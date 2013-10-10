@@ -85,6 +85,17 @@ public:
     int limit();
 
     // FIXME: Sorting?
+
+    /**
+     * Adds a custom option which any search backend could use
+     * to configure the query result.
+     *
+     * Each backend has their own custom options which should be
+     * looked up in their corresponding documentation
+     */
+    void addCustomOption(const QString& option, const QString& value);
+    void removeCustomOption(const QString& option);
+    QString customOption(const QString& option);
 };
 
 #endif // QUERY_H
