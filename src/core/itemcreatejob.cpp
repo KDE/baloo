@@ -20,51 +20,14 @@
  *
  */
 
-#include "tag.h"
+#include "itemcreatejob.h"
 
-Tag::Tag(const QByteArray& id)
+ItemCreateJob::ItemCreateJob(QObject* parent): KJob(parent)
 {
-    m_id = id;
-    qRegisterMetaType<Tag*>();
+
 }
 
-Tag::Tag(const QString& name)
+ItemCreateJob::~ItemCreateJob()
 {
-    m_name = name;
-    qRegisterMetaType<Tag*>();
-}
 
-QByteArray Tag::id()
-{
-    return m_id;
-}
-
-void Tag::setId(const QByteArray& id)
-{
-    m_id = id;
-}
-
-QString Tag::name()
-{
-    return m_name;
-}
-
-void Tag::setName(const QString& name)
-{
-    m_name = name;
-}
-
-QByteArray Tag::type()
-{
-    return QByteArray("Tag");
-}
-
-TagFetchJob* Tag::fetch()
-{
-    return new TagFetchJob(this);
-}
-
-TagCreateJob* Tag::create()
-{
-    return new TagCreateJob(this);
 }

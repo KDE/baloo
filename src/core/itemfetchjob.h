@@ -26,6 +26,7 @@
 #include "core_export.h"
 
 #include <KJob>
+#include <QMetaType>
 
 class Item;
 
@@ -39,5 +40,7 @@ public:
 signals:
     void itemReceived(Item* item);
 };
+
+Q_DECLARE_METATYPE(KJob*);
 
 #endif // ITEMFETCHJOB_H

@@ -20,51 +20,36 @@
  *
  */
 
-#include "tag.h"
+#ifndef TAGCREATEJOB_H
+#define TAGCREATEJOB_H
 
-Tag::Tag(const QByteArray& id)
-{
-    m_id = id;
-    qRegisterMetaType<Tag*>();
-}
+#include "itemcreatejob.h"
 
-Tag::Tag(const QString& name)
-{
-    m_name = name;
-    qRegisterMetaType<Tag*>();
-}
+class Tag;
 
-QByteArray Tag::id()
+class TagCreateJob : public ItemCreateJob
 {
-    return m_id;
-}
+    Q_OBJECT
+public:
+    TagCreateJob(Tag* tag, QObject* parent = 0);
 
-void Tag::setId(const QByteArray& id)
-{
-    m_id = id;
-}
+    virtual void start();
 
-QString Tag::name()
-{
-    return m_name;
-}
+    enum Error {
+        Error_ConnectionError = 1,
+        Error_TagExists = 2,
+        Error_TagIdProvided = 3,
+        Error_TagEmptyName = 4
+    };
 
-void Tag::setName(const QString& name)
-{
-    m_name = name;
-}
+signals:
+    void tagCreated(Tag* tag);
 
-QByteArray Tag::type()
-{
-    return QByteArray("Tag");
-}
+private slots:
+    void doStart();
 
-TagFetchJob* Tag::fetch()
-{
-    return new TagFetchJob(this);
-}
+private:
+    Tag* m_tag;
+};
 
-TagCreateJob* Tag::create()
-{
-    return new TagCreateJob(this);
-}
+#endif // TAGCREATEJOB_H

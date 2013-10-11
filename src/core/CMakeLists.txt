@@ -3,6 +3,7 @@ set(CORE_SRCS
     relation.cpp
 
     itemfetchjob.cpp
+    itemcreatejob.cpp
 )
 
 kde4_add_library(viziercore SHARED ${CORE_SRCS})

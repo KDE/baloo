@@ -20,51 +20,24 @@
  *
  */
 
-#include "tag.h"
+#ifndef ITEMCREATEJOB_H
+#define ITEMCREATEJOB_H
 
-Tag::Tag(const QByteArray& id)
-{
-    m_id = id;
-    qRegisterMetaType<Tag*>();
-}
+#include "core_export.h"
 
-Tag::Tag(const QString& name)
-{
-    m_name = name;
-    qRegisterMetaType<Tag*>();
-}
+#include <KJob>
 
-QByteArray Tag::id()
-{
-    return m_id;
-}
+class Item;
 
-void Tag::setId(const QByteArray& id)
+class VIZIER_CORE_EXPORT ItemCreateJob : public KJob
 {
-    m_id = id;
-}
+    Q_OBJECT
+public:
+    explicit ItemCreateJob(QObject* parent = 0);
+    virtual ~ItemCreateJob();
 
-QString Tag::name()
-{
-    return m_name;
-}
+signals:
+    void itemCreated(Item* item);
+};
 
-void Tag::setName(const QString& name)
-{
-    m_name = name;
-}
-
-QByteArray Tag::type()
-{
-    return QByteArray("Tag");
-}
-
-TagFetchJob* Tag::fetch()
-{
-    return new TagFetchJob(this);
-}
-
-TagCreateJob* Tag::create()
-{
-    return new TagCreateJob(this);
-}
+#endif // ITEMCREATEJOB_H

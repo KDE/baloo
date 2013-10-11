@@ -149,6 +149,55 @@ void TagTests::testTagFetchInvalid()
     QCOMPARE(spy3.at(0).first().value<KJob*>(), job);
 
     QCOMPARE(job->error(), (int)TagFetchJob::Error_TagDoesNotExist);
+    QVERIFY(tag.id().isEmpty());
 }
+
+void TagTests::testTagCreate()
+{
+    Tag tag(QLatin1String("TagA"));
+    TagCreateJob* job = tag.create();
+    QVERIFY(job);
+
+    QSignalSpy spy1(job, SIGNAL(itemCreated(Item*)));
+    QSignalSpy spy2(job, SIGNAL(tagCreated(Tag*)));
+    QSignalSpy spy3(job, SIGNAL(result(KJob*)));
+    QVERIFY(job->exec());
+
+    QCOMPARE(spy1.size(), 1);
+    QCOMPARE(spy1.at(0).size(), 1);
+    QCOMPARE(spy1.at(0).first().value<Item*>(), &tag);
+
+    QCOMPARE(spy2.size(), 1);
+    QCOMPARE(spy2.at(0).size(), 1);
+    QCOMPARE(spy2.at(0).first().value<Tag*>(), &tag);
+
+    QCOMPARE(spy3.size(), 1);
+    QCOMPARE(spy3.at(0).size(), 1);
+    QCOMPARE(spy3.at(0).first().value<KJob*>(), job);
+    QCOMPARE(job->error(), 0);
+
+    QCOMPARE(tag.id(), QByteArray("tag:1"));
+}
+
+void TagTests::testTagCreate_duplicate()
+{
+    testTagCreate();
+
+    Tag tag(QLatin1String("TagA"));
+    TagCreateJob* job = tag.create();
+    QVERIFY(job);
+
+    QSignalSpy spy(job, SIGNAL(result(KJob*)));
+    QVERIFY(!job->exec());
+
+    QCOMPARE(spy.size(), 1);
+    QCOMPARE(spy.at(0).size(), 1);
+    QCOMPARE(spy.at(0).first().value<KJob*>(), job);
+    QCOMPARE(job->error(), (int)TagCreateJob::Error_TagExists);
+
+    QVERIFY(tag.id().isEmpty());
+}
+
+
 
 QTEST_KDEMAIN_CORE(TagTests)

@@ -25,7 +25,8 @@
 
 #include "item.h"
 #include "tagfetchjob.h"
-#include "tag_export.h"
+#include "tagcreatejob.h"
+
 /*
 #include "tagsavejob.h"
 #include "tagcreatejob.h"
@@ -40,17 +41,17 @@ public:
     Tag(const QString& name);
 
     QByteArray id();
+    void setId(const QByteArray& id);
+
     QByteArray type();
 
     QString name();
     void setName(const QString& name);
 
     TagFetchJob* fetch();
-    /*
-    TagSaveJob* save();
+    //TagSaveJob* save();
     TagCreateJob* create();
-    TagRemoveJob* remove();
-    */
+    //TagRemoveJob* remove();
 
 private:
     friend class TagFetchJob;

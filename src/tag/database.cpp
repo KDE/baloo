@@ -61,8 +61,9 @@ bool Database::init()
     }
 
     QSqlQuery query(db);
-    bool ret = query.exec("CREATE TABLE tags (id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                          "name VARCHAR(255))");
+    bool ret = query.exec("CREATE TABLE tags("
+                          "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                          "name TEXT NOT NULL UNIQUE)");
     if (!ret) {
         kDebug() << "Could not create table" << query.lastError().text();
         return false;

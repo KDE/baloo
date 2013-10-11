@@ -43,6 +43,9 @@ private slots:
     void testTagFetchFromName();
     void testTagFetchInvalid();
 
+    void testTagCreate();
+    void testTagCreate_duplicate();
+
 private:
     KTempDir m_tempDir;
     QString m_dbPath;

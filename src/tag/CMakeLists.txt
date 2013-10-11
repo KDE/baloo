@@ -1,6 +1,7 @@
 set(TAGS_SRCS
     tag.cpp
     tagfetchjob.cpp
+    tagcreatejob.cpp
 
     database.cpp
 )
