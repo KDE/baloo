@@ -20,42 +20,37 @@
  *
  */
 
-#include "tag.h"
+#ifndef TAGFETCHJOB_H
+#define TAGFETCHJOB_H
 
-Tag::Tag(const QByteArray& id)
+#include "tag_export.h"
+#include "itemfetchjob.h"
+
+class Tag;
+
+class VIZIER_TAG_EXPORT TagFetchJob : public ItemFetchJob
 {
-    m_id = id;
+    Q_OBJECT
+public:
+    TagFetchJob(Tag* tag, QObject* parent = 0);
+    virtual ~TagFetchJob();
 
-    qRegisterMetaType<Tag*>();
-}
+    virtual void start();
 
-Tag::Tag(const QString& name)
-{
-    m_name = name;
-    m_id = 0;
-}
+    enum Error {
+        Error_ConnectionError = 1,
+        Error_TagInvalidId = 2,
+        Error_TagDoesNotExist = 3
+    };
 
-QByteArray Tag::id()
-{
-    return m_id;
-}
+signals:
+    void tagReceived(Tag* tag);
 
-QString Tag::name()
-{
-    return m_name;
-}
+private slots:
+    void doStart();
 
-void Tag::setName(const QString& name)
-{
-    m_name = name;
-}
+private:
+    Tag* m_tag;
+};
 
-QByteArray Tag::type()
-{
-    return QByteArray("Tag");
-}
-
-TagFetchJob* Tag::fetch()
-{
-    return new TagFetchJob(this);
-}
+#endif // TAGFETCHJOB_H

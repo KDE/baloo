@@ -21,3 +21,14 @@
  */
 
 #include "itemfetchjob.h"
+
+ItemFetchJob::ItemFetchJob(QObject* parent)
+    : KJob(parent)
+{
+
+}
+
+ItemFetchJob::~ItemFetchJob()
+{
+
+}

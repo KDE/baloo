@@ -23,28 +23,43 @@
 #ifndef TAG_H
 #define TAG_H
 
-#include "../core/item.h"
+#include "item.h"
+#include "tagfetchjob.h"
+#include "tag_export.h"
+/*
+#include "tagsavejob.h"
+#include "tagcreatejob.h"
+#include "tagremovejob.h"
+*/
 
-class TagFetchJob;
-class TagSaveJob;
-class TagCreateJob;
-class TagRemoveJob;
 
-class Tag : public Item
+class VIZIER_TAG_EXPORT Tag : public Item
 {
 public:
-    Tag();
+    Tag(const QByteArray& id);
     Tag(const QString& name);
 
-    QString id();
+    QByteArray id();
+    QByteArray type();
 
     QString name();
     void setName(const QString& name);
 
     TagFetchJob* fetch();
+    /*
     TagSaveJob* save();
     TagCreateJob* create();
     TagRemoveJob* remove();
+    */
+
+private:
+    friend class TagFetchJob;
+
+    QByteArray m_id;
+    QString m_name;
 };
+
+//Q_DECLARE_METATYPE(Tag);
+Q_DECLARE_METATYPE(Tag*);
 
 #endif // TAG_H

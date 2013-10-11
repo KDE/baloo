@@ -23,6 +23,9 @@
 #ifndef ITEM_H
 #define ITEM_H
 
+#include "core_export.h"
+
+#include <QMetaType>
 #include <QString>
 
 class ItemFetchJob;
@@ -32,36 +35,33 @@ class ItemRemoveJob;
 
 class ItemType;
 
-class Item
+class VIZIER_CORE_EXPORT Item
 {
 public:
+    Item();
     virtual ~Item();
 
     /**
-     * Every item has a unique identifier
+     * Every Item must has a globally unique identifier. Most identifiers
+     * are of the form "akonadi:?item=5" or "tag:5" or "file:22456"
      */
-    virtual QString id();
-
-    virtual QString type();
-
-    /**
-     * Fetches a property value from the local cache. This cache
-     * is empty until load has been called
-     */
-    //FIXME: The key should not be a string
-    virtual QVariant property(QString key);
+    virtual QByteArray id() = 0;
 
     /**
-     * This sets the property in the local cache. It is not actually
-     * saved until you call save
+     * Every Item has a type that is based on the Item id. It's mostly
+     * something as simple as "Email", "Tag", "File", "Contact", etc.
+     *
+     * This type can be used as a basis of casting this to its appropriate
+     * derived class or initializing the derived class with the id.
      */
-    //FIXME: The key should not be a string
-    virtual void setProperty(QString key, const QVariant& value):
+    virtual QByteArray type() = 0;
 
     virtual ItemFetchJob* fetch();
     virtual ItemSaveJob* save();
     virtual ItemCreateJob* create();
     virtual ItemRemoveJob* remove();
 };
+
+Q_DECLARE_METATYPE(Item*);
 
 #endif // ITEM_H

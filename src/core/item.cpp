@@ -21,3 +21,33 @@
  */
 
 #include "item.h"
+
+Item::Item()
+{
+    qRegisterMetaType<Item*>();
+}
+
+Item::~Item()
+{
+
+}
+
+ItemFetchJob* Item::fetch()
+{
+    return 0;
+}
+
+ItemSaveJob* Item::save()
+{
+    return 0;
+}
+
+ItemCreateJob* Item::create()
+{
+    return 0;
+}
+
+ItemRemoveJob* Item::remove()
+{
+    return 0;
+}

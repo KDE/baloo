@@ -23,6 +23,9 @@
 #ifndef RELATION_H
 #define RELATION_H
 
+#include "core_export.h"
+#include <QByteArray>
+
 class Item;
 class ItemType;
 
@@ -31,9 +34,9 @@ class RelationCreateJob;
 class RelationRemoveJob;
 
 /**
- * This class represents a relation between 2 items
+ * This class represents a way of connecting any two Items.
  */
-class Relation
+class VIZIER_CORE_EXPORT Relation
 {
 public:
     virtual ~Relation();
@@ -41,8 +44,8 @@ public:
     /**
      * The from must be of type fromType
      */
-    virtual ItemType fromType() const = 0;
-    virtual ItemType toType() const = 0;
+    virtual QByteArray fromType() const = 0;
+    virtual QByteArray toType() const = 0;
 
     Item from();
     Item to();

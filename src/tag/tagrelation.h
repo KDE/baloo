@@ -23,7 +23,7 @@
 #ifndef TAGRELATION_H
 #define TAGRELATION_H
 
-#include "../core/relation.h"
+#include "relation.h"
 
 class Tag;
 class Item;
@@ -36,12 +36,14 @@ public:
     Tag tag();
     Item item();
 
-    ItemType fromType() const; // Returns TagType
-    ItemType toType() const;   // Returns ItemType
+    QByteArray fromType() const; // Returns TagType
+    QByteArray toType() const;   // Returns ItemType
 
+    /*
     TagFetchJob* load();
     TagCreateJob* create();
     TagDeleteJob* remove();
+    */
 };
 
 // Register Tag relation plugin

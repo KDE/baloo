@@ -20,11 +20,34 @@
  *
  */
 
-#include <QApplication>
+#ifndef TAGTESTS_H
+#define TAGTESTS_H
 
-int main(int argc, char ** argv) {
-    QApplication app(argc, argv);
+#include <QObject>
+#include <KTempDir>
 
-    return app.exec();
-}
+class Database;
 
+class TagTests : public QObject
+{
+    Q_OBJECT
+public:
+    explicit TagTests(QObject* parent = 0);
+
+private slots:
+    void init();
+    void initTestCase();
+    void cleanupTestCase();
+
+    void testTagFetchFromId();
+    void testTagFetchFromName();
+    void testTagFetchInvalid();
+
+private:
+    KTempDir m_tempDir;
+    QString m_dbPath;
+
+    Database* m_db;
+};
+
+#endif // TAGTESTS_H

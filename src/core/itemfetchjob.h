@@ -23,13 +23,21 @@
 #ifndef ITEMFETCHJOB_H
 #define ITEMFETCHJOB_H
 
-class ItemFetchJob
+#include "core_export.h"
+
+#include <KJob>
+
+class Item;
+
+class VIZIER_CORE_EXPORT ItemFetchJob : public KJob
 {
+    Q_OBJECT
 public:
+    explicit ItemFetchJob(QObject* parent);
     virtual ~ItemFetchJob();
 
 signals:
-    void itemReceived(const Item& item);
+    void itemReceived(Item* item);
 };
 
 #endif // ITEMFETCHJOB_H

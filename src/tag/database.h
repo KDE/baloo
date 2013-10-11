@@ -20,42 +20,28 @@
  *
  */
 
-#include "tag.h"
+#ifndef DATABASE_H
+#define DATABASE_H
 
-Tag::Tag(const QByteArray& id)
+#include <QObject>
+#include <QSqlDatabase>
+
+class Database : public QObject
 {
-    m_id = id;
+public:
+    explicit Database(QObject* parent = 0);
+    ~Database();
 
-    qRegisterMetaType<Tag*>();
-}
+    QString path();
+    void setPath(const QString& path);
 
-Tag::Tag(const QString& name)
-{
-    m_name = name;
-    m_id = 0;
-}
+    bool init();
+    bool isInitialized();
 
-QByteArray Tag::id()
-{
-    return m_id;
-}
+private:
+    QString m_path;
+    QString m_connectionName;
+    bool m_initialized;
+};
 
-QString Tag::name()
-{
-    return m_name;
-}
-
-void Tag::setName(const QString& name)
-{
-    m_name = name;
-}
-
-QByteArray Tag::type()
-{
-    return QByteArray("Tag");
-}
-
-TagFetchJob* Tag::fetch()
-{
-    return new TagFetchJob(this);
-}
+#endif // DATABASE_H
