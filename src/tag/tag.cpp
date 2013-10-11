@@ -64,7 +64,17 @@ TagFetchJob* Tag::fetch()
     return new TagFetchJob(this);
 }
 
+TagSaveJob* Tag::save()
+{
+    return new TagSaveJob(this);
+}
+
 TagCreateJob* Tag::create()
 {
     return new TagCreateJob(this);
+}
+
+TagRemoveJob* Tag::remove()
+{
+    return new TagRemoveJob(this);
 }

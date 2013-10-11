@@ -198,6 +198,138 @@ void TagTests::testTagCreate_duplicate()
     QVERIFY(tag.id().isEmpty());
 }
 
+void TagTests::testTagModify()
+{
+    Tag tag(QLatin1String("TagA"));
+    TagCreateJob* cjob = tag.create();
+    cjob->exec();
+
+    QByteArray id = tag.id();
+    tag.setName("TagB");
+
+    ItemSaveJob* job = tag.save();
+    QVERIFY(job);
+
+    QSignalSpy spy1(job, SIGNAL(itemSaved(Item*)));
+    QSignalSpy spy2(job, SIGNAL(tagSaved(Tag*)));
+    QSignalSpy spy3(job, SIGNAL(result(KJob*)));
+    QVERIFY(job->exec());
+
+    QCOMPARE(spy1.size(), 1);
+    QCOMPARE(spy1.at(0).size(), 1);
+    QCOMPARE(spy1.at(0).first().value<Item*>(), &tag);
+
+    QCOMPARE(spy2.size(), 1);
+    QCOMPARE(spy2.at(0).size(), 1);
+    QCOMPARE(spy2.at(0).first().value<Tag*>(), &tag);
+
+    QCOMPARE(spy3.size(), 1);
+    QCOMPARE(spy3.at(0).size(), 1);
+    QCOMPARE(spy3.at(0).first().value<KJob*>(), job);
+    QCOMPARE(job->error(), 0);
+
+    QCOMPARE(tag.id(), id);
+    QCOMPARE(tag.name(), QLatin1String("TagB"));
+}
+
+void TagTests::testTagModify_duplicate()
+{
+    QSqlQuery insertQ;
+    insertQ.prepare("INSERT INTO tags (name) VALUES (?)");
+    insertQ.addBindValue("TagB");
+    QVERIFY(insertQ.exec());
+
+    Tag tag(QLatin1String("TagA"));
+    TagCreateJob* cjob = tag.create();
+    cjob->exec();
+
+    QByteArray id = tag.id();
+    tag.setName("TagB");
+
+    ItemSaveJob* job = tag.save();
+    QVERIFY(job);
+
+    QSignalSpy spy1(job, SIGNAL(itemSaved(Item*)));
+    QSignalSpy spy2(job, SIGNAL(tagSaved(Tag*)));
+    QSignalSpy spy3(job, SIGNAL(result(KJob*)));
+    QVERIFY(!job->exec());
+
+    QCOMPARE(spy1.size(), 0);
+    QCOMPARE(spy2.size(), 0);
+
+    QCOMPARE(spy3.size(), 1);
+    QCOMPARE(spy3.at(0).size(), 1);
+    QCOMPARE(spy3.at(0).first().value<KJob*>(), job);
+    QCOMPARE(job->error(), (int)TagSaveJob::Error_TagExists);
+
+    QCOMPARE(tag.name(), QLatin1String("TagB"));
+    QVERIFY(tag.id().isEmpty());
+}
+
+void TagTests::testTagRemove()
+{
+    QStringList list;
+    list << "TagA" << "TagB" << "TagC";
+
+    foreach (const QString& tag, list) {
+        QSqlQuery insertQ;
+        insertQ.prepare("INSERT INTO tags (name) VALUES (?)");
+        insertQ.addBindValue(tag);
+
+        QVERIFY(insertQ.exec());
+    }
+
+    Tag tag(QByteArray("tag:1"));
+    TagRemoveJob* job = tag.remove();
+    QVERIFY(job);
+
+    QSignalSpy spy1(job, SIGNAL(itemRemoved(Item*)));
+    QSignalSpy spy2(job, SIGNAL(tagRemoved(Tag*)));
+    QSignalSpy spy3(job, SIGNAL(result(KJob*)));
+    QVERIFY(job->exec());
+
+    QCOMPARE(spy1.size(), 1);
+    QCOMPARE(spy1.at(0).size(), 1);
+    QCOMPARE(spy1.at(0).first().value<Item*>(), &tag);
+
+    QCOMPARE(spy2.size(), 1);
+    QCOMPARE(spy2.at(0).size(), 1);
+    QCOMPARE(spy2.at(0).first().value<Tag*>(), &tag);
+
+    QCOMPARE(spy3.size(), 1);
+    QCOMPARE(spy3.at(0).size(), 1);
+    QCOMPARE(spy3.at(0).first().value<KJob*>(), job);
+    QCOMPARE(job->error(), 0);
+
+    QVERIFY(tag.name().isEmpty());
+
+    QSqlQuery query;
+    query.prepare("SELECT name from tags where id = ?");
+    query.addBindValue(1);
+    QVERIFY(query.exec());
+    QVERIFY(!query.next());
+}
+
+void TagTests::testTagRemove_notExists()
+{
+    Tag tag(QByteArray("tag:1"));
+    TagRemoveJob* job = tag.remove();
+    QVERIFY(job);
+
+    QSignalSpy spy1(job, SIGNAL(itemRemoved(Item*)));
+    QSignalSpy spy2(job, SIGNAL(tagRemoved(Tag*)));
+    QSignalSpy spy3(job, SIGNAL(result(KJob*)));
+    QVERIFY(!job->exec());
+
+    QCOMPARE(spy1.size(), 0);
+    QCOMPARE(spy2.size(), 0);
+    QCOMPARE(spy3.size(), 1);
+    QCOMPARE(spy3.at(0).size(), 1);
+    QCOMPARE(spy3.at(0).first().value<KJob*>(), job);
+    QCOMPARE(job->error(), (int)TagRemoveJob::Error_TagDoesNotExist);
+
+    QCOMPARE(tag.id(), QByteArray("tag:1"));
+}
 
 
 QTEST_KDEMAIN_CORE(TagTests)

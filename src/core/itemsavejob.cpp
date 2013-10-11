@@ -20,42 +20,14 @@
  *
  */
 
-#ifndef TAG_H
-#define TAG_H
+#include "itemsavejob.h"
 
-#include "item.h"
-#include "tagfetchjob.h"
-#include "tagcreatejob.h"
-#include "tagsavejob.h"
-#include "tagremovejob.h"
-
-class VIZIER_TAG_EXPORT Tag : public Item
+ItemSaveJob::ItemSaveJob(QObject* parent): KJob(parent)
 {
-public:
-    Tag(const QByteArray& id);
-    Tag(const QString& name);
 
-    QByteArray id();
-    void setId(const QByteArray& id);
+}
 
-    QByteArray type();
+ItemSaveJob::~ItemSaveJob()
+{
 
-    QString name();
-    void setName(const QString& name);
-
-    TagFetchJob* fetch();
-    TagSaveJob* save();
-    TagCreateJob* create();
-    TagRemoveJob* remove();
-
-private:
-    friend class TagFetchJob;
-
-    QByteArray m_id;
-    QString m_name;
-};
-
-//Q_DECLARE_METATYPE(Tag);
-Q_DECLARE_METATYPE(Tag*);
-
-#endif // TAG_H
+}

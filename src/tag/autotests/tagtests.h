@@ -46,6 +46,12 @@ private slots:
     void testTagCreate();
     void testTagCreate_duplicate();
 
+    void testTagModify();
+    void testTagModify_duplicate();
+
+    void testTagRemove();
+    void testTagRemove_notExists();
+
 private:
     KTempDir m_tempDir;
     QString m_dbPath;

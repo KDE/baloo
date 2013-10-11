@@ -20,42 +20,35 @@
  *
  */
 
-#ifndef TAG_H
-#define TAG_H
+#ifndef TAGREMOVEJOB_H
+#define TAGREMOVEJOB_H
 
-#include "item.h"
-#include "tagfetchjob.h"
-#include "tagcreatejob.h"
-#include "tagsavejob.h"
-#include "tagremovejob.h"
+#include "itemremovejob.h"
 
-class VIZIER_TAG_EXPORT Tag : public Item
+class Tag;
+
+class TagRemoveJob : public ItemRemoveJob
 {
+    Q_OBJECT
 public:
-    Tag(const QByteArray& id);
-    Tag(const QString& name);
+    TagRemoveJob(Tag* tag, QObject* parent = 0);
+    virtual void start();
 
-    QByteArray id();
-    void setId(const QByteArray& id);
+    enum Error {
+        Error_ConnectionError,
+        Error_TagInvalidId,
+        Error_TagEmptyId,
+        Error_TagDoesNotExist
+    };
 
-    QByteArray type();
+signals:
+    void tagRemoved(Tag* tag);
 
-    QString name();
-    void setName(const QString& name);
-
-    TagFetchJob* fetch();
-    TagSaveJob* save();
-    TagCreateJob* create();
-    TagRemoveJob* remove();
+private slots:
+    void doStart();
 
 private:
-    friend class TagFetchJob;
-
-    QByteArray m_id;
-    QString m_name;
+    Tag* m_tag;
 };
 
-//Q_DECLARE_METATYPE(Tag);
-Q_DECLARE_METATYPE(Tag*);
-
-#endif // TAG_H
+#endif // TAGREMOVEJOB_H

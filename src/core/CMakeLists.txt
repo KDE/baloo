@@ -4,6 +4,8 @@ set(CORE_SRCS
 
     itemfetchjob.cpp
     itemcreatejob.cpp
+    itemsavejob.cpp
+    itemremovejob.cpp
 )
 
 kde4_add_library(viziercore SHARED ${CORE_SRCS})
