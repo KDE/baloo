@@ -33,8 +33,9 @@ class VIZIER_TAG_EXPORT Tag : public Item
 {
 public:
     Tag();
-    Tag(const QByteArray& id);
     Tag(const QString& name);
+
+    static Tag fromId(const QByteArray& id);
 
     QByteArray type();
 

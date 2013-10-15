@@ -24,19 +24,18 @@
 
 Tag::Tag()
 {
-    qRegisterMetaType<Tag*>();
-}
-
-Tag::Tag(const QByteArray& id)
-{
-    setId(id);
-    qRegisterMetaType<Tag*>();
 }
 
 Tag::Tag(const QString& name)
 {
     m_name = name;
-    qRegisterMetaType<Tag*>();
+}
+
+Tag Tag::fromId(const QByteArray& id)
+{
+    Tag tag;
+    tag.setId(id);
+    return tag;
 }
 
 QString Tag::name()

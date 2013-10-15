@@ -46,6 +46,8 @@ void TagTests::initTestCase()
 {
     m_dbPath = m_tempDir.name() + QLatin1String("tagDB.sqlite");
 
+    qRegisterMetaType<Item*>();
+    qRegisterMetaType<Tag*>();
     qRegisterMetaType<KJob*>();
     qRegisterMetaType<Relation*>();
     qRegisterMetaType<TagRelation*>();
@@ -95,7 +97,7 @@ void TagTests::testTagFetchFromId()
 {
     insertTags(QStringList() << "TagA" << "TagB" << "TagC");
 
-    Tag tag(QByteArray("tag:2"));
+    Tag tag = Tag::fromId("tag:2");
     QVERIFY(tag.name().isEmpty());
     QCOMPARE(tag.id(), QByteArray("tag:2"));
 
@@ -279,7 +281,7 @@ void TagTests::testTagRemove()
 {
     insertTags(QStringList() << "TagA" << "TagB" << "TagC");
 
-    Tag tag(QByteArray("tag:1"));
+    Tag tag = Tag::fromId(QByteArray("tag:1"));
     TagRemoveJob* job = tag.remove();
     QVERIFY(job);
 
@@ -312,7 +314,7 @@ void TagTests::testTagRemove()
 
 void TagTests::testTagRemove_notExists()
 {
-    Tag tag(QByteArray("tag:1"));
+    Tag tag = Tag::fromId(QByteArray("tag:1"));
     TagRemoveJob* job = tag.remove();
     QVERIFY(job);
 
@@ -414,7 +416,7 @@ void TagTests::testTagRelationSaveJob()
     Item item;
     item.setId("file:1");
 
-    Tag tag(QByteArray("tag:1"));
+    Tag tag = Tag::fromId(QByteArray("tag:1"));
 
     TagRelation rel(tag, item);
     TagRelationCreateJob* job = rel.create();
@@ -457,7 +459,7 @@ void TagTests::testTagRelationSaveJob_duplicate()
     Item item;
     item.setId("file:1");
 
-    Tag tag(QByteArray("tag:1"));
+    Tag tag = Tag::fromId(QByteArray("tag:1"));
 
     TagRelation rel(tag, item);
     TagRelationCreateJob* job = rel.create();
@@ -488,7 +490,7 @@ void TagTests::testTagRelationRemoveJob()
     Item item;
     item.setId("file:1");
 
-    Tag tag(QByteArray("tag:1"));
+    Tag tag = Tag::fromId(QByteArray("tag:1"));
 
     TagRelation rel(tag, item);
     TagRelationRemoveJob* job = rel.remove();
@@ -524,7 +526,7 @@ void TagTests::testTagRelationRemoveJob_notExists()
     Item item;
     item.setId("file:1");
 
-    Tag tag(QByteArray("tag:1"));
+    Tag tag = Tag::fromId(QByteArray("tag:1"));
 
     TagRelation rel(tag, item);
     TagRelationRemoveJob* job = rel.remove();
