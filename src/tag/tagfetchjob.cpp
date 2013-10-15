@@ -55,7 +55,7 @@ void TagFetchJob::doStart()
     query.setForwardOnly(true);
 
     if (m_tag->id().size()) {
-        const QByteArray& arr = m_tag->m_id;
+        const QByteArray& arr = m_tag->id();
         int id = arr.mid(4).toInt(); // "tag:" takes 4 characters
 
         if (id <= 0) {
@@ -76,7 +76,7 @@ void TagFetchJob::doStart()
 
         if (query.next()) {
             QString name = query.value(0).toString();
-            m_tag->m_name = name;
+            m_tag->setName(name);
         }
         else {
             setError(Error_TagDoesNotExist);
@@ -101,7 +101,7 @@ void TagFetchJob::doStart()
 
         if (query.next()) {
             int id = query.value(0).toInt();
-            m_tag->m_id = QByteArray("tag:") + QByteArray::number(id);
+            m_tag->setId(QByteArray("tag:") + QByteArray::number(id));
         }
         else {
             setError(Error_TagDoesNotExist);

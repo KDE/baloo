@@ -45,7 +45,13 @@ public:
      * Every Item must has a globally unique identifier. Most identifiers
      * are of the form "akonadi:?item=5" or "tag:5" or "file:22456"
      */
-    virtual QByteArray id() = 0;
+    QByteArray id();
+
+    /**
+     * Sets the id to the desired value. This method should generally never
+     * be called by clients. It is used by the data stores.
+     */
+    void setId(const QByteArray& id);
 
     /**
      * Every Item has a type that is based on the Item id. It's mostly
@@ -54,14 +60,27 @@ public:
      * This type can be used as a basis of casting this to its appropriate
      * derived class or initializing the derived class with the id.
      */
-    virtual QByteArray type() = 0;
+    virtual QByteArray type() { return QByteArray("Item"); }
 
     virtual ItemFetchJob* fetch();
     virtual ItemSaveJob* save();
     virtual ItemCreateJob* create();
     virtual ItemRemoveJob* remove();
+
+private:
+    QByteArray m_id;
 };
 
 Q_DECLARE_METATYPE(Item*);
+
+inline QByteArray Item::id()
+{
+    return m_id;
+}
+
+inline void Item::setId(const QByteArray& id)
+{
+    m_id = id;
+}
 
 #endif // ITEM_H

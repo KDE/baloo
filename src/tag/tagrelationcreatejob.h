@@ -20,26 +20,34 @@
  *
  */
 
-#ifndef RELATIONFETCHJOB_H
-#define RELATIONFETCHJOB_H
+#ifndef TAGRELATIONCREATEJOB_H
+#define TAGRELATIONCREATEJOB_H
 
-#include <KJob>
-#include "core_export.h"
+#include "relationcreatejob.h"
+#include "tag_export.h"
 
-class Item;
-class Relation;
+class TagRelation;
 
-class VIZIER_CORE_EXPORT RelationFetchJob : public KJob
+class VIZIER_TAG_EXPORT TagRelationCreateJob : public RelationCreateJob
 {
     Q_OBJECT
 public:
-    explicit RelationFetchJob(QObject* parent = 0);
-    virtual ~RelationFetchJob();
+    TagRelationCreateJob(TagRelation* relation, QObject* parent = 0);
+    virtual void start();
 
+    enum Errors {
+        Error_InvalidRelation,
+        Error_RelationExists,
+        Error_InvalidTagId
+    };
 signals:
-    void relationReceived(Relation* relation);
-    void fromReceived(Item* from);
-    void toReceived(Item* to);
+    void tagRelationCreated(TagRelation* relation);
+
+private slots:
+    void doStart();
+
+private:
+    TagRelation* m_tagRelation;
 };
 
-#endif // RELATIONFETCHJOB_H
+#endif // TAGRELATIONCREATEJOB_H

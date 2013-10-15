@@ -21,3 +21,24 @@
  */
 
 #include "relation.h"
+
+Relation::~Relation()
+{
+}
+
+RelationCreateJob* Relation::create()
+{
+    return 0;
+}
+
+RelationFetchJob* Relation::fetch()
+{
+    return 0;
+}
+
+RelationRemoveJob* Relation::remove()
+{
+    return 0;
+}
+
+

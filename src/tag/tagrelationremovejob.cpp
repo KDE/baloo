@@ -20,25 +20,24 @@
  *
  */
 
-#include "tagsavejob.h"
+#include "tagrelationremovejob.h"
+#include "tagrelation.h"
 #include "tag.h"
 
 #include <QTimer>
+#include <QVariant>
 
 #include <QSqlQuery>
 #include <QSqlError>
 
-#include <KDebug>
-
-TagSaveJob::TagSaveJob(Tag* tag, QObject* parent)
-    : ItemSaveJob(parent)
-    , m_tag(tag)
+TagRelationRemoveJob::TagRelationRemoveJob(TagRelation* tagRelation, QObject* parent)
+    : RelationRemoveJob(parent)
+    , m_tagRelation(tagRelation)
 {
-    Q_ASSERT(tag);
-    qRegisterMetaType<KJob*>();
+    Q_ASSERT(tagRelation);
 }
 
-void TagSaveJob::start()
+void TagRelationRemoveJob::start()
 {
     QTimer::singleShot(0, this, SLOT(doStart()));
 }
@@ -49,45 +48,43 @@ namespace {
     }
 }
 
-void TagSaveJob::doStart()
+void TagRelationRemoveJob::doStart()
 {
-    if (m_tag->id().isEmpty()) {
-        setError(Error_TagNotCreated);
-        setErrorText("Tags must have an id before saving");
+    if (m_tagRelation->item().id().isEmpty() || m_tagRelation->tag().id().isEmpty()) {
+        setError(Error_EmptyIds);
+        setErrorText("The Item or Tag id is empty");
         emitResult();
         return;
     }
 
-    if (m_tag->name().isEmpty()) {
-        setError(Error_TagEmptyName);
-        setErrorText("A Tag must have a name");
-        emitResult();
-        return;
-    }
-
-    int id = toInt(m_tag->id());
+    int id = toInt(m_tagRelation->tag().id());
     if (id <= 0) {
-        setError(Error_TagInvalidId);
-        setErrorText("Invalid id " + m_tag->id());
+        setError(Error_InvalidTagId);
+        setErrorText("Invalid Tag ID");
         emitResult();
         return;
     }
 
     QSqlQuery query;
-    query.prepare("UPDATE tags SET name = ? WHERE id = ?");
-    query.addBindValue(m_tag->name());
-    query.addBindValue(toInt(m_tag->id()));
+    query.prepare("DELETE FROM tagRelations where tid = ? AND rid = ?");
+    query.addBindValue(id);
+    query.addBindValue(m_tagRelation->item().id());
 
     if (!query.exec()) {
-        m_tag->setId(QByteArray());
-        setError(Error_TagExists);
-        setErrorText("Tag with name " + m_tag->name() + " already exists");
+        setError(Error_ConnectionError);
+        setErrorText(query.lastError().text());
         emitResult();
         return;
     }
 
-    emit itemSaved(m_tag);
-    emit tagSaved(m_tag);
+    if (query.numRowsAffected() == 0) {
+        setError(Error_RelationDoesNotExist);
+        setErrorText("The tag relation does not exist");
+        emitResult();
+        return;
+    }
+
+    emit relationRemoved(m_tagRelation);
+    emit tagRelationRemoved(m_tagRelation);
     emitResult();
 }
-

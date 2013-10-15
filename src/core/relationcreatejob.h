@@ -20,26 +20,23 @@
  *
  */
 
-#ifndef RELATIONFETCHJOB_H
-#define RELATIONFETCHJOB_H
+#ifndef RELATIONCREATEJOB_H
+#define RELATIONCREATEJOB_H
 
 #include <KJob>
 #include "core_export.h"
 
-class Item;
 class Relation;
 
-class VIZIER_CORE_EXPORT RelationFetchJob : public KJob
+class VIZIER_CORE_EXPORT RelationCreateJob : public KJob
 {
     Q_OBJECT
 public:
-    explicit RelationFetchJob(QObject* parent = 0);
-    virtual ~RelationFetchJob();
+    explicit RelationCreateJob(QObject* parent = 0);
+    virtual ~RelationCreateJob();
 
 signals:
-    void relationReceived(Relation* relation);
-    void fromReceived(Item* from);
-    void toReceived(Item* to);
+    void relationCreated(Relation* relation);
 };
 
-#endif // RELATIONFETCHJOB_H
+#endif // RELATIONCREATEJOB_H

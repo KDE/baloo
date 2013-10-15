@@ -21,3 +21,13 @@
  */
 
 #include "relationfetchjob.h"
+
+RelationFetchJob::RelationFetchJob(QObject* parent): KJob(parent)
+{
+
+}
+
+RelationFetchJob::~RelationFetchJob()
+{
+
+}

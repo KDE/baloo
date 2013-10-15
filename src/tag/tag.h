@@ -32,11 +32,9 @@
 class VIZIER_TAG_EXPORT Tag : public Item
 {
 public:
+    Tag();
     Tag(const QByteArray& id);
     Tag(const QString& name);
-
-    QByteArray id();
-    void setId(const QByteArray& id);
 
     QByteArray type();
 
@@ -49,9 +47,6 @@ public:
     TagRemoveJob* remove();
 
 private:
-    friend class TagFetchJob;
-
-    QByteArray m_id;
     QString m_name;
 };
 

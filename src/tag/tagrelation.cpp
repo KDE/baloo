@@ -21,3 +21,67 @@
  */
 
 #include "tagrelation.h"
+#include "item.h"
+#include "tag.h"
+
+TagRelation::TagRelation(const Tag& tag, const Item& item)
+    : m_tag(tag)
+    , m_item(item)
+{
+}
+
+TagRelation::TagRelation(const Tag& tag)
+    : m_tag(tag)
+{
+}
+
+TagRelation::TagRelation(const Item& item)
+    : m_item(item)
+{
+}
+
+Tag& TagRelation::tag()
+{
+    return m_tag;
+}
+
+Item& TagRelation::item()
+{
+    return m_item;
+}
+
+const Tag& TagRelation::tag() const
+{
+    return m_tag;
+}
+
+const Item& TagRelation::item() const
+{
+    return m_item;
+}
+
+void TagRelation::setItem(const Item& item)
+{
+    m_item = item;
+}
+
+void TagRelation::setTag(const Tag& tag)
+{
+    m_tag = tag;
+}
+
+
+TagRelationCreateJob* TagRelation::create()
+{
+    return new TagRelationCreateJob(this);
+}
+
+TagRelationFetchJob* TagRelation::fetch()
+{
+    return new TagRelationFetchJob(this);
+}
+
+TagRelationRemoveJob* TagRelation::remove()
+{
+    return new TagRelationRemoveJob(this);
+}

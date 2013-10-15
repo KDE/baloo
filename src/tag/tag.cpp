@@ -22,9 +22,14 @@
 
 #include "tag.h"
 
+Tag::Tag()
+{
+    qRegisterMetaType<Tag*>();
+}
+
 Tag::Tag(const QByteArray& id)
 {
-    m_id = id;
+    setId(id);
     qRegisterMetaType<Tag*>();
 }
 
@@ -32,16 +37,6 @@ Tag::Tag(const QString& name)
 {
     m_name = name;
     qRegisterMetaType<Tag*>();
-}
-
-QByteArray Tag::id()
-{
-    return m_id;
-}
-
-void Tag::setId(const QByteArray& id)
-{
-    m_id = id;
 }
 
 QString Tag::name()

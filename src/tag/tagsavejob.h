@@ -35,6 +35,7 @@ public:
     virtual void start();
 
     enum Error {
+        Error_TagInvalidId,
         Error_TagNotCreated,
         Error_TagExists,
         Error_TagEmptyName

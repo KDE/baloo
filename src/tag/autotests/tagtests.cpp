@@ -23,7 +23,7 @@
 #include "tagtests.h"
 
 #include "tag.h"
-#include "tagfetchjob.h"
+#include "tagrelation.h"
 #include "database.h"
 
 #include "qtest_kde.h"
@@ -34,6 +34,7 @@
 #include <QSignalSpy>
 
 #include <QSqlQuery>
+#include <QSqlError>
 
 TagTests::TagTests(QObject* parent)
     : QObject(parent)
@@ -43,7 +44,11 @@ TagTests::TagTests(QObject* parent)
 
 void TagTests::initTestCase()
 {
-    m_dbPath = m_tempDir.name() + QDir::separator() + QLatin1String("tagDB.sqlite");
+    m_dbPath = m_tempDir.name() + QLatin1String("tagDB.sqlite");
+
+    qRegisterMetaType<KJob*>();
+    qRegisterMetaType<Relation*>();
+    qRegisterMetaType<TagRelation*>();
 }
 
 void TagTests::cleanupTestCase()
@@ -61,18 +66,34 @@ void TagTests::init()
     m_db->init();
 }
 
-void TagTests::testTagFetchFromId()
+void TagTests::insertTags(const QStringList& tags)
 {
-    QStringList list;
-    list << "TagA" << "TagB" << "TagC";
-
-    foreach (const QString& tag, list) {
+    foreach (const QString& tag, tags) {
         QSqlQuery insertQ;
         insertQ.prepare("INSERT INTO tags (name) VALUES (?)");
         insertQ.addBindValue(tag);
 
         QVERIFY(insertQ.exec());
     }
+}
+
+void TagTests::insertRelations(const QHash< int, QString >& relations)
+{
+    QHash< int, QString >::const_iterator iter = relations.constBegin();
+    for (; iter != relations.constEnd(); iter++) {
+        QSqlQuery insertQ;
+        insertQ.prepare("INSERT INTO tagRelations (tid, rid) VALUES (?, ?)");
+        insertQ.addBindValue(iter.key());
+        insertQ.addBindValue(iter.value().toUtf8());
+
+        QVERIFY(insertQ.exec());
+    }
+}
+
+
+void TagTests::testTagFetchFromId()
+{
+    insertTags(QStringList() << "TagA" << "TagB" << "TagC");
 
     Tag tag(QByteArray("tag:2"));
     QVERIFY(tag.name().isEmpty());
@@ -98,16 +119,7 @@ void TagTests::testTagFetchFromId()
 
 void TagTests::testTagFetchFromName()
 {
-    QStringList list;
-    list << "TagA" << "TagB" << "TagC";
-
-    foreach (const QString& tag, list) {
-        QSqlQuery insertQ;
-        insertQ.prepare("INSERT INTO tags (name) VALUES (?)");
-        insertQ.addBindValue(tag);
-
-        QVERIFY(insertQ.exec());
-    }
+    insertTags(QStringList() << "TagA" << "TagB" << "TagC");
 
     Tag tag(QLatin1String("TagC"));
     QCOMPARE(tag.name(), QLatin1String("TagC"));
@@ -234,10 +246,7 @@ void TagTests::testTagModify()
 
 void TagTests::testTagModify_duplicate()
 {
-    QSqlQuery insertQ;
-    insertQ.prepare("INSERT INTO tags (name) VALUES (?)");
-    insertQ.addBindValue("TagB");
-    QVERIFY(insertQ.exec());
+    insertTags(QStringList() << "TagB");
 
     Tag tag(QLatin1String("TagA"));
     TagCreateJob* cjob = tag.create();
@@ -268,16 +277,7 @@ void TagTests::testTagModify_duplicate()
 
 void TagTests::testTagRemove()
 {
-    QStringList list;
-    list << "TagA" << "TagB" << "TagC";
-
-    foreach (const QString& tag, list) {
-        QSqlQuery insertQ;
-        insertQ.prepare("INSERT INTO tags (name) VALUES (?)");
-        insertQ.addBindValue(tag);
-
-        QVERIFY(insertQ.exec());
-    }
+    insertTags(QStringList() << "TagA" << "TagB" << "TagC");
 
     Tag tag(QByteArray("tag:1"));
     TagRemoveJob* job = tag.remove();
@@ -331,5 +331,216 @@ void TagTests::testTagRemove_notExists()
     QCOMPARE(tag.id(), QByteArray("tag:1"));
 }
 
+
+void TagTests::testTagRelationFetchFromTag()
+{
+    insertTags(QStringList() << "TagA");
+
+    QHash<int, QString> rel;
+    rel.insert(1, "file:1");
+    insertRelations(rel);
+
+    Tag tag(QLatin1String("TagA"));
+
+    TagRelation tagRel(tag);
+    TagRelationFetchJob* job = tagRel.fetch();
+    QVERIFY(job);
+
+    QSignalSpy spy1(job, SIGNAL(relationReceived(Relation*)));
+    QSignalSpy spy2(job, SIGNAL(tagRelationReceived(TagRelation*)));
+    QSignalSpy spy3(job, SIGNAL(result(KJob*)));
+    QVERIFY(job->exec());
+
+    QCOMPARE(spy1.size(), 1);
+    QCOMPARE(spy1.at(0).size(), 1);
+    QCOMPARE(spy1.at(0).first().value<Relation*>(), &tagRel);
+
+    QCOMPARE(spy2.size(), 1);
+    QCOMPARE(spy2.at(0).size(), 1);
+    QCOMPARE(spy2.at(0).first().value<TagRelation*>(), &tagRel);
+
+    QCOMPARE(spy3.size(), 1);
+    QCOMPARE(spy3.at(0).size(), 1);
+    QCOMPARE(spy3.at(0).first().value<KJob*>(), job);
+    QCOMPARE(job->error(), 0);
+
+    QCOMPARE(tagRel.item().id(), QByteArray("file:1"));
+    QCOMPARE(tagRel.tag().name(), QLatin1String("TagA"));
+    QCOMPARE(tagRel.tag().id(), QByteArray("tag:1"));
+}
+
+void TagTests::testTagRelationFetchFromItem()
+{
+    insertTags(QStringList() << "TagA");
+
+    QHash<int, QString> rel;
+    rel.insert(1, "file:1");
+    insertRelations(rel);
+
+    Item item;
+    item.setId("file:1");
+
+    TagRelation tagRel(item);
+    TagRelationFetchJob* job = tagRel.fetch();
+    QVERIFY(job);
+
+    QSignalSpy spy1(job, SIGNAL(relationReceived(Relation*)));
+    QSignalSpy spy2(job, SIGNAL(tagRelationReceived(TagRelation*)));
+    QSignalSpy spy3(job, SIGNAL(result(KJob*)));
+    QVERIFY(job->exec());
+
+    QCOMPARE(spy1.size(), 1);
+    QCOMPARE(spy1.at(0).size(), 1);
+    QCOMPARE(spy1.at(0).first().value<Relation*>(), &tagRel);
+
+    QCOMPARE(spy2.size(), 1);
+    QCOMPARE(spy2.at(0).size(), 1);
+    QCOMPARE(spy2.at(0).first().value<TagRelation*>(), &tagRel);
+
+    QCOMPARE(spy3.size(), 1);
+    QCOMPARE(spy3.at(0).size(), 1);
+    QCOMPARE(spy3.at(0).first().value<KJob*>(), job);
+    QCOMPARE(job->error(), 0);
+
+    QCOMPARE(tagRel.item().id(), QByteArray("file:1"));
+    QCOMPARE(tagRel.tag().id(), QByteArray("tag:1"));
+    QVERIFY(tagRel.tag().name().isEmpty());
+}
+
+void TagTests::testTagRelationSaveJob()
+{
+    insertTags(QStringList() << "TagA");
+
+    Item item;
+    item.setId("file:1");
+
+    Tag tag(QByteArray("tag:1"));
+
+    TagRelation rel(tag, item);
+    TagRelationCreateJob* job = rel.create();
+    QVERIFY(job);
+
+    QSignalSpy spy1(job, SIGNAL(relationCreated(Relation*)));
+    QSignalSpy spy2(job, SIGNAL(tagRelationCreated(TagRelation*)));
+    QSignalSpy spy3(job, SIGNAL(result(KJob*)));
+    QVERIFY(job->exec());
+
+    QCOMPARE(spy1.size(), 1);
+    QCOMPARE(spy1.at(0).size(), 1);
+    QCOMPARE(spy1.at(0).first().value<Relation*>(), &rel);
+
+    QCOMPARE(spy2.size(), 1);
+    QCOMPARE(spy2.at(0).size(), 1);
+    QCOMPARE(spy2.at(0).first().value<TagRelation*>(), &rel);
+
+    QCOMPARE(spy3.size(), 1);
+    QCOMPARE(spy3.at(0).size(), 1);
+    QCOMPARE(spy3.at(0).first().value<KJob*>(), job);
+    QCOMPARE(job->error(), 0);
+
+    QSqlQuery query;
+    query.prepare("select rid from tagRelations where tid = 1");
+
+    QVERIFY(query.exec());
+    QVERIFY(query.next());
+    QCOMPARE(query.value(0).toByteArray(), QByteArray("file:1"));
+}
+
+void TagTests::testTagRelationSaveJob_duplicate()
+{
+    insertTags(QStringList() << "TagA");
+
+    QHash<int, QString> relHash;
+    relHash.insert(1, "file:1");
+    insertRelations(relHash);
+
+    Item item;
+    item.setId("file:1");
+
+    Tag tag(QByteArray("tag:1"));
+
+    TagRelation rel(tag, item);
+    TagRelationCreateJob* job = rel.create();
+    QVERIFY(job);
+
+    QSignalSpy spy1(job, SIGNAL(relationCreated(Relation*)));
+    QSignalSpy spy2(job, SIGNAL(tagRelationCreated(TagRelation*)));
+    QSignalSpy spy3(job, SIGNAL(result(KJob*)));
+    QVERIFY(!job->exec());
+
+    QCOMPARE(spy1.size(), 0);
+    QCOMPARE(spy2.size(), 0);
+
+    QCOMPARE(spy3.size(), 1);
+    QCOMPARE(spy3.at(0).size(), 1);
+    QCOMPARE(spy3.at(0).first().value<KJob*>(), job);
+    QCOMPARE(job->error(), (int)TagRelationCreateJob::Error_RelationExists);
+}
+
+void TagTests::testTagRelationRemoveJob()
+{
+    insertTags(QStringList() << "TagA");
+
+    QHash<int, QString> relHash;
+    relHash.insert(1, "file:1");
+    insertRelations(relHash);
+
+    Item item;
+    item.setId("file:1");
+
+    Tag tag(QByteArray("tag:1"));
+
+    TagRelation rel(tag, item);
+    TagRelationRemoveJob* job = rel.remove();
+    QVERIFY(job);
+
+    QSignalSpy spy1(job, SIGNAL(relationRemoved(Relation*)));
+    QSignalSpy spy2(job, SIGNAL(tagRelationRemoved(TagRelation*)));
+    QSignalSpy spy3(job, SIGNAL(result(KJob*)));
+    QVERIFY(job->exec());
+
+    QCOMPARE(spy1.size(), 1);
+    QCOMPARE(spy1.at(0).size(), 1);
+    QCOMPARE(spy1.at(0).first().value<Relation*>(), &rel);
+
+    QCOMPARE(spy2.size(), 1);
+    QCOMPARE(spy2.at(0).size(), 1);
+    QCOMPARE(spy2.at(0).first().value<TagRelation*>(), &rel);
+
+    QCOMPARE(spy3.size(), 1);
+    QCOMPARE(spy3.at(0).size(), 1);
+    QCOMPARE(spy3.at(0).first().value<KJob*>(), job);
+    QCOMPARE(job->error(), 0);
+
+    QSqlQuery query;
+    query.prepare("select rid from tagRelations where tid = ?");
+    query.addBindValue(1);
+    QVERIFY(query.exec());
+    QVERIFY(!query.next());
+}
+
+void TagTests::testTagRelationRemoveJob_notExists()
+{
+    Item item;
+    item.setId("file:1");
+
+    Tag tag(QByteArray("tag:1"));
+
+    TagRelation rel(tag, item);
+    TagRelationRemoveJob* job = rel.remove();
+    QVERIFY(job);
+
+    QSignalSpy spy1(job, SIGNAL(relationRemoved(Relation*)));
+    QSignalSpy spy2(job, SIGNAL(tagRelationRemoved(TagRelation*)));
+    QSignalSpy spy3(job, SIGNAL(result(KJob*)));
+    QVERIFY(!job->exec());
+
+    QCOMPARE(spy1.size(), 0);
+    QCOMPARE(spy2.size(), 0);
+    QCOMPARE(spy3.size(), 1);
+    QCOMPARE(spy3.at(0).size(), 1);
+    QCOMPARE(spy3.at(0).first().value<KJob*>(), job);
+    QCOMPARE(job->error(), (int)TagRelationRemoveJob::Error_RelationDoesNotExist);
+}
 
 QTEST_KDEMAIN_CORE(TagTests)

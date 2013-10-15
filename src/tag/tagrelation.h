@@ -24,27 +24,40 @@
 #define TAGRELATION_H
 
 #include "relation.h"
+#include "tag.h"
+#include "tagrelationfetchjob.h"
+#include "tagrelationcreatejob.h"
+#include "tagrelationremovejob.h"
 
-class Tag;
-class Item;
-
-class TagRelation : public Relation
+class VIZIER_TAG_EXPORT TagRelation : public Relation
 {
 public:
+    TagRelation(const Tag& tag);
+    TagRelation(const Item& item);
     TagRelation(const Tag& tag, const Item& item);
 
-    Tag tag();
-    Item item();
+    Tag& tag();
+    Item& item();
 
-    QByteArray fromType() const; // Returns TagType
-    QByteArray toType() const;   // Returns ItemType
+    const Tag& tag() const;
+    const Item& item() const;
 
-    /*
-    TagFetchJob* load();
-    TagCreateJob* create();
-    TagDeleteJob* remove();
-    */
+    void setTag(const Tag& tag);
+    void setItem(const Item& item);
+
+    QByteArray fromType() const { return "Tag"; }
+    QByteArray toType() const { return "Item"; }
+
+    TagRelationFetchJob* fetch();
+    TagRelationCreateJob* create();
+    TagRelationRemoveJob* remove();
+
+private:
+    Tag m_tag;
+    Item m_item;
 };
+
+Q_DECLARE_METATYPE(TagRelation*);
 
 // Register Tag relation plugin
 

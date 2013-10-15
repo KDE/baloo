@@ -25,6 +25,7 @@
 
 #include "core_export.h"
 #include <QByteArray>
+#include <QMetaType>
 
 class Item;
 class ItemType;
@@ -47,19 +48,19 @@ public:
     virtual QByteArray fromType() const = 0;
     virtual QByteArray toType() const = 0;
 
+    /*
     Item from();
     Item to();
 
     void setFrom(const Item& item);
     void setTo(const Item& to);
+    */
 
     virtual RelationFetchJob* fetch();
     virtual RelationCreateJob* create();
     virtual RelationRemoveJob* remove();
-
-    // Is there any point in allowing modification of a relation?
-    // It is supposed to be a lightweight thing
-    // virtual RelationModifyJob* save(); // Should we name this commit?
 };
+
+Q_DECLARE_METATYPE(Relation*);
 
 #endif // RELATION_H

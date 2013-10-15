@@ -24,6 +24,7 @@
 #define TAGTESTS_H
 
 #include <QObject>
+#include <QHash>
 #include <KTempDir>
 
 class Database;
@@ -52,11 +53,22 @@ private slots:
     void testTagRemove();
     void testTagRemove_notExists();
 
+    void testTagRelationFetchFromTag();
+    void testTagRelationFetchFromItem();
+
+    void testTagRelationSaveJob();
+    void testTagRelationSaveJob_duplicate();
+
+    void testTagRelationRemoveJob();
+    void testTagRelationRemoveJob_notExists();
 private:
     KTempDir m_tempDir;
     QString m_dbPath;
 
     Database* m_db;
+
+    void insertTags(const QStringList& tags);
+    void insertRelations(const QHash<int, QString>& relations);
 };
 
 #endif // TAGTESTS_H

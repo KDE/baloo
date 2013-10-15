@@ -24,10 +24,11 @@
 #define TAGCREATEJOB_H
 
 #include "itemcreatejob.h"
+#include "tag_export.h"
 
 class Tag;
 
-class TagCreateJob : public ItemCreateJob
+class VIZIER_TAG_EXPORT TagCreateJob : public ItemCreateJob
 {
     Q_OBJECT
 public:

@@ -5,6 +5,11 @@ set(TAGS_SRCS
     tagsavejob.cpp
     tagremovejob.cpp
 
+    tagrelation.cpp
+    tagrelationfetchjob.cpp
+    tagrelationcreatejob.cpp
+    tagrelationremovejob.cpp
+
     database.cpp
 )
 

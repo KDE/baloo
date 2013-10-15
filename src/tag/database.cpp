@@ -56,7 +56,7 @@ bool Database::init()
         return false;
     }
 
-    if (!db.tables().isEmpty()) {
+    if (db.tables().size() == 2) {
         return true;
     }
 
@@ -65,9 +65,21 @@ bool Database::init()
                           "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                           "name TEXT NOT NULL UNIQUE)");
     if (!ret) {
-        kDebug() << "Could not create table" << query.lastError().text();
+        kDebug() << "Could not create tags table" << query.lastError().text();
         return false;
     }
+
+    ret = query.exec("CREATE TABLE tagRelations ("
+                     "tid INTEGER NOT NULL, "
+                     "rid TEXT NOT NULL, "
+                     "PRIMARY KEY (tid, rid) "
+                     "FOREIGN KEY (tid) REFERENCES tags (id))");
+    if (!ret) {
+        kDebug() << "Could not create tagRelation table" << query.lastError().text();
+        return false;
+    }
+
+    // TODO: Create an index on rid?
 
     m_initialized = true;
     return true;

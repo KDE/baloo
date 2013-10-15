@@ -20,25 +20,24 @@
  *
  */
 
-#include "tagsavejob.h"
-#include "tag.h"
+#include "tagrelationcreatejob.h"
+#include "tagrelation.h"
 
 #include <QTimer>
+#include <QVariant>
 
 #include <QSqlQuery>
 #include <QSqlError>
-
 #include <KDebug>
 
-TagSaveJob::TagSaveJob(Tag* tag, QObject* parent)
-    : ItemSaveJob(parent)
-    , m_tag(tag)
+TagRelationCreateJob::TagRelationCreateJob(TagRelation* tagRelation, QObject* parent)
+    : RelationCreateJob(parent)
+    , m_tagRelation(tagRelation)
 {
-    Q_ASSERT(tag);
-    qRegisterMetaType<KJob*>();
+    Q_ASSERT(tagRelation);
 }
 
-void TagSaveJob::start()
+void TagRelationCreateJob::start()
 {
     QTimer::singleShot(0, this, SLOT(doStart()));
 }
@@ -49,45 +48,36 @@ namespace {
     }
 }
 
-void TagSaveJob::doStart()
+void TagRelationCreateJob::doStart()
 {
-    if (m_tag->id().isEmpty()) {
-        setError(Error_TagNotCreated);
-        setErrorText("Tags must have an id before saving");
+    if (m_tagRelation->item().id().isEmpty() || m_tagRelation->tag().id().isEmpty()) {
+        setError(Error_InvalidRelation);
+        setErrorText("Invalid or Empty Ids provided");
         emitResult();
         return;
     }
 
-    if (m_tag->name().isEmpty()) {
-        setError(Error_TagEmptyName);
-        setErrorText("A Tag must have a name");
-        emitResult();
-        return;
-    }
-
-    int id = toInt(m_tag->id());
+    int id = toInt(m_tagRelation->tag().id());
     if (id <= 0) {
-        setError(Error_TagInvalidId);
-        setErrorText("Invalid id " + m_tag->id());
+        setError(Error_InvalidTagId);
+        setErrorText("Invalid Tag ID");
         emitResult();
         return;
     }
 
     QSqlQuery query;
-    query.prepare("UPDATE tags SET name = ? WHERE id = ?");
-    query.addBindValue(m_tag->name());
-    query.addBindValue(toInt(m_tag->id()));
+    query.prepare("insert into tagRelations (tid, rid) values (?, ?)");
+    query.addBindValue(id);
+    query.addBindValue(m_tagRelation->item().id());
 
     if (!query.exec()) {
-        m_tag->setId(QByteArray());
-        setError(Error_TagExists);
-        setErrorText("Tag with name " + m_tag->name() + " already exists");
+        setError(Error_RelationExists);
+        setErrorText("The relation already exists");
         emitResult();
         return;
     }
 
-    emit itemSaved(m_tag);
-    emit tagSaved(m_tag);
+    emit relationCreated(m_tagRelation);
+    emit tagRelationCreated(m_tagRelation);
     emitResult();
 }
-
