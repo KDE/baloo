@@ -30,6 +30,10 @@
 #include <QSqlError>
 #include <KDebug>
 
+#include <QDBusConnection>
+#include <QDBusMessage>
+#include <QDBusPendingCall>
+
 TagRelationCreateJob::TagRelationCreateJob(TagRelation* tagRelation, QObject* parent)
     : RelationCreateJob(parent)
     , m_tagRelation(tagRelation)
@@ -76,6 +80,18 @@ void TagRelationCreateJob::doStart()
         emitResult();
         return;
     }
+
+    QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/tagrelations"),
+                                                      QLatin1String("org.kde"),
+                                                      QLatin1String("added"));
+
+    QVariantList vl;
+    vl.reserve(2);
+    vl << m_tagRelation->tag().id();
+    vl << m_tagRelation->item().id();
+    message.setArguments(vl);
+
+    QDBusConnection::sessionBus().send(message);
 
     emit relationCreated(m_tagRelation);
     emit tagRelationCreated(m_tagRelation);

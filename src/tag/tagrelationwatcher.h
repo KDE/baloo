@@ -24,28 +24,37 @@
 #define TAGRELATIONWATCHER_H
 
 #include <QObject>
-
-class Tag;
-class Item;
+#include "tag.h"
 
 /**
  * This class can be used to watch any tag or any specific
  * item. Or a specific relation with both tag and item
  */
-class TagRelationWatcher : public QObject
+class VIZIER_TAG_EXPORT TagRelationWatcher : public QObject
 {
     Q_OBJECT
 public:
-    TagRelationWatcher(const Tag& tag);
-    TagRelationWatcher(const Item& item);
-    TagRelationWatcher(const Tag& tag, const Item& item);
+    TagRelationWatcher(const Tag& tag, QObject* parent = 0);
+    TagRelationWatcher(const Item& item, QObject* parent = 0);
+    TagRelationWatcher(const Tag& tag, const Item& item, QObject* parent = 0);
 
+    // FIXME: Maybe we should allow watching multiple tags over here?
+    //        There is no extra cost.
 signals:
     void tagAdded(const Tag& tag);
     void tagRemoved(const Tag& tag);
 
     void itemAdded(const Item& item);
     void itemRemoved(const Item& item);
+
+private slots:
+    void slotAdded(const QByteArray& tagID, const QByteArray& itemID);
+    void slotRemoved(const QByteArray& tagID, const QByteArray& itemID);
+
+    void init();
+private:
+    QByteArray m_tagID;
+    QByteArray m_itemID;
 };
 
 #endif // TAGRELATIONWATCHER_H

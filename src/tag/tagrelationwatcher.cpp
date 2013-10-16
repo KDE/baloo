@@ -21,3 +21,65 @@
  */
 
 #include "tagrelationwatcher.h"
+
+#include <QDBusConnection>
+#include <KDebug>
+
+TagRelationWatcher::TagRelationWatcher(const Tag& tag, QObject* parent)
+    : QObject(parent)
+    , m_tagID(tag.id())
+{
+    init();
+}
+
+TagRelationWatcher::TagRelationWatcher(const Item& item, QObject* parent)
+    : QObject(parent)
+    , m_itemID(item.id())
+{
+    init();
+}
+
+TagRelationWatcher::TagRelationWatcher(const Tag& tag, const Item& item, QObject* parent)
+    : QObject(parent)
+    , m_tagID(tag.id())
+    , m_itemID(item.id())
+{
+    init();
+}
+
+void TagRelationWatcher::init()
+{
+    QDBusConnection con = QDBusConnection::sessionBus();
+    con.connect(QString(), QLatin1String("/tagrelations"), QLatin1String("org.kde"),
+                QLatin1String("added"), this, SLOT(slotAdded(QByteArray, QByteArray)));
+    con.connect(QString(), QLatin1String("/tagrelations"), QLatin1String("org.kde"),
+                QLatin1String("removed"), this, SLOT(slotRemoved(QByteArray, QByteArray)));
+}
+
+void TagRelationWatcher::slotAdded(const QByteArray& tagID, const QByteArray& itemID)
+{
+    if (m_tagID == tagID) {
+        emit tagAdded(Tag::fromId(tagID));
+    }
+
+    if (m_itemID == itemID) {
+        Item item;
+        item.setId(itemID);
+
+        emit itemAdded(item);
+    }
+}
+
+void TagRelationWatcher::slotRemoved(const QByteArray& tagID, const QByteArray& itemID)
+{
+    if (m_tagID == tagID) {
+        emit tagRemoved(Tag::fromId(tagID));
+    }
+
+    if (m_itemID == itemID) {
+        Item item;
+        item.setId(itemID);
+
+        emit itemRemoved(item);
+    }
+}

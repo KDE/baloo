@@ -10,6 +10,8 @@ set(TAGS_SRCS
     tagrelationcreatejob.cpp
     tagrelationremovejob.cpp
 
+    tagrelationwatcher.cpp
+
     database.cpp
 )
 
@@ -39,3 +41,4 @@ install(TARGETS viziertags ${INSTALL_TARGETS_DEFAULT_ARGS})
 #)
 
 add_subdirectory(autotests)
+add_subdirectory(tests)

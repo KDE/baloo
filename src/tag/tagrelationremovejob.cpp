@@ -30,6 +30,10 @@
 #include <QSqlQuery>
 #include <QSqlError>
 
+#include <QDBusConnection>
+#include <QDBusMessage>
+#include <QDBusPendingCall>
+
 TagRelationRemoveJob::TagRelationRemoveJob(TagRelation* tagRelation, QObject* parent)
     : RelationRemoveJob(parent)
     , m_tagRelation(tagRelation)
@@ -83,6 +87,18 @@ void TagRelationRemoveJob::doStart()
         emitResult();
         return;
     }
+
+    QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/tagrelations"),
+                                                      QLatin1String("org.kde"),
+                                                      QLatin1String("removed"));
+
+    QVariantList vl;
+    vl.reserve(2);
+    vl << m_tagRelation->tag().id();
+    vl << m_tagRelation->item().id();
+    message.setArguments(vl);
+
+    QDBusConnection::sessionBus().send(message);
 
     emit relationRemoved(m_tagRelation);
     emit tagRelationRemoved(m_tagRelation);

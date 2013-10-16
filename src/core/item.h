@@ -45,7 +45,7 @@ public:
      * Every Item must has a globally unique identifier. Most identifiers
      * are of the form "akonadi:?item=5" or "tag:5" or "file:22456"
      */
-    QByteArray id();
+    QByteArray id() const;
 
     /**
      * Sets the id to the desired value. This method should generally never
@@ -73,7 +73,7 @@ private:
 
 Q_DECLARE_METATYPE(Item*);
 
-inline QByteArray Item::id()
+inline QByteArray Item::id() const
 {
     return m_id;
 }
