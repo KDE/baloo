@@ -37,7 +37,7 @@ public:
     virtual ~ItemCreateJob();
 
 signals:
-    void itemCreated(Item* item);
+    void itemCreated(const Item& item);
 };
 
 #endif // ITEMCREATEJOB_H

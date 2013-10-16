@@ -36,7 +36,7 @@ public:
     virtual ~RelationRemoveJob();
 
 signals:
-    void relationRemoved(Relation* relation);
+    void relationRemoved(const Relation& relation);
 };
 
 #endif // RELATIONREMOVEJOB_H

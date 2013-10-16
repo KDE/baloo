@@ -35,7 +35,7 @@ public:
 
 private slots:
     void main();
-    void slotTagCreated(Tag* tag);
+    void slotTagCreated(const Tag& tag);
 
     void slotTagAdded(const Tag& tag);
     void slotTagRemoved(const Tag& tag);
@@ -60,17 +60,16 @@ void App::main()
     db->setPath("/tmp/tagDb.sqlite");
     db->init();
 
-    //FIXME: This sucks!
-    Tag* tag = new Tag("TagA");
-    TagCreateJob* job = tag->create();
-    connect(job, SIGNAL(tagCreated(Tag*)), this, SLOT(slotTagCreated(Tag*)));
+    Tag tag("TagA");
+    TagCreateJob* job = tag.create();
+    connect(job, SIGNAL(tagCreated(Tag)), this, SLOT(slotTagCreated(Tag)));
 
     job->start();
 }
 
-void App::slotTagCreated(Tag* tag)
+void App::slotTagCreated(const Tag& tag)
 {
-    TagRelationWatcher* watcher1 = new TagRelationWatcher(*tag, this);
+    TagRelationWatcher* watcher1 = new TagRelationWatcher(tag, this);
     connect(watcher1, SIGNAL(tagAdded(Tag)), this, SLOT(slotTagAdded(Tag)));
     connect(watcher1, SIGNAL(tagRemoved(Tag)), this, SLOT(slotTagRemoved(Tag)));
 
@@ -81,7 +80,7 @@ void App::slotTagCreated(Tag* tag)
     connect(watcher2, SIGNAL(itemAdded(Item)), this, SLOT(slotItemAdded(Item)));
     connect(watcher2, SIGNAL(itemRemoved(Item)), this, SLOT(slotItemRemoved(Item)));
 
-    TagRelation* rel = new TagRelation(*tag, item);
+    TagRelation* rel = new TagRelation(tag, item);
     rel->create()->start();
 }
 

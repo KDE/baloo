@@ -30,12 +30,21 @@
 
 #include <KDebug>
 
-TagSaveJob::TagSaveJob(Tag* tag, QObject* parent)
+class TagSaveJob::Private {
+public:
+    Tag tag;
+};
+
+TagSaveJob::TagSaveJob(const Tag& tag, QObject* parent)
     : ItemSaveJob(parent)
-    , m_tag(tag)
+    , d(new Private)
 {
-    Q_ASSERT(tag);
-    qRegisterMetaType<KJob*>();
+    d->tag = tag;
+}
+
+TagSaveJob::~TagSaveJob()
+{
+    delete d;
 }
 
 void TagSaveJob::start()
@@ -51,43 +60,43 @@ namespace {
 
 void TagSaveJob::doStart()
 {
-    if (m_tag->id().isEmpty()) {
+    if (d->tag.id().isEmpty()) {
         setError(Error_TagNotCreated);
         setErrorText("Tags must have an id before saving");
         emitResult();
         return;
     }
 
-    if (m_tag->name().isEmpty()) {
+    if (d->tag.name().isEmpty()) {
         setError(Error_TagEmptyName);
         setErrorText("A Tag must have a name");
         emitResult();
         return;
     }
 
-    int id = toInt(m_tag->id());
+    int id = toInt(d->tag.id());
     if (id <= 0) {
         setError(Error_TagInvalidId);
-        setErrorText("Invalid id " + m_tag->id());
+        setErrorText("Invalid id " + d->tag.id());
         emitResult();
         return;
     }
 
     QSqlQuery query;
     query.prepare("UPDATE tags SET name = ? WHERE id = ?");
-    query.addBindValue(m_tag->name());
-    query.addBindValue(toInt(m_tag->id()));
+    query.addBindValue(d->tag.name());
+    query.addBindValue(toInt(d->tag.id()));
 
     if (!query.exec()) {
-        m_tag->setId(QByteArray());
+        d->tag.setId(QByteArray());
         setError(Error_TagExists);
-        setErrorText("Tag with name " + m_tag->name() + " already exists");
+        setErrorText("Tag with name " + d->tag.name() + " already exists");
         emitResult();
         return;
     }
 
-    emit itemSaved(m_tag);
-    emit tagSaved(m_tag);
+    emit itemSaved(d->tag);
+    emit tagSaved(d->tag);
     emitResult();
 }
 

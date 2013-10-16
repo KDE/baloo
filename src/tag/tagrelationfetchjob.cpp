@@ -33,11 +33,21 @@
 #include <QSqlError>
 #include <KDebug>
 
-TagRelationFetchJob::TagRelationFetchJob(TagRelation* tagRelation, QObject* parent)
+class TagRelationFetchJob::Private {
+public:
+    TagRelation relation;
+};
+
+TagRelationFetchJob::TagRelationFetchJob(const TagRelation& relation, QObject* parent)
     : RelationFetchJob(parent)
-    , m_tagRelation(tagRelation)
+    , d(new Private)
 {
-    Q_ASSERT(tagRelation);
+    d->relation = relation;
+}
+
+TagRelationFetchJob::~TagRelationFetchJob()
+{
+    delete d;
 }
 
 void TagRelationFetchJob::start()
@@ -47,18 +57,18 @@ void TagRelationFetchJob::start()
 
 void TagRelationFetchJob::doStart()
 {
-    Item& item = m_tagRelation->item();
-    Tag& tag = m_tagRelation->tag();
+    Item& item = d->relation.item();
+    Tag& tag = d->relation.tag();
 
     if (item.id().isEmpty()) {
         // We must first fetch the tag
         if (tag.id().isEmpty() || tag.name().isEmpty()) {
             TagFetchJob* tagFetchJob = tag.fetch();
-            connect(tagFetchJob, SIGNAL(tagReceived(Tag*)), SLOT(slotTagReceived()));
+            connect(tagFetchJob, SIGNAL(tagReceived(Tag)), SLOT(slotTagReceived(Tag)));
             tagFetchJob->start();
         }
         else {
-            slotTagReceived();
+            slotTagReceived(d->relation.tag());
         }
     }
     else {
@@ -75,10 +85,10 @@ void TagRelationFetchJob::doStart()
 
         if (query.next()) {
             int id = query.value(0).toInt();
-            m_tagRelation->tag().setId(QByteArray("tag:") + QByteArray::number(id));
+            d->relation.tag().setId(QByteArray("tag:") + QByteArray::number(id));
 
-            emit relationReceived(m_tagRelation);
-            emit tagRelationReceived(m_tagRelation);
+            emit relationReceived(d->relation);
+            emit tagRelationReceived(d->relation);
             emitResult();
         }
         else {
@@ -96,9 +106,11 @@ namespace {
     }
 }
 
-void TagRelationFetchJob::slotTagReceived()
+void TagRelationFetchJob::slotTagReceived(const Tag& tag)
 {
-    int id = toInt(m_tagRelation->tag().id());
+    d->relation.setTag(tag);
+
+    int id = toInt(tag.id());
     if (id <= 0) {
         setError(Error_InvalidTagId);
         setErrorText("Invalid Tag ID");
@@ -118,10 +130,10 @@ void TagRelationFetchJob::slotTagReceived()
     }
 
     if (query.next()) {
-        m_tagRelation->item().setId(query.value(0).toByteArray());
+        d->relation.item().setId(query.value(0).toByteArray());
 
-        emit relationReceived(m_tagRelation);
-        emit tagRelationReceived(m_tagRelation);
+        emit relationReceived(d->relation);
+        emit tagRelationReceived(d->relation);
         emitResult();
     }
     else {

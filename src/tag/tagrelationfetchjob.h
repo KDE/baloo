@@ -26,13 +26,16 @@
 #include "relationfetchjob.h"
 #include "tag_export.h"
 
+class Tag;
 class TagRelation;
 
 class VIZIER_TAG_EXPORT TagRelationFetchJob : public RelationFetchJob
 {
     Q_OBJECT
 public:
-    TagRelationFetchJob(TagRelation* relation, QObject* parent = 0);
+    TagRelationFetchJob(const TagRelation& relation, QObject* parent = 0);
+    ~TagRelationFetchJob();
+
     virtual void start();
 
     enum Error {
@@ -42,14 +45,15 @@ public:
     };
 
 signals:
-    void tagRelationReceived(TagRelation* relation);
+    void tagRelationReceived(const TagRelation& relation);
 
 private slots:
     void doStart();
-    void slotTagReceived();
+    void slotTagReceived(const Tag& tag);
 
 private:
-    TagRelation* m_tagRelation;
+    class Private;
+    Private* d;
 };
 
 #endif // TAGRELATIONFETCHJOB_H

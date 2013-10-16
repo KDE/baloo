@@ -24,30 +24,28 @@
 
 Item::Item()
 {
-    qRegisterMetaType<Item*>();
 }
 
 Item::~Item()
 {
-
 }
 
-ItemFetchJob* Item::fetch()
+ItemFetchJob* Item::fetch() const
 {
     return 0;
 }
 
-ItemSaveJob* Item::save()
+ItemSaveJob* Item::save() const
 {
     return 0;
 }
 
-ItemCreateJob* Item::create()
+ItemCreateJob* Item::create() const
 {
     return 0;
 }
 
-ItemRemoveJob* Item::remove()
+ItemRemoveJob* Item::remove() const
 {
     return 0;
 }

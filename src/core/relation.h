@@ -45,8 +45,8 @@ public:
     /**
      * The from must be of type fromType
      */
-    virtual QByteArray fromType() const = 0;
-    virtual QByteArray toType() const = 0;
+    virtual QByteArray fromType() const { return QByteArray("Item"); }
+    virtual QByteArray toType() const { return QByteArray("Item"); }
 
     /*
     Item from();
@@ -61,6 +61,6 @@ public:
     virtual RelationRemoveJob* remove();
 };
 
-Q_DECLARE_METATYPE(Relation*);
+Q_DECLARE_METATYPE(Relation);
 
 #endif // RELATION_H

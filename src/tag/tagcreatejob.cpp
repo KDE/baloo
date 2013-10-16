@@ -35,12 +35,21 @@
 #include <QDBusConnection>
 #include <QDBusMessage>
 
-TagCreateJob::TagCreateJob(Tag* tag, QObject* parent)
+class TagCreateJob::Private {
+public:
+    Tag tag;
+};
+
+TagCreateJob::TagCreateJob(const Tag& tag, QObject* parent)
     : ItemCreateJob(parent)
-    , m_tag(tag)
+    , d(new Private)
 {
-    Q_ASSERT(tag);
-    qRegisterMetaType<KJob*>();
+    d->tag = tag;
+}
+
+TagCreateJob::~TagCreateJob()
+{
+    delete d;
 }
 
 void TagCreateJob::start()
@@ -50,14 +59,14 @@ void TagCreateJob::start()
 
 void TagCreateJob::doStart()
 {
-    if (m_tag->id().size()) {
+    if (d->tag.id().size()) {
         setError(Error_TagIdProvided);
         setErrorText("A tagid must not be provided when creating a tag");
         emitResult();
         return;
     }
 
-    if (m_tag->name().isEmpty()) {
+    if (d->tag.name().isEmpty()) {
         setError(Error_TagEmptyName);
         setErrorText("A Tag must have a name");
         emitResult();
@@ -67,7 +76,7 @@ void TagCreateJob::doStart()
     QSqlQuery query;
     query.setForwardOnly(true);
     query.prepare(QLatin1String("insert into tags (name) VALUES (?)"));
-    query.addBindValue(m_tag->name());
+    query.addBindValue(d->tag.name());
 
     if (!query.exec()) {
         // FIXME: What about connection errors?
@@ -77,7 +86,7 @@ void TagCreateJob::doStart()
         return;
     }
 
-    m_tag->setId(QByteArray("tag:") + QByteArray::number(query.lastInsertId().toInt()));
+    d->tag.setId(QByteArray("tag:") + QByteArray::number(query.lastInsertId().toInt()));
 
 
     QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/tags"),
@@ -86,13 +95,13 @@ void TagCreateJob::doStart()
 
     QVariantList vl;
     vl.reserve(2);
-    vl << m_tag->id();
-    vl << m_tag->name();
+    vl << d->tag.id();
+    vl << d->tag.name();
     message.setArguments(vl);
 
     QDBusConnection::sessionBus().send(message);
 
-    emit itemCreated(m_tag);
-    emit tagCreated(m_tag);
+    emit itemCreated(d->tag);
+    emit tagCreated(d->tag);
     emitResult();
 }

@@ -53,22 +53,22 @@ QByteArray Tag::type()
     return QByteArray("Tag");
 }
 
-TagFetchJob* Tag::fetch()
+TagFetchJob* Tag::fetch() const
 {
-    return new TagFetchJob(this);
+    return new TagFetchJob(*this);
 }
 
-TagSaveJob* Tag::save()
+TagSaveJob* Tag::save() const
 {
-    return new TagSaveJob(this);
+    return new TagSaveJob(*this);
 }
 
-TagCreateJob* Tag::create()
+TagCreateJob* Tag::create() const
 {
-    return new TagCreateJob(this);
+    return new TagCreateJob(*this);
 }
 
-TagRemoveJob* Tag::remove()
+TagRemoveJob* Tag::remove() const
 {
-    return new TagRemoveJob(this);
+    return new TagRemoveJob(*this);
 }

@@ -24,6 +24,10 @@
 #include "item.h"
 #include "tag.h"
 
+TagRelation::TagRelation()
+{
+}
+
 TagRelation::TagRelation(const Tag& tag, const Item& item)
     : m_tag(tag)
     , m_item(item)
@@ -70,18 +74,17 @@ void TagRelation::setTag(const Tag& tag)
     m_tag = tag;
 }
 
-
 TagRelationCreateJob* TagRelation::create()
 {
-    return new TagRelationCreateJob(this);
+    return new TagRelationCreateJob(*this);
 }
 
 TagRelationFetchJob* TagRelation::fetch()
 {
-    return new TagRelationFetchJob(this);
+    return new TagRelationFetchJob(*this);
 }
 
 TagRelationRemoveJob* TagRelation::remove()
 {
-    return new TagRelationRemoveJob(this);
+    return new TagRelationRemoveJob(*this);
 }

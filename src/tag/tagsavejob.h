@@ -31,7 +31,9 @@ class TagSaveJob : public ItemSaveJob
 {
     Q_OBJECT
 public:
-    TagSaveJob(Tag* tag, QObject* parent = 0);
+    TagSaveJob(const Tag& tag, QObject* parent = 0);
+    ~TagSaveJob();
+
     virtual void start();
 
     enum Error {
@@ -42,13 +44,14 @@ public:
     };
 
 signals:
-    void tagSaved(Tag* tag);
+    void tagSaved(const Tag& tag);
 
 private slots:
     void doStart();
 
 private:
-    Tag* m_tag;
+    class Private;
+    Private* d;
 };
 
 #endif // TAGSAVEJOB_H

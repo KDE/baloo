@@ -32,6 +32,7 @@
 class VIZIER_TAG_EXPORT TagRelation : public Relation
 {
 public:
+    TagRelation();
     TagRelation(const Tag& tag);
     TagRelation(const Item& item);
     TagRelation(const Tag& tag, const Item& item);
@@ -57,8 +58,6 @@ private:
     Item m_item;
 };
 
-Q_DECLARE_METATYPE(TagRelation*);
-
-// Register Tag relation plugin
+Q_DECLARE_METATYPE(TagRelation);
 
 #endif // TAGRELATION_H

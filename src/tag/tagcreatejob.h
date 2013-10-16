@@ -32,7 +32,8 @@ class VIZIER_TAG_EXPORT TagCreateJob : public ItemCreateJob
 {
     Q_OBJECT
 public:
-    TagCreateJob(Tag* tag, QObject* parent = 0);
+    TagCreateJob(const Tag& tag, QObject* parent = 0);
+    ~TagCreateJob();
 
     virtual void start();
 
@@ -44,13 +45,14 @@ public:
     };
 
 signals:
-    void tagCreated(Tag* tag);
+    void tagCreated(const Tag& tag);
 
 private slots:
     void doStart();
 
 private:
-    Tag* m_tag;
+    class Private;
+    Private* d;
 };
 
 #endif // TAGCREATEJOB_H

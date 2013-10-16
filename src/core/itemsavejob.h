@@ -37,7 +37,7 @@ public:
     virtual ~ItemSaveJob();
 
 signals:
-    void itemSaved(Item* item);
+    void itemSaved(const Item& item);
 };
 
 #endif // ITEMSAVEJOB_H

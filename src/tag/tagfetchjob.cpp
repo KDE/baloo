@@ -31,17 +31,21 @@
 
 #include <KDebug>
 
-TagFetchJob::TagFetchJob(Tag* tag, QObject* parent)
+class TagFetchJob::Private {
+public:
+    Tag tag;
+};
+
+TagFetchJob::TagFetchJob(const Tag& tag, QObject* parent)
     : ItemFetchJob(parent)
-    , m_tag(tag)
+    , d(new Private)
 {
-    Q_ASSERT(tag);
-    qRegisterMetaType<KJob*>();
+    d->tag = tag;
 }
 
 TagFetchJob::~TagFetchJob()
 {
-
+    delete d;
 }
 
 void TagFetchJob::start()
@@ -54,13 +58,13 @@ void TagFetchJob::doStart()
     QSqlQuery query;
     query.setForwardOnly(true);
 
-    if (m_tag->id().size()) {
-        const QByteArray& arr = m_tag->id();
+    if (d->tag.id().size()) {
+        const QByteArray& arr = d->tag.id();
         int id = arr.mid(4).toInt(); // "tag:" takes 4 characters
 
         if (id <= 0) {
             setError(Error_TagInvalidId);
-            setErrorText("Invalid id " + m_tag->id());
+            setErrorText("Invalid id " + d->tag.id());
             emitResult();
             return;
         }
@@ -76,21 +80,21 @@ void TagFetchJob::doStart()
 
         if (query.next()) {
             QString name = query.value(0).toString();
-            m_tag->setName(name);
+            d->tag.setName(name);
         }
         else {
             setError(Error_TagDoesNotExist);
-            setErrorText("Invalid ID " + m_tag->id());
+            setErrorText("Invalid ID " + d->tag.id());
             emitResult();
             return;
         }
 
-        emit itemReceived(m_tag);
-        emit tagReceived(m_tag);
+        emit itemReceived(d->tag);
+        emit tagReceived(d->tag);
     }
-    else if (m_tag->name().size()) {
+    else if (d->tag.name().size()) {
         query.prepare("select id from tags where name = ?");
-        query.addBindValue(m_tag->name());
+        query.addBindValue(d->tag.name());
 
         if (!query.exec()) {
             setError(Error_ConnectionError);
@@ -101,17 +105,17 @@ void TagFetchJob::doStart()
 
         if (query.next()) {
             int id = query.value(0).toInt();
-            m_tag->setId(QByteArray("tag:") + QByteArray::number(id));
+            d->tag.setId(QByteArray("tag:") + QByteArray::number(id));
         }
         else {
             setError(Error_TagDoesNotExist);
-            setErrorText("Tag " + m_tag->name() + " does not exist");
+            setErrorText("Tag " + d->tag.name() + " does not exist");
             emitResult();
             return;
         }
 
-        emit itemReceived(m_tag);
-        emit tagReceived(m_tag);
+        emit itemReceived(d->tag);
+        emit tagReceived(d->tag);
     }
 
     emitResult();

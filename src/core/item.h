@@ -64,16 +64,16 @@ public:
      */
     virtual QByteArray type() { return QByteArray("Item"); }
 
-    virtual ItemFetchJob* fetch();
-    virtual ItemSaveJob* save();
-    virtual ItemCreateJob* create();
-    virtual ItemRemoveJob* remove();
+    virtual ItemFetchJob* fetch() const;
+    virtual ItemSaveJob* save() const;
+    virtual ItemCreateJob* create() const;
+    virtual ItemRemoveJob* remove() const;
 
 private:
     QByteArray m_id;
 };
 
-Q_DECLARE_METATYPE(Item*);
+Q_DECLARE_METATYPE(Item);
 
 inline Item::Id Item::id() const
 {

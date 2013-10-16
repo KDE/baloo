@@ -31,7 +31,9 @@ class TagRemoveJob : public ItemRemoveJob
 {
     Q_OBJECT
 public:
-    TagRemoveJob(Tag* tag, QObject* parent = 0);
+    TagRemoveJob(const Tag& tag, QObject* parent = 0);
+    ~TagRemoveJob();
+
     virtual void start();
 
     enum Error {
@@ -42,13 +44,14 @@ public:
     };
 
 signals:
-    void tagRemoved(Tag* tag);
+    void tagRemoved(const Tag& tag);
 
 private slots:
     void doStart();
 
 private:
-    Tag* m_tag;
+    class Private;
+    Private* d;
 };
 
 #endif // TAGREMOVEJOB_H

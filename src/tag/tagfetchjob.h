@@ -32,7 +32,7 @@ class VIZIER_TAG_EXPORT TagFetchJob : public ItemFetchJob
 {
     Q_OBJECT
 public:
-    TagFetchJob(Tag* tag, QObject* parent = 0);
+    TagFetchJob(const Tag& tag, QObject* parent = 0);
     virtual ~TagFetchJob();
 
     virtual void start();
@@ -44,13 +44,14 @@ public:
     };
 
 signals:
-    void tagReceived(Tag* tag);
+    void tagReceived(const Tag& tag);
 
 private slots:
     void doStart();
 
 private:
-    Tag* m_tag;
+    class Private;
+    Private* d;
 };
 
 #endif // TAGFETCHJOB_H

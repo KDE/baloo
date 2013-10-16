@@ -35,12 +35,21 @@
 #include <QDBusConnection>
 #include <QDBusMessage>
 
-TagRemoveJob::TagRemoveJob(Tag* tag, QObject* parent)
+class TagRemoveJob::Private {
+public:
+    Tag tag;
+};
+
+TagRemoveJob::TagRemoveJob(const Tag& tag, QObject* parent)
     : ItemRemoveJob(parent)
-    , m_tag(tag)
+    , d(new Private)
 {
-    Q_ASSERT(tag);
-    qRegisterMetaType<KJob*>();
+    d->tag = tag;
+}
+
+TagRemoveJob::~TagRemoveJob()
+{
+    delete d;
 }
 
 void TagRemoveJob::start()
@@ -56,17 +65,17 @@ namespace {
 
 void TagRemoveJob::doStart()
 {
-    if (m_tag->id().isEmpty()) {
+    if (d->tag.id().isEmpty()) {
         setError(Error_TagEmptyId);
         setErrorText("A tagid must not be provided when creating a tag");
         emitResult();
         return;
     }
 
-    int id = toInt(m_tag->id());
+    int id = toInt(d->tag.id());
     if (id <= 0) {
         setError(Error_TagInvalidId);
-        setErrorText("Invalid id " + m_tag->id());
+        setErrorText("Invalid id " + d->tag.id());
         emitResult();
         return;
     }
@@ -84,7 +93,7 @@ void TagRemoveJob::doStart()
 
     if (query.numRowsAffected() == 0) {
         setError(Error_TagDoesNotExist);
-        setErrorText("Tag with ID " + m_tag->id() + " does not exist");
+        setErrorText("Tag with ID " + d->tag.id() + " does not exist");
         emitResult();
         return;
     }
@@ -95,13 +104,13 @@ void TagRemoveJob::doStart()
 
     QVariantList vl;
     vl.reserve(1);
-    vl << m_tag->id();
+    vl << d->tag.id();
     message.setArguments(vl);
 
     QDBusConnection::sessionBus().send(message);
 
-    emit itemRemoved(m_tag);
-    emit tagRemoved(m_tag);
+    emit itemRemoved(d->tag);
+    emit tagRemoved(d->tag);
     emitResult();
 }
 

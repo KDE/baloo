@@ -34,11 +34,21 @@
 #include <QDBusMessage>
 #include <QDBusPendingCall>
 
-TagRelationRemoveJob::TagRelationRemoveJob(TagRelation* tagRelation, QObject* parent)
+class TagRelationRemoveJob::Private {
+public:
+    TagRelation relation;
+};
+
+TagRelationRemoveJob::TagRelationRemoveJob(const TagRelation& tagRelation, QObject* parent)
     : RelationRemoveJob(parent)
-    , m_tagRelation(tagRelation)
+    , d(new Private)
 {
-    Q_ASSERT(tagRelation);
+    d->relation = tagRelation;
+}
+
+TagRelationRemoveJob::~TagRelationRemoveJob()
+{
+    delete d;
 }
 
 void TagRelationRemoveJob::start()
@@ -54,14 +64,14 @@ namespace {
 
 void TagRelationRemoveJob::doStart()
 {
-    if (m_tagRelation->item().id().isEmpty() || m_tagRelation->tag().id().isEmpty()) {
+    if (d->relation.item().id().isEmpty() || d->relation.tag().id().isEmpty()) {
         setError(Error_EmptyIds);
         setErrorText("The Item or Tag id is empty");
         emitResult();
         return;
     }
 
-    int id = toInt(m_tagRelation->tag().id());
+    int id = toInt(d->relation.tag().id());
     if (id <= 0) {
         setError(Error_InvalidTagId);
         setErrorText("Invalid Tag ID");
@@ -72,7 +82,7 @@ void TagRelationRemoveJob::doStart()
     QSqlQuery query;
     query.prepare("DELETE FROM tagRelations where tid = ? AND rid = ?");
     query.addBindValue(id);
-    query.addBindValue(m_tagRelation->item().id());
+    query.addBindValue(d->relation.item().id());
 
     if (!query.exec()) {
         setError(Error_ConnectionError);
@@ -94,13 +104,13 @@ void TagRelationRemoveJob::doStart()
 
     QVariantList vl;
     vl.reserve(2);
-    vl << m_tagRelation->tag().id();
-    vl << m_tagRelation->item().id();
+    vl << d->relation.tag().id();
+    vl << d->relation.item().id();
     message.setArguments(vl);
 
     QDBusConnection::sessionBus().send(message);
 
-    emit relationRemoved(m_tagRelation);
-    emit tagRelationRemoved(m_tagRelation);
+    emit relationRemoved(d->relation);
+    emit tagRelationRemoved(d->relation);
     emitResult();
 }

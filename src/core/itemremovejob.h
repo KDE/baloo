@@ -37,7 +37,7 @@ public:
     virtual ~ItemRemoveJob();
 
 signals:
-    void itemRemoved(Item* item);
+    void itemRemoved(const Item& item);
 };
 
 #endif // ITEMREMOVEJOB_H

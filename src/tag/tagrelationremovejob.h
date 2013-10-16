@@ -32,7 +32,9 @@ class VIZIER_TAG_EXPORT TagRelationRemoveJob : public RelationRemoveJob
 {
     Q_OBJECT
 public:
-    TagRelationRemoveJob(TagRelation* tagRelation, QObject* parent = 0);
+    TagRelationRemoveJob(const TagRelation& tagRelation, QObject* parent = 0);
+    ~TagRelationRemoveJob();
+
     virtual void start();
 
     enum Errors {
@@ -42,13 +44,14 @@ public:
         Error_InvalidTagId
     };
 signals:
-    void tagRelationRemoved(TagRelation* relation);
+    void tagRelationRemoved(const TagRelation& relation);
 
 private slots:
     void doStart();
 
 private:
-    TagRelation* m_tagRelation;
+    class Private;
+    Private* d;
 };
 
 #endif // TAGRELATIONREMOVEJOB_H

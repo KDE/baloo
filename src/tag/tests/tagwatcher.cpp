@@ -36,7 +36,7 @@ public:
 private slots:
     void main();
 
-    void slotTagCreatedFromJob(Tag* tag);
+    void slotTagCreatedFromJob(const Tag& tag);
     void slotTagCreated(const Tag& tag);
     void slotTagRemoved(const Tag& tag);
 };
@@ -63,16 +63,16 @@ void App::main()
     connect(store, SIGNAL(tagCreated(Tag)), this, SLOT(slotTagCreated(Tag)));
     connect(store, SIGNAL(tagRemoved(Tag)), this, SLOT(slotTagRemoved(Tag)));
 
-    Tag* tag = new Tag("TagA");
-    TagCreateJob* job = tag->create();
-    connect(job, SIGNAL(tagCreated(Tag*)), this, SLOT(slotTagCreatedFromJob(Tag*)));
+    Tag tag("TagA");
+    TagCreateJob* job = tag.create();
+    connect(job, SIGNAL(tagCreated(Tag)), this, SLOT(slotTagCreatedFromJob(Tag)));
 
     job->start();
 }
 
-void App::slotTagCreatedFromJob(Tag* tag)
+void App::slotTagCreatedFromJob(const Tag& tag)
 {
-    tag->remove()->start();
+    tag.remove()->start();
 }
 
 void App::slotTagCreated(const Tag& tag)

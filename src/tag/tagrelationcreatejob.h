@@ -32,7 +32,9 @@ class VIZIER_TAG_EXPORT TagRelationCreateJob : public RelationCreateJob
 {
     Q_OBJECT
 public:
-    TagRelationCreateJob(TagRelation* relation, QObject* parent = 0);
+    TagRelationCreateJob(const TagRelation& relation, QObject* parent = 0);
+    ~TagRelationCreateJob();
+
     virtual void start();
 
     enum Errors {
@@ -41,13 +43,14 @@ public:
         Error_InvalidTagId
     };
 signals:
-    void tagRelationCreated(TagRelation* relation);
+    void tagRelationCreated(const TagRelation& relation);
 
 private slots:
     void doStart();
 
 private:
-    TagRelation* m_tagRelation;
+    class Private;
+    Private* d;
 };
 
 #endif // TAGRELATIONCREATEJOB_H

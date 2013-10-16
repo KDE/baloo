@@ -33,11 +33,21 @@
 #include <QDBusConnection>
 #include <QDBusMessage>
 
-TagRelationCreateJob::TagRelationCreateJob(TagRelation* tagRelation, QObject* parent)
+class TagRelationCreateJob::Private {
+public:
+    TagRelation relation;
+};
+
+TagRelationCreateJob::TagRelationCreateJob(const TagRelation& relation, QObject* parent)
     : RelationCreateJob(parent)
-    , m_tagRelation(tagRelation)
+    , d(new Private)
 {
-    Q_ASSERT(tagRelation);
+    d->relation = relation;
+}
+
+TagRelationCreateJob::~TagRelationCreateJob()
+{
+    delete d;
 }
 
 void TagRelationCreateJob::start()
@@ -53,14 +63,14 @@ namespace {
 
 void TagRelationCreateJob::doStart()
 {
-    if (m_tagRelation->item().id().isEmpty() || m_tagRelation->tag().id().isEmpty()) {
+    if (d->relation.item().id().isEmpty() || d->relation.tag().id().isEmpty()) {
         setError(Error_InvalidRelation);
         setErrorText("Invalid or Empty Ids provided");
         emitResult();
         return;
     }
 
-    int id = toInt(m_tagRelation->tag().id());
+    int id = toInt(d->relation.tag().id());
     if (id <= 0) {
         setError(Error_InvalidTagId);
         setErrorText("Invalid Tag ID");
@@ -71,7 +81,7 @@ void TagRelationCreateJob::doStart()
     QSqlQuery query;
     query.prepare("insert into tagRelations (tid, rid) values (?, ?)");
     query.addBindValue(id);
-    query.addBindValue(m_tagRelation->item().id());
+    query.addBindValue(d->relation.item().id());
 
     if (!query.exec()) {
         setError(Error_RelationExists);
@@ -86,13 +96,13 @@ void TagRelationCreateJob::doStart()
 
     QVariantList vl;
     vl.reserve(2);
-    vl << m_tagRelation->tag().id();
-    vl << m_tagRelation->item().id();
+    vl << d->relation.tag().id();
+    vl << d->relation.item().id();
     message.setArguments(vl);
 
     QDBusConnection::sessionBus().send(message);
 
-    emit relationCreated(m_tagRelation);
-    emit tagRelationCreated(m_tagRelation);
+    emit relationCreated(d->relation);
+    emit tagRelationCreated(d->relation);
     emitResult();
 }

@@ -36,7 +36,7 @@ public:
     virtual ~RelationCreateJob();
 
 signals:
-    void relationCreated(Relation* relation);
+    void relationCreated(const Relation& relation);
 };
 
 #endif // RELATIONCREATEJOB_H

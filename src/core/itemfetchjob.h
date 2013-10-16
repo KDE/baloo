@@ -38,7 +38,7 @@ public:
     virtual ~ItemFetchJob();
 
 signals:
-    void itemReceived(Item* item);
+    void itemReceived(const Item& item);
 };
 
 Q_DECLARE_METATYPE(KJob*);
