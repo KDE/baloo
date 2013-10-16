@@ -35,7 +35,7 @@ public:
     Tag();
     Tag(const QString& name);
 
-    static Tag fromId(const QByteArray& id);
+    static Tag fromId(const Item::Id& id);
 
     QByteArray type();
 

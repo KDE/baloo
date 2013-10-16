@@ -31,7 +31,7 @@ Tag::Tag(const QString& name)
     m_name = name;
 }
 
-Tag Tag::fromId(const QByteArray& id)
+Tag Tag::fromId(const Item::Id& id)
 {
     Tag tag;
     tag.setId(id);

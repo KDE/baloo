@@ -53,8 +53,8 @@ private slots:
 
     void init();
 private:
-    QByteArray m_tagID;
-    QByteArray m_itemID;
+    Item::Id m_tagID;
+    Item::Id m_itemID;
 };
 
 #endif // TAGRELATIONWATCHER_H

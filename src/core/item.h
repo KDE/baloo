@@ -41,17 +41,19 @@ public:
     Item();
     virtual ~Item();
 
+    typedef QByteArray Id;
+
     /**
      * Every Item must has a globally unique identifier. Most identifiers
      * are of the form "akonadi:?item=5" or "tag:5" or "file:22456"
      */
-    QByteArray id() const;
+    Id id() const;
 
     /**
      * Sets the id to the desired value. This method should generally never
      * be called by clients. It is used by the data stores.
      */
-    void setId(const QByteArray& id);
+    void setId(const Id& id);
 
     /**
      * Every Item has a type that is based on the Item id. It's mostly
@@ -73,12 +75,12 @@ private:
 
 Q_DECLARE_METATYPE(Item*);
 
-inline QByteArray Item::id() const
+inline Item::Id Item::id() const
 {
     return m_id;
 }
 
-inline void Item::setId(const QByteArray& id)
+inline void Item::setId(const Item::Id& id)
 {
     m_id = id;
 }
