@@ -56,7 +56,8 @@ bool Database::init()
         return false;
     }
 
-    if (db.tables().size() == 2) {
+    const QStringList tables = db.tables();
+    if (tables.contains("tags") && tables.contains("tagRelations")) {
         return true;
     }
 
