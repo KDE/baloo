@@ -10,6 +10,8 @@ set(CORE_SRCS
     relationfetchjob.cpp
     relationcreatejob.cpp
     relationremovejob.cpp
+
+    datastore.cpp
 )
 
 kde4_add_library(viziercore SHARED ${CORE_SRCS})

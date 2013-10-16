@@ -32,6 +32,9 @@
 
 #include <KDebug>
 
+#include <QDBusConnection>
+#include <QDBusMessage>
+
 TagCreateJob::TagCreateJob(Tag* tag, QObject* parent)
     : ItemCreateJob(parent)
     , m_tag(tag)
@@ -75,6 +78,19 @@ void TagCreateJob::doStart()
     }
 
     m_tag->setId(QByteArray("tag:") + QByteArray::number(query.lastInsertId().toInt()));
+
+
+    QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/tags"),
+                                                      QLatin1String("org.kde"),
+                                                      QLatin1String("created"));
+
+    QVariantList vl;
+    vl.reserve(2);
+    vl << m_tag->id();
+    vl << m_tag->name();
+    message.setArguments(vl);
+
+    QDBusConnection::sessionBus().send(message);
 
     emit itemCreated(m_tag);
     emit tagCreated(m_tag);

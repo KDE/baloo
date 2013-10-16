@@ -20,4 +20,32 @@
  *
  */
 
-#include "tagmanager.h"
+#ifndef TAGSTORE_H
+#define TAGSTORE_H
+
+#include "datastore.h"
+#include "tag_export.h"
+
+class Tag;
+
+class VIZIER_TAG_EXPORT TagStore : public DataStore
+{
+    Q_OBJECT
+public:
+    explicit TagStore(QObject* parent = 0);
+    virtual ~TagStore();
+
+    virtual ItemFetchJob* fetchAll();
+    virtual bool supportsWatching() const { return true; }
+
+signals:
+    void tagCreated(const Tag& tag);
+    void tagRemoved(const Tag& tag);
+
+private slots:
+    void slotWatchStatusChanged(bool status);
+    void slotCreated(const QByteArray& id, const QString& name);
+    void slotRemoved(const QByteArray& id);
+};
+
+#endif // TAGSTORE_H

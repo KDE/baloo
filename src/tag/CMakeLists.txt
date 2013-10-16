@@ -11,6 +11,7 @@ set(TAGS_SRCS
     tagrelationremovejob.cpp
 
     tagrelationwatcher.cpp
+    tagstore.cpp
 
     database.cpp
 )

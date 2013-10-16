@@ -38,7 +38,7 @@ Tag Tag::fromId(const QByteArray& id)
     return tag;
 }
 
-QString Tag::name()
+QString Tag::name() const
 {
     return m_name;
 }

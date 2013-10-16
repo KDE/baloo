@@ -32,6 +32,9 @@
 
 #include <KDebug>
 
+#include <QDBusConnection>
+#include <QDBusMessage>
+
 TagRemoveJob::TagRemoveJob(Tag* tag, QObject* parent)
     : ItemRemoveJob(parent)
     , m_tag(tag)
@@ -85,6 +88,17 @@ void TagRemoveJob::doStart()
         emitResult();
         return;
     }
+
+    QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/tags"),
+                                                      QLatin1String("org.kde"),
+                                                      QLatin1String("removed"));
+
+    QVariantList vl;
+    vl.reserve(1);
+    vl << m_tag->id();
+    message.setArguments(vl);
+
+    QDBusConnection::sessionBus().send(message);
 
     emit itemRemoved(m_tag);
     emit tagRemoved(m_tag);

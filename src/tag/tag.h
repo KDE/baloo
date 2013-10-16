@@ -39,7 +39,7 @@ public:
 
     QByteArray type();
 
-    QString name();
+    QString name() const;
     void setName(const QString& name);
 
     TagFetchJob* fetch();

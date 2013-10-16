@@ -20,23 +20,39 @@
  *
  */
 
-#ifndef TAGMANAGER_H
-#define TAGMANAGER_H
+#include "datastore.h"
 
-class TagManager
+DataStore::DataStore(QObject* parent)
+    : QObject(parent)
+    , m_watchEnabled(false)
 {
-public:
-    TagManager* instance();
 
-    TagFetchJob* listTags();
+}
 
-    void setWatchEnabled(bool status);
-    bool watchEnabled();
+DataStore::~DataStore()
+{
 
-signals:
-    void tagCreated(const Tag& tag);
-    void tagRemoved(const Tag& removed);
+}
 
-};
+void DataStore::setWatchEnabled(bool status)
+{
+    if (m_watchEnabled != status) {
+        m_watchEnabled = status;
+        emit watchStatusChanged(status);
+    }
+}
 
-#endif // TAGMANAGER_H
+bool DataStore::watchEnabled() const
+{
+    return m_watchEnabled;
+}
+
+bool DataStore::supportsWatching() const
+{
+    return false;
+}
+
+ItemFetchJob* DataStore::fetchAll()
+{
+    return 0;
+}

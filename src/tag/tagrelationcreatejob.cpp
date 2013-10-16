@@ -32,7 +32,6 @@
 
 #include <QDBusConnection>
 #include <QDBusMessage>
-#include <QDBusPendingCall>
 
 TagRelationCreateJob::TagRelationCreateJob(TagRelation* tagRelation, QObject* parent)
     : RelationCreateJob(parent)
