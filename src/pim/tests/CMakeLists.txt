@@ -1,0 +1,14 @@
+include_directories(
+  ${CMAKE_CURRENT_SOURCE_DIR}/..
+)
+
+kde4_add_executable(emailindexer emailtest.cpp)
+
+target_link_libraries(emailindexer
+  ${QT_QTCORE_LIBRARY}
+  ${QT_QTTEST_LIBRARY}
+  ${KDE4_KDECORE_LIBS}
+
+  viziercore
+  vizierpim
+)
