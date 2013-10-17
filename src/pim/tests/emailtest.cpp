@@ -101,12 +101,12 @@ void App::slotRootCollectionsFetched(KJob* kjob)
 void App::indexNextCollection()
 {
     Akonadi::ItemFetchJob *fetchJob = new Akonadi::ItemFetchJob(m_collections.takeFirst(), this);
-    fetchJob->fetchScope().fetchAllAttributes(false);
-    fetchJob->fetchScope().fetchFullPayload(false);
+    fetchJob->fetchScope().fetchAllAttributes(true);
+    fetchJob->fetchScope().fetchFullPayload(true);
     fetchJob->fetchScope().setFetchModificationTime(true);
 
-    connect(fetchJob, SIGNAL(itemsReceived(Akonadi::Item::List)), this, SLOT(itemsReceived(Akonadi::Item::List)));
-    connect(fetchJob, SIGNAL(result(KJob*)), this, SLOT(jobDone(KJob*)));
+    connect(fetchJob, SIGNAL(itemsReceived(Akonadi::Item::List)), this, SLOT(itemReceived(Akonadi::Item::List)));
+    connect(fetchJob, SIGNAL(result(KJob*)), this, SLOT(slotIndexed()));
 }
 
 void App::itemReceived(const Akonadi::Item::List& itemList)
@@ -120,6 +120,12 @@ void App::itemReceived(const Akonadi::Item::List& itemList)
 
     m_indexTime += timer.elapsed();
     m_numEmails += itemList.size();
+
+    if (m_numEmails % 100) {
+        kDebug() << "Emails:" << m_numEmails;
+        kDebug() << "Total Time:" << m_totalTime.elapsed()/1000.0 << " seconds";
+        kDebug() << "Index Time:" << m_indexTime/1000.0 << " seconds";
+    }
 }
 
 void App::slotIndexed()

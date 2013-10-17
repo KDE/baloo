@@ -29,9 +29,16 @@ EmailIndexer::EmailIndexer()
     m_db.setPath("/tmp/xap/");
 }
 
+EmailIndexer::~EmailIndexer()
+{
+}
+
 void EmailIndexer::index(const Akonadi::Item& item)
 {
-    Q_ASSERT(item.hasPayload());
+    if (!item.hasPayload()) {
+        kDebug() << "No payload";
+        return;
+    }
 
     if (!item.hasPayload<KMime::Message::Ptr>()) {
         return;
@@ -143,11 +150,12 @@ void EmailIndexer::processPart(KMime::Content* content, KMime::Content* mainCont
         }
     }
 
+    /*
     if (type->isHTMLText()) {
         QTextDocument doc;
         doc.setHtml(content->decodedText());
         m_db.insertText(doc.toPlainText());
-    }
+    }*/
 
     // FIXME: Handle attachments?
 }

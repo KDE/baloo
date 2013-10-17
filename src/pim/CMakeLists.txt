@@ -23,6 +23,7 @@ target_link_libraries(vizierpim
     ${KDEPIMLIBS_KMIME_LIBS}
     ${XAPIAN_LIBRARIES}
     viziercore
+    akonadi-kmime
 )
 
 set_target_properties(vizierpim PROPERTIES

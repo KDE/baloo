@@ -34,6 +34,7 @@ class VIZIER_PIM_EXPORT EmailIndexer
 {
 public:
     EmailIndexer();
+    ~EmailIndexer();
 
     void index(const Akonadi::Item& item);
     void commit();

@@ -9,6 +9,9 @@ target_link_libraries(emailindexer
   ${QT_QTTEST_LIBRARY}
   ${KDE4_KDECORE_LIBS}
 
+  ${KDEPIMLIBS_AKONADI_LIBS}
+  ${KDEPIMLIBS_KMIME_LIBS}
+
   viziercore
   vizierpim
 )
