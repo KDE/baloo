@@ -178,6 +178,42 @@ void DatabaseTests::testInsertMultiple()
     }
 }
 
+void DatabaseTests::testInsertBool()
+{
+    m_db->beginDocument(1);
+    m_db->insert("subject", "Booga is the title");
+    m_db->insertBool("isRead", true);
+    m_db->insertBool("spam", false);
+    m_db->endDocument();
+    m_db->commit();
+
+    // subject db
+    {
+        QString subjectDbName = m_tempDir->name() + "subject";
+        Xapian::Database termDb(subjectDbName.toStdString());
+        Xapian::TermIterator iter = termDb.termlist_begin(1);
+
+        QCOMPARE((*iter).c_str(), "booga"); iter++;
+        QCOMPARE((*iter).c_str(), "is"); iter++;
+        QCOMPARE((*iter).c_str(), "the"); iter++;
+        QCOMPARE((*iter).c_str(), "title"); iter++;
+        QCOMPARE(iter, termDb.termlist_end(1));
+    }
+
+    // text db
+    {
+        QString textDbName = m_tempDir->name() + "text";
+        Xapian::Database textDb(textDbName.toStdString());
+        Xapian::TermIterator iter = textDb.termlist_begin(1);
+
+        QCOMPARE((*iter).c_str(), "XisRead"); iter++;
+        QCOMPARE((*iter).c_str(), "booga"); iter++;
+        QCOMPARE((*iter).c_str(), "is"); iter++;
+        QCOMPARE((*iter).c_str(), "the"); iter++;
+        QCOMPARE((*iter).c_str(), "title"); iter++;
+        QCOMPARE(iter, textDb.termlist_end(1));
+    }
+}
 
 
 QTEST_KDEMAIN_CORE(DatabaseTests)

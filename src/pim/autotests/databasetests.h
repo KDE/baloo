@@ -42,6 +42,7 @@ private slots:
 
     void testInsert();
     void testInsertMultiple();
+    void testInsertBool();
 private:
     Database* m_db;
     KTempDir* m_tempDir;
