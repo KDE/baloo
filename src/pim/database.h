@@ -25,15 +25,13 @@
 
 #include <xapian.h>
 
-#include <QObject>
 #include <KTempDir>
-
 #include <QHash>
 
-class Database : public QObject
+class Database
 {
 public:
-    explicit Database(QObject* parent = 0);
+    Database();
     ~Database();
 
     /**
@@ -70,7 +68,6 @@ private:
 
     Xapian::WritableDatabase* m_plainTextDb;
     Xapian::Document m_plainTextDoc;
-    Xapian::SimpleStopper m_stopper;
 
     QByteArray m_pathDir;
     uint m_docId;

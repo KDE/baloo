@@ -12,10 +12,6 @@ add_definitions(${KDE4_ENABLE_EXCEPTIONS})
 
 kde4_add_library(vizierpim SHARED ${PIM_SRCS})
 
-message(WARNING "AAAAAHHHHHHHHHHHHHHHHHHH ${PIM_SRCS}")
-message(WARNING "AAAAAHHHHHHHHHHHHHHHHHHH ${KDEPIMLIBS_AKONADI_LIBS}")
-message(WARNING "AAAAAHHHHHHHHHHHHHHHHHHH ${KDEPIMLIBS_KMIME_LIBS}")
-
 target_link_libraries(vizierpim
     ${QT_QTCORE_LIBRARY}
     ${KDE4_KDECORE_LIBRARY}
@@ -33,4 +29,5 @@ set_target_properties(vizierpim PROPERTIES
 
 install(TARGETS vizierpim ${INSTALL_TARGETS_DEFAULT_ARGS})
 
+add_subdirectory(autotests)
 add_subdirectory(tests)

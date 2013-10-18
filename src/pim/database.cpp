@@ -25,9 +25,8 @@
 #include <KDebug>
 #include <QStringList>
 
-Database::Database(QObject* parent)
-    : QObject(parent)
-    , m_plainTextDb(0)
+Database::Database()
+    : m_plainTextDb(0)
 {
 }
 
@@ -112,7 +111,6 @@ void Database::insert(const QByteArray& key, const QByteArray& value)
     {
         Xapian::TermGenerator termGen;
         termGen.set_document(m_plainTextDoc);
-        termGen.set_stopper(&m_stopper);
         termGen.index_text_without_positions(value.data());
     }
 }
@@ -124,11 +122,8 @@ void Database::insertText(const QString& text)
         return;
     }
 
-    Xapian::SimpleStopper stopper;
-
     Xapian::TermGenerator termGen;
     termGen.set_document(m_plainTextDoc);
-    termGen.set_stopper(&m_stopper);
     termGen.index_text_without_positions(text.toUtf8().data());
 }
 
