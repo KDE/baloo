@@ -22,7 +22,7 @@
 
 #include "emailindexer.h"
 
-#include <QCoreApplication>
+#include <QApplication>
 #include <QTimer>
 #include <KDebug>
 
@@ -32,7 +32,7 @@
 #include <Akonadi/ItemFetchScope>
 #include <Akonadi/Item>
 
-class App : public QCoreApplication {
+class App : public QApplication {
     Q_OBJECT
 public:
     App(int& argc, char** argv, int flags = ApplicationFlags);
@@ -60,7 +60,7 @@ int main(int argc, char** argv)
     return app.exec();
 }
 
-App::App(int& argc, char** argv, int flags): QCoreApplication(argc, argv, flags)
+App::App(int& argc, char** argv, int flags): QApplication(argc, argv, flags)
 {
     QTimer::singleShot(0, this, SLOT(main()));
 }

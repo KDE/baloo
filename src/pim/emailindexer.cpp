@@ -150,12 +150,12 @@ void EmailIndexer::processPart(KMime::Content* content, KMime::Content* mainCont
         }
     }
 
-    /*
-    if (type->isHTMLText()) {
+    // Only get HTML content, if no plain text content
+    if (!mainContent && type->isHTMLText()) {
         QTextDocument doc;
         doc.setHtml(content->decodedText());
         m_db.insertText(doc.toPlainText());
-    }*/
+    }
 
     // FIXME: Handle attachments?
 }
