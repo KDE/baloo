@@ -58,10 +58,19 @@ public:
     void insert(const QByteArray& key, const QByteArray& value);
     void insertText(const QString& text);
 
+    /**
+     * Inserts they key in the document only if the \p value is true.
+     * Otherwise it is ignored
+     */
+    void insertBool(const QByteArray& key, bool value);
+
 private:
     /// Maps keys -> database
     QHash<QByteArray, Xapian::WritableDatabase*> m_databases;
+
     Xapian::WritableDatabase* m_plainTextDb;
+    Xapian::Document m_plainTextDoc;
+    Xapian::SimpleStopper m_stopper;
 
     QByteArray m_pathDir;
     uint m_docId;

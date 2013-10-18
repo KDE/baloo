@@ -68,6 +68,11 @@ void Database::beginDocument(uint id)
 
 void Database::endDocument()
 {
+    m_plainTextDb->replace_document(m_docId, m_plainTextDoc);
+
+    m_plainTextDoc.clear_terms();
+    m_plainTextDoc.clear_values();
+
     m_docId = 0;
 }
 
@@ -99,16 +104,16 @@ void Database::insert(const QByteArray& key, const QByteArray& value)
 
     Xapian::TermGenerator termGen;
     termGen.set_document(doc);
-    termGen.index_text(value.data());
+    termGen.index_text_without_positions(value.data());
 
     database->replace_document(m_docId, doc);
 
+    // Also insert in the 'text' document
     {
         Xapian::TermGenerator termGen;
-        termGen.set_document(doc);
-        termGen.index_text(value.data());
-
-        m_plainTextDb->replace_document(m_docId, doc);
+        termGen.set_document(m_plainTextDoc);
+        termGen.set_stopper(&m_stopper);
+        termGen.index_text_without_positions(value.data());
     }
 }
 
@@ -121,53 +126,25 @@ void Database::insertText(const QString& text)
 
     Xapian::SimpleStopper stopper;
 
-    Xapian::Document doc;
     Xapian::TermGenerator termGen;
-    termGen.set_document(doc);
-    termGen.set_stopper(&stopper);
-    termGen.index_text(text.toUtf8().data());
-
-    m_plainTextDb->replace_document(m_docId, doc);
+    termGen.set_document(m_plainTextDoc);
+    termGen.set_stopper(&m_stopper);
+    termGen.index_text_without_positions(text.toUtf8().data());
 }
 
-/*
-void Database::test()
+void Database::insertBool(const QByteArray& key, bool value)
 {
-    Xapian::Database databases;
-    bool isEmpty = true;
-    QHash< QByteArray, Xapian::WritableDatabase* >::iterator it = m_databases.begin();
-    for (; it != m_databases.end(); it++) {
-        Xapian::WritableDatabase* db = it.value();
-        db->commit();
-        databases.add_database(*db);
-
-        isEmpty = false;
-    }
-
-    if (isEmpty) {
-        kDebug() << "No db found";
+    if (m_docId == 0) {
+        kError() << "Attempting to insert without calling beginDocument";
         return;
     }
 
-    Xapian::Enquire enquire(databases);
-    //Xapian::Query query("aleix");
+    if (!value)
+        return;
 
-    Xapian::QueryParser queryParser;
-    queryParser.set_database(databases);
-    Xapian::Query query = queryParser.parse_query("running", Xapian::QueryParser::FLAG_PARTIAL);
-
-    kDebug() << "Query:" << query.get_description().c_str();
-    enquire.set_query(query);
-    Xapian::MSet matches = enquire.get_mset(0, 10);
-    Xapian::MSetIterator i;
-    for (i = matches.begin(); i != matches.end(); ++i) {
-        kDebug() << "Document ID " << *i << "\t";
-        kDebug() << "Document ID " << i.get_document().get_docid() << "\t";
-        kDebug() << i.get_percent() << "% ";
-        Xapian::Document doc = i.get_document();
-        kDebug() << "[" << doc.get_data().c_str() << "]" << endl;
-    }
-}*/
+    std::string term = std::string("X") + key.data();
+    m_plainTextDoc.add_boolean_term(term);
+}
 
 void Database::commit()
 {
@@ -177,28 +154,3 @@ void Database::commit()
     }
     m_plainTextDb->commit();
 }
-
-
-/*
-int main(int argc, char** argv) {
-    Q_UNUSED(argc);
-    Q_UNUSED(argv);
-
-    /*
-    Database db;
-    db.insert(10, "subject", "This is the email run subject");
-    db.insert(10, "from", "Visehsh Handa <me@vhanda.in>");
-    db.insert(10, "cc", "Aleix Pol <apol@kde.org>");
-    db.insert(10, "to", "Alex Fiestas <afiestas@kde.org>");
-    db.insert(10, "content", "This is the content of the email!");
-
-    try {
-        db.test();
-    }
-    catch (const Xapian::InvalidArgumentError& err) {
-        kDebug() << err.get_description().c_str();
-        kDebug() << err.get_context().c_str();
-    }*/
-
-//    return 0;
-//}

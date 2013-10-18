@@ -163,10 +163,11 @@ void EmailIndexer::processPart(KMime::Content* content, KMime::Content* mainCont
 void EmailIndexer::processMessageStatus(const Akonadi::MessageStatus& status)
 {
     Q_UNUSED(status);
-    // TODO?
-    /*if (status.isRead()) {
 
-    }*/
+    m_db.insertBool("isRead", status.isRead());
+    m_db.insertBool("hasAttachment", status.hasAttachment());
+
+    // FIXME: How do we deal with the other flags?
 }
 
 void EmailIndexer::commit()
