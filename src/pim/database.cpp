@@ -147,5 +147,6 @@ void Database::commit()
     for (; it != m_databases.end(); it++) {
         it.value()->commit();
     }
-    m_plainTextDb->commit();
+    if (m_plainTextDb)
+        m_plainTextDb->commit();
 }

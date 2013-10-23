@@ -20,13 +20,17 @@
  *
  */
 
-#include "emailindexer.h"
+#include "queryiterator.h"
+#include "query.h"
 
 #include <QCoreApplication>
 #include <QTimer>
 #include <KDebug>
 
-#include <xapian.h>
+#include <Akonadi/ItemFetchJob>
+#include <Akonadi/ItemFetchScope>
+
+#include <KMime/Message>
 
 class App : public QCoreApplication {
     Q_OBJECT
@@ -37,6 +41,7 @@ public:
 
 private slots:
     void main();
+    void itemsReceived(const Akonadi::Item::List& item);
 };
 
 int main(int argc, char** argv)
@@ -58,35 +63,39 @@ App::App(int& argc, char** argv, int flags): QCoreApplication(argc, argv, flags)
 
 void App::main()
 {
-    QString base("/tmp/xap/");
-    Xapian::Database databases;
-    databases.add_database(Xapian::Database((base + "text").toStdString()));
+    Query query;
+    query.matches(m_query);
+    query.setLimit(10000);
 
-    Xapian::Enquire enquire(databases);
-    //Xapian::Query query("aleix");
+    QList<Akonadi::Entity::Id> m_akonadiIds;
 
-    QTime timer;
-    timer.start();
-    Xapian::QueryParser queryParser;
-    queryParser.set_database(databases);
-    Xapian::Query query = queryParser.parse_query(m_query.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
-
-    kDebug() << "Query:" << query.get_description().c_str();
-    enquire.set_query(query);
-    Xapian::MSet matches = enquire.get_mset(0, 10000);
-    Xapian::MSetIterator i;
-    for (i = matches.begin(); i != matches.end(); ++i) {
-        //kDebug() << "Document ID " << *i << "\t";
-        kDebug() << "Document ID " << i.get_document().get_docid() << "\t";
-        /*kDebug() << i.get_percent() << "% ";
-        Xapian::Document doc = i.get_document();
-        kDebug() << "[" << doc.get_data().c_str() << "]" << endl;*/
+    QueryIterator it = query.exec();
+    while (it.next()) {
+        m_akonadiIds << it.current();
     }
-    kDebug() << matches.size();
-    kDebug() << "Elapsed:" << timer.elapsed();
-    quit();
+
+    if (m_akonadiIds.isEmpty()) {
+        quit();
+        return;
+    }
+
+    Akonadi::ItemFetchJob* job = new Akonadi::ItemFetchJob(m_akonadiIds);
+    job->fetchScope().fetchFullPayload(true);
+
+    connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),
+            this, SLOT(itemsReceived(Akonadi::Item::List)));
+
+    job->start();
 }
 
+void App::itemsReceived(const Akonadi::Item::List& itemList)
+{
+    Q_FOREACH (const Akonadi::Item& item, itemList) {
+        KMime::Message::Ptr message = item.payload<KMime::Message::Ptr>();
+        kDebug() << message->subject(false)->asUnicodeString();
+    }
+    quit();
+}
 
 
 #include "emailquerytest.moc"

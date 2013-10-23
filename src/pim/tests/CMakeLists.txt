@@ -24,6 +24,9 @@ target_link_libraries(emailquery
   ${KDE4_KDECORE_LIBS}
   ${XAPIAN_LIBRARIES}
 
+  ${KDEPIMLIBS_AKONADI_LIBS}
+  ${KDEPIMLIBS_KMIME_LIBS}
+
   viziercore
   vizierpim
 )

@@ -166,6 +166,7 @@ void EmailIndexer::processMessageStatus(const Akonadi::MessageStatus& status)
 
     m_db.insertBool("isRead", status.isRead());
     m_db.insertBool("hasAttachment", status.hasAttachment());
+    m_db.insertBool("isImportant", status.isImportant());
 
     // FIXME: How do we deal with the other flags?
 }

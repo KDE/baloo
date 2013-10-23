@@ -6,6 +6,8 @@ include_directories(
 set(PIM_SRCS
   database.cpp
   emailindexer.cpp
+  query.cpp
+  queryiterator.cpp
 )
 
 add_definitions(${KDE4_ENABLE_EXCEPTIONS})
