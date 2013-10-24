@@ -63,6 +63,8 @@ public:
      */
     void matches(const QString& match);
 
+    void bodyMatches(const QString& match);
+
     /**
      * Matches teh string \p subjectMatch specifically in the
      * email subject
@@ -95,6 +97,7 @@ private:
     bool m_attachment;
 
     QString m_matchString;
+    QString m_bodyMatchString;
     QString m_subjectMatchString;
 
     int m_limit;

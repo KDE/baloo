@@ -49,25 +49,52 @@ public:
     /**
      * Commit all the pending documents to the database. Avoid
      * calling this function too frequently in order to increase
-     * efficiently
+     * efficiency
      */
     void commit();
 
-    void insert(const QByteArray& key, const QByteArray& value);
-    void insertText(const QString& text);
+    /**
+     * Sets the value of this \p key to exactly that of \p value
+     */
+    void set(const QByteArray& key, const QByteArray& value);
+    void set(const QByteArray& key, const QString& value) {
+        set(key, value.toUtf8());
+    }
 
     /**
-     * Inserts they key in the document only if the \p value is true.
-     * Otherwise it is ignored
+     * Sets the value of key \p key, to \p value after running the
+     * value through a token generator. This means superflous details
+     * such as punctuations and capitalization will be lost
      */
-    void insertBool(const QByteArray& key, bool value);
+    void setText(const QByteArray& key, const QByteArray& value);
+    void setText(const QByteArray& key, const QString& value) {
+        setText(key, value.toUtf8());
+    }
+
+    void append(const QByteArray& key, const QByteArray& value);
+    void append(const QByteArray& key, const QString& value) {
+        append(key, value.toUtf8());
+    }
+
+    void appendText(const QByteArray& key, const QByteArray& value);
+    void appendText(const QByteArray& key, const QString& value) {
+        appendText(key, value.toUtf8());
+    }
+
+    /**
+     * Only appends the boolean value if \p value is true. Otherwise
+     * it is ignored.
+     */
+    // FIXME: This means we cannot do negation queries on booleans
+    void appendBool(const QByteArray& dbKey, const QByteArray& key, bool value);
 
 private:
+    Xapian::WritableDatabase* fetchDb(const QByteArray& key);
+    Xapian::Document* fetchDoc(Xapian::WritableDatabase* db);
+
     /// Maps keys -> database
     QHash<QByteArray, Xapian::WritableDatabase*> m_databases;
-
-    Xapian::WritableDatabase* m_plainTextDb;
-    Xapian::Document m_plainTextDoc;
+    QHash<Xapian::WritableDatabase*, Xapian::Document*> m_documents;
 
     QByteArray m_pathDir;
     uint m_docId;

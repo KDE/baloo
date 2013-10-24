@@ -58,6 +58,29 @@ void EmailIndexer::index(const Akonadi::Item& item)
     m_db.endDocument();
 }
 
+void EmailIndexer::insert(const QByteArray& key, KMime::Headers::Generics::MailboxList* mlist)
+{
+    if (mlist)
+        insert(key, mlist->mailboxes());
+}
+
+void EmailIndexer::insert(const QByteArray& key, KMime::Headers::Generics::AddressList* alist)
+{
+    if (alist)
+        insert(key, alist->mailboxes());
+}
+
+void EmailIndexer::insert(const QByteArray& key, const KMime::Types::Mailbox::List& list)
+{
+    Q_FOREACH (const KMime::Types::Mailbox& mbox, list) {
+        m_db.appendText(key, mbox.name());
+        m_db.appendText("all", mbox.name());
+
+        m_db.append(key, mbox.address());
+        m_db.append("all", mbox.address());
+    }
+}
+
 // FIXME: Only index properties that are actually searched!
 void EmailIndexer::process(const KMime::Message::Ptr& msg)
 {
@@ -66,7 +89,8 @@ void EmailIndexer::process(const KMime::Message::Ptr& msg)
     //
     KMime::Headers::Subject* subject = msg->subject(false);
     if (subject) {
-        m_db.insert("subject", subject->asUnicodeString().toUtf8());
+        m_db.setText("subject", subject->asUnicodeString());
+        m_db.appendText("all", subject->asUnicodeString());
     }
 
     KMime::Headers::Date* date = msg->date(false);
@@ -75,50 +99,16 @@ void EmailIndexer::process(const KMime::Message::Ptr& msg)
         // m_db.insert("date", date->dateTime().toString());
     }
 
-    KMime::Headers::From* from = msg->from(false);
-    if (from) {
-        m_db.insert("from", from->asUnicodeString().toUtf8());
-    }
+    insert("from", msg->from(false));
+    insert("to", msg->to(false));
+    insert("cc", msg->cc(false));
+    insert("bcc", msg->bcc(false));
 
-    KMime::Headers::To* to = msg->to(false);
-    if (to) {
-        m_db.insert("to", to->asUnicodeString().toUtf8());
-    }
-
-    KMime::Headers::Cc* cc = msg->cc(false);
-    if (cc) {
-        m_db.insert("cc", cc->asUnicodeString().toUtf8());
-    }
-
-    KMime::Headers::Bcc* bcc = msg->bcc(false);
-    if (bcc) {
-        m_db.insert("bcc", bcc->asUnicodeString().toUtf8());
-    }
-
-    KMime::Headers::MessageID* messageId = msg->messageID(false);
-    if (messageId) {
-        m_db.insert("messageId", messageId->asUnicodeString().toUtf8());
-    }
-
-    KMime::Headers::Sender* sender = msg->sender(false);
-    if (sender) {
-        m_db.insert("sender", sender->asUnicodeString().toUtf8());
-    }
-
-    KMime::Headers::Organization* organization = msg->organization(false);
-    if (organization) {
-        m_db.insert("organization", organization->asUnicodeString().toUtf8());
-    }
-
-    KMime::Headers::Base* listID = msg->headerByType("List-Id");
-    if (listID) {
-        m_db.insert("List-Id", listID->asUnicodeString().toUtf8());
-    }
-
-    KMime::Headers::Base* mailingList = msg->headerByType("X-Mailing-List");
-    if (mailingList) {
-        m_db.insert("X-Mailing-List", mailingList->asUnicodeString().toUtf8());
-    }
+    // Stuff that could be indexed
+    // - Message ID
+    // - Organization
+    // - listID
+    // - mailingList
 
     //
     // Process Plain Text Content
@@ -129,7 +119,8 @@ void EmailIndexer::process(const KMime::Message::Ptr& msg)
     KMime::Content* mainBody = msg->mainBodyPart("text/plain");
     if (mainBody) {
         const QString text = mainBody->decodedText();
-        m_db.insertText(text);
+        m_db.appendText("text", text);
+        m_db.appendText("all", text);
     }
     processPart(msg.get(), mainBody);
 }
@@ -154,7 +145,9 @@ void EmailIndexer::processPart(KMime::Content* content, KMime::Content* mainCont
     if (!mainContent && type->isHTMLText()) {
         QTextDocument doc;
         doc.setHtml(content->decodedText());
-        m_db.insertText(doc.toPlainText());
+
+        m_db.appendText("body", doc.toPlainText());
+        m_db.appendText("all", doc.toPlainText());
     }
 
     // FIXME: Handle attachments?
@@ -162,11 +155,9 @@ void EmailIndexer::processPart(KMime::Content* content, KMime::Content* mainCont
 
 void EmailIndexer::processMessageStatus(const Akonadi::MessageStatus& status)
 {
-    Q_UNUSED(status);
-
-    m_db.insertBool("isRead", status.isRead());
-    m_db.insertBool("hasAttachment", status.hasAttachment());
-    m_db.insertBool("isImportant", status.isImportant());
+    m_db.appendBool("all", "isRead", status.isRead());
+    m_db.appendBool("all", "hasAttachment", status.hasAttachment());
+    m_db.appendBool("all", "isImportant", status.isImportant());
 
     // FIXME: How do we deal with the other flags?
 }

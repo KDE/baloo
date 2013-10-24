@@ -35,14 +35,13 @@ class DatabaseTests : public QObject
 public:
     explicit DatabaseTests(QObject* parent = 0);
 
-private slots:
+private Q_SLOTS:
     void init();
     void initTestCase();
     void cleanupTestCase();
 
-    void testInsert();
-    void testInsertMultiple();
-    void testInsertBool();
+    void testSet();
+    void testAppend();
 private:
     Database* m_db;
     KTempDir* m_tempDir;

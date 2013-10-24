@@ -26,13 +26,12 @@
 #include <QStringList>
 
 Database::Database()
-    : m_plainTextDb(0)
 {
 }
 
 Database::~Database()
 {
-    delete m_plainTextDb;
+    qDeleteAll(m_documents);
     qDeleteAll(m_databases);
 }
 
@@ -58,87 +57,103 @@ QString Database::path() const {
 void Database::beginDocument(uint id)
 {
     m_docId = id;
-
-    if (!m_plainTextDb) {
-        std::string path = m_pathDir.data() + std::string("text");
-        m_plainTextDb = new Xapian::WritableDatabase(path, Xapian::DB_CREATE_OR_OPEN);
-    }
 }
 
 void Database::endDocument()
 {
-    m_plainTextDb->replace_document(m_docId, m_plainTextDoc);
+    QHash<Xapian::WritableDatabase*, Xapian::Document*>::iterator it = m_documents.begin();
+    for (; it != m_documents.end(); it++) {
+        Xapian::WritableDatabase* db = it.key();
+        Xapian::Document* doc = it.value();
 
-    m_plainTextDoc.clear_terms();
-    m_plainTextDoc.clear_values();
+        db->replace_document(m_docId, *doc);
+        delete doc;
+    }
+    m_documents.clear();
 
     m_docId = 0;
 }
 
-void Database::insert(const QByteArray& key, const QByteArray& value)
+Xapian::WritableDatabase* Database::fetchDb(const QByteArray& key)
 {
-    if (m_docId == 0) {
-        kError() << "Attempting to insert without calling beginDocument";
-        return;
-    }
-
-    Xapian::WritableDatabase* database;
+    Q_ASSERT_X(m_docId != 0, "Database", "Attempting to insert data without calling beginDocument");
+    Q_ASSERT_X(key.size(), "Database", "Attempting to insert data with an empty key");
 
     QHash<QByteArray, Xapian::WritableDatabase*>::iterator it = m_databases.find(key);
     if (it == m_databases.end()) {
         std::string path = m_pathDir.data() + std::string(key.data());
-        database = new Xapian::WritableDatabase(path, Xapian::DB_CREATE_OR_OPEN);
 
-        //it.value() = database;
-        m_databases.insert(key, database);
+        Xapian::WritableDatabase* db = new Xapian::WritableDatabase(path, Xapian::DB_CREATE_OR_OPEN);
+        m_databases.insert(key, db);
+        return db;
     }
     else {
-        database = it.value();
+        return it.value();
     }
+}
+
+void Database::set(const QByteArray& key, const QByteArray& value)
+{
+    Xapian::WritableDatabase* db = fetchDb(key);
 
     Xapian::Document doc;
-    // FIXME: We do not want this!! Results in massive data duplication
-    // How do we do not do this?
-    //// doc.set_data(value.data());
+    doc.add_term(value.data());
+    db->replace_document(m_docId, doc);
+}
 
+void Database::setText(const QByteArray& key, const QByteArray& value)
+{
+    Xapian::WritableDatabase* db = fetchDb(key);
+
+    Xapian::Document doc;
     Xapian::TermGenerator termGen;
     termGen.set_document(doc);
     termGen.index_text_without_positions(value.data());
 
-    database->replace_document(m_docId, doc);
+    db->replace_document(m_docId, doc);
+}
 
-    // Also insert in the 'text' document
-    {
-        Xapian::TermGenerator termGen;
-        termGen.set_document(m_plainTextDoc);
-        termGen.index_text_without_positions(value.data());
+Xapian::Document* Database::fetchDoc(Xapian::WritableDatabase* db)
+{
+    QHash<Xapian::WritableDatabase*, Xapian::Document*>::const_iterator it = m_documents.constFind(db);
+    if (it == m_documents.constEnd()) {
+        Xapian::Document* doc = new Xapian::Document();
+
+        m_documents.insert(db, doc);
+        return doc;
+    }
+    else {
+        return it.value();
     }
 }
 
-void Database::insertText(const QString& text)
+void Database::append(const QByteArray& key, const QByteArray& value)
 {
-    if (m_docId == 0) {
-        kError() << "Attempting to insert without calling beginDocument";
-        return;
-    }
+    Xapian::WritableDatabase* db = fetchDb(key);
+    Xapian::Document* doc = fetchDoc(db);
+    doc->add_term(value.data());
+}
+
+void Database::appendText(const QByteArray& key, const QByteArray& value)
+{
+    Xapian::WritableDatabase* db = fetchDb(key);
+    Xapian::Document* doc = fetchDoc(db);
 
     Xapian::TermGenerator termGen;
-    termGen.set_document(m_plainTextDoc);
-    termGen.index_text_without_positions(text.toUtf8().data());
+    termGen.set_document(*doc);
+    termGen.index_text_without_positions(value.data());
 }
 
-void Database::insertBool(const QByteArray& key, bool value)
+void Database::appendBool(const QByteArray& dbKey, const QByteArray& key, bool value)
 {
-    if (m_docId == 0) {
-        kError() << "Attempting to insert without calling beginDocument";
-        return;
-    }
-
     if (!value)
         return;
 
+    Xapian::WritableDatabase* db = fetchDb(dbKey);
+    Xapian::Document* doc = fetchDoc(db);
+
     std::string term = std::string("X") + key.data();
-    m_plainTextDoc.add_boolean_term(term);
+    doc->add_boolean_term(term);
 }
 
 void Database::commit()
@@ -147,6 +162,4 @@ void Database::commit()
     for (; it != m_databases.end(); it++) {
         it.value()->commit();
     }
-    if (m_plainTextDb)
-        m_plainTextDb->commit();
 }

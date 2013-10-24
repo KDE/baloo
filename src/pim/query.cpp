@@ -107,6 +107,11 @@ void Query::matches(const QString& match)
     m_matchString = match;
 }
 
+void Query::bodyMatches(const QString& match)
+{
+    m_bodyMatchString = match;
+}
+
 void Query::subjectMatches(const QString& subjectMatch)
 {
     m_subjectMatchString = subjectMatch;
@@ -185,7 +190,7 @@ QueryIterator Query::exec()
     }
 
     if (m_subjectMatchString.size()) {
-        Xapian::Database db((m_path + "text").toStdString());
+        Xapian::Database db((m_path + "subject").toStdString());
 
         Xapian::QueryParser parser;
         parser.set_database(db);
@@ -195,7 +200,18 @@ QueryIterator Query::exec()
         databases.add_database(db);
     }
 
-    bool textDbNeeded = false;
+    if (m_bodyMatchString.size()) {
+        Xapian::Database db((m_path + "body").toStdString());
+
+        Xapian::QueryParser parser;
+        parser.set_database(db);
+        Xapian::Query q = parser.parse_query(m_bodyMatchString.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
+
+        m_queries << q;
+        databases.add_database(db);
+    }
+
+    bool allDbNeeded = false;
 
     if (m_collections.size()) {
         Xapian::Query query;
@@ -207,37 +223,37 @@ QueryIterator Query::exec()
         }
 
         m_queries << query;
-        textDbNeeded = true;
+        allDbNeeded = true;
     }
 
     if (m_important) {
         m_queries << Xapian::Query("XisImportant");
-        textDbNeeded = true;
+        allDbNeeded = true;
     }
 
     if (m_read) {
         m_queries << Xapian::Query("XisRead");
-        textDbNeeded = true;
+        allDbNeeded = true;
     }
 
     if (m_attachment) {
         m_queries << Xapian::Query("XisAttachment");
-        textDbNeeded = true;
+        allDbNeeded = true;
     }
 
     if (m_matchString.size()) {
-        Xapian::Database db((m_path + "text").toStdString());
+        Xapian::Database db((m_path + "all").toStdString());
 
         Xapian::QueryParser parser;
         parser.set_database(db);
         Xapian::Query q = parser.parse_query(m_matchString.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
 
         m_queries << q;
-        textDbNeeded = true;
+        allDbNeeded = true;
     }
 
-    if (textDbNeeded)
-        databases.add_database(Xapian::Database((m_path + "text").toStdString()));
+    if (allDbNeeded)
+        databases.add_database(Xapian::Database((m_path + "all").toStdString()));
 
     Xapian::Query query(Xapian::Query::OP_AND, m_queries.begin(), m_queries.end());
     kDebug() << query.get_description().c_str();

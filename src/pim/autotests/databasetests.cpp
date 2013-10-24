@@ -56,162 +56,81 @@ void DatabaseTests::init()
     m_db->setPath(m_tempDir->name());
 }
 
-void DatabaseTests::testInsert()
+void DatabaseTests::testSet()
 {
     m_db->beginDocument(1);
-    m_db->insert("subject", "Booga is the title");
+    m_db->set("email", QByteArray("abc@xyz.com"));
+    m_db->setText("subject", QByteArray("Booga is the title"));
     m_db->endDocument();
     m_db->commit();
 
-    // subject
     {
         QString termDbName = m_tempDir->name() + "subject";
         QVERIFY(QFile::exists(termDbName));
 
         Xapian::Database termDb(termDbName.toStdString());
-        Xapian::TermIterator iter = termDb.termlist_begin(1);
 
+        QCOMPARE(termDb.get_doccount(), (unsigned)1);
+        QVERIFY(!termDb.has_positions());
+
+        Xapian::TermIterator iter = termDb.termlist_begin(1);
         QCOMPARE((*iter).c_str(), "booga"); iter++;
         QCOMPARE((*iter).c_str(), "is"); iter++;
         QCOMPARE((*iter).c_str(), "the"); iter++;
         QCOMPARE((*iter).c_str(), "title"); iter++;
         QCOMPARE(iter, termDb.termlist_end(1));
-
-        QVERIFY(!termDb.has_positions());
-        QCOMPARE(termDb.get_doccount(), (unsigned)1);
 
         Xapian::Document doc = termDb.get_document(1);
         QVERIFY(doc.get_data().empty());
     }
 
-    // text db
     {
-        QString textDbName = m_tempDir->name() + "text";
-        QVERIFY(QFile::exists(textDbName));
+        QString termDbName = m_tempDir->name() + "email";
+        QVERIFY(QFile::exists(termDbName));
 
-        Xapian::Database textDb(textDbName.toStdString());
-        Xapian::TermIterator iter = textDb.termlist_begin(1);
-
-        QCOMPARE((*iter).c_str(), "booga"); iter++;
-        QCOMPARE((*iter).c_str(), "is"); iter++;
-        QCOMPARE((*iter).c_str(), "the"); iter++;
-        QCOMPARE((*iter).c_str(), "title"); iter++;
-        QCOMPARE(iter, textDb.termlist_end(1));
-
-        QVERIFY(!textDb.has_positions());
-        QCOMPARE(textDb.get_doccount(), (unsigned)1);
-
-        Xapian::Document doc = textDb.get_document(1);
-        QVERIFY(doc.get_data().empty());
-    }
-}
-
-void DatabaseTests::testInsertMultiple()
-{
-    m_db->beginDocument(1);
-    m_db->insert("subject", "Booga is the title");
-    m_db->insert("from", "Vishesh Handa");
-    m_db->endDocument();
-    m_db->commit();
-
-    // subject db
-    {
-        QString subjectDbName = m_tempDir->name() + "subject";
-        QVERIFY(QFile::exists(subjectDbName));
-
-        Xapian::Database termDb(subjectDbName.toStdString());
-        Xapian::TermIterator iter = termDb.termlist_begin(1);
-
-        QCOMPARE((*iter).c_str(), "booga"); iter++;
-        QCOMPARE((*iter).c_str(), "is"); iter++;
-        QCOMPARE((*iter).c_str(), "the"); iter++;
-        QCOMPARE((*iter).c_str(), "title"); iter++;
-        QCOMPARE(iter, termDb.termlist_end(1));
-
+        Xapian::Database termDb(termDbName.toStdString());
         QVERIFY(!termDb.has_positions());
         QCOMPARE(termDb.get_doccount(), (unsigned)1);
 
-        Xapian::Document doc = termDb.get_document(1);
-        QVERIFY(doc.get_data().empty());
-    }
-
-    // from db
-    {
-        QString fromDbName = m_tempDir->name() + "from";
-        QVERIFY(QFile::exists(fromDbName));
-
-        Xapian::Database termDb(fromDbName.toStdString());
         Xapian::TermIterator iter = termDb.termlist_begin(1);
-
-        QCOMPARE((*iter).c_str(), "handa"); iter++;
-        QCOMPARE((*iter).c_str(), "vishesh"); iter++;
+        QCOMPARE((*iter).c_str(), "abc@xyz.com"); iter++;
         QCOMPARE(iter, termDb.termlist_end(1));
-
-        QVERIFY(!termDb.has_positions());
-        QCOMPARE(termDb.get_doccount(), (unsigned)1);
-
-        Xapian::Document doc = termDb.get_document(1);
-        QVERIFY(doc.get_data().empty());
-    }
-
-    // text db
-    {
-        QString textDbName = m_tempDir->name() + "text";
-        QVERIFY(QFile::exists(textDbName));
-
-        Xapian::Database termDb(textDbName.toStdString());
-        Xapian::TermIterator iter = termDb.termlist_begin(1);
-
-        QCOMPARE((*iter).c_str(), "booga"); iter++;
-        QCOMPARE((*iter).c_str(), "handa"); iter++;
-        QCOMPARE((*iter).c_str(), "is"); iter++;
-        QCOMPARE((*iter).c_str(), "the"); iter++;
-        QCOMPARE((*iter).c_str(), "title"); iter++;
-        QCOMPARE((*iter).c_str(), "vishesh"); iter++;
-        QCOMPARE(iter, termDb.termlist_end(1));
-
-        QVERIFY(!termDb.has_positions());
-        QCOMPARE(termDb.get_doccount(), (unsigned)1);
 
         Xapian::Document doc = termDb.get_document(1);
         QVERIFY(doc.get_data().empty());
     }
 }
 
-void DatabaseTests::testInsertBool()
+void DatabaseTests::testAppend()
 {
     m_db->beginDocument(1);
-    m_db->insert("subject", "Booga is the title");
-    m_db->insertBool("isRead", true);
-    m_db->insertBool("spam", false);
+    m_db->append("subject", QLatin1String("abc@xyz.com"));
+    m_db->appendText("subject", QLatin1String("Booga is"));
+    m_db->appendText("subject", QLatin1String("the title"));
+    m_db->appendBool("subject", "isRead", true);
+    m_db->appendBool("subject", "isSpam", false);
     m_db->endDocument();
     m_db->commit();
 
-    // subject db
     {
-        QString subjectDbName = m_tempDir->name() + "subject";
-        Xapian::Database termDb(subjectDbName.toStdString());
+        QString termDbName = m_tempDir->name() + "subject";
+        QVERIFY(QFile::exists(termDbName));
+
+        Xapian::Database termDb(termDbName.toStdString());
+        QVERIFY(!termDb.has_positions());
+        QCOMPARE(termDb.get_doccount(), (unsigned)1);
+
         Xapian::TermIterator iter = termDb.termlist_begin(1);
-
-        QCOMPARE((*iter).c_str(), "booga"); iter++;
-        QCOMPARE((*iter).c_str(), "is"); iter++;
-        QCOMPARE((*iter).c_str(), "the"); iter++;
-        QCOMPARE((*iter).c_str(), "title"); iter++;
-        QCOMPARE(iter, termDb.termlist_end(1));
-    }
-
-    // text db
-    {
-        QString textDbName = m_tempDir->name() + "text";
-        Xapian::Database textDb(textDbName.toStdString());
-        Xapian::TermIterator iter = textDb.termlist_begin(1);
-
         QCOMPARE((*iter).c_str(), "XisRead"); iter++;
+        QCOMPARE((*iter).c_str(), "abc@xyz.com"); iter++;
         QCOMPARE((*iter).c_str(), "booga"); iter++;
         QCOMPARE((*iter).c_str(), "is"); iter++;
         QCOMPARE((*iter).c_str(), "the"); iter++;
         QCOMPARE((*iter).c_str(), "title"); iter++;
-        QCOMPARE(iter, textDb.termlist_end(1));
+        QCOMPARE(iter, termDb.termlist_end(1));
+
+        Xapian::Document doc = termDb.get_document(1);
+        QVERIFY(doc.get_data().empty());
     }
 }
 

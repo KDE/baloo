@@ -44,6 +44,10 @@ private:
     void process(const KMime::Message::Ptr& msg);
     void processPart(KMime::Content* content, KMime::Content* mainContent);
     void processMessageStatus(const Akonadi::MessageStatus& status);
+
+    void insert(const QByteArray& key, KMime::Headers::Generics::MailboxList* mlist);
+    void insert(const QByteArray& key, KMime::Headers::Generics::AddressList* alist);
+    void insert(const QByteArray& key, const KMime::Types::Mailbox::List& list);
 };
 
 #endif // EMAILINDEXER_H

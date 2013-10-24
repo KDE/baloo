@@ -37,7 +37,7 @@ class App : public QApplication {
 public:
     App(int& argc, char** argv, int flags = ApplicationFlags);
 
-private slots:
+private Q_SLOTS:
     void main();
 
     void slotRootCollectionsFetched(KJob* job);
@@ -114,7 +114,7 @@ void App::itemReceived(const Akonadi::Item::List& itemList)
     QTime timer;
     timer.start();
 
-    foreach(const Akonadi::Item& item, itemList) {
+    Q_FOREACH (const Akonadi::Item& item, itemList) {
         m_indexer.index(item);
     }
 

@@ -39,7 +39,7 @@ public:
 
     QString m_query;
 
-private slots:
+private Q_SLOTS:
     void main();
     void itemsReceived(const Akonadi::Item::List& item);
 };
@@ -65,7 +65,7 @@ void App::main()
 {
     Query query;
     query.matches(m_query);
-    query.setLimit(10000);
+    query.setLimit(100);
 
     QList<Akonadi::Entity::Id> m_akonadiIds;
 
@@ -73,6 +73,7 @@ void App::main()
     while (it.next()) {
         m_akonadiIds << it.current();
     }
+    kDebug() << "Got" << m_akonadiIds.size() << "items";
 
     if (m_akonadiIds.isEmpty()) {
         quit();
@@ -84,6 +85,8 @@ void App::main()
 
     connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),
             this, SLOT(itemsReceived(Akonadi::Item::List)));
+    connect(job, SIGNAL(finished(KJob*)),
+            this, SLOT(quit()));
 
     job->start();
 }
@@ -92,9 +95,8 @@ void App::itemsReceived(const Akonadi::Item::List& itemList)
 {
     Q_FOREACH (const Akonadi::Item& item, itemList) {
         KMime::Message::Ptr message = item.payload<KMime::Message::Ptr>();
-        kDebug() << message->subject(false)->asUnicodeString();
+        kDebug() << message->subject()->asUnicodeString();
     }
-    quit();
 }
 
 
