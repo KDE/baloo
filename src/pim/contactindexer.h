@@ -20,42 +20,25 @@
  *
  */
 
-#include "result.h"
+#ifndef CONTACTINDEXER_H
+#define CONTACTINDEXER_H
 
-using namespace Baloo;
+#include "database.h"
+#include "pim_export.h"
 
-class Result::Private {
+#include <Akonadi/Item>
+
+class VIZIER_PIM_EXPORT ContactIndexer
+{
 public:
-    QByteArray id;
-    QString text;
+    ContactIndexer();
+    ~ContactIndexer();
+
+    void index(const Akonadi::Item& item);
+    void commit();
+
+private:
+    Database m_db;
 };
 
-Result::Result()
-    : d(new Private)
-{
-}
-
-Result::~Result()
-{
-    delete d;
-}
-
-void Result::setId(const QByteArray& id)
-{
-    d->id = id;
-}
-
-QByteArray Result::id()
-{
-    return d->id;
-}
-
-void Result::setText(const QString& text)
-{
-    d->text = text;
-}
-
-QString Result::text()
-{
-    return d->text;
-}
+#endif // CONTACTINDEXER_H

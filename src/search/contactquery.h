@@ -20,42 +20,49 @@
  *
  */
 
-#include "result.h"
+#ifndef CONTACTQUERY_H
+#define CONTACTQUERY_H
 
-using namespace Baloo;
+#include <QString>
+#include "search_export.h"
 
-class Result::Private {
+namespace Baloo {
+
+class ResultIterator;
+
+/**
+ * Query for a list of contacts matching a criteria
+ */
+class BALOO_SEARCH_EXPORT ContactQuery
+{
 public:
-    QByteArray id;
-    QString text;
+    ContactQuery();
+    ~ContactQuery();
+
+    void matchName(const QString& name);
+    void matchNickname(const QString& nick);
+    void matchEmail(const QString& email);
+    void matchUID(const QString& uid);
+    void match(const QString& str);
+
+    enum MatchCriteria {
+        ExactMatch,
+        StartsWithMatch
+    };
+
+    void setMatchCriteria(MatchCriteria m);
+    MatchCriteria matchCriteria() const;
+
+    ResultIterator exec();
+
+    int limit() const;
+    void setLimit(int limit);
+
+private:
+    class Private;
+    Private* d;
 };
 
-Result::Result()
-    : d(new Private)
-{
 }
 
-Result::~Result()
-{
-    delete d;
-}
-
-void Result::setId(const QByteArray& id)
-{
-    d->id = id;
-}
-
-QByteArray Result::id()
-{
-    return d->id;
-}
-
-void Result::setText(const QString& text)
-{
-    d->text = text;
-}
-
-QString Result::text()
-{
-    return d->text;
-}
+#endif // CONTACTQUERY_H

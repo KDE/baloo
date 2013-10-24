@@ -20,42 +20,37 @@
  *
  */
 
-#include "result.h"
+#include "resultiterator_p.h"
 
 using namespace Baloo;
 
-class Result::Private {
-public:
-    QByteArray id;
-    QString text;
-};
-
-Result::Result()
+ResultIterator::ResultIterator()
     : d(new Private)
 {
+    d->m_firstElement = false;
 }
 
-Result::~Result()
+bool ResultIterator::next()
 {
-    delete d;
+    if (d->m_iter == d->m_end)
+        return false;
+
+    if (d->m_firstElement) {
+        d->m_iter = d->m_mset.begin();
+        d->m_firstElement = false;
+        return (d->m_iter != d->m_end);
+    }
+
+    d->m_iter++;
+    return (d->m_iter != d->m_end);
 }
 
-void Result::setId(const QByteArray& id)
+Result ResultIterator::current()
 {
-    d->id = id;
-}
+    Xapian::Document doc = d->m_iter.get_document();
 
-QByteArray Result::id()
-{
-    return d->id;
-}
-
-void Result::setText(const QString& text)
-{
-    d->text = text;
-}
-
-QString Result::text()
-{
-    return d->text;
+    Result res;
+    res.setId(QByteArray::number(doc.get_docid()));
+    res.setText(QString::fromStdString(doc.get_data()));
+    return res;
 }

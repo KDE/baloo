@@ -23,30 +23,41 @@
 #ifndef RESULT_H
 #define RESULT_H
 
+#include <QString>
+#include <QByteArray>
+
+namespace Baloo {
+
 class Result
 {
 public:
     Result();
-    virtual ~Result();
+    ~Result();
 
-    QString id();
-    void setId(const QString& id);
+    QByteArray id();
+    void setId(const QByteArray& id);
 
     /**
      * Some text that can be used to display the result
      * to the user
      */
-    QString displayText();
-    void setDisplayText(const QString& text);
+    QString text();
+    void setText(const QString& text);
 
     /**
      * Returns an icon that could be used when displaying
-     * the result
+     * the result.
+     *
+     * Most often there is no icon
      */
-    QString icon();
-    void setIcon(const QString& icon);
+    //QString icon();
+    //void setIcon(const QString& icon);
 
 private:
+    class Private;
+    Private* d;
 };
+
+}
 
 #endif // RESULT_H

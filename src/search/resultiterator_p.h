@@ -20,42 +20,31 @@
  *
  */
 
-#include "result.h"
+#ifndef QUERYITERATOR_H
+#define QUERYITERATOR_H
 
-using namespace Baloo;
+#include "resultiterator.h"
+#include "xapian.h"
 
-class Result::Private {
+namespace Baloo {
+
+class ResultIterator::Private
+{
 public:
-    QByteArray id;
-    QString text;
+    void init(const Xapian::MSet& mset) {
+        m_mset = mset;
+        m_end = m_mset.end();
+        m_iter = m_mset.begin();
+        m_firstElement = true;
+    }
+
+    Xapian::MSet m_mset;
+    Xapian::MSetIterator m_iter;
+    Xapian::MSetIterator m_end;
+
+    bool m_firstElement;
 };
 
-Result::Result()
-    : d(new Private)
-{
 }
 
-Result::~Result()
-{
-    delete d;
-}
-
-void Result::setId(const QByteArray& id)
-{
-    d->id = id;
-}
-
-QByteArray Result::id()
-{
-    return d->id;
-}
-
-void Result::setText(const QString& text)
-{
-    d->text = text;
-}
-
-QString Result::text()
-{
-    return d->text;
-}
+#endif // QUERYITERATOR_H

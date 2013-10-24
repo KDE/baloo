@@ -20,42 +20,30 @@
  *
  */
 
+#ifndef RESULT_ITERATOR_H
+#define RESULT_ITERATOR_H
+
+#include "search_export.h"
 #include "result.h"
 
-using namespace Baloo;
+namespace Baloo {
 
-class Result::Private {
+class ContactQuery;
+
+class BALOO_SEARCH_EXPORT ResultIterator
+{
 public:
-    QByteArray id;
-    QString text;
+    ResultIterator();
+
+    Result current();
+    bool next();
+
+private:
+    friend class ContactQuery;
+
+    class Private;
+    Private* d;
 };
 
-Result::Result()
-    : d(new Private)
-{
 }
-
-Result::~Result()
-{
-    delete d;
-}
-
-void Result::setId(const QByteArray& id)
-{
-    d->id = id;
-}
-
-QByteArray Result::id()
-{
-    return d->id;
-}
-
-void Result::setText(const QString& text)
-{
-    d->text = text;
-}
-
-QString Result::text()
-{
-    return d->text;
-}
+#endif // RESULT_ITERATOR_H
