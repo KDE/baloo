@@ -16,3 +16,8 @@ include_directories(
 )
 
 add_subdirectory(src)
+
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/BalooConfig.cmake
+        DESTINATION ${LIB_INSTALL_DIR}/cmake/Baloo)
+
+macro_display_feature_log()

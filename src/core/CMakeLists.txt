@@ -33,6 +33,7 @@ install(FILES
     itemfetchjob.h
 
     relation.h
+    core_export.h
 
     DESTINATION ${INCLUDE_INSTALL_DIR}/baloo COMPONENT Devel
 )
