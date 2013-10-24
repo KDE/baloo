@@ -3,6 +3,7 @@ include_directories(
 )
 
 set(SEARCH_SRCS
+    query.cpp
     result.cpp
     resultiterator.cpp
     contactquery.cpp
@@ -16,6 +17,7 @@ kde4_add_library(baloosearch SHARED ${SEARCH_SRCS})
 target_link_libraries(baloosearch
     ${QT_QTCORE_LIBRARY}
     ${KDE4_KDECORE_LIBRARY}
+    ${QJSON_LIBRARIES}
     ${XAPIAN_LIBRARIES}
     baloocore
 )
@@ -26,3 +28,14 @@ set_target_properties(baloosearch PROPERTIES
 )
 
 install(TARGETS baloosearch ${INSTALL_TARGETS_DEFAULT_ARGS})
+
+install(FILES
+    query.h
+    contactquery.h
+
+    result.h
+    resultiterator.h
+    search_export.h
+
+    DESTINATION ${INCLUDE_INSTALL_DIR}/baloo COMPONENT Devel
+)

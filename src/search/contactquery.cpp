@@ -42,7 +42,8 @@ public:
 };
 
 ContactQuery::ContactQuery()
-    : d(new Private)
+    : Query()
+    , d(new Private)
 {
 }
 

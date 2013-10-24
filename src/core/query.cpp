@@ -20,25 +20,4 @@
  *
  */
 
-#ifndef QUERY_H
-#define QUERY_H
-
-#include "search_export.h"
-#include <QByteArray>
-
-namespace Baloo {
-
-class ResultIterator;
-
-class BALOO_SEARCH_EXPORT Query
-{
-public:
-    Query();
-    virtual ~Query();
-    virtual ResultIterator exec() = 0;
-
-    static Query* fromJSON(const QByteArray& json);
-};
-
-}
-#endif // QUERY_H
+#include "query.h"

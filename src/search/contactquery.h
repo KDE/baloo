@@ -24,16 +24,14 @@
 #define CONTACTQUERY_H
 
 #include <QString>
-#include "search_export.h"
+#include "query.h"
 
 namespace Baloo {
-
-class ResultIterator;
 
 /**
  * Query for a list of contacts matching a criteria
  */
-class BALOO_SEARCH_EXPORT ContactQuery
+class BALOO_SEARCH_EXPORT ContactQuery : public Query
 {
 public:
     ContactQuery();

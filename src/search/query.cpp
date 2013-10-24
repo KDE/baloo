@@ -21,3 +21,55 @@
  */
 
 #include "query.h"
+#include "contactquery.h"
+
+#include <QVariant>
+#include <KDebug>
+
+#include <qjson/parser.h>
+using namespace Baloo;
+
+Query::Query()
+{
+
+}
+
+Query::~Query()
+{
+
+}
+
+Query* Query::fromJSON(const QByteArray& json)
+{
+    QJson::Parser parser;
+    bool ok = false;
+
+    QVariantMap result = parser.parse(json, &ok).toMap();
+    if (!ok) {
+        kError() << "Could not parse json query";
+        return 0;
+    }
+
+    const QString type = result["type"].toString().toLower();
+    if (type != "contact") {
+        kError() << "Can only handle contact queries";
+        return 0;
+    }
+
+    ContactQuery* cq = new ContactQuery();
+    cq->matchName(result["name"].toString());
+    cq->matchNickname(result["nick"].toString());
+    cq->matchEmail(result["email"].toString());
+    cq->matchUID(result["uid"].toString());
+    cq->match(result["$"].toString());
+
+    const QString criteria = result["matchCriteria"].toString().toLower();
+    if (criteria == "exact")
+        cq->setMatchCriteria(ContactQuery::ExactMatch);
+    else if (criteria == "startswith")
+        cq->setMatchCriteria(ContactQuery::StartsWithMatch);
+
+    cq->setLimit(result["limit"].toInt());
+
+    return cq;
+}
