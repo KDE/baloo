@@ -9,8 +9,8 @@ target_link_libraries(tagrelationwatcher
   ${QT_QTSQL_LIBRARY}
   ${QT_QTTEST_LIBRARY}
   ${KDE4_KDECORE_LIBS}
-  viziercore
-  viziertags
+  baloocore
+  balootags
 )
 
 kde4_add_executable(tagwatcher tagwatcher.cpp ../database.cpp)
@@ -20,6 +20,6 @@ target_link_libraries(tagwatcher
   ${QT_QTSQL_LIBRARY}
   ${QT_QTTEST_LIBRARY}
   ${KDE4_KDECORE_LIBS}
-  viziercore
-  viziertags
+  baloocore
+  balootags
 )

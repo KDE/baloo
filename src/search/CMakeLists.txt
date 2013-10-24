@@ -17,7 +17,7 @@ target_link_libraries(baloosearch
     ${QT_QTCORE_LIBRARY}
     ${KDE4_KDECORE_LIBRARY}
     ${XAPIAN_LIBRARIES}
-    viziercore
+    baloocore
 )
 
 set_target_properties(baloosearch PROPERTIES

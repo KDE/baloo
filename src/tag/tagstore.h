@@ -28,7 +28,7 @@
 
 class Tag;
 
-class VIZIER_TAG_EXPORT TagStore : public DataStore
+class BALOO_TAG_EXPORT TagStore : public DataStore
 {
     Q_OBJECT
 public:

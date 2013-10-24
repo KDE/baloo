@@ -30,7 +30,7 @@
 
 class Item;
 
-class VIZIER_CORE_EXPORT ItemFetchJob : public KJob
+class BALOO_CORE_EXPORT ItemFetchJob : public KJob
 {
     Q_OBJECT
 public:

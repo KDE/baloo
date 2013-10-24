@@ -30,7 +30,7 @@
 #include <Akonadi/Item>
 #include <Akonadi/KMime/MessageStatus>
 
-class VIZIER_PIM_EXPORT EmailIndexer
+class BALOO_PIM_EXPORT EmailIndexer
 {
 public:
     EmailIndexer();

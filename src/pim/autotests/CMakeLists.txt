@@ -9,5 +9,5 @@ target_link_libraries(databasetest
   ${QT_QTTEST_LIBRARY}
   ${KDE4_KDECORE_LIBS}
   ${XAPIAN_LIBRARIES}
-  viziercore
+  baloocore
 )

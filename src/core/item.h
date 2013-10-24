@@ -35,7 +35,7 @@ class ItemRemoveJob;
 
 class ItemType;
 
-class VIZIER_CORE_EXPORT Item
+class BALOO_CORE_EXPORT Item
 {
 public:
     Item();

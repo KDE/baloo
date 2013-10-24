@@ -30,7 +30,7 @@
  * This class can be used to watch any tag or any specific
  * item. Or a specific relation with both tag and item
  */
-class VIZIER_TAG_EXPORT TagRelationWatcher : public QObject
+class BALOO_TAG_EXPORT TagRelationWatcher : public QObject
 {
     Q_OBJECT
 public:

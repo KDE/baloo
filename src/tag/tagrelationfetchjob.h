@@ -29,7 +29,7 @@
 class Tag;
 class TagRelation;
 
-class VIZIER_TAG_EXPORT TagRelationFetchJob : public RelationFetchJob
+class BALOO_TAG_EXPORT TagRelationFetchJob : public RelationFetchJob
 {
     Q_OBJECT
 public:

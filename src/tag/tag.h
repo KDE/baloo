@@ -29,7 +29,7 @@
 #include "tagsavejob.h"
 #include "tagremovejob.h"
 
-class VIZIER_TAG_EXPORT Tag : public Item
+class BALOO_TAG_EXPORT Tag : public Item
 {
 public:
     Tag();

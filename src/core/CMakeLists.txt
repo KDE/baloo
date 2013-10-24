@@ -14,19 +14,19 @@ set(CORE_SRCS
     datastore.cpp
 )
 
-kde4_add_library(viziercore SHARED ${CORE_SRCS})
+kde4_add_library(baloocore SHARED ${CORE_SRCS})
 
-target_link_libraries(viziercore
+target_link_libraries(baloocore
     ${QT_QTCORE_LIBRARY}
     ${KDE4_KDECORE_LIBRARY}
 )
 
-set_target_properties(viziercore PROPERTIES
+set_target_properties(baloocore PROPERTIES
     VERSION ${GENERIC_LIB_VERSION}
     SOVERSION ${GENERIC_LIB_SOVERSION}
 )
 
-install(TARGETS viziercore ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS baloocore ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES
     item.h
@@ -34,5 +34,5 @@ install(FILES
 
     relation.h
 
-    DESTINATION ${INCLUDE_INSTALL_DIR}/vizier COMPONENT Devel
+    DESTINATION ${INCLUDE_INSTALL_DIR}/baloo COMPONENT Devel
 )

@@ -12,8 +12,8 @@ target_link_libraries(emailindexer
   ${KDEPIMLIBS_AKONADI_LIBS}
   ${KDEPIMLIBS_KMIME_LIBS}
 
-  viziercore
-  vizierpim
+  baloocore
+  baloopim
 )
 
 kde4_add_executable(emailquery emailquerytest.cpp)
@@ -27,6 +27,6 @@ target_link_libraries(emailquery
   ${KDEPIMLIBS_AKONADI_LIBS}
   ${KDEPIMLIBS_KMIME_LIBS}
 
-  viziercore
-  vizierpim
+  baloocore
+  baloopim
 )

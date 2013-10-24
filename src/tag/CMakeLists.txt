@@ -16,21 +16,21 @@ set(TAGS_SRCS
     database.cpp
 )
 
-kde4_add_library(viziertags SHARED ${TAGS_SRCS})
+kde4_add_library(balootags SHARED ${TAGS_SRCS})
 
-target_link_libraries(viziertags
+target_link_libraries(balootags
     ${QT_QTCORE_LIBRARY}
     ${QT_QTSQL_LIBRARY}
     ${KDE4_KDECORE_LIBRARY}
-    viziercore
+    baloocore
 )
 
-set_target_properties(viziertags PROPERTIES
+set_target_properties(balootags PROPERTIES
     VERSION ${GENERIC_LIB_VERSION}
     SOVERSION ${GENERIC_LIB_SOVERSION}
 )
 
-install(TARGETS viziertags ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS balootags ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 #install(FILES
 #    tag.h
@@ -38,7 +38,7 @@ install(TARGETS viziertags ${INSTALL_TARGETS_DEFAULT_ARGS})
 #
 #    tagrelation.h
 #
-#    DESTINATION ${INCLUDE_INSTALL_DIR}/vizier COMPONENT Devel
+#    DESTINATION ${INCLUDE_INSTALL_DIR}/baloo COMPONENT Devel
 #)
 
 add_subdirectory(autotests)

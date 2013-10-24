@@ -30,7 +30,7 @@ class Item;
 class ItemFetchJob;
 
 // FIXME: Maybe this should be a singleton?
-class VIZIER_CORE_EXPORT DataStore : public QObject
+class BALOO_CORE_EXPORT DataStore : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(bool watchEnabled READ watchEnabled WRITE setWatchEnabled)

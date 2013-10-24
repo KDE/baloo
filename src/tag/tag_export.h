@@ -17,22 +17,22 @@
     Boston, MA 02110-1301, USA.
 */
 
-#ifndef _VIZIER_TAG_EXPORT_H
-#define _VIZIER_TAG_EXPORT_H
+#ifndef _BALOO_TAG_EXPORT_H
+#define _BALOO_TAG_EXPORT_H
 
 /* needed for KDE_EXPORT and KDE_IMPORT macros */
 #include <kdemacros.h>
 
-#ifndef VIZIER_TAG_EXPORT
+#ifndef BALOO_TAG_EXPORT
 # if defined(KDELIBS_STATIC_LIBS)
    /* No export/import for static libraries */
-#  define VIZIER_TAG_EXPORT
-# elif defined(MAKE_VIZIER_TAG_LIB)
+#  define BALOO_TAG_EXPORT
+# elif defined(MAKE_BALOO_TAG_LIB)
    /* We are building this library */
-#  define VIZIER_TAG_EXPORT KDE_EXPORT
+#  define BALOO_TAG_EXPORT KDE_EXPORT
 # else
    /* We are using this library */
-#  define VIZIER_TAG_EXPORT KDE_IMPORT
+#  define BALOO_TAG_EXPORT KDE_IMPORT
 # endif
 #endif
 

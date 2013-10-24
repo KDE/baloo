@@ -28,7 +28,7 @@
 
 #include <Akonadi/Item>
 
-class VIZIER_PIM_EXPORT ContactIndexer
+class BALOO_PIM_EXPORT ContactIndexer
 {
 public:
     ContactIndexer();

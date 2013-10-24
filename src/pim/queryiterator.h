@@ -28,7 +28,7 @@
 #include <xapian.h>
 #include <Akonadi/Item>
 
-class VIZIER_PIM_EXPORT QueryIterator
+class BALOO_PIM_EXPORT QueryIterator
 {
 public:
     QueryIterator(const Xapian::MSet& mset);

@@ -28,7 +28,7 @@
 
 class Relation;
 
-class VIZIER_CORE_EXPORT RelationCreateJob : public KJob
+class BALOO_CORE_EXPORT RelationCreateJob : public KJob
 {
     Q_OBJECT
 public:

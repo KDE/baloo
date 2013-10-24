@@ -14,25 +14,25 @@ set(PIM_SRCS
 add_definitions(${KDE4_ENABLE_EXCEPTIONS})
 add_definitions(-DQT_NO_KEYWORDS)
 
-kde4_add_library(vizierpim SHARED ${PIM_SRCS})
+kde4_add_library(baloopim SHARED ${PIM_SRCS})
 
-target_link_libraries(vizierpim
+target_link_libraries(baloopim
     ${QT_QTCORE_LIBRARY}
     ${KDE4_KDECORE_LIBRARY}
     ${KDEPIMLIBS_AKONADI_LIBS}
     ${KDEPIMLIBS_KMIME_LIBS}
     ${KDEPIMLIBS_KABC_LIBS}
     ${XAPIAN_LIBRARIES}
-    viziercore
+    baloocore
     akonadi-kmime
 )
 
-set_target_properties(vizierpim PROPERTIES
+set_target_properties(baloopim PROPERTIES
     VERSION ${GENERIC_LIB_VERSION}
     SOVERSION ${GENERIC_LIB_SOVERSION}
 )
 
-install(TARGETS vizierpim ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS baloopim ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 add_subdirectory(autotests)
 add_subdirectory(tests)

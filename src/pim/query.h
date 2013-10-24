@@ -30,7 +30,7 @@
 
 class QueryIterator;
 
-class VIZIER_PIM_EXPORT Query
+class BALOO_PIM_EXPORT Query
 {
 public:
     Query();

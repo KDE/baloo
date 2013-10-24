@@ -29,7 +29,7 @@
 
 class Item;
 
-class VIZIER_CORE_EXPORT ItemSaveJob : public KJob
+class BALOO_CORE_EXPORT ItemSaveJob : public KJob
 {
     Q_OBJECT
 public:

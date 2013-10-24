@@ -9,6 +9,6 @@ target_link_libraries(tagtest
   ${QT_QTSQL_LIBRARY}
   ${QT_QTTEST_LIBRARY}
   ${KDE4_KDECORE_LIBS}
-  viziercore
-  viziertags
+  baloocore
+  balootags
 )

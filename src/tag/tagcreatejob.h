@@ -28,7 +28,7 @@
 
 class Tag;
 
-class VIZIER_TAG_EXPORT TagCreateJob : public ItemCreateJob
+class BALOO_TAG_EXPORT TagCreateJob : public ItemCreateJob
 {
     Q_OBJECT
 public:

@@ -29,7 +29,7 @@
 #include "tagrelationcreatejob.h"
 #include "tagrelationremovejob.h"
 
-class VIZIER_TAG_EXPORT TagRelation : public Relation
+class BALOO_TAG_EXPORT TagRelation : public Relation
 {
 public:
     TagRelation();

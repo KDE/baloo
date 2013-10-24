@@ -28,7 +28,7 @@
 
 class TagRelation;
 
-class VIZIER_TAG_EXPORT TagRelationRemoveJob : public RelationRemoveJob
+class BALOO_TAG_EXPORT TagRelationRemoveJob : public RelationRemoveJob
 {
     Q_OBJECT
 public:

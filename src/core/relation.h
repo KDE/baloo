@@ -37,7 +37,7 @@ class RelationRemoveJob;
 /**
  * This class represents a way of connecting any two Items.
  */
-class VIZIER_CORE_EXPORT Relation
+class BALOO_CORE_EXPORT Relation
 {
 public:
     virtual ~Relation();

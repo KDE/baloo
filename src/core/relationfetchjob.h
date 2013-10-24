@@ -29,7 +29,7 @@
 class Item;
 class Relation;
 
-class VIZIER_CORE_EXPORT RelationFetchJob : public KJob
+class BALOO_CORE_EXPORT RelationFetchJob : public KJob
 {
     Q_OBJECT
 public:

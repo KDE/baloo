@@ -28,7 +28,7 @@
 
 class Tag;
 
-class VIZIER_TAG_EXPORT TagFetchJob : public ItemFetchJob
+class BALOO_TAG_EXPORT TagFetchJob : public ItemFetchJob
 {
     Q_OBJECT
 public:

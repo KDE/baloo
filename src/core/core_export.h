@@ -17,22 +17,22 @@
     Boston, MA 02110-1301, USA.
 */
 
-#ifndef _VIZIER_CORE_EXPORT_H
-#define _VIZIER_CORE_EXPORT_H
+#ifndef _BALOO_CORE_EXPORT_H
+#define _BALOO_CORE_EXPORT_H
 
 /* needed for KDE_EXPORT and KDE_IMPORT macros */
 #include <kdemacros.h>
 
-#ifndef VIZIER_CORE_EXPORT
+#ifndef BALOO_CORE_EXPORT
 # if defined(KDELIBS_STATIC_LIBS)
    /* No export/import for static libraries */
-#  define VIZIER_CORE_EXPORT
-# elif defined(MAKE_VIZIER_CORE_LIB)
+#  define BALOO_CORE_EXPORT
+# elif defined(MAKE_BALOO_CORE_LIB)
    /* We are building this library */
-#  define VIZIER_CORE_EXPORT KDE_EXPORT
+#  define BALOO_CORE_EXPORT KDE_EXPORT
 # else
    /* We are using this library */
-#  define VIZIER_CORE_EXPORT KDE_IMPORT
+#  define BALOO_CORE_EXPORT KDE_IMPORT
 # endif
 #endif
 
