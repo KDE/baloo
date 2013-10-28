@@ -29,6 +29,8 @@
 #include "tagsavejob.h"
 #include "tagremovejob.h"
 
+namespace Baloo {
+
 class BALOO_TAG_EXPORT Tag : public Item
 {
 public:
@@ -51,6 +53,8 @@ private:
     QString m_name;
 };
 
-Q_DECLARE_METATYPE(Tag);
+}
+
+Q_DECLARE_METATYPE(Baloo::Tag);
 
 #endif // TAG_H

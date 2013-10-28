@@ -22,6 +22,8 @@
 
 #include "itemcreatejob.h"
 
+using namespace Baloo;
+
 ItemCreateJob::ItemCreateJob(QObject* parent): KJob(parent)
 {
 

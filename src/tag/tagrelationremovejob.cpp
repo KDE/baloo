@@ -34,6 +34,8 @@
 #include <QDBusMessage>
 #include <QDBusPendingCall>
 
+using namespace Baloo;
+
 class TagRelationRemoveJob::Private {
 public:
     TagRelation relation;

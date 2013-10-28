@@ -26,6 +26,8 @@
 #include <KJob>
 #include "core_export.h"
 
+namespace Baloo {
+
 class Relation;
 
 class BALOO_CORE_EXPORT RelationCreateJob : public KJob
@@ -38,5 +40,7 @@ public:
 signals:
     void relationCreated(const Relation& relation);
 };
+
+}
 
 #endif // RELATIONCREATEJOB_H

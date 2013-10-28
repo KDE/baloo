@@ -22,6 +22,8 @@
 
 #include "relationremovejob.h"
 
+using namespace Baloo;
+
 RelationRemoveJob::RelationRemoveJob(QObject* parent): KJob(parent)
 {
 

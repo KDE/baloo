@@ -25,6 +25,8 @@
 #include <QDBusConnection>
 #include <KDebug>
 
+using namespace Baloo;
+
 TagRelationWatcher::TagRelationWatcher(const Tag& tag, QObject* parent)
     : QObject(parent)
     , m_tagID(tag.id())

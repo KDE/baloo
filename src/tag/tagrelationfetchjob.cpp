@@ -33,6 +33,8 @@
 #include <QSqlError>
 #include <KDebug>
 
+using namespace Baloo;
+
 class TagRelationFetchJob::Private {
 public:
     TagRelation relation;

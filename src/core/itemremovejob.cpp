@@ -22,6 +22,8 @@
 
 #include "itemremovejob.h"
 
+using namespace Baloo;
+
 ItemRemoveJob::ItemRemoveJob(QObject* parent): KJob(parent)
 {
 

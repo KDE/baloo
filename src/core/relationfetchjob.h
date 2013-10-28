@@ -26,6 +26,8 @@
 #include <KJob>
 #include "core_export.h"
 
+namespace Baloo {
+
 class Item;
 class Relation;
 
@@ -41,5 +43,7 @@ signals:
     void fromReceived(const Item& from);
     void toReceived(const Item& to);
 };
+
+}
 
 #endif // RELATIONFETCHJOB_H

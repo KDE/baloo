@@ -22,6 +22,8 @@
 
 #include "tag.h"
 
+using namespace Baloo;
+
 Tag::Tag()
 {
 }

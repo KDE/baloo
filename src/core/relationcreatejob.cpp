@@ -22,6 +22,8 @@
 
 #include "relationcreatejob.h"
 
+using namespace Baloo;
+
 RelationCreateJob::RelationCreateJob(QObject* parent): KJob(parent)
 {
 

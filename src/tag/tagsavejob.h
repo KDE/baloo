@@ -25,6 +25,8 @@
 
 #include "itemsavejob.h"
 
+namespace Baloo {
+
 class Tag;
 
 class TagSaveJob : public ItemSaveJob
@@ -53,5 +55,7 @@ private:
     class Private;
     Private* d;
 };
+
+}
 
 #endif // TAGSAVEJOB_H

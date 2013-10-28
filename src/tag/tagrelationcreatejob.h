@@ -26,6 +26,8 @@
 #include "relationcreatejob.h"
 #include "tag_export.h"
 
+namespace Baloo {
+
 class TagRelation;
 
 class BALOO_TAG_EXPORT TagRelationCreateJob : public RelationCreateJob
@@ -52,5 +54,7 @@ private:
     class Private;
     Private* d;
 };
+
+}
 
 #endif // TAGRELATIONCREATEJOB_H

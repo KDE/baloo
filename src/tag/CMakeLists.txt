@@ -32,14 +32,24 @@ set_target_properties(balootags PROPERTIES
 
 install(TARGETS balootags ${INSTALL_TARGETS_DEFAULT_ARGS})
 
-#install(FILES
-#    tag.h
-#    tagfetchjob.h
-#
-#    tagrelation.h
-#
-#    DESTINATION ${INCLUDE_INSTALL_DIR}/baloo COMPONENT Devel
-#)
+install(FILES
+    tag.h
+    tagfetchjob.h
+    tagsavejob.h
+    tagcreatejob.h
+    tagremovejob.h
+
+    tagrelation.h
+    tagrelationcreatejob.h
+    tagrelationfetchjob.h
+    tagrelationremovejob.h
+
+    tagrelationwatcher.h
+    tagstore.h
+    tag_export.h
+
+    DESTINATION ${INCLUDE_INSTALL_DIR}/baloo COMPONENT Devel
+)
 
 add_subdirectory(autotests)
 add_subdirectory(tests)

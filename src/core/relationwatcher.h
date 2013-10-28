@@ -23,6 +23,8 @@
 #ifndef RELATIONWATCHER_H
 #define RELATIONWATCHER_H
 
+namespace Baloo {
+
 class RelationWatcher
 {
 public:
@@ -39,5 +41,7 @@ signals:
     void toAdded(const Item& item);
     void toRemoved(const Item& item);
 };
+
+}
 
 #endif // RELATIONWATCHER_H

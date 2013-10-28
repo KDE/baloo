@@ -22,6 +22,8 @@
 
 #include "relation.h"
 
+using namespace Baloo;
+
 Relation::~Relation()
 {
 }

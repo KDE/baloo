@@ -31,6 +31,8 @@
 
 #include <KDebug>
 
+using namespace Baloo;
+
 class TagFetchJob::Private {
 public:
     Tag tag;

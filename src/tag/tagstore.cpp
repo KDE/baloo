@@ -25,6 +25,8 @@
 
 #include <QDBusConnection>
 
+using namespace Baloo;
+
 TagStore::TagStore(QObject* parent): DataStore(parent)
 {
     connect(this, SIGNAL(watchStatusChanged(bool)), SLOT(slotWatchStatusChanged(bool)));

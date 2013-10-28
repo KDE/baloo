@@ -22,6 +22,8 @@
 
 #include "datastore.h"
 
+using namespace Baloo;
+
 DataStore::DataStore(QObject* parent)
     : QObject(parent)
     , m_watchEnabled(false)

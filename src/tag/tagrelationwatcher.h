@@ -26,6 +26,8 @@
 #include <QObject>
 #include "tag.h"
 
+namespace Baloo {
+
 /**
  * This class can be used to watch any tag or any specific
  * item. Or a specific relation with both tag and item
@@ -56,5 +58,7 @@ private:
     Item::Id m_tagID;
     Item::Id m_itemID;
 };
+
+}
 
 #endif // TAGRELATIONWATCHER_H

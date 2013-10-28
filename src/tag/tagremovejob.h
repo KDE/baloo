@@ -25,6 +25,8 @@
 
 #include "itemremovejob.h"
 
+namespace Baloo {
+
 class Tag;
 
 class TagRemoveJob : public ItemRemoveJob
@@ -53,5 +55,7 @@ private:
     class Private;
     Private* d;
 };
+
+}
 
 #endif // TAGREMOVEJOB_H

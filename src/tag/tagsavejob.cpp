@@ -30,6 +30,8 @@
 
 #include <KDebug>
 
+using namespace Baloo;
+
 class TagSaveJob::Private {
 public:
     Tag tag;

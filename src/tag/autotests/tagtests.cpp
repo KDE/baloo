@@ -36,6 +36,8 @@
 #include <QSqlQuery>
 #include <QSqlError>
 
+using namespace Baloo;
+
 TagTests::TagTests(QObject* parent)
     : QObject(parent)
     , m_db(0)

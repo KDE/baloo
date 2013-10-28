@@ -26,6 +26,8 @@
 #include "relationremovejob.h"
 #include "tag_export.h"
 
+namespace Baloo {
+
 class TagRelation;
 
 class BALOO_TAG_EXPORT TagRelationRemoveJob : public RelationRemoveJob
@@ -53,5 +55,7 @@ private:
     class Private;
     Private* d;
 };
+
+}
 
 #endif // TAGRELATIONREMOVEJOB_H

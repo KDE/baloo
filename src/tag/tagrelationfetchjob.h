@@ -26,6 +26,8 @@
 #include "relationfetchjob.h"
 #include "tag_export.h"
 
+namespace Baloo {
+
 class Tag;
 class TagRelation;
 
@@ -55,5 +57,7 @@ private:
     class Private;
     Private* d;
 };
+
+}
 
 #endif // TAGRELATIONFETCHJOB_H

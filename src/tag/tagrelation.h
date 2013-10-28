@@ -29,6 +29,8 @@
 #include "tagrelationcreatejob.h"
 #include "tagrelationremovejob.h"
 
+namespace Baloo {
+
 class BALOO_TAG_EXPORT TagRelation : public Relation
 {
 public:
@@ -58,6 +60,8 @@ private:
     Item m_item;
 };
 
-Q_DECLARE_METATYPE(TagRelation);
+}
+
+Q_DECLARE_METATYPE(Baloo::TagRelation);
 
 #endif // TAGRELATION_H

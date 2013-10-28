@@ -26,6 +26,8 @@
 #include <QObject>
 #include "core_export.h"
 
+namespace Baloo {
+
 class Item;
 class ItemFetchJob;
 
@@ -69,5 +71,7 @@ Q_SIGNALS:
 private:
     bool m_watchEnabled;
 };
+
+}
 
 #endif // DATASTORE_H

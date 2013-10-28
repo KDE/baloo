@@ -22,6 +22,8 @@
 
 #include "relationfetchjob.h"
 
+using namespace Baloo;
+
 RelationFetchJob::RelationFetchJob(QObject* parent): KJob(parent)
 {
 

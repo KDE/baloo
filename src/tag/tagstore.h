@@ -26,6 +26,8 @@
 #include "datastore.h"
 #include "tag_export.h"
 
+namespace Baloo {
+
 class Tag;
 
 class BALOO_TAG_EXPORT TagStore : public DataStore
@@ -47,5 +49,7 @@ private slots:
     void slotCreated(const QByteArray& id, const QString& name);
     void slotRemoved(const QByteArray& id);
 };
+
+}
 
 #endif // TAGSTORE_H

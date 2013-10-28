@@ -27,6 +27,8 @@
 
 #include <KJob>
 
+namespace Baloo {
+
 class Item;
 
 class BALOO_CORE_EXPORT ItemCreateJob : public KJob
@@ -39,5 +41,7 @@ public:
 signals:
     void itemCreated(const Item& item);
 };
+
+}
 
 #endif // ITEMCREATEJOB_H

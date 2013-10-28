@@ -22,6 +22,8 @@
 
 #include "item.h"
 
+using namespace Baloo;
+
 Item::Item()
 {
 }

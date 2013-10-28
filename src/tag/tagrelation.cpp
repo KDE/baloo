@@ -24,6 +24,8 @@
 #include "item.h"
 #include "tag.h"
 
+using namespace Baloo;
+
 TagRelation::TagRelation()
 {
 }

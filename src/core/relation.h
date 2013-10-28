@@ -27,6 +27,8 @@
 #include <QByteArray>
 #include <QMetaType>
 
+namespace Baloo {
+
 class Item;
 class ItemType;
 
@@ -61,6 +63,8 @@ public:
     virtual RelationRemoveJob* remove();
 };
 
-Q_DECLARE_METATYPE(Relation);
+}
+
+Q_DECLARE_METATYPE(Baloo::Relation);
 
 #endif // RELATION_H

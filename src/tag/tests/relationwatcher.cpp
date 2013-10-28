@@ -28,6 +28,8 @@
 #include <QTimer>
 #include <KDebug>
 
+using namespace Baloo;
+
 class App : public QCoreApplication {
     Q_OBJECT
 public:

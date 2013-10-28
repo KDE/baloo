@@ -28,6 +28,8 @@
 #include <QMetaType>
 #include <QString>
 
+namespace Baloo {
+
 class ItemFetchJob;
 class ItemSaveJob;
 class ItemCreateJob;
@@ -73,8 +75,6 @@ private:
     QByteArray m_id;
 };
 
-Q_DECLARE_METATYPE(Item);
-
 inline Item::Id Item::id() const
 {
     return m_id;
@@ -84,5 +84,9 @@ inline void Item::setId(const Item::Id& id)
 {
     m_id = id;
 }
+
+}
+
+Q_DECLARE_METATYPE(Baloo::Item);
 
 #endif // ITEM_H

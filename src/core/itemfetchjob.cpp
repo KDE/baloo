@@ -22,6 +22,8 @@
 
 #include "itemfetchjob.h"
 
+using namespace Baloo;
+
 ItemFetchJob::ItemFetchJob(QObject* parent)
     : KJob(parent)
 {

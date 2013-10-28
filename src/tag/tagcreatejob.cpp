@@ -35,6 +35,8 @@
 #include <QDBusConnection>
 #include <QDBusMessage>
 
+using namespace Baloo;
+
 class TagCreateJob::Private {
 public:
     Tag tag;

@@ -31,8 +31,16 @@ install(TARGETS baloocore ${INSTALL_TARGETS_DEFAULT_ARGS})
 install(FILES
     item.h
     itemfetchjob.h
+    itemcreatejob.h
+    itemsavejob.h
+    itemremovejob.h
 
     relation.h
+    relationfetchjob.h
+    relationremovejob.h
+    relationcreatejob.h
+
+    datastore.h
     core_export.h
 
     DESTINATION ${INCLUDE_INSTALL_DIR}/baloo COMPONENT Devel

@@ -26,6 +26,8 @@
 #include "itemcreatejob.h"
 #include "tag_export.h"
 
+namespace Baloo {
+
 class Tag;
 
 class BALOO_TAG_EXPORT TagCreateJob : public ItemCreateJob
@@ -55,4 +57,5 @@ private:
     Private* d;
 };
 
+}
 #endif // TAGCREATEJOB_H

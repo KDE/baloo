@@ -28,6 +28,8 @@
 #include <KJob>
 #include <QMetaType>
 
+namespace Baloo {
+
 class Item;
 
 class BALOO_CORE_EXPORT ItemFetchJob : public KJob
@@ -40,6 +42,8 @@ public:
 signals:
     void itemReceived(const Item& item);
 };
+
+}
 
 Q_DECLARE_METATYPE(KJob*);
 

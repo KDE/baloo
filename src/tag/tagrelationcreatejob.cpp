@@ -33,6 +33,8 @@
 #include <QDBusConnection>
 #include <QDBusMessage>
 
+using namespace Baloo;
+
 class TagRelationCreateJob::Private {
 public:
     TagRelation relation;
