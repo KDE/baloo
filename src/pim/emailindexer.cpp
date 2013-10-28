@@ -22,6 +22,8 @@
 
 #include "emailindexer.h"
 
+#include <Akonadi/Collection>
+
 #include <QTextDocument>
 
 EmailIndexer::EmailIndexer()
@@ -55,6 +57,8 @@ void EmailIndexer::index(const Akonadi::Item& item)
     KMime::Message::Ptr msg = item.payload<KMime::Message::Ptr>();
     process(msg);
 
+    Akonadi::Entity::Id colId = item.parentCollection().id();
+    m_db.append("all", QByteArray("XC") + QByteArray::number(colId));
     m_db.endDocument();
 }
 
