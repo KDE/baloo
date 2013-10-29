@@ -106,8 +106,8 @@ void TagTests::testTagFetchFromId()
     TagFetchJob* job = tag.fetch();
     QVERIFY(job);
 
-    QSignalSpy spy1(job, SIGNAL(itemReceived(Item)));
-    QSignalSpy spy2(job, SIGNAL(tagReceived(Tag)));
+    QSignalSpy spy1(job, SIGNAL(itemReceived(Baloo::Item)));
+    QSignalSpy spy2(job, SIGNAL(tagReceived(Baloo::Tag)));
     QVERIFY(job->exec());
 
     QCOMPARE(spy1.size(), 1);
@@ -133,8 +133,8 @@ void TagTests::testTagFetchFromName()
     TagFetchJob* job = tag.fetch();
     QVERIFY(job);
 
-    QSignalSpy spy1(job, SIGNAL(itemReceived(Item)));
-    QSignalSpy spy2(job, SIGNAL(tagReceived(Tag)));
+    QSignalSpy spy1(job, SIGNAL(itemReceived(Baloo::Item)));
+    QSignalSpy spy2(job, SIGNAL(tagReceived(Baloo::Tag)));
     QVERIFY(job->exec());
 
     QCOMPARE(spy1.size(), 1);
@@ -155,8 +155,8 @@ void TagTests::testTagFetchInvalid()
     TagFetchJob* job = tag.fetch();
     QVERIFY(job);
 
-    QSignalSpy spy1(job, SIGNAL(itemReceived(Item)));
-    QSignalSpy spy2(job, SIGNAL(tagReceived(Tag)));
+    QSignalSpy spy1(job, SIGNAL(itemReceived(Baloo::Item)));
+    QSignalSpy spy2(job, SIGNAL(tagReceived(Baloo::Tag)));
     QSignalSpy spy3(job, SIGNAL(result(KJob*)));
     QVERIFY(!job->exec());
 
@@ -176,8 +176,8 @@ void TagTests::testTagCreate()
     TagCreateJob* job = tag.create();
     QVERIFY(job);
 
-    QSignalSpy spy1(job, SIGNAL(itemCreated(Item)));
-    QSignalSpy spy2(job, SIGNAL(tagCreated(Tag)));
+    QSignalSpy spy1(job, SIGNAL(itemCreated(Baloo::Item)));
+    QSignalSpy spy2(job, SIGNAL(tagCreated(Baloo::Tag)));
     QSignalSpy spy3(job, SIGNAL(result(KJob*)));
     QVERIFY(job->exec());
 
@@ -222,7 +222,7 @@ void TagTests::testTagModify()
     Tag tag(QLatin1String("TagA"));
     TagCreateJob* cjob = tag.create();
 
-    QSignalSpy spy(cjob, SIGNAL(tagCreated(Tag)));
+    QSignalSpy spy(cjob, SIGNAL(tagCreated(Baloo::Tag)));
     cjob->exec();
 
     QCOMPARE(spy.size(), 1);
@@ -235,8 +235,8 @@ void TagTests::testTagModify()
     ItemSaveJob* job = tag.save();
     QVERIFY(job);
 
-    QSignalSpy spy1(job, SIGNAL(itemSaved(Item)));
-    QSignalSpy spy2(job, SIGNAL(tagSaved(Tag)));
+    QSignalSpy spy1(job, SIGNAL(itemSaved(Baloo::Item)));
+    QSignalSpy spy2(job, SIGNAL(tagSaved(Baloo::Tag)));
     QSignalSpy spy3(job, SIGNAL(result(KJob*)));
     QVERIFY(job->exec());
 
@@ -264,7 +264,7 @@ void TagTests::testTagModify_duplicate()
     Tag tag(QLatin1String("TagA"));
     TagCreateJob* cjob = tag.create();
 
-    QSignalSpy spy(cjob, SIGNAL(tagCreated(Tag)));
+    QSignalSpy spy(cjob, SIGNAL(tagCreated(Baloo::Tag)));
     cjob->exec();
 
     QCOMPARE(spy.size(), 1);
@@ -277,8 +277,8 @@ void TagTests::testTagModify_duplicate()
     ItemSaveJob* job = tag.save();
     QVERIFY(job);
 
-    QSignalSpy spy1(job, SIGNAL(itemSaved(Item)));
-    QSignalSpy spy2(job, SIGNAL(tagSaved(Tag)));
+    QSignalSpy spy1(job, SIGNAL(itemSaved(Baloo::Item)));
+    QSignalSpy spy2(job, SIGNAL(tagSaved(Baloo::Tag)));
     QSignalSpy spy3(job, SIGNAL(result(KJob*)));
     QVERIFY(!job->exec());
 
@@ -299,8 +299,8 @@ void TagTests::testTagRemove()
     TagRemoveJob* job = tag.remove();
     QVERIFY(job);
 
-    QSignalSpy spy1(job, SIGNAL(itemRemoved(Item)));
-    QSignalSpy spy2(job, SIGNAL(tagRemoved(Tag)));
+    QSignalSpy spy1(job, SIGNAL(itemRemoved(Baloo::Item)));
+    QSignalSpy spy2(job, SIGNAL(tagRemoved(Baloo::Tag)));
     QSignalSpy spy3(job, SIGNAL(result(KJob*)));
     QVERIFY(job->exec());
 
@@ -335,8 +335,8 @@ void TagTests::testTagRemove_notExists()
     TagRemoveJob* job = tag.remove();
     QVERIFY(job);
 
-    QSignalSpy spy1(job, SIGNAL(itemRemoved(Item)));
-    QSignalSpy spy2(job, SIGNAL(tagRemoved(Tag)));
+    QSignalSpy spy1(job, SIGNAL(itemRemoved(Baloo::Item)));
+    QSignalSpy spy2(job, SIGNAL(tagRemoved(Baloo::Tag)));
     QSignalSpy spy3(job, SIGNAL(result(KJob*)));
     QVERIFY(!job->exec());
 
@@ -363,8 +363,8 @@ void TagTests::testTagRelationFetchFromTag()
     TagRelationFetchJob* job = tagRel.fetch();
     QVERIFY(job);
 
-    QSignalSpy spy1(job, SIGNAL(relationReceived(Relation)));
-    QSignalSpy spy2(job, SIGNAL(tagRelationReceived(TagRelation)));
+    QSignalSpy spy1(job, SIGNAL(relationReceived(Baloo::Relation)));
+    QSignalSpy spy2(job, SIGNAL(tagRelationReceived(Baloo::TagRelation)));
     QSignalSpy spy3(job, SIGNAL(result(KJob*)));
     QVERIFY(job->exec());
 
@@ -405,8 +405,8 @@ void TagTests::testTagRelationFetchFromItem()
     TagRelationFetchJob* job = tagRel.fetch();
     QVERIFY(job);
 
-    QSignalSpy spy1(job, SIGNAL(relationReceived(Relation)));
-    QSignalSpy spy2(job, SIGNAL(tagRelationReceived(TagRelation)));
+    QSignalSpy spy1(job, SIGNAL(relationReceived(Baloo::Relation)));
+    QSignalSpy spy2(job, SIGNAL(tagRelationReceived(Baloo::TagRelation)));
     QSignalSpy spy3(job, SIGNAL(result(KJob*)));
     QVERIFY(job->exec());
 
@@ -441,8 +441,8 @@ void TagTests::testTagRelationSaveJob()
     TagRelationCreateJob* job = rel.create();
     QVERIFY(job);
 
-    QSignalSpy spy1(job, SIGNAL(relationCreated(Relation)));
-    QSignalSpy spy2(job, SIGNAL(tagRelationCreated(TagRelation)));
+    QSignalSpy spy1(job, SIGNAL(relationCreated(Baloo::Relation)));
+    QSignalSpy spy2(job, SIGNAL(tagRelationCreated(Baloo::TagRelation)));
     QSignalSpy spy3(job, SIGNAL(result(KJob*)));
     QVERIFY(job->exec());
 
@@ -488,8 +488,8 @@ void TagTests::testTagRelationSaveJob_duplicate()
     TagRelationCreateJob* job = rel.create();
     QVERIFY(job);
 
-    QSignalSpy spy1(job, SIGNAL(relationCreated(Relation)));
-    QSignalSpy spy2(job, SIGNAL(tagRelationCreated(TagRelation)));
+    QSignalSpy spy1(job, SIGNAL(relationCreated(Baloo::Relation)));
+    QSignalSpy spy2(job, SIGNAL(tagRelationCreated(Baloo::TagRelation)));
     QSignalSpy spy3(job, SIGNAL(result(KJob*)));
     QVERIFY(!job->exec());
 
@@ -519,8 +519,8 @@ void TagTests::testTagRelationRemoveJob()
     TagRelationRemoveJob* job = rel.remove();
     QVERIFY(job);
 
-    QSignalSpy spy1(job, SIGNAL(relationRemoved(Relation)));
-    QSignalSpy spy2(job, SIGNAL(tagRelationRemoved(TagRelation)));
+    QSignalSpy spy1(job, SIGNAL(relationRemoved(Baloo::Relation)));
+    QSignalSpy spy2(job, SIGNAL(tagRelationRemoved(Baloo::TagRelation)));
     QSignalSpy spy3(job, SIGNAL(result(KJob*)));
     QVERIFY(job->exec());
 
@@ -559,8 +559,8 @@ void TagTests::testTagRelationRemoveJob_notExists()
     TagRelationRemoveJob* job = rel.remove();
     QVERIFY(job);
 
-    QSignalSpy spy1(job, SIGNAL(relationRemoved(Relation)));
-    QSignalSpy spy2(job, SIGNAL(tagRelationRemoved(TagRelation)));
+    QSignalSpy spy1(job, SIGNAL(relationRemoved(Baloo::Relation)));
+    QSignalSpy spy2(job, SIGNAL(tagRelationRemoved(Baloo::TagRelation)));
     QSignalSpy spy3(job, SIGNAL(result(KJob*)));
     QVERIFY(!job->exec());
 

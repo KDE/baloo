@@ -39,7 +39,7 @@ public:
     virtual ~ItemSaveJob();
 
 signals:
-    void itemSaved(const Item& item);
+    void itemSaved(const Baloo::Item& item);
 };
 
 }

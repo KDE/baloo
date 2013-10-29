@@ -45,7 +45,7 @@ public:
         Error_InvalidTagId
     };
 signals:
-    void tagRelationCreated(const TagRelation& relation);
+    void tagRelationCreated(const Baloo::TagRelation& relation);
 
 private slots:
     void doStart();

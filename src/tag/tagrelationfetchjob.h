@@ -47,11 +47,11 @@ public:
     };
 
 signals:
-    void tagRelationReceived(const TagRelation& relation);
+    void tagRelationReceived(const Baloo::TagRelation& relation);
 
 private slots:
     void doStart();
-    void slotTagReceived(const Tag& tag);
+    void slotTagReceived(const Baloo::Tag& tag);
 
 private:
     class Private;

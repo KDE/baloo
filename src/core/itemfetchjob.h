@@ -40,7 +40,7 @@ public:
     virtual ~ItemFetchJob();
 
 signals:
-    void itemReceived(const Item& item);
+    void itemReceived(const Baloo::Item& item);
 };
 
 }

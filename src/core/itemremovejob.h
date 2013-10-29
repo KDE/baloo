@@ -39,7 +39,7 @@ public:
     virtual ~ItemRemoveJob();
 
 signals:
-    void itemRemoved(const Item& item);
+    void itemRemoved(const Baloo::Item& item);
 };
 
 }

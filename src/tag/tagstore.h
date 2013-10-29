@@ -41,13 +41,16 @@ public:
     virtual bool supportsWatching() const { return true; }
 
 signals:
-    void tagCreated(const Tag& tag);
-    void tagRemoved(const Tag& tag);
+    void tagCreated(const Baloo::Tag& tag);
+    void tagRemoved(const Baloo::Tag& tag);
 
 private slots:
     void slotWatchStatusChanged(bool status);
     void slotCreated(const QByteArray& id, const QString& name);
     void slotRemoved(const QByteArray& id);
+
+private:
+    explicit TagStore(QObject* parent = 0);
 };
 
 }

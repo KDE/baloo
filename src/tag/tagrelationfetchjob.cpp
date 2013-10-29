@@ -66,7 +66,7 @@ void TagRelationFetchJob::doStart()
         // We must first fetch the tag
         if (tag.id().isEmpty() || tag.name().isEmpty()) {
             TagFetchJob* tagFetchJob = tag.fetch();
-            connect(tagFetchJob, SIGNAL(tagReceived(Tag)), SLOT(slotTagReceived(Tag)));
+            connect(tagFetchJob, SIGNAL(tagReceived(Baloo::Tag)), SLOT(slotTagReceived(Baloo::Tag)));
             tagFetchJob->start();
         }
         else {

@@ -38,7 +38,7 @@ public:
     virtual ~RelationCreateJob();
 
 signals:
-    void relationCreated(const Relation& relation);
+    void relationCreated(const Baloo::Relation& relation);
 };
 
 }

@@ -38,7 +38,7 @@ public:
     virtual ~RelationRemoveJob();
 
 signals:
-    void relationRemoved(const Relation& relation);
+    void relationRemoved(const Baloo::Relation& relation);
 };
 
 }

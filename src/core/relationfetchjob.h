@@ -39,9 +39,9 @@ public:
     virtual ~RelationFetchJob();
 
 signals:
-    void relationReceived(const Relation& relation);
-    void fromReceived(const Item& from);
-    void toReceived(const Item& to);
+    void relationReceived(const Baloo::Relation& relation);
+    void fromReceived(const Baloo::Item& from);
+    void toReceived(const Baloo::Item& to);
 };
 
 }

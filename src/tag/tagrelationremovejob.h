@@ -46,7 +46,7 @@ public:
         Error_InvalidTagId
     };
 signals:
-    void tagRelationRemoved(const TagRelation& relation);
+    void tagRelationRemoved(const Baloo::TagRelation& relation);
 
 private slots:
     void doStart();

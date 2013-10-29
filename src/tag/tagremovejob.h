@@ -46,7 +46,7 @@ public:
     };
 
 signals:
-    void tagRemoved(const Tag& tag);
+    void tagRemoved(const Baloo::Tag& tag);
 
 private slots:
     void doStart();

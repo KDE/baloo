@@ -25,6 +25,8 @@
 
 namespace Baloo {
 
+class Item;
+
 class RelationWatcher
 {
 public:
@@ -35,11 +37,11 @@ public:
 
 signals:
     // vHanda: Maybe we should only be emitting the item id on removal?
-    void fromAdded(const Item& item);
-    void fromRemoved(const Item& item);
+    void fromAdded(const Baloo::Item& item);
+    void fromRemoved(const Baloo::Item& item);
 
-    void toAdded(const Item& item);
-    void toRemoved(const Item& item);
+    void toAdded(const Baloo::Item& item);
+    void toRemoved(const Baloo::Item& item);
 };
 
 }
