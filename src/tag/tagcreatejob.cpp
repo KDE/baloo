@@ -88,7 +88,7 @@ void TagCreateJob::doStart()
         return;
     }
 
-    d->tag.setId(QByteArray("tag:") + QByteArray::number(query.lastInsertId().toInt()));
+    d->tag.setId(serialize("tag", query.lastInsertId().toInt()));
 
 
     QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/tags"),

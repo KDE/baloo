@@ -85,6 +85,18 @@ inline void Item::setId(const Item::Id& id)
     m_id = id;
 }
 
+//
+// Convenience functions
+//
+QByteArray inline serialize(const QByteArray& namespace_, int id) {
+    return namespace_ + ':' + QByteArray::number(id);
+}
+
+int inline deserialize(const QByteArray& namespace_, const QByteArray& str) {
+    // The +1 is for the ':'
+    return str.mid(namespace_.size() + 1).toInt();
+}
+
 }
 
 Q_DECLARE_METATYPE(Baloo::Item);

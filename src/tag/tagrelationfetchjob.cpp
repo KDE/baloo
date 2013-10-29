@@ -87,7 +87,7 @@ void TagRelationFetchJob::doStart()
 
         if (query.next()) {
             int id = query.value(0).toInt();
-            d->relation.tag().setId(QByteArray("tag:") + QByteArray::number(id));
+            d->relation.tag().setId(serialize("tag", id));
 
             emit relationReceived(d->relation);
             emit tagRelationReceived(d->relation);
@@ -102,17 +102,11 @@ void TagRelationFetchJob::doStart()
     }
 }
 
-namespace {
-    int toInt(const QByteArray& arr) {
-        return arr.mid(4).toInt(); // "tag:" takes 4 char
-    }
-}
-
 void TagRelationFetchJob::slotTagReceived(const Tag& tag)
 {
     d->relation.setTag(tag);
 
-    int id = toInt(tag.id());
+    int id = deserialize("tag", tag.id());
     if (id <= 0) {
         setError(Error_InvalidTagId);
         setErrorText("Invalid Tag ID");

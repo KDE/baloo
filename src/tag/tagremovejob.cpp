@@ -59,12 +59,6 @@ void TagRemoveJob::start()
     QTimer::singleShot(0, this, SLOT(doStart()));
 }
 
-namespace {
-    int toInt(const QByteArray& arr) {
-        return arr.mid(4).toInt(); // "tag:" takes 4 char
-    }
-}
-
 void TagRemoveJob::doStart()
 {
     if (d->tag.id().isEmpty()) {
@@ -74,7 +68,7 @@ void TagRemoveJob::doStart()
         return;
     }
 
-    int id = toInt(d->tag.id());
+    int id = deserialize("tag", d->tag.id());
     if (id <= 0) {
         setError(Error_TagInvalidId);
         setErrorText("Invalid id " + d->tag.id());

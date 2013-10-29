@@ -67,8 +67,7 @@ void TagFetchJob::doStart()
     query.setForwardOnly(true);
 
     if (d->tag.id().size()) {
-        const QByteArray& arr = d->tag.id();
-        int id = arr.mid(4).toInt(); // "tag:" takes 4 characters
+        int id = deserialize("tag", d->tag.id());
 
         if (id <= 0) {
             setError(Error_TagInvalidId);
@@ -113,7 +112,7 @@ void TagFetchJob::doStart()
 
         if (query.next()) {
             int id = query.value(0).toInt();
-            d->tag.setId(QByteArray("tag:") + QByteArray::number(id));
+            d->tag.setId(serialize("tag", id));
         }
         else {
             setError(Error_TagDoesNotExist);
@@ -140,7 +139,7 @@ void TagFetchJob::doStart()
             QString name = query.value(1).toString();
 
             Tag tag;
-            tag.setId(QByteArray("tag:") + QByteArray::number(id));
+            tag.setId(serialize("tag", id));
             tag.setName(name);
 
             emit itemReceived(tag);

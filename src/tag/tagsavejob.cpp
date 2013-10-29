@@ -54,12 +54,6 @@ void TagSaveJob::start()
     QTimer::singleShot(0, this, SLOT(doStart()));
 }
 
-namespace {
-    int toInt(const QByteArray& arr) {
-        return arr.mid(4).toInt(); // "tag:" takes 4 char
-    }
-}
-
 void TagSaveJob::doStart()
 {
     if (d->tag.id().isEmpty()) {
@@ -76,7 +70,7 @@ void TagSaveJob::doStart()
         return;
     }
 
-    int id = toInt(d->tag.id());
+    int id = deserialize("tag", d->tag.id());
     if (id <= 0) {
         setError(Error_TagInvalidId);
         setErrorText("Invalid id " + d->tag.id());
@@ -87,7 +81,7 @@ void TagSaveJob::doStart()
     QSqlQuery query;
     query.prepare("UPDATE tags SET name = ? WHERE id = ?");
     query.addBindValue(d->tag.name());
-    query.addBindValue(toInt(d->tag.id()));
+    query.addBindValue(id);
 
     if (!query.exec()) {
         d->tag.setId(QByteArray());

@@ -58,12 +58,6 @@ void TagRelationRemoveJob::start()
     QTimer::singleShot(0, this, SLOT(doStart()));
 }
 
-namespace {
-    int toInt(const QByteArray& arr) {
-        return arr.mid(4).toInt(); // "tag:" takes 4 char
-    }
-}
-
 void TagRelationRemoveJob::doStart()
 {
     if (d->relation.item().id().isEmpty() || d->relation.tag().id().isEmpty()) {
@@ -73,7 +67,7 @@ void TagRelationRemoveJob::doStart()
         return;
     }
 
-    int id = toInt(d->relation.tag().id());
+    int id = deserialize("tag", d->relation.tag().id());
     if (id <= 0) {
         setError(Error_InvalidTagId);
         setErrorText("Invalid Tag ID");
