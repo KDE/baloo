@@ -36,6 +36,8 @@ class BALOO_TAG_EXPORT TagRelationFetchJob : public RelationFetchJob
     Q_OBJECT
 public:
     TagRelationFetchJob(const TagRelation& relation, QObject* parent = 0);
+    TagRelationFetchJob(const Tag& tag, QObject* parent = 0);
+    TagRelationFetchJob(const Item& item, QObject* parent = 0);
     ~TagRelationFetchJob();
 
     virtual void start();

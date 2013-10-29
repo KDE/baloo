@@ -47,6 +47,20 @@ TagRelationFetchJob::TagRelationFetchJob(const TagRelation& relation, QObject* p
     d->relation = relation;
 }
 
+TagRelationFetchJob::TagRelationFetchJob(const Tag& tag, QObject* parent)
+    : RelationFetchJob(parent)
+    , d(new Private)
+{
+    d->relation = TagRelation(tag);
+}
+
+TagRelationFetchJob::TagRelationFetchJob(const Item& item, QObject* parent)
+    : RelationFetchJob(parent)
+    , d(new Private)
+{
+    d->relation = TagRelation(item);
+}
+
 TagRelationFetchJob::~TagRelationFetchJob()
 {
     delete d;
