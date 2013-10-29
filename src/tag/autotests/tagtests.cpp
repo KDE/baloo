@@ -393,17 +393,19 @@ void TagTests::testTagRelationFetchFromTag()
 
 void TagTests::testTagRelationFetchFromItem()
 {
-    insertTags(QStringList() << "TagA");
+    insertTags(QStringList() << "TagA" << "TagB");
 
-    QHash<int, QString> rel;
+    QMultiHash<int, QString> rel;
     rel.insert(1, "file:1");
+    rel.insert(2, "file:1");
+    rel.insert(1, "file:3");
     insertRelations(rel);
 
     Item item;
     item.setId("file:1");
 
-    TagRelation tagRel(item);
-    TagRelationFetchJob* job = tagRel.fetch();
+    TagRelation rela(item);
+    TagRelationFetchJob* job = rela.fetch();
     QVERIFY(job);
 
     QSignalSpy spy1(job, SIGNAL(relationReceived(Baloo::Relation)));
@@ -411,22 +413,30 @@ void TagTests::testTagRelationFetchFromItem()
     QSignalSpy spy3(job, SIGNAL(result(KJob*)));
     QVERIFY(job->exec());
 
-    QCOMPARE(spy1.size(), 1);
+    QCOMPARE(spy1.size(), 2);
     QCOMPARE(spy1.at(0).size(), 1);
+    QCOMPARE(spy1.at(1).size(), 1);
+    // FIXME: What should we be testing about the original relation?
     //QCOMPARE(spy1.at(0).first().value<Relation*>(), &tagRel);
 
-    QCOMPARE(spy2.size(), 1);
+    QCOMPARE(spy2.size(), 2);
     QCOMPARE(spy2.at(0).size(), 1);
-    TagRelation tagRel2 = spy2.at(0).first().value<TagRelation>();
+    QCOMPARE(spy2.at(1).size(), 1);
+    TagRelation tagRel1 = spy2.at(0).first().value<TagRelation>();
+    TagRelation tagRel2 = spy2.at(1).first().value<TagRelation>();
 
     QCOMPARE(spy3.size(), 1);
     QCOMPARE(spy3.at(0).size(), 1);
     QCOMPARE(spy3.at(0).first().value<KJob*>(), job);
     QCOMPARE(job->error(), 0);
 
+    QCOMPARE(tagRel1.item().id(), QByteArray("file:1"));
+    QCOMPARE(tagRel1.tag().id(), QByteArray("tag:1"));
+    QCOMPARE(tagRel1.tag().name(), QString("TagA"));
+
     QCOMPARE(tagRel2.item().id(), QByteArray("file:1"));
-    QCOMPARE(tagRel2.tag().id(), QByteArray("tag:1"));
-    QVERIFY(tagRel2.tag().name().isEmpty());
+    QCOMPARE(tagRel2.tag().id(), QByteArray("tag:2"));
+    QCOMPARE(tagRel2.tag().name(), QString("TagB"));
 }
 
 void TagTests::testTagRelationSaveJob()

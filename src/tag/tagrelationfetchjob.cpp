@@ -75,7 +75,8 @@ void TagRelationFetchJob::doStart()
     }
     else {
         QSqlQuery query;
-        query.prepare(QLatin1String("select tid from tagRelations where rid = ?"));
+        query.prepare(QLatin1String("select tid, name from tagRelations, tags where "
+                                    "rid = ? and tags.id = tagRelations.tid"));
         query.addBindValue(item.id());
 
         if (!query.exec()) {
@@ -85,20 +86,26 @@ void TagRelationFetchJob::doStart()
             return;
         }
 
-        if (query.next()) {
+        bool found = false;
+        while (query.next()) {
             int id = query.value(0).toInt();
-            d->relation.tag().setId(serialize("tag", id));
+            QString name = query.value(1).toString();
 
-            emit relationReceived(d->relation);
-            emit tagRelationReceived(d->relation);
-            emitResult();
+            TagRelation rel(d->relation);
+            rel.tag().setId(serialize("tag", id));
+            rel.tag().setName(name);
+
+            emit relationReceived(rel);
+            emit tagRelationReceived(rel);
+            found = true;
         }
-        else {
+
+        if (!found) {
             setError(Error_NoRelation);
             setErrorText("No relation could be found");
-            emitResult();
-            return;
         }
+
+        emitResult();
     }
 }
 
