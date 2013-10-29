@@ -29,6 +29,8 @@
 #include <QSqlError>
 
 #include <KDebug>
+#include <QDBusConnection>
+#include <QDBusMessage>
 
 using namespace Baloo;
 
@@ -90,6 +92,18 @@ void TagSaveJob::doStart()
         emitResult();
         return;
     }
+
+    QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/tags"),
+                                                      QLatin1String("org.kde"),
+                                                      QLatin1String("modified"));
+
+    QVariantList vl;
+    vl.reserve(2);
+    vl << d->tag.id();
+    vl << d->tag.name();
+    message.setArguments(vl);
+
+    QDBusConnection::sessionBus().send(message);
 
     emit itemSaved(d->tag);
     emit tagSaved(d->tag);

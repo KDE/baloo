@@ -44,11 +44,13 @@ public:
 signals:
     void tagCreated(const Baloo::Tag& tag);
     void tagRemoved(const Baloo::Tag& tag);
+    void tagModified(const Baloo::Tag& tag);
 
 private slots:
     void slotWatchStatusChanged(bool status);
     void slotCreated(const QByteArray& id, const QString& name);
     void slotRemoved(const QByteArray& id);
+    void slotModified(const QByteArray& id, const QString& name);
 
 private:
     explicit TagStore(QObject* parent = 0);

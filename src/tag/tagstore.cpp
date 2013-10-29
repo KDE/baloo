@@ -56,12 +56,16 @@ void TagStore::slotWatchStatusChanged(bool status)
                     QLatin1String("created"), this, SLOT(slotCreated(QByteArray, QString)));
         con.connect(QString(), QLatin1String("/tags"), QLatin1String("org.kde"),
                     QLatin1String("removed"), this, SLOT(slotRemoved(QByteArray)));
+        con.connect(QString(), QLatin1String("/tags"), QLatin1String("org.kde"),
+                    QLatin1String("modified"), this, SLOT(slotModified(QByteArray, QString)));
     }
     else {
         con.disconnect(QString(), QLatin1String("/tags"), QLatin1String("org.kde"),
                     QLatin1String("created"), this, SLOT(slotCreated(QByteArray, QString)));
         con.disconnect(QString(), QLatin1String("/tags"), QLatin1String("org.kde"),
                     QLatin1String("removed"), this, SLOT(slotRemoved(QByteArray)));
+        con.disconnect(QString(), QLatin1String("/tags"), QLatin1String("org.kde"),
+                    QLatin1String("modified"), this, SLOT(slotModified(QByteArray, QString)));
     }
 }
 
@@ -82,3 +86,12 @@ void TagStore::slotRemoved(const QByteArray& id)
     emit tagRemoved(tag);
     emit itemRemoved(tag);
 }
+
+void TagStore::slotModified(const QByteArray& id, const QString& name)
+{
+    Tag tag = Tag::fromId(id);
+    tag.setName(name);
+
+    emit tagModified(tag);
+}
+

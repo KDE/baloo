@@ -38,9 +38,12 @@ public:
 private slots:
     void main();
 
-    void slotTagCreatedFromJob(const Tag& tag);
-    void slotTagCreated(const Tag& tag);
-    void slotTagRemoved(const Tag& tag);
+    void slotTagCreatedFromJob(const Baloo::Tag& tag);
+    void slotTagModifiedFromJob(const Baloo::Tag& tag);
+
+    void slotTagCreated(const Baloo::Tag& tag);
+    void slotTagModified(const Baloo::Tag& tag);
+    void slotTagRemoved(const Baloo::Tag& tag);
 };
 
 int main(int argc, char** argv)
@@ -62,17 +65,28 @@ void App::main()
 
     TagStore* store = TagStore::instance();
     store->setWatchEnabled(true);
-    connect(store, SIGNAL(tagCreated(Tag)), this, SLOT(slotTagCreated(Tag)));
-    connect(store, SIGNAL(tagRemoved(Tag)), this, SLOT(slotTagRemoved(Tag)));
+    connect(store, SIGNAL(tagCreated(Baloo::Tag)), this, SLOT(slotTagCreated(Baloo::Tag)));
+    connect(store, SIGNAL(tagRemoved(Baloo::Tag)), this, SLOT(slotTagRemoved(Baloo::Tag)));
+    connect(store, SIGNAL(tagModified(Baloo::Tag)), this, SLOT(slotTagModified(Baloo::Tag)));
 
     Tag tag("TagA");
     TagCreateJob* job = tag.create();
-    connect(job, SIGNAL(tagCreated(Tag)), this, SLOT(slotTagCreatedFromJob(Tag)));
+    connect(job, SIGNAL(tagCreated(Baloo::Tag)), this, SLOT(slotTagCreatedFromJob(Baloo::Tag)));
 
     job->start();
 }
 
 void App::slotTagCreatedFromJob(const Tag& tag)
+{
+    Tag t(tag);
+    t.setName("TagB");
+
+    TagSaveJob* job = t.save();
+    connect(job, SIGNAL(tagSaved(Baloo::Tag)), this, SLOT(slotTagModifiedFromJob(Baloo::Tag)));
+    job->start();
+}
+
+void App::slotTagModifiedFromJob(const Tag& tag)
 {
     tag.remove()->start();
 }
@@ -85,6 +99,11 @@ void App::slotTagCreated(const Tag& tag)
 void App::slotTagRemoved(const Tag& tag)
 {
     kDebug() << tag.id();
+}
+
+void App::slotTagModified(const Tag& tag)
+{
+    kDebug() << tag.id() << tag.name();
 }
 
 #include "tagwatcher.moc"
