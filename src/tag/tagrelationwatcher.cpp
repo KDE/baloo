@@ -27,6 +27,11 @@
 
 using namespace Baloo;
 
+TagRelationWatcher::TagRelationWatcher(QObject* parent): QObject(parent)
+{
+    init();
+}
+
 TagRelationWatcher::TagRelationWatcher(const Tag& tag, QObject* parent)
     : QObject(parent)
     , m_tagID(tag.id())
@@ -60,11 +65,11 @@ void TagRelationWatcher::init()
 
 void TagRelationWatcher::slotAdded(const QByteArray& tagID, const QByteArray& itemID)
 {
-    if (m_tagID == tagID) {
+    if (m_tagID.isEmpty() || m_tagID == tagID) {
         emit tagAdded(Tag::fromId(tagID));
     }
 
-    if (m_itemID == itemID) {
+    if (m_itemID.isEmpty() || m_itemID == itemID) {
         Item item;
         item.setId(itemID);
 
@@ -74,11 +79,11 @@ void TagRelationWatcher::slotAdded(const QByteArray& tagID, const QByteArray& it
 
 void TagRelationWatcher::slotRemoved(const QByteArray& tagID, const QByteArray& itemID)
 {
-    if (m_tagID == tagID) {
+    if (m_tagID.isEmpty() || m_tagID == tagID) {
         emit tagRemoved(Tag::fromId(tagID));
     }
 
-    if (m_itemID == itemID) {
+    if (m_itemID.isEmpty() || m_itemID == itemID) {
         Item item;
         item.setId(itemID);
 

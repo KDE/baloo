@@ -36,6 +36,7 @@ class BALOO_TAG_EXPORT TagRelationWatcher : public QObject
 {
     Q_OBJECT
 public:
+    explicit TagRelationWatcher(QObject* parent = 0);
     TagRelationWatcher(const Tag& tag, QObject* parent = 0);
     TagRelationWatcher(const Item& item, QObject* parent = 0);
     TagRelationWatcher(const Tag& tag, const Item& item, QObject* parent = 0);
