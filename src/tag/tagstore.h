@@ -25,6 +25,7 @@
 
 #include "datastore.h"
 #include "tag_export.h"
+#include "tagfetchjob.h"
 
 namespace Baloo {
 
@@ -37,7 +38,7 @@ public:
     static TagStore* instance();
     virtual ~TagStore();
 
-    virtual ItemFetchJob* fetchAll();
+    virtual TagFetchJob* fetchAll();
     virtual bool supportsWatching() const { return true; }
 
 signals:

@@ -43,10 +43,9 @@ TagStore::~TagStore()
 {
 }
 
-ItemFetchJob* TagStore::fetchAll()
+TagFetchJob* TagStore::fetchAll()
 {
-    // FIXME: Implement this!
-    return DataStore::fetchAll();
+    return new TagFetchJob(this);
 }
 
 void TagStore::slotWatchStatusChanged(bool status)

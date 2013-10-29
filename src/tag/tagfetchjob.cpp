@@ -38,6 +38,12 @@ public:
     Tag tag;
 };
 
+TagFetchJob::TagFetchJob(QObject* parent)
+    : ItemFetchJob(parent)
+    , d(new Private)
+{
+}
+
 TagFetchJob::TagFetchJob(const Tag& tag, QObject* parent)
     : ItemFetchJob(parent)
     , d(new Private)
@@ -118,6 +124,28 @@ void TagFetchJob::doStart()
 
         emit itemReceived(d->tag);
         emit tagReceived(d->tag);
+    }
+    else {
+        query.prepare("select id, name from tags");
+
+        if (!query.exec()) {
+            setError(Error_ConnectionError);
+            setErrorText(query.lastError().text());
+            emitResult();
+            return;
+        }
+
+        while (query.next()) {
+            int id = query.value(0).toInt();
+            QString name = query.value(1).toString();
+
+            Tag tag;
+            tag.setId(QByteArray("tag:") + QByteArray::number(id));
+            tag.setName(name);
+
+            emit itemReceived(tag);
+            emit tagReceived(tag);
+        }
     }
 
     emitResult();

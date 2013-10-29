@@ -61,6 +61,8 @@ private slots:
 
     void testTagRelationRemoveJob();
     void testTagRelationRemoveJob_notExists();
+
+    void testTagStoreFetchAll();
 private:
     KTempDir m_tempDir;
     QString m_dbPath;

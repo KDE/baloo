@@ -25,6 +25,7 @@
 #include "tag.h"
 #include "tagrelation.h"
 #include "database.h"
+#include "tagstore.h"
 
 #include "qtest_kde.h"
 #include <KDebug>
@@ -571,5 +572,30 @@ void TagTests::testTagRelationRemoveJob_notExists()
     QCOMPARE(spy3.at(0).first().value<KJob*>(), job);
     QCOMPARE(job->error(), (int)TagRelationRemoveJob::Error_RelationDoesNotExist);
 }
+
+void TagTests::testTagStoreFetchAll()
+{
+    insertTags(QStringList() << "TagA" << "TagB" << "TagC");
+
+    TagStore* tagStore = TagStore::instance();
+    TagFetchJob* job = tagStore->fetchAll();
+
+    QSignalSpy spy(job, SIGNAL(tagReceived(Baloo::Tag)));
+    QVERIFY(job->exec());
+    QCOMPARE(spy.size(), 3);
+
+    QCOMPARE(spy.at(0).size(), 1);
+    QCOMPARE(spy.at(0).first().value<Tag>().id(), QByteArray("tag:1"));
+    QCOMPARE(spy.at(0).first().value<Tag>().name(), QString("TagA"));
+
+    QCOMPARE(spy.at(1).size(), 1);
+    QCOMPARE(spy.at(1).first().value<Tag>().id(), QByteArray("tag:2"));
+    QCOMPARE(spy.at(1).first().value<Tag>().name(), QString("TagB"));
+
+    QCOMPARE(spy.at(2).size(), 1);
+    QCOMPARE(spy.at(2).first().value<Tag>().id(), QByteArray("tag:3"));
+    QCOMPARE(spy.at(2).first().value<Tag>().name(), QString("TagC"));
+}
+
 
 QTEST_KDEMAIN_CORE(TagTests)

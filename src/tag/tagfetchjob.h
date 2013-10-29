@@ -34,6 +34,14 @@ class BALOO_TAG_EXPORT TagFetchJob : public ItemFetchJob
 {
     Q_OBJECT
 public:
+    /**
+     * Fetch the data for all the tags in the database
+     */
+    explicit TagFetchJob(QObject* parent = 0);
+
+    /**
+     * Fetch the data for tag \p tag
+     */
     TagFetchJob(const Tag& tag, QObject* parent = 0);
     virtual ~TagFetchJob();
 
