@@ -60,7 +60,7 @@ void App::main()
     db->setPath("/tmp/tagDb.sqlite");
     db->init();
 
-    TagStore* store = new TagStore(this);
+    TagStore* store = TagStore::instance();
     store->setWatchEnabled(true);
     connect(store, SIGNAL(tagCreated(Tag)), this, SLOT(slotTagCreated(Tag)));
     connect(store, SIGNAL(tagRemoved(Tag)), this, SLOT(slotTagRemoved(Tag)));

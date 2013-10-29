@@ -34,7 +34,7 @@ class BALOO_TAG_EXPORT TagStore : public DataStore
 {
     Q_OBJECT
 public:
-    explicit TagStore(QObject* parent = 0);
+    static TagStore* instance();
     virtual ~TagStore();
 
     virtual ItemFetchJob* fetchAll();

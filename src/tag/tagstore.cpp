@@ -24,8 +24,15 @@
 #include "tag.h"
 
 #include <QDBusConnection>
+#include <QCoreApplication>
 
 using namespace Baloo;
+
+TagStore* TagStore::instance()
+{
+    static TagStore* tagStore = new TagStore(QCoreApplication::instance());
+    return tagStore;
+}
 
 TagStore::TagStore(QObject* parent): DataStore(parent)
 {
