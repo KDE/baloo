@@ -24,12 +24,13 @@
 #define TAGREMOVEJOB_H
 
 #include "itemremovejob.h"
+#include "tag_export.h"
 
 namespace Baloo {
 
 class Tag;
 
-class TagRemoveJob : public ItemRemoveJob
+class BALOO_TAG_EXPORT TagRemoveJob : public ItemRemoveJob
 {
     Q_OBJECT
 public:
