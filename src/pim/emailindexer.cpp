@@ -26,13 +26,15 @@
 
 #include <QTextDocument>
 
-EmailIndexer::EmailIndexer()
+EmailIndexer::EmailIndexer(const QString& path)
 {
-    m_db.setPath("/tmp/xap/");
+    m_db = new Xapian::WritableDatabase(path.toStdString(), Xapian::DB_CREATE_OR_OPEN);
 }
 
 EmailIndexer::~EmailIndexer()
 {
+    m_db->commit();
+    delete m_db;
 }
 
 void EmailIndexer::index(const Akonadi::Item& item)
@@ -51,15 +53,28 @@ void EmailIndexer::index(const Akonadi::Item& item)
     if (status.isSpam())
         return;
 
-    m_db.beginDocument(item.id());
+    m_doc = new Xapian::Document();
+    m_termGen = new Xapian::TermGenerator();
+    m_termGen->set_document(*m_doc);
+    m_termGen->set_database(*m_db);
+
     processMessageStatus(status);
 
     KMime::Message::Ptr msg = item.payload<KMime::Message::Ptr>();
     process(msg);
 
+    // Parent collection
     Akonadi::Entity::Id colId = item.parentCollection().id();
-    m_db.append("all", QByteArray("XC") + QByteArray::number(colId));
-    m_db.endDocument();
+    QByteArray term = 'C' + QByteArray::number(colId);
+    m_doc->add_boolean_term(term.data());
+
+    m_db->replace_document(item.id(), *m_doc);
+
+    delete m_doc;
+    delete m_termGen;
+
+    m_doc = 0;
+    m_termGen = 0;
 }
 
 void EmailIndexer::insert(const QByteArray& key, KMime::Headers::Generics::MailboxList* mlist)
@@ -74,14 +89,16 @@ void EmailIndexer::insert(const QByteArray& key, KMime::Headers::Generics::Addre
         insert(key, alist->mailboxes());
 }
 
+// Add once with a prefix and once without
 void EmailIndexer::insert(const QByteArray& key, const KMime::Types::Mailbox::List& list)
 {
     Q_FOREACH (const KMime::Types::Mailbox& mbox, list) {
-        m_db.appendText(key, mbox.name());
-        m_db.appendText("all", mbox.name());
+        std::string name = mbox.name().toStdString();
+        m_termGen->index_text_without_positions(name, 1, key.data());
+        m_termGen->index_text_without_positions(name, 1);
 
-        m_db.append(key, mbox.address());
-        m_db.append("all", mbox.address());
+        m_doc->add_term((key + mbox.address()).data());
+        m_doc->add_term(mbox.address().data());
     }
 }
 
@@ -93,20 +110,21 @@ void EmailIndexer::process(const KMime::Message::Ptr& msg)
     //
     KMime::Headers::Subject* subject = msg->subject(false);
     if (subject) {
-        m_db.setText("subject", subject->asUnicodeString());
-        m_db.appendText("all", subject->asUnicodeString());
+        QString str = subject->asUnicodeString();
+        m_termGen->index_text_without_positions(str.toStdString(), 1, "S");
+        m_termGen->index_text_without_positions(str.toStdString());
     }
 
     KMime::Headers::Date* date = msg->date(false);
     if (date) {
-        // FIXME: We cannot index the date as a string! We need it for sorting!
-        // m_db.insert("date", date->dateTime().toString());
+        QString str = date->dateTime().toString();
+        m_doc->add_value(0, str.toStdString());
     }
 
-    insert("from", msg->from(false));
-    insert("to", msg->to(false));
-    insert("cc", msg->cc(false));
-    insert("bcc", msg->bcc(false));
+    insert("F", msg->from(false));
+    insert("T", msg->to(false));
+    insert("CC", msg->cc(false));
+    insert("BC", msg->bcc(false));
 
     // Stuff that could be indexed
     // - Message ID
@@ -122,11 +140,13 @@ void EmailIndexer::process(const KMime::Message::Ptr& msg)
 
     KMime::Content* mainBody = msg->mainBodyPart("text/plain");
     if (mainBody) {
-        const QString text = mainBody->decodedText();
-        m_db.appendText("text", text);
-        m_db.appendText("all", text);
+        const std::string text = mainBody->decodedText().toStdString();
+        m_termGen->index_text_without_positions(text);
+        // Maybe we want to index the text twice?
     }
-    processPart(msg.get(), mainBody);
+
+    if (!mainBody)
+        processPart(msg.get(), mainBody);
 }
 
 void EmailIndexer::processPart(KMime::Content* content, KMime::Content* mainContent)
@@ -150,8 +170,8 @@ void EmailIndexer::processPart(KMime::Content* content, KMime::Content* mainCont
         QTextDocument doc;
         doc.setHtml(content->decodedText());
 
-        m_db.appendText("body", doc.toPlainText());
-        m_db.appendText("all", doc.toPlainText());
+        const std::string text = doc.toPlainText().toStdString();
+        m_termGen->index_text_without_positions(text);
     }
 
     // FIXME: Handle attachments?
@@ -159,14 +179,28 @@ void EmailIndexer::processPart(KMime::Content* content, KMime::Content* mainCont
 
 void EmailIndexer::processMessageStatus(const Akonadi::MessageStatus& status)
 {
-    m_db.appendBool("all", "isRead", status.isRead());
-    m_db.appendBool("all", "hasAttachment", status.hasAttachment());
-    m_db.appendBool("all", "isImportant", status.isImportant());
-
-    // FIXME: How do we deal with the other flags?
+    insertBool('R', status.isRead());
+    insertBool('A', status.hasAttachment());
+    insertBool('I', status.isImportant());
+    insertBool('W', status.isWatched());
 }
+
+void EmailIndexer::insertBool(char key, bool value)
+{
+    QByteArray term("B");
+    if (value) {
+        term.append(key);
+    }
+    else {
+        term.append('N');
+        term.append(key);
+    }
+
+    m_doc->add_boolean_term(term.data());
+}
+
 
 void EmailIndexer::commit()
 {
-    m_db.commit();
+    m_db->commit();
 }

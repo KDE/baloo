@@ -20,8 +20,8 @@
  *
  */
 
-#include "queryiterator.h"
-#include "query.h"
+#include "src/pim/queryiterator.h"
+#include "src/pim/query.h"
 
 #include <QCoreApplication>
 #include <QTimer>

@@ -23,8 +23,9 @@
 #ifndef EMAILINDEXER_H
 #define EMAILINDEXER_H
 
-#include "database.h"
 #include "pim_export.h"
+
+#include <xapian.h>
 
 #include <KMime/Message>
 #include <Akonadi/Item>
@@ -33,13 +34,20 @@
 class BALOO_PIM_EXPORT EmailIndexer
 {
 public:
-    EmailIndexer();
+    /**
+     * You must provide the path where the indexed information
+     * should be stored
+     */
+    EmailIndexer(const QString& path);
     ~EmailIndexer();
 
     void index(const Akonadi::Item& item);
     void commit();
+
 private:
-    Database m_db;
+    Xapian::WritableDatabase* m_db;
+    Xapian::Document* m_doc;
+    Xapian::TermGenerator* m_termGen;
 
     void process(const KMime::Message::Ptr& msg);
     void processPart(KMime::Content* content, KMime::Content* mainContent);
@@ -48,6 +56,8 @@ private:
     void insert(const QByteArray& key, KMime::Headers::Generics::MailboxList* mlist);
     void insert(const QByteArray& key, KMime::Headers::Generics::AddressList* alist);
     void insert(const QByteArray& key, const KMime::Types::Mailbox::List& list);
+
+    void insertBool(char key, bool value);
 };
 
 #endif // EMAILINDEXER_H
