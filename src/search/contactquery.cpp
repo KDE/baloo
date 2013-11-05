@@ -46,6 +46,7 @@ ContactQuery::ContactQuery()
     : Query()
     , d(new Private)
 {
+    d->criteria = StartsWithMatch;
 }
 
 ContactQuery::~ContactQuery()
@@ -100,7 +101,7 @@ void ContactQuery::setMatchCriteria(ContactQuery::MatchCriteria m)
 
 ResultIterator ContactQuery::exec()
 {
-    QString dir = KStandardDirs::locateLocal("data", "baloo/email/");
+    QString dir = KStandardDirs::locateLocal("data", "baloo/contacts/");
     Xapian::Database db(dir.toStdString());
 
     QList<Xapian::Query> m_queries;
