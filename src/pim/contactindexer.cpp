@@ -63,6 +63,7 @@ void ContactIndexer::index(const Akonadi::Item& item)
 
     std::string stdName = name.toStdString();
     std::string stdNick = addresse.nickName().toStdString();
+    kDebug() << "Indexing" << name << addresse.nickName();
 
     termGen.index_text(stdName);
     termGen.index_text(stdNick);

@@ -187,7 +187,7 @@ void BalooIndexingAgent::slotItemsRecevied(const Akonadi::Item::List& items)
     Q_FOREACH (const Akonadi::Item& item, items) {
         if (item.mimeType() == QLatin1String("message/rfc822"))
             m_emailIndexer.index(item);
-        else if (item.mimeType() == QLatin1String("text/vcard"))
+        else if (item.mimeType() == QLatin1String("text/directory"))
             m_contactIndexer.index(item);
 
         dt = qMax(dt, item.modificationTime());
