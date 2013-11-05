@@ -26,6 +26,7 @@
 
 #include <QList>
 #include <KDebug>
+#include <KStandardDirs>
 
 using namespace Baloo;
 
@@ -97,96 +98,77 @@ void ContactQuery::setMatchCriteria(ContactQuery::MatchCriteria m)
     d->criteria = m;
 }
 
-namespace {
-    std::string dbName(const QString& name) {
-        const QLatin1String base("/tmp/cxap/");
-        return (base + name).toStdString();
-    }
-}
-
 ResultIterator ContactQuery::exec()
 {
-    Xapian::Database databases;
+    QString dir = KStandardDirs::locateLocal("data", "baloo/email/");
+    Xapian::Database db(dir.toStdString());
+
     QList<Xapian::Query> m_queries;
 
     if (d->criteria == ExactMatch) {
         if (d->any.size()) {
             m_queries << Xapian::Query(d->any.toStdString());
-            databases.add_database(Xapian::Database(dbName("all")));
         }
 
         if (d->name.size()) {
-            m_queries << Xapian::Query(d->name.toStdString());
-            databases.add_database(Xapian::Database(dbName("name")));
+            m_queries << Xapian::Query("NA" + d->name.toStdString());
         }
 
         if (d->nick.size()) {
-            m_queries << Xapian::Query(d->nick.toStdString());
-            databases.add_database(Xapian::Database(dbName("nick")));
+            m_queries << Xapian::Query("NI" + d->nick.toStdString());
         }
 
         if (d->email.size()) {
             m_queries << Xapian::Query(d->email.toStdString());
-            databases.add_database(Xapian::Database(dbName("email")));
         }
 
         if (d->uid.size()) {
             m_queries << Xapian::Query(d->uid.toStdString());
-            databases.add_database(Xapian::Database(dbName("uid")));
         }
     }
     else if (d->criteria == StartsWithMatch) {
         if (d->any.size()) {
-            Xapian::Database db(dbName("all"));
-
             Xapian::QueryParser parser;
             parser.set_database(db);
             m_queries << parser.parse_query(d->any.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
-            databases.add_database(db);
         }
 
         if (d->name.size()) {
-            Xapian::Database db(dbName("name"));
-
             Xapian::QueryParser parser;
             parser.set_database(db);
+            parser.add_prefix("", "NA");
+
             m_queries << parser.parse_query(d->name.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
-            databases.add_database(db);
         }
 
         if (d->nick.size()) {
-            Xapian::Database db(dbName("nick"));
-
             Xapian::QueryParser parser;
             parser.set_database(db);
+            parser.add_prefix("", "NI");
+
             m_queries << parser.parse_query(d->nick.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
-            databases.add_database(db);
         }
 
         // FIXME: Check for exact match?
         if (d->email.size()) {
-            Xapian::Database db(dbName("email"));
-
             Xapian::QueryParser parser;
             parser.set_database(db);
+
             m_queries << parser.parse_query(d->email.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
-            databases.add_database(db);
         }
 
         if (d->uid.size()) {
-            Xapian::Database db(dbName("uid"));
-
             Xapian::QueryParser parser;
             parser.set_database(db);
+
             m_queries << parser.parse_query(d->uid.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
-            databases.add_database(db);
         }
     }
 
     Xapian::Query query(Xapian::Query::OP_OR, m_queries.begin(), m_queries.end());
     kDebug() << query.get_description().c_str();
 
-    Xapian::Enquire enquire(databases);
+    Xapian::Enquire enquire(db);
     enquire.set_query(query);
 
     if (d->limit == 0)

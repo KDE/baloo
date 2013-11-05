@@ -72,7 +72,10 @@ void ContactIndexer::index(const Akonadi::Item& item)
     termGen.index_text(stdName, 1, "NI");
 
     Q_FOREACH (const QString& email, addresse.emails()) {
-        doc.add_term(email.toStdString());
+        std::string stdEmail = email.toStdString();
+
+        doc.add_term(stdEmail);
+        termGen.index_text(stdEmail);
     }
 
     m_db->replace_document(item.id(), doc);
