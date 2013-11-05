@@ -31,6 +31,8 @@
 #include <QLinkedList>
 #include <QTimer>
 
+class KJob;
+
 class BalooIndexingAgent : public Akonadi::AgentBase, public Akonadi::AgentBase::ObserverV3
 {
     Q_OBJECT
@@ -53,6 +55,8 @@ public:
 
 private Q_SLOTS:
     void findUnindexedItems();
+    void slotRootCollectionsFetched(KJob* job);
+    void slotItemFetchFinished(KJob* job);
 
     void processNext();
     void slotItemsRecevied(const Akonadi::Item::List& items);
@@ -61,6 +65,8 @@ private Q_SLOTS:
 private:
     Akonadi::Item::List m_items;
     QTimer m_timer;
+    QDateTime m_lastItemMTime;
+    int m_jobs;
 
     EmailIndexer m_emailIndexer;
     QTimer m_commitTimer;

@@ -25,8 +25,11 @@
 #include <Akonadi/ItemFetchJob>
 #include <Akonadi/ItemFetchScope>
 #include <Akonadi/ChangeRecorder>
+#include <Akonadi/CollectionFetchJob>
 
 #include <KStandardDirs>
+#include <KConfig>
+#include <KConfigGroup>
 
 namespace {
     QString emailIndexingPath() {
@@ -60,8 +63,46 @@ BalooIndexingAgent::~BalooIndexingAgent()
 
 void BalooIndexingAgent::findUnindexedItems()
 {
+    KConfig config("baloorc");
+    KConfigGroup group = config.group("Akonadi");
 
+    m_lastItemMTime = group.readEntry("lastItem", QDateTime());
+
+    Akonadi::CollectionFetchJob* job = new Akonadi::CollectionFetchJob(Akonadi::Collection::root(),
+                                                                        Akonadi::CollectionFetchJob::Recursive);
+    connect(job, SIGNAL(finished(KJob*)), this, SLOT(slotRootCollectionsFetched(KJob*)));
+    job->start();
+        return;
 }
+
+void BalooIndexingAgent::slotRootCollectionsFetched(KJob* kjob)
+{
+    Akonadi::CollectionFetchJob* cjob = qobject_cast<Akonadi::CollectionFetchJob*>(kjob);
+    Akonadi::Collection::List cList = cjob->collections();
+
+    m_jobs = 0;
+    Q_FOREACH (const Akonadi::Collection& c, cList) {
+        Akonadi::ItemFetchJob* job = new Akonadi::ItemFetchJob(c);
+
+        if (!m_lastItemMTime.isNull()) {
+            KDateTime dt(m_lastItemMTime, KDateTime::Spec::UTC());
+            job->fetchScope().setFetchChangedSince(dt);
+        }
+
+        job->fetchScope().fetchFullPayload(true);
+        job->fetchScope().fetchAllAttributes();
+        job->fetchScope().fetchModificationTime();
+        job->fetchScope().setCacheOnly(true);
+        job->fetchScope().setIgnoreRetrievalErrors(true);
+
+        connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),
+                this, SLOT(slotItemsRecevied(Akonadi::Item::List)));
+        connect(job, SIGNAL(finished(KJob*)), this, SLOT(slotItemFetchFinished(KJob*)));
+        job->start();
+        m_jobs++;
+    }
+}
+
 
 void BalooIndexingAgent::itemAdded(const Akonadi::Item& item, const Akonadi::Collection& collection)
 {
@@ -118,8 +159,12 @@ void BalooIndexingAgent::cleanup()
 void BalooIndexingAgent::processNext()
 {
     Akonadi::ItemFetchJob* job = new Akonadi::ItemFetchJob(m_items);
+    m_items.clear();
     job->fetchScope().fetchAllAttributes();
     job->fetchScope().fetchFullPayload();
+    job->fetchScope().fetchModificationTime();
+    job->fetchScope().setCacheOnly(true);
+    job->fetchScope().setIgnoreRetrievalErrors(true);
 
     connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),
             this, SLOT(slotItemsRecevied(Akonadi::Item::List)));
@@ -128,12 +173,33 @@ void BalooIndexingAgent::processNext()
 
 void BalooIndexingAgent::slotItemsRecevied(const Akonadi::Item::List& items)
 {
+    KConfig config("baloorc");
+    KConfigGroup group = config.group("Akonadi");
+    bool initial = group.readEntry("initialIndexingDone", false);
+    QDateTime dt = group.readEntry("lastItem", QDateTime::fromMSecsSinceEpoch(1));
+
     Q_FOREACH (const Akonadi::Item& item, items) {
         if (item.mimeType() == QLatin1String("message/rfc822"))
             m_emailIndexer.index(item);
+
+        dt = qMax(dt, item.modificationTime());
     }
+    if (initial)
+        group.writeEntry("lastItem", dt);
+
     m_commitTimer.start();
 }
+
+void BalooIndexingAgent::slotItemFetchFinished(KJob* job)
+{
+    m_jobs--;
+    if (m_jobs == 0) {
+        KConfig config("baloorc");
+        KConfigGroup group = config.group("Akonadi");
+        group.writeEntry("initialIndexingDone", true);
+    }
+}
+
 
 void BalooIndexingAgent::slotCommitTimerElapsed()
 {
