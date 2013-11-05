@@ -26,9 +26,11 @@
 #include <QString>
 #include <QByteArray>
 
+#include "search_export.h"
+
 namespace Baloo {
 
-class Result
+class BALOO_SEARCH_EXPORT Result
 {
 public:
     Result();
