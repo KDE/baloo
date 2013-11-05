@@ -7,6 +7,7 @@ set(SEARCH_SRCS
     result.cpp
     resultiterator.cpp
     contactquery.cpp
+    emailquery.cpp
 )
 
 add_definitions(${KDE4_ENABLE_EXCEPTIONS})
@@ -32,6 +33,7 @@ install(TARGETS baloosearch ${INSTALL_TARGETS_DEFAULT_ARGS})
 install(FILES
     query.h
     contactquery.h
+    emailquery.h
 
     result.h
     resultiterator.h

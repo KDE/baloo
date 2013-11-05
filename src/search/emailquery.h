@@ -20,20 +20,20 @@
  *
  */
 
-#ifndef QUERY_H
-#define QUERY_H
+#ifndef _EMAIL_QUERY_H
+#define _EMAIL_QUERY_H
 
-#include "pim_export.h"
+#include "query.h"
 
 #include <QStringList>
 #include <Akonadi/Collection>
 
-class QueryIterator;
+namespace Baloo {
 
-class BALOO_PIM_EXPORT Query
+class BALOO_SEARCH_EXPORT EmailQuery : public Query
 {
 public:
-    Query();
+    EmailQuery();
 
     void setInvolves(const QStringList& involves);
     void addInvolves(const QString& email);
@@ -79,7 +79,7 @@ public:
      * Execute the query and return an iterator to fetch
      * the results
      */
-    QueryIterator exec();
+    ResultIterator exec();
 
 private:
     QString m_path;
@@ -103,4 +103,6 @@ private:
     int m_limit;
 };
 
-#endif // QUERY_H
+}
+
+#endif // _EMAIL_QUERY_H

@@ -29,6 +29,7 @@
 namespace Baloo {
 
 class ContactQuery;
+class EmailQuery;
 
 class BALOO_SEARCH_EXPORT ResultIterator
 {
@@ -40,6 +41,7 @@ public:
 
 private:
     friend class ContactQuery;
+    friend class EmailQuery;
 
     class Private;
     Private* d;

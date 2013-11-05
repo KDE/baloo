@@ -20,10 +20,13 @@
  *
  */
 
-#include "queryiterator.h"
-#include "query.h"
+#include "emailquery.h"
+#include "resultiterator_p.h"
+#include "xapian.h"
 
-Query::Query()
+using namespace Baloo;
+
+EmailQuery::EmailQuery()
 {
     m_path = QLatin1String("/tmp/xap/");
 
@@ -32,107 +35,107 @@ Query::Query()
     m_read = false;
 }
 
-void Query::addInvolves(const QString& email)
+void EmailQuery::addInvolves(const QString& email)
 {
     m_involves << email;
 }
 
-void Query::setInvolves(const QStringList& involves)
+void EmailQuery::setInvolves(const QStringList& involves)
 {
     m_involves = involves;
 }
 
-void Query::addBcc(const QString& bcc)
+void EmailQuery::addBcc(const QString& bcc)
 {
     m_bcc << bcc;
 }
 
-void Query::setBcc(const QStringList& bcc)
+void EmailQuery::setBcc(const QStringList& bcc)
 {
     m_bcc = bcc;
 }
 
-void Query::setCc(const QStringList& cc)
+void EmailQuery::setCc(const QStringList& cc)
 {
     m_cc = cc;
 }
 
-void Query::setFrom(const QString& from)
+void EmailQuery::setFrom(const QString& from)
 {
     m_from = from;
 }
 
-void Query::addTo(const QString& to)
+void EmailQuery::addTo(const QString& to)
 {
     m_to << to;
 }
 
-void Query::setTo(const QStringList& to)
+void EmailQuery::setTo(const QStringList& to)
 {
     m_to = to;
 }
 
-void Query::addCc(const QString& cc)
+void EmailQuery::addCc(const QString& cc)
 {
     m_cc << cc;
 }
 
-void Query::addFrom(const QString& from)
+void EmailQuery::addFrom(const QString& from)
 {
     m_from = from;
 }
 
-void Query::addCollection(Akonadi::Collection::Id id)
+void EmailQuery::addCollection(Akonadi::Collection::Id id)
 {
     m_collections << id;
 }
 
-void Query::setCollection(const QList< Akonadi::Entity::Id >& collections)
+void EmailQuery::setCollection(const QList< Akonadi::Entity::Id >& collections)
 {
     m_collections = collections;
 }
 
-int Query::limit()
+int EmailQuery::limit()
 {
     return m_limit;
 }
 
-void Query::setLimit(int limit)
+void EmailQuery::setLimit(int limit)
 {
     m_limit = limit;
 }
 
-void Query::matches(const QString& match)
+void EmailQuery::matches(const QString& match)
 {
     m_matchString = match;
 }
 
-void Query::bodyMatches(const QString& match)
+void EmailQuery::bodyMatches(const QString& match)
 {
     m_bodyMatchString = match;
 }
 
-void Query::subjectMatches(const QString& subjectMatch)
+void EmailQuery::subjectMatches(const QString& subjectMatch)
 {
     m_subjectMatchString = subjectMatch;
 }
 
-void Query::setAttachment(bool hasAttachment)
+void EmailQuery::setAttachment(bool hasAttachment)
 {
     m_attachment = hasAttachment;
 }
 
-void Query::setImportant(bool important)
+void EmailQuery::setImportant(bool important)
 {
     m_important = important;
 }
 
-void Query::setRead(bool read)
+void EmailQuery::setRead(bool read)
 {
     m_read = read;
 }
 
-QueryIterator Query::exec()
+ResultIterator EmailQuery::exec()
 {
     Xapian::Database databases;
     QList<Xapian::Query> m_queries;
@@ -265,5 +268,8 @@ QueryIterator Query::exec()
         m_limit = 1000000;
 
     Xapian::MSet matches = enquire.get_mset(0, m_limit);
-    return QueryIterator(matches);
+
+    ResultIterator iter;
+    iter.d->init(matches);
+    return iter;
 }
