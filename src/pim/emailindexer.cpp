@@ -23,6 +23,7 @@
 #include "emailindexer.h"
 
 #include <Akonadi/Collection>
+#include <Akonadi/KMime/MessageFlags>
 
 #include <QTextDocument>
 
@@ -111,6 +112,7 @@ void EmailIndexer::process(const KMime::Message::Ptr& msg)
     KMime::Headers::Subject* subject = msg->subject(false);
     if (subject) {
         QString str = subject->asUnicodeString();
+        kDebug() << "Indexing" << str;
         m_termGen->index_text_without_positions(str.toStdString(), 1, "S");
         m_termGen->index_text_without_positions(str.toStdString());
     }
@@ -197,6 +199,81 @@ void EmailIndexer::insertBool(char key, bool value)
     }
 
     m_doc->add_boolean_term(term.data());
+}
+
+void EmailIndexer::updateFlags(const Akonadi::Item& item,
+                               const QSet<QByteArray>& added,
+                               const QSet<QByteArray>& removed)
+{
+    Xapian::Document doc;
+    try {
+        doc = m_db->get_document(item.id());
+    }
+    catch (const Xapian::DocNotFoundError&) {
+        return;
+    }
+
+    Q_FOREACH (const QByteArray& flag, removed) {
+        if (flag == Akonadi::MessageFlags::Seen) {
+            doc.remove_term("BR");
+            doc.add_boolean_term("BNR");
+        }
+        else if (flag == Akonadi::MessageFlags::Flagged) {
+            doc.remove_term("BI");
+            doc.add_boolean_term("BNI");
+        }
+        else if (flag == Akonadi::MessageFlags::Watched) {
+            doc.remove_term("BW");
+            doc.add_boolean_term("BNW");
+        }
+    }
+
+    Q_FOREACH (const QByteArray& flag, added) {
+        if (flag == Akonadi::MessageFlags::Seen) {
+            doc.remove_term("BNR");
+            doc.add_boolean_term("BR");
+        }
+        else if (flag == Akonadi::MessageFlags::Flagged) {
+            doc.remove_term("BNI");
+            doc.add_boolean_term("BI");
+        }
+        else if (flag == Akonadi::MessageFlags::Watched) {
+            doc.remove_term("BNW");
+            doc.add_boolean_term("BW");
+        }
+    }
+
+    m_db->replace_document(doc.get_docid(), doc);
+}
+
+void EmailIndexer::remove(const Akonadi::Item& item)
+{
+    try {
+        m_db->delete_document(item.id());
+    }
+    catch (const Xapian::DocNotFoundError&) {
+        return;
+    }
+}
+
+void EmailIndexer::move(const Akonadi::Entity::Id& itemId,
+                        const Akonadi::Entity::Id& from,
+                        const Akonadi::Entity::Id& to)
+{
+    Xapian::Document doc;
+    try {
+        doc = m_db->get_document(itemId);
+    }
+    catch (const Xapian::DocNotFoundError&) {
+        return;
+    }
+
+    const QByteArray ft = 'C' + QByteArray::number(from);
+    const QByteArray tt = 'C' + QByteArray::number(to);
+
+    doc.remove_term(ft.data());
+    doc.add_boolean_term(tt.data());
+    m_db->replace_document(doc.get_docid(), doc);
 }
 
 

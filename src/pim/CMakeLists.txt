@@ -36,3 +36,26 @@ install(TARGETS baloopim ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 add_subdirectory(autotests)
 add_subdirectory(tests)
+
+#
+# Feeder
+#
+kde4_add_executable(akonadi_baloo_indexer
+    agent.cpp
+    emailindexer.cpp
+)
+
+target_link_libraries(akonadi_baloo_indexer
+    ${QT_QTCORE_LIBRARY}
+    ${KDE4_KDECORE_LIBRARY}
+    ${KDEPIMLIBS_AKONADI_LIBS}
+    ${KDEPIMLIBS_KMIME_LIBS}
+    ${KDEPIMLIBS_KABC_LIBS}
+    ${XAPIAN_LIBRARIES}
+    baloocore
+    akonadi-kmime
+)
+
+install(TARGETS akonadi_baloo_indexer ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(FILES akonadibalooindexingagent.desktop
+        DESTINATION "${CMAKE_INSTALL_PREFIX}/share/akonadi/agents")

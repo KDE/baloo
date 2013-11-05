@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Akonadi Baloo Indexing Agent
+
+Type=AkonadiAgent
+Exec=akonadi_baloo_indexer
+Icon=nepomuk
+
+X-Akonadi-MimeTypes=text/directory
+X-Akonadi-Capabilities=Unique,Autostart
+X-Akonadi-Identifier=akonadi_baloo_indexer
