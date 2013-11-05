@@ -23,22 +23,22 @@
 #ifndef CONTACTINDEXER_H
 #define CONTACTINDEXER_H
 
-#include "database.h"
-#include "pim_export.h"
-
+#include <xapian.h>
 #include <Akonadi/Item>
 
-class BALOO_PIM_EXPORT ContactIndexer
+class ContactIndexer
 {
 public:
-    ContactIndexer();
+    ContactIndexer(const QString& path);
     ~ContactIndexer();
 
     void index(const Akonadi::Item& item);
+    void remove(const Akonadi::Item& item);
+
     void commit();
 
 private:
-    Database m_db;
+    Xapian::WritableDatabase* m_db;
 };
 
 #endif // CONTACTINDEXER_H

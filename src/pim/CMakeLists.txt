@@ -4,7 +4,6 @@ include_directories(
 )
 
 set(PIM_SRCS
-  database.cpp
   emailindexer.cpp
   contactindexer.cpp
   query.cpp
@@ -34,7 +33,6 @@ set_target_properties(baloopim PROPERTIES
 
 install(TARGETS baloopim ${INSTALL_TARGETS_DEFAULT_ARGS})
 
-add_subdirectory(autotests)
 add_subdirectory(tests)
 
 #
@@ -43,6 +41,7 @@ add_subdirectory(tests)
 kde4_add_executable(akonadi_baloo_indexer
     agent.cpp
     emailindexer.cpp
+    contactindexer.cpp
 )
 
 target_link_libraries(akonadi_baloo_indexer

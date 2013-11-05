@@ -2,7 +2,7 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/..
 )
 
-kde4_add_executable(emailindexer emailtest.cpp)
+kde4_add_executable(emailindexer emailtest.cpp ../emailindexer.cpp)
 
 target_link_libraries(emailindexer
   ${QT_QTCORE_LIBRARY}
@@ -11,9 +11,9 @@ target_link_libraries(emailindexer
 
   ${KDEPIMLIBS_AKONADI_LIBS}
   ${KDEPIMLIBS_KMIME_LIBS}
+  akonadi-kmime
 
-  baloocore
-  baloopim
+  ${XAPIAN_LIBRARIES}
 )
 
 kde4_add_executable(emailquery emailquerytest.cpp)

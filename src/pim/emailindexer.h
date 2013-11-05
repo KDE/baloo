@@ -23,15 +23,13 @@
 #ifndef EMAILINDEXER_H
 #define EMAILINDEXER_H
 
-#include "pim_export.h"
-
 #include <xapian.h>
 
 #include <KMime/Message>
 #include <Akonadi/Item>
 #include <Akonadi/KMime/MessageStatus>
 
-class BALOO_PIM_EXPORT EmailIndexer
+class EmailIndexer
 {
 public:
     /**

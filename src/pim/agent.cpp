@@ -35,11 +35,15 @@ namespace {
     QString emailIndexingPath() {
         return KStandardDirs::locateLocal("data", "baloo/email/");
     }
+    QString contactIndexingPath() {
+        return KStandardDirs::locateLocal("data", "baloo/contacts/");
+    }
 }
 
 BalooIndexingAgent::BalooIndexingAgent(const QString& id)
     : AgentBase(id)
     , m_emailIndexer(emailIndexingPath())
+    , m_contactIndexer(contactIndexingPath())
 {
     QTimer::singleShot(0, this, SLOT(findUnindexedItems()));
 
@@ -118,6 +122,7 @@ void BalooIndexingAgent::itemChanged(const Akonadi::Item& item, const QSet<QByte
 
     // We should probably just delete the item and add it again?
     m_emailIndexer.remove(item);
+    m_contactIndexer.remove(item);
     m_items << item;
     m_timer.start();
 }
@@ -136,6 +141,7 @@ void BalooIndexingAgent::itemsRemoved(const Akonadi::Item::List& items)
 {
     Q_FOREACH (const Akonadi::Item& item, items) {
         m_emailIndexer.remove(item);
+        m_contactIndexer.remove(item);
     }
     m_commitTimer.start();
 }
@@ -181,6 +187,8 @@ void BalooIndexingAgent::slotItemsRecevied(const Akonadi::Item::List& items)
     Q_FOREACH (const Akonadi::Item& item, items) {
         if (item.mimeType() == QLatin1String("message/rfc822"))
             m_emailIndexer.index(item);
+        else if (item.mimeType() == QLatin1String("text/vcard"))
+            m_contactIndexer.index(item);
 
         dt = qMax(dt, item.modificationTime());
     }
@@ -190,7 +198,7 @@ void BalooIndexingAgent::slotItemsRecevied(const Akonadi::Item::List& items)
     m_commitTimer.start();
 }
 
-void BalooIndexingAgent::slotItemFetchFinished(KJob* job)
+void BalooIndexingAgent::slotItemFetchFinished(KJob*)
 {
     m_jobs--;
     if (m_jobs == 0) {
@@ -204,6 +212,7 @@ void BalooIndexingAgent::slotItemFetchFinished(KJob* job)
 void BalooIndexingAgent::slotCommitTimerElapsed()
 {
     m_emailIndexer.commit();
+    m_contactIndexer.commit();
 }
 
 AKONADI_AGENT_MAIN(BalooIndexingAgent)

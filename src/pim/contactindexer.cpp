@@ -24,14 +24,15 @@
 
 #include <KABC/Addressee>
 
-ContactIndexer::ContactIndexer()
+ContactIndexer::ContactIndexer(const QString& path)
 {
-    m_db.setPath("/tmp/cxap/");
+    m_db = new Xapian::WritableDatabase(path.toStdString(), Xapian::DB_CREATE_OR_OPEN);
 }
 
 ContactIndexer::~ContactIndexer()
 {
-
+    m_db->commit();
+    delete m_db;
 }
 
 void ContactIndexer::index(const Akonadi::Item& item)
@@ -45,7 +46,11 @@ void ContactIndexer::index(const Akonadi::Item& item)
         return;
     }
 
-    m_db.beginDocument(item.id());
+    Xapian::Document doc;
+    Xapian::TermGenerator termGen;
+    termGen.set_database(*m_db);
+    termGen.set_document(doc);
+
     KABC::Addressee addresse = item.payload<KABC::Addressee>();
 
     QString name;
@@ -56,27 +61,36 @@ void ContactIndexer::index(const Akonadi::Item& item)
         name = addresse.assembledName();
     }
 
-    m_db.setText("name", name);
-    m_db.setText("nick", addresse.nickName());
-    m_db.set("uid", addresse.uid());
+    std::string stdName = name.toStdString();
+    std::string stdNick = addresse.nickName().toStdString();
 
-    // We duplicate all the data in a key called "all"
-    m_db.setText("all", name);
-    m_db.setText("all", addresse.nickName());
-    m_db.set("all", addresse.uid());
+    termGen.index_text(stdName);
+    termGen.index_text(stdNick);
+    doc.add_boolean_term(addresse.uid().toStdString());
+
+    termGen.index_text(stdName, 1, "NA");
+    termGen.index_text(stdName, 1, "NI");
 
     Q_FOREACH (const QString& email, addresse.emails()) {
-        m_db.append("email", email);
-        m_db.append("all", email);
+        doc.add_term(email.toStdString());
     }
 
+    m_db->replace_document(item.id(), doc);
     // TODO: Contact Groups?
-    m_db.endDocument();
+}
+
+void ContactIndexer::remove(const Akonadi::Item& item)
+{
+    try {
+        m_db->delete_document(item.id());
+    }
+    catch (const Xapian::DocNotFoundError&) {
+        return;
+    }
 }
 
 void ContactIndexer::commit()
 {
-    m_db.commit();
+    m_db->commit();
 }
-
 

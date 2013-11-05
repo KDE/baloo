@@ -24,6 +24,7 @@
 #define AGENT_H
 
 #include "emailindexer.h"
+#include "contactindexer.h"
 
 #include <akonadi/agentbase.h>
 #include <akonadi/collection.h>
@@ -69,6 +70,8 @@ private:
     int m_jobs;
 
     EmailIndexer m_emailIndexer;
+    ContactIndexer m_contactIndexer;
+
     QTimer m_commitTimer;
 };
 
