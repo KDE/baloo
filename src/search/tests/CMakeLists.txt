@@ -16,3 +16,17 @@ target_link_libraries(contactsearch
 
   baloosearch
 )
+
+kde4_add_executable(emailquery emailquerytest.cpp)
+
+target_link_libraries(emailquery
+  ${QT_QTCORE_LIBRARY}
+  ${QT_QTTEST_LIBRARY}
+  ${KDE4_KDECORE_LIBS}
+
+  ${KDEPIMLIBS_AKONADI_LIBS}
+  ${KDEPIMLIBS_KMIME_LIBS}
+
+  baloocore
+  baloosearch
+)

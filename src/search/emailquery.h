@@ -53,8 +53,19 @@ public:
     void setCollection(const QList<Akonadi::Collection::Id>& collections);
     void addCollection(Akonadi::Collection::Id id);
 
+    /**
+     * By default the importance is ignored
+     */
     void setImportant(bool important = true);
+
+    /**
+     * By default the read status is ignored
+     */
     void setRead(bool read = true);
+
+    /**
+     * By default the attachment status is ignored
+     */
     void setAttachment(bool hasAttachment = true);
 
     /**
@@ -63,13 +74,10 @@ public:
      */
     void matches(const QString& match);
 
-    void bodyMatches(const QString& match);
-
     /**
      * Matches teh string \p subjectMatch specifically in the
      * email subject
      */
-    // FIXME: Is this really required?
     void subjectMatches(const QString& subjectMatch);
 
     void setLimit(int limit);
@@ -92,12 +100,11 @@ private:
 
     QList<Akonadi::Collection::Id> m_collections;
 
-    bool m_important;
-    bool m_read;
-    bool m_attachment;
+    char m_important;
+    char m_read;
+    char m_attachment;
 
     QString m_matchString;
-    QString m_bodyMatchString;
     QString m_subjectMatchString;
 
     int m_limit;

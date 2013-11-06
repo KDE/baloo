@@ -24,15 +24,17 @@
 #include "resultiterator_p.h"
 #include "xapian.h"
 
+#include <KStandardDirs>
+
 using namespace Baloo;
 
 EmailQuery::EmailQuery()
 {
     m_path = QLatin1String("/tmp/xap/");
 
-    m_important = false;
-    m_attachment = false;
-    m_read = false;
+    m_important = 'O';
+    m_attachment = 'O';
+    m_read = 'O';
 }
 
 void EmailQuery::addInvolves(const QString& email)
@@ -110,11 +112,6 @@ void EmailQuery::matches(const QString& match)
     m_matchString = match;
 }
 
-void EmailQuery::bodyMatches(const QString& match)
-{
-    m_bodyMatchString = match;
-}
-
 void EmailQuery::subjectMatches(const QString& subjectMatch)
 {
     m_subjectMatchString = subjectMatch;
@@ -122,154 +119,134 @@ void EmailQuery::subjectMatches(const QString& subjectMatch)
 
 void EmailQuery::setAttachment(bool hasAttachment)
 {
-    m_attachment = hasAttachment;
+    m_attachment = hasAttachment ? 'T' : 'F';
 }
 
 void EmailQuery::setImportant(bool important)
 {
-    m_important = important;
+    m_important = important ? 'T' : 'F';
 }
 
 void EmailQuery::setRead(bool read)
 {
-    m_read = read;
+    m_read = read ? 'T' : 'F';
 }
 
 ResultIterator EmailQuery::exec()
 {
-    Xapian::Database databases;
+    QString dir = KStandardDirs::locateLocal("data", "baloo/email/");
+    Xapian::Database db(dir.toStdString());
+
     QList<Xapian::Query> m_queries;
 
     if (m_involves.size()) {
-        Xapian::Query query;
-        Q_FOREACH (const QString& email, m_involves) {
-            Xapian::Query q = Xapian::Query(email.toStdString());
-            query = Xapian::Query(Xapian::Query::OP_OR, query, q);
-        }
+        Xapian::QueryParser parser;
+        parser.set_database(db);
+        parser.add_prefix("", "F");
+        parser.add_prefix("", "T");
+        parser.add_prefix("", "CC");
+        parser.add_prefix("", "BCC");
 
-        m_queries << query;
-        databases.add_database(Xapian::Database((m_path + "from").toStdString()));
-        databases.add_database(Xapian::Database((m_path + "to").toStdString()));
-        databases.add_database(Xapian::Database((m_path + "cc").toStdString()));
-        databases.add_database(Xapian::Database((m_path + "bcc").toStdString()));
+        // vHanda: Do we really need the query parser over here?
+        Q_FOREACH (const QString& str, m_involves) {
+            m_queries << parser.parse_query(str.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
+        }
     }
 
     if (m_from.size()) {
-        m_queries << Xapian::Query(m_from.toStdString());
-        databases.add_database(Xapian::Database((m_path + "from").toStdString()));
+        Xapian::QueryParser parser;
+        parser.set_database(db);
+        parser.add_prefix("", "F");
+
+        m_queries << parser.parse_query(m_from.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
     }
 
     if (m_to.size()) {
-        Xapian::Query query;
-        Q_FOREACH (const QString& to, m_to) {
-            Xapian::Query q = Xapian::Query(to.toStdString());
-            query = Xapian::Query(Xapian::Query::OP_OR, query, q);
-        }
+        Xapian::QueryParser parser;
+        parser.set_database(db);
+        parser.add_prefix("", "T");
 
-        m_queries << query;
-        databases.add_database(Xapian::Database((m_path + "to").toStdString()));
+        Q_FOREACH (const QString& str, m_to) {
+            m_queries << parser.parse_query(str.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
+        }
     }
 
     if (m_cc.size()) {
-        Xapian::Query query;
-        Q_FOREACH (const QString& cc, m_cc) {
-            Xapian::Query q = Xapian::Query(cc.toStdString());
-            query = Xapian::Query(Xapian::Query::OP_OR, query, q);
-        }
+        Xapian::QueryParser parser;
+        parser.set_database(db);
+        parser.add_prefix("", "CC");
 
-        m_queries << query;
-        databases.add_database(Xapian::Database((m_path + "cc").toStdString()));
+        Q_FOREACH (const QString& str, m_cc) {
+            m_queries << parser.parse_query(str.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
+        }
     }
 
     if (m_bcc.size()) {
-        Xapian::Query query;
-        Q_FOREACH (const QString& bcc, m_bcc) {
-            Xapian::Query q = Xapian::Query(bcc.toStdString());
-            query = Xapian::Query(Xapian::Query::OP_OR, query, q);
-        }
+        Xapian::QueryParser parser;
+        parser.set_database(db);
+        parser.add_prefix("", "BC");
 
-        m_queries << query;
-        databases.add_database(Xapian::Database((m_path + "bcc").toStdString()));
+        Q_FOREACH (const QString& str, m_bcc) {
+            m_queries << parser.parse_query(str.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
+        }
     }
 
     if (m_subjectMatchString.size()) {
-        Xapian::Database db((m_path + "subject").toStdString());
-
         Xapian::QueryParser parser;
         parser.set_database(db);
-        Xapian::Query q = parser.parse_query(m_subjectMatchString.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
+        parser.add_prefix("", "S");
 
-        m_queries << q;
-        databases.add_database(db);
+        m_queries << parser.parse_query(m_subjectMatchString.toStdString(),
+                                        Xapian::QueryParser::FLAG_PARTIAL);
     }
-
-    if (m_bodyMatchString.size()) {
-        Xapian::Database db((m_path + "body").toStdString());
-
-        Xapian::QueryParser parser;
-        parser.set_database(db);
-        Xapian::Query q = parser.parse_query(m_bodyMatchString.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
-
-        m_queries << q;
-        databases.add_database(db);
-    }
-
-    bool allDbNeeded = false;
 
     if (m_collections.size()) {
         Xapian::Query query;
         Q_FOREACH (const Akonadi::Collection::Id& id, m_collections) {
-            QString collectionStr = QLatin1String("XC") + QString::number(id);
-            Xapian::Query q = Xapian::Query(collectionStr.toStdString());
+            QString c = QString::number(id);
+            Xapian::Query q = Xapian::Query('C' + c.toStdString());
 
             query = Xapian::Query(Xapian::Query::OP_OR, query, q);
         }
 
         m_queries << query;
-        allDbNeeded = true;
     }
 
-    if (m_important) {
-        m_queries << Xapian::Query("XisImportant");
-        allDbNeeded = true;
-    }
+    if (m_important == 'T')
+        m_queries << Xapian::Query("BI");
+    else if (m_important == 'F')
+        m_queries << Xapian::Query("BNI");
 
-    if (m_read) {
-        m_queries << Xapian::Query("XisRead");
-        allDbNeeded = true;
-    }
+    if (m_read == 'T')
+        m_queries << Xapian::Query("BR");
+    else if (m_important == 'F')
+        m_queries << Xapian::Query("BNR");
 
-    if (m_attachment) {
-        m_queries << Xapian::Query("XisAttachment");
-        allDbNeeded = true;
-    }
+    if (m_attachment == 'T')
+        m_queries << Xapian::Query("BA");
+    else if (m_attachment == 'F')
+        m_queries << Xapian::Query("BNA");
 
     if (m_matchString.size()) {
-        Xapian::Database db((m_path + "all").toStdString());
-
         Xapian::QueryParser parser;
         parser.set_database(db);
-        Xapian::Query q = parser.parse_query(m_matchString.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
 
-        m_queries << q;
-        allDbNeeded = true;
+        m_queries << parser.parse_query(m_matchString.toStdString(),
+                                        Xapian::QueryParser::FLAG_PARTIAL);
     }
-
-    if (allDbNeeded)
-        databases.add_database(Xapian::Database((m_path + "all").toStdString()));
 
     Xapian::Query query(Xapian::Query::OP_AND, m_queries.begin(), m_queries.end());
     kDebug() << query.get_description().c_str();
 
-    Xapian::Enquire enquire(databases);
+    Xapian::Enquire enquire(db);
     enquire.set_query(query);
 
     if (m_limit == 0)
         m_limit = 1000000;
 
-    Xapian::MSet matches = enquire.get_mset(0, m_limit);
+    Xapian::MSet mset = enquire.get_mset(0, m_limit);
 
     ResultIterator iter;
-    iter.d->init(matches);
+    iter.d->init(mset);
     return iter;
 }

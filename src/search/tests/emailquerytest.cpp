@@ -20,8 +20,8 @@
  *
  */
 
-#include "src/pim/queryiterator.h"
-#include "src/pim/query.h"
+#include "../resultiterator.h"
+#include "../emailquery.h"
 
 #include <QCoreApplication>
 #include <QTimer>
@@ -31,6 +31,8 @@
 #include <Akonadi/ItemFetchScope>
 
 #include <KMime/Message>
+
+using namespace Baloo;
 
 class App : public QCoreApplication {
     Q_OBJECT
@@ -63,15 +65,15 @@ App::App(int& argc, char** argv, int flags): QCoreApplication(argc, argv, flags)
 
 void App::main()
 {
-    Query query;
+    EmailQuery query;
     query.matches(m_query);
     query.setLimit(100);
 
     QList<Akonadi::Entity::Id> m_akonadiIds;
 
-    QueryIterator it = query.exec();
+    ResultIterator it = query.exec();
     while (it.next()) {
-        m_akonadiIds << it.current();
+        m_akonadiIds << it.current().id().toInt();
     }
     kDebug() << "Got" << m_akonadiIds.size() << "items";
 
