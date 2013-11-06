@@ -27,15 +27,19 @@
 
 #include <QTextDocument>
 
-EmailIndexer::EmailIndexer(const QString& path)
+EmailIndexer::EmailIndexer(const QString& path, const QString& contactDbPath)
 {
     m_db = new Xapian::WritableDatabase(path.toStdString(), Xapian::DB_CREATE_OR_OPEN);
+    m_contactDb = new Xapian::WritableDatabase(contactDbPath.toStdString(), Xapian::DB_CREATE_OR_OPEN);
 }
 
 EmailIndexer::~EmailIndexer()
 {
     m_db->commit();
     delete m_db;
+
+    m_contactDb->commit();
+    delete m_contactDb;
 }
 
 void EmailIndexer::index(const Akonadi::Item& item)
@@ -103,6 +107,26 @@ void EmailIndexer::insert(const QByteArray& key, const KMime::Types::Mailbox::Li
 
         m_doc->add_term((key + mbox.address()).data());
         m_doc->add_term(mbox.address().data());
+
+        //
+        // Add emails for email auto-completion
+        //
+        int id = qHash(mbox.prettyAddress());
+        try {
+            Xapian::Document doc = m_contactDb->get_document(id);
+            continue;
+        }
+        catch (const Xapian::DocNotFoundError&) {
+            Xapian::Document doc;
+            doc.set_data(mbox.prettyAddress().toStdString());
+
+            Xapian::TermGenerator termGen;
+            termGen.set_document(doc);
+            termGen.index_text(name);
+
+            doc.add_term(mbox.address().data());
+            m_contactDb->replace_document(id, doc);
+        }
     }
 }
 
@@ -283,4 +307,5 @@ void EmailIndexer::move(const Akonadi::Entity::Id& itemId,
 void EmailIndexer::commit()
 {
     m_db->commit();
+    m_contactDb->commit();
 }

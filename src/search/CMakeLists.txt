@@ -8,6 +8,7 @@ set(SEARCH_SRCS
     resultiterator.cpp
     contactquery.cpp
     emailquery.cpp
+    contactcompleter.cpp
 )
 
 add_definitions(${KDE4_ENABLE_EXCEPTIONS})
@@ -34,6 +35,7 @@ install(FILES
     query.h
     contactquery.h
     emailquery.h
+    contactcompleter.h
 
     result.h
     resultiterator.h

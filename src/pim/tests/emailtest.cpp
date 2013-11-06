@@ -62,7 +62,7 @@ int main(int argc, char** argv)
 
 App::App(int& argc, char** argv, int flags)
     : QApplication(argc, argv, flags)
-    , m_indexer("/tmp/xap")
+    , m_indexer("/tmp/xap", "/tmp/xapC")
 {
     QTimer::singleShot(0, this, SLOT(main()));
 }

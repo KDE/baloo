@@ -38,11 +38,14 @@ namespace {
     QString contactIndexingPath() {
         return KStandardDirs::locateLocal("data", "baloo/contacts/");
     }
+    QString emailContactsIndexingPath() {
+        return KStandardDirs::locateLocal("data", "baloo/emailContacts/");
+    }
 }
 
 BalooIndexingAgent::BalooIndexingAgent(const QString& id)
     : AgentBase(id)
-    , m_emailIndexer(emailIndexingPath())
+    , m_emailIndexer(emailIndexingPath(), emailContactsIndexingPath())
     , m_contactIndexer(contactIndexingPath())
 {
     QTimer::singleShot(0, this, SLOT(findUnindexedItems()));

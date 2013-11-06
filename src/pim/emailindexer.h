@@ -36,7 +36,7 @@ public:
      * You must provide the path where the indexed information
      * should be stored
      */
-    EmailIndexer(const QString& path);
+    EmailIndexer(const QString& path, const QString& contactDbPath);
     ~EmailIndexer();
 
     void index(const Akonadi::Item& item);
@@ -53,6 +53,8 @@ private:
     Xapian::WritableDatabase* m_db;
     Xapian::Document* m_doc;
     Xapian::TermGenerator* m_termGen;
+
+    Xapian::WritableDatabase* m_contactDb;
 
     void process(const KMime::Message::Ptr& msg);
     void processPart(KMime::Content* content, KMime::Content* mainContent);
