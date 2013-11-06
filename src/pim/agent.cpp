@@ -58,6 +58,7 @@ BalooIndexingAgent::BalooIndexingAgent(const QString& id)
 
     changeRecorder()->setAllMonitored(true);
     changeRecorder()->itemFetchScope().setCacheOnly(true);
+    changeRecorder()->itemFetchScope().setAncestorRetrieval(Akonadi::ItemFetchScope::Parent);
     changeRecorder()->setChangeRecordingEnabled(false);
 }
 
@@ -98,6 +99,7 @@ void BalooIndexingAgent::slotRootCollectionsFetched(KJob* kjob)
         job->fetchScope().fetchModificationTime();
         job->fetchScope().setCacheOnly(true);
         job->fetchScope().setIgnoreRetrievalErrors(true);
+        job->fetchScope().setAncestorRetrieval(Akonadi::ItemFetchScope::Parent);
 
         connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),
                 this, SLOT(slotItemsRecevied(Akonadi::Item::List)));
@@ -171,6 +173,7 @@ void BalooIndexingAgent::processNext()
     job->fetchScope().fetchModificationTime();
     job->fetchScope().setCacheOnly(true);
     job->fetchScope().setIgnoreRetrievalErrors(true);
+    job->fetchScope().setAncestorRetrieval(Akonadi::ItemFetchScope::Parent);
 
     connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),
             this, SLOT(slotItemsRecevied(Akonadi::Item::List)));

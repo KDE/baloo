@@ -65,6 +65,9 @@ void EmailIndexer::index(const Akonadi::Item& item)
     process(msg);
 
     // Parent collection
+    Q_ASSERT_X(item.parentCollection().isValid(), "Baloo::EmailIndexer::index",
+               "Item does not have a valid parent collection");
+
     Akonadi::Entity::Id colId = item.parentCollection().id();
     QByteArray term = 'C' + QByteArray::number(colId);
     m_doc->add_boolean_term(term.data());

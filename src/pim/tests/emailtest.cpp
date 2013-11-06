@@ -106,6 +106,7 @@ void App::indexNextCollection()
     fetchJob->fetchScope().fetchAllAttributes(true);
     fetchJob->fetchScope().fetchFullPayload(true);
     fetchJob->fetchScope().setFetchModificationTime(false);
+    fetchJob->fetchScope().setAncestorRetrieval(Akonadi::ItemFetchScope::Parent);
 
     connect(fetchJob, SIGNAL(itemsReceived(Akonadi::Item::List)), this, SLOT(itemReceived(Akonadi::Item::List)));
     connect(fetchJob, SIGNAL(result(KJob*)), this, SLOT(slotIndexed()));
