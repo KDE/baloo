@@ -195,6 +195,7 @@ ResultIterator EmailQuery::exec()
         Xapian::QueryParser parser;
         parser.set_database(db);
         parser.add_prefix("", "S");
+        parser.set_default_op(Xapian::Query::OP_AND);
 
         m_queries << parser.parse_query(m_subjectMatchString.toStdString(),
                                         Xapian::QueryParser::FLAG_PARTIAL);
@@ -230,6 +231,7 @@ ResultIterator EmailQuery::exec()
     if (m_matchString.size()) {
         Xapian::QueryParser parser;
         parser.set_database(db);
+        parser.set_default_op(Xapian::Query::OP_AND);
 
         m_queries << parser.parse_query(m_matchString.toStdString(),
                                         Xapian::QueryParser::FLAG_PARTIAL);
