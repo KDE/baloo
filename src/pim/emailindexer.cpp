@@ -97,6 +97,28 @@ void EmailIndexer::insert(const QByteArray& key, KMime::Headers::Generics::Addre
         insert(key, alist->mailboxes());
 }
 
+namespace {
+    // Does some extra stuff such as lower casing the email, removing all quotes
+    // and removing extra spaces
+    // TODO: Move this into KMime?
+    // TODO: If name is all upper/lower then try to captialize it?
+    QString prettyAddress(const KMime::Types::Mailbox& mbox) {
+        QString name = mbox.name().simplified();
+        QByteArray email = mbox.address().simplified().toLower();
+
+        // Remove outer quotes recursively
+        while (name.size() >= 2 && (name[0] == '\'' || name[0] == '"') &&
+               (name[name.size()-1] == '\'' || name[name.size()-1] == '"')) {
+            name = name.mid(1, name.size()-2);
+        }
+
+        if (!email.isEmpty())
+            return name;
+        else
+            return name + QLatin1String(" <") + QString::fromUtf8(email) + QLatin1Char('>');
+    }
+}
+
 // Add once with a prefix and once without
 void EmailIndexer::insert(const QByteArray& key, const KMime::Types::Mailbox::List& list)
 {
@@ -111,18 +133,20 @@ void EmailIndexer::insert(const QByteArray& key, const KMime::Types::Mailbox::Li
         //
         // Add emails for email auto-completion
         //
-        int id = qHash(mbox.prettyAddress());
+        QString pa = prettyAddress(mbox);
+        int id = qHash(pa);
         try {
             Xapian::Document doc = m_contactDb->get_document(id);
             continue;
         }
         catch (const Xapian::DocNotFoundError&) {
             Xapian::Document doc;
-            doc.set_data(mbox.prettyAddress().toStdString());
+            std::string pretty = pa.toStdString();
+            doc.set_data(pretty);
 
             Xapian::TermGenerator termGen;
             termGen.set_document(doc);
-            termGen.index_text(name);
+            termGen.index_text(pretty);
 
             doc.add_term(mbox.address().data());
             m_contactDb->replace_document(id, doc);
