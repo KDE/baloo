@@ -112,8 +112,8 @@ namespace {
             name = name.mid(1, name.size()-2);
         }
 
-        if (!email.isEmpty())
-            return name;
+        if (name.isEmpty())
+            return email;
         else
             return name + QLatin1String(" <") + QString::fromUtf8(email) + QLatin1Char('>');
     }
