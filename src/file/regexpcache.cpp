@@ -21,8 +21,7 @@
 
 #include "regexpcache.h"
 
-#include <QtCore/QStringList>
-
+#include <QStringList>
 
 RegExpCache::RegExpCache()
 {

@@ -16,11 +16,10 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef _NEPOMUK_FILE_WATCH_H_
-#define _NEPOMUK_FILE_WATCH_H_
+#ifndef _FILE_WATCH_H_
+#define _FILE_WATCH_H_
 
-#include "service2.h"
-
+#include <QObject>
 #include <QtCore/QUrl>
 #include <QtCore/QVariant>
 #include <QtCore/QSet>
@@ -33,18 +32,18 @@ class RegExpCache;
 class ActiveFileQueue;
 class QThread;
 
-namespace Nepomuk2
+namespace Baloo
 {
 
 class MetadataMover;
 
-class FileWatch : public Service2
+class FileWatch : public QObject
 {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "org.kde.nepomuk.FileWatch")
 
 public:
-    FileWatch();
+    explicit FileWatch(QObject* parent = 0);
     ~FileWatch();
 
     /**
@@ -120,13 +119,13 @@ private Q_SLOTS:
      * cleans up the index with respect to removed files, and optionally
      * tells the indexer service to run on the mount path.
      */
-    void slotDeviceMounted(const Nepomuk2::RemovableMediaCache::Entry*);
+    void slotDeviceMounted(const Baloo::RemovableMediaCache::Entry*);
 
     /**
      * Connected to each removable media.
      * Removes all the watches that were added for that removable media
      */
-    void slotDeviceTeardownRequested(const Nepomuk2::RemovableMediaCache::Entry*);
+    void slotDeviceTeardownRequested(const Baloo::RemovableMediaCache::Entry*);
 
     void slotActiveFileQueueTimeout(const QString& url);
 

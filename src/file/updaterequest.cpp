@@ -21,9 +21,9 @@
 
 #include "updaterequest.h"
 
-#include <Soprano/Node> // for qHash(QUrl)
+#include <QUrl>
 
-uint Nepomuk2::qHash(const UpdateRequest& req)
+uint Baloo::qHash(const UpdateRequest& req)
 {
     return qHash(req.source()) ^ qHash(req.target());
 }

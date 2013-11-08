@@ -22,7 +22,7 @@
 #ifndef ACTIVEFILEQUEUE_H
 #define ACTIVEFILEQUEUE_H
 
-#include <QtCore/QObject>
+#include <QObject>
 #include <QString>
 
 /**

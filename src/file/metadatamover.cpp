@@ -17,28 +17,19 @@
 */
 
 #include "metadatamover.h"
-#include "nepomukfilewatch.h"
-#include "datamanagement.h"
-#include "resourcemanager.h"
+#include "filewatch.h"
 
 #include <QtCore/QTimer>
-
-#include <Soprano/Model>
-#include <Soprano/Node>
-#include <Soprano/QueryResultIterator>
-
-#include "nie.h"
 
 #include <KDebug>
 #include <KJob>
 #include <KLocale>
 
-using namespace Nepomuk2::Vocabulary;
+using namespace Baloo;
 
-Nepomuk2::MetadataMover::MetadataMover(Soprano::Model* model, QObject* parent)
+MetadataMover::MetadataMover(QObject* parent)
     : QObject(parent),
-      m_queueMutex(QMutex::Recursive),
-      m_model(model)
+      m_queueMutex(QMutex::Recursive)
 {
     // setup the main update queue timer
     m_queueTimer = new QTimer(this);
@@ -49,12 +40,12 @@ Nepomuk2::MetadataMover::MetadataMover(Soprano::Model* model, QObject* parent)
 }
 
 
-Nepomuk2::MetadataMover::~MetadataMover()
+MetadataMover::~MetadataMover()
 {
 }
 
 
-void Nepomuk2::MetadataMover::moveFileMetadata(const KUrl& from, const KUrl& to)
+void MetadataMover::moveFileMetadata(const KUrl& from, const KUrl& to)
 {
 //    kDebug() << from << to;
     Q_ASSERT(!from.path().isEmpty() && from.path() != "/");
@@ -70,14 +61,14 @@ void Nepomuk2::MetadataMover::moveFileMetadata(const KUrl& from, const KUrl& to)
 }
 
 
-void Nepomuk2::MetadataMover::removeFileMetadata(const KUrl& file)
+void MetadataMover::removeFileMetadata(const KUrl& file)
 {
     Q_ASSERT(!file.path().isEmpty() && file.path() != "/");
     removeFileMetadata(KUrl::List() << file);
 }
 
 
-void Nepomuk2::MetadataMover::removeFileMetadata(const KUrl::List& files)
+void MetadataMover::removeFileMetadata(const KUrl::List& files)
 {
     kDebug() << files;
     QMutexLocker lock(&m_queueMutex);
@@ -92,7 +83,7 @@ void Nepomuk2::MetadataMover::removeFileMetadata(const KUrl::List& files)
 }
 
 
-void Nepomuk2::MetadataMover::slotWorkUpdateQueue()
+void MetadataMover::slotWorkUpdateQueue()
 {
     // lock for initial iteration
     QMutexLocker lock(&m_queueMutex);
@@ -137,48 +128,31 @@ void Nepomuk2::MetadataMover::slotWorkUpdateQueue()
 }
 
 
-namespace
-{
-QUrl fetchUriFromUrl(const QUrl& nieUrl)
-{
-    if (nieUrl.isEmpty()) {
-        return QUrl();
-    }
-
-    QString query = QString::fromLatin1("select ?r where { ?r nie:url %1 . } LIMIT 1")
-                    .arg(Soprano::Node::resourceToN3(nieUrl));
-
-    Soprano::Model* model = Nepomuk2::ResourceManager::instance()->mainModel();
-    Soprano::QueryResultIterator it = model->executeQuery(query, Soprano::Query::QueryLanguageSparqlNoInference);
-    if (it.next())
-        return it[0].uri();
-
-    return QUrl();
-}
-}
-
-void Nepomuk2::MetadataMover::removeMetadata(const KUrl& url)
+void MetadataMover::removeMetadata(const KUrl& url)
 {
     if (url.isEmpty()) {
         kDebug() << "empty path. Looks like a bug somewhere...";
         return;
     }
 
-    const QUrl uri = fetchUriFromUrl(url);
+#warning FIXME: needs a fetchUriFromUrl
+    const QUrl uri;
     if (uri.isEmpty())
         return;
 
     // When the url is a folder we do not remove the metadata for all
     // the files in that folder, since inotify gives us a delete event
     // for each of those files
-    KJob* job = Nepomuk2::removeResources(QList<QUrl>() << uri);
+#warning FIXME: There is no removeResources job
+/*    KJob* job = Nepomuk2::removeResources(QList<QUrl>() << uri);
     job->exec();
     if (job->error())
         kError() << job->errorString();
+    */
 }
 
 
-void Nepomuk2::MetadataMover::updateMetadata(const KUrl& from, const KUrl& to)
+void MetadataMover::updateMetadata(const KUrl& from, const KUrl& to)
 {
     kDebug() << from << "->" << to;
     if (from.isEmpty() || to.isEmpty()) {
@@ -186,6 +160,7 @@ void Nepomuk2::MetadataMover::updateMetadata(const KUrl& from, const KUrl& to)
         return;
     }
 
+    /*
     const QUrl uri = fetchUriFromUrl(from);
     if (!uri.isEmpty()) {
         KJob* job = Nepomuk2::setProperty(QList<QUrl>() << uri, NIE::url(), QVariantList() << to);
@@ -198,13 +173,13 @@ void Nepomuk2::MetadataMover::updateMetadata(const KUrl& from, const KUrl& to)
         // create the metadata in case the target folder is configured to be indexed.
         //
         emit movedWithoutData(to.path());
-    }
+    }*/
 }
 
 
 
 // start the timer in the update thread
-void Nepomuk2::MetadataMover::slotStartUpdateTimer()
+void MetadataMover::slotStartUpdateTimer()
 {
     if (!m_queueTimer->isActive()) {
         m_queueTimer->start();

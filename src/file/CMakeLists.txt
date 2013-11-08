@@ -1,0 +1,39 @@
+
+set(file_SRCS
+    # Filewatch
+    filewatch.cpp
+    updaterequest.cpp
+    activefilequeue.cpp
+    metadatamover.cpp
+
+    # Common
+    regexpcache.cpp
+    fileexcludefilters.cpp
+    removabledeviceindexnotification.cpp
+    removablemediacache.cpp
+
+    main.cpp
+)
+
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+    set(file_SRCS
+        ${file_SRCS}
+        kinotify.cpp
+    )
+    add_definitions(-DBUILD_KINOTIFY)
+endif()
+
+kde4_add_executable(baloo_file ${file_SRCS})
+
+target_link_libraries(baloo_file
+    ${QT_QTCORE_LIBRARY}
+    ${QT_QTSQL_LIBRARY}
+    ${KDE4_KDECORE_LIBS}
+    ${KDE4_KDEUI_LIBS}
+    ${KDE4_SOLID_LIBS}
+    baloocore
+)
+
+install(TARGETS baloo_file ${INSTALL_TARGETS_DEFAULT_ARGS})
+
+add_subdirectory(autotest)

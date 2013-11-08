@@ -21,23 +21,23 @@
 
 #include <QtCore/QStringList>
 
-#include "nepomukcommon_export.h"
-
-namespace Nepomuk2
+namespace Baloo
 {
+
 /**
  * \return A list of default exclude filters to be used
  * in the filewatch service to ignore temporary files
  * and folders that change a lot and as a basis for the
  * user configurable exclude filters in the strigi service.
  */
-NEPOMUKCOMMON_EXPORT QStringList defaultExcludeFilterList();
+QStringList defaultExcludeFilterList();
 
 /**
  * \return The version of the default exclude filter list.
  * This is increased whenever the list changes.
  */
-NEPOMUKCOMMON_EXPORT int defaultExcludeFilterListVersion();
+int defaultExcludeFilterListVersion();
+
 }
 
 #endif

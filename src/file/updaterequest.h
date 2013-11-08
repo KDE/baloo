@@ -19,13 +19,13 @@
    License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _NEPOMUK_UPDATE_REQUEST_H_
-#define _NEPOMUK_UPDATE_REQUEST_H_
+#ifndef _UPDATE_REQUEST_H_
+#define _UPDATE_REQUEST_H_
 
 #include <KUrl>
-#include <QtCore/QDateTime>
+#include <QDateTime>
 
-namespace Nepomuk2
+namespace Baloo
 {
 /**
  * One update request with a timestamp.

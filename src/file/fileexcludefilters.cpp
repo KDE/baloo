@@ -100,8 +100,7 @@ const char* s_defaultFolderExcludeFilters[] = {
 const int s_defaultFolderExcludeFiltersVersion = 1;
 }
 
-
-QStringList Nepomuk2::defaultExcludeFilterList()
+QStringList Baloo::defaultExcludeFilterList()
 {
     QStringList l;
     for (int i = 0; s_defaultFileExcludeFilters[i]; ++i)
@@ -111,7 +110,7 @@ QStringList Nepomuk2::defaultExcludeFilterList()
     return l;
 }
 
-int Nepomuk2::defaultExcludeFilterListVersion()
+int Baloo::defaultExcludeFilterListVersion()
 {
     return qMax(s_defaultFileExcludeFiltersVersion, s_defaultFolderExcludeFiltersVersion);
 }

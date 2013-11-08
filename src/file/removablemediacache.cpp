@@ -65,8 +65,9 @@ bool isUsableVolume(const QString& udi)
 }
 }
 
+using namespace Baloo;
 
-Nepomuk2::RemovableMediaCache::RemovableMediaCache(QObject* parent)
+RemovableMediaCache::RemovableMediaCache(QObject* parent)
     : QObject(parent)
     , m_entryCacheMutex(QMutex::Recursive)
 {
@@ -79,12 +80,12 @@ Nepomuk2::RemovableMediaCache::RemovableMediaCache(QObject* parent)
 }
 
 
-Nepomuk2::RemovableMediaCache::~RemovableMediaCache()
+RemovableMediaCache::~RemovableMediaCache()
 {
 }
 
 
-void Nepomuk2::RemovableMediaCache::initCacheEntries()
+void RemovableMediaCache::initCacheEntries()
 {
     QList<Solid::Device> devices
         = Solid::Device::listFromQuery(QLatin1String("StorageVolume.usage=='FileSystem'"))
@@ -100,7 +101,7 @@ void Nepomuk2::RemovableMediaCache::initCacheEntries()
     }
 }
 
-QList<const Nepomuk2::RemovableMediaCache::Entry*> Nepomuk2::RemovableMediaCache::allMedia() const
+QList<const RemovableMediaCache::Entry*> RemovableMediaCache::allMedia() const
 {
     QMutexLocker lock(&m_entryCacheMutex);
     QList<const Entry*> media;
@@ -109,7 +110,7 @@ QList<const Nepomuk2::RemovableMediaCache::Entry*> Nepomuk2::RemovableMediaCache
     return media;
 }
 
-Nepomuk2::RemovableMediaCache::Entry* Nepomuk2::RemovableMediaCache::createCacheEntry(const Solid::Device& dev)
+RemovableMediaCache::Entry* RemovableMediaCache::createCacheEntry(const Solid::Device& dev)
 {
     QMutexLocker lock(&m_entryCacheMutex);
 
@@ -138,7 +139,7 @@ Nepomuk2::RemovableMediaCache::Entry* Nepomuk2::RemovableMediaCache::createCache
 }
 
 
-const Nepomuk2::RemovableMediaCache::Entry* Nepomuk2::RemovableMediaCache::findEntryByFilePath(const QString& path) const
+const RemovableMediaCache::Entry* RemovableMediaCache::findEntryByFilePath(const QString& path) const
 {
     QMutexLocker lock(&m_entryCacheMutex);
 
@@ -156,7 +157,7 @@ const Nepomuk2::RemovableMediaCache::Entry* Nepomuk2::RemovableMediaCache::findE
 }
 
 
-const Nepomuk2::RemovableMediaCache::Entry* Nepomuk2::RemovableMediaCache::findEntryByUrl(const KUrl& url) const
+const RemovableMediaCache::Entry* RemovableMediaCache::findEntryByUrl(const KUrl& url) const
 {
     QMutexLocker lock(&m_entryCacheMutex);
 
@@ -173,7 +174,7 @@ const Nepomuk2::RemovableMediaCache::Entry* Nepomuk2::RemovableMediaCache::findE
 }
 
 
-QList<const Nepomuk2::RemovableMediaCache::Entry*> Nepomuk2::RemovableMediaCache::findEntriesByMountPath(const QString& path) const
+QList<const RemovableMediaCache::Entry*> RemovableMediaCache::findEntriesByMountPath(const QString& path) const
 {
     QMutexLocker lock(&m_entryCacheMutex);
 
@@ -190,20 +191,20 @@ QList<const Nepomuk2::RemovableMediaCache::Entry*> Nepomuk2::RemovableMediaCache
 }
 
 
-bool Nepomuk2::RemovableMediaCache::hasRemovableSchema(const KUrl& url) const
+bool RemovableMediaCache::hasRemovableSchema(const KUrl& url) const
 {
     return m_usedSchemas.contains(url.scheme());
 }
 
 
-bool Nepomuk2::RemovableMediaCache::isEmpty() const
+bool RemovableMediaCache::isEmpty() const
 {
     QMutexLocker lock(&m_entryCacheMutex);
     return m_metadataCache.isEmpty();
 }
 
 
-void Nepomuk2::RemovableMediaCache::slotSolidDeviceAdded(const QString& udi)
+void RemovableMediaCache::slotSolidDeviceAdded(const QString& udi)
 {
     kDebug() << udi;
 
@@ -213,7 +214,7 @@ void Nepomuk2::RemovableMediaCache::slotSolidDeviceAdded(const QString& udi)
 }
 
 
-void Nepomuk2::RemovableMediaCache::slotSolidDeviceRemoved(const QString& udi)
+void RemovableMediaCache::slotSolidDeviceRemoved(const QString& udi)
 {
     QMutexLocker lock(&m_entryCacheMutex);
     QHash< QString, Entry >::iterator it = m_metadataCache.find(udi);
@@ -225,7 +226,7 @@ void Nepomuk2::RemovableMediaCache::slotSolidDeviceRemoved(const QString& udi)
 }
 
 
-void Nepomuk2::RemovableMediaCache::slotAccessibilityChanged(bool accessible, const QString& udi)
+void RemovableMediaCache::slotAccessibilityChanged(bool accessible, const QString& udi)
 {
     kDebug() << accessible << udi;
 
@@ -243,7 +244,7 @@ void Nepomuk2::RemovableMediaCache::slotAccessibilityChanged(bool accessible, co
     }
 }
 
-void Nepomuk2::RemovableMediaCache::slotTeardownRequested(const QString& udi)
+void RemovableMediaCache::slotTeardownRequested(const QString& udi)
 {
     QMutexLocker lock(&m_entryCacheMutex);
     Entry* entry = &m_metadataCache[udi];
@@ -254,12 +255,12 @@ void Nepomuk2::RemovableMediaCache::slotTeardownRequested(const QString& udi)
 
 
 
-Nepomuk2::RemovableMediaCache::Entry::Entry()
+RemovableMediaCache::Entry::Entry()
 {
 }
 
 
-Nepomuk2::RemovableMediaCache::Entry::Entry(const Solid::Device& device)
+RemovableMediaCache::Entry::Entry(const Solid::Device& device)
     : m_device(device)
 {
     if (device.is<Solid::StorageVolume>()) {
@@ -284,7 +285,7 @@ Nepomuk2::RemovableMediaCache::Entry::Entry(const Solid::Device& device)
     }
 }
 
-QString Nepomuk2::RemovableMediaCache::Entry::constructRelativeUrlString(const QString& path) const
+QString RemovableMediaCache::Entry::constructRelativeUrlString(const QString& path) const
 {
     if (const Solid::StorageAccess* sa = m_device.as<Solid::StorageAccess>()) {
         if (sa->isAccessible()) {
@@ -297,13 +298,13 @@ QString Nepomuk2::RemovableMediaCache::Entry::constructRelativeUrlString(const Q
     return QString();
 }
 
-KUrl Nepomuk2::RemovableMediaCache::Entry::constructRelativeUrl(const QString& path) const
+KUrl RemovableMediaCache::Entry::constructRelativeUrl(const QString& path) const
 {
     return KUrl(constructRelativeUrlString(path));
 }
 
 
-KUrl Nepomuk2::RemovableMediaCache::Entry::constructLocalFileUrl(const KUrl& filexUrl) const
+KUrl RemovableMediaCache::Entry::constructLocalFileUrl(const KUrl& filexUrl) const
 {
     if (const Solid::StorageAccess* sa = m_device.as<Solid::StorageAccess>()) {
         if (sa->isAccessible()) {
@@ -318,7 +319,7 @@ KUrl Nepomuk2::RemovableMediaCache::Entry::constructLocalFileUrl(const KUrl& fil
     return QString();
 }
 
-QString Nepomuk2::RemovableMediaCache::Entry::mountPath() const
+QString RemovableMediaCache::Entry::mountPath() const
 {
     if (const Solid::StorageAccess* sa = m_device.as<Solid::StorageAccess>()) {
         return sa->filePath();
@@ -327,7 +328,7 @@ QString Nepomuk2::RemovableMediaCache::Entry::mountPath() const
     }
 }
 
-bool Nepomuk2::RemovableMediaCache::Entry::isMounted() const
+bool RemovableMediaCache::Entry::isMounted() const
 {
     if (const Solid::StorageAccess* sa = m_device.as<Solid::StorageAccess>()) {
         return sa->isAccessible();

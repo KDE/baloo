@@ -22,9 +22,9 @@
 
 #include "activefilequeue.h"
 
-#include <QtCore/QQueue>
-#include <QtCore/QHash>
-#include <QtCore/QTimer>
+#include <QQueue>
+#include <QHash>
+#include <QTimer>
 
 
 namespace

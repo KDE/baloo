@@ -16,13 +16,13 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef _NEPOMUK_METADATA_MOVER_H_
-#define _NEPOMUK_METADATA_MOVER_H_
+#ifndef _METADATA_MOVER_H_
+#define _METADATA_MOVER_H_
 
-#include <QtCore/QMutex>
-#include <QtCore/QQueue>
-#include <QtCore/QSet>
-#include <QtCore/QDateTime>
+#include <QMutex>
+#include <QQueue>
+#include <QSet>
+#include <QDateTime>
 
 #include <KUrl>
 
@@ -30,19 +30,15 @@
 
 class QTimer;
 
-namespace Soprano
+namespace Baloo
 {
-class Model;
-}
 
-namespace Nepomuk2
-{
 class MetadataMover : public QObject
 {
     Q_OBJECT
 
 public:
-    MetadataMover(Soprano::Model* model, QObject* parent = 0);
+    explicit MetadataMover(QObject* parent = 0);
     ~MetadataMover();
 
 public Q_SLOTS:
@@ -104,7 +100,6 @@ private:
 
     QTimer* m_queueTimer;
 
-    Soprano::Model* m_model;
 };
 }
 

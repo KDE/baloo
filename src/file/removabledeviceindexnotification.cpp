@@ -20,7 +20,7 @@
 */
 
 #include "removabledeviceindexnotification.h"
-#include "fileindexerinterface.h"
+//#include "fileindexerinterface.h"
 
 #include <KLocale>
 #include <KConfig>
@@ -31,7 +31,7 @@
 
 #include <Solid/StorageAccess>
 
-RemovableDeviceIndexNotification::RemovableDeviceIndexNotification(const Nepomuk2::RemovableMediaCache::Entry* medium,
+RemovableDeviceIndexNotification::RemovableDeviceIndexNotification(const Baloo::RemovableMediaCache::Entry* medium,
         QObject* parent)
     : KNotification(QLatin1String("nepomuk_new_removable_device"),
                     KNotification::Persistent,

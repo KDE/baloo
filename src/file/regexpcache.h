@@ -22,12 +22,10 @@
 #ifndef _REGEXP_CACHE_H_
 #define _REGEXP_CACHE_H_
 
-#include <QtCore/QList>
-#include <QtCore/QRegExp>
+#include <QList>
+#include <QRegExp>
 
-#include "nepomukcommon_export.h"
-
-class NEPOMUKCOMMON_EXPORT RegExpCache
+class RegExpCache
 {
 public:
     RegExpCache();

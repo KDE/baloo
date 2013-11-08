@@ -33,7 +33,7 @@ class RemovableDeviceIndexNotification : public KNotification
     Q_OBJECT
 
 public:
-    RemovableDeviceIndexNotification(const Nepomuk2::RemovableMediaCache::Entry* medium, QObject* parent = 0);
+    RemovableDeviceIndexNotification(const Baloo::RemovableMediaCache::Entry* medium, QObject* parent = 0);
 
 private slots:
     void slotActionActivated(uint action);
@@ -42,7 +42,7 @@ private slots:
     void slotActionConfigureActivated();
 
 private:
-    const Nepomuk2::RemovableMediaCache::Entry* m_medium;
+    const Baloo::RemovableMediaCache::Entry* m_medium;
 };
 
 #endif // REMOVABLEDEVICEINDEXNOTIFICATION_H

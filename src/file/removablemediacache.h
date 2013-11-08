@@ -19,10 +19,8 @@
    License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef NEPOMUK_REMOVABLEMEDIACACHE_H
-#define NEPOMUK_REMOVABLEMEDIACACHE_H
-
-#include "nepomukcommon_export.h"
+#ifndef REMOVABLEMEDIACACHE_H
+#define REMOVABLEMEDIACACHE_H
 
 #include <QtCore/QObject>
 #include <QtCore/QMutex>
@@ -33,7 +31,7 @@
 #include <KUrl>
 
 
-namespace Nepomuk2
+namespace Baloo
 {
 
 /**
@@ -43,7 +41,7 @@ namespace Nepomuk2
  * more or less unique URIs for each device allowing to store
  * device-specific configuration.
  */
-class NEPOMUKCOMMON_EXPORT RemovableMediaCache : public QObject
+class RemovableMediaCache : public QObject
 {
     Q_OBJECT
 
@@ -51,7 +49,7 @@ public:
     RemovableMediaCache(QObject* parent = 0);
     ~RemovableMediaCache();
 
-    class NEPOMUKCOMMON_EXPORT Entry
+    class Entry
     {
     public:
         Entry();
@@ -109,10 +107,10 @@ public:
     bool isEmpty() const;
 
 signals:
-    void deviceAdded(const Nepomuk2::RemovableMediaCache::Entry* entry);
-    void deviceRemoved(const Nepomuk2::RemovableMediaCache::Entry* entry);
-    void deviceMounted(const Nepomuk2::RemovableMediaCache::Entry* entry);
-    void deviceTeardownRequested(const Nepomuk2::RemovableMediaCache::Entry* entry);
+    void deviceAdded(const Baloo::RemovableMediaCache::Entry* entry);
+    void deviceRemoved(const Baloo::RemovableMediaCache::Entry* entry);
+    void deviceMounted(const Baloo::RemovableMediaCache::Entry* entry);
+    void deviceTeardownRequested(const Baloo::RemovableMediaCache::Entry* entry);
 
 private slots:
     void slotSolidDeviceAdded(const QString& udi);
@@ -136,6 +134,6 @@ private:
     mutable QMutex m_entryCacheMutex;
 };
 
-} // namespace Nepomuk2
+} // namespace Baloo
 
-#endif // NEPOMUK_REMOVABLEMEDIACACHE_H
+#endif // REMOVABLEMEDIACACHE_H

@@ -21,9 +21,9 @@
 #ifndef OPTIMIZED_BYTE_ARRAY_H
 #define OPTIMIZED_BYTE_ARRAY_H
 
-#include <QtCore/QHash>
-#include <QtCore/QVector>
-#include <QtCore/QByteArray>
+#include <QHash>
+#include <QVector>
+#include <QByteArray>
 #include <QDir>
 #include <QSet>
 #include <KDebug>

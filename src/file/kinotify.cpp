@@ -21,14 +21,14 @@
 #include "kinotify.h"
 #include "optimizedbytearray.h"
 
-#include <QtCore/QSocketNotifier>
-#include <QtCore/QHash>
-#include <QtCore/QDirIterator>
-#include <QtCore/QFile>
-#include <QtCore/QScopedArrayPointer>
-#include <QtCore/QLinkedList>
-#include <QtCore/QTimer>
-#include <QtCore/QPair>
+#include <QSocketNotifier>
+#include <QHash>
+#include <QDirIterator>
+#include <QFile>
+#include <QScopedArrayPointer>
+#include <QLinkedList>
+#include <QTimer>
+#include <QPair>
 
 #include <kdebug.h>
 
