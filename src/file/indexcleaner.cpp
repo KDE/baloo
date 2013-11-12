@@ -30,22 +30,7 @@
 #include <KDebug>
 #include <KConfigGroup>
 
-#include "resource.h"
-#include "resourcemanager.h"
-
-#include <Soprano/Model>
-#include <Soprano/QueryResultIterator>
-#include <Soprano/NodeIterator>
-#include <Soprano/Node>
-
-#include <Soprano/Vocabulary/RDF>
-#include <Soprano/Vocabulary/Xesam>
-#include <Soprano/Vocabulary/NAO>
-#include "nfo.h"
-#include "nie.h"
-
-using namespace Nepomuk2::Vocabulary;
-using namespace Soprano::Vocabulary;
+using namespace Baloo;
 
 namespace
 {
@@ -62,7 +47,7 @@ QString constructExcludeIncludeFoldersFilter(const QStringList& folders)
     foreach(const QString & folder, folders) {
         if (!used.contains(folder)) {
             used << folder;
-            filters << QString::fromLatin1("(?url!=%1)").arg(Soprano::Node::resourceToN3(KUrl(folder)));
+            //filters << QString::fromLatin1("(?url!=%1)").arg(Soprano::Node::resourceToN3(KUrl(folder)));
         }
     }
     return filters.join(QLatin1String(" && "));
@@ -70,7 +55,7 @@ QString constructExcludeIncludeFoldersFilter(const QStringList& folders)
 }
 
 
-Nepomuk2::IndexCleaner::IndexCleaner(QObject* parent)
+IndexCleaner::IndexCleaner(QObject* parent)
     : KJob(parent),
       m_suspended(false),
       m_delay(0)
@@ -79,13 +64,14 @@ Nepomuk2::IndexCleaner::IndexCleaner(QObject* parent)
 }
 
 
-void Nepomuk2::IndexCleaner::start()
+void IndexCleaner::start()
 {
     kDebug() << "CLEANING!!";
-    const QString folderFilter = constructExcludeFolderFilter(Nepomuk2::FileIndexerConfig::self());
+    const QString folderFilter = constructExcludeFolderFilter(FileIndexerConfig::self());
 
     const int limit = 20;
 
+    /*
     //
     // Create all queries that return indexed data which should not be there anymore.
     //
@@ -121,8 +107,8 @@ void Nepomuk2::IndexCleaner::start()
     //
     // 2. Build filter query for all exclude filters
     //
-    const QString fileFilters = constructExcludeFiltersFilenameFilter(Nepomuk2::FileIndexerConfig::self());
-    const QString includeExcludeFilters = constructExcludeIncludeFoldersFilter(Nepomuk2::FileIndexerConfig::self()->includeFolders());
+    const QString fileFilters = constructExcludeFiltersFilenameFilter(FileIndexerConfig::self());
+    const QString includeExcludeFilters = constructExcludeIncludeFoldersFilter(FileIndexerConfig::self()->includeFolders());
 
     QString filters;
     if (!includeExcludeFilters.isEmpty() && !fileFilters.isEmpty())
@@ -148,7 +134,7 @@ void Nepomuk2::IndexCleaner::start()
     }
 
     // 2.2. Data for files which have paths that are excluded through exclude filters
-    const QString excludeFiltersFolderFilter = constructExcludeFiltersFolderFilter(Nepomuk2::FileIndexerConfig::self());
+    const QString excludeFiltersFolderFilter = constructExcludeFiltersFolderFilter(FileIndexerConfig::self());
     if (!excludeFiltersFolderFilter.isEmpty()) {
         m_removalQueries << QString::fromLatin1("select distinct ?r where { "
                                                 "graph ?g { ?r nie:url ?url . } . "
@@ -166,10 +152,10 @@ void Nepomuk2::IndexCleaner::start()
     m_query = m_removalQueries.dequeue();
     if (!m_suspended) {
         QTimer::singleShot(m_delay, this, SLOT(clearNextBatch()));
-    }
+    }*/
 }
 
-void Nepomuk2::IndexCleaner::slotRemoveResourcesDone(KJob* job)
+void IndexCleaner::slotRemoveResourcesDone(KJob* job)
 {
     if (job->error()) {
         kDebug() << job->errorString();
@@ -181,8 +167,9 @@ void Nepomuk2::IndexCleaner::slotRemoveResourcesDone(KJob* job)
     }
 }
 
-void Nepomuk2::IndexCleaner::clearNextBatch()
+void IndexCleaner::clearNextBatch()
 {
+    /*
     QList<QUrl> resources;
     Soprano::QueryResultIterator it
         = ResourceManager::instance()->mainModel()->executeQuery(m_query, Soprano::Query::QueryLanguageSparqlNoInference);
@@ -193,7 +180,7 @@ void Nepomuk2::IndexCleaner::clearNextBatch()
     if (!resources.isEmpty()) {
         kDebug() << m_query;
         kDebug() << resources;
-        KJob* job = Nepomuk2::clearIndexedData(resources);
+        KJob* job = clearIndexedData(resources);
         connect(job, SIGNAL(finished(KJob*)), this, SLOT(slotRemoveResourcesDone(KJob*)), Qt::QueuedConnection);
     }
 
@@ -204,17 +191,17 @@ void Nepomuk2::IndexCleaner::clearNextBatch()
 
     else {
         emitResult();
-    }
+    }*/
 }
 
-bool Nepomuk2::IndexCleaner::doSuspend()
+bool IndexCleaner::doSuspend()
 {
     QMutexLocker locker(&m_stateMutex);
     m_suspended = true;
     return true;
 }
 
-bool Nepomuk2::IndexCleaner::doResume()
+bool IndexCleaner::doResume()
 {
     QMutexLocker locker(&m_stateMutex);
     if (m_suspended) {
@@ -224,7 +211,7 @@ bool Nepomuk2::IndexCleaner::doResume()
     return true;
 }
 
-void Nepomuk2::IndexCleaner::setDelay(int msecs)
+void IndexCleaner::setDelay(int msecs)
 {
     m_delay = msecs;
 }
@@ -299,7 +286,7 @@ void cleanupList(QList<QPair<QString, bool> >& result)
 }
 
 // static
-QString Nepomuk2::IndexCleaner::constructExcludeFolderFilter(FileIndexerConfig* cfg)
+QString IndexCleaner::constructExcludeFolderFilter(FileIndexerConfig* cfg)
 {
     //
     // This filter consists of two parts:
@@ -336,7 +323,7 @@ QString excludeFilterToSparqlRegex(const QString& filter)
 }
 
 // static
-QString Nepomuk2::IndexCleaner::constructExcludeFiltersFilenameFilter(Nepomuk2::FileIndexerConfig* cfg)
+QString IndexCleaner::constructExcludeFiltersFilenameFilter(FileIndexerConfig* cfg)
 {
     //
     // This is stright-forward: we convert the filters into SPARQL regex syntax
@@ -351,7 +338,7 @@ QString Nepomuk2::IndexCleaner::constructExcludeFiltersFilenameFilter(Nepomuk2::
 
 
 // static
-QString Nepomuk2::IndexCleaner::constructExcludeFiltersFolderFilter(Nepomuk2::FileIndexerConfig* cfg)
+QString IndexCleaner::constructExcludeFiltersFolderFilter(FileIndexerConfig* cfg)
 {
     //
     // In order to find the entries which we should remove based on matching exclude filters in path

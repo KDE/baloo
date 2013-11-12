@@ -26,7 +26,7 @@
 #include <KJob>
 #include <Soprano/QueryResultIterator>
 
-namespace Nepomuk2
+namespace Baloo
 {
 
 class FileIndexingQueue : public IndexingQueue

@@ -41,8 +41,9 @@
 #include <KConfigGroup>
 #include <KLocale>
 
+using namespace Baloo;
 
-Nepomuk2::IndexScheduler::IndexScheduler(QObject* parent)
+IndexScheduler::IndexScheduler(QObject* parent)
     : QObject(parent)
     , m_indexing(false)
     , m_lastBasicIndexingFile(QDateTime::currentDateTime())
@@ -67,8 +68,8 @@ Nepomuk2::IndexScheduler::IndexScheduler(QObject* parent)
 
     // Stop indexing when a device is unmounted
     RemovableMediaCache* cache = new RemovableMediaCache(this);
-    connect(cache, SIGNAL(deviceTeardownRequested(const Nepomuk2::RemovableMediaCache::Entry*)),
-            this, SLOT(slotTeardownRequested(const Nepomuk2::RemovableMediaCache::Entry*)));
+    connect(cache, SIGNAL(deviceTeardownRequested(const RemovableMediaCache::Entry*)),
+            this, SLOT(slotTeardownRequested(const RemovableMediaCache::Entry*)));
 
     m_basicIQ = new BasicIndexingQueue(this);
     m_fileIQ = new FileIndexingQueue(this);
@@ -113,12 +114,12 @@ Nepomuk2::IndexScheduler::IndexScheduler(QObject* parent)
 }
 
 
-Nepomuk2::IndexScheduler::~IndexScheduler()
+IndexScheduler::~IndexScheduler()
 {
 }
 
 
-void Nepomuk2::IndexScheduler::suspend()
+void IndexScheduler::suspend()
 {
     if (m_state != State_Suspended) {
         m_state = State_Suspended;
@@ -130,7 +131,7 @@ void Nepomuk2::IndexScheduler::suspend()
 }
 
 
-void Nepomuk2::IndexScheduler::resume()
+void IndexScheduler::resume()
 {
     if (m_state == State_Suspended) {
         m_state = State_Normal;
@@ -142,7 +143,7 @@ void Nepomuk2::IndexScheduler::resume()
 }
 
 
-void Nepomuk2::IndexScheduler::setSuspended(bool suspended)
+void IndexScheduler::setSuspended(bool suspended)
 {
     if (suspended)
         suspend();
@@ -150,22 +151,22 @@ void Nepomuk2::IndexScheduler::setSuspended(bool suspended)
         resume();
 }
 
-bool Nepomuk2::IndexScheduler::isSuspended() const
+bool IndexScheduler::isSuspended() const
 {
     return m_state == State_Suspended;
 }
 
-bool Nepomuk2::IndexScheduler::isCleaning() const
+bool IndexScheduler::isCleaning() const
 {
     return m_state == State_Cleaning;
 }
 
-bool Nepomuk2::IndexScheduler::isIndexing() const
+bool IndexScheduler::isIndexing() const
 {
     return m_indexing;
 }
 
-QUrl Nepomuk2::IndexScheduler::currentUrl() const
+QUrl IndexScheduler::currentUrl() const
 {
     if (!m_fileIQ->currentUrl().isEmpty())
         return m_fileIQ->currentUrl();
@@ -173,13 +174,13 @@ QUrl Nepomuk2::IndexScheduler::currentUrl() const
         return m_basicIQ->currentUrl();
 }
 
-Nepomuk2::UpdateDirFlags Nepomuk2::IndexScheduler::currentFlags() const
+UpdateDirFlags IndexScheduler::currentFlags() const
 {
     return m_basicIQ->currentFlags();
 }
 
 
-void Nepomuk2::IndexScheduler::setIndexingStarted(bool started)
+void IndexScheduler::setIndexingStarted(bool started)
 {
     if (started != m_indexing) {
         m_indexing = started;
@@ -191,17 +192,17 @@ void Nepomuk2::IndexScheduler::setIndexingStarted(bool started)
     }
 }
 
-void Nepomuk2::IndexScheduler::slotStartedIndexing()
+void IndexScheduler::slotStartedIndexing()
 {
     m_eventMonitor->enable();
 }
 
-void Nepomuk2::IndexScheduler::slotFinishedIndexing()
+void IndexScheduler::slotFinishedIndexing()
 {
     m_eventMonitor->suspendDiskSpaceMonitor();
 }
 
-void Nepomuk2::IndexScheduler::slotCleaningDone()
+void IndexScheduler::slotCleaningDone()
 {
     m_cleaner = 0;
 
@@ -209,19 +210,19 @@ void Nepomuk2::IndexScheduler::slotCleaningDone()
     slotScheduleIndexing();
 }
 
-void Nepomuk2::IndexScheduler::updateDir(const QString& path, UpdateDirFlags flags)
+void IndexScheduler::updateDir(const QString& path, UpdateDirFlags flags)
 {
     m_basicIQ->enqueue(path, flags);
 }
 
 
-void Nepomuk2::IndexScheduler::updateAll(bool forceUpdate)
+void IndexScheduler::updateAll(bool forceUpdate)
 {
     queueAllFoldersForUpdate(forceUpdate);
 }
 
 
-void Nepomuk2::IndexScheduler::queueAllFoldersForUpdate(bool forceUpdate)
+void IndexScheduler::queueAllFoldersForUpdate(bool forceUpdate)
 {
     m_basicIQ->clear();
 
@@ -236,7 +237,7 @@ void Nepomuk2::IndexScheduler::queueAllFoldersForUpdate(bool forceUpdate)
 }
 
 
-void Nepomuk2::IndexScheduler::slotIncludeFolderListChanged(const QStringList& added, const QStringList& removed)
+void IndexScheduler::slotIncludeFolderListChanged(const QStringList& added, const QStringList& removed)
 {
     kDebug() << added << removed;
     foreach(const QString & path, removed) {
@@ -251,7 +252,7 @@ void Nepomuk2::IndexScheduler::slotIncludeFolderListChanged(const QStringList& a
     }
 }
 
-void Nepomuk2::IndexScheduler::slotExcludeFolderListChanged(const QStringList& added, const QStringList& removed)
+void IndexScheduler::slotExcludeFolderListChanged(const QStringList& added, const QStringList& removed)
 {
     kDebug() << added << removed;
     foreach(const QString & path, added) {
@@ -266,7 +267,7 @@ void Nepomuk2::IndexScheduler::slotExcludeFolderListChanged(const QStringList& a
     }
 }
 
-void Nepomuk2::IndexScheduler::restartCleaner()
+void IndexScheduler::restartCleaner()
 {
     if (m_cleaner) {
         m_cleaner->kill();
@@ -282,7 +283,7 @@ void Nepomuk2::IndexScheduler::restartCleaner()
 }
 
 
-void Nepomuk2::IndexScheduler::slotConfigFiltersChanged()
+void IndexScheduler::slotConfigFiltersChanged()
 {
     restartCleaner();
 
@@ -294,18 +295,18 @@ void Nepomuk2::IndexScheduler::slotConfigFiltersChanged()
 }
 
 
-void Nepomuk2::IndexScheduler::analyzeFile(const QString& path)
+void IndexScheduler::analyzeFile(const QString& path)
 {
     m_basicIQ->enqueue(path);
 }
 
 
-void Nepomuk2::IndexScheduler::slotBeginIndexingFile(const QUrl&)
+void IndexScheduler::slotBeginIndexingFile(const QUrl&)
 {
     setIndexingStarted(true);
 }
 
-void Nepomuk2::IndexScheduler::slotEndIndexingFile(const QUrl&)
+void IndexScheduler::slotEndIndexingFile(const QUrl&)
 {
     const QUrl basicUrl = m_basicIQ->currentUrl();
     const QUrl fileUrl = m_fileIQ->currentUrl();
@@ -318,7 +319,7 @@ void Nepomuk2::IndexScheduler::slotEndIndexingFile(const QUrl&)
 //
 // Slow down the Basic Indexing if we have > x files
 //
-void Nepomuk2::IndexScheduler::slotEndBasicIndexingFile()
+void IndexScheduler::slotEndBasicIndexingFile()
 {
     QDateTime current = QDateTime::currentDateTime();
     if (current.secsTo(m_lastBasicIndexingFile) > 60) {
@@ -341,7 +342,7 @@ void Nepomuk2::IndexScheduler::slotEndBasicIndexingFile()
 }
 
 
-void Nepomuk2::IndexScheduler::slotTeardownRequested(const Nepomuk2::RemovableMediaCache::Entry* entry)
+void IndexScheduler::slotTeardownRequested(const RemovableMediaCache::Entry* entry)
 {
     const QString path = entry->mountPath();
 
@@ -349,7 +350,7 @@ void Nepomuk2::IndexScheduler::slotTeardownRequested(const Nepomuk2::RemovableMe
     m_fileIQ->clear(path);
 }
 
-void Nepomuk2::IndexScheduler::slotScheduleIndexing()
+void IndexScheduler::slotScheduleIndexing()
 {
     if (m_state == State_Suspended) {
         kDebug() << "Suspended";
@@ -415,7 +416,7 @@ void Nepomuk2::IndexScheduler::slotScheduleIndexing()
     }
 }
 
-QString Nepomuk2::IndexScheduler::userStatusString() const
+QString IndexScheduler::userStatusString() const
 {
     bool indexing = isIndexing();
     bool suspended = isSuspended();
@@ -435,12 +436,12 @@ QString Nepomuk2::IndexScheduler::userStatusString() const
     }
 }
 
-Nepomuk2::IndexScheduler::State Nepomuk2::IndexScheduler::currentStatus() const
+IndexScheduler::State IndexScheduler::currentStatus() const
 {
     return m_state;
 }
 
-void Nepomuk2::IndexScheduler::emitStatusStringChanged()
+void IndexScheduler::emitStatusStringChanged()
 {
     QString status = userStatusString();
     if (status != m_oldStatus) {
@@ -448,7 +449,3 @@ void Nepomuk2::IndexScheduler::emitStatusStringChanged()
         m_oldStatus = status;
     }
 }
-
-
-
-#include "indexscheduler.moc"

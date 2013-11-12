@@ -18,10 +18,6 @@
 */
 
 #include "util.h"
-#include "datamanagement.h"
-#include "nepomuktools.h"
-#include "resourcemanager.h"
-#include "kext.h"
 
 #include <QtCore/QUrl>
 #include <QtCore/QFile>
@@ -35,17 +31,17 @@
 #include <KGlobal>
 #include <KComponentData>
 
-#include <Soprano/Model>
-#include <Soprano/QueryResultIterator>
+using namespace Baloo;
 
-
-KJob* Nepomuk2::clearIndexedData(const QUrl& url)
+KJob* clearIndexedData(const QUrl& url)
 {
-    return clearIndexedData(QList<QUrl>() << url);
+    return 0;//clearIndexedData(QList<QUrl>() << url);
 }
 
-KJob* Nepomuk2::clearIndexedData(const QList<QUrl>& urls)
+KJob* clearIndexedData(const QList<QUrl>& urls)
 {
+    return 0;
+    /*
     if (urls.isEmpty())
         return 0;
 
@@ -60,16 +56,16 @@ KJob* Nepomuk2::clearIndexedData(const QList<QUrl>& urls)
         component = KComponentData(QByteArray("nepomukindexer"),
                                    QByteArray(), KComponentData::SkipMainComponentRegistration);
     }
-    return Nepomuk2::removeDataByApplication(urls, RemoveSubResoures, component);
+    return removeDataByApplication(urls, RemoveSubResoures, component);
+    */
 }
-
-using namespace Nepomuk2::Vocabulary;
 
 //
 // We don't really care if the indexing level is in the incorrect graph
 //
-void Nepomuk2::updateIndexingLevel(const QUrl& uri, int level)
+void updateIndexingLevel(const QUrl& uri, int level)
 {
+    /*
     QString uriN3 = Soprano::Node::resourceToN3(uri);
 
     QString query = QString::fromLatin1("select ?g ?l where { graph ?g { %1 kext:indexingLevel ?l . } }")
@@ -97,9 +93,10 @@ void Nepomuk2::updateIndexingLevel(const QUrl& uri, int level)
     }
     // Practically, this should never happen, but still
     else {
-        QScopedPointer<KJob> job(Nepomuk2::setProperty(QList<QUrl>() << uri, KExt::indexingLevel(),
+        QScopedPointer<KJob> job(setProperty(QList<QUrl>() << uri, KExt::indexingLevel(),
                                  QVariantList() << QVariant(level)));
         job->setAutoDelete(false);
         job->exec();
     }
+    */
 }

@@ -23,9 +23,7 @@
 #include <QtCore/QTimer>
 #include <KDebug>
 
-namespace Nepomuk2
-{
-
+using namespace Baloo;
 
 IndexingQueue::IndexingQueue(QObject* parent): QObject(parent)
 {
@@ -90,8 +88,4 @@ void IndexingQueue::finishIteration()
 void IndexingQueue::setDelay(int msec)
 {
     m_delay = msec;
-}
-
-
-
 }

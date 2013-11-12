@@ -22,24 +22,18 @@
 #include "fileindexingjob.h"
 #include "util.h"
 #include "fileindexerconfig.h"
-#include "resourcemanager.h"
-#include "kext.h"
 
 #include <KUrl>
 #include <KDebug>
 #include <KProcess>
 #include <KStandardDirs>
 
-#include <Soprano/Node>
-#include <Soprano/Model>
-#include <Soprano/QueryResultIterator>
-
 #include <QtCore/QFileInfo>
 #include <QtCore/QTimer>
 
-using namespace Nepomuk2::Vocabulary;
+using namespace Baloo;
 
-Nepomuk2::FileIndexingJob::FileIndexingJob(const QUrl& fileUrl, QObject* parent)
+FileIndexingJob::FileIndexingJob(const QUrl& fileUrl, QObject* parent)
     : KJob(parent),
       m_url(fileUrl)
 {
@@ -50,7 +44,7 @@ Nepomuk2::FileIndexingJob::FileIndexingJob(const QUrl& fileUrl, QObject* parent)
             this, SLOT(slotProcessTimerTimeout()));
 }
 
-void Nepomuk2::FileIndexingJob::start()
+void FileIndexingJob::start()
 {
     if (!QFile::exists(m_url.toLocalFile())) {
         QTimer::singleShot(0, this, SLOT(slotProcessNonExistingFile()));
@@ -76,8 +70,9 @@ void Nepomuk2::FileIndexingJob::start()
     m_processTimer->start(5 * 60 * 1000);
 }
 
-void Nepomuk2::FileIndexingJob::slotProcessNonExistingFile()
+void FileIndexingJob::slotProcessNonExistingFile()
 {
+    /*
     QString query = QString::fromLatin1("select ?r where { ?r nie:url %1. }")
                     .arg(Soprano::Node::resourceToN3(m_url));
     Soprano::Model* model = ResourceManager::instance()->mainModel();
@@ -89,12 +84,13 @@ void Nepomuk2::FileIndexingJob::slotProcessNonExistingFile()
         // which is not mounted. When the device is mounted, then the file will get reindexed
         model->removeAllStatements(uri, KExt::indexingLevel(), QUrl());
     }
+    */
 
     emitResult();
 }
 
 
-void Nepomuk2::FileIndexingJob::slotIndexedFile(int exitCode, QProcess::ExitStatus exitStatus)
+void FileIndexingJob::slotIndexedFile(int exitCode, QProcess::ExitStatus exitStatus)
 {
     // stop the timer since there is no need to kill the process anymore
     m_processTimer->stop();
@@ -118,7 +114,7 @@ void Nepomuk2::FileIndexingJob::slotIndexedFile(int exitCode, QProcess::ExitStat
     emitResult();
 }
 
-void Nepomuk2::FileIndexingJob::slotProcessTimerTimeout()
+void FileIndexingJob::slotProcessTimerTimeout()
 {
     m_process->disconnect(this);
     m_process->kill();

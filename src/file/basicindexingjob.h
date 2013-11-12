@@ -20,25 +20,31 @@
  *
  */
 
-#include <QCoreApplication>
+#ifndef BASICINDEXINGJOB_H
+#define BASICINDEXINGJOB_H
 
-#include <KComponentData>
-#include <KAboutData>
+#include <KJob>
 
-#include "filewatch.h"
-#include "fileindexer.h"
+namespace Baloo {
 
-int main(int argc, char** argv) {
-    QCoreApplication app(argc, argv);
+class BasicIndexingJob : public KJob
+{
+public:
+    BasicIndexingJob(const QString& url, const QString& mimetype, QObject* parent = 0);
+    ~BasicIndexingJob();
 
-    KAboutData aboutData("biloo_file", "biloo_file", ki18n("Biloo File"), "0.1",
-                         ki18n("An application to handle file metadata"),
-                         KAboutData::License_GPL_V2);
+    virtual void start();
 
-    KComponentData data(aboutData, KComponentData::RegisterAsMainComponent);
+private slots:
+    void doStart();
 
-    Baloo::FileWatch filewatcher(&app);
-    Baloo::FileIndexer fileIndexer(&app);
+private:
+    int fetchFileId(const QString& url);
 
-    return app.exec();
+    QString m_url;
+    QString m_mimetype;
+};
+
 }
+
+#endif // BASICINDEXINGJOB_H

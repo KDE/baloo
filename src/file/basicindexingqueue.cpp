@@ -21,19 +21,13 @@
 #include "basicindexingqueue.h"
 #include "fileindexerconfig.h"
 #include "util.h"
-#include "indexer/simpleindexer.h"
-
-#include "resourcemanager.h"
-
-#include <Soprano/Model>
-#include <Soprano/QueryResultIterator>
+#include "basicindexingjob.h"
 
 #include <KDebug>
 #include <KMimeType>
 #include <QtCore/QDateTime>
 
-namespace Nepomuk2
-{
+using namespace Baloo;
 
 BasicIndexingQueue::BasicIndexingQueue(QObject* parent): IndexingQueue(parent)
 {
@@ -163,8 +157,13 @@ bool BasicIndexingQueue::shouldIndex(const QString& path, const QString& mimetyp
     if (!fileInfo.exists())
         return false;
 
-    bool needToIndex = false;
+    bool needToIndex = true;//false;
 
+    /*
+     * FIXME: - Query Xapian and check its stored mtime
+     *        - Need to first store the file url mapping
+     *        - Fetch the mtime
+     *
     Soprano::Model* model = ResourceManager::instance()->mainModel();
 
     // Optimization: We don't care about the mtime of directories. If it has been indexed once
@@ -181,7 +180,7 @@ bool BasicIndexingQueue::shouldIndex(const QString& path, const QString& mimetyp
                              Soprano::Node::literalToN3(Soprano::LiteralValue(fileInfo.lastModified())));
 
         needToIndex = !model->executeQuery(query, Soprano::Query::QueryLanguageSparqlNoInference).boolValue();
-    }
+    }*/
 
     if (needToIndex) {
         kDebug() << path;
@@ -202,20 +201,10 @@ void BasicIndexingQueue::index(const QString& path)
     const QUrl fileUrl = QUrl::fromLocalFile(path);
     emit beginIndexingFile(fileUrl);
 
-    KJob* job = clearIndexedData(fileUrl);
-    connect(job, SIGNAL(finished(KJob*)), this, SLOT(slotClearIndexedDataFinished(KJob*)));
-}
+    KJob* job = new Baloo::BasicIndexingJob(path, m_currentMimeType);
+    connect(job, SIGNAL(finished(KJob*)), this, SLOT(slotIndexingFinished(KJob*)));
 
-void BasicIndexingQueue::slotClearIndexedDataFinished(KJob* job)
-{
-    if (job->error()) {
-        kDebug() << job->errorString();
-    }
-
-    SimpleIndexingJob* indexingJob = new SimpleIndexingJob(m_currentUrl, m_currentMimeType);
-    indexingJob->start();
-
-    connect(indexingJob, SIGNAL(finished(KJob*)), this, SLOT(slotIndexingFinished(KJob*)));
+    job->start();
 }
 
 void BasicIndexingQueue::slotIndexingFinished(KJob* job)
@@ -233,7 +222,4 @@ void BasicIndexingQueue::slotIndexingFinished(KJob* job)
 
     // Continue the queue
     finishIteration();
-}
-
-
 }

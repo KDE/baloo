@@ -24,7 +24,7 @@
 
 class KJob;
 
-namespace Nepomuk2
+namespace Baloo
 {
 /// remove all indexed data for \p url the datamanagement way
 KJob* clearIndexedData(const QUrl& url);

@@ -55,9 +55,11 @@ bool isDirHidden(const QString& path)
 }
 }
 
-Nepomuk2::FileIndexerConfig* Nepomuk2::FileIndexerConfig::s_self = 0;
+using namespace Baloo;
 
-Nepomuk2::FileIndexerConfig::FileIndexerConfig(QObject* parent)
+FileIndexerConfig* FileIndexerConfig::s_self = 0;
+
+FileIndexerConfig::FileIndexerConfig(QObject* parent)
     : QObject(parent)
     , m_config("nepomukstrigirc")
     , m_indexHidden(false)
@@ -77,24 +79,24 @@ Nepomuk2::FileIndexerConfig::FileIndexerConfig(QObject* parent)
 }
 
 
-Nepomuk2::FileIndexerConfig::~FileIndexerConfig()
+FileIndexerConfig::~FileIndexerConfig()
 {
 }
 
 
-Nepomuk2::FileIndexerConfig* Nepomuk2::FileIndexerConfig::self()
+FileIndexerConfig* FileIndexerConfig::self()
 {
     return s_self;
 }
 
 
-QList<QPair<QString, bool> > Nepomuk2::FileIndexerConfig::folders() const
+QList<QPair<QString, bool> > FileIndexerConfig::folders() const
 {
     return m_folderCache;
 }
 
 
-QStringList Nepomuk2::FileIndexerConfig::includeFolders() const
+QStringList FileIndexerConfig::includeFolders() const
 {
     QStringList fl;
     for (int i = 0; i < m_folderCache.count(); ++i) {
@@ -105,7 +107,7 @@ QStringList Nepomuk2::FileIndexerConfig::includeFolders() const
 }
 
 
-QStringList Nepomuk2::FileIndexerConfig::excludeFolders() const
+QStringList FileIndexerConfig::excludeFolders() const
 {
     QStringList fl;
     for (int i = 0; i < m_folderCache.count(); ++i) {
@@ -116,7 +118,7 @@ QStringList Nepomuk2::FileIndexerConfig::excludeFolders() const
 }
 
 
-QStringList Nepomuk2::FileIndexerConfig::excludeFilters() const
+QStringList FileIndexerConfig::excludeFilters() const
 {
     KConfigGroup cfg = m_config.group("General");
 
@@ -139,33 +141,33 @@ QStringList Nepomuk2::FileIndexerConfig::excludeFilters() const
 }
 
 
-bool Nepomuk2::FileIndexerConfig::indexHiddenFilesAndFolders() const
+bool FileIndexerConfig::indexHiddenFilesAndFolders() const
 {
     return m_indexHidden;
 }
 
 
-KIO::filesize_t Nepomuk2::FileIndexerConfig::minDiskSpace() const
+KIO::filesize_t FileIndexerConfig::minDiskSpace() const
 {
     // default: 200 MB
     return m_config.group("General").readEntry("min disk space", KIO::filesize_t(200 * 1024 * 1024));
 }
 
 
-void Nepomuk2::FileIndexerConfig::slotConfigDirty()
+void FileIndexerConfig::slotConfigDirty()
 {
     if (forceConfigUpdate())
         emit configChanged();
 }
 
 
-bool Nepomuk2::FileIndexerConfig::isInitialRun() const
+bool FileIndexerConfig::isInitialRun() const
 {
     return m_config.group("General").readEntry("first run", true);
 }
 
 
-bool Nepomuk2::FileIndexerConfig::shouldBeIndexed(const QString& path) const
+bool FileIndexerConfig::shouldBeIndexed(const QString& path) const
 {
     QFileInfo fi(path);
     if (fi.isDir()) {
@@ -178,7 +180,7 @@ bool Nepomuk2::FileIndexerConfig::shouldBeIndexed(const QString& path) const
 }
 
 
-bool Nepomuk2::FileIndexerConfig::shouldFolderBeIndexed(const QString& path) const
+bool FileIndexerConfig::shouldFolderBeIndexed(const QString& path) const
 {
     QString folder;
     if (folderInFolderList(path, folder)) {
@@ -210,27 +212,27 @@ bool Nepomuk2::FileIndexerConfig::shouldFolderBeIndexed(const QString& path) con
 }
 
 
-bool Nepomuk2::FileIndexerConfig::shouldFileBeIndexed(const QString& fileName) const
+bool FileIndexerConfig::shouldFileBeIndexed(const QString& fileName) const
 {
     // check the filters
     QWriteLocker lock(&m_folderCacheMutex);
     return !m_excludeFilterRegExpCache.exactMatch(fileName);
 }
 
-bool Nepomuk2::FileIndexerConfig::shouldMimeTypeBeIndexed(const QString& mimeType) const
+bool FileIndexerConfig::shouldMimeTypeBeIndexed(const QString& mimeType) const
 {
     QReadLocker lock(&m_mimetypeMutex);
     return !m_excludeMimetypes.contains(mimeType);
 }
 
 
-bool Nepomuk2::FileIndexerConfig::folderInFolderList(const QString& path)
+bool FileIndexerConfig::folderInFolderList(const QString& path)
 {
     QString str;
     return folderInFolderList(path, str);
 }
 
-bool Nepomuk2::FileIndexerConfig::folderInFolderList(const QString& path, QString& folder) const
+bool FileIndexerConfig::folderInFolderList(const QString& path, QString& folder) const
 {
     QReadLocker lock(&m_folderCacheMutex);
 
@@ -305,7 +307,7 @@ void cleanupList(QList<QPair<QString, bool> >& result)
 }
 
 
-void Nepomuk2::FileIndexerConfig::fillIncludeFolderChanges(const Nepomuk2::FileIndexerConfig::Entry& entry, const QSet<QString>& include, QStringList* includeAdded, QStringList* includeRemoved)
+void FileIndexerConfig::fillIncludeFolderChanges(const FileIndexerConfig::Entry& entry, const QSet<QString>& include, QStringList* includeAdded, QStringList* includeRemoved)
 {
     QStringList added = QSet<QString>(include).subtract(entry.includes).toList();
     QStringList removed = QSet<QString>(entry.includes).subtract(include).toList();
@@ -317,7 +319,7 @@ void Nepomuk2::FileIndexerConfig::fillIncludeFolderChanges(const Nepomuk2::FileI
         includeRemoved->append(removed);
 }
 
-void Nepomuk2::FileIndexerConfig::fillExcludeFolderChanges(const Nepomuk2::FileIndexerConfig::Entry& entry, const QSet<QString>& exclude, QStringList* excludeAdded, QStringList* excludeRemoved)
+void FileIndexerConfig::fillExcludeFolderChanges(const FileIndexerConfig::Entry& entry, const QSet<QString>& exclude, QStringList* excludeAdded, QStringList* excludeRemoved)
 {
     QStringList added = QSet<QString>(exclude).subtract(entry.excludes).toList();
     QStringList removed = QSet<QString>(entry.excludes).subtract(exclude).toList();
@@ -330,7 +332,7 @@ void Nepomuk2::FileIndexerConfig::fillExcludeFolderChanges(const Nepomuk2::FileI
 }
 
 
-bool Nepomuk2::FileIndexerConfig::buildFolderCache()
+bool FileIndexerConfig::buildFolderCache()
 {
     QWriteLocker lock(&m_folderCacheMutex);
 
@@ -415,7 +417,7 @@ bool Nepomuk2::FileIndexerConfig::buildFolderCache()
 }
 
 
-bool Nepomuk2::FileIndexerConfig::buildExcludeFilterRegExpCache()
+bool FileIndexerConfig::buildExcludeFilterRegExpCache()
 {
     QWriteLocker lock(&m_folderCacheMutex);
     QStringList newFilters = excludeFilters();
@@ -431,7 +433,7 @@ bool Nepomuk2::FileIndexerConfig::buildExcludeFilterRegExpCache()
     return false;
 }
 
-bool Nepomuk2::FileIndexerConfig::buildMimeTypeCache()
+bool FileIndexerConfig::buildMimeTypeCache()
 {
     QWriteLocker lock(&m_mimetypeMutex);
     QStringList newMimeExcludes = m_config.group("General").readPathEntry("exclude mimetypes", QStringList());
@@ -447,7 +449,7 @@ bool Nepomuk2::FileIndexerConfig::buildMimeTypeCache()
 }
 
 
-bool Nepomuk2::FileIndexerConfig::forceConfigUpdate()
+bool FileIndexerConfig::forceConfigUpdate()
 {
     m_config.reparseConfiguration();
     bool changed = false;
@@ -465,25 +467,22 @@ bool Nepomuk2::FileIndexerConfig::forceConfigUpdate()
     return changed;
 }
 
-void Nepomuk2::FileIndexerConfig::setInitialRun(bool isInitialRun)
+void FileIndexerConfig::setInitialRun(bool isInitialRun)
 {
     m_config.group("General").writeEntry("first run", isInitialRun);
 }
 
-bool Nepomuk2::FileIndexerConfig::initialUpdateDisabled() const
+bool FileIndexerConfig::initialUpdateDisabled() const
 {
     return m_config.group("General").readEntry("disable initial update", true);
 }
 
-bool Nepomuk2::FileIndexerConfig::suspendOnPowerSaveDisabled() const
+bool FileIndexerConfig::suspendOnPowerSaveDisabled() const
 {
     return m_config.group("General").readEntry("disable suspend on powersave", false);
 }
 
-bool Nepomuk2::FileIndexerConfig::isDebugModeEnabled() const
+bool FileIndexerConfig::isDebugModeEnabled() const
 {
     return m_config.group("General").readEntry("debug mode", false);
 }
-
-
-#include "fileindexerconfig.moc"

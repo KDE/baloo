@@ -26,7 +26,7 @@
 #include <QtCore/QDirIterator>
 #include <QtCore/QUrl>
 
-namespace Nepomuk2
+namespace Baloo
 {
 
 /**

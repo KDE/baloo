@@ -18,7 +18,6 @@
 */
 
 #include "fileindexer.h"
-#include "fileindexeradaptor.h"
 #include "indexscheduler.h"
 #include "fileindexerconfig.h"
 #include "util.h"
@@ -26,15 +25,12 @@
 #include <KDebug>
 #include <KDirNotify>
 
-#include "resourcemanager.h"
-
 #include <QtCore/QTimer>
-#include <Soprano/QueryResultIterator>
-#include <Soprano/Model>
-#include <Soprano/Node>
 
-Nepomuk2::FileIndexer::FileIndexer()
-    : Service2()
+using namespace Baloo;
+
+FileIndexer::FileIndexer(QObject* parent)
+    : QObject(parent)
 {
     // Create the configuration instance singleton (for thread-safety)
     // ==============================================================
@@ -71,38 +67,38 @@ Nepomuk2::FileIndexer::FileIndexer()
 }
 
 
-Nepomuk2::FileIndexer::~FileIndexer()
+FileIndexer::~FileIndexer()
 {
 }
 
-void Nepomuk2::FileIndexer::slotIndexingDone()
+void FileIndexer::slotIndexingDone()
 {
     FileIndexerConfig::self()->setInitialRun(false);
 }
 
-void Nepomuk2::FileIndexer::emitStatusMessage()
+void FileIndexer::emitStatusMessage()
 {
     QString message = m_indexScheduler->userStatusString();
 
     emit status((int)m_indexScheduler->currentStatus(), message);
 }
 
-QString Nepomuk2::FileIndexer::statusMessage() const
+QString FileIndexer::statusMessage() const
 {
     return m_indexScheduler->userStatusString();
 }
 
-int Nepomuk2::FileIndexer::currentStatus() const
+int FileIndexer::currentStatus() const
 {
     return (int)m_indexScheduler->currentStatus();
 }
 
-QString Nepomuk2::FileIndexer::userStatusString() const
+QString FileIndexer::userStatusString() const
 {
     return m_indexScheduler->userStatusString();
 }
 
-void Nepomuk2::FileIndexer::setSuspended(bool suspend)
+void FileIndexer::setSuspended(bool suspend)
 {
     if (suspend) {
         m_indexScheduler->suspend();
@@ -112,48 +108,48 @@ void Nepomuk2::FileIndexer::setSuspended(bool suspend)
 }
 
 
-bool Nepomuk2::FileIndexer::isSuspended() const
+bool FileIndexer::isSuspended() const
 {
     return m_indexScheduler->isSuspended();
 }
 
 
-bool Nepomuk2::FileIndexer::isIndexing() const
+bool FileIndexer::isIndexing() const
 {
     return m_indexScheduler->isIndexing();
 }
 
-bool Nepomuk2::FileIndexer::isCleaning() const
+bool FileIndexer::isCleaning() const
 {
     return m_indexScheduler->isCleaning();
 }
 
 
-void Nepomuk2::FileIndexer::suspend() const
+void FileIndexer::suspend() const
 {
     m_indexScheduler->suspend();
 }
 
 
-void Nepomuk2::FileIndexer::resume() const
+void FileIndexer::resume() const
 {
     m_indexScheduler->resume();
 }
 
 
-QString Nepomuk2::FileIndexer::currentFile() const
+QString FileIndexer::currentFile() const
 {
     return m_indexScheduler->currentUrl().toLocalFile();
 }
 
 
-QString Nepomuk2::FileIndexer::currentFolder() const
+QString FileIndexer::currentFolder() const
 {
     return KUrl(m_indexScheduler->currentUrl()).directory();
 }
 
 
-void Nepomuk2::FileIndexer::updateFolder(const QString& path, bool recursive, bool forced)
+void FileIndexer::updateFolder(const QString& path, bool recursive, bool forced)
 {
     kDebug() << "Called with path: " << path;
     QFileInfo info(path);
@@ -170,7 +166,8 @@ void Nepomuk2::FileIndexer::updateFolder(const QString& path, bool recursive, bo
     }
 }
 
-int Nepomuk2::FileIndexer::indexedFiles() const
+/*
+int FileIndexer::indexedFiles() const
 {
     QString query = QString::fromLatin1("select count(distinct ?r) where { ?r kext:indexingLevel ?t. "
                                         " FILTER(?t >= %1) . }")
@@ -184,7 +181,7 @@ int Nepomuk2::FileIndexer::indexedFiles() const
     return 0;
 }
 
-int Nepomuk2::FileIndexer::totalFiles() const
+int FileIndexer::totalFiles() const
 {
     QString query = QString::fromLatin1("select count(distinct ?r) where { ?r kext:indexingLevel ?t. }");
 
@@ -195,21 +192,22 @@ int Nepomuk2::FileIndexer::totalFiles() const
 
     return 0;
 }
+*/
 
 
-void Nepomuk2::FileIndexer::updateAllFolders(bool forced)
+void FileIndexer::updateAllFolders(bool forced)
 {
     m_indexScheduler->updateAll(forced);
 }
 
 
-void Nepomuk2::FileIndexer::indexFile(const QString& path)
+void FileIndexer::indexFile(const QString& path)
 {
     m_indexScheduler->analyzeFile(path);
 }
 
 
-void Nepomuk2::FileIndexer::indexFolder(const QString& path, bool recursive, bool forced)
+void FileIndexer::indexFolder(const QString& path, bool recursive, bool forced)
 {
     QFileInfo info(path);
     if (info.exists()) {
@@ -221,32 +219,12 @@ void Nepomuk2::FileIndexer::indexFolder(const QString& path, bool recursive, boo
 
         kDebug() << "Updating : " << dirPath;
 
-        Nepomuk2::UpdateDirFlags flags;
+        UpdateDirFlags flags;
         if (recursive)
-            flags |= Nepomuk2::UpdateRecursive;
+            flags |= UpdateRecursive;
         if (forced)
-            flags |= Nepomuk2::ForceUpdate;
+            flags |= ForceUpdate;
 
         m_indexScheduler->updateDir(dirPath, flags);
     }
 }
-
-
-int main(int argc, char** argv)
-{
-    KAboutData aboutData("nepomukfileindexer",
-                         "nepomukfileindexer",
-                         ki18n("Nepomuk File Indexer"),
-                         NEPOMUK_VERSION_STRING,
-                         ki18n("Nepomuk File Indexer"),
-                         KAboutData::License_GPL,
-                         ki18n("(c) 2008-2013, Sebastian Trüg"),
-                         KLocalizedString(),
-                         "http://nepomuk.kde.org");
-    aboutData.addAuthor(ki18n("Sebastian Trüg"), ki18n("Developer"), "trueg@kde.org");
-    aboutData.addAuthor(ki18n("Vishesh Handa"), ki18n("Maintainer"), "me@vhanda.in");
-
-    Nepomuk2::Service2::initUI<Nepomuk2::FileIndexer>(argc, argv, aboutData);
-}
-#include "fileindexer.moc"
-

@@ -17,14 +17,14 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef _NEPOMUK_FILEINDEXER_INDEX_SCHEDULER_H_
-#define _NEPOMUK_FILEINDEXER_INDEX_SCHEDULER_H_
+#ifndef _BALOO_FILEINDEXER_INDEX_SCHEDULER_H_
+#define _BALOO_FILEINDEXER_INDEX_SCHEDULER_H_
 
 #include "basicindexingqueue.h" // Required for UpdateDirFlags
 #include "removablemediacache.h"
 #include <QDateTime>
 
-namespace Nepomuk2
+namespace Baloo
 {
 
 class IndexCleaner;
@@ -48,7 +48,7 @@ public:
      * The enumes are assigned with fixed numbers because they will be
      * transferred via dBus
      *
-     * @see Nepomuk2::FileIndexer::status()
+     * @see FileIndexer::status()
      */
     enum State {
         State_Normal = 0,
@@ -156,7 +156,7 @@ private Q_SLOTS:
     // Event Monitor integration
     void slotScheduleIndexing();
 
-    void slotTeardownRequested(const Nepomuk2::RemovableMediaCache::Entry* entry);
+    void slotTeardownRequested(const RemovableMediaCache::Entry* entry);
     void emitStatusStringChanged();
 private:
     void queueAllFoldersForUpdate(bool forceUpdate = false);
@@ -186,6 +186,4 @@ private:
 };
 }
 
-
 #endif
-

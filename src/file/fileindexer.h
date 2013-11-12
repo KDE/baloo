@@ -17,13 +17,12 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef _NEPOMUK_FILEINDEXER_SERVICE_H_
-#define _NEPOMUK_FILEINDEXER_SERVICE_H_
+#ifndef _BALOO_FILEINDEXER_SERVICE_H_
+#define _BALOO_FILEINDEXER_SERVICE_H_
 
-#include "service2.h"
 #include <QtCore/QTimer>
 
-namespace Nepomuk2
+namespace Baloo
 {
 
 class IndexScheduler;
@@ -31,13 +30,12 @@ class IndexScheduler;
 /**
  * Service controlling the file indexer
  */
-class FileIndexer : public Nepomuk2::Service2
+class FileIndexer : public QObject
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "org.kde.nepomuk.FileIndexer")
 
 public:
-    FileIndexer();
+    explicit FileIndexer(QObject* parent = 0);
     ~FileIndexer();
 
 Q_SIGNALS:
@@ -93,8 +91,8 @@ public Q_SLOTS:
     Q_SCRIPTABLE QString currentFolder() const;
     Q_SCRIPTABLE QString currentFile() const;
 
-    Q_SCRIPTABLE int indexedFiles() const;
-    Q_SCRIPTABLE int totalFiles() const;
+    //Q_SCRIPTABLE int indexedFiles() const;
+    //Q_SCRIPTABLE int totalFiles() const;
 
     /**
      * Update folder \a path if it is configured to be indexed.

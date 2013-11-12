@@ -25,7 +25,7 @@
 #include <KJob>
 #include <QtCore/QStack>
 
-namespace Nepomuk2
+namespace Baloo
 {
 
 enum UpdateDirFlag {
@@ -84,7 +84,6 @@ protected:
     virtual void processNextIteration();
 
 private slots:
-    void slotClearIndexedDataFinished(KJob* job);
     void slotIndexingFinished(KJob* job);
 
 private:
@@ -105,7 +104,7 @@ private:
      * \return \c true the path is being indexed
      * \return \c false the path did not meet the criteria
      */
-    bool process(const QString& path, Nepomuk2::UpdateDirFlags flags);
+    bool process(const QString& path, UpdateDirFlags flags);
 
     QStack< QPair<QString, UpdateDirFlags> > m_paths;
 
@@ -116,6 +115,6 @@ private:
 
 }
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(Nepomuk2::UpdateDirFlags)
+Q_DECLARE_OPERATORS_FOR_FLAGS(Baloo::UpdateDirFlags)
 
 #endif // BASICINDEXINGQUEUE_H

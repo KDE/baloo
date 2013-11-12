@@ -19,19 +19,14 @@
 
 
 #include "fileindexingqueue.h"
-#include "resourcemanager.h"
 #include "fileindexingjob.h"
 #include "fileindexerconfig.h"
 #include "util.h"
 
-#include <Soprano/Model>
-#include <Soprano/QueryResultIterator>
-
 #include <KDebug>
 #include <QTimer>
 
-namespace Nepomuk2
-{
+using namespace Baloo;
 
 FileIndexingQueue::FileIndexingQueue(QObject* parent): IndexingQueue(parent)
 {
@@ -55,13 +50,14 @@ void FileIndexingQueue::fillQueue()
     if (m_fileQueue.size() > 0)
         return;
 
+    /*
     QString query = QString::fromLatin1("select distinct ?url where { ?r nie:url ?url ; kext:indexingLevel ?l "
                                         " FILTER(?l = 1 ). } LIMIT 10");
 
     Soprano::Model* model = ResourceManager::instance()->mainModel();
     Soprano::QueryResultIterator it = model->executeQuery(query, Soprano::Query::QueryLanguageSparql);
     while (it.next())
-        m_fileQueue.enqueue(it[0].uri());
+        m_fileQueue.enqueue(it[0].uri());*/
 }
 
 void FileIndexingQueue::enqueue(const QUrl& url)
@@ -98,7 +94,7 @@ void FileIndexingQueue::slotFinishedIndexingFile(KJob* job)
 {
     if (job->error()) {
         kDebug() << job->errorString();
-        // Get the uri of the current file
+        /*// Get the uri of the current file
         QString query = QString::fromLatin1("select ?r where { ?r nie:url %1 . }")
                         .arg(Soprano::Node::resourceToN3(m_currentUrl));
         Soprano::Model* model = ResourceManager::instance()->mainModel();
@@ -108,7 +104,7 @@ void FileIndexingQueue::slotFinishedIndexingFile(KJob* job)
             // Update the indexing level to -1, signalling an error,
             // so the next round of the queue doesn't try to index it again.
             updateIndexingLevel(it[0].uri(), -1);
-        }
+        }*/
     }
 
     QUrl url = m_currentUrl;
@@ -145,7 +141,4 @@ void FileIndexingQueue::slotConfigChanged()
 {
     m_fileQueue.clear();
     fillQueue();
-}
-
-
 }

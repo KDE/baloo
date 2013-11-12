@@ -19,8 +19,8 @@
    License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _NEPOMUK_INDEXER_H_
-#define _NEPOMUK_INDEXER_H_
+#ifndef _BALOO_INDEXING_JOB_H_
+#define _BALOO_INDEXING_JOB_H_
 
 #include <KJob>
 #include <KUrl>
@@ -29,14 +29,12 @@
 class QFileInfo;
 class QTimer;
 
-namespace Nepomuk2
+namespace Baloo
 {
 
 class Resource;
 
 /**
- * \class Indexer nepomukindexer.h Nepomuk2/Indexer
- *
  * \brief The one entry point to indexing files.
  *
  * The %Indexer can be used to index any file on the local file system

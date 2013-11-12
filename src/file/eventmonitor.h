@@ -17,8 +17,8 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef _NEPOMUK_FILEINDEXER_EVENT_MONITOR_H_
-#define _NEPOMUK_FILEINDEXER_EVENT_MONITOR_H_
+#ifndef _BALOO_FILEINDEXER_EVENT_MONITOR_H_
+#define _BALOO_FILEINDEXER_EVENT_MONITOR_H_
 
 #include <QtCore/QObject>
 #include <QtCore/QStringList>
@@ -27,7 +27,7 @@
 
 class KDiskFreeSpace;
 
-namespace Nepomuk2
+namespace Baloo
 {
 
 class EventMonitor : public QObject

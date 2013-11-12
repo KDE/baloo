@@ -20,25 +20,28 @@
  *
  */
 
-#include <QCoreApplication>
+#ifndef DATABASE_H
+#define DATABASE_H
 
-#include <KComponentData>
-#include <KAboutData>
+#include <QObject>
+#include <QSqlDatabase>
 
-#include "filewatch.h"
-#include "fileindexer.h"
+class Database : public QObject
+{
+public:
+    explicit Database(QObject* parent = 0);
+    ~Database();
 
-int main(int argc, char** argv) {
-    QCoreApplication app(argc, argv);
+    QString path();
+    void setPath(const QString& path);
 
-    KAboutData aboutData("biloo_file", "biloo_file", ki18n("Biloo File"), "0.1",
-                         ki18n("An application to handle file metadata"),
-                         KAboutData::License_GPL_V2);
+    bool init();
+    bool isInitialized();
 
-    KComponentData data(aboutData, KComponentData::RegisterAsMainComponent);
+private:
+    QString m_path;
+    QString m_connectionName;
+    bool m_initialized;
+};
 
-    Baloo::FileWatch filewatcher(&app);
-    Baloo::FileIndexer fileIndexer(&app);
-
-    return app.exec();
-}
+#endif // DATABASE_H

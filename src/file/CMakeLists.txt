@@ -5,6 +5,20 @@ set(file_SRCS
     updaterequest.cpp
     activefilequeue.cpp
     metadatamover.cpp
+    database.cpp
+
+    # File Indexer
+    fileindexer.cpp
+    fileindexerconfig.cpp
+    indexscheduler.cpp
+    indexcleaner.cpp
+    indexingqueue.cpp
+    basicindexingqueue.cpp
+    fileindexingqueue.cpp
+    basicindexingjob.cpp
+    fileindexingjob.cpp
+    eventmonitor.cpp
+    util.cpp
 
     # Common
     regexpcache.cpp
@@ -29,8 +43,11 @@ target_link_libraries(baloo_file
     ${QT_QTCORE_LIBRARY}
     ${QT_QTSQL_LIBRARY}
     ${KDE4_KDECORE_LIBS}
+    ${KDE4_KIO_LIBS}
     ${KDE4_KDEUI_LIBS}
+    ${KDE4_KIDLETIME_LIBS}
     ${KDE4_SOLID_LIBS}
+    ${XAPIAN_LIBRARIES}
     baloocore
 )
 

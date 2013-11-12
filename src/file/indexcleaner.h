@@ -29,7 +29,7 @@
 
 #include <KJob>
 
-namespace Nepomuk2
+namespace Baloo
 {
 class FileIndexerConfig;
 
@@ -47,13 +47,13 @@ public:
      * not be indexed according to the configured folders in \p cfg. This does not
      * take exclude filters into account and ignores hidden folders alltogether.
      */
-    static QString constructExcludeFolderFilter(Nepomuk2::FileIndexerConfig* cfg);
+    static QString constructExcludeFolderFilter(FileIndexerConfig* cfg);
 
     /**
      * Construct a SPARQL filter which matches all filenames (variable ?fn) that
      * match one of the exclude filters set in \p cfg.
      */
-    static QString constructExcludeFiltersFilenameFilter(Nepomuk2::FileIndexerConfig* cfg);
+    static QString constructExcludeFiltersFilenameFilter(FileIndexerConfig* cfg);
 
     /**
      * Construct a SPARQL filter which matches all file URLs (variable ?url) that should
@@ -63,7 +63,7 @@ public:
      * This method does take include folders into account but does not specifically handle
      * hidden folders.
      */
-    static QString constructExcludeFiltersFolderFilter(Nepomuk2::FileIndexerConfig* cfg);
+    static QString constructExcludeFiltersFolderFilter(FileIndexerConfig* cfg);
 
 public slots:
     /**

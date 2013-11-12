@@ -30,7 +30,7 @@
 
 #include "regexpcache.h"
 
-namespace Nepomuk2
+namespace Baloo
 {
 /**
  * Active config class which emits signals if the config

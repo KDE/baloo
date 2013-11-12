@@ -47,8 +47,9 @@ void sendEvent(const QString& event, const QString& text, const QString& iconNam
 }
 }
 
+using namespace Baloo;
 
-Nepomuk2::EventMonitor::EventMonitor(QObject* parent)
+EventMonitor::EventMonitor(QObject* parent)
     : QObject(parent)
 {
     // monitor the powermanagement to not drain the battery
@@ -71,12 +72,12 @@ Nepomuk2::EventMonitor::EventMonitor(QObject* parent)
 }
 
 
-Nepomuk2::EventMonitor::~EventMonitor()
+EventMonitor::~EventMonitor()
 {
 }
 
 
-void Nepomuk2::EventMonitor::slotPowerManagementStatusChanged(bool conserveResources)
+void EventMonitor::slotPowerManagementStatusChanged(bool conserveResources)
 {
     m_isOnBattery = conserveResources;
     if (m_enabled) {
@@ -85,7 +86,7 @@ void Nepomuk2::EventMonitor::slotPowerManagementStatusChanged(bool conserveResou
 }
 
 
-void Nepomuk2::EventMonitor::slotCheckAvailableSpace()
+void EventMonitor::slotCheckAvailableSpace()
 {
     if (!m_enabled)
         return;
@@ -116,7 +117,7 @@ void Nepomuk2::EventMonitor::slotCheckAvailableSpace()
 }
 
 
-void Nepomuk2::EventMonitor::enable()
+void EventMonitor::enable()
 {
     /* avoid add multiple idle timeout */
     if (!m_enabled) {
@@ -128,7 +129,7 @@ void Nepomuk2::EventMonitor::enable()
         m_availSpaceTimer.start(s_availSpaceTimeout);
 }
 
-void Nepomuk2::EventMonitor::disable()
+void EventMonitor::disable()
 {
     if (m_enabled) {
         m_enabled = false;
@@ -138,18 +139,18 @@ void Nepomuk2::EventMonitor::disable()
     m_availSpaceTimer.stop();
 }
 
-void Nepomuk2::EventMonitor::suspendDiskSpaceMonitor()
+void EventMonitor::suspendDiskSpaceMonitor()
 {
     m_availSpaceTimer.stop();
 }
 
-void Nepomuk2::EventMonitor::resumeDiskSpaceMonitor()
+void EventMonitor::resumeDiskSpaceMonitor()
 {
     if (m_enabled && !m_availSpaceTimer.isActive())
         m_availSpaceTimer.start(s_availSpaceTimeout);
 }
 
-void Nepomuk2::EventMonitor::slotIdleTimeoutReached()
+void EventMonitor::slotIdleTimeoutReached()
 {
     if (m_enabled) {
         m_isIdle = true;
@@ -158,7 +159,7 @@ void Nepomuk2::EventMonitor::slotIdleTimeoutReached()
     KIdleTime::instance()->catchNextResumeEvent();
 }
 
-void Nepomuk2::EventMonitor::slotResumeFromIdle()
+void EventMonitor::slotResumeFromIdle()
 {
     m_isIdle = false;
     if (m_enabled) {
