@@ -20,8 +20,8 @@
  *
  */
 
-#include <xapian.h>
 #include "basicindexingjob.h"
+#include "database.h"
 
 #include <QTimer>
 #include <QVariant>
@@ -29,12 +29,14 @@
 #include <QDateTime>
 #include <QSqlQuery>
 
-#include <KStandardDirs>
+#include <KDebug>
 
 using namespace Baloo;
 
-BasicIndexingJob::BasicIndexingJob(const QString& url, const QString& mimetype, QObject* parent)
+BasicIndexingJob::BasicIndexingJob(Database* db, const QString& url,
+                                   const QString& mimetype, QObject* parent)
     : KJob(parent)
+    , m_db(db)
     , m_url(url)
     , m_mimetype(mimetype)
 {
@@ -53,29 +55,24 @@ void BasicIndexingJob::doStart()
 {
     int id = fetchFileId(m_url);
 
-    const QString dbPath = KStandardDirs::locateLocal("data", "baloo/file/");
-
-    Xapian::WritableDatabase db = Xapian::WritableDatabase(dbPath.toStdString(),
-                                                           Xapian::DB_CREATE_OR_OPEN);
-
     QFileInfo fileInfo(m_url);
+
+    // FIXME: We will need a termGenerator
+    // FIXME: Fetch the type?
 
     Xapian::Document doc;
     doc.add_term('M' + m_mimetype.toStdString());
-    // FIXME: We will need a termGenerator
     doc.add_term('F' + fileInfo.fileName().toStdString());
     doc.add_term("DT_M" + fileInfo.lastModified().toString(Qt::ISODate).toStdString());
-    // FIXME: Fetch the type?
 
-    db.replace_document(id, doc);
-    db.commit();
+    m_db->xapainDatabase()->replace_document(id, doc);
 
     emitResult();
 }
 
 int BasicIndexingJob::fetchFileId(const QString& url)
 {
-    QSqlQuery query;
+    QSqlQuery query(m_db->sqlDatabase());
     query.prepare(QLatin1String("insert into files (url) VALUES (?)"));
     query.addBindValue(url);
     query.exec();

@@ -40,11 +40,12 @@ int main(int argc, char** argv) {
     KComponentData data(aboutData, KComponentData::RegisterAsMainComponent);
 
     Database db;
-    db.setPath(KStandardDirs::locateLocal("data", "baloo/fileMapping"));
+    db.setPath(KStandardDirs::locateLocal("data", "baloo/file/"));
     db.init();
+    db.transaction();
 
     Baloo::FileWatch filewatcher(&app);
-    Baloo::FileIndexer fileIndexer(&app);
+    Baloo::FileIndexer fileIndexer(&db, &app);
 
     return app.exec();
 }

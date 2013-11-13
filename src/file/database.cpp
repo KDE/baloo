@@ -39,7 +39,7 @@ Database::Database(QObject* parent)
 
 Database::~Database()
 {
-    QSqlDatabase::removeDatabase(m_connectionName);
+    QSqlDatabase::removeDatabase(m_sqlDb.connectionName());
 }
 
 bool Database::init()
@@ -47,21 +47,22 @@ bool Database::init()
     if (m_initialized)
         return true;
 
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE3");
-    db.setDatabaseName(m_path);
-    m_connectionName = db.connectionName();
+    m_xapianDb = new Xapian::WritableDatabase(m_path.toStdString(), Xapian::DB_CREATE_OR_OPEN);
 
-    if (!db.open()) {
-        kDebug() << "Failed to open db" << db.lastError().text();
+    m_sqlDb = QSqlDatabase::addDatabase("QSQLITE3");
+    m_sqlDb.setDatabaseName(m_path + "/fileMap.sqlite3");
+
+    if (!m_sqlDb.open()) {
+        kDebug() << "Failed to open db" << m_sqlDb.lastError().text();
         return false;
     }
 
-    const QStringList tables = db.tables();
+    const QStringList tables = m_sqlDb.tables();
     if (tables.contains("files")) {
         return true;
     }
 
-    QSqlQuery query(db);
+    QSqlQuery query(m_sqlDb);
     bool ret = query.exec("CREATE TABLE files("
                           "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                           "url TEXT NOT NULL UNIQUE)");
@@ -88,9 +89,34 @@ QString Database::path()
 void Database::setPath(const QString& path)
 {
     m_path = path;
+    if (!m_path.endsWith('/'))
+        m_path.append('/');
 }
 
 bool Database::isInitialized()
 {
     return m_initialized;
 }
+
+QSqlDatabase& Database::sqlDatabase()
+{
+    return m_sqlDb;
+}
+
+Xapian::WritableDatabase* Database::xapainDatabase()
+{
+    return m_xapianDb;
+}
+
+void Database::transaction()
+{
+    m_sqlDb.transaction();
+}
+
+void Database::commit()
+{
+    m_sqlDb.commit();
+    m_xapianDb->commit();
+}
+
+

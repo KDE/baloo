@@ -22,6 +22,8 @@
 
 #include <QtCore/QTimer>
 
+class Database;
+
 namespace Baloo
 {
 
@@ -35,7 +37,7 @@ class FileIndexer : public QObject
     Q_OBJECT
 
 public:
-    explicit FileIndexer(QObject* parent = 0);
+    FileIndexer(Database* db, QObject* parent = 0);
     ~FileIndexer();
 
 Q_SIGNALS:

@@ -26,6 +26,7 @@
 #include "basicindexingqueue.h"
 #include "eventmonitor.h"
 #include "indexcleaner.h"
+#include "database.h"
 
 #include <QtCore/QList>
 #include <QtCore/QFile>
@@ -43,11 +44,12 @@
 
 using namespace Baloo;
 
-IndexScheduler::IndexScheduler(QObject* parent)
+IndexScheduler::IndexScheduler(Database* db, QObject* parent)
     : QObject(parent)
     , m_indexing(false)
     , m_lastBasicIndexingFile(QDateTime::currentDateTime())
     , m_basicIndexingFileCount(0)
+    , m_db(db)
 {
     // remove old indexing error log
     if (FileIndexerConfig::self()->isDebugModeEnabled()) {
@@ -71,7 +73,7 @@ IndexScheduler::IndexScheduler(QObject* parent)
     connect(cache, SIGNAL(deviceTeardownRequested(const RemovableMediaCache::Entry*)),
             this, SLOT(slotTeardownRequested(const RemovableMediaCache::Entry*)));
 
-    m_basicIQ = new BasicIndexingQueue(this);
+    m_basicIQ = new BasicIndexingQueue(m_db, this);
     m_fileIQ = new FileIndexingQueue(this);
 
     connect(m_basicIQ, SIGNAL(finishedIndexing()), this, SIGNAL(basicIndexingDone()));
@@ -116,6 +118,7 @@ IndexScheduler::IndexScheduler(QObject* parent)
 
 IndexScheduler::~IndexScheduler()
 {
+    m_db->commit();
 }
 
 
@@ -339,6 +342,12 @@ void IndexScheduler::slotEndBasicIndexingFile()
     }
 
     m_basicIndexingFileCount++;
+
+    if ((m_basicIndexingFileCount % 100) == 0) {
+        kDebug() << "Commit";
+        m_db->commit();
+        m_db->transaction();
+    }
 }
 
 

@@ -25,6 +25,8 @@
 #include <KJob>
 #include <QtCore/QStack>
 
+class Database;
+
 namespace Baloo
 {
 
@@ -62,7 +64,7 @@ class BasicIndexingQueue: public IndexingQueue
 {
     Q_OBJECT
 public:
-    explicit BasicIndexingQueue(QObject* parent = 0);
+    explicit BasicIndexingQueue(Database* db, QObject* parent = 0);
 
     QUrl currentUrl() const;
     UpdateDirFlags currentFlags() const;
@@ -111,6 +113,8 @@ private:
     QUrl m_currentUrl;
     QString m_currentMimeType;
     UpdateDirFlags m_currentFlags;
+
+    Database* m_db;
 };
 
 }

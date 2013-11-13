@@ -23,6 +23,7 @@
 #include "fileindexerconfig.h"
 #include "util.h"
 #include "basicindexingjob.h"
+#include "database.h"
 
 #include <KDebug>
 #include <KMimeType>
@@ -33,7 +34,9 @@
 
 using namespace Baloo;
 
-BasicIndexingQueue::BasicIndexingQueue(QObject* parent): IndexingQueue(parent)
+BasicIndexingQueue::BasicIndexingQueue(Database* db, QObject* parent)
+    : IndexingQueue(parent)
+    , m_db(db)
 {
 
 }
@@ -82,11 +85,10 @@ void BasicIndexingQueue::enqueue(const QString& path)
 void BasicIndexingQueue::enqueue(const QString& path, UpdateDirFlags flags)
 {
     kDebug() << path;
-    bool wasEmpty = m_paths.empty();
     m_paths.push(qMakePair(path, flags));
     callForNextIteration();
 
-        Q_EMIT startedIndexing();
+    Q_EMIT startedIndexing();
 }
 
 void BasicIndexingQueue::processNextIteration()
@@ -160,7 +162,7 @@ bool BasicIndexingQueue::shouldIndex(const QString& path, const QString& mimetyp
     if (!fileInfo.exists())
         return false;
 
-    QSqlQuery query;
+    QSqlQuery query(m_db->sqlDatabase());
     query.setForwardOnly(true);
     query.prepare(QLatin1String("select id from files where url = ?"));
     query.addBindValue(path);
@@ -173,10 +175,8 @@ bool BasicIndexingQueue::shouldIndex(const QString& path, const QString& mimetyp
     if (id == 0)
         return true;
 
-    const QString dbPath = KStandardDirs::locateLocal("data", "baloo/file/");
-    Xapian::Database db(dbPath.toStdString());
     try {
-        Xapian::Document doc = db.get_document(id);
+        Xapian::Document doc = m_db->xapainDatabase()->get_document(id);
         Xapian::TermIterator it = doc.termlist_begin();
         it.skip_to("DT_M");
         if (it == doc.termlist_end())
@@ -206,7 +206,7 @@ void BasicIndexingQueue::index(const QString& path)
     const QUrl fileUrl = QUrl::fromLocalFile(path);
     Q_EMIT beginIndexingFile(fileUrl);
 
-    KJob* job = new Baloo::BasicIndexingJob(path, m_currentMimeType);
+    KJob* job = new Baloo::BasicIndexingJob(m_db, path, m_currentMimeType);
     connect(job, SIGNAL(finished(KJob*)), this, SLOT(slotIndexingFinished(KJob*)));
 
     job->start();

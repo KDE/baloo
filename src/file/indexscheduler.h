@@ -24,6 +24,8 @@
 #include "removablemediacache.h"
 #include <QDateTime>
 
+class Database;
+
 namespace Baloo
 {
 
@@ -59,7 +61,7 @@ public:
         State_Cleaning = 5
     };
 
-    IndexScheduler(QObject* parent = 0);
+    IndexScheduler(Database* db, QObject* parent = 0);
     ~IndexScheduler();
 
     bool isSuspended() const;
@@ -183,6 +185,8 @@ private:
     int m_basicIndexingFileCount;
 
     QString m_oldStatus;
+
+    Database* m_db;
 };
 }
 

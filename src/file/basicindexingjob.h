@@ -25,13 +25,16 @@
 
 #include <KJob>
 
+class Database;
+
 namespace Baloo {
 
 class BasicIndexingJob : public KJob
 {
     Q_OBJECT
 public:
-    BasicIndexingJob(const QString& url, const QString& mimetype, QObject* parent = 0);
+    BasicIndexingJob(Database* m_db, const QString& url,
+                     const QString& mimetype, QObject* parent = 0);
     ~BasicIndexingJob();
 
     virtual void start();
@@ -42,6 +45,7 @@ private Q_SLOTS:
 private:
     int fetchFileId(const QString& url);
 
+    Database* m_db;
     QString m_url;
     QString m_mimetype;
 };
