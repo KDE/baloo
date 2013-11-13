@@ -51,10 +51,10 @@ public:
     ActiveFileQueue(QObject* parent = 0);
     ~ActiveFileQueue();
 
-signals:
+Q_SIGNALS:
     void urlTimeout(const QString& url);
 
-public slots:
+public Q_SLOTS:
     void enqueueUrl(const QString& url);
 
     /**
@@ -71,7 +71,7 @@ public slots:
      */
     void setWaitTimeout(int seconds);
 
-private slots:
+private Q_SLOTS:
     void slotTimer();
 
 private:

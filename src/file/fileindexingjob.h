@@ -82,7 +82,7 @@ Q_SIGNALS:
     // TODO: better only have one method for success and failure.
     // TODO: actually emit the indexingDone signal
 
-private slots:
+private Q_SLOTS:
     void slotIndexedFile(int exitCode, QProcess::ExitStatus exitStatus);
     void slotProcessTimerTimeout();
     void slotProcessNonExistingFile();

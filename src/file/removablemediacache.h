@@ -106,13 +106,13 @@ public:
      */
     bool isEmpty() const;
 
-signals:
+Q_SIGNALS:
     void deviceAdded(const Baloo::RemovableMediaCache::Entry* entry);
     void deviceRemoved(const Baloo::RemovableMediaCache::Entry* entry);
     void deviceMounted(const Baloo::RemovableMediaCache::Entry* entry);
     void deviceTeardownRequested(const Baloo::RemovableMediaCache::Entry* entry);
 
-private slots:
+private Q_SLOTS:
     void slotSolidDeviceAdded(const QString& udi);
     void slotSolidDeviceRemoved(const QString& udi);
     void slotAccessibilityChanged(bool accessible, const QString& udi);

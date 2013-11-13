@@ -27,7 +27,7 @@ class KInotifyTest : public QObject
 {
     Q_OBJECT
 
-private slots:
+private Q_SLOTS:
     void testDeleteFile();
     void testDeleteFolder();
     void testCreateFolder();

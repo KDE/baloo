@@ -65,7 +65,7 @@ public:
      */
     static QString constructExcludeFiltersFolderFilter(FileIndexerConfig* cfg);
 
-public slots:
+public Q_SLOTS:
     /**
      * Set the delay between the cleanup queries.
      * Used for throtteling the cleaner to not grab too
@@ -79,7 +79,7 @@ protected:
     virtual bool doSuspend();
     virtual bool doResume();
 
-private slots:
+private Q_SLOTS:
     void clearNextBatch();
     void slotRemoveResourcesDone(KJob* job);
 

@@ -48,7 +48,7 @@ public:
         return m_isOnBattery;
     }
 
-signals:
+Q_SIGNALS:
     /**
      * Emitted when the power management status changes.
      *
@@ -67,7 +67,7 @@ signals:
      */
     void idleStatusChanged(bool isIdle);
 
-public slots:
+public Q_SLOTS:
     void enable();
     void disable();
     void suspendDiskSpaceMonitor();

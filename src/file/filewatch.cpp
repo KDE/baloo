@@ -174,7 +174,7 @@ FileWatch::FileWatch(QObject* parent)
 
     //Watch all indexed folders unless they are subdirectories of home, which is already watched
     QStringList folders;// = FileIndexerConfig::self()->includeFolders();
-    foreach(const QString & folder, folders) {
+    Q_FOREACH (const QString& folder, folders) {
         if (!folder.startsWith(home)) {
             watchFolder(folder);
         }
@@ -240,7 +240,7 @@ void FileWatch::slotFileMoved(const QString& urlFrom, const QString& urlTo)
 void FileWatch::slotFilesDeleted(const QStringList& paths)
 {
     KUrl::List urls;
-    foreach(const QString & path, paths) {
+    Q_FOREACH (const QString& path, paths) {
         if (!ignorePath(path)) {
             urls << KUrl(path);
         }
@@ -391,7 +391,7 @@ void FileWatch::updateIndexedFoldersWatches()
 #ifdef BUILD_KINOTIFY
     if (m_dirWatch) {
         QStringList folders;// = FileIndexerConfig::self()->includeFolders();
-        foreach(const QString & folder, folders) {
+        Q_FOREACH (const QString& folder, folders) {
             m_dirWatch->removeWatch(folder);
             watchFolder(folder);
         }
@@ -523,11 +523,11 @@ void FileWatch::updateStatusMessage(const QString& newStatus)
     m_statusMessage = newStatus;
 
     if (m_isIdle) {
-        emit metadataUpdateStarted();
+        Q_EMIT metadataUpdateStarted();
         m_isIdle = false;
     }
 
-    emit status(1, m_statusMessage);
+    Q_EMIT status(1, m_statusMessage);
 }
 
 void FileWatch::resetStatusMessage()
@@ -536,6 +536,6 @@ void FileWatch::resetStatusMessage()
 
     m_statusMessage = i18n("The File Watcher is idle.");
 
-    emit metadataUpdateStopped();
-    emit status(0, m_statusMessage);
+    Q_EMIT metadataUpdateStopped();
+    Q_EMIT status(0, m_statusMessage);
 }

@@ -73,7 +73,7 @@ void MetadataMover::removeFileMetadata(const KUrl::List& files)
     kDebug() << files;
     QMutexLocker lock(&m_queueMutex);
 
-    foreach(const KUrl & file, files) {
+    Q_FOREACH (const KUrl& file, files) {
         UpdateRequest req(file);
         if (!m_updateQueue.contains(req))
             m_updateQueue.enqueue(req);
@@ -88,7 +88,7 @@ void MetadataMover::slotWorkUpdateQueue()
     // lock for initial iteration
     QMutexLocker lock(&m_queueMutex);
 
-    emit metadataUpdateStarted();
+    Q_EMIT metadataUpdateStarted();
 
     // work the queue
     if (!m_updateQueue.isEmpty()) {
@@ -102,13 +102,13 @@ void MetadataMover::slotWorkUpdateQueue()
         // an empty second url means deletion
         if (updateRequest.target().isEmpty()) {
 
-            emit statusMessage(i18n("Remove metadata from %1", updateRequest.source().prettyUrl()));
+            Q_EMIT statusMessage(i18n("Remove metadata from %1", updateRequest.source().prettyUrl()));
             removeMetadata(updateRequest.source());
         } else {
             const KUrl from = updateRequest.source();
             const KUrl to = updateRequest.target();
 
-            emit statusMessage(i18n("Move metadata from %1 to %2", from.prettyUrl(), to.prettyUrl()));
+            Q_EMIT statusMessage(i18n("Move metadata from %1 to %2", from.prettyUrl(), to.prettyUrl()));
 
             // We do NOT get deleted messages for overwritten files! Thus, we
             // have to remove all metadata for overwritten files first.
@@ -122,7 +122,7 @@ void MetadataMover::slotWorkUpdateQueue()
     } else {
         //kDebug() << "All update requests handled. Stopping timer.";
 
-        emit metadataUpdateStopped();
+        Q_EMIT metadataUpdateStopped();
         m_queueTimer->stop();
     }
 }

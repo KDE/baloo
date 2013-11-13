@@ -157,7 +157,7 @@ KIO::filesize_t FileIndexerConfig::minDiskSpace() const
 void FileIndexerConfig::slotConfigDirty()
 {
     if (forceConfigUpdate())
-        emit configChanged();
+        Q_EMIT configChanged();
 }
 
 
@@ -200,7 +200,7 @@ bool FileIndexerConfig::shouldFolderBeIndexed(const QString& path) const
         // check the exclude filters for all components of the path
         // after folder
         const QStringList pathComponents = path.mid(folder.count()).split('/', QString::SkipEmptyParts);
-        foreach(const QString & c, pathComponents) {
+        Q_FOREACH (const QString& c, pathComponents) {
             if (!shouldFileBeIndexed(c)) {
                 return false;
             }
@@ -277,7 +277,7 @@ bool alreadyExcluded(const QList<QPair<QString, bool> >& folders, const QString&
  */
 void insertSortFolders(const QStringList& folders, bool include, QList<QPair<QString, bool> >& result)
 {
-    foreach(const QString & f, folders) {
+    Q_FOREACH (const QString& f, folders) {
         int pos = 0;
         QString path = KUrl(f).path(KUrl::RemoveTrailingSlash);
         while (result.count() > pos &&
@@ -366,7 +366,7 @@ bool FileIndexerConfig::buildFolderCache()
     // Removable Media
     //
     QStringList groupList = m_config.groupList();
-    foreach(const QString & groupName, groupList) {
+    Q_FOREACH (const QString& groupName, groupList) {
         if (!groupName.startsWith("Device-"))
             continue;
 
@@ -379,12 +379,12 @@ bool FileIndexerConfig::buildFolderCache()
         QStringList excludes = group.readPathEntry("exclude folders", QStringList());
 
         QStringList includeFoldersPlain;
-        foreach(const QString & path, includes)
-        includeFoldersPlain << mountPath + path;
+        Q_FOREACH (const QString& path, includes)
+            includeFoldersPlain << mountPath + path;
 
         QStringList excludeFoldersPlain;
-        foreach(const QString & path, excludes)
-        excludeFoldersPlain << mountPath + path;
+        Q_FOREACH (const QString& path, excludes)
+            excludeFoldersPlain << mountPath + path;
 
         insertSortFolders(includeFoldersPlain, true, m_folderCache);
         insertSortFolders(excludeFoldersPlain, false, m_folderCache);
@@ -404,12 +404,12 @@ bool FileIndexerConfig::buildFolderCache()
 
     bool changed = false;
     if (!includeAdded.isEmpty() || !includeRemoved.isEmpty()) {
-        emit includeFolderListChanged(includeAdded, includeRemoved);
+        Q_EMIT includeFolderListChanged(includeAdded, includeRemoved);
         changed = true;
     }
 
     if (!excludeAdded.isEmpty() || !excludeRemoved.isEmpty()) {
-        emit excludeFolderListChanged(excludeAdded, excludeRemoved);
+        Q_EMIT excludeFolderListChanged(excludeAdded, excludeRemoved);
         changed = true;
     }
 
@@ -426,7 +426,7 @@ bool FileIndexerConfig::buildExcludeFilterRegExpCache()
     QSet<QString> newFilterSet = newFilters.toSet();
     if (m_prevFileFilters != newFilterSet) {
         m_prevFileFilters = newFilterSet;
-        emit fileExcludeFiltersChanged();
+        Q_EMIT fileExcludeFiltersChanged();
         return true;
     }
 
@@ -441,7 +441,7 @@ bool FileIndexerConfig::buildMimeTypeCache()
     QSet<QString> newMimeExcludeSet = newMimeExcludes.toSet();
     if (m_excludeMimetypes != newMimeExcludeSet) {
         m_excludeMimetypes = newMimeExcludeSet;
-        emit mimeTypeFiltersChanged();
+        Q_EMIT mimeTypeFiltersChanged();
         return true;
     }
 

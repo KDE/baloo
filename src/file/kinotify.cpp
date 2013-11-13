@@ -145,7 +145,7 @@ public:
                 //If we can't, fall back to signalling
                 kDebug() << "User limit reached. Count: " << watchPathHash.count();
                 userLimitReachedSignaled = true;
-                emit q->watchUserLimitReached(path);
+                Q_EMIT q->watchUserLimitReached(path);
             }
             return false;
         }
@@ -358,19 +358,19 @@ void KInotify::slotEvent(int socket)
         // now signal the event
         if (event->mask & EventAccess) {
 //            kDebug() << path << "EventAccess";
-            emit accessed(QFile::decodeName(path));
+            Q_EMIT accessed(QFile::decodeName(path));
         }
         if (event->mask & EventAttributeChange) {
 //            kDebug() << path << "EventAttributeChange";
-            emit attributeChanged(QFile::decodeName(path));
+            Q_EMIT attributeChanged(QFile::decodeName(path));
         }
         if (event->mask & EventCloseWrite) {
 //            kDebug() << path << "EventCloseWrite";
-            emit closedWrite(QFile::decodeName(path));
+            Q_EMIT closedWrite(QFile::decodeName(path));
         }
         if (event->mask & EventCloseRead) {
 //            kDebug() << path << "EventCloseRead";
-            emit closedRead(QFile::decodeName(path));
+            Q_EMIT closedRead(QFile::decodeName(path));
         }
         if (event->mask & EventCreate) {
 //            kDebug() << path << "EventCreate";
@@ -378,22 +378,22 @@ void KInotify::slotEvent(int socket)
                 // FIXME: store the mode and flags somewhere
                 addWatch(path, d->mode, d->flags);
             }
-            emit created(QFile::decodeName(path), event->mask & IN_ISDIR);
+            Q_EMIT created(QFile::decodeName(path), event->mask & IN_ISDIR);
         }
         if (event->mask & EventDeleteSelf) {
             kDebug() << path << "EventDeleteSelf";
             d->removeWatch(event->wd);
-            emit deleted(QFile::decodeName(path), event->mask & IN_ISDIR);
+            Q_EMIT deleted(QFile::decodeName(path), event->mask & IN_ISDIR);
         }
         if (event->mask & EventDelete) {
 //            kDebug() << path << "EventDelete";
             // we watch all folders recursively. Thus, folder removing is reported in DeleteSelf.
             if (!(event->mask & IN_ISDIR))
-                emit deleted(QFile::decodeName(path), false);
+                Q_EMIT deleted(QFile::decodeName(path), false);
         }
         if (event->mask & EventModify) {
 //            kDebug() << path << "EventModify";
-            emit modified(QFile::decodeName(path));
+            Q_EMIT modified(QFile::decodeName(path));
         }
         if (event->mask & EventMoveSelf) {
 //            kDebug() << path << "EventMoveSelf";
@@ -423,20 +423,20 @@ void KInotify::slotEvent(int socket)
                     }
                 }
 //                kDebug() << oldPath << "EventMoveTo" << path;
-                emit moved(QFile::decodeName(oldPath), QFile::decodeName(path));
+                Q_EMIT moved(QFile::decodeName(oldPath), QFile::decodeName(path));
             } else {
                 kDebug() << "No cookie for move information of" << path << "simulating new file event";
-                emit created(path, event->mask & IN_ISDIR);
+                Q_EMIT created(path, event->mask & IN_ISDIR);
 
                 // also simulate a closed write since that is what triggers indexing of files in the file watcher
                 if (!(event->mask & IN_ISDIR)) {
-                    emit closedWrite(path);
+                    Q_EMIT closedWrite(path);
                 }
             }
         }
         if (event->mask & EventOpen) {
 //            kDebug() << path << "EventOpen";
-            emit opened(QFile::decodeName(path));
+            Q_EMIT opened(QFile::decodeName(path));
         }
         if (event->mask & EventUnmount) {
 //            kDebug() << path << "EventUnmount. removing from path hash";
@@ -446,13 +446,13 @@ void KInotify::slotEvent(int socket)
             // This is present because a unmount event is sent by inotify after unmounting, by
             // which time the watches have already been removed.
             if (path != "/") {
-                emit unmounted(QFile::decodeName(path));
+                Q_EMIT unmounted(QFile::decodeName(path));
             }
         }
         if (event->mask & EventQueueOverflow) {
             // This should not happen since we grab all events as soon as they arrive
             kDebug() << path << "EventQueueOverflow";
-//            emit queueOverflow();
+//            Q_EMIT queueOverflow();
         }
         if (event->mask & EventIgnored) {
 //             kDebug() << path << "EventIgnored";
@@ -472,7 +472,7 @@ void KInotify::slotClearCookies()
     while (it.hasNext()) {
         it.next();
         removeWatch(it.value().first);
-        emit deleted(QFile::decodeName(it.value().first), it.value().second & IN_ISDIR);
+        Q_EMIT deleted(QFile::decodeName(it.value().first), it.value().second & IN_ISDIR);
     }
 
     d->cookies.clear();

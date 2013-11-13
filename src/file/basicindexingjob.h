@@ -36,7 +36,7 @@ public:
 
     virtual void start();
 
-private slots:
+private Q_SLOTS:
     void doStart();
 
 private:

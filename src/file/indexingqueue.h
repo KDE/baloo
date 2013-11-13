@@ -57,11 +57,11 @@ public:
      */
     void setDelay(int msec);
 
-public slots:
+public Q_SLOTS:
     void suspend();
     void resume();
 
-signals:
+Q_SIGNALS:
     /**
      * The derived queues must emit this signal when their queue
      * gets filled up
@@ -85,7 +85,7 @@ protected:
      */
     virtual void processNextIteration() = 0;
 
-protected slots:
+protected Q_SLOTS:
     /**
      * Call this function when you have finished processing the
      * iteration from processNextIteration.
@@ -96,7 +96,7 @@ protected slots:
 
     void callForNextIteration();
 
-private slots:
+private Q_SLOTS:
     void processNext();
 
 private:

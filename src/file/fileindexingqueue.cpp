@@ -39,7 +39,7 @@ FileIndexingQueue::FileIndexingQueue(QObject* parent): IndexingQueue(parent)
 void FileIndexingQueue::start()
 {
     fillQueue();
-    emit startedIndexing();
+    Q_EMIT startedIndexing();
 
     callForNextIteration();
 }
@@ -86,7 +86,7 @@ void FileIndexingQueue::process(const QUrl& url)
 
     KJob* job = new FileIndexingJob(url);
     job->start();
-    emit beginIndexingFile(url);
+    Q_EMIT beginIndexingFile(url);
     connect(job, SIGNAL(finished(KJob*)), this, SLOT(slotFinishedIndexingFile(KJob*)));
 }
 
@@ -109,7 +109,7 @@ void FileIndexingQueue::slotFinishedIndexingFile(KJob* job)
 
     QUrl url = m_currentUrl;
     m_currentUrl.clear();
-    emit endIndexingFile(url);
+    Q_EMIT endIndexingFile(url);
     if (m_fileQueue.isEmpty()) {
         fillQueue();
     }

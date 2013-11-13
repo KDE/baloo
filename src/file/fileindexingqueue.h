@@ -41,21 +41,21 @@ public:
     void clear(const QString& path);
     QUrl currentUrl();
 
-public slots:
+public Q_SLOTS:
     /**
      * Fills up the queue and starts the indexing
      */
     void start();
 
     void enqueue(const QUrl& url);
-signals:
+Q_SIGNALS:
     void beginIndexingFile(const QUrl& url);
     void endIndexingFile(const QUrl& url);
 
 protected:
     virtual void processNextIteration();
 
-private slots:
+private Q_SLOTS:
     void slotFinishedIndexingFile(KJob* job);
     void slotConfigChanged();
 

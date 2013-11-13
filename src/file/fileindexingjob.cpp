@@ -50,6 +50,9 @@ void FileIndexingJob::start()
         QTimer::singleShot(0, this, SLOT(slotProcessNonExistingFile()));
         return;
     }
+    emitResult();
+    return;
+    /*
 
     // setup the external process which does the actual indexing
     const QString exe = KStandardDirs::findExe(QLatin1String("nepomukindexer"));
@@ -68,6 +71,7 @@ void FileIndexingJob::start()
 
     // start the timer which will kill the process if it does not terminate after 5 minutes
     m_processTimer->start(5 * 60 * 1000);
+    */
 }
 
 void FileIndexingJob::slotProcessNonExistingFile()

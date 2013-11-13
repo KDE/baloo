@@ -31,7 +31,7 @@ class ActiveFileQueueTest : public QObject
 public:
     ActiveFileQueueTest();
 
-private slots:
+private Q_SLOTS:
     void testTimeout();
     void testRequeue();
 };

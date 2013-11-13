@@ -69,11 +69,11 @@ public:
 
     virtual bool isEmpty();
 
-signals:
+Q_SIGNALS:
     void beginIndexingFile(const QUrl& url);
     void endIndexingFile(const QUrl& url);
 
-public slots:
+public Q_SLOTS:
     void enqueue(const QString& path);
     void enqueue(const QString& path, UpdateDirFlags flags);
 
@@ -83,7 +83,7 @@ public slots:
 protected:
     virtual void processNextIteration();
 
-private slots:
+private Q_SLOTS:
     void slotIndexingFinished(KJob* job);
 
 private:

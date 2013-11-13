@@ -35,7 +35,7 @@ class RemovableDeviceIndexNotification : public KNotification
 public:
     RemovableDeviceIndexNotification(const Baloo::RemovableMediaCache::Entry* medium, QObject* parent = 0);
 
-private slots:
+private Q_SLOTS:
     void slotActionActivated(uint action);
     void slotActionDoIndexActivated();
     void slotActionDoNotIndexActivated();

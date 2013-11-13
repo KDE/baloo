@@ -29,6 +29,7 @@
 #include <KStandardDirs>
 
 #include <QtCore/QDateTime>
+#include <QSqlQuery>
 
 using namespace Baloo;
 
@@ -85,8 +86,7 @@ void BasicIndexingQueue::enqueue(const QString& path, UpdateDirFlags flags)
     m_paths.push(qMakePair(path, flags));
     callForNextIteration();
 
-    if (wasEmpty)
-        emit startedIndexing();
+        Q_EMIT startedIndexing();
 }
 
 void BasicIndexingQueue::processNextIteration()
@@ -204,7 +204,7 @@ void BasicIndexingQueue::index(const QString& path)
 {
     kDebug() << path;
     const QUrl fileUrl = QUrl::fromLocalFile(path);
-    emit beginIndexingFile(fileUrl);
+    Q_EMIT beginIndexingFile(fileUrl);
 
     KJob* job = new Baloo::BasicIndexingJob(path, m_currentMimeType);
     connect(job, SIGNAL(finished(KJob*)), this, SLOT(slotIndexingFinished(KJob*)));
@@ -223,7 +223,7 @@ void BasicIndexingQueue::slotIndexingFinished(KJob* job)
     m_currentMimeType.clear();
     m_currentFlags = NoUpdateFlags;
 
-    emit endIndexingFile(url);
+    Q_EMIT endIndexingFile(url);
 
     // Continue the queue
     finishIteration();

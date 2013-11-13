@@ -90,7 +90,7 @@ void RemovableMediaCache::initCacheEntries()
     QList<Solid::Device> devices
         = Solid::Device::listFromQuery(QLatin1String("StorageVolume.usage=='FileSystem'"))
           + Solid::Device::listFromType(Solid::DeviceInterface::NetworkShare);
-    foreach(const Solid::Device & dev, devices) {
+    Q_FOREACH (const Solid::Device& dev, devices) {
         if (isUsableVolume(dev)) {
             if (Entry* entry = createCacheEntry(dev)) {
                 const Solid::StorageAccess* storage = entry->device().as<Solid::StorageAccess>();
@@ -129,7 +129,7 @@ RemovableMediaCache::Entry* RemovableMediaCache::createCacheEntry(const Solid::D
 
         QHash<QString, Entry>::iterator it = m_metadataCache.insert(dev.udi(), entry);
 
-        emit deviceAdded(&it.value());
+        Q_EMIT deviceAdded(&it.value());
 
         return &it.value();
     } else {
@@ -220,7 +220,7 @@ void RemovableMediaCache::slotSolidDeviceRemoved(const QString& udi)
     QHash< QString, Entry >::iterator it = m_metadataCache.find(udi);
     if (it != m_metadataCache.end()) {
         kDebug() << "Found removable storage volume for Nepomuk undocking:" << udi;
-        emit deviceRemoved(&it.value());
+        Q_EMIT deviceRemoved(&it.value());
         m_metadataCache.erase(it);
     }
 }
@@ -240,7 +240,7 @@ void RemovableMediaCache::slotAccessibilityChanged(bool accessible, const QStrin
     if (accessible) {
         kDebug() << udi << "accessible at" << entry->device().as<Solid::StorageAccess>()->filePath()
                  << "with identifier" << entry->url();
-        emit deviceMounted(entry);
+        Q_EMIT deviceMounted(entry);
     }
 }
 
@@ -250,7 +250,7 @@ void RemovableMediaCache::slotTeardownRequested(const QString& udi)
     Entry* entry = &m_metadataCache[udi];
     Q_ASSERT(entry != 0);
 
-    emit deviceTeardownRequested(entry);
+    Q_EMIT deviceTeardownRequested(entry);
 }
 
 

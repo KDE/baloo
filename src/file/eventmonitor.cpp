@@ -81,7 +81,7 @@ void EventMonitor::slotPowerManagementStatusChanged(bool conserveResources)
 {
     m_isOnBattery = conserveResources;
     if (m_enabled) {
-        emit powerManagementStatusChanged(conserveResources);
+        Q_EMIT powerManagementStatusChanged(conserveResources);
     }
 }
 
@@ -97,7 +97,7 @@ void EventMonitor::slotCheckAvailableSpace()
     if (info.isValid()) {
         if (info.available() <= FileIndexerConfig::self()->minDiskSpace()) {
             m_isDiskSpaceLow = true;
-            emit diskSpaceStatusChanged(true);
+            Q_EMIT diskSpaceStatusChanged(true);
 
             sendEvent("indexingSuspended",
                       i18n("Disk space is running low (%1 left). Suspending indexing of files.",
@@ -106,7 +106,7 @@ void EventMonitor::slotCheckAvailableSpace()
         } else if (m_isDiskSpaceLow) {
             // We only emit this signal, if previously emitted with the value true
             m_isDiskSpaceLow = false;
-            emit diskSpaceStatusChanged(false);
+            Q_EMIT diskSpaceStatusChanged(false);
 
             sendEvent("indexingResumed", i18n("Resuming indexing of files for fast searching."), "drive-harddisk");
         }
@@ -154,7 +154,7 @@ void EventMonitor::slotIdleTimeoutReached()
 {
     if (m_enabled) {
         m_isIdle = true;
-        emit idleStatusChanged(true);
+        Q_EMIT idleStatusChanged(true);
     }
     KIdleTime::instance()->catchNextResumeEvent();
 }
@@ -163,7 +163,7 @@ void EventMonitor::slotResumeFromIdle()
 {
     m_isIdle = false;
     if (m_enabled) {
-        emit idleStatusChanged(false);
+        Q_EMIT idleStatusChanged(false);
     }
 }
 

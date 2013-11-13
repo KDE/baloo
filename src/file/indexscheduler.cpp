@@ -126,7 +126,7 @@ void IndexScheduler::suspend()
         slotScheduleIndexing();
 
         m_eventMonitor->disable();
-        emit indexingSuspended(true);
+        Q_EMIT indexingSuspended(true);
     }
 }
 
@@ -138,7 +138,7 @@ void IndexScheduler::resume()
         slotScheduleIndexing();
 
         m_eventMonitor->enable();
-        emit indexingSuspended(false);
+        Q_EMIT indexingSuspended(false);
     }
 }
 
@@ -184,11 +184,11 @@ void IndexScheduler::setIndexingStarted(bool started)
 {
     if (started != m_indexing) {
         m_indexing = started;
-        emit indexingStateChanged(m_indexing);
+        Q_EMIT indexingStateChanged(m_indexing);
         if (m_indexing)
-            emit indexingStarted();
+            Q_EMIT indexingStarted();
         else
-            emit indexingStopped();
+            Q_EMIT indexingStopped();
     }
 }
 
@@ -231,7 +231,7 @@ void IndexScheduler::queueAllFoldersForUpdate(bool forceUpdate)
         flags |= ForceUpdate;
 
     // update everything again in case the folders changed
-    foreach(const QString & f, FileIndexerConfig::self()->includeFolders()) {
+    Q_FOREACH (const QString& f, FileIndexerConfig::self()->includeFolders()) {
         m_basicIQ->enqueue(f, flags);
     }
 }
@@ -240,14 +240,14 @@ void IndexScheduler::queueAllFoldersForUpdate(bool forceUpdate)
 void IndexScheduler::slotIncludeFolderListChanged(const QStringList& added, const QStringList& removed)
 {
     kDebug() << added << removed;
-    foreach(const QString & path, removed) {
+    Q_FOREACH (const QString& path, removed) {
         m_basicIQ->clear(path);
         m_fileIQ->clear(path);
     }
 
     restartCleaner();
 
-    foreach(const QString & path, added) {
+    Q_FOREACH(const QString& path, added) {
         m_basicIQ->enqueue(path, UpdateRecursive);
     }
 }
@@ -255,14 +255,14 @@ void IndexScheduler::slotIncludeFolderListChanged(const QStringList& added, cons
 void IndexScheduler::slotExcludeFolderListChanged(const QStringList& added, const QStringList& removed)
 {
     kDebug() << added << removed;
-    foreach(const QString & path, added) {
+    Q_FOREACH (const QString& path, added) {
         m_basicIQ->clear(path);
         m_fileIQ->clear(path);
     }
 
     restartCleaner();
 
-    foreach(const QString & path, removed) {
+    Q_FOREACH (const QString &path, removed) {
         m_basicIQ->enqueue(path, UpdateRecursive);
     }
 }
@@ -445,7 +445,7 @@ void IndexScheduler::emitStatusStringChanged()
 {
     QString status = userStatusString();
     if (status != m_oldStatus) {
-        emit statusStringChanged();
+        Q_EMIT statusStringChanged();
         m_oldStatus = status;
     }
 }

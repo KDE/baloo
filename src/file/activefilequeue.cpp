@@ -110,7 +110,7 @@ void ActiveFileQueue::enqueueUrl(const QString& url)
             d->m_emittedEntries.erase(iter);
         } else {
             // It's not in any of the queues
-            emit urlTimeout(url);
+            Q_EMIT urlTimeout(url);
             d->m_emittedEntries.insert(url, d->m_emittedTimeout);
         }
     }
@@ -142,7 +142,7 @@ void ActiveFileQueue::slotTimer()
             // Insert into the emitted queue
             d->m_emittedEntries.insert(entry.url, d->m_emittedTimeout);
 
-            emit urlTimeout(entry.url);
+            Q_EMIT urlTimeout(entry.url);
             it.remove();
         }
     }

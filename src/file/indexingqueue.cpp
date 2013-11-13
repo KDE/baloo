@@ -67,7 +67,7 @@ void IndexingQueue::callForNextIteration()
         return;
 
     if (isEmpty()) {
-        emit finishedIndexing();
+        Q_EMIT finishedIndexing();
         return;
     }
 

@@ -80,7 +80,7 @@ void FileIndexer::emitStatusMessage()
 {
     QString message = m_indexScheduler->userStatusString();
 
-    emit status((int)m_indexScheduler->currentStatus(), message);
+    Q_EMIT status((int)m_indexScheduler->currentStatus(), message);
 }
 
 QString FileIndexer::statusMessage() const

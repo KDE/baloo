@@ -1,4 +1,5 @@
 add_definitions(${KDE4_ENABLE_EXCEPTIONS})
+add_definitions(-DQT_NO_KEYWORDS)
 
 set(file_SRCS
     # Filewatch

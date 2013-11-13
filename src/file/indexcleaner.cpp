@@ -44,7 +44,7 @@ QString constructExcludeIncludeFoldersFilter(const QStringList& folders)
 {
     QStringList filters;
     QStringList used;
-    foreach(const QString & folder, folders) {
+    Q_FOREACH (const QString& folder, folders) {
         if (!used.contains(folder)) {
             used << folder;
             //filters << QString::fromLatin1("(?url!=%1)").arg(Soprano::Node::resourceToN3(KUrl(folder)));
@@ -330,7 +330,7 @@ QString IndexCleaner::constructExcludeFiltersFilenameFilter(FileIndexerConfig* c
     // and then combine them with the || operator.
     //
     QStringList fileFilters;
-    foreach(const QString & filter, cfg->excludeFilters()) {
+    Q_FOREACH (const QString& filter, cfg->excludeFilters()) {
         fileFilters << QString::fromLatin1("REGEX(STR(?fn),\"^%1$\")").arg(excludeFilterToSparqlRegex(filter));
     }
     return fileFilters.join(QLatin1String(" || "));
@@ -363,9 +363,9 @@ QString IndexCleaner::constructExcludeFiltersFolderFilter(FileIndexerConfig* cfg
     // We create a mapping from exclude filter to the include folders in question.
     //
     QMultiHash<QString, QString> includeFolders;
-    foreach(const QString & folder, cfg->includeFolders()) {
+    Q_FOREACH (const QString& folder, cfg->includeFolders()) {
         const QStringList components = folder.split('/', QString::SkipEmptyParts);
-        foreach(const QString & c, components) {
+        Q_FOREACH (const QString& c, components) {
             for (int i = 0; i < excludeRegExps.count(); ++i) {
                 if (excludeRegExps[i].exactMatch(c)) {
                     includeFolders.insert(excludeRegExps[i].pattern(), folder);
@@ -378,7 +378,7 @@ QString IndexCleaner::constructExcludeFiltersFolderFilter(FileIndexerConfig* cfg
     // Build the SPARQL filters that match the urls to remove
     //
     QStringList urlFilters;
-    foreach(const QString & filter, excludeFilters) {
+    Q_FOREACH (const QString& filter, excludeFilters) {
         QStringList terms;
 
         // 1. Create the basic filter term to get all urls that match the exclude filter
@@ -386,7 +386,7 @@ QString IndexCleaner::constructExcludeFiltersFolderFilter(FileIndexerConfig* cfg
 
         // 2. Create special cases for all include folders that have a matching path component
         // (the "10000" is just some random value which should make sure we get all the urls)
-        foreach(const QString folder, includeFolders.values(filter)) {
+        Q_FOREACH (const QString& folder, includeFolders.values(filter)) {
             const QString encodedUrl = QString::fromAscii(KUrl(folder).toEncoded());
             terms << QString::fromLatin1("(!REGEX(STR(?url),'^%1/') || REGEX(bif:substring(STR(?url),%2,10000),'/%3/'))")
                   .arg(encodedUrl)

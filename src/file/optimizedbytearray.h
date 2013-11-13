@@ -50,13 +50,13 @@ public:
         QList<QByteArray> list = array.split('/');
         QVector<QByteArray> vec;
         vec.reserve(list.size());
-        foreach(const QByteArray & ba, list) {
+        Q_FOREACH (const QByteArray& ba, list) {
             if (!ba.isEmpty())
                 vec << ba;
         }
 
         m_data.reserve(vec.size());
-        foreach(const QByteArray & arr, vec) {
+        Q_FOREACH (const QByteArray& arr, vec) {
             QSet< QByteArray >::iterator it = cache.find(arr);
             if (it != cache.end())
                 m_data.append(*it);
@@ -67,13 +67,13 @@ public:
 
     QByteArray toByteArray() const {
         int size = 0;
-        foreach(const QByteArray & arr, m_data)
-        size += arr.size() + 1;
+        Q_FOREACH (const QByteArray& arr, m_data)
+            size += arr.size() + 1;
 
         QByteArray array;
         array.reserve(size);
 
-        foreach(const QByteArray & arr, m_data) {
+        Q_FOREACH (const QByteArray& arr, m_data) {
             array.append('/');
             array.append(arr);
         }
