@@ -61,7 +61,7 @@ FileIndexerConfig* FileIndexerConfig::s_self = 0;
 
 FileIndexerConfig::FileIndexerConfig(QObject* parent)
     : QObject(parent)
-    , m_config("nepomukstrigirc")
+    , m_config("baloofilerc")
     , m_indexHidden(false)
 {
     if (!s_self) {
@@ -474,7 +474,7 @@ void FileIndexerConfig::setInitialRun(bool isInitialRun)
 
 bool FileIndexerConfig::initialUpdateDisabled() const
 {
-    return m_config.group("General").readEntry("disable initial update", true);
+    return m_config.group("General").readEntry("disable initial update", false);
 }
 
 bool FileIndexerConfig::suspendOnPowerSaveDisabled() const
