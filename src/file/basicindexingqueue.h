@@ -112,6 +112,8 @@ private:
 
     QUrl m_currentUrl;
     QString m_currentMimeType;
+    int m_currentFileId;
+
     UpdateDirFlags m_currentFlags;
 
     Database* m_db;

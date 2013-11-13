@@ -33,10 +33,11 @@
 
 using namespace Baloo;
 
-BasicIndexingJob::BasicIndexingJob(Database* db, const QString& url,
+BasicIndexingJob::BasicIndexingJob(Database* m_db, int fileId, const QString& url,
                                    const QString& mimetype, QObject* parent)
     : KJob(parent)
-    , m_db(db)
+    , m_db(m_db)
+    , m_fileId(fileId)
     , m_url(url)
     , m_mimetype(mimetype)
 {
@@ -53,7 +54,12 @@ void BasicIndexingJob::start()
 
 void BasicIndexingJob::doStart()
 {
-    int id = fetchFileId(m_url);
+    if (m_fileId == 0) {
+        m_fileId = createFileId(m_url);
+        if (m_fileId == 0) {
+            emitResult();
+        }
+    }
 
     QFileInfo fileInfo(m_url);
 
@@ -65,12 +71,12 @@ void BasicIndexingJob::doStart()
     doc.add_term('F' + fileInfo.fileName().toStdString());
     doc.add_term("DT_M" + fileInfo.lastModified().toString(Qt::ISODate).toStdString());
 
-    m_db->xapainDatabase()->replace_document(id, doc);
+    m_db->xapainDatabase()->replace_document(m_fileId, doc);
 
     emitResult();
 }
 
-int BasicIndexingJob::fetchFileId(const QString& url)
+int BasicIndexingJob::createFileId(const QString& url)
 {
     QSqlQuery query(m_db->sqlDatabase());
     query.prepare(QLatin1String("insert into files (url) VALUES (?)"));

@@ -33,7 +33,7 @@ class BasicIndexingJob : public KJob
 {
     Q_OBJECT
 public:
-    BasicIndexingJob(Database* m_db, const QString& url,
+    BasicIndexingJob(Database* m_db, int fileId, const QString& url,
                      const QString& mimetype, QObject* parent = 0);
     ~BasicIndexingJob();
 
@@ -43,9 +43,10 @@ private Q_SLOTS:
     void doStart();
 
 private:
-    int fetchFileId(const QString& url);
+    int createFileId(const QString& url);
 
     Database* m_db;
+    int m_fileId;
     QString m_url;
     QString m_mimetype;
 };

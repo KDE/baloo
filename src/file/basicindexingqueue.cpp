@@ -46,6 +46,7 @@ void BasicIndexingQueue::clear()
     m_currentUrl.clear();
     m_currentFlags = NoUpdateFlags;
     m_paths.clear();
+    m_currentFileId = 0;
 }
 
 void BasicIndexingQueue::clear(const QString& path)
@@ -168,15 +169,14 @@ bool BasicIndexingQueue::shouldIndex(const QString& path, const QString& mimetyp
     query.addBindValue(path);
     query.exec();
 
-    int id = 0;
     if (query.next())
-        id = query.value(0).toInt();
+        m_currentFileId = query.value(0).toInt();
 
-    if (id == 0)
+    if (m_currentFileId == 0)
         return true;
 
     try {
-        Xapian::Document doc = m_db->xapainDatabase()->get_document(id);
+        Xapian::Document doc = m_db->xapainDatabase()->get_document(m_currentFileId);
         Xapian::TermIterator it = doc.termlist_begin();
         it.skip_to("DT_M");
         if (it == doc.termlist_end())
@@ -206,7 +206,7 @@ void BasicIndexingQueue::index(const QString& path)
     const QUrl fileUrl = QUrl::fromLocalFile(path);
     Q_EMIT beginIndexingFile(fileUrl);
 
-    KJob* job = new Baloo::BasicIndexingJob(m_db, path, m_currentMimeType);
+    KJob* job = new Baloo::BasicIndexingJob(m_db, m_currentFileId, path, m_currentMimeType);
     connect(job, SIGNAL(finished(KJob*)), this, SLOT(slotIndexingFinished(KJob*)));
 
     job->start();
