@@ -70,6 +70,12 @@ bool Database::init()
         return false;
     }
 
+    ret = query.exec("CREATE INDEX fileUrl_index ON files (url)");
+    if (!ret) {
+        kDebug() << "Could not create tags index" << query.lastError().text();
+        return false;
+    }
+
     m_initialized = true;
     return true;
 }
