@@ -113,6 +113,9 @@ IndexScheduler::IndexScheduler(Database* db, QObject* parent)
 
     m_state = State_Normal;
     slotScheduleIndexing();
+
+    m_commitTimer.setSingleShot(true);
+    connect(&m_commitTimer, SIGNAL(timeout()), this, SLOT(slotCommitTimerElapsed()));
 }
 
 
@@ -343,10 +346,39 @@ void IndexScheduler::slotEndBasicIndexingFile()
     }*/
 
     m_basicIQ->setDelay(0);
-    m_basicIndexingFileCount++;
+    m_fileIQ->setDelay(0);
+    //m_basicIndexingFileCount++;
 
-    if ((m_basicIndexingFileCount % 100) == 0) {
-        kDebug() << "Commit";
+    if (!m_commitTimer.isActive()) {
+        m_commitTimer.start(100);
+    }
+}
+
+
+void IndexScheduler::slotCommitTimerElapsed()
+{
+    bool commit = false;
+
+    if (m_state != State_Normal) {
+        commit = true;
+    }
+    else {
+        int interval = m_commitTimer.interval();
+        if (interval <= 100) {
+            m_commitTimer.start(1000);
+        }
+        else if (interval <= 1000) {
+            m_commitTimer.start(3000);
+        }
+        else if (interval <= 3000) {
+            m_commitTimer.start(5000);
+        }
+        else {
+            commit = true;
+        }
+    }
+
+    if (commit) {
         m_db->commit();
         m_db->transaction();
     }

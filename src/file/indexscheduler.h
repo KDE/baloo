@@ -23,6 +23,7 @@
 #include "basicindexingqueue.h" // Required for UpdateDirFlags
 #include "removablemediacache.h"
 #include <QDateTime>
+#include <QTimer>
 
 class Database;
 
@@ -160,6 +161,9 @@ private Q_SLOTS:
 
     void slotTeardownRequested(const RemovableMediaCache::Entry* entry);
     void emitStatusStringChanged();
+
+    void slotCommitTimerElapsed();
+
 private:
     void queueAllFoldersForUpdate(bool forceUpdate = false);
 
@@ -176,6 +180,7 @@ private:
     // Queues
     BasicIndexingQueue* m_basicIQ;
     FileIndexingQueue* m_fileIQ;
+    QTimer m_commitTimer;
 
     EventMonitor* m_eventMonitor;
 
