@@ -169,11 +169,13 @@ bool BasicIndexingQueue::shouldIndex(const QString& path, const QString& mimetyp
     query.addBindValue(path);
     query.exec();
 
-    if (query.next())
+    if (query.next()) {
         m_currentFileId = query.value(0).toInt();
-
-    if (m_currentFileId == 0)
+    }
+    else {
+        m_currentFileId = 0;
         return true;
+    }
 
     try {
         Xapian::Document doc = m_db->xapainDatabase()->get_document(m_currentFileId);
@@ -222,6 +224,7 @@ void BasicIndexingQueue::slotIndexingFinished(KJob* job)
     m_currentUrl.clear();
     m_currentMimeType.clear();
     m_currentFlags = NoUpdateFlags;
+    m_currentFileId = 0;
 
     Q_EMIT endIndexingFile(url);
 
