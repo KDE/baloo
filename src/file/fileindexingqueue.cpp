@@ -27,6 +27,8 @@
 #include <KDebug>
 #include <QTimer>
 
+#include <QSqlQuery>
+
 using namespace Baloo;
 
 FileIndexingQueue::FileIndexingQueue(Database* db, QObject* parent)
@@ -53,14 +55,24 @@ void FileIndexingQueue::fillQueue()
     if (m_fileQueue.size() > 0)
         return;
 
-    /*
-    QString query = QString::fromLatin1("select distinct ?url where { ?r nie:url ?url ; kext:indexingLevel ?l "
-                                        " FILTER(?l = 1 ). } LIMIT 10");
+    Xapian::Enquire enquire(*m_db->xapainDatabase());
+    enquire.set_query(Xapian::Query("Z1"));
 
-    Soprano::Model* model = ResourceManager::instance()->mainModel();
-    Soprano::QueryResultIterator it = model->executeQuery(query, Soprano::Query::QueryLanguageSparql);
-    while (it.next())
-        m_fileQueue.enqueue(it[0].uri());*/
+    Xapian::MSet mset = enquire.get_mset(0, 10);
+    Xapian::MSetIterator it = mset.begin();
+    for (; it != mset.end(); it++) {
+        int fileId = *it;
+
+        kDebug() << fileId;
+        QSqlQuery query(m_db->sqlDatabase());
+        query.setForwardOnly(true);
+        query.prepare("select url from files where id = ?");
+        query.addBindValue(fileId);
+        query.exec();
+
+        if (query.next())
+            m_fileQueue << query.value(0).toString();
+    }
 }
 
 void FileIndexingQueue::enqueue(const QUrl& url)

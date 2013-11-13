@@ -70,6 +70,7 @@ void BasicIndexingJob::doStart()
     doc.add_term('M' + m_mimetype.toStdString());
     doc.add_term('F' + fileInfo.fileName().toStdString());
     doc.add_term("DT_M" + fileInfo.lastModified().toString(Qt::ISODate).toStdString());
+    doc.add_term("Z1"); // Indexing Level 1
 
     m_db->xapainDatabase()->replace_document(m_fileId, doc);
 
