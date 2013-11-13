@@ -324,6 +324,7 @@ void IndexScheduler::slotEndIndexingFile(const QUrl&)
 //
 void IndexScheduler::slotEndBasicIndexingFile()
 {
+    /*
     QDateTime current = QDateTime::currentDateTime();
     if (current.secsTo(m_lastBasicIndexingFile) > 60) {
         m_basicIQ->setDelay(0);
@@ -339,8 +340,9 @@ void IndexScheduler::slotEndBasicIndexingFile()
             m_basicIQ->setDelay(100);
         } else
             m_basicIQ->setDelay(0);
-    }
+    }*/
 
+    m_basicIQ->setDelay(0);
     m_basicIndexingFileCount++;
 
     if ((m_basicIndexingFileCount % 100) == 0) {
