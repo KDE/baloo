@@ -75,7 +75,7 @@ void FileIndexingQueue::fillQueue()
     }
 }
 
-void FileIndexingQueue::enqueue(const QUrl& url)
+void FileIndexingQueue::enqueue(const QString& url)
 {
     if (!m_fileQueue.contains(url)) {
         m_fileQueue.enqueue(url);
@@ -91,11 +91,11 @@ bool FileIndexingQueue::isEmpty()
 
 void FileIndexingQueue::processNextIteration()
 {
-    const QUrl fileUrl = m_fileQueue.dequeue();
+    const QString fileUrl = m_fileQueue.dequeue();
     process(fileUrl);
 }
 
-void FileIndexingQueue::process(const QUrl& url)
+void FileIndexingQueue::process(const QString& url)
 {
     m_currentUrl = url;
 
@@ -122,7 +122,7 @@ void FileIndexingQueue::slotFinishedIndexingFile(KJob* job)
         }*/
     }
 
-    QUrl url = m_currentUrl;
+    QString url = m_currentUrl;
     m_currentUrl.clear();
     Q_EMIT endIndexingFile(url);
     if (m_fileQueue.isEmpty()) {
@@ -139,15 +139,15 @@ void FileIndexingQueue::clear()
 
 void FileIndexingQueue::clear(const QString& path)
 {
-    QMutableListIterator<QUrl> it(m_fileQueue);
+    QMutableListIterator<QString> it(m_fileQueue);
     while (it.hasNext()) {
-        if (it.next().toLocalFile().startsWith(path))
+        if (it.next().startsWith(path))
             it.remove();
     }
 }
 
 
-QUrl FileIndexingQueue::currentUrl()
+QString FileIndexingQueue::currentUrl()
 {
     return m_currentUrl;
 }

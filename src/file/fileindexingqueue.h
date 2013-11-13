@@ -41,7 +41,7 @@ public:
 
     void clear();
     void clear(const QString& path);
-    QUrl currentUrl();
+    QString currentUrl();
 
 public Q_SLOTS:
     /**
@@ -49,10 +49,10 @@ public Q_SLOTS:
      */
     void start();
 
-    void enqueue(const QUrl& url);
+    void enqueue(const QString& url);
 Q_SIGNALS:
-    void beginIndexingFile(const QUrl& url);
-    void endIndexingFile(const QUrl& url);
+    void beginIndexingFile(const QString& url);
+    void endIndexingFile(const QString& url);
 
 protected:
     virtual void processNextIteration();
@@ -62,10 +62,10 @@ private Q_SLOTS:
     void slotConfigChanged();
 
 private:
-    void process(const QUrl& url);
+    void process(const QString& url);
 
-    QQueue<QUrl> m_fileQueue;
-    QUrl m_currentUrl;
+    QQueue<QString> m_fileQueue;
+    QString m_currentUrl;
     Database* m_db;
 };
 }

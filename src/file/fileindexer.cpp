@@ -139,13 +139,13 @@ void FileIndexer::resume() const
 
 QString FileIndexer::currentFile() const
 {
-    return m_indexScheduler->currentUrl().toLocalFile();
+    return m_indexScheduler->currentUrl();
 }
 
 
 QString FileIndexer::currentFolder() const
 {
-    return KUrl(m_indexScheduler->currentUrl()).directory();
+    return KUrl(QUrl::fromLocalFile(m_indexScheduler->currentUrl())).directory();
 }
 
 

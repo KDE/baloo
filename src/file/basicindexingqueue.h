@@ -66,14 +66,14 @@ class BasicIndexingQueue: public IndexingQueue
 public:
     explicit BasicIndexingQueue(Database* db, QObject* parent = 0);
 
-    QUrl currentUrl() const;
+    QString currentUrl() const;
     UpdateDirFlags currentFlags() const;
 
     virtual bool isEmpty();
 
 Q_SIGNALS:
-    void beginIndexingFile(const QUrl& url);
-    void endIndexingFile(const QUrl& url);
+    void beginIndexingFile(const QString& url);
+    void endIndexingFile(const QString& url);
 
 public Q_SLOTS:
     void enqueue(const QString& path);
@@ -110,7 +110,7 @@ private:
 
     QStack< QPair<QString, UpdateDirFlags> > m_paths;
 
-    QUrl m_currentUrl;
+    QString m_currentUrl;
     QString m_currentMimeType;
     int m_currentFileId;
 

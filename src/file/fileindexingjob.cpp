@@ -33,7 +33,7 @@
 
 using namespace Baloo;
 
-FileIndexingJob::FileIndexingJob(Database* db, const QUrl& fileUrl, QObject* parent)
+FileIndexingJob::FileIndexingJob(Database* db, const QString& fileUrl, QObject* parent)
     : KJob(parent)
     , m_db(db)
     , m_url(fileUrl)
@@ -47,7 +47,7 @@ FileIndexingJob::FileIndexingJob(Database* db, const QUrl& fileUrl, QObject* par
 
 void FileIndexingJob::start()
 {
-    if (!QFile::exists(m_url.toLocalFile())) {
+    if (!QFile::exists(m_url)) {
         QTimer::singleShot(0, this, SLOT(slotProcessNonExistingFile()));
         return;
     }
@@ -58,7 +58,7 @@ void FileIndexingJob::start()
     m_process = new QProcess(this);
 
     QStringList args;
-    args << m_url.toLocalFile();
+    args << m_url;
     kDebug() << args;
 
     connect(m_process, SIGNAL(finished(int, QProcess::ExitStatus)),
@@ -81,11 +81,11 @@ void FileIndexingJob::slotProcessNonExistingFile()
     Soprano::Model* model = ResourceManager::instance()->mainModel();
     Soprano::QueryResultIterator it = model->executeQuery(query, Soprano::Query::QueryLanguageSparqlNoInference);
     while (it.next()) {
-        QUrl uri = it[0].uri();
+        QString uri = it[0].uri();
 
         // We do not just delete the resource cause it could be part of some removeable media
         // which is not mounted. When the device is mounted, then the file will get reindexed
-        model->removeAllStatements(uri, KExt::indexingLevel(), QUrl());
+        model->removeAllStatements(uri, KExt::indexingLevel(), QString());
     }
     */
 
@@ -115,16 +115,16 @@ void FileIndexingJob::slotIndexedFile(int exitCode, QProcess::ExitStatus exitSta
     //kDebug() << "Indexing of " << m_url.toLocalFile() << "finished with exit code" << exitCode;
     if (exitStatus != QProcess::NormalExit) {
         setError(IndexerCrashed);
-        setErrorText(QLatin1String("Indexer process crashed on ") + m_url.toLocalFile());
+        setErrorText(QLatin1String("Indexer process crashed on ") + m_url);
     }
     if (exitCode == 1) {
         setError(IndexerFailed);
-        setErrorText(QLatin1String("Indexer process returned with an error for ") + m_url.toLocalFile());
+        setErrorText(QLatin1String("Indexer process returned with an error for ") + m_url);
         if (FileIndexerConfig::self()->isDebugModeEnabled()) {
             QFile errorLogFile(KStandardDirs::locateLocal("data", QLatin1String("nepomuk/file-indexer-error-log"), true));
             if (errorLogFile.open(QIODevice::Append)) {
                 QTextStream s(&errorLogFile);
-                s << m_url.toLocalFile() << ": " << QString::fromLocal8Bit(m_process->readAllStandardOutput()) << endl;
+                s << m_url << ": " << QString::fromLocal8Bit(m_process->readAllStandardOutput()) << endl;
             }
         }
     }
@@ -138,7 +138,7 @@ void FileIndexingJob::slotProcessTimerTimeout()
     m_process->kill();
     m_process->waitForFinished();
     setError(KJob::KilledJobError);
-    setErrorText(QLatin1String("Indexer process got stuck for") + m_url.toLocalFile());
+    setErrorText(QLatin1String("Indexer process got stuck for") + m_url);
     emitResult();
 }
 

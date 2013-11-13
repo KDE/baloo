@@ -24,7 +24,6 @@
 #include <QtCore/QObject>
 #include <QtCore/QQueue>
 #include <QtCore/QDirIterator>
-#include <QtCore/QUrl>
 
 namespace Baloo
 {

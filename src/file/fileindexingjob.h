@@ -53,9 +53,9 @@ class FileIndexingJob : public KJob
     Q_OBJECT
 
 public:
-    FileIndexingJob(Database* db, const QUrl& fileUrl, QObject* parent = 0);
+    FileIndexingJob(Database* db, const QString& fileUrl, QObject* parent = 0);
 
-    KUrl url() const {
+    QString url() const {
         return m_url;
     }
 
@@ -93,7 +93,7 @@ private Q_SLOTS:
 private:
     Database* m_db;
 
-    KUrl m_url;
+    QString m_url;
     QProcess* m_process;
     int m_exitCode;
     QTimer* m_processTimer;

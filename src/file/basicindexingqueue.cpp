@@ -59,7 +59,7 @@ void BasicIndexingQueue::clear(const QString& path)
     }
 }
 
-QUrl BasicIndexingQueue::currentUrl() const
+QString BasicIndexingQueue::currentUrl() const
 {
     return m_currentUrl;
 }
@@ -110,8 +110,7 @@ bool BasicIndexingQueue::process(const QString& path, UpdateDirFlags flags)
 {
     bool startedIndexing = false;
 
-    QUrl url = QUrl::fromLocalFile(path);
-    QString mimetype = KMimeType::findByUrl(url)->name();
+    QString mimetype = KMimeType::findByUrl(QUrl::fromLocalFile(path))->name();
 
     bool forced = flags & ForceUpdate;
     bool recursive = flags & UpdateRecursive;
@@ -120,7 +119,7 @@ bool BasicIndexingQueue::process(const QString& path, UpdateDirFlags flags)
     QFileInfo info(path);
     if (info.isDir()) {
         if (forced || indexingRequired) {
-            m_currentUrl = url;
+            m_currentUrl = path;
             m_currentFlags = flags;
             m_currentMimeType = mimetype;
 
@@ -138,7 +137,7 @@ bool BasicIndexingQueue::process(const QString& path, UpdateDirFlags flags)
             }
         }
     } else if (info.isFile() && (forced || indexingRequired)) {
-        m_currentUrl = url;
+        m_currentUrl = path;
         m_currentFlags = flags;
         m_currentMimeType = mimetype;
 
@@ -205,8 +204,7 @@ bool BasicIndexingQueue::shouldIndexContents(const QString& dir)
 void BasicIndexingQueue::index(const QString& path)
 {
     kDebug() << path;
-    const QUrl fileUrl = QUrl::fromLocalFile(path);
-    Q_EMIT beginIndexingFile(fileUrl);
+    Q_EMIT beginIndexingFile(path);
 
     KJob* job = new Baloo::BasicIndexingJob(m_db, m_currentFileId, path, m_currentMimeType);
     connect(job, SIGNAL(finished(KJob*)), this, SLOT(slotIndexingFinished(KJob*)));
@@ -220,7 +218,7 @@ void BasicIndexingQueue::slotIndexingFinished(KJob* job)
         kDebug() << job->errorString();
     }
 
-    QUrl url = m_currentUrl;
+    QString url = m_currentUrl;
     m_currentUrl.clear();
     m_currentMimeType.clear();
     m_currentFlags = NoUpdateFlags;

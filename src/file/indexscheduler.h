@@ -91,7 +91,7 @@ public:
      * \sa indexingStarted
      * \sa indexingStopped
      */
-    QUrl currentUrl() const;
+    QString currentUrl() const;
 
     /**
      * The UpdateDirFlags of the the current url that is being
@@ -149,8 +149,8 @@ private Q_SLOTS:
 
     void slotCleaningDone();
 
-    void slotBeginIndexingFile(const QUrl& url);
-    void slotEndIndexingFile(const QUrl& url);
+    void slotBeginIndexingFile(const QString& url);
+    void slotEndIndexingFile(const QString& url);
     void slotEndBasicIndexingFile();
 
     void slotStartedIndexing();

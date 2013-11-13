@@ -20,7 +20,6 @@
 #define _FILE_WATCH_H_
 
 #include <QObject>
-#include <QtCore/QUrl>
 #include <QtCore/QVariant>
 #include <QtCore/QSet>
 

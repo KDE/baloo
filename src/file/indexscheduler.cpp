@@ -34,7 +34,6 @@
 #include <QtCore/QDirIterator>
 #include <QtCore/QDateTime>
 #include <QtCore/QByteArray>
-#include <QtCore/QUrl>
 
 #include <KDebug>
 #include <KUrl>
@@ -79,11 +78,11 @@ IndexScheduler::IndexScheduler(Database* db, QObject* parent)
     connect(m_basicIQ, SIGNAL(finishedIndexing()), this, SIGNAL(basicIndexingDone()));
     connect(m_fileIQ, SIGNAL(finishedIndexing()), this, SIGNAL(fileIndexingDone()));
 
-    connect(m_basicIQ, SIGNAL(beginIndexingFile(QUrl)), this, SLOT(slotBeginIndexingFile(QUrl)));
-    connect(m_basicIQ, SIGNAL(endIndexingFile(QUrl)), this, SLOT(slotEndIndexingFile(QUrl)));
-    connect(m_basicIQ, SIGNAL(endIndexingFile(QUrl)), this, SLOT(slotEndBasicIndexingFile()));
-    connect(m_fileIQ, SIGNAL(beginIndexingFile(QUrl)), this, SLOT(slotBeginIndexingFile(QUrl)));
-    connect(m_fileIQ, SIGNAL(endIndexingFile(QUrl)), this, SLOT(slotEndIndexingFile(QUrl)));
+    connect(m_basicIQ, SIGNAL(beginIndexingFile(QString)), this, SLOT(slotBeginIndexingFile(QString)));
+    connect(m_basicIQ, SIGNAL(endIndexingFile(QString)), this, SLOT(slotEndIndexingFile(QString)));
+    connect(m_basicIQ, SIGNAL(endIndexingFile(QString)), this, SLOT(slotEndBasicIndexingFile()));
+    connect(m_fileIQ, SIGNAL(beginIndexingFile(QString)), this, SLOT(slotBeginIndexingFile(QString)));
+    connect(m_fileIQ, SIGNAL(endIndexingFile(QString)), this, SLOT(slotEndIndexingFile(QString)));
 
     connect(m_basicIQ, SIGNAL(startedIndexing()), this, SLOT(slotStartedIndexing()));
     connect(m_basicIQ, SIGNAL(finishedIndexing()), this, SLOT(slotFinishedIndexing()));
@@ -91,7 +90,7 @@ IndexScheduler::IndexScheduler(Database* db, QObject* parent)
     connect(m_fileIQ, SIGNAL(finishedIndexing()), this, SLOT(slotFinishedIndexing()));
 
     // Connect both the queues together
-    connect(m_basicIQ, SIGNAL(endIndexingFile(QUrl)), m_fileIQ, SLOT(enqueue(QUrl)));
+    connect(m_basicIQ, SIGNAL(endIndexingFile(QString)), m_fileIQ, SLOT(enqueue(QString)));
 
     // Status String
     connect(m_basicIQ, SIGNAL(startedIndexing()), this, SLOT(emitStatusStringChanged()));
@@ -172,7 +171,7 @@ bool IndexScheduler::isIndexing() const
     return m_indexing;
 }
 
-QUrl IndexScheduler::currentUrl() const
+QString IndexScheduler::currentUrl() const
 {
     if (!m_fileIQ->currentUrl().isEmpty())
         return m_fileIQ->currentUrl();
@@ -307,15 +306,15 @@ void IndexScheduler::analyzeFile(const QString& path)
 }
 
 
-void IndexScheduler::slotBeginIndexingFile(const QUrl&)
+void IndexScheduler::slotBeginIndexingFile(const QString&)
 {
     setIndexingStarted(true);
 }
 
-void IndexScheduler::slotEndIndexingFile(const QUrl&)
+void IndexScheduler::slotEndIndexingFile(const QString&)
 {
-    const QUrl basicUrl = m_basicIQ->currentUrl();
-    const QUrl fileUrl = m_fileIQ->currentUrl();
+    const QString basicUrl = m_basicIQ->currentUrl();
+    const QString fileUrl = m_fileIQ->currentUrl();
 
     if (basicUrl.isEmpty() && fileUrl.isEmpty()) {
         setIndexingStarted(false);
