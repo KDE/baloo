@@ -26,6 +26,8 @@
 #include <KJob>
 #include <Soprano/QueryResultIterator>
 
+class Database;
+
 namespace Baloo
 {
 
@@ -33,7 +35,7 @@ class FileIndexingQueue : public IndexingQueue
 {
     Q_OBJECT
 public:
-    explicit FileIndexingQueue(QObject* parent = 0);
+    FileIndexingQueue(Database* db, QObject* parent = 0);
     virtual bool isEmpty();
     virtual void fillQueue();
 
@@ -64,6 +66,7 @@ private:
 
     QQueue<QUrl> m_fileQueue;
     QUrl m_currentUrl;
+    Database* m_db;
 };
 }
 

@@ -56,3 +56,4 @@ target_link_libraries(baloo_file
 install(TARGETS baloo_file ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 add_subdirectory(autotest)
+add_subdirectory(extractor)

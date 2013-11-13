@@ -74,7 +74,7 @@ IndexScheduler::IndexScheduler(Database* db, QObject* parent)
             this, SLOT(slotTeardownRequested(const RemovableMediaCache::Entry*)));
 
     m_basicIQ = new BasicIndexingQueue(m_db, this);
-    m_fileIQ = new FileIndexingQueue(this);
+    m_fileIQ = new FileIndexingQueue(m_db, this);
 
     connect(m_basicIQ, SIGNAL(finishedIndexing()), this, SIGNAL(basicIndexingDone()));
     connect(m_fileIQ, SIGNAL(finishedIndexing()), this, SIGNAL(fileIndexingDone()));

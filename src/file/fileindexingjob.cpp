@@ -33,9 +33,10 @@
 
 using namespace Baloo;
 
-FileIndexingJob::FileIndexingJob(const QUrl& fileUrl, QObject* parent)
-    : KJob(parent),
-      m_url(fileUrl)
+FileIndexingJob::FileIndexingJob(Database* db, const QUrl& fileUrl, QObject* parent)
+    : KJob(parent)
+    , m_db(db)
+    , m_url(fileUrl)
 {
     // setup the timer used to kill the indexer process if it seems to get stuck
     m_processTimer = new QTimer(this);
@@ -50,28 +51,26 @@ void FileIndexingJob::start()
         QTimer::singleShot(0, this, SLOT(slotProcessNonExistingFile()));
         return;
     }
-    emitResult();
-    return;
-    /*
 
     // setup the external process which does the actual indexing
-    const QString exe = KStandardDirs::findExe(QLatin1String("nepomukindexer"));
+    const QString exe = KStandardDirs::findExe(QLatin1String("baloo_file_extractor"));
 
-    kDebug() << "Running" << exe << m_url.toLocalFile();
-
-    m_process = new KProcess(this);
+    m_process = new QProcess(this);
 
     QStringList args;
     args << m_url.toLocalFile();
+    kDebug() << args;
 
-    m_process->setProgram(exe, args);
-    m_process->setOutputChannelMode(KProcess::OnlyStdoutChannel);
-    connect(m_process, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(slotIndexedFile(int, QProcess::ExitStatus)));
-    m_process->start();
+    connect(m_process, SIGNAL(finished(int, QProcess::ExitStatus)),
+            this, SLOT(slotIndexedFile(int, QProcess::ExitStatus)));
+    connect(m_process, SIGNAL(readyReadStandardOutput()),
+            this, SLOT(slotReadyReadStdOutput()));
+
+    m_process->setProcessChannelMode(QProcess::SeparateChannels);
+    m_process->start(exe, args);
 
     // start the timer which will kill the process if it does not terminate after 5 minutes
     m_processTimer->start(5 * 60 * 1000);
-    */
 }
 
 void FileIndexingJob::slotProcessNonExistingFile()
@@ -91,6 +90,20 @@ void FileIndexingJob::slotProcessNonExistingFile()
     */
 
     emitResult();
+}
+
+void FileIndexingJob::slotReadyReadStdOutput()
+{
+    QByteArray arr = QByteArray::fromBase64(m_process->readAll());
+    QDataStream st(&arr, QIODevice::ReadOnly);
+
+    QVariantMap map;
+    st >> map;
+
+    // FIXME: Write this to Xapian - How?
+    kDebug() << "---------";
+    kDebug() << map;
+    kDebug() << "---------";
 }
 
 
@@ -115,6 +128,7 @@ void FileIndexingJob::slotIndexedFile(int exitCode, QProcess::ExitStatus exitSta
             }
         }
     }
+
     emitResult();
 }
 

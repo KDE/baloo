@@ -22,13 +22,16 @@
 #include "fileindexingjob.h"
 #include "fileindexerconfig.h"
 #include "util.h"
+#include "database.h"
 
 #include <KDebug>
 #include <QTimer>
 
 using namespace Baloo;
 
-FileIndexingQueue::FileIndexingQueue(QObject* parent): IndexingQueue(parent)
+FileIndexingQueue::FileIndexingQueue(Database* db, QObject* parent)
+    : IndexingQueue(parent)
+    , m_db(db)
 {
     m_fileQueue.reserve(10);
 
@@ -84,7 +87,7 @@ void FileIndexingQueue::process(const QUrl& url)
 {
     m_currentUrl = url;
 
-    KJob* job = new FileIndexingJob(url);
+    KJob* job = new FileIndexingJob(m_db, url);
     job->start();
     Q_EMIT beginIndexingFile(url);
     connect(job, SIGNAL(finished(KJob*)), this, SLOT(slotFinishedIndexingFile(KJob*)));

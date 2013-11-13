@@ -24,10 +24,11 @@
 
 #include <KJob>
 #include <KUrl>
-#include <KProcess>
+#include <QProcess>
 
 class QFileInfo;
 class QTimer;
+class Database;
 
 namespace Baloo
 {
@@ -52,7 +53,7 @@ class FileIndexingJob : public KJob
     Q_OBJECT
 
 public:
-    FileIndexingJob(const QUrl& fileUrl, QObject* parent = 0);
+    FileIndexingJob(Database* db, const QUrl& fileUrl, QObject* parent = 0);
 
     KUrl url() const {
         return m_url;
@@ -87,9 +88,13 @@ private Q_SLOTS:
     void slotProcessTimerTimeout();
     void slotProcessNonExistingFile();
 
+    void slotReadyReadStdOutput();
+
 private:
+    Database* m_db;
+
     KUrl m_url;
-    KProcess* m_process;
+    QProcess* m_process;
     int m_exitCode;
     QTimer* m_processTimer;
 };
