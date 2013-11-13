@@ -29,6 +29,7 @@ namespace Baloo {
 
 class BasicIndexingJob : public KJob
 {
+    Q_OBJECT
 public:
     BasicIndexingJob(const QString& url, const QString& mimetype, QObject* parent = 0);
     ~BasicIndexingJob();

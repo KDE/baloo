@@ -20,22 +20,28 @@
  *
  */
 
-#include <QCoreApplication>
+#include <QApplication>
 
 #include <KComponentData>
 #include <KAboutData>
+#include <KStandardDirs>
 
 #include "filewatch.h"
 #include "fileindexer.h"
+#include "database.h"
 
 int main(int argc, char** argv) {
-    QCoreApplication app(argc, argv);
+    QApplication app(argc, argv);
 
     KAboutData aboutData("biloo_file", "biloo_file", ki18n("Biloo File"), "0.1",
                          ki18n("An application to handle file metadata"),
                          KAboutData::License_GPL_V2);
 
     KComponentData data(aboutData, KComponentData::RegisterAsMainComponent);
+
+    Database db;
+    db.setPath(KStandardDirs::locateLocal("data", "baloo/fileMapping"));
+    db.init();
 
     Baloo::FileWatch filewatcher(&app);
     Baloo::FileIndexer fileIndexer(&app);

@@ -1,3 +1,4 @@
+add_definitions(${KDE4_ENABLE_EXCEPTIONS})
 
 set(file_SRCS
     # Filewatch

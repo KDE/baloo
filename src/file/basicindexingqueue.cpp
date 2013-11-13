@@ -18,6 +18,7 @@
 */
 
 
+#include <xapian.h>
 #include "basicindexingqueue.h"
 #include "fileindexerconfig.h"
 #include "util.h"
@@ -25,6 +26,8 @@
 
 #include <KDebug>
 #include <KMimeType>
+#include <KStandardDirs>
+
 #include <QtCore/QDateTime>
 
 using namespace Baloo;
@@ -157,33 +160,35 @@ bool BasicIndexingQueue::shouldIndex(const QString& path, const QString& mimetyp
     if (!fileInfo.exists())
         return false;
 
-    bool needToIndex = true;//false;
+    QSqlQuery query;
+    query.setForwardOnly(true);
+    query.prepare(QLatin1String("select id from files where url = ?"));
+    query.addBindValue(path);
+    query.exec();
 
-    /*
-     * FIXME: - Query Xapian and check its stored mtime
-     *        - Need to first store the file url mapping
-     *        - Fetch the mtime
-     *
-    Soprano::Model* model = ResourceManager::instance()->mainModel();
+    int id = 0;
+    if (query.next())
+        id = query.value(0).toInt();
 
-    // Optimization: We don't care about the mtime of directories. If it has been indexed once
-    // then it doesn't need to indexed again - ever
-    if (fileInfo.isDir()) {
-        QString query = QString::fromLatin1("ask where { ?r nie:url %1 . }")
-                        .arg(Soprano::Node::resourceToN3(QUrl::fromLocalFile(path)));
+    if (id == 0)
+        return true;
 
-        needToIndex = !model->executeQuery(query, Soprano::Query::QueryLanguageSparqlNoInference).boolValue();
-    } else {
-        // check if this file is new by checking its mtime
-        QString query = QString::fromLatin1("ask where { ?r nie:url %1 ; nie:lastModified ?dt . FILTER(?dt=%2) .}")
-                        .arg(Soprano::Node::resourceToN3(QUrl::fromLocalFile(path)),
-                             Soprano::Node::literalToN3(Soprano::LiteralValue(fileInfo.lastModified())));
+    const QString dbPath = KStandardDirs::locateLocal("data", "baloo/file/");
+    Xapian::Database db(dbPath.toStdString());
+    try {
+        Xapian::Document doc = db.get_document(id);
+        Xapian::TermIterator it = doc.termlist_begin();
+        it.skip_to("DT_M");
+        if (it == doc.termlist_end())
+            return false;
 
-        needToIndex = !model->executeQuery(query, Soprano::Query::QueryLanguageSparqlNoInference).boolValue();
-    }*/
+        const QString str = QString::fromStdString(*it).mid(4);
+        const QDateTime mtime = QDateTime::fromString(str, Qt::ISODate);
 
-    if (needToIndex) {
-        kDebug() << path;
+        if (mtime != fileInfo.lastModified())
+            return true;
+    }
+    catch (const Xapian::DocNotFoundError&) {
         return true;
     }
 

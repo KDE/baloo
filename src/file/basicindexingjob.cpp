@@ -22,7 +22,6 @@
 
 #include <xapian.h>
 #include "basicindexingjob.h"
-#include "database.h"
 
 #include <QTimer>
 #include <QVariant>
@@ -76,12 +75,7 @@ void BasicIndexingJob::doStart()
 
 int BasicIndexingJob::fetchFileId(const QString& url)
 {
-    Database db;
-    db.setPath(KStandardDirs::locateLocal("data", "baloo/fileMapping"));
-    db.init();
-
     QSqlQuery query;
-    query.setForwardOnly(true);
     query.prepare(QLatin1String("insert into files (url) VALUES (?)"));
     query.addBindValue(url);
     query.exec();
