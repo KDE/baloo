@@ -22,15 +22,12 @@
 
 #include <KUrl>
 
-class KJob;
+class Database;
 
 namespace Baloo
 {
-/// remove all indexed data for \p url the datamanagement way
-KJob* clearIndexedData(const QUrl& url);
-KJob* clearIndexedData(const QList<QUrl>& urls);
-/// update kext::indexingLevel for \p url
-void updateIndexingLevel(const QUrl& uri, int level);
+
+void updateIndexingLevel(Database* db, int fileId, int level);
 
 }
 #endif

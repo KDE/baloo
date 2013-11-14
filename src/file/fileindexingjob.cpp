@@ -22,6 +22,7 @@
 #include "fileindexingjob.h"
 #include "util.h"
 #include "fileindexerconfig.h"
+#include "database.h"
 
 #include <KUrl>
 #include <KDebug>
@@ -75,19 +76,8 @@ void FileIndexingJob::start()
 
 void FileIndexingJob::slotProcessNonExistingFile()
 {
-    /*
-    QString query = QString::fromLatin1("select ?r where { ?r nie:url %1. }")
-                    .arg(Soprano::Node::resourceToN3(m_url));
-    Soprano::Model* model = ResourceManager::instance()->mainModel();
-    Soprano::QueryResultIterator it = model->executeQuery(query, Soprano::Query::QueryLanguageSparqlNoInference);
-    while (it.next()) {
-        QString uri = it[0].uri();
-
-        // We do not just delete the resource cause it could be part of some removeable media
-        // which is not mounted. When the device is mounted, then the file will get reindexed
-        model->removeAllStatements(uri, KExt::indexingLevel(), QString());
-    }
-    */
+    if (m_file.id())
+        m_db->xapainDatabase()->delete_document(m_file.id());
 
     emitResult();
 }
@@ -117,7 +107,7 @@ void FileIndexingJob::slotIndexedFile(int exitCode, QProcess::ExitStatus exitSta
         setError(IndexerCrashed);
         setErrorText(QLatin1String("Indexer process crashed on ") + m_file.url());
     }
-    if (exitCode == 1) {
+    else if (exitCode == 1) {
         setError(IndexerFailed);
         setErrorText(QLatin1String("Indexer process returned with an error for ") + m_file.url());
         if (FileIndexerConfig::self()->isDebugModeEnabled()) {
@@ -127,6 +117,10 @@ void FileIndexingJob::slotIndexedFile(int exitCode, QProcess::ExitStatus exitSta
                 s << m_file.url() << ": " << QString::fromLocal8Bit(m_process->readAllStandardOutput()) << endl;
             }
         }
+    }
+    else {
+        kDebug() << "UPDATING IL to 2";
+        updateIndexingLevel(m_db, m_file.id(), 2);
     }
 
     emitResult();

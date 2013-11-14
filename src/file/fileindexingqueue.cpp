@@ -99,17 +99,7 @@ void FileIndexingQueue::slotFinishedIndexingFile(KJob* job)
 {
     if (job->error()) {
         kDebug() << job->errorString();
-        /*// Get the uri of the current file
-        QString query = QString::fromLatin1("select ?r where { ?r nie:url %1 . }")
-                        .arg(Soprano::Node::resourceToN3(m_currentUrl));
-        Soprano::Model* model = ResourceManager::instance()->mainModel();
-        Soprano::QueryResultIterator it = model->executeQuery(query, Soprano::Query::QueryLanguageSparqlNoInference);
-
-        if (it.next()) {
-            // Update the indexing level to -1, signalling an error,
-            // so the next round of the queue doesn't try to index it again.
-            updateIndexingLevel(it[0].uri(), -1);
-        }*/
+        updateIndexingLevel(m_db, m_currentFile.id(), 0);
     }
 
     FileMapping file = m_currentFile;
