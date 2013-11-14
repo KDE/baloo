@@ -33,8 +33,8 @@ class FileMapping
 {
 public:
     FileMapping();
-    FileMapping(const QString& url);
-    FileMapping(int id);
+    explicit FileMapping(const QString& url);
+    explicit FileMapping(int id);
 
     int id() const;
     QString url() const;
@@ -43,6 +43,7 @@ public:
     void setId(int id);
 
     bool fetched();
+    bool empty() const;
 
     void clear();
     /**
@@ -57,6 +58,8 @@ public:
      * Creates the corresponding url <-> id mapping
      */
     bool create(Database* db);
+
+    bool operator ==(const FileMapping& rhs) const;
 
 private:
     class Private;

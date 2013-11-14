@@ -50,10 +50,10 @@ void BasicIndexingQueue::clear()
 
 void BasicIndexingQueue::clear(const QString& path)
 {
-    QMutableVectorIterator< QPair<QString, UpdateDirFlags> > it(m_paths);
+    QMutableVectorIterator< QPair<FileMapping, UpdateDirFlags> > it(m_paths);
     while (it.hasNext()) {
         it.next();
-        if (it.value().first.startsWith(path))
+        if (it.value().first.url().startsWith(path))
             it.remove();
     }
 }
@@ -74,18 +74,18 @@ bool BasicIndexingQueue::isEmpty()
     return m_paths.isEmpty();
 }
 
-void BasicIndexingQueue::enqueue(const QString& path)
+void BasicIndexingQueue::enqueue(const FileMapping& file)
 {
     UpdateDirFlags flags;
     flags |= UpdateRecursive;
 
-    enqueue(path, flags);
+    enqueue(file, flags);
 }
 
-void BasicIndexingQueue::enqueue(const QString& path, UpdateDirFlags flags)
+void BasicIndexingQueue::enqueue(const FileMapping& file, UpdateDirFlags flags)
 {
-    kDebug() << path;
-    m_paths.push(qMakePair(path, flags));
+    kDebug() << file.url();
+    m_paths.push(qMakePair(file, flags));
     callForNextIteration();
 
     Q_EMIT startedIndexing();
@@ -96,7 +96,7 @@ void BasicIndexingQueue::processNextIteration()
     bool processingFile = false;
 
     if (!m_paths.isEmpty()) {
-        QPair< QString, UpdateDirFlags > pair = m_paths.pop();
+        QPair<FileMapping, UpdateDirFlags> pair = m_paths.pop();
         processingFile = process(pair.first, pair.second);
     }
 
@@ -105,51 +105,51 @@ void BasicIndexingQueue::processNextIteration()
 }
 
 
-bool BasicIndexingQueue::process(const QString& path, UpdateDirFlags flags)
+bool BasicIndexingQueue::process(FileMapping& file, UpdateDirFlags flags)
 {
     bool startedIndexing = false;
 
-    QString mimetype = KMimeType::findByUrl(QUrl::fromLocalFile(path))->name();
+    QString mimetype = KMimeType::findByUrl(QUrl::fromLocalFile(file.url()))->name();
 
     bool forced = flags & ForceUpdate;
     bool recursive = flags & UpdateRecursive;
-    bool indexingRequired = shouldIndex(path, mimetype);
+    bool indexingRequired = shouldIndex(file, mimetype);
 
-    QFileInfo info(path);
+    QFileInfo info(file.url());
     if (info.isDir()) {
         if (forced || indexingRequired) {
-            m_currentFile.setUrl(path);
+            m_currentFile = file;
             m_currentFlags = flags;
             m_currentMimeType = mimetype;
 
             startedIndexing = true;
-            index(path);
+            index(file);
         }
 
         // We don't want to follow system links
-        if (recursive && !info.isSymLink() && shouldIndexContents(path)) {
+        if (recursive && !info.isSymLink() && shouldIndexContents(file.url())) {
             QDir::Filters dirFilter = QDir::NoDotAndDotDot | QDir::Readable | QDir::Files | QDir::Dirs;
 
-            QDirIterator it(path, dirFilter);
+            QDirIterator it(file.url(), dirFilter);
             while (it.hasNext()) {
-                m_paths.push(qMakePair(it.next(), flags));
+                m_paths.push(qMakePair(FileMapping(it.next()), flags));
             }
         }
     } else if (info.isFile() && (forced || indexingRequired)) {
-        m_currentFile.setUrl(path);
+        m_currentFile = file;
         m_currentFlags = flags;
         m_currentMimeType = mimetype;
 
         startedIndexing = true;
-        index(path);
+        index(file);
     }
 
     return startedIndexing;
 }
 
-bool BasicIndexingQueue::shouldIndex(const QString& path, const QString& mimetype)
+bool BasicIndexingQueue::shouldIndex(FileMapping& file, const QString& mimetype) const
 {
-    bool shouldIndexFile = FileIndexerConfig::self()->shouldFileBeIndexed(path);
+    bool shouldIndexFile = FileIndexerConfig::self()->shouldFileBeIndexed(file.url());
     if (!shouldIndexFile)
         return false;
 
@@ -157,17 +157,16 @@ bool BasicIndexingQueue::shouldIndex(const QString& path, const QString& mimetyp
     if (!shouldIndexType)
         return false;
 
-    QFileInfo fileInfo(path);
+    QFileInfo fileInfo(file.url());
     if (!fileInfo.exists())
         return false;
 
-    FileMapping file(path);
     if (!file.fetch(m_db)) {
         return true;
     }
 
     try {
-        Xapian::Document doc = m_db->xapainDatabase()->get_document(m_currentFile.id());
+        Xapian::Document doc = m_db->xapainDatabase()->get_document(file.id());
         Xapian::TermIterator it = doc.termlist_begin();
         it.skip_to("DT_M");
         if (it == doc.termlist_end())
@@ -186,17 +185,18 @@ bool BasicIndexingQueue::shouldIndex(const QString& path, const QString& mimetyp
     return false;
 }
 
+// static
 bool BasicIndexingQueue::shouldIndexContents(const QString& dir)
 {
     return FileIndexerConfig::self()->shouldFolderBeIndexed(dir);
 }
 
-void BasicIndexingQueue::index(const QString& path)
+void BasicIndexingQueue::index(const FileMapping& file)
 {
-    kDebug() << path;
-    Q_EMIT beginIndexingFile(path);
+    kDebug() << file.url();
+    Q_EMIT beginIndexingFile(file);
 
-    KJob* job = new Baloo::BasicIndexingJob(m_db, m_currentFile, m_currentMimeType);
+    KJob* job = new Baloo::BasicIndexingJob(m_db, file, m_currentMimeType);
     connect(job, SIGNAL(finished(KJob*)), this, SLOT(slotIndexingFinished(KJob*)));
 
     job->start();
@@ -208,12 +208,12 @@ void BasicIndexingQueue::slotIndexingFinished(KJob* job)
         kDebug() << job->errorString();
     }
 
-    QString url = m_currentFile.url();
+    FileMapping file = m_currentFile;
     m_currentFile.clear();
     m_currentMimeType.clear();
     m_currentFlags = NoUpdateFlags;
 
-    Q_EMIT endIndexingFile(url);
+    Q_EMIT endIndexingFile(file);
 
     // Continue the queue
     finishIteration();

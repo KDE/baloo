@@ -83,6 +83,9 @@ bool FileMapping::fetched()
 
 bool FileMapping::fetch(Database* db)
 {
+    if (fetched())
+        return true;
+   
     if (d->id == 0 && d->url.isEmpty())
         return false;
 
@@ -140,5 +143,24 @@ void FileMapping::clear()
 {
     d->id = 0;
     d->url.clear();
+}
+
+bool FileMapping::empty() const
+{
+    return d->url.isEmpty() && d->id == 0;
+}
+
+bool FileMapping::operator==(const FileMapping& rhs) const
+{
+    if (rhs.empty() && empty())
+        return true;
+
+    if (!rhs.url().isEmpty() && !url().isEmpty())
+        return rhs.url() == url();
+
+    if (rhs.id() && id())
+        return rhs.id() == id();
+
+    return false;
 }
 

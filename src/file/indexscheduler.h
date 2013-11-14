@@ -22,6 +22,7 @@
 
 #include "basicindexingqueue.h" // Required for UpdateDirFlags
 #include "removablemediacache.h"
+#include "filemapping.h"
 #include <QDateTime>
 #include <QTimer>
 
@@ -149,8 +150,8 @@ private Q_SLOTS:
 
     void slotCleaningDone();
 
-    void slotBeginIndexingFile(const QString& url);
-    void slotEndIndexingFile(const QString& url);
+    void slotBeginIndexingFile(const Baloo::FileMapping& file);
+    void slotEndIndexingFile(const Baloo::FileMapping& file);
     void slotEndBasicIndexingFile();
 
     void slotStartedIndexing();

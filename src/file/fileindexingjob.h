@@ -26,6 +26,8 @@
 #include <KUrl>
 #include <QProcess>
 
+#include "filemapping.h"
+
 class QFileInfo;
 class QTimer;
 class Database;
@@ -53,10 +55,10 @@ class FileIndexingJob : public KJob
     Q_OBJECT
 
 public:
-    FileIndexingJob(Database* db, const QString& fileUrl, QObject* parent = 0);
+    FileIndexingJob(Database* db, const FileMapping& file, QObject* parent = 0);
 
     QString url() const {
-        return m_url;
+        return m_file.url();
     }
 
     virtual void start();
@@ -93,7 +95,7 @@ private Q_SLOTS:
 private:
     Database* m_db;
 
-    QString m_url;
+    FileMapping m_file;
     QProcess* m_process;
     int m_exitCode;
     QTimer* m_processTimer;

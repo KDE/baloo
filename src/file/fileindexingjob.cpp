@@ -33,10 +33,10 @@
 
 using namespace Baloo;
 
-FileIndexingJob::FileIndexingJob(Database* db, const QString& fileUrl, QObject* parent)
+FileIndexingJob::FileIndexingJob(Database* db, const FileMapping& file, QObject* parent)
     : KJob(parent)
     , m_db(db)
-    , m_url(fileUrl)
+    , m_file(file)
 {
     // setup the timer used to kill the indexer process if it seems to get stuck
     m_processTimer = new QTimer(this);
@@ -47,7 +47,7 @@ FileIndexingJob::FileIndexingJob(Database* db, const QString& fileUrl, QObject* 
 
 void FileIndexingJob::start()
 {
-    if (!QFile::exists(m_url)) {
+    if (!QFile::exists(m_file.url())) {
         QTimer::singleShot(0, this, SLOT(slotProcessNonExistingFile()));
         return;
     }
@@ -58,7 +58,7 @@ void FileIndexingJob::start()
     m_process = new QProcess(this);
 
     QStringList args;
-    args << m_url;
+    args << m_file.url();
     kDebug() << args;
 
     connect(m_process, SIGNAL(finished(int, QProcess::ExitStatus)),
@@ -115,16 +115,16 @@ void FileIndexingJob::slotIndexedFile(int exitCode, QProcess::ExitStatus exitSta
     //kDebug() << "Indexing of " << m_url.toLocalFile() << "finished with exit code" << exitCode;
     if (exitStatus != QProcess::NormalExit) {
         setError(IndexerCrashed);
-        setErrorText(QLatin1String("Indexer process crashed on ") + m_url);
+        setErrorText(QLatin1String("Indexer process crashed on ") + m_file.url());
     }
     if (exitCode == 1) {
         setError(IndexerFailed);
-        setErrorText(QLatin1String("Indexer process returned with an error for ") + m_url);
+        setErrorText(QLatin1String("Indexer process returned with an error for ") + m_file.url());
         if (FileIndexerConfig::self()->isDebugModeEnabled()) {
             QFile errorLogFile(KStandardDirs::locateLocal("data", QLatin1String("nepomuk/file-indexer-error-log"), true));
             if (errorLogFile.open(QIODevice::Append)) {
                 QTextStream s(&errorLogFile);
-                s << m_url << ": " << QString::fromLocal8Bit(m_process->readAllStandardOutput()) << endl;
+                s << m_file.url() << ": " << QString::fromLocal8Bit(m_process->readAllStandardOutput()) << endl;
             }
         }
     }
@@ -138,7 +138,7 @@ void FileIndexingJob::slotProcessTimerTimeout()
     m_process->kill();
     m_process->waitForFinished();
     setError(KJob::KilledJobError);
-    setErrorText(QLatin1String("Indexer process got stuck for") + m_url);
+    setErrorText(QLatin1String("Indexer process got stuck for") + m_file.url());
     emitResult();
 }
 

@@ -74,12 +74,12 @@ public:
     virtual bool isEmpty();
 
 Q_SIGNALS:
-    void beginIndexingFile(const QString& url);
-    void endIndexingFile(const QString& url);
+    void beginIndexingFile(const Baloo::FileMapping& file);
+    void endIndexingFile(const Baloo::FileMapping& file);
 
 public Q_SLOTS:
-    void enqueue(const QString& path);
-    void enqueue(const QString& path, UpdateDirFlags flags);
+    void enqueue(const FileMapping& file);
+    void enqueue(const FileMapping& file, UpdateDirFlags flags);
 
     void clear();
     void clear(const QString& path);
@@ -95,10 +95,10 @@ private:
      * This method does not need to be synchronous. The indexing operation may be started
      * and on completion, the finishedIndexing method should be called
      */
-    void index(const QString& path);
+    void index(const FileMapping& file);
 
-    bool shouldIndex(const QString& path, const QString& mimetype);
-    bool shouldIndexContents(const QString& dir);
+    bool shouldIndex(FileMapping& file, const QString& mimetype) const;
+    static bool shouldIndexContents(const QString& dir);
 
     /**
      * Check if the \p path needs to be indexed based on the \p flags
@@ -108,9 +108,9 @@ private:
      * \return \c true the path is being indexed
      * \return \c false the path did not meet the criteria
      */
-    bool process(const QString& path, UpdateDirFlags flags);
+    bool process(FileMapping& file, UpdateDirFlags flags);
 
-    QStack< QPair<QString, UpdateDirFlags> > m_paths;
+    QStack< QPair<FileMapping, UpdateDirFlags> > m_paths;
 
     FileMapping m_currentFile;
     QString m_currentMimeType;

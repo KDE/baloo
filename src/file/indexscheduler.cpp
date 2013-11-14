@@ -78,11 +78,17 @@ IndexScheduler::IndexScheduler(Database* db, QObject* parent)
     connect(m_basicIQ, SIGNAL(finishedIndexing()), this, SIGNAL(basicIndexingDone()));
     connect(m_fileIQ, SIGNAL(finishedIndexing()), this, SIGNAL(fileIndexingDone()));
 
-    connect(m_basicIQ, SIGNAL(beginIndexingFile(QString)), this, SLOT(slotBeginIndexingFile(QString)));
-    connect(m_basicIQ, SIGNAL(endIndexingFile(QString)), this, SLOT(slotEndIndexingFile(QString)));
-    connect(m_basicIQ, SIGNAL(endIndexingFile(QString)), this, SLOT(slotEndBasicIndexingFile()));
-    connect(m_fileIQ, SIGNAL(beginIndexingFile(QString)), this, SLOT(slotBeginIndexingFile(QString)));
-    connect(m_fileIQ, SIGNAL(endIndexingFile(QString)), this, SLOT(slotEndIndexingFile(QString)));
+    connect(m_basicIQ, SIGNAL(beginIndexingFile(Baloo::FileMapping)),
+            this, SLOT(slotBeginIndexingFile(Baloo::FileMapping)));
+    connect(m_basicIQ, SIGNAL(endIndexingFile(Baloo::FileMapping)),
+            this, SLOT(slotEndIndexingFile(Baloo::FileMapping)));
+    connect(m_basicIQ, SIGNAL(endIndexingFile(Baloo::FileMapping)),
+            this, SLOT(slotEndBasicIndexingFile()));
+
+    connect(m_fileIQ, SIGNAL(beginIndexingFile(Baloo::FileMapping)),
+            this, SLOT(slotBeginIndexingFile(Baloo::FileMapping)));
+    connect(m_fileIQ, SIGNAL(endIndexingFile(Baloo::FileMapping)),
+            this, SLOT(slotEndIndexingFile(Baloo::FileMapping)));
 
     connect(m_basicIQ, SIGNAL(startedIndexing()), this, SLOT(slotStartedIndexing()));
     connect(m_basicIQ, SIGNAL(finishedIndexing()), this, SLOT(slotFinishedIndexing()));
@@ -90,7 +96,8 @@ IndexScheduler::IndexScheduler(Database* db, QObject* parent)
     connect(m_fileIQ, SIGNAL(finishedIndexing()), this, SLOT(slotFinishedIndexing()));
 
     // Connect both the queues together
-    connect(m_basicIQ, SIGNAL(endIndexingFile(QString)), m_fileIQ, SLOT(enqueue(QString)));
+    connect(m_basicIQ, SIGNAL(endIndexingFile(Baloo::FileMapping)),
+            m_fileIQ, SLOT(enqueue(Baloo::FileMapping)));
 
     // Status String
     connect(m_basicIQ, SIGNAL(startedIndexing()), this, SLOT(emitStatusStringChanged()));
@@ -217,7 +224,7 @@ void IndexScheduler::slotCleaningDone()
 
 void IndexScheduler::updateDir(const QString& path, UpdateDirFlags flags)
 {
-    m_basicIQ->enqueue(path, flags);
+    m_basicIQ->enqueue(FileMapping(path), flags);
 }
 
 
@@ -237,7 +244,7 @@ void IndexScheduler::queueAllFoldersForUpdate(bool forceUpdate)
 
     // update everything again in case the folders changed
     Q_FOREACH (const QString& f, FileIndexerConfig::self()->includeFolders()) {
-        m_basicIQ->enqueue(f, flags);
+        m_basicIQ->enqueue(FileMapping(f), flags);
     }
 }
 
@@ -253,7 +260,7 @@ void IndexScheduler::slotIncludeFolderListChanged(const QStringList& added, cons
     restartCleaner();
 
     Q_FOREACH(const QString& path, added) {
-        m_basicIQ->enqueue(path, UpdateRecursive);
+        m_basicIQ->enqueue(FileMapping(path), UpdateRecursive);
     }
 }
 
@@ -268,7 +275,7 @@ void IndexScheduler::slotExcludeFolderListChanged(const QStringList& added, cons
     restartCleaner();
 
     Q_FOREACH (const QString &path, removed) {
-        m_basicIQ->enqueue(path, UpdateRecursive);
+        m_basicIQ->enqueue(FileMapping(path), UpdateRecursive);
     }
 }
 
@@ -302,16 +309,16 @@ void IndexScheduler::slotConfigFiltersChanged()
 
 void IndexScheduler::analyzeFile(const QString& path)
 {
-    m_basicIQ->enqueue(path);
+    m_basicIQ->enqueue(FileMapping(path));
 }
 
 
-void IndexScheduler::slotBeginIndexingFile(const QString&)
+void IndexScheduler::slotBeginIndexingFile(const FileMapping&)
 {
     setIndexingStarted(true);
 }
 
-void IndexScheduler::slotEndIndexingFile(const QString&)
+void IndexScheduler::slotEndIndexingFile(const FileMapping&)
 {
     const QString basicUrl = m_basicIQ->currentUrl();
     const QString fileUrl = m_fileIQ->currentUrl();

@@ -27,8 +27,6 @@
 #include <KDebug>
 #include <QTimer>
 
-#include <QSqlQuery>
-
 using namespace Baloo;
 
 FileIndexingQueue::FileIndexingQueue(Database* db, QObject* parent)
@@ -61,28 +59,20 @@ void FileIndexingQueue::fillQueue()
     Xapian::MSet mset = enquire.get_mset(0, 10);
     Xapian::MSetIterator it = mset.begin();
     for (; it != mset.end(); it++) {
-        int fileId = *it;
-
-        kDebug() << fileId;
-        QSqlQuery query(m_db->sqlDatabase());
-        query.setForwardOnly(true);
-        query.prepare("select url from files where id = ?");
-        query.addBindValue(fileId);
-        query.exec();
-
-        if (query.next())
-            m_fileQueue << query.value(0).toString();
+        FileMapping file(*it);
+        if (file.fetch(m_db)) {
+            m_fileQueue << file;
+        }
     }
 }
 
-void FileIndexingQueue::enqueue(const QString& url)
+void FileIndexingQueue::enqueue(const FileMapping& file)
 {
-    if (!m_fileQueue.contains(url)) {
-        m_fileQueue.enqueue(url);
+    if (!m_fileQueue.contains(file)) {
+        m_fileQueue.enqueue(file);
         callForNextIteration();
     }
 }
-
 
 bool FileIndexingQueue::isEmpty()
 {
@@ -91,17 +81,17 @@ bool FileIndexingQueue::isEmpty()
 
 void FileIndexingQueue::processNextIteration()
 {
-    const QString fileUrl = m_fileQueue.dequeue();
-    process(fileUrl);
+    const FileMapping file = m_fileQueue.dequeue();
+    process(file);
 }
 
-void FileIndexingQueue::process(const QString& url)
+void FileIndexingQueue::process(const FileMapping& file)
 {
-    m_currentUrl = url;
+    m_currentFile = file;
 
-    KJob* job = new FileIndexingJob(m_db, url);
+    KJob* job = new FileIndexingJob(m_db, file);
     job->start();
-    Q_EMIT beginIndexingFile(url);
+    Q_EMIT beginIndexingFile(file);
     connect(job, SIGNAL(finished(KJob*)), this, SLOT(slotFinishedIndexingFile(KJob*)));
 }
 
@@ -122,9 +112,9 @@ void FileIndexingQueue::slotFinishedIndexingFile(KJob* job)
         }*/
     }
 
-    QString url = m_currentUrl;
-    m_currentUrl.clear();
-    Q_EMIT endIndexingFile(url);
+    FileMapping file = m_currentFile;
+    m_currentFile.clear();
+    Q_EMIT endIndexingFile(file);
 
     if (m_fileQueue.isEmpty()) {
         fillQueue();
@@ -134,15 +124,15 @@ void FileIndexingQueue::slotFinishedIndexingFile(KJob* job)
 
 void FileIndexingQueue::clear()
 {
-    m_currentUrl.clear();
+    m_currentFile.clear();
     m_fileQueue.clear();
 }
 
 void FileIndexingQueue::clear(const QString& path)
 {
-    QMutableListIterator<QString> it(m_fileQueue);
+    QMutableListIterator<FileMapping> it(m_fileQueue);
     while (it.hasNext()) {
-        if (it.next().startsWith(path))
+        if (it.next().url().startsWith(path))
             it.remove();
     }
 }
@@ -150,7 +140,7 @@ void FileIndexingQueue::clear(const QString& path)
 
 QString FileIndexingQueue::currentUrl()
 {
-    return m_currentUrl;
+    return m_currentFile.url();
 }
 
 void FileIndexingQueue::slotConfigChanged()

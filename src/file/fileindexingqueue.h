@@ -22,6 +22,7 @@
 #define FILEINDEXINGQUEUE_H
 
 #include "indexingqueue.h"
+#include "filemapping.h"
 
 #include <KJob>
 #include <Soprano/QueryResultIterator>
@@ -49,10 +50,10 @@ public Q_SLOTS:
      */
     void start();
 
-    void enqueue(const QString& url);
+    void enqueue(const Baloo::FileMapping& file);
 Q_SIGNALS:
-    void beginIndexingFile(const QString& url);
-    void endIndexingFile(const QString& url);
+    void beginIndexingFile(const Baloo::FileMapping& file);
+    void endIndexingFile(const Baloo::FileMapping& file);
 
 protected:
     virtual void processNextIteration();
@@ -62,10 +63,10 @@ private Q_SLOTS:
     void slotConfigChanged();
 
 private:
-    void process(const QString& url);
+    void process(const FileMapping& file);
 
-    QQueue<QString> m_fileQueue;
-    QString m_currentUrl;
+    QQueue<FileMapping> m_fileQueue;
+    FileMapping m_currentFile;
     Database* m_db;
 };
 }
