@@ -24,13 +24,13 @@
 #include "util.h"
 #include "basicindexingjob.h"
 #include "database.h"
+#include "filemapping.h"
 
 #include <KDebug>
 #include <KMimeType>
 #include <KStandardDirs>
 
 #include <QtCore/QDateTime>
-#include <QSqlQuery>
 
 using namespace Baloo;
 
@@ -43,10 +43,9 @@ BasicIndexingQueue::BasicIndexingQueue(Database* db, QObject* parent)
 
 void BasicIndexingQueue::clear()
 {
-    m_currentUrl.clear();
+    m_currentFile.clear();
     m_currentFlags = NoUpdateFlags;
     m_paths.clear();
-    m_currentFileId = 0;
 }
 
 void BasicIndexingQueue::clear(const QString& path)
@@ -61,7 +60,7 @@ void BasicIndexingQueue::clear(const QString& path)
 
 QString BasicIndexingQueue::currentUrl() const
 {
-    return m_currentUrl;
+    return m_currentFile.url();
 }
 
 UpdateDirFlags BasicIndexingQueue::currentFlags() const
@@ -119,7 +118,7 @@ bool BasicIndexingQueue::process(const QString& path, UpdateDirFlags flags)
     QFileInfo info(path);
     if (info.isDir()) {
         if (forced || indexingRequired) {
-            m_currentUrl = path;
+            m_currentFile.setUrl(path);
             m_currentFlags = flags;
             m_currentMimeType = mimetype;
 
@@ -137,7 +136,7 @@ bool BasicIndexingQueue::process(const QString& path, UpdateDirFlags flags)
             }
         }
     } else if (info.isFile() && (forced || indexingRequired)) {
-        m_currentUrl = path;
+        m_currentFile.setUrl(path);
         m_currentFlags = flags;
         m_currentMimeType = mimetype;
 
@@ -162,22 +161,13 @@ bool BasicIndexingQueue::shouldIndex(const QString& path, const QString& mimetyp
     if (!fileInfo.exists())
         return false;
 
-    QSqlQuery query(m_db->sqlDatabase());
-    query.setForwardOnly(true);
-    query.prepare(QLatin1String("select id from files where url = ?"));
-    query.addBindValue(path);
-    query.exec();
-
-    if (query.next()) {
-        m_currentFileId = query.value(0).toInt();
-    }
-    else {
-        m_currentFileId = 0;
+    FileMapping file(path);
+    if (!file.fetch(m_db)) {
         return true;
     }
 
     try {
-        Xapian::Document doc = m_db->xapainDatabase()->get_document(m_currentFileId);
+        Xapian::Document doc = m_db->xapainDatabase()->get_document(m_currentFile.id());
         Xapian::TermIterator it = doc.termlist_begin();
         it.skip_to("DT_M");
         if (it == doc.termlist_end())
@@ -206,7 +196,7 @@ void BasicIndexingQueue::index(const QString& path)
     kDebug() << path;
     Q_EMIT beginIndexingFile(path);
 
-    KJob* job = new Baloo::BasicIndexingJob(m_db, m_currentFileId, path, m_currentMimeType);
+    KJob* job = new Baloo::BasicIndexingJob(m_db, m_currentFile, m_currentMimeType);
     connect(job, SIGNAL(finished(KJob*)), this, SLOT(slotIndexingFinished(KJob*)));
 
     job->start();
@@ -218,11 +208,10 @@ void BasicIndexingQueue::slotIndexingFinished(KJob* job)
         kDebug() << job->errorString();
     }
 
-    QString url = m_currentUrl;
-    m_currentUrl.clear();
+    QString url = m_currentFile.url();
+    m_currentFile.clear();
     m_currentMimeType.clear();
     m_currentFlags = NoUpdateFlags;
-    m_currentFileId = 0;
 
     Q_EMIT endIndexingFile(url);
 

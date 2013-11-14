@@ -22,8 +22,10 @@
 #define BASICINDEXINGQUEUE_H
 
 #include "indexingqueue.h"
+#include "filemapping.h"
+
 #include <KJob>
-#include <QtCore/QStack>
+#include <QStack>
 
 class Database;
 
@@ -110,9 +112,8 @@ private:
 
     QStack< QPair<QString, UpdateDirFlags> > m_paths;
 
-    QString m_currentUrl;
+    FileMapping m_currentFile;
     QString m_currentMimeType;
-    int m_currentFileId;
 
     UpdateDirFlags m_currentFlags;
 

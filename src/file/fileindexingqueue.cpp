@@ -125,6 +125,7 @@ void FileIndexingQueue::slotFinishedIndexingFile(KJob* job)
     QString url = m_currentUrl;
     m_currentUrl.clear();
     Q_EMIT endIndexingFile(url);
+
     if (m_fileQueue.isEmpty()) {
         fillQueue();
     }

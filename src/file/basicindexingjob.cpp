@@ -33,12 +33,11 @@
 
 using namespace Baloo;
 
-BasicIndexingJob::BasicIndexingJob(Database* m_db, int fileId, const QString& url,
+BasicIndexingJob::BasicIndexingJob(Database* m_db, const FileMapping& file,
                                    const QString& mimetype, QObject* parent)
     : KJob(parent)
     , m_db(m_db)
-    , m_fileId(fileId)
-    , m_url(url)
+    , m_file(file)
     , m_mimetype(mimetype)
 {
 }
@@ -54,14 +53,16 @@ void BasicIndexingJob::start()
 
 void BasicIndexingJob::doStart()
 {
-    if (m_fileId == 0) {
-        m_fileId = createFileId(m_url);
-        if (m_fileId == 0) {
+    if (m_file.id() == 0) {
+        if (!m_file.create(m_db)) {
+            setError(1);
+            setErrorText("Cannot create fileMapping for" + QString::number(m_file.id()));
             emitResult();
+            return;
         }
     }
 
-    QFileInfo fileInfo(m_url);
+    QFileInfo fileInfo(m_file.url());
 
     // FIXME: We will need a termGenerator
     // FIXME: Fetch the type?
@@ -72,18 +73,7 @@ void BasicIndexingJob::doStart()
     doc.add_term("DT_M" + fileInfo.lastModified().toString(Qt::ISODate).toStdString());
     doc.add_term("Z1"); // Indexing Level 1
 
-    m_db->xapainDatabase()->replace_document(m_fileId, doc);
+    m_db->xapainDatabase()->replace_document(m_file.id(), doc);
 
     emitResult();
 }
-
-int BasicIndexingJob::createFileId(const QString& url)
-{
-    QSqlQuery query(m_db->sqlDatabase());
-    query.prepare(QLatin1String("insert into files (url) VALUES (?)"));
-    query.addBindValue(url);
-    query.exec();
-
-    return query.lastInsertId().toInt();
-}
-

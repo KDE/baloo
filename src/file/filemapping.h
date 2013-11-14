@@ -20,35 +20,48 @@
  *
  */
 
-#ifndef BASICINDEXINGJOB_H
-#define BASICINDEXINGJOB_H
+#ifndef FILEMAPPING_H
+#define FILEMAPPING_H
 
-#include <KJob>
-#include "filemapping.h"
+#include <QString>
 
 class Database;
 
 namespace Baloo {
 
-class BasicIndexingJob : public KJob
+class FileMapping
 {
-    Q_OBJECT
 public:
-    BasicIndexingJob(Database* m_db, const FileMapping& file,
-                     const QString& mimetype, QObject* parent = 0);
-    ~BasicIndexingJob();
+    FileMapping();
+    FileMapping(const QString& url);
+    FileMapping(int id);
 
-    virtual void start();
+    int id() const;
+    QString url() const;
 
-private Q_SLOTS:
-    void doStart();
+    void setUrl(const QString& url);
+    void setId(int id);
+
+    bool fetched();
+
+    void clear();
+    /**
+     * Fetch the corresponding url or Id depending on what is not
+     * available.
+     *
+     * Returns true if fetching was successful
+     */
+    bool fetch(Database* db);
+
+    /**
+     * Creates the corresponding url <-> id mapping
+     */
+    bool create(Database* db);
 
 private:
-    Database* m_db;
-    FileMapping m_file;
-    QString m_mimetype;
+    class Private;
+    Private* d;
 };
 
 }
-
-#endif // BASICINDEXINGJOB_H
+#endif // FILEMAPPING_H
