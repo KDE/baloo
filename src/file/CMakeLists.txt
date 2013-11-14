@@ -51,6 +51,7 @@ target_link_libraries(baloo_file
     ${KDE4_KIDLETIME_LIBS}
     ${KDE4_SOLID_LIBS}
     ${XAPIAN_LIBRARIES}
+    ${QJSON_LIBRARIES}
     baloocore
 )
 

@@ -24,6 +24,8 @@
 #include "fileindexerconfig.h"
 #include "database.h"
 
+#include <qjson/serializer.h>
+
 #include <KUrl>
 #include <KDebug>
 #include <KProcess>
@@ -31,6 +33,7 @@
 
 #include <QtCore/QFileInfo>
 #include <QtCore/QTimer>
+#include <QDateTime>
 
 using namespace Baloo;
 
@@ -90,10 +93,44 @@ void FileIndexingJob::slotReadyReadStdOutput()
     QVariantMap map;
     st >> map;
 
-    // FIXME: Write this to Xapian - How?
-    kDebug() << "---------";
-    kDebug() << map;
-    kDebug() << "---------";
+    QJson::Serializer serializer;
+    QByteArray json = serializer.serialize(map);
+
+    m_file.fetch(m_db);
+
+    Xapian::Document doc = m_db->xapainDatabase()->get_document(m_file.id());
+    Xapian::TermGenerator termGen;
+    termGen.set_document(doc);
+    termGen.set_database(*m_db->xapainDatabase());
+
+    // Save the data for fetching later
+    doc.set_data(json.constData());
+
+    // Index the data
+    QMap<QString, QVariant>::const_iterator it = map.constBegin();
+    for (; it != map.constEnd(); it++) {
+        const QString key = it.key().toUpper();
+        const QVariant val = it.value();
+
+        if (val.type() == QVariant::Bool) {
+            doc.add_boolean_term(key.toStdString());
+        }
+        else if (val.type() == QVariant::Int) {
+            const QString term = key + val.toString();
+            doc.add_term(term.toStdString());
+        }
+        else if (val.type() == QVariant::DateTime) {
+            const QString term = key + val.toDateTime().toString(Qt::ISODate);
+            doc.add_term(term.toStdString());
+        }
+        else {
+            QString term = key;
+            if (term == "TEXT")
+                term.clear();
+
+            termGen.index_text(val.toString().toStdString(), 1, term.toStdString());
+        }
+    }
 }
 
 
