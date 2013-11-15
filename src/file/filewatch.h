@@ -30,6 +30,7 @@ class KUrl;
 class RegExpCache;
 class ActiveFileQueue;
 class QThread;
+class Database;
 
 namespace Baloo
 {
@@ -39,10 +40,9 @@ class MetadataMover;
 class FileWatch : public QObject
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "org.kde.nepomuk.FileWatch")
 
 public:
-    explicit FileWatch(QObject* parent = 0);
+    FileWatch(Database* db, QObject* parent = 0);
     ~FileWatch();
 
     /**
@@ -157,6 +157,8 @@ private:
      * they are created for example by build systems.
      */
     bool ignorePath(const QString& path);
+
+    Database* m_db;
 
     QThread* m_metadataMoverThread;
     MetadataMover* m_metadataMover;

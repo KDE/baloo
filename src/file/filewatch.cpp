@@ -25,6 +25,7 @@
 //#include "fileindexerconfig.h"
 #include "activefilequeue.h"
 #include "regexpcache.h"
+#include "database.h"
 
 #ifdef BUILD_KINOTIFY
 #include "kinotify.h"
@@ -104,8 +105,9 @@ bool IgnoringKInotify::filterWatch(const QString& path, WatchEvents& modes, Watc
 
 using namespace Baloo;
 
-FileWatch::FileWatch(QObject* parent)
+FileWatch::FileWatch(Database* db, QObject* parent)
     : QObject(parent)
+    , m_db(db)
 #ifdef BUILD_KINOTIFY
     , m_dirWatch(0)
 #endif
@@ -128,7 +130,7 @@ FileWatch::FileWatch(QObject* parent)
     // start the mover thread
     m_metadataMoverThread = new QThread(this);
     m_metadataMoverThread->start();
-    m_metadataMover = new MetadataMover(this);
+    m_metadataMover = new MetadataMover(m_db, this);
     connect(m_metadataMover, SIGNAL(movedWithoutData(QString)),
             this, SLOT(slotMovedWithoutData(QString)),
             Qt::QueuedConnection);

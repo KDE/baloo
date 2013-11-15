@@ -18,8 +18,12 @@
 
 #include "metadatamover.h"
 #include "filewatch.h"
+#include "filemapping.h"
+#include "database.h"
 
-#include <QtCore/QTimer>
+#include <QTimer>
+#include <QSqlQuery>
+#include <QSqlError>
 
 #include <KDebug>
 #include <KJob>
@@ -27,16 +31,16 @@
 
 using namespace Baloo;
 
-MetadataMover::MetadataMover(QObject* parent)
-    : QObject(parent),
-      m_queueMutex(QMutex::Recursive)
+MetadataMover::MetadataMover(Database* db, QObject* parent)
+    : QObject(parent)
+    , m_db(db)
+    , m_queueMutex(QMutex::Recursive)
 {
     // setup the main update queue timer
     m_queueTimer = new QTimer(this);
     connect(m_queueTimer, SIGNAL(timeout()),
             this, SLOT(slotWorkUpdateQueue()),
             Qt::DirectConnection);
-
 }
 
 
@@ -122,6 +126,9 @@ void MetadataMover::slotWorkUpdateQueue()
     } else {
         //kDebug() << "All update requests handled. Stopping timer.";
 
+        m_db->commit();
+        m_db->transaction();
+
         Q_EMIT metadataUpdateStopped();
         m_queueTimer->stop();
     }
@@ -135,20 +142,12 @@ void MetadataMover::removeMetadata(const QString& url)
         return;
     }
 
-#warning FIXME: needs a fetchUriFromUrl
-    const QUrl uri;
-    if (uri.isEmpty())
-        return;
-
-    // When the url is a folder we do not remove the metadata for all
-    // the files in that folder, since inotify gives us a delete event
-    // for each of those files
-#warning FIXME: There is no removeResources job
-/*    KJob* job = Nepomuk2::removeResources(QList<QUrl>() << uri);
-    job->exec();
-    if (job->error())
-        kError() << job->errorString();
-    */
+    QSqlQuery query(m_db->sqlDatabase());
+    query.prepare("delete from files where url = ?");
+    query.addBindValue(url);
+    if (!query.exec()) {
+        kError() << query.lastError().text();
+    }
 }
 
 
@@ -160,23 +159,41 @@ void MetadataMover::updateMetadata(const QString& from, const QString& to)
         return;
     }
 
-    /*
-    const QUrl uri = fetchUriFromUrl(from);
-    if (!uri.isEmpty()) {
-        KJob* job = Nepomuk2::setProperty(QList<QUrl>() << uri, NIE::url(), QVariantList() << to);
-        job->exec();
-        if (job->error())
-            kError() << job->errorString();
-    } else {
+    Q_ASSERT(from[from.size()-1] != '/');
+    Q_ASSERT(to[to.size()-1] != '/');
+
+    FileMapping fromFile(from);
+    fromFile.fetch(m_db);
+
+    if (fromFile.fetch(m_db)) {
+        QSqlQuery q(m_db->sqlDatabase());
+        q.prepare("update files set url = ? where id = ?");
+        q.addBindValue(to);
+        q.addBindValue(fromFile.id());
+        if (!q.exec())
+            kError() << q.lastError().text();
+    }
+
+    QSqlQuery query(m_db->sqlDatabase());
+    query.prepare("update files set url = ':t' || substr(url, :fs) "
+                  "where url like ':f/%'");
+
+    query.bindValue(":t", to);
+    query.bindValue(":fs", from.size());
+    query.bindValue(":f", from);
+
+    if (!query.exec()) {
+        kError() << "Big query failed:" << query.lastError().text();
+    }
+
+    if (!fromFile.id()) {
         //
         // If we have no metadata yet we need to tell the file indexer (if running) so it can
         // create the metadata in case the target folder is configured to be indexed.
         //
-        emit movedWithoutData(to.path());
-    }*/
+        Q_EMIT movedWithoutData(to);
+    }
 }
-
-
 
 // start the timer in the update thread
 void MetadataMover::slotStartUpdateTimer()

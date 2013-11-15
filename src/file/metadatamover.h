@@ -27,6 +27,7 @@
 #include "updaterequest.h"
 
 class QTimer;
+class Database;
 
 namespace Baloo
 {
@@ -36,7 +37,7 @@ class MetadataMover : public QObject
     Q_OBJECT
 
 public:
-    explicit MetadataMover(QObject* parent = 0);
+    MetadataMover(Database* db, QObject* parent = 0);
     ~MetadataMover();
 
 public Q_SLOTS:
@@ -91,13 +92,14 @@ private:
      */
     void updateMetadata(const QString& from, const QString& to);
 
+    Database* m_db;
+
     // if the second url is empty, just delete the metadata
     QQueue<UpdateRequest> m_updateQueue;
 
     QMutex m_queueMutex;
 
     QTimer* m_queueTimer;
-
 };
 }
 
