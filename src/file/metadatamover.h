@@ -24,8 +24,6 @@
 #include <QSet>
 #include <QDateTime>
 
-#include <KUrl>
-
 #include "updaterequest.h"
 
 class QTimer;
@@ -42,9 +40,9 @@ public:
     ~MetadataMover();
 
 public Q_SLOTS:
-    void moveFileMetadata(const KUrl& from, const KUrl& to);
-    void removeFileMetadata(const KUrl& file);
-    void removeFileMetadata(const KUrl::List& files);
+    void moveFileMetadata(const QString& from, const QString& to);
+    void removeFileMetadata(const QString& file);
+    void removeFileMetadata(const QStringList& files);
 
 Q_SIGNALS:
     /**
@@ -85,13 +83,13 @@ private:
     /**
      * Remove the metadata for file \p url
      */
-    void removeMetadata(const KUrl& url);
+    void removeMetadata(const QString& url);
 
     /**
      * Recursively update the nie:url and nie:isPartOf properties
      * of the resource describing \p from.
      */
-    void updateMetadata(const KUrl& from, const KUrl& to);
+    void updateMetadata(const QString& from, const QString& to);
 
     // if the second url is empty, just delete the metadata
     QQueue<UpdateRequest> m_updateQueue;

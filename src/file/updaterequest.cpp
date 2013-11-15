@@ -21,8 +21,6 @@
 
 #include "updaterequest.h"
 
-#include <QUrl>
-
 uint Baloo::qHash(const UpdateRequest& req)
 {
     return qHash(req.source()) ^ qHash(req.target());

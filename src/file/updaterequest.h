@@ -22,7 +22,7 @@
 #ifndef _UPDATE_REQUEST_H_
 #define _UPDATE_REQUEST_H_
 
-#include <KUrl>
+#include <QString>
 #include <QDateTime>
 
 namespace Baloo
@@ -33,8 +33,8 @@ namespace Baloo
 class UpdateRequest
 {
 public:
-    UpdateRequest(const KUrl& s = KUrl(),
-                  const KUrl& t = KUrl())
+    UpdateRequest(const QString& s = QString(),
+                  const QString& t = QString())
         : m_source(s),
           m_target(t) {
         m_timestamp = QDateTime::currentDateTime();
@@ -42,22 +42,22 @@ public:
 
     /// here the timestamp is ignored deliberately
     bool operator==(const UpdateRequest& other) const {
-        return m_source.equals(other.m_source) && m_target.equals(other.m_target);
+        return m_source == other.m_source && m_target == other.m_target;
     }
 
     QDateTime timestamp() const {
         return m_timestamp;
     }
-    KUrl source() const {
+    QString source() const {
         return m_source;
     }
-    KUrl target() const {
+    QString target() const {
         return m_target;
     }
 
 private:
-    KUrl m_source;
-    KUrl m_target;
+    QString m_source;
+    QString m_target;
     QDateTime m_timestamp;
 };
 

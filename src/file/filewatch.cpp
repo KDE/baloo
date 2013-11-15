@@ -35,7 +35,6 @@
 #include <QtDBus/QDBusConnection>
 
 #include <KDebug>
-#include <KUrl>
 #include <KConfigGroup>
 #include <KLocale>
 
@@ -230,19 +229,17 @@ QString FileWatch::statusMessage() const
 void FileWatch::slotFileMoved(const QString& urlFrom, const QString& urlTo)
 {
     if (!ignorePath(urlFrom) || !ignorePath(urlTo)) {
-        const KUrl from(urlFrom);
-        const KUrl to(urlTo);
-        m_metadataMover->moveFileMetadata(from, to);
+        m_metadataMover->moveFileMetadata(urlFrom, urlTo);
     }
 }
 
 
 void FileWatch::slotFilesDeleted(const QStringList& paths)
 {
-    KUrl::List urls;
+    QStringList urls;
     Q_FOREACH (const QString& path, paths) {
         if (!ignorePath(path)) {
-            urls << KUrl(path);
+            urls << path;
         }
     }
 

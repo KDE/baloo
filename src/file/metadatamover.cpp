@@ -45,11 +45,11 @@ MetadataMover::~MetadataMover()
 }
 
 
-void MetadataMover::moveFileMetadata(const KUrl& from, const KUrl& to)
+void MetadataMover::moveFileMetadata(const QString& from, const QString& to)
 {
 //    kDebug() << from << to;
-    Q_ASSERT(!from.path().isEmpty() && from.path() != "/");
-    Q_ASSERT(!to.path().isEmpty() && to.path() != "/");
+    Q_ASSERT(!from.isEmpty() && from != "/");
+    Q_ASSERT(!to.isEmpty() && to != "/");
 
     QMutexLocker lock(&m_queueMutex);
 
@@ -61,19 +61,19 @@ void MetadataMover::moveFileMetadata(const KUrl& from, const KUrl& to)
 }
 
 
-void MetadataMover::removeFileMetadata(const KUrl& file)
+void MetadataMover::removeFileMetadata(const QString& file)
 {
-    Q_ASSERT(!file.path().isEmpty() && file.path() != "/");
-    removeFileMetadata(KUrl::List() << file);
+    Q_ASSERT(!file.isEmpty() && file != "/");
+    removeFileMetadata(QStringList() << file);
 }
 
 
-void MetadataMover::removeFileMetadata(const KUrl::List& files)
+void MetadataMover::removeFileMetadata(const QStringList& files)
 {
     kDebug() << files;
     QMutexLocker lock(&m_queueMutex);
 
-    Q_FOREACH (const KUrl& file, files) {
+    Q_FOREACH (const QString& file, files) {
         UpdateRequest req(file);
         if (!m_updateQueue.contains(req))
             m_updateQueue.enqueue(req);
@@ -102,13 +102,13 @@ void MetadataMover::slotWorkUpdateQueue()
         // an empty second url means deletion
         if (updateRequest.target().isEmpty()) {
 
-            Q_EMIT statusMessage(i18n("Remove metadata from %1", updateRequest.source().prettyUrl()));
+            Q_EMIT statusMessage(i18n("Remove metadata from %1", updateRequest.source()));
             removeMetadata(updateRequest.source());
         } else {
-            const KUrl from = updateRequest.source();
-            const KUrl to = updateRequest.target();
+            const QString from = updateRequest.source();
+            const QString to = updateRequest.target();
 
-            Q_EMIT statusMessage(i18n("Move metadata from %1 to %2", from.prettyUrl(), to.prettyUrl()));
+            Q_EMIT statusMessage(i18n("Move metadata from %1 to %2", from, to));
 
             // We do NOT get deleted messages for overwritten files! Thus, we
             // have to remove all metadata for overwritten files first.
@@ -128,7 +128,7 @@ void MetadataMover::slotWorkUpdateQueue()
 }
 
 
-void MetadataMover::removeMetadata(const KUrl& url)
+void MetadataMover::removeMetadata(const QString& url)
 {
     if (url.isEmpty()) {
         kDebug() << "empty path. Looks like a bug somewhere...";
@@ -152,7 +152,7 @@ void MetadataMover::removeMetadata(const KUrl& url)
 }
 
 
-void MetadataMover::updateMetadata(const KUrl& from, const KUrl& to)
+void MetadataMover::updateMetadata(const QString& from, const QString& to)
 {
     kDebug() << from << "->" << to;
     if (from.isEmpty() || to.isEmpty()) {
