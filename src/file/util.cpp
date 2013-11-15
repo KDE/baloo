@@ -29,8 +29,9 @@ void Baloo::updateIndexingLevel(Database* db, int fileId, int level)
 
         if (it != doc.termlist_end()) {
             std::string term = *it;
-            if (term.find("Z"))
+            if (term.length() && term[0] == 'Z') {
                 doc.remove_term(term);
+            }
         }
 
         const QString term = QLatin1Char('Z') + QString::number(level);
