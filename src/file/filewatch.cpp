@@ -22,7 +22,7 @@
 #include "fileexcludefilters.h"
 #include "removabledeviceindexnotification.h"
 #include "removablemediacache.h"
-//#include "fileindexerconfig.h"
+#include "fileindexerconfig.h"
 #include "activefilequeue.h"
 #include "regexpcache.h"
 #include "database.h"
@@ -115,7 +115,7 @@ FileWatch::FileWatch(Database* db, QObject* parent)
 {
     // Create the configuration instance singleton (for thread-safety)
     // ==============================================================
-    // (void)new FileIndexerConfig(this);
+    (void)new FileIndexerConfig(this);
     resetStatusMessage();
 
     // the list of default exclude filters we use here differs from those
@@ -132,7 +132,7 @@ FileWatch::FileWatch(Database* db, QObject* parent)
     m_metadataMoverThread->start();
     m_metadataMover = new MetadataMover(m_db, this);
     connect(m_metadataMover, SIGNAL(movedWithoutData(QString)),
-            this, SLOT(slotMovedWithoutData(QString)),
+            this, SIGNAL(indexFile(QString)),
             Qt::QueuedConnection);
     connect(m_metadataMover, SIGNAL(statusMessage(QString)),
             this, SLOT(updateStatusMessage(QString)),
@@ -174,7 +174,7 @@ FileWatch::FileWatch(Database* db, QObject* parent)
     watchFolder(home);
 
     //Watch all indexed folders unless they are subdirectories of home, which is already watched
-    QStringList folders;// = FileIndexerConfig::self()->includeFolders();
+    QStringList folders = FileIndexerConfig::self()->includeFolders();
     Q_FOREACH (const QString& folder, folders) {
         if (!folder.startsWith(home)) {
             watchFolder(folder);
@@ -192,8 +192,8 @@ FileWatch::FileWatch(Database* db, QObject* parent)
             this, SLOT(slotDeviceTeardownRequested(const Baloo::RemovableMediaCache::Entry*)));
     addWatchesForMountedRemovableMedia();
 
-    //connect(FileIndexerConfig::self(), SIGNAL(configChanged()),
-    //        this, SLOT(updateIndexedFoldersWatches()));
+    connect(FileIndexerConfig::self(), SIGNAL(configChanged()),
+            this, SLOT(updateIndexedFoldersWatches()));
 }
 
 
@@ -267,7 +267,7 @@ void FileWatch::slotFileCreated(const QString& path, bool isDir)
     // we only need the file creation event for folders
     // file creation is always followed by a CloseAfterWrite event
     if (isDir) {
-        updateFileViaFileIndexer(path);
+        Q_EMIT indexFile(path);
     }
 }
 
@@ -287,41 +287,6 @@ void FileWatch::slotFileClosedAfterWrite(const QString& path)
         m_fileModificationQueue->enqueueUrl(path);
     }
 }
-
-void FileWatch::slotMovedWithoutData(const QString& path)
-{
-    updateFileViaFileIndexer(path);
-}
-
-
-// static
-void FileWatch::updateFileViaFileIndexer(const QString& path)
-{
-    /*
-    if (FileIndexerConfig::self()->shouldBeIndexed(path)) {
-        org::kde::nepomuk::FileIndexer fileIndexer("org.kde.nepomuk.services.nepomukfileindexer", "/nepomukfileindexer", QDBusConnection::sessionBus());
-        if (fileIndexer.isValid()) {
-            fileIndexer.indexFile(path);
-        }
-    }*/
-}
-
-
-// static
-void FileWatch::updateFolderViaFileIndexer(const QString& path)
-{
-    //if (FileIndexerConfig::self()->shouldBeIndexed(path)) {
-        //
-        // Tell the file indexer service (if running) to update the newly created
-        // folder or the folder containing the newly created file
-        //
-    //    org::kde::nepomuk::FileIndexer fileIndexer("org.kde.nepomuk.services.nepomukfileindexer", "/nepomukfileindexer", QDBusConnection::sessionBus());
-    //    if (fileIndexer.isValid()) {
-    //        fileIndexer.updateFolder(path, false /* non-recursive */, false /* no forced update */);
-    //    }
-    //}
-}
-
 
 void FileWatch::connectToKDirNotify()
 {
@@ -389,7 +354,7 @@ void FileWatch::updateIndexedFoldersWatches()
 {
 #ifdef BUILD_KINOTIFY
     if (m_dirWatch) {
-        QStringList folders;// = FileIndexerConfig::self()->includeFolders();
+        QStringList folders = FileIndexerConfig::self()->includeFolders();
         Q_FOREACH (const QString& folder, folders) {
             m_dirWatch->removeWatch(folder);
             watchFolder(folder);
@@ -514,7 +479,7 @@ void FileWatch::slotDeviceTeardownRequested(const Baloo::RemovableMediaCache::En
 void FileWatch::slotActiveFileQueueTimeout(const QString& url)
 {
     kDebug() << url;
-    updateFileViaFileIndexer(url);
+    Q_EMIT indexFile(url);
 }
 
 void FileWatch::updateStatusMessage(const QString& newStatus)

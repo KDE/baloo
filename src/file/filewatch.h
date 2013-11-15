@@ -45,18 +45,6 @@ public:
     FileWatch(Database* db, QObject* parent = 0);
     ~FileWatch();
 
-    /**
-     * Tells the file indexer to update the file (it can also be a folder but
-     * then updating will not be recursive) at \p path.
-     */
-    static void updateFileViaFileIndexer(const QString& path);
-
-    /**
-     * Tells the file indexer to update the folder at \p path or the folder
-     * containing \p path in case it is a file.
-     */
-    static void updateFolderViaFileIndexer(const QString& path);
-
 Q_SIGNALS:
     /**
      * Emitted each time the status/activity of the FileWatcher changes
@@ -78,6 +66,8 @@ Q_SIGNALS:
      * Emitted when the watcher stops to do something
      */
     Q_SCRIPTABLE void metadataUpdateStopped();
+
+    void indexFile(const QString& string);
 
 public Q_SLOTS:
     /**
@@ -101,7 +91,6 @@ private Q_SLOTS:
     void slotFilesDeleted(const QStringList& path);
     void slotFileCreated(const QString& path, bool isDir);
     void slotFileClosedAfterWrite(const QString&);
-    void slotMovedWithoutData(const QString&);
     void connectToKDirNotify();
 #ifdef BUILD_KINOTIFY
     void slotInotifyWatchUserLimitReached(const QString&);

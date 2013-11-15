@@ -203,7 +203,13 @@ void FileIndexer::updateAllFolders(bool forced)
 
 void FileIndexer::indexFile(const QString& path)
 {
-    m_indexScheduler->analyzeFile(path);
+    QFileInfo info(path);
+    if (info.isDir()) {
+        indexFolder(path, false /*non-recursive*/, false /*not-forced*/);
+    }
+    else {
+        m_indexScheduler->analyzeFile(path);
+    }
 }
 
 

@@ -44,8 +44,10 @@ int main(int argc, char** argv) {
     db.init();
     db.transaction();
 
-    Baloo::FileWatch filewatcher(&app);
+    Baloo::FileWatch filewatcher(&db, &app);
     Baloo::FileIndexer fileIndexer(&db, &app);
 
+    QObject::connect(&filewatcher, SIGNAL(indexFile(QString)),
+                     &fileIndexer, SLOT(indexFile(QString)));
     return app.exec();
 }
