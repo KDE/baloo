@@ -26,7 +26,7 @@ set_target_properties(baloocore PROPERTIES
     SOVERSION ${GENERIC_LIB_SOVERSION}
 )
 
-install(TARGETS baloocore ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS baloocore EXPORT BalooLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES
     item.h

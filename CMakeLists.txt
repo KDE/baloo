@@ -21,7 +21,14 @@ include_directories(
 
 add_subdirectory(src)
 
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/BalooConfig.cmake
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/BalooConfig.cmake.in
+               ${CMAKE_CURRENT_BINARY_DIR}/BalooConfig.cmake @ONLY)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/BalooConfig.cmake
         DESTINATION ${LIB_INSTALL_DIR}/cmake/Baloo)
+install(EXPORT BalooLibraryTargets
+        DESTINATION ${LIB_INSTALL_DIR}/cmake/Baloo
+        FILE BalooTargetsWithPrefix.cmake)
 
 macro_display_feature_log()

@@ -30,7 +30,7 @@ set_target_properties(balootags PROPERTIES
     SOVERSION ${GENERIC_LIB_SOVERSION}
 )
 
-install(TARGETS balootags ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS balootags EXPORT BalooLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES
     tag.h

@@ -1,0 +1,22 @@
+# Do not modify this file. Any change will be overwritten by CMake.
+
+# Config file for Baloo. This file will define:
+# BALOO_INCLUDE_DIR - The Baloo include directory
+# BALOO_LIBRARIES - The library needed to use Baloo
+
+get_filename_component(_currentDir ${CMAKE_CURRENT_LIST_FILE} PATH) # The current directory
+get_filename_component(rootDir ${_currentDir}/@relInstallDir@ ABSOLUTE) # The install prefix
+
+# Include directory
+set(BALOO_INSTALL_PREFIX "${rootDir}")
+set(BALOO_INCLUDE_DIR "@INCLUDE_INSTALL_DIR@")
+
+include(${_currentDir}/BalooTargetsWithPrefix.cmake)
+
+set(BALOO_CORE_LIBRARY baloocore)
+set(BALOO_SEARCH_LIBRARY baloosearch)
+set(BALOO_TAG_LIBRARY balootag)
+
+# Set the library variable
+set(BALOO_LIBRARIES ${BALOO_CORE_LIBRARY} ${BALOO_SEARCH_LIBRARY} ${BALOO_TAG_LIBRARY})
+

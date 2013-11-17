@@ -29,7 +29,7 @@ set_target_properties(baloosearch PROPERTIES
     SOVERSION ${GENERIC_LIB_SOVERSION}
 )
 
-install(TARGETS baloosearch ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS baloosearch EXPORT BalooLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES
     query.h
