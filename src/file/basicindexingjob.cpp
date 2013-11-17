@@ -70,8 +70,20 @@ void BasicIndexingJob::doStart()
     Xapian::Document doc;
     doc.add_term('M' + m_mimetype.toStdString());
     doc.add_term('F' + fileInfo.fileName().toStdString());
+
+    // Modified Date
+    QDateTime mod = fileInfo.lastModified();
     doc.add_term("DT_M" + fileInfo.lastModified().toString(Qt::ISODate).toStdString());
-    doc.add_term("Z1"); // Indexing Level 1
+
+    const QString year = "DT_MY" + QString::number(mod.date().year());
+    const QString month = "DT_MM" + QString::number(mod.date().month());
+    const QString day = "DT_MD" + QString::number(mod.date().day());
+    doc.add_term(year.toStdString());
+    doc.add_term(month.toStdString());
+    doc.add_term(day.toStdString());
+
+    // Indexing Level 1
+    doc.add_term("Z1");
 
     m_db->xapainDatabase()->replace_document(m_file.id(), doc);
 

@@ -19,13 +19,8 @@
 */
 
 #include "kio_timeline.h"
-#include "nepomukservicecontrolinterface.h"
 #include "timelinetools.h"
-
-#include <Nepomuk2/ResourceManager>
-#include <Nepomuk2/Vocabulary/NFO>
-#include <Nepomuk2/Vocabulary/NIE>
-#include <Nepomuk2/Vocabulary/NUAO>
+#include "src/file/filemapping.h"
 
 #include <KUrl>
 #include <kio/global.h>
@@ -37,23 +32,16 @@
 #include <kio/netaccess.h>
 #include <KComponentData>
 #include <KCalendarSystem>
-
-#include <Soprano/Vocabulary/NAO>
-#include <Soprano/Vocabulary/XMLSchema>
-#include <Soprano/QueryResultIterator>
-#include <Soprano/Model>
-#include <Soprano/Node>
+#include <KStandardDirs>
+#include <kde_file.h>
 
 #include <QtCore/QDate>
 #include <QtCore/QCoreApplication>
-#include <QtDBus/QDBusConnection>
-#include <QtDBus/QDBusConnectionInterface>
 
 #include <sys/types.h>
 #include <unistd.h>
 
-using namespace KIO;
-
+using namespace Baloo;
 
 namespace
 {
@@ -93,47 +81,54 @@ KIO::UDSEntry createDayUDSEntry(const QDate& date)
     KIO::UDSEntry uds = createFolderUDSEntry(date.toString("yyyy-MM-dd"),
                         KGlobal::locale()->formatDate(date, KLocale::FancyLongDate),
                         date);
-    uds.insert(KIO::UDSEntry::UDS_NEPOMUK_QUERY, Nepomuk2::buildTimelineQuery(date).toString());
+
     return uds;
 }
 
-bool filesInDateRange(const QDate& from, const QDate& to = QDate())
+KIO::UDSEntry createFileUDSEntry(const QString& fileUrl)
 {
-    // We avoid inference over here since it speeds up the query by an order of ~110ms
-    // Not sure why it happens, but it is worth it. Specially, since we are just listing
-    // the nie:lastModified. We don't need inference
-    return Nepomuk2::ResourceManager::instance()->mainModel()->executeQuery(
-               Nepomuk2::buildTimelineQuery(from, to).toSparqlQuery(Nepomuk2::Query::Query::CreateAskQuery),
-               Soprano::Query::QueryLanguageSparqlNoInference).boolValue();
-}
-}
+    KIO::UDSEntry uds;
+    // Code from kdelibs/kioslaves/file.cpp
+    KDE_struct_stat statBuf;
+    if( KDE_stat(QFile::encodeName(fileUrl).data(), &statBuf ) == 0) {
+        uds.insert(KIO::UDSEntry::UDS_MODIFICATION_TIME, statBuf.st_mtime);
+        uds.insert(KIO::UDSEntry::UDS_ACCESS_TIME, statBuf.st_atime);
+        uds.insert(KIO::UDSEntry::UDS_SIZE, statBuf.st_size);
+        uds.insert(KIO::UDSEntry::UDS_USER, statBuf.st_uid);
+        uds.insert(KIO::UDSEntry::UDS_GROUP, statBuf.st_gid);
 
+        mode_t type = statBuf.st_mode & S_IFMT;
+        mode_t access = statBuf.st_mode & 07777;
 
-Nepomuk2::TimelineProtocol::TimelineProtocol(const QByteArray& poolSocket, const QByteArray& appSocket)
-    : KIO::ForwardingSlaveBase("timeline", poolSocket, appSocket)
-{
-    kDebug();
-}
-
-
-Nepomuk2::TimelineProtocol::~TimelineProtocol()
-{
-    kDebug();
-}
-
-
-void Nepomuk2::TimelineProtocol::listDir(const KUrl& url)
-{
-    // without a running file indexer timeline is not at all reliable
-    if (!QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.nepomuk.services.nepomukfileindexer") ||
-            !org::kde::nepomuk::ServiceControl("org.kde.nepomuk.services.nepomukfileindexer",
-                    "/servicecontrol",
-                    QDBusConnection::sessionBus()).isInitialized()) {
-        error(KIO::ERR_SLAVE_DEFINED,
-              i18n("The file indexing service is not running. Without it timeline results are not available."));
-        return;
+        uds.insert(KIO::UDSEntry::UDS_FILE_TYPE, type);
+        uds.insert(KIO::UDSEntry::UDS_ACCESS, access);
+        uds.insert(KIO::UDSEntry::UDS_URL, fileUrl);
+        uds.insert(KIO::UDSEntry::UDS_NAME, KUrl(QUrl::fromLocalFile(fileUrl)).fileName());
     }
 
+    return uds;
+}
+
+}
+
+
+TimelineProtocol::TimelineProtocol(const QByteArray& poolSocket, const QByteArray& appSocket)
+    : KIO::SlaveBase("timeline", poolSocket, appSocket)
+{
+    m_db = new Database();
+    m_db->setPath(KStandardDirs::locateLocal("data", "baloo/file/"));
+    m_db->init();
+}
+
+
+TimelineProtocol::~TimelineProtocol()
+{
+    delete m_db;
+}
+
+
+void TimelineProtocol::listDir(const KUrl& url)
+{
     switch (parseTimelineUrl(url, &m_date, &m_filename)) {
     case RootFolder:
         listEntry(createFolderUDSEntry(QLatin1String("today"), i18n("Today"), QDate::currentDate()), false);
@@ -155,8 +150,50 @@ void Nepomuk2::TimelineProtocol::listDir(const KUrl& url)
         finished();
         break;
 
+    case DayFolder: {
+        QString dayStr = "DT_MD" + QString::number(m_date.day());
+        QString monStr = "DT_MM" + QString::number(m_date.month());
+        QString yearStr = "DT_MY" + QString::number(m_date.year());
+
+        std::vector<std::string> strings(3);
+        strings[0] = dayStr.toStdString();
+        strings[1] = monStr.toStdString();
+        strings[2] = yearStr.toStdString();
+
+        Xapian::Query query = Xapian::Query(Xapian::Query::OP_AND, strings.begin(), strings.end());
+        kDebug() << "Running" << query.get_description().c_str();
+        Xapian::Enquire enq(*m_db->xapainDatabase());
+        enq.set_query(query);
+
+        Xapian::MSet mset = enq.get_mset(0, 100000000);
+        Xapian::MSetIterator it = mset.begin();
+        for (; it != mset.end(); it++) {
+            Baloo::FileMapping file(*it);
+            if (!file.fetch(m_db))
+                continue;
+
+            KIO::UDSEntry uds = createFileUDSEntry(file.url());
+            if (uds.count())
+                listEntry(uds, false);
+        }
+        listEntry(KIO::UDSEntry(), true);
+    }
+
+    default:
+        error(KIO::ERR_DOES_NOT_EXIST, url.prettyUrl());
+        break;
+    }
+}
+
+
+void TimelineProtocol::mimetype(const KUrl& url)
+{
+    switch (parseTimelineUrl(url, &m_date, &m_filename)) {
+    case RootFolder:
+    case CalendarFolder:
+    case MonthFolder:
     case DayFolder:
-        ForwardingSlaveBase::listDir(url);
+        mimetype(QString::fromLatin1("inode/directory"));
         break;
 
     default:
@@ -166,73 +203,7 @@ void Nepomuk2::TimelineProtocol::listDir(const KUrl& url)
 }
 
 
-void Nepomuk2::TimelineProtocol::mkdir(const KUrl& url, int permissions)
-{
-    Q_UNUSED(permissions);
-    error(ERR_UNSUPPORTED_ACTION, url.prettyUrl());
-}
-
-
-void Nepomuk2::TimelineProtocol::get(const KUrl& url)
-{
-    kDebug() << url;
-
-    if (parseTimelineUrl(url, &m_date, &m_filename) && !m_filename.isEmpty()) {
-        ForwardingSlaveBase::get(url);
-    } else {
-        error(KIO::ERR_DOES_NOT_EXIST, url.prettyUrl());
-    }
-}
-
-
-void Nepomuk2::TimelineProtocol::put(const KUrl& url, int permissions, KIO::JobFlags flags)
-{
-    kDebug() << url;
-
-    if (parseTimelineUrl(url, &m_date, &m_filename) && !m_filename.isEmpty()) {
-        ForwardingSlaveBase::put(url, permissions, flags);
-    } else {
-        error(KIO::ERR_DOES_NOT_EXIST, url.prettyUrl());
-    }
-}
-
-
-void Nepomuk2::TimelineProtocol::copy(const KUrl& src, const KUrl& dest, int permissions, KIO::JobFlags flags)
-{
-    Q_UNUSED(src);
-    Q_UNUSED(dest);
-    Q_UNUSED(permissions);
-    Q_UNUSED(flags);
-
-    error(ERR_UNSUPPORTED_ACTION, src.prettyUrl());
-}
-
-
-void Nepomuk2::TimelineProtocol::rename(const KUrl& src, const KUrl& dest, KIO::JobFlags flags)
-{
-    Q_UNUSED(src);
-    Q_UNUSED(dest);
-    Q_UNUSED(flags);
-
-    error(ERR_UNSUPPORTED_ACTION, src.prettyUrl());
-}
-
-
-void Nepomuk2::TimelineProtocol::del(const KUrl& url, bool isfile)
-{
-    kDebug() << url;
-    ForwardingSlaveBase::del(url, isfile);
-}
-
-
-void Nepomuk2::TimelineProtocol::mimetype(const KUrl& url)
-{
-    kDebug() << url;
-    ForwardingSlaveBase::mimetype(url);
-}
-
-
-void Nepomuk2::TimelineProtocol::stat(const KUrl& url)
+void TimelineProtocol::stat(const KUrl& url)
 {
     switch (parseTimelineUrl(url, &m_date, &m_filename)) {
     case RootFolder: {
@@ -260,8 +231,6 @@ void Nepomuk2::TimelineProtocol::stat(const KUrl& url)
         if (m_filename.isEmpty()) {
             statEntry(createDayUDSEntry(m_date));
             finished();
-        } else {
-            ForwardingSlaveBase::stat(url);
         }
         break;
 
@@ -272,58 +241,58 @@ void Nepomuk2::TimelineProtocol::stat(const KUrl& url)
 }
 
 
-// only used for the queries
-bool Nepomuk2::TimelineProtocol::rewriteUrl(const KUrl& url, KUrl& newURL)
+void TimelineProtocol::listDays(int month, int year)
 {
-    if (parseTimelineUrl(url, &m_date, &m_filename) == DayFolder) {
-        newURL = buildTimelineQuery(m_date).toSearchUrl();
-        newURL.addPath(m_filename);
-        kDebug() << url << newURL;
-        return true;
-    } else {
-        return false;
-    }
-}
+    QString monStr = "DT_MM" + QString::number(m_date.month());
+    QString yearStr = "DT_MY" + QString::number(m_date.year());
+    Xapian::Query query = Xapian::Query(Xapian::Query::OP_AND,
+                                        monStr.toStdString(),
+                                        yearStr.toStdString());
 
-
-void Nepomuk2::TimelineProtocol::prepareUDSEntry(KIO::UDSEntry& entry,
-        bool listing) const
-{
-    // Do nothing
-    // We do not want the default implemention which tries to change the UDS_NAME and some
-    // other stuff
-}
-
-
-void Nepomuk2::TimelineProtocol::listDays(int month, int year)
-{
-    kDebug() << month << year;
     const int days = KGlobal::locale()->calendar()->daysInMonth(QDate(year, month, 1));
     for (int day = 1; day <= days; ++day) {
         QDate date(year, month, day);
-        if (date <= QDate::currentDate() &&
-                filesInDateRange(date)) {
+        if (date >= QDate::currentDate())
+            break;
+
+        QString dayStr = "DT_MD" + QString::number(m_date.day());
+        Xapian::Query q = Xapian::Query(Xapian::Query::OP_AND,
+                                        query, Xapian::Query(dayStr.toStdString()));
+
+        Xapian::Enquire enq(*m_db->xapainDatabase());
+        enq.set_query(q);
+
+        Xapian::MSet mset = enq.get_mset(0, 1);
+        if (mset.size()) {
             listEntry(createDayUDSEntry(date), false);
         }
     }
 }
 
 
-void Nepomuk2::TimelineProtocol::listThisYearsMonths()
+void TimelineProtocol::listThisYearsMonths()
 {
-    kDebug();
+    QString yearStr = "DT_MY" + QString::number(m_date.year());
+
     int currentMonth = QDate::currentDate().month();
     for (int month = 1; month <= currentMonth; ++month) {
-        const QDate dateInMonth(QDate::currentDate().year(), month, 1);
-        if (filesInDateRange(KGlobal::locale()->calendar()->firstDayOfMonth(dateInMonth),
-                             KGlobal::locale()->calendar()->lastDayOfMonth(dateInMonth))) {
+
+        QString monStr = "DT_MM" + QString::number(m_date.month());
+        Xapian::Query query = Xapian::Query(Xapian::Query::OP_AND,
+                                            monStr.toStdString(),
+                                            yearStr.toStdString());
+        Xapian::Enquire enq(*m_db->xapainDatabase());
+        enq.set_query(query);
+
+        Xapian::MSet mset = enq.get_mset(0, 1);
+        if (mset.size()) {
             listEntry(createMonthUDSEntry(month, QDate::currentDate().year()), false);
         }
     }
 }
 
 
-void Nepomuk2::TimelineProtocol::listPreviousYears()
+void TimelineProtocol::listPreviousYears()
 {
     kDebug();
     // TODO: list years before this year that have files, but first get the smallest date
@@ -346,7 +315,7 @@ extern "C"
             exit(-1);
         }
 
-        Nepomuk2::TimelineProtocol slave(argv[2], argv[3]);
+        Baloo::TimelineProtocol slave(argv[2], argv[3]);
         slave.dispatchLoop();
 
         kDebug(7102) << "Timeline slave Done";
@@ -354,5 +323,3 @@ extern "C"
         return 0;
     }
 }
-
-#include "kio_timeline.moc"
