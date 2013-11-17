@@ -44,19 +44,17 @@ EmailIndexer::~EmailIndexer()
 
 void EmailIndexer::index(const Akonadi::Item& item)
 {
-    if (!item.hasPayload()) {
-        kDebug() << "No payload";
-        return;
-    }
-
-    if (!item.hasPayload<KMime::Message::Ptr>()) {
-        return;
-    }
-
     Akonadi::MessageStatus status;
     status.setStatusFromFlags(item.flags());
     if (status.isSpam())
         return;
+
+    KMime::Message::Ptr msg;
+    try {
+        msg = item.payload<KMime::Message::Ptr>();
+    } catch (const Akonadi::PayloadException&) {
+        return;
+    }
 
     m_doc = new Xapian::Document();
     m_termGen = new Xapian::TermGenerator();
@@ -64,8 +62,6 @@ void EmailIndexer::index(const Akonadi::Item& item)
     m_termGen->set_database(*m_db);
 
     processMessageStatus(status);
-
-    KMime::Message::Ptr msg = item.payload<KMime::Message::Ptr>();
     process(msg);
 
     // Parent collection

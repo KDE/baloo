@@ -62,6 +62,8 @@ BalooIndexingAgent::BalooIndexingAgent(const QString& id)
     changeRecorder()->setAllMonitored(true);
     changeRecorder()->itemFetchScope().setCacheOnly(true);
     changeRecorder()->itemFetchScope().setAncestorRetrieval(Akonadi::ItemFetchScope::Parent);
+    changeRecorder()->itemFetchScope().setFetchRemoteIdentification(false);
+    changeRecorder()->itemFetchScope().setFetchModificationTime(false);
     changeRecorder()->setChangeRecordingEnabled(false);
 }
 
@@ -98,10 +100,10 @@ void BalooIndexingAgent::slotRootCollectionsFetched(KJob* kjob)
         }
 
         job->fetchScope().fetchFullPayload(true);
-        job->fetchScope().fetchAllAttributes();
-        job->fetchScope().fetchModificationTime();
         job->fetchScope().setCacheOnly(true);
         job->fetchScope().setIgnoreRetrievalErrors(true);
+        job->fetchScope().setFetchRemoteIdentification(false);
+        job->fetchScope().setFetchModificationTime(true);
         job->fetchScope().setAncestorRetrieval(Akonadi::ItemFetchScope::Parent);
 
         connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),
@@ -171,11 +173,11 @@ void BalooIndexingAgent::processNext()
 {
     Akonadi::ItemFetchJob* job = new Akonadi::ItemFetchJob(m_items);
     m_items.clear();
-    job->fetchScope().fetchAllAttributes();
-    job->fetchScope().fetchFullPayload();
-    job->fetchScope().fetchModificationTime();
+    job->fetchScope().fetchFullPayload(true);
     job->fetchScope().setCacheOnly(true);
     job->fetchScope().setIgnoreRetrievalErrors(true);
+    job->fetchScope().setFetchRemoteIdentification(false);
+    job->fetchScope().setFetchModificationTime(true);
     job->fetchScope().setAncestorRetrieval(Akonadi::ItemFetchScope::Parent);
 
     connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),

@@ -37,12 +37,10 @@ ContactIndexer::~ContactIndexer()
 
 void ContactIndexer::index(const Akonadi::Item& item)
 {
-    if (!item.hasPayload()) {
-        kDebug() << "No payload";
-        return;
-    }
-
-    if (!item.hasPayload<KABC::Addressee>()) {
+    KABC::Addressee addresse;
+    try {
+        addresse = item.payload<KABC::Addressee>();
+    } catch (const Akonadi::PayloadException&) {
         return;
     }
 
@@ -50,8 +48,6 @@ void ContactIndexer::index(const Akonadi::Item& item)
     Xapian::TermGenerator termGen;
     termGen.set_database(*m_db);
     termGen.set_document(doc);
-
-    KABC::Addressee addresse = item.payload<KABC::Addressee>();
 
     QString name;
     if (!addresse.formattedName().isEmpty()) {
