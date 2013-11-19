@@ -22,6 +22,7 @@
 
 #include "tagsavejob.h"
 #include "tag.h"
+#include "util.h"
 
 #include <QTimer>
 
@@ -80,7 +81,7 @@ void TagSaveJob::doStart()
         return;
     }
 
-    QSqlQuery query;
+    QSqlQuery query(db(parent()));
     query.prepare("UPDATE tags SET name = ? WHERE id = ?");
     query.addBindValue(d->tag.name());
     query.addBindValue(id);

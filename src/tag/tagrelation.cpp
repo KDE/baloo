@@ -75,18 +75,3 @@ void TagRelation::setTag(const Tag& tag)
 {
     m_tag = tag;
 }
-
-TagRelationCreateJob* TagRelation::create()
-{
-    return new TagRelationCreateJob(*this);
-}
-
-TagRelationFetchJob* TagRelation::fetch()
-{
-    return new TagRelationFetchJob(*this);
-}
-
-TagRelationRemoveJob* TagRelation::remove()
-{
-    return new TagRelationRemoveJob(*this);
-}

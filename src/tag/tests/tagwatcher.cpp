@@ -22,11 +22,13 @@
 
 #include "tagrelationwatcher.h"
 #include "tagstore.h"
-#include "database.h"
+#include "connection.h"
+#include "connection_p.h"
 
 #include <QCoreApplication>
 #include <QTimer>
 #include <KDebug>
+#include <KTempDir>
 
 using namespace Baloo;
 
@@ -44,6 +46,9 @@ private slots:
     void slotTagCreated(const Baloo::Tag& tag);
     void slotTagModified(const Baloo::Tag& tag);
     void slotTagRemoved(const Baloo::Tag& tag);
+private:
+    Baloo::Tags::Connection* m_con;
+    KTempDir m_dir;
 };
 
 int main(int argc, char** argv)
@@ -59,9 +64,8 @@ App::App(int& argc, char** argv, int flags): QCoreApplication(argc, argv, flags)
 
 void App::main()
 {
-    Database* db = new Database;
-    db->setPath("/tmp/tagDb.sqlite");
-    db->init();
+    QString dbPath = m_dir.name() + QLatin1String("tagDB.sqlite");
+    m_con = new Baloo::Tags::Connection(new Baloo::Tags::ConnectionPrivate(dbPath));
 
     TagStore* store = TagStore::instance();
     store->setWatchEnabled(true);
@@ -70,7 +74,7 @@ void App::main()
     connect(store, SIGNAL(tagModified(Baloo::Tag)), this, SLOT(slotTagModified(Baloo::Tag)));
 
     Tag tag("TagA");
-    TagCreateJob* job = tag.create();
+    TagCreateJob* job = new TagCreateJob(tag, m_con);
     connect(job, SIGNAL(tagCreated(Baloo::Tag)), this, SLOT(slotTagCreatedFromJob(Baloo::Tag)));
 
     job->start();
@@ -81,14 +85,15 @@ void App::slotTagCreatedFromJob(const Tag& tag)
     Tag t(tag);
     t.setName("TagB");
 
-    TagSaveJob* job = t.save();
+    TagSaveJob* job = new TagSaveJob(t, m_con);
     connect(job, SIGNAL(tagSaved(Baloo::Tag)), this, SLOT(slotTagModifiedFromJob(Baloo::Tag)));
     job->start();
 }
 
 void App::slotTagModifiedFromJob(const Tag& tag)
 {
-    tag.remove()->start();
+    TagRemoveJob* job = new TagRemoveJob(tag, m_con);
+    job->start();
 }
 
 void App::slotTagCreated(const Tag& tag)

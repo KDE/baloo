@@ -23,6 +23,7 @@
 #include "tagrelationremovejob.h"
 #include "tagrelation.h"
 #include "tag.h"
+#include "util.h"
 
 #include <QTimer>
 #include <QVariant>
@@ -75,7 +76,7 @@ void TagRelationRemoveJob::doStart()
         return;
     }
 
-    QSqlQuery query;
+    QSqlQuery query(db(parent()));
     query.prepare("DELETE FROM tagRelations where tid = ? AND rid = ?");
     query.addBindValue(id);
     query.addBindValue(d->relation.item().id());

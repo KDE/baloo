@@ -22,6 +22,7 @@
 
 #include "tagremovejob.h"
 #include "tag.h"
+#include "util.h"
 
 #include <QTimer>
 #include <QVariant>
@@ -76,7 +77,7 @@ void TagRemoveJob::doStart()
         return;
     }
 
-    QSqlQuery query;
+    QSqlQuery query(db(parent()));
     query.prepare("DELETE FROM tags where id = ?");
     query.addBindValue(id);
 

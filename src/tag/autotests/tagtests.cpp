@@ -24,8 +24,8 @@
 
 #include "tag.h"
 #include "tagrelation.h"
-#include "database.h"
 #include "tagstore.h"
+#include "connection_p.h"
 
 #include "qtest_kde.h"
 #include <KDebug>
@@ -41,7 +41,6 @@ using namespace Baloo;
 
 TagTests::TagTests(QObject* parent)
     : QObject(parent)
-    , m_db(0)
 {
 }
 
@@ -63,18 +62,16 @@ void TagTests::cleanupTestCase()
 
 void TagTests::init()
 {
-    delete m_db;
+    delete m_con;
     cleanupTestCase();
 
-    m_db = new Database(this);
-    m_db->setPath(m_dbPath);
-    m_db->init();
+    m_con = new Baloo::Tags::Connection(new Baloo::Tags::ConnectionPrivate(m_dbPath));
 }
 
 void TagTests::insertTags(const QStringList& tags)
 {
     foreach (const QString& tag, tags) {
-        QSqlQuery insertQ;
+        QSqlQuery insertQ(m_con->d->db());
         insertQ.prepare("INSERT INTO tags (name) VALUES (?)");
         insertQ.addBindValue(tag);
 
@@ -86,7 +83,7 @@ void TagTests::insertRelations(const QHash< int, QString >& relations)
 {
     QHash< int, QString >::const_iterator iter = relations.constBegin();
     for (; iter != relations.constEnd(); iter++) {
-        QSqlQuery insertQ;
+        QSqlQuery insertQ(m_con->d->db());
         insertQ.prepare("INSERT INTO tagRelations (tid, rid) VALUES (?, ?)");
         insertQ.addBindValue(iter.key());
         insertQ.addBindValue(iter.value().toUtf8());
@@ -104,7 +101,7 @@ void TagTests::testTagFetchFromId()
     QVERIFY(tag.name().isEmpty());
     QCOMPARE(tag.id(), QByteArray("tag:2"));
 
-    TagFetchJob* job = tag.fetch();
+    TagFetchJob* job = new TagFetchJob(tag, m_con);
     QVERIFY(job);
 
     QSignalSpy spy1(job, SIGNAL(itemReceived(Baloo::Item)));
@@ -131,7 +128,7 @@ void TagTests::testTagFetchFromName()
     QCOMPARE(tag.name(), QLatin1String("TagC"));
     QVERIFY(tag.id().isEmpty());
 
-    TagFetchJob* job = tag.fetch();
+    TagFetchJob* job = new TagFetchJob(tag, m_con);
     QVERIFY(job);
 
     QSignalSpy spy1(job, SIGNAL(itemReceived(Baloo::Item)));
@@ -153,7 +150,7 @@ void TagTests::testTagFetchFromName()
 void TagTests::testTagFetchInvalid()
 {
     Tag tag(QLatin1String("TagC"));
-    TagFetchJob* job = tag.fetch();
+    TagFetchJob* job = new TagFetchJob(tag, m_con);
     QVERIFY(job);
 
     QSignalSpy spy1(job, SIGNAL(itemReceived(Baloo::Item)));
@@ -174,7 +171,7 @@ void TagTests::testTagFetchInvalid()
 void TagTests::testTagCreate()
 {
     Tag tag(QLatin1String("TagA"));
-    TagCreateJob* job = tag.create();
+    TagCreateJob* job = new TagCreateJob(tag, m_con);
     QVERIFY(job);
 
     QSignalSpy spy1(job, SIGNAL(itemCreated(Baloo::Item)));
@@ -204,7 +201,7 @@ void TagTests::testTagCreate_duplicate()
     testTagCreate();
 
     Tag tag(QLatin1String("TagA"));
-    TagCreateJob* job = tag.create();
+    TagCreateJob* job = new TagCreateJob(tag, m_con);
     QVERIFY(job);
 
     QSignalSpy spy(job, SIGNAL(result(KJob*)));
@@ -221,7 +218,7 @@ void TagTests::testTagCreate_duplicate()
 void TagTests::testTagModify()
 {
     Tag tag(QLatin1String("TagA"));
-    TagCreateJob* cjob = tag.create();
+    TagCreateJob* cjob = new TagCreateJob(tag, m_con);
 
     QSignalSpy spy(cjob, SIGNAL(tagCreated(Baloo::Tag)));
     cjob->exec();
@@ -233,7 +230,7 @@ void TagTests::testTagModify()
     QByteArray id = tag.id();
     tag.setName("TagB");
 
-    ItemSaveJob* job = tag.save();
+    TagSaveJob* job = new TagSaveJob(tag, m_con);
     QVERIFY(job);
 
     QSignalSpy spy1(job, SIGNAL(itemSaved(Baloo::Item)));
@@ -263,7 +260,7 @@ void TagTests::testTagModify_duplicate()
     insertTags(QStringList() << "TagB");
 
     Tag tag(QLatin1String("TagA"));
-    TagCreateJob* cjob = tag.create();
+    TagCreateJob* cjob = new TagCreateJob(tag, m_con);
 
     QSignalSpy spy(cjob, SIGNAL(tagCreated(Baloo::Tag)));
     cjob->exec();
@@ -275,7 +272,7 @@ void TagTests::testTagModify_duplicate()
     QByteArray id = tag.id();
     tag.setName("TagB");
 
-    ItemSaveJob* job = tag.save();
+    TagSaveJob* job = new TagSaveJob(tag, m_con);
     QVERIFY(job);
 
     QSignalSpy spy1(job, SIGNAL(itemSaved(Baloo::Item)));
@@ -297,7 +294,7 @@ void TagTests::testTagRemove()
     insertTags(QStringList() << "TagA" << "TagB" << "TagC");
 
     Tag tag = Tag::fromId(QByteArray("tag:1"));
-    TagRemoveJob* job = tag.remove();
+    TagRemoveJob* job = new TagRemoveJob(tag, m_con);
     QVERIFY(job);
 
     QSignalSpy spy1(job, SIGNAL(itemRemoved(Baloo::Item)));
@@ -323,7 +320,7 @@ void TagTests::testTagRemove()
 
     QVERIFY(tag.name().isEmpty());
 
-    QSqlQuery query;
+    QSqlQuery query(m_con->d->db());
     query.prepare("SELECT name from tags where id = ?");
     query.addBindValue(1);
     QVERIFY(query.exec());
@@ -333,7 +330,7 @@ void TagTests::testTagRemove()
 void TagTests::testTagRemove_notExists()
 {
     Tag tag = Tag::fromId(QByteArray("tag:1"));
-    TagRemoveJob* job = tag.remove();
+    TagRemoveJob* job = new TagRemoveJob(tag, m_con);
     QVERIFY(job);
 
     QSignalSpy spy1(job, SIGNAL(itemRemoved(Baloo::Item)));
@@ -361,7 +358,7 @@ void TagTests::testTagRelationFetchFromTag()
     Tag tag(QLatin1String("TagA"));
 
     TagRelation tagRel(tag);
-    TagRelationFetchJob* job = tagRel.fetch();
+    TagRelationFetchJob* job = new TagRelationFetchJob(tagRel, m_con);
     QVERIFY(job);
 
     QSignalSpy spy1(job, SIGNAL(relationReceived(Baloo::Relation)));
@@ -405,7 +402,7 @@ void TagTests::testTagRelationFetchFromItem()
     item.setId("file:1");
 
     TagRelation rela(item);
-    TagRelationFetchJob* job = rela.fetch();
+    TagRelationFetchJob* job = new TagRelationFetchJob(rela, m_con);
     QVERIFY(job);
 
     QSignalSpy spy1(job, SIGNAL(relationReceived(Baloo::Relation)));
@@ -449,7 +446,7 @@ void TagTests::testTagRelationSaveJob()
     Tag tag = Tag::fromId(QByteArray("tag:1"));
 
     TagRelation rel(tag, item);
-    TagRelationCreateJob* job = rel.create();
+    TagRelationCreateJob* job = new TagRelationCreateJob(rel, m_con);
     QVERIFY(job);
 
     QSignalSpy spy1(job, SIGNAL(relationCreated(Baloo::Relation)));
@@ -474,7 +471,7 @@ void TagTests::testTagRelationSaveJob()
     QCOMPARE(spy3.at(0).first().value<KJob*>(), job);
     QCOMPARE(job->error(), 0);
 
-    QSqlQuery query;
+    QSqlQuery query(m_con->d->db());
     query.prepare("select rid from tagRelations where tid = 1");
 
     QVERIFY(query.exec());
@@ -496,7 +493,7 @@ void TagTests::testTagRelationSaveJob_duplicate()
     Tag tag = Tag::fromId(QByteArray("tag:1"));
 
     TagRelation rel(tag, item);
-    TagRelationCreateJob* job = rel.create();
+    TagRelationCreateJob* job = new TagRelationCreateJob(rel, m_con);
     QVERIFY(job);
 
     QSignalSpy spy1(job, SIGNAL(relationCreated(Baloo::Relation)));
@@ -527,7 +524,7 @@ void TagTests::testTagRelationRemoveJob()
     Tag tag = Tag::fromId(QByteArray("tag:1"));
 
     TagRelation rel(tag, item);
-    TagRelationRemoveJob* job = rel.remove();
+    TagRelationRemoveJob* job = new TagRelationRemoveJob(rel, m_con);
     QVERIFY(job);
 
     QSignalSpy spy1(job, SIGNAL(relationRemoved(Baloo::Relation)));
@@ -552,7 +549,7 @@ void TagTests::testTagRelationRemoveJob()
     QCOMPARE(spy3.at(0).first().value<KJob*>(), job);
     QCOMPARE(job->error(), 0);
 
-    QSqlQuery query;
+    QSqlQuery query(m_con->d->db());
     query.prepare("select rid from tagRelations where tid = ?");
     query.addBindValue(1);
     QVERIFY(query.exec());
@@ -567,7 +564,7 @@ void TagTests::testTagRelationRemoveJob_notExists()
     Tag tag = Tag::fromId(QByteArray("tag:1"));
 
     TagRelation rel(tag, item);
-    TagRelationRemoveJob* job = rel.remove();
+    TagRelationRemoveJob* job = new TagRelationRemoveJob(rel, m_con);
     QVERIFY(job);
 
     QSignalSpy spy1(job, SIGNAL(relationRemoved(Baloo::Relation)));
@@ -587,8 +584,7 @@ void TagTests::testTagStoreFetchAll()
 {
     insertTags(QStringList() << "TagA" << "TagB" << "TagC");
 
-    TagStore* tagStore = TagStore::instance();
-    TagFetchJob* job = tagStore->fetchAll();
+    TagFetchJob* job = new TagFetchJob(m_con);
 
     QSignalSpy spy(job, SIGNAL(tagReceived(Baloo::Tag)));
     QVERIFY(job->exec());

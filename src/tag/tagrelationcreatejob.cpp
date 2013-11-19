@@ -22,6 +22,7 @@
 
 #include "tagrelationcreatejob.h"
 #include "tagrelation.h"
+#include "util.h"
 
 #include <QTimer>
 #include <QVariant>
@@ -74,7 +75,7 @@ void TagRelationCreateJob::doStart()
         return;
     }
 
-    QSqlQuery query;
+    QSqlQuery query(db(parent()));
     query.prepare("insert into tagRelations (tid, rid) values (?, ?)");
     query.addBindValue(id);
     query.addBindValue(d->relation.item().id());

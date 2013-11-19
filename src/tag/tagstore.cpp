@@ -43,11 +43,6 @@ TagStore::~TagStore()
 {
 }
 
-TagFetchJob* TagStore::fetchAll()
-{
-    return new TagFetchJob(this);
-}
-
 void TagStore::slotWatchStatusChanged(bool status)
 {
     QDBusConnection con = QDBusConnection::sessionBus();

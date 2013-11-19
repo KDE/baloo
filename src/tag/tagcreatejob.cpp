@@ -22,6 +22,7 @@
 
 #include "tagcreatejob.h"
 #include "tag.h"
+#include "util.h"
 
 #include <QTimer>
 #include <QVariant>
@@ -75,7 +76,7 @@ void TagCreateJob::doStart()
         return;
     }
 
-    QSqlQuery query;
+    QSqlQuery query(db(parent()));
     query.setForwardOnly(true);
     query.prepare(QLatin1String("insert into tags (name) VALUES (?)"));
     query.addBindValue(d->tag.name());

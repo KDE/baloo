@@ -20,34 +20,4 @@
  *
  */
 
-#ifndef RELATION_H
-#define RELATION_H
-
-#include "core_export.h"
-#include <QByteArray>
-#include <QMetaType>
-
-namespace Baloo {
-
-class Item;
-
-/**
- * This class represents a way of connecting any two Items.
- */
-class BALOO_CORE_EXPORT Relation
-{
-public:
-    virtual ~Relation();
-
-    /**
-     * The from must be of type fromType
-     */
-    virtual QByteArray fromType() const { return QByteArray("Item"); }
-    virtual QByteArray toType() const { return QByteArray("Item"); }
-};
-
-}
-
-Q_DECLARE_METATYPE(Baloo::Relation);
-
-#endif // RELATION_H
+#include "property.h"

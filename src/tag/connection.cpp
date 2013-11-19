@@ -20,54 +20,42 @@
  *
  */
 
-#include "database.h"
+#include "connection.h"
+#include "connection_p.h"
 
-#include <QStringList>
-
-#include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QSqlError>
-
-#include <KConfig>
+#include <KStandardDirs>
 #include <KDebug>
 
-Database::Database(QObject* parent)
-    : QObject(parent)
-    , m_initialized(false)
+#include <QThreadStorage>
+#include <QSqlError>
+#include <QSqlQuery>
+
+using namespace Baloo::Tags;
+
+ConnectionPrivate::ConnectionPrivate(const QString& path)
 {
-}
+    m_connectionName = QString::number(qrand());
 
-Database::~Database()
-{
-    QSqlDatabase::removeDatabase(m_connectionName);
-}
+    m_db = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE3", m_connectionName));
+    m_db->setDatabaseName(path);
 
-bool Database::init()
-{
-    if (m_initialized)
-        return true;
-
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE3");
-    db.setDatabaseName(m_path);
-    m_connectionName = db.connectionName();
-
-    if (!db.open()) {
-        kDebug() << "Failed to open db" << db.lastError().text();
-        return false;
+    if (!m_db->open()) {
+        kDebug() << "Failed to open db" << m_db->lastError().text();
+        return;
     }
 
-    const QStringList tables = db.tables();
+    const QStringList tables = m_db->tables();
     if (tables.contains("tags") && tables.contains("tagRelations")) {
-        return true;
+        return;
     }
 
-    QSqlQuery query(db);
+    QSqlQuery query(*m_db);
     bool ret = query.exec("CREATE TABLE tags("
                           "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                           "name TEXT NOT NULL UNIQUE)");
     if (!ret) {
         kDebug() << "Could not create tags table" << query.lastError().text();
-        return false;
+        return;
     }
 
     ret = query.exec("CREATE TABLE tagRelations ("
@@ -77,26 +65,43 @@ bool Database::init()
                      "FOREIGN KEY (tid) REFERENCES tags (id))");
     if (!ret) {
         kDebug() << "Could not create tagRelation table" << query.lastError().text();
-        return false;
+        return;
     }
-
-    // TODO: Create an index on rid?
-
-    m_initialized = true;
-    return true;
 }
 
-QString Database::path()
+ConnectionPrivate::~ConnectionPrivate()
 {
-    return m_path;
+    delete m_db;
+    QSqlDatabase::removeDatabase(m_connectionName);
 }
 
-void Database::setPath(const QString& path)
+Connection::Connection(QObject* parent)
+    : QObject(parent)
 {
-    m_path = path;
+    const QString path = KStandardDirs::locateLocal("data", "baloo/tags.sqlite3");
+    d = new ConnectionPrivate(path);
 }
 
-bool Database::isInitialized()
+Connection::Connection(ConnectionPrivate* priv)
+    : QObject()
+    , d(priv)
 {
-    return m_initialized;
+}
+
+
+Connection::~Connection()
+{
+    delete d;
+}
+
+QThreadStorage<Connection*> connections;
+
+Connection* Connection::defaultConnection()
+{
+    if (connections.hasLocalData())
+        return connections.localData();
+
+    Connection* con = new Connection();
+    connections.setLocalData(con);
+    return con;
 }

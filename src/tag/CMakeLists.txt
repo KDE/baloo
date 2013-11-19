@@ -13,7 +13,7 @@ set(TAGS_SRCS
     tagrelationwatcher.cpp
     tagstore.cpp
 
-    database.cpp
+    connection.cpp
 )
 
 kde4_add_library(balootags SHARED ${TAGS_SRCS})

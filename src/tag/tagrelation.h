@@ -51,10 +51,6 @@ public:
     QByteArray fromType() const { return "Tag"; }
     QByteArray toType() const { return "Item"; }
 
-    TagRelationFetchJob* fetch();
-    TagRelationCreateJob* create();
-    TagRelationRemoveJob* remove();
-
 private:
     Tag m_tag;
     Item m_item;

@@ -24,12 +24,13 @@
 #define TAGSAVEJOB_H
 
 #include "itemsavejob.h"
+#include "tag_export.h"
 
 namespace Baloo {
 
 class Tag;
 
-class TagSaveJob : public ItemSaveJob
+class BALOO_TAG_EXPORT TagSaveJob : public ItemSaveJob
 {
     Q_OBJECT
 public:

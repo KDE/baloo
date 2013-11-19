@@ -2,7 +2,7 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/..
 )
 
-kde4_add_executable(tagrelationwatcher relationwatcher.cpp ../database.cpp)
+kde4_add_executable(tagrelationwatcher relationwatcher.cpp)
 
 target_link_libraries(tagrelationwatcher
   ${QT_QTCORE_LIBRARY}
@@ -13,7 +13,7 @@ target_link_libraries(tagrelationwatcher
   balootags
 )
 
-kde4_add_executable(tagwatcher tagwatcher.cpp ../database.cpp)
+kde4_add_executable(tagwatcher tagwatcher.cpp)
 
 target_link_libraries(tagwatcher
   ${QT_QTCORE_LIBRARY}

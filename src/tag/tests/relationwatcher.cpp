@@ -22,11 +22,13 @@
 
 #include "tagrelationwatcher.h"
 #include "tagrelation.h"
-#include "database.h"
+#include "connection.h"
+#include "connection_p.h"
 
 #include <QCoreApplication>
 #include <QTimer>
 #include <KDebug>
+#include <KTempDir>
 
 using namespace Baloo;
 
@@ -37,12 +39,16 @@ public:
 
 private slots:
     void main();
-    void slotTagCreated(const Tag& tag);
+    void slotTagCreated(const Baloo::Tag& tag);
 
-    void slotTagAdded(const Tag& tag);
-    void slotTagRemoved(const Tag& tag);
-    void slotItemAdded(const Item& item);
-    void slotItemRemoved(const Item& item);
+    void slotTagAdded(const Baloo::Tag& tag);
+    void slotTagRemoved(const Baloo::Tag& tag);
+    void slotItemAdded(const Baloo::Item& item);
+    void slotItemRemoved(const Baloo::Item& item);
+
+private:
+    Baloo::Tags::Connection* m_con;
+    KTempDir m_dir;
 };
 
 int main(int argc, char** argv)
@@ -58,13 +64,12 @@ App::App(int& argc, char** argv, int flags): QCoreApplication(argc, argv, flags)
 
 void App::main()
 {
-    Database* db = new Database;
-    db->setPath("/tmp/tagDb.sqlite");
-    db->init();
+    QString dbPath = m_dir.name() + QLatin1String("tagDB.sqlite");
+    m_con = new Baloo::Tags::Connection(new Baloo::Tags::ConnectionPrivate(dbPath));
 
     Tag tag("TagA");
-    TagCreateJob* job = tag.create();
-    connect(job, SIGNAL(tagCreated(Tag)), this, SLOT(slotTagCreated(Tag)));
+    TagCreateJob* job = new TagCreateJob(tag, m_con);
+    connect(job, SIGNAL(tagCreated(Baloo::Tag)), this, SLOT(slotTagCreated(Baloo::Tag)));
 
     job->start();
 }
@@ -72,18 +77,18 @@ void App::main()
 void App::slotTagCreated(const Tag& tag)
 {
     TagRelationWatcher* watcher1 = new TagRelationWatcher(tag, this);
-    connect(watcher1, SIGNAL(tagAdded(Tag)), this, SLOT(slotTagAdded(Tag)));
-    connect(watcher1, SIGNAL(tagRemoved(Tag)), this, SLOT(slotTagRemoved(Tag)));
+    connect(watcher1, SIGNAL(tagAdded(Baloo::Tag)), this, SLOT(slotTagAdded(Baloo::Tag)));
+    connect(watcher1, SIGNAL(tagRemoved(Baloo::Tag)), this, SLOT(slotTagRemoved(Baloo::Tag)));
 
     Item item;
     item.setId("file:1");
 
     TagRelationWatcher* watcher2 = new TagRelationWatcher(item, this);
-    connect(watcher2, SIGNAL(itemAdded(Item)), this, SLOT(slotItemAdded(Item)));
-    connect(watcher2, SIGNAL(itemRemoved(Item)), this, SLOT(slotItemRemoved(Item)));
+    connect(watcher2, SIGNAL(itemAdded(Baloo::Item)), this, SLOT(slotItemAdded(Baloo::Item)));
+    connect(watcher2, SIGNAL(itemRemoved(Baloo::Item)), this, SLOT(slotItemRemoved(Baloo::Item)));
 
-    TagRelation* rel = new TagRelation(tag, item);
-    rel->create()->start();
+    TagRelationCreateJob* job = new TagRelationCreateJob(TagRelation(tag, item), m_con);
+    job->start();
 }
 
 void App::slotTagAdded(const Tag& tag)
@@ -93,8 +98,8 @@ void App::slotTagAdded(const Tag& tag)
     Item item;
     item.setId("file:1");
 
-    TagRelation* rel = new TagRelation(tag, item);
-    rel->remove()->start();
+    TagRelationRemoveJob* job = new TagRelationRemoveJob(TagRelation(tag, item), m_con);
+    job->start();
 }
 
 void App::slotItemAdded(const Item& item)

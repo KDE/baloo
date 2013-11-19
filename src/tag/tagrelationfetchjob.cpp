@@ -22,9 +22,9 @@
 
 #include "tagrelationfetchjob.h"
 #include "tagrelation.h"
-#include "item.h"
 #include "tag.h"
 #include "tagfetchjob.h"
+#include "util.h"
 
 #include <QTimer>
 #include <QVariant>
@@ -79,7 +79,7 @@ void TagRelationFetchJob::doStart()
     if (item.id().isEmpty()) {
         // We must first fetch the tag
         if (tag.id().isEmpty() || tag.name().isEmpty()) {
-            TagFetchJob* tagFetchJob = tag.fetch();
+            TagFetchJob* tagFetchJob = new TagFetchJob(tag, parent());
             connect(tagFetchJob, SIGNAL(tagReceived(Baloo::Tag)), SLOT(slotTagReceived(Baloo::Tag)));
             tagFetchJob->start();
         }
@@ -88,7 +88,7 @@ void TagRelationFetchJob::doStart()
         }
     }
     else {
-        QSqlQuery query;
+        QSqlQuery query(db(parent()));
         query.prepare(QLatin1String("select tid, name from tagRelations, tags where "
                                     "rid = ? and tags.id = tagRelations.tid"));
         query.addBindValue(item.id());
@@ -135,7 +135,7 @@ void TagRelationFetchJob::slotTagReceived(const Tag& tag)
         return;
     }
 
-    QSqlQuery query;
+    QSqlQuery query(db(parent()));
     query.prepare(QLatin1String("select rid from tagRelations where tid = ?"));
     query.addBindValue(id);
 

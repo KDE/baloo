@@ -25,17 +25,10 @@
 
 #include "core_export.h"
 
-#include <QMetaType>
 #include <QString>
+#include <QMetaType>
 
 namespace Baloo {
-
-class ItemFetchJob;
-class ItemSaveJob;
-class ItemCreateJob;
-class ItemRemoveJob;
-
-class ItemType;
 
 class BALOO_CORE_EXPORT Item
 {
@@ -65,11 +58,6 @@ public:
      * derived class or initializing the derived class with the id.
      */
     virtual QByteArray type() { return QByteArray("Item"); }
-
-    virtual ItemFetchJob* fetch() const;
-    virtual ItemSaveJob* save() const;
-    virtual ItemCreateJob* create() const;
-    virtual ItemRemoveJob* remove() const;
 
 private:
     QByteArray m_id;

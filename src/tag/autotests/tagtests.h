@@ -27,7 +27,7 @@
 #include <QHash>
 #include <KTempDir>
 
-class Database;
+#include "connection.h"
 
 class TagTests : public QObject
 {
@@ -67,7 +67,7 @@ private:
     KTempDir m_tempDir;
     QString m_dbPath;
 
-    Database* m_db;
+    Baloo::Tags::Connection* m_con;
 
     void insertTags(const QStringList& tags);
     void insertRelations(const QHash<int, QString>& relations);

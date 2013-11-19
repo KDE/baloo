@@ -22,6 +22,7 @@
 
 #include "tagfetchjob.h"
 #include "tag.h"
+#include "util.h"
 
 #include <QTimer>
 
@@ -63,7 +64,7 @@ void TagFetchJob::start()
 
 void TagFetchJob::doStart()
 {
-    QSqlQuery query;
+    QSqlQuery query(db(parent()));
     query.setForwardOnly(true);
 
     if (d->tag.id().size()) {

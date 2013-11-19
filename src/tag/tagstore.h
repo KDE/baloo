@@ -38,7 +38,6 @@ public:
     static TagStore* instance();
     virtual ~TagStore();
 
-    virtual TagFetchJob* fetchAll();
     virtual bool supportsWatching() const { return true; }
 
 signals:

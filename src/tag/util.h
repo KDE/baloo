@@ -20,34 +20,20 @@
  *
  */
 
-#ifndef RELATION_H
-#define RELATION_H
+#ifndef _TAG_UTIL_H
+#define _TAG_UTIL_H
 
-#include "core_export.h"
-#include <QByteArray>
-#include <QMetaType>
+#include "connection.h"
+#include "connection_p.h"
 
-namespace Baloo {
+#include <QSqlDatabase>
 
-class Item;
+inline QSqlDatabase& db(QObject* parent) {
+    Baloo::Tags::Connection* con = qobject_cast<Baloo::Tags::Connection*>(parent);
+    if (!con)
+        con = Baloo::Tags::Connection::defaultConnection();
 
-/**
- * This class represents a way of connecting any two Items.
- */
-class BALOO_CORE_EXPORT Relation
-{
-public:
-    virtual ~Relation();
-
-    /**
-     * The from must be of type fromType
-     */
-    virtual QByteArray fromType() const { return QByteArray("Item"); }
-    virtual QByteArray toType() const { return QByteArray("Item"); }
-};
-
+    return con->d->db();
 }
 
-Q_DECLARE_METATYPE(Baloo::Relation);
-
-#endif // RELATION_H
+#endif

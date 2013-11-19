@@ -44,11 +44,6 @@ public:
     QString name() const;
     void setName(const QString& name);
 
-    TagFetchJob* fetch() const;
-    TagSaveJob* save() const;
-    TagCreateJob* create() const;
-    TagRemoveJob* remove() const;
-
 private:
     QString m_name;
 };

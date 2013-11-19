@@ -31,23 +31,3 @@ Item::Item()
 Item::~Item()
 {
 }
-
-ItemFetchJob* Item::fetch() const
-{
-    return 0;
-}
-
-ItemSaveJob* Item::save() const
-{
-    return 0;
-}
-
-ItemCreateJob* Item::create() const
-{
-    return 0;
-}
-
-ItemRemoveJob* Item::remove() const
-{
-    return 0;
-}

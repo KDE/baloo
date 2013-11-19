@@ -20,34 +20,38 @@
  *
  */
 
-#ifndef RELATION_H
-#define RELATION_H
+#ifndef CONNECTION_H
+#define CONNECTION_H
 
-#include "core_export.h"
-#include <QByteArray>
-#include <QMetaType>
+#include <QObject>
+#include "tag_export.h"
 
 namespace Baloo {
+namespace Tags {
 
-class Item;
+class ConnectionPrivate;
 
-/**
- * This class represents a way of connecting any two Items.
- */
-class BALOO_CORE_EXPORT Relation
+class BALOO_TAG_EXPORT Connection : public QObject
 {
+    Q_OBJECT
 public:
-    virtual ~Relation();
+    explicit Connection(QObject* parent = 0);
+    ~Connection();
 
     /**
-     * The from must be of type fromType
+     * Returns the default connection for this thread
      */
-    virtual QByteArray fromType() const { return QByteArray("Item"); }
-    virtual QByteArray toType() const { return QByteArray("Item"); }
+    static Connection* defaultConnection();
+
+    /**
+     * Only used by tests
+     */
+    explicit Connection(ConnectionPrivate* priv);
+
+    ConnectionPrivate* d;
+private:
 };
 
 }
-
-Q_DECLARE_METATYPE(Baloo::Relation);
-
-#endif // RELATION_H
+}
+#endif // CONNECTION_H

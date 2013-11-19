@@ -20,28 +20,4 @@
  *
  */
 
-#ifndef DATABASE_H
-#define DATABASE_H
-
-#include <QObject>
-#include <QSqlDatabase>
-
-class Database : public QObject
-{
-public:
-    explicit Database(QObject* parent = 0);
-    ~Database();
-
-    QString path();
-    void setPath(const QString& path);
-
-    bool init();
-    bool isInitialized();
-
-private:
-    QString m_path;
-    QString m_connectionName;
-    bool m_initialized;
-};
-
-#endif // DATABASE_H
+#include "searchstore.h"
