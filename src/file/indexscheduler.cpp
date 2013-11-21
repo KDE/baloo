@@ -46,14 +46,12 @@ using namespace Baloo;
 IndexScheduler::IndexScheduler(Database* db, QObject* parent)
     : QObject(parent)
     , m_indexing(false)
-    , m_lastBasicIndexingFile(QDateTime::currentDateTime())
-    , m_basicIndexingFileCount(0)
     , m_db(db)
 {
     // remove old indexing error log
-    if (FileIndexerConfig::self()->isDebugModeEnabled()) {
-        QFile::remove(KStandardDirs::locateLocal("data", QLatin1String("nepomuk/file-indexer-error-log")));
-    }
+    // if (FileIndexerConfig::self()->isDebugModeEnabled()) {
+    //    QFile::remove(KStandardDirs::locateLocal("data", QLatin1String("nepomuk/file-indexer-error-log")));
+    // }
 
     FileIndexerConfig* indexConfig = FileIndexerConfig::self();
     connect(indexConfig, SIGNAL(includeFolderListChanged(QStringList, QStringList)),
@@ -68,9 +66,9 @@ IndexScheduler::IndexScheduler(Database* db, QObject* parent)
             this, SLOT(slotConfigFiltersChanged()));
 
     // Stop indexing when a device is unmounted
-    RemovableMediaCache* cache = new RemovableMediaCache(this);
-    connect(cache, SIGNAL(deviceTeardownRequested(const RemovableMediaCache::Entry*)),
-            this, SLOT(slotTeardownRequested(const RemovableMediaCache::Entry*)));
+    // RemovableMediaCache* cache = new RemovableMediaCache(this);
+    // connect(cache, SIGNAL(deviceTeardownRequested(const RemovableMediaCache::Entry*)),
+    //        this, SLOT(slotTeardownRequested(const RemovableMediaCache::Entry*)));
 
     m_basicIQ = new BasicIndexingQueue(m_db, this);
     m_fileIQ = new FileIndexingQueue(m_db, this);
@@ -85,10 +83,12 @@ IndexScheduler::IndexScheduler(Database* db, QObject* parent)
     connect(m_basicIQ, SIGNAL(endIndexingFile(Baloo::FileMapping)),
             this, SLOT(slotEndBasicIndexingFile()));
 
+    /*
     connect(m_fileIQ, SIGNAL(beginIndexingFile(Baloo::FileMapping)),
             this, SLOT(slotBeginIndexingFile(Baloo::FileMapping)));
     connect(m_fileIQ, SIGNAL(endIndexingFile(Baloo::FileMapping)),
             this, SLOT(slotEndIndexingFile(Baloo::FileMapping)));
+    */
 
     connect(m_basicIQ, SIGNAL(startedIndexing()), this, SLOT(slotStartedIndexing()));
     connect(m_basicIQ, SIGNAL(finishedIndexing()), this, SLOT(slotFinishedIndexing()));
@@ -328,32 +328,10 @@ void IndexScheduler::slotEndIndexingFile(const FileMapping&)
     }
 }
 
-//
-// Slow down the Basic Indexing if we have > x files
-//
 void IndexScheduler::slotEndBasicIndexingFile()
 {
-    /*
-    QDateTime current = QDateTime::currentDateTime();
-    if (current.secsTo(m_lastBasicIndexingFile) > 60) {
-        m_basicIQ->setDelay(0);
-        m_basicIndexingFileCount = 0;
-    } else {
-        if (m_basicIndexingFileCount > 1000) {
-            m_basicIQ->setDelay(400);
-        } else if (m_basicIndexingFileCount > 750) {
-            m_basicIQ->setDelay(300);
-        } else if (m_basicIndexingFileCount > 500) {
-            m_basicIQ->setDelay(200);
-        } else if (m_basicIndexingFileCount > 200) {
-            m_basicIQ->setDelay(100);
-        } else
-            m_basicIQ->setDelay(0);
-    }*/
-
     m_basicIQ->setDelay(0);
     m_fileIQ->setDelay(0);
-    //m_basicIndexingFileCount++;
 
     if (!m_commitTimer.isActive()) {
         m_commitTimer.start(100);

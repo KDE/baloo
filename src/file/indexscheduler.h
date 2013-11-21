@@ -186,10 +186,6 @@ private:
     EventMonitor* m_eventMonitor;
 
     State m_state;
-
-    QDateTime m_lastBasicIndexingFile;
-    int m_basicIndexingFileCount;
-
     QString m_oldStatus;
 
     Database* m_db;
