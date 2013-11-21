@@ -34,29 +34,12 @@ class Database;
 namespace Baloo
 {
 
-/**
- * \brief The one entry point to indexing files.
- *
- * The %Indexer can be used to index any file on the local file system
- * or stored in some other place like an email attachment. The resulting
- * data is automatically stored into the %Nepomuk database. The %Indexer
- * automatically removes previous data and makes sure the resource URI
- * does not change.
- *
- * This class is also used by the %Nepomuk file indexing service.
- *
- * \author Sebastian Trueg <trueg@kde.org>
- */
 class FileIndexingJob : public KJob
 {
     Q_OBJECT
 
 public:
-    FileIndexingJob(Database* db, const FileMapping& file, QObject* parent = 0);
-
-    QString url() const {
-        return m_file.url();
-    }
+    FileIndexingJob(const QList<FileMapping>& files, QObject* parent = 0);
 
     virtual void start();
 
@@ -69,17 +52,16 @@ public:
         IndexerCrashed
     };
 
+    QList<FileMapping> files() const { return m_files; }
+
 private Q_SLOTS:
     void slotIndexedFile(int exitCode, QProcess::ExitStatus exitStatus);
     void slotProcessTimerTimeout();
     void slotProcessNonExistingFile();
 
 private:
-    Database* m_db;
-
-    FileMapping m_file;
+    QList<FileMapping> m_files;
     QProcess* m_process;
-    int m_exitCode;
     QTimer* m_processTimer;
 };
 }

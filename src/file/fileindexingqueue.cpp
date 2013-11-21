@@ -81,17 +81,22 @@ bool FileIndexingQueue::isEmpty()
 
 void FileIndexingQueue::processNextIteration()
 {
-    const FileMapping file = m_fileQueue.dequeue();
-    process(file);
+    // Take first 10
+    QList<FileMapping> files;
+    for (int i=0; i<10 && m_fileQueue.size(); i++) {
+        files << m_fileQueue.dequeue();
+    }
+
+    process(files);
 }
 
-void FileIndexingQueue::process(const FileMapping& file)
+void FileIndexingQueue::process(const QList<FileMapping>& files)
 {
-    m_currentFile = file;
+    //m_currentFile = files;
 
-    KJob* job = new FileIndexingJob(m_db, file);
+    KJob* job = new FileIndexingJob(files, this);
     job->start();
-    Q_EMIT beginIndexingFile(file);
+    //Q_EMIT beginIndexingFile(files);
     connect(job, SIGNAL(finished(KJob*)), this, SLOT(slotFinishedIndexingFile(KJob*)));
 }
 
@@ -99,7 +104,8 @@ void FileIndexingQueue::slotFinishedIndexingFile(KJob* job)
 {
     if (job->error()) {
         kDebug() << job->errorString();
-        updateIndexingLevel(m_db, m_currentFile.id(), 0);
+        // FIXME: How do we fix this?
+        // updateIndexingLevel(m_db, m_currentFile.id(), 0);
     }
 
     FileMapping file = m_currentFile;

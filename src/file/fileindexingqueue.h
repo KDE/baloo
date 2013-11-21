@@ -63,7 +63,7 @@ private Q_SLOTS:
     void slotConfigChanged();
 
 private:
-    void process(const FileMapping& file);
+    void process(const QList<FileMapping>& file);
 
     QQueue<FileMapping> m_fileQueue;
     FileMapping m_currentFile;

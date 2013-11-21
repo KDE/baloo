@@ -37,10 +37,9 @@
 
 using namespace Baloo;
 
-FileIndexingJob::FileIndexingJob(Database* db, const FileMapping& file, QObject* parent)
+FileIndexingJob::FileIndexingJob(const QList<FileMapping>& files, QObject* parent)
     : KJob(parent)
-    , m_db(db)
-    , m_file(file)
+    , m_files(files)
 {
     // setup the timer used to kill the indexer process if it seems to get stuck
     m_processTimer = new QTimer(this);
@@ -51,10 +50,13 @@ FileIndexingJob::FileIndexingJob(Database* db, const FileMapping& file, QObject*
 
 void FileIndexingJob::start()
 {
+    /*
+     * FIXME: We need to check if all these files exist!
     if (!QFile::exists(m_file.url())) {
         QTimer::singleShot(0, this, SLOT(slotProcessNonExistingFile()));
         return;
     }
+    */
 
     // setup the external process which does the actual indexing
     const QString exe = KStandardDirs::findExe(QLatin1String("baloo_file_extractor"));
@@ -62,7 +64,8 @@ void FileIndexingJob::start()
     m_process = new QProcess(this);
 
     QStringList args;
-    args << m_file.url();
+    Q_FOREACH (const FileMapping& file, m_files)
+        args << file.url();
     kDebug() << args;
 
     connect(m_process, SIGNAL(finished(int, QProcess::ExitStatus)),
@@ -78,8 +81,8 @@ void FileIndexingJob::start()
 void FileIndexingJob::slotProcessNonExistingFile()
 {
     // FIXME: Maybe we want to remove it from the fileMapping as well?
-    if (m_file.id())
-        m_db->xapainDatabase()->delete_document(m_file.id());
+    // if (m_file.id())
+    //    m_db->xapainDatabase()->delete_document(m_file.id());
 
     emitResult();
 }
@@ -89,14 +92,14 @@ void FileIndexingJob::slotIndexedFile(int exitCode, QProcess::ExitStatus exitSta
     // stop the timer since there is no need to kill the process anymore
     m_processTimer->stop();
 
-    //kDebug() << "Indexing of " << m_url.toLocalFile() << "finished with exit code" << exitCode;
     if (exitStatus != QProcess::NormalExit) {
         setError(IndexerCrashed);
-        setErrorText(QLatin1String("Indexer process crashed on ") + m_file.url());
+        setErrorText(QLatin1String("Indexer process crashed on "));// + m_file.url());
     }
     else if (exitCode == 1) {
         setError(IndexerFailed);
-        setErrorText(QLatin1String("Indexer process returned with an error for ") + m_file.url());
+        //setErrorText(QLatin1String("Indexer process returned with an error for ") + m_file.url());
+        /*
         if (FileIndexerConfig::self()->isDebugModeEnabled()) {
             QFile errorLogFile(KStandardDirs::locateLocal("data", QLatin1String("nepomuk/file-indexer-error-log"), true));
             if (errorLogFile.open(QIODevice::Append)) {
@@ -104,6 +107,7 @@ void FileIndexingJob::slotIndexedFile(int exitCode, QProcess::ExitStatus exitSta
                 s << m_file.url() << ": " << QString::fromLocal8Bit(m_process->readAllStandardOutput()) << endl;
             }
         }
+        */
     }
 
     emitResult();
@@ -115,7 +119,7 @@ void FileIndexingJob::slotProcessTimerTimeout()
     m_process->kill();
     m_process->waitForFinished();
     setError(KJob::KilledJobError);
-    setErrorText(QLatin1String("Indexer process got stuck for") + m_file.url());
+    setErrorText(QLatin1String("Indexer process got stuck for"));
     emitResult();
 }
 
