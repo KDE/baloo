@@ -17,6 +17,7 @@ include_directories(
   ${KFILEMETADATA_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/file/lib
 )
 
 add_subdirectory(src)

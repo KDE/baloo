@@ -11,7 +11,6 @@ include_directories(
 set(kio_timeline_SRCS
   kio_timeline.cpp
   timelinetools.cpp
-  ../../file/filemapping.cpp
   ../../file/database.cpp
 )
 
@@ -22,6 +21,7 @@ target_link_libraries(kio_timeline
   ${XAPIAN_LIBRARIES}
   ${QT_QTSQL_LIBRARY}
   baloocore
+  baloofiles
 )
 
 install(TARGETS kio_timeline DESTINATION ${PLUGIN_INSTALL_DIR})

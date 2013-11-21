@@ -24,12 +24,12 @@
 #define FILEMAPPING_H
 
 #include <QString>
-
-class Database;
+#include <QSqlDatabase>
+#include "file_export.h"
 
 namespace Baloo {
 
-class FileMapping
+class BALOO_FILE_EXPORT FileMapping
 {
 public:
     FileMapping();
@@ -46,18 +46,19 @@ public:
     bool empty() const;
 
     void clear();
+
     /**
      * Fetch the corresponding url or Id depending on what is not
      * available.
      *
      * Returns true if fetching was successful
      */
-    bool fetch(Database* db);
+    bool fetch(QSqlDatabase db);
 
     /**
      * Creates the corresponding url <-> id mapping
      */
-    bool create(Database* db);
+    bool create(QSqlDatabase db);
 
     bool operator ==(const FileMapping& rhs) const;
 

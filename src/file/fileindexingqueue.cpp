@@ -60,7 +60,7 @@ void FileIndexingQueue::fillQueue()
     Xapian::MSetIterator it = mset.begin();
     for (; it != mset.end(); it++) {
         FileMapping file(*it);
-        if (file.fetch(m_db)) {
+        if (file.fetch(m_db->sqlDatabase())) {
             m_fileQueue << file;
         }
     }

@@ -1,6 +1,8 @@
 add_definitions(${KDE4_ENABLE_EXCEPTIONS})
 add_definitions(-DQT_NO_KEYWORDS)
 
+add_subdirectory(lib)
+
 set(file_SRCS
     # Filewatch
     filewatch.cpp
@@ -27,7 +29,6 @@ set(file_SRCS
     fileexcludefilters.cpp
     removabledeviceindexnotification.cpp
     removablemediacache.cpp
-    filemapping.cpp
 
     main.cpp
 )
@@ -53,6 +54,7 @@ target_link_libraries(baloo_file
     ${XAPIAN_LIBRARIES}
     ${QJSON_LIBRARIES}
     baloocore
+    baloofiles
 )
 
 install(TARGETS baloo_file ${INSTALL_TARGETS_DEFAULT_ARGS})

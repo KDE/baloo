@@ -163,9 +163,9 @@ void MetadataMover::updateMetadata(const QString& from, const QString& to)
     Q_ASSERT(to[to.size()-1] != '/');
 
     FileMapping fromFile(from);
-    fromFile.fetch(m_db);
+    fromFile.fetch(m_db->sqlDatabase());
 
-    if (fromFile.fetch(m_db)) {
+    if (fromFile.fetch(m_db->sqlDatabase())) {
         QSqlQuery q(m_db->sqlDatabase());
         q.prepare("update files set url = ? where id = ?");
         q.addBindValue(to);

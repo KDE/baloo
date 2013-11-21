@@ -54,7 +54,7 @@ void BasicIndexingJob::start()
 void BasicIndexingJob::doStart()
 {
     if (m_file.id() == 0) {
-        if (!m_file.create(m_db)) {
+        if (!m_file.create(m_db->sqlDatabase())) {
             setError(1);
             setErrorText("Cannot create fileMapping for" + QString::number(m_file.id()));
             emitResult();

@@ -24,7 +24,7 @@
 #include <kio/slavebase.h>
 
 #include <QtCore/QDate>
-#include "src/file/database.h"
+#include "database.h"
 
 namespace Baloo
 {

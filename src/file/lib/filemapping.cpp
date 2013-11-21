@@ -21,7 +21,6 @@
  */
 
 #include "filemapping.h"
-#include "database.h"
 
 #include <QSqlQuery>
 #include <QVariant>
@@ -81,16 +80,16 @@ bool FileMapping::fetched()
     return true;
 }
 
-bool FileMapping::fetch(Database* db)
+bool FileMapping::fetch(QSqlDatabase db)
 {
     if (fetched())
         return true;
-   
+
     if (d->id == 0 && d->url.isEmpty())
         return false;
 
     if (d->url.isEmpty()) {
-        QSqlQuery query(db->sqlDatabase());
+        QSqlQuery query(db);
         query.setForwardOnly(true);
         query.prepare(QLatin1String("select url from files where id = ?"));
         query.addBindValue(d->id);
@@ -103,7 +102,7 @@ bool FileMapping::fetch(Database* db)
         d->url = query.value(0).toString();
     }
     else {
-        QSqlQuery query(db->sqlDatabase());
+        QSqlQuery query(db);
         query.setForwardOnly(true);
         query.prepare(QLatin1String("select id from files where url = ?"));
         query.addBindValue(d->url);
@@ -119,7 +118,7 @@ bool FileMapping::fetch(Database* db)
     return true;
 }
 
-bool FileMapping::create(Database* db)
+bool FileMapping::create(QSqlDatabase db)
 {
     if (d->id)
         return false;
@@ -127,7 +126,7 @@ bool FileMapping::create(Database* db)
     if (d->url.isEmpty())
         return false;
 
-    QSqlQuery query(db->sqlDatabase());
+    QSqlQuery query(db);
     query.prepare(QLatin1String("insert into files (url) VALUES (?)"));
     query.addBindValue(d->url);
 

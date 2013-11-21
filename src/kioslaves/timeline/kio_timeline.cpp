@@ -20,7 +20,7 @@
 
 #include "kio_timeline.h"
 #include "timelinetools.h"
-#include "src/file/filemapping.h"
+#include "filemapping.h"
 
 #include <KUrl>
 #include <kio/global.h>

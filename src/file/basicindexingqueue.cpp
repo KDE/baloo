@@ -161,7 +161,7 @@ bool BasicIndexingQueue::shouldIndex(FileMapping& file, const QString& mimetype)
     if (!fileInfo.exists())
         return false;
 
-    if (!file.fetch(m_db)) {
+    if (!file.fetch(m_db->sqlDatabase())) {
         return true;
     }
 
