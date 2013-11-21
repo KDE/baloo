@@ -67,8 +67,6 @@ void FileIndexingJob::start()
 
     connect(m_process, SIGNAL(finished(int, QProcess::ExitStatus)),
             this, SLOT(slotIndexedFile(int, QProcess::ExitStatus)));
-    connect(m_process, SIGNAL(readyReadStandardOutput()),
-            this, SLOT(slotReadyReadStdOutput()));
 
     m_process->setProcessChannelMode(QProcess::SeparateChannels);
     m_process->start(exe, args);
@@ -79,60 +77,12 @@ void FileIndexingJob::start()
 
 void FileIndexingJob::slotProcessNonExistingFile()
 {
+    // FIXME: Maybe we want to remove it from the fileMapping as well?
     if (m_file.id())
         m_db->xapainDatabase()->delete_document(m_file.id());
 
     emitResult();
 }
-
-void FileIndexingJob::slotReadyReadStdOutput()
-{
-    QByteArray arr = QByteArray::fromBase64(m_process->readAll());
-    QDataStream st(&arr, QIODevice::ReadOnly);
-
-    QVariantMap map;
-    st >> map;
-
-    QJson::Serializer serializer;
-    QByteArray json = serializer.serialize(map);
-
-    m_file.fetch(m_db);
-
-    Xapian::Document doc = m_db->xapainDatabase()->get_document(m_file.id());
-    Xapian::TermGenerator termGen;
-    termGen.set_document(doc);
-    termGen.set_database(*m_db->xapainDatabase());
-
-    // Save the data for fetching later
-    doc.set_data(json.constData());
-
-    // Index the data
-    QMap<QString, QVariant>::const_iterator it = map.constBegin();
-    for (; it != map.constEnd(); it++) {
-        const QString key = it.key().toUpper();
-        const QVariant val = it.value();
-
-        if (val.type() == QVariant::Bool) {
-            doc.add_boolean_term(key.toStdString());
-        }
-        else if (val.type() == QVariant::Int) {
-            const QString term = key + val.toString();
-            doc.add_term(term.toStdString());
-        }
-        else if (val.type() == QVariant::DateTime) {
-            const QString term = key + val.toDateTime().toString(Qt::ISODate);
-            doc.add_term(term.toStdString());
-        }
-        else {
-            QString term = key;
-            if (term == "TEXT")
-                term.clear();
-
-            termGen.index_text(val.toString().toStdString(), 1, term.toStdString());
-        }
-    }
-}
-
 
 void FileIndexingJob::slotIndexedFile(int exitCode, QProcess::ExitStatus exitStatus)
 {
@@ -154,10 +104,6 @@ void FileIndexingJob::slotIndexedFile(int exitCode, QProcess::ExitStatus exitSta
                 s << m_file.url() << ": " << QString::fromLocal8Bit(m_process->readAllStandardOutput()) << endl;
             }
         }
-    }
-    else {
-        kDebug() << "UPDATING IL to 2";
-        updateIndexingLevel(m_db, m_file.id(), 2);
     }
 
     emitResult();

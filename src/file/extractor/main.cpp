@@ -21,25 +21,31 @@
 */
 
 #include "priority.h"
+#include "../database.h"
+#include "filemapping.h"
+#include "../util.h"
 
 #include <KAboutData>
 #include <KCmdLineArgs>
 #include <KLocale>
 #include <KComponentData>
 #include <KApplication>
+#include <KStandardDirs>
 
 #include <QApplication>
-#include <QtCore/QDir>
-#include <QtCore/QTextStream>
+#include <qjson/serializer.h>
 
 #include <iostream>
 #include <KDebug>
 #include <KUrl>
-#include <KJob>
 #include <KMimeType>
 
 #include <kfilemetadata/extractorpluginmanager.h>
 #include <kfilemetadata/extractorplugin.h>
+
+#include <xapian.h>
+
+using namespace Baloo;
 
 int main(int argc, char* argv[])
 {
@@ -57,7 +63,8 @@ int main(int argc, char* argv[])
     KCmdLineArgs::init(argc, argv, &aboutData);
 
     KCmdLineOptions options;
-    options.add("+[url]", ki18n("The URL of the file to be indexed"));
+    options.add("+[url]", ki18n("The URL of the files to be indexed"));
+    options.add("debug", ki18n("Print the data being indexed"));
 
     KCmdLineArgs::addCmdLineOptions(options);
     const KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
@@ -66,36 +73,84 @@ int main(int argc, char* argv[])
     QApplication app(argc, argv);
     KComponentData data(aboutData, KComponentData::RegisterAsMainComponent);
 
-    if (args->count() == 0) {
+    int argCount = args->count();
+    if (argCount == 0) {
         QTextStream err(stderr);
         err << "Must input url of the file to be indexed";
 
         return 1;
     }
 
-    const QString url = args->url(0).toLocalFile();
-    QString mimetype = KMimeType::findByUrl(args->url(0))->name();
+    // FIXME: We only need read access to the sqldb
+    Database db;
+    db.setPath(KStandardDirs::locateLocal("data", "baloo/file/"));
+    db.init();
+    db.transaction();
 
     KFileMetaData::ExtractorPluginManager m_manager;
-    QList<KFileMetaData::ExtractorPlugin*> exList = m_manager.fetchExtractors(mimetype);
+    for (int i=0; i<argCount; i++) {
+        const QString url = args->url(i).toLocalFile();
+        const QString mimetype = KMimeType::findByUrl(args->url(i))->name();
 
-    QVariantMap map;
-    Q_FOREACH (KFileMetaData::ExtractorPlugin* plugin, exList) {
-        QVariantMap data = plugin->extract(url, mimetype);
-        map.unite(data);
+        QList<KFileMetaData::ExtractorPlugin*> exList = m_manager.fetchExtractors(mimetype);
+
+        QVariantMap map;
+        Q_FOREACH (KFileMetaData::ExtractorPlugin* plugin, exList) {
+            QVariantMap data = plugin->extract(url, mimetype);
+            map.unite(data);
+        }
+
+        FileMapping file(url);
+        if (!file.fetch(db.sqlDatabase()))
+            continue;
+
+        Xapian::Document doc = db.xapainDatabase()->get_document(file.id());
+        Xapian::TermGenerator termGen;
+        termGen.set_document(doc);
+        termGen.set_database(*db.xapainDatabase());
+
+        QJson::Serializer serializer;
+        QByteArray json = serializer.serialize(map);
+
+        doc.set_data(json.constData());
+
+        QMap<QString, QVariant>::const_iterator it = map.constBegin();
+        for (; it != map.constEnd(); it++) {
+            const QString key = it.key().toUpper();
+            const QVariant val = it.value();
+
+            if (val.type() == QVariant::Bool) {
+                doc.add_boolean_term(key.toStdString());
+            }
+            else if (val.type() == QVariant::Int) {
+                const QString term = key + val.toString();
+                doc.add_term(term.toStdString());
+            }
+            else if (val.type() == QVariant::DateTime) {
+                const QString term = key + val.toDateTime().toString(Qt::ISODate);
+                doc.add_term(term.toStdString());
+            }
+            else {
+                QString term = key;
+                if (term == "TEXT")
+                    term.clear();
+
+                if (term.size())
+                    termGen.index_text(val.toString().toStdString(), 1, term.toStdString());
+                termGen.index_text(val.toString().toStdString());
+            }
+        }
+
+        db.xapainDatabase()->replace_document(file.id(), doc);
+
+        // FIXME: This results in the document being replaced twice
+        updateIndexingLevel(&db, file.id(), 2);
+
+        if (args->isSet("debug"))
+            kDebug() << map;
     }
 
-    QByteArray byteArray;
-    QDataStream st(&byteArray, QIODevice::WriteOnly);
-    st << map;
-
-    std::cout << byteArray.toBase64().constData();
-
-    /*
-    QMap<QString, QVariant>::const_iterator it = map.constBegin();
-    for (; it != map.constEnd(); it++) {
-        std::cout << it.key().toStdString() << ": " << it.value().toString().toStdString() << '\n';
-    }*/
+    db.commit();
 
     return 0;
 }

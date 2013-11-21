@@ -28,14 +28,11 @@
 
 #include "filemapping.h"
 
-class QFileInfo;
 class QTimer;
 class Database;
 
 namespace Baloo
 {
-
-class Resource;
 
 /**
  * \brief The one entry point to indexing files.
@@ -72,25 +69,10 @@ public:
         IndexerCrashed
     };
 
-Q_SIGNALS:
-    /**
-     * Emitted once the indexing for a file or resource has finished.
-     *
-     * \param url The url used in indexFile() or indexResource()
-     * \param resource The resource representing the indexed file or resource in %Nepomuk
-     */
-//        void indexingDone( const KUrl& url, const Nepomuk2::Resource& resource );
-
-    // TODO: void indexingFailed( const KUrl& url );
-    // TODO: better only have one method for success and failure.
-    // TODO: actually emit the indexingDone signal
-
 private Q_SLOTS:
     void slotIndexedFile(int exitCode, QProcess::ExitStatus exitStatus);
     void slotProcessTimerTimeout();
     void slotProcessNonExistingFile();
-
-    void slotReadyReadStdOutput();
 
 private:
     Database* m_db;
