@@ -33,7 +33,10 @@ FileIndexingQueue::FileIndexingQueue(Database* db, QObject* parent)
     : IndexingQueue(parent)
     , m_db(db)
 {
-    m_fileQueue.reserve(10);
+    m_maxSize = 120;
+    m_batchSize = 40;
+
+    m_fileQueue.reserve(m_maxSize);
 
     FileIndexerConfig* config = FileIndexerConfig::self();
     connect(config, SIGNAL(configChanged()), this, SLOT(slotConfigChanged()));
@@ -43,14 +46,13 @@ FileIndexingQueue::FileIndexingQueue(Database* db, QObject* parent)
 
 void FileIndexingQueue::fillQueue()
 {
-    // prevent abuse this API
-    if (m_fileQueue.size() > 0)
+    if (m_fileQueue.size() >= m_maxSize)
         return;
 
     Xapian::Enquire enquire(*m_db->xapainDatabase());
     enquire.set_query(Xapian::Query("Z1"));
 
-    Xapian::MSet mset = enquire.get_mset(0, 10);
+    Xapian::MSet mset = enquire.get_mset(0, m_maxSize - m_fileQueue.size());
     Xapian::MSetIterator it = mset.begin();
     for (; it != mset.end(); it++) {
         FileMapping file(*it);
@@ -75,9 +77,8 @@ bool FileIndexingQueue::isEmpty()
 
 void FileIndexingQueue::processNextIteration()
 {
-    // Take first 10
     QList<FileMapping> files;
-    for (int i=0; i<10 && m_fileQueue.size(); i++) {
+    for (int i=0; i<m_batchSize && m_fileQueue.size(); i++) {
         files << m_fileQueue.dequeue();
     }
 

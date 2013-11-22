@@ -61,6 +61,9 @@ private:
 
     QQueue<FileMapping> m_fileQueue;
     Database* m_db;
+
+    int m_maxSize;
+    int m_batchSize;
 };
 }
 
