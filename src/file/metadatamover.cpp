@@ -126,8 +126,8 @@ void MetadataMover::slotWorkUpdateQueue()
     } else {
         //kDebug() << "All update requests handled. Stopping timer.";
 
-        m_db->commit();
-        m_db->transaction();
+        m_db->sqlDatabase().commit();
+        m_db->sqlDatabase().transaction();
 
         Q_EMIT metadataUpdateStopped();
         m_queueTimer->stop();

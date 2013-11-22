@@ -85,7 +85,6 @@ void BasicIndexingJob::doStart()
     // Indexing Level 1
     doc.add_term("Z1");
 
-    m_db->xapainDatabase()->replace_document(m_file.id(), doc);
-
+    Q_EMIT newDocument(m_file.id(), doc);
     emitResult();
 }

@@ -26,6 +26,7 @@
 
 #include <KJob>
 #include <QStack>
+#include <xapian.h>
 
 class Database;
 
@@ -76,6 +77,8 @@ public:
 Q_SIGNALS:
     void beginIndexingFile(const Baloo::FileMapping& file);
     void endIndexingFile(const Baloo::FileMapping& file);
+
+    void newDocument(unsigned id, Xapian::Document doc);
 
 public Q_SLOTS:
     void enqueue(const FileMapping& file);

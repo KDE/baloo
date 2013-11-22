@@ -28,15 +28,10 @@
 #include <QSqlQuery>
 #include <QSqlError>
 
-QSqlDatabase fileDataDb()
-{
-    return QSqlDatabase();
-}
-
 QSqlDatabase fileMappingDb()
 {
     QSqlDatabase sqlDb = QSqlDatabase::addDatabase("QSQLITE3");
-    const QString path = KStandardDirs::locateLocal("data", "baloo/fileMapping.sqlite3");
+    const QString path = KStandardDirs::locateLocal("data", "baloo/file/fileMapping.sqlite3");
     sqlDb.setDatabaseName(path);
 
     if (!sqlDb.open()) {

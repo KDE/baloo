@@ -24,6 +24,7 @@
 #include "fileindexerconfig.h"
 #include "fileindexingqueue.h"
 #include "basicindexingqueue.h"
+#include "commitqueue.h"
 #include "eventmonitor.h"
 #include "indexcleaner.h"
 #include "database.h"
@@ -72,23 +73,10 @@ IndexScheduler::IndexScheduler(Database* db, QObject* parent)
 
     m_basicIQ = new BasicIndexingQueue(m_db, this);
     m_fileIQ = new FileIndexingQueue(m_db, this);
+    m_fileIQ->suspend();
 
     connect(m_basicIQ, SIGNAL(finishedIndexing()), this, SIGNAL(basicIndexingDone()));
     connect(m_fileIQ, SIGNAL(finishedIndexing()), this, SIGNAL(fileIndexingDone()));
-
-    connect(m_basicIQ, SIGNAL(beginIndexingFile(Baloo::FileMapping)),
-            this, SLOT(slotBeginIndexingFile(Baloo::FileMapping)));
-    connect(m_basicIQ, SIGNAL(endIndexingFile(Baloo::FileMapping)),
-            this, SLOT(slotEndIndexingFile(Baloo::FileMapping)));
-    connect(m_basicIQ, SIGNAL(endIndexingFile(Baloo::FileMapping)),
-            this, SLOT(slotEndBasicIndexingFile()));
-
-    /*
-    connect(m_fileIQ, SIGNAL(beginIndexingFile(Baloo::FileMapping)),
-            this, SLOT(slotBeginIndexingFile(Baloo::FileMapping)));
-    connect(m_fileIQ, SIGNAL(endIndexingFile(Baloo::FileMapping)),
-            this, SLOT(slotEndIndexingFile(Baloo::FileMapping)));
-    */
 
     connect(m_basicIQ, SIGNAL(startedIndexing()), this, SLOT(slotStartedIndexing()));
     connect(m_basicIQ, SIGNAL(finishedIndexing()), this, SLOT(slotFinishedIndexing()));
@@ -117,17 +105,20 @@ IndexScheduler::IndexScheduler(Database* db, QObject* parent)
     m_cleaner = new IndexCleaner(this);
     connect(m_cleaner, SIGNAL(finished(KJob*)), this, SLOT(slotCleaningDone()));
 
+    m_commitQ = new CommitQueue(m_db, this);
+    connect(m_commitQ, SIGNAL(committed()), this, SLOT(slotCommitted()));
+    connect(m_basicIQ, SIGNAL(newDocument(uint,Xapian::Document)),
+            m_commitQ, SLOT(add(uint,Xapian::Document)));
+    connect(m_fileIQ, SIGNAL(deleteDocument(uint)),
+            m_commitQ, SLOT(remove(uint)));
+
     m_state = State_Normal;
     slotScheduleIndexing();
-
-    m_commitTimer.setSingleShot(true);
-    connect(&m_commitTimer, SIGNAL(timeout()), this, SLOT(slotCommitTimerElapsed()));
 }
 
 
 IndexScheduler::~IndexScheduler()
 {
-    m_db->commit();
 }
 
 
@@ -180,10 +171,7 @@ bool IndexScheduler::isIndexing() const
 
 QString IndexScheduler::currentUrl() const
 {
-    if (!m_fileIQ->currentUrl().isEmpty())
-        return m_fileIQ->currentUrl();
-    else
-        return m_basicIQ->currentUrl();
+    return m_basicIQ->currentUrl();
 }
 
 UpdateDirFlags IndexScheduler::currentFlags() const
@@ -207,11 +195,18 @@ void IndexScheduler::setIndexingStarted(bool started)
 void IndexScheduler::slotStartedIndexing()
 {
     m_eventMonitor->enable();
+    setIndexingStarted(true);
 }
 
 void IndexScheduler::slotFinishedIndexing()
 {
-    m_eventMonitor->suspendDiskSpaceMonitor();
+    if (m_basicIQ->isEmpty() && m_fileIQ->isEmpty()) {
+        m_eventMonitor->suspendDiskSpaceMonitor();
+        setIndexingStarted(false);
+    }
+
+    if (m_basicIQ->isEmpty())
+        m_fileIQ->resume();
 }
 
 void IndexScheduler::slotCleaningDone()
@@ -225,6 +220,7 @@ void IndexScheduler::slotCleaningDone()
 void IndexScheduler::updateDir(const QString& path, UpdateDirFlags flags)
 {
     m_basicIQ->enqueue(FileMapping(path), flags);
+    slotScheduleIndexing();
 }
 
 
@@ -246,6 +242,9 @@ void IndexScheduler::queueAllFoldersForUpdate(bool forceUpdate)
     Q_FOREACH (const QString& f, FileIndexerConfig::self()->includeFolders()) {
         m_basicIQ->enqueue(FileMapping(f), flags);
     }
+
+    // Required to switch off the FileIQ
+    slotScheduleIndexing();
 }
 
 
@@ -262,6 +261,7 @@ void IndexScheduler::slotIncludeFolderListChanged(const QStringList& added, cons
     Q_FOREACH(const QString& path, added) {
         m_basicIQ->enqueue(FileMapping(path), UpdateRecursive);
     }
+    slotScheduleIndexing();
 }
 
 void IndexScheduler::slotExcludeFolderListChanged(const QStringList& added, const QStringList& removed)
@@ -312,63 +312,7 @@ void IndexScheduler::analyzeFile(const QString& path)
     m_basicIQ->enqueue(FileMapping(path));
 }
 
-
-void IndexScheduler::slotBeginIndexingFile(const FileMapping&)
-{
-    setIndexingStarted(true);
-}
-
-void IndexScheduler::slotEndIndexingFile(const FileMapping&)
-{
-    const QString basicUrl = m_basicIQ->currentUrl();
-    const QString fileUrl = m_fileIQ->currentUrl();
-
-    if (basicUrl.isEmpty() && fileUrl.isEmpty()) {
-        setIndexingStarted(false);
-    }
-}
-
-void IndexScheduler::slotEndBasicIndexingFile()
-{
-    m_basicIQ->setDelay(0);
-    m_fileIQ->setDelay(0);
-
-    if (!m_commitTimer.isActive()) {
-        m_commitTimer.start(100);
-    }
-}
-
-
-void IndexScheduler::slotCommitTimerElapsed()
-{
-    bool commit = false;
-
-    if (m_state != State_Normal) {
-        commit = true;
-    }
-    else {
-        int interval = m_commitTimer.interval();
-        if (interval <= 100) {
-            m_commitTimer.start(1000);
-        }
-        else if (interval <= 1000) {
-            m_commitTimer.start(3000);
-        }
-        else if (interval <= 3000) {
-            m_commitTimer.start(5000);
-        }
-        else {
-            commit = true;
-        }
-    }
-
-    if (commit) {
-        m_db->commit();
-        m_db->transaction();
-    }
-}
-
-
+/*
 void IndexScheduler::slotTeardownRequested(const RemovableMediaCache::Entry* entry)
 {
     const QString path = entry->mountPath();
@@ -376,6 +320,7 @@ void IndexScheduler::slotTeardownRequested(const RemovableMediaCache::Entry* ent
     m_basicIQ->clear(path);
     m_fileIQ->clear(path);
 }
+*/
 
 void IndexScheduler::slotScheduleIndexing()
 {
@@ -425,9 +370,6 @@ void IndexScheduler::slotScheduleIndexing()
             m_state = State_UserIdle;
             m_basicIQ->setDelay(0);
             m_basicIQ->resume();
-
-            m_fileIQ->setDelay(0);
-            m_fileIQ->resume();
         }
     }
 
@@ -438,9 +380,13 @@ void IndexScheduler::slotScheduleIndexing()
         m_basicIQ->setDelay(0);
         m_basicIQ->resume();
 
-        m_fileIQ->setDelay(3000);
-        m_fileIQ->resume();
     }
+
+    // The FileIQ should never run when the BasicIQ is still running
+    if (m_basicIQ->isEmpty())
+        m_fileIQ->resume();
+    else
+        m_fileIQ->suspend();
 }
 
 QString IndexScheduler::userStatusString() const
@@ -474,5 +420,12 @@ void IndexScheduler::emitStatusStringChanged()
     if (status != m_oldStatus) {
         Q_EMIT statusStringChanged();
         m_oldStatus = status;
+    }
+}
+
+void IndexScheduler::slotCommitted()
+{
+    if (m_basicIQ->isEmpty()) {
+        m_fileIQ->resume();
     }
 }

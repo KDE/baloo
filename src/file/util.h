@@ -21,13 +21,12 @@
 #define _NEPOMUK_FILEINDEXER_UTIL_H_
 
 #include <KUrl>
-
-class Database;
+#include <xapian.h>
 
 namespace Baloo
 {
 
-void updateIndexingLevel(Database* db, int fileId, int level);
+void updateIndexingLevel(Xapian::WritableDatabase db, int fileId, int level);
 
 }
 #endif

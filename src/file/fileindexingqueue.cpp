@@ -39,17 +39,11 @@ FileIndexingQueue::FileIndexingQueue(Database* db, QObject* parent)
     connect(config, SIGNAL(configChanged()), this, SLOT(slotConfigChanged()));
 }
 
-void FileIndexingQueue::start()
-{
-    fillQueue();
-    Q_EMIT startedIndexing();
-
-    callForNextIteration();
-}
+// FIXME: We are not emiting startedIndexing!
 
 void FileIndexingQueue::fillQueue()
 {
-    /* prevent abuse this API */
+    // prevent abuse this API
     if (m_fileQueue.size() > 0)
         return;
 
@@ -92,12 +86,11 @@ void FileIndexingQueue::processNextIteration()
 
 void FileIndexingQueue::process(const QList<FileMapping>& files)
 {
-    //m_currentFile = files;
+    FileIndexingJob* job = new FileIndexingJob(files, this);
+    connect(job, SIGNAL(deleteDocument(uint)), SIGNAL(deleteDocument(uint)));
+    connect(job, SIGNAL(finished(KJob*)), SLOT(slotFinishedIndexingFile(KJob*)));
 
-    KJob* job = new FileIndexingJob(files, this);
     job->start();
-    //Q_EMIT beginIndexingFile(files);
-    connect(job, SIGNAL(finished(KJob*)), this, SLOT(slotFinishedIndexingFile(KJob*)));
 }
 
 void FileIndexingQueue::slotFinishedIndexingFile(KJob* job)
@@ -108,10 +101,8 @@ void FileIndexingQueue::slotFinishedIndexingFile(KJob* job)
         // updateIndexingLevel(m_db, m_currentFile.id(), 0);
     }
 
-    FileMapping file = m_currentFile;
-    m_currentFile.clear();
-    Q_EMIT endIndexingFile(file);
-
+    // The process would have modified the db
+    m_db->xapainDatabase()->reopen();
     if (m_fileQueue.isEmpty()) {
         fillQueue();
     }
@@ -120,7 +111,6 @@ void FileIndexingQueue::slotFinishedIndexingFile(KJob* job)
 
 void FileIndexingQueue::clear()
 {
-    m_currentFile.clear();
     m_fileQueue.clear();
 }
 
@@ -131,12 +121,6 @@ void FileIndexingQueue::clear(const QString& path)
         if (it.next().url().startsWith(path))
             it.remove();
     }
-}
-
-
-QString FileIndexingQueue::currentUrl()
-{
-    return m_currentFile.url();
 }
 
 void FileIndexingQueue::slotConfigChanged()

@@ -33,6 +33,7 @@ namespace Baloo
 
 class IndexCleaner;
 class FileIndexingQueue;
+class CommitQueue;
 class EventMonitor;
 
 /**
@@ -150,20 +151,16 @@ private Q_SLOTS:
 
     void slotCleaningDone();
 
-    void slotBeginIndexingFile(const Baloo::FileMapping& file);
-    void slotEndIndexingFile(const Baloo::FileMapping& file);
-    void slotEndBasicIndexingFile();
-
     void slotStartedIndexing();
     void slotFinishedIndexing();
 
     // Event Monitor integration
     void slotScheduleIndexing();
 
-    void slotTeardownRequested(const RemovableMediaCache::Entry* entry);
+    //void slotTeardownRequested(const RemovableMediaCache::Entry* entry);
     void emitStatusStringChanged();
 
-    void slotCommitTimerElapsed();
+    void slotCommitted();
 
 private:
     void queueAllFoldersForUpdate(bool forceUpdate = false);
@@ -181,7 +178,7 @@ private:
     // Queues
     BasicIndexingQueue* m_basicIQ;
     FileIndexingQueue* m_fileIQ;
-    QTimer m_commitTimer;
+    CommitQueue* m_commitQ;
 
     EventMonitor* m_eventMonitor;
 

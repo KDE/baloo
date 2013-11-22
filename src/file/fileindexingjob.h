@@ -54,10 +54,12 @@ public:
 
     QList<FileMapping> files() const { return m_files; }
 
+Q_SIGNALS:
+    void deleteDocument(unsigned docid);
+
 private Q_SLOTS:
     void slotIndexedFile(int exitCode, QProcess::ExitStatus exitStatus);
     void slotProcessTimerTimeout();
-    void slotProcessNonExistingFile();
 
 private:
     QList<FileMapping> m_files;

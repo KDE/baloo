@@ -81,11 +81,23 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    // FIXME: We only need read access to the sqldb
-    Database db;
-    db.setPath(KStandardDirs::locateLocal("data", "baloo/file/"));
-    db.init();
-    db.transaction();
+    // FIXME: What if the fileMapping does not exist?
+    // FIXME: We do not need the readonly db
+    QString path = KStandardDirs::locateLocal("data", "baloo/file");
+
+    Database bigDb;
+    bigDb.setPath(path);
+    bigDb.init();
+    QSqlDatabase& sqlDb = bigDb.sqlDatabase();
+
+    Xapian::WritableDatabase db;
+    try {
+        db = Xapian::WritableDatabase(path.toStdString(), Xapian::DB_CREATE_OR_OPEN);
+    }
+    catch (const Xapian::DatabaseLockError& err) {
+        kError() << err.get_error_string();
+        return 1;
+    }
 
     KFileMetaData::ExtractorPluginManager m_manager;
     for (int i=0; i<argCount; i++) {
@@ -101,13 +113,13 @@ int main(int argc, char* argv[])
         }
 
         FileMapping file(url);
-        if (!file.fetch(db.sqlDatabase()))
+        if (!file.fetch(sqlDb))
             continue;
 
-        Xapian::Document doc = db.xapainDatabase()->get_document(file.id());
+        Xapian::Document doc = db.get_document(file.id());
         Xapian::TermGenerator termGen;
         termGen.set_document(doc);
-        termGen.set_database(*db.xapainDatabase());
+        termGen.set_database(db);
 
         QJson::Serializer serializer;
         QByteArray json = serializer.serialize(map);
@@ -141,10 +153,8 @@ int main(int argc, char* argv[])
             }
         }
 
-        db.xapainDatabase()->replace_document(file.id(), doc);
-
-        // FIXME: This results in the document being replaced twice
-        updateIndexingLevel(&db, file.id(), 2);
+        db.replace_document(file.id(), doc);
+        updateIndexingLevel(db, file.id(), 2);
 
         if (args->isSet("debug"))
             kDebug() << map;

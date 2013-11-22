@@ -47,7 +47,9 @@ bool Database::init()
     if (m_initialized)
         return true;
 
-    m_xapianDb = new Xapian::WritableDatabase(m_path.toStdString(), Xapian::DB_CREATE_OR_OPEN);
+    // Create the Xapian DB
+    Xapian::WritableDatabase(m_path.toStdString(), Xapian::DB_CREATE_OR_OPEN);
+    m_xapianDb = new Xapian::Database(m_path.toStdString());
 
     m_sqlDb = QSqlDatabase::addDatabase("QSQLITE3");
     m_sqlDb.setDatabaseName(m_path + "/fileMap.sqlite3");
@@ -103,20 +105,8 @@ QSqlDatabase& Database::sqlDatabase()
     return m_sqlDb;
 }
 
-Xapian::WritableDatabase* Database::xapainDatabase()
+Xapian::Database* Database::xapainDatabase()
 {
     return m_xapianDb;
 }
-
-void Database::transaction()
-{
-    m_sqlDb.transaction();
-}
-
-void Database::commit()
-{
-    m_sqlDb.commit();
-    m_xapianDb->commit();
-}
-
 

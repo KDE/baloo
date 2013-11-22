@@ -50,13 +50,27 @@ FileIndexingJob::FileIndexingJob(const QList<FileMapping>& files, QObject* paren
 
 void FileIndexingJob::start()
 {
-    /*
-     * FIXME: We need to check if all these files exist!
-    if (!QFile::exists(m_file.url())) {
-        QTimer::singleShot(0, this, SLOT(slotProcessNonExistingFile()));
+    //
+    // Remove files which do not exist
+    //
+    QMutableListIterator<FileMapping> it(m_files);
+    while (it.hasNext()) {
+        const FileMapping file = it.next();
+        if (file.url().isEmpty()) {
+            it.remove();
+        }
+
+        else if (!QFile::exists(file.url())) {
+            kDebug() << file.url() << "does not exist";
+            Q_EMIT deleteDocument(file.id());
+            it.remove();
+        }
+    }
+
+    if (m_files.isEmpty()) {
+        emitResult();
         return;
     }
-    */
 
     // setup the external process which does the actual indexing
     const QString exe = KStandardDirs::findExe(QLatin1String("baloo_file_extractor"));
@@ -76,15 +90,6 @@ void FileIndexingJob::start()
 
     // start the timer which will kill the process if it does not terminate after 5 minutes
     m_processTimer->start(5 * 60 * 1000);
-}
-
-void FileIndexingJob::slotProcessNonExistingFile()
-{
-    // FIXME: Maybe we want to remove it from the fileMapping as well?
-    // if (m_file.id())
-    //    m_db->xapainDatabase()->delete_document(m_file.id());
-
-    emitResult();
 }
 
 void FileIndexingJob::slotIndexedFile(int exitCode, QProcess::ExitStatus exitStatus)

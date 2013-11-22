@@ -25,6 +25,7 @@
 
 #include <KJob>
 #include "filemapping.h"
+#include <xapian.h>
 
 class Database;
 
@@ -39,6 +40,9 @@ public:
     ~BasicIndexingJob();
 
     virtual void start();
+
+Q_SIGNALS:
+    void newDocument(unsigned id, Xapian::Document doc);
 
 private Q_SLOTS:
     void doStart();

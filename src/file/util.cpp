@@ -18,12 +18,12 @@
 */
 
 #include "util.h"
-#include "database.h"
+#include <xapian.h>
 
-void Baloo::updateIndexingLevel(Database* db, int fileId, int level)
+void Baloo::updateIndexingLevel(Xapian::WritableDatabase db, int fileId, int level)
 {
     try {
-        Xapian::Document doc = db->xapainDatabase()->get_document(fileId);
+        Xapian::Document doc = db.get_document(fileId);
         Xapian::TermIterator it = doc.termlist_begin();
         it.skip_to("Z");
 
@@ -37,7 +37,7 @@ void Baloo::updateIndexingLevel(Database* db, int fileId, int level)
         const QString term = QLatin1Char('Z') + QString::number(level);
         doc.add_term(term.toStdString());
 
-        db->xapainDatabase()->replace_document(fileId, doc);
+        db.replace_document(fileId, doc);
     }
     catch (const Xapian::DocNotFoundError&) {
         return;

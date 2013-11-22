@@ -41,17 +41,14 @@ public:
     bool isInitialized();
 
     QSqlDatabase& sqlDatabase();
-    Xapian::WritableDatabase* xapainDatabase();
-
-    void transaction();
-    void commit();
+    Xapian::Database* xapainDatabase();
 
 private:
     QString m_path;
     QString m_connectionName;
     bool m_initialized;
 
-    Xapian::WritableDatabase* m_xapianDb;
+    Xapian::Database* m_xapianDb;
     QSqlDatabase m_sqlDb;
 };
 

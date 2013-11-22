@@ -42,18 +42,12 @@ public:
 
     void clear();
     void clear(const QString& path);
-    QString currentUrl();
 
 public Q_SLOTS:
-    /**
-     * Fills up the queue and starts the indexing
-     */
-    void start();
-
     void enqueue(const Baloo::FileMapping& file);
+
 Q_SIGNALS:
-    void beginIndexingFile(const Baloo::FileMapping& file);
-    void endIndexingFile(const Baloo::FileMapping& file);
+    void deleteDocument(unsigned docid);
 
 protected:
     virtual void processNextIteration();
@@ -66,7 +60,6 @@ private:
     void process(const QList<FileMapping>& file);
 
     QQueue<FileMapping> m_fileQueue;
-    FileMapping m_currentFile;
     Database* m_db;
 };
 }

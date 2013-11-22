@@ -42,7 +42,7 @@ int main(int argc, char** argv) {
     Database db;
     db.setPath(KStandardDirs::locateLocal("data", "baloo/file/"));
     db.init();
-    db.transaction();
+    db.sqlDatabase().transaction();
 
     Baloo::FileWatch filewatcher(&db, &app);
     Baloo::FileIndexer fileIndexer(&db, &app);

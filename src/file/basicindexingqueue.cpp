@@ -193,11 +193,13 @@ bool BasicIndexingQueue::shouldIndexContents(const QString& dir)
 
 void BasicIndexingQueue::index(const FileMapping& file)
 {
-    kDebug() << file.url();
+    kDebug() << file.id() << file.url();
     Q_EMIT beginIndexingFile(file);
 
-    KJob* job = new Baloo::BasicIndexingJob(m_db, file, m_currentMimeType);
+    BasicIndexingJob* job = new Baloo::BasicIndexingJob(m_db, file, m_currentMimeType);
     connect(job, SIGNAL(finished(KJob*)), this, SLOT(slotIndexingFinished(KJob*)));
+    connect(job, SIGNAL(newDocument(unsigned,Xapian::Document)),
+            this, SIGNAL(newDocument(unsigned,Xapian::Document)));
 
     job->start();
 }

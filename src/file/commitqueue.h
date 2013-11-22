@@ -20,16 +20,48 @@
  *
  */
 
-#ifndef DBFUNCTIONS_H
-#define DBFUNCTIONS_H
+#ifndef COMMITQUEUE_H
+#define COMMITQUEUE_H
 
-#include <QSqlDatabase>
-#include <KStandardDirs>
+#include <QObject>
+#include <QTimer>
+#include <QVector>
+#include <QPair>
+#include <xapian.h>
 
-inline QString fileIndexDbPath() {
-    return KStandardDirs::locateLocal("data", "baloo/file/");
+class Database;
+
+namespace Baloo {
+
+class CommitQueue : public QObject
+{
+    Q_OBJECT
+public:
+    CommitQueue(Database* db, QObject* parent = 0);
+    ~CommitQueue();
+
+public Q_SLOTS:
+    void add(unsigned id, Xapian::Document doc);
+    void remove(unsigned docid);
+
+    void commit();
+
+Q_SIGNALS:
+    void committed();
+
+private:
+    void startTimers();
+
+    typedef QPair<Xapian::docid, Xapian::Document> DocIdPair;
+    QVector<DocIdPair> m_docsToAdd;
+
+    QVector<Xapian::docid> m_docsToRemove;
+
+    QTimer m_smallTimer;
+    QTimer m_largeTimer;
+    Database* m_db;
+};
+
 }
 
-QSqlDatabase fileMappingDb();
-
-#endif // DBFUNCTIONS_H
+#endif // COMMITQUEUE_H
