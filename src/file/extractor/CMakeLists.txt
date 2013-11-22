@@ -1,6 +1,7 @@
 set(EXTRACTOR_SRCS
   main.cpp
   priority.cpp
+  result.cpp
   ../database.cpp
   ../util.cpp
 )
@@ -11,7 +12,7 @@ target_link_libraries(baloo_file_extractor
   ${QT_QTSQL_LIBRARY}
   ${KDE4_KDECORE_LIBS}
   ${KDE4_KDEUI_LIBS}
-  ${KFILEMETADATA_LIBRARIES}
+  ${KFILEMETADATA_LIBRARY}
   ${XAPIAN_LIBRARIES}
   ${QJSON_LIBRARIES}
   baloofiles

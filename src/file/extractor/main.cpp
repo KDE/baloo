@@ -23,6 +23,7 @@
 #include "priority.h"
 #include "../database.h"
 #include "filemapping.h"
+#include "result.h"
 #include "../util.h"
 
 #include <KAboutData>
@@ -83,7 +84,6 @@ int main(int argc, char* argv[])
     }
 
     // FIXME: What if the fileMapping does not exist?
-    // FIXME: We do not need the readonly db
     QString path = KStandardDirs::locateLocal("data", "baloo/file");
 
     Database bigDb;
@@ -91,79 +91,45 @@ int main(int argc, char* argv[])
     bigDb.init();
     QSqlDatabase& sqlDb = bigDb.sqlDatabase();
 
-    typedef QPair<uint, Xapian::Document> DocIdPair;
-    QVector<DocIdPair> documents;
-    documents.reserve(argCount);
+    QVector<Result> results;
+    results.resize(argCount);
 
     KFileMetaData::ExtractorPluginManager m_manager;
     for (int i=0; i<argCount; i++) {
         const QString url = args->url(i).toLocalFile();
         const QString mimetype = KMimeType::findByUrl(args->url(i))->name();
 
-        QList<KFileMetaData::ExtractorPlugin*> exList = m_manager.fetchExtractors(mimetype);
-
-        QVariantMap map;
-        Q_FOREACH (KFileMetaData::ExtractorPlugin* plugin, exList) {
-            QVariantMap data = plugin->extract(url, mimetype);
-            map.unite(data);
-        }
-
         FileMapping file(url);
         if (!file.fetch(sqlDb))
             continue;
 
         Xapian::Document doc = bigDb.xapainDatabase()->get_document(file.id());
-        Xapian::TermGenerator termGen;
-        termGen.set_document(doc);
 
-        QJson::Serializer serializer;
-        QByteArray json = serializer.serialize(map);
+        Result& result = results[i];
+        result.setInputUrl(url);
+        result.setInputMimetype(mimetype);
+        result.setId(file.id());
+        result.setDocument(doc);
 
-        doc.set_data(json.constData());
+        QList<KFileMetaData::ExtractorPlugin*> exList = m_manager.fetchExtractors(mimetype);
 
-        QMap<QString, QVariant>::const_iterator it = map.constBegin();
-        for (; it != map.constEnd(); it++) {
-            const QString key = it.key().toUpper();
-            const QVariant val = it.value();
-
-            if (val.type() == QVariant::Bool) {
-                doc.add_boolean_term(key.toStdString());
-            }
-            else if (val.type() == QVariant::Int) {
-                const QString term = key + val.toString();
-                doc.add_term(term.toStdString());
-            }
-            else if (val.type() == QVariant::DateTime) {
-                const QString term = key + val.toDateTime().toString(Qt::ISODate);
-                doc.add_term(term.toStdString());
-            }
-            else {
-                QString term = key;
-                if (term == "TEXT")
-                    term.clear();
-
-                if (term.size())
-                    termGen.index_text(val.toString().toStdString(), 1, term.toStdString());
-                termGen.index_text(val.toString().toStdString());
-            }
+        Q_FOREACH (KFileMetaData::ExtractorPlugin* plugin, exList) {
+            plugin->extract(&result);
         }
-
-        documents << qMakePair(file.id(), doc);
-
-        if (args->isSet("debug"))
-            kDebug() << map;
     }
 
     try {
         Xapian::WritableDatabase db = Xapian::WritableDatabase(path.toStdString(), Xapian::DB_CREATE_OR_OPEN);
-        Q_FOREACH (const DocIdPair& pair, documents) {
-            uint id = pair.first;
-            db.replace_document(id, pair.second);
-            updateIndexingLevel(db, id, 2);
+        for (int i = 0; i<results.size(); i++) {
+            Result& res = results[i];
+            res.save(db);
+
+            updateIndexingLevel(db, res.id(), 2);
         }
         db.commit();
     }
     catch (const Xapian::DatabaseLockError& err) {
+        // FIXME: Try again after 10 msecs!
         kError() << err.get_error_string();
         return 1;
     }
