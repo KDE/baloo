@@ -33,6 +33,7 @@
 #include <KStandardDirs>
 
 #include <QApplication>
+#include <QPair>
 #include <qjson/serializer.h>
 
 #include <iostream>
@@ -90,14 +91,9 @@ int main(int argc, char* argv[])
     bigDb.init();
     QSqlDatabase& sqlDb = bigDb.sqlDatabase();
 
-    Xapian::WritableDatabase db;
-    try {
-        db = Xapian::WritableDatabase(path.toStdString(), Xapian::DB_CREATE_OR_OPEN);
-    }
-    catch (const Xapian::DatabaseLockError& err) {
-        kError() << err.get_error_string();
-        return 1;
-    }
+    typedef QPair<uint, Xapian::Document> DocIdPair;
+    QVector<DocIdPair> documents;
+    documents.reserve(argCount);
 
     KFileMetaData::ExtractorPluginManager m_manager;
     for (int i=0; i<argCount; i++) {
@@ -116,10 +112,9 @@ int main(int argc, char* argv[])
         if (!file.fetch(sqlDb))
             continue;
 
-        Xapian::Document doc = db.get_document(file.id());
+        Xapian::Document doc = bigDb.xapainDatabase()->get_document(file.id());
         Xapian::TermGenerator termGen;
         termGen.set_document(doc);
-        termGen.set_database(db);
 
         QJson::Serializer serializer;
         QByteArray json = serializer.serialize(map);
@@ -153,14 +148,25 @@ int main(int argc, char* argv[])
             }
         }
 
-        db.replace_document(file.id(), doc);
-        updateIndexingLevel(db, file.id(), 2);
+        documents << qMakePair<uint, Xapian::Document>(file.id(), doc);
 
         if (args->isSet("debug"))
             kDebug() << map;
     }
 
-    db.commit();
+    try {
+        Xapian::WritableDatabase db = Xapian::WritableDatabase(path.toStdString(), Xapian::DB_CREATE_OR_OPEN);
+        Q_FOREACH (const DocIdPair& pair, documents) {
+            uint id = pair.first;
+            db.replace_document(id, pair.second);
+            updateIndexingLevel(db, id, 2);
+        }
+        db.commit();
+    }
+    catch (const Xapian::DatabaseLockError& err) {
+        kError() << err.get_error_string();
+        return 1;
+    }
 
     return 0;
 }

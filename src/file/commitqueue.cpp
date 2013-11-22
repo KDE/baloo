@@ -72,20 +72,26 @@ void Baloo::CommitQueue::commit()
     m_db->sqlDatabase().transaction();
 
     const std::string path = m_db->path().toStdString();
-    Xapian::WritableDatabase db(path, Xapian::DB_CREATE_OR_OPEN);
+    try {
+        Xapian::WritableDatabase db(path, Xapian::DB_CREATE_OR_OPEN);
 
-    Q_FOREACH (const DocIdPair& doc, m_docsToAdd) {
-        db.replace_document(doc.first, doc.second);
+        Q_FOREACH (const DocIdPair& doc, m_docsToAdd) {
+            db.replace_document(doc.first, doc.second);
+        }
+        m_docsToAdd.clear();
+
+        Q_FOREACH (Xapian::docid id, m_docsToRemove) {
+            db.delete_document(id);
+        }
+        m_docsToRemove.clear();
+
+        db.commit();
+        m_db->xapainDatabase()->reopen();
+
+        Q_EMIT committed();
     }
-    m_docsToAdd.clear();
-
-    Q_FOREACH (Xapian::docid id, m_docsToRemove) {
-        db.delete_document(id);
+    catch (const Xapian::DatabaseLockError& err) {
+        kError() << err.get_error_string();
+        startTimers();
     }
-    m_docsToRemove.clear();
-
-    db.commit();
-    m_db->xapainDatabase()->reopen();
-
-    Q_EMIT committed();
 }
