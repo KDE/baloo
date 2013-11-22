@@ -32,7 +32,7 @@ public:
     Private() : id(0) {}
 
     QString url;
-    int id;
+    uint id;
 };
 
 FileMapping::FileMapping()
@@ -46,13 +46,13 @@ FileMapping::FileMapping(const QString& url)
     d->url = url;
 }
 
-FileMapping::FileMapping(int id)
+FileMapping::FileMapping(uint id)
     : d(new Private)
 {
     d->id = id;
 }
 
-int FileMapping::id() const
+uint FileMapping::id() const
 {
     return d->id;
 }
@@ -62,7 +62,7 @@ QString FileMapping::url() const
     return d->url;
 }
 
-void FileMapping::setId(int id)
+void FileMapping::setId(uint id)
 {
     d->id = id;
 }
@@ -112,7 +112,7 @@ bool FileMapping::fetch(QSqlDatabase db)
             return false;
         }
 
-        d->id = query.value(0).toInt();
+        d->id = query.value(0).toUInt();
     }
 
     return true;
@@ -134,7 +134,7 @@ bool FileMapping::create(QSqlDatabase db)
         return false;
     }
 
-    d->id = query.lastInsertId().toInt();
+    d->id = query.lastInsertId().toUInt();
     return true;
 }
 

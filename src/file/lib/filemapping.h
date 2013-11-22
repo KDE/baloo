@@ -34,13 +34,13 @@ class BALOO_FILE_EXPORT FileMapping
 public:
     FileMapping();
     explicit FileMapping(const QString& url);
-    explicit FileMapping(int id);
+    explicit FileMapping(uint id);
 
-    int id() const;
+    uint id() const;
     QString url() const;
 
     void setUrl(const QString& url);
-    void setId(int id);
+    void setId(uint id);
 
     bool fetched();
     bool empty() const;

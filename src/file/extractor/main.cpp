@@ -148,7 +148,7 @@ int main(int argc, char* argv[])
             }
         }
 
-        documents << qMakePair<uint, Xapian::Document>(file.id(), doc);
+        documents << qMakePair(file.id(), doc);
 
         if (args->isSet("debug"))
             kDebug() << map;
