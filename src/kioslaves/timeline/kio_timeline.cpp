@@ -169,7 +169,7 @@ void TimelineProtocol::listDir(const KUrl& url)
         Xapian::MSetIterator it = mset.begin();
         for (; it != mset.end(); it++) {
             Baloo::FileMapping file(*it);
-            if (!file.fetch(m_db))
+            if (!file.fetch(m_db->sqlDatabase()))
                 continue;
 
             KIO::UDSEntry uds = createFileUDSEntry(file.url());
