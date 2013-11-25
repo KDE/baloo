@@ -35,6 +35,7 @@ class BALOO_TAG_EXPORT TagRelationRemoveJob : public RelationRemoveJob
     Q_OBJECT
 public:
     TagRelationRemoveJob(const TagRelation& tagRelation, QObject* parent = 0);
+    TagRelationRemoveJob(const QList<TagRelation>& tagRelations, QObject* parent = 0);
     ~TagRelationRemoveJob();
 
     virtual void start();

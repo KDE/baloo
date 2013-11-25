@@ -39,14 +39,21 @@ using namespace Baloo;
 
 class TagRelationRemoveJob::Private {
 public:
-    TagRelation relation;
+    QList<TagRelation> relations;
 };
 
 TagRelationRemoveJob::TagRelationRemoveJob(const TagRelation& tagRelation, QObject* parent)
     : RelationRemoveJob(parent)
     , d(new Private)
 {
-    d->relation = tagRelation;
+    d->relations << tagRelation;
+}
+
+TagRelationRemoveJob::TagRelationRemoveJob(const QList<TagRelation>& tagRelations, QObject* parent)
+    : RelationRemoveJob(parent)
+    , d(new Private)
+{
+    d->relations = tagRelations;
 }
 
 TagRelationRemoveJob::~TagRelationRemoveJob()
@@ -61,53 +68,56 @@ void TagRelationRemoveJob::start()
 
 void TagRelationRemoveJob::doStart()
 {
-    if (d->relation.item().id().isEmpty() || d->relation.tag().id().isEmpty()) {
-        setError(Error_EmptyIds);
-        setErrorText("The Item or Tag id is empty");
-        emitResult();
-        return;
+    Q_FOREACH (const TagRelation& rel, d->relations) {
+        if (rel.item().id().isEmpty() || rel.tag().id().isEmpty()) {
+            setError(Error_EmptyIds);
+            setErrorText("The Item or Tag id is empty");
+            emitResult();
+            return;
+        }
+
+        int id = deserialize("tag", rel.tag().id());
+        if (id <= 0) {
+            setError(Error_InvalidTagId);
+            setErrorText("Invalid Tag ID");
+            emitResult();
+            return;
+        }
+
+        QSqlQuery query(db(parent()));
+        query.prepare("DELETE FROM tagRelations where tid = ? AND rid = ?");
+        query.addBindValue(id);
+        query.addBindValue(rel.item().id());
+
+        if (!query.exec()) {
+            setError(Error_ConnectionError);
+            setErrorText(query.lastError().text());
+            emitResult();
+            return;
+        }
+
+        if (query.numRowsAffected() == 0) {
+            setError(Error_RelationDoesNotExist);
+            setErrorText("The tag relation does not exist");
+            emitResult();
+            return;
+        }
+
+        QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/tagrelations"),
+                                                        QLatin1String("org.kde"),
+                                                        QLatin1String("removed"));
+
+        QVariantList vl;
+        vl.reserve(2);
+        vl << rel.tag().id();
+        vl << rel.item().id();
+        message.setArguments(vl);
+
+        QDBusConnection::sessionBus().send(message);
+
+        emit relationRemoved(rel);
+        emit tagRelationRemoved(rel);
     }
 
-    int id = deserialize("tag", d->relation.tag().id());
-    if (id <= 0) {
-        setError(Error_InvalidTagId);
-        setErrorText("Invalid Tag ID");
-        emitResult();
-        return;
-    }
-
-    QSqlQuery query(db(parent()));
-    query.prepare("DELETE FROM tagRelations where tid = ? AND rid = ?");
-    query.addBindValue(id);
-    query.addBindValue(d->relation.item().id());
-
-    if (!query.exec()) {
-        setError(Error_ConnectionError);
-        setErrorText(query.lastError().text());
-        emitResult();
-        return;
-    }
-
-    if (query.numRowsAffected() == 0) {
-        setError(Error_RelationDoesNotExist);
-        setErrorText("The tag relation does not exist");
-        emitResult();
-        return;
-    }
-
-    QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/tagrelations"),
-                                                      QLatin1String("org.kde"),
-                                                      QLatin1String("removed"));
-
-    QVariantList vl;
-    vl.reserve(2);
-    vl << d->relation.tag().id();
-    vl << d->relation.item().id();
-    message.setArguments(vl);
-
-    QDBusConnection::sessionBus().send(message);
-
-    emit relationRemoved(d->relation);
-    emit tagRelationRemoved(d->relation);
     emitResult();
 }
