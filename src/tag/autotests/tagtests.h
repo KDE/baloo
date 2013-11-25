@@ -58,6 +58,7 @@ private slots:
 
     void testTagRelationSaveJob();
     void testTagRelationSaveJob_duplicate();
+    void testTagRelationSaveListJobs();
 
     void testTagRelationRemoveJob();
     void testTagRelationRemoveJob_notExists();

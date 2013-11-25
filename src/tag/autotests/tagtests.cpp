@@ -510,6 +510,46 @@ void TagTests::testTagRelationSaveJob_duplicate()
     QCOMPARE(job->error(), (int)TagRelationCreateJob::Error_RelationExists);
 }
 
+void TagTests::testTagRelationSaveListJobs()
+{
+    insertTags(QStringList() << "TagA" << "TagB");
+
+    QHash<int, QByteArray> relHash;
+    relHash.insert(1, "file:1");
+    insertRelations(relHash);
+
+    QList<Item> items;
+    items << Item::fromId("file:1");
+    items << Item::fromId("file:2");
+
+    QList<Tag> tags;
+    tags << Tag::fromId("tag:1");
+    tags << Tag::fromId("tag:2");
+
+    TagRelationCreateJob* job = new TagRelationCreateJob(items, tags, m_con);
+
+    QSignalSpy spy1(job, SIGNAL(relationCreated(Baloo::Relation)));
+    QSignalSpy spy2(job, SIGNAL(tagRelationCreated(Baloo::TagRelation)));
+    QVERIFY(job->exec());
+
+    QCOMPARE(spy1.size(), 3);
+    QCOMPARE(spy2.size(), 3);
+
+    TagRelation tagRel1 = spy2.at(0).first().value<TagRelation>();
+    TagRelation tagRel2 = spy2.at(1).first().value<TagRelation>();
+    TagRelation tagRel3 = spy2.at(2).first().value<TagRelation>();
+
+    QCOMPARE(tagRel1.item().id(), QByteArray("file:1"));
+    QCOMPARE(tagRel1.tag().id(), QByteArray("tag:2"));
+
+    QCOMPARE(tagRel2.item().id(), QByteArray("file:2"));
+    QCOMPARE(tagRel2.tag().id(), QByteArray("tag:1"));
+
+    QCOMPARE(tagRel3.item().id(), QByteArray("file:2"));
+    QCOMPARE(tagRel3.tag().id(), QByteArray("tag:2"));
+}
+
+
 void TagTests::testTagRelationRemoveJob()
 {
     insertTags(QStringList() << "TagA");

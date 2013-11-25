@@ -28,6 +28,8 @@
 
 namespace Baloo {
 
+class Item;
+class Tag;
 class TagRelation;
 
 class BALOO_TAG_EXPORT TagRelationCreateJob : public RelationCreateJob
@@ -35,6 +37,12 @@ class BALOO_TAG_EXPORT TagRelationCreateJob : public RelationCreateJob
     Q_OBJECT
 public:
     TagRelationCreateJob(const TagRelation& relation, QObject* parent = 0);
+
+    /**
+     * Assigns \p tags to \p items. If some of those items already contain
+     * those tags, then those relations are just ignored.
+     */
+    TagRelationCreateJob(const QList<Item>& items, const QList<Tag>& tags, QObject* parent = 0);
     ~TagRelationCreateJob();
 
     virtual void start();
@@ -42,13 +50,16 @@ public:
     enum Errors {
         Error_InvalidRelation,
         Error_RelationExists,
-        Error_InvalidTagId
+        Error_InvalidTagId,
+        Error_ConnectionError
     };
 signals:
     void tagRelationCreated(const Baloo::TagRelation& relation);
 
 private slots:
     void doStart();
+    void slotTagFetched(const Baloo::Tag& tag);
+    void slotTagFetchJobFinished(KJob* job);
 
 private:
     class Private;

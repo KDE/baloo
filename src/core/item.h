@@ -59,6 +59,8 @@ public:
      */
     virtual QByteArray type() { return QByteArray("Item"); }
 
+    static Item fromId(const Id& id);
+
 private:
     QByteArray m_id;
 };

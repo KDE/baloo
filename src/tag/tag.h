@@ -48,6 +48,17 @@ private:
     QString m_name;
 };
 
+inline bool operator ==(const Tag& t1, const Tag& t2)
+{
+    if (t1.id().size() && t2.id().size())
+        return t1.id() == t2.id();
+
+    if (t1.name().size() && t2.name().size())
+        return t1.name() == t2.name();
+
+    return false;
+}
+
 }
 
 Q_DECLARE_METATYPE(Baloo::Tag);

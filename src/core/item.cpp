@@ -31,3 +31,10 @@ Item::Item()
 Item::~Item()
 {
 }
+
+Item Item::fromId(const Item::Id& id)
+{
+    Item item;
+    item.setId(id);
+    return item;
+}
