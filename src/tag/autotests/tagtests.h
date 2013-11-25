@@ -70,7 +70,7 @@ private:
     Baloo::Tags::Connection* m_con;
 
     void insertTags(const QStringList& tags);
-    void insertRelations(const QHash<int, QString>& relations);
+    void insertRelations(const QHash<int, QByteArray>& relations);
 };
 
 #endif // TAGTESTS_H

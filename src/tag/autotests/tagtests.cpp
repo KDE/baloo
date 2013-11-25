@@ -79,14 +79,14 @@ void TagTests::insertTags(const QStringList& tags)
     }
 }
 
-void TagTests::insertRelations(const QHash< int, QString >& relations)
+void TagTests::insertRelations(const QHash<int, QByteArray>& relations)
 {
-    QHash< int, QString >::const_iterator iter = relations.constBegin();
+    QHash<int, QByteArray>::const_iterator iter = relations.constBegin();
     for (; iter != relations.constEnd(); iter++) {
         QSqlQuery insertQ(m_con->d->db());
         insertQ.prepare("INSERT INTO tagRelations (tid, rid) VALUES (?, ?)");
         insertQ.addBindValue(iter.key());
-        insertQ.addBindValue(iter.value().toUtf8());
+        insertQ.addBindValue(iter.value());
 
         QVERIFY(insertQ.exec());
     }
@@ -351,7 +351,7 @@ void TagTests::testTagRelationFetchFromTag()
 {
     insertTags(QStringList() << "TagA");
 
-    QHash<int, QString> rel;
+    QHash<int, QByteArray> rel;
     rel.insert(1, "file:1");
     insertRelations(rel);
 
@@ -392,7 +392,7 @@ void TagTests::testTagRelationFetchFromItem()
 {
     insertTags(QStringList() << "TagA" << "TagB");
 
-    QMultiHash<int, QString> rel;
+    QMultiHash<int, QByteArray> rel;
     rel.insert(1, "file:1");
     rel.insert(2, "file:1");
     rel.insert(1, "file:3");
@@ -483,7 +483,7 @@ void TagTests::testTagRelationSaveJob_duplicate()
 {
     insertTags(QStringList() << "TagA");
 
-    QHash<int, QString> relHash;
+    QHash<int, QByteArray> relHash;
     relHash.insert(1, "file:1");
     insertRelations(relHash);
 
@@ -514,7 +514,7 @@ void TagTests::testTagRelationRemoveJob()
 {
     insertTags(QStringList() << "TagA");
 
-    QHash<int, QString> relHash;
+    QHash<int, QByteArray> relHash;
     relHash.insert(1, "file:1");
     insertRelations(relHash);
 
