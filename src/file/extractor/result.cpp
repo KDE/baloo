@@ -35,7 +35,7 @@ Result::Result()
 void Result::add(const QString& key_, const QVariant& val)
 {
     kDebug() << key_ << val;
-    m_map.insert(key_, val);
+    m_map.insertMulti(key_, val);
 
     QString key = key_.toUpper();
 
@@ -86,5 +86,10 @@ void Result::setId(uint id)
 uint Result::id() const
 {
     return m_docId;
+}
+
+QVariantMap Result::map() const
+{
+    return m_map;
 }
 

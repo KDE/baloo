@@ -40,6 +40,7 @@ public:
     void setDocument(const Xapian::Document& doc);
 
     uint id() const;
+    QVariantMap map() const;
 
 private:
     uint m_docId;

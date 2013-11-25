@@ -67,6 +67,7 @@ int main(int argc, char* argv[])
     KCmdLineOptions options;
     options.add("+[url]", ki18n("The URL of the files to be indexed"));
     options.add("debug", ki18n("Print the data being indexed"));
+    options.add("bdata", ki18n("Print the QVariantMap in Base64 encoding"));
 
     KCmdLineArgs::addCmdLineOptions(options);
     const KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
@@ -116,6 +117,17 @@ int main(int argc, char* argv[])
         Q_FOREACH (KFileMetaData::ExtractorPlugin* plugin, exList) {
             plugin->extract(&result);
         }
+    }
+
+    if (args->isSet("bdata")) {
+        QByteArray arr;
+        QDataStream s(&arr, QIODevice::WriteOnly);
+
+        Q_FOREACH (const Result& res, results)
+            s << res.map();
+
+        std::cout << arr.toBase64().constData();
+        return 0;
     }
 
     try {
