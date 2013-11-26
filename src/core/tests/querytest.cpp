@@ -33,15 +33,21 @@ class App : public QApplication {
 public:
     App(int& argc, char** argv, int flags = ApplicationFlags);
 
+    QString m_query;
+
 private Q_SLOTS:
     void main();
-
-private:
 };
 
 int main(int argc, char** argv)
 {
     App app(argc, argv);
+
+    if (argc != 2) {
+        kError() << "Proper args required";
+    }
+    app.m_query = argv[1];
+
     return app.exec();
 }
 
@@ -57,7 +63,7 @@ void App::main()
 {
     Query q;
     q.addType("File");
-    q.setSearchString("Jason Show");
+    q.setSearchString(m_query);
     q.setLimit(10);
 
     ResultIterator it = q.exec();
