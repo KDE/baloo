@@ -23,26 +23,21 @@
 #ifndef QUERY_H
 #define QUERY_H
 
-#include "../core/relation.h"
+#include "relation.h"
+#include "resultiterator.h"
+
+namespace Baloo {
 
 class Term;
 
-class Query
+class BALOO_CORE_EXPORT Query
 {
 public:
     Query();
     Query(const Term& t);
 
-    /**
-     * A term is added to the list of terms that are ANDed
-     * in the query.
-     *
-     * Each of these terms must match in the query
-     */
-    void addTerm(const Term& t);
-    void setTerms(const QList<Term>& terms);
-
-    QList<Term> terms();
+    void setTerm(const Term& t);
+    Term term() const;
 
     /**
      * Add a type to the results of the query.
@@ -51,9 +46,9 @@ public:
      * This is generally used to filter only Files, Emails, Tags, etc
      */
     void addType(const QString& type);
-    void setTypes(const QList<QString>& types);
+    void setTypes(const QStringList& types);
 
-    QList<QString> types();
+    QStringList types() const;
 
     /**
      * Every Item in the result must contain the relation \p rel
@@ -61,12 +56,7 @@ public:
     void addRelation(const Relation& rel);
     void setRelations(const QList<Relation>& rel);
 
-    QList<Relation> relations();
-
-    // FIXME: Is this something we want?
-    void add(const Term& term);
-    void add(const QString& type);
-    void add(const Relation& rel);
+    QList<Relation> relations() const;
 
     /**
      * Set some text which should be used to search for Items. This
@@ -76,13 +66,14 @@ public:
      * to give the best possible results.
      */
     void setSearchString(const QString& str);
-    QString searchString();
+    QString searchString() const;
 
     /**
-     * Only a maximum of \p limit results will be returned
+     * Only a maximum of \p limit results will be returned.
+     * By default the limit is 100000.
      */
-    void setLimit(int limit);
-    int limit();
+    void setLimit(uint limit);
+    uint limit() const;
 
     // FIXME: Sorting?
 
@@ -93,9 +84,17 @@ public:
      * Each backend has their own custom options which should be
      * looked up in their corresponding documentation
      */
-    void addCustomOption(const QString& option, const QString& value);
-    void removeCustomOption(const QString& option);
-    QString customOption(const QString& option);
+    // TODO:
+    //void addCustomOption(const QString& option, const QString& value);
+    //void removeCustomOption(const QString& option);
+    //QString customOption(const QString& option);
+
+    ResultIterator exec();
+
+private:
+    class Private;
+    Private* d;
 };
 
+}
 #endif // QUERY_H

@@ -21,3 +21,156 @@
  */
 
 #include "query.h"
+#include "term.h"
+#include "searchstore.h"
+
+#include <QString>
+#include <QStringList>
+#include <QList>
+
+#include <KDebug>
+#include <KService>
+#include <KServiceTypeTrader>
+
+using namespace Baloo;
+
+class Baloo::Query::Private {
+public:
+    Private() {
+        m_limit = 100000;
+    }
+    Term m_term;
+
+    QStringList m_types;
+    QString m_searchString;
+    uint m_limit;
+};
+
+Query::Query()
+    : d(new Private)
+{
+}
+
+Query::Query(const Term& t)
+    : d(new Private)
+{
+    d->m_term = t;
+}
+
+void Query::setTerm(const Term& t)
+{
+    d->m_term = t;
+}
+
+Term Query::term() const
+{
+    return d->m_term;
+}
+
+void Query::addType(const QString& type)
+{
+    d->m_types << type;
+}
+
+void Query::setTypes(const QStringList& types)
+{
+    d->m_types = types;
+}
+
+QStringList Query::types() const
+{
+    return d->m_types;
+}
+
+QString Query::searchString() const
+{
+    return d->m_searchString;
+}
+
+void Query::setSearchString(const QString& str)
+{
+    d->m_searchString = str;
+}
+
+void Query::addRelation(const Relation& rel)
+{
+    //TODO:
+}
+
+void Query::setRelations(const QList<Relation>& rel)
+{
+    //TODO:
+}
+
+QList<Relation> Query::relations() const
+{
+    //TODO:
+    return QList<Relation>();
+}
+
+uint Query::limit() const
+{
+    return d->m_limit;
+}
+
+void Query::setLimit(uint limit)
+{
+    d->m_limit = limit;
+}
+
+namespace {
+
+QList<Baloo::SearchStore*> allSearchStores()
+{
+    // Get all the plugins
+    KService::List plugins = KServiceTypeTrader::self()->query("BalooSearchStore");
+
+    QList<Baloo::SearchStore*> stores;
+    KService::List::const_iterator it;
+    for (it = plugins.constBegin(); it != plugins.constEnd(); it++) {
+        KService::Ptr service = *it;
+
+        QString error;
+        Baloo::SearchStore* st = service->createInstance<Baloo::SearchStore>(0, QVariantList(), &error);
+        if (!st) {
+            kError() << "Could not create Extractor: " << service->library();
+            kError() << error;
+            continue;
+        }
+
+        stores << st;
+    }
+
+    return stores;
+}
+
+}
+
+ResultIterator Query::exec()
+{
+    // vHanda: Maybe this should default to allow searches on all search stores?
+    Q_ASSERT_X(!types().isEmpty(), "Baloo::Query::exec", "A query is being initialized without a type");
+    if (types().isEmpty())
+        return ResultIterator();
+
+    QList<SearchStore*> stores = allSearchStores();
+
+    SearchStore* storeMatch = 0;
+    Q_FOREACH (SearchStore* store, stores) {
+        Q_FOREACH (const QString& type, types()) {
+            if (store->types().contains(type)) {
+                storeMatch = store;
+                break;
+            }
+        }
+
+        if (storeMatch)
+            break;
+    }
+
+    int id = storeMatch->exec(*this);
+    return ResultIterator(id, storeMatch);
+
+    //FIXME: Massive memory leak. Someone needs to delete all the stores!
+}
+

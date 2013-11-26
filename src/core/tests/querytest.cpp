@@ -20,30 +20,53 @@
  *
  */
 
-#include "searchstore.h"
+#include "query.h"
+
+#include <QApplication>
+#include <QTimer>
+#include <KDebug>
+
+#include <iostream>
+
+class App : public QApplication {
+    Q_OBJECT
+public:
+    App(int& argc, char** argv, int flags = ApplicationFlags);
+
+private Q_SLOTS:
+    void main();
+
+private:
+};
+
+int main(int argc, char** argv)
+{
+    App app(argc, argv);
+    return app.exec();
+}
+
+App::App(int& argc, char** argv, int flags)
+    : QApplication(argc, argv, flags)
+{
+    QTimer::singleShot(0, this, SLOT(main()));
+}
 
 using namespace Baloo;
 
-SearchStore::SearchStore(QObject* parent)
-    : QObject(parent)
+void App::main()
 {
+    Query q;
+    q.addType("File");
+    q.setSearchString("Jason Show");
+    q.setLimit(10);
+
+    ResultIterator it = q.exec();
+    while (it.next()) {
+        std::cout << it.id().constData() << "\n";
+    }
+
+    quit();
 }
 
-SearchStore::~SearchStore()
-{
-}
 
-QString SearchStore::icon(int)
-{
-    return QString();
-}
-
-QString SearchStore::text(int)
-{
-    return QString();
-}
-
-QString SearchStore::property(int, const QString&)
-{
-    return QString();
-}
+#include "querytest.moc"

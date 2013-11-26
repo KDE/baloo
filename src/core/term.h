@@ -23,25 +23,33 @@
 #ifndef TERM_H
 #define TERM_H
 
-class Item;
+#include <QString>
+#include <QVariant>
 
-class Term
+#include "core_export.h"
+
+namespace Baloo {
+
+class BALOO_CORE_EXPORT Term
 {
 public:
     enum Comparator {
         Auto,
         Equal,
         Contains,
-        G,              /// Greater
-        GE,             /// Greather or Equal
-        L,
-        LE
+        Greater,
+        GreaterEqual,
+        Less,
+        LessEqual
     };
 
     enum Operation {
+        None,
         And,
         Or
     };
+
+    Term();
 
     /**
      * The Item must contain the property \p property
@@ -54,15 +62,17 @@ public:
      *
      * The default comparator is Auto which has the following behavior
      * For Strings - Contains
-     * For Integers - Equals
      * For DateTime - Contains
+     * For any other type - Equals
      */
     Term(const QString& property, const QVariant& value, Comparator c = Auto);
 
+    // Removing Range based terms for now
+    // FIXME: Add range based terms
     /**
      * The property must fall within the range \p start <= \p value <= \p end
      */
-    Term(const QString& property, const QVariant& start, const QVariant& end);
+    //Term(const QString& property, const QVariant& start, const QVariant& end);
 
     /**
      * This term is a combination of other terms
@@ -77,8 +87,8 @@ public:
      */
     void setNegation(bool isNegated);
 
-    bool negation();
-    bool isNegated();
+    bool negated() const;
+    bool isNegated() const;
 
     void addSubTerm(const Term& term);
     void setSubTerms(const QList<Term>& terms);
@@ -89,7 +99,7 @@ public:
     Term subTerm() const;
     QList<Term> subTerms() const;
 
-    void setOperator(Operation op);
+    void setOperation(Operation op);
     Operation operation() const;
 
     /**
@@ -104,26 +114,30 @@ public:
     Comparator comparator() const;
     void setComparator(Comparator c);
 
+private:
+    class Private;
+    Private* d;
 };
 
-Term operator&&(const Term& lhs, const Term& rhs) {
+inline Term operator &&(const Term& lhs, const Term& rhs) {
     Term t(Term::And);
     t.addSubTerm(lhs);
     t.addSubTerm(rhs);
     return t;
 }
 
-Term operator||(const Term& lhs, const Term& rhs) {
+inline Term operator ||(const Term& lhs, const Term& rhs) {
     Term t(Term::Or);
     t.addSubTerm(lhs);
     t.addSubTerm(rhs);
     return t;
 }
 
-Term operator!(const Term& rhs) {
+inline Term operator !(const Term& rhs) {
     Term t(rhs);
-    t.setNegation(!rhs.negation());
+    t.setNegation(!rhs.isNegated());
     return t;
 }
 
+}
 #endif // TERM_H

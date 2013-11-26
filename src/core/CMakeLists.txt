@@ -12,6 +12,11 @@ set(CORE_SRCS
     relationremovejob.cpp
 
     datastore.cpp
+
+    searchstore.cpp
+    query.cpp
+    resultiterator.cpp
+    term.cpp
 )
 
 kde4_add_library(baloocore SHARED ${CORE_SRCS})
@@ -41,7 +46,16 @@ install(FILES
     relationcreatejob.h
 
     datastore.h
+
+    query.h
+    term.h
+    searchstore.h
+
     core_export.h
 
     DESTINATION ${INCLUDE_INSTALL_DIR}/baloo COMPONENT Devel
 )
+
+install(FILES baloosearchstore.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
+
+add_subdirectory(tests)

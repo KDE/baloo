@@ -2,6 +2,7 @@ add_definitions(${KDE4_ENABLE_EXCEPTIONS})
 add_definitions(-DQT_NO_KEYWORDS)
 
 add_subdirectory(lib)
+add_subdirectory(search)
 
 set(file_SRCS
     # Filewatch

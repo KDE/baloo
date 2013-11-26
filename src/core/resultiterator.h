@@ -20,30 +20,33 @@
  *
  */
 
-#include "searchstore.h"
+#ifndef _BALOO_CORE_RESULT_ITERATOR_H
+#define _BALOO_CORE_RESULT_ITERATOR_H
 
-using namespace Baloo;
+#include "core_export.h"
+#include "item.h"
 
-SearchStore::SearchStore(QObject* parent)
-    : QObject(parent)
+namespace Baloo {
+
+class SearchStore;
+
+class BALOO_CORE_EXPORT ResultIterator
 {
-}
+public:
+    ResultIterator();
+    ResultIterator(int id, SearchStore* store);
+    ~ResultIterator();
 
-SearchStore::~SearchStore()
-{
-}
+    bool next();
 
-QString SearchStore::icon(int)
-{
-    return QString();
-}
+    Item::Id id();
+    QString text();
+    QString icon();
 
-QString SearchStore::text(int)
-{
-    return QString();
-}
+private:
+    class Private;
+    Private* d;
+};
 
-QString SearchStore::property(int, const QString&)
-{
-    return QString();
 }
+#endif // _BALOO_CORE_RESULT_ITERATOR_H

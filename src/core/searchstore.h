@@ -20,58 +20,54 @@
  *
  */
 
-#ifndef SEARCHSTORE_H
-#define SEARCHSTORE_H
+#ifndef _BALOO_SEARCHSTORE_H
+#define _BALOO_SEARCHSTORE_H
 
-#include <QFlag>
+#include <QString>
+#include <QHash>
+#include <KService>
 
-class Type;
+#include "core_export.h"
+#include "item.h"
 
-class SearchStore
+namespace Baloo {
+
+class Term;
+class Query;
+
+class BALOO_CORE_EXPORT SearchStore : public QObject
 {
+    Q_OBJECT
 public:
-    SearchStore();
+    explicit SearchStore(QObject* parent = 0);
     virtual ~SearchStore();
 
     /**
      * Returns a list of types which can be searched for
      * in this store
      */
-    QList<Type> types();
+    virtual QStringList types() = 0;
 
-    enum Feature {
-        /**
-         * This search store only provides the most basic features
-         */
-        FeatureNone,
+    /**
+     * Executes the particular query synchronously.
+     *
+     * \return Returns a integer representating the integer
+     */
+    virtual int exec(const Query& query) = 0;
+    virtual bool next(int queryId) = 0;
+    virtual void close(int queryId) = 0;
 
-        /**
-         * This Search Store provides a list of types which never change
-         */
-        FeatureStaticTypes,
-        /**
-         * The Search Store provides realtime notifications for when
-         * a new type is stored and removed in the store
-         */
-        FeatureNewTypeNotification,
+    virtual Item::Id id(int queryId) = 0;
 
-        /**
-         * The Search Store provides a notification signifying that
-         * the list of types supported by this store has changed
-         */
-        FeatureTypeChangeNotification
-    };
-    Q_DECLARE_ENUM(Features, Feature);
-    //Q_FLAGS(Features);
-
-    // Functions that would actually implement the searching!
-signals:
-    void typeAdded(const Type& type);
-    void typeRemoved(const Type& type);
-
-    void typesChanged();
+    virtual QString text(int queryId);
+    virtual QString icon(int queryId);
+    virtual QString property(int queryId, const QString& propName);
 };
 
-//Q_DECLARE_OPERATORS_FOR_FLAGS(SearchStore::Features);
+}
 
-#endif // SEARCHSTORE_H
+#define BALOO_EXPORT_SEARCHSTORE( classname, libname )    \
+    K_PLUGIN_FACTORY(factory, registerPlugin<classname>();) \
+    K_EXPORT_PLUGIN(factory(#libname))
+
+#endif // _BALOO_SEARCHSTORE_H

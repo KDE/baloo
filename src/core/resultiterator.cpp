@@ -20,30 +20,66 @@
  *
  */
 
+#include "resultiterator.h"
 #include "searchstore.h"
+#include <KDebug>
 
 using namespace Baloo;
 
-SearchStore::SearchStore(QObject* parent)
-    : QObject(parent)
+class Baloo::ResultIterator::Private {
+public:
+    int queryId;
+    SearchStore* store;
+};
+
+ResultIterator::ResultIterator(int id, SearchStore* store)
+    : d(new Private)
 {
+    d->queryId = id;
+    d->store = store;
 }
 
-SearchStore::~SearchStore()
+ResultIterator::ResultIterator()
+    : d(new Private)
 {
+    d->queryId = 0;
+    d->store = 0;
 }
 
-QString SearchStore::icon(int)
+ResultIterator::~ResultIterator()
 {
-    return QString();
+    d->store->close(d->queryId);
+    delete d;
 }
 
-QString SearchStore::text(int)
+bool ResultIterator::next()
 {
-    return QString();
+    if (d->store)
+        return d->store->next(d->queryId);
+    else
+        return false;
 }
 
-QString SearchStore::property(int, const QString&)
+Item::Id ResultIterator::id()
 {
-    return QString();
+    if (d->store)
+        return d->store->id(d->queryId);
+    else
+        return Item::Id();
+}
+
+QString ResultIterator::text()
+{
+    if (d->store)
+        return d->store->id(d->queryId);
+    else
+        return QString();
+}
+
+QString ResultIterator::icon()
+{
+    if (d->store)
+        return d->store->icon(d->queryId);
+    else
+        return QString();
 }

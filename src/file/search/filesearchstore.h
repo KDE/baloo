@@ -20,4 +20,45 @@
  *
  */
 
-#include "term.h"
+#ifndef FILESEARCHSTORE_H
+#define FILESEARCHSTORE_H
+
+#include "searchstore.h"
+#include <xapian.h>
+
+namespace Baloo {
+
+class FileSearchStore : public SearchStore
+{
+public:
+    FileSearchStore(QObject* parent, const QVariantList& args);
+
+    /**
+     * Overwrite the default DB path. Generally used for testing
+     */
+    void setDbPath(const QString& path);
+
+    virtual QStringList types();
+    virtual int exec(const Query& query);
+    virtual void close(int queryId);
+    virtual bool next(int queryId);
+
+    virtual Item::Id id(int queryId);
+
+private:
+    Xapian::Query toXapianQuery(const Term& term);
+    Xapian::Query toXapianQuery(Xapian::Query::op op, const QList<Term>& terms);
+
+    struct Iter {
+        Xapian::MSet mset;
+        Xapian::MSetIterator it;
+    };
+
+    QHash<int, Iter> m_queryMap;
+    int m_nextId;
+
+    QString m_dbPath;
+};
+
+}
+#endif // FILESEARCHSTORE_H
