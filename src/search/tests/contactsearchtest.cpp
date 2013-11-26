@@ -21,7 +21,7 @@
  */
 
 #include "contactquery.h"
-#include "resultiterator.h"
+#include "../resultiterator.h"
 
 #include <QApplication>
 #include <QTimer>
