@@ -39,7 +39,11 @@ Database::Database(QObject* parent)
 
 Database::~Database()
 {
-    QSqlDatabase::removeDatabase(m_sqlDb.connectionName());
+    QString name = m_sqlDb->connectionName();
+    delete m_sqlDb;
+    delete m_xapianDb;
+
+    QSqlDatabase::removeDatabase(name);
 }
 
 bool Database::init()
@@ -51,20 +55,20 @@ bool Database::init()
     Xapian::WritableDatabase(m_path.toStdString(), Xapian::DB_CREATE_OR_OPEN);
     m_xapianDb = new Xapian::Database(m_path.toStdString());
 
-    m_sqlDb = QSqlDatabase::addDatabase("QSQLITE3");
-    m_sqlDb.setDatabaseName(m_path + "/fileMap.sqlite3");
+    m_sqlDb = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE3"));
+    m_sqlDb->setDatabaseName(m_path + "/fileMap.sqlite3");
 
-    if (!m_sqlDb.open()) {
-        kDebug() << "Failed to open db" << m_sqlDb.lastError().text();
+    if (!m_sqlDb->open()) {
+        kDebug() << "Failed to open db" << m_sqlDb->lastError().text();
         return false;
     }
 
-    const QStringList tables = m_sqlDb.tables();
+    const QStringList tables = m_sqlDb->tables();
     if (tables.contains("files")) {
         return true;
     }
 
-    QSqlQuery query(m_sqlDb);
+    QSqlQuery query(*m_sqlDb);
     bool ret = query.exec("CREATE TABLE files("
                           "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                           "url TEXT NOT NULL UNIQUE)");
@@ -102,7 +106,7 @@ bool Database::isInitialized()
 
 QSqlDatabase& Database::sqlDatabase()
 {
-    return m_sqlDb;
+    return *m_sqlDb;
 }
 
 Xapian::Database* Database::xapainDatabase()

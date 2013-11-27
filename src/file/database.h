@@ -49,7 +49,7 @@ private:
     bool m_initialized;
 
     Xapian::Database* m_xapianDb;
-    QSqlDatabase m_sqlDb;
+    QSqlDatabase* m_sqlDb;
 };
 
 #endif // DATABASE_H
