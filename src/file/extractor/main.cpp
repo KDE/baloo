@@ -95,16 +95,21 @@ int main(int argc, char* argv[])
     QVector<Result> results;
     results.resize(argCount);
 
+    bool bData = args->isSet("bdata");
+
     KFileMetaData::ExtractorPluginManager m_manager;
     for (int i=0; i<argCount; i++) {
         const QString url = args->url(i).toLocalFile();
         const QString mimetype = KMimeType::findByUrl(args->url(i))->name();
 
         FileMapping file(url);
-        if (!file.fetch(sqlDb))
+        // FIXME: add to all dbs if not present
+        if (!file.fetch(sqlDb) && !bData)
             continue;
 
-        Xapian::Document doc = bigDb.xapainDatabase()->get_document(file.id());
+        Xapian::Document doc;
+        if (!bData)
+            doc = bigDb.xapainDatabase()->get_document(file.id());
 
         Result& result = results[i];
         result.setInputUrl(url);
@@ -119,7 +124,7 @@ int main(int argc, char* argv[])
         }
     }
 
-    if (args->isSet("bdata")) {
+    if (bData) {
         QByteArray arr;
         QDataStream s(&arr, QIODevice::WriteOnly);
 
