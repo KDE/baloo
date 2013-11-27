@@ -63,6 +63,12 @@ void Result::append(const QString& text)
     m_termGen.index_text(text.toStdString());
 }
 
+void Result::addType(const QString& type)
+{
+    QString t = 'T' + type.toLower();
+    m_doc.add_boolean_term(t.toStdString());
+}
+
 void Result::save(Xapian::WritableDatabase& db)
 {
     QJson::Serializer serializer;

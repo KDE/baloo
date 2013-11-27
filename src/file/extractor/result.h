@@ -33,6 +33,7 @@ public:
 
     virtual void add(const QString& key, const QVariant& value);
     virtual void append(const QString& text);
+    virtual void addType(const QString& type);
 
     void save(Xapian::WritableDatabase& db);
 
