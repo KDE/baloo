@@ -94,6 +94,19 @@ Xapian::Query FileSearchStore::toXapianQuery(const Term& term)
     //}
 }
 
+namespace {
+    Xapian::Query andQuery(const Xapian::Query& a, const Xapian::Query& b)
+    {
+        if (a.empty() && !b.empty())
+            return b;
+        if (!a.empty() && b.empty())
+            return a;
+        if (a.empty() && b.empty())
+            return Xapian::Query();
+        else
+            return Xapian::Query(Xapian::Query::OP_AND, a, b);
+    }
+}
 
 int FileSearchStore::exec(const Query& query)
 {
@@ -105,10 +118,12 @@ int FileSearchStore::exec(const Query& query)
         int flags = Xapian::QueryParser::FLAG_DEFAULT | Xapian::QueryParser::FLAG_PARTIAL;
         Xapian::Query q = parser.parse_query(str, flags);
 
-        if (xapQ.empty())
-            xapQ = q;
-        else
-            xapQ = Xapian::Query(Xapian::Query::OP_AND, q, xapQ);
+        xapQ = andQuery(xapQ, q);
+    }
+
+    Q_FOREACH (const QString& type, query.types()) {
+        QString t = 'T' + type.toLower();
+        xapQ = andQuery(xapQ, Xapian::Query(t.toStdString()));
     }
 
     Xapian::Database db(m_dbPath.toStdString());

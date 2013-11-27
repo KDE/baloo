@@ -69,7 +69,7 @@ Term Query::term() const
 
 void Query::addType(const QString& type)
 {
-    d->m_types << type;
+    d->m_types << type.split('/', QString::SkipEmptyParts);
 }
 
 void Query::setTypes(const QStringList& types)

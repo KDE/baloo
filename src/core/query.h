@@ -44,6 +44,9 @@ public:
      *
      * Each Item in the result must contain one of the types.
      * This is generally used to filter only Files, Emails, Tags, etc
+     *
+     * One can add multiple types in one go by separating individual types
+     * with a '/'. Eg - "File/Audio"
      */
     void addType(const QString& type);
     void setTypes(const QStringList& types);
