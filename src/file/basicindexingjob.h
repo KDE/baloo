@@ -48,6 +48,8 @@ private Q_SLOTS:
     void doStart();
 
 private:
+    QList<QByteArray> typesForMimeType(const QString& mimeType) const;
+
     Database* m_db;
     FileMapping m_file;
     QString m_mimetype;
