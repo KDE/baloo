@@ -69,21 +69,28 @@ void BasicIndexingJob::doStart()
 
     Xapian::Document doc;
     doc.add_term('M' + m_mimetype.toStdString());
-    doc.add_term('F' + fileInfo.fileName().toStdString());
+
+    std::string fileName = fileInfo.fileName().toStdString();
+
+    Xapian::TermGenerator termGen;
+    termGen.set_document(doc);
+    termGen.index_text_without_positions(fileName, 1000);
+    doc.add_term(fileName, 10000);
+    doc.add_boolean_term('F' + fileName);
 
     // Modified Date
     QDateTime mod = fileInfo.lastModified();
-    doc.add_term("DT_M" + fileInfo.lastModified().toString(Qt::ISODate).toStdString());
+    doc.add_boolean_term("DT_M" + fileInfo.lastModified().toString(Qt::ISODate).toStdString());
 
     const QString year = "DT_MY" + QString::number(mod.date().year());
     const QString month = "DT_MM" + QString::number(mod.date().month());
     const QString day = "DT_MD" + QString::number(mod.date().day());
-    doc.add_term(year.toStdString());
-    doc.add_term(month.toStdString());
-    doc.add_term(day.toStdString());
+    doc.add_boolean_term(year.toStdString());
+    doc.add_boolean_term(month.toStdString());
+    doc.add_boolean_term(day.toStdString());
 
     // Indexing Level 1
-    doc.add_term("Z1");
+    doc.add_boolean_term("Z1");
 
     // Types
     QList<QByteArray> types = typesForMimeType(m_mimetype);
