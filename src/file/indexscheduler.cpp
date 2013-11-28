@@ -73,7 +73,7 @@ IndexScheduler::IndexScheduler(Database* db, QObject* parent)
 
     m_basicIQ = new BasicIndexingQueue(m_db, this);
     m_fileIQ = new FileIndexingQueue(m_db, this);
-    m_fileIQ->suspend();
+    m_fileIQ->fillQueue();
 
     connect(m_basicIQ, SIGNAL(finishedIndexing()), this, SIGNAL(basicIndexingDone()));
     connect(m_fileIQ, SIGNAL(finishedIndexing()), this, SIGNAL(fileIndexingDone()));
@@ -205,7 +205,7 @@ void IndexScheduler::slotFinishedIndexing()
         setIndexingStarted(false);
     }
 
-    if (m_basicIQ->isEmpty())
+    if (m_basicIQ->isEmpty() && !m_fileIQ->isEmpty())
         m_fileIQ->resume();
 }
 
@@ -383,7 +383,7 @@ void IndexScheduler::slotScheduleIndexing()
     }
 
     // The FileIQ should never run when the BasicIQ is still running
-    if (m_basicIQ->isEmpty())
+    if (m_basicIQ->isEmpty() && !m_fileIQ->isEmpty())
         m_fileIQ->resume();
     else
         m_fileIQ->suspend();
