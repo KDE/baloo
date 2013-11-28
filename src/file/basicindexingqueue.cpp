@@ -169,9 +169,11 @@ bool BasicIndexingQueue::shouldIndex(FileMapping& file, const QString& mimetype)
         Xapian::Document doc = m_db->xapainDatabase()->get_document(file.id());
         Xapian::TermIterator it = doc.termlist_begin();
         it.skip_to("DT_M");
-        if (it == doc.termlist_end())
-            return false;
+        if (it == doc.termlist_end()) {
+            return true;
+        }
 
+        // The 4 is for "DT_M"
         const QString str = QString::fromStdString(*it).mid(4);
         const QDateTime mtime = QDateTime::fromString(str, Qt::ISODate);
 
