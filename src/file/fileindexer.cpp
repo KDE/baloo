@@ -59,7 +59,7 @@ FileIndexer::FileIndexer(Database* db, QObject* parent)
     connect(m_indexScheduler, SIGNAL(fileIndexingDone()),
             this, SIGNAL(fileIndexingDone()));
     connect(m_indexScheduler, SIGNAL(basicIndexingDone()),
-            this, SLOT(slotIndexingDone()));
+            this, SLOT(slotBasicIndexingDone()));
 
     connect(m_indexScheduler, SIGNAL(statusStringChanged()),
             this, SLOT(emitStatusMessage()));
@@ -71,7 +71,7 @@ FileIndexer::~FileIndexer()
 {
 }
 
-void FileIndexer::slotIndexingDone()
+void FileIndexer::slotBasicIndexingDone()
 {
     FileIndexerConfig::self()->setInitialRun(false);
 }

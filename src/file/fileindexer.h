@@ -117,7 +117,7 @@ public Q_SLOTS:
     Q_SCRIPTABLE void indexFile(const QString& path);
 
 private Q_SLOTS:
-    void slotIndexingDone();
+    void slotBasicIndexingDone();
 
     /**
      * @brief Called when the status string in the Indexscheduler is changed
