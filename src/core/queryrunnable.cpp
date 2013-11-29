@@ -20,36 +20,43 @@
  *
  */
 
-#ifndef _BALOO_CORE_RESULT_ITERATOR_H
-#define _BALOO_CORE_RESULT_ITERATOR_H
+#include "queryrunnable.h"
 
-#include "core_export.h"
-#include "item.h"
+using namespace Baloo;
 
-namespace Baloo {
-
-class SearchStore;
-class Result;
-
-class BALOO_CORE_EXPORT ResultIterator
-{
+class QueryRunnable::Private {
 public:
-    ResultIterator();
-    // internal
-    ResultIterator(int id, SearchStore* store);
-    ~ResultIterator();
-
-    bool next();
-
-    Item::Id id() const;
-    QString text() const;
-    QString icon() const;
-
-    Result result() const;
-private:
-    class Private;
-    Private* d;
+    Query m_query;
+    bool m_stop;
 };
 
+QueryRunnable::QueryRunnable(const Query& query, QObject* parent)
+    : QObject(parent)
+    , d(new Private)
+{
+    d->m_query = query;
+    d->m_stop = false;
+
+    qRegisterMetaType<Baloo::Result>("Baloo::Result");
 }
-#endif // _BALOO_CORE_RESULT_ITERATOR_H
+
+QueryRunnable::~QueryRunnable()
+{
+    delete d;
+}
+
+void QueryRunnable::stop()
+{
+    d->m_stop = true;
+}
+
+void QueryRunnable::run()
+{
+    ResultIterator it = d->m_query.exec();
+    while (it.next()) {
+        Q_EMIT queryResult(this, it.result());
+    }
+
+    Q_EMIT finished(this);
+}
+

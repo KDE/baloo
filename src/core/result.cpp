@@ -20,36 +20,55 @@
  *
  */
 
-#ifndef _BALOO_CORE_RESULT_ITERATOR_H
-#define _BALOO_CORE_RESULT_ITERATOR_H
+#include "result.h"
 
-#include "core_export.h"
-#include "item.h"
+using namespace Baloo;
 
-namespace Baloo {
-
-class SearchStore;
-class Result;
-
-class BALOO_CORE_EXPORT ResultIterator
-{
+class Result::Private {
 public:
-    ResultIterator();
-    // internal
-    ResultIterator(int id, SearchStore* store);
-    ~ResultIterator();
-
-    bool next();
-
-    Item::Id id() const;
-    QString text() const;
-    QString icon() const;
-
-    Result result() const;
-private:
-    class Private;
-    Private* d;
+    QByteArray id;
+    QString text;
+    QString icon;
 };
 
+Result::Result()
+    : d(new Private)
+{
 }
-#endif // _BALOO_CORE_RESULT_ITERATOR_H
+
+Result::~Result()
+{
+    delete d;
+}
+
+void Result::setId(const QByteArray& id)
+{
+    d->id = id;
+}
+
+QByteArray Result::id() const
+{
+    return d->id;
+}
+
+void Result::setText(const QString& text)
+{
+    d->text = text;
+}
+
+QString Result::text() const
+{
+    return d->text;
+}
+
+QString Result::icon() const
+{
+    return d->icon;
+}
+
+void Result::setIcon(const QString& icon)
+{
+    d->icon = icon;
+}
+
+

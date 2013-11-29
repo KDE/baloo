@@ -22,6 +22,7 @@
 
 #include "resultiterator.h"
 #include "searchstore.h"
+#include "result.h"
 #include <KDebug>
 
 using namespace Baloo;
@@ -60,7 +61,7 @@ bool ResultIterator::next()
         return false;
 }
 
-Item::Id ResultIterator::id()
+Item::Id ResultIterator::id() const
 {
     if (d->store)
         return d->store->id(d->queryId);
@@ -68,18 +69,28 @@ Item::Id ResultIterator::id()
         return Item::Id();
 }
 
-QString ResultIterator::text()
+QString ResultIterator::text() const
 {
     if (d->store)
-        return d->store->id(d->queryId);
+        return d->store->text(d->queryId);
     else
         return QString();
 }
 
-QString ResultIterator::icon()
+QString ResultIterator::icon() const
 {
     if (d->store)
         return d->store->icon(d->queryId);
     else
         return QString();
+}
+
+Result ResultIterator::result() const
+{
+    Result res;
+    res.setId(id());
+    res.setText(text());
+    res.setIcon(icon());
+
+    return res;
 }

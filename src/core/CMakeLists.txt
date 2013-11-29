@@ -14,9 +14,11 @@ set(CORE_SRCS
     datastore.cpp
 
     searchstore.cpp
-    query.cpp
-    resultiterator.cpp
     term.cpp
+    query.cpp
+    queryrunnable.cpp
+    resultiterator.cpp
+    result.cpp
 )
 
 kde4_add_library(baloocore SHARED ${CORE_SRCS})
@@ -47,8 +49,11 @@ install(FILES
 
     datastore.h
 
-    query.h
     term.h
+    query.h
+    queryrunnable.h
+    result.h
+    resultiterator.h
     searchstore.h
 
     core_export.h
