@@ -27,6 +27,7 @@
 #include "xapian.h"
 
 namespace Baloo {
+namespace PIM {
 
 class ResultIterator::Private
 {
@@ -45,6 +46,7 @@ public:
     bool m_firstElement;
 };
 
+}
 }
 
 #endif // QUERYITERATOR_H

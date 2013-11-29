@@ -20,32 +20,37 @@
  *
  */
 
-#ifndef RESULT_ITERATOR_H
-#define RESULT_ITERATOR_H
+#include "resultiterator_p.h"
 
-#include "search_export.h"
-#include "result.h"
+using namespace Baloo::PIM;
 
-namespace Baloo {
-
-class ContactQuery;
-class EmailQuery;
-
-class BALOO_SEARCH_EXPORT ResultIterator
+ResultIterator::ResultIterator()
+    : d(new Private)
 {
-public:
-    ResultIterator();
-
-    Result current();
-    bool next();
-
-private:
-    friend class ContactQuery;
-    friend class EmailQuery;
-
-    class Private;
-    Private* d;
-};
-
+    d->m_firstElement = false;
 }
-#endif // RESULT_ITERATOR_H
+
+bool ResultIterator::next()
+{
+    if (d->m_iter == d->m_end)
+        return false;
+
+    if (d->m_firstElement) {
+        d->m_iter = d->m_mset.begin();
+        d->m_firstElement = false;
+        return (d->m_iter != d->m_end);
+    }
+
+    d->m_iter++;
+    return (d->m_iter != d->m_end);
+}
+
+Result ResultIterator::current()
+{
+    Xapian::Document doc = d->m_iter.get_document();
+
+    Result res;
+    res.setId(QByteArray::number(doc.get_docid()));
+    res.setText(QString::fromStdString(doc.get_data()));
+    return res;
+}

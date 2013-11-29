@@ -26,7 +26,7 @@
 
 #include <KStandardDirs>
 
-using namespace Baloo;
+using namespace Baloo::PIM;
 
 EmailQuery::EmailQuery()
 {

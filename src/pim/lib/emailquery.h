@@ -29,8 +29,9 @@
 #include <Akonadi/Collection>
 
 namespace Baloo {
+namespace PIM {
 
-class BALOO_SEARCH_EXPORT EmailQuery : public Query
+class BALOO_PIM_EXPORT EmailQuery : public Query
 {
 public:
     EmailQuery();
@@ -110,6 +111,7 @@ private:
     int m_limit;
 };
 
+}
 }
 
 #endif // _EMAIL_QUERY_H

@@ -28,7 +28,7 @@
 #include <KDebug>
 #include <KStandardDirs>
 
-using namespace Baloo;
+using namespace Baloo::PIM;
 
 class ContactQuery::Private {
 public:

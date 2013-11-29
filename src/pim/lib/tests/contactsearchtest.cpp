@@ -29,6 +29,8 @@
 
 #include <Akonadi/Contact/ContactSearchJob>
 
+using namespace Baloo::PIM;
+
 class App : public QApplication {
     Q_OBJECT
 public:
@@ -66,11 +68,11 @@ void App::main()
     kDebug() << "Query started";
 #endif
 
-    Baloo::ContactQuery q;
+    ContactQuery q;
     q.matchEmail("t");
-    q.setMatchCriteria(Baloo::ContactQuery::StartsWithMatch);
+    q.setMatchCriteria(ContactQuery::StartsWithMatch);
 
-    Baloo::ResultIterator iter = q.exec();
+    ResultIterator iter = q.exec();
     while (iter.next()) {
         kDebug() << iter.current().id();
     }

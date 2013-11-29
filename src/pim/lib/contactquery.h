@@ -20,25 +20,49 @@
  *
  */
 
-#ifndef QUERY_H
-#define QUERY_H
+#ifndef CONTACTQUERY_H
+#define CONTACTQUERY_H
 
-#include "search_export.h"
-#include <QByteArray>
+#include <QString>
+#include "query.h"
 
 namespace Baloo {
+namespace PIM {
 
-class ResultIterator;
-
-class BALOO_SEARCH_EXPORT Query
+/**
+ * Query for a list of contacts matching a criteria
+ */
+class BALOO_PIM_EXPORT ContactQuery : public Query
 {
 public:
-    Query();
-    virtual ~Query();
-    virtual ResultIterator exec() = 0;
+    ContactQuery();
+    ~ContactQuery();
 
-    static Query* fromJSON(const QByteArray& json);
+    void matchName(const QString& name);
+    void matchNickname(const QString& nick);
+    void matchEmail(const QString& email);
+    void matchUID(const QString& uid);
+    void match(const QString& str);
+
+    enum MatchCriteria {
+        ExactMatch,
+        StartsWithMatch
+    };
+
+    void setMatchCriteria(MatchCriteria m);
+    MatchCriteria matchCriteria() const;
+
+    ResultIterator exec();
+
+    int limit() const;
+    void setLimit(int limit);
+
+private:
+    class Private;
+    Private* d;
 };
 
 }
-#endif // QUERY_H
+}
+
+#endif // CONTACTQUERY_H

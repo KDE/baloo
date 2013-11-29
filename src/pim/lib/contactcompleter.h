@@ -20,46 +20,28 @@
  *
  */
 
-#ifndef RESULT_H
-#define RESULT_H
+#ifndef CONTACTCOMPLETER_H
+#define CONTACTCOMPLETER_H
 
 #include <QString>
-#include <QByteArray>
-
-#include "search_export.h"
+#include "pim_export.h"
 
 namespace Baloo {
+namespace PIM {
 
-class BALOO_SEARCH_EXPORT Result
+// FIXME: Make this async!!
+class BALOO_PIM_EXPORT ContactCompleter
 {
 public:
-    Result();
-    ~Result();
+    ContactCompleter(const QString& prefix, int limit = 10);
 
-    QByteArray id();
-    void setId(const QByteArray& id);
-
-    /**
-     * Some text that can be used to display the result
-     * to the user
-     */
-    QString text();
-    void setText(const QString& text);
-
-    /**
-     * Returns an icon that could be used when displaying
-     * the result.
-     *
-     * Most often there is no icon
-     */
-    //QString icon();
-    //void setIcon(const QString& icon);
+    QStringList complete();
 
 private:
-    class Private;
-    Private* d;
+    QString m_prefix;
+    int m_limit;
 };
 
 }
-
-#endif // RESULT_H
+}
+#endif // CONTACTCOMPLETER_H

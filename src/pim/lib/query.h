@@ -20,42 +20,27 @@
  *
  */
 
-#include "result.h"
+#ifndef QUERY_H
+#define QUERY_H
 
-using namespace Baloo;
+#include "pim_export.h"
+#include <QByteArray>
 
-class Result::Private {
+namespace Baloo {
+namespace PIM {
+
+class ResultIterator;
+
+class BALOO_PIM_EXPORT Query
+{
 public:
-    QByteArray id;
-    QString text;
+    Query();
+    virtual ~Query();
+    virtual ResultIterator exec() = 0;
+
+    static Query* fromJSON(const QByteArray& json);
 };
 
-Result::Result()
-    : d(new Private)
-{
 }
-
-Result::~Result()
-{
-    delete d;
 }
-
-void Result::setId(const QByteArray& id)
-{
-    d->id = id;
-}
-
-QByteArray Result::id()
-{
-    return d->id;
-}
-
-void Result::setText(const QString& text)
-{
-    d->text = text;
-}
-
-QString Result::text()
-{
-    return d->text;
-}
+#endif // QUERY_H

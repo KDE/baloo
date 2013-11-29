@@ -20,9 +20,9 @@
  *
  */
 
-#include "../resultiterator.h"
-#include "../emailquery.h"
+#include "../contactcompleter.h"
 
+#include <iostream>
 #include <QCoreApplication>
 #include <QTimer>
 #include <KDebug>
@@ -32,7 +32,7 @@
 
 #include <KMime/Message>
 
-using namespace Baloo;
+using namespace Baloo::PIM;
 
 class App : public QCoreApplication {
     Q_OBJECT
@@ -43,7 +43,6 @@ public:
 
 private Q_SLOTS:
     void main();
-    void itemsReceived(const Akonadi::Item::List& item);
 };
 
 int main(int argc, char** argv)
@@ -65,41 +64,17 @@ App::App(int& argc, char** argv, int flags): QCoreApplication(argc, argv, flags)
 
 void App::main()
 {
-    EmailQuery query;
-    query.matches(m_query);
-    query.setLimit(100);
+    ContactCompleter com(m_query, 100);
 
-    QList<Akonadi::Entity::Id> m_akonadiIds;
+    QTime timer;
+    timer.start();
 
-    ResultIterator it = query.exec();
-    while (it.next()) {
-        m_akonadiIds << it.current().id().toInt();
-    }
-    kDebug() << "Got" << m_akonadiIds.size() << "items";
+    QStringList emails = com.complete();
+    Q_FOREACH (const QString& em, emails)
+        std::cout << em.toUtf8().data() << std::endl;
 
-    if (m_akonadiIds.isEmpty()) {
-        quit();
-        return;
-    }
-
-    Akonadi::ItemFetchJob* job = new Akonadi::ItemFetchJob(m_akonadiIds);
-    job->fetchScope().fetchFullPayload(true);
-
-    connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),
-            this, SLOT(itemsReceived(Akonadi::Item::List)));
-    connect(job, SIGNAL(finished(KJob*)),
-            this, SLOT(quit()));
-
-    job->start();
+    kDebug() << timer.elapsed();
+    quit();
 }
 
-void App::itemsReceived(const Akonadi::Item::List& itemList)
-{
-    Q_FOREACH (const Akonadi::Item& item, itemList) {
-        KMime::Message::Ptr message = item.payload<KMime::Message::Ptr>();
-        kDebug() << message->subject()->asUnicodeString();
-    }
-}
-
-
-#include "emailquerytest.moc"
+#include "contactcompleter.moc"

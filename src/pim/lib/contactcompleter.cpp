@@ -26,7 +26,7 @@
 #include <KStandardDirs>
 #include <KDebug>
 
-using namespace Baloo;
+using namespace Baloo::PIM;
 
 ContactCompleter::ContactCompleter(const QString& prefix, int limit)
     : m_prefix(prefix.toLower())

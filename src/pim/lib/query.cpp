@@ -27,7 +27,8 @@
 #include <KDebug>
 
 #include <qjson/parser.h>
-using namespace Baloo;
+
+using namespace Baloo::PIM;
 
 Query::Query()
 {

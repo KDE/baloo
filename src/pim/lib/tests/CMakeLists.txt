@@ -13,7 +13,7 @@ target_link_libraries(contactsearch
   ${KDEPIMLIBS_AKONADI_CONTACT_LIBS}
   ${KDEPIMLIBS_KMIME_LIBS}
 
-  baloosearch
+  baloopim
 )
 
 kde4_add_executable(emailquery emailquerytest.cpp)
@@ -26,7 +26,7 @@ target_link_libraries(emailquery
   ${KDEPIMLIBS_KMIME_LIBS}
 
   baloocore
-  baloosearch
+  baloopim
 )
 
 kde4_add_executable(contactcompleter contactcompletiontest.cpp)
@@ -34,5 +34,5 @@ kde4_add_executable(contactcompleter contactcompletiontest.cpp)
 target_link_libraries(contactcompleter
   ${QT_QTCORE_LIBRARY}
   ${KDE4_KDECORE_LIBS}
-  baloosearch
+  baloopim
 )
