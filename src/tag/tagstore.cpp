@@ -70,16 +70,16 @@ void TagStore::slotCreated(const QByteArray& id, const QString& name)
     tag.setName(name);
     // FIXME: Mark the tag as fetched?
 
-    emit tagCreated(tag);
-    emit itemCreated(tag);
+    Q_EMIT tagCreated(tag);
+    Q_EMIT itemCreated(tag);
 }
 
 void TagStore::slotRemoved(const QByteArray& id)
 {
     Tag tag = Tag::fromId(id);
 
-    emit tagRemoved(tag);
-    emit itemRemoved(tag);
+    Q_EMIT tagRemoved(tag);
+    Q_EMIT itemRemoved(tag);
 }
 
 void TagStore::slotModified(const QByteArray& id, const QString& name)
@@ -87,6 +87,6 @@ void TagStore::slotModified(const QByteArray& id, const QString& name)
     Tag tag = Tag::fromId(id);
     tag.setName(name);
 
-    emit tagModified(tag);
+    Q_EMIT tagModified(tag);
 }
 

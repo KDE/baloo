@@ -106,8 +106,8 @@ void TagRemoveJob::doStart()
 
     QDBusConnection::sessionBus().send(message);
 
-    emit itemRemoved(d->tag);
-    emit tagRemoved(d->tag);
+    Q_EMIT itemRemoved(d->tag);
+    Q_EMIT tagRemoved(d->tag);
     emitResult();
 }
 

@@ -142,8 +142,8 @@ void TagRelationCreateJob::Private::createSingleRelation()
 
     QDBusConnection::sessionBus().send(message);
 
-    emit q->relationCreated(m_relation);
-    emit q->tagRelationCreated(m_relation);
+    Q_EMIT q->relationCreated(m_relation);
+    Q_EMIT q->tagRelationCreated(m_relation);
     q->emitResult();
 }
 
@@ -219,8 +219,8 @@ void TagRelationCreateJob::Private::createMultipleRelations()
 
         QDBusConnection::sessionBus().send(message);
 
-        emit q->relationCreated(rel);
-        emit q->tagRelationCreated(rel);
+        Q_EMIT q->relationCreated(rel);
+        Q_EMIT q->tagRelationCreated(rel);
     }
 
     q->emitResult();

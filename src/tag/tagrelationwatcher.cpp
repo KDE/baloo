@@ -66,27 +66,27 @@ void TagRelationWatcher::init()
 void TagRelationWatcher::slotAdded(const QByteArray& tagID, const QByteArray& itemID)
 {
     if (m_tagID.isEmpty() || m_tagID == tagID) {
-        emit tagAdded(Tag::fromId(tagID));
+        Q_EMIT tagAdded(Tag::fromId(tagID));
     }
 
     if (m_itemID.isEmpty() || m_itemID == itemID) {
         Item item;
         item.setId(itemID);
 
-        emit itemAdded(item);
+        Q_EMIT itemAdded(item);
     }
 }
 
 void TagRelationWatcher::slotRemoved(const QByteArray& tagID, const QByteArray& itemID)
 {
     if (m_tagID.isEmpty() || m_tagID == tagID) {
-        emit tagRemoved(Tag::fromId(tagID));
+        Q_EMIT tagRemoved(Tag::fromId(tagID));
     }
 
     if (m_itemID.isEmpty() || m_itemID == itemID) {
         Item item;
         item.setId(itemID);
 
-        emit itemRemoved(item);
+        Q_EMIT itemRemoved(item);
     }
 }

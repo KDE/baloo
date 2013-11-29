@@ -28,7 +28,7 @@ class FileIndexerConfigTest : public QObject
 {
     Q_OBJECT
 
-private slots:
+private Q_SLOTS:
     void testShouldFolderBeIndexed();
     void testShouldBeIndexed();
     void testExcludeFilterOnFolders();

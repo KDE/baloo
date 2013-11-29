@@ -115,8 +115,8 @@ void TagRelationRemoveJob::doStart()
 
         QDBusConnection::sessionBus().send(message);
 
-        emit relationRemoved(rel);
-        emit tagRelationRemoved(rel);
+        Q_EMIT relationRemoved(rel);
+        Q_EMIT tagRelationRemoved(rel);
     }
 
     emitResult();

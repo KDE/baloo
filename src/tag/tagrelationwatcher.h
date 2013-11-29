@@ -43,14 +43,14 @@ public:
 
     // FIXME: Maybe we should allow watching multiple tags over here?
     //        There is no extra cost.
-signals:
+Q_SIGNALS:
     void tagAdded(const Baloo::Tag& tag);
     void tagRemoved(const Baloo::Tag& tag);
 
     void itemAdded(const Baloo::Item& item);
     void itemRemoved(const Baloo::Item& item);
 
-private slots:
+private Q_SLOTS:
     void slotAdded(const QByteArray& tagID, const QByteArray& itemID);
     void slotRemoved(const QByteArray& tagID, const QByteArray& itemID);
 

@@ -53,10 +53,10 @@ public:
         Error_TagDoesNotExist = 3
     };
 
-signals:
+Q_SIGNALS:
     void tagReceived(const Baloo::Tag& tag);
 
-private slots:
+private Q_SLOTS:
     void doStart();
 
 private:

@@ -412,7 +412,7 @@ void FileWatch::slotDeviceMounted(const Baloo::RemovableMediaCache::Entry* entry
             const QString mountPath = group.readEntry("mount path", QString());
             if (!mountPath.isEmpty()) {
                 const QStringList folders = group.readPathEntry("folders", QStringList());
-                foreach(const QString & folder, folders) {
+                Q_FOREACH (const QString & folder, folders) {
                     QString path = mountPath + folder;
                     fileIndexer.indexFolder(path, true, false);
                 }

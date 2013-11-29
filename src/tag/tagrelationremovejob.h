@@ -46,10 +46,10 @@ public:
         Error_RelationDoesNotExist,
         Error_InvalidTagId
     };
-signals:
+Q_SIGNALS:
     void tagRelationRemoved(const Baloo::TagRelation& relation);
 
-private slots:
+private Q_SLOTS:
     void doStart();
 
 private:

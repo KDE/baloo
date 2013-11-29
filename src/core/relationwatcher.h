@@ -35,7 +35,7 @@ public:
     Item from();
     Item to();
 
-signals:
+Q_SIGNALS:
     // vHanda: Maybe we should only be emitting the item id on removal?
     void fromAdded(const Baloo::Item& item);
     void fromRemoved(const Baloo::Item& item);

@@ -53,10 +53,10 @@ public:
         Error_InvalidTagId,
         Error_ConnectionError
     };
-signals:
+Q_SIGNALS:
     void tagRelationCreated(const Baloo::TagRelation& relation);
 
-private slots:
+private Q_SLOTS:
     void doStart();
     void slotTagFetched(const Baloo::Tag& tag);
     void slotTagFetchJobFinished(KJob* job);

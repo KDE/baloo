@@ -46,10 +46,10 @@ public:
         Error_TagEmptyName = 4
     };
 
-signals:
+Q_SIGNALS:
     void tagCreated(const Baloo::Tag& tag);
 
-private slots:
+private Q_SLOTS:
     void doStart();
 
 private:

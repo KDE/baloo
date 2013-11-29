@@ -48,10 +48,10 @@ public:
         Error_InvalidTagId
     };
 
-signals:
+Q_SIGNALS:
     void tagRelationReceived(const Baloo::TagRelation& relation);
 
-private slots:
+private Q_SLOTS:
     void doStart();
     void slotTagReceived(const Baloo::Tag& tag);
 

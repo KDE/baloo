@@ -106,8 +106,8 @@ void TagSaveJob::doStart()
 
     QDBusConnection::sessionBus().send(message);
 
-    emit itemSaved(d->tag);
-    emit tagSaved(d->tag);
+    Q_EMIT itemSaved(d->tag);
+    Q_EMIT tagSaved(d->tag);
     emitResult();
 }
 

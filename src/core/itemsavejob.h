@@ -38,7 +38,7 @@ public:
     explicit ItemSaveJob(QObject* parent = 0);
     virtual ~ItemSaveJob();
 
-signals:
+Q_SIGNALS:
     void itemSaved(const Baloo::Item& item);
 };
 

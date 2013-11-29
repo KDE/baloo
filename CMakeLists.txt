@@ -9,6 +9,7 @@ find_package(QJSON REQUIRED)
 find_package(KFileMetaData)
 
 include(KDE4Defaults)
+add_definitions(-DQT_NO_KEYWORDS)
 
 include_directories(
   ${QT_INCLUDES}

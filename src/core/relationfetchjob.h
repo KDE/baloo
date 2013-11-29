@@ -38,7 +38,7 @@ public:
     explicit RelationFetchJob(QObject* parent = 0);
     virtual ~RelationFetchJob();
 
-signals:
+Q_SIGNALS:
     void relationReceived(const Baloo::Relation& relation);
     void fromReceived(const Baloo::Item& from);
     void toReceived(const Baloo::Item& to);

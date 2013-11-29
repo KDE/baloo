@@ -39,7 +39,7 @@ public:
     explicit ItemFetchJob(QObject* parent);
     virtual ~ItemFetchJob();
 
-signals:
+Q_SIGNALS:
     void itemReceived(const Baloo::Item& item);
 };
 

@@ -37,7 +37,7 @@ class App : public QCoreApplication {
 public:
     App(int& argc, char** argv, int flags = ApplicationFlags);
 
-private slots:
+private Q_SLOTS:
     void main();
 
     void slotTagCreatedFromJob(const Baloo::Tag& tag);

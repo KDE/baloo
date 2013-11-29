@@ -35,7 +35,7 @@ class TagTests : public QObject
 public:
     explicit TagTests(QObject* parent = 0);
 
-private slots:
+private Q_SLOTS:
     void init();
     void initTestCase();
     void cleanupTestCase();

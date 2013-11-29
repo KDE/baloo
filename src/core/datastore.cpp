@@ -40,7 +40,7 @@ void DataStore::setWatchEnabled(bool status)
 {
     if (m_watchEnabled != status) {
         m_watchEnabled = status;
-        emit watchStatusChanged(status);
+        Q_EMIT watchStatusChanged(status);
     }
 }
 

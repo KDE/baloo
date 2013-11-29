@@ -28,7 +28,7 @@ class IndexCleanerTest : public QObject
 {
     Q_OBJECT
 
-private slots:
+private Q_SLOTS:
     void testConstructExcludeFolderFilter();
     void testConstructExcludeFiltersFolderFilter1();
     void testConstructExcludeFiltersFolderFilter2();

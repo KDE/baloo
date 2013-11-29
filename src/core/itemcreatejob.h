@@ -38,7 +38,7 @@ public:
     explicit ItemCreateJob(QObject* parent = 0);
     virtual ~ItemCreateJob();
 
-signals:
+Q_SIGNALS:
     void itemCreated(const Baloo::Item& item);
 };
 

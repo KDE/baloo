@@ -38,7 +38,7 @@ public:
     explicit ItemRemoveJob(QObject* parent = 0);
     virtual ~ItemRemoveJob();
 
-signals:
+Q_SIGNALS:
     void itemRemoved(const Baloo::Item& item);
 };
 

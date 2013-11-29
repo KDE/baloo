@@ -70,7 +70,7 @@ void TagTests::init()
 
 void TagTests::insertTags(const QStringList& tags)
 {
-    foreach (const QString& tag, tags) {
+    Q_FOREACH (const QString& tag, tags) {
         QSqlQuery insertQ(m_con->d->db());
         insertQ.prepare("INSERT INTO tags (name) VALUES (?)");
         insertQ.addBindValue(tag);

@@ -55,9 +55,9 @@ KTempDir* createTmpFolders(const QStringList& folders)
         delete tmpDir;
         tmpDir = new KTempDir(QLatin1String("/tmp/"));
     }
-    foreach(const QString & f, folders) {
+    Q_FOREACH (const QString & f, folders) {
         QDir dir(tmpDir->name());
-        foreach(const QString & sf, f.split('/', QString::SkipEmptyParts)) {
+        Q_FOREACH (const QString & sf, f.split('/', QString::SkipEmptyParts)) {
             if (!dir.exists(sf)) {
                 dir.mkdir(sf);
             }

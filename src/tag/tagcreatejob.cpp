@@ -104,7 +104,7 @@ void TagCreateJob::doStart()
 
     QDBusConnection::sessionBus().send(message);
 
-    emit itemCreated(d->tag);
-    emit tagCreated(d->tag);
+    Q_EMIT itemCreated(d->tag);
+    Q_EMIT tagCreated(d->tag);
     emitResult();
 }

@@ -12,7 +12,6 @@ set(BALOO_PIM_LIB_SRCS
 )
 
 add_definitions(${KDE4_ENABLE_EXCEPTIONS})
-add_definitions(-DQT_NO_KEYWORDS)
 
 kde4_add_library(baloopim SHARED ${BALOO_PIM_LIB_SRCS})
 

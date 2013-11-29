@@ -37,7 +37,7 @@ public:
     explicit RelationCreateJob(QObject* parent = 0);
     virtual ~RelationCreateJob();
 
-signals:
+Q_SIGNALS:
     void relationCreated(const Baloo::Relation& relation);
 };
 

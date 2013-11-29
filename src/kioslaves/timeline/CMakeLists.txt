@@ -1,5 +1,4 @@
 project(kioslave-timeline)
-add_definitions(-DQT_NO_KEYWORDS)
 
 include_directories(
   ${QT_INCLUDES}

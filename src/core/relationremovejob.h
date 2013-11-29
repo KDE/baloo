@@ -37,7 +37,7 @@ public:
     explicit RelationRemoveJob(QObject* parent = 0);
     virtual ~RelationRemoveJob();
 
-signals:
+Q_SIGNALS:
     void relationRemoved(const Baloo::Relation& relation);
 };
 

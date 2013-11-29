@@ -109,8 +109,8 @@ void TagRelationFetchJob::doStart()
             rel.tag().setId(serialize("tag", id));
             rel.tag().setName(name);
 
-            emit relationReceived(rel);
-            emit tagRelationReceived(rel);
+            Q_EMIT relationReceived(rel);
+            Q_EMIT tagRelationReceived(rel);
             found = true;
         }
 
@@ -149,8 +149,8 @@ void TagRelationFetchJob::slotTagReceived(const Tag& tag)
     if (query.next()) {
         d->relation.item().setId(query.value(0).toByteArray());
 
-        emit relationReceived(d->relation);
-        emit tagRelationReceived(d->relation);
+        Q_EMIT relationReceived(d->relation);
+        Q_EMIT tagRelationReceived(d->relation);
         emitResult();
     }
     else {

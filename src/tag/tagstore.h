@@ -40,12 +40,12 @@ public:
 
     virtual bool supportsWatching() const { return true; }
 
-signals:
+Q_SIGNALS:
     void tagCreated(const Baloo::Tag& tag);
     void tagRemoved(const Baloo::Tag& tag);
     void tagModified(const Baloo::Tag& tag);
 
-private slots:
+private Q_SLOTS:
     void slotWatchStatusChanged(bool status);
     void slotCreated(const QByteArray& id, const QString& name);
     void slotRemoved(const QByteArray& id);

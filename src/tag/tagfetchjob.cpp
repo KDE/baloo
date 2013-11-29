@@ -97,8 +97,8 @@ void TagFetchJob::doStart()
             return;
         }
 
-        emit itemReceived(d->tag);
-        emit tagReceived(d->tag);
+        Q_EMIT itemReceived(d->tag);
+        Q_EMIT tagReceived(d->tag);
     }
     else if (d->tag.name().size()) {
         query.prepare("select id from tags where name = ?");
@@ -122,8 +122,8 @@ void TagFetchJob::doStart()
             return;
         }
 
-        emit itemReceived(d->tag);
-        emit tagReceived(d->tag);
+        Q_EMIT itemReceived(d->tag);
+        Q_EMIT tagReceived(d->tag);
     }
     else {
         query.prepare("select id, name from tags");
@@ -143,8 +143,8 @@ void TagFetchJob::doStart()
             tag.setId(serialize("tag", id));
             tag.setName(name);
 
-            emit itemReceived(tag);
-            emit tagReceived(tag);
+            Q_EMIT itemReceived(tag);
+            Q_EMIT tagReceived(tag);
         }
     }
 

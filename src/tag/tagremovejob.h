@@ -46,10 +46,10 @@ public:
         Error_TagDoesNotExist
     };
 
-signals:
+Q_SIGNALS:
     void tagRemoved(const Baloo::Tag& tag);
 
-private slots:
+private Q_SLOTS:
     void doStart();
 
 private:
