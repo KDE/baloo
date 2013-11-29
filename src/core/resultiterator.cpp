@@ -49,7 +49,8 @@ ResultIterator::ResultIterator()
 
 ResultIterator::~ResultIterator()
 {
-    d->store->close(d->queryId);
+    if (d->store)
+        d->store->close(d->queryId);
     delete d;
 }
 
