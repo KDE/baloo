@@ -168,6 +168,9 @@ ResultIterator Query::exec()
             break;
     }
 
+    if (!storeMatch)
+        return ResultIterator();
+
     int id = storeMatch->exec(*this);
     return ResultIterator(id, storeMatch);
 
