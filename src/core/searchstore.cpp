@@ -22,6 +22,11 @@
 
 #include "searchstore.h"
 
+#include <KDebug>
+#include <KService>
+#include <KServiceTypeTrader>
+#include <QThreadStorage>
+
 using namespace Baloo;
 
 SearchStore::SearchStore(QObject* parent)
@@ -51,4 +56,40 @@ QString SearchStore::text(int)
 QString SearchStore::property(int, const QString&)
 {
     return QString();
+}
+
+typedef QList<SearchStore*> SearchStoreList;
+QThreadStorage<SearchStoreList*> threadStorage;
+
+//
+// Search Stores
+//
+// static
+QList<SearchStore*> SearchStore::searchStores()
+{
+    if (threadStorage.hasLocalData())
+        return *threadStorage.localData();
+
+    // Get all the plugins
+    KService::List plugins = KServiceTypeTrader::self()->query("BalooSearchStore");
+
+    QList<Baloo::SearchStore*> stores;
+    KService::List::const_iterator it;
+    for (it = plugins.constBegin(); it != plugins.constEnd(); it++) {
+        KService::Ptr service = *it;
+
+        QString error;
+        Baloo::SearchStore* st = service->createInstance<Baloo::SearchStore>(0, QVariantList(), &error);
+        if (!st) {
+            kError() << "Could not create Extractor: " << service->library();
+            kError() << error;
+            continue;
+        }
+
+        stores << st;
+    }
+
+    threadStorage.setLocalData(new SearchStoreList(stores));
+    return stores;
+
 }

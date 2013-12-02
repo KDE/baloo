@@ -29,8 +29,6 @@
 #include <QList>
 
 #include <KDebug>
-#include <KService>
-#include <KServiceTypeTrader>
 
 using namespace Baloo;
 
@@ -118,34 +116,6 @@ void Query::setLimit(uint limit)
     d->m_limit = limit;
 }
 
-namespace {
-
-QList<Baloo::SearchStore*> allSearchStores()
-{
-    // Get all the plugins
-    KService::List plugins = KServiceTypeTrader::self()->query("BalooSearchStore");
-
-    QList<Baloo::SearchStore*> stores;
-    KService::List::const_iterator it;
-    for (it = plugins.constBegin(); it != plugins.constEnd(); it++) {
-        KService::Ptr service = *it;
-
-        QString error;
-        Baloo::SearchStore* st = service->createInstance<Baloo::SearchStore>(0, QVariantList(), &error);
-        if (!st) {
-            kError() << "Could not create Extractor: " << service->library();
-            kError() << error;
-            continue;
-        }
-
-        stores << st;
-    }
-
-    return stores;
-}
-
-}
-
 ResultIterator Query::exec()
 {
     // vHanda: Maybe this should default to allow searches on all search stores?
@@ -153,7 +123,7 @@ ResultIterator Query::exec()
     if (types().isEmpty())
         return ResultIterator();
 
-    QList<SearchStore*> stores = allSearchStores();
+    QList<SearchStore*> stores = SearchStore::searchStores();
 
     SearchStore* storeMatch = 0;
     Q_FOREACH (SearchStore* store, stores) {
