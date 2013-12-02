@@ -49,5 +49,8 @@ int main(int argc, char** argv) {
 
     QObject::connect(&filewatcher, SIGNAL(indexFile(QString)),
                      &fileIndexer, SLOT(indexFile(QString)));
+    QObject::connect(&filewatcher, SIGNAL(installedWatches()),
+                     &fileIndexer, SLOT(update()));
+
     return app.exec();
 }

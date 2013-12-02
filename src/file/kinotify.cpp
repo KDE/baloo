@@ -189,6 +189,9 @@ public:
         if (!dirIterators.isEmpty()) {
             QMetaObject::invokeMethod(q, "_k_addWatches", Qt::QueuedConnection);
         }
+        else {
+            Q_EMIT q->installedWatches();
+        }
 
         return addedWatchSuccessfully;
     }

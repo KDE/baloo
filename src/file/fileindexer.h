@@ -60,6 +60,12 @@ Q_SIGNALS:
 
 public Q_SLOTS:
     /**
+     * Checks if the file system needs to be scanned and updates the folders
+     * accordingly
+     */
+    void update();
+
+    /**
      * @brief Translated status message of the current Indexer behaviour.
      *
      * @since 4.11
@@ -130,6 +136,7 @@ private Q_SLOTS:
 
 private:
     IndexScheduler* m_indexScheduler;
+    bool m_startupUpdateDone;
 };
 }
 

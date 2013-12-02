@@ -148,6 +148,8 @@ FileWatch::FileWatch(Database* db, QObject* parent)
             this, SLOT(slotFileClosedAfterWrite(QString)));
     connect(m_dirWatch, SIGNAL(watchUserLimitReached(QString)),
             this, SLOT(slotInotifyWatchUserLimitReached(QString)));
+    connect(m_dirWatch, SIGNAL(installedWatches()),
+            this, SIGNAL(installedWatches()));
 
     // recursively watch the whole home dir
 

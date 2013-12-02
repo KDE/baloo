@@ -47,6 +47,7 @@ public:
 
 Q_SIGNALS:
     void indexFile(const QString& string);
+    void installedWatches();
 
 private Q_SLOTS:
     void slotFileMoved(const QString& from, const QString& to);

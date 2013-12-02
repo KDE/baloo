@@ -31,6 +31,7 @@ using namespace Baloo;
 
 FileIndexer::FileIndexer(Database* db, QObject* parent)
     : QObject(parent)
+    , m_startupUpdateDone(false)
 {
     // Create the configuration instance singleton (for thread-safety)
     // ==============================================================
@@ -43,11 +44,6 @@ FileIndexer::FileIndexer(Database* db, QObject* parent)
     // setup status connections
     connect(m_indexScheduler, SIGNAL(statusStringChanged()),
             this, SIGNAL(statusStringChanged()));
-
-    // start initial indexing honoring the hidden config option to disable it
-    if (FileIndexerConfig::self()->isInitialRun() || !FileIndexerConfig::self()->initialUpdateDisabled()) {
-        m_indexScheduler->updateAll();
-    }
 
     // Connect some signals used in the DBus interface
     connect(this, SIGNAL(statusStringChanged()),
@@ -66,9 +62,20 @@ FileIndexer::FileIndexer(Database* db, QObject* parent)
 
 }
 
-
 FileIndexer::~FileIndexer()
 {
+}
+
+void FileIndexer::update()
+{
+    if (m_startupUpdateDone)
+        return;
+
+    // start initial indexing honoring the hidden config option to disable it
+    if (FileIndexerConfig::self()->isInitialRun() || !FileIndexerConfig::self()->initialUpdateDisabled()) {
+        m_indexScheduler->updateAll();
+    }
+    m_startupUpdateDone = true;
 }
 
 void FileIndexer::slotBasicIndexingDone()

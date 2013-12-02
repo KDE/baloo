@@ -181,6 +181,12 @@ Q_SIGNALS:
      */
     void watchUserLimitReached(const QString& path);
 
+    /**
+     * This is emitted once watches have been installed in all the directories
+     * indicated by addWatch
+     */
+    void installedWatches();
+
 private Q_SLOTS:
     void slotEvent(int);
     void slotClearCookies();
