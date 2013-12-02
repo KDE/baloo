@@ -42,6 +42,8 @@ public:
     bool next();
 
     Item::Id id() const;
+    QUrl url() const;
+
     QString text() const;
     QString icon() const;
 

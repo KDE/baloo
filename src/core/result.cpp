@@ -29,6 +29,7 @@ public:
     QByteArray id;
     QString text;
     QString icon;
+    QUrl url;
 };
 
 Result::Result()
@@ -71,4 +72,13 @@ void Result::setIcon(const QString& icon)
     d->icon = icon;
 }
 
+QUrl Result::url() const
+{
+    return d->url;
+}
+
+void Result::setUrl(const QUrl& url)
+{
+    d->url = url;
+}
 

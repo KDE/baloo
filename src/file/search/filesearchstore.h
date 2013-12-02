@@ -25,6 +25,7 @@
 
 #include "searchstore.h"
 #include <xapian.h>
+#include <QSqlDatabase>
 
 namespace Baloo {
 
@@ -32,6 +33,7 @@ class FileSearchStore : public SearchStore
 {
 public:
     FileSearchStore(QObject* parent, const QVariantList& args);
+    virtual ~FileSearchStore();
 
     /**
      * Overwrite the default DB path. Generally used for testing
@@ -44,6 +46,7 @@ public:
     virtual bool next(int queryId);
 
     virtual Item::Id id(int queryId);
+    virtual QUrl url(int queryId);
 
 private:
     Xapian::Query toXapianQuery(const Term& term);
@@ -58,6 +61,7 @@ private:
     int m_nextId;
 
     QString m_dbPath;
+    QSqlDatabase* m_sqlDb;
 };
 
 }

@@ -24,6 +24,7 @@
 #include "item.h"
 #include "term.h"
 #include "query.h"
+#include "filemapping.h"
 
 #include <xapian.h>
 #include <QVector>
@@ -38,6 +39,18 @@ FileSearchStore::FileSearchStore(QObject* parent, const QVariantList&)
 {
     m_dbPath = KStandardDirs::locateLocal("data", "baloo/file/");
     m_nextId = 1;
+
+    const QString conName = "filesearchstore" + QString::number(qrand());
+    m_sqlDb = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE3", conName));
+    m_sqlDb->setDatabaseName(m_dbPath + "/fileMap.sqlite3");
+    kDebug() << "SQL OPEN: "<< m_sqlDb->open();
+}
+
+FileSearchStore::~FileSearchStore()
+{
+    const QString conName = m_sqlDb->connectionName();
+    delete m_sqlDb;
+    QSqlDatabase::removeDatabase(conName);
 }
 
 QStringList FileSearchStore::types()
@@ -110,11 +123,15 @@ namespace {
 
 int FileSearchStore::exec(const Query& query)
 {
+    Xapian::Database db(m_dbPath.toStdString());
+
     Xapian::Query xapQ = toXapianQuery(query.term());
     if (query.searchString().size()) {
         std::string str = query.searchString().toStdString();
 
         Xapian::QueryParser parser;
+        parser.set_database(db);
+
         int flags = Xapian::QueryParser::FLAG_DEFAULT | Xapian::QueryParser::FLAG_PARTIAL;
         Xapian::Query q = parser.parse_query(str, flags);
 
@@ -126,7 +143,6 @@ int FileSearchStore::exec(const Query& query)
         xapQ = andQuery(xapQ, Xapian::Query(t.toStdString()));
     }
 
-    Xapian::Database db(m_dbPath.toStdString());
     Xapian::Enquire enquire(db);
     enquire.set_query(xapQ);
 
@@ -144,10 +160,25 @@ void FileSearchStore::close(int queryId)
 
 Item::Id FileSearchStore::id(int queryId)
 {
+    Q_ASSERT_X(m_queryMap.contains(queryId), "FileSearchStore::id",
+               "Passed a queryId which does not exist");
+
     Iter& it = m_queryMap[queryId];
     uint id = *(it.it);
 
     return serialize("file", id);
+}
+
+QUrl FileSearchStore::url(int queryId)
+{
+    Iter& it = m_queryMap[queryId];
+    uint id = *(it.it);
+
+    FileMapping file(id);
+    file.fetch(*m_sqlDb);
+
+    kDebug() << queryId << file.url();
+    return QUrl::fromLocalFile(file.url());
 }
 
 bool FileSearchStore::next(int queryId)

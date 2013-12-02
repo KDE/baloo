@@ -33,6 +33,11 @@ SearchStore::~SearchStore()
 {
 }
 
+QUrl SearchStore::url(int)
+{
+    return QUrl();
+}
+
 QString SearchStore::icon(int)
 {
     return QString();

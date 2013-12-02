@@ -70,6 +70,14 @@ Item::Id ResultIterator::id() const
         return Item::Id();
 }
 
+QUrl ResultIterator::url() const
+{
+    if (d->store)
+        return d->store->url(d->queryId);
+    else
+        return QUrl();
+}
+
 QString ResultIterator::text() const
 {
     if (d->store)
@@ -92,6 +100,7 @@ Result ResultIterator::result() const
     res.setId(id());
     res.setText(text());
     res.setIcon(icon());
+    res.setUrl(url());
 
     return res;
 }

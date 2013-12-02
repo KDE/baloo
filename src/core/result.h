@@ -25,6 +25,7 @@
 
 #include <QString>
 #include <QByteArray>
+#include <QUrl>
 
 #include "core_export.h"
 
@@ -54,6 +55,13 @@ public:
      */
     QString icon() const;
     void setIcon(const QString& icon);
+
+    /**
+     * Represents the url of the item returned. The item
+     * may not always contain a url
+     */
+    QUrl url() const;
+    void setUrl(const QUrl& url);
 
 private:
     class Private;

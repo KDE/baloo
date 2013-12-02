@@ -25,6 +25,7 @@
 
 #include <QString>
 #include <QHash>
+#include <QUrl>
 #include <KService>
 
 #include "core_export.h"
@@ -59,6 +60,7 @@ public:
 
     virtual Item::Id id(int queryId) = 0;
 
+    virtual QUrl url(int queryId);
     virtual QString text(int queryId);
     virtual QString icon(int queryId);
     virtual QString property(int queryId, const QString& propName);
