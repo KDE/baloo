@@ -81,14 +81,14 @@ bool IgnoringKInotify::filterWatch(const QString& path, WatchEvents& modes, Watc
     // earlier ones would have already been tested by this function
     QString file = cpts.last();
 
-    bool shouldFileNameBeIndexed = true;//Nepomuk2::FileIndexerConfig::self()->shouldFileBeIndexed(file);
+    bool shouldFileNameBeIndexed = Baloo::FileIndexerConfig::self()->shouldFileBeIndexed(file);
     if (!shouldFileNameBeIndexed) {
         // If the path should not be indexed then we do not want to watch it
         // This is an optimization
         return false;
     }
 
-    bool shouldFolderBeIndexed = true;//Nepomuk2::FileIndexerConfig::self()->folderInFolderList(path);
+    bool shouldFolderBeIndexed = Baloo::FileIndexerConfig::self()->folderInFolderList(path);
 
     // Only watch the index folders for file change.
     // We still need to monitor everything for file creation because directories count as
