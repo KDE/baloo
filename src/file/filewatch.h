@@ -98,7 +98,6 @@ private:
 
     Database* m_db;
 
-    QThread* m_metadataMoverThread;
     MetadataMover* m_metadataMover;
 
 #ifdef BUILD_KINOTIFY

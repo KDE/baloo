@@ -125,14 +125,10 @@ FileWatch::FileWatch(Database* db, QObject* parent)
     m_pathExcludeRegExpCache = new RegExpCache();
     m_pathExcludeRegExpCache->rebuildCacheFromFilterList(defaultExcludeFilterList());
 
-    // start the mover thread
-    m_metadataMoverThread = new QThread(this);
-    m_metadataMoverThread->start();
     m_metadataMover = new MetadataMover(m_db, this);
     connect(m_metadataMover, SIGNAL(movedWithoutData(QString)),
             this, SIGNAL(indexFile(QString)),
             Qt::QueuedConnection);
-    m_metadataMover->moveToThread(m_metadataMoverThread);
 
     m_fileModificationQueue = new ActiveFileQueue(this);
     connect(m_fileModificationQueue, SIGNAL(urlTimeout(QString)),
@@ -191,10 +187,6 @@ FileWatch::FileWatch(Database* db, QObject* parent)
 
 FileWatch::~FileWatch()
 {
-    kDebug();
-    m_metadataMoverThread->quit();
-    m_metadataMoverThread->wait();
-    delete m_metadataMover;
 }
 
 
