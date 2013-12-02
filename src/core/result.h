@@ -35,6 +35,7 @@ class BALOO_CORE_EXPORT Result
 {
 public:
     Result();
+    Result(const Result& rhs);
     ~Result();
 
     QByteArray id() const;

@@ -37,6 +37,11 @@ Result::Result()
 {
 }
 
+Result::Result(const Result& rhs)
+    : d(new Private(*rhs.d))
+{
+}
+
 Result::~Result()
 {
     delete d;
