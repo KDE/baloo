@@ -22,6 +22,7 @@
 #include "database.h"
 
 #include <QTimer>
+#include <QFileInfo>
 #include <QSqlQuery>
 #include <QSqlError>
 
@@ -167,6 +168,17 @@ void MetadataMover::updateMetadata(const QString& from, const QString& to)
             kError() << q.lastError().text();
     }
 
+    if (!fromFile.id()) {
+        //
+        // If we have no metadata yet we need to tell the file indexer (if running) so it can
+        // create the metadata in case the target folder is configured to be indexed.
+        //
+        Q_EMIT movedWithoutData(to);
+    }
+
+    if (!QFileInfo(from).isDir())
+        return;
+
     QSqlQuery query(m_db->sqlDatabase());
     query.prepare("update files set url = ':t' || substr(url, :fs) "
                   "where url like ':f/%'");
@@ -177,14 +189,6 @@ void MetadataMover::updateMetadata(const QString& from, const QString& to)
 
     if (!query.exec()) {
         kError() << "Big query failed:" << query.lastError().text();
-    }
-
-    if (!fromFile.id()) {
-        //
-        // If we have no metadata yet we need to tell the file indexer (if running) so it can
-        // create the metadata in case the target folder is configured to be indexed.
-        //
-        Q_EMIT movedWithoutData(to);
     }
 }
 
