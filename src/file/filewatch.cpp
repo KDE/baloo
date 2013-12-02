@@ -111,12 +111,10 @@ FileWatch::FileWatch(Database* db, QObject* parent)
 #ifdef BUILD_KINOTIFY
     , m_dirWatch(0)
 #endif
-    , m_isIdle(true)
 {
     // Create the configuration instance singleton (for thread-safety)
     // ==============================================================
     (void)new FileIndexerConfig(this);
-    resetStatusMessage();
 
     // the list of default exclude filters we use here differs from those
     // that can be configured for the file indexer service
@@ -133,12 +131,6 @@ FileWatch::FileWatch(Database* db, QObject* parent)
     m_metadataMover = new MetadataMover(m_db, this);
     connect(m_metadataMover, SIGNAL(movedWithoutData(QString)),
             this, SIGNAL(indexFile(QString)),
-            Qt::QueuedConnection);
-    connect(m_metadataMover, SIGNAL(statusMessage(QString)),
-            this, SLOT(updateStatusMessage(QString)),
-            Qt::QueuedConnection);
-    connect(m_metadataMover, SIGNAL(metadataUpdateStopped()),
-            this, SLOT(resetStatusMessage()),
             Qt::QueuedConnection);
     m_metadataMover->moveToThread(m_metadataMoverThread);
 
@@ -216,16 +208,6 @@ void FileWatch::watchFolder(const QString& path)
                              KInotify::WatchEvents(KInotify::EventMove | KInotify::EventDelete | KInotify::EventDeleteSelf | KInotify::EventCloseWrite | KInotify::EventCreate),
                              KInotify::WatchFlags());
 #endif
-}
-
-bool FileWatch::isUpdatingMetaData() const
-{
-    return !m_isIdle;
-}
-
-QString FileWatch::statusMessage() const
-{
-    return m_statusMessage;
 }
 
 void FileWatch::slotFileMoved(const QString& urlFrom, const QString& urlTo)
@@ -482,24 +464,3 @@ void FileWatch::slotActiveFileQueueTimeout(const QString& url)
     Q_EMIT indexFile(url);
 }
 
-void FileWatch::updateStatusMessage(const QString& newStatus)
-{
-    m_statusMessage = newStatus;
-
-    if (m_isIdle) {
-        Q_EMIT metadataUpdateStarted();
-        m_isIdle = false;
-    }
-
-    Q_EMIT status(1, m_statusMessage);
-}
-
-void FileWatch::resetStatusMessage()
-{
-    m_isIdle = true;
-
-    m_statusMessage = i18n("The File Watcher is idle.");
-
-    Q_EMIT metadataUpdateStopped();
-    Q_EMIT status(0, m_statusMessage);
-}

@@ -92,8 +92,6 @@ void MetadataMover::slotWorkUpdateQueue()
     // lock for initial iteration
     QMutexLocker lock(&m_queueMutex);
 
-    Q_EMIT metadataUpdateStarted();
-
     // work the queue
     if (!m_updateQueue.isEmpty()) {
         UpdateRequest updateRequest = m_updateQueue.dequeue();
@@ -105,14 +103,10 @@ void MetadataMover::slotWorkUpdateQueue()
 
         // an empty second url means deletion
         if (updateRequest.target().isEmpty()) {
-
-            Q_EMIT statusMessage(i18n("Remove metadata from %1", updateRequest.source()));
             removeMetadata(updateRequest.source());
         } else {
             const QString from = updateRequest.source();
             const QString to = updateRequest.target();
-
-            Q_EMIT statusMessage(i18n("Move metadata from %1 to %2", from, to));
 
             // We do NOT get deleted messages for overwritten files! Thus, we
             // have to remove all metadata for overwritten files first.
@@ -129,7 +123,6 @@ void MetadataMover::slotWorkUpdateQueue()
         m_db->sqlDatabase().commit();
         m_db->sqlDatabase().transaction();
 
-        Q_EMIT metadataUpdateStopped();
         m_queueTimer->stop();
     }
 }

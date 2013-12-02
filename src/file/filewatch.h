@@ -46,44 +46,7 @@ public:
     ~FileWatch();
 
 Q_SIGNALS:
-    /**
-     * Emitted each time the status/activity of the FileWatcher changes
-     *
-     * @p status what the watcher is doing
-     *    @arg 0 idle
-     *    @arg 1 working
-     *
-     * @p msg translated status message that indicates what is happening
-     **/
-    Q_SCRIPTABLE void status(int status, QString msg);
-
-    /**
-     * Emitted when the watcher starts to do something
-     */
-    Q_SCRIPTABLE void metadataUpdateStarted();
-
-    /**
-     * Emitted when the watcher stops to do something
-     */
-    Q_SCRIPTABLE void metadataUpdateStopped();
-
     void indexFile(const QString& string);
-
-public Q_SLOTS:
-    /**
-     * Returns if the watcher is doing something
-     *
-     * @return @arg true watcher is working
-     *         @arg false watcher is idle
-     */
-    Q_SCRIPTABLE bool isUpdatingMetaData() const;
-
-    /**
-     * Returns a translated status message that indicates what is happening
-     *
-     * @return translated status string
-     **/
-    Q_SCRIPTABLE QString statusMessage() const;
 
 private Q_SLOTS:
     void slotFileMoved(const QString& from, const QString& to);
@@ -117,20 +80,6 @@ private Q_SLOTS:
 
     void slotActiveFileQueueTimeout(const QString& url);
 
-    /**
-     * @brief When called via MetaMover (signal) the state of the watcher will be active and the status message will be set
-     *
-     * @param newStatus new translated status string telling what the current task is
-     */
-    void updateStatusMessage(const QString& newStatus);
-
-    /**
-     * @brief When called via MetaMover (signal) the state of the watcher is idle
-     *
-     * Sets the status message to indicate that the watcher is idle.
-     */
-    void resetStatusMessage();
-
 private:
     /** Watch a folder, provided it is not already watched*/
     void watchFolder(const QString& path);
@@ -161,12 +110,6 @@ private:
 
     /// queue used to "compress" constant file modifications like downloads
     ActiveFileQueue* m_fileModificationQueue;
-
-    bool m_isIdle;              /**< Current state of the watcher
-                                       * @arg true is idle
-                                       * @arg false is doing something
-                                       */
-    QString m_statusMessage;    /**< temporary saved status message telling what is going on */
 };
 }
 

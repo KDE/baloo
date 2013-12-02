@@ -55,23 +55,6 @@ Q_SIGNALS:
      */
     void movedWithoutData(const QString& path);
 
-    /**
-     * @brief Emitted once for each remove and/or move requests
-     *
-     * @param msg translated msg message indicating what teh watcher is doing
-     */
-    void statusMessage(const QString& msg);
-
-    /**
-     * @brief Emitted once remove/move requests are started
-     */
-    void metadataUpdateStarted();
-
-    /**
-     * @brief Emitted once all remove/move requests are finished
-     */
-    void metadataUpdateStopped();
-
 private Q_SLOTS:
     void slotWorkUpdateQueue();
 
