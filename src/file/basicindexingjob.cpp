@@ -64,9 +64,6 @@ void BasicIndexingJob::doStart()
 
     QFileInfo fileInfo(m_file.url());
 
-    // FIXME: We will need a termGenerator
-    // FIXME: Fetch the type?
-
     Xapian::Document doc;
     doc.add_term('M' + m_mimetype.toStdString());
 
@@ -95,6 +92,8 @@ void BasicIndexingJob::doStart()
     // Types
     QList<QByteArray> types = typesForMimeType(m_mimetype);
     types << QByteArray("File");
+    if (fileInfo.isDir())
+        types << QByteArray("Folder");
 
     Q_FOREACH (const QByteArray& arr, types) {
         QByteArray a = 'T' + arr.toLower();
