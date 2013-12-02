@@ -23,6 +23,8 @@
 #include "filefetchjob.h"
 #include "filemapping.h"
 #include "db.h"
+#include "file.h"
+#include "file_p.h"
 
 #include <QFileInfo>
 #include <QTimer>
@@ -36,20 +38,30 @@ using namespace Baloo;
 
 class FileFetchJob::Private {
 public:
-    FileMapping m_file;
-    QVariantMap m_data;
+    QString url;
+    QByteArray id;
+
+    File m_file;
 };
 
 FileFetchJob::FileFetchJob(const QString& url, QObject* parent)
-    : KJob(parent)
+    : ItemFetchJob(parent)
     , d(new Private)
 {
-    d->m_file.setUrl(url);
+    d->url = url;
+}
+
+FileFetchJob::FileFetchJob(const File& file, QObject* parent)
+    : ItemFetchJob(parent)
+    , d(new Private)
+{
+    d->id = file.id();
+    d->url = file.url();
 }
 
 FileFetchJob::~FileFetchJob()
 {
-
+    delete d;
 }
 
 void FileFetchJob::start()
@@ -59,30 +71,45 @@ void FileFetchJob::start()
 
 void FileFetchJob::doStart()
 {
-    const QString& url = d->m_file.url();
-    if (!QFile::exists(url)) {
+    const QString& url = d->url;
+    if (url.size() && !QFile::exists(url)) {
         setError(Error_FileDoesNotExist);
         setErrorText("File " + url + " does not exist");
         emitResult();
         return;
     }
 
-    if (!d->m_file.fetch(fileMappingDb())) {
+    if (d->id.size() && !d->id.startsWith("file")) {
+        setError(Error_InvalidId);
+        setErrorText("Invalid Id " + QString::fromUtf8(d->id));
+        emitResult();
+        return;
+    }
+
+    FileMapping fileMap;
+    fileMap.setId(deserialize("file", d->id));
+    fileMap.setUrl(d->url);
+
+    if (!fileMap.fetch(fileMappingDb())) {
         // TODO: Send file for indexing!!
         emitResult();
         return;
     }
 
+    const int id = fileMap.id();
+    d->m_file.setId(serialize("file", id));
+    d->m_file.d->url = fileMap.url();
+
     // Fetch data from Xapian
     Xapian::Database db(fileIndexDbPath().toStdString());
     try {
-        Xapian::Document doc = db.get_document(d->m_file.id());
+        Xapian::Document doc = db.get_document(id);
 
         std::string docData = doc.get_data();
         const QByteArray arr(docData.c_str(), docData.length());
 
         QJson::Parser parser;
-        d->m_data = parser.parse(arr).toMap();
+        d->m_file.d->variantMap = parser.parse(arr).toMap();
     }
     catch (const Xapian::DocNotFoundError&){
         // Send file for indexing to baloo_file
@@ -90,16 +117,14 @@ void FileFetchJob::doStart()
     catch (const Xapian::InvalidArgumentError& err) {
         kError() << err.get_msg().c_str();
     }
+
+    Q_EMIT itemReceived(d->m_file);
+    Q_EMIT fileReceived(d->m_file);
     emitResult();
 }
 
-QVariantMap FileFetchJob::data() const
+File FileFetchJob::file() const
 {
-    return d->m_data;
-}
-
-QString FileFetchJob::url() const
-{
-    return d->m_file.url();
+    return d->m_file;
 }
 

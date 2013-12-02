@@ -1,4 +1,5 @@
 set(FILE_LIB_SRCS
+    file.cpp
     filefetchjob.cpp
     filemapping.cpp
     db.cpp

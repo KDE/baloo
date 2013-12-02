@@ -20,51 +20,40 @@
  *
  */
 
-#ifndef FILEFETCHJOB_H
-#define FILEFETCHJOB_H
+#ifndef FILE_H
+#define FILE_H
 
-#include "file_export.h"
-#include "itemfetchjob.h"
+#include "item.h"
+#include "filefetchjob.h"
 #include <QVariantMap>
 
 namespace Baloo {
 
-class File;
+class FilePrivate;
 
-/**
- * The FileFetchJob is responsible for fetching the indexed
- * metadata for a particular file. If the file does not
- * contain any indexed metadata then no data will be returned.
- * However, the file will be sent for indexing.
- */
-class BALOO_FILE_EXPORT FileFetchJob : public ItemFetchJob
+class File : public Item
 {
-    Q_OBJECT
 public:
-    FileFetchJob(const QString& url, QObject* parent = 0);
-    FileFetchJob(const File& file, QObject* parent = 0);
-    ~FileFetchJob();
+    File();
+    File(const QString& url);
+    ~File();
 
-    virtual void start();
+    static File fromId(const Item::Id& id);
 
-    enum Errors {
-        Error_FileDoesNotExist = 1,
-        Error_InvalidId
-    };
+    QString url() const;
 
-    File file() const;
-
-Q_SIGNALS:
-    void fileReceived(const Baloo::File& file);
-
-private Q_SLOTS:
-    void doStart();
+    /**
+     * Gives a variant map of the properties that have been extracted
+     * from the file by the indexer
+     */
+    QVariantMap properties() const;
+    QVariant property(const QString& key) const;
 
 private:
-    class Private;
-    Private* d;
+    FilePrivate* d;
+    friend class FileFetchJob;
 };
 
 }
 
-#endif // FILEFETCHJOB_H
+#endif // FILE_H
