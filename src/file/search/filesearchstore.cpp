@@ -31,6 +31,7 @@
 
 #include <KStandardDirs>
 #include <KDebug>
+#include <KUrl>
 
 using namespace Baloo;
 
@@ -94,6 +95,11 @@ QUrl FileSearchStore::urlFromDoc(const Xapian::docid& docid)
 QString FileSearchStore::prefix(const QString& property)
 {
     return property.toUpper();
+}
+
+QString FileSearchStore::text(int queryId)
+{
+    return KUrl(url(queryId)).fileName();
 }
 
 
