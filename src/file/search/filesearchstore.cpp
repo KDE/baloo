@@ -36,6 +36,8 @@ using namespace Baloo;
 
 FileSearchStore::FileSearchStore(QObject* parent, const QVariantList&)
     : SearchStore(parent)
+    , m_sqlDb(0)
+    , m_mutex(QMutex::Recursive)
 {
     m_dbPath = KStandardDirs::locateLocal("data", "baloo/file/");
     m_nextId = 1;
@@ -123,6 +125,7 @@ namespace {
 
 int FileSearchStore::exec(const Query& query)
 {
+    QMutexLocker lock(&m_mutex);
     Xapian::Database db(m_dbPath.toStdString());
 
     Xapian::Query xapQ = toXapianQuery(query.term());
@@ -155,11 +158,13 @@ int FileSearchStore::exec(const Query& query)
 
 void FileSearchStore::close(int queryId)
 {
+    QMutexLocker lock(&m_mutex);
     m_queryMap.remove(queryId);
 }
 
 Item::Id FileSearchStore::id(int queryId)
 {
+    QMutexLocker lock(&m_mutex);
     Q_ASSERT_X(m_queryMap.contains(queryId), "FileSearchStore::id",
                "Passed a queryId which does not exist");
 
@@ -171,18 +176,19 @@ Item::Id FileSearchStore::id(int queryId)
 
 QUrl FileSearchStore::url(int queryId)
 {
+    QMutexLocker lock(&m_mutex);
     Iter& it = m_queryMap[queryId];
     uint id = *(it.it);
 
     FileMapping file(id);
     file.fetch(*m_sqlDb);
 
-    kDebug() << queryId << file.url();
     return QUrl::fromLocalFile(file.url());
 }
 
 bool FileSearchStore::next(int queryId)
 {
+    QMutexLocker lock(&m_mutex);
     Iter& it = m_queryMap[queryId];
     it.it++;
     return it.it != it.mset.end();

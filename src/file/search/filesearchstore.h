@@ -27,6 +27,8 @@
 #include <xapian.h>
 #include <QSqlDatabase>
 
+#include <QMutex>
+
 namespace Baloo {
 
 class FileSearchStore : public SearchStore
@@ -62,6 +64,7 @@ private:
 
     QString m_dbPath;
     QSqlDatabase* m_sqlDb;
+    QMutex m_mutex;
 };
 
 }
