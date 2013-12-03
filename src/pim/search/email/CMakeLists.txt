@@ -1,0 +1,12 @@
+kde4_add_plugin(baloo_emailsearchstore emailsearchstore.cpp)
+
+target_link_libraries(baloo_emailsearchstore
+    ${QT_QTCORE_LIBRARY}
+    ${KDE4_KDECORE_LIBRARY}
+    ${XAPIAN_LIBRARIES}
+    baloocore
+    baloopim
+)
+
+install(FILES baloo_emailsearchstore.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+install(TARGETS baloo_emailsearchstore DESTINATION ${PLUGIN_INSTALL_DIR})
