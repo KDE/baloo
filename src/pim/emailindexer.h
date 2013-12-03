@@ -23,13 +23,14 @@
 #ifndef EMAILINDEXER_H
 #define EMAILINDEXER_H
 
+#include "abstractindexer.h"
+
 #include <xapian.h>
 
 #include <KMime/Message>
-#include <Akonadi/Item>
 #include <Akonadi/KMime/MessageStatus>
 
-class EmailIndexer
+class EmailIndexer: public AbstractIndexer
 {
 public:
     /**
@@ -38,6 +39,8 @@ public:
      */
     EmailIndexer(const QString& path, const QString& contactDbPath);
     ~EmailIndexer();
+
+    QStringList mimeTypes() const;
 
     void index(const Akonadi::Item& item);
     void updateFlags(const Akonadi::Item& item, const QSet<QByteArray>& added,

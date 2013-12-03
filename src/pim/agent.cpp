@@ -22,6 +22,9 @@
 
 #include "agent.h"
 
+#include "contactindexer.h"
+#include "emailindexer.h"
+
 #include <Akonadi/ItemFetchJob>
 #include <Akonadi/ItemFetchScope>
 #include <Akonadi/ChangeRecorder>
@@ -45,10 +48,10 @@ namespace {
 
 BalooIndexingAgent::BalooIndexingAgent(const QString& id)
     : AgentBase(id)
-    , m_emailIndexer(emailIndexingPath(), emailContactsIndexingPath())
-    , m_contactIndexer(contactIndexingPath())
-{
+ {
     QTimer::singleShot(0, this, SLOT(findUnindexedItems()));
+
+    createIndexers();
 
     m_timer.setInterval(10);
     m_timer.setSingleShot(true);
@@ -69,6 +72,35 @@ BalooIndexingAgent::BalooIndexingAgent(const QString& id)
 
 BalooIndexingAgent::~BalooIndexingAgent()
 {
+}
+
+void BalooIndexingAgent::createIndexers()
+{
+    try {
+        addIndexer(new EmailIndexer(emailIndexingPath(), emailContactsIndexingPath()));
+    }
+    catch (const Xapian::DatabaseError &e) {
+        kError() << "Failed to create email indexer:" << e.get_error_string();
+    }
+
+    try {
+        addIndexer(new ContactIndexer(contactIndexingPath()));
+    }
+    catch (const Xapian::DatabaseError &e) {
+        kError() << "Failed to create contact indexer:" << e.get_error_string();
+    }
+}
+
+void BalooIndexingAgent::addIndexer(AbstractIndexer* indexer)
+{
+    Q_FOREACH (const QString& mimeType, indexer->mimeTypes()) {
+        m_indexers.insert(mimeType, indexer);
+    }
+}
+
+AbstractIndexer* BalooIndexingAgent::indexerForItem(const Akonadi::Item& item)
+{
+    return m_indexers.value(item.mimeType());
 }
 
 void BalooIndexingAgent::findUnindexedItems()
@@ -127,28 +159,39 @@ void BalooIndexingAgent::itemChanged(const Akonadi::Item& item, const QSet<QByte
 {
     Q_UNUSED(partIdentifiers);
 
-    // We should probably just delete the item and add it again?
-    m_emailIndexer.remove(item);
-    m_contactIndexer.remove(item);
-    m_items << item;
-    m_timer.start();
+    AbstractIndexer *indexer = indexerForItem(item);
+    if (indexer) {
+        indexer->remove(item);
+        m_items << item;
+        m_timer.start();
+    }
 }
 
 void BalooIndexingAgent::itemsFlagsChanged(const Akonadi::Item::List& items,
                                            const QSet<QByteArray>& addedFlags,
                                            const QSet<QByteArray>& removedFlags)
 {
+    // Akonadi always sends batch of items of the same type
+    AbstractIndexer *indexer = indexerForItem(items.first());
+    if (!indexer) {
+        return;
+    }
+
     Q_FOREACH (const Akonadi::Item& item, items) {
-        m_emailIndexer.updateFlags(item, addedFlags, removedFlags);
+        indexer->updateFlags(item, addedFlags, removedFlags);
     }
     m_commitTimer.start();
 }
 
 void BalooIndexingAgent::itemsRemoved(const Akonadi::Item::List& items)
 {
+    AbstractIndexer *indexer = indexerForItem(items.first());
+    if (!indexer) {
+        return;
+    }
+
     Q_FOREACH (const Akonadi::Item& item, items) {
-        m_emailIndexer.remove(item);
-        m_contactIndexer.remove(item);
+        indexer->remove(item);
     }
     m_commitTimer.start();
 }
@@ -157,8 +200,9 @@ void BalooIndexingAgent::itemsMoved(const Akonadi::Item::List& items,
                                     const Akonadi::Collection& sourceCollection,
                                     const Akonadi::Collection& destinationCollection)
 {
+    AbstractIndexer *indexer = indexerForItem(items.first());
     Q_FOREACH (const Akonadi::Item& item, items) {
-        m_emailIndexer.move(item.id(), sourceCollection.id(), destinationCollection.id());
+        indexer->move(item.id(), sourceCollection.id(), destinationCollection.id());
     }
     m_commitTimer.start();
 }
@@ -193,11 +237,12 @@ void BalooIndexingAgent::slotItemsRecevied(const Akonadi::Item::List& items)
     QDateTime dt = group.readEntry("lastItem", QDateTime::fromMSecsSinceEpoch(1));
 
     Q_FOREACH (const Akonadi::Item& item, items) {
-        if (item.mimeType() == QLatin1String("message/rfc822"))
-            m_emailIndexer.index(item);
-        else if (item.mimeType() == QLatin1String("text/directory"))
-            m_contactIndexer.index(item);
+        AbstractIndexer *indexer = indexerForItem(item);
+        if (!indexer) {
+            continue;
+        }
 
+        indexer->index(item);
         dt = qMax(dt, item.modificationTime());
     }
     if (initial)
@@ -219,8 +264,9 @@ void BalooIndexingAgent::slotItemFetchFinished(KJob*)
 
 void BalooIndexingAgent::slotCommitTimerElapsed()
 {
-    m_emailIndexer.commit();
-    m_contactIndexer.commit();
+    Q_FOREACH (AbstractIndexer *indexer, m_indexers) {
+        indexer->commit();
+    }
 }
 
 AKONADI_AGENT_MAIN(BalooIndexingAgent)

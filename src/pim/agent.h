@@ -23,16 +23,14 @@
 #ifndef AGENT_H
 #define AGENT_H
 
-#include "emailindexer.h"
-#include "contactindexer.h"
-
 #include <akonadi/agentbase.h>
 #include <akonadi/collection.h>
 
-#include <QLinkedList>
 #include <QTimer>
+#include <QDateTime>
 
 class KJob;
+class AbstractIndexer;
 
 class BalooIndexingAgent : public Akonadi::AgentBase, public Akonadi::AgentBase::ObserverV3
 {
@@ -64,13 +62,16 @@ private Q_SLOTS:
     void slotCommitTimerElapsed();
 
 private:
+    void createIndexers();
+    void addIndexer(AbstractIndexer *indexer);
+    AbstractIndexer* indexerForItem(const Akonadi::Item& item);
+
     Akonadi::Item::List m_items;
     QTimer m_timer;
     QDateTime m_lastItemMTime;
     int m_jobs;
 
-    EmailIndexer m_emailIndexer;
-    ContactIndexer m_contactIndexer;
+    QMap<QString, AbstractIndexer*> m_indexers;
 
     QTimer m_commitTimer;
 };
