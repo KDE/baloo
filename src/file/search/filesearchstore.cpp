@@ -35,14 +35,12 @@
 using namespace Baloo;
 
 FileSearchStore::FileSearchStore(QObject* parent, const QVariantList&)
-    : SearchStore(parent)
+    : XapianSearchStore(parent)
     , m_sqlDb(0)
-    , m_mutex(QMutex::Recursive)
+    , m_sqlMutex(QMutex::Recursive)
 {
-    m_dbPath = KStandardDirs::locateLocal("data", "baloo/file/");
-    m_nextId = 1;
-
-    setDbPath(m_dbPath);
+    const QString path = KStandardDirs::locateLocal("data", "baloo/file/");
+    setDbPath(path);
 }
 
 FileSearchStore::~FileSearchStore()
@@ -54,13 +52,13 @@ FileSearchStore::~FileSearchStore()
 
 void FileSearchStore::setDbPath(const QString& path)
 {
-    m_dbPath = path;
+    XapianSearchStore::setDbPath(path);
 
     const QString conName = "filesearchstore" + QString::number(qrand());
 
     delete m_sqlDb;
     m_sqlDb = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE3", conName));
-    m_sqlDb->setDatabaseName(m_dbPath + "/fileMap.sqlite3");
+    m_sqlDb->setDatabaseName(dbPath() + "/fileMap.sqlite3");
     m_sqlDb->open();
 }
 
@@ -69,88 +67,10 @@ QStringList FileSearchStore::types()
     return QStringList() << "File";
 }
 
-Xapian::Query FileSearchStore::toXapianQuery(Xapian::Query::op op, const QList<Term>& terms)
+Xapian::Query FileSearchStore::convertTypes(const QStringList& types)
 {
-    Q_ASSERT_X(op == Xapian::Query::OP_AND || op == Xapian::Query::OP_OR,
-               "FileSearchStore::toXapianQuery", "The op must be AND / OR");
-
-    QVector<Xapian::Query> queries;
-    queries.reserve(terms.size());
-
-    Q_FOREACH (const Term& term, terms) {
-        Xapian::Query q = toXapianQuery(term);
-        queries << q;
-    }
-
-    return Xapian::Query(op, queries.begin(), queries.end());
-}
-
-Xapian::Query FileSearchStore::toXapianQuery(const Term& term)
-{
-    if (term.operation() == Term::And) {
-        return toXapianQuery(Xapian::Query::OP_AND, term.subTerms());
-    }
-    if (term.operation() == Term::Or) {
-        return toXapianQuery(Xapian::Query::OP_OR, term.subTerms());
-    }
-
-    if (term.property().isEmpty())
-        return Xapian::Query();
-
-    // FIXME: Need some way to check if only a property exists!
-    if (!term.value().isNull()) {
-        return Xapian::Query();
-    }
-
-    // Both property and value are non empty
-    // FIXME: How to convert the property to the appropriate prefix?
-    if (term.comparator() == Term::Contains) {
-        Xapian::QueryParser parser;
-
-        std::string prefix = term.property().toUpper().toStdString();
-        std::string str = term.value().toString().toStdString();
-        return parser.parse_query(str, Xapian::QueryParser::FLAG_DEFAULT, prefix);
-    }
-
-    // FIXME: We use equals in all other conditions
-    //if (term.comparator() == Term::Equal) {
-        return Xapian::Query(term.value().toString().toStdString());
-    //}
-}
-
-namespace {
-    Xapian::Query andQuery(const Xapian::Query& a, const Xapian::Query& b)
-    {
-        if (a.empty() && !b.empty())
-            return b;
-        if (!a.empty() && b.empty())
-            return a;
-        if (a.empty() && b.empty())
-            return Xapian::Query();
-        else
-            return Xapian::Query(Xapian::Query::OP_AND, a, b);
-    }
-}
-
-int FileSearchStore::exec(const Query& query)
-{
-    QMutexLocker lock(&m_mutex);
-    Xapian::Database db(m_dbPath.toStdString());
-
-    Xapian::Query xapQ = toXapianQuery(query.term());
-    if (query.searchString().size()) {
-        std::string str = query.searchString().toStdString();
-
-        Xapian::QueryParser parser;
-        parser.set_database(db);
-
-        int flags = Xapian::QueryParser::FLAG_DEFAULT | Xapian::QueryParser::FLAG_PARTIAL;
-        Xapian::Query q = parser.parse_query(str, flags);
-
-        xapQ = andQuery(xapQ, q);
-    }
-
-    Q_FOREACH (const QString& type, query.types()) {
+    Xapian::Query xapQ;
+    Q_FOREACH (const QString& type, types) {
         QString t = 'T' + type.toLower();
         if (t == "Tfile")
             continue;
@@ -158,70 +78,23 @@ int FileSearchStore::exec(const Query& query)
         xapQ = andQuery(xapQ, Xapian::Query(t.toStdString()));
     }
 
-    Xapian::Enquire enquire(db);
-    enquire.set_query(xapQ);
-
-    Result& res = m_queryMap[m_nextId++];
-    res.mset = enquire.get_mset(0, query.limit());
-    res.it = res.mset.begin();
-
-    return m_nextId-1;
+    return xapQ;
 }
 
-void FileSearchStore::close(int queryId)
+QUrl FileSearchStore::urlFromDoc(const Xapian::docid& docid)
 {
-    QMutexLocker lock(&m_mutex);
-    m_queryMap.remove(queryId);
-}
+    QMutexLocker lock(&m_sqlMutex);
 
-Item::Id FileSearchStore::id(int queryId)
-{
-    QMutexLocker lock(&m_mutex);
-    Q_ASSERT_X(m_queryMap.contains(queryId), "FileSearchStore::id",
-               "Passed a queryId which does not exist");
-
-    Result& res = m_queryMap[queryId];
-    if (!res.lastId)
-        return QByteArray();
-
-    return serialize("file", res.lastId);
-}
-
-QUrl FileSearchStore::url(int queryId)
-{
-    QMutexLocker lock(&m_mutex);
-    Result& res = m_queryMap[queryId];
-
-    if (!res.lastId)
-        return QUrl();
-
-    if (!res.lastUrl.isEmpty())
-        return res.lastUrl;
-
-    FileMapping file(res.lastId);
+    FileMapping file(docid);
     file.fetch(*m_sqlDb);
 
-    res.lastUrl = QUrl::fromLocalFile(file.url());
-    return res.lastUrl;
+    return QUrl::fromLocalFile(file.url());
 }
 
-bool FileSearchStore::next(int queryId)
+QString FileSearchStore::prefix(const QString& property)
 {
-    QMutexLocker lock(&m_mutex);
-    Result& res = m_queryMap[queryId];
-
-    bool atEnd = (res.it == res.mset.end());
-    if (atEnd) {
-        res.lastId = 0;
-        res.lastUrl.clear();
-    }
-    else {
-        res.lastId = *res.it;
-        res.lastUrl.clear();
-        res.it++;
-    }
-
-    return !atEnd;
+    return property.toUpper();
 }
+
 
 BALOO_EXPORT_SEARCHSTORE(Baloo::FileSearchStore, "baloo_filesearchstore")

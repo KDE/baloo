@@ -23,51 +23,32 @@
 #ifndef FILESEARCHSTORE_H
 #define FILESEARCHSTORE_H
 
-#include "searchstore.h"
-#include <xapian.h>
+#include "xapiansearchstore.h"
 #include <QSqlDatabase>
 
 #include <QMutex>
 
 namespace Baloo {
 
-class FileSearchStore : public SearchStore
+class FileSearchStore : public XapianSearchStore
 {
 public:
     FileSearchStore(QObject* parent, const QVariantList& args);
     virtual ~FileSearchStore();
 
-    /**
-     * Overwrite the default DB path. Generally used for testing
-     */
-    void setDbPath(const QString& path);
-
+    virtual void setDbPath(const QString& path);
     virtual QStringList types();
-    virtual int exec(const Query& query);
-    virtual void close(int queryId);
-    virtual bool next(int queryId);
 
-    virtual Item::Id id(int queryId);
-    virtual QUrl url(int queryId);
+protected:
+    virtual QString prefix(const QString& property);
+    virtual Xapian::Query convertTypes(const QStringList& types);
+    virtual QUrl urlFromDoc(const Xapian::docid& docid);
+
+    virtual QByteArray idPrefix() { return QByteArray("file"); }
 
 private:
-    Xapian::Query toXapianQuery(const Term& term);
-    Xapian::Query toXapianQuery(Xapian::Query::op op, const QList<Term>& terms);
-
-    struct Result {
-        Xapian::MSet mset;
-        Xapian::MSetIterator it;
-
-        uint lastId;
-        QUrl lastUrl;
-    };
-
-    QHash<int, Result> m_queryMap;
-    int m_nextId;
-
-    QString m_dbPath;
     QSqlDatabase* m_sqlDb;
-    QMutex m_mutex;
+    QMutex m_sqlMutex;
 };
 
 }
