@@ -68,4 +68,15 @@ QUrl EmailSearchStore::urlFromDoc(const Xapian::docid& docid)
     return url;
 }
 
+QString EmailSearchStore::text(int queryId)
+{
+    std::string data = docForQuery(queryId).get_data();
+
+    QString subject = QString::fromStdString(data);
+    if (subject.isEmpty())
+        return QLatin1String("No Subject");
+
+    return subject;
+}
+
 BALOO_EXPORT_SEARCHSTORE(Baloo::EmailSearchStore, "baloo_emailsearchstore")

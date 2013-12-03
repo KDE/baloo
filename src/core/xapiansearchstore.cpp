@@ -31,6 +31,7 @@ using namespace Baloo;
 XapianSearchStore::XapianSearchStore(QObject* parent)
     : SearchStore(parent)
     , m_nextId(1)
+    , m_mutex(QMutex::Recursive)
     , m_db(0)
 {
 }
@@ -190,3 +191,22 @@ bool XapianSearchStore::next(int queryId)
     return !atEnd;
 }
 
+Xapian::Document XapianSearchStore::docForQuery(int queryId)
+{
+    QMutexLocker lock(&m_mutex);
+
+    try {
+        const Result& res = m_queryMap.value(queryId);
+        if (!res.lastId)
+            return Xapian::Document();
+
+        return m_db->get_document(res.lastId);
+    }
+    catch (const Xapian::DocNotFoundError&) {
+        return Xapian::Document();
+    }
+    catch (const Xapian::DatabaseModifiedError&) {
+        m_db->reopen();
+        return docForQuery(queryId);
+    }
+}

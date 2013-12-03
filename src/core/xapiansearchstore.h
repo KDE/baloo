@@ -79,6 +79,8 @@ protected:
      */
     virtual QByteArray idPrefix() = 0;
 
+    Xapian::Document docForQuery(int queryId);
+
     /**
      * Convenience function to AND two Xapian queries together.
      */

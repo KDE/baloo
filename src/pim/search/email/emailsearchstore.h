@@ -33,6 +33,7 @@ public:
     EmailSearchStore(QObject* parent, const QVariantList& args);
 
     virtual QStringList types();
+    virtual QString text(int queryId);
 
 protected:
     virtual Xapian::Query convertTypes(const QStringList&) { return Xapian::Query(); }
