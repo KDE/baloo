@@ -71,7 +71,7 @@ private:
     QDateTime m_lastItemMTime;
     int m_jobs;
 
-    QMap<QString, AbstractIndexer*> m_indexers;
+    QMap<QString, AbstractIndexer* > m_indexers;
 
     QTimer m_commitTimer;
 };

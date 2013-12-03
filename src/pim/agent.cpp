@@ -72,21 +72,34 @@ BalooIndexingAgent::BalooIndexingAgent(const QString& id)
 
 BalooIndexingAgent::~BalooIndexingAgent()
 {
+    while (!m_indexers.isEmpty()) {
+        const QMap<QString,AbstractIndexer*>::Iterator it = m_indexers.begin();
+        AbstractIndexer *indexer = ( *it );
+        Q_FOREACH (const QString &mimeType, indexer->mimeTypes()) {
+            m_indexers.remove(mimeType);
+        }
+        delete indexer;
+    }
 }
 
 void BalooIndexingAgent::createIndexers()
 {
+    AbstractIndexer *indexer = 0;
     try {
-        addIndexer(new EmailIndexer(emailIndexingPath(), emailContactsIndexingPath()));
+        indexer = new EmailIndexer(emailIndexingPath(), emailContactsIndexingPath());
+        addIndexer(indexer);
     }
     catch (const Xapian::DatabaseError &e) {
+        delete indexer;
         kError() << "Failed to create email indexer:" << e.get_error_string();
     }
 
     try {
-        addIndexer(new ContactIndexer(contactIndexingPath()));
+        indexer = new ContactIndexer(contactIndexingPath());
+        addIndexer(indexer);
     }
     catch (const Xapian::DatabaseError &e) {
+        delete indexer;
         kError() << "Failed to create contact indexer:" << e.get_error_string();
     }
 }
