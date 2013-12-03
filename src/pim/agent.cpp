@@ -33,6 +33,7 @@
 #include <KStandardDirs>
 #include <KConfig>
 #include <KConfigGroup>
+#include <KLocalizedString>
 
 namespace {
     QString emailIndexingPath() {
@@ -52,6 +53,12 @@ BalooIndexingAgent::BalooIndexingAgent(const QString& id)
     QTimer::singleShot(0, this, SLOT(findUnindexedItems()));
 
     createIndexers();
+    if (m_indexers.isEmpty()) {
+        Q_EMIT status(Broken, i18nc("@info:status", "No indexers available"));
+        setOnline(false);
+    } else {
+        setOnline(true);
+    }
 
     m_timer.setInterval(10);
     m_timer.setSingleShot(true);
@@ -91,7 +98,7 @@ void BalooIndexingAgent::createIndexers()
     }
     catch (const Xapian::DatabaseError &e) {
         delete indexer;
-        kError() << "Failed to create email indexer:" << e.get_error_string();
+        kError() << "Failed to create email indexer:" << QString::fromStdString(e.get_msg());
     }
 
     try {
@@ -100,7 +107,7 @@ void BalooIndexingAgent::createIndexers()
     }
     catch (const Xapian::DatabaseError &e) {
         delete indexer;
-        kError() << "Failed to create contact indexer:" << e.get_error_string();
+        kError() << "Failed to create contact indexer:" << QString::fromStdString(e.get_msg());
     }
 }
 
