@@ -31,12 +31,16 @@ using namespace Baloo;
 XapianSearchStore::XapianSearchStore(QObject* parent)
     : SearchStore(parent)
     , m_nextId(1)
+    , m_db(0)
 {
 }
 
 void XapianSearchStore::setDbPath(const QString& path)
 {
     m_dbPath = path;
+
+    delete m_db;
+    m_db = new Xapian::Database(m_dbPath.toStdString());
 }
 
 QString XapianSearchStore::dbPath()
@@ -107,14 +111,14 @@ Xapian::Query XapianSearchStore::andQuery(const Xapian::Query& a, const Xapian::
 int XapianSearchStore::exec(const Query& query)
 {
     QMutexLocker lock(&m_mutex);
-    Xapian::Database db(m_dbPath.toStdString());
+    m_db->reopen();
 
     Xapian::Query xapQ = toXapianQuery(query.term());
     if (query.searchString().size()) {
         std::string str = query.searchString().toStdString();
 
         Xapian::QueryParser parser;
-        parser.set_database(db);
+        parser.set_database(*m_db);
 
         int flags = Xapian::QueryParser::FLAG_DEFAULT | Xapian::QueryParser::FLAG_PARTIAL;
         Xapian::Query q = parser.parse_query(str, flags);
@@ -123,7 +127,7 @@ int XapianSearchStore::exec(const Query& query)
     }
     xapQ = andQuery(xapQ, convertTypes(query.types()));
 
-    Xapian::Enquire enquire(db);
+    Xapian::Enquire enquire(*m_db);
     enquire.set_query(xapQ);
 
     Result& res = m_queryMap[m_nextId++];

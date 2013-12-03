@@ -101,6 +101,8 @@ private:
 
     QString m_dbPath;
     QMutex m_mutex;
+
+    Xapian::Database* m_db;
 };
 
 }
