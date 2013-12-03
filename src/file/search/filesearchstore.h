@@ -54,12 +54,15 @@ private:
     Xapian::Query toXapianQuery(const Term& term);
     Xapian::Query toXapianQuery(Xapian::Query::op op, const QList<Term>& terms);
 
-    struct Iter {
+    struct Result {
         Xapian::MSet mset;
         Xapian::MSetIterator it;
+
+        uint lastId;
+        QUrl lastUrl;
     };
 
-    QHash<int, Iter> m_queryMap;
+    QHash<int, Result> m_queryMap;
     int m_nextId;
 
     QString m_dbPath;

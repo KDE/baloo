@@ -11,3 +11,5 @@ target_link_libraries(baloo_filesearchstore
 
 install(FILES baloo_filesearchstore.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 install(TARGETS baloo_filesearchstore DESTINATION ${PLUGIN_INSTALL_DIR})
+
+add_subdirectory(autotest)

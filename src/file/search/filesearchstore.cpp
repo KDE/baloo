@@ -42,10 +42,7 @@ FileSearchStore::FileSearchStore(QObject* parent, const QVariantList&)
     m_dbPath = KStandardDirs::locateLocal("data", "baloo/file/");
     m_nextId = 1;
 
-    const QString conName = "filesearchstore" + QString::number(qrand());
-    m_sqlDb = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE3", conName));
-    m_sqlDb->setDatabaseName(m_dbPath + "/fileMap.sqlite3");
-    kDebug() << "SQL OPEN: "<< m_sqlDb->open();
+    setDbPath(m_dbPath);
 }
 
 FileSearchStore::~FileSearchStore()
@@ -53,6 +50,18 @@ FileSearchStore::~FileSearchStore()
     const QString conName = m_sqlDb->connectionName();
     delete m_sqlDb;
     QSqlDatabase::removeDatabase(conName);
+}
+
+void FileSearchStore::setDbPath(const QString& path)
+{
+    m_dbPath = path;
+
+    const QString conName = "filesearchstore" + QString::number(qrand());
+
+    delete m_sqlDb;
+    m_sqlDb = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE3", conName));
+    m_sqlDb->setDatabaseName(m_dbPath + "/fileMap.sqlite3");
+    m_sqlDb->open();
 }
 
 QStringList FileSearchStore::types()
@@ -143,15 +152,18 @@ int FileSearchStore::exec(const Query& query)
 
     Q_FOREACH (const QString& type, query.types()) {
         QString t = 'T' + type.toLower();
+        if (t == "Tfile")
+            continue;
+
         xapQ = andQuery(xapQ, Xapian::Query(t.toStdString()));
     }
 
     Xapian::Enquire enquire(db);
     enquire.set_query(xapQ);
 
-    Iter& it = m_queryMap[m_nextId++];
-    it.mset = enquire.get_mset(0, query.limit());
-    it.it = it.mset.begin();
+    Result& res = m_queryMap[m_nextId++];
+    res.mset = enquire.get_mset(0, query.limit());
+    res.it = res.mset.begin();
 
     return m_nextId-1;
 }
@@ -168,30 +180,47 @@ Item::Id FileSearchStore::id(int queryId)
     Q_ASSERT_X(m_queryMap.contains(queryId), "FileSearchStore::id",
                "Passed a queryId which does not exist");
 
-    Iter& it = m_queryMap[queryId];
-    uint id = *(it.it);
+    Result& res = m_queryMap[queryId];
+    if (!res.lastId)
+        return QByteArray();
 
-    return serialize("file", id);
+    return serialize("file", res.lastId);
 }
 
 QUrl FileSearchStore::url(int queryId)
 {
     QMutexLocker lock(&m_mutex);
-    Iter& it = m_queryMap[queryId];
-    uint id = *(it.it);
+    Result& res = m_queryMap[queryId];
 
-    FileMapping file(id);
+    if (!res.lastId)
+        return QUrl();
+
+    if (!res.lastUrl.isEmpty())
+        return res.lastUrl;
+
+    FileMapping file(res.lastId);
     file.fetch(*m_sqlDb);
 
-    return QUrl::fromLocalFile(file.url());
+    res.lastUrl = QUrl::fromLocalFile(file.url());
+    return res.lastUrl;
 }
 
 bool FileSearchStore::next(int queryId)
 {
     QMutexLocker lock(&m_mutex);
-    Iter& it = m_queryMap[queryId];
-    it.it++;
-    return it.it != it.mset.end();
+    Result& res = m_queryMap[queryId];
+
+    bool atEnd = (res.it == res.mset.end());
+    if (atEnd) {
+        res.lastId = 0;
+        res.lastUrl.clear();
+    }
+    else {
+        res.lastId = *res.it;
+        res.it++;
+    }
+
+    return !atEnd;
 }
 
 BALOO_EXPORT_SEARCHSTORE(Baloo::FileSearchStore, "baloo_filesearchstore")
