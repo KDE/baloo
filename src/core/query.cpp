@@ -30,6 +30,9 @@
 
 #include <KDebug>
 
+#include <qjson/serializer.h>
+#include <qjson/parser.h>
+
 using namespace Baloo;
 
 class Baloo::Query::Private {
@@ -143,7 +146,31 @@ ResultIterator Query::exec()
 
     int id = storeMatch->exec(*this);
     return ResultIterator(id, storeMatch);
-
-    //FIXME: Massive memory leak. Someone needs to delete all the stores!
 }
 
+QByteArray Query::toJSON()
+{
+    QVariantMap map;
+    map["type"] = d->m_types;
+    map["limit"] = d->m_limit;
+    map["searchString"] = d->m_searchString;
+    map["term"] = QVariant(d->m_term.toVariantMap());
+
+    QJson::Serializer serializer;
+    return serializer.serialize(map);
+}
+
+// static
+Query Query::fromJSON(const QByteArray& arr)
+{
+    QJson::Parser parser;
+    QVariantMap map = parser.parse(arr).toMap();
+
+    Query query;
+    query.d->m_types = map["type"].toStringList();
+    query.d->m_limit = map["limit"].toInt();
+    query.d->m_searchString = map["searchString"].toString();
+    query.d->m_term = Term::fromVariantMap(map["term"].toMap());
+
+    return query;
+}

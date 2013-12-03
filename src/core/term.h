@@ -114,6 +114,8 @@ public:
     Comparator comparator() const;
     void setComparator(Comparator c);
 
+    QVariantMap toVariantMap() const;
+    static Term fromVariantMap(const QVariantMap& map);
 private:
     class Private;
     Private* d;

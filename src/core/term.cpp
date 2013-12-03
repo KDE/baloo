@@ -21,6 +21,7 @@
  */
 
 #include "term.h"
+#include <QVariant>
 
 using namespace Baloo;
 
@@ -180,4 +181,120 @@ Term::Comparator Term::comparator() const
 void Term::setComparator(Term::Comparator c)
 {
     d->m_comp = c;
+}
+
+QVariantMap Term::toVariantMap() const
+{
+    QVariantMap map;
+    if (d->m_op != None) {
+        QVariantList variantList;
+        Q_FOREACH (const Term& term, d->m_subTerms) {
+            variantList << QVariant(term.toVariantMap());
+        }
+
+        if (d->m_op == And)
+            map["$and"] = variantList;
+        else
+            map["$or"] = variantList;
+
+        return map;
+    }
+
+    QString op;
+    switch (d->m_comp) {
+    case Equal:
+        map[d->m_property] = d->m_value;
+        return map;
+
+    case Contains:
+        op = "$ct";
+        break;
+
+    case Greater:
+        op = "$gt";
+        break;
+
+    case GreaterEqual:
+        op = "$gte";
+        break;
+
+    case Less:
+        op = "$lt";
+        break;
+
+    case LessEqual:
+        op = "$lte";
+        break;
+
+    default:
+        return QVariantMap();
+    }
+
+    QVariantMap m;
+    m[op] = d->m_value;
+    map[d->m_property] = QVariant(m);
+    return map;
+}
+
+Term Term::fromVariantMap(const QVariantMap& map)
+{
+    if (map.size() != 1)
+        return Term();
+
+    Term term;
+
+    QString andOrString;
+    if (map.contains("$and")) {
+        andOrString = "$and";
+        term.setOperation(And);
+    }
+    else if (map.contains("$or")) {
+        andOrString = "$or";
+        term.setOperation(Or);
+    }
+
+    if (andOrString.size()) {
+        QList<Term> subTerms;
+
+        QVariantList list = map[andOrString].toList();
+        Q_FOREACH (const QVariant& var, list)
+            subTerms << Term::fromVariantMap(var.toMap());
+
+        term.setSubTerms(subTerms);
+        return term;
+    }
+
+    QString prop = map.keys().first();
+    term.setProperty(prop);
+
+    QVariant value = map.value(prop);
+    if (value.type() == QVariant::Map) {
+        QVariantMap map = value.toMap();
+        if (map.size() != 1)
+            return term;
+
+        QString op = map.keys().first();
+        Term::Comparator com;
+        if (op == "$ct")
+            com = Contains;
+        else if (op == "$gt")
+            com = Greater;
+        else if (op == "$gte")
+            com = GreaterEqual;
+        else if (op == "$lt")
+            com = Less;
+        else if (op == "$lte")
+            com = LessEqual;
+        else
+            return term;
+
+        term.setComparator(com);
+        term.setValue(map.value(op));
+        return term;
+    }
+
+    term.setComparator(Equal);
+    term.setValue(value);
+
+    return term;
 }

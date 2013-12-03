@@ -94,6 +94,9 @@ public:
 
     ResultIterator exec();
 
+    QByteArray toJSON();
+    static Query fromJSON(const QByteArray& arr);
+
 private:
     class Private;
     Private* d;

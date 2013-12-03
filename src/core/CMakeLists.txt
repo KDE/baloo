@@ -25,6 +25,7 @@ kde4_add_library(baloocore SHARED ${CORE_SRCS})
 
 target_link_libraries(baloocore
     ${QT_QTCORE_LIBRARY}
+    ${QJSON_LIBRARIES}
     ${KDE4_KDECORE_LIBRARY}
 )
 
