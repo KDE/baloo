@@ -217,6 +217,7 @@ bool FileSearchStore::next(int queryId)
     }
     else {
         res.lastId = *res.it;
+        res.lastUrl.clear();
         res.it++;
     }
 

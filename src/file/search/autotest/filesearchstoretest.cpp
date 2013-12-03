@@ -99,10 +99,13 @@ void FileSearchStoreTest::insertText(int id, const QString& text)
 
 void FileSearchStoreTest::testSimpleSearchString()
 {
-    QString url("/home/t/a");
-    uint id = insertUrl(url);
+    QString url1("/home/t/a");
+    uint id1 = insertUrl(url1);
+    insertText(id1, "This is sample text");
 
-    insertText(id, "This is sample text");
+    QString url2("/home/t/b");
+    uint id2 = insertUrl(url2);
+    insertText(id2, "sample sample more sample text");
 
     Query q;
     q.addType("File");
@@ -111,13 +114,12 @@ void FileSearchStoreTest::testSimpleSearchString()
     int qid = m_store->exec(q);
     QCOMPARE(qid, 1);
     QVERIFY(m_store->next(qid));
+    QCOMPARE(m_store->id(qid), serialize("file", id2));
+    QCOMPARE(m_store->url(qid), QUrl::fromLocalFile(url2));
 
-    // Check if the id is correct. Do it twice to make sure
-    QCOMPARE(m_store->id(qid), serialize("file", id));
-    QCOMPARE(m_store->id(qid), serialize("file", id));
-
-    QCOMPARE(m_store->url(qid), QUrl::fromLocalFile(url));
-    QCOMPARE(m_store->url(qid), QUrl::fromLocalFile(url));
+    QVERIFY(m_store->next(qid));
+    QCOMPARE(m_store->id(qid), serialize("file", id1));
+    QCOMPARE(m_store->url(qid), QUrl::fromLocalFile(url1));
 
     QVERIFY(!m_store->next(qid));
     QVERIFY(m_store->id(qid).isEmpty());
