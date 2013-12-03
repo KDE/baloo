@@ -158,10 +158,11 @@ void EmailIndexer::process(const KMime::Message::Ptr& msg)
     //
     KMime::Headers::Subject* subject = msg->subject(false);
     if (subject) {
-        QString str = subject->asUnicodeString();
-        kDebug() << "Indexing" << str;
-        m_termGen->index_text_without_positions(str.toStdString(), 1, "S");
-        m_termGen->index_text_without_positions(str.toStdString());
+        std::string str = subject->asUnicodeString().toStdString();
+        kDebug() << "Indexing" << str.c_str();
+        m_termGen->index_text_without_positions(str, 1, "S");
+        m_termGen->index_text_without_positions(str);
+        m_doc->set_data(str);
     }
 
     KMime::Headers::Date* date = msg->date(false);
