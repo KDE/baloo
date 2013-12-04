@@ -1,3 +1,5 @@
+add_definitions(${KDE4_ENABLE_EXCEPTIONS})
+
 set(CORE_SRCS
     item.cpp
     relation.cpp
