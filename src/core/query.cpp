@@ -174,3 +174,24 @@ Query Query::fromJSON(const QByteArray& arr)
 
     return query;
 }
+
+QUrl Query::toSearchUrl(const QString& title)
+{
+    QUrl url;
+    url.setScheme(QLatin1String("baloosearch"));
+    url.addQueryItem(QLatin1String("json"), QString::fromUtf8(toJSON()));
+
+    if (title.size())
+        url.addQueryItem(QLatin1String("title"), title);
+
+    return url;
+}
+
+Query Query::fromSearchUrl(const QUrl& url)
+{
+    if (url.scheme() != QLatin1String("baloosearch"))
+        return Query();
+
+    QString jsonString = url.queryItemValue(QLatin1String("json"));
+    return Query::fromJSON(jsonString.toUtf8());
+}

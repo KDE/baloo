@@ -16,21 +16,13 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef _NEPOMUK_KIO_NEPOMUK_SEARCH_H_
-#define _NEPOMUK_KIO_NEPOMUK_SEARCH_H_
+#ifndef _BALOO_KIO_SEARCH_H_
+#define _BALOO_KIO_SEARCH_H_
 
 #include <kio/slavebase.h>
 
-#include "searchfolder.h"
-
-#include <QtCore/QQueue>
-
-namespace Nepomuk2
+namespace Baloo
 {
-namespace Search
-{
-class Query;
-}
 
 class SearchProtocol : public KIO::SlaveBase
 {
@@ -57,8 +49,6 @@ public:
     void stat(const KUrl& url);
 
 private:
-    bool ensureNepomukRunning(bool emitError = true);
-    void listRoot();
 };
 }
 

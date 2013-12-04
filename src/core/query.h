@@ -97,6 +97,9 @@ public:
     QByteArray toJSON();
     static Query fromJSON(const QByteArray& arr);
 
+    QUrl toSearchUrl(const QString& title = QString());
+    static Query fromSearchUrl(const QUrl& url);
+
 private:
     class Private;
     Private* d;
