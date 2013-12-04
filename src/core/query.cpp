@@ -126,7 +126,7 @@ ResultIterator Query::exec()
     if (types().isEmpty())
         return ResultIterator();
 
-    QList<SearchStore*> stores = SearchStore::searchStores();
+    static QList<SearchStore*> stores = SearchStore::searchStores();
 
     SearchStore* storeMatch = 0;
     Q_FOREACH (SearchStore* store, stores) {

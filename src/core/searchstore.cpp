@@ -58,18 +58,12 @@ QString SearchStore::property(int, const QString&)
     return QString();
 }
 
-typedef QList<SearchStore*> SearchStoreList;
-QThreadStorage<SearchStoreList*> threadStorage;
-
 //
 // Search Stores
 //
 // static
 QList<SearchStore*> SearchStore::searchStores()
 {
-    if (threadStorage.hasLocalData())
-        return *threadStorage.localData();
-
     // Get all the plugins
     KService::List plugins = KServiceTypeTrader::self()->query("BalooSearchStore");
 
@@ -81,7 +75,7 @@ QList<SearchStore*> SearchStore::searchStores()
         QString error;
         Baloo::SearchStore* st = service->createInstance<Baloo::SearchStore>(0, QVariantList(), &error);
         if (!st) {
-            kError() << "Could not create Extractor: " << service->library();
+            kError() << "Could not create SearchStore: " << service->library();
             kError() << error;
             continue;
         }
@@ -89,7 +83,5 @@ QList<SearchStore*> SearchStore::searchStores()
         stores << st;
     }
 
-    threadStorage.setLocalData(new SearchStoreList(stores));
     return stores;
-
 }

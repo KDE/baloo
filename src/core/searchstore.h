@@ -44,8 +44,8 @@ public:
     virtual ~SearchStore();
 
     /**
-     * Gives a list of search stores for this specific thread. These stores
-     * are managed internally and should not be deleted.
+     * Gives a list of available search stores. These stores must be managed and
+     * deleted by the caller
      */
     static QList<SearchStore*> searchStores();
 
