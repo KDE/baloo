@@ -31,7 +31,7 @@ namespace Baloo {
 
 class FilePrivate;
 
-class File : public Item
+class BALOO_FILE_EXPORT File : public Item
 {
 public:
     File();

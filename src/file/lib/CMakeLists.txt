@@ -24,6 +24,7 @@ set_target_properties(baloofiles PROPERTIES
 install(TARGETS baloofiles ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES
+    file.h
     filefetchjob.h
     file_export.h
 
