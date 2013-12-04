@@ -72,7 +72,7 @@ void ContactIndexer::index(const Akonadi::Item& item)
     doc.add_boolean_term(addresse.uid().toStdString());
 
     termGen.index_text(stdName, 1, "NA");
-    termGen.index_text(stdName, 1, "NI");
+    termGen.index_text(stdNick, 1, "NI");
 
     Q_FOREACH (const QString& email, addresse.emails()) {
         std::string stdEmail = email.toStdString();
