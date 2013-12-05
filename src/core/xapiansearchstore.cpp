@@ -25,6 +25,7 @@
 #include "query.h"
 
 #include <QVector>
+#include <KDebug>
 
 using namespace Baloo;
 
@@ -41,7 +42,13 @@ void XapianSearchStore::setDbPath(const QString& path)
     m_dbPath = path;
 
     delete m_db;
-    m_db = new Xapian::Database(m_dbPath.toStdString());
+    try {
+        m_db = new Xapian::Database(m_dbPath.toStdString());
+    }
+    catch (const Xapian::DatabaseOpeningError&) {
+        kError() << "Xapian Database does not exist at " << m_dbPath;
+        m_db = 0;
+    }
 }
 
 QString XapianSearchStore::dbPath()
@@ -94,6 +101,9 @@ Xapian::Query XapianSearchStore::andQuery(const Xapian::Query& a, const Xapian::
 
 int XapianSearchStore::exec(const Query& query)
 {
+    if (!m_db)
+        return 0;
+
     QMutexLocker lock(&m_mutex);
     m_db->reopen();
 
@@ -133,7 +143,7 @@ Item::Id XapianSearchStore::id(int queryId)
     Q_ASSERT_X(m_queryMap.contains(queryId), "FileSearchStore::id",
                "Passed a queryId which does not exist");
 
-    Result& res = m_queryMap[queryId];
+    const Result res = m_queryMap.value(queryId);
     if (!res.lastId)
         return QByteArray();
 
@@ -157,6 +167,9 @@ QUrl XapianSearchStore::url(int queryId)
 
 bool XapianSearchStore::next(int queryId)
 {
+    if (!m_db)
+        return false;
+
     QMutexLocker lock(&m_mutex);
     Result& res = m_queryMap[queryId];
 
@@ -176,6 +189,9 @@ bool XapianSearchStore::next(int queryId)
 
 Xapian::Document XapianSearchStore::docForQuery(int queryId)
 {
+    if (!m_db)
+        return Xapian::Document();
+
     QMutexLocker lock(&m_mutex);
 
     try {
