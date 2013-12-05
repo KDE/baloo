@@ -45,12 +45,7 @@ bool ResultIterator::next()
     return (d->m_iter != d->m_end);
 }
 
-Result ResultIterator::current()
+Akonadi::Entity::Id ResultIterator::id()
 {
-    Xapian::Document doc = d->m_iter.get_document();
-
-    Result res;
-    res.setId(QByteArray::number(doc.get_docid()));
-    res.setText(QString::fromStdString(doc.get_data()));
-    return res;
+    return *(d->m_iter);
 }

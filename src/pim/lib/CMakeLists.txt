@@ -4,7 +4,6 @@ include_directories(
 
 set(BALOO_PIM_LIB_SRCS
     query.cpp
-    result.cpp
     resultiterator.cpp
     contactquery.cpp
     emailquery.cpp
@@ -35,7 +34,6 @@ install(FILES
     emailquery.h
     contactcompleter.h
 
-    result.h
     resultiterator.h
     pim_export.h
 

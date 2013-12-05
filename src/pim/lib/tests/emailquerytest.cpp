@@ -73,7 +73,7 @@ void App::main()
 
     ResultIterator it = query.exec();
     while (it.next()) {
-        m_akonadiIds << it.current().id().toInt();
+        m_akonadiIds << it.id();
     }
     kDebug() << "Got" << m_akonadiIds.size() << "items";
 

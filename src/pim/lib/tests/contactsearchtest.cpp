@@ -74,7 +74,7 @@ void App::main()
 
     ResultIterator iter = q.exec();
     while (iter.next()) {
-        kDebug() << iter.current().id();
+        kDebug() << iter.id();
     }
 }
 

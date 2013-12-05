@@ -26,6 +26,8 @@
 #include "pim_export.h"
 #include "result.h"
 
+#include <Akonadi/Item>
+
 namespace Baloo {
 namespace PIM {
 
@@ -37,7 +39,7 @@ class BALOO_PIM_EXPORT ResultIterator
 public:
     ResultIterator();
 
-    Result current();
+    Akonadi::Item::Id id();
     bool next();
 
 private:
