@@ -102,7 +102,7 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
     return Xapian::Query(value.toString().toStdString());
 }
 
-QUrl FileSearchStore::urlFromDoc(const Xapian::docid& docid)
+QUrl FileSearchStore::constructUrl(const Xapian::docid& docid)
 {
     QMutexLocker lock(&m_sqlMutex);
 

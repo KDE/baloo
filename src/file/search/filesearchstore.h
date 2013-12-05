@@ -46,7 +46,7 @@ protected:
                                          Term::Comparator com);
 
     virtual Xapian::Query convertTypes(const QStringList& types);
-    virtual QUrl urlFromDoc(const Xapian::docid& docid);
+    virtual QUrl constructUrl(const Xapian::docid& docid);
 
     virtual QByteArray idPrefix() { return QByteArray("file"); }
 

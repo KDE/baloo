@@ -69,7 +69,7 @@ Xapian::Query ContactSearchStore::constructQuery(const QString& property, const 
 }
 
 
-QUrl ContactSearchStore::urlFromDoc(const Xapian::docid& docid)
+QUrl ContactSearchStore::constructUrl(const Xapian::docid& docid)
 {
     KUrl url;
     url.setProtocol(QLatin1String("akonadi"));

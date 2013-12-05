@@ -63,7 +63,7 @@ protected:
     /**
      * Returns the url for the document with id \p docid.
      */
-    virtual QUrl urlFromDoc(const Xapian::docid& docid) = 0;
+    virtual QUrl constructUrl(const Xapian::docid& docid) = 0;
 
     /**
      * Gives a list of types which have been provided with the query.

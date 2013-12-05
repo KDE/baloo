@@ -73,7 +73,7 @@ Xapian::Query EmailSearchStore::constructQuery(const QString& property, const QV
     return Xapian::Query(value.toString().toStdString());
 }
 
-QUrl EmailSearchStore::urlFromDoc(const Xapian::docid& docid)
+QUrl EmailSearchStore::constructUrl(const Xapian::docid& docid)
 {
     KUrl url;
     url.setProtocol(QLatin1String("akonadi"));

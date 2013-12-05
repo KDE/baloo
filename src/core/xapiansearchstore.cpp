@@ -161,7 +161,7 @@ QUrl XapianSearchStore::url(int queryId)
     if (!res.lastUrl.isEmpty())
         return res.lastUrl;
 
-    res.lastUrl = urlFromDoc(res.lastId);
+    res.lastUrl = constructUrl(res.lastId);
     return res.lastUrl;
 }
 

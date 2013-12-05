@@ -41,7 +41,7 @@ protected:
 
     virtual Xapian::Query constructQuery(const QString& property, const QVariant& value,
                                          Term::Comparator com);
-    virtual QUrl urlFromDoc(const Xapian::docid& docid);
+    virtual QUrl constructUrl(const Xapian::docid& docid);
 
 private:
     QHash<QString, QString> m_prefix;
