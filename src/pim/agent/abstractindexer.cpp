@@ -1,6 +1,5 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
- * Copyright 2013  Vishesh Handa <me@vhanda.in>
+ * Copyright 2013  Daniel Vrátil <dvratil@redhat.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -20,28 +19,30 @@
  *
  */
 
-#ifndef CONTACTINDEXER_H
-#define CONTACTINDEXER_H
-
 #include "abstractindexer.h"
 
-#include <xapian.h>
-
-class ContactIndexer: public AbstractIndexer
+AbstractIndexer::AbstractIndexer()
 {
-  public:
-    ContactIndexer(const QString& path);
-    ~ContactIndexer();
+}
 
-    QStringList mimeTypes() const;
+AbstractIndexer::~AbstractIndexer()
+{
+}
 
-    void index(const Akonadi::Item& item);
-    void remove(const Akonadi::Item& item);
+void AbstractIndexer::move(const Akonadi::Item::Id& item,
+                           const Akonadi::Entity::Id& from,
+                           const Akonadi::Entity::Id& to)
+{
+    Q_UNUSED(item);
+    Q_UNUSED(from);
+    Q_UNUSED(to);
+}
 
-    void commit();
-
-private:
-    Xapian::WritableDatabase* m_db;
-};
-
-#endif // CONTACTINDEXER_H
+void AbstractIndexer::updateFlags(const Akonadi::Item& item,
+                                  const QSet<QByteArray>& addedFlags,
+                                  const QSet<QByteArray>& removed)
+{
+    Q_UNUSED(item);
+    Q_UNUSED(addedFlags);
+    Q_UNUSED(removed);
+}

@@ -6,6 +6,7 @@ include_directories(
 add_definitions(${KDE4_ENABLE_EXCEPTIONS})
 
 kde4_add_executable(akonadi_baloo_indexer
+    abstractindexer.cpp
     agent.cpp
     emailindexer.cpp
     contactindexer.cpp

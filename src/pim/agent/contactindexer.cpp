@@ -24,7 +24,8 @@
 
 #include <KABC/Addressee>
 
-ContactIndexer::ContactIndexer(const QString& path)
+ContactIndexer::ContactIndexer(const QString& path):
+    AbstractIndexer()
 {
     m_db = new Xapian::WritableDatabase(path.toStdString(), Xapian::DB_CREATE_OR_OPEN);
 }
@@ -33,6 +34,11 @@ ContactIndexer::~ContactIndexer()
 {
     m_db->commit();
     delete m_db;
+}
+
+QStringList ContactIndexer::mimeTypes() const
+{
+    return QStringList() << KABC::Addressee::mimeType();
 }
 
 void ContactIndexer::index(const Akonadi::Item& item)

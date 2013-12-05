@@ -27,7 +27,8 @@
 
 #include <QTextDocument>
 
-EmailIndexer::EmailIndexer(const QString& path, const QString& contactDbPath)
+EmailIndexer::EmailIndexer(const QString& path, const QString& contactDbPath):
+    AbstractIndexer()
 {
     m_db = new Xapian::WritableDatabase(path.toStdString(), Xapian::DB_CREATE_OR_OPEN);
     m_contactDb = new Xapian::WritableDatabase(contactDbPath.toStdString(), Xapian::DB_CREATE_OR_OPEN);
@@ -40,6 +41,11 @@ EmailIndexer::~EmailIndexer()
 
     m_contactDb->commit();
     delete m_contactDb;
+}
+
+QStringList EmailIndexer::mimeTypes() const
+{
+    return QStringList() << KMime::Message::mimeType();
 }
 
 void EmailIndexer::index(const Akonadi::Item& item)
@@ -304,7 +310,7 @@ void EmailIndexer::remove(const Akonadi::Item& item)
     }
 }
 
-void EmailIndexer::move(const Akonadi::Entity::Id& itemId,
+void EmailIndexer::move(const Akonadi::Item::Id& itemId,
                         const Akonadi::Entity::Id& from,
                         const Akonadi::Entity::Id& to)
 {
