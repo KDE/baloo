@@ -41,7 +41,10 @@ public:
     virtual QString text(int queryId);
 
 protected:
-    virtual QString prefix(const QString& property);
+    virtual Xapian::Query constructQuery(const QString& property,
+                                         const QVariant& value,
+                                         Term::Comparator com);
+
     virtual Xapian::Query convertTypes(const QStringList& types);
     virtual QUrl urlFromDoc(const Xapian::docid& docid);
 

@@ -54,9 +54,23 @@ QStringList EmailSearchStore::types()
     return QStringList() << "Akonadi" << "Email";
 }
 
-QString EmailSearchStore::prefix(const QString& property)
+Xapian::Query EmailSearchStore::constructQuery(const QString& property, const QVariant& value,
+                                               Term::Comparator com)
 {
-    return m_prefix.value(property.toLower());
+    if (value.isNull())
+        return Xapian::Query();
+
+    if (com == Term::Contains) {
+        Xapian::QueryParser parser;
+        parser.set_database(*xapianDb());
+
+        std::string p = m_prefix.value(property.toLower()).toStdString();
+        std::string str = value.toString().toStdString();
+        int flags = Xapian::QueryParser::FLAG_DEFAULT | Xapian::QueryParser::FLAG_PARTIAL;
+        return parser.parse_query(str, flags, p);
+    }
+
+    return Xapian::Query(value.toString().toStdString());
 }
 
 QUrl EmailSearchStore::urlFromDoc(const Xapian::docid& docid)

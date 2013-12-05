@@ -24,6 +24,7 @@
 #define BALOO_XAPIANSEARCHSTORE_H
 
 #include "searchstore.h"
+#include "term.h"
 #include <xapian.h>
 #include <QMutex>
 
@@ -52,14 +53,12 @@ public:
 
 protected:
     /**
-     * Fetches the data from the active xapian document
+     * The derived class should implement the logic for constructing the appropriate
+     * Xapian::Query class from the given values.
      */
-    QString data(int queryId);
-
-    /**
-     * Translates a property to its appropriate prefix.
-     */
-    virtual QString prefix(const QString& property) = 0;
+    virtual Xapian::Query constructQuery(const QString& property,
+                                         const QVariant& value,
+                                         Term::Comparator com) = 0;
 
     /**
      * Returns the url for the document with id \p docid.
@@ -85,6 +84,8 @@ protected:
      * Convenience function to AND two Xapian queries together.
      */
     Xapian::Query andQuery(const Xapian::Query& a, const Xapian::Query& b);
+
+    Xapian::Database* xapianDb();
 
 private:
     Xapian::Query toXapianQuery(const Term& term);

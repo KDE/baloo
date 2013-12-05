@@ -77,24 +77,7 @@ Xapian::Query XapianSearchStore::toXapianQuery(const Term& term)
     if (term.property().isEmpty())
         return Xapian::Query();
 
-    // FIXME: Need some way to check if only a property exists!
-    if (!term.value().isNull()) {
-        return Xapian::Query();
-    }
-
-    // Both property and value are non empty
-    if (term.comparator() == Term::Contains) {
-        Xapian::QueryParser parser;
-
-        std::string p = prefix(term.property()).toStdString();
-        std::string str = term.value().toString().toStdString();
-        return parser.parse_query(str, Xapian::QueryParser::FLAG_DEFAULT, p);
-    }
-
-    // FIXME: We use equals in all other conditions
-    //if (term.comparator() == Term::Equal) {
-        return Xapian::Query(term.value().toString().toStdString());
-    //}
+    return constructQuery(term.property(), term.value(), term.comparator());
 }
 
 Xapian::Query XapianSearchStore::andQuery(const Xapian::Query& a, const Xapian::Query& b)
@@ -209,4 +192,9 @@ Xapian::Document XapianSearchStore::docForQuery(int queryId)
         m_db->reopen();
         return docForQuery(queryId);
     }
+}
+
+Xapian::Database* XapianSearchStore::xapianDb()
+{
+    return m_db;
 }

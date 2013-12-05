@@ -38,7 +38,8 @@ protected:
     virtual Xapian::Query convertTypes(const QStringList&) { return Xapian::Query(); }
     virtual QByteArray idPrefix() { return QByteArray("akonadi"); }
 
-    virtual QString prefix(const QString& property);
+    virtual Xapian::Query constructQuery(const QString& property, const QVariant& value,
+                                         Term::Comparator com);
     virtual QUrl urlFromDoc(const Xapian::docid& docid);
 
 private:

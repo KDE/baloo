@@ -82,6 +82,26 @@ Xapian::Query FileSearchStore::convertTypes(const QStringList& types)
     return xapQ;
 }
 
+Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVariant& value,
+                                              Term::Comparator com)
+{
+    // FIXME: Handle cases where only the property is specified
+    if (value.isNull())
+        return Xapian::Query();
+
+    if (com == Term::Contains) {
+        Xapian::QueryParser parser;
+        parser.set_database(*xapianDb());
+
+        std::string p = property.toUpper().toStdString();
+        std::string str = value.toString().toStdString();
+        int flags = Xapian::QueryParser::FLAG_DEFAULT | Xapian::QueryParser::FLAG_PARTIAL;
+        return parser.parse_query(str, flags, p);
+    }
+
+    return Xapian::Query(value.toString().toStdString());
+}
+
 QUrl FileSearchStore::urlFromDoc(const Xapian::docid& docid)
 {
     QMutexLocker lock(&m_sqlMutex);
@@ -90,11 +110,6 @@ QUrl FileSearchStore::urlFromDoc(const Xapian::docid& docid)
     file.fetch(*m_sqlDb);
 
     return QUrl::fromLocalFile(file.url());
-}
-
-QString FileSearchStore::prefix(const QString& property)
-{
-    return property.toUpper();
 }
 
 QString FileSearchStore::text(int queryId)
