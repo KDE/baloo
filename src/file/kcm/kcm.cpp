@@ -97,8 +97,6 @@ ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args
             this, SLOT(changed()));
     connect(m_checkEnableNepomuk, SIGNAL(toggled(bool)),
             this, SLOT(changed()));
-    connect(m_checkEnableEmailIndexer, SIGNAL(toggled(bool)),
-            this, SLOT(changed()));
     connect(m_comboRemovableMediaHandling, SIGNAL(activated(int)),
             this, SLOT(changed()));
 
@@ -108,8 +106,6 @@ ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args
             this, SLOT(slotAdvancedFileIndexing()));
     connect(m_fileIndexerSuspendResumeButtom, SIGNAL(clicked(bool)),
             this, SLOT(slotFileIndexerSuspendResumeClicked()));
-    connect(m_emailIndexerSuspendResumeButtom, SIGNAL(clicked(bool)),
-            this, SLOT(slotEmailIndexerSuspendResumeClicked()));
     connect(m_buttonDetails, SIGNAL(leftClickedUrl()),
             this, SLOT(slotStatusDetailsClicked()));
 
@@ -144,11 +140,6 @@ void ServerConfigModule::load()
     KConfig config("nepomukserverrc");
     m_checkEnableNepomuk->setChecked(config.group("Basic Settings").readEntry("Start Nepomuk", true));
     m_checkEnableFileIndexer->setChecked(config.group("Service-nepomukfileindexer").readEntry("autostart", true));
-
-    const QString akonadiCtlExe = KStandardDirs::findExe("akonadictl");
-    m_emailIndexingBox->setVisible(!akonadiCtlExe.isEmpty());
-    KConfig akonadiConfig("akonadi_nepomuk_feederrc");
-    m_checkEnableEmailIndexer->setChecked(akonadiConfig.group("akonadi_nepomuk_email_feeder").readEntry("Enabled", true));
 
     // 2. file indexer settings
     KConfig fileIndexerConfig("nepomukstrigirc");
@@ -225,12 +216,6 @@ void ServerConfigModule::save()
     KConfig config("nepomukserverrc");
     config.group("Basic Settings").writeEntry("Start Nepomuk", m_checkEnableNepomuk->isChecked());
     config.group("Service-nepomukfileindexer").writeEntry("autostart", m_checkEnableFileIndexer->isChecked());
-
-    KConfig akonadiConfig("akonadi_nepomuk_feederrc");
-    akonadiConfig.group("akonadi_nepomuk_email_feeder").writeEntry("Enabled", m_checkEnableEmailIndexer->isChecked());
-    akonadiConfig.sync();
-    QDBusInterface akonadiIface("org.freedesktop.Akonadi.Agent.akonadi_nepomuk_email_feeder", "/", "org.freedesktop.Akonadi.Agent.Control");
-    akonadiIface.asyncCall("reconfigure");
 
     // 2. update file indexer config
     KConfig fileIndexerConfig("nepomukstrigirc");
@@ -335,7 +320,6 @@ void ServerConfigModule::defaults()
 {
     m_checkEnableFileIndexer->setChecked(true);
     m_checkEnableNepomuk->setChecked(true);
-    m_checkEnableEmailIndexer->setChecked(true);
     m_indexFolderSelectionDialog->setIndexHiddenFolders(false);
     m_indexFolderSelectionDialog->setFolders(defaultFolders(), QStringList());
     m_excludeFilterSelectionDialog->setExcludeFilters(Baloo::defaultExcludeFilterList());

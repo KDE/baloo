@@ -7,7 +7,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>427</width>
+    <width>589</width>
     <height>359</height>
    </rect>
   </property>
@@ -169,82 +169,6 @@
             </item>
             <item>
              <widget class="QPushButton" name="m_fileIndexerSuspendResumeButtom">
-              <property name="text">
-               <string>Suspend</string>
-              </property>
-              <property name="clicked" stdset="0">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QGroupBox" name="m_emailIndexingBox">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="title">
-          <string>PIM Data Indexing</string>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_11">
-          <item>
-           <widget class="QLabel" name="label_12">
-            <property name="text">
-             <string>PIM data indexing allows full text search in events, contacts, email and their attachments.</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="m_checkEnableEmailIndexer">
-            <property name="text">
-             <string>Enable PIM Data Indexer</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout2">
-            <item>
-             <spacer name="horizontalSpacer2">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeType">
-               <enum>QSizePolicy::Fixed</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>1</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
-             <widget class="KSqueezedTextLabel" name="m_labelEmailIndexerStatus">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                <horstretch>1</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="font">
-               <font>
-                <weight>75</weight>
-                <italic>true</italic>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string notr="true">KSqueezedTextLabel</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="m_emailIndexerSuspendResumeButtom">
               <property name="text">
                <string>Suspend</string>
               </property>
@@ -439,11 +363,6 @@
    <header>kurllabel.h</header>
   </customwidget>
   <customwidget>
-   <class>KPushButton</class>
-   <extends>QPushButton</extends>
-   <header>kpushbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>KTabWidget</class>
    <extends>QTabWidget</extends>
    <header>ktabwidget.h</header>
@@ -464,22 +383,6 @@
    <sender>m_checkEnableNepomuk</sender>
    <signal>toggled(bool)</signal>
    <receiver>groupBox</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>206</x>
-     <y>100</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>228</x>
-     <y>269</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>m_checkEnableNepomuk</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>m_emailIndexingBox</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
