@@ -10,6 +10,7 @@ get_filename_component(rootDir ${_currentDir}/@relInstallDir@ ABSOLUTE) # The in
 # Include directory
 set(BALOO_INSTALL_PREFIX "${rootDir}")
 set(BALOO_INCLUDE_DIR "@INCLUDE_INSTALL_DIR@")
+set(Baloo_FOUND true)
 
 include(${_currentDir}/BalooTargetsWithPrefix.cmake)
 
