@@ -10,7 +10,7 @@ set(kcm_file_SRCS
 qt4_add_dbus_interface(kcm_file_SRCS ../org.kde.baloo.file.indexer.xml fileindexerinterface)
 
 kde4_add_ui_files(kcm_file_SRCS
-  nepomukconfigwidget.ui
+  configwidget.ui
   indexfolderselectionwidget.ui
   excludefilterselectiondialog.ui)
 

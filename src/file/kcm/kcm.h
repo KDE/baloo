@@ -20,7 +20,7 @@
 #define _BALOO_FILE_KCM_H_
 
 #include <KCModule>
-#include "ui_nepomukconfigwidget.h"
+#include "ui_configwidget.h"
 #include "fileindexerinterface.h"
 
 namespace Baloo
@@ -29,7 +29,7 @@ namespace Baloo
 class IndexFolderSelectionDialog;
 class ExcludeFilterSelectionDialog;
 
-class ServerConfigModule : public KCModule, private Ui::NepomukConfigWidget
+class ServerConfigModule : public KCModule, private Ui::ConfigWidget
 {
     Q_OBJECT
 

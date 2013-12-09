@@ -91,7 +91,7 @@ ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args
 
     connect(m_checkEnableFileIndexer, SIGNAL(toggled(bool)),
             this, SLOT(changed()));
-    connect(m_checkEnableNepomuk, SIGNAL(toggled(bool)),
+    connect(m_checkEnabled, SIGNAL(toggled(bool)),
             this, SLOT(changed()));
     connect(m_comboRemovableMediaHandling, SIGNAL(activated(int)),
             this, SLOT(changed()));
@@ -134,7 +134,7 @@ void ServerConfigModule::load()
     // 1. basic setup
     KConfig config("baloofilerc");
     KConfigGroup basicSettings = config.group("Basic Settings");
-    m_checkEnableNepomuk->setChecked(basicSettings.readEntry("Enabled", true));
+    m_checkEnabled->setChecked(basicSettings.readEntry("Enabled", true));
     m_checkEnableFileIndexer->setChecked(basicSettings.readEntry("Indexing-Enabled", true));
 
     // 2. file indexer settings
@@ -190,7 +190,7 @@ void ServerConfigModule::load()
     // combobox items: 0 - ignore, 1 - index all, 2 - ask user
     m_comboRemovableMediaHandling->setCurrentIndex(int(indexNewlyMounted) + int(askIndividually));
 
-    groupBox->setEnabled(m_checkEnableNepomuk->isChecked());
+    groupBox->setEnabled(m_checkEnabled->isChecked());
 
     recreateInterfaces();
     updateFileIndexerStatus();
@@ -210,7 +210,7 @@ void ServerConfigModule::save()
     // Change the settings
     KConfig config("baloofilerc");
     KConfigGroup basicSettings = config.group("Basic Settings");
-    basicSettings.writeEntry("Enabled", m_checkEnableNepomuk->isChecked());
+    basicSettings.writeEntry("Enabled", m_checkEnabled->isChecked());
     basicSettings.writeEntry("Indexing-Enabled", m_checkEnableFileIndexer->isChecked());
 
     // 2.1 Update all the RemovableMedia paths
@@ -300,7 +300,7 @@ void ServerConfigModule::save()
 void ServerConfigModule::defaults()
 {
     m_checkEnableFileIndexer->setChecked(true);
-    m_checkEnableNepomuk->setChecked(true);
+    m_checkEnabled->setChecked(true);
     m_indexFolderSelectionDialog->setIndexHiddenFolders(false);
     m_indexFolderSelectionDialog->setFolders(defaultFolders(), QStringList());
     m_excludeFilterSelectionDialog->setExcludeFilters(Baloo::defaultExcludeFilterList());
@@ -310,9 +310,9 @@ void ServerConfigModule::defaults()
 void ServerConfigModule::updateFileServerStatus()
 {
     if (QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.baloo.file")) {
-        m_labelNepomukStatus->setText(i18nc("@info:status", "File Metadata services are active"));
+        m_labelStatus->setText(i18nc("@info:status", "File Metadata services are active"));
     } else {
-        m_labelNepomukStatus->setText(i18nc("@info:status", "File Metadata services are disabled"));
+        m_labelStatus->setText(i18nc("@info:status", "File Metadata services are disabled"));
     }
 }
 

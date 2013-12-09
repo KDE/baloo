@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <author>Sebastian Trueg</author>
- <class>NepomukConfigWidget</class>
- <widget class="QWidget" name="NepomukConfigWidget">
+ <class>ConfigWidget</class>
+ <widget class="QWidget" name="ConfigWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -46,7 +46,7 @@
             <item row="0" column="0" rowspan="2">
              <layout class="QVBoxLayout" name="verticalLayout_9">
               <item>
-               <widget class="QCheckBox" name="m_checkEnableNepomuk">
+               <widget class="QCheckBox" name="m_checkEnabled">
                 <property name="text">
                  <string>Enable File metadata</string>
                 </property>
@@ -71,7 +71,7 @@
                  </spacer>
                 </item>
                 <item>
-                 <widget class="KSqueezedTextLabel" name="m_labelNepomukStatus">
+                 <widget class="KSqueezedTextLabel" name="m_labelStatus">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                     <horstretch>1</horstretch>
@@ -375,12 +375,12 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>m_checkEnableNepomuk</tabstop>
+  <tabstop>m_checkEnabled</tabstop>
  </tabstops>
  <resources/>
  <connections>
   <connection>
-   <sender>m_checkEnableNepomuk</sender>
+   <sender>m_checkEnabled</sender>
    <signal>toggled(bool)</signal>
    <receiver>groupBox</receiver>
    <slot>setEnabled(bool)</slot>
