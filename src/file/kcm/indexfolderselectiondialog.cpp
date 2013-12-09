@@ -21,6 +21,7 @@
 
 #include <QTreeView>
 
+using namespace Baloo;
 
 namespace
 {
@@ -59,7 +60,7 @@ QStringList removeHiddenFolders(const QStringList& folders)
 }
 
 
-Nepomuk2::IndexFolderSelectionDialog::IndexFolderSelectionDialog(QWidget* parent)
+IndexFolderSelectionDialog::IndexFolderSelectionDialog(QWidget* parent)
     : KDialog(parent)
 {
     setupUi(mainWidget());
@@ -79,7 +80,7 @@ Nepomuk2::IndexFolderSelectionDialog::IndexFolderSelectionDialog(QWidget* parent
 }
 
 
-Nepomuk2::IndexFolderSelectionDialog::~IndexFolderSelectionDialog()
+IndexFolderSelectionDialog::~IndexFolderSelectionDialog()
 {
 }
 
@@ -96,7 +97,7 @@ QStringList filterNonExistingDirectories(const QStringList& list)
 }
 }
 
-void Nepomuk2::IndexFolderSelectionDialog::setFolders(const QStringList& includeDirs, const QStringList& exclude)
+void IndexFolderSelectionDialog::setFolders(const QStringList& includeDirs, const QStringList& exclude)
 {
     QStringList includes = filterNonExistingDirectories(includeDirs);
     QStringList excludes = filterNonExistingDirectories(exclude);
@@ -121,13 +122,13 @@ void Nepomuk2::IndexFolderSelectionDialog::setFolders(const QStringList& include
 }
 
 
-void Nepomuk2::IndexFolderSelectionDialog::setIndexHiddenFolders(bool enable)
+void IndexFolderSelectionDialog::setIndexHiddenFolders(bool enable)
 {
     m_checkShowHiddenFolders->setChecked(enable);
 }
 
 
-QStringList Nepomuk2::IndexFolderSelectionDialog::includeFolders() const
+QStringList IndexFolderSelectionDialog::includeFolders() const
 {
     if (!indexHiddenFolders()) {
         return removeHiddenFolders(m_folderModel->includeFolders());
@@ -137,7 +138,7 @@ QStringList Nepomuk2::IndexFolderSelectionDialog::includeFolders() const
 }
 
 
-QStringList Nepomuk2::IndexFolderSelectionDialog::excludeFolders() const
+QStringList IndexFolderSelectionDialog::excludeFolders() const
 {
     if (!indexHiddenFolders()) {
         return removeHiddenFolders(m_folderModel->excludeFolders());
@@ -147,7 +148,7 @@ QStringList Nepomuk2::IndexFolderSelectionDialog::excludeFolders() const
 }
 
 
-bool Nepomuk2::IndexFolderSelectionDialog::indexHiddenFolders() const
+bool IndexFolderSelectionDialog::indexHiddenFolders() const
 {
     return m_checkShowHiddenFolders->isChecked();
 }

@@ -21,7 +21,7 @@
 
 #include <QtCore/QStringList>
 
-namespace Nepomuk2
+namespace Baloo
 {
 /**
  * \return A list of default exclude filters to be used

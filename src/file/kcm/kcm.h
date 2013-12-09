@@ -16,26 +16,22 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef _NEPOMUK_SERVER_KCM_H_
-#define _NEPOMUK_SERVER_KCM_H_
+#ifndef _BALOO_FILE_KCM_H_
+#define _BALOO_FILE_KCM_H_
 
 #include <KCModule>
 #include "ui_nepomukconfigwidget.h"
 #include "nepomukserverinterface.h"
 #include "fileindexerinterface.h"
-#include "akonadifeederinterface.h"
-
-#include <Nepomuk2/Query/Query>
 
 class QRadioButton;
 class QAbstractButton;
 
-namespace Nepomuk2
+namespace Baloo
 {
 
 class IndexFolderSelectionDialog;
 class ExcludeFilterSelectionDialog;
-class StatusWidget;
 
 class ServerConfigModule : public KCModule, private Ui::NepomukConfigWidget
 {
@@ -80,8 +76,6 @@ private:
 
     void syncCheckBoxesFromMimetypes(const QStringList& mimetypes);
     QStringList mimetypesFromCheckboxes();
-
-    bool m_nepomukAvailable;
 
     org::kde::NepomukServer* m_serverInterface;
     org::kde::nepomuk::FileIndexer* m_fileIndexerInterface;

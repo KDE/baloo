@@ -26,17 +26,7 @@
 #include <kdialog.h>
 #include <QLabel>
 
-#include <Nepomuk2/ResourceManager>
-
-namespace Soprano
-{
-namespace Util
-{
-class AsyncQuery;
-}
-}
-
-namespace Nepomuk2
+namespace Baloo
 {
 
 class DetailsWidget : public KDialog
@@ -48,8 +38,8 @@ public:
 
 private slots:
     void refresh();
-    void slotFileCountFinished(Soprano::Util::AsyncQuery* query);
-    void slotEmailCountFinished(Soprano::Util::AsyncQuery* query);
+    void slotFileCountFinished();
+    void slotEmailCountFinished();
 
 private:
     QLabel* m_fileCountLabel;

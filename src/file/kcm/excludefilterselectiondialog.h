@@ -18,13 +18,13 @@
  *
  */
 
-#ifndef NEPOMUK2_EXCLUDEFILTERSELECTIONDIALOG_H
-#define NEPOMUK2_EXCLUDEFILTERSELECTIONDIALOG_H
+#ifndef _EXCLUDEFILTERSELECTIONDIALOG_H
+#define _EXCLUDEFILTERSELECTIONDIALOG_H
 
 #include <KDialog>
 #include "ui_excludefilterselectiondialog.h"
 
-namespace Nepomuk2
+namespace Baloo
 {
 
 class ExcludeFilterSelectionDialog :  public KDialog, public Ui_ExcludeFilterSelectionWidget

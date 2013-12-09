@@ -152,7 +152,7 @@ const int s_sourceCodeMimeTypesVersion = 1;
 }
 
 
-QStringList Nepomuk2::defaultExcludeFilterList()
+QStringList Baloo::defaultExcludeFilterList()
 {
     QStringList l;
     for (int i = 0; s_defaultFileExcludeFilters[i]; ++i)
@@ -162,12 +162,12 @@ QStringList Nepomuk2::defaultExcludeFilterList()
     return l;
 }
 
-int Nepomuk2::defaultExcludeFilterListVersion()
+int Baloo::defaultExcludeFilterListVersion()
 {
     return qMax(s_defaultFileExcludeFiltersVersion, s_defaultFolderExcludeFiltersVersion);
 }
 
-QStringList Nepomuk2::documentMimetypes()
+QStringList Baloo::documentMimetypes()
 {
     QStringList l;
     for (int i = 0; s_documentMimeTypes[i]; i++)
@@ -176,7 +176,7 @@ QStringList Nepomuk2::documentMimetypes()
     return l;
 }
 
-QStringList Nepomuk2::sourceCodeMimeTypes()
+QStringList Baloo::sourceCodeMimeTypes()
 {
     QStringList l;
     for (int i = 0; s_sourceCodeMimeTypes[i]; i++)
@@ -185,13 +185,13 @@ QStringList Nepomuk2::sourceCodeMimeTypes()
     return l;
 }
 
-QStringList Nepomuk2::defaultExcludeMimetypes()
+QStringList Baloo::defaultExcludeMimetypes()
 {
     // By default we want to index everything apart from source code
     return sourceCodeMimeTypes();
 }
 
-int Nepomuk2::defaultExcludeMimetypesVersion()
+int Baloo::defaultExcludeMimetypesVersion()
 {
     // The +1 is the image, video and audio mimetypes
     return s_documentMimeTypesVersion + s_sourceCodeMimeTypesVersion + 1;

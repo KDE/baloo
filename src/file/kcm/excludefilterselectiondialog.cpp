@@ -20,35 +20,37 @@
 
 #include "excludefilterselectiondialog.h"
 
-Nepomuk2::ExcludeFilterSelectionDialog::ExcludeFilterSelectionDialog(QWidget* parent): KDialog(parent)
+using namespace Baloo;
+
+ExcludeFilterSelectionDialog::ExcludeFilterSelectionDialog(QWidget* parent): KDialog(parent)
 {
     setupUi(mainWidget());
     setCaption(i18nc("@title:window Referring to the folders which will be searched for files to index for desktop search",
                      "Advanced File Filtering"));
 }
 
-Nepomuk2::ExcludeFilterSelectionDialog::~ExcludeFilterSelectionDialog()
+ExcludeFilterSelectionDialog::~ExcludeFilterSelectionDialog()
 {
 
 }
 
-void Nepomuk2::ExcludeFilterSelectionDialog::setExcludeFilters(const QStringList& filters)
+void ExcludeFilterSelectionDialog::setExcludeFilters(const QStringList& filters)
 {
     m_editExcludeFilters->setItems(filters);
 }
 
-void Nepomuk2::ExcludeFilterSelectionDialog::setExcludeMimeTypes(const QStringList& mimetypes)
+void ExcludeFilterSelectionDialog::setExcludeMimeTypes(const QStringList& mimetypes)
 {
     m_editMimeTypeExcludes->setItems(mimetypes);
 
 }
 
-QStringList Nepomuk2::ExcludeFilterSelectionDialog::excludeFilters()
+QStringList ExcludeFilterSelectionDialog::excludeFilters()
 {
     return m_editExcludeFilters->items();
 }
 
-QStringList Nepomuk2::ExcludeFilterSelectionDialog::excludeMimeTypes()
+QStringList ExcludeFilterSelectionDialog::excludeMimeTypes()
 {
     return m_editMimeTypeExcludes->items();
 }

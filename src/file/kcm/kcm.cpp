@@ -17,16 +17,14 @@
    Boston, MA 02110-1301, USA.
 */
 
-#include "nepomukserverkcm.h"
+#include "kcm.h"
 #include "nepomukserverinterface.h"
 #include "servicecontrol.h"
 #include "fileexcludefilters.h"
-#include "../kioslaves/common/standardqueries.h"
 #include "fileindexerinterface.h"
 #include "indexfolderselectiondialog.h"
 #include "excludefilterselectiondialog.h"
 #include "detailswidget.h"
-#include "removablemediacache.h"
 
 #include <KPluginFactory>
 #include <KPluginLoader>
@@ -40,21 +38,14 @@
 #include <KDirWatch>
 #include <KDebug>
 
-#include <Nepomuk2/Query/QueryParser>
-#include <Nepomuk2/Query/FileQuery>
-
 #include <QRadioButton>
 #include <QInputDialog>
 #include <QPushButton>
 #include <QtCore/QDir>
 #include <QtDBus/QDBusServiceWatcher>
 
-#include <Soprano/PluginManager>
-#include <Soprano/Backend>
-
-
-K_PLUGIN_FACTORY(NepomukConfigModuleFactory, registerPlugin<Nepomuk2::ServerConfigModule>();)
-K_EXPORT_PLUGIN(NepomukConfigModuleFactory("kcm_nepomuk", "kcm_nepomuk"))
+K_PLUGIN_FACTORY(BalooConfigModuleFactory, registerPlugin<Baloo::ServerConfigModule>();)
+K_EXPORT_PLUGIN(BalooConfigModuleFactory("kcm_baloofile", "kcm_baloofile"))
 
 
 namespace
@@ -94,10 +85,10 @@ BackupFrequency parseBackupFrequency(const QString& s)
 
 }
 
+using namespace Baloo;
 
-
-Nepomuk2::ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args)
-    : KCModule(NepomukConfigModuleFactory::componentData(), parent, args),
+ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args)
+    : KCModule(BalooConfigModuleFactory::componentData(), parent, args),
       m_serverInterface(0),
       m_fileIndexerInterface(0),
       m_akonadiInterface(0),
@@ -105,109 +96,100 @@ Nepomuk2::ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariant
       m_checkboxesChanged(false)
 {
     KAboutData* about = new KAboutData(
-        "kcm_nepomuk", "kcm_nepomuk", ki18n("Desktop Search Configuration Module"),
+        "kcm_baloofile", "kcm_baloofile", ki18n("Desktop Search Configuration Module"),
         KDE_VERSION_STRING, KLocalizedString(), KAboutData::License_GPL,
         ki18n("Copyright 2007-2010 Sebastian Trüg"));
     about->addAuthor(ki18n("Sebastian Trüg"), KLocalizedString(), "trueg@kde.org");
+    about->addAuthor(ki18n("Vishesh Handa"), KLocalizedString(), "vhanda@kde.org");
     setAboutData(about);
     setButtons(Help | Apply | Default);
 
-    const Soprano::Backend* virtuosoBackend = Soprano::PluginManager::instance()->discoverBackendByName(QLatin1String("virtuoso"));
-    m_nepomukAvailable = (virtuosoBackend && virtuosoBackend->isAvailable());
+    setupUi(this);
 
-    if (m_nepomukAvailable) {
-        setupUi(this);
+    m_indexFolderSelectionDialog = new IndexFolderSelectionDialog(this);
+    m_excludeFilterSelectionDialog = new ExcludeFilterSelectionDialog(this);
 
-        m_indexFolderSelectionDialog = new IndexFolderSelectionDialog(this);
-        m_excludeFilterSelectionDialog = new ExcludeFilterSelectionDialog(this);
+    QDBusServiceWatcher* watcher = new QDBusServiceWatcher(this);
+    watcher->addWatchedService(QLatin1String("org.kde.nepomuk.services.nepomukfileindexer"));
+    watcher->addWatchedService(QLatin1String("org.kde.NepomukServer"));
+    watcher->addWatchedService(QLatin1String("org.freedesktop.Akonadi.Agent.akonadi_nepomuk_feeder"));
+    watcher->setConnection(QDBusConnection::sessionBus());
+    watcher->setWatchMode(QDBusServiceWatcher::WatchForRegistration | QDBusServiceWatcher::WatchForUnregistration);
 
-        QDBusServiceWatcher* watcher = new QDBusServiceWatcher(this);
-        watcher->addWatchedService(QLatin1String("org.kde.nepomuk.services.nepomukfileindexer"));
-        watcher->addWatchedService(QLatin1String("org.kde.NepomukServer"));
-        watcher->addWatchedService(QLatin1String("org.freedesktop.Akonadi.Agent.akonadi_nepomuk_feeder"));
-        watcher->setConnection(QDBusConnection::sessionBus());
-        watcher->setWatchMode(QDBusServiceWatcher::WatchForRegistration | QDBusServiceWatcher::WatchForUnregistration);
+    connect(watcher, SIGNAL(serviceRegistered(const QString&)),
+            this, SLOT(recreateInterfaces()));
+    connect(watcher, SIGNAL(serviceUnregistered(const QString&)),
+            this, SLOT(recreateInterfaces()));
 
-        connect(watcher, SIGNAL(serviceRegistered(const QString&)),
-                this, SLOT(recreateInterfaces()));
-        connect(watcher, SIGNAL(serviceUnregistered(const QString&)),
-                this, SLOT(recreateInterfaces()));
+    recreateInterfaces();
 
-        recreateInterfaces();
+    connect(m_checkEnableFileIndexer, SIGNAL(toggled(bool)),
+            this, SLOT(changed()));
+    connect(m_checkEnableNepomuk, SIGNAL(toggled(bool)),
+            this, SLOT(changed()));
+    connect(m_checkEnableEmailIndexer, SIGNAL(toggled(bool)),
+            this, SLOT(changed()));
+    connect(m_comboRemovableMediaHandling, SIGNAL(activated(int)),
+            this, SLOT(changed()));
 
-        connect(m_checkEnableFileIndexer, SIGNAL(toggled(bool)),
-                this, SLOT(changed()));
-        connect(m_checkEnableNepomuk, SIGNAL(toggled(bool)),
-                this, SLOT(changed()));
-        connect(m_checkEnableEmailIndexer, SIGNAL(toggled(bool)),
-                this, SLOT(changed()));
-        connect(m_comboRemovableMediaHandling, SIGNAL(activated(int)),
-                this, SLOT(changed()));
+    connect(m_buttonCustomizeIndexFolders, SIGNAL(clicked()),
+            this, SLOT(slotEditIndexFolders()));
+    connect(m_buttonAdvancedFileIndexing, SIGNAL(clicked()),
+            this, SLOT(slotAdvancedFileIndexing()));
+    connect(m_fileIndexerSuspendResumeButtom, SIGNAL(clicked(bool)),
+            this, SLOT(slotFileIndexerSuspendResumeClicked()));
+    connect(m_emailIndexerSuspendResumeButtom, SIGNAL(clicked(bool)),
+            this, SLOT(slotEmailIndexerSuspendResumeClicked()));
+    connect(m_buttonDetails, SIGNAL(leftClickedUrl()),
+            this, SLOT(slotStatusDetailsClicked()));
 
-        connect(m_buttonCustomizeIndexFolders, SIGNAL(clicked()),
-                this, SLOT(slotEditIndexFolders()));
-        connect(m_buttonAdvancedFileIndexing, SIGNAL(clicked()),
-                this, SLOT(slotAdvancedFileIndexing()));
-        connect(m_fileIndexerSuspendResumeButtom, SIGNAL(clicked(bool)),
-                this, SLOT(slotFileIndexerSuspendResumeClicked()));
-        connect(m_emailIndexerSuspendResumeButtom, SIGNAL(clicked(bool)),
-                this, SLOT(slotEmailIndexerSuspendResumeClicked()));
-        connect(m_buttonDetails, SIGNAL(leftClickedUrl()),
-                this, SLOT(slotStatusDetailsClicked()));
+    connect(m_checkboxAudio, SIGNAL(toggled(bool)),
+            this, SLOT(slotCheckBoxesChanged()));
+    connect(m_checkboxImage, SIGNAL(toggled(bool)),
+            this, SLOT(slotCheckBoxesChanged()));
+    connect(m_checkboxVideo, SIGNAL(toggled(bool)),
+            this, SLOT(slotCheckBoxesChanged()));
+    connect(m_checkboxDocuments, SIGNAL(toggled(bool)),
+            this, SLOT(slotCheckBoxesChanged()));
+    connect(m_checkboxSourceCode, SIGNAL(toggled(bool)),
+            this, SLOT(slotCheckBoxesChanged()));
 
-        connect(m_checkboxAudio, SIGNAL(toggled(bool)),
-                this, SLOT(slotCheckBoxesChanged()));
-        connect(m_checkboxImage, SIGNAL(toggled(bool)),
-                this, SLOT(slotCheckBoxesChanged()));
-        connect(m_checkboxVideo, SIGNAL(toggled(bool)),
-                this, SLOT(slotCheckBoxesChanged()));
-        connect(m_checkboxDocuments, SIGNAL(toggled(bool)),
-                this, SLOT(slotCheckBoxesChanged()));
-        connect(m_checkboxSourceCode, SIGNAL(toggled(bool)),
-                this, SLOT(slotCheckBoxesChanged()));
+    // Backup
+    m_comboBackupFrequency->addItem(i18nc("@item:inlistbox", "Disable Automatic Backups"));
+    m_comboBackupFrequency->addItem(i18nc("@item:inlistbox", "Daily Backup"));
+    m_comboBackupFrequency->addItem(i18nc("@item:inlistbox", "Weekly Backup"));
 
-        // Backup
-        m_comboBackupFrequency->addItem(i18nc("@item:inlistbox", "Disable Automatic Backups"));
-        m_comboBackupFrequency->addItem(i18nc("@item:inlistbox", "Daily Backup"));
-        m_comboBackupFrequency->addItem(i18nc("@item:inlistbox", "Weekly Backup"));
+    for (int i = 1; i <= 7; ++i)
+        m_comboBackupDay->addItem(KGlobal::locale()->calendar()->weekDayName(i), i);
 
-        for (int i = 1; i <= 7; ++i)
-            m_comboBackupDay->addItem(KGlobal::locale()->calendar()->weekDayName(i), i);
+    connect(m_comboBackupFrequency, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(slotBackupFrequencyChanged()));
+    connect(m_comboBackupFrequency, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(changed()));
+    connect(m_comboBackupDay, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(changed()));
+    connect(m_editBackupTime, SIGNAL(timeChanged(QTime)),
+            this, SLOT(changed()));
+    connect(m_spinBackupMax, SIGNAL(valueChanged(int)),
+            this, SLOT(changed()));
 
-        connect(m_comboBackupFrequency, SIGNAL(currentIndexChanged(int)),
-                this, SLOT(slotBackupFrequencyChanged()));
-        connect(m_comboBackupFrequency, SIGNAL(currentIndexChanged(int)),
-                this, SLOT(changed()));
-        connect(m_comboBackupDay, SIGNAL(currentIndexChanged(int)),
-                this, SLOT(changed()));
-        connect(m_editBackupTime, SIGNAL(timeChanged(QTime)),
-                this, SLOT(changed()));
-        connect(m_spinBackupMax, SIGNAL(valueChanged(int)),
-                this, SLOT(changed()));
+    connect(m_buttonManualBackup, SIGNAL(clicked(bool)),
+            this, SLOT(slotManualBackup()));
+    connect(m_buttonRestoreBackup, SIGNAL(clicked(bool)),
+            this, SLOT(slotRestoreBackup()));
 
-        connect(m_buttonManualBackup, SIGNAL(clicked(bool)),
-                this, SLOT(slotManualBackup()));
-        connect(m_buttonRestoreBackup, SIGNAL(clicked(bool)),
-                this, SLOT(slotRestoreBackup()));
+    // update backup status whenever manual backups are created
+    KDirWatch::self()->addDir(KStandardDirs::locateLocal("data", "nepomuk/backupsync/backups/"));
+    connect(KDirWatch::self(), SIGNAL(dirty(QString)), this, SLOT(updateBackupStatus()));
 
-        // update backup status whenever manual backups are created
-        KDirWatch::self()->addDir(KStandardDirs::locateLocal("data", "nepomuk/backupsync/backups/"));
-        connect(KDirWatch::self(), SIGNAL(dirty(QString)), this, SLOT(updateBackupStatus()));
-
-        // args[0] can be the page index allowing to open the config with a specific page
-        if (args.count() > 0 && args[0].toInt() < m_mainTabWidget->count()) {
-            m_mainTabWidget->setCurrentIndex(args[0].toInt());
-        }
-    } else {
-        QLabel* label = new QLabel(i18n("The Nepomuk installation is not complete. No desktop search settings can be provided."));
-        label->setAlignment(Qt::AlignCenter);
-        QVBoxLayout* layout = new QVBoxLayout(this);
-        layout->addWidget(label);
+    // args[0] can be the page index allowing to open the config with a specific page
+    if (args.count() > 0 && args[0].toInt() < m_mainTabWidget->count()) {
+        m_mainTabWidget->setCurrentIndex(args[0].toInt());
     }
 }
 
 
-Nepomuk2::ServerConfigModule::~ServerConfigModule()
+ServerConfigModule::~ServerConfigModule()
 {
     delete m_fileIndexerInterface;
     delete m_akonadiInterface;
@@ -215,11 +197,8 @@ Nepomuk2::ServerConfigModule::~ServerConfigModule()
 }
 
 
-void Nepomuk2::ServerConfigModule::load()
+void ServerConfigModule::load()
 {
-    if (!m_nepomukAvailable)
-        return;
-
     // 1. basic setup
     KConfig config("nepomukserverrc");
     m_checkEnableNepomuk->setChecked(config.group("Basic Settings").readEntry("Start Nepomuk", true));
@@ -306,11 +285,8 @@ void Nepomuk2::ServerConfigModule::load()
 }
 
 
-void Nepomuk2::ServerConfigModule::save()
+void ServerConfigModule::save()
 {
-    if (!m_nepomukAvailable)
-        return;
-
     QStringList includeFolders = m_indexFolderSelectionDialog->includeFolders();
     QStringList excludeFolders = m_indexFolderSelectionDialog->excludeFolders();
 
@@ -432,11 +408,8 @@ void Nepomuk2::ServerConfigModule::save()
 }
 
 
-void Nepomuk2::ServerConfigModule::defaults()
+void ServerConfigModule::defaults()
 {
-    if (!m_nepomukAvailable)
-        return;
-
     m_checkEnableFileIndexer->setChecked(true);
     m_checkEnableNepomuk->setChecked(true);
     m_checkEnableEmailIndexer->setChecked(true);
@@ -448,7 +421,7 @@ void Nepomuk2::ServerConfigModule::defaults()
 }
 
 
-void Nepomuk2::ServerConfigModule::updateNepomukServerStatus()
+void ServerConfigModule::updateNepomukServerStatus()
 {
     if (m_serverInterface &&
             m_serverInterface->isNepomukEnabled()) {
@@ -459,7 +432,7 @@ void Nepomuk2::ServerConfigModule::updateNepomukServerStatus()
 }
 
 
-void Nepomuk2::ServerConfigModule::setFileIndexerStatusText(const QString& text, bool elide)
+void ServerConfigModule::setFileIndexerStatusText(const QString& text, bool elide)
 {
     m_labelFileIndexerStatus->setWordWrap(!elide);
     m_labelFileIndexerStatus->setTextElideMode(elide ? Qt::ElideMiddle : Qt::ElideNone);
@@ -467,7 +440,7 @@ void Nepomuk2::ServerConfigModule::setFileIndexerStatusText(const QString& text,
 }
 
 
-void Nepomuk2::ServerConfigModule::updateFileIndexerStatus()
+void ServerConfigModule::updateFileIndexerStatus()
 {
     if (QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.nepomuk.services.nepomukfileindexer")) {
         if (org::kde::nepomuk::ServiceControl("org.kde.nepomuk.services.nepomukfileindexer", "/servicecontrol",
@@ -492,7 +465,7 @@ void Nepomuk2::ServerConfigModule::updateFileIndexerStatus()
     }
 }
 
-void Nepomuk2::ServerConfigModule::updateFileIndexerSuspendResumeButtonText(bool isSuspended)
+void ServerConfigModule::updateFileIndexerSuspendResumeButtonText(bool isSuspended)
 {
     if (isSuspended) {
         m_fileIndexerSuspendResumeButtom->setText(i18nc("Resumes the Nepomuk file indexing service.", "Resume"));
@@ -503,7 +476,7 @@ void Nepomuk2::ServerConfigModule::updateFileIndexerSuspendResumeButtonText(bool
     }
 }
 
-void Nepomuk2::ServerConfigModule::slotFileIndexerSuspendResumeClicked()
+void ServerConfigModule::slotFileIndexerSuspendResumeClicked()
 {
     bool suspended = m_fileIndexerInterface->isSuspended();
     if (!suspended) {
@@ -515,14 +488,14 @@ void Nepomuk2::ServerConfigModule::slotFileIndexerSuspendResumeClicked()
     }
 }
 
-void Nepomuk2::ServerConfigModule::setEmailIndexerStatusText(const QString& text, bool elide)
+void ServerConfigModule::setEmailIndexerStatusText(const QString& text, bool elide)
 {
     m_labelEmailIndexerStatus->setWordWrap(!elide);
     m_labelEmailIndexerStatus->setTextElideMode(elide ? Qt::ElideMiddle : Qt::ElideNone);
     m_labelEmailIndexerStatus->setText(text);
 }
 
-void Nepomuk2::ServerConfigModule::updateEmailIndexerStatus()
+void ServerConfigModule::updateEmailIndexerStatus()
 {
     if (QDBusConnection::sessionBus().interface()->isServiceRegistered("org.freedesktop.Akonadi.Agent.akonadi_nepomuk_feeder")) {
         bool isOnline = m_akonadiInterface->isOnline();
@@ -547,7 +520,7 @@ void Nepomuk2::ServerConfigModule::updateEmailIndexerStatus()
     }
 }
 
-void Nepomuk2::ServerConfigModule::updateEmailIndexerSuspendResumeButtonText(bool isSuspended)
+void ServerConfigModule::updateEmailIndexerSuspendResumeButtonText(bool isSuspended)
 {
     if (isSuspended) {
         m_emailIndexerSuspendResumeButtom->setText(i18n("Resume"));
@@ -558,7 +531,7 @@ void Nepomuk2::ServerConfigModule::updateEmailIndexerSuspendResumeButtonText(boo
     }
 }
 
-void Nepomuk2::ServerConfigModule::slotEmailIndexerSuspendResumeClicked()
+void ServerConfigModule::slotEmailIndexerSuspendResumeClicked()
 {
     bool suspended = !m_akonadiInterface->isOnline();
     if (!suspended) {
@@ -570,7 +543,7 @@ void Nepomuk2::ServerConfigModule::slotEmailIndexerSuspendResumeClicked()
     }
 }
 
-void Nepomuk2::ServerConfigModule::updateBackupStatus()
+void ServerConfigModule::updateBackupStatus()
 {
     const QString backupUrl = KStandardDirs::locateLocal("data", "nepomuk/backupsync/backups/");
     QDir dir(backupUrl);
@@ -589,7 +562,7 @@ void Nepomuk2::ServerConfigModule::updateBackupStatus()
 }
 
 
-void Nepomuk2::ServerConfigModule::recreateInterfaces()
+void ServerConfigModule::recreateInterfaces()
 {
     delete m_fileIndexerInterface;
     delete m_akonadiInterface;
@@ -608,14 +581,14 @@ void Nepomuk2::ServerConfigModule::recreateInterfaces()
 }
 
 
-void Nepomuk2::ServerConfigModule::slotStatusDetailsClicked()
+void ServerConfigModule::slotStatusDetailsClicked()
 {
     DetailsWidget dialog(this);
     dialog.exec();
 }
 
 
-void Nepomuk2::ServerConfigModule::slotEditIndexFolders()
+void ServerConfigModule::slotEditIndexFolders()
 {
     const QStringList oldIncludeFolders = m_indexFolderSelectionDialog->includeFolders();
     const QStringList oldExcludeFolders = m_indexFolderSelectionDialog->excludeFolders();
@@ -630,7 +603,7 @@ void Nepomuk2::ServerConfigModule::slotEditIndexFolders()
     }
 }
 
-void Nepomuk2::ServerConfigModule::slotAdvancedFileIndexing()
+void ServerConfigModule::slotAdvancedFileIndexing()
 {
     const QStringList oldExcludeFilters = m_excludeFilterSelectionDialog->excludeFilters();
     QStringList oldExcludeMimeTypes = m_excludeFilterSelectionDialog->excludeMimeTypes();
@@ -653,7 +626,7 @@ void Nepomuk2::ServerConfigModule::slotAdvancedFileIndexing()
 }
 
 
-void Nepomuk2::ServerConfigModule::slotBackupFrequencyChanged()
+void ServerConfigModule::slotBackupFrequencyChanged()
 {
     m_comboBackupDay->setShown(m_comboBackupFrequency->currentIndex() >= WeeklyBackup);
     m_comboBackupDay->setDisabled(m_comboBackupFrequency->currentIndex() == DisableAutomaticBackups);
@@ -661,12 +634,12 @@ void Nepomuk2::ServerConfigModule::slotBackupFrequencyChanged()
     m_spinBackupMax->setDisabled(m_comboBackupFrequency->currentIndex() == DisableAutomaticBackups);
 }
 
-void Nepomuk2::ServerConfigModule::slotManualBackup()
+void ServerConfigModule::slotManualBackup()
 {
     KProcess::execute("nepomukbackup", QStringList() << "--backup");
 }
 
-void Nepomuk2::ServerConfigModule::slotRestoreBackup()
+void ServerConfigModule::slotRestoreBackup()
 {
     KProcess::execute("nepomukbackup", QStringList() << "--restore");
 }
@@ -718,7 +691,7 @@ void syncCheckBox(const QStringList& mimetypes, const QStringList& types, QCheck
 
 }
 
-void Nepomuk2::ServerConfigModule::syncCheckBoxesFromMimetypes(const QStringList& mimetypes)
+void ServerConfigModule::syncCheckBoxesFromMimetypes(const QStringList& mimetypes)
 {
     syncCheckBox(mimetypes, QLatin1String("image/*"), m_checkboxImage);
     syncCheckBox(mimetypes, QLatin1String("audio/*"), m_checkboxAudio);
@@ -729,7 +702,7 @@ void Nepomuk2::ServerConfigModule::syncCheckBoxesFromMimetypes(const QStringList
     m_checkboxesChanged = false;
 }
 
-QStringList Nepomuk2::ServerConfigModule::mimetypesFromCheckboxes()
+QStringList ServerConfigModule::mimetypesFromCheckboxes()
 {
     QStringList types;
     if (!m_checkboxAudio->isChecked())
@@ -746,10 +719,10 @@ QStringList Nepomuk2::ServerConfigModule::mimetypesFromCheckboxes()
     return types;
 }
 
-void Nepomuk2::ServerConfigModule::slotCheckBoxesChanged()
+void ServerConfigModule::slotCheckBoxesChanged()
 {
     m_checkboxesChanged = true;;
     changed(true);
 }
 
-#include "nepomukserverkcm.moc"
+#include "kcm.moc"

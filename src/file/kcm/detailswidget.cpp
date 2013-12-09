@@ -24,12 +24,11 @@
 
 #include <QHBoxLayout>
 
-#include <Soprano/Util/AsyncQuery>
-#include <Soprano/Node>
-
 #include <KLocalizedString>
 
-Nepomuk2::DetailsWidget::DetailsWidget(QWidget* parent, Qt::WindowFlags flags)
+using namespace Baloo;
+
+DetailsWidget::DetailsWidget(QWidget* parent, Qt::WindowFlags flags)
     : KDialog(parent, flags)
 {
     // KDialog stuff
@@ -82,31 +81,21 @@ Nepomuk2::DetailsWidget::DetailsWidget(QWidget* parent, Qt::WindowFlags flags)
     refresh();
 }
 
-Nepomuk2::DetailsWidget::~DetailsWidget()
+DetailsWidget::~DetailsWidget()
 {
 
 }
 
-void Nepomuk2::DetailsWidget::refresh()
+void DetailsWidget::refresh()
 {
     m_fileCountLabel->setText(i18n("Calculating"));
     m_emailCountLabel->setText(i18n("Calculating"));
 
-    // update file count
-    // ========================================
-    QLatin1String queryStr("select count(distinct ?r) where { ?r a nfo:FileDataObject ;"
-                           " kext:indexingLevel ?l . }");
-
-    Soprano::Model* model = ResourceManager::instance()->mainModel();
-    Soprano::Util::AsyncQuery* query
-        = Soprano::Util::AsyncQuery::executeQuery(model, queryStr, Soprano::Query::QueryLanguageSparql);
-
-    connect(query, SIGNAL(nextReady(Soprano::Util::AsyncQuery*)),
-            this, SLOT(slotFileCountFinished(Soprano::Util::AsyncQuery*)));
 }
 
-void Nepomuk2::DetailsWidget::slotFileCountFinished(Soprano::Util::AsyncQuery* query)
+void DetailsWidget::slotFileCountFinished()
 {
+    /*
     int num = query->binding(0).literal().toInt();
     m_fileCountLabel->setText(i18n("%1", num));
     query->close();
@@ -119,13 +108,16 @@ void Nepomuk2::DetailsWidget::slotFileCountFinished(Soprano::Util::AsyncQuery* q
 
     connect(q, SIGNAL(nextReady(Soprano::Util::AsyncQuery*)),
             this, SLOT(slotEmailCountFinished(Soprano::Util::AsyncQuery*)));
+            */
 }
 
-void Nepomuk2::DetailsWidget::slotEmailCountFinished(Soprano::Util::AsyncQuery* query)
+void DetailsWidget::slotEmailCountFinished()
 {
+    /*
     int num = query->binding(0).literal().toInt();
     m_emailCountLabel->setText(i18n("%1", num));
 
     query->close();
+    */
 }
 

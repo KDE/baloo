@@ -16,15 +16,15 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef _NEPOMUK_INDEX_FOLDER_SELECTION_DIALOG_H_
-#define _NEPOMUK_INDEX_FOLDER_SELECTION_DIALOG_H_
+#ifndef _BALOO_INDEX_FOLDER_SELECTION_DIALOG_H_
+#define _BALOO_INDEX_FOLDER_SELECTION_DIALOG_H_
 
 #include <KDialog>
 #include "ui_indexfolderselectionwidget.h"
 
 class FolderSelectionModel;
 
-namespace Nepomuk2
+namespace Baloo
 {
 class IndexFolderSelectionDialog : public KDialog, public Ui_IndexFolderSelectionWidget
 {
