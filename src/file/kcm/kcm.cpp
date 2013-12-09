@@ -91,7 +91,6 @@ ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args
     : KCModule(BalooConfigModuleFactory::componentData(), parent, args),
       m_serverInterface(0),
       m_fileIndexerInterface(0),
-      m_akonadiInterface(0),
       m_failedToInitialize(false),
       m_checkboxesChanged(false)
 {
@@ -112,7 +111,6 @@ ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args
     QDBusServiceWatcher* watcher = new QDBusServiceWatcher(this);
     watcher->addWatchedService(QLatin1String("org.kde.nepomuk.services.nepomukfileindexer"));
     watcher->addWatchedService(QLatin1String("org.kde.NepomukServer"));
-    watcher->addWatchedService(QLatin1String("org.freedesktop.Akonadi.Agent.akonadi_nepomuk_feeder"));
     watcher->setConnection(QDBusConnection::sessionBus());
     watcher->setWatchMode(QDBusServiceWatcher::WatchForRegistration | QDBusServiceWatcher::WatchForUnregistration);
 
@@ -192,7 +190,6 @@ ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args
 ServerConfigModule::~ServerConfigModule()
 {
     delete m_fileIndexerInterface;
-    delete m_akonadiInterface;
     delete m_serverInterface;
 }
 
@@ -217,9 +214,10 @@ void ServerConfigModule::load()
     QStringList includeFolders = group.readPathEntry("folders", defaultFolders());
     QStringList excludeFolders = group.readPathEntry("exclude folders", QStringList());
 
+    /*
     QScopedPointer<RemovableMediaCache> rmc(new Nepomuk2::RemovableMediaCache(this));
     QList< const RemovableMediaCache::Entry* > allMedia = rmc->allMedia();
-    foreach(const RemovableMediaCache::Entry * entry, allMedia) {
+    Q_FOREACH (const RemovableMediaCache::Entry * entry, allMedia) {
         QByteArray groupName("Device-" + entry->url().toUtf8());
         if (!fileIndexerConfig.hasGroup(groupName))
             continue;
@@ -231,7 +229,7 @@ void ServerConfigModule::load()
             continue;
 
         QStringList includes = grp.readPathEntry("folders", defaultFolders());
-        foreach(const QString & path, includes) {
+        Q_FOREACH (const QString & path, includes) {
             if (path == QLatin1String("/"))
                 includeFolders << mountPath;
             else
@@ -239,17 +237,18 @@ void ServerConfigModule::load()
         }
 
         QStringList excludes = grp.readPathEntry("exclude folders", QStringList());
-        foreach(const QString & path, excludes) {
+        Q_FOREACH (const QString & path, excludes) {
             if (path == QLatin1String("/"))
                 excludeFolders << mountPath;
             else
                 excludeFolders << mountPath + path;
         }
     }
+    */
 
     m_indexFolderSelectionDialog->setFolders(includeFolders, excludeFolders);
 
-    m_excludeFilterSelectionDialog->setExcludeFilters(fileIndexerConfig.group("General").readEntry("exclude filters", Nepomuk2::defaultExcludeFilterList()));
+    m_excludeFilterSelectionDialog->setExcludeFilters(fileIndexerConfig.group("General").readEntry("exclude filters", Baloo::defaultExcludeFilterList()));
 
     // MimeTypes
     QStringList mimetypes = fileIndexerConfig.group("General").readEntry("exclude mimetypes", defaultExcludeMimetypes());
@@ -276,12 +275,11 @@ void ServerConfigModule::load()
 
     recreateInterfaces();
     updateFileIndexerStatus();
-    updateEmailIndexerStatus();
     updateNepomukServerStatus();
 
     // 7. all values loaded -> no changes
     m_checkboxesChanged = false;
-    emit changed(false);
+    Q_EMIT changed(false);
 }
 
 
@@ -305,9 +303,10 @@ void ServerConfigModule::save()
     KConfig fileIndexerConfig("nepomukstrigirc");
 
     // 2.1 Update all the RemovableMedia paths
+    /*
     QScopedPointer<RemovableMediaCache> rmc(new Nepomuk2::RemovableMediaCache(this));
     QList< const RemovableMediaCache::Entry* > allMedia = rmc->allMedia();
-    foreach(const RemovableMediaCache::Entry * entry, allMedia) {
+    Q_FOREACH (const RemovableMediaCache::Entry * entry, allMedia) {
         QByteArray groupName("Device-" + entry->url().toUtf8());
         KConfigGroup group = fileIndexerConfig.group(groupName);
 
@@ -351,6 +350,7 @@ void ServerConfigModule::save()
         group.writePathEntry("folders", includes);
         group.writePathEntry("exclude folders", excludes);
     }
+    */
 
     // 2.2 Update normals paths
     fileIndexerConfig.group("General").writePathEntry("folders", includeFolders);
@@ -398,13 +398,12 @@ void ServerConfigModule::save()
     // 5. update state
     recreateInterfaces();
     updateFileIndexerStatus();
-    updateEmailIndexerStatus();
     updateNepomukServerStatus();
 
 
     // 6. all values saved -> no changes
     m_checkboxesChanged = false;
-    emit changed(false);
+    Q_EMIT changed(false);
 }
 
 
@@ -415,7 +414,7 @@ void ServerConfigModule::defaults()
     m_checkEnableEmailIndexer->setChecked(true);
     m_indexFolderSelectionDialog->setIndexHiddenFolders(false);
     m_indexFolderSelectionDialog->setFolders(defaultFolders(), QStringList());
-    m_excludeFilterSelectionDialog->setExcludeFilters(Nepomuk2::defaultExcludeFilterList());
+    m_excludeFilterSelectionDialog->setExcludeFilters(Baloo::defaultExcludeFilterList());
 
     // FIXME: set backup config
 }
@@ -488,61 +487,6 @@ void ServerConfigModule::slotFileIndexerSuspendResumeClicked()
     }
 }
 
-void ServerConfigModule::setEmailIndexerStatusText(const QString& text, bool elide)
-{
-    m_labelEmailIndexerStatus->setWordWrap(!elide);
-    m_labelEmailIndexerStatus->setTextElideMode(elide ? Qt::ElideMiddle : Qt::ElideNone);
-    m_labelEmailIndexerStatus->setText(text);
-}
-
-void ServerConfigModule::updateEmailIndexerStatus()
-{
-    if (QDBusConnection::sessionBus().interface()->isServiceRegistered("org.freedesktop.Akonadi.Agent.akonadi_nepomuk_feeder")) {
-        bool isOnline = m_akonadiInterface->isOnline();
-        if (isOnline) {
-            QString statusMessage = m_akonadiInterface->statusMessage();
-            int percent = m_akonadiInterface->progress();
-            QString status = i18nc("<status string> (<percentage>%)", "%1 (%2%)", statusMessage, percent);
-
-            if (status.isEmpty()) {
-                setEmailIndexerStatusText(i18nc("@info:status %1 is an error message returned by a dbus interface.",
-                                                "Failed to contact PIM Data Indexer service (%1)",
-                                                m_akonadiInterface->lastError().message()), false);
-            } else {
-                setEmailIndexerStatusText(status, true);
-                updateEmailIndexerSuspendResumeButtonText(!isOnline);
-            }
-        } else {
-            setEmailIndexerStatusText(i18nc("@info:status", "PIM Data Indexing service is suspended"), false);
-        }
-    } else {
-        setEmailIndexerStatusText(i18nc("@info:status", "PIM Data indexing service not running."), false);
-    }
-}
-
-void ServerConfigModule::updateEmailIndexerSuspendResumeButtonText(bool isSuspended)
-{
-    if (isSuspended) {
-        m_emailIndexerSuspendResumeButtom->setText(i18n("Resume"));
-        m_emailIndexerSuspendResumeButtom->setIcon(KIcon("media-playback-start"));
-    } else {
-        m_emailIndexerSuspendResumeButtom->setText(i18n("Suspend"));
-        m_emailIndexerSuspendResumeButtom->setIcon(KIcon("media-playback-pause"));
-    }
-}
-
-void ServerConfigModule::slotEmailIndexerSuspendResumeClicked()
-{
-    bool suspended = !m_akonadiInterface->isOnline();
-    if (!suspended) {
-        m_akonadiInterface->setOnline(false);
-        updateEmailIndexerSuspendResumeButtonText(true);
-    } else {
-        m_akonadiInterface->setOnline(true);
-        updateEmailIndexerSuspendResumeButtonText(false);
-    }
-}
-
 void ServerConfigModule::updateBackupStatus()
 {
     const QString backupUrl = KStandardDirs::locateLocal("data", "nepomuk/backupsync/backups/");
@@ -565,19 +509,13 @@ void ServerConfigModule::updateBackupStatus()
 void ServerConfigModule::recreateInterfaces()
 {
     delete m_fileIndexerInterface;
-    delete m_akonadiInterface;
     delete m_serverInterface;
 
     m_fileIndexerInterface = new org::kde::nepomuk::FileIndexer("org.kde.nepomuk.services.nepomukfileindexer", "/nepomukfileindexer", QDBusConnection::sessionBus());
     m_serverInterface = new org::kde::NepomukServer("org.kde.NepomukServer", "/nepomukserver", QDBusConnection::sessionBus());
-    m_akonadiInterface = new org::freedesktop::Akonadi::Agent::Status("org.freedesktop.Akonadi.Agent.akonadi_nepomuk_feeder", "/", QDBusConnection::sessionBus());
 
     connect(m_fileIndexerInterface, SIGNAL(statusChanged()),
             this, SLOT(updateFileIndexerStatus()));
-    connect(m_akonadiInterface, SIGNAL(percent(int)),
-            this, SLOT(updateEmailIndexerStatus()));
-    connect(m_akonadiInterface, SIGNAL(status(int, QString)),
-            this, SLOT(updateEmailIndexerStatus()));
 }
 
 
@@ -649,7 +587,7 @@ namespace
 bool containsRegex(const QStringList& list, const QString& regex)
 {
     QRegExp exp(regex, Qt::CaseInsensitive, QRegExp::Wildcard);
-    foreach(const QString & string, list) {
+    Q_FOREACH (const QString & string, list) {
         if (string.contains(exp))
             return true;;
     }
@@ -673,7 +611,7 @@ void syncCheckBox(const QStringList& mimetypes, const QStringList& types, QCheck
     bool containsAll = true;
     bool containsAny = false;
 
-    foreach(const QString & type, types) {
+    Q_FOREACH (const QString & type, types) {
         if (mimetypes.contains(type)) {
             containsAny = true;
         } else {

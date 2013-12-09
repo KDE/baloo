@@ -63,3 +63,4 @@ install(FILES baloo_file.desktop DESTINATION ${AUTOSTART_INSTALL_DIR})
 
 add_subdirectory(autotest)
 add_subdirectory(extractor)
+add_subdirectory(kcm)

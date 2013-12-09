@@ -36,7 +36,7 @@ public:
     explicit DetailsWidget(QWidget* parent = 0, Qt::WindowFlags flags = 0);
     ~DetailsWidget();
 
-private slots:
+private Q_SLOTS:
     void refresh();
     void slotFileCountFinished();
     void slotEmailCountFinished();

@@ -49,14 +49,12 @@ public Q_SLOTS:
 private Q_SLOTS:
     void updateNepomukServerStatus();
     void updateFileIndexerStatus();
-    void updateEmailIndexerStatus();
     void updateBackupStatus();
     void recreateInterfaces();
     void slotEditIndexFolders();
     void slotAdvancedFileIndexing();
     void slotStatusDetailsClicked();
     void slotFileIndexerSuspendResumeClicked();
-    void slotEmailIndexerSuspendResumeClicked();
     void slotBackupFrequencyChanged();
     void slotManualBackup();
     void slotRestoreBackup();
@@ -69,17 +67,13 @@ private Q_SLOTS:
 
 private:
     void setFileIndexerStatusText(const QString& text, bool elide);
-    void setEmailIndexerStatusText(const QString& text, bool elide);
-
     void updateFileIndexerSuspendResumeButtonText(bool isSuspended);
-    void updateEmailIndexerSuspendResumeButtonText(bool isSuspended);
 
     void syncCheckBoxesFromMimetypes(const QStringList& mimetypes);
     QStringList mimetypesFromCheckboxes();
 
     org::kde::NepomukServer* m_serverInterface;
     org::kde::nepomuk::FileIndexer* m_fileIndexerInterface;
-    org::freedesktop::Akonadi::Agent::Status* m_akonadiInterface;
 
     IndexFolderSelectionDialog* m_indexFolderSelectionDialog;
     ExcludeFilterSelectionDialog* m_excludeFilterSelectionDialog;

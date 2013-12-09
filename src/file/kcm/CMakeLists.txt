@@ -1,5 +1,5 @@
 set(kcm_file_SRCS
-  nepomukserverkcm.cpp
+  kcm.cpp
   fileexcludefilters.cpp
   folderselectionmodel.cpp
   indexfolderselectiondialog.cpp
@@ -7,7 +7,9 @@ set(kcm_file_SRCS
   detailswidget.cpp
 )
 
-#qt4_add_dbus_interface(kcmnepomuk_SRCS ${NEPOMUK_CORE_DBUS_INTERFACES_DIR}/org.kde.nepomuk.FileIndexer.xml fileindexerinterface)
+qt4_add_dbus_interface(kcm_file_SRCS ${NEPOMUK_CORE_DBUS_INTERFACES_DIR}/org.kde.NepomukServer.xml nepomukserverinterface)
+qt4_add_dbus_interface(kcm_file_SRCS ${NEPOMUK_CORE_DBUS_INTERFACES_DIR}/org.kde.nepomuk.ServiceControl.xml nepomukservicecontrol)
+qt4_add_dbus_interface(kcm_file_SRCS ${NEPOMUK_CORE_DBUS_INTERFACES_DIR}/org.kde.nepomuk.FileIndexer.xml fileindexerinterface)
 
 kde4_add_ui_files(kcm_file_SRCS
   nepomukconfigwidget.ui

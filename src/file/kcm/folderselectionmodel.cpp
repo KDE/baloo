@@ -88,7 +88,7 @@ QVariant FolderSelectionModel::data(const QModelIndex& index, int role) const
                 // Included files with exclude directories as a sub-directory are marked
                 // as PartiallyChecked
                 const QString path = filePath(index);
-                foreach(const QString & ex, m_excluded) {
+                Q_FOREACH (const QString & ex, m_excluded) {
                     if (ex.startsWith(path))
                         return Qt::PartiallyChecked;
                 }
@@ -179,7 +179,7 @@ void FolderSelectionModel::includePath(const QString& path)
         if (includeState(path) != StateIncludeInherited) {
             m_included.insert(path);
         }
-        emit dataChanged(index(path), findLastLeaf(index(path), this));
+        Q_EMIT dataChanged(index(path), findLastLeaf(index(path), this));
     }
 }
 
@@ -196,7 +196,7 @@ void FolderSelectionModel::excludePath(const QString& path)
         if (includeState(path) == StateIncludeInherited) {
             m_excluded.insert(path);
         }
-        emit dataChanged(index(path), findLastLeaf(index(path), this));
+        Q_EMIT dataChanged(index(path), findLastLeaf(index(path), this));
     }
 }
 
