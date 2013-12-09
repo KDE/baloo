@@ -49,15 +49,11 @@ public Q_SLOTS:
 private Q_SLOTS:
     void updateNepomukServerStatus();
     void updateFileIndexerStatus();
-    void updateBackupStatus();
     void recreateInterfaces();
     void slotEditIndexFolders();
     void slotAdvancedFileIndexing();
     void slotStatusDetailsClicked();
     void slotFileIndexerSuspendResumeClicked();
-    void slotBackupFrequencyChanged();
-    void slotManualBackup();
-    void slotRestoreBackup();
 
     /**
      * This slot is called when any of the "index documents", "index whatever" checkboxes

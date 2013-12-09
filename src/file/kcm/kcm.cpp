@@ -55,34 +55,6 @@ QStringList defaultFolders()
     return QStringList() << QDir::homePath();
 }
 
-enum BackupFrequency {
-    DisableAutomaticBackups = 0,
-    DailyBackup = 1,
-    WeeklyBackup = 2
-};
-
-
-QString backupFrequencyToString(BackupFrequency freq)
-{
-    switch (freq) {
-    case DailyBackup:
-        return QLatin1String("daily");
-    case WeeklyBackup:
-        return QLatin1String("weekly");
-    default:
-        return QLatin1String("disabled");
-    }
-}
-
-BackupFrequency parseBackupFrequency(const QString& s)
-{
-    for (int i = 0; i < 4; ++i) {
-        if (s == backupFrequencyToString(BackupFrequency(i)))
-            return BackupFrequency(i);
-    }
-    return DisableAutomaticBackups;
-}
-
 }
 
 using namespace Baloo;
@@ -151,34 +123,6 @@ ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args
             this, SLOT(slotCheckBoxesChanged()));
     connect(m_checkboxSourceCode, SIGNAL(toggled(bool)),
             this, SLOT(slotCheckBoxesChanged()));
-
-    // Backup
-    m_comboBackupFrequency->addItem(i18nc("@item:inlistbox", "Disable Automatic Backups"));
-    m_comboBackupFrequency->addItem(i18nc("@item:inlistbox", "Daily Backup"));
-    m_comboBackupFrequency->addItem(i18nc("@item:inlistbox", "Weekly Backup"));
-
-    for (int i = 1; i <= 7; ++i)
-        m_comboBackupDay->addItem(KGlobal::locale()->calendar()->weekDayName(i), i);
-
-    connect(m_comboBackupFrequency, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(slotBackupFrequencyChanged()));
-    connect(m_comboBackupFrequency, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(changed()));
-    connect(m_comboBackupDay, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(changed()));
-    connect(m_editBackupTime, SIGNAL(timeChanged(QTime)),
-            this, SLOT(changed()));
-    connect(m_spinBackupMax, SIGNAL(valueChanged(int)),
-            this, SLOT(changed()));
-
-    connect(m_buttonManualBackup, SIGNAL(clicked(bool)),
-            this, SLOT(slotManualBackup()));
-    connect(m_buttonRestoreBackup, SIGNAL(clicked(bool)),
-            this, SLOT(slotRestoreBackup()));
-
-    // update backup status whenever manual backups are created
-    KDirWatch::self()->addDir(KStandardDirs::locateLocal("data", "nepomuk/backupsync/backups/"));
-    connect(KDirWatch::self(), SIGNAL(dirty(QString)), this, SLOT(updateBackupStatus()));
 
     // args[0] can be the page index allowing to open the config with a specific page
     if (args.count() > 0 && args[0].toInt() < m_mainTabWidget->count()) {
@@ -261,17 +205,6 @@ void ServerConfigModule::load()
     m_comboRemovableMediaHandling->setCurrentIndex(int(indexNewlyMounted) + int(askIndividually));
 
     groupBox->setEnabled(m_checkEnableNepomuk->isChecked());
-
-    // 4. Backup settings
-    KConfig backupConfig("nepomukbackuprc");
-    KConfigGroup backupCfg = backupConfig.group("Backup");
-    m_comboBackupFrequency->setCurrentIndex(parseBackupFrequency(backupCfg.readEntry("backup frequency", "disabled")));
-    m_editBackupTime->setTime(QTime::fromString(backupCfg.readEntry("backup time", "18:00:00"), Qt::ISODate));
-    m_comboBackupDay->setCurrentIndex(backupCfg.readEntry("backup day", 1) - 1);
-    m_spinBackupMax->setValue(backupCfg.readEntry("max backups", 10));
-
-    slotBackupFrequencyChanged();
-    updateBackupStatus();
 
     recreateInterfaces();
     updateFileIndexerStatus();
@@ -372,15 +305,6 @@ void ServerConfigModule::save()
     fileIndexerConfig.group("RemovableMedia").writeEntry("index newly mounted", m_comboRemovableMediaHandling->currentIndex() > 0);
     fileIndexerConfig.group("RemovableMedia").writeEntry("ask user", m_comboRemovableMediaHandling->currentIndex() == 2);
 
-    // 3. Update backup config
-    KConfig backup("nepomukbackuprc");
-    KConfigGroup backupCfg = backup.group("Backup");
-    backupCfg.writeEntry("backup frequency", backupFrequencyToString(BackupFrequency(m_comboBackupFrequency->currentIndex())));
-    backupCfg.writeEntry("backup day", m_comboBackupDay->itemData(m_comboBackupDay->currentIndex()).toInt());
-    backupCfg.writeEntry("backup time", m_editBackupTime->time().toString(Qt::ISODate));
-    backupCfg.writeEntry("max backups", m_spinBackupMax->value());
-
-
     // 4. update the current state of the nepomuk server
     if (m_serverInterface->isValid()) {
         m_serverInterface->enableNepomuk(m_checkEnableNepomuk->isChecked());
@@ -415,8 +339,6 @@ void ServerConfigModule::defaults()
     m_indexFolderSelectionDialog->setIndexHiddenFolders(false);
     m_indexFolderSelectionDialog->setFolders(defaultFolders(), QStringList());
     m_excludeFilterSelectionDialog->setExcludeFilters(Baloo::defaultExcludeFilterList());
-
-    // FIXME: set backup config
 }
 
 
@@ -487,24 +409,6 @@ void ServerConfigModule::slotFileIndexerSuspendResumeClicked()
     }
 }
 
-void ServerConfigModule::updateBackupStatus()
-{
-    const QString backupUrl = KStandardDirs::locateLocal("data", "nepomuk/backupsync/backups/");
-    QDir dir(backupUrl);
-    const QStringList backupFiles = dir.entryList(QDir::Files | QDir::NoDotAndDotDot, QDir::Name);
-
-    QString text = i18np("1 existing backup", "%1 existing backups", backupFiles.size());
-    if (!backupFiles.isEmpty()) {
-        text += QLatin1String(" (");
-        text += i18nc("@info %1 is the creation date of a backup formatted vi KLocale::formatDateTime",
-                      "Oldest: %1",
-                      KGlobal::locale()->formatDateTime(QFileInfo(backupUrl + QLatin1String("/") + backupFiles.first()).created(), KLocale::FancyShortDate));
-        text += QLatin1String(")");
-    }
-
-    m_labelBackupStats->setText(text);
-}
-
 
 void ServerConfigModule::recreateInterfaces()
 {
@@ -563,24 +467,6 @@ void ServerConfigModule::slotAdvancedFileIndexing()
     }
 }
 
-
-void ServerConfigModule::slotBackupFrequencyChanged()
-{
-    m_comboBackupDay->setShown(m_comboBackupFrequency->currentIndex() >= WeeklyBackup);
-    m_comboBackupDay->setDisabled(m_comboBackupFrequency->currentIndex() == DisableAutomaticBackups);
-    m_editBackupTime->setDisabled(m_comboBackupFrequency->currentIndex() == DisableAutomaticBackups);
-    m_spinBackupMax->setDisabled(m_comboBackupFrequency->currentIndex() == DisableAutomaticBackups);
-}
-
-void ServerConfigModule::slotManualBackup()
-{
-    KProcess::execute("nepomukbackup", QStringList() << "--backup");
-}
-
-void ServerConfigModule::slotRestoreBackup()
-{
-    KProcess::execute("nepomukbackup", QStringList() << "--restore");
-}
 
 namespace
 {
