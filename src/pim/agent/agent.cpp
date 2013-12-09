@@ -49,7 +49,7 @@ namespace {
 
 BalooIndexingAgent::BalooIndexingAgent(const QString& id)
     : AgentBase(id)
- {
+{
     QTimer::singleShot(0, this, SLOT(findUnindexedItems()));
 
     createIndexers();
@@ -79,14 +79,8 @@ BalooIndexingAgent::BalooIndexingAgent(const QString& id)
 
 BalooIndexingAgent::~BalooIndexingAgent()
 {
-    while (!m_indexers.isEmpty()) {
-        const QMap<QString,AbstractIndexer*>::Iterator it = m_indexers.begin();
-        AbstractIndexer *indexer = ( *it );
-        Q_FOREACH (const QString &mimeType, indexer->mimeTypes()) {
-            m_indexers.remove(mimeType);
-        }
-        delete indexer;
-    }
+    qDeleteAll(m_indexers.values().toSet());
+    m_indexers.clear();
 }
 
 void BalooIndexingAgent::createIndexers()
@@ -134,7 +128,6 @@ void BalooIndexingAgent::findUnindexedItems()
                                                                         Akonadi::CollectionFetchJob::Recursive);
     connect(job, SIGNAL(finished(KJob*)), this, SLOT(slotRootCollectionsFetched(KJob*)));
     job->start();
-        return;
 }
 
 void BalooIndexingAgent::slotRootCollectionsFetched(KJob* kjob)
