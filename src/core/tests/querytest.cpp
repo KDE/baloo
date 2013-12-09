@@ -24,6 +24,8 @@
 
 #include <QApplication>
 #include <QTimer>
+#include <QFileInfo>
+#include <QDateTime>
 #include <KDebug>
 
 #include <iostream>
@@ -41,6 +43,21 @@ private Q_SLOTS:
 
 int main(int argc, char** argv)
 {
+    /*
+    QString str("2012-10-28T02:03:01");
+    QDateTime mtime = QDateTime::fromString(str, Qt::ISODate);
+
+    uint t = 1351382581;
+    QDateTime lm = QDateTime::fromTime_t(t);
+
+    qDebug() << lm << mtime;
+
+    bool r1 = mtime != lm;
+    bool r2 = mtime != lm;
+    qDebug() << r1 << r2;
+    return 0;
+    */
+
     App app(argc, argv);
 
     if (argc != 2) {

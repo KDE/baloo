@@ -177,8 +177,12 @@ bool BasicIndexingQueue::shouldIndex(FileMapping& file, const QString& mimetype)
         const QString str = QString::fromStdString(*it).mid(4);
         const QDateTime mtime = QDateTime::fromString(str, Qt::ISODate);
 
-        if (mtime != fileInfo.lastModified())
+        const QDateTime lm = fileInfo.lastModified();
+        // Using time_t because there seems to be a bug in QDateTime::fromTime_t which is what
+        // QFileInfo::lastModified uses internally
+        if (lm.toTime_t() != mtime.toTime_t()) {
             return true;
+        }
     }
     catch (const Xapian::DocNotFoundError&) {
         return true;
