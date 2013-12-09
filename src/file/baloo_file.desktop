@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Service
+Exec=baloo_file
+X-KDE-StartupNotify=false
+X-KDE-autostart-condition=baloofilerc:Basic Settings:Start:true
+OnlyShowIn=KDE;
+X-KDE-autostart-phase=1
+Name=Baloo File Daemon
