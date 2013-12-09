@@ -25,6 +25,8 @@
 
 #include "xapiansearchstore.h"
 
+#include <QSet>
+
 namespace Baloo {
 
 class EmailSearchStore : public XapianSearchStore
@@ -45,6 +47,7 @@ protected:
 
 private:
     QHash<QString, QString> m_prefix;
+    QSet<QString> m_boolProperties;
 };
 
 }

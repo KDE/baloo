@@ -41,9 +41,41 @@ EmailSearchStore::EmailSearchStore(QObject* parent, const QVariantList&)
     m_prefix.insert("cc", "CC");
     m_prefix.insert("bcc", "BC");
     m_prefix.insert("subject", "S");
+    m_prefix.insert("collection", "C");
 
-    // Collection?
-    // Flags?
+    // TODO: Add body flag?
+    // TODO: Add tags?
+
+    /*
+    // TODO: Add these when there is support for them in the indexer
+    m_prefix.insert("reply-to", "RT");
+    m_prefix.insert("list-id", "LI");
+    m_prefix.insert("resent-from", "RF");
+    m_prefix.insert("x-loop", "XL");
+    m_prefix.insert("x-mailing-list", "XML");
+    m_prefix.insert("x-spam-flag", "XSF");
+    m_prefix.insert("organization", "O");
+    */
+
+    // Boolean Flags
+    m_prefix.insert("isimportant", "I");
+    m_prefix.insert("istoact", "");
+    m_prefix.insert("iswatched", "W");
+    m_prefix.insert("isdeleted", "");
+    m_prefix.insert("isspam", "");
+    m_prefix.insert("isreplied", "");
+    m_prefix.insert("isignored", "");
+    m_prefix.insert("isforwarded", "");
+    m_prefix.insert("issent", "");
+    m_prefix.insert("isqueued", "");
+    m_prefix.insert("isham", "");
+    m_prefix.insert("isread", "R");
+
+    m_boolProperties << "isimportant" << "istoAct" << "iswatched" << "isdeleted" << "isspam"
+                     << "isreplied" << "isignored" << "isforwarded" << "issent" << "isqueued"
+                     << "isham" << "isread";
+
+    // TODO: Sent date? Age in days?
 
     const QString path = KStandardDirs::locateLocal("data", "baloo/email/");
     setDbPath(path);
@@ -60,11 +92,38 @@ Xapian::Query EmailSearchStore::constructQuery(const QString& property, const QV
     if (value.isNull())
         return Xapian::Query();
 
+    QString prop = property.toLower();
+    if (m_boolProperties.contains(prop)) {
+        QString p = m_prefix.value(prop);
+        if (p.isEmpty())
+            return Xapian::Query();
+
+        std::string term("B");
+        bool isTrue = false;
+
+        if (value.isNull() )
+            isTrue = true;
+
+        if (value.type() == QVariant::Bool) {
+            isTrue = value.toBool();
+        }
+
+        if (isTrue)
+            term += p.toStdString();
+        else
+            term += 'N' + p.toStdString();
+
+        return Xapian::Query(term);
+    }
+
     if (com == Term::Contains) {
         Xapian::QueryParser parser;
         parser.set_database(*xapianDb());
 
         std::string p = m_prefix.value(property.toLower()).toStdString();
+        if (p.empty())
+            return Xapian::Query();
+
         std::string str = value.toString().toStdString();
         int flags = Xapian::QueryParser::FLAG_DEFAULT | Xapian::QueryParser::FLAG_PARTIAL;
         return parser.parse_query(str, flags, p);
