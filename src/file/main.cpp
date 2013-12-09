@@ -28,6 +28,7 @@
 
 #include <KConfig>
 #include <KConfigGroup>
+#include <KDebug>
 #include <iostream>
 
 #include "filewatch.h"
@@ -55,12 +56,15 @@ int main(int argc, char** argv) {
 
     bool indexingEnabled = group.readEntry("Indexing-Enabled", true);
 
+    if (!QDBusConnection::sessionBus().registerService("org.kde.baloo.file")) {
+        kError() << "Failed to register via dbus. Another instance is running";
+        return 1;
+    }
+
     Database db;
     db.setPath(KStandardDirs::locateLocal("data", "baloo/file/"));
     db.init();
     db.sqlDatabase().transaction();
-
-    QDBusConnection::sessionBus().registerService("org.kde.baloo.file");
 
     Baloo::FileWatch filewatcher(&db, &app);
 
