@@ -1,6 +1,6 @@
 /* This file is part of the KDE Project
    Copyright (c) 2008-2010 Sebastian Trueg <trueg@kde.org>
-   Copyright (c) 2010-2011 Vishesh Handa <handa.vish@gmail.com>
+   Copyright (c) 2010-2013 Vishesh Handa <handa.vish@gmail.com>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -60,6 +60,11 @@ FileIndexer::FileIndexer(Database* db, QObject* parent)
     connect(m_indexScheduler, SIGNAL(statusStringChanged()),
             this, SLOT(emitStatusMessage()));
 
+    QDBusConnection bus = QDBusConnection::sessionBus();
+    bus.registerObject(QLatin1String("/fileindexer"), this,
+                       QDBusConnection::ExportScriptableSignals |
+                       QDBusConnection::ExportScriptableSlots |
+                       QDBusConnection::ExportAdaptors);
 }
 
 FileIndexer::~FileIndexer()

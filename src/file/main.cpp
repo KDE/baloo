@@ -26,9 +26,15 @@
 #include <KAboutData>
 #include <KStandardDirs>
 
+#include <KConfig>
+#include <KConfigGroup>
+#include <iostream>
+
 #include "filewatch.h"
 #include "fileindexer.h"
 #include "database.h"
+
+#include <QDBusConnection>
 
 int main(int argc, char** argv) {
     QApplication app(argc, argv);
@@ -39,18 +45,33 @@ int main(int argc, char** argv) {
 
     KComponentData data(aboutData, KComponentData::RegisterAsMainComponent);
 
+    KConfig config("baloofilerc");
+    KConfigGroup group = config.group("Basic Settings");
+    bool enabled = group.readEntry("Enabled", true);
+    if (!enabled) {
+        std::cout << "Baloo File Handling has been disabled" << std::endl;
+        return 0;
+    }
+
+    bool indexingEnabled = group.readEntry("Indexing-Enabled", true);
+
     Database db;
     db.setPath(KStandardDirs::locateLocal("data", "baloo/file/"));
     db.init();
     db.sqlDatabase().transaction();
 
-    Baloo::FileWatch filewatcher(&db, &app);
-    Baloo::FileIndexer fileIndexer(&db, &app);
+    QDBusConnection::sessionBus().registerService("org.kde.baloo.file");
 
-    QObject::connect(&filewatcher, SIGNAL(indexFile(QString)),
-                     &fileIndexer, SLOT(indexFile(QString)));
-    QObject::connect(&filewatcher, SIGNAL(installedWatches()),
-                     &fileIndexer, SLOT(update()));
+    Baloo::FileWatch filewatcher(&db, &app);
+
+    if (indexingEnabled) {
+        Baloo::FileIndexer fileIndexer(&db, &app);
+
+        QObject::connect(&filewatcher, SIGNAL(indexFile(QString)),
+                        &fileIndexer, SLOT(indexFile(QString)));
+        QObject::connect(&filewatcher, SIGNAL(installedWatches()),
+                        &fileIndexer, SLOT(update()));
+    }
 
     return app.exec();
 }

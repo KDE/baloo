@@ -21,11 +21,7 @@
 
 #include <KCModule>
 #include "ui_nepomukconfigwidget.h"
-#include "nepomukserverinterface.h"
 #include "fileindexerinterface.h"
-
-class QRadioButton;
-class QAbstractButton;
 
 namespace Baloo
 {
@@ -47,7 +43,7 @@ public Q_SLOTS:
     void defaults();
 
 private Q_SLOTS:
-    void updateNepomukServerStatus();
+    void updateFileServerStatus();
     void updateFileIndexerStatus();
     void recreateInterfaces();
     void slotEditIndexFolders();
@@ -68,8 +64,7 @@ private:
     void syncCheckBoxesFromMimetypes(const QStringList& mimetypes);
     QStringList mimetypesFromCheckboxes();
 
-    org::kde::NepomukServer* m_serverInterface;
-    org::kde::nepomuk::FileIndexer* m_fileIndexerInterface;
+    org::kde::baloo::file* m_fileIndexerInterface;
 
     IndexFolderSelectionDialog* m_indexFolderSelectionDialog;
     ExcludeFilterSelectionDialog* m_excludeFilterSelectionDialog;

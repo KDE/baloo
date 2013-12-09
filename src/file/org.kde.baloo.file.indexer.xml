@@ -1,0 +1,63 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+         "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node>
+  <interface name="org.kde.baloo.file">
+    <method name="isIndexing">
+      <arg type="b" direction="out" />
+    </method>
+    <method name="isSuspended">
+      <arg type="b" direction="out" />
+    </method>
+    <method name="isCleaning">
+      <arg type="b" direction="out" />
+    </method>
+    <method name="currentFolder">
+      <arg type="s" direction="out" />
+    </method>
+    <method name="currentFile">
+      <arg type="s" direction="out" />
+    </method>
+    <method name="indexedFiles">
+      <arg type="i" direction="out" />
+    </method>
+    <method name="totalFiles">
+      <arg type="i" direction="out" />
+    </method>
+    <method name="suspend" />
+    <method name="resume" />
+    <method name="updateFolder">
+      <arg name="path" type="s" direction="in" />
+      <arg name="recursive" type="b" direction="in" />
+      <arg name="forced" type="b" direction="in" />
+    </method>
+    <method name="updateAllFolders">
+      <arg name="forced" type="b" direction="in" />
+    </method>
+    <method name="indexFolder">
+      <arg name="path" type="s" direction="in" />
+      <arg name="recursive" type="b" direction="in" />
+      <arg name="forced" type="b" direction="in" />
+    </method>
+    <method name="indexFile">
+      <arg name="path" type="s" direction="in" />
+    </method>
+    <!--@deprecated use statusMessage instead -->
+    <method name="userStatusString">
+      <arg type="s" direction="out" />
+    </method>
+    <method name="statusMessage">
+      <arg type="s" direction="out" />
+    </method>
+    <method name="currentStatus">
+      <arg type="i" direction="out" />
+    </method>
+    <signal name="status" >
+      <arg name="state" type="i" />
+      <arg name="msg" type="s" />
+    </signal>
+    <signal name="statusChanged" />
+    <signal name="indexingStarted" />
+    <signal name="indexingStopped" />
+    <signal name="fileIndexingDone" />
+  </interface>
+</node>

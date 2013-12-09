@@ -18,8 +18,6 @@
 */
 
 #include "kcm.h"
-#include "nepomukserverinterface.h"
-#include "servicecontrol.h"
 #include "fileexcludefilters.h"
 #include "fileindexerinterface.h"
 #include "indexfolderselectiondialog.h"
@@ -61,7 +59,6 @@ using namespace Baloo;
 
 ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args)
     : KCModule(BalooConfigModuleFactory::componentData(), parent, args),
-      m_serverInterface(0),
       m_fileIndexerInterface(0),
       m_failedToInitialize(false),
       m_checkboxesChanged(false)
@@ -81,8 +78,7 @@ ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args
     m_excludeFilterSelectionDialog = new ExcludeFilterSelectionDialog(this);
 
     QDBusServiceWatcher* watcher = new QDBusServiceWatcher(this);
-    watcher->addWatchedService(QLatin1String("org.kde.nepomuk.services.nepomukfileindexer"));
-    watcher->addWatchedService(QLatin1String("org.kde.NepomukServer"));
+    watcher->addWatchedService(QLatin1String("org.kde.baloo.file"));
     watcher->setConnection(QDBusConnection::sessionBus());
     watcher->setWatchMode(QDBusServiceWatcher::WatchForRegistration | QDBusServiceWatcher::WatchForUnregistration);
 
@@ -130,20 +126,19 @@ ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args
 ServerConfigModule::~ServerConfigModule()
 {
     delete m_fileIndexerInterface;
-    delete m_serverInterface;
 }
 
 
 void ServerConfigModule::load()
 {
     // 1. basic setup
-    KConfig config("nepomukserverrc");
-    m_checkEnableNepomuk->setChecked(config.group("Basic Settings").readEntry("Start Nepomuk", true));
-    m_checkEnableFileIndexer->setChecked(config.group("Service-nepomukfileindexer").readEntry("autostart", true));
+    KConfig config("baloofilerc");
+    KConfigGroup basicSettings = config.group("Basic Settings");
+    m_checkEnableNepomuk->setChecked(basicSettings.readEntry("Enabled", true));
+    m_checkEnableFileIndexer->setChecked(basicSettings.readEntry("Indexing-Enabled", true));
 
     // 2. file indexer settings
-    KConfig fileIndexerConfig("nepomukstrigirc");
-    KConfigGroup group = fileIndexerConfig.group("General");
+    KConfigGroup group = config.group("General");
     m_indexFolderSelectionDialog->setIndexHiddenFolders(group.readEntry("index hidden folders", false));
 
     QStringList includeFolders = group.readPathEntry("folders", defaultFolders());
@@ -183,15 +178,15 @@ void ServerConfigModule::load()
 
     m_indexFolderSelectionDialog->setFolders(includeFolders, excludeFolders);
 
-    m_excludeFilterSelectionDialog->setExcludeFilters(fileIndexerConfig.group("General").readEntry("exclude filters", Baloo::defaultExcludeFilterList()));
+    m_excludeFilterSelectionDialog->setExcludeFilters(config.group("General").readEntry("exclude filters", Baloo::defaultExcludeFilterList()));
 
     // MimeTypes
-    QStringList mimetypes = fileIndexerConfig.group("General").readEntry("exclude mimetypes", defaultExcludeMimetypes());
+    QStringList mimetypes = config.group("General").readEntry("exclude mimetypes", defaultExcludeMimetypes());
     m_excludeFilterSelectionDialog->setExcludeMimeTypes(mimetypes);
     syncCheckBoxesFromMimetypes(mimetypes);
 
-    const bool indexNewlyMounted = fileIndexerConfig.group("RemovableMedia").readEntry("index newly mounted", false);
-    const bool askIndividually = fileIndexerConfig.group("RemovableMedia").readEntry("ask user", false);
+    const bool indexNewlyMounted = config.group("RemovableMedia").readEntry("index newly mounted", false);
+    const bool askIndividually = config.group("RemovableMedia").readEntry("ask user", false);
     // combobox items: 0 - ignore, 1 - index all, 2 - ask user
     m_comboRemovableMediaHandling->setCurrentIndex(int(indexNewlyMounted) + int(askIndividually));
 
@@ -199,7 +194,7 @@ void ServerConfigModule::load()
 
     recreateInterfaces();
     updateFileIndexerStatus();
-    updateNepomukServerStatus();
+    updateFileServerStatus();
 
     // 7. all values loaded -> no changes
     m_checkboxesChanged = false;
@@ -212,13 +207,11 @@ void ServerConfigModule::save()
     QStringList includeFolders = m_indexFolderSelectionDialog->includeFolders();
     QStringList excludeFolders = m_indexFolderSelectionDialog->excludeFolders();
 
-    // 1. change the settings (in case the server is not running)
-    KConfig config("nepomukserverrc");
-    config.group("Basic Settings").writeEntry("Start Nepomuk", m_checkEnableNepomuk->isChecked());
-    config.group("Service-nepomukfileindexer").writeEntry("autostart", m_checkEnableFileIndexer->isChecked());
-
-    // 2. update file indexer config
-    KConfig fileIndexerConfig("nepomukstrigirc");
+    // Change the settings
+    KConfig config("baloofilerc");
+    KConfigGroup basicSettings = config.group("Basic Settings");
+    basicSettings.writeEntry("Enabled", m_checkEnableNepomuk->isChecked());
+    basicSettings.writeEntry("Indexing-Enabled", m_checkEnableFileIndexer->isChecked());
 
     // 2.1 Update all the RemovableMedia paths
     /*
@@ -271,12 +264,12 @@ void ServerConfigModule::save()
     */
 
     // 2.2 Update normals paths
-    fileIndexerConfig.group("General").writePathEntry("folders", includeFolders);
-    fileIndexerConfig.group("General").writePathEntry("exclude folders", excludeFolders);
+    config.group("General").writePathEntry("folders", includeFolders);
+    config.group("General").writePathEntry("exclude folders", excludeFolders);
 
     // 2.3 Other stuff
-    fileIndexerConfig.group("General").writeEntry("index hidden folders", m_indexFolderSelectionDialog->indexHiddenFolders());
-    fileIndexerConfig.group("General").writeEntry("exclude filters", m_excludeFilterSelectionDialog->excludeFilters());
+    config.group("General").writeEntry("index hidden folders", m_indexFolderSelectionDialog->indexHiddenFolders());
+    config.group("General").writeEntry("exclude filters", m_excludeFilterSelectionDialog->excludeFilters());
 
     QStringList excludeMimetypes = m_excludeFilterSelectionDialog->excludeMimeTypes();
     if (m_checkboxesChanged) {
@@ -284,30 +277,18 @@ void ServerConfigModule::save()
         m_checkboxesChanged = false;
     }
 
-    fileIndexerConfig.group("General").writeEntry("exclude mimetypes", excludeMimetypes);
+    config.group("General").writeEntry("exclude mimetypes", excludeMimetypes);
 
     // combobox items: 0 - ignore, 1 - index all, 2 - ask user
-    fileIndexerConfig.group("RemovableMedia").writeEntry("index newly mounted", m_comboRemovableMediaHandling->currentIndex() > 0);
-    fileIndexerConfig.group("RemovableMedia").writeEntry("ask user", m_comboRemovableMediaHandling->currentIndex() == 2);
+    config.group("RemovableMedia").writeEntry("index newly mounted", m_comboRemovableMediaHandling->currentIndex() > 0);
+    config.group("RemovableMedia").writeEntry("ask user", m_comboRemovableMediaHandling->currentIndex() == 2);
 
-    // 4. update the current state of the nepomuk server
-    if (m_serverInterface->isValid()) {
-        m_serverInterface->enableNepomuk(m_checkEnableNepomuk->isChecked());
-        m_serverInterface->enableFileIndexer(m_checkEnableFileIndexer->isChecked());
-    } else if (m_checkEnableNepomuk->isChecked()) {
-        if (!QProcess::startDetached(QLatin1String("nepomukserver"))) {
-            KMessageBox::error(this,
-                               i18n("Failed to start the desktop search service (Nepomuk). The settings have been saved "
-                                    "and will be used the next time the server is started."),
-                               i18n("Desktop search service not running"));
-        }
-    }
-
+    // TODO: Update the baloo_file process or just restart it!
 
     // 5. update state
     recreateInterfaces();
     updateFileIndexerStatus();
-    updateNepomukServerStatus();
+    updateFileServerStatus();
 
 
     // 6. all values saved -> no changes
@@ -326,13 +307,12 @@ void ServerConfigModule::defaults()
 }
 
 
-void ServerConfigModule::updateNepomukServerStatus()
+void ServerConfigModule::updateFileServerStatus()
 {
-    if (m_serverInterface &&
-            m_serverInterface->isNepomukEnabled()) {
-        m_labelNepomukStatus->setText(i18nc("@info:status", "Desktop search services are active"));
+    if (QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.baloo.file")) {
+        m_labelNepomukStatus->setText(i18nc("@info:status", "File Metadata services are active"));
     } else {
-        m_labelNepomukStatus->setText(i18nc("@info:status", "Desktop search services are disabled"));
+        m_labelNepomukStatus->setText(i18nc("@info:status", "File Metadata services are disabled"));
     }
 }
 
@@ -347,36 +327,34 @@ void ServerConfigModule::setFileIndexerStatusText(const QString& text, bool elid
 
 void ServerConfigModule::updateFileIndexerStatus()
 {
-    if (QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.nepomuk.services.nepomukfileindexer")) {
-        if (org::kde::nepomuk::ServiceControl("org.kde.nepomuk.services.nepomukfileindexer", "/servicecontrol",
-                                              QDBusConnection::sessionBus()).isInitialized()) {
-            QString status = m_fileIndexerInterface->userStatusString();
-            if (status.isEmpty()) {
-                setFileIndexerStatusText(i18nc("@info:status %1 is an error message returned by a dbus interface.",
-                                               "Failed to contact File Indexer service (%1)",
-                                               m_fileIndexerInterface->lastError().message()), false);
-            } else {
-                m_failedToInitialize = false;
-                setFileIndexerStatusText(status, true);
-                updateFileIndexerSuspendResumeButtonText(m_fileIndexerInterface->isSuspended());
-            }
-        } else {
-            m_failedToInitialize = true;
-            setFileIndexerStatusText(i18nc("@info:status", "File indexing service failed to initialize, "
-                                           "most likely due to an installation problem."), false);
-        }
-    } else if (!m_failedToInitialize) {
+    // FIXME: Make this non-blocking!
+    QDBusPendingReply<QString> reply = m_fileIndexerInterface->userStatusString();
+    reply.waitForFinished();
+
+    if (reply.isError()) {
         setFileIndexerStatusText(i18nc("@info:status", "File indexing service not running."), false);
+        return;
+    }
+
+    QString status = reply.value();
+    if (status.isEmpty()) {
+        setFileIndexerStatusText(i18nc("@info:status %1 is an error message returned by a dbus interface.",
+                                        "Failed to contact File Indexer service (%1)",
+                                        m_fileIndexerInterface->lastError().message()), false);
+    } else {
+        m_failedToInitialize = false;
+        setFileIndexerStatusText(status, true);
+        updateFileIndexerSuspendResumeButtonText(m_fileIndexerInterface->isSuspended());
     }
 }
 
 void ServerConfigModule::updateFileIndexerSuspendResumeButtonText(bool isSuspended)
 {
     if (isSuspended) {
-        m_fileIndexerSuspendResumeButtom->setText(i18nc("Resumes the Nepomuk file indexing service.", "Resume"));
+        m_fileIndexerSuspendResumeButtom->setText(i18nc("Resumes the File indexing service.", "Resume"));
         m_fileIndexerSuspendResumeButtom->setIcon(KIcon("media-playback-start"));
     } else {
-        m_fileIndexerSuspendResumeButtom->setText(i18nc("Suspends the Nepomuk file indexing service.", "Suspend"));
+        m_fileIndexerSuspendResumeButtom->setText(i18nc("Suspends the File indexing service.", "Suspend"));
         m_fileIndexerSuspendResumeButtom->setIcon(KIcon("media-playback-pause"));
     }
 }
@@ -397,10 +375,9 @@ void ServerConfigModule::slotFileIndexerSuspendResumeClicked()
 void ServerConfigModule::recreateInterfaces()
 {
     delete m_fileIndexerInterface;
-    delete m_serverInterface;
 
-    m_fileIndexerInterface = new org::kde::nepomuk::FileIndexer("org.kde.nepomuk.services.nepomukfileindexer", "/nepomukfileindexer", QDBusConnection::sessionBus());
-    m_serverInterface = new org::kde::NepomukServer("org.kde.NepomukServer", "/nepomukserver", QDBusConnection::sessionBus());
+    m_fileIndexerInterface = new org::kde::baloo::file("org.kde.baloo.file", "/fileindexer",
+                                                       QDBusConnection::sessionBus());
 
     connect(m_fileIndexerInterface, SIGNAL(statusChanged()),
             this, SLOT(updateFileIndexerStatus()));

@@ -28,13 +28,13 @@
        <item>
         <widget class="QGroupBox" name="groupBox_2">
          <property name="title">
-          <string>Nepomuk Semantic Desktop</string>
+          <string>File Metadata</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_10">
           <item>
            <widget class="QLabel" name="label_3">
             <property name="text">
-             <string>Nepomuk Semantic Desktop enables tagging and rating of files integrated with the Desktop Search.</string>
+             <string>File metadata enables tagging and rating of files integrated with the Desktop Search.</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -48,7 +48,7 @@
               <item>
                <widget class="QCheckBox" name="m_checkEnableNepomuk">
                 <property name="text">
-                 <string>Enable Nepomuk Semantic Desktop</string>
+                 <string>Enable File metadata</string>
                 </property>
                </widget>
               </item>
@@ -109,13 +109,13 @@
        <item>
         <widget class="QGroupBox" name="groupBox">
          <property name="title">
-          <string>Nepomuk Desktop File Indexer</string>
+          <string>Desktop File Indexer</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout">
           <item>
            <widget class="QLabel" name="label_2">
             <property name="text">
-             <string>Nepomuk desktop search allows searching for files by content instead of just by name.</string>
+             <string>Desktop search allows searching for files by content instead of just by name.</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -125,7 +125,7 @@
           <item>
            <widget class="QCheckBox" name="m_checkEnableFileIndexer">
             <property name="text">
-             <string>Enable Nepomuk File Indexer</string>
+             <string>Enable Desktop File Indexer</string>
             </property>
            </widget>
           </item>

@@ -35,6 +35,7 @@ class IndexScheduler;
 class FileIndexer : public QObject
 {
     Q_OBJECT
+    Q_CLASSINFO("D-Bus Interface", "org.kde.baloo.file")
 
 public:
     FileIndexer(Database* db, QObject* parent = 0);
