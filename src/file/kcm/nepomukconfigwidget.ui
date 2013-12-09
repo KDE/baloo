@@ -1,0 +1,685 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <author>Sebastian Trueg</author>
+ <class>NepomukConfigWidget</class>
+ <widget class="QWidget" name="NepomukConfigWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>427</width>
+    <height>359</height>
+   </rect>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_8">
+   <property name="margin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="KTabWidget" name="m_mainTabWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>Basic Settings</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_13">
+       <item>
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>Nepomuk Semantic Desktop</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_10">
+          <item>
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Nepomuk Semantic Desktop enables tagging and rating of files integrated with the Desktop Search.</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QGridLayout" name="gridLayout_2">
+            <item row="0" column="0" rowspan="2">
+             <layout class="QVBoxLayout" name="verticalLayout_9">
+              <item>
+               <widget class="QCheckBox" name="m_checkEnableNepomuk">
+                <property name="text">
+                 <string>Enable Nepomuk Semantic Desktop</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_2">
+                <item>
+                 <spacer name="horizontalSpacer_3">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Fixed</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>13</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="KSqueezedTextLabel" name="m_labelNepomukStatus">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>1</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <weight>75</weight>
+                    <italic>true</italic>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string notr="true">KSqueezedTextLabel</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+            <item row="1" column="1">
+             <widget class="KUrlLabel" name="m_buttonDetails">
+              <property name="text">
+               <string>Details...</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="title">
+          <string>Nepomuk Desktop File Indexer</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Nepomuk desktop search allows searching for files by content instead of just by name.</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="m_checkEnableFileIndexer">
+            <property name="text">
+             <string>Enable Nepomuk File Indexer</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Fixed</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>1</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="KSqueezedTextLabel" name="m_labelFileIndexerStatus">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>1</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <italic>true</italic>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string notr="true">KSqueezedTextLabel</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="m_fileIndexerSuspendResumeButtom">
+              <property name="text">
+               <string>Suspend</string>
+              </property>
+              <property name="clicked" stdset="0">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="m_emailIndexingBox">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="title">
+          <string>PIM Data Indexing</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_11">
+          <item>
+           <widget class="QLabel" name="label_12">
+            <property name="text">
+             <string>PIM data indexing allows full text search in events, contacts, email and their attachments.</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="m_checkEnableEmailIndexer">
+            <property name="text">
+             <string>Enable PIM Data Indexer</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout2">
+            <item>
+             <spacer name="horizontalSpacer2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Fixed</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>1</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="KSqueezedTextLabel" name="m_labelEmailIndexerStatus">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>1</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <italic>true</italic>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string notr="true">KSqueezedTextLabel</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="m_emailIndexerSuspendResumeButtom">
+              <property name="text">
+               <string>Suspend</string>
+              </property>
+              <property name="clicked" stdset="0">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>1</width>
+           <height>1</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_4">
+      <attribute name="title">
+       <string>Indexing</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QGroupBox" name="groupBox_7">
+         <property name="title">
+          <string>File Indexing</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_7">
+          <item>
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>Customize the files and folders to be indexed</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="m_checkboxDocuments">
+            <property name="text">
+             <string>Index Documents</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="m_checkboxAudio">
+            <property name="text">
+             <string>Index Audio</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="m_checkboxImage">
+            <property name="text">
+             <string>Index Images</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="m_checkboxVideo">
+            <property name="text">
+             <string>Index Videos</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="m_checkboxSourceCode">
+            <property name="text">
+             <string>Index Source Code</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_7">
+            <item>
+             <spacer name="horizontalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="m_buttonAdvancedFileIndexing">
+              <property name="text">
+               <string>Advanced</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="m_buttonCustomizeIndexFolders">
+              <property name="text">
+               <string>Customize Folders</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QFormLayout" name="formLayout_3">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_11">
+              <property name="text">
+               <string>Removable media handling:</string>
+              </property>
+              <property name="buddy">
+               <cstring>m_comboRemovableMediaHandling</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="KComboBox" name="m_comboRemovableMediaHandling">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <horstretch>1</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="toolTip">
+               <string comment="@info:tooltip">Indexing of files on removable media</string>
+              </property>
+              <property name="whatsThis">
+               <string comment="@info:whatsthis">&lt;para&gt;Nepomuk can index files on removable devices like USB keys or external hard-disks for fast desktop searches.&lt;/para&gt;
+&lt;para&gt;By default no files are indexed. Here this behaviour can be changed to one of two options:&lt;/para&gt;
+&lt;para&gt;&lt;list&gt;&lt;item&gt;&lt;interface&gt;Index files on all removable devices&lt;/interface&gt; - Files on removable media are indexed as soon as the medium is mounted. Caution: this does not include media which have been rejected via the second option.&lt;/item&gt;
+&lt;item&gt;&lt;interface&gt;Ask individually when newly mounted&lt;/interface&gt; - The user will be asked to decide if files on the newly mounted medium should be indexed or not. Once decided Nepomuk will not ask again.&lt;/item&gt;&lt;/list&gt;&lt;/para&gt;</string>
+              </property>
+              <item>
+               <property name="text">
+                <string>Ignore all removable media</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Index files on all removable devices</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Ask individually when newly mounted</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>1</width>
+           <height>1</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_2">
+      <attribute name="title">
+       <string>Backup</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_12">
+       <item>
+        <widget class="QGroupBox" name="groupBox_3">
+         <property name="title">
+          <string>Automatic Backups</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string comment="@info">Nepomuk can perform regular automatic backups of all data that could not be restored otherwise. This includes manually created tags, ratings, but also statistical data.</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QFormLayout" name="formLayout">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_9">
+              <property name="text">
+               <string>Backup frequency:</string>
+              </property>
+              <property name="buddy">
+               <cstring>m_comboBackupFrequency</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="KComboBox" name="m_comboBackupFrequency">
+              <property name="toolTip">
+               <string>How often should a backup of the Nepomuk database be created</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_8">
+              <property name="text">
+               <string>Backup Time:</string>
+              </property>
+              <property name="buddy">
+               <cstring>m_editBackupTime</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <layout class="QHBoxLayout" name="horizontalLayout_6">
+              <item>
+               <widget class="KComboBox" name="m_comboBackupDay"/>
+              </item>
+              <item>
+               <widget class="QTimeEdit" name="m_editBackupTime">
+                <property name="toolTip">
+                 <string>When should the backup be created</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_10">
+              <property name="text">
+               <string>Max number of backups:</string>
+              </property>
+              <property name="buddy">
+               <cstring>m_spinBackupMax</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <layout class="QHBoxLayout" name="horizontalLayout_8">
+              <item>
+               <widget class="QSpinBox" name="m_spinBackupMax">
+                <property name="toolTip">
+                 <string>How many previous backups should be kept</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="m_labelBackupStats">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_6">
+         <property name="title">
+          <string>Tools</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <item>
+           <widget class="KPushButton" name="m_buttonManualBackup">
+            <property name="text">
+             <string>Manual Backup...</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="KPushButton" name="m_buttonRestoreBackup">
+            <property name="text">
+             <string>Restore Backup...</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_5">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>1</width>
+              <height>1</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>1</width>
+           <height>1</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>KComboBox</class>
+   <extends>QComboBox</extends>
+   <header>kcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KUrlLabel</class>
+   <extends>QLabel</extends>
+   <header>kurllabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KPushButton</class>
+   <extends>QPushButton</extends>
+   <header>kpushbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KTabWidget</class>
+   <extends>QTabWidget</extends>
+   <header>ktabwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>KSqueezedTextLabel</class>
+   <extends>QLabel</extends>
+   <header>ksqueezedtextlabel.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>m_checkEnableNepomuk</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>m_checkEnableNepomuk</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>groupBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>68</x>
+     <y>102</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>42</x>
+     <y>154</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_sliderMemoryUsage</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>m_editMemoryUsage</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>107</x>
+     <y>57</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>107</x>
+     <y>57</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_editMemoryUsage</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>m_sliderMemoryUsage</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>107</x>
+     <y>57</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>107</x>
+     <y>57</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_checkEnableNepomuk</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>m_emailIndexingBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>206</x>
+     <y>100</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>228</x>
+     <y>269</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
