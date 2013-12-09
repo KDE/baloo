@@ -51,7 +51,6 @@ void Baloo::CommitQueue::add(unsigned id, Xapian::Document doc)
 
 void Baloo::CommitQueue::remove(unsigned int docid)
 {
-    kDebug() << docid;
     m_docsToRemove << docid;
     startTimers();
 }
@@ -81,7 +80,11 @@ void Baloo::CommitQueue::commit()
         m_docsToAdd.clear();
 
         Q_FOREACH (Xapian::docid id, m_docsToRemove) {
-            db.delete_document(id);
+            try {
+                db.delete_document(id);
+            }
+            catch (const Xapian::DocNotFoundError&) {
+            }
         }
         m_docsToRemove.clear();
 
