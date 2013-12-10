@@ -39,12 +39,19 @@ class Baloo::Query::Private {
 public:
     Private() {
         m_limit = 100000;
+        m_yearFilter = -1;
+        m_monthFilter = -1;
+        m_dayFilter = -1;
     }
     Term m_term;
 
     QStringList m_types;
     QString m_searchString;
     uint m_limit;
+
+    int m_yearFilter;
+    int m_monthFilter;
+    int m_dayFilter;
 };
 
 Query::Query()
@@ -119,6 +126,28 @@ void Query::setLimit(uint limit)
     d->m_limit = limit;
 }
 
+void Query::setDateFilter(int year, int month, int day)
+{
+    d->m_yearFilter = year;
+    d->m_monthFilter = month;
+    d->m_dayFilter = day;
+}
+
+int Query::yearFilter() const
+{
+    return d->m_yearFilter;
+}
+
+int Query::monthFilter() const
+{
+    return d->m_monthFilter;
+}
+
+int Query::dayFilter() const
+{
+    return d->m_dayFilter;
+}
+
 ResultIterator Query::exec()
 {
     // vHanda: Maybe this should default to allow searches on all search stores?
@@ -156,6 +185,13 @@ QByteArray Query::toJSON()
     map["searchString"] = d->m_searchString;
     map["term"] = QVariant(d->m_term.toVariantMap());
 
+    if (d->m_yearFilter >= 0)
+        map["yearFilter"] = d->m_yearFilter;
+    if (d->m_monthFilter >= 0)
+        map["monthFilter"] = d->m_monthFilter;
+    if (d->m_dayFilter >= 0)
+        map["dayFilter"] = d->m_dayFilter;
+
     QJson::Serializer serializer;
     return serializer.serialize(map);
 }
@@ -171,6 +207,13 @@ Query Query::fromJSON(const QByteArray& arr)
     query.d->m_limit = map["limit"].toInt();
     query.d->m_searchString = map["searchString"].toString();
     query.d->m_term = Term::fromVariantMap(map["term"].toMap());
+
+    if (map.contains("yearFilter"))
+        query.d->m_yearFilter = map["yearFilter"].toInt();
+    if (map.contains("monthFilter"))
+        query.d->m_monthFilter = map["monthFilter"].toInt();
+    if (map.contains("dayFilter"))
+        query.d->m_dayFilter = map["dayFilter"].toInt();
 
     return query;
 }

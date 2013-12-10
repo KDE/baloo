@@ -60,6 +60,8 @@ protected:
                                          const QVariant& value,
                                          Term::Comparator com) = 0;
 
+    virtual Xapian::Query constructFilterQuery(int year, int month, int day);
+
     /**
      * Returns the url for the document with id \p docid.
      */

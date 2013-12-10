@@ -78,6 +78,17 @@ public:
     void setLimit(uint limit);
     uint limit() const;
 
+    /**
+     * Filter the results in the specified date range.
+     *
+     * The year/month/day may be set to -1 in order to ignore it.
+     */
+    void setDateFilter(int year, int month = -1, int day = -1);
+
+    int yearFilter() const;
+    int monthFilter() const;
+    int dayFilter() const;
+
     // FIXME: Sorting?
 
     /**

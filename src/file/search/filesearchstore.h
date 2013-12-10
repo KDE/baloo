@@ -45,6 +45,8 @@ protected:
                                          const QVariant& value,
                                          Term::Comparator com);
 
+    virtual Xapian::Query constructFilterQuery(int year, int month, int day);
+
     virtual Xapian::Query convertTypes(const QStringList& types);
     virtual QUrl constructUrl(const Xapian::docid& docid);
 

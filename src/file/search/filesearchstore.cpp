@@ -102,6 +102,21 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
     return Xapian::Query(value.toString().toStdString());
 }
 
+Xapian::Query FileSearchStore::constructFilterQuery(int year, int month, int day)
+{
+    QVector<std::string> vector;
+    vector.reserve(3);
+
+    if (year != -1)
+        vector << QString::fromLatin1("DT_MY%1").arg(year).toStdString();
+    if (month != -1)
+        vector << QString::fromLatin1("DT_MM%1").arg(month).toStdString();
+    if (day != -1)
+        vector << QString::fromLatin1("DT_MD%1").arg(day).toStdString();
+
+    return Xapian::Query(Xapian::Query::OP_AND, vector.begin(), vector.end());
+}
+
 QUrl FileSearchStore::constructUrl(const Xapian::docid& docid)
 {
     QMutexLocker lock(&m_sqlMutex);
