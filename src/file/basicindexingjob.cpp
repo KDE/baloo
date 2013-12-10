@@ -122,8 +122,8 @@ QList<QByteArray> BasicIndexingJob::typesForMimeType(const QString& mimeType) co
         types << "Image";
     if (mimeType.contains(QLatin1String("document")))
         types << "Document";
-    //if (mimeType.contains(QLatin1String("text")))
-    //    types << "Document";
+    if (mimeType.contains(QLatin1String("text")))
+        types << "Document";
     //if (mimeType.contains(QLatin1String("font")))
     //    types << "Font";
 
