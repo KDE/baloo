@@ -86,14 +86,19 @@ void BasicIndexingJob::doStart()
     doc.add_boolean_term(month.toStdString());
     doc.add_boolean_term(day.toStdString());
 
-    // Indexing Level 1
-    doc.add_boolean_term("Z1");
-
     // Types
     QList<QByteArray> types = typesForMimeType(m_mimetype);
     types << QByteArray("File");
-    if (fileInfo.isDir())
+    if (fileInfo.isDir()) {
         types << QByteArray("Folder");
+
+        // This is an optimization for folders. They do not need to go through
+        // file indexing, so there are no indexers for folders
+        doc.add_boolean_term("Z2");
+    }
+    else {
+        doc.add_boolean_term("Z1");
+    }
 
     Q_FOREACH (const QByteArray& arr, types) {
         QByteArray a = 'T' + arr.toLower();
