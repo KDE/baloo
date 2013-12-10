@@ -52,6 +52,8 @@ void Result::add(const QString& key_, const QVariant& val)
     }
     else {
         const std::string value = val.toString().toStdString();
+        if (value.empty())
+            return;
 
         m_termGen.index_text(value);
         m_termGen.index_text(value, 1, key.toStdString());
