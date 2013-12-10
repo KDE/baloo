@@ -155,6 +155,8 @@ void TimelineProtocol::listDir(const KUrl& url)
                 listEntry(uds, false);
         }
         listEntry(KIO::UDSEntry(), true);
+        finished();
+        break;
     }
 
     default:
@@ -258,14 +260,6 @@ void TimelineProtocol::listThisYearsMonths()
             listEntry(createMonthUDSEntry(month, year), false);
         }
     }
-}
-
-
-void TimelineProtocol::listPreviousYears()
-{
-    kDebug();
-    // TODO: list years before this year that have files, but first get the smallest date
-    // Using a query like: "select ?date where { ?r a nfo:FileDataObject . ?r nie:lastModified ?date . } ORDER BY ?date LIMIT 1" (this would have to be cached)
 }
 
 

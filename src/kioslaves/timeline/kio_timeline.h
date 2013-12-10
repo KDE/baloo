@@ -54,7 +54,6 @@ public:
 private:
     void listDays(int month, int year);
     void listThisYearsMonths();
-    void listPreviousYears();
     bool filesInDate(const QDate& date);
 
     /// temp vars for the currently handled URL
