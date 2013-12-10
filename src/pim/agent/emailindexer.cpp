@@ -161,13 +161,13 @@ void EmailIndexer::process(const KMime::Message::Ptr& msg)
 {
     //
     // Process Headers
-    //
+    // (Give the subject a higher priority)
     KMime::Headers::Subject* subject = msg->subject(false);
     if (subject) {
         std::string str = subject->asUnicodeString().toStdString();
         kDebug() << "Indexing" << str.c_str();
         m_termGen->index_text_without_positions(str, 1, "S");
-        m_termGen->index_text_without_positions(str);
+        m_termGen->index_text_without_positions(str, 100);
         m_doc->set_data(str);
     }
 
