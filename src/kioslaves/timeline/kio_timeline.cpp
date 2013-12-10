@@ -20,7 +20,8 @@
 
 #include "kio_timeline.h"
 #include "timelinetools.h"
-#include "filemapping.h"
+#include "query.h"
+#include "resultiterator.h"
 
 #include <KUrl>
 #include <kio/global.h>
@@ -35,11 +36,8 @@
 #include <KStandardDirs>
 #include <kde_file.h>
 
-#include <QtCore/QDate>
-#include <QtCore/QCoreApplication>
-
-#include <sys/types.h>
-#include <unistd.h>
+#include <QDate>
+#include <QCoreApplication>
 
 using namespace Baloo;
 
@@ -49,7 +47,6 @@ KIO::UDSEntry createFolderUDSEntry(const QString& name, const QString& displayNa
 {
     KIO::UDSEntry uds;
     QDateTime dt(date, QTime(0, 0, 0));
-    kDebug() << dt;
     uds.insert(KIO::UDSEntry::UDS_NAME, name);
     uds.insert(KIO::UDSEntry::UDS_DISPLAY_NAME, displayName);
     uds.insert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
@@ -85,12 +82,12 @@ KIO::UDSEntry createDayUDSEntry(const QDate& date)
     return uds;
 }
 
-KIO::UDSEntry createFileUDSEntry(const QString& fileUrl)
+KIO::UDSEntry createFileUDSEntry(const KUrl& fileUrl)
 {
     KIO::UDSEntry uds;
     // Code from kdelibs/kioslaves/file.cpp
     KDE_struct_stat statBuf;
-    if( KDE_stat(QFile::encodeName(fileUrl).data(), &statBuf ) == 0) {
+    if( KDE_stat(QFile::encodeName(fileUrl.toLocalFile()).data(), &statBuf ) == 0) {
         uds.insert(KIO::UDSEntry::UDS_MODIFICATION_TIME, statBuf.st_mtime);
         uds.insert(KIO::UDSEntry::UDS_ACCESS_TIME, statBuf.st_atime);
         uds.insert(KIO::UDSEntry::UDS_SIZE, statBuf.st_size);
@@ -102,8 +99,8 @@ KIO::UDSEntry createFileUDSEntry(const QString& fileUrl)
 
         uds.insert(KIO::UDSEntry::UDS_FILE_TYPE, type);
         uds.insert(KIO::UDSEntry::UDS_ACCESS, access);
-        uds.insert(KIO::UDSEntry::UDS_URL, fileUrl);
-        uds.insert(KIO::UDSEntry::UDS_NAME, KUrl(QUrl::fromLocalFile(fileUrl)).fileName());
+        uds.insert(KIO::UDSEntry::UDS_URL, fileUrl.url());
+        uds.insert(KIO::UDSEntry::UDS_NAME, fileUrl.fileName());
     }
 
     return uds;
@@ -115,15 +112,11 @@ KIO::UDSEntry createFileUDSEntry(const QString& fileUrl)
 TimelineProtocol::TimelineProtocol(const QByteArray& poolSocket, const QByteArray& appSocket)
     : KIO::SlaveBase("timeline", poolSocket, appSocket)
 {
-    m_db = new Database();
-    m_db->setPath(KStandardDirs::locateLocal("data", "baloo/file/"));
-    m_db->init();
 }
 
 
 TimelineProtocol::~TimelineProtocol()
 {
-    delete m_db;
 }
 
 
@@ -151,28 +144,13 @@ void TimelineProtocol::listDir(const KUrl& url)
         break;
 
     case DayFolder: {
-        QString dayStr = "DT_MD" + QString::number(m_date.day());
-        QString monStr = "DT_MM" + QString::number(m_date.month());
-        QString yearStr = "DT_MY" + QString::number(m_date.year());
+        Query query;
+        query.addType("File");
+        query.setDateFilter(m_date.year(), m_date.month(), m_date.day());
 
-        std::vector<std::string> strings(3);
-        strings[0] = dayStr.toStdString();
-        strings[1] = monStr.toStdString();
-        strings[2] = yearStr.toStdString();
-
-        Xapian::Query query = Xapian::Query(Xapian::Query::OP_AND, strings.begin(), strings.end());
-        kDebug() << "Running" << query.get_description().c_str();
-        Xapian::Enquire enq(*m_db->xapainDatabase());
-        enq.set_query(query);
-
-        Xapian::MSet mset = enq.get_mset(0, 100000000);
-        Xapian::MSetIterator it = mset.begin();
-        for (; it != mset.end(); it++) {
-            Baloo::FileMapping file(*it);
-            if (!file.fetch(m_db->sqlDatabase()))
-                continue;
-
-            KIO::UDSEntry uds = createFileUDSEntry(file.url());
+        ResultIterator it = query.exec();
+        while (it.next()) {
+            KIO::UDSEntry uds = createFileUDSEntry(it.url());
             if (uds.count())
                 listEntry(uds, false);
         }
@@ -243,50 +221,41 @@ void TimelineProtocol::stat(const KUrl& url)
 
 void TimelineProtocol::listDays(int month, int year)
 {
-    QString monStr = "DT_MM" + QString::number(m_date.month());
-    QString yearStr = "DT_MY" + QString::number(m_date.year());
-    Xapian::Query query = Xapian::Query(Xapian::Query::OP_AND,
-                                        monStr.toStdString(),
-                                        yearStr.toStdString());
-
-    const int days = KGlobal::locale()->calendar()->daysInMonth(QDate(year, month, 1));
-    for (int day = 1; day <= days; ++day) {
+    const int days = KGlobal::locale()->calendar()->daysInMonth(year, month);
+    for (int day = 1; day <= days; day++) {
         QDate date(year, month, day);
-        if (date >= QDate::currentDate())
-            break;
 
-        QString dayStr = "DT_MD" + QString::number(m_date.day());
-        Xapian::Query q = Xapian::Query(Xapian::Query::OP_AND,
-                                        query, Xapian::Query(dayStr.toStdString()));
-
-        Xapian::Enquire enq(*m_db->xapainDatabase());
-        enq.set_query(q);
-
-        Xapian::MSet mset = enq.get_mset(0, 1);
-        if (mset.size()) {
+        if (date <= QDate::currentDate() && filesInDate(date)) {
             listEntry(createDayUDSEntry(date), false);
         }
     }
 }
 
+bool TimelineProtocol::filesInDate(const QDate& date)
+{
+    Query query;
+    query.addType("File");
+    query.setLimit(1);
+    query.setDateFilter(date.year(), date.month(), date.day());
+
+    ResultIterator it = query.exec();
+    return it.next();
+}
+
 
 void TimelineProtocol::listThisYearsMonths()
 {
-    QString yearStr = "DT_MY" + QString::number(m_date.year());
+    Query query;
+    query.addType("File");
+    query.setLimit(1);
 
+    int year = QDate::currentDate().year();
     int currentMonth = QDate::currentDate().month();
     for (int month = 1; month <= currentMonth; ++month) {
-
-        QString monStr = "DT_MM" + QString::number(m_date.month());
-        Xapian::Query query = Xapian::Query(Xapian::Query::OP_AND,
-                                            monStr.toStdString(),
-                                            yearStr.toStdString());
-        Xapian::Enquire enq(*m_db->xapainDatabase());
-        enq.set_query(query);
-
-        Xapian::MSet mset = enq.get_mset(0, 1);
-        if (mset.size()) {
-            listEntry(createMonthUDSEntry(month, QDate::currentDate().year()), false);
+        query.setDateFilter(year, month);
+        ResultIterator it = query.exec();
+        if (it.next()) {
+            listEntry(createMonthUDSEntry(month, year), false);
         }
     }
 }
@@ -308,7 +277,7 @@ extern "C"
         KComponentData("kio_timeline");
         QCoreApplication app(argc, argv);
 
-        kDebug(7102) << "Starting timeline slave " << getpid();
+        kDebug() << "Starting timeline slave " << getpid();
 
         if (argc != 4) {
             kError() << "Usage: kio_timeline protocol domain-socket1 domain-socket2";
@@ -318,7 +287,7 @@ extern "C"
         Baloo::TimelineProtocol slave(argv[2], argv[3]);
         slave.dispatchLoop();
 
-        kDebug(7102) << "Timeline slave Done";
+        kDebug() << "Timeline slave Done";
 
         return 0;
     }

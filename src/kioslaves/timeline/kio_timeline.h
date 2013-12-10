@@ -23,8 +23,7 @@
 
 #include <kio/slavebase.h>
 
-#include <QtCore/QDate>
-#include "src/file/database.h"
+#include <QDate>
 
 namespace Baloo
 {
@@ -56,12 +55,11 @@ private:
     void listDays(int month, int year);
     void listThisYearsMonths();
     void listPreviousYears();
+    bool filesInDate(const QDate& date);
 
     /// temp vars for the currently handled URL
     QDate m_date;
     QString m_filename;
-
-    Database* m_db;
 };
 }
 
