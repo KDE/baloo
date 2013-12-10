@@ -22,5 +22,5 @@ target_link_libraries(kcm_baloofile
 )
 
 
-install(FILES kcm_baloofile.desktop desktop-search.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+install(FILES kcm_baloofile.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 install(TARGETS kcm_baloofile DESTINATION ${PLUGIN_INSTALL_DIR})
