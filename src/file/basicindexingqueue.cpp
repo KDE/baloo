@@ -173,6 +173,12 @@ bool BasicIndexingQueue::shouldIndex(FileMapping& file, const QString& mimetype)
             return true;
         }
 
+        // A folders mtime is updated when a new file is added / removed / renamed
+        // we don't really need to reindex a folder when that happens
+        // In fact, we never need to reindex a folder
+        if (mimetype == QLatin1String("inode/directory"))
+            return false;
+
         // The 4 is for "DT_M"
         const QString str = QString::fromStdString(*it).mid(4);
         const QDateTime mtime = QDateTime::fromString(str, Qt::ISODate);
