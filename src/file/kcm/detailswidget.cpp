@@ -39,7 +39,7 @@ DetailsWidget::DetailsWidget(QWidget* parent, Qt::WindowFlags flags)
     connect(this, SIGNAL(user1Clicked()), this, SLOT(refresh()));
 
     QLabel* iconLabel = new QLabel();
-    iconLabel->setPixmap(KIcon("nepomuk").pixmap(48, 48));
+    iconLabel->setPixmap(KIcon("edit-find").pixmap(48, 48));
     iconLabel->setMinimumSize(QSize(48, 48));
     iconLabel->setMaximumSize(QSize(48, 48));
 

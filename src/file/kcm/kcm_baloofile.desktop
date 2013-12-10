@@ -1,6 +1,6 @@
 [Desktop Entry]
 Exec=kcmshell4 kcm_baloofile
-Icon=nepomuk
+Icon=edit-find
 Type=Service
 
 X-KDE-ServiceTypes=KCModule
