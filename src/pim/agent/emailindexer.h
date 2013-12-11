@@ -59,6 +59,8 @@ private:
 
     Xapian::WritableDatabase* m_contactDb;
 
+    void toggleFlag(Xapian::Document& doc, const char* remove, const char* add);
+
     void process(const KMime::Message::Ptr& msg);
     void processPart(KMime::Content* content, KMime::Content* mainContent);
     void processMessageStatus(const Akonadi::MessageStatus& status);

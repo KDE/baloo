@@ -255,6 +255,19 @@ void EmailIndexer::insertBool(char key, bool value)
     m_doc->add_boolean_term(term.data());
 }
 
+void EmailIndexer::toggleFlag(Xapian::Document& doc, const char* remove, const char* add)
+{
+    try {
+        doc.remove_term(remove);
+    }
+    catch (const Xapian::InvalidArgumentError &e) {
+        // The previous flag state was not indexed, continue
+    }
+
+    doc.add_term(add);
+}
+
+
 void EmailIndexer::updateFlags(const Akonadi::Item& item,
                                const QSet<QByteArray>& added,
                                const QSet<QByteArray>& removed)
@@ -269,31 +282,25 @@ void EmailIndexer::updateFlags(const Akonadi::Item& item,
 
     Q_FOREACH (const QByteArray& flag, removed) {
         if (flag == Akonadi::MessageFlags::Seen) {
-            doc.remove_term("BR");
-            doc.add_boolean_term("BNR");
+            toggleFlag(doc, "BR", "BNR");
         }
         else if (flag == Akonadi::MessageFlags::Flagged) {
-            doc.remove_term("BI");
-            doc.add_boolean_term("BNI");
+            toggleFlag(doc, "BI", "BNI");
         }
         else if (flag == Akonadi::MessageFlags::Watched) {
-            doc.remove_term("BW");
-            doc.add_boolean_term("BNW");
+            toggleFlag(doc, "BW", "BNW");
         }
     }
 
     Q_FOREACH (const QByteArray& flag, added) {
         if (flag == Akonadi::MessageFlags::Seen) {
-            doc.remove_term("BNR");
-            doc.add_boolean_term("BR");
+            toggleFlag(doc, "BNR", "BR");
         }
         else if (flag == Akonadi::MessageFlags::Flagged) {
-            doc.remove_term("BNI");
-            doc.add_boolean_term("BI");
+            toggleFlag(doc, "BNI", "BI");
         }
         else if (flag == Akonadi::MessageFlags::Watched) {
-            doc.remove_term("BNW");
-            doc.add_boolean_term("BW");
+            toggleFlag(doc, "BNW", "BW");
         }
     }
 
