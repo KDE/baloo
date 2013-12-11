@@ -26,6 +26,7 @@
 #include <KService>
 #include <KServiceTypeTrader>
 #include <QThreadStorage>
+#include <QMutex>
 
 using namespace Baloo;
 
@@ -64,6 +65,9 @@ QString SearchStore::property(int, const QString&)
 // static
 QList<SearchStore*> SearchStore::searchStores()
 {
+    static QMutex mutex;
+    QMutexLocker lock(&mutex);
+
     // Get all the plugins
     KService::List plugins = KServiceTypeTrader::self()->query("BalooSearchStore");
 
