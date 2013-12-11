@@ -6,7 +6,7 @@ find_package(KDE4 REQUIRED)
 find_package(KdepimLibs REQUIRED)
 find_package(Xapian REQUIRED)
 find_package(QJSON REQUIRED)
-find_package(KFileMetaData)
+find_package(KFileMetaData REQUIRED)
 
 include(KDE4Defaults)
 add_definitions(-DQT_NO_KEYWORDS)
