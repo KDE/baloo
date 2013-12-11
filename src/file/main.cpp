@@ -75,6 +75,8 @@ int main(int argc, char** argv) {
                         &fileIndexer, SLOT(indexFile(QString)));
         QObject::connect(&filewatcher, SIGNAL(installedWatches()),
                         &fileIndexer, SLOT(update()));
+        QObject::connect(&filewatcher, SIGNAL(fileRemoved(int)),
+                         &fileIndexer, SLOT(removeFileData(int)));
 
         return app.exec();
     }

@@ -136,12 +136,18 @@ void MetadataMover::removeMetadata(const QString& url)
         return;
     }
 
+    FileMapping file(url);
+    file.fetch(m_db->sqlDatabase());
+
     QSqlQuery query(m_db->sqlDatabase());
     query.prepare("delete from files where url = ?");
     query.addBindValue(url);
     if (!query.exec()) {
         kError() << query.lastError().text();
     }
+
+    if (file.id())
+        Q_EMIT fileRemoved(file.id());
 }
 
 

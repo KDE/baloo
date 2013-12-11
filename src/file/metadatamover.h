@@ -55,6 +55,12 @@ Q_SIGNALS:
      */
     void movedWithoutData(const QString& path);
 
+    /**
+     * Emitted when file with id \p id has been removed. This is emitted
+     * so that the clients using this id can update their databases.
+     */
+    void fileRemoved(int id);
+
 private Q_SLOTS:
     void slotWorkUpdateQueue();
 

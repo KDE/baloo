@@ -246,3 +246,8 @@ void FileIndexer::indexFolder(const QString& path, bool recursive, bool forced)
         m_indexScheduler->updateDir(dirPath, flags);
     }
 }
+
+void FileIndexer::removeFileData(int id)
+{
+    m_indexScheduler->removeFileData(id);
+}

@@ -429,3 +429,8 @@ void IndexScheduler::slotCommitted()
         m_fileIQ->resume();
     }
 }
+
+void IndexScheduler::removeFileData(int id)
+{
+    m_commitQ->remove(id);
+}

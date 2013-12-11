@@ -129,6 +129,8 @@ FileWatch::FileWatch(Database* db, QObject* parent)
     connect(m_metadataMover, SIGNAL(movedWithoutData(QString)),
             this, SIGNAL(indexFile(QString)),
             Qt::QueuedConnection);
+    connect(m_metadataMover, SIGNAL(fileRemoved(int)),
+            this, SIGNAL(fileRemoved(int)));
 
     m_fileModificationQueue = new ActiveFileQueue(this);
     connect(m_fileModificationQueue, SIGNAL(urlTimeout(QString)),
