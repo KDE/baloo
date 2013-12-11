@@ -121,7 +121,7 @@ int XapianSearchStore::exec(const Query& query)
     }
     xapQ = andQuery(xapQ, convertTypes(query.types()));
     xapQ = andQuery(xapQ, constructFilterQuery(query.yearFilter(), query.monthFilter(), query.dayFilter()));
-    xapQ = andQuery(xapQ, finalizeQuery(query));
+    xapQ = andQuery(xapQ, finalizeQuery(xapQ));
 
     Xapian::Enquire enquire(*m_db);
     enquire.set_query(xapQ);
