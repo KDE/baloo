@@ -174,7 +174,11 @@ void BalooIndexingAgent::itemChanged(const Akonadi::Item& item, const QSet<QByte
 
     AbstractIndexer *indexer = indexerForItem(item);
     if (indexer) {
-        indexer->remove(item);
+        try {
+            indexer->remove(item);
+        } catch (const Xapian::Error &e) {
+            kWarning() << "Xapian error in indexer" << indexer << ":" << e.get_error_string();
+        }
         m_items << item;
         m_timer.start();
     }
@@ -191,7 +195,11 @@ void BalooIndexingAgent::itemsFlagsChanged(const Akonadi::Item::List& items,
     }
 
     Q_FOREACH (const Akonadi::Item& item, items) {
-        indexer->updateFlags(item, addedFlags, removedFlags);
+        try {
+            indexer->updateFlags(item, addedFlags, removedFlags);
+        } catch (const Xapian::Error &e) {
+            kWarning() << "Xapian error in indexer" << indexer << ":" << e.get_error_string();
+        }
     }
     m_commitTimer.start();
 }
@@ -204,7 +212,11 @@ void BalooIndexingAgent::itemsRemoved(const Akonadi::Item::List& items)
     }
 
     Q_FOREACH (const Akonadi::Item& item, items) {
-        indexer->remove(item);
+        try {
+            indexer->remove(item);
+        } catch (const Xapian::Error &e) {
+            kWarning() << "Xapian error in indexer" << indexer << ":" << e.get_error_string();
+        }
     }
     m_commitTimer.start();
 }
@@ -215,7 +227,11 @@ void BalooIndexingAgent::itemsMoved(const Akonadi::Item::List& items,
 {
     AbstractIndexer *indexer = indexerForItem(items.first());
     Q_FOREACH (const Akonadi::Item& item, items) {
-        indexer->move(item.id(), sourceCollection.id(), destinationCollection.id());
+        try {
+            indexer->move(item.id(), sourceCollection.id(), destinationCollection.id());
+        } catch (const Xapian::Error &e) {
+            kWarning() << "Xapian error in indexer" << indexer << ":" << e.get_error_string();
+        }
     }
     m_commitTimer.start();
 }
@@ -255,7 +271,12 @@ void BalooIndexingAgent::slotItemsRecevied(const Akonadi::Item::List& items)
             continue;
         }
 
-        indexer->index(item);
+        try {
+            indexer->index(item);
+        } catch (const Xapian::Error &e) {
+            kWarning() << "Xapian error in indexer" << indexer << ":" << e.get_error_string();
+        }
+
         dt = qMax(dt, item.modificationTime());
     }
     if (initial)
@@ -278,7 +299,11 @@ void BalooIndexingAgent::slotItemFetchFinished(KJob*)
 void BalooIndexingAgent::slotCommitTimerElapsed()
 {
     Q_FOREACH (AbstractIndexer *indexer, m_indexers) {
-        indexer->commit();
+        try {
+            indexer->commit();
+        } catch (const Xapian::Error &e) {
+            kWarning() << "Xapian error in indexer" << indexer << ":" << e.get_error_string();
+        }
     }
 }
 
