@@ -40,29 +40,23 @@ QStringList ContactCompleter::complete()
     QString dir = KStandardDirs::locateLocal("data", "baloo/emailContacts/");
     Xapian::Database db(dir.toStdString());
 
+    Xapian::QueryParser parser;
+    parser.set_database(db);
+
     std::string prefix = m_prefix.toStdString();
-    Xapian::TermIterator it = db.allterms_begin(prefix);
-    Xapian::TermIterator end = db.allterms_end(prefix);
+    int flags = Xapian::QueryParser::FLAG_DEFAULT | Xapian::QueryParser::FLAG_PARTIAL;
+    Xapian::Query q = parser.parse_query(prefix, flags);
 
-    // vhanda FIXME: Sort based on term frequency?
+    Xapian::Enquire enq(db);
+    enq.set_query(q);
+
+    Xapian::MSet mset = enq.get_mset(0, m_limit);
+    Xapian::MSetIterator mit = mset.begin();
+
     QStringList list;
-    for (; it != end; it++) {
-        std::string term = *it;
-
-        Xapian::Query query(term);
-        Xapian::Enquire enq(db);
-        enq.set_query(query);
-        enq.set_sort_by_value(0, false);
-
-        Xapian::MSet mset = enq.get_mset(0, m_limit - list.size());
-        Xapian::MSetIterator mit = mset.begin();
-        for (; mit != mset.end(); mit++) {
-            QString entry = QString::fromStdString(db.get_document(*mit).get_data());
-            list << entry;
-        }
-
-        if (list.size() == m_limit)
-            break;
+    for (; mit != mset.end(); mit++) {
+        QString entry = QString::fromStdString(mit.get_document().get_data());
+        list << entry;
     }
 
     return list;
