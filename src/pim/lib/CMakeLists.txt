@@ -8,6 +8,8 @@ set(BALOO_PIM_LIB_SRCS
     contactquery.cpp
     emailquery.cpp
     contactcompleter.cpp
+
+    ../search/email/agepostingsource.cpp
 )
 
 add_definitions(${KDE4_ENABLE_EXCEPTIONS})

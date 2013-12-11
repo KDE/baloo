@@ -173,7 +173,7 @@ void EmailIndexer::process(const KMime::Message::Ptr& msg)
 
     KMime::Headers::Date* date = msg->date(false);
     if (date) {
-        QString str = date->dateTime().toString();
+        QString str = QString::number(date->dateTime().toTime_t());
         m_doc->add_value(0, str.toStdString());
     }
 

@@ -24,6 +24,7 @@
 #include "item.h"
 #include "term.h"
 #include "query.h"
+#include "agepostingsource.h"
 
 #include <QVector>
 
@@ -150,6 +151,12 @@ QString EmailSearchStore::text(int queryId)
         return QLatin1String("No Subject");
 
     return subject;
+}
+
+Xapian::Query EmailSearchStore::finalizeQuery(const Xapian::Query& query)
+{
+    AgePostingSource ps(0);
+    return Xapian::Query(Xapian::Query::OP_AND_MAYBE, query, Xapian::Query(&ps));
 }
 
 BALOO_EXPORT_SEARCHSTORE(Baloo::EmailSearchStore, "baloo_emailsearchstore")

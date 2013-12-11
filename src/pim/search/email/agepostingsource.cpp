@@ -20,33 +20,45 @@
  *
  */
 
-#include "resultiterator_p.h"
+#include "agepostingsource.h"
 
-using namespace Baloo::PIM;
+#include <QString>
+#include <QDateTime>
+#include <KDebug>
 
-ResultIterator::ResultIterator()
-    : d(new Private)
+#include <cmath>
+
+using namespace Baloo;
+
+AgePostingSource::AgePostingSource(Xapian::valueno slot_)
+    : Xapian::ValuePostingSource(slot_)
 {
-    d->m_firstElement = false;
+    m_currentTime_t = QDateTime::currentDateTime().toTime_t();
+    kDebug() << "Created with current time" << m_currentTime_t;
 }
 
-bool ResultIterator::next()
+Xapian::weight AgePostingSource::get_weight() const
 {
-    if (d->m_iter == d->m_end)
-        return false;
+    QString str = QString::fromStdString(*value_it);
 
-    if (d->m_firstElement) {
-        d->m_iter = d->m_mset.begin();
-        d->m_firstElement = false;
-        return (d->m_iter != d->m_end);
-    }
+    bool ok = false;
+    uint time = str.toUInt(&ok);
+    uint diff = m_currentTime_t - time;
 
-    d->m_iter++;
-    return (d->m_iter != d->m_end);
+    if (!ok)
+        return 0.0;
+
+    // Don't ask - Just tried random things. We need to improve the weights.
+    return log10(diff);
 }
 
-Akonadi::Entity::Id ResultIterator::id()
+Xapian::PostingSource* AgePostingSource::clone() const
 {
-    //kDebug() << d->m_iter.get_rank() << d->m_iter.get_weight();
-    return *(d->m_iter);
+    return new AgePostingSource(slot);
+}
+
+void AgePostingSource::init(const Xapian::Database& db_)
+{
+    Xapian::ValuePostingSource::init(db_);
+    //set_maxweight(1.0);
 }

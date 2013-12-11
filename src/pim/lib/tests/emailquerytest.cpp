@@ -97,7 +97,8 @@ void App::itemsReceived(const Akonadi::Item::List& itemList)
 {
     Q_FOREACH (const Akonadi::Item& item, itemList) {
         KMime::Message::Ptr message = item.payload<KMime::Message::Ptr>();
-        kDebug() << message->subject()->asUnicodeString();
+        KDateTime date = message->date()->dateTime().toUtc();
+        kDebug() << date.toString(KDateTime::ISODate) << message->subject()->asUnicodeString();
     }
 }
 

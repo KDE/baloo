@@ -23,6 +23,7 @@
 #include "emailquery.h"
 #include "resultiterator_p.h"
 #include "xapian.h"
+#include "../search/email/agepostingsource.h"
 
 #include <KStandardDirs>
 
@@ -238,7 +239,9 @@ ResultIterator EmailQuery::exec()
     }
 
     Xapian::Query query(Xapian::Query::OP_AND, m_queries.begin(), m_queries.end());
-    kDebug() << query.get_description().c_str();
+
+    AgePostingSource ps(0);
+    query = Xapian::Query(Xapian::Query::OP_AND_MAYBE, query, Xapian::Query(&ps));
 
     Xapian::Enquire enquire(db);
     enquire.set_query(query);

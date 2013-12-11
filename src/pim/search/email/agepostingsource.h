@@ -20,33 +20,32 @@
  *
  */
 
-#include "resultiterator_p.h"
+#ifndef AGEPOSTINGSOURCE_H
+#define AGEPOSTINGSOURCE_H
 
-using namespace Baloo::PIM;
+#include <xapian.h>
+#include <QString>
 
-ResultIterator::ResultIterator()
-    : d(new Private)
+namespace Baloo {
+
+class AgePostingSource : public Xapian::ValuePostingSource
 {
-    d->m_firstElement = false;
-}
+public:
+    AgePostingSource(Xapian::valueno slot_);
 
-bool ResultIterator::next()
-{
-    if (d->m_iter == d->m_end)
-        return false;
+    virtual Xapian::weight get_weight() const;
+    virtual Xapian::PostingSource* clone() const;
 
-    if (d->m_firstElement) {
-        d->m_iter = d->m_mset.begin();
-        d->m_firstElement = false;
-        return (d->m_iter != d->m_end);
+    virtual std::string name() const {
+        return "AgePostingSource";
     }
 
-    d->m_iter++;
-    return (d->m_iter != d->m_end);
+    virtual void init(const Xapian::Database& db_);
+
+private:
+    uint m_currentTime_t;
+};
+
 }
 
-Akonadi::Entity::Id ResultIterator::id()
-{
-    //kDebug() << d->m_iter.get_rank() << d->m_iter.get_weight();
-    return *(d->m_iter);
-}
+#endif // AGEPOSTINGSOURCE_H

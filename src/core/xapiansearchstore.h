@@ -63,6 +63,11 @@ protected:
     virtual Xapian::Query constructFilterQuery(int year, int month, int day);
 
     /**
+     * Apply any final touches to the query
+     */
+    virtual Xapian::Query finalizeQuery(const Xapian::Query& query);
+
+    /**
      * Returns the url for the document with id \p docid.
      */
     virtual QUrl constructUrl(const Xapian::docid& docid) = 0;
