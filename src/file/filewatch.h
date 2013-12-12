@@ -26,10 +26,8 @@
 #include "removablemediacache.h"
 
 class KInotify;
-class KUrl;
 class RegExpCache;
 class ActiveFileQueue;
-class QThread;
 class Database;
 
 namespace Baloo

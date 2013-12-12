@@ -25,7 +25,6 @@
 #include <QtCore/QTimer>
 #include <QtCore/QDateTime>
 
-class KDiskFreeSpace;
 
 namespace Baloo
 {

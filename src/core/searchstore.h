@@ -33,7 +33,6 @@
 
 namespace Baloo {
 
-class Term;
 class Query;
 
 class BALOO_CORE_EXPORT SearchStore : public QObject

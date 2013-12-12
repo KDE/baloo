@@ -29,7 +29,6 @@
 #include "filemapping.h"
 
 class QTimer;
-class Database;
 
 namespace Baloo
 {
