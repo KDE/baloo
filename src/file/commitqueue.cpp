@@ -70,6 +70,9 @@ void Baloo::CommitQueue::commit()
     m_db->sqlDatabase().commit();
     m_db->sqlDatabase().transaction();
 
+    if (m_docsToAdd.isEmpty() && m_docsToRemove.isEmpty())
+        return;
+
     const std::string path = m_db->path().toStdString();
     try {
         Xapian::WritableDatabase db(path, Xapian::DB_CREATE_OR_OPEN);
