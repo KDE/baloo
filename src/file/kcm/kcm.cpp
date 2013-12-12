@@ -28,16 +28,9 @@
 #include <KPluginLoader>
 #include <KAboutData>
 #include <KSharedConfig>
-#include <KMessageBox>
-#include <KUrlLabel>
-#include <KProcess>
-#include <KStandardDirs>
-#include <KCalendarSystem>
 #include <KDirWatch>
 #include <KDebug>
 
-#include <QRadioButton>
-#include <QInputDialog>
 #include <QPushButton>
 #include <QtCore/QDir>
 #include <QtDBus/QDBusServiceWatcher>

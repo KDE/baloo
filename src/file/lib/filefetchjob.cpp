@@ -26,8 +26,8 @@
 #include "file.h"
 #include "file_p.h"
 
-#include <QFileInfo>
 #include <QTimer>
+#include <QFile>
 
 #include <xapian.h>
 #include <qjson/parser.h>

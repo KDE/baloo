@@ -30,16 +30,13 @@
 #include <KCmdLineArgs>
 #include <KLocale>
 #include <KComponentData>
-#include <KApplication>
 #include <KStandardDirs>
 
 #include <QApplication>
-#include <QPair>
 #include <qjson/serializer.h>
 
 #include <iostream>
 #include <KDebug>
-#include <KUrl>
 #include <KMimeType>
 
 #include <kfilemetadata/extractorpluginmanager.h>

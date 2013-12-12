@@ -25,7 +25,6 @@
 #include <QHash>
 #include <QDirIterator>
 #include <QFile>
-#include <QScopedArrayPointer>
 #include <QLinkedList>
 #include <QTimer>
 #include <QPair>

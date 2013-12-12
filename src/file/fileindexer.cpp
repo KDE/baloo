@@ -23,9 +23,9 @@
 #include "util.h"
 
 #include <KDebug>
-#include <KDirNotify>
 
 #include <QtCore/QTimer>
+#include <QDBusConnection>
 
 using namespace Baloo;
 

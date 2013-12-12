@@ -22,13 +22,11 @@
 #include "indexscheduler.h"
 
 #include <KDebug>
-#include <KPassivePopup>
 #include <KLocale>
 #include <KDiskFreeSpaceInfo>
 #include <KStandardDirs>
 #include <KNotification>
 #include <KIcon>
-#include <KConfigGroup>
 #include <KIdleTime>
 
 #include <Solid/PowerManagement>

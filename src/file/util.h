@@ -20,7 +20,6 @@
 #ifndef _NEPOMUK_FILEINDEXER_UTIL_H_
 #define _NEPOMUK_FILEINDEXER_UTIL_H_
 
-#include <KUrl>
 #include <xapian.h>
 
 namespace Baloo

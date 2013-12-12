@@ -25,7 +25,7 @@
 
 #include "core_export.h"
 
-#include <QString>
+#include <QByteArray>
 #include <QMetaType>
 
 namespace Baloo {

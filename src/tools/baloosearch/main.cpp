@@ -25,7 +25,6 @@
 #include <KAboutData>
 #include <KLocale>
 #include <KComponentData>
-#include <KUrl>
 #include <KDebug>
 
 #include "query.h"

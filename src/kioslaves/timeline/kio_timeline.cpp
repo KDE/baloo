@@ -33,7 +33,6 @@
 #include <kio/netaccess.h>
 #include <KComponentData>
 #include <KCalendarSystem>
-#include <KStandardDirs>
 #include <kde_file.h>
 
 #include <QDate>

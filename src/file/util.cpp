@@ -20,6 +20,8 @@
 #include "util.h"
 #include <xapian.h>
 
+#include <QString>
+
 void Baloo::updateIndexingLevel(Xapian::WritableDatabase db, int fileId, int level)
 {
     try {

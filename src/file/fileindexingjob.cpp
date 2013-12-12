@@ -26,14 +26,11 @@
 
 #include <qjson/serializer.h>
 
-#include <KUrl>
 #include <KDebug>
-#include <KProcess>
 #include <KStandardDirs>
 
 #include <QtCore/QFileInfo>
 #include <QtCore/QTimer>
-#include <QDateTime>
 
 using namespace Baloo;
 

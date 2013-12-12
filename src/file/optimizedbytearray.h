@@ -24,7 +24,6 @@
 #include <QHash>
 #include <QVector>
 #include <QByteArray>
-#include <QDir>
 #include <QSet>
 #include <KDebug>
 

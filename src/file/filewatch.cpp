@@ -37,7 +37,6 @@
 
 #include <KDebug>
 #include <KConfigGroup>
-#include <KLocale>
 
 #ifdef BUILD_KINOTIFY
 namespace

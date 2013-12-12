@@ -25,7 +25,6 @@
 #include "database.h"
 
 #include <KDebug>
-#include <QTimer>
 
 using namespace Baloo;
 

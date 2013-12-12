@@ -28,7 +28,6 @@
 
 #include <KDebug>
 #include <KMimeType>
-#include <KStandardDirs>
 
 #include <QtCore/QDateTime>
 

@@ -24,14 +24,12 @@
 #include "fileindexerconfigutils.h"
 
 #include <KConfig>
-#include <KConfigGroup>
 #include <KTempDir>
 
 #include <QtCore/QFile>
 #include <QtCore/QDir>
 #include <QtCore/QScopedPointer>
 
-#include <QtTest>
 
 #include "qtest_kde.h"
 

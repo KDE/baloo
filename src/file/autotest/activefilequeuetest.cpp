@@ -22,7 +22,6 @@
 #include "activefilequeuetest.h"
 #include "../activefilequeue.h"
 
-#include <QtTest>
 #include <qtest_kde.h>
 
 

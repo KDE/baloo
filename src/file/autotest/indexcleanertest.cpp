@@ -25,7 +25,6 @@
 #include "fileindexerconfigutils.h"
 
 #include <KConfig>
-#include <KConfigGroup>
 #include <KTempDir>
 #include <KDebug>
 
@@ -33,7 +32,6 @@
 #include <QtCore/QDir>
 #include <QtCore/QScopedPointer>
 
-#include <QtTest>
 
 #include "qtest_kde.h"
 

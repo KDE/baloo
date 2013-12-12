@@ -26,7 +26,6 @@
 #include <KStandardDirs>
 #include <qtest_kde.h>
 
-#include <QtTest>
 #include <QTextStream>
 #include <QFile>
 #include <QSignalSpy>

@@ -23,7 +23,6 @@
 #define FILEINDEXERCONFIGUTILS_H
 
 #include <KConfig>
-#include <KConfigGroup>
 #include <KTempDir>
 
 #include <QtCore/QDir>

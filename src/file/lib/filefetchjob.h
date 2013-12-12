@@ -25,7 +25,6 @@
 
 #include "file_export.h"
 #include "itemfetchjob.h"
-#include <QVariantMap>
 
 namespace Baloo {
 

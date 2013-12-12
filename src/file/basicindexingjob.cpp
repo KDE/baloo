@@ -24,10 +24,8 @@
 #include "database.h"
 
 #include <QTimer>
-#include <QVariant>
 #include <QFileInfo>
 #include <QDateTime>
-#include <QSqlQuery>
 
 #include <KDebug>
 

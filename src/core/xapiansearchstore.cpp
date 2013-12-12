@@ -25,6 +25,7 @@
 #include "query.h"
 
 #include <QVector>
+#include <QStringList>
 #include <KDebug>
 
 using namespace Baloo;

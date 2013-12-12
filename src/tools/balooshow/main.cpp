@@ -22,14 +22,13 @@
 #include <QCoreApplication>
 #include <QHash>
 #include <QUrl>
-#include <QSet>
 
 #include <KCmdLineArgs>
 #include <KAboutData>
 #include <KLocale>
 #include <KComponentData>
-#include <KUrl>
 #include <KDebug>
+#include <KUrl>
 
 #include "file.h"
 #include "filefetchjob.h"

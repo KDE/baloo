@@ -28,7 +28,6 @@
 #include <QVariant>
 
 #include <QSqlQuery>
-#include <QSqlError>
 #include <KDebug>
 
 #include <QDBusConnection>

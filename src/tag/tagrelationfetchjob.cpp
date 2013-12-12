@@ -27,10 +27,9 @@
 #include "util.h"
 
 #include <QTimer>
-#include <QVariant>
 
-#include <QSqlQuery>
 #include <QSqlError>
+#include <QSqlQuery>
 #include <KDebug>
 
 using namespace Baloo;

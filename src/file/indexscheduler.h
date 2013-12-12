@@ -23,8 +23,6 @@
 #include "basicindexingqueue.h" // Required for UpdateDirFlags
 #include "removablemediacache.h"
 #include "filemapping.h"
-#include <QDateTime>
-#include <QTimer>
 
 class Database;
 

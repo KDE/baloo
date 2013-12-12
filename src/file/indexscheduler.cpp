@@ -37,9 +37,7 @@
 #include <QtCore/QByteArray>
 
 #include <KDebug>
-#include <KUrl>
 #include <KStandardDirs>
-#include <KConfigGroup>
 #include <KLocale>
 
 using namespace Baloo;

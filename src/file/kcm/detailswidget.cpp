@@ -22,9 +22,10 @@
 
 #include "detailswidget.h"
 
-#include <QHBoxLayout>
 
 #include <KLocalizedString>
+
+#include <QVBoxLayout>
 
 using namespace Baloo;
 

@@ -21,8 +21,6 @@
 
 #include <QMutex>
 #include <QQueue>
-#include <QSet>
-#include <QDateTime>
 
 #include "updaterequest.h"
 

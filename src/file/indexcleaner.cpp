@@ -28,7 +28,7 @@
 #include <QtCore/QMutexLocker>
 #include <QtCore/QSet>
 #include <KDebug>
-#include <KConfigGroup>
+#include <KUrl>
 
 using namespace Baloo;
 

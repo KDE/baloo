@@ -23,7 +23,6 @@
 #define _BALOO_INDEXING_JOB_H_
 
 #include <KJob>
-#include <KUrl>
 #include <QProcess>
 
 #include "filemapping.h"

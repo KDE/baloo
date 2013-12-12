@@ -27,9 +27,7 @@
 
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
-#include <QColor>
 #include <QBrush>
-#include <QPalette>
 
 #include <KDebug>
 #include <KIcon>

@@ -28,7 +28,6 @@
 #include <QSqlQuery>
 #include <QSqlError>
 
-#include <KConfig>
 #include <KDebug>
 
 Database::Database(QObject* parent)

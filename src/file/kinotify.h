@@ -21,7 +21,6 @@
 #define _KINOTIFY_H_
 
 #include <QObject>
-#include <QFlags>
 
 /**
  * A simple wrapper around inotify which only allows

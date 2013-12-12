@@ -26,7 +26,6 @@
 
 #include <QTimer>
 
-#include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
 

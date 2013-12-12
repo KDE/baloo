@@ -26,7 +26,6 @@
 #include "query.h"
 #include "agepostingsource.h"
 
-#include <QVector>
 
 #include <KStandardDirs>
 #include <KDebug>

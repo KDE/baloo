@@ -30,12 +30,9 @@
 #include "qtest_kde.h"
 #include <KDebug>
 
-#include <QDir>
-#include <QTest>
 #include <QSignalSpy>
 
 #include <QSqlQuery>
-#include <QSqlError>
 
 using namespace Baloo;
 

@@ -32,7 +32,6 @@
 
 #include <xapian.h>
 
-#include <QTest>
 
 using namespace Baloo;
 

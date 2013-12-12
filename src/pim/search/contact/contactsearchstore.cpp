@@ -25,7 +25,6 @@
 #include "term.h"
 #include "query.h"
 
-#include <QVector>
 
 #include <KStandardDirs>
 #include <KDebug>
