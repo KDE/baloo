@@ -25,7 +25,6 @@
 #include "filemapping.h"
 
 #include <KJob>
-#include <Soprano/QueryResultIterator>
 
 class Database;
 

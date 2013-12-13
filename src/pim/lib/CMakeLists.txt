@@ -1,4 +1,5 @@
 include_directories(
+    ${KDEPIMLIBS_INCLUDE_DIRS}
     ${XAPIAN_INCLUDE_DIR}
 )
 
