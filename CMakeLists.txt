@@ -1,7 +1,5 @@
 project(baloo)
 
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
-
 find_package(KDE4 REQUIRED)
 find_package(KdepimLibs REQUIRED)
 find_package(Xapian REQUIRED)
