@@ -1,2 +1,2 @@
 #! /usr/bin/env bash
-$XGETTEXT *.cpp -o $podir/kio_nepomuksearch.pot
+$XGETTEXT *.cpp -o $podir/kio_baloosearch.pot
