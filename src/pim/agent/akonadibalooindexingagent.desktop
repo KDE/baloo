@@ -1,5 +1,10 @@
 [Desktop Entry]
 Name=Akonadi Baloo Indexing Agent
+Name[de]=Akonadi-Indizierungsagent für Baloo
+Name[pt]=Agente de Indexação do Baloo no Akonadi
+Name[pt_BR]=Agente de Indexação do Baloo no Akonadi
+Name[uk]=Агент індексування Baloo для Akonadi
+Name[x-test]=xxAkonadi Baloo Indexing Agentxx
 
 Type=AkonadiAgent
 Exec=akonadi_baloo_indexer
