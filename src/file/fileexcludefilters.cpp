@@ -32,6 +32,8 @@ const char* s_defaultFileExcludeFilters[] = {
     "*.loT",
     "*.moc",
     "moc_*.cpp",
+    "qrc_*.cpp",
+    "ui_*.h",
     "cmake_install.cmake",
     "CMakeCache.txt",
     "CTestTestfile.cmake",
@@ -88,6 +90,10 @@ const char* s_defaultFolderExcludeFilters[] = {
     "CMakeFiles",
     "CMakeTmp",
     "CMakeTmpQmake",
+    ".moc",
+    ".obj",
+    ".pch",
+    ".uic",
 
     //misc
     "core-dumps",
