@@ -21,7 +21,7 @@
 #define _BALOO_FILEINDEXER_INDEX_SCHEDULER_H_
 
 #include "basicindexingqueue.h" // Required for UpdateDirFlags
-#include "removablemediacache.h"
+//#include "removablemediacache.h"
 #include "filemapping.h"
 
 class Database;

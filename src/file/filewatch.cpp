@@ -20,8 +20,8 @@
 #include "filewatch.h"
 #include "metadatamover.h"
 #include "fileexcludefilters.h"
-#include "removabledeviceindexnotification.h"
-#include "removablemediacache.h"
+//#include "removabledeviceindexnotification.h"
+//#include "removablemediacache.h"
 #include "fileindexerconfig.h"
 #include "activefilequeue.h"
 #include "regexpcache.h"
@@ -176,12 +176,14 @@ FileWatch::FileWatch(Database* db, QObject* parent)
 #endif
 
     // we automatically watch newly mounted media - it is very unlikely that anything non-interesting is mounted
+    /*
     m_removableMediaCache = new RemovableMediaCache(this);
     connect(m_removableMediaCache, SIGNAL(deviceMounted(const Baloo::RemovableMediaCache::Entry*)),
             this, SLOT(slotDeviceMounted(const Baloo::RemovableMediaCache::Entry*)));
     connect(m_removableMediaCache, SIGNAL(deviceTeardownRequested(const Baloo::RemovableMediaCache::Entry*)),
             this, SLOT(slotDeviceTeardownRequested(const Baloo::RemovableMediaCache::Entry*)));
     addWatchesForMountedRemovableMedia();
+    */
 
     connect(FileIndexerConfig::self(), SIGNAL(configChanged()),
             this, SLOT(updateIndexedFoldersWatches()));
@@ -341,6 +343,7 @@ void FileWatch::updateIndexedFoldersWatches()
 }
 
 
+/*
 void FileWatch::addWatchesForMountedRemovableMedia()
 {
     Q_FOREACH(const RemovableMediaCache::Entry * entry, m_removableMediaCache->allMedia()) {
@@ -358,7 +361,6 @@ void FileWatch::slotDeviceMounted(const Baloo::RemovableMediaCache::Entry* entry
     const QByteArray devGroupName("Device-" + entry->url().toUtf8());
     int index = 0;
     // Old-format -> port to new format
-    /*
     if (fileIndexerConfig.group("Devices").hasKey(entry->url())) {
         KConfigGroup devicesGroup = fileIndexerConfig.group("Devices");
         index = devicesGroup.readEntry(entry->url(), false) ? 1 : -1;
@@ -376,13 +378,12 @@ void FileWatch::slotDeviceMounted(const Baloo::RemovableMediaCache::Entry* entry
         // Migrate the existing filex data
         RemovableMediaDataMigrator* migrator = new RemovableMediaDataMigrator(entry);
         QThreadPool::globalInstance()->start(migrator);
-    }*/
+    }
 
     // Already exists
     if (fileIndexerConfig.hasGroup(devGroupName)) {
         // Inform the indexer to start the indexing process
 
-        /*
         org::kde::nepomuk::FileIndexer fileIndexer("org.kde.nepomuk.services.nepomukfileindexer", "/nepomukfileindexer", QDBusConnection::sessionBus());
         if (fileIndexer.isValid()) {
             KConfigGroup group = fileIndexerConfig.group(devGroupName);
@@ -395,7 +396,6 @@ void FileWatch::slotDeviceMounted(const Baloo::RemovableMediaCache::Entry* entry
                 }
             }
         }
-        */
 
         index = 1;
     }
@@ -452,6 +452,7 @@ void FileWatch::slotDeviceTeardownRequested(const Baloo::RemovableMediaCache::En
 #endif
 }
 
+*/
 
 void FileWatch::slotActiveFileQueueTimeout(const QString& url)
 {

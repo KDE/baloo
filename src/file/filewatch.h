@@ -71,13 +71,13 @@ private Q_SLOTS:
      * cleans up the index with respect to removed files, and optionally
      * tells the indexer service to run on the mount path.
      */
-    void slotDeviceMounted(const Baloo::RemovableMediaCache::Entry*);
+    //void slotDeviceMounted(const Baloo::RemovableMediaCache::Entry*);
 
     /**
      * Connected to each removable media.
      * Removes all the watches that were added for that removable media
      */
-    void slotDeviceTeardownRequested(const Baloo::RemovableMediaCache::Entry*);
+    //void slotDeviceTeardownRequested(const Baloo::RemovableMediaCache::Entry*);
 
     void slotActiveFileQueueTimeout(const QString& url);
 
@@ -106,7 +106,7 @@ private:
 #endif
 
     RegExpCache* m_pathExcludeRegExpCache;
-    RemovableMediaCache* m_removableMediaCache;
+    //RemovableMediaCache* m_removableMediaCache;
 
     /// queue used to "compress" constant file modifications like downloads
     ActiveFileQueue* m_fileModificationQueue;

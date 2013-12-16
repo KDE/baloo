@@ -23,6 +23,7 @@
 #ifndef _BALOO_FILEINDEXER_UTIL_H_
 #define _BALOO_FILEINDEXER_UTIL_H_
 
+#include <KUrl>
 #include <xapian.h>
 
 namespace Baloo

@@ -28,8 +28,8 @@ set(file_SRCS
     # Common
     regexpcache.cpp
     fileexcludefilters.cpp
-    removabledeviceindexnotification.cpp
-    removablemediacache.cpp
+    # removabledeviceindexnotification.cpp
+    # removablemediacache.cpp
 
     main.cpp
 )
