@@ -50,6 +50,8 @@ App::App(QObject* parent): QObject(parent)
         m_urls << url;
     }
 
+    connect(this, SIGNAL(saved()), this, SLOT(processNextUrl()), Qt::QueuedConnection);
+
     QTimer::singleShot(0, this, SLOT(processNextUrl()));
 }
 
@@ -61,7 +63,12 @@ App::~App()
 void App::processNextUrl()
 {
     if (m_urls.isEmpty()) {
-        QCoreApplication::instance()->exit(0);
+        if (m_results.isEmpty()) {
+            QCoreApplication::instance()->exit(0);
+        }
+        else {
+            saveChanges();
+        }
         return;
     }
 
@@ -105,12 +112,10 @@ void App::processNextUrl()
         else {
             saveChanges();
         }
-        QCoreApplication::instance()->exit(0);
         return;
     }
-    else {
-        QTimer::singleShot(0, this, SLOT(processNextUrl()));
-    }
+
+    QTimer::singleShot(0, this, SLOT(processNextUrl()));
 }
 
 void App::saveChanges()
@@ -128,10 +133,12 @@ void App::saveChanges()
         }
         db.commit();
         m_results.clear();
+
+        Q_EMIT saved();
     }
     catch (const Xapian::DatabaseLockError& err) {
-        kError() << err.get_error_string();
-        return;
+        kError() << "Cannot open database in write mode:" << err.get_error_string();
+        QTimer::singleShot(100, this, SLOT(saveChanges()));
     }
 }
 

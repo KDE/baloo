@@ -47,6 +47,9 @@ private Q_SLOTS:
     void processNextUrl();
     void saveChanges();
 
+Q_SIGNALS:
+    void saved();
+
 private:
     QVector<Result> m_results;
     QStringList m_urls;
