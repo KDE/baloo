@@ -3,6 +3,7 @@ set(EXTRACTOR_SRCS
   app.cpp
   priority.cpp
   result.cpp
+  ../basicindexingjob.cpp
   ../database.cpp
   ../util.cpp
 )

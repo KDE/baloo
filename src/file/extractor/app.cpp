@@ -22,6 +22,7 @@
 
 #include "app.h"
 #include "../util.h"
+#include "../basicindexingjob.h"
 
 #include <KCmdLineArgs>
 #include <KMimeType>
@@ -78,15 +79,25 @@ void App::processNextUrl()
     const QString mimetype = KMimeType::findByUrl(KUrl::fromLocalFile(url))->name();
 
     FileMapping file(url);
-    // FIXME: add to all dbs if not present
-    if (!file.fetch(m_db.sqlDatabase()) && !m_bData) {
-        QTimer::singleShot(0, this, SLOT(processNextUrl()));
-        return;
+    if (!m_bData) {
+        if (!file.fetch(m_db.sqlDatabase())) {
+            file.create(m_db.sqlDatabase());
+        }
     }
 
     Xapian::Document doc;
-    if (!m_bData)
-        doc = m_db.xapainDatabase()->get_document(file.id());
+    if (file.fetched()) {
+        try {
+            doc = m_db.xapainDatabase()->get_document(file.id());
+        }
+        catch (const Xapian::DocNotFoundError&) {
+            BasicIndexingJob basicIndexer(&m_db, file, mimetype);
+            basicIndexer.index();
+
+            file.setId(basicIndexer.id());
+            doc = basicIndexer.document();
+        }
+    }
 
     Result result;
     result.setInputUrl(url);
