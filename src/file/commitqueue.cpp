@@ -66,9 +66,9 @@ void Baloo::CommitQueue::startTimers()
 
 void Baloo::CommitQueue::commit()
 {
-    kDebug() << "COMMITTING";
     m_db->sqlDatabase().commit();
     m_db->sqlDatabase().transaction();
+    kDebug() << "SQL Committed";
 
     if (m_docsToAdd.isEmpty() && m_docsToRemove.isEmpty())
         return;
@@ -77,11 +77,13 @@ void Baloo::CommitQueue::commit()
     try {
         Xapian::WritableDatabase db(path, Xapian::DB_CREATE_OR_OPEN);
 
+        kDebug() << "Adding:" << m_docsToAdd.size() << "docs";
         Q_FOREACH (const DocIdPair& doc, m_docsToAdd) {
             db.replace_document(doc.first, doc.second);
         }
         m_docsToAdd.clear();
 
+        kDebug() << "Removing:" << m_docsToRemove.size() << "docs";
         Q_FOREACH (Xapian::docid id, m_docsToRemove) {
             try {
                 db.delete_document(id);
@@ -92,6 +94,7 @@ void Baloo::CommitQueue::commit()
         m_docsToRemove.clear();
 
         db.commit();
+        kDebug() << "Xapian Committed";
         m_db->xapainDatabase()->reopen();
 
         Q_EMIT committed();
