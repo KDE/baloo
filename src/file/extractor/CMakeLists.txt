@@ -1,5 +1,6 @@
 set(EXTRACTOR_SRCS
   main.cpp
+  app.cpp
   priority.cpp
   result.cpp
   ../database.cpp

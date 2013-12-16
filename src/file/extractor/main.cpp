@@ -20,31 +20,15 @@
    License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "app.h"
 #include "priority.h"
-#include "../database.h"
-#include "filemapping.h"
-#include "result.h"
-#include "../util.h"
 
 #include <KAboutData>
 #include <KCmdLineArgs>
 #include <KLocale>
 #include <KComponentData>
-#include <KStandardDirs>
 
-#include <QApplication>
-#include <qjson/serializer.h>
-
-#include <iostream>
 #include <KDebug>
-#include <KMimeType>
-
-#include <kfilemetadata/extractorpluginmanager.h>
-#include <kfilemetadata/extractorplugin.h>
-
-#include <xapian.h>
-
-using namespace Baloo;
 
 int main(int argc, char* argv[])
 {
@@ -69,10 +53,6 @@ int main(int argc, char* argv[])
     KCmdLineArgs::addCmdLineOptions(options);
     const KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
 
-    // Application
-    QApplication app(argc, argv);
-    KComponentData data(aboutData, KComponentData::RegisterAsMainComponent);
-
     int argCount = args->count();
     if (argCount == 0) {
         QTextStream err(stderr);
@@ -81,72 +61,16 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    // FIXME: What if the fileMapping does not exist?
-    QString path = KStandardDirs::locateLocal("data", "baloo/file");
+    if (args->isSet("bdata") && argCount > 1) {
+        QTextStream err(stderr);
+        err << "bdata can only accept one url";
 
-    Database bigDb;
-    bigDb.setPath(path);
-    bigDb.init();
-    QSqlDatabase& sqlDb = bigDb.sqlDatabase();
-
-    QVector<Result> results;
-    results.resize(argCount);
-
-    bool bData = args->isSet("bdata");
-
-    KFileMetaData::ExtractorPluginManager m_manager;
-    for (int i=0; i<argCount; i++) {
-        const QString url = args->url(i).toLocalFile();
-        const QString mimetype = KMimeType::findByUrl(args->url(i))->name();
-
-        FileMapping file(url);
-        // FIXME: add to all dbs if not present
-        if (!file.fetch(sqlDb) && !bData)
-            continue;
-
-        Xapian::Document doc;
-        if (!bData)
-            doc = bigDb.xapainDatabase()->get_document(file.id());
-
-        Result& result = results[i];
-        result.setInputUrl(url);
-        result.setInputMimetype(mimetype);
-        result.setId(file.id());
-        result.setDocument(doc);
-
-        QList<KFileMetaData::ExtractorPlugin*> exList = m_manager.fetchExtractors(mimetype);
-
-        Q_FOREACH (KFileMetaData::ExtractorPlugin* plugin, exList) {
-            plugin->extract(&result);
-        }
-    }
-
-    if (bData) {
-        QByteArray arr;
-        QDataStream s(&arr, QIODevice::WriteOnly);
-
-        Q_FOREACH (const Result& res, results)
-            s << res.map();
-
-        std::cout << arr.toBase64().constData();
-        return 0;
-    }
-
-    try {
-        Xapian::WritableDatabase db = Xapian::WritableDatabase(path.toStdString(), Xapian::DB_CREATE_OR_OPEN);
-        for (int i = 0; i<results.size(); i++) {
-            Result& res = results[i];
-            res.save(db);
-
-            updateIndexingLevel(db, res.id(), 2);
-        }
-        db.commit();
-    }
-    catch (const Xapian::DatabaseLockError& err) {
-        // FIXME: Try again after 10 msecs!
-        kError() << err.get_error_string();
         return 1;
     }
 
-    return 0;
+    QCoreApplication app(argc, argv);
+    KComponentData data(aboutData, KComponentData::RegisterAsMainComponent);
+
+    Baloo::App appObject;
+    return app.exec();
 }
