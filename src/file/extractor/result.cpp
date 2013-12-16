@@ -101,3 +101,9 @@ QVariantMap Result::map() const
     return m_map;
 }
 
+bool Result::shouldSaveImmediately() const
+{
+    // Documents with these many terms occupy about 50 mb
+    int termCount = m_doc.termlist_count();
+    return termCount > 100000;
+}

@@ -99,6 +99,11 @@ void App::processNextUrl()
     }
     m_results << result;
 
+    if (result.shouldSaveImmediately()) {
+        saveChanges();
+        return;
+    }
+
     if (m_urls.isEmpty()) {
         if (m_bData) {
             QByteArray arr;
