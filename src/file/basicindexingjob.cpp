@@ -31,10 +31,8 @@
 
 using namespace Baloo;
 
-BasicIndexingJob::BasicIndexingJob(Database* m_db, const FileMapping& file,
-                                   const QString& mimetype, QObject* parent)
-    : KJob(parent)
-    , m_db(m_db)
+BasicIndexingJob::BasicIndexingJob(Database* m_db, const FileMapping& file, const QString& mimetype)
+    : m_db(m_db)
     , m_file(file)
     , m_mimetype(mimetype)
 {
@@ -44,19 +42,12 @@ BasicIndexingJob::~BasicIndexingJob()
 {
 }
 
-void BasicIndexingJob::start()
-{
-    QTimer::singleShot(0, this, SLOT(doStart()));
-}
-
-void BasicIndexingJob::doStart()
+bool BasicIndexingJob::index()
 {
     if (m_file.id() == 0) {
         if (!m_file.create(m_db->sqlDatabase())) {
-            setError(1);
-            setErrorText("Cannot create fileMapping for" + QString::number(m_file.id()));
-            emitResult();
-            return;
+            kError() << "Cannot create fileMapping for" << m_file.url();
+            return false;
         }
     }
 
@@ -103,8 +94,9 @@ void BasicIndexingJob::doStart()
         doc.add_boolean_term(a.constData());
     }
 
-    Q_EMIT newDocument(m_file.id(), doc);
-    emitResult();
+    m_id = m_file.id();
+    m_doc = doc;
+    return true;
 }
 
 QList<QByteArray> BasicIndexingJob::typesForMimeType(const QString& mimeType) const

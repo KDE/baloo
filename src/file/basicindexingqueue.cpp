@@ -30,6 +30,7 @@
 #include <KMimeType>
 
 #include <QtCore/QDateTime>
+#include <QTimer>
 
 using namespace Baloo;
 
@@ -203,20 +204,16 @@ void BasicIndexingQueue::index(const FileMapping& file)
     kDebug() << file.id() << file.url();
     Q_EMIT beginIndexingFile(file);
 
-    BasicIndexingJob* job = new Baloo::BasicIndexingJob(m_db, file, m_currentMimeType);
-    connect(job, SIGNAL(finished(KJob*)), this, SLOT(slotIndexingFinished(KJob*)));
-    connect(job, SIGNAL(newDocument(unsigned,Xapian::Document)),
-            this, SIGNAL(newDocument(unsigned,Xapian::Document)));
-
-    job->start();
-}
-
-void BasicIndexingQueue::slotIndexingFinished(KJob* job)
-{
-    if (job->error()) {
-        kDebug() << job->errorString();
+    BasicIndexingJob job(m_db, file, m_currentMimeType);
+    if (job.index()) {
+        Q_EMIT newDocument(job.id(), job.document());
     }
 
+    QTimer::singleShot(0, this, SLOT(slotIndexingFinished()));
+}
+
+void BasicIndexingQueue::slotIndexingFinished()
+{
     FileMapping file = m_currentFile;
     m_currentFile.clear();
     m_currentMimeType.clear();

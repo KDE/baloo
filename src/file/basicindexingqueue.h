@@ -91,7 +91,7 @@ protected:
     virtual void processNextIteration();
 
 private Q_SLOTS:
-    void slotIndexingFinished(KJob* job);
+    void slotIndexingFinished();
 
 private:
     /**

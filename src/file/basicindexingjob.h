@@ -23,7 +23,6 @@
 #ifndef BASICINDEXINGJOB_H
 #define BASICINDEXINGJOB_H
 
-#include <KJob>
 #include "filemapping.h"
 #include <xapian.h>
 
@@ -31,21 +30,16 @@ class Database;
 
 namespace Baloo {
 
-class BasicIndexingJob : public KJob
+class BasicIndexingJob
 {
-    Q_OBJECT
 public:
-    BasicIndexingJob(Database* m_db, const FileMapping& file,
-                     const QString& mimetype, QObject* parent = 0);
+    BasicIndexingJob(Database* m_db, const FileMapping& file, const QString& mimetype);
     ~BasicIndexingJob();
 
-    virtual void start();
+    bool index();
 
-Q_SIGNALS:
-    void newDocument(unsigned id, Xapian::Document doc);
-
-private Q_SLOTS:
-    void doStart();
+    Xapian::Document document() { return m_doc; }
+    uint id() { return m_id; }
 
 private:
     QList<QByteArray> typesForMimeType(const QString& mimeType) const;
@@ -53,6 +47,9 @@ private:
     Database* m_db;
     FileMapping m_file;
     QString m_mimetype;
+
+    uint m_id;
+    Xapian::Document m_doc;
 };
 
 }
