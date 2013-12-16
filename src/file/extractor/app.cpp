@@ -34,7 +34,9 @@
 
 using namespace Baloo;
 
-App::App(QObject* parent): QObject(parent)
+App::App(QObject* parent)
+    : QObject(parent)
+    , m_termCount(0)
 {
     m_path = KStandardDirs::locateLocal("data", "baloo/file");
 
@@ -98,8 +100,10 @@ void App::processNextUrl()
         plugin->extract(&result);
     }
     m_results << result;
+    m_termCount += result.document().termlist_count();
 
-    if (result.shouldSaveImmediately()) {
+    // Documents with these many terms occupy about 10 mb
+    if (m_termCount >= 10000) {
         saveChanges();
         return;
     }
@@ -138,6 +142,7 @@ void App::saveChanges()
         }
         db.commit();
         m_results.clear();
+        m_termCount = 0;
 
         Q_EMIT saved();
     }

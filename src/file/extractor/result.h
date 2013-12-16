@@ -43,12 +43,9 @@ public:
     uint id() const;
     QVariantMap map() const;
 
-    /**
-     * Returns true if the Result consumes a large
-     * amount of memory and should be saved as soon
-     * as possible
-     */
-    bool shouldSaveImmediately() const;
+    Xapian::Document& document() {
+        return m_doc;
+    }
 
 private:
     uint m_docId;

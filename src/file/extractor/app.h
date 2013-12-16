@@ -60,6 +60,8 @@ private:
     Database m_db;
 
     KFileMetaData::ExtractorPluginManager m_manager;
+
+    int m_termCount;
 };
 
 }
