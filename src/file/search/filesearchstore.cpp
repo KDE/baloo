@@ -94,7 +94,12 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
         Xapian::QueryParser parser;
         parser.set_database(*xapianDb());
 
-        std::string p = property.toUpper().toStdString();
+        std::string p;
+        if (property.toLower() == "filename")
+            p = 'F';
+        else
+            p = property.toUpper().toStdString();
+
         std::string str = value.toString().toStdString();
         int flags = Xapian::QueryParser::FLAG_DEFAULT | Xapian::QueryParser::FLAG_PARTIAL;
         return parser.parse_query(str, flags, p);
