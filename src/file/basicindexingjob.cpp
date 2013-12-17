@@ -61,8 +61,7 @@ bool BasicIndexingJob::index()
     Xapian::TermGenerator termGen;
     termGen.set_document(doc);
     termGen.index_text_without_positions(fileName, 1000);
-    doc.add_term(fileName, 10000);
-    doc.add_boolean_term('F' + fileName);
+    termGen.index_text_without_positions(fileName, 1000, "F");
 
     // Modified Date
     QDateTime mod = fileInfo.lastModified();
