@@ -68,6 +68,11 @@ protected:
     virtual Xapian::Query finalizeQuery(const Xapian::Query& query);
 
     /**
+     * Create a query for any custom options.
+     */
+    virtual Xapian::Query applyCustomOptions(const Xapian::Query& q, const QVariantHash& options);
+
+    /**
      * Returns the url for the document with id \p docid.
      */
     virtual QUrl constructUrl(const Xapian::docid& docid) = 0;

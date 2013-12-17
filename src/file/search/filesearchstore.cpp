@@ -25,6 +25,7 @@
 #include "term.h"
 #include "query.h"
 #include "filemapping.h"
+#include "pathfilterpostingsource.h"
 
 #include <xapian.h>
 #include <QVector>
@@ -132,5 +133,17 @@ QString FileSearchStore::text(int queryId)
     return KUrl(url(queryId)).fileName();
 }
 
+Xapian::Query FileSearchStore::applyCustomOptions(const Xapian::Query& q, const QVariantHash& options)
+{
+    QHash<QString, QVariant>::const_iterator it = options.constFind("includeFolder");
+    if (it == options.constEnd()) {
+        return q;
+    }
+
+    QString includeDir = it.value().toString();
+
+    PathFilterPostingSource ps(m_sqlDb, includeDir);
+    return andQuery(q, Xapian::Query(&ps));
+}
 
 BALOO_EXPORT_SEARCHSTORE(Baloo::FileSearchStore, "baloo_filesearchstore")

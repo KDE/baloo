@@ -127,4 +127,51 @@ void FileSearchStoreTest::testSimpleSearchString()
     m_store->close(qid);
 }
 
+void FileSearchStoreTest::testIncludeDir()
+{
+    QString url1("/home/t/a");
+    uint id1 = insertUrl(url1);
+    insertText(id1, "This is sample text");
+
+    QString url2("/home/t/b");
+    uint id2 = insertUrl(url2);
+    insertText(id2, "sample sample more sample text");
+
+    QString url3("/home/garden/b");
+    uint id3 = insertUrl(url3);
+    insertText(id3, "The grass is green in the garden.");
+
+    QString url4("/home/tt/b");
+    uint id4 = insertUrl(url4);
+    insertText(id4, "Let's see if this works.");
+
+    QString url5("/home/t/c");
+    uint id5 = insertUrl(url5);
+    insertText(id5, "sample sample more sample text");
+
+    Query q;
+    q.addType("File");
+    q.addCustomOption("includeFolder", QVariant("/home/t"));
+
+    int qid = m_store->exec(q);
+    QCOMPARE(qid, 1);
+    QVERIFY(m_store->next(qid));
+    QCOMPARE(m_store->id(qid), serialize("file", id1));
+    QCOMPARE(m_store->url(qid), QUrl::fromLocalFile(url1));
+
+    QVERIFY(m_store->next(qid));
+    QCOMPARE(m_store->id(qid), serialize("file", id2));
+    QCOMPARE(m_store->url(qid), QUrl::fromLocalFile(url2));
+
+    QVERIFY(m_store->next(qid));
+    QCOMPARE(m_store->id(qid), serialize("file", id5));
+    QCOMPARE(m_store->url(qid), QUrl::fromLocalFile(url5));
+
+    QVERIFY(!m_store->next(qid));
+    QVERIFY(m_store->id(qid).isEmpty());
+    QVERIFY(m_store->url(qid).isEmpty());
+
+    m_store->close(qid);
+}
+
 QTEST_KDEMAIN_CORE(Baloo::FileSearchStoreTest)

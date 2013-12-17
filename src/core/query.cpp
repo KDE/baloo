@@ -52,6 +52,8 @@ public:
     int m_yearFilter;
     int m_monthFilter;
     int m_dayFilter;
+
+    QVariantHash m_customOptions;
 };
 
 Query::Query()
@@ -148,6 +150,26 @@ int Query::dayFilter() const
     return d->m_dayFilter;
 }
 
+void Query::addCustomOption(const QString& option, const QVariant& value)
+{
+    d->m_customOptions.insert(option, value);
+}
+
+QVariant Query::customOption(const QString& option) const
+{
+    return d->m_customOptions.value(option);
+}
+
+QVariantHash Query::customOptions() const
+{
+    return d->m_customOptions;
+}
+
+void Query::removeCustomOption(const QString& option)
+{
+    d->m_customOptions.remove(option);
+}
+
 ResultIterator Query::exec()
 {
     // vHanda: Maybe this should default to allow searches on all search stores?
@@ -192,6 +214,9 @@ QByteArray Query::toJSON()
     if (d->m_dayFilter >= 0)
         map["dayFilter"] = d->m_dayFilter;
 
+    if (d->m_customOptions.size())
+        map["customOptions"] = d->m_customOptions;
+
     QJson::Serializer serializer;
     return serializer.serialize(map);
 }
@@ -214,6 +239,9 @@ Query Query::fromJSON(const QByteArray& arr)
         query.d->m_monthFilter = map["monthFilter"].toInt();
     if (map.contains("dayFilter"))
         query.d->m_dayFilter = map["dayFilter"].toInt();
+
+    if (map.contains("customOptions"))
+        query.d->m_customOptions = map["customOptions"].toHash();
 
     return query;
 }

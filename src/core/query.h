@@ -25,6 +25,7 @@
 
 #include "relation.h"
 #include "resultiterator.h"
+#include <QVariant>
 
 namespace Baloo {
 
@@ -98,10 +99,10 @@ public:
      * Each backend has their own custom options which should be
      * looked up in their corresponding documentation
      */
-    // TODO:
-    //void addCustomOption(const QString& option, const QString& value);
-    //void removeCustomOption(const QString& option);
-    //QString customOption(const QString& option);
+    void addCustomOption(const QString& option, const QVariant& value);
+    void removeCustomOption(const QString& option);
+    QVariant customOption(const QString& option) const;
+    QVariantHash customOptions() const;
 
     ResultIterator exec();
 

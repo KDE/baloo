@@ -44,6 +44,7 @@ private Q_SLOTS:
     void cleanupTestCase();
 
     void testSimpleSearchString();
+    void testIncludeDir();
 
 private:
     KTempDir* m_tempDir;

@@ -1,4 +1,4 @@
-kde4_add_plugin(baloo_filesearchstore filesearchstore.cpp)
+kde4_add_plugin(baloo_filesearchstore pathfilterpostingsource.cpp filesearchstore.cpp)
 
 target_link_libraries(baloo_filesearchstore
     ${QT_QTCORE_LIBRARY}

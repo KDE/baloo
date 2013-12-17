@@ -4,6 +4,7 @@ include_directories(
 
 kde4_add_unit_test(filesearchstoretest filesearchstoretest.cpp
                    ../filesearchstore.cpp
+                   ../pathfilterpostingsource.cpp
                    ../../lib/filemapping.cpp
                    ../../database.cpp
 )

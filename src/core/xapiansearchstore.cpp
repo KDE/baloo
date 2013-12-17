@@ -122,6 +122,7 @@ int XapianSearchStore::exec(const Query& query)
     }
     xapQ = andQuery(xapQ, convertTypes(query.types()));
     xapQ = andQuery(xapQ, constructFilterQuery(query.yearFilter(), query.monthFilter(), query.dayFilter()));
+    xapQ = applyCustomOptions(xapQ, query.customOptions());
     xapQ = finalizeQuery(xapQ);
 
     Xapian::Enquire enquire(*m_db);
@@ -230,4 +231,10 @@ Xapian::Query XapianSearchStore::constructFilterQuery(int year, int month, int d
 Xapian::Query XapianSearchStore::finalizeQuery(const Xapian::Query& query)
 {
     return query;
+}
+
+Xapian::Query XapianSearchStore::applyCustomOptions(const Xapian::Query& q, const QVariantHash& options)
+{
+    Q_UNUSED(options);
+    return q;
 }

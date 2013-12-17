@@ -20,43 +20,49 @@
  *
  */
 
-#ifndef FILESEARCHSTORE_H
-#define FILESEARCHSTORE_H
+#ifndef PATHFILTERPOSTINGSOURCE_H
+#define PATHFILTERPOSTINGSOURCE_H
 
-#include "xapiansearchstore.h"
+#include <xapian.h>
+#include <QString>
 #include <QSqlDatabase>
-
-#include <QMutex>
 
 namespace Baloo {
 
-class FileSearchStore : public XapianSearchStore
+class PathFilterPostingSource : public Xapian::PostingSource
 {
 public:
-    FileSearchStore(QObject* parent, const QVariantList& args);
-    virtual ~FileSearchStore();
+    PathFilterPostingSource(QSqlDatabase* sqlDb, const QString& includeDir);
+    virtual ~PathFilterPostingSource();
 
-    virtual void setDbPath(const QString& path);
-    virtual QStringList types();
-    virtual QString text(int queryId);
+    virtual void init(const Xapian::Database& db);
 
-protected:
-    virtual Xapian::Query constructQuery(const QString& property,
-                                         const QVariant& value,
-                                         Term::Comparator com);
+    virtual Xapian::docid get_docid() const;
 
-    virtual Xapian::Query constructFilterQuery(int year, int month, int day);
-    virtual Xapian::Query applyCustomOptions(const Xapian::Query& q, const QVariantHash& options);
+    virtual void next(Xapian::weight min_wt);
+    virtual void skip_to(Xapian::docid did, Xapian::weight min_wt);
+    virtual bool at_end() const;
 
-    virtual Xapian::Query convertTypes(const QStringList& types);
-    virtual QUrl constructUrl(const Xapian::docid& docid);
+    virtual Xapian::doccount get_termfreq_min() const;
+    virtual Xapian::doccount get_termfreq_est() const;
+    virtual Xapian::doccount get_termfreq_max() const;
 
-    virtual QByteArray idPrefix() { return QByteArray("file"); }
-
+    virtual PostingSource* clone() const {
+        return new PathFilterPostingSource(m_sqlDb, m_includeDir);
+    }
 private:
+    bool isMatch(uint docid);
+
     QSqlDatabase* m_sqlDb;
-    QMutex m_sqlMutex;
+    QString m_includeDir;
+
+    Xapian::Database m_db;
+    Xapian::PostingIterator m_iter;
+    Xapian::PostingIterator m_end;
+
+    bool m_first;
 };
 
 }
-#endif // FILESEARCHSTORE_H
+
+#endif // PATHFILTERPOSTINGSOURCE_H
