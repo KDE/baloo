@@ -30,6 +30,11 @@ File::File()
 {
 }
 
+File::File(const File& f)
+    : d(new FilePrivate(*f.d))
+{
+}
+
 File::File(const QString& url)
     : d(new FilePrivate)
 {

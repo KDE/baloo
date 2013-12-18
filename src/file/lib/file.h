@@ -35,6 +35,7 @@ class BALOO_FILE_EXPORT File : public Item
 {
 public:
     File();
+    File(const File& f);
     File(const QString& url);
     ~File();
 
