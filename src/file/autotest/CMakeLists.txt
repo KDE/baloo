@@ -17,3 +17,21 @@ target_link_libraries(activefilequeuetest
   ${QT_QTTEST_LIBRARY}
   ${KDE4_KDECORE_LIBS}
 )
+
+#
+# Metadata Mover
+#
+set(metadatamover_SRC
+    metadatamovertest.cpp
+    ../metadatamover.cpp
+    ../database.cpp
+    ../lib/filemapping.cpp)
+
+kde4_add_unit_test(metadatamovertest NOGUI ${metadatamover_SRC})
+
+target_link_libraries(metadatamovertest
+  ${QT_QTTEST_LIBRARY}
+  ${QT_QTSQL_LIBRARY}
+  ${KDE4_KDECORE_LIBS}
+  ${XAPIAN_LIBRARIES}
+)
