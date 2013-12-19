@@ -30,9 +30,12 @@
 
 QSqlDatabase fileMappingDb()
 {
-    QSqlDatabase sqlDb = QSqlDatabase::addDatabase("QSQLITE3");
-    const QString path = KStandardDirs::locateLocal("data", "baloo/file/fileMap.sqlite3");
-    sqlDb.setDatabaseName(path);
+    QSqlDatabase sqlDb = QSqlDatabase::database("fileMappingDb");
+    if (!sqlDb.isValid()) {
+        sqlDb = QSqlDatabase::addDatabase("QSQLITE3", "fileMappingDb");
+        const QString path = KStandardDirs::locateLocal("data", "baloo/file/fileMap.sqlite3");
+        sqlDb.setDatabaseName(path);
+    }
 
     if (!sqlDb.open()) {
         kDebug() << "Failed to open db" << sqlDb.lastError().text();
