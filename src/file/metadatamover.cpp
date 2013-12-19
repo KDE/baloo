@@ -186,14 +186,28 @@ void MetadataMover::updateMetadata(const QString& from, const QString& to)
         return;
 
     QSqlQuery query(m_db->sqlDatabase());
+    /*
     query.prepare("update files set url = ':t' || substr(url, :fs) "
                   "where url like ':f/%'");
 
     query.bindValue(":t", to);
-    query.bindValue(":fs", from.size());
+    query.bindValue(":fs", from.size() + 1);
     query.bindValue(":f", from);
+    */
 
-    if (!query.exec()) {
+    //
+    // Temporary workaround because either sqlite3_prepare16_v2 seems to be buggy
+    // or the qt sqlite driver is not calling it properly
+    //
+    QString queryStr("update files set url = '");
+    queryStr.append(to);
+    queryStr.append("' || substr(url, ");
+    queryStr.append(QString::number(from.size() + 1));
+    queryStr.append(") where url like '");
+    queryStr.append(from);
+    queryStr.append("/%'");
+
+    if (!query.exec(queryStr)) {
         kError() << "Big query failed:" << query.lastError().text();
     }
 }
