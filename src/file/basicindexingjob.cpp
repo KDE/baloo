@@ -31,8 +31,8 @@
 
 using namespace Baloo;
 
-BasicIndexingJob::BasicIndexingJob(Database* m_db, const FileMapping& file, const QString& mimetype)
-    : m_db(m_db)
+BasicIndexingJob::BasicIndexingJob(QSqlDatabase* db, const FileMapping& file, const QString& mimetype)
+    : m_sqlDb(db)
     , m_file(file)
     , m_mimetype(mimetype)
 {
@@ -45,7 +45,7 @@ BasicIndexingJob::~BasicIndexingJob()
 bool BasicIndexingJob::index()
 {
     if (m_file.id() == 0) {
-        if (!m_file.create(m_db->sqlDatabase())) {
+        if (!m_file.create(*m_sqlDb)) {
             kError() << "Cannot create fileMapping for" << m_file.url();
             return false;
         }

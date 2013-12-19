@@ -23,6 +23,7 @@
 #include "app.h"
 #include "../util.h"
 #include "../basicindexingjob.h"
+#include "../database.h"
 
 #include <KCmdLineArgs>
 #include <KMimeType>
@@ -91,7 +92,7 @@ void App::processNextUrl()
             doc = m_db.xapainDatabase()->get_document(file.id());
         }
         catch (const Xapian::DocNotFoundError&) {
-            BasicIndexingJob basicIndexer(&m_db, file, mimetype);
+            BasicIndexingJob basicIndexer(&m_db.sqlDatabase(), file, mimetype);
             basicIndexer.index();
 
             file.setId(basicIndexer.id());

@@ -205,7 +205,7 @@ void BasicIndexingQueue::index(const FileMapping& file)
     kDebug() << file.id() << file.url();
     Q_EMIT beginIndexingFile(file);
 
-    BasicIndexingJob job(m_db, file, m_currentMimeType);
+    BasicIndexingJob job(&m_db->sqlDatabase(), file, m_currentMimeType);
     if (job.index()) {
         Q_EMIT newDocument(job.id(), job.document());
     }

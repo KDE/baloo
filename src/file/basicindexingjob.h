@@ -26,14 +26,14 @@
 #include "filemapping.h"
 #include <xapian.h>
 
-class Database;
+#include <QSqlDatabase>
 
 namespace Baloo {
 
 class BasicIndexingJob
 {
 public:
-    BasicIndexingJob(Database* m_db, const FileMapping& file, const QString& mimetype);
+    BasicIndexingJob(QSqlDatabase* db, const FileMapping& file, const QString& mimetype);
     ~BasicIndexingJob();
 
     bool index();
@@ -44,7 +44,7 @@ public:
 private:
     QList<QByteArray> typesForMimeType(const QString& mimeType) const;
 
-    Database* m_db;
+    QSqlDatabase* m_sqlDb;
     FileMapping m_file;
     QString m_mimetype;
 
