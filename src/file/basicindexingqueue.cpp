@@ -166,6 +166,7 @@ bool BasicIndexingQueue::shouldIndex(FileMapping& file, const QString& mimetype)
     }
 
     try {
+        reopenIfRequired(m_db->xapainDatabase());
         Xapian::Document doc = m_db->xapainDatabase()->get_document(file.id());
         Xapian::TermIterator it = doc.termlist_begin();
         it.skip_to("DT_M");

@@ -30,6 +30,7 @@ namespace Baloo
 {
 
 void updateIndexingLevel(Xapian::WritableDatabase db, int fileId, int level);
+void reopenIfRequired(Xapian::Database* db);
 
 }
 #endif

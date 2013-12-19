@@ -48,3 +48,13 @@ void Baloo::updateIndexingLevel(Xapian::WritableDatabase db, int fileId, int lev
         return;
     }
 }
+
+void Baloo::reopenIfRequired(Xapian::Database* db)
+{
+    try {
+        db->get_doccount();
+    }
+    catch (const Xapian::DatabaseModifiedError&) {
+        db->reopen();
+    }
+}

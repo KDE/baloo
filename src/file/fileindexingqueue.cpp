@@ -51,6 +51,7 @@ void FileIndexingQueue::fillQueue()
     if (m_fileQueue.size() >= m_maxSize)
         return;
 
+    reopenIfRequired(m_db->xapainDatabase());
     Xapian::Enquire enquire(*m_db->xapainDatabase());
     enquire.set_query(Xapian::Query("Z1"));
 
