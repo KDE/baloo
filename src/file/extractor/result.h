@@ -51,6 +51,7 @@ private:
     uint m_docId;
     Xapian::Document m_doc;
     Xapian::TermGenerator m_termGen;
+    Xapian::TermGenerator m_termGenForText;
 
     QVariantMap m_map;
 };

@@ -62,7 +62,7 @@ void Result::add(const QString& key_, const QVariant& val)
 
 void Result::append(const QString& text)
 {
-    m_termGen.index_text(text.toStdString());
+    m_termGenForText.index_text(text.toStdString());
 }
 
 void Result::addType(const QString& type)
@@ -83,7 +83,14 @@ void Result::save(Xapian::WritableDatabase& db)
 void Result::setDocument(const Xapian::Document& doc)
 {
     m_doc = doc;
+    // All document metadata are indexed from position 1000
     m_termGen.set_document(m_doc);
+    m_termGen.set_termpos(1000);
+
+    // All document plain text starts from 10000. This is done to avoid
+    // clashes with the term positions
+    m_termGenForText.set_document(m_doc);
+    m_termGenForText.set_termpos(10000);
 }
 
 void Result::setId(uint id)

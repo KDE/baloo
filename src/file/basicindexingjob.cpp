@@ -60,8 +60,8 @@ bool BasicIndexingJob::index()
 
     Xapian::TermGenerator termGen;
     termGen.set_document(doc);
-    termGen.index_text_without_positions(fileName, 1000);
-    termGen.index_text_without_positions(fileName, 1000, "F");
+    termGen.index_text(fileName, 1000);
+    termGen.index_text(fileName, 1000, "F");
 
     // Modified Date
     QDateTime mod = fileInfo.lastModified();
