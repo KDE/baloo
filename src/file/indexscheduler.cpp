@@ -81,10 +81,6 @@ IndexScheduler::IndexScheduler(Database* db, QObject* parent)
     connect(m_fileIQ, SIGNAL(startedIndexing()), this, SLOT(slotStartedIndexing()));
     connect(m_fileIQ, SIGNAL(finishedIndexing()), this, SLOT(slotFinishedIndexing()));
 
-    // Connect both the queues together
-    connect(m_basicIQ, SIGNAL(endIndexingFile(Baloo::FileMapping)),
-            m_fileIQ, SLOT(enqueue(Baloo::FileMapping)));
-
     // Status String
     connect(m_basicIQ, SIGNAL(startedIndexing()), this, SLOT(emitStatusStringChanged()));
     connect(m_basicIQ, SIGNAL(finishedIndexing()), this, SLOT(emitStatusStringChanged()));
