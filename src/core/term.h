@@ -81,6 +81,8 @@ public:
     Term(Operation op, const Term& t);
     Term(Operation op, const QList<Term>& t);
 
+    bool isValid() const;
+
     /**
      * Negate this term. Negation only applies for Equal or Contains
      * For other Comparators you must invert it yourself

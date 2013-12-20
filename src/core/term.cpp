@@ -105,6 +105,11 @@ Term::Term(Term::Operation op, const QList<Term>& t)
     d->m_subTerms = t;
 }
 
+bool Term::isValid() const
+{
+    return !d->m_property.isEmpty();
+}
+
 void Term::setNegation(bool isNegated)
 {
     d->m_isNegated = isNegated;

@@ -50,6 +50,7 @@ public:
      * with a '/'. Eg - "File/Audio"
      */
     void addType(const QString& type);
+    void addTypes(const QStringList& typeList);
     void setTypes(const QStringList& types);
 
     QStringList types() const;

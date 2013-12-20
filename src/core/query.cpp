@@ -82,6 +82,13 @@ void Query::addType(const QString& type)
     d->m_types << type.split('/', QString::SkipEmptyParts);
 }
 
+void Query::addTypes(const QStringList& typeList)
+{
+    Q_FOREACH (const QString& type, typeList) {
+        addType(type);
+    }
+}
+
 void Query::setTypes(const QStringList& types)
 {
     d->m_types = types;
