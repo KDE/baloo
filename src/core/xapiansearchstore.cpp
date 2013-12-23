@@ -114,6 +114,7 @@ int XapianSearchStore::exec(const Query& query)
 
         Xapian::QueryParser parser;
         parser.set_database(*m_db);
+        parser.set_default_op(Xapian::Query::OP_AND);
 
         int flags = Xapian::QueryParser::FLAG_DEFAULT | Xapian::QueryParser::FLAG_PARTIAL;
         Xapian::Query q = parser.parse_query(str, flags);
