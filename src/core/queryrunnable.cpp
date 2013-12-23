@@ -53,7 +53,7 @@ void QueryRunnable::stop()
 void QueryRunnable::run()
 {
     ResultIterator it = d->m_query.exec();
-    while (it.next()) {
+    while (!d->m_stop && it.next()) {
         Q_EMIT queryResult(this, it.result());
     }
 
