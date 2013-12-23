@@ -21,13 +21,18 @@
  */
 
 #include "queryrunnable.h"
+#include <QMutex>
+#include <QMutexLocker>
 
 using namespace Baloo;
 
 class QueryRunnable::Private {
 public:
     Query m_query;
+    mutable QMutex m_mutex;
     bool m_stop;
+
+    bool stopRequested() const;
 };
 
 QueryRunnable::QueryRunnable(const Query& query, QObject* parent)
@@ -47,13 +52,20 @@ QueryRunnable::~QueryRunnable()
 
 void QueryRunnable::stop()
 {
+    QMutexLocker lock(&d->m_mutex);
     d->m_stop = true;
+}
+
+bool QueryRunnable::Private::stopRequested() const
+{
+    QMutexLocker lock(&m_mutex);
+    return m_stop;
 }
 
 void QueryRunnable::run()
 {
     ResultIterator it = d->m_query.exec();
-    while (!d->m_stop && it.next()) {
+    while (!d->stopRequested() && it.next()) {
         Q_EMIT queryResult(this, it.result());
     }
 
