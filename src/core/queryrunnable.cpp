@@ -21,18 +21,23 @@
  */
 
 #include "queryrunnable.h"
-#include <QMutex>
-#include <QMutexLocker>
+#include <QAtomicInt>
 
 using namespace Baloo;
 
 class QueryRunnable::Private {
 public:
     Query m_query;
-    mutable QMutex m_mutex;
-    bool m_stop;
+    QAtomicInt m_stop;
 
-    bool stopRequested() const;
+    bool stopRequested() const {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+        return m_stop.load();
+#else
+        return m_stop;
+#endif
+    }
+
 };
 
 QueryRunnable::QueryRunnable(const Query& query, QObject* parent)
@@ -52,14 +57,11 @@ QueryRunnable::~QueryRunnable()
 
 void QueryRunnable::stop()
 {
-    QMutexLocker lock(&d->m_mutex);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+    d->m_stop.store(true);
+#else
     d->m_stop = true;
-}
-
-bool QueryRunnable::Private::stopRequested() const
-{
-    QMutexLocker lock(&m_mutex);
-    return m_stop;
+#endif
 }
 
 void QueryRunnable::run()
