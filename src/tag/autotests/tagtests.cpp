@@ -79,7 +79,7 @@ void TagTests::insertTags(const QStringList& tags)
 void TagTests::insertRelations(const QHash<int, QByteArray>& relations)
 {
     QHash<int, QByteArray>::const_iterator iter = relations.constBegin();
-    for (; iter != relations.constEnd(); iter++) {
+    for (; iter != relations.constEnd(); ++iter) {
         QSqlQuery insertQ(m_con->d->db());
         insertQ.prepare("INSERT INTO tagRelations (tid, rid) VALUES (?, ?)");
         insertQ.addBindValue(iter.key());

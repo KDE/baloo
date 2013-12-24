@@ -73,7 +73,7 @@ QList<SearchStore*> SearchStore::searchStores()
 
     QList<Baloo::SearchStore*> stores;
     KService::List::const_iterator it;
-    for (it = plugins.constBegin(); it != plugins.constEnd(); it++) {
+    for (it = plugins.constBegin(); it != plugins.constEnd(); ++it) {
         KService::Ptr service = *it;
 
         QString error;

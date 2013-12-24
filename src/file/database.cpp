@@ -33,6 +33,9 @@
 Database::Database(QObject* parent)
     : QObject(parent)
     , m_initialized(false)
+    , m_xapianDb(0)
+    , m_sqlDb(0)
+
 {
 }
 
