@@ -36,6 +36,8 @@ class BALOO_CORE_EXPORT Query
 public:
     Query();
     Query(const Term& t);
+    Query(const Query& rhs);
+    ~Query();
 
     void setTerm(const Term& t);
     Term term() const;

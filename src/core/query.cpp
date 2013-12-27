@@ -67,6 +67,16 @@ Query::Query(const Term& t)
     d->m_term = t;
 }
 
+Query::Query(const Query& rhs)
+    : d(new Private(*rhs.d))
+{
+}
+
+Query::~Query()
+{
+    delete d;
+}
+
 void Query::setTerm(const Term& t)
 {
     d->m_term = t;
