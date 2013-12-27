@@ -26,6 +26,7 @@
 
 #include <QVector>
 #include <QStringList>
+#include <QDateTime>
 #include <KDebug>
 
 #include <algorithm>
@@ -153,6 +154,35 @@ namespace {
     }
 }
 
+
+Xapian::Query XapianSearchStore::constructSearchQuery(const QString& str)
+{
+    QVector<Xapian::Query> queries;
+    QStringList list = str.split(" ");
+
+    QMutableListIterator<QString> iter(list);
+    while (iter.hasNext()) {
+        const QString str = iter.next();
+        if (str.size() <= 3) {
+            queries << makeQuery(str, m_db);
+            iter.remove();
+        }
+    }
+
+    if (!list.isEmpty()) {
+        std::string stdStr = list.join(" ").toStdString();
+
+        Xapian::QueryParser parser;
+        parser.set_database(*m_db);
+        parser.set_default_op(Xapian::Query::OP_AND);
+
+        int flags = Xapian::QueryParser::FLAG_DEFAULT | Xapian::QueryParser::FLAG_PARTIAL;
+        queries << parser.parse_query(stdStr, flags);
+    }
+
+    return Xapian::Query(Xapian::Query::OP_AND, queries.begin(), queries.end());
+}
+
 int XapianSearchStore::exec(const Query& query)
 {
     if (!m_db)
@@ -161,35 +191,15 @@ int XapianSearchStore::exec(const Query& query)
     QMutexLocker lock(&m_mutex);
     m_db->reopen();
 
+    QTime queryGenerationTimer;
+    queryGenerationTimer.start();
+
     Xapian::Query xapQ = toXapianQuery(query.term());
     if (query.searchString().size()) {
         QString str = query.searchString();
 
-        QVector<Xapian::Query> queries;
-        QStringList list = str.split(" ");
-
-        QMutableListIterator<QString> iter(list);
-        while (iter.hasNext()) {
-            const QString str = iter.next();
-            if (str.size() <= 3) {
-                queries << makeQuery(str, m_db);
-                iter.remove();
-            }
-        }
-
-        Xapian::Query q(Xapian::Query::OP_AND, queries.begin(), queries.end());
+        Xapian::Query q = constructSearchQuery(str);
         xapQ = andQuery(xapQ, q);
-
-        std::string stdStr = list.join(" ").toStdString();
-
-        Xapian::QueryParser parser;
-        parser.set_database(*m_db);
-        parser.set_default_op(Xapian::Query::OP_AND);
-
-        int flags = Xapian::QueryParser::FLAG_DEFAULT | Xapian::QueryParser::FLAG_PARTIAL;
-        Xapian::Query qq = parser.parse_query(stdStr, flags);
-
-        xapQ = andQuery(xapQ, qq);
     }
     xapQ = andQuery(xapQ, convertTypes(query.types()));
     xapQ = andQuery(xapQ, constructFilterQuery(query.yearFilter(), query.monthFilter(), query.dayFilter()));
@@ -200,10 +210,15 @@ int XapianSearchStore::exec(const Query& query)
     kDebug() << xapQ.get_description().c_str();
     enquire.set_query(xapQ);
 
+    kDebug() << "Query Generation" << queryGenerationTimer.elapsed();
+
     Result& res = m_queryMap[m_nextId++];
+    QTime timer;
+    timer.start();
     res.mset = enquire.get_mset(query.offset(), query.limit());
     res.it = res.mset.begin();
 
+    kDebug() << "Exec" << timer.elapsed() << "msecs";
     return m_nextId-1;
 }
 
