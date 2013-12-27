@@ -28,6 +28,8 @@
 #include <QStringList>
 #include <KDebug>
 
+#include <algorithm>
+
 using namespace Baloo;
 
 XapianSearchStore::XapianSearchStore(QObject* parent)
@@ -100,6 +102,57 @@ Xapian::Query XapianSearchStore::andQuery(const Xapian::Query& a, const Xapian::
         return Xapian::Query(Xapian::Query::OP_AND, a, b);
 }
 
+namespace {
+    struct Term {
+        std::string t;
+        uint count;
+
+        // pop_heap pops the largest element, we want the smallest to be popped
+        bool operator < (const Term& rhs) const {
+            return count > rhs.count;
+        }
+    };
+
+    Xapian::Query makeQuery(const QString& string, Xapian::Database* db)
+    {
+        // Lets just keep the top 10 (+1 for push_heap)
+        QList<Term> topTerms;
+        topTerms.reserve(11);
+
+        const std::string stdString = string.toStdString();
+        Xapian::TermIterator it = db->allterms_begin(stdString);
+        Xapian::TermIterator end = db->allterms_end(stdString);
+        for (; it != end; it++) {
+            Term term;
+            term.t = *it;
+            term.count = db->get_collection_freq(term.t);
+
+            if (topTerms.size() < 10) {
+                topTerms.push_back(term);
+                std::push_heap(topTerms.begin(), topTerms.end());
+            }
+            else {
+                // Remove the term with the min count
+                topTerms.push_back(term);
+                std::push_heap(topTerms.begin(), topTerms.end());
+
+                std::pop_heap(topTerms.begin(), topTerms.end());
+                topTerms.pop_back();
+            }
+        }
+
+        QVector<std::string> termStrings;
+        termStrings.reserve(topTerms.size());
+
+        Q_FOREACH (const Term& term, topTerms) {
+            termStrings << term.t;
+        }
+
+        Xapian::Query finalQ(Xapian::Query::OP_SYNONYM, termStrings.begin(), termStrings.end());
+        return finalQ;
+    }
+}
+
 int XapianSearchStore::exec(const Query& query)
 {
     if (!m_db)
@@ -110,16 +163,33 @@ int XapianSearchStore::exec(const Query& query)
 
     Xapian::Query xapQ = toXapianQuery(query.term());
     if (query.searchString().size()) {
-        std::string str = query.searchString().toStdString();
+        QString str = query.searchString();
+
+        QVector<Xapian::Query> queries;
+        QStringList list = str.split(" ");
+
+        QMutableListIterator<QString> iter(list);
+        while (iter.hasNext()) {
+            const QString str = iter.next();
+            if (str.size() <= 3) {
+                queries << makeQuery(str, m_db);
+                iter.remove();
+            }
+        }
+
+        Xapian::Query q(Xapian::Query::OP_AND, queries.begin(), queries.end());
+        xapQ = andQuery(xapQ, q);
+
+        std::string stdStr = list.join(" ").toStdString();
 
         Xapian::QueryParser parser;
         parser.set_database(*m_db);
         parser.set_default_op(Xapian::Query::OP_AND);
 
         int flags = Xapian::QueryParser::FLAG_DEFAULT | Xapian::QueryParser::FLAG_PARTIAL;
-        Xapian::Query q = parser.parse_query(str, flags);
+        Xapian::Query qq = parser.parse_query(stdStr, flags);
 
-        xapQ = andQuery(xapQ, q);
+        xapQ = andQuery(xapQ, qq);
     }
     xapQ = andQuery(xapQ, convertTypes(query.types()));
     xapQ = andQuery(xapQ, constructFilterQuery(query.yearFilter(), query.monthFilter(), query.dayFilter()));
