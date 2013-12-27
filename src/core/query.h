@@ -82,6 +82,9 @@ public:
     void setLimit(uint limit);
     uint limit() const;
 
+    void setOffset(uint offset);
+    uint offset() const;
+
     /**
      * Filter the results in the specified date range.
      *

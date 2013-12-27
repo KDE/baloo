@@ -201,7 +201,7 @@ int XapianSearchStore::exec(const Query& query)
     enquire.set_query(xapQ);
 
     Result& res = m_queryMap[m_nextId++];
-    res.mset = enquire.get_mset(0, query.limit());
+    res.mset = enquire.get_mset(query.offset(), query.limit());
     res.it = res.mset.begin();
 
     return m_nextId-1;
