@@ -158,7 +158,7 @@ namespace {
 Xapian::Query XapianSearchStore::constructSearchQuery(const QString& str)
 {
     QVector<Xapian::Query> queries;
-    QStringList list = str.split(" ");
+    QStringList list = str.split(" ", QString::SkipEmptyParts);
 
     QMutableListIterator<QString> iter(list);
     while (iter.hasNext()) {
