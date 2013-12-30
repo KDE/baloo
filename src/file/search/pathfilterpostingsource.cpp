@@ -23,6 +23,8 @@
 #include "pathfilterpostingsource.h"
 #include "filemapping.h"
 #include <KDebug>
+#include <QSqlQuery>
+#include <QSqlError>
 
 using namespace Baloo;
 
@@ -81,15 +83,41 @@ void PathFilterPostingSource::next(Xapian::weight)
     } while (!isMatch(*m_iter));
 }
 
-void PathFilterPostingSource::skip_to(Xapian::docid did, Xapian::weight min_wt)
+void PathFilterPostingSource::skip_to(Xapian::docid did, Xapian::weight)
 {
     m_iter.skip_to(did);
 
     if (m_iter == m_end)
         return;
 
-    if (!isMatch(*m_iter))
-        next(min_wt);
+    if (isMatch(*m_iter))
+        return;
+
+    QSqlQuery query(*m_sqlDb);
+    /*
+     * sqlite prepare is buggy
+    query.prepare("select id from files where id > :id and url like ':f%' limit 1");
+    query.bindValue(":id", did);
+    query.bindValue(":f", m_includeDir);
+    */
+
+    QString str;
+    str += QLatin1String("select id from files where id >= ") + QString::number(did);
+    str += QLatin1String(" and url like '") + m_includeDir + QLatin1String("%' limit 1");
+
+    if (!query.exec(str)) {
+        m_iter = m_end;
+        kDebug() << query.lastError().text();
+        return;
+    }
+
+    if (!query.next()) {
+        m_iter = m_end;
+        return;
+    }
+
+    int id = query.value(0).toInt();
+    m_iter.skip_to(id);
 }
 
 
