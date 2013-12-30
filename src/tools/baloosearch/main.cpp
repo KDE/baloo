@@ -120,14 +120,11 @@ int main(int argc, char* argv[])
         if (url.isLocalFile()) {
             title = colorString(url.toLocalFile(), 32);
         }
-        /*
         else {
-            QUrl resUri = result.resource().uri();
-            title = colorString(url.toString(), 32) + "  " +
-                    colorString(fetchProperty(resUri, NMO::sentDate()), 31) + " " +
-                    colorString(fetchProperty(resUri, NAO::prefLabel()), 32);
+            title = colorString(QString::fromUtf8(iter.id()), 31);
+            title += " ";
+            title += colorString(iter.text(), 32);
         }
-        */
 
         out << "  " << title << endl;
         //out << "  " << highlightBold( result.excerpt() ) << endl;
