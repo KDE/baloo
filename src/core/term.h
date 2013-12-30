@@ -25,6 +25,7 @@
 
 #include <QString>
 #include <QVariant>
+#include <QDebug>
 
 #include "core_export.h"
 
@@ -144,6 +145,11 @@ inline Term operator !(const Term& rhs) {
     Term t(rhs);
     t.setNegation(!rhs.isNegated());
     return t;
+}
+
+inline QDebug operator << (QDebug d, const Term& t) {
+    d << t.toVariantMap();
+    return d;
 }
 
 }
