@@ -67,8 +67,16 @@ int main(int argc, char* argv[])
     KCmdLineArgs::init(argc, argv, &aboutData);
 
     KCmdLineOptions options;
+    options.add("l").add("limit <queryLimit>",  ki18n("Number of results to return"));
+    options.add("o").add("offset <offset>",  ki18n("Offset from which start the search"));
+    options.add("t").add("type <typeStr>",  ki18n("Type of data to be searched"));
+    options.add("e").add("email",  ki18n("If set, search through emails"));
     options.add("+query", ki18n("The words to search for"));
     KCmdLineArgs::addCmdLineOptions(options);
+
+    int queryLimit = 10;
+    int offset = 0;
+    QString typeStr = "File";
 
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
     if (args->count() == 0) {
@@ -76,20 +84,32 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    if(args->isSet("type"))
+        typeStr = args->getOption("type");
+    if(args->isSet("limit"))
+        queryLimit = args->getOption("limit").toInt();
+    if(args->isSet("offset"))
+        offset = args->getOption("offset").toInt();
+
+    if(args->isSet("email"))
+        typeStr = "Email";
+
     QCoreApplication app(argc, argv);
     KComponentData comp(aboutData);
 
     QTextStream out(stdout);
 
-    // HACK: Find a better way!
-    QStringList argList = args->allArguments();
-    argList.takeFirst();
-    QString queryStr = argList.join(" ");
+    QString queryStr = args->arg(0);
+    for (int i = 1; i < args->count(); i++) {
+        queryStr += " ";
+        queryStr += args->arg(i);
+    }
 
     Baloo::Query query;
-    query.addType("File");
+    query.addType(typeStr);
     query.setSearchString(queryStr);
-    query.setLimit(10);
+    query.setLimit(queryLimit);
+    query.setOffset(offset);
 
     out << "\n";
     Baloo::ResultIterator iter = query.exec();
