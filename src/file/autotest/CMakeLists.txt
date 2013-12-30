@@ -35,3 +35,16 @@ target_link_libraries(metadatamovertest
   ${KDE4_KDECORE_LIBS}
   ${XAPIAN_LIBRARIES}
 )
+
+#
+# File Monitor
+#
+set(fileMonitor_SRC filemonitortest.cpp)
+
+kde4_add_unit_test(filemonitortest NOGUI ${fileMonitor_SRC})
+
+target_link_libraries(filemonitortest
+  ${QT_QTTEST_LIBRARY}
+  ${KDE4_KDECORE_LIBS}
+  baloofiles
+)

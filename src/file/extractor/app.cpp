@@ -31,6 +31,8 @@
 #include <KDebug>
 
 #include <QTimer>
+#include <QDBusMessage>
+#include <QDBusConnection>
 
 #include <iostream>
 
@@ -144,6 +146,8 @@ void App::saveChanges()
     if (m_results.isEmpty())
         return;
 
+    QList<QString> updatedFiles;
+
     try {
         Xapian::WritableDatabase db(m_path.toStdString(), Xapian::DB_CREATE_OR_OPEN);
         for (int i = 0; i<m_results.size(); i++) {
@@ -151,6 +155,7 @@ void App::saveChanges()
             res.save(db);
 
             updateIndexingLevel(db, res.id(), 2);
+            updatedFiles << res.inputUrl();
         }
         db.commit();
         m_results.clear();
@@ -161,6 +166,18 @@ void App::saveChanges()
     catch (const Xapian::DatabaseLockError& err) {
         kError() << "Cannot open database in write mode:" << err.get_error_string();
         QTimer::singleShot(100, this, SLOT(saveChanges()));
+        return;
     }
+
+    QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/files"),
+                                                      QLatin1String("org.kde"),
+                                                      QLatin1String("changed"));
+
+    QVariantList vl;
+    vl.reserve(1);
+    vl << QVariant(updatedFiles);
+    message.setArguments(vl);
+
+    QDBusConnection::sessionBus().send(message);
 }
 
