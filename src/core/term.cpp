@@ -107,7 +107,14 @@ Term::Term(Term::Operation op, const QList<Term>& t)
 
 bool Term::isValid() const
 {
-    return !d->m_property.isEmpty();
+    if (d->m_property.isEmpty()) {
+        if (d->m_op == Term::None)
+            return false;
+
+        return d->m_property.isEmpty() && d->m_value.isNull();
+    }
+
+    return true;
 }
 
 void Term::setNegation(bool isNegated)

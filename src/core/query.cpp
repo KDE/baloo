@@ -35,10 +35,12 @@
 
 using namespace Baloo;
 
+const int defaultLimit = 100000;
+
 class Baloo::Query::Private {
 public:
     Private() {
-        m_limit = 100000;
+        m_limit = defaultLimit;
         m_offset = 0;
         m_yearFilter = -1;
         m_monthFilter = -1;
@@ -231,11 +233,21 @@ ResultIterator Query::exec()
 QByteArray Query::toJSON()
 {
     QVariantMap map;
-    map["type"] = d->m_types;
-    map["limit"] = d->m_limit;
-    map["offset"] = d->m_offset;
-    map["searchString"] = d->m_searchString;
-    map["term"] = QVariant(d->m_term.toVariantMap());
+
+    if (!d->m_types.isEmpty())
+        map["type"] = d->m_types;
+
+    if (d->m_limit != defaultLimit)
+        map["limit"] = d->m_limit;
+
+    if (d->m_offset)
+        map["offset"] = d->m_offset;
+
+    if (!d->m_searchString.isEmpty())
+        map["searchString"] = d->m_searchString;
+
+    if (d->m_term.isValid())
+        map["term"] = QVariant(d->m_term.toVariantMap());
 
     if (d->m_yearFilter >= 0)
         map["yearFilter"] = d->m_yearFilter;
@@ -255,11 +267,16 @@ QByteArray Query::toJSON()
 Query Query::fromJSON(const QByteArray& arr)
 {
     QJson::Parser parser;
-    QVariantMap map = parser.parse(arr).toMap();
+    const QVariantMap map = parser.parse(arr).toMap();
 
     Query query;
     query.d->m_types = map["type"].toStringList();
-    query.d->m_limit = map["limit"].toUInt();
+
+    if (map.contains("limit"))
+        query.d->m_limit = map["limit"].toUInt();
+    else
+        query.d->m_limit = defaultLimit;
+
     query.d->m_offset = map["offset"].toUInt();
     query.d->m_searchString = map["searchString"].toString();
     query.d->m_term = Term::fromVariantMap(map["term"].toMap());
