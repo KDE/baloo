@@ -118,6 +118,8 @@ public:
     QUrl toSearchUrl(const QString& title = QString());
     static Query fromSearchUrl(const QUrl& url);
 
+    bool operator == (const Query& rhs) const;
+
 private:
     class Private;
     Private* d;

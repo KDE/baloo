@@ -1,0 +1,98 @@
+/*
+ * <one line to give the library's name and an idea of what it does.>
+ * Copyright (C) 2013  Vishesh Handa <me@vhanda.in>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ */
+
+#include "queryserializationtest.h"
+#include "query.h"
+#include <term.h>
+#include "term.h"
+
+#include <qtest_kde.h>
+#include <QSignalSpy>
+
+#include <KDebug>
+
+using namespace Baloo;
+
+// Test a simple query with no terms
+void QuerySerializationTest::testBasic()
+{
+    Query query;
+    query.setLimit(5);
+    query.setOffset(1);
+    query.setSearchString("Bookie");
+    query.addType("File/Audio");
+
+    QByteArray json = query.toJSON();
+    Query q = Query::fromJSON(json);
+
+    QCOMPARE(q.limit(), static_cast<uint>(5));
+    QCOMPARE(q.offset(), static_cast<uint>(1));
+    QCOMPARE(q.searchString(), QLatin1String("Bookie"));
+    QCOMPARE(q.types().size(), 2);
+    QVERIFY(q.types().contains("File"));
+    QVERIFY(q.types().contains("Audio"));
+
+    QCOMPARE(q, query);
+}
+
+void QuerySerializationTest::testTerm()
+{
+    Term term("property", 1);
+
+    Query query;
+    query.setTerm(term);
+
+    QByteArray json = query.toJSON();
+    Query q = Query::fromJSON(json);
+
+    Term t = q.term();
+    QCOMPARE(t.property(), QLatin1String("property"));
+    QCOMPARE(t.value(), QVariant(1));
+    QCOMPARE(q.term(), term);
+
+    QCOMPARE(q, query);
+}
+
+void QuerySerializationTest::testAndTerm()
+{
+    Term term1("prop1", 1);
+    Term term2("prop2", 2);
+
+    Term term(Term::And);
+    term.addSubTerm(term1);
+    term.addSubTerm(term2);
+
+    Query query;
+    query.setTerm(term);
+
+    QByteArray json = query.toJSON();
+    Query q = Query::fromJSON(json);
+
+    Term t = q.term();
+    QCOMPARE(t.subTerms().size(), 2);
+    QCOMPARE(t.subTerms().at(0), term1);
+    QCOMPARE(t.subTerms().at(1), term2);
+
+    QCOMPARE(t, term);
+    QCOMPARE(q, query);
+
+}
+
+QTEST_KDEMAIN_CORE(QuerySerializationTest)

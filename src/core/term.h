@@ -118,6 +118,9 @@ public:
 
     QVariantMap toVariantMap() const;
     static Term fromVariantMap(const QVariantMap& map);
+
+    bool operator == (const Term& rhs) const;
+
 private:
     class Private;
     Private* d;

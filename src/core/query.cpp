@@ -297,3 +297,24 @@ Query Query::fromSearchUrl(const QUrl& url)
     QString jsonString = url.queryItemValue(QLatin1String("json"));
     return Query::fromJSON(jsonString.toUtf8());
 }
+
+bool Query::operator==(const Query& rhs) const
+{
+    if (rhs.d->m_limit != d->m_limit || rhs.d->m_offset != d->m_offset ||
+        rhs.d->m_dayFilter != d->m_dayFilter || rhs.d->m_monthFilter != d->m_monthFilter ||
+        rhs.d->m_yearFilter != d->m_yearFilter || rhs.d->m_customOptions != d->m_customOptions ||
+        rhs.d->m_searchString != d->m_searchString )
+    {
+        return false;
+    }
+
+    if (rhs.d->m_types.size() != d->m_types.size())
+        return false;
+
+    Q_FOREACH (const QString& type, rhs.d->m_types) {
+        if (!d->m_types.contains(type))
+            return false;
+    }
+
+    return d->m_term == rhs.d->m_term;
+}

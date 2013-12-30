@@ -303,3 +303,26 @@ Term Term::fromVariantMap(const QVariantMap& map)
 
     return term;
 }
+
+bool Term::operator==(const Term& rhs) const
+{
+    if (d->m_op != rhs.d->m_op || d->m_comp != rhs.d->m_comp ||
+        d->m_isNegated != rhs.d->m_isNegated || d->m_property != rhs.d->m_property ||
+        d->m_value != rhs.d->m_value)
+    {
+        return false;
+    }
+
+    if (d->m_subTerms.size() != rhs.d->m_subTerms.size())
+        return false;
+
+    if (d->m_subTerms.isEmpty())
+        return true;
+
+    Q_FOREACH (const Term& t, d->m_subTerms) {
+        if (!rhs.d->m_subTerms.contains(t))
+            return false;
+    }
+
+    return true;
+}
