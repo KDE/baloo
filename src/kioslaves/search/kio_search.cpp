@@ -1,5 +1,6 @@
 /*
    Copyright (C) 2008-2010 by Sebastian Trueg <trueg at kde.org>
+   Copyright (C) 2012-2013 by Vishesh Handa <me@vhanda.in>
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -188,7 +189,7 @@ extern "C"
         Baloo::SearchProtocol slave(argv[2], argv[3]);
         slave.dispatchLoop();
 
-        kDebug() << "Nepomuksearch slave Done";
+        kDebug() << "baloosearch slave Done";
 
         return 0;
     }
