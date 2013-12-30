@@ -33,6 +33,8 @@ private Q_SLOTS:
     void testBasic();
     void testTerm();
     void testAndTerm();
+
+    void testCustomOptions();
 };
 }
 

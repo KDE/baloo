@@ -288,8 +288,19 @@ Query Query::fromJSON(const QByteArray& arr)
     if (map.contains("dayFilter"))
         query.d->m_dayFilter = map["dayFilter"].toInt();
 
-    if (map.contains("customOptions"))
-        query.d->m_customOptions = map["customOptions"].toHash();
+    if (map.contains("customOptions")) {
+        QVariant var = map["customOptions"];
+        if (var.type() == QVariant::Hash) {
+            query.d->m_customOptions = map["customOptions"].toHash();
+        }
+        else if (var.type() == QVariant::Map) {
+            QVariantMap map = var.toMap();
+
+            QMap<QString, QVariant>::const_iterator it = map.constBegin();
+            for (; it != map.constEnd(); ++it)
+                query.d->m_customOptions.insert(it.key(), it.value());
+        }
+    }
 
     return query;
 }
