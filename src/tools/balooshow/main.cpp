@@ -32,6 +32,14 @@
 #include "file.h"
 #include "filefetchjob.h"
 
+QString colorString(const QString& input, int color)
+{
+    QString colorStart = QString::fromLatin1("\033[0;%1m").arg(color);
+    QLatin1String colorEnd("\033[0;0m");
+
+    return colorStart + input + colorEnd;
+}
+
 int main(int argc, char* argv[])
 {
     KAboutData aboutData("balooshow",
@@ -64,21 +72,32 @@ int main(int argc, char* argv[])
     //
     // The Resource Uri
     //
-    const QUrl url = args->url(0);
-    if (!url.isLocalFile()) {
-        err << "Not a local file" << args->url(0).url() << endl;
-        return 1;
+    QVector<QUrl> urls;
+    for (int i = 0; i < args->count(); i++) {
+        urls.append(args->url(i));
+        if (!urls.at(i).isLocalFile()) {
+            err << "Not a local file" << args->url(i).url() << endl;
+            return 1;
+        }
     }
 
     QTextStream stream(stdout);
-    Baloo::FileFetchJob* job = new Baloo::FileFetchJob(url.toLocalFile());
-    job->exec();
+    Baloo::FileFetchJob* job;
+    QString text;
 
-    QVariantMap properties = job->file().properties();
-    QMapIterator<QString, QVariant> it(properties);
-    while (it.hasNext()) {
-        it.next();
-        stream << it.key() << ": " << it.value().toString() << endl;
+    Q_FOREACH (const QUrl& url, urls) {
+        job = new Baloo::FileFetchJob(url.toLocalFile());
+        job->exec();
+
+        text = colorString(url.toLocalFile(), 32);
+        stream << text << endl;
+
+        QVariantMap properties = job->file().properties();
+        QMapIterator<QString, QVariant> it(properties);
+        while (it.hasNext()) {
+          it.next();
+          stream << "\t" << it.key() << ": " << it.value().toString() << endl;
+        }
     }
 
     return 0;
