@@ -70,3 +70,4 @@ install(FILES
 install(FILES baloosearchstore.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
 
 add_subdirectory(tests)
+add_subdirectory(autotests)
