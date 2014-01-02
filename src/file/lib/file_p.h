@@ -24,6 +24,7 @@
 #define BALOO_FILE_P_H
 
 #include <QString>
+#include <QStringList>
 #include <QVariantMap>
 
 namespace Baloo {
@@ -32,6 +33,10 @@ class FilePrivate {
 public:
     QString url;
     QVariantMap variantMap;
+
+    int rating;
+    QStringList tags;
+    QString userComment;
 };
 
 }

@@ -34,6 +34,9 @@
 
 #include <KDebug>
 
+#include <sys/types.h>
+#include <attr/xattr.h>
+
 using namespace Baloo;
 
 class FileFetchJob::Private {
@@ -116,6 +119,31 @@ void FileFetchJob::doStart()
     }
     catch (const Xapian::InvalidArgumentError& err) {
         kError() << err.get_msg().c_str();
+    }
+
+    // Fetch xattr
+    QFile file(d->url);
+    file.open(QIODevice::ReadOnly);
+
+    char buffer[1000];
+    int len = 0;
+
+    len = fgetxattr(file.handle(), "user.baloo.rating", &buffer, 1000);
+    if (len) {
+        QString str = QString::fromUtf8(buffer, len);
+        d->m_file.setRating(str.toInt());
+    }
+
+    len = fgetxattr(file.handle(), "user.baloo.tags", &buffer, 1000);
+    if (len) {
+        QString str = QString::fromUtf8(buffer, len);
+        d->m_file.setTags(str.split(',', QString::SkipEmptyParts));
+    }
+
+    len = fgetxattr(file.handle(), "user.xdg.comment", &buffer, 1000);
+    if (len) {
+        QString str = QString::fromUtf8(buffer, len);
+        d->m_file.setUserComment(str);
     }
 
     Q_EMIT itemReceived(d->m_file);

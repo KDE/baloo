@@ -50,6 +50,16 @@ public:
     QVariantMap properties() const;
     QVariant property(const QString& key) const;
 
+    void setRating(int rating);
+    int rating() const;
+
+    void addTag(const QString& tag);
+    void setTags(const QStringList& tags);
+    QStringList tags() const;
+
+    QString userComment() const;
+    void setUserComment(const QString& comment);
+
 private:
     FilePrivate* d;
     friend class FileFetchJob;

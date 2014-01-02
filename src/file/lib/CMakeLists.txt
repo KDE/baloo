@@ -1,6 +1,7 @@
 set(FILE_LIB_SRCS
     file.cpp
     filefetchjob.cpp
+    filemodifyjob.cpp
     filemapping.cpp
     filemonitor.cpp
     db.cpp
@@ -27,6 +28,7 @@ install(TARGETS baloofiles ${INSTALL_TARGETS_DEFAULT_ARGS})
 install(FILES
     file.h
     filefetchjob.h
+    filemodifyjob.h
     filemonitor.h
     file_export.h
 

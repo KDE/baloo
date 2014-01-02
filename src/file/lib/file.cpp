@@ -67,3 +67,38 @@ QVariant File::property(const QString& key) const
 {
     return d->variantMap.value(key);
 }
+
+void File::setRating(int rating)
+{
+    d->rating = rating;
+}
+
+int File::rating() const
+{
+    return d->rating;
+}
+
+void File::addTag(const QString& tag)
+{
+    d->tags << tag;
+}
+
+void File::setTags(const QStringList& tags)
+{
+    d->tags = tags;
+}
+
+QStringList File::tags() const
+{
+    return d->tags;
+}
+
+void File::setUserComment(const QString& comment)
+{
+    d->userComment = comment;
+}
+
+QString File::userComment() const
+{
+    return d->userComment;
+}
