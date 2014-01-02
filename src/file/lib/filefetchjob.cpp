@@ -129,19 +129,19 @@ void FileFetchJob::doStart()
     int len = 0;
 
     len = fgetxattr(file.handle(), "user.baloo.rating", &buffer, 1000);
-    if (len) {
+    if (len > 0) {
         QString str = QString::fromUtf8(buffer, len);
         d->m_file.setRating(str.toInt());
     }
 
     len = fgetxattr(file.handle(), "user.baloo.tags", &buffer, 1000);
-    if (len) {
+    if (len > 0) {
         QString str = QString::fromUtf8(buffer, len);
         d->m_file.setTags(str.split(',', QString::SkipEmptyParts));
     }
 
     len = fgetxattr(file.handle(), "user.xdg.comment", &buffer, 1000);
-    if (len) {
+    if (len > 0) {
         QString str = QString::fromUtf8(buffer, len);
         d->m_file.setUserComment(str);
     }

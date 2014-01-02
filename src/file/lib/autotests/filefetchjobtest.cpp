@@ -66,6 +66,9 @@ void FileFetchJobTest::testXapianData()
     File file = job->file();
 
     QCOMPARE(file.properties(), map);
+    QCOMPARE(file.rating(), 0);
+    QVERIFY(file.tags().isEmpty());
+    QVERIFY(file.userComment().isEmpty());
 }
 
 void FileFetchJobTest::testExtendedAttributes()

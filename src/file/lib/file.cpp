@@ -28,6 +28,7 @@ using namespace Baloo;
 File::File()
     : d(new FilePrivate)
 {
+    d->rating = 0;
 }
 
 File::File(const File& f)
@@ -39,6 +40,7 @@ File::File(const QString& url)
     : d(new FilePrivate)
 {
     d->url = url;
+    d->rating = 0;
 }
 
 File::~File()
