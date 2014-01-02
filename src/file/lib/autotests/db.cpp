@@ -1,14 +1,11 @@
 /*
- * This file is part of the KDE Baloo Project
- * Copyright (C) 2013  Vishesh Handa <me@vhanda.in>
+ * <one line to give the library's name and an idea of what it does.>
+ * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) version 3, or any
- * later version accepted by the membership of KDE e.V. (or its
- * successor approved by the membership of KDE e.V.), which shall
- * act as a proxy defined in Section 6 of version 3 of the license.
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,34 +13,36 @@
  * Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
- * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
 
 #include "db.h"
 
+#include <QString>
+#include <QStringList>
+
+#include <KTempDir>
 #include <KDebug>
-#include <KStandardDirs>
 
 #include <QSqlQuery>
 #include <QSqlError>
 
+static KTempDir dir;
+
 QString fileIndexDbPath()
 {
-    return KStandardDirs::locateLocal("data", "baloo/file/");
+    return dir.name();
 }
 
-QSqlDatabase fileMappingDb() {
-    const QString path = KStandardDirs::locateLocal("data", "baloo/file/fileMap.sqlite3");
-    return fileMappingDb(path);
-}
-
-QSqlDatabase fileMappingDb(const QString& path)
+// FIXME: Avoid duplicating this code!
+QSqlDatabase fileMappingDb()
 {
     QSqlDatabase sqlDb = QSqlDatabase::database("fileMappingDb");
     if (!sqlDb.isValid()) {
         sqlDb = QSqlDatabase::addDatabase("QSQLITE3", "fileMappingDb");
-        sqlDb.setDatabaseName(path);
+        sqlDb.setDatabaseName(dir.name() + "fileMap.sqlite3");
     }
 
     if (!sqlDb.open()) {

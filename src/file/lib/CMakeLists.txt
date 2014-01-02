@@ -34,3 +34,5 @@ install(FILES
 
     DESTINATION ${INCLUDE_INSTALL_DIR}/baloo COMPONENT Devel
 )
+
+add_subdirectory(autotests)

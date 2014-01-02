@@ -24,12 +24,10 @@
 #define DBFUNCTIONS_H
 
 #include <QSqlDatabase>
-#include <KStandardDirs>
 
-inline QString fileIndexDbPath() {
-    return KStandardDirs::locateLocal("data", "baloo/file/");
-}
+QString fileIndexDbPath();
 
+QSqlDatabase fileMappingDb(const QString& path);
 QSqlDatabase fileMappingDb();
 
 #endif // DBFUNCTIONS_H
