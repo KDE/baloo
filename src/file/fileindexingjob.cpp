@@ -34,7 +34,7 @@
 
 using namespace Baloo;
 
-FileIndexingJob::FileIndexingJob(const QList<FileMapping>& files, QObject* parent)
+FileIndexingJob::FileIndexingJob(const QList<uint>& files, QObject* parent)
     : KJob(parent)
     , m_files(files)
 {
@@ -47,23 +47,6 @@ FileIndexingJob::FileIndexingJob(const QList<FileMapping>& files, QObject* paren
 
 void FileIndexingJob::start()
 {
-    //
-    // Remove files which do not exist
-    //
-    QMutableListIterator<FileMapping> it(m_files);
-    while (it.hasNext()) {
-        const FileMapping file = it.next();
-        if (file.url().isEmpty()) {
-            it.remove();
-        }
-
-        else if (!QFile::exists(file.url())) {
-            kDebug() << file.url() << "does not exist";
-            Q_EMIT deleteDocument(file.id());
-            it.remove();
-        }
-    }
-
     if (m_files.isEmpty()) {
         emitResult();
         return;
@@ -75,8 +58,8 @@ void FileIndexingJob::start()
     m_process = new QProcess(this);
 
     QStringList args;
-    Q_FOREACH (const FileMapping& file, m_files)
-        args << file.url();
+    Q_FOREACH (const uint& file, m_files)
+        args << QString::number(file);
     kDebug() << args;
 
     connect(m_process, SIGNAL(finished(int, QProcess::ExitStatus)),

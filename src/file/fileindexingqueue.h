@@ -43,7 +43,6 @@ public:
     virtual void fillQueue();
 
     void clear();
-    void clear(const QString& path);
 
 public Q_SLOTS:
     void enqueue(const Baloo::FileMapping& file);
@@ -59,9 +58,9 @@ private Q_SLOTS:
     void slotConfigChanged();
 
 private:
-    void process(const QList<FileMapping>& file);
+    void process(const QList<uint>& file);
 
-    QQueue<FileMapping> m_fileQueue;
+    QQueue<uint> m_fileQueue;
     Database* m_db;
 
     int m_maxSize;

@@ -38,7 +38,7 @@ class FileIndexingJob : public KJob
     Q_OBJECT
 
 public:
-    FileIndexingJob(const QList<FileMapping>& files, QObject* parent = 0);
+    FileIndexingJob(const QList<uint>& files, QObject* parent = 0);
 
     virtual void start();
 
@@ -51,17 +51,14 @@ public:
         IndexerCrashed
     };
 
-    QList<FileMapping> files() const { return m_files; }
-
-Q_SIGNALS:
-    void deleteDocument(unsigned docid);
+    QList<uint> files() const { return m_files; }
 
 private Q_SLOTS:
     void slotIndexedFile(int exitCode, QProcess::ExitStatus exitStatus);
     void slotProcessTimerTimeout();
 
 private:
-    QList<FileMapping> m_files;
+    QList<uint> m_files;
     QProcess* m_process;
     QTimer* m_processTimer;
 };

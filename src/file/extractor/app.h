@@ -51,7 +51,10 @@ Q_SIGNALS:
     void saved();
 
 private:
+    void deleteDocument(unsigned docid);
+
     QVector<Result> m_results;
+    QVector<uint> m_docsToRemove;
     QStringList m_urls;
     bool m_bData;
 

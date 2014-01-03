@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
     KCmdLineArgs::init(argc, argv, &aboutData);
 
     KCmdLineOptions options;
-    options.add("+[url]", ki18n("The URL of the files to be indexed"));
+    options.add("+[url]", ki18n("The URL/id of the files to be indexed"));
     options.add("debug", ki18n("Print the data being indexed"));
     options.add("bdata", ki18n("Print the QVariantMap in Base64 encoding"));
 
@@ -56,14 +56,14 @@ int main(int argc, char* argv[])
     int argCount = args->count();
     if (argCount == 0) {
         QTextStream err(stderr);
-        err << "Must input url of the file to be indexed";
+        err << "Must input url/id of the file to be indexed";
 
         return 1;
     }
 
     if (args->isSet("bdata") && argCount > 1) {
         QTextStream err(stderr);
-        err << "bdata can only accept one url";
+        err << "bdata can only accept one url/id";
 
         return 1;
     }

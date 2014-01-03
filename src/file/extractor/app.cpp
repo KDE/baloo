@@ -31,6 +31,7 @@
 #include <KDebug>
 
 #include <QTimer>
+#include <QtCore/QFileInfo>
 #include <QDBusMessage>
 #include <QDBusConnection>
 
@@ -52,8 +53,25 @@ App::App(QObject* parent)
 
     m_results.reserve(args->count());
     for (int i=0; i<args->count(); i++) {
-        const QString url = args->url(i).toLocalFile();
-        m_urls << url;
+        FileMapping mapping = FileMapping(args->arg(i).toUInt());
+        if (mapping.fetch(m_db.sqlDatabase())) {
+            // arg is an id
+            if (QFile::exists(mapping.url())) {
+                m_urls << mapping.url();
+            } else {
+                // id was looked up, but file deleted
+                kDebug() << mapping.url() << "does not exist";
+                deleteDocument(mapping.id());
+            }
+        } else {
+            // arg is a url
+            QString url = args->url(i).toLocalFile();
+            if (!QFile::exists(url)) {
+              // arg is a url but could not be found
+              continue;
+            }
+            m_urls << args->url(i).toLocalFile();
+        }
     }
 
     connect(this, SIGNAL(saved()), this, SLOT(processNextUrl()), Qt::QueuedConnection);
@@ -64,7 +82,6 @@ App::App(QObject* parent)
 App::~App()
 {
 }
-
 
 void App::processNextUrl()
 {
@@ -157,8 +174,18 @@ void App::saveChanges()
             updateIndexingLevel(db, res.id(), 2);
             updatedFiles << res.inputUrl();
         }
+        
+        Q_FOREACH (Xapian::docid id, m_docsToRemove) {
+            try {
+                db.delete_document(id);
+            }
+            catch (const Xapian::DocNotFoundError&) {
+            }
+        }
+
         db.commit();
         m_results.clear();
+        m_docsToRemove.clear();
         m_termCount = 0;
 
         Q_EMIT saved();
@@ -179,5 +206,10 @@ void App::saveChanges()
     message.setArguments(vl);
 
     QDBusConnection::sessionBus().send(message);
+}
+
+void App::deleteDocument(unsigned docid)
+{
+    m_docsToRemove << docid;
 }
 

@@ -103,8 +103,6 @@ IndexScheduler::IndexScheduler(Database* db, QObject* parent)
     connect(m_commitQ, SIGNAL(committed()), this, SLOT(slotCommitted()));
     connect(m_basicIQ, SIGNAL(newDocument(uint,Xapian::Document)),
             m_commitQ, SLOT(add(uint,Xapian::Document)));
-    connect(m_fileIQ, SIGNAL(deleteDocument(uint)),
-            m_commitQ, SLOT(remove(uint)));
 
     m_state = State_Normal;
     slotScheduleIndexing();
@@ -247,7 +245,7 @@ void IndexScheduler::slotIncludeFolderListChanged(const QStringList& added, cons
     kDebug() << added << removed;
     Q_FOREACH (const QString& path, removed) {
         m_basicIQ->clear(path);
-        m_fileIQ->clear(path);
+        m_fileIQ->clear();
     }
 
     restartCleaner();
@@ -263,7 +261,7 @@ void IndexScheduler::slotExcludeFolderListChanged(const QStringList& added, cons
     kDebug() << added << removed;
     Q_FOREACH (const QString& path, added) {
         m_basicIQ->clear(path);
-        m_fileIQ->clear(path);
+        m_fileIQ->clear();
     }
 
     restartCleaner();

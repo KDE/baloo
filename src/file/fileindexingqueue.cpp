@@ -58,17 +58,14 @@ void FileIndexingQueue::fillQueue()
     Xapian::MSet mset = enquire.get_mset(0, m_maxSize - m_fileQueue.size());
     Xapian::MSetIterator it = mset.begin();
     for (; it != mset.end(); it++) {
-        FileMapping file(*it);
-        if (file.fetch(m_db->sqlDatabase())) {
-            m_fileQueue << file;
-        }
+        m_fileQueue << *it;
     }
 }
 
 void FileIndexingQueue::enqueue(const FileMapping& file)
 {
-    if (!m_fileQueue.contains(file)) {
-        m_fileQueue.enqueue(file);
+    if (!m_fileQueue.contains(file.id())) {
+        m_fileQueue.enqueue(file.id());
         callForNextIteration();
     }
 }
@@ -80,7 +77,7 @@ bool FileIndexingQueue::isEmpty()
 
 void FileIndexingQueue::processNextIteration()
 {
-    QList<FileMapping> files;
+    QList<uint> files;
     for (int i=0; i<m_batchSize && m_fileQueue.size(); i++) {
         files << m_fileQueue.dequeue();
     }
@@ -88,7 +85,7 @@ void FileIndexingQueue::processNextIteration()
     process(files);
 }
 
-void FileIndexingQueue::process(const QList<FileMapping>& files)
+void FileIndexingQueue::process(const QList<uint>& files)
 {
     FileIndexingJob* job = new FileIndexingJob(files, this);
     connect(job, SIGNAL(deleteDocument(uint)), SIGNAL(deleteDocument(uint)));
@@ -116,15 +113,6 @@ void FileIndexingQueue::slotFinishedIndexingFile(KJob* job)
 void FileIndexingQueue::clear()
 {
     m_fileQueue.clear();
-}
-
-void FileIndexingQueue::clear(const QString& path)
-{
-    QMutableListIterator<FileMapping> it(m_fileQueue);
-    while (it.hasNext()) {
-        if (it.next().url().startsWith(path))
-            it.remove();
-    }
 }
 
 void FileIndexingQueue::slotConfigChanged()
