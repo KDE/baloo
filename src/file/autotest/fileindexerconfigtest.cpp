@@ -33,7 +33,7 @@
 
 #include "qtest_kde.h"
 
-using namespace Nepomuk2::Test;
+using namespace Baloo::Test;
 
 void FileIndexerConfigTest::testShouldFolderBeIndexed()
 {
@@ -68,7 +68,7 @@ void FileIndexerConfigTest::testShouldFolderBeIndexed()
                        false);
 
     // create our test config object
-    QScopedPointer<Nepomuk2::FileIndexerConfig> cfg(new Nepomuk2::FileIndexerConfig());
+    QScopedPointer<Baloo::FileIndexerConfig> cfg(new Baloo::FileIndexerConfig());
 
     // run through all the folders
     QVERIFY(cfg->shouldFolderBeIndexed(dirPrefix + indexedRootDir));
@@ -153,7 +153,7 @@ void FileIndexerConfigTest::testShouldBeIndexed()
                        false);
 
     // create our test config object
-    QScopedPointer<Nepomuk2::FileIndexerConfig> cfg(new Nepomuk2::FileIndexerConfig());
+    QScopedPointer<Baloo::FileIndexerConfig> cfg(new Baloo::FileIndexerConfig());
 
     // run through all the folders
     QVERIFY(cfg->shouldFolderBeIndexed(dirPrefix + indexedRootDir));
@@ -271,7 +271,7 @@ void FileIndexerConfigTest::testExcludeFilterOnFolders()
                        false);
 
     // create our test config object
-    QScopedPointer<Nepomuk2::FileIndexerConfig> cfg(new Nepomuk2::FileIndexerConfig());
+    QScopedPointer<Baloo::FileIndexerConfig> cfg(new Baloo::FileIndexerConfig());
 
     // run through our folders that should be excluded
     QVERIFY(cfg->shouldFolderBeIndexed(dirPrefix + indexedRootDir));

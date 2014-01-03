@@ -48,3 +48,20 @@ target_link_libraries(filemonitortest
   ${KDE4_KDECORE_LIBS}
   baloofiles
 )
+
+#
+# File Indexing Config
+#
+set(indexingConfig_SRC
+    fileindexerconfigtest.cpp
+    ../fileindexerconfig.cpp
+    ../regexpcache.cpp
+    ../fileexcludefilters.cpp
+)
+
+kde4_add_unit_test(fileindexerconfigtest NOGUI ${indexingConfig_SRC})
+
+target_link_libraries(fileindexerconfigtest
+  ${QT_QTTEST_LIBRARY}
+  ${KDE4_KDECORE_LIBS}
+)

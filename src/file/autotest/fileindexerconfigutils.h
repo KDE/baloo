@@ -23,11 +23,12 @@
 #define FILEINDEXERCONFIGUTILS_H
 
 #include <KConfig>
+#include <KConfigGroup>
 #include <KTempDir>
 
 #include <QtCore/QDir>
 
-namespace Nepomuk2
+namespace Baloo
 {
 namespace Test
 {
@@ -36,7 +37,7 @@ void writeIndexerConfig(const QStringList& includeFolders,
                         const QStringList& excludeFilters,
                         bool indexHidden)
 {
-    KConfig fileIndexerConfig("nepomukstrigirc");
+    KConfig fileIndexerConfig("baloofilerc");
     fileIndexerConfig.group("General").writePathEntry("folders", includeFolders);
     fileIndexerConfig.group("General").writePathEntry("exclude folders", excludeFolders);
     fileIndexerConfig.group("General").writeEntry("exclude filters", excludeFilters);
