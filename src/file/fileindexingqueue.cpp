@@ -88,7 +88,6 @@ void FileIndexingQueue::processNextIteration()
 void FileIndexingQueue::process(const QList<uint>& files)
 {
     FileIndexingJob* job = new FileIndexingJob(files, this);
-    connect(job, SIGNAL(deleteDocument(uint)), SIGNAL(deleteDocument(uint)));
     connect(job, SIGNAL(finished(KJob*)), SLOT(slotFinishedIndexingFile(KJob*)));
 
     job->start();
