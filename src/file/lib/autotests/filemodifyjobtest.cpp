@@ -38,8 +38,15 @@ void FileModifyJobTest::testSingleFile()
 {
     KTemporaryFile tmpFile;
     tmpFile.open();
+    tmpFile.setAutoRemove(false);
+
+    QTextStream stream(&tmpFile);
+    stream << "ABC";
 
     const QString fileUrl = tmpFile.fileName();
+    tmpFile.close();
+
+    int fileSize = QFileInfo(fileUrl).size();
 
     File file(fileUrl);
     file.setRating(5);
@@ -48,8 +55,10 @@ void FileModifyJobTest::testSingleFile()
     FileModifyJob* job = new FileModifyJob(file);
     QVERIFY(job->exec());
 
-    char buffer[1000];
+    int fileSizeNew = QFileInfo(fileUrl).size();
+    QCOMPARE(fileSize, fileSizeNew);
 
+    char buffer[1000];
     const QByteArray arr = QFile::encodeName(fileUrl);
 
     int len = getxattr(arr.constData(), "user.baloo.rating", &buffer, 1000);
@@ -86,6 +95,8 @@ void FileModifyJobTest::testSingleFile()
 
     iter++;
     QCOMPARE(*iter, std::string("R5"));
+
+    QFile::remove(fileUrl);
 }
 
 void FileModifyJobTest::testMultiFileRating()

@@ -107,7 +107,7 @@ void FileModifyJob::doSingleFile()
     }
 
     QFile file(fileMap.url());
-    if (!file.open(QIODevice::WriteOnly)) {
+    if (!file.open(QIODevice::ReadOnly)) {
         setErrorText(file.errorString());
         emitResult();
         return;
@@ -175,7 +175,7 @@ void FileModifyJob::doMultipleFiles()
         }
 
         QFile file(fileMap.url());
-        if (!file.open(QIODevice::WriteOnly)) {
+        if (!file.open(QIODevice::ReadOnly)) {
             setErrorText(file.errorString());
             emitResult();
             return;
