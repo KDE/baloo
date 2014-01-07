@@ -39,6 +39,8 @@ public:
     int rating;
     QString comment;
     QStringList tags;
+
+    Private() : rating(0) {}
 };
 
 FileModifyJob::FileModifyJob(QObject* parent)
