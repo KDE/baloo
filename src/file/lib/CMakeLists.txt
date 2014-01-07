@@ -4,6 +4,7 @@ set(FILE_LIB_SRCS
     filemodifyjob.cpp
     filemapping.cpp
     filemonitor.cpp
+    taglistjob.cpp
     db.cpp
 )
 
@@ -30,6 +31,7 @@ install(FILES
     filefetchjob.h
     filemodifyjob.h
     filemonitor.h
+    taglistjob.h
     file_export.h
 
     DESTINATION ${INCLUDE_INSTALL_DIR}/baloo COMPONENT Devel
