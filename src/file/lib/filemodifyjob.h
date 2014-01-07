@@ -23,10 +23,11 @@
 
 #include "itemsavejob.h"
 #include "file.h"
+#include "file_export.h"
 
 namespace Baloo {
 
-class FileModifyJob : public ItemSaveJob
+class BALOO_FILE_EXPORT FileModifyJob : public ItemSaveJob
 {
     Q_OBJECT
 public:
