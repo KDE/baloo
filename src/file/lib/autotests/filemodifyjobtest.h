@@ -31,6 +31,7 @@ class FileModifyJobTest : public QObject
 
 private Q_SLOTS:
     void testSingleFile();
+    void testMultiFileRating();
 
 };
 

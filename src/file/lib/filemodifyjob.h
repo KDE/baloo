@@ -35,10 +35,17 @@ public:
 
     virtual void start();
 
+    static FileModifyJob* modifyRating(const QStringList& files, int rating);
+    static FileModifyJob* modifyUserComment(const QStringList& files, const QString& comment);
+    static FileModifyJob* modifyTags(const QStringList& files, const QStringList& tags);
+
 private Q_SLOTS:
     void doStart();
 
 private:
+    void doSingleFile();
+    void doMultipleFiles();
+
     class Private;
     Private* d;
 };

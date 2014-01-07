@@ -86,7 +86,41 @@ void FileModifyJobTest::testSingleFile()
 
     iter++;
     QCOMPARE(*iter, std::string("R5"));
-
 }
+
+void FileModifyJobTest::testMultiFileRating()
+{
+    KTemporaryFile tmpFile1;
+    tmpFile1.open();
+
+    KTemporaryFile tmpFile2;
+    tmpFile2.open();
+
+    const QString fileUrl1 = tmpFile1.fileName();
+    const QString fileUrl2 = tmpFile2.fileName();
+
+    QStringList files;
+    files << fileUrl1 << fileUrl2;
+
+    FileModifyJob* job = FileModifyJob::modifyRating(files, 5);
+    QVERIFY(job->exec());
+
+    char buffer[1000];
+
+    const QByteArray arr1 = QFile::encodeName(fileUrl1);
+    int len = getxattr(arr1.constData(), "user.baloo.rating", &buffer, 1000);
+    QVERIFY(len > 0);
+
+    int r = QString::fromUtf8(buffer, len).toInt();
+    QCOMPARE(r, 5);
+
+    const QByteArray arr2 = QFile::encodeName(fileUrl1);
+    len = getxattr(arr2.constData(), "user.baloo.rating", &buffer, 1000);
+    QVERIFY(len > 0);
+
+    r = QString::fromUtf8(buffer, len).toInt();
+    QCOMPARE(r, 5);
+}
+
 
 QTEST_KDEMAIN_CORE(FileModifyJobTest)
