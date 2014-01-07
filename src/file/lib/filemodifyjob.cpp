@@ -110,14 +110,20 @@ void FileModifyJob::doStart()
     QByteArray com = d->file.userComment().toUtf8();
     fsetxattr(file.handle(), "user.xdg.comment", com.constData(), com.size(), 0);
 
-    // Save in Xapian?
+    // Save in Xapian
     const std::string path = fileIndexDbPath().toStdString();
     Xapian::WritableDatabase db(path, Xapian::DB_CREATE_OR_OPEN);
-    Xapian::Document doc = db.get_document(fileMap.id());
+    Xapian::Document doc;
 
-    removeTerms(doc, "R");
-    removeTerms(doc, "TAG");
-    removeTerms(doc, "C");
+    try {
+        doc = db.get_document(fileMap.id());
+
+        removeTerms(doc, "R");
+        removeTerms(doc, "TAG");
+        removeTerms(doc, "C");
+    }
+    catch (const Xapian::DocNotFoundError&) {
+    }
 
     const int rating = d->file.rating();
     if (rating > 0) {
