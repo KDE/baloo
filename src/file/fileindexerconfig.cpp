@@ -43,16 +43,6 @@ bool isDirHidden(QDir& dir)
     else
         return false;
 }
-
-bool isDirHidden(const QString& path)
-{
-#ifdef Q_OS_WIN
-    QDir dir(path);
-    return isDirHidden(dir);
-#else
-    return path.contains(QLatin1String("/."));
-#endif
-}
 }
 
 using namespace Baloo;
