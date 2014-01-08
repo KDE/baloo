@@ -17,6 +17,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/file/lib
+  ${CMAKE_SOURCE_DIR}/src/xapian
 )
 
 add_subdirectory(src)

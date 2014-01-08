@@ -6,6 +6,7 @@ target_link_libraries(baloo_emailsearchstore
     ${XAPIAN_LIBRARIES}
     baloocore
     baloopim
+    balooxapian
 )
 
 install(FILES baloo_emailsearchstore.desktop DESTINATION ${SERVICES_INSTALL_DIR})

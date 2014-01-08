@@ -7,6 +7,7 @@ target_link_libraries(baloo_filesearchstore
     ${XAPIAN_LIBRARIES}
     baloocore
     baloofiles
+    balooxapian
 )
 
 install(FILES baloo_filesearchstore.desktop DESTINATION ${SERVICES_INSTALL_DIR})

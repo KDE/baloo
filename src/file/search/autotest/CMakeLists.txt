@@ -16,4 +16,5 @@ target_link_libraries(filesearchstoretest
   ${KDE4_KDECORE_LIBS}
   ${XAPIAN_LIBRARIES}
   baloocore
+  balooxapian
 )

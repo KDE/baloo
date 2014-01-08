@@ -21,8 +21,6 @@ set(CORE_SRCS
     queryrunnable.cpp
     resultiterator.cpp
     result.cpp
-
-    xapiansearchstore.cpp
 )
 
 kde4_add_library(baloocore SHARED ${CORE_SRCS})
