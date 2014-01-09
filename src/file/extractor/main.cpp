@@ -27,6 +27,7 @@
 #include <KCmdLineArgs>
 #include <KLocale>
 #include <KComponentData>
+#include <QApplication>
 
 #include <KDebug>
 
@@ -68,7 +69,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    QCoreApplication app(argc, argv);
+    QApplication app(argc, argv);
     KComponentData data(aboutData, KComponentData::RegisterAsMainComponent);
 
     Baloo::App appObject;
