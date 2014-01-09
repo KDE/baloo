@@ -34,7 +34,7 @@
 
 using namespace Baloo;
 
-FileIndexingJob::FileIndexingJob(const QList<uint>& files, QObject* parent)
+FileIndexingJob::FileIndexingJob(const QVector<uint>& files, QObject* parent)
     : KJob(parent)
     , m_files(files)
 {

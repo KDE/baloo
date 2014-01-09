@@ -25,6 +25,7 @@
 
 #include <KJob>
 #include <QProcess>
+#include <QVector>
 
 #include "filemapping.h"
 
@@ -38,7 +39,7 @@ class FileIndexingJob : public KJob
     Q_OBJECT
 
 public:
-    FileIndexingJob(const QList<uint>& files, QObject* parent = 0);
+    FileIndexingJob(const QVector<uint>& files, QObject* parent = 0);
 
     virtual void start();
 
@@ -51,14 +52,14 @@ public:
         IndexerCrashed
     };
 
-    QList<uint> files() const { return m_files; }
+    QVector<uint> files() const { return m_files; }
 
 private Q_SLOTS:
     void slotIndexedFile(int exitCode, QProcess::ExitStatus exitStatus);
     void slotProcessTimerTimeout();
 
 private:
-    QList<uint> m_files;
+    QVector<uint> m_files;
     QProcess* m_process;
     QTimer* m_processTimer;
 };

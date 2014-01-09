@@ -27,6 +27,7 @@
 #include "indexingqueue.h"
 #include "filemapping.h"
 
+#include <QStack>
 #include <KJob>
 
 class Database;
@@ -58,9 +59,9 @@ private Q_SLOTS:
     void slotConfigChanged();
 
 private:
-    void process(const QList<uint>& file);
+    void process(const QVector<uint>& files);
 
-    QQueue<uint> m_fileQueue;
+    QStack<uint> m_fileQueue;
     Database* m_db;
 
     int m_maxSize;
