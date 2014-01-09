@@ -77,7 +77,16 @@ void Result::save(Xapian::WritableDatabase& db)
     QByteArray json = serializer.serialize(m_map);
     m_doc.set_data(json.constData());
 
-    db.replace_document(m_docId, m_doc);
+    // We keep trying to write if someone else has modified the database
+    while (true) {
+        try {
+            db.replace_document(m_docId, m_doc);
+            break;
+        }
+        catch (const Xapian::DatabaseModifiedError&) {
+            db.reopen();
+        }
+    }
 }
 
 void Result::setDocument(const Xapian::Document& doc)
