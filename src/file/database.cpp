@@ -54,7 +54,11 @@ bool Database::init()
         return true;
 
     // Create the Xapian DB
-    Xapian::WritableDatabase(m_path.toStdString(), Xapian::DB_CREATE_OR_OPEN);
+    try {
+        Xapian::WritableDatabase(m_path.toStdString(), Xapian::DB_CREATE_OR_OPEN);
+    }
+    catch (const Xapian::DatabaseLockError&) {
+    }
     m_xapianDb = new Xapian::Database(m_path.toStdString());
 
     m_sqlDb = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE3"));
