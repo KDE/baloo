@@ -90,19 +90,14 @@ void FileIndexingQueue::processNextIteration()
 void FileIndexingQueue::process(const QVector<uint>& files)
 {
     FileIndexingJob* job = new FileIndexingJob(files, this);
+    connect(job, SIGNAL(indexingFailed(uint)), this, SIGNAL(deleteDocument(uint)));
     connect(job, SIGNAL(finished(KJob*)), SLOT(slotFinishedIndexingFile(KJob*)));
 
     job->start();
 }
 
-void FileIndexingQueue::slotFinishedIndexingFile(KJob* job)
+void FileIndexingQueue::slotFinishedIndexingFile(KJob*)
 {
-    if (job->error()) {
-        kDebug() << job->errorString();
-        // FIXME: How do we fix this?
-        // updateIndexingLevel(m_db, m_currentFile.id(), 0);
-    }
-
     // The process would have modified the db
     m_db->xapainDatabase()->reopen();
     if (m_fileQueue.isEmpty()) {

@@ -1,6 +1,7 @@
 /*
    This file is part of the Nepomuk KDE project.
    Copyright (C) 2010-2011 Sebastian Trueg <trueg@kde.org>
+   Copyright (C) 2012-2014 Vishesh Handa <me@vhanda.in>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -37,6 +38,7 @@ using namespace Baloo;
 FileIndexingJob::FileIndexingJob(const QVector<uint>& files, QObject* parent)
     : KJob(parent)
     , m_files(files)
+    , m_process(0)
 {
     // setup the timer used to kill the indexer process if it seems to get stuck
     m_processTimer = new QTimer(this);
@@ -52,13 +54,29 @@ void FileIndexingJob::start()
         return;
     }
 
+    m_args = m_files;
+    m_files.clear();
+
+    start(m_args);
+}
+
+void FileIndexingJob::start(const QVector<uint>& files)
+{
     // setup the external process which does the actual indexing
     const QString exe = KStandardDirs::findExe(QLatin1String("baloo_file_extractor"));
 
+    // Just in case
+    if (m_process) {
+        m_process->disconnect();
+        m_process->close();
+
+        delete m_process;
+        m_process = 0;
+    }
     m_process = new QProcess(this);
 
     QStringList args;
-    Q_FOREACH (const uint& file, m_files)
+    Q_FOREACH (const uint& file, files)
         args << QString::number(file);
     kDebug() << args;
 
@@ -72,40 +90,56 @@ void FileIndexingJob::start()
     m_processTimer->start(5 * 60 * 1000);
 }
 
-void FileIndexingJob::slotIndexedFile(int exitCode, QProcess::ExitStatus exitStatus)
+void FileIndexingJob::slotIndexedFile(int, QProcess::ExitStatus exitStatus)
 {
     // stop the timer since there is no need to kill the process anymore
     m_processTimer->stop();
+    m_process->deleteLater();
+    m_process = 0;
 
-    if (exitStatus != QProcess::NormalExit) {
-        setError(IndexerCrashed);
-        setErrorText(QLatin1String("Indexer process crashed on "));// + m_file.url());
+    if (exitStatus == QProcess::NormalExit) {
+        if (m_files.isEmpty()) {
+            emitResult();
+            return;
+        }
     }
-    else if (exitCode == 1) {
-        setError(IndexerFailed);
-        //setErrorText(QLatin1String("Indexer process returned with an error for ") + m_file.url());
-        /*
-        if (FileIndexerConfig::self()->isDebugModeEnabled()) {
-            QFile errorLogFile(KStandardDirs::locateLocal("data", QLatin1String("nepomuk/file-indexer-error-log"), true));
-            if (errorLogFile.open(QIODevice::Append)) {
-                QTextStream s(&errorLogFile);
-                s << m_file.url() << ": " << QString::fromLocal8Bit(m_process->readAllStandardOutput()) << endl;
+    else {
+        if (m_args.size() == 1) {
+            uint doc = m_args.first();
+            kError() << "Indexer crashed while indexing" << doc;
+            kError() << "Blacklisting this file";
+            Q_EMIT indexingFailed(doc);
+
+            if (m_files.isEmpty()) {
+                emitResult();
+                return;
             }
         }
-        */
+        else {
+            m_files = m_args;
+        }
     }
 
-    emitResult();
+    // Split the number of files into half
+    if (m_files.size() == 1) {
+        m_args = m_files;
+        m_files.clear();
+
+        start(m_args);
+    }
+    else {
+        int mid = m_files.size()/2;
+        m_args = m_files.mid(mid);
+        m_files.resize(mid);
+
+        start(m_args);
+    }
 }
 
 void FileIndexingJob::slotProcessTimerTimeout()
 {
-    m_process->disconnect(this);
-    m_process->kill();
-    m_process->waitForFinished();
-    setError(KJob::KilledJobError);
-    setErrorText(QLatin1String("Indexer process got stuck for"));
-    emitResult();
+    // Emulate a crash so that we narrow down the file which is taking too long
+    slotIndexedFile(1, QProcess::CrashExit);
 }
 
 #include "fileindexingjob.moc"

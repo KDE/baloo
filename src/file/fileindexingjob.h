@@ -43,23 +43,22 @@ public:
 
     virtual void start();
 
+Q_SIGNALS:
     /**
-     * Error codes: IndexerFailed is emitted when the indexer returns 1
-     *              IndexerCrashed is emitted when the indexer crashed
+     * This signal is emitted when the indexing fails on a particular document
      */
-    enum {
-        IndexerFailed = UserDefinedError,
-        IndexerCrashed
-    };
-
-    QVector<uint> files() const { return m_files; }
+    void indexingFailed(uint document);
 
 private Q_SLOTS:
     void slotIndexedFile(int exitCode, QProcess::ExitStatus exitStatus);
     void slotProcessTimerTimeout();
 
 private:
+    void start(const QVector<uint>& files);
+
     QVector<uint> m_files;
+    QVector<uint> m_args;
+
     QProcess* m_process;
     QTimer* m_processTimer;
 };
