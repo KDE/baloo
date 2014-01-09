@@ -21,6 +21,7 @@
  */
 
 #include "result.h"
+#include "../util.h"
 
 #include <KDebug>
 #include <qjson/serializer.h>
@@ -76,6 +77,7 @@ void Result::save(Xapian::WritableDatabase& db)
     QJson::Serializer serializer;
     QByteArray json = serializer.serialize(m_map);
     m_doc.set_data(json.constData());
+    Baloo::updateIndexingLevel(m_doc, 2);
 
     // We keep trying to write if someone else has modified the database
     while (true) {

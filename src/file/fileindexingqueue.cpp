@@ -90,7 +90,7 @@ void FileIndexingQueue::processNextIteration()
 void FileIndexingQueue::process(const QVector<uint>& files)
 {
     FileIndexingJob* job = new FileIndexingJob(files, this);
-    connect(job, SIGNAL(indexingFailed(uint)), this, SIGNAL(deleteDocument(uint)));
+    connect(job, SIGNAL(indexingFailed(uint)), this, SLOT(slotIndexingFailed(uint)));
     connect(job, SIGNAL(finished(KJob*)), SLOT(slotFinishedIndexingFile(KJob*)));
 
     job->start();
@@ -105,6 +105,16 @@ void FileIndexingQueue::slotFinishedIndexingFile(KJob*)
     }
     finishIteration();
 }
+
+void FileIndexingQueue::slotIndexingFailed(uint id)
+{
+    reopenIfRequired(m_db->xapainDatabase());
+    Xapian::Document doc = m_db->xapainDatabase()->get_document(id);
+
+    updateIndexingLevel(doc, -1);
+    Q_EMIT newDocument(id, doc);
+}
+
 
 void FileIndexingQueue::clear()
 {

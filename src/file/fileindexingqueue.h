@@ -26,6 +26,7 @@
 
 #include "indexingqueue.h"
 #include "filemapping.h"
+#include <xapian.h>
 
 #include <QStack>
 #include <KJob>
@@ -49,6 +50,7 @@ public Q_SLOTS:
     void enqueue(const Baloo::FileMapping& file);
 
 Q_SIGNALS:
+    void newDocument(uint docid, const Xapian::Document& doc);
     void deleteDocument(unsigned docid);
 
 protected:
@@ -56,6 +58,7 @@ protected:
 
 private Q_SLOTS:
     void slotFinishedIndexingFile(KJob* job);
+    void slotIndexingFailed(uint doc);
     void slotConfigChanged();
 
 private:

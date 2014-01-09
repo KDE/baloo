@@ -25,28 +25,20 @@
 
 #include <QString>
 
-void Baloo::updateIndexingLevel(Xapian::WritableDatabase db, int fileId, int level)
+void Baloo::updateIndexingLevel(Xapian::Document& doc, int level)
 {
-    try {
-        Xapian::Document doc = db.get_document(fileId);
-        Xapian::TermIterator it = doc.termlist_begin();
-        it.skip_to("Z");
+    Xapian::TermIterator it = doc.termlist_begin();
+    it.skip_to("Z");
 
-        if (it != doc.termlist_end()) {
-            std::string term = *it;
-            if (term.length() && term[0] == 'Z') {
-                doc.remove_term(term);
-            }
+    if (it != doc.termlist_end()) {
+        std::string term = *it;
+        if (term.length() && term[0] == 'Z') {
+            doc.remove_term(term);
         }
-
-        const QString term = QLatin1Char('Z') + QString::number(level);
-        doc.add_term(term.toStdString());
-
-        db.replace_document(fileId, doc);
     }
-    catch (const Xapian::DocNotFoundError&) {
-        return;
-    }
+
+    const QString term = QLatin1Char('Z') + QString::number(level);
+    doc.add_term(term.toStdString());
 }
 
 void Baloo::reopenIfRequired(Xapian::Database* db)

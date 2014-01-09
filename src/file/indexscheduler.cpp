@@ -90,6 +90,8 @@ IndexScheduler::IndexScheduler(Database* db, QObject* parent)
     connect(m_commitQ, SIGNAL(committed()), this, SLOT(slotCommitted()));
     connect(m_basicIQ, SIGNAL(newDocument(uint,Xapian::Document)),
             m_commitQ, SLOT(add(uint,Xapian::Document)));
+    connect(m_fileIQ, SIGNAL(newDocument(uint,Xapian::Document)),
+            m_commitQ, SLOT(add(uint,Xapian::Document)));
 
     m_state = State_Normal;
     slotScheduleIndexing();

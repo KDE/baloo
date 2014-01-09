@@ -21,7 +21,6 @@
  */
 
 #include "app.h"
-#include "../util.h"
 #include "../basicindexingjob.h"
 #include "../database.h"
 
@@ -171,10 +170,9 @@ void App::saveChanges()
             Result& res = m_results[i];
             res.save(db);
 
-            updateIndexingLevel(db, res.id(), 2);
             updatedFiles << res.inputUrl();
         }
-        
+
         Q_FOREACH (Xapian::docid id, m_docsToRemove) {
             try {
                 db.delete_document(id);

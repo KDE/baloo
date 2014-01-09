@@ -29,7 +29,7 @@
 namespace Baloo
 {
 
-void updateIndexingLevel(Xapian::WritableDatabase db, int fileId, int level);
+void updateIndexingLevel(Xapian::Document& doc, int level);
 void reopenIfRequired(Xapian::Database* db);
 
 }
