@@ -212,15 +212,18 @@ ResultIterator Query::exec()
 
     SearchStore* storeMatch = 0;
     Q_FOREACH (SearchStore* store, stores) {
+        bool matches = true;
         Q_FOREACH (const QString& type, types()) {
-            if (store->types().contains(type)) {
-                storeMatch = store;
+            if (!store->types().contains(type)) {
+                matches = false;
                 break;
             }
         }
 
-        if (storeMatch)
+        if (matches) {
+            storeMatch = store;
             break;
+        }
     }
 
     if (!storeMatch)
