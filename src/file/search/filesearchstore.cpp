@@ -66,7 +66,7 @@ void FileSearchStore::setDbPath(const QString& path)
 
 QStringList FileSearchStore::types()
 {
-    return QStringList() << "File";
+    return QStringList() << "File" << "Audio" << "Video" << "Document" << "Image" << "Archive";
 }
 
 Xapian::Query FileSearchStore::convertTypes(const QStringList& types)
