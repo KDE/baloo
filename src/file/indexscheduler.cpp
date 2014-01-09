@@ -29,15 +29,7 @@
 #include "indexcleaner.h"
 #include "database.h"
 
-#include <QtCore/QList>
-#include <QtCore/QFile>
-#include <QtCore/QFileInfo>
-#include <QtCore/QDirIterator>
-#include <QtCore/QDateTime>
-#include <QtCore/QByteArray>
-
 #include <KDebug>
-#include <KStandardDirs>
 #include <KLocale>
 
 using namespace Baloo;
@@ -47,11 +39,6 @@ IndexScheduler::IndexScheduler(Database* db, QObject* parent)
     , m_indexing(false)
     , m_db(db)
 {
-    // remove old indexing error log
-    // if (FileIndexerConfig::self()->isDebugModeEnabled()) {
-    //    QFile::remove(KStandardDirs::locateLocal("data", QLatin1String("nepomuk/file-indexer-error-log")));
-    // }
-
     FileIndexerConfig* indexConfig = FileIndexerConfig::self();
     connect(indexConfig, SIGNAL(includeFolderListChanged(QStringList, QStringList)),
             this, SLOT(slotIncludeFolderListChanged(QStringList, QStringList)));

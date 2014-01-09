@@ -29,7 +29,7 @@
 #include <KDebug>
 #include <KMimeType>
 
-#include <QtCore/QDateTime>
+#include <QDateTime>
 #include <QTimer>
 
 using namespace Baloo;
