@@ -184,6 +184,7 @@ void App::saveChanges()
         }
 
         db.commit();
+        m_db.xapainDatabase()->reopen();
         m_results.clear();
         m_docsToRemove.clear();
         m_termCount = 0;
