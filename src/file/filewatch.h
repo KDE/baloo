@@ -59,6 +59,8 @@ private Q_SLOTS:
 #ifdef BUILD_KINOTIFY
     void slotInotifyWatchUserLimitReached(const QString&);
 #endif
+    void slotMovedWithoutData(const QString& url);
+
     /**
      * To be called whenever the list of indexed folders changes. This is done because
      * the indexed folders are watched with the 'KInotify::EventCreate' event, and the

@@ -126,8 +126,7 @@ FileWatch::FileWatch(Database* db, QObject* parent)
 
     m_metadataMover = new MetadataMover(m_db, this);
     connect(m_metadataMover, SIGNAL(movedWithoutData(QString)),
-            this, SIGNAL(indexFile(QString)),
-            Qt::QueuedConnection);
+            this, SLOT(slotMovedWithoutData(QString)));
     connect(m_metadataMover, SIGNAL(fileRemoved(int)),
             this, SIGNAL(fileRemoved(int)));
 
@@ -458,5 +457,11 @@ void FileWatch::slotActiveFileQueueTimeout(const QString& url)
 {
     kDebug() << url;
     Q_EMIT indexFile(url);
+}
+
+void FileWatch::slotMovedWithoutData(const QString& url)
+{
+    if (FileIndexerConfig::self()->shouldBeIndexed(url))
+        Q_EMIT indexFile(url);
 }
 
