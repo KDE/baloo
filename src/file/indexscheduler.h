@@ -176,6 +176,9 @@ private:
     void setStateFromEvent();
     void scheduleCleaning();
 
+    void addClearFolders(const QStringList& add, const QStringList& clear);
+
+
     bool m_indexing;
 
     IndexCleaner* m_cleaner;

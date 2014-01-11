@@ -236,33 +236,31 @@ void IndexScheduler::queueAllFoldersForUpdate(bool forceUpdate)
 
 void IndexScheduler::slotIncludeFolderListChanged(const QStringList& added, const QStringList& removed)
 {
-    kDebug() << added << removed;
-    Q_FOREACH (const QString& path, removed) {
-        m_basicIQ->clear(path);
-        m_fileIQ->clear();
-    }
-
-    restartCleaner();
-
-    Q_FOREACH(const QString& path, added) {
-        m_basicIQ->enqueue(FileMapping(path), UpdateRecursive);
-    }
-    slotScheduleIndexing();
+    //Index the folders added to the include list, clear the folders removed from it
+    addClearFolders(added, removed);
 }
 
 void IndexScheduler::slotExcludeFolderListChanged(const QStringList& added, const QStringList& removed)
 {
-    kDebug() << added << removed;
-    Q_FOREACH (const QString& path, added) {
+    //Clear the folders added to the exclude list, index the folders removed from it
+    addClearFolders(removed, added);
+}
+
+//Index the folders in add, clear the folders in clear
+void IndexScheduler::addClearFolders(const QStringList& add, const QStringList& clear)
+{
+    kDebug() << "To index: " << add << "To clear: " << clear;
+    Q_FOREACH (const QString& path, clear) {
         m_basicIQ->clear(path);
         m_fileIQ->clear();
     }
 
     restartCleaner();
 
-    Q_FOREACH (const QString &path, removed) {
+    Q_FOREACH (const QString &path, add) {
         m_basicIQ->enqueue(FileMapping(path), UpdateRecursive);
     }
+    slotScheduleIndexing();
 }
 
 void IndexScheduler::restartCleaner()
