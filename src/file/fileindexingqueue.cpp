@@ -40,8 +40,6 @@ FileIndexingQueue::FileIndexingQueue(Database* db, QObject* parent)
 
     m_fileQueue.reserve(m_maxSize);
 
-    FileIndexerConfig* config = FileIndexerConfig::self();
-    connect(config, SIGNAL(configChanged()), this, SLOT(slotConfigChanged()));
 }
 
 // FIXME: We are not emiting startedIndexing!
@@ -119,10 +117,4 @@ void FileIndexingQueue::slotIndexingFailed(uint id)
 void FileIndexingQueue::clear()
 {
     m_fileQueue.clear();
-}
-
-void FileIndexingQueue::slotConfigChanged()
-{
-    m_fileQueue.clear();
-    fillQueue();
 }

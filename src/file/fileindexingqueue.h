@@ -59,7 +59,6 @@ protected:
 private Q_SLOTS:
     void slotFinishedIndexingFile(KJob* job);
     void slotIndexingFailed(uint doc);
-    void slotConfigChanged();
 
 private:
     void process(const QVector<uint>& files);
