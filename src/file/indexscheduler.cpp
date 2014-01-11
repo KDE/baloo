@@ -266,15 +266,12 @@ void IndexScheduler::restartCleaner()
 {
     if (m_cleaner) {
         m_cleaner->kill();
-        delete m_cleaner;
     }
 
     // TODO: only clean the filters that were changed from the config
+    //FIXME: Cleaner not yet implemented
     m_cleaner = new IndexCleaner(this);
     connect(m_cleaner, SIGNAL(finished(KJob*)), this, SLOT(slotCleaningDone()));
-
-    //FIXME: Cleaner not yet implemented
-    //FIXME: Make the work actually start on resume.
     m_cleaner->start();
 }
 
@@ -396,6 +393,7 @@ void IndexScheduler::scheduleCleaning()
           //so that they are never running at the same time
           m_basicIQ->suspend();
           m_fileIQ->suspend();
+          kDebug() << "Resuming cleaner";
           m_cleaner->resume();
           break;
     }

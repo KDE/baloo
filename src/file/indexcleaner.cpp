@@ -57,7 +57,6 @@ QString constructExcludeIncludeFoldersFilter(const QStringList& folders)
 
 IndexCleaner::IndexCleaner(QObject* parent)
     : KJob(parent),
-      m_suspended(false),
       m_delay(0)
 {
     setCapabilities(Suspendable);
@@ -69,7 +68,10 @@ void IndexCleaner::start()
     kDebug() << "CLEANING!!";
     const QString folderFilter = constructExcludeFolderFilter(FileIndexerConfig::self());
 
-    const int limit = 20;
+    //Start suspended
+    this->suspend();
+
+    //     const int limit = 20;
 
     /*
     //
@@ -161,10 +163,7 @@ void IndexCleaner::slotRemoveResourcesDone(KJob* job)
         kDebug() << job->errorString();
     }
 
-    QMutexLocker lock(&m_stateMutex);
-    if (!m_suspended) {
-        QTimer::singleShot(m_delay, this, SLOT(clearNextBatch()));
-    }
+    QTimer::singleShot(m_delay, this, SLOT(clearNextBatch()));
 }
 
 void IndexCleaner::clearNextBatch()
@@ -197,18 +196,12 @@ void IndexCleaner::clearNextBatch()
 
 bool IndexCleaner::doSuspend()
 {
-    QMutexLocker locker(&m_stateMutex);
-    m_suspended = true;
     return true;
 }
 
 bool IndexCleaner::doResume()
 {
-    QMutexLocker locker(&m_stateMutex);
-    if (m_suspended) {
-        m_suspended = false;
-        QTimer::singleShot(0, this, SLOT(clearNextBatch()));
-    }
+    QTimer::singleShot(0, this, SLOT(clearNextBatch()));
     return true;
 }
 

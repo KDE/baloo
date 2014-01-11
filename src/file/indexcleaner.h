@@ -88,8 +88,6 @@ private:
 
     QString m_query;
 
-    QMutex m_stateMutex;
-    bool m_suspended;
     int m_delay;
 };
 }
