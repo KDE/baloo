@@ -52,7 +52,8 @@ void IndexingQueue::resume()
     m_suspended = false;
     if (isEmpty())
         fillQueue();
-    callForNextIteration();
+    if (!isEmpty())
+        callForNextIteration();
 }
 
 void IndexingQueue::suspend()
