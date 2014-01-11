@@ -190,7 +190,7 @@ void App::saveChanges()
         Q_EMIT saved();
     }
     catch (const Xapian::DatabaseLockError& err) {
-        kError() << "Cannot open database in write mode:" << err.get_error_string();
+        kError() << "Cannot open database in write mode:" << err.get_msg().c_str();
         QTimer::singleShot(100, this, SLOT(saveChanges()));
         return;
     }

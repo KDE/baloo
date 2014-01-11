@@ -100,7 +100,7 @@ void Baloo::CommitQueue::commit()
         Q_EMIT committed();
     }
     catch (const Xapian::DatabaseLockError& err) {
-        kError() << err.get_error_string();
+        kError() << err.get_msg().c_str();
         startTimers();
     }
 }
