@@ -184,7 +184,7 @@ void IndexScheduler::slotFinishedIndexing()
     if (m_basicIQ->isEmpty()) {
         m_fileIQ->fillQueue();
         if (!m_fileIQ->isEmpty())
-            m_fileIQ->resume();
+            slotScheduleIndexing();
     }
 
     if (m_basicIQ->isEmpty() && m_fileIQ->isEmpty()) {
