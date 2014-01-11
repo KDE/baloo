@@ -85,6 +85,7 @@ IndexScheduler::IndexScheduler(Database* db, QObject* parent)
 
     m_cleaner = new IndexCleaner(this);
     connect(m_cleaner, SIGNAL(finished(KJob*)), this, SLOT(slotCleaningDone()));
+    m_cleaner->start();
 
     m_commitQ = new CommitQueue(m_db, this);
     connect(m_commitQ, SIGNAL(committed()), this, SLOT(slotCommitted()));
@@ -192,6 +193,7 @@ void IndexScheduler::slotFinishedIndexing()
 
 void IndexScheduler::slotCleaningDone()
 {
+    kDebug() << "Cleaning done";
     m_cleaner = 0;
 
     m_state = State_Normal;
@@ -271,8 +273,9 @@ void IndexScheduler::restartCleaner()
     m_cleaner = new IndexCleaner(this);
     connect(m_cleaner, SIGNAL(finished(KJob*)), this, SLOT(slotCleaningDone()));
 
-    m_state = State_Normal;
-    slotScheduleIndexing();
+    //FIXME: Cleaner not yet implemented
+    //FIXME: Make the work actually start on resume.
+    m_cleaner->start();
 }
 
 
@@ -303,71 +306,128 @@ void IndexScheduler::slotTeardownRequested(const RemovableMediaCache::Entry* ent
 }
 */
 
-void IndexScheduler::slotScheduleIndexing()
+
+void IndexScheduler::setStateFromEvent()
 {
+   //Don't change the state if already suspended
     if (m_state == State_Suspended) {
         kDebug() << "Suspended";
-        m_basicIQ->suspend();
-        m_fileIQ->suspend();
-        if (m_cleaner)
-            m_cleaner->suspend();
     }
-
     else if (m_state == State_Cleaning) {
         kDebug() << "Cleaning";
-        m_basicIQ->suspend();
-        m_fileIQ->suspend();
-        if (m_cleaner)
-            m_cleaner->resume();
     }
-
     else if (m_eventMonitor->isDiskSpaceLow()) {
         kDebug() << "Disk Space";
         m_state = State_LowDiskSpace;
-
-        m_basicIQ->suspend();
-        m_fileIQ->suspend();
     }
-
     else if (m_eventMonitor->isOnBattery()) {
         kDebug() << "Battery";
         m_state = State_OnBattery;
-
-        m_basicIQ->setDelay(0);
-        m_basicIQ->resume();
-
-        m_fileIQ->suspend();
-        if (m_cleaner)
-            m_cleaner->suspend();
     }
-
     else if (m_eventMonitor->isIdle()) {
         kDebug() << "Idle";
-        if (m_cleaner) {
-            m_state = State_Cleaning;
-            m_cleaner->start();
-            slotScheduleIndexing();
-        } else {
-            m_state = State_UserIdle;
-            m_basicIQ->setDelay(0);
-            m_basicIQ->resume();
-        }
+        m_state = State_UserIdle;
     }
-
     else {
         kDebug() << "Normal";
         m_state = State_Normal;
+    }
+}
 
+bool IndexScheduler::scheduleBasicQueue()
+{
+    switch (m_state) {
+        case State_Suspended:
+        case State_Cleaning:
+        case State_LowDiskSpace:
+            kDebug() << "No basic queue: suspended, cleaning or low disc space";
+            return false;
+        case State_OnBattery:
+        case State_UserIdle:
+        case State_Normal:
+        default:
+            return true;
+    }
+}
+
+
+bool IndexScheduler::scheduleFileQueue()
+{
+    if (!m_basicIQ->isEmpty()){
+        kDebug() << "Basic queue not empty, so no file queue.";
+        return false;
+    }
+    switch (m_state) {
+        case State_Suspended:
+        case State_Cleaning:
+        case State_LowDiskSpace:
+        case State_OnBattery:
+            kDebug() << "No file queue: suspended, cleaning, low disc space or on battery";
+            return false;
+        case State_UserIdle:
+        case State_Normal:
+        default:
+            return true;
+    }
+}
+
+void IndexScheduler::scheduleCleaning()
+{
+    //If there is no cleaner ready, don't clean
+    if (!m_cleaner) {
+      return;
+    }
+    //Do we need to do some cleaning?
+    switch (m_state) {
+      //If we are already cleaning, don't need to do anything
+      case State_Cleaning:
+          break;
+      case State_Suspended:
+          kDebug() << "No cleaner: suspended";
+          m_cleaner->suspend();
+          break;
+      case State_OnBattery:
+      case State_LowDiskSpace:
+      case State_UserIdle:
+      case State_Normal:
+      default:
+          m_state = State_Cleaning;
+          //Suspend the other queues here
+          //so that they are never running at the same time
+          m_basicIQ->suspend();
+          m_fileIQ->suspend();
+          m_cleaner->resume();
+          break;
+    }
+}
+
+void IndexScheduler::slotScheduleIndexing()
+{
+    //Set the state from the event monitor
+    setStateFromEvent();
+
+    //Suspend or resume the cleaner, if there is one.
+    scheduleCleaning();
+
+    //Should we run the basic queue?
+    bool runBasic = scheduleBasicQueue();
+
+    //If we should not, stop.
+    if (!runBasic) {
+        m_basicIQ->suspend();
+        m_fileIQ->suspend();
+    }
+    else {
+        //Run the basic queue
         m_basicIQ->setDelay(0);
         m_basicIQ->resume();
-
+        //Consider running the file queue:
+        //this will only happen if the basic queue is not empty.
+        if (scheduleFileQueue())
+            m_fileIQ->resume();
+        else
+            m_fileIQ->suspend();
     }
-
-    // The FileIQ should never run when the BasicIQ is still running
-    if (m_basicIQ->isEmpty() && !m_fileIQ->isEmpty())
-        m_fileIQ->resume();
-    else
-        m_fileIQ->suspend();
 }
 
 QString IndexScheduler::userStatusString() const

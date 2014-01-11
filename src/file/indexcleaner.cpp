@@ -169,6 +169,7 @@ void IndexCleaner::slotRemoveResourcesDone(KJob* job)
 
 void IndexCleaner::clearNextBatch()
 {
+    emitResult();
     /*
     QList<QUrl> resources;
     Soprano::QueryResultIterator it

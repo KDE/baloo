@@ -171,6 +171,11 @@ private:
 
     void restartCleaner();
 
+    bool scheduleBasicQueue();
+    bool scheduleFileQueue();
+    void setStateFromEvent();
+    void scheduleCleaning();
+
     bool m_indexing;
 
     IndexCleaner* m_cleaner;
