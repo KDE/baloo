@@ -41,7 +41,7 @@ public:
     bool isInitialized();
 
     QSqlDatabase& sqlDatabase();
-    Xapian::Database* xapainDatabase();
+    Xapian::Database* xapianDatabase();
 
 private:
     QString m_path;

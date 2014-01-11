@@ -95,7 +95,7 @@ void Baloo::CommitQueue::commit()
 
         db.commit();
         kDebug() << "Xapian Committed";
-        m_db->xapainDatabase()->reopen();
+        m_db->xapianDatabase()->reopen();
 
         Q_EMIT committed();
     }

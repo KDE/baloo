@@ -93,7 +93,7 @@ void FileSearchStoreTest::insertText(int id, const QString& text)
     wdb->replace_document(id, doc);
     wdb->commit();
 
-    m_db->xapainDatabase()->reopen();
+    m_db->xapianDatabase()->reopen();
 }
 
 void FileSearchStoreTest::testSimpleSearchString()

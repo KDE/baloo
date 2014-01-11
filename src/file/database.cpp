@@ -115,7 +115,7 @@ QSqlDatabase& Database::sqlDatabase()
     return *m_sqlDb;
 }
 
-Xapian::Database* Database::xapainDatabase()
+Xapian::Database* Database::xapianDatabase()
 {
     return m_xapianDb;
 }
