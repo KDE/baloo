@@ -418,9 +418,11 @@ void IndexScheduler::slotScheduleIndexing()
         m_fileIQ->suspend();
     }
     else {
-        //Run the basic queue
-        m_basicIQ->setDelay(0);
-        m_basicIQ->resume();
+        //Run the basic queue if it isn't empty
+        if (!m_basicIQ->isEmpty()) {
+            m_basicIQ->setDelay(0);
+            m_basicIQ->resume();
+        }
         //Consider running the file queue:
         //this will only happen if the basic queue is not empty.
         if (scheduleFileQueue())
