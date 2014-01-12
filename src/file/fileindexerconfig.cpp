@@ -29,6 +29,7 @@
 #include <KStandardDirs>
 #include <KConfigGroup>
 #include <KDebug>
+#include <KUrl>
 
 
 namespace

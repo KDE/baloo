@@ -1,7 +1,7 @@
-kde4_add_plugin(kio_tags kio_tags.cpp)
+add_library(kio_tags MODULE kio_tags.cpp)
 
 target_link_libraries(kio_tags
-  ${KDE4_KIO_LIBS}
+  KF5::KIOWidgets
   balootags
 )
 

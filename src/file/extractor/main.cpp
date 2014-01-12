@@ -23,7 +23,7 @@
 #include "app.h"
 #include "priority.h"
 
-#include <KAboutData>
+#include <k4aboutdata.h>
 #include <KCmdLineArgs>
 #include <KLocale>
 #include <KComponentData>
@@ -37,10 +37,10 @@ int main(int argc, char* argv[])
     lowerSchedulingPriority();
     lowerPriority();
 
-    KAboutData aboutData("baloo_file_extractor", 0, ki18n("Baloo File Extractor"),
+    K4AboutData aboutData("baloo_file_extractor", 0, ki18n("Baloo File Extractor"),
                          "0.1",
                          ki18n("The File Extractor extracts the file metadata and text"),
-                         KAboutData::License_LGPL_V2,
+                         K4AboutData::License_LGPL_V2,
                          ki18n("(C) 2013, Vishesh Handa"));
     aboutData.addAuthor(ki18n("Vishesh Handa"), ki18n("Maintainer"), "me@vhanda.in");
 

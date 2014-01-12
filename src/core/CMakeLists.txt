@@ -1,4 +1,4 @@
-add_definitions(${KDE4_ENABLE_EXCEPTIONS})
+add_definitions(-fexceptions)
 
 set(CORE_SRCS
     item.cpp
@@ -23,12 +23,12 @@ set(CORE_SRCS
     result.cpp
 )
 
-kde4_add_library(baloocore SHARED ${CORE_SRCS})
+add_library(baloocore SHARED ${CORE_SRCS})
 
 target_link_libraries(baloocore
-    ${QT_QTCORE_LIBRARY}
+    Qt5::Core
+    KF5::KDE4Support
     ${QJSON_LIBRARIES}
-    ${KDE4_KDECORE_LIBRARY}
     ${XAPIAN_LIBRARIES}
 )
 

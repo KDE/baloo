@@ -1,17 +1,26 @@
 project(baloo)
+cmake_minimum_required(VERSION 2.8.12)
 
-find_package(KDE4 REQUIRED)
-find_package(KdepimLibs REQUIRED)
-find_package(Xapian REQUIRED)
-find_package(QJSON REQUIRED)
+find_package(ECM 0.0.9 REQUIRED NO_MODULE)
+set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules" ${CMAKE_MODULE_PATH})
+
+find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Widgets Xml Test Sql)
+find_package(KF5 REQUIRED NO_MODULE COMPONENTS KDE4Support I18n Service IdleTime KCMUtils Auth)
 find_package(KFileMetaData REQUIRED)
 
-include(KDE4Defaults)
+# FIXME: Port Kdepimlibs?
+#find_package(KdepimLibs REQUIRED)
+
+find_package(Xapian REQUIRED)
+find_package(QJSON REQUIRED)
+
+include(KDEInstallDirs)
+include(KDECMakeSettings)
+include(KDECompilerSettings)
 add_definitions(-DQT_NO_KEYWORDS)
 
 include_directories(
-  ${QT_INCLUDES}
-  ${KDE4_INCLUDES}
   ${QJSON_INCLUDE_DIR}
   ${KFILEMETADATA_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}
@@ -32,4 +41,4 @@ install(EXPORT BalooLibraryTargets
         DESTINATION ${LIB_INSTALL_DIR}/cmake/Baloo
         FILE BalooTargetsWithPrefix.cmake)
 
-macro_display_feature_log()
+feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)

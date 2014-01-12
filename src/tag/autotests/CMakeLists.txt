@@ -5,10 +5,10 @@ include_directories(
 kde4_add_unit_test(tagtest tagtests.cpp)
 
 target_link_libraries(tagtest
-  ${QT_QTCORE_LIBRARY}
-  ${QT_QTSQL_LIBRARY}
-  ${QT_QTTEST_LIBRARY}
-  ${KDE4_KDECORE_LIBS}
+  Qt5::Core
+  Qt5::Sql
+  Qt5::Test
+  
   baloocore
   balootags
 )

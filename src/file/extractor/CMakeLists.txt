@@ -8,12 +8,11 @@ set(EXTRACTOR_SRCS
   ../util.cpp
 )
 
-kde4_add_executable(baloo_file_extractor ${EXTRACTOR_SRCS})
+add_executable(baloo_file_extractor ${EXTRACTOR_SRCS})
 
 target_link_libraries(baloo_file_extractor
-  ${QT_QTSQL_LIBRARY}
-  ${KDE4_KDECORE_LIBS}
-  ${KDE4_KDEUI_LIBS}
+  Qt5::Sql
+  KF5::KDE4Support
   ${KFILEMETADATA_LIBRARY}
   ${XAPIAN_LIBRARIES}
   ${QJSON_LIBRARIES}

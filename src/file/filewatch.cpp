@@ -285,6 +285,9 @@ void FileWatch::connectToKDirNotify()
 //a helper which modifies /proc/sys/fs/inotify/max_user_watches
 bool raiseWatchLimit()
 {
+    // FIXME: vHanda: FIX ME!!
+    return false;
+    /*
     KAuth::Action limitAction("org.kde.nepomuk.filewatch.raiselimit");
     limitAction.setHelperID("org.kde.nepomuk.filewatch");
 
@@ -293,6 +296,7 @@ bool raiseWatchLimit()
         return false;
     }
     return true;
+    */
 }
 
 //This slot is connected to a signal emitted in KInotify when

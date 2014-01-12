@@ -26,6 +26,7 @@
 #include <KApplication>
 #include <KCmdLineArgs>
 #include <KDebug>
+#include <k4aboutdata.h>
 
 #include <QTimer>
 
@@ -34,12 +35,12 @@
 
 int main(int argc, char** argv)
 {
-    KAboutData aboutData("indexerconfigtest",
+    K4AboutData aboutData("indexerconfigtest",
                          "indexerconfigtest",
                          ki18n("indexerconfigtest"),
                          "0.1",
                          ki18n("indexerconfigtest"),
-                         KAboutData::License_GPL,
+                         K4AboutData::License_GPL,
                          ki18n("(c) 2014, Vishesh Handa"),
                          KLocalizedString(),
                          "http://kde.org");

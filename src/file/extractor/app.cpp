@@ -28,6 +28,7 @@
 #include <KMimeType>
 #include <KStandardDirs>
 #include <KDebug>
+#include <KUrl>
 
 #include <QTimer>
 #include <QtCore/QFileInfo>

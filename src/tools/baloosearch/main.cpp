@@ -28,6 +28,7 @@
 #include <KLocale>
 #include <KComponentData>
 #include <KDebug>
+#include <k4aboutdata.h>
 
 #include "query.h"
 
@@ -53,12 +54,12 @@ QString colorString(const QString& input, int color)
 
 int main(int argc, char* argv[])
 {
-    KAboutData aboutData("baloosearch",
+    K4AboutData aboutData("baloosearch",
                          "baloosearch",
                          ki18n("Baloo Search"),
                          "0.1",
                          ki18n("Baloo Search - A debugging tool"),
-                         KAboutData::License_GPL,
+                         K4AboutData::License_GPL,
                          ki18n("(c) 2013, Vishesh Handa"),
                          KLocalizedString(),
                          "http://kde.org");

@@ -16,12 +16,12 @@ set(TAGS_SRCS
     connection.cpp
 )
 
-kde4_add_library(balootags SHARED ${TAGS_SRCS})
+add_library(balootags SHARED ${TAGS_SRCS})
 
 target_link_libraries(balootags
-    ${QT_QTCORE_LIBRARY}
-    ${QT_QTSQL_LIBRARY}
-    ${KDE4_KDECORE_LIBRARY}
+    Qt5::Core
+    Qt5::Sql
+    KF5::KDE4Support
     baloocore
 )
 

@@ -1,7 +1,7 @@
-kde4_add_plugin(kio_baloosearch kio_search.cpp)
+add_library(kio_baloosearch MODULE kio_search.cpp)
 
 target_link_libraries(kio_baloosearch
-  ${KDE4_KIO_LIBS}
+  KF5::KIOWidgets
   baloocore
 )
 

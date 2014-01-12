@@ -7,18 +7,19 @@ set(kcm_file_SRCS
   detailswidget.cpp
 )
 
-qt4_add_dbus_interface(kcm_file_SRCS ../org.kde.baloo.file.indexer.xml fileindexerinterface)
+qt5_add_dbus_interface(kcm_file_SRCS ../org.kde.baloo.file.indexer.xml fileindexerinterface)
 
-kde4_add_ui_files(kcm_file_SRCS
+qt5_wrap_ui(kcm_file_SRCS
   configwidget.ui
   indexfolderselectionwidget.ui
   excludefilterselectiondialog.ui)
 
-kde4_add_plugin(kcm_baloofile ${kcm_file_SRCS})
+add_library(kcm_baloofile MODULE ${kcm_file_SRCS})
 
 target_link_libraries(kcm_baloofile
-  ${KDE4_KDEUI_LIBS}
-  ${KDE4_KIO_LIBS}
+  KF5::KIOWidgets
+  KF5::KDE4Support
+  KF5::KCMUtils
 )
 
 

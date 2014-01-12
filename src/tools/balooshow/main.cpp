@@ -28,6 +28,7 @@
 #include <KComponentData>
 #include <KDebug>
 #include <KUrl>
+#include <k4aboutdata.h>
 
 #include "file.h"
 #include "filefetchjob.h"
@@ -42,12 +43,12 @@ QString colorString(const QString& input, int color)
 
 int main(int argc, char* argv[])
 {
-    KAboutData aboutData("balooshow",
+    K4AboutData aboutData("balooshow",
                          "balooshow",
                          ki18n("Baloo Show"),
                          "0.1",
                          ki18n("The Baloo data Viewer - A debugging tool"),
-                         KAboutData::License_GPL,
+                         K4AboutData::License_GPL,
                          ki18n("(c) 2012, Vishesh Handa"),
                          KLocalizedString(),
                          "http://kde.org");

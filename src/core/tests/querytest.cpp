@@ -74,5 +74,4 @@ void App::main()
     quit();
 }
 
-
 #include "querytest.moc"

@@ -1,8 +1,8 @@
-kde4_add_plugin(baloo_contactsearchstore contactsearchstore.cpp)
+add_library(baloo_contactsearchstore MODULE contactsearchstore.cpp)
 
 target_link_libraries(baloo_contactsearchstore
-    ${QT_QTCORE_LIBRARY}
-    ${KDE4_KDECORE_LIBRARY}
+    Qt5::Core
+    KF5::KDE4Support
     ${XAPIAN_LIBRARIES}
     baloocore
     baloopim

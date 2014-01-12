@@ -480,5 +480,4 @@ void KInotify::slotClearCookies()
     d->cookies.clear();
 }
 
-
-#include "kinotify.moc"
+#include "moc_kinotify.cpp"

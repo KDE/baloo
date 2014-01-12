@@ -13,13 +13,13 @@ set(BALOO_PIM_LIB_SRCS
     ../search/email/agepostingsource.cpp
 )
 
-add_definitions(${KDE4_ENABLE_EXCEPTIONS})
+add_definitions(-fexceptions)
 
-kde4_add_library(baloopim SHARED ${BALOO_PIM_LIB_SRCS})
+add_library(baloopim SHARED ${BALOO_PIM_LIB_SRCS})
 
 target_link_libraries(baloopim
-    ${QT_QTCORE_LIBRARY}
-    ${KDE4_KDECORE_LIBRARY}
+    Qt5::Core
+    KF5::KDE4Support
     ${QJSON_LIBRARIES}
     ${XAPIAN_LIBRARIES}
 )

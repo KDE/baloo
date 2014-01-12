@@ -11,10 +11,10 @@ set(kio_timeline_SRCS
   timelinetools.cpp
 )
 
-kde4_add_plugin(kio_timeline ${kio_timeline_SRCS})
+add_library(kio_timeline MODULE ${kio_timeline_SRCS})
 
 target_link_libraries(kio_timeline
-  ${KDE4_KIO_LIBS}
+  KF5::KIOWidgets
   baloocore
 )
 

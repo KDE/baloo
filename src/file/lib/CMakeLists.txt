@@ -8,12 +8,12 @@ set(FILE_LIB_SRCS
     db.cpp
 )
 
-kde4_add_library(baloofiles SHARED ${FILE_LIB_SRCS})
+add_library(baloofiles SHARED ${FILE_LIB_SRCS})
 
 target_link_libraries(baloofiles
-    ${QT_QTCORE_LIBRARY}
-    ${QT_QTSQL_LIBRARY}
-    ${KDE4_KDECORE_LIBRARY}
+    Qt5::Core
+    Qt5::Sql
+    KF5::KDE4Support
     ${XAPIAN_LIBRARIES}
     ${QJSON_LIBRARIES}
     baloocore

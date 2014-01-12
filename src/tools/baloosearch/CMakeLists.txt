@@ -1,9 +1,9 @@
 set(SRCS main.cpp)
 
-kde4_add_executable(baloosearch ${SRCS})
+add_executable(baloosearch ${SRCS})
 
 target_link_libraries(baloosearch
-  ${KDE4_KDECORE_LIBS}
+  
   baloocore
 )
 

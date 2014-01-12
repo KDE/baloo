@@ -23,7 +23,7 @@
 #include <QApplication>
 
 #include <KComponentData>
-#include <KAboutData>
+#include <k4aboutdata.h>
 #include <KStandardDirs>
 
 #include <KConfig>
@@ -40,9 +40,9 @@
 int main(int argc, char** argv) {
     QApplication app(argc, argv);
 
-    KAboutData aboutData("baloo_file", "baloo_file", ki18n("Baloo File"), "0.1",
+    K4AboutData aboutData("baloo_file", "baloo_file", ki18n("Baloo File"), "0.1",
                          ki18n("An application to handle file metadata"),
-                         KAboutData::License_GPL_V2);
+                         K4AboutData::License_GPL_V2);
 
     KComponentData data(aboutData, KComponentData::RegisterAsMainComponent);
 
