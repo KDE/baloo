@@ -1,7 +1,7 @@
 add_subdirectory(core)
 add_subdirectory(xapian)
 add_subdirectory(file)
-add_subdirectory(tag)
+#add_subdirectory(tag)
 add_subdirectory(pim)
 add_subdirectory(kioslaves)
 add_subdirectory(tools)

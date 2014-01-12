@@ -17,8 +17,8 @@ include(${_currentDir}/BalooTargetsWithPrefix.cmake)
 set(BALOO_CORE_LIBRARY baloocore)
 set(BALOO_FILE_LIBRARY baloofiles)
 set(BALOO_PIM_LIBRARY baloopim)
-set(BALOO_TAG_LIBRARY balootags)
+#set(BALOO_TAG_LIBRARY balootags)
 
 # Set the library variable
-set(BALOO_LIBRARIES ${BALOO_CORE_LIBRARY} ${BALOO_FILE_LIBRARY} ${BALOO_PIM_LIBRARY} ${BALOO_TAG_LIBRARY})
+set(BALOO_LIBRARIES ${BALOO_CORE_LIBRARY} ${BALOO_FILE_LIBRARY} ${BALOO_PIM_LIBRARY})
 
