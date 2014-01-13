@@ -43,6 +43,13 @@ FileSearchStore::FileSearchStore(QObject* parent, const QVariantList&)
 {
     const QString path = KStandardDirs::locateLocal("data", "baloo/file/");
     setDbPath(path);
+
+    m_prefixes.insert("filename", "F");
+    m_prefixes.insert("mimetype", "M");
+    m_prefixes.insert("rating", "R");
+    m_prefixes.insert("tag", "TAG");
+    m_prefixes.insert("tags", "TAG");
+    m_prefixes.insert("usercomment", "C");
 }
 
 FileSearchStore::~FileSearchStore()
@@ -95,8 +102,9 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
         parser.set_database(*xapianDb());
 
         std::string p;
-        if (property.toLower() == "filename")
-            p = 'F';
+        QHash<QString, std::string>::const_iterator it = m_prefixes.constFind(property.toLower());
+        if (it != m_prefixes.constEnd())
+            p = it.value();
         else
             p = property.toUpper().toStdString();
 

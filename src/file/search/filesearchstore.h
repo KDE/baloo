@@ -56,6 +56,8 @@ protected:
 private:
     QSqlDatabase* m_sqlDb;
     QMutex m_sqlMutex;
+
+    QHash<QString, std::string> m_prefixes;
 };
 
 }
