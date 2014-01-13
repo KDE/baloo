@@ -461,7 +461,6 @@ void FileWatch::slotActiveFileQueueTimeout(const QString& url)
 
 void FileWatch::slotMovedWithoutData(const QString& url)
 {
-    if (FileIndexerConfig::self()->shouldBeIndexed(url))
-        Q_EMIT indexFile(url);
+    Q_EMIT indexFile(url);
 }
 

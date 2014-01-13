@@ -149,8 +149,8 @@ bool BasicIndexingQueue::process(FileMapping& file, UpdateDirFlags flags)
 
 bool BasicIndexingQueue::shouldIndex(FileMapping& file, const QString& mimetype) const
 {
-    bool shouldIndexFile = FileIndexerConfig::self()->shouldFileBeIndexed(file.url());
-    if (!shouldIndexFile)
+    bool shouldBeIndexed = FileIndexerConfig::self()->shouldBeIndexed(file.url());
+    if (!shouldBeIndexed)
         return false;
 
     bool shouldIndexType = FileIndexerConfig::self()->shouldMimeTypeBeIndexed(mimetype);
