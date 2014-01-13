@@ -53,23 +53,23 @@ App::App(QObject* parent)
     m_results.reserve(args->count());
     for (int i=0; i<args->count(); i++) {
         FileMapping mapping = FileMapping(args->arg(i).toUInt());
+        QString url;
         if (mapping.fetch(m_db.sqlDatabase())) {
             // arg is an id
-            if (QFile::exists(mapping.url())) {
-                m_urls << mapping.url();
-            } else {
-                // id was looked up, but file deleted
-                kDebug() << mapping.url() << "does not exist";
-                deleteDocument(mapping.id());
-            }
+            url = mapping.url();
         } else {
             // arg is a url
-            QString url = args->url(i).toLocalFile();
-            if (!QFile::exists(url)) {
-              // arg is a url but could not be found
-              continue;
-            }
-            m_urls << args->url(i).toLocalFile();
+            url = args->url(i).toLocalFile();
+        }
+        if (QFile::exists(url)) {
+            m_urls << url;
+        } else {
+            // id or url was looked up, but file deleted
+            kDebug() << url << "does not exist";
+            //Try to delete it as an id:
+            // it may have been deleted from the FileMapping db as well.
+            // The worst that can happen is deleting nothing.
+            deleteDocument(mapping.id());
         }
     }
 
