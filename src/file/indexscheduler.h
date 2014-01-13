@@ -29,7 +29,6 @@ class Database;
 namespace Baloo
 {
 
-class IndexCleaner;
 class FileIndexingQueue;
 class FileIndexerConfig;
 class CommitQueue;
@@ -150,8 +149,6 @@ private Q_SLOTS:
     void slotIncludeFolderListChanged(const QStringList& added, const QStringList& removed);
     void slotExcludeFolderListChanged(const QStringList& added, const QStringList& removed);
 
-    void slotCleaningDone();
-
     void slotStartedIndexing();
     void slotFinishedIndexing();
 
@@ -170,21 +167,17 @@ private:
     // no signal is emitted twice
     void setIndexingStarted(bool started);
 
-    void restartCleaner();
-
     bool scheduleBasicQueue();
     bool scheduleFileQueue();
     void setStateFromEvent();
-    void scheduleCleaning();
 
     void addClearFolders(const QStringList& add, const QStringList& clear);
 
 
     bool m_indexing;
 
-    IndexCleaner* m_cleaner;
-
     FileIndexerConfig* m_config;
+
     // Queues
     BasicIndexingQueue* m_basicIQ;
     FileIndexingQueue* m_fileIQ;

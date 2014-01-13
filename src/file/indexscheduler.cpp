@@ -26,7 +26,6 @@
 #include "basicindexingqueue.h"
 #include "commitqueue.h"
 #include "eventmonitor.h"
-#include "indexcleaner.h"
 #include "database.h"
 
 #include <KDebug>
@@ -82,10 +81,6 @@ IndexScheduler::IndexScheduler(Database* db, FileIndexerConfig* config, QObject*
             this, SLOT(slotScheduleIndexing()));
     connect(m_eventMonitor, SIGNAL(powerManagementStatusChanged(bool)),
             this, SLOT(slotScheduleIndexing()));
-
-    m_cleaner = new IndexCleaner(this);
-    connect(m_cleaner, SIGNAL(finished(KJob*)), this, SLOT(slotCleaningDone()));
-    m_cleaner->start();
 
     m_commitQ = new CommitQueue(m_db, this);
     connect(m_commitQ, SIGNAL(committed()), this, SLOT(slotCommitted()));
@@ -195,15 +190,6 @@ void IndexScheduler::slotFinishedIndexing()
 
 }
 
-void IndexScheduler::slotCleaningDone()
-{
-    kDebug() << "Cleaning done";
-    m_cleaner = 0;
-
-    m_state = State_Normal;
-    slotScheduleIndexing();
-}
-
 void IndexScheduler::updateDir(const QString& path, UpdateDirFlags flags)
 {
     m_basicIQ->enqueue(FileMapping(path), flags);
@@ -256,32 +242,14 @@ void IndexScheduler::addClearFolders(const QStringList& add, const QStringList& 
         m_fileIQ->clear();
     }
 
-    restartCleaner();
-
     Q_FOREACH (const QString &path, add) {
         m_basicIQ->enqueue(FileMapping(path), UpdateRecursive);
     }
     slotScheduleIndexing();
 }
 
-void IndexScheduler::restartCleaner()
-{
-    if (m_cleaner) {
-        m_cleaner->kill();
-    }
-
-    // TODO: only clean the filters that were changed from the config
-    //FIXME: Cleaner not yet implemented
-    m_cleaner = new IndexCleaner(this);
-    connect(m_cleaner, SIGNAL(finished(KJob*)), this, SLOT(slotCleaningDone()));
-    m_cleaner->start();
-}
-
-
 void IndexScheduler::slotConfigFiltersChanged()
 {
-    restartCleaner();
-
     // We need to this - there is no way to avoid it
     m_basicIQ->clear();
     m_fileIQ->clear();
@@ -370,44 +338,10 @@ bool IndexScheduler::scheduleFileQueue()
     }
 }
 
-void IndexScheduler::scheduleCleaning()
-{
-    //If there is no cleaner ready, don't clean
-    if (!m_cleaner) {
-      return;
-    }
-    //Do we need to do some cleaning?
-    switch (m_state) {
-      //If we are already cleaning, don't need to do anything
-      case State_Cleaning:
-          break;
-      case State_Suspended:
-          kDebug() << "No cleaner: suspended";
-          m_cleaner->suspend();
-          break;
-      case State_OnBattery:
-      case State_LowDiskSpace:
-      case State_UserIdle:
-      case State_Normal:
-      default:
-          m_state = State_Cleaning;
-          //Suspend the other queues here
-          //so that they are never running at the same time
-          m_basicIQ->suspend();
-          m_fileIQ->suspend();
-          kDebug() << "Resuming cleaner";
-          m_cleaner->resume();
-          break;
-    }
-}
-
 void IndexScheduler::slotScheduleIndexing()
 {
     //Set the state from the event monitor
     setStateFromEvent();
-
-    //Suspend or resume the cleaner, if there is one.
-    scheduleCleaning();
 
     //Should we run the basic queue?
     bool runBasic = scheduleBasicQueue();

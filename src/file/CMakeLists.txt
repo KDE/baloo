@@ -15,7 +15,6 @@ set(file_SRCS
     fileindexer.cpp
     fileindexerconfig.cpp
     indexscheduler.cpp
-    indexcleaner.cpp
     indexingqueue.cpp
     basicindexingqueue.cpp
     fileindexingqueue.cpp
