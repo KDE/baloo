@@ -90,13 +90,22 @@ int main(int argc, char* argv[])
         job->exec();
 
         Baloo::File file = job->file();
-        int fid = Baloo::deserialize("file", job->file().id());
+        int fid = Baloo::deserialize("file", file.id());
         text = colorString(QString::number(fid), 31);
         text += " ";
         text += colorString(url.toLocalFile(), 32);
         stream << text << endl;
 
-        QVariantMap properties = job->file().properties();
+        QVariantMap properties = file.properties();
+        if (file.rating())
+            properties.insert("rating", file.rating());
+
+        if (!file.tags().isEmpty())
+            properties.insert("tags", file.tags().join(", "));
+
+        if (!file.userComment().isEmpty())
+            properties.insert("userComment", file.userComment());
+
         QMapIterator<QString, QVariant> it(properties);
         while (it.hasNext()) {
           it.next();
