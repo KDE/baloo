@@ -89,7 +89,7 @@ void EventMonitor::slotCheckAvailableSpace()
     if (!m_enabled)
         return;
 
-    QString path = KStandardDirs::locateLocal("data", "nepomuk/repository/", false);
+    QString path = KStandardDirs::locateLocal("data", "baloo/file", false);
     KDiskFreeSpaceInfo info = KDiskFreeSpaceInfo::freeSpaceInfo(path);
     if (info.isValid()) {
         KConfig config("baloofilerc");
