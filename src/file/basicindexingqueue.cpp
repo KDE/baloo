@@ -196,7 +196,7 @@ bool BasicIndexingQueue::shouldIndex(FileMapping& file, const QString& mimetype)
 
 bool BasicIndexingQueue::shouldIndexContents(const QString& dir)
 {
-    return m_config->shouldFileBeIndexed(dir);
+    return m_config->shouldFolderBeIndexed(dir);
 }
 
 void BasicIndexingQueue::index(const FileMapping& file)
