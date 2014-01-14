@@ -37,7 +37,6 @@
 
 #include <KDebug>
 #include <KConfigGroup>
-#include <baloo/file.h>
 
 #ifdef BUILD_KINOTIFY
 namespace
