@@ -115,10 +115,12 @@ int main(int argc, char* argv[])
     Baloo::ResultIterator iter = query.exec();
     while (iter.next()) {
         const QUrl url = iter.url();
+        const QByteArray id = iter.id();
+        int fid = Baloo::deserialize("file", id);
 
         QString title;
         if (url.isLocalFile()) {
-            title = colorString(url.toLocalFile(), 32);
+            title = colorString(QString::number(fid), 31) + " " + colorString(url.toLocalFile(), 32);
         }
         else {
             title = colorString(QString::fromUtf8(iter.id()), 31);
