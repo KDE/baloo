@@ -97,6 +97,38 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
     if (value.isNull())
         return Xapian::Query();
 
+    if (property.compare(QLatin1String("rating"), Qt::CaseInsensitive) == 0) {
+        int val = value.toInt();
+        if (val == 0)
+            return Xapian::Query();
+
+        QVector<std::string> terms;
+        if (com == Term::Greater || com == Term::GreaterEqual) {
+            if (com == Term::Greater)
+                val++;
+
+            for (int i=val; i<=10; i++) {
+                QByteArray arr = 'R' + QByteArray::number(i);
+                terms << arr.constData();
+            }
+        }
+        else if (com == Term::Less || com == Term::LessEqual) {
+            if (com == Term::Less)
+                val--;
+
+            for (int i=1; i<=val; i++) {
+                QByteArray arr = 'R' + QByteArray::number(i);
+                terms << arr.constData();
+            }
+        }
+        else if (com == Term::Equal) {
+            QByteArray arr = 'R' + QByteArray::number(val);
+            terms << arr.constData();
+        }
+
+        return Xapian::Query(Xapian::Query::OP_OR, terms.begin(), terms.end());
+    }
+
     if (com == Term::Contains) {
         Xapian::QueryParser parser;
         parser.set_database(*xapianDb());
