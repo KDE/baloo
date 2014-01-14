@@ -14,6 +14,7 @@ include_directories(
   ${KDE4_INCLUDES}
   ${QJSON_INCLUDE_DIR}
   ${KFILEMETADATA_INCLUDE_DIR}
+  ${XAPIAN_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/file/lib
