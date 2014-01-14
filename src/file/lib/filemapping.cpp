@@ -27,54 +27,45 @@
 
 using namespace Baloo;
 
-class FileMapping::Private {
-public:
-    Private() : id(0) {}
-
-    QString url;
-    uint id;
-};
-
 FileMapping::FileMapping()
-    : d(new Private)
+    : m_id(0)
 {
 }
 
 FileMapping::FileMapping(const QString& url)
-    : d(new Private)
+    : m_id(0)
 {
-    d->url = url;
+    m_url = url;
 }
 
 FileMapping::FileMapping(uint id)
-    : d(new Private)
 {
-    d->id = id;
+    m_id = id;
 }
 
 uint FileMapping::id() const
 {
-    return d->id;
+    return m_id;
 }
 
 QString FileMapping::url() const
 {
-    return d->url;
+    return m_url;
 }
 
 void FileMapping::setId(uint id)
 {
-    d->id = id;
+    m_id = id;
 }
 
 void FileMapping::setUrl(const QString& url)
 {
-    d->url = url;
+    m_url = url;
 }
 
 bool FileMapping::fetched()
 {
-    if (d->id == 0 || d->url.isEmpty())
+    if (m_id == 0 || m_url.isEmpty())
         return false;
 
     return true;
@@ -85,34 +76,34 @@ bool FileMapping::fetch(QSqlDatabase db)
     if (fetched())
         return true;
 
-    if (d->id == 0 && d->url.isEmpty())
+    if (m_id == 0 && m_url.isEmpty())
         return false;
 
-    if (d->url.isEmpty()) {
+    if (m_url.isEmpty()) {
         QSqlQuery query(db);
         query.setForwardOnly(true);
         query.prepare(QLatin1String("select url from files where id = ?"));
-        query.addBindValue(d->id);
+        query.addBindValue(m_id);
         query.exec();
 
         if (!query.next()) {
             return false;
         }
 
-        d->url = query.value(0).toString();
+        m_url = query.value(0).toString();
     }
     else {
         QSqlQuery query(db);
         query.setForwardOnly(true);
         query.prepare(QLatin1String("select id from files where url = ?"));
-        query.addBindValue(d->url);
+        query.addBindValue(m_url);
         query.exec();
 
         if (!query.next()) {
             return false;
         }
 
-        d->id = query.value(0).toUInt();
+        m_id = query.value(0).toUInt();
     }
 
     return true;
@@ -120,33 +111,33 @@ bool FileMapping::fetch(QSqlDatabase db)
 
 bool FileMapping::create(QSqlDatabase db)
 {
-    if (d->id)
+    if (m_id)
         return false;
 
-    if (d->url.isEmpty())
+    if (m_url.isEmpty())
         return false;
 
     QSqlQuery query(db);
     query.prepare(QLatin1String("insert into files (url) VALUES (?)"));
-    query.addBindValue(d->url);
+    query.addBindValue(m_url);
 
     if (!query.exec()) {
         return false;
     }
 
-    d->id = query.lastInsertId().toUInt();
+    m_id = query.lastInsertId().toUInt();
     return true;
 }
 
 void FileMapping::clear()
 {
-    d->id = 0;
-    d->url.clear();
+    m_id = 0;
+    m_url.clear();
 }
 
 bool FileMapping::empty() const
 {
-    return d->url.isEmpty() && d->id == 0;
+    return m_url.isEmpty() && m_id == 0;
 }
 
 bool FileMapping::operator==(const FileMapping& rhs) const

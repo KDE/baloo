@@ -63,8 +63,8 @@ public:
     bool operator ==(const FileMapping& rhs) const;
 
 private:
-    class Private;
-    Private* d;
+    QString m_url;
+    uint m_id;
 };
 
 }
