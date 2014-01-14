@@ -32,7 +32,8 @@ File::File()
 }
 
 File::File(const File& f)
-    : d(new FilePrivate(*f.d))
+    : Item(f)
+    , d(new FilePrivate(*f.d))
 {
 }
 

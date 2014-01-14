@@ -89,7 +89,11 @@ int main(int argc, char* argv[])
         job = new Baloo::FileFetchJob(url.toLocalFile());
         job->exec();
 
-        text = colorString(url.toLocalFile(), 32);
+        Baloo::File file = job->file();
+        int fid = Baloo::deserialize("file", job->file().id());
+        text = colorString(QString::number(fid), 31);
+        text += " ";
+        text += colorString(url.toLocalFile(), 32);
         stream << text << endl;
 
         QVariantMap properties = job->file().properties();
