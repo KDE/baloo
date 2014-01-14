@@ -34,21 +34,22 @@
 
 using namespace Baloo;
 
-IndexScheduler::IndexScheduler(Database* db, QObject* parent)
+IndexScheduler::IndexScheduler(Database* db, FileIndexerConfig* config, QObject* parent)
     : QObject(parent)
     , m_indexing(false)
+    , m_config(config)
     , m_db(db)
 {
-    FileIndexerConfig* indexConfig = FileIndexerConfig::self();
-    connect(indexConfig, SIGNAL(includeFolderListChanged(QStringList, QStringList)),
+    Q_ASSERT(m_config);
+    connect(m_config, SIGNAL(includeFolderListChanged(QStringList, QStringList)),
             this, SLOT(slotIncludeFolderListChanged(QStringList, QStringList)));
-    connect(indexConfig, SIGNAL(excludeFolderListChanged(QStringList, QStringList)),
+    connect(m_config, SIGNAL(excludeFolderListChanged(QStringList, QStringList)),
             this, SLOT(slotExcludeFolderListChanged(QStringList, QStringList)));
 
     // FIXME: What if both the signals are emitted?
-    connect(indexConfig, SIGNAL(fileExcludeFiltersChanged()),
+    connect(m_config, SIGNAL(fileExcludeFiltersChanged()),
             this, SLOT(slotConfigFiltersChanged()));
-    connect(indexConfig, SIGNAL(mimeTypeFiltersChanged()),
+    connect(m_config, SIGNAL(mimeTypeFiltersChanged()),
             this, SLOT(slotConfigFiltersChanged()));
 
     // Stop indexing when a device is unmounted
@@ -56,7 +57,7 @@ IndexScheduler::IndexScheduler(Database* db, QObject* parent)
     // connect(cache, SIGNAL(deviceTeardownRequested(const RemovableMediaCache::Entry*)),
     //        this, SLOT(slotTeardownRequested(const RemovableMediaCache::Entry*)));
 
-    m_basicIQ = new BasicIndexingQueue(m_db, this);
+    m_basicIQ = new BasicIndexingQueue(m_db, m_config, this);
     m_fileIQ = new FileIndexingQueue(m_db, this);
 
     connect(m_basicIQ, SIGNAL(finishedIndexing()), this, SIGNAL(basicIndexingDone()));
@@ -225,7 +226,7 @@ void IndexScheduler::queueAllFoldersForUpdate(bool forceUpdate)
         flags |= ForceUpdate;
 
     // update everything again in case the folders changed
-    Q_FOREACH (const QString& f, FileIndexerConfig::self()->includeFolders()) {
+    Q_FOREACH (const QString& f, m_config->includeFolders()) {
         m_basicIQ->enqueue(FileMapping(f), flags);
     }
 

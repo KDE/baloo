@@ -34,13 +34,14 @@ namespace Baloo
 {
 
 class MetadataMover;
+class FileIndexerConfig;
 
 class FileWatch : public QObject
 {
     Q_OBJECT
 
 public:
-    FileWatch(Database* db, QObject* parent = 0);
+    FileWatch(Database* db, FileIndexerConfig* config, QObject* parent = 0);
     ~FileWatch();
 
 Q_SIGNALS:
@@ -102,6 +103,7 @@ private:
     Database* m_db;
 
     MetadataMover* m_metadataMover;
+    FileIndexerConfig* m_config;
 
 #ifdef BUILD_KINOTIFY
     KInotify* m_dirWatch;

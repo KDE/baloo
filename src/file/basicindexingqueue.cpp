@@ -34,11 +34,11 @@
 
 using namespace Baloo;
 
-BasicIndexingQueue::BasicIndexingQueue(Database* db, QObject* parent)
+BasicIndexingQueue::BasicIndexingQueue(Database* db, FileIndexerConfig* config, QObject* parent)
     : IndexingQueue(parent)
     , m_db(db)
+    , m_config(config)
 {
-
 }
 
 void BasicIndexingQueue::clear()
@@ -149,11 +149,11 @@ bool BasicIndexingQueue::process(FileMapping& file, UpdateDirFlags flags)
 
 bool BasicIndexingQueue::shouldIndex(FileMapping& file, const QString& mimetype) const
 {
-    bool shouldBeIndexed = FileIndexerConfig::self()->shouldBeIndexed(file.url());
+    bool shouldBeIndexed = m_config->shouldBeIndexed(file.url());
     if (!shouldBeIndexed)
         return false;
 
-    bool shouldIndexType = FileIndexerConfig::self()->shouldMimeTypeBeIndexed(mimetype);
+    bool shouldIndexType = m_config->shouldMimeTypeBeIndexed(mimetype);
     if (!shouldIndexType)
         return false;
 
@@ -194,10 +194,9 @@ bool BasicIndexingQueue::shouldIndex(FileMapping& file, const QString& mimetype)
     return false;
 }
 
-// static
 bool BasicIndexingQueue::shouldIndexContents(const QString& dir)
 {
-    return FileIndexerConfig::self()->shouldFolderBeIndexed(dir);
+    return m_config->shouldFileBeIndexed(dir);
 }
 
 void BasicIndexingQueue::index(const FileMapping& file)

@@ -31,6 +31,7 @@ namespace Baloo
 
 class IndexCleaner;
 class FileIndexingQueue;
+class FileIndexerConfig;
 class CommitQueue;
 class EventMonitor;
 
@@ -62,7 +63,7 @@ public:
         State_Cleaning = 5
     };
 
-    IndexScheduler(Database* db, QObject* parent = 0);
+    IndexScheduler(Database* db, FileIndexerConfig* config, QObject* parent = 0);
     ~IndexScheduler();
 
     bool isSuspended() const;
@@ -183,6 +184,7 @@ private:
 
     IndexCleaner* m_cleaner;
 
+    FileIndexerConfig* m_config;
     // Queues
     BasicIndexingQueue* m_basicIQ;
     FileIndexingQueue* m_fileIQ;

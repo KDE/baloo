@@ -33,6 +33,8 @@ class Database;
 namespace Baloo
 {
 
+class FileIndexerConfig;
+
 enum UpdateDirFlag {
     /**
      * No flags, only used to make code more readable
@@ -67,7 +69,7 @@ class BasicIndexingQueue: public IndexingQueue
 {
     Q_OBJECT
 public:
-    explicit BasicIndexingQueue(Database* db, QObject* parent = 0);
+    explicit BasicIndexingQueue(Database* db, FileIndexerConfig* config, QObject* parent = 0);
 
     QString currentUrl() const;
     UpdateDirFlags currentFlags() const;
@@ -101,7 +103,7 @@ private:
     void index(const FileMapping& file);
 
     bool shouldIndex(FileMapping& file, const QString& mimetype) const;
-    static bool shouldIndexContents(const QString& dir);
+    bool shouldIndexContents(const QString& dir);
 
     /**
      * Check if the \p path needs to be indexed based on the \p flags
@@ -121,6 +123,7 @@ private:
     UpdateDirFlags m_currentFlags;
 
     Database* m_db;
+    FileIndexerConfig* m_config;
 };
 
 }

@@ -24,22 +24,21 @@
 
 #include <KDebug>
 
-#include <QtCore/QTimer>
+#include <QTimer>
 #include <QDBusConnection>
 
 using namespace Baloo;
 
-FileIndexer::FileIndexer(Database* db, QObject* parent)
+FileIndexer::FileIndexer(Database* db, FileIndexerConfig* config, QObject* parent)
     : QObject(parent)
+    , m_config(config)
     , m_startupUpdateDone(false)
 {
-    // Create the configuration instance singleton (for thread-safety)
-    // ==============================================================
-    (void)new FileIndexerConfig(this);
+    Q_ASSERT(config);
 
     // setup the actual index scheduler
     // ==============================================================
-    m_indexScheduler = new IndexScheduler(db, this);
+    m_indexScheduler = new IndexScheduler(db, config, this);
 
     // setup status connections
     connect(m_indexScheduler, SIGNAL(statusStringChanged()),
@@ -77,7 +76,7 @@ void FileIndexer::update()
         return;
 
     // start initial indexing honoring the hidden config option to disable it
-    if (FileIndexerConfig::self()->isInitialRun() || !FileIndexerConfig::self()->initialUpdateDisabled()) {
+    if (m_config->isInitialRun() || !m_config->initialUpdateDisabled()) {
         m_indexScheduler->updateAll();
     }
     m_startupUpdateDone = true;
@@ -85,7 +84,7 @@ void FileIndexer::update()
 
 void FileIndexer::slotBasicIndexingDone()
 {
-    FileIndexerConfig::self()->setInitialRun(false);
+    m_config->setInitialRun(false);
 }
 
 void FileIndexer::emitStatusMessage()
@@ -172,7 +171,7 @@ void FileIndexer::updateFolder(const QString& path, bool recursive, bool forced)
         else
             dirPath = info.absolutePath();
 
-        if (FileIndexerConfig::self()->shouldFolderBeIndexed(dirPath)) {
+        if (m_config->shouldFolderBeIndexed(dirPath)) {
             indexFolder(path, recursive, forced);
         }
     }

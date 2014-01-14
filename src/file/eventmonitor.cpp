@@ -18,7 +18,6 @@
 */
 
 #include "eventmonitor.h"
-#include "fileindexerconfig.h"
 #include "indexscheduler.h"
 
 #include <KDebug>
@@ -28,6 +27,7 @@
 #include <KNotification>
 #include <KIcon>
 #include <KIdleTime>
+#include <KConfigGroup>
 
 #include <Solid/PowerManagement>
 
@@ -89,11 +89,12 @@ void EventMonitor::slotCheckAvailableSpace()
     if (!m_enabled)
         return;
 
-
     QString path = KStandardDirs::locateLocal("data", "nepomuk/repository/", false);
     KDiskFreeSpaceInfo info = KDiskFreeSpaceInfo::freeSpaceInfo(path);
     if (info.isValid()) {
-        if (info.available() <= FileIndexerConfig::self()->minDiskSpace()) {
+        KConfig config("baloofilerc");
+        int minSize = config.group("General").readEntry("min disk space", KIO::filesize_t(200 * 1024 * 1024));
+        if (info.available() <= minSize) {
             m_isDiskSpaceLow = true;
             Q_EMIT diskSpaceStatusChanged(true);
 

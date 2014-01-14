@@ -23,7 +23,6 @@
 
 #include "fileindexingqueue.h"
 #include "fileindexingjob.h"
-#include "fileindexerconfig.h"
 #include "util.h"
 #include "database.h"
 
@@ -39,7 +38,6 @@ FileIndexingQueue::FileIndexingQueue(Database* db, QObject* parent)
     m_batchSize = 40;
 
     m_fileQueue.reserve(m_maxSize);
-
 }
 
 // FIXME: We are not emiting startedIndexing!

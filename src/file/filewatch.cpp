@@ -37,6 +37,7 @@
 
 #include <KDebug>
 #include <KConfigGroup>
+#include <baloo/file.h>
 
 #ifdef BUILD_KINOTIFY
 namespace
@@ -48,7 +49,7 @@ namespace
 class IgnoringKInotify : public KInotify
 {
 public:
-    IgnoringKInotify(RegExpCache* rec, QObject* parent);
+    IgnoringKInotify(RegExpCache* rec, Baloo::FileIndexerConfig* config, QObject* parent);
     ~IgnoringKInotify();
 
 protected:
@@ -56,11 +57,13 @@ protected:
 
 private:
     RegExpCache* m_pathExcludeRegExpCache;
+    Baloo::FileIndexerConfig* m_config;
 };
 
-IgnoringKInotify::IgnoringKInotify(RegExpCache* rec, QObject* parent)
-    : KInotify(parent),
-      m_pathExcludeRegExpCache(rec)
+IgnoringKInotify::IgnoringKInotify(RegExpCache* rec, Baloo::FileIndexerConfig* config, QObject* parent)
+    : KInotify(parent)
+    , m_pathExcludeRegExpCache(rec)
+    , m_config(config)
 {
 }
 
@@ -80,14 +83,14 @@ bool IgnoringKInotify::filterWatch(const QString& path, WatchEvents& modes, Watc
     // earlier ones would have already been tested by this function
     QString file = cpts.last();
 
-    bool shouldFileNameBeIndexed = Baloo::FileIndexerConfig::self()->shouldFileBeIndexed(file);
+    bool shouldFileNameBeIndexed = m_config->shouldFileBeIndexed(file);
     if (!shouldFileNameBeIndexed) {
         // If the path should not be indexed then we do not want to watch it
         // This is an optimization
         return false;
     }
 
-    bool shouldFolderBeIndexed = Baloo::FileIndexerConfig::self()->folderInFolderList(path);
+    bool shouldFolderBeIndexed = m_config->folderInFolderList(path);
 
     // Only watch the index folders for file change.
     // We still need to monitor everything for file creation because directories count as
@@ -104,9 +107,10 @@ bool IgnoringKInotify::filterWatch(const QString& path, WatchEvents& modes, Watc
 
 using namespace Baloo;
 
-FileWatch::FileWatch(Database* db, QObject* parent)
+FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
     : QObject(parent)
     , m_db(db)
+    , m_config(config)
 #ifdef BUILD_KINOTIFY
     , m_dirWatch(0)
 #endif
@@ -136,7 +140,7 @@ FileWatch::FileWatch(Database* db, QObject* parent)
 
 #ifdef BUILD_KINOTIFY
     // monitor the file system for changes (restricted by the inotify limit)
-    m_dirWatch = new IgnoringKInotify(m_pathExcludeRegExpCache, this);
+    m_dirWatch = new IgnoringKInotify(m_pathExcludeRegExpCache, m_config, this);
 
     connect(m_dirWatch, SIGNAL(moved(QString, QString)),
             this, SLOT(slotFileMoved(QString, QString)));
@@ -164,7 +168,7 @@ FileWatch::FileWatch(Database* db, QObject* parent)
     watchFolder(home);
 
     //Watch all indexed folders unless they are subdirectories of home, which is already watched
-    QStringList folders = FileIndexerConfig::self()->includeFolders();
+    QStringList folders = m_config->includeFolders();
     Q_FOREACH (const QString& folder, folders) {
         if (!folder.startsWith(home)) {
             watchFolder(folder);
@@ -184,7 +188,7 @@ FileWatch::FileWatch(Database* db, QObject* parent)
     addWatchesForMountedRemovableMedia();
     */
 
-    connect(FileIndexerConfig::self(), SIGNAL(configChanged()),
+    connect(m_config, SIGNAL(configChanged()),
             this, SLOT(updateIndexedFoldersWatches()));
 }
 
@@ -332,7 +336,7 @@ void FileWatch::updateIndexedFoldersWatches()
 {
 #ifdef BUILD_KINOTIFY
     if (m_dirWatch) {
-        QStringList folders = FileIndexerConfig::self()->includeFolders();
+        QStringList folders = m_config->includeFolders();
         Q_FOREACH (const QString& folder, folders) {
             m_dirWatch->removeWatch(folder);
             watchFolder(folder);

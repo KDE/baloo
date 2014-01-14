@@ -66,7 +66,7 @@ IndexCleaner::IndexCleaner(QObject* parent)
 void IndexCleaner::start()
 {
     kDebug() << "CLEANING!!";
-    const QString folderFilter = constructExcludeFolderFilter(FileIndexerConfig::self());
+    const QString folderFilter;// = constructExcludeFolderFilter(FileIndexerConfig::self());
 
     //Start suspended
     this->suspend();

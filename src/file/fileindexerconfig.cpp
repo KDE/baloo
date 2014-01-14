@@ -20,8 +20,8 @@
 #include "fileindexerconfig.h"
 #include "fileexcludefilters.h"
 
-#include <QtCore/QStringList>
-#include <QtCore/QDir>
+#include <QStringList>
+#include <QDir>
 #include <QWriteLocker>
 #include <QReadLocker>
 
@@ -47,17 +47,11 @@ bool isDirHidden(QDir& dir)
 
 using namespace Baloo;
 
-FileIndexerConfig* FileIndexerConfig::s_self = 0;
-
 FileIndexerConfig::FileIndexerConfig(QObject* parent)
     : QObject(parent)
     , m_config("baloofilerc")
     , m_indexHidden(false)
 {
-    if (!s_self) {
-        s_self = this;
-    }
-
     KDirWatch* dirWatch = KDirWatch::self();
     connect(dirWatch, SIGNAL(dirty(const QString&)),
             this, SLOT(slotConfigDirty()));
@@ -71,12 +65,6 @@ FileIndexerConfig::FileIndexerConfig(QObject* parent)
 
 FileIndexerConfig::~FileIndexerConfig()
 {
-}
-
-
-FileIndexerConfig* FileIndexerConfig::self()
-{
-    return s_self;
 }
 
 
