@@ -24,7 +24,6 @@
 #define RESULT_ITERATOR_H
 
 #include "pim_export.h"
-#include "result.h"
 
 #include <Akonadi/Item>
 
