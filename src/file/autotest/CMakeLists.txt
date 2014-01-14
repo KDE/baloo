@@ -65,3 +65,30 @@ target_link_libraries(fileindexerconfigtest
   ${QT_QTTEST_LIBRARY}
   ${KDE4_KDECORE_LIBS}
 )
+
+#
+# Basic Indexing Queue Test
+#
+
+set(basicIndexingQueue_SRC
+    basicindexingqueuetest.cpp
+    ../basicindexingqueue.cpp
+    ../basicindexingjob.cpp
+    ../indexingqueue.cpp
+    ../fileindexerconfig.cpp
+    ../fileexcludefilters.cpp
+    ../regexpcache.cpp
+    ../database.cpp
+    ../util.cpp
+    ../lib/filemapping.cpp
+)
+
+kde4_add_unit_test(basicindexingqueuetest NOGUI ${basicIndexingQueue_SRC})
+
+target_link_libraries(basicindexingqueuetest
+  ${QT_QTTEST_LIBRARY}
+  ${QT_QTSQL_LIBRARY}
+  ${KDE4_KDECORE_LIBS}
+  ${XAPIAN_LIBRARIES}
+)
+
