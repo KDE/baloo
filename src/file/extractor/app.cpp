@@ -32,6 +32,8 @@
 #include <QTimer>
 #include <QtCore/QFileInfo>
 #include <QDBusMessage>
+#include <QSqlQuery>
+#include <QSqlError>
 #include <QDBusConnection>
 
 #include <iostream>
@@ -57,6 +59,15 @@ App::App(QObject* parent)
         if (mapping.fetch(m_db.sqlDatabase())) {
             // arg is an id
             url = mapping.url();
+            // If this url no longer exists, remove it from the mapping db.
+            if (!QFile::exists(url)) {
+                QSqlQuery query(m_db.sqlDatabase());
+                query.prepare("delete from files where url = ?");
+                query.addBindValue(url);
+                if (!query.exec()) {
+                    kError() << query.lastError().text();
+                }
+            }
         } else {
             // arg is a url
             url = args->url(i).toLocalFile();
@@ -66,7 +77,7 @@ App::App(QObject* parent)
         } else {
             // id or url was looked up, but file deleted
             kDebug() << url << "does not exist";
-            //Try to delete it as an id:
+            // Try to delete it as an id:
             // it may have been deleted from the FileMapping db as well.
             // The worst that can happen is deleting nothing.
             deleteDocument(mapping.id());
