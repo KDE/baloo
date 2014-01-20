@@ -41,7 +41,7 @@ QSqlDatabase fileMappingDb()
 {
     QSqlDatabase sqlDb = QSqlDatabase::database("fileMappingDb");
     if (!sqlDb.isValid()) {
-        sqlDb = QSqlDatabase::addDatabase("QSQLITE3", "fileMappingDb");
+        sqlDb = QSqlDatabase::addDatabase("QSQLITE", "fileMappingDb");
         sqlDb.setDatabaseName(dir.name() + "fileMap.sqlite3");
     }
 

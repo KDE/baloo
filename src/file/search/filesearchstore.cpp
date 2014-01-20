@@ -66,7 +66,7 @@ void FileSearchStore::setDbPath(const QString& path)
     const QString conName = "filesearchstore" + QString::number(qrand());
 
     delete m_sqlDb;
-    m_sqlDb = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE3", conName));
+    m_sqlDb = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE", conName));
     m_sqlDb->setDatabaseName(dbPath() + "/fileMap.sqlite3");
     m_sqlDb->open();
 }

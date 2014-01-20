@@ -36,7 +36,7 @@ ConnectionPrivate::ConnectionPrivate(const QString& path)
 {
     m_connectionName = QString::number(qrand());
 
-    m_db = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE3", m_connectionName));
+    m_db = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE", m_connectionName));
     m_db->setDatabaseName(path);
 
     if (!m_db->open()) {
