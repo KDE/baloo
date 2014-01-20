@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef FILEMODIFYJOB_H
-#define FILEMODIFYJOB_H
+#ifndef _BALOO_FILEMODIFYJOB_H
+#define _BALOO_FILEMODIFYJOB_H
 
 #include "itemsavejob.h"
 #include "file.h"
@@ -53,4 +53,4 @@ private:
 };
 
 }
-#endif // FILEMODIFYJOB_H
+#endif // _BALOO_FILEMODIFYJOB_H

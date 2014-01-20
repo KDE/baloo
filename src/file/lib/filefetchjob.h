@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef FILEFETCHJOB_H
-#define FILEFETCHJOB_H
+#ifndef _BALOO_FILEFETCHJOB_H
+#define _BALOO_FILEFETCHJOB_H
 
 #include "file_export.h"
 #include "itemfetchjob.h"
@@ -66,4 +66,4 @@ private:
 
 }
 
-#endif // FILEFETCHJOB_H
+#endif // _BALOO_FILEFETCHJOB_H
