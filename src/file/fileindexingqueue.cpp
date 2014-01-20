@@ -34,7 +34,7 @@ FileIndexingQueue::FileIndexingQueue(Database* db, QObject* parent)
     : IndexingQueue(parent)
     , m_db(db)
 {
-    m_maxSize = 120;
+    m_maxSize = 1200;
     m_batchSize = 40;
 
     m_fileQueue.reserve(m_maxSize);
