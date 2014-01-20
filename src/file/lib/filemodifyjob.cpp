@@ -56,6 +56,11 @@ FileModifyJob::FileModifyJob(const File& file, QObject* parent)
     d->file = file;
 }
 
+FileModifyJob::~FileModifyJob()
+{
+    delete d;
+}
+
 void FileModifyJob::start()
 {
     QTimer::singleShot(0, this, SLOT(doStart()));

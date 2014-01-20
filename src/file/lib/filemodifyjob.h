@@ -33,6 +33,7 @@ class BALOO_FILE_EXPORT FileModifyJob : public ItemSaveJob
 public:
     explicit FileModifyJob(QObject* parent = 0);
     FileModifyJob(const File& file, QObject* parent = 0);
+    virtual ~FileModifyJob();
 
     virtual void start();
 
