@@ -40,13 +40,3 @@ void Baloo::updateIndexingLevel(Xapian::Document& doc, int level)
     const QString term = QLatin1Char('Z') + QString::number(level);
     doc.add_term(term.toStdString());
 }
-
-void Baloo::reopenIfRequired(Xapian::Database* db)
-{
-    try {
-        db->get_doccount();
-    }
-    catch (const Xapian::DatabaseModifiedError&) {
-        db->reopen();
-    }
-}

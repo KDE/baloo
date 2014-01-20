@@ -23,6 +23,7 @@
 #include "util.h"
 
 #include <KDebug>
+#include <KUrl>
 
 #include <QTimer>
 #include <QDBusConnection>
