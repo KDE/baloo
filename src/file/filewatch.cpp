@@ -318,6 +318,7 @@ void FileWatch::slotInotifyWatchUserLimitReached(const QString& path)
             m_dirWatch = 0;
         }
         connectToKDirNotify();
+        Q_EMIT installedWatches();
     }
 }
 #endif
