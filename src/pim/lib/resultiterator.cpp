@@ -30,6 +30,11 @@ ResultIterator::ResultIterator()
     d->m_firstElement = false;
 }
 
+ResultIterator::~ResultIterator()
+{
+    delete d;
+}
+
 bool ResultIterator::next()
 {
     if (d->m_iter == d->m_end)

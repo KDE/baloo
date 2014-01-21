@@ -105,6 +105,11 @@ Term::Term(Term::Operation op, const QList<Term>& t)
     d->m_subTerms = t;
 }
 
+Term::~Term()
+{
+    delete d;
+}
+
 bool Term::isValid() const
 {
     if (d->m_property.isEmpty()) {

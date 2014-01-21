@@ -81,6 +81,7 @@ public:
     Term(Operation op);
     Term(Operation op, const Term& t);
     Term(Operation op, const QList<Term>& t);
+    ~Term();
 
     bool isValid() const;
 
