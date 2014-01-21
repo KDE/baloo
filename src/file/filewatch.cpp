@@ -288,8 +288,8 @@ void FileWatch::connectToKDirNotify()
 //a helper which modifies /proc/sys/fs/inotify/max_user_watches
 bool raiseWatchLimit()
 {
-    KAuth::Action limitAction("org.kde.nepomuk.filewatch.raiselimit");
-    limitAction.setHelperID("org.kde.nepomuk.filewatch");
+    KAuth::Action limitAction("org.kde.baloo.filewatch.raiselimit");
+    limitAction.setHelperID("org.kde.baloo.filewatch");
 
     KAuth::ActionReply reply = limitAction.execute();
     if (reply.failed()) {
@@ -310,7 +310,7 @@ void FileWatch::slotInotifyWatchUserLimitReached(const QString& path)
     } else {
         //If we got here, we hit the limit and couldn't authenticate to raise it,
         // so put something in the syslog so someone notices.
-        syslog(LOG_USER | LOG_WARNING, "KDE Nepomuk Filewatch service reached the folder watch limit. File changes may be ignored.");
+        syslog(LOG_USER | LOG_WARNING, "KDE Baloo Filewatch service reached the inotify folder watch limit. File changes may be ignored.");
         // we do it the brutal way for now hoping with new kernels and defaults this will never happen
         // Delete the KInotify and switch to KDirNotify dbus signals
         if (m_dirWatch) {

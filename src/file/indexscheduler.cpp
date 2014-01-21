@@ -187,7 +187,6 @@ void IndexScheduler::slotFinishedIndexing()
         m_eventMonitor->suspendDiskSpaceMonitor();
         setIndexingStarted(false);
     }
-
 }
 
 void IndexScheduler::updateDir(const QString& path, UpdateDirFlags flags)
