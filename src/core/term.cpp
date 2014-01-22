@@ -49,6 +49,11 @@ Term::Term()
 {
 }
 
+Term::Term(const Term& t)
+    : d(new Private(*t.d))
+{
+}
+
 Term::Term(const QString& property)
     : d(new Private)
 {

@@ -51,6 +51,7 @@ public:
     };
 
     Term();
+    Term(const Term& t);
 
     /**
      * The Item must contain the property \p property
