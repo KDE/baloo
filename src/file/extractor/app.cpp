@@ -129,9 +129,7 @@ void App::processNextUrl()
         }
     }
 
-    Result result;
-    result.setInputUrl(url);
-    result.setInputMimetype(mimetype);
+    Result result(url, mimetype);
     result.setId(file.id());
     result.setDocument(doc);
 

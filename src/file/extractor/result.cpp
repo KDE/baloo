@@ -30,8 +30,13 @@
 #include <kfilemetadata/propertyinfo.h>
 #include <kfilemetadata/typeinfo.h>
 
-Result::Result()
-    : KFileMetaData::ExtractionResult()
+// In order to use it in a vector
+Result::Result(): ExtractionResult(QString(), QString())
+{
+}
+
+Result::Result(const QString& url, const QString& mimetype)
+    : KFileMetaData::ExtractionResult(url, mimetype)
 {
 }
 
