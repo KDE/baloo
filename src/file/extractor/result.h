@@ -33,7 +33,7 @@ public:
 
     virtual void add(KFileMetaData::Property::Property property, const QVariant& value);
     virtual void append(const QString& text);
-    virtual void addType(const QString& type);
+    virtual void addType(KFileMetaData::Type::Type type);
 
     void save(Xapian::WritableDatabase& db);
 

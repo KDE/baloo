@@ -28,6 +28,7 @@
 
 #include <QDateTime>
 #include <kfilemetadata/propertyinfo.h>
+#include <kfilemetadata/typeinfo.h>
 
 Result::Result()
     : KFileMetaData::ExtractionResult()
@@ -69,9 +70,10 @@ void Result::append(const QString& text)
     m_termGenForText.index_text(text.toStdString());
 }
 
-void Result::addType(const QString& type)
+void Result::addType(KFileMetaData::Type::Type type)
 {
-    QString t = 'T' + type.toLower();
+    KFileMetaData::TypeInfo ti(type);
+    QString t = 'T' + ti.name().toLower();
     m_doc.add_boolean_term(t.toStdString());
 }
 
