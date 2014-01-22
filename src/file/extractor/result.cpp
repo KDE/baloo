@@ -27,37 +27,40 @@
 #include <qjson/serializer.h>
 
 #include <QDateTime>
+#include <kfilemetadata/propertyinfo.h>
 
 Result::Result()
     : KFileMetaData::ExtractionResult()
 {
 }
 
-void Result::add(const QString& key_, const QVariant& val)
+void Result::add(KFileMetaData::Property::Property property, const QVariant& value)
 {
-    kDebug() << key_ << val;
-    m_map.insertMulti(key_, val);
+    KFileMetaData::PropertyInfo pi(property);
+    kDebug() << pi.name() << value;
+    m_map.insertMulti(pi.name(), value);
 
-    QString key = key_.toUpper();
+    QString key = pi.name().toUpper();
 
-    if (val.type() == QVariant::Bool) {
-        m_doc.add_boolean_term(key.toStdString());
+    if (value.type() == QVariant::Bool) {
+        m_doc.add_boolean_term(key.toUtf8().constData());
     }
-    else if (val.type() == QVariant::Int) {
-        const QString term = key + val.toString();
-        m_doc.add_term(term.toStdString());
+    else if (value.type() == QVariant::Int) {
+        const QString term = key + value.toString();
+        m_doc.add_term(term.toUtf8().constData());
     }
-    else if (val.type() == QVariant::DateTime) {
-        const QString term = key + val.toDateTime().toString(Qt::ISODate);
-        m_doc.add_term(term.toStdString());
+    else if (value.type() == QVariant::DateTime) {
+        const QString term = key + value.toDateTime().toString(Qt::ISODate);
+        m_doc.add_term(term.toUtf8().constData());
     }
     else {
-        const std::string value = val.toString().toStdString();
-        if (value.empty())
+        const QByteArray val = value.toString().toUtf8();
+        if (val.isEmpty())
             return;
 
-        m_termGen.index_text(value);
-        m_termGen.index_text(value, 1, key.toStdString());
+        m_termGen.index_text(val.constData(), 1, key.toUtf8().constData());
+        if (pi.shouldBeIndexed())
+            m_termGen.index_text(val.constData());
     }
 }
 
