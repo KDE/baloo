@@ -33,6 +33,7 @@
 #include <KStandardDirs>
 #include <KDebug>
 #include <KUrl>
+#include <KMimeType>
 
 using namespace Baloo;
 
@@ -177,6 +178,13 @@ QString FileSearchStore::text(int queryId)
 {
     return KUrl(url(queryId)).fileName();
 }
+
+QString FileSearchStore::icon(int queryId)
+{
+    KMimeType::Ptr mime = KMimeType::findByUrl(url(queryId));
+    return mime->iconName();
+}
+
 
 Xapian::Query FileSearchStore::applyCustomOptions(const Xapian::Query& q, const QVariantHash& options)
 {
