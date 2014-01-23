@@ -103,6 +103,12 @@ void Query::addTypes(const QStringList& typeList)
     }
 }
 
+void Query::setType(const QString& type)
+{
+    d->m_types.clear();
+    addType(type);
+}
+
 void Query::setTypes(const QStringList& types)
 {
     d->m_types = types;

@@ -53,6 +53,7 @@ public:
      */
     void addType(const QString& type);
     void addTypes(const QStringList& typeList);
+    void setType(const QString& type);
     void setTypes(const QStringList& types);
 
     QStringList types() const;
