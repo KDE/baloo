@@ -30,6 +30,11 @@ ResultIterator::ResultIterator()
     d->m_firstElement = false;
 }
 
+ResultIterator::ResultIterator(const ResultIterator& ri)
+    : d(new Private(*ri.d))
+{
+}
+
 ResultIterator::~ResultIterator()
 {
     delete d;

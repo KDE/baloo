@@ -37,6 +37,7 @@ class BALOO_PIM_EXPORT ResultIterator
 {
 public:
     ResultIterator();
+    ResultIterator(const ResultIterator& ri);
     ~ResultIterator();
 
     Akonadi::Item::Id id();
