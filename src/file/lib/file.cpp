@@ -49,6 +49,13 @@ File::~File()
     delete d;
 }
 
+const File& File::operator=(const File& f)
+{
+    delete d;
+    d = new FilePrivate(*f.d);
+    return *this;
+}
+
 File File::fromId(const Item::Id& id)
 {
     File file;

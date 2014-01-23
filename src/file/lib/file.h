@@ -39,6 +39,8 @@ public:
     File(const QString& url);
     ~File();
 
+    const File& operator =(const File& f);
+
     static File fromId(const Item::Id& id);
 
     QString url() const;
