@@ -69,13 +69,13 @@ void SearchRunner::match(Plasma::RunnerContext& context)
         return;
 
     query.setType("Email");
-    Baloo::ResultIterator iter = query.exec();
-    while (context.isValid() && iter.next()) {
+    it = query.exec();
+    while (context.isValid() && it.next()) {
         Plasma::QueryMatch match(this);
-        match.setIcon(KIcon(iter.icon()));
-        match.setId(iter.id());
-        match.setText(iter.text());
-        match.setData(iter.url());
+        match.setIcon(KIcon(it.icon()));
+        match.setId(it.id());
+        match.setText(it.text());
+        match.setData(it.url());
         match.setType(Plasma::QueryMatch::PossibleMatch);
 
         context.addMatch(context.query(), match);
