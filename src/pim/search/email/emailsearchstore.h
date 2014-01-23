@@ -36,6 +36,9 @@ public:
 
     virtual QStringList types();
     virtual QString text(int queryId);
+    virtual QString icon(int) {
+        return QLatin1String("internet-mail");
+    }
 
 protected:
     virtual Xapian::Query convertTypes(const QStringList&) { return Xapian::Query(); }
