@@ -25,11 +25,27 @@
 
 #include "core_export.h"
 #include "item.h"
+#include "searchstore.h"
+
+#include <QExplicitlySharedDataPointer>
 
 namespace Baloo {
 
 class SearchStore;
 class Result;
+
+// TODO: Move this to another file?
+class ResultIteratorPrivate : public QSharedData {
+public:
+    ResultIteratorPrivate();
+    ~ResultIteratorPrivate() {
+        if (store)
+            store->close(queryId);
+    }
+
+    int queryId;
+    SearchStore* store;
+};
 
 class BALOO_CORE_EXPORT ResultIterator
 {
@@ -37,7 +53,6 @@ public:
     ResultIterator();
     // internal
     ResultIterator(int id, SearchStore* store);
-    ~ResultIterator();
 
     bool next();
 
@@ -49,8 +64,7 @@ public:
 
     Result result() const;
 private:
-    class Private;
-    Private* d;
+    QExplicitlySharedDataPointer<ResultIteratorPrivate> d;
 };
 
 }
