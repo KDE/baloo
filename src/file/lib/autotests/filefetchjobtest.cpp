@@ -32,7 +32,21 @@
 #include <xapian.h>
 #include <attr/xattr.h>
 
+#include <QSqlQuery>
+
 using namespace Baloo;
+
+void FileFetchJobTest::init()
+{
+    // TODO: Remove the old xapian DB?
+    // Create the Xapian DB
+    const std::string xapianPath = fileIndexDbPath().toStdString();
+    Xapian::WritableDatabase db(xapianPath, Xapian::DB_CREATE_OR_OPEN);
+
+    // Clear the sqlite db
+    QSqlDatabase sqlDb = fileMappingDb();
+    sqlDb.exec("delete from files");
+}
 
 void FileFetchJobTest::testXapianData()
 {

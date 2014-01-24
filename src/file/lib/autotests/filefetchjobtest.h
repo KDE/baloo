@@ -1,5 +1,5 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
+ * This file is part of the KDE Baloo Project
  * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
  *
  * This library is free software; you can redistribute it and/or
@@ -30,6 +30,8 @@ class FileFetchJobTest : public QObject
     Q_OBJECT
 
 private Q_SLOTS:
+    void init();
+
     void testXapianData();
     void testExtendedAttributes();
 
