@@ -31,8 +31,10 @@ namespace Baloo {
 
 class EmailSearchStore : public XapianSearchStore
 {
+    Q_OBJECT
+    Q_INTERFACES(Baloo::SearchStore)
 public:
-    EmailSearchStore(QObject* parent, const QVariantList& args);
+    EmailSearchStore(QObject* parent = 0);
 
     virtual QStringList types();
     virtual QString text(int queryId);

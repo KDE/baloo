@@ -52,7 +52,7 @@ void FileSearchStoreTest::init()
     m_db->setPath(m_tempDir->name());
     m_db->init();
 
-    m_store = new FileSearchStore(this, QVariantList());
+    m_store = new FileSearchStore(this);
     m_store->setDbPath(m_tempDir->name());
 }
 

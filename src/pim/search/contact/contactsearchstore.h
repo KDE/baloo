@@ -29,8 +29,10 @@ namespace Baloo {
 
 class ContactSearchStore : public XapianSearchStore
 {
+    Q_OBJECT
+    Q_INTERFACES(Baloo::SearchStore)
 public:
-    ContactSearchStore(QObject* parent, const QVariantList& args);
+    ContactSearchStore(QObject* parent = 0);
 
     virtual QStringList types();
 

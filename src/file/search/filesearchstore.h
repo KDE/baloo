@@ -32,8 +32,10 @@ namespace Baloo {
 
 class FileSearchStore : public XapianSearchStore
 {
+    Q_OBJECT
+    Q_INTERFACES(Baloo::SearchStore)
 public:
-    FileSearchStore(QObject* parent, const QVariantList& args);
+    FileSearchStore(QObject* parent = 0);
     virtual ~FileSearchStore();
 
     virtual void setDbPath(const QString& path);

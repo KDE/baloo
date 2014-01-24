@@ -37,7 +37,7 @@
 
 using namespace Baloo;
 
-FileSearchStore::FileSearchStore(QObject* parent, const QVariantList&)
+FileSearchStore::FileSearchStore(QObject* parent)
     : XapianSearchStore(parent)
     , m_sqlDb(0)
     , m_sqlMutex(QMutex::Recursive)

@@ -32,7 +32,7 @@
 
 using namespace Baloo;
 
-ContactSearchStore::ContactSearchStore(QObject* parent, const QVariantList&)
+ContactSearchStore::ContactSearchStore(QObject* parent)
     : XapianSearchStore(parent)
 {
     m_prefix.insert("name", "NA");
