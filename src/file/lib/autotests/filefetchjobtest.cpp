@@ -47,7 +47,7 @@ void FileFetchJobTest::testXapianData()
     Xapian::Document doc;
     doc.set_data(json.constData());
 
-    KTemporaryFile tempFile;
+    QTemporaryFile tempFile;
     tempFile.open();
 
     FileMapping fileMap(tempFile.fileName());
@@ -73,7 +73,7 @@ void FileFetchJobTest::testXapianData()
 
 void FileFetchJobTest::testExtendedAttributes()
 {
-    KTemporaryFile tempFile;
+    QTemporaryFile tempFile;
     tempFile.open();
     QByteArray fileName = QFile::encodeName(tempFile.fileName());
 
