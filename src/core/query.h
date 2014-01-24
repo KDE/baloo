@@ -121,6 +121,8 @@ public:
 
     bool operator == (const Query& rhs) const;
 
+    Query& operator=(const Query& rhs);
+
 private:
     class Private;
     Private* d;

@@ -343,3 +343,9 @@ bool Term::operator==(const Term& rhs) const
 
     return true;
 }
+
+Term& Term::operator=(const Term& rhs)
+{
+    *d = *rhs.d;
+    return *this;
+}

@@ -87,3 +87,8 @@ void Result::setUrl(const QUrl& url)
     d->url = url;
 }
 
+Result& Result::operator=(const Result& rhs)
+{
+    *d = *rhs.d;
+    return *this;
+}

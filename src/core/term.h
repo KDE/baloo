@@ -124,6 +124,8 @@ public:
 
     bool operator == (const Term& rhs) const;
 
+    Term& operator=(const Term& rhs);
+
 private:
     class Private;
     Private* d;
