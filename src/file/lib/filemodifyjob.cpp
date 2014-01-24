@@ -152,6 +152,7 @@ void FileModifyJob::doStart()
             doc = db.get_document(fileMap.id());
 
             removeTerms(doc, "R");
+            removeTerms(doc, "T");
             removeTerms(doc, "TAG");
             removeTerms(doc, "C");
         }
@@ -164,9 +165,14 @@ void FileModifyJob::doStart()
             doc.add_boolean_term(ratingStr.toUtf8().constData());
         }
 
+        Xapian::TermGenerator termGen;
+        termGen.set_document(doc);
+
         Q_FOREACH (const QString& tag, d->tags) {
-            const QString tagStr = "TAG" + tag.toLower();
-            doc.add_term(tagStr.toUtf8().constData());
+            termGen.index_text(tag.toUtf8().constData(), 1, "T");
+
+            const QString tagStr = QLatin1String("TAG") + tag;
+            doc.add_boolean_term(tagStr.toUtf8().constData());
         }
 
         if (!d->comment.isEmpty()) {

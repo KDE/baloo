@@ -48,8 +48,8 @@ FileSearchStore::FileSearchStore(QObject* parent)
     m_prefixes.insert("filename", "F");
     m_prefixes.insert("mimetype", "M");
     m_prefixes.insert("rating", "R");
-    m_prefixes.insert("tag", "TAG");
-    m_prefixes.insert("tags", "TAG");
+    m_prefixes.insert("tag", "T");
+    m_prefixes.insert("tags", "T");
     m_prefixes.insert("usercomment", "C");
 }
 
