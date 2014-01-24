@@ -27,6 +27,7 @@
 #include "qtest_kde.h"
 #include <KTemporaryFile>
 #include <KDebug>
+#include <KTempDir>
 
 #include <qjson/serializer.h>
 #include <xapian.h>
@@ -128,6 +129,31 @@ void FileModifyJobTest::testMultiFileRating()
     QVERIFY(len > 0);
 
     r = QString::fromUtf8(buffer, len).toInt();
+    QCOMPARE(r, 5);
+}
+
+void FileModifyJobTest::testFolder()
+{
+    QTemporaryFile f;
+    f.open();
+
+    // We use the same prefix as the tmpfile
+    KTempDir dir(f.fileName().mid(0, f.fileName().lastIndexOf('/') + 1));
+    const QString url = dir.name();
+
+    File file(url);
+    file.setRating(5);
+
+    FileModifyJob* job = new FileModifyJob(file);
+    QVERIFY(job->exec());
+
+    char buffer[1000];
+
+    const QByteArray arr1 = QFile::encodeName(url);
+    int len = getxattr(arr1.constData(), "user.baloo.rating", &buffer, 1000);
+    QVERIFY(len > 0);
+
+    int r = QString::fromUtf8(buffer, len).toInt();
     QCOMPARE(r, 5);
 }
 

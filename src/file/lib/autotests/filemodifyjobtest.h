@@ -33,6 +33,7 @@ private Q_SLOTS:
     void testSingleFile();
     void testMultiFileRating();
 
+    void testFolder();
 };
 
 }

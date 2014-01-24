@@ -21,6 +21,7 @@
 #include "filemodifyjob.h"
 #include "filemapping.h"
 #include "db.h"
+#include <KDebug>
 
 #include <QTimer>
 #include <QFile>
@@ -114,23 +115,24 @@ void FileModifyJob::doSingleFile()
         }
     }
 
-    QFile file(fileMap.url());
-    if (!file.open(QIODevice::ReadOnly)) {
+    if (!QFile::exists(fileMap.url())) {
         setError(Error_FileDoesNotExist);
-        setErrorText(file.errorString());
+        setErrorText("Does not exist " + fileMap.url());
         emitResult();
         return;
     }
 
+    const QByteArray furl = QFile::encodeName(fileMap.url());
+
     QByteArray rat = QString::number(d->file.rating()).toUtf8();
-    fsetxattr(file.handle(), "user.baloo.rating", rat.constData(), rat.size(), 0);
+    setxattr(furl.constData(), "user.baloo.rating", rat.constData(), rat.size(), 0);
 
     // TODO: Normalize the tags?
     QByteArray tags = d->file.tags().join(",").toUtf8();
-    fsetxattr(file.handle(), "user.baloo.tags", tags.constData(), tags.size(), 0);
+    setxattr(furl.constData(), "user.baloo.tags", tags.constData(), tags.size(), 0);
 
     QByteArray com = d->file.userComment().toUtf8();
-    fsetxattr(file.handle(), "user.xdg.comment", com.constData(), com.size(), 0);
+    setxattr(furl.constData(), "user.xdg.comment", com.constData(), com.size(), 0);
 
     // Save in Xapian
     const std::string path = fileIndexDbPath().toStdString();
@@ -183,27 +185,28 @@ void FileModifyJob::doMultipleFiles()
             fileMap.create(fileMappingDb());
         }
 
-        QFile file(fileMap.url());
-        if (!file.open(QIODevice::ReadOnly)) {
+        if (!QFile::exists(fileMap.url())) {
             setError(Error_FileDoesNotExist);
-            setErrorText(file.errorString());
+            setErrorText("Does not exist " + fileMap.url());
             emitResult();
             return;
         }
 
+        const QByteArray furl = QFile::encodeName(fileMap.url());
+
         if (d->rating) {
             QByteArray rat = QString::number(d->rating).toUtf8();
-            fsetxattr(file.handle(), "user.baloo.rating", rat.constData(), rat.size(), 0);
+            setxattr(furl.constData(), "user.baloo.rating", rat.constData(), rat.size(), 0);
         }
 
         if (!d->tags.isEmpty()) {
             QByteArray tags = d->tags.join(",").toUtf8();
-            fsetxattr(file.handle(), "user.baloo.tags", tags.constData(), tags.size(), 0);
+            setxattr(furl.constData(), "user.baloo.tags", tags.constData(), tags.size(), 0);
         }
 
         if (!d->comment.isEmpty()) {
             QByteArray com = d->comment.toUtf8();
-            fsetxattr(file.handle(), "user.xdg.comment", com.constData(), com.size(), 0);
+            setxattr(furl.constData(), "user.xdg.comment", com.constData(), com.size(), 0);
         }
 
         // Save in Xapian
