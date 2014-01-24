@@ -96,17 +96,17 @@ void FileFetchJobTest::testExtendedAttributes()
     QVERIFY(fileMap.create(sqlDb));
 
     QByteArray rat = QString::number(7).toUtf8();
-    setxattr(fileName.constData(), "user.baloo.rating", rat.constData(), rat.size(), 0);
+    QVERIFY(setxattr(fileName.constData(), "user.baloo.rating", rat.constData(), rat.size(), 0) != -1);
 
     QStringList tags;
     tags << "TagA" << "TagB";
 
     QByteArray tagStr = tags.join(",").toUtf8();
-    setxattr(fileName.constData(), "user.baloo.tags", tagStr.constData(), tagStr.size(), 0);
+    QVERIFY(setxattr(fileName.constData(), "user.baloo.tags", tagStr.constData(), tagStr.size(), 0) != -1);
 
     const QString userComment("UserComment");
     QByteArray com = userComment.toUtf8();
-    setxattr(fileName.constData(), "user.xdg.comment", com.constData(), com.size(), 0);
+    QVERIFY(setxattr(fileName.constData(), "user.xdg.comment", com.constData(), com.size(), 0) != -1);
 
     FileFetchJob* job = new FileFetchJob(tempFile.fileName());
     job->exec();
