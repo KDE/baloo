@@ -13,6 +13,7 @@ Description[de]=Damit Sie keine Dateiänderungen verpassen, setzen Sie die Begre
 Description[es]=Para evitar pérdidas en cambios de archivos, eleve el límite de vigilancia de carpetas inotify
 Description[nl]=Om wijzigingen in bestanden niet te missen vergroot u de limiet op bewaakte mappen van inotify
 Description[pt]=Para evitar as alterações de ficheiros perdidas, aumente o limite de monitorização de pastas do 'inotify'
+Description[pt_BR]=Para evitar a perda de alterações dos arquivos, aumente o limite de monitoramento das pastas do inotify
 Description[sv]=För att undvika att missa filändringar, höj gränsen för katalogbevakning i inotify.
 Description[uk]=Щоб не пропустити змін у файлах, збільшіть значення обмеження щодо кількості тек, за якими спостерігає система (inotify).
 Description[x-test]=xxTo avoid missing file changes, raise the inotify folder watch limitxx
