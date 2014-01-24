@@ -21,8 +21,10 @@
  */
 
 #include "filemapping.h"
+#include <KDebug>
 
 #include <QSqlQuery>
+#include <QSqlError>
 #include <QVariant>
 
 using namespace Baloo;
@@ -122,6 +124,7 @@ bool FileMapping::create(QSqlDatabase db)
     query.addBindValue(m_url);
 
     if (!query.exec()) {
+        kError() << query.lastError().text();
         return false;
     }
 
