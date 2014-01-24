@@ -26,6 +26,7 @@
 
 #include "qtest_kde.h"
 #include <KTemporaryFile>
+#include <KTempDir>
 #include <KDebug>
 
 #include <qjson/serializer.h>
@@ -109,6 +110,41 @@ void FileFetchJobTest::testExtendedAttributes()
     QVERIFY(setxattr(fileName.constData(), "user.xdg.comment", com.constData(), com.size(), 0) != -1);
 
     FileFetchJob* job = new FileFetchJob(tempFile.fileName());
+    job->exec();
+    File file = job->file();
+
+    QCOMPARE(file.rating(), 7);
+    QCOMPARE(file.tags(), tags);
+    QCOMPARE(file.userComment(), userComment);
+}
+
+void FileFetchJobTest::testFolder()
+{
+    QTemporaryFile f;
+    f.open();
+
+    // We use the same prefix as the tmpfile
+    KTempDir tmpDir(f.fileName().mid(0, f.fileName().lastIndexOf('/') + 1));
+    QByteArray fileName = QFile::encodeName(tmpDir.name());
+
+    FileMapping fileMap(tmpDir.name());
+    QSqlDatabase sqlDb = fileMappingDb();
+    QVERIFY(fileMap.create(sqlDb));
+
+    QByteArray rat = QString::number(7).toUtf8();
+    QVERIFY(setxattr(fileName.constData(), "user.baloo.rating", rat.constData(), rat.size(), 0) != -1);
+
+    QStringList tags;
+    tags << "TagA" << "TagB";
+
+    QByteArray tagStr = tags.join(",").toUtf8();
+    QVERIFY(setxattr(fileName.constData(), "user.baloo.tags", tagStr.constData(), tagStr.size(), 0) != -1);
+
+    const QString userComment("UserComment");
+    QByteArray com = userComment.toUtf8();
+    QVERIFY(setxattr(fileName.constData(), "user.xdg.comment", com.constData(), com.size(), 0) != -1);
+
+    FileFetchJob* job = new FileFetchJob(tmpDir.name());
     job->exec();
     File file = job->file();
 

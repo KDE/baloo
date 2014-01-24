@@ -34,6 +34,7 @@ private Q_SLOTS:
 
     void testXapianData();
     void testExtendedAttributes();
+    void testFolder();
 
 };
 
