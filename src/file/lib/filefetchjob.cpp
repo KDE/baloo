@@ -45,6 +45,8 @@ public:
     QByteArray id;
 
     File m_file;
+
+    void fetchUserMetadata();
 };
 
 FileFetchJob::FileFetchJob(const QString& url, QObject* parent)
@@ -94,7 +96,12 @@ void FileFetchJob::doStart()
     fileMap.setUrl(d->url);
 
     if (!fileMap.fetch(fileMappingDb())) {
+        kDebug() << "No file index information found" << url;
         // TODO: Send file for indexing!!
+
+        d->fetchUserMetadata();
+        Q_EMIT itemReceived(d->m_file);
+        Q_EMIT fileReceived(d->m_file);
         emitResult();
         return;
     }
@@ -121,8 +128,16 @@ void FileFetchJob::doStart()
         kError() << err.get_msg().c_str();
     }
 
+    d->fetchUserMetadata();
+    Q_EMIT itemReceived(d->m_file);
+    Q_EMIT fileReceived(d->m_file);
+    emitResult();
+}
+
+void FileFetchJob::Private::fetchUserMetadata()
+{
     // Fetch xattr
-    QByteArray fileUrl = QFile::encodeName(d->url);
+    QByteArray fileUrl = QFile::encodeName(url);
 
     char buffer[1000];
     int len = 0;
@@ -130,24 +145,20 @@ void FileFetchJob::doStart()
     len = getxattr(fileUrl.constData(), "user.baloo.rating", &buffer, 1000);
     if (len > 0) {
         QString str = QString::fromUtf8(buffer, len);
-        d->m_file.setRating(str.toInt());
+        m_file.setRating(str.toInt());
     }
 
     len = getxattr(fileUrl.constData(), "user.baloo.tags", &buffer, 1000);
     if (len > 0) {
         QString str = QString::fromUtf8(buffer, len);
-        d->m_file.setTags(str.split(',', QString::SkipEmptyParts));
+        m_file.setTags(str.split(',', QString::SkipEmptyParts));
     }
 
     len = getxattr(fileUrl.constData(), "user.xdg.comment", &buffer, 1000);
     if (len > 0) {
         QString str = QString::fromUtf8(buffer, len);
-        d->m_file.setUserComment(str);
+        m_file.setUserComment(str);
     }
-
-    Q_EMIT itemReceived(d->m_file);
-    Q_EMIT fileReceived(d->m_file);
-    emitResult();
 }
 
 File FileFetchJob::file() const
