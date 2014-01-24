@@ -41,6 +41,10 @@ public:
     static FileModifyJob* modifyUserComment(const QStringList& files, const QString& comment);
     static FileModifyJob* modifyTags(const QStringList& files, const QStringList& tags);
 
+    enum Errors {
+        Error_FileDoesNotExist = KJob::UserDefinedError + 1,
+        Error_EmptyFile,
+    };
 private Q_SLOTS:
     void doStart();
 

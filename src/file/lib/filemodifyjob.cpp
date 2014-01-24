@@ -103,6 +103,7 @@ void FileModifyJob::doSingleFile()
 
     if (!fileMap.fetched()) {
         if (fileMap.empty()) {
+            setError(Error_EmptyFile);
             setErrorText(QLatin1String("Invalid Argument"));
             emitResult();
             return;
@@ -115,6 +116,7 @@ void FileModifyJob::doSingleFile()
 
     QFile file(fileMap.url());
     if (!file.open(QIODevice::ReadOnly)) {
+        setError(Error_FileDoesNotExist);
         setErrorText(file.errorString());
         emitResult();
         return;
@@ -183,6 +185,7 @@ void FileModifyJob::doMultipleFiles()
 
         QFile file(fileMap.url());
         if (!file.open(QIODevice::ReadOnly)) {
+            setError(Error_FileDoesNotExist);
             setErrorText(file.errorString());
             emitResult();
             return;
