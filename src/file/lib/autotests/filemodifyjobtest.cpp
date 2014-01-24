@@ -67,7 +67,7 @@ void FileModifyJobTest::testSingleFile()
     QCOMPARE(r, 5);
 
     len = getxattr(arr.constData(), "user.baloo.tags", &buffer, 1000);
-    QCOMPARE(len, 0);
+    QCOMPARE(len, -1);
 
     len = getxattr(arr.constData(), "user.xdg.comment", &buffer, 1000);
     QVERIFY(len > 0);

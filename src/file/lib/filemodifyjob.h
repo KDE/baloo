@@ -49,9 +49,6 @@ private Q_SLOTS:
     void doStart();
 
 private:
-    void doSingleFile();
-    void doMultipleFiles();
-
     class Private;
     Private* d;
 };
