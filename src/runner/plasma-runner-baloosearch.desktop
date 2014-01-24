@@ -1,5 +1,24 @@
 [Desktop Entry]
 Name=Desktop Search
+Name[cs]=Vyhledávací služby
+Name[da]=Skrivebordssøgning
+Name[de]=Desktopsuche
+Name[el]=Αναζήτηση στην επιφάνεια εργασίας
+Name[es]=Búsqueda de escritorio
+Name[fi]=Työpöytähaku
+Name[fr]=Recherche sur le bureau
+Name[nl]=Bureaublad-zoekopdracht
+Name[pt]=Pesquisa no Ambiente de Trabalho
+Name[pt_BR]=Pesquisa no desktop
+Name[sk]=Hľadanie na ploche
+Name[sl]=Namizno iskanje
+Name[sr]=Претрага површи
+Name[sr@ijekavian]=Претрага површи
+Name[sr@ijekavianlatin]=Pretraga površi
+Name[sr@latin]=Pretraga površi
+Name[sv]=Skrivbordssökning
+Name[uk]=Стільничний пошук
+Name[x-test]=xxDesktop Searchxx
 Comment=Runner which searches through files, emails and contacts
 X-KDE-ServiceTypes=Plasma/Runner
 Type=Service
