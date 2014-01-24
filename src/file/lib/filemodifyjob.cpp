@@ -70,17 +70,27 @@ void FileModifyJob::start()
 namespace {
 
 void removeTerms(Xapian::Document& doc, const std::string& p) {
+    QByteArray prefix = QByteArray::fromRawData(p.c_str(), p.size());
+
     Xapian::TermIterator it = doc.termlist_begin();
     it.skip_to(p);
     while (it != doc.termlist_end()){
-        const std::string term = *it;
-        int minLength = std::min(term.length(), p.length());
-        if (strncmp(term.c_str(), p.c_str(), minLength)) {
+        const std::string t = *it;
+        const QByteArray term = QByteArray::fromRawData(t.c_str(), t.size());
+        if (!term.startsWith(prefix)) {
             break;
         }
 
+        // The term should not just be the prefix
+        if (term.size() <= prefix.size())
+            break;
+
+        // The term should not contain any more upper case letters
+        if (isupper(term.at(prefix.size())))
+            break;
+
         it++;
-        doc.remove_term(term);
+        doc.remove_term(t);
     }
 }
 

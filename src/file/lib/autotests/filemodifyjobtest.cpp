@@ -94,8 +94,6 @@ void FileModifyJobTest::testSingleFile()
 
     iter++;
     QCOMPARE(*iter, std::string("R5"));
-
-    QFile::remove(fileUrl);
 }
 
 void FileModifyJobTest::testMultiFileRating()
@@ -130,6 +128,56 @@ void FileModifyJobTest::testMultiFileRating()
 
     r = QString::fromUtf8(buffer, len).toInt();
     QCOMPARE(r, 5);
+}
+
+void FileModifyJobTest::testXapianUpdate()
+{
+    QTemporaryFile tmpFile;
+    tmpFile.open();
+    const QString fileUrl = tmpFile.fileName();
+
+    File file(fileUrl);
+    file.setRating(4);
+
+    FileModifyJob* job = new FileModifyJob(file);
+    QVERIFY(job->exec());
+
+    FileMapping fileMap(fileUrl);
+    QSqlDatabase sqlDb = fileMappingDb();
+    QVERIFY(fileMap.fetch(sqlDb));
+
+    const std::string xapianPath = fileIndexDbPath().toStdString();
+    Xapian::Database db(xapianPath);
+
+    Xapian::Document doc = db.get_document(fileMap.id());
+
+    Xapian::TermIterator iter = doc.termlist_begin();
+    QCOMPARE(*iter, std::string("R4"));
+    iter++;
+    QCOMPARE(iter, doc.termlist_end());
+
+    // Add another term, and make sure it is not removed
+    doc.add_term("RATING");
+    {
+        const std::string xapianPath = fileIndexDbPath().toStdString();
+        Xapian::WritableDatabase db(xapianPath, Xapian::DB_CREATE_OR_OPEN);
+        db.replace_document(fileMap.id(), doc);
+        db.commit();
+    }
+
+    file.setRating(5);
+    job = new FileModifyJob(file);
+    QVERIFY(job->exec());
+
+    db.reopen();
+    doc = db.get_document(fileMap.id());
+
+    iter = doc.termlist_begin();
+    QCOMPARE(*iter, std::string("R5"));
+    iter++;
+    QCOMPARE(*iter, std::string("RATING"));
+    iter++;
+    QCOMPARE(iter, doc.termlist_end());
 }
 
 void FileModifyJobTest::testFolder()
