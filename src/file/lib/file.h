@@ -44,6 +44,7 @@ public:
     static File fromId(const Item::Id& id);
 
     QString url() const;
+    void setUrl(const QString& url);
 
     /**
      * Gives a variant map of the properties that have been extracted

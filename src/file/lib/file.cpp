@@ -68,6 +68,11 @@ QString File::url() const
     return d->url;
 }
 
+void File::setUrl(const QString& url)
+{
+    d->url = url;
+}
+
 QVariantMap File::properties() const
 {
     return d->variantMap;

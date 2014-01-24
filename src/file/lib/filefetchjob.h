@@ -42,6 +42,7 @@ class BALOO_FILE_EXPORT FileFetchJob : public ItemFetchJob
 public:
     FileFetchJob(const QString& url, QObject* parent = 0);
     FileFetchJob(const File& file, QObject* parent = 0);
+    FileFetchJob(const QStringList& urls, QObject* parent = 0);
     ~FileFetchJob();
 
     virtual void start();
@@ -52,6 +53,7 @@ public:
     };
 
     File file() const;
+    QList<File> files() const;
 
 Q_SIGNALS:
     void fileReceived(const Baloo::File& file);
