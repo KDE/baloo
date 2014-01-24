@@ -36,15 +36,13 @@ using namespace Baloo;
 
 void FileModifyJobTest::testSingleFile()
 {
-    KTemporaryFile tmpFile;
+    QTemporaryFile tmpFile;
     tmpFile.open();
-    tmpFile.setAutoRemove(false);
 
     QTextStream stream(&tmpFile);
     stream << "ABC";
 
     const QString fileUrl = tmpFile.fileName();
-    tmpFile.close();
 
     int fileSize = QFileInfo(fileUrl).size();
 
@@ -101,10 +99,10 @@ void FileModifyJobTest::testSingleFile()
 
 void FileModifyJobTest::testMultiFileRating()
 {
-    KTemporaryFile tmpFile1;
+    QTemporaryFile tmpFile1;
     tmpFile1.open();
 
-    KTemporaryFile tmpFile2;
+    QTemporaryFile tmpFile2;
     tmpFile2.open();
 
     const QString fileUrl1 = tmpFile1.fileName();
