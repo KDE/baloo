@@ -1,0 +1,7 @@
+[Desktop Entry]
+MimeType=message/rfc822;message/news;
+Type=Service
+X-KDE-ServiceTypes=AkonadiBalooSearchPlugin
+X-KDE-Library=akonadi_baloo_searchplugin
+X-KDE-ClassName=SearchPlugin
+Name=Akonadi Baloo Search Plugin

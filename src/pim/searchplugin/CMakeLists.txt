@@ -14,7 +14,7 @@ target_link_libraries(akonadi_baloo_searchplugin
     balooxapian
 )
 
-install(TARGETS akonadi_baloo_searchplugin DESTINATION "${CMAKE_INSTALL_PREFIX}/lib64/kde4/plugins")
+install(TARGETS akonadi_baloo_searchplugin DESTINATION ${PLUGIN_INSTALL_DIR})
 install(FILES akonadibaloosearchplugin.desktop
         DESTINATION ${SERVICES_INSTALL_DIR})
 
