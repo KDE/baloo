@@ -1,10 +1,13 @@
 project(baloo)
 
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules" ${CMAKE_MODULE_PATH})
+
 find_package(KDE4 REQUIRED)
 find_package(KdepimLibs REQUIRED)
 find_package(Xapian REQUIRED)
 find_package(QJSON REQUIRED)
 find_package(KFileMetaData REQUIRED)
+find_package(Xattr REQUIRED)
 
 include(KDE4Defaults)
 add_definitions(-DQT_NO_KEYWORDS)
