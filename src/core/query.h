@@ -23,6 +23,7 @@
 #ifndef QUERY_H
 #define QUERY_H
 
+#include "core_export.h"
 #include "relation.h"
 #include "resultiterator.h"
 #include <QVariant>

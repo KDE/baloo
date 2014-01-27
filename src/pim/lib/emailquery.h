@@ -23,6 +23,7 @@
 #ifndef _EMAIL_QUERY_H
 #define _EMAIL_QUERY_H
 
+#include "pim_export.h"
 #include "query.h"
 
 #include <QStringList>

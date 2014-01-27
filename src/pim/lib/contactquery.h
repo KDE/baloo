@@ -23,6 +23,7 @@
 #ifndef CONTACTQUERY_H
 #define CONTACTQUERY_H
 
+#include "pim_export.h"
 #include <QString>
 #include "query.h"
 
