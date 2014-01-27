@@ -26,6 +26,7 @@
 #include "filemapping.h"
 #include <xapian.h>
 
+#include <kfilemetadata/types.h>
 #include <QSqlDatabase>
 
 namespace Baloo {
@@ -42,7 +43,7 @@ public:
     uint id() { return m_id; }
 
 private:
-    QList<QByteArray> typesForMimeType(const QString& mimeType) const;
+    QVector<KFileMetaData::Type::Type> typesForMimeType(const QString& mimeType) const;
 
     QSqlDatabase* m_sqlDb;
     FileMapping m_file;

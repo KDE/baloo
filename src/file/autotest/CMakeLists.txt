@@ -89,6 +89,7 @@ target_link_libraries(basicindexingqueuetest
   ${QT_QTTEST_LIBRARY}
   ${QT_QTSQL_LIBRARY}
   ${KDE4_KDECORE_LIBS}
+  ${KFILEMETADATA_LIBRARY}
   ${XAPIAN_LIBRARIES}
 )
 
