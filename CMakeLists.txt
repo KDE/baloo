@@ -3,13 +3,43 @@ project(baloo)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules" ${CMAKE_MODULE_PATH})
 
 find_package(KDE4 REQUIRED)
-find_package(KdepimLibs REQUIRED)
-find_package(Xapian REQUIRED)
-find_package(QJSON REQUIRED)
-find_package(KFileMetaData REQUIRED)
-find_package(Xattr REQUIRED)
-
 include(KDE4Defaults)
+
+find_package(KdepimLibs CONFIG)
+set_package_properties(KdepimLibs PROPERTIES
+    DESCRIPTION "The KDEPIM libraries"
+    URL "http://www.kde.org"
+    TYPE REQUIRED
+)
+
+find_package(Xapian CONFIG)
+set_package_properties(Xapian PROPERTIES
+    DESCRIPTION "The Xapian search engine library"
+    URL "http://xapian.org"
+    TYPE REQUIRED
+)
+
+find_package(KFileMetaData CONFIG)
+set_package_properties(KFileMetaData PROPERTIES
+    DESCRIPTION "A library for extracting file metadata"
+    URL "https://projects.kde.org/kfilemetadata"
+    TYPE REQUIRED
+)
+
+find_package(QJSON)
+set_package_properties(QJSON PROPERTIES
+    DESCRIPTION "Qt library for handling JSON data"
+    URL "http://qjson.sourceforge.net/"
+    TYPE REQUIRED
+)
+
+find_package(Xattr)
+set_package_properties(Xattr PROPERTIES
+    URL "http://savannah.nongnu.org/projects/attr"
+    TYPE REQUIRED
+)
+
+
 add_definitions(-DQT_NO_KEYWORDS)
 
 include_directories(
@@ -36,4 +66,7 @@ install(EXPORT BalooLibraryTargets
         DESTINATION ${LIB_INSTALL_DIR}/cmake/Baloo
         FILE BalooTargetsWithPrefix.cmake)
 
-macro_display_feature_log()
+feature_summary(WHAT ALL
+    INCLUDE_QUIET_PACKAGES
+    FATAL_ON_MISSING_REQUIRED_PACKAGES
+)
