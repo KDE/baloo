@@ -20,9 +20,8 @@
  *
  */
 
-#include "../src/search/query.h"
-#include "../src/search/term.h"
-#include "../src/tag/tagrelation.h"
+#include "query.h"
+#include "term.h"
 
 #include <QDateTime>
 
@@ -64,7 +63,7 @@ void testSearchAllFiles() {
     {
         Query q;
         q.addType("File");
-        q.addRelation(TagRelation(Tag("x")));
+        q.addTerm(Term("tag", "TagX"));
     }
 }
 
