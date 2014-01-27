@@ -1,7 +1,9 @@
 [org.kde.baloo.filewatch.raiselimit]
 Name=Folder Watch Limit
+Name[da]=Grænse for mappeovervågning
 Name[de]=Begrenzung für Ordnerüberwachung
 Name[es]=Límite de vigilancia de carpetas
+Name[fi]=Kansioiden valvontaraja
 Name[nl]=Limiet op bewaakte mappen
 Name[pt]=Limite de Monitorização de Pastas
 Name[pt_BR]=Limite de monitoramento de pastas
@@ -15,8 +17,10 @@ Name[sv]=Gräns för katalogbevakning
 Name[uk]=Обмеження щодо нагляду за теками
 Name[x-test]=xxFolder Watch Limitxx
 Description=To avoid missing file changes, raise the inotify folder watch limit
+Description[da]=Hæv inotify mappeovervågningsgrænsen for ikke at gå glip af filændringer
 Description[de]=Damit Sie keine Dateiänderungen verpassen, setzen Sie die Begrenzung für Ordnerüberwachung durch inotify nach oben
 Description[es]=Para evitar pérdidas en cambios de archivos, eleve el límite de vigilancia de carpetas inotify
+Description[fi]=Nosta inotifyn kansioiden valvontarajaa välttääksesi sitä, että joitain tiedostomuutoksia ei huomata
 Description[nl]=Om wijzigingen in bestanden niet te missen vergroot u de limiet op bewaakte mappen van inotify
 Description[pt]=Para evitar as alterações de ficheiros perdidas, aumente o limite de monitorização de pastas do 'inotify'
 Description[pt_BR]=Para evitar a perda de alterações dos arquivos, aumente o limite de monitoramento das pastas do inotify
