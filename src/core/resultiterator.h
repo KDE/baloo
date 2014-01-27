@@ -24,7 +24,6 @@
 #define _BALOO_CORE_RESULT_ITERATOR_H
 
 #include "core_export.h"
-#include "item.h"
 #include "searchstore.h"
 
 #include <QExplicitlySharedDataPointer>
@@ -56,7 +55,7 @@ public:
 
     bool next();
 
-    Item::Id id() const;
+    QByteArray id() const;
     QUrl url() const;
 
     QString text() const;

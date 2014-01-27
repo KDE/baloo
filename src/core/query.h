@@ -23,7 +23,6 @@
 #ifndef QUERY_H
 #define QUERY_H
 
-#include "relation.h"
 #include "resultiterator.h"
 #include <QVariant>
 
@@ -57,14 +56,6 @@ public:
     void setTypes(const QStringList& types);
 
     QStringList types() const;
-
-    /**
-     * Every Item in the result must contain the relation \p rel
-     */
-    void addRelation(const Relation& rel);
-    void setRelations(const QList<Relation>& rel);
-
-    QList<Relation> relations() const;
 
     /**
      * Set some text which should be used to search for Items. This

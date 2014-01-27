@@ -24,7 +24,7 @@
 #define _BALOO_FILEFETCHJOB_H
 
 #include "file_export.h"
-#include "itemfetchjob.h"
+#include <KJob>
 
 namespace Baloo {
 
@@ -36,7 +36,7 @@ class File;
  * contain any indexed metadata then no data will be returned.
  * However, the file will be sent for indexing.
  */
-class BALOO_FILE_EXPORT FileFetchJob : public ItemFetchJob
+class BALOO_FILE_EXPORT FileFetchJob : public KJob
 {
     Q_OBJECT
 public:

@@ -21,6 +21,9 @@
 #include "filemodifyjob.h"
 #include "filemapping.h"
 #include "db.h"
+#include "file.h"
+#include "searchstore.h"
+
 #include <KDebug>
 
 #include <QTimer>
@@ -43,13 +46,13 @@ public:
 };
 
 FileModifyJob::FileModifyJob(QObject* parent)
-    : ItemSaveJob(parent)
+    : KJob(parent)
     , d(new Private)
 {
 }
 
 FileModifyJob::FileModifyJob(const File& file, QObject* parent)
-    : ItemSaveJob(parent)
+    : KJob(parent)
     , d(new Private)
 {
     d->files.append(file);

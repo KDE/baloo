@@ -1,20 +1,6 @@
 add_definitions(${KDE4_ENABLE_EXCEPTIONS})
 
 set(CORE_SRCS
-    item.cpp
-    relation.cpp
-
-    itemfetchjob.cpp
-    itemcreatejob.cpp
-    itemsavejob.cpp
-    itemremovejob.cpp
-
-    relationfetchjob.cpp
-    relationcreatejob.cpp
-    relationremovejob.cpp
-
-    datastore.cpp
-
     searchstore.cpp
     term.cpp
     query.cpp
@@ -40,19 +26,6 @@ set_target_properties(baloocore PROPERTIES
 install(TARGETS baloocore EXPORT BalooLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES
-    item.h
-    itemfetchjob.h
-    itemcreatejob.h
-    itemsavejob.h
-    itemremovejob.h
-
-    relation.h
-    relationfetchjob.h
-    relationremovejob.h
-    relationcreatejob.h
-
-    datastore.h
-
     term.h
     query.h
     queryrunnable.h

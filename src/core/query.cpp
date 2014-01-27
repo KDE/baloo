@@ -129,22 +129,6 @@ void Query::setSearchString(const QString& str)
     d->m_searchString = str;
 }
 
-void Query::addRelation(const Relation& rel)
-{
-    //TODO:
-}
-
-void Query::setRelations(const QList<Relation>& rel)
-{
-    //TODO:
-}
-
-QList<Relation> Query::relations() const
-{
-    //TODO:
-    return QList<Relation>();
-}
-
 uint Query::limit() const
 {
     return d->m_limit;

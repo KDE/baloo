@@ -25,6 +25,7 @@
 #include "db.h"
 #include "file.h"
 #include "file_p.h"
+#include "searchstore.h"
 
 #include <QTimer>
 #include <QFile>
@@ -47,7 +48,7 @@ public:
 };
 
 FileFetchJob::FileFetchJob(const QString& url, QObject* parent)
-    : ItemFetchJob(parent)
+    : KJob(parent)
     , d(new Private)
 {
     File file(url);
@@ -55,14 +56,14 @@ FileFetchJob::FileFetchJob(const QString& url, QObject* parent)
 }
 
 FileFetchJob::FileFetchJob(const File& file, QObject* parent)
-    : ItemFetchJob(parent)
+    : KJob(parent)
     , d(new Private)
 {
     d->m_files << file;
 }
 
 FileFetchJob::FileFetchJob(const QStringList& urls, QObject* parent)
-    : ItemFetchJob(parent)
+    : KJob(parent)
     , d(new Private)
 {
     Q_FOREACH (const QString& url, urls)
@@ -108,7 +109,6 @@ void FileFetchJob::doStart()
             // TODO: Send file for indexing!!
 
             d->fetchUserMetadata(file);
-            Q_EMIT itemReceived(file);
             Q_EMIT fileReceived(file);
             emitResult();
             return;
@@ -137,7 +137,6 @@ void FileFetchJob::doStart()
         }
 
         d->fetchUserMetadata(file);
-        Q_EMIT itemReceived(file);
         Q_EMIT fileReceived(file);
     }
     emitResult();

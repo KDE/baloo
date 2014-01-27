@@ -32,8 +32,7 @@ File::File()
 }
 
 File::File(const File& f)
-    : Item(f)
-    , d(new FilePrivate(*f.d))
+    : d(new FilePrivate(*f.d))
 {
 }
 
@@ -56,11 +55,21 @@ const File& File::operator=(const File& f)
     return *this;
 }
 
-File File::fromId(const Item::Id& id)
+File File::fromId(const QByteArray& id)
 {
     File file;
     file.setId(id);
     return file;
+}
+
+QByteArray File::id() const
+{
+    return d->id;
+}
+
+void File::setId(const QByteArray& id)
+{
+    d->id = id;
 }
 
 QString File::url() const

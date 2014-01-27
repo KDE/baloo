@@ -31,6 +31,7 @@ namespace Baloo {
 
 class FilePrivate {
 public:
+    QByteArray id;
     QString url;
     QVariantMap variantMap;
 

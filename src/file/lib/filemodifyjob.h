@@ -21,13 +21,14 @@
 #ifndef _BALOO_FILEMODIFYJOB_H
 #define _BALOO_FILEMODIFYJOB_H
 
-#include "itemsavejob.h"
-#include "file.h"
 #include "file_export.h"
+#include <KJob>
 
 namespace Baloo {
 
-class BALOO_FILE_EXPORT FileModifyJob : public ItemSaveJob
+class File;
+
+class BALOO_FILE_EXPORT FileModifyJob : public KJob
 {
     Q_OBJECT
 public:

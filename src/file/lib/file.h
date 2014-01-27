@@ -23,7 +23,6 @@
 #ifndef _BALOO_FILE_H
 #define _BALOO_FILE_H
 
-#include "item.h"
 #include "filefetchjob.h"
 #include <QVariantMap>
 
@@ -31,7 +30,7 @@ namespace Baloo {
 
 class FilePrivate;
 
-class BALOO_FILE_EXPORT File : public Item
+class BALOO_FILE_EXPORT File
 {
 public:
     File();
@@ -41,10 +40,13 @@ public:
 
     const File& operator =(const File& f);
 
-    static File fromId(const Item::Id& id);
+    static File fromId(const QByteArray& id);
 
     QString url() const;
     void setUrl(const QString& url);
+
+    QByteArray id() const;
+    void setId(const QByteArray& id);
 
     /**
      * Gives a variant map of the properties that have been extracted

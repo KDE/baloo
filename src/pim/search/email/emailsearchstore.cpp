@@ -21,7 +21,6 @@
  */
 
 #include "emailsearchstore.h"
-#include "item.h"
 #include "term.h"
 #include "query.h"
 #include "agepostingsource.h"

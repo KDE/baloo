@@ -21,7 +21,6 @@
  */
 
 #include "filesearchstore.h"
-#include "item.h"
 #include "term.h"
 #include "query.h"
 #include "filemapping.h"

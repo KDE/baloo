@@ -228,7 +228,7 @@ void XapianSearchStore::close(int queryId)
     m_queryMap.remove(queryId);
 }
 
-Item::Id XapianSearchStore::id(int queryId)
+QByteArray XapianSearchStore::id(int queryId)
 {
     QMutexLocker lock(&m_mutex);
     Q_ASSERT_X(m_queryMap.contains(queryId), "FileSearchStore::id",

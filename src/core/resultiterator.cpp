@@ -64,12 +64,12 @@ bool ResultIterator::next()
         return false;
 }
 
-Item::Id ResultIterator::id() const
+QByteArray ResultIterator::id() const
 {
     if (d->store)
         return d->store->id(d->queryId);
     else
-        return Item::Id();
+        return QByteArray();
 }
 
 QUrl ResultIterator::url() const

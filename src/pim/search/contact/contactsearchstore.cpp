@@ -21,7 +21,6 @@
  */
 
 #include "contactsearchstore.h"
-#include "item.h"
 #include "term.h"
 #include "query.h"
 

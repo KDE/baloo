@@ -43,7 +43,7 @@ public:
     virtual void close(int queryId);
     virtual bool next(int queryId);
 
-    virtual Item::Id id(int queryId);
+    virtual QByteArray id(int queryId);
     virtual QUrl url(int queryId);
 
     /**

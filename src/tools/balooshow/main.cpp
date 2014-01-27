@@ -31,6 +31,7 @@
 
 #include "file.h"
 #include "filefetchjob.h"
+#include "searchstore.h" // for deserialize
 
 QString colorString(const QString& input, int color)
 {
