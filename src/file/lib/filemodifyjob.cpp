@@ -33,6 +33,9 @@
 #include <xapian.h>
 #include <attr/xattr.h>
 
+#include <QDBusMessage>
+#include <QDBusConnection>
+
 using namespace Baloo;
 
 class Baloo::FileModifyJob::Private {
@@ -102,6 +105,8 @@ void removeTerms(Xapian::Document& doc, const std::string& p) {
 
 void FileModifyJob::doStart()
 {
+    QStringList updatedFiles;
+
     Q_FOREACH (const File& file, d->files) {
         FileMapping fileMap(file.url());
         if (!file.id().isEmpty()) {
@@ -129,6 +134,7 @@ void FileModifyJob::doStart()
             return;
         }
 
+        updatedFiles << fileMap.url();
         const QByteArray furl = QFile::encodeName(fileMap.url());
 
         if (d->rating) {
@@ -191,6 +197,16 @@ void FileModifyJob::doStart()
     }
 
     // Notify the world?
+    QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/files"),
+                                                      QLatin1String("org.kde"),
+                                                      QLatin1String("changed"));
+
+    QVariantList vl;
+    vl.reserve(1);
+    vl << QVariant(updatedFiles);
+    message.setArguments(vl);
+
+    QDBusConnection::sessionBus().send(message);
 
     emitResult();
 }
