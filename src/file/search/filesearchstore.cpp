@@ -34,6 +34,8 @@
 #include <KUrl>
 #include <KMimeType>
 
+#include <kfilemetadata/propertyinfo.h>
+
 using namespace Baloo;
 
 FileSearchStore::FileSearchStore(QObject* parent)
@@ -135,10 +137,14 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
 
         std::string p;
         QHash<QString, std::string>::const_iterator it = m_prefixes.constFind(property.toLower());
-        if (it != m_prefixes.constEnd())
+        if (it != m_prefixes.constEnd()) {
             p = it.value();
-        else
-            p = property.toUpper().toStdString();
+        }
+        else {
+            KFileMetaData::PropertyInfo pi = KFileMetaData::PropertyInfo::fromName(property);
+            int propPrefix = static_cast<int>(pi.property());
+            p = ('X' + QString::number(propPrefix)).toUtf8().constData();
+        }
 
         std::string str = value.toString().toStdString();
         int flags = Xapian::QueryParser::FLAG_DEFAULT | Xapian::QueryParser::FLAG_PARTIAL;
