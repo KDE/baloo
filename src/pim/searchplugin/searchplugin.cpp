@@ -22,13 +22,14 @@
 
 #include "searchplugin.h"
 
-#include <query.h>
-#include <term.h>
-#include <baloo/pim/emailquery.h>
+#include "query.h"
+#include "term.h"
+#include "resultiterator.h"
 
 #include <akonadi/searchquery.h>
 
 #include <KDebug>
+#include <Akonadi/KMime/MessageFlags>
 #include <QtPlugin>
 
 static Baloo::Term::Operation mapRelation(Akonadi::SearchTerm::Relation relation) {
@@ -38,59 +39,123 @@ static Baloo::Term::Operation mapRelation(Akonadi::SearchTerm::Relation relation
     return Baloo::Term::Or;
 }
 
-Baloo::Query SearchPlugin::fromAkonadiQuery(const QString &akonadiQuery, const QList<qint64> &collections, const QStringList &mimeTypes)
+static Baloo::Term getTerm(const Akonadi::SearchTerm &term, const QString &property) {
+    Baloo::Term t(property, term.value().toString());
+    //FIXME negation support is missing in baloo
+    t.setNegation(term.isNegated());
+    return t;
+}
+
+QSet<qint64> SearchPlugin::search(const QString &akonadiQuery, const QList<qint64> &collections, const QStringList &mimeTypes)
 {
     const Akonadi::SearchQuery searchQuery = Akonadi::SearchQuery::fromJSON(akonadiQuery.toLatin1());
     if (searchQuery.isNull()) {
         kWarning() << "invalid query " << akonadiQuery;
-        return Baloo::Query();
+        return QSet<qint64>();
     }
     const Akonadi::SearchTerm term = searchQuery.term();
 
     Baloo::Query query;
     if (term.subTerms().isEmpty()) {
-        query.setSearchString(term.value().toString());
-        return query;
-    } else {
-        Baloo::Term t(mapRelation(term.relation()));
-        //TODO use mimetypes instead?
-        if (term.key() == "type") {
-            if (term.value().toString() == "email") {
-                Baloo::PIM::EmailQuery emailQuery;
-                emailQuery.setCollection(collections);
+        kWarning() << "empty query";
+        return QSet<qint64>();
+    }
 
-                Q_FOREACH (const Akonadi::SearchTerm &subterm, term.subTerms()) {
-                    switch (Akonadi::EmailSearchTerm::fromKey(subterm.key())) {
-                        case Akonadi::EmailSearchTerm::Subject:
-                            emailQuery.subjectMatches(subterm.value().toString());
-                            break;
-                        case Akonadi::EmailSearchTerm::Headers:
-                            break;
-                        case Akonadi::EmailSearchTerm::Age:
-                            break;
-                        case Akonadi::EmailSearchTerm::All:
-                            emailQuery.matches(subterm.value().toString());
-                        case Akonadi::EmailSearchTerm::Body:
-                            break;
-                        case Akonadi::EmailSearchTerm::CC:
-                            emailQuery.addCc(subterm.value().toString());
-                            break;
+    Baloo::Term t(mapRelation(term.relation()));
+    if (mimeTypes.contains("message/rfc822")) {
+        kDebug() << "mail query";
+        query.setType("Email");
+
+        Q_FOREACH (const Akonadi::SearchTerm &subterm, term.subTerms()) {
+            kDebug() << subterm.key() << subterm.value();
+            const Akonadi::EmailSearchTerm::EmailSearchField field = Akonadi::EmailSearchTerm::fromKey(subterm.key());
+            switch (field) {
+                case Akonadi::EmailSearchTerm::Body:
+                    //FIXME
+                    //todo somehow search the body (not possible yet)
+                    query.setSearchString(subterm.value().toString());
+                    break;
+                case Akonadi::EmailSearchTerm::Headers:
+                    //FIXME
+                    //or all header terms?
+                    query.setSearchString(subterm.value().toString());
+                    break;
+                case Akonadi::EmailSearchTerm::Recipients:
+                    break;
+                case Akonadi::EmailSearchTerm::Size:
+                    break;
+                case Akonadi::EmailSearchTerm::Age:
+                    break;
+                case Akonadi::EmailSearchTerm::Subject:
+                    t.addSubTerm(getTerm(subterm, "subject"));
+                    break;
+                case Akonadi::EmailSearchTerm::From:
+                    t.addSubTerm(getTerm(subterm, "from"));
+                    break;
+                case Akonadi::EmailSearchTerm::To:
+                    t.addSubTerm(getTerm(subterm, "to"));
+                    break;
+                case Akonadi::EmailSearchTerm::CC:
+                    t.addSubTerm(getTerm(subterm, "cc"));
+                    break;
+                case Akonadi::EmailSearchTerm::BCC:
+                    t.addSubTerm(getTerm(subterm, "bcc"));
+                    break;
+                case Akonadi::EmailSearchTerm::MessageStatus:
+                    if (subterm.value().toString() == QString::fromLatin1(Akonadi::MessageFlags::Flagged)) {
+                        t.addSubTerm(Baloo::Term("isimportant", !subterm.isNegated()));
                     }
-                }
-                return emailQuery;
+                    //TODO remaining flags
+                    break;
+                case Akonadi::EmailSearchTerm::MessageTag:
+                    //search directly in akonadi? or index tags.
+                    break;
+                case Akonadi::EmailSearchTerm::ReplyTo:
+                    break;
+                case Akonadi::EmailSearchTerm::Organization:
+                    break;
+                case Akonadi::EmailSearchTerm::Date:
+                    break;
+                case Akonadi::EmailSearchTerm::ListId:
+                    break;
+                case Akonadi::EmailSearchTerm::ResentFrom:
+                    break;
+                case Akonadi::EmailSearchTerm::XLoop:
+                    break;
+                case Akonadi::EmailSearchTerm::XMailingList:
+                    break;
+                case Akonadi::EmailSearchTerm::XSpamFlag:
+                    break;
+                case Akonadi::EmailSearchTerm::All:
+                    query.setSearchString(subterm.value().toString());
+                    break;
+                case Akonadi::EmailSearchTerm::Unknown:
+                default:
+                    kWarning() << "unknown term " << subterm.key();
             }
         }
+    } else if (mimeTypes.contains("text/directory")) {
+        query.setType("Contacts");
+        //TODO contact queries
+
     }
-    return Baloo::Query();
-}
+    if (t.subTerms().isEmpty()) {
+        kWarning() << "no terms added";
+        return QSet<qint64>();
+    }
 
+    Baloo::Term parentTerm(Baloo::Term::And);
+    Baloo::Term collectionTerm(Baloo::Term::Or);
+    Q_FOREACH (const qint64 col, collections) {
+        collectionTerm.addSubTerm(Baloo::Term("collection", QString::number(col)));
+    }
+    parentTerm.addSubTerm(collectionTerm);
+    parentTerm.addSubTerm(t);
 
+    query.setTerm(parentTerm);
 
-QSet<qint64> SearchPlugin::search(const QString &queryString, const QList<qint64> &collections, const QStringList &mimeTypes)
-{
     QSet<qint64> resultSet;
-
-    Baloo::Query query = fromAkonadiQuery(queryString, collections, mimeTypes);
+    kDebug() << query.toJSON();
     Baloo::ResultIterator iter = query.exec();
     while (iter.next()) {
         const QByteArray id = iter.id();
