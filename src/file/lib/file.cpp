@@ -82,14 +82,14 @@ void File::setUrl(const QString& url)
     d->url = url;
 }
 
-QVariantMap File::properties() const
+KFileMetaData::PropertyMap File::properties() const
 {
-    return d->variantMap;
+    return d->propertyMap;
 }
 
-QVariant File::property(const QString& key) const
+QVariant File::property(KFileMetaData::Property::Property property) const
 {
-    return d->variantMap.value(key);
+    return d->propertyMap.value(property);
 }
 
 void File::setRating(int rating)

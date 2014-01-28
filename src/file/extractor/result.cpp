@@ -42,21 +42,20 @@ Result::Result(const QString& url, const QString& mimetype)
 
 void Result::add(KFileMetaData::Property::Property property, const QVariant& value)
 {
-    KFileMetaData::PropertyInfo pi(property);
-    kDebug() << pi.name() << value;
-    m_map.insertMulti(pi.name(), value);
+    QString p = QString::number(static_cast<int>(property));
+    m_map.insertMulti(p, value);
 
-    QString key = pi.name().toUpper();
+    QString prefix = QLatin1String("X") + p;
 
     if (value.type() == QVariant::Bool) {
-        m_doc.add_boolean_term(key.toUtf8().constData());
+        m_doc.add_boolean_term(prefix.toUtf8().constData());
     }
     else if (value.type() == QVariant::Int) {
-        const QString term = key + value.toString();
+        const QString term = prefix + value.toString();
         m_doc.add_term(term.toUtf8().constData());
     }
     else if (value.type() == QVariant::DateTime) {
-        const QString term = key + value.toDateTime().toString(Qt::ISODate);
+        const QString term = prefix + value.toDateTime().toString(Qt::ISODate);
         m_doc.add_term(term.toUtf8().constData());
     }
     else {
@@ -64,7 +63,8 @@ void Result::add(KFileMetaData::Property::Property property, const QVariant& val
         if (val.isEmpty())
             return;
 
-        m_termGen.index_text(val.constData(), 1, key.toUtf8().constData());
+        m_termGen.index_text(val.constData(), 1, prefix.toUtf8().constData());
+        KFileMetaData::PropertyInfo pi(property);
         if (pi.shouldBeIndexed())
             m_termGen.index_text(val.constData());
     }

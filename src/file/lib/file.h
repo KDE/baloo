@@ -24,7 +24,7 @@
 #define _BALOO_FILE_H
 
 #include "filefetchjob.h"
-#include <QVariantMap>
+#include <kfilemetadata/properties.h>
 
 namespace Baloo {
 
@@ -52,8 +52,8 @@ public:
      * Gives a variant map of the properties that have been extracted
      * from the file by the indexer
      */
-    QVariantMap properties() const;
-    QVariant property(const QString& key) const;
+    KFileMetaData::PropertyMap properties() const;
+    QVariant property(KFileMetaData::Property::Property property) const;
 
     void setRating(int rating);
     int rating() const;

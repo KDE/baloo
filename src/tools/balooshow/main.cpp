@@ -33,6 +33,8 @@
 #include "filefetchjob.h"
 #include "searchstore.h" // for deserialize
 
+#include <kfilemetadata/propertyinfo.h>
+
 QString colorString(const QString& input, int color)
 {
     QString colorStart = QString::fromLatin1("\033[0;%1m").arg(color);
@@ -97,21 +99,21 @@ int main(int argc, char* argv[])
         text += colorString(url.toLocalFile(), 32);
         stream << text << endl;
 
-        QVariantMap properties = file.properties();
+        KFileMetaData::PropertyMap propMap = file.properties();
+        KFileMetaData::PropertyMap::const_iterator it = propMap.constBegin();
+        for (; it != propMap.constEnd(); ++it) {
+            KFileMetaData::PropertyInfo pi(it.key());
+            stream << "\t" << pi.displayName() << ": " << it.value().toString() << endl;
+        }
+
         if (file.rating())
-            properties.insert("rating", file.rating());
+            stream << "\t" << "Rating: " << file.rating() << endl;
 
         if (!file.tags().isEmpty())
-            properties.insert("tags", file.tags().join(", "));
+            stream << "\t" << "Tags: " << file.tags().join(", ") << endl;
 
         if (!file.userComment().isEmpty())
-            properties.insert("userComment", file.userComment());
-
-        QMapIterator<QString, QVariant> it(properties);
-        while (it.hasNext()) {
-          it.next();
-          stream << "\t" << it.key() << ": " << it.value().toString() << endl;
-        }
+            stream << "\t" << "User Comment: " << file.userComment() << endl;
     }
 
     return 0;

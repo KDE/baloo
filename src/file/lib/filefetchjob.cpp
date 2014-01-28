@@ -127,7 +127,8 @@ void FileFetchJob::doStart()
             const QByteArray arr(docData.c_str(), docData.length());
 
             QJson::Parser parser;
-            file.d->variantMap = parser.parse(arr).toMap();
+            QVariantMap varMap = parser.parse(arr).toMap();
+            file.d->propertyMap = KFileMetaData::toPropertyMap(varMap);
         }
         catch (const Xapian::DocNotFoundError&){
             // Send file for indexing to baloo_file

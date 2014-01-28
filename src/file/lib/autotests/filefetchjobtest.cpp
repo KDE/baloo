@@ -34,6 +34,7 @@
 #include <attr/xattr.h>
 
 #include <QSqlQuery>
+#include <kfilemetadata/properties.h>
 
 using namespace Baloo;
 
@@ -52,11 +53,13 @@ void FileFetchJobTest::init()
 void FileFetchJobTest::testXapianData()
 {
     QJson::Serializer serializer;
-    QVariantMap map;
-    map.insert("test1", "value1");
-    map.insert("test2", "value2");
 
-    QByteArray json = serializer.serialize(map);
+    using namespace KFileMetaData;
+    PropertyMap map;
+    map.insert(Property::Album, "value1");
+    map.insert(Property::Artist, "value2");
+
+    QByteArray json = serializer.serialize(toVariantMap(map));
     QVERIFY(!json.isEmpty());
 
     Xapian::Document doc;
