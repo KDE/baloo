@@ -2,21 +2,28 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/..
 )
 
-kde4_add_executable(searchtest searchtest.cpp)
-
-target_link_libraries(searchtest
-  ${QT_QTCORE_LIBRARY}
-  ${QT_QTTEST_LIBRARY}
-  ${KDE4_KDECORE_LIBS}
-
-  ${KDEPIMLIBS_AKONADI_LIBS}
-  ${KDEPIMLIBS_AKONADI_KMIME_LIBS}
-  ${KDEPIMLIBS_KMIME_LIBS}
-
-  ${XAPIAN_LIBRARIES}
-    baloocore
-    baloopim
-    balooxapian
+set(searchplugintest_SRCS
+    searchplugintest.cpp
+    ../searchplugin.cpp
+    ../../agent/emailindexer.cpp
+    ../../agent/contactindexer.cpp
+    ../../agent/abstractindexer.cpp
+    ../../search/email/emailsearchstore.cpp
+    ../../search/email/agepostingsource.cpp
+    ../../search/contact/contactsearchstore.cpp
 )
 
-install(TARGETS searchtest ${INSTALL_TARGETS_DEFAULT_ARGS})
+add_definitions(-DBALOO_NO_PLUGINS=TRUE)
+
+kde4_add_unit_test(searchplugintest NOGUI ${searchplugintest_SRCS})
+target_link_libraries(searchplugintest
+    ${QT_QTTEST_LIBRARY}
+    ${KDE4_KDECORE_LIBS}
+    ${KDEPIMLIBS_AKONADI_LIBS}
+    ${KDEPIMLIBS_AKONADI_KMIME_LIBS}
+    ${KDEPIMLIBS_KMIME_LIBS}
+    ${KDEPIMLIBS_KABC_LIBS}
+    ${XAPIAN_LIBRARIES}
+    baloocore
+    balooxapian
+)
