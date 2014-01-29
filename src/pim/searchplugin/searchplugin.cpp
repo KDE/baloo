@@ -53,7 +53,7 @@ static Baloo::Term::Comparator mapComparator(Akonadi::SearchTerm::Condition comp
     if (comparator == Akonadi::SearchTerm::CondEqual){
         return Baloo::Term::Equal;
     }
-    if (comparator == Akonadi::SearchTerm::CondLessOrEqueal){
+    if (comparator == Akonadi::SearchTerm::CondLessOrEqual){
         return Baloo::Term::LessEqual;
     }
     if (comparator == Akonadi::SearchTerm::CondLessThan){
@@ -92,6 +92,7 @@ QSet<qint64> SearchPlugin::search(const QString &akonadiQuery, const QList<qint6
             kDebug() << subterm.key() << subterm.value();
             const Akonadi::EmailSearchTerm::EmailSearchField field = Akonadi::EmailSearchTerm::fromKey(subterm.key());
             switch (field) {
+                case Akonadi::EmailSearchTerm::Message:
                 case Akonadi::EmailSearchTerm::Body:
                     //FIXME
                     //todo somehow search the body (not possible yet)
@@ -102,10 +103,10 @@ QSet<qint64> SearchPlugin::search(const QString &akonadiQuery, const QList<qint6
                     //search all headers
                     query.setSearchString(subterm.value().toString());
                     break;
-                case Akonadi::EmailSearchTerm::Size:
+                case Akonadi::EmailSearchTerm::ByteSize:
                     t.addSubTerm(getTerm(subterm, "size"));
                     break;
-                case Akonadi::EmailSearchTerm::Date: {
+                case Akonadi::EmailSearchTerm::HeaderDate: {
                     const KDateTime dt = KDateTime::fromString(subterm.value().toString(), KDateTime::ISODate);
                     Baloo::Term s("date", QString::number(dt.toTime_t()), mapComparator(subterm.condition()));
                     s.setNegation(subterm.isNegated());
@@ -115,16 +116,16 @@ QSet<qint64> SearchPlugin::search(const QString &akonadiQuery, const QList<qint6
                 case Akonadi::EmailSearchTerm::Subject:
                     t.addSubTerm(getTerm(subterm, "subject"));
                     break;
-                case Akonadi::EmailSearchTerm::From:
+                case Akonadi::EmailSearchTerm::HeaderFrom:
                     t.addSubTerm(getTerm(subterm, "from"));
                     break;
-                case Akonadi::EmailSearchTerm::To:
+                case Akonadi::EmailSearchTerm::HeaderTo:
                     t.addSubTerm(getTerm(subterm, "to"));
                     break;
-                case Akonadi::EmailSearchTerm::CC:
+                case Akonadi::EmailSearchTerm::HeaderCC:
                     t.addSubTerm(getTerm(subterm, "cc"));
                     break;
-                case Akonadi::EmailSearchTerm::BCC:
+                case Akonadi::EmailSearchTerm::HeaderBCC:
                     t.addSubTerm(getTerm(subterm, "bcc"));
                     break;
                 case Akonadi::EmailSearchTerm::MessageStatus:
@@ -136,26 +137,23 @@ QSet<qint64> SearchPlugin::search(const QString &akonadiQuery, const QList<qint6
                 case Akonadi::EmailSearchTerm::MessageTag:
                     //search directly in akonadi? or index tags.
                     break;
-                case Akonadi::EmailSearchTerm::ReplyTo:
+                case Akonadi::EmailSearchTerm::HeaderReplyTo:
                     t.addSubTerm(getTerm(subterm, "replyto"));
                     break;
-                case Akonadi::EmailSearchTerm::Organization:
+                case Akonadi::EmailSearchTerm::HeaderOrganization:
                     t.addSubTerm(getTerm(subterm, "organization"));
                     break;
-                case Akonadi::EmailSearchTerm::ListId:
+                case Akonadi::EmailSearchTerm::HeaderListId:
 //                     t.addSubTerm(getTerm(subterm, "listid"));
                     break;
-                case Akonadi::EmailSearchTerm::ResentFrom:
+                case Akonadi::EmailSearchTerm::HeaderResentFrom:
 //                     t.addSubTerm(getTerm(subterm, "resentfrom"));
                     break;
-                case Akonadi::EmailSearchTerm::XLoop:
+                case Akonadi::EmailSearchTerm::HeaderXLoop:
                     break;
-                case Akonadi::EmailSearchTerm::XMailingList:
+                case Akonadi::EmailSearchTerm::HeaderXMailingList:
                     break;
-                case Akonadi::EmailSearchTerm::XSpamFlag:
-                    break;
-                case Akonadi::EmailSearchTerm::All:
-                    query.setSearchString(subterm.value().toString());
+                case Akonadi::EmailSearchTerm::HeaderXSpamFlag:
                     break;
                 case Akonadi::EmailSearchTerm::Unknown:
                 default:
