@@ -71,7 +71,7 @@ EmailSearchStore::EmailSearchStore(QObject* parent)
     m_prefix.insert("isham", "");
     m_prefix.insert("isread", "R");
 
-    m_boolProperties << "isimportant" << "istoAct" << "iswatched" << "isdeleted" << "isspam"
+    m_boolProperties << "isimportant" << "istoact" << "iswatched" << "isdeleted" << "isspam"
                      << "isreplied" << "isignored" << "isforwarded" << "issent" << "isqueued"
                      << "isham" << "isread";
 
