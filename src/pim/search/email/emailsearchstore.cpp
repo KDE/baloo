@@ -77,7 +77,12 @@ EmailSearchStore::EmailSearchStore(QObject* parent)
 
     // TODO: Sent date? Age in days?
 
-    const QString path = KStandardDirs::locateLocal("data", "baloo/email/");
+    QString path = KStandardDirs::locateLocal("data", "baloo/email/");
+    const QByteArray overrideDir = qgetenv("BALOO_EMAIL_OVERRIDE_DIR");
+    if (!overrideDir.isEmpty()) {
+        kWarning() << "overriding email dir " << overrideDir;
+        path = QString::fromLatin1(overrideDir);
+    }
     setDbPath(path);
 }
 

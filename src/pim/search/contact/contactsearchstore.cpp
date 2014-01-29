@@ -40,7 +40,12 @@ ContactSearchStore::ContactSearchStore(QObject* parent)
     m_prefix.insert("email", ""); // Email currently doesn't map to anything
     m_prefix.insert("collection", "C");
 
-    const QString path = KStandardDirs::locateLocal("data", "baloo/contacts/");
+    QString path = KStandardDirs::locateLocal("data", "baloo/contacts/");
+    const QByteArray overrideDir = qgetenv("BALOO_CONTACTS_OVERRIDE_DIR");
+    if (!overrideDir.isEmpty()) {
+        kWarning() << "overriding contacts dir " << overrideDir;
+        path = QString::fromLatin1(overrideDir);
+    }
     setDbPath(path);
 }
 
