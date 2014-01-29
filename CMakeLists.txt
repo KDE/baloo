@@ -5,6 +5,7 @@ find_package(KdepimLibs REQUIRED)
 find_package(Xapian REQUIRED)
 find_package(QJSON REQUIRED)
 find_package(KFileMetaData REQUIRED)
+find_package(Akonadi REQUIRED)
 
 include(KDE4Defaults)
 add_definitions(-DQT_NO_KEYWORDS)
@@ -15,6 +16,7 @@ include_directories(
   ${QJSON_INCLUDE_DIR}
   ${KFILEMETADATA_INCLUDE_DIR}
   ${XAPIAN_INCLUDE_DIR}
+  ${AKONADI_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/file/lib
