@@ -135,24 +135,51 @@ QSet<qint64> SearchPlugin::search(const QString &akonadiQuery, const QList<qint6
             }
         }
     } else if (mimeTypes.contains("text/directory")) {
-        query.setType("Contacts");
-        //TODO contact queries
-
+        query.setType("Contact");
+        Q_FOREACH (const Akonadi::SearchTerm &subterm, term.subTerms()) {
+            kDebug() << subterm.key() << subterm.value();
+            const Akonadi::ContactSearchTerm::ContactSearchField field = Akonadi::ContactSearchTerm::fromKey(subterm.key());
+            switch (field) {
+                case Akonadi::ContactSearchTerm::Name:
+                    t.addSubTerm(getTerm(subterm, "name"));
+                    break;
+                case Akonadi::ContactSearchTerm::Email:
+                    t.addSubTerm(getTerm(subterm, "email"));
+                    break;
+                case Akonadi::ContactSearchTerm::Nickname:
+                    t.addSubTerm(getTerm(subterm, "nick"));
+                    break;
+                case Akonadi::ContactSearchTerm::Uid:
+                    t.addSubTerm(getTerm(subterm, "uid"));
+                    break;
+                case Akonadi::ContactSearchTerm::Unknown:
+                default:
+                    kWarning() << "unknown term " << subterm.key();
+            }
+        }
+    } else if (mimeTypes.contains("...")) {
+        query.setType("ContactGroups");
+        //TODO contactgroup queries
     }
     if (t.subTerms().isEmpty()) {
         kWarning() << "no terms added";
         return QSet<qint64>();
     }
 
-    Baloo::Term parentTerm(Baloo::Term::And);
-    Baloo::Term collectionTerm(Baloo::Term::Or);
-    Q_FOREACH (const qint64 col, collections) {
-        collectionTerm.addSubTerm(Baloo::Term("collection", QString::number(col)));
-    }
-    parentTerm.addSubTerm(collectionTerm);
-    parentTerm.addSubTerm(t);
+    //Filter by collection if not empty
+    if (!collections.isEmpty()) {
+        Baloo::Term parentTerm(Baloo::Term::And);
+        Baloo::Term collectionTerm(Baloo::Term::Or);
+        Q_FOREACH (const qint64 col, collections) {
+            collectionTerm.addSubTerm(Baloo::Term("collection", QString::number(col)));
+        }
+        parentTerm.addSubTerm(collectionTerm);
+        parentTerm.addSubTerm(t);
 
-    query.setTerm(parentTerm);
+        query.setTerm(parentTerm);
+    } else {
+        query.setTerm(t);
+    }
 
     QSet<qint64> resultSet;
     kDebug() << query.toJSON();
