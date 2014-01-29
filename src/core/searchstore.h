@@ -80,7 +80,13 @@ public:
 
 Q_DECLARE_INTERFACE( Baloo::SearchStore, "org.kde.Baloo.SearchStore" )
 
+// BALOO_NO_PLUGINS allows to compile all plugins into a single test binary
+// (otherwise the qt_plugin_query_verification_data will be defined multiple times)
+#ifndef BALOO_NO_PLUGINS
 #define BALOO_EXPORT_SEARCHSTORE( classname, libname )    \
     Q_EXPORT_PLUGIN2(libname, classname)
+#else
+#define BALOO_EXPORT_SEARCHSTORE( classname, libname )
+#endif
 
 #endif // _BALOO_SEARCHSTORE_H
