@@ -3,3 +3,4 @@ Type=AkonadiSearchPlugin
 Name=Akonadi Baloo Search Plugin
 X-Akonadi-Library=akonadi_baloo_searchplugin
 X-Akonadi-ClassName=SearchPlugin
+X-Akonadi-LoadByDefault=true
