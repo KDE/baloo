@@ -23,6 +23,7 @@
 #include "contactindexer.h"
 
 #include <KABC/Addressee>
+#include <Akonadi/Collection>
 
 ContactIndexer::ContactIndexer(const QString& path):
     AbstractIndexer()
@@ -59,8 +60,11 @@ void ContactIndexer::index(const Akonadi::Item& item)
     if (!addresse.formattedName().isEmpty()) {
         name = addresse.formattedName();
     }
-    else {
+    else if (!addresse.assembledName().isEmpty()) {
         name = addresse.assembledName();
+    }
+    else {
+        name = addresse.name();
     }
 
     std::string stdName = name.toStdString();
@@ -80,6 +84,14 @@ void ContactIndexer::index(const Akonadi::Item& item)
         doc.add_term(stdEmail);
         termGen.index_text(stdEmail);
     }
+
+    // Parent collection
+    Q_ASSERT_X(item.parentCollection().isValid(), "Baloo::EmailIndexer::index",
+               "Item does not have a valid parent collection");
+
+    Akonadi::Entity::Id colId = item.parentCollection().id();
+    QByteArray term = 'C' + QByteArray::number(colId);
+    doc.add_boolean_term(term.data());
 
     m_db->replace_document(item.id(), doc);
     // TODO: Contact Groups?
