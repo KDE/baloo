@@ -70,6 +70,9 @@ void EmailIndexer::index(const Akonadi::Item& item)
     processMessageStatus(status);
     process(msg);
 
+    // Size
+    m_doc->add_value(1, QString::number(item.size()).toStdString());
+
     // Parent collection
     Q_ASSERT_X(item.parentCollection().isValid(), "Baloo::EmailIndexer::index",
                "Item does not have a valid parent collection");

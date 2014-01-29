@@ -30,6 +30,7 @@
 
 #include <KDebug>
 #include <Akonadi/KMime/MessageFlags>
+#include <KDateTime>
 #include <QtPlugin>
 
 static Baloo::Term::Operation mapRelation(Akonadi::SearchTerm::Relation relation) {
@@ -39,9 +40,30 @@ static Baloo::Term::Operation mapRelation(Akonadi::SearchTerm::Relation relation
     return Baloo::Term::Or;
 }
 
+static Baloo::Term::Comparator mapComparator(Akonadi::SearchTerm::Condition comparator) {
+    if (comparator == Akonadi::SearchTerm::CondContains){
+        return Baloo::Term::Contains;
+    }
+    if (comparator == Akonadi::SearchTerm::CondGreaterOrEqual){
+        return Baloo::Term::GreaterEqual;
+    }
+    if (comparator == Akonadi::SearchTerm::CondGreaterThan){
+        return Baloo::Term::Greater;
+    }
+    if (comparator == Akonadi::SearchTerm::CondEqual){
+        return Baloo::Term::Equal;
+    }
+    if (comparator == Akonadi::SearchTerm::CondLessOrEqueal){
+        return Baloo::Term::LessEqual;
+    }
+    if (comparator == Akonadi::SearchTerm::CondLessThan){
+        return Baloo::Term::Less;
+    }
+    return Baloo::Term::Auto;
+}
+
 static Baloo::Term getTerm(const Akonadi::SearchTerm &term, const QString &property) {
-    Baloo::Term t(property, term.value().toString());
-    //FIXME negation support is missing in baloo
+    Baloo::Term t(property, term.value().toString(), mapComparator(term.condition()));
     t.setNegation(term.isNegated());
     return t;
 }
@@ -77,14 +99,18 @@ QSet<qint64> SearchPlugin::search(const QString &akonadiQuery, const QList<qint6
                     break;
                 case Akonadi::EmailSearchTerm::Headers:
                     //FIXME
-                    //or all header terms?
+                    //search all headers
                     query.setSearchString(subterm.value().toString());
                     break;
-                case Akonadi::EmailSearchTerm::Recipients:
-                    break;
                 case Akonadi::EmailSearchTerm::Size:
+                    t.addSubTerm(getTerm(subterm, "size"));
                     break;
-                case Akonadi::EmailSearchTerm::Age:
+                case Akonadi::EmailSearchTerm::Date: {
+                    const KDateTime dt = KDateTime::fromString(subterm.value().toString(), KDateTime::ISODate);
+                    Baloo::Term s("date", QString::number(dt.toTime_t()), mapComparator(subterm.condition()));
+                    s.setNegation(subterm.isNegated());
+                    t.addSubTerm(s);
+                }
                     break;
                 case Akonadi::EmailSearchTerm::Subject:
                     t.addSubTerm(getTerm(subterm, "subject"));
@@ -111,14 +137,16 @@ QSet<qint64> SearchPlugin::search(const QString &akonadiQuery, const QList<qint6
                     //search directly in akonadi? or index tags.
                     break;
                 case Akonadi::EmailSearchTerm::ReplyTo:
+                    t.addSubTerm(getTerm(subterm, "replyto"));
                     break;
                 case Akonadi::EmailSearchTerm::Organization:
-                    break;
-                case Akonadi::EmailSearchTerm::Date:
+                    t.addSubTerm(getTerm(subterm, "organization"));
                     break;
                 case Akonadi::EmailSearchTerm::ListId:
+//                     t.addSubTerm(getTerm(subterm, "listid"));
                     break;
                 case Akonadi::EmailSearchTerm::ResentFrom:
+//                     t.addSubTerm(getTerm(subterm, "resentfrom"));
                     break;
                 case Akonadi::EmailSearchTerm::XLoop:
                     break;

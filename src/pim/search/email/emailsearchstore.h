@@ -54,6 +54,7 @@ protected:
 private:
     QHash<QString, QString> m_prefix;
     QSet<QString> m_boolProperties;
+    QHash<QString, int> m_valueProperties;
 };
 
 }

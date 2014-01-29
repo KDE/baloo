@@ -42,6 +42,8 @@ EmailSearchStore::EmailSearchStore(QObject* parent)
     m_prefix.insert("bcc", "BC");
     m_prefix.insert("subject", "S");
     m_prefix.insert("collection", "C");
+    m_prefix.insert("replyto", "RT");
+    m_prefix.insert("organization", "O");
 
     // TODO: Add body flag?
     // TODO: Add tags?
@@ -75,7 +77,8 @@ EmailSearchStore::EmailSearchStore(QObject* parent)
                      << "isreplied" << "isignored" << "isforwarded" << "issent" << "isqueued"
                      << "isham" << "isread";
 
-    // TODO: Sent date? Age in days?
+    m_valueProperties.insert("date", 0);
+    m_valueProperties.insert("size", 1);
 
     QString path = KStandardDirs::locateLocal("data", "baloo/email/");
     const QByteArray overrideDir = qgetenv("BALOO_EMAIL_OVERRIDE_DIR");
@@ -132,6 +135,26 @@ Xapian::Query EmailSearchStore::constructQuery(const QString& property, const QV
         std::string str = value.toString().toStdString();
         int flags = Xapian::QueryParser::FLAG_DEFAULT | Xapian::QueryParser::FLAG_PARTIAL;
         return parser.parse_query(str, flags, p);
+    }
+
+    if (com == Term::Greater || com == Term::GreaterEqual || com == Term::Less || com == Term::LessEqual) {
+        if (!m_valueProperties.contains(property.toLower())) {
+            return Xapian::Query();
+        }
+        qlonglong numVal = value.toLongLong();
+        if (com == Term::Greater) {
+            numVal++;
+        }
+        if (com == Term::Less) {
+            numVal--;
+        }
+        int valueNumber = m_valueProperties.value(property.toLower());
+        if (com == Term::GreaterEqual || com == Term::Greater) {
+            return Xapian::Query(Xapian::Query::OP_VALUE_GE, valueNumber, QString::number(numVal).toStdString());
+        }
+        else if (com == Term::LessEqual || com == Term::Less) {
+            return Xapian::Query(Xapian::Query::OP_VALUE_LE, valueNumber, QString::number(numVal).toStdString());
+        }
     }
 
     return Xapian::Query(value.toString().toStdString());
