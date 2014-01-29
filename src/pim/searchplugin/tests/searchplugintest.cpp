@@ -81,10 +81,6 @@ private Q_SLOTS:
         removeDir(contactsDir);
         QVERIFY(dir.mkpath(contactsDir));
 
-//         qputenv("BALOO_EMAIL_OVERRIDE_DIR", emailDir.toLatin1());
-//         qputenv("BALOO_EMAILCONTACTS_OVERRIDE_DIR", emailContactsDir.toLatin1());
-//         qputenv("BALOO_CONTACTS_OVERRIDE_DIR", contactsDir.toLatin1());
-
         kDebug() << "indexing sample data";
         kDebug() << emailDir;
         kDebug() << emailContactsDir;
@@ -167,17 +163,17 @@ private Q_SLOTS:
             QSet<qint64> result= QSet<qint64>() << 1;
             QTest::newRow("find subject equal") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
         }
-//         {
-//             Akonadi::SearchQuery query;
-//             Akonadi::EmailSearchTerm term(Akonadi::EmailSearchTerm::Subject, "subject1", Akonadi::SearchTerm::CondEqual);
-//             term.setIsNegated(true);
-//             query.addTerm(term);
-//
-//             QList<qint64> collections = QList<qint64>() << 2;
-//             QStringList mimeTypes = QStringList() << "message/rfc822";
-//             QSet<qint64> result= QSet<qint64>() << 2;
-//             QTest::newRow("find subject equal negated") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
-//         }
+        {
+            Akonadi::SearchQuery query;
+            Akonadi::EmailSearchTerm term(Akonadi::EmailSearchTerm::Subject, "subject1", Akonadi::SearchTerm::CondEqual);
+            term.setIsNegated(true);
+            query.addTerm(term);
+
+            QList<qint64> collections = QList<qint64>() << 2;
+            QStringList mimeTypes = QStringList() << "message/rfc822";
+            QSet<qint64> result= QSet<qint64>() << 2;
+            QTest::newRow("find subject equal negated") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
+        }
         {
             Akonadi::SearchQuery query;
             query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, "subject", Akonadi::SearchTerm::CondContains));
