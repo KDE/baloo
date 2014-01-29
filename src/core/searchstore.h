@@ -43,6 +43,11 @@ public:
     virtual ~SearchStore();
 
     /**
+     * Override search stores for testing
+     */
+    static void overrideSearchStores(const QList<SearchStore*> &overrideSearchStores);
+
+    /**
      * Gives a list of available search stores. These stores must be managed and
      * deleted by the caller
      */
