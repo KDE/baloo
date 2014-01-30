@@ -83,13 +83,6 @@ public Q_SLOTS:
      */
     Q_SCRIPTABLE int currentStatus() const;
 
-    /**
-     * \return A user readable status string. Includes the currently indexed folder.
-     *
-     * @deprecated use statusMessage() instead
-     */
-    Q_SCRIPTABLE QString userStatusString() const;
-
     Q_SCRIPTABLE bool isSuspended() const;
     Q_SCRIPTABLE bool isIndexing() const;
     Q_SCRIPTABLE bool isCleaning() const;
@@ -97,9 +90,6 @@ public Q_SLOTS:
     Q_SCRIPTABLE void resume() const;
     Q_SCRIPTABLE void suspend() const;
     Q_SCRIPTABLE void setSuspended(bool);
-
-    //Q_SCRIPTABLE int indexedFiles() const;
-    //Q_SCRIPTABLE int totalFiles() const;
 
     /**
      * Update folder \a path if it is configured to be indexed.

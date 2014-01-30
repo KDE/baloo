@@ -11,18 +11,6 @@
     <method name="isCleaning">
       <arg type="b" direction="out" />
     </method>
-    <method name="currentFolder">
-      <arg type="s" direction="out" />
-    </method>
-    <method name="currentFile">
-      <arg type="s" direction="out" />
-    </method>
-    <method name="indexedFiles">
-      <arg type="i" direction="out" />
-    </method>
-    <method name="totalFiles">
-      <arg type="i" direction="out" />
-    </method>
     <method name="suspend" />
     <method name="resume" />
     <method name="updateFolder">
@@ -40,10 +28,6 @@
     </method>
     <method name="indexFile">
       <arg name="path" type="s" direction="in" />
-    </method>
-    <!--@deprecated use statusMessage instead -->
-    <method name="userStatusString">
-      <arg type="s" direction="out" />
     </method>
     <method name="statusMessage">
       <arg type="s" direction="out" />

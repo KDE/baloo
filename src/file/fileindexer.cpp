@@ -105,11 +105,6 @@ int FileIndexer::currentStatus() const
     return (int)m_indexScheduler->currentStatus();
 }
 
-QString FileIndexer::userStatusString() const
-{
-    return m_indexScheduler->userStatusString();
-}
-
 void FileIndexer::setSuspended(bool suspend)
 {
     if (suspend) {
@@ -164,35 +159,6 @@ void FileIndexer::updateFolder(const QString& path, bool recursive, bool forced)
         }
     }
 }
-
-/*
-int FileIndexer::indexedFiles() const
-{
-    QString query = QString::fromLatin1("select count(distinct ?r) where { ?r kext:indexingLevel ?t. "
-                                        " FILTER(?t >= %1) . }")
-                    .arg(Soprano::Node::literalToN3(Soprano::LiteralValue(2)));
-
-    Soprano::Model* model = Nepomuk2::ResourceManager::instance()->mainModel();
-    Soprano::QueryResultIterator it = model->executeQuery(query, Soprano::Query::QueryLanguageSparql);
-    if (it.next())
-        return it[0].literal().toInt();
-
-    return 0;
-}
-
-int FileIndexer::totalFiles() const
-{
-    QString query = QString::fromLatin1("select count(distinct ?r) where { ?r kext:indexingLevel ?t. }");
-
-    Soprano::Model* model = Nepomuk2::ResourceManager::instance()->mainModel();
-    Soprano::QueryResultIterator it = model->executeQuery(query, Soprano::Query::QueryLanguageSparql);
-    if (it.next())
-        return it[0].literal().toInt();
-
-    return 0;
-}
-*/
-
 
 void FileIndexer::updateAllFolders(bool forced)
 {

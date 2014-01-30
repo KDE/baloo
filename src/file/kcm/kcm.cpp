@@ -321,7 +321,7 @@ void ServerConfigModule::setFileIndexerStatusText(const QString& text, bool elid
 void ServerConfigModule::updateFileIndexerStatus()
 {
     // FIXME: Make this non-blocking!
-    QDBusPendingReply<QString> reply = m_fileIndexerInterface->userStatusString();
+    QDBusPendingReply<QString> reply = m_fileIndexerInterface->statusMessage();
     reply.waitForFinished();
 
     if (reply.isError()) {
