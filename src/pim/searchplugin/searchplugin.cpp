@@ -85,10 +85,7 @@ Baloo::Term recursiveEmailTermMapping(const Akonadi::SearchTerm &term)
         switch (field) {
             case Akonadi::EmailSearchTerm::Message:
             case Akonadi::EmailSearchTerm::Body:
-                //FIXME
-                //todo somehow search the body (not possible yet)
-//                 query.setSearchString(term.value().toString());
-                break;
+                return getTerm(term, "body");
             case Akonadi::EmailSearchTerm::Headers:
                 //FIXME
                 //search all headers

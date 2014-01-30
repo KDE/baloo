@@ -42,6 +42,7 @@ EmailSearchStore::EmailSearchStore(QObject* parent)
     m_prefix.insert("replyto", "RT");
     m_prefix.insert("organization", "O");
 
+    m_prefix.insert("body", "B");
     // TODO: Add body flag?
     // TODO: Add tags?
 

@@ -90,11 +90,15 @@ private Q_SLOTS:
 
         {
             KMime::Message::Ptr msg(new KMime::Message);
-            msg->setContent("content1");
             msg->subject()->from7BitString("subject1");
+            msg->contentType()->setMimeType("text/plain");
+            msg->setBody("body1 mälmöö");
             msg->from()->addAddress("john@test.com", "John Doe");
             msg->to()->addAddress("jane@test.com", "Jane Doe");
             msg->date()->setDateTime(KDateTime(QDate(2013,11,10), QTime(12,0,0)));
+//             msg->assemble();
+//             kDebug() << msg->encodedContent();
+
             Akonadi::Item item("message/rfc822");
             item.setId(1);
             item.setSize(1000);
@@ -105,11 +109,20 @@ private Q_SLOTS:
         }
         {
             KMime::Message::Ptr msg(new KMime::Message);
-            msg->setContent("content2");
             msg->subject()->from7BitString("subject2");
+
+            //Multipart message
+            KMime::Content *b = new KMime::Content;
+            b->contentType()->setMimeType( "text/plain" );
+            b->setBody( "body2" );
+            msg->addContent( b, true );
+
             msg->from()->addAddress("john@test.com", "John Doe");
             msg->to()->addAddress("jane@test.com", "Jane Doe");
             msg->date()->setDateTime(KDateTime(QDate(2013,11,10), QTime(13,0,0)));
+//             msg->assemble();
+//             kDebug() << msg->encodedContent();
+
             Akonadi::Item item("message/rfc822");
             item.setId(2);
             item.setSize(1002);
@@ -186,6 +199,24 @@ private Q_SLOTS:
             QStringList mimeTypes = QStringList() << "message/rfc822";
             QSet<qint64> result= QSet<qint64>() << 1 << 2;
             QTest::newRow("find subject contains") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
+        }
+        {
+            Akonadi::SearchQuery query;
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Body, "body", Akonadi::SearchTerm::CondContains));
+
+            QList<qint64> collections = QList<qint64>() << 1 << 2;
+            QStringList mimeTypes = QStringList() << "message/rfc822";
+            QSet<qint64> result= QSet<qint64>() << 1 << 2;
+            QTest::newRow("find body contains") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
+        }
+        {
+            Akonadi::SearchQuery query;
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Body, "mälmöö", Akonadi::SearchTerm::CondContains));
+
+            QList<qint64> collections = QList<qint64>() << 1 << 2;
+            QStringList mimeTypes = QStringList() << "message/rfc822";
+            QSet<qint64> result= QSet<qint64>() << 1;
+            QTest::newRow("find utf8 body contains") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
         }
         {
             Akonadi::SearchQuery query(Akonadi::SearchTerm::RelOr);

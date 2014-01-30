@@ -167,7 +167,7 @@ void EmailIndexer::process(const KMime::Message::Ptr& msg)
     // (Give the subject a higher priority)
     KMime::Headers::Subject* subject = msg->subject(false);
     if (subject) {
-        std::string str = subject->asUnicodeString().toStdString();
+        std::string str(subject->asUnicodeString().toUtf8().constData());
         kDebug() << "Indexing" << str.c_str();
         m_termGen->index_text_without_positions(str, 1, "S");
         m_termGen->index_text_without_positions(str, 100);
@@ -176,7 +176,7 @@ void EmailIndexer::process(const KMime::Message::Ptr& msg)
 
     KMime::Headers::Date* date = msg->date(false);
     if (date) {
-        QString str = QString::number(date->dateTime().toTime_t());
+        const QString str = QString::number(date->dateTime().toTime_t());
         m_doc->add_value(0, str.toStdString());
     }
 
@@ -194,18 +194,16 @@ void EmailIndexer::process(const KMime::Message::Ptr& msg)
     //
     // Process Plain Text Content
     //
-    if (msg->contents().isEmpty())
-        return;
 
     KMime::Content* mainBody = msg->mainBodyPart("text/plain");
     if (mainBody) {
-        const std::string text = mainBody->decodedText().toStdString();
+        const std::string text(mainBody->decodedText().toUtf8().constData());
         m_termGen->index_text_without_positions(text);
-        // Maybe we want to index the text twice?
+        m_termGen->index_text_without_positions(text, 1, "B");
     }
-
-    if (!mainBody)
-        processPart(msg.get(), mainBody);
+    else {
+        processPart(msg.get(), 0);
+    }
 }
 
 void EmailIndexer::processPart(KMime::Content* content, KMime::Content* mainContent)
@@ -215,22 +213,24 @@ void EmailIndexer::processPart(KMime::Content* content, KMime::Content* mainCont
     }
 
     KMime::Headers::ContentType* type = content->contentType(false);
-    if (type && type->isMultipart()) {
-        if (type->isSubtype("encrypted"))
-            return;
+    if (type) {
+        if (type->isMultipart()) {
+            if (type->isSubtype("encrypted"))
+                return;
 
-        Q_FOREACH (KMime::Content* c, content->contents()) {
-            processPart(c, mainContent);
+            Q_FOREACH (KMime::Content* c, content->contents()) {
+                processPart(c, mainContent);
+            }
         }
-    }
 
-    // Only get HTML content, if no plain text content
-    if (!mainContent && type->isHTMLText()) {
-        QTextDocument doc;
-        doc.setHtml(content->decodedText());
+        // Only get HTML content, if no plain text content
+        if (!mainContent && type->isHTMLText()) {
+            QTextDocument doc;
+            doc.setHtml(content->decodedText());
 
-        const std::string text = doc.toPlainText().toStdString();
-        m_termGen->index_text_without_positions(text);
+            const std::string text(doc.toPlainText().toUtf8().constData());
+            m_termGen->index_text_without_positions(text);
+        }
     }
 
     // FIXME: Handle attachments?

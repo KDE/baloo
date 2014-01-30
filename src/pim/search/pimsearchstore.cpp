@@ -73,7 +73,7 @@ Xapian::Query PIMSearchStore::constructQuery(const QString& property, const QVar
         parser.set_database(*xapianDb());
 
         std::string p = m_prefix.value(property.toLower()).toStdString();
-        std::string str = value.toString().toStdString();
+        std::string str(value.toString().toUtf8().constData());
         int flags = Xapian::QueryParser::FLAG_DEFAULT | Xapian::QueryParser::FLAG_PARTIAL;
         return parser.parse_query(str, flags, p);
     }
