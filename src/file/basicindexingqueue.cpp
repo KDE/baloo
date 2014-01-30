@@ -44,7 +44,6 @@ BasicIndexingQueue::BasicIndexingQueue(Database* db, FileIndexerConfig* config, 
 void BasicIndexingQueue::clear()
 {
     m_currentFile.clear();
-    m_currentFlags = NoUpdateFlags;
     m_paths.clear();
 }
 
@@ -57,17 +56,6 @@ void BasicIndexingQueue::clear(const QString& path)
             it.remove();
     }
 }
-
-QString BasicIndexingQueue::currentUrl() const
-{
-    return m_currentFile.url();
-}
-
-UpdateDirFlags BasicIndexingQueue::currentFlags() const
-{
-    return m_currentFlags;
-}
-
 
 bool BasicIndexingQueue::isEmpty()
 {
@@ -119,7 +107,6 @@ bool BasicIndexingQueue::process(FileMapping& file, UpdateDirFlags flags)
     if (info.isDir()) {
         if (forced || indexingRequired) {
             m_currentFile = file;
-            m_currentFlags = flags;
             m_currentMimeType = mimetype;
 
             startedIndexing = true;
@@ -137,7 +124,6 @@ bool BasicIndexingQueue::process(FileMapping& file, UpdateDirFlags flags)
         }
     } else if (info.isFile() && (forced || indexingRequired)) {
         m_currentFile = file;
-        m_currentFlags = flags;
         m_currentMimeType = mimetype;
 
         startedIndexing = true;
@@ -217,7 +203,6 @@ void BasicIndexingQueue::slotIndexingFinished()
     FileMapping file = m_currentFile;
     m_currentFile.clear();
     m_currentMimeType.clear();
-    m_currentFlags = NoUpdateFlags;
 
     Q_EMIT endIndexingFile(file);
 

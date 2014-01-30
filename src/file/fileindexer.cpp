@@ -148,19 +148,6 @@ void FileIndexer::resume() const
     m_indexScheduler->resume();
 }
 
-
-QString FileIndexer::currentFile() const
-{
-    return m_indexScheduler->currentUrl();
-}
-
-
-QString FileIndexer::currentFolder() const
-{
-    return KUrl(QUrl::fromLocalFile(m_indexScheduler->currentUrl())).directory();
-}
-
-
 void FileIndexer::updateFolder(const QString& path, bool recursive, bool forced)
 {
     kDebug() << "Called with path: " << path;

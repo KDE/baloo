@@ -98,9 +98,6 @@ public Q_SLOTS:
     Q_SCRIPTABLE void suspend() const;
     Q_SCRIPTABLE void setSuspended(bool);
 
-    Q_SCRIPTABLE QString currentFolder() const;
-    Q_SCRIPTABLE QString currentFile() const;
-
     //Q_SCRIPTABLE int indexedFiles() const;
     //Q_SCRIPTABLE int totalFiles() const;
 

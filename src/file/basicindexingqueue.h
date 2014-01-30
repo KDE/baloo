@@ -71,9 +71,6 @@ class BasicIndexingQueue: public IndexingQueue
 public:
     explicit BasicIndexingQueue(Database* db, FileIndexerConfig* config, QObject* parent = 0);
 
-    QString currentUrl() const;
-    UpdateDirFlags currentFlags() const;
-
     virtual bool isEmpty();
 
 Q_SIGNALS:

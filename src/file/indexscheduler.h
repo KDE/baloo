@@ -83,22 +83,6 @@ public:
      */
     State currentStatus() const;
 
-    /**
-     * The current uri being indexed. It is empty if no file is being indexed.
-     * The url being empty does not indicate that the indexer isn't running,
-     * just that it hasn't found a file to index.
-     *
-     * \sa indexingStarted
-     * \sa indexingStopped
-     */
-    QString currentUrl() const;
-
-    /**
-     * The UpdateDirFlags of the the current url that is being
-     * indexed.
-     */
-    UpdateDirFlags currentFlags() const;
-
     void removeFileData(int id);
 
 public Q_SLOTS:

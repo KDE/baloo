@@ -146,17 +146,6 @@ bool IndexScheduler::isIndexing() const
     return m_indexing;
 }
 
-QString IndexScheduler::currentUrl() const
-{
-    return m_basicIQ->currentUrl();
-}
-
-UpdateDirFlags IndexScheduler::currentFlags() const
-{
-    return m_basicIQ->currentFlags();
-}
-
-
 void IndexScheduler::setIndexingStarted(bool started)
 {
     if (started != m_indexing) {
