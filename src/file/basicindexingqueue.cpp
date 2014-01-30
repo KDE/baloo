@@ -43,7 +43,6 @@ BasicIndexingQueue::BasicIndexingQueue(Database* db, FileIndexerConfig* config, 
 
 void BasicIndexingQueue::clear()
 {
-    m_currentFile.clear();
     m_paths.clear();
 }
 
@@ -106,11 +105,8 @@ bool BasicIndexingQueue::process(FileMapping& file, UpdateDirFlags flags)
     QFileInfo info(file.url());
     if (info.isDir()) {
         if (forced || indexingRequired) {
-            m_currentFile = file;
-            m_currentMimeType = mimetype;
-
             startedIndexing = true;
-            index(file);
+            index(file, mimetype);
         }
 
         // We don't want to follow system links
@@ -123,11 +119,8 @@ bool BasicIndexingQueue::process(FileMapping& file, UpdateDirFlags flags)
             }
         }
     } else if (info.isFile() && (forced || indexingRequired)) {
-        m_currentFile = file;
-        m_currentMimeType = mimetype;
-
         startedIndexing = true;
-        index(file);
+        index(file, mimetype);
     }
 
     return startedIndexing;
@@ -185,12 +178,11 @@ bool BasicIndexingQueue::shouldIndexContents(const QString& dir)
     return m_config->shouldFolderBeIndexed(dir);
 }
 
-void BasicIndexingQueue::index(const FileMapping& file)
+void BasicIndexingQueue::index(const FileMapping& file, const QString& mimetype)
 {
     kDebug() << file.id() << file.url();
-    Q_EMIT beginIndexingFile(file);
 
-    BasicIndexingJob job(&m_db->sqlDatabase(), file, m_currentMimeType);
+    BasicIndexingJob job(&m_db->sqlDatabase(), file, mimetype);
     if (job.index()) {
         Q_EMIT newDocument(job.id(), job.document());
     }
@@ -200,12 +192,6 @@ void BasicIndexingQueue::index(const FileMapping& file)
 
 void BasicIndexingQueue::slotIndexingFinished()
 {
-    FileMapping file = m_currentFile;
-    m_currentFile.clear();
-    m_currentMimeType.clear();
-
-    Q_EMIT endIndexingFile(file);
-
     // Continue the queue
     finishIteration();
 }

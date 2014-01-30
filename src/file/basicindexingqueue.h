@@ -74,9 +74,6 @@ public:
     virtual bool isEmpty();
 
 Q_SIGNALS:
-    void beginIndexingFile(const Baloo::FileMapping& file);
-    void endIndexingFile(const Baloo::FileMapping& file);
-
     void newDocument(unsigned id, Xapian::Document doc);
 
 public Q_SLOTS:
@@ -97,7 +94,7 @@ private:
      * This method does not need to be synchronous. The indexing operation may be started
      * and on completion, the finishedIndexing method should be called
      */
-    void index(const FileMapping& file);
+    void index(const FileMapping& file, const QString& mimetype);
 
     bool shouldIndex(FileMapping& file, const QString& mimetype) const;
     bool shouldIndexContents(const QString& dir);
@@ -113,11 +110,6 @@ private:
     bool process(FileMapping& file, UpdateDirFlags flags);
 
     QStack< QPair<FileMapping, UpdateDirFlags> > m_paths;
-
-    FileMapping m_currentFile;
-    QString m_currentMimeType;
-
-    UpdateDirFlags m_currentFlags;
 
     Database* m_db;
     FileIndexerConfig* m_config;
