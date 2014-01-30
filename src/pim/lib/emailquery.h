@@ -76,7 +76,7 @@ public:
     void matches(const QString& match);
 
     /**
-     * Matches teh string \p subjectMatch specifically in the
+     * Matches the string \p subjectMatch specifically in the
      * email subject
      */
     void subjectMatches(const QString& subjectMatch);
