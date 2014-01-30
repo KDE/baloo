@@ -75,8 +75,6 @@ IndexScheduler::IndexScheduler(Database* db, FileIndexerConfig* config, QObject*
     connect(this, SIGNAL(indexingSuspended(bool)), this, SLOT(emitStatusStringChanged()));
 
     m_eventMonitor = new EventMonitor(this);
-    connect(m_eventMonitor, SIGNAL(diskSpaceStatusChanged(bool)),
-            this, SLOT(slotScheduleIndexing()));
     connect(m_eventMonitor, SIGNAL(idleStatusChanged(bool)),
             this, SLOT(slotScheduleIndexing()));
     connect(m_eventMonitor, SIGNAL(powerManagementStatusChanged(bool)),
@@ -168,7 +166,6 @@ void IndexScheduler::slotFinishedIndexing()
     }
 
     if (m_basicIQ->isEmpty() && m_fileIQ->isEmpty()) {
-        m_eventMonitor->suspendDiskSpaceMonitor();
         setIndexingStarted(false);
     }
 }
@@ -263,10 +260,6 @@ void IndexScheduler::setStateFromEvent()
     if (m_state == State_Suspended) {
         kDebug() << "Suspended";
     }
-    else if (m_eventMonitor->isDiskSpaceLow()) {
-        kDebug() << "Disk Space";
-        m_state = State_LowDiskSpace;
-    }
     else if (m_eventMonitor->isOnBattery()) {
         kDebug() << "Battery";
         m_state = State_OnBattery;
@@ -285,8 +278,7 @@ bool IndexScheduler::scheduleBasicQueue()
 {
     switch (m_state) {
         case State_Suspended:
-        case State_LowDiskSpace:
-            kDebug() << "No basic queue: suspended or low disc space";
+            kDebug() << "No basic queue: suspended";
             return false;
         case State_OnBattery:
         case State_UserIdle:
@@ -305,9 +297,8 @@ bool IndexScheduler::scheduleFileQueue()
     }
     switch (m_state) {
         case State_Suspended:
-        case State_LowDiskSpace:
         case State_OnBattery:
-            kDebug() << "No file queue: suspended or low disc space or on battery";
+            kDebug() << "No file queue: suspended or on battery";
             return false;
         case State_UserIdle:
         case State_Normal:

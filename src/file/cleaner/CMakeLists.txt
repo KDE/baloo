@@ -14,6 +14,7 @@ target_link_libraries(baloo_file_cleaner
   ${QT_QTSQL_LIBRARY}
   ${KDE4_KDECORE_LIBS}
   ${KDE4_KDEUI_LIBS}
+  ${KDE4_KIO_LIBS}
   ${XAPIAN_LIBRARIES}
 )
 

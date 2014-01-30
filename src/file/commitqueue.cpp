@@ -24,6 +24,8 @@
 #include "database.h"
 
 #include <KDebug>
+#include <KDiskFreeSpaceInfo>
+#include <QCoreApplication>
 
 Baloo::CommitQueue::CommitQueue(Database* db, QObject* parent)
     : QObject(parent)
@@ -66,6 +68,14 @@ void Baloo::CommitQueue::startTimers()
 
 void Baloo::CommitQueue::commit()
 {
+    // The 200 mb is arbitrary
+    KDiskFreeSpaceInfo info = KDiskFreeSpaceInfo::freeSpaceInfo(m_db->path());
+    if (info.isValid() && info.available() <= 200 * 1024 * 1024) {
+        kError() << "Low disk space. Aborting!!";
+        QCoreApplication::instance()->quit();
+        return;
+    }
+
     m_db->sqlDatabase().commit();
     m_db->sqlDatabase().transaction();
     kDebug() << "SQL Committed";

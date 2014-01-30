@@ -57,8 +57,7 @@ public:
         State_Normal = 0,
         State_UserIdle = 1,
         State_OnBattery = 2,
-        State_LowDiskSpace = 3,
-        State_Suspended = 4
+        State_Suspended = 3
     };
 
     IndexScheduler(Database* db, FileIndexerConfig* config, QObject* parent = 0);

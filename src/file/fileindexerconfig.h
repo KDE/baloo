@@ -70,12 +70,6 @@ public:
     bool indexHiddenFilesAndFolders() const;
 
     /**
-     * The minimal available disk space. If it drops below
-     * indexing will be suspended.
-     */
-    KIO::filesize_t minDiskSpace() const;
-
-    /**
      * true the first time the service is run (or after manually
      * tampering with the config.
      */

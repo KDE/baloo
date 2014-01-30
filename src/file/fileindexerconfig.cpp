@@ -124,14 +124,6 @@ bool FileIndexerConfig::indexHiddenFilesAndFolders() const
     return m_indexHidden;
 }
 
-
-KIO::filesize_t FileIndexerConfig::minDiskSpace() const
-{
-    // default: 200 MB
-    return m_config.group("General").readEntry("min disk space", KIO::filesize_t(200 * 1024 * 1024));
-}
-
-
 void FileIndexerConfig::slotConfigDirty()
 {
     if (forceConfigUpdate())
