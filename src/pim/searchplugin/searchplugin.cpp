@@ -94,8 +94,7 @@ Baloo::Term recursiveEmailTermMapping(const Akonadi::SearchTerm &term)
             case Akonadi::EmailSearchTerm::ByteSize:
                 return getTerm(term, "size");
             case Akonadi::EmailSearchTerm::HeaderDate: {
-                const KDateTime dt = KDateTime::fromString(term.value().toString(), KDateTime::ISODate);
-                Baloo::Term s("date", QString::number(dt.toTime_t()), mapComparator(term.condition()));
+                Baloo::Term s("date", QString::number(term.value().toDateTime().toTime_t()), mapComparator(term.condition()));
                 s.setNegation(term.isNegated());
                 return s;
             }
