@@ -185,11 +185,5 @@ void BasicIndexingQueue::index(const FileMapping& file, const QString& mimetype)
         Q_EMIT newDocument(job.id(), job.document());
     }
 
-    QTimer::singleShot(0, this, SLOT(slotIndexingFinished()));
-}
-
-void BasicIndexingQueue::slotIndexingFinished()
-{
-    // Continue the queue
-    finishIteration();
+    QTimer::singleShot(0, this, SLOT(finishIteration()));
 }

@@ -56,14 +56,6 @@ void FileIndexingQueue::fillQueue()
     }
 }
 
-void FileIndexingQueue::enqueue(const FileMapping& file)
-{
-    if (!m_fileQueue.contains(file.id())) {
-        m_fileQueue << file.id();
-        callForNextIteration();
-    }
-}
-
 bool FileIndexingQueue::isEmpty()
 {
     return m_fileQueue.isEmpty();
@@ -78,11 +70,6 @@ void FileIndexingQueue::processNextIteration()
         files << m_fileQueue.pop();
     }
 
-    process(files);
-}
-
-void FileIndexingQueue::process(const QVector<uint>& files)
-{
     FileIndexingJob* job = new FileIndexingJob(files, this);
     connect(job, SIGNAL(indexingFailed(uint)), this, SLOT(slotIndexingFailed(uint)));
     connect(job, SIGNAL(finished(KJob*)), SLOT(slotFinishedIndexingFile(KJob*)));

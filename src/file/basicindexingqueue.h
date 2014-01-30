@@ -86,9 +86,6 @@ public Q_SLOTS:
 protected:
     virtual void processNextIteration();
 
-private Q_SLOTS:
-    void slotIndexingFinished();
-
 private:
     /**
      * This method does not need to be synchronous. The indexing operation may be started

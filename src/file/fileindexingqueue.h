@@ -46,9 +46,6 @@ public:
 
     void clear();
 
-public Q_SLOTS:
-    void enqueue(const Baloo::FileMapping& file);
-
 Q_SIGNALS:
     void newDocument(uint docid, const Xapian::Document& doc);
     void deleteDocument(unsigned docid);
@@ -61,8 +58,6 @@ private Q_SLOTS:
     void slotIndexingFailed(uint doc);
 
 private:
-    void process(const QVector<uint>& files);
-
     QStack<uint> m_fileQueue;
     Database* m_db;
 
