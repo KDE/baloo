@@ -29,6 +29,7 @@ IndexingQueue::IndexingQueue(QObject* parent): QObject(parent)
 {
     m_sentEvent = false;
     m_suspended = false;
+    m_shouldEmitStartSignal = true;
     m_delay = 0;
 }
 
@@ -69,7 +70,12 @@ void IndexingQueue::callForNextIteration()
 
     if (isEmpty()) {
         Q_EMIT finishedIndexing();
+        m_shouldEmitStartSignal = true;
         return;
+    }
+    else if (m_shouldEmitStartSignal) {
+        Q_EMIT startedIndexing();
+        m_shouldEmitStartSignal = false;
     }
 
     if (!m_suspended) {

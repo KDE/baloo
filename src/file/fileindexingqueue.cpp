@@ -40,8 +40,6 @@ FileIndexingQueue::FileIndexingQueue(Database* db, QObject* parent)
     m_fileQueue.reserve(m_maxSize);
 }
 
-// FIXME: We are not emiting startedIndexing!
-
 void FileIndexingQueue::fillQueue()
 {
     if (m_fileQueue.size() >= m_maxSize)

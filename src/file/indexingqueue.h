@@ -65,14 +65,13 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     /**
-     * The derived queues must emit this signal when their queue
-     * gets filled up
+     * This signal will be emitted when the queue starts
+     * processing items
      */
     void startedIndexing();
 
     /**
-     * Will automatically be emitted after an iteration if empty
-     * returns true
+     * The signal be emitted once the queue is empty
      */
     void finishedIndexing();
 
@@ -104,6 +103,7 @@ private Q_SLOTS:
 private:
     bool m_suspended;
     bool m_sentEvent;
+    bool m_shouldEmitStartSignal;
     int m_delay;
 };
 

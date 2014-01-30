@@ -74,8 +74,6 @@ void BasicIndexingQueue::enqueue(const FileMapping& file, UpdateDirFlags flags)
     kDebug() << file.url();
     m_paths.push(qMakePair(file, flags));
     callForNextIteration();
-
-    Q_EMIT startedIndexing();
 }
 
 void BasicIndexingQueue::processNextIteration()
