@@ -93,7 +93,7 @@ void EventMonitor::slotCheckAvailableSpace()
     KDiskFreeSpaceInfo info = KDiskFreeSpaceInfo::freeSpaceInfo(path);
     if (info.isValid()) {
         KConfig config("baloofilerc");
-        int minSize = config.group("General").readEntry("min disk space", KIO::filesize_t(200 * 1024 * 1024));
+        qulonglong minSize = config.group("General").readEntry("min disk space", KIO::filesize_t(200 * 1024 * 1024));
         if (info.available() <= minSize) {
             m_isDiskSpaceLow = true;
             Q_EMIT diskSpaceStatusChanged(true);
