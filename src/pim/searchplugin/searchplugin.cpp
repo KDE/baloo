@@ -68,6 +68,114 @@ static Baloo::Term getTerm(const Akonadi::SearchTerm &term, const QString &prope
     return t;
 }
 
+Baloo::Term recursiveEmailTermMapping(const Akonadi::SearchTerm &term)
+{
+    if (!term.subTerms().isEmpty()) {
+        Baloo::Term t(mapRelation(term.relation()));
+        Q_FOREACH (const Akonadi::SearchTerm &subterm, term.subTerms()) {
+            const Baloo::Term newTerm = recursiveEmailTermMapping(subterm);
+            if (newTerm.isValid()) {
+                t.addSubTerm(newTerm);
+            }
+        }
+        return t;
+    } else {
+        kDebug() << term.key() << term.value();
+        const Akonadi::EmailSearchTerm::EmailSearchField field = Akonadi::EmailSearchTerm::fromKey(term.key());
+        switch (field) {
+            case Akonadi::EmailSearchTerm::Message:
+            case Akonadi::EmailSearchTerm::Body:
+                //FIXME
+                //todo somehow search the body (not possible yet)
+//                 query.setSearchString(term.value().toString());
+                break;
+            case Akonadi::EmailSearchTerm::Headers:
+                //FIXME
+                //search all headers
+//                 query.setSearchString(term.value().toString());
+                break;
+            case Akonadi::EmailSearchTerm::ByteSize:
+                return getTerm(term, "size");
+            case Akonadi::EmailSearchTerm::HeaderDate: {
+                const KDateTime dt = KDateTime::fromString(term.value().toString(), KDateTime::ISODate);
+                Baloo::Term s("date", QString::number(dt.toTime_t()), mapComparator(term.condition()));
+                s.setNegation(term.isNegated());
+                return s;
+            }
+            case Akonadi::EmailSearchTerm::Subject:
+                return getTerm(term, "subject");
+            case Akonadi::EmailSearchTerm::HeaderFrom:
+                return getTerm(term, "from");
+            case Akonadi::EmailSearchTerm::HeaderTo:
+                return getTerm(term, "to");
+            case Akonadi::EmailSearchTerm::HeaderCC:
+                return getTerm(term, "cc");
+            case Akonadi::EmailSearchTerm::HeaderBCC:
+                return getTerm(term, "bcc");
+            case Akonadi::EmailSearchTerm::MessageStatus:
+                if (term.value().toString() == QString::fromLatin1(Akonadi::MessageFlags::Flagged)) {
+                    return Baloo::Term("isimportant", !term.isNegated());
+                }
+                //TODO remaining flags
+                break;
+            case Akonadi::EmailSearchTerm::MessageTag:
+                //search directly in akonadi? or index tags.
+                break;
+            case Akonadi::EmailSearchTerm::HeaderReplyTo:
+                return getTerm(term, "replyto");
+            case Akonadi::EmailSearchTerm::HeaderOrganization:
+                return getTerm(term, "organization");
+            case Akonadi::EmailSearchTerm::HeaderListId:
+//                     t.addSubTerm(getTerm(term, "listid"));
+                break;
+            case Akonadi::EmailSearchTerm::HeaderResentFrom:
+//                     t.addSubTerm(getTerm(term, "resentfrom"));
+                break;
+            case Akonadi::EmailSearchTerm::HeaderXLoop:
+                break;
+            case Akonadi::EmailSearchTerm::HeaderXMailingList:
+                break;
+            case Akonadi::EmailSearchTerm::HeaderXSpamFlag:
+                break;
+            case Akonadi::EmailSearchTerm::Unknown:
+            default:
+                kWarning() << "unknown term " << term.key();
+        }
+    }
+    return Baloo::Term();
+}
+
+Baloo::Term recursiveContactTermMapping(const Akonadi::SearchTerm &term)
+{
+    if (!term.subTerms().isEmpty()) {
+        Baloo::Term t(mapRelation(term.relation()));
+        Q_FOREACH (const Akonadi::SearchTerm &subterm, term.subTerms()) {
+            const Baloo::Term newTerm = recursiveContactTermMapping(subterm);
+            if (newTerm.isValid()) {
+                t.addSubTerm(newTerm);
+            }
+        }
+        return t;
+    } else {
+        kDebug() << term.key() << term.value();
+        const Akonadi::ContactSearchTerm::ContactSearchField field = Akonadi::ContactSearchTerm::fromKey(term.key());
+        switch (field) {
+            case Akonadi::ContactSearchTerm::Name:
+                return getTerm(term, "name");
+            case Akonadi::ContactSearchTerm::Email:
+                return getTerm(term, "email");
+            case Akonadi::ContactSearchTerm::Nickname:
+                return getTerm(term, "nick");
+            case Akonadi::ContactSearchTerm::Uid:
+                return getTerm(term, "uid");
+            case Akonadi::ContactSearchTerm::Unknown:
+            default:
+                kWarning() << "unknown term " << term.key();
+        }
+    }
+    return Baloo::Term();
+}
+
 QSet<qint64> SearchPlugin::search(const QString &akonadiQuery, const QList<qint64> &collections, const QStringList &mimeTypes)
 {
     const Akonadi::SearchQuery searchQuery = Akonadi::SearchQuery::fromJSON(akonadiQuery.toLatin1());
@@ -83,108 +191,14 @@ QSet<qint64> SearchPlugin::search(const QString &akonadiQuery, const QList<qint6
         return QSet<qint64>();
     }
 
-    Baloo::Term t(mapRelation(term.relation()));
+    Baloo::Term t;
     if (mimeTypes.contains("message/rfc822")) {
         kDebug() << "mail query";
         query.setType("Email");
-
-        Q_FOREACH (const Akonadi::SearchTerm &termsGroup, term.subTerms()) {
-            Q_FOREACH (const Akonadi::SearchTerm &subterm, termsGroup.subTerms()) {
-                kDebug() << subterm.key() << subterm.value();
-                const Akonadi::EmailSearchTerm::EmailSearchField field = Akonadi::EmailSearchTerm::fromKey(subterm.key());
-                switch (field) {
-                    case Akonadi::EmailSearchTerm::Message:
-                    case Akonadi::EmailSearchTerm::Body:
-                        //FIXME
-                        //todo somehow search the body (not possible yet)
-                        query.setSearchString(subterm.value().toString());
-                        break;
-                    case Akonadi::EmailSearchTerm::Headers:
-                        //FIXME
-                        //search all headers
-                        query.setSearchString(subterm.value().toString());
-                        break;
-                    case Akonadi::EmailSearchTerm::ByteSize:
-                        t.addSubTerm(getTerm(subterm, "size"));
-                        break;
-                    case Akonadi::EmailSearchTerm::HeaderDate: {
-                        const KDateTime dt = KDateTime::fromString(subterm.value().toString(), KDateTime::ISODate);
-                        Baloo::Term s("date", QString::number(dt.toTime_t()), mapComparator(subterm.condition()));
-                        s.setNegation(subterm.isNegated());
-                        t.addSubTerm(s);
-                    }
-                        break;
-                    case Akonadi::EmailSearchTerm::Subject:
-                        t.addSubTerm(getTerm(subterm, "subject"));
-                        break;
-                    case Akonadi::EmailSearchTerm::HeaderFrom:
-                        t.addSubTerm(getTerm(subterm, "from"));
-                        break;
-                    case Akonadi::EmailSearchTerm::HeaderTo:
-                        t.addSubTerm(getTerm(subterm, "to"));
-                        break;
-                    case Akonadi::EmailSearchTerm::HeaderCC:
-                        t.addSubTerm(getTerm(subterm, "cc"));
-                        break;
-                    case Akonadi::EmailSearchTerm::HeaderBCC:
-                        t.addSubTerm(getTerm(subterm, "bcc"));
-                        break;
-                    case Akonadi::EmailSearchTerm::MessageStatus:
-                        if (subterm.value().toString() == QString::fromLatin1(Akonadi::MessageFlags::Flagged)) {
-                            t.addSubTerm(Baloo::Term("isimportant", !subterm.isNegated()));
-                        }
-                        //TODO remaining flags
-                        break;
-                    case Akonadi::EmailSearchTerm::MessageTag:
-                        //search directly in akonadi? or index tags.
-                        break;
-                    case Akonadi::EmailSearchTerm::HeaderReplyTo:
-                        t.addSubTerm(getTerm(subterm, "replyto"));
-                        break;
-                    case Akonadi::EmailSearchTerm::HeaderOrganization:
-                        t.addSubTerm(getTerm(subterm, "organization"));
-                        break;
-                    case Akonadi::EmailSearchTerm::HeaderListId:
-    //                     t.addSubTerm(getTerm(subterm, "listid"));
-                        break;
-                    case Akonadi::EmailSearchTerm::HeaderResentFrom:
-    //                     t.addSubTerm(getTerm(subterm, "resentfrom"));
-                        break;
-                    case Akonadi::EmailSearchTerm::HeaderXLoop:
-                        break;
-                    case Akonadi::EmailSearchTerm::HeaderXMailingList:
-                        break;
-                    case Akonadi::EmailSearchTerm::HeaderXSpamFlag:
-                        break;
-                    case Akonadi::EmailSearchTerm::Unknown:
-                    default:
-                        kWarning() << "unknown term " << subterm.key();
-                }
-            }
-        }
+        t = recursiveEmailTermMapping(term);
     } else if (mimeTypes.contains("text/directory")) {
         query.setType("Contact");
-        Q_FOREACH (const Akonadi::SearchTerm &subterm, term.subTerms()) {
-            kDebug() << subterm.key() << subterm.value();
-            const Akonadi::ContactSearchTerm::ContactSearchField field = Akonadi::ContactSearchTerm::fromKey(subterm.key());
-            switch (field) {
-                case Akonadi::ContactSearchTerm::Name:
-                    t.addSubTerm(getTerm(subterm, "name"));
-                    break;
-                case Akonadi::ContactSearchTerm::Email:
-                    t.addSubTerm(getTerm(subterm, "email"));
-                    break;
-                case Akonadi::ContactSearchTerm::Nickname:
-                    t.addSubTerm(getTerm(subterm, "nick"));
-                    break;
-                case Akonadi::ContactSearchTerm::Uid:
-                    t.addSubTerm(getTerm(subterm, "uid"));
-                    break;
-                case Akonadi::ContactSearchTerm::Unknown:
-                default:
-                    kWarning() << "unknown term " << subterm.key();
-            }
-        }
+        t = recursiveContactTermMapping(term);
     } else if (mimeTypes.contains("...")) {
         query.setType("ContactGroups");
         //TODO contactgroup queries
