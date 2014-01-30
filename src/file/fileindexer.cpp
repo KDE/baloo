@@ -137,23 +137,6 @@ void FileIndexer::resume() const
     m_indexScheduler->resume();
 }
 
-void FileIndexer::updateFolder(const QString& path, bool recursive, bool forced)
-{
-    kDebug() << "Called with path: " << path;
-    QFileInfo info(path);
-    if (info.exists()) {
-        QString dirPath;
-        if (info.isDir())
-            dirPath = info.absoluteFilePath();
-        else
-            dirPath = info.absolutePath();
-
-        if (m_config->shouldFolderBeIndexed(dirPath)) {
-            indexFolder(path, recursive, forced);
-        }
-    }
-}
-
 void FileIndexer::updateAllFolders(bool forced)
 {
     m_indexScheduler->updateAll(forced);
@@ -167,7 +150,7 @@ void FileIndexer::indexFile(const QString& path)
         indexFolder(path, false /*non-recursive*/, false /*not-forced*/);
     }
     else {
-        m_indexScheduler->analyzeFile(path);
+        m_indexScheduler->indexFile(path);
     }
 }
 

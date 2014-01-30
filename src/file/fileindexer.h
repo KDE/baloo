@@ -91,11 +91,6 @@ public Q_SLOTS:
     Q_SCRIPTABLE void setSuspended(bool);
 
     /**
-     * Update folder \a path if it is configured to be indexed.
-     */
-    Q_SCRIPTABLE void updateFolder(const QString& path, bool recursive, bool forced);
-
-    /**
      * Update all folders configured to be indexed.
      */
     Q_SCRIPTABLE void updateAllFolders(bool forced);

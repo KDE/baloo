@@ -241,7 +241,7 @@ void IndexScheduler::slotConfigFiltersChanged()
 }
 
 
-void IndexScheduler::analyzeFile(const QString& path)
+void IndexScheduler::indexFile(const QString& path)
 {
     m_basicIQ->enqueue(FileMapping(path));
 }

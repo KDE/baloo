@@ -108,9 +108,9 @@ public Q_SLOTS:
     void updateAll(bool forceUpdate = false);
 
     /**
-     * Analyze the one file without conditions.
+     * Send this specific file for indexing
      */
-    void analyzeFile(const QString& path);
+    void indexFile(const QString& path);
 
 Q_SIGNALS:
     // Indexing State
