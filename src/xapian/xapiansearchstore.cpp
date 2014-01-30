@@ -120,7 +120,7 @@ namespace {
         QList<Term> topTerms;
         topTerms.reserve(11);
 
-        const std::string stdString = string.toStdString();
+        const std::string stdString = string.toLower().toStdString();
         Xapian::TermIterator it = db->allterms_begin(stdString);
         Xapian::TermIterator end = db->allterms_end(stdString);
         for (; it != end; it++) {
