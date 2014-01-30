@@ -58,8 +58,7 @@ public:
         State_UserIdle = 1,
         State_OnBattery = 2,
         State_LowDiskSpace = 3,
-        State_Suspended = 4,
-        State_Cleaning = 5
+        State_Suspended = 4
     };
 
     IndexScheduler(Database* db, FileIndexerConfig* config, QObject* parent = 0);
@@ -67,7 +66,6 @@ public:
 
     bool isSuspended() const;
     bool isIndexing() const;
-    bool isCleaning() const;
 
     /**
      * A user readable description of the scheduler's status

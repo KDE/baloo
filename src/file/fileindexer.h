@@ -85,7 +85,6 @@ public Q_SLOTS:
 
     Q_SCRIPTABLE bool isSuspended() const;
     Q_SCRIPTABLE bool isIndexing() const;
-    Q_SCRIPTABLE bool isCleaning() const;
 
     Q_SCRIPTABLE void resume() const;
     Q_SCRIPTABLE void suspend() const;

@@ -126,12 +126,6 @@ bool FileIndexer::isIndexing() const
     return m_indexScheduler->isIndexing();
 }
 
-bool FileIndexer::isCleaning() const
-{
-    return m_indexScheduler->isCleaning();
-}
-
-
 void FileIndexer::suspend() const
 {
     m_indexScheduler->suspend();

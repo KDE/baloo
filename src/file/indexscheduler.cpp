@@ -136,11 +136,6 @@ bool IndexScheduler::isSuspended() const
     return m_state == State_Suspended;
 }
 
-bool IndexScheduler::isCleaning() const
-{
-    return m_state == State_Cleaning;
-}
-
 bool IndexScheduler::isIndexing() const
 {
     return m_indexing;
@@ -268,9 +263,6 @@ void IndexScheduler::setStateFromEvent()
     if (m_state == State_Suspended) {
         kDebug() << "Suspended";
     }
-    else if (m_state == State_Cleaning) {
-        kDebug() << "Cleaning";
-    }
     else if (m_eventMonitor->isDiskSpaceLow()) {
         kDebug() << "Disk Space";
         m_state = State_LowDiskSpace;
@@ -293,9 +285,8 @@ bool IndexScheduler::scheduleBasicQueue()
 {
     switch (m_state) {
         case State_Suspended:
-        case State_Cleaning:
         case State_LowDiskSpace:
-            kDebug() << "No basic queue: suspended, cleaning or low disc space";
+            kDebug() << "No basic queue: suspended or low disc space";
             return false;
         case State_OnBattery:
         case State_UserIdle:
@@ -314,10 +305,9 @@ bool IndexScheduler::scheduleFileQueue()
     }
     switch (m_state) {
         case State_Suspended:
-        case State_Cleaning:
         case State_LowDiskSpace:
         case State_OnBattery:
-            kDebug() << "No file queue: suspended, cleaning, low disc space or on battery";
+            kDebug() << "No file queue: suspended or low disc space or on battery";
             return false;
         case State_UserIdle:
         case State_Normal:
@@ -358,13 +348,10 @@ QString IndexScheduler::userStatusString() const
 {
     bool indexing = isIndexing();
     bool suspended = isSuspended();
-    bool cleaning = isCleaning();
     bool processing = !m_basicIQ->isEmpty();
 
     if (suspended) {
         return i18nc("@info:status", "File indexer is suspended.");
-    } else if (cleaning) {
-        return i18nc("@info:status", "Cleaning invalid file metadata");
     } else if (indexing) {
         return i18nc("@info:status", "Indexing files for desktop search.");
     } else if (processing) {
