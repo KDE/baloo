@@ -21,66 +21,27 @@
  */
 
 #include "contactsearchstore.h"
-#include "item.h"
-#include "term.h"
-#include "query.h"
-
 
 #include <KStandardDirs>
 #include <KDebug>
-#include <KUrl>
 
 using namespace Baloo;
 
 ContactSearchStore::ContactSearchStore(QObject* parent)
-    : XapianSearchStore(parent)
+    : PIMSearchStore(parent)
 {
     m_prefix.insert("name", "NA");
     m_prefix.insert("nick", "NI");
     m_prefix.insert("email", ""); // Email currently doesn't map to anything
     m_prefix.insert("collection", "C");
 
-    QString path = KStandardDirs::locateLocal("data", "baloo/contacts/");
-    const QByteArray overrideDir = qgetenv("BALOO_CONTACTS_OVERRIDE_DIR");
-    if (!overrideDir.isEmpty()) {
-        kWarning() << "overriding contacts dir " << overrideDir;
-        path = QString::fromLatin1(overrideDir);
-    }
+    const QString path = KStandardDirs::locateLocal("data", "baloo/contacts/");
     setDbPath(path);
 }
 
 QStringList ContactSearchStore::types()
 {
     return QStringList() << "Akonadi" << "Contact";
-}
-
-Xapian::Query ContactSearchStore::constructQuery(const QString& property, const QVariant& value,
-                                                 Term::Comparator com)
-{
-    if (value.isNull())
-        return Xapian::Query();
-
-    if (com == Term::Contains) {
-        Xapian::QueryParser parser;
-        parser.set_database(*xapianDb());
-
-        std::string p = m_prefix.value(property.toLower()).toStdString();
-        std::string str = value.toString().toStdString();
-        int flags = Xapian::QueryParser::FLAG_DEFAULT | Xapian::QueryParser::FLAG_PARTIAL;
-        return parser.parse_query(str, flags, p);
-    }
-
-    return Xapian::Query(value.toString().toStdString());
-}
-
-
-QUrl ContactSearchStore::constructUrl(const Xapian::docid& docid)
-{
-    KUrl url;
-    url.setProtocol(QLatin1String("akonadi"));
-    url.addQueryItem(QLatin1String("item"), QString::number(docid));
-
-    return url;
 }
 
 BALOO_EXPORT_SEARCHSTORE(Baloo::ContactSearchStore, "baloo_contactsearchstore")

@@ -8,6 +8,7 @@ set(searchplugintest_SRCS
     ../../agent/emailindexer.cpp
     ../../agent/contactindexer.cpp
     ../../agent/abstractindexer.cpp
+    ../../search/pimsearchstore.cpp
     ../../search/email/emailsearchstore.cpp
     ../../search/email/agepostingsource.cpp
     ../../search/contact/contactsearchstore.cpp

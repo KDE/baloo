@@ -1,6 +1,7 @@
 /*
  * This file is part of the KDE Baloo Project
- * Copyright (C) 2012  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2013  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2014  Christian Mollekopf <mollekopf@kolabsys.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,22 +21,35 @@
  *
  */
 
-#ifndef BALOO_PIM_CONTACT_SEARCHSTORE_H
-#define BALOO_PIM_CONTACT_SEARCHSTORE_H
+#ifndef BALOO_PIM_SEARCHSTORE_H
+#define BALOO_PIM_SEARCHSTORE_H
 
-#include "../pimsearchstore.h"
+#include "xapiansearchstore.h"
+
+#include <QSet>
 
 namespace Baloo {
 
-class ContactSearchStore : public PIMSearchStore
+class PIMSearchStore : public XapianSearchStore
 {
     Q_OBJECT
-    Q_INTERFACES(Baloo::SearchStore)
 public:
-    ContactSearchStore(QObject* parent = 0);
+    PIMSearchStore(QObject* parent = 0);
 
     virtual QStringList types();
+
+protected:
+    virtual Xapian::Query convertTypes(const QStringList&) { return Xapian::Query(); }
+    virtual QByteArray idPrefix() { return QByteArray("akonadi"); }
+
+    virtual Xapian::Query constructQuery(const QString& property, const QVariant& value,
+                                         Term::Comparator com);
+    virtual QUrl constructUrl(const Xapian::docid& docid);
+
+    QHash<QString, QString> m_prefix;
+    QSet<QString> m_boolProperties;
+    QHash<QString, int> m_valueProperties;
 };
 
 }
-#endif // BALOO_PIM_CONTACT_SEARCHSTORE_H
+#endif // BALOO_PIM_SEARCHSTORE_H

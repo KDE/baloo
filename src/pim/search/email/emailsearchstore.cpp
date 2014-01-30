@@ -21,20 +21,17 @@
  */
 
 #include "emailsearchstore.h"
-#include "item.h"
 #include "term.h"
 #include "query.h"
 #include "agepostingsource.h"
 
-
 #include <KStandardDirs>
 #include <KDebug>
-#include <KUrl>
 
 using namespace Baloo;
 
 EmailSearchStore::EmailSearchStore(QObject* parent)
-    : XapianSearchStore(parent)
+    : PIMSearchStore(parent)
 {
     m_prefix.insert("from", "F");
     m_prefix.insert("to", "T");
@@ -80,12 +77,7 @@ EmailSearchStore::EmailSearchStore(QObject* parent)
     m_valueProperties.insert("date", 0);
     m_valueProperties.insert("size", 1);
 
-    QString path = KStandardDirs::locateLocal("data", "baloo/email/");
-    const QByteArray overrideDir = qgetenv("BALOO_EMAIL_OVERRIDE_DIR");
-    if (!overrideDir.isEmpty()) {
-        kWarning() << "overriding email dir " << overrideDir;
-        path = QString::fromLatin1(overrideDir);
-    }
+    const QString path = KStandardDirs::locateLocal("data", "baloo/email/");
     setDbPath(path);
 }
 
@@ -97,76 +89,13 @@ QStringList EmailSearchStore::types()
 Xapian::Query EmailSearchStore::constructQuery(const QString& property, const QVariant& value,
                                                Term::Comparator com)
 {
-    if (value.isNull())
-        return Xapian::Query();
-
-    QString prop = property.toLower();
-    if (m_boolProperties.contains(prop)) {
-        QString p = m_prefix.value(prop);
-        if (p.isEmpty())
-            return Xapian::Query();
-
-        std::string term("B");
-        bool isTrue = false;
-
-        if (value.isNull() )
-            isTrue = true;
-
-        if (value.type() == QVariant::Bool) {
-            isTrue = value.toBool();
-        }
-
-        if (isTrue)
-            term += p.toStdString();
-        else
-            term += 'N' + p.toStdString();
-
-        return Xapian::Query(term);
-    }
-
+    //TODO is this special case necessary? maybe we can also move it to PIM
     if (com == Term::Contains) {
-        Xapian::QueryParser parser;
-        parser.set_database(*xapianDb());
-
-        std::string p = m_prefix.value(property.toLower()).toStdString();
-        if (p.empty())
-            return Xapian::Query();
-
-        std::string str = value.toString().toStdString();
-        int flags = Xapian::QueryParser::FLAG_DEFAULT | Xapian::QueryParser::FLAG_PARTIAL;
-        return parser.parse_query(str, flags, p);
-    }
-
-    if (com == Term::Greater || com == Term::GreaterEqual || com == Term::Less || com == Term::LessEqual) {
-        if (!m_valueProperties.contains(property.toLower())) {
+        if (!m_prefix.contains(property.toLower())) {
             return Xapian::Query();
         }
-        qlonglong numVal = value.toLongLong();
-        if (com == Term::Greater) {
-            numVal++;
-        }
-        if (com == Term::Less) {
-            numVal--;
-        }
-        int valueNumber = m_valueProperties.value(property.toLower());
-        if (com == Term::GreaterEqual || com == Term::Greater) {
-            return Xapian::Query(Xapian::Query::OP_VALUE_GE, valueNumber, QString::number(numVal).toStdString());
-        }
-        else if (com == Term::LessEqual || com == Term::Less) {
-            return Xapian::Query(Xapian::Query::OP_VALUE_LE, valueNumber, QString::number(numVal).toStdString());
-        }
     }
-
-    return Xapian::Query(value.toString().toStdString());
-}
-
-QUrl EmailSearchStore::constructUrl(const Xapian::docid& docid)
-{
-    KUrl url;
-    url.setProtocol(QLatin1String("akonadi"));
-    url.addQueryItem(QLatin1String("item"), QString::number(docid));
-
-    return url;
+    return PIMSearchStore::constructQuery(property, value, com);
 }
 
 QString EmailSearchStore::text(int queryId)

@@ -1,4 +1,4 @@
-kde4_add_plugin(baloo_contactsearchstore contactsearchstore.cpp)
+kde4_add_plugin(baloo_contactsearchstore contactsearchstore.cpp ../pimsearchstore.cpp)
 
 target_link_libraries(baloo_contactsearchstore
     ${QT_QTCORE_LIBRARY}

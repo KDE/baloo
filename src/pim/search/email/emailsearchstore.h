@@ -20,16 +20,14 @@
  *
  */
 
-#ifndef BALOO_PIM_SEARCHSTORE_H
-#define BALOO_PIM_SEARCHSTORE_H
+#ifndef BALOO_PIM_EMAIL_SEARCHSTORE_H
+#define BALOO_PIM_EMAIL_SEARCHSTORE_H
 
-#include "xapiansearchstore.h"
-
-#include <QSet>
+#include "../pimsearchstore.h"
 
 namespace Baloo {
 
-class EmailSearchStore : public XapianSearchStore
+class EmailSearchStore : public PIMSearchStore
 {
     Q_OBJECT
     Q_INTERFACES(Baloo::SearchStore)
@@ -43,19 +41,10 @@ public:
     }
 
 protected:
-    virtual Xapian::Query convertTypes(const QStringList&) { return Xapian::Query(); }
-    virtual QByteArray idPrefix() { return QByteArray("akonadi"); }
-
     virtual Xapian::Query constructQuery(const QString& property, const QVariant& value,
                                          Term::Comparator com);
-    virtual QUrl constructUrl(const Xapian::docid& docid);
     virtual Xapian::Query finalizeQuery(const Xapian::Query& query);
-
-private:
-    QHash<QString, QString> m_prefix;
-    QSet<QString> m_boolProperties;
-    QHash<QString, int> m_valueProperties;
 };
 
 }
-#endif // BALOO_PIM_SEARCHSTORE_H
+#endif // BALOO_PIM_EMAIL_SEARCHSTORE_H
