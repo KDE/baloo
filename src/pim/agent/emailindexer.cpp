@@ -90,6 +90,13 @@ void EmailIndexer::index(const Akonadi::Item& item)
     m_termGen = 0;
 }
 
+void EmailIndexer::insert(const QByteArray& key, KMime::Headers::Base* unstructured)
+{
+    if (unstructured) {
+        m_termGen->index_text_without_positions(unstructured->asUnicodeString().toUtf8().constData(), 1, key.data());
+    }
+}
+
 void EmailIndexer::insert(const QByteArray& key, KMime::Headers::Generics::MailboxList* mlist)
 {
     if (mlist)
@@ -184,16 +191,20 @@ void EmailIndexer::process(const KMime::Message::Ptr& msg)
     insert("T", msg->to(false));
     insert("CC", msg->cc(false));
     insert("BC", msg->bcc(false));
-
-    // Stuff that could be indexed
-    // - Message ID
-    // - Organization
-    // - listID
-    // - mailingList
+    insert("O", msg->organization(false));
+    insert("RT", msg->replyTo(false));
+    insert("RF", msg->headerByType("Resent-From"));
+    insert("LI", msg->headerByType("List-Id"));
+    insert("XL", msg->headerByType("X-Loop"));
+    insert("XML", msg->headerByType("X-Mailing-List"));
+    insert("XSF", msg->headerByType("X-Spam-Flag"));
 
     //
     // Process Plain Text Content
     //
+
+    //Index all headers
+    m_termGen->index_text_without_positions(std::string(msg->head().constData()), 1, "H");
 
     KMime::Content* mainBody = msg->mainBodyPart("text/plain");
     if (mainBody) {

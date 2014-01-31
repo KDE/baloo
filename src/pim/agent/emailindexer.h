@@ -65,6 +65,7 @@ private:
     void processPart(KMime::Content* content, KMime::Content* mainContent);
     void processMessageStatus(const Akonadi::MessageStatus& status);
 
+    void insert(const QByteArray& key, KMime::Headers::Base* base);
     void insert(const QByteArray& key, KMime::Headers::Generics::MailboxList* mlist);
     void insert(const QByteArray& key, KMime::Headers::Generics::AddressList* alist);
     void insert(const QByteArray& key, const KMime::Types::Mailbox::List& list);

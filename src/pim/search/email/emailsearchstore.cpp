@@ -41,21 +41,17 @@ EmailSearchStore::EmailSearchStore(QObject* parent)
     m_prefix.insert("collection", "C");
     m_prefix.insert("replyto", "RT");
     m_prefix.insert("organization", "O");
-
-    m_prefix.insert("body", "B");
-    // TODO: Add body flag?
-    // TODO: Add tags?
-
-    /*
-    // TODO: Add these when there is support for them in the indexer
-    m_prefix.insert("reply-to", "RT");
     m_prefix.insert("list-id", "LI");
     m_prefix.insert("resent-from", "RF");
     m_prefix.insert("x-loop", "XL");
     m_prefix.insert("x-mailing-list", "XML");
     m_prefix.insert("x-spam-flag", "XSF");
-    m_prefix.insert("organization", "O");
-    */
+
+    m_prefix.insert("body", "B");
+    m_prefix.insert("headers", "H");
+
+    // TODO: Add body flag?
+    // TODO: Add tags?
 
     // Boolean Flags
     m_prefix.insert("isimportant", "I");

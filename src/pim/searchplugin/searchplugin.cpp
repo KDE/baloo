@@ -83,14 +83,17 @@ Baloo::Term recursiveEmailTermMapping(const Akonadi::SearchTerm &term)
         kDebug() << term.key() << term.value();
         const Akonadi::EmailSearchTerm::EmailSearchField field = Akonadi::EmailSearchTerm::fromKey(term.key());
         switch (field) {
-            case Akonadi::EmailSearchTerm::Message:
+            case Akonadi::EmailSearchTerm::Message: {
+                Baloo::Term s(Baloo::Term::Or);
+                s.setNegation(term.isNegated());
+                s.addSubTerm(Baloo::Term("body", term.value(), mapComparator(term.condition())));
+                s.addSubTerm(Baloo::Term("headers", term.value(), mapComparator(term.condition())));
+                return s;
+            }
             case Akonadi::EmailSearchTerm::Body:
                 return getTerm(term, "body");
             case Akonadi::EmailSearchTerm::Headers:
-                //FIXME
-                //search all headers
-//                 query.setSearchString(term.value().toString());
-                break;
+                return getTerm(term, "headers");
             case Akonadi::EmailSearchTerm::ByteSize:
                 return getTerm(term, "size");
             case Akonadi::EmailSearchTerm::HeaderDate: {
@@ -112,7 +115,39 @@ Baloo::Term recursiveEmailTermMapping(const Akonadi::SearchTerm &term)
                 if (term.value().toString() == QString::fromLatin1(Akonadi::MessageFlags::Flagged)) {
                     return Baloo::Term("isimportant", !term.isNegated());
                 }
-                //TODO remaining flags
+                if (term.value().toString() == QString::fromLatin1(Akonadi::MessageFlags::ToAct)) {
+                    return Baloo::Term("istoact", !term.isNegated());
+                }
+                if (term.value().toString() == QString::fromLatin1(Akonadi::MessageFlags::Watched)) {
+                    return Baloo::Term("iswatched", !term.isNegated());
+                }
+                if (term.value().toString() == QString::fromLatin1(Akonadi::MessageFlags::Deleted)) {
+                    return Baloo::Term("isdeleted", !term.isNegated());
+                }
+                if (term.value().toString() == QString::fromLatin1(Akonadi::MessageFlags::Spam)) {
+                    return Baloo::Term("isspam", !term.isNegated());
+                }
+                if (term.value().toString() == QString::fromLatin1(Akonadi::MessageFlags::Replied)) {
+                    return Baloo::Term("isreplied", !term.isNegated());
+                }
+                if (term.value().toString() == QString::fromLatin1(Akonadi::MessageFlags::Ignored)) {
+                    return Baloo::Term("isignored", !term.isNegated());
+                }
+                if (term.value().toString() == QString::fromLatin1(Akonadi::MessageFlags::Forwarded)) {
+                    return Baloo::Term("isforwarded", !term.isNegated());
+                }
+                if (term.value().toString() == QString::fromLatin1(Akonadi::MessageFlags::Sent)) {
+                    return Baloo::Term("issent", !term.isNegated());
+                }
+                if (term.value().toString() == QString::fromLatin1(Akonadi::MessageFlags::Queued)) {
+                    return Baloo::Term("isqueued", !term.isNegated());
+                }
+                if (term.value().toString() == QString::fromLatin1(Akonadi::MessageFlags::Ham)) {
+                    return Baloo::Term("isham", !term.isNegated());
+                }
+                if (term.value().toString() == QString::fromLatin1(Akonadi::MessageFlags::Seen)) {
+                    return Baloo::Term("isread", !term.isNegated());
+                }
                 break;
             case Akonadi::EmailSearchTerm::MessageTag:
                 //search directly in akonadi? or index tags.
