@@ -19,4 +19,4 @@ install(TARGETS akonadi_baloo_searchplugin DESTINATION ${PLUGIN_INSTALL_DIR}/ako
 install(FILES akonadibaloosearchplugin.desktop
         DESTINATION ${PLUGIN_INSTALL_DIR}/akonadi)
 
-add_subdirectory(tests)
+add_subdirectory(autotests)

@@ -136,6 +136,7 @@ private Q_SLOTS:
             addressee.setFormattedName("John Doe");
             addressee.setNickName("JD");
             addressee.setEmails(QStringList() << "john@test.com");
+            addressee.setBirthday(QDateTime(QDate(2000, 01, 01)));
             Akonadi::Item item(KABC::Addressee::mimeType());
             item.setId(3);
             item.setPayload(addressee);
@@ -147,6 +148,7 @@ private Q_SLOTS:
             addressee.setUid("uid2");
             addressee.setName("Jane Doe");
             addressee.setEmails(QStringList() << "jane@test.com");
+            addressee.setBirthday(QDateTime(QDate(2001, 01, 01)));
             Akonadi::Item item(KABC::Addressee::mimeType());
             item.setId(4);
             item.setPayload(addressee);
@@ -343,6 +345,16 @@ private Q_SLOTS:
             QSet<qint64> result = QSet<qint64>() << 3;
             QTest::newRow("contact by uid") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
         }
+
+//         {
+//             Akonadi::SearchQuery query;
+//             query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Birthday, "uid1", Akonadi::SearchTerm::CondEqual));
+//
+//             QList<qint64> collections = QList<qint64>() << 3;
+//             QStringList mimeTypes = QStringList() << KABC::Addressee::mimeType();
+//             QSet<qint64> result = QSet<qint64>() << 3;
+//             QTest::newRow("contact by birthday") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
+//         }
 //         {
 //             Akonadi::SearchQuery query;
 //             query.addTerm(Akonadi::SearchTerm("*", "", Akonadi::SearchTerm::CondEqual));
