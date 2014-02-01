@@ -239,6 +239,10 @@ QSet<qint64> SearchPlugin::search(const QString &akonadiQuery, const QList<qint6
         return QSet<qint64>();
     }
 
+    if (searchQuery.limit() > 0) {
+        query.setLimit(searchQuery.limit());
+    }
+
     //Filter by collection if not empty
     if (!collections.isEmpty()) {
         Baloo::Term parentTerm(Baloo::Term::And);
