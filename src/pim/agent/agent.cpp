@@ -112,9 +112,21 @@ void BalooIndexingAgent::addIndexer(AbstractIndexer* indexer)
     }
 }
 
-AbstractIndexer* BalooIndexingAgent::indexerForItem(const Akonadi::Item& item)
+AbstractIndexer* BalooIndexingAgent::indexerForItem(const Akonadi::Item& item) const
 {
     return m_indexers.value(item.mimeType());
+}
+
+QList<AbstractIndexer*> BalooIndexingAgent::indexersForCollection(const Akonadi::Collection& collection) const
+{
+    QList<AbstractIndexer*> indexers;
+    Q_FOREACH (const QString& mimeType, collection.contentMimeTypes()) {
+        AbstractIndexer *i = m_indexers.value(mimeType);
+        if (i) {
+            indexers.append(i);
+        }
+    }
+    return indexers;
 }
 
 void BalooIndexingAgent::findUnindexedItems()
@@ -214,6 +226,18 @@ void BalooIndexingAgent::itemsRemoved(const Akonadi::Item::List& items)
     Q_FOREACH (const Akonadi::Item& item, items) {
         try {
             indexer->remove(item);
+        } catch (const Xapian::Error &e) {
+            kWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
+        }
+    }
+    m_commitTimer.start();
+}
+
+void BalooIndexingAgent::collectionRemoved(const Akonadi::Collection& collection)
+{
+    Q_FOREACH (AbstractIndexer *indexer, indexersForCollection(collection)) {
+        try {
+            indexer->remove(collection);
         } catch (const Xapian::Error &e) {
             kWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
         }

@@ -46,6 +46,7 @@ public:
     void updateFlags(const Akonadi::Item& item, const QSet<QByteArray>& added,
                      const QSet<QByteArray>& removed);
     void remove(const Akonadi::Item& item);
+    void remove(const Akonadi::Collection& item);
     void move(const Akonadi::Item::Id& itemId,
               const Akonadi::Entity::Id& from,
               const Akonadi::Entity::Id& to);

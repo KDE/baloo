@@ -107,6 +107,24 @@ void ContactIndexer::remove(const Akonadi::Item& item)
     }
 }
 
+void ContactIndexer::remove(const Akonadi::Collection& collection)
+{
+    try {
+        Xapian::Query query('C'+ QString::number(collection.id()).toStdString());
+        Xapian::Enquire enquire(*m_db);
+        enquire.set_query(query);
+
+        Xapian::MSet mset = enquire.get_mset(0, m_db->get_doccount());
+        for (Xapian::MSetIterator it = mset.begin(); it != mset.end(); it++) {
+            qint64 id = *it;
+            remove(Akonadi::Item(id));
+        }
+    }
+    catch (const Xapian::DocNotFoundError&) {
+        return;
+    }
+}
+
 void ContactIndexer::commit()
 {
     m_db->commit();
