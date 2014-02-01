@@ -24,9 +24,10 @@
 #include "indexingqueue.h"
 #include "filemapping.h"
 
-#include <KJob>
 #include <QStack>
+#include <QPair>
 #include <xapian.h>
+
 
 class Database;
 

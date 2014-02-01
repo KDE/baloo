@@ -25,7 +25,6 @@
 #include "file.h"
 
 #include "qtest_kde.h"
-#include <KTemporaryFile>
 #include <KDebug>
 #include <KTempDir>
 

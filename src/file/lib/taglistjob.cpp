@@ -23,7 +23,6 @@
 #include <KDebug>
 
 #include <xapian.h>
-#include <QTimer>
 #include <QStringList>
 
 using namespace Baloo;

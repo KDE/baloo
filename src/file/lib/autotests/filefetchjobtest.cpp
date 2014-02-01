@@ -25,7 +25,7 @@
 #include "file.h"
 
 #include "qtest_kde.h"
-#include <KTemporaryFile>
+#include <QSqlQuery>
 #include <KTempDir>
 #include <KDebug>
 
@@ -33,7 +33,6 @@
 #include <xapian.h>
 #include <attr/xattr.h>
 
-#include <QSqlQuery>
 #include <kfilemetadata/properties.h>
 
 using namespace Baloo;

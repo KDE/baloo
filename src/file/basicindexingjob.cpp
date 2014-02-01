@@ -23,7 +23,6 @@
 #include "basicindexingjob.h"
 #include "database.h"
 
-#include <QTimer>
 #include <QFileInfo>
 #include <QDateTime>
 

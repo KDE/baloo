@@ -24,12 +24,8 @@
 
 #include <KUser>
 #include <KDebug>
-#include <KAboutData>
-#include <KApplication>
 #include <KSharedConfig>
-#include <KConfigGroup>
-#include <KCmdLineArgs>
-#include <KMimeType>
+#include <KApplication>
 
 #include <KIO/Job>
 #include <KIO/NetAccess>

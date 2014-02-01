@@ -26,7 +26,7 @@
 
 #include <QVector>
 #include <QStringList>
-#include <QDateTime>
+#include <QTime>
 #include <KDebug>
 
 #include <algorithm>

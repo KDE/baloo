@@ -35,6 +35,7 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QDBusConnection>
+#include <KApplication>
 
 #include <iostream>
 

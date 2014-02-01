@@ -27,10 +27,8 @@
 #include <QTimer>
 #include <QFile>
 #include <QUrl>
-#include <QVariant>
 #include <QCoreApplication>
 #include <QSqlQuery>
-#include <QSqlError>
 
 using namespace Baloo;
 

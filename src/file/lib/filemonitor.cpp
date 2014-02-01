@@ -21,7 +21,6 @@
 #include "filemonitor.h"
 
 #include <QSet>
-#include <QList>
 #include <QString>
 #include <QStringList>
 #include <QDBusConnection>

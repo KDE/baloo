@@ -25,10 +25,9 @@
 #include <QFileInfo>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QStringList>
 
 #include <KDebug>
-#include <KJob>
-#include <KLocale>
 
 using namespace Baloo;
 
