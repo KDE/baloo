@@ -210,7 +210,7 @@ void EmailIndexer::process(const KMime::Message::Ptr& msg)
     if (mainBody) {
         const std::string text(mainBody->decodedText().toUtf8().constData());
         m_termGen->index_text_without_positions(text);
-        m_termGen->index_text_without_positions(text, 1, "B");
+        m_termGen->index_text_without_positions(text, 1, "BO");
     }
     else {
         processPart(msg.get(), 0);
@@ -253,6 +253,15 @@ void EmailIndexer::processMessageStatus(const Akonadi::MessageStatus& status)
     insertBool('A', status.hasAttachment());
     insertBool('I', status.isImportant());
     insertBool('W', status.isWatched());
+    insertBool('T', status.isToAct());
+    insertBool('D', status.isDeleted());
+    insertBool('S', status.isSpam());
+    insertBool('E', status.isReplied());
+    insertBool('G', status.isIgnored());
+    insertBool('F', status.isForwarded());
+    insertBool('N', status.isSent());
+    insertBool('Q', status.isQueued());
+    insertBool('H', status.isHam());
 }
 
 void EmailIndexer::insertBool(char key, bool value)

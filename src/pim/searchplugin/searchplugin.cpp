@@ -148,6 +148,9 @@ Baloo::Term recursiveEmailTermMapping(const Akonadi::SearchTerm &term)
                 if (term.value().toString() == QString::fromLatin1(Akonadi::MessageFlags::Seen)) {
                     return Baloo::Term("isread", !term.isNegated());
                 }
+                if (term.value().toString() == QString::fromLatin1(Akonadi::MessageFlags::HasAttachment)) {
+                    return Baloo::Term("hasattachment", !term.isNegated());
+                }
                 break;
             case Akonadi::EmailSearchTerm::MessageTag:
                 //search directly in akonadi? or index tags.

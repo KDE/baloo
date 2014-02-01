@@ -47,7 +47,7 @@ EmailSearchStore::EmailSearchStore(QObject* parent)
     m_prefix.insert("x-mailing-list", "XML");
     m_prefix.insert("x-spam-flag", "XSF");
 
-    m_prefix.insert("body", "B");
+    m_prefix.insert("body", "BO");
     m_prefix.insert("headers", "H");
 
     // TODO: Add body flag?
@@ -67,9 +67,23 @@ EmailSearchStore::EmailSearchStore(QObject* parent)
     m_prefix.insert("isham", "");
     m_prefix.insert("isread", "R");
 
+    m_prefix.insert("isimportant", "I");
+    m_prefix.insert("istoact", "T");
+    m_prefix.insert("iswatched", "W");
+    m_prefix.insert("isdeleted", "D");
+    m_prefix.insert("isspam", "S");
+    m_prefix.insert("isreplied", "E");
+    m_prefix.insert("isignored", "G");
+    m_prefix.insert("isforwarded", "F");
+    m_prefix.insert("issent", "N");
+    m_prefix.insert("isqueued", "Q");
+    m_prefix.insert("isham", "H");
+    m_prefix.insert("isread", "R");
+    m_prefix.insert("hasattachment", "A");
+
     m_boolProperties << "isimportant" << "istoact" << "iswatched" << "isdeleted" << "isspam"
                      << "isreplied" << "isignored" << "isforwarded" << "issent" << "isqueued"
-                     << "isham" << "isread";
+                     << "isham" << "isread" << "hasattachment";
 
     m_valueProperties.insert("date", 0);
     m_valueProperties.insert("size", 1);
