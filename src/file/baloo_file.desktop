@@ -6,6 +6,7 @@ X-KDE-autostart-condition=baloofilerc:Basic Settings:Enabled:true
 OnlyShowIn=KDE;
 X-KDE-autostart-phase=1
 Name=Baloo File Daemon
+Name[bs]=Baloo datotečni demon
 Name[da]=Baloo fil-dæmon
 Name[de]=Baloo-Dateidienst
 Name[el]=Δαίμονας αρχείων Baloo

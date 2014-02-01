@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Desktop Search
+Name[bs]=Pretraga površi
 Name[cs]=Vyhledávací služby
 Name[da]=Skrivebordssøgning
 Name[de]=Desktopsuche
@@ -20,6 +21,7 @@ Name[sv]=Skrivbordssökning
 Name[uk]=Стільничний пошук
 Name[x-test]=xxDesktop Searchxx
 Comment=Runner which searches through files, emails and contacts
+Comment[bs]=Trkač koji traži kroz datoteke, elektronsku poštu i kontakte
 Comment[da]=Runner som gennemsøger filer, e-mails og kontakter
 Comment[de]=Runner, der Dateien, E-Mails und Kontakte durchsucht
 Comment[fi]=Suoritusohjelma, joka etsii tiedostoista, sähköposteista ja yhteystiedoista
