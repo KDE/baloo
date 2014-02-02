@@ -93,7 +93,7 @@ bool IgnoringKInotify::filterWatch(const QString& path, WatchEvents& modes, Watc
 
     // Only watch the index folders for file change.
     // We still need to monitor everything for file creation because directories count as
-    // files, and we want to recieve signals for a new directory, so that we can watch it.
+    // files, and we want to receive signals for a new directory, so that we can watch it.
     if (shouldFolderBeIndexed && shouldFileNameBeIndexed) {
         modes |= KInotify::EventCloseWrite;
     } else {
@@ -258,7 +258,7 @@ void FileWatch::slotFileClosedAfterWrite(const QString& path)
     QDateTime fileModification = QFileInfo(path).lastModified();
     QDateTime dirModification = QFileInfo(QFileInfo(path).absoluteDir().absolutePath()).lastModified();
 
-    // If we have recieved a FileClosedAfterWrite event, then the file must have been
+    // If we have received a FileClosedAfterWrite event, then the file must have been
     // closed within the last minute.
     // This is being done cause many applications open the file under write mode, do not
     // make any modifications and then close the file. This results in us getting

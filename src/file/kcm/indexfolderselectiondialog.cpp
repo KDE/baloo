@@ -115,7 +115,7 @@ void IndexFolderSelectionDialog::setFolders(const QStringList& includeDirs, cons
     }
 
     // make sure that the tree is expanded to show all selected items
-    // expand the parent of each folder, as there is no point expanding the the folder itself
+    // expand the parent of each folder, as there is no point expanding the folder itself
     Q_FOREACH (const QString & dir, m_folderModel->includeFolders() + m_folderModel->excludeFolders()) {
         expandRecursively(m_folderModel->index(dir).parent(), m_viewIndexFolders);
     }

@@ -185,7 +185,7 @@ private:
      */
     bool folderInFolderList(const QString& path, QString& folder) const;
 
-    // These functions return true if the the new cache is different from the old one
+    // These functions return true if the new cache is different from the old one
     // They also emit signals to indicate how they are different
     bool buildFolderCache();
     bool buildExcludeFilterRegExpCache();
@@ -222,7 +222,7 @@ private:
 
     /**
      * Fills the \p includeAdded and \p includeRemoved lists with the changes
-     * that have occured between \p entry and \p include
+     * that have occurred between \p entry and \p include
      */
     void fillIncludeFolderChanges(const Entry& entry, const QSet<QString>& include,
                                   QStringList* includeAdded, QStringList* includeRemoved);
