@@ -136,8 +136,11 @@ void BalooIndexingAgent::slotRootCollectionsFetched(KJob* kjob)
     Akonadi::Collection::List cList = cjob->collections();
 
     m_jobs = 0;
+
+    status(Running, i18n("Indexing PIM data"));
     Q_FOREACH (const Akonadi::Collection& c, cList) {
         Akonadi::ItemFetchJob* job = new Akonadi::ItemFetchJob(c);
+        job->setProperty("collectionsCount", cList.size());
 
         if (!m_lastItemMTime.isNull()) {
             KDateTime dt(m_lastItemMTime, KDateTime::Spec::UTC());
@@ -285,9 +288,11 @@ void BalooIndexingAgent::slotItemsRecevied(const Akonadi::Item::List& items)
     m_commitTimer.start();
 }
 
-void BalooIndexingAgent::slotItemFetchFinished(KJob*)
+void BalooIndexingAgent::slotItemFetchFinished(KJob* job)
 {
+    const int totalJobs = job->property("collectionsCount").toInt();
     m_jobs--;
+    percent((float(totalJobs - m_jobs) / float(totalJobs)) * 100);
     if (m_jobs == 0) {
         KConfig config("baloorc");
         KConfigGroup group = config.group("Akonadi");
