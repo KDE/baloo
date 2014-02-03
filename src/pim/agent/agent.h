@@ -77,7 +77,7 @@ private:
     Akonadi::Item::List m_items;
     QTimer m_timer;
     QDateTime m_lastItemMTime;
-    QList<Akonadi::ItemFetchJob*> m_jobs;
+    QList<KJob*> m_jobs;
 
     QMap<QString, AbstractIndexer* > m_indexers;
 

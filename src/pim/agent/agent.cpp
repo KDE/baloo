@@ -322,7 +322,7 @@ void BalooIndexingAgent::slotCommitTimerElapsed()
 
 void BalooIndexingAgent::onAbortRequested()
 {
-    Q_FOREACH (Akonadi::ItemFetchJob *job, m_jobs) {
+    Q_FOREACH (KJob *job, m_jobs) {
         job->kill(KJob::Quietly);
     }
     m_jobs.clear();
