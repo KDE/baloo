@@ -27,3 +27,4 @@ install(FILES akonadibalooindexingagent.desktop
         DESTINATION "${CMAKE_INSTALL_PREFIX}/share/akonadi/agents")
 
 add_subdirectory(tests)
+add_subdirectory(autotests)

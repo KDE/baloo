@@ -49,6 +49,8 @@ public:
                             const Akonadi::Collection& sourceCollection,
                             const Akonadi::Collection& destinationCollection);
 
+    virtual void collectionRemoved(const Akonadi::Collection& collection);
+
     // Remove the entire db
     virtual void cleanup();
 
@@ -64,7 +66,8 @@ private Q_SLOTS:
 private:
     void createIndexers();
     void addIndexer(AbstractIndexer *indexer);
-    AbstractIndexer* indexerForItem(const Akonadi::Item& item);
+    AbstractIndexer* indexerForItem(const Akonadi::Item& item) const;
+    QList<AbstractIndexer*> indexersForCollection(const Akonadi::Collection& collection) const;
 
     Akonadi::Item::List m_items;
     QTimer m_timer;

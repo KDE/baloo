@@ -76,19 +76,27 @@ Xapian::Query XapianSearchStore::toXapianQuery(Xapian::Query::op op, const QList
     return Xapian::Query(op, queries.begin(), queries.end());
 }
 
+static Xapian::Query negate(bool shouldNegate, const Xapian::Query &query)
+{
+    if (shouldNegate) {
+        return Xapian::Query(Xapian::Query::OP_AND_NOT, Xapian::Query::MatchAll, query);
+    }
+    return query;
+}
+
 Xapian::Query XapianSearchStore::toXapianQuery(const Term& term)
 {
     if (term.operation() == Term::And) {
-        return toXapianQuery(Xapian::Query::OP_AND, term.subTerms());
+        return negate(term.isNegated(), toXapianQuery(Xapian::Query::OP_AND, term.subTerms()));
     }
     if (term.operation() == Term::Or) {
-        return toXapianQuery(Xapian::Query::OP_OR, term.subTerms());
+        return negate(term.isNegated(), toXapianQuery(Xapian::Query::OP_OR, term.subTerms()));
     }
 
     if (term.property().isEmpty())
         return Xapian::Query();
 
-    return constructQuery(term.property(), term.value(), term.comparator());
+    return negate(term.isNegated(), constructQuery(term.property(), term.value(), term.comparator()));
 }
 
 Xapian::Query XapianSearchStore::andQuery(const Xapian::Query& a, const Xapian::Query& b)

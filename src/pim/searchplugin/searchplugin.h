@@ -1,6 +1,6 @@
 /*
  * This file is part of the KDE Baloo Project
- * Copyright (C) 2012  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2014  Christian Mollekopf <mollekopf@kolabsys.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,22 +20,23 @@
  *
  */
 
-#ifndef BALOO_PIM_CONTACT_SEARCHSTORE_H
-#define BALOO_PIM_CONTACT_SEARCHSTORE_H
+#ifndef BALOO_PIM_SEARCHPLUGIN_H
+#define BALOO_PIM_SEARCHPLUGIN_H
 
-#include "../pimsearchstore.h"
+#include <akonadi/abstractsearchplugin.h>
 
 namespace Baloo {
+class Query;
+}
 
-class ContactSearchStore : public PIMSearchStore
+class SearchPlugin : public QObject, public Akonadi::AbstractSearchPlugin
 {
     Q_OBJECT
-    Q_INTERFACES(Baloo::SearchStore)
+    Q_INTERFACES(Akonadi::AbstractSearchPlugin)
 public:
-    ContactSearchStore(QObject* parent = 0);
-
-    virtual QStringList types();
+    virtual QSet<qint64> search( const QString &query, const QList<qint64> &collections, const QStringList &mimeTypes );
+private:
+    Baloo::Query fromAkonadiQuery(const QString &akonadiQuery, const QList<qint64> &collections, const QStringList &mimeTypes);
 };
 
-}
-#endif // BALOO_PIM_CONTACT_SEARCHSTORE_H
+#endif

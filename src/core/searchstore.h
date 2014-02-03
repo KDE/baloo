@@ -42,6 +42,11 @@ public:
     virtual ~SearchStore();
 
     /**
+     * Override search stores for testing
+     */
+    static void overrideSearchStores(const QList<SearchStore*> &overrideSearchStores);
+
+    /**
      * Gives a list of available search stores. These stores must be managed and
      * deleted by the caller
      */
@@ -87,7 +92,13 @@ inline int deserialize(const QByteArray& namespace_, const QByteArray& str) {
 
 Q_DECLARE_INTERFACE(Baloo::SearchStore, "org.kde.Baloo.SearchStore")
 
+// BALOO_NO_PLUGINS allows to compile all plugins into a single test binary
+// (otherwise the qt_plugin_query_verification_data will be defined multiple times)
+#ifndef BALOO_NO_PLUGINS
 #define BALOO_EXPORT_SEARCHSTORE( classname, libname )    \
     Q_EXPORT_PLUGIN2(libname, classname)
+#else
+#define BALOO_EXPORT_SEARCHSTORE( classname, libname )
+#endif
 
 #endif // _BALOO_SEARCHSTORE_H

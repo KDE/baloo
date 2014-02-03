@@ -1,4 +1,4 @@
-kde4_add_plugin(baloo_emailsearchstore agepostingsource.cpp emailsearchstore.cpp)
+kde4_add_plugin(baloo_emailsearchstore agepostingsource.cpp emailsearchstore.cpp ../pimsearchstore.cpp)
 
 target_link_libraries(baloo_emailsearchstore
     ${QT_QTCORE_LIBRARY}

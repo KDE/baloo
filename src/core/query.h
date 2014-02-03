@@ -23,7 +23,9 @@
 #ifndef QUERY_H
 #define QUERY_H
 
+#include "core_export.h"
 #include "resultiterator.h"
+
 #include <QVariant>
 
 namespace Baloo {

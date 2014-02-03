@@ -39,6 +39,12 @@ set_package_properties(Xattr PROPERTIES
     TYPE REQUIRED
 )
 
+find_package(Akonadi)
+set_package_properties(Akonadi PROPERTIES
+    URL "http://akonadi-project.org"
+    TYPE REQUIRED
+)
+
 
 add_definitions(-DQT_NO_KEYWORDS)
 
@@ -48,6 +54,7 @@ include_directories(
   ${QJSON_INCLUDE_DIR}
   ${KFILEMETADATA_INCLUDE_DIR}
   ${XAPIAN_INCLUDE_DIR}
+  ${AKONADI_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/file/lib
