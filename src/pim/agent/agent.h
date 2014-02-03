@@ -28,9 +28,15 @@
 
 #include <QTimer>
 #include <QDateTime>
+#include <QList>
 
 class KJob;
 class AbstractIndexer;
+
+namespace Akonadi
+{
+class ItemFetchJob;
+}
 
 class BalooIndexingAgent : public Akonadi::AgentBase, public Akonadi::AgentBase::ObserverV3
 {
@@ -60,6 +66,7 @@ private Q_SLOTS:
     void processNext();
     void slotItemsRecevied(const Akonadi::Item::List& items);
     void slotCommitTimerElapsed();
+    void onAbortRequested();
 
 private:
     void createIndexers();
@@ -69,7 +76,7 @@ private:
     Akonadi::Item::List m_items;
     QTimer m_timer;
     QDateTime m_lastItemMTime;
-    int m_jobs;
+    QList<Akonadi::ItemFetchJob*> m_jobs;
 
     QMap<QString, AbstractIndexer* > m_indexers;
 

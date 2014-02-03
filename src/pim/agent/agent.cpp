@@ -60,6 +60,9 @@ BalooIndexingAgent::BalooIndexingAgent(const QString& id)
         setOnline(true);
     }
 
+    connect(this, SIGNAL(abortRequested()),
+            this, SLOT(onAbortRequested()));
+
     m_timer.setInterval(10);
     m_timer.setSingleShot(true);
     connect(&m_timer, SIGNAL(timeout()), this, SLOT(processNext()));
@@ -135,8 +138,6 @@ void BalooIndexingAgent::slotRootCollectionsFetched(KJob* kjob)
     Akonadi::CollectionFetchJob* cjob = qobject_cast<Akonadi::CollectionFetchJob*>(kjob);
     Akonadi::Collection::List cList = cjob->collections();
 
-    m_jobs = 0;
-
     status(Running, i18n("Indexing PIM data"));
     Q_FOREACH (const Akonadi::Collection& c, cList) {
         Akonadi::ItemFetchJob* job = new Akonadi::ItemFetchJob(c);
@@ -158,7 +159,7 @@ void BalooIndexingAgent::slotRootCollectionsFetched(KJob* kjob)
                 this, SLOT(slotItemsRecevied(Akonadi::Item::List)));
         connect(job, SIGNAL(finished(KJob*)), this, SLOT(slotItemFetchFinished(KJob*)));
         job->start();
-        m_jobs++;
+        m_jobs << job;
     }
 }
 
@@ -291,9 +292,9 @@ void BalooIndexingAgent::slotItemsRecevied(const Akonadi::Item::List& items)
 void BalooIndexingAgent::slotItemFetchFinished(KJob* job)
 {
     const int totalJobs = job->property("collectionsCount").toInt();
-    m_jobs--;
-    percent((float(totalJobs - m_jobs) / float(totalJobs)) * 100);
-    if (m_jobs == 0) {
+    m_jobs.removeOne(job);
+    percent((float(totalJobs - m_jobs.count()) / float(totalJobs)) * 100);
+    if (m_jobs.isEmpty()) {
         KConfig config("baloorc");
         KConfigGroup group = config.group("Akonadi");
         group.writeEntry("initialIndexingDone", true);
@@ -310,6 +311,15 @@ void BalooIndexingAgent::slotCommitTimerElapsed()
             kWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
         }
     }
+}
+
+void BalooIndexingAgent::onAbortRequested()
+{
+    Q_FOREACH (Akonadi::ItemFetchJob *job, m_jobs) {
+        job->kill(KJob::Quietly);
+    }
+    m_jobs.clear();
+    status(Idle);
 }
 
 AKONADI_AGENT_MAIN(BalooIndexingAgent)
