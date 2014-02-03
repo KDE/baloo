@@ -26,8 +26,8 @@ target_link_libraries(balootags
 )
 
 set_target_properties(balootags PROPERTIES
-    VERSION ${GENERIC_LIB_VERSION}
-    SOVERSION ${GENERIC_LIB_SOVERSION}
+    VERSION ${BALOO_VERSION_STRING}
+    SOVERSION ${BALOO_SOVERSION}
 )
 
 install(TARGETS balootags EXPORT BalooLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS})

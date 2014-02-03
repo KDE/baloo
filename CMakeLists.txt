@@ -15,10 +15,17 @@ find_package(KFileMetaData REQUIRED)
 find_package(Xapian REQUIRED)
 find_package(QJSON REQUIRED)
 
+include(ECMSetupVersion)
+
 include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(KDECompilerSettings)
 add_definitions(-DQT_NO_KEYWORDS)
+
+set(KF5_VERSION "5.0.0")
+ecm_setup_version(${KF5_VERSION} VARIABLE_PREFIX BALOO
+                        VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/baloo_version.h"
+                        PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/BalooConfigVersion.cmake")
 
 include_directories(
   ${QJSON_INCLUDE_DIR}

@@ -20,8 +20,8 @@ target_link_libraries(baloofiles
 )
 
 set_target_properties(baloofiles PROPERTIES
-    VERSION ${GENERIC_LIB_VERSION}
-    SOVERSION ${GENERIC_LIB_SOVERSION}
+    VERSION ${BALOO_VERSION_STRING}
+    SOVERSION ${BALOO_SOVERSION}
 )
 
 install(TARGETS baloofiles ${INSTALL_TARGETS_DEFAULT_ARGS})
