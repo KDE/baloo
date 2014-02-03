@@ -1,5 +1,6 @@
 add_definitions(${KDE4_ENABLE_EXCEPTIONS})
 
+include_directories(${KDEPIMLIBS_INCLUDE_DIRS})
 kde4_add_plugin(akonadi_baloo_searchplugin
     searchplugin.cpp
 )
