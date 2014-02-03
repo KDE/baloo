@@ -62,6 +62,8 @@ BalooIndexingAgent::BalooIndexingAgent(const QString& id)
 
     connect(this, SIGNAL(abortRequested()),
             this, SLOT(onAbortRequested()));
+    connect(this, SIGNAL(onlineChanged(bool)),
+            this, SLOT(onOnlineChanged(bool)));
 
     m_timer.setInterval(10);
     m_timer.setSingleShot(true);
@@ -122,6 +124,10 @@ AbstractIndexer* BalooIndexingAgent::indexerForItem(const Akonadi::Item& item)
 
 void BalooIndexingAgent::findUnindexedItems()
 {
+    if (!isOnline()) {
+        return;
+    }
+
     KConfig config("baloorc");
     KConfigGroup group = config.group("Akonadi");
 
@@ -298,6 +304,7 @@ void BalooIndexingAgent::slotItemFetchFinished(KJob* job)
         KConfig config("baloorc");
         KConfigGroup group = config.group("Akonadi");
         group.writeEntry("initialIndexingDone", true);
+        status(Idle);
     }
 }
 
@@ -320,6 +327,20 @@ void BalooIndexingAgent::onAbortRequested()
     }
     m_jobs.clear();
     status(Idle);
+}
+
+void BalooIndexingAgent::onOnlineChanged(bool online)
+{
+    // Ignore everything when offline
+    changeRecorder()->setAllMonitored(online);
+
+    // Index items that might have changed while we were offline
+    if (online) {
+        findUnindexedItems();
+    } else {
+        // Abort ongoing indexing when switched to offline
+        onAbortRequested();
+    }
 }
 
 AKONADI_AGENT_MAIN(BalooIndexingAgent)

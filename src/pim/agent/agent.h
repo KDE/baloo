@@ -67,6 +67,7 @@ private Q_SLOTS:
     void slotItemsRecevied(const Akonadi::Item::List& items);
     void slotCommitTimerElapsed();
     void onAbortRequested();
+    void onOnlineChanged(bool online);
 
 private:
     void createIndexers();
