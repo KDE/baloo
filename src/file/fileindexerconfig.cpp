@@ -444,7 +444,7 @@ void FileIndexerConfig::setInitialRun(bool isInitialRun)
 
 bool FileIndexerConfig::initialUpdateDisabled() const
 {
-    return m_config.group("General").readEntry("disable initial update", false);
+    return m_config.group("General").readEntry("disable initial update", true);
 }
 
 bool FileIndexerConfig::suspendOnPowerSaveDisabled() const
