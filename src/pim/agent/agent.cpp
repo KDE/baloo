@@ -304,7 +304,7 @@ void BalooIndexingAgent::slotItemFetchFinished(KJob* job)
         KConfig config("baloorc");
         KConfigGroup group = config.group("Akonadi");
         group.writeEntry("initialIndexingDone", true);
-        status(Idle);
+        status(Idle, i18n("Ready"));
     }
 }
 
@@ -326,7 +326,7 @@ void BalooIndexingAgent::onAbortRequested()
         job->kill(KJob::Quietly);
     }
     m_jobs.clear();
-    status(Idle);
+    status(Idle, i18n("Ready"));
 }
 
 void BalooIndexingAgent::onOnlineChanged(bool online)
