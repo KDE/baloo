@@ -272,7 +272,7 @@ void BalooIndexingAgent::slotItemsRecevied(const Akonadi::Item::List& items)
 {
     KConfig config("baloorc");
     KConfigGroup group = config.group("Akonadi");
-    bool initial = group.readEntry("initialIndexingDone", false);
+    const bool initialDone = group.readEntry("initialIndexingDone", false);
     QDateTime dt = group.readEntry("lastItem", QDateTime::fromMSecsSinceEpoch(1));
 
     Q_FOREACH (const Akonadi::Item& item, items) {
@@ -289,7 +289,7 @@ void BalooIndexingAgent::slotItemsRecevied(const Akonadi::Item::List& items)
 
         dt = qMax(dt, item.modificationTime());
     }
-    if (initial)
+    if (initialDone)
         group.writeEntry("lastItem", dt);
 
     m_commitTimer.start();
