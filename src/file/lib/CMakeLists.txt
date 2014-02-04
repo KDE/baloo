@@ -6,6 +6,8 @@ set(FILE_LIB_SRCS
     filemonitor.cpp
     taglistjob.cpp
     db.cpp
+
+    xattrdetector.cpp
 )
 
 kde4_add_library(baloofiles SHARED ${FILE_LIB_SRCS})
@@ -14,6 +16,7 @@ target_link_libraries(baloofiles
     ${QT_QTCORE_LIBRARY}
     ${QT_QTSQL_LIBRARY}
     ${KDE4_KDECORE_LIBRARY}
+    ${KDE4_SOLID_LIBS}
     ${XAPIAN_LIBRARIES}
     ${QJSON_LIBRARIES}
     baloocore
@@ -37,4 +40,5 @@ install(FILES
     DESTINATION ${INCLUDE_INSTALL_DIR}/baloo COMPONENT Devel
 )
 
+add_subdirectory(tests)
 add_subdirectory(autotests)
