@@ -39,7 +39,7 @@ set_package_properties(Xattr PROPERTIES
     TYPE REQUIRED
 )
 
-find_package(Akonadi)
+find_package(Akonadi 1.11.42 CONFIG)
 set_package_properties(Akonadi PROPERTIES
     URL "http://akonadi-project.org"
     TYPE REQUIRED
