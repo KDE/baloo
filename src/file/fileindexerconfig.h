@@ -85,16 +85,6 @@ public:
     bool initialUpdateDisabled() const;
 
     /**
-     * A "hidden" config option which allows to disable the feature
-     * where the file indexing is suspended when in powersave mode.
-     * This is especially useful for mobile devices which always run
-     * on battery.
-     *
-     * At some point this should be a finer grained configuration.
-     */
-    bool suspendOnPowerSaveDisabled() const;
-
-    /**
      * Check if \p path should be indexed taking into account
      * the includeFolders(), the excludeFolders(), and the
      * excludeFilters().
@@ -136,13 +126,6 @@ public:
      * to the configuration
      */
     bool shouldMimeTypeBeIndexed(const QString& mimeType) const;
-
-    /**
-     * Check if the debug mode is enabled. The debug mode is a hidden
-     * configuration option (without any GUI) that will make the indexer
-     * log errors in a dedicated file.
-     */
-    bool isDebugModeEnabled() const;
 
     /**
      * Returns true if the folder is in the list indexed directories

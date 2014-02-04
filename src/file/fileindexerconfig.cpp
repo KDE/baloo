@@ -446,13 +446,3 @@ bool FileIndexerConfig::initialUpdateDisabled() const
 {
     return m_config.group("General").readEntry("disable initial update", true);
 }
-
-bool FileIndexerConfig::suspendOnPowerSaveDisabled() const
-{
-    return m_config.group("General").readEntry("disable suspend on powersave", false);
-}
-
-bool FileIndexerConfig::isDebugModeEnabled() const
-{
-    return m_config.group("General").readEntry("debug mode", false);
-}
