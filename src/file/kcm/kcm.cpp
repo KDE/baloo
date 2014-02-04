@@ -75,9 +75,9 @@ ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args
     watcher->setConnection(QDBusConnection::sessionBus());
     watcher->setWatchMode(QDBusServiceWatcher::WatchForRegistration | QDBusServiceWatcher::WatchForUnregistration);
 
-    connect(watcher, SIGNAL(serviceRegistered(const QString&)),
+    connect(watcher, SIGNAL(serviceRegistered(QString)),
             this, SLOT(recreateInterfaces()));
-    connect(watcher, SIGNAL(serviceUnregistered(const QString&)),
+    connect(watcher, SIGNAL(serviceUnregistered(QString)),
             this, SLOT(recreateInterfaces()));
 
     recreateInterfaces();

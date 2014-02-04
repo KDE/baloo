@@ -65,7 +65,7 @@ void BasicIndexingQueueTest::testSimpleDirectoryStructure()
     BasicIndexingQueue queue(&db, &config);
     queue.enqueue(FileMapping(p + "home"));
 
-    QSignalSpy spy(&queue, SIGNAL(newDocument(uint, Xapian::Document)));
+    QSignalSpy spy(&queue, SIGNAL(newDocument(uint,Xapian::Document)));
     queue.resume();
 
     QEventLoop loop;

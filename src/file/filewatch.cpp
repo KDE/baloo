@@ -141,12 +141,12 @@ FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
     // monitor the file system for changes (restricted by the inotify limit)
     m_dirWatch = new IgnoringKInotify(m_pathExcludeRegExpCache, m_config, this);
 
-    connect(m_dirWatch, SIGNAL(moved(QString, QString)),
-            this, SLOT(slotFileMoved(QString, QString)));
-    connect(m_dirWatch, SIGNAL(deleted(QString, bool)),
-            this, SLOT(slotFileDeleted(QString, bool)));
-    connect(m_dirWatch, SIGNAL(created(QString, bool)),
-            this, SLOT(slotFileCreated(QString, bool)));
+    connect(m_dirWatch, SIGNAL(moved(QString,QString)),
+            this, SLOT(slotFileMoved(QString,QString)));
+    connect(m_dirWatch, SIGNAL(deleted(QString,bool)),
+            this, SLOT(slotFileDeleted(QString,bool)));
+    connect(m_dirWatch, SIGNAL(created(QString,bool)),
+            this, SLOT(slotFileCreated(QString,bool)));
     connect(m_dirWatch, SIGNAL(closedWrite(QString)),
             this, SLOT(slotFileClosedAfterWrite(QString)));
     connect(m_dirWatch, SIGNAL(watchUserLimitReached(QString)),
@@ -273,9 +273,9 @@ void FileWatch::connectToKDirNotify()
 {
     // monitor KIO for changes
     QDBusConnection::sessionBus().connect(QString(), QString(), "org.kde.KDirNotify", "FileMoved",
-                                          this, SIGNAL(slotFileMoved(const QString&, const QString&)));
+                                          this, SIGNAL(slotFileMoved(QString,QString)));
     QDBusConnection::sessionBus().connect(QString(), QString(), "org.kde.KDirNotify", "FilesRemoved",
-                                          this, SIGNAL(slotFilesDeleted(const QStringList&)));
+                                          this, SIGNAL(slotFilesDeleted(QStringList)));
 }
 
 

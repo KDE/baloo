@@ -385,3 +385,4 @@ private Q_SLOTS:
 QTEST_MAIN(SearchPluginTest)
 
 #include "searchplugintest.moc"
+

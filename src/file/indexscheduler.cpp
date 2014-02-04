@@ -40,10 +40,10 @@ IndexScheduler::IndexScheduler(Database* db, FileIndexerConfig* config, QObject*
     , m_db(db)
 {
     Q_ASSERT(m_config);
-    connect(m_config, SIGNAL(includeFolderListChanged(QStringList, QStringList)),
-            this, SLOT(slotIncludeFolderListChanged(QStringList, QStringList)));
-    connect(m_config, SIGNAL(excludeFolderListChanged(QStringList, QStringList)),
-            this, SLOT(slotExcludeFolderListChanged(QStringList, QStringList)));
+    connect(m_config, SIGNAL(includeFolderListChanged(QStringList,QStringList)),
+            this, SLOT(slotIncludeFolderListChanged(QStringList,QStringList)));
+    connect(m_config, SIGNAL(excludeFolderListChanged(QStringList,QStringList)),
+            this, SLOT(slotExcludeFolderListChanged(QStringList,QStringList)));
 
     // FIXME: What if both the signals are emitted?
     connect(m_config, SIGNAL(fileExcludeFiltersChanged()),

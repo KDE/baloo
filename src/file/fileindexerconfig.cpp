@@ -53,9 +53,9 @@ FileIndexerConfig::FileIndexerConfig(QObject* parent)
     , m_indexHidden(false)
 {
     KDirWatch* dirWatch = KDirWatch::self();
-    connect(dirWatch, SIGNAL(dirty(const QString&)),
+    connect(dirWatch, SIGNAL(dirty(QString)),
             this, SLOT(slotConfigDirty()));
-    connect(dirWatch, SIGNAL(created(const QString&)),
+    connect(dirWatch, SIGNAL(created(QString)),
             this, SLOT(slotConfigDirty()));
     dirWatch->addFile(KStandardDirs::locateLocal("config", m_config.name()));
 

@@ -150,3 +150,4 @@ private Q_SLOTS:
 QTEST_MAIN(IndexerTest)
 
 #include "indexertest.moc"
+
