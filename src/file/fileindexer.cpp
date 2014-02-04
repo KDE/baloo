@@ -59,7 +59,7 @@ FileIndexer::FileIndexer(Database* db, FileIndexerConfig* config, QObject* paren
             this, SLOT(emitStatusMessage()));
 
     QDBusConnection bus = QDBusConnection::sessionBus();
-    bus.registerObject(QLatin1String("/fileindexer"), this,
+    bus.registerObject(QLatin1String("/indexer"), this,
                        QDBusConnection::ExportScriptableSignals |
                        QDBusConnection::ExportScriptableSlots |
                        QDBusConnection::ExportAdaptors);

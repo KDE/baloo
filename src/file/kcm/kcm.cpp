@@ -369,7 +369,7 @@ void ServerConfigModule::recreateInterfaces()
 {
     delete m_fileIndexerInterface;
 
-    m_fileIndexerInterface = new org::kde::baloo::file("org.kde.baloo.file", "/fileindexer",
+    m_fileIndexerInterface = new org::kde::baloo::file("org.kde.baloo.file", "/indexer",
                                                        QDBusConnection::sessionBus());
 
     connect(m_fileIndexerInterface, SIGNAL(statusChanged()),
