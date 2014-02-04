@@ -301,7 +301,9 @@ bool IndexScheduler::scheduleFileQueue()
             kDebug() << "No file queue: suspended or on battery";
             return false;
         case State_UserIdle:
+            m_fileIQ->setDelay(0);
         case State_Normal:
+            m_fileIQ->setDelay(500);
         default:
             return true;
     }
