@@ -7,7 +7,7 @@ X-KDE-ServiceTypes=KCModule
 X-KDE-Library=kcm_baloofile
 X-KDE-ParentApp=kcontrol
 
-X-KDE-System-Settings-Parent-Category=desktop-search
+X-KDE-System-Settings-Parent-Category=workspace-appearance-and-behavior
 
 Name=Desktop Search
 Name[bs]=Pretraga površi
