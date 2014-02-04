@@ -5,7 +5,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules" ${CMAKE_MODULE_PATH})
 find_package(KDE4 REQUIRED)
 include(KDE4Defaults)
 
-find_package(KdepimLibs 4.12.43 CONFIG)
+find_package(KdepimLibs 4.12.44 CONFIG)
 set_package_properties(KdepimLibs PROPERTIES
     DESCRIPTION "The KDEPIM libraries"
     URL "http://www.kde.org"
