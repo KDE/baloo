@@ -81,7 +81,7 @@ IndexScheduler::IndexScheduler(Database* db, FileIndexerConfig* config, QObject*
             this, SLOT(slotScheduleIndexing()));
 
     m_commitQ = new CommitQueue(m_db, this);
-    connect(m_commitQ, SIGNAL(committed()), this, SLOT(slotCommitted()));
+    connect(m_commitQ, SIGNAL(committed()), this, SLOT(slotScheduleIndexing()));
     connect(m_basicIQ, SIGNAL(newDocument(uint,Xapian::Document)),
             m_commitQ, SLOT(add(uint,Xapian::Document)));
     connect(m_fileIQ, SIGNAL(newDocument(uint,Xapian::Document)),
@@ -363,13 +363,6 @@ void IndexScheduler::emitStatusStringChanged()
     if (status != m_oldStatus) {
         Q_EMIT statusStringChanged();
         m_oldStatus = status;
-    }
-}
-
-void IndexScheduler::slotCommitted()
-{
-    if (m_basicIQ->isEmpty()) {
-        m_fileIQ->resume();
     }
 }
 

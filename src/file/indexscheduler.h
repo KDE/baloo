@@ -139,8 +139,6 @@ private Q_SLOTS:
     //void slotTeardownRequested(const RemovableMediaCache::Entry* entry);
     void emitStatusStringChanged();
 
-    void slotCommitted();
-
 private:
     void queueAllFoldersForUpdate(bool forceUpdate = false);
 
