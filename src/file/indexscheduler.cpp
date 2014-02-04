@@ -352,11 +352,6 @@ QString IndexScheduler::userStatusString() const
     }
 }
 
-IndexScheduler::State IndexScheduler::currentStatus() const
-{
-    return m_state;
-}
-
 void IndexScheduler::emitStatusStringChanged()
 {
     QString status = userStatusString();

@@ -24,13 +24,6 @@
     <method name="statusMessage">
       <arg type="s" direction="out" />
     </method>
-    <method name="currentStatus">
-      <arg type="i" direction="out" />
-    </method>
-    <signal name="status" >
-      <arg name="state" type="i" />
-      <arg name="msg" type="s" />
-    </signal>
     <signal name="statusChanged" />
     <signal name="indexingStarted" />
     <signal name="indexingStopped" />

@@ -1,6 +1,6 @@
 /* This file is part of the KDE Project
    Copyright (c) 2008-2010 Sebastian Trueg <trueg@kde.org>
-   Copyright (c) 2010-2013 Vishesh Handa <handa.vish@gmail.com>
+   Copyright (c) 2010-2014 Vishesh Handa <handa.vish@gmail.com>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -41,10 +41,6 @@ FileIndexer::FileIndexer(Database* db, FileIndexerConfig* config, QObject* paren
 
     // setup status connections
     connect(m_indexScheduler, SIGNAL(statusStringChanged()),
-            this, SIGNAL(statusStringChanged()));
-
-    // Connect some signals used in the DBus interface
-    connect(this, SIGNAL(statusStringChanged()),
             this, SIGNAL(statusChanged()));
     connect(m_indexScheduler, SIGNAL(indexingStarted()),
             this, SIGNAL(indexingStarted()));
@@ -54,9 +50,6 @@ FileIndexer::FileIndexer(Database* db, FileIndexerConfig* config, QObject* paren
             this, SIGNAL(fileIndexingDone()));
     connect(m_indexScheduler, SIGNAL(basicIndexingDone()),
             this, SLOT(slotBasicIndexingDone()));
-
-    connect(m_indexScheduler, SIGNAL(statusStringChanged()),
-            this, SLOT(emitStatusMessage()));
 
     QDBusConnection bus = QDBusConnection::sessionBus();
     bus.registerObject(QLatin1String("/indexer"), this,
@@ -86,21 +79,9 @@ void FileIndexer::slotBasicIndexingDone()
     m_config->setInitialRun(false);
 }
 
-void FileIndexer::emitStatusMessage()
-{
-    QString message = m_indexScheduler->userStatusString();
-
-    Q_EMIT status((int)m_indexScheduler->currentStatus(), message);
-}
-
 QString FileIndexer::statusMessage() const
 {
     return m_indexScheduler->userStatusString();
-}
-
-int FileIndexer::currentStatus() const
-{
-    return (int)m_indexScheduler->currentStatus();
 }
 
 void FileIndexer::setSuspended(bool suspend)

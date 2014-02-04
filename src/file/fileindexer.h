@@ -43,22 +43,10 @@ public:
     ~FileIndexer();
 
 Q_SIGNALS:
-    void statusStringChanged();
-
     Q_SCRIPTABLE void statusChanged();
     Q_SCRIPTABLE void indexingStarted();
     Q_SCRIPTABLE void indexingStopped();
     Q_SCRIPTABLE void fileIndexingDone();
-
-    /**
-     * Emitted each time the status/activity of the FileIndexer changes
-     *
-     * @p status what the watcher is doing tehse represent the IndexScheduler::Status enum
-     * @see Nepomuk2::IndexScheduler::Status
-     *
-     * @p msg translated status message that indicates what is happening
-     */
-    Q_SCRIPTABLE void status(int status, QString msg);
 
 public Q_SLOTS:
     /**
@@ -69,19 +57,8 @@ public Q_SLOTS:
 
     /**
      * @brief Translated status message of the current Indexer behaviour.
-     *
-     * @since 4.11
      */
     Q_SCRIPTABLE QString statusMessage() const;
-
-    /**
-     * @brief Returns the internal state of the indexer
-     *
-     * @since 4.11
-     *
-     * @return an integer that represents the status as defined in Nepomuk2::IndexScheduler::Status
-     */
-    Q_SCRIPTABLE int currentStatus() const;
 
     Q_SCRIPTABLE bool isSuspended() const;
     Q_SCRIPTABLE bool isIndexing() const;
@@ -109,15 +86,6 @@ public Q_SLOTS:
 
 private Q_SLOTS:
     void slotBasicIndexingDone();
-
-    /**
-     * @brief Called when the status string in the Indexscheduler is changed
-     *
-     * emits the current indexer state and status message via dbus.
-     *
-     * @see status()
-     */
-    void emitStatusMessage();
 
 private:
     IndexScheduler* m_indexScheduler;

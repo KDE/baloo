@@ -71,15 +71,6 @@ public:
      */
     QString userStatusString() const;
 
-    /**
-     * @brief Returns the internal stateof the indexer as enum
-     *
-     * This status is used to expose the current state of the indexer via dbus.
-     *
-     * @return Enum state of the indexer
-     */
-    State currentStatus() const;
-
     void removeFileData(int id);
 
 public Q_SLOTS:
