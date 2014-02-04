@@ -7,6 +7,10 @@ set(FILE_LIB_SRCS
     taglistjob.cpp
     db.cpp
 
+    indexerconfig.cpp
+    ../fileindexerconfig.cpp
+    ../regexpcache.cpp
+    ../fileexcludefilters.cpp
     xattrdetector.cpp
 )
 
@@ -35,6 +39,7 @@ install(FILES
     filemodifyjob.h
     filemonitor.h
     taglistjob.h
+    indexerconfig.h
     file_export.h
 
     DESTINATION ${INCLUDE_INSTALL_DIR}/baloo COMPONENT Devel
