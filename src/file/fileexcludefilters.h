@@ -23,7 +23,6 @@
 
 namespace Baloo
 {
-
 /**
  * \return A list of default exclude filters to be used
  * in the filewatch service to ignore temporary files
@@ -38,6 +37,11 @@ QStringList defaultExcludeFilterList();
  */
 int defaultExcludeFilterListVersion();
 
+QStringList defaultExcludeMimetypes();
+int defaultExcludeMimetypesVersion();
+
+QStringList documentMimetypes();
+QStringList sourceCodeMimeTypes();
 }
 
 #endif

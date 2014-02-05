@@ -18,7 +18,7 @@
 */
 
 #include "kcm.h"
-#include "fileexcludefilters.h"
+#include "../fileexcludefilters.h"
 #include "fileindexerinterface.h"
 #include "indexfolderselectiondialog.h"
 #include "excludefilterselectiondialog.h"

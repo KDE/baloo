@@ -1,6 +1,6 @@
 set(kcm_file_SRCS
   kcm.cpp
-  fileexcludefilters.cpp
+  ../fileexcludefilters.cpp
   folderselectionmodel.cpp
   indexfolderselectiondialog.cpp
   excludefilterselectiondialog.cpp

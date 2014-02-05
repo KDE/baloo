@@ -406,7 +406,7 @@ bool FileIndexerConfig::buildExcludeFilterRegExpCache()
 bool FileIndexerConfig::buildMimeTypeCache()
 {
     QWriteLocker lock(&m_mimetypeMutex);
-    QStringList newMimeExcludes = m_config.group("General").readPathEntry("exclude mimetypes", QStringList());
+    QStringList newMimeExcludes = m_config.group("General").readPathEntry("exclude mimetypes", defaultExcludeMimetypes());
 
     QSet<QString> newMimeExcludeSet = newMimeExcludes.toSet();
     if (m_excludeMimetypes != newMimeExcludeSet) {
