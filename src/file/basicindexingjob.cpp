@@ -54,9 +54,9 @@ bool BasicIndexingJob::index()
     QFileInfo fileInfo(m_file.url());
 
     Xapian::Document doc;
-    doc.add_term('M' + m_mimetype.toStdString());
+    doc.add_term(std::string("M") + m_mimetype.toUtf8().constData());
 
-    std::string fileName = fileInfo.fileName().toStdString();
+    std::string fileName(fileInfo.fileName().toUtf8().constData());
 
     Xapian::TermGenerator termGen;
     termGen.set_document(doc);
@@ -65,14 +65,15 @@ bool BasicIndexingJob::index()
 
     // Modified Date
     QDateTime mod = fileInfo.lastModified();
-    doc.add_boolean_term("DT_M" + fileInfo.lastModified().toString(Qt::ISODate).toStdString());
+    QByteArray dtm = fileInfo.lastModified().toString(Qt::ISODate).toUtf8();
+    doc.add_boolean_term(std::string("DT_M") + dtm.constData());
 
     const QString year = "DT_MY" + QString::number(mod.date().year());
     const QString month = "DT_MM" + QString::number(mod.date().month());
     const QString day = "DT_MD" + QString::number(mod.date().day());
-    doc.add_boolean_term(year.toStdString());
-    doc.add_boolean_term(month.toStdString());
-    doc.add_boolean_term(day.toStdString());
+    doc.add_boolean_term(year.toUtf8().constData());
+    doc.add_boolean_term(month.toUtf8().constData());
+    doc.add_boolean_term(day.toUtf8().constData());
 
     // Types
     QVector<KFileMetaData::Type::Type> tList = typesForMimeType(m_mimetype);

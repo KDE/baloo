@@ -119,7 +119,7 @@ void FileFetchJob::doStart()
         file.setUrl(fileMap.url());
 
         // Fetch data from Xapian
-        Xapian::Database db(fileIndexDbPath().toStdString());
+        Xapian::Database db(fileIndexDbPath());
         try {
             Xapian::Document doc = db.get_document(id);
 

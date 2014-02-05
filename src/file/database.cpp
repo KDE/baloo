@@ -54,12 +54,13 @@ bool Database::init()
         return true;
 
     // Create the Xapian DB
+    QByteArray path = m_path.toUtf8();
     try {
-        Xapian::WritableDatabase(m_path.toStdString(), Xapian::DB_CREATE_OR_OPEN);
+        Xapian::WritableDatabase(path.constData(), Xapian::DB_CREATE_OR_OPEN);
     }
     catch (const Xapian::DatabaseLockError&) {
     }
-    m_xapianDb = new Xapian::Database(m_path.toStdString());
+    m_xapianDb = new Xapian::Database(path.constData());
 
     m_sqlDb = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE"));
     m_sqlDb->setDatabaseName(m_path + "/fileMap.sqlite3");

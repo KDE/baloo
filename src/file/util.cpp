@@ -38,5 +38,5 @@ void Baloo::updateIndexingLevel(Xapian::Document& doc, int level)
     }
 
     const QString term = QLatin1Char('Z') + QString::number(level);
-    doc.add_term(term.toStdString());
+    doc.add_term(term.toUtf8().constData());
 }

@@ -46,7 +46,7 @@ TagListJob::~TagListJob()
 void TagListJob::start()
 {
     try {
-        Xapian::Database xapianDb(fileIndexDbPath().toStdString());
+        Xapian::Database xapianDb(fileIndexDbPath());
         Xapian::TermIterator it = xapianDb.allterms_begin("TAG");
         Xapian::TermIterator end = xapianDb.allterms_end("TAG");
 

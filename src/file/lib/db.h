@@ -25,7 +25,7 @@
 
 #include <QSqlDatabase>
 
-QString fileIndexDbPath();
+std::string fileIndexDbPath();
 
 QSqlDatabase fileMappingDb(const QString& path);
 QSqlDatabase fileMappingDb();

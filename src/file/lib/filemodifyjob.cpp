@@ -153,8 +153,7 @@ void FileModifyJob::doStart()
         }
 
         // Save in Xapian
-        const std::string path = fileIndexDbPath().toStdString();
-        Xapian::WritableDatabase db(path, Xapian::DB_CREATE_OR_OPEN);
+        Xapian::WritableDatabase db(fileIndexDbPath(), Xapian::DB_CREATE_OR_OPEN);
         Xapian::Document doc;
 
         try {

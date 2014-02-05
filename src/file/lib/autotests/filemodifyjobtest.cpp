@@ -80,7 +80,7 @@ void FileModifyJobTest::testSingleFile()
     QSqlDatabase sqlDb = fileMappingDb();
     QVERIFY(fileMap.fetch(sqlDb));
 
-    const std::string xapianPath = fileIndexDbPath().toStdString();
+    const std::string xapianPath = fileIndexDbPath();
     Xapian::Database db(xapianPath);
 
     Xapian::Document doc = db.get_document(fileMap.id());
@@ -145,7 +145,7 @@ void FileModifyJobTest::testXapianUpdate()
     QSqlDatabase sqlDb = fileMappingDb();
     QVERIFY(fileMap.fetch(sqlDb));
 
-    const std::string xapianPath = fileIndexDbPath().toStdString();
+    const std::string xapianPath = fileIndexDbPath();
     Xapian::Database db(xapianPath);
 
     Xapian::Document doc = db.get_document(fileMap.id());
@@ -158,7 +158,7 @@ void FileModifyJobTest::testXapianUpdate()
     // Add another term, and make sure it is not removed
     doc.add_term("RATING");
     {
-        const std::string xapianPath = fileIndexDbPath().toStdString();
+        const std::string xapianPath = fileIndexDbPath();
         Xapian::WritableDatabase db(xapianPath, Xapian::DB_CREATE_OR_OPEN);
         db.replace_document(fileMap.id(), doc);
         db.commit();

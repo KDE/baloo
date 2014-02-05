@@ -72,14 +72,14 @@ void Result::add(KFileMetaData::Property::Property property, const QVariant& val
 
 void Result::append(const QString& text)
 {
-    m_termGenForText.index_text(text.toStdString());
+    m_termGenForText.index_text(text.toUtf8().constData());
 }
 
 void Result::addType(KFileMetaData::Type::Type type)
 {
     KFileMetaData::TypeInfo ti(type);
     QString t = 'T' + ti.name().toLower();
-    m_doc.add_boolean_term(t.toStdString());
+    m_doc.add_boolean_term(t.toUtf8().constData());
 }
 
 void Result::save(Xapian::WritableDatabase& db)

@@ -41,7 +41,7 @@ void FileFetchJobTest::init()
 {
     // TODO: Remove the old xapian DB?
     // Create the Xapian DB
-    const std::string xapianPath = fileIndexDbPath().toStdString();
+    const std::string xapianPath = fileIndexDbPath();
     Xapian::WritableDatabase db(xapianPath, Xapian::DB_CREATE_OR_OPEN);
 
     // Clear the sqlite db
@@ -72,7 +72,7 @@ void FileFetchJobTest::testXapianData()
     QVERIFY(fileMap.create(sqlDb));
 
     {
-        const std::string xapianPath = fileIndexDbPath().toStdString();
+        const std::string xapianPath = fileIndexDbPath();
         Xapian::WritableDatabase db(xapianPath, Xapian::DB_CREATE_OR_OPEN);
         db.replace_document(fileMap.id(), doc);
         db.commit();

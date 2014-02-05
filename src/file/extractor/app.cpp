@@ -175,7 +175,7 @@ void App::saveChanges()
     QList<QString> updatedFiles;
 
     try {
-        Xapian::WritableDatabase db(m_path.toStdString(), Xapian::DB_CREATE_OR_OPEN);
+        Xapian::WritableDatabase db(m_path.toUtf8().constData(), Xapian::DB_CREATE_OR_OPEN);
         for (int i = 0; i<m_results.size(); i++) {
             Result& res = m_results[i];
             res.save(db);

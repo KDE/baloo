@@ -31,9 +31,9 @@
 
 static KTempDir dir;
 
-QString fileIndexDbPath()
+std::string fileIndexDbPath()
 {
-    return dir.name();
+    return dir.name().toUtf8().constData();
 }
 
 // FIXME: Avoid duplicating this code!

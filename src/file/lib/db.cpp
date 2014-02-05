@@ -28,9 +28,9 @@
 #include <QSqlQuery>
 #include <QSqlError>
 
-QString fileIndexDbPath()
+std::string fileIndexDbPath()
 {
-    return KStandardDirs::locateLocal("data", "baloo/file/");
+    return KStandardDirs::locateLocal("data", "baloo/file/").toUtf8().constData();
 }
 
 QSqlDatabase fileMappingDb() {
