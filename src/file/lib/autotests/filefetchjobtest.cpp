@@ -105,7 +105,7 @@ void FileFetchJobTest::testExtendedAttributes()
     tags << "TagA" << "TagB";
 
     QByteArray tagStr = tags.join(",").toUtf8();
-    QVERIFY(setxattr(fileName.constData(), "user.baloo.tags", tagStr.constData(), tagStr.size(), 0) != -1);
+    QVERIFY(setxattr(fileName.constData(), "user.xdg.tags", tagStr.constData(), tagStr.size(), 0) != -1);
 
     const QString userComment("UserComment");
     QByteArray com = userComment.toUtf8();
@@ -140,7 +140,7 @@ void FileFetchJobTest::testFolder()
     tags << "TagA" << "TagB";
 
     QByteArray tagStr = tags.join(",").toUtf8();
-    QVERIFY(setxattr(fileName.constData(), "user.baloo.tags", tagStr.constData(), tagStr.size(), 0) != -1);
+    QVERIFY(setxattr(fileName.constData(), "user.xdg.tags", tagStr.constData(), tagStr.size(), 0) != -1);
 
     const QString userComment("UserComment");
     QByteArray com = userComment.toUtf8();

@@ -144,7 +144,7 @@ void FileModifyJob::doStart()
 
         if (!d->tags.isEmpty()) {
             QString tags = d->tags.join(",");
-            setCustomFileMetaData(furl, QLatin1String("user.baloo.tags"), tags);
+            setCustomFileMetaData(furl, QLatin1String("user.xdg.tags"), tags);
         }
 
         if (!d->comment.isEmpty()) {

@@ -147,7 +147,7 @@ void FileFetchJob::Private::fetchUserMetadata(File& file)
 {
     const QString url = file.url();
     QString rating = customFileMetaData(url, QLatin1String("user.baloo.rating"));
-    QString tags = customFileMetaData(url, QLatin1String("user.baloo.tags"));
+    QString tags = customFileMetaData(url, QLatin1String("user.xdg.tags"));
     QString comment = customFileMetaData(url, QLatin1String("user.xdg.comment"));
 
     file.setRating(rating.toInt());
