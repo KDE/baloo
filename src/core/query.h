@@ -111,6 +111,7 @@ public:
 
     QUrl toSearchUrl(const QString& title = QString());
     static Query fromSearchUrl(const QUrl& url);
+    static QString titleFromQueryUrl(const QUrl& url);
 
     bool operator == (const Query& rhs) const;
 
