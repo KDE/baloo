@@ -20,10 +20,14 @@
 
 #include "filecustommetadata.h"
 #include "xattrdetector.h"
+#include "db.h"
+#include "filemapping.h"
 #include <KDebug>
 
 #include <attr/xattr.h>
 #include <QFile>
+#include <QSqlQuery>
+#include <QSqlError>
 
 using namespace Baloo;
 
@@ -42,6 +46,25 @@ void Baloo::setCustomFileMetaData(const QString& url, const QString& key, const 
             return;
         }
     }
+    else {
+        QSqlDatabase mapDb = fileMappingDb();
+        FileMapping fileMap(url);
+        if (!fileMap.fetch(mapDb)) {
+            if (!fileMap.create(mapDb))
+                return;
+        }
+
+        QSqlDatabase db = fileMetadataDb();
+        QSqlQuery q(db);
+        q.prepare("insert or replace into files (id, property, value) VALUES (?, ?, ?)");
+        q.addBindValue(fileMap.id());
+        q.addBindValue(key);
+        q.addBindValue(value);
+
+        if (!q.exec()) {
+            kError() << url << key << value << "Error:" << q.lastError().text();
+        }
+    }
 }
 
 QString Baloo::customFileMetaData(const QString& url, const QString& key)
@@ -57,6 +80,26 @@ QString Baloo::customFileMetaData(const QString& url, const QString& key)
         return QString::fromUtf8(arr);
     }
     else {
+        QSqlDatabase mapDb = fileMappingDb();
+        FileMapping fileMap(url);
+        if (!fileMap.fetch(mapDb)) {
+            return QString();
+        }
+
+        QSqlDatabase db = fileMetadataDb();
+        QSqlQuery q(db);
+        q.prepare("select value from files where id = ? and property = ?");
+        q.addBindValue(fileMap.id());
+        q.addBindValue(key);
+
+        if (!q.exec()) {
+            kError() << url << key << "Error:" << q.lastError().text();
+        }
+
+        if (q.next()) {
+            return q.value(0).toString();
+        }
+
         return QString();
     }
 }
