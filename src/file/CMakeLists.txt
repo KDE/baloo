@@ -25,6 +25,7 @@ set(file_SRCS
     util.cpp
 
     # Common
+    priority.cpp
     regexpcache.cpp
     fileexcludefilters.cpp
     # removabledeviceindexnotification.cpp

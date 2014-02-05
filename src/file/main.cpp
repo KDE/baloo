@@ -35,10 +35,16 @@
 #include "fileindexer.h"
 #include "database.h"
 #include "fileindexerconfig.h"
+#include "priority.h"
 
 #include <QDBusConnection>
 
-int main(int argc, char** argv) {
+int main(int argc, char** argv)
+{
+    lowerIOPriority();
+    lowerSchedulingPriority();
+    lowerPriority();
+
     QApplication app(argc, argv);
 
     KAboutData aboutData("baloo_file", "baloo_file", ki18n("Baloo File"), "0.1",
