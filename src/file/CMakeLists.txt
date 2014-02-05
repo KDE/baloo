@@ -20,6 +20,7 @@ set(file_SRCS
     fileindexingqueue.cpp
     commitqueue.cpp
     basicindexingjob.cpp
+    xapiandocument.cpp
     fileindexingjob.cpp
     eventmonitor.cpp
     util.cpp

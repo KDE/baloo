@@ -4,6 +4,7 @@ set(EXTRACTOR_SRCS
   result.cpp
   ../priority.cpp
   ../basicindexingjob.cpp
+  ../xapiandocument.cpp
   ../database.cpp
   ../util.cpp
 )
