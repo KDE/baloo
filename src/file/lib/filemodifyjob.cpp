@@ -23,6 +23,7 @@
 #include "db.h"
 #include "file.h"
 #include "searchstore.h"
+#include "filecustommetadata.h"
 
 #include <KDebug>
 
@@ -31,7 +32,6 @@
 #include <QStringList>
 
 #include <xapian.h>
-#include <attr/xattr.h>
 
 #include <QDBusMessage>
 #include <QDBusConnection>
@@ -135,21 +135,20 @@ void FileModifyJob::doStart()
         }
 
         updatedFiles << fileMap.url();
-        const QByteArray furl = QFile::encodeName(fileMap.url());
+        const QString furl = fileMap.url();
 
         if (d->rating) {
-            QByteArray rat = QString::number(d->rating).toUtf8();
-            setxattr(furl.constData(), "user.baloo.rating", rat.constData(), rat.size(), 0);
+            const QString rat = QString::number(d->rating);
+            setCustomFileMetaData(furl, QLatin1String("user.baloo.rating"), rat);
         }
 
         if (!d->tags.isEmpty()) {
-            QByteArray tags = d->tags.join(",").toUtf8();
-            setxattr(furl.constData(), "user.baloo.tags", tags.constData(), tags.size(), 0);
+            QString tags = d->tags.join(",");
+            setCustomFileMetaData(furl, QLatin1String("user.baloo.tags"), tags);
         }
 
         if (!d->comment.isEmpty()) {
-            QByteArray com = d->comment.toUtf8();
-            setxattr(furl.constData(), "user.xdg.comment", com.constData(), com.size(), 0);
+            setCustomFileMetaData(furl, QLatin1String("user.xdg.comment"), d->comment);
         }
 
         // Save in Xapian

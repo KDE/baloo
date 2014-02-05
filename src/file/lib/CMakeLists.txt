@@ -12,6 +12,7 @@ set(FILE_LIB_SRCS
     ../regexpcache.cpp
     ../fileexcludefilters.cpp
     xattrdetector.cpp
+    filecustommetadata.cpp
 )
 
 kde4_add_library(baloofiles SHARED ${FILE_LIB_SRCS})
