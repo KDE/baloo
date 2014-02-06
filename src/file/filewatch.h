@@ -89,11 +89,6 @@ private:
     void watchFolder(const QString& path);
 
     /**
-     * Adds watches for all mounted removable media.
-     */
-    void addWatchesForMountedRemovableMedia();
-
-    /**
      * Returns true if the path is one that should be always ignored.
      * This includes such things like temporary files and folders as
      * they are created for example by build systems.

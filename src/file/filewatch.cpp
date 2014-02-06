@@ -20,8 +20,6 @@
 #include "filewatch.h"
 #include "metadatamover.h"
 #include "fileexcludefilters.h"
-//#include "removabledeviceindexnotification.h"
-//#include "removablemediacache.h"
 #include "fileindexerconfig.h"
 #include "activefilequeue.h"
 #include "regexpcache.h"
@@ -176,16 +174,6 @@ FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
 #else
     connectToKDirNotify();
 #endif
-
-    // we automatically watch newly mounted media - it is very unlikely that anything non-interesting is mounted
-    /*
-    m_removableMediaCache = new RemovableMediaCache(this);
-    connect(m_removableMediaCache, SIGNAL(deviceMounted(const Baloo::RemovableMediaCache::Entry*)),
-            this, SLOT(slotDeviceMounted(const Baloo::RemovableMediaCache::Entry*)));
-    connect(m_removableMediaCache, SIGNAL(deviceTeardownRequested(const Baloo::RemovableMediaCache::Entry*)),
-            this, SLOT(slotDeviceTeardownRequested(const Baloo::RemovableMediaCache::Entry*)));
-    addWatchesForMountedRemovableMedia();
-    */
 
     connect(m_config, SIGNAL(configChanged()),
             this, SLOT(updateIndexedFoldersWatches()));
@@ -344,118 +332,6 @@ void FileWatch::updateIndexedFoldersWatches()
     }
 #endif
 }
-
-
-/*
-void FileWatch::addWatchesForMountedRemovableMedia()
-{
-    Q_FOREACH(const RemovableMediaCache::Entry * entry, m_removableMediaCache->allMedia()) {
-        if (entry->isMounted())
-            slotDeviceMounted(entry);
-    }
-}
-
-void FileWatch::slotDeviceMounted(const Baloo::RemovableMediaCache::Entry* entry)
-{
-    //
-    // tell the file indexer to update the newly mounted device
-    //
-    KConfig fileIndexerConfig("nepomukstrigirc");
-    const QByteArray devGroupName("Device-" + entry->url().toUtf8());
-    int index = 0;
-    // Old-format -> port to new format
-    if (fileIndexerConfig.group("Devices").hasKey(entry->url())) {
-        KConfigGroup devicesGroup = fileIndexerConfig.group("Devices");
-        index = devicesGroup.readEntry(entry->url(), false) ? 1 : -1;
-        devicesGroup.deleteEntry(entry->url());
-
-        KConfigGroup devGroup = fileIndexerConfig.group(devGroupName);
-        devGroup.writeEntry("mount path", entry->mountPath());
-        if (index == 1)
-            devGroup.writeEntry("folders", QStringList() << QLatin1String("/"));
-        else if (index == -1)
-            devGroup.writeEntry("exclude folders", QStringList() << QLatin1String("/"));
-
-        fileIndexerConfig.sync();
-
-        // Migrate the existing filex data
-        RemovableMediaDataMigrator* migrator = new RemovableMediaDataMigrator(entry);
-        QThreadPool::globalInstance()->start(migrator);
-    }
-
-    // Already exists
-    if (fileIndexerConfig.hasGroup(devGroupName)) {
-        // Inform the indexer to start the indexing process
-
-        org::kde::nepomuk::FileIndexer fileIndexer("org.kde.nepomuk.services.nepomukfileindexer", "/nepomukfileindexer", QDBusConnection::sessionBus());
-        if (fileIndexer.isValid()) {
-            KConfigGroup group = fileIndexerConfig.group(devGroupName);
-            const QString mountPath = group.readEntry("mount path", QString());
-            if (!mountPath.isEmpty()) {
-                const QStringList folders = group.readPathEntry("folders", QStringList());
-                Q_FOREACH (const QString & folder, folders) {
-                    QString path = mountPath + folder;
-                    fileIndexer.indexFolder(path, true, false);
-                }
-            }
-        }
-
-        index = 1;
-    }
-
-    const bool indexNewlyMounted = fileIndexerConfig.group("RemovableMedia").readEntry("index newly mounted", false);
-    const bool askIndividually = fileIndexerConfig.group("RemovableMedia").readEntry("ask user", false);
-
-    if (index == 0 && indexNewlyMounted && !askIndividually) {
-        KConfigGroup deviceGroup = fileIndexerConfig.group("Device-" + entry->url());
-        deviceGroup.writeEntry("folders", QStringList() << entry->mountPath());
-
-        index = 1;
-    }
-
-    // ask the user if we should index
-    else if (index == 0 && indexNewlyMounted && askIndividually) {
-        kDebug() << "Device unknown. Asking user for action.";
-        (new RemovableDeviceIndexNotification(entry, this))->sendEvent();
-    }
-
-    //
-    // Install the watches
-    //
-    KConfig config("nepomukstrigirc");
-    KConfigGroup cfg = config.group("RemovableMedia");
-
-    if (cfg.readEntry<bool>("add watches", true)) {
-        QString path = entry->mountPath();
-        // If the device is not a storage device, mountPath returns QString().
-        // In this case do not try to install watches.
-        if (path.isEmpty())
-            return;
-        if (entry->device().isDeviceInterface(Solid::DeviceInterface::NetworkShare)) {
-            if (cfg.readEntry<bool>("add watches network share", false)) {
-                kDebug() << "Installing watch for network share at mount point" << path;
-                watchFolder(path);
-            }
-        } else {
-            kDebug() << "Installing watch for removable storage at mount point" << path;
-            // vHanda: Perhaps this should only be done if we have some metadata on the removable media
-            // and if we do not then we add the watches when we get some metadata?
-            watchFolder(path);
-        }
-    }
-}
-
-void FileWatch::slotDeviceTeardownRequested(const Baloo::RemovableMediaCache::Entry* entry)
-{
-#ifdef BUILD_KINOTIFY
-    if (m_dirWatch) {
-        kDebug() << entry->mountPath();
-        m_dirWatch->removeWatch(entry->mountPath());
-    }
-#endif
-}
-
-*/
 
 void FileWatch::slotActiveFileQueueTimeout(const QString& url)
 {
