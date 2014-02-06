@@ -21,6 +21,7 @@
 
 #include "cleaner.h"
 #include "../database.h"
+#include "../priority.h"
 
 #include <KAboutData>
 #include <KCmdLineArgs>
@@ -34,6 +35,10 @@
 
 int main(int argc, char* argv[])
 {
+    lowerIOPriority();
+    lowerSchedulingPriority();
+    lowerPriority();
+
     KAboutData aboutData("baloo_file_cleaner", 0, ki18n("Baloo File Cleaner"),
                          "0.1",
                          ki18n("Cleans up stale file index information"),
