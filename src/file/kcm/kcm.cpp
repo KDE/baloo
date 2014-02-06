@@ -103,11 +103,6 @@ ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args
             this, SLOT(slotCheckBoxesChanged()));
     connect(m_checkboxSourceCode, SIGNAL(toggled(bool)),
             this, SLOT(slotCheckBoxesChanged()));
-
-    // args[0] can be the page index allowing to open the config with a specific page
-    if (args.count() > 0 && args[0].toInt() < m_mainTabWidget->count()) {
-        m_mainTabWidget->setCurrentIndex(args[0].toInt());
-    }
 }
 
 
