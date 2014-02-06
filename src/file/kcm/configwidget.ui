@@ -274,54 +274,6 @@
             </item>
            </layout>
           </item>
-          <item>
-           <layout class="QFormLayout" name="formLayout_3">
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_11">
-              <property name="text">
-               <string>Removable media handling:</string>
-              </property>
-              <property name="buddy">
-               <cstring>m_comboRemovableMediaHandling</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="KComboBox" name="m_comboRemovableMediaHandling">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                <horstretch>1</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="toolTip">
-               <string comment="@info:tooltip">Indexing of files on removable media</string>
-              </property>
-              <property name="whatsThis">
-               <string comment="@info:whatsthis">&lt;para&gt;Nepomuk can index files on removable devices like USB keys or external hard-disks for fast desktop searches.&lt;/para&gt;
-&lt;para&gt;By default no files are indexed. Here this behaviour can be changed to one of two options:&lt;/para&gt;
-&lt;para&gt;&lt;list&gt;&lt;item&gt;&lt;interface&gt;Index files on all removable devices&lt;/interface&gt; - Files on removable media are indexed as soon as the medium is mounted. Caution: this does not include media which have been rejected via the second option.&lt;/item&gt;
-&lt;item&gt;&lt;interface&gt;Ask individually when newly mounted&lt;/interface&gt; - The user will be asked to decide if files on the newly mounted medium should be indexed or not. Once decided Nepomuk will not ask again.&lt;/item&gt;&lt;/list&gt;&lt;/para&gt;</string>
-              </property>
-              <item>
-               <property name="text">
-                <string>Ignore all removable media</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Index files on all removable devices</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Ask individually when newly mounted</string>
-               </property>
-              </item>
-             </widget>
-            </item>
-           </layout>
-          </item>
          </layout>
         </widget>
        </item>
@@ -345,11 +297,6 @@
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>KComboBox</class>
-   <extends>QComboBox</extends>
-   <header>kcombobox.h</header>
-  </customwidget>
   <customwidget>
    <class>KTabWidget</class>
    <extends>QTabWidget</extends>

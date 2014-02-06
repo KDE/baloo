@@ -1,6 +1,6 @@
 /* This file is part of the KDE Project
    Copyright (c) 2007-2010 Sebastian Trueg <trueg@kde.org>
-   Copyright (c) 2012-2013 Vishesh Handa <me@vhanda.in>
+   Copyright (c) 2012-2014 Vishesh Handa <me@vhanda.in>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -85,8 +85,6 @@ ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args
             this, SLOT(changed()));
     connect(m_checkEnabled, SIGNAL(toggled(bool)),
             this, SLOT(changed()));
-    connect(m_comboRemovableMediaHandling, SIGNAL(activated(int)),
-            this, SLOT(changed()));
 
     connect(m_buttonCustomizeIndexFolders, SIGNAL(clicked()),
             this, SLOT(slotEditIndexFolders()));
@@ -134,38 +132,6 @@ void ServerConfigModule::load()
     QStringList includeFolders = group.readPathEntry("folders", defaultFolders());
     QStringList excludeFolders = group.readPathEntry("exclude folders", QStringList());
 
-    /*
-    QScopedPointer<RemovableMediaCache> rmc(new Nepomuk2::RemovableMediaCache(this));
-    QList< const RemovableMediaCache::Entry* > allMedia = rmc->allMedia();
-    Q_FOREACH (const RemovableMediaCache::Entry * entry, allMedia) {
-        QByteArray groupName("Device-" + entry->url().toUtf8());
-        if (!fileIndexerConfig.hasGroup(groupName))
-            continue;
-
-        KConfigGroup grp = fileIndexerConfig.group(groupName);
-
-        QString mountPath = grp.readEntry("mount path", QString());
-        if (mountPath.isEmpty())
-            continue;
-
-        QStringList includes = grp.readPathEntry("folders", defaultFolders());
-        Q_FOREACH (const QString & path, includes) {
-            if (path == QLatin1String("/"))
-                includeFolders << mountPath;
-            else
-                includeFolders << mountPath + path;
-        }
-
-        QStringList excludes = grp.readPathEntry("exclude folders", QStringList());
-        Q_FOREACH (const QString & path, excludes) {
-            if (path == QLatin1String("/"))
-                excludeFolders << mountPath;
-            else
-                excludeFolders << mountPath + path;
-        }
-    }
-    */
-
     m_indexFolderSelectionDialog->setFolders(includeFolders, excludeFolders);
 
     m_excludeFilterSelectionDialog->setExcludeFilters(config.group("General").readEntry("exclude filters", Baloo::defaultExcludeFilterList()));
@@ -174,11 +140,6 @@ void ServerConfigModule::load()
     QStringList mimetypes = config.group("General").readEntry("exclude mimetypes", defaultExcludeMimetypes());
     m_excludeFilterSelectionDialog->setExcludeMimeTypes(mimetypes);
     syncCheckBoxesFromMimetypes(mimetypes);
-
-    const bool indexNewlyMounted = config.group("RemovableMedia").readEntry("index newly mounted", false);
-    const bool askIndividually = config.group("RemovableMedia").readEntry("ask user", false);
-    // combobox items: 0 - ignore, 1 - index all, 2 - ask user
-    m_comboRemovableMediaHandling->setCurrentIndex(int(indexNewlyMounted) + int(askIndividually));
 
     groupBox->setEnabled(m_checkEnabled->isChecked());
 
@@ -203,56 +164,6 @@ void ServerConfigModule::save()
     basicSettings.writeEntry("Enabled", m_checkEnabled->isChecked());
     basicSettings.writeEntry("Indexing-Enabled", m_checkEnableFileIndexer->isChecked());
 
-    // 2.1 Update all the RemovableMedia paths
-    /*
-    QScopedPointer<RemovableMediaCache> rmc(new Nepomuk2::RemovableMediaCache(this));
-    QList< const RemovableMediaCache::Entry* > allMedia = rmc->allMedia();
-    Q_FOREACH (const RemovableMediaCache::Entry * entry, allMedia) {
-        QByteArray groupName("Device-" + entry->url().toUtf8());
-        KConfigGroup group = fileIndexerConfig.group(groupName);
-
-        QString mountPath = entry->mountPath();
-        if (mountPath.isEmpty())
-            continue;
-
-        group.writeEntry("mount path", mountPath);
-
-        QStringList includes;
-        QMutableListIterator<QString> it(includeFolders);
-        while (it.hasNext()) {
-            QString fullPath = it.next();
-            if (fullPath.startsWith(mountPath)) {
-                QString path = fullPath.mid(mountPath.length());
-                if (!path.isEmpty())
-                    includes << path;
-                else
-                    includes << QLatin1String("/");
-                it.remove();
-            }
-        }
-
-        QStringList excludes;
-        QMutableListIterator<QString> iter(excludeFolders);
-        while (iter.hasNext()) {
-            QString fullPath = iter.next();
-            if (fullPath.startsWith(mountPath)) {
-                QString path = fullPath.mid(mountPath.length());
-                if (!path.isEmpty())
-                    excludes << path;
-                else
-                    excludes << QLatin1String("/");
-                iter.remove();
-            }
-        }
-
-        if (includes.isEmpty() && excludes.isEmpty())
-            excludes << QString("/");
-
-        group.writePathEntry("folders", includes);
-        group.writePathEntry("exclude folders", excludes);
-    }
-    */
-
     // 2.2 Update normals paths
     config.group("General").writePathEntry("folders", includeFolders);
     config.group("General").writePathEntry("exclude folders", excludeFolders);
@@ -268,10 +179,6 @@ void ServerConfigModule::save()
     }
 
     config.group("General").writeEntry("exclude mimetypes", excludeMimetypes);
-
-    // combobox items: 0 - ignore, 1 - index all, 2 - ask user
-    config.group("RemovableMedia").writeEntry("index newly mounted", m_comboRemovableMediaHandling->currentIndex() > 0);
-    config.group("RemovableMedia").writeEntry("ask user", m_comboRemovableMediaHandling->currentIndex() == 2);
 
     // TODO: Update the baloo_file process or just restart it!
 
