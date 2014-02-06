@@ -70,6 +70,11 @@ private:
     bool m_failedToInitialize;
 
     bool m_checkboxesChanged;
+
+    QStringList m_oldIncludeFolders;
+    QStringList m_oldExcludeFolders;
+    QStringList m_oldExcludeFilters;
+    QStringList m_oldExcludeMimetypes;
 };
 }
 

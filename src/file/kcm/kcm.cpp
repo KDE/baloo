@@ -29,6 +29,7 @@
 #include <KSharedConfig>
 #include <KDirWatch>
 #include <KDebug>
+#include <KStandardDirs>
 
 #include <QPushButton>
 #include <QtCore/QDir>
@@ -136,6 +137,11 @@ void ServerConfigModule::load()
     m_excludeFilterSelectionDialog->setExcludeMimeTypes(mimetypes);
     syncCheckBoxesFromMimetypes(mimetypes);
 
+    m_oldExcludeFilters = m_excludeFilterSelectionDialog->excludeFilters();
+    m_oldExcludeMimetypes = m_excludeFilterSelectionDialog->excludeMimeTypes();
+    m_oldExcludeFolders = excludeFolders;
+    m_oldIncludeFolders = includeFolders;
+
     groupBox->setEnabled(m_checkEnabled->isChecked());
 
     recreateInterfaces();
@@ -174,7 +180,27 @@ void ServerConfigModule::save()
 
     config.group("General").writeEntry("exclude mimetypes", excludeMimetypes);
 
-    // TODO: Update the baloo_file process or just restart it!
+    // Start Baloo
+    if (m_checkEnabled) {
+        const QString exe = KStandardDirs::findExe(QLatin1String("baloo_file"));
+        QProcess::startDetached(exe);
+    }
+
+    // Start cleaner
+    bool cleaningRequired = false;
+    if (includeFolders != m_oldIncludeFolders)
+        cleaningRequired = true;
+    else if (excludeFolders != m_oldExcludeFolders)
+        cleaningRequired = true;
+    else if (m_excludeFilterSelectionDialog->excludeFilters() != m_oldExcludeFilters)
+        cleaningRequired = true;
+    else if (excludeMimetypes != m_oldExcludeMimetypes)
+        cleaningRequired = true;
+
+    if (cleaningRequired) {
+        const QString exe = KStandardDirs::findExe(QLatin1String("baloo_file_cleaner"));
+        QProcess::startDetached(exe);
+    }
 
     // 5. update state
     recreateInterfaces();
