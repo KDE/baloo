@@ -112,10 +112,6 @@ FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
     , m_dirWatch(0)
 #endif
 {
-    // Create the configuration instance singleton (for thread-safety)
-    // ==============================================================
-    (void)new FileIndexerConfig(this);
-
     // the list of default exclude filters we use here differs from those
     // that can be configured for the file indexer service
     // the default list should only contain files and folders that users are
