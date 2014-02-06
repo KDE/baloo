@@ -86,6 +86,8 @@ ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args
             this, SLOT(changed()));
     connect(m_checkEnabled, SIGNAL(toggled(bool)),
             this, SLOT(changed()));
+    connect(m_checkEnabled, SIGNAL(toggled(bool)),
+            this, SLOT(updateEnabledItems()));
 
     connect(m_buttonCustomizeIndexFolders, SIGNAL(clicked()),
             this, SLOT(slotEditIndexFolders()));
@@ -250,6 +252,16 @@ void ServerConfigModule::updateFileIndexerStatus()
         updateFileIndexerSuspendResumeButtonText(m_fileIndexerInterface->isSuspended());
     }
 }
+
+void ServerConfigModule::updateEnabledItems()
+{
+    bool checked = m_checkEnabled->isChecked();
+    groupBox->setEnabled(checked);
+    m_checkEnableFileIndexer->setEnabled(checked);
+    m_fileIndexerSuspendResumeButtom->setEnabled(checked);
+    m_labelFileIndexerStatus->setEnabled(checked);
+}
+
 
 void ServerConfigModule::updateFileIndexerSuspendResumeButtonText(bool isSuspended)
 {

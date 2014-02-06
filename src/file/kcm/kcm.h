@@ -44,6 +44,7 @@ public Q_SLOTS:
 
 private Q_SLOTS:
     void updateFileIndexerStatus();
+    void updateEnabledItems();
     void recreateInterfaces();
     void slotEditIndexFolders();
     void slotAdvancedFileIndexing();
