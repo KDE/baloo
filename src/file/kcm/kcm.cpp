@@ -22,7 +22,6 @@
 #include "fileindexerinterface.h"
 #include "indexfolderselectiondialog.h"
 #include "excludefilterselectiondialog.h"
-#include "detailswidget.h"
 
 #include <KPluginFactory>
 #include <KPluginLoader>
@@ -95,8 +94,6 @@ ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args
             this, SLOT(slotAdvancedFileIndexing()));
     connect(m_fileIndexerSuspendResumeButtom, SIGNAL(clicked(bool)),
             this, SLOT(slotFileIndexerSuspendResumeClicked()));
-    connect(m_buttonDetails, SIGNAL(leftClickedUrl()),
-            this, SLOT(slotStatusDetailsClicked()));
 
     connect(m_checkboxAudio, SIGNAL(toggled(bool)),
             this, SLOT(slotCheckBoxesChanged()));
@@ -374,13 +371,6 @@ void ServerConfigModule::recreateInterfaces()
 
     connect(m_fileIndexerInterface, SIGNAL(statusChanged()),
             this, SLOT(updateFileIndexerStatus()));
-}
-
-
-void ServerConfigModule::slotStatusDetailsClicked()
-{
-    DetailsWidget dialog(this);
-    dialog.exec();
 }
 
 

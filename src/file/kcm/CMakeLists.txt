@@ -4,7 +4,6 @@ set(kcm_file_SRCS
   folderselectionmodel.cpp
   indexfolderselectiondialog.cpp
   excludefilterselectiondialog.cpp
-  detailswidget.cpp
 )
 
 qt4_add_dbus_interface(kcm_file_SRCS ../org.kde.baloo.file.indexer.xml fileindexerinterface)

@@ -94,13 +94,6 @@
               </item>
              </layout>
             </item>
-            <item row="1" column="1">
-             <widget class="KUrlLabel" name="m_buttonDetails">
-              <property name="text">
-               <string>Details...</string>
-              </property>
-             </widget>
-            </item>
            </layout>
           </item>
          </layout>
@@ -356,11 +349,6 @@
    <class>KComboBox</class>
    <extends>QComboBox</extends>
    <header>kcombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>KUrlLabel</class>
-   <extends>QLabel</extends>
-   <header>kurllabel.h</header>
   </customwidget>
   <customwidget>
    <class>KTabWidget</class>

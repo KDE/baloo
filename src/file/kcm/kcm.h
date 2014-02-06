@@ -48,7 +48,6 @@ private Q_SLOTS:
     void recreateInterfaces();
     void slotEditIndexFolders();
     void slotAdvancedFileIndexing();
-    void slotStatusDetailsClicked();
     void slotFileIndexerSuspendResumeClicked();
 
     /**
