@@ -13,51 +13,22 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
-    <widget class="QGroupBox" name="groupBox_2">
+    <widget class="QGroupBox" name="settingsGroupBox">
      <property name="title">
-      <string>File Metadata</string>
+      <string>Settings</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>File metadata enables tagging and rating of files integrated with the Desktop Search.</string>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="QCheckBox" name="m_checkEnabled">
         <property name="text">
-         <string>Enable File metadata</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string>Desktop File Indexer</string>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Desktop search allows searching for files by content instead of just by name.</string>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
+         <string>Enable Tags and Ratings</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QCheckBox" name="m_checkEnableFileIndexer">
         <property name="text">
-         <string>Enable Desktop File Indexer</string>
+         <string>Enable Desktop Search</string>
         </property>
        </widget>
       </item>
@@ -115,7 +86,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox_7">
+    <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>File Indexing</string>
      </property>

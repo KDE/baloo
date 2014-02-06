@@ -142,8 +142,6 @@ void ServerConfigModule::load()
     m_oldExcludeFolders = excludeFolders;
     m_oldIncludeFolders = includeFolders;
 
-    groupBox->setEnabled(m_checkEnabled->isChecked());
-
     recreateInterfaces();
     updateFileIndexerStatus();
 
