@@ -43,7 +43,6 @@ public Q_SLOTS:
     void defaults();
 
 private Q_SLOTS:
-    void updateFileServerStatus();
     void updateFileIndexerStatus();
     void recreateInterfaces();
     void slotEditIndexFolders();

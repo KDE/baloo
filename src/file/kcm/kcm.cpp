@@ -140,7 +140,6 @@ void ServerConfigModule::load()
 
     recreateInterfaces();
     updateFileIndexerStatus();
-    updateFileServerStatus();
 
     // 7. all values loaded -> no changes
     m_checkboxesChanged = false;
@@ -180,8 +179,6 @@ void ServerConfigModule::save()
     // 5. update state
     recreateInterfaces();
     updateFileIndexerStatus();
-    updateFileServerStatus();
-
 
     // 6. all values saved -> no changes
     m_checkboxesChanged = false;
@@ -196,16 +193,6 @@ void ServerConfigModule::defaults()
     m_indexFolderSelectionDialog->setIndexHiddenFolders(false);
     m_indexFolderSelectionDialog->setFolders(defaultFolders(), QStringList());
     m_excludeFilterSelectionDialog->setExcludeFilters(Baloo::defaultExcludeFilterList());
-}
-
-
-void ServerConfigModule::updateFileServerStatus()
-{
-    if (QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.baloo.file")) {
-        m_labelStatus->setText(i18nc("@info:status", "File Metadata services are active"));
-    } else {
-        m_labelStatus->setText(i18nc("@info:status", "File Metadata services are disabled"));
-    }
 }
 
 

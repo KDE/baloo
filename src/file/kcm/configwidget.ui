@@ -17,7 +17,7 @@
      <property name="title">
       <string>File Metadata</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_10">
+     <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
        <widget class="QLabel" name="label_3">
         <property name="text">
@@ -29,59 +29,11 @@
        </widget>
       </item>
       <item>
-       <layout class="QGridLayout" name="gridLayout_2">
-        <item row="0" column="0" rowspan="2">
-         <layout class="QVBoxLayout" name="verticalLayout_9">
-          <item>
-           <widget class="QCheckBox" name="m_checkEnabled">
-            <property name="text">
-             <string>Enable File metadata</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <item>
-             <spacer name="horizontalSpacer_3">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeType">
-               <enum>QSizePolicy::Fixed</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>13</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
-             <widget class="KSqueezedTextLabel" name="m_labelStatus">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                <horstretch>1</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="font">
-               <font>
-                <weight>75</weight>
-                <italic>true</italic>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string notr="true">KSqueezedTextLabel</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </item>
-       </layout>
+       <widget class="QCheckBox" name="m_checkEnabled">
+        <property name="text">
+         <string>Enable File metadata</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
