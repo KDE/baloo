@@ -35,11 +35,19 @@ class XattrDetector::Private {
 public:
     QStringList m_unSupportedPaths;
     QStringList m_supportedPaths;
+
+    void init();
+    bool m_initialized;
 };
 
 XattrDetector::XattrDetector(QObject* parent)
     : QObject(parent)
     , d(new Private)
+{
+    d->m_initialized = false;
+}
+
+void XattrDetector::Private::init()
 {
     QList<Solid::Device> devices
         = Solid::Device::listFromType(Solid::DeviceInterface::StorageAccess);
@@ -56,14 +64,14 @@ XattrDetector::XattrDetector(QObject* parent)
 
     Q_FOREACH (const QString& mountPath, mountPaths) {
         while (1) {
-            QString randFile = QUuid::createUuid().toString();
+            QString randFile = "baloo-xattr-check-" + QUuid::createUuid().toString();
             const QString url = mountPath + QDir::separator() + randFile;
             if (QFile::exists(url))
                 continue;
 
             QFile file(url);
             if (!file.open(QIODevice::WriteOnly)) {
-                d->m_unSupportedPaths << mountPath;
+                m_unSupportedPaths << mountPath;
                 break;
             }
             file.close();
@@ -72,19 +80,20 @@ XattrDetector::XattrDetector(QObject* parent)
             int ret = setxattr(path.constData(), "test", "0", 1, 0);
             if (ret != -1) {
                 // Check the actual error?
-                d->m_unSupportedPaths << mountPath;
+                m_unSupportedPaths << mountPath;
             }
             else {
-                d->m_supportedPaths << mountPath;
+                m_supportedPaths << mountPath;
             }
 
             QFile::remove(url);
             break;
         }
     }
-    d->m_unSupportedPaths << "/tmp" << "/proc";
-    kDebug() << "supportedPaths:" << d->m_supportedPaths;
-    kDebug() << "UnsupportedPaths:" << d->m_unSupportedPaths;
+    m_unSupportedPaths << "/tmp" << "/proc";
+    kDebug() << "supportedPaths:" << m_supportedPaths;
+    kDebug() << "UnsupportedPaths:" << m_unSupportedPaths;
+    m_initialized = true;
 }
 
 XattrDetector::~XattrDetector()
@@ -94,6 +103,9 @@ XattrDetector::~XattrDetector()
 
 bool XattrDetector::isSupported(const QString& path)
 {
+    if (!d->m_initialized)
+        d->init();
+
     Q_FOREACH (const QString& p, d->m_supportedPaths) {
         if (path.startsWith(p))
             return true;
