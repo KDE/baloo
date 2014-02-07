@@ -136,7 +136,7 @@ void EmailQuery::setRead(bool read)
 ResultIterator EmailQuery::exec()
 {
     QString dir = KStandardDirs::locateLocal("data", "baloo/email/");
-    Xapian::Database db(dir.toStdString());
+    Xapian::Database db(dir.toUtf8().constData());
 
     QList<Xapian::Query> m_queries;
 
