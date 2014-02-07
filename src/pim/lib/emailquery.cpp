@@ -140,7 +140,7 @@ ResultIterator EmailQuery::exec()
 
     QList<Xapian::Query> m_queries;
 
-    if (m_involves.size()) {
+    if (!m_involves.isEmpty()) {
         Xapian::QueryParser parser;
         parser.set_database(db);
         parser.add_prefix("", "F");
@@ -154,7 +154,7 @@ ResultIterator EmailQuery::exec()
         }
     }
 
-    if (m_from.size()) {
+    if (!m_from.isEmpty()) {
         Xapian::QueryParser parser;
         parser.set_database(db);
         parser.add_prefix("", "F");
@@ -162,7 +162,7 @@ ResultIterator EmailQuery::exec()
         m_queries << parser.parse_query(m_from.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
     }
 
-    if (m_to.size()) {
+    if (!m_to.isEmpty()) {
         Xapian::QueryParser parser;
         parser.set_database(db);
         parser.add_prefix("", "T");
@@ -172,7 +172,7 @@ ResultIterator EmailQuery::exec()
         }
     }
 
-    if (m_cc.size()) {
+    if (!m_cc.isEmpty()) {
         Xapian::QueryParser parser;
         parser.set_database(db);
         parser.add_prefix("", "CC");
@@ -182,7 +182,7 @@ ResultIterator EmailQuery::exec()
         }
     }
 
-    if (m_bcc.size()) {
+    if (!m_bcc.isEmpty()) {
         Xapian::QueryParser parser;
         parser.set_database(db);
         parser.add_prefix("", "BC");
@@ -192,7 +192,7 @@ ResultIterator EmailQuery::exec()
         }
     }
 
-    if (m_subjectMatchString.size()) {
+    if (!m_subjectMatchString.isEmpty()) {
         Xapian::QueryParser parser;
         parser.set_database(db);
         parser.add_prefix("", "S");
@@ -202,7 +202,7 @@ ResultIterator EmailQuery::exec()
                                         Xapian::QueryParser::FLAG_PARTIAL);
     }
 
-    if (m_collections.size()) {
+    if (!m_collections.isEmpty()) {
         Xapian::Query query;
         Q_FOREACH (const Akonadi::Collection::Id& id, m_collections) {
             QString c = QString::number(id);
@@ -229,7 +229,7 @@ ResultIterator EmailQuery::exec()
     else if (m_attachment == 'F')
         m_queries << Xapian::Query("BNA");
 
-    if (m_matchString.size()) {
+    if (!m_matchString.isEmpty()) {
         Xapian::QueryParser parser;
         parser.set_database(db);
         parser.set_default_op(Xapian::Query::OP_AND);
