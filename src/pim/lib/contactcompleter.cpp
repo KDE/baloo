@@ -38,7 +38,7 @@ ContactCompleter::ContactCompleter(const QString& prefix, int limit)
 QStringList ContactCompleter::complete()
 {
     QString dir = KStandardDirs::locateLocal("data", "baloo/emailContacts/");
-    Xapian::Database db(dir.toStdString());
+    Xapian::Database db(dir.toUtf8().constData());
 
     Xapian::QueryParser parser;
     parser.set_database(db);
