@@ -2,6 +2,7 @@
 Name=Folder Watch Limit
 Name[bs]=Ograničenje praćenja direktorija
 Name[ca]=Límit de vigilància de carpetes
+Name[cs]=Limit sledovaných složek
 Name[da]=Grænse for mappeovervågning
 Name[de]=Begrenzung für Ordnerüberwachung
 Name[el]=Όριο παρακολούθησης φακέλων
@@ -22,6 +23,7 @@ Name[x-test]=xxFolder Watch Limitxx
 Description=To avoid missing file changes, raise the inotify folder watch limit
 Description[bs]=Da izbjegnete nedostajuće izmjene datoteka, povećajte limit za inofity direktorij.
 Description[ca]=Per evitar la pèrdua de canvis de fitxers, eleveu el límit de vigilància de carpetes de l'«inotify»
+Description[cs]=Abyste nepřehlédli změny souborů, zvyšte limit sledovaných složek inotify
 Description[da]=Hæv inotify mappeovervågningsgrænsen for ikke at gå glip af filændringer
 Description[de]=Damit Sie keine Dateiänderungen verpassen, setzen Sie die Begrenzung für Ordnerüberwachung durch inotify nach oben
 Description[el]=Για να αποφύγετε την παράβλεψη αλλαγών των αρχείων, αυξήστε το όριο παρακολούθησης φακέλων inotify
