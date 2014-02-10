@@ -3,7 +3,6 @@ set(kcm_file_SRCS
   ../fileexcludefilters.cpp
   folderselectionmodel.cpp
   indexfolderselectiondialog.cpp
-  excludefilterselectiondialog.cpp
 )
 
 qt4_add_dbus_interface(kcm_file_SRCS ../org.kde.baloo.file.indexer.xml fileindexerinterface)
@@ -11,7 +10,7 @@ qt4_add_dbus_interface(kcm_file_SRCS ../org.kde.baloo.file.indexer.xml fileindex
 kde4_add_ui_files(kcm_file_SRCS
   configwidget.ui
   indexfolderselectionwidget.ui
-  excludefilterselectiondialog.ui)
+)
 
 kde4_add_plugin(kcm_baloofile ${kcm_file_SRCS})
 

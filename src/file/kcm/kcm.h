@@ -27,7 +27,6 @@ namespace Baloo
 {
 
 class IndexFolderSelectionDialog;
-class ExcludeFilterSelectionDialog;
 
 class ServerConfigModule : public KCModule, private Ui::ConfigWidget
 {
@@ -47,34 +46,20 @@ private Q_SLOTS:
     void updateEnabledItems();
     void recreateInterfaces();
     void slotEditIndexFolders();
-    void slotAdvancedFileIndexing();
     void slotFileIndexerSuspendResumeClicked();
-
-    /**
-     * This slot is called when any of the "index documents", "index whatever" checkboxes
-     * status is chanaged
-     */
-    void slotCheckBoxesChanged();
 
 private:
     void setFileIndexerStatusText(const QString& text, bool elide);
     void updateFileIndexerSuspendResumeButtonText(bool isSuspended);
 
-    void syncCheckBoxesFromMimetypes(const QStringList& mimetypes);
-    QStringList mimetypesFromCheckboxes();
-
     org::kde::baloo::file* m_fileIndexerInterface;
 
     IndexFolderSelectionDialog* m_indexFolderSelectionDialog;
-    ExcludeFilterSelectionDialog* m_excludeFilterSelectionDialog;
 
     bool m_failedToInitialize;
 
-    bool m_checkboxesChanged;
-
     QStringList m_oldIncludeFolders;
     QStringList m_oldExcludeFolders;
-    QStringList m_oldExcludeFilters;
     QStringList m_oldExcludeMimetypes;
 };
 }

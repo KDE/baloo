@@ -105,24 +105,6 @@ const char* s_defaultFolderExcludeFilters[] = {
 
 const int s_defaultFolderExcludeFiltersVersion = 1;
 
-const char* s_documentMimeTypes[] = {
-    "application/pdf",
-    "application/vnd.oasis.opendocument.text",
-    "application/vnd.oasis.opendocument.spreadsheet",
-    "application/vnd.oasis.opendocument.presentation",
-    "application/vnd.oasis.opendocument.graphics",
-    "application/vnd.ms-excel",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    "application/vnd.ms-powerpoint",
-    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-    "application/msword",
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-
-    // end of list
-    0
-};
-const int s_documentMimeTypesVersion = 1;
-
 const char* s_sourceCodeMimeTypes[] = {
     "text/css",
     "text/x-c++src",
@@ -173,15 +155,6 @@ int Baloo::defaultExcludeFilterListVersion()
     return qMax(s_defaultFileExcludeFiltersVersion, s_defaultFolderExcludeFiltersVersion);
 }
 
-QStringList Baloo::documentMimetypes()
-{
-    QStringList l;
-    for (int i = 0; s_documentMimeTypes[i]; i++)
-        l << QLatin1String(s_documentMimeTypes[i]);
-
-    return l;
-}
-
 QStringList Baloo::sourceCodeMimeTypes()
 {
     QStringList l;
@@ -200,6 +173,6 @@ QStringList Baloo::defaultExcludeMimetypes()
 int Baloo::defaultExcludeMimetypesVersion()
 {
     // The +1 is the image, video and audio mimetypes
-    return s_documentMimeTypesVersion + s_sourceCodeMimeTypesVersion + 1;
+    return s_sourceCodeMimeTypesVersion + 1;
 }
 

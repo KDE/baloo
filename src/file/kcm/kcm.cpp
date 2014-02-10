@@ -21,7 +21,7 @@
 #include "../fileexcludefilters.h"
 #include "fileindexerinterface.h"
 #include "indexfolderselectiondialog.h"
-#include "excludefilterselectiondialog.h"
+#include "folderselectionwidget.h"
 
 #include <KPluginFactory>
 #include <KPluginLoader>
@@ -51,10 +51,9 @@ QStringList defaultFolders()
 using namespace Baloo;
 
 ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args)
-    : KCModule(BalooConfigModuleFactory::componentData(), parent, args),
-      m_fileIndexerInterface(0),
-      m_failedToInitialize(false),
-      m_checkboxesChanged(false)
+    : KCModule(BalooConfigModuleFactory::componentData(), parent, args)
+    , m_fileIndexerInterface(0)
+    , m_failedToInitialize(false)
 {
     KAboutData* about = new KAboutData(
         "kcm_baloofile", "kcm_baloofile", ki18n("Configure Desktop Search"),
@@ -68,7 +67,6 @@ ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args
     setupUi(this);
 
     m_indexFolderSelectionDialog = new IndexFolderSelectionDialog(this);
-    m_excludeFilterSelectionDialog = new ExcludeFilterSelectionDialog(this);
 
     QDBusServiceWatcher* watcher = new QDBusServiceWatcher(this);
     watcher->addWatchedService(QLatin1String("org.kde.baloo.file"));
@@ -91,21 +89,11 @@ ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args
 
     connect(m_buttonCustomizeIndexFolders, SIGNAL(clicked()),
             this, SLOT(slotEditIndexFolders()));
-    connect(m_buttonAdvancedFileIndexing, SIGNAL(clicked()),
-            this, SLOT(slotAdvancedFileIndexing()));
     connect(m_fileIndexerSuspendResumeButtom, SIGNAL(clicked(bool)),
             this, SLOT(slotFileIndexerSuspendResumeClicked()));
 
-    connect(m_checkboxAudio, SIGNAL(toggled(bool)),
-            this, SLOT(slotCheckBoxesChanged()));
-    connect(m_checkboxImage, SIGNAL(toggled(bool)),
-            this, SLOT(slotCheckBoxesChanged()));
-    connect(m_checkboxVideo, SIGNAL(toggled(bool)),
-            this, SLOT(slotCheckBoxesChanged()));
-    connect(m_checkboxDocuments, SIGNAL(toggled(bool)),
-            this, SLOT(slotCheckBoxesChanged()));
     connect(m_checkboxSourceCode, SIGNAL(toggled(bool)),
-            this, SLOT(slotCheckBoxesChanged()));
+            this, SLOT(changed()));
 }
 
 
@@ -117,13 +105,13 @@ ServerConfigModule::~ServerConfigModule()
 
 void ServerConfigModule::load()
 {
-    // 1. basic setup
+    // Basic setup
     KConfig config("baloofilerc");
     KConfigGroup basicSettings = config.group("Basic Settings");
     m_checkEnabled->setChecked(basicSettings.readEntry("Enabled", true));
     m_checkEnableFileIndexer->setChecked(basicSettings.readEntry("Indexing-Enabled", true));
 
-    // 2. file indexer settings
+    // File indexer settings
     KConfigGroup group = config.group("General");
     m_indexFolderSelectionDialog->setIndexHiddenFolders(group.readEntry("index hidden folders", false));
 
@@ -132,23 +120,17 @@ void ServerConfigModule::load()
 
     m_indexFolderSelectionDialog->setFolders(includeFolders, excludeFolders);
 
-    m_excludeFilterSelectionDialog->setExcludeFilters(config.group("General").readEntry("exclude filters", Baloo::defaultExcludeFilterList()));
-
     // MimeTypes
     QStringList mimetypes = config.group("General").readEntry("exclude mimetypes", defaultExcludeMimetypes());
-    m_excludeFilterSelectionDialog->setExcludeMimeTypes(mimetypes);
-    syncCheckBoxesFromMimetypes(mimetypes);
 
-    m_oldExcludeFilters = m_excludeFilterSelectionDialog->excludeFilters();
-    m_oldExcludeMimetypes = m_excludeFilterSelectionDialog->excludeMimeTypes();
+    m_oldExcludeMimetypes = mimetypes;
     m_oldExcludeFolders = excludeFolders;
     m_oldIncludeFolders = includeFolders;
 
     recreateInterfaces();
     updateFileIndexerStatus();
 
-    // 7. all values loaded -> no changes
-    m_checkboxesChanged = false;
+    // All values loaded -> no changes
     Q_EMIT changed(false);
 }
 
@@ -170,13 +152,10 @@ void ServerConfigModule::save()
 
     // 2.3 Other stuff
     config.group("General").writeEntry("index hidden folders", m_indexFolderSelectionDialog->indexHiddenFolders());
-    config.group("General").writeEntry("exclude filters", m_excludeFilterSelectionDialog->excludeFilters());
 
-    QStringList excludeMimetypes = m_excludeFilterSelectionDialog->excludeMimeTypes();
-    if (m_checkboxesChanged) {
-        excludeMimetypes = mimetypesFromCheckboxes();
-        m_checkboxesChanged = false;
-    }
+    QStringList excludeMimetypes;
+    if (m_checkboxSourceCode->isChecked())
+        excludeMimetypes = sourceCodeMimeTypes();
 
     config.group("General").writeEntry("exclude mimetypes", excludeMimetypes);
 
@@ -192,8 +171,6 @@ void ServerConfigModule::save()
         cleaningRequired = true;
     else if (excludeFolders != m_oldExcludeFolders)
         cleaningRequired = true;
-    else if (m_excludeFilterSelectionDialog->excludeFilters() != m_oldExcludeFilters)
-        cleaningRequired = true;
     else if (excludeMimetypes != m_oldExcludeMimetypes)
         cleaningRequired = true;
 
@@ -207,7 +184,6 @@ void ServerConfigModule::save()
     updateFileIndexerStatus();
 
     // 6. all values saved -> no changes
-    m_checkboxesChanged = false;
     Q_EMIT changed(false);
 }
 
@@ -218,7 +194,6 @@ void ServerConfigModule::defaults()
     m_checkEnabled->setChecked(true);
     m_indexFolderSelectionDialog->setIndexHiddenFolders(false);
     m_indexFolderSelectionDialog->setFolders(defaultFolders(), QStringList());
-    m_excludeFilterSelectionDialog->setExcludeFilters(Baloo::defaultExcludeFilterList());
 }
 
 
@@ -312,110 +287,6 @@ void ServerConfigModule::slotEditIndexFolders()
         m_indexFolderSelectionDialog->setFolders(oldIncludeFolders, oldExcludeFolders);
         m_indexFolderSelectionDialog->setIndexHiddenFolders(oldIndexHidden);
     }
-}
-
-void ServerConfigModule::slotAdvancedFileIndexing()
-{
-    const QStringList oldExcludeFilters = m_excludeFilterSelectionDialog->excludeFilters();
-    QStringList oldExcludeMimeTypes = m_excludeFilterSelectionDialog->excludeMimeTypes();
-
-    if (m_checkboxesChanged) {
-        oldExcludeMimeTypes = mimetypesFromCheckboxes();
-        m_excludeFilterSelectionDialog->setExcludeMimeTypes(oldExcludeMimeTypes);
-        m_checkboxesChanged = false;
-    }
-
-    if (m_excludeFilterSelectionDialog->exec()) {
-        changed();
-
-        QStringList mimetypes = m_excludeFilterSelectionDialog->excludeMimeTypes();
-        syncCheckBoxesFromMimetypes(mimetypes);
-    } else {
-        m_excludeFilterSelectionDialog->setExcludeFilters(oldExcludeFilters);
-        m_excludeFilterSelectionDialog->setExcludeMimeTypes(oldExcludeMimeTypes);
-    }
-}
-
-
-namespace
-{
-bool containsRegex(const QStringList& list, const QString& regex)
-{
-    QRegExp exp(regex, Qt::CaseInsensitive, QRegExp::Wildcard);
-    Q_FOREACH (const QString & string, list) {
-        if (string.contains(exp))
-            return true;;
-    }
-    return false;
-}
-
-void syncCheckBox(const QStringList& mimetypes, const QString& type, QCheckBox* checkbox)
-{
-    if (containsRegex(mimetypes, type)) {
-        if (mimetypes.contains(type))
-            checkbox->setChecked(false);
-        else
-            checkbox->setCheckState(Qt::PartiallyChecked);
-    } else {
-        checkbox->setChecked(true);
-    }
-}
-
-void syncCheckBox(const QStringList& mimetypes, const QStringList& types, QCheckBox* checkbox)
-{
-    bool containsAll = true;
-    bool containsAny = false;
-
-    Q_FOREACH (const QString & type, types) {
-        if (mimetypes.contains(type)) {
-            containsAny = true;
-        } else {
-            containsAll = false;
-        }
-    }
-
-    if (containsAll)
-        checkbox->setCheckState(Qt::Unchecked);
-    else if (containsAny)
-        checkbox->setCheckState(Qt::PartiallyChecked);
-    else
-        checkbox->setCheckState(Qt::Checked);
-}
-
-}
-
-void ServerConfigModule::syncCheckBoxesFromMimetypes(const QStringList& mimetypes)
-{
-    syncCheckBox(mimetypes, QLatin1String("image/*"), m_checkboxImage);
-    syncCheckBox(mimetypes, QLatin1String("audio/*"), m_checkboxAudio);
-    syncCheckBox(mimetypes, QLatin1String("video/*"), m_checkboxVideo);
-
-    syncCheckBox(mimetypes, documentMimetypes(), m_checkboxDocuments);
-    syncCheckBox(mimetypes, sourceCodeMimeTypes(), m_checkboxSourceCode);
-    m_checkboxesChanged = false;
-}
-
-QStringList ServerConfigModule::mimetypesFromCheckboxes()
-{
-    QStringList types;
-    if (!m_checkboxAudio->isChecked())
-        types << QLatin1String("audio/*");
-    if (!m_checkboxImage->isChecked())
-        types << QLatin1String("image/*");
-    if (!m_checkboxVideo->isChecked())
-        types << QLatin1String("video/*");
-    if (!m_checkboxDocuments->isChecked())
-        types << documentMimetypes();
-    if (!m_checkboxSourceCode->isChecked())
-        types << sourceCodeMimeTypes();
-
-    return types;
-}
-
-void ServerConfigModule::slotCheckBoxesChanged()
-{
-    m_checkboxesChanged = true;;
-    changed(true);
 }
 
 #include "kcm.moc"

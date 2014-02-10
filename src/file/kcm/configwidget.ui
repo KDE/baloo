@@ -92,44 +92,9 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_7">
       <item>
-       <widget class="QLabel" name="label_7">
-        <property name="text">
-         <string>Customize the files and folders to be indexed</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="m_checkboxDocuments">
-        <property name="text">
-         <string>Index Documents</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="m_checkboxAudio">
-        <property name="text">
-         <string>Index Audio</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="m_checkboxImage">
-        <property name="text">
-         <string>Index Images</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="m_checkboxVideo">
-        <property name="text">
-         <string>Index Videos</string>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="QCheckBox" name="m_checkboxSourceCode">
         <property name="text">
-         <string>Index Source Code</string>
+         <string>Enable Developer Mode</string>
         </property>
        </widget>
       </item>
@@ -147,13 +112,6 @@
            </size>
           </property>
          </spacer>
-        </item>
-        <item>
-         <widget class="QPushButton" name="m_buttonAdvancedFileIndexing">
-          <property name="text">
-           <string>Advanced</string>
-          </property>
-         </widget>
         </item>
         <item>
          <widget class="QPushButton" name="m_buttonCustomizeIndexFolders">

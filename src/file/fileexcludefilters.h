@@ -40,7 +40,6 @@ int defaultExcludeFilterListVersion();
 QStringList defaultExcludeMimetypes();
 int defaultExcludeMimetypesVersion();
 
-QStringList documentMimetypes();
 QStringList sourceCodeMimeTypes();
 }
 
