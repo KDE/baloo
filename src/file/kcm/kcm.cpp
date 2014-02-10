@@ -231,7 +231,6 @@ void ServerConfigModule::updateFileIndexerStatus()
 void ServerConfigModule::updateEnabledItems()
 {
     bool checked = m_checkEnabled->isChecked();
-    groupBox->setEnabled(checked);
     m_checkEnableFileIndexer->setEnabled(checked);
     m_fileIndexerSuspendResumeButtom->setEnabled(checked);
     m_labelFileIndexerStatus->setEnabled(checked);
