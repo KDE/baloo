@@ -1,5 +1,6 @@
 /* This file is part of the KDE Project
    Copyright (c) 2007 Sebastian Trueg <trueg@kde.org>
+   Copyright (c) 2012-2014 Vishesh Handa <me@vhanda.in>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -25,8 +26,6 @@
 namespace Baloo
 {
 
-class IndexFolderSelectionDialog;
-
 class ServerConfigModule : public KCModule, private Ui::ConfigWidget
 {
     Q_OBJECT
@@ -42,11 +41,8 @@ public Q_SLOTS:
 
 private Q_SLOTS:
     void updateEnabledItems();
-    void slotEditIndexFolders();
 
 private:
-    IndexFolderSelectionDialog* m_indexFolderSelectionDialog;
-
     bool m_failedToInitialize;
 
     QStringList m_oldIncludeFolders;

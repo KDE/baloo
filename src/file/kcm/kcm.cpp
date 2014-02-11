@@ -19,7 +19,6 @@
 
 #include "kcm.h"
 #include "../fileexcludefilters.h"
-#include "indexfolderselectiondialog.h"
 #include "folderselectionwidget.h"
 
 #include <KPluginFactory>
@@ -64,8 +63,6 @@ ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args
 
     setupUi(this);
 
-    m_indexFolderSelectionDialog = new IndexFolderSelectionDialog(this);
-
     connect(m_checkEnableFileIndexer, SIGNAL(toggled(bool)),
             this, SLOT(changed()));
     connect(m_checkEnabled, SIGNAL(toggled(bool)),
@@ -73,9 +70,8 @@ ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args
     connect(m_checkEnabled, SIGNAL(toggled(bool)),
             this, SLOT(updateEnabledItems()));
 
-    connect(m_buttonCustomizeIndexFolders, SIGNAL(clicked()),
-            this, SLOT(slotEditIndexFolders()));
-
+    connect(m_folderSelectionWidget, SIGNAL(changed()),
+            this, SLOT(changed()));
     connect(m_checkboxSourceCode, SIGNAL(toggled(bool)),
             this, SLOT(changed()));
 }
@@ -96,12 +92,10 @@ void ServerConfigModule::load()
 
     // File indexer settings
     KConfigGroup group = config.group("General");
-    m_indexFolderSelectionDialog->setIndexHiddenFolders(group.readEntry("index hidden folders", false));
 
     QStringList includeFolders = group.readPathEntry("folders", defaultFolders());
     QStringList excludeFolders = group.readPathEntry("exclude folders", QStringList());
-
-    m_indexFolderSelectionDialog->setFolders(includeFolders, excludeFolders);
+    m_folderSelectionWidget->setFolders(includeFolders, excludeFolders);
 
     // MimeTypes
     QStringList mimetypes = config.group("General").readEntry("exclude mimetypes", defaultExcludeMimetypes());
@@ -117,8 +111,8 @@ void ServerConfigModule::load()
 
 void ServerConfigModule::save()
 {
-    QStringList includeFolders = m_indexFolderSelectionDialog->includeFolders();
-    QStringList excludeFolders = m_indexFolderSelectionDialog->excludeFolders();
+    QStringList includeFolders = m_folderSelectionWidget->includeFolders();
+    QStringList excludeFolders = m_folderSelectionWidget->excludeFolders();
 
     // Change the settings
     KConfig config("baloofilerc");
@@ -129,9 +123,6 @@ void ServerConfigModule::save()
     // 2.2 Update normals paths
     config.group("General").writePathEntry("folders", includeFolders);
     config.group("General").writePathEntry("exclude folders", excludeFolders);
-
-    // 2.3 Other stuff
-    config.group("General").writeEntry("index hidden folders", m_indexFolderSelectionDialog->indexHiddenFolders());
 
     QStringList excludeMimetypes;
     if (m_checkboxSourceCode->isChecked())
@@ -168,8 +159,7 @@ void ServerConfigModule::defaults()
 {
     m_checkEnableFileIndexer->setChecked(true);
     m_checkEnabled->setChecked(true);
-    m_indexFolderSelectionDialog->setIndexHiddenFolders(false);
-    m_indexFolderSelectionDialog->setFolders(defaultFolders(), QStringList());
+    m_folderSelectionWidget->setFolders(defaultFolders(), QStringList());
 }
 
 
@@ -177,38 +167,6 @@ void ServerConfigModule::updateEnabledItems()
 {
     bool checked = m_checkEnabled->isChecked();
     m_checkEnableFileIndexer->setEnabled(checked);
-}
-
-
-void ServerConfigModule::slotEditIndexFolders()
-{
-    FolderSelectionWidget* widget = new FolderSelectionWidget(this);
-    widget->setMinimumWidth(600);
-
-    QHBoxLayout* hLayout = new QHBoxLayout();
-    hLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum));
-    hLayout->addWidget(widget);
-    hLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum));
-
-    widget->show();
-    verticalLayout_2->addItem(hLayout);
-
-    QStringList exclude;
-    exclude << "/home/vishesh/kde" << "/home/vishesh/kde5";
-
-    widget->setFolders(m_oldIncludeFolders, exclude);
-
-    const QStringList oldIncludeFolders = m_indexFolderSelectionDialog->includeFolders();
-    const QStringList oldExcludeFolders = m_indexFolderSelectionDialog->excludeFolders();
-    const bool oldIndexHidden = m_indexFolderSelectionDialog->indexHiddenFolders();
-
-    if (m_indexFolderSelectionDialog->exec()) {
-        changed();
-    } else {
-        // revert to previous settings
-        m_indexFolderSelectionDialog->setFolders(oldIncludeFolders, oldExcludeFolders);
-        m_indexFolderSelectionDialog->setIndexHiddenFolders(oldIndexHidden);
-    }
 }
 
 #include "kcm.moc"
