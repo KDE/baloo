@@ -36,12 +36,16 @@ namespace
 /// recursively check if a folder is hidden
 bool isDirHidden(QDir& dir)
 {
+#ifdef __unix__
+    return dir.absolutePath().contains("/.");
+#else
     if (QFileInfo(dir.path()).isHidden())
         return true;
     else if (dir.cdUp())
         return isDirHidden(dir);
     else
         return false;
+#endif
 }
 }
 
