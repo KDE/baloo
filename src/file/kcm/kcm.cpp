@@ -63,8 +63,6 @@ ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args
 
     setupUi(this);
 
-    connect(m_checkEnableFileIndexer, SIGNAL(toggled(bool)),
-            this, SLOT(changed()));
     connect(m_checkEnabled, SIGNAL(toggled(bool)),
             this, SLOT(changed()));
     connect(m_checkEnabled, SIGNAL(toggled(bool)),
@@ -88,7 +86,6 @@ void ServerConfigModule::load()
     KConfig config("baloofilerc");
     KConfigGroup basicSettings = config.group("Basic Settings");
     m_checkEnabled->setChecked(basicSettings.readEntry("Enabled", true));
-    m_checkEnableFileIndexer->setChecked(basicSettings.readEntry("Indexing-Enabled", true));
 
     // File indexer settings
     KConfigGroup group = config.group("General");
@@ -118,7 +115,9 @@ void ServerConfigModule::save()
     KConfig config("baloofilerc");
     KConfigGroup basicSettings = config.group("Basic Settings");
     basicSettings.writeEntry("Enabled", m_checkEnabled->isChecked());
-    basicSettings.writeEntry("Indexing-Enabled", m_checkEnableFileIndexer->isChecked());
+
+    bool indexingEnabled = !m_folderSelectionWidget->allMountPointsExcluded();
+    basicSettings.writeEntry("Indexing-Enabled", indexingEnabled);
 
     // 2.2 Update normals paths
     config.group("General").writePathEntry("folders", includeFolders);
@@ -157,7 +156,6 @@ void ServerConfigModule::save()
 
 void ServerConfigModule::defaults()
 {
-    m_checkEnableFileIndexer->setChecked(true);
     m_checkEnabled->setChecked(true);
     m_folderSelectionWidget->setFolders(defaultFolders(), QStringList());
 }
@@ -166,7 +164,8 @@ void ServerConfigModule::defaults()
 void ServerConfigModule::updateEnabledItems()
 {
     bool checked = m_checkEnabled->isChecked();
-    m_checkEnableFileIndexer->setEnabled(checked);
+    m_folderSelectionWidget->setEnabled(checked);
+    m_checkboxSourceCode->setEnabled(checked);
 }
 
 #include "kcm.moc"

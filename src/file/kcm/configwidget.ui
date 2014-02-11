@@ -20,13 +20,6 @@
     </widget>
    </item>
    <item>
-    <widget class="QCheckBox" name="m_checkEnableFileIndexer">
-     <property name="text">
-      <string>Enable Desktop Search</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="FolderSelectionWidget" name="m_folderSelectionWidget" native="true"/>
    </item>
    <item>
