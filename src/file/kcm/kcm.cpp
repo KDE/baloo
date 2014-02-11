@@ -164,7 +164,7 @@ void ServerConfigModule::defaults()
 void ServerConfigModule::updateEnabledItems()
 {
     bool checked = m_checkEnabled->isChecked();
-    m_folderSelectionWidget->setEnabled(checked);
+    m_groupBox->setEnabled(checked);
     m_checkboxSourceCode->setEnabled(checked);
 }
 

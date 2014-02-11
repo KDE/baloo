@@ -34,7 +34,6 @@
 #include <QBoxLayout>
 #include <QSpacerItem>
 #include <QPushButton>
-#include <QLabel>
 
 FolderSelectionWidget::FolderSelectionWidget(QWidget* parent, Qt::WindowFlags f)
     : QWidget(parent, f)
@@ -42,11 +41,7 @@ FolderSelectionWidget::FolderSelectionWidget(QWidget* parent, Qt::WindowFlags f)
     m_listWidget = new QListWidget(this);
     m_listWidget->setAlternatingRowColors(true);
 
-    QLabel* label = new QLabel(i18n("Remove the following directories from the search results"));
-    label->setWordWrap(true);
-
     QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(label);
     layout->addWidget(m_listWidget);
 
     QHBoxLayout* hLayout = new QHBoxLayout;

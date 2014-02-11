@@ -20,7 +20,19 @@
     </widget>
    </item>
    <item>
-    <widget class="FolderSelectionWidget" name="m_folderSelectionWidget" native="true"/>
+    <widget class="QGroupBox" name="m_groupBox">
+     <property name="title">
+      <string>Hide these directories from the search results</string>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="FolderSelectionWidget" name="m_folderSelectionWidget" native="true"/>
+      </item>
+     </layout>
+    </widget>
    </item>
    <item>
     <widget class="QCheckBox" name="m_checkboxSourceCode">
