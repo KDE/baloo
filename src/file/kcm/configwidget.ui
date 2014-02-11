@@ -15,7 +15,7 @@
    <item>
     <widget class="QCheckBox" name="m_checkEnabled">
      <property name="text">
-      <string>Enable Tags and Ratings</string>
+      <string>Enable Desktop Search</string>
      </property>
     </widget>
    </item>
