@@ -19,7 +19,6 @@
 
 #include "kcm.h"
 #include "../fileexcludefilters.h"
-#include "fileindexerinterface.h"
 #include "indexfolderselectiondialog.h"
 #include "folderselectionwidget.h"
 
@@ -32,8 +31,8 @@
 #include <KStandardDirs>
 
 #include <QPushButton>
-#include <QtCore/QDir>
-#include <QtDBus/QDBusServiceWatcher>
+#include <QDir>
+#include <QProcess>
 
 K_PLUGIN_FACTORY(BalooConfigModuleFactory, registerPlugin<Baloo::ServerConfigModule>();)
 K_EXPORT_PLUGIN(BalooConfigModuleFactory("kcm_baloofile", "kcm_baloofile"))
@@ -52,7 +51,6 @@ using namespace Baloo;
 
 ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args)
     : KCModule(BalooConfigModuleFactory::componentData(), parent, args)
-    , m_fileIndexerInterface(0)
     , m_failedToInitialize(false)
 {
     KAboutData* about = new KAboutData(
@@ -68,18 +66,6 @@ ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args
 
     m_indexFolderSelectionDialog = new IndexFolderSelectionDialog(this);
 
-    QDBusServiceWatcher* watcher = new QDBusServiceWatcher(this);
-    watcher->addWatchedService(QLatin1String("org.kde.baloo.file"));
-    watcher->setConnection(QDBusConnection::sessionBus());
-    watcher->setWatchMode(QDBusServiceWatcher::WatchForRegistration | QDBusServiceWatcher::WatchForUnregistration);
-
-    connect(watcher, SIGNAL(serviceRegistered(QString)),
-            this, SLOT(recreateInterfaces()));
-    connect(watcher, SIGNAL(serviceUnregistered(QString)),
-            this, SLOT(recreateInterfaces()));
-
-    recreateInterfaces();
-
     connect(m_checkEnableFileIndexer, SIGNAL(toggled(bool)),
             this, SLOT(changed()));
     connect(m_checkEnabled, SIGNAL(toggled(bool)),
@@ -89,8 +75,6 @@ ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args
 
     connect(m_buttonCustomizeIndexFolders, SIGNAL(clicked()),
             this, SLOT(slotEditIndexFolders()));
-    connect(m_fileIndexerSuspendResumeButtom, SIGNAL(clicked(bool)),
-            this, SLOT(slotFileIndexerSuspendResumeClicked()));
 
     connect(m_checkboxSourceCode, SIGNAL(toggled(bool)),
             this, SLOT(changed()));
@@ -99,7 +83,6 @@ ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args
 
 ServerConfigModule::~ServerConfigModule()
 {
-    delete m_fileIndexerInterface;
 }
 
 
@@ -126,9 +109,6 @@ void ServerConfigModule::load()
     m_oldExcludeMimetypes = mimetypes;
     m_oldExcludeFolders = excludeFolders;
     m_oldIncludeFolders = includeFolders;
-
-    recreateInterfaces();
-    updateFileIndexerStatus();
 
     // All values loaded -> no changes
     Q_EMIT changed(false);
@@ -179,11 +159,7 @@ void ServerConfigModule::save()
         QProcess::startDetached(exe);
     }
 
-    // 5. update state
-    recreateInterfaces();
-    updateFileIndexerStatus();
-
-    // 6. all values saved -> no changes
+    // all values saved -> no changes
     Q_EMIT changed(false);
 }
 
@@ -197,84 +173,31 @@ void ServerConfigModule::defaults()
 }
 
 
-void ServerConfigModule::setFileIndexerStatusText(const QString& text, bool elide)
-{
-    m_labelFileIndexerStatus->setWordWrap(!elide);
-    m_labelFileIndexerStatus->setTextElideMode(elide ? Qt::ElideMiddle : Qt::ElideNone);
-    m_labelFileIndexerStatus->setText(text);
-}
-
-
-void ServerConfigModule::updateFileIndexerStatus()
-{
-    // FIXME: Make this non-blocking!
-    QDBusPendingReply<QString> reply = m_fileIndexerInterface->statusMessage();
-    reply.waitForFinished();
-
-    if (reply.isError()) {
-        setFileIndexerStatusText(i18nc("@info:status", "File indexing service not running."), false);
-        return;
-    }
-
-    QString status = reply.value();
-    if (status.isEmpty()) {
-        setFileIndexerStatusText(i18nc("@info:status %1 is an error message returned by a dbus interface.",
-                                        "Failed to contact File Indexer service (%1)",
-                                        m_fileIndexerInterface->lastError().message()), false);
-    } else {
-        m_failedToInitialize = false;
-        setFileIndexerStatusText(status, true);
-        updateFileIndexerSuspendResumeButtonText(m_fileIndexerInterface->isSuspended());
-    }
-}
-
 void ServerConfigModule::updateEnabledItems()
 {
     bool checked = m_checkEnabled->isChecked();
     m_checkEnableFileIndexer->setEnabled(checked);
-    m_fileIndexerSuspendResumeButtom->setEnabled(checked);
-    m_labelFileIndexerStatus->setEnabled(checked);
-}
-
-
-void ServerConfigModule::updateFileIndexerSuspendResumeButtonText(bool isSuspended)
-{
-    if (isSuspended) {
-        m_fileIndexerSuspendResumeButtom->setText(i18nc("Resumes the File indexing service.", "Resume"));
-        m_fileIndexerSuspendResumeButtom->setIcon(KIcon("media-playback-start"));
-    } else {
-        m_fileIndexerSuspendResumeButtom->setText(i18nc("Suspends the File indexing service.", "Suspend"));
-        m_fileIndexerSuspendResumeButtom->setIcon(KIcon("media-playback-pause"));
-    }
-}
-
-void ServerConfigModule::slotFileIndexerSuspendResumeClicked()
-{
-    bool suspended = m_fileIndexerInterface->isSuspended();
-    if (!suspended) {
-        m_fileIndexerInterface->suspend();
-        updateFileIndexerSuspendResumeButtonText(true);
-    } else {
-        m_fileIndexerInterface->resume();
-        updateFileIndexerSuspendResumeButtonText(false);
-    }
-}
-
-
-void ServerConfigModule::recreateInterfaces()
-{
-    delete m_fileIndexerInterface;
-
-    m_fileIndexerInterface = new org::kde::baloo::file("org.kde.baloo.file", "/indexer",
-                                                       QDBusConnection::sessionBus());
-
-    connect(m_fileIndexerInterface, SIGNAL(statusChanged()),
-            this, SLOT(updateFileIndexerStatus()));
 }
 
 
 void ServerConfigModule::slotEditIndexFolders()
 {
+    FolderSelectionWidget* widget = new FolderSelectionWidget(this);
+    widget->setMinimumWidth(600);
+
+    QHBoxLayout* hLayout = new QHBoxLayout();
+    hLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum));
+    hLayout->addWidget(widget);
+    hLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum));
+
+    widget->show();
+    verticalLayout_2->addItem(hLayout);
+
+    QStringList exclude;
+    exclude << "/home/vishesh/kde" << "/home/vishesh/kde5";
+
+    widget->setFolders(m_oldIncludeFolders, exclude);
+
     const QStringList oldIncludeFolders = m_indexFolderSelectionDialog->includeFolders();
     const QStringList oldExcludeFolders = m_indexFolderSelectionDialog->excludeFolders();
     const bool oldIndexHidden = m_indexFolderSelectionDialog->indexHiddenFolders();

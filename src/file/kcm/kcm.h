@@ -21,7 +21,6 @@
 
 #include <KCModule>
 #include "ui_configwidget.h"
-#include "fileindexerinterface.h"
 
 namespace Baloo
 {
@@ -42,18 +41,10 @@ public Q_SLOTS:
     void defaults();
 
 private Q_SLOTS:
-    void updateFileIndexerStatus();
     void updateEnabledItems();
-    void recreateInterfaces();
     void slotEditIndexFolders();
-    void slotFileIndexerSuspendResumeClicked();
 
 private:
-    void setFileIndexerStatusText(const QString& text, bool elide);
-    void updateFileIndexerSuspendResumeButtonText(bool isSuspended);
-
-    org::kde::baloo::file* m_fileIndexerInterface;
-
     IndexFolderSelectionDialog* m_indexFolderSelectionDialog;
 
     bool m_failedToInitialize;
