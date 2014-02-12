@@ -39,12 +39,7 @@ public Q_SLOTS:
     void save();
     void defaults();
 
-private Q_SLOTS:
-    void updateEnabledItems();
-
 private:
-    bool m_failedToInitialize;
-
     QStringList m_oldIncludeFolders;
     QStringList m_oldExcludeFolders;
     QStringList m_oldExcludeMimetypes;

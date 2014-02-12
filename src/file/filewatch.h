@@ -23,10 +23,7 @@
 #include <QtCore/QVariant>
 #include <QtCore/QSet>
 
-#include "removablemediacache.h"
-
 class KInotify;
-class RegExpCache;
 class ActiveFileQueue;
 class Database;
 
@@ -88,13 +85,6 @@ private:
     /** Watch a folder, provided it is not already watched*/
     void watchFolder(const QString& path);
 
-    /**
-     * Returns true if the path is one that should be always ignored.
-     * This includes such things like temporary files and folders as
-     * they are created for example by build systems.
-     */
-    bool ignorePath(const QString& path);
-
     Database* m_db;
 
     MetadataMover* m_metadataMover;
@@ -103,9 +93,6 @@ private:
 #ifdef BUILD_KINOTIFY
     KInotify* m_dirWatch;
 #endif
-
-    RegExpCache* m_pathExcludeRegExpCache;
-    //RemovableMediaCache* m_removableMediaCache;
 
     /// queue used to "compress" constant file modifications like downloads
     ActiveFileQueue* m_fileModificationQueue;

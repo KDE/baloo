@@ -19,7 +19,6 @@
 
 #include "filewatch.h"
 #include "metadatamover.h"
-#include "fileexcludefilters.h"
 #include "fileindexerconfig.h"
 #include "activefilequeue.h"
 #include "regexpcache.h"
@@ -46,20 +45,18 @@ namespace
 class IgnoringKInotify : public KInotify
 {
 public:
-    IgnoringKInotify(RegExpCache* rec, Baloo::FileIndexerConfig* config, QObject* parent);
+    IgnoringKInotify(Baloo::FileIndexerConfig* config, QObject* parent);
     ~IgnoringKInotify();
 
 protected:
     bool filterWatch(const QString& path, WatchEvents& modes, WatchFlags& flags);
 
 private:
-    RegExpCache* m_pathExcludeRegExpCache;
     Baloo::FileIndexerConfig* m_config;
 };
 
-IgnoringKInotify::IgnoringKInotify(RegExpCache* rec, Baloo::FileIndexerConfig* config, QObject* parent)
+IgnoringKInotify::IgnoringKInotify(Baloo::FileIndexerConfig* config, QObject* parent)
     : KInotify(parent)
-    , m_pathExcludeRegExpCache(rec)
     , m_config(config)
 {
 }
@@ -68,36 +65,14 @@ IgnoringKInotify::~IgnoringKInotify()
 {
 }
 
-bool IgnoringKInotify::filterWatch(const QString& path, WatchEvents& modes, WatchFlags& flags)
+//
+// Non-indexed directories are never watched as their metadata is stored
+// in the extended attributes for the file as is never lost. Unless your filesystem
+// does not support xattr, then you're out of luck. Sorry.
+//
+bool IgnoringKInotify::filterWatch(const QString& path, WatchEvents&, WatchFlags&)
 {
-    Q_UNUSED(flags);
-
-    QStringList cpts = path.split('/', QString::SkipEmptyParts);
-    if (cpts.isEmpty())
-        return false;
-
-    // We only check the final componenet instead of all the components cause the
-    // earlier ones would have already been tested by this function
-    QString file = cpts.last();
-
-    bool shouldFileNameBeIndexed = m_config->shouldFileBeIndexed(file);
-    if (!shouldFileNameBeIndexed) {
-        // If the path should not be indexed then we do not want to watch it
-        // This is an optimization
-        return false;
-    }
-
-    bool shouldFolderBeIndexed = m_config->folderInFolderList(path);
-
-    // Only watch the index folders for file change.
-    // We still need to monitor everything for file creation because directories count as
-    // files, and we want to receive signals for a new directory, so that we can watch it.
-    if (shouldFolderBeIndexed && shouldFileNameBeIndexed) {
-        modes |= KInotify::EventCloseWrite;
-    } else {
-        modes &= (~KInotify::EventCloseWrite);
-    }
-    return true;
+    return m_config->shouldFolderBeIndexed(path);
 }
 }
 #endif // BUILD_KINOTIFY
@@ -112,15 +87,6 @@ FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
     , m_dirWatch(0)
 #endif
 {
-    // the list of default exclude filters we use here differs from those
-    // that can be configured for the file indexer service
-    // the default list should only contain files and folders that users are
-    // very unlikely to ever annotate but that change very often. This way
-    // we avoid a lot of work while hopefully not breaking the workflow of
-    // too many users.
-    m_pathExcludeRegExpCache = new RegExpCache();
-    m_pathExcludeRegExpCache->rebuildCacheFromFilterList(defaultExcludeFilterList());
-
     m_metadataMover = new MetadataMover(m_db, this);
     connect(m_metadataMover, SIGNAL(movedWithoutData(QString)),
             this, SLOT(slotMovedWithoutData(QString)));
@@ -133,7 +99,7 @@ FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
 
 #ifdef BUILD_KINOTIFY
     // monitor the file system for changes (restricted by the inotify limit)
-    m_dirWatch = new IgnoringKInotify(m_pathExcludeRegExpCache, m_config, this);
+    m_dirWatch = new IgnoringKInotify(m_config, this);
 
     connect(m_dirWatch, SIGNAL(moved(QString,QString)),
             this, SLOT(slotFileMoved(QString,QString)));
@@ -148,24 +114,10 @@ FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
     connect(m_dirWatch, SIGNAL(installedWatches()),
             this, SIGNAL(installedWatches()));
 
-    // recursively watch the whole home dir
-
-    // FIXME: we cannot simply watch the folders that contain annotated files since moving
-    // one of these files out of the watched "area" would mean we "lose" it, i.e. we have no
-    // information about where it is moved.
-    // On the other hand only using the homedir means a lot of restrictions.
-    // One dummy solution would be a hybrid: watch the whole home dir plus all folders that
-    // contain annotated files outside of the home dir and hope for the best
-
-    const QString home = QDir::homePath();
-    watchFolder(home);
-
-    //Watch all indexed folders unless they are subdirectories of home, which is already watched
+    // Watch all indexed folders
     QStringList folders = m_config->includeFolders();
     Q_FOREACH (const QString& folder, folders) {
-        if (!folder.startsWith(home)) {
-            watchFolder(folder);
-        }
+        watchFolder(folder);
     }
 #else
     connectToKDirNotify();
@@ -195,24 +147,13 @@ void FileWatch::watchFolder(const QString& path)
 
 void FileWatch::slotFileMoved(const QString& urlFrom, const QString& urlTo)
 {
-    if (!ignorePath(urlFrom) || !ignorePath(urlTo)) {
-        m_metadataMover->moveFileMetadata(urlFrom, urlTo);
-    }
+    m_metadataMover->moveFileMetadata(urlFrom, urlTo);
 }
 
 
 void FileWatch::slotFilesDeleted(const QStringList& paths)
 {
-    QStringList urls;
-    Q_FOREACH (const QString& path, paths) {
-        if (!ignorePath(path)) {
-            urls << path;
-        }
-    }
-
-    if (!urls.isEmpty()) {
-        m_metadataMover->removeFileMetadata(urls);
-    }
+    m_metadataMover->removeFileMetadata(paths);
 }
 
 
@@ -306,14 +247,6 @@ void FileWatch::slotInotifyWatchUserLimitReached(const QString& path)
     }
 }
 #endif
-
-
-bool FileWatch::ignorePath(const QString& path)
-{
-    // when using KInotify there is no need to check the folder since
-    // we only watch interesting folders to begin with.
-    return m_pathExcludeRegExpCache->filenameMatch(path);
-}
 
 
 void FileWatch::updateIndexedFoldersWatches()

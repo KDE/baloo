@@ -55,13 +55,13 @@ int main(int argc, char** argv)
 
     KConfig config("baloofilerc");
     KConfigGroup group = config.group("Basic Settings");
-    bool enabled = group.readEntry("Enabled", true);
-    if (!enabled) {
-        std::cout << "Baloo File Handling has been disabled" << std::endl;
+    bool indexingEnabled = group.readEntry("Indexing-Enabled", true);
+
+    if (!indexingEnabled) {
+        std::cout << "Baloo File Indexing has been disabled" << std::endl;
         return 0;
     }
 
-    bool indexingEnabled = group.readEntry("Indexing-Enabled", true);
 
     if (!QDBusConnection::sessionBus().registerService("org.kde.baloo.file")) {
         kError() << "Failed to register via dbus. Another instance is running";
@@ -76,18 +76,14 @@ int main(int argc, char** argv)
     Baloo::FileIndexerConfig indexerConfig;
     Baloo::FileWatch filewatcher(&db, &indexerConfig, &app);
 
-    if (indexingEnabled) {
-        Baloo::FileIndexer fileIndexer(&db, &indexerConfig, &app);
+    Baloo::FileIndexer fileIndexer(&db, &indexerConfig, &app);
 
-        QObject::connect(&filewatcher, SIGNAL(indexFile(QString)),
-                        &fileIndexer, SLOT(indexFile(QString)));
-        QObject::connect(&filewatcher, SIGNAL(installedWatches()),
-                        &fileIndexer, SLOT(update()));
-        QObject::connect(&filewatcher, SIGNAL(fileRemoved(int)),
-                         &fileIndexer, SLOT(removeFileData(int)));
-
-        return app.exec();
-    }
+    QObject::connect(&filewatcher, SIGNAL(indexFile(QString)),
+                     &fileIndexer, SLOT(indexFile(QString)));
+    QObject::connect(&filewatcher, SIGNAL(installedWatches()),
+                     &fileIndexer, SLOT(update()));
+    QObject::connect(&filewatcher, SIGNAL(fileRemoved(int)),
+                     &fileIndexer, SLOT(removeFileData(int)));
 
     return app.exec();
 }

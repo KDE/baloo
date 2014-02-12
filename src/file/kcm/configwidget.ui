@@ -13,13 +13,6 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
-    <widget class="QCheckBox" name="m_checkEnabled">
-     <property name="text">
-      <string>Enable Desktop Search</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QGroupBox" name="m_groupBox">
      <property name="title">
       <string>Hide these directories from the search results</string>

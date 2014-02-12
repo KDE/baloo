@@ -50,7 +50,6 @@ using namespace Baloo;
 
 ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args)
     : KCModule(BalooConfigModuleFactory::componentData(), parent, args)
-    , m_failedToInitialize(false)
 {
     KAboutData* about = new KAboutData(
         "kcm_baloofile", "kcm_baloofile", ki18n("Configure Desktop Search"),
@@ -62,11 +61,6 @@ ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args
     setButtons(Help | Apply | Default);
 
     setupUi(this);
-
-    connect(m_checkEnabled, SIGNAL(toggled(bool)),
-            this, SLOT(changed()));
-    connect(m_checkEnabled, SIGNAL(toggled(bool)),
-            this, SLOT(updateEnabledItems()));
 
     connect(m_folderSelectionWidget, SIGNAL(changed()),
             this, SLOT(changed()));
@@ -82,12 +76,8 @@ ServerConfigModule::~ServerConfigModule()
 
 void ServerConfigModule::load()
 {
-    // Basic setup
-    KConfig config("baloofilerc");
-    KConfigGroup basicSettings = config.group("Basic Settings");
-    m_checkEnabled->setChecked(basicSettings.readEntry("Enabled", true));
-
     // File indexer settings
+    KConfig config("baloofilerc");
     KConfigGroup group = config.group("General");
 
     QStringList includeFolders = group.readPathEntry("folders", defaultFolders());
@@ -114,7 +104,6 @@ void ServerConfigModule::save()
     // Change the settings
     KConfig config("baloofilerc");
     KConfigGroup basicSettings = config.group("Basic Settings");
-    basicSettings.writeEntry("Enabled", m_checkEnabled->isChecked());
 
     bool indexingEnabled = !m_folderSelectionWidget->allMountPointsExcluded();
     basicSettings.writeEntry("Indexing-Enabled", indexingEnabled);
@@ -130,9 +119,12 @@ void ServerConfigModule::save()
     config.group("General").writeEntry("exclude mimetypes", excludeMimetypes);
 
     // Start Baloo
-    if (m_checkEnabled) {
+    if (indexingEnabled) {
         const QString exe = KStandardDirs::findExe(QLatin1String("baloo_file"));
         QProcess::startDetached(exe);
+    }
+    else {
+        // FIXME: Stop the baloo_file process
     }
 
     // Start cleaner
@@ -156,16 +148,7 @@ void ServerConfigModule::save()
 
 void ServerConfigModule::defaults()
 {
-    m_checkEnabled->setChecked(true);
     m_folderSelectionWidget->setFolders(defaultFolders(), QStringList());
-}
-
-
-void ServerConfigModule::updateEnabledItems()
-{
-    bool checked = m_checkEnabled->isChecked();
-    m_groupBox->setEnabled(checked);
-    m_checkboxSourceCode->setEnabled(checked);
 }
 
 #include "kcm.moc"
