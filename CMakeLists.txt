@@ -62,7 +62,7 @@ include_directories(
 )
 
 add_subdirectory(src)
-
+add_subdirectory(icons)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/BalooConfig.cmake.in
                ${CMAKE_CURRENT_BINARY_DIR}/BalooConfig.cmake @ONLY)
