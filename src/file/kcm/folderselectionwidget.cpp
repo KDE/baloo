@@ -119,11 +119,7 @@ void FolderSelectionWidget::setFolders(QStringList includeDirs, QStringList excl
         item->setData(Qt::DisplayRole, display);
         item->setData(Qt::WhatsThisRole, url);
         item->setData(UrlRole, url);
-
-        if (m_mountPoints.contains(url))
-            item->setData(Qt::DecorationRole, KIcon("drive-harddisk"));
-        else
-            item->setData(Qt::DecorationRole, KIcon("folder"));
+        item->setData(Qt::DecorationRole, KIcon(iconName(url)));
 
         m_listWidget->addItem(item);
     }
@@ -229,11 +225,7 @@ void FolderSelectionWidget::slotAddButtonClicked()
     item->setData(Qt::DisplayRole, display);
     item->setData(Qt::WhatsThisRole, url);
     item->setData(UrlRole, url);
-
-    if (m_mountPoints.contains(url))
-        item->setData(Qt::DecorationRole, KIcon("drive-harddisk"));
-    else
-        item->setData(Qt::DecorationRole, KIcon("folder"));
+    item->setData(Qt::DecorationRole, KIcon(iconName(url)));
 
     m_listWidget->addItem(item);
 
@@ -269,5 +261,24 @@ bool FolderSelectionWidget::shouldShowMountPoint(const QString& mountPoint)
 bool FolderSelectionWidget::allMountPointsExcluded() const
 {
     return excludeFolders().toSet() == m_mountPoints.toSet();
+}
+
+QString FolderSelectionWidget::iconName(QString path) const
+{
+    // Ensure paths end with /
+    if (!path.endsWith(QDir::separator()))
+        path.append(QDir::separator());
+
+    QString homePath = QDir::homePath();
+    if (!homePath.endsWith(QDir::separator()))
+        homePath.append(QDir::separator());
+
+    if (path == homePath)
+        return QLatin1String("user-home");
+
+    if (m_mountPoints.contains(path))
+        return QLatin1String("drive-harddisk");
+
+    return QLatin1String("folder");
 }
 

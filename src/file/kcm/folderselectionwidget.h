@@ -52,6 +52,8 @@ private:
     bool shouldShowMountPoint(const QString& mountPoint);
     QString fetchMountPoint(const QString& url) const;
 
+    QString iconName(QString path) const;
+
     QListWidget* m_listWidget;
     QStringList m_mountPoints;
 
