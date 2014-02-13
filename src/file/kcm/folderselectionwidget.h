@@ -53,6 +53,7 @@ private Q_SLOTS:
 private:
     bool shouldShowMountPoint(const QString& mountPoint);
     QString fetchMountPoint(const QString& url) const;
+    void showMessage(const QString& message);
 
     QString iconName(QString path) const;
 

@@ -203,13 +203,9 @@ void FolderSelectionWidget::slotAddButtonClicked()
 
     // We don't care about the root dir
     if (url == QLatin1String("/")) {
-        m_messageWidget->setText(i18n("The root directory is always hidden"));
-        m_messageWidget->setMessageType(KMessageWidget::Warning);
-        m_messageWidget->animatedShow();
-
-        QTimer::singleShot(3000, m_messageWidget, SLOT(animatedHide()));
-        return;
+        showMessage(i18n("The root directory is always hidden"));
     }
+
     // Remove any existing folder with that name
     // Remove any folder which is a sub-folder
     QVector<QListWidgetItem*> deleteList;
@@ -219,6 +215,9 @@ void FolderSelectionWidget::slotAddButtonClicked()
         QString existingUrl = item->data(UrlRole).toString();
 
         if (existingUrl == url) {
+            QString name = KUrl(QUrl::fromLocalFile(url)).fileName();
+            showMessage(i18n("Folder %1 is already excluded").arg(name));
+
             deleteList << item;
             continue;
         }
@@ -236,6 +235,9 @@ void FolderSelectionWidget::slotAddButtonClicked()
                 // we just move the parent to the bottom
                 url = existingUrl;
                 deleteList << item;
+
+                QString name = KUrl(QUrl::fromLocalFile(url)).fileName();
+                showMessage(i18n("Folder's parent %1 is already excluded").arg(name));
             }
         }
     }
@@ -265,6 +267,15 @@ void FolderSelectionWidget::slotRemoveButtonClicked()
 void FolderSelectionWidget::slotCurrentItemChanged(QListWidgetItem* current, QListWidgetItem*)
 {
     m_removeButton->setEnabled(current != 0);
+}
+
+void FolderSelectionWidget::showMessage(const QString& message)
+{
+    m_messageWidget->setText(message);
+    m_messageWidget->setMessageType(KMessageWidget::Warning);
+    m_messageWidget->animatedShow();
+
+    QTimer::singleShot(3000, m_messageWidget, SLOT(animatedHide()));
 }
 
 
