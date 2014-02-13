@@ -64,7 +64,7 @@ ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args
 
     setupUi(this);
 
-    QPixmap pixmap = KIcon("edit-find").pixmap(IconSize(KIconLoader::Desktop));
+    QPixmap pixmap = KIcon("baloo").pixmap(IconSize(KIconLoader::Desktop));
     m_pixmapLabel->setPixmap(pixmap);
 
     connect(m_folderSelectionWidget, SIGNAL(changed()),
