@@ -56,6 +56,12 @@ public Q_SLOTS:
     void update();
 
     /**
+     * Quits the application. This may not be the best place to keep such
+     * a slot, but it's simpler than creating a new interface for now
+     */
+    Q_SCRIPTABLE void quit() const;
+
+    /**
      * @brief Translated status message of the current Indexer behaviour.
      */
     Q_SCRIPTABLE QString statusMessage() const;

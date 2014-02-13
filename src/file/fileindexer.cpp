@@ -25,6 +25,7 @@
 #include <KDebug>
 
 #include <QDBusConnection>
+#include <QCoreApplication>
 
 using namespace Baloo;
 
@@ -159,4 +160,9 @@ void FileIndexer::indexFolder(const QString& path, bool recursive, bool forced)
 void FileIndexer::removeFileData(int id)
 {
     m_indexScheduler->removeFileData(id);
+}
+
+void FileIndexer::quit() const
+{
+    QCoreApplication::instance()->quit();
 }

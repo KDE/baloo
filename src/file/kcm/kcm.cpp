@@ -32,6 +32,8 @@
 #include <QPushButton>
 #include <QDir>
 #include <QProcess>
+#include <QDBusConnection>
+#include <QDBusMessage>
 
 K_PLUGIN_FACTORY(BalooConfigModuleFactory, registerPlugin<Baloo::ServerConfigModule>();)
 K_EXPORT_PLUGIN(BalooConfigModuleFactory("kcm_baloofile", "kcm_baloofile"))
@@ -124,7 +126,12 @@ void ServerConfigModule::save()
         QProcess::startDetached(exe);
     }
     else {
-        // FIXME: Stop the baloo_file process
+        QDBusMessage message = QDBusMessage::createMethodCall(QLatin1String("org.kde.baloo.file"),
+                                                              QLatin1String("/indexer"),
+                                                              QLatin1String("org.kde.baloo.file"),
+                                                              QLatin1String("quit"));
+
+        QDBusConnection::sessionBus().send(message);
     }
 
     // Start cleaner
