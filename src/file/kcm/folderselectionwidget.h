@@ -24,6 +24,7 @@
 #include <QWidget>
 #include <QListWidget>
 #include <QPushButton>
+#include <KMessageWidget>
 
 class FolderSelectionWidget : public QWidget
 {
@@ -59,6 +60,8 @@ private:
 
     QPushButton* m_addButton;
     QPushButton* m_removeButton;
+
+    KMessageWidget* m_messageWidget;
 };
 
 #endif // FOLDERSELECTIONWIDGET_H

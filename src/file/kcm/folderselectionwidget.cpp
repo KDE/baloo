@@ -29,6 +29,7 @@
 #include <KFileDialog>
 
 #include <QDir>
+#include <QTimer>
 #include <KUrl>
 #include <KLocalizedString>
 #include <QBoxLayout>
@@ -41,7 +42,11 @@ FolderSelectionWidget::FolderSelectionWidget(QWidget* parent, Qt::WindowFlags f)
     m_listWidget = new QListWidget(this);
     m_listWidget->setAlternatingRowColors(true);
 
+    m_messageWidget = new KMessageWidget(this);
+    m_messageWidget->hide();
+
     QVBoxLayout* layout = new QVBoxLayout(this);
+    layout->addWidget(m_messageWidget);
     layout->addWidget(m_listWidget);
 
     QHBoxLayout* hLayout = new QHBoxLayout;
@@ -188,6 +193,15 @@ void FolderSelectionWidget::slotAddButtonClicked()
     if (!url.endsWith(QDir::separator()))
         url.append(QDir::separator());
 
+    // We don't care about the root dir
+    if (url == QLatin1String("/")) {
+        m_messageWidget->setText(i18n("The root directory is always hidden"));
+        m_messageWidget->setMessageType(KMessageWidget::Warning);
+        m_messageWidget->animatedShow();
+
+        QTimer::singleShot(3000, m_messageWidget, SLOT(animatedHide()));
+        return;
+    }
     // Remove any existing folder with that name
     // Remove any folder which is a sub-folder
     QVector<QListWidgetItem*> deleteList;
