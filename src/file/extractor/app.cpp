@@ -157,11 +157,11 @@ void App::processNextUrl()
                 s << res.map();
 
             std::cout << arr.toBase64().constData();
+            m_results.clear();
         }
         else {
             saveChanges();
         }
-        return;
     }
 
     QTimer::singleShot(0, this, SLOT(processNextUrl()));
