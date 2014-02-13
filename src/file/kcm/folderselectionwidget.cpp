@@ -60,8 +60,12 @@ FolderSelectionWidget::FolderSelectionWidget(QWidget* parent, Qt::WindowFlags f)
 
     m_removeButton = new QPushButton(this);
     m_removeButton->setIcon(KIcon("list-remove"));
+    m_removeButton->setEnabled(false);
     connect(m_removeButton, SIGNAL(clicked(bool)),
             this, SLOT(slotRemoveButtonClicked()));
+
+    connect(m_listWidget, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),
+            this, SLOT(slotCurrentItemChanged(QListWidgetItem*,QListWidgetItem*)));
 
     hLayout->addWidget(m_addButton);
     hLayout->addWidget(m_removeButton);
@@ -257,6 +261,12 @@ void FolderSelectionWidget::slotRemoveButtonClicked()
 
     Q_EMIT changed();
 }
+
+void FolderSelectionWidget::slotCurrentItemChanged(QListWidgetItem* current, QListWidgetItem*)
+{
+    m_removeButton->setEnabled(current != 0);
+}
+
 
 bool FolderSelectionWidget::shouldShowMountPoint(const QString& mountPoint)
 {

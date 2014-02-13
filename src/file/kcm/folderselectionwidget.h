@@ -48,6 +48,7 @@ Q_SIGNALS:
 private Q_SLOTS:
     void slotAddButtonClicked();
     void slotRemoveButtonClicked();
+    void slotCurrentItemChanged(QListWidgetItem* current, QListWidgetItem*);
 
 private:
     bool shouldShowMountPoint(const QString& mountPoint);
