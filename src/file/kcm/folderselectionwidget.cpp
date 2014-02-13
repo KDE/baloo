@@ -190,6 +190,10 @@ void FolderSelectionWidget::slotAddButtonClicked()
         return;
     }
 
+    // vHanda: Maybe we should be showing a message?
+    if (url == QLatin1String("/home"))
+        url = QDir::homePath();
+
     if (!url.endsWith(QDir::separator()))
         url.append(QDir::separator());
 
