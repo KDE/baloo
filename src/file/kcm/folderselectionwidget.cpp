@@ -252,6 +252,7 @@ void FolderSelectionWidget::slotAddButtonClicked()
     item->setData(Qt::DecorationRole, KIcon(iconName(url)));
 
     m_listWidget->addItem(item);
+    m_listWidget->setCurrentItem(item);
 
     Q_EMIT changed();
 }
