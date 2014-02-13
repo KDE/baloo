@@ -64,6 +64,9 @@ ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args
 
     setupUi(this);
 
+    QPixmap pixmap = KIcon("edit-find").pixmap(KIconLoader::SizeEnormous);
+    m_pixmapLabel->setPixmap(pixmap);
+
     connect(m_folderSelectionWidget, SIGNAL(changed()),
             this, SLOT(changed()));
     connect(m_checkboxSourceCode, SIGNAL(toggled(bool)),
