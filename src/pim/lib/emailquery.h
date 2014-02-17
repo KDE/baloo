@@ -36,6 +36,7 @@ class BALOO_PIM_EXPORT EmailQuery : public Query
 {
 public:
     EmailQuery();
+    virtual ~EmailQuery();
 
     void setInvolves(const QStringList& involves);
     void addInvolves(const QString& email);
@@ -83,7 +84,7 @@ public:
     void subjectMatches(const QString& subjectMatch);
 
     void setLimit(int limit);
-    int limit();
+    int limit() const;
 
     /**
      * Execute the query and return an iterator to fetch
@@ -92,24 +93,10 @@ public:
     ResultIterator exec();
 
 private:
-    QString m_path;
-
-    QStringList m_involves;
-    QStringList m_to;
-    QStringList m_cc;
-    QStringList m_bcc;
-    QString m_from;
-
-    QList<Akonadi::Collection::Id> m_collections;
-
-    char m_important;
-    char m_read;
-    char m_attachment;
-
-    QString m_matchString;
-    QString m_subjectMatchString;
-
-    int m_limit;
+    //@cond PRIVATE
+    class Private;
+    Private * const d;
+    //@endcond
 };
 
 }

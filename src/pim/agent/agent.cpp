@@ -60,6 +60,11 @@ BalooIndexingAgent::BalooIndexingAgent(const QString& id)
         setOnline(true);
     }
 
+    connect(this, SIGNAL(abortRequested()),
+            this, SLOT(onAbortRequested()));
+    connect(this, SIGNAL(onlineChanged(bool)),
+            this, SLOT(onOnlineChanged(bool)));
+
     m_timer.setInterval(10);
     m_timer.setSingleShot(true);
     connect(&m_timer, SIGNAL(timeout()), this, SLOT(processNext()));
@@ -131,6 +136,10 @@ QList<AbstractIndexer*> BalooIndexingAgent::indexersForCollection(const Akonadi:
 
 void BalooIndexingAgent::findUnindexedItems()
 {
+    if (!isOnline()) {
+        return;
+    }
+
     KConfig config("baloorc");
     KConfigGroup group = config.group("Akonadi");
 
@@ -147,9 +156,10 @@ void BalooIndexingAgent::slotRootCollectionsFetched(KJob* kjob)
     Akonadi::CollectionFetchJob* cjob = qobject_cast<Akonadi::CollectionFetchJob*>(kjob);
     Akonadi::Collection::List cList = cjob->collections();
 
-    m_jobs = 0;
+    status(Running, i18n("Indexing PIM data"));
     Q_FOREACH (const Akonadi::Collection& c, cList) {
         Akonadi::ItemFetchJob* job = new Akonadi::ItemFetchJob(c);
+        job->setProperty("collectionsCount", cList.size());
 
         if (!m_lastItemMTime.isNull()) {
             KDateTime dt(m_lastItemMTime, KDateTime::Spec::UTC());
@@ -167,7 +177,7 @@ void BalooIndexingAgent::slotRootCollectionsFetched(KJob* kjob)
                 this, SLOT(slotItemsRecevied(Akonadi::Item::List)));
         connect(job, SIGNAL(finished(KJob*)), this, SLOT(slotItemFetchFinished(KJob*)));
         job->start();
-        m_jobs++;
+        m_jobs << job;
     }
 }
 
@@ -286,7 +296,7 @@ void BalooIndexingAgent::slotItemsRecevied(const Akonadi::Item::List& items)
 {
     KConfig config("baloorc");
     KConfigGroup group = config.group("Akonadi");
-    bool initial = group.readEntry("initialIndexingDone", false);
+    const bool initialDone = group.readEntry("initialIndexingDone", false);
     QDateTime dt = group.readEntry("lastItem", QDateTime::fromMSecsSinceEpoch(1));
 
     Q_FOREACH (const Akonadi::Item& item, items) {
@@ -303,19 +313,22 @@ void BalooIndexingAgent::slotItemsRecevied(const Akonadi::Item::List& items)
 
         dt = qMax(dt, item.modificationTime());
     }
-    if (initial)
+    if (initialDone)
         group.writeEntry("lastItem", dt);
 
     m_commitTimer.start();
 }
 
-void BalooIndexingAgent::slotItemFetchFinished(KJob*)
+void BalooIndexingAgent::slotItemFetchFinished(KJob* job)
 {
-    m_jobs--;
-    if (m_jobs == 0) {
+    const int totalJobs = job->property("collectionsCount").toInt();
+    m_jobs.removeOne(job);
+    percent((float(totalJobs - m_jobs.count()) / float(totalJobs)) * 100);
+    if (m_jobs.isEmpty()) {
         KConfig config("baloorc");
         KConfigGroup group = config.group("Akonadi");
         group.writeEntry("initialIndexingDone", true);
+        status(Idle, i18n("Ready"));
     }
 }
 
@@ -328,6 +341,29 @@ void BalooIndexingAgent::slotCommitTimerElapsed()
         } catch (const Xapian::Error &e) {
             kWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
         }
+    }
+}
+
+void BalooIndexingAgent::onAbortRequested()
+{
+    Q_FOREACH (KJob *job, m_jobs) {
+        job->kill(KJob::Quietly);
+    }
+    m_jobs.clear();
+    status(Idle, i18n("Ready"));
+}
+
+void BalooIndexingAgent::onOnlineChanged(bool online)
+{
+    // Ignore everything when offline
+    changeRecorder()->setAllMonitored(online);
+
+    // Index items that might have changed while we were offline
+    if (online) {
+        findUnindexedItems();
+    } else {
+        // Abort ongoing indexing when switched to offline
+        onAbortRequested();
     }
 }
 
