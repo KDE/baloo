@@ -39,18 +39,13 @@ set_package_properties(QJSON PROPERTIES
     TYPE REQUIRED
 )
 
-find_package(Xattr)
-set_package_properties(Xattr PROPERTIES
-    URL "http://savannah.nongnu.org/projects/attr"
-    TYPE REQUIRED
-)
-
 find_package(Akonadi 1.11.42 CONFIG)
 set_package_properties(Akonadi PROPERTIES
     URL "http://akonadi-project.org"
     TYPE REQUIRED
 )
 
+include(ConfigureChecks.cmake)
 
 add_definitions(-DQT_NO_KEYWORDS)
 
