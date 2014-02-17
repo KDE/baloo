@@ -124,9 +124,10 @@ namespace {
 
     Xapian::Query makeQuery(const QString& string, Xapian::Database* db)
     {
-        // Lets just keep the top 10 (+1 for push_heap)
+        // Lets just keep the top x (+1 for push_heap)
+        static const int MaxTerms = 100;
         QList<Term> topTerms;
-        topTerms.reserve(11);
+        topTerms.reserve(MaxTerms + 1);
 
         const std::string stdString = string.toLower().toStdString();
         Xapian::TermIterator it = db->allterms_begin(stdString);
@@ -136,7 +137,7 @@ namespace {
             term.t = *it;
             term.count = db->get_collection_freq(term.t);
 
-            if (topTerms.size() < 10) {
+            if (topTerms.size() < MaxTerms) {
                 topTerms.push_back(term);
                 std::push_heap(topTerms.begin(), topTerms.end());
             }
