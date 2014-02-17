@@ -43,8 +43,7 @@ Result::Result(const QString& url, const QString& mimetype)
 void Result::add(KFileMetaData::Property::Property property, const QVariant& value)
 {
     QString p = QString::number(static_cast<int>(property));
-    KFileMetaData::PropertyInfo pi(property);
-    m_map.insertMulti(pi.name(), value);
+    m_map.insertMulti(p, value);
 
     QString prefix = QLatin1String("X") + p;
 
@@ -65,6 +64,7 @@ void Result::add(KFileMetaData::Property::Property property, const QVariant& val
             return;
 
         m_termGen.index_text(val.constData(), 1, prefix.toUtf8().constData());
+        KFileMetaData::PropertyInfo pi(property);
         if (pi.shouldBeIndexed())
             m_termGen.index_text(val.constData());
     }

@@ -36,6 +36,7 @@
 #include <QSqlError>
 #include <QDBusConnection>
 #include <KApplication>
+#include <kfilemetadata/propertyinfo.h>
 
 #include <iostream>
 
@@ -153,8 +154,21 @@ void App::processNextUrl()
             QByteArray arr;
             QDataStream s(&arr, QIODevice::WriteOnly);
 
-            Q_FOREACH (const Result& res, m_results)
-                s << res.map();
+            Q_FOREACH (const Result& res, m_results) {
+                QVariantMap map;
+
+                QMapIterator<QString, QVariant> it(res.map());
+                while (it.hasNext()) {
+                    it.next();
+                    int propNum = it.key().toInt();
+
+                    using namespace KFileMetaData::Property;
+                    Property prop = static_cast<Property>(propNum);
+                    KFileMetaData::PropertyInfo pi(prop);
+                    map.insert(pi.name(), it.value());
+                }
+                s << map;
+            }
 
             std::cout << arr.toBase64().constData();
             m_results.clear();
