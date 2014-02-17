@@ -23,19 +23,11 @@
 #ifndef _BALOO_KIO_TAGS_H_
 #define _BALOO_KIO_TAGS_H_
 
-#include <kio/forwardingslavebase.h>
-#include <Nepomuk2/Tag>
+#include <KIO/ForwardingSlaveBase>
 
-namespace Nepomuk2
+namespace Baloo
 {
 
-/**
- * The nepomuktags kio slave. It has the following url structure -
- *
- * nepomuktags:/Tag1/Tag2/Tag3/
- * nepomuktags:/Tag1/Tag2/Tag3/_file_url_
- *
- */
 class TagsProtocol : public KIO::ForwardingSlaveBase
 {
     Q_OBJECT
@@ -48,11 +40,6 @@ public:
      * additional tags that can be used to filter the results
      */
     void listDir(const KUrl& url);
-
-    /**
-     * Results in the creation of a new tag.
-     */
-    void mkdir(const KUrl& url, int permissions);
 
     /**
      * Will be forwarded for files.
@@ -93,25 +80,22 @@ public:
      * Tags will be created as virtual folders.
      */
     void stat(const KUrl& url);
-
 protected:
     virtual bool rewriteUrl(const KUrl& url, KUrl& newURL);
 
 private:
-    QList<Tag> m_allTags;
-
     enum ParseResult {
         RootUrl,
         TagUrl,
         FileUrl,
         InvalidUrl
     };
-    ParseResult parseUrl(const KUrl& url, QList<Tag>& tags, QUrl& fileUrl, bool ignoreErrors = false);
+    ParseResult parseUrl(const KUrl& url, QString& tag, QString& fileUrl, bool ignoreErrors = false);
 
-    bool splitUrl(const KUrl& url, QList<Tag>& tags, QString& filename);
+    bool splitUrl(const KUrl& url, QList<QString>& tags, QString& filename);
 
-    QUrl decodeFileUrl(const QString& urlString);
-    QString encodeFileUrl(const QUrl& url);
+    QString decodeFileUrl(const QString& urlString);
+    QString encodeFileUrl(const QString& url);
 };
 }
 
