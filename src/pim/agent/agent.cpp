@@ -24,6 +24,7 @@
 
 #include "contactindexer.h"
 #include "emailindexer.h"
+#include "balooindexeradaptor.h"
 
 #include <Akonadi/ItemFetchJob>
 #include <Akonadi/ItemFetchScope>
@@ -80,12 +81,25 @@ BalooIndexingAgent::BalooIndexingAgent(const QString& id)
     changeRecorder()->itemFetchScope().setFetchRemoteIdentification(false);
     changeRecorder()->itemFetchScope().setFetchModificationTime(false);
     changeRecorder()->setChangeRecordingEnabled(false);
+
+    new BalooIndexerAdaptor(this);
 }
 
 BalooIndexingAgent::~BalooIndexingAgent()
 {
     qDeleteAll(m_indexers.values().toSet());
     m_indexers.clear();
+}
+
+void BalooIndexingAgent::reindexCollection(const qlonglong id)
+{
+    kDebug() << "Reindexing collection " << id;
+}
+
+qlonglong BalooIndexingAgent::indexedItems(const qlonglong id)
+{
+    kDebug() << id;
+    return 100;
 }
 
 void BalooIndexingAgent::createIndexers()

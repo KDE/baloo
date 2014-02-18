@@ -45,6 +45,9 @@ public:
     BalooIndexingAgent(const QString& id);
     ~BalooIndexingAgent();
 
+    void reindexCollection(const qlonglong id);
+    qlonglong indexedItems(const qlonglong id);
+
     virtual void itemAdded(const Akonadi::Item& item, const Akonadi::Collection& collection);
     virtual void itemChanged(const Akonadi::Item& item, const QSet<QByteArray>& partIdentifiers);
     virtual void itemsFlagsChanged(const Akonadi::Item::List& items,
