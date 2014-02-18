@@ -68,6 +68,7 @@ EmailQuery::EmailQuery():
 
 EmailQuery::~EmailQuery()
 {
+    delete d;
 }
 
 void EmailQuery::addInvolves(const QString& email)
