@@ -148,16 +148,22 @@ QList<AbstractIndexer*> BalooIndexingAgent::indexersForCollection(const Akonadi:
     return indexers;
 }
 
+QDateTime BalooIndexingAgent::loadLastItemMTime(const QDateTime &defaultDt) const
+{
+    KConfig config("baloorc");
+    KConfigGroup group = config.group("Akonadi");
+    const QDateTime dt = group.readEntry("lastItem", defaultDt);
+    //read entry always reads in the local timezone it seems
+    return QDateTime(dt.date(), dt.time(), Qt::UTC);
+}
+
 void BalooIndexingAgent::findUnindexedItems()
 {
     if (!isOnline()) {
         return;
     }
 
-    KConfig config("baloorc");
-    KConfigGroup group = config.group("Akonadi");
-
-    m_lastItemMTime = group.readEntry("lastItem", QDateTime());
+    m_lastItemMTime = loadLastItemMTime();
 
     Akonadi::CollectionFetchJob* job = new Akonadi::CollectionFetchJob(Akonadi::Collection::root(),
                                                                         Akonadi::CollectionFetchJob::Recursive);
@@ -311,7 +317,7 @@ void BalooIndexingAgent::slotItemsRecevied(const Akonadi::Item::List& items)
     KConfig config("baloorc");
     KConfigGroup group = config.group("Akonadi");
     const bool initialDone = group.readEntry("initialIndexingDone", false);
-    QDateTime dt = group.readEntry("lastItem", QDateTime::fromMSecsSinceEpoch(1));
+    QDateTime dt = loadLastItemMTime(QDateTime::fromMSecsSinceEpoch(1));
 
     Q_FOREACH (const Akonadi::Item& item, items) {
         AbstractIndexer *indexer = indexerForItem(item);

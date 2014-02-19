@@ -75,6 +75,7 @@ private Q_SLOTS:
     void onOnlineChanged(bool online);
 
 private:
+    QDateTime loadLastItemMTime(const QDateTime &defaultDt = QDateTime()) const;
     void createIndexers();
     void addIndexer(AbstractIndexer *indexer);
     AbstractIndexer* indexerForItem(const Akonadi::Item& item) const;
