@@ -19,6 +19,7 @@ Name[sr@latin]=Balooov priključak pretrage nad Akonadijem
 Name[sv]=Akonadi Baloo-sökinsticksprogram
 Name[uk]=Агент пошуку Baloo для Akonadi
 Name[x-test]=xxAkonadi Baloo Search Pluginxx
+Name[zh_TW]=Akonadi Baloo 搜尋外掛程式
 X-Akonadi-Library=akonadi_baloo_searchplugin
 X-Akonadi-ClassName=SearchPlugin
 X-Akonadi-LoadByDefault=true
