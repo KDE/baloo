@@ -36,6 +36,7 @@ BasicIndexingJob::BasicIndexingJob(QSqlDatabase* db, const FileMapping& file, co
     : m_sqlDb(db)
     , m_file(file)
     , m_mimetype(mimetype)
+    , m_id(0)
 {
 }
 
