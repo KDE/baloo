@@ -254,7 +254,7 @@ ResultIterator EmailQuery::exec()
 
     if (d->read == 'T')
         m_queries << Xapian::Query("BR");
-    else if (d->important == 'F')
+    else if (d->read == 'F')
         m_queries << Xapian::Query("BNR");
 
     if (d->attachment == 'T')
