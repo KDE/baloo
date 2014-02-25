@@ -31,8 +31,8 @@
 #include <../pim/search/contact/contactsearchstore.h>
 #include <query.h>
 
-Q_DECLARE_METATYPE(QSet<qint64>);
-Q_DECLARE_METATYPE(QList<qint64>);
+Q_DECLARE_METATYPE(QSet<qint64>)
+Q_DECLARE_METATYPE(QList<qint64>)
 
 class IndexerTest : public QObject
 {
@@ -41,6 +41,7 @@ private:
     QString emailDir;
     QString emailContactsDir;
     QString contactsDir;
+    QString notesDir;
 
     bool removeDir(const QString & dirName)
     {
@@ -70,6 +71,7 @@ private Q_SLOTS:
         emailDir = QDir::tempPath() + "/searchplugintest/baloo/email/";
         emailContactsDir = QDir::tempPath() + "/searchplugintest/baloo/emailcontacts/";
         contactsDir = QDir::tempPath() + "/searchplugintest/baloo/contacts/";
+        notesDir = QDir::tempPath() + "/searchplugintest/baloo/notes/";
 
         QDir dir;
         removeDir(emailDir);
@@ -78,10 +80,13 @@ private Q_SLOTS:
         QVERIFY(dir.mkpath(emailContactsDir));
         removeDir(contactsDir);
         QVERIFY(dir.mkpath(contactsDir));
+        removeDir(notesDir);
+        QVERIFY(dir.mkpath(notesDir));
 
         kDebug() << "indexing sample data";
         kDebug() << emailDir;
         kDebug() << emailContactsDir;
+        kDebug() << notesDir;
 
 //         EmailIndexer emailIndexer(emailDir, emailContactsDir);
 //         ContactIndexer contactIndexer(contactsDir);
@@ -114,7 +119,7 @@ private Q_SLOTS:
         return resultSet;
     }
 
-    void testRemoveByCollection() {
+    void testEmailRemoveByCollection() {
         EmailIndexer emailIndexer(emailDir, emailContactsDir);
         {
             KMime::Message::Ptr msg(new KMime::Message);
@@ -144,7 +149,6 @@ private Q_SLOTS:
         emailIndexer.commit();
         QCOMPARE(getAllItems(), QSet<qint64>() << 1);
     }
-
 };
 
 QTEST_MAIN(IndexerTest)

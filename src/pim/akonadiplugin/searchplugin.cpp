@@ -179,6 +179,32 @@ Baloo::Term recursiveEmailTermMapping(const Akonadi::SearchTerm &term)
     return Baloo::Term();
 }
 
+Baloo::Term recursiveNoteTermMapping(const Akonadi::SearchTerm &term)
+{
+    if (!term.subTerms().isEmpty()) {
+        Baloo::Term t(mapRelation(term.relation()));
+        Q_FOREACH (const Akonadi::SearchTerm &subterm, term.subTerms()) {
+            const Baloo::Term newTerm = recursiveNoteTermMapping(subterm);
+            if (newTerm.isValid()) {
+                t.addSubTerm(newTerm);
+            }
+        }
+        return t;
+    } else {
+        kDebug() << term.key() << term.value();
+        const Akonadi::EmailSearchTerm::EmailSearchField field = Akonadi::EmailSearchTerm::fromKey(term.key());
+        switch (field) {
+        case Akonadi::EmailSearchTerm::Subject:
+            return getTerm(term, "subject");
+        case Akonadi::EmailSearchTerm::Body:
+            return getTerm(term, "body");
+        default:
+            kWarning() << "unknown term " << term.key();
+        }
+    }
+    return Baloo::Term();
+}
+
 Baloo::Term recursiveContactTermMapping(const Akonadi::SearchTerm &term)
 {
     if (!term.subTerms().isEmpty()) {
@@ -233,6 +259,9 @@ QSet<qint64> SearchPlugin::search(const QString &akonadiQuery, const QList<qint6
     } else if (mimeTypes.contains("text/directory")) {
         query.setType("Contact");
         t = recursiveContactTermMapping(term);
+    } else if (mimeTypes.contains(QLatin1String("text/x-vnd.akonadi.note"))) {
+        query.setType("Note");
+        t = recursiveNoteTermMapping(term);
     } else if (mimeTypes.contains("...")) {
         query.setType("ContactGroups");
         //TODO contactgroup queries

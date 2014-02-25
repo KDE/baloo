@@ -24,6 +24,7 @@
 
 #include "contactindexer.h"
 #include "emailindexer.h"
+#include "akonotesindexer.h"
 #include "balooindexeradaptor.h"
 
 #include <Akonadi/ItemFetchJob>
@@ -45,6 +46,9 @@ namespace {
     }
     QString emailContactsIndexingPath() {
         return KStandardDirs::locateLocal("data", "baloo/emailContacts/");
+    }
+    QString akonotesIndexingPath() {
+        return KStandardDirs::locateLocal("data", "baloo/notes/");
     }
 }
 
@@ -121,6 +125,15 @@ void BalooIndexingAgent::createIndexers()
     catch (const Xapian::DatabaseError &e) {
         delete indexer;
         kError() << "Failed to create contact indexer:" << QString::fromStdString(e.get_msg());
+    }
+
+    try {
+        indexer = new AkonotesIndexer(akonotesIndexingPath());
+        addIndexer(indexer);
+    }
+    catch (const Xapian::DatabaseError &e) {
+        delete indexer;
+        kError() << "Failed to create akonotes indexer:" << QString::fromStdString(e.get_msg());
     }
 }
 
