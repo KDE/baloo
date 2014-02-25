@@ -192,6 +192,7 @@ void BalooIndexingAgent::slotRootCollectionsFetched(KJob* kjob)
         job->fetchScope().setFetchRemoteIdentification(false);
         job->fetchScope().setFetchModificationTime(true);
         job->fetchScope().setAncestorRetrieval(Akonadi::ItemFetchScope::Parent);
+        job->setDeliveryOption( Akonadi::ItemFetchJob::EmitItemsInBatches );
 
         connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),
                 this, SLOT(slotItemsRecevied(Akonadi::Item::List)));
