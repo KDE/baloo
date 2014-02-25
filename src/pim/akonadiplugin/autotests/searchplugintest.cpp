@@ -33,8 +33,8 @@
 #include <akonadi/searchquery.h>
 #include <akonadi/kmime/messageflags.h>
 
-Q_DECLARE_METATYPE(QSet<qint64>);
-Q_DECLARE_METATYPE(QList<qint64>);
+Q_DECLARE_METATYPE(QSet<qint64>)
+Q_DECLARE_METATYPE(QList<qint64>)
 
 class SearchPluginTest : public QObject
 {
