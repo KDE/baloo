@@ -22,6 +22,8 @@
 
 #include "akonotesindexer.h"
 
+#include <QTextDocument>
+
 
 AkonotesIndexer::AkonotesIndexer(const QString& path)
     : AbstractIndexer()
@@ -83,10 +85,43 @@ void AkonotesIndexer::process(const KMime::Message::Ptr &msg)
     }
 
     KMime::Content* mainBody = msg->mainBodyPart("text/plain");
-    const std::string text(mainBody->decodedText().toUtf8().constData());
-    m_termGen->index_text_without_positions(text);
-    m_termGen->index_text_without_positions(text, 1, "BO");
+    if (mainBody) {
+       const std::string text(mainBody->decodedText().toUtf8().constData());
+       m_termGen->index_text_without_positions(text);
+       m_termGen->index_text_without_positions(text, 1, "BO");
+    } else {
+        processPart(msg.get(), 0);
+    }
 }
+
+void AkonotesIndexer::processPart(KMime::Content* content, KMime::Content* mainContent)
+{
+    if (content == mainContent) {
+        return;
+    }
+
+    KMime::Headers::ContentType* type = content->contentType(false);
+    if (type) {
+        if (type->isMultipart()) {
+            if (type->isSubtype("encrypted"))
+                return;
+
+            Q_FOREACH (KMime::Content* c, content->contents()) {
+                processPart(c, mainContent);
+            }
+        }
+
+        // Only get HTML content, if no plain text content
+        if (!mainContent && type->isHTMLText()) {
+            QTextDocument doc;
+            doc.setHtml(content->decodedText());
+
+            const std::string text(doc.toPlainText().toUtf8().constData());
+            m_termGen->index_text_without_positions(text);
+        }
+    }
+}
+
 
 void AkonotesIndexer::commit()
 {

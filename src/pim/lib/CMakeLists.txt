@@ -37,6 +37,7 @@ install(FILES
     contactquery.h
     emailquery.h
     contactcompleter.h
+    notequery.h
 
     resultiterator.h
     pim_export.h

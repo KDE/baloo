@@ -49,6 +49,7 @@ public:
     void remove(const Akonadi::Item &item);
     void remove(const Akonadi::Collection &collection);
 private:
+    void processPart(KMime::Content *content, KMime::Content *mainContent);
     void process(const KMime::Message::Ptr &msg);
     Xapian::WritableDatabase *m_db;
     Xapian::Document *m_doc;

@@ -82,12 +82,11 @@ ResultIterator NoteQuery::exec()
     QList<Xapian::Query> m_queries;
 
     if (!d->note.isEmpty()) {
-        //TODO
-        /*
         Xapian::QueryParser parser;
         parser.set_database(db);
+        parser.add_prefix("", "BO");
+
         m_queries << parser.parse_query(d->note.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
-        */
     }
 
     if (!d->title.isEmpty()) {
