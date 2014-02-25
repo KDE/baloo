@@ -86,7 +86,7 @@ void ContactIndexer::index(const Akonadi::Item& item)
     }
 
     // Parent collection
-    Q_ASSERT_X(item.parentCollection().isValid(), "Baloo::EmailIndexer::index",
+    Q_ASSERT_X(item.parentCollection().isValid(), "Baloo::ContactIndexer::index",
                "Item does not have a valid parent collection");
 
     Akonadi::Entity::Id colId = item.parentCollection().id();
