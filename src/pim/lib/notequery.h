@@ -1,6 +1,6 @@
 /*
  * This file is part of the KDE Baloo Project
- * Copyright (C) 2013  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2014 Laurent Montel <montel@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,39 +20,37 @@
  *
  */
 
-#ifndef RESULT_ITERATOR_H
-#define RESULT_ITERATOR_H
+#ifndef NOTEQUERY_H
+#define NOTEQUERY_H
 
 #include "pim_export.h"
-
-#include <Akonadi/Item>
+#include <QString>
+#include "query.h"
 
 namespace Baloo {
 namespace PIM {
-
-class ContactQuery;
-class EmailQuery;
-class NoteQuery;
-
-class BALOO_PIM_EXPORT ResultIterator
+/**
+ * Query for a list of contacts matching a criteria
+ */
+class BALOO_PIM_EXPORT NoteQuery : public Query
 {
 public:
-    ResultIterator();
-    ResultIterator(const ResultIterator& ri);
-    ~ResultIterator();
+    NoteQuery();
+    ~NoteQuery();
 
-    Akonadi::Item::Id id();
-    bool next();
+    void matchTitle(const QString& title);
+    void matchNote(const QString& note);
+
+    void setLimit(int limit);
+    int limit() const;
+
+    ResultIterator exec();
 
 private:
-    friend class ContactQuery;
-    friend class EmailQuery;
-    friend class NoteQuery;
-
     class Private;
     Private* d;
 };
+}
+}
 
-}
-}
-#endif // RESULT_ITERATOR_H
+#endif // NOTEQUERY_H
