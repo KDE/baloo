@@ -107,34 +107,34 @@ ResultIterator ContactQuery::exec()
     QList<Xapian::Query> m_queries;
 
     if (d->criteria == ExactMatch) {
-        if (d->any.size()) {
+        if (!d->any.isEmpty()) {
             m_queries << Xapian::Query(d->any.toStdString());
         }
 
-        if (d->name.size()) {
+        if (!d->name.isEmpty()) {
             m_queries << Xapian::Query("NA" + d->name.toStdString());
         }
 
-        if (d->nick.size()) {
+        if (!d->nick.isEmpty()) {
             m_queries << Xapian::Query("NI" + d->nick.toStdString());
         }
 
-        if (d->email.size()) {
+        if (!d->email.isEmpty()) {
             m_queries << Xapian::Query(d->email.toStdString());
         }
 
-        if (d->uid.size()) {
+        if (!d->uid.isEmpty()) {
             m_queries << Xapian::Query(d->uid.toStdString());
         }
     }
     else if (d->criteria == StartsWithMatch) {
-        if (d->any.size()) {
+        if (!d->any.isEmpty()) {
             Xapian::QueryParser parser;
             parser.set_database(db);
             m_queries << parser.parse_query(d->any.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
         }
 
-        if (d->name.size()) {
+        if (!d->name.isEmpty()) {
             Xapian::QueryParser parser;
             parser.set_database(db);
             parser.add_prefix("", "NA");
@@ -142,7 +142,7 @@ ResultIterator ContactQuery::exec()
             m_queries << parser.parse_query(d->name.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
         }
 
-        if (d->nick.size()) {
+        if (!d->nick.isEmpty()) {
             Xapian::QueryParser parser;
             parser.set_database(db);
             parser.add_prefix("", "NI");
@@ -151,14 +151,14 @@ ResultIterator ContactQuery::exec()
         }
 
         // FIXME: Check for exact match?
-        if (d->email.size()) {
+        if (!d->email.isEmpty()) {
             Xapian::QueryParser parser;
             parser.set_database(db);
 
             m_queries << parser.parse_query(d->email.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
         }
 
-        if (d->uid.size()) {
+        if (!d->uid.isEmpty()) {
             Xapian::QueryParser parser;
             parser.set_database(db);
 

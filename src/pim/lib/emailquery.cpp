@@ -195,7 +195,7 @@ ResultIterator EmailQuery::exec()
         m_queries << parser.parse_query(d->from.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
     }
 
-    if (d->to.size()) {
+    if (!d->to.isEmpty()) {
         Xapian::QueryParser parser;
         parser.set_database(db);
         parser.add_prefix("", "T");
@@ -205,7 +205,7 @@ ResultIterator EmailQuery::exec()
         }
     }
 
-    if (d->cc.size()) {
+    if (!d->cc.isEmpty()) {
         Xapian::QueryParser parser;
         parser.set_database(db);
         parser.add_prefix("", "CC");
@@ -215,7 +215,7 @@ ResultIterator EmailQuery::exec()
         }
     }
 
-    if (d->bcc.size()) {
+    if (!d->bcc.isEmpty()) {
         Xapian::QueryParser parser;
         parser.set_database(db);
         parser.add_prefix("", "BC");
@@ -225,7 +225,7 @@ ResultIterator EmailQuery::exec()
         }
     }
 
-    if (d->subjectMatchString.size()) {
+    if (!d->subjectMatchString.isEmpty()) {
         Xapian::QueryParser parser;
         parser.set_database(db);
         parser.add_prefix("", "S");
@@ -235,7 +235,7 @@ ResultIterator EmailQuery::exec()
                                         Xapian::QueryParser::FLAG_PARTIAL);
     }
 
-    if (d->collections.size()) {
+    if (!d->collections.isEmpty()) {
         Xapian::Query query;
         Q_FOREACH (const Akonadi::Collection::Id& id, d->collections) {
             QString c = QString::number(id);
@@ -262,7 +262,7 @@ ResultIterator EmailQuery::exec()
     else if (d->attachment == 'F')
         m_queries << Xapian::Query("BNA");
 
-    if (d->matchString.size()) {
+    if (!d->matchString.isEmpty()) {
         Xapian::QueryParser parser;
         parser.set_database(db);
         parser.set_default_op(Xapian::Query::OP_AND);
