@@ -37,7 +37,7 @@ ContactCompleter::ContactCompleter(const QString& prefix, int limit)
 
 QStringList ContactCompleter::complete()
 {
-    QString dir = KStandardDirs::locateLocal("data", "baloo/emailContacts/");
+    const QString dir = KStandardDirs::locateLocal("data", "baloo/emailContacts/");
     Xapian::Database db(dir.toUtf8().constData());
 
     Xapian::QueryParser parser;
@@ -54,8 +54,9 @@ QStringList ContactCompleter::complete()
     Xapian::MSetIterator mit = mset.begin();
 
     QStringList list;
-    for (; mit != mset.end(); mit++) {
-        QString entry = QString::fromStdString(mit.get_document().get_data());
+    Xapian::MSetIterator end = mset.end();
+    for (; mit != end; ++mit) {
+        const QString entry = QString::fromStdString(mit.get_document().get_data());
         list << entry;
     }
 
