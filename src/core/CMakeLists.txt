@@ -19,8 +19,8 @@ target_link_libraries(baloocore
 )
 
 set_target_properties(baloocore PROPERTIES
-    VERSION ${GENERIC_LIB_VERSION}
-    SOVERSION ${GENERIC_LIB_SOVERSION}
+    VERSION ${BALOO_VERSION}
+    SOVERSION ${BALOO_VERSION_MAJOR}
 )
 
 install(TARGETS baloocore EXPORT BalooLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS})

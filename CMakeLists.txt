@@ -1,5 +1,11 @@
 project(baloo)
 
+set(BALOO_VERSION_MAJOR 4)
+set(BALOO_VERSION_MINOR 12)
+set(BALOO_VERSION_RELEASE 80)
+set(BALOO_VERSION "${BALOO_VERSION_MAJOR}.${BALOO_VERSION_MINOR}.${BALOO_VERSION_RELEASE}")
+
+
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules" ${CMAKE_MODULE_PATH})
 
 find_package(KDE4 REQUIRED)
@@ -67,7 +73,12 @@ add_subdirectory(icons)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/BalooConfig.cmake.in
                ${CMAKE_CURRENT_BINARY_DIR}/BalooConfig.cmake @ONLY)
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/BalooConfig.cmake
+# this file is used by to check if the installed version can be used.
+macro_write_basic_cmake_version_file(${CMAKE_CURRENT_BINARY_DIR}/BalooConfigVersion.cmake
+                                     ${BALOO_VERSION_MAJOR} ${BALOO_VERSION_MINOR} ${BALOO_VERSION_RELEASE})
+
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/BalooConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/BalooConfigVersion.cmake
         DESTINATION ${LIB_INSTALL_DIR}/cmake/Baloo)
 install(EXPORT BalooLibraryTargets
         DESTINATION ${LIB_INSTALL_DIR}/cmake/Baloo
