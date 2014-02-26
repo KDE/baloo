@@ -115,8 +115,9 @@ void ContactIndexer::remove(const Akonadi::Collection& collection)
         enquire.set_query(query);
 
         Xapian::MSet mset = enquire.get_mset(0, m_db->get_doccount());
-        for (Xapian::MSetIterator it = mset.begin(); it != mset.end(); it++) {
-            qint64 id = *it;
+        Xapian::MSetIterator end(mset.end());
+        for (Xapian::MSetIterator it = mset.begin(); it != end; ++it) {
+            const qint64 id = *it;
             remove(Akonadi::Item(id));
         }
     }
