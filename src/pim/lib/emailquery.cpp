@@ -48,6 +48,7 @@ class EmailQuery::Private
 
     QString matchString;
     QString subjectMatchString;
+    QString bodyMatchString;
 
     int limit;
 };
@@ -151,6 +152,11 @@ void EmailQuery::subjectMatches(const QString& subjectMatch)
     d->subjectMatchString = subjectMatch;
 }
 
+void EmailQuery::bodyMatches(const QString &bodyMatch)
+{
+    d->bodyMatchString =  bodyMatch;
+}
+
 void EmailQuery::setAttachment(bool hasAttachment)
 {
     d->attachment = hasAttachment ? 'T' : 'F';
@@ -245,6 +251,14 @@ ResultIterator EmailQuery::exec()
         }
 
         m_queries << query;
+    }
+
+    if (!d->bodyMatchString.isEmpty()) {
+        Xapian::QueryParser parser;
+        parser.set_database(db);
+        parser.add_prefix("", "BO");
+
+        m_queries << parser.parse_query(d->bodyMatchString.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
     }
 
     if (d->important == 'T')

@@ -83,6 +83,12 @@ public:
      */
     void subjectMatches(const QString& subjectMatch);
 
+    /**
+     * Matches the string \p bodyMatch specifically in the body email
+     */
+    void bodyMatches(const QString& bodyMatch);
+
+
     void setLimit(int limit);
     int limit() const;
 
