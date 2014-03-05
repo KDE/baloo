@@ -121,7 +121,7 @@ void FileModifyJobTest::testMultiFileRating()
     int r = QString::fromUtf8(buffer, len).toInt();
     QCOMPARE(r, 5);
 
-    const QByteArray arr2 = QFile::encodeName(fileUrl1);
+    const QByteArray arr2 = QFile::encodeName(fileUrl2);
     len = getxattr(arr2.constData(), "user.baloo.rating", &buffer, 1000);
     QVERIFY(len > 0);
 
