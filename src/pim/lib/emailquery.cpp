@@ -281,7 +281,7 @@ ResultIterator EmailQuery::exec()
         parser.set_database(db);
         parser.set_default_op(Xapian::Query::OP_AND);
 
-        QStringList list = d->matchString.split(QRegExp("\\s"), QString::SkipEmptyParts);
+        const QStringList list = d->matchString.split(QRegExp("\\s"), QString::SkipEmptyParts);
         Q_FOREACH (const QString& s, list) {
             m_queries << parser.parse_query(s.toStdString(),
                                             Xapian::QueryParser::FLAG_PARTIAL);
