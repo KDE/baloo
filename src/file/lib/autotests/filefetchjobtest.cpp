@@ -90,7 +90,7 @@ void FileFetchJobTest::testXapianData()
 
 void FileFetchJobTest::testExtendedAttributes()
 {
-    QTemporaryFile tempFile;
+    QTemporaryFile tempFile(QLatin1String(BUILDDIR "testExtendedAttributes.XXXXXX"));
     tempFile.open();
     QByteArray fileName = QFile::encodeName(tempFile.fileName());
 
@@ -122,7 +122,7 @@ void FileFetchJobTest::testExtendedAttributes()
 
 void FileFetchJobTest::testFolder()
 {
-    QTemporaryFile f;
+    QTemporaryFile f(QLatin1String(BUILDDIR "testFolder.XXXXXX"));
     f.open();
 
     // We use the same prefix as the tmpfile

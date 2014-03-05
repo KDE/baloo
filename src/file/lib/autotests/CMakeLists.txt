@@ -43,3 +43,8 @@ target_link_libraries(modifyjobtest
   ${QJSON_LIBRARIES}
   baloocore
 )
+
+# Pass CMAKE_CURRENT_BINARY_DIR so tests can use it to create some of the
+# temporary files they need (as XattrDetector blacklists /tmp by default).
+set_target_properties(fetchjobtest PROPERTIES COMPILE_FLAGS -DBUILDDIR="\\"${CMAKE_CURRENT_BINARY_DIR}/\\"")
+set_target_properties(modifyjobtest PROPERTIES COMPILE_FLAGS -DBUILDDIR="\\"${CMAKE_CURRENT_BINARY_DIR}/\\"")
