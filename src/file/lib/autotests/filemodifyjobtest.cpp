@@ -36,7 +36,7 @@ using namespace Baloo;
 
 void FileModifyJobTest::testSingleFile()
 {
-    QTemporaryFile tmpFile;
+    QTemporaryFile tmpFile(QLatin1String(BUILDDIR "testSingleFile.XXXXXX"));
     tmpFile.open();
 
     QTextStream stream(&tmpFile);
@@ -97,10 +97,10 @@ void FileModifyJobTest::testSingleFile()
 
 void FileModifyJobTest::testMultiFileRating()
 {
-    QTemporaryFile tmpFile1;
+    QTemporaryFile tmpFile1(QLatin1String(BUILDDIR "testMultiFileRating.XXXXXX"));
     tmpFile1.open();
 
-    QTemporaryFile tmpFile2;
+    QTemporaryFile tmpFile2(QLatin1String(BUILDDIR "testMultiFileRating.XXXXXX"));
     tmpFile2.open();
 
     const QString fileUrl1 = tmpFile1.fileName();
@@ -181,7 +181,7 @@ void FileModifyJobTest::testXapianUpdate()
 
 void FileModifyJobTest::testFolder()
 {
-    QTemporaryFile f;
+    QTemporaryFile f(QLatin1String(BUILDDIR "testFolder.XXXXXX"));
     f.open();
 
     // We use the same prefix as the tmpfile
