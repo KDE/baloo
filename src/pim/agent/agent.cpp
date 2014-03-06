@@ -31,6 +31,7 @@
 #include <Akonadi/ItemFetchScope>
 #include <Akonadi/ChangeRecorder>
 #include <Akonadi/CollectionFetchJob>
+#include <Akonadi/AgentManager>
 
 #include <KStandardDirs>
 #include <KConfig>
@@ -87,6 +88,18 @@ BalooIndexingAgent::BalooIndexingAgent(const QString& id)
     changeRecorder()->setChangeRecordingEnabled(false);
 
     new BalooIndexerAdaptor(this);
+
+    // Cleanup agentsrc after migration to 4.13
+    Akonadi::AgentManager* agentManager = Akonadi::AgentManager::self();
+    const Akonadi::AgentInstance::List allAgents = agentManager->instances();
+    const QStringList oldFeeders = QStringList() << "akonadi_nepomuk_feeder";
+    // Cannot use agentManager->instance(oldInstanceName) here, it wouldn't find broken instances.
+    Q_FOREACH( const Akonadi::AgentInstance& inst, allAgents ) {
+        if ( oldFeeders.contains( inst.identifier() ) ) {
+            kDebug() << "Removing old nepomuk feeder" << inst.identifier();
+            agentManager->removeInstance( inst );
+        }
+    }
 }
 
 BalooIndexingAgent::~BalooIndexingAgent()
