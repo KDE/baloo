@@ -55,19 +55,6 @@ EmailSearchStore::EmailSearchStore(QObject* parent)
 
     // Boolean Flags
     m_prefix.insert("isimportant", "I");
-    m_prefix.insert("istoact", "");
-    m_prefix.insert("iswatched", "W");
-    m_prefix.insert("isdeleted", "");
-    m_prefix.insert("isspam", "");
-    m_prefix.insert("isreplied", "");
-    m_prefix.insert("isignored", "");
-    m_prefix.insert("isforwarded", "");
-    m_prefix.insert("issent", "");
-    m_prefix.insert("isqueued", "");
-    m_prefix.insert("isham", "");
-    m_prefix.insert("isread", "R");
-
-    m_prefix.insert("isimportant", "I");
     m_prefix.insert("istoact", "T");
     m_prefix.insert("iswatched", "W");
     m_prefix.insert("isdeleted", "D");
