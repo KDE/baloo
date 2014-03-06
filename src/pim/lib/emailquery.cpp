@@ -50,6 +50,7 @@ class EmailQuery::Private
     QString subjectMatchString;
     QString bodyMatchString;
 
+    EmailQuery::OpType opType;
     int limit;
 };
 
@@ -57,6 +58,7 @@ EmailQuery::Private::Private():
     important('0'),
     read('0'),
     attachment('0'),
+    opType(OpAnd),
     limit(0)
 {
 }
@@ -70,6 +72,11 @@ EmailQuery::EmailQuery():
 EmailQuery::~EmailQuery()
 {
     delete d;
+}
+
+void EmailQuery::setSearchType(EmailQuery::OpType op)
+{
+    d->opType = op;
 }
 
 void EmailQuery::addInvolves(const QString& email)
@@ -287,8 +294,15 @@ ResultIterator EmailQuery::exec()
                                             Xapian::QueryParser::FLAG_PARTIAL);
         }
     }
-
-    Xapian::Query query(Xapian::Query::OP_AND, m_queries.begin(), m_queries.end());
+    Xapian::Query query;
+    switch(d->opType) {
+    case OpAnd:
+        query = Xapian::Query(Xapian::Query::OP_AND, m_queries.begin(), m_queries.end());
+        break;
+    case OpOr:
+        query = Xapian::Query(Xapian::Query::OP_OR, m_queries.begin(), m_queries.end());
+        break;
+    }
 
     AgePostingSource ps(0);
     query = Xapian::Query(Xapian::Query::OP_AND_MAYBE, query, Xapian::Query(&ps));

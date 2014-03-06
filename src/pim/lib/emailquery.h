@@ -38,6 +38,13 @@ public:
     EmailQuery();
     virtual ~EmailQuery();
 
+    enum OpType {
+        OpAnd = 0,
+        OpOr
+    };
+
+    void setSearchType(OpType op);
+
     void setInvolves(const QStringList& involves);
     void addInvolves(const QString& email);
 
