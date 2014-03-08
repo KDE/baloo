@@ -122,6 +122,12 @@ public:
     QVariantMap toVariantMap() const;
     static Term fromVariantMap(const QVariantMap& map);
 
+    int position() const;
+    int length() const;
+    void setPosition(int pos);
+    void setPosition(int pos, int len);
+    void setLength(int len);
+
     bool operator == (const Term& rhs) const;
 
     Term& operator=(const Term& rhs);
