@@ -53,9 +53,21 @@ namespace {
     }
 }
 
+#define INDEXING_AGENT_VERSION 1
+
 BalooIndexingAgent::BalooIndexingAgent(const QString& id)
     : AgentBase(id)
 {
+    KConfig config("baloorc");
+    KConfigGroup group = config.group("Akonadi");
+    const int agentIndexingVersion = group.readEntry("agentIndexingVersion", 0);
+    if (agentIndexingVersion<INDEXING_AGENT_VERSION) {
+        group.deleteEntry("lastItem");
+        group.deleteEntry("initialIndexingDone");
+        group.writeEntry("agentIndexingVersion", INDEXING_AGENT_VERSION);
+        group.sync();
+    }
+
     QTimer::singleShot(0, this, SLOT(findUnindexedItems()));
 
     createIndexers();
@@ -343,6 +355,7 @@ void BalooIndexingAgent::slotItemsRecevied(const Akonadi::Item::List& items)
 {
     KConfig config("baloorc");
     KConfigGroup group = config.group("Akonadi");
+
     const bool initialDone = group.readEntry("initialIndexingDone", false);
     QDateTime dt = loadLastItemMTime(QDateTime::fromMSecsSinceEpoch(1));
 
@@ -375,6 +388,7 @@ void BalooIndexingAgent::slotItemFetchFinished(KJob* job)
         KConfig config("baloorc");
         KConfigGroup group = config.group("Akonadi");
         group.writeEntry("initialIndexingDone", true);
+        group.writeEntry("agentIndexingVersion", INDEXING_AGENT_VERSION);
         status(Idle, i18n("Ready"));
     }
 }
