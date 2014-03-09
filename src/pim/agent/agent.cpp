@@ -56,7 +56,8 @@ namespace {
 #define INDEXING_AGENT_VERSION 1
 
 BalooIndexingAgent::BalooIndexingAgent(const QString& id)
-    : AgentBase(id)
+    : AgentBase(id),
+      m_inProgress(false)
 {
     KConfig config("baloorc");
     KConfigGroup group = config.group("Akonadi");
@@ -77,7 +78,6 @@ BalooIndexingAgent::BalooIndexingAgent(const QString& id)
     } else {
         setOnline(true);
     }
-
     connect(this, SIGNAL(abortRequested()),
             this, SLOT(onAbortRequested()));
     connect(this, SIGNAL(onlineChanged(bool)),
@@ -200,6 +200,10 @@ void BalooIndexingAgent::findUnindexedItems()
     if (!isOnline()) {
         return;
     }
+    if (m_inProgress) {
+        return;
+    }
+    m_inProgress = true;
 
     m_lastItemMTime = loadLastItemMTime();
 
@@ -390,6 +394,7 @@ void BalooIndexingAgent::slotItemFetchFinished(KJob* job)
         group.writeEntry("initialIndexingDone", true);
         group.writeEntry("agentIndexingVersion", INDEXING_AGENT_VERSION);
         status(Idle, i18n("Ready"));
+        m_inProgress = false;
     }
 }
 
@@ -411,6 +416,7 @@ void BalooIndexingAgent::onAbortRequested()
         job->kill(KJob::Quietly);
     }
     m_jobs.clear();
+    m_inProgress = false;
     status(Idle, i18n("Ready"));
 }
 

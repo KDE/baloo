@@ -89,6 +89,7 @@ private:
     QMap<QString, AbstractIndexer* > m_indexers;
 
     QTimer m_commitTimer;
+    bool m_inProgress;
 };
 
 #endif // AGENT_H
