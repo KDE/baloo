@@ -165,17 +165,15 @@ Baloo::Term recursiveEmailTermMapping(const Akonadi::SearchTerm &term)
             case Akonadi::EmailSearchTerm::HeaderOrganization:
                 return getTerm(term, "organization");
             case Akonadi::EmailSearchTerm::HeaderListId:
-//                     t.addSubTerm(getTerm(term, "listid"));
-                break;
+                return getTerm(term, "list-id");
             case Akonadi::EmailSearchTerm::HeaderResentFrom:
-//                     t.addSubTerm(getTerm(term, "resentfrom"));
-                break;
+                return getTerm(term, "resent-from");
             case Akonadi::EmailSearchTerm::HeaderXLoop:
-                break;
+                return getTerm(term, "x-loop");
             case Akonadi::EmailSearchTerm::HeaderXMailingList:
-                break;
+                return getTerm(term, "x-mailing-list");
             case Akonadi::EmailSearchTerm::HeaderXSpamFlag:
-                break;
+                return getTerm(term, "x-spam-flag");
             case Akonadi::EmailSearchTerm::Unknown:
             default:
                 kWarning() << "unknown term " << term.key();
