@@ -41,11 +41,11 @@ EmailSearchStore::EmailSearchStore(QObject* parent)
     m_prefix.insert("collection", "C");
     m_prefix.insert("replyto", "RT");
     m_prefix.insert("organization", "O");
-    m_prefix.insert("list-id", "LI");
-    m_prefix.insert("resent-from", "RF");
-    m_prefix.insert("x-loop", "XL");
-    m_prefix.insert("x-mailing-list", "XML");
-    m_prefix.insert("x-spam-flag", "XSF");
+    m_prefix.insert("listid", "LI");
+    m_prefix.insert("resentfrom", "RF");
+    m_prefix.insert("xloop", "XL");
+    m_prefix.insert("xmailinglist", "XML");
+    m_prefix.insert("xspamflag", "XSF");
 
     m_prefix.insert("body", "BO");
     m_prefix.insert("headers", "H");
