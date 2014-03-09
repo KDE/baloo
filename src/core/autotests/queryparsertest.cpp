@@ -138,4 +138,12 @@ void QueryParserTest::testReduction()
     );
 }
 
+void QueryParserTest::testTags()
+{
+    QCOMPARE(
+        QueryParser::parseQuery("tagged as Important"),
+        Query(Term("tags", "Important", Term::Contains))
+    );
+}
+
 QTEST_KDEMAIN_CORE(QueryParserTest)

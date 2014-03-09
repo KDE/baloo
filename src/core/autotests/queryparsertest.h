@@ -38,6 +38,7 @@ private Q_SLOTS:
     void testFilename();
     void testTypehints();
     void testReduction();
+    void testTags();
 };
 }
 

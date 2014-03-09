@@ -84,7 +84,8 @@ QList<Baloo::Term> PassProperties::run(const QList<Baloo::Term> &match) const
         term.setProperty(property);
 
         // Mutate "equals" to "contains" for String ranges
-        if (term.comparator() == Baloo::Term::Equal && range == String) {
+        if (term.comparator() == Baloo::Term::Equal &&
+            (range == String || range == Tag)) {
             term.setComparator(Baloo::Term::Contains);
         }
 
