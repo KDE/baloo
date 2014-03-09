@@ -185,6 +185,8 @@ void EmailIndexer::process(const KMime::Message::Ptr& msg)
     if (date) {
         const QString str = QString::number(date->dateTime().toTime_t());
         m_doc->add_value(0, str.toStdString());
+        const QString julianDay = QString::number(date->dateTime().date().toJulianDay());
+        m_doc->add_value(2, julianDay.toStdString());
     }
 
     insert("F", msg->from(false));
