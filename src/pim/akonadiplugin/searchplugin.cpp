@@ -101,6 +101,11 @@ Baloo::Term recursiveEmailTermMapping(const Akonadi::SearchTerm &term)
                 s.setNegation(term.isNegated());
                 return s;
             }
+            case Akonadi::EmailSearchTerm::HeaderOnlyDate: {
+                Baloo::Term s("onlydate", QString::number(term.value().toDate().toJulianDay()), mapComparator(term.condition()));
+                s.setNegation(term.isNegated());
+                return s;
+            }
             case Akonadi::EmailSearchTerm::Subject:
                 return getTerm(term, "subject");
             case Akonadi::EmailSearchTerm::HeaderFrom:
