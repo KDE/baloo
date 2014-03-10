@@ -130,6 +130,52 @@ private Q_SLOTS:
             emailIndexer.index(item);
         }
         {
+            KMime::Message::Ptr msg(new KMime::Message);
+            msg->subject()->from7BitString("subject3");
+
+            //Multipart message
+            KMime::Content *b = new KMime::Content;
+            b->contentType()->setMimeType( "text/plain" );
+            b->setBody( "body3" );
+            msg->addContent( b, true );
+
+            msg->from()->addAddress("john@test.com", "John Doe");
+            msg->to()->addAddress("jane@test.com", "Jane Doe");
+            msg->date()->setDateTime(KDateTime(QDate(2014,11,10), QTime(13,0,0)));
+            msg->assemble();
+
+            Akonadi::Item item("message/rfc822");
+            item.setId(3);
+            item.setSize(1002);
+            item.setPayload(msg);
+            item.setParentCollection(Akonadi::Collection(2));
+            item.setFlags(Akonadi::Item::Flags() << Akonadi::MessageFlags::Flagged << Akonadi::MessageFlags::Replied);
+            emailIndexer.index(item);
+        }
+        {
+            KMime::Message::Ptr msg(new KMime::Message);
+            msg->subject()->from7BitString("subject4");
+
+            //Multipart message
+            KMime::Content *b = new KMime::Content;
+            b->contentType()->setMimeType( "text/plain" );
+            b->setBody( "body4" );
+            msg->addContent( b, true );
+
+            msg->from()->addAddress("john@test.com", "John Doe");
+            msg->to()->addAddress("jane@test.com", "Jane Doe");
+            msg->date()->setDateTime(KDateTime(QDate(2014,11,11), QTime(13,0,0)));
+            msg->assemble();
+
+            Akonadi::Item item("message/rfc822");
+            item.setId(4);
+            item.setSize(1002);
+            item.setPayload(msg);
+            item.setParentCollection(Akonadi::Collection(2));
+            item.setFlags(Akonadi::Item::Flags() << Akonadi::MessageFlags::Flagged << Akonadi::MessageFlags::Replied);
+            emailIndexer.index(item);
+        }
+        {
             KABC::Addressee addressee;
             addressee.setUid("uid1");
             addressee.setName("John Doe");
@@ -188,7 +234,7 @@ private Q_SLOTS:
 
             QList<qint64> collections = QList<qint64>() << 2;
             QStringList mimeTypes = QStringList() << "message/rfc822";
-            QSet<qint64> result= QSet<qint64>() << 2;
+            QSet<qint64> result= QSet<qint64>() << 2 << 3 << 4;
             QTest::newRow("find subject equal negated") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
         }
         {
@@ -197,16 +243,16 @@ private Q_SLOTS:
 
             QList<qint64> collections = QList<qint64>() << 1 << 2;
             QStringList mimeTypes = QStringList() << "message/rfc822";
-            QSet<qint64> result= QSet<qint64>() << 1 << 2;
+            QSet<qint64> result= QSet<qint64>() << 1 << 2 << 3 << 4;
             QTest::newRow("find subject contains") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
         }
         {
             Akonadi::SearchQuery query;
             query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Body, "body", Akonadi::SearchTerm::CondContains));
 
-            QList<qint64> collections = QList<qint64>() << 1 << 2;
+            QList<qint64> collections = QList<qint64>() << 1 << 2 << 3 << 4;
             QStringList mimeTypes = QStringList() << "message/rfc822";
-            QSet<qint64> result= QSet<qint64>() << 1 << 2;
+            QSet<qint64> result= QSet<qint64>() << 1 << 2 << 3 << 4;
             QTest::newRow("find body contains") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
         }
         {
@@ -224,7 +270,7 @@ private Q_SLOTS:
 
             QList<qint64> collections = QList<qint64>() << 1 << 2;
             QStringList mimeTypes = QStringList() << "message/rfc822";
-            QSet<qint64> result= QSet<qint64>() << 1 << 2;
+            QSet<qint64> result= QSet<qint64>() << 1 << 2 << 3 << 4;
             QTest::newRow("find header contains") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
         }
         {
@@ -233,7 +279,7 @@ private Q_SLOTS:
 
             QList<qint64> collections = QList<qint64>() << 1 << 2;
             QStringList mimeTypes = QStringList() << "message/rfc822";
-            QSet<qint64> result= QSet<qint64>() << 1 << 2;
+            QSet<qint64> result= QSet<qint64>() << 1 << 2 << 3 << 4;
             QTest::newRow("find message contains") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
         }
         {
@@ -261,7 +307,7 @@ private Q_SLOTS:
 
             QList<qint64> collections = QList<qint64>() << 1 << 2;
             QStringList mimeTypes = QStringList() << "message/rfc822";
-            QSet<qint64> result = QSet<qint64>() << 2;
+            QSet<qint64> result = QSet<qint64>() << 2 << 3 << 4;
             QTest::newRow("find by message flag") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
         }
         {
@@ -270,8 +316,8 @@ private Q_SLOTS:
 
             QList<qint64> collections = QList<qint64>() << 1 << 2;
             QStringList mimeTypes = QStringList() << "message/rfc822";
-            QSet<qint64> result = QSet<qint64>() << 1 << 2;
-            QTest::newRow("find by size greate than equal") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
+            QSet<qint64> result = QSet<qint64>() << 1 << 2 << 3 << 4;
+            QTest::newRow("find by size greater than equal") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
         }
         {
             Akonadi::SearchQuery query;
@@ -279,7 +325,7 @@ private Q_SLOTS:
 
             QList<qint64> collections = QList<qint64>() << 1 << 2;
             QStringList mimeTypes = QStringList() << "message/rfc822";
-            QSet<qint64> result = QSet<qint64>() << 1 << 2;
+            QSet<qint64> result = QSet<qint64>() << 1 << 2 << 3 << 4;
             QTest::newRow("find by size greate than equal") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
         }
         {
@@ -288,7 +334,7 @@ private Q_SLOTS:
 
             QList<qint64> collections = QList<qint64>() << 1 << 2;
             QStringList mimeTypes = QStringList() << "message/rfc822";
-            QSet<qint64> result = QSet<qint64>() << 2;
+            QSet<qint64> result = QSet<qint64>() << 2 << 3 << 4;
             QTest::newRow("find by size separate") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
         }
         {
@@ -297,7 +343,7 @@ private Q_SLOTS:
 
             QList<qint64> collections = QList<qint64>() << 1 << 2;
             QStringList mimeTypes = QStringList() << "message/rfc822";
-            QSet<qint64> result = QSet<qint64>() << 2;
+            QSet<qint64> result = QSet<qint64>() << 2 << 3 << 4;
             QTest::newRow("find by date") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
         }
         {
@@ -344,6 +390,30 @@ private Q_SLOTS:
             QStringList mimeTypes = QStringList() << KABC::Addressee::mimeType();
             QSet<qint64> result = QSet<qint64>() << 3;
             QTest::newRow("contact by uid") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
+        }
+        {
+            Akonadi::SearchQuery query;
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderOnlyDate, QDate(2013, 11, 10), Akonadi::SearchTerm::CondGreaterOrEqual));
+            QList<qint64> collections = QList<qint64>() << 1 << 2;
+            QStringList mimeTypes = QStringList() << "message/rfc822";
+            QSet<qint64> result = QSet<qint64>() << 1 << 2 << 3 << 4;
+            QTest::newRow("find by date only") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
+        }
+        {
+            Akonadi::SearchQuery query;
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderOnlyDate, QDate(2014, 11, 10), Akonadi::SearchTerm::CondGreaterOrEqual));
+            QList<qint64> collections = QList<qint64>() << 1 << 2;
+            QStringList mimeTypes = QStringList() << "message/rfc822";
+            QSet<qint64> result = QSet<qint64>() << 3 << 4;
+            QTest::newRow("find by date only greater or equal") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
+        }
+        {
+            Akonadi::SearchQuery query;
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderOnlyDate, QDate(2014, 11, 10), Akonadi::SearchTerm::CondGreaterThan));
+            QList<qint64> collections = QList<qint64>() << 1 << 2;
+            QStringList mimeTypes = QStringList() << "message/rfc822";
+            QSet<qint64> result = QSet<qint64>() << 4;
+            QTest::newRow("find by date only greater than") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
         }
 
 //         {
