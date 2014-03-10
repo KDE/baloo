@@ -119,6 +119,7 @@ private Q_SLOTS:
             msg->from()->addAddress("john@test.com", "John Doe");
             msg->to()->addAddress("jane@test.com", "Jane Doe");
             msg->date()->setDateTime(KDateTime(QDate(2013,11,10), QTime(13,0,0)));
+            msg->organization()->from7BitString("kde");
             msg->assemble();
 
             Akonadi::Item item("message/rfc822");
@@ -415,6 +416,15 @@ private Q_SLOTS:
             QSet<qint64> result = QSet<qint64>() << 4;
             QTest::newRow("find by date only greater than") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
         }
+        {
+            Akonadi::SearchQuery query;
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderOrganization, "kde", Akonadi::SearchTerm::CondEqual));
+            QList<qint64> collections = QList<qint64>() << 1 << 2;
+            QStringList mimeTypes = QStringList() << "message/rfc822";
+            QSet<qint64> result = QSet<qint64>() << 2;
+            QTest::newRow("find by header organization") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
+        }
+
 
 //         {
 //             Akonadi::SearchQuery query;
