@@ -51,7 +51,8 @@ void TagListJob::start()
         Xapian::TermIterator end = xapianDb.allterms_end("TAG");
 
         for (; it != end; it++ ) {
-            QString tag = QString::fromStdString(*it);
+            std::string str = *it;
+            QString tag = QString::fromUtf8(str.c_str(), str.length());
             if (tag.startsWith("TAG")) {
                 d->tags << tag.mid(3);
             }
