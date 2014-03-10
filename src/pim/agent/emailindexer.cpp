@@ -135,7 +135,7 @@ namespace {
 void EmailIndexer::insert(const QByteArray& key, const KMime::Types::Mailbox::List& list)
 {
     Q_FOREACH (const KMime::Types::Mailbox& mbox, list) {
-        std::string name = mbox.name().toStdString();
+        std::string name(mbox.name().toUtf8().constData());
         m_termGen->index_text_without_positions(name, 1, key.data());
         m_termGen->index_text_without_positions(name, 1);
 
@@ -153,7 +153,7 @@ void EmailIndexer::insert(const QByteArray& key, const KMime::Types::Mailbox::Li
         }
         catch (const Xapian::DocNotFoundError&) {
             Xapian::Document doc;
-            std::string pretty = pa.toStdString();
+            std::string pretty(pa.toUtf8().constData());
             doc.set_data(pretty);
 
             Xapian::TermGenerator termGen;

@@ -19,12 +19,12 @@
  */
 
 #include "filecustommetadata.h"
+#include "baloo_xattr_p.h"
 #include "xattrdetector.h"
 #include "db.h"
 #include "filemapping.h"
 #include <KDebug>
 
-#include <attr/xattr.h>
 #include <QFile>
 #include <QSqlQuery>
 #include <QSqlError>
@@ -36,11 +36,7 @@ static XattrDetector g_detector;
 void Baloo::setCustomFileMetaData(const QString& url, const QString& key, const QString& value)
 {
     if (g_detector.isSupported(url)) {
-        const QByteArray p = QFile::encodeName(url);
-        const QByteArray k = key.toUtf8();
-        const QByteArray v = value.toUtf8();
-
-        int r = setxattr(p.constData(), k.constData(), v.constData(), v.size(), 0);
+        int r = baloo_setxattr(url, key, value);
         if (r == -1) {
             kError() << "Could not store xattr for" << url << key << value;
             return;
@@ -70,14 +66,9 @@ void Baloo::setCustomFileMetaData(const QString& url, const QString& key, const 
 QString Baloo::customFileMetaData(const QString& url, const QString& key)
 {
     if (g_detector.isSupported(url)) {
-        const QByteArray p = QFile::encodeName(url);
-        const QByteArray k = key.toUtf8();
-
-        int size = getxattr(p.constData(), k.constData(), 0, 0);
-        QByteArray arr(size, Qt::Uninitialized);
-        getxattr(p.constData(), k.constData(), arr.data(), size);
-
-        return QString::fromUtf8(arr);
+        QString value;
+        baloo_getxattr(url, key, &value);
+        return value;
     }
     else {
         QSqlDatabase mapDb = fileMappingDb();

@@ -19,6 +19,7 @@
  */
 
 #include "xattrdetector.h"
+#include "baloo_xattr_p.h"
 
 #include <Solid/Device>
 #include <Solid/StorageAccess>
@@ -26,8 +27,6 @@
 #include <quuid.h>
 #include <QFile>
 #include <QDir>
-
-#include <attr/xattr.h>
 
 using namespace Baloo;
 
@@ -76,8 +75,7 @@ void XattrDetector::Private::init()
             }
             file.close();
 
-            QByteArray path = QFile::encodeName(url);
-            int ret = setxattr(path.constData(), "test", "0", 1, 0);
+            int ret = baloo_setxattr(url, QLatin1String("test"), QLatin1String("0"));
             if (ret != -1) {
                 // Check the actual error?
                 m_unSupportedPaths << mountPath;
