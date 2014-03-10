@@ -88,7 +88,7 @@ BalooIndexingAgent::BalooIndexingAgent(const QString& id)
     connect(&m_timer, SIGNAL(timeout()), this, SLOT(processNext()));
 
     m_commitTimer.setInterval(1000);
-    m_timer.setSingleShot(true);
+    m_commitTimer.setSingleShot(true);
     connect(&m_commitTimer, SIGNAL(timeout()),
             this, SLOT(slotCommitTimerElapsed()));
 
