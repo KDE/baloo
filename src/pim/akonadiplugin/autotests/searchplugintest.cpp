@@ -28,8 +28,10 @@
 #include "searchplugin.h"
 #include <../pim/agent/emailindexer.h>
 #include <../pim/agent/contactindexer.h>
+#include <../pim/agent/akonotesindexer.h>
 #include <../pim/search/email/emailsearchstore.h>
 #include <../pim/search/contact/contactsearchstore.h>
+#include <../pim/search/note/notesearchstore.h>
 #include <akonadi/searchquery.h>
 #include <akonadi/kmime/messageflags.h>
 
@@ -43,6 +45,7 @@ private:
     QString emailDir;
     QString emailContactsDir;
     QString contactsDir;
+    QString noteDir;
 
     bool removeDir(const QString & dirName)
     {
@@ -72,6 +75,7 @@ private Q_SLOTS:
         emailDir = QDir::tempPath() + "/searchplugintest/baloo/email/";
         emailContactsDir = QDir::tempPath() + "/searchplugintest/baloo/emailcontacts/";
         contactsDir = QDir::tempPath() + "/searchplugintest/baloo/contacts/";
+        noteDir = QDir::tempPath() + "/searchplugintest/baloo/notes/";
 
         QDir dir;
         removeDir(emailDir);
@@ -80,13 +84,17 @@ private Q_SLOTS:
         QVERIFY(dir.mkpath(emailContactsDir));
         removeDir(contactsDir);
         QVERIFY(dir.mkpath(contactsDir));
+        removeDir(noteDir);
+        QVERIFY(dir.mkpath(noteDir));
 
         kDebug() << "indexing sample data";
         kDebug() << emailDir;
         kDebug() << emailContactsDir;
+        kDebug() << noteDir;
 
         EmailIndexer emailIndexer(emailDir, emailContactsDir);
         ContactIndexer contactIndexer(contactsDir);
+        AkonotesIndexer noteIndexer(noteDir);
 
         {
             KMime::Message::Ptr msg(new KMime::Message);
@@ -185,7 +193,7 @@ private Q_SLOTS:
             addressee.setEmails(QStringList() << "john@test.com");
             addressee.setBirthday(QDateTime(QDate(2000, 01, 01)));
             Akonadi::Item item(KABC::Addressee::mimeType());
-            item.setId(3);
+            item.setId(6);
             item.setPayload(addressee);
             item.setParentCollection(Akonadi::Collection(3));
             contactIndexer.index(item);
@@ -197,10 +205,29 @@ private Q_SLOTS:
             addressee.setEmails(QStringList() << "jane@test.com");
             addressee.setBirthday(QDateTime(QDate(2001, 01, 01)));
             Akonadi::Item item(KABC::Addressee::mimeType());
-            item.setId(4);
+            item.setId(7);
             item.setPayload(addressee);
             item.setParentCollection(Akonadi::Collection(3));
             contactIndexer.index(item);
+        }
+        {
+            KMime::Message::Ptr msg(new KMime::Message);
+            msg->subject()->from7BitString("note");
+
+            //Multipart message
+            KMime::Content *b = new KMime::Content;
+            b->contentType()->setMimeType( "text/plain" );
+            b->setBody( "body note" );
+            msg->addContent( b, true );
+            msg->assemble();
+
+            Akonadi::Item item("text/x-vnd.akonadi.note");
+            item.setId(8);
+            item.setSize(1002);
+            item.setPayload(msg);
+            item.setParentCollection(Akonadi::Collection(5));
+            item.setFlags(Akonadi::Item::Flags() << Akonadi::MessageFlags::Flagged << Akonadi::MessageFlags::Replied);
+            noteIndexer.index(item);
         }
 
 
@@ -209,7 +236,10 @@ private Q_SLOTS:
         emailSearchStore->setDbPath(emailDir);
         Baloo::ContactSearchStore *contactSearchStore = new Baloo::ContactSearchStore(this);
         contactSearchStore->setDbPath(contactsDir);
-        Baloo::SearchStore::overrideSearchStores(QList<Baloo::SearchStore*>() << emailSearchStore << contactSearchStore);
+        Baloo::NoteSearchStore *noteSearchStore = new Baloo::NoteSearchStore(this);
+        noteSearchStore->setDbPath(noteDir);
+
+        Baloo::SearchStore::overrideSearchStores(QList<Baloo::SearchStore*>() << emailSearchStore << contactSearchStore << noteSearchStore);
     }
 
     void testEmailSearch_data() {
@@ -294,6 +324,26 @@ private Q_SLOTS:
             QTest::newRow("or term") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
         }
         {
+            Akonadi::SearchQuery query(Akonadi::SearchTerm::RelAnd);
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, "subject1", Akonadi::SearchTerm::CondEqual));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Body, "body1", Akonadi::SearchTerm::CondContains));
+
+            QList<qint64> collections = QList<qint64>() << 1 << 2;
+            QStringList mimeTypes = QStringList() << "message/rfc822";
+            QSet<qint64> result= QSet<qint64>() << 1;
+            QTest::newRow("and term") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
+        }
+        {
+            Akonadi::SearchQuery query(Akonadi::SearchTerm::RelAnd);
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, "subject1", Akonadi::SearchTerm::CondEqual));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Body, "body2", Akonadi::SearchTerm::CondEqual));
+
+            QList<qint64> collections = QList<qint64>() << 1 << 2;
+            QStringList mimeTypes = QStringList() << "message/rfc822";
+            QSet<qint64> result;
+            QTest::newRow("and term equal") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
+        }
+        {
             Akonadi::SearchQuery query;
             query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, "subject", Akonadi::SearchTerm::CondContains));
 
@@ -353,7 +403,7 @@ private Q_SLOTS:
 
             QList<qint64> collections;
             QStringList mimeTypes = QStringList() << KABC::Addressee::mimeType();
-            QSet<qint64> result = QSet<qint64>() << 3;
+            QSet<qint64> result = QSet<qint64>() << 6;
             QTest::newRow("contact by name") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
         }
         {
@@ -371,7 +421,7 @@ private Q_SLOTS:
 
             QList<qint64> collections = QList<qint64>() << 3;
             QStringList mimeTypes = QStringList() << KABC::Addressee::mimeType();
-            QSet<qint64> result = QSet<qint64>() << 3;
+            QSet<qint64> result = QSet<qint64>() << 6;
             QTest::newRow("contact by lowercase name") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
         }
         {
@@ -380,7 +430,7 @@ private Q_SLOTS:
 
             QList<qint64> collections = QList<qint64>() << 3;
             QStringList mimeTypes = QStringList() << KABC::Addressee::mimeType();
-            QSet<qint64> result = QSet<qint64>() << 3;
+            QSet<qint64> result = QSet<qint64>() << 6;
             QTest::newRow("contact by nickname") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
         }
         {
@@ -389,7 +439,7 @@ private Q_SLOTS:
 
             QList<qint64> collections = QList<qint64>() << 3;
             QStringList mimeTypes = QStringList() << KABC::Addressee::mimeType();
-            QSet<qint64> result = QSet<qint64>() << 3;
+            QSet<qint64> result = QSet<qint64>() << 6;
             QTest::newRow("contact by uid") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
         }
         {
@@ -424,7 +474,15 @@ private Q_SLOTS:
             QSet<qint64> result = QSet<qint64>() << 2;
             QTest::newRow("find by header organization") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
         }
+        {
+            Akonadi::SearchQuery query;
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, "note", Akonadi::SearchTerm::CondEqual));
 
+            QList<qint64> collections = QList<qint64>() << 5;
+            QStringList mimeTypes = QStringList() << "text/x-vnd.akonadi.note";
+            QSet<qint64> result= QSet<qint64>() << 8;
+            QTest::newRow("find note subject equal") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
+        }
 
 //         {
 //             Akonadi::SearchQuery query;
@@ -455,7 +513,7 @@ private Q_SLOTS:
 
         kDebug() << "starting search";
         SearchPlugin plugin;
-        QSet<qint64> result = plugin.search(query, collections, mimeTypes);
+        const QSet<qint64> result = plugin.search(query, collections, mimeTypes);
         kDebug() << result;
         QCOMPARE(result, expectedResult);
     }
