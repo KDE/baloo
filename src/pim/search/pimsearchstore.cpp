@@ -87,10 +87,10 @@ Xapian::Query PIMSearchStore::constructQuery(const QString& property, const QVar
         }
         qlonglong numVal = value.toLongLong();
         if (com == Term::Greater) {
-            numVal++;
+            ++numVal;
         }
         if (com == Term::Less) {
-            numVal--;
+            --numVal;
         }
         int valueNumber = m_valueProperties.value(property.toLower());
         if (com == Term::GreaterEqual || com == Term::Greater) {
