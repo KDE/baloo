@@ -590,7 +590,7 @@ private Q_SLOTS:
         }
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderDate, KDateTime(QDate(2013, 11, 10), QTime(12, 30, 0)).toString(KDateTime::ISODate), Akonadi::SearchTerm::CondGreaterOrEqual));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderDate, KDateTime(QDate(2013, 11, 10), QTime(12, 30, 0)).dateTime(), Akonadi::SearchTerm::CondGreaterOrEqual));
 
             QList<qint64> collections = QList<qint64>() << 1 << 2;
             QStringList mimeTypes = QStringList() << "message/rfc822";
