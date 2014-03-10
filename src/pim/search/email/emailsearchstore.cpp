@@ -101,7 +101,7 @@ QString EmailSearchStore::text(int queryId)
 {
     std::string data = docForQuery(queryId).get_data();
 
-    QString subject = QString::fromStdString(data);
+    QString subject = QString::fromUtf8(data.c_str(), data.length());
     if (subject.isEmpty())
         return QLatin1String("No Subject");
 

@@ -47,7 +47,7 @@ void XapianSearchStore::setDbPath(const QString& path)
 
     delete m_db;
     try {
-        m_db = new Xapian::Database(m_dbPath.toStdString());
+        m_db = new Xapian::Database(m_dbPath.toUtf8().constData());
     }
     catch (const Xapian::DatabaseOpeningError&) {
         kError() << "Xapian Database does not exist at " << m_dbPath;
@@ -129,7 +129,7 @@ namespace {
         QList<Term> topTerms;
         topTerms.reserve(MaxTerms + 1);
 
-        const std::string stdString = string.toLower().toStdString();
+        const std::string stdString(string.toLower().toUtf8().constData());
         Xapian::TermIterator it = db->allterms_begin(stdString);
         Xapian::TermIterator end = db->allterms_end(stdString);
         for (; it != end; it++) {
@@ -180,7 +180,7 @@ Xapian::Query XapianSearchStore::constructSearchQuery(const QString& str)
     }
 
     if (!list.isEmpty()) {
-        std::string stdStr = list.join(" ").toStdString();
+        std::string stdStr(list.join(" ").toUtf8().constData());
 
         Xapian::QueryParser parser;
         parser.set_database(*m_db);

@@ -158,7 +158,8 @@ bool BasicIndexingQueue::shouldIndex(FileMapping& file, const QString& mimetype)
             return false;
 
         // The 4 is for "DT_M"
-        const QString str = QString::fromStdString(*it).mid(4);
+        const std::string s = *it;
+        const QString str = QString::fromUtf8(s.c_str(), s.length()).mid(4);
         const QDateTime mtime = QDateTime::fromString(str, Qt::ISODate);
 
         if (mtime != fileInfo.lastModified())

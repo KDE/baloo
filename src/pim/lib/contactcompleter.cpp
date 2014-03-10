@@ -43,7 +43,7 @@ QStringList ContactCompleter::complete()
     Xapian::QueryParser parser;
     parser.set_database(db);
 
-    std::string prefix = m_prefix.toStdString();
+    std::string prefix(m_prefix.toUtf8().constData());
     int flags = Xapian::QueryParser::FLAG_DEFAULT | Xapian::QueryParser::FLAG_PARTIAL;
     Xapian::Query q = parser.parse_query(prefix, flags);
 
@@ -56,7 +56,8 @@ QStringList ContactCompleter::complete()
     QStringList list;
     Xapian::MSetIterator end = mset.end();
     for (; mit != end; ++mit) {
-        const QString entry = QString::fromStdString(mit.get_document().get_data());
+        std::string str = mit.get_document().get_data();
+        const QString entry = QString::fromUtf8(str.c_str(), str.length());
         list << entry;
     }
 
