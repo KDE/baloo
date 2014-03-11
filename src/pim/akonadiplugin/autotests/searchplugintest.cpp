@@ -151,6 +151,7 @@ private Q_SLOTS:
             msg->from()->addAddress("john@test.com", "John Doe");
             msg->to()->addAddress("jane@test.com", "Jane Doe");
             msg->date()->setDateTime(KDateTime(QDate(2014,11,10), QTime(13,0,0)));
+            msg->organization()->from7BitString("kde5");
             msg->assemble();
 
             Akonadi::Item item("message/rfc822");
@@ -177,6 +178,7 @@ private Q_SLOTS:
             msg->bcc()->addAddress("bcc@test.com", "Jane Doe");
             msg->date()->setDateTime(KDateTime(QDate(2014,11,11), QTime(13,0,0)));
             msg->assemble();
+            //qDebug()<<" msg"<<msg->encodedContent();
 
             Akonadi::Item item("message/rfc822");
             item.setId(4);
@@ -286,7 +288,6 @@ private Q_SLOTS:
 
         Baloo::SearchStore::overrideSearchStores(QList<Baloo::SearchStore*>() << emailSearchStore << contactSearchStore << noteSearchStore);
     }
-
     void testNoteSearch_data() {
         QTest::addColumn<QString>("query");
         QTest::addColumn<QList<qint64> >("collections");
@@ -421,13 +422,11 @@ private Q_SLOTS:
         }
     }
 
-
     void testEmailSearch_data() {
         QTest::addColumn<QString>("query");
         QTest::addColumn<QList<qint64> >("collections");
         QTest::addColumn<QStringList>("mimeTypes");
         QTest::addColumn<QSet<qint64> >("expectedResult");
-
         {
             Akonadi::SearchQuery query;
             query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, "subject1", Akonadi::SearchTerm::CondEqual));
@@ -622,7 +621,15 @@ private Q_SLOTS:
             QSet<qint64> result = QSet<qint64>() << 4;
             QTest::newRow("find by date only greater than") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
         }
-#if 0
+        {
+            Akonadi::SearchQuery query;
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderCC, "Jane Doe <cc@test.com>", Akonadi::SearchTerm::CondEqual));
+            QList<qint64> collections = QList<qint64>() << 1 << 2;
+            QStringList mimeTypes = QStringList() << "message/rfc822";
+            QSet<qint64> result = QSet<qint64>() << 4;
+            QTest::newRow("find by header cc") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
+        }
+#if 0 //Doesn't work we need to investigate it.
         {
             Akonadi::SearchQuery query;
             query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderCC, "cc@test.com", Akonadi::SearchTerm::CondContains));
@@ -631,15 +638,31 @@ private Q_SLOTS:
             QSet<qint64> result = QSet<qint64>() << 4;
             QTest::newRow("find by header cc") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
         }
+#endif
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderBCC, "bcc@test.com", Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderOrganization, "kde", Akonadi::SearchTerm::CondEqual));
+            QList<qint64> collections = QList<qint64>() << 1 << 2;
+            QStringList mimeTypes = QStringList() << "message/rfc822";
+            QSet<qint64> result = QSet<qint64>() << 2;
+            QTest::newRow("find by header organization (equal)") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
+        }
+        {
+            Akonadi::SearchQuery query;
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderOrganization, "kde", Akonadi::SearchTerm::CondContains));
+            QList<qint64> collections = QList<qint64>() << 1 << 2;
+            QStringList mimeTypes = QStringList() << "message/rfc822";
+            QSet<qint64> result = QSet<qint64>() << 2 << 3;
+            QTest::newRow("find by header organization (contains)") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
+        }
+        {
+            Akonadi::SearchQuery query;
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderBCC, "Jane Doe <bcc@test.com>", Akonadi::SearchTerm::CondContains));
             QList<qint64> collections = QList<qint64>() << 1 << 2;
             QStringList mimeTypes = QStringList() << "message/rfc822";
             QSet<qint64> result = QSet<qint64>() << 4;
             QTest::newRow("find by header bcc") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
         }
-#endif
     }
 
     void testEmailSearch() {

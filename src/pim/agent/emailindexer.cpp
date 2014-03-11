@@ -145,7 +145,7 @@ void EmailIndexer::insert(const QByteArray& key, const KMime::Types::Mailbox::Li
         //
         // Add emails for email auto-completion
         //
-        QString pa = prettyAddress(mbox);
+        const QString pa = prettyAddress(mbox);
         int id = qHash(pa);
         try {
             Xapian::Document doc = m_contactDb->get_document(id);
