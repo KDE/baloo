@@ -265,6 +265,9 @@ void EmailIndexer::processMessageStatus(const Akonadi::MessageStatus& status)
     insertBool('Q', status.isQueued());
     insertBool('H', status.isHam());
     insertBool('C', status.isEncrypted());
+    insertBool('V', status.hasInvitation());
+
+    //Akonadi::MessageFlags::HasInvitation
 }
 
 void EmailIndexer::insertBool(char key, bool value)
