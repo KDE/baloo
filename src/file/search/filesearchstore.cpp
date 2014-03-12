@@ -203,5 +203,3 @@ Xapian::Query FileSearchStore::applyCustomOptions(const Xapian::Query& q, const 
     PathFilterPostingSource ps(m_sqlDb, includeDir);
     return andQuery(q, Xapian::Query(&ps));
 }
-
-BALOO_EXPORT_SEARCHSTORE(Baloo::FileSearchStore, "baloo_filesearchstore")

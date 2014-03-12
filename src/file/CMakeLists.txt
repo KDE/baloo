@@ -1,7 +1,7 @@
 add_definitions(-fexceptions)
 
 add_subdirectory(lib)
-#add_subdirectory(search)
+add_subdirectory(search)
 
 set(file_SRCS
     # Filewatch

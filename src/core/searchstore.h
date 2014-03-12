@@ -26,7 +26,6 @@
 #include <QString>
 #include <QHash>
 #include <QUrl>
-#include <KService>
 
 #include "core_export.h"
 
@@ -86,8 +85,5 @@ inline int deserialize(const QByteArray& namespace_, const QByteArray& str) {
 }
 
 Q_DECLARE_INTERFACE(Baloo::SearchStore, "org.kde.Baloo.SearchStore")
-
-#define BALOO_EXPORT_SEARCHSTORE( classname, libname )    \
-    Q_EXPORT_PLUGIN2(libname, classname)
 
 #endif // _BALOO_SEARCHSTORE_H
