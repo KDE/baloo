@@ -35,7 +35,7 @@ ContactSearchStore::ContactSearchStore(QObject* parent)
     m_prefix.insert("email", ""); // Email currently doesn't map to anything
     m_prefix.insert("collection", "C");
 
-    const QString path = KStandardDirs::locateLocal("data", "baloo/contacts/");
+    const QString path = KGlobal::dirs()->localxdgdatadir() + "baloo/contacts/";
     setDbPath(path);
 }
 

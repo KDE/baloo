@@ -30,11 +30,11 @@
 
 std::string fileIndexDbPath()
 {
-    return KStandardDirs::locateLocal("data", "baloo/file/").toUtf8().constData();
+    return (KGlobal::dirs()->localxdgdatadir() + "baloo/file").toUtf8().constData();
 }
 
 QSqlDatabase fileMappingDb() {
-    const QString path = KStandardDirs::locateLocal("data", "baloo/file/fileMap.sqlite3");
+    const QString path = KGlobal::dirs()->localxdgdatadir() + "baloo/file/fileMap.sqlite3";
     return fileMappingDb(path);
 }
 
@@ -76,7 +76,7 @@ QSqlDatabase fileMappingDb(const QString& path)
 
 QSqlDatabase fileMetadataDb()
 {
-    const QString path = KStandardDirs::locateLocal("data", "baloo/fileMetaData.sqlite3");
+    const QString path = KGlobal::dirs()->localxdgdatadir() + "baloo/file/fileMetaData.sqlite3";
     QSqlDatabase sqlDb = QSqlDatabase::database("fileMetadataDb");
     if (!sqlDb.isValid()) {
         sqlDb = QSqlDatabase::addDatabase("QSQLITE", "fileMetadataDb");
