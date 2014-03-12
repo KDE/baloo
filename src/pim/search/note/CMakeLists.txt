@@ -3,6 +3,7 @@ kde4_add_plugin(baloo_notesearchstore notesearchstore.cpp ../pimsearchstore.cpp)
 target_link_libraries(baloo_notesearchstore
     ${QT_QTCORE_LIBRARY}
     ${KDE4_KDECORE_LIBRARY}
+    ${KDEPIMLIBS_AKONADI_LIBS}
     ${XAPIAN_LIBRARIES}
     baloocore
     balooxapian

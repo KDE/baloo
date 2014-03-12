@@ -42,7 +42,7 @@
 #include <KLocalizedString>
 
 namespace {
-    QString dbPath(const QString &dbName) {
+    QString dbPath(const QString& dbName) {
         QString basePath = "baloo";
         if (Akonadi::ServerManager::hasInstanceIdentifier()) {
             basePath = QString::fromLatin1("baloo/instances/%1").arg(Akonadi::ServerManager::instanceIdentifier());

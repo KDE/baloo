@@ -78,8 +78,7 @@ EmailSearchStore::EmailSearchStore(QObject* parent)
     m_valueProperties.insert("size", 1);
     m_valueProperties.insert("onlydate", 2);
 
-    const QString path = KGlobal::dirs()->localxdgdatadir() + "baloo/email";
-    setDbPath(path);
+    setDbPath(findDatabase("email"));
 }
 
 QStringList EmailSearchStore::types()

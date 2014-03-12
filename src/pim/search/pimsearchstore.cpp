@@ -26,6 +26,8 @@
 
 #include <KDebug>
 #include <KUrl>
+#include <KStandardDirs>
+#include <Akonadi/ServerManager>
 
 using namespace Baloo;
 
@@ -36,6 +38,15 @@ PIMSearchStore::PIMSearchStore(QObject* parent) : XapianSearchStore(parent)
 QStringList PIMSearchStore::types()
 {
     return QStringList() << "Akonadi";
+}
+
+QString PIMSearchStore::findDatabase(const QString& dbName) const
+{
+    QString basePath = "baloo";
+    if (Akonadi::ServerManager::hasInstanceIdentifier()) {
+        basePath = QString::fromLatin1("baloo/instances/%1").arg(Akonadi::ServerManager::instanceIdentifier());
+    }
+    return KGlobal::dirs()->localxdgdatadir() + QString::fromLatin1("%1/%2/").arg(basePath, dbName);
 }
 
 Xapian::Query PIMSearchStore::constructQuery(const QString& property, const QVariant& value,
