@@ -27,6 +27,8 @@
 #include "akonotesindexer.h"
 #include "balooindexeradaptor.h"
 
+#include "src/file/priority.h"
+
 #include <Akonadi/ItemFetchJob>
 #include <Akonadi/ItemFetchScope>
 #include <Akonadi/ChangeRecorder>
@@ -67,6 +69,10 @@ BalooIndexingAgent::BalooIndexingAgent(const QString& id)
     : AgentBase(id),
       m_inProgress(false)
 {
+    lowerIOPriority();
+    lowerSchedulingPriority();
+    lowerPriority();
+
     KConfig config("baloorc");
     KConfigGroup group = config.group("Akonadi");
     const int agentIndexingVersion = group.readEntry("agentIndexingVersion", 0);
