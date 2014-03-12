@@ -26,7 +26,8 @@
 #include <KConfigGroup>
 #include <KTempDir>
 
-#include <QtCore/QDir>
+#include <QDir>
+#include <QTextStream>
 
 namespace Baloo
 {
@@ -34,8 +35,8 @@ namespace Test
 {
 void writeIndexerConfig(const QStringList& includeFolders,
                         const QStringList& excludeFolders,
-                        const QStringList& excludeFilters,
-                        bool indexHidden)
+                        const QStringList& excludeFilters = QStringList(),
+                        bool indexHidden = false)
 {
     KConfig fileIndexerConfig("baloofilerc");
     fileIndexerConfig.group("General").writePathEntry("folders", includeFolders);
@@ -67,6 +68,37 @@ KTempDir* createTmpFolders(const QStringList& folders)
     return tmpDir;
 }
 
+
+KTempDir* createTmpFilesAndFolders(const QStringList& list)
+{
+    KTempDir* tmpDir = new KTempDir();
+    // If the temporary directory is in a hidden folder, then the tests will fail,
+    // so we use /tmp/ instead.
+    // TODO: Find a better solution
+    if (tmpDir->name().contains("/.")) {
+        delete tmpDir;
+        tmpDir = new KTempDir(QLatin1String("/tmp/"));
+    }
+    Q_FOREACH (const QString& f, list) {
+        if (f.endsWith('/')) {
+            QDir dir(tmpDir->name());
+            Q_FOREACH (const QString & sf, f.split('/', QString::SkipEmptyParts)) {
+                if (!dir.exists(sf)) {
+                    dir.mkdir(sf);
+                }
+                dir.cd(sf);
+            }
+        }
+        else {
+            QFile file(tmpDir->name() + f);
+            file.open(QIODevice::WriteOnly);
+
+            QTextStream stream(&file);
+            stream << "test";
+        }
+    }
+    return tmpDir;
+}
 //
 // Trying to put all cases into one folder tree:
 // |- indexedRootDir

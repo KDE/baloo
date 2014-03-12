@@ -103,6 +103,12 @@ void Query::addTypes(const QStringList& typeList)
     }
 }
 
+void Query::setType(const QString& type)
+{
+    d->m_types.clear();
+    addType(type);
+}
+
 void Query::setTypes(const QStringList& types)
 {
     d->m_types = types;
@@ -121,22 +127,6 @@ QString Query::searchString() const
 void Query::setSearchString(const QString& str)
 {
     d->m_searchString = str;
-}
-
-void Query::addRelation(const Relation& rel)
-{
-    //TODO:
-}
-
-void Query::setRelations(const QList<Relation>& rel)
-{
-    //TODO:
-}
-
-QList<Relation> Query::relations() const
-{
-    //TODO:
-    return QList<Relation>();
 }
 
 uint Query::limit() const
@@ -348,4 +338,10 @@ bool Query::operator==(const Query& rhs) const
     }
 
     return d->m_term == rhs.d->m_term;
+}
+
+Query& Query::operator=(const Query& rhs)
+{
+    *d = *rhs.d;
+    return *this;
 }

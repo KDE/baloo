@@ -33,6 +33,8 @@
 #include <QTimer>
 #include <QtCore/QFileInfo>
 #include <QDBusMessage>
+#include <QSqlQuery>
+#include <QSqlError>
 #include <QDBusConnection>
 
 #include <iostream>
@@ -54,23 +56,32 @@ App::App(QObject* parent)
     m_results.reserve(args->count());
     for (int i=0; i<args->count(); i++) {
         FileMapping mapping = FileMapping(args->arg(i).toUInt());
+        QString url;
         if (mapping.fetch(m_db.sqlDatabase())) {
             // arg is an id
-            if (QFile::exists(mapping.url())) {
-                m_urls << mapping.url();
-            } else {
-                // id was looked up, but file deleted
-                kDebug() << mapping.url() << "does not exist";
-                deleteDocument(mapping.id());
+            url = mapping.url();
+            // If this url no longer exists, remove it from the mapping db.
+            if (!QFile::exists(url)) {
+                QSqlQuery query(m_db.sqlDatabase());
+                query.prepare("delete from files where url = ?");
+                query.addBindValue(url);
+                if (!query.exec()) {
+                    kError() << query.lastError().text();
+                }
             }
         } else {
             // arg is a url
-            QString url = args->url(i).toLocalFile();
-            if (!QFile::exists(url)) {
-              // arg is a url but could not be found
-              continue;
-            }
-            m_urls << args->url(i).toLocalFile();
+            url = args->url(i).toLocalFile();
+        }
+        if (QFile::exists(url)) {
+            m_urls << url;
+        } else {
+            // id or url was looked up, but file deleted
+            kDebug() << url << "does not exist";
+            // Try to delete it as an id:
+            // it may have been deleted from the FileMapping db as well.
+            // The worst that can happen is deleting nothing.
+            deleteDocument(mapping.id());
         }
     }
 
@@ -108,7 +119,7 @@ void App::processNextUrl()
     Xapian::Document doc;
     if (file.fetched()) {
         try {
-            doc = m_db.xapainDatabase()->get_document(file.id());
+            doc = m_db.xapianDatabase()->get_document(file.id());
         }
         catch (const Xapian::DocNotFoundError&) {
             BasicIndexingJob basicIndexer(&m_db.sqlDatabase(), file, mimetype);
@@ -119,9 +130,7 @@ void App::processNextUrl()
         }
     }
 
-    Result result;
-    result.setInputUrl(url);
-    result.setInputMimetype(mimetype);
+    Result result(url, mimetype);
     result.setId(file.id());
     result.setDocument(doc);
 
@@ -183,7 +192,7 @@ void App::saveChanges()
         }
 
         db.commit();
-        m_db.xapainDatabase()->reopen();
+        m_db.xapianDatabase()->reopen();
         m_results.clear();
         m_docsToRemove.clear();
         m_termCount = 0;
@@ -191,7 +200,7 @@ void App::saveChanges()
         Q_EMIT saved();
     }
     catch (const Xapian::DatabaseLockError& err) {
-        kError() << "Cannot open database in write mode:" << err.get_error_string();
+        kError() << "Cannot open database in write mode:" << err.get_msg().c_str();
         QTimer::singleShot(100, this, SLOT(saveChanges()));
         return;
     }

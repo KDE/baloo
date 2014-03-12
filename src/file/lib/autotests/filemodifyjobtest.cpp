@@ -27,6 +27,7 @@
 #include "qtest_kde.h"
 #include <KTemporaryFile>
 #include <KDebug>
+#include <KTempDir>
 
 #include <qjson/serializer.h>
 #include <xapian.h>
@@ -36,15 +37,13 @@ using namespace Baloo;
 
 void FileModifyJobTest::testSingleFile()
 {
-    KTemporaryFile tmpFile;
+    QTemporaryFile tmpFile;
     tmpFile.open();
-    tmpFile.setAutoRemove(false);
 
     QTextStream stream(&tmpFile);
     stream << "ABC";
 
     const QString fileUrl = tmpFile.fileName();
-    tmpFile.close();
 
     int fileSize = QFileInfo(fileUrl).size();
 
@@ -68,7 +67,7 @@ void FileModifyJobTest::testSingleFile()
     QCOMPARE(r, 5);
 
     len = getxattr(arr.constData(), "user.baloo.tags", &buffer, 1000);
-    QCOMPARE(len, 0);
+    QCOMPARE(len, -1);
 
     len = getxattr(arr.constData(), "user.xdg.comment", &buffer, 1000);
     QVERIFY(len > 0);
@@ -95,16 +94,14 @@ void FileModifyJobTest::testSingleFile()
 
     iter++;
     QCOMPARE(*iter, std::string("R5"));
-
-    QFile::remove(fileUrl);
 }
 
 void FileModifyJobTest::testMultiFileRating()
 {
-    KTemporaryFile tmpFile1;
+    QTemporaryFile tmpFile1;
     tmpFile1.open();
 
-    KTemporaryFile tmpFile2;
+    QTemporaryFile tmpFile2;
     tmpFile2.open();
 
     const QString fileUrl1 = tmpFile1.fileName();
@@ -130,6 +127,81 @@ void FileModifyJobTest::testMultiFileRating()
     QVERIFY(len > 0);
 
     r = QString::fromUtf8(buffer, len).toInt();
+    QCOMPARE(r, 5);
+}
+
+void FileModifyJobTest::testXapianUpdate()
+{
+    QTemporaryFile tmpFile;
+    tmpFile.open();
+    const QString fileUrl = tmpFile.fileName();
+
+    File file(fileUrl);
+    file.setRating(4);
+
+    FileModifyJob* job = new FileModifyJob(file);
+    QVERIFY(job->exec());
+
+    FileMapping fileMap(fileUrl);
+    QSqlDatabase sqlDb = fileMappingDb();
+    QVERIFY(fileMap.fetch(sqlDb));
+
+    const std::string xapianPath = fileIndexDbPath().toStdString();
+    Xapian::Database db(xapianPath);
+
+    Xapian::Document doc = db.get_document(fileMap.id());
+
+    Xapian::TermIterator iter = doc.termlist_begin();
+    QCOMPARE(*iter, std::string("R4"));
+    iter++;
+    QCOMPARE(iter, doc.termlist_end());
+
+    // Add another term, and make sure it is not removed
+    doc.add_term("RATING");
+    {
+        const std::string xapianPath = fileIndexDbPath().toStdString();
+        Xapian::WritableDatabase db(xapianPath, Xapian::DB_CREATE_OR_OPEN);
+        db.replace_document(fileMap.id(), doc);
+        db.commit();
+    }
+
+    file.setRating(5);
+    job = new FileModifyJob(file);
+    QVERIFY(job->exec());
+
+    db.reopen();
+    doc = db.get_document(fileMap.id());
+
+    iter = doc.termlist_begin();
+    QCOMPARE(*iter, std::string("R5"));
+    iter++;
+    QCOMPARE(*iter, std::string("RATING"));
+    iter++;
+    QCOMPARE(iter, doc.termlist_end());
+}
+
+void FileModifyJobTest::testFolder()
+{
+    QTemporaryFile f;
+    f.open();
+
+    // We use the same prefix as the tmpfile
+    KTempDir dir(f.fileName().mid(0, f.fileName().lastIndexOf('/') + 1));
+    const QString url = dir.name();
+
+    File file(url);
+    file.setRating(5);
+
+    FileModifyJob* job = new FileModifyJob(file);
+    QVERIFY(job->exec());
+
+    char buffer[1000];
+
+    const QByteArray arr1 = QFile::encodeName(url);
+    int len = getxattr(arr1.constData(), "user.baloo.rating", &buffer, 1000);
+    QVERIFY(len > 0);
+
+    int r = QString::fromUtf8(buffer, len).toInt();
     QCOMPARE(r, 5);
 }
 

@@ -20,11 +20,11 @@
  *
  */
 
-#ifndef FILEFETCHJOB_H
-#define FILEFETCHJOB_H
+#ifndef _BALOO_FILEFETCHJOB_H
+#define _BALOO_FILEFETCHJOB_H
 
 #include "file_export.h"
-#include "itemfetchjob.h"
+#include <KJob>
 
 namespace Baloo {
 
@@ -36,12 +36,13 @@ class File;
  * contain any indexed metadata then no data will be returned.
  * However, the file will be sent for indexing.
  */
-class BALOO_FILE_EXPORT FileFetchJob : public ItemFetchJob
+class BALOO_FILE_EXPORT FileFetchJob : public KJob
 {
     Q_OBJECT
 public:
     FileFetchJob(const QString& url, QObject* parent = 0);
     FileFetchJob(const File& file, QObject* parent = 0);
+    FileFetchJob(const QStringList& urls, QObject* parent = 0);
     ~FileFetchJob();
 
     virtual void start();
@@ -52,6 +53,7 @@ public:
     };
 
     File file() const;
+    QList<File> files() const;
 
 Q_SIGNALS:
     void fileReceived(const Baloo::File& file);
@@ -66,4 +68,4 @@ private:
 
 }
 
-#endif // FILEFETCHJOB_H
+#endif // _BALOO_FILEFETCHJOB_H

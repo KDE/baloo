@@ -32,6 +32,9 @@
 
 #include "file.h"
 #include "filefetchjob.h"
+#include "searchstore.h" // for deserialize
+
+#include <kfilemetadata/propertyinfo.h>
 
 QString colorString(const QString& input, int color)
 {
@@ -90,15 +93,28 @@ int main(int argc, char* argv[])
         job = new Baloo::FileFetchJob(url.toLocalFile());
         job->exec();
 
-        text = colorString(url.toLocalFile(), 32);
+        Baloo::File file = job->file();
+        int fid = Baloo::deserialize("file", file.id());
+        text = colorString(QString::number(fid), 31);
+        text += " ";
+        text += colorString(url.toLocalFile(), 32);
         stream << text << endl;
 
-        QVariantMap properties = job->file().properties();
-        QMapIterator<QString, QVariant> it(properties);
-        while (it.hasNext()) {
-          it.next();
-          stream << "\t" << it.key() << ": " << it.value().toString() << endl;
+        KFileMetaData::PropertyMap propMap = file.properties();
+        KFileMetaData::PropertyMap::const_iterator it = propMap.constBegin();
+        for (; it != propMap.constEnd(); ++it) {
+            KFileMetaData::PropertyInfo pi(it.key());
+            stream << "\t" << pi.displayName() << ": " << it.value().toString() << endl;
         }
+
+        if (file.rating())
+            stream << "\t" << "Rating: " << file.rating() << endl;
+
+        if (!file.tags().isEmpty())
+            stream << "\t" << "Tags: " << file.tags().join(", ") << endl;
+
+        if (!file.userComment().isEmpty())
+            stream << "\t" << "User Comment: " << file.userComment() << endl;
     }
 
     return 0;

@@ -20,6 +20,41 @@ include(FeatureSummary)
 include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(KDECompilerSettings)
+
+find_package(KdepimLibs 4.12.43 CONFIG)
+set_package_properties(KdepimLibs PROPERTIES
+    DESCRIPTION "The KDEPIM libraries"
+    URL "http://www.kde.org"
+    TYPE REQUIRED
+)
+
+find_package(Xapian CONFIG)
+set_package_properties(Xapian PROPERTIES
+    DESCRIPTION "The Xapian search engine library"
+    URL "http://xapian.org"
+    TYPE REQUIRED
+)
+
+find_package(KFileMetaData CONFIG)
+set_package_properties(KFileMetaData PROPERTIES
+    DESCRIPTION "A library for extracting file metadata"
+    URL "https://projects.kde.org/kfilemetadata"
+    TYPE REQUIRED
+)
+
+find_package(QJSON)
+set_package_properties(QJSON PROPERTIES
+    DESCRIPTION "Qt library for handling JSON data"
+    URL "http://qjson.sourceforge.net/"
+    TYPE REQUIRED
+)
+
+find_package(Xattr)
+set_package_properties(Xattr PROPERTIES
+    URL "http://savannah.nongnu.org/projects/attr"
+    TYPE REQUIRED
+)
+
 add_definitions(-DQT_NO_KEYWORDS)
 
 set(KF5_VERSION "5.0.0")
@@ -30,6 +65,7 @@ ecm_setup_version(${KF5_VERSION} VARIABLE_PREFIX BALOO
 include_directories(
   ${QJSON_INCLUDE_DIR}
   ${KFILEMETADATA_INCLUDE_DIR}
+  ${XAPIAN_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/file/lib
@@ -48,4 +84,8 @@ install(EXPORT BalooLibraryTargets
         DESTINATION ${LIB_INSTALL_DIR}/cmake/Baloo
         FILE BalooTargetsWithPrefix.cmake)
 
-feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
+
+feature_summary(WHAT ALL
+    INCLUDE_QUIET_PACKAGES
+    FATAL_ON_MISSING_REQUIRED_PACKAGES
+)

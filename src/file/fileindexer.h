@@ -28,6 +28,7 @@ namespace Baloo
 {
 
 class IndexScheduler;
+class FileIndexerConfig;
 
 /**
  * Service controlling the file indexer
@@ -38,7 +39,7 @@ class FileIndexer : public QObject
     Q_CLASSINFO("D-Bus Interface", "org.kde.baloo.file")
 
 public:
-    FileIndexer(Database* db, QObject* parent = 0);
+    FileIndexer(Database* db, FileIndexerConfig* config, QObject* parent = 0);
     ~FileIndexer();
 
 Q_SIGNALS:
@@ -139,6 +140,7 @@ private Q_SLOTS:
 
 private:
     IndexScheduler* m_indexScheduler;
+    FileIndexerConfig* m_config;
     bool m_startupUpdateDone;
 };
 }

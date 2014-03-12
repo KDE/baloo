@@ -32,13 +32,16 @@ namespace Baloo {
 
 class FileSearchStore : public XapianSearchStore
 {
+    Q_OBJECT
+    Q_INTERFACES(Baloo::SearchStore)
 public:
-    FileSearchStore(QObject* parent, const QVariantList& args);
+    FileSearchStore(QObject* parent = 0);
     virtual ~FileSearchStore();
 
     virtual void setDbPath(const QString& path);
     virtual QStringList types();
     virtual QString text(int queryId);
+    virtual QString icon(int queryId);
 
 protected:
     virtual Xapian::Query constructQuery(const QString& property,
@@ -56,6 +59,8 @@ protected:
 private:
     QSqlDatabase* m_sqlDb;
     QMutex m_sqlMutex;
+
+    QHash<QString, std::string> m_prefixes;
 };
 
 }

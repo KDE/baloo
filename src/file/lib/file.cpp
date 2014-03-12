@@ -48,11 +48,28 @@ File::~File()
     delete d;
 }
 
-File File::fromId(const Item::Id& id)
+const File& File::operator=(const File& f)
+{
+    delete d;
+    d = new FilePrivate(*f.d);
+    return *this;
+}
+
+File File::fromId(const QByteArray& id)
 {
     File file;
     file.setId(id);
     return file;
+}
+
+QByteArray File::id() const
+{
+    return d->id;
+}
+
+void File::setId(const QByteArray& id)
+{
+    d->id = id;
 }
 
 QString File::url() const
@@ -60,14 +77,19 @@ QString File::url() const
     return d->url;
 }
 
-QVariantMap File::properties() const
+void File::setUrl(const QString& url)
 {
-    return d->variantMap;
+    d->url = url;
 }
 
-QVariant File::property(const QString& key) const
+KFileMetaData::PropertyMap File::properties() const
 {
-    return d->variantMap.value(key);
+    return d->propertyMap;
+}
+
+QVariant File::property(KFileMetaData::Property::Property property) const
+{
+    return d->propertyMap.value(property);
 }
 
 void File::setRating(int rating)

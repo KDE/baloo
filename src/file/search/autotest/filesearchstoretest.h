@@ -45,6 +45,7 @@ private Q_SLOTS:
 
     void testSimpleSearchString();
     void testIncludeDir();
+    void testRatings();
 
 private:
     KTempDir* m_tempDir;
@@ -53,6 +54,7 @@ private:
 
     uint insertUrl(const QString& url);
     void insertText(int id, const QString& text);
+    void insertRating(int id, int rating);
 };
 
 }

@@ -49,6 +49,11 @@ Term::Term()
 {
 }
 
+Term::Term(const Term& t)
+    : d(new Private(*t.d))
+{
+}
+
 Term::Term(const QString& property)
     : d(new Private)
 {
@@ -103,6 +108,11 @@ Term::Term(Term::Operation op, const QList<Term>& t)
 {
     d->m_op = op;
     d->m_subTerms = t;
+}
+
+Term::~Term()
+{
+    delete d;
 }
 
 bool Term::isValid() const
@@ -332,4 +342,10 @@ bool Term::operator==(const Term& rhs) const
     }
 
     return true;
+}
+
+Term& Term::operator=(const Term& rhs)
+{
+    *d = *rhs.d;
+    return *this;
 }

@@ -25,6 +25,7 @@
 #include "db.h"
 #include "file.h"
 #include "file_p.h"
+#include "searchstore.h"
 
 #include <QTimer>
 #include <QFile>
@@ -41,25 +42,32 @@ using namespace Baloo;
 
 class FileFetchJob::Private {
 public:
-    QString url;
-    QByteArray id;
+    QList<File> m_files;
 
-    File m_file;
+    void fetchUserMetadata(File& file);
 };
 
 FileFetchJob::FileFetchJob(const QString& url, QObject* parent)
-    : ItemFetchJob(parent)
+    : KJob(parent)
     , d(new Private)
 {
-    d->url = url;
+    File file(url);
+    d->m_files << file;
 }
 
 FileFetchJob::FileFetchJob(const File& file, QObject* parent)
-    : ItemFetchJob(parent)
+    : KJob(parent)
     , d(new Private)
 {
-    d->id = file.id();
-    d->url = file.url();
+    d->m_files << file;
+}
+
+FileFetchJob::FileFetchJob(const QStringList& urls, QObject* parent)
+    : KJob(parent)
+    , d(new Private)
+{
+    Q_FOREACH (const QString& url, urls)
+        d->m_files << File(url);
 }
 
 FileFetchJob::~FileFetchJob()
@@ -74,85 +82,105 @@ void FileFetchJob::start()
 
 void FileFetchJob::doStart()
 {
-    const QString& url = d->url;
-    if (url.size() && !QFile::exists(url)) {
-        setError(Error_FileDoesNotExist);
-        setErrorText("File " + url + " does not exist");
-        emitResult();
-        return;
+    QList<File>::iterator it = d->m_files.begin();
+    for (; it != d->m_files.end(); ++it) {
+        File& file = *it;
+        const QString& url = file.url();
+        if (url.size() && !QFile::exists(url)) {
+            setError(Error_FileDoesNotExist);
+            setErrorText("File " + url + " does not exist");
+            emitResult();
+            return;
+        }
+
+        if (file.id().size() && !file.id().startsWith("file")) {
+            setError(Error_InvalidId);
+            setErrorText("Invalid Id " + QString::fromUtf8(file.id()));
+            emitResult();
+            return;
+        }
+
+        FileMapping fileMap;
+        fileMap.setId(deserialize("file", file.id()));
+        fileMap.setUrl(file.url());
+
+        if (!fileMap.fetch(fileMappingDb())) {
+            kDebug() << "No file index information found" << url;
+            // TODO: Send file for indexing!!
+
+            d->fetchUserMetadata(file);
+            Q_EMIT fileReceived(file);
+            emitResult();
+            return;
+        }
+
+        const int id = fileMap.id();
+        file.setId(serialize("file", id));
+        file.setUrl(fileMap.url());
+
+        // Fetch data from Xapian
+        Xapian::Database db(fileIndexDbPath().toStdString());
+        try {
+            Xapian::Document doc = db.get_document(id);
+
+            std::string docData = doc.get_data();
+            const QByteArray arr(docData.c_str(), docData.length());
+
+            QJson::Parser parser;
+            QVariantMap varMap = parser.parse(arr).toMap();
+            file.d->propertyMap = KFileMetaData::toPropertyMap(varMap);
+        }
+        catch (const Xapian::DocNotFoundError&){
+            // Send file for indexing to baloo_file
+        }
+        catch (const Xapian::InvalidArgumentError& err) {
+            kError() << err.get_msg().c_str();
+        }
+
+        d->fetchUserMetadata(file);
+        Q_EMIT fileReceived(file);
     }
+    emitResult();
+}
 
-    if (d->id.size() && !d->id.startsWith("file")) {
-        setError(Error_InvalidId);
-        setErrorText("Invalid Id " + QString::fromUtf8(d->id));
-        emitResult();
-        return;
-    }
-
-    FileMapping fileMap;
-    fileMap.setId(deserialize("file", d->id));
-    fileMap.setUrl(d->url);
-
-    if (!fileMap.fetch(fileMappingDb())) {
-        // TODO: Send file for indexing!!
-        emitResult();
-        return;
-    }
-
-    const int id = fileMap.id();
-    d->m_file.setId(serialize("file", id));
-    d->m_file.d->url = fileMap.url();
-
-    // Fetch data from Xapian
-    Xapian::Database db(fileIndexDbPath().toStdString());
-    try {
-        Xapian::Document doc = db.get_document(id);
-
-        std::string docData = doc.get_data();
-        const QByteArray arr(docData.c_str(), docData.length());
-
-        QJson::Parser parser;
-        d->m_file.d->variantMap = parser.parse(arr).toMap();
-    }
-    catch (const Xapian::DocNotFoundError&){
-        // Send file for indexing to baloo_file
-    }
-    catch (const Xapian::InvalidArgumentError& err) {
-        kError() << err.get_msg().c_str();
-    }
-
+void FileFetchJob::Private::fetchUserMetadata(File& file)
+{
     // Fetch xattr
-    QFile file(d->url);
-    file.open(QIODevice::ReadOnly);
+    QByteArray fileUrl = QFile::encodeName(file.url());
 
     char buffer[1000];
     int len = 0;
 
-    len = fgetxattr(file.handle(), "user.baloo.rating", &buffer, 1000);
+    len = getxattr(fileUrl.constData(), "user.baloo.rating", &buffer, 1000);
     if (len > 0) {
         QString str = QString::fromUtf8(buffer, len);
-        d->m_file.setRating(str.toInt());
+        file.setRating(str.toInt());
     }
 
-    len = fgetxattr(file.handle(), "user.baloo.tags", &buffer, 1000);
+    len = getxattr(fileUrl.constData(), "user.baloo.tags", &buffer, 1000);
     if (len > 0) {
         QString str = QString::fromUtf8(buffer, len);
-        d->m_file.setTags(str.split(',', QString::SkipEmptyParts));
+        file.setTags(str.split(',', QString::SkipEmptyParts));
     }
 
-    len = fgetxattr(file.handle(), "user.xdg.comment", &buffer, 1000);
+    len = getxattr(fileUrl.constData(), "user.xdg.comment", &buffer, 1000);
     if (len > 0) {
         QString str = QString::fromUtf8(buffer, len);
-        d->m_file.setUserComment(str);
+        file.setUserComment(str);
     }
-
-    Q_EMIT itemReceived(d->m_file);
-    Q_EMIT fileReceived(d->m_file);
-    emitResult();
 }
 
 File FileFetchJob::file() const
 {
-    return d->m_file;
+    if (d->m_files.size() >= 1)
+        return d->m_files.first();
+    else
+        return File();
 }
+
+QList<File> FileFetchJob::files() const
+{
+    return d->m_files;
+}
+
 

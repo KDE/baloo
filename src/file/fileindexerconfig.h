@@ -42,16 +42,10 @@ class FileIndexerConfig : public QObject
 
 public:
     /**
-     * Create a new file indexr config. The first instance to be
-     * created will be accessible via self().
+     * Create a new file indexr config.
      */
     FileIndexerConfig(QObject* parent = 0);
     ~FileIndexerConfig();
-
-    /**
-     * Get the first created instance of FileIndexerConfig
-     */
-    static FileIndexerConfig* self();
 
     /**
      * A cleaned up list of all include and exclude folders
@@ -155,7 +149,6 @@ public:
      * log errors in a dedicated file.
      */
     bool isDebugModeEnabled() const;
-
 
     /**
      * Returns true if the folder is in the list indexed directories

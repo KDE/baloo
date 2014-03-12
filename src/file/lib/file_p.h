@@ -25,14 +25,15 @@
 
 #include <QString>
 #include <QStringList>
-#include <QVariantMap>
+#include <kfilemetadata/properties.h>
 
 namespace Baloo {
 
 class FilePrivate {
 public:
+    QByteArray id;
     QString url;
-    QVariantMap variantMap;
+    KFileMetaData::PropertyMap propertyMap;
 
     int rating;
     QStringList tags;

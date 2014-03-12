@@ -27,37 +27,46 @@
 #include <qjson/serializer.h>
 
 #include <QDateTime>
+#include <kfilemetadata/propertyinfo.h>
+#include <kfilemetadata/typeinfo.h>
 
-Result::Result()
-    : KFileMetaData::ExtractionResult()
+// In order to use it in a vector
+Result::Result(): ExtractionResult(QString(), QString())
 {
 }
 
-void Result::add(const QString& key_, const QVariant& val)
+Result::Result(const QString& url, const QString& mimetype)
+    : KFileMetaData::ExtractionResult(url, mimetype)
 {
-    kDebug() << key_ << val;
-    m_map.insertMulti(key_, val);
+}
 
-    QString key = key_.toUpper();
+void Result::add(KFileMetaData::Property::Property property, const QVariant& value)
+{
+    QString p = QString::number(static_cast<int>(property));
+    m_map.insertMulti(p, value);
 
-    if (val.type() == QVariant::Bool) {
-        m_doc.add_boolean_term(key.toStdString());
+    QString prefix = QLatin1String("X") + p;
+
+    if (value.type() == QVariant::Bool) {
+        m_doc.add_boolean_term(prefix.toUtf8().constData());
     }
-    else if (val.type() == QVariant::Int) {
-        const QString term = key + val.toString();
-        m_doc.add_term(term.toStdString());
+    else if (value.type() == QVariant::Int) {
+        const QString term = prefix + value.toString();
+        m_doc.add_term(term.toUtf8().constData());
     }
-    else if (val.type() == QVariant::DateTime) {
-        const QString term = key + val.toDateTime().toString(Qt::ISODate);
-        m_doc.add_term(term.toStdString());
+    else if (value.type() == QVariant::DateTime) {
+        const QString term = prefix + value.toDateTime().toString(Qt::ISODate);
+        m_doc.add_term(term.toUtf8().constData());
     }
     else {
-        const std::string value = val.toString().toStdString();
-        if (value.empty())
+        const QByteArray val = value.toString().toUtf8();
+        if (val.isEmpty())
             return;
 
-        m_termGen.index_text(value);
-        m_termGen.index_text(value, 1, key.toStdString());
+        m_termGen.index_text(val.constData(), 1, prefix.toUtf8().constData());
+        KFileMetaData::PropertyInfo pi(property);
+        if (pi.shouldBeIndexed())
+            m_termGen.index_text(val.constData());
     }
 }
 
@@ -66,9 +75,10 @@ void Result::append(const QString& text)
     m_termGenForText.index_text(text.toStdString());
 }
 
-void Result::addType(const QString& type)
+void Result::addType(KFileMetaData::Type::Type type)
 {
-    QString t = 'T' + type.toLower();
+    KFileMetaData::TypeInfo ti(type);
+    QString t = 'T' + ti.name().toLower();
     m_doc.add_boolean_term(t.toStdString());
 }
 

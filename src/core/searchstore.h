@@ -29,7 +29,6 @@
 #include <KService>
 
 #include "core_export.h"
-#include "item.h"
 
 namespace Baloo {
 
@@ -63,7 +62,7 @@ public:
     virtual bool next(int queryId) = 0;
     virtual void close(int queryId) = 0;
 
-    virtual Item::Id id(int queryId) = 0;
+    virtual QByteArray id(int queryId) = 0;
 
     virtual QUrl url(int queryId);
     virtual QString text(int queryId);
@@ -71,10 +70,24 @@ public:
     virtual QString property(int queryId, const QString& propName);
 };
 
+
+//
+// Convenience functions
+//
+inline QByteArray serialize(const QByteArray& namespace_, int id) {
+    return namespace_ + ':' + QByteArray::number(id);
 }
 
+inline int deserialize(const QByteArray& namespace_, const QByteArray& str) {
+    // The +1 is for the ':'
+    return str.mid(namespace_.size() + 1).toInt();
+}
+
+}
+
+Q_DECLARE_INTERFACE(Baloo::SearchStore, "org.kde.Baloo.SearchStore")
+
 #define BALOO_EXPORT_SEARCHSTORE( classname, libname )    \
-    K_PLUGIN_FACTORY(factory, registerPlugin<classname>();) \
-    K_EXPORT_PLUGIN(factory(#libname))
+    Q_EXPORT_PLUGIN2(libname, classname)
 
 #endif // _BALOO_SEARCHSTORE_H

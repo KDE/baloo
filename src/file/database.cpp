@@ -61,7 +61,7 @@ bool Database::init()
     }
     m_xapianDb = new Xapian::Database(m_path.toStdString());
 
-    m_sqlDb = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE3"));
+    m_sqlDb = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE"));
     m_sqlDb->setDatabaseName(m_path + "/fileMap.sqlite3");
 
     if (!m_sqlDb->open()) {
@@ -115,7 +115,7 @@ QSqlDatabase& Database::sqlDatabase()
     return *m_sqlDb;
 }
 
-Xapian::Database* Database::xapainDatabase()
+Xapian::Database* Database::xapianDatabase()
 {
     return m_xapianDb;
 }

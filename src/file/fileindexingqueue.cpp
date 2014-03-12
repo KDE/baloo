@@ -23,7 +23,6 @@
 
 #include "fileindexingqueue.h"
 #include "fileindexingjob.h"
-#include "fileindexerconfig.h"
 #include "util.h"
 #include "database.h"
 
@@ -35,13 +34,10 @@ FileIndexingQueue::FileIndexingQueue(Database* db, QObject* parent)
     : IndexingQueue(parent)
     , m_db(db)
 {
-    m_maxSize = 120;
+    m_maxSize = 1200;
     m_batchSize = 40;
 
     m_fileQueue.reserve(m_maxSize);
-
-    FileIndexerConfig* config = FileIndexerConfig::self();
-    connect(config, SIGNAL(configChanged()), this, SLOT(slotConfigChanged()));
 }
 
 // FIXME: We are not emiting startedIndexing!
@@ -51,10 +47,10 @@ void FileIndexingQueue::fillQueue()
     if (m_fileQueue.size() >= m_maxSize)
         return;
 
-    reopenIfRequired(m_db->xapainDatabase());
-    Xapian::Enquire enquire(*m_db->xapainDatabase());
+    Xapian::Enquire enquire(*m_db->xapianDatabase());
     enquire.set_query(Xapian::Query("Z1"));
 
+    m_db->xapianDatabase()->reopen();
     Xapian::MSet mset = enquire.get_mset(0, m_maxSize - m_fileQueue.size());
     Xapian::MSetIterator it = mset.begin();
     for (; it != mset.end(); it++) {
@@ -99,7 +95,7 @@ void FileIndexingQueue::process(const QVector<uint>& files)
 void FileIndexingQueue::slotFinishedIndexingFile(KJob*)
 {
     // The process would have modified the db
-    m_db->xapainDatabase()->reopen();
+    m_db->xapianDatabase()->reopen();
     if (m_fileQueue.isEmpty()) {
         fillQueue();
     }
@@ -108,8 +104,8 @@ void FileIndexingQueue::slotFinishedIndexingFile(KJob*)
 
 void FileIndexingQueue::slotIndexingFailed(uint id)
 {
-    reopenIfRequired(m_db->xapainDatabase());
-    Xapian::Document doc = m_db->xapainDatabase()->get_document(id);
+    m_db->xapianDatabase()->reopen();
+    Xapian::Document doc = m_db->xapianDatabase()->get_document(id);
 
     updateIndexingLevel(doc, -1);
     Q_EMIT newDocument(id, doc);
@@ -119,10 +115,4 @@ void FileIndexingQueue::slotIndexingFailed(uint id)
 void FileIndexingQueue::clear()
 {
     m_fileQueue.clear();
-}
-
-void FileIndexingQueue::slotConfigChanged()
-{
-    m_fileQueue.clear();
-    fillQueue();
 }

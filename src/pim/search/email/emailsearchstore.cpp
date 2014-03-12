@@ -21,7 +21,6 @@
  */
 
 #include "emailsearchstore.h"
-#include "item.h"
 #include "term.h"
 #include "query.h"
 #include "agepostingsource.h"
@@ -33,7 +32,7 @@
 
 using namespace Baloo;
 
-EmailSearchStore::EmailSearchStore(QObject* parent, const QVariantList&)
+EmailSearchStore::EmailSearchStore(QObject* parent)
     : XapianSearchStore(parent)
 {
     m_prefix.insert("from", "F");

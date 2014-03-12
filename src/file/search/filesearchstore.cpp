@@ -21,7 +21,6 @@
  */
 
 #include "filesearchstore.h"
-#include "item.h"
 #include "term.h"
 #include "query.h"
 #include "filemapping.h"
@@ -33,16 +32,26 @@
 #include <KStandardDirs>
 #include <KDebug>
 #include <KUrl>
+#include <KMimeType>
+
+#include <kfilemetadata/propertyinfo.h>
 
 using namespace Baloo;
 
-FileSearchStore::FileSearchStore(QObject* parent, const QVariantList&)
+FileSearchStore::FileSearchStore(QObject* parent)
     : XapianSearchStore(parent)
     , m_sqlDb(0)
     , m_sqlMutex(QMutex::Recursive)
 {
     const QString path = KStandardDirs::locateLocal("data", "baloo/file/");
     setDbPath(path);
+
+    m_prefixes.insert("filename", "F");
+    m_prefixes.insert("mimetype", "M");
+    m_prefixes.insert("rating", "R");
+    m_prefixes.insert("tag", "T");
+    m_prefixes.insert("tags", "T");
+    m_prefixes.insert("usercomment", "C");
 }
 
 FileSearchStore::~FileSearchStore()
@@ -59,14 +68,14 @@ void FileSearchStore::setDbPath(const QString& path)
     const QString conName = "filesearchstore" + QString::number(qrand());
 
     delete m_sqlDb;
-    m_sqlDb = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE3", conName));
+    m_sqlDb = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE", conName));
     m_sqlDb->setDatabaseName(dbPath() + "/fileMap.sqlite3");
     m_sqlDb->open();
 }
 
 QStringList FileSearchStore::types()
 {
-    return QStringList() << "File" << "Audio" << "Video" << "Document" << "Image" << "Archive";
+    return QStringList() << "File" << "Audio" << "Video" << "Document" << "Image" << "Archive" << "Folder";
 }
 
 Xapian::Query FileSearchStore::convertTypes(const QStringList& types)
@@ -90,15 +99,52 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
     if (value.isNull())
         return Xapian::Query();
 
+    if (property.compare(QLatin1String("rating"), Qt::CaseInsensitive) == 0) {
+        int val = value.toInt();
+        if (val == 0)
+            return Xapian::Query();
+
+        QVector<std::string> terms;
+        if (com == Term::Greater || com == Term::GreaterEqual) {
+            if (com == Term::Greater)
+                val++;
+
+            for (int i=val; i<=10; i++) {
+                QByteArray arr = 'R' + QByteArray::number(i);
+                terms << arr.constData();
+            }
+        }
+        else if (com == Term::Less || com == Term::LessEqual) {
+            if (com == Term::Less)
+                val--;
+
+            for (int i=1; i<=val; i++) {
+                QByteArray arr = 'R' + QByteArray::number(i);
+                terms << arr.constData();
+            }
+        }
+        else if (com == Term::Equal) {
+            QByteArray arr = 'R' + QByteArray::number(val);
+            terms << arr.constData();
+        }
+
+        return Xapian::Query(Xapian::Query::OP_OR, terms.begin(), terms.end());
+    }
+
     if (com == Term::Contains) {
         Xapian::QueryParser parser;
         parser.set_database(*xapianDb());
 
         std::string p;
-        if (property.toLower() == "filename")
-            p = 'F';
-        else
-            p = property.toUpper().toStdString();
+        QHash<QString, std::string>::const_iterator it = m_prefixes.constFind(property.toLower());
+        if (it != m_prefixes.constEnd()) {
+            p = it.value();
+        }
+        else {
+            KFileMetaData::PropertyInfo pi = KFileMetaData::PropertyInfo::fromName(property);
+            int propPrefix = static_cast<int>(pi.property());
+            p = ('X' + QString::number(propPrefix)).toUtf8().constData();
+        }
 
         std::string str = value.toString().toStdString();
         int flags = Xapian::QueryParser::FLAG_DEFAULT | Xapian::QueryParser::FLAG_PARTIAL;
@@ -137,6 +183,13 @@ QString FileSearchStore::text(int queryId)
 {
     return KUrl(url(queryId)).fileName();
 }
+
+QString FileSearchStore::icon(int queryId)
+{
+    KMimeType::Ptr mime = KMimeType::findByUrl(url(queryId));
+    return mime->iconName();
+}
+
 
 Xapian::Query FileSearchStore::applyCustomOptions(const Xapian::Query& q, const QVariantHash& options)
 {

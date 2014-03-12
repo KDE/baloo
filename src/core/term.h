@@ -51,6 +51,7 @@ public:
     };
 
     Term();
+    Term(const Term& t);
 
     /**
      * The Item must contain the property \p property
@@ -81,6 +82,7 @@ public:
     Term(Operation op);
     Term(Operation op, const Term& t);
     Term(Operation op, const QList<Term>& t);
+    ~Term();
 
     bool isValid() const;
 
@@ -121,6 +123,8 @@ public:
     static Term fromVariantMap(const QVariantMap& map);
 
     bool operator == (const Term& rhs) const;
+
+    Term& operator=(const Term& rhs);
 
 private:
     class Private;

@@ -30,10 +30,11 @@ class Result : public KFileMetaData::ExtractionResult
 {
 public:
     Result();
+    Result(const QString& url, const QString& mimetype);
 
-    virtual void add(const QString& key, const QVariant& value);
+    virtual void add(KFileMetaData::Property::Property property, const QVariant& value);
     virtual void append(const QString& text);
-    virtual void addType(const QString& type);
+    virtual void addType(KFileMetaData::Type::Type type);
 
     void save(Xapian::WritableDatabase& db);
 

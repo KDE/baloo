@@ -24,7 +24,6 @@
 #define RESULT_ITERATOR_H
 
 #include "pim_export.h"
-#include "result.h"
 
 #include <Akonadi/Item>
 
@@ -38,6 +37,8 @@ class BALOO_PIM_EXPORT ResultIterator
 {
 public:
     ResultIterator();
+    ResultIterator(const ResultIterator& ri);
+    ~ResultIterator();
 
     Akonadi::Item::Id id();
     bool next();

@@ -11,6 +11,7 @@ set(filesearchstore_SRCS filesearchstoretest.cpp
                    ../../database.cpp
 )
 
+<<<<<<< HEAD
 ecm_add_test(${filesearchstore_SRCS}
     TEST_NAME "filesearchstoretest"
     LINK_LIBRARIES
@@ -20,4 +21,15 @@ ecm_add_test(${filesearchstore_SRCS}
         ${XAPIAN_LIBRARIES}
         baloocore
         balooxapian
+=======
+target_link_libraries(filesearchstoretest
+  ${QT_QTCORE_LIBRARY}
+  ${QT_QTSQL_LIBRARY}
+  ${QT_QTTEST_LIBRARY}
+  ${KDE4_KDECORE_LIBS}
+  ${XAPIAN_LIBRARIES}
+  ${KFILEMETADATA_LIBRARY}
+  baloocore
+  balooxapian
+>>>>>>> master
 )

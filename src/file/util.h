@@ -23,14 +23,12 @@
 #ifndef _BALOO_FILEINDEXER_UTIL_H_
 #define _BALOO_FILEINDEXER_UTIL_H_
 
-#include <KUrl>
 #include <xapian.h>
 
 namespace Baloo
 {
 
 void updateIndexingLevel(Xapian::Document& doc, int level);
-void reopenIfRequired(Xapian::Database* db);
 
 }
 #endif

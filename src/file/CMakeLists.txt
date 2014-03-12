@@ -15,7 +15,6 @@ set(file_SRCS
     fileindexer.cpp
     fileindexerconfig.cpp
     indexscheduler.cpp
-    indexcleaner.cpp
     indexingqueue.cpp
     basicindexingqueue.cpp
     fileindexingqueue.cpp
@@ -45,7 +44,6 @@ endif()
 add_executable(baloo_file ${file_SRCS})
 
 target_link_libraries(baloo_file
-    Qt5::Core
     Qt5::Sql
 
     KF5::KIOWidgets
@@ -68,3 +66,5 @@ add_subdirectory(autotest)
 add_subdirectory(tests)
 add_subdirectory(extractor)
 #add_subdirectory(kcm)
+add_subdirectory(inotify)
+add_subdirectory(cleaner)

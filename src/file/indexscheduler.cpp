@@ -26,7 +26,6 @@
 #include "basicindexingqueue.h"
 #include "commitqueue.h"
 #include "eventmonitor.h"
-#include "indexcleaner.h"
 #include "database.h"
 
 #include <KDebug>
@@ -34,21 +33,22 @@
 
 using namespace Baloo;
 
-IndexScheduler::IndexScheduler(Database* db, QObject* parent)
+IndexScheduler::IndexScheduler(Database* db, FileIndexerConfig* config, QObject* parent)
     : QObject(parent)
     , m_indexing(false)
+    , m_config(config)
     , m_db(db)
 {
-    FileIndexerConfig* indexConfig = FileIndexerConfig::self();
-    connect(indexConfig, SIGNAL(includeFolderListChanged(QStringList, QStringList)),
+    Q_ASSERT(m_config);
+    connect(m_config, SIGNAL(includeFolderListChanged(QStringList, QStringList)),
             this, SLOT(slotIncludeFolderListChanged(QStringList, QStringList)));
-    connect(indexConfig, SIGNAL(excludeFolderListChanged(QStringList, QStringList)),
+    connect(m_config, SIGNAL(excludeFolderListChanged(QStringList, QStringList)),
             this, SLOT(slotExcludeFolderListChanged(QStringList, QStringList)));
 
     // FIXME: What if both the signals are emitted?
-    connect(indexConfig, SIGNAL(fileExcludeFiltersChanged()),
+    connect(m_config, SIGNAL(fileExcludeFiltersChanged()),
             this, SLOT(slotConfigFiltersChanged()));
-    connect(indexConfig, SIGNAL(mimeTypeFiltersChanged()),
+    connect(m_config, SIGNAL(mimeTypeFiltersChanged()),
             this, SLOT(slotConfigFiltersChanged()));
 
     // Stop indexing when a device is unmounted
@@ -56,9 +56,8 @@ IndexScheduler::IndexScheduler(Database* db, QObject* parent)
     // connect(cache, SIGNAL(deviceTeardownRequested(const RemovableMediaCache::Entry*)),
     //        this, SLOT(slotTeardownRequested(const RemovableMediaCache::Entry*)));
 
-    m_basicIQ = new BasicIndexingQueue(m_db, this);
+    m_basicIQ = new BasicIndexingQueue(m_db, m_config, this);
     m_fileIQ = new FileIndexingQueue(m_db, this);
-    m_fileIQ->fillQueue();
 
     connect(m_basicIQ, SIGNAL(finishedIndexing()), this, SIGNAL(basicIndexingDone()));
     connect(m_fileIQ, SIGNAL(finishedIndexing()), this, SIGNAL(fileIndexingDone()));
@@ -82,9 +81,6 @@ IndexScheduler::IndexScheduler(Database* db, QObject* parent)
             this, SLOT(slotScheduleIndexing()));
     connect(m_eventMonitor, SIGNAL(powerManagementStatusChanged(bool)),
             this, SLOT(slotScheduleIndexing()));
-
-    m_cleaner = new IndexCleaner(this);
-    connect(m_cleaner, SIGNAL(finished(KJob*)), this, SLOT(slotCleaningDone()));
 
     m_commitQ = new CommitQueue(m_db, this);
     connect(m_commitQ, SIGNAL(committed()), this, SLOT(slotCommitted()));
@@ -181,21 +177,16 @@ void IndexScheduler::slotStartedIndexing()
 
 void IndexScheduler::slotFinishedIndexing()
 {
+    if (m_basicIQ->isEmpty()) {
+        m_fileIQ->fillQueue();
+        if (!m_fileIQ->isEmpty())
+            slotScheduleIndexing();
+    }
+
     if (m_basicIQ->isEmpty() && m_fileIQ->isEmpty()) {
         m_eventMonitor->suspendDiskSpaceMonitor();
         setIndexingStarted(false);
     }
-
-    if (m_basicIQ->isEmpty() && !m_fileIQ->isEmpty())
-        m_fileIQ->resume();
-}
-
-void IndexScheduler::slotCleaningDone()
-{
-    m_cleaner = 0;
-
-    m_state = State_Normal;
-    slotScheduleIndexing();
 }
 
 void IndexScheduler::updateDir(const QString& path, UpdateDirFlags flags)
@@ -220,7 +211,7 @@ void IndexScheduler::queueAllFoldersForUpdate(bool forceUpdate)
         flags |= ForceUpdate;
 
     // update everything again in case the folders changed
-    Q_FOREACH (const QString& f, FileIndexerConfig::self()->includeFolders()) {
+    Q_FOREACH (const QString& f, m_config->includeFolders()) {
         m_basicIQ->enqueue(FileMapping(f), flags);
     }
 
@@ -231,55 +222,33 @@ void IndexScheduler::queueAllFoldersForUpdate(bool forceUpdate)
 
 void IndexScheduler::slotIncludeFolderListChanged(const QStringList& added, const QStringList& removed)
 {
-    kDebug() << added << removed;
-    Q_FOREACH (const QString& path, removed) {
-        m_basicIQ->clear(path);
-        m_fileIQ->clear();
-    }
-
-    restartCleaner();
-
-    Q_FOREACH(const QString& path, added) {
-        m_basicIQ->enqueue(FileMapping(path), UpdateRecursive);
-    }
-    slotScheduleIndexing();
+    //Index the folders added to the include list, clear the folders removed from it
+    addClearFolders(added, removed);
 }
 
 void IndexScheduler::slotExcludeFolderListChanged(const QStringList& added, const QStringList& removed)
 {
-    kDebug() << added << removed;
-    Q_FOREACH (const QString& path, added) {
+    //Clear the folders added to the exclude list, index the folders removed from it
+    addClearFolders(removed, added);
+}
+
+//Index the folders in add, clear the folders in clear
+void IndexScheduler::addClearFolders(const QStringList& add, const QStringList& clear)
+{
+    kDebug() << "To index: " << add << "To clear: " << clear;
+    Q_FOREACH (const QString& path, clear) {
         m_basicIQ->clear(path);
         m_fileIQ->clear();
     }
 
-    restartCleaner();
-
-    Q_FOREACH (const QString &path, removed) {
+    Q_FOREACH (const QString &path, add) {
         m_basicIQ->enqueue(FileMapping(path), UpdateRecursive);
     }
-}
-
-void IndexScheduler::restartCleaner()
-{
-    if (m_cleaner) {
-        m_cleaner->kill();
-        delete m_cleaner;
-    }
-
-    // TODO: only clean the filters that were changed from the config
-    m_cleaner = new IndexCleaner(this);
-    connect(m_cleaner, SIGNAL(finished(KJob*)), this, SLOT(slotCleaningDone()));
-
-    m_state = State_Normal;
     slotScheduleIndexing();
 }
 
-
 void IndexScheduler::slotConfigFiltersChanged()
 {
-    restartCleaner();
-
     // We need to this - there is no way to avoid it
     m_basicIQ->clear();
     m_fileIQ->clear();
@@ -303,71 +272,97 @@ void IndexScheduler::slotTeardownRequested(const RemovableMediaCache::Entry* ent
 }
 */
 
-void IndexScheduler::slotScheduleIndexing()
+
+void IndexScheduler::setStateFromEvent()
 {
+   //Don't change the state if already suspended
     if (m_state == State_Suspended) {
         kDebug() << "Suspended";
-        m_basicIQ->suspend();
-        m_fileIQ->suspend();
-        if (m_cleaner)
-            m_cleaner->suspend();
     }
-
     else if (m_state == State_Cleaning) {
         kDebug() << "Cleaning";
-        m_basicIQ->suspend();
-        m_fileIQ->suspend();
-        if (m_cleaner)
-            m_cleaner->resume();
     }
-
     else if (m_eventMonitor->isDiskSpaceLow()) {
         kDebug() << "Disk Space";
         m_state = State_LowDiskSpace;
-
-        m_basicIQ->suspend();
-        m_fileIQ->suspend();
     }
-
     else if (m_eventMonitor->isOnBattery()) {
         kDebug() << "Battery";
         m_state = State_OnBattery;
-
-        m_basicIQ->setDelay(0);
-        m_basicIQ->resume();
-
-        m_fileIQ->suspend();
-        if (m_cleaner)
-            m_cleaner->suspend();
     }
-
     else if (m_eventMonitor->isIdle()) {
         kDebug() << "Idle";
-        if (m_cleaner) {
-            m_state = State_Cleaning;
-            m_cleaner->start();
-            slotScheduleIndexing();
-        } else {
-            m_state = State_UserIdle;
-            m_basicIQ->setDelay(0);
-            m_basicIQ->resume();
-        }
+        m_state = State_UserIdle;
     }
-
     else {
         kDebug() << "Normal";
         m_state = State_Normal;
-
-        m_basicIQ->setDelay(0);
-        m_basicIQ->resume();
-
     }
+}
 
-    // The FileIQ should never run when the BasicIQ is still running
-    if (m_basicIQ->isEmpty() && !m_fileIQ->isEmpty())
-        m_fileIQ->resume();
-    else
+bool IndexScheduler::scheduleBasicQueue()
+{
+    switch (m_state) {
+        case State_Suspended:
+        case State_Cleaning:
+        case State_LowDiskSpace:
+            kDebug() << "No basic queue: suspended, cleaning or low disc space";
+            return false;
+        case State_OnBattery:
+        case State_UserIdle:
+        case State_Normal:
+        default:
+            return true;
+    }
+}
+
+
+bool IndexScheduler::scheduleFileQueue()
+{
+    if (!m_basicIQ->isEmpty()){
+        kDebug() << "Basic queue not empty, so no file queue.";
+        return false;
+    }
+    switch (m_state) {
+        case State_Suspended:
+        case State_Cleaning:
+        case State_LowDiskSpace:
+        case State_OnBattery:
+            kDebug() << "No file queue: suspended, cleaning, low disc space or on battery";
+            return false;
+        case State_UserIdle:
+        case State_Normal:
+        default:
+            return true;
+    }
+}
+
+void IndexScheduler::slotScheduleIndexing()
+{
+    //Set the state from the event monitor
+    setStateFromEvent();
+
+    //Should we run the basic queue?
+    bool runBasic = scheduleBasicQueue();
+
+    //If we should not, stop.
+    if (!runBasic) {
+        m_basicIQ->suspend();
         m_fileIQ->suspend();
+    }
+    else {
+        //Run the basic queue if it isn't empty
+        if (!m_basicIQ->isEmpty()) {
+            m_basicIQ->setDelay(0);
+            m_basicIQ->resume();
+        }
+        //Consider running the file queue:
+        //this will only happen if the basic queue is not empty.
+        if (scheduleFileQueue())
+            m_fileIQ->resume();
+        else
+            m_fileIQ->suspend();
+    }
 }
 
 QString IndexScheduler::userStatusString() const

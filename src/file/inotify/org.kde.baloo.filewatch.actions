@@ -1,0 +1,5 @@
+[org.kde.baloo.filewatch.raiselimit]
+Name=Folder Watch Limit
+Description=To avoid missing file changes, raise the inotify folder watch limit
+Policy=auth_admin
+Persistence=session

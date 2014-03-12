@@ -34,11 +34,11 @@
 
 using namespace Baloo;
 
-BasicIndexingQueue::BasicIndexingQueue(Database* db, QObject* parent)
+BasicIndexingQueue::BasicIndexingQueue(Database* db, FileIndexerConfig* config, QObject* parent)
     : IndexingQueue(parent)
     , m_db(db)
+    , m_config(config)
 {
-
 }
 
 void BasicIndexingQueue::clear()
@@ -149,11 +149,11 @@ bool BasicIndexingQueue::process(FileMapping& file, UpdateDirFlags flags)
 
 bool BasicIndexingQueue::shouldIndex(FileMapping& file, const QString& mimetype) const
 {
-    bool shouldIndexFile = FileIndexerConfig::self()->shouldFileBeIndexed(file.url());
-    if (!shouldIndexFile)
+    bool shouldBeIndexed = m_config->shouldBeIndexed(file.url());
+    if (!shouldBeIndexed)
         return false;
 
-    bool shouldIndexType = FileIndexerConfig::self()->shouldMimeTypeBeIndexed(mimetype);
+    bool shouldIndexType = m_config->shouldMimeTypeBeIndexed(mimetype);
     if (!shouldIndexType)
         return false;
 
@@ -166,8 +166,8 @@ bool BasicIndexingQueue::shouldIndex(FileMapping& file, const QString& mimetype)
     }
 
     try {
-        reopenIfRequired(m_db->xapainDatabase());
-        Xapian::Document doc = m_db->xapainDatabase()->get_document(file.id());
+        m_db->xapianDatabase()->reopen();
+        Xapian::Document doc = m_db->xapianDatabase()->get_document(file.id());
         Xapian::TermIterator it = doc.termlist_begin();
         it.skip_to("DT_M");
         if (it == doc.termlist_end()) {
@@ -194,10 +194,9 @@ bool BasicIndexingQueue::shouldIndex(FileMapping& file, const QString& mimetype)
     return false;
 }
 
-// static
 bool BasicIndexingQueue::shouldIndexContents(const QString& dir)
 {
-    return FileIndexerConfig::self()->shouldFolderBeIndexed(dir);
+    return m_config->shouldFolderBeIndexed(dir);
 }
 
 void BasicIndexingQueue::index(const FileMapping& file)

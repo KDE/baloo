@@ -20,18 +20,17 @@
  *
  */
 
-#ifndef FILE_H
-#define FILE_H
+#ifndef _BALOO_FILE_H
+#define _BALOO_FILE_H
 
-#include "item.h"
 #include "filefetchjob.h"
-#include <QVariantMap>
+#include <kfilemetadata/properties.h>
 
 namespace Baloo {
 
 class FilePrivate;
 
-class BALOO_FILE_EXPORT File : public Item
+class BALOO_FILE_EXPORT File
 {
 public:
     File();
@@ -39,16 +38,22 @@ public:
     File(const QString& url);
     ~File();
 
-    static File fromId(const Item::Id& id);
+    const File& operator =(const File& f);
+
+    static File fromId(const QByteArray& id);
 
     QString url() const;
+    void setUrl(const QString& url);
+
+    QByteArray id() const;
+    void setId(const QByteArray& id);
 
     /**
      * Gives a variant map of the properties that have been extracted
      * from the file by the indexer
      */
-    QVariantMap properties() const;
-    QVariant property(const QString& key) const;
+    KFileMetaData::PropertyMap properties() const;
+    QVariant property(KFileMetaData::Property::Property property) const;
 
     void setRating(int rating);
     int rating() const;
@@ -67,4 +72,4 @@ private:
 
 }
 
-#endif // FILE_H
+#endif // _BALOO_FILE_H

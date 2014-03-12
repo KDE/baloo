@@ -95,12 +95,12 @@ void Baloo::CommitQueue::commit()
 
         db.commit();
         kDebug() << "Xapian Committed";
-        m_db->xapainDatabase()->reopen();
+        m_db->xapianDatabase()->reopen();
 
         Q_EMIT committed();
     }
     catch (const Xapian::DatabaseLockError& err) {
-        kError() << err.get_error_string();
+        kError() << err.get_msg().c_str();
         startTimers();
     }
 }

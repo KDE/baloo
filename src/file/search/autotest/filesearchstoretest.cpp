@@ -52,7 +52,7 @@ void FileSearchStoreTest::init()
     m_db->setPath(m_tempDir->name());
     m_db->init();
 
-    m_store = new FileSearchStore(this, QVariantList());
+    m_store = new FileSearchStore(this);
     m_store->setDbPath(m_tempDir->name());
 }
 
@@ -93,8 +93,24 @@ void FileSearchStoreTest::insertText(int id, const QString& text)
     wdb->replace_document(id, doc);
     wdb->commit();
 
-    m_db->xapainDatabase()->reopen();
+    m_db->xapianDatabase()->reopen();
 }
+
+void FileSearchStoreTest::insertRating(int id, int rating)
+{
+    Xapian::Document doc;
+
+    QString str = 'R' + QString::number(rating);
+    doc.add_term(str.toStdString());
+
+    QScopedPointer<Xapian::WritableDatabase> wdb(new Xapian::WritableDatabase(m_tempDir->name().toStdString(),
+                                                                              Xapian::DB_CREATE_OR_OPEN));
+    wdb->replace_document(id, doc);
+    wdb->commit();
+
+    m_db->xapianDatabase()->reopen();
+}
+
 
 void FileSearchStoreTest::testSimpleSearchString()
 {
@@ -173,5 +189,57 @@ void FileSearchStoreTest::testIncludeDir()
 
     m_store->close(qid);
 }
+
+void FileSearchStoreTest::testRatings()
+{
+    QString url1("/home/t/a");
+    uint id1 = insertUrl(url1);
+    insertRating(id1, 2);
+
+    QString url2("/home/t/b");
+    uint id2 = insertUrl(url2);
+    insertRating(id2, 4);
+
+    QString url3("/home/garden/b");
+    uint id3 = insertUrl(url3);
+    insertRating(id3, 6);
+
+    QString url4("/home/tt/b");
+    uint id4 = insertUrl(url4);
+    insertRating(id4, 10);
+
+    QString url5("/home/tt/c");
+    uint id5 = insertUrl(url5);
+    insertText(id5, "Test text");
+
+    //
+    // Less than 5
+    //
+    Query q;
+    q.addType("File");
+    q.setTerm(Term("rating", 5, Term::Less));
+
+    int qid1 = m_store->exec(q);
+    QCOMPARE(qid1, 1);
+
+    QVERIFY(m_store->next(qid1));
+    QCOMPARE(m_store->id(qid1), serialize("file", id1));
+    QVERIFY(m_store->next(qid1));
+    QCOMPARE(m_store->id(qid1), serialize("file", id2));
+    QVERIFY(!m_store->next(qid1));
+
+    //
+    // Greater than 6
+    //
+    q.setTerm(Term("rating", 6, Term::Greater));
+
+    int qid2 = m_store->exec(q);
+    QCOMPARE(qid2, 2);
+
+    QVERIFY(m_store->next(qid2));
+    QCOMPARE(m_store->id(qid2), serialize("file", id4));
+    QVERIFY(!m_store->next(qid2));
+}
+
 
 QTEST_KDEMAIN_CORE(Baloo::FileSearchStoreTest)

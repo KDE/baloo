@@ -27,31 +27,33 @@
 
 using namespace Baloo;
 
-class Baloo::ResultIterator::Private {
-public:
-    int queryId;
-    SearchStore* store;
-};
+ResultIteratorPrivate::ResultIteratorPrivate()
+    : queryId(0)
+    , store(0)
+{
+}
+
+/*
+ * FIXME: The linker complains if it is not present in the header.
+ResultIteratorPrivate::~ResultIteratorPrivate()
+{
+    if (store) {
+        store->close(queryId);
+    }
+}
+*/
+
 
 ResultIterator::ResultIterator(int id, SearchStore* store)
-    : d(new Private)
+    : d(new ResultIteratorPrivate)
 {
     d->queryId = id;
     d->store = store;
 }
 
 ResultIterator::ResultIterator()
-    : d(new Private)
+    : d(new ResultIteratorPrivate)
 {
-    d->queryId = 0;
-    d->store = 0;
-}
-
-ResultIterator::~ResultIterator()
-{
-    if (d->store)
-        d->store->close(d->queryId);
-    delete d;
 }
 
 bool ResultIterator::next()
@@ -62,12 +64,12 @@ bool ResultIterator::next()
         return false;
 }
 
-Item::Id ResultIterator::id() const
+QByteArray ResultIterator::id() const
 {
     if (d->store)
         return d->store->id(d->queryId);
     else
-        return Item::Id();
+        return QByteArray();
 }
 
 QUrl ResultIterator::url() const

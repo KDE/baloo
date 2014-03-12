@@ -76,15 +76,23 @@ QList<SearchStore*> SearchStore::searchStores()
     for (it = plugins.constBegin(); it != plugins.constEnd(); ++it) {
         KService::Ptr service = *it;
 
-        QString error;
-        Baloo::SearchStore* st = service->createInstance<Baloo::SearchStore>(0, QVariantList(), &error);
-        if (!st) {
-            kError() << "Could not create SearchStore: " << service->library();
-            kError() << error;
-            continue;
-        }
+        KPluginLoader pluginLoader(*service);
+        Baloo::SearchStore* st = 0;
 
-        stores << st;
+        // We're not using the KPluginFactory since we don't need it and it requires
+        // KGlobal::locale() to be initialized from the main thread. And we have no way of
+        // doing this if this code gets called from a non-kde application in a thread (akonadi).
+        QObject* instance = pluginLoader.instance();
+        if (instance) {
+            st = qobject_cast<Baloo::SearchStore*>(instance);
+        }
+        if (st) {
+            stores << st;
+        }
+        else {
+            kError() << "Could not create SearchStore: " << service->library();
+            kError() << pluginLoader.errorString();
+        }
     }
 
     return stores;

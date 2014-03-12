@@ -5,6 +5,7 @@ target_link_libraries(baloo_filesearchstore
     Qt5::Sql
     KF5::KDE4Support
     ${XAPIAN_LIBRARIES}
+    ${KFILEMETADATA_LIBRARY}
     baloocore
     baloofiles
     balooxapian

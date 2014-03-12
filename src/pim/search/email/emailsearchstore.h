@@ -31,11 +31,16 @@ namespace Baloo {
 
 class EmailSearchStore : public XapianSearchStore
 {
+    Q_OBJECT
+    Q_INTERFACES(Baloo::SearchStore)
 public:
-    EmailSearchStore(QObject* parent, const QVariantList& args);
+    EmailSearchStore(QObject* parent = 0);
 
     virtual QStringList types();
     virtual QString text(int queryId);
+    virtual QString icon(int) {
+        return QLatin1String("internet-mail");
+    }
 
 protected:
     virtual Xapian::Query convertTypes(const QStringList&) { return Xapian::Query(); }

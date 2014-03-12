@@ -21,6 +21,10 @@
 #include "filemodifyjob.h"
 #include "filemapping.h"
 #include "db.h"
+#include "file.h"
+#include "searchstore.h"
+
+#include <KDebug>
 
 #include <QTimer>
 #include <QFile>
@@ -29,13 +33,14 @@
 #include <xapian.h>
 #include <attr/xattr.h>
 
+#include <QDBusMessage>
+#include <QDBusConnection>
+
 using namespace Baloo;
 
 class Baloo::FileModifyJob::Private {
 public:
-    File file;
-
-    QStringList files;
+    QList<File> files;
     int rating;
     QString comment;
     QStringList tags;
@@ -44,16 +49,24 @@ public:
 };
 
 FileModifyJob::FileModifyJob(QObject* parent)
-    : ItemSaveJob(parent)
+    : KJob(parent)
     , d(new Private)
 {
 }
 
 FileModifyJob::FileModifyJob(const File& file, QObject* parent)
-    : ItemSaveJob(parent)
+    : KJob(parent)
     , d(new Private)
 {
-    d->file = file;
+    d->files.append(file);
+    d->rating = file.rating();
+    d->comment = file.userComment();
+    d->tags = file.tags();
+}
+
+FileModifyJob::~FileModifyJob()
+{
+    delete d;
 }
 
 void FileModifyJob::start()
@@ -64,17 +77,27 @@ void FileModifyJob::start()
 namespace {
 
 void removeTerms(Xapian::Document& doc, const std::string& p) {
+    QByteArray prefix = QByteArray::fromRawData(p.c_str(), p.size());
+
     Xapian::TermIterator it = doc.termlist_begin();
     it.skip_to(p);
     while (it != doc.termlist_end()){
-        const std::string term = *it;
-        int minLength = std::min(term.length(), p.length());
-        if (strncmp(term.c_str(), p.c_str(), minLength)) {
+        const std::string t = *it;
+        const QByteArray term = QByteArray::fromRawData(t.c_str(), t.size());
+        if (!term.startsWith(prefix)) {
             break;
         }
 
+        // The term should not just be the prefix
+        if (term.size() <= prefix.size())
+            break;
+
+        // The term should not contain any more upper case letters
+        if (isupper(term.at(prefix.size())))
+            break;
+
         it++;
-        doc.remove_term(term);
+        doc.remove_term(t);
     }
 }
 
@@ -82,120 +105,51 @@ void removeTerms(Xapian::Document& doc, const std::string& p) {
 
 void FileModifyJob::doStart()
 {
-    if (d->files.isEmpty())
-        doSingleFile();
-    else
-        doMultipleFiles();
-}
+    QStringList updatedFiles;
 
-void FileModifyJob::doSingleFile()
-{
-    FileMapping fileMap(d->file.url());
-    if (!d->file.id().isEmpty()) {
-        int id = deserialize("file", d->file.id());
-        fileMap.setId(id);
-    }
+    Q_FOREACH (const File& file, d->files) {
+        FileMapping fileMap(file.url());
+        if (!file.id().isEmpty()) {
+            int id = deserialize("file", file.id());
+            fileMap.setId(id);
+        }
 
-    if (!fileMap.fetched()) {
-        if (fileMap.empty()) {
-            setErrorText(QLatin1String("Invalid Argument"));
+        if (!fileMap.fetched()) {
+            if (fileMap.empty()) {
+                setError(Error_EmptyFile);
+                setErrorText(QLatin1String("Invalid Argument"));
+                emitResult();
+                return;
+            }
+
+            if (!fileMap.fetch(fileMappingDb())) {
+                fileMap.create(fileMappingDb());
+            }
+        }
+
+        if (!QFile::exists(fileMap.url())) {
+            setError(Error_FileDoesNotExist);
+            setErrorText("Does not exist " + fileMap.url());
             emitResult();
             return;
         }
 
-        if (!fileMap.fetch(fileMappingDb())) {
-            fileMap.create(fileMappingDb());
-        }
-    }
-
-    QFile file(fileMap.url());
-    if (!file.open(QIODevice::ReadOnly)) {
-        setErrorText(file.errorString());
-        emitResult();
-        return;
-    }
-
-    QByteArray rat = QString::number(d->file.rating()).toUtf8();
-    fsetxattr(file.handle(), "user.baloo.rating", rat.constData(), rat.size(), 0);
-
-    // TODO: Normalize the tags?
-    QByteArray tags = d->file.tags().join(",").toUtf8();
-    fsetxattr(file.handle(), "user.baloo.tags", tags.constData(), tags.size(), 0);
-
-    QByteArray com = d->file.userComment().toUtf8();
-    fsetxattr(file.handle(), "user.xdg.comment", com.constData(), com.size(), 0);
-
-    // Save in Xapian
-    const std::string path = fileIndexDbPath().toStdString();
-    Xapian::WritableDatabase db(path, Xapian::DB_CREATE_OR_OPEN);
-    Xapian::Document doc;
-
-    try {
-        doc = db.get_document(fileMap.id());
-
-        removeTerms(doc, "R");
-        removeTerms(doc, "TAG");
-        removeTerms(doc, "C");
-    }
-    catch (const Xapian::DocNotFoundError&) {
-    }
-
-    const int rating = d->file.rating();
-    if (rating > 0) {
-        const QString ratingStr = QLatin1Char('R') + QString::number(d->file.rating());
-        doc.add_boolean_term(ratingStr.toStdString());
-    }
-
-    Q_FOREACH (const QString& tag, d->file.tags()) {
-        const QString tagStr = "TAG" + tag.toLower();
-        doc.add_term(tagStr.toStdString());
-    }
-
-    if (!d->file.userComment().isEmpty()) {
-        Xapian::TermGenerator termGen;
-        termGen.set_document(doc);
-
-        const std::string str = d->file.userComment().toLower().toStdString();
-        termGen.index_text(str, 1, "C");
-    }
-
-    db.replace_document(fileMap.id(), doc);
-    db.commit();
-
-    // Notify the world?
-
-    emitResult();
-}
-
-void FileModifyJob::doMultipleFiles()
-{
-    Q_FOREACH (const QString fileUrl, d->files) {
-        FileMapping fileMap(fileUrl);
-
-        if (!fileMap.fetch(fileMappingDb())) {
-            fileMap.create(fileMappingDb());
-        }
-
-        QFile file(fileMap.url());
-        if (!file.open(QIODevice::ReadOnly)) {
-            setErrorText(file.errorString());
-            emitResult();
-            return;
-        }
+        updatedFiles << fileMap.url();
+        const QByteArray furl = QFile::encodeName(fileMap.url());
 
         if (d->rating) {
             QByteArray rat = QString::number(d->rating).toUtf8();
-            fsetxattr(file.handle(), "user.baloo.rating", rat.constData(), rat.size(), 0);
+            setxattr(furl.constData(), "user.baloo.rating", rat.constData(), rat.size(), 0);
         }
 
         if (!d->tags.isEmpty()) {
             QByteArray tags = d->tags.join(",").toUtf8();
-            fsetxattr(file.handle(), "user.baloo.tags", tags.constData(), tags.size(), 0);
+            setxattr(furl.constData(), "user.baloo.tags", tags.constData(), tags.size(), 0);
         }
 
         if (!d->comment.isEmpty()) {
             QByteArray com = d->comment.toUtf8();
-            fsetxattr(file.handle(), "user.xdg.comment", com.constData(), com.size(), 0);
+            setxattr(furl.constData(), "user.xdg.comment", com.constData(), com.size(), 0);
         }
 
         // Save in Xapian
@@ -207,6 +161,7 @@ void FileModifyJob::doMultipleFiles()
             doc = db.get_document(fileMap.id());
 
             removeTerms(doc, "R");
+            removeTerms(doc, "T");
             removeTerms(doc, "TAG");
             removeTerms(doc, "C");
         }
@@ -215,21 +170,26 @@ void FileModifyJob::doMultipleFiles()
 
         const int rating = d->rating;
         if (rating > 0) {
-            const QString ratingStr = QLatin1Char('R') + QString::number(d->file.rating());
-            doc.add_boolean_term(ratingStr.toStdString());
+            const QString ratingStr = QLatin1Char('R') + QString::number(d->rating);
+            doc.add_boolean_term(ratingStr.toUtf8().constData());
         }
 
+        Xapian::TermGenerator termGen;
+        termGen.set_document(doc);
+
         Q_FOREACH (const QString& tag, d->tags) {
-            const QString tagStr = "TAG" + tag.toLower();
-            doc.add_term(tagStr.toStdString());
+            termGen.index_text(tag.toUtf8().constData(), 1, "T");
+
+            const QString tagStr = QLatin1String("TAG") + tag;
+            doc.add_boolean_term(tagStr.toUtf8().constData());
         }
 
         if (!d->comment.isEmpty()) {
             Xapian::TermGenerator termGen;
             termGen.set_document(doc);
 
-            const std::string str = d->file.userComment().toLower().toStdString();
-            termGen.index_text(str, 1, "C");
+            const QByteArray str = d->comment.toUtf8();
+            termGen.index_text(str.constData(), 1, "C");
         }
 
         db.replace_document(fileMap.id(), doc);
@@ -237,15 +197,35 @@ void FileModifyJob::doMultipleFiles()
     }
 
     // Notify the world?
+    QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/files"),
+                                                      QLatin1String("org.kde"),
+                                                      QLatin1String("changed"));
+
+    QVariantList vl;
+    vl.reserve(1);
+    vl << QVariant(updatedFiles);
+    message.setArguments(vl);
+
+    QDBusConnection::sessionBus().send(message);
 
     emitResult();
+}
 
+namespace {
+    QList<File> convertToFiles(const QStringList& fileurls)
+    {
+        QList<File> files;
+        Q_FOREACH (const QString& url, fileurls) {
+            files << File(url);
+        }
+        return files;
+    }
 }
 
 FileModifyJob* FileModifyJob::modifyRating(const QStringList& files, int rating)
 {
     FileModifyJob* job = new FileModifyJob();
-    job->d->files = files;
+    job->d->files = convertToFiles(files);
     job->d->rating = rating;
 
     return job;
@@ -254,7 +234,7 @@ FileModifyJob* FileModifyJob::modifyRating(const QStringList& files, int rating)
 FileModifyJob* FileModifyJob::modifyTags(const QStringList& files, const QStringList& tags)
 {
     FileModifyJob* job = new FileModifyJob();
-    job->d->files = files;
+    job->d->files = convertToFiles(files);
     job->d->tags = tags;
 
     return job;
@@ -263,7 +243,7 @@ FileModifyJob* FileModifyJob::modifyTags(const QStringList& files, const QString
 FileModifyJob* FileModifyJob::modifyUserComment(const QStringList& files, const QString& comment)
 {
     FileModifyJob* job = new FileModifyJob();
-    job->d->files = files;
+    job->d->files = convertToFiles(files);
     job->d->comment = comment;
 
     return job;

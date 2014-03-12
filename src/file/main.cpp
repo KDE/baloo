@@ -34,6 +34,7 @@
 #include "filewatch.h"
 #include "fileindexer.h"
 #include "database.h"
+#include "fileindexerconfig.h"
 
 #include <QDBusConnection>
 
@@ -66,10 +67,11 @@ int main(int argc, char** argv) {
     db.init();
     db.sqlDatabase().transaction();
 
-    Baloo::FileWatch filewatcher(&db, &app);
+    Baloo::FileIndexerConfig indexerConfig;
+    Baloo::FileWatch filewatcher(&db, &indexerConfig, &app);
 
     if (indexingEnabled) {
-        Baloo::FileIndexer fileIndexer(&db, &app);
+        Baloo::FileIndexer fileIndexer(&db, &indexerConfig, &app);
 
         QObject::connect(&filewatcher, SIGNAL(indexFile(QString)),
                         &fileIndexer, SLOT(indexFile(QString)));

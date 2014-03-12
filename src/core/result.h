@@ -64,6 +64,8 @@ public:
     QUrl url() const;
     void setUrl(const QUrl& url);
 
+    Result& operator=(const Result& rhs);
+
 private:
     class Private;
     Private* d;

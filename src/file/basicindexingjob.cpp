@@ -27,6 +27,7 @@
 #include <QFileInfo>
 #include <QDateTime>
 
+#include <kfilemetadata/typeinfo.h>
 #include <KDebug>
 
 using namespace Baloo;
@@ -75,10 +76,16 @@ bool BasicIndexingJob::index()
     doc.add_boolean_term(day.toStdString());
 
     // Types
-    QList<QByteArray> types = typesForMimeType(m_mimetype);
-    types << QByteArray("File");
+    QVector<KFileMetaData::Type::Type> tList = typesForMimeType(m_mimetype);
+    QVector<QByteArray> types;
+    types.reserve(tList.size() + 2);
+    Q_FOREACH (KFileMetaData::Type::Type type, tList) {
+        types << KFileMetaData::TypeInfo(type).name().toLower().toUtf8();
+    }
+    types << QByteArray("file");
+
     if (fileInfo.isDir()) {
-        types << QByteArray("Folder");
+        types << QByteArray("folder");
 
         // This is an optimization for folders. They do not need to go through
         // file indexing, so there are no indexers for folders
@@ -89,7 +96,7 @@ bool BasicIndexingJob::index()
     }
 
     Q_FOREACH (const QByteArray& arr, types) {
-        QByteArray a = 'T' + arr.toLower();
+        QByteArray a = 'T' + arr;
         doc.add_boolean_term(a.constData());
     }
 
@@ -98,100 +105,111 @@ bool BasicIndexingJob::index()
     return true;
 }
 
-QList<QByteArray> BasicIndexingJob::typesForMimeType(const QString& mimeType) const
+QVector<KFileMetaData::Type::Type> BasicIndexingJob::typesForMimeType(const QString& mimeType) const
 {
-    QList<QByteArray> types;
+    using namespace KFileMetaData;
+    QVector<Type::Type> types;
 
     // Basic types
     if (mimeType.contains(QLatin1String("audio")))
-        types << "Audio";
+        types << Type::Audio;
     if (mimeType.contains(QLatin1String("video")))
-        types << "Video";
+        types << Type::Video;
     if (mimeType.contains(QLatin1String("image")))
-        types << "Image";
+        types << Type::Image;
     if (mimeType.contains(QLatin1String("document")))
-        types << "Document";
+        types << Type::Document;
     if (mimeType.contains(QLatin1String("text")))
-        types << "Document";
+        types << Type::Text;
     //if (mimeType.contains(QLatin1String("font")))
     //    types << "Font";
 
     if (mimeType.contains(QLatin1String("powerpoint"))) {
-        types << "Presentation";
-        types << "Document";
+        types << Type::Presentation;
+        types << Type::Document;
     }
     if (mimeType.contains(QLatin1String("excel"))) {
-        types << "Spreadsheet";
-        types << "Document";
+        types << Type::Spreadsheet;
+        types << Type::Document;
     }
     //if (mimeType.contains(QLatin1String("text/html")))
     //    types << "Html";
 
-    static QMultiHash<QString, QByteArray> typeMapper;
+    static QMultiHash<QString, Type::Type> typeMapper;
     if (typeMapper.isEmpty()) {
         // Microsoft
-        typeMapper.insert(QLatin1String("application/msword"), "Document");
-        typeMapper.insert(QLatin1String("application/vnd.ms-powerpoint"), "Document");
-        typeMapper.insert(QLatin1String("application/vnd.ms-excel"), "Document");
+        typeMapper.insert(QLatin1String("application/msword"), Type::Document);
+        typeMapper.insert(QLatin1String("application/vnd.ms-powerpoint"), Type::Document);
+        typeMapper.insert(QLatin1String("application/vnd.ms-powerpoint"), Type::Presentation);
+        typeMapper.insert(QLatin1String("application/vnd.ms-excel"), Type::Document);
+        typeMapper.insert(QLatin1String("application/vnd.ms-excel"), Type::Spreadsheet);
 
         // Office 2007
         typeMapper.insert(QLatin1String("application/vnd.openxmlformats-officedocument.wordprocessingml.document"),
-                          "Document");
+                          Type::Document);
         typeMapper.insert(QLatin1String("application/vnd.openxmlformats-officedocument.presentationml.presentation"),
-                          "Document");
+                          Type::Document);
+        typeMapper.insert(QLatin1String("application/vnd.openxmlformats-officedocument.presentationml.presentation"),
+                          Type::Presentation);
         typeMapper.insert(QLatin1String("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
-                          "Document");
+                          Type::Document);
+        typeMapper.insert(QLatin1String("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
+                          Type::Spreadsheet);
 
         // Open document formats - http://en.wikipedia.org/wiki/OpenDocument_technical_specification
-        typeMapper.insert(QLatin1String("application/vnd.oasis.opendocument.text"), "Document");
-        typeMapper.insert(QLatin1String("application/vnd.oasis.opendocument.presentation"), "Document");
-        typeMapper.insert(QLatin1String("application/vnd.oasis.opendocument.spreadsheet"), "Document");
+        typeMapper.insert(QLatin1String("application/vnd.oasis.opendocument.text"), Type::Document);
+        typeMapper.insert(QLatin1String("application/vnd.oasis.opendocument.presentation"), Type::Document);
+        typeMapper.insert(QLatin1String("application/vnd.oasis.opendocument.presentation"), Type::Presentation);
+        typeMapper.insert(QLatin1String("application/vnd.oasis.opendocument.spreadsheet"), Type::Document);
+        typeMapper.insert(QLatin1String("application/vnd.oasis.opendocument.spreadsheet"), Type::Spreadsheet);
 
         // Others
-        typeMapper.insert(QLatin1String("application/pdf"), "Document");
-        typeMapper.insert(QLatin1String("application/postscript"), "Document");
-        typeMapper.insert(QLatin1String("application/x-dvi"), "Document");
-        typeMapper.insert(QLatin1String("application/rtf"), "Document");
+        typeMapper.insert(QLatin1String("application/pdf"), Type::Document);
+        typeMapper.insert(QLatin1String("application/postscript"), Type::Document);
+        typeMapper.insert(QLatin1String("application/x-dvi"), Type::Document);
+        typeMapper.insert(QLatin1String("application/rtf"), Type::Document);
 
         // Ebooks
-        typeMapper.insert(QLatin1String("application/epub+zip"), "Document");
-        typeMapper.insert(QLatin1String("application/x-mobipocket-ebook"), "Document");
+        typeMapper.insert(QLatin1String("application/epub+zip"), Type::Document);
+        typeMapper.insert(QLatin1String("application/x-mobipocket-ebook"), Type::Document);
 
         // Archives - http://en.wikipedia.org/wiki/List_of_archive_formats
-        typeMapper.insert(QLatin1String("application/x-tar"), "Archive");
-        typeMapper.insert(QLatin1String("application/x-bzip2"), "Archive");
-        typeMapper.insert(QLatin1String("application/x-gzip"), "Archive");
-        typeMapper.insert(QLatin1String("application/x-lzip"), "Archive");
-        typeMapper.insert(QLatin1String("application/x-lzma"), "Archive");
-        typeMapper.insert(QLatin1String("application/x-lzop"), "Archive");
-        typeMapper.insert(QLatin1String("application/x-compress"), "Archive");
-        typeMapper.insert(QLatin1String("application/x-7z-compressed"), "Archive");
-        typeMapper.insert(QLatin1String("application/x-ace-compressed"), "Archive");
-        typeMapper.insert(QLatin1String("application/x-astrotite-afa"), "Archive");
-        typeMapper.insert(QLatin1String("application/x-alz-compressed"), "Archive");
-        typeMapper.insert(QLatin1String("application/vnd.android.package-archive"), "Archive");
-        typeMapper.insert(QLatin1String("application/x-arj"), "Archive");
-        typeMapper.insert(QLatin1String("application/vnd.ms-cab-compressed"), "Archive");
-        typeMapper.insert(QLatin1String("application/x-cfs-compressed"), "Archive");
-        typeMapper.insert(QLatin1String("application/x-dar"), "Archive");
-        typeMapper.insert(QLatin1String("application/x-lzh"), "Archive");
-        typeMapper.insert(QLatin1String("application/x-lzx"), "Archive");
-        typeMapper.insert(QLatin1String("application/x-rar-compressed"), "Archive");
-        typeMapper.insert(QLatin1String("application/x-stuffit"), "Archive");
-        typeMapper.insert(QLatin1String("application/x-stuffitx"), "Archive");
-        typeMapper.insert(QLatin1String("application/x-gtar"), "Archive");
-        typeMapper.insert(QLatin1String("application/zip"), "Archive");
+        typeMapper.insert(QLatin1String("application/x-tar"), Type::Archive);
+        typeMapper.insert(QLatin1String("application/x-bzip2"), Type::Archive);
+        typeMapper.insert(QLatin1String("application/x-gzip"), Type::Archive);
+        typeMapper.insert(QLatin1String("application/x-lzip"), Type::Archive);
+        typeMapper.insert(QLatin1String("application/x-lzma"), Type::Archive);
+        typeMapper.insert(QLatin1String("application/x-lzop"), Type::Archive);
+        typeMapper.insert(QLatin1String("application/x-compress"), Type::Archive);
+        typeMapper.insert(QLatin1String("application/x-7z-compressed"), Type::Archive);
+        typeMapper.insert(QLatin1String("application/x-ace-compressed"), Type::Archive);
+        typeMapper.insert(QLatin1String("application/x-astrotite-afa"), Type::Archive);
+        typeMapper.insert(QLatin1String("application/x-alz-compressed"), Type::Archive);
+        typeMapper.insert(QLatin1String("application/vnd.android.package-archive"), Type::Archive);
+        typeMapper.insert(QLatin1String("application/x-arj"), Type::Archive);
+        typeMapper.insert(QLatin1String("application/vnd.ms-cab-compressed"), Type::Archive);
+        typeMapper.insert(QLatin1String("application/x-cfs-compressed"), Type::Archive);
+        typeMapper.insert(QLatin1String("application/x-dar"), Type::Archive);
+        typeMapper.insert(QLatin1String("application/x-lzh"), Type::Archive);
+        typeMapper.insert(QLatin1String("application/x-lzx"), Type::Archive);
+        typeMapper.insert(QLatin1String("application/x-rar-compressed"), Type::Archive);
+        typeMapper.insert(QLatin1String("application/x-stuffit"), Type::Archive);
+        typeMapper.insert(QLatin1String("application/x-stuffitx"), Type::Archive);
+        typeMapper.insert(QLatin1String("application/x-gtar"), Type::Archive);
+        typeMapper.insert(QLatin1String("application/zip"), Type::Archive);
 
         // Special images
+        /*
         typeMapper.insert(QLatin1String("image/vnd.microsoft.icon"), "Icon");
         typeMapper.insert(QLatin1String("image/svg+xml"), "Image");
 
         // Fonts
         typeMapper.insert(QLatin1String("application/vnd.ms-fontobject"), "Font");
         typeMapper.insert(QLatin1String("application/vnd.ms-opentype"), "Font");
+        */
     }
 
-    types << typeMapper.values(mimeType);
+    types << typeMapper.values(mimeType).toVector();
     return types;
 }
 

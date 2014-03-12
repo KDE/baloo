@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef DATABASE_H
-#define DATABASE_H
+#ifndef _BALOO_FILE_DATABASE_H
+#define _BALOO_FILE_DATABASE_H
 
 #include <QObject>
 #include <QSqlDatabase>
@@ -41,7 +41,7 @@ public:
     bool isInitialized();
 
     QSqlDatabase& sqlDatabase();
-    Xapian::Database* xapainDatabase();
+    Xapian::Database* xapianDatabase();
 
 private:
     QString m_path;
@@ -52,4 +52,4 @@ private:
     QSqlDatabase* m_sqlDb;
 };
 
-#endif // DATABASE_H
+#endif // _BALOO_FILE_DATABASE_H

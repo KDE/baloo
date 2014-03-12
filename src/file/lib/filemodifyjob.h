@@ -18,21 +18,23 @@
  *
  */
 
-#ifndef FILEMODIFYJOB_H
-#define FILEMODIFYJOB_H
+#ifndef _BALOO_FILEMODIFYJOB_H
+#define _BALOO_FILEMODIFYJOB_H
 
-#include "itemsavejob.h"
-#include "file.h"
 #include "file_export.h"
+#include <KJob>
 
 namespace Baloo {
 
-class BALOO_FILE_EXPORT FileModifyJob : public ItemSaveJob
+class File;
+
+class BALOO_FILE_EXPORT FileModifyJob : public KJob
 {
     Q_OBJECT
 public:
     explicit FileModifyJob(QObject* parent = 0);
     FileModifyJob(const File& file, QObject* parent = 0);
+    virtual ~FileModifyJob();
 
     virtual void start();
 
@@ -40,16 +42,17 @@ public:
     static FileModifyJob* modifyUserComment(const QStringList& files, const QString& comment);
     static FileModifyJob* modifyTags(const QStringList& files, const QStringList& tags);
 
+    enum Errors {
+        Error_FileDoesNotExist = KJob::UserDefinedError + 1,
+        Error_EmptyFile,
+    };
 private Q_SLOTS:
     void doStart();
 
 private:
-    void doSingleFile();
-    void doMultipleFiles();
-
     class Private;
     Private* d;
 };
 
 }
-#endif // FILEMODIFYJOB_H
+#endif // _BALOO_FILEMODIFYJOB_H
