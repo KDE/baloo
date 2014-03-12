@@ -12,6 +12,7 @@ set(akonadi_baloo_indexer_SRCS
     emailindexer.cpp
     contactindexer.cpp
     akonotesindexer.cpp
+    ../../file/priority.cpp
 )
 
 qt4_add_dbus_adaptor(akonadi_baloo_indexer_SRCS org.freedesktop.Akonadi.BalooIndexer.xml agent.h BalooIndexingAgent)

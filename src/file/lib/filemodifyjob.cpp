@@ -45,7 +45,16 @@ public:
     QString comment;
     QStringList tags;
 
-    Private() : rating(0) {}
+    bool ratingSet;
+    bool commentSet;
+    bool tagsSet;
+
+    Private()
+        : rating(0)
+        , ratingSet(false)
+        , commentSet(false)
+        , tagsSet(false)
+    {}
 };
 
 FileModifyJob::FileModifyJob(QObject* parent)
@@ -62,6 +71,8 @@ FileModifyJob::FileModifyJob(const File& file, QObject* parent)
     d->rating = file.rating();
     d->comment = file.userComment();
     d->tags = file.tags();
+
+    d->ratingSet = d->commentSet = d->tagsSet = true;
 }
 
 FileModifyJob::~FileModifyJob()
@@ -137,17 +148,17 @@ void FileModifyJob::doStart()
         updatedFiles << fileMap.url();
         const QString furl = fileMap.url();
 
-        if (d->rating) {
+        if (d->ratingSet) {
             const QString rat = QString::number(d->rating);
             setCustomFileMetaData(furl, QLatin1String("user.baloo.rating"), rat);
         }
 
-        if (!d->tags.isEmpty()) {
+        if (d->tagsSet) {
             QString tags = d->tags.join(",");
             setCustomFileMetaData(furl, QLatin1String("user.xdg.tags"), tags);
         }
 
-        if (!d->comment.isEmpty()) {
+        if (d->commentSet) {
             setCustomFileMetaData(furl, QLatin1String("user.xdg.comment"), d->comment);
         }
 
@@ -225,6 +236,7 @@ FileModifyJob* FileModifyJob::modifyRating(const QStringList& files, int rating)
     FileModifyJob* job = new FileModifyJob();
     job->d->files = convertToFiles(files);
     job->d->rating = rating;
+    job->d->ratingSet = true;
 
     return job;
 }
@@ -234,6 +246,7 @@ FileModifyJob* FileModifyJob::modifyTags(const QStringList& files, const QString
     FileModifyJob* job = new FileModifyJob();
     job->d->files = convertToFiles(files);
     job->d->tags = tags;
+    job->d->tagsSet = true;
 
     return job;
 }
@@ -243,6 +256,7 @@ FileModifyJob* FileModifyJob::modifyUserComment(const QStringList& files, const 
     FileModifyJob* job = new FileModifyJob();
     job->d->files = convertToFiles(files);
     job->d->comment = comment;
+    job->d->commentSet = true;
 
     return job;
 }
