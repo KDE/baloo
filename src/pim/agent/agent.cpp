@@ -32,6 +32,7 @@
 #include <Akonadi/ChangeRecorder>
 #include <Akonadi/CollectionFetchJob>
 #include <Akonadi/AgentManager>
+#include <Akonadi/ServerManager>
 
 #include <KStandardDirs>
 #include <KConfig>
@@ -39,17 +40,24 @@
 #include <KLocalizedString>
 
 namespace {
+    QString dbPath(const QString &dbName) {
+        QString basePath = "baloo";
+        if (Akonadi::ServerManager::hasInstanceIdentifier()) {
+            basePath = QString::fromLatin1("baloo/instances/%1").arg(Akonadi::ServerManager::instanceIdentifier());
+        }
+        return KStandardDirs::locateLocal("data", QString::fromLatin1("%1/%2/").arg(basePath, dbName));
+    }
     QString emailIndexingPath() {
-        return KStandardDirs::locateLocal("data", "baloo/email/");
+        return dbPath("email");
     }
     QString contactIndexingPath() {
-        return KStandardDirs::locateLocal("data", "baloo/contacts/");
+        return dbPath("contacts");
     }
     QString emailContactsIndexingPath() {
-        return KStandardDirs::locateLocal("data", "baloo/emailContacts/");
+        return dbPath("emailContacts");
     }
     QString akonotesIndexingPath() {
-        return KStandardDirs::locateLocal("data", "baloo/notes/");
+        return dbPath("notes");
     }
 }
 
@@ -125,10 +133,28 @@ void BalooIndexingAgent::reindexCollection(const qlonglong id)
     kDebug() << "Reindexing collection " << id;
 }
 
+qlonglong BalooIndexingAgent::indexedItemsInDatabase(const std::string& term, const QString& dbPath) const
+{
+    Xapian::Database db;
+    try {
+        db = Xapian::Database(dbPath.toStdString());
+    } catch (const Xapian::DatabaseError& e) {
+        kError() << "Failed to open database" << dbPath << ":" << QString::fromStdString(e.get_msg());
+        return 0;
+    }
+
+    const qlonglong count = db.get_termfreq(term);
+    return count;
+}
+
 qlonglong BalooIndexingAgent::indexedItems(const qlonglong id)
 {
     kDebug() << id;
-    return 100;
+
+    const std::string term = QString::fromLatin1("C%1").arg(id).toStdString();
+    return indexedItemsInDatabase(term, emailIndexingPath())
+            + indexedItemsInDatabase(term, contactIndexingPath())
+            + indexedItemsInDatabase(term, akonotesIndexingPath());
 }
 
 void BalooIndexingAgent::createIndexers()
