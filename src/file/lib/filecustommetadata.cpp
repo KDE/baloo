@@ -23,7 +23,9 @@
 #include "xattrdetector.h"
 #include "db.h"
 #include "filemapping.h"
+
 #include <KDebug>
+#include <KGlobal>
 
 #include <QFile>
 #include <QSqlQuery>
@@ -31,11 +33,11 @@
 
 using namespace Baloo;
 
-static XattrDetector g_detector;
+K_GLOBAL_STATIC(XattrDetector, g_detector)
 
 void Baloo::setCustomFileMetaData(const QString& url, const QString& key, const QString& value)
 {
-    if (g_detector.isSupported(url)) {
+    if (g_detector->isSupported(url)) {
         int r = baloo_setxattr(url, key, value);
         if (r == -1) {
             kError() << "Could not store xattr for" << url << key << value;
@@ -65,7 +67,7 @@ void Baloo::setCustomFileMetaData(const QString& url, const QString& key, const 
 
 QString Baloo::customFileMetaData(const QString& url, const QString& key)
 {
-    if (g_detector.isSupported(url)) {
+    if (g_detector->isSupported(url)) {
         QString value;
         baloo_getxattr(url, key, &value);
         return value;
