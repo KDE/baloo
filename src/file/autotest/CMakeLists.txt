@@ -72,10 +72,10 @@ set(basicIndexingQueue_SRC
 kde4_add_unit_test(basicindexingqueuetest NOGUI ${basicIndexingQueue_SRC})
 
 target_link_libraries(basicindexingqueuetest
-  ${QT_QTTEST_LIBRARY}
-  ${QT_QTSQL_LIBRARY}
-  ${KDE4_KDECORE_LIBS}
-  ${KFILEMETADATA_LIBRARY}
+  Qt5::Test
+  Qt5::Sql
+
+  KF5::FileMetaData
   ${XAPIAN_LIBRARIES}
 )
 

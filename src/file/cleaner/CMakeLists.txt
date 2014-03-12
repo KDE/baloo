@@ -11,9 +11,10 @@ set(CLEANER_SRCS
 kde4_add_executable(baloo_file_cleaner ${CLEANER_SRCS})
 
 target_link_libraries(baloo_file_cleaner
-  ${QT_QTSQL_LIBRARY}
-  ${KDE4_KDECORE_LIBS}
-  ${KDE4_KDEUI_LIBS}
+  Qt5::Sql
+
+  KF5::KDE4Support
+  KF5::Runner
   ${XAPIAN_LIBRARIES}
 )
 
