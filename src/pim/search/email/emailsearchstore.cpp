@@ -67,10 +67,11 @@ EmailSearchStore::EmailSearchStore(QObject* parent)
     m_prefix.insert("isham", "H");
     m_prefix.insert("isread", "R");
     m_prefix.insert("hasattachment", "A");
+    m_prefix.insert("isencrypted", "C");
 
     m_boolProperties << "isimportant" << "istoact" << "iswatched" << "isdeleted" << "isspam"
                      << "isreplied" << "isignored" << "isforwarded" << "issent" << "isqueued"
-                     << "isham" << "isread" << "hasattachment";
+                     << "isham" << "isread" << "hasattachment" << "isencrypted";
 
     m_valueProperties.insert("date", 0);
     m_valueProperties.insert("size", 1);

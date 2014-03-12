@@ -549,7 +549,7 @@ private Q_SLOTS:
             QSet<qint64> result = QSet<qint64>() << 1 << 2 << 3 << 4;
             QTest::newRow("find by message replied") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
         }
-#if 0
+
         {
             Akonadi::SearchQuery query(Akonadi::SearchTerm::RelAnd);
             query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::MessageStatus, QString::fromLatin1(Akonadi::MessageFlags::Replied), Akonadi::SearchTerm::CondContains));
@@ -560,7 +560,7 @@ private Q_SLOTS:
             QSet<qint64> result = QSet<qint64>() << 1;
             QTest::newRow("find by message replied and encrypted") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
         }
-#endif
+
         {
             Akonadi::SearchQuery query;
             query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::ByteSize, QString::number(1000), Akonadi::SearchTerm::CondGreaterOrEqual));

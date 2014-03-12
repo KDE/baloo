@@ -264,6 +264,7 @@ void EmailIndexer::processMessageStatus(const Akonadi::MessageStatus& status)
     insertBool('N', status.isSent());
     insertBool('Q', status.isQueued());
     insertBool('H', status.isHam());
+    insertBool('C', status.isEncrypted());
 }
 
 void EmailIndexer::insertBool(char key, bool value)
