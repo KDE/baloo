@@ -12,6 +12,7 @@ find_package(KFileMetaData REQUIRED)
 #find_package(KdepimLibs REQUIRED)
 
 include(ECMSetupVersion)
+include(ECMAddTests)
 
 include(GenerateExportHeader)
 include(FeatureSummary)

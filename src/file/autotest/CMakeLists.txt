@@ -76,6 +76,7 @@ target_link_libraries(basicindexingqueuetest
   Qt5::Sql
 
   KF5::FileMetaData
+  KF5::KDE4Support
   ${XAPIAN_LIBRARIES}
 )
 
