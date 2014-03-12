@@ -79,37 +79,38 @@ Xapian::Query PIMSearchStore::constructQuery(const QString& property, const QVar
         return Xapian::Query(term);
     }
 
-    if (com == Term::Contains || com == Term::Equal) {
-        Xapian::QueryParser parser;
-        parser.set_database(*xapianDb());
-
-        std::string p = m_prefix.value(property.toLower()).toStdString();
-        std::string str(value.toString().toUtf8().constData());
-        int flags = Xapian::QueryParser::FLAG_DEFAULT;
-        if (com == Term::Contains) {
-            flags |= Xapian::QueryParser::FLAG_PARTIAL;
-        }
-        return parser.parse_query(str, flags, p);
-    }
-
-    if (com == Term::Greater || com == Term::GreaterEqual || com == Term::Less || com == Term::LessEqual) {
-        if (!m_valueProperties.contains(property.toLower())) {
-            return Xapian::Query();
-        }
+    if (m_valueProperties.contains(prop) && (com == Term::Equal || com == Term::Greater || com == Term::GreaterEqual || com == Term::Less || com == Term::LessEqual)) {
         qlonglong numVal = value.toLongLong();
+        kDebug() << value << numVal;
         if (com == Term::Greater) {
             ++numVal;
         }
         if (com == Term::Less) {
             --numVal;
         }
-        int valueNumber = m_valueProperties.value(property.toLower());
+        int valueNumber = m_valueProperties.value(prop);
         if (com == Term::GreaterEqual || com == Term::Greater) {
             return Xapian::Query(Xapian::Query::OP_VALUE_GE, valueNumber, QString::number(numVal).toStdString());
         }
         else if (com == Term::LessEqual || com == Term::Less) {
             return Xapian::Query(Xapian::Query::OP_VALUE_LE, valueNumber, QString::number(numVal).toStdString());
         }
+        else if (com == Term::Equal) {
+            const Xapian::Query gtQuery(Xapian::Query::OP_VALUE_GE, valueNumber, QString::number(numVal).toStdString());
+            const Xapian::Query ltQuery(Xapian::Query::OP_VALUE_LE, valueNumber, QString::number(numVal).toStdString());
+            return Xapian::Query(Xapian::Query::OP_AND, gtQuery, ltQuery);
+        }
+    } else if ((com == Term::Contains || com == Term::Equal) && m_prefix.contains(prop)) {
+        Xapian::QueryParser parser;
+        parser.set_database(*xapianDb());
+
+        std::string p = m_prefix.value(prop).toStdString();
+        std::string str(value.toString().toUtf8().constData());
+        int flags = Xapian::QueryParser::FLAG_DEFAULT;
+        if (com == Term::Contains) {
+            flags |= Xapian::QueryParser::FLAG_PARTIAL;
+        }
+        return parser.parse_query(str, flags, p);
     }
 
     return Xapian::Query(value.toString().toStdString());

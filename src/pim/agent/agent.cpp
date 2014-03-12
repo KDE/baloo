@@ -133,10 +133,28 @@ void BalooIndexingAgent::reindexCollection(const qlonglong id)
     kDebug() << "Reindexing collection " << id;
 }
 
+qlonglong BalooIndexingAgent::indexedItemsInDatabase(const std::string& term, const QString& dbPath) const
+{
+    Xapian::Database db;
+    try {
+        db = Xapian::Database(dbPath.toStdString());
+    } catch (const Xapian::DatabaseError& e) {
+        kError() << "Failed to open database" << dbPath << ":" << QString::fromStdString(e.get_msg());
+        return 0;
+    }
+
+    const qlonglong count = db.get_termfreq(term);
+    return count;
+}
+
 qlonglong BalooIndexingAgent::indexedItems(const qlonglong id)
 {
     kDebug() << id;
-    return 100;
+
+    const std::string term = QString::fromLatin1("C%1").arg(id).toStdString();
+    return indexedItemsInDatabase(term, emailIndexingPath())
+            + indexedItemsInDatabase(term, contactIndexingPath())
+            + indexedItemsInDatabase(term, akonotesIndexingPath());
 }
 
 void BalooIndexingAgent::createIndexers()
