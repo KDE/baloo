@@ -63,7 +63,7 @@ void FileModifyJobTest::testSingleFile()
     QCOMPARE(value.toInt(), 5);
 
     len = baloo_getxattr(fileUrl, "user.xdg.tags", &value);
-    QCOMPARE(len, -1);
+    QCOMPARE(len, 0);
 
     len = baloo_getxattr(fileUrl, "user.xdg.comment", &value);
     QVERIFY(len > 0);
