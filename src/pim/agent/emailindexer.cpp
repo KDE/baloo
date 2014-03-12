@@ -176,7 +176,7 @@ void EmailIndexer::process(const KMime::Message::Ptr& msg)
     if (subject) {
         std::string str(subject->asUnicodeString().toUtf8().constData());
         kDebug() << "Indexing" << str.c_str();
-        m_termGen->index_text_without_positions(str, 1, "S");
+        m_termGen->index_text_without_positions(str, 1, "SU");
         m_termGen->index_text_without_positions(str, 100);
         m_doc->set_data(str);
     }
@@ -206,7 +206,7 @@ void EmailIndexer::process(const KMime::Message::Ptr& msg)
     //
 
     //Index all headers
-    m_termGen->index_text_without_positions(std::string(msg->head().constData()), 1, "H");
+    m_termGen->index_text_without_positions(std::string(msg->head().constData()), 1, "HE");
 
     KMime::Content* mainBody = msg->mainBodyPart("text/plain");
     if (mainBody) {
