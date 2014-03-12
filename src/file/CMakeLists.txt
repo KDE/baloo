@@ -52,6 +52,7 @@ target_link_libraries(baloo_file
     KF5::I18n
     KF5::Solid
     KF5::Auth
+    KF5::FileMetaData
     ${XAPIAN_LIBRARIES}
     ${QJSON_LIBRARIES}
     baloocore

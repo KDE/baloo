@@ -22,7 +22,9 @@
 #include "activefilequeuetest.h"
 #include "../activefilequeue.h"
 
-#include <qtest_kde.h>
+#include <qtest.h>
+#include <qsignalspy.h>
+#include <qtimer.h>
 
 
 namespace

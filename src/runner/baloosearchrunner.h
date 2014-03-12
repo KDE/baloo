@@ -21,7 +21,7 @@
 #ifndef _BALOO_SEARCH_RUNNER_H_
 #define _BALOO_SEARCH_RUNNER_H_
 
-#include <Plasma/AbstractRunner>
+#include <KRunner/AbstractRunner>
 
 class SearchRunner : public Plasma::AbstractRunner
 {

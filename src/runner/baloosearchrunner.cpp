@@ -23,7 +23,8 @@
 
 #include <KIcon>
 #include <KRun>
-#include <Plasma/QueryMatch>
+#include <KRunner/QueryMatch>
+#include <KLocalizedString>
 
 #include "query.h"
 
@@ -62,7 +63,7 @@ void SearchRunner::match(Plasma::RunnerContext& context)
         match.setData(it.url());
         match.setType(Plasma::QueryMatch::PossibleMatch);
 
-        context.addMatch(context.query(), match);
+        context.addMatch(match);
     }
 
     if (!context.isValid())
@@ -78,7 +79,7 @@ void SearchRunner::match(Plasma::RunnerContext& context)
         match.setData(it.url());
         match.setType(Plasma::QueryMatch::PossibleMatch);
 
-        context.addMatch(context.query(), match);
+        context.addMatch(match);
     }
 }
 

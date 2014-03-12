@@ -31,6 +31,7 @@
 
 #include <QDateTime>
 #include <QTimer>
+#include <QUrl>
 
 using namespace Baloo;
 

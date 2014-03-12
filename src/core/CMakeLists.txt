@@ -23,6 +23,8 @@ set_target_properties(baloocore PROPERTIES
     SOVERSION ${BALOO_SOVERSION}
 )
 
+generate_export_header(baloocore BASE_NAME BALOO_CORE EXPORT_FILE_NAME core_export.h)
+
 install(TARGETS baloocore EXPORT BalooLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES
@@ -33,7 +35,7 @@ install(FILES
     resultiterator.h
     searchstore.h
 
-    core_export.h
+    ${CMAKE_CURRENT_BINARY_DIR}/core_export.h
 
     DESTINATION ${INCLUDE_INSTALL_DIR}/baloo COMPONENT Devel
 )

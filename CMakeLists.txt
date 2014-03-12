@@ -5,27 +5,25 @@ find_package(ECM 0.0.9 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules" ${ECM_MODULE_PATH})
 
 find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Widgets Xml Test Sql)
-find_package(KF5 REQUIRED NO_MODULE COMPONENTS KDE4Support I18n Service IdleTime KCMUtils Auth)
+find_package(KF5 REQUIRED NO_MODULE COMPONENTS KDE4Support I18n Service IdleTime KCMUtils Auth Runner)
 find_package(KFileMetaData REQUIRED)
 
 # FIXME: Port Kdepimlibs?
 #find_package(KdepimLibs REQUIRED)
 
-find_package(Xapian REQUIRED)
-find_package(QJSON REQUIRED)
-
 include(ECMSetupVersion)
 
+include(GenerateExportHeader)
 include(FeatureSummary)
 include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(KDECompilerSettings)
 
-find_package(KdepimLibs 4.12.43 CONFIG)
+find_package(KdepimLibs 4.60.43 CONFIG)
 set_package_properties(KdepimLibs PROPERTIES
     DESCRIPTION "The KDEPIM libraries"
     URL "http://www.kde.org"
-    TYPE REQUIRED
+    TYPE OPTIONAL #Can't be required yet, as it's not ported
 )
 
 find_package(Xapian CONFIG)

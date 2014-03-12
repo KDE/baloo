@@ -22,7 +22,7 @@
 #include "cleaner.h"
 #include "../database.h"
 
-#include <KAboutData>
+#include <k4aboutdata.h>
 #include <KCmdLineArgs>
 #include <KLocale>
 #include <KComponentData>
@@ -33,10 +33,10 @@
 
 int main(int argc, char* argv[])
 {
-    KAboutData aboutData("baloo_file_cleaner", 0, ki18n("Baloo File Cleaner"),
+    K4AboutData aboutData("baloo_file_cleaner", 0, ki18n("Baloo File Cleaner"),
                          "0.1",
                          ki18n("Cleans up stale file index information"),
-                         KAboutData::License_LGPL_V2,
+                         K4AboutData::License_LGPL_V2,
                          ki18n("(C) 2014, Vishesh Handa"));
     aboutData.addAuthor(ki18n("Vishesh Handa"), ki18n("Maintainer"), "me@vhanda.in");
 
