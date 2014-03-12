@@ -39,6 +39,8 @@ public:
     virtual QStringList types();
 
 protected:
+    QString findDatabase(const QString& databasePath) const;
+
     virtual Xapian::Query convertTypes(const QStringList&) { return Xapian::Query(); }
     virtual QByteArray idPrefix() { return QByteArray("akonadi"); }
 

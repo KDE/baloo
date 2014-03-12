@@ -32,6 +32,7 @@
 #include <Akonadi/ChangeRecorder>
 #include <Akonadi/CollectionFetchJob>
 #include <Akonadi/AgentManager>
+#include <Akonadi/ServerManager>
 
 #include <KStandardDirs>
 #include <KConfig>
@@ -39,17 +40,24 @@
 #include <KLocalizedString>
 
 namespace {
+    QString dbPath(const QString& dbName) {
+        QString basePath = "baloo";
+        if (Akonadi::ServerManager::hasInstanceIdentifier()) {
+            basePath = QString::fromLatin1("baloo/instances/%1").arg(Akonadi::ServerManager::instanceIdentifier());
+        }
+        return KStandardDirs::locateLocal("data", QString::fromLatin1("%1/%2/").arg(basePath, dbName));
+    }
     QString emailIndexingPath() {
-        return KStandardDirs::locateLocal("data", "baloo/email/");
+        return dbPath("email");
     }
     QString contactIndexingPath() {
-        return KStandardDirs::locateLocal("data", "baloo/contacts/");
+        return dbPath("contacts");
     }
     QString emailContactsIndexingPath() {
-        return KStandardDirs::locateLocal("data", "baloo/emailContacts/");
+        return dbPath("emailContacts");
     }
     QString akonotesIndexingPath() {
-        return KStandardDirs::locateLocal("data", "baloo/notes/");
+        return dbPath("notes");
     }
 }
 

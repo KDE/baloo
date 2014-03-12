@@ -34,8 +34,7 @@ NoteSearchStore::NoteSearchStore(QObject* parent)
     m_prefix.insert("collection", "C");
     m_prefix.insert("body", "BO");
 
-    const QString path = KStandardDirs::locateLocal("data", "baloo/notes/");
-    setDbPath(path);
+    setDbPath(findDatabase("notes"));
 }
 
 QStringList NoteSearchStore::types()

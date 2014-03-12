@@ -3,6 +3,7 @@ kde4_add_plugin(baloo_contactsearchstore contactsearchstore.cpp ../pimsearchstor
 target_link_libraries(baloo_contactsearchstore
     ${QT_QTCORE_LIBRARY}
     ${KDE4_KDECORE_LIBRARY}
+    ${KDEPIMLIBS_AKONADI_LIBS}
     ${XAPIAN_LIBRARIES}
     baloocore
     baloopim
