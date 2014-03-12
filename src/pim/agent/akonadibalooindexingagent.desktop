@@ -25,6 +25,7 @@ Name[sr@latin]=Balooov agent indeksiranja nad Akonadijem
 Name[sv]=Akonadi Baloo-indexeringsmodul
 Name[uk]=Агент індексування Baloo для Akonadi
 Name[x-test]=xxAkonadi Baloo Indexing Agentxx
+Name[zh_CN]=Akonadi Baloo 索引器
 Name[zh_TW]=Akonadi Baloo 索引代理程式
 
 Type=AkonadiAgent
