@@ -288,7 +288,17 @@ void BalooIndexingAgent::itemAdded(const Akonadi::Item& item, const Akonadi::Col
 
 void BalooIndexingAgent::itemChanged(const Akonadi::Item& item, const QSet<QByteArray>& partIdentifiers)
 {
-    Q_UNUSED(partIdentifiers);
+    // We don't index certain parts so we don't care when they change
+    QSet<QByteArray> pi = partIdentifiers;
+    QMutableSetIterator<QByteArray> it(pi);
+    while (it.hasNext()) {
+        it.next();
+        if (!it.value().startsWith("PLD:"))
+            it.remove();
+    }
+
+    if (pi.isEmpty())
+        return;
 
     AbstractIndexer *indexer = indexerForItem(item);
     if (indexer) {
