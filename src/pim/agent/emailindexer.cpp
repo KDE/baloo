@@ -138,6 +138,8 @@ void EmailIndexer::insert(const QByteArray& key, const KMime::Types::Mailbox::Li
         std::string name(mbox.name().toUtf8().constData());
         m_termGen->index_text_without_positions(name, 1, key.data());
         m_termGen->index_text_without_positions(name, 1);
+        m_termGen->index_text_without_positions(mbox.address().data(), 1, key.data());
+        m_termGen->index_text_without_positions(mbox.address().data(), 1);
 
         m_doc->add_term((key + mbox.address()).data());
         m_doc->add_term(mbox.address().data());
