@@ -224,6 +224,7 @@ private Q_SLOTS:
                           << Akonadi::MessageFlags::Encrypted
                           /*<< Akonadi::MessageFlags::Spam*/
                           << Akonadi::MessageFlags::Ham);
+            //Spam is exclude from indexer. So we can't add it.
             emailIndexer.index(item);
         }
         //Contact item
@@ -612,6 +613,7 @@ private Q_SLOTS:
             //query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::MessageStatus, QString::fromLatin1(Akonadi::MessageFlags::Watched), Akonadi::SearchTerm::CondContains));
             query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::MessageStatus, QString::fromLatin1(Akonadi::MessageFlags::Ignored), Akonadi::SearchTerm::CondContains));
             query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::MessageStatus, QString::fromLatin1(Akonadi::MessageFlags::Encrypted), Akonadi::SearchTerm::CondContains));
+            //Spam is exclude from indexer.
             //query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::MessageStatus, QString::fromLatin1(Akonadi::MessageFlags::Spam), Akonadi::SearchTerm::CondContains));
             query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::MessageStatus, QString::fromLatin1(Akonadi::MessageFlags::Ham), Akonadi::SearchTerm::CondContains));
 
@@ -680,11 +682,20 @@ private Q_SLOTS:
 
         {
             Akonadi::SearchQuery query;
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderOnlyDate, QDate(2014,11,11), Akonadi::SearchTerm::CondEqual));
+            QList<qint64> collections = QList<qint64>() << 1 << 2;
+            QStringList mimeTypes = QStringList() << "message/rfc822";
+            QSet<qint64> result = QSet<qint64>() << 4 << 5;
+            QTest::newRow("find by date only (equal condition)") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
+        }
+
+        {
+            Akonadi::SearchQuery query;
             query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderOnlyDate, QDate(2013, 11, 10), Akonadi::SearchTerm::CondGreaterOrEqual));
             QList<qint64> collections = QList<qint64>() << 1 << 2;
             QStringList mimeTypes = QStringList() << "message/rfc822";
             QSet<qint64> result = QSet<qint64>() << 1 << 2 << 3 << 4 << 5;
-            QTest::newRow("find by date only") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
+            QTest::newRow("find by date only (greater or equal)") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
         }
         {
             Akonadi::SearchQuery query;
@@ -710,16 +721,16 @@ private Q_SLOTS:
             QSet<qint64> result = QSet<qint64>() << 4;
             QTest::newRow("find by header cc") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
         }
-#if 0 //Doesn't work we need to investigate it.
+
         {
             Akonadi::SearchQuery query;
             query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderCC, "cc@test.com", Akonadi::SearchTerm::CondContains));
             QList<qint64> collections = QList<qint64>() << 1 << 2;
             QStringList mimeTypes = QStringList() << "message/rfc822";
             QSet<qint64> result = QSet<qint64>() << 4;
-            QTest::newRow("find by header cc") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
+            QTest::newRow("find by header cc (contains)") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
         }
-#endif
+
         {
             Akonadi::SearchQuery query;
             query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderOrganization, "kde", Akonadi::SearchTerm::CondEqual));
@@ -762,7 +773,7 @@ private Q_SLOTS:
         QFETCH(QStringList, mimeTypes);
         QFETCH(QSet<qint64>, expectedResult);
 
-        qDebug() << "starting search";
+        kDebug() << "starting search";
         SearchPlugin plugin;
         const QSet<qint64> result = plugin.search(query, collections, mimeTypes);
         kDebug() << result;
