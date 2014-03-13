@@ -63,7 +63,7 @@ namespace {
     }
 }
 
-#define INDEXING_AGENT_VERSION 1
+#define INDEXING_AGENT_VERSION 2
 
 BalooIndexingAgent::BalooIndexingAgent(const QString& id)
     : AgentBase(id),
@@ -136,6 +136,7 @@ BalooIndexingAgent::~BalooIndexingAgent()
 
 void BalooIndexingAgent::reindexCollection(const qlonglong id)
 {
+    
     kDebug() << "Reindexing collection " << id;
 }
 
