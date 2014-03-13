@@ -34,22 +34,30 @@ AgePostingSource::AgePostingSource(Xapian::valueno slot_)
     : Xapian::ValuePostingSource(slot_)
 {
     m_currentTime_t = QDateTime::currentDateTime().toTime_t();
-    kDebug() << "Created with current time" << m_currentTime_t;
 }
 
 Xapian::weight AgePostingSource::get_weight() const
 {
-    QString str = QString::fromStdString(*value_it);
+    std::string s = *value_it;
+    QString str = QString::fromUtf8(s.c_str(), s.length());
 
     bool ok = false;
     uint time = str.toUInt(&ok);
-    uint diff = m_currentTime_t - time;
 
     if (!ok)
         return 0.0;
 
-    // Don't ask - Just tried random things. We need to improve the weights.
-    return log10(diff);
+    QDateTime dt = QDateTime::fromTime_t(time);
+    uint diff = m_currentTime_t - time;
+
+    // Each day is given a penalty of penalty of 1.0
+    double penalty = 1.0 / (24*60*60);
+    double result = 1000.0 - (diff*penalty);
+
+    if (result < 0.0)
+        return 0.0;
+
+    return result;
 }
 
 Xapian::PostingSource* AgePostingSource::clone() const
@@ -60,5 +68,5 @@ Xapian::PostingSource* AgePostingSource::clone() const
 void AgePostingSource::init(const Xapian::Database& db_)
 {
     Xapian::ValuePostingSource::init(db_);
-    //set_maxweight(1.0);
+    set_maxweight(1000.0);
 }

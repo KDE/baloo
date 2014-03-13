@@ -8,6 +8,7 @@ set(BALOO_PIM_LIB_SRCS
     resultiterator.cpp
     contactquery.cpp
     emailquery.cpp
+    notequery.cpp
     contactcompleter.cpp
 
     ../search/email/agepostingsource.cpp
@@ -36,6 +37,7 @@ install(FILES
     contactquery.h
     emailquery.h
     contactcompleter.h
+    notequery.h
 
     resultiterator.h
     pim_export.h

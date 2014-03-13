@@ -7,6 +7,13 @@
 get_filename_component(_currentDir ${CMAKE_CURRENT_LIST_FILE} PATH) # The current directory
 get_filename_component(rootDir ${_currentDir}/@relInstallDir@ ABSOLUTE) # The install prefix
 
+# The library version
+set(BALOO_VERSION_MAJOR @BALOO_VERSION_MAJOR@)
+set(BALOO_VERSION_MINOR @BALOO_VERSION_MINOR@)
+set(BALOO_VERSION_RELEASE @BALOO_VERSION_RELEASE@)
+set(BALOO_VERSION ${BALOO_VERSION_MAJOR}.${BALOO_VERSION_MINOR}.${BALOO_VERSION_RELEASE})
+
+
 # Include directory
 set(BALOO_INSTALL_PREFIX "${rootDir}")
 set(BALOO_INCLUDE_DIR "@INCLUDE_INSTALL_DIR@")

@@ -1,9 +1,10 @@
 set(EXTRACTOR_SRCS
   main.cpp
   app.cpp
-  priority.cpp
   result.cpp
+  ../priority.cpp
   ../basicindexingjob.cpp
+  ../xapiandocument.cpp
   ../database.cpp
   ../util.cpp
 )

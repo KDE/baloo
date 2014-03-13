@@ -40,9 +40,6 @@ public:
     bool isIdle()         const {
         return m_isIdle;
     }
-    bool isDiskSpaceLow() const {
-        return m_isDiskSpaceLow;
-    }
     bool isOnBattery()    const {
         return m_isOnBattery;
     }
@@ -56,12 +53,6 @@ Q_SIGNALS:
     void powerManagementStatusChanged(bool conserveResources);
 
     /**
-     * Emitted when the disk space is low. In this case you
-     * should stop indexing immediately.
-     */
-    void diskSpaceStatusChanged(bool isLow);
-
-    /**
      * Emitted when the system becomes idle
      */
     void idleStatusChanged(bool isIdle);
@@ -69,23 +60,16 @@ Q_SIGNALS:
 public Q_SLOTS:
     void enable();
     void disable();
-    void suspendDiskSpaceMonitor();
-    void resumeDiskSpaceMonitor();
 
 private Q_SLOTS:
     void slotIdleTimeoutReached();
     void slotResumeFromIdle();
     void slotPowerManagementStatusChanged(bool conserveResources);
-    void slotCheckAvailableSpace();
 
 private:
     bool m_enabled;
     bool m_isIdle;
-    bool m_isDiskSpaceLow;
     bool m_isOnBattery;
-
-    // timer used to periodically check for available space
-    QTimer m_availSpaceTimer;
 };
 }
 

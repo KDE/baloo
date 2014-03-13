@@ -37,12 +37,16 @@ namespace
 /// recursively check if a folder is hidden
 bool isDirHidden(QDir& dir)
 {
+#ifdef __unix__
+    return dir.absolutePath().contains("/.");
+#else
     if (QFileInfo(dir.path()).isHidden())
         return true;
     else if (dir.cdUp())
         return isDirHidden(dir);
     else
         return false;
+#endif
 }
 }
 
@@ -54,9 +58,9 @@ FileIndexerConfig::FileIndexerConfig(QObject* parent)
     , m_indexHidden(false)
 {
     KDirWatch* dirWatch = KDirWatch::self();
-    connect(dirWatch, SIGNAL(dirty(const QString&)),
+    connect(dirWatch, SIGNAL(dirty(QString)),
             this, SLOT(slotConfigDirty()));
-    connect(dirWatch, SIGNAL(created(const QString&)),
+    connect(dirWatch, SIGNAL(created(QString)),
             this, SLOT(slotConfigDirty()));
     dirWatch->addFile(KStandardDirs::locateLocal("config", m_config.name()));
 
@@ -124,14 +128,6 @@ bool FileIndexerConfig::indexHiddenFilesAndFolders() const
 {
     return m_indexHidden;
 }
-
-
-KIO::filesize_t FileIndexerConfig::minDiskSpace() const
-{
-    // default: 200 MB
-    return m_config.group("General").readEntry("min disk space", KIO::filesize_t(200 * 1024 * 1024));
-}
-
 
 void FileIndexerConfig::slotConfigDirty()
 {
@@ -415,7 +411,7 @@ bool FileIndexerConfig::buildExcludeFilterRegExpCache()
 bool FileIndexerConfig::buildMimeTypeCache()
 {
     QWriteLocker lock(&m_mimetypeMutex);
-    QStringList newMimeExcludes = m_config.group("General").readPathEntry("exclude mimetypes", QStringList());
+    QStringList newMimeExcludes = m_config.group("General").readPathEntry("exclude mimetypes", defaultExcludeMimetypes());
 
     QSet<QString> newMimeExcludeSet = newMimeExcludes.toSet();
     if (m_excludeMimetypes != newMimeExcludeSet) {
@@ -453,15 +449,5 @@ void FileIndexerConfig::setInitialRun(bool isInitialRun)
 
 bool FileIndexerConfig::initialUpdateDisabled() const
 {
-    return m_config.group("General").readEntry("disable initial update", false);
-}
-
-bool FileIndexerConfig::suspendOnPowerSaveDisabled() const
-{
-    return m_config.group("General").readEntry("disable suspend on powersave", false);
-}
-
-bool FileIndexerConfig::isDebugModeEnabled() const
-{
-    return m_config.group("General").readEntry("debug mode", false);
+    return m_config.group("General").readEntry("disable initial update", true);
 }

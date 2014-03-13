@@ -37,6 +37,7 @@ class ContactIndexer: public AbstractIndexer
 
     void index(const Akonadi::Item& item);
     void remove(const Akonadi::Item& item);
+    void remove(const Akonadi::Collection& item);
 
     void commit();
 

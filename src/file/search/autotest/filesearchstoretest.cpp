@@ -86,9 +86,10 @@ void FileSearchStoreTest::insertText(int id, const QString& text)
 
     Xapian::TermGenerator termGen;
     termGen.set_document(doc);
-    termGen.index_text(text.toStdString());
+    termGen.index_text(text.toUtf8().constData());
 
-    QScopedPointer<Xapian::WritableDatabase> wdb(new Xapian::WritableDatabase(m_tempDir->name().toStdString(),
+    std::string dir = m_tempDir->name().toUtf8().constData();
+    QScopedPointer<Xapian::WritableDatabase> wdb(new Xapian::WritableDatabase(dir,
                                                                               Xapian::DB_CREATE_OR_OPEN));
     wdb->replace_document(id, doc);
     wdb->commit();
@@ -101,9 +102,10 @@ void FileSearchStoreTest::insertRating(int id, int rating)
     Xapian::Document doc;
 
     QString str = 'R' + QString::number(rating);
-    doc.add_term(str.toStdString());
+    doc.add_term(str.toUtf8().constData());
 
-    QScopedPointer<Xapian::WritableDatabase> wdb(new Xapian::WritableDatabase(m_tempDir->name().toStdString(),
+    std::string dir = m_tempDir->name().toUtf8().constData();
+    QScopedPointer<Xapian::WritableDatabase> wdb(new Xapian::WritableDatabase(dir,
                                                                               Xapian::DB_CREATE_OR_OPEN));
     wdb->replace_document(id, doc);
     wdb->commit();

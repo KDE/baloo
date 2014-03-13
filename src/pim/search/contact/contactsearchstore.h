@@ -23,11 +23,11 @@
 #ifndef BALOO_PIM_CONTACT_SEARCHSTORE_H
 #define BALOO_PIM_CONTACT_SEARCHSTORE_H
 
-#include "xapiansearchstore.h"
+#include "../pimsearchstore.h"
 
 namespace Baloo {
 
-class ContactSearchStore : public XapianSearchStore
+class ContactSearchStore : public PIMSearchStore
 {
     Q_OBJECT
     Q_INTERFACES(Baloo::SearchStore)
@@ -35,17 +35,6 @@ public:
     ContactSearchStore(QObject* parent = 0);
 
     virtual QStringList types();
-
-protected:
-    virtual Xapian::Query convertTypes(const QStringList&) { return Xapian::Query(); }
-    virtual QByteArray idPrefix() { return QByteArray("akonadi"); }
-
-    virtual Xapian::Query constructQuery(const QString& property, const QVariant& value,
-                                         Term::Comparator com);
-    virtual QUrl constructUrl(const Xapian::docid& docid);
-
-private:
-    QHash<QString, QString> m_prefix;
 };
 
 }

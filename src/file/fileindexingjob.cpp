@@ -80,8 +80,8 @@ void FileIndexingJob::start(const QVector<uint>& files)
         args << QString::number(file);
     kDebug() << args;
 
-    connect(m_process, SIGNAL(finished(int, QProcess::ExitStatus)),
-            this, SLOT(slotIndexedFile(int, QProcess::ExitStatus)));
+    connect(m_process, SIGNAL(finished(int,QProcess::ExitStatus)),
+            this, SLOT(slotIndexedFile(int,QProcess::ExitStatus)));
 
     m_process->setProcessChannelMode(QProcess::SeparateChannels);
     m_process->start(exe, args);

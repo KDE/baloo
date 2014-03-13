@@ -57,9 +57,7 @@ public:
         State_Normal = 0,
         State_UserIdle = 1,
         State_OnBattery = 2,
-        State_LowDiskSpace = 3,
-        State_Suspended = 4,
-        State_Cleaning = 5
+        State_Suspended = 3
     };
 
     IndexScheduler(Database* db, FileIndexerConfig* config, QObject* parent = 0);
@@ -67,37 +65,11 @@ public:
 
     bool isSuspended() const;
     bool isIndexing() const;
-    bool isCleaning() const;
 
     /**
      * A user readable description of the scheduler's status
      */
     QString userStatusString() const;
-
-    /**
-     * @brief Returns the internal stateof the indexer as enum
-     *
-     * This status is used to expose the current state of the indexer via dbus.
-     *
-     * @return Enum state of the indexer
-     */
-    State currentStatus() const;
-
-    /**
-     * The current uri being indexed. It is empty if no file is being indexed.
-     * The url being empty does not indicate that the indexer isn't running,
-     * just that it hasn't found a file to index.
-     *
-     * \sa indexingStarted
-     * \sa indexingStopped
-     */
-    QString currentUrl() const;
-
-    /**
-     * The UpdateDirFlags of the the current url that is being
-     * indexed.
-     */
-    UpdateDirFlags currentFlags() const;
 
     void removeFileData(int id);
 
@@ -126,9 +98,9 @@ public Q_SLOTS:
     void updateAll(bool forceUpdate = false);
 
     /**
-     * Analyze the one file without conditions.
+     * Send this specific file for indexing
      */
-    void analyzeFile(const QString& path);
+    void indexFile(const QString& path);
 
 Q_SIGNALS:
     // Indexing State
@@ -157,8 +129,6 @@ private Q_SLOTS:
 
     //void slotTeardownRequested(const RemovableMediaCache::Entry* entry);
     void emitStatusStringChanged();
-
-    void slotCommitted();
 
 private:
     void queueAllFoldersForUpdate(bool forceUpdate = false);

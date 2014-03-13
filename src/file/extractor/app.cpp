@@ -36,6 +36,8 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QDBusConnection>
+#include <KApplication>
+#include <kfilemetadata/propertyinfo.h>
 
 #include <iostream>
 
@@ -153,15 +155,28 @@ void App::processNextUrl()
             QByteArray arr;
             QDataStream s(&arr, QIODevice::WriteOnly);
 
-            Q_FOREACH (const Result& res, m_results)
-                s << res.map();
+            Q_FOREACH (const Result& res, m_results) {
+                QVariantMap map;
+
+                QMapIterator<QString, QVariant> it(res.map());
+                while (it.hasNext()) {
+                    it.next();
+                    int propNum = it.key().toInt();
+
+                    using namespace KFileMetaData::Property;
+                    Property prop = static_cast<Property>(propNum);
+                    KFileMetaData::PropertyInfo pi(prop);
+                    map.insert(pi.name(), it.value());
+                }
+                s << map;
+            }
 
             std::cout << arr.toBase64().constData();
+            m_results.clear();
         }
         else {
             saveChanges();
         }
-        return;
     }
 
     QTimer::singleShot(0, this, SLOT(processNextUrl()));
@@ -175,7 +190,7 @@ void App::saveChanges()
     QList<QString> updatedFiles;
 
     try {
-        Xapian::WritableDatabase db(m_path.toStdString(), Xapian::DB_CREATE_OR_OPEN);
+        Xapian::WritableDatabase db(m_path.toUtf8().constData(), Xapian::DB_CREATE_OR_OPEN);
         for (int i = 0; i<m_results.size(); i++) {
             Result& res = m_results[i];
             res.save(db);

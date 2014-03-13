@@ -32,6 +32,7 @@ namespace PIM {
 
 class ContactQuery;
 class EmailQuery;
+class NoteQuery;
 
 class BALOO_PIM_EXPORT ResultIterator
 {
@@ -46,6 +47,7 @@ public:
 private:
     friend class ContactQuery;
     friend class EmailQuery;
+    friend class NoteQuery;
 
     class Private;
     Private* d;

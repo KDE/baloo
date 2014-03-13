@@ -24,6 +24,8 @@
 #include "database.h"
 
 #include <KDebug>
+#include <KDiskFreeSpaceInfo>
+#include <QCoreApplication>
 
 Baloo::CommitQueue::CommitQueue(Database* db, QObject* parent)
     : QObject(parent)
@@ -66,6 +68,14 @@ void Baloo::CommitQueue::startTimers()
 
 void Baloo::CommitQueue::commit()
 {
+    // The 200 mb is arbitrary
+    KDiskFreeSpaceInfo info = KDiskFreeSpaceInfo::freeSpaceInfo(m_db->path());
+    if (info.isValid() && info.available() <= 200 * 1024 * 1024) {
+        kError() << "Low disk space. Aborting!!";
+        QCoreApplication::instance()->quit();
+        return;
+    }
+
     m_db->sqlDatabase().commit();
     m_db->sqlDatabase().transaction();
     kDebug() << "SQL Committed";
@@ -73,9 +83,9 @@ void Baloo::CommitQueue::commit()
     if (m_docsToAdd.isEmpty() && m_docsToRemove.isEmpty())
         return;
 
-    const std::string path = m_db->path().toStdString();
+    const QByteArray path = m_db->path().toUtf8();
     try {
-        Xapian::WritableDatabase db(path, Xapian::DB_CREATE_OR_OPEN);
+        Xapian::WritableDatabase db(path.constData(), Xapian::DB_CREATE_OR_OPEN);
 
         kDebug() << "Adding:" << m_docsToAdd.size() << "docs";
         Q_FOREACH (const DocIdPair& doc, m_docsToAdd) {

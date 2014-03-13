@@ -6,6 +6,13 @@ set(FILE_LIB_SRCS
     filemonitor.cpp
     taglistjob.cpp
     db.cpp
+
+    indexerconfig.cpp
+    ../fileindexerconfig.cpp
+    ../regexpcache.cpp
+    ../fileexcludefilters.cpp
+    xattrdetector.cpp
+    filecustommetadata.cpp
 )
 
 add_library(baloofiles SHARED ${FILE_LIB_SRCS})
@@ -14,6 +21,7 @@ target_link_libraries(baloofiles
     Qt5::Core
     Qt5::Sql
     KF5::KDE4Support
+    KF5::Solid
     ${XAPIAN_LIBRARIES}
     ${QJSON_LIBRARIES}
     baloocore
@@ -32,9 +40,11 @@ install(FILES
     filemodifyjob.h
     filemonitor.h
     taglistjob.h
+    indexerconfig.h
     file_export.h
 
     DESTINATION ${INCLUDE_INSTALL_DIR}/baloo COMPONENT Devel
 )
 
+add_subdirectory(tests)
 add_subdirectory(autotests)

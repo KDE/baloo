@@ -23,7 +23,6 @@
 #ifndef EXTRACTOR_APP_H
 #define EXTRACTOR_APP_H
 
-#include <QCoreApplication>
 #include <QVector>
 #include <QStringList>
 

@@ -1,6 +1,6 @@
 /* This file is part of the KDE Project
    Copyright (c) 2008 Sebastian Trueg <trueg@kde.org>
-   Copyright (c) 2010-12 Vishesh Handa <me@vhanda.in>
+   Copyright (c) 2010-14 Vishesh Handa <me@vhanda.in>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -18,16 +18,9 @@
 */
 
 #include "eventmonitor.h"
-#include "indexscheduler.h"
 
 #include <KDebug>
-#include <KLocale>
-#include <KDiskFreeSpaceInfo>
-#include <KStandardDirs>
-#include <KNotification>
-#include <KIcon>
 #include <KIdleTime>
-#include <KConfigGroup>
 
 #include <Solid/PowerManagement>
 
@@ -35,15 +28,6 @@
 
 // TODO: Make idle timeout configurable?
 static int s_idleTimeout = 1000 * 60 * 2; // 2 min
-static int s_availSpaceTimeout = 1000 * 30; // 30 seconds
-
-namespace
-{
-void sendEvent(const QString& event, const QString& text, const QString& iconName)
-{
-    KNotification::event(event, text, KIcon(iconName).pixmap(32, 32));
-}
-}
 
 using namespace Baloo;
 
@@ -54,10 +38,6 @@ EventMonitor::EventMonitor(QObject* parent)
     connect(Solid::PowerManagement::notifier(), SIGNAL(appShouldConserveResourcesChanged(bool)),
             this, SLOT(slotPowerManagementStatusChanged(bool)));
 
-    // setup the avail disk usage monitor
-    connect(&m_availSpaceTimer, SIGNAL(timeout()),
-            this, SLOT(slotCheckAvailableSpace()));
-
     // setup idle time
     KIdleTime* idleTime = KIdleTime::instance();
     connect(idleTime, SIGNAL(timeoutReached(int)), this, SLOT(slotIdleTimeoutReached()));
@@ -65,7 +45,6 @@ EventMonitor::EventMonitor(QObject* parent)
 
     m_isOnBattery = Solid::PowerManagement::appShouldConserveResources();
     m_isIdle = false;
-    m_isDiskSpaceLow = false; /* We hope */
     m_enabled = false;
 }
 
@@ -84,38 +63,6 @@ void EventMonitor::slotPowerManagementStatusChanged(bool conserveResources)
 }
 
 
-void EventMonitor::slotCheckAvailableSpace()
-{
-    if (!m_enabled)
-        return;
-
-    QString path = KStandardDirs::locateLocal("data", "baloo/file", false);
-    KDiskFreeSpaceInfo info = KDiskFreeSpaceInfo::freeSpaceInfo(path);
-    if (info.isValid()) {
-        KConfig config("baloofilerc");
-        int minSize = config.group("General").readEntry("min disk space", KIO::filesize_t(200 * 1024 * 1024));
-        if (info.available() <= minSize) {
-            m_isDiskSpaceLow = true;
-            Q_EMIT diskSpaceStatusChanged(true);
-
-            sendEvent("indexingSuspended",
-                      i18n("Disk space is running low (%1 left). Suspending indexing of files.",
-                           KIO::convertSize(info.available())),
-                      "drive-harddisk");
-        } else if (m_isDiskSpaceLow) {
-            // We only emit this signal, if previously emitted with the value true
-            m_isDiskSpaceLow = false;
-            Q_EMIT diskSpaceStatusChanged(false);
-
-            sendEvent("indexingResumed", i18n("Resuming indexing of files for fast searching."), "drive-harddisk");
-        }
-    } else {
-        // if it does not work once, it will probably never work
-        m_availSpaceTimer.stop();
-    }
-}
-
-
 void EventMonitor::enable()
 {
     /* avoid add multiple idle timeout */
@@ -123,9 +70,6 @@ void EventMonitor::enable()
         m_enabled = true;
         KIdleTime::instance()->addIdleTimeout(s_idleTimeout);
     }
-
-    if (!m_availSpaceTimer.isActive())
-        m_availSpaceTimer.start(s_availSpaceTimeout);
 }
 
 void EventMonitor::disable()
@@ -134,19 +78,6 @@ void EventMonitor::disable()
         m_enabled = false;
         KIdleTime::instance()->removeAllIdleTimeouts();
     }
-
-    m_availSpaceTimer.stop();
-}
-
-void EventMonitor::suspendDiskSpaceMonitor()
-{
-    m_availSpaceTimer.stop();
-}
-
-void EventMonitor::resumeDiskSpaceMonitor()
-{
-    if (m_enabled && !m_availSpaceTimer.isActive())
-        m_availSpaceTimer.start(s_availSpaceTimeout);
 }
 
 void EventMonitor::slotIdleTimeoutReached()

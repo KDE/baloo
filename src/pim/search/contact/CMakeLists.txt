@@ -1,4 +1,4 @@
-add_library(baloo_contactsearchstore MODULE contactsearchstore.cpp)
+add_library(baloo_contactsearchstore MODULE contactsearchstore.cpp ../pimsearchstore.cpp)
 
 target_link_libraries(baloo_contactsearchstore
     Qt5::Core

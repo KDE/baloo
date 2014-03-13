@@ -22,8 +22,8 @@
 
 #include "basicindexingjob.h"
 #include "database.h"
+#include "xapiandocument.h"
 
-#include <QTimer>
 #include <QFileInfo>
 #include <QDateTime>
 
@@ -36,6 +36,7 @@ BasicIndexingJob::BasicIndexingJob(QSqlDatabase* db, const FileMapping& file, co
     : m_sqlDb(db)
     , m_file(file)
     , m_mimetype(mimetype)
+    , m_id(0)
 {
 }
 
@@ -54,54 +55,41 @@ bool BasicIndexingJob::index()
 
     QFileInfo fileInfo(m_file.url());
 
-    Xapian::Document doc;
-    doc.add_term('M' + m_mimetype.toStdString());
-
-    std::string fileName = fileInfo.fileName().toStdString();
-
-    Xapian::TermGenerator termGen;
-    termGen.set_document(doc);
-    termGen.index_text(fileName, 1000);
-    termGen.index_text(fileName, 1000, "F");
+    XapianDocument doc;
+    doc.addTerm(m_mimetype, "M");
+    doc.indexText(fileInfo.fileName(), 1000);
+    doc.indexText(fileInfo.fileName(), "F", 1000);
 
     // Modified Date
     QDateTime mod = fileInfo.lastModified();
-    doc.add_boolean_term("DT_M" + fileInfo.lastModified().toString(Qt::ISODate).toStdString());
+    const QString dtm = mod.toString(Qt::ISODate);
 
-    const QString year = "DT_MY" + QString::number(mod.date().year());
-    const QString month = "DT_MM" + QString::number(mod.date().month());
-    const QString day = "DT_MD" + QString::number(mod.date().day());
-    doc.add_boolean_term(year.toStdString());
-    doc.add_boolean_term(month.toStdString());
-    doc.add_boolean_term(day.toStdString());
+    doc.addBoolTerm(dtm, "DT_M");
+    doc.addBoolTerm(mod.date().year(), "DT_MY");
+    doc.addBoolTerm(mod.date().month(), "DT_MM");
+    doc.addBoolTerm(mod.date().day(), "DT_MD");
 
     // Types
     QVector<KFileMetaData::Type::Type> tList = typesForMimeType(m_mimetype);
-    QVector<QByteArray> types;
-    types.reserve(tList.size() + 2);
     Q_FOREACH (KFileMetaData::Type::Type type, tList) {
-        types << KFileMetaData::TypeInfo(type).name().toLower().toUtf8();
+        QString tstr = KFileMetaData::TypeInfo(type).name().toLower();
+        doc.addBoolTerm(tstr, "T");
     }
-    types << QByteArray("file");
+    doc.addBoolTerm("file", "T");
 
     if (fileInfo.isDir()) {
-        types << QByteArray("folder");
+        doc.addBoolTerm("folder", "T");
 
         // This is an optimization for folders. They do not need to go through
         // file indexing, so there are no indexers for folders
-        doc.add_boolean_term("Z2");
+        doc.addBoolTerm("Z2");
     }
     else {
-        doc.add_boolean_term("Z1");
-    }
-
-    Q_FOREACH (const QByteArray& arr, types) {
-        QByteArray a = 'T' + arr;
-        doc.add_boolean_term(a.constData());
+        doc.addBoolTerm("Z1");
     }
 
     m_id = m_file.id();
-    m_doc = doc;
+    m_doc = doc.doc();
     return true;
 }
 

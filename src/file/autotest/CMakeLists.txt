@@ -60,6 +60,7 @@ set(basicIndexingQueue_SRC
     basicindexingqueuetest.cpp
     ../basicindexingqueue.cpp
     ../basicindexingjob.cpp
+    ../xapiandocument.cpp
     ../indexingqueue.cpp
     ../fileindexerconfig.cpp
     ../fileexcludefilters.cpp

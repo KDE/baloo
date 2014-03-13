@@ -1,6 +1,6 @@
 /*
  * This file is part of the KDE Baloo Project
- * Copyright (C) 2013  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2014  Christian Mollekopf <mollekopf@kolabsys.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,32 +20,23 @@
  *
  */
 
-#ifndef DETAILSWIDGET_H
-#define DETAILSWIDGET_H
+#ifndef BALOO_PIM_SEARCHPLUGIN_H
+#define BALOO_PIM_SEARCHPLUGIN_H
 
-#include <kdialog.h>
-#include <QLabel>
+#include <akonadi/abstractsearchplugin.h>
 
-namespace Baloo
-{
+namespace Baloo {
+class Query;
+}
 
-class DetailsWidget : public KDialog
+class SearchPlugin : public QObject, public Akonadi::AbstractSearchPlugin
 {
     Q_OBJECT
+    Q_INTERFACES(Akonadi::AbstractSearchPlugin)
 public:
-    explicit DetailsWidget(QWidget* parent = 0, Qt::WindowFlags flags = 0);
-    ~DetailsWidget();
-
-private Q_SLOTS:
-    void refresh();
-    void slotFileCountFinished();
-    void slotEmailCountFinished();
-
+    virtual QSet<qint64> search( const QString &query, const QList<qint64> &collections, const QStringList &mimeTypes );
 private:
-    QLabel* m_fileCountLabel;
-    QLabel* m_emailCountLabel;
-
+    Baloo::Query fromAkonadiQuery(const QString &akonadiQuery, const QList<qint64> &collections, const QStringList &mimeTypes);
 };
 
-}
-#endif // DETAILSWIDGET_H
+#endif

@@ -27,6 +27,7 @@
 #include <KCmdLineArgs>
 #include <KDebug>
 #include <k4aboutdata.h>
+#include <kmimetype.h>
 
 #include <QTimer>
 
@@ -64,6 +65,13 @@ int main(int argc, char** argv)
 
     const QUrl url = args->url(0);
     bool shouldIndex = config.shouldBeIndexed(url.toLocalFile());
-    std::cout << url.toLocalFile().toUtf8().constData() << " " << shouldIndex << std::endl;
+
+    QString mimetype = KMimeType::findByUrl(url)->name();
+    bool shouldIndexMimetype = config.shouldMimeTypeBeIndexed(mimetype);
+    std::cout << url.toLocalFile().toUtf8().constData() << "\n"
+              << "Should Index: " << std::boolalpha << shouldIndex << "\n"
+              << "Should Index Mimetype: " << std::boolalpha << shouldIndexMimetype << "\n"
+              << "Mimetype: " << mimetype.toUtf8().constData() << std::endl;
+
     return 0; //app.exec();
 }

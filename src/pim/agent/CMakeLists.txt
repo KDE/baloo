@@ -1,6 +1,7 @@
 include_directories(
     ${XAPIAN_INCLUDE_DIR}
     ${KDEPIMLIBS_INCLUDE_DIRS}
+    ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 add_definitions(-fexceptions)
@@ -10,7 +11,13 @@ add_executable(akonadi_baloo_indexer
     agent.cpp
     emailindexer.cpp
     contactindexer.cpp
+    akonotesindexer.cpp
+    ../../file/priority.cpp
 )
+
+qt4_add_dbus_adaptor(akonadi_baloo_indexer_SRCS org.freedesktop.Akonadi.BalooIndexer.xml agent.h BalooIndexingAgent)
+
+add_executable(akonadi_baloo_indexer ${akonadi_baloo_indexer_SRCS})
 
 target_link_libraries(akonadi_baloo_indexer
     Qt5::Core
@@ -27,3 +34,4 @@ install(FILES akonadibalooindexingagent.desktop
         DESTINATION "${CMAKE_INSTALL_PREFIX}/share/akonadi/agents")
 
 add_subdirectory(tests)
+add_subdirectory(autotests)

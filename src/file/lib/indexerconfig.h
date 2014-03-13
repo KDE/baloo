@@ -1,6 +1,6 @@
 /*
  * <one line to give the library's name and an idea of what it does.>
- * Copyright (C) 2012-2013  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,31 +18,29 @@
  *
  */
 
-#ifndef _EXCLUDEFILTERSELECTIONDIALOG_H
-#define _EXCLUDEFILTERSELECTIONDIALOG_H
+#ifndef BALOO_INDEXERCONFIG_H
+#define BALOO_INDEXERCONFIG_H
 
-#include <KDialog>
-#include "ui_excludefilterselectiondialog.h"
+#include <QObject>
+#include "file_export.h"
 
-namespace Baloo
+namespace Baloo {
+
+class BALOO_FILE_EXPORT IndexerConfig
 {
-
-class ExcludeFilterSelectionDialog :  public KDialog, public Ui_ExcludeFilterSelectionWidget
-{
-    Q_OBJECT
 public:
-    explicit ExcludeFilterSelectionDialog(QWidget* parent = 0);
-    ~ExcludeFilterSelectionDialog();
+    IndexerConfig();
+    ~IndexerConfig();
 
-    void setExcludeFilters(const QStringList& filters);
-    void setExcludeMimeTypes(const QStringList& mimetypes);
+    bool balooEnabled() const;
+    bool fileIndexingEnabled() const;
 
-    QStringList excludeFilters();
-    QStringList excludeMimeTypes();
+    bool shouldBeIndexed(const QString& path) const;
 
 private:
-
+    class Private;
+    Private* d;
 };
 }
 
-#endif // _EXCLUDEFILTERSELECTIONDIALOG_H
+#endif // BALOO_INDEXERCONFIG_H

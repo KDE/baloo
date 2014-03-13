@@ -1,6 +1,6 @@
 /* This file is part of the KDE Project
    Copyright (c) 2008-2010 Sebastian Trueg <trueg@kde.org>
-   Copyright (c) 2010-2013 Vishesh Handa <handa.vish@gmail.com>
+   Copyright (c) 2010-2014 Vishesh Handa <handa.vish@gmail.com>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -23,10 +23,9 @@
 #include "util.h"
 
 #include <KDebug>
-#include <KUrl>
 
-#include <QTimer>
 #include <QDBusConnection>
+#include <QCoreApplication>
 
 using namespace Baloo;
 
@@ -43,10 +42,6 @@ FileIndexer::FileIndexer(Database* db, FileIndexerConfig* config, QObject* paren
 
     // setup status connections
     connect(m_indexScheduler, SIGNAL(statusStringChanged()),
-            this, SIGNAL(statusStringChanged()));
-
-    // Connect some signals used in the DBus interface
-    connect(this, SIGNAL(statusStringChanged()),
             this, SIGNAL(statusChanged()));
     connect(m_indexScheduler, SIGNAL(indexingStarted()),
             this, SIGNAL(indexingStarted()));
@@ -57,11 +52,8 @@ FileIndexer::FileIndexer(Database* db, FileIndexerConfig* config, QObject* paren
     connect(m_indexScheduler, SIGNAL(basicIndexingDone()),
             this, SLOT(slotBasicIndexingDone()));
 
-    connect(m_indexScheduler, SIGNAL(statusStringChanged()),
-            this, SLOT(emitStatusMessage()));
-
     QDBusConnection bus = QDBusConnection::sessionBus();
-    bus.registerObject(QLatin1String("/fileindexer"), this,
+    bus.registerObject(QLatin1String("/indexer"), this,
                        QDBusConnection::ExportScriptableSignals |
                        QDBusConnection::ExportScriptableSlots |
                        QDBusConnection::ExportAdaptors);
@@ -88,24 +80,7 @@ void FileIndexer::slotBasicIndexingDone()
     m_config->setInitialRun(false);
 }
 
-void FileIndexer::emitStatusMessage()
-{
-    QString message = m_indexScheduler->userStatusString();
-
-    Q_EMIT status((int)m_indexScheduler->currentStatus(), message);
-}
-
 QString FileIndexer::statusMessage() const
-{
-    return m_indexScheduler->userStatusString();
-}
-
-int FileIndexer::currentStatus() const
-{
-    return (int)m_indexScheduler->currentStatus();
-}
-
-QString FileIndexer::userStatusString() const
 {
     return m_indexScheduler->userStatusString();
 }
@@ -131,12 +106,6 @@ bool FileIndexer::isIndexing() const
     return m_indexScheduler->isIndexing();
 }
 
-bool FileIndexer::isCleaning() const
-{
-    return m_indexScheduler->isCleaning();
-}
-
-
 void FileIndexer::suspend() const
 {
     m_indexScheduler->suspend();
@@ -147,65 +116,6 @@ void FileIndexer::resume() const
 {
     m_indexScheduler->resume();
 }
-
-
-QString FileIndexer::currentFile() const
-{
-    return m_indexScheduler->currentUrl();
-}
-
-
-QString FileIndexer::currentFolder() const
-{
-    return KUrl(QUrl::fromLocalFile(m_indexScheduler->currentUrl())).directory();
-}
-
-
-void FileIndexer::updateFolder(const QString& path, bool recursive, bool forced)
-{
-    kDebug() << "Called with path: " << path;
-    QFileInfo info(path);
-    if (info.exists()) {
-        QString dirPath;
-        if (info.isDir())
-            dirPath = info.absoluteFilePath();
-        else
-            dirPath = info.absolutePath();
-
-        if (m_config->shouldFolderBeIndexed(dirPath)) {
-            indexFolder(path, recursive, forced);
-        }
-    }
-}
-
-/*
-int FileIndexer::indexedFiles() const
-{
-    QString query = QString::fromLatin1("select count(distinct ?r) where { ?r kext:indexingLevel ?t. "
-                                        " FILTER(?t >= %1) . }")
-                    .arg(Soprano::Node::literalToN3(Soprano::LiteralValue(2)));
-
-    Soprano::Model* model = Nepomuk2::ResourceManager::instance()->mainModel();
-    Soprano::QueryResultIterator it = model->executeQuery(query, Soprano::Query::QueryLanguageSparql);
-    if (it.next())
-        return it[0].literal().toInt();
-
-    return 0;
-}
-
-int FileIndexer::totalFiles() const
-{
-    QString query = QString::fromLatin1("select count(distinct ?r) where { ?r kext:indexingLevel ?t. }");
-
-    Soprano::Model* model = Nepomuk2::ResourceManager::instance()->mainModel();
-    Soprano::QueryResultIterator it = model->executeQuery(query, Soprano::Query::QueryLanguageSparql);
-    if (it.next())
-        return it[0].literal().toInt();
-
-    return 0;
-}
-*/
-
 
 void FileIndexer::updateAllFolders(bool forced)
 {
@@ -220,7 +130,7 @@ void FileIndexer::indexFile(const QString& path)
         indexFolder(path, false /*non-recursive*/, false /*not-forced*/);
     }
     else {
-        m_indexScheduler->analyzeFile(path);
+        m_indexScheduler->indexFile(path);
     }
 }
 
@@ -250,4 +160,9 @@ void FileIndexer::indexFolder(const QString& path, bool recursive, bool forced)
 void FileIndexer::removeFileData(int id)
 {
     m_indexScheduler->removeFileData(id);
+}
+
+void FileIndexer::quit() const
+{
+    QCoreApplication::instance()->quit();
 }

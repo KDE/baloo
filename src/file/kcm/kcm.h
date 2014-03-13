@@ -1,5 +1,6 @@
 /* This file is part of the KDE Project
    Copyright (c) 2007 Sebastian Trueg <trueg@kde.org>
+   Copyright (c) 2012-2014 Vishesh Handa <me@vhanda.in>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -21,13 +22,9 @@
 
 #include <KCModule>
 #include "ui_configwidget.h"
-#include "fileindexerinterface.h"
 
 namespace Baloo
 {
-
-class IndexFolderSelectionDialog;
-class ExcludeFilterSelectionDialog;
 
 class ServerConfigModule : public KCModule, private Ui::ConfigWidget
 {
@@ -42,36 +39,10 @@ public Q_SLOTS:
     void save();
     void defaults();
 
-private Q_SLOTS:
-    void updateFileServerStatus();
-    void updateFileIndexerStatus();
-    void recreateInterfaces();
-    void slotEditIndexFolders();
-    void slotAdvancedFileIndexing();
-    void slotStatusDetailsClicked();
-    void slotFileIndexerSuspendResumeClicked();
-
-    /**
-     * This slot is called when any of the "index documents", "index whatever" checkboxes
-     * status is chanaged
-     */
-    void slotCheckBoxesChanged();
-
 private:
-    void setFileIndexerStatusText(const QString& text, bool elide);
-    void updateFileIndexerSuspendResumeButtonText(bool isSuspended);
-
-    void syncCheckBoxesFromMimetypes(const QStringList& mimetypes);
-    QStringList mimetypesFromCheckboxes();
-
-    org::kde::baloo::file* m_fileIndexerInterface;
-
-    IndexFolderSelectionDialog* m_indexFolderSelectionDialog;
-    ExcludeFilterSelectionDialog* m_excludeFilterSelectionDialog;
-
-    bool m_failedToInitialize;
-
-    bool m_checkboxesChanged;
+    QStringList m_oldIncludeFolders;
+    QStringList m_oldExcludeFolders;
+    QStringList m_oldExcludeMimetypes;
 };
 }
 

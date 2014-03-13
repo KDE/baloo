@@ -73,10 +73,10 @@ RemovableMediaCache::RemovableMediaCache(QObject* parent)
 {
     initCacheEntries();
 
-    connect(Solid::DeviceNotifier::instance(), SIGNAL(deviceAdded(const QString&)),
-            this, SLOT(slotSolidDeviceAdded(const QString&)));
-    connect(Solid::DeviceNotifier::instance(), SIGNAL(deviceRemoved(const QString&)),
-            this, SLOT(slotSolidDeviceRemoved(const QString&)));
+    connect(Solid::DeviceNotifier::instance(), SIGNAL(deviceAdded(QString)),
+            this, SLOT(slotSolidDeviceAdded(QString)));
+    connect(Solid::DeviceNotifier::instance(), SIGNAL(deviceRemoved(QString)),
+            this, SLOT(slotSolidDeviceRemoved(QString)));
 }
 
 
@@ -122,8 +122,8 @@ RemovableMediaCache::Entry* RemovableMediaCache::createCacheEntry(const Solid::D
         m_usedSchemas.insert(KUrl(entry.url()).scheme());
 
         const Solid::StorageAccess* storage = dev.as<Solid::StorageAccess>();
-        connect(storage, SIGNAL(accessibilityChanged(bool, QString)),
-                this, SLOT(slotAccessibilityChanged(bool, QString)));
+        connect(storage, SIGNAL(accessibilityChanged(bool,QString)),
+                this, SLOT(slotAccessibilityChanged(bool,QString)));
         connect(storage, SIGNAL(teardownRequested(QString)),
                 this, SLOT(slotTeardownRequested(QString)));
 

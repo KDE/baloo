@@ -23,7 +23,6 @@
 #include <KDebug>
 
 #include <xapian.h>
-#include <QTimer>
 #include <QStringList>
 
 using namespace Baloo;
@@ -46,15 +45,20 @@ TagListJob::~TagListJob()
 
 void TagListJob::start()
 {
-    Xapian::Database xapianDb(fileIndexDbPath().toStdString());
-    Xapian::TermIterator it = xapianDb.allterms_begin("TAG");
-    Xapian::TermIterator end = xapianDb.allterms_end("TAG");
+    try {
+        Xapian::Database xapianDb(fileIndexDbPath());
+        Xapian::TermIterator it = xapianDb.allterms_begin("TAG");
+        Xapian::TermIterator end = xapianDb.allterms_end("TAG");
 
-    for (; it != end; it++ ) {
-        QString tag = QString::fromStdString(*it);
-        if (tag.startsWith("TAG")) {
-            d->tags << tag.mid(3);
+        for (; it != end; it++ ) {
+            std::string str = *it;
+            QString tag = QString::fromUtf8(str.c_str(), str.length());
+            if (tag.startsWith("TAG")) {
+                d->tags << tag.mid(3);
+            }
         }
+    }
+    catch (const Xapian::DatabaseOpeningError&) {
     }
 
     emitResult();

@@ -23,6 +23,7 @@
 #include "db.h"
 #include "file.h"
 #include "searchstore.h"
+#include "filecustommetadata.h"
 
 #include <KDebug>
 
@@ -31,7 +32,6 @@
 #include <QStringList>
 
 #include <xapian.h>
-#include <attr/xattr.h>
 
 #include <QDBusMessage>
 #include <QDBusConnection>
@@ -45,7 +45,16 @@ public:
     QString comment;
     QStringList tags;
 
-    Private() : rating(0) {}
+    bool ratingSet;
+    bool commentSet;
+    bool tagsSet;
+
+    Private()
+        : rating(0)
+        , ratingSet(false)
+        , commentSet(false)
+        , tagsSet(false)
+    {}
 };
 
 FileModifyJob::FileModifyJob(QObject* parent)
@@ -62,6 +71,8 @@ FileModifyJob::FileModifyJob(const File& file, QObject* parent)
     d->rating = file.rating();
     d->comment = file.userComment();
     d->tags = file.tags();
+
+    d->ratingSet = d->commentSet = d->tagsSet = true;
 }
 
 FileModifyJob::~FileModifyJob()
@@ -135,33 +146,31 @@ void FileModifyJob::doStart()
         }
 
         updatedFiles << fileMap.url();
-        const QByteArray furl = QFile::encodeName(fileMap.url());
+        const QString furl = fileMap.url();
 
-        if (d->rating) {
-            QByteArray rat = QString::number(d->rating).toUtf8();
-            setxattr(furl.constData(), "user.baloo.rating", rat.constData(), rat.size(), 0);
+        if (d->ratingSet) {
+            const QString rat = QString::number(d->rating);
+            setCustomFileMetaData(furl, QLatin1String("user.baloo.rating"), rat);
         }
 
-        if (!d->tags.isEmpty()) {
-            QByteArray tags = d->tags.join(",").toUtf8();
-            setxattr(furl.constData(), "user.baloo.tags", tags.constData(), tags.size(), 0);
+        if (d->tagsSet) {
+            QString tags = d->tags.join(",");
+            setCustomFileMetaData(furl, QLatin1String("user.xdg.tags"), tags);
         }
 
-        if (!d->comment.isEmpty()) {
-            QByteArray com = d->comment.toUtf8();
-            setxattr(furl.constData(), "user.xdg.comment", com.constData(), com.size(), 0);
+        if (d->commentSet) {
+            setCustomFileMetaData(furl, QLatin1String("user.xdg.comment"), d->comment);
         }
 
         // Save in Xapian
-        const std::string path = fileIndexDbPath().toStdString();
-        Xapian::WritableDatabase db(path, Xapian::DB_CREATE_OR_OPEN);
+        Xapian::WritableDatabase db(fileIndexDbPath(), Xapian::DB_CREATE_OR_OPEN);
         Xapian::Document doc;
 
         try {
             doc = db.get_document(fileMap.id());
 
             removeTerms(doc, "R");
-            removeTerms(doc, "T");
+            removeTerms(doc, "TA");
             removeTerms(doc, "TAG");
             removeTerms(doc, "C");
         }
@@ -178,7 +187,7 @@ void FileModifyJob::doStart()
         termGen.set_document(doc);
 
         Q_FOREACH (const QString& tag, d->tags) {
-            termGen.index_text(tag.toUtf8().constData(), 1, "T");
+            termGen.index_text(tag.toUtf8().constData(), 1, "TA");
 
             const QString tagStr = QLatin1String("TAG") + tag;
             doc.add_boolean_term(tagStr.toUtf8().constData());
@@ -227,6 +236,7 @@ FileModifyJob* FileModifyJob::modifyRating(const QStringList& files, int rating)
     FileModifyJob* job = new FileModifyJob();
     job->d->files = convertToFiles(files);
     job->d->rating = rating;
+    job->d->ratingSet = true;
 
     return job;
 }
@@ -236,6 +246,7 @@ FileModifyJob* FileModifyJob::modifyTags(const QStringList& files, const QString
     FileModifyJob* job = new FileModifyJob();
     job->d->files = convertToFiles(files);
     job->d->tags = tags;
+    job->d->tagsSet = true;
 
     return job;
 }
@@ -245,6 +256,7 @@ FileModifyJob* FileModifyJob::modifyUserComment(const QStringList& files, const 
     FileModifyJob* job = new FileModifyJob();
     job->d->files = convertToFiles(files);
     job->d->comment = comment;
+    job->d->commentSet = true;
 
     return job;
 }

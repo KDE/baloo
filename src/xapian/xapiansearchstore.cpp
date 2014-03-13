@@ -26,7 +26,7 @@
 
 #include <QVector>
 #include <QStringList>
-#include <QDateTime>
+#include <QTime>
 #include <KDebug>
 
 #include <algorithm>
@@ -47,7 +47,7 @@ void XapianSearchStore::setDbPath(const QString& path)
 
     delete m_db;
     try {
-        m_db = new Xapian::Database(m_dbPath.toStdString());
+        m_db = new Xapian::Database(m_dbPath.toUtf8().constData());
     }
     catch (const Xapian::DatabaseOpeningError&) {
         kError() << "Xapian Database does not exist at " << m_dbPath;
@@ -76,19 +76,27 @@ Xapian::Query XapianSearchStore::toXapianQuery(Xapian::Query::op op, const QList
     return Xapian::Query(op, queries.begin(), queries.end());
 }
 
+static Xapian::Query negate(bool shouldNegate, const Xapian::Query &query)
+{
+    if (shouldNegate) {
+        return Xapian::Query(Xapian::Query::OP_AND_NOT, Xapian::Query::MatchAll, query);
+    }
+    return query;
+}
+
 Xapian::Query XapianSearchStore::toXapianQuery(const Term& term)
 {
     if (term.operation() == Term::And) {
-        return toXapianQuery(Xapian::Query::OP_AND, term.subTerms());
+        return negate(term.isNegated(), toXapianQuery(Xapian::Query::OP_AND, term.subTerms()));
     }
     if (term.operation() == Term::Or) {
-        return toXapianQuery(Xapian::Query::OP_OR, term.subTerms());
+        return negate(term.isNegated(), toXapianQuery(Xapian::Query::OP_OR, term.subTerms()));
     }
 
     if (term.property().isEmpty())
         return Xapian::Query();
 
-    return constructQuery(term.property(), term.value(), term.comparator());
+    return negate(term.isNegated(), constructQuery(term.property(), term.value(), term.comparator()));
 }
 
 Xapian::Query XapianSearchStore::andQuery(const Xapian::Query& a, const Xapian::Query& b)
@@ -116,11 +124,12 @@ namespace {
 
     Xapian::Query makeQuery(const QString& string, Xapian::Database* db)
     {
-        // Lets just keep the top 10 (+1 for push_heap)
+        // Lets just keep the top x (+1 for push_heap)
+        static const int MaxTerms = 100;
         QList<Term> topTerms;
-        topTerms.reserve(11);
+        topTerms.reserve(MaxTerms + 1);
 
-        const std::string stdString = string.toStdString();
+        const std::string stdString(string.toLower().toUtf8().constData());
         Xapian::TermIterator it = db->allterms_begin(stdString);
         Xapian::TermIterator end = db->allterms_end(stdString);
         for (; it != end; it++) {
@@ -128,7 +137,7 @@ namespace {
             term.t = *it;
             term.count = db->get_collection_freq(term.t);
 
-            if (topTerms.size() < 10) {
+            if (topTerms.size() < MaxTerms) {
                 topTerms.push_back(term);
                 std::push_heap(topTerms.begin(), topTerms.end());
             }
@@ -158,7 +167,8 @@ namespace {
 Xapian::Query XapianSearchStore::constructSearchQuery(const QString& str)
 {
     QVector<Xapian::Query> queries;
-    QStringList list = str.split(" ", QString::SkipEmptyParts);
+    QRegExp splitRegex("[\\s.]");
+    QStringList list = str.split(splitRegex, QString::SkipEmptyParts);
 
     QMutableListIterator<QString> iter(list);
     while (iter.hasNext()) {
@@ -170,7 +180,7 @@ Xapian::Query XapianSearchStore::constructSearchQuery(const QString& str)
     }
 
     if (!list.isEmpty()) {
-        std::string stdStr = list.join(" ").toStdString();
+        std::string stdStr(list.join(" ").toUtf8().constData());
 
         Xapian::QueryParser parser;
         parser.set_database(*m_db);

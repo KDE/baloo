@@ -26,6 +26,7 @@
 #include "file.h"
 #include "file_p.h"
 #include "searchstore.h"
+#include "filecustommetadata.h"
 
 #include <QTimer>
 #include <QFile>
@@ -36,7 +37,6 @@
 #include <KDebug>
 
 #include <sys/types.h>
-#include <attr/xattr.h>
 
 using namespace Baloo;
 
@@ -119,7 +119,7 @@ void FileFetchJob::doStart()
         file.setUrl(fileMap.url());
 
         // Fetch data from Xapian
-        Xapian::Database db(fileIndexDbPath().toStdString());
+        Xapian::Database db(fileIndexDbPath());
         try {
             Xapian::Document doc = db.get_document(id);
 
@@ -145,29 +145,14 @@ void FileFetchJob::doStart()
 
 void FileFetchJob::Private::fetchUserMetadata(File& file)
 {
-    // Fetch xattr
-    QByteArray fileUrl = QFile::encodeName(file.url());
+    const QString url = file.url();
+    QString rating = customFileMetaData(url, QLatin1String("user.baloo.rating"));
+    QString tags = customFileMetaData(url, QLatin1String("user.xdg.tags"));
+    QString comment = customFileMetaData(url, QLatin1String("user.xdg.comment"));
 
-    char buffer[1000];
-    int len = 0;
-
-    len = getxattr(fileUrl.constData(), "user.baloo.rating", &buffer, 1000);
-    if (len > 0) {
-        QString str = QString::fromUtf8(buffer, len);
-        file.setRating(str.toInt());
-    }
-
-    len = getxattr(fileUrl.constData(), "user.baloo.tags", &buffer, 1000);
-    if (len > 0) {
-        QString str = QString::fromUtf8(buffer, len);
-        file.setTags(str.split(',', QString::SkipEmptyParts));
-    }
-
-    len = getxattr(fileUrl.constData(), "user.xdg.comment", &buffer, 1000);
-    if (len > 0) {
-        QString str = QString::fromUtf8(buffer, len);
-        file.setUserComment(str);
-    }
+    file.setRating(rating.toInt());
+    file.setTags(tags.split(',', QString::SkipEmptyParts));
+    file.setUserComment(comment);
 }
 
 File FileFetchJob::file() const

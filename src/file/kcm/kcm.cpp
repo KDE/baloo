@@ -1,6 +1,6 @@
 /* This file is part of the KDE Project
    Copyright (c) 2007-2010 Sebastian Trueg <trueg@kde.org>
-   Copyright (c) 2012-2013 Vishesh Handa <me@vhanda.in>
+   Copyright (c) 2012-2014 Vishesh Handa <me@vhanda.in>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -18,11 +18,8 @@
 */
 
 #include "kcm.h"
-#include "fileexcludefilters.h"
-#include "fileindexerinterface.h"
-#include "indexfolderselectiondialog.h"
-#include "excludefilterselectiondialog.h"
-#include "detailswidget.h"
+#include "../fileexcludefilters.h"
+#include "folderselectionwidget.h"
 
 #include <KPluginFactory>
 #include <KPluginLoader>
@@ -30,10 +27,13 @@
 #include <KSharedConfig>
 #include <KDirWatch>
 #include <KDebug>
+#include <KStandardDirs>
 
 #include <QPushButton>
-#include <QtCore/QDir>
-#include <QtDBus/QDBusServiceWatcher>
+#include <QDir>
+#include <QProcess>
+#include <QDBusConnection>
+#include <QDBusMessage>
 
 K_PLUGIN_FACTORY(BalooConfigModuleFactory, registerPlugin<Baloo::ServerConfigModule>();)
 K_EXPORT_PLUGIN(BalooConfigModuleFactory("kcm_baloofile", "kcm_baloofile"))
@@ -51,13 +51,10 @@ QStringList defaultFolders()
 using namespace Baloo;
 
 ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args)
-    : KCModule(BalooConfigModuleFactory::componentData(), parent, args),
-      m_fileIndexerInterface(0),
-      m_failedToInitialize(false),
-      m_checkboxesChanged(false)
+    : KCModule(BalooConfigModuleFactory::componentData(), parent, args)
 {
     KAboutData* about = new KAboutData(
-        "kcm_baloofile", "kcm_baloofile", ki18n("Desktop Search Configuration Module"),
+        "kcm_baloofile", "kcm_baloofile", ki18n("Configure Desktop Search"),
         KDE_VERSION_STRING, KLocalizedString(), KAboutData::License_GPL,
         ki18n("Copyright 2007-2010 Sebastian Trüg"));
     about->addAuthor(ki18n("Sebastian Trüg"), KLocalizedString(), "trueg@kde.org");
@@ -67,440 +64,101 @@ ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args
 
     setupUi(this);
 
-    m_indexFolderSelectionDialog = new IndexFolderSelectionDialog(this);
-    m_excludeFilterSelectionDialog = new ExcludeFilterSelectionDialog(this);
+    QPixmap pixmap = KIcon("baloo").pixmap(IconSize(KIconLoader::Desktop));
+    m_pixmapLabel->setPixmap(pixmap);
 
-    QDBusServiceWatcher* watcher = new QDBusServiceWatcher(this);
-    watcher->addWatchedService(QLatin1String("org.kde.baloo.file"));
-    watcher->setConnection(QDBusConnection::sessionBus());
-    watcher->setWatchMode(QDBusServiceWatcher::WatchForRegistration | QDBusServiceWatcher::WatchForUnregistration);
-
-    connect(watcher, SIGNAL(serviceRegistered(const QString&)),
-            this, SLOT(recreateInterfaces()));
-    connect(watcher, SIGNAL(serviceUnregistered(const QString&)),
-            this, SLOT(recreateInterfaces()));
-
-    recreateInterfaces();
-
-    connect(m_checkEnableFileIndexer, SIGNAL(toggled(bool)),
+    connect(m_folderSelectionWidget, SIGNAL(changed()),
             this, SLOT(changed()));
-    connect(m_checkEnabled, SIGNAL(toggled(bool)),
-            this, SLOT(changed()));
-    connect(m_comboRemovableMediaHandling, SIGNAL(activated(int)),
-            this, SLOT(changed()));
-
-    connect(m_buttonCustomizeIndexFolders, SIGNAL(clicked()),
-            this, SLOT(slotEditIndexFolders()));
-    connect(m_buttonAdvancedFileIndexing, SIGNAL(clicked()),
-            this, SLOT(slotAdvancedFileIndexing()));
-    connect(m_fileIndexerSuspendResumeButtom, SIGNAL(clicked(bool)),
-            this, SLOT(slotFileIndexerSuspendResumeClicked()));
-    connect(m_buttonDetails, SIGNAL(leftClickedUrl()),
-            this, SLOT(slotStatusDetailsClicked()));
-
-    connect(m_checkboxAudio, SIGNAL(toggled(bool)),
-            this, SLOT(slotCheckBoxesChanged()));
-    connect(m_checkboxImage, SIGNAL(toggled(bool)),
-            this, SLOT(slotCheckBoxesChanged()));
-    connect(m_checkboxVideo, SIGNAL(toggled(bool)),
-            this, SLOT(slotCheckBoxesChanged()));
-    connect(m_checkboxDocuments, SIGNAL(toggled(bool)),
-            this, SLOT(slotCheckBoxesChanged()));
     connect(m_checkboxSourceCode, SIGNAL(toggled(bool)),
-            this, SLOT(slotCheckBoxesChanged()));
-
-    // args[0] can be the page index allowing to open the config with a specific page
-    if (args.count() > 0 && args[0].toInt() < m_mainTabWidget->count()) {
-        m_mainTabWidget->setCurrentIndex(args[0].toInt());
-    }
+            this, SLOT(changed()));
 }
 
 
 ServerConfigModule::~ServerConfigModule()
 {
-    delete m_fileIndexerInterface;
 }
 
 
 void ServerConfigModule::load()
 {
-    // 1. basic setup
+    // File indexer settings
     KConfig config("baloofilerc");
-    KConfigGroup basicSettings = config.group("Basic Settings");
-    m_checkEnabled->setChecked(basicSettings.readEntry("Enabled", true));
-    m_checkEnableFileIndexer->setChecked(basicSettings.readEntry("Indexing-Enabled", true));
-
-    // 2. file indexer settings
     KConfigGroup group = config.group("General");
-    m_indexFolderSelectionDialog->setIndexHiddenFolders(group.readEntry("index hidden folders", false));
 
     QStringList includeFolders = group.readPathEntry("folders", defaultFolders());
     QStringList excludeFolders = group.readPathEntry("exclude folders", QStringList());
-
-    /*
-    QScopedPointer<RemovableMediaCache> rmc(new Nepomuk2::RemovableMediaCache(this));
-    QList< const RemovableMediaCache::Entry* > allMedia = rmc->allMedia();
-    Q_FOREACH (const RemovableMediaCache::Entry * entry, allMedia) {
-        QByteArray groupName("Device-" + entry->url().toUtf8());
-        if (!fileIndexerConfig.hasGroup(groupName))
-            continue;
-
-        KConfigGroup grp = fileIndexerConfig.group(groupName);
-
-        QString mountPath = grp.readEntry("mount path", QString());
-        if (mountPath.isEmpty())
-            continue;
-
-        QStringList includes = grp.readPathEntry("folders", defaultFolders());
-        Q_FOREACH (const QString & path, includes) {
-            if (path == QLatin1String("/"))
-                includeFolders << mountPath;
-            else
-                includeFolders << mountPath + path;
-        }
-
-        QStringList excludes = grp.readPathEntry("exclude folders", QStringList());
-        Q_FOREACH (const QString & path, excludes) {
-            if (path == QLatin1String("/"))
-                excludeFolders << mountPath;
-            else
-                excludeFolders << mountPath + path;
-        }
-    }
-    */
-
-    m_indexFolderSelectionDialog->setFolders(includeFolders, excludeFolders);
-
-    m_excludeFilterSelectionDialog->setExcludeFilters(config.group("General").readEntry("exclude filters", Baloo::defaultExcludeFilterList()));
+    m_folderSelectionWidget->setFolders(includeFolders, excludeFolders);
 
     // MimeTypes
     QStringList mimetypes = config.group("General").readEntry("exclude mimetypes", defaultExcludeMimetypes());
-    m_excludeFilterSelectionDialog->setExcludeMimeTypes(mimetypes);
-    syncCheckBoxesFromMimetypes(mimetypes);
 
-    const bool indexNewlyMounted = config.group("RemovableMedia").readEntry("index newly mounted", false);
-    const bool askIndividually = config.group("RemovableMedia").readEntry("ask user", false);
-    // combobox items: 0 - ignore, 1 - index all, 2 - ask user
-    m_comboRemovableMediaHandling->setCurrentIndex(int(indexNewlyMounted) + int(askIndividually));
+    m_oldExcludeMimetypes = mimetypes;
+    m_oldExcludeFolders = excludeFolders;
+    m_oldIncludeFolders = includeFolders;
 
-    groupBox->setEnabled(m_checkEnabled->isChecked());
-
-    recreateInterfaces();
-    updateFileIndexerStatus();
-    updateFileServerStatus();
-
-    // 7. all values loaded -> no changes
-    m_checkboxesChanged = false;
+    // All values loaded -> no changes
     Q_EMIT changed(false);
 }
 
 
 void ServerConfigModule::save()
 {
-    QStringList includeFolders = m_indexFolderSelectionDialog->includeFolders();
-    QStringList excludeFolders = m_indexFolderSelectionDialog->excludeFolders();
+    QStringList includeFolders = m_folderSelectionWidget->includeFolders();
+    QStringList excludeFolders = m_folderSelectionWidget->excludeFolders();
 
     // Change the settings
     KConfig config("baloofilerc");
     KConfigGroup basicSettings = config.group("Basic Settings");
-    basicSettings.writeEntry("Enabled", m_checkEnabled->isChecked());
-    basicSettings.writeEntry("Indexing-Enabled", m_checkEnableFileIndexer->isChecked());
 
-    // 2.1 Update all the RemovableMedia paths
-    /*
-    QScopedPointer<RemovableMediaCache> rmc(new Nepomuk2::RemovableMediaCache(this));
-    QList< const RemovableMediaCache::Entry* > allMedia = rmc->allMedia();
-    Q_FOREACH (const RemovableMediaCache::Entry * entry, allMedia) {
-        QByteArray groupName("Device-" + entry->url().toUtf8());
-        KConfigGroup group = fileIndexerConfig.group(groupName);
-
-        QString mountPath = entry->mountPath();
-        if (mountPath.isEmpty())
-            continue;
-
-        group.writeEntry("mount path", mountPath);
-
-        QStringList includes;
-        QMutableListIterator<QString> it(includeFolders);
-        while (it.hasNext()) {
-            QString fullPath = it.next();
-            if (fullPath.startsWith(mountPath)) {
-                QString path = fullPath.mid(mountPath.length());
-                if (!path.isEmpty())
-                    includes << path;
-                else
-                    includes << QLatin1String("/");
-                it.remove();
-            }
-        }
-
-        QStringList excludes;
-        QMutableListIterator<QString> iter(excludeFolders);
-        while (iter.hasNext()) {
-            QString fullPath = iter.next();
-            if (fullPath.startsWith(mountPath)) {
-                QString path = fullPath.mid(mountPath.length());
-                if (!path.isEmpty())
-                    excludes << path;
-                else
-                    excludes << QLatin1String("/");
-                iter.remove();
-            }
-        }
-
-        if (includes.isEmpty() && excludes.isEmpty())
-            excludes << QString("/");
-
-        group.writePathEntry("folders", includes);
-        group.writePathEntry("exclude folders", excludes);
-    }
-    */
+    bool indexingEnabled = !m_folderSelectionWidget->allMountPointsExcluded();
+    basicSettings.writeEntry("Indexing-Enabled", indexingEnabled);
 
     // 2.2 Update normals paths
     config.group("General").writePathEntry("folders", includeFolders);
     config.group("General").writePathEntry("exclude folders", excludeFolders);
 
-    // 2.3 Other stuff
-    config.group("General").writeEntry("index hidden folders", m_indexFolderSelectionDialog->indexHiddenFolders());
-    config.group("General").writeEntry("exclude filters", m_excludeFilterSelectionDialog->excludeFilters());
-
-    QStringList excludeMimetypes = m_excludeFilterSelectionDialog->excludeMimeTypes();
-    if (m_checkboxesChanged) {
-        excludeMimetypes = mimetypesFromCheckboxes();
-        m_checkboxesChanged = false;
-    }
+    QStringList excludeMimetypes;
+    if (m_checkboxSourceCode->isChecked())
+        excludeMimetypes = sourceCodeMimeTypes();
 
     config.group("General").writeEntry("exclude mimetypes", excludeMimetypes);
 
-    // combobox items: 0 - ignore, 1 - index all, 2 - ask user
-    config.group("RemovableMedia").writeEntry("index newly mounted", m_comboRemovableMediaHandling->currentIndex() > 0);
-    config.group("RemovableMedia").writeEntry("ask user", m_comboRemovableMediaHandling->currentIndex() == 2);
+    // Start Baloo
+    if (indexingEnabled) {
+        const QString exe = KStandardDirs::findExe(QLatin1String("baloo_file"));
+        QProcess::startDetached(exe);
+    }
+    else {
+        QDBusMessage message = QDBusMessage::createMethodCall(QLatin1String("org.kde.baloo.file"),
+                                                              QLatin1String("/indexer"),
+                                                              QLatin1String("org.kde.baloo.file"),
+                                                              QLatin1String("quit"));
 
-    // TODO: Update the baloo_file process or just restart it!
+        QDBusConnection::sessionBus().send(message);
+    }
 
-    // 5. update state
-    recreateInterfaces();
-    updateFileIndexerStatus();
-    updateFileServerStatus();
+    // Start cleaner
+    bool cleaningRequired = false;
+    if (includeFolders != m_oldIncludeFolders)
+        cleaningRequired = true;
+    else if (excludeFolders != m_oldExcludeFolders)
+        cleaningRequired = true;
+    else if (excludeMimetypes != m_oldExcludeMimetypes)
+        cleaningRequired = true;
 
+    if (cleaningRequired) {
+        const QString exe = KStandardDirs::findExe(QLatin1String("baloo_file_cleaner"));
+        QProcess::startDetached(exe);
+    }
 
-    // 6. all values saved -> no changes
-    m_checkboxesChanged = false;
+    // all values saved -> no changes
     Q_EMIT changed(false);
 }
 
 
 void ServerConfigModule::defaults()
 {
-    m_checkEnableFileIndexer->setChecked(true);
-    m_checkEnabled->setChecked(true);
-    m_indexFolderSelectionDialog->setIndexHiddenFolders(false);
-    m_indexFolderSelectionDialog->setFolders(defaultFolders(), QStringList());
-    m_excludeFilterSelectionDialog->setExcludeFilters(Baloo::defaultExcludeFilterList());
-}
-
-
-void ServerConfigModule::updateFileServerStatus()
-{
-    if (QDBusConnection::sessionBus().interface()->isServiceRegistered("org.kde.baloo.file")) {
-        m_labelStatus->setText(i18nc("@info:status", "File Metadata services are active"));
-    } else {
-        m_labelStatus->setText(i18nc("@info:status", "File Metadata services are disabled"));
-    }
-}
-
-
-void ServerConfigModule::setFileIndexerStatusText(const QString& text, bool elide)
-{
-    m_labelFileIndexerStatus->setWordWrap(!elide);
-    m_labelFileIndexerStatus->setTextElideMode(elide ? Qt::ElideMiddle : Qt::ElideNone);
-    m_labelFileIndexerStatus->setText(text);
-}
-
-
-void ServerConfigModule::updateFileIndexerStatus()
-{
-    // FIXME: Make this non-blocking!
-    QDBusPendingReply<QString> reply = m_fileIndexerInterface->userStatusString();
-    reply.waitForFinished();
-
-    if (reply.isError()) {
-        setFileIndexerStatusText(i18nc("@info:status", "File indexing service not running."), false);
-        return;
-    }
-
-    QString status = reply.value();
-    if (status.isEmpty()) {
-        setFileIndexerStatusText(i18nc("@info:status %1 is an error message returned by a dbus interface.",
-                                        "Failed to contact File Indexer service (%1)",
-                                        m_fileIndexerInterface->lastError().message()), false);
-    } else {
-        m_failedToInitialize = false;
-        setFileIndexerStatusText(status, true);
-        updateFileIndexerSuspendResumeButtonText(m_fileIndexerInterface->isSuspended());
-    }
-}
-
-void ServerConfigModule::updateFileIndexerSuspendResumeButtonText(bool isSuspended)
-{
-    if (isSuspended) {
-        m_fileIndexerSuspendResumeButtom->setText(i18nc("Resumes the File indexing service.", "Resume"));
-        m_fileIndexerSuspendResumeButtom->setIcon(KIcon("media-playback-start"));
-    } else {
-        m_fileIndexerSuspendResumeButtom->setText(i18nc("Suspends the File indexing service.", "Suspend"));
-        m_fileIndexerSuspendResumeButtom->setIcon(KIcon("media-playback-pause"));
-    }
-}
-
-void ServerConfigModule::slotFileIndexerSuspendResumeClicked()
-{
-    bool suspended = m_fileIndexerInterface->isSuspended();
-    if (!suspended) {
-        m_fileIndexerInterface->suspend();
-        updateFileIndexerSuspendResumeButtonText(true);
-    } else {
-        m_fileIndexerInterface->resume();
-        updateFileIndexerSuspendResumeButtonText(false);
-    }
-}
-
-
-void ServerConfigModule::recreateInterfaces()
-{
-    delete m_fileIndexerInterface;
-
-    m_fileIndexerInterface = new org::kde::baloo::file("org.kde.baloo.file", "/fileindexer",
-                                                       QDBusConnection::sessionBus());
-
-    connect(m_fileIndexerInterface, SIGNAL(statusChanged()),
-            this, SLOT(updateFileIndexerStatus()));
-}
-
-
-void ServerConfigModule::slotStatusDetailsClicked()
-{
-    DetailsWidget dialog(this);
-    dialog.exec();
-}
-
-
-void ServerConfigModule::slotEditIndexFolders()
-{
-    const QStringList oldIncludeFolders = m_indexFolderSelectionDialog->includeFolders();
-    const QStringList oldExcludeFolders = m_indexFolderSelectionDialog->excludeFolders();
-    const bool oldIndexHidden = m_indexFolderSelectionDialog->indexHiddenFolders();
-
-    if (m_indexFolderSelectionDialog->exec()) {
-        changed();
-    } else {
-        // revert to previous settings
-        m_indexFolderSelectionDialog->setFolders(oldIncludeFolders, oldExcludeFolders);
-        m_indexFolderSelectionDialog->setIndexHiddenFolders(oldIndexHidden);
-    }
-}
-
-void ServerConfigModule::slotAdvancedFileIndexing()
-{
-    const QStringList oldExcludeFilters = m_excludeFilterSelectionDialog->excludeFilters();
-    QStringList oldExcludeMimeTypes = m_excludeFilterSelectionDialog->excludeMimeTypes();
-
-    if (m_checkboxesChanged) {
-        oldExcludeMimeTypes = mimetypesFromCheckboxes();
-        m_excludeFilterSelectionDialog->setExcludeMimeTypes(oldExcludeMimeTypes);
-        m_checkboxesChanged = false;
-    }
-
-    if (m_excludeFilterSelectionDialog->exec()) {
-        changed();
-
-        QStringList mimetypes = m_excludeFilterSelectionDialog->excludeMimeTypes();
-        syncCheckBoxesFromMimetypes(mimetypes);
-    } else {
-        m_excludeFilterSelectionDialog->setExcludeFilters(oldExcludeFilters);
-        m_excludeFilterSelectionDialog->setExcludeMimeTypes(oldExcludeMimeTypes);
-    }
-}
-
-
-namespace
-{
-bool containsRegex(const QStringList& list, const QString& regex)
-{
-    QRegExp exp(regex, Qt::CaseInsensitive, QRegExp::Wildcard);
-    Q_FOREACH (const QString & string, list) {
-        if (string.contains(exp))
-            return true;;
-    }
-    return false;
-}
-
-void syncCheckBox(const QStringList& mimetypes, const QString& type, QCheckBox* checkbox)
-{
-    if (containsRegex(mimetypes, type)) {
-        if (mimetypes.contains(type))
-            checkbox->setChecked(false);
-        else
-            checkbox->setCheckState(Qt::PartiallyChecked);
-    } else {
-        checkbox->setChecked(true);
-    }
-}
-
-void syncCheckBox(const QStringList& mimetypes, const QStringList& types, QCheckBox* checkbox)
-{
-    bool containsAll = true;
-    bool containsAny = false;
-
-    Q_FOREACH (const QString & type, types) {
-        if (mimetypes.contains(type)) {
-            containsAny = true;
-        } else {
-            containsAll = false;
-        }
-    }
-
-    if (containsAll)
-        checkbox->setCheckState(Qt::Unchecked);
-    else if (containsAny)
-        checkbox->setCheckState(Qt::PartiallyChecked);
-    else
-        checkbox->setCheckState(Qt::Checked);
-}
-
-}
-
-void ServerConfigModule::syncCheckBoxesFromMimetypes(const QStringList& mimetypes)
-{
-    syncCheckBox(mimetypes, QLatin1String("image/*"), m_checkboxImage);
-    syncCheckBox(mimetypes, QLatin1String("audio/*"), m_checkboxAudio);
-    syncCheckBox(mimetypes, QLatin1String("video/*"), m_checkboxVideo);
-
-    syncCheckBox(mimetypes, documentMimetypes(), m_checkboxDocuments);
-    syncCheckBox(mimetypes, sourceCodeMimeTypes(), m_checkboxSourceCode);
-    m_checkboxesChanged = false;
-}
-
-QStringList ServerConfigModule::mimetypesFromCheckboxes()
-{
-    QStringList types;
-    if (!m_checkboxAudio->isChecked())
-        types << QLatin1String("audio/*");
-    if (!m_checkboxImage->isChecked())
-        types << QLatin1String("image/*");
-    if (!m_checkboxVideo->isChecked())
-        types << QLatin1String("video/*");
-    if (!m_checkboxDocuments->isChecked())
-        types << documentMimetypes();
-    if (!m_checkboxSourceCode->isChecked())
-        types << sourceCodeMimeTypes();
-
-    return types;
-}
-
-void ServerConfigModule::slotCheckBoxesChanged()
-{
-    m_checkboxesChanged = true;;
-    changed(true);
+    m_folderSelectionWidget->setFolders(defaultFolders(), QStringList());
 }
 
 #include "kcm.moc"

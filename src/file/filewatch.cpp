@@ -19,9 +19,6 @@
 
 #include "filewatch.h"
 #include "metadatamover.h"
-#include "fileexcludefilters.h"
-//#include "removabledeviceindexnotification.h"
-//#include "removablemediacache.h"
 #include "fileindexerconfig.h"
 #include "activefilequeue.h"
 #include "regexpcache.h"
@@ -48,20 +45,18 @@ namespace
 class IgnoringKInotify : public KInotify
 {
 public:
-    IgnoringKInotify(RegExpCache* rec, Baloo::FileIndexerConfig* config, QObject* parent);
+    IgnoringKInotify(Baloo::FileIndexerConfig* config, QObject* parent);
     ~IgnoringKInotify();
 
 protected:
     bool filterWatch(const QString& path, WatchEvents& modes, WatchFlags& flags);
 
 private:
-    RegExpCache* m_pathExcludeRegExpCache;
     Baloo::FileIndexerConfig* m_config;
 };
 
-IgnoringKInotify::IgnoringKInotify(RegExpCache* rec, Baloo::FileIndexerConfig* config, QObject* parent)
+IgnoringKInotify::IgnoringKInotify(Baloo::FileIndexerConfig* config, QObject* parent)
     : KInotify(parent)
-    , m_pathExcludeRegExpCache(rec)
     , m_config(config)
 {
 }
@@ -70,36 +65,14 @@ IgnoringKInotify::~IgnoringKInotify()
 {
 }
 
-bool IgnoringKInotify::filterWatch(const QString& path, WatchEvents& modes, WatchFlags& flags)
+//
+// Non-indexed directories are never watched as their metadata is stored
+// in the extended attributes for the file as is never lost. Unless your filesystem
+// does not support xattr, then you're out of luck. Sorry.
+//
+bool IgnoringKInotify::filterWatch(const QString& path, WatchEvents&, WatchFlags&)
 {
-    Q_UNUSED(flags);
-
-    QStringList cpts = path.split('/', QString::SkipEmptyParts);
-    if (cpts.isEmpty())
-        return false;
-
-    // We only check the final componenet instead of all the components cause the
-    // earlier ones would have already been tested by this function
-    QString file = cpts.last();
-
-    bool shouldFileNameBeIndexed = m_config->shouldFileBeIndexed(file);
-    if (!shouldFileNameBeIndexed) {
-        // If the path should not be indexed then we do not want to watch it
-        // This is an optimization
-        return false;
-    }
-
-    bool shouldFolderBeIndexed = m_config->folderInFolderList(path);
-
-    // Only watch the index folders for file change.
-    // We still need to monitor everything for file creation because directories count as
-    // files, and we want to recieve signals for a new directory, so that we can watch it.
-    if (shouldFolderBeIndexed && shouldFileNameBeIndexed) {
-        modes |= KInotify::EventCloseWrite;
-    } else {
-        modes &= (~KInotify::EventCloseWrite);
-    }
-    return true;
+    return m_config->shouldFolderBeIndexed(path);
 }
 }
 #endif // BUILD_KINOTIFY
@@ -114,19 +87,6 @@ FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
     , m_dirWatch(0)
 #endif
 {
-    // Create the configuration instance singleton (for thread-safety)
-    // ==============================================================
-    (void)new FileIndexerConfig(this);
-
-    // the list of default exclude filters we use here differs from those
-    // that can be configured for the file indexer service
-    // the default list should only contain files and folders that users are
-    // very unlikely to ever annotate but that change very often. This way
-    // we avoid a lot of work while hopefully not breaking the workflow of
-    // too many users.
-    m_pathExcludeRegExpCache = new RegExpCache();
-    m_pathExcludeRegExpCache->rebuildCacheFromFilterList(defaultExcludeFilterList());
-
     m_metadataMover = new MetadataMover(m_db, this);
     connect(m_metadataMover, SIGNAL(movedWithoutData(QString)),
             this, SLOT(slotMovedWithoutData(QString)));
@@ -139,14 +99,14 @@ FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
 
 #ifdef BUILD_KINOTIFY
     // monitor the file system for changes (restricted by the inotify limit)
-    m_dirWatch = new IgnoringKInotify(m_pathExcludeRegExpCache, m_config, this);
+    m_dirWatch = new IgnoringKInotify(m_config, this);
 
-    connect(m_dirWatch, SIGNAL(moved(QString, QString)),
-            this, SLOT(slotFileMoved(QString, QString)));
-    connect(m_dirWatch, SIGNAL(deleted(QString, bool)),
-            this, SLOT(slotFileDeleted(QString, bool)));
-    connect(m_dirWatch, SIGNAL(created(QString, bool)),
-            this, SLOT(slotFileCreated(QString, bool)));
+    connect(m_dirWatch, SIGNAL(moved(QString,QString)),
+            this, SLOT(slotFileMoved(QString,QString)));
+    connect(m_dirWatch, SIGNAL(deleted(QString,bool)),
+            this, SLOT(slotFileDeleted(QString,bool)));
+    connect(m_dirWatch, SIGNAL(created(QString,bool)),
+            this, SLOT(slotFileCreated(QString,bool)));
     connect(m_dirWatch, SIGNAL(closedWrite(QString)),
             this, SLOT(slotFileClosedAfterWrite(QString)));
     connect(m_dirWatch, SIGNAL(watchUserLimitReached(QString)),
@@ -154,38 +114,14 @@ FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
     connect(m_dirWatch, SIGNAL(installedWatches()),
             this, SIGNAL(installedWatches()));
 
-    // recursively watch the whole home dir
-
-    // FIXME: we cannot simply watch the folders that contain annotated files since moving
-    // one of these files out of the watched "area" would mean we "lose" it, i.e. we have no
-    // information about where it is moved.
-    // On the other hand only using the homedir means a lot of restrictions.
-    // One dummy solution would be a hybrid: watch the whole home dir plus all folders that
-    // contain annotated files outside of the home dir and hope for the best
-
-    const QString home = QDir::homePath();
-    watchFolder(home);
-
-    //Watch all indexed folders unless they are subdirectories of home, which is already watched
+    // Watch all indexed folders
     QStringList folders = m_config->includeFolders();
     Q_FOREACH (const QString& folder, folders) {
-        if (!folder.startsWith(home)) {
-            watchFolder(folder);
-        }
+        watchFolder(folder);
     }
 #else
     connectToKDirNotify();
 #endif
-
-    // we automatically watch newly mounted media - it is very unlikely that anything non-interesting is mounted
-    /*
-    m_removableMediaCache = new RemovableMediaCache(this);
-    connect(m_removableMediaCache, SIGNAL(deviceMounted(const Baloo::RemovableMediaCache::Entry*)),
-            this, SLOT(slotDeviceMounted(const Baloo::RemovableMediaCache::Entry*)));
-    connect(m_removableMediaCache, SIGNAL(deviceTeardownRequested(const Baloo::RemovableMediaCache::Entry*)),
-            this, SLOT(slotDeviceTeardownRequested(const Baloo::RemovableMediaCache::Entry*)));
-    addWatchesForMountedRemovableMedia();
-    */
 
     connect(m_config, SIGNAL(configChanged()),
             this, SLOT(updateIndexedFoldersWatches()));
@@ -211,24 +147,13 @@ void FileWatch::watchFolder(const QString& path)
 
 void FileWatch::slotFileMoved(const QString& urlFrom, const QString& urlTo)
 {
-    if (!ignorePath(urlFrom) || !ignorePath(urlTo)) {
-        m_metadataMover->moveFileMetadata(urlFrom, urlTo);
-    }
+    m_metadataMover->moveFileMetadata(urlFrom, urlTo);
 }
 
 
 void FileWatch::slotFilesDeleted(const QStringList& paths)
 {
-    QStringList urls;
-    Q_FOREACH (const QString& path, paths) {
-        if (!ignorePath(path)) {
-            urls << path;
-        }
-    }
-
-    if (!urls.isEmpty()) {
-        m_metadataMover->removeFileMetadata(urls);
-    }
+    m_metadataMover->removeFileMetadata(paths);
 }
 
 
@@ -258,7 +183,7 @@ void FileWatch::slotFileClosedAfterWrite(const QString& path)
     QDateTime fileModification = QFileInfo(path).lastModified();
     QDateTime dirModification = QFileInfo(QFileInfo(path).absoluteDir().absolutePath()).lastModified();
 
-    // If we have recieved a FileClosedAfterWrite event, then the file must have been
+    // If we have received a FileClosedAfterWrite event, then the file must have been
     // closed within the last minute.
     // This is being done cause many applications open the file under write mode, do not
     // make any modifications and then close the file. This results in us getting
@@ -273,9 +198,9 @@ void FileWatch::connectToKDirNotify()
 {
     // monitor KIO for changes
     QDBusConnection::sessionBus().connect(QString(), QString(), "org.kde.KDirNotify", "FileMoved",
-                                          this, SIGNAL(slotFileMoved(const QString&, const QString&)));
+                                          this, SIGNAL(slotFileMoved(QString,QString)));
     QDBusConnection::sessionBus().connect(QString(), QString(), "org.kde.KDirNotify", "FilesRemoved",
-                                          this, SIGNAL(slotFilesDeleted(const QStringList&)));
+                                          this, SIGNAL(slotFilesDeleted(QStringList)));
 }
 
 
@@ -328,14 +253,6 @@ void FileWatch::slotInotifyWatchUserLimitReached(const QString& path)
 #endif
 
 
-bool FileWatch::ignorePath(const QString& path)
-{
-    // when using KInotify there is no need to check the folder since
-    // we only watch interesting folders to begin with.
-    return m_pathExcludeRegExpCache->filenameMatch(path);
-}
-
-
 void FileWatch::updateIndexedFoldersWatches()
 {
 #ifdef BUILD_KINOTIFY
@@ -348,118 +265,6 @@ void FileWatch::updateIndexedFoldersWatches()
     }
 #endif
 }
-
-
-/*
-void FileWatch::addWatchesForMountedRemovableMedia()
-{
-    Q_FOREACH(const RemovableMediaCache::Entry * entry, m_removableMediaCache->allMedia()) {
-        if (entry->isMounted())
-            slotDeviceMounted(entry);
-    }
-}
-
-void FileWatch::slotDeviceMounted(const Baloo::RemovableMediaCache::Entry* entry)
-{
-    //
-    // tell the file indexer to update the newly mounted device
-    //
-    KConfig fileIndexerConfig("nepomukstrigirc");
-    const QByteArray devGroupName("Device-" + entry->url().toUtf8());
-    int index = 0;
-    // Old-format -> port to new format
-    if (fileIndexerConfig.group("Devices").hasKey(entry->url())) {
-        KConfigGroup devicesGroup = fileIndexerConfig.group("Devices");
-        index = devicesGroup.readEntry(entry->url(), false) ? 1 : -1;
-        devicesGroup.deleteEntry(entry->url());
-
-        KConfigGroup devGroup = fileIndexerConfig.group(devGroupName);
-        devGroup.writeEntry("mount path", entry->mountPath());
-        if (index == 1)
-            devGroup.writeEntry("folders", QStringList() << QLatin1String("/"));
-        else if (index == -1)
-            devGroup.writeEntry("exclude folders", QStringList() << QLatin1String("/"));
-
-        fileIndexerConfig.sync();
-
-        // Migrate the existing filex data
-        RemovableMediaDataMigrator* migrator = new RemovableMediaDataMigrator(entry);
-        QThreadPool::globalInstance()->start(migrator);
-    }
-
-    // Already exists
-    if (fileIndexerConfig.hasGroup(devGroupName)) {
-        // Inform the indexer to start the indexing process
-
-        org::kde::nepomuk::FileIndexer fileIndexer("org.kde.nepomuk.services.nepomukfileindexer", "/nepomukfileindexer", QDBusConnection::sessionBus());
-        if (fileIndexer.isValid()) {
-            KConfigGroup group = fileIndexerConfig.group(devGroupName);
-            const QString mountPath = group.readEntry("mount path", QString());
-            if (!mountPath.isEmpty()) {
-                const QStringList folders = group.readPathEntry("folders", QStringList());
-                Q_FOREACH (const QString & folder, folders) {
-                    QString path = mountPath + folder;
-                    fileIndexer.indexFolder(path, true, false);
-                }
-            }
-        }
-
-        index = 1;
-    }
-
-    const bool indexNewlyMounted = fileIndexerConfig.group("RemovableMedia").readEntry("index newly mounted", false);
-    const bool askIndividually = fileIndexerConfig.group("RemovableMedia").readEntry("ask user", false);
-
-    if (index == 0 && indexNewlyMounted && !askIndividually) {
-        KConfigGroup deviceGroup = fileIndexerConfig.group("Device-" + entry->url());
-        deviceGroup.writeEntry("folders", QStringList() << entry->mountPath());
-
-        index = 1;
-    }
-
-    // ask the user if we should index
-    else if (index == 0 && indexNewlyMounted && askIndividually) {
-        kDebug() << "Device unknown. Asking user for action.";
-        (new RemovableDeviceIndexNotification(entry, this))->sendEvent();
-    }
-
-    //
-    // Install the watches
-    //
-    KConfig config("nepomukstrigirc");
-    KConfigGroup cfg = config.group("RemovableMedia");
-
-    if (cfg.readEntry<bool>("add watches", true)) {
-        QString path = entry->mountPath();
-        // If the device is not a storage device, mountPath returns QString().
-        // In this case do not try to install watches.
-        if (path.isEmpty())
-            return;
-        if (entry->device().isDeviceInterface(Solid::DeviceInterface::NetworkShare)) {
-            if (cfg.readEntry<bool>("add watches network share", false)) {
-                kDebug() << "Installing watch for network share at mount point" << path;
-                watchFolder(path);
-            }
-        } else {
-            kDebug() << "Installing watch for removable storage at mount point" << path;
-            // vHanda: Perhaps this should only be done if we have some metadata on the removable media
-            // and if we do not then we add the watches when we get some metadata?
-            watchFolder(path);
-        }
-    }
-}
-
-void FileWatch::slotDeviceTeardownRequested(const Baloo::RemovableMediaCache::Entry* entry)
-{
-#ifdef BUILD_KINOTIFY
-    if (m_dirWatch) {
-        kDebug() << entry->mountPath();
-        m_dirWatch->removeWatch(entry->mountPath());
-    }
-#endif
-}
-
-*/
 
 void FileWatch::slotActiveFileQueueTimeout(const QString& url)
 {

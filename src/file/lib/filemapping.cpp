@@ -25,7 +25,6 @@
 
 #include <QSqlQuery>
 #include <QSqlError>
-#include <QVariant>
 
 using namespace Baloo;
 

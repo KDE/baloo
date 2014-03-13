@@ -23,7 +23,9 @@
 #ifndef QUERY_H
 #define QUERY_H
 
+#include "core_export.h"
 #include "resultiterator.h"
+
 #include <QVariant>
 
 namespace Baloo {
@@ -109,6 +111,7 @@ public:
 
     QUrl toSearchUrl(const QString& title = QString());
     static Query fromSearchUrl(const QUrl& url);
+    static QString titleFromQueryUrl(const QUrl& url);
 
     bool operator == (const Query& rhs) const;
 

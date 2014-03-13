@@ -49,8 +49,8 @@ FileSearchStore::FileSearchStore(QObject* parent)
     m_prefixes.insert("filename", "F");
     m_prefixes.insert("mimetype", "M");
     m_prefixes.insert("rating", "R");
-    m_prefixes.insert("tag", "T");
-    m_prefixes.insert("tags", "T");
+    m_prefixes.insert("tag", "TA");
+    m_prefixes.insert("tags", "TA");
     m_prefixes.insert("usercomment", "C");
 }
 
@@ -86,7 +86,8 @@ Xapian::Query FileSearchStore::convertTypes(const QStringList& types)
         if (t == "Tfile")
             continue;
 
-        xapQ = andQuery(xapQ, Xapian::Query(t.toStdString()));
+        const QByteArray arr = t.toUtf8();
+        xapQ = andQuery(xapQ, Xapian::Query(arr.constData()));
     }
 
     return xapQ;
@@ -146,12 +147,13 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
             p = ('X' + QString::number(propPrefix)).toUtf8().constData();
         }
 
-        std::string str = value.toString().toStdString();
+        const QByteArray arr = value.toString().toUtf8();
         int flags = Xapian::QueryParser::FLAG_DEFAULT | Xapian::QueryParser::FLAG_PARTIAL;
-        return parser.parse_query(str, flags, p);
+        return parser.parse_query(arr.constData(), flags, p);
     }
 
-    return Xapian::Query(value.toString().toStdString());
+    const QByteArray arr = value.toString().toUtf8();
+    return Xapian::Query(arr.constData());
 }
 
 Xapian::Query FileSearchStore::constructFilterQuery(int year, int month, int day)
@@ -160,11 +162,11 @@ Xapian::Query FileSearchStore::constructFilterQuery(int year, int month, int day
     vector.reserve(3);
 
     if (year != -1)
-        vector << QString::fromLatin1("DT_MY%1").arg(year).toStdString();
+        vector << QString::fromLatin1("DT_MY%1").arg(year).toUtf8().constData();
     if (month != -1)
-        vector << QString::fromLatin1("DT_MM%1").arg(month).toStdString();
+        vector << QString::fromLatin1("DT_MM%1").arg(month).toUtf8().constData();
     if (day != -1)
-        vector << QString::fromLatin1("DT_MD%1").arg(day).toStdString();
+        vector << QString::fromLatin1("DT_MD%1").arg(day).toUtf8().constData();
 
     return Xapian::Query(Xapian::Query::OP_AND, vector.begin(), vector.end());
 }

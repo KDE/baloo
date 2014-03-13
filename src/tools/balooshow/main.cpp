@@ -21,6 +21,7 @@
 #include <QCoreApplication>
 #include <QHash>
 #include <QUrl>
+#include <QFile>
 
 #include <KCmdLineArgs>
 #include <KAboutData>
@@ -76,12 +77,14 @@ int main(int argc, char* argv[])
     //
     // The Resource Uri
     //
-    QVector<QUrl> urls;
+    QVector<QString> urls;
     for (int i = 0; i < args->count(); i++) {
-        urls.append(args->url(i));
-        if (!urls.at(i).isLocalFile()) {
-            err << "Not a local file" << args->url(i).url() << endl;
-            return 1;
+        const QString url = args->url(i).toLocalFile();
+        if (QFile::exists(url)) {
+            urls.append(url);
+        }
+        else {
+            urls.append(QLatin1String("file:") + args->arg(i));
         }
     }
 
@@ -89,15 +92,22 @@ int main(int argc, char* argv[])
     Baloo::FileFetchJob* job;
     QString text;
 
-    Q_FOREACH (const QUrl& url, urls) {
-        job = new Baloo::FileFetchJob(url.toLocalFile());
+    Q_FOREACH (const QString& url, urls) {
+        Baloo::File ifile;
+        if (url.startsWith("file:")) {
+            ifile.setId(url.toUtf8());
+        }
+        else {
+            ifile.setUrl(url);
+        }
+        job = new Baloo::FileFetchJob(ifile);
         job->exec();
 
         Baloo::File file = job->file();
         int fid = Baloo::deserialize("file", file.id());
         text = colorString(QString::number(fid), 31);
         text += " ";
-        text += colorString(url.toLocalFile(), 32);
+        text += colorString(file.url(), 32);
         stream << text << endl;
 
         KFileMetaData::PropertyMap propMap = file.properties();

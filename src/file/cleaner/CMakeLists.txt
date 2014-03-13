@@ -1,6 +1,7 @@
 set(CLEANER_SRCS
   main.cpp
   cleaner.cpp
+  ../priority.cpp
   ../database.cpp
   ../commitqueue.cpp
   ../fileindexerconfig.cpp

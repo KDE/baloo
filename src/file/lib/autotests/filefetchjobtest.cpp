@@ -20,20 +20,19 @@
 
 #include "filefetchjobtest.h"
 #include "filefetchjob.h"
+#include "../baloo_xattr_p.h"
 #include "../db.h"
 #include "filemapping.h"
 #include "file.h"
 
 #include "qtest_kde.h"
-#include <KTemporaryFile>
+#include <QSqlQuery>
 #include <KTempDir>
 #include <KDebug>
 
 #include <qjson/serializer.h>
 #include <xapian.h>
-#include <attr/xattr.h>
 
-#include <QSqlQuery>
 #include <kfilemetadata/properties.h>
 
 using namespace Baloo;
@@ -42,7 +41,7 @@ void FileFetchJobTest::init()
 {
     // TODO: Remove the old xapian DB?
     // Create the Xapian DB
-    const std::string xapianPath = fileIndexDbPath().toStdString();
+    const std::string xapianPath = fileIndexDbPath();
     Xapian::WritableDatabase db(xapianPath, Xapian::DB_CREATE_OR_OPEN);
 
     // Clear the sqlite db
@@ -73,7 +72,7 @@ void FileFetchJobTest::testXapianData()
     QVERIFY(fileMap.create(sqlDb));
 
     {
-        const std::string xapianPath = fileIndexDbPath().toStdString();
+        const std::string xapianPath = fileIndexDbPath();
         Xapian::WritableDatabase db(xapianPath, Xapian::DB_CREATE_OR_OPEN);
         db.replace_document(fileMap.id(), doc);
         db.commit();
@@ -91,26 +90,25 @@ void FileFetchJobTest::testXapianData()
 
 void FileFetchJobTest::testExtendedAttributes()
 {
-    QTemporaryFile tempFile;
+    QTemporaryFile tempFile(QLatin1String(BUILDDIR "testExtendedAttributes.XXXXXX"));
     tempFile.open();
-    QByteArray fileName = QFile::encodeName(tempFile.fileName());
+    QString fileName = tempFile.fileName();
 
     FileMapping fileMap(tempFile.fileName());
     QSqlDatabase sqlDb = fileMappingDb();
     QVERIFY(fileMap.create(sqlDb));
 
-    QByteArray rat = QString::number(7).toUtf8();
-    QVERIFY(setxattr(fileName.constData(), "user.baloo.rating", rat.constData(), rat.size(), 0) != -1);
+    QString rat = QString::number(7);
+    QVERIFY(baloo_setxattr(fileName, QLatin1String("user.baloo.rating"), rat) != -1);
 
     QStringList tags;
     tags << "TagA" << "TagB";
 
-    QByteArray tagStr = tags.join(",").toUtf8();
-    QVERIFY(setxattr(fileName.constData(), "user.baloo.tags", tagStr.constData(), tagStr.size(), 0) != -1);
+    QString tagStr = tags.join(",");
+    QVERIFY(baloo_setxattr(fileName, QLatin1String("user.xdg.tags"), tagStr) != -1);
 
     const QString userComment("UserComment");
-    QByteArray com = userComment.toUtf8();
-    QVERIFY(setxattr(fileName.constData(), "user.xdg.comment", com.constData(), com.size(), 0) != -1);
+    QVERIFY(baloo_setxattr(fileName, QLatin1String("user.xdg.comment"), userComment) != -1);
 
     FileFetchJob* job = new FileFetchJob(tempFile.fileName());
     job->exec();
@@ -123,29 +121,28 @@ void FileFetchJobTest::testExtendedAttributes()
 
 void FileFetchJobTest::testFolder()
 {
-    QTemporaryFile f;
+    QTemporaryFile f(QLatin1String(BUILDDIR "testFolder.XXXXXX"));
     f.open();
 
     // We use the same prefix as the tmpfile
     KTempDir tmpDir(f.fileName().mid(0, f.fileName().lastIndexOf('/') + 1));
-    QByteArray fileName = QFile::encodeName(tmpDir.name());
+    QString fileName = tmpDir.name();
 
     FileMapping fileMap(tmpDir.name());
     QSqlDatabase sqlDb = fileMappingDb();
     QVERIFY(fileMap.create(sqlDb));
 
-    QByteArray rat = QString::number(7).toUtf8();
-    QVERIFY(setxattr(fileName.constData(), "user.baloo.rating", rat.constData(), rat.size(), 0) != -1);
+    QString rat = QString::number(7);
+    QVERIFY(baloo_setxattr(fileName, QLatin1String("user.baloo.rating"), rat) != -1);
 
     QStringList tags;
     tags << "TagA" << "TagB";
 
-    QByteArray tagStr = tags.join(",").toUtf8();
-    QVERIFY(setxattr(fileName.constData(), "user.baloo.tags", tagStr.constData(), tagStr.size(), 0) != -1);
+    QString tagStr = tags.join(",");
+    QVERIFY(baloo_setxattr(fileName, QLatin1String("user.xdg.tags"), tagStr) != -1);
 
     const QString userComment("UserComment");
-    QByteArray com = userComment.toUtf8();
-    QVERIFY(setxattr(fileName.constData(), "user.xdg.comment", com.constData(), com.size(), 0) != -1);
+    QVERIFY(baloo_setxattr(fileName, QLatin1String("user.xdg.comment"), userComment) != -1);
 
     FileFetchJob* job = new FileFetchJob(tmpDir.name());
     job->exec();

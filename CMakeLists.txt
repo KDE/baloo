@@ -20,12 +20,12 @@ include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(KDECompilerSettings)
 
-find_package(KdepimLibs 4.60.43 CONFIG)
-set_package_properties(KdepimLibs PROPERTIES
-    DESCRIPTION "The KDEPIM libraries"
-    URL "http://www.kde.org"
-    TYPE OPTIONAL #Can't be required yet, as it's not ported
-)
+##find_package(KdepimLibs 4.60.43 CONFIG)
+##set_package_properties(KdepimLibs PROPERTIES
+##    DESCRIPTION "The KDEPIM libraries"
+#    URL "http://www.kde.org"
+#    TYPE OPTIONAL #Can't be required yet, as it's not ported
+#)
 
 find_package(Xapian CONFIG)
 set_package_properties(Xapian PROPERTIES
@@ -48,11 +48,11 @@ set_package_properties(QJSON PROPERTIES
     TYPE REQUIRED
 )
 
-find_package(Xattr)
-set_package_properties(Xattr PROPERTIES
-    URL "http://savannah.nongnu.org/projects/attr"
-    TYPE REQUIRED
-)
+#find_package(Akonadi 1.19.42 CONFIG)
+#set_package_properties(Akonadi PROPERTIES
+#    URL "http://akonadi-project.org"
+#    TYPE REQUIRED
+#)
 
 add_definitions(-DQT_NO_KEYWORDS)
 
@@ -65,6 +65,7 @@ include_directories(
   ${QJSON_INCLUDE_DIR}
   ${KFILEMETADATA_INCLUDE_DIR}
   ${XAPIAN_INCLUDE_DIR}
+  ${AKONADI_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/file/lib
@@ -72,7 +73,7 @@ include_directories(
 )
 
 add_subdirectory(src)
-
+add_subdirectory(icons)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/BalooConfig.cmake.in
                ${CMAKE_CURRENT_BINARY_DIR}/BalooConfig.cmake @ONLY)

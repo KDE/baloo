@@ -25,15 +25,13 @@
 #include "query.h"
 #include "agepostingsource.h"
 
-
 #include <KStandardDirs>
 #include <KDebug>
-#include <KUrl>
 
 using namespace Baloo;
 
 EmailSearchStore::EmailSearchStore(QObject* parent)
-    : XapianSearchStore(parent)
+    : PIMSearchStore(parent)
 {
     m_prefix.insert("from", "F");
     m_prefix.insert("to", "T");
@@ -41,43 +39,46 @@ EmailSearchStore::EmailSearchStore(QObject* parent)
     m_prefix.insert("bcc", "BC");
     m_prefix.insert("subject", "S");
     m_prefix.insert("collection", "C");
+    m_prefix.insert("replyto", "RT");
+    m_prefix.insert("organization", "O");
+    m_prefix.insert("listid", "LI");
+    m_prefix.insert("resentfrom", "RF");
+    m_prefix.insert("xloop", "XL");
+    m_prefix.insert("xmailinglist", "XML");
+    m_prefix.insert("xspamflag", "XSF");
+
+    m_prefix.insert("body", "BO");
+    m_prefix.insert("headers", "H");
 
     // TODO: Add body flag?
     // TODO: Add tags?
 
-    /*
-    // TODO: Add these when there is support for them in the indexer
-    m_prefix.insert("reply-to", "RT");
-    m_prefix.insert("list-id", "LI");
-    m_prefix.insert("resent-from", "RF");
-    m_prefix.insert("x-loop", "XL");
-    m_prefix.insert("x-mailing-list", "XML");
-    m_prefix.insert("x-spam-flag", "XSF");
-    m_prefix.insert("organization", "O");
-    */
-
     // Boolean Flags
     m_prefix.insert("isimportant", "I");
-    m_prefix.insert("istoact", "");
+    m_prefix.insert("istoact", "T");
     m_prefix.insert("iswatched", "W");
-    m_prefix.insert("isdeleted", "");
-    m_prefix.insert("isspam", "");
-    m_prefix.insert("isreplied", "");
-    m_prefix.insert("isignored", "");
-    m_prefix.insert("isforwarded", "");
-    m_prefix.insert("issent", "");
-    m_prefix.insert("isqueued", "");
-    m_prefix.insert("isham", "");
+    m_prefix.insert("isdeleted", "D");
+    m_prefix.insert("isspam", "S");
+    m_prefix.insert("isreplied", "E");
+    m_prefix.insert("isignored", "G");
+    m_prefix.insert("isforwarded", "F");
+    m_prefix.insert("issent", "N");
+    m_prefix.insert("isqueued", "Q");
+    m_prefix.insert("isham", "H");
     m_prefix.insert("isread", "R");
+    m_prefix.insert("hasattachment", "A");
+    m_prefix.insert("isencrypted", "C");
+    m_prefix.insert("hasinvitation", "V");
 
-    m_boolProperties << "isimportant" << "istoAct" << "iswatched" << "isdeleted" << "isspam"
+    m_boolProperties << "isimportant" << "istoact" << "iswatched" << "isdeleted" << "isspam"
                      << "isreplied" << "isignored" << "isforwarded" << "issent" << "isqueued"
-                     << "isham" << "isread";
+                     << "isham" << "isread" << "hasattachment" << "isencrypted" << "hasinvitation";
 
-    // TODO: Sent date? Age in days?
+    m_valueProperties.insert("date", 0);
+    m_valueProperties.insert("size", 1);
+    m_valueProperties.insert("onlydate", 2);
 
-    const QString path = KStandardDirs::locateLocal("data", "baloo/email/");
-    setDbPath(path);
+    setDbPath(findDatabase("email"));
 }
 
 QStringList EmailSearchStore::types()
@@ -88,63 +89,20 @@ QStringList EmailSearchStore::types()
 Xapian::Query EmailSearchStore::constructQuery(const QString& property, const QVariant& value,
                                                Term::Comparator com)
 {
-    if (value.isNull())
-        return Xapian::Query();
-
-    QString prop = property.toLower();
-    if (m_boolProperties.contains(prop)) {
-        QString p = m_prefix.value(prop);
-        if (p.isEmpty())
-            return Xapian::Query();
-
-        std::string term("B");
-        bool isTrue = false;
-
-        if (value.isNull() )
-            isTrue = true;
-
-        if (value.type() == QVariant::Bool) {
-            isTrue = value.toBool();
-        }
-
-        if (isTrue)
-            term += p.toStdString();
-        else
-            term += 'N' + p.toStdString();
-
-        return Xapian::Query(term);
-    }
-
+    //TODO is this special case necessary? maybe we can also move it to PIM
     if (com == Term::Contains) {
-        Xapian::QueryParser parser;
-        parser.set_database(*xapianDb());
-
-        std::string p = m_prefix.value(property.toLower()).toStdString();
-        if (p.empty())
+        if (!m_prefix.contains(property.toLower())) {
             return Xapian::Query();
-
-        std::string str = value.toString().toStdString();
-        int flags = Xapian::QueryParser::FLAG_DEFAULT | Xapian::QueryParser::FLAG_PARTIAL;
-        return parser.parse_query(str, flags, p);
+        }
     }
-
-    return Xapian::Query(value.toString().toStdString());
-}
-
-QUrl EmailSearchStore::constructUrl(const Xapian::docid& docid)
-{
-    KUrl url;
-    url.setProtocol(QLatin1String("akonadi"));
-    url.addQueryItem(QLatin1String("item"), QString::number(docid));
-
-    return url;
+    return PIMSearchStore::constructQuery(property, value, com);
 }
 
 QString EmailSearchStore::text(int queryId)
 {
     std::string data = docForQuery(queryId).get_data();
 
-    QString subject = QString::fromStdString(data);
+    QString subject = QString::fromUtf8(data.c_str(), data.length());
     if (subject.isEmpty())
         return QLatin1String("No Subject");
 

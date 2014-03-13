@@ -20,24 +20,23 @@
 
 #include "filemodifyjobtest.h"
 #include "filemodifyjob.h"
+#include "../baloo_xattr_p.h"
 #include "../db.h"
 #include "filemapping.h"
 #include "file.h"
 
 #include "qtest_kde.h"
-#include <KTemporaryFile>
 #include <KDebug>
 #include <KTempDir>
 
 #include <qjson/serializer.h>
 #include <xapian.h>
-#include <attr/xattr.h>
 
 using namespace Baloo;
 
 void FileModifyJobTest::testSingleFile()
 {
-    QTemporaryFile tmpFile;
+    QTemporaryFile tmpFile(QLatin1String(BUILDDIR "testSingleFile.XXXXXX"));
     tmpFile.open();
 
     QTextStream stream(&tmpFile);
@@ -57,22 +56,18 @@ void FileModifyJobTest::testSingleFile()
     int fileSizeNew = QFileInfo(fileUrl).size();
     QCOMPARE(fileSize, fileSizeNew);
 
-    char buffer[1000];
-    const QByteArray arr = QFile::encodeName(fileUrl);
+    QString value;
 
-    int len = getxattr(arr.constData(), "user.baloo.rating", &buffer, 1000);
+    int len = baloo_getxattr(fileUrl, QLatin1String("user.baloo.rating"), &value);
     QVERIFY(len > 0);
+    QCOMPARE(value.toInt(), 5);
 
-    int r = QString::fromUtf8(buffer, len).toInt();
-    QCOMPARE(r, 5);
+    len = baloo_getxattr(fileUrl, "user.xdg.tags", &value);
+    QCOMPARE(len, 0);
 
-    len = getxattr(arr.constData(), "user.baloo.tags", &buffer, 1000);
-    QCOMPARE(len, -1);
-
-    len = getxattr(arr.constData(), "user.xdg.comment", &buffer, 1000);
+    len = baloo_getxattr(fileUrl, "user.xdg.comment", &value);
     QVERIFY(len > 0);
-    QString comment = QString::fromUtf8(buffer, len);
-    QCOMPARE(comment, QString("User Comment"));
+    QCOMPARE(value, QString("User Comment"));
 
     //
     // Check in Xapian
@@ -81,7 +76,7 @@ void FileModifyJobTest::testSingleFile()
     QSqlDatabase sqlDb = fileMappingDb();
     QVERIFY(fileMap.fetch(sqlDb));
 
-    const std::string xapianPath = fileIndexDbPath().toStdString();
+    const std::string xapianPath = fileIndexDbPath();
     Xapian::Database db(xapianPath);
 
     Xapian::Document doc = db.get_document(fileMap.id());
@@ -98,10 +93,10 @@ void FileModifyJobTest::testSingleFile()
 
 void FileModifyJobTest::testMultiFileRating()
 {
-    QTemporaryFile tmpFile1;
+    QTemporaryFile tmpFile1(QLatin1String(BUILDDIR "testMultiFileRating.XXXXXX"));
     tmpFile1.open();
 
-    QTemporaryFile tmpFile2;
+    QTemporaryFile tmpFile2(QLatin1String(BUILDDIR "testMultiFileRating.XXXXXX"));
     tmpFile2.open();
 
     const QString fileUrl1 = tmpFile1.fileName();
@@ -113,21 +108,15 @@ void FileModifyJobTest::testMultiFileRating()
     FileModifyJob* job = FileModifyJob::modifyRating(files, 5);
     QVERIFY(job->exec());
 
-    char buffer[1000];
+    QString value;
 
-    const QByteArray arr1 = QFile::encodeName(fileUrl1);
-    int len = getxattr(arr1.constData(), "user.baloo.rating", &buffer, 1000);
+    int len = baloo_getxattr(fileUrl1, "user.baloo.rating", &value);
     QVERIFY(len > 0);
+    QCOMPARE(value.toInt(), 5);
 
-    int r = QString::fromUtf8(buffer, len).toInt();
-    QCOMPARE(r, 5);
-
-    const QByteArray arr2 = QFile::encodeName(fileUrl1);
-    len = getxattr(arr2.constData(), "user.baloo.rating", &buffer, 1000);
+    len = baloo_getxattr(fileUrl2, "user.baloo.rating", &value);
     QVERIFY(len > 0);
-
-    r = QString::fromUtf8(buffer, len).toInt();
-    QCOMPARE(r, 5);
+    QCOMPARE(value.toInt(), 5);
 }
 
 void FileModifyJobTest::testXapianUpdate()
@@ -146,7 +135,7 @@ void FileModifyJobTest::testXapianUpdate()
     QSqlDatabase sqlDb = fileMappingDb();
     QVERIFY(fileMap.fetch(sqlDb));
 
-    const std::string xapianPath = fileIndexDbPath().toStdString();
+    const std::string xapianPath = fileIndexDbPath();
     Xapian::Database db(xapianPath);
 
     Xapian::Document doc = db.get_document(fileMap.id());
@@ -159,7 +148,7 @@ void FileModifyJobTest::testXapianUpdate()
     // Add another term, and make sure it is not removed
     doc.add_term("RATING");
     {
-        const std::string xapianPath = fileIndexDbPath().toStdString();
+        const std::string xapianPath = fileIndexDbPath();
         Xapian::WritableDatabase db(xapianPath, Xapian::DB_CREATE_OR_OPEN);
         db.replace_document(fileMap.id(), doc);
         db.commit();
@@ -182,7 +171,7 @@ void FileModifyJobTest::testXapianUpdate()
 
 void FileModifyJobTest::testFolder()
 {
-    QTemporaryFile f;
+    QTemporaryFile f(QLatin1String(BUILDDIR "testFolder.XXXXXX"));
     f.open();
 
     // We use the same prefix as the tmpfile
@@ -195,14 +184,11 @@ void FileModifyJobTest::testFolder()
     FileModifyJob* job = new FileModifyJob(file);
     QVERIFY(job->exec());
 
-    char buffer[1000];
+    QString value;
 
-    const QByteArray arr1 = QFile::encodeName(url);
-    int len = getxattr(arr1.constData(), "user.baloo.rating", &buffer, 1000);
+    int len = baloo_getxattr(url, QLatin1String("user.baloo.rating"), &value);
     QVERIFY(len > 0);
-
-    int r = QString::fromUtf8(buffer, len).toInt();
-    QCOMPARE(r, 5);
+    QCOMPARE(value.toInt(), 5);
 }
 
 

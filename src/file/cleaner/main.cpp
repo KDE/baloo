@@ -21,18 +21,24 @@
 
 #include "cleaner.h"
 #include "../database.h"
+#include "../priority.h"
 
 #include <k4aboutdata.h>
 #include <KCmdLineArgs>
 #include <KLocale>
 #include <KComponentData>
 #include <QApplication>
+#include <QDBusConnection>
 
 #include <KDebug>
 #include <KStandardDirs>
 
 int main(int argc, char* argv[])
 {
+    lowerIOPriority();
+    lowerSchedulingPriority();
+    lowerPriority();
+
     K4AboutData aboutData("baloo_file_cleaner", 0, ki18n("Baloo File Cleaner"),
                          "0.1",
                          ki18n("Cleans up stale file index information"),
@@ -44,6 +50,11 @@ int main(int argc, char* argv[])
 
     QApplication app(argc, argv);
     KComponentData data(aboutData, KComponentData::RegisterAsMainComponent);
+
+    if (!QDBusConnection::sessionBus().registerService("org.kde.baloo.file.cleaner")) {
+        kError() << "Failed to register via dbus. Another instance is running";
+        return 1;
+    }
 
     Database db;
     db.setPath(KStandardDirs::locateLocal("data", "baloo/file/"));

@@ -319,6 +319,11 @@ Query Query::fromSearchUrl(const QUrl& url)
     return Query::fromJSON(jsonString.toUtf8());
 }
 
+QString Query::titleFromQueryUrl(const QUrl& url)
+{
+    return url.queryItemValue("title");
+}
+
 bool Query::operator==(const Query& rhs) const
 {
     if (rhs.d->m_limit != d->m_limit || rhs.d->m_offset != d->m_offset ||

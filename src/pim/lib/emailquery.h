@@ -23,6 +23,7 @@
 #ifndef _EMAIL_QUERY_H
 #define _EMAIL_QUERY_H
 
+#include "pim_export.h"
 #include "query.h"
 
 #include <QStringList>
@@ -35,6 +36,14 @@ class BALOO_PIM_EXPORT EmailQuery : public Query
 {
 public:
     EmailQuery();
+    virtual ~EmailQuery();
+
+    enum OpType {
+        OpAnd = 0,
+        OpOr
+    };
+
+    void setSearchType(OpType op);
 
     void setInvolves(const QStringList& involves);
     void addInvolves(const QString& email);
@@ -76,13 +85,19 @@ public:
     void matches(const QString& match);
 
     /**
-     * Matches teh string \p subjectMatch specifically in the
+     * Matches the string \p subjectMatch specifically in the
      * email subject
      */
     void subjectMatches(const QString& subjectMatch);
 
+    /**
+     * Matches the string \p bodyMatch specifically in the body email
+     */
+    void bodyMatches(const QString& bodyMatch);
+
+
     void setLimit(int limit);
-    int limit();
+    int limit() const;
 
     /**
      * Execute the query and return an iterator to fetch
@@ -91,24 +106,10 @@ public:
     ResultIterator exec();
 
 private:
-    QString m_path;
-
-    QStringList m_involves;
-    QStringList m_to;
-    QStringList m_cc;
-    QStringList m_bcc;
-    QString m_from;
-
-    QList<Akonadi::Collection::Id> m_collections;
-
-    char m_important;
-    char m_read;
-    char m_attachment;
-
-    QString m_matchString;
-    QString m_subjectMatchString;
-
-    int m_limit;
+    //@cond PRIVATE
+    class Private;
+    Private * const d;
+    //@endcond
 };
 
 }

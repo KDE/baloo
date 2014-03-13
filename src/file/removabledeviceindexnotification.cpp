@@ -50,7 +50,7 @@ RemovableDeviceIndexNotification::RemovableDeviceIndexNotification(const Baloo::
 
     // as soon as the device is unmounted this notification becomes pointless
     if (const Solid::StorageAccess* storage = m_medium->device().as<Solid::StorageAccess>()) {
-        connect(storage, SIGNAL(accessibilityChanged(bool, QString)), SLOT(close()));
+        connect(storage, SIGNAL(accessibilityChanged(bool,QString)), SLOT(close()));
     }
 }
 

@@ -28,7 +28,7 @@
 #include <QTextDocument>
 
 EmailIndexer::EmailIndexer(const QString& path, const QString& contactDbPath):
-    AbstractIndexer()
+    AbstractIndexer(), m_termGen( 0 )
 {
     m_db = new Xapian::WritableDatabase(path.toStdString(), Xapian::DB_CREATE_OR_OPEN);
     m_contactDb = new Xapian::WritableDatabase(contactDbPath.toStdString(), Xapian::DB_CREATE_OR_OPEN);
@@ -70,6 +70,9 @@ void EmailIndexer::index(const Akonadi::Item& item)
     processMessageStatus(status);
     process(msg);
 
+    // Size
+    m_doc->add_value(1, QString::number(item.size()).toStdString());
+
     // Parent collection
     Q_ASSERT_X(item.parentCollection().isValid(), "Baloo::EmailIndexer::index",
                "Item does not have a valid parent collection");
@@ -85,6 +88,13 @@ void EmailIndexer::index(const Akonadi::Item& item)
 
     m_doc = 0;
     m_termGen = 0;
+}
+
+void EmailIndexer::insert(const QByteArray& key, KMime::Headers::Base* unstructured)
+{
+    if (unstructured) {
+        m_termGen->index_text_without_positions(unstructured->asUnicodeString().toUtf8().constData(), 1, key.data());
+    }
 }
 
 void EmailIndexer::insert(const QByteArray& key, KMime::Headers::Generics::MailboxList* mlist)
@@ -125,7 +135,7 @@ namespace {
 void EmailIndexer::insert(const QByteArray& key, const KMime::Types::Mailbox::List& list)
 {
     Q_FOREACH (const KMime::Types::Mailbox& mbox, list) {
-        std::string name = mbox.name().toStdString();
+        std::string name(mbox.name().toUtf8().constData());
         m_termGen->index_text_without_positions(name, 1, key.data());
         m_termGen->index_text_without_positions(name, 1);
 
@@ -135,7 +145,7 @@ void EmailIndexer::insert(const QByteArray& key, const KMime::Types::Mailbox::Li
         //
         // Add emails for email auto-completion
         //
-        QString pa = prettyAddress(mbox);
+        const QString pa = prettyAddress(mbox);
         int id = qHash(pa);
         try {
             Xapian::Document doc = m_contactDb->get_document(id);
@@ -143,7 +153,7 @@ void EmailIndexer::insert(const QByteArray& key, const KMime::Types::Mailbox::Li
         }
         catch (const Xapian::DocNotFoundError&) {
             Xapian::Document doc;
-            std::string pretty = pa.toStdString();
+            std::string pretty(pa.toUtf8().constData());
             doc.set_data(pretty);
 
             Xapian::TermGenerator termGen;
@@ -164,7 +174,7 @@ void EmailIndexer::process(const KMime::Message::Ptr& msg)
     // (Give the subject a higher priority)
     KMime::Headers::Subject* subject = msg->subject(false);
     if (subject) {
-        std::string str = subject->asUnicodeString().toStdString();
+        std::string str(subject->asUnicodeString().toUtf8().constData());
         kDebug() << "Indexing" << str.c_str();
         m_termGen->index_text_without_positions(str, 1, "S");
         m_termGen->index_text_without_positions(str, 100);
@@ -173,36 +183,40 @@ void EmailIndexer::process(const KMime::Message::Ptr& msg)
 
     KMime::Headers::Date* date = msg->date(false);
     if (date) {
-        QString str = QString::number(date->dateTime().toTime_t());
+        const QString str = QString::number(date->dateTime().toTime_t());
         m_doc->add_value(0, str.toStdString());
+        const QString julianDay = QString::number(date->dateTime().date().toJulianDay());
+        m_doc->add_value(2, julianDay.toStdString());
     }
 
     insert("F", msg->from(false));
     insert("T", msg->to(false));
     insert("CC", msg->cc(false));
     insert("BC", msg->bcc(false));
-
-    // Stuff that could be indexed
-    // - Message ID
-    // - Organization
-    // - listID
-    // - mailingList
+    insert("O", msg->organization(false));
+    insert("RT", msg->replyTo(false));
+    insert("RF", msg->headerByType("Resent-From"));
+    insert("LI", msg->headerByType("List-Id"));
+    insert("XL", msg->headerByType("X-Loop"));
+    insert("XML", msg->headerByType("X-Mailing-List"));
+    insert("XSF", msg->headerByType("X-Spam-Flag"));
 
     //
     // Process Plain Text Content
     //
-    if (msg->contents().isEmpty())
-        return;
+
+    //Index all headers
+    m_termGen->index_text_without_positions(std::string(msg->head().constData()), 1, "H");
 
     KMime::Content* mainBody = msg->mainBodyPart("text/plain");
     if (mainBody) {
-        const std::string text = mainBody->decodedText().toStdString();
+        const std::string text(mainBody->decodedText().toUtf8().constData());
         m_termGen->index_text_without_positions(text);
-        // Maybe we want to index the text twice?
+        m_termGen->index_text_without_positions(text, 1, "BO");
     }
-
-    if (!mainBody)
-        processPart(msg.get(), mainBody);
+    else {
+        processPart(msg.get(), 0);
+    }
 }
 
 void EmailIndexer::processPart(KMime::Content* content, KMime::Content* mainContent)
@@ -212,22 +226,24 @@ void EmailIndexer::processPart(KMime::Content* content, KMime::Content* mainCont
     }
 
     KMime::Headers::ContentType* type = content->contentType(false);
-    if (type && type->isMultipart()) {
-        if (type->isSubtype("encrypted"))
-            return;
+    if (type) {
+        if (type->isMultipart()) {
+            if (type->isSubtype("encrypted"))
+                return;
 
-        Q_FOREACH (KMime::Content* c, content->contents()) {
-            processPart(c, mainContent);
+            Q_FOREACH (KMime::Content* c, content->contents()) {
+                processPart(c, mainContent);
+            }
         }
-    }
 
-    // Only get HTML content, if no plain text content
-    if (!mainContent && type->isHTMLText()) {
-        QTextDocument doc;
-        doc.setHtml(content->decodedText());
+        // Only get HTML content, if no plain text content
+        if (!mainContent && type->isHTMLText()) {
+            QTextDocument doc;
+            doc.setHtml(content->decodedText());
 
-        const std::string text = doc.toPlainText().toStdString();
-        m_termGen->index_text_without_positions(text);
+            const std::string text(doc.toPlainText().toUtf8().constData());
+            m_termGen->index_text_without_positions(text);
+        }
     }
 
     // FIXME: Handle attachments?
@@ -239,6 +255,19 @@ void EmailIndexer::processMessageStatus(const Akonadi::MessageStatus& status)
     insertBool('A', status.hasAttachment());
     insertBool('I', status.isImportant());
     insertBool('W', status.isWatched());
+    insertBool('T', status.isToAct());
+    insertBool('D', status.isDeleted());
+    insertBool('S', status.isSpam());
+    insertBool('E', status.isReplied());
+    insertBool('G', status.isIgnored());
+    insertBool('F', status.isForwarded());
+    insertBool('N', status.isSent());
+    insertBool('Q', status.isQueued());
+    insertBool('H', status.isHam());
+    insertBool('C', status.isEncrypted());
+    insertBool('V', status.hasInvitation());
+
+    //Akonadi::MessageFlags::HasInvitation
 }
 
 void EmailIndexer::insertBool(char key, bool value)
@@ -311,6 +340,26 @@ void EmailIndexer::remove(const Akonadi::Item& item)
 {
     try {
         m_db->delete_document(item.id());
+        //TODO remove contacts from contact db?
+    }
+    catch (const Xapian::DocNotFoundError&) {
+        return;
+    }
+}
+
+void EmailIndexer::remove(const Akonadi::Collection& collection)
+{
+    try {
+        Xapian::Query query('C'+ QString::number(collection.id()).toStdString());
+        Xapian::Enquire enquire(*m_db);
+        enquire.set_query(query);
+
+        Xapian::MSet mset = enquire.get_mset(0, m_db->get_doccount());
+        Xapian::MSetIterator end = mset.end();
+        for (Xapian::MSetIterator it = mset.begin(); it != end; ++it) {
+            const qint64 id = *it;
+            remove(Akonadi::Item(id));
+        }
     }
     catch (const Xapian::DocNotFoundError&) {
         return;

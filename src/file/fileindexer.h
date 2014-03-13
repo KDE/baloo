@@ -43,22 +43,10 @@ public:
     ~FileIndexer();
 
 Q_SIGNALS:
-    void statusStringChanged();
-
     Q_SCRIPTABLE void statusChanged();
     Q_SCRIPTABLE void indexingStarted();
     Q_SCRIPTABLE void indexingStopped();
     Q_SCRIPTABLE void fileIndexingDone();
-
-    /**
-     * Emitted each time the status/activity of the FileIndexer changes
-     *
-     * @p status what the watcher is doing tehse represent the IndexScheduler::Status enum
-     * @see Nepomuk2::IndexScheduler::Status
-     *
-     * @p msg translated status message that indicates what is happening
-     */
-    Q_SCRIPTABLE void status(int status, QString msg);
 
 public Q_SLOTS:
     /**
@@ -68,46 +56,22 @@ public Q_SLOTS:
     void update();
 
     /**
+     * Quits the application. This may not be the best place to keep such
+     * a slot, but it's simpler than creating a new interface for now
+     */
+    Q_SCRIPTABLE void quit() const;
+
+    /**
      * @brief Translated status message of the current Indexer behaviour.
-     *
-     * @since 4.11
      */
     Q_SCRIPTABLE QString statusMessage() const;
 
-    /**
-     * @brief Returns the internal state of the indexer
-     *
-     * @since 4.11
-     *
-     * @return an integer that represents the status as defined in Nepomuk2::IndexScheduler::Status
-     */
-    Q_SCRIPTABLE int currentStatus() const;
-
-    /**
-     * \return A user readable status string. Includes the currently indexed folder.
-     *
-     * @deprecated use statusMessage() instead
-     */
-    Q_SCRIPTABLE QString userStatusString() const;
-
     Q_SCRIPTABLE bool isSuspended() const;
     Q_SCRIPTABLE bool isIndexing() const;
-    Q_SCRIPTABLE bool isCleaning() const;
 
     Q_SCRIPTABLE void resume() const;
     Q_SCRIPTABLE void suspend() const;
     Q_SCRIPTABLE void setSuspended(bool);
-
-    Q_SCRIPTABLE QString currentFolder() const;
-    Q_SCRIPTABLE QString currentFile() const;
-
-    //Q_SCRIPTABLE int indexedFiles() const;
-    //Q_SCRIPTABLE int totalFiles() const;
-
-    /**
-     * Update folder \a path if it is configured to be indexed.
-     */
-    Q_SCRIPTABLE void updateFolder(const QString& path, bool recursive, bool forced);
 
     /**
      * Update all folders configured to be indexed.
@@ -128,15 +92,6 @@ public Q_SLOTS:
 
 private Q_SLOTS:
     void slotBasicIndexingDone();
-
-    /**
-     * @brief Called when the status string in the Indexscheduler is changed
-     *
-     * emits the current indexer state and status message via dbus.
-     *
-     * @see status()
-     */
-    void emitStatusMessage();
 
 private:
     IndexScheduler* m_indexScheduler;

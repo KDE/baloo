@@ -21,7 +21,7 @@
 */
 
 #include "app.h"
-#include "priority.h"
+#include "../priority.h"
 
 #include <k4aboutdata.h>
 #include <KCmdLineArgs>

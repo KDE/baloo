@@ -70,12 +70,6 @@ public:
     bool indexHiddenFilesAndFolders() const;
 
     /**
-     * The minimal available disk space. If it drops below
-     * indexing will be suspended.
-     */
-    KIO::filesize_t minDiskSpace() const;
-
-    /**
      * true the first time the service is run (or after manually
      * tampering with the config.
      */
@@ -89,16 +83,6 @@ public:
      * sure all folders are at least indexed once.
      */
     bool initialUpdateDisabled() const;
-
-    /**
-     * A "hidden" config option which allows to disable the feature
-     * where the file indexing is suspended when in powersave mode.
-     * This is especially useful for mobile devices which always run
-     * on battery.
-     *
-     * At some point this should be a finer grained configuration.
-     */
-    bool suspendOnPowerSaveDisabled() const;
 
     /**
      * Check if \p path should be indexed taking into account
@@ -144,13 +128,6 @@ public:
     bool shouldMimeTypeBeIndexed(const QString& mimeType) const;
 
     /**
-     * Check if the debug mode is enabled. The debug mode is a hidden
-     * configuration option (without any GUI) that will make the indexer
-     * log errors in a dedicated file.
-     */
-    bool isDebugModeEnabled() const;
-
-    /**
      * Returns true if the folder is in the list indexed directories
      * and not in the list of exclude directories
      */
@@ -191,7 +168,7 @@ private:
      */
     bool folderInFolderList(const QString& path, QString& folder) const;
 
-    // These functions return true if the the new cache is different from the old one
+    // These functions return true if the new cache is different from the old one
     // They also emit signals to indicate how they are different
     bool buildFolderCache();
     bool buildExcludeFilterRegExpCache();
@@ -228,7 +205,7 @@ private:
 
     /**
      * Fills the \p includeAdded and \p includeRemoved lists with the changes
-     * that have occured between \p entry and \p include
+     * that have occurred between \p entry and \p include
      */
     void fillIncludeFolderChanges(const Entry& entry, const QSet<QString>& include,
                                   QStringList* includeAdded, QStringList* includeRemoved);

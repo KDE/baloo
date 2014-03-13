@@ -40,10 +40,10 @@ IndexScheduler::IndexScheduler(Database* db, FileIndexerConfig* config, QObject*
     , m_db(db)
 {
     Q_ASSERT(m_config);
-    connect(m_config, SIGNAL(includeFolderListChanged(QStringList, QStringList)),
-            this, SLOT(slotIncludeFolderListChanged(QStringList, QStringList)));
-    connect(m_config, SIGNAL(excludeFolderListChanged(QStringList, QStringList)),
-            this, SLOT(slotExcludeFolderListChanged(QStringList, QStringList)));
+    connect(m_config, SIGNAL(includeFolderListChanged(QStringList,QStringList)),
+            this, SLOT(slotIncludeFolderListChanged(QStringList,QStringList)));
+    connect(m_config, SIGNAL(excludeFolderListChanged(QStringList,QStringList)),
+            this, SLOT(slotExcludeFolderListChanged(QStringList,QStringList)));
 
     // FIXME: What if both the signals are emitted?
     connect(m_config, SIGNAL(fileExcludeFiltersChanged()),
@@ -75,15 +75,13 @@ IndexScheduler::IndexScheduler(Database* db, FileIndexerConfig* config, QObject*
     connect(this, SIGNAL(indexingSuspended(bool)), this, SLOT(emitStatusStringChanged()));
 
     m_eventMonitor = new EventMonitor(this);
-    connect(m_eventMonitor, SIGNAL(diskSpaceStatusChanged(bool)),
-            this, SLOT(slotScheduleIndexing()));
     connect(m_eventMonitor, SIGNAL(idleStatusChanged(bool)),
             this, SLOT(slotScheduleIndexing()));
     connect(m_eventMonitor, SIGNAL(powerManagementStatusChanged(bool)),
             this, SLOT(slotScheduleIndexing()));
 
     m_commitQ = new CommitQueue(m_db, this);
-    connect(m_commitQ, SIGNAL(committed()), this, SLOT(slotCommitted()));
+    connect(m_commitQ, SIGNAL(committed()), this, SLOT(slotScheduleIndexing()));
     connect(m_basicIQ, SIGNAL(newDocument(uint,Xapian::Document)),
             m_commitQ, SLOT(add(uint,Xapian::Document)));
     connect(m_fileIQ, SIGNAL(newDocument(uint,Xapian::Document)),
@@ -136,26 +134,10 @@ bool IndexScheduler::isSuspended() const
     return m_state == State_Suspended;
 }
 
-bool IndexScheduler::isCleaning() const
-{
-    return m_state == State_Cleaning;
-}
-
 bool IndexScheduler::isIndexing() const
 {
     return m_indexing;
 }
-
-QString IndexScheduler::currentUrl() const
-{
-    return m_basicIQ->currentUrl();
-}
-
-UpdateDirFlags IndexScheduler::currentFlags() const
-{
-    return m_basicIQ->currentFlags();
-}
-
 
 void IndexScheduler::setIndexingStarted(bool started)
 {
@@ -184,7 +166,6 @@ void IndexScheduler::slotFinishedIndexing()
     }
 
     if (m_basicIQ->isEmpty() && m_fileIQ->isEmpty()) {
-        m_eventMonitor->suspendDiskSpaceMonitor();
         setIndexingStarted(false);
     }
 }
@@ -257,7 +238,7 @@ void IndexScheduler::slotConfigFiltersChanged()
 }
 
 
-void IndexScheduler::analyzeFile(const QString& path)
+void IndexScheduler::indexFile(const QString& path)
 {
     m_basicIQ->enqueue(FileMapping(path));
 }
@@ -279,13 +260,6 @@ void IndexScheduler::setStateFromEvent()
     if (m_state == State_Suspended) {
         kDebug() << "Suspended";
     }
-    else if (m_state == State_Cleaning) {
-        kDebug() << "Cleaning";
-    }
-    else if (m_eventMonitor->isDiskSpaceLow()) {
-        kDebug() << "Disk Space";
-        m_state = State_LowDiskSpace;
-    }
     else if (m_eventMonitor->isOnBattery()) {
         kDebug() << "Battery";
         m_state = State_OnBattery;
@@ -304,9 +278,7 @@ bool IndexScheduler::scheduleBasicQueue()
 {
     switch (m_state) {
         case State_Suspended:
-        case State_Cleaning:
-        case State_LowDiskSpace:
-            kDebug() << "No basic queue: suspended, cleaning or low disc space";
+            kDebug() << "No basic queue: suspended";
             return false;
         case State_OnBattery:
         case State_UserIdle:
@@ -325,13 +297,13 @@ bool IndexScheduler::scheduleFileQueue()
     }
     switch (m_state) {
         case State_Suspended:
-        case State_Cleaning:
-        case State_LowDiskSpace:
         case State_OnBattery:
-            kDebug() << "No file queue: suspended, cleaning, low disc space or on battery";
+            kDebug() << "No file queue: suspended or on battery";
             return false;
         case State_UserIdle:
+            m_fileIQ->setDelay(0);
         case State_Normal:
+            m_fileIQ->setDelay(500);
         default:
             return true;
     }
@@ -369,13 +341,10 @@ QString IndexScheduler::userStatusString() const
 {
     bool indexing = isIndexing();
     bool suspended = isSuspended();
-    bool cleaning = isCleaning();
     bool processing = !m_basicIQ->isEmpty();
 
     if (suspended) {
         return i18nc("@info:status", "File indexer is suspended.");
-    } else if (cleaning) {
-        return i18nc("@info:status", "Cleaning invalid file metadata");
     } else if (indexing) {
         return i18nc("@info:status", "Indexing files for desktop search.");
     } else if (processing) {
@@ -385,24 +354,12 @@ QString IndexScheduler::userStatusString() const
     }
 }
 
-IndexScheduler::State IndexScheduler::currentStatus() const
-{
-    return m_state;
-}
-
 void IndexScheduler::emitStatusStringChanged()
 {
     QString status = userStatusString();
     if (status != m_oldStatus) {
         Q_EMIT statusStringChanged();
         m_oldStatus = status;
-    }
-}
-
-void IndexScheduler::slotCommitted()
-{
-    if (m_basicIQ->isEmpty()) {
-        m_fileIQ->resume();
     }
 }
 

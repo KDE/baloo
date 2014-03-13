@@ -24,7 +24,6 @@
 #include "term.h"
 
 #include <qtest_kde.h>
-#include <QSignalSpy>
 
 #include <KDebug>
 

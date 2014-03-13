@@ -25,6 +25,10 @@
 #include <Akonadi/Item>
 #include <QStringList>
 
+namespace Akonadi {
+class Collection;
+}
+
 class AbstractIndexer
 {
   public:
@@ -34,6 +38,7 @@ class AbstractIndexer
     virtual QStringList mimeTypes() const = 0;
     virtual void index(const Akonadi::Item& item) = 0;
     virtual void remove(const Akonadi::Item& item) = 0;
+    virtual void remove(const Akonadi::Collection& item) = 0;
     virtual void commit() = 0;
 
 

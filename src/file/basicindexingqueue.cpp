@@ -44,8 +44,6 @@ BasicIndexingQueue::BasicIndexingQueue(Database* db, FileIndexerConfig* config, 
 
 void BasicIndexingQueue::clear()
 {
-    m_currentFile.clear();
-    m_currentFlags = NoUpdateFlags;
     m_paths.clear();
 }
 
@@ -58,17 +56,6 @@ void BasicIndexingQueue::clear(const QString& path)
             it.remove();
     }
 }
-
-QString BasicIndexingQueue::currentUrl() const
-{
-    return m_currentFile.url();
-}
-
-UpdateDirFlags BasicIndexingQueue::currentFlags() const
-{
-    return m_currentFlags;
-}
-
 
 bool BasicIndexingQueue::isEmpty()
 {
@@ -88,8 +75,6 @@ void BasicIndexingQueue::enqueue(const FileMapping& file, UpdateDirFlags flags)
     kDebug() << file.url();
     m_paths.push(qMakePair(file, flags));
     callForNextIteration();
-
-    Q_EMIT startedIndexing();
 }
 
 void BasicIndexingQueue::processNextIteration()
@@ -119,12 +104,8 @@ bool BasicIndexingQueue::process(FileMapping& file, UpdateDirFlags flags)
     QFileInfo info(file.url());
     if (info.isDir()) {
         if (forced || indexingRequired) {
-            m_currentFile = file;
-            m_currentFlags = flags;
-            m_currentMimeType = mimetype;
-
             startedIndexing = true;
-            index(file);
+            index(file, mimetype);
         }
 
         // We don't want to follow system links
@@ -137,12 +118,8 @@ bool BasicIndexingQueue::process(FileMapping& file, UpdateDirFlags flags)
             }
         }
     } else if (info.isFile() && (forced || indexingRequired)) {
-        m_currentFile = file;
-        m_currentFlags = flags;
-        m_currentMimeType = mimetype;
-
         startedIndexing = true;
-        index(file);
+        index(file, mimetype);
     }
 
     return startedIndexing;
@@ -182,7 +159,8 @@ bool BasicIndexingQueue::shouldIndex(FileMapping& file, const QString& mimetype)
             return false;
 
         // The 4 is for "DT_M"
-        const QString str = QString::fromStdString(*it).mid(4);
+        const std::string s = *it;
+        const QString str = QString::fromUtf8(s.c_str(), s.length()).mid(4);
         const QDateTime mtime = QDateTime::fromString(str, Qt::ISODate);
 
         if (mtime != fileInfo.lastModified())
@@ -200,28 +178,14 @@ bool BasicIndexingQueue::shouldIndexContents(const QString& dir)
     return m_config->shouldFolderBeIndexed(dir);
 }
 
-void BasicIndexingQueue::index(const FileMapping& file)
+void BasicIndexingQueue::index(const FileMapping& file, const QString& mimetype)
 {
     kDebug() << file.id() << file.url();
-    Q_EMIT beginIndexingFile(file);
 
-    BasicIndexingJob job(&m_db->sqlDatabase(), file, m_currentMimeType);
+    BasicIndexingJob job(&m_db->sqlDatabase(), file, mimetype);
     if (job.index()) {
         Q_EMIT newDocument(job.id(), job.document());
     }
 
-    QTimer::singleShot(0, this, SLOT(slotIndexingFinished()));
-}
-
-void BasicIndexingQueue::slotIndexingFinished()
-{
-    FileMapping file = m_currentFile;
-    m_currentFile.clear();
-    m_currentMimeType.clear();
-    m_currentFlags = NoUpdateFlags;
-
-    Q_EMIT endIndexingFile(file);
-
-    // Continue the queue
-    finishIteration();
+    QTimer::singleShot(0, this, SLOT(finishIteration()));
 }

@@ -28,9 +28,15 @@
 
 #include <QTimer>
 #include <QDateTime>
+#include <QList>
 
 class KJob;
 class AbstractIndexer;
+
+namespace Akonadi
+{
+class ItemFetchJob;
+}
 
 class BalooIndexingAgent : public Akonadi::AgentBase, public Akonadi::AgentBase::ObserverV3
 {
@@ -38,6 +44,9 @@ class BalooIndexingAgent : public Akonadi::AgentBase, public Akonadi::AgentBase:
 public:
     BalooIndexingAgent(const QString& id);
     ~BalooIndexingAgent();
+
+    void reindexCollection(const qlonglong id);
+    qlonglong indexedItems(const qlonglong id);
 
     virtual void itemAdded(const Akonadi::Item& item, const Akonadi::Collection& collection);
     virtual void itemChanged(const Akonadi::Item& item, const QSet<QByteArray>& partIdentifiers);
@@ -48,6 +57,8 @@ public:
     virtual void itemsMoved(const Akonadi::Item::List& items,
                             const Akonadi::Collection& sourceCollection,
                             const Akonadi::Collection& destinationCollection);
+
+    virtual void collectionRemoved(const Akonadi::Collection& collection);
 
     // Remove the entire db
     virtual void cleanup();
@@ -60,20 +71,26 @@ private Q_SLOTS:
     void processNext();
     void slotItemsRecevied(const Akonadi::Item::List& items);
     void slotCommitTimerElapsed();
+    void onAbortRequested();
+    void onOnlineChanged(bool online);
 
 private:
+    qlonglong indexedItemsInDatabase(const std::string& term, const QString& dbPath) const;
+    QDateTime loadLastItemMTime(const QDateTime& defaultDt = QDateTime()) const;
     void createIndexers();
     void addIndexer(AbstractIndexer *indexer);
-    AbstractIndexer* indexerForItem(const Akonadi::Item& item);
+    AbstractIndexer* indexerForItem(const Akonadi::Item& item) const;
+    QList<AbstractIndexer*> indexersForCollection(const Akonadi::Collection& collection) const;
 
     Akonadi::Item::List m_items;
     QTimer m_timer;
     QDateTime m_lastItemMTime;
-    int m_jobs;
+    QList<KJob*> m_jobs;
 
     QMap<QString, AbstractIndexer* > m_indexers;
 
     QTimer m_commitTimer;
+    bool m_inProgress;
 };
 
 #endif // AGENT_H

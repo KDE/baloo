@@ -31,6 +31,7 @@ using namespace Baloo;
 PathFilterPostingSource::PathFilterPostingSource(QSqlDatabase* sqlDb, const QString& includeDir)
     : m_sqlDb(sqlDb)
     , m_includeDir(includeDir)
+    , m_first(false)
 {
     if (!m_includeDir.endsWith('/'))
         m_includeDir.append('/');

@@ -46,6 +46,7 @@ public:
     void updateFlags(const Akonadi::Item& item, const QSet<QByteArray>& added,
                      const QSet<QByteArray>& removed);
     void remove(const Akonadi::Item& item);
+    void remove(const Akonadi::Collection& item);
     void move(const Akonadi::Item::Id& itemId,
               const Akonadi::Entity::Id& from,
               const Akonadi::Entity::Id& to);
@@ -65,6 +66,7 @@ private:
     void processPart(KMime::Content* content, KMime::Content* mainContent);
     void processMessageStatus(const Akonadi::MessageStatus& status);
 
+    void insert(const QByteArray& key, KMime::Headers::Base* base);
     void insert(const QByteArray& key, KMime::Headers::Generics::MailboxList* mlist);
     void insert(const QByteArray& key, KMime::Headers::Generics::AddressList* alist);
     void insert(const QByteArray& key, const KMime::Types::Mailbox::List& list);

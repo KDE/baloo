@@ -23,6 +23,7 @@
 #include "contactindexer.h"
 
 #include <KABC/Addressee>
+#include <Akonadi/Collection>
 
 ContactIndexer::ContactIndexer(const QString& path):
     AbstractIndexer()
@@ -59,8 +60,11 @@ void ContactIndexer::index(const Akonadi::Item& item)
     if (!addresse.formattedName().isEmpty()) {
         name = addresse.formattedName();
     }
-    else {
+    else if (!addresse.assembledName().isEmpty()) {
         name = addresse.assembledName();
+    }
+    else {
+        name = addresse.name();
     }
 
     std::string stdName = name.toStdString();
@@ -81,6 +85,14 @@ void ContactIndexer::index(const Akonadi::Item& item)
         termGen.index_text(stdEmail);
     }
 
+    // Parent collection
+    Q_ASSERT_X(item.parentCollection().isValid(), "Baloo::ContactIndexer::index",
+               "Item does not have a valid parent collection");
+
+    Akonadi::Entity::Id colId = item.parentCollection().id();
+    QByteArray term = 'C' + QByteArray::number(colId);
+    doc.add_boolean_term(term.data());
+
     m_db->replace_document(item.id(), doc);
     // TODO: Contact Groups?
 }
@@ -89,6 +101,25 @@ void ContactIndexer::remove(const Akonadi::Item& item)
 {
     try {
         m_db->delete_document(item.id());
+    }
+    catch (const Xapian::DocNotFoundError&) {
+        return;
+    }
+}
+
+void ContactIndexer::remove(const Akonadi::Collection& collection)
+{
+    try {
+        Xapian::Query query('C'+ QString::number(collection.id()).toStdString());
+        Xapian::Enquire enquire(*m_db);
+        enquire.set_query(query);
+
+        Xapian::MSet mset = enquire.get_mset(0, m_db->get_doccount());
+        Xapian::MSetIterator end(mset.end());
+        for (Xapian::MSetIterator it = mset.begin(); it != end; ++it) {
+            const qint64 id = *it;
+            remove(Akonadi::Item(id));
+        }
     }
     catch (const Xapian::DocNotFoundError&) {
         return;

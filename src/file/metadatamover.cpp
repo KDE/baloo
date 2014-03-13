@@ -25,10 +25,9 @@
 #include <QFileInfo>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QStringList>
 
 #include <KDebug>
-#include <KJob>
-#include <KLocale>
 
 using namespace Baloo;
 
@@ -182,8 +181,9 @@ void MetadataMover::updateMetadata(const QString& from, const QString& to)
         Q_EMIT movedWithoutData(to);
     }
 
-    if (!QFileInfo(from).isDir())
+    if (!QFileInfo(to).isDir()) {
         return;
+    }
 
     QSqlQuery query(m_db->sqlDatabase());
     /*

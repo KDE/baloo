@@ -69,11 +69,11 @@ void KInotifyTest::testDeleteFile()
     kn.addWatch(dir.name(), KInotify::EventAll);
 
     // listen to the desired signal
-    QSignalSpy spy(&kn, SIGNAL(deleted(QString, bool)));
+    QSignalSpy spy(&kn, SIGNAL(deleted(QString,bool)));
 
     // test removing a file
     QFile::remove(f1);
-    waitForSignal(&kn, SIGNAL(deleted(QString, bool)));
+    waitForSignal(&kn, SIGNAL(deleted(QString,bool)));
     QCOMPARE(spy.count(), 1);
     QCOMPARE(spy.takeFirst().at(0).toString(), f1);
 }
@@ -91,11 +91,11 @@ void KInotifyTest::testDeleteFolder()
     kn.addWatch(dir.name(), KInotify::EventAll);
 
     // listen to the desired signal
-    QSignalSpy spy(&kn, SIGNAL(deleted(QString, bool)));
+    QSignalSpy spy(&kn, SIGNAL(deleted(QString,bool)));
 
     // test removing a folder
     QDir().rmdir(d1);
-    waitForSignal(&kn, SIGNAL(deleted(QString, bool)));
+    waitForSignal(&kn, SIGNAL(deleted(QString,bool)));
     QCOMPARE(spy.count(), 1);
     QCOMPARE(spy.takeFirst().at(0).toString(), d1);
     // make sure we do not watch the removed folder anymore
@@ -112,12 +112,12 @@ void KInotifyTest::testCreateFolder()
     kn.addWatch(dir.name(), KInotify::EventAll);
 
     // listen to the desired signal
-    QSignalSpy createdSpy(&kn, SIGNAL(created(QString, bool)));
+    QSignalSpy createdSpy(&kn, SIGNAL(created(QString,bool)));
 
     // create the subdir
     const QString d1(QString::fromLatin1("%1randomJunk1").arg(dir.name()));
     mkdir(d1);
-    waitForSignal(&kn, SIGNAL(created(QString, bool)));
+    waitForSignal(&kn, SIGNAL(created(QString,bool)));
     QCOMPARE(createdSpy.count(), 1);
     QCOMPARE(createdSpy.takeFirst().at(0).toString(), d1);
     QVERIFY(kn.watchingPath(d1));
@@ -125,7 +125,7 @@ void KInotifyTest::testCreateFolder()
     // lets go one level deeper
     const QString d2 = QString::fromLatin1("%1/subdir1").arg(d1);
     mkdir(d2);
-    waitForSignal(&kn, SIGNAL(created(QString, bool)));
+    waitForSignal(&kn, SIGNAL(created(QString,bool)));
     QCOMPARE(createdSpy.count(), 1);
     QCOMPARE(createdSpy.takeFirst().at(0).toString(), d2);
     QVERIFY(kn.watchingPath(d2));
@@ -133,7 +133,7 @@ void KInotifyTest::testCreateFolder()
     // although we are in the folder test lets try creating a file
     const QString f1 = QString::fromLatin1("%1/somefile1").arg(d2);
     touchFile(f1);
-    waitForSignal(&kn, SIGNAL(created(QString, bool)));
+    waitForSignal(&kn, SIGNAL(created(QString,bool)));
     QCOMPARE(createdSpy.count(), 1);
     QCOMPARE(createdSpy.takeFirst().at(0).toString(), f1);
 }
@@ -151,14 +151,14 @@ void KInotifyTest::testRenameFile()
     kn.addWatch(dir.name(), KInotify::EventAll);
 
     // listen to the desired signal
-    QSignalSpy spy(&kn, SIGNAL(moved(QString, QString)));
+    QSignalSpy spy(&kn, SIGNAL(moved(QString,QString)));
 
     // actually move the file
     const QString f2(QString::fromLatin1("%1randomJunk2").arg(dir.name()));
     QFile::rename(f1, f2);
 
     // check the desired signal
-    waitForSignal(&kn, SIGNAL(moved(QString, QString)));
+    waitForSignal(&kn, SIGNAL(moved(QString,QString)));
     QCOMPARE(spy.count(), 1);
     QList<QVariant> args = spy.takeFirst();
     QCOMPARE(args.at(0).toString(), f1);
@@ -169,7 +169,7 @@ void KInotifyTest::testRenameFile()
     QFile::rename(f2, f3);
 
     // check the desired signal
-    waitForSignal(&kn, SIGNAL(moved(QString, QString)));
+    waitForSignal(&kn, SIGNAL(moved(QString,QString)));
     QCOMPARE(spy.count(), 1);
     args = spy.takeFirst();
     QCOMPARE(args.at(0).toString(), f2);
@@ -192,13 +192,13 @@ void KInotifyTest::testMoveFile()
     kn.addWatch(dir2.name(), KInotify::EventAll);
 
     // listen to the desired signal
-    QSignalSpy spy(&kn, SIGNAL(moved(QString, QString)));
+    QSignalSpy spy(&kn, SIGNAL(moved(QString,QString)));
 
     // actually move the file
     QFile::rename(src, dest);
 
     // check the desired signal
-    waitForSignal(&kn, SIGNAL(moved(QString, QString)));
+    waitForSignal(&kn, SIGNAL(moved(QString,QString)));
     QCOMPARE(spy.count(), 1);
     QList<QVariant> args = spy.takeFirst();
     QCOMPARE(args.at(0).toString(), src);
@@ -209,7 +209,7 @@ void KInotifyTest::testMoveFile()
     QFile::rename(dest, dest2);
 
     // check the desired signal
-    waitForSignal(&kn, SIGNAL(moved(QString, QString)));
+    waitForSignal(&kn, SIGNAL(moved(QString,QString)));
     QCOMPARE(spy.count(), 1);
     args = spy.takeFirst();
     QCOMPARE(args.at(0).toString(), dest);
@@ -229,14 +229,14 @@ void KInotifyTest::testRenameFolder()
     kn.addWatch(dir.name(), KInotify::EventAll);
 
     // listen to the desired signal
-    QSignalSpy spy(&kn, SIGNAL(moved(QString, QString)));
+    QSignalSpy spy(&kn, SIGNAL(moved(QString,QString)));
 
     // actually move the file
     const QString f2(QString::fromLatin1("%1randomJunk2").arg(dir.name()));
     QFile::rename(f1, f2);
 
     // check the desired signal
-    waitForSignal(&kn, SIGNAL(moved(QString, QString)));
+    waitForSignal(&kn, SIGNAL(moved(QString,QString)));
     QCOMPARE(spy.count(), 1);
     QList<QVariant> args = spy.takeFirst();
     QCOMPARE(args.at(0).toString(), f1);
@@ -251,7 +251,7 @@ void KInotifyTest::testRenameFolder()
     QFile::rename(f2, f3);
 
     // check the desired signal
-    waitForSignal(&kn, SIGNAL(moved(QString, QString)));
+    waitForSignal(&kn, SIGNAL(moved(QString,QString)));
     QCOMPARE(spy.count(), 1);
     args = spy.takeFirst();
     QCOMPARE(args.at(0).toString(), f2);
@@ -268,12 +268,12 @@ void KInotifyTest::testRenameFolder()
     // listen to the desired signal
     const QString f4(QString::fromLatin1("%1/somefile").arg(f3));
 
-    QSignalSpy createdSpy(&kn, SIGNAL(created(QString, bool)));
+    QSignalSpy createdSpy(&kn, SIGNAL(created(QString,bool)));
 
     // test creating a file
     touchFile(f4);
 
-    waitForSignal(&kn, SIGNAL(created(QString, bool)));
+    waitForSignal(&kn, SIGNAL(created(QString,bool)));
     QCOMPARE(createdSpy.count(), 1);
     QCOMPARE(createdSpy.takeFirst().at(0).toString(), f4);
 }
@@ -294,13 +294,13 @@ void KInotifyTest::testMoveFolder()
     kn.addWatch(dir2.name(), KInotify::EventAll);
 
     // listen to the desired signal
-    QSignalSpy spy(&kn, SIGNAL(moved(QString, QString)));
+    QSignalSpy spy(&kn, SIGNAL(moved(QString,QString)));
 
     // actually move the file
     QFile::rename(src, dest);
 
     // check the desired signal
-    waitForSignal(&kn, SIGNAL(moved(QString, QString)));
+    waitForSignal(&kn, SIGNAL(moved(QString,QString)));
     QCOMPARE(spy.count(), 1);
     QList<QVariant> args = spy.takeFirst();
     QCOMPARE(args.at(0).toString(), src);
@@ -315,7 +315,7 @@ void KInotifyTest::testMoveFolder()
     QFile::rename(dest, dest2);
 
     // check the desired signal
-    waitForSignal(&kn, SIGNAL(moved(QString, QString)));
+    waitForSignal(&kn, SIGNAL(moved(QString,QString)));
     QCOMPARE(spy.count(), 1);
     args = spy.takeFirst();
     QCOMPARE(args.at(0).toString(), dest);
@@ -332,12 +332,12 @@ void KInotifyTest::testMoveFolder()
     // listen to the desired signal
     const QString f4(QString::fromLatin1("%1/somefile").arg(dest2));
 
-    QSignalSpy createdSpy(&kn, SIGNAL(created(QString, bool)));
+    QSignalSpy createdSpy(&kn, SIGNAL(created(QString,bool)));
 
     // test creating a file
     touchFile(f4);
 
-    waitForSignal(&kn, SIGNAL(created(QString, bool)));
+    waitForSignal(&kn, SIGNAL(created(QString,bool)));
     QCOMPARE(createdSpy.count(), 1);
     QCOMPARE(createdSpy.takeFirst().at(0).toString(), f4);
 }
@@ -356,13 +356,13 @@ void KInotifyTest::testMoveRootFolder()
     kn.addWatch(src, KInotify::EventAll);
 
     // listen for the moved signal
-    QSignalSpy spy(&kn, SIGNAL(moved(QString, QString)));
+    QSignalSpy spy(&kn, SIGNAL(moved(QString,QString)));
 
     // actually move the file
     QFile::rename(src, dest);
 
     // check the desired signal
-    waitForSignal(&kn, SIGNAL(moved(QString, QString)));
+    waitForSignal(&kn, SIGNAL(moved(QString,QString)));
     QEXPECT_FAIL("", "KInotify cannot handle moving of top-level folders.", Abort);
     QCOMPARE(spy.count(), 1);
     QList<QVariant> args = spy.takeFirst();

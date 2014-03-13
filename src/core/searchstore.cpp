@@ -59,6 +59,13 @@ QString SearchStore::property(int, const QString&)
     return QString();
 }
 
+Q_GLOBAL_STATIC(QList<SearchStore*>, s_overrideSearchStores)
+
+void SearchStore::overrideSearchStores(const QList<SearchStore*> &overrideSearchStores)
+{
+    *s_overrideSearchStores = overrideSearchStores;
+}
+
 //
 // Search Stores
 //
@@ -67,6 +74,11 @@ QList<SearchStore*> SearchStore::searchStores()
 {
     static QMutex mutex;
     QMutexLocker lock(&mutex);
+
+    if (s_overrideSearchStores && !s_overrideSearchStores->isEmpty()) {
+        kDebug() << "Overriding search stores.";
+        return *s_overrideSearchStores;
+    }
 
     // Get all the plugins
     KService::List plugins = KServiceTypeTrader::self()->query("BalooSearchStore");

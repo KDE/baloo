@@ -40,8 +40,6 @@ FileIndexingQueue::FileIndexingQueue(Database* db, QObject* parent)
     m_fileQueue.reserve(m_maxSize);
 }
 
-// FIXME: We are not emiting startedIndexing!
-
 void FileIndexingQueue::fillQueue()
 {
     if (m_fileQueue.size() >= m_maxSize)
@@ -55,14 +53,6 @@ void FileIndexingQueue::fillQueue()
     Xapian::MSetIterator it = mset.begin();
     for (; it != mset.end(); it++) {
         m_fileQueue << *it;
-    }
-}
-
-void FileIndexingQueue::enqueue(const FileMapping& file)
-{
-    if (!m_fileQueue.contains(file.id())) {
-        m_fileQueue << file.id();
-        callForNextIteration();
     }
 }
 
@@ -80,11 +70,6 @@ void FileIndexingQueue::processNextIteration()
         files << m_fileQueue.pop();
     }
 
-    process(files);
-}
-
-void FileIndexingQueue::process(const QVector<uint>& files)
-{
     FileIndexingJob* job = new FileIndexingJob(files, this);
     connect(job, SIGNAL(indexingFailed(uint)), this, SLOT(slotIndexingFailed(uint)));
     connect(job, SIGNAL(finished(KJob*)), SLOT(slotFinishedIndexingFile(KJob*)));

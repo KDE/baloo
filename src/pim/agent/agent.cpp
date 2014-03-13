@@ -24,11 +24,17 @@
 
 #include "contactindexer.h"
 #include "emailindexer.h"
+#include "akonotesindexer.h"
+#include "balooindexeradaptor.h"
+
+#include "src/file/priority.h"
 
 #include <Akonadi/ItemFetchJob>
 #include <Akonadi/ItemFetchScope>
 #include <Akonadi/ChangeRecorder>
 #include <Akonadi/CollectionFetchJob>
+#include <Akonadi/AgentManager>
+#include <Akonadi/ServerManager>
 
 #include <KStandardDirs>
 #include <KConfig>
@@ -36,20 +42,47 @@
 #include <KLocalizedString>
 
 namespace {
+    QString dbPath(const QString& dbName) {
+        QString basePath = "baloo";
+        if (Akonadi::ServerManager::hasInstanceIdentifier()) {
+            basePath = QString::fromLatin1("baloo/instances/%1").arg(Akonadi::ServerManager::instanceIdentifier());
+        }
+        return KStandardDirs::locateLocal("data", QString::fromLatin1("%1/%2/").arg(basePath, dbName));
+    }
     QString emailIndexingPath() {
-        return KStandardDirs::locateLocal("data", "baloo/email/");
+        return dbPath("email");
     }
     QString contactIndexingPath() {
-        return KStandardDirs::locateLocal("data", "baloo/contacts/");
+        return dbPath("contacts");
     }
     QString emailContactsIndexingPath() {
-        return KStandardDirs::locateLocal("data", "baloo/emailContacts/");
+        return dbPath("emailContacts");
+    }
+    QString akonotesIndexingPath() {
+        return dbPath("notes");
     }
 }
 
+#define INDEXING_AGENT_VERSION 1
+
 BalooIndexingAgent::BalooIndexingAgent(const QString& id)
-    : AgentBase(id)
+    : AgentBase(id),
+      m_inProgress(false)
 {
+    lowerIOPriority();
+    lowerSchedulingPriority();
+    lowerPriority();
+
+    KConfig config("baloorc");
+    KConfigGroup group = config.group("Akonadi");
+    const int agentIndexingVersion = group.readEntry("agentIndexingVersion", 0);
+    if (agentIndexingVersion<INDEXING_AGENT_VERSION) {
+        group.deleteEntry("lastItem");
+        group.deleteEntry("initialIndexingDone");
+        group.writeEntry("agentIndexingVersion", INDEXING_AGENT_VERSION);
+        group.sync();
+    }
+
     QTimer::singleShot(0, this, SLOT(findUnindexedItems()));
 
     createIndexers();
@@ -59,13 +92,17 @@ BalooIndexingAgent::BalooIndexingAgent(const QString& id)
     } else {
         setOnline(true);
     }
+    connect(this, SIGNAL(abortRequested()),
+            this, SLOT(onAbortRequested()));
+    connect(this, SIGNAL(onlineChanged(bool)),
+            this, SLOT(onOnlineChanged(bool)));
 
     m_timer.setInterval(10);
     m_timer.setSingleShot(true);
     connect(&m_timer, SIGNAL(timeout()), this, SLOT(processNext()));
 
     m_commitTimer.setInterval(1000);
-    m_timer.setSingleShot(true);
+    m_commitTimer.setSingleShot(true);
     connect(&m_commitTimer, SIGNAL(timeout()),
             this, SLOT(slotCommitTimerElapsed()));
 
@@ -75,12 +112,55 @@ BalooIndexingAgent::BalooIndexingAgent(const QString& id)
     changeRecorder()->itemFetchScope().setFetchRemoteIdentification(false);
     changeRecorder()->itemFetchScope().setFetchModificationTime(false);
     changeRecorder()->setChangeRecordingEnabled(false);
+
+    new BalooIndexerAdaptor(this);
+
+    // Cleanup agentsrc after migration to 4.13
+    Akonadi::AgentManager* agentManager = Akonadi::AgentManager::self();
+    const Akonadi::AgentInstance::List allAgents = agentManager->instances();
+    const QStringList oldFeeders = QStringList() << "akonadi_nepomuk_feeder";
+    // Cannot use agentManager->instance(oldInstanceName) here, it wouldn't find broken instances.
+    Q_FOREACH( const Akonadi::AgentInstance& inst, allAgents ) {
+        if ( oldFeeders.contains( inst.identifier() ) ) {
+            kDebug() << "Removing old nepomuk feeder" << inst.identifier();
+            agentManager->removeInstance( inst );
+        }
+    }
 }
 
 BalooIndexingAgent::~BalooIndexingAgent()
 {
     qDeleteAll(m_indexers.values().toSet());
     m_indexers.clear();
+}
+
+void BalooIndexingAgent::reindexCollection(const qlonglong id)
+{
+    kDebug() << "Reindexing collection " << id;
+}
+
+qlonglong BalooIndexingAgent::indexedItemsInDatabase(const std::string& term, const QString& dbPath) const
+{
+    Xapian::Database db;
+    try {
+        db = Xapian::Database(dbPath.toStdString());
+    } catch (const Xapian::DatabaseError& e) {
+        kError() << "Failed to open database" << dbPath << ":" << QString::fromStdString(e.get_msg());
+        return 0;
+    }
+
+    const qlonglong count = db.get_termfreq(term);
+    return count;
+}
+
+qlonglong BalooIndexingAgent::indexedItems(const qlonglong id)
+{
+    kDebug() << id;
+
+    const std::string term = QString::fromLatin1("C%1").arg(id).toStdString();
+    return indexedItemsInDatabase(term, emailIndexingPath())
+            + indexedItemsInDatabase(term, contactIndexingPath())
+            + indexedItemsInDatabase(term, akonotesIndexingPath());
 }
 
 void BalooIndexingAgent::createIndexers()
@@ -103,6 +183,15 @@ void BalooIndexingAgent::createIndexers()
         delete indexer;
         kError() << "Failed to create contact indexer:" << QString::fromStdString(e.get_msg());
     }
+
+    try {
+        indexer = new AkonotesIndexer(akonotesIndexingPath());
+        addIndexer(indexer);
+    }
+    catch (const Xapian::DatabaseError &e) {
+        delete indexer;
+        kError() << "Failed to create akonotes indexer:" << QString::fromStdString(e.get_msg());
+    }
 }
 
 void BalooIndexingAgent::addIndexer(AbstractIndexer* indexer)
@@ -112,17 +201,43 @@ void BalooIndexingAgent::addIndexer(AbstractIndexer* indexer)
     }
 }
 
-AbstractIndexer* BalooIndexingAgent::indexerForItem(const Akonadi::Item& item)
+AbstractIndexer* BalooIndexingAgent::indexerForItem(const Akonadi::Item& item) const
 {
     return m_indexers.value(item.mimeType());
 }
 
-void BalooIndexingAgent::findUnindexedItems()
+QList<AbstractIndexer*> BalooIndexingAgent::indexersForCollection(const Akonadi::Collection& collection) const
+{
+    QList<AbstractIndexer*> indexers;
+    Q_FOREACH (const QString& mimeType, collection.contentMimeTypes()) {
+        AbstractIndexer *i = m_indexers.value(mimeType);
+        if (i) {
+            indexers.append(i);
+        }
+    }
+    return indexers;
+}
+
+QDateTime BalooIndexingAgent::loadLastItemMTime(const QDateTime &defaultDt) const
 {
     KConfig config("baloorc");
     KConfigGroup group = config.group("Akonadi");
+    const QDateTime dt = group.readEntry("lastItem", defaultDt);
+    //read entry always reads in the local timezone it seems
+    return QDateTime(dt.date(), dt.time(), Qt::UTC);
+}
 
-    m_lastItemMTime = group.readEntry("lastItem", QDateTime());
+void BalooIndexingAgent::findUnindexedItems()
+{
+    if (!isOnline()) {
+        return;
+    }
+    if (m_inProgress) {
+        return;
+    }
+    m_inProgress = true;
+
+    m_lastItemMTime = loadLastItemMTime();
 
     Akonadi::CollectionFetchJob* job = new Akonadi::CollectionFetchJob(Akonadi::Collection::root(),
                                                                         Akonadi::CollectionFetchJob::Recursive);
@@ -135,9 +250,10 @@ void BalooIndexingAgent::slotRootCollectionsFetched(KJob* kjob)
     Akonadi::CollectionFetchJob* cjob = qobject_cast<Akonadi::CollectionFetchJob*>(kjob);
     Akonadi::Collection::List cList = cjob->collections();
 
-    m_jobs = 0;
+    status(Running, i18n("Indexing PIM data"));
     Q_FOREACH (const Akonadi::Collection& c, cList) {
         Akonadi::ItemFetchJob* job = new Akonadi::ItemFetchJob(c);
+        job->setProperty("collectionsCount", cList.size());
 
         if (!m_lastItemMTime.isNull()) {
             KDateTime dt(m_lastItemMTime, KDateTime::Spec::UTC());
@@ -150,12 +266,13 @@ void BalooIndexingAgent::slotRootCollectionsFetched(KJob* kjob)
         job->fetchScope().setFetchRemoteIdentification(false);
         job->fetchScope().setFetchModificationTime(true);
         job->fetchScope().setAncestorRetrieval(Akonadi::ItemFetchScope::Parent);
+        job->setDeliveryOption( Akonadi::ItemFetchJob::EmitItemsInBatches );
 
         connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),
                 this, SLOT(slotItemsRecevied(Akonadi::Item::List)));
         connect(job, SIGNAL(finished(KJob*)), this, SLOT(slotItemFetchFinished(KJob*)));
         job->start();
-        m_jobs++;
+        m_jobs << job;
     }
 }
 
@@ -221,6 +338,18 @@ void BalooIndexingAgent::itemsRemoved(const Akonadi::Item::List& items)
     m_commitTimer.start();
 }
 
+void BalooIndexingAgent::collectionRemoved(const Akonadi::Collection& collection)
+{
+    Q_FOREACH (AbstractIndexer *indexer, indexersForCollection(collection)) {
+        try {
+            indexer->remove(collection);
+        } catch (const Xapian::Error &e) {
+            kWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
+        }
+    }
+    m_commitTimer.start();
+}
+
 void BalooIndexingAgent::itemsMoved(const Akonadi::Item::List& items,
                                     const Akonadi::Collection& sourceCollection,
                                     const Akonadi::Collection& destinationCollection)
@@ -262,8 +391,9 @@ void BalooIndexingAgent::slotItemsRecevied(const Akonadi::Item::List& items)
 {
     KConfig config("baloorc");
     KConfigGroup group = config.group("Akonadi");
-    bool initial = group.readEntry("initialIndexingDone", false);
-    QDateTime dt = group.readEntry("lastItem", QDateTime::fromMSecsSinceEpoch(1));
+
+    const bool initialDone = group.readEntry("initialIndexingDone", false);
+    QDateTime dt = loadLastItemMTime(QDateTime::fromMSecsSinceEpoch(1));
 
     Q_FOREACH (const Akonadi::Item& item, items) {
         AbstractIndexer *indexer = indexerForItem(item);
@@ -279,19 +409,24 @@ void BalooIndexingAgent::slotItemsRecevied(const Akonadi::Item::List& items)
 
         dt = qMax(dt, item.modificationTime());
     }
-    if (initial)
+    if (initialDone)
         group.writeEntry("lastItem", dt);
 
     m_commitTimer.start();
 }
 
-void BalooIndexingAgent::slotItemFetchFinished(KJob*)
+void BalooIndexingAgent::slotItemFetchFinished(KJob* job)
 {
-    m_jobs--;
-    if (m_jobs == 0) {
+    const int totalJobs = job->property("collectionsCount").toInt();
+    m_jobs.removeOne(job);
+    percent((float(totalJobs - m_jobs.count()) / float(totalJobs)) * 100);
+    if (m_jobs.isEmpty()) {
         KConfig config("baloorc");
         KConfigGroup group = config.group("Akonadi");
         group.writeEntry("initialIndexingDone", true);
+        group.writeEntry("agentIndexingVersion", INDEXING_AGENT_VERSION);
+        status(Idle, i18n("Ready"));
+        m_inProgress = false;
     }
 }
 
@@ -304,6 +439,30 @@ void BalooIndexingAgent::slotCommitTimerElapsed()
         } catch (const Xapian::Error &e) {
             kWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
         }
+    }
+}
+
+void BalooIndexingAgent::onAbortRequested()
+{
+    Q_FOREACH (KJob *job, m_jobs) {
+        job->kill(KJob::Quietly);
+    }
+    m_jobs.clear();
+    m_inProgress = false;
+    status(Idle, i18n("Ready"));
+}
+
+void BalooIndexingAgent::onOnlineChanged(bool online)
+{
+    // Ignore everything when offline
+    changeRecorder()->setAllMonitored(online);
+
+    // Index items that might have changed while we were offline
+    if (online) {
+        findUnindexedItems();
+    } else {
+        // Abort ongoing indexing when switched to offline
+        onAbortRequested();
     }
 }
 

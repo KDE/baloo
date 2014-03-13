@@ -23,7 +23,6 @@
 #include "../fileindexerconfig.h"
 #include "fileindexerconfigutils.h"
 
-#include <KConfig>
 #include <KTempDir>
 
 #include <QtCore/QFile>
