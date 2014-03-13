@@ -682,11 +682,20 @@ private Q_SLOTS:
 
         {
             Akonadi::SearchQuery query;
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderOnlyDate, QDate(2014,11,11), Akonadi::SearchTerm::CondEqual));
+            QList<qint64> collections = QList<qint64>() << 1 << 2;
+            QStringList mimeTypes = QStringList() << "message/rfc822";
+            QSet<qint64> result = QSet<qint64>() << 4 << 5;
+            QTest::newRow("find by date only (equal condition)") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
+        }
+
+        {
+            Akonadi::SearchQuery query;
             query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderOnlyDate, QDate(2013, 11, 10), Akonadi::SearchTerm::CondGreaterOrEqual));
             QList<qint64> collections = QList<qint64>() << 1 << 2;
             QStringList mimeTypes = QStringList() << "message/rfc822";
             QSet<qint64> result = QSet<qint64>() << 1 << 2 << 3 << 4 << 5;
-            QTest::newRow("find by date only") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
+            QTest::newRow("find by date only (greater or equal)") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
         }
         {
             Akonadi::SearchQuery query;
@@ -764,7 +773,7 @@ private Q_SLOTS:
         QFETCH(QStringList, mimeTypes);
         QFETCH(QSet<qint64>, expectedResult);
 
-        qDebug() << "starting search";
+        kDebug() << "starting search";
         SearchPlugin plugin;
         const QSet<qint64> result = plugin.search(query, collections, mimeTypes);
         kDebug() << result;
