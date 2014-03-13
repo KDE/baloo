@@ -5,7 +5,6 @@ target_link_libraries(baloo_contactsearchstore
     ${KDE4_KDECORE_LIBRARY}
     ${XAPIAN_LIBRARIES}
     baloocore
-    baloopim
     balooxapian
 )
 
