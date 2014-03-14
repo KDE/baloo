@@ -90,3 +90,5 @@ void SearchRunner::run(const Plasma::RunnerContext&, const Plasma::QueryMatch& m
 }
 
 K_EXPORT_PLASMA_RUNNER(baloosearchrunner, SearchRunner)
+
+#include "baloosearchrunner.moc"

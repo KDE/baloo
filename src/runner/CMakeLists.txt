@@ -1,4 +1,4 @@
-kde4_add_plugin(krunner_baloosearchrunner baloosearchrunner.cpp)
+add_library(krunner_baloosearchrunner MODULE baloosearchrunner.cpp)
 
 target_link_libraries(krunner_baloosearchrunner
   KF5::Runner
