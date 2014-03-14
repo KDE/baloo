@@ -5,7 +5,7 @@ find_package(ECM 0.0.9 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules" ${ECM_MODULE_PATH})
 
 find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Widgets Xml Test Sql)
-find_package(KF5 REQUIRED NO_MODULE COMPONENTS KDE4Support I18n Service IdleTime KCMUtils Auth Runner)
+find_package(KF5 REQUIRED NO_MODULE COMPONENTS KDE4Support I18n Service IdleTime KCMUtils Auth Runner Plasma)
 find_package(KFileMetaData REQUIRED)
 
 # FIXME: Port Kdepimlibs?
@@ -38,13 +38,6 @@ find_package(KFileMetaData CONFIG)
 set_package_properties(KFileMetaData PROPERTIES
     DESCRIPTION "A library for extracting file metadata"
     URL "https://projects.kde.org/kfilemetadata"
-    TYPE REQUIRED
-)
-
-find_package(QJSON)
-set_package_properties(QJSON PROPERTIES
-    DESCRIPTION "Qt library for handling JSON data"
-    URL "http://qjson.sourceforge.net/"
     TYPE REQUIRED
 )
 

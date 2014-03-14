@@ -25,7 +25,7 @@
 #include "fileindexerconfig.h"
 #include "database.h"
 
-#include <qjson/serializer.h>
+//#include <qjson/serializer.h>
 
 #include <KDebug>
 #include <KStandardDirs>

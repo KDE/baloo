@@ -30,8 +30,8 @@
 
 #include <KDebug>
 
-#include <qjson/serializer.h>
-#include <qjson/parser.h>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 using namespace Baloo;
 
@@ -252,15 +252,19 @@ QByteArray Query::toJSON()
     if (d->m_customOptions.size())
         map["customOptions"] = d->m_customOptions;
 
-    QJson::Serializer serializer;
-    return serializer.serialize(map);
+    QJsonObject jo = QJsonObject::fromVariantMap(map);
+    QJsonDocument jdoc;
+    jdoc.setObject(jo);
+    return jdoc.toJson().constData();
 }
 
 // static
 Query Query::fromJSON(const QByteArray& arr)
 {
-    QJson::Parser parser;
-    const QVariantMap map = parser.parse(arr).toMap();
+
+
+    QJsonDocument jdoc = QJsonDocument::fromJson(arr);
+    const QVariantMap map = jdoc.object().toVariantMap();
 
     Query query;
     query.d->m_types = map["type"].toStringList();
