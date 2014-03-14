@@ -29,7 +29,6 @@
 #include <KDebug>
 #include <KTempDir>
 
-#include <qjson/serializer.h>
 #include <xapian.h>
 
 using namespace Baloo;

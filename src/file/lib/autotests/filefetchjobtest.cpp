@@ -30,6 +30,9 @@
 #include <KTempDir>
 #include <KDebug>
 
+#include <QJsonDocument>
+#include <QJsonObject>
+
 #include <xapian.h>
 
 #include <kfilemetadata/properties.h>
