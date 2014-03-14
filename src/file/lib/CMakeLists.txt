@@ -23,7 +23,6 @@ target_link_libraries(baloofiles
     KF5::KDE4Support
     KF5::Solid
     ${XAPIAN_LIBRARIES}
-    ${QJSON_LIBRARIES}
     baloocore
 )
 
@@ -47,4 +46,4 @@ install(FILES
 )
 
 add_subdirectory(tests)
-#add_subdirectory(autotests)
+add_subdirectory(autotests)
