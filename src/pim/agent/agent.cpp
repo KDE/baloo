@@ -270,7 +270,7 @@ void BalooIndexingAgent::slotRootCollectionsFetched(KJob* kjob)
         job->setDeliveryOption( Akonadi::ItemFetchJob::EmitItemsInBatches );
 
         connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),
-                this, SLOT(slotItemsRecevied(Akonadi::Item::List)));
+                this, SLOT(slotItemsReceived(Akonadi::Item::List)));
         connect(job, SIGNAL(finished(KJob*)), this, SLOT(slotItemFetchFinished(KJob*)));
         job->start();
         m_jobs << job;
@@ -297,8 +297,9 @@ void BalooIndexingAgent::itemChanged(const Akonadi::Item& item, const QSet<QByte
             it.remove();
     }
 
-    if (pi.isEmpty())
+    if (pi.isEmpty()) {
         return;
+    }
 
     AbstractIndexer *indexer = indexerForItem(item);
     if (indexer) {
@@ -394,11 +395,11 @@ void BalooIndexingAgent::processNext()
     job->fetchScope().setAncestorRetrieval(Akonadi::ItemFetchScope::Parent);
 
     connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),
-            this, SLOT(slotItemsRecevied(Akonadi::Item::List)));
+            this, SLOT(slotItemsReceived(Akonadi::Item::List)));
     job->start();
 }
 
-void BalooIndexingAgent::slotItemsRecevied(const Akonadi::Item::List& items)
+void BalooIndexingAgent::slotItemsReceived(const Akonadi::Item::List& items)
 {
     KConfig config("baloorc");
     KConfigGroup group = config.group("Akonadi");
