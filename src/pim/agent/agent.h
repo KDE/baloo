@@ -69,7 +69,7 @@ private Q_SLOTS:
     void slotItemFetchFinished(KJob* job);
 
     void processNext();
-    void slotItemsRecevied(const Akonadi::Item::List& items);
+    void slotItemsReceived(const Akonadi::Item::List& items);
     void slotCommitTimerElapsed();
     void onAbortRequested();
     void onOnlineChanged(bool online);

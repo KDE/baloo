@@ -178,6 +178,11 @@ private Q_SLOTS:
             msg->bcc()->addAddress("bcc@test.com", "Jane Doe");
             msg->date()->setDateTime(KDateTime(QDate(2014,11,11), QTime(13,0,0)));
             msg->replyTo()->from7BitString("test@kde.org");
+            KMime::Headers::Generic *header = new KMime::Headers::Generic( "Resent-From", msg.get(), QLatin1String("resent@kde.org"), "utf-8" );
+            msg->setHeader( header );
+            header = new KMime::Headers::Generic( "List-Id", msg.get(), QLatin1String("KDE PIM <kde-pim.kde.org>"), "utf-8" );
+            msg->setHeader( header );
+
             msg->assemble();
 
             Akonadi::Item item("message/rfc822");
@@ -755,7 +760,6 @@ private Q_SLOTS:
             QSet<qint64> result = QSet<qint64>() << 4;
             QTest::newRow("find by header bcc") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
         }
-#if 0
         {
             Akonadi::SearchQuery query;
             query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderReplyTo, "test@kde.org", Akonadi::SearchTerm::CondContains));
@@ -764,7 +768,14 @@ private Q_SLOTS:
             QSet<qint64> result = QSet<qint64>() << 4;
             QTest::newRow("find by reply to") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
         }
-#endif
+        {
+            Akonadi::SearchQuery query;
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderListId, "kde-pim.kde.org", Akonadi::SearchTerm::CondContains));
+            QList<qint64> collections = QList<qint64>() << 1 << 2;
+            QStringList mimeTypes = QStringList() << "message/rfc822";
+            QSet<qint64> result = QSet<qint64>() << 4;
+            QTest::newRow("find by list id") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
+        }
     }
 
     void testEmailSearch() {
