@@ -88,3 +88,5 @@ void SearchRunner::run(const Plasma::RunnerContext&, const Plasma::QueryMatch& m
     const QUrl url = match.data().toUrl();
     new KRun(url, 0);
 }
+
+K_EXPORT_PLASMA_RUNNER(baloosearchrunner, SearchRunner)
