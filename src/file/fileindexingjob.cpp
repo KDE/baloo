@@ -68,7 +68,7 @@ void FileIndexingJob::start(const QVector<uint>& files)
     // Just in case
     if (m_process) {
         m_process->disconnect();
-        m_process->close();
+        m_process->kill();
 
         delete m_process;
         m_process = 0;
