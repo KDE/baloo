@@ -104,7 +104,8 @@ int File::rating() const
 
 void File::addTag(const QString& tag)
 {
-    d->tags << tag;
+    if (!d->tags.contains(tag))
+        d->tags << tag;
 }
 
 void File::setTags(const QStringList& tags)
