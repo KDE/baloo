@@ -329,7 +329,7 @@ Xapian::Query XapianSearchStore::finalizeQuery(const Xapian::Query& query)
     return query;
 }
 
-Xapian::Query XapianSearchStore::applyCustomOptions(const Xapian::Query& q, const QVariantHash& options)
+Xapian::Query XapianSearchStore::applyCustomOptions(const Xapian::Query& q, const QVariantMap& options)
 {
     Q_UNUSED(options);
     return q;

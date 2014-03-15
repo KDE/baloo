@@ -8,7 +8,6 @@ add_library(balooxapian SHARED ${XAPIAN_SRCS})
 
 target_link_libraries(balooxapian
     Qt5::Core
-    ${QJSON_LIBRARIES}
     KF5::KDE4Support
     ${XAPIAN_LIBRARIES}
     baloocore

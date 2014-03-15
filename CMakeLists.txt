@@ -5,7 +5,7 @@ find_package(ECM 0.0.9 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules" ${ECM_MODULE_PATH})
 
 find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Widgets Xml Test Sql)
-find_package(KF5 REQUIRED NO_MODULE COMPONENTS KDE4Support I18n Service IdleTime KCMUtils Auth Runner)
+find_package(KF5 REQUIRED NO_MODULE COMPONENTS KDE4Support I18n Service IdleTime KCMUtils Auth Runner Plasma)
 find_package(KFileMetaData REQUIRED)
 
 # FIXME: Port Kdepimlibs?
@@ -41,13 +41,6 @@ set_package_properties(KFileMetaData PROPERTIES
     TYPE REQUIRED
 )
 
-find_package(QJSON)
-set_package_properties(QJSON PROPERTIES
-    DESCRIPTION "Qt library for handling JSON data"
-    URL "http://qjson.sourceforge.net/"
-    TYPE REQUIRED
-)
-
 #find_package(Akonadi 1.19.42 CONFIG)
 #set_package_properties(Akonadi PROPERTIES
 #    URL "http://akonadi-project.org"
@@ -62,7 +55,6 @@ ecm_setup_version(${KF5_VERSION} VARIABLE_PREFIX BALOO
                         PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/BalooConfigVersion.cmake")
 
 include_directories(
-  ${QJSON_INCLUDE_DIR}
   ${KFILEMETADATA_INCLUDE_DIR}
   ${XAPIAN_INCLUDE_DIR}
   ${AKONADI_INCLUDE_DIR}

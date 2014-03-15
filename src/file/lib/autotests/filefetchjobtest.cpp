@@ -30,7 +30,9 @@
 #include <KTempDir>
 #include <KDebug>
 
-#include <qjson/serializer.h>
+#include <QJsonDocument>
+#include <QJsonObject>
+
 #include <xapian.h>
 
 #include <kfilemetadata/properties.h>
@@ -51,14 +53,16 @@ void FileFetchJobTest::init()
 
 void FileFetchJobTest::testXapianData()
 {
-    QJson::Serializer serializer;
-
     using namespace KFileMetaData;
     PropertyMap map;
     map.insert(Property::Album, "value1");
     map.insert(Property::Artist, "value2");
 
-    QByteArray json = serializer.serialize(toVariantMap(map));
+    QJsonObject jo = QJsonObject::fromVariantMap(toVariantMap(map));
+    QJsonDocument jdoc;
+    jdoc.setObject(jo);
+
+    QByteArray json = jdoc.toJson();
     QVERIFY(!json.isEmpty());
 
     Xapian::Document doc;

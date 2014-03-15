@@ -17,7 +17,6 @@ ecm_add_test(${filefetchjobtest_SRC}
         Qt5::Test
         Qt5::Sql
         ${XAPIAN_LIBRARIES}
-        ${QJSON_LIBRARIES}
         baloocore
 )
 
@@ -40,7 +39,6 @@ ecm_add_test(${filemodifyjobtest_SRC}
         Qt5::Test
         Qt5::Sql
         ${XAPIAN_LIBRARIES}
-        ${QJSON_LIBRARIES}
         baloocore
 )
 

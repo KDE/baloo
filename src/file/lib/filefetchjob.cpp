@@ -31,8 +31,10 @@
 #include <QTimer>
 #include <QFile>
 
+#include <QJsonDocument>
+#include <QJsonObject>
+
 #include <xapian.h>
-#include <qjson/parser.h>
 
 #include <KDebug>
 
@@ -126,8 +128,9 @@ void FileFetchJob::doStart()
             std::string docData = doc.get_data();
             const QByteArray arr(docData.c_str(), docData.length());
 
-            QJson::Parser parser;
-            QVariantMap varMap = parser.parse(arr).toMap();
+            QJsonDocument jdoc = QJsonDocument::fromJson(arr);
+            const QVariantMap varMap = jdoc.object().toVariantMap();
+
             file.d->propertyMap = KFileMetaData::toPropertyMap(varMap);
         }
         catch (const Xapian::DocNotFoundError&){

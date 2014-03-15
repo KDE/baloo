@@ -102,7 +102,7 @@ public:
     void addCustomOption(const QString& option, const QVariant& value);
     void removeCustomOption(const QString& option);
     QVariant customOption(const QString& option) const;
-    QVariantHash customOptions() const;
+    QVariantMap customOptions() const;
 
     ResultIterator exec();
 

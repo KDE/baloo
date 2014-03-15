@@ -30,8 +30,8 @@
 
 #include <KDebug>
 
-#include <qjson/serializer.h>
-#include <qjson/parser.h>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 using namespace Baloo;
 
@@ -57,7 +57,7 @@ public:
     int m_monthFilter;
     int m_dayFilter;
 
-    QVariantHash m_customOptions;
+    QVariantMap m_customOptions;
 };
 
 Query::Query()
@@ -181,7 +181,7 @@ QVariant Query::customOption(const QString& option) const
     return d->m_customOptions.value(option);
 }
 
-QVariantHash Query::customOptions() const
+QVariantMap Query::customOptions() const
 {
     return d->m_customOptions;
 }
@@ -252,15 +252,17 @@ QByteArray Query::toJSON()
     if (d->m_customOptions.size())
         map["customOptions"] = d->m_customOptions;
 
-    QJson::Serializer serializer;
-    return serializer.serialize(map);
+    QJsonObject jo = QJsonObject::fromVariantMap(map);
+    QJsonDocument jdoc;
+    jdoc.setObject(jo);
+    return jdoc.toJson();
 }
 
 // static
 Query Query::fromJSON(const QByteArray& arr)
 {
-    QJson::Parser parser;
-    const QVariantMap map = parser.parse(arr).toMap();
+    QJsonDocument jdoc = QJsonDocument::fromJson(arr);
+    const QVariantMap map = jdoc.object().toVariantMap();
 
     Query query;
     query.d->m_types = map["type"].toStringList();
@@ -283,14 +285,14 @@ Query Query::fromJSON(const QByteArray& arr)
 
     if (map.contains("customOptions")) {
         QVariant var = map["customOptions"];
-        if (var.type() == QVariant::Hash) {
-            query.d->m_customOptions = map["customOptions"].toHash();
+        if (var.type() == QVariant::Map) {
+            query.d->m_customOptions = map["customOptions"].toMap();
         }
-        else if (var.type() == QVariant::Map) {
-            QVariantMap map = var.toMap();
+        else if (var.type() == QVariant::Hash) {
+            QVariantHash hash = var.toHash();
 
-            QMap<QString, QVariant>::const_iterator it = map.constBegin();
-            for (; it != map.constEnd(); ++it)
+            QHash<QString, QVariant>::const_iterator it = hash.constBegin();
+            for (; it != hash.constEnd(); ++it)
                 query.d->m_customOptions.insert(it.key(), it.value());
         }
     }

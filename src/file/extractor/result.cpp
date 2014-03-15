@@ -24,7 +24,8 @@
 #include "../util.h"
 
 #include <KDebug>
-#include <qjson/serializer.h>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 #include <QDateTime>
 #include <kfilemetadata/propertyinfo.h>
@@ -84,9 +85,10 @@ void Result::addType(KFileMetaData::Type::Type type)
 
 void Result::save(Xapian::WritableDatabase& db)
 {
-    QJson::Serializer serializer;
-    QByteArray json = serializer.serialize(m_map);
-    m_doc.set_data(json.constData());
+    QJsonObject jo = QJsonObject::fromVariantMap(m_map);
+    QJsonDocument jdoc;
+    jdoc.setObject(jo);
+    m_doc.set_data(jdoc.toJson().constData());
     Baloo::updateIndexingLevel(m_doc, 2);
 
     // We keep trying to write if someone else has modified the database

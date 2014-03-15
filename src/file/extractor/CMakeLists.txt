@@ -16,7 +16,6 @@ target_link_libraries(baloo_file_extractor
   KF5::KDE4Support
   ${KFILEMETADATA_LIBRARY}
   ${XAPIAN_LIBRARIES}
-  ${QJSON_LIBRARIES}
   baloofiles
 )
 

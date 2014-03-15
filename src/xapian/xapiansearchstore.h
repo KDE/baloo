@@ -71,7 +71,7 @@ protected:
     /**
      * Create a query for any custom options.
      */
-    virtual Xapian::Query applyCustomOptions(const Xapian::Query& q, const QVariantHash& options);
+    virtual Xapian::Query applyCustomOptions(const Xapian::Query& q, const QVariantMap& options);
 
     /**
      * Returns the url for the document with id \p docid.
