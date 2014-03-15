@@ -194,38 +194,15 @@ void TagsProtocol::copy(const KUrl& src, const KUrl& dest, int permissions, KIO:
 {
     kDebug() << src << dest;
 
-    /*
-    if (src.scheme() == QLatin1String("file")) {
-        QList<Tag> tags;
-        QUrl fileUrl;
-
-        ParseResult result = parseUrl(dest, tags, fileUrl);
-        switch (result) {
-        case InvalidUrl:
-            return;
-
-        case RootUrl:
-        case TagUrl:
-            error(KIO::ERR_UNSUPPORTED_ACTION, src.prettyUrl());
-            return;
-
-            // It's a file url, cause the filename doesn't exist as a tag
-        case FileUrl:
-            QVariantList tagUris;
-            Q_FOREACH (const Tag & tag, tags)
-            tagUris << tag.uri();
-
-            KJob* job = Nepomuk2::addProperty(QList<QUrl>() << src, NAO::hasTag(), tagUris);
-            job->exec();
-            finished();
-            return;
-        }
+    if (src.scheme() != QLatin1String("file")) {
+        error(KIO::ERR_UNSUPPORTED_ACTION, src.prettyUrl());
+        return;
     }
 
-    QList<Tag> tags;
-    QUrl fileUrl;
+    QString tag;
+    QString fileUrl;
 
-    ParseResult result = parseUrl(dest, tags, fileUrl);
+    ParseResult result = parseUrl(dest, tag, fileUrl);
     switch (result) {
     case InvalidUrl:
         return;
@@ -236,9 +213,17 @@ void TagsProtocol::copy(const KUrl& src, const KUrl& dest, int permissions, KIO:
         return;
 
     case FileUrl:
-        ForwardingSlaveBase::copy(src, fileUrl, permissions, flags);
+        Baloo::FileFetchJob* job = new Baloo::FileFetchJob(fileUrl);
+        job->exec();
+        Baloo::File file = job->file();
+
+        file.addTag(tag);
+        Baloo::FileModifyJob* mjob = new Baloo::FileModifyJob(file);
+        mjob->exec();
+
+        finished();
         return;
-    }*/
+    }
 }
 
 
