@@ -293,37 +293,19 @@ void TagsProtocol::rename(const KUrl& src, const KUrl& dest, KIO::JobFlags flags
         return;
 
     case RootUrl:
+    case TagUrl:
         error(KIO::ERR_UNSUPPORTED_ACTION, src.prettyUrl());
         return;
 
     case FileUrl: {
         // Yes, this is weird, but it is required
-        // It is required cause the dest url is of the form tags:/tag1/tag2/file_url_with_new_filename
+        // It is required cause the dest url is of the form tags:/tag/file_url_with_new_filename
         // So we extract the new fileUrl from the 'src', and apply the new file to the dest
         KUrl destUrl(fileUrl);
         destUrl.setFileName(dest.fileName());
 
         ForwardingSlaveBase::rename(fileUrl, destUrl, flags);
         return;
-    }
-
-    case TagUrl: {
-        /*
-        Tag fromTag = srcTags.last();
-
-        QString path = dest.path();
-        QStringList tagNames = path.split('/');
-        if (tagNames.isEmpty()) {
-            error(KIO::ERR_UNSUPPORTED_ACTION, src.prettyUrl());
-            return;
-        }
-
-        QString toIdentifier = tagNames.last();
-        fromTag.setProperty(NAO::identifier(), toIdentifier);
-        fromTag.setProperty(NAO::prefLabel(), toIdentifier);
-        */
-
-        finished();
     }
     }
 }
