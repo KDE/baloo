@@ -21,7 +21,6 @@ add_library(baloopim SHARED ${BALOO_PIM_LIB_SRCS})
 target_link_libraries(baloopim
     Qt5::Core
     KF5::KDE4Support
-    ${QJSON_LIBRARIES}
     ${XAPIAN_LIBRARIES}
 )
 

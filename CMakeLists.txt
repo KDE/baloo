@@ -55,7 +55,6 @@ ecm_setup_version(${KF5_VERSION} VARIABLE_PREFIX BALOO
                         PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/BalooConfigVersion.cmake")
 
 include_directories(
-  ${QJSON_INCLUDE_DIR}
   ${KFILEMETADATA_INCLUDE_DIR}
   ${XAPIAN_INCLUDE_DIR}
   ${AKONADI_INCLUDE_DIR}

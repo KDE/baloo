@@ -193,9 +193,9 @@ QString FileSearchStore::icon(int queryId)
 }
 
 
-Xapian::Query FileSearchStore::applyCustomOptions(const Xapian::Query& q, const QVariantHash& options)
+Xapian::Query FileSearchStore::applyCustomOptions(const Xapian::Query& q, const QVariantMap& options)
 {
-    QHash<QString, QVariant>::const_iterator it = options.constFind("includeFolder");
+    QMap<QString, QVariant>::const_iterator it = options.constFind("includeFolder");
     if (it == options.constEnd()) {
         return q;
     }

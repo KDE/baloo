@@ -104,7 +104,7 @@ void QuerySerializationTest::testCustomOptions()
     QByteArray json = query.toJSON();
     Query q = Query::fromJSON(json);
 
-    QVariantHash options = q.customOptions();
+    QVariantMap options = q.customOptions();
     QCOMPARE(options.size(), 2);
     QCOMPARE(options.value("includeFolders"), QVariant("/home/vishesh/"));
     QCOMPARE(options.value("op1"), QVariant(5));
