@@ -6,7 +6,6 @@ target_link_libraries(baloo_emailsearchstore
     ${KDEPIMLIBS_AKONADI_LIBS}
     ${XAPIAN_LIBRARIES}
     baloocore
-    baloopim
     balooxapian
 )
 

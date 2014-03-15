@@ -424,10 +424,7 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const KUrl& url, QString& tag, 
     if (path.isEmpty() || path == QLatin1String("/"))
         return RootUrl;
 
-    QString fileName = url.fileName(KUrl::ObeyTrailingSlash);
-    QString dir = url.directory(KUrl::ObeyTrailingSlash);
-
-    QStringList names = dir.split('/', QString::SkipEmptyParts);
+    QStringList names = path.split(QLatin1Char('/'), QString::SkipEmptyParts);
     if (names.size() == 0)  {
         return RootUrl;
     }
@@ -440,6 +437,7 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const KUrl& url, QString& tag, 
     }
     else {
         tag = names[0];
+        QString fileName = url.fileName(KUrl::ObeyTrailingSlash);
         fileUrl = decodeFileUrl(fileName);
 
         return FileUrl;
