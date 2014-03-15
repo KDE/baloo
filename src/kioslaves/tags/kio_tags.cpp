@@ -194,38 +194,15 @@ void TagsProtocol::copy(const KUrl& src, const KUrl& dest, int permissions, KIO:
 {
     kDebug() << src << dest;
 
-    /*
-    if (src.scheme() == QLatin1String("file")) {
-        QList<Tag> tags;
-        QUrl fileUrl;
-
-        ParseResult result = parseUrl(dest, tags, fileUrl);
-        switch (result) {
-        case InvalidUrl:
-            return;
-
-        case RootUrl:
-        case TagUrl:
-            error(KIO::ERR_UNSUPPORTED_ACTION, src.prettyUrl());
-            return;
-
-            // It's a file url, cause the filename doesn't exist as a tag
-        case FileUrl:
-            QVariantList tagUris;
-            Q_FOREACH (const Tag & tag, tags)
-            tagUris << tag.uri();
-
-            KJob* job = Nepomuk2::addProperty(QList<QUrl>() << src, NAO::hasTag(), tagUris);
-            job->exec();
-            finished();
-            return;
-        }
+    if (src.scheme() != QLatin1String("file")) {
+        error(KIO::ERR_UNSUPPORTED_ACTION, src.prettyUrl());
+        return;
     }
 
-    QList<Tag> tags;
-    QUrl fileUrl;
+    QString tag;
+    QString fileUrl;
 
-    ParseResult result = parseUrl(dest, tags, fileUrl);
+    ParseResult result = parseUrl(dest, tag, fileUrl);
     switch (result) {
     case InvalidUrl:
         return;
@@ -236,9 +213,17 @@ void TagsProtocol::copy(const KUrl& src, const KUrl& dest, int permissions, KIO:
         return;
 
     case FileUrl:
-        ForwardingSlaveBase::copy(src, fileUrl, permissions, flags);
+        Baloo::FileFetchJob* job = new Baloo::FileFetchJob(fileUrl);
+        job->exec();
+        Baloo::File file = job->file();
+
+        file.addTag(tag);
+        Baloo::FileModifyJob* mjob = new Baloo::FileModifyJob(file);
+        mjob->exec();
+
+        finished();
         return;
-    }*/
+    }
 }
 
 
@@ -293,37 +278,19 @@ void TagsProtocol::rename(const KUrl& src, const KUrl& dest, KIO::JobFlags flags
         return;
 
     case RootUrl:
+    case TagUrl:
         error(KIO::ERR_UNSUPPORTED_ACTION, src.prettyUrl());
         return;
 
     case FileUrl: {
         // Yes, this is weird, but it is required
-        // It is required cause the dest url is of the form tags:/tag1/tag2/file_url_with_new_filename
+        // It is required cause the dest url is of the form tags:/tag/file_url_with_new_filename
         // So we extract the new fileUrl from the 'src', and apply the new file to the dest
         KUrl destUrl(fileUrl);
         destUrl.setFileName(dest.fileName());
 
         ForwardingSlaveBase::rename(fileUrl, destUrl, flags);
         return;
-    }
-
-    case TagUrl: {
-        /*
-        Tag fromTag = srcTags.last();
-
-        QString path = dest.path();
-        QStringList tagNames = path.split('/');
-        if (tagNames.isEmpty()) {
-            error(KIO::ERR_UNSUPPORTED_ACTION, src.prettyUrl());
-            return;
-        }
-
-        QString toIdentifier = tagNames.last();
-        fromTag.setProperty(NAO::identifier(), toIdentifier);
-        fromTag.setProperty(NAO::prefLabel(), toIdentifier);
-        */
-
-        finished();
     }
     }
 }

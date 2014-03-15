@@ -126,6 +126,7 @@ QVector<KFileMetaData::Type::Type> BasicIndexingJob::typesForMimeType(const QStr
     static QMultiHash<QString, Type::Type> typeMapper;
     if (typeMapper.isEmpty()) {
         // Microsoft
+        typeMapper.insert(QLatin1String("text/plain"), Type::Document);
         typeMapper.insert(QLatin1String("application/msword"), Type::Document);
         typeMapper.insert(QLatin1String("application/vnd.ms-powerpoint"), Type::Document);
         typeMapper.insert(QLatin1String("application/vnd.ms-powerpoint"), Type::Presentation);
