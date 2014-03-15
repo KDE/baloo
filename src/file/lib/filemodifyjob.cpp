@@ -163,7 +163,15 @@ void FileModifyJob::doStart()
         }
 
         // Save in Xapian
-        Xapian::WritableDatabase db(fileIndexDbPath(), Xapian::DB_CREATE_OR_OPEN);
+        Xapian::WritableDatabase db;
+        try {
+            db = Xapian::WritableDatabase(fileIndexDbPath(), Xapian::DB_CREATE_OR_OPEN);
+        }
+        catch (const Xapian::DatabaseLockError& err) {
+            kError() << err.get_msg().c_str();
+            kError() << "Trying again in 20 msecs";
+            QTimer::singleShot(20, this, SLOT(doStart()));
+        }
         Xapian::Document doc;
 
         try {
