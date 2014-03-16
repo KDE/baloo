@@ -31,7 +31,7 @@ Name[zh_TW]=Akonadi Baloo 索引代理程式
 
 Type=AkonadiAgent
 Exec=akonadi_baloo_indexer
-Icon=nepomuk
+Icon=baloo
 
 X-Akonadi-MimeTypes=text/directory
 X-Akonadi-Capabilities=Unique,Autostart
