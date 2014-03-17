@@ -127,6 +127,7 @@ void FileModifyJobTest::testXapianUpdate()
 
     File file(fileUrl);
     file.setRating(4);
+    file.addTag("Round-Tag");
 
     FileModifyJob* job = new FileModifyJob(file);
     QVERIFY(job->exec());
@@ -143,6 +144,13 @@ void FileModifyJobTest::testXapianUpdate()
     Xapian::TermIterator iter = doc.termlist_begin();
     QCOMPARE(*iter, std::string("R4"));
     iter++;
+    QCOMPARE(*iter, std::string("TAGRound-Tag"));
+    iter++;
+    qDebug() << (*iter).c_str();
+    QCOMPARE(*iter, std::string("TAround"));
+    iter++;
+    QCOMPARE(*iter, std::string("TAtag"));
+    iter++;
     QCOMPARE(iter, doc.termlist_end());
 
     // Add another term, and make sure it is not removed
@@ -155,6 +163,7 @@ void FileModifyJobTest::testXapianUpdate()
     }
 
     file.setRating(5);
+    file.setTags(QStringList() << "Square-Tag");
     job = new FileModifyJob(file);
     QVERIFY(job->exec());
 
@@ -165,6 +174,12 @@ void FileModifyJobTest::testXapianUpdate()
     QCOMPARE(*iter, std::string("R5"));
     iter++;
     QCOMPARE(*iter, std::string("RATING"));
+    iter++;
+    QCOMPARE(*iter, std::string("TAGSquare-Tag"));
+    iter++;
+    QCOMPARE(*iter, std::string("TAsqaure"));
+    iter++;
+    QCOMPARE(*iter, std::string("TAtag"));
     iter++;
     QCOMPARE(iter, doc.termlist_end());
 }
