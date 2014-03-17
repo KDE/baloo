@@ -31,6 +31,7 @@ class NoteSearchStore : public PIMSearchStore
 {
     Q_OBJECT
     Q_INTERFACES(Baloo::SearchStore)
+    Q_PLUGIN_METADATA(IID "org.kde.baloo.note" FILE "baloonotesearchstore.json")
 public:
     NoteSearchStore(QObject* parent = 0);
 

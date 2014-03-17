@@ -115,4 +115,4 @@ Xapian::Query EmailSearchStore::finalizeQuery(const Xapian::Query& query)
     return Xapian::Query(Xapian::Query::OP_AND_MAYBE, query, Xapian::Query(&ps));
 }
 
-BALOO_EXPORT_SEARCHSTORE(Baloo::EmailSearchStore, "baloo_emailsearchstore")
+#include "emailsearchstore.moc"

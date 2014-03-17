@@ -31,6 +31,7 @@ class ContactSearchStore : public PIMSearchStore
 {
     Q_OBJECT
     Q_INTERFACES(Baloo::SearchStore)
+    Q_PLUGIN_METADATA(IID "org.kde.baloo.contacts" FILE "baloocontactsearchstore.json")
 public:
     ContactSearchStore(QObject* parent = 0);
 

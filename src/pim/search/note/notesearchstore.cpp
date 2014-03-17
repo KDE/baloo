@@ -42,4 +42,4 @@ QStringList NoteSearchStore::types()
     return QStringList() << "Akonadi" << "Note";
 }
 
-BALOO_EXPORT_SEARCHSTORE(Baloo::NoteSearchStore, "baloo_notesearchstore")
+#include "notesearchstore.moc"

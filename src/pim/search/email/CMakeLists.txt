@@ -1,4 +1,4 @@
-add_library(baloo_emailsearchstore MODULE agepostingsource.cpp emailsearchstore.cpp)
+add_library(baloo_emailsearchstore MODULE agepostingsource.cpp emailsearchstore.cpp ../pimsearchstore.cpp)
 
 target_link_libraries(baloo_emailsearchstore
     Qt5::Core

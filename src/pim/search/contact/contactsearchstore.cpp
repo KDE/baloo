@@ -43,4 +43,4 @@ QStringList ContactSearchStore::types()
     return QStringList() << "Akonadi" << "Contact";
 }
 
-BALOO_EXPORT_SEARCHSTORE(Baloo::ContactSearchStore, "baloo_contactsearchstore")
+#include "contactsearchstore.moc"
