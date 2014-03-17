@@ -493,6 +493,32 @@ private Q_SLOTS:
             QSet<qint64> result = QSet<qint64>() << 101 << 102;
             QTest::newRow("contact by email") << QString::fromLatin1(query.toJSON()) << collections << contactMimeTypes << result;
         }
+        {
+            Akonadi::SearchQuery query;
+            query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Name, "Doe", Akonadi::SearchTerm::CondContains));
+
+            QList<qint64> collections;
+            QSet<qint64> result = QSet<qint64>() << 100 << 101 << 102;
+            QTest::newRow("contact by name (Doe)") << QString::fromLatin1(query.toJSON()) << collections << contactMimeTypes << result;
+        }
+        {
+            Akonadi::SearchQuery query;
+            query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Name, "Do", Akonadi::SearchTerm::CondContains));
+
+            QList<qint64> collections;
+            QSet<qint64> result = QSet<qint64>() << 100 << 101 << 102;
+            QTest::newRow("contact by name (Do)") << QString::fromLatin1(query.toJSON()) << collections << contactMimeTypes << result;
+        }
+#if 0 //Doesn't work for the moment
+        {
+            Akonadi::SearchQuery query;
+            query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Name, "oe", Akonadi::SearchTerm::CondContains));
+
+            QList<qint64> collections;
+            QSet<qint64> result = QSet<qint64>() << 100 << 101 << 102;
+            QTest::newRow("contact by name (oe)") << QString::fromLatin1(query.toJSON()) << collections << contactMimeTypes << result;
+        }
+#endif
     }
 #endif
     void testEmailSearch_data() {
