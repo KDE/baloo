@@ -38,6 +38,7 @@
 Q_DECLARE_METATYPE(QSet<qint64>)
 Q_DECLARE_METATYPE(QList<qint64>)
 
+
 class SearchPluginTest : public QObject
 {
     Q_OBJECT
@@ -776,6 +777,46 @@ private Q_SLOTS:
             QSet<qint64> result = QSet<qint64>() << 4;
             QTest::newRow("find by list id") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
         }
+        {
+            Akonadi::SearchQuery query(Akonadi::SearchTerm::RelOr);
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::MessageStatus, QString::fromLatin1(Akonadi::MessageFlags::Deleted), Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderListId, "kde-pim.kde.org", Akonadi::SearchTerm::CondContains));
+
+            QList<qint64> collections = QList<qint64>() << 1 << 2;
+            QStringList mimeTypes = QStringList() << "message/rfc822";
+            QSet<qint64> result = QSet<qint64>() << 4 << 5;
+            QTest::newRow("find by message by deleted status or headerListId") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
+        }
+        {
+            Akonadi::SearchQuery query(Akonadi::SearchTerm::RelOr);
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::MessageStatus, QString::fromLatin1(Akonadi::MessageFlags::Deleted), Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderListId, "kde-pim.kde.org", Akonadi::SearchTerm::CondContains));
+
+            QList<qint64> collections;
+            QStringList mimeTypes = QStringList() << "message/rfc822";
+            QSet<qint64> result = QSet<qint64>() << 4 << 5;
+            QTest::newRow("find by message by deleted status or headerListId in all collections") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
+        }
+        {
+            Akonadi::SearchQuery query(Akonadi::SearchTerm::RelAnd);
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::MessageStatus, QString::fromLatin1(Akonadi::MessageFlags::Deleted), Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderListId, "kde-pim.kde.org", Akonadi::SearchTerm::CondContains));
+
+            QList<qint64> collections = QList<qint64>() << 1 << 2;
+            QStringList mimeTypes = QStringList() << "message/rfc822";
+            QSet<qint64> result;
+            QTest::newRow("find by message by deleted status and headerListId") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
+        }
+        {
+            Akonadi::SearchQuery query;
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Message, "subject", Akonadi::SearchTerm::CondEqual));
+
+            QList<qint64> collections = QList<qint64>() << 1 << 2;
+            QStringList mimeTypes = QStringList() << "message/rfc822";
+            QSet<qint64> result = QSet<qint64>() << 1 << 2 << 3 << 4 << 5;
+            QTest::newRow("find by message term") << QString::fromLatin1(query.toJSON()) << collections << mimeTypes << result;
+        }
+
     }
 
     void testEmailSearch() {
