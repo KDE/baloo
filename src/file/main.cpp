@@ -29,6 +29,7 @@
 #include <KConfig>
 #include <KConfigGroup>
 #include <KDebug>
+#include <KGlobal>
 #include <iostream>
 
 #include "filewatch.h"

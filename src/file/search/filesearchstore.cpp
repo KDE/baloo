@@ -33,6 +33,7 @@
 #include <KDebug>
 #include <KUrl>
 #include <KMimeType>
+#include <KGlobal>
 
 #include <kfilemetadata/propertyinfo.h>
 

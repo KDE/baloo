@@ -26,6 +26,7 @@
 #include <k4aboutdata.h>
 #include <KCmdLineArgs>
 #include <KLocale>
+#include <KGlobal>
 #include <KComponentData>
 #include <QApplication>
 #include <QDBusConnection>

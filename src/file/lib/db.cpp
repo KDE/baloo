@@ -24,6 +24,7 @@
 
 #include <KDebug>
 #include <KStandardDirs>
+#include <KGlobal>
 
 #include <QSqlQuery>
 #include <QSqlError>
