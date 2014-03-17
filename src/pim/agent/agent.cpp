@@ -63,7 +63,7 @@ namespace {
     }
 }
 
-#define INDEXING_AGENT_VERSION 2
+#define INDEXING_AGENT_VERSION 3
 
 BalooIndexingAgent::BalooIndexingAgent(const QString& id)
     : AgentBase(id),
