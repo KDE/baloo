@@ -47,7 +47,7 @@ namespace {
         if (Akonadi::ServerManager::hasInstanceIdentifier()) {
             basePath = QString::fromLatin1("baloo/instances/%1").arg(Akonadi::ServerManager::instanceIdentifier());
         }
-        return KStandardDirs::locateLocal("data", QString::fromLatin1("%1/%2/").arg(basePath, dbName));
+        return KGlobal::dirs()->localxdgdatadir() + QString::fromLatin1("%1/%2/").arg(basePath, dbName);
     }
     QString emailIndexingPath() {
         return dbPath("email");
@@ -63,7 +63,7 @@ namespace {
     }
 }
 
-#define INDEXING_AGENT_VERSION 2
+#define INDEXING_AGENT_VERSION 3
 
 BalooIndexingAgent::BalooIndexingAgent(const QString& id)
     : AgentBase(id),

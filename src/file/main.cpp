@@ -68,8 +68,10 @@ int main(int argc, char** argv)
         return 1;
     }
 
+    const QString path = KGlobal::dirs()->localxdgdatadir() + "baloo/file/";
+
     Database db;
-    db.setPath(KStandardDirs::locateLocal("data", "baloo/file/"));
+    db.setPath(path);
     db.init();
     db.sqlDatabase().transaction();
 
