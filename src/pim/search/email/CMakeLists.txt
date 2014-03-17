@@ -5,7 +5,6 @@ target_link_libraries(baloo_emailsearchstore
     KF5::KDE4Support
     ${XAPIAN_LIBRARIES}
     baloocore
-    baloopim
     balooxapian
 )
 

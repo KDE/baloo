@@ -43,7 +43,7 @@ FileSearchStore::FileSearchStore(QObject* parent)
     , m_sqlDb(0)
     , m_sqlMutex(QMutex::Recursive)
 {
-    const QString path = KStandardDirs::locateLocal("data", "baloo/file/");
+    const QString path = KGlobal::dirs()->localxdgdatadir() + "baloo/file/";
     setDbPath(path);
 
     m_prefixes.insert("filename", "F");

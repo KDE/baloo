@@ -47,7 +47,7 @@ App::App(QObject* parent)
     : QObject(parent)
     , m_termCount(0)
 {
-    m_path = KStandardDirs::locateLocal("data", "baloo/file");
+    m_path = KGlobal::dirs()->localxdgdatadir() + "baloo/file";
 
     m_db.setPath(m_path);
     m_db.init();

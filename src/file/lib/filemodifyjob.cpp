@@ -100,12 +100,15 @@ void removeTerms(Xapian::Document& doc, const std::string& p) {
         }
 
         // The term should not just be the prefix
-        if (term.size() <= prefix.size())
+        if (term.size() <= prefix.size()) {
             break;
+        }
 
         // The term should not contain any more upper case letters
-        if (isupper(term.at(prefix.size())))
-            break;
+        if (isupper(term.at(prefix.size()))) {
+            it++;
+            continue;
+        }
 
         it++;
         doc.remove_term(t);
@@ -163,7 +166,15 @@ void FileModifyJob::doStart()
         }
 
         // Save in Xapian
-        Xapian::WritableDatabase db(fileIndexDbPath(), Xapian::DB_CREATE_OR_OPEN);
+        Xapian::WritableDatabase db;
+        try {
+            db = Xapian::WritableDatabase(fileIndexDbPath(), Xapian::DB_CREATE_OR_OPEN);
+        }
+        catch (const Xapian::DatabaseLockError& err) {
+            kError() << err.get_msg().c_str();
+            kError() << "Trying again in 20 msecs";
+            QTimer::singleShot(20, this, SLOT(doStart()));
+        }
         Xapian::Document doc;
 
         try {
@@ -189,7 +200,7 @@ void FileModifyJob::doStart()
         Q_FOREACH (const QString& tag, d->tags) {
             termGen.index_text(tag.toUtf8().constData(), 1, "TA");
 
-            const QString tagStr = QLatin1String("TAG") + tag;
+            const QString tagStr = QLatin1String("TAG-") + tag;
             doc.add_boolean_term(tagStr.toUtf8().constData());
         }
 

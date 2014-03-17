@@ -76,7 +76,7 @@ int NoteQuery::limit() const
 
 ResultIterator NoteQuery::exec()
 {
-    const QString dir = KStandardDirs::locateLocal("data", "baloo/notes/");
+    const QString dir = KGlobal::dirs()->localxdgdatadir() + "baloo/notes/";
     Xapian::Database db(dir.toUtf8().constData());
 
     QList<Xapian::Query> m_queries;
@@ -92,7 +92,7 @@ ResultIterator NoteQuery::exec()
     if (!d->title.isEmpty()) {
         Xapian::QueryParser parser;
         parser.set_database(db);
-        parser.add_prefix("", "S");
+        parser.add_prefix("", "SU");
         parser.set_default_op(Xapian::Query::OP_AND);
 
         m_queries << parser.parse_query(d->title.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);

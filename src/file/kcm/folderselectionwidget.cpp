@@ -84,6 +84,12 @@ namespace {
 
         return output;
     }
+
+    QString makeHomePretty(const QString& url) {
+        if (url.startsWith(QDir::homePath()))
+            return QString(url).replace(0, QDir::homePath().length(), QLatin1String("~"));
+        return url;
+    }
 }
 void FolderSelectionWidget::setFolders(QStringList includeDirs, QStringList exclude)
 {
@@ -129,6 +135,7 @@ void FolderSelectionWidget::setFolders(QStringList includeDirs, QStringList excl
         item->setData(Qt::WhatsThisRole, url);
         item->setData(UrlRole, url);
         item->setData(Qt::DecorationRole, KIcon(iconName(url)));
+        item->setToolTip(makeHomePretty(url));
 
         m_listWidget->addItem(item);
     }
@@ -250,6 +257,7 @@ void FolderSelectionWidget::slotAddButtonClicked()
     item->setData(Qt::WhatsThisRole, url);
     item->setData(UrlRole, url);
     item->setData(Qt::DecorationRole, KIcon(iconName(url)));
+    item->setToolTip(makeHomePretty(url));
 
     m_listWidget->addItem(item);
     m_listWidget->setCurrentItem(item);

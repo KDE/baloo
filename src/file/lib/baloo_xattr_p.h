@@ -78,7 +78,7 @@ inline int baloo_setxattr(const QString& path, const QString& name, const QStrin
     const QByteArray v = value.toUtf8();
     const void* attributeValue = v.constData();
 
-    const size_t valueSize = name.size();
+    const size_t valueSize = v.size();
 
 #if defined(Q_OS_LINUX)
     return setxattr(encodedPath, attributeName, attributeValue, valueSize, 0);

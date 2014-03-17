@@ -101,7 +101,7 @@ void ContactQuery::setMatchCriteria(ContactQuery::MatchCriteria m)
 
 ResultIterator ContactQuery::exec()
 {
-    const QString dir = KStandardDirs::locateLocal("data", "baloo/contacts/");
+    const QString dir = KGlobal::dirs()->localxdgdatadir() + "baloo/contacts/";
     Xapian::Database db(dir.toUtf8().constData());
 
     QList<Xapian::Query> m_queries;

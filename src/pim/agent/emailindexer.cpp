@@ -138,6 +138,8 @@ void EmailIndexer::insert(const QByteArray& key, const KMime::Types::Mailbox::Li
         std::string name(mbox.name().toUtf8().constData());
         m_termGen->index_text_without_positions(name, 1, key.data());
         m_termGen->index_text_without_positions(name, 1);
+        m_termGen->index_text_without_positions(mbox.address().data(), 1, key.data());
+        m_termGen->index_text_without_positions(mbox.address().data(), 1);
 
         m_doc->add_term((key + mbox.address()).data());
         m_doc->add_term(mbox.address().data());
@@ -176,7 +178,7 @@ void EmailIndexer::process(const KMime::Message::Ptr& msg)
     if (subject) {
         std::string str(subject->asUnicodeString().toUtf8().constData());
         kDebug() << "Indexing" << str.c_str();
-        m_termGen->index_text_without_positions(str, 1, "S");
+        m_termGen->index_text_without_positions(str, 1, "SU");
         m_termGen->index_text_without_positions(str, 100);
         m_doc->set_data(str);
     }
@@ -206,7 +208,7 @@ void EmailIndexer::process(const KMime::Message::Ptr& msg)
     //
 
     //Index all headers
-    m_termGen->index_text_without_positions(std::string(msg->head().constData()), 1, "H");
+    m_termGen->index_text_without_positions(std::string(msg->head().constData()), 1, "HE");
 
     KMime::Content* mainBody = msg->mainBodyPart("text/plain");
     if (mainBody) {
@@ -266,8 +268,6 @@ void EmailIndexer::processMessageStatus(const Akonadi::MessageStatus& status)
     insertBool('H', status.isHam());
     insertBool('C', status.isEncrypted());
     insertBool('V', status.hasInvitation());
-
-    //Akonadi::MessageFlags::HasInvitation
 }
 
 void EmailIndexer::insertBool(char key, bool value)

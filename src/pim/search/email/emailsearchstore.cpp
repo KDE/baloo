@@ -37,7 +37,7 @@ EmailSearchStore::EmailSearchStore(QObject* parent)
     m_prefix.insert("to", "T");
     m_prefix.insert("cc", "CC");
     m_prefix.insert("bcc", "BC");
-    m_prefix.insert("subject", "S");
+    m_prefix.insert("subject", "SU");
     m_prefix.insert("collection", "C");
     m_prefix.insert("replyto", "RT");
     m_prefix.insert("organization", "O");
@@ -48,7 +48,7 @@ EmailSearchStore::EmailSearchStore(QObject* parent)
     m_prefix.insert("xspamflag", "XSF");
 
     m_prefix.insert("body", "BO");
-    m_prefix.insert("headers", "H");
+    m_prefix.insert("headers", "HE");
 
     // TODO: Add body flag?
     // TODO: Add tags?

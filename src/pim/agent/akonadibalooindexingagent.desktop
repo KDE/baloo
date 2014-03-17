@@ -11,6 +11,7 @@ Name[fr]=Agent d'indexation Baloo de Akonadi
 Name[hu]=Akonadi Baloo indexelő ügynök
 Name[it]=Agente di indicizzazione Baloo di Akonadi
 Name[ko]=Akonadi Baloo 검색 에이전트
+Name[nb]=Akonadi Baloo indekseringsagent
 Name[nds]=Akonadi-Baloo-Indizeerhölper
 Name[nl]=Akonadi-agent voor Baloo indexering
 Name[pl]=Agent indeksowania Baloo dla Akonadi
@@ -30,7 +31,7 @@ Name[zh_TW]=Akonadi Baloo 索引代理程式
 
 Type=AkonadiAgent
 Exec=akonadi_baloo_indexer
-Icon=nepomuk
+Icon=baloo
 
 X-Akonadi-MimeTypes=text/directory
 X-Akonadi-Capabilities=Unique,Autostart
