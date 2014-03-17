@@ -144,9 +144,8 @@ void FileModifyJobTest::testXapianUpdate()
     Xapian::TermIterator iter = doc.termlist_begin();
     QCOMPARE(*iter, std::string("R4"));
     iter++;
-    QCOMPARE(*iter, std::string("TAGRound-Tag"));
+    QCOMPARE(*iter, std::string("TAG-Round-Tag"));
     iter++;
-    qDebug() << (*iter).c_str();
     QCOMPARE(*iter, std::string("TAround"));
     iter++;
     QCOMPARE(*iter, std::string("TAtag"));
@@ -175,9 +174,9 @@ void FileModifyJobTest::testXapianUpdate()
     iter++;
     QCOMPARE(*iter, std::string("RATING"));
     iter++;
-    QCOMPARE(*iter, std::string("TAGSquare-Tag"));
+    QCOMPARE(*iter, std::string("TAG-Square-Tag"));
     iter++;
-    QCOMPARE(*iter, std::string("TAsqaure"));
+    QCOMPARE(*iter, std::string("TAsquare"));
     iter++;
     QCOMPARE(*iter, std::string("TAtag"));
     iter++;
