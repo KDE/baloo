@@ -80,7 +80,7 @@ private:
         kDebug() << "starting search";
         SearchPlugin plugin;
         const QSet<qint64> result = plugin.search(query, collections, mimeTypes);
-        qDebug() << result;
+        kDebug() << result;
         QCOMPARE(result, expectedResult);
     }
 
@@ -799,7 +799,6 @@ private Q_SLOTS:
             QSet<qint64> result = QSet<qint64>() << 4;
             QTest::newRow("find by header cc (contains) with case") << QString::fromLatin1(query.toJSON()) << allEmailCollections << emailMimeTypes << result;
         }
-#endif
 #if 0 //Can not work for the moment
         {
             Akonadi::SearchQuery query;
@@ -822,6 +821,13 @@ private Q_SLOTS:
             query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, "qtx11extras", Akonadi::SearchTerm::CondContains));
             QSet<qint64> result = QSet<qint64>() << 6;
             QTest::newRow("search qtx11extras in subject") << QString::fromLatin1(query.toJSON()) << allEmailCollections << emailMimeTypes << result;
+        }
+#endif
+        {
+            Akonadi::SearchQuery query;
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderFrom, "test.com", Akonadi::SearchTerm::CondContains));
+            QSet<qint64> result = QSet<qint64>() << 1 << 2 << 3 << 4 << 5 << 6;
+            QTest::newRow("search by from email part") << QString::fromLatin1(query.toJSON()) << allEmailCollections << emailMimeTypes << result;
         }
     }
 
