@@ -42,6 +42,8 @@ public:
     void indexText(const QString& text, int wdfInc = 1);
     void indexText(const QString& text, const QString& prefix, int wdfInc = 1);
 
+    void addValue(int pos, const QString& value);
+
     Xapian::Document doc();
 
 private:
