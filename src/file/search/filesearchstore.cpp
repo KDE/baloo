@@ -28,6 +28,7 @@
 
 #include <xapian.h>
 #include <QVector>
+#include <QDate>
 
 #include <KStandardDirs>
 #include <KDebug>
@@ -150,6 +151,42 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
         const QByteArray arr = value.toString().toUtf8();
         int flags = Xapian::QueryParser::FLAG_DEFAULT | Xapian::QueryParser::FLAG_PARTIAL;
         return parser.parse_query(arr.constData(), flags, p);
+    }
+
+    if ((property.compare("modified", Qt::CaseInsensitive) == 0)
+        && (com == Term::Equal || com == Term::Greater ||
+            com == Term::GreaterEqual || com == Term::Less || com == Term::LessEqual))
+    {
+        qlonglong numVal = 0;
+        int slotNumber = 0;
+
+        if (value.type() == QVariant::DateTime) {
+            slotNumber = 0;
+            numVal = value.toDateTime().toTime_t();
+        }
+        else if (value.type() == QVariant::Date) {
+            slotNumber = 1;
+            numVal = value.toDate().toJulianDay();
+        }
+
+        if (com == Term::Greater) {
+            ++numVal;
+        }
+        if (com == Term::Less) {
+            --numVal;
+        }
+
+        if (com == Term::GreaterEqual || com == Term::Greater) {
+            return Xapian::Query(Xapian::Query::OP_VALUE_GE, slotNumber, QString::number(numVal).toStdString());
+        }
+        else if (com == Term::LessEqual || com == Term::Less) {
+            return Xapian::Query(Xapian::Query::OP_VALUE_LE, slotNumber, QString::number(numVal).toStdString());
+        }
+        else if (com == Term::Equal) {
+            const Xapian::Query gtQuery(Xapian::Query::OP_VALUE_GE, slotNumber, QString::number(numVal).toStdString());
+            const Xapian::Query ltQuery(Xapian::Query::OP_VALUE_LE, slotNumber, QString::number(numVal).toStdString());
+            return Xapian::Query(Xapian::Query::OP_AND, gtQuery, ltQuery);
+        }
     }
 
     const QByteArray arr = value.toString().toUtf8();

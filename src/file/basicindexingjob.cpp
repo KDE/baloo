@@ -69,6 +69,10 @@ bool BasicIndexingJob::index()
     doc.addBoolTerm(mod.date().month(), "DT_MM");
     doc.addBoolTerm(mod.date().day(), "DT_MD");
 
+    const QString timeTStr = QString::number(mod.toTime_t());
+    doc.addValue(0, timeTStr);
+    doc.addValue(1, QString::number(mod.date().toJulianDay()));
+
     // Types
     QVector<KFileMetaData::Type::Type> tList = typesForMimeType(m_mimetype);
     Q_FOREACH (KFileMetaData::Type::Type type, tList) {

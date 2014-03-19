@@ -64,3 +64,9 @@ Xapian::Document XapianDocument::doc()
 {
     return m_doc;
 }
+
+void XapianDocument::addValue(int pos, const QString& value)
+{
+    m_doc.add_value(pos, value.toUtf8().constData());
+}
+
