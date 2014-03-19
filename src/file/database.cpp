@@ -23,6 +23,7 @@
 #include "database.h"
 
 #include <QStringList>
+#include <QDir>
 
 #include <QSqlDatabase>
 #include <QSqlQuery>
@@ -52,6 +53,9 @@ bool Database::init()
 {
     if (m_initialized)
         return true;
+
+    // Create the path if it does not exist
+    QDir().mkpath(m_path);
 
     // Create the Xapian DB
     QByteArray path = m_path.toUtf8();

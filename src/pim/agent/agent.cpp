@@ -168,6 +168,8 @@ void BalooIndexingAgent::createIndexers()
 {
     AbstractIndexer *indexer = 0;
     try {
+        QDir().mkpath(emailIndexingPath());
+        QDir().mkpath(emailContactsIndexingPath());
         indexer = new EmailIndexer(emailIndexingPath(), emailContactsIndexingPath());
         addIndexer(indexer);
     }
@@ -177,6 +179,7 @@ void BalooIndexingAgent::createIndexers()
     }
 
     try {
+        QDir().mkpath(contactIndexingPath());
         indexer = new ContactIndexer(contactIndexingPath());
         addIndexer(indexer);
     }
@@ -186,6 +189,7 @@ void BalooIndexingAgent::createIndexers()
     }
 
     try {
+        QDir().mkpath(akonotesIndexingPath());
         indexer = new AkonotesIndexer(akonotesIndexingPath());
         addIndexer(indexer);
     }
