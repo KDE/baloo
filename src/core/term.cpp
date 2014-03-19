@@ -22,6 +22,7 @@
 
 #include "term.h"
 #include <QVariant>
+#include <QDateTime>
 
 using namespace Baloo;
 
@@ -255,7 +256,22 @@ QVariantMap Term::toVariantMap() const
     QVariantMap m;
     m[op] = d->m_value;
     map[d->m_property] = QVariant(m);
+
     return map;
+}
+
+namespace {
+    // QJson does not recognize QDate/QDateTime parameters. We try to guess
+    // and see if they can be converted into date/datetime.
+    QVariant tryConvert(const QVariant& var) {
+        if (var.canConvert(QVariant::DateTime)) {
+            if (!var.toString().contains("T")) {
+                return QVariant(var.toDate());
+            }
+            return QVariant(var.toDateTime());
+        }
+        return var;
+    }
 }
 
 Term Term::fromVariantMap(const QVariantMap& map)
@@ -311,12 +327,13 @@ Term Term::fromVariantMap(const QVariantMap& map)
             return term;
 
         term.setComparator(com);
-        term.setValue(map.value(op));
+        term.setValue(tryConvert(map.value(op)));
+
         return term;
     }
 
     term.setComparator(Equal);
-    term.setValue(value);
+    term.setValue(tryConvert(value));
 
     return term;
 }
