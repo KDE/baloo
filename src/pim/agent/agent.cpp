@@ -271,7 +271,7 @@ void BalooIndexingAgent::slotRootCollectionsFetched(KJob* kjob)
         job->fetchScope().setFetchRemoteIdentification(false);
         job->fetchScope().setFetchModificationTime(true);
         job->fetchScope().setAncestorRetrieval(Akonadi::ItemFetchScope::Parent);
-        job->setDeliveryOption( Akonadi::ItemFetchJob::EmitItemsInBatches );
+        job->setDeliveryOption(Akonadi::ItemFetchJob::EmitItemsIndividually);
 
         connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),
                 this, SLOT(slotItemsReceived(Akonadi::Item::List)));
@@ -397,6 +397,7 @@ void BalooIndexingAgent::processNext()
     job->fetchScope().setFetchRemoteIdentification(false);
     job->fetchScope().setFetchModificationTime(true);
     job->fetchScope().setAncestorRetrieval(Akonadi::ItemFetchScope::Parent);
+    job->setDeliveryOption(Akonadi::ItemFetchJob::EmitItemsIndividually);
 
     connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),
             this, SLOT(slotItemsReceived(Akonadi::Item::List)));
