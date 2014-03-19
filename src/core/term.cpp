@@ -265,10 +265,14 @@ namespace {
     // and see if they can be converted into date/datetime.
     QVariant tryConvert(const QVariant& var) {
         if (var.canConvert(QVariant::DateTime)) {
+            QDateTime dt = var.toDateTime();
+            if (!dt.isValid())
+                return var;
+
             if (!var.toString().contains("T")) {
                 return QVariant(var.toDate());
             }
-            return QVariant(var.toDateTime());
+            return dt;
         }
         return var;
     }

@@ -53,7 +53,7 @@ void QuerySerializationTest::testBasic()
 
 void QuerySerializationTest::testTerm()
 {
-    Term term("property", 1);
+    Term term("property", "value");
 
     Query query;
     query.setTerm(term);
@@ -63,7 +63,7 @@ void QuerySerializationTest::testTerm()
 
     Term t = q.term();
     QCOMPARE(t.property(), QLatin1String("property"));
-    QCOMPARE(t.value(), QVariant(1));
+    QCOMPARE(t.value(), QVariant("value"));
     QCOMPARE(q.term(), term);
 
     QCOMPARE(q, query);
