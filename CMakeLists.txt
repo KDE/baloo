@@ -48,6 +48,7 @@ set_package_properties(Akonadi PROPERTIES
 include(ConfigureChecks.cmake)
 
 add_definitions(-DQT_NO_KEYWORDS)
+add_definitions(${KDE4_ENABLE_EXCEPTIONS})
 
 include_directories(
   ${QT_INCLUDES}

@@ -100,7 +100,14 @@ Xapian::Query EmailSearchStore::constructQuery(const QString& property, const QV
 
 QString EmailSearchStore::text(int queryId)
 {
-    std::string data = docForQuery(queryId).get_data();
+    Xapian::Document doc = docForQuery(queryId);
+    std::string data;
+    try {
+        data = doc.get_data();
+    }
+    catch (const Xapian::DatabaseError&) {
+        // Nothing to do, move along
+    }
 
     QString subject = QString::fromUtf8(data.c_str(), data.length());
     if (subject.isEmpty())
