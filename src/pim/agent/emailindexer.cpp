@@ -28,7 +28,7 @@
 #include <QTextDocument>
 
 EmailIndexer::EmailIndexer(const QString& path, const QString& contactDbPath):
-    AbstractIndexer(), m_termGen( 0 )
+    AbstractIndexer(), m_doc( 0 ), m_termGen( 0 )
 {
     m_db = new Xapian::WritableDatabase(path.toStdString(), Xapian::DB_CREATE_OR_OPEN);
     m_contactDb = new Xapian::WritableDatabase(contactDbPath.toStdString(), Xapian::DB_CREATE_OR_OPEN);
