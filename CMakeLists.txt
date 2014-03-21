@@ -6,7 +6,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules" ${ECM_MODULE_P
 
 find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Widgets Xml Test Sql)
 find_package(KF5 REQUIRED NO_MODULE COMPONENTS KDE4Support I18n Service IdleTime KCMUtils Auth Runner Plasma)
-find_package(KFileMetaData REQUIRED)
+find_package(KFileMetaData 4.97 REQUIRED)
 
 # FIXME: Port Kdepimlibs?
 #find_package(KdepimLibs REQUIRED)
