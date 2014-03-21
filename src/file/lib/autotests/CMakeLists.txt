@@ -12,6 +12,7 @@ set(filefetchjobtest_SRC filefetchjobtest.cpp
 ecm_add_test(${filefetchjobtest_SRC}
     TEST_NAME "filefetchjobtest"
     LINK_LIBRARIES
+        KF5::FileMetaData
         KF5::Solid
         KF5::KDE4Support
         Qt5::Test
@@ -34,6 +35,7 @@ set(filemodifyjobtest_SRC filemodifyjobtest.cpp
 ecm_add_test(${filemodifyjobtest_SRC}
     TEST_NAME "filemodifyjobtest"
     LINK_LIBRARIES
+        KF5::FileMetaData
         KF5::Solid
         KF5::KDE4Support
         Qt5::Test
@@ -46,3 +48,4 @@ ecm_add_test(${filemodifyjobtest_SRC}
 # temporary files they need (as XattrDetector blacklists /tmp by default).
 set_target_properties(filefetchjobtest PROPERTIES COMPILE_FLAGS -DBUILDDIR="\\"${CMAKE_CURRENT_BINARY_DIR}/\\"")
 set_target_properties(filemodifyjobtest PROPERTIES COMPILE_FLAGS -DBUILDDIR="\\"${CMAKE_CURRENT_BINARY_DIR}/\\"")
+

@@ -18,6 +18,7 @@ set(FILE_LIB_SRCS
 add_library(baloofiles SHARED ${FILE_LIB_SRCS})
 
 target_link_libraries(baloofiles
+    KF5::FileMetaData
     Qt5::Core
     Qt5::Sql
     KF5::KDE4Support
