@@ -91,7 +91,6 @@ void Baloo::CommitQueue::commit()
         Q_FOREACH (const DocIdPair& doc, m_docsToAdd) {
             db.replace_document(doc.first, doc.second);
         }
-        m_docsToAdd.clear();
 
         kDebug() << "Removing:" << m_docsToRemove.size() << "docs";
         Q_FOREACH (Xapian::docid id, m_docsToRemove) {
@@ -101,16 +100,22 @@ void Baloo::CommitQueue::commit()
             catch (const Xapian::DocNotFoundError&) {
             }
         }
-        m_docsToRemove.clear();
 
         db.commit();
         kDebug() << "Xapian Committed";
         m_db->xapianDatabase()->reopen();
 
+        m_docsToAdd.clear();
+        m_docsToRemove.clear();
+
         Q_EMIT committed();
     }
     catch (const Xapian::DatabaseLockError& err) {
         kError() << err.get_msg().c_str();
+        startTimers();
+    }
+    catch (const Xapian::DatabaseModifiedError& err) {
+        kError() << "Commit failed, retrying in another 200 msecs";
         startTimers();
     }
 }
