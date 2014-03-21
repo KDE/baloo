@@ -371,6 +371,8 @@ void BalooIndexingAgent::itemsMoved(const Akonadi::Item::List& items,
                                     const Akonadi::Collection& destinationCollection)
 {
     AbstractIndexer *indexer = indexerForItem(items.first());
+    if (!indexer)
+       return;
     Q_FOREACH (const Akonadi::Item& item, items) {
         try {
             indexer->move(item.id(), sourceCollection.id(), destinationCollection.id());
