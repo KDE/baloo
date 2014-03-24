@@ -13,6 +13,7 @@ find_package(KFileMetaData 4.97 REQUIRED)
 
 include(ECMSetupVersion)
 include(ECMAddTests)
+include(ECMInstallIcons)
 
 include(GenerateExportHeader)
 include(FeatureSummary)
