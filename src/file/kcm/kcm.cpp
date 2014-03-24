@@ -28,6 +28,10 @@
 #include <KDirWatch>
 #include <KDebug>
 #include <KStandardDirs>
+#include <KLocalizedString>
+#include <KIcon>
+#include <KIconLoader>
+#include <KConfigGroup>
 
 #include <QPushButton>
 #include <QDir>
@@ -36,7 +40,7 @@
 #include <QDBusMessage>
 
 K_PLUGIN_FACTORY(BalooConfigModuleFactory, registerPlugin<Baloo::ServerConfigModule>();)
-K_EXPORT_PLUGIN(BalooConfigModuleFactory("kcm_baloofile", "kcm_baloofile"))
+K_EXPORT_PLUGIN(BalooConfigModuleFactory("kcm_baloofile"))
 
 
 namespace
@@ -51,14 +55,14 @@ QStringList defaultFolders()
 using namespace Baloo;
 
 ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args)
-    : KCModule(BalooConfigModuleFactory::componentData(), parent, args)
+    : KCModule(parent, args)
 {
     KAboutData* about = new KAboutData(
-        "kcm_baloofile", "kcm_baloofile", ki18n("Configure Desktop Search"),
-        KDE_VERSION_STRING, KLocalizedString(), KAboutData::License_GPL,
-        ki18n("Copyright 2007-2010 Sebastian Trüg"));
-    about->addAuthor(ki18n("Sebastian Trüg"), KLocalizedString(), "trueg@kde.org");
-    about->addAuthor(ki18n("Vishesh Handa"), KLocalizedString(), "vhanda@kde.org");
+        "kcm_baloofile", "kcm_baloofile", i18n("Configure Desktop Search"),
+        "0.1", QString(), KAboutData::License_GPL,
+        i18n("Copyright 2007-2010 Sebastian Trüg"));
+    about->addAuthor(i18n("Sebastian Trüg"), QString(), "trueg@kde.org");
+    about->addAuthor(i18n("Vishesh Handa"), QString(), "vhanda@kde.org");
     setAboutData(about);
     setButtons(Help | Apply | Default);
 
