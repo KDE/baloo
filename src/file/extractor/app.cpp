@@ -49,7 +49,10 @@ App::App(QObject* parent)
     m_path = KGlobal::dirs()->localxdgdatadir() + "baloo/file";
 
     m_db.setPath(m_path);
-    m_db.init();
+    if (!m_db.init()) {
+        QTimer::singleShot(0, QCoreApplication::instance(), SLOT(quit()));
+        return;
+    }
 
     const KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
     m_bData = args->isSet("bdata");
