@@ -8,6 +8,7 @@ X-KDE-autostart-phase=0
 Name=Baloo File Daemon
 Name[bs]=Baloo datotečni demon
 Name[ca]=Dimoni de fitxers Baloo
+Name[ca@valencia]=Dimoni de fitxers Baloo
 Name[da]=Baloo fil-dæmon
 Name[de]=Baloo-Dateidienst
 Name[el]=Δαίμονας αρχείων Baloo

@@ -2,6 +2,7 @@
 Name=Desktop Search
 Name[bs]=Pretraga površi
 Name[ca]=Cerca a l'escriptori
+Name[ca@valencia]=Cerca a l'escriptori
 Name[cs]=Vyhledávací služby
 Name[da]=Skrivebordssøgning
 Name[de]=Desktop-Suche
@@ -35,6 +36,7 @@ Name[zh_TW]=桌面搜尋
 Comment=Runner which searches through files, emails and contacts
 Comment[bs]=Trkač koji traži kroz datoteke, elektronsku poštu i kontakte
 Comment[ca]=Executor que cerca per fitxers, correus electrònics i contactes
+Comment[ca@valencia]=Executor que cerca per fitxers, correus electrònics i contactes
 Comment[da]=Runner som gennemsøger filer, e-mails og kontakter
 Comment[de]=Runner, der Dateien, E-Mails und Kontakte durchsucht
 Comment[el]=Αναζήτηση για αρχεία, μηνύματα ηλ. ταχυδρομείου και επαφές
