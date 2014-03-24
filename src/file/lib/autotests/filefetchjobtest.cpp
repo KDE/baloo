@@ -22,6 +22,7 @@
 #include "filefetchjob.h"
 #include "../baloo_xattr_p.h"
 #include "../db.h"
+#include "../xattrdetector.h"
 #include "filemapping.h"
 #include "file.h"
 
@@ -92,7 +93,13 @@ void FileFetchJobTest::testExtendedAttributes()
 {
     QTemporaryFile tempFile(QLatin1String(BUILDDIR "testExtendedAttributes.XXXXXX"));
     tempFile.open();
+
     QString fileName = tempFile.fileName();
+    XattrDetector detector;
+    if (!detector.isSupported(fileName)) {
+        kWarning() << "Xattr not supported on this filesystem";
+        return;
+    }
 
     FileMapping fileMap(tempFile.fileName());
     QSqlDatabase sqlDb = fileMappingDb();
@@ -127,6 +134,12 @@ void FileFetchJobTest::testFolder()
     // We use the same prefix as the tmpfile
     KTempDir tmpDir(f.fileName().mid(0, f.fileName().lastIndexOf('/') + 1));
     QString fileName = tmpDir.name();
+
+    XattrDetector detector;
+    if (!detector.isSupported(fileName)) {
+        kWarning() << "Xattr not supported on this filesystem";
+        return;
+    }
 
     FileMapping fileMap(tmpDir.name());
     QSqlDatabase sqlDb = fileMappingDb();
