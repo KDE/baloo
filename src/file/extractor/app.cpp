@@ -137,6 +137,7 @@ void App::processNextUrl()
     Result result(url, mimetype);
     result.setId(file.id());
     result.setDocument(doc);
+    result.setReadOnly(m_bData);
 
     QList<KFileMetaData::ExtractorPlugin*> exList = m_manager.fetchExtractors(mimetype);
 

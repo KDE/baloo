@@ -31,12 +31,12 @@
 #include <kfilemetadata/typeinfo.h>
 
 // In order to use it in a vector
-Result::Result(): ExtractionResult(QString(), QString()), m_docId(0)
+Result::Result(): ExtractionResult(QString(), QString()), m_docId(0), m_readOnly(false)
 {
 }
 
 Result::Result(const QString& url, const QString& mimetype)
-    : KFileMetaData::ExtractionResult(url, mimetype), m_docId(0)
+    : KFileMetaData::ExtractionResult(url, mimetype), m_docId(0), m_readOnly(false)
 {
 }
 
@@ -72,7 +72,9 @@ void Result::add(KFileMetaData::Property::Property property, const QVariant& val
 
 void Result::append(const QString& text)
 {
-    m_termGenForText.index_text(text.toUtf8().constData());
+    if (!m_readOnly) {
+        m_termGenForText.index_text(text.toUtf8().constData());
+    }
 }
 
 void Result::addType(KFileMetaData::Type::Type type)
@@ -80,6 +82,11 @@ void Result::addType(KFileMetaData::Type::Type type)
     KFileMetaData::TypeInfo ti(type);
     QString t = 'T' + ti.name().toLower();
     m_doc.add_boolean_term(t.toUtf8().constData());
+}
+
+void Result::setReadOnly(bool readOnly)
+{
+    m_readOnly = readOnly;
 }
 
 void Result::save(Xapian::WritableDatabase& db)

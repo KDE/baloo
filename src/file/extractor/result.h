@@ -36,6 +36,11 @@ public:
     virtual void append(const QString& text);
     virtual void addType(KFileMetaData::Type::Type type);
 
+    /**
+     * Read only mode is a special mode where plain text changes are ignored
+     * so this way, this class will consume less memory
+     */
+    void setReadOnly(bool readOnly);
     void save(Xapian::WritableDatabase& db);
 
     void setId(uint id);
@@ -55,6 +60,7 @@ private:
     Xapian::TermGenerator m_termGenForText;
 
     QVariantMap m_map;
+    bool m_readOnly;
 };
 
 #endif // EXTRACTIONRESULT_H
