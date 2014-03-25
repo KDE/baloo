@@ -147,7 +147,7 @@ void App::processNextUrl()
     m_termCount += result.document().termlist_count();
 
     // Documents with these many terms occupy about 10 mb
-    if (m_termCount >= 10000) {
+    if (m_termCount >= 10000 && !m_bData) {
         saveChanges();
         return;
     }
