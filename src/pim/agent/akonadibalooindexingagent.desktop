@@ -2,6 +2,7 @@
 Name=Akonadi Baloo Indexing Agent
 Name[bs]=Akonadi Baloo agent za indeksiranje
 Name[ca]=Agent d'indexació Baloo de l'Akonadi
+Name[ca@valencia]=Agent d'indexació Baloo de l'Akonadi
 Name[da]=Baloo indekseringsagent til Akonadi
 Name[de]=Akonadi-Indizierungsagent für Baloo
 Name[el]=Πράκτορας δεικτοδότησης Baloo Akonadi
@@ -25,6 +26,7 @@ Name[sr@ijekavian]=Балуов агент индексирања над Ако�
 Name[sr@ijekavianlatin]=Balooov agent indeksiranja nad Akonadijem
 Name[sr@latin]=Balooov agent indeksiranja nad Akonadijem
 Name[sv]=Akonadi Baloo-indexeringsmodul
+Name[tr]=Akonadi Baloo Dizinleme Aracı
 Name[uk]=Агент індексування Baloo для Akonadi
 Name[x-test]=xxAkonadi Baloo Indexing Agentxx
 Name[zh_CN]=Akonadi Baloo 索引器

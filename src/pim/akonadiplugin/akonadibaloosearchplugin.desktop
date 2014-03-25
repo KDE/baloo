@@ -2,6 +2,7 @@
 Type=AkonadiSearchPlugin
 Name=Akonadi Baloo Search Plugin
 Name[ca]=Connector de cerca Baloo de l'Akonadi
+Name[ca@valencia]=Connector de cerca Baloo de l'Akonadi
 Name[da]=Akonadi-søgeplugin til Baloo
 Name[de]=Akonadi-Suchmodul für Baloo
 Name[el]=Πράκτορας αναζήτησης Baloo Akonadi
@@ -25,6 +26,7 @@ Name[sr@ijekavian]=Балуов прикључак претраге над Ак�
 Name[sr@ijekavianlatin]=Balooov priključak pretrage nad Akonadijem
 Name[sr@latin]=Balooov priključak pretrage nad Akonadijem
 Name[sv]=Akonadi Baloo-sökinsticksprogram
+Name[tr]=Akonadi Baloo Arama Eklentisi
 Name[uk]=Агент пошуку Baloo для Akonadi
 Name[x-test]=xxAkonadi Baloo Search Pluginxx
 Name[zh_CN]=Akonadi Baloo 搜索插件

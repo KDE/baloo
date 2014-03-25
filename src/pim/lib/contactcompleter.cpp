@@ -38,7 +38,14 @@ ContactCompleter::ContactCompleter(const QString& prefix, int limit)
 QStringList ContactCompleter::complete()
 {
     const QString dir = KGlobal::dirs()->localxdgdatadir() + "baloo/emailContacts/";
-    Xapian::Database db(dir.toUtf8().constData());
+    Xapian::Database db;
+    try {
+        db = Xapian::Database(dir.toUtf8().constData());
+    }
+    catch (const Xapian::DatabaseError& e) {
+        kWarning() << QString::fromStdString(e.get_type()) << QString::fromStdString(e.get_description());
+        return QStringList();
+    }
 
     Xapian::QueryParser parser;
     parser.set_database(db);
