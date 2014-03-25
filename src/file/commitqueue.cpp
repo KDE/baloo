@@ -27,6 +27,8 @@
 #include <KDiskFreeSpaceInfo>
 #include <QCoreApplication>
 
+#include <malloc.h>
+
 Baloo::CommitQueue::CommitQueue(Database* db, QObject* parent)
     : QObject(parent)
     , m_db(db)
@@ -107,6 +109,8 @@ void Baloo::CommitQueue::commit()
 
         m_docsToAdd.clear();
         m_docsToRemove.clear();
+
+        malloc_trim(0);
 
         Q_EMIT committed();
     }
