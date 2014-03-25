@@ -64,7 +64,15 @@ bool Database::init()
     }
     catch (const Xapian::DatabaseLockError&) {
     }
-    m_xapianDb = new Xapian::Database(path.constData());
+
+    try {
+        m_xapianDb = new Xapian::Database(path.constData());
+    }
+    catch (const Xapian::DatabaseError& err) {
+        kError() << "Serious Error: " << err.get_error_string();
+        kError() << err.get_msg().c_str() << err.get_context().c_str() << err.get_description().c_str();
+        return false;
+    }
 
     m_sqlDb = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE"));
     m_sqlDb->setDatabaseName(m_path + "/fileMap.sqlite3");

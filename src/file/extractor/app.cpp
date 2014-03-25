@@ -49,7 +49,10 @@ App::App(QObject* parent)
     m_path = KGlobal::dirs()->localxdgdatadir() + "baloo/file";
 
     m_db.setPath(m_path);
-    m_db.init();
+    if (!m_db.init()) {
+        QTimer::singleShot(0, QCoreApplication::instance(), SLOT(quit()));
+        return;
+    }
 
     const KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
     m_bData = args->isSet("bdata");
@@ -134,6 +137,7 @@ void App::processNextUrl()
     Result result(url, mimetype);
     result.setId(file.id());
     result.setDocument(doc);
+    result.setReadOnly(m_bData);
 
     QList<KFileMetaData::ExtractorPlugin*> exList = m_manager.fetchExtractors(mimetype);
 
@@ -144,7 +148,7 @@ void App::processNextUrl()
     m_termCount += result.document().termlist_count();
 
     // Documents with these many terms occupy about 10 mb
-    if (m_termCount >= 10000) {
+    if (m_termCount >= 10000 && !m_bData) {
         saveChanges();
         return;
     }
