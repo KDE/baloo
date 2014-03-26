@@ -89,23 +89,12 @@ void Result::setReadOnly(bool readOnly)
     m_readOnly = readOnly;
 }
 
-void Result::save(Xapian::WritableDatabase& db)
+void Result::finish()
 {
     QJson::Serializer serializer;
     QByteArray json = serializer.serialize(m_map);
     m_doc.set_data(json.constData());
     Baloo::updateIndexingLevel(m_doc, 2);
-
-    // We keep trying to write if someone else has modified the database
-    while (true) {
-        try {
-            db.replace_document(m_docId, m_doc);
-            break;
-        }
-        catch (const Xapian::DatabaseModifiedError&) {
-            db.reopen();
-        }
-    }
 }
 
 void Result::setDocument(const Xapian::Document& doc)
