@@ -92,3 +92,31 @@ QString XapianDocument::fetchTermStartsWith(const QByteArray& term)
         return QString();
     }
 }
+
+void XapianDocument::removeTermStartsWith(const QByteArray& prefix)
+{
+    Xapian::TermIterator it = m_doc.termlist_begin();
+    it.skip_to(prefix.constData());
+    while (it != m_doc.termlist_end()){
+        const std::string t = *it;
+        const QByteArray term = QByteArray::fromRawData(t.c_str(), t.size());
+        if (!term.startsWith(prefix)) {
+            break;
+        }
+
+        // The term should not just be the prefix
+        if (term.size() <= prefix.size()) {
+            break;
+        }
+
+        // The term should not contain any more upper case letters
+        if (isupper(term.at(prefix.size()))) {
+            it++;
+            continue;
+        }
+
+        it++;
+        m_doc.remove_term(t);
+    }
+}
+

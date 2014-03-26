@@ -42,6 +42,7 @@ target_link_libraries(modifyjobtest
   ${XAPIAN_LIBRARIES}
   ${QJSON_LIBRARIES}
   baloocore
+  balooxapian
 )
 
 # Pass CMAKE_CURRENT_BINARY_DIR so tests can use it to create some of the

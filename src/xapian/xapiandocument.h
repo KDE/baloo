@@ -51,6 +51,7 @@ public:
 
     QString fetchTermStartsWith(const QByteArray& term);
 
+    void removeTermStartsWith(const QByteArray& prefix);
 private:
     Xapian::Document m_doc;
     Xapian::TermGenerator m_termGen;

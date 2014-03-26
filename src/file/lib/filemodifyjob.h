@@ -46,8 +46,10 @@ public:
         Error_FileDoesNotExist = KJob::UserDefinedError + 1,
         Error_EmptyFile,
     };
+
 private Q_SLOTS:
     void doStart();
+    void slotCommitted();
 
 private:
     class Private;

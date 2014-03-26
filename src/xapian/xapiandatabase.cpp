@@ -124,7 +124,7 @@ XapianDocument XapianDatabase::document(uint id)
         m_db->reopen();
         return document(id);
     }
-    catch (const Xapian::DatabaseError&) {
+    catch (const Xapian::Error&) {
         return XapianDocument();
     }
 }

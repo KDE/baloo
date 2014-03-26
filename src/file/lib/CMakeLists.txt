@@ -25,6 +25,7 @@ target_link_libraries(baloofiles
     ${XAPIAN_LIBRARIES}
     ${QJSON_LIBRARIES}
     baloocore
+    balooxapian
 )
 
 set_target_properties(baloofiles PROPERTIES
