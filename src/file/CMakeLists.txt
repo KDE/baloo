@@ -20,7 +20,6 @@ set(file_SRCS
     fileindexingqueue.cpp
     commitqueue.cpp
     basicindexingjob.cpp
-    xapiandocument.cpp
     fileindexingjob.cpp
     eventmonitor.cpp
     util.cpp
@@ -58,6 +57,7 @@ target_link_libraries(baloo_file
     ${QJSON_LIBRARIES}
     baloocore
     baloofiles
+    balooxapian
 )
 
 install(TARGETS baloo_file ${INSTALL_TARGETS_DEFAULT_ARGS})

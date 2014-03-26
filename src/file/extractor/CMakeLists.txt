@@ -4,7 +4,6 @@ set(EXTRACTOR_SRCS
   result.cpp
   ../priority.cpp
   ../basicindexingjob.cpp
-  ../xapiandocument.cpp
   ../database.cpp
   ../util.cpp
 )
@@ -19,6 +18,7 @@ target_link_libraries(baloo_file_extractor
   ${XAPIAN_LIBRARIES}
   ${QJSON_LIBRARIES}
   baloofiles
+  balooxapian
 )
 
 install(TARGETS baloo_file_extractor DESTINATION ${BIN_INSTALL_DIR})

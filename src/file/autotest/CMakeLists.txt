@@ -74,7 +74,6 @@ set(basicIndexingQueue_SRC
     basicindexingqueuetest.cpp
     ../basicindexingqueue.cpp
     ../basicindexingjob.cpp
-    ../xapiandocument.cpp
     ../indexingqueue.cpp
     ../fileindexerconfig.cpp
     ../fileexcludefilters.cpp
@@ -92,5 +91,6 @@ target_link_libraries(basicindexingqueuetest
   ${KDE4_KDECORE_LIBS}
   ${KFILEMETADATA_LIBRARY}
   ${XAPIAN_LIBRARIES}
+  balooxapian
 )
 

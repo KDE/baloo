@@ -24,13 +24,15 @@
 #include <xapian.h>
 #include <QString>
 
+#include "xapian_export.h"
+
 namespace Baloo {
 
 /**
  * This class is just a light wrapper over Xapian::Document
  * which provides nice Qt apis.
  */
-class XapianDocument
+class BALOO_XAPIAN_EXPORT XapianDocument
 {
 public:
     XapianDocument();

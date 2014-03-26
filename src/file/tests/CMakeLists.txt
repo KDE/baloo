@@ -23,7 +23,6 @@ kde4_add_executable(basicindexingqueuetest
                     ../basicindexingqueue.cpp
                     ../indexingqueue.cpp
                     ../basicindexingjob.cpp
-                    ../xapiandocument.cpp
                     ../database.cpp
                     ../lib/filemapping.cpp
                     ../commitqueue.cpp
@@ -37,4 +36,5 @@ target_link_libraries(basicindexingqueuetest
   ${XAPIAN_LIBRARIES}
   ${KFILEMETADATA_LIBRARY}
   baloocore
+  balooxapian
 )
