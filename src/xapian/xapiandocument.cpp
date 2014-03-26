@@ -27,6 +27,12 @@ XapianDocument::XapianDocument()
     m_termGen.set_document(m_doc);
 }
 
+XapianDocument::XapianDocument(const Xapian::Document& doc)
+    : m_doc(doc)
+{
+    m_termGen.set_document(m_doc);
+}
+
 void XapianDocument::addTerm(const QString& term, const QString& prefix)
 {
     QByteArray arr = prefix.toUtf8();
@@ -70,3 +76,19 @@ void XapianDocument::addValue(int pos, const QString& value)
     m_doc.add_value(pos, value.toUtf8().constData());
 }
 
+QString XapianDocument::fetchTermStartsWith(const QByteArray& term)
+{
+    try {
+        Xapian::TermIterator it = m_doc.termlist_begin();
+        it.skip_to(term.constData());
+
+        if (it == m_doc.termlist_end()) {
+            return QString();
+        }
+        std::string str = *it;
+        return QString::fromUtf8(str.c_str(), str.length());
+    }
+    catch (const Xapian::Error&) {
+        return QString();
+    }
+}

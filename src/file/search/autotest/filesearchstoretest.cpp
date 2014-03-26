@@ -94,7 +94,7 @@ void FileSearchStoreTest::insertText(int id, const QString& text)
     wdb->replace_document(id, doc);
     wdb->commit();
 
-    m_db->xapianDatabase()->reopen();
+    m_db->xapianDatabase()->db()->reopen();
 }
 
 void FileSearchStoreTest::insertRating(int id, int rating)
@@ -110,7 +110,7 @@ void FileSearchStoreTest::insertRating(int id, int rating)
     wdb->replace_document(id, doc);
     wdb->commit();
 
-    m_db->xapianDatabase()->reopen();
+    m_db->xapianDatabase()->db()->reopen();
 }
 
 

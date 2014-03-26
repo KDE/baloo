@@ -36,6 +36,7 @@ class BALOO_XAPIAN_EXPORT XapianDocument
 {
 public:
     XapianDocument();
+    XapianDocument(const Xapian::Document& doc);
 
     void addTerm(const QString& term, const QString& prefix);
     void addBoolTerm(const QString& term, const QString& prefix = QString());
@@ -47,6 +48,8 @@ public:
     void addValue(int pos, const QString& value);
 
     Xapian::Document doc();
+
+    QString fetchTermStartsWith(const QByteArray& term);
 
 private:
     Xapian::Document m_doc;

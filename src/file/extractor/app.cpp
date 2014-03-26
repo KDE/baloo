@@ -123,7 +123,7 @@ void App::processNextUrl()
     Xapian::Document doc;
     if (file.fetched()) {
         try {
-            doc = m_db.xapianDatabase()->get_document(file.id());
+            doc = m_db.xapianDatabase()->db()->get_document(file.id());
         }
         catch (const Xapian::DocNotFoundError&) {
             BasicIndexingJob basicIndexer(&m_db.sqlDatabase(), file, mimetype);
@@ -210,7 +210,7 @@ void App::saveChanges()
         }
 
         db.commit();
-        m_db.xapianDatabase()->reopen();
+        m_db.xapianDatabase()->db()->reopen();
         m_results.clear();
         m_docsToRemove.clear();
         m_termCount = 0;

@@ -34,6 +34,7 @@ target_link_libraries(metadatamovertest
   ${QT_QTSQL_LIBRARY}
   ${KDE4_KDECORE_LIBS}
   ${XAPIAN_LIBRARIES}
+  balooxapian
 )
 
 #
