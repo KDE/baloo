@@ -45,14 +45,22 @@ void FileIndexingQueue::fillQueue()
     if (m_fileQueue.size() >= m_maxSize)
         return;
 
-    Xapian::Enquire enquire(*m_db->xapianDatabase());
-    enquire.set_query(Xapian::Query("Z1"));
+    try {
+        Xapian::Database* db = m_db->xapianDatabase()->db();
+        Xapian::Enquire enquire(*db);
+        enquire.set_query(Xapian::Query("Z1"));
 
-    m_db->xapianDatabase()->reopen();
-    Xapian::MSet mset = enquire.get_mset(0, m_maxSize - m_fileQueue.size());
-    Xapian::MSetIterator it = mset.begin();
-    for (; it != mset.end(); it++) {
-        m_fileQueue << *it;
+        Xapian::MSet mset = enquire.get_mset(0, m_maxSize - m_fileQueue.size());
+        Xapian::MSetIterator it = mset.begin();
+        for (; it != mset.end(); it++) {
+            m_fileQueue << *it;
+        }
+    }
+    catch (const Xapian::DatabaseModifiedError&) {
+        fillQueue();
+    }
+    catch (const Xapian::Error&) {
+        return;
     }
 }
 
@@ -80,7 +88,7 @@ void FileIndexingQueue::processNextIteration()
 void FileIndexingQueue::slotFinishedIndexingFile(KJob*)
 {
     // The process would have modified the db
-    m_db->xapianDatabase()->reopen();
+    m_db->xapianDatabase()->db()->reopen();
     if (m_fileQueue.isEmpty()) {
         fillQueue();
     }
@@ -89,8 +97,8 @@ void FileIndexingQueue::slotFinishedIndexingFile(KJob*)
 
 void FileIndexingQueue::slotIndexingFailed(uint id)
 {
-    m_db->xapianDatabase()->reopen();
-    Xapian::Document doc = m_db->xapianDatabase()->get_document(id);
+    m_db->xapianDatabase()->db()->reopen();
+    Xapian::Document doc = m_db->xapianDatabase()->db()->get_document(id);
 
     updateIndexingLevel(doc, -1);
     Q_EMIT newDocument(id, doc);

@@ -17,6 +17,7 @@ target_link_libraries(baloo_file_cleaner
   ${KDE4_KDEUI_LIBS}
   ${KDE4_KIO_LIBS}
   ${XAPIAN_LIBRARIES}
+  balooxapian
 )
 
 install(TARGETS baloo_file_cleaner DESTINATION ${BIN_INSTALL_DIR})

@@ -25,6 +25,9 @@
 #include "searchstore.h"
 #include "filecustommetadata.h"
 
+#include "xapiandatabase.h"
+#include "xapiandocument.h"
+
 #include <KDebug>
 
 #include <QTimer>
@@ -49,11 +52,15 @@ public:
     bool commentSet;
     bool tagsSet;
 
+    XapianDatabase* m_db;
+    QStringList m_updatedFiles;
+
     Private()
         : rating(0)
         , ratingSet(false)
         , commentSet(false)
         , tagsSet(false)
+        , m_db(0)
     {}
 };
 
@@ -85,42 +92,8 @@ void FileModifyJob::start()
     QTimer::singleShot(0, this, SLOT(doStart()));
 }
 
-namespace {
-
-void removeTerms(Xapian::Document& doc, const std::string& p) {
-    QByteArray prefix = QByteArray::fromRawData(p.c_str(), p.size());
-
-    Xapian::TermIterator it = doc.termlist_begin();
-    it.skip_to(p);
-    while (it != doc.termlist_end()){
-        const std::string t = *it;
-        const QByteArray term = QByteArray::fromRawData(t.c_str(), t.size());
-        if (!term.startsWith(prefix)) {
-            break;
-        }
-
-        // The term should not just be the prefix
-        if (term.size() <= prefix.size()) {
-            break;
-        }
-
-        // The term should not contain any more upper case letters
-        if (isupper(term.at(prefix.size()))) {
-            it++;
-            continue;
-        }
-
-        it++;
-        doc.remove_term(t);
-    }
-}
-
-}
-
 void FileModifyJob::doStart()
 {
-    QStringList updatedFiles;
-
     Q_FOREACH (const File& file, d->files) {
         FileMapping fileMap(file.url());
         if (!file.id().isEmpty()) {
@@ -148,7 +121,7 @@ void FileModifyJob::doStart()
             return;
         }
 
-        updatedFiles << fileMap.url();
+        d->m_updatedFiles << fileMap.url();
         const QString furl = fileMap.url();
 
         if (d->ratingSet) {
@@ -166,56 +139,36 @@ void FileModifyJob::doStart()
         }
 
         // Save in Xapian
-        Xapian::WritableDatabase db;
-        try {
-            db = Xapian::WritableDatabase(fileIndexDbPath(), Xapian::DB_CREATE_OR_OPEN);
-        }
-        catch (const Xapian::DatabaseLockError& err) {
-            kError() << err.get_msg().c_str();
-            kError() << "Trying again in 20 msecs";
-            QTimer::singleShot(20, this, SLOT(doStart()));
-        }
-        Xapian::Document doc;
+        d->m_db = new XapianDatabase(QString::fromUtf8(fileIndexDbPath().c_str()));
+        XapianDocument doc = d->m_db->document(fileMap.id());
 
-        try {
-            doc = db.get_document(fileMap.id());
-
-            removeTerms(doc, "R");
-            removeTerms(doc, "TA");
-            removeTerms(doc, "TAG");
-            removeTerms(doc, "C");
-        }
-        catch (const Xapian::DocNotFoundError&) {
-        }
+        doc.removeTermStartsWith("R");
+        doc.removeTermStartsWith("TA");
+        doc.removeTermStartsWith("TAG");
+        doc.removeTermStartsWith("C");
 
         const int rating = d->rating;
         if (rating > 0) {
-            const QString ratingStr = QLatin1Char('R') + QString::number(d->rating);
-            doc.add_boolean_term(ratingStr.toUtf8().constData());
+            doc.addBoolTerm(rating, "R");
         }
 
-        Xapian::TermGenerator termGen;
-        termGen.set_document(doc);
-
         Q_FOREACH (const QString& tag, d->tags) {
-            termGen.index_text(tag.toUtf8().constData(), 1, "TA");
-
-            const QString tagStr = QLatin1String("TAG-") + tag;
-            doc.add_boolean_term(tagStr.toUtf8().constData());
+            doc.indexText(tag, "TA");
+            doc.addBoolTerm(tag, "TAG-");
         }
 
         if (!d->comment.isEmpty()) {
-            Xapian::TermGenerator termGen;
-            termGen.set_document(doc);
-
-            const QByteArray str = d->comment.toUtf8();
-            termGen.index_text(str.constData(), 1, "C");
+            doc.indexText(d->comment, "C");
         }
 
-        db.replace_document(fileMap.id(), doc);
-        db.commit();
+        d->m_db->replaceDocument(fileMap.id(), doc.doc());
+        connect(d->m_db, SIGNAL(committed()), this, SLOT(slotCommitted()));
+        d->m_db->commit();
     }
+}
 
+void FileModifyJob::slotCommitted()
+{
     // Notify the world?
     QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/files"),
                                                       QLatin1String("org.kde"),
@@ -223,7 +176,7 @@ void FileModifyJob::doStart()
 
     QVariantList vl;
     vl.reserve(1);
-    vl << QVariant(updatedFiles);
+    vl << QVariant(d->m_updatedFiles);
     message.setArguments(vl);
 
     QDBusConnection::sessionBus().send(message);

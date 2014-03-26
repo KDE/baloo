@@ -37,6 +37,7 @@ public:
     bool m_isNegated;
 
     QList<Term> m_subTerms;
+    QVariantHash m_userData;
 
     Private() {
         m_op = None;
@@ -204,6 +205,16 @@ Term::Comparator Term::comparator() const
 void Term::setComparator(Term::Comparator c)
 {
     d->m_comp = c;
+}
+
+void Term::setUserData(const QString& name, const QVariant& value)
+{
+    d->m_userData.insert(name, value);
+}
+
+QVariant Term::userData(const QString& name) const
+{
+    return d->m_userData.value(name);
 }
 
 QVariantMap Term::toVariantMap() const

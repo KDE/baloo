@@ -54,25 +54,8 @@ bool Database::init()
     if (m_initialized)
         return true;
 
-    // Create the path if it does not exist
-    QDir().mkpath(m_path);
-
     // Create the Xapian DB
-    QByteArray path = m_path.toUtf8();
-    try {
-        Xapian::WritableDatabase(path.constData(), Xapian::DB_CREATE_OR_OPEN);
-    }
-    catch (const Xapian::DatabaseLockError&) {
-    }
-
-    try {
-        m_xapianDb = new Xapian::Database(path.constData());
-    }
-    catch (const Xapian::DatabaseError& err) {
-        kError() << "Serious Error: " << err.get_error_string();
-        kError() << err.get_msg().c_str() << err.get_context().c_str() << err.get_description().c_str();
-        return false;
-    }
+    m_xapianDb = new Baloo::XapianDatabase(m_path);
 
     m_sqlDb = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE"));
     m_sqlDb->setDatabaseName(m_path + "/fileMap.sqlite3");
@@ -128,7 +111,7 @@ QSqlDatabase& Database::sqlDatabase()
     return *m_sqlDb;
 }
 
-Xapian::Database* Database::xapianDatabase()
+Baloo::XapianDatabase* Database::xapianDatabase()
 {
     return m_xapianDb;
 }

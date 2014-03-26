@@ -41,7 +41,6 @@ public:
      * so this way, this class will consume less memory
      */
     void setReadOnly(bool readOnly);
-    void save(Xapian::WritableDatabase& db);
 
     void setId(uint id);
     void setDocument(const Xapian::Document& doc);
@@ -52,6 +51,12 @@ public:
     Xapian::Document& document() {
         return m_doc;
     }
+
+    /**
+     * Applies the finishing touches on the document, and makes
+     * it ready to be pushed into the db
+     */
+    void finish();
 
 private:
     uint m_docId;

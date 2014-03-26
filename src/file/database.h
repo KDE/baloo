@@ -26,7 +26,7 @@
 #include <QObject>
 #include <QSqlDatabase>
 
-#include <xapian.h>
+#include "xapiandatabase.h"
 
 class Database : public QObject
 {
@@ -41,14 +41,14 @@ public:
     bool isInitialized();
 
     QSqlDatabase& sqlDatabase();
-    Xapian::Database* xapianDatabase();
+    Baloo::XapianDatabase* xapianDatabase();
 
 private:
     QString m_path;
     QString m_connectionName;
     bool m_initialized;
 
-    Xapian::Database* m_xapianDb;
+    Baloo::XapianDatabase* m_xapianDb;
     QSqlDatabase* m_sqlDb;
 };
 

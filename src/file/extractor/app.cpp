@@ -54,6 +54,9 @@ App::App(QObject* parent)
         return;
     }
 
+    connect(m_db.xapianDatabase(), SIGNAL(committed()),
+            this, SLOT(slotCommitted()));
+
     const KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
     m_bData = args->isSet("bdata");
 
@@ -123,7 +126,7 @@ void App::processNextUrl()
     Xapian::Document doc;
     if (file.fetched()) {
         try {
-            doc = m_db.xapianDatabase()->get_document(file.id());
+            doc = m_db.xapianDatabase()->db()->get_document(file.id());
         }
         catch (const Xapian::DocNotFoundError&) {
             BasicIndexingJob basicIndexer(&m_db.sqlDatabase(), file, mimetype);
@@ -190,38 +193,24 @@ void App::saveChanges()
     if (m_results.isEmpty())
         return;
 
-    QList<QString> updatedFiles;
+    m_updatedFiles.clear();
 
-    try {
-        Xapian::WritableDatabase db(m_path.toUtf8().constData(), Xapian::DB_CREATE_OR_OPEN);
-        for (int i = 0; i<m_results.size(); i++) {
-            Result& res = m_results[i];
-            res.save(db);
+    for (int i = 0; i<m_results.size(); i++) {
+        Result& res = m_results[i];
+        res.finish();
 
-            updatedFiles << res.inputUrl();
-        }
-
-        Q_FOREACH (Xapian::docid id, m_docsToRemove) {
-            try {
-                db.delete_document(id);
-            }
-            catch (const Xapian::DocNotFoundError&) {
-            }
-        }
-
-        db.commit();
-        m_db.xapianDatabase()->reopen();
-        m_results.clear();
-        m_docsToRemove.clear();
-        m_termCount = 0;
-
-        Q_EMIT saved();
+        m_db.xapianDatabase()->replaceDocument(res.id(), res.document());
+        m_updatedFiles << res.inputUrl();
     }
-    catch (const Xapian::DatabaseLockError& err) {
-        kError() << "Cannot open database in write mode:" << err.get_msg().c_str();
-        QTimer::singleShot(100, this, SLOT(saveChanges()));
-        return;
-    }
+
+    m_db.xapianDatabase()->commit();
+}
+
+void App::slotCommitted()
+{
+    m_results.clear();
+    m_termCount = 0;
+    m_updatedFiles.clear();
 
     QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/files"),
                                                       QLatin1String("org.kde"),
@@ -229,14 +218,17 @@ void App::saveChanges()
 
     QVariantList vl;
     vl.reserve(1);
-    vl << QVariant(updatedFiles);
+    vl << QVariant(m_updatedFiles);
     message.setArguments(vl);
 
     QDBusConnection::sessionBus().send(message);
+
+    Q_EMIT saved();
 }
+
 
 void App::deleteDocument(unsigned docid)
 {
-    m_docsToRemove << docid;
+    m_db.xapianDatabase()->deleteDocument(docid);
 }
 

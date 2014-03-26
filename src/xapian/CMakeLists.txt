@@ -2,6 +2,8 @@ add_definitions(${KDE4_ENABLE_EXCEPTIONS})
 
 set(XAPIAN_SRCS
     xapiansearchstore.cpp
+    xapiandocument.cpp
+    xapiandatabase.cpp
 )
 
 kde4_add_library(balooxapian SHARED ${XAPIAN_SRCS})
