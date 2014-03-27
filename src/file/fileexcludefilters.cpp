@@ -166,8 +166,7 @@ QStringList Baloo::sourceCodeMimeTypes()
 
 QStringList Baloo::defaultExcludeMimetypes()
 {
-    // By default we want to index everything apart from source code
-    return sourceCodeMimeTypes();
+    return QStringList();
 }
 
 int Baloo::defaultExcludeMimetypesVersion()
