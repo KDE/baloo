@@ -96,7 +96,11 @@ bool BasicIndexingQueue::process(FileMapping& file, UpdateDirFlags flags)
 {
     bool startedIndexing = false;
 
-    QString mimetype = KMimeType::findByUrl(QUrl::fromLocalFile(file.url()))->name();
+    // This mimetype may not be completely accurate, but that's okay. This is
+    // just the initial phase of indexing. The second phase can try to find
+    // a more accurate mimetype.
+    QString mimetype = KMimeType::findByUrl(QUrl::fromLocalFile(file.url()), 0,
+                                            true /*is Local*/, true /*Fast*/)->name();
 
     bool forced = flags & ForceUpdate;
     bool recursive = flags & UpdateRecursive;
