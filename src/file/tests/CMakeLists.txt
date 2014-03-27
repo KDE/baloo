@@ -41,7 +41,7 @@ target_link_libraries(basicindexingqueuetest
 
 kde4_add_executable(fileindexingqueuetest
                     fileindexingqueuetest.cpp
-                    ../fileindexingjob.cpp
+                    fileindexer.cpp
                     ../fileindexerconfig.cpp
                     ../regexpcache.cpp
                     ../fileexcludefilters.cpp

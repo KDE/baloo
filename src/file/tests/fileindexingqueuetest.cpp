@@ -25,12 +25,23 @@
 #include <QTime>
 #include <QCoreApplication>
 
+#include "fileindexer.h"
+
 #include "../basicindexingqueue.h"
-#include "../fileindexingjob.h"
 #include "../commitqueue.h"
 #include "../database.h"
 #include "../fileindexerconfig.h"
 #include "../lib/filemapping.h"
+
+namespace {
+    QString contents(const QString& url) {
+        QFile file(url);
+        file.open(QIODevice::ReadOnly);
+
+        QTextStream stream(&file);
+        return stream.readAll();
+    }
+}
 
 int main(int argc, char** argv)
 {
@@ -63,17 +74,31 @@ int main(int argc, char** argv)
     Xapian::MSet mset = enquire.get_mset(0, 50000);
     Xapian::MSetIterator it = mset.begin();
 
-    QTime timer;
-    timer.start();
-    for (; it != mset.end(); it++) {
-        QVector<uint> files;
-        files << *it;
+    QHash<QString, int> m_timePerType;
+    QHash<QString, int> m_numPerType;
 
-        Baloo::FileIndexingJob* job = new Baloo::FileIndexingJob(files);
-        job->setCustomDbPath(db.path());
+    uint totalTime = 0;
+    for (; it != mset.end(); it++) {
+        Baloo::FileMapping fileMap(*it);
+        if (!fileMap.fetch(db.sqlDatabase()))
+            continue;
+
+        Baloo::FileIndexer* job = new Baloo::FileIndexer(fileMap.id(), fileMap.url());
+        job->setCustomPath(db.path());
         job->exec();
+
+        qDebug() << fileMap.id() << fileMap.url() << job->mimeType() << job->elapsed();
+        totalTime += job->elapsed();
+
+        m_timePerType[job->mimeType()] += job->elapsed();
+        m_numPerType[job->mimeType()] += 1;
     }
 
-    qDebug() << "Elapsed:" << timer.elapsed();
+    qDebug() << "\n\n";
+    Q_FOREACH (const QString& type, m_timePerType.uniqueKeys()) {
+        double averageTime = m_timePerType.value(type) / m_numPerType.value(type);
+        qDebug() << type << averageTime;
+    }
+    qDebug() << "Total Elapsed:" << totalTime;
     return 0;
 }
