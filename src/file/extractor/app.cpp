@@ -46,7 +46,14 @@ App::App(QObject* parent)
     : QObject(parent)
     , m_termCount(0)
 {
-    m_path = KGlobal::dirs()->localxdgdatadir() + "baloo/file";
+    const KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
+
+    if (!args->getOption("db").isEmpty()) {
+        m_path = args->getOption("db");
+    }
+    else {
+        m_path = KGlobal::dirs()->localxdgdatadir() + "baloo/file";
+    }
 
     m_db.setPath(m_path);
     if (!m_db.init()) {
@@ -57,7 +64,6 @@ App::App(QObject* parent)
     connect(m_db.xapianDatabase(), SIGNAL(committed()),
             this, SLOT(slotCommitted()));
 
-    const KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
     m_bData = args->isSet("bdata");
 
     m_results.reserve(args->count());
