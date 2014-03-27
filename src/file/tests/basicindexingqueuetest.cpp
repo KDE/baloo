@@ -55,6 +55,28 @@ int main(int argc, char** argv)
     timer.start();
     int ret = app.exec();
 
+    commitQueue.commit();
     qDebug() << "Elapsed:" << timer.elapsed();
+
+    // Print the io usage
+    QFile file("/proc/self/io");
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+
+    QTextStream fs(&file);
+    QString str = fs.readAll();
+
+    QTextStream stream(&str);
+    while (!stream.atEnd()) {
+        QString str = stream.readLine();
+        if (str.startsWith("rchar")) {
+            ulong amt = str.mid(QString("rchar: ").size()).toULong();
+            qDebug() << "Read:" << amt / 1024  << "kb";
+        }
+        if (str.startsWith("wchar")) {
+            ulong amt = str.mid(QString("wchar: ").size()).toULong();
+            qDebug() << "Written:" << amt / 1024  << "kb";
+        }
+    }
+
     return ret;
 }
