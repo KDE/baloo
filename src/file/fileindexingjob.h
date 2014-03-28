@@ -41,6 +41,12 @@ class FileIndexingJob : public KJob
 public:
     FileIndexingJob(const QVector<uint>& files, QObject* parent = 0);
 
+    /**
+     * Set a custom path which should be sent to the baloo_file_extractor
+     * to use for the database. This is useful when debugging.
+     */
+    void setCustomDbPath(const QString& path);
+
     virtual void start();
 
 Q_SIGNALS:
@@ -61,6 +67,8 @@ private:
 
     QProcess* m_process;
     QTimer* m_processTimer;
+
+    QString m_customDbPath;
 };
 }
 

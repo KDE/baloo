@@ -38,3 +38,28 @@ target_link_libraries(basicindexingqueuetest
   baloocore
   balooxapian
 )
+
+kde4_add_executable(fileindexingqueuetest
+                    fileindexingqueuetest.cpp
+                    fileindexer.cpp
+                    ../fileindexerconfig.cpp
+                    ../regexpcache.cpp
+                    ../fileexcludefilters.cpp
+                    ../basicindexingqueue.cpp
+                    ../indexingqueue.cpp
+                    ../basicindexingjob.cpp
+                    ../database.cpp
+                    ../lib/filemapping.cpp
+                    ../commitqueue.cpp
+)
+
+target_link_libraries(fileindexingqueuetest
+  ${QT_QTCORE_LIBRARY}
+  ${QT_QTSQL_LIBRARY}
+  ${KDE4_KDECORE_LIBS}
+  ${KDE4_KIO_LIBS}
+  ${XAPIAN_LIBRARIES}
+  ${KFILEMETADATA_LIBRARY}
+  baloocore
+  balooxapian
+)

@@ -25,11 +25,23 @@
 #include <QTime>
 #include <QCoreApplication>
 
+#include "fileindexer.h"
+
 #include "../basicindexingqueue.h"
 #include "../commitqueue.h"
 #include "../database.h"
 #include "../fileindexerconfig.h"
 #include "../lib/filemapping.h"
+
+namespace {
+    QString contents(const QString& url) {
+        QFile file(url);
+        file.open(QIODevice::ReadOnly);
+
+        QTextStream stream(&file);
+        return stream.readAll();
+    }
+}
 
 int main(int argc, char** argv)
 {
@@ -50,52 +62,43 @@ int main(int argc, char** argv)
                      &commitQueue, SLOT(add(uint,Xapian::Document)));
 
     basicIQ.enqueue(Baloo::FileMapping(QDir::homePath()));
-
-    QTime timer;
-    timer.start();
-    int ret = app.exec();
+    app.exec();
 
     commitQueue.commit();
-    qDebug() << "Elapsed:" << timer.elapsed();
 
-    // Print the io usage
-    QFile file("/proc/self/io");
-    file.open(QIODevice::ReadOnly | QIODevice::Text);
+    // Now the file indexing
+    Xapian::Database* xdb = db.xapianDatabase()->db();
+    Xapian::Enquire enquire(*xdb);
+    enquire.set_query(Xapian::Query("Z1"));
 
-    QTextStream fs(&file);
-    QString str = fs.readAll();
+    Xapian::MSet mset = enquire.get_mset(0, 50000);
+    Xapian::MSetIterator it = mset.begin();
 
-    qDebug() << "------- IO ---------";
-    QTextStream stream(&str);
-    while (!stream.atEnd()) {
-        QString str = stream.readLine();
+    QHash<QString, int> m_timePerType;
+    QHash<QString, int> m_numPerType;
 
-        QString rchar("rchar: ");
-        if (str.startsWith(rchar)) {
-            ulong amt = str.mid(rchar.size()).toULong();
-            qDebug() << "Read:" << amt / 1024  << "kb";
-        }
+    uint totalTime = 0;
+    for (; it != mset.end(); it++) {
+        Baloo::FileMapping fileMap(*it);
+        if (!fileMap.fetch(db.sqlDatabase()))
+            continue;
 
-        QString wchar("wchar: ");
-        if (str.startsWith(wchar)) {
-            ulong amt = str.mid(wchar.size()).toULong();
-            qDebug() << "Write:" << amt / 1024  << "kb";
-        }
+        Baloo::FileIndexer* job = new Baloo::FileIndexer(fileMap.id(), fileMap.url());
+        job->setCustomPath(db.path());
+        job->exec();
 
-        QString read("read_bytes: ");
-        if (str.startsWith(read)) {
-            ulong amt = str.mid(read.size()).toULong();
-            qDebug() << "Actual Reads:" << amt / 1024  << "kb";
-        }
+        qDebug() << fileMap.id() << fileMap.url() << job->mimeType() << job->elapsed();
+        totalTime += job->elapsed();
 
-        QString write("write_bytes: ");
-        if (str.startsWith(write)) {
-            ulong amt = str.mid(write.size()).toULong();
-            qDebug() << "Actual Writes:" << amt / 1024  << "kb";
-        }
+        m_timePerType[job->mimeType()] += job->elapsed();
+        m_numPerType[job->mimeType()] += 1;
     }
-    qDebug() << "\nThe actual read/writes may be 0 because of an existing"
-             << "cache and /tmp being memory mapped";
 
-    return ret;
+    qDebug() << "\n\n";
+    Q_FOREACH (const QString& type, m_timePerType.uniqueKeys()) {
+        double averageTime = m_timePerType.value(type) / m_numPerType.value(type);
+        qDebug() << type << averageTime;
+    }
+    qDebug() << "Total Elapsed:" << totalTime;
+    return 0;
 }

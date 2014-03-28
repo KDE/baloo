@@ -42,7 +42,6 @@ public Q_SLOTS:
 private:
     QStringList m_oldIncludeFolders;
     QStringList m_oldExcludeFolders;
-    QStringList m_oldExcludeMimetypes;
 };
 }
 

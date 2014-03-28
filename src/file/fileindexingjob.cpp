@@ -78,6 +78,10 @@ void FileIndexingJob::start(const QVector<uint>& files)
     QStringList args;
     Q_FOREACH (const uint& file, files)
         args << QString::number(file);
+
+    if (!m_customDbPath.isEmpty()) {
+        args << "--db" << m_customDbPath;
+    }
     kDebug() << args;
 
     connect(m_process, SIGNAL(finished(int,QProcess::ExitStatus)),
@@ -141,5 +145,11 @@ void FileIndexingJob::slotProcessTimerTimeout()
     // Emulate a crash so that we narrow down the file which is taking too long
     slotIndexedFile(1, QProcess::CrashExit);
 }
+
+void FileIndexingJob::setCustomDbPath(const QString& path)
+{
+    m_customDbPath = path;
+}
+
 
 #include "fileindexingjob.moc"

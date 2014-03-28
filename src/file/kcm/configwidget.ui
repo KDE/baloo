@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <author>Sebastian Trueg</author>
+ <author>Vishesh Handa</author>
  <class>ConfigWidget</class>
  <widget class="QWidget" name="ConfigWidget">
   <property name="geometry">
@@ -52,13 +52,6 @@
        <widget class="FolderSelectionWidget" name="m_folderSelectionWidget" native="true"/>
       </item>
      </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QCheckBox" name="m_checkboxSourceCode">
-     <property name="text">
-      <string>Enable Developer Mode</string>
-     </property>
     </widget>
    </item>
    <item>

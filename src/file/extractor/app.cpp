@@ -46,7 +46,14 @@ App::App(QObject* parent)
     : QObject(parent)
     , m_termCount(0)
 {
-    m_path = KGlobal::dirs()->localxdgdatadir() + "baloo/file";
+    const KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
+
+    if (!args->getOption("db").isEmpty()) {
+        m_path = args->getOption("db");
+    }
+    else {
+        m_path = KGlobal::dirs()->localxdgdatadir() + "baloo/file";
+    }
 
     m_db.setPath(m_path);
     if (!m_db.init()) {
@@ -57,7 +64,6 @@ App::App(QObject* parent)
     connect(m_db.xapianDatabase(), SIGNAL(committed()),
             this, SLOT(slotCommitted()));
 
-    const KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
     m_bData = args->isSet("bdata");
 
     m_results.reserve(args->count());
@@ -123,19 +129,14 @@ void App::processNextUrl()
         }
     }
 
-    Xapian::Document doc;
-    if (file.fetched()) {
-        try {
-            doc = m_db.xapianDatabase()->db()->get_document(file.id());
-        }
-        catch (const Xapian::DocNotFoundError&) {
-            BasicIndexingJob basicIndexer(&m_db.sqlDatabase(), file, mimetype);
-            basicIndexer.index();
+    // We always run the basic indexing again. This is mostly so that the proper
+    // mimetype is set and we get proper type information.
+    // The mimetype fetched in the BasicIQ is fast but not accurate
+    BasicIndexingJob basicIndexer(&m_db.sqlDatabase(), file, mimetype);
+    basicIndexer.index();
 
-            file.setId(basicIndexer.id());
-            doc = basicIndexer.document();
-        }
-    }
+    file.setId(basicIndexer.id());
+    Xapian::Document doc = basicIndexer.document();
 
     Result result(url, mimetype);
     result.setId(file.id());
