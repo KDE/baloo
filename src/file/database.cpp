@@ -85,6 +85,16 @@ bool Database::init()
         return false;
     }
 
+    //
+    // WAL Journaling mode has much lower io writes than the traditional journal
+    // based indexing.
+    //
+    ret = query.exec("PRAGMA journal_mode = WAL");
+    if (!ret) {
+        kDebug() << "Could not set WAL journaling mode" << query.lastError().text();
+        return false;
+    }
+
     m_initialized = true;
     return true;
 }
