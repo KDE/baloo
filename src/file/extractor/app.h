@@ -52,10 +52,12 @@ Q_SIGNALS:
 
 private:
     void deleteDocument(unsigned docid);
+    void printDebug();
 
     QVector<Result> m_results;
     QStringList m_urls;
     bool m_bData;
+    bool m_debugEnabled;
 
     QString m_path;
 
