@@ -72,7 +72,7 @@ bool Database::init()
 
     QSqlQuery query(*m_sqlDb);
     bool ret = query.exec("CREATE TABLE files("
-                          "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                          "id INTEGER PRIMARY KEY, "
                           "url TEXT NOT NULL UNIQUE)");
     if (!ret) {
         kDebug() << "Could not create tags table" << query.lastError().text();
