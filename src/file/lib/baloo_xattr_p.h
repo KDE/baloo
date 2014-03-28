@@ -53,6 +53,13 @@ inline ssize_t baloo_getxattr(const QString& path, const QString& name, QString*
     const ssize_t size = extattr_get_file(encodedPath, EXTATTR_NAMESPACE_USER, attributeName, NULL, 0);
 #endif
 
+    if (size <= 0) {
+        if (value) {
+            value->clear();
+        }
+        return size;
+    }
+
     QByteArray data(size, Qt::Uninitialized);
 
 #if defined(Q_OS_LINUX)

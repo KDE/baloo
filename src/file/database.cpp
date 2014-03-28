@@ -72,7 +72,7 @@ bool Database::init()
 
     QSqlQuery query(*m_sqlDb);
     bool ret = query.exec("CREATE TABLE files("
-                          "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                          "id INTEGER PRIMARY KEY, "
                           "url TEXT NOT NULL UNIQUE)");
     if (!ret) {
         kDebug() << "Could not create tags table" << query.lastError().text();
@@ -82,6 +82,16 @@ bool Database::init()
     ret = query.exec("CREATE INDEX fileUrl_index ON files (url)");
     if (!ret) {
         kDebug() << "Could not create tags index" << query.lastError().text();
+        return false;
+    }
+
+    //
+    // WAL Journaling mode has much lower io writes than the traditional journal
+    // based indexing.
+    //
+    ret = query.exec("PRAGMA journal_mode = WAL");
+    if (!ret) {
+        kDebug() << "Could not set WAL journaling mode" << query.lastError().text();
         return false;
     }
 
