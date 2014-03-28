@@ -264,6 +264,7 @@ ResultIterator EmailQuery::exec()
         Xapian::QueryParser parser;
         parser.set_database(db);
         parser.add_prefix("", "BO");
+        parser.set_default_op(Xapian::Query::OP_AND);
 
         m_queries << parser.parse_query(d->bodyMatchString.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
     }

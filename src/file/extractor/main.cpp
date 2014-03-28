@@ -50,6 +50,8 @@ int main(int argc, char* argv[])
     options.add("+[url]", ki18n("The URL/id of the files to be indexed"));
     options.add("debug", ki18n("Print the data being indexed"));
     options.add("bdata", ki18n("Print the QVariantMap in Base64 encoding"));
+    // FIXME: Set a proper string after the freeze. This option is just for debugging
+    options.add("db <url>", ki18n(""));
 
     KCmdLineArgs::addCmdLineOptions(options);
     const KCmdLineArgs* args = KCmdLineArgs::parsedArgs();

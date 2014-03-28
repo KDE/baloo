@@ -2,6 +2,8 @@ add_definitions(-fexceptions)
 
 set(XAPIAN_SRCS
     xapiansearchstore.cpp
+    xapiandocument.cpp
+    xapiandatabase.cpp
 )
 
 add_library(balooxapian SHARED ${XAPIAN_SRCS})

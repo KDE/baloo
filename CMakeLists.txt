@@ -49,6 +49,7 @@ set_package_properties(KFileMetaData PROPERTIES
 #)
 
 add_definitions(-DQT_NO_KEYWORDS)
+add_definitions(${KDE4_ENABLE_EXCEPTIONS})
 
 set(KF5_VERSION "5.0.0")
 ecm_setup_version(${KF5_VERSION} VARIABLE_PREFIX BALOO
@@ -58,7 +59,9 @@ ecm_setup_version(${KF5_VERSION} VARIABLE_PREFIX BALOO
 include_directories(
   ${KFILEMETADATA_INCLUDE_DIR}
   ${XAPIAN_INCLUDE_DIR}
+  ${KDEPIMLIBS_INCLUDE_DIRS}
   ${AKONADI_INCLUDE_DIR}
+  ${KDE4_INCLUDES}
   ${CMAKE_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/file/lib

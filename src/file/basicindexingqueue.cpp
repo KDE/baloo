@@ -26,6 +26,8 @@
 #include "database.h"
 #include "filemapping.h"
 
+#include "xapiandocument.h"
+
 #include <KDebug>
 #include <KMimeType>
 
@@ -95,7 +97,11 @@ bool BasicIndexingQueue::process(FileMapping& file, UpdateDirFlags flags)
 {
     bool startedIndexing = false;
 
-    QString mimetype = KMimeType::findByUrl(QUrl::fromLocalFile(file.url()))->name();
+    // This mimetype may not be completely accurate, but that's okay. This is
+    // just the initial phase of indexing. The second phase can try to find
+    // a more accurate mimetype.
+    QString mimetype = KMimeType::findByUrl(QUrl::fromLocalFile(file.url()), 0,
+                                            true /*is Local*/, true /*Fast*/)->name();
 
     bool forced = flags & ForceUpdate;
     bool recursive = flags & UpdateRecursive;
@@ -143,30 +149,22 @@ bool BasicIndexingQueue::shouldIndex(FileMapping& file, const QString& mimetype)
         return true;
     }
 
-    try {
-        m_db->xapianDatabase()->reopen();
-        Xapian::Document doc = m_db->xapianDatabase()->get_document(file.id());
-        Xapian::TermIterator it = doc.termlist_begin();
-        it.skip_to("DT_M");
-        if (it == doc.termlist_end()) {
-            return true;
-        }
-
-        // A folders mtime is updated when a new file is added / removed / renamed
-        // we don't really need to reindex a folder when that happens
-        // In fact, we never need to reindex a folder
-        if (mimetype == QLatin1String("inode/directory"))
-            return false;
-
-        // The 4 is for "DT_M"
-        const std::string s = *it;
-        const QString str = QString::fromUtf8(s.c_str(), s.length()).mid(4);
-        const QDateTime mtime = QDateTime::fromString(str, Qt::ISODate);
-
-        if (mtime != fileInfo.lastModified())
-            return true;
+    XapianDocument doc = m_db->xapianDatabase()->document(file.id());
+    QString dtStr = doc.fetchTermStartsWith("DT_M");
+    if (dtStr.isEmpty()) {
+        return true;
     }
-    catch (const Xapian::DocNotFoundError&) {
+
+    // A folders mtime is updated when a new file is added / removed / renamed
+    // we don't really need to reindex a folder when that happens
+    // In fact, we never need to reindex a folder
+    if (mimetype == QLatin1String("inode/directory"))
+        return false;
+
+    // The 4 is for "DT_M"
+    const QDateTime mtime = QDateTime::fromString(dtStr.mid(4), Qt::ISODate);
+
+    if (mtime != fileInfo.lastModified()) {
         return true;
     }
 

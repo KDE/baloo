@@ -48,12 +48,24 @@ App::App(QObject* parent)
     : QObject(parent)
     , m_termCount(0)
 {
-    m_path = KGlobal::dirs()->localxdgdatadir() + "baloo/file";
+    const KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
+
+    if (!args->getOption("db").isEmpty()) {
+        m_path = args->getOption("db");
+    }
+    else {
+        m_path = KGlobal::dirs()->localxdgdatadir() + "baloo/file";
+    }
 
     m_db.setPath(m_path);
-    m_db.init();
+    if (!m_db.init()) {
+        QTimer::singleShot(0, QCoreApplication::instance(), SLOT(quit()));
+        return;
+    }
 
-    const KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
+    connect(m_db.xapianDatabase(), SIGNAL(committed()),
+            this, SLOT(slotCommitted()));
+
     m_bData = args->isSet("bdata");
 
     m_results.reserve(args->count());
@@ -119,23 +131,19 @@ void App::processNextUrl()
         }
     }
 
-    Xapian::Document doc;
-    if (file.fetched()) {
-        try {
-            doc = m_db.xapianDatabase()->get_document(file.id());
-        }
-        catch (const Xapian::DocNotFoundError&) {
-            BasicIndexingJob basicIndexer(&m_db.sqlDatabase(), file, mimetype);
-            basicIndexer.index();
+    // We always run the basic indexing again. This is mostly so that the proper
+    // mimetype is set and we get proper type information.
+    // The mimetype fetched in the BasicIQ is fast but not accurate
+    BasicIndexingJob basicIndexer(&m_db.sqlDatabase(), file, mimetype);
+    basicIndexer.index();
 
-            file.setId(basicIndexer.id());
-            doc = basicIndexer.document();
-        }
-    }
+    file.setId(basicIndexer.id());
+    Xapian::Document doc = basicIndexer.document();
 
     Result result(url, mimetype);
     result.setId(file.id());
     result.setDocument(doc);
+    result.setReadOnly(m_bData);
 
     QList<KFileMetaData::ExtractorPlugin*> exList = m_manager.fetchExtractors(mimetype);
 
@@ -146,7 +154,7 @@ void App::processNextUrl()
     m_termCount += result.document().termlist_count();
 
     // Documents with these many terms occupy about 10 mb
-    if (m_termCount >= 10000) {
+    if (m_termCount >= 10000 && !m_bData) {
         saveChanges();
         return;
     }
@@ -188,38 +196,24 @@ void App::saveChanges()
     if (m_results.isEmpty())
         return;
 
-    QList<QString> updatedFiles;
+    m_updatedFiles.clear();
 
-    try {
-        Xapian::WritableDatabase db(m_path.toUtf8().constData(), Xapian::DB_CREATE_OR_OPEN);
-        for (int i = 0; i<m_results.size(); i++) {
-            Result& res = m_results[i];
-            res.save(db);
+    for (int i = 0; i<m_results.size(); i++) {
+        Result& res = m_results[i];
+        res.finish();
 
-            updatedFiles << res.inputUrl();
-        }
-
-        Q_FOREACH (Xapian::docid id, m_docsToRemove) {
-            try {
-                db.delete_document(id);
-            }
-            catch (const Xapian::DocNotFoundError&) {
-            }
-        }
-
-        db.commit();
-        m_db.xapianDatabase()->reopen();
-        m_results.clear();
-        m_docsToRemove.clear();
-        m_termCount = 0;
-
-        Q_EMIT saved();
+        m_db.xapianDatabase()->replaceDocument(res.id(), res.document());
+        m_updatedFiles << res.inputUrl();
     }
-    catch (const Xapian::DatabaseLockError& err) {
-        kError() << "Cannot open database in write mode:" << err.get_msg().c_str();
-        QTimer::singleShot(100, this, SLOT(saveChanges()));
-        return;
-    }
+
+    m_db.xapianDatabase()->commit();
+}
+
+void App::slotCommitted()
+{
+    m_results.clear();
+    m_termCount = 0;
+    m_updatedFiles.clear();
 
     QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/files"),
                                                       QLatin1String("org.kde"),
@@ -227,14 +221,17 @@ void App::saveChanges()
 
     QVariantList vl;
     vl.reserve(1);
-    vl << QVariant(updatedFiles);
+    vl << QVariant(m_updatedFiles);
     message.setArguments(vl);
 
     QDBusConnection::sessionBus().send(message);
+
+    Q_EMIT saved();
 }
+
 
 void App::deleteDocument(unsigned docid)
 {
-    m_docsToRemove << docid;
+    m_db.xapianDatabase()->deleteDocument(docid);
 }
 

@@ -13,3 +13,50 @@ target_link_libraries(indexerconfigtest
   KF5::KDE4Support
   baloocore
 )
+
+add_executable(basicindexingqueuetest-manual
+                    basicindexingqueuetest.cpp
+                    ../fileindexerconfig.cpp
+                    ../regexpcache.cpp
+                    ../fileexcludefilters.cpp
+                    ../basicindexingqueue.cpp
+                    ../indexingqueue.cpp
+                    ../basicindexingjob.cpp
+                    ../database.cpp
+                    ../lib/filemapping.cpp
+                    ../commitqueue.cpp
+)
+
+target_link_libraries(basicindexingqueuetest-manual
+  Qt5::Core
+  Qt5::Sql
+  KF5::KDE4Support
+  KF5::FileMetaData
+  ${XAPIAN_LIBRARIES}
+  baloocore
+  balooxapian
+)
+
+add_executable(fileindexingqueuetest-manual
+                    fileindexingqueuetest.cpp
+                    fileindexer.cpp
+                    ../fileindexerconfig.cpp
+                    ../regexpcache.cpp
+                    ../fileexcludefilters.cpp
+                    ../basicindexingqueue.cpp
+                    ../indexingqueue.cpp
+                    ../basicindexingjob.cpp
+                    ../database.cpp
+                    ../lib/filemapping.cpp
+                    ../commitqueue.cpp
+)
+
+target_link_libraries(fileindexingqueuetest-manual
+  Qt5::Core
+  Qt5::Sql
+  KF5::KDE4Support
+  KF5::FileMetaData
+  ${XAPIAN_LIBRARIES}
+  baloocore
+  balooxapian
+)

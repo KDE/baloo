@@ -22,6 +22,7 @@
 
 #include "term.h"
 #include <QVariant>
+#include <QDateTime>
 
 using namespace Baloo;
 
@@ -36,6 +37,7 @@ public:
     bool m_isNegated;
 
     QList<Term> m_subTerms;
+    QVariantHash m_userData;
 
     Private() {
         m_op = None;
@@ -205,6 +207,16 @@ void Term::setComparator(Term::Comparator c)
     d->m_comp = c;
 }
 
+void Term::setUserData(const QString& name, const QVariant& value)
+{
+    d->m_userData.insert(name, value);
+}
+
+QVariant Term::userData(const QString& name) const
+{
+    return d->m_userData.value(name);
+}
+
 QVariantMap Term::toVariantMap() const
 {
     QVariantMap map;
@@ -255,7 +267,26 @@ QVariantMap Term::toVariantMap() const
     QVariantMap m;
     m[op] = d->m_value;
     map[d->m_property] = QVariant(m);
+
     return map;
+}
+
+namespace {
+    // QJson does not recognize QDate/QDateTime parameters. We try to guess
+    // and see if they can be converted into date/datetime.
+    QVariant tryConvert(const QVariant& var) {
+        if (var.canConvert(QVariant::DateTime)) {
+            QDateTime dt = var.toDateTime();
+            if (!dt.isValid())
+                return var;
+
+            if (!var.toString().contains("T")) {
+                return QVariant(var.toDate());
+            }
+            return dt;
+        }
+        return var;
+    }
 }
 
 Term Term::fromVariantMap(const QVariantMap& map)
@@ -311,12 +342,13 @@ Term Term::fromVariantMap(const QVariantMap& map)
             return term;
 
         term.setComparator(com);
-        term.setValue(map.value(op));
+        term.setValue(tryConvert(map.value(op)));
+
         return term;
     }
 
     term.setComparator(Equal);
-    term.setValue(value);
+    term.setValue(tryConvert(value));
 
     return term;
 }

@@ -45,6 +45,7 @@ public:
 private Q_SLOTS:
     void processNextUrl();
     void saveChanges();
+    void slotCommitted();
 
 Q_SIGNALS:
     void saved();
@@ -53,7 +54,6 @@ private:
     void deleteDocument(unsigned docid);
 
     QVector<Result> m_results;
-    QVector<uint> m_docsToRemove;
     QStringList m_urls;
     bool m_bData;
 
@@ -64,6 +64,7 @@ private:
     KFileMetaData::ExtractorPluginManager m_manager;
 
     int m_termCount;
+    QList<QString> m_updatedFiles;
 };
 
 }

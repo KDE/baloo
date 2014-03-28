@@ -26,7 +26,7 @@
 
 
 AkonotesIndexer::AkonotesIndexer(const QString& path)
-    : AbstractIndexer()
+    : AbstractIndexer(), m_termGen( 0 )
 {
     m_db = new Xapian::WritableDatabase(path.toStdString(), Xapian::DB_CREATE_OR_OPEN);
 }

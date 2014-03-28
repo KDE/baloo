@@ -168,6 +168,8 @@ void BalooIndexingAgent::createIndexers()
 {
     AbstractIndexer *indexer = 0;
     try {
+        QDir().mkpath(emailIndexingPath());
+        QDir().mkpath(emailContactsIndexingPath());
         indexer = new EmailIndexer(emailIndexingPath(), emailContactsIndexingPath());
         addIndexer(indexer);
     }
@@ -177,6 +179,7 @@ void BalooIndexingAgent::createIndexers()
     }
 
     try {
+        QDir().mkpath(contactIndexingPath());
         indexer = new ContactIndexer(contactIndexingPath());
         addIndexer(indexer);
     }
@@ -186,6 +189,7 @@ void BalooIndexingAgent::createIndexers()
     }
 
     try {
+        QDir().mkpath(akonotesIndexingPath());
         indexer = new AkonotesIndexer(akonotesIndexingPath());
         addIndexer(indexer);
     }
@@ -267,7 +271,7 @@ void BalooIndexingAgent::slotRootCollectionsFetched(KJob* kjob)
         job->fetchScope().setFetchRemoteIdentification(false);
         job->fetchScope().setFetchModificationTime(true);
         job->fetchScope().setAncestorRetrieval(Akonadi::ItemFetchScope::Parent);
-        job->setDeliveryOption( Akonadi::ItemFetchJob::EmitItemsInBatches );
+        job->setDeliveryOption(Akonadi::ItemFetchJob::EmitItemsIndividually);
 
         connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),
                 this, SLOT(slotItemsReceived(Akonadi::Item::List)));
@@ -367,6 +371,8 @@ void BalooIndexingAgent::itemsMoved(const Akonadi::Item::List& items,
                                     const Akonadi::Collection& destinationCollection)
 {
     AbstractIndexer *indexer = indexerForItem(items.first());
+    if (!indexer)
+       return;
     Q_FOREACH (const Akonadi::Item& item, items) {
         try {
             indexer->move(item.id(), sourceCollection.id(), destinationCollection.id());
@@ -393,6 +399,7 @@ void BalooIndexingAgent::processNext()
     job->fetchScope().setFetchRemoteIdentification(false);
     job->fetchScope().setFetchModificationTime(true);
     job->fetchScope().setAncestorRetrieval(Akonadi::ItemFetchScope::Parent);
+    job->setDeliveryOption(Akonadi::ItemFetchJob::EmitItemsIndividually);
 
     connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),
             this, SLOT(slotItemsReceived(Akonadi::Item::List)));

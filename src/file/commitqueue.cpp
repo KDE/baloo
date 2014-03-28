@@ -27,6 +27,8 @@
 #include <KDiskFreeSpaceInfo>
 #include <QCoreApplication>
 
+#include "xapiandocument.h"
+
 Baloo::CommitQueue::CommitQueue(Database* db, QObject* parent)
     : QObject(parent)
     , m_db(db)
@@ -38,6 +40,9 @@ Baloo::CommitQueue::CommitQueue(Database* db, QObject* parent)
     m_largeTimer.setSingleShot(true);
     m_largeTimer.setInterval(10000);
     connect(&m_largeTimer, SIGNAL(timeout()), this, SLOT(commit()));
+
+    connect(m_db->xapianDatabase(), SIGNAL(committed()),
+            this, SIGNAL(committed()));
 }
 
 Baloo::CommitQueue::~CommitQueue()
@@ -47,13 +52,13 @@ Baloo::CommitQueue::~CommitQueue()
 
 void Baloo::CommitQueue::add(unsigned id, Xapian::Document doc)
 {
-    m_docsToAdd << qMakePair(id, doc);
+    m_db->xapianDatabase()->replaceDocument(id, doc);
     startTimers();
 }
 
 void Baloo::CommitQueue::remove(unsigned int docid)
 {
-    m_docsToRemove << docid;
+    m_db->xapianDatabase()->deleteDocument(docid);
     startTimers();
 }
 
@@ -80,37 +85,8 @@ void Baloo::CommitQueue::commit()
     m_db->sqlDatabase().transaction();
     kDebug() << "SQL Committed";
 
-    if (m_docsToAdd.isEmpty() && m_docsToRemove.isEmpty())
-        return;
+    m_db->xapianDatabase()->commit();
 
-    const QByteArray path = m_db->path().toUtf8();
-    try {
-        Xapian::WritableDatabase db(path.constData(), Xapian::DB_CREATE_OR_OPEN);
-
-        kDebug() << "Adding:" << m_docsToAdd.size() << "docs";
-        Q_FOREACH (const DocIdPair& doc, m_docsToAdd) {
-            db.replace_document(doc.first, doc.second);
-        }
-        m_docsToAdd.clear();
-
-        kDebug() << "Removing:" << m_docsToRemove.size() << "docs";
-        Q_FOREACH (Xapian::docid id, m_docsToRemove) {
-            try {
-                db.delete_document(id);
-            }
-            catch (const Xapian::DocNotFoundError&) {
-            }
-        }
-        m_docsToRemove.clear();
-
-        db.commit();
-        kDebug() << "Xapian Committed";
-        m_db->xapianDatabase()->reopen();
-
-        Q_EMIT committed();
-    }
-    catch (const Xapian::DatabaseLockError& err) {
-        kError() << err.get_msg().c_str();
-        startTimers();
-    }
+    m_smallTimer.stop();
+    m_largeTimer.stop();
 }

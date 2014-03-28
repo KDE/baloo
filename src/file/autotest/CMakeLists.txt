@@ -24,7 +24,7 @@ set(metadatamover_SRC
 
 ecm_add_test(${metadatamover_SRC}
     TEST_NAME "metadatamovertest"
-    LINK_LIBRARIES Qt5::Test Qt5::Sql KF5::KDE4Support ${XAPIAN_LIBRARIES}
+    LINK_LIBRARIES Qt5::Test Qt5::Sql KF5::KDE4Support ${XAPIAN_LIBRARIES} balooxapian
 )
 
 #
@@ -60,7 +60,6 @@ set(basicIndexingQueue_SRC
     basicindexingqueuetest.cpp
     ../basicindexingqueue.cpp
     ../basicindexingjob.cpp
-    ../xapiandocument.cpp
     ../indexingqueue.cpp
     ../fileindexerconfig.cpp
     ../fileexcludefilters.cpp
@@ -70,14 +69,9 @@ set(basicIndexingQueue_SRC
     ../lib/filemapping.cpp
 )
 
-kde4_add_unit_test(basicindexingqueuetest NOGUI ${basicIndexingQueue_SRC})
-
-target_link_libraries(basicindexingqueuetest
-  Qt5::Test
-  Qt5::Sql
-
-  KF5::FileMetaData
-  KF5::KDE4Support
-  ${XAPIAN_LIBRARIES}
+ecm_add_test(${basicIndexingQueue_SRC}
+    TEST_NAME basicindexingqueuetest
+    LINK_LIBRARIES Qt5::Test Qt5::Sql KF5::FileMetaData
+                   KF5::KDE4Support ${XAPIAN_LIBRARIES} balooxapian
 )
 

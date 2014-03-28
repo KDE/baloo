@@ -21,6 +21,7 @@
 #include "filemodifyjobtest.h"
 #include "filemodifyjob.h"
 #include "../baloo_xattr_p.h"
+#include "../xattrdetector.h"
 #include "../db.h"
 #include "filemapping.h"
 #include "file.h"
@@ -57,16 +58,22 @@ void FileModifyJobTest::testSingleFile()
 
     QString value;
 
-    int len = baloo_getxattr(fileUrl, QLatin1String("user.baloo.rating"), &value);
-    QVERIFY(len > 0);
-    QCOMPARE(value.toInt(), 5);
+    XattrDetector detector;
+    if (detector.isSupported(tmpFile.fileName())) {
+        int len = baloo_getxattr(fileUrl, QLatin1String("user.baloo.rating"), &value);
+        QVERIFY(len > 0);
+        QCOMPARE(value.toInt(), 5);
 
-    len = baloo_getxattr(fileUrl, "user.xdg.tags", &value);
-    QCOMPARE(len, 0);
+        len = baloo_getxattr(fileUrl, "user.xdg.tags", &value);
+        QCOMPARE(len, 0);
 
-    len = baloo_getxattr(fileUrl, "user.xdg.comment", &value);
-    QVERIFY(len > 0);
-    QCOMPARE(value, QString("User Comment"));
+        len = baloo_getxattr(fileUrl, "user.xdg.comment", &value);
+        QVERIFY(len > 0);
+        QCOMPARE(value, QString("User Comment"));
+    }
+    else {
+        kWarning() << "Xattr not supported on this filesystem";
+    }
 
     //
     // Check in Xapian
@@ -109,13 +116,19 @@ void FileModifyJobTest::testMultiFileRating()
 
     QString value;
 
-    int len = baloo_getxattr(fileUrl1, "user.baloo.rating", &value);
-    QVERIFY(len > 0);
-    QCOMPARE(value.toInt(), 5);
+    XattrDetector detector;
+    if (detector.isSupported(tmpFile1.fileName())) {
+        int len = baloo_getxattr(fileUrl1, "user.baloo.rating", &value);
+        QVERIFY(len > 0);
+        QCOMPARE(value.toInt(), 5);
 
-    len = baloo_getxattr(fileUrl2, "user.baloo.rating", &value);
-    QVERIFY(len > 0);
-    QCOMPARE(value.toInt(), 5);
+        len = baloo_getxattr(fileUrl2, "user.baloo.rating", &value);
+        QVERIFY(len > 0);
+        QCOMPARE(value.toInt(), 5);
+    }
+    else {
+        kWarning() << "Xattr not supported on this filesystem";
+    }
 }
 
 void FileModifyJobTest::testXapianUpdate()
@@ -199,9 +212,15 @@ void FileModifyJobTest::testFolder()
 
     QString value;
 
-    int len = baloo_getxattr(url, QLatin1String("user.baloo.rating"), &value);
-    QVERIFY(len > 0);
-    QCOMPARE(value.toInt(), 5);
+    XattrDetector detector;
+    if (detector.isSupported(f.fileName())) {
+        int len = baloo_getxattr(url, QLatin1String("user.baloo.rating"), &value);
+        QVERIFY(len > 0);
+        QCOMPARE(value.toInt(), 5);
+    }
+    else {
+        kWarning() << "Xattr not supported on this filesystem";
+    }
 }
 
 

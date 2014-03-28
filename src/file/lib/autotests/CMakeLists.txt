@@ -42,6 +42,7 @@ ecm_add_test(${filemodifyjobtest_SRC}
         Qt5::Sql
         ${XAPIAN_LIBRARIES}
         baloocore
+        balooxapian
 )
 
 # Pass CMAKE_CURRENT_BINARY_DIR so tests can use it to create some of the

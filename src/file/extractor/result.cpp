@@ -32,12 +32,12 @@
 #include <kfilemetadata/typeinfo.h>
 
 // In order to use it in a vector
-Result::Result(): ExtractionResult(QString(), QString()), m_docId(0)
+Result::Result(): ExtractionResult(QString(), QString()), m_docId(0), m_readOnly(false)
 {
 }
 
 Result::Result(const QString& url, const QString& mimetype)
-    : KFileMetaData::ExtractionResult(url, mimetype), m_docId(0)
+    : KFileMetaData::ExtractionResult(url, mimetype), m_docId(0), m_readOnly(false)
 {
 }
 
@@ -73,7 +73,9 @@ void Result::add(KFileMetaData::Property::Property property, const QVariant& val
 
 void Result::append(const QString& text)
 {
-    m_termGenForText.index_text(text.toUtf8().constData());
+    if (!m_readOnly) {
+        m_termGenForText.index_text(text.toUtf8().constData());
+    }
 }
 
 void Result::addType(KFileMetaData::Type::Type type)
@@ -83,24 +85,18 @@ void Result::addType(KFileMetaData::Type::Type type)
     m_doc.add_boolean_term(t.toUtf8().constData());
 }
 
-void Result::save(Xapian::WritableDatabase& db)
+void Result::setReadOnly(bool readOnly)
+{
+    m_readOnly = readOnly;
+}
+
+void Result::finish()
 {
     QJsonObject jo = QJsonObject::fromVariantMap(m_map);
     QJsonDocument jdoc;
     jdoc.setObject(jo);
     m_doc.set_data(jdoc.toJson().constData());
     Baloo::updateIndexingLevel(m_doc, 2);
-
-    // We keep trying to write if someone else has modified the database
-    while (true) {
-        try {
-            db.replace_document(m_docId, m_doc);
-            break;
-        }
-        catch (const Xapian::DatabaseModifiedError&) {
-            db.reopen();
-        }
-    }
 }
 
 void Result::setDocument(const Xapian::Document& doc)

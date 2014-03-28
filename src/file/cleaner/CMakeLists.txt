@@ -17,6 +17,7 @@ target_link_libraries(baloo_file_cleaner
   KF5::KDE4Support
   KF5::Runner
   ${XAPIAN_LIBRARIES}
+  balooxapian
 )
 
 install(TARGETS baloo_file_cleaner DESTINATION ${BIN_INSTALL_DIR})

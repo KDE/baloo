@@ -1,6 +1,6 @@
 /*
  * <one line to give the library's name and an idea of what it does.>
- * Copyright (C) 2013  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,43 +18,44 @@
  *
  */
 
-#ifndef _BALOO_FILEMODIFYJOB_H
-#define _BALOO_FILEMODIFYJOB_H
+#ifndef BALOO_FILEINDEXER_H
+#define BALOO_FILEINDEXER_H
 
-#include "file_export.h"
 #include <KJob>
+#include <QProcess>
+
+#include <QTime>
 
 namespace Baloo {
 
-class File;
-
-class BALOO_FILE_EXPORT FileModifyJob : public KJob
+class FileIndexer : public KJob
 {
     Q_OBJECT
 public:
-    explicit FileModifyJob(QObject* parent = 0);
-    FileModifyJob(const File& file, QObject* parent = 0);
-    virtual ~FileModifyJob();
+    FileIndexer(uint id, const QString& url);
 
     virtual void start();
+    void setCustomPath(const QString& path);
 
-    static FileModifyJob* modifyRating(const QStringList& files, int rating);
-    static FileModifyJob* modifyUserComment(const QStringList& files, const QString& comment);
-    static FileModifyJob* modifyTags(const QStringList& files, const QStringList& tags);
-
-    enum Errors {
-        Error_FileDoesNotExist = KJob::UserDefinedError + 1,
-        Error_EmptyFile,
-    };
+    QString mimeType() const;
+    int elapsed() const;
 
 private Q_SLOTS:
     void doStart();
-    void slotCommitted();
+    void slotIndexedFile(int returnCode, QProcess::ExitStatus status);
 
 private:
-    class Private;
-    Private* d;
+    int m_id;
+    QString m_url;
+    QString m_mimeType;
+
+    QString m_customPath;
+    QProcess* m_process;
+
+    QTime m_timer;
+    int m_elapsed;
 };
 
 }
-#endif // _BALOO_FILEMODIFYJOB_H
+
+#endif // BALOO_FILEINDEXER_H

@@ -73,8 +73,6 @@ ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args
 
     connect(m_folderSelectionWidget, SIGNAL(changed()),
             this, SLOT(changed()));
-    connect(m_checkboxSourceCode, SIGNAL(toggled(bool)),
-            this, SLOT(changed()));
 }
 
 
@@ -93,10 +91,6 @@ void ServerConfigModule::load()
     QStringList excludeFolders = group.readPathEntry("exclude folders", QStringList());
     m_folderSelectionWidget->setFolders(includeFolders, excludeFolders);
 
-    // MimeTypes
-    QStringList mimetypes = config.group("General").readEntry("exclude mimetypes", defaultExcludeMimetypes());
-
-    m_oldExcludeMimetypes = mimetypes;
     m_oldExcludeFolders = excludeFolders;
     m_oldIncludeFolders = includeFolders;
 
@@ -121,12 +115,6 @@ void ServerConfigModule::save()
     config.group("General").writePathEntry("folders", includeFolders);
     config.group("General").writePathEntry("exclude folders", excludeFolders);
 
-    QStringList excludeMimetypes;
-    if (m_checkboxSourceCode->isChecked())
-        excludeMimetypes = sourceCodeMimeTypes();
-
-    config.group("General").writeEntry("exclude mimetypes", excludeMimetypes);
-
     // Start Baloo
     if (indexingEnabled) {
         const QString exe = KStandardDirs::findExe(QLatin1String("baloo_file"));
@@ -146,8 +134,6 @@ void ServerConfigModule::save()
     if (includeFolders != m_oldIncludeFolders)
         cleaningRequired = true;
     else if (excludeFolders != m_oldExcludeFolders)
-        cleaningRequired = true;
-    else if (excludeMimetypes != m_oldExcludeMimetypes)
         cleaningRequired = true;
 
     if (cleaningRequired) {

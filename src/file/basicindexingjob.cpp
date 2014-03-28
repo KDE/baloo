@@ -23,9 +23,11 @@
 #include "basicindexingjob.h"
 #include "database.h"
 #include "xapiandocument.h"
+#include "lib/baloo_xattr_p.h"
 
 #include <QFileInfo>
 #include <QDateTime>
+#include <QStringList>
 
 #include <kfilemetadata/typeinfo.h>
 #include <KDebug>
@@ -69,6 +71,10 @@ bool BasicIndexingJob::index()
     doc.addBoolTerm(mod.date().month(), "DT_MM");
     doc.addBoolTerm(mod.date().day(), "DT_MD");
 
+    const QString timeTStr = QString::number(mod.toTime_t());
+    doc.addValue(0, timeTStr);
+    doc.addValue(1, QString::number(mod.date().toJulianDay()));
+
     // Types
     QVector<KFileMetaData::Type::Type> tList = typesForMimeType(m_mimetype);
     Q_FOREACH (KFileMetaData::Type::Type type, tList) {
@@ -86,6 +92,32 @@ bool BasicIndexingJob::index()
     }
     else {
         doc.addBoolTerm("Z1");
+    }
+
+    //
+    // X-Attr terms
+    //
+    QString val;
+
+    baloo_getxattr(m_file.url(), QLatin1String("user.xdg.tags"), &val);
+    if (!val.isEmpty()) {
+        QStringList tags = val.split(QLatin1Char(','), QString::SkipEmptyParts);
+        Q_FOREACH (const QString& tag, tags) {
+            doc.indexText(tag, QLatin1String("TA"));
+            doc.addBoolTerm(QLatin1String("TAG-") + tag);
+        }
+    }
+
+    val.clear();
+    baloo_getxattr(m_file.url(), QLatin1String("user.baloo.rating"), &val);
+    if (!val.isEmpty()) {
+        doc.addBoolTerm(val, QLatin1String("R"));
+    }
+
+    val.clear();
+    baloo_getxattr(m_file.url(), QLatin1String("user.xdg.comment"), &val);
+    if (!val.isEmpty()) {
+        doc.indexText(val, QLatin1String("C"));
     }
 
     m_id = m_file.id();

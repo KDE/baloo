@@ -53,7 +53,7 @@ void QuerySerializationTest::testBasic()
 
 void QuerySerializationTest::testTerm()
 {
-    Term term("property", 1);
+    Term term("property", "value");
 
     Query query;
     query.setTerm(term);
@@ -63,7 +63,7 @@ void QuerySerializationTest::testTerm()
 
     Term t = q.term();
     QCOMPARE(t.property(), QLatin1String("property"));
-    QCOMPARE(t.value(), QVariant(1));
+    QCOMPARE(t.value(), QVariant("value"));
     QCOMPARE(q.term(), term);
 
     QCOMPARE(q, query);
@@ -93,6 +93,45 @@ void QuerySerializationTest::testAndTerm()
     QCOMPARE(q, query);
 
 }
+
+void QuerySerializationTest::testDateTerm()
+{
+    Term term("prop", QDate::currentDate());
+
+    Query query;
+    query.setTerm(term);
+
+    QByteArray json = query.toJSON();
+    Query q = Query::fromJSON(json);
+
+    Term t = q.term();
+    QCOMPARE(t.value(), term.value());
+    QCOMPARE(t.value().typeName(), term.value().typeName());
+    QCOMPARE(t.property(), term.property());
+}
+
+void QuerySerializationTest::testDateTimeTerm()
+{
+    // This is hack being done so that the milliseconds are ignored
+    // the internal QJson serializer throws away the msecs
+    QDateTime dt = QDateTime::currentDateTime();
+    dt.setTime(QTime(dt.time().hour(), dt.time().minute(), dt.time().second()));
+
+    Term term("prop", dt);
+
+    Query query;
+    query.setTerm(term);
+
+    QByteArray json = query.toJSON();
+    Query q = Query::fromJSON(json);
+
+    Term t = q.term();
+    QCOMPARE(t.value().typeName(), term.value().typeName());
+    QCOMPARE(t.value().toDateTime(), term.value().toDateTime());
+    QCOMPARE(t.value(), term.value());
+    QCOMPARE(t.property(), term.property());
+}
+
 
 void QuerySerializationTest::testCustomOptions()
 {

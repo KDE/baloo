@@ -52,11 +52,6 @@ Q_SIGNALS:
 private:
     void startTimers();
 
-    typedef QPair<Xapian::docid, Xapian::Document> DocIdPair;
-    QVector<DocIdPair> m_docsToAdd;
-
-    QVector<Xapian::docid> m_docsToRemove;
-
     QTimer m_smallTimer;
     QTimer m_largeTimer;
     Database* m_db;

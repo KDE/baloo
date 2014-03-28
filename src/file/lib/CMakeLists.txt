@@ -25,6 +25,7 @@ target_link_libraries(baloofiles
     KF5::Solid
     ${XAPIAN_LIBRARIES}
     baloocore
+    balooxapian
 )
 
 set_target_properties(baloofiles PROPERTIES

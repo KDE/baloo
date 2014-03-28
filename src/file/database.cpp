@@ -23,6 +23,7 @@
 #include "database.h"
 
 #include <QStringList>
+#include <QDir>
 
 #include <QSqlDatabase>
 #include <QSqlQuery>
@@ -54,13 +55,7 @@ bool Database::init()
         return true;
 
     // Create the Xapian DB
-    QByteArray path = m_path.toUtf8();
-    try {
-        Xapian::WritableDatabase(path.constData(), Xapian::DB_CREATE_OR_OPEN);
-    }
-    catch (const Xapian::DatabaseLockError&) {
-    }
-    m_xapianDb = new Xapian::Database(path.constData());
+    m_xapianDb = new Baloo::XapianDatabase(m_path);
 
     m_sqlDb = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE"));
     m_sqlDb->setDatabaseName(m_path + "/fileMap.sqlite3");
@@ -77,7 +72,7 @@ bool Database::init()
 
     QSqlQuery query(*m_sqlDb);
     bool ret = query.exec("CREATE TABLE files("
-                          "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                          "id INTEGER PRIMARY KEY, "
                           "url TEXT NOT NULL UNIQUE)");
     if (!ret) {
         kDebug() << "Could not create tags table" << query.lastError().text();
@@ -87,6 +82,16 @@ bool Database::init()
     ret = query.exec("CREATE INDEX fileUrl_index ON files (url)");
     if (!ret) {
         kDebug() << "Could not create tags index" << query.lastError().text();
+        return false;
+    }
+
+    //
+    // WAL Journaling mode has much lower io writes than the traditional journal
+    // based indexing.
+    //
+    ret = query.exec("PRAGMA journal_mode = WAL");
+    if (!ret) {
+        kDebug() << "Could not set WAL journaling mode" << query.lastError().text();
         return false;
     }
 
@@ -116,7 +121,7 @@ QSqlDatabase& Database::sqlDatabase()
     return *m_sqlDb;
 }
 
-Xapian::Database* Database::xapianDatabase()
+Baloo::XapianDatabase* Database::xapianDatabase()
 {
     return m_xapianDb;
 }

@@ -24,16 +24,19 @@
 #include <xapian.h>
 #include <QString>
 
+#include "xapian_export.h"
+
 namespace Baloo {
 
 /**
  * This class is just a light wrapper over Xapian::Document
  * which provides nice Qt apis.
  */
-class XapianDocument
+class BALOO_XAPIAN_EXPORT XapianDocument
 {
 public:
     XapianDocument();
+    XapianDocument(const Xapian::Document& doc);
 
     void addTerm(const QString& term, const QString& prefix);
     void addBoolTerm(const QString& term, const QString& prefix = QString());
@@ -42,8 +45,13 @@ public:
     void indexText(const QString& text, int wdfInc = 1);
     void indexText(const QString& text, const QString& prefix, int wdfInc = 1);
 
+    void addValue(int pos, const QString& value);
+
     Xapian::Document doc();
 
+    QString fetchTermStartsWith(const QByteArray& term);
+
+    void removeTermStartsWith(const QByteArray& prefix);
 private:
     Xapian::Document m_doc;
     Xapian::TermGenerator m_termGen;
