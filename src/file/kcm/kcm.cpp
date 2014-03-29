@@ -34,6 +34,7 @@
 #include <QProcess>
 #include <QDBusConnection>
 #include <QDBusMessage>
+#include <QDBusPendingCall>
 
 K_PLUGIN_FACTORY(BalooConfigModuleFactory, registerPlugin<Baloo::ServerConfigModule>();)
 K_EXPORT_PLUGIN(BalooConfigModuleFactory("kcm_baloofile", "kcm_baloofile"))
@@ -119,7 +120,7 @@ void ServerConfigModule::save()
                                                               QLatin1String("org.kde.baloo.file"),
                                                               QLatin1String("quit"));
 
-        QDBusConnection::sessionBus().send(message);
+        QDBusConnection::sessionBus().asyncCall(message);
     }
 
     // Start cleaner
