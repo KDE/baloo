@@ -50,6 +50,7 @@ void Cleaner::start()
 
     FileIndexerConfig config;
 
+    int numDocuments = 0;
     while (query.next()) {
         int id = query.value(0).toInt();
         QString url = query.value(1).toString();
@@ -75,6 +76,12 @@ void Cleaner::start()
             q.addBindValue(id);
             q.exec();
             m_commitQueue->remove(id);
+
+            numDocuments++;
+        }
+
+        if (numDocuments >= 1000) {
+            m_commitQueue->commit();
         }
     }
 
