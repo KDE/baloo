@@ -117,9 +117,7 @@ Q_SIGNALS:
     void statusStringChanged();
 private Q_SLOTS:
     // Config
-    void slotConfigFiltersChanged();
-    void slotIncludeFolderListChanged(const QStringList& added, const QStringList& removed);
-    void slotExcludeFolderListChanged(const QStringList& added, const QStringList& removed);
+    void slotConfigChanged();
 
     void slotStartedIndexing();
     void slotFinishedIndexing();

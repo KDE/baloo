@@ -40,16 +40,7 @@ IndexScheduler::IndexScheduler(Database* db, FileIndexerConfig* config, QObject*
     , m_db(db)
 {
     Q_ASSERT(m_config);
-    connect(m_config, SIGNAL(includeFolderListChanged(QStringList,QStringList)),
-            this, SLOT(slotIncludeFolderListChanged(QStringList,QStringList)));
-    connect(m_config, SIGNAL(excludeFolderListChanged(QStringList,QStringList)),
-            this, SLOT(slotExcludeFolderListChanged(QStringList,QStringList)));
-
-    // FIXME: What if both the signals are emitted?
-    connect(m_config, SIGNAL(fileExcludeFiltersChanged()),
-            this, SLOT(slotConfigFiltersChanged()));
-    connect(m_config, SIGNAL(mimeTypeFiltersChanged()),
-            this, SLOT(slotConfigFiltersChanged()));
+    connect(m_config, SIGNAL(configChanged()), this, SLOT(slotConfigChanged()));
 
     // Stop indexing when a device is unmounted
     // RemovableMediaCache* cache = new RemovableMediaCache(this);
@@ -201,34 +192,7 @@ void IndexScheduler::queueAllFoldersForUpdate(bool forceUpdate)
 }
 
 
-void IndexScheduler::slotIncludeFolderListChanged(const QStringList& added, const QStringList& removed)
-{
-    //Index the folders added to the include list, clear the folders removed from it
-    addClearFolders(added, removed);
-}
-
-void IndexScheduler::slotExcludeFolderListChanged(const QStringList& added, const QStringList& removed)
-{
-    //Clear the folders added to the exclude list, index the folders removed from it
-    addClearFolders(removed, added);
-}
-
-//Index the folders in add, clear the folders in clear
-void IndexScheduler::addClearFolders(const QStringList& add, const QStringList& clear)
-{
-    kDebug() << "To index: " << add << "To clear: " << clear;
-    Q_FOREACH (const QString& path, clear) {
-        m_basicIQ->clear(path);
-        m_fileIQ->clear();
-    }
-
-    Q_FOREACH (const QString &path, add) {
-        m_basicIQ->enqueue(FileMapping(path), UpdateRecursive);
-    }
-    slotScheduleIndexing();
-}
-
-void IndexScheduler::slotConfigFiltersChanged()
+void IndexScheduler::slotConfigChanged()
 {
     // We need to this - there is no way to avoid it
     m_basicIQ->clear();
