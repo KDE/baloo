@@ -65,6 +65,7 @@ App::App(QObject* parent)
             this, SLOT(slotCommitted()));
 
     m_bData = args->isSet("bdata");
+    m_debugEnabled = args->isSet("debug");
 
     m_results.reserve(args->count());
     for (int i=0; i<args->count(); i++) {
@@ -224,6 +225,10 @@ void App::slotCommitted()
 
     QDBusConnection::sessionBus().send(message);
 
+    if (m_debugEnabled) {
+        printDebug();
+    }
+
     Q_EMIT saved();
 }
 
@@ -233,3 +238,57 @@ void App::deleteDocument(unsigned docid)
     m_db.xapianDatabase()->deleteDocument(docid);
 }
 
+void App::printDebug()
+{
+    Q_FOREACH (const Result& res, m_results) {
+        qDebug() << res.inputUrl();
+        QMapIterator<QString, QVariant> it(res.map());
+        while (it.hasNext()) {
+            it.next();
+            int propNum = it.key().toInt();
+
+            using namespace KFileMetaData::Property;
+            Property prop = static_cast<Property>(propNum);
+            KFileMetaData::PropertyInfo pi(prop);
+            qDebug() << pi.name() << it.value();
+        }
+    }
+
+    // Print the io usage
+    QFile file("/proc/self/io");
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+
+    QTextStream fs(&file);
+    QString str = fs.readAll();
+
+    qDebug() << "------- IO ---------";
+    QTextStream stream(&str);
+    while (!stream.atEnd()) {
+        QString str = stream.readLine();
+
+        QString rchar("rchar: ");
+        if (str.startsWith(rchar)) {
+            ulong amt = str.mid(rchar.size()).toULong();
+            qDebug() << "Read:" << amt / 1024  << "kb";
+        }
+
+        QString wchar("wchar: ");
+        if (str.startsWith(wchar)) {
+            ulong amt = str.mid(wchar.size()).toULong();
+            qDebug() << "Write:" << amt / 1024  << "kb";
+        }
+
+        QString read("read_bytes: ");
+        if (str.startsWith(read)) {
+            ulong amt = str.mid(read.size()).toULong();
+            qDebug() << "Actual Reads:" << amt / 1024  << "kb";
+        }
+
+        QString write("write_bytes: ");
+        if (str.startsWith(write)) {
+            ulong amt = str.mid(write.size()).toULong();
+            qDebug() << "Actual Writes:" << amt / 1024  << "kb";
+        }
+    }
+
+}
