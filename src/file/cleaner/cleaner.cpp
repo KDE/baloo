@@ -64,7 +64,9 @@ void Cleaner::start()
             removeIt = true;
         }
 
-        QString mimetype = KMimeType::findByUrl(QUrl::fromLocalFile(url))->name();
+        // vHanda FIXME: Perhaps we want to get the proper mimetype from xapian?
+        QString mimetype = KMimeType::findByUrl(QUrl::fromLocalFile(url), 0,
+                                                true /*local*/, true /*fast*/)->name();
         if (!config.shouldMimeTypeBeIndexed(mimetype)) {
             removeIt = true;
         }
