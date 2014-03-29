@@ -24,6 +24,7 @@ target_link_libraries(indexertest
     ${KDEPIMLIBS_KMIME_LIBS}
     ${KDEPIMLIBS_KABC_LIBS}
     ${XAPIAN_LIBRARIES}
+    ${KDEPIMLIBS_KPIMUTILS_LIBS}
     baloocore
     balooxapian
 )

@@ -26,6 +26,8 @@
 #include <Akonadi/KMime/MessageFlags>
 
 #include <QTextDocument>
+#include <kpimutils/email.h>
+
 
 EmailIndexer::EmailIndexer(const QString& path, const QString& contactDbPath):
     AbstractIndexer(), m_doc( 0 ), m_termGen( 0 )
@@ -115,19 +117,9 @@ namespace {
     // TODO: Move this into KMime?
     // TODO: If name is all upper/lower then try to captialize it?
     QString prettyAddress(const KMime::Types::Mailbox& mbox) {
-        QString name = mbox.name().simplified();
-        QByteArray email = mbox.address().simplified().toLower();
-
-        // Remove outer quotes recursively
-        while (name.size() >= 2 && (name[0] == '\'' || name[0] == '"') &&
-               (name[name.size()-1] == '\'' || name[name.size()-1] == '"')) {
-            name = name.mid(1, name.size()-2);
-        }
-
-        if (name.isEmpty())
-            return email;
-        else
-            return name + QLatin1String(" <") + QString::fromUtf8(email) + QLatin1Char('>');
+        const QString name = mbox.name().simplified();
+        const QByteArray email = mbox.address().simplified().toLower();
+        return KPIMUtils::normalizedAddress(name, QString::fromUtf8(email));
     }
 }
 
