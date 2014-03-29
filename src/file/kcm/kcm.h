@@ -40,8 +40,6 @@ public Q_SLOTS:
     void defaults();
 
 private:
-    QStringList m_oldIncludeFolders;
-    QStringList m_oldExcludeFolders;
 };
 }
 

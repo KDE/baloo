@@ -87,9 +87,6 @@ void ServerConfigModule::load()
     QStringList excludeFolders = group.readPathEntry("exclude folders", QStringList());
     m_folderSelectionWidget->setFolders(includeFolders, excludeFolders);
 
-    m_oldExcludeFolders = excludeFolders;
-    m_oldIncludeFolders = includeFolders;
-
     // All values loaded -> no changes
     Q_EMIT changed(false);
 }
@@ -126,16 +123,8 @@ void ServerConfigModule::save()
     }
 
     // Start cleaner
-    bool cleaningRequired = false;
-    if (includeFolders != m_oldIncludeFolders)
-        cleaningRequired = true;
-    else if (excludeFolders != m_oldExcludeFolders)
-        cleaningRequired = true;
-
-    if (cleaningRequired) {
-        const QString exe = KStandardDirs::findExe(QLatin1String("baloo_file_cleaner"));
-        QProcess::startDetached(exe);
-    }
+    const QString exe = KStandardDirs::findExe(QLatin1String("baloo_file_cleaner"));
+    QProcess::startDetached(exe);
 
     // all values saved -> no changes
     Q_EMIT changed(false);
