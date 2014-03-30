@@ -34,6 +34,7 @@
 #include <QProcess>
 #include <QDBusConnection>
 #include <QDBusMessage>
+#include <QDBusPendingCall>
 
 K_PLUGIN_FACTORY(BalooConfigModuleFactory, registerPlugin<Baloo::ServerConfigModule>();)
 K_EXPORT_PLUGIN(BalooConfigModuleFactory("kcm_baloofile", "kcm_baloofile"))
@@ -87,9 +88,6 @@ void ServerConfigModule::load()
     QStringList excludeFolders = group.readPathEntry("exclude folders", QStringList());
     m_folderSelectionWidget->setFolders(includeFolders, excludeFolders);
 
-    m_oldExcludeFolders = excludeFolders;
-    m_oldIncludeFolders = includeFolders;
-
     // All values loaded -> no changes
     Q_EMIT changed(false);
 }
@@ -122,20 +120,12 @@ void ServerConfigModule::save()
                                                               QLatin1String("org.kde.baloo.file"),
                                                               QLatin1String("quit"));
 
-        QDBusConnection::sessionBus().send(message);
+        QDBusConnection::sessionBus().asyncCall(message);
     }
 
     // Start cleaner
-    bool cleaningRequired = false;
-    if (includeFolders != m_oldIncludeFolders)
-        cleaningRequired = true;
-    else if (excludeFolders != m_oldExcludeFolders)
-        cleaningRequired = true;
-
-    if (cleaningRequired) {
-        const QString exe = KStandardDirs::findExe(QLatin1String("baloo_file_cleaner"));
-        QProcess::startDetached(exe);
-    }
+    const QString exe = KStandardDirs::findExe(QLatin1String("baloo_file_cleaner"));
+    QProcess::startDetached(exe);
 
     // all values saved -> no changes
     Q_EMIT changed(false);

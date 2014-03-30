@@ -199,7 +199,12 @@ int XapianSearchStore::exec(const Query& query)
         return 0;
 
     QMutexLocker lock(&m_mutex);
-    m_db->reopen();
+    try {
+        m_db->reopen();
+    } catch (Xapian::DatabaseError& e) {
+        kWarning() << "Failed to reopen database" << dbPath() << ":" <<  QString::fromStdString(e.get_msg());
+        return 0;
+    }
 
     QTime queryGenerationTimer;
     queryGenerationTimer.start();
