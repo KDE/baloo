@@ -5,7 +5,6 @@ set(BALOO_VERSION_MINOR 13)
 set(BALOO_VERSION_RELEASE 43)
 set(BALOO_VERSION "${BALOO_VERSION_MAJOR}.${BALOO_VERSION_MINOR}.${BALOO_VERSION_RELEASE}")
 
-
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules" ${CMAKE_MODULE_PATH})
 
 find_package(KDE4 REQUIRED)
@@ -46,11 +45,13 @@ set_package_properties(Akonadi PROPERTIES
 )
 
 include(ConfigureChecks.cmake)
+configure_file(config.h.cmake ${CMAKE_BINARY_DIR}/config.h)
 
 add_definitions(-DQT_NO_KEYWORDS)
 add_definitions(${KDE4_ENABLE_EXCEPTIONS})
 
 include_directories(
+  ${CMAKE_BINARY_DIR}
   ${QT_INCLUDES}
   ${QJSON_INCLUDE_DIR}
   ${KFILEMETADATA_INCLUDE_DIR}
