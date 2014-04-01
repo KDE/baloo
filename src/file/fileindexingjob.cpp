@@ -96,6 +96,7 @@ void FileIndexingJob::slotIndexedFile(int, QProcess::ExitStatus exitStatus)
 {
     // stop the timer since there is no need to kill the process anymore
     m_processTimer->stop();
+    m_process->disconnect(this);
     m_process->deleteLater();
     m_process = 0;
 
@@ -141,6 +142,7 @@ void FileIndexingJob::slotIndexedFile(int, QProcess::ExitStatus exitStatus)
 void FileIndexingJob::slotProcessTimerTimeout()
 {
     // Emulate a crash so that we narrow down the file which is taking too long
+    qDebug() << "Process took too long killing";
     slotIndexedFile(1, QProcess::CrashExit);
 }
 
