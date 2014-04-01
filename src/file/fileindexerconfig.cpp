@@ -444,6 +444,7 @@ bool FileIndexerConfig::forceConfigUpdate()
 void FileIndexerConfig::setInitialRun(bool isInitialRun)
 {
     m_config.group("General").writeEntry("first run", isInitialRun);
+    m_config.sync();
 }
 
 bool FileIndexerConfig::initialUpdateDisabled() const

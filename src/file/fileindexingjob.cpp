@@ -37,26 +37,23 @@ using namespace Baloo;
 
 FileIndexingJob::FileIndexingJob(const QVector<uint>& files, QObject* parent)
     : KJob(parent)
-    , m_files(files)
     , m_process(0)
 {
+    Q_ASSERT(!files.isEmpty());
+    m_files.push(files);
+
     // setup the timer used to kill the indexer process if it seems to get stuck
     m_processTimer = new QTimer(this);
     m_processTimer->setSingleShot(true);
     connect(m_processTimer, SIGNAL(timeout()),
             this, SLOT(slotProcessTimerTimeout()));
+
+    m_processTimeout = 5 * 60 * 1000;
 }
 
 void FileIndexingJob::start()
 {
-    if (m_files.isEmpty()) {
-        emitResult();
-        return;
-    }
-
-    m_args = m_files;
-    m_files.clear();
-
+    m_args = m_files.pop();
     start(m_args);
 }
 
@@ -65,14 +62,7 @@ void FileIndexingJob::start(const QVector<uint>& files)
     // setup the external process which does the actual indexing
     const QString exe = KStandardDirs::findExe(QLatin1String("baloo_file_extractor"));
 
-    // Just in case
-    if (m_process) {
-        m_process->disconnect();
-        m_process->kill();
-
-        delete m_process;
-        m_process = 0;
-    }
+    Q_ASSERT(m_process == 0);
     m_process = new QProcess(this);
 
     QStringList args;
@@ -90,59 +80,59 @@ void FileIndexingJob::start(const QVector<uint>& files)
     m_process->setProcessChannelMode(QProcess::SeparateChannels);
     m_process->start(exe, args);
 
-    // start the timer which will kill the process if it does not terminate after 5 minutes
-    m_processTimer->start(5 * 60 * 1000);
+    m_processTimer->start(m_processTimeout);
 }
 
 void FileIndexingJob::slotIndexedFile(int, QProcess::ExitStatus exitStatus)
 {
     // stop the timer since there is no need to kill the process anymore
     m_processTimer->stop();
+    m_process->disconnect(this);
     m_process->deleteLater();
     m_process = 0;
 
     if (exitStatus == QProcess::NormalExit) {
         if (m_files.isEmpty()) {
             emitResult();
-            return;
+        } else {
+            m_args = m_files.pop();
+            start(m_args);
         }
+        return;
     }
-    else {
-        if (m_args.size() == 1) {
-            uint doc = m_args.first();
-            kError() << "Indexer crashed while indexing" << doc;
-            kError() << "Blacklisting this file";
-            Q_EMIT indexingFailed(doc);
 
-            if (m_files.isEmpty()) {
-                emitResult();
-                return;
-            }
+    // Failed to index. We must figure out which was the offending file
+    qDebug() << "Indexing failed. Trying to determine offending file";
+
+    // Here it is!
+    if (m_args.size() == 1) {
+        uint doc = m_args.first();
+        kError() << "Indexer crashed while indexing" << doc;
+        kError() << "Blacklisting this file";
+        Q_EMIT indexingFailed(doc);
+
+        if (m_files.isEmpty()) {
+            emitResult();
+        } else {
+            m_args = m_files.pop();
+            start(m_args);
         }
-        else {
-            m_files = m_args;
-        }
+        return;
     }
 
-    // Split the number of files into half
-    if (m_files.size() == 1) {
-        m_args = m_files;
-        m_files.clear();
+    // We split the args into half and push the rest back into m_files
+    // to call later
+    int s = m_args.size() / 2;
+    m_files.push(m_args.mid(s));
+    m_args.resize(s);
 
-        start(m_args);
-    }
-    else {
-        int mid = m_files.size()/2;
-        m_args = m_files.mid(mid);
-        m_files.resize(mid);
-
-        start(m_args);
-    }
+    start(m_args);
 }
 
 void FileIndexingJob::slotProcessTimerTimeout()
 {
     // Emulate a crash so that we narrow down the file which is taking too long
+    qDebug() << "Process took too long killing";
     slotIndexedFile(1, QProcess::CrashExit);
 }
 
@@ -150,6 +140,12 @@ void FileIndexingJob::setCustomDbPath(const QString& path)
 {
     m_customDbPath = path;
 }
+
+void FileIndexingJob::setTimeoutInterval(int msec)
+{
+    m_processTimeout = msec;
+}
+
 
 
 #include "fileindexingjob.moc"

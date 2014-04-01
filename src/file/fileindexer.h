@@ -97,6 +97,7 @@ private:
     IndexScheduler* m_indexScheduler;
     FileIndexerConfig* m_config;
     bool m_startupUpdateDone;
+    bool m_initalRun;
 };
 }
 
