@@ -57,6 +57,8 @@ FileIndexer::FileIndexer(Database* db, FileIndexerConfig* config, QObject* paren
                        QDBusConnection::ExportScriptableSignals |
                        QDBusConnection::ExportScriptableSlots |
                        QDBusConnection::ExportAdaptors);
+
+    m_initalRun = m_config->isInitialRun();
 }
 
 FileIndexer::~FileIndexer()
@@ -77,7 +79,10 @@ void FileIndexer::update()
 
 void FileIndexer::slotBasicIndexingDone()
 {
-    m_config->setInitialRun(false);
+    if (m_initalRun) {
+        m_config->setInitialRun(false);
+        m_initalRun = false;
+    }
 }
 
 QString FileIndexer::statusMessage() const
