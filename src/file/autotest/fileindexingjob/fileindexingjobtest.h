@@ -35,6 +35,7 @@ private Q_SLOTS:
     void testNormalExecution();
     void testFileFail();
     void testMultiFileFail();
+    void testTimeout();
 };
 }
 

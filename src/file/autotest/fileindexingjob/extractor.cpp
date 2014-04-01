@@ -31,6 +31,7 @@
 
 #include <signal.h>
 #include <iostream>
+#include <unistd.h>
 
 int main(int argc, char* argv[])
 {
@@ -55,12 +56,14 @@ int main(int argc, char* argv[])
 
     KComponentData data(aboutData, KComponentData::RegisterAsMainComponent);
 
-    QByteArray arr = qgetenv("BALOO_EXTRACTOR_FAIL_FILE");
-    if (arr.isEmpty()) {
+    QByteArray failArr = qgetenv("BALOO_EXTRACTOR_FAIL_FILE");
+    QByteArray timeoutArr = qgetenv("BALOO_EXTRACTOR_TIMEOUT_FILE");
+    if (failArr.isEmpty() && timeoutArr.isEmpty()) {
         return 0;
     }
 
-    QStringList failFiles = QString::fromUtf8(arr).split(",", QString::SkipEmptyParts);
+    QStringList failFiles = QString::fromUtf8(failArr).split(",", QString::SkipEmptyParts);
+    QStringList timeoutFiles = QString::fromUtf8(timeoutArr).split(",", QString::SkipEmptyParts);
 
     for (int i = 0; i < args->count(); i++) {
         QString fid = args->arg(i);
@@ -68,6 +71,11 @@ int main(int argc, char* argv[])
             // kill oneself
             raise(SIGKILL);
             return -1;
+        }
+
+        if (timeoutFiles.contains(fid)) {
+            // 100 msecs
+            usleep(100 * 1000);
         }
     }
 

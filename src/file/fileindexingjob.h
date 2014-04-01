@@ -47,6 +47,15 @@ public:
      */
     void setCustomDbPath(const QString& path);
 
+    /**
+     * Set the maximum number of msecs that each file should take in order
+     * to get indexed. If a file takes longer, then it will be marked
+     * as failing and the indexingFailed signal will be called
+     *
+     * By deafult this is 5 minutes
+     */
+    void setTimeoutInterval(int msec);
+
     virtual void start();
 
 Q_SIGNALS:
@@ -67,6 +76,7 @@ private:
 
     QProcess* m_process;
     QTimer* m_processTimer;
+    int m_processTimeout;
 
     QString m_customDbPath;
 };

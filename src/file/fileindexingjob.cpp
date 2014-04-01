@@ -45,6 +45,8 @@ FileIndexingJob::FileIndexingJob(const QVector<uint>& files, QObject* parent)
     m_processTimer->setSingleShot(true);
     connect(m_processTimer, SIGNAL(timeout()),
             this, SLOT(slotProcessTimerTimeout()));
+
+    m_processTimeout = 5 * 60 * 1000;
 }
 
 void FileIndexingJob::start()
@@ -87,8 +89,7 @@ void FileIndexingJob::start(const QVector<uint>& files)
     m_process->setProcessChannelMode(QProcess::SeparateChannels);
     m_process->start(exe, args);
 
-    // start the timer which will kill the process if it does not terminate after 5 minutes
-    m_processTimer->start(5 * 60 * 1000);
+    m_processTimer->start(m_processTimeout);
 }
 
 void FileIndexingJob::slotIndexedFile(int, QProcess::ExitStatus exitStatus)
@@ -147,6 +148,12 @@ void FileIndexingJob::setCustomDbPath(const QString& path)
 {
     m_customDbPath = path;
 }
+
+void FileIndexingJob::setTimeoutInterval(int msec)
+{
+    m_processTimeout = msec;
+}
+
 
 
 #include "fileindexingjob.moc"

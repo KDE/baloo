@@ -91,4 +91,24 @@ void FileIndexingJobTest::testNormalExecution()
     QCOMPARE(spy2.count(), 1);
 }
 
+void FileIndexingJobTest::testTimeout()
+{
+    QVector<uint> files;
+    for (int i = 0; i<40; i++) {
+        files << i;
+    }
+
+    putenv("BALOO_EXTRACTOR_TIMEOUT_FILE=5");
+    FileIndexingJob* job = new FileIndexingJob(files);
+    job->setTimeoutInterval(100);
+
+    QSignalSpy spy(job, SIGNAL(indexingFailed(uint)));
+    QVERIFY(job->exec());
+
+    QCOMPARE(spy.count(), 1);
+    QCOMPARE(spy.at(0).size(), 1);
+    QCOMPARE(spy.at(0).first().toUInt(), (uint)5);
+}
+
+
 QTEST_MAIN(FileIndexingJobTest);
