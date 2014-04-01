@@ -60,11 +60,11 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    QString failFile = QString::fromUtf8(arr);
+    QStringList failFiles = QString::fromUtf8(arr).split(",", QString::SkipEmptyParts);
 
     for (int i = 0; i < args->count(); i++) {
         QString fid = args->arg(i);
-        if (fid == failFile) {
+        if (failFiles.contains(fid)) {
             // kill oneself
             raise(SIGKILL);
             return -1;

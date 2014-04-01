@@ -39,7 +39,9 @@ void FileIndexingJobTest::init()
 void FileIndexingJobTest::testFileFail()
 {
     QVector<uint> files;
-    files << 1 << 2 << 3 << 4 << 5 << 6;
+    for (int i = 0; i<40; i++) {
+        files << i;
+    }
 
     putenv("BALOO_EXTRACTOR_FAIL_FILE=5");
     FileIndexingJob* job = new FileIndexingJob(files);
@@ -50,6 +52,28 @@ void FileIndexingJobTest::testFileFail()
     QCOMPARE(spy.count(), 1);
     QCOMPARE(spy.at(0).size(), 1);
     QCOMPARE(spy.at(0).first().toUInt(), (uint)5);
+}
+
+void FileIndexingJobTest::testMultiFileFail()
+{
+    QVector<uint> files;
+    for (int i = 0; i<40; i++) {
+        files << i;
+    }
+
+    putenv("BALOO_EXTRACTOR_FAIL_FILE=5,18,19");
+    FileIndexingJob* job = new FileIndexingJob(files);
+
+    QSignalSpy spy(job, SIGNAL(indexingFailed(uint)));
+    QVERIFY(job->exec());
+
+    QCOMPARE(spy.count(), 3);
+    QCOMPARE(spy.at(0).size(), 1);
+    QCOMPARE(spy.at(0).first().toUInt(), (uint)5);
+    QCOMPARE(spy.at(1).size(), 1);
+    QCOMPARE(spy.at(1).first().toUInt(), (uint)18);
+    QCOMPARE(spy.at(2).size(), 1);
+    QCOMPARE(spy.at(2).first().toUInt(), (uint)19);
 }
 
 void FileIndexingJobTest::testNormalExecution()
