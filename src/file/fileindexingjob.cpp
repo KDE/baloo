@@ -49,10 +49,7 @@ FileIndexingJob::FileIndexingJob(const QVector<uint>& files, QObject* parent)
 
 void FileIndexingJob::start()
 {
-    if (m_files.isEmpty()) {
-        emitResult();
-        return;
-    }
+    Q_ASSERT(!m_files.isEmpty());
 
     m_args = m_files;
     m_files.clear();
