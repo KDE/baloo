@@ -102,40 +102,40 @@ void FileIndexingJob::slotIndexedFile(int, QProcess::ExitStatus exitStatus)
     if (exitStatus == QProcess::NormalExit) {
         if (m_files.isEmpty()) {
             emitResult();
-            return;
+        } else {
+            m_args = m_files;
+            m_files.clear();
+            start(m_args);
         }
+        return;
     }
-    else {
-        if (m_args.size() == 1) {
-            uint doc = m_args.first();
-            kError() << "Indexer crashed while indexing" << doc;
-            kError() << "Blacklisting this file";
-            Q_EMIT indexingFailed(doc);
 
-            if (m_files.isEmpty()) {
-                emitResult();
-                return;
-            }
+    // Failed to index. We must figure out which was the offending file
+
+    // Here it is!
+    if (m_args.size() == 1) {
+        uint doc = m_args.first();
+        kError() << "Indexer crashed while indexing" << doc;
+        kError() << "Blacklisting this file";
+        Q_EMIT indexingFailed(doc);
+
+        if (m_files.isEmpty()) {
+            emitResult();
+        } else {
+            m_args = m_files;
+            m_files.clear();
+            start(m_args);
         }
-        else {
-            m_files = m_args;
-        }
+        return;
     }
 
-    // Split the number of files into half
-    if (m_files.size() == 1) {
-        m_args = m_files;
-        m_files.clear();
+    // We split the args into half and push the rest back into m_files
+    // to call later
+    int s = m_args.size() / 2;
+    m_files = m_args.mid(s) + m_files;
+    m_args.resize(s);
 
-        start(m_args);
-    }
-    else {
-        int mid = m_files.size()/2;
-        m_args = m_files.mid(mid);
-        m_files.resize(mid);
-
-        start(m_args);
-    }
+    start(m_args);
 }
 
 void FileIndexingJob::slotProcessTimerTimeout()

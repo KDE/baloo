@@ -71,7 +71,10 @@ private Q_SLOTS:
 private:
     void start(const QVector<uint>& files);
 
+    /// holds the files which still need to be indexed
     QVector<uint> m_files;
+
+    /// holds the files which have been sent to the process
     QVector<uint> m_args;
 
     QProcess* m_process;
