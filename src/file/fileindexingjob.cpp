@@ -37,9 +37,11 @@ using namespace Baloo;
 
 FileIndexingJob::FileIndexingJob(const QVector<uint>& files, QObject* parent)
     : KJob(parent)
-    , m_files(files)
     , m_process(0)
 {
+    Q_ASSERT(!files.isEmpty());
+    m_files.push(files);
+
     // setup the timer used to kill the indexer process if it seems to get stuck
     m_processTimer = new QTimer(this);
     m_processTimer->setSingleShot(true);
@@ -51,11 +53,7 @@ FileIndexingJob::FileIndexingJob(const QVector<uint>& files, QObject* parent)
 
 void FileIndexingJob::start()
 {
-    Q_ASSERT(!m_files.isEmpty());
-
-    m_args = m_files;
-    m_files.clear();
-
+    m_args = m_files.pop();
     start(m_args);
 }
 
@@ -97,14 +95,14 @@ void FileIndexingJob::slotIndexedFile(int, QProcess::ExitStatus exitStatus)
         if (m_files.isEmpty()) {
             emitResult();
         } else {
-            m_args = m_files;
-            m_files.clear();
+            m_args = m_files.pop();
             start(m_args);
         }
         return;
     }
 
     // Failed to index. We must figure out which was the offending file
+    qDebug() << "Indexing failed. Trying to determine offending file";
 
     // Here it is!
     if (m_args.size() == 1) {
@@ -116,8 +114,7 @@ void FileIndexingJob::slotIndexedFile(int, QProcess::ExitStatus exitStatus)
         if (m_files.isEmpty()) {
             emitResult();
         } else {
-            m_args = m_files;
-            m_files.clear();
+            m_args = m_files.pop();
             start(m_args);
         }
         return;
@@ -126,7 +123,7 @@ void FileIndexingJob::slotIndexedFile(int, QProcess::ExitStatus exitStatus)
     // We split the args into half and push the rest back into m_files
     // to call later
     int s = m_args.size() / 2;
-    m_files = m_args.mid(s) + m_files;
+    m_files.push(m_args.mid(s));
     m_args.resize(s);
 
     start(m_args);
