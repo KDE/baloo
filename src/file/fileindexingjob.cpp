@@ -64,14 +64,7 @@ void FileIndexingJob::start(const QVector<uint>& files)
     // setup the external process which does the actual indexing
     const QString exe = KStandardDirs::findExe(QLatin1String("baloo_file_extractor"));
 
-    // Just in case
-    if (m_process) {
-        m_process->disconnect();
-        m_process->kill();
-
-        delete m_process;
-        m_process = 0;
-    }
+    Q_ASSERT(m_process == 0);
     m_process = new QProcess(this);
 
     QStringList args;
