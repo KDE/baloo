@@ -60,7 +60,7 @@ void FileIndexingJob::start()
 void FileIndexingJob::start(const QVector<uint>& files)
 {
     // setup the external process which does the actual indexing
-    const QString exe = KStandardDirs::findExe(QLatin1String("baloo_file_extractor"));
+    static const QString exe = KStandardDirs::findExe(QLatin1String("baloo_file_extractor"));
 
     Q_ASSERT(m_process == 0);
     m_process = new QProcess(this);
