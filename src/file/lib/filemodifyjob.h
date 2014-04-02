@@ -49,7 +49,6 @@ public:
 
 private Q_SLOTS:
     void doStart();
-    void slotCommitted();
 
 private:
     class Private;

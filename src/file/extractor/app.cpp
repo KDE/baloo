@@ -61,9 +61,6 @@ App::App(QObject* parent)
         return;
     }
 
-    connect(m_db.xapianDatabase(), SIGNAL(committed()),
-            this, SLOT(slotCommitted()));
-
     m_bData = args->isSet("bdata");
     m_debugEnabled = args->isSet("debug");
 
@@ -206,10 +203,8 @@ void App::saveChanges()
     }
 
     m_db.xapianDatabase()->commit();
-}
+    // vHanda: Write the Sqlite db?
 
-void App::slotCommitted()
-{
     m_results.clear();
     m_termCount = 0;
     m_updatedFiles.clear();

@@ -45,7 +45,6 @@ public:
 private Q_SLOTS:
     void processNextUrl();
     void saveChanges();
-    void slotCommitted();
 
 Q_SIGNALS:
     void saved();

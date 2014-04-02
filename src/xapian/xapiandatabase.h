@@ -1,5 +1,4 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
  * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
  *
  * This library is free software; you can redistribute it and/or
@@ -25,7 +24,6 @@
 #include "xapian_export.h"
 
 #include <QString>
-#include <QObject>
 #include <QPair>
 #include <QVector>
 
@@ -33,13 +31,16 @@ namespace Baloo {
 
 class XapianDocument;
 
-class BALOO_XAPIAN_EXPORT XapianDatabase : public QObject
+class BALOO_XAPIAN_EXPORT XapianDatabase
 {
-    Q_OBJECT
 public:
-    XapianDatabase(const QString& path);
+    /**
+     * Create the Xapian db at path \p path. The parameter \p
+     * writeOnly locks the database as long as this object is
+     * valid
+     */
+    XapianDatabase(const QString& path, bool writeOnly = false);
 
-public Q_SLOTS:
     void replaceDocument(uint id, const Xapian::Document& doc);
     void deleteDocument(uint id);
 
@@ -50,7 +51,6 @@ public Q_SLOTS:
      */
     void commit();
 
-public:
     XapianDocument document(uint id);
 
     /**
@@ -63,11 +63,9 @@ public:
         return m_db;
     }
 
-Q_SIGNALS:
-    void committed();
-
 private:
     Xapian::Database* m_db;
+    Xapian::WritableDatabase m_wDb;
 
     typedef QPair<Xapian::docid, Xapian::Document> DocIdPair;
     QVector<DocIdPair> m_docsToAdd;
@@ -75,7 +73,7 @@ private:
 
     std::string m_path;
 
-    void retryCommit();
+    Xapian::WritableDatabase createWritableDb();
 };
 
 }

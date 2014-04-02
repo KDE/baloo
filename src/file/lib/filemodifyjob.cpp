@@ -53,7 +53,6 @@ public:
     bool tagsSet;
 
     XapianDatabase* m_db;
-    QStringList m_updatedFiles;
 
     Private()
         : rating(0)
@@ -94,6 +93,8 @@ void FileModifyJob::start()
 
 void FileModifyJob::doStart()
 {
+    QStringList updatedFiles;
+
     Q_FOREACH (const File& file, d->files) {
         FileMapping fileMap(file.url());
         if (!file.id().isEmpty()) {
@@ -121,7 +122,7 @@ void FileModifyJob::doStart()
             return;
         }
 
-        d->m_updatedFiles << fileMap.url();
+        updatedFiles << fileMap.url();
         const QString furl = fileMap.url();
 
         if (d->ratingSet) {
@@ -162,13 +163,9 @@ void FileModifyJob::doStart()
         }
 
         d->m_db->replaceDocument(fileMap.id(), doc.doc());
-        connect(d->m_db, SIGNAL(committed()), this, SLOT(slotCommitted()));
         d->m_db->commit();
     }
-}
 
-void FileModifyJob::slotCommitted()
-{
     // Notify the world?
     QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/files"),
                                                       QLatin1String("org.kde"),
@@ -176,7 +173,7 @@ void FileModifyJob::slotCommitted()
 
     QVariantList vl;
     vl.reserve(1);
-    vl << QVariant(d->m_updatedFiles);
+    vl << QVariant(updatedFiles);
     message.setArguments(vl);
 
     QDBusConnection::sessionBus().send(message);

@@ -1,5 +1,4 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
  * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
  *
  * This library is free software; you can redistribute it and/or
@@ -26,27 +25,32 @@
 #include <QDir>
 
 #include <malloc.h>
+#include <unistd.h>
 
 using namespace Baloo;
 
-XapianDatabase::XapianDatabase(const QString& path)
-    : QObject()
-    , m_db(0)
+XapianDatabase::XapianDatabase(const QString& path, bool writeOnly)
+    : m_db(0)
 {
     QDir().mkpath(path);
     m_path = path.toUtf8().constData();
 
-    try {
-        Xapian::WritableDatabase(m_path, Xapian::DB_CREATE_OR_OPEN);
-        m_db = new Xapian::Database(m_path);
-    }
-    catch (const Xapian::DatabaseError& err) {
-        kError() << "Serious Error: " << err.get_error_string();
-        kError() << err.get_msg().c_str() << err.get_context().c_str() << err.get_description().c_str();
-    }
+    if (!writeOnly) {
+        try {
+            createWritableDb();
+            m_db = new Xapian::Database(m_path);
+        }
+        catch (const Xapian::DatabaseError& err) {
+            kError() << "Serious Error: " << err.get_error_string();
+            kError() << err.get_msg().c_str() << err.get_context().c_str() << err.get_description().c_str();
+        }
 
-    // Possible errors - DatabaseLock error
-    // Corrupt and InvalidID error
+        // Possible errors - DatabaseLock error
+        // Corrupt and InvalidID error
+    }
+    else {
+        m_wDb = createWritableDb();
+    }
 }
 
 void XapianDatabase::replaceDocument(uint id, const Xapian::Document& doc)
@@ -62,56 +66,33 @@ void XapianDatabase::deleteDocument(uint id)
 void XapianDatabase::commit()
 {
     if (m_docsToAdd.isEmpty() && m_docsToRemove.isEmpty()) {
-        Q_EMIT committed();
         return;
     }
 
-    try {
-        Xapian::WritableDatabase wdb(m_path, Xapian::DB_CREATE_OR_OPEN);
+    Xapian::WritableDatabase wdb = createWritableDb();
 
-        kDebug() << "Adding:" << m_docsToAdd.size() << "docs";
-        Q_FOREACH (const DocIdPair& doc, m_docsToAdd) {
-            wdb.replace_document(doc.first, doc.second);
+    kDebug() << "Adding:" << m_docsToAdd.size() << "docs";
+    Q_FOREACH (const DocIdPair& doc, m_docsToAdd) {
+        wdb.replace_document(doc.first, doc.second);
+    }
+
+    kDebug() << "Removing:" << m_docsToRemove.size() << "docs";
+    Q_FOREACH (Xapian::docid id, m_docsToRemove) {
+        try {
+            wdb.delete_document(id);
         }
-
-        kDebug() << "Removing:" << m_docsToRemove.size() << "docs";
-        Q_FOREACH (Xapian::docid id, m_docsToRemove) {
-            try {
-                wdb.delete_document(id);
-            }
-            catch (const Xapian::DocNotFoundError&) {
-            }
+        catch (const Xapian::DocNotFoundError&) {
         }
-
-        wdb.commit();
-        m_db->reopen();
-        kDebug() << "Xapian Committed";
-
-        m_docsToAdd.clear();
-        m_docsToRemove.clear();
-
-        malloc_trim(0);
-
-        Q_EMIT committed();
     }
-    catch (const Xapian::DatabaseLockError& err) {
-        kError() << err.get_msg().c_str();
-        retryCommit();
-    }
-    catch (const Xapian::DatabaseModifiedError& err) {
-        kError() << err.get_msg().c_str();
-        kError() << "Commit failed, retrying in another 200 msecs";
-        retryCommit();
-    }
-    catch (const Xapian::DatabaseError& err) {
-        kError() << err.get_msg().c_str();
-        retryCommit();
-    }
-}
 
-void XapianDatabase::retryCommit()
-{
-    QTimer::singleShot(200, this, SLOT(commit()));
+    wdb.commit();
+    m_db->reopen();
+    kDebug() << "Xapian Committed";
+
+    m_docsToAdd.clear();
+    m_docsToRemove.clear();
+
+    malloc_trim(0);
 }
 
 XapianDocument XapianDatabase::document(uint id)
@@ -129,5 +110,37 @@ XapianDocument XapianDatabase::document(uint id)
     }
 }
 
+Xapian::WritableDatabase XapianDatabase::createWritableDb()
+{
+    // We need to keep sleeping for a required amount, until we reach
+    // a threshold. That's when we decide to abort?
+    for (int i = 1; i <= 20; i++) {
+        try {
+            Xapian::WritableDatabase wdb(m_path, Xapian::DB_CREATE_OR_OPEN);
+            return wdb;
+        }
+        catch (const Xapian::DatabaseLockError&) {
+            usleep(i * 50 * 1000);
+        }
+        catch (const Xapian::DatabaseModifiedError&) {
+            usleep(i * 50 * 1000);
+        }
+        catch (const Xapian::DatabaseCreateError& err) {
+            kDebug() << err.get_error_string();
+            return Xapian::WritableDatabase();
+        }
+        catch (const Xapian::DatabaseCorruptError& err) {
+            kError() << "Database Corrupted - What did you do?";
+            kError() << err.get_error_string();
+            return Xapian::WritableDatabase();
+        }
+        catch (...) {
+            kError() << "Bananana Error";
+            return Xapian::WritableDatabase();
+        }
+    }
 
+    kError() << "Could not obtain lock for Xapian Database. This is bad";
+    return Xapian::WritableDatabase();
+}
 
