@@ -53,7 +53,7 @@ using namespace Baloo;
 
 FileIndexerConfig::FileIndexerConfig(QObject* parent)
     : QObject(parent)
-    , m_config("baloofilerc")
+    , m_config("baloofilerc", KConfig::SimpleConfig)
     , m_indexHidden(false)
 {
     KDirWatch* dirWatch = KDirWatch::self();
