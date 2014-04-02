@@ -266,8 +266,10 @@ bool IndexScheduler::scheduleFileQueue()
             return false;
         case State_UserIdle:
             m_fileIQ->setDelay(0);
+            return true;
         case State_Normal:
             m_fileIQ->setDelay(500);
+            return true;
         default:
             return true;
     }

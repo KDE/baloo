@@ -39,6 +39,7 @@ class BALOO_XAPIAN_EXPORT XapianDatabase : public QObject
 public:
     XapianDatabase(const QString& path);
 
+public Q_SLOTS:
     void replaceDocument(uint id, const Xapian::Document& doc);
     void deleteDocument(uint id);
 
@@ -49,6 +50,7 @@ public:
      */
     void commit();
 
+public:
     XapianDocument document(uint id);
 
     /**
