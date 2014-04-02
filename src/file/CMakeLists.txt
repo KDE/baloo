@@ -6,7 +6,6 @@ add_subdirectory(search)
 set(file_SRCS
     # Filewatch
     filewatch.cpp
-    updaterequest.cpp
     activefilequeue.cpp
     metadatamover.cpp
     database.cpp

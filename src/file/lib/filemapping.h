@@ -60,6 +60,8 @@ public:
      */
     bool create(QSqlDatabase db);
 
+    bool remove(QSqlDatabase db);
+
     bool operator ==(const FileMapping& rhs) const;
 
 private:

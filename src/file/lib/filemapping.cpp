@@ -131,6 +131,34 @@ bool FileMapping::create(QSqlDatabase db)
     return true;
 }
 
+bool FileMapping::remove(QSqlDatabase db)
+{
+    if (m_url.isEmpty() && m_id == 0)
+        return false;
+
+    QSqlQuery query(db);
+
+    if (!m_url.isEmpty()) {
+        query.prepare("delete from files where url = ?");
+        query.addBindValue(m_url);
+        if (!query.exec()) {
+            kError() << query.lastError().text();
+            return false;
+        }
+    }
+    else {
+        query.prepare("delete from files where id = ?");
+        query.addBindValue(m_id);
+        if (!query.exec()) {
+            kError() << query.lastError().text();
+            return false;
+        }
+    }
+
+    return true;
+}
+
+
 void FileMapping::clear()
 {
     m_id = 0;
