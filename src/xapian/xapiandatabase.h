@@ -42,6 +42,7 @@ public:
     XapianDatabase(const QString& path, bool writeOnly = false);
 
     void replaceDocument(uint id, const Xapian::Document& doc);
+    void replaceDocument(uint id, const XapianDocument& doc);
     void deleteDocument(uint id);
 
     /**
