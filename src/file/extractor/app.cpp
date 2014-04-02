@@ -23,6 +23,7 @@
 #include "app.h"
 #include "../basicindexingjob.h"
 #include "../database.h"
+#include "xapiandatabase.h"
 
 #include <KCmdLineArgs>
 #include <KMimeType>
@@ -50,13 +51,12 @@ App::App(QObject* parent)
 
     if (!args->getOption("db").isEmpty()) {
         m_path = args->getOption("db");
-    }
-    else {
+    } else {
         m_path = KGlobal::dirs()->localxdgdatadir() + "baloo/file";
     }
 
     m_db.setPath(m_path);
-    if (!m_db.init()) {
+    if (!m_db.init(true /*sql db only*/)) {
         QTimer::singleShot(0, QCoreApplication::instance(), SLOT(quit()));
         return;
     }
@@ -68,31 +68,30 @@ App::App(QObject* parent)
     for (int i=0; i<args->count(); i++) {
         FileMapping mapping = FileMapping(args->arg(i).toUInt());
         QString url;
+
+        // arg is an id
         if (mapping.fetch(m_db.sqlDatabase())) {
-            // arg is an id
             url = mapping.url();
-            // If this url no longer exists, remove it from the mapping db.
             if (!QFile::exists(url)) {
-                QSqlQuery query(m_db.sqlDatabase());
-                query.prepare("delete from files where url = ?");
-                query.addBindValue(url);
-                if (!query.exec()) {
-                    kError() << query.lastError().text();
-                }
+                mapping.remove(m_db.sqlDatabase());
+                continue;
             }
         } else {
             // arg is a url
             url = args->url(i).toLocalFile();
         }
+
         if (QFile::exists(url)) {
             m_urls << url;
         } else {
             // id or url was looked up, but file deleted
             kDebug() << url << "does not exist";
+
             // Try to delete it as an id:
             // it may have been deleted from the FileMapping db as well.
             // The worst that can happen is deleting nothing.
-            deleteDocument(mapping.id());
+            mapping.remove(m_db.sqlDatabase());
+            m_docsToDelete << mapping.id();
         }
     }
 
@@ -194,16 +193,21 @@ void App::saveChanges()
 
     m_updatedFiles.clear();
 
+    XapianDatabase xapDb(m_path);
     for (int i = 0; i<m_results.size(); i++) {
         Result& res = m_results[i];
         res.finish();
 
-        m_db.xapianDatabase()->replaceDocument(res.id(), res.document());
+        xapDb.replaceDocument(res.id(), res.document());
         m_updatedFiles << res.inputUrl();
     }
 
-    m_db.xapianDatabase()->commit();
-    // vHanda: Write the Sqlite db?
+    Q_FOREACH (int docid, m_docsToDelete) {
+        xapDb.deleteDocument(docid);
+    }
+
+    xapDb.commit();
+    m_db.sqlDatabase().commit();
 
     m_results.clear();
     m_termCount = 0;
@@ -225,12 +229,6 @@ void App::saveChanges()
     }
 
     Q_EMIT saved();
-}
-
-
-void App::deleteDocument(unsigned docid)
-{
-    m_db.xapianDatabase()->deleteDocument(docid);
 }
 
 void App::printDebug()

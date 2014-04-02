@@ -72,6 +72,7 @@ private:
     QVector<uint> m_docsToRemove;
 
     std::string m_path;
+    bool m_writeOnly;
 
     Xapian::WritableDatabase createWritableDb();
 };

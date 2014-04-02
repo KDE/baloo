@@ -50,7 +50,6 @@ Q_SIGNALS:
     void saved();
 
 private:
-    void deleteDocument(unsigned docid);
     void printDebug();
 
     QVector<Result> m_results;
@@ -66,6 +65,7 @@ private:
 
     int m_termCount;
     QList<QString> m_updatedFiles;
+    QVector<uint> m_docsToDelete;
 };
 
 }

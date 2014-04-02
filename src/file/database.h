@@ -37,7 +37,7 @@ public:
     QString path();
     void setPath(const QString& path);
 
-    bool init();
+    bool init(bool sqlOnly = false);
     bool isInitialized();
 
     QSqlDatabase& sqlDatabase();

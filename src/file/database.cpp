@@ -49,13 +49,15 @@ Database::~Database()
     QSqlDatabase::removeDatabase(name);
 }
 
-bool Database::init()
+bool Database::init(bool sqlOnly)
 {
     if (m_initialized)
         return true;
 
-    // Create the Xapian DB
-    m_xapianDb = new Baloo::XapianDatabase(m_path);
+    if (!sqlOnly) {
+        // Create the Xapian DB
+        m_xapianDb = new Baloo::XapianDatabase(m_path);
+    }
 
     m_sqlDb = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE"));
     m_sqlDb->setDatabaseName(m_path + "/fileMap.sqlite3");

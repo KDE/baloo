@@ -31,6 +31,7 @@ using namespace Baloo;
 
 XapianDatabase::XapianDatabase(const QString& path, bool writeOnly)
     : m_db(0)
+    , m_writeOnly(writeOnly)
 {
     QDir().mkpath(path);
     m_path = path.toUtf8().constData();
@@ -55,16 +56,29 @@ XapianDatabase::XapianDatabase(const QString& path, bool writeOnly)
 
 void XapianDatabase::replaceDocument(uint id, const Xapian::Document& doc)
 {
+    if (m_writeOnly) {
+        m_wDb.replace_document(id, doc);
+        return;
+    }
     m_docsToAdd << qMakePair(id, doc);
 }
 
 void XapianDatabase::deleteDocument(uint id)
 {
+    if (m_writeOnly) {
+        m_wDb.delete_document(id);
+        return;
+    }
     m_docsToRemove << id;
 }
 
 void XapianDatabase::commit()
 {
+    if (m_writeOnly) {
+        m_wDb.commit();
+        return;
+    }
+
     if (m_docsToAdd.isEmpty() && m_docsToRemove.isEmpty()) {
         return;
     }
@@ -98,7 +112,12 @@ void XapianDatabase::commit()
 XapianDocument XapianDatabase::document(uint id)
 {
     try {
-        Xapian::Document xdoc = m_db->get_document(id);
+        Xapian::Document xdoc;
+        if (m_writeOnly) {
+            xdoc = m_wDb.get_document(id);
+        } else {
+            xdoc = m_db->get_document(id);
+        }
         return XapianDocument(xdoc);
     }
     catch (const Xapian::DatabaseModifiedError&) {
