@@ -42,6 +42,8 @@ class ContactIndexer: public AbstractIndexer
     void commit();
 
 private:
+    bool indexContact(const Akonadi::Item &item);
+    void indexContactGroup(const Akonadi::Item &item);
     Xapian::WritableDatabase* m_db;
 };
 

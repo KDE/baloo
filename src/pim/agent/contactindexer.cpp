@@ -23,6 +23,7 @@
 #include "contactindexer.h"
 
 #include <KABC/Addressee>
+#include <KABC/ContactGroup>
 #include <Akonadi/Collection>
 
 ContactIndexer::ContactIndexer(const QString& path):
@@ -42,13 +43,13 @@ QStringList ContactIndexer::mimeTypes() const
     return QStringList() << KABC::Addressee::mimeType();
 }
 
-void ContactIndexer::index(const Akonadi::Item& item)
+bool ContactIndexer::indexContact(const Akonadi::Item& item)
 {
     KABC::Addressee addresse;
     try {
         addresse = item.payload<KABC::Addressee>();
     } catch (const Akonadi::PayloadException&) {
-        return;
+        return false;
     }
 
     Xapian::Document doc;
@@ -67,8 +68,8 @@ void ContactIndexer::index(const Akonadi::Item& item)
         name = addresse.name();
     }
 
-    std::string stdName = name.toStdString();
-    std::string stdNick = addresse.nickName().toStdString();
+    const std::string stdName = name.toStdString();
+    const std::string stdNick = addresse.nickName().toStdString();
     kDebug() << "Indexing" << name << addresse.nickName();
 
     termGen.index_text(stdName);
@@ -89,12 +90,52 @@ void ContactIndexer::index(const Akonadi::Item& item)
     Q_ASSERT_X(item.parentCollection().isValid(), "Baloo::ContactIndexer::index",
                "Item does not have a valid parent collection");
 
-    Akonadi::Entity::Id colId = item.parentCollection().id();
-    QByteArray term = 'C' + QByteArray::number(colId);
+    const Akonadi::Entity::Id colId = item.parentCollection().id();
+    const QByteArray term = 'C' + QByteArray::number(colId);
     doc.add_boolean_term(term.data());
 
     m_db->replace_document(item.id(), doc);
-    // TODO: Contact Groups?
+    return true;
+}
+
+void ContactIndexer::indexContactGroup(const Akonadi::Item& item)
+{
+    KABC::ContactGroup group;
+    try {
+        group = item.payload<KABC::ContactGroup>();
+    } catch (const Akonadi::PayloadException&) {
+        return;
+    }
+
+    Xapian::Document doc;
+    Xapian::TermGenerator termGen;
+    termGen.set_database(*m_db);
+    termGen.set_document(doc);
+
+    const QString name = group.name();
+
+    const std::string stdName = name.toStdString();
+
+    termGen.index_text(stdName);
+
+    termGen.index_text(stdName, 1, "NA");
+    // Parent collection
+    Q_ASSERT_X(item.parentCollection().isValid(), "Baloo::ContactIndexer::index",
+               "Item does not have a valid parent collection");
+
+    const Akonadi::Entity::Id colId = item.parentCollection().id();
+    const QByteArray term = 'C' + QByteArray::number(colId);
+    doc.add_boolean_term(term.data());
+
+    m_db->replace_document(item.id(), doc);
+}
+
+
+void ContactIndexer::index(const Akonadi::Item& item)
+{
+    if (!indexContact(item)) {
+        indexContactGroup(item);
+    }
 }
 
 void ContactIndexer::remove(const Akonadi::Item& item)
