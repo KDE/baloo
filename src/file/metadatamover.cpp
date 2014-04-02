@@ -34,13 +34,7 @@ using namespace Baloo;
 MetadataMover::MetadataMover(Database* db, QObject* parent)
     : QObject(parent)
     , m_db(db)
-    , m_queueMutex(QMutex::Recursive)
 {
-    // setup the main update queue timer
-    m_queueTimer = new QTimer(this);
-    connect(m_queueTimer, SIGNAL(timeout()),
-            this, SLOT(slotWorkUpdateQueue()),
-            Qt::DirectConnection);
 }
 
 
@@ -55,15 +49,13 @@ void MetadataMover::moveFileMetadata(const QString& from, const QString& to)
     Q_ASSERT(!from.isEmpty() && from != "/");
     Q_ASSERT(!to.isEmpty() && to != "/");
 
-    QMutexLocker lock(&m_queueMutex);
+    // We do NOT get deleted messages for overwritten files! Thus, we
+    // have to remove all metadata for overwritten files first.
+    removeMetadata(to);
 
-    UpdateRequest req(from, to);
-    if (!m_updateQueue.contains(req))
-        m_updateQueue.enqueue(req);
-
-    QTimer::singleShot(0, this, SLOT(slotStartUpdateTimer()));
+    // and finally update the old statements
+    updateMetadata(from, to);
 }
-
 
 void MetadataMover::removeFileMetadata(const QString& file)
 {
@@ -75,55 +67,9 @@ void MetadataMover::removeFileMetadata(const QString& file)
 void MetadataMover::removeFileMetadata(const QStringList& files)
 {
     kDebug() << files;
-    QMutexLocker lock(&m_queueMutex);
 
     Q_FOREACH (const QString& file, files) {
-        UpdateRequest req(file);
-        if (!m_updateQueue.contains(req))
-            m_updateQueue.enqueue(req);
-    }
-
-    QTimer::singleShot(0, this, SLOT(slotStartUpdateTimer()));
-}
-
-
-void MetadataMover::slotWorkUpdateQueue()
-{
-    // lock for initial iteration
-    QMutexLocker lock(&m_queueMutex);
-
-    // work the queue
-    if (!m_updateQueue.isEmpty()) {
-        UpdateRequest updateRequest = m_updateQueue.dequeue();
-
-        // unlock after queue utilization
-        lock.unlock();
-
-//        kDebug() << "========================= handling" << updateRequest.source() << updateRequest.target();
-
-        // an empty second url means deletion
-        if (updateRequest.target().isEmpty()) {
-            removeMetadata(updateRequest.source());
-        } else {
-            const QString from = updateRequest.source();
-            const QString to = updateRequest.target();
-
-            // We do NOT get deleted messages for overwritten files! Thus, we
-            // have to remove all metadata for overwritten files first.
-            removeMetadata(to);
-
-            // and finally update the old statements
-            updateMetadata(from, to);
-        }
-
-//        kDebug() << "========================= done with" << updateRequest.source() << updateRequest.target();
-    } else {
-        //kDebug() << "All update requests handled. Stopping timer.";
-
-        m_db->sqlDatabase().commit();
-        m_db->sqlDatabase().transaction();
-
-        m_queueTimer->stop();
+        removeMetadata(file);
     }
 }
 
@@ -210,14 +156,9 @@ void MetadataMover::updateMetadata(const QString& from, const QString& to)
     if (!query.exec(queryStr)) {
         kError() << "Big query failed:" << query.lastError().text();
     }
-}
 
-// start the timer in the update thread
-void MetadataMover::slotStartUpdateTimer()
-{
-    if (!m_queueTimer->isActive()) {
-        m_queueTimer->start();
-    }
+    m_db->sqlDatabase().commit();
+    m_db->sqlDatabase().transaction();
 }
 
 #include "metadatamover.moc"
