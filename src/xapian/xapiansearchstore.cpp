@@ -46,12 +46,19 @@ void XapianSearchStore::setDbPath(const QString& path)
     m_dbPath = path;
 
     delete m_db;
+    m_db = 0;
+
     try {
         m_db = new Xapian::Database(m_dbPath.toUtf8().constData());
     }
     catch (const Xapian::DatabaseOpeningError&) {
         kError() << "Xapian Database does not exist at " << m_dbPath;
-        m_db = 0;
+    }
+    catch (const Xapian::DatabaseCorruptError&) {
+        kError() << "Xapian Database corrupted at " << m_dbPath;
+    }
+    catch (...) {
+        kError() << "Random exception, but we do not want to crash";
     }
 }
 

@@ -38,7 +38,7 @@ public:
     XapianDocument();
     XapianDocument(const Xapian::Document& doc);
 
-    void addTerm(const QString& term, const QString& prefix);
+    void addTerm(const QString& term, const QString& prefix = QString());
     void addBoolTerm(const QString& term, const QString& prefix = QString());
     void addBoolTerm(int term, const QString& prefix);
 
@@ -47,7 +47,7 @@ public:
 
     void addValue(int pos, const QString& value);
 
-    Xapian::Document doc();
+    Xapian::Document doc() const;
 
     QString fetchTermStartsWith(const QByteArray& term);
 

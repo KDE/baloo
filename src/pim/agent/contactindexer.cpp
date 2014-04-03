@@ -21,6 +21,7 @@
  */
 
 #include "contactindexer.h"
+#include "xapiandocument.h"
 
 #include <KABC/Addressee>
 #include <KABC/ContactGroup>
@@ -29,7 +30,7 @@
 ContactIndexer::ContactIndexer(const QString& path):
     AbstractIndexer()
 {
-    m_db = new Xapian::WritableDatabase(path.toStdString(), Xapian::DB_CREATE_OR_OPEN);
+    m_db = new Baloo::XapianDatabase(path, true);
 }
 
 ContactIndexer::~ContactIndexer()
@@ -52,10 +53,7 @@ bool ContactIndexer::indexContact(const Akonadi::Item& item)
         return false;
     }
 
-    Xapian::Document doc;
-    Xapian::TermGenerator termGen;
-    termGen.set_database(*m_db);
-    termGen.set_document(doc);
+    Baloo::XapianDocument doc;
 
     QString name;
     if (!addresse.formattedName().isEmpty()) {
@@ -68,22 +66,18 @@ bool ContactIndexer::indexContact(const Akonadi::Item& item)
         name = addresse.name();
     }
 
-    const std::string stdName = name.toStdString();
-    const std::string stdNick = addresse.nickName().toStdString();
     kDebug() << "Indexing" << name << addresse.nickName();
 
-    termGen.index_text(stdName);
-    termGen.index_text(stdNick);
-    doc.add_boolean_term(addresse.uid().toStdString());
+    doc.indexText(name);
+    doc.indexText(addresse.nickName());
+    doc.indexText(addresse.uid());
 
-    termGen.index_text(stdName, 1, "NA");
-    termGen.index_text(stdNick, 1, "NI");
+    doc.indexText(name, "NA");
+    doc.indexText(addresse.nickName(), "NI");
 
     Q_FOREACH (const QString& email, addresse.emails()) {
-        std::string stdEmail = email.toStdString();
-
-        doc.add_term(stdEmail);
-        termGen.index_text(stdEmail);
+        doc.addTerm(email);
+        doc.indexText(email);
     }
 
     // Parent collection
@@ -91,10 +85,9 @@ bool ContactIndexer::indexContact(const Akonadi::Item& item)
                "Item does not have a valid parent collection");
 
     const Akonadi::Entity::Id colId = item.parentCollection().id();
-    const QByteArray term = 'C' + QByteArray::number(colId);
-    doc.add_boolean_term(term.data());
+    doc.addBoolTerm(colId, "C");
 
-    m_db->replace_document(item.id(), doc);
+    m_db->replaceDocument(item.id(), doc);
     return true;
 }
 
@@ -107,27 +100,20 @@ void ContactIndexer::indexContactGroup(const Akonadi::Item& item)
         return;
     }
 
-    Xapian::Document doc;
-    Xapian::TermGenerator termGen;
-    termGen.set_database(*m_db);
-    termGen.set_document(doc);
+    Baloo::XapianDocument doc;
 
     const QString name = group.name();
+    doc.indexText(name);
+    doc.indexText(name, "NA");
 
-    const std::string stdName = name.toStdString();
-
-    termGen.index_text(stdName);
-
-    termGen.index_text(stdName, 1, "NA");
     // Parent collection
     Q_ASSERT_X(item.parentCollection().isValid(), "Baloo::ContactIndexer::index",
                "Item does not have a valid parent collection");
 
     const Akonadi::Entity::Id colId = item.parentCollection().id();
-    const QByteArray term = 'C' + QByteArray::number(colId);
-    doc.add_boolean_term(term.data());
+    doc.addBoolTerm(colId, "C");
 
-    m_db->replace_document(item.id(), doc);
+    m_db->replaceDocument(item.id(), doc);
 }
 
 
@@ -140,22 +126,18 @@ void ContactIndexer::index(const Akonadi::Item& item)
 
 void ContactIndexer::remove(const Akonadi::Item& item)
 {
-    try {
-        m_db->delete_document(item.id());
-    }
-    catch (const Xapian::DocNotFoundError&) {
-        return;
-    }
+    m_db->deleteDocument(item.id());
 }
 
 void ContactIndexer::remove(const Akonadi::Collection& collection)
 {
     try {
+        Xapian::Database* db = m_db->db();
         Xapian::Query query('C'+ QString::number(collection.id()).toStdString());
-        Xapian::Enquire enquire(*m_db);
+        Xapian::Enquire enquire(*db);
         enquire.set_query(query);
 
-        Xapian::MSet mset = enquire.get_mset(0, m_db->get_doccount());
+        Xapian::MSet mset = enquire.get_mset(0, db->get_doccount());
         Xapian::MSetIterator end(mset.end());
         for (Xapian::MSetIterator it = mset.begin(); it != end; ++it) {
             const qint64 id = *it;

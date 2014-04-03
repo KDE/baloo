@@ -66,7 +66,7 @@ void XapianDocument::indexText(const QString& text, int wdfInc)
     indexText(text, QString(), wdfInc);
 }
 
-Xapian::Document XapianDocument::doc()
+Xapian::Document XapianDocument::doc() const
 {
     return m_doc;
 }

@@ -58,6 +58,11 @@ XapianDatabase::XapianDatabase(const QString& path, bool writeOnly)
     }
 }
 
+void XapianDatabase::replaceDocument(uint id, const XapianDocument& doc)
+{
+    replaceDocument(id, doc.doc());
+}
+
 void XapianDatabase::replaceDocument(uint id, const Xapian::Document& doc)
 {
     if (m_writeOnly) {
@@ -70,7 +75,11 @@ void XapianDatabase::replaceDocument(uint id, const Xapian::Document& doc)
 void XapianDatabase::deleteDocument(uint id)
 {
     if (m_writeOnly) {
-        m_wDb.delete_document(id);
+        try {
+            m_wDb.delete_document(id);
+        }
+        catch (const Xapian::DocNotFoundError&) {
+        }
         return;
     }
     m_docsToRemove << id;
