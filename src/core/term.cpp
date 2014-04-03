@@ -29,8 +29,6 @@ class Baloo::Term::Private {
 public:
     Operation m_op;
     Comparator m_comp;
-    int m_pos;
-    int m_len;
 
     QString m_property;
     QVariant m_value;
@@ -43,8 +41,6 @@ public:
     Private() {
         m_op = None;
         m_comp = Auto;
-        m_pos = 0;
-        m_len = 0;
         m_isNegated = false;
     }
 };
@@ -208,32 +204,6 @@ Term::Comparator Term::comparator() const
 void Term::setComparator(Term::Comparator c)
 {
     d->m_comp = c;
-}
-
-int Term::position() const
-{
-    return d->m_pos;
-}
-
-int Term::length() const
-{
-    return d->m_len;
-}
-
-void Term::setPosition(int pos)
-{
-    d->m_pos = pos;
-}
-
-void Term::setPosition(int pos, int len)
-{
-    d->m_pos = pos;
-    d->m_len = len;
-}
-
-void Term::setLength(int len)
-{
-    d->m_len = len;
 }
 
 void Term::setUserData(const QString& name, const QVariant& value)
