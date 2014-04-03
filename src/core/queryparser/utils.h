@@ -20,7 +20,7 @@
 #ifndef __UTILS_H__
 #define __UTILS_H__
 
-#include "../term.h"
+#include "term.h"
 
 #include <QtCore/QString>
 #include <QtCore/QList>

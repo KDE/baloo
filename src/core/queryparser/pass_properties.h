@@ -22,7 +22,7 @@
 
 #include <QtCore/QString>
 
-#include "../term.h"
+#include "term.h"
 
 class PassProperties
 {

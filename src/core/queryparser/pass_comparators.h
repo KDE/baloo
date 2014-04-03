@@ -22,7 +22,7 @@
 
 #include <QtCore/QList>
 
-#include "../term.h"
+#include "term.h"
 
 class PassComparators
 {

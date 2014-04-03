@@ -35,8 +35,8 @@
 #include "pass_subqueries.h"
 #include "pass_comparators.h"
 
-#include "../term.h"
-#include "../query.h"
+#include "term.h"
+#include "query.h"
 
 #include <klocale.h>
 #include <kcalendarsystem.h>

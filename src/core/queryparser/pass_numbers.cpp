@@ -20,7 +20,7 @@
 #include "pass_numbers.h"
 #include "utils.h"
 
-#include "../term.h"
+#include "term.h"
 
 #include <klocalizedstring.h>
 

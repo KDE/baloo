@@ -20,7 +20,7 @@
 #include "pass_properties.h"
 #include "utils.h"
 
-#include "../term.h"
+#include "term.h"
 
 PassProperties::PassProperties()
 {

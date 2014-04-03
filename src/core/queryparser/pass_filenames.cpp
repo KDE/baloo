@@ -20,7 +20,7 @@
 #include "pass_filenames.h"
 #include "utils.h"
 
-#include "../term.h"
+#include "term.h"
 
 #include <QtCore/QRegExp>
 

@@ -20,7 +20,7 @@
 #include "pass_decimalvalues.h"
 #include "utils.h"
 
-#include "../term.h"
+#include "term.h"
 
 static double scales[] = {
     1.0,

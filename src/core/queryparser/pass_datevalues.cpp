@@ -21,7 +21,7 @@
 #include "pass_dateperiods.h"
 #include "utils.h"
 
-#include "../term.h"
+#include "term.h"
 
 PassDateValues::PassDateValues()
 : pm(false)

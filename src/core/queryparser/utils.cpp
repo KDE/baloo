@@ -20,7 +20,7 @@
 #include "utils.h"
 #include "pass_dateperiods.h"
 
-#include "../term.h"
+#include "term.h"
 
 #include <klocalizedstring.h>
 

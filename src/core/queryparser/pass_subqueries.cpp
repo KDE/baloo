@@ -20,7 +20,7 @@
 #include "pass_subqueries.h"
 #include "utils.h"
 
-#include "../term.h"
+#include "term.h"
 
 void PassSubqueries::setProperty(const QString &property)
 {

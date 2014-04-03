@@ -20,8 +20,7 @@
 #ifndef _BALOO_QUERY_PARSER_H_
 #define _BALOO_QUERY_PARSER_H_
 
-#include "../query.h"
-
+#include "query.h"
 #include "core_export.h"
 
 #include <QtCore/QString>
