@@ -21,7 +21,8 @@
 #include "queryparsertest.h"
 #include "query.h"
 #include "term.h"
-#include "queryparser/queryparser.h"
+
+#include "../queryparser.h"
 
 #include <qtest_kde.h>
 

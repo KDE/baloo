@@ -21,7 +21,7 @@
 #define _BALOO_QUERY_PARSER_H_
 
 #include "query.h"
-#include "core_export.h"
+#include "queryparser_export.h"
 
 #include <QtCore/QString>
 
@@ -36,7 +36,7 @@ class CompletionProposal;
  * \brief Parser for desktop user queries.
  *
  * \warning This is NOT a SPARQL parser.
- * \note Don't forget to insert the "libbaloocore" localization catalog
+ * \note Don't forget to insert the "baloo_queryparser" localization catalog
  *       for this class to be localized. Do so using KLocale::insertCatalog.
  *
  * The QueryParser can be used to parse user queries, ie. queries that the user
@@ -99,7 +99,7 @@ class CompletionProposal;
  *
  * \since 4.14
  */
-class BALOO_CORE_EXPORT QueryParser
+class BALOO_QUERYPARSER_EXPORT QueryParser
 {
     friend class ::PatternMatcher;
 
