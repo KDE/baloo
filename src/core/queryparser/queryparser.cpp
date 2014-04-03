@@ -185,7 +185,7 @@ Query QueryParser::parse(const QString &query, ParserFlags flags, int cursor_pos
         }
 
         d->terms.append(Term(QString(), part, Term::Equal));
-        d->terms.last().setPosition(position, length);
+        setTermRange(d->terms.last(), position, position + length - 1);
     }
 
     // Run the parsing passes
@@ -388,7 +388,7 @@ void QueryParser::Private::runPasses(int cursor_position, QueryParser::ParserFla
         ki18n("Sender of an e-mail"), CompletionProposal::Email);
     pass_properties.setProperty(QLatin1String("subject"), PassProperties::String);
     runPass(pass_properties, cursor_position,
-        i18nc("Subject of an e-mail or note", "title|subject %1;titled %1"),
+        i18nc("Subject of an e-mail or note", "title|subject is %1;title|subject %1;titled %1"),
         ki18n("Subject"));
     pass_properties.setProperty(QLatin1String("to"), PassProperties::EmailAddress);
     runPass(pass_properties, cursor_position,
@@ -467,17 +467,17 @@ Term QueryParser::Private::intervalComparison(const QString &prop,
                                               const Term &min,
                                               const Term &max)
 {
-    int start_position = qMin(min.position(), max.position());
-    int end_position = qMax(min.position() + min.length(), max.position() + max.length());
+    int start_position = qMin(termStart(min), termStart(max));
+    int end_position = qMax(termEnd(min), termEnd(max));
 
     Term greater(prop, min.value(), Term::GreaterEqual);
     Term smaller(prop, max.value(), Term::LessEqual);
 
-    greater.setPosition(start_position, end_position - start_position);
-    copyTermPosition(smaller, greater);
+    setTermRange(greater, start_position, end_position);
+    copyTermRange(smaller, greater);
 
     Term total = (greater && smaller);
-    copyTermPosition(total, greater);
+    copyTermRange(total, greater);
 
     return total;
 }
@@ -528,7 +528,7 @@ Term QueryParser::Private::dateTimeComparison(const QString &prop,
     }
 
     Term end_term(QString(), datetime, Term::Equal);
-    copyTermPosition(end_term, term);
+    copyTermRange(end_term, term);
 
     return intervalComparison(
         prop,
@@ -607,8 +607,8 @@ Term QueryParser::Private::tuneTerm(Term term, Query &query)
             Term min(QString(), v * 80LL / 100LL, Term::Equal);
             Term max(QString(), v * 120LL / 100LL, Term::Equal);
 
-            copyTermPosition(min, term);
-            copyTermPosition(max, term);
+            copyTermRange(min, term);
+            copyTermRange(max, term);
 
             term = intervalComparison(
                 term.property(),
@@ -856,8 +856,8 @@ void QueryParser::Private::foldDateTimes()
             spec_contains_interesting_data = true;
             end_of_cluster = false;
 
-            start_position = qMin(start_position, term.position());
-            end_position = qMax(end_position, term.position() + term.length());
+            start_position = qMin(start_position, termStart(term));
+            end_position = qMax(end_position, termEnd(term));
         } else if (spec_contains_interesting_data) {
             // A small string literal, like "a", "on", etc. These terms can be
             // ignored and removed from date-times.
@@ -872,7 +872,8 @@ void QueryParser::Private::foldDateTimes()
             if (spec_contains_interesting_data) {
                 // End a date-time spec build its corresponding QDateTime
                 new_terms.append(buildDateTimeLiteral(spec));
-                new_terms.last().setPosition(start_position, end_position - start_position);
+
+                setTermRange(new_terms.last(), start_position, end_position);
 
                 spec.reset();
                 spec_contains_interesting_data = false;
@@ -887,7 +888,8 @@ void QueryParser::Private::foldDateTimes()
     if (spec_contains_interesting_data) {
         // Query ending with a date-time, don't forget to build it
         new_terms.append(buildDateTimeLiteral(spec));
-        new_terms.last().setPosition(start_position, end_position - start_position);
+
+        setTermRange(new_terms.last(), start_position, end_position);
     }
 
     terms.swap(new_terms);

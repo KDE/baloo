@@ -17,10 +17,11 @@
    Boston, MA 02110-1301, USA.
  */
 
-#ifndef _BALOO_SEARCH_QUERY_PARSER_H_
-#define _BALOO_SEARCH_QUERY_PARSER_H_
+#ifndef _BALOO_QUERY_PARSER_H_
+#define _BALOO_QUERY_PARSER_H_
 
-#include "query.h"
+#include "../query.h"
+
 #include "core_export.h"
 
 #include <QtCore/QString>

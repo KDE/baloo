@@ -72,7 +72,7 @@ class PatternMatcher
                         // its position. If more terms are returned, the pass
                         // must handle positions itself
                         if (replacement.count() == 1) {
-                            terms[index].setPosition(start_position, end_position - start_position);
+                            setTermRange(terms[index], start_position, end_position);
                         }
 
                         // Re-explore the terms vector as indexes have changed

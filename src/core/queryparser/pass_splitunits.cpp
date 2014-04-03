@@ -43,7 +43,7 @@ QList<Baloo::Term> PassSplitUnits::run(const QList<Baloo::Term> &match) const
     Baloo::Term unit_term;
 
     QString value = stringValueIfLiteral(match.at(0));
-    int value_position = match.at(0).position();
+    int value_position = termStart(match.at(0));
 
     if (value.isNull()) {
         return rs;
@@ -58,7 +58,8 @@ QList<Baloo::Term> PassSplitUnits::run(const QList<Baloo::Term> &match) const
 
     if (prefix.size() < value.size() && known_units.contains(prefix)) {
         unit_term.setValue(prefix);
-        unit_term.setPosition(value_position, prefix.size());
+
+        setTermRange(unit_term, value_position, value_position + prefix.size() - 1);
 
         value = value.mid(prefix.size());
         value_position += prefix.size();
@@ -75,12 +76,18 @@ QList<Baloo::Term> PassSplitUnits::run(const QList<Baloo::Term> &match) const
         value.resize(value.size() - postfix.size());
 
         unit_term.setValue(postfix);
-        unit_term.setPosition(value_position + value.size(), postfix.size());
+
+        setTermRange(
+            unit_term,
+            value_position + value.size(),
+            value_position + value.size() + postfix.size() - 1
+        );
     }
 
     // Value
     value_term.setValue(value);
-    value_term.setPosition(value_position, value.size());
+
+    setTermRange(value_term, value_position, value_position + value.size() - 1);
 
     if (unit_term.value().isValid()) {
         rs.append(value_term);

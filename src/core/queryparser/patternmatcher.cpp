@@ -77,8 +77,8 @@ int PatternMatcher::matchPattern(int first_term_index,
 
         // Always update start and end position, they will be simply discarded
         // if the pattern ends not matching.
-        start_position = qMin(start_position, term.position());
-        end_position = qMax(end_position, term.position() + term.length());
+        start_position = qMin(start_position, termStart(term));
+        end_position = qMax(end_position, termEnd(term));
 
         if (pattern.at(pattern_index) == QLatin1String("%%")) {
             // Start to match anything
@@ -180,12 +180,12 @@ void PatternMatcher::addCompletionProposal(int first_pattern_index_not_matching,
         return;
     }
 
-    if (cursor_position < first_matching.position()) {
+    if (cursor_position < termStart(first_matching)) {
         return;
     }
 
     if (first_term_index_not_matching < terms.count() &&
-        cursor_position > terms.at(first_term_index_not_matching).position()) {
+        cursor_position > termStart(terms.at(first_term_index_not_matching))) {
         return;
     }
 
@@ -215,8 +215,8 @@ void PatternMatcher::addCompletionProposal(int first_pattern_index_not_matching,
     parser->addCompletionProposal(new Baloo::CompletionProposal(
         user_friendly_pattern,
         first_pattern_index_not_matching - 1,
-        first_matching.position(),
-        last_matching.position() + last_matching.length() + 1 - first_matching.position(),
+        termStart(first_matching),
+        termEnd(last_matching) - termStart(first_matching) + 1,
         completion_type,
         completion_description
     ));

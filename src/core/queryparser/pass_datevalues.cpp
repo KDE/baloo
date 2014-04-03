@@ -97,7 +97,7 @@ QList<Baloo::Term> PassDateValues::run(const QList<Baloo::Term> &match) const
                 Baloo::Term::Equal
             );
 
-            copyTermPosition(comparison, term);
+            copyTermRange(comparison, term);
 
             progress = true;
             rs.append(comparison);

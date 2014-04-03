@@ -29,6 +29,22 @@ bool localeWordsSeparatedBySpaces()
     return i18nc("Are words of your language separated by spaces (Y/N) ?", "Y") == QLatin1String("Y");
 }
 
+int termStart(const Baloo::Term &term)
+{
+    return term.userData(QLatin1String("start_position")).toInt();
+}
+
+int termEnd(const Baloo::Term &term)
+{
+    return term.userData(QLatin1String("end_position")).toInt();
+}
+
+void setTermRange(Baloo::Term &term, int start, int end)
+{
+    term.setUserData(QLatin1String("start_position"), start);
+    term.setUserData(QLatin1String("end_position"), end);
+}
+
 QString stringValueIfLiteral(const Baloo::Term &term)
 {
     if (!term.property().isNull()) {
@@ -58,9 +74,13 @@ long long int longValueIfLiteral(const Baloo::Term& term, bool *ok)
     return term.value().toLongLong();
 }
 
-void copyTermPosition(Baloo::Term &target, const Baloo::Term &source)
+void copyTermRange(Baloo::Term &target, const Baloo::Term &source)
 {
-    target.setPosition(source.position(), source.length());
+    setTermRange(
+        target,
+        termStart(source),
+        termEnd(source)
+    );
 }
 
 Baloo::Term fuseTerms(const QList<Baloo::Term> &terms, int first_term_index, int &end_term_index)
@@ -117,15 +137,15 @@ Baloo::Term fuseTerms(const QList<Baloo::Term> &terms, int first_term_index, int
         }
 
         // Add term to the fused term
-        int start_position = term.position();
-        int end_position = start_position + term.length();
+        int start_position = termStart(term);
+        int end_position = termEnd(term);
 
         if (first) {
             fused_term = term;
             first = false;
         } else {
-            start_position = qMin(start_position, fused_term.position());
-            end_position = qMax(end_position, fused_term.position() + fused_term.length());
+            start_position = qMin(start_position, termStart(fused_term));
+            end_position = qMax(end_position, termEnd(fused_term));
 
             if (build_and) {
                 if (fused_term.operation() == Baloo::Term::And) {
@@ -142,7 +162,7 @@ Baloo::Term fuseTerms(const QList<Baloo::Term> &terms, int first_term_index, int
             }
         }
 
-        fused_term.setPosition(start_position, end_position - start_position);
+        setTermRange(fused_term, start_position, end_position);
 
         // Default to AND, and don't invert terms
         build_and = true;

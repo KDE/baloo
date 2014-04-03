@@ -27,9 +27,13 @@
 
 bool localeWordsSeparatedBySpaces();
 
+int termStart(const Baloo::Term &term);
+int termEnd(const Baloo::Term &term);
+void setTermRange(Baloo::Term &term, int start, int end);
+
 QString stringValueIfLiteral(const Baloo::Term &term);
 long long longValueIfLiteral(const Baloo::Term &term, bool *ok);
-void copyTermPosition(Baloo::Term &target, const Baloo::Term &source);
+void copyTermRange(Baloo::Term &target, const Baloo::Term &source);
 
 Baloo::Term fuseTerms(const QList<Baloo::Term> &terms,
                       int first_term_index,

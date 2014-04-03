@@ -30,13 +30,13 @@ namespace Baloo
 {
 
 /**
-    * \class CompletionProposal completionproposal.h Baloo/Query/CompletionProposal
-    * \brief Information about an auto-completion proposal
-    *
-    * When parsing an user query, QueryParser may find that a pattern that nearly
-    * matches and that the user may want to use. In this case, one or more
-    * completion proposals are used to describe what patterns can be used.
-    */
+ * \class CompletionProposal completionproposal.h Baloo/Query/CompletionProposal
+ * \brief Information about an auto-completion proposal
+ *
+ * When parsing an user query, QueryParser may find that a pattern that nearly
+ * matches and that the user may want to use. In this case, one or more
+ * completion proposals are used to describe what patterns can be used.
+ */
 class BALOO_CORE_EXPORT CompletionProposal
 {
     private:
@@ -44,11 +44,11 @@ class BALOO_CORE_EXPORT CompletionProposal
 
     public:
         /**
-            * \brief Data-type used by the first placeholder of the pattern
-            *
-            * If the pattern is "sent by %1", the type of "%1" is Contact. This
-            * way, a GUI can show to the user a list of his or her contacts.
-            */
+         * \brief Data-type used by the first placeholder of the pattern
+         *
+         * If the pattern is "sent by %1", the type of "%1" is Contact. This
+         * way, a GUI can show to the user a list of his or her contacts.
+         */
         enum Type
         {
             NoType,         /*!< No specific type (integer, string, something that does not need any auto-completion list) */
@@ -59,17 +59,17 @@ class BALOO_CORE_EXPORT CompletionProposal
         };
 
         /**
-            * \param pattern list of terms matched by the proposal ("sent",
-            *                "by", "%1" for instance)
-            * \param last_matched_part index of the last part of the mattern
-            *                          that has been matched against the user
-            *                          query
-            * \param position position in the user query of the pattern matched
-            * \param length length in the user query of the terms matched
-            * \param type if the pattern contains "%1", this is the type of
-            *             the value matched by this placeholder
-            * \param description human description of the pattern
-            */
+         * \param pattern list of terms matched by the proposal ("sent",
+         *                "by", "%1" for instance)
+         * \param last_matched_part index of the last part of the mattern
+         *                          that has been matched against the user
+         *                          query
+         * \param position position in the user query of the pattern matched
+         * \param length length in the user query of the terms matched
+         * \param type if the pattern contains "%1", this is the type of
+         *             the value matched by this placeholder
+         * \param description human description of the pattern
+         */
         CompletionProposal(const QStringList &pattern,
                             int last_matched_part,
                             int position,
@@ -79,38 +79,38 @@ class BALOO_CORE_EXPORT CompletionProposal
         ~CompletionProposal();
 
         /**
-            * \return list of terms that make the pattern
-            */
+         * \return list of terms that make the pattern
+         */
         QStringList pattern() const;
 
         /**
-            * \return index of the last matched part of the pattern
-            */
+         * \return index of the last matched part of the pattern
+         */
         int lastMatchedPart() const;
 
         /**
-            * \return position in the user query of the pattern
-            *
-            * As an user query can contain spaces and separators that are
-            * ignored by the pattern matcher, position() and length() are
-            * used to find the sub-string of the user query that has matched
-            * against the pattern.
-            */
+         * \return position in the user query of the pattern
+         *
+         * As an user query can contain spaces and separators that are
+         * ignored by the pattern matcher, position() and length() are
+         * used to find the sub-string of the user query that has matched
+         * against the pattern.
+         */
         int position() const;
 
         /**
-            * \sa position
-            */
+         * \sa position
+         */
         int length() const;
 
         /**
-            * \return type of the value represented by the "%1" term in the pattern
-            */
+         * \return type of the value represented by the "%1" term in the pattern
+         */
         Type type() const;
 
         /**
-            * \return description of the pattern
-            */
+         * \return description of the pattern
+         */
         KLocalizedString description() const;
 
     private:

@@ -45,7 +45,7 @@ QList<Baloo::Term> PassDecimalValues::run(const QList<Baloo::Term> &match) const
     bool has_decimal_part;
     long long integer_part = longValueIfLiteral(match.at(0), &has_integer_part);
     long long decimal_part = longValueIfLiteral(match.at(1), &has_decimal_part);
-    int decimal_length = match.at(1).length();
+    int decimal_length = termEnd(match.at(1)) - termStart(match.at(1)) + 1;
 
     if (has_integer_part &&
         has_decimal_part &&
