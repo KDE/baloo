@@ -88,7 +88,12 @@ void XapianDatabase::deleteDocument(uint id)
 void XapianDatabase::commit()
 {
     if (m_writeOnly) {
-        m_wDb.commit();
+        try {
+            m_wDb.commit();
+        }
+        catch (const Xapian::Error& err) {
+            kError() << err.get_error_string();
+        }
         return;
     }
 
@@ -116,8 +121,13 @@ void XapianDatabase::commit()
         }
     }
 
-    wdb.commit();
-    m_db->reopen();
+    try {
+        wdb.commit();
+        m_db->reopen();
+    }
+    catch (const Xapian::Error& err) {
+        kError() << err.get_error_string();
+    }
     kDebug() << "Xapian Committed";
 
     m_docsToAdd.clear();
