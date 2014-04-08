@@ -44,6 +44,7 @@ private Q_SLOTS:
     void indexNextCollection();
     void itemReceived(const Akonadi::Item::List& item);
     void slotIndexed();
+    void slotCommitTimerElapsed();
 
 private:
     Akonadi::Collection::List m_collections;
@@ -52,6 +53,8 @@ private:
     QTime m_totalTime;
     int m_indexTime;
     int m_numEmails;
+
+    QTimer m_commitTimer;
 };
 
 int main(int argc, char** argv)
@@ -69,6 +72,10 @@ App::App(int& argc, char** argv, int flags)
 
 void App::main()
 {
+    m_commitTimer.setInterval(1000);
+    connect(&m_commitTimer, SIGNAL(timeout()), this, SLOT(slotCommitTimerElapsed()));
+    m_commitTimer.start();
+
     Akonadi::CollectionFetchJob* job = new Akonadi::CollectionFetchJob(Akonadi::Collection::root(),
                                                                        Akonadi::CollectionFetchJob::Recursive);
     connect(job, SIGNAL(finished(KJob*)), this, SLOT(slotRootCollectionsFetched(KJob*)));
@@ -124,8 +131,13 @@ void App::itemReceived(const Akonadi::Item::List& itemList)
 
     m_indexTime += timer.elapsed();
     m_numEmails += itemList.size();
+}
 
-    timer.restart();
+void App::slotCommitTimerElapsed()
+{
+    QTime timer;
+    timer.start();
+
     m_indexer.commit();
     m_indexTime += timer.elapsed();
 
