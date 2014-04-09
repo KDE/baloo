@@ -21,6 +21,8 @@
 
 #include "baloosearchrunner.h"
 
+#include <QLinkedList>
+
 #include <KIcon>
 #include <KRun>
 #include <Plasma/QueryMatch>
@@ -50,11 +52,32 @@ SearchRunner::~SearchRunner()
 void SearchRunner::match(Plasma::RunnerContext& context)
 {
     Baloo::Query query;
-    query.setLimit(5);
     query.setSearchString(context.query());
-    query.addType("File");
 
+    query.setType("Email");
+    query.setLimit(10);
+    QLinkedList<Plasma::QueryMatch> mailMatches;
     Baloo::ResultIterator it = query.exec();
+
+    while (context.isValid() && it.next()) {
+        Plasma::QueryMatch match(this);
+        match.setIcon(KIcon(it.icon()));
+        match.setId(it.id());
+        match.setText(it.text());
+        match.setData(it.url());
+        match.setType(Plasma::QueryMatch::PossibleMatch);
+
+        mailMatches.append(match);
+    }
+
+    if (!context.isValid())
+        return;
+
+    query.setType("File");
+    query.setLimit(10 - qMin(5, mailMatches.count()));
+    int matchesAdded = 0;
+    it = query.exec();
+
     while (context.isValid() && it.next()) {
         Plasma::QueryMatch match(this);
         match.setIcon(KIcon(it.icon()));
@@ -70,22 +93,17 @@ void SearchRunner::match(Plasma::RunnerContext& context)
         match.setSubtext(url);
 
         context.addMatch(context.query(), match);
+
+        ++matchesAdded;
     }
 
     if (!context.isValid())
         return;
 
-    query.setType("Email");
-    it = query.exec();
-    while (context.isValid() && it.next()) {
-        Plasma::QueryMatch match(this);
-        match.setIcon(KIcon(it.icon()));
-        match.setId(it.id());
-        match.setText(it.text());
-        match.setData(it.url());
-        match.setType(Plasma::QueryMatch::PossibleMatch);
+    while (context.isValid() && !mailMatches.isEmpty() && matchesAdded <= 10) {
+        context.addMatch(context.query(), mailMatches.takeFirst());
 
-        context.addMatch(context.query(), match);
+        ++matchesAdded;
     }
 }
 
