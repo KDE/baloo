@@ -104,10 +104,16 @@ int main(int argc, char* argv[])
 
         Baloo::File file = job->file();
         int fid = Baloo::deserialize("file", file.id());
-        text = colorString(QString::number(fid), 31);
-        text += " ";
-        text += colorString(file.url(), 32);
-        stream << text << endl;
+
+        if (fid && !file.url().isEmpty()) {
+            text = colorString(QString::number(fid), 31);
+            text += " ";
+            text += colorString(file.url(), 32);
+            stream << text << endl;
+        }
+        else {
+            stream << "No index information found" << endl;
+        }
 
         KFileMetaData::PropertyMap propMap = file.properties();
         KFileMetaData::PropertyMap::const_iterator it = propMap.constBegin();
