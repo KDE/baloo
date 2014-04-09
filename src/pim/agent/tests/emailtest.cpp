@@ -24,6 +24,7 @@
 
 #include <QApplication>
 #include <QTimer>
+#include <QFile>
 #include <KDebug>
 
 #include <Akonadi/CollectionFetchJob>
@@ -44,6 +45,7 @@ private Q_SLOTS:
     void indexNextCollection();
     void itemReceived(const Akonadi::Item::List& item);
     void slotIndexed();
+    void slotCommitTimerElapsed();
 
 private:
     Akonadi::Collection::List m_collections;
@@ -52,6 +54,8 @@ private:
     QTime m_totalTime;
     int m_indexTime;
     int m_numEmails;
+
+    QTimer m_commitTimer;
 };
 
 int main(int argc, char** argv)
@@ -69,6 +73,10 @@ App::App(int& argc, char** argv, int flags)
 
 void App::main()
 {
+    m_commitTimer.setInterval(1000);
+    connect(&m_commitTimer, SIGNAL(timeout()), this, SLOT(slotCommitTimerElapsed()));
+    m_commitTimer.start();
+
     Akonadi::CollectionFetchJob* job = new Akonadi::CollectionFetchJob(Akonadi::Collection::root(),
                                                                        Akonadi::CollectionFetchJob::Recursive);
     connect(job, SIGNAL(finished(KJob*)), this, SLOT(slotRootCollectionsFetched(KJob*)));
@@ -124,8 +132,13 @@ void App::itemReceived(const Akonadi::Item::List& itemList)
 
     m_indexTime += timer.elapsed();
     m_numEmails += itemList.size();
+}
 
-    timer.restart();
+void App::slotCommitTimerElapsed()
+{
+    QTime timer;
+    timer.start();
+
     m_indexer.commit();
     m_indexTime += timer.elapsed();
 
@@ -146,6 +159,45 @@ void App::slotIndexed()
     kDebug() << "Emails:" << m_numEmails;
     kDebug() << "Total Time:" << m_totalTime.elapsed()/1000.0 << " seconds";
     kDebug() << "Index Time:" << m_indexTime/1000.0 << " seconds";
+
+    // Print the io usage
+    QFile file("/proc/self/io");
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+
+    QTextStream fs(&file);
+    QString str = fs.readAll();
+
+    qDebug() << "------- IO ---------";
+    QTextStream stream(&str);
+    while (!stream.atEnd()) {
+        QString str = stream.readLine();
+
+        QString rchar("rchar: ");
+        if (str.startsWith(rchar)) {
+            ulong amt = str.mid(rchar.size()).toULong();
+            qDebug() << "Read:" << amt / 1024  << "kb";
+        }
+
+        QString wchar("wchar: ");
+        if (str.startsWith(wchar)) {
+            ulong amt = str.mid(wchar.size()).toULong();
+            qDebug() << "Write:" << amt / 1024  << "kb";
+        }
+
+        QString read("read_bytes: ");
+        if (str.startsWith(read)) {
+            ulong amt = str.mid(read.size()).toULong();
+            qDebug() << "Actual Reads:" << amt / 1024  << "kb";
+        }
+
+        QString write("write_bytes: ");
+        if (str.startsWith(write)) {
+            ulong amt = str.mid(write.size()).toULong();
+            qDebug() << "Actual Writes:" << amt / 1024  << "kb";
+        }
+    }
+    qDebug() << "\nThe actual read/writes may be 0 because of an existing"
+             << "cache and /tmp being memory mapped";
     quit();
 }
 
