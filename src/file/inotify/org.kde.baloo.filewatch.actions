@@ -48,6 +48,7 @@ Description[fi]=Nosta inotifyn kansioiden valvontarajaa välttääksesi sitä, e
 Description[fr]=Pour éviter des changements de fichiers manquant, augmentez la limite de surveillance des dossiers
 Description[gl]=Para evitar perder cambios nos ficheiros aumente o límite de vixilancia de cartafol de inotify
 Description[hu]=A fájlváltoztatások hiányzásának elkerülése érdekében növelje a értesítő mappafigyelési korlátot
+Description[ia]=Pro evitar perder modificationes de file, altia le limite de guardia de dossier inotify
 Description[it]=Per non perdere le modifiche ai file, alza il limite di osservazione delle cartelle di inotify
 Description[ko]=파일 변경 사항을 놓치지 않으려면 inotify 폴더 감시 제한을 높이십시오
 Description[nb]=Øk grensen for mappeovervåker for å unngå å gå glipp av filendringer
