@@ -25,8 +25,7 @@
 #include "../basicindexingqueue.h"
 #include "../database.h"
 
-#include "qtest_kde.h"
-
+#include <QTest>
 #include <QSignalSpy>
 #include <QEventLoop>
 
@@ -76,4 +75,4 @@ void BasicIndexingQueueTest::testSimpleDirectoryStructure()
     QCOMPARE(spy.count(), 5);
 }
 
-QTEST_KDEMAIN_CORE(BasicIndexingQueueTest)
+QTEST_MAIN(BasicIndexingQueueTest)

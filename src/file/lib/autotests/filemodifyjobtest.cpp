@@ -26,9 +26,11 @@
 #include "filemapping.h"
 #include "file.h"
 
-#include "qtest_kde.h"
 #include <QDebug>
+#include <QFileInfo>
 #include <KTempDir>
+#include <QTest>
+#include <QTemporaryFile>
 
 #include <xapian.h>
 
@@ -224,4 +226,4 @@ void FileModifyJobTest::testFolder()
 }
 
 
-QTEST_KDEMAIN_CORE(FileModifyJobTest)
+QTEST_MAIN(FileModifyJobTest)

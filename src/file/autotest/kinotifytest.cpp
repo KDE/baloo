@@ -373,4 +373,4 @@ void KInotifyTest::testMoveRootFolder()
     QVERIFY(kn.watchingPath(dest));
 }
 
-QTEST_KDEMAIN_CORE(KInotifyTest)
+QTEST_MAIN(KInotifyTest)

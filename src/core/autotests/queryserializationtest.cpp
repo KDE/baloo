@@ -23,7 +23,7 @@
 #include <term.h>
 #include "term.h"
 
-#include <qtest_kde.h>
+#include <QtTest>
 
 #include <QDebug>
 
@@ -152,4 +152,4 @@ void QuerySerializationTest::testCustomOptions()
 }
 
 
-QTEST_KDEMAIN_CORE(QuerySerializationTest)
+QTEST_MAIN(QuerySerializationTest)

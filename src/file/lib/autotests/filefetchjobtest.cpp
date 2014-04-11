@@ -26,10 +26,11 @@
 #include "filemapping.h"
 #include "file.h"
 
-#include "qtest_kde.h"
 #include <QSqlQuery>
 #include <KTempDir>
 #include <QDebug>
+#include <QTest>
+#include <QTemporaryFile>
 
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -170,4 +171,4 @@ void FileFetchJobTest::testFolder()
     QCOMPARE(file.userComment(), userComment);
 }
 
-QTEST_KDEMAIN_CORE(FileFetchJobTest)
+QTEST_MAIN(FileFetchJobTest)

@@ -25,7 +25,9 @@
 #include <QSignalSpy>
 #include <QSqlQuery>
 
-#include "qtest_kde.h"
+#include <QTest>
+#include <QTimer>
+#include <QDir>
 
 using namespace Baloo;
 
@@ -173,4 +175,4 @@ void MetadataMoverTest::testMoveFolder()
     QVERIFY(!query.next());
 }
 
-QTEST_KDEMAIN_CORE(MetadataMoverTest)
+QTEST_MAIN(MetadataMoverTest)

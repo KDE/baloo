@@ -27,8 +27,8 @@
 #include "query.h"
 #include "term.h"
 
-#include "qtest_kde.h"
 #include <QDebug>
+#include <QtTest>
 
 #include <xapian.h>
 
@@ -244,4 +244,4 @@ void FileSearchStoreTest::testRatings()
 }
 
 
-QTEST_KDEMAIN_CORE(Baloo::FileSearchStoreTest)
+QTEST_MAIN(Baloo::FileSearchStoreTest)

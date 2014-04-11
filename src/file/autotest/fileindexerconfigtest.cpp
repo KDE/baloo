@@ -28,9 +28,7 @@
 #include <QtCore/QFile>
 #include <QtCore/QDir>
 #include <QtCore/QScopedPointer>
-
-
-#include "qtest_kde.h"
+#include <QTest>
 
 using namespace Baloo::Test;
 
@@ -292,6 +290,6 @@ void FileIndexerConfigTest::testExcludeFilterOnFolders()
     QVERIFY(cfg->shouldFolderBeIndexed(dirPrefix + includedSubSubDir + fileName));
 }
 
-QTEST_KDEMAIN_CORE(FileIndexerConfigTest)
+QTEST_MAIN(FileIndexerConfigTest)
 
 #include "fileindexerconfigtest.moc"
