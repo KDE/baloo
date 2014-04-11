@@ -20,7 +20,6 @@
 #ifndef _BALOO_TIMELINE_TOOLS_H_
 #define _BALOO_TIMELINE_TOOLS_H_
 
-class KUrl;
 class QString;
 
 #include <QDate>
@@ -59,7 +58,7 @@ enum TimelineFolderType {
  * Otherwise it is an invalid date. \p filename is optionally set to the name of the file
  * in the folder.
  */
-TimelineFolderType parseTimelineUrl(const KUrl& url, QDate* date, QString* filename = 0);
+TimelineFolderType parseTimelineUrl(const QUrl& url, QDate* date, QString* filename = 0);
 
 }
 

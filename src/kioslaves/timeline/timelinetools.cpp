@@ -21,7 +21,7 @@
 
 #include "timelinetools.h"
 
-#include <KUrl>
+#include <QUrl>
 #include <KCalendarSystem>
 #include <KGlobal>
 #include <KLocale>
@@ -71,7 +71,7 @@ QDate applyRelativeDateModificators(const QDate& date, const QMap<QString, QStri
 }
 
 
-Baloo::TimelineFolderType Baloo::parseTimelineUrl(const KUrl& url, QDate* date, QString* filename)
+Baloo::TimelineFolderType Baloo::parseTimelineUrl(const QUrl& url, QDate* date, QString* filename)
 {
     kDebug() << url;
 
@@ -80,7 +80,7 @@ Baloo::TimelineFolderType Baloo::parseTimelineUrl(const KUrl& url, QDate* date, 
     // reset
     *date = QDate();
 
-    const QString path = url.path(KUrl::RemoveTrailingSlash);
+    const QString path = url.path(QUrl::StripTrailingSlash);
 
     if (path.isEmpty() || path == QLatin1String("/")) {
         kDebug() << url << "is root folder";

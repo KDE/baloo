@@ -24,7 +24,7 @@
 #include "query.h"
 #include "resultiterator.h"
 
-#include <KUrl>
+#include <QUrl>
 #include <kio/global.h>
 #include <klocale.h>
 #include <kio/job.h>
@@ -82,7 +82,7 @@ KIO::UDSEntry createDayUDSEntry(const QDate& date)
     return uds;
 }
 
-KIO::UDSEntry createFileUDSEntry(const KUrl& fileUrl)
+KIO::UDSEntry createFileUDSEntry(const QUrl& fileUrl)
 {
     KIO::UDSEntry uds;
     // Code from kdelibs/kioslaves/file.cpp
@@ -120,7 +120,7 @@ TimelineProtocol::~TimelineProtocol()
 }
 
 
-void TimelineProtocol::listDir(const KUrl& url)
+void TimelineProtocol::listDir(const QUrl& url)
 {
     switch (parseTimelineUrl(url, &m_date, &m_filename)) {
     case RootFolder:
@@ -166,7 +166,7 @@ void TimelineProtocol::listDir(const KUrl& url)
 }
 
 
-void TimelineProtocol::mimetype(const KUrl& url)
+void TimelineProtocol::mimetype(const QUrl& url)
 {
     switch (parseTimelineUrl(url, &m_date, &m_filename)) {
     case RootFolder:
@@ -183,7 +183,7 @@ void TimelineProtocol::mimetype(const KUrl& url)
 }
 
 
-void TimelineProtocol::stat(const KUrl& url)
+void TimelineProtocol::stat(const QUrl& url)
 {
     switch (parseTimelineUrl(url, &m_date, &m_filename)) {
     case RootFolder: {

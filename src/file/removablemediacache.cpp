@@ -119,7 +119,7 @@ RemovableMediaCache::Entry* RemovableMediaCache::createCacheEntry(const Solid::D
         kDebug() << "Usable" << dev.udi();
 
         // we only add to this set and never remove. This is no problem as this is a small set
-        m_usedSchemas.insert(KUrl(entry.url()).scheme());
+        m_usedSchemas.insert(QUrl(entry.url()).scheme());
 
         const Solid::StorageAccess* storage = dev.as<Solid::StorageAccess>();
         connect(storage, SIGNAL(accessibilityChanged(bool,QString)),
@@ -157,7 +157,7 @@ const RemovableMediaCache::Entry* RemovableMediaCache::findEntryByFilePath(const
 }
 
 
-const RemovableMediaCache::Entry* RemovableMediaCache::findEntryByUrl(const KUrl& url) const
+const RemovableMediaCache::Entry* RemovableMediaCache::findEntryByUrl(const QUrl& url) const
 {
     QMutexLocker lock(&m_entryCacheMutex);
 
@@ -191,7 +191,7 @@ QList<const RemovableMediaCache::Entry*> RemovableMediaCache::findEntriesByMount
 }
 
 
-bool RemovableMediaCache::hasRemovableSchema(const KUrl& url) const
+bool RemovableMediaCache::hasRemovableSchema(const QUrl& url) const
 {
     return m_usedSchemas.contains(url.scheme());
 }
@@ -298,18 +298,18 @@ QString RemovableMediaCache::Entry::constructRelativeUrlString(const QString& pa
     return QString();
 }
 
-KUrl RemovableMediaCache::Entry::constructRelativeUrl(const QString& path) const
+QUrl RemovableMediaCache::Entry::constructRelativeUrl(const QString& path) const
 {
-    return KUrl(constructRelativeUrlString(path));
+    return QUrl(constructRelativeUrlString(path));
 }
 
 
-KUrl RemovableMediaCache::Entry::constructLocalFileUrl(const KUrl& filexUrl) const
+QUrl RemovableMediaCache::Entry::constructLocalFileUrl(const QUrl& filexUrl) const
 {
     if (const Solid::StorageAccess* sa = m_device.as<Solid::StorageAccess>()) {
         if (sa->isAccessible()) {
             // the base of the path: the mount path
-            KUrl fileUrl(sa->filePath());
+            QUrl fileUrl(sa->filePath());
             fileUrl.addPath(QUrl::fromEncoded(filexUrl.toEncoded().mid(m_urlPrefix.count())).toString());
             return fileUrl;
         }

@@ -30,8 +30,8 @@
 #include <kmimetype.h>
 
 #include <QTimer>
+#include <QUrl>
 
-#include <KUrl>
 #include <iostream>
 
 int main(int argc, char** argv)

@@ -22,6 +22,7 @@
 #include "query.h"
 #include "resultiterator.h"
 
+#include <QUrl>
 #include <KUser>
 #include <KDebug>
 #include <KSharedConfig>
@@ -36,7 +37,7 @@ using namespace Baloo;
 namespace
 {
 
-KIO::UDSEntry statSearchFolder(const KUrl& url)
+KIO::UDSEntry statSearchFolder(const QUrl& url)
 {
     KIO::UDSEntry uds;
     uds.insert(KIO::UDSEntry::UDS_ACCESS, 0700);
@@ -56,9 +57,9 @@ KIO::UDSEntry statSearchFolder(const KUrl& url)
     return uds;
 }
 
-bool isRootUrl(const KUrl& url)
+bool isRootUrl(const QUrl& url)
 {
-    const QString path = url.path(KUrl::RemoveTrailingSlash);
+    const QString path = url.path(QUrl::StripTrailingSlash);
     return (!url.hasQuery() &&
             (path.isEmpty() || path == QLatin1String("/")));
 }
@@ -75,7 +76,7 @@ SearchProtocol::~SearchProtocol()
 {
 }
 
-void SearchProtocol::listDir(const KUrl& url)
+void SearchProtocol::listDir(const QUrl& url)
 {
     // list the root folder
     if (isRootUrl(url)) {
@@ -88,7 +89,7 @@ void SearchProtocol::listDir(const KUrl& url)
 
     while (it.next()) {
         KIO::UDSEntry uds;
-        const KUrl url(it.url());
+        const QUrl url(it.url());
 
         if (url.isLocalFile()) {
             // Code from kdelibs/kioslaves/file.cpp
@@ -137,14 +138,14 @@ void SearchProtocol::listDir(const KUrl& url)
 }
 
 
-void SearchProtocol::mimetype(const KUrl&)
+void SearchProtocol::mimetype(const QUrl&)
 {
     mimeType(QLatin1String("inode/directory"));
     finished();
 }
 
 
-void SearchProtocol::stat(const KUrl& url)
+void SearchProtocol::stat(const QUrl& url)
 {
     // the root folder
     if (isRootUrl(url)) {

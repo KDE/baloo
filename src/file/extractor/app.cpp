@@ -28,7 +28,6 @@
 #include <KMimeType>
 #include <KStandardDirs>
 #include <KDebug>
-#include <KUrl>
 #include <KGlobal>
 
 #include <QTimer>
@@ -122,7 +121,7 @@ void App::processNextUrl()
     }
 
     const QString url = m_urls.takeFirst();
-    const QString mimetype = KMimeType::findByUrl(KUrl::fromLocalFile(url))->name();
+    const QString mimetype = KMimeType::findByUrl(QUrl::fromLocalFile(url))->name();
 
     FileMapping file(url);
     if (!m_bData) {

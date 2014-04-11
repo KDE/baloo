@@ -30,7 +30,7 @@
 
 #include <QDir>
 #include <QTimer>
-#include <KUrl>
+#include <QUrl>
 #include <KLocalizedString>
 #include <QBoxLayout>
 #include <QSpacerItem>
@@ -129,7 +129,7 @@ void FolderSelectionWidget::setFolders(QStringList includeDirs, QStringList excl
 
     Q_FOREACH (QString url, excludeList) {
         QListWidgetItem* item = new QListWidgetItem(m_listWidget);
-        QString display = KUrl(QUrl::fromLocalFile(url)).fileName();
+        QString display = QUrl::fromLocalFile(url).fileName();
 
         item->setData(Qt::DisplayRole, display);
         item->setData(Qt::WhatsThisRole, url);
@@ -196,7 +196,7 @@ QString FolderSelectionWidget::fetchMountPoint(const QString& url) const
 
 void FolderSelectionWidget::slotAddButtonClicked()
 {
-    QString url = KFileDialog::getExistingDirectory(KUrl(), this, i18n("Select the folder which should be excluded"));
+    QString url = KFileDialog::getExistingDirectory(QUrl(), this, i18n("Select the folder which should be excluded"));
     if (url.isEmpty()) {
         return;
     }
@@ -222,7 +222,7 @@ void FolderSelectionWidget::slotAddButtonClicked()
         QString existingUrl = item->data(UrlRole).toString();
 
         if (existingUrl == url) {
-            QString name = KUrl(QUrl::fromLocalFile(url)).fileName();
+            QString name = QUrl::fromLocalFile(url).fileName();
             showMessage(i18n("Folder %1 is already excluded").arg(name));
 
             deleteList << item;
@@ -243,7 +243,7 @@ void FolderSelectionWidget::slotAddButtonClicked()
                 url = existingUrl;
                 deleteList << item;
 
-                QString name = KUrl(QUrl::fromLocalFile(url)).fileName();
+                QString name = QUrl::fromLocalFile(url).fileName();
                 showMessage(i18n("Folder's parent %1 is already excluded").arg(name));
             }
         }
@@ -251,7 +251,7 @@ void FolderSelectionWidget::slotAddButtonClicked()
     qDeleteAll(deleteList);
 
     QListWidgetItem* item = new QListWidgetItem(m_listWidget);
-    QString display = KUrl(QUrl::fromLocalFile(url)).fileName();
+    QString display = QUrl::fromLocalFile(url).fileName();
 
     item->setData(Qt::DisplayRole, display);
     item->setData(Qt::WhatsThisRole, url);

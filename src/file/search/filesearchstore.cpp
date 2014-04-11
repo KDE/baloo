@@ -29,10 +29,10 @@
 #include <xapian.h>
 #include <QVector>
 #include <QDate>
+#include <QUrl>
 
 #include <KStandardDirs>
 #include <KDebug>
-#include <KUrl>
 #include <KMimeType>
 #include <KGlobal>
 
@@ -221,7 +221,7 @@ QUrl FileSearchStore::constructUrl(const Xapian::docid& docid)
 
 QString FileSearchStore::text(int queryId)
 {
-    return KUrl(url(queryId)).fileName();
+    return url(queryId).fileName();
 }
 
 QString FileSearchStore::icon(int queryId)

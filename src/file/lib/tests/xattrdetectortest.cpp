@@ -27,9 +27,9 @@
 #include <KCmdLineArgs>
 #include <KDebug>
 
+#include <QUrl>
 #include <QTimer>
 
-#include <KUrl>
 #include <iostream>
 
 int main(int argc, char** argv)

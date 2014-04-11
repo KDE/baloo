@@ -20,6 +20,7 @@
 #include "fileindexerconfig.h"
 #include "fileexcludefilters.h"
 
+#include <QUrl>
 #include <QStringList>
 #include <QDir>
 #include <QWriteLocker>
@@ -29,7 +30,6 @@
 #include <KStandardDirs>
 #include <KConfigGroup>
 #include <KDebug>
-#include <KUrl>
 
 
 namespace
@@ -211,7 +211,7 @@ bool FileIndexerConfig::folderInFolderList(const QString& path, QString& folder)
 {
     QReadLocker lock(&m_folderCacheMutex);
 
-    const QString p = KUrl(path).path(KUrl::RemoveTrailingSlash);
+    const QString p = QUrl(path).adjusted(QUrl::StripTrailingSlash).path();
 
     // we traverse the list backwards to catch all exclude folders
     int i = m_folderCache.count();
@@ -239,8 +239,11 @@ bool alreadyExcluded(const QList<QPair<QString, bool> >& folders, const QString&
 {
     bool included = false;
     for (int i = 0; i < folders.count(); ++i) {
-        if (f != folders[i].first &&
-                f.startsWith(KUrl(folders[i].first).path(KUrl::AddTrailingSlash))) {
+        QString path = QUrl(folders[i].first).path();
+        if (!path.endsWith('/'))
+            path.append('/');
+
+        if (f != folders[i].first && f.startsWith(path)) {
             included = folders[i].second;
         }
     }
@@ -254,7 +257,7 @@ void insertSortFolders(const QStringList& folders, bool include, QList<QPair<QSt
 {
     Q_FOREACH (const QString& f, folders) {
         int pos = 0;
-        QString path = KUrl(f).path(KUrl::RemoveTrailingSlash);
+        QString path = QUrl(f).adjusted(QUrl::StripTrailingSlash).path();
         while (result.count() > pos &&
                 result[pos].first < path)
             ++pos;

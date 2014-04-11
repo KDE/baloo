@@ -25,7 +25,7 @@
 #include "query.h"
 
 #include <KDebug>
-#include <KUrl>
+#include <QUrl>
 #include <KStandardDirs>
 #include <KGlobal>
 //#include <Akonadi/ServerManager>
@@ -119,8 +119,8 @@ Xapian::Query PIMSearchStore::constructQuery(const QString& property, const QVar
 
 QUrl PIMSearchStore::constructUrl(const Xapian::docid& docid)
 {
-    KUrl url;
-    url.setProtocol(QLatin1String("akonadi"));
+    QUrl url;
+    url.setScheme(QLatin1String("akonadi"));
     url.addQueryItem(QLatin1String("item"), QString::number(docid));
 
     return url;

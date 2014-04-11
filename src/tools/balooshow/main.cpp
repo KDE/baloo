@@ -28,7 +28,6 @@
 #include <KLocale>
 #include <KComponentData>
 #include <KDebug>
-#include <KUrl>
 #include <k4aboutdata.h>
 
 #include "file.h"

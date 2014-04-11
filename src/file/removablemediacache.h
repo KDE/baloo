@@ -28,7 +28,7 @@
 
 #include <Solid/Device>
 
-#include <KUrl>
+#include <QUrl>
 
 
 namespace Baloo
@@ -60,8 +60,8 @@ public:
          * take place. It is, thus, suitable for queries.
          */
         QString constructRelativeUrlString(const QString& path) const;
-        KUrl constructRelativeUrl(const QString& path) const;
-        KUrl constructLocalFileUrl(const KUrl& filexUrl) const;
+        QUrl constructRelativeUrl(const QString& path) const;
+        QUrl constructLocalFileUrl(const QUrl& filexUrl) const;
 
         Solid::Device device() const {
             return m_device;
@@ -81,7 +81,7 @@ public:
     };
 
     const Entry* findEntryByFilePath(const QString& path) const;
-    const Entry* findEntryByUrl(const KUrl& url) const;
+    const Entry* findEntryByUrl(const QUrl& url) const;
 
     /**
      * Searches for entries which are mounted at a path which starts with
@@ -99,7 +99,7 @@ public:
      * URL which can be converted to a local one.
      * This method is primarily used for performance gain.
      */
-    bool hasRemovableSchema(const KUrl& url) const;
+    bool hasRemovableSchema(const QUrl& url) const;
 
     /**
      * Returns true if they are no devices in the RemoveableMediaCache

@@ -22,7 +22,7 @@
 
 #include "kio_tags.h"
 
-#include <KUrl>
+#include <QUrl>
 #include <kio/global.h>
 #include <klocale.h>
 #include <kio/job.h>
@@ -78,7 +78,7 @@ KIO::UDSEntry createUDSEntryForTag(const QString& tag)
 }
 }
 
-void TagsProtocol::listDir(const KUrl& url)
+void TagsProtocol::listDir(const QUrl& url)
 {
     kDebug() << url;
 
@@ -112,7 +112,7 @@ void TagsProtocol::listDir(const KUrl& url)
 
         ResultIterator it = q.exec();
         while (it.next()) {
-            const KUrl url = it.url();
+            const QUrl url = it.url();
             const QString fileUrl = url.toLocalFile();
 
             // Somehow stat the file
@@ -148,7 +148,7 @@ void TagsProtocol::listDir(const KUrl& url)
     }
 }
 
-void TagsProtocol::stat(const KUrl& url)
+void TagsProtocol::stat(const QUrl& url)
 {
     kDebug() << url;
 
@@ -190,7 +190,7 @@ void TagsProtocol::stat(const KUrl& url)
     }
 }
 
-void TagsProtocol::copy(const KUrl& src, const KUrl& dest, int permissions, KIO::JobFlags flags)
+void TagsProtocol::copy(const QUrl& src, const QUrl& dest, int permissions, KIO::JobFlags flags)
 {
     kDebug() << src << dest;
 
@@ -227,7 +227,7 @@ void TagsProtocol::copy(const KUrl& src, const KUrl& dest, int permissions, KIO:
 }
 
 
-void TagsProtocol::get(const KUrl& url)
+void TagsProtocol::get(const QUrl& url)
 {
     kDebug() << url;
 
@@ -251,7 +251,7 @@ void TagsProtocol::get(const KUrl& url)
 }
 
 
-void TagsProtocol::put(const KUrl& url, int permissions, KIO::JobFlags flags)
+void TagsProtocol::put(const QUrl& url, int permissions, KIO::JobFlags flags)
 {
     Q_UNUSED(permissions);
     Q_UNUSED(flags);
@@ -261,7 +261,7 @@ void TagsProtocol::put(const KUrl& url, int permissions, KIO::JobFlags flags)
 }
 
 
-void TagsProtocol::rename(const KUrl& src, const KUrl& dest, KIO::JobFlags flags)
+void TagsProtocol::rename(const QUrl& src, const QUrl& dest, KIO::JobFlags flags)
 {
     kDebug() << src << dest;
     if (src.isLocalFile()) {
@@ -286,7 +286,7 @@ void TagsProtocol::rename(const KUrl& src, const KUrl& dest, KIO::JobFlags flags
         // Yes, this is weird, but it is required
         // It is required cause the dest url is of the form tags:/tag/file_url_with_new_filename
         // So we extract the new fileUrl from the 'src', and apply the new file to the dest
-        KUrl destUrl(fileUrl);
+        QUrl destUrl(fileUrl);
         destUrl.setFileName(dest.fileName());
 
         ForwardingSlaveBase::rename(fileUrl, destUrl, flags);
@@ -295,7 +295,7 @@ void TagsProtocol::rename(const KUrl& src, const KUrl& dest, KIO::JobFlags flags
     }
 }
 
-void TagsProtocol::del(const KUrl& url, bool isfile)
+void TagsProtocol::del(const QUrl& url, bool isfile)
 {
     Q_UNUSED(isfile);
     /*
@@ -339,7 +339,7 @@ void TagsProtocol::del(const KUrl& url, bool isfile)
 }
 
 
-void TagsProtocol::mimetype(const KUrl& url)
+void TagsProtocol::mimetype(const QUrl& url)
 {
     kDebug() << url;
 
@@ -365,7 +365,7 @@ void TagsProtocol::mimetype(const KUrl& url)
 
 // The ForwardingSlaveBase functions are always called with a file:// url
 // In this case we just set the newUrl = url
-bool TagsProtocol::rewriteUrl(const KUrl& url, KUrl& newURL)
+bool TagsProtocol::rewriteUrl(const QUrl& url, QUrl& newURL)
 {
     if (url.scheme() != QLatin1String("file"))
         return false;
@@ -385,7 +385,7 @@ QString TagsProtocol::encodeFileUrl(const QString& url)
 }
 
 
-TagsProtocol::ParseResult TagsProtocol::parseUrl(const KUrl& url, QString& tag, QString& fileUrl, bool ignoreErrors)
+TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, QString& tag, QString& fileUrl, bool ignoreErrors)
 {
     QString path = url.path();
     if (path.isEmpty() || path == QLatin1String("/"))
@@ -404,7 +404,7 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const KUrl& url, QString& tag, 
     }
     else {
         tag = names[0];
-        QString fileName = url.fileName(KUrl::ObeyTrailingSlash);
+        QString fileName = url.fileName(QUrl::ObeyTrailingSlash);
         fileUrl = decodeFileUrl(fileName);
 
         return FileUrl;
