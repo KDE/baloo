@@ -40,9 +40,6 @@ Baloo::CommitQueue::CommitQueue(Database* db, QObject* parent)
     m_largeTimer.setSingleShot(true);
     m_largeTimer.setInterval(10000);
     connect(&m_largeTimer, SIGNAL(timeout()), this, SLOT(commit()));
-
-    connect(m_db->xapianDatabase(), SIGNAL(committed()),
-            this, SIGNAL(committed()));
 }
 
 Baloo::CommitQueue::~CommitQueue()
@@ -89,4 +86,6 @@ void Baloo::CommitQueue::commit()
 
     m_smallTimer.stop();
     m_largeTimer.stop();
+
+    Q_EMIT committed();
 }

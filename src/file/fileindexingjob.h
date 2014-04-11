@@ -26,6 +26,7 @@
 #include <KJob>
 #include <QProcess>
 #include <QVector>
+#include <QStack>
 
 #include "filemapping.h"
 
@@ -47,6 +48,15 @@ public:
      */
     void setCustomDbPath(const QString& path);
 
+    /**
+     * Set the maximum number of msecs that each file should take in order
+     * to get indexed. If a file takes longer, then it will be marked
+     * as failing and the indexingFailed signal will be called
+     *
+     * By deafult this is 5 minutes
+     */
+    void setTimeoutInterval(int msec);
+
     virtual void start();
 
 Q_SIGNALS:
@@ -62,11 +72,15 @@ private Q_SLOTS:
 private:
     void start(const QVector<uint>& files);
 
-    QVector<uint> m_files;
+    /// holds the files which still need to be indexed
+    QStack< QVector<uint> > m_files;
+
+    /// holds the files which have been sent to the process
     QVector<uint> m_args;
 
     QProcess* m_process;
     QTimer* m_processTimer;
+    int m_processTimeout;
 
     QString m_customDbPath;
 };

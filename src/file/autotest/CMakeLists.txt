@@ -75,3 +75,4 @@ ecm_add_test(${basicIndexingQueue_SRC}
                    KF5::KDE4Support ${XAPIAN_LIBRARIES} balooxapian
 )
 
+add_subdirectory(fileindexingjob)

@@ -27,6 +27,8 @@ target_link_libraries(akonadi_baloo_indexer
     ${KDEPIMLIBS_KMIME_LIBS}
     ${KDEPIMLIBS_KABC_LIBS}
     ${XAPIAN_LIBRARIES}
+    ${KDEPIMLIBS_KPIMUTILS_LIBS}
+    balooxapian
 )
 
 install(TARGETS akonadi_baloo_indexer ${INSTALL_TARGETS_DEFAULT_ARGS})

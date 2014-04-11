@@ -81,7 +81,6 @@ bool BasicIndexingJob::index()
         QString tstr = KFileMetaData::TypeInfo(type).name().toLower();
         doc.addBoolTerm(tstr, "T");
     }
-    doc.addBoolTerm("file", "T");
 
     if (fileInfo.isDir()) {
         doc.addBoolTerm("folder", "T");

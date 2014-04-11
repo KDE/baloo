@@ -19,12 +19,8 @@
 #ifndef _METADATA_MOVER_H_
 #define _METADATA_MOVER_H_
 
-#include <QMutex>
-#include <QQueue>
+#include <QObject>
 
-#include "updaterequest.h"
-
-class QTimer;
 class Database;
 
 namespace Baloo
@@ -59,14 +55,6 @@ Q_SIGNALS:
      */
     void fileRemoved(int id);
 
-private Q_SLOTS:
-    void slotWorkUpdateQueue();
-
-    /**
-     * Start the update queue from the main thread.
-     */
-    void slotStartUpdateTimer();
-
 private:
     /**
      * Remove the metadata for file \p url
@@ -80,13 +68,6 @@ private:
     void updateMetadata(const QString& from, const QString& to);
 
     Database* m_db;
-
-    // if the second url is empty, just delete the metadata
-    QQueue<UpdateRequest> m_updateQueue;
-
-    QMutex m_queueMutex;
-
-    QTimer* m_queueTimer;
 };
 }
 

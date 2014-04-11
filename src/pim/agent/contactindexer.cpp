@@ -21,14 +21,16 @@
  */
 
 #include "contactindexer.h"
+#include "xapiandocument.h"
 
 #include <KABC/Addressee>
+#include <KABC/ContactGroup>
 #include <Akonadi/Collection>
 
 ContactIndexer::ContactIndexer(const QString& path):
     AbstractIndexer()
 {
-    m_db = new Xapian::WritableDatabase(path.toStdString(), Xapian::DB_CREATE_OR_OPEN);
+    m_db = new Baloo::XapianDatabase(path, true);
 }
 
 ContactIndexer::~ContactIndexer()
@@ -42,19 +44,16 @@ QStringList ContactIndexer::mimeTypes() const
     return QStringList() << KABC::Addressee::mimeType();
 }
 
-void ContactIndexer::index(const Akonadi::Item& item)
+bool ContactIndexer::indexContact(const Akonadi::Item& item)
 {
     KABC::Addressee addresse;
     try {
         addresse = item.payload<KABC::Addressee>();
     } catch (const Akonadi::PayloadException&) {
-        return;
+        return false;
     }
 
-    Xapian::Document doc;
-    Xapian::TermGenerator termGen;
-    termGen.set_database(*m_db);
-    termGen.set_document(doc);
+    Baloo::XapianDocument doc;
 
     QString name;
     if (!addresse.formattedName().isEmpty()) {
@@ -67,54 +66,78 @@ void ContactIndexer::index(const Akonadi::Item& item)
         name = addresse.name();
     }
 
-    std::string stdName = name.toStdString();
-    std::string stdNick = addresse.nickName().toStdString();
     kDebug() << "Indexing" << name << addresse.nickName();
 
-    termGen.index_text(stdName);
-    termGen.index_text(stdNick);
-    doc.add_boolean_term(addresse.uid().toStdString());
+    doc.indexText(name);
+    doc.indexText(addresse.nickName());
+    doc.indexText(addresse.uid());
 
-    termGen.index_text(stdName, 1, "NA");
-    termGen.index_text(stdNick, 1, "NI");
+    doc.indexText(name, "NA");
+    doc.indexText(addresse.nickName(), "NI");
 
     Q_FOREACH (const QString& email, addresse.emails()) {
-        std::string stdEmail = email.toStdString();
-
-        doc.add_term(stdEmail);
-        termGen.index_text(stdEmail);
+        doc.addTerm(email);
+        doc.indexText(email);
     }
 
     // Parent collection
     Q_ASSERT_X(item.parentCollection().isValid(), "Baloo::ContactIndexer::index",
                "Item does not have a valid parent collection");
 
-    Akonadi::Entity::Id colId = item.parentCollection().id();
-    QByteArray term = 'C' + QByteArray::number(colId);
-    doc.add_boolean_term(term.data());
+    const Akonadi::Entity::Id colId = item.parentCollection().id();
+    doc.addBoolTerm(colId, "C");
 
-    m_db->replace_document(item.id(), doc);
-    // TODO: Contact Groups?
+    m_db->replaceDocument(item.id(), doc);
+    return true;
+}
+
+void ContactIndexer::indexContactGroup(const Akonadi::Item& item)
+{
+    KABC::ContactGroup group;
+    try {
+        group = item.payload<KABC::ContactGroup>();
+    } catch (const Akonadi::PayloadException&) {
+        return;
+    }
+
+    Baloo::XapianDocument doc;
+
+    const QString name = group.name();
+    doc.indexText(name);
+    doc.indexText(name, "NA");
+
+    // Parent collection
+    Q_ASSERT_X(item.parentCollection().isValid(), "Baloo::ContactIndexer::index",
+               "Item does not have a valid parent collection");
+
+    const Akonadi::Entity::Id colId = item.parentCollection().id();
+    doc.addBoolTerm(colId, "C");
+
+    m_db->replaceDocument(item.id(), doc);
+}
+
+
+void ContactIndexer::index(const Akonadi::Item& item)
+{
+    if (!indexContact(item)) {
+        indexContactGroup(item);
+    }
 }
 
 void ContactIndexer::remove(const Akonadi::Item& item)
 {
-    try {
-        m_db->delete_document(item.id());
-    }
-    catch (const Xapian::DocNotFoundError&) {
-        return;
-    }
+    m_db->deleteDocument(item.id());
 }
 
 void ContactIndexer::remove(const Akonadi::Collection& collection)
 {
     try {
+        Xapian::Database* db = m_db->db();
         Xapian::Query query('C'+ QString::number(collection.id()).toStdString());
-        Xapian::Enquire enquire(*m_db);
+        Xapian::Enquire enquire(*db);
         enquire.set_query(query);
 
-        Xapian::MSet mset = enquire.get_mset(0, m_db->get_doccount());
+        Xapian::MSet mset = enquire.get_mset(0, db->get_doccount());
         Xapian::MSetIterator end(mset.end());
         for (Xapian::MSetIterator it = mset.begin(); it != end; ++it) {
             const qint64 id = *it;

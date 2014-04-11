@@ -23,6 +23,7 @@
 #include "app.h"
 #include "../basicindexingjob.h"
 #include "../database.h"
+#include "xapiandatabase.h"
 
 #include <KCmdLineArgs>
 #include <KMimeType>
@@ -51,51 +52,47 @@ App::App(QObject* parent)
 
     if (!args->getOption("db").isEmpty()) {
         m_path = args->getOption("db");
-    }
-    else {
+    } else {
         m_path = KGlobal::dirs()->localxdgdatadir() + "baloo/file";
     }
 
     m_db.setPath(m_path);
-    if (!m_db.init()) {
+    if (!m_db.init(true /*sql db only*/)) {
         QTimer::singleShot(0, QCoreApplication::instance(), SLOT(quit()));
         return;
     }
 
-    connect(m_db.xapianDatabase(), SIGNAL(committed()),
-            this, SLOT(slotCommitted()));
-
     m_bData = args->isSet("bdata");
+    m_debugEnabled = args->isSet("debug");
 
     m_results.reserve(args->count());
     for (int i=0; i<args->count(); i++) {
         FileMapping mapping = FileMapping(args->arg(i).toUInt());
         QString url;
+
+        // arg is an id
         if (mapping.fetch(m_db.sqlDatabase())) {
-            // arg is an id
             url = mapping.url();
-            // If this url no longer exists, remove it from the mapping db.
             if (!QFile::exists(url)) {
-                QSqlQuery query(m_db.sqlDatabase());
-                query.prepare("delete from files where url = ?");
-                query.addBindValue(url);
-                if (!query.exec()) {
-                    kError() << query.lastError().text();
-                }
+                mapping.remove(m_db.sqlDatabase());
+                continue;
             }
         } else {
             // arg is a url
             url = args->url(i).toLocalFile();
         }
+
         if (QFile::exists(url)) {
             m_urls << url;
         } else {
             // id or url was looked up, but file deleted
             kDebug() << url << "does not exist";
+
             // Try to delete it as an id:
             // it may have been deleted from the FileMapping db as well.
             // The worst that can happen is deleting nothing.
-            deleteDocument(mapping.id());
+            mapping.remove(m_db.sqlDatabase());
+            m_docsToDelete << mapping.id();
         }
     }
 
@@ -197,19 +194,22 @@ void App::saveChanges()
 
     m_updatedFiles.clear();
 
+    XapianDatabase xapDb(m_path);
     for (int i = 0; i<m_results.size(); i++) {
         Result& res = m_results[i];
         res.finish();
 
-        m_db.xapianDatabase()->replaceDocument(res.id(), res.document());
+        xapDb.replaceDocument(res.id(), res.document());
         m_updatedFiles << res.inputUrl();
     }
 
-    m_db.xapianDatabase()->commit();
-}
+    Q_FOREACH (int docid, m_docsToDelete) {
+        xapDb.deleteDocument(docid);
+    }
 
-void App::slotCommitted()
-{
+    xapDb.commit();
+    m_db.sqlDatabase().commit();
+
     m_results.clear();
     m_termCount = 0;
     m_updatedFiles.clear();
@@ -225,12 +225,64 @@ void App::slotCommitted()
 
     QDBusConnection::sessionBus().send(message);
 
+    if (m_debugEnabled) {
+        printDebug();
+    }
+
     Q_EMIT saved();
 }
 
-
-void App::deleteDocument(unsigned docid)
+void App::printDebug()
 {
-    m_db.xapianDatabase()->deleteDocument(docid);
-}
+    Q_FOREACH (const Result& res, m_results) {
+        qDebug() << res.inputUrl();
+        QMapIterator<QString, QVariant> it(res.map());
+        while (it.hasNext()) {
+            it.next();
+            int propNum = it.key().toInt();
 
+            using namespace KFileMetaData::Property;
+            Property prop = static_cast<Property>(propNum);
+            KFileMetaData::PropertyInfo pi(prop);
+            qDebug() << pi.name() << it.value();
+        }
+    }
+
+    // Print the io usage
+    QFile file("/proc/self/io");
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+
+    QTextStream fs(&file);
+    QString str = fs.readAll();
+
+    qDebug() << "------- IO ---------";
+    QTextStream stream(&str);
+    while (!stream.atEnd()) {
+        QString str = stream.readLine();
+
+        QString rchar("rchar: ");
+        if (str.startsWith(rchar)) {
+            ulong amt = str.mid(rchar.size()).toULong();
+            qDebug() << "Read:" << amt / 1024  << "kb";
+        }
+
+        QString wchar("wchar: ");
+        if (str.startsWith(wchar)) {
+            ulong amt = str.mid(wchar.size()).toULong();
+            qDebug() << "Write:" << amt / 1024  << "kb";
+        }
+
+        QString read("read_bytes: ");
+        if (str.startsWith(read)) {
+            ulong amt = str.mid(read.size()).toULong();
+            qDebug() << "Actual Reads:" << amt / 1024  << "kb";
+        }
+
+        QString write("write_bytes: ");
+        if (str.startsWith(write)) {
+            ulong amt = str.mid(write.size()).toULong();
+            qDebug() << "Actual Writes:" << amt / 1024  << "kb";
+        }
+    }
+
+}

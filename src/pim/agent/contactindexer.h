@@ -24,8 +24,7 @@
 #define CONTACTINDEXER_H
 
 #include "abstractindexer.h"
-
-#include <xapian.h>
+#include "xapiandatabase.h"
 
 class ContactIndexer: public AbstractIndexer
 {
@@ -42,7 +41,10 @@ class ContactIndexer: public AbstractIndexer
     void commit();
 
 private:
-    Xapian::WritableDatabase* m_db;
+    bool indexContact(const Akonadi::Item &item);
+    void indexContactGroup(const Akonadi::Item &item);
+
+    Baloo::XapianDatabase* m_db;
 };
 
 #endif // CONTACTINDEXER_H

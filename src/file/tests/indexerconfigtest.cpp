@@ -67,11 +67,14 @@ int main(int argc, char** argv)
     bool shouldIndex = config.shouldBeIndexed(url.toLocalFile());
 
     QString mimetype = KMimeType::findByUrl(url)->name();
-    bool shouldIndexMimetype = config.shouldMimeTypeBeIndexed(mimetype);
+    QString fastMimetype = KMimeType::findByUrl(url, 0, true, true)->name();
+
+    bool shouldIndexMimetype = config.shouldMimeTypeBeIndexed(fastMimetype);
     std::cout << url.toLocalFile().toUtf8().constData() << "\n"
               << "Should Index: " << std::boolalpha << shouldIndex << "\n"
               << "Should Index Mimetype: " << std::boolalpha << shouldIndexMimetype << "\n"
-              << "Mimetype: " << mimetype.toUtf8().constData() << std::endl;
+              << "Fast Mimetype: " << fastMimetype.toUtf8().constData() << std::endl
+              << "Slow Mimetype: " << mimetype.toUtf8().constData() << std::endl;
 
     return 0; //app.exec();
 }

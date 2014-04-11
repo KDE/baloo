@@ -22,11 +22,8 @@
 #include <QtCore/QObject>
 #include <QtCore/QList>
 #include <QtCore/QSet>
-#include <QtCore/QRegExp>
-#include <QtCore/QReadWriteLock>
 
 #include <kconfig.h>
-#include <kio/global.h>
 
 #include "regexpcache.h"
 
@@ -188,9 +185,6 @@ private:
     QSet<QString> m_excludeMimetypes;
 
     bool m_indexHidden;
-
-    mutable QReadWriteLock m_folderCacheMutex;
-    mutable QReadWriteLock m_mimetypeMutex;
 
     static FileIndexerConfig* s_self;
 

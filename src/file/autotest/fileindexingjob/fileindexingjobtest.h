@@ -1,6 +1,6 @@
 /*
  * <one line to give the library's name and an idea of what it does.>
- * Copyright (C) 2013  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,42 +18,25 @@
  *
  */
 
-#ifndef _BALOO_FILEMODIFYJOB_H
-#define _BALOO_FILEMODIFYJOB_H
+#ifndef BALOO_FILEINDEXINGJOBTEST_H
+#define BALOO_FILEINDEXINGJOBTEST_H
 
-#include "file_export.h"
-#include <KJob>
+#include <QObject>
 
 namespace Baloo {
 
-class File;
-
-class BALOO_FILE_EXPORT FileModifyJob : public KJob
+class FileIndexingJobTest : public QObject
 {
     Q_OBJECT
-public:
-    explicit FileModifyJob(QObject* parent = 0);
-    FileModifyJob(const File& file, QObject* parent = 0);
-    virtual ~FileModifyJob();
-
-    virtual void start();
-
-    static FileModifyJob* modifyRating(const QStringList& files, int rating);
-    static FileModifyJob* modifyUserComment(const QStringList& files, const QString& comment);
-    static FileModifyJob* modifyTags(const QStringList& files, const QStringList& tags);
-
-    enum Errors {
-        Error_FileDoesNotExist = KJob::UserDefinedError + 1,
-        Error_EmptyFile,
-    };
 
 private Q_SLOTS:
-    void doStart();
+    void init();
 
-private:
-    class Private;
-    Private* d;
+    void testNormalExecution();
+    void testFileFail();
+    void testMultiFileFail();
+    void testTimeout();
 };
-
 }
-#endif // _BALOO_FILEMODIFYJOB_H
+
+#endif // BALOO_FILEINDEXINGJOBTEST_H

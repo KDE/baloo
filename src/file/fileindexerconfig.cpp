@@ -23,8 +23,6 @@
 #include <QUrl>
 #include <QStringList>
 #include <QDir>
-#include <QWriteLocker>
-#include <QReadLocker>
 
 #include <KDirWatch>
 #include <KStandardDirs>
@@ -54,7 +52,7 @@ using namespace Baloo;
 
 FileIndexerConfig::FileIndexerConfig(QObject* parent)
     : QObject(parent)
-    , m_config("baloofilerc")
+    , m_config("baloofilerc", KConfig::SimpleConfig)
     , m_indexHidden(false)
 {
     KDirWatch* dirWatch = KDirWatch::self();
@@ -190,13 +188,11 @@ bool FileIndexerConfig::shouldFolderBeIndexed(const QString& path) const
 bool FileIndexerConfig::shouldFileBeIndexed(const QString& fileName) const
 {
     // check the filters
-    QWriteLocker lock(&m_folderCacheMutex);
     return !m_excludeFilterRegExpCache.exactMatch(fileName);
 }
 
 bool FileIndexerConfig::shouldMimeTypeBeIndexed(const QString& mimeType) const
 {
-    QReadLocker lock(&m_mimetypeMutex);
     return !m_excludeMimetypes.contains(mimeType);
 }
 
@@ -209,8 +205,6 @@ bool FileIndexerConfig::folderInFolderList(const QString& path)
 
 bool FileIndexerConfig::folderInFolderList(const QString& path, QString& folder) const
 {
-    QReadLocker lock(&m_folderCacheMutex);
-
     const QString p = QUrl(path).adjusted(QUrl::StripTrailingSlash).path();
 
     // we traverse the list backwards to catch all exclude folders
@@ -312,7 +306,6 @@ void FileIndexerConfig::fillExcludeFolderChanges(const FileIndexerConfig::Entry&
 
 bool FileIndexerConfig::buildFolderCache()
 {
-    QWriteLocker lock(&m_folderCacheMutex);
 
     //
     // General folders
@@ -397,7 +390,6 @@ bool FileIndexerConfig::buildFolderCache()
 
 bool FileIndexerConfig::buildExcludeFilterRegExpCache()
 {
-    QWriteLocker lock(&m_folderCacheMutex);
     QStringList newFilters = excludeFilters();
     m_excludeFilterRegExpCache.rebuildCacheFromFilterList(newFilters);
 
@@ -413,7 +405,6 @@ bool FileIndexerConfig::buildExcludeFilterRegExpCache()
 
 bool FileIndexerConfig::buildMimeTypeCache()
 {
-    QWriteLocker lock(&m_mimetypeMutex);
     QStringList newMimeExcludes = m_config.group("General").readPathEntry("exclude mimetypes", defaultExcludeMimetypes());
 
     QSet<QString> newMimeExcludeSet = newMimeExcludes.toSet();
@@ -448,6 +439,7 @@ bool FileIndexerConfig::forceConfigUpdate()
 void FileIndexerConfig::setInitialRun(bool isInitialRun)
 {
     m_config.group("General").writeEntry("first run", isInitialRun);
+    m_config.sync();
 }
 
 bool FileIndexerConfig::initialUpdateDisabled() const

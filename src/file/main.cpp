@@ -20,11 +20,12 @@
  *
  */
 
-#include <QApplication>
-
 #include <KComponentData>
 #include <k4aboutdata.h>
 #include <KStandardDirs>
+#include <KCmdLineArgs>
+#include <KUniqueApplication>
+#include <KCrash>
 
 #include <KConfig>
 #include <KConfigGroup>
@@ -46,13 +47,14 @@ int main(int argc, char** argv)
     lowerSchedulingPriority();
     lowerPriority();
 
-    QApplication app(argc, argv);
-
     K4AboutData aboutData("baloo_file", "baloo_file", ki18n("Baloo File"), "0.1",
                          ki18n("An application to handle file metadata"),
                          K4AboutData::License_GPL_V2);
 
-    KComponentData data(aboutData, KComponentData::RegisterAsMainComponent);
+    KCmdLineArgs::init(argc, argv, &aboutData);
+
+    KUniqueApplication app(true);
+    app.disableSessionManagement();
 
     KConfig config("baloofilerc");
     KConfigGroup group = config.group("Basic Settings");
@@ -68,6 +70,9 @@ int main(int argc, char** argv)
         kError() << "Failed to register via dbus. Another instance is running";
         return 1;
     }
+
+    // Crash Handling
+    KCrash::setFlags(KCrash::AutoRestart);
 
     const QString path = KGlobal::dirs()->localxdgdatadir() + "baloo/file/";
 

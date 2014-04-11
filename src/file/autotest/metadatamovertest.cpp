@@ -72,10 +72,6 @@ void MetadataMoverTest::testRemoveFile()
     QSignalSpy spy(&mover, SIGNAL(fileRemoved(int)));
     mover.removeFileMetadata(url);
 
-    QEventLoop loop;
-    connect(&mover, SIGNAL(fileRemoved(int)), &loop, SLOT(quit()));
-    loop.exec();
-
     QCOMPARE(spy.size(), 1);
     QCOMPARE(spy.at(0).size(), 1);
     QCOMPARE(spy.at(0).first().toUInt(), fid);

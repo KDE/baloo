@@ -45,17 +45,17 @@ public:
 private Q_SLOTS:
     void processNextUrl();
     void saveChanges();
-    void slotCommitted();
 
 Q_SIGNALS:
     void saved();
 
 private:
-    void deleteDocument(unsigned docid);
+    void printDebug();
 
     QVector<Result> m_results;
     QStringList m_urls;
     bool m_bData;
+    bool m_debugEnabled;
 
     QString m_path;
 
@@ -65,6 +65,7 @@ private:
 
     int m_termCount;
     QList<QString> m_updatedFiles;
+    QVector<uint> m_docsToDelete;
 };
 
 }
