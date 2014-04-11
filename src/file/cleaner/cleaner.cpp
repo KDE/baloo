@@ -22,8 +22,7 @@
 #include "../database.h"
 #include "../fileindexerconfig.h"
 
-#include <KMimeType>
-
+#include <QMimeDatabase>
 #include <QTimer>
 #include <QFile>
 #include <QUrl>
@@ -49,6 +48,7 @@ void Cleaner::start()
     query.exec(QLatin1String("select id, url from files"));
 
     FileIndexerConfig config;
+    QMimeDatabase mimeDb;
 
     int numDocuments = 0;
     while (query.next()) {
@@ -65,8 +65,7 @@ void Cleaner::start()
         }
 
         // vHanda FIXME: Perhaps we want to get the proper mimetype from xapian?
-        QString mimetype = KMimeType::findByUrl(QUrl::fromLocalFile(url), 0,
-                                                true /*local*/, true /*fast*/)->name();
+        QString mimetype = mimeDb.mimeTypeForFile(url, QMimeDatabase::MatchExtension).name();
         if (!config.shouldMimeTypeBeIndexed(mimetype)) {
             removeIt = true;
         }

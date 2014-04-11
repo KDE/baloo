@@ -26,6 +26,7 @@
 
 #include <QStack>
 #include <QPair>
+#include <QMimeDatabase>
 #include <xapian.h>
 
 
@@ -111,6 +112,7 @@ private:
 
     Database* m_db;
     FileIndexerConfig* m_config;
+    QMimeDatabase m_mimeDb;
 };
 
 }

@@ -33,7 +33,7 @@
 #include <QStandardPaths>
 
 #include <QDebug>
-#include <KMimeType>
+#include <QMimeDatabase>
 
 #include <kfilemetadata/propertyinfo.h>
 
@@ -225,8 +225,7 @@ QString FileSearchStore::text(int queryId)
 
 QString FileSearchStore::icon(int queryId)
 {
-    KMimeType::Ptr mime = KMimeType::findByUrl(url(queryId));
-    return mime->iconName();
+    return QMimeDatabase().mimeTypeForFile(url(queryId).toLocalFile()).iconName();
 }
 
 

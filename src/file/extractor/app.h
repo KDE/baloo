@@ -25,6 +25,7 @@
 
 #include <QVector>
 #include <QStringList>
+#include <QMimeDatabase>
 
 #include <kfilemetadata/extractorpluginmanager.h>
 #include <kfilemetadata/extractorplugin.h>
@@ -64,6 +65,7 @@ private:
     QString m_path;
 
     Database m_db;
+    QMimeDatabase m_mimeDb;
 
     KFileMetaData::ExtractorPluginManager m_manager;
 

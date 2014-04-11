@@ -25,9 +25,7 @@
 #include <QCoreApplication>
 #include <QCommandLineParser>
 #include <QFileInfo>
-#include <QUrl>
-
-#include <KMimeType>
+#include <QMimeDatabase>
 
 #include <iostream>
 
@@ -46,14 +44,16 @@ int main(int argc, char** argv)
     Baloo::FileIndexerConfig config;
 
     const QString arg = parser.positionalArguments().first();
-    const QUrl url = QUrl::fromLocalFile(QFileInfo(arg).absoluteFilePath());
-    bool shouldIndex = config.shouldBeIndexed(url.toLocalFile());
+    const QString url = QFileInfo(arg).absoluteFilePath();
 
-    QString mimetype = KMimeType::findByUrl(url)->name();
-    QString fastMimetype = KMimeType::findByUrl(url, 0, true, true)->name();
+    bool shouldIndex = config.shouldBeIndexed(url);
+
+    QMimeDatabase m_mimeDb;
+    QString mimetype = m_mimeDb.mimeTypeForFile(url, QMimeDatabase::MatchExtension).name();
+    QString fastMimetype = m_mimeDb.mimeTypeForFile(url).name();
 
     bool shouldIndexMimetype = config.shouldMimeTypeBeIndexed(fastMimetype);
-    std::cout << url.toLocalFile().toUtf8().constData() << "\n"
+    std::cout << url.toUtf8().constData() << "\n"
               << "Should Index: " << std::boolalpha << shouldIndex << "\n"
               << "Should Index Mimetype: " << std::boolalpha << shouldIndexMimetype << "\n"
               << "Fast Mimetype: " << fastMimetype.toUtf8().constData() << std::endl

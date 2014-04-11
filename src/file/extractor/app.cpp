@@ -25,7 +25,6 @@
 #include "../database.h"
 #include "xapiandatabase.h"
 
-#include <KMimeType>
 #include <QDebug>
 
 #include <QTimer>
@@ -104,7 +103,7 @@ void App::processNextUrl()
     }
 
     const QString url = m_urls.takeFirst();
-    const QString mimetype = KMimeType::findByUrl(QUrl::fromLocalFile(url))->name();
+    const QString mimetype = m_mimeDb.mimeTypeForFile(url).name();
 
     FileMapping file(url);
     if (!m_bData) {
