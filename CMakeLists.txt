@@ -57,11 +57,7 @@ ecm_setup_version(${KF5_VERSION} VARIABLE_PREFIX BALOO
                         PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/BalooConfigVersion.cmake")
 
 include_directories(
-  ${KFILEMETADATA_INCLUDE_DIR}
   ${XAPIAN_INCLUDE_DIR}
-  ${KDEPIMLIBS_INCLUDE_DIRS}
-  ${AKONADI_INCLUDE_DIR}
-  ${KDE4_INCLUDES}
   ${CMAKE_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/file/lib
