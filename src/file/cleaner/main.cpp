@@ -23,12 +23,10 @@
 #include "../database.h"
 #include "../priority.h"
 
-#include <KGlobal>
-#include <KStandardDirs>
-
+#include <QStandardPaths>
 #include <QCoreApplication>
-#include <QDBusConnection>
 #include <QCommandLineParser>
+#include <QDBusConnection>
 #include <QDebug>
 
 int main(int argc, char* argv[])
@@ -44,7 +42,8 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    const QString path = KGlobal::dirs()->localxdgdatadir() + "baloo/file/";
+    const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)
+                         + QLatin1String("/baloo/file");
 
     Database db;
     db.setPath(path);

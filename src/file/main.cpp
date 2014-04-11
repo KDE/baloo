@@ -22,7 +22,6 @@
 
 #include <KComponentData>
 #include <k4aboutdata.h>
-#include <KStandardDirs>
 #include <KCmdLineArgs>
 #include <KUniqueApplication>
 #include <KCrash>
@@ -74,7 +73,7 @@ int main(int argc, char** argv)
     // Crash Handling
     KCrash::setFlags(KCrash::AutoRestart);
 
-    const QString path = KGlobal::dirs()->localxdgdatadir() + "baloo/file/";
+    const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/baloo/file/";
 
     Database db;
     db.setPath(path);

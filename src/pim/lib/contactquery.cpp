@@ -26,7 +26,7 @@
 
 #include <QList>
 #include <QDebug>
-#include <KStandardDirs>
+#include <QStandardPaths>
 
 using namespace Baloo::PIM;
 
@@ -101,7 +101,7 @@ void ContactQuery::setMatchCriteria(ContactQuery::MatchCriteria m)
 
 ResultIterator ContactQuery::exec()
 {
-    const QString dir = KGlobal::dirs()->localxdgdatadir() + "baloo/contacts/";
+    const QString dir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/baloo/contacts/";
     Xapian::Database db(dir.toUtf8().constData());
 
     QList<Xapian::Query> m_queries;

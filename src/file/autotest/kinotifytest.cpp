@@ -23,7 +23,6 @@
 
 #include <KTempDir>
 #include <KRandom>
-#include <KStandardDirs>
 #include <qtest_kde.h>
 
 #include <QTextStream>
@@ -45,7 +44,7 @@ void touchFile(const QString& path)
 
 void mkdir(const QString& path)
 {
-    KStandardDirs::makeDir(path);
+    QDir().mkpath(path);
 }
 
 void waitForSignal(QObject* object, const char* signal, int timeout = 500)

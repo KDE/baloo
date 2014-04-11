@@ -23,19 +23,20 @@
 #include "db.h"
 
 #include <QDebug>
-#include <KStandardDirs>
-#include <KGlobal>
+#include <QStandardPaths>
 
 #include <QSqlQuery>
 #include <QSqlError>
 
+static const QString xdgDataDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
+
 std::string fileIndexDbPath()
 {
-    return (KGlobal::dirs()->localxdgdatadir() + "baloo/file").toUtf8().constData();
+    return (xdgDataDir + "/baloo/file").toUtf8().constData();
 }
 
 QSqlDatabase fileMappingDb() {
-    const QString path = KGlobal::dirs()->localxdgdatadir() + "baloo/file/fileMap.sqlite3";
+    const QString path = xdgDataDir + "/baloo/file/fileMap.sqlite3";
     return fileMappingDb(path);
 }
 
@@ -77,7 +78,7 @@ QSqlDatabase fileMappingDb(const QString& path)
 
 QSqlDatabase fileMetadataDb()
 {
-    const QString path = KGlobal::dirs()->localxdgdatadir() + "baloo/file/fileMetaData.sqlite3";
+    const QString path = xdgDataDir + "/baloo/file/fileMetaData.sqlite3";
     QSqlDatabase sqlDb = QSqlDatabase::database("fileMetadataDb");
     if (!sqlDb.isValid()) {
         sqlDb = QSqlDatabase::addDatabase("QSQLITE", "fileMetadataDb");

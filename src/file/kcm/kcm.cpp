@@ -27,7 +27,7 @@
 #include <KSharedConfig>
 #include <KDirWatch>
 #include <QDebug>
-#include <KStandardDirs>
+#include <QStandardPaths>
 #include <KLocalizedString>
 #include <KIcon>
 #include <KIconLoader>
@@ -115,7 +115,7 @@ void ServerConfigModule::save()
 
     // Start Baloo
     if (indexingEnabled) {
-        const QString exe = KStandardDirs::findExe(QLatin1String("baloo_file"));
+        const QString exe = QStandardPaths::findExecutable(QLatin1String("baloo_file"));
         QProcess::startDetached(exe);
     }
     else {
@@ -128,7 +128,7 @@ void ServerConfigModule::save()
     }
 
     // Start cleaner
-    const QString exe = KStandardDirs::findExe(QLatin1String("baloo_file_cleaner"));
+    const QString exe = QStandardPaths::findExecutable(QLatin1String("baloo_file_cleaner"));
     QProcess::startDetached(exe);
 
     // all values saved -> no changes

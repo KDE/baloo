@@ -25,7 +25,7 @@
 #include <QDir>
 
 #include <KDirWatch>
-#include <KStandardDirs>
+#include <QStandardPaths>
 #include <KConfigGroup>
 #include <QDebug>
 
@@ -60,7 +60,7 @@ FileIndexerConfig::FileIndexerConfig(QObject* parent)
             this, SLOT(slotConfigDirty()));
     connect(dirWatch, SIGNAL(created(QString)),
             this, SLOT(slotConfigDirty()));
-    dirWatch->addFile(KStandardDirs::locateLocal("config", m_config.name()));
+    dirWatch->addFile(QStandardPaths::locate(QStandardPaths::ConfigLocation, m_config.name()));
 
     forceConfigUpdate();
 }

@@ -25,7 +25,7 @@
 #include "xapian.h"
 #include "../search/email/agepostingsource.h"
 
-#include <KStandardDirs>
+#include <QStandardPaths>
 
 using namespace Baloo::PIM;
 
@@ -181,7 +181,7 @@ void EmailQuery::setRead(bool read)
 
 ResultIterator EmailQuery::exec()
 {
-    const QString dir = KGlobal::dirs()->localxdgdatadir() + "baloo/email/";
+    const QString dir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/baloo/email/";
     Xapian::Database db;
     try {
         db = Xapian::Database(dir.toUtf8().constData());

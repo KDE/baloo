@@ -26,7 +26,7 @@
 #include "database.h"
 
 #include <QDebug>
-#include <KStandardDirs>
+#include <QStandardPaths>
 
 #include <QtCore/QFileInfo>
 #include <QtCore/QTimer>
@@ -58,7 +58,7 @@ void FileIndexingJob::start()
 void FileIndexingJob::start(const QVector<uint>& files)
 {
     // setup the external process which does the actual indexing
-    static const QString exe = KStandardDirs::findExe(QLatin1String("baloo_file_extractor"));
+    static const QString exe = QStandardPaths::findExecutable(QLatin1String("baloo_file_extractor"));
 
     Q_ASSERT(m_process == 0);
     m_process = new QProcess(this);

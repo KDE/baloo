@@ -24,7 +24,7 @@
 #include <QTimer>
 #include <QUrl>
 
-#include <KStandardDirs>
+#include <QStandardPaths>
 #include <KMimeType>
 
 using namespace Baloo;
@@ -53,7 +53,7 @@ void FileIndexer::doStart()
     m_mimeType = KMimeType::findByUrl(QUrl::fromLocalFile(m_url))->name();
 
     // setup the external process which does the actual indexing
-    const QString exe = KStandardDirs::findExe(QLatin1String("baloo_file_extractor"));
+    const QString exe = QStandardPaths::findExecutable(QLatin1String("baloo_file_extractor"));
 
     QStringList args;
     args << QString::number(m_id);

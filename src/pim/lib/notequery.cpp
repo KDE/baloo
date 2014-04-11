@@ -26,7 +26,7 @@
 
 #include <QList>
 #include <QDebug>
-#include <KStandardDirs>
+#include <QStandardPaths>
 
 using namespace Baloo::PIM;
 
@@ -76,7 +76,7 @@ int NoteQuery::limit() const
 
 ResultIterator NoteQuery::exec()
 {
-    const QString dir = KGlobal::dirs()->localxdgdatadir() + "baloo/notes/";
+    const QString dir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/baloo/notes/";
     Xapian::Database db(dir.toUtf8().constData());
 
     QList<Xapian::Query> m_queries;

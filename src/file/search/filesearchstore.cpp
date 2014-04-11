@@ -30,11 +30,10 @@
 #include <QVector>
 #include <QDate>
 #include <QUrl>
+#include <QStandardPaths>
 
-#include <KStandardDirs>
 #include <QDebug>
 #include <KMimeType>
-#include <KGlobal>
 
 #include <kfilemetadata/propertyinfo.h>
 
@@ -45,7 +44,7 @@ FileSearchStore::FileSearchStore(QObject* parent)
     , m_sqlDb(0)
     , m_sqlMutex(QMutex::Recursive)
 {
-    const QString path = KGlobal::dirs()->localxdgdatadir() + "baloo/file/";
+    const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/baloo/file/";
     setDbPath(path);
 
     m_prefixes.insert("filename", "F");

@@ -22,7 +22,6 @@
 
 #include "contactsearchstore.h"
 
-#include <KStandardDirs>
 #include <QDebug>
 
 using namespace Baloo;

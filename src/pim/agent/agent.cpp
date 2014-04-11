@@ -36,7 +36,6 @@
 #include <Akonadi/AgentManager>
 #include <Akonadi/ServerManager>
 
-#include <KStandardDirs>
 #include <KConfig>
 #include <KConfigGroup>
 #include <KLocalizedString>

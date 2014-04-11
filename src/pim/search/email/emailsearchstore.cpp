@@ -25,7 +25,6 @@
 #include "query.h"
 #include "agepostingsource.h"
 
-#include <KStandardDirs>
 #include <QDebug>
 
 using namespace Baloo;

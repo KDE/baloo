@@ -23,7 +23,7 @@
 #include "contactcompleter.h"
 #include <xapian.h>
 
-#include <KStandardDirs>
+#include <QStandardPaths>
 #include <QDebug>
 
 using namespace Baloo::PIM;
@@ -37,7 +37,7 @@ ContactCompleter::ContactCompleter(const QString& prefix, int limit)
 
 QStringList ContactCompleter::complete()
 {
-    const QString dir = KGlobal::dirs()->localxdgdatadir() + "baloo/emailContacts/";
+    const QString dir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/baloo/emailContacts/";
     Xapian::Database db;
     try {
         db = Xapian::Database(dir.toUtf8().constData());
