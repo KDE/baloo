@@ -23,16 +23,13 @@
 #include "../database.h"
 #include "../priority.h"
 
-#include <k4aboutdata.h>
-#include <KCmdLineArgs>
-#include <KLocale>
 #include <KGlobal>
-#include <KComponentData>
-#include <QApplication>
-#include <QDBusConnection>
-
-#include <QDebug>
 #include <KStandardDirs>
+
+#include <QCoreApplication>
+#include <QDBusConnection>
+#include <QCommandLineParser>
+#include <QDebug>
 
 int main(int argc, char* argv[])
 {
@@ -40,17 +37,7 @@ int main(int argc, char* argv[])
     lowerSchedulingPriority();
     lowerPriority();
 
-    K4AboutData aboutData("baloo_file_cleaner", 0, ki18n("Baloo File Cleaner"),
-                         "0.1",
-                         ki18n("Cleans up stale file index information"),
-                         K4AboutData::License_LGPL_V2,
-                         ki18n("(C) 2014, Vishesh Handa"));
-    aboutData.addAuthor(ki18n("Vishesh Handa"), ki18n("Maintainer"), "me@vhanda.in");
-
-    KCmdLineArgs::init(argc, argv, &aboutData);
-
-    QApplication app(argc, argv);
-    KComponentData data(aboutData, KComponentData::RegisterAsMainComponent);
+    QCoreApplication app(argc, argv);
 
     if (!QDBusConnection::sessionBus().registerService("org.kde.baloo.file.cleaner")) {
         qWarning() << "Failed to register via dbus. Another instance is running";

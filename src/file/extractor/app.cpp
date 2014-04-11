@@ -1,6 +1,6 @@
 /*
  * This file is part of the KDE Baloo Project
- * Copyright (C) 2013  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2013-2014  Vishesh Handa <me@vhanda.in>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -25,49 +25,41 @@
 #include "../database.h"
 #include "xapiandatabase.h"
 
-#include <KCmdLineArgs>
 #include <KMimeType>
-#include <KStandardDirs>
 #include <QDebug>
-#include <KGlobal>
 
 #include <QTimer>
-#include <QtCore/QFileInfo>
+#include <QFileInfo>
 #include <QDBusMessage>
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QDBusConnection>
-#include <KApplication>
+
 #include <kfilemetadata/propertyinfo.h>
 
 #include <iostream>
 
 using namespace Baloo;
 
-App::App(QObject* parent)
+App::App(const QString& path, QObject* parent)
     : QObject(parent)
+    , m_path(path)
     , m_termCount(0)
 {
-    const KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
-
-    if (!args->getOption("db").isEmpty()) {
-        m_path = args->getOption("db");
-    } else {
-        m_path = KGlobal::dirs()->localxdgdatadir() + "baloo/file";
-    }
-
     m_db.setPath(m_path);
     if (!m_db.init(true /*sql db only*/)) {
         QTimer::singleShot(0, QCoreApplication::instance(), SLOT(quit()));
         return;
     }
 
-    m_bData = args->isSet("bdata");
-    m_debugEnabled = args->isSet("debug");
+    connect(this, SIGNAL(saved()), this, SLOT(processNextUrl()), Qt::QueuedConnection);
+}
 
-    m_results.reserve(args->count());
-    for (int i=0; i<args->count(); i++) {
-        FileMapping mapping = FileMapping(args->arg(i).toUInt());
+void App::startProcessing(const QStringList& args)
+{
+    m_results.reserve(args.size());
+    Q_FOREACH (const QString& arg, args) {
+        FileMapping mapping = FileMapping(arg.toUInt());
         QString url;
 
         // arg is an id
@@ -79,7 +71,7 @@ App::App(QObject* parent)
             }
         } else {
             // arg is a url
-            url = args->url(i).toLocalFile();
+            url = QFileInfo(arg).absoluteFilePath();
         }
 
         if (QFile::exists(url)) {
@@ -96,13 +88,7 @@ App::App(QObject* parent)
         }
     }
 
-    connect(this, SIGNAL(saved()), this, SLOT(processNextUrl()), Qt::QueuedConnection);
-
     QTimer::singleShot(0, this, SLOT(processNextUrl()));
-}
-
-App::~App()
-{
 }
 
 void App::processNextUrl()

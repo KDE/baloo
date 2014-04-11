@@ -22,48 +22,31 @@
 
 #include "xattrdetector.h"
 
-#include <k4aboutdata.h>
-#include <KApplication>
-#include <KCmdLineArgs>
-#include <QDebug>
-
-#include <QUrl>
-#include <QTimer>
+#include <QCommandLineParser>
+#include <QCoreApplication>
+#include <QFileInfo>
 
 #include <iostream>
 
 int main(int argc, char** argv)
 {
-    K4AboutData aboutData("xattrdetectortest",
-                         "xattrdetectortest",
-                         ki18n("xattrdetectortest"),
-                         "0.1",
-                         ki18n("xattrdetectortest"),
-                         K4AboutData::License_GPL,
-                         ki18n("(c) 2014, Vishesh Handa"),
-                         KLocalizedString(),
-                         "http://kde.org");
-    aboutData.addAuthor(ki18n("Vishesh Handa"), ki18n("Maintainer"), "me@vhanda.in");
-
-    KCmdLineArgs::init(argc, argv, &aboutData);
-
-    KCmdLineOptions options;
-    options.add("+file", ki18n("The file URL"));
-    KCmdLineArgs::addCmdLineOptions(options);
-
-    KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
-
     QCoreApplication app(argc, argv);
-    KComponentData comp(aboutData);
 
-    if (args->count() == 0)
-        KCmdLineArgs::usage();
+    QCommandLineParser parser;
+    parser.addPositionalArgument("file", QLatin1String("The file url"));
+    parser.process(app);
+
+    QStringList args = parser.positionalArguments();
+    if (args.isEmpty()) {
+        parser.showHelp(1);
+    }
 
     Baloo::XattrDetector xattr;
 
-    const QUrl url = args->url(0);
-    bool shouldHave = xattr.isSupported(url.toLocalFile());
-    std::cout << url.toLocalFile().toUtf8().constData() << " " << shouldHave << std::endl;
+    const QString url = QFileInfo(args.first()).absoluteFilePath();
+
+    bool shouldHave = xattr.isSupported(url);
+    std::cout << url.toUtf8().constData() << " " << shouldHave << std::endl;
 
     return 0;
 }

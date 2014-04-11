@@ -1,6 +1,6 @@
 /*
    This file is part of the Nepomuk KDE project.
-   Copyright (C) 2010-13 Vishesh Handa <handa.vish@gmail.com>
+   Copyright (C) 2010-14 Vishesh Handa <handa.vish@gmail.com>
    Copyright (C) 2010-2011 Sebastian Trueg <trueg@kde.org>
 
    This library is free software; you can redistribute it and/or
@@ -23,13 +23,13 @@
 #include "app.h"
 #include "../priority.h"
 
-#include <k4aboutdata.h>
-#include <KCmdLineArgs>
 #include <KLocale>
-#include <KComponentData>
-#include <QApplication>
+#include <KGlobal>
+#include <KStandardDirs>
 
-#include <QDebug>
+#include <QApplication>
+#include <QCommandLineParser>
+#include <QCommandLineOption>
 
 int main(int argc, char* argv[])
 {
@@ -37,43 +37,38 @@ int main(int argc, char* argv[])
     lowerSchedulingPriority();
     lowerPriority();
 
-    K4AboutData aboutData("baloo_file_extractor", 0, ki18n("Baloo File Extractor"),
-                         "0.1",
-                         ki18n("The File Extractor extracts the file metadata and text"),
-                         K4AboutData::License_LGPL_V2,
-                         ki18n("(C) 2013, Vishesh Handa"));
-    aboutData.addAuthor(ki18n("Vishesh Handa"), ki18n("Maintainer"), "me@vhanda.in");
-
-    KCmdLineArgs::init(argc, argv, &aboutData);
-
-    KCmdLineOptions options;
-    options.add("+[url]", ki18n("The URL/id of the files to be indexed"));
-    options.add("debug", ki18n("Print the data being indexed"));
-    options.add("bdata", ki18n("Print the QVariantMap in Base64 encoding"));
-    // FIXME: Set a proper string after the freeze. This option is just for debugging
-    options.add("db <url>", KLocalizedString());
-
-    KCmdLineArgs::addCmdLineOptions(options);
-    const KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
-
-    int argCount = args->count();
-    if (argCount == 0) {
-        QTextStream err(stderr);
-        err << "Must input url/id of the file to be indexed";
-
-        return 1;
-    }
-
-    if (args->isSet("bdata") && argCount > 1) {
-        QTextStream err(stderr);
-        err << "bdata can only accept one url/id";
-
-        return 1;
-    }
-
     QApplication app(argc, argv);
-    KComponentData data(aboutData, KComponentData::RegisterAsMainComponent);
+    QCoreApplication::setApplicationName("Baloo File Extractor");
+    QCoreApplication::setApplicationVersion("0.1");
 
-    Baloo::App appObject;
+    QCommandLineParser parser;
+    parser.setApplicationDescription(i18n("The File Extractor extracts the file metadata and text"));
+    parser.addHelpOption();
+    parser.addVersionOption();
+
+    parser.addPositionalArgument("urls", i18n("The URL/id of the files to be indexed"));
+    parser.addOption(QCommandLineOption("debug", i18n("Print the data being indexed")));
+    parser.addOption(QCommandLineOption("bdata", i18n("Print the QVariantMap in Base64 encoding")));
+    parser.addOption(QCommandLineOption("db", i18n("Specify a custom path for the database"),
+                                        i18n("path"), KGlobal::dirs()->localxdgdatadir() + "baloo/file"));
+
+    parser.process(app);
+
+    QStringList args = parser.positionalArguments();
+    if (args.isEmpty()) {
+        fprintf(stderr, "The url/id of the file is missing\n\n");
+        parser.showHelp(1);
+    }
+
+    if (parser.isSet("bdata") && args.size() > 1) {
+        fprintf(stderr, "bdata can only accept one url/id\n\n");
+        parser.showHelp(1);
+    }
+
+    Baloo::App appObject(parser.value("db"));
+    appObject.setBData(parser.isSet("bdata"));
+    appObject.setDebug(parser.isSet("debug"));
+    appObject.startProcessing(args);
+
     return app.exec();
 }

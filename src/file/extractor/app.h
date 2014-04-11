@@ -39,8 +39,12 @@ class App : public QObject
 {
     Q_OBJECT
 public:
-    explicit App(QObject* parent = 0);
-    ~App();
+    explicit App(const QString& path, QObject* parent = 0);
+
+    void setDebug(bool status) { m_debugEnabled = status; }
+    void setBData(bool status) { m_bData = status; }
+
+    void startProcessing(const QStringList& args);
 
 private Q_SLOTS:
     void processNextUrl();

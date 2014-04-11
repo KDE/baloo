@@ -22,48 +22,31 @@
 
 #include "../fileindexerconfig.h"
 
-#include <KAboutData>
-#include <KApplication>
-#include <KCmdLineArgs>
-#include <QDebug>
-#include <k4aboutdata.h>
-#include <kmimetype.h>
-
-#include <QTimer>
+#include <QCoreApplication>
+#include <QCommandLineParser>
+#include <QFileInfo>
 #include <QUrl>
+
+#include <KMimeType>
 
 #include <iostream>
 
 int main(int argc, char** argv)
 {
-    K4AboutData aboutData("indexerconfigtest",
-                         "indexerconfigtest",
-                         ki18n("indexerconfigtest"),
-                         "0.1",
-                         ki18n("indexerconfigtest"),
-                         K4AboutData::License_GPL,
-                         ki18n("(c) 2014, Vishesh Handa"),
-                         KLocalizedString(),
-                         "http://kde.org");
-    aboutData.addAuthor(ki18n("Vishesh Handa"), ki18n("Maintainer"), "me@vhanda.in");
-
-    KCmdLineArgs::init(argc, argv, &aboutData);
-
-    KCmdLineOptions options;
-    options.add("+file", ki18n("The file URL"));
-    KCmdLineArgs::addCmdLineOptions(options);
-
-    KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
-
     QCoreApplication app(argc, argv);
-    KComponentData comp(aboutData);
 
-    if (args->count() == 0)
-        KCmdLineArgs::usage();
+    QCommandLineParser parser;
+    parser.addPositionalArgument("file", "The file url");
+    parser.process(app);
+
+    if (parser.positionalArguments().isEmpty()) {
+        parser.showHelp(1);
+    }
 
     Baloo::FileIndexerConfig config;
 
-    const QUrl url = args->url(0);
+    const QString arg = parser.positionalArguments().first();
+    const QUrl url = QUrl::fromLocalFile(QFileInfo(arg).absoluteFilePath());
     bool shouldIndex = config.shouldBeIndexed(url.toLocalFile());
 
     QString mimetype = KMimeType::findByUrl(url)->name();
