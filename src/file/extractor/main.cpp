@@ -29,7 +29,7 @@
 #include <KComponentData>
 #include <QApplication>
 
-#include <KDebug>
+#include <QDebug>
 
 int main(int argc, char* argv[])
 {

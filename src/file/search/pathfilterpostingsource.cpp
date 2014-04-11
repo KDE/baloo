@@ -22,7 +22,7 @@
 
 #include "pathfilterpostingsource.h"
 #include "filemapping.h"
-#include <KDebug>
+#include <QDebug>
 #include <QSqlQuery>
 #include <QSqlError>
 
@@ -108,7 +108,7 @@ void PathFilterPostingSource::skip_to(Xapian::docid did, Xapian::weight)
 
     if (!query.exec(str)) {
         m_iter = m_end;
-        kDebug() << query.lastError().text();
+        qDebug() << query.lastError().text();
         return;
     }
 

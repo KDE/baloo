@@ -26,7 +26,7 @@
 #include <KAboutData>
 #include <KSharedConfig>
 #include <KDirWatch>
-#include <KDebug>
+#include <QDebug>
 #include <KStandardDirs>
 #include <KLocalizedString>
 #include <KIcon>

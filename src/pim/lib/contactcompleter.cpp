@@ -24,7 +24,7 @@
 #include <xapian.h>
 
 #include <KStandardDirs>
-#include <KDebug>
+#include <QDebug>
 
 using namespace Baloo::PIM;
 
@@ -43,7 +43,7 @@ QStringList ContactCompleter::complete()
         db = Xapian::Database(dir.toUtf8().constData());
     }
     catch (const Xapian::DatabaseError& e) {
-        kWarning() << QString::fromStdString(e.get_type()) << QString::fromStdString(e.get_description());
+        qWarning() << QString::fromStdString(e.get_type()) << QString::fromStdString(e.get_description());
         return QStringList();
     }
 

@@ -30,7 +30,7 @@
 #include <QStringList>
 
 #include <kfilemetadata/typeinfo.h>
-#include <KDebug>
+#include <QDebug>
 
 using namespace Baloo;
 
@@ -50,7 +50,7 @@ bool BasicIndexingJob::index()
 {
     if (m_file.id() == 0) {
         if (!m_file.create(*m_sqlDb)) {
-            kError() << "Cannot create fileMapping for" << m_file.url();
+            qWarning() << "Cannot create fileMapping for" << m_file.url();
             return false;
         }
     }

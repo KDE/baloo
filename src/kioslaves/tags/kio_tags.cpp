@@ -27,7 +27,7 @@
 #include <klocale.h>
 #include <kio/job.h>
 #include <KUser>
-#include <KDebug>
+#include <QDebug>
 #include <KLocale>
 #include <kio/netaccess.h>
 #include <KComponentData>
@@ -80,7 +80,7 @@ KIO::UDSEntry createUDSEntryForTag(const QString& tag)
 
 void TagsProtocol::listDir(const QUrl& url)
 {
-    kDebug() << url;
+    qDebug() << url;
 
     QString tag;
     QString fileUrl;
@@ -91,7 +91,7 @@ void TagsProtocol::listDir(const QUrl& url)
         return;
 
     case RootUrl: {
-        kDebug() << "Root Url";
+        qDebug() << "Root Url";
 
         TagListJob* job = new TagListJob();
         job->exec();
@@ -142,7 +142,7 @@ void TagsProtocol::listDir(const QUrl& url)
     }
 
     case FileUrl:
-        kDebug() << "File URL : " << fileUrl;
+        qDebug() << "File URL : " << fileUrl;
         ForwardingSlaveBase::listDir(QUrl::fromLocalFile(fileUrl));
         return;
     }
@@ -150,7 +150,7 @@ void TagsProtocol::listDir(const QUrl& url)
 
 void TagsProtocol::stat(const QUrl& url)
 {
-    kDebug() << url;
+    qDebug() << url;
 
     QString tag;
     QString fileUrl;
@@ -192,7 +192,7 @@ void TagsProtocol::stat(const QUrl& url)
 
 void TagsProtocol::copy(const QUrl& src, const QUrl& dest, int permissions, KIO::JobFlags flags)
 {
-    kDebug() << src << dest;
+    qDebug() << src << dest;
 
     if (src.scheme() != QLatin1String("file")) {
         error(KIO::ERR_UNSUPPORTED_ACTION, src.prettyUrl());
@@ -229,7 +229,7 @@ void TagsProtocol::copy(const QUrl& src, const QUrl& dest, int permissions, KIO:
 
 void TagsProtocol::get(const QUrl& url)
 {
-    kDebug() << url;
+    qDebug() << url;
 
     QString tag;
     QString fileUrl;
@@ -263,7 +263,7 @@ void TagsProtocol::put(const QUrl& url, int permissions, KIO::JobFlags flags)
 
 void TagsProtocol::rename(const QUrl& src, const QUrl& dest, KIO::JobFlags flags)
 {
-    kDebug() << src << dest;
+    qDebug() << src << dest;
     if (src.isLocalFile()) {
         error(KIO::ERR_CANNOT_DELETE_ORIGINAL, src.prettyUrl());
         return;
@@ -321,14 +321,14 @@ void TagsProtocol::del(const QUrl& url, bool isfile)
     }
 
     case FileUrl: {
-        kDebug() << "Removing file url : " << fileUrl;
+        qDebug() << "Removing file url : " << fileUrl;
         // FIXME: FUCK!!!!!!
         TagRelation rel(tag, );
         TagRelationRemoveJob* job = new TagRelationRemoveJob(T);
         job->exec();
 
         if (job->error()) {
-            kError() << job->errorString();
+            qWarning() << job->errorString();
             error(KIO::ERR_CANNOT_DELETE, job->errorString());
         } else {
             finished();
@@ -341,7 +341,7 @@ void TagsProtocol::del(const QUrl& url, bool isfile)
 
 void TagsProtocol::mimetype(const QUrl& url)
 {
-    kDebug() << url;
+    qDebug() << url;
 
     QString tag;
     QString fileUrl;
@@ -421,7 +421,7 @@ extern "C"
         QCoreApplication app(argc, argv);
 
         if (argc != 4) {
-            kError() << "Usage: kio_tags protocol domain-socket1 domain-socket2";
+            qWarning() << "Usage: kio_tags protocol domain-socket1 domain-socket2";
             exit(-1);
         }
 

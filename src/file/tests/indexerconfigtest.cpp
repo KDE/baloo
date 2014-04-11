@@ -25,7 +25,7 @@
 #include <KAboutData>
 #include <KApplication>
 #include <KCmdLineArgs>
-#include <KDebug>
+#include <QDebug>
 #include <k4aboutdata.h>
 #include <kmimetype.h>
 

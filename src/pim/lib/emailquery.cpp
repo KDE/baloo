@@ -186,7 +186,7 @@ ResultIterator EmailQuery::exec()
     try {
         db = Xapian::Database(dir.toUtf8().constData());
     } catch (const Xapian::DatabaseError& e) {
-        kWarning() << "Failed to open Xapian database:" << QString::fromStdString(e.get_error_string());
+        qWarning() << "Failed to open Xapian database:" << QString::fromStdString(e.get_error_string());
         return ResultIterator();
     }
 

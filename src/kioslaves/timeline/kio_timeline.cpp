@@ -29,7 +29,7 @@
 #include <klocale.h>
 #include <kio/job.h>
 #include <KUser>
-#include <KDebug>
+#include <QDebug>
 #include <KLocale>
 #include <kio/netaccess.h>
 #include <KComponentData>
@@ -271,17 +271,17 @@ extern "C"
         KComponentData("kio_timeline");
         QCoreApplication app(argc, argv);
 
-        kDebug() << "Starting timeline slave " << getpid();
+        qDebug() << "Starting timeline slave " << getpid();
 
         if (argc != 4) {
-            kError() << "Usage: kio_timeline protocol domain-socket1 domain-socket2";
+            qWarning() << "Usage: kio_timeline protocol domain-socket1 domain-socket2";
             exit(-1);
         }
 
         Baloo::TimelineProtocol slave(argv[2], argv[3]);
         slave.dispatchLoop();
 
-        kDebug() << "Timeline slave Done";
+        qDebug() << "Timeline slave Done";
 
         return 0;
     }

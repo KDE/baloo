@@ -23,7 +23,7 @@
 #include "notesearchstore.h"
 
 #include <KStandardDirs>
-#include <KDebug>
+#include <QDebug>
 
 using namespace Baloo;
 

@@ -24,7 +24,7 @@
 #include "term.h"
 #include "query.h"
 
-#include <KDebug>
+#include <QDebug>
 #include <QUrl>
 #include <KStandardDirs>
 #include <KGlobal>
@@ -82,7 +82,7 @@ Xapian::Query PIMSearchStore::constructQuery(const QString& property, const QVar
 
     if (m_valueProperties.contains(prop) && (com == Term::Equal || com == Term::Greater || com == Term::GreaterEqual || com == Term::Less || com == Term::LessEqual)) {
         qlonglong numVal = value.toLongLong();
-        kDebug() << value << numVal;
+        qDebug() << value << numVal;
         if (com == Term::Greater) {
             ++numVal;
         }

@@ -28,7 +28,7 @@
 #include "xapiandatabase.h"
 #include "xapiandocument.h"
 
-#include <KDebug>
+#include <QDebug>
 
 #include <QTimer>
 #include <QFile>

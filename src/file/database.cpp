@@ -29,7 +29,7 @@
 #include <QSqlQuery>
 #include <QSqlError>
 
-#include <KDebug>
+#include <QDebug>
 
 Database::Database(QObject* parent)
     : QObject(parent)
@@ -63,7 +63,7 @@ bool Database::init(bool sqlOnly)
     m_sqlDb->setDatabaseName(m_path + "/fileMap.sqlite3");
 
     if (!m_sqlDb->open()) {
-        kDebug() << "Failed to open db" << m_sqlDb->lastError().text();
+        qDebug() << "Failed to open db" << m_sqlDb->lastError().text();
         return false;
     }
 
@@ -77,13 +77,13 @@ bool Database::init(bool sqlOnly)
                           "id INTEGER PRIMARY KEY, "
                           "url TEXT NOT NULL UNIQUE)");
     if (!ret) {
-        kDebug() << "Could not create tags table" << query.lastError().text();
+        qDebug() << "Could not create tags table" << query.lastError().text();
         return false;
     }
 
     ret = query.exec("CREATE INDEX fileUrl_index ON files (url)");
     if (!ret) {
-        kDebug() << "Could not create tags index" << query.lastError().text();
+        qDebug() << "Could not create tags index" << query.lastError().text();
         return false;
     }
 
@@ -93,7 +93,7 @@ bool Database::init(bool sqlOnly)
     //
     ret = query.exec("PRAGMA journal_mode = WAL");
     if (!ret) {
-        kDebug() << "Could not set WAL journaling mode" << query.lastError().text();
+        qDebug() << "Could not set WAL journaling mode" << query.lastError().text();
         return false;
     }
 

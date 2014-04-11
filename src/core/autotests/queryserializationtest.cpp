@@ -25,7 +25,7 @@
 
 #include <qtest_kde.h>
 
-#include <KDebug>
+#include <QDebug>
 
 using namespace Baloo;
 

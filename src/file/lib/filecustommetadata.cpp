@@ -24,7 +24,7 @@
 #include "db.h"
 #include "filemapping.h"
 
-#include <KDebug>
+#include <QDebug>
 #include <KGlobal>
 
 #include <QFile>
@@ -40,7 +40,7 @@ void Baloo::setCustomFileMetaData(const QString& url, const QString& key, const 
     if (g_detector->isSupported(url)) {
         int r = baloo_setxattr(url, key, value);
         if (r == -1) {
-            kError() << "Could not store xattr for" << url << key << value;
+            qWarning() << "Could not store xattr for" << url << key << value;
             return;
         }
     }
@@ -60,7 +60,7 @@ void Baloo::setCustomFileMetaData(const QString& url, const QString& key, const 
         q.addBindValue(value);
 
         if (!q.exec()) {
-            kError() << url << key << value << "Error:" << q.lastError().text();
+            qWarning() << url << key << value << "Error:" << q.lastError().text();
         }
     }
 }
@@ -86,7 +86,7 @@ QString Baloo::customFileMetaData(const QString& url, const QString& key)
         q.addBindValue(key);
 
         if (!q.exec()) {
-            kError() << url << key << "Error:" << q.lastError().text();
+            qWarning() << url << key << "Error:" << q.lastError().text();
         }
 
         if (q.next()) {

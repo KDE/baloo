@@ -25,7 +25,7 @@
 #include "fileindexerconfig.h"
 #include "database.h"
 
-#include <KDebug>
+#include <QDebug>
 #include <KStandardDirs>
 
 #include <QtCore/QFileInfo>
@@ -70,7 +70,7 @@ void FileIndexingJob::start(const QVector<uint>& files)
     if (!m_customDbPath.isEmpty()) {
         args << "--db" << m_customDbPath;
     }
-    kDebug() << args;
+    qDebug() << args;
 
     connect(m_process, SIGNAL(finished(int,QProcess::ExitStatus)),
             this, SLOT(slotIndexedFile(int,QProcess::ExitStatus)));
@@ -105,8 +105,8 @@ void FileIndexingJob::slotIndexedFile(int, QProcess::ExitStatus exitStatus)
     // Here it is!
     if (m_args.size() == 1) {
         uint doc = m_args.first();
-        kError() << "Indexer crashed while indexing" << doc;
-        kError() << "Blacklisting this file";
+        qWarning() << "Indexer crashed while indexing" << doc;
+        qWarning() << "Blacklisting this file";
         Q_EMIT indexingFailed(doc);
 
         if (m_files.isEmpty()) {

@@ -20,7 +20,7 @@
 
 #include "taglistjob.h"
 #include "db.h"
-#include <KDebug>
+#include <QDebug>
 
 #include <xapian.h>
 #include <QStringList>

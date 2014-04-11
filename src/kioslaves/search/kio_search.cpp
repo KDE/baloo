@@ -24,7 +24,7 @@
 
 #include <QUrl>
 #include <KUser>
-#include <KDebug>
+#include <QDebug>
 #include <KSharedConfig>
 #include <KApplication>
 
@@ -163,7 +163,7 @@ void SearchProtocol::stat(const QUrl& url)
         finished();
     }
 
-    // kDebug() << "Stat search folder" << url;
+    // qDebug() << "Stat search folder" << url;
     statEntry(statSearchFolder(url));
     finished();
 
@@ -181,12 +181,12 @@ extern "C"
         KComponentData comp("kio_baloosearch");
         QCoreApplication app(argc, argv);
 
-        kDebug() << "Starting baloosearch slave " << getpid();
+        qDebug() << "Starting baloosearch slave " << getpid();
 
         Baloo::SearchProtocol slave(argv[2], argv[3]);
         slave.dispatchLoop();
 
-        kDebug() << "baloosearch slave Done";
+        qDebug() << "baloosearch slave Done";
 
         return 0;
     }

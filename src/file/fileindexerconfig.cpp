@@ -27,7 +27,7 @@
 #include <KDirWatch>
 #include <KStandardDirs>
 #include <KConfigGroup>
-#include <KDebug>
+#include <QDebug>
 
 
 namespace

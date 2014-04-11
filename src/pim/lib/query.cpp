@@ -25,7 +25,7 @@
 #include <qt/QtCore/qjsondocument.h>
 
 #include <QVariant>
-#include <KDebug>
+#include <QDebug>
 
 #include <QJsonDocument>
 
@@ -46,14 +46,14 @@ Query* Query::fromJSON(const QByteArray& json)
     QJsonParseError error;
     QJsonDocument doc = QJsonDocument::fromJson(json, &error);
     if (error) {
-        kError() << "Could not parse json query" << error.errorString();
+        qWarning() << "Could not parse json query" << error.errorString();
         return 0;
     }
 
     QVariantMap result = doc.toVariant().toVariantMap();
     const QString type = result["type"].toString().toLower();
     if (type != "contact") {
-        kError() << "Can only handle contact queries";
+        qWarning() << "Can only handle contact queries";
         return 0;
     }
 

@@ -28,7 +28,7 @@
 #include "term.h"
 
 #include "qtest_kde.h"
-#include <KDebug>
+#include <QDebug>
 
 #include <xapian.h>
 

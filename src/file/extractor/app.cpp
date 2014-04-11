@@ -28,7 +28,7 @@
 #include <KCmdLineArgs>
 #include <KMimeType>
 #include <KStandardDirs>
-#include <KDebug>
+#include <QDebug>
 #include <KGlobal>
 
 #include <QTimer>
@@ -86,7 +86,7 @@ App::App(QObject* parent)
             m_urls << url;
         } else {
             // id or url was looked up, but file deleted
-            kDebug() << url << "does not exist";
+            qDebug() << url << "does not exist";
 
             // Try to delete it as an id:
             // it may have been deleted from the FileMapping db as well.

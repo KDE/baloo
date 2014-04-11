@@ -36,7 +36,7 @@
 
 #include <xapian.h>
 
-#include <KDebug>
+#include <QDebug>
 
 #include <sys/types.h>
 
@@ -107,7 +107,7 @@ void FileFetchJob::doStart()
         fileMap.setUrl(file.url());
 
         if (!fileMap.fetch(fileMappingDb())) {
-            kDebug() << "No file index information found" << url;
+            qDebug() << "No file index information found" << url;
             // TODO: Send file for indexing!!
 
             d->fetchUserMetadata(file);
@@ -137,7 +137,7 @@ void FileFetchJob::doStart()
             // Send file for indexing to baloo_file
         }
         catch (const Xapian::InvalidArgumentError& err) {
-            kError() << err.get_msg().c_str();
+            qWarning() << err.get_msg().c_str();
         }
 
         d->fetchUserMetadata(file);

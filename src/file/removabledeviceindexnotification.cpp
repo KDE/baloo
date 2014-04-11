@@ -26,7 +26,7 @@
 #include <KConfig>
 #include <KConfigGroup>
 #include <KIcon>
-#include <KDebug>
+#include <QDebug>
 #include <KToolInvocation>
 
 #include <Solid/StorageAccess>
@@ -85,7 +85,7 @@ void RemovableDeviceIndexNotification::slotActionConfigureActivated()
 
 void RemovableDeviceIndexNotification::slotActionActivated(uint action)
 {
-    kDebug() << action;
+    qDebug() << action;
     switch (action) {
     case 1:
         slotActionDoIndexActivated();

@@ -19,7 +19,7 @@
 
 #include "eventmonitor.h"
 
-#include <KDebug>
+#include <QDebug>
 #include <KIdleTime>
 
 #include <Solid/PowerManagement>

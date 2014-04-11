@@ -27,7 +27,7 @@
 #include <KAboutData>
 #include <KLocale>
 #include <KComponentData>
-#include <KDebug>
+#include <QDebug>
 #include <k4aboutdata.h>
 
 #include "query.h"

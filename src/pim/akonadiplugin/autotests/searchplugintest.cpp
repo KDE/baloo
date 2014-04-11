@@ -77,10 +77,10 @@ private:
         QFETCH(QStringList, mimeTypes);
         QFETCH(QSet<qint64>, expectedResult);
 
-        kDebug() << "starting search";
+        qDebug() << "starting search";
         SearchPlugin plugin;
         const QSet<qint64> result = plugin.search(query, collections, mimeTypes);
-        kDebug() << result;
+        qDebug() << result;
         QCOMPARE(result, expectedResult);
     }
 
@@ -101,10 +101,10 @@ private Q_SLOTS:
         removeDir(noteDir);
         QVERIFY(dir.mkpath(noteDir));
 
-        kDebug() << "indexing sample data";
-        kDebug() << emailDir;
-        kDebug() << emailContactsDir;
-        kDebug() << noteDir;
+        qDebug() << "indexing sample data";
+        qDebug() << emailDir;
+        qDebug() << emailContactsDir;
+        qDebug() << noteDir;
 
         EmailIndexer emailIndexer(emailDir, emailContactsDir);
         ContactIndexer contactIndexer(contactsDir);

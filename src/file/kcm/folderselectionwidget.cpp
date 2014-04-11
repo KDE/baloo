@@ -25,7 +25,7 @@
 #include <Solid/StorageDrive>
 
 #include <KIcon>
-#include <KDebug>
+#include <QDebug>
 #include <KFileDialog>
 
 #include <QDir>

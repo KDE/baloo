@@ -25,7 +25,7 @@
 #include <QStringList>
 #include <QDBusConnection>
 
-#include <KDebug>
+#include <QDebug>
 
 using namespace Baloo;
 

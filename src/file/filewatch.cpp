@@ -32,7 +32,7 @@
 #include <QtCore/QThread>
 #include <QtDBus/QDBusConnection>
 
-#include <KDebug>
+#include <QDebug>
 #include <KConfigGroup>
 
 #ifdef BUILD_KINOTIFY
@@ -136,7 +136,7 @@ FileWatch::~FileWatch()
 // FIXME: listen to Create for folders!
 void FileWatch::watchFolder(const QString& path)
 {
-    kDebug() << path;
+    qDebug() << path;
 #ifdef BUILD_KINOTIFY
     if (m_dirWatch && !m_dirWatch->watchingPath(path))
         m_dirWatch->addWatch(path,
@@ -232,7 +232,7 @@ bool raiseWatchLimit()
 void FileWatch::slotInotifyWatchUserLimitReached(const QString& path)
 {
     if (raiseWatchLimit()) {
-        kDebug() << "Successfully raised watch limit, re-adding " << path;
+        qDebug() << "Successfully raised watch limit, re-adding " << path;
         if (m_dirWatch)
             m_dirWatch->resetUserLimit();
         watchFolder(path);
@@ -268,7 +268,7 @@ void FileWatch::updateIndexedFoldersWatches()
 
 void FileWatch::slotActiveFileQueueTimeout(const QString& url)
 {
-    kDebug() << url;
+    qDebug() << url;
     Q_EMIT indexFile(url);
 }
 

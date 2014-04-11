@@ -27,7 +27,7 @@
 #include "file.h"
 
 #include "qtest_kde.h"
-#include <KDebug>
+#include <QDebug>
 #include <KTempDir>
 
 #include <xapian.h>
@@ -72,7 +72,7 @@ void FileModifyJobTest::testSingleFile()
         QCOMPARE(value, QString("User Comment"));
     }
     else {
-        kWarning() << "Xattr not supported on this filesystem";
+        qWarning() << "Xattr not supported on this filesystem";
     }
 
     //
@@ -127,7 +127,7 @@ void FileModifyJobTest::testMultiFileRating()
         QCOMPARE(value.toInt(), 5);
     }
     else {
-        kWarning() << "Xattr not supported on this filesystem";
+        qWarning() << "Xattr not supported on this filesystem";
     }
 }
 
@@ -219,7 +219,7 @@ void FileModifyJobTest::testFolder()
         QCOMPARE(value.toInt(), 5);
     }
     else {
-        kWarning() << "Xattr not supported on this filesystem";
+        qWarning() << "Xattr not supported on this filesystem";
     }
 }
 

@@ -25,7 +25,7 @@
 #include <k4aboutdata.h>
 #include <KApplication>
 #include <KCmdLineArgs>
-#include <KDebug>
+#include <QDebug>
 
 #include <QUrl>
 #include <QTimer>

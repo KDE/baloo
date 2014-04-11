@@ -25,7 +25,7 @@
 #include <QApplication>
 #include <QTimer>
 #include <QFile>
-#include <KDebug>
+#include <QDebug>
 
 #include <Akonadi/CollectionFetchJob>
 #include <Akonadi/Collection>
@@ -104,7 +104,7 @@ void App::slotRootCollectionsFetched(KJob* kjob)
         indexNextCollection();
     }
     else {
-        kDebug() << "No collections to index";
+        qDebug() << "No collections to index";
     }
 }
 
@@ -142,9 +142,9 @@ void App::slotCommitTimerElapsed()
     m_indexer.commit();
     m_indexTime += timer.elapsed();
 
-    kDebug() << "Emails:" << m_numEmails;
-    kDebug() << "Total Time:" << m_totalTime.elapsed()/1000.0 << " seconds";
-    kDebug() << "Index Time:" << m_indexTime/1000.0 << " seconds";
+    qDebug() << "Emails:" << m_numEmails;
+    qDebug() << "Total Time:" << m_totalTime.elapsed()/1000.0 << " seconds";
+    qDebug() << "Index Time:" << m_indexTime/1000.0 << " seconds";
 }
 
 void App::slotIndexed()
@@ -156,9 +156,9 @@ void App::slotIndexed()
 
     m_indexer.commit();
 
-    kDebug() << "Emails:" << m_numEmails;
-    kDebug() << "Total Time:" << m_totalTime.elapsed()/1000.0 << " seconds";
-    kDebug() << "Index Time:" << m_indexTime/1000.0 << " seconds";
+    qDebug() << "Emails:" << m_numEmails;
+    qDebug() << "Total Time:" << m_totalTime.elapsed()/1000.0 << " seconds";
+    qDebug() << "Index Time:" << m_indexTime/1000.0 << " seconds";
 
     // Print the io usage
     QFile file("/proc/self/io");

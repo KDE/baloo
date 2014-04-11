@@ -27,7 +27,7 @@
 #include <QSqlError>
 #include <QStringList>
 
-#include <KDebug>
+#include <QDebug>
 
 using namespace Baloo;
 
@@ -45,7 +45,7 @@ MetadataMover::~MetadataMover()
 
 void MetadataMover::moveFileMetadata(const QString& from, const QString& to)
 {
-//    kDebug() << from << to;
+//    qDebug() << from << to;
     Q_ASSERT(!from.isEmpty() && from != "/");
     Q_ASSERT(!to.isEmpty() && to != "/");
 
@@ -66,7 +66,7 @@ void MetadataMover::removeFileMetadata(const QString& file)
 
 void MetadataMover::removeFileMetadata(const QStringList& files)
 {
-    kDebug() << files;
+    qDebug() << files;
 
     Q_FOREACH (const QString& file, files) {
         removeMetadata(file);
@@ -77,7 +77,7 @@ void MetadataMover::removeFileMetadata(const QStringList& files)
 void MetadataMover::removeMetadata(const QString& url)
 {
     if (url.isEmpty()) {
-        kDebug() << "empty path. Looks like a bug somewhere...";
+        qDebug() << "empty path. Looks like a bug somewhere...";
         return;
     }
 
@@ -88,7 +88,7 @@ void MetadataMover::removeMetadata(const QString& url)
     query.prepare("delete from files where url = ?");
     query.addBindValue(url);
     if (!query.exec()) {
-        kError() << query.lastError().text();
+        qWarning() << query.lastError().text();
     }
 
     if (file.id())
@@ -98,9 +98,9 @@ void MetadataMover::removeMetadata(const QString& url)
 
 void MetadataMover::updateMetadata(const QString& from, const QString& to)
 {
-    kDebug() << from << "->" << to;
+    qDebug() << from << "->" << to;
     if (from.isEmpty() || to.isEmpty()) {
-        kError() << "Paths Empty - File a bug" << from << to;
+        qWarning() << "Paths Empty - File a bug" << from << to;
         return;
     }
 
@@ -116,7 +116,7 @@ void MetadataMover::updateMetadata(const QString& from, const QString& to)
         q.addBindValue(to);
         q.addBindValue(fromFile.id());
         if (!q.exec())
-            kError() << q.lastError().text();
+            qWarning() << q.lastError().text();
     }
 
     if (!fromFile.id()) {
@@ -154,7 +154,7 @@ void MetadataMover::updateMetadata(const QString& from, const QString& to)
     queryStr.append("/%'");
 
     if (!query.exec(queryStr)) {
-        kError() << "Big query failed:" << query.lastError().text();
+        qWarning() << "Big query failed:" << query.lastError().text();
     }
 
     m_db->sqlDatabase().commit();

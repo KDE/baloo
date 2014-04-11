@@ -28,7 +28,7 @@
 
 #include <akonadi/searchquery.h>
 
-#include <KDebug>
+#include <QDebug>
 #include <Akonadi/KMime/MessageFlags>
 #include <KDateTime>
 #include <QtPlugin>
@@ -80,7 +80,7 @@ Baloo::Term recursiveEmailTermMapping(const Akonadi::SearchTerm &term)
         }
         return t;
     } else {
-        kDebug() << term.key() << term.value();
+        qDebug() << term.key() << term.value();
         const Akonadi::EmailSearchTerm::EmailSearchField field = Akonadi::EmailSearchTerm::fromKey(term.key());
         switch (field) {
             case Akonadi::EmailSearchTerm::Message: {
@@ -182,7 +182,7 @@ Baloo::Term recursiveEmailTermMapping(const Akonadi::SearchTerm &term)
                 return getTerm(term, "xspamflag");
             case Akonadi::EmailSearchTerm::Unknown:
             default:
-                kWarning() << "unknown term " << term.key();
+                qWarning() << "unknown term " << term.key();
         }
     }
     return Baloo::Term();
@@ -200,7 +200,7 @@ Baloo::Term recursiveNoteTermMapping(const Akonadi::SearchTerm &term)
         }
         return t;
     } else {
-        kDebug() << term.key() << term.value();
+        qDebug() << term.key() << term.value();
         const Akonadi::EmailSearchTerm::EmailSearchField field = Akonadi::EmailSearchTerm::fromKey(term.key());
         switch (field) {
         case Akonadi::EmailSearchTerm::Subject:
@@ -208,7 +208,7 @@ Baloo::Term recursiveNoteTermMapping(const Akonadi::SearchTerm &term)
         case Akonadi::EmailSearchTerm::Body:
             return getTerm(term, "body");
         default:
-            kWarning() << "unknown term " << term.key();
+            qWarning() << "unknown term " << term.key();
         }
     }
     return Baloo::Term();
@@ -226,7 +226,7 @@ Baloo::Term recursiveContactTermMapping(const Akonadi::SearchTerm &term)
         }
         return t;
     } else {
-        kDebug() << term.key() << term.value();
+        qDebug() << term.key() << term.value();
         const Akonadi::ContactSearchTerm::ContactSearchField field = Akonadi::ContactSearchTerm::fromKey(term.key());
         switch (field) {
             case Akonadi::ContactSearchTerm::Name:
@@ -239,7 +239,7 @@ Baloo::Term recursiveContactTermMapping(const Akonadi::SearchTerm &term)
                 return getTerm(term, "uid");
             case Akonadi::ContactSearchTerm::Unknown:
             default:
-                kWarning() << "unknown term " << term.key();
+                qWarning() << "unknown term " << term.key();
         }
     }
     return Baloo::Term();
@@ -249,20 +249,20 @@ QSet<qint64> SearchPlugin::search(const QString &akonadiQuery, const QList<qint6
 {
     const Akonadi::SearchQuery searchQuery = Akonadi::SearchQuery::fromJSON(akonadiQuery.toLatin1());
     if (searchQuery.isNull()) {
-        kWarning() << "invalid query " << akonadiQuery;
+        qWarning() << "invalid query " << akonadiQuery;
         return QSet<qint64>();
     }
     const Akonadi::SearchTerm term = searchQuery.term();
 
     Baloo::Query query;
     if (term.subTerms().isEmpty()) {
-        kWarning() << "empty query";
+        qWarning() << "empty query";
         return QSet<qint64>();
     }
 
     Baloo::Term t;
     if (mimeTypes.contains("message/rfc822")) {
-        kDebug() << "mail query";
+        qDebug() << "mail query";
         query.setType("Email");
         t = recursiveEmailTermMapping(term);
     } else if (mimeTypes.contains("text/directory")) {
@@ -276,7 +276,7 @@ QSet<qint64> SearchPlugin::search(const QString &akonadiQuery, const QList<qint6
         //TODO contactgroup queries
     }
     if (t.subTerms().isEmpty()) {
-        kWarning() << "no terms added";
+        qWarning() << "no terms added";
         return QSet<qint64>();
     }
 
@@ -300,14 +300,14 @@ QSet<qint64> SearchPlugin::search(const QString &akonadiQuery, const QList<qint6
     }
 
     QSet<qint64> resultSet;
-    kDebug() << query.toJSON();
+    qDebug() << query.toJSON();
     Baloo::ResultIterator iter = query.exec();
     while (iter.next()) {
         const QByteArray id = iter.id();
         const int fid = Baloo::deserialize("akonadi", id);
         resultSet << fid;
     }
-    kDebug() << "Got" << resultSet.count() << "results";
+    qDebug() << "Got" << resultSet.count() << "results";
     return resultSet;
 }
 

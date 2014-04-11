@@ -28,7 +28,7 @@
 
 #include "xapiandocument.h"
 
-#include <KDebug>
+#include <QDebug>
 #include <KMimeType>
 
 #include <QDateTime>
@@ -74,7 +74,7 @@ void BasicIndexingQueue::enqueue(const FileMapping& file)
 
 void BasicIndexingQueue::enqueue(const FileMapping& file, UpdateDirFlags flags)
 {
-    kDebug() << file.url();
+    qDebug() << file.url();
     m_paths.push(qMakePair(file, flags));
     callForNextIteration();
 }
@@ -178,7 +178,7 @@ bool BasicIndexingQueue::shouldIndexContents(const QString& dir)
 
 void BasicIndexingQueue::index(const FileMapping& file, const QString& mimetype)
 {
-    kDebug() << file.id() << file.url();
+    qDebug() << file.id() << file.url();
 
     BasicIndexingJob job(&m_db->sqlDatabase(), file, mimetype);
     if (job.index()) {

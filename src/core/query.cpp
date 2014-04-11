@@ -28,7 +28,7 @@
 #include <QStringList>
 #include <QList>
 
-#include <KDebug>
+#include <QDebug>
 
 #include <QJsonDocument>
 #include <QJsonObject>

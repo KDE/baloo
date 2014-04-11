@@ -24,7 +24,7 @@
 
 #include <QApplication>
 #include <QTimer>
-#include <KDebug>
+#include <QDebug>
 
 #include <iostream>
 
@@ -44,7 +44,7 @@ int main(int argc, char** argv)
     App app(argc, argv);
 
     if (argc != 2) {
-        kError() << "Proper args required";
+        qWarning() << "Proper args required";
     }
     app.m_query = argv[1];
 

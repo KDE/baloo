@@ -32,7 +32,7 @@
 #include <QUrl>
 
 #include <KStandardDirs>
-#include <KDebug>
+#include <QDebug>
 #include <KMimeType>
 #include <KGlobal>
 

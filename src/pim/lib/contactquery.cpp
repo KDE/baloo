@@ -25,7 +25,7 @@
 #include "xapian.h"
 
 #include <QList>
-#include <KDebug>
+#include <QDebug>
 #include <KStandardDirs>
 
 using namespace Baloo::PIM;
@@ -167,7 +167,7 @@ ResultIterator ContactQuery::exec()
     }
 
     Xapian::Query query(Xapian::Query::OP_OR, m_queries.begin(), m_queries.end());
-    kDebug() << query.get_description().c_str();
+    qDebug() << query.get_description().c_str();
 
     Xapian::Enquire enquire(db);
     enquire.set_query(query);

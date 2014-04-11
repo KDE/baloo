@@ -20,7 +20,7 @@
  *
  */
 
-#include <KDebug>
+#include <QDebug>
 #include <KTempDir>
 #include <QTime>
 #include <QCoreApplication>

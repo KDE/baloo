@@ -66,7 +66,7 @@ bool ContactIndexer::indexContact(const Akonadi::Item& item)
         name = addresse.name();
     }
 
-    kDebug() << "Indexing" << name << addresse.nickName();
+    qDebug() << "Indexing" << name << addresse.nickName();
 
     doc.indexText(name);
     doc.indexText(addresse.nickName());

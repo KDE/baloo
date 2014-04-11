@@ -21,7 +21,7 @@
  */
 
 #include "filemapping.h"
-#include <KDebug>
+#include <QDebug>
 
 #include <QSqlQuery>
 #include <QSqlError>
@@ -123,7 +123,7 @@ bool FileMapping::create(QSqlDatabase db)
     query.addBindValue(m_url);
 
     if (!query.exec()) {
-        kError() << query.lastError().text();
+        qWarning() << query.lastError().text();
         return false;
     }
 
@@ -142,7 +142,7 @@ bool FileMapping::remove(QSqlDatabase db)
         query.prepare("delete from files where url = ?");
         query.addBindValue(m_url);
         if (!query.exec()) {
-            kError() << query.lastError().text();
+            qWarning() << query.lastError().text();
             return false;
         }
     }
@@ -150,7 +150,7 @@ bool FileMapping::remove(QSqlDatabase db)
         query.prepare("delete from files where id = ?");
         query.addBindValue(m_id);
         if (!query.exec()) {
-            kError() << query.lastError().text();
+            qWarning() << query.lastError().text();
             return false;
         }
     }

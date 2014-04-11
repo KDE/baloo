@@ -29,7 +29,7 @@
 
 #include <KConfig>
 #include <KConfigGroup>
-#include <KDebug>
+#include <QDebug>
 #include <KGlobal>
 #include <iostream>
 
@@ -67,7 +67,7 @@ int main(int argc, char** argv)
 
 
     if (!QDBusConnection::sessionBus().registerService("org.kde.baloo.file")) {
-        kError() << "Failed to register via dbus. Another instance is running";
+        qWarning() << "Failed to register via dbus. Another instance is running";
         return 1;
     }
 

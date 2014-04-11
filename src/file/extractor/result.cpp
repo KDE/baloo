@@ -23,7 +23,7 @@
 #include "result.h"
 #include "../util.h"
 
-#include <KDebug>
+#include <QDebug>
 #include <QJsonDocument>
 #include <QJsonObject>
 

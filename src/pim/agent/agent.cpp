@@ -122,7 +122,7 @@ BalooIndexingAgent::BalooIndexingAgent(const QString& id)
     // Cannot use agentManager->instance(oldInstanceName) here, it wouldn't find broken instances.
     Q_FOREACH( const Akonadi::AgentInstance& inst, allAgents ) {
         if ( oldFeeders.contains( inst.identifier() ) ) {
-            kDebug() << "Removing old nepomuk feeder" << inst.identifier();
+            qDebug() << "Removing old nepomuk feeder" << inst.identifier();
             agentManager->removeInstance( inst );
         }
     }
@@ -137,7 +137,7 @@ BalooIndexingAgent::~BalooIndexingAgent()
 void BalooIndexingAgent::reindexCollection(const qlonglong id)
 {
     
-    kDebug() << "Reindexing collection " << id;
+    qDebug() << "Reindexing collection " << id;
 }
 
 qlonglong BalooIndexingAgent::indexedItemsInDatabase(const std::string& term, const QString& dbPath) const
@@ -146,7 +146,7 @@ qlonglong BalooIndexingAgent::indexedItemsInDatabase(const std::string& term, co
     try {
         db = Xapian::Database(dbPath.toStdString());
     } catch (const Xapian::DatabaseError& e) {
-        kError() << "Failed to open database" << dbPath << ":" << QString::fromStdString(e.get_msg());
+        qWarning() << "Failed to open database" << dbPath << ":" << QString::fromStdString(e.get_msg());
         return 0;
     }
 
@@ -156,7 +156,7 @@ qlonglong BalooIndexingAgent::indexedItemsInDatabase(const std::string& term, co
 
 qlonglong BalooIndexingAgent::indexedItems(const qlonglong id)
 {
-    kDebug() << id;
+    qDebug() << id;
 
     const std::string term = QString::fromLatin1("C%1").arg(id).toStdString();
     return indexedItemsInDatabase(term, emailIndexingPath())
@@ -175,7 +175,7 @@ void BalooIndexingAgent::createIndexers()
     }
     catch (const Xapian::DatabaseError &e) {
         delete indexer;
-        kError() << "Failed to create email indexer:" << QString::fromStdString(e.get_msg());
+        qWarning() << "Failed to create email indexer:" << QString::fromStdString(e.get_msg());
     }
 
     try {
@@ -185,7 +185,7 @@ void BalooIndexingAgent::createIndexers()
     }
     catch (const Xapian::DatabaseError &e) {
         delete indexer;
-        kError() << "Failed to create contact indexer:" << QString::fromStdString(e.get_msg());
+        qWarning() << "Failed to create contact indexer:" << QString::fromStdString(e.get_msg());
     }
 
     try {
@@ -195,7 +195,7 @@ void BalooIndexingAgent::createIndexers()
     }
     catch (const Xapian::DatabaseError &e) {
         delete indexer;
-        kError() << "Failed to create akonotes indexer:" << QString::fromStdString(e.get_msg());
+        qWarning() << "Failed to create akonotes indexer:" << QString::fromStdString(e.get_msg());
     }
 }
 
@@ -310,7 +310,7 @@ void BalooIndexingAgent::itemChanged(const Akonadi::Item& item, const QSet<QByte
         try {
             indexer->remove(item);
         } catch (const Xapian::Error &e) {
-            kWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
+            qWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
         }
         m_items << item;
         m_timer.start();
@@ -331,7 +331,7 @@ void BalooIndexingAgent::itemsFlagsChanged(const Akonadi::Item::List& items,
         try {
             indexer->updateFlags(item, addedFlags, removedFlags);
         } catch (const Xapian::Error &e) {
-            kWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
+            qWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
         }
     }
     m_commitTimer.start();
@@ -348,7 +348,7 @@ void BalooIndexingAgent::itemsRemoved(const Akonadi::Item::List& items)
         try {
             indexer->remove(item);
         } catch (const Xapian::Error &e) {
-            kWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
+            qWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
         }
     }
     m_commitTimer.start();
@@ -360,7 +360,7 @@ void BalooIndexingAgent::collectionRemoved(const Akonadi::Collection& collection
         try {
             indexer->remove(collection);
         } catch (const Xapian::Error &e) {
-            kWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
+            qWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
         }
     }
     m_commitTimer.start();
@@ -377,7 +377,7 @@ void BalooIndexingAgent::itemsMoved(const Akonadi::Item::List& items,
         try {
             indexer->move(item.id(), sourceCollection.id(), destinationCollection.id());
         } catch (const Xapian::Error &e) {
-            kWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
+            qWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
         }
     }
     m_commitTimer.start();
@@ -423,7 +423,7 @@ void BalooIndexingAgent::slotItemsReceived(const Akonadi::Item::List& items)
         try {
             indexer->index(item);
         } catch (const Xapian::Error &e) {
-            kWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
+            qWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
         }
 
         dt = qMax(dt, item.modificationTime());
@@ -456,7 +456,7 @@ void BalooIndexingAgent::slotCommitTimerElapsed()
         try {
             indexer->commit();
         } catch (const Xapian::Error &e) {
-            kWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
+            qWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
         }
     }
 }

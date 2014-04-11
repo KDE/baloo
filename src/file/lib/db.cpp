@@ -22,7 +22,7 @@
 
 #include "db.h"
 
-#include <KDebug>
+#include <QDebug>
 #include <KStandardDirs>
 #include <KGlobal>
 
@@ -48,7 +48,7 @@ QSqlDatabase fileMappingDb(const QString& path)
     }
 
     if (!sqlDb.open()) {
-        kDebug() << "Failed to open db" << sqlDb.lastError().text();
+        qDebug() << "Failed to open db" << sqlDb.lastError().text();
         return sqlDb;
     }
 
@@ -62,13 +62,13 @@ QSqlDatabase fileMappingDb(const QString& path)
                           "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                           "url TEXT NOT NULL UNIQUE)");
     if (!ret) {
-        kDebug() << "Could not create tags table" << query.lastError().text();
+        qDebug() << "Could not create tags table" << query.lastError().text();
         return sqlDb;
     }
 
     ret = query.exec("CREATE INDEX fileUrl_index ON files (url)");
     if (!ret) {
-        kDebug() << "Could not create tags index" << query.lastError().text();
+        qDebug() << "Could not create tags index" << query.lastError().text();
         return sqlDb;
     }
 
@@ -85,7 +85,7 @@ QSqlDatabase fileMetadataDb()
     }
 
     if (!sqlDb.open()) {
-        kDebug() << "Failed to open db" << sqlDb.lastError().text();
+        qDebug() << "Failed to open db" << sqlDb.lastError().text();
         return sqlDb;
     }
 
@@ -102,13 +102,13 @@ QSqlDatabase fileMetadataDb()
                           "UNIQUE(id, property) ON CONFLICT REPLACE)");
 
     if (!ret) {
-        kDebug() << "Could not create tags table" << query.lastError().text();
+        qDebug() << "Could not create tags table" << query.lastError().text();
         return sqlDb;
     }
 
     ret = query.exec("CREATE INDEX fileprop_index ON files (property)");
     if (!ret) {
-        kDebug() << "Could not create tags index" << query.lastError().text();
+        qDebug() << "Could not create tags index" << query.lastError().text();
         return sqlDb;
     }
 

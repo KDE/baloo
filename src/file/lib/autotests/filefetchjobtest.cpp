@@ -29,7 +29,7 @@
 #include "qtest_kde.h"
 #include <QSqlQuery>
 #include <KTempDir>
-#include <KDebug>
+#include <QDebug>
 
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -101,7 +101,7 @@ void FileFetchJobTest::testExtendedAttributes()
     QString fileName = tempFile.fileName();
     XattrDetector detector;
     if (!detector.isSupported(fileName)) {
-        kWarning() << "Xattr not supported on this filesystem";
+        qWarning() << "Xattr not supported on this filesystem";
         return;
     }
 
@@ -141,7 +141,7 @@ void FileFetchJobTest::testFolder()
 
     XattrDetector detector;
     if (!detector.isSupported(fileName)) {
-        kWarning() << "Xattr not supported on this filesystem";
+        qWarning() << "Xattr not supported on this filesystem";
         return;
     }
 

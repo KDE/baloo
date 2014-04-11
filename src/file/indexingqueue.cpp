@@ -21,7 +21,7 @@
 #include "indexingqueue.h"
 
 #include <QtCore/QTimer>
-#include <KDebug>
+#include <QDebug>
 
 using namespace Baloo;
 

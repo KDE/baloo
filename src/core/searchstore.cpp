@@ -22,7 +22,7 @@
 
 #include "searchstore.h"
 
-#include <KDebug>
+#include <QDebug>
 #include <KService>
 #include <KServiceTypeTrader>
 #include <QThreadStorage>
@@ -76,7 +76,7 @@ QList<SearchStore*> SearchStore::searchStores()
     QMutexLocker lock(&mutex);
 
     if (s_overrideSearchStores && !s_overrideSearchStores->isEmpty()) {
-        kDebug() << "Overriding search stores.";
+        qDebug() << "Overriding search stores.";
         return *s_overrideSearchStores;
     }
 
@@ -102,8 +102,8 @@ QList<SearchStore*> SearchStore::searchStores()
             stores << st;
         }
         else {
-            kError() << "Could not create SearchStore: " << service->library();
-            kError() << pluginLoader.errorString();
+            qWarning() << "Could not create SearchStore: " << service->library();
+            qWarning() << pluginLoader.errorString();
         }
     }
 

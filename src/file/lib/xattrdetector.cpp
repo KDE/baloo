@@ -23,7 +23,7 @@
 
 #include <Solid/Device>
 #include <Solid/StorageAccess>
-#include <KDebug>
+#include <QDebug>
 #include <quuid.h>
 #include <QFile>
 #include <QDir>
@@ -89,8 +89,8 @@ void XattrDetector::Private::init()
         }
     }
     m_unSupportedPaths << "/tmp" << "/proc";
-    kDebug() << "supportedPaths:" << m_supportedPaths;
-    kDebug() << "UnsupportedPaths:" << m_unSupportedPaths;
+    qDebug() << "supportedPaths:" << m_supportedPaths;
+    qDebug() << "UnsupportedPaths:" << m_unSupportedPaths;
     m_initialized = true;
 }
 

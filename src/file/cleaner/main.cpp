@@ -31,7 +31,7 @@
 #include <QApplication>
 #include <QDBusConnection>
 
-#include <KDebug>
+#include <QDebug>
 #include <KStandardDirs>
 
 int main(int argc, char* argv[])
@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
     KComponentData data(aboutData, KComponentData::RegisterAsMainComponent);
 
     if (!QDBusConnection::sessionBus().registerService("org.kde.baloo.file.cleaner")) {
-        kError() << "Failed to register via dbus. Another instance is running";
+        qWarning() << "Failed to register via dbus. Another instance is running";
         return 1;
     }
 

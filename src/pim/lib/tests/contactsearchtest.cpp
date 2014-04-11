@@ -25,7 +25,7 @@
 
 #include <QApplication>
 #include <QTimer>
-#include <KDebug>
+#include <QDebug>
 
 #include <Akonadi/Contact/ContactSearchJob>
 
@@ -65,7 +65,7 @@ void App::main()
     connect(job, SIGNAL(finished(KJob*)),
             this, SLOT(quit()));
     job->start();
-    kDebug() << "Query started";
+    qDebug() << "Query started";
 #endif
 
     ContactQuery q;
@@ -74,15 +74,15 @@ void App::main()
 
     ResultIterator iter = q.exec();
     while (iter.next()) {
-        kDebug() << iter.id();
+        qDebug() << iter.id();
     }
 }
 
 void App::slotItemsReceived(const Akonadi::Item::List& list)
 {
-    kDebug() << list.size();
+    qDebug() << list.size();
     Q_FOREACH (const Akonadi::Item& item, list) {
-        kDebug() << item.id() << item.mimeType();
+        qDebug() << item.id() << item.mimeType();
     }
 }
 

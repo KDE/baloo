@@ -27,7 +27,7 @@
 #include <QVector>
 #include <QStringList>
 #include <QTime>
-#include <KDebug>
+#include <QDebug>
 
 #include <algorithm>
 
@@ -52,13 +52,13 @@ void XapianSearchStore::setDbPath(const QString& path)
         m_db = new Xapian::Database(m_dbPath.toUtf8().constData());
     }
     catch (const Xapian::DatabaseOpeningError&) {
-        kError() << "Xapian Database does not exist at " << m_dbPath;
+        qWarning() << "Xapian Database does not exist at " << m_dbPath;
     }
     catch (const Xapian::DatabaseCorruptError&) {
-        kError() << "Xapian Database corrupted at " << m_dbPath;
+        qWarning() << "Xapian Database corrupted at " << m_dbPath;
     }
     catch (...) {
-        kError() << "Random exception, but we do not want to crash";
+        qWarning() << "Random exception, but we do not want to crash";
     }
 }
 
@@ -209,7 +209,7 @@ int XapianSearchStore::exec(const Query& query)
     try {
         m_db->reopen();
     } catch (Xapian::DatabaseError& e) {
-        kWarning() << "Failed to reopen database" << dbPath() << ":" <<  QString::fromStdString(e.get_msg());
+        qWarning() << "Failed to reopen database" << dbPath() << ":" <<  QString::fromStdString(e.get_msg());
         return 0;
     }
 
@@ -229,10 +229,10 @@ int XapianSearchStore::exec(const Query& query)
     xapQ = finalizeQuery(xapQ);
 
     Xapian::Enquire enquire(*m_db);
-    kDebug() << xapQ.get_description().c_str();
+    qDebug() << xapQ.get_description().c_str();
     enquire.set_query(xapQ);
 
-    kDebug() << "Query Generation" << queryGenerationTimer.elapsed();
+    qDebug() << "Query Generation" << queryGenerationTimer.elapsed();
 
     Result& res = m_queryMap[m_nextId++];
     QTime timer;
@@ -240,7 +240,7 @@ int XapianSearchStore::exec(const Query& query)
     res.mset = enquire.get_mset(query.offset(), query.limit());
     res.it = res.mset.begin();
 
-    kDebug() << "Exec" << timer.elapsed() << "msecs";
+    qDebug() << "Exec" << timer.elapsed() << "msecs";
     return m_nextId-1;
 }
 

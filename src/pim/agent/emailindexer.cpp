@@ -169,7 +169,7 @@ void EmailIndexer::process(const KMime::Message::Ptr& msg)
     KMime::Headers::Subject* subject = msg->subject(false);
     if (subject) {
         std::string str(subject->asUnicodeString().toUtf8().constData());
-        kDebug() << "Indexing" << str.c_str();
+        qDebug() << "Indexing" << str.c_str();
         m_termGen->index_text_without_positions(str, 1, "SU");
         m_termGen->index_text_without_positions(str, 100);
         m_doc->set_data(str);
