@@ -23,17 +23,17 @@
 #include <QString>
 #include <QStringList>
 
-#include <KTempDir>
+#include <QTemporaryDir>
 #include <QDebug>
 
 #include <QSqlQuery>
 #include <QSqlError>
 
-static KTempDir dir;
+static QTemporaryDir dir;
 
 std::string fileIndexDbPath()
 {
-    return dir.name().toUtf8().constData();
+    return dir.path().toUtf8().constData();
 }
 
 // FIXME: Avoid duplicating this code!
@@ -42,7 +42,7 @@ QSqlDatabase fileMappingDb()
     QSqlDatabase sqlDb = QSqlDatabase::database("fileMappingDb");
     if (!sqlDb.isValid()) {
         sqlDb = QSqlDatabase::addDatabase("QSQLITE", "fileMappingDb");
-        sqlDb.setDatabaseName(dir.name() + "fileMap.sqlite3");
+        sqlDb.setDatabaseName(dir.path() + "/fileMap.sqlite3");
     }
 
     if (!sqlDb.open()) {
@@ -78,7 +78,7 @@ QSqlDatabase fileMetadataDb()
     QSqlDatabase sqlDb = QSqlDatabase::database("fileMetadataDb");
     if (!sqlDb.isValid()) {
         sqlDb = QSqlDatabase::addDatabase("QSQLITE", "fileMetadataDb");
-        sqlDb.setDatabaseName(dir.name() + "fileMetadData.sqlite3");
+        sqlDb.setDatabaseName(dir.path() + "/fileMetadData.sqlite3");
     }
 
     if (!sqlDb.open()) {

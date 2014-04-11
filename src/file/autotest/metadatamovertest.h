@@ -22,7 +22,7 @@
 #define METADATAMOVERTEST_H
 
 #include "../database.h"
-#include <KTempDir>
+#include <QTemporaryDir>
 
 namespace Baloo {
 
@@ -45,7 +45,7 @@ private:
     uint insertUrl(const QString& url);
 
     Database* m_db;
-    KTempDir* m_tempDir;
+    QTemporaryDir* m_tempDir;
 };
 
 }

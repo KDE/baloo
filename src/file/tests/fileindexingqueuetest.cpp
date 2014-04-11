@@ -21,7 +21,7 @@
  */
 
 #include <QDebug>
-#include <KTempDir>
+#include <QTemporaryDir>
 #include <QTime>
 #include <QCoreApplication>
 
@@ -45,10 +45,10 @@ namespace {
 
 int main(int argc, char** argv)
 {
-    KTempDir tempDir;
+    QTemporaryDir tempDir;
 
     Database db;
-    db.setPath(tempDir.name());
+    db.setPath(tempDir.path());
     db.init();
 
     Baloo::FileIndexerConfig config;

@@ -48,12 +48,12 @@ void FileSearchStoreTest::init()
     cleanupTestCase();
 
     m_db = new Database(this);
-    m_tempDir = new KTempDir();
-    m_db->setPath(m_tempDir->name());
+    m_tempDir = new QTemporaryDir();
+    m_db->setPath(m_tempDir->path());
     m_db->init();
 
     m_store = new FileSearchStore(this);
-    m_store->setDbPath(m_tempDir->name());
+    m_store->setDbPath(m_tempDir->path());
 }
 
 void FileSearchStoreTest::initTestCase()
@@ -88,7 +88,7 @@ void FileSearchStoreTest::insertText(int id, const QString& text)
     termGen.set_document(doc);
     termGen.index_text(text.toUtf8().constData());
 
-    std::string dir = m_tempDir->name().toUtf8().constData();
+    std::string dir = m_tempDir->path().toUtf8().constData();
     QScopedPointer<Xapian::WritableDatabase> wdb(new Xapian::WritableDatabase(dir,
                                                                               Xapian::DB_CREATE_OR_OPEN));
     wdb->replace_document(id, doc);
@@ -104,7 +104,7 @@ void FileSearchStoreTest::insertRating(int id, int rating)
     QString str = 'R' + QString::number(rating);
     doc.add_term(str.toUtf8().constData());
 
-    std::string dir = m_tempDir->name().toUtf8().constData();
+    std::string dir = m_tempDir->path().toUtf8().constData();
     QScopedPointer<Xapian::WritableDatabase> wdb(new Xapian::WritableDatabase(dir,
                                                                               Xapian::DB_CREATE_OR_OPEN));
     wdb->replace_document(id, doc);

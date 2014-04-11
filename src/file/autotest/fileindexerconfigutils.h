@@ -24,10 +24,10 @@
 
 #include <KConfig>
 #include <KConfigGroup>
-#include <KTempDir>
 
 #include <QDir>
 #include <QTextStream>
+#include <QTemporaryDir>
 
 namespace Baloo
 {
@@ -46,18 +46,18 @@ void writeIndexerConfig(const QStringList& includeFolders,
     fileIndexerConfig.sync();
 }
 
-KTempDir* createTmpFolders(const QStringList& folders)
+QTemporaryDir* createTmpFolders(const QStringList& folders)
 {
-    KTempDir* tmpDir = new KTempDir();
+    QTemporaryDir* tmpDir = new QTemporaryDir();
     // If the temporary directory is in a hidden folder, then the tests will fail,
     // so we use /tmp/ instead.
     // TODO: Find a better solution
-    if (tmpDir->name().contains("/.")) {
+    if (tmpDir->path().contains("/.")) {
         delete tmpDir;
-        tmpDir = new KTempDir(QLatin1String("/tmp/"));
+        tmpDir = new QTemporaryDir(QLatin1String("/tmp/"));
     }
     Q_FOREACH (const QString & f, folders) {
-        QDir dir(tmpDir->name());
+        QDir dir(tmpDir->path());
         Q_FOREACH (const QString & sf, f.split('/', QString::SkipEmptyParts)) {
             if (!dir.exists(sf)) {
                 dir.mkdir(sf);
@@ -69,19 +69,19 @@ KTempDir* createTmpFolders(const QStringList& folders)
 }
 
 
-KTempDir* createTmpFilesAndFolders(const QStringList& list)
+QTemporaryDir* createTmpFilesAndFolders(const QStringList& list)
 {
-    KTempDir* tmpDir = new KTempDir();
+    QTemporaryDir* tmpDir = new QTemporaryDir();
     // If the temporary directory is in a hidden folder, then the tests will fail,
     // so we use /tmp/ instead.
     // TODO: Find a better solution
-    if (tmpDir->name().contains("/.")) {
+    if (tmpDir->path().contains("/.")) {
         delete tmpDir;
-        tmpDir = new KTempDir(QLatin1String("/tmp/"));
+        tmpDir = new QTemporaryDir(QLatin1String("/tmp/"));
     }
     Q_FOREACH (const QString& f, list) {
         if (f.endsWith('/')) {
-            QDir dir(tmpDir->name());
+            QDir dir(tmpDir->path());
             Q_FOREACH (const QString & sf, f.split('/', QString::SkipEmptyParts)) {
                 if (!dir.exists(sf)) {
                     dir.mkdir(sf);
@@ -90,7 +90,7 @@ KTempDir* createTmpFilesAndFolders(const QStringList& list)
             }
         }
         else {
-            QFile file(tmpDir->name() + f);
+            QFile file(tmpDir->path() + '/' + f);
             file.open(QIODevice::WriteOnly);
 
             QTextStream stream(&file);

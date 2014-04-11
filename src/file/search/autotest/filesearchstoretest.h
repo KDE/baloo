@@ -24,7 +24,7 @@
 #define BALOO_FILESEARCHSTORETEST_H
 
 #include <QObject>
-#include <KTempDir>
+#include <QTemporaryDir>
 
 class Database;
 
@@ -48,7 +48,7 @@ private Q_SLOTS:
     void testRatings();
 
 private:
-    KTempDir* m_tempDir;
+    QTemporaryDir* m_tempDir;
     Database* m_db;
     FileSearchStore* m_store;
 

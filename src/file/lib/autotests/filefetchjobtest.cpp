@@ -27,10 +27,10 @@
 #include "file.h"
 
 #include <QSqlQuery>
-#include <KTempDir>
 #include <QDebug>
 #include <QTest>
 #include <QTemporaryFile>
+#include <QTemporaryDir>
 
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -133,12 +133,9 @@ void FileFetchJobTest::testExtendedAttributes()
 
 void FileFetchJobTest::testFolder()
 {
-    QTemporaryFile f(QLatin1String(BUILDDIR "testFolder.XXXXXX"));
-    f.open();
-
     // We use the same prefix as the tmpfile
-    KTempDir tmpDir(f.fileName().mid(0, f.fileName().lastIndexOf('/') + 1));
-    QString fileName = tmpDir.name();
+    QTemporaryDir tmpDir;
+    QString fileName = tmpDir.path();
 
     XattrDetector detector;
     if (!detector.isSupported(fileName)) {
@@ -146,7 +143,7 @@ void FileFetchJobTest::testFolder()
         return;
     }
 
-    FileMapping fileMap(tmpDir.name());
+    FileMapping fileMap(fileName);
     QSqlDatabase sqlDb = fileMappingDb();
     QVERIFY(fileMap.create(sqlDb));
 
@@ -162,7 +159,7 @@ void FileFetchJobTest::testFolder()
     const QString userComment("UserComment");
     QVERIFY(baloo_setxattr(fileName, QLatin1String("user.xdg.comment"), userComment) != -1);
 
-    FileFetchJob* job = new FileFetchJob(tmpDir.name());
+    FileFetchJob* job = new FileFetchJob(fileName);
     job->exec();
     File file = job->file();
 

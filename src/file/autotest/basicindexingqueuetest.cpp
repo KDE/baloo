@@ -44,25 +44,25 @@ void BasicIndexingQueueTest::testSimpleDirectoryStructure()
     dirs << QLatin1String("home/docs/");
     dirs << QLatin1String("home/docs/1");
 
-    QScopedPointer<KTempDir> dir(Test::createTmpFilesAndFolders(dirs));
-    QString p = dir->name();
+    QScopedPointer<QTemporaryDir> dir(Test::createTmpFilesAndFolders(dirs));
 
     QStringList includeFolders;
-    includeFolders << dir->name() + "home";
+    includeFolders << dir->path() + "/home";
+    qDebug() << includeFolders;
 
     QStringList excludeFolders;
-    excludeFolders << dir->name() + "home/kde";
+    excludeFolders << dir->path() + "/home/kde";
 
     Test::writeIndexerConfig(includeFolders, excludeFolders);
 
-    KTempDir dbDir;
+    QTemporaryDir dbDir;
     Database db;
-    db.setPath(dbDir.name());
+    db.setPath(dbDir.path());
     db.init();
 
     FileIndexerConfig config;
     BasicIndexingQueue queue(&db, &config);
-    queue.enqueue(FileMapping(p + "home"));
+    queue.enqueue(FileMapping(dir->path() + "/home"));
 
     QSignalSpy spy(&queue, SIGNAL(newDocument(uint,Xapian::Document)));
     queue.resume();

@@ -28,9 +28,9 @@
 
 #include <QDebug>
 #include <QFileInfo>
-#include <KTempDir>
 #include <QTest>
 #include <QTemporaryFile>
+#include <QTemporaryDir>
 
 #include <xapian.h>
 
@@ -199,12 +199,8 @@ void FileModifyJobTest::testXapianUpdate()
 
 void FileModifyJobTest::testFolder()
 {
-    QTemporaryFile f(QLatin1String(BUILDDIR "testFolder.XXXXXX"));
-    f.open();
-
-    // We use the same prefix as the tmpfile
-    KTempDir dir(f.fileName().mid(0, f.fileName().lastIndexOf('/') + 1));
-    const QString url = dir.name();
+    QTemporaryDir dir;
+    const QString url = dir.path();
 
     File file(url);
     file.setRating(5);
@@ -215,7 +211,7 @@ void FileModifyJobTest::testFolder()
     QString value;
 
     XattrDetector detector;
-    if (detector.isSupported(f.fileName())) {
+    if (detector.isSupported(dir.path())) {
         int len = baloo_getxattr(url, QLatin1String("user.baloo.rating"), &value);
         QVERIFY(len > 0);
         QCOMPARE(value.toInt(), 5);

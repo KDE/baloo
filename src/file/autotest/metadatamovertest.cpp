@@ -41,9 +41,9 @@ MetadataMoverTest::MetadataMoverTest(QObject* parent)
 void MetadataMoverTest::init()
 {
 
-    m_tempDir = new KTempDir();
+    m_tempDir = new QTemporaryDir();
     m_db = new Database(this);
-    m_db->setPath(m_tempDir->name());
+    m_db->setPath(m_tempDir->path());
     m_db->init();
 }
 
@@ -117,13 +117,13 @@ void MetadataMoverTest::testMoveFile()
 
 void MetadataMoverTest::testMoveFolder()
 {
-    const QString folderUrl(m_tempDir->name() + "folder");
+    const QString folderUrl(m_tempDir->path() + "/folder");
     uint folId = insertUrl(folderUrl);
 
     // The directory needs to be created because moveFileMetadata checks if it is
     // a directory in order to do the more complicated sql query to rename the
     // files in that folder
-    QDir dir(m_tempDir->name());
+    QDir dir(m_tempDir->path());
     dir.mkdir("folder");
     QVERIFY(QDir(folderUrl).exists());
 
@@ -135,7 +135,7 @@ void MetadataMoverTest::testMoveFolder()
 
     MetadataMover mover(m_db, this);
 
-    const QString newFolderUrl(m_tempDir->name() + "p");
+    const QString newFolderUrl(m_tempDir->path() + "/p");
     dir.rename("folder", "p");
     mover.moveFileMetadata(folderUrl, newFolderUrl);
 
