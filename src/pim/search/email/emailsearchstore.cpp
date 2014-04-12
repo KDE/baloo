@@ -105,7 +105,7 @@ QString EmailSearchStore::text(int queryId)
     try {
         data = doc.get_data();
     }
-    catch (const Xapian::DatabaseError&) {
+    catch (const Xapian::Error&) {
         // Nothing to do, move along
     }
 
