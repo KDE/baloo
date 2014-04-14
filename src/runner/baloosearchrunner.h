@@ -22,6 +22,7 @@
 #define _BALOO_SEARCH_RUNNER_H_
 
 #include <KRunner/AbstractRunner>
+#include <KRunner/QueryMatch>
 
 class SearchRunner : public Plasma::AbstractRunner
 {
@@ -37,6 +38,10 @@ public:
 
 protected Q_SLOTS:
     void init();
+
+private:
+    void match(Plasma::RunnerContext& context, const QString& type,
+               const QString& category);
 };
 
 #endif // _BALOO_SEARCH_RUNNER_H_

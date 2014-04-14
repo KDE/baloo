@@ -27,6 +27,7 @@
 #include <KLocalizedString>
 
 #include "query.h"
+#include "result.h"
 
 SearchRunner::SearchRunner(QObject* parent, const QVariantList& args)
     : Plasma::AbstractRunner(parent, args)
@@ -47,12 +48,17 @@ SearchRunner::~SearchRunner()
 {
 }
 
-void SearchRunner::match(Plasma::RunnerContext& context)
+
+void SearchRunner::match(Plasma::RunnerContext& context, const QString& type,
+                         const QString& category)
 {
+    if (!context.isValid())
+        return;
+
     Baloo::Query query;
     query.setLimit(5);
     query.setSearchString(context.query());
-    query.addType("File");
+    query.setType(type);
 
     Baloo::ResultIterator it = query.exec();
     while (context.isValid() && it.next()) {
@@ -62,25 +68,20 @@ void SearchRunner::match(Plasma::RunnerContext& context)
         match.setText(it.text());
         match.setData(it.url());
         match.setType(Plasma::QueryMatch::PossibleMatch);
+        match.setMatchCategory(category);
 
         context.addMatch(match);
     }
+}
 
-    if (!context.isValid())
-        return;
-
-    query.setType("Email");
-    it = query.exec();
-    while (context.isValid() && it.next()) {
-        Plasma::QueryMatch match(this);
-        match.setIcon(KIcon(it.icon()));
-        match.setId(it.id());
-        match.setText(it.text());
-        match.setData(it.url());
-        match.setType(Plasma::QueryMatch::PossibleMatch);
-
-        context.addMatch(match);
-    }
+void SearchRunner::match(Plasma::RunnerContext& context)
+{
+    match(context, QLatin1String("File/Audio"), QLatin1String("Audio"));
+    match(context, QLatin1String("File/Image"), QLatin1String("Image"));
+    match(context, QLatin1String("File/Document"), QLatin1String("Document"));
+    match(context, QLatin1String("File/Video"), QLatin1String("Video"));
+    match(context, QLatin1String("File/Folder"), QLatin1String("Folder"));
+    match(context, QLatin1String("Email"), QLatin1String("Email"));
 }
 
 void SearchRunner::run(const Plasma::RunnerContext&, const Plasma::QueryMatch& match)
