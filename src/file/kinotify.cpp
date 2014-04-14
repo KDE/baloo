@@ -29,8 +29,6 @@
 #include <QTimer>
 #include <QPair>
 
-#include <kdebug.h>
-
 #include <sys/inotify.h>
 #include <sys/utsname.h>
 #include <sys/types.h>

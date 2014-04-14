@@ -20,16 +20,14 @@
  *
  */
 
-#include <KComponentData>
-#include <k4aboutdata.h>
-#include <KCmdLineArgs>
+#include <KAboutData>
 #include <KUniqueApplication>
 #include <KCrash>
+#include <KLocale>
 
 #include <KConfig>
 #include <KConfigGroup>
 #include <QDebug>
-#include <KGlobal>
 #include <iostream>
 
 #include "filewatch.h"
@@ -46,11 +44,12 @@ int main(int argc, char** argv)
     lowerSchedulingPriority();
     lowerPriority();
 
-    K4AboutData aboutData("baloo_file", "baloo_file", ki18n("Baloo File"), "0.1",
-                         ki18n("An application to handle file metadata"),
-                         K4AboutData::License_GPL_V2);
+    KAboutData aboutData("baloo_file", "baloo_file", i18n("Baloo File"), "0.1",
+                         i18n("An application to handle file metadata"),
+                         KAboutData::License_LGPL_V2);
+    aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), "me@vhanda.in", "http://vhanda.in");
 
-    KCmdLineArgs::init(argc, argv, &aboutData);
+    KAboutData::setApplicationData(aboutData);
 
     KUniqueApplication app(true);
     app.disableSessionManagement();

@@ -21,15 +21,15 @@
  */
 
 #include <QCoreApplication>
+#include <QCommandLineParser>
+#include <QCommandLineOption>
 #include <QUrl>
+#include <QDebug>
 
-#include <KCmdLineArgs>
 #include <KAboutData>
 #include <KLocale>
-#include <KComponentData>
-#include <QDebug>
-#include <k4aboutdata.h>
 
+#include <iostream>
 #include "query.h"
 
 QString highlightBold(const QString& input)
@@ -54,57 +54,55 @@ QString colorString(const QString& input, int color)
 
 int main(int argc, char* argv[])
 {
-    K4AboutData aboutData("baloosearch",
+    KAboutData aboutData("baloosearch",
                          "baloosearch",
-                         ki18n("Baloo Search"),
+                         i18n("Baloo Search"),
                          "0.1",
-                         ki18n("Baloo Search - A debugging tool"),
-                         K4AboutData::License_GPL,
-                         ki18n("(c) 2013, Vishesh Handa"),
-                         KLocalizedString(),
-                         "http://kde.org");
-    aboutData.addAuthor(ki18n("Vishesh Handa"), ki18n("Maintainer"), "me@vhanda.in");
+                         i18n("Baloo Search - A debugging tool"),
+                         KAboutData::License_GPL,
+                         i18n("(c) 2013, Vishesh Handa"));
+    aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), "me@vhanda.in");
 
-    KCmdLineArgs::init(argc, argv, &aboutData);
+    KAboutData::setApplicationData(aboutData);
+    QCoreApplication app(argc, argv);
 
-    KCmdLineOptions options;
-    options.add("l").add("limit <queryLimit>",  ki18n("Number of results to return"));
-    options.add("o").add("offset <offset>",  ki18n("Offset from which start the search"));
-    options.add("t").add("type <typeStr>",  ki18n("Type of data to be searched"));
-    options.add("e").add("email",  ki18n("If set, search through emails"));
-    options.add("+query", ki18n("The words to search for"));
-    KCmdLineArgs::addCmdLineOptions(options);
+    QCommandLineParser parser;
+    parser.addOption(QCommandLineOption(QStringList() << "l" << "limit",
+                                        "The maximum number of results",
+                                        "limit"));
+    parser.addOption(QCommandLineOption(QStringList() << "o" << "offset",
+                                        "Offset from which to start the search",
+                                        "offset"));
+    parser.addOption(QCommandLineOption(QStringList() << "t" << "type",
+                                        "Type of data to be searched",
+                                        "typeStr"));
+    parser.addOption(QCommandLineOption(QStringList() << "e" << "email",
+                                        "If set, search for email"));
+    parser.addPositionalArgument("query", "List of words to query for");
+    parser.process(app);
 
     int queryLimit = 10;
     int offset = 0;
     QString typeStr = "File";
 
-    KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
-    if (args->count() == 0) {
-        KCmdLineArgs::usage();
-        return 1;
+    QStringList args = parser.positionalArguments();
+    if (args.isEmpty()) {
+        parser.showHelp(1);
     }
 
-    if(args->isSet("type"))
-        typeStr = args->getOption("type");
-    if(args->isSet("limit"))
-        queryLimit = args->getOption("limit").toInt();
-    if(args->isSet("offset"))
-        offset = args->getOption("offset").toInt();
+    if(parser.isSet("type"))
+        typeStr = parser.value("type");
+    if(parser.isSet("limit"))
+        queryLimit = parser.value("limit").toInt();
+    if(parser.isSet("offset"))
+        offset = parser.value("offset").toInt();
 
-    if(args->isSet("email"))
+    if(parser.isSet("email"))
         typeStr = "Email";
-
-    QCoreApplication app(argc, argv);
-    KComponentData comp(aboutData);
 
     QTextStream out(stdout);
 
-    QString queryStr = args->arg(0);
-    for (int i = 1; i < args->count(); i++) {
-        queryStr += " ";
-        queryStr += args->arg(i);
-    }
+    QString queryStr = args.join(" ");
 
     Baloo::Query query;
     query.addType(typeStr);

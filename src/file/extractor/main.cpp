@@ -24,7 +24,6 @@
 #include "../priority.h"
 
 #include <KLocale>
-#include <KGlobal>
 
 #include <QApplication>
 #include <QCommandLineParser>

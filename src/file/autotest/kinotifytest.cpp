@@ -23,7 +23,6 @@
 
 #include <QTemporaryDir>
 #include <KRandom>
-#include <qtest_kde.h>
 
 #include <QTextStream>
 #include <QFile>
@@ -31,6 +30,7 @@
 #include <QEventLoop>
 #include <QTimer>
 #include <QDir>
+#include <QTest>
 
 namespace
 {
