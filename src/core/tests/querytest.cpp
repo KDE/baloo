@@ -22,13 +22,13 @@
 
 #include "query.h"
 
-#include <QApplication>
+#include <QCoreApplication>
 #include <QTimer>
 #include <QDebug>
 
 #include <iostream>
 
-class App : public QApplication {
+class App : public QCoreApplication {
     Q_OBJECT
 public:
     App(int& argc, char** argv, int flags = ApplicationFlags);
@@ -52,7 +52,7 @@ int main(int argc, char** argv)
 }
 
 App::App(int& argc, char** argv, int flags)
-    : QApplication(argc, argv, flags)
+    : QCoreApplication(argc, argv, flags)
 {
     QTimer::singleShot(0, this, SLOT(main()));
 }

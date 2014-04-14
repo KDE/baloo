@@ -13,7 +13,7 @@ add_library(baloocore SHARED ${CORE_SRCS})
 
 target_link_libraries(baloocore
     Qt5::Core
-    KF5::KDE4Support
+    KF5::Service
     ${XAPIAN_LIBRARIES}
 )
 
