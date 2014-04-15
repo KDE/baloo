@@ -98,10 +98,13 @@ void FileIndexingQueue::slotFinishedIndexingFile(KJob*)
 void FileIndexingQueue::slotIndexingFailed(uint id)
 {
     m_db->xapianDatabase()->db()->reopen();
-    Xapian::Document doc = m_db->xapianDatabase()->db()->get_document(id);
-
-    updateIndexingLevel(doc, -1);
-    Q_EMIT newDocument(id, doc);
+    Xapian::Document doc;
+    try {
+        Xapian::Document doc = m_db->xapianDatabase()->db()->get_document(id);
+        updateIndexingLevel(doc, -1);
+        Q_EMIT newDocument(id, doc);
+    } catch (const Xapian::Error& err) {
+    }
 }
 
 
