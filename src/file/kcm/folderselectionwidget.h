@@ -51,6 +51,7 @@ private Q_SLOTS:
     void slotCurrentItemChanged(QListWidgetItem* current, QListWidgetItem*);
 
 private:
+    QString getFolderDisplayName(const QString& url) const;
     bool shouldShowMountPoint(const QString& mountPoint);
     QString fetchMountPoint(const QString& url) const;
     void showMessage(const QString& message);

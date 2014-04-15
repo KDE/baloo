@@ -129,7 +129,7 @@ void FolderSelectionWidget::setFolders(QStringList includeDirs, QStringList excl
 
     Q_FOREACH (QString url, excludeList) {
         QListWidgetItem* item = new QListWidgetItem(m_listWidget);
-        QString display = KUrl(QUrl::fromLocalFile(url)).fileName();
+        QString display = getFolderDisplayName(url);
 
         item->setData(Qt::DisplayRole, display);
         item->setData(Qt::WhatsThisRole, url);
@@ -251,7 +251,7 @@ void FolderSelectionWidget::slotAddButtonClicked()
     qDeleteAll(deleteList);
 
     QListWidgetItem* item = new QListWidgetItem(m_listWidget);
-    QString display = KUrl(QUrl::fromLocalFile(url)).fileName();
+    QString display = getFolderDisplayName(url);
 
     item->setData(Qt::DisplayRole, display);
     item->setData(Qt::WhatsThisRole, url);
@@ -287,6 +287,30 @@ void FolderSelectionWidget::showMessage(const QString& message)
     QTimer::singleShot(3000, m_messageWidget, SLOT(animatedHide()));
 }
 
+
+QString FolderSelectionWidget::getFolderDisplayName(const QString& url) const
+{
+    QString name = url;
+
+    // Check Home Dir
+    if (url.startsWith(QDir::homePath())) {
+        name = url.mid(QDir::homePath().length() + 1);
+    }
+    else {
+        // Check Mount allMountPointsExcluded
+        Q_FOREACH (QString mountPoint, m_mountPoints) {
+            if (url.startsWith(mountPoint)) {
+                name = "[" + QDir(mountPoint).dirName() + "]/" + url.mid(mountPoint.length());
+                break;
+            }
+        }
+    }
+
+    if (name.endsWith('/')) {
+        name = name.mid(0, name.size() - 1);
+    }
+    return name;
+}
 
 bool FolderSelectionWidget::shouldShowMountPoint(const QString& mountPoint)
 {
