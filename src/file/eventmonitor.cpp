@@ -35,15 +35,16 @@ EventMonitor::EventMonitor(QObject* parent)
     : QObject(parent)
 {
     // monitor the powermanagement to not drain the battery
-    connect(Solid::PowerManagement::notifier(), SIGNAL(appShouldConserveResourcesChanged(bool)),
-            this, SLOT(slotPowerManagementStatusChanged(bool)));
+    // FIXME: Solid no longer supports all of this
+//    connect(Solid::PowerManagement::notifier(), SIGNAL(appShouldConserveResourcesChanged(bool)),
+//            this, SLOT(slotPowerManagementStatusChanged(bool)));
 
     // setup idle time
     KIdleTime* idleTime = KIdleTime::instance();
     connect(idleTime, SIGNAL(timeoutReached(int)), this, SLOT(slotIdleTimeoutReached()));
     connect(idleTime, SIGNAL(resumingFromIdle()), this, SLOT(slotResumeFromIdle()));
 
-    m_isOnBattery = Solid::PowerManagement::appShouldConserveResources();
+    m_isOnBattery = false;//Solid::PowerManagement::appShouldConserveResources();
     m_isIdle = false;
     m_enabled = false;
 }
