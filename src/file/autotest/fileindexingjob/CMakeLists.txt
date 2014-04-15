@@ -4,7 +4,7 @@ set_target_properties(baloo_file_extractor_dummy
 )
 
 target_link_libraries(baloo_file_extractor_dummy
-  ${KDE4_KDECORE_LIBS}
+  Qt5::Core
 )
 
 add_definitions("-DBALOO_TEMP_PATH=\"${CMAKE_CURRENT_BINARY_DIR}\"")

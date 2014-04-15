@@ -14,11 +14,13 @@ add_library(kcm_baloofile MODULE ${kcm_file_SRCS})
 
 target_link_libraries(kcm_baloofile
   KF5::KIOWidgets
+  KF5::CoreAddons
   KF5::KCMUtils
   KF5::I18n
-  KF5::KDE4Support
+  KF5::Solid
 
   Qt5::DBus
+  Qt5::Widgets
 )
 
 

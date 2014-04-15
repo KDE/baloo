@@ -29,10 +29,9 @@
 #include <QDebug>
 #include <QStandardPaths>
 #include <KLocalizedString>
-#include <KIcon>
-#include <KIconLoader>
 #include <KConfigGroup>
 
+#include <QStyle>
 #include <QPushButton>
 #include <QDir>
 #include <QProcess>
@@ -69,7 +68,8 @@ ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args
 
     setupUi(this);
 
-    QPixmap pixmap = KIcon("baloo").pixmap(IconSize(KIconLoader::Desktop));
+    int pixelSize = style()->pixelMetric(QStyle::PM_LargeIconSize);
+    QPixmap pixmap = QIcon("baloo").pixmap(QSize(pixelSize, pixelSize));
     m_pixmapLabel->setPixmap(pixmap);
 
     connect(m_folderSelectionWidget, SIGNAL(changed()),

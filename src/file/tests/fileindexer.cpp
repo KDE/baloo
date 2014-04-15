@@ -69,7 +69,7 @@ void FileIndexer::doStart()
     m_process->start(exe, args);
 }
 
-void FileIndexer::slotIndexedFile(int returnCode, QProcess::ExitStatus status)
+void FileIndexer::slotIndexedFile(int, QProcess::ExitStatus)
 {
     m_elapsed = m_timer.elapsed();
 

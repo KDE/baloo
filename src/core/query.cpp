@@ -27,6 +27,7 @@
 #include <QString>
 #include <QStringList>
 #include <QList>
+#include <QUrlQuery>
 
 #include <QDebug>
 
@@ -304,11 +305,14 @@ QUrl Query::toSearchUrl(const QString& title)
 {
     QUrl url;
     url.setScheme(QLatin1String("baloosearch"));
-    url.addQueryItem(QLatin1String("json"), QString::fromUtf8(toJSON()));
+
+    QUrlQuery urlQuery;
+    urlQuery.addQueryItem(QLatin1String("json"), QString::fromUtf8(toJSON()));
 
     if (title.size())
-        url.addQueryItem(QLatin1String("title"), title);
+        urlQuery.addQueryItem(QLatin1String("title"), title);
 
+    url.setQuery(urlQuery);
     return url;
 }
 
@@ -317,13 +321,15 @@ Query Query::fromSearchUrl(const QUrl& url)
     if (url.scheme() != QLatin1String("baloosearch"))
         return Query();
 
-    QString jsonString = url.queryItemValue(QLatin1String("json"));
+    QUrlQuery urlQuery(url);
+    QString jsonString = urlQuery.queryItemValue(QLatin1String("json"));
     return Query::fromJSON(jsonString.toUtf8());
 }
 
 QString Query::titleFromQueryUrl(const QUrl& url)
 {
-    return url.queryItemValue("title");
+    QUrlQuery urlQuery(url);
+    return urlQuery.queryItemValue("title");
 }
 
 bool Query::operator==(const Query& rhs) const

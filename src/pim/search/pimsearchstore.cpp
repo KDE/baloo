@@ -26,6 +26,7 @@
 
 #include <QDebug>
 #include <QUrl>
+#include <QUrlQuery>
 #include <QStandardPaths>
 //#include <Akonadi/ServerManager>
 
@@ -120,7 +121,10 @@ QUrl PIMSearchStore::constructUrl(const Xapian::docid& docid)
 {
     QUrl url;
     url.setScheme(QLatin1String("akonadi"));
-    url.addQueryItem(QLatin1String("item"), QString::number(docid));
+
+    QUrlQuery query;
+    query.addQueryItem(QLatin1String("item"), QString::number(docid));
+    url.setQuery(query);
 
     return url;
 }
