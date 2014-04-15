@@ -23,6 +23,7 @@
 #ifndef _BALOO_SEARCHSTORE_H
 #define _BALOO_SEARCHSTORE_H
 
+#include <QObject>
 #include <QString>
 #include <QHash>
 #include <QUrl>

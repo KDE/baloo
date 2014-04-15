@@ -25,7 +25,6 @@
 #include "filemapping.h"
 
 #include <QDebug>
-#include <KGlobal>
 
 #include <QFile>
 #include <QSqlQuery>
@@ -33,7 +32,7 @@
 
 using namespace Baloo;
 
-K_GLOBAL_STATIC(XattrDetector, g_detector)
+Q_GLOBAL_STATIC(XattrDetector, g_detector)
 
 void Baloo::setCustomFileMetaData(const QString& url, const QString& key, const QString& value)
 {

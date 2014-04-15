@@ -27,7 +27,7 @@
 #include <QDebug>
 
 #include <KAboutData>
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <iostream>
 #include "query.h"

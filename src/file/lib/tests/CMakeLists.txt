@@ -6,5 +6,4 @@ add_executable(xattrdetectortest
 target_link_libraries(xattrdetectortest
   Qt5::Core
   KF5::Solid
-  KF5::KDE4Support
 )

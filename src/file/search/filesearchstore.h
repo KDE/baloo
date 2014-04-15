@@ -59,7 +59,7 @@ protected:
     virtual QByteArray idPrefix() { return QByteArray("file"); }
 
 private:
-    QSqlDatabase* m_sqlDb;
+    QSqlDatabase m_sqlDb;
     QMutex m_sqlMutex;
 
     QHash<QString, std::string> m_prefixes;

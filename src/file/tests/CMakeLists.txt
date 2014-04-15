@@ -10,7 +10,6 @@ add_executable(indexerconfigtest
 
 target_link_libraries(indexerconfigtest
   Qt5::Core
-  KF5::KDE4Support
   baloocore
 )
 
@@ -30,8 +29,8 @@ add_executable(basicindexingqueuetest-manual
 target_link_libraries(basicindexingqueuetest-manual
   Qt5::Core
   Qt5::Sql
-  KF5::KDE4Support
   KF5::FileMetaData
+  KF5::KIOCore
   ${XAPIAN_LIBRARIES}
   baloocore
   balooxapian
@@ -54,8 +53,8 @@ add_executable(fileindexingqueuetest-manual
 target_link_libraries(fileindexingqueuetest-manual
   Qt5::Core
   Qt5::Sql
-  KF5::KDE4Support
   KF5::FileMetaData
+  KF5::KIOCore
   ${XAPIAN_LIBRARIES}
   baloocore
   balooxapian

@@ -22,7 +22,7 @@
 #include "removabledeviceindexnotification.h"
 //#include "fileindexerinterface.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 #include <KConfig>
 #include <KConfigGroup>
 #include <KIcon>

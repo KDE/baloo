@@ -4,8 +4,8 @@ cmake_minimum_required(VERSION 2.8.12)
 find_package(ECM 0.0.9 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules" ${ECM_MODULE_PATH})
 
-find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Widgets Xml Test Sql)
-find_package(KF5 REQUIRED NO_MODULE COMPONENTS KDE4Support I18n Service IdleTime KCMUtils Auth Runner Plasma)
+find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Widgets DBus Test Sql)
+find_package(KF5 REQUIRED NO_MODULE COMPONENTS KDE4Support I18n Service IdleTime KCMUtils Auth Runner Crash Solid KIO Auth)
 find_package(KFileMetaData 4.97 REQUIRED)
 
 # FIXME: Port Kdepimlibs?
@@ -62,6 +62,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/file/lib
   ${CMAKE_SOURCE_DIR}/src/xapian
+  ${CMAKE_BINARY_DIR}/src/xapian
 )
 
 add_subdirectory(src)

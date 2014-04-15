@@ -3,13 +3,13 @@ include(ECMAddTests)
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
   ecm_add_test(kinotifytest.cpp ../kinotify.cpp
     TEST_NAME "kinotifytest"
-    LINK_LIBRARIES Qt5::Test KF5::KDE4Support
+    LINK_LIBRARIES Qt5::Test KF5::CoreAddons
   )
 endif()
 
 ecm_add_test(activefilequeuetest.cpp ../activefilequeue.cpp
     TEST_NAME "activefilequeuetest"
-    LINK_LIBRARIES Qt5::Test KF5::KDE4Support
+    LINK_LIBRARIES Qt5::Test
 )
 
 #
@@ -24,7 +24,7 @@ set(metadatamover_SRC
 
 ecm_add_test(${metadatamover_SRC}
     TEST_NAME "metadatamovertest"
-    LINK_LIBRARIES Qt5::Test Qt5::Sql KF5::KDE4Support ${XAPIAN_LIBRARIES} balooxapian
+    LINK_LIBRARIES Qt5::Test Qt5::Sql ${XAPIAN_LIBRARIES} balooxapian
 )
 
 #
@@ -34,7 +34,7 @@ set(fileMonitor_SRC filemonitortest.cpp)
 
 ecm_add_test(${fileMonitor_SRC}
     TEST_NAME "filemonitortest"
-    LINK_LIBRARIES Qt5::Test baloofiles KF5::KDE4Support
+    LINK_LIBRARIES Qt5::Test baloofiles
 )
 
 #
@@ -49,7 +49,7 @@ set(indexingConfig_SRC
 
 ecm_add_test(${indexingConfig_SRC}
     TEST_NAME "fileindexerconfigtest"
-    LINK_LIBRARIES Qt5::Test KF5::KDE4Support
+    LINK_LIBRARIES Qt5::Test KF5::ConfigCore KF5::CoreAddons
 )
 
 #
@@ -71,8 +71,8 @@ set(basicIndexingQueue_SRC
 
 ecm_add_test(${basicIndexingQueue_SRC}
     TEST_NAME basicindexingqueuetest
-    LINK_LIBRARIES Qt5::Test Qt5::Sql KF5::FileMetaData
-                   KF5::KDE4Support ${XAPIAN_LIBRARIES} balooxapian
+    LINK_LIBRARIES Qt5::Test Qt5::Sql KF5::FileMetaData KF5::ConfigCore
+                   KF5::CoreAddons ${XAPIAN_LIBRARIES} balooxapian
 )
 
 add_subdirectory(fileindexingjob)

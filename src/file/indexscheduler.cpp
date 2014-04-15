@@ -29,7 +29,7 @@
 #include "database.h"
 
 #include <QDebug>
-#include <KLocale>
+#include <KLocalizedString>
 
 using namespace Baloo;
 

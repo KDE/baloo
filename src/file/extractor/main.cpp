@@ -23,7 +23,8 @@
 #include "app.h"
 #include "../priority.h"
 
-#include <KLocale>
+#include <KLocalizedString>
+#include <QStandardPaths>
 
 #include <QApplication>
 #include <QCommandLineParser>

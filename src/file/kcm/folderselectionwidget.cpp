@@ -24,9 +24,9 @@
 #include <Solid/StorageAccess>
 #include <Solid/StorageDrive>
 
-#include <KIcon>
+#include <QIcon>
 #include <QDebug>
-#include <KFileDialog>
+#include <QFileDialog>
 
 #include <QDir>
 #include <QTimer>
@@ -54,12 +54,12 @@ FolderSelectionWidget::FolderSelectionWidget(QWidget* parent, Qt::WindowFlags f)
     hLayout->addItem(spacer);
 
     m_addButton = new QPushButton(this);
-    m_addButton->setIcon(KIcon("list-add"));
+    m_addButton->setIcon(QIcon("list-add"));
     connect(m_addButton, SIGNAL(clicked(bool)),
             this, SLOT(slotAddButtonClicked()));
 
     m_removeButton = new QPushButton(this);
-    m_removeButton->setIcon(KIcon("list-remove"));
+    m_removeButton->setIcon(QIcon("list-remove"));
     m_removeButton->setEnabled(false);
     connect(m_removeButton, SIGNAL(clicked(bool)),
             this, SLOT(slotRemoveButtonClicked()));
@@ -134,7 +134,7 @@ void FolderSelectionWidget::setFolders(QStringList includeDirs, QStringList excl
         item->setData(Qt::DisplayRole, display);
         item->setData(Qt::WhatsThisRole, url);
         item->setData(UrlRole, url);
-        item->setData(Qt::DecorationRole, KIcon(iconName(url)));
+        item->setData(Qt::DecorationRole, QIcon(iconName(url)));
         item->setToolTip(makeHomePretty(url));
 
         m_listWidget->addItem(item);
@@ -196,7 +196,7 @@ QString FolderSelectionWidget::fetchMountPoint(const QString& url) const
 
 void FolderSelectionWidget::slotAddButtonClicked()
 {
-    QString url = KFileDialog::getExistingDirectory(QUrl(), this, i18n("Select the folder which should be excluded"));
+    QString url = QFileDialog::getExistingDirectory(this, i18n("Select the folder which should be excluded"));
     if (url.isEmpty()) {
         return;
     }
@@ -256,7 +256,7 @@ void FolderSelectionWidget::slotAddButtonClicked()
     item->setData(Qt::DisplayRole, display);
     item->setData(Qt::WhatsThisRole, url);
     item->setData(UrlRole, url);
-    item->setData(Qt::DecorationRole, KIcon(iconName(url)));
+    item->setData(Qt::DecorationRole, QIcon(iconName(url)));
     item->setToolTip(makeHomePretty(url));
 
     m_listWidget->addItem(item);

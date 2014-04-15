@@ -21,7 +21,7 @@
 #include "filemonitortest.h"
 #include "filemonitor.h"
 
-#include <qtest_kde.h>
+#include <QTest>
 #include <QSignalSpy>
 
 #include <QDBusConnection>

@@ -2,7 +2,6 @@ add_library(baloo_contactsearchstore MODULE contactsearchstore.cpp ../pimsearchs
 
 target_link_libraries(baloo_contactsearchstore
     Qt5::Core
-    KF5::KDE4Support
     ${XAPIAN_LIBRARIES}
     baloocore
     balooxapian

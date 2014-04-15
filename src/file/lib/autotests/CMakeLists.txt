@@ -14,9 +14,9 @@ ecm_add_test(${filefetchjobtest_SRC}
     LINK_LIBRARIES
         KF5::FileMetaData
         KF5::Solid
-        KF5::KDE4Support
         Qt5::Test
         Qt5::Sql
+        Qt5::DBus
         ${XAPIAN_LIBRARIES}
         baloocore
 )
@@ -37,9 +37,9 @@ ecm_add_test(${filemodifyjobtest_SRC}
     LINK_LIBRARIES
         KF5::FileMetaData
         KF5::Solid
-        KF5::KDE4Support
         Qt5::Test
         Qt5::Sql
+        Qt5::DBus
         ${XAPIAN_LIBRARIES}
         baloocore
         balooxapian

@@ -2,7 +2,6 @@ add_library(baloo_emailsearchstore MODULE agepostingsource.cpp emailsearchstore.
 
 target_link_libraries(baloo_emailsearchstore
     Qt5::Core
-    KF5::KDE4Support
     ${XAPIAN_LIBRARIES}
     baloocore
     balooxapian

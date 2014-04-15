@@ -27,7 +27,7 @@
 #include <QTextStream>
 
 #include <KAboutData>
-#include <KLocale>
+#include <KLocalizedString>
 
 #include "file.h"
 #include "filefetchjob.h"

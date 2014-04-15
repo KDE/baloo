@@ -9,13 +9,12 @@ set(CLEANER_SRCS
   ../fileexcludefilters.cpp
 )
 
-kde4_add_executable(baloo_file_cleaner ${CLEANER_SRCS})
+add_executable(baloo_file_cleaner ${CLEANER_SRCS})
 
 target_link_libraries(baloo_file_cleaner
   Qt5::Sql
-
-  KF5::KDE4Support
-  KF5::Runner
+  Qt5::DBus
+  KF5::KIOCore
   ${XAPIAN_LIBRARIES}
   balooxapian
 )

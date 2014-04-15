@@ -28,6 +28,7 @@
 #include <QTest>
 #include <QSignalSpy>
 #include <QEventLoop>
+#include <QDebug>
 
 using namespace Baloo;
 

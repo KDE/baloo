@@ -41,7 +41,6 @@ using namespace Baloo;
 
 FileSearchStore::FileSearchStore(QObject* parent)
     : XapianSearchStore(parent)
-    , m_sqlDb(0)
     , m_sqlMutex(QMutex::Recursive)
 {
     const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/baloo/file/";
@@ -57,8 +56,10 @@ FileSearchStore::FileSearchStore(QObject* parent)
 
 FileSearchStore::~FileSearchStore()
 {
-    const QString conName = m_sqlDb->connectionName();
-    delete m_sqlDb;
+    const QString conName = m_sqlDb.connectionName();
+    m_sqlDb.close();
+    m_sqlDb = QSqlDatabase();
+
     QSqlDatabase::removeDatabase(conName);
 }
 
@@ -68,10 +69,9 @@ void FileSearchStore::setDbPath(const QString& path)
 
     const QString conName = "filesearchstore" + QString::number(qrand());
 
-    delete m_sqlDb;
-    m_sqlDb = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE", conName));
-    m_sqlDb->setDatabaseName(dbPath() + "/fileMap.sqlite3");
-    m_sqlDb->open();
+    m_sqlDb = QSqlDatabase::addDatabase("QSQLITE", conName);
+    m_sqlDb.setDatabaseName(dbPath() + "/fileMap.sqlite3");
+    m_sqlDb.open();
 }
 
 QStringList FileSearchStore::types()
@@ -213,7 +213,7 @@ QUrl FileSearchStore::constructUrl(const Xapian::docid& docid)
     QMutexLocker lock(&m_sqlMutex);
 
     FileMapping file(docid);
-    file.fetch(*m_sqlDb);
+    file.fetch(m_sqlDb);
 
     return QUrl::fromLocalFile(file.url());
 }
@@ -238,6 +238,6 @@ Xapian::Query FileSearchStore::applyCustomOptions(const Xapian::Query& q, const 
 
     QString includeDir = it.value().toString();
 
-    PathFilterPostingSource ps(m_sqlDb, includeDir);
+    PathFilterPostingSource ps(&m_sqlDb, includeDir);
     return andQuery(q, Xapian::Query(&ps));
 }

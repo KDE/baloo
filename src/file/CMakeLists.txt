@@ -48,11 +48,11 @@ target_link_libraries(baloo_file
 
     KF5::KIOWidgets
     KF5::IdleTime
-    KF5::KDE4Support
     KF5::I18n
     KF5::Solid
     KF5::Auth
     KF5::FileMetaData
+    KF5::Crash
     ${XAPIAN_LIBRARIES}
     baloocore
     baloofiles

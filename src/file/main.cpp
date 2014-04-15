@@ -21,9 +21,8 @@
  */
 
 #include <KAboutData>
-#include <KUniqueApplication>
 #include <KCrash>
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <KConfig>
 #include <KConfigGroup>
@@ -37,6 +36,7 @@
 #include "priority.h"
 
 #include <QDBusConnection>
+#include <QApplication>
 
 int main(int argc, char** argv)
 {
@@ -51,8 +51,9 @@ int main(int argc, char** argv)
 
     KAboutData::setApplicationData(aboutData);
 
-    KUniqueApplication app(true);
-    app.disableSessionManagement();
+    QApplication app(argc, argv);
+    //KUniqueApplication app(true);
+    //app.disableSessionManagement();
 
     KConfig config("baloofilerc");
     KConfigGroup group = config.group("Basic Settings");

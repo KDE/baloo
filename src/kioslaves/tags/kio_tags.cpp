@@ -28,7 +28,7 @@
 #include <kio/job.h>
 #include <KUser>
 #include <QDebug>
-#include <KLocale>
+#include <KLocalizedString>
 #include <kio/netaccess.h>
 #include <KComponentData>
 

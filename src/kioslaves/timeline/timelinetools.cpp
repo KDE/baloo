@@ -24,7 +24,7 @@
 #include <QUrl>
 #include <KCalendarSystem>
 #include <KGlobal>
-#include <KLocale>
+#include <KLocalizedString>
 #include <QDebug>
 
 #include <QtCore/QDate>

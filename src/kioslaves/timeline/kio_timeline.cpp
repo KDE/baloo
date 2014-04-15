@@ -30,7 +30,7 @@
 #include <kio/job.h>
 #include <KUser>
 #include <QDebug>
-#include <KLocale>
+#include <KLocalizedString>
 #include <kio/netaccess.h>
 #include <KComponentData>
 #include <KCalendarSystem>
@@ -76,7 +76,7 @@ KIO::UDSEntry createMonthUDSEntry(int month, int year)
 KIO::UDSEntry createDayUDSEntry(const QDate& date)
 {
     KIO::UDSEntry uds = createFolderUDSEntry(date.toString("yyyy-MM-dd"),
-                        KGlobal::locale()->formatDate(date, KLocale::FancyLongDate),
+                        KGlobal::locale()->formatDate(date, KLocalizedString::FancyLongDate),
                         date);
 
     return uds;

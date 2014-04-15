@@ -3,7 +3,6 @@ add_library(baloo_filesearchstore MODULE pathfilterpostingsource.cpp filesearchs
 target_link_libraries(baloo_filesearchstore
     Qt5::Core
     Qt5::Sql
-    KF5::KDE4Support
     ${XAPIAN_LIBRARIES}
     ${KFILEMETADATA_LIBRARY}
     baloocore
