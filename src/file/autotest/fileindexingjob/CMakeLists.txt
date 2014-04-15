@@ -10,5 +10,5 @@ target_link_libraries(baloo_file_extractor_dummy
 add_definitions("-DBALOO_TEMP_PATH=\"${CMAKE_CURRENT_BINARY_DIR}\"")
 ecm_add_test(fileindexingjobtest.cpp ../../fileindexingjob.cpp
     TEST_NAME "fileindexingjobtest"
-    LINK_LIBRARIES Qt5::Test Qt5::Sql KF5::CoreAddons KF5::FileMetaData ${XAPIAN_LIBRARIES}
+    LINK_LIBRARIES Qt5::Test Qt5::Sql KF5::CoreAddons KF5::ConfigCore KF5::FileMetaData ${XAPIAN_LIBRARIES}
 )

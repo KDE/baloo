@@ -31,6 +31,7 @@ target_link_libraries(basicindexingqueuetest-manual
   Qt5::Sql
   KF5::FileMetaData
   KF5::KIOCore
+  KF5::ConfigCore
   ${XAPIAN_LIBRARIES}
   baloocore
   balooxapian
@@ -55,6 +56,7 @@ target_link_libraries(fileindexingqueuetest-manual
   Qt5::Sql
   KF5::FileMetaData
   KF5::KIOCore
+  KF5::ConfigCore
   ${XAPIAN_LIBRARIES}
   baloocore
   balooxapian
