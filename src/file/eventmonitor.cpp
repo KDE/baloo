@@ -22,8 +22,6 @@
 #include <QDebug>
 #include <KIdleTime>
 
-#include <Solid/PowerManagement>
-
 #include <QtDBus/QDBusInterface>
 
 // TODO: Make idle timeout configurable?

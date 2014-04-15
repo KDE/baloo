@@ -53,6 +53,7 @@ target_link_libraries(baloo_file
     KF5::Auth
     KF5::FileMetaData
     KF5::Crash
+    KF5::ConfigCore
     ${XAPIAN_LIBRARIES}
     baloocore
     baloofiles
