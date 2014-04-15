@@ -63,7 +63,7 @@ void SearchRunner::match(Plasma::RunnerContext& context, const QString& type,
     Baloo::ResultIterator it = query.exec();
     while (context.isValid() && it.next()) {
         Plasma::QueryMatch match(this);
-        match.setIcon(QIcon(it.icon()));
+        match.setIcon(QIcon::fromTheme(it.icon()));
         match.setId(it.id());
         match.setText(it.text());
         match.setData(it.url());

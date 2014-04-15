@@ -54,12 +54,12 @@ FolderSelectionWidget::FolderSelectionWidget(QWidget* parent, Qt::WindowFlags f)
     hLayout->addItem(spacer);
 
     m_addButton = new QPushButton(this);
-    m_addButton->setIcon(QIcon("list-add"));
+    m_addButton->setIcon(QIcon::fromTheme("list-add"));
     connect(m_addButton, SIGNAL(clicked(bool)),
             this, SLOT(slotAddButtonClicked()));
 
     m_removeButton = new QPushButton(this);
-    m_removeButton->setIcon(QIcon("list-remove"));
+    m_removeButton->setIcon(QIcon::fromTheme("list-remove"));
     m_removeButton->setEnabled(false);
     connect(m_removeButton, SIGNAL(clicked(bool)),
             this, SLOT(slotRemoveButtonClicked()));
@@ -256,7 +256,7 @@ void FolderSelectionWidget::slotAddButtonClicked()
     item->setData(Qt::DisplayRole, display);
     item->setData(Qt::WhatsThisRole, url);
     item->setData(UrlRole, url);
-    item->setData(Qt::DecorationRole, QIcon(iconName(url)));
+    item->setData(Qt::DecorationRole, QIcon::fromTheme(iconName(url)));
     item->setToolTip(makeHomePretty(url));
 
     m_listWidget->addItem(item);
