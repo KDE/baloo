@@ -32,6 +32,8 @@ set_target_properties(baloofiles PROPERTIES
     SOVERSION ${BALOO_SOVERSION}
 )
 
+generate_export_header(baloofiles BASE_NAME BALOO_FILE EXPORT_FILE_NAME file_export.h)
+
 install(TARGETS baloofiles EXPORT BalooLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES
@@ -41,7 +43,7 @@ install(FILES
     filemonitor.h
     taglistjob.h
     indexerconfig.h
-    file_export.h
+    ${CMAKE_CURRENT_BINARY_DIR}/file_export.h
 
     DESTINATION ${INCLUDE_INSTALL_DIR}/baloo COMPONENT Devel
 )

@@ -61,6 +61,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/file/lib
+  ${CMAKE_BINARY_DIR}/src/file/lib
   ${CMAKE_SOURCE_DIR}/src/xapian
   ${CMAKE_BINARY_DIR}/src/xapian
 )
