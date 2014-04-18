@@ -58,6 +58,7 @@ const char* s_defaultFileExcludeFilters[] = {
     "*.vm*",
     "*.nvram",
     "*.rcore",
+    "*.swap",
     "lzo",
     "litmain.sh",
     "*.orig",
