@@ -55,6 +55,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QCheckBox" name="m_enableCheckbox">
+     <property name="text">
+      <string>Enable Desktop Search</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <spacer name="bottomSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
