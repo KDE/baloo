@@ -27,7 +27,7 @@
 # if defined(KDELIBS_STATIC_LIBS)
    /* No export/import for static libraries */
 #  define BALOO_XAPIAN_EXPORT
-# elif defined(MAKE_BALOO_XAPIAN_LIB)
+# elif defined(MAKE_BALOOXAPIAN_LIB)
    /* We are building this library */
 #  define BALOO_XAPIAN_EXPORT KDE_EXPORT
 # else

@@ -41,6 +41,8 @@
 #include <KConfigGroup>
 #include <KLocalizedString>
 
+#include <QFile>
+
 namespace {
     QString dbPath(const QString& dbName) {
         QString basePath = "baloo";
@@ -144,7 +146,7 @@ qlonglong BalooIndexingAgent::indexedItemsInDatabase(const std::string& term, co
 {
     Xapian::Database db;
     try {
-        db = Xapian::Database(dbPath.toUtf8().constData());
+        db = Xapian::Database(QFile::encodeName(dbPath).constData());
     } catch (const Xapian::DatabaseError& e) {
         kError() << "Failed to open database" << dbPath << ":" << QString::fromStdString(e.get_msg());
         return 0;

@@ -27,6 +27,8 @@
 
 #include <KStandardDirs>
 
+#include <QFile>
+
 using namespace Baloo::PIM;
 
 class EmailQuery::Private
@@ -184,7 +186,7 @@ ResultIterator EmailQuery::exec()
     const QString dir = KGlobal::dirs()->localxdgdatadir() + "baloo/email/";
     Xapian::Database db;
     try {
-        db = Xapian::Database(dir.toUtf8().constData());
+        db = Xapian::Database(QFile::encodeName(dir).constData());
     } catch (const Xapian::DatabaseError& e) {
         kWarning() << "Failed to open Xapian database:" << QString::fromStdString(e.get_error_string());
         return ResultIterator();

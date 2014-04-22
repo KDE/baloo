@@ -27,7 +27,7 @@
 # if defined(KDELIBS_STATIC_LIBS)
    /* No export/import for static libraries */
 #  define BALOO_FILE_EXPORT
-# elif defined(MAKE_BALOO_FILE_LIB)
+# elif defined(MAKE_BALOOFILES_LIB)
    /* We are building this library */
 #  define BALOO_FILE_EXPORT KDE_EXPORT
 # else

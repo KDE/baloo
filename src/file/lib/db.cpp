@@ -27,10 +27,11 @@
 
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QFile>
 
 std::string fileIndexDbPath()
 {
-    return (KGlobal::dirs()->localxdgdatadir() + "baloo/file").toUtf8().constData();
+    return QFile::encodeName(KGlobal::dirs()->localxdgdatadir() + "baloo/file").constData();
 }
 
 QSqlDatabase fileMappingDb() {
