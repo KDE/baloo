@@ -293,8 +293,13 @@ QString FolderSelectionWidget::getFolderDisplayName(const QString& url) const
     QString name = url;
 
     // Check Home Dir
-    if (url.startsWith(QDir::homePath())) {
-        name = url.mid(QDir::homePath().length() + 1);
+    QString homePath = QDir::homePath() + '/';
+    if (url == homePath) {
+        return QDir(homePath).dirName();
+    }
+
+    if (url.startsWith(homePath)) {
+        name = url.mid(homePath.size());
     }
     else {
         // Check Mount allMountPointsExcluded
