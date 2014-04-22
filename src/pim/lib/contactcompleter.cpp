@@ -26,6 +26,8 @@
 #include <KStandardDirs>
 #include <KDebug>
 
+#include <QFile>
+
 using namespace Baloo::PIM;
 
 ContactCompleter::ContactCompleter(const QString& prefix, int limit)
@@ -40,7 +42,7 @@ QStringList ContactCompleter::complete()
     const QString dir = KGlobal::dirs()->localxdgdatadir() + "baloo/emailContacts/";
     Xapian::Database db;
     try {
-        db = Xapian::Database(dir.toUtf8().constData());
+        db = Xapian::Database(QFile::encodeName(dir).constData());
     }
     catch (const Xapian::DatabaseError& e) {
         kWarning() << QString::fromStdString(e.get_type()) << QString::fromStdString(e.get_description());

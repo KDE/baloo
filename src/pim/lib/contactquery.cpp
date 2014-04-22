@@ -28,6 +28,8 @@
 #include <KDebug>
 #include <KStandardDirs>
 
+#include <QFile>
+
 using namespace Baloo::PIM;
 
 class ContactQuery::Private {
@@ -102,7 +104,14 @@ void ContactQuery::setMatchCriteria(ContactQuery::MatchCriteria m)
 ResultIterator ContactQuery::exec()
 {
     const QString dir = KGlobal::dirs()->localxdgdatadir() + "baloo/contacts/";
-    Xapian::Database db(dir.toUtf8().constData());
+    Xapian::Database db;
+
+    try {
+        db = Xapian::Database(QFile::encodeName(dir).constData());
+    } catch (const Xapian::DatabaseError& e) {
+        kWarning() << "Failed to open Xapian database:" << QString::fromStdString(e.get_error_string());
+        return ResultIterator();
+    }
 
     QList<Xapian::Query> m_queries;
 

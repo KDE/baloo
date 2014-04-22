@@ -25,6 +25,8 @@
 #include "xapian.h"
 
 #include <QList>
+#include <QFile>
+
 #include <KDebug>
 #include <KStandardDirs>
 
@@ -77,7 +79,14 @@ int NoteQuery::limit() const
 ResultIterator NoteQuery::exec()
 {
     const QString dir = KGlobal::dirs()->localxdgdatadir() + "baloo/notes/";
-    Xapian::Database db(dir.toUtf8().constData());
+
+    Xapian::Database db;
+    try {
+        db = Xapian::Database(QFile::encodeName(dir).constData());
+    } catch (const Xapian::DatabaseError& e) {
+        kWarning() << "Failed to open Xapian database:" << QString::fromStdString(e.get_error_string());
+        return ResultIterator();
+    }
 
     QList<Xapian::Query> m_queries;
 
