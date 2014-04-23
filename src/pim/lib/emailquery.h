@@ -27,7 +27,7 @@
 #include "query.h"
 
 #include <QStringList>
-#include <Akonadi/Collection>
+#include <Collection>
 
 namespace Baloo {
 namespace PIM {

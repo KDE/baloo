@@ -22,7 +22,7 @@
 
 #include "query.h"
 #include "contactquery.h"
-#include <qt/QtCore/qjsondocument.h>
+#include <qjsondocument.h>
 
 #include <QVariant>
 #include <QDebug>
@@ -45,12 +45,12 @@ Query* Query::fromJSON(const QByteArray& json)
 {
     QJsonParseError error;
     QJsonDocument doc = QJsonDocument::fromJson(json, &error);
-    if (error) {
+    if (doc.isNull()) {
         qWarning() << "Could not parse json query" << error.errorString();
         return 0;
     }
 
-    QVariantMap result = doc.toVariant().toVariantMap();
+    QVariantMap result = doc.toVariant().toMap();
     const QString type = result["type"].toString().toLower();
     if (type != "contact") {
         qWarning() << "Can only handle contact queries";

@@ -1,5 +1,4 @@
 include_directories(
-    ${KDEPIMLIBS_INCLUDE_DIRS}
     ${XAPIAN_INCLUDE_DIR}
 )
 
@@ -14,13 +13,21 @@ set(BALOO_PIM_LIB_SRCS
     ../search/email/agepostingsource.cpp
 )
 
+find_package(KF5KDELibs4Support REQUIRED)
+find_package(KF5ItemModels REQUIRED)
+
 add_definitions(-fexceptions)
 
 add_library(baloopim SHARED ${BALOO_PIM_LIB_SRCS})
 
+generate_export_header(baloopim BASE_NAME BALOO_PIM EXPORT_FILE_NAME pim_export.h)
+
+
 target_link_libraries(baloopim
     Qt5::Core
-    KF5::KDE4Support
+    KF5::KDELibs4Support
+    KF5::AkonadiCore
+    KF5::ItemModels
     ${XAPIAN_LIBRARIES}
 )
 
@@ -39,9 +46,10 @@ install(FILES
     notequery.h
 
     resultiterator.h
-    pim_export.h
+    ${CMAKE_CURRENT_BINARY_DIR}/pim_export.h
 
     DESTINATION ${INCLUDE_INSTALL_DIR}/baloo/pim COMPONENT Devel
 )
 
-add_subdirectory(tests)
+#REACTIVATE it
+#add_subdirectory(tests)

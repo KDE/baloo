@@ -8,9 +8,6 @@ find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Widgets DBus Test Sql)
 find_package(KF5 REQUIRED NO_MODULE COMPONENTS I18n Config Service IdleTime KCMUtils Auth Runner Crash Solid KIO Auth)
 find_package(KFileMetaData 4.97 REQUIRED)
 
-# FIXME: Port Kdepimlibs?
-#find_package(KdepimLibs REQUIRED)
-
 include(ECMSetupVersion)
 include(ECMAddTests)
 include(ECMInstallIcons)
@@ -21,12 +18,24 @@ include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(KDECompilerSettings)
 
-##find_package(KdepimLibs 4.60.43 CONFIG)
-##set_package_properties(KdepimLibs PROPERTIES
-##    DESCRIPTION "The KDEPIM libraries"
-#    URL "http://www.kde.org"
-#    TYPE OPTIONAL #Can't be required yet, as it's not ported
-#)
+# Temporary option untill kdepimlibs is ok. Activate it if you want to compile kdepim
+option(KDEPIM_SUPPORT_BUILD "Build baloo kdepim support" FALSE)
+
+if (KDEPIM_SUPPORT_BUILD)
+  find_package(KF5Akonadi CONFIG REQUIRED)
+  set_package_properties(KF5Akonadi PROPERTIES
+      DESCRIPTION "The KDEPIM libraries"
+      URL "http://www.kde.org"
+      TYPE REQUIRED
+  )
+  set(AkonadiServer_MIN_VERSION "1.70.41")
+  find_package(Akonadi ${AkonadiServer_MIN_VERSION} CONFIG REQUIRED)
+  set_package_properties(Akonadi PROPERTIES
+    URL "http://akonadi-project.org"
+    TYPE REQUIRED
+  )
+
+endif()
 
 find_package(Xapian CONFIG)
 set_package_properties(Xapian PROPERTIES
@@ -41,12 +50,6 @@ set_package_properties(KFileMetaData PROPERTIES
     URL "https://projects.kde.org/kfilemetadata"
     TYPE REQUIRED
 )
-
-#find_package(Akonadi 1.19.42 CONFIG)
-#set_package_properties(Akonadi PROPERTIES
-#    URL "http://akonadi-project.org"
-#    TYPE REQUIRED
-#)
 
 add_definitions(-DQT_NO_KEYWORDS)
 add_definitions(-fexceptions)

@@ -1,4 +1,6 @@
 #add_subdirectory(agent)
-#add_subdirectory(lib)
+if (KDEPIM_SUPPORT_BUILD)
+  add_subdirectory(lib)
+endif()
 add_subdirectory(search)
 #add_subdirectory(akonadiplugin)

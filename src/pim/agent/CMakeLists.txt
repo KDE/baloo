@@ -6,6 +6,9 @@ include_directories(
 
 add_definitions(-fexceptions)
 
+find_package(KF5KDELibs4Support REQUIRED)
+
+
 add_executable(akonadi_baloo_indexer
     abstractindexer.cpp
     agent.cpp

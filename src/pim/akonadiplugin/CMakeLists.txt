@@ -1,19 +1,21 @@
 add_definitions(${KDE4_ENABLE_EXCEPTIONS})
 
-include_directories(${KDEPIMLIBS_INCLUDE_DIRS})
-kde4_add_plugin(akonadi_baloo_searchplugin
+find_package(KF5KDELibs4Support REQUIRED)
+
+
+add_library(akonadi_baloo_searchplugin
+ MODULE 
     searchplugin.cpp
 )
 
 target_link_libraries(akonadi_baloo_searchplugin
-    ${QT_QTCORE_LIBRARY}
-    ${KDE4_KDECORE_LIBRARY}
-    ${KDEPIMLIBS_AKONADI_LIBS}
-    ${KDEPIMLIBS_AKONADI_KMIME_LIBS}
+    KF5::AkonadiCore
+    KF5::AkonadiKMime
     ${XAPIAN_LIBRARIES}
     baloocore
     baloopim
     balooxapian
+    KF5::KDELibs4Support
 )
 
 install(TARGETS akonadi_baloo_searchplugin DESTINATION ${PLUGIN_INSTALL_DIR}/akonadi)

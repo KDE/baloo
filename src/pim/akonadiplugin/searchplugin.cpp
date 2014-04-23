@@ -26,12 +26,13 @@
 #include "term.h"
 #include "resultiterator.h"
 
-#include <akonadi/searchquery.h>
+#include <searchquery.h>
 
 #include <QDebug>
 #include <Akonadi/KMime/MessageFlags>
 #include <KDateTime>
 #include <QtPlugin>
+#include <QStringList>
 
 static Baloo::Term::Operation mapRelation(Akonadi::SearchTerm::Relation relation) {
     if (relation == Akonadi::SearchTerm::RelAnd){
