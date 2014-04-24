@@ -26,6 +26,8 @@
 #include <QStandardPaths>
 #include <QDebug>
 
+#include <QFile>
+
 using namespace Baloo::PIM;
 
 ContactCompleter::ContactCompleter(const QString& prefix, int limit)
@@ -40,7 +42,7 @@ QStringList ContactCompleter::complete()
     const QString dir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/baloo/emailContacts/";
     Xapian::Database db;
     try {
-        db = Xapian::Database(dir.toUtf8().constData());
+        db = Xapian::Database(QFile::encodeName(dir).constData());
     }
     catch (const Xapian::DatabaseError& e) {
         qWarning() << QString::fromStdString(e.get_type()) << QString::fromStdString(e.get_description());

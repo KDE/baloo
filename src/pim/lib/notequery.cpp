@@ -27,6 +27,11 @@
 #include <QList>
 #include <QDebug>
 #include <QStandardPaths>
+#include <QFile>
+
+#include <KGlobal>
+#include <KStandardDirs>
+#include <KDebug>
 
 using namespace Baloo::PIM;
 
@@ -77,7 +82,14 @@ int NoteQuery::limit() const
 ResultIterator NoteQuery::exec()
 {
     const QString dir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/baloo/notes/";
-    Xapian::Database db(dir.toUtf8().constData());
+
+    Xapian::Database db;
+    try {
+        db = Xapian::Database(QFile::encodeName(dir).constData());
+    } catch (const Xapian::DatabaseError& e) {
+        kWarning() << "Failed to open Xapian database:" << QString::fromStdString(e.get_error_string());
+        return ResultIterator();
+    }
 
     QList<Xapian::Query> m_queries;
 
@@ -86,7 +98,8 @@ ResultIterator NoteQuery::exec()
         parser.set_database(db);
         parser.add_prefix("", "BO");
 
-        m_queries << parser.parse_query(d->note.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
+        const QByteArray baNote = d->note.toUtf8();
+        m_queries << parser.parse_query(baNote.constData(), Xapian::QueryParser::FLAG_PARTIAL);
     }
 
     if (!d->title.isEmpty()) {
@@ -95,7 +108,8 @@ ResultIterator NoteQuery::exec()
         parser.add_prefix("", "SU");
         parser.set_default_op(Xapian::Query::OP_AND);
 
-        m_queries << parser.parse_query(d->title.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
+        const QByteArray baTitle = d->title.toUtf8();
+        m_queries << parser.parse_query(baTitle.constData(), Xapian::QueryParser::FLAG_PARTIAL);
     }
 
     Xapian::Query query(Xapian::Query::OP_OR, m_queries.begin(), m_queries.end());

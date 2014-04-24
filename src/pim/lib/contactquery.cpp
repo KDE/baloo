@@ -24,9 +24,13 @@
 #include "resultiterator_p.h"
 #include "xapian.h"
 
+#include <KDebug>
+
 #include <QList>
 #include <QDebug>
 #include <QStandardPaths>
+
+#include <QFile>
 
 using namespace Baloo::PIM;
 
@@ -102,25 +106,36 @@ void ContactQuery::setMatchCriteria(ContactQuery::MatchCriteria m)
 ResultIterator ContactQuery::exec()
 {
     const QString dir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/baloo/contacts/";
-    Xapian::Database db(dir.toUtf8().constData());
+    Xapian::Database db;
+
+    try {
+        db = Xapian::Database(QFile::encodeName(dir).constData());
+    } catch (const Xapian::DatabaseError& e) {
+        kWarning() << "Failed to open Xapian database:" << QString::fromStdString(e.get_error_string());
+        return ResultIterator();
+    }
 
     QList<Xapian::Query> m_queries;
 
     if (d->criteria == ExactMatch) {
         if (!d->any.isEmpty()) {
-            m_queries << Xapian::Query(d->any.toStdString());
+            const QByteArray ba = d->any.toUtf8();
+            m_queries << Xapian::Query(ba.constData());
         }
 
         if (!d->name.isEmpty()) {
-            m_queries << Xapian::Query("NA" + d->name.toStdString());
+            const QByteArray ba = "NA" + d->name.toUtf8();
+            m_queries << Xapian::Query(ba.constData());
         }
 
         if (!d->nick.isEmpty()) {
-            m_queries << Xapian::Query("NI" + d->nick.toStdString());
+            const QByteArray ba = "NI" + d->nick.toUtf8();
+            m_queries << Xapian::Query(ba.constData());
         }
 
         if (!d->email.isEmpty()) {
-            m_queries << Xapian::Query(d->email.toStdString());
+            const QByteArray ba = d->email.toUtf8();
+            m_queries << Xapian::Query(ba.constData());
         }
 
         if (!d->uid.isEmpty()) {
@@ -131,31 +146,32 @@ ResultIterator ContactQuery::exec()
         if (!d->any.isEmpty()) {
             Xapian::QueryParser parser;
             parser.set_database(db);
-            m_queries << parser.parse_query(d->any.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
+            const QByteArray ba = d->any.toUtf8();
+            m_queries << parser.parse_query(ba.constData(), Xapian::QueryParser::FLAG_PARTIAL);
         }
 
         if (!d->name.isEmpty()) {
             Xapian::QueryParser parser;
             parser.set_database(db);
             parser.add_prefix("", "NA");
-
-            m_queries << parser.parse_query(d->name.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
+            const QByteArray ba = d->name.toUtf8();
+            m_queries << parser.parse_query(ba.constData(), Xapian::QueryParser::FLAG_PARTIAL);
         }
 
         if (!d->nick.isEmpty()) {
             Xapian::QueryParser parser;
             parser.set_database(db);
             parser.add_prefix("", "NI");
-
-            m_queries << parser.parse_query(d->nick.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
+            const QByteArray ba = d->nick.toUtf8();
+            m_queries << parser.parse_query(ba.constData(), Xapian::QueryParser::FLAG_PARTIAL);
         }
 
         // FIXME: Check for exact match?
         if (!d->email.isEmpty()) {
             Xapian::QueryParser parser;
             parser.set_database(db);
-
-            m_queries << parser.parse_query(d->email.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
+            const QByteArray ba = d->email.toUtf8();
+            m_queries << parser.parse_query(ba.constData(), Xapian::QueryParser::FLAG_PARTIAL);
         }
 
         if (!d->uid.isEmpty()) {

@@ -27,6 +27,7 @@
 
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QFile>
 
 static const QString xdgDataDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
 

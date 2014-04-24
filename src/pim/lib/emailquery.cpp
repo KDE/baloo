@@ -27,6 +27,8 @@
 
 #include <QStandardPaths>
 
+#include <QFile>
+
 using namespace Baloo::PIM;
 
 class EmailQuery::Private
@@ -184,7 +186,7 @@ ResultIterator EmailQuery::exec()
     const QString dir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/baloo/email/";
     Xapian::Database db;
     try {
-        db = Xapian::Database(dir.toUtf8().constData());
+        db = Xapian::Database(QFile::encodeName(dir).constData());
     } catch (const Xapian::DatabaseError& e) {
         qWarning() << "Failed to open Xapian database:" << QString::fromStdString(e.get_error_string());
         return ResultIterator();
@@ -202,7 +204,8 @@ ResultIterator EmailQuery::exec()
 
         // vHanda: Do we really need the query parser over here?
         Q_FOREACH (const QString& str, d->involves) {
-            m_queries << parser.parse_query(str.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
+            const QByteArray ba = str.toUtf8();
+            m_queries << parser.parse_query(ba.constData(), Xapian::QueryParser::FLAG_PARTIAL);
         }
     }
 
@@ -210,8 +213,8 @@ ResultIterator EmailQuery::exec()
         Xapian::QueryParser parser;
         parser.set_database(db);
         parser.add_prefix("", "F");
-
-        m_queries << parser.parse_query(d->from.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
+        const QByteArray ba = d->from.toUtf8();
+        m_queries << parser.parse_query(ba.constData(), Xapian::QueryParser::FLAG_PARTIAL);
     }
 
     if (!d->to.isEmpty()) {
@@ -220,7 +223,8 @@ ResultIterator EmailQuery::exec()
         parser.add_prefix("", "T");
 
         Q_FOREACH (const QString& str, d->to) {
-            m_queries << parser.parse_query(str.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
+            const QByteArray ba = str.toUtf8();
+            m_queries << parser.parse_query(ba.constData(), Xapian::QueryParser::FLAG_PARTIAL);
         }
     }
 
@@ -230,7 +234,8 @@ ResultIterator EmailQuery::exec()
         parser.add_prefix("", "CC");
 
         Q_FOREACH (const QString& str, d->cc) {
-            m_queries << parser.parse_query(str.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
+            const QByteArray ba = str.toUtf8();
+            m_queries << parser.parse_query(ba.constData(), Xapian::QueryParser::FLAG_PARTIAL);
         }
     }
 
@@ -240,7 +245,8 @@ ResultIterator EmailQuery::exec()
         parser.add_prefix("", "BC");
 
         Q_FOREACH (const QString& str, d->bcc) {
-            m_queries << parser.parse_query(str.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
+            const QByteArray ba = str.toUtf8();
+            m_queries << parser.parse_query(ba.constData(), Xapian::QueryParser::FLAG_PARTIAL);
         }
     }
 
@@ -249,8 +255,8 @@ ResultIterator EmailQuery::exec()
         parser.set_database(db);
         parser.add_prefix("", "SU");
         parser.set_default_op(Xapian::Query::OP_AND);
-
-        m_queries << parser.parse_query(d->subjectMatchString.toStdString(),
+        const QByteArray ba = d->subjectMatchString.toUtf8();
+        m_queries << parser.parse_query(ba.constData(),
                                         Xapian::QueryParser::FLAG_PARTIAL);
     }
 
@@ -271,8 +277,8 @@ ResultIterator EmailQuery::exec()
         parser.set_database(db);
         parser.add_prefix("", "BO");
         parser.set_default_op(Xapian::Query::OP_AND);
-
-        m_queries << parser.parse_query(d->bodyMatchString.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
+        const QByteArray ba = d->bodyMatchString.toUtf8();
+        m_queries << parser.parse_query(ba.constData(), Xapian::QueryParser::FLAG_PARTIAL);
     }
 
     if (d->important == 'T')
@@ -297,7 +303,8 @@ ResultIterator EmailQuery::exec()
 
         const QStringList list = d->matchString.split(QRegExp("\\s"), QString::SkipEmptyParts);
         Q_FOREACH (const QString& s, list) {
-            m_queries << parser.parse_query(s.toStdString(),
+            const QByteArray ba = s.toUtf8();
+            m_queries << parser.parse_query(ba.constData(),
                                             Xapian::QueryParser::FLAG_PARTIAL);
         }
     }

@@ -42,6 +42,8 @@
 #include <KGlobal>
 #include <KStandardDirs>
 
+#include <QFile>
+
 namespace {
     QString dbPath(const QString& dbName) {
         QString basePath = "baloo";
@@ -64,7 +66,7 @@ namespace {
     }
 }
 
-#define INDEXING_AGENT_VERSION 3
+#define INDEXING_AGENT_VERSION 4
 
 BalooIndexingAgent::BalooIndexingAgent(const QString& id)
     : AgentBase(id),
@@ -145,7 +147,7 @@ qlonglong BalooIndexingAgent::indexedItemsInDatabase(const std::string& term, co
 {
     Xapian::Database db;
     try {
-        db = Xapian::Database(dbPath.toStdString());
+        db = Xapian::Database(QFile::encodeName(dbPath).constData());
     } catch (const Xapian::DatabaseError& e) {
         qWarning() << "Failed to open database" << dbPath << ":" << QString::fromStdString(e.get_msg());
         return 0;

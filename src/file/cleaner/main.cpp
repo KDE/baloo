@@ -23,11 +23,15 @@
 #include "../database.h"
 #include "../priority.h"
 
+#include <KConfig>
+#include <KConfigGroup>
+
 #include <QStandardPaths>
 #include <QCoreApplication>
 #include <QCommandLineParser>
 #include <QDBusConnection>
 #include <QDebug>
+#include <QDir>
 
 int main(int argc, char* argv[])
 {
@@ -44,6 +48,18 @@ int main(int argc, char* argv[])
 
     const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)
                          + QLatin1String("/baloo/file");
+
+    KConfig config("baloofilerc");
+    KConfigGroup group = config.group("Basic Settings");
+    bool indexingEnabled = group.readEntry("Indexing-Enabled", true);
+    if (!indexingEnabled) {
+        QDir dir(path);
+        Q_FOREACH (const QString& file, dir.entryList(QDir::Files)) {
+            dir.remove(file);
+        }
+        QFile::remove(path);
+        return 0;
+    }
 
     Database db;
     db.setPath(path);
