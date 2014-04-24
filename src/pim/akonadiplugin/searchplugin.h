@@ -23,7 +23,9 @@
 #ifndef BALOO_PIM_SEARCHPLUGIN_H
 #define BALOO_PIM_SEARCHPLUGIN_H
 
+#include <QStringList>
 #include <akonadi/abstractsearchplugin.h>
+#include <QObject>
 
 namespace Baloo {
 class Query;

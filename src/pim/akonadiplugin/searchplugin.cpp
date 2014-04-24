@@ -33,6 +33,7 @@
 #include <KDateTime>
 #include <QtPlugin>
 #include <QStringList>
+#include <QDateTime>
 
 static Baloo::Term::Operation mapRelation(Akonadi::SearchTerm::Relation relation) {
     if (relation == Akonadi::SearchTerm::RelAnd){
@@ -312,4 +313,5 @@ QSet<qint64> SearchPlugin::search(const QString &akonadiQuery, const QList<qint6
     return resultSet;
 }
 
-Q_EXPORT_PLUGIN2(akonadi_baloo_searchplugin, SearchPlugin)
+//QT5
+//Q_EXPORT_PLUGIN2(akonadi_baloo_searchplugin, SearchPlugin)

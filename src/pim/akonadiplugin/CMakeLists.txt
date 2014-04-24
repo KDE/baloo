@@ -1,7 +1,7 @@
 add_definitions(${KDE4_ENABLE_EXCEPTIONS})
 
 find_package(KF5KDELibs4Support REQUIRED)
-
+find_package(KF5AkonadiKMime REQUIRED)
 
 add_library(akonadi_baloo_searchplugin
  MODULE 
@@ -16,6 +16,9 @@ target_link_libraries(akonadi_baloo_searchplugin
     baloopim
     balooxapian
     KF5::KDELibs4Support
+    KF5::AkonadiKMime
+    KF5::ItemModels
+    KF5::AkonadiKMime
 )
 
 install(TARGETS akonadi_baloo_searchplugin DESTINATION ${PLUGIN_INSTALL_DIR}/akonadi)
