@@ -82,7 +82,7 @@ void Cleaner::start()
             numDocuments++;
         }
 
-        if (numDocuments >= 1000) {
+        if (numDocuments && numDocuments % 1000 == 0) {
             m_commitQueue->commit();
         }
     }
