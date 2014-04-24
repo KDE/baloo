@@ -29,16 +29,18 @@
 
 #include "src/file/priority.h"
 
-#include <Akonadi/ItemFetchJob>
-#include <Akonadi/ItemFetchScope>
-#include <Akonadi/ChangeRecorder>
-#include <Akonadi/CollectionFetchJob>
-#include <Akonadi/AgentManager>
-#include <Akonadi/ServerManager>
+#include <ItemFetchJob>
+#include <ItemFetchScope>
+#include <ChangeRecorder>
+#include <CollectionFetchJob>
+#include <AgentManager>
+#include <ServerManager>
 
 #include <KConfig>
 #include <KConfigGroup>
 #include <KLocalizedString>
+#include <KGlobal>
+#include <KStandardDirs>
 
 namespace {
     QString dbPath(const QString& dbName) {

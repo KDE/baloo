@@ -26,8 +26,8 @@
 #include "abstractindexer.h"
 
 #include <KMime/Message>
-#include <Akonadi/Collection>
-#include <Akonadi/Item>
+#include <Collection>
+#include <Item>
 
 #include <xapian.h>
 

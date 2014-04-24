@@ -27,11 +27,11 @@
 #include <QFile>
 #include <QDebug>
 
-#include <Akonadi/CollectionFetchJob>
-#include <Akonadi/Collection>
-#include <Akonadi/ItemFetchJob>
-#include <Akonadi/ItemFetchScope>
-#include <Akonadi/Item>
+#include <CollectionFetchJob>
+#include <Collection>
+#include <ItemFetchJob>
+#include <ItemFetchScope>
+#include <Item>
 
 class App : public QApplication {
     Q_OBJECT

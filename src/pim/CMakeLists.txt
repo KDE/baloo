@@ -1,5 +1,5 @@
-#add_subdirectory(agent)
 if (KDEPIM_SUPPORT_BUILD)
+  add_subdirectory(agent)
   add_subdirectory(lib)
 endif()
 add_subdirectory(search)

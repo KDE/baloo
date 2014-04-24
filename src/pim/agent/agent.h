@@ -23,8 +23,8 @@
 #ifndef AGENT_H
 #define AGENT_H
 
-#include <akonadi/agentbase.h>
-#include <akonadi/collection.h>
+#include <agentbase.h>
+#include <collection.h>
 
 #include <QTimer>
 #include <QDateTime>

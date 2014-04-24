@@ -22,7 +22,7 @@
 
 #include "emailindexer.h"
 
-#include <Akonadi/Collection>
+#include <Collection>
 #include <Akonadi/KMime/MessageFlags>
 
 #include <QTextDocument>

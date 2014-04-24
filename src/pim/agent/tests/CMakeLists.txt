@@ -7,11 +7,11 @@ add_executable(emailindexer emailtest.cpp ../emailindexer.cpp ../abstractindexer
 target_link_libraries(emailindexer
   Qt5::Core
   Qt5::Test
-  
-
-  ${KDEPIMLIBS_AKONADI_LIBS}
-  ${KDEPIMLIBS_AKONADI_KMIME_LIBS}
-  ${KDEPIMLIBS_KMIME_LIBS}
-  ${KDEPIMLIBS_KPIMUTILS_LIBS}
+  KF5::AkonadiCore
+  KF5::AkonadiKMime
+  KF5::KMime
+  KF5::PimUtils
+  KF5::ItemModels
+  KF5::KDELibs4Support
   ${XAPIAN_LIBRARIES}
 )

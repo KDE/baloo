@@ -25,7 +25,7 @@
 
 #include <KABC/Addressee>
 #include <KABC/ContactGroup>
-#include <Akonadi/Collection>
+#include <Collection>
 
 ContactIndexer::ContactIndexer(const QString& path):
     AbstractIndexer()
