@@ -1,3 +1,4 @@
+kde_enable_exceptions()
 include_directories(
     ${XAPIAN_INCLUDE_DIR}
 )
@@ -15,8 +16,6 @@ set(BALOO_PIM_LIB_SRCS
 
 find_package(KF5KDELibs4Support REQUIRED)
 find_package(KF5ItemModels REQUIRED)
-
-add_definitions(-fexceptions)
 
 add_library(baloopim SHARED ${BALOO_PIM_LIB_SRCS})
 

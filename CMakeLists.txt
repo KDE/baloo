@@ -52,7 +52,8 @@ set_package_properties(KFileMetaData PROPERTIES
 )
 
 add_definitions(-DQT_NO_KEYWORDS)
-add_definitions(-fexceptions)
+# Turn exceptions on
+kde_enable_exceptions()
 
 set(KF5_VERSION "5.0.0")
 ecm_setup_version(${KF5_VERSION} VARIABLE_PREFIX BALOO

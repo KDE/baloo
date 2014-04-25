@@ -1,4 +1,4 @@
-add_definitions(-fexceptions)
+kde_enable_exceptions()
 
 set(CORE_SRCS
     searchstore.cpp

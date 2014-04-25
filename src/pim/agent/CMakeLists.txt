@@ -1,10 +1,9 @@
+kde_enable_exceptions()
 include_directories(
     ${XAPIAN_INCLUDE_DIR}
     ${KDEPIMLIBS_INCLUDE_DIRS}
     ${CMAKE_CURRENT_BINARY_DIR}
 )
-
-add_definitions(-fexceptions)
 
 find_package(KF5KDELibs4Support REQUIRED)
 find_package(KF5Abc REQUIRED)

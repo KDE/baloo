@@ -1,4 +1,4 @@
-add_definitions(-fexceptions)
+kde_enable_exceptions()
 
 add_subdirectory(lib)
 add_subdirectory(search)
