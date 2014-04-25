@@ -38,9 +38,12 @@ using namespace Baloo;
 FileIndexingJob::FileIndexingJob(const QVector<uint>& files, QObject* parent)
     : KJob(parent)
     , m_process(0)
+    , m_suspended(false)
 {
     Q_ASSERT(!files.isEmpty());
     m_files.push(files);
+
+    setCapabilities(Suspendable);
 
     // setup the timer used to kill the indexer process if it seems to get stuck
     m_processTimer = new QTimer(this);
@@ -96,7 +99,9 @@ void FileIndexingJob::slotIndexedFile(int, QProcess::ExitStatus exitStatus)
             emitResult();
         } else {
             m_args = m_files.pop();
-            start(m_args);
+            if (!m_suspended) {
+                start(m_args);
+            }
         }
         return;
     }
@@ -115,7 +120,9 @@ void FileIndexingJob::slotIndexedFile(int, QProcess::ExitStatus exitStatus)
             emitResult();
         } else {
             m_args = m_files.pop();
-            start(m_args);
+            if (!m_suspended) {
+                start(m_args);
+            }
         }
         return;
     }
@@ -126,7 +133,9 @@ void FileIndexingJob::slotIndexedFile(int, QProcess::ExitStatus exitStatus)
     m_files.push(m_args.mid(s));
     m_args.resize(s);
 
-    start(m_args);
+    if (!m_suspended) {
+        start(m_args);
+    }
 }
 
 void FileIndexingJob::slotProcessTimerTimeout()
@@ -146,6 +155,18 @@ void FileIndexingJob::setTimeoutInterval(int msec)
     m_processTimeout = msec;
 }
 
+bool FileIndexingJob::doSuspend()
+{
+    m_suspended = true;
+    return true;
+}
+
+bool FileIndexingJob::doResume()
+{
+    m_suspended = false;
+    start(m_args);
+    return true;
+}
 
 
 #include "fileindexingjob.moc"

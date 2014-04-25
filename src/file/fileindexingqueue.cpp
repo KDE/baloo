@@ -33,6 +33,7 @@ using namespace Baloo;
 FileIndexingQueue::FileIndexingQueue(Database* db, QObject* parent)
     : IndexingQueue(parent)
     , m_db(db)
+    , m_indexJob(0)
 {
     m_maxSize = 1200;
     m_batchSize = 40;
@@ -78,14 +79,15 @@ void FileIndexingQueue::processNextIteration()
         files << m_fileQueue.pop();
     }
 
-    FileIndexingJob* job = new FileIndexingJob(files, this);
-    connect(job, SIGNAL(indexingFailed(uint)), this, SLOT(slotIndexingFailed(uint)));
-    connect(job, SIGNAL(finished(KJob*)), SLOT(slotFinishedIndexingFile(KJob*)));
+    Q_ASSERT(m_indexJob == 0);
+    m_indexJob = new FileIndexingJob(files, this);
+    connect(m_indexJob, SIGNAL(indexingFailed(uint)), this, SLOT(slotIndexingFailed(uint)));
+    connect(m_indexJob, SIGNAL(finished(KJob*)), SLOT(slotFinishedIndexingFile(KJob*)));
 
-    job->start();
+    m_indexJob->start();
 }
 
-void FileIndexingQueue::slotFinishedIndexingFile(KJob*)
+void FileIndexingQueue::slotFinishedIndexingFile(KJob* job)
 {
     // The process would have modified the db
     m_db->xapianDatabase()->db()->reopen();
@@ -93,6 +95,9 @@ void FileIndexingQueue::slotFinishedIndexingFile(KJob*)
         fillQueue();
     }
     finishIteration();
+
+    Q_ASSERT(job == m_indexJob);
+    m_indexJob = 0;
 }
 
 void FileIndexingQueue::slotIndexingFailed(uint id)
@@ -112,3 +117,16 @@ void FileIndexingQueue::clear()
 {
     m_fileQueue.clear();
 }
+
+void FileIndexingQueue::doResume()
+{
+    if (m_indexJob)
+        m_indexJob->resume();
+}
+
+void FileIndexingQueue::doSuspend()
+{
+    if (m_indexJob)
+        m_indexJob->suspend();
+}
+
