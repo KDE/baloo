@@ -205,43 +205,52 @@ int XapianSearchStore::exec(const Query& query)
     if (!m_db)
         return 0;
 
-    QMutexLocker lock(&m_mutex);
-    try {
-        m_db->reopen();
-    } catch (Xapian::DatabaseError& e) {
-        kWarning() << "Failed to reopen database" << dbPath() << ":" <<  QString::fromStdString(e.get_msg());
-        return 0;
+    while (1) {
+        try {
+            QMutexLocker lock(&m_mutex);
+            try {
+                m_db->reopen();
+            } catch (Xapian::DatabaseError& e) {
+                kWarning() << "Failed to reopen database" << dbPath() << ":" <<  QString::fromStdString(e.get_msg());
+                return 0;
+            }
+
+            QTime queryGenerationTimer;
+            queryGenerationTimer.start();
+
+            Xapian::Query xapQ = toXapianQuery(query.term());
+            if (query.searchString().size()) {
+                QString str = query.searchString();
+
+                Xapian::Query q = constructSearchQuery(str);
+                xapQ = andQuery(xapQ, q);
+            }
+            xapQ = andQuery(xapQ, convertTypes(query.types()));
+            xapQ = andQuery(xapQ, constructFilterQuery(query.yearFilter(), query.monthFilter(), query.dayFilter()));
+            xapQ = applyCustomOptions(xapQ, query.customOptions());
+            xapQ = finalizeQuery(xapQ);
+
+            Xapian::Enquire enquire(*m_db);
+            kDebug() << xapQ.get_description().c_str();
+            enquire.set_query(xapQ);
+
+            kDebug() << "Query Generation" << queryGenerationTimer.elapsed();
+
+            Result& res = m_queryMap[m_nextId++];
+            QTime timer;
+            timer.start();
+            res.mset = enquire.get_mset(query.offset(), query.limit());
+            res.it = res.mset.begin();
+
+            kDebug() << "Exec" << timer.elapsed() << "msecs";
+            return m_nextId-1;
+        }
+        catch (const Xapian::DatabaseModifiedError&) {
+            continue;
+        }
     }
 
-    QTime queryGenerationTimer;
-    queryGenerationTimer.start();
-
-    Xapian::Query xapQ = toXapianQuery(query.term());
-    if (query.searchString().size()) {
-        QString str = query.searchString();
-
-        Xapian::Query q = constructSearchQuery(str);
-        xapQ = andQuery(xapQ, q);
-    }
-    xapQ = andQuery(xapQ, convertTypes(query.types()));
-    xapQ = andQuery(xapQ, constructFilterQuery(query.yearFilter(), query.monthFilter(), query.dayFilter()));
-    xapQ = applyCustomOptions(xapQ, query.customOptions());
-    xapQ = finalizeQuery(xapQ);
-
-    Xapian::Enquire enquire(*m_db);
-    kDebug() << xapQ.get_description().c_str();
-    enquire.set_query(xapQ);
-
-    kDebug() << "Query Generation" << queryGenerationTimer.elapsed();
-
-    Result& res = m_queryMap[m_nextId++];
-    QTime timer;
-    timer.start();
-    res.mset = enquire.get_mset(query.offset(), query.limit());
-    res.it = res.mset.begin();
-
-    kDebug() << "Exec" << timer.elapsed() << "msecs";
-    return m_nextId-1;
+    return 0;
 }
 
 void XapianSearchStore::close(int queryId)
