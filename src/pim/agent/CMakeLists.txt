@@ -45,6 +45,5 @@ install(TARGETS akonadi_baloo_indexer ${INSTALL_TARGETS_DEFAULT_ARGS})
 install(FILES akonadibalooindexingagent.desktop
         DESTINATION "${CMAKE_INSTALL_PREFIX}/share/akonadi/agents")
 
-#Reactivate
 add_subdirectory(tests)
 add_subdirectory(autotests)
