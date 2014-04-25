@@ -215,9 +215,6 @@ int XapianSearchStore::exec(const Query& query)
                 return 0;
             }
 
-            QTime queryGenerationTimer;
-            queryGenerationTimer.start();
-
             Xapian::Query xapQ = toXapianQuery(query.term());
             if (query.searchString().size()) {
                 QString str = query.searchString();
@@ -231,18 +228,12 @@ int XapianSearchStore::exec(const Query& query)
             xapQ = finalizeQuery(xapQ);
 
             Xapian::Enquire enquire(*m_db);
-            kDebug() << xapQ.get_description().c_str();
             enquire.set_query(xapQ);
 
-            kDebug() << "Query Generation" << queryGenerationTimer.elapsed();
-
             Result& res = m_queryMap[m_nextId++];
-            QTime timer;
-            timer.start();
             res.mset = enquire.get_mset(query.offset(), query.limit());
             res.it = res.mset.begin();
 
-            kDebug() << "Exec" << timer.elapsed() << "msecs";
             return m_nextId-1;
         }
         catch (const Xapian::DatabaseModifiedError&) {
