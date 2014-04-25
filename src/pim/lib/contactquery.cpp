@@ -24,7 +24,7 @@
 #include "resultiterator_p.h"
 #include "xapian.h"
 
-#include <KDebug>
+#include <QDebug>
 
 #include <QList>
 #include <QDebug>
@@ -111,7 +111,7 @@ ResultIterator ContactQuery::exec()
     try {
         db = Xapian::Database(QFile::encodeName(dir).constData());
     } catch (const Xapian::DatabaseError& e) {
-        kWarning() << "Failed to open Xapian database:" << QString::fromStdString(e.get_error_string());
+        qWarning() << "Failed to open Xapian database:" << QString::fromStdString(e.get_error_string());
         return ResultIterator();
     }
 

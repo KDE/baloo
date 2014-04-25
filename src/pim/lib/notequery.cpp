@@ -28,10 +28,8 @@
 #include <QDebug>
 #include <QStandardPaths>
 #include <QFile>
+#include <QDebug>
 
-#include <KGlobal>
-#include <KStandardDirs>
-#include <KDebug>
 
 using namespace Baloo::PIM;
 
@@ -87,7 +85,7 @@ ResultIterator NoteQuery::exec()
     try {
         db = Xapian::Database(QFile::encodeName(dir).constData());
     } catch (const Xapian::DatabaseError& e) {
-        kWarning() << "Failed to open Xapian database:" << QString::fromStdString(e.get_error_string());
+        qWarning() << "Failed to open Xapian database:" << QString::fromStdString(e.get_error_string());
         return ResultIterator();
     }
 
