@@ -5,7 +5,7 @@ find_package(ECM 0.0.12 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules" ${ECM_MODULE_PATH})
 
 find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Widgets DBus Test Sql)
-find_package(KF5 REQUIRED NO_MODULE COMPONENTS I18n Config Service IdleTime KCMUtils Auth Runner Crash Solid KIO Auth)
+find_package(KF5 REQUIRED COMPONENTS I18n Config Service IdleTime KCMUtils Auth Runner Crash Solid KIO Auth)
 find_package(KFileMetaData 4.97 REQUIRED)
 
 include(ECMSetupVersion)
