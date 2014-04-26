@@ -49,3 +49,19 @@ target_link_libraries(modifyjobtest
 # temporary files they need (as XattrDetector blacklists /tmp by default).
 set_target_properties(fetchjobtest PROPERTIES COMPILE_FLAGS -DBUILDDIR="\\"${CMAKE_CURRENT_BINARY_DIR}/\\"")
 set_target_properties(modifyjobtest PROPERTIES COMPILE_FLAGS -DBUILDDIR="\\"${CMAKE_CURRENT_BINARY_DIR}/\\"")
+
+#
+# TagList Job
+#
+set(taglistjobtest_SRC taglistjobtest.cpp)
+kde4_add_unit_test(taglistjobtest NOGUI ${taglistjobtest_SRC})
+target_link_libraries(taglistjobtest
+  ${QT_QTTEST_LIBRARY}
+  ${KDE4_KDECORE_LIBS}
+  #${KDE4_SOLID_LIBS}
+  ${QT_QTSQL_LIBRARY}
+  ${XAPIAN_LIBRARIES}
+  ${QJSON_LIBRARIES}
+  baloocore
+  baloofiles
+)
