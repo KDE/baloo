@@ -101,6 +101,9 @@ XattrDetector::~XattrDetector()
 
 bool XattrDetector::isSupported(const QString& path)
 {
+#ifdef Q_OS_WIN
+    return false;
+#endif
     if (!d->m_initialized)
         d->init();
 
