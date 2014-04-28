@@ -133,7 +133,9 @@ void XapianDatabase::commit()
     m_docsToAdd.clear();
     m_docsToRemove.clear();
 
+#ifdef __GNUC__
     malloc_trim(0);
+#endif
 }
 
 XapianDocument XapianDatabase::document(uint id)
