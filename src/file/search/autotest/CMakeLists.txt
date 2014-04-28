@@ -9,6 +9,8 @@ kde4_add_unit_test(filesearchstoretest filesearchstoretest.cpp
                    ../../database.cpp
 )
 
+set_target_properties(filesearchstoretest PROPERTIES COMPILE_FLAGS -DBALOO_FILE_EXPORT=)
+
 target_link_libraries(filesearchstoretest
   ${QT_QTCORE_LIBRARY}
   ${QT_QTSQL_LIBRARY}

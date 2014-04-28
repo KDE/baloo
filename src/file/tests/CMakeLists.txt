@@ -27,7 +27,7 @@ kde4_add_executable(basicindexingqueuetest
                     ../lib/filemapping.cpp
                     ../commitqueue.cpp
 )
-
+set_target_properties(basicindexingqueuetest PROPERTIES COMPILE_FLAGS -DBALOO_FILE_EXPORT=)
 target_link_libraries(basicindexingqueuetest
   ${QT_QTCORE_LIBRARY}
   ${QT_QTSQL_LIBRARY}
@@ -52,7 +52,7 @@ kde4_add_executable(fileindexingqueuetest
                     ../lib/filemapping.cpp
                     ../commitqueue.cpp
 )
-
+set_target_properties(fileindexingqueuetest PROPERTIES COMPILE_FLAGS -DBALOO_FILE_EXPORT=)
 target_link_libraries(fileindexingqueuetest
   ${QT_QTCORE_LIBRARY}
   ${QT_QTSQL_LIBRARY}

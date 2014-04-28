@@ -26,7 +26,7 @@ set(metadatamover_SRC
     ../lib/filemapping.cpp)
 
 kde4_add_unit_test(metadatamovertest NOGUI ${metadatamover_SRC})
-
+set_target_properties(metadatamovertest PROPERTIES COMPILE_FLAGS -DBALOO_FILE_EXPORT=)
 target_link_libraries(metadatamovertest
   ${QT_QTTEST_LIBRARY}
   ${QT_QTSQL_LIBRARY}
@@ -83,7 +83,7 @@ set(basicIndexingQueue_SRC
 )
 
 kde4_add_unit_test(basicindexingqueuetest NOGUI ${basicIndexingQueue_SRC})
-
+set_target_properties(basicindexingqueuetest PROPERTIES COMPILE_FLAGS -DBALOO_FILE_EXPORT=)
 target_link_libraries(basicindexingqueuetest
   ${QT_QTTEST_LIBRARY}
   ${QT_QTSQL_LIBRARY}
