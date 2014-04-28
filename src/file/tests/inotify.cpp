@@ -26,6 +26,7 @@
 #include <iostream>
 
 #include "../kinotify.h"
+#include "util.h"
 
 int main(int argc, char** argv)
 {
@@ -42,4 +43,5 @@ int main(int argc, char** argv)
     app.exec();
 
     std::cout << "Elapsed: " << timer.elapsed() << std::endl;
+    printIOUsage();
 }
