@@ -24,6 +24,7 @@
 #include "../basicindexingjob.h"
 #include "../database.h"
 #include "xapiandatabase.h"
+#include "../fileindexerconfig.h"
 
 #include <KCmdLineArgs>
 #include <KMimeType>
@@ -64,6 +65,8 @@ App::App(QObject* parent)
     m_bData = args->isSet("bdata");
     m_debugEnabled = args->isSet("debug");
 
+    FileIndexerConfig config;
+
     m_results.reserve(args->count());
     for (int i=0; i<args->count(); i++) {
         FileMapping mapping = FileMapping(args->arg(i).toUInt());
@@ -81,11 +84,11 @@ App::App(QObject* parent)
             url = args->url(i).toLocalFile();
         }
 
-        if (QFile::exists(url)) {
+        if (QFile::exists(url) && config.shouldBeIndexed(url)) {
             m_urls << url;
         } else {
             // id or url was looked up, but file deleted
-            kDebug() << url << "does not exist";
+            kDebug() << url << "does not exist or should not be indexed";
 
             // Try to delete it as an id:
             // it may have been deleted from the FileMapping db as well.

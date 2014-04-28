@@ -6,6 +6,9 @@ set(EXTRACTOR_SRCS
   ../basicindexingjob.cpp
   ../database.cpp
   ../util.cpp
+  ../fileindexerconfig.cpp
+  ../regexpcache.cpp
+  ../fileexcludefilters.cpp
 )
 
 kde4_add_executable(baloo_file_extractor ${EXTRACTOR_SRCS})
