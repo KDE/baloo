@@ -33,16 +33,6 @@
 #include "../fileindexerconfig.h"
 #include "../lib/filemapping.h"
 
-namespace {
-    QString contents(const QString& url) {
-        QFile file(url);
-        file.open(QIODevice::ReadOnly);
-
-        QTextStream stream(&file);
-        return stream.readAll();
-    }
-}
-
 int main(int argc, char** argv)
 {
     KTempDir tempDir;
