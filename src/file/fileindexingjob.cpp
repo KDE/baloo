@@ -170,7 +170,8 @@ bool FileIndexingJob::doResume()
         return false;
 
     m_suspended = false;
-    start(m_args);
+    if (!m_process)
+        start(m_args);
     return true;
 }
 
