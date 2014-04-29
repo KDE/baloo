@@ -10,7 +10,7 @@ target_link_libraries(baloo_file_extractor_dummy
 add_definitions("-DBALOO_TEMP_PATH=\\\"${CMAKE_CURRENT_BINARY_DIR}\\\"")
 kde4_add_unit_test(fileindexingjobtest NOGUI fileindexingjobtest.cpp
                                              ../../fileindexingjob.cpp)
-
+set_target_properties(fileindexingjobtest PROPERTIES COMPILE_FLAGS -DBALOO_FILE_EXPORT=)
 target_link_libraries(fileindexingjobtest
   ${QT_QTTEST_LIBRARY}
   ${KDE4_KDECORE_LIBS}

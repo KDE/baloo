@@ -6,6 +6,7 @@ include(CheckSymbolExists)
 # least some file systems supported by the operating system. We currently
 # assume the functionality is in libc itself.
 
+if (NOT WIN32)
 # Linux and OS X.
 check_include_files("sys/types.h;sys/xattr.h" HAVE_SYS_XATTR_H)
 
@@ -19,3 +20,4 @@ endif ()
 # Check whether malloc_trim(3) is supported.
 check_include_file("malloc.h" HAVE_MALLOC_H)
 check_symbol_exists(malloc_trim "malloc.h" HAVE_MALLOC_TRIM)
+endif ()

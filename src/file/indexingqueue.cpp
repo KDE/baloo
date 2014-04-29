@@ -50,6 +50,7 @@ void IndexingQueue::processNext()
 
 void IndexingQueue::resume()
 {
+    doResume();
     m_suspended = false;
     if (isEmpty())
         fillQueue();
@@ -59,6 +60,7 @@ void IndexingQueue::resume()
 
 void IndexingQueue::suspend()
 {
+    doSuspend();
     m_suspended = true;
 }
 
@@ -95,4 +97,12 @@ void IndexingQueue::finishIteration()
 void IndexingQueue::setDelay(int msec)
 {
     m_delay = msec;
+}
+
+void IndexingQueue::doResume()
+{
+}
+
+void IndexingQueue::doSuspend()
+{
 }

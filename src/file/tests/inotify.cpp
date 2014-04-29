@@ -20,46 +20,28 @@
  *
  */
 
-#include <KDebug>
-#include <KTempDir>
-#include <QTime>
 #include <QCoreApplication>
+#include <QDir>
+#include <QTime>
+#include <iostream>
 
-#include "../basicindexingqueue.h"
-#include "../commitqueue.h"
-#include "../database.h"
-#include "../fileindexerconfig.h"
-#include "../lib/filemapping.h"
+#include "../kinotify.h"
 #include "util.h"
 
 int main(int argc, char** argv)
 {
-    KTempDir tempDir;
-
-    Database db;
-    db.setPath(tempDir.name());
-    db.init();
-
-    Baloo::FileIndexerConfig config;
     QCoreApplication app(argc, argv);
 
-    Baloo::BasicIndexingQueue basicIQ(&db, &config);
-    QObject::connect(&basicIQ, SIGNAL(finishedIndexing()), &app, SLOT(quit()));
-
-    Baloo::CommitQueue commitQueue(&db);
-    QObject::connect(&basicIQ, SIGNAL(newDocument(uint,Xapian::Document)),
-                     &commitQueue, SLOT(add(uint,Xapian::Document)));
-
-    basicIQ.enqueue(Baloo::FileMapping(QDir::homePath()));
+    KInotify inotify;
+    QObject::connect(&inotify, SIGNAL(installedWatches()),
+                     &app, SLOT(quit()));
 
     QTime timer;
     timer.start();
-    int ret = app.exec();
 
-    commitQueue.commit();
-    qDebug() << "Elapsed:" << timer.elapsed();
+    inotify.addWatch(QDir::homePath(), KInotify::EventAll);
+    app.exec();
 
+    std::cout << "Elapsed: " << timer.elapsed() << std::endl;
     printIOUsage();
-
-    return ret;
 }
