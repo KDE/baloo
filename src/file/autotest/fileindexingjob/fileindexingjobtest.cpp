@@ -30,7 +30,11 @@ void FileIndexingJobTest::init()
 {
     // Set the correct path
     QByteArray path = qgetenv("PATH");
+#ifndef Q_OS_WIN
     path = QByteArray(BALOO_TEMP_PATH) + ":" + path;
+#else
+    path = QByteArray(BALOO_TEMP_PATH) + ";" + path;
+#endif
 
     setenv("PATH", path.constData(), 1);
     unsetenv("BALOO_EXTRACTOR_FAIL_FILE");

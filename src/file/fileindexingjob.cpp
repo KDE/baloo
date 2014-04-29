@@ -157,14 +157,21 @@ void FileIndexingJob::setTimeoutInterval(int msec)
 
 bool FileIndexingJob::doSuspend()
 {
+    if (m_suspended)
+        return false;
+
     m_suspended = true;
     return true;
 }
 
 bool FileIndexingJob::doResume()
 {
+    if (!m_suspended)
+        return false;
+
     m_suspended = false;
-    start(m_args);
+    if (!m_process)
+        start(m_args);
     return true;
 }
 
