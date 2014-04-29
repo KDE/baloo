@@ -24,6 +24,7 @@
 #include <KIcon>
 #include <KRun>
 #include <Plasma/QueryMatch>
+#include <QDir>
 
 #include "query.h"
 
@@ -61,6 +62,12 @@ void SearchRunner::match(Plasma::RunnerContext& context)
         match.setText(it.text());
         match.setData(it.url());
         match.setType(Plasma::QueryMatch::PossibleMatch);
+
+        QString url = it.url().toLocalFile();
+        if (url.startsWith(QDir::homePath())) {
+            url.replace(0, QDir::homePath().length(), QLatin1String("~"));
+        }
+        match.setSubtext(url);
 
         context.addMatch(context.query(), match);
     }
