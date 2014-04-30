@@ -29,6 +29,10 @@
 #include <QTextStream>
 #include <QTemporaryDir>
 
+#ifdef Q_OS_WIN
+#include <windows.h>
+#endif
+
 namespace Baloo
 {
 namespace Test
@@ -52,7 +56,7 @@ QTemporaryDir* createTmpFolders(const QStringList& folders)
     // If the temporary directory is in a hidden folder, then the tests will fail,
     // so we use /tmp/ instead.
     // TODO: Find a better solution
-    if (tmpDir->path().contains("/.")) {
+    if (QFileInfo(tmpDir->path()).isHidden()) {
         delete tmpDir;
         tmpDir = new QTemporaryDir(QLatin1String("/tmp/"));
     }
@@ -62,6 +66,13 @@ QTemporaryDir* createTmpFolders(const QStringList& folders)
             if (!dir.exists(sf)) {
                 dir.mkdir(sf);
             }
+#ifdef Q_OS_WIN
+            if(sf.startsWith(".")) {
+                if(!SetFileAttributesW(reinterpret_cast<const WCHAR*>((dir.path() + "/" + sf).utf16()), FILE_ATTRIBUTE_HIDDEN)) {
+                    qWarning("failed to set 'hidden' attribute!");
+                }
+            }
+#endif
             dir.cd(sf);
         }
     }
@@ -75,7 +86,7 @@ QTemporaryDir* createTmpFilesAndFolders(const QStringList& list)
     // If the temporary directory is in a hidden folder, then the tests will fail,
     // so we use /tmp/ instead.
     // TODO: Find a better solution
-    if (tmpDir->path().contains("/.")) {
+    if (QFileInfo(tmpDir->path()).isHidden()) {
         delete tmpDir;
         tmpDir = new QTemporaryDir(QLatin1String("/tmp/"));
     }
@@ -86,6 +97,13 @@ QTemporaryDir* createTmpFilesAndFolders(const QStringList& list)
                 if (!dir.exists(sf)) {
                     dir.mkdir(sf);
                 }
+#ifdef Q_OS_WIN
+                if(sf.startsWith(".")) {
+                    if(!SetFileAttributesW(reinterpret_cast<const WCHAR*>((dir.path() + "/" + sf).utf16()), FILE_ATTRIBUTE_HIDDEN)) {
+                        qWarning("failed to set 'hidden' attribute!");
+                    }
+                }
+#endif
                 dir.cd(sf);
             }
         }

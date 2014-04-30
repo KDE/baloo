@@ -34,7 +34,6 @@ if (KDEPIM_SUPPORT_BUILD)
     URL "http://akonadi-project.org"
     TYPE REQUIRED
   )
-
 endif()
 
 find_package(Xapian CONFIG)

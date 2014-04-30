@@ -24,8 +24,10 @@
 #include "../basicindexingjob.h"
 #include "../database.h"
 #include "xapiandatabase.h"
+#include "../fileindexerconfig.h"
 
 #include <QDebug>
+#include <QCoreApplication>
 
 #include <QTimer>
 #include <QFileInfo>
@@ -56,6 +58,8 @@ App::App(const QString& path, QObject* parent)
 
 void App::startProcessing(const QStringList& args)
 {
+    FileIndexerConfig config;
+
     m_results.reserve(args.size());
     Q_FOREACH (const QString& arg, args) {
         FileMapping mapping = FileMapping(arg.toUInt());
@@ -73,11 +77,11 @@ void App::startProcessing(const QStringList& args)
             url = QFileInfo(arg).absoluteFilePath();
         }
 
-        if (QFile::exists(url)) {
+        if (QFile::exists(url) && config.shouldBeIndexed(url)) {
             m_urls << url;
         } else {
             // id or url was looked up, but file deleted
-            qDebug() << url << "does not exist";
+            qDebug() << url << "does not exist or should not be indexed";
 
             // Try to delete it as an id:
             // it may have been deleted from the FileMapping db as well.

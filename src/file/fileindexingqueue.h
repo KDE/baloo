@@ -35,6 +35,7 @@ class Database;
 
 namespace Baloo
 {
+class FileIndexingJob;
 
 class FileIndexingQueue : public IndexingQueue
 {
@@ -52,6 +53,8 @@ Q_SIGNALS:
 
 protected:
     virtual void processNextIteration();
+    virtual void doSuspend();
+    virtual void doResume();
 
 private Q_SLOTS:
     void slotFinishedIndexingFile(KJob* job);
@@ -63,6 +66,8 @@ private:
 
     int m_maxSize;
     int m_batchSize;
+
+    FileIndexingJob* m_indexJob;
 };
 }
 

@@ -65,6 +65,10 @@ Q_SIGNALS:
      */
     void indexingFailed(uint document);
 
+protected:
+    virtual bool doSuspend();
+    virtual bool doResume();
+
 private Q_SLOTS:
     void slotIndexedFile(int exitCode, QProcess::ExitStatus exitStatus);
     void slotProcessTimerTimeout();
@@ -83,6 +87,8 @@ private:
     int m_processTimeout;
 
     QString m_customDbPath;
+
+    bool m_suspended;
 };
 }
 

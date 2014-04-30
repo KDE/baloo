@@ -92,13 +92,13 @@ private Q_SLOTS:
         noteDir = QDir::tempPath() + "/searchplugintest/baloo/notes/";
 
         QDir dir;
-        removeDir(emailDir);
+        QVERIFY(removeDir(emailDir));
         QVERIFY(dir.mkpath(emailDir));
-        removeDir(emailContactsDir);
+        QVERIFY(removeDir(emailContactsDir));
         QVERIFY(dir.mkpath(emailContactsDir));
-        removeDir(contactsDir);
+        QVERIFY(removeDir(contactsDir));
         QVERIFY(dir.mkpath(contactsDir));
-        removeDir(noteDir);
+        QVERIFY(removeDir(noteDir));
         QVERIFY(dir.mkpath(noteDir));
 
         qDebug() << "indexing sample data";

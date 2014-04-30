@@ -17,6 +17,8 @@
  *
  */
 
+//#include "config.h"
+
 #include "xapiandatabase.h"
 #include "xapiandocument.h"
 
@@ -24,7 +26,9 @@
 #include <QTimer>
 #include <QDir>
 
+#if defined(HAVE_MALLOC_H)
 #include <malloc.h>
+#endif
 #include <unistd.h>
 
 using namespace Baloo;
@@ -133,7 +137,9 @@ void XapianDatabase::commit()
     m_docsToAdd.clear();
     m_docsToRemove.clear();
 
+#if defined(HAVE_MALLOC_TRIM)
     malloc_trim(0);
+#endif
 }
 
 XapianDocument XapianDatabase::document(uint id)

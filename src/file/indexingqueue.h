@@ -85,6 +85,8 @@ protected:
      * \sa finishIndexingFile
      */
     virtual void processNextIteration() = 0;
+    virtual void doSuspend();
+    virtual void doResume();
 
 protected Q_SLOTS:
     /**

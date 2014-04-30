@@ -47,6 +47,16 @@ ecm_add_test(${filemodifyjobtest_SRC}
 
 # Pass CMAKE_CURRENT_BINARY_DIR so tests can use it to create some of the
 # temporary files they need (as XattrDetector blacklists /tmp by default).
-set_target_properties(filefetchjobtest PROPERTIES COMPILE_FLAGS -DBUILDDIR="\\"${CMAKE_CURRENT_BINARY_DIR}/\\"")
-set_target_properties(filemodifyjobtest PROPERTIES COMPILE_FLAGS -DBUILDDIR="\\"${CMAKE_CURRENT_BINARY_DIR}/\\"")
+set_target_properties(filefetchjobtest PROPERTIES COMPILE_FLAGS -DBUILDDIR="\\"${CMAKE_CURRENT_BINARY_DIR}/\\""\ -DBALOO_FILE_EXPORT=)
+set_target_properties(filemodifyjobtest PROPERTIES COMPILE_FLAGS -DBUILDDIR="\\"${CMAKE_CURRENT_BINARY_DIR}/\\""\ -DBALOO_FILE_EXPORT=)
 
+#
+# TagList Job
+#
+ecm_add_test(taglistjobtest.cpp
+    TEST_NAME "taglistjobtest"
+    LINK_LIBRARIES
+        Qt5::Test
+        baloocore
+        baloofiles
+)

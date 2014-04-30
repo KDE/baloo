@@ -22,9 +22,11 @@
 #include "baloosearchrunner.h"
 
 #include <QIcon>
+#include <QDir>
 #include <KRun>
 #include <KRunner/QueryMatch>
 #include <KLocalizedString>
+#include <QLinkedList>
 
 #include "query.h"
 #include "result.h"
@@ -56,11 +58,14 @@ void SearchRunner::match(Plasma::RunnerContext& context, const QString& type,
         return;
 
     Baloo::Query query;
-    query.setLimit(5);
     query.setSearchString(context.query());
     query.setType(type);
 
+    query.setType("Email");
+    query.setLimit(10);
+    QLinkedList<Plasma::QueryMatch> mailMatches;
     Baloo::ResultIterator it = query.exec();
+
     while (context.isValid() && it.next()) {
         Plasma::QueryMatch match(this);
         match.setIcon(QIcon::fromTheme(it.icon()));
@@ -69,6 +74,12 @@ void SearchRunner::match(Plasma::RunnerContext& context, const QString& type,
         match.setData(it.url());
         match.setType(Plasma::QueryMatch::PossibleMatch);
         match.setMatchCategory(category);
+
+        QString url = it.url().toLocalFile();
+        if (url.startsWith(QDir::homePath())) {
+            url.replace(0, QDir::homePath().length(), QLatin1String("~"));
+        }
+        match.setSubtext(url);
 
         context.addMatch(match);
     }

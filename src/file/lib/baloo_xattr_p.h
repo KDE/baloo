@@ -51,6 +51,8 @@ inline ssize_t baloo_getxattr(const QString& path, const QString& name, QString*
     const ssize_t size = getxattr(encodedPath, attributeName, NULL, 0, 0, 0);
 #elif defined(Q_OS_FREEBSD) || defined(Q_OS_NETBSD)
     const ssize_t size = extattr_get_file(encodedPath, EXTATTR_NAMESPACE_USER, attributeName, NULL, 0);
+#elif defined(Q_OS_WIN)
+    const ssize_t size = 0;
 #endif
 
     if (size <= 0) {
@@ -68,6 +70,8 @@ inline ssize_t baloo_getxattr(const QString& path, const QString& name, QString*
     const ssize_t r = getxattr(encodedPath, attributeName, data.data(), size, 0, 0);
 #elif defined(Q_OS_FREEBSD) || defined(Q_OS_NETBSD)
     const ssize_t r = extattr_get_file(encodedPath, EXTATTR_NAMESPACE_USER, attributeName, data.data(), size);
+#elif defined(Q_OS_WIN)
+    const ssize_t r = 0;
 #endif
 
     *value = QString::fromUtf8(data);
@@ -94,6 +98,8 @@ inline int baloo_setxattr(const QString& path, const QString& name, const QStrin
 #elif defined(Q_OS_FREEBSD) || defined(Q_OS_NETBSD)
     const ssize_t count = extattr_set_file(encodedPath, EXTATTR_NAMESPACE_USER, attributeName, attributeValue, valueSize);
     return count == -1 ? -1 : 0;
+#elif defined(Q_OS_WIN)
+    return -1;
 #endif
 }
 
