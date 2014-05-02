@@ -15,7 +15,7 @@ target_link_libraries(indexerconfigtest
   baloocore
 )
 
-kde4_add_executable(basicindexingqueuetest
+kde4_add_executable(bindexingqueuetest
                     basicindexingqueuetest.cpp
                     ../fileindexerconfig.cpp
                     ../regexpcache.cpp
@@ -27,8 +27,8 @@ kde4_add_executable(basicindexingqueuetest
                     ../lib/filemapping.cpp
                     ../commitqueue.cpp
 )
-set_target_properties(basicindexingqueuetest PROPERTIES COMPILE_FLAGS -DBALOO_FILE_EXPORT=)
-target_link_libraries(basicindexingqueuetest
+set_target_properties(bindexingqueuetest PROPERTIES COMPILE_FLAGS -DBALOO_FILE_EXPORT=)
+target_link_libraries(bindexingqueuetest
   ${QT_QTCORE_LIBRARY}
   ${QT_QTSQL_LIBRARY}
   ${KDE4_KDECORE_LIBS}
