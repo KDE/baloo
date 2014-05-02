@@ -1,4 +1,4 @@
-add_definitions(${KDE4_ENABLE_EXCEPTIONS})
+kde_enable_exceptions()
 
 find_package(KF5KDELibs4Support REQUIRED)
 find_package(KF5AkonadiMime REQUIRED)
