@@ -64,11 +64,13 @@ target_link_libraries(fileindexingqueuetest
   balooxapian
 )
 
-kde4_add_executable(inotifytest
-                    inotify.cpp
-                    ../kinotify.cpp
-)
-target_link_libraries(inotifytest
-  ${QT_QTCORE_LIBRARY}
-  ${KDE4_KDECORE_LIBS}
-)
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+  kde4_add_executable(inotifytest
+    inotify.cpp
+    ../kinotify.cpp
+  )
+  target_link_libraries(inotifytest
+    ${QT_QTCORE_LIBRARY}
+    ${KDE4_KDECORE_LIBS}
+  )
+endif(CMAKE_SYSTEM_NAME MATCHES "Linux")
