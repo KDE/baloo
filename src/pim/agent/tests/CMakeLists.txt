@@ -8,7 +8,7 @@ target_link_libraries(emailindexer
   Qt5::Core
   Qt5::Test
   KF5::AkonadiCore
-  KF5::AkonadiKMime
+ KF5::AkonadiMime
   KF5::KMime
   KF5::PimUtils
   KF5::ItemModels
