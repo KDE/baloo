@@ -52,6 +52,7 @@ int main(int argc, char** argv)
     KAboutData::setApplicationData(aboutData);
 
     QApplication app(argc, argv);
+    app.setQuitOnLastWindowClosed(false);
     //KUniqueApplication app(true);
     //app.disableSessionManagement();
 
