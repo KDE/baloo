@@ -119,8 +119,8 @@ void FileFetchJob::doStart()
         file.setUrl(fileMap.url());
 
         // Fetch data from Xapian
-        Xapian::Database db(fileIndexDbPath());
         try {
+            Xapian::Database db(fileIndexDbPath());
             Xapian::Document doc = db.get_document(id);
 
             std::string docData = doc.get_data();
@@ -135,6 +135,9 @@ void FileFetchJob::doStart()
         }
         catch (const Xapian::InvalidArgumentError& err) {
             kError() << err.get_msg().c_str();
+        }
+        catch (const Xapian::Error& err) {
+            kError() << "Xapian error of type" << err.get_type() << ":" << err.get_msg().c_str();
         }
 
         d->fetchUserMetadata(file);
