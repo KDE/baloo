@@ -54,6 +54,11 @@ XapianDatabase::XapianDatabase(const QString& path, bool writeOnly)
     }
 }
 
+XapianDatabase::~XapianDatabase()
+{
+    delete m_db;
+}
+
 void XapianDatabase::replaceDocument(uint id, const XapianDocument& doc)
 {
     replaceDocument(id, doc.doc());
