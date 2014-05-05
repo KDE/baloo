@@ -115,6 +115,11 @@ int main(int argc, char* argv[])
 
         out << "Indexed " << phaseTwo << " / " << total << " files\n";
         out << "Failed to index " << failed << " files\n";
+
+        int actualTotal = phaseOne + phaseTwo + failed;
+        if (actualTotal != total) {
+            out << total - actualTotal << " files not accounted for\n";
+        }
         return 0;
     }
 
