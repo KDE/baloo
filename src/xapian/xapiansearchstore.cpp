@@ -174,7 +174,7 @@ namespace {
 Xapian::Query XapianSearchStore::constructSearchQuery(const QString& str)
 {
     QVector<Xapian::Query> queries;
-    QRegExp splitRegex("[\\s.]");
+    QRegExp splitRegex("[\\s.+*/\\-=]");
     QStringList list = str.split(splitRegex, QString::SkipEmptyParts);
 
     QMutableListIterator<QString> iter(list);
