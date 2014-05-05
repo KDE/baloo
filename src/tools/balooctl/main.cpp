@@ -33,6 +33,11 @@
 
 #include <QDBusMessage>
 #include <QDBusConnection>
+#include <QDBusConnectionInterface>
+
+#include "xapiandatabase.h"
+
+using namespace Baloo;
 
 int main(int argc, char* argv[])
 {
@@ -42,7 +47,7 @@ int main(int argc, char* argv[])
     KCmdLineArgs::init(argc, argv, &aboutData);
 
     KCmdLineOptions options;
-    //options.add("status", ki18n("Print the status of the indexer"));
+    options.add("+status", ki18n("Print the status of the indexer"));
     options.add("+enable", ki18n("Enable the file indexer"));
     options.add("+disable", ki18n("Disable the file indexer"));
     KCmdLineArgs::addCmdLineOptions(options);
@@ -60,10 +65,38 @@ int main(int argc, char* argv[])
 
     QString command = args->arg(0);
     if (command == QLatin1String("status")) {
-        // Get info if baloo_file is running
-        // Get number of level 1 files
-        // Get number of level 2 files
-        // Print a kind of progress bar
+        QDBusConnection bus = QDBusConnection::sessionBus();
+        bool running = bus.interface()->isServiceRegistered("org.kde.baloo.file");
+
+        if (running) {
+            out << "Baloo File Indexer is running\n";
+        }
+        else {
+            out << "Baloo File Indexer is NOT running\n";
+        }
+
+        const QString path = KGlobal::dirs()->localxdgdatadir() + "baloo/file/";
+
+        XapianDatabase database(path);
+        Xapian::Database* xdb = database.db();
+        Xapian::Enquire enquire(*xdb);
+
+        enquire.set_query(Xapian::Query("Z1"));
+        Xapian::MSet mset = enquire.get_mset(0, 10000000);
+        int phaseOne = mset.size();
+
+        enquire.set_query(Xapian::Query("Z2"));
+        mset = enquire.get_mset(0, 10000000);
+        int phaseTwo = mset.size();
+
+        enquire.set_query(Xapian::Query("Z-1"));
+        mset = enquire.get_mset(0, 10000000);
+        int failed = mset.size();
+
+        int total = xdb->get_doccount();
+
+        out << "Indexed " << phaseTwo << " / " << total << " files\n";
+        out << "Failed to index " << failed << " files\n";
         return 0;
     }
 
