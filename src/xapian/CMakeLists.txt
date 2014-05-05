@@ -8,7 +8,7 @@ set(XAPIAN_SRCS
 
 add_library(balooxapian SHARED ${XAPIAN_SRCS})
 
-target_link_libraries(balooxapian
+target_link_libraries(balooxapian PUBLIC
     Qt5::Core
     ${XAPIAN_LIBRARIES}
     baloocore

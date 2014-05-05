@@ -11,8 +11,8 @@ set(CORE_SRCS
 
 add_library(baloocore SHARED ${CORE_SRCS})
 
-target_link_libraries(baloocore
-    Qt5::Core
+target_link_libraries(baloocore PUBLIC Qt5::Core)
+target_link_libraries(baloocore PRIVATE
     KF5::Service
     ${XAPIAN_LIBRARIES}
 )

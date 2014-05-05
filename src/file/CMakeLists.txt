@@ -45,7 +45,7 @@ add_executable(baloo_file ${file_SRCS})
 
 target_link_libraries(baloo_file
     Qt5::Sql
-
+    Qt5::DBus
     KF5::KIOWidgets
     KF5::IdleTime
     KF5::I18n

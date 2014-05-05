@@ -21,9 +21,8 @@ add_library(baloopim SHARED ${BALOO_PIM_LIB_SRCS})
 
 generate_export_header(baloopim BASE_NAME BALOO_PIM EXPORT_FILE_NAME pim_export.h)
 
-
-target_link_libraries(baloopim
-    Qt5::Core
+target_link_libraries(baloopim PUBLIC Qt5::Core)
+target_link_libraries(baloopim PRIVATE
     KF5::KDELibs4Support
     KF5::AkonadiCore
     KF5::ItemModels

@@ -17,8 +17,13 @@ set(FILE_LIB_SRCS
 
 add_library(baloofiles SHARED ${FILE_LIB_SRCS})
 
-target_link_libraries(baloofiles
+target_link_libraries(baloofiles PUBLIC
+    Qt5::Core
+    KF5::CoreAddons
+)
+target_link_libraries(baloofiles PRIVATE
     KF5::FileMetaData
+    KF5::ConfigCore
     Qt5::DBus
     Qt5::Sql
     KF5::Solid

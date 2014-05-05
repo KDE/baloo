@@ -15,9 +15,11 @@ add_executable(baloo_file_extractor ${EXTRACTOR_SRCS})
 
 target_link_libraries(baloo_file_extractor
   Qt5::Sql
+  Qt5::DBus
   Qt5::Widgets
   KF5::FileMetaData
   KF5::I18n
+  KF5::Service
   ${XAPIAN_LIBRARIES}
   baloofiles
   balooxapian

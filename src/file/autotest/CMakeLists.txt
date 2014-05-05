@@ -34,7 +34,7 @@ set(fileMonitor_SRC filemonitortest.cpp)
 
 ecm_add_test(${fileMonitor_SRC}
     TEST_NAME "filemonitortest"
-    LINK_LIBRARIES Qt5::Test baloofiles
+    LINK_LIBRARIES Qt5::Test Qt5::DBus baloofiles
 )
 
 #

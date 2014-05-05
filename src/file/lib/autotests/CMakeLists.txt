@@ -13,6 +13,8 @@ ecm_add_test(${filefetchjobtest_SRC}
     TEST_NAME "filefetchjobtest"
     LINK_LIBRARIES
         KF5::FileMetaData
+        KF5::CoreAddons
+        KF5::ConfigCore
         KF5::Solid
         Qt5::Test
         Qt5::Sql
@@ -36,6 +38,8 @@ ecm_add_test(${filemodifyjobtest_SRC}
     TEST_NAME "filemodifyjobtest"
     LINK_LIBRARIES
         KF5::FileMetaData
+        KF5::CoreAddons
+        KF5::ConfigCore
         KF5::Solid
         Qt5::Test
         Qt5::Sql

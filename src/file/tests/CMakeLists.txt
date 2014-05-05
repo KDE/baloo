@@ -10,6 +10,8 @@ add_executable(indexerconfigtest
 
 target_link_libraries(indexerconfigtest
   Qt5::Core
+  KF5::CoreAddons
+  KF5::ConfigCore
   baloocore
 )
 
