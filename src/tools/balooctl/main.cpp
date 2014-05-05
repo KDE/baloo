@@ -115,6 +115,14 @@ int main(int argc, char* argv[])
 
         out << "Indexed " << phaseTwo << " / " << total << " files\n";
         out << "Failed to index " << failed << " files\n";
+        if (failed) {
+            out << "File IDs: ";
+            Xapian::MSetIterator iter = mset.begin();
+            for (; iter != mset.end(); ++iter) {
+                out << *iter << " ";
+            }
+            out << "\n";
+        }
 
         int actualTotal = phaseOne + phaseTwo + failed;
         if (actualTotal != total) {
