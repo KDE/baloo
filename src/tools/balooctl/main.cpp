@@ -39,6 +39,21 @@
 
 using namespace Baloo;
 
+void start()
+{
+    const QString exe = KStandardDirs::findExe(QLatin1String("baloo_file"));
+    QProcess::startDetached(exe);
+}
+
+void stop()
+{
+    QDBusMessage message = QDBusMessage::createMethodCall(QLatin1String("org.kde.baloo.file"),
+                                                          QLatin1String("/indexer"),
+                                                          QLatin1String("org.kde.baloo.file"),
+                                                          QLatin1String("quit"));
+    QDBusConnection::sessionBus().call(message);
+}
+
 int main(int argc, char* argv[])
 {
     KAboutData aboutData("balooctl", "balooctl", KLocalizedString(), "0.1");
@@ -50,6 +65,9 @@ int main(int argc, char* argv[])
     options.add("+status", ki18n("Print the status of the indexer"));
     options.add("+enable", ki18n("Enable the file indexer"));
     options.add("+disable", ki18n("Disable the file indexer"));
+    options.add("+start", ki18n("Start the file indexer"));
+    options.add("+stop", ki18n("Stop the file indexer"));
+    options.add("+restart", ki18n("Restart the file indexer"));
     KCmdLineArgs::addCmdLineOptions(options);
 
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
@@ -100,39 +118,54 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    bool isEnabled = false;
-    if (command == QLatin1String("enable")) {
-        isEnabled = true;
+    if (command == QLatin1String("enable") || command == QLatin1String("disable")) {
+        bool isEnabled = false;
+        if (command == QLatin1String("enable")) {
+            isEnabled = true;
+        }
+        else if (command == QLatin1String("disable")) {
+            isEnabled = false;
+        }
+
+        KConfig config("baloofilerc");
+        KConfigGroup basicSettings = config.group("Basic Settings");
+        basicSettings.writeEntry("Indexing-Enabled", isEnabled);
+
+        if (isEnabled) {
+            out << "Enabling the File Indexer\n";
+            config.group("General").writeEntry("first run", true);
+
+            start();
+        }
+        else {
+            out << "Disabling the File Indexer\n";
+
+            stop();
+            const QString exe = KStandardDirs::findExe(QLatin1String("baloo_file_cleaner"));
+            QProcess::startDetached(exe);
+        }
+
+        return 0;
     }
-    else if (command == QLatin1String("disable")) {
-        isEnabled = false;
-    }
-    else {
-        return 1;
-    }
 
-    KConfig config("baloofilerc");
-    KConfigGroup basicSettings = config.group("Basic Settings");
-    basicSettings.writeEntry("Indexing-Enabled", isEnabled);
+    if (command == QLatin1String("start") || command == QLatin1String("stop") ||
+        command == QLatin1String("restart")) {
+        bool shouldStart = false;
+        bool shouldStop = false;
 
-    if (isEnabled) {
-        out << "Enabling the File Indexer\n";
-        config.group("General").writeEntry("first run", true);
+        if (command == QLatin1String("start"))
+            shouldStart = true;
+        else if (command == QLatin1String("stop"))
+            shouldStop = true;
+        else if (command == QLatin1String("restart")) {
+            shouldStart = true;
+            shouldStop = true;
+        }
 
-        const QString exe = KStandardDirs::findExe(QLatin1String("baloo_file"));
-        QProcess::startDetached(exe);
-    }
-    else {
-        out << "Disabling the File Indexer\n";
-
-        QDBusMessage message = QDBusMessage::createMethodCall(QLatin1String("org.kde.baloo.file"),
-                                                              QLatin1String("/indexer"),
-                                                              QLatin1String("org.kde.baloo.file"),
-                                                              QLatin1String("quit"));
-        QDBusConnection::sessionBus().call(message);
-
-        const QString exe = KStandardDirs::findExe(QLatin1String("baloo_file_cleaner"));
-        QProcess::startDetached(exe);
+        if (shouldStop)
+            stop();
+        if (shouldStart)
+            start();
     }
 
     return 0;
