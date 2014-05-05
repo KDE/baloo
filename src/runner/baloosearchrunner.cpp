@@ -93,6 +93,7 @@ void SearchRunner::match(Plasma::RunnerContext& context)
         match.setSubtext(url);
 
         context.addMatch(context.query(), match);
+
         ++matchesAdded;
     }
 
