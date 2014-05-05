@@ -60,9 +60,8 @@ void SearchRunner::match(Plasma::RunnerContext& context, const QString& type,
     Baloo::Query query;
     query.setSearchString(context.query());
     query.setType(type);
-
-    query.setType("Email");
     query.setLimit(10);
+
     QLinkedList<Plasma::QueryMatch> mailMatches;
     Baloo::ResultIterator it = query.exec();
 
