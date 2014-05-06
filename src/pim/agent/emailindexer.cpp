@@ -26,7 +26,7 @@
 #include <Akonadi/KMime/MessageFlags>
 
 #include <QTextDocument>
-#include <KPIMUtils/email.h>
+#include <kpimutils/email.h>
 
 
 EmailIndexer::EmailIndexer(const QString& path, const QString& contactDbPath):
