@@ -167,7 +167,7 @@ QStringList Baloo::sourceCodeMimeTypes()
 
 QStringList Baloo::defaultExcludeMimetypes()
 {
-    return QStringList();
+    return sourceCodeMimeTypes();
 }
 
 int Baloo::defaultExcludeMimetypesVersion()
