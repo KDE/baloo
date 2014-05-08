@@ -26,7 +26,7 @@
 #include <KLocalizedString>
 #include <QStandardPaths>
 
-#include <QApplication>
+#include <QCoreApplication>
 #include <QCommandLineParser>
 #include <QCommandLineOption>
 
@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
     lowerSchedulingPriority();
     lowerPriority();
 
-    QApplication app(argc, argv);
+    QCoreApplication app(argc, argv);
     QCoreApplication::setApplicationName("Baloo File Extractor");
     QCoreApplication::setApplicationVersion("0.1");
 
