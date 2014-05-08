@@ -120,7 +120,23 @@ void App::processNextUrl()
     }
 
     const QString url = m_urls.takeFirst();
-    const QString mimetype = KMimeType::findByUrl(KUrl::fromLocalFile(url))->name();
+    QString mimetype = KMimeType::findByUrl(KUrl::fromLocalFile(url))->name();
+
+    //
+    // HACK: We only want to index plain text files which end with a .txt
+    // Also, we're ignoring txt files which are greater tha 50 Mb as we
+    // have trouble processing them
+    //
+    if (mimetype == QLatin1String("text/plain")) {
+        if (!url.endsWith(".txt")) {
+            mimetype.clear();
+        }
+
+        QFileInfo fileInfo(url);
+        if (fileInfo.size() >= 50 * 1024 * 1024 ) {
+            mimetype.clear();
+        }
+    }
 
     FileMapping file(url);
     if (!m_bData) {
