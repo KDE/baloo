@@ -23,6 +23,7 @@
 #include <QTest>
 #include <Akonadi/Collection>
 #include <KABC/Addressee>
+#include <KABC/ContactGroup>
 #include <QDir>
 
 #include "searchplugin.h"
@@ -308,6 +309,15 @@ private Q_SLOTS:
             item.setParentCollection(Akonadi::Collection(3));
             contactIndexer.index(item);
         }
+        {
+            KABC::ContactGroup group;
+            group.setName("group1");
+            Akonadi::Item item(KABC::ContactGroup::mimeType());
+            item.setId(103);
+            item.setPayload(group);
+            item.setParentCollection(Akonadi::Collection(3));
+            contactIndexer.index(item);
+        }
 
 
         //Note item
@@ -445,6 +455,7 @@ private Q_SLOTS:
         QTest::addColumn<QStringList>("mimeTypes");
         QTest::addColumn<QSet<qint64> >("expectedResult");
         const QStringList contactMimeTypes = QStringList() << KABC::Addressee::mimeType();
+        const QStringList contactGroupMimeTypes = QStringList() << KABC::ContactGroup::mimeType();
         {
             Akonadi::SearchQuery query;
             query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Name, "John", Akonadi::SearchTerm::CondContains));
@@ -509,6 +520,18 @@ private Q_SLOTS:
             QSet<qint64> result = QSet<qint64>() << 100 << 101 << 102;
             QTest::newRow("contact by name (Do)") << QString::fromLatin1(query.toJSON()) << collections << contactMimeTypes << result;
         }
+
+        {
+#if 0
+            Akonadi::SearchQuery query;
+            query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Name, "group1", Akonadi::SearchTerm::CondContains));
+
+            QList<qint64> collections;
+            QSet<qint64> result = QSet<qint64>() << 103;
+            QTest::newRow("contact group by name (group1)") << QString::fromLatin1(query.toJSON()) << collections << contactGroupMimeTypes << result;
+#endif
+        }
+
 #if 0 //Doesn't work for the moment
         {
             Akonadi::SearchQuery query;
