@@ -156,3 +156,24 @@ void AkonotesIndexer::remove(const Akonadi::Collection& collection)
         return;
     }
 }
+
+void AkonotesIndexer::move(const Akonadi::Item::Id& itemId,
+                        const Akonadi::Entity::Id& from,
+                        const Akonadi::Entity::Id& to)
+{
+    Xapian::Document doc;
+    try {
+        doc = m_db->get_document(itemId);
+    }
+    catch (const Xapian::DocNotFoundError&) {
+        return;
+    }
+
+    const QByteArray ft = 'C' + QByteArray::number(from);
+    const QByteArray tt = 'C' + QByteArray::number(to);
+
+    doc.remove_term(ft.data());
+    doc.add_boolean_term(tt.data());
+    m_db->replace_document(doc.get_docid(), doc);
+}
+

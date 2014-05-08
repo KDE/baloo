@@ -48,6 +48,7 @@ public:
 
     void remove(const Akonadi::Item &item);
     void remove(const Akonadi::Collection &collection);
+    void move(const Akonadi::Item::Id &itemId, const Akonadi::Entity::Id &from, const Akonadi::Entity::Id &to);
 private:
     void processPart(KMime::Content *content, KMime::Content *mainContent);
     void process(const KMime::Message::Ptr &msg);

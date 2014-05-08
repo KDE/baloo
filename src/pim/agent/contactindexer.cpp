@@ -154,3 +154,23 @@ void ContactIndexer::commit()
     m_db->commit();
 }
 
+void ContactIndexer::move(const Akonadi::Item::Id& itemId,
+                        const Akonadi::Entity::Id& from,
+                        const Akonadi::Entity::Id& to)
+{
+    Baloo::XapianDocument doc;
+    try {
+        doc = m_db->document(itemId);
+    }
+    catch (const Xapian::DocNotFoundError&) {
+        return;
+    }
+
+    const QByteArray ft = 'C' + QByteArray::number(from);
+    const QByteArray tt = 'C' + QByteArray::number(to);
+
+    doc.removeTermStartsWith(ft.data());
+    doc.addBoolTerm(tt.data());
+    m_db->replaceDocument(doc.doc().get_docid(), doc);
+}
+
