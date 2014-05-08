@@ -31,6 +31,8 @@
 #include <KDebug>
 #include <Akonadi/KMime/MessageFlags>
 #include <KDateTime>
+#include <KABC/Addressee>
+#include <KABC/ContactGroup>
 #include <QtPlugin>
 
 static Baloo::Term::Operation mapRelation(Akonadi::SearchTerm::Relation relation) {
@@ -261,19 +263,20 @@ QSet<qint64> SearchPlugin::search(const QString &akonadiQuery, const QList<qint6
     }
 
     Baloo::Term t;
+
     if (mimeTypes.contains("message/rfc822")) {
         kDebug() << "mail query";
         query.setType("Email");
         t = recursiveEmailTermMapping(term);
-    } else if (mimeTypes.contains("text/directory")) {
+    } else if (mimeTypes.contains(KABC::Addressee::mimeType())) {
         query.setType("Contact");
         t = recursiveContactTermMapping(term);
     } else if (mimeTypes.contains(QLatin1String("text/x-vnd.akonadi.note"))) {
         query.setType("Note");
         t = recursiveNoteTermMapping(term);
-    } else if (mimeTypes.contains("...")) {
+    } else if (mimeTypes.contains(KABC::ContactGroup::mimeType())) {
         query.setType("ContactGroups");
-        //TODO contactgroup queries
+        t = recursiveContactTermMapping(term);
     }
     if (t.subTerms().isEmpty()) {
         kWarning() << "no terms added";

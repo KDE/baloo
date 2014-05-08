@@ -10,6 +10,7 @@ target_link_libraries(akonadi_baloo_searchplugin
     ${KDE4_KDECORE_LIBRARY}
     ${KDEPIMLIBS_AKONADI_LIBS}
     ${KDEPIMLIBS_AKONADI_KMIME_LIBS}
+    ${KDEPIMLIBS_KABC_LIBS}
     ${XAPIAN_LIBRARIES}
     baloocore
     baloopim
