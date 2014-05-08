@@ -40,6 +40,7 @@ class ContactIndexer: public AbstractIndexer
 
     void commit();
 
+    void move(const Akonadi::Item::Id &itemId, const Akonadi::Entity::Id &from, const Akonadi::Entity::Id &to);
 private:
     bool indexContact(const Akonadi::Item &item);
     void indexContactGroup(const Akonadi::Item &item);
