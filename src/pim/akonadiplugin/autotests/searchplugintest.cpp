@@ -456,6 +456,7 @@ private Q_SLOTS:
         QTest::addColumn<QSet<qint64> >("expectedResult");
         const QStringList contactMimeTypes = QStringList() << KABC::Addressee::mimeType();
         const QStringList contactGroupMimeTypes = QStringList() << KABC::ContactGroup::mimeType();
+#if 1
         {
             Akonadi::SearchQuery query;
             query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Name, "John", Akonadi::SearchTerm::CondContains));
@@ -520,7 +521,7 @@ private Q_SLOTS:
             QSet<qint64> result = QSet<qint64>() << 100 << 101 << 102;
             QTest::newRow("contact by name (Do)") << QString::fromLatin1(query.toJSON()) << collections << contactMimeTypes << result;
         }
-
+#endif
         {
 #if 0
             Akonadi::SearchQuery query;

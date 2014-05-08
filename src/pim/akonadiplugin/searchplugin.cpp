@@ -261,6 +261,7 @@ QSet<qint64> SearchPlugin::search(const QString &akonadiQuery, const QList<qint6
     }
 
     Baloo::Term t;
+
     if (mimeTypes.contains("message/rfc822")) {
         kDebug() << "mail query";
         query.setType("Email");
@@ -271,9 +272,9 @@ QSet<qint64> SearchPlugin::search(const QString &akonadiQuery, const QList<qint6
     } else if (mimeTypes.contains(QLatin1String("text/x-vnd.akonadi.note"))) {
         query.setType("Note");
         t = recursiveNoteTermMapping(term);
-    } else if (mimeTypes.contains("...")) {
+    } else if (mimeTypes.contains("application/x-vnd.kde.contactgroup")) {
         query.setType("ContactGroups");
-        //TODO contactgroup queries
+        t = recursiveContactTermMapping(term);
     }
     if (t.subTerms().isEmpty()) {
         kWarning() << "no terms added";
