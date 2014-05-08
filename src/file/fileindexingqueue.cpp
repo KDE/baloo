@@ -46,6 +46,11 @@ void FileIndexingQueue::fillQueue()
     if (m_fileQueue.size() >= m_maxSize)
         return;
 
+    // We do not want to refill the queue when a job is going on
+    // this will result in unnecessary duplicates
+    if (m_indexJob)
+        return;
+
     try {
         Xapian::Database* db = m_db->xapianDatabase()->db();
         Xapian::Enquire enquire(*db);
