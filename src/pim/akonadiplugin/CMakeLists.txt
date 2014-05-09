@@ -2,7 +2,8 @@ kde_enable_exceptions()
 
 find_package(KF5KDELibs4Support REQUIRED)
 find_package(KF5AkonadiMime REQUIRED)
-
+find_package(KF5Abc REQUIRED)
+find_package(KF5PimUtils REQUIRED)
 add_library(akonadi_baloo_searchplugin
  MODULE 
     searchplugin.cpp
@@ -23,4 +24,6 @@ install(TARGETS akonadi_baloo_searchplugin DESTINATION ${PLUGIN_INSTALL_DIR}/ako
 install(FILES akonadibaloosearchplugin.desktop
         DESTINATION ${PLUGIN_INSTALL_DIR}/akonadi)
 
-add_subdirectory(autotests)
+
+#REACTIVATE
+#add_subdirectory(autotests)

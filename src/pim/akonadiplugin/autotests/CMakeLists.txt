@@ -21,13 +21,13 @@ add_definitions(-DBALOO_NO_PLUGINS=TRUE)
 kde4_add_unit_test(searchplugintest NOGUI ${searchplugintest_SRCS})
 target_link_libraries(searchplugintest
     ${QT_QTTEST_LIBRARY}
-    ${KDE4_KDECORE_LIBS}
-    ${KDEPIMLIBS_AKONADI_LIBS}
-    ${KDEPIMLIBS_AKONADI_KMIME_LIBS}
-    ${KDEPIMLIBS_KMIME_LIBS}
-    ${KDEPIMLIBS_KABC_LIBS}
+    
+    KF5::AkonadiCore
+    KF5::AkonadiMime
+    KF5::Mime
+    KF5::Abc
     ${XAPIAN_LIBRARIES}
-    ${KDEPIMLIBS_KPIMUTILS_LIBS}
+    KF5::PimUtils
     baloocore
     balooxapian
 )

@@ -22,7 +22,7 @@
 #ifndef ABSTRACTINDEXER_H
 #define ABSTRACTINDEXER_H
 
-#include <Item>
+#include <AkonadiCore/Item>
 #include <QStringList>
 
 namespace Akonadi {

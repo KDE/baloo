@@ -21,7 +21,7 @@
  */
 
 #include <QTest>
-#include <Akonadi/Collection>
+#include <AkonadiCore/Collection>
 #include <KABC/Addressee>
 #include <QDir>
 

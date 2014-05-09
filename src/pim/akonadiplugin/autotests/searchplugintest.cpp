@@ -21,7 +21,7 @@
  */
 
 #include <QTest>
-#include <Akonadi/Collection>
+#include <AkonadiCore/Collection>
 #include <KABC/Addressee>
 #include <QDir>
 
@@ -32,8 +32,8 @@
 #include <../pim/search/email/emailsearchstore.h>
 #include <../pim/search/contact/contactsearchstore.h>
 #include <../pim/search/note/notesearchstore.h>
-#include <akonadi/searchquery.h>
-#include <akonadi/kmime/messageflags.h>
+#include <AkonadiCore/searchquery.h>
+#include <Akonadi/KMime/MessageFlags>
 
 Q_DECLARE_METATYPE(QSet<qint64>)
 Q_DECLARE_METATYPE(QList<qint64>)
