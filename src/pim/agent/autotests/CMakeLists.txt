@@ -25,4 +25,5 @@ target_link_libraries(indexertest
     KF5::PimUtils
     baloocore
     balooxapian
+    Qt5::Test
 )
