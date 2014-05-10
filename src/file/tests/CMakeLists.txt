@@ -64,7 +64,9 @@ target_link_libraries(fileindexingqueuetest-manual
   balooxapian
 )
 
-add_executable(inotifytest inotify.cpp ../kinotify.cpp)
-target_link_libraries(inotifytest
-  Qt5::Core
-)
+if(BUILD_KINOTIFY)
+  add_executable(inotifytest inotify.cpp ../kinotify.cpp)
+  target_link_libraries(inotifytest
+    Qt5::Core
+  )
+endif()

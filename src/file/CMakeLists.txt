@@ -33,7 +33,9 @@ set(file_SRCS
     main.cpp
 )
 
+set(BUILD_KINOTIFY False)
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+    set(BUILD_KINOTIFY True)
     set(file_SRCS
         ${file_SRCS}
         kinotify.cpp
