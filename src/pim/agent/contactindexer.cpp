@@ -41,7 +41,7 @@ ContactIndexer::~ContactIndexer()
 
 QStringList ContactIndexer::mimeTypes() const
 {
-    return QStringList() << KABC::Addressee::mimeType();
+    return QStringList() << KABC::Addressee::mimeType() << KABC::ContactGroup::mimeType();
 }
 
 bool ContactIndexer::indexContact(const Akonadi::Item& item)
@@ -106,13 +106,13 @@ void ContactIndexer::indexContactGroup(const Akonadi::Item& item)
     doc.indexText(name);
     doc.indexText(name, "NA");
 
+
     // Parent collection
     Q_ASSERT_X(item.parentCollection().isValid(), "Baloo::ContactIndexer::index",
                "Item does not have a valid parent collection");
 
     const Akonadi::Entity::Id colId = item.parentCollection().id();
     doc.addBoolTerm(colId, "C");
-
     m_db->replaceDocument(item.id(), doc);
 }
 
