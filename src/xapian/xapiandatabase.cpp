@@ -24,8 +24,10 @@
 #include <QTimer>
 #include <QDir>
 
+#ifdef __GNUC__
 #include <malloc.h>
 #include <unistd.h>
+#endif
 
 using namespace Baloo;
 
