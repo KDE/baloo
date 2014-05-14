@@ -55,11 +55,10 @@ QString colorString(const QString& input, int color)
 int main(int argc, char* argv[])
 {
     KAboutData aboutData("baloosearch",
-                         "baloosearch",
                          i18n("Baloo Search"),
                          "0.1",
                          i18n("Baloo Search - A debugging tool"),
-                         KAboutData::License_GPL,
+                         KAboutLicense::GPL,
                          i18n("(c) 2013, Vishesh Handa"));
     aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), "me@vhanda.in");
 

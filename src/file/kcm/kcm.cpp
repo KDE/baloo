@@ -58,8 +58,8 @@ ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args
     : KCModule(parent, args)
 {
     KAboutData* about = new KAboutData(
-        "kcm_baloofile", "kcm_baloofile", i18n("Configure Desktop Search"),
-        "0.1", QString(), KAboutData::License_GPL,
+        "kcm_baloofile", i18n("Configure Desktop Search"),
+        "0.1", QString(), KAboutLicense::GPL,
         i18n("Copyright 2007-2010 Sebastian Trüg"));
     about->addAuthor(i18n("Sebastian Trüg"), QString(), "trueg@kde.org");
     about->addAuthor(i18n("Vishesh Handa"), QString(), "vhanda@kde.org");
