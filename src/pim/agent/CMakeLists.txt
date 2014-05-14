@@ -7,7 +7,7 @@ include_directories(
 
 find_package(KF5KDELibs4Support REQUIRED)
 find_package(KF5Abc REQUIRED)
-find_package(KF5KMime REQUIRED)
+find_package(KF5Mime REQUIRED)
 find_package(KF5PimUtils REQUIRED)
 find_package(KF5AkonadiMime REQUIRED)
 #find_package(KF5ItemModels REQUIRED)
@@ -31,7 +31,7 @@ target_link_libraries(akonadi_baloo_indexer
     KF5::KDELibs4Support
     KF5::AkonadiCore
     KF5::AkonadiMime
-    KF5::KMime
+    KF5::Mime
     KF5::Abc
     KF5::AkonadiAgentBase
     ${XAPIAN_LIBRARIES}
