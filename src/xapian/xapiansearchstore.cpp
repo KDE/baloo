@@ -174,7 +174,7 @@ namespace {
 Xapian::Query XapianSearchStore::constructSearchQuery(const QString& str)
 {
     QVector<Xapian::Query> queries;
-    QRegExp splitRegex("[\\s.]");
+    QRegExp splitRegex("[\\s.+*/\\-=]");
     QStringList list = str.split(splitRegex, QString::SkipEmptyParts);
 
     QMutableListIterator<QString> iter(list);
@@ -238,6 +238,9 @@ int XapianSearchStore::exec(const Query& query)
         }
         catch (const Xapian::DatabaseModifiedError&) {
             continue;
+        }
+        catch (const Xapian::Error&) {
+            return 0;
         }
     }
 
@@ -320,6 +323,9 @@ Xapian::Document XapianSearchStore::docForQuery(int queryId)
     catch (const Xapian::DatabaseModifiedError&) {
         m_db->reopen();
         return docForQuery(queryId);
+    }
+    catch (const Xapian::Error&) {
+        return Xapian::Document();
     }
 }
 

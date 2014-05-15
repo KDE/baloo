@@ -41,7 +41,7 @@ ContactIndexer::~ContactIndexer()
 
 QStringList ContactIndexer::mimeTypes() const
 {
-    return QStringList() << KABC::Addressee::mimeType();
+    return QStringList() << KABC::Addressee::mimeType() << KABC::ContactGroup::mimeType();
 }
 
 bool ContactIndexer::indexContact(const Akonadi::Item& item)
@@ -106,13 +106,13 @@ void ContactIndexer::indexContactGroup(const Akonadi::Item& item)
     doc.indexText(name);
     doc.indexText(name, "NA");
 
+
     // Parent collection
     Q_ASSERT_X(item.parentCollection().isValid(), "Baloo::ContactIndexer::index",
                "Item does not have a valid parent collection");
 
     const Akonadi::Entity::Id colId = item.parentCollection().id();
     doc.addBoolTerm(colId, "C");
-
     m_db->replaceDocument(item.id(), doc);
 }
 
@@ -152,5 +152,25 @@ void ContactIndexer::remove(const Akonadi::Collection& collection)
 void ContactIndexer::commit()
 {
     m_db->commit();
+}
+
+void ContactIndexer::move(const Akonadi::Item::Id& itemId,
+                        const Akonadi::Entity::Id& from,
+                        const Akonadi::Entity::Id& to)
+{
+    Baloo::XapianDocument doc;
+    try {
+        doc = m_db->document(itemId);
+    }
+    catch (const Xapian::DocNotFoundError&) {
+        return;
+    }
+
+    const QByteArray ft = 'C' + QByteArray::number(from);
+    const QByteArray tt = 'C' + QByteArray::number(to);
+
+    doc.removeTermStartsWith(ft.data());
+    doc.addBoolTerm(tt.data());
+    m_db->replaceDocument(doc.doc().get_docid(), doc);
 }
 

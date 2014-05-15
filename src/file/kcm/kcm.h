@@ -39,7 +39,9 @@ public Q_SLOTS:
     void save();
     void defaults();
 
+    void folderSelectionChanged();
 private:
+    bool m_previouslyEnabled;
 };
 }
 

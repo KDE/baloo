@@ -64,9 +64,12 @@ target_link_libraries(fileindexingqueuetest-manual
   balooxapian
 )
 
-if(BUILD_KINOTIFY)
-  add_executable(inotifytest inotify.cpp ../kinotify.cpp)
-  target_link_libraries(inotifytest
-    Qt5::Core
-  )
-endif()
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+    if(BUILD_KINOTIFY)
+      add_executable(inotifytest inotify.cpp ../kinotify.cpp)
+      target_link_libraries(inotifytest
+        Qt5::Core
+      )
+    endif()
+endif(CMAKE_SYSTEM_NAME MATCHES "Linux")
+

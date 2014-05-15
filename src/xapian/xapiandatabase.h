@@ -40,6 +40,7 @@ public:
      * valid
      */
     XapianDatabase(const QString& path, bool writeOnly = false);
+    ~XapianDatabase();
 
     void replaceDocument(uint id, const Xapian::Document& doc);
     void replaceDocument(uint id, const XapianDocument& doc);

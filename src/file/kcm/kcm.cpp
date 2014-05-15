@@ -74,6 +74,10 @@ ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args
 
     connect(m_folderSelectionWidget, SIGNAL(changed()),
             this, SLOT(changed()));
+    connect(m_folderSelectionWidget, SIGNAL(changed()),
+            this, SLOT(folderSelectionChanged()));
+    connect(m_enableCheckbox, SIGNAL(stateChanged(int)),
+            this, SLOT(changed()));
 }
 
 
@@ -87,6 +91,10 @@ void ServerConfigModule::load()
     // File indexer settings
     KConfig config("baloofilerc");
     KConfigGroup group = config.group("General");
+
+    KConfigGroup basicSettings = config.group("Basic Settings");
+    m_previouslyEnabled = basicSettings.readEntry("Indexing-Enabled", true);
+    m_enableCheckbox->setChecked(m_previouslyEnabled);
 
     QStringList includeFolders = group.readPathEntry("folders", defaultFolders());
     QStringList excludeFolders = group.readPathEntry("exclude folders", QStringList());
@@ -106,15 +114,24 @@ void ServerConfigModule::save()
     KConfig config("baloofilerc");
     KConfigGroup basicSettings = config.group("Basic Settings");
 
-    bool indexingEnabled = !m_folderSelectionWidget->allMountPointsExcluded();
-    basicSettings.writeEntry("Indexing-Enabled", indexingEnabled);
+    bool mountPointsEx = m_folderSelectionWidget->allMountPointsExcluded();
+
+    bool enabled = m_enableCheckbox->isChecked();
+    if (mountPointsEx)
+        enabled = false;
+
+    basicSettings.writeEntry("Indexing-Enabled", enabled);
 
     // 2.2 Update normals paths
     config.group("General").writePathEntry("folders", includeFolders);
     config.group("General").writePathEntry("exclude folders", excludeFolders);
 
+    if (m_previouslyEnabled != enabled) {
+        config.group("General").deleteEntry("first run");
+    }
+
     // Start Baloo
-    if (indexingEnabled) {
+    if (enabled) {
         const QString exe = QStandardPaths::findExecutable(QLatin1String("baloo_file"));
         QProcess::startDetached(exe);
     }
@@ -139,6 +156,12 @@ void ServerConfigModule::save()
 void ServerConfigModule::defaults()
 {
     m_folderSelectionWidget->setFolders(defaultFolders(), QStringList());
+}
+
+void ServerConfigModule::folderSelectionChanged()
+{
+    bool disabled = m_folderSelectionWidget->allMountPointsExcluded();
+    m_enableCheckbox->setChecked(!disabled);
 }
 
 #include "kcm.moc"

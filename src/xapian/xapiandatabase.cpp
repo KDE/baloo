@@ -28,8 +28,10 @@
 
 #if defined(HAVE_MALLOC_H)
 #include <malloc.h>
-#endif
 #include <unistd.h>
+#else
+#include <unistd.h>
+#endif
 
 using namespace Baloo;
 
@@ -56,6 +58,11 @@ XapianDatabase::XapianDatabase(const QString& path, bool writeOnly)
     else {
         m_wDb = createWritableDb();
     }
+}
+
+XapianDatabase::~XapianDatabase()
+{
+    delete m_db;
 }
 
 void XapianDatabase::replaceDocument(uint id, const XapianDocument& doc)
