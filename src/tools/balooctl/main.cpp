@@ -19,16 +19,16 @@
 */
 
 #include <QCoreApplication>
+#include <QCommandLineOption>
+#include <QCommandLineParser>
 #include <QFile>
+#include <QDebug>
 
-#include <KCmdLineArgs>
 #include <KAboutData>
-#include <KLocale>
-#include <KComponentData>
-#include <KDebug>
-#include <KUrl>
+#include <KConfig>
 #include <KConfigGroup>
-#include <KStandardDirs>
+#include <KLocalizedString>
+#include <QStandardPaths>
 #include <QProcess>
 
 #include <QDBusMessage>
@@ -41,7 +41,7 @@ using namespace Baloo;
 
 void start()
 {
-    const QString exe = KStandardDirs::findExe(QLatin1String("baloo_file"));
+    const QString exe = QStandardPaths::findExecutable(QLatin1String("baloo_file"));
     QProcess::startDetached(exe);
 }
 
@@ -56,32 +56,31 @@ void stop()
 
 int main(int argc, char* argv[])
 {
-    KAboutData aboutData("balooctl", "balooctl", KLocalizedString(), "0.1");
-    aboutData.addAuthor(ki18n("Vishesh Handa"), ki18n("Maintainer"), "me@vhanda.in");
+    KAboutData aboutData("balooctl", i18n("balooctl"), "0.1");
+    aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), "me@vhanda.in");
 
-    KCmdLineArgs::init(argc, argv, &aboutData);
-
-    KCmdLineOptions options;
-    options.add("+status", ki18n("Print the status of the indexer"));
-    options.add("+enable", ki18n("Enable the file indexer"));
-    options.add("+disable", ki18n("Disable the file indexer"));
-    options.add("+start", ki18n("Start the file indexer"));
-    options.add("+stop", ki18n("Stop the file indexer"));
-    options.add("+restart", ki18n("Restart the file indexer"));
-    KCmdLineArgs::addCmdLineOptions(options);
-
-    KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
-
+    KAboutData::setApplicationData(aboutData);
     QCoreApplication app(argc, argv);
-    KComponentData comp(aboutData);
 
-    if (args->count() == 0)
-        KCmdLineArgs::usage();
+    QCommandLineParser parser;
+    parser.addPositionalArgument("command", i18n("The command to execute"));
+
+    parser.addPositionalArgument("status", i18n("Print the status of the indexer"));
+    parser.addPositionalArgument("enable", i18n("Enable the file indexer"));
+    parser.addPositionalArgument("disable", i18n("Disable the file indexer"));
+    parser.addPositionalArgument("start", i18n("Start the file indexer"));
+    parser.addPositionalArgument("stop", i18n("Stop the file indexer"));
+    parser.addPositionalArgument("restart", i18n("Restart the file indexer"));
+
+    parser.process(app);
+    if (parser.positionalArguments().isEmpty()) {
+        parser.showHelp(1);
+    }
 
     QTextStream err(stderr);
     QTextStream out(stdout);
 
-    QString command = args->arg(0);
+    QString command = parser.positionalArguments().first();
     if (command == QLatin1String("status")) {
         QDBusConnection bus = QDBusConnection::sessionBus();
         bool running = bus.interface()->isServiceRegistered("org.kde.baloo.file");
@@ -93,7 +92,7 @@ int main(int argc, char* argv[])
             out << "Baloo File Indexer is NOT running\n";
         }
 
-        const QString path = KGlobal::dirs()->localxdgdatadir() + "baloo/file/";
+        const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/baloo/file/";
 
         XapianDatabase database(path);
         Xapian::Database* xdb = database.db();
@@ -154,7 +153,7 @@ int main(int argc, char* argv[])
             out << "Disabling the File Indexer\n";
 
             stop();
-            const QString exe = KStandardDirs::findExe(QLatin1String("baloo_file_cleaner"));
+            const QString exe = QStandardPaths::findExecutable(QLatin1String("baloo_file_cleaner"));
             QProcess::startDetached(exe);
         }
 
