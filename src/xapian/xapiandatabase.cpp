@@ -28,8 +28,10 @@
 
 #if defined(HAVE_MALLOC_H)
 #include <malloc.h>
-#endif
 #include <unistd.h>
+#else
+#include <unistd.h>
+#endif
 
 using namespace Baloo;
 
