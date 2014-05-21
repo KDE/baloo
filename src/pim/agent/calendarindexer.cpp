@@ -39,7 +39,10 @@ CalendarIndexer::~CalendarIndexer()
 
 QStringList CalendarIndexer::mimeTypes() const
 {
-    return QStringList(); //TODO << QString::fromLatin1( "text/x-vnd.akonadi.note" );
+    return QStringList() << QString::fromLatin1("application/x-vnd.akonadi.calendar.event")
+                         << QString::fromLatin1("application/x-vnd.akonadi.calendar.todo")
+                         << QString::fromLatin1("application/x-vnd.akonadi.calendar.journal")
+                         << QString::fromLatin1("application/x-vnd.akonadi.calendar.freebusy");
 }
 
 void CalendarIndexer::index(const Akonadi::Item &item)
