@@ -268,15 +268,12 @@ QSet<qint64> SearchPlugin::search(const QString &akonadiQuery, const QList<qint6
         kDebug() << "mail query";
         query.setType("Email");
         t = recursiveEmailTermMapping(term);
-    } else if (mimeTypes.contains(KABC::Addressee::mimeType())) {
+    } else if (mimeTypes.contains(KABC::Addressee::mimeType()) || mimeTypes.contains(KABC::ContactGroup::mimeType())) {
         query.setType("Contact");
         t = recursiveContactTermMapping(term);
     } else if (mimeTypes.contains(QLatin1String("text/x-vnd.akonadi.note"))) {
         query.setType("Note");
         t = recursiveNoteTermMapping(term);
-    } else if (mimeTypes.contains(KABC::ContactGroup::mimeType())) {
-        query.setType("Contact");
-        t = recursiveContactTermMapping(term);
     }
     if (t.subTerms().isEmpty()) {
         kWarning() << "no terms added";
