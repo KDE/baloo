@@ -35,6 +35,10 @@ ContactSearchStore::ContactSearchStore(QObject* parent)
     m_prefix.insert("email", ""); // Email currently doesn't map to anything
     m_prefix.insert("collection", "C");
 
+
+    m_valueProperties.insert("birthday", 0);
+    m_valueProperties.insert("anniversary", 1);
+
     setDbPath(findDatabase("contacts"));
 }
 

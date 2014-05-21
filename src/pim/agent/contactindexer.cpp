@@ -87,6 +87,12 @@ bool ContactIndexer::indexContact(const Akonadi::Item& item)
     const Akonadi::Entity::Id colId = item.parentCollection().id();
     doc.addBoolTerm(colId, "C");
 
+    if (addresse.birthday().isValid()) {
+        const QString julianDay = QString::number(addresse.birthday().date().toJulianDay());
+        doc.addValue(0, julianDay);
+    }
+    //TODO index anniversary ?
+
     m_db->replaceDocument(item.id(), doc);
     return true;
 }
