@@ -63,6 +63,9 @@ namespace {
     QString akonotesIndexingPath() {
         return dbPath("notes");
     }
+    QString calendarIndexingPath() {
+        return dbPath("calendars");
+    }
 }
 
 #define INDEXING_AGENT_VERSION 4
