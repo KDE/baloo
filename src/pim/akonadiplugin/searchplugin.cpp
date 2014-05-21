@@ -275,7 +275,7 @@ QSet<qint64> SearchPlugin::search(const QString &akonadiQuery, const QList<qint6
         query.setType("Note");
         t = recursiveNoteTermMapping(term);
     } else if (mimeTypes.contains(KABC::ContactGroup::mimeType())) {
-        query.setType("ContactGroups");
+        query.setType("Contact");
         t = recursiveContactTermMapping(term);
     }
     if (t.subTerms().isEmpty()) {

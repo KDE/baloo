@@ -523,14 +523,12 @@ private Q_SLOTS:
         }
 #endif
         {
-#if 0
             Akonadi::SearchQuery query;
             query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Name, "group1", Akonadi::SearchTerm::CondContains));
 
             QList<qint64> collections;
             QSet<qint64> result = QSet<qint64>() << 103;
             QTest::newRow("contact group by name (group1)") << QString::fromLatin1(query.toJSON()) << collections << contactGroupMimeTypes << result;
-#endif
         }
 
 #if 0 //Doesn't work for the moment
