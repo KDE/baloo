@@ -25,6 +25,7 @@
 #include "contactindexer.h"
 #include "emailindexer.h"
 #include "akonotesindexer.h"
+#include "calendarindexer.h"
 #include "balooindexeradaptor.h"
 
 #include "src/file/priority.h"
@@ -196,6 +197,16 @@ void BalooIndexingAgent::createIndexers()
     try {
         QDir().mkpath(akonotesIndexingPath());
         indexer = new AkonotesIndexer(akonotesIndexingPath());
+        addIndexer(indexer);
+    }
+    catch (const Xapian::DatabaseError &e) {
+        delete indexer;
+        kError() << "Failed to create akonotes indexer:" << QString::fromStdString(e.get_msg());
+    }
+
+    try {
+        QDir().mkpath(calendarIndexingPath());
+        indexer = new CalendarIndexer(calendarIndexingPath());
         addIndexer(indexer);
     }
     catch (const Xapian::DatabaseError &e) {

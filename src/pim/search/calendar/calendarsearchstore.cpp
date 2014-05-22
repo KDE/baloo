@@ -30,9 +30,7 @@ using namespace Baloo;
 CalendarSearchStore::CalendarSearchStore(QObject* parent)
     : PIMSearchStore(parent)
 {
-    //m_prefix.insert("subject", "SU");
-    //m_prefix.insert("collection", "C");
-    //m_prefix.insert("body", "BO");
+    m_prefix.insert("collection", "C");
 
     setDbPath(findDatabase("calendars"));
 }
