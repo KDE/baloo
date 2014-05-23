@@ -71,8 +71,6 @@ int main(int argc, char* argv[])
     if (args->count() == 0)
         KCmdLineArgs::usage();
 
-    QTextStream err(stdout);
-
     //
     // The Resource Uri
     //
