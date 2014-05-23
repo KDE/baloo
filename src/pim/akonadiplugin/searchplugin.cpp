@@ -190,6 +190,11 @@ Baloo::Term recursiveEmailTermMapping(const Akonadi::SearchTerm &term)
     return Baloo::Term();
 }
 
+Baloo::Term recursiveCalendarTermMapping(const Akonadi::SearchTerm &term)
+{
+    return Baloo::Term();
+}
+
 Baloo::Term recursiveNoteTermMapping(const Akonadi::SearchTerm &term)
 {
     if (!term.subTerms().isEmpty()) {
@@ -274,7 +279,14 @@ QSet<qint64> SearchPlugin::search(const QString &akonadiQuery, const QList<qint6
     } else if (mimeTypes.contains(QLatin1String("text/x-vnd.akonadi.note"))) {
         query.setType("Note");
         t = recursiveNoteTermMapping(term);
+    } else if (mimeTypes.contains(QLatin1String("application/x-vnd.akonadi.calendar.event")) ||
+               mimeTypes.contains(QLatin1String("application/x-vnd.akonadi.calendar.todo")) ||
+               mimeTypes.contains(QLatin1String("application/x-vnd.akonadi.calendar.journal")) ||
+               mimeTypes.contains(QLatin1String("application/x-vnd.akonadi.calendar.freebusy"))) {
+        query.setType("Calendar");
+        t = recursiveCalendarTermMapping(term);
     }
+
     if (t.subTerms().isEmpty()) {
         kWarning() << "no terms added";
         return QSet<qint64>();

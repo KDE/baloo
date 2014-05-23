@@ -47,6 +47,7 @@ QStringList CalendarIndexer::mimeTypes() const
 
 void CalendarIndexer::index(const Akonadi::Item &item)
 {
+    //TODO
 }
 
 void CalendarIndexer::commit()
