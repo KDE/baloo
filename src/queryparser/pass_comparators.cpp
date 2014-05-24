@@ -33,7 +33,7 @@ QList<Baloo::Term> PassComparators::run(const QList<Baloo::Term> &match) const
 {
     Baloo::Term term(match.at(0));
 
-    // The the comparator of the term and ignore the property and the value, that
+    // Set the comparator of the term and ignore the property and the value, that
     // will be (or are already) filled by other passes
     term.setComparator(comparator);
 

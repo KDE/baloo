@@ -35,7 +35,7 @@ PassNumbers::PassNumbers()
     registerNames(6, i18nc("Space-separated list of words meaning 6", "six sixth"));
     registerNames(7, i18nc("Space-separated list of words meaning 7", "seven seventh"));
     registerNames(8, i18nc("Space-separated list of words meaning 8", "eight eighth"));
-    registerNames(9, i18nc("Space-separated list of words meaning 9", "nine nineth"));
+    registerNames(9, i18nc("Space-separated list of words meaning 9", "nine ninth"));
     registerNames(10, i18nc("Space-separated list of words meaning 10", "ten tenth"));
 }
 
