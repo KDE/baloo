@@ -66,8 +66,6 @@ int main(int argc, char* argv[])
         parser.showHelp(1);
     }
 
-    QTextStream err(stdout);
-
     //
     // The Resource Uri
     //

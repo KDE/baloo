@@ -1,6 +1,6 @@
 /*
  * This file is part of the KDE Baloo Project
- * Copyright (C) 2013  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2014 Laurent Montel <montel@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,30 +20,38 @@
  *
  */
 
-#include "contactsearchstore.h"
+#ifndef CALENDARINDEXER_H
+#define CALENDARINDEXER_H
 
-#include <QDebug>
+#include "abstractindexer.h"
 
-using namespace Baloo;
+#include <Akonadi/Collection>
+#include <Akonadi/Item>
 
-ContactSearchStore::ContactSearchStore(QObject* parent)
-    : PIMSearchStore(parent)
+#include <xapian.h>
+
+class CalendarIndexer : public AbstractIndexer
 {
-    m_prefix.insert("name", "NA");
-    m_prefix.insert("nick", "NI");
-    m_prefix.insert("email", ""); // Email currently doesn't map to anything
-    m_prefix.insert("collection", "C");
+public:
+    /**
+     * You must provide the path where the indexed information
+     * should be stored
+     */
+    CalendarIndexer(const QString& path);
+    ~CalendarIndexer();
 
+    QStringList mimeTypes() const;
 
-    m_valueProperties.insert("birthday", 0);
-    m_valueProperties.insert("anniversary", 1);
+    void index(const Akonadi::Item &item);
+    void commit();
 
-    setDbPath(findDatabase("contacts"));
-}
+    void remove(const Akonadi::Item &item);
+    void remove(const Akonadi::Collection &collection);
+    void move(const Akonadi::Item::Id &itemId, const Akonadi::Entity::Id &from, const Akonadi::Entity::Id &to);
+private:
+    Xapian::WritableDatabase *m_db;
+    Xapian::Document *m_doc;
+    Xapian::TermGenerator *m_termGen;
+};
 
-QStringList ContactSearchStore::types()
-{
-    return QStringList() << "Akonadi" << "Contact";
-}
-
-#include "contactsearchstore.moc"
+#endif // CALENDARINDEXER_H

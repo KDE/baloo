@@ -318,6 +318,15 @@ private Q_SLOTS:
             item.setParentCollection(Akonadi::Collection(3));
             contactIndexer.index(item);
         }
+        {
+            KABC::ContactGroup group;
+            group.setName("group3");
+            Akonadi::Item item(KABC::ContactGroup::mimeType());
+            item.setId(104);
+            item.setPayload(group);
+            item.setParentCollection(Akonadi::Collection(4));
+            contactIndexer.index(item);
+        }
 
 
         //Note item
@@ -523,14 +532,36 @@ private Q_SLOTS:
         }
 #endif
         {
-#if 0
             Akonadi::SearchQuery query;
             query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Name, "group1", Akonadi::SearchTerm::CondContains));
 
             QList<qint64> collections;
             QSet<qint64> result = QSet<qint64>() << 103;
             QTest::newRow("contact group by name (group1)") << QString::fromLatin1(query.toJSON()) << collections << contactGroupMimeTypes << result;
-#endif
+        }
+        {
+            Akonadi::SearchQuery query;
+            query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Name, "group2", Akonadi::SearchTerm::CondContains));
+
+            QList<qint64> collections;
+            QSet<qint64> result;
+            QTest::newRow("contact group by name (group2)") << QString::fromLatin1(query.toJSON()) << collections << contactGroupMimeTypes << result;
+        }
+        {
+            Akonadi::SearchQuery query;
+            query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Name, "group3", Akonadi::SearchTerm::CondContains));
+
+            QList<qint64> collections = QList<qint64>() << 4;
+            QSet<qint64> result = QSet<qint64>() << 104;
+            QTest::newRow("contact group by name (group3 in collection 4)") << QString::fromLatin1(query.toJSON()) << collections << contactGroupMimeTypes << result;
+        }
+        {
+            Akonadi::SearchQuery query;
+            query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Name, "group3", Akonadi::SearchTerm::CondContains));
+
+            QList<qint64> collections = QList<qint64>() << 3;
+            QSet<qint64> result;
+            QTest::newRow("contact group by name (group3 in collection 3)") << QString::fromLatin1(query.toJSON()) << collections << contactGroupMimeTypes << result;
         }
 
 #if 0 //Doesn't work for the moment

@@ -24,6 +24,7 @@ include(${_currentDir}/BalooTargetsWithPrefix.cmake)
 set(BALOO_CORE_LIBRARY baloocore)
 set(BALOO_FILE_LIBRARY baloofiles)
 set(BALOO_PIM_LIBRARY baloopim)
+set(BALOO_QUERYPARSER_LIBRARY balooqueryparser)
 #set(BALOO_TAG_LIBRARY balootags)
 
 # Set the library variable

@@ -1,6 +1,6 @@
 /*
  * This file is part of the KDE Baloo Project
- * Copyright (C) 2013  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2014 Laurent Montel <montel@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,30 +20,24 @@
  *
  */
 
-#include "contactsearchstore.h"
+#include "calendarsearchstore.h"
 
-#include <QDebug>
+#include <KStandardDirs>
+#include <KDebug>
 
 using namespace Baloo;
 
-ContactSearchStore::ContactSearchStore(QObject* parent)
+CalendarSearchStore::CalendarSearchStore(QObject* parent)
     : PIMSearchStore(parent)
 {
-    m_prefix.insert("name", "NA");
-    m_prefix.insert("nick", "NI");
-    m_prefix.insert("email", ""); // Email currently doesn't map to anything
     m_prefix.insert("collection", "C");
 
-
-    m_valueProperties.insert("birthday", 0);
-    m_valueProperties.insert("anniversary", 1);
-
-    setDbPath(findDatabase("contacts"));
+    setDbPath(findDatabase("calendars"));
 }
 
-QStringList ContactSearchStore::types()
+QStringList CalendarSearchStore::types()
 {
-    return QStringList() << "Akonadi" << "Contact";
+    return QStringList() << "Akonadi" << "Calendar";
 }
 
-#include "contactsearchstore.moc"
+BALOO_EXPORT_SEARCHSTORE(Baloo::CalendarSearchStore, "baloo_calendarsearchstore")
