@@ -33,7 +33,7 @@ PassPeriodNames::PassPeriodNames()
     ));
     registerNames(month_names, i18nc(
         "Month names, starting at the first of the year",
-        "january february march april may june july augustus september october november december"
+        "january february march april may june july august september october november december"
     ));
 }
 
@@ -41,7 +41,7 @@ void PassPeriodNames::registerNames(QHash<QString, long long> &table, const QStr
 {
     QStringList list = names.split(QLatin1Char(' '));
 
-    for (long long i=0; i<list.count(); ++i) {
+    for (int i=0; i<list.count(); ++i) {
         table.insert(list.at(i), i + 1);    // Count from 1 as calendars do this
     }
 }
