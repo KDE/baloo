@@ -1,9 +1,7 @@
-kde4_add_plugin(baloo_calendarsearchstore calendarsearchstore.cpp ../pimsearchstore.cpp)
+add_library(baloo_calendarsearchstore calendarsearchstore.cpp ../pimsearchstore.cpp)
 
 target_link_libraries(baloo_calendarsearchstore
-    ${QT_QTCORE_LIBRARY}
-    ${KDE4_KDECORE_LIBRARY}
-    ${KDEPIMLIBS_AKONADI_LIBS}
+    Qt5::Core
     ${XAPIAN_LIBRARIES}
     baloocore
     balooxapian

@@ -31,6 +31,7 @@ class CalendarSearchStore : public PIMSearchStore
 {
     Q_OBJECT
     Q_INTERFACES(Baloo::SearchStore)
+    Q_PLUGIN_METADATA(IID "org.kde.baloo.calendar" FILE "baloocalendarsearchstore.json")
 public:
     CalendarSearchStore(QObject* parent = 0);
 
