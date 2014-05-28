@@ -1,4 +1,4 @@
-add_library(baloo_calendarsearchstore calendarsearchstore.cpp ../pimsearchstore.cpp)
+add_library(baloo_calendarsearchstore MODULE calendarsearchstore.cpp ../pimsearchstore.cpp)
 
 target_link_libraries(baloo_calendarsearchstore
     Qt5::Core

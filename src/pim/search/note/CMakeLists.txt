@@ -1,4 +1,4 @@
-add_library(baloo_notesearchstore notesearchstore.cpp ../pimsearchstore.cpp)
+add_library(baloo_notesearchstore MODULE notesearchstore.cpp ../pimsearchstore.cpp)
 
 target_link_libraries(baloo_notesearchstore
     Qt5::Core
