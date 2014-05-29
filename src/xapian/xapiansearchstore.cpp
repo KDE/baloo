@@ -41,6 +41,11 @@ XapianSearchStore::XapianSearchStore(QObject* parent)
 {
 }
 
+XapianSearchStore::~XapianSearchStore()
+{
+    delete m_db;
+}
+
 void XapianSearchStore::setDbPath(const QString& path)
 {
     m_dbPath = path;
