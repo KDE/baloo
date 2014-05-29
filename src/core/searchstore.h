@@ -46,11 +46,13 @@ public:
      */
     static void overrideSearchStores(const QList<SearchStore*> &overrideSearchStores);
 
+    typedef QList< QSharedPointer<SearchStore> > List;
+
     /**
      * Gives a list of available search stores. These stores must be managed and
      * deleted by the caller
      */
-    static QList<SearchStore*> searchStores();
+    static List searchStores();
 
     /**
      * Returns a list of types which can be searched for
@@ -74,7 +76,6 @@ public:
     virtual QString icon(int queryId);
     virtual QString property(int queryId, const QString& propName);
 };
-
 
 //
 // Convenience functions

@@ -59,18 +59,23 @@ QString SearchStore::property(int, const QString&)
     return QString();
 }
 
-Q_GLOBAL_STATIC(QList<SearchStore*>, s_overrideSearchStores)
+Q_GLOBAL_STATIC(SearchStore::List, s_overrideSearchStores)
 
 void SearchStore::overrideSearchStores(const QList<SearchStore*> &overrideSearchStores)
 {
-    *s_overrideSearchStores = overrideSearchStores;
+    List* list = &(*s_overrideSearchStores);
+    list->clear();
+
+    Q_FOREACH (SearchStore* store, overrideSearchStores) {
+        list->append(QSharedPointer<SearchStore>(store));
+    }
 }
 
 //
 // Search Stores
 //
 // static
-QList<SearchStore*> SearchStore::searchStores()
+SearchStore::List SearchStore::searchStores()
 {
     static QMutex mutex;
     QMutexLocker lock(&mutex);
@@ -83,7 +88,7 @@ QList<SearchStore*> SearchStore::searchStores()
     // Get all the plugins
     KService::List plugins = KServiceTypeTrader::self()->query("BalooSearchStore");
 
-    QList<Baloo::SearchStore*> stores;
+    List stores;
     KService::List::const_iterator it;
     for (it = plugins.constBegin(); it != plugins.constEnd(); ++it) {
         KService::Ptr service = *it;
@@ -99,7 +104,7 @@ QList<SearchStore*> SearchStore::searchStores()
             st = qobject_cast<Baloo::SearchStore*>(instance);
         }
         if (st) {
-            stores << st;
+            stores << QSharedPointer<SearchStore>(st);
         }
         else {
             qWarning() << "Could not create SearchStore: " << service->library();
