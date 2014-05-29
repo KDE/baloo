@@ -25,7 +25,7 @@
 #include <QFile>
 #include <QString>
 
-#if defined(Q_OS_LINUX)
+#if defined(Q_OS_LINUX) || defined(__GLIBC__)
 #include <sys/types.h>
 #include <sys/xattr.h>
 #elif defined(Q_OS_MAC)
@@ -45,7 +45,7 @@ inline ssize_t baloo_getxattr(const QString& path, const QString& name, QString*
     const char* attributeName = n.constData();
 
     // First get the size of the data we are going to get to reserve the right amount of space.
-#if defined(Q_OS_LINUX)
+#if defined(Q_OS_LINUX) || defined(__GLIBC__)
     const ssize_t size = getxattr(encodedPath, attributeName, NULL, 0);
 #elif defined(Q_OS_MAC)
     const ssize_t size = getxattr(encodedPath, attributeName, NULL, 0, 0, 0);
@@ -64,7 +64,7 @@ inline ssize_t baloo_getxattr(const QString& path, const QString& name, QString*
 
     QByteArray data(size, Qt::Uninitialized);
 
-#if defined(Q_OS_LINUX)
+#if defined(Q_OS_LINUX) || defined(__GLIBC__)
     const ssize_t r = getxattr(encodedPath, attributeName, data.data(), size);
 #elif defined(Q_OS_MAC)
     const ssize_t r = getxattr(encodedPath, attributeName, data.data(), size, 0, 0);
@@ -91,7 +91,7 @@ inline int baloo_setxattr(const QString& path, const QString& name, const QStrin
 
     const size_t valueSize = v.size();
 
-#if defined(Q_OS_LINUX)
+#if defined(Q_OS_LINUX) || defined(__GLIBC__)
     return setxattr(encodedPath, attributeName, attributeValue, valueSize, 0);
 #elif defined(Q_OS_MAC)
     return setxattr(encodedPath, attributeName, attributeValue, valueSize, 0, 0);
