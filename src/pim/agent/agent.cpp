@@ -42,6 +42,7 @@
 #include <KLocalizedString>
 #include <KGlobal>
 #include <KStandardDirs>
+#include <KDebug>
 
 #include <QFile>
 
