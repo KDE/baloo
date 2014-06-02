@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 2.8.12)
 find_package(ECM 0.0.12 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules" ${ECM_MODULE_PATH})
 
-find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Widgets DBus Test Sql)
+find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Widgets DBus Sql)
 find_package(KF5 REQUIRED COMPONENTS I18n Config Service IdleTime KCMUtils Auth Runner Crash Solid KIO Auth)
 find_package(KFileMetaData 4.97 REQUIRED)
 
@@ -14,6 +14,17 @@ include(ECMInstallIcons)
 
 include(GenerateExportHeader)
 include(FeatureSummary)
+
+find_package(Qt5Test ${QT_MIN_VERSION} CONFIG QUIET)
+set_package_properties(Qt5Test PROPERTIES
+         PURPOSE "Required for tests"
+         TYPE OPTIONAL
+         )
+add_feature_info("Qt5Test" Qt5Test_FOUND "Required for building tests")
+if (NOT Qt5Test_FOUND)
+    set(BUILD_TESTING OFF CACHE BOOL "Build the testing tree.")
+endif()
+
 include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(KDECompilerSettings)
