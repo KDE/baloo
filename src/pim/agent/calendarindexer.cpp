@@ -47,7 +47,15 @@ QStringList CalendarIndexer::mimeTypes() const
 
 void CalendarIndexer::index(const Akonadi::Item &item)
 {
-    //TODO
+    if ( item.hasPayload<KCalCore::Event::Ptr>() ) {
+        indexEventItem( item, item.payload<KCalCore::Event::Ptr>() );
+    } else if ( item.hasPayload<KCalCore::Journal::Ptr>() ) {
+        indexJournalItem( item, item.payload<KCalCore::Journal::Ptr>() );
+    } else if ( item.hasPayload<KCalCore::Todo::Ptr>() ) {
+        indexTodoItem( item, item.payload<KCalCore::Todo::Ptr>() );
+    } else {
+        return;
+    }
 }
 
 void CalendarIndexer::commit()
@@ -104,3 +112,22 @@ void CalendarIndexer::move(const Akonadi::Item::Id& itemId,
     m_db->replace_document(doc.get_docid(), doc);
 }
 
+void CalendarIndexer::indexEventItem(const Akonadi::Item &item, const KCalCore::Event::Ptr &event)
+{
+    //TODO
+}
+
+void CalendarIndexer::indexJournalItem(const Akonadi::Item &item, const KCalCore::Journal::Ptr &journal)
+{
+    //TODO
+}
+
+void CalendarIndexer::indexTodoItem(const Akonadi::Item &item, const KCalCore::Todo::Ptr &todo)
+{
+    //TODO
+}
+
+void CalendarIndexer::updateIncidenceItem( const KCalCore::Incidence::Ptr &calInc )
+{
+    //TODO
+}

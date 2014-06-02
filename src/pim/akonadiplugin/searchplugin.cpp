@@ -192,6 +192,29 @@ Baloo::Term recursiveEmailTermMapping(const Akonadi::SearchTerm &term)
 
 Baloo::Term recursiveCalendarTermMapping(const Akonadi::SearchTerm &term)
 {
+    if (!term.subTerms().isEmpty()) {
+        Baloo::Term t(mapRelation(term.relation()));
+        Q_FOREACH (const Akonadi::SearchTerm &subterm, term.subTerms()) {
+            const Baloo::Term newTerm = recursiveCalendarTermMapping(subterm);
+            if (newTerm.isValid()) {
+                t.addSubTerm(newTerm);
+            }
+        }
+        return t;
+    } else {
+        kDebug() << term.key() << term.value();
+#if 0
+        const Akonadi::EmailSearchTerm::EmailSearchField field = Akonadi::EmailSearchTerm::fromKey(term.key());
+        switch (field) {
+        case Akonadi::EmailSearchTerm::Subject:
+            return getTerm(term, "subject");
+        case Akonadi::EmailSearchTerm::Body:
+            return getTerm(term, "body");
+        default:
+            kWarning() << "unknown term " << term.key();
+        }
+#endif
+    }
     return Baloo::Term();
 }
 
