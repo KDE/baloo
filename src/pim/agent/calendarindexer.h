@@ -27,6 +27,9 @@
 
 #include <Akonadi/Collection>
 #include <Akonadi/Item>
+#include <KCalCore/Journal>
+#include <KCalCore/Event>
+#include <KCalCore/Todo>
 
 #include <xapian.h>
 
@@ -49,6 +52,11 @@ public:
     void remove(const Akonadi::Collection &collection);
     void move(const Akonadi::Item::Id &itemId, const Akonadi::Entity::Id &from, const Akonadi::Entity::Id &to);
 private:
+    void indexEventItem(const Akonadi::Item &item, const KCalCore::Event::Ptr &event);
+    void indexJournalItem(const Akonadi::Item &item, const KCalCore::Journal::Ptr &journal);
+    void indexTodoItem(const Akonadi::Item &item, const KCalCore::Todo::Ptr &todo);
+    void updateIncidenceItem(const KCalCore::Incidence::Ptr &calInc);
+
     Xapian::WritableDatabase *m_db;
     Xapian::Document *m_doc;
     Xapian::TermGenerator *m_termGen;

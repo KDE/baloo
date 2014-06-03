@@ -29,6 +29,7 @@ target_link_libraries(akonadi_baloo_indexer
     ${KDEPIMLIBS_KABC_LIBS}
     ${XAPIAN_LIBRARIES}
     ${KDEPIMLIBS_KPIMUTILS_LIBS}
+    ${KDEPIMLIBS_KCALCORE_LIBS}
     balooxapian
 )
 
