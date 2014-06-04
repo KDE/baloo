@@ -32,9 +32,10 @@
 #include <QDebug>
 #include <KLocalizedString>
 #include <kio/netaccess.h>
-#include <KComponentData>
 #include <KCalendarSystem>
 #include <kde_file.h>
+#include <kglobal.h>
+#include <KComponentData>
 
 #include <QDate>
 #include <QCoreApplication>
@@ -76,7 +77,7 @@ KIO::UDSEntry createMonthUDSEntry(int month, int year)
 KIO::UDSEntry createDayUDSEntry(const QDate& date)
 {
     KIO::UDSEntry uds = createFolderUDSEntry(date.toString("yyyy-MM-dd"),
-                        KGlobal::locale()->formatDate(date, KLocalizedString::FancyLongDate),
+                        KGlobal::locale()->formatDate(date, KLocale::FancyLongDate),
                         date);
 
     return uds;
@@ -160,7 +161,7 @@ void TimelineProtocol::listDir(const QUrl& url)
     }
 
     default:
-        error(KIO::ERR_DOES_NOT_EXIST, url.prettyUrl());
+        error(KIO::ERR_DOES_NOT_EXIST, url.toString());
         break;
     }
 }
@@ -177,7 +178,7 @@ void TimelineProtocol::mimetype(const QUrl& url)
         break;
 
     default:
-        error(KIO::ERR_DOES_NOT_EXIST, url.prettyUrl());
+        error(KIO::ERR_DOES_NOT_EXIST, url.toString());
         break;
     }
 }
@@ -215,7 +216,7 @@ void TimelineProtocol::stat(const QUrl& url)
         break;
 
     default:
-        error(KIO::ERR_DOES_NOT_EXIST, url.prettyUrl());
+        error(KIO::ERR_DOES_NOT_EXIST, url.toString());
         break;
     }
 }
@@ -265,24 +266,13 @@ void TimelineProtocol::listThisYearsMonths()
 
 extern "C"
 {
-    KDE_EXPORT int kdemain(int argc, char** argv)
+    Q_DECL_EXPORT int kdemain(int, char** argv)
     {
-        // necessary to use other kio slaves
         KComponentData("kio_timeline");
-        QCoreApplication app(argc, argv);
-
-        qDebug() << "Starting timeline slave " << getpid();
-
-        if (argc != 4) {
-            qWarning() << "Usage: kio_timeline protocol domain-socket1 domain-socket2";
-            exit(-1);
-        }
-
         Baloo::TimelineProtocol slave(argv[2], argv[3]);
         slave.dispatchLoop();
-
-        qDebug() << "Timeline slave Done";
-
         return 0;
     }
 }
+
+#include "kio_timeline.moc"

@@ -1,11 +1,3 @@
-project(kioslave-timeline)
-
-include_directories(
-  ${QT_INCLUDES}
-  ${KDE4_INCLUDES}
-  ${KDE4_KIO_INCLUDES}
-)
-
 set(kio_timeline_SRCS
   kio_timeline.cpp
   timelinetools.cpp
@@ -15,6 +7,8 @@ add_library(kio_timeline MODULE ${kio_timeline_SRCS})
 
 target_link_libraries(kio_timeline
   KF5::KIOWidgets
+  KF5::I18n
+  KF5::KDELibs4Support
   baloocore
 )
 
