@@ -2,7 +2,7 @@ project(baloo)
 
 set(BALOO_VERSION_MAJOR 4)
 set(BALOO_VERSION_MINOR 13)
-set(BALOO_VERSION_RELEASE 1)
+set(BALOO_VERSION_RELEASE 2)
 set(BALOO_VERSION "${BALOO_VERSION_MAJOR}.${BALOO_VERSION_MINOR}.${BALOO_VERSION_RELEASE}")
 
 
@@ -39,7 +39,7 @@ set_package_properties(QJSON PROPERTIES
     TYPE REQUIRED
 )
 
-find_package(Akonadi 1.11.42 CONFIG)
+find_package(Akonadi 1.12.1 CONFIG)
 set_package_properties(Akonadi PROPERTIES
     URL "http://akonadi-project.org"
     TYPE REQUIRED
