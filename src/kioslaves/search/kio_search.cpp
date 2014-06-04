@@ -27,6 +27,7 @@
 #include <QDebug>
 #include <KSharedConfig>
 #include <KApplication>
+#include <KLocalizedString>
 
 #include <KIO/Job>
 #include <KIO/NetAccess>
@@ -59,7 +60,7 @@ KIO::UDSEntry statSearchFolder(const QUrl& url)
 
 bool isRootUrl(const QUrl& url)
 {
-    const QString path = url.path(QUrl::StripTrailingSlash);
+    const QString path = url.path();
     return (!url.hasQuery() &&
             (path.isEmpty() || path == QLatin1String("/")));
 }
@@ -168,26 +169,18 @@ void SearchProtocol::stat(const QUrl& url)
     finished();
 
     /*else {
-        error(KIO::ERR_CANNOT_ENTER_DIRECTORY, url.prettyUrl());
+        error(KIO::ERR_CANNOT_ENTER_DIRECTORY, url.toString());
         return;
     }*/
 }
 
 extern "C"
 {
-    KDE_EXPORT int kdemain(int argc, char** argv)
+    Q_DECL_EXPORT int kdemain(int, char** argv)
     {
-        // necessary to use other kio slaves
         KComponentData comp("kio_baloosearch");
-        QCoreApplication app(argc, argv);
-
-        qDebug() << "Starting baloosearch slave " << getpid();
-
         Baloo::SearchProtocol slave(argv[2], argv[3]);
         slave.dispatchLoop();
-
-        qDebug() << "baloosearch slave Done";
-
         return 0;
     }
 }

@@ -2,6 +2,7 @@ add_library(kio_baloosearch MODULE kio_search.cpp)
 
 target_link_libraries(kio_baloosearch
   KF5::KIOWidgets
+  KF5::KDELibs4Support
   baloocore
 )
 
