@@ -31,6 +31,7 @@
 #include <KLocalizedString>
 #include <kio/netaccess.h>
 #include <KComponentData>
+#include <KUrl>
 
 #include <QCoreApplication>
 #include <QDateTime>
@@ -195,7 +196,7 @@ void TagsProtocol::copy(const QUrl& src, const QUrl& dest, int permissions, KIO:
     qDebug() << src << dest;
 
     if (src.scheme() != QLatin1String("file")) {
-        error(KIO::ERR_UNSUPPORTED_ACTION, src.prettyUrl());
+        error(KIO::ERR_UNSUPPORTED_ACTION, src.toString());
         return;
     }
 
@@ -209,7 +210,7 @@ void TagsProtocol::copy(const QUrl& src, const QUrl& dest, int permissions, KIO:
 
     case RootUrl:
     case TagUrl:
-        error(KIO::ERR_UNSUPPORTED_ACTION, src.prettyUrl());
+        error(KIO::ERR_UNSUPPORTED_ACTION, src.toString());
         return;
 
     case FileUrl:
@@ -241,7 +242,7 @@ void TagsProtocol::get(const QUrl& url)
 
     case RootUrl:
     case TagUrl:
-        error(KIO::ERR_UNSUPPORTED_ACTION, url.prettyUrl());
+        error(KIO::ERR_UNSUPPORTED_ACTION, url.toString());
         return;
 
     case FileUrl:
@@ -256,7 +257,7 @@ void TagsProtocol::put(const QUrl& url, int permissions, KIO::JobFlags flags)
     Q_UNUSED(permissions);
     Q_UNUSED(flags);
 
-    error(KIO::ERR_UNSUPPORTED_ACTION, url.prettyUrl());
+    error(KIO::ERR_UNSUPPORTED_ACTION, url.toString());
     return;
 }
 
@@ -265,7 +266,7 @@ void TagsProtocol::rename(const QUrl& src, const QUrl& dest, KIO::JobFlags flags
 {
     qDebug() << src << dest;
     if (src.isLocalFile()) {
-        error(KIO::ERR_CANNOT_DELETE_ORIGINAL, src.prettyUrl());
+        error(KIO::ERR_CANNOT_DELETE_ORIGINAL, src.toString());
         return;
     }
 
@@ -279,14 +280,14 @@ void TagsProtocol::rename(const QUrl& src, const QUrl& dest, KIO::JobFlags flags
 
     case RootUrl:
     case TagUrl:
-        error(KIO::ERR_UNSUPPORTED_ACTION, src.prettyUrl());
+        error(KIO::ERR_UNSUPPORTED_ACTION, src.toString());
         return;
 
     case FileUrl: {
         // Yes, this is weird, but it is required
         // It is required cause the dest url is of the form tags:/tag/file_url_with_new_filename
         // So we extract the new fileUrl from the 'src', and apply the new file to the dest
-        QUrl destUrl(fileUrl);
+        KUrl destUrl(fileUrl);
         destUrl.setFileName(dest.fileName());
 
         ForwardingSlaveBase::rename(fileUrl, destUrl, flags);
@@ -309,7 +310,7 @@ void TagsProtocol::del(const QUrl& url, bool isfile)
         return;
 
     case RootUrl:
-        error(KIO::ERR_UNSUPPORTED_ACTION, url.prettyUrl());
+        error(KIO::ERR_UNSUPPORTED_ACTION, url.toString());
         return;
 
     case TagUrl: {
@@ -404,7 +405,7 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, QString& tag, 
     }
     else {
         tag = names[0];
-        QString fileName = url.fileName(QUrl::ObeyTrailingSlash);
+        QString fileName = url.fileName();
         fileUrl = decodeFileUrl(fileName);
 
         return FileUrl;
@@ -414,20 +415,11 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, QString& tag, 
 
 extern "C"
 {
-    KDE_EXPORT int kdemain(int argc, char** argv)
+    Q_DECL_EXPORT int kdemain(int, char** argv)
     {
-        // necessary to use other kio slaves
         KComponentData("kio_tags");
-        QCoreApplication app(argc, argv);
-
-        if (argc != 4) {
-            qWarning() << "Usage: kio_tags protocol domain-socket1 domain-socket2";
-            exit(-1);
-        }
-
         Baloo::TagsProtocol slave(argv[2], argv[3]);
         slave.dispatchLoop();
-
         return 0;
     }
 }
