@@ -127,6 +127,7 @@ void App::processNextUrl()
     //
     if (mimetype == QLatin1String("text/plain")) {
         if (!url.endsWith(".txt")) {
+            qDebug() << "text/plain does not end with .txt. Ignoring";
             mimetype.clear();
         }
 
