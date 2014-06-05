@@ -25,3 +25,5 @@ target_link_libraries(baloo_file_extractor
 )
 
 install(TARGETS baloo_file_extractor DESTINATION ${BIN_INSTALL_DIR})
+
+add_subdirectory(autotests)
