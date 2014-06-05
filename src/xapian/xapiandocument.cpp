@@ -23,14 +23,14 @@
 using namespace Baloo;
 
 XapianDocument::XapianDocument()
+    : m_termGen(&m_doc)
 {
-    m_termGen.set_document(m_doc);
 }
 
 XapianDocument::XapianDocument(const Xapian::Document& doc)
     : m_doc(doc)
+    , m_termGen(&m_doc)
 {
-    m_termGen.set_document(m_doc);
 }
 
 void XapianDocument::addTerm(const QString& term, const QString& prefix)
@@ -56,9 +56,7 @@ void XapianDocument::addBoolTerm(const QString& term, const QString& prefix)
 
 void XapianDocument::indexText(const QString& text, const QString& prefix, int wdfInc)
 {
-    const QByteArray tarr = text.toUtf8();
-    const QByteArray par = prefix.toUtf8();
-    m_termGen.index_text(tarr.constData(), wdfInc, par.constData());
+    m_termGen.indexText(text, prefix, wdfInc);
 }
 
 void XapianDocument::indexText(const QString& text, int wdfInc)

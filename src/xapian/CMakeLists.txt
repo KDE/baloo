@@ -4,6 +4,7 @@ set(XAPIAN_SRCS
     xapiansearchstore.cpp
     xapiandocument.cpp
     xapiandatabase.cpp
+    termgenerator.cpp
 )
 
 add_library(balooxapian SHARED ${XAPIAN_SRCS})
@@ -22,3 +23,5 @@ set_target_properties(balooxapian PROPERTIES
 generate_export_header(balooxapian BASE_NAME BALOO_XAPIAN EXPORT_FILE_NAME xapian_export.h)
 
 install(TARGETS balooxapian EXPORT BalooLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+
+add_subdirectory(autotests)
