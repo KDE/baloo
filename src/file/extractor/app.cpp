@@ -24,7 +24,6 @@
 #include "../basicindexingjob.h"
 #include "../database.h"
 #include "xapiandatabase.h"
-#include "../fileindexerconfig.h"
 
 #include <QDebug>
 #include <QCoreApplication>
@@ -58,8 +57,6 @@ App::App(const QString& path, QObject* parent)
 
 void App::startProcessing(const QStringList& args)
 {
-    FileIndexerConfig config;
-
     m_results.reserve(args.size());
     Q_FOREACH (const QString& arg, args) {
         FileMapping mapping = FileMapping(arg.toUInt());
@@ -77,11 +74,11 @@ void App::startProcessing(const QStringList& args)
             url = QFileInfo(arg).absoluteFilePath();
         }
 
-        if (QFile::exists(url) && config.shouldBeIndexed(url)) {
+        if (QFile::exists(url)) {
             m_urls << url;
         } else {
             // id or url was looked up, but file deleted
-            qDebug() << url << "does not exist or should not be indexed";
+            qDebug() << url << "does not exist";
 
             // Try to delete it as an id:
             // it may have been deleted from the FileMapping db as well.
@@ -108,6 +105,20 @@ void App::processNextUrl()
 
     const QString url = m_urls.takeFirst();
     QString mimetype = m_mimeDb.mimeTypeForFile(url).name();
+
+    if (!m_ignoreConfig) {
+        bool shouldIndex = m_config.shouldBeIndexed(url) && m_config.shouldMimeTypeBeIndexed(mimetype);
+        if (!shouldIndex) {
+            qDebug() << url << "should not be indexed. Ignoring";
+
+            FileMapping mapping(url);
+            mapping.remove(m_db.sqlDatabase());
+            m_docsToDelete << mapping.id();
+
+            QTimer::singleShot(0, this, SLOT(processNextUrl()));
+            return;
+        }
+    }
 
     //
     // HACK: We only want to index plain text files which end with a .txt

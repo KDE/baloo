@@ -48,6 +48,7 @@ int main(int argc, char* argv[])
     parser.addPositionalArgument("urls", i18n("The URL/id of the files to be indexed"));
     parser.addOption(QCommandLineOption("debug", i18n("Print the data being indexed")));
     parser.addOption(QCommandLineOption("bdata", i18n("Print the QVariantMap in Base64 encoding")));
+    parser.addOption(QCommandLineOption("ignoreConfig", i18n("Ignore the baloofilerc config and always index the file")));
 
     const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/baloo/file";
     parser.addOption(QCommandLineOption("db", i18n("Specify a custom path for the database"),
@@ -69,6 +70,7 @@ int main(int argc, char* argv[])
     Baloo::App appObject(parser.value("db"));
     appObject.setBData(parser.isSet("bdata"));
     appObject.setDebug(parser.isSet("debug"));
+    appObject.setIgnoreConfig(parser.isSet("ignoreConfig"));
     appObject.startProcessing(args);
 
     return app.exec();

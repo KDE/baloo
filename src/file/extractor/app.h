@@ -32,6 +32,7 @@
 
 #include "result.h"
 #include "../database.h"
+#include "../fileindexerconfig.h"
 #include "filemapping.h"
 
 namespace Baloo {
@@ -44,6 +45,7 @@ public:
 
     void setDebug(bool status) { m_debugEnabled = status; }
     void setBData(bool status) { m_bData = status; }
+    void setIgnoreConfig(bool status) { m_ignoreConfig = status; }
 
     void startProcessing(const QStringList& args);
 
@@ -61,6 +63,7 @@ private:
     QStringList m_urls;
     bool m_bData;
     bool m_debugEnabled;
+    bool m_ignoreConfig;
 
     QString m_path;
 
@@ -72,6 +75,8 @@ private:
     int m_termCount;
     QList<QString> m_updatedFiles;
     QVector<uint> m_docsToDelete;
+
+    FileIndexerConfig m_config;
 };
 
 }
