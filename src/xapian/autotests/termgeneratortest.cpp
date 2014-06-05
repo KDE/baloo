@@ -26,34 +26,51 @@
 
 using namespace Baloo;
 
+namespace {
+    QStringList allWords(const Xapian::Document& doc)
+    {
+        QStringList words;
+        for (auto it = doc.termlist_begin(); it != doc.termlist_end(); it++) {
+            std::string str = *it;
+            words << QString::fromUtf8(str.c_str(), str.length());
+        }
+
+        return words;
+    }
+}
 void TermGeneratorTest::testWordBoundaries()
 {
-    QString str("The quick (\"brown\") 'fox' can't jump 32.3 feet, right? No-Wrong;xx.txt");
+    QString str = QString::fromLatin1("The quick (\"brown\") 'fox' can't jump 32.3 feet, right? No-Wrong;xx.txt");
 
     Xapian::Document doc;
     TermGenerator termGen(&doc);
     termGen.indexText(str);
 
-    QStringList words;
-    for (auto it = doc.termlist_begin(); it != doc.termlist_end(); it++) {
-        std::string str = *it;
-        words << QString::fromUtf8(str.c_str(), str.length());
-    }
+    QStringList words = allWords(doc);
 
-    QCOMPARE(words[0], QString("32.3"));
-    QCOMPARE(words[1], QString("brown"));
-    QCOMPARE(words[2], QString("can't"));
-    QCOMPARE(words[3], QString("feet"));
-    QCOMPARE(words[4], QString("fox"));
-    QCOMPARE(words[5], QString("jump"));
-    QCOMPARE(words[6], QString("no"));
-    QCOMPARE(words[7], QString("quick"));
-    QCOMPARE(words[8], QString("right"));
-    QCOMPARE(words[9], QString("the"));
-    QCOMPARE(words[10], QString("txt"));
-    QCOMPARE(words[11], QString("wrong"));
-    QCOMPARE(words[12], QString("xx"));
-    QCOMPARE(words.size(), 13);
+    QStringList expectedWords;
+    expectedWords << "32.3" << "brown" << "can't" << "feet" << "fox" << "jump"
+                  << "no" << "quick" << "right" << "the" << "txt" << "wrong"
+                  << "xx";
+
+    QCOMPARE(words, expectedWords);
+}
+
+void TermGeneratorTest::testAccetCharacters()
+{
+    QString str = QString::fromLatin1("Como está Kûg");
+
+    Xapian::Document doc;
+    TermGenerator termGen(&doc);
+    termGen.indexText(str);
+
+    QStringList words = allWords(doc);
+
+    QStringList expectedWords;
+    expectedWords << "esta" << "como" << "kug";
+
+    QEXPECT_FAIL("", "Xapian does not handle diarectics", Continue);
+    QCOMPARE(words, expectedWords);
 }
 
 QTEST_MAIN(TermGeneratorTest)
