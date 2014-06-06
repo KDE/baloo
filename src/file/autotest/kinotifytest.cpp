@@ -373,4 +373,21 @@ void KInotifyTest::testMoveRootFolder()
     QVERIFY(kn.watchingPath(dest));
 }
 
+void KInotifyTest::testFileClosedAfterWrite()
+{
+    QTemporaryDir dir;
+    touchFile(dir.path() + "/file");
+
+    KInotify kn;
+    kn.addWatch(dir.path(), KInotify::EventAll);
+
+    QSignalSpy spy(&kn, SIGNAL(closedWrite(QString)));
+    touchFile(dir.path() + "/file");
+
+    waitForSignal(&kn, SIGNAL(closedWrite(QString)));
+    QCOMPARE(spy.count(), 1);
+    QCOMPARE(spy.at(0).first().toString(), dir.path() + "/file");
+}
+
+
 QTEST_MAIN(KInotifyTest)
