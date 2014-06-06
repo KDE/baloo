@@ -74,6 +74,27 @@ void BasicIndexingQueueTest::testSimpleDirectoryStructure()
 
     // kde and kde/1 are not indexed
     QCOMPARE(spy.count(), 5);
+
+    QStringList urls;
+    for (int i = 0; i < spy.count(); i++) {
+        QVariantList args = spy.at(i);
+        QCOMPARE(args.size(), 2);
+
+        int id = args[0].toInt();
+        QVERIFY(id > 0);
+
+        FileMapping fileMap(id);
+        QVERIFY(fileMap.fetch(db.sqlDatabase()));
+        urls << fileMap.url();
+    }
+
+    QString home = dir->path() + "/home";
+
+    QStringList expectedUrls;
+    expectedUrls << home << home + "/1" << home + "/2" << home + "/docs"
+                 << home + "/docs/1";
+
+    QCOMPARE(urls, expectedUrls);
 }
 
 QTEST_MAIN(BasicIndexingQueueTest)
