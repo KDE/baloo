@@ -49,7 +49,6 @@ public:
 
 Q_SIGNALS:
     void newDocument(uint docid, const Xapian::Document& doc);
-    void deleteDocument(unsigned docid);
 
 protected:
     virtual void processNextIteration();

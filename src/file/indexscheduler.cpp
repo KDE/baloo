@@ -42,11 +42,6 @@ IndexScheduler::IndexScheduler(Database* db, FileIndexerConfig* config, QObject*
     Q_ASSERT(m_config);
     connect(m_config, SIGNAL(configChanged()), this, SLOT(slotConfigChanged()));
 
-    // Stop indexing when a device is unmounted
-    // RemovableMediaCache* cache = new RemovableMediaCache(this);
-    // connect(cache, SIGNAL(deviceTeardownRequested(const RemovableMediaCache::Entry*)),
-    //        this, SLOT(slotTeardownRequested(const RemovableMediaCache::Entry*)));
-
     m_basicIQ = new BasicIndexingQueue(m_db, m_config, this);
     m_fileIQ = new FileIndexingQueue(m_db, this);
 
@@ -206,17 +201,6 @@ void IndexScheduler::indexFile(const QString& path)
 {
     m_basicIQ->enqueue(FileMapping(path));
 }
-
-/*
-void IndexScheduler::slotTeardownRequested(const RemovableMediaCache::Entry* entry)
-{
-    const QString path = entry->mountPath();
-
-    m_basicIQ->clear(path);
-    m_fileIQ->clear(path);
-}
-*/
-
 
 void IndexScheduler::setStateFromEvent()
 {
