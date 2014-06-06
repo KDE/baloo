@@ -59,6 +59,8 @@ public:
      */
     void setDelay(int msec);
 
+    bool isSuspended() const;
+
 public Q_SLOTS:
     void suspend();
     void resume();

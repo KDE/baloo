@@ -63,10 +63,13 @@ void BasicIndexingQueueTest::testSimpleDirectoryStructure()
 
     FileIndexerConfig config;
     BasicIndexingQueue queue(&db, &config);
-    queue.enqueue(FileMapping(dir->path() + "/home"));
+    QCOMPARE(queue.isSuspended(), false);
 
     QSignalSpy spy(&queue, SIGNAL(newDocument(uint,Xapian::Document)));
-    queue.resume();
+    QSignalSpy spyStarted(&queue, SIGNAL(startedIndexing()));
+    QSignalSpy spyFinished(&queue, SIGNAL(finishedIndexing()));
+
+    queue.enqueue(FileMapping(dir->path() + "/home"));
 
     QEventLoop loop;
     connect(&queue, SIGNAL(finishedIndexing()), &loop, SLOT(quit()));
@@ -74,6 +77,8 @@ void BasicIndexingQueueTest::testSimpleDirectoryStructure()
 
     // kde and kde/1 are not indexed
     QCOMPARE(spy.count(), 5);
+    QCOMPARE(spyStarted.count(), 1);
+    QCOMPARE(spyFinished.count(), 1);
 
     QStringList urls;
     for (int i = 0; i < spy.count(); i++) {

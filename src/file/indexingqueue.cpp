@@ -106,3 +106,8 @@ void IndexingQueue::doResume()
 void IndexingQueue::doSuspend()
 {
 }
+
+bool IndexingQueue::isSuspended() const
+{
+    return m_suspended;
+}
