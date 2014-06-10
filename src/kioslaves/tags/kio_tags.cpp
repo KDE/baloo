@@ -23,23 +23,15 @@
 #include "kio_tags.h"
 
 #include <QUrl>
-#include <kio/global.h>
-#include <klocale.h>
-#include <kio/job.h>
-#include <KUser>
 #include <QDebug>
+
 #include <KLocalizedString>
-#include <kio/netaccess.h>
-#include <KComponentData>
-#include <KUrl>
+#include <KUser>
+#include <kio/job.h>
 
 #include <QCoreApplication>
 #include <QDateTime>
-#include <QDBusConnection>
-#include <QDBusConnectionInterface>
-
-#include <sys/types.h>
-#include <unistd.h>
+#include <QDir>
 
 #include "file.h"
 #include "filemodifyjob.h"
@@ -98,10 +90,9 @@ void TagsProtocol::listDir(const QUrl& url)
         job->exec();
 
         Q_FOREACH (const QString& tag, job->tags()) {
-            listEntry(createUDSEntryForTag(tag), false);
+            listEntry(createUDSEntryForTag(tag));
         }
 
-        listEntry(KIO::UDSEntry(), true);
         finished();
         return;
     }
@@ -135,10 +126,9 @@ void TagsProtocol::listDir(const QUrl& url)
             uds.insert(KIO::UDSEntry::UDS_TARGET_URL, url.url());
             uds.insert(KIO::UDSEntry::UDS_LOCAL_PATH, fileUrl);
 
-            listEntry(uds, false);
+            listEntry(uds);
         }
 
-        listEntry(KIO::UDSEntry(), true);
         finished();
     }
 
@@ -191,7 +181,7 @@ void TagsProtocol::stat(const QUrl& url)
     }
 }
 
-void TagsProtocol::copy(const QUrl& src, const QUrl& dest, int permissions, KIO::JobFlags flags)
+void TagsProtocol::copy(const QUrl& src, const QUrl& dest, int, KIO::JobFlags)
 {
     qDebug() << src << dest;
 
@@ -287,10 +277,12 @@ void TagsProtocol::rename(const QUrl& src, const QUrl& dest, KIO::JobFlags flags
         // Yes, this is weird, but it is required
         // It is required cause the dest url is of the form tags:/tag/file_url_with_new_filename
         // So we extract the new fileUrl from the 'src', and apply the new file to the dest
-        KUrl destUrl(fileUrl);
-        destUrl.setFileName(dest.fileName());
+        QString destUrl = fileUrl;
+        int lastIndex = destUrl.lastIndexOf(QDir::separator());
+        destUrl.resize(lastIndex + 1);
+        destUrl.append(dest.fileName());
 
-        ForwardingSlaveBase::rename(fileUrl, destUrl, flags);
+        ForwardingSlaveBase::rename(fileUrl, QUrl(destUrl), flags);
         return;
     }
     }
@@ -298,6 +290,7 @@ void TagsProtocol::rename(const QUrl& src, const QUrl& dest, KIO::JobFlags flags
 
 void TagsProtocol::del(const QUrl& url, bool isfile)
 {
+    Q_UNUSED(url)
     Q_UNUSED(isfile);
     /*
 
@@ -386,7 +379,7 @@ QString TagsProtocol::encodeFileUrl(const QString& url)
 }
 
 
-TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, QString& tag, QString& fileUrl, bool ignoreErrors)
+TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, QString& tag, QString& fileUrl, bool)
 {
     QString path = url.path();
     if (path.isEmpty() || path == QLatin1String("/"))
@@ -415,9 +408,10 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, QString& tag, 
 
 extern "C"
 {
-    Q_DECL_EXPORT int kdemain(int, char** argv)
+    Q_DECL_EXPORT int kdemain(int argc, char** argv)
     {
-        KComponentData("kio_tags");
+        QCoreApplication app(argc, argv);
+        app.setApplicationName(QStringLiteral("kio_tags"));
         Baloo::TagsProtocol slave(argv[2], argv[3]);
         slave.dispatchLoop();
         return 0;
