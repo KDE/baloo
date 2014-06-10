@@ -25,13 +25,11 @@
 #include <QUrl>
 #include <KUser>
 #include <QDebug>
+#include <QCoreApplication>
 #include <KSharedConfig>
-#include <KApplication>
 #include <KLocalizedString>
 
 #include <KIO/Job>
-#include <KIO/NetAccess>
-#include <kde_file.h>
 
 using namespace Baloo;
 
@@ -81,7 +79,6 @@ void SearchProtocol::listDir(const QUrl& url)
 {
     // list the root folder
     if (isRootUrl(url)) {
-        listEntry(KIO::UDSEntry(), true);
         finished();
     }
 
@@ -94,8 +91,8 @@ void SearchProtocol::listDir(const QUrl& url)
 
         if (url.isLocalFile()) {
             // Code from kdelibs/kioslaves/file.cpp
-            KDE_struct_stat statBuf;
-            if (KDE_stat(QFile::encodeName(url.toLocalFile()).data(), &statBuf) == 0) {
+            QT_STATBUF statBuf;
+            if (QT_LSTAT(QFile::encodeName(url.toLocalFile()).data(), &statBuf) == 0) {
                 uds.insert(KIO::UDSEntry::UDS_MODIFICATION_TIME, statBuf.st_mtime);
                 uds.insert(KIO::UDSEntry::UDS_ACCESS_TIME, statBuf.st_atime);
                 uds.insert(KIO::UDSEntry::UDS_SIZE, statBuf.st_size);
@@ -114,10 +111,7 @@ void SearchProtocol::listDir(const QUrl& url)
         } else {
             // not a local file
             KIO::StatJob* job = KIO::stat(url, KIO::HideProgressInfo);
-            // we do not want to wait for the event loop to delete the job
-            QScopedPointer<KIO::StatJob> sp(job);
-            job->setAutoDelete(false);
-            if (KIO::NetAccess::synchronousRun(job, 0)) {
+            if (job->exec()) {
                 uds = job->statResult();
             } else {
                 continue;
@@ -131,10 +125,9 @@ void SearchProtocol::listDir(const QUrl& url)
         if (url.isLocalFile())
             uds.insert(KIO::UDSEntry::UDS_LOCAL_PATH, url.toLocalFile());
 
-        listEntry(uds, false);
+        listEntry(uds);
     }
 
-    listEntry(KIO::UDSEntry(), true);
     finished();
 }
 
@@ -176,9 +169,10 @@ void SearchProtocol::stat(const QUrl& url)
 
 extern "C"
 {
-    Q_DECL_EXPORT int kdemain(int, char** argv)
+    Q_DECL_EXPORT int kdemain(int argc, char** argv)
     {
-        KComponentData comp("kio_baloosearch");
+        QCoreApplication app(argc, argv);
+        app.setApplicationName(QStringLiteral("kio_baloosearch"));
         Baloo::SearchProtocol slave(argv[2], argv[3]);
         slave.dispatchLoop();
         return 0;
