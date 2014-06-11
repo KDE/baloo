@@ -24,17 +24,16 @@
 #include "query.h"
 #include "resultiterator.h"
 
-#include <QUrl>
 #include <QDebug>
 #include <QDate>
 #include <QCoreApplication>
 
-#include <kio/global.h>
-#include <kio/job.h>
 #include <KUser>
+#include <KFormat>
 
 #include <KLocalizedString>
 #include <KCalendarSystem>
+#include <KLocale>
 
 using namespace Baloo;
 
@@ -73,7 +72,7 @@ KIO::UDSEntry createMonthUDSEntry(int month, int year)
 KIO::UDSEntry createDayUDSEntry(const QDate& date)
 {
     KIO::UDSEntry uds = createFolderUDSEntry(date.toString("yyyy-MM-dd"),
-                        KLocale::global()->formatDate(date, KLocale::FancyLongDate),
+                        KFormat().formatRelativeDate(date, QLocale::LongFormat),
                         date);
 
     return uds;
