@@ -1,7 +1,7 @@
 /*
    Copyright 2009-2010 Sebastian Trueg <trueg@kde.org>
    Copyright 2013      Vishesh Handa <me@vhanda.in>
-   
+
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
    published by the Free Software Foundation; either version 2 of
@@ -25,20 +25,16 @@
 #include "resultiterator.h"
 
 #include <QUrl>
-#include <kio/global.h>
-#include <klocale.h>
-#include <kio/job.h>
-#include <KUser>
 #include <QDebug>
-#include <KLocalizedString>
-#include <kio/netaccess.h>
-#include <KCalendarSystem>
-#include <kde_file.h>
-#include <kglobal.h>
-#include <KComponentData>
-
 #include <QDate>
 #include <QCoreApplication>
+
+#include <kio/global.h>
+#include <kio/job.h>
+#include <KUser>
+
+#include <KLocalizedString>
+#include <KCalendarSystem>
 
 using namespace Baloo;
 
@@ -62,7 +58,7 @@ KIO::UDSEntry createFolderUDSEntry(const QString& name, const QString& displayNa
 KIO::UDSEntry createMonthUDSEntry(int month, int year)
 {
     QString dateString
-        = KGlobal::locale()->calendar()->formatDate(QDate(year, month, 1),
+        = KLocale::global()->calendar()->formatDate(QDate(year, month, 1),
                 i18nc("Month and year used in a tree above the actual days. "
                       "Have a look at http://api.kde.org/4.x-api/kdelibs-"
                       "apidocs/kdecore/html/classKCalendarSystem.html#a560204439a4b670ad36c16c404f292b4 "
@@ -77,7 +73,7 @@ KIO::UDSEntry createMonthUDSEntry(int month, int year)
 KIO::UDSEntry createDayUDSEntry(const QDate& date)
 {
     KIO::UDSEntry uds = createFolderUDSEntry(date.toString("yyyy-MM-dd"),
-                        KGlobal::locale()->formatDate(date, KLocale::FancyLongDate),
+                        KLocale::global()->formatDate(date, KLocale::FancyLongDate),
                         date);
 
     return uds;
@@ -87,8 +83,8 @@ KIO::UDSEntry createFileUDSEntry(const QUrl& fileUrl)
 {
     KIO::UDSEntry uds;
     // Code from kdelibs/kioslaves/file.cpp
-    KDE_struct_stat statBuf;
-    if( KDE_stat(QFile::encodeName(fileUrl.toLocalFile()).data(), &statBuf ) == 0) {
+    QT_STATBUF statBuf;
+    if( QT_LSTAT(QFile::encodeName(fileUrl.toLocalFile()).data(), &statBuf) == 0) {
         uds.insert(KIO::UDSEntry::UDS_MODIFICATION_TIME, statBuf.st_mtime);
         uds.insert(KIO::UDSEntry::UDS_ACCESS_TIME, statBuf.st_atime);
         uds.insert(KIO::UDSEntry::UDS_SIZE, statBuf.st_size);
@@ -125,22 +121,19 @@ void TimelineProtocol::listDir(const QUrl& url)
 {
     switch (parseTimelineUrl(url, &m_date, &m_filename)) {
     case RootFolder:
-        listEntry(createFolderUDSEntry(QLatin1String("today"), i18n("Today"), QDate::currentDate()), false);
-        listEntry(createFolderUDSEntry(QLatin1String("calendar"), i18n("Calendar"), QDate::currentDate()), false);
-        listEntry(KIO::UDSEntry(), true);
+        listEntry(createFolderUDSEntry(QLatin1String("today"), i18n("Today"), QDate::currentDate()));
+        listEntry(createFolderUDSEntry(QLatin1String("calendar"), i18n("Calendar"), QDate::currentDate()));
         finished();
         break;
 
     case CalendarFolder:
         listThisYearsMonths();
         // TODO: add entry for previous years
-        listEntry(KIO::UDSEntry(), true);
         finished();
         break;
 
     case MonthFolder:
         listDays(m_date.month(), m_date.year());
-        listEntry(KIO::UDSEntry(), true);
         finished();
         break;
 
@@ -153,9 +146,8 @@ void TimelineProtocol::listDir(const QUrl& url)
         while (it.next()) {
             KIO::UDSEntry uds = createFileUDSEntry(it.url());
             if (uds.count())
-                listEntry(uds, false);
+                listEntry(uds);
         }
-        listEntry(KIO::UDSEntry(), true);
         finished();
         break;
     }
@@ -224,12 +216,12 @@ void TimelineProtocol::stat(const QUrl& url)
 
 void TimelineProtocol::listDays(int month, int year)
 {
-    const int days = KGlobal::locale()->calendar()->daysInMonth(year, month);
+    const int days = KLocale::global()->calendar()->daysInMonth(year, month);
     for (int day = 1; day <= days; day++) {
         QDate date(year, month, day);
 
         if (date <= QDate::currentDate() && filesInDate(date)) {
-            listEntry(createDayUDSEntry(date), false);
+            listEntry(createDayUDSEntry(date));
         }
     }
 }
@@ -258,7 +250,7 @@ void TimelineProtocol::listThisYearsMonths()
         query.setDateFilter(year, month);
         ResultIterator it = query.exec();
         if (it.next()) {
-            listEntry(createMonthUDSEntry(month, year), false);
+            listEntry(createMonthUDSEntry(month, year));
         }
     }
 }
@@ -266,9 +258,10 @@ void TimelineProtocol::listThisYearsMonths()
 
 extern "C"
 {
-    Q_DECL_EXPORT int kdemain(int, char** argv)
+    Q_DECL_EXPORT int kdemain(int argc, char** argv)
     {
-        KComponentData("kio_timeline");
+        QCoreApplication app(argc, argv);
+        app.setApplicationName(QStringLiteral("kio_timeline"));
         Baloo::TimelineProtocol slave(argv[2], argv[3]);
         slave.dispatchLoop();
         return 0;

@@ -22,13 +22,12 @@
 #include "timelinetools.h"
 
 #include <QUrl>
-#include <KCalendarSystem>
-#include <KGlobal>
-#include <KLocalizedString>
+#include <QDate>
+#include <QRegExp>
 #include <QDebug>
 
-#include <QtCore/QDate>
-#include <QtCore/QRegExp>
+#include <KCalendarSystem>
+#include <KLocalizedString>
 
 namespace
 {
@@ -56,7 +55,7 @@ QDate applyRelativeDateModificators(const QDate& date, const QMap<QString, QStri
     if (modificators.contains(weekKey)) {
         int relWeeks = modificators[weekKey].toInt(&ok);
         if (ok) {
-            const KCalendarSystem* calSystem = KGlobal::locale()->calendar();
+            const KCalendarSystem* calSystem = KLocale::global()->calendar();
             newDate = newDate.addDays(relWeeks * calSystem->daysInWeek(date));
         }
     }
