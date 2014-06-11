@@ -25,7 +25,6 @@ set(BALOO_CORE_LIBRARY KF5::BalooCore)
 set(BALOO_FILE_LIBRARY KF5::BalooFiles)
 set(BALOO_PIM_LIBRARY baloopim)
 set(BALOO_QUERYPARSER_LIBRARY balooqueryparser)
-#set(BALOO_TAG_LIBRARY balootags)
 
 # Set the library variable
 set(BALOO_LIBRARIES KF5::BalooCore KF5::BalooFiles ${BALOO_PIM_LIBRARY})
