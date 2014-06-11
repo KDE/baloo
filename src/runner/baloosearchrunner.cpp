@@ -26,7 +26,6 @@
 #include <KRun>
 #include <KRunner/QueryMatch>
 #include <KLocalizedString>
-#include <QLinkedList>
 
 #include "query.h"
 #include "result.h"
@@ -51,10 +50,27 @@ SearchRunner::~SearchRunner()
 }
 
 
+QStringList SearchRunner::categories() const
+{
+    QStringList list;
+    list << QLatin1String("Audio")
+         << QLatin1String("Image")
+         << QLatin1String("Document")
+         << QLatin1String("Video")
+         << QLatin1String("Folder")
+         << QLatin1String("Email");
+
+    return list;
+}
+
 void SearchRunner::match(Plasma::RunnerContext& context, const QString& type,
                          const QString& category)
 {
     if (!context.isValid())
+        return;
+
+    const QStringList categories = context.enabledCategories();
+    if (!categories.isEmpty() && !categories.contains(category))
         return;
 
     Baloo::Query query;
@@ -62,7 +78,6 @@ void SearchRunner::match(Plasma::RunnerContext& context, const QString& type,
     query.setType(type);
     query.setLimit(10);
 
-    QLinkedList<Plasma::QueryMatch> mailMatches;
     Baloo::ResultIterator it = query.exec();
 
     while (context.isValid() && it.next()) {

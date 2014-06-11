@@ -36,6 +36,8 @@ public:
     void match(Plasma::RunnerContext& context);
     void run(const Plasma::RunnerContext& context, const Plasma::QueryMatch& action);
 
+    virtual QStringList categories() const;
+
 protected Q_SLOTS:
     void init();
 
