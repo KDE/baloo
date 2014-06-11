@@ -6,7 +6,6 @@ add_executable(contactsearch contactsearchtest.cpp)
 
 target_link_libraries(contactsearch
   Qt5::Core
-  
 
   ${KDEPIMLIBS_AKONADI_LIBS}
   ${KDEPIMLIBS_AKONADI_KMIME_LIBS}
@@ -20,12 +19,11 @@ add_executable(emailquery emailquerytest.cpp)
 
 target_link_libraries(emailquery
   Qt5::Core
-  
 
   ${KDEPIMLIBS_AKONADI_LIBS}
   ${KDEPIMLIBS_KMIME_LIBS}
 
-  baloocore
+  KF5::BalooCore
   baloopim
 )
 
@@ -33,6 +31,5 @@ add_executable(contactcompleter contactcompletiontest.cpp)
 
 target_link_libraries(contactcompleter
   Qt5::Core
-  
   baloopim
 )

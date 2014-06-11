@@ -4,5 +4,5 @@ set(EXTRACTOR_TEST_SRCS
 
 ecm_add_test(${EXTRACTOR_TEST_SRCS}
     TEST_NAME "extractortest"
-    LINK_LIBRARIES Qt5::Test Qt5::Sql ${XAPIAN_LIBRARIES} balooxapian
+    LINK_LIBRARIES Qt5::Test Qt5::Sql ${XAPIAN_LIBRARIES} KF5::BalooXapian
 )

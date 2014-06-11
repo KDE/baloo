@@ -20,7 +20,7 @@ ecm_add_test(${filefetchjobtest_SRC}
         Qt5::Sql
         Qt5::DBus
         ${XAPIAN_LIBRARIES}
-        baloocore
+        KF5::BalooCore
 )
 
 #
@@ -45,8 +45,8 @@ ecm_add_test(${filemodifyjobtest_SRC}
         Qt5::Sql
         Qt5::DBus
         ${XAPIAN_LIBRARIES}
-        baloocore
-        balooxapian
+        KF5::BalooCore
+        KF5::BalooXapian
 )
 
 # Pass CMAKE_CURRENT_BINARY_DIR so tests can use it to create some of the
@@ -61,6 +61,6 @@ ecm_add_test(taglistjobtest.cpp
     TEST_NAME "taglistjobtest"
     LINK_LIBRARIES
         Qt5::Test
-        baloocore
-        baloofiles
+        KF5::BalooCore
+        KF5::BalooFiles
 )

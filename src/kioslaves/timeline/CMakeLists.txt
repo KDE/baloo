@@ -9,7 +9,7 @@ target_link_libraries(kio_timeline
   KF5::KIOWidgets
   KF5::I18n
   KF5::KDELibs4Support
-  baloocore
+  KF5::BalooCore
 )
 
 install(TARGETS kio_timeline DESTINATION ${PLUGIN_INSTALL_DIR})

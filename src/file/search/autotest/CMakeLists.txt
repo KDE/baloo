@@ -18,7 +18,7 @@ ecm_add_test(${filesearchstore_SRCS}
         Qt5::Sql
         Qt5::Test
         ${XAPIAN_LIBRARIES}
-        ${KFILEMETADATA_LIBRARY}
-        baloocore
-        balooxapian
+        KF5::FileMetaData
+        KF5::BalooCore
+        KF5::BalooXapian
 )

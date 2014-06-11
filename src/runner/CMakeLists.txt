@@ -4,7 +4,7 @@ target_link_libraries(krunner_baloosearchrunner
   KF5::Runner
   KF5::KIOWidgets
   KF5::I18n
-  baloocore
+  KF5::BalooCore
 )
 
 install(

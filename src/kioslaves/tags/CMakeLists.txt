@@ -4,8 +4,8 @@ target_link_libraries(kio_tags
   KF5::KIOWidgets
   KF5::FileMetaData
   KF5::I18n
-  baloocore
-  baloofiles
+  KF5::BalooCore
+  KF5::BalooFiles
 )
 
 install(TARGETS kio_tags DESTINATION ${PLUGIN_INSTALL_DIR})

@@ -3,7 +3,7 @@ add_library(kio_baloosearch MODULE kio_search.cpp)
 target_link_libraries(kio_baloosearch
   KF5::KIOWidgets
   KF5::I18n
-  baloocore
+  KF5::BalooCore
 )
 
 install(TARGETS kio_baloosearch DESTINATION ${PLUGIN_INSTALL_DIR})

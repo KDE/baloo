@@ -7,21 +7,22 @@ set(XAPIAN_SRCS
     termgenerator.cpp
 )
 
-add_library(balooxapian SHARED ${XAPIAN_SRCS})
+add_library(KF5BalooXapian SHARED ${XAPIAN_SRCS})
+add_library(KF5::BalooXapian ALIAS KF5BalooXapian)
 
-target_link_libraries(balooxapian PUBLIC
+target_link_libraries(KF5BalooXapian PUBLIC
     Qt5::Core
     ${XAPIAN_LIBRARIES}
-    baloocore
+    KF5::BalooCore
 )
 
-set_target_properties(balooxapian PROPERTIES
+set_target_properties(KF5BalooXapian PROPERTIES
     VERSION ${BALOO_VERSION_STRING}
     SOVERSION ${BALOO_SOVERSION}
 )
 
-generate_export_header(balooxapian BASE_NAME BALOO_XAPIAN EXPORT_FILE_NAME xapian_export.h)
+generate_export_header(KF5BalooXapian BASE_NAME BALOO_XAPIAN EXPORT_FILE_NAME xapian_export.h)
 
-install(TARGETS balooxapian EXPORT BalooLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS KF5BalooXapian EXPORT BalooLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 add_subdirectory(autotests)

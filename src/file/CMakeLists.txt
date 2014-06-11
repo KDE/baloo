@@ -57,9 +57,9 @@ target_link_libraries(baloo_file
     KF5::Crash
     KF5::ConfigCore
     ${XAPIAN_LIBRARIES}
-    baloocore
-    baloofiles
-    balooxapian
+    KF5::BalooCore
+    KF5::BalooFiles
+    KF5::BalooXapian
 )
 
 install(TARGETS baloo_file ${INSTALL_TARGETS_DEFAULT_ARGS})

@@ -24,7 +24,7 @@ set(metadatamover_SRC
 
 ecm_add_test(${metadatamover_SRC}
     TEST_NAME "metadatamovertest"
-    LINK_LIBRARIES Qt5::Test Qt5::Sql ${XAPIAN_LIBRARIES} balooxapian
+    LINK_LIBRARIES Qt5::Test Qt5::Sql ${XAPIAN_LIBRARIES} KF5::BalooXapian
 )
 
 #
@@ -34,7 +34,7 @@ set(fileMonitor_SRC filemonitortest.cpp)
 
 ecm_add_test(${fileMonitor_SRC}
     TEST_NAME "filemonitortest"
-    LINK_LIBRARIES Qt5::Test Qt5::DBus baloofiles
+    LINK_LIBRARIES Qt5::Test Qt5::DBus KF5::BalooFiles
 )
 
 #
@@ -72,7 +72,7 @@ set(basicIndexingQueue_SRC
 ecm_add_test(${basicIndexingQueue_SRC}
     TEST_NAME basicindexingqueuetest
     LINK_LIBRARIES Qt5::Test Qt5::Sql KF5::FileMetaData KF5::ConfigCore
-                   KF5::CoreAddons ${XAPIAN_LIBRARIES} balooxapian
+                   KF5::CoreAddons ${XAPIAN_LIBRARIES} KF5::BalooXapian
 )
 
 add_subdirectory(fileindexingjob)

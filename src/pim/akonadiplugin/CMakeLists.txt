@@ -13,9 +13,9 @@ target_link_libraries(akonadi_baloo_searchplugin
     KF5::AkonadiCore
     KF5::AkonadiMime
     ${XAPIAN_LIBRARIES}
-    baloocore
+    KF5::BalooCore
+    KF5::BalooXapian
     baloopim
-    balooxapian
     KF5::KDELibs4Support
     KF5::ItemModels
     KF5::Abc

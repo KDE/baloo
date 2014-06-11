@@ -18,12 +18,12 @@ add_definitions(-DBALOO_NO_PLUGINS=TRUE)
 kde4_add_unit_test(indexertest NOGUI ${indexertest_SRCS})
 target_link_libraries(indexertest
     KF5::AkonadiCore
-   KF5::AkonadiMime
+    KF5::AkonadiMime
     KF5::KMime
     KF5::Abc
     ${XAPIAN_LIBRARIES}
     KF5::PimUtils
-    baloocore
-    balooxapian
+    KF5::BalooCore
+    KF5::BalooXapian
     Qt5::Test
 )

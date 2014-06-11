@@ -3,8 +3,8 @@ add_library(baloo_notesearchstore MODULE notesearchstore.cpp ../pimsearchstore.c
 target_link_libraries(baloo_notesearchstore
     Qt5::Core
     ${XAPIAN_LIBRARIES}
-    baloocore
-    balooxapian
+    KF5::BalooCore
+    KF5::BalooXapian
 )
 
 install(FILES baloo_notesearchstore.desktop DESTINATION ${SERVICES_INSTALL_DIR})

@@ -38,7 +38,7 @@ target_link_libraries(akonadi_baloo_indexer
     ${XAPIAN_LIBRARIES}
     KF5::PimUtils
     KF5::ItemModels
-    balooxapian
+    KF5::BalooXapian
 )
 
 install(TARGETS akonadi_baloo_indexer ${INSTALL_TARGETS_DEFAULT_ARGS})

@@ -5,9 +5,9 @@ target_link_libraries(baloo_filesearchstore
     Qt5::Sql
     ${XAPIAN_LIBRARIES}
     ${KFILEMETADATA_LIBRARY}
-    baloocore
-    baloofiles
-    balooxapian
+    KF5::BalooCore
+    KF5::BalooFiles
+    KF5::BalooXapian
 )
 
 install(FILES baloo_filesearchstore.desktop DESTINATION ${SERVICES_INSTALL_DIR})

@@ -3,8 +3,8 @@ set(SRCS main.cpp)
 add_executable(balooshow ${SRCS})
 
 target_link_libraries(balooshow
-    baloocore
-    baloofiles
+    KF5::BalooCore
+    KF5::BalooFiles
     KF5::FileMetaData
     KF5::CoreAddons
     KF5::I18n

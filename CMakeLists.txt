@@ -28,6 +28,7 @@ endif()
 include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(KDECompilerSettings)
+include(ECMGenerateHeaders)
 
 # Temporary option untill kdepimlibs is ok. Activate it if you want to compile kdepim
 option(KDEPIM_SUPPORT_BUILD "Build baloo kdepim support" FALSE)
@@ -68,29 +69,43 @@ kde_enable_exceptions()
 set(KF5_VERSION "5.0.0")
 ecm_setup_version(${KF5_VERSION} VARIABLE_PREFIX BALOO
                         VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/baloo_version.h"
-                        PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/BalooConfigVersion.cmake")
+                        PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF5BalooConfigVersion.cmake")
 
 include_directories(
   ${XAPIAN_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/file/lib
   ${CMAKE_BINARY_DIR}/src/file/lib
-  ${CMAKE_SOURCE_DIR}/src/xapian
   ${CMAKE_BINARY_DIR}/src/xapian
+  ${CMAKE_SOURCE_DIR}/src/xapian
 )
 
 add_subdirectory(src)
 add_subdirectory(icons)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/BalooConfig.cmake.in
-               ${CMAKE_CURRENT_BINARY_DIR}/BalooConfig.cmake @ONLY)
+# Config files
+set(CMAKECONFIG_INSTALL_DIR "${CMAKECONFIG_INSTALL_PREFIX}/KF5Baloo")
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/BalooConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/BalooConfigVersion.cmake
-        DESTINATION ${LIB_INSTALL_DIR}/cmake/Baloo)
+include(ECMPackageConfigHelpers)
+
+ecm_configure_package_config_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/KF5BalooConfig.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/KF5BalooConfig.cmake"
+    INSTALL_DESTINATION ${CMAKECONFIG_INSTALL_DIR}
+)
+
+install(FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/KF5BalooConfig.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/KF5BalooConfigVersion.cmake"
+    DESTINATION ${CMAKECONFIG_INSTALL_DIR}
+    COMPONENT devel
+)
 install(EXPORT BalooLibraryTargets
-        DESTINATION ${LIB_INSTALL_DIR}/cmake/Baloo
-        FILE BalooTargetsWithPrefix.cmake)
+        NAMESPACE KF5::
+        DESTINATION ${LIB_INSTALL_DIR}/cmake/KF5Baloo
+        FILE KF5BalooTargetsWithPrefix.cmake)
 
 
 feature_summary(WHAT ALL

@@ -8,8 +8,8 @@ target_link_libraries(balooctl
     KF5::ConfigCore
     KF5::I18n
     ${XAPIAN_LIBRARIES}
-    baloofiles
-    balooxapian
+    KF5::BalooFiles
+    KF5::BalooXapian
 )
 
 install(TARGETS balooctl DESTINATION ${BIN_INSTALL_DIR})

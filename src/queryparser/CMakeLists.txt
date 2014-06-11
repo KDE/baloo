@@ -24,7 +24,7 @@ kde4_add_library(balooqueryparser SHARED ${QUERYPARSER_SRCS})
 target_link_libraries(balooqueryparser
     ${QT_QTCORE_LIBRARY}
     ${KDE4_KDECORE_LIBRARY}
-    baloocore
+    KF5::BalooCore
 )
 
 set_target_properties(balooqueryparser PROPERTIES

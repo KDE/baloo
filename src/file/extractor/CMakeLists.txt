@@ -20,8 +20,8 @@ target_link_libraries(baloo_file_extractor
   KF5::I18n
   KF5::Service
   ${XAPIAN_LIBRARIES}
-  baloofiles
-  balooxapian
+  KF5::BalooFiles
+  KF5::BalooXapian
 )
 
 install(TARGETS baloo_file_extractor DESTINATION ${BIN_INSTALL_DIR})

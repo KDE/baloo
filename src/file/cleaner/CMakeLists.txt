@@ -16,7 +16,7 @@ target_link_libraries(baloo_file_cleaner
   Qt5::DBus
   KF5::KIOCore
   ${XAPIAN_LIBRARIES}
-  balooxapian
+  KF5::BalooXapian
 )
 
 install(TARGETS baloo_file_cleaner DESTINATION ${BIN_INSTALL_DIR})
