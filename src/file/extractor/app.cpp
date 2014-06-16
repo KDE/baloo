@@ -228,10 +228,6 @@ void App::saveChanges()
     xapDb.commit();
     m_db.sqlDatabase().commit();
 
-    m_results.clear();
-    m_termCount = 0;
-    m_updatedFiles.clear();
-
     QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/files"),
                                                       QLatin1String("org.kde"),
                                                       QLatin1String("changed"));
@@ -242,6 +238,10 @@ void App::saveChanges()
     message.setArguments(vl);
 
     QDBusConnection::sessionBus().send(message);
+
+    m_results.clear();
+    m_termCount = 0;
+    m_updatedFiles.clear();
 
     if (m_debugEnabled) {
         printDebug();
