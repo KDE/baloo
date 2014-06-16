@@ -63,6 +63,25 @@ QStringList SearchRunner::categories() const
     return list;
 }
 
+QIcon SearchRunner::categoryIcon(const QString& category) const
+{
+    if (category == QStringLiteral("Audio")) {
+        return QIcon::fromTheme("audio");
+    } else if (category == QStringLiteral("Image")) {
+        return QIcon::fromTheme("image");
+    } else if (category == QStringLiteral("Document")) {
+        return QIcon::fromTheme("application-pdf");
+    } else if (category == QStringLiteral("Video")) {
+        return QIcon::fromTheme("video");
+    } else if (category == QStringLiteral("Folder")) {
+        return QIcon::fromTheme("folder");
+    } else if (category == QStringLiteral("Email")) {
+        return QIcon::fromTheme("mail-message");
+    }
+
+    return Plasma::AbstractRunner::categoryIcon(category);
+}
+
 void SearchRunner::match(Plasma::RunnerContext& context, const QString& type,
                          const QString& category)
 {
