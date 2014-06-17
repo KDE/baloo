@@ -75,4 +75,18 @@ ecm_add_test(${basicIndexingQueue_SRC}
                    KF5::CoreAddons ${XAPIAN_LIBRARIES} KF5::BalooXapian
 )
 
+#
+# Regexp cahce benchmark
+#
+set(regexpcache_SRCS
+    regularexpcachebenchmark.cpp
+    ../regexpcache.cpp
+    ../fileexcludefilters.cpp
+)
+
+ecm_add_test(${regexpcache_SRCS}
+    TEST_NAME "regexpcachebenchmark"
+    LINK_LIBRARIES Qt5::Test KF5::ConfigCore KF5::CoreAddons
+)
+
 add_subdirectory(fileindexingjob)
