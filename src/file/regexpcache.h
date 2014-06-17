@@ -32,7 +32,6 @@ public:
     ~RegExpCache();
 
     bool exactMatch(const QString& s) const;
-    bool filenameMatch(const QString& path) const;
 
     void rebuildCacheFromFilterList(const QStringList& filters);
 

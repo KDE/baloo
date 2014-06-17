@@ -44,18 +44,6 @@ bool RegExpCache::exactMatch(const QString& s) const
 }
 
 
-bool RegExpCache::filenameMatch(const QString& path) const
-{
-    QString name;
-    int i = path.lastIndexOf('/');
-    if (i >= 0)
-        name = path.mid(i + 1);
-    else
-        name = path;
-    return exactMatch(name);
-}
-
-
 void RegExpCache::rebuildCacheFromFilterList(const QStringList& filters)
 {
     m_regexpCache.clear();
