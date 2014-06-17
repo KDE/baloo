@@ -1,6 +1,7 @@
 /*
-   This file is part of the Nepomuk KDE project.
+   This file is part of the KDE Baloo project.
    Copyright (C) 2010 Sebastian Trueg <trueg@kde.org>
+   Copyright (C) 2014 Vishesh Handa <me@vhanda.in>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -35,8 +36,8 @@ RegExpCache::~RegExpCache()
 
 bool RegExpCache::exactMatch(const QString& s) const
 {
-    Q_FOREACH(const QRegExp & filter, m_regexpCache) {
-        if (filter.exactMatch(s)) {
+    Q_FOREACH(const QRegularExpression& filter, m_regexpCache) {
+        if (filter.match(s).hasMatch()) {
             return true;
         }
     }
@@ -47,7 +48,12 @@ bool RegExpCache::exactMatch(const QString& s) const
 void RegExpCache::rebuildCacheFromFilterList(const QStringList& filters)
 {
     m_regexpCache.clear();
-    Q_FOREACH(const QString & filter, filters) {
-        m_regexpCache.append(QRegExp(filter, Qt::CaseSensitive, QRegExp::Wildcard));
+    Q_FOREACH (const QString& filter, filters) {
+        QString f = filter;
+        f.replace(QLatin1Char('?'), QLatin1Char('.'));
+        f.replace(QStringLiteral("*"), QStringLiteral(".*"));
+        f = "^" + f + "$";
+
+        m_regexpCache.append(QRegularExpression(f));
     }
 }
