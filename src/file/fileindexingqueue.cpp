@@ -58,7 +58,7 @@ void FileIndexingQueue::fillQueue()
 
         Xapian::MSet mset = enquire.get_mset(0, m_maxSize - m_fileQueue.size());
         Xapian::MSetIterator it = mset.begin();
-        for (; it != mset.end(); it++) {
+        for (; it != mset.end(); ++it) {
             m_fileQueue << *it;
         }
     }

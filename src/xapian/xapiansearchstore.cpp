@@ -139,7 +139,7 @@ namespace {
         const std::string stdString(string.toLower().toUtf8().constData());
         Xapian::TermIterator it = db->allterms_begin(stdString);
         Xapian::TermIterator end = db->allterms_end(stdString);
-        for (; it != end; it++) {
+        for (; it != end; ++it) {
             Term term;
             term.t = *it;
             term.count = db->get_collection_freq(term.t);
