@@ -54,7 +54,7 @@ void Baloo::setCustomFileMetaData(const QString& url, const QString& key, const 
 
         QSqlDatabase db = fileMetadataDb();
         QSqlQuery q(db);
-        q.prepare("insert or replace into files (id, property, value) VALUES (?, ?, ?)");
+        q.prepare(QLatin1String("insert or replace into files (id, property, value) VALUES (?, ?, ?)"));
         q.addBindValue(fileMap.id());
         q.addBindValue(key);
         q.addBindValue(value);

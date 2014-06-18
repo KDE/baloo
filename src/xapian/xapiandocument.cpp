@@ -111,11 +111,11 @@ void XapianDocument::removeTermStartsWith(const QByteArray& prefix)
 
         // The term should not contain any more upper case letters
         if (isupper(term.at(prefix.size()))) {
-            it++;
+            ++it;
             continue;
         }
 
-        it++;
+        ++it;
         m_doc.remove_term(t);
     }
 }

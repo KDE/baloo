@@ -88,7 +88,7 @@ void FileFetchJob::doStart()
         const QString& url = file.url();
         if (url.size() && !QFile::exists(url)) {
             setError(Error_FileDoesNotExist);
-            setErrorText("File " + url + " does not exist");
+            setErrorText(QLatin1String("File ") + url + QLatin1String(" does not exist"));
             emitResult();
             return;
         }

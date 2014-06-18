@@ -109,8 +109,8 @@ QString Database::path()
 void Database::setPath(const QString& path)
 {
     m_path = path;
-    if (!m_path.endsWith('/'))
-        m_path.append('/');
+    if (!m_path.endsWith(QLatin1Char('/')))
+        m_path.append(QLatin1Char('/'));
 }
 
 bool Database::isInitialized()

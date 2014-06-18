@@ -293,7 +293,7 @@ QString FolderSelectionWidget::getFolderDisplayName(const QString& url) const
     QString name = url;
 
     // Check Home Dir
-    QString homePath = QDir::homePath() + '/';
+    QString homePath = QDir::homePath() + QLatin1Char('/');
     if (url == homePath) {
         return QDir(homePath).dirName();
     }
@@ -305,13 +305,13 @@ QString FolderSelectionWidget::getFolderDisplayName(const QString& url) const
         // Check Mount allMountPointsExcluded
         Q_FOREACH (QString mountPoint, m_mountPoints) {
             if (url.startsWith(mountPoint)) {
-                name = "[" + QDir(mountPoint).dirName() + "]/" + url.mid(mountPoint.length());
+                name = QLatin1Char('[') + QDir(mountPoint).dirName() + QLatin1String("]/") + url.mid(mountPoint.length());
                 break;
             }
         }
     }
 
-    if (name.endsWith('/')) {
+    if (name.endsWith(QLatin1Char('/'))) {
         name = name.mid(0, name.size() - 1);
     }
     return name;
@@ -319,7 +319,7 @@ QString FolderSelectionWidget::getFolderDisplayName(const QString& url) const
 
 bool FolderSelectionWidget::shouldShowMountPoint(const QString& mountPoint)
 {
-    if (mountPoint == "/")
+    if (mountPoint == QLatin1String("/"))
         return false;
 
     if (mountPoint.startsWith(QLatin1String("/boot")))

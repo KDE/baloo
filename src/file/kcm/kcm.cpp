@@ -65,7 +65,7 @@ ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args
 
     setupUi(this);
 
-    QPixmap pixmap = KIcon("baloo").pixmap(IconSize(KIconLoader::Desktop));
+    const QPixmap pixmap = KIcon(QLatin1String("baloo")).pixmap(IconSize(KIconLoader::Desktop));
     m_pixmapLabel->setPixmap(pixmap);
 
     connect(m_folderSelectionWidget, SIGNAL(changed()),
@@ -156,7 +156,7 @@ void ServerConfigModule::defaults()
 
 void ServerConfigModule::folderSelectionChanged()
 {
-    bool disabled = m_folderSelectionWidget->allMountPointsExcluded();
+    const bool disabled = m_folderSelectionWidget->allMountPointsExcluded();
     m_enableCheckbox->setChecked(!disabled);
 }
 
