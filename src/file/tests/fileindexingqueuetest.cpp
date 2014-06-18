@@ -68,7 +68,7 @@ int main(int argc, char** argv)
     QHash<QString, int> m_numPerType;
 
     uint totalTime = 0;
-    for (; it != mset.end(); it++) {
+    for (; it != mset.end(); ++it) {
         Baloo::FileMapping fileMap(*it);
         if (!fileMap.fetch(db.sqlDatabase()))
             continue;

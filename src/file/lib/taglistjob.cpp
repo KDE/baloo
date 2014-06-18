@@ -50,7 +50,7 @@ void TagListJob::start()
         Xapian::TermIterator it = xapianDb.allterms_begin("TAG-");
         Xapian::TermIterator end = xapianDb.allterms_end("TAG-");
 
-        for (; it != end; it++ ) {
+        for (; it != end; ++it ) {
             std::string str = *it;
             const QString tag = QString::fromUtf8(str.c_str(), str.length());
             if (tag.startsWith(QLatin1String("TAG-"))) {

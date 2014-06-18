@@ -26,15 +26,28 @@
 
 
 CalendarIndexer::CalendarIndexer(const QString& path)
-    : AbstractIndexer(), m_termGen( 0 )
+    : AbstractIndexer(), m_db( 0 ), m_termGen( 0 )
 {
-    m_db = new Xapian::WritableDatabase(path.toUtf8().constData(), Xapian::DB_CREATE_OR_OPEN);
+    try {
+        m_db = new Xapian::WritableDatabase(path.toUtf8().constData(), Xapian::DB_CREATE_OR_OPEN);
+    }
+    catch (const Xapian::DatabaseCorruptError& err) {
+        kError() << "Database Corrupted - What did you do?";
+        kError() << err.get_error_string();
+        m_db = 0;
+    }
+    catch (const Xapian::Error &e) {
+        kError() << QString::fromStdString(e.get_type()) << QString::fromStdString(e.get_description());
+        m_db = 0;
+    }
 }
 
 CalendarIndexer::~CalendarIndexer()
 {
-    m_db->commit();
-    delete m_db;
+    if (m_db) {
+        m_db->commit();
+        delete m_db;
+    }
 }
 
 QStringList CalendarIndexer::mimeTypes() const
@@ -60,11 +73,14 @@ void CalendarIndexer::index(const Akonadi::Item &item)
 
 void CalendarIndexer::commit()
 {
-    m_db->commit();
+    if (m_db)
+        m_db->commit();
 }
 
 void CalendarIndexer::remove(const Akonadi::Item &item)
 {
+    if (!m_db)
+        return;
     try {
         m_db->delete_document(item.id());
     }
@@ -75,6 +91,8 @@ void CalendarIndexer::remove(const Akonadi::Item &item)
 
 void CalendarIndexer::remove(const Akonadi::Collection& collection)
 {
+    if (!m_db)
+        return;
     try {
         Xapian::Query query('C'+ QString::number(collection.id()).toStdString());
         Xapian::Enquire enquire(*m_db);
@@ -96,6 +114,8 @@ void CalendarIndexer::move(const Akonadi::Item::Id& itemId,
                         const Akonadi::Entity::Id& from,
                         const Akonadi::Entity::Id& to)
 {
+    if (!m_db)
+        return;
     Xapian::Document doc;
     try {
         doc = m_db->get_document(itemId);
