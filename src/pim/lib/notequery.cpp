@@ -108,20 +108,24 @@ ResultIterator NoteQuery::exec()
         const QByteArray baTitle = d->title.toUtf8();
         m_queries << parser.parse_query(baTitle.constData(), Xapian::QueryParser::FLAG_PARTIAL);
     }
+    try {
+        Xapian::Query query(Xapian::Query::OP_OR, m_queries.begin(), m_queries.end());
+        kDebug() << query.get_description().c_str();
 
-    Xapian::Query query(Xapian::Query::OP_OR, m_queries.begin(), m_queries.end());
-    kDebug() << query.get_description().c_str();
+        Xapian::Enquire enquire(db);
+        enquire.set_query(query);
 
-    Xapian::Enquire enquire(db);
-    enquire.set_query(query);
+        if (d->limit == 0)
+            d->limit = 10000;
 
-    if (d->limit == 0)
-        d->limit = 10000;
+        Xapian::MSet matches = enquire.get_mset(0, d->limit);
 
-    Xapian::MSet matches = enquire.get_mset(0, d->limit);
-
-    ResultIterator iter;
-    iter.d->init(matches);
-    return iter;
-
+        ResultIterator iter;
+        iter.d->init(matches);
+        return iter;
+    }
+    catch (const Xapian::Error &e) {
+        kWarning() << QString::fromStdString(e.get_type()) << QString::fromStdString(e.get_description());
+        return ResultIterator();
+    }
 }

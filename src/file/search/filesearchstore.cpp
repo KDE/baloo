@@ -76,15 +76,15 @@ void FileSearchStore::setDbPath(const QString& path)
 
 QStringList FileSearchStore::types()
 {
-    return QStringList() << "File" << "Audio" << "Video" << "Document" << "Image" << "Archive" << "Folder";
+    return QStringList() << QLatin1String("File") << QLatin1String("Audio") << QLatin1String("Video") << QLatin1String("Document") << QLatin1String("Image") << QLatin1String("Archive") << QLatin1String("Folder");
 }
 
 Xapian::Query FileSearchStore::convertTypes(const QStringList& types)
 {
     Xapian::Query xapQ;
     Q_FOREACH (const QString& type, types) {
-        QString t = 'T' + type.toLower();
-        if (t == "Tfile")
+        const QString t = QLatin1Char('T') + type.toLower();
+        if (t == QLatin1String("Tfile"))
             continue;
 
         const QByteArray arr = t.toUtf8();
@@ -153,7 +153,7 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
         return parser.parse_query(arr.constData(), flags, p);
     }
 
-    if ((property.compare("modified", Qt::CaseInsensitive) == 0)
+    if ((property.compare(QLatin1String("modified"), Qt::CaseInsensitive) == 0)
         && (com == Term::Equal || com == Term::Greater ||
             com == Term::GreaterEqual || com == Term::Less || com == Term::LessEqual))
     {
@@ -232,7 +232,7 @@ QString FileSearchStore::icon(int queryId)
 
 Xapian::Query FileSearchStore::applyCustomOptions(const Xapian::Query& q, const QVariantHash& options)
 {
-    QHash<QString, QVariant>::const_iterator it = options.constFind("includeFolder");
+    QHash<QString, QVariant>::const_iterator it = options.constFind(QLatin1String("includeFolder"));
     if (it == options.constEnd()) {
         return q;
     }

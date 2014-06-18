@@ -81,7 +81,7 @@ QList<SearchStore*> SearchStore::searchStores()
     }
 
     // Get all the plugins
-    KService::List plugins = KServiceTypeTrader::self()->query("BalooSearchStore");
+    KService::List plugins = KServiceTypeTrader::self()->query(QLatin1String("BalooSearchStore"));
 
     QList<Baloo::SearchStore*> stores;
     KService::List::const_iterator it;

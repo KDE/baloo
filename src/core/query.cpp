@@ -93,7 +93,7 @@ Term Query::term() const
 
 void Query::addType(const QString& type)
 {
-    d->m_types << type.split('/', QString::SkipEmptyParts);
+    d->m_types << type.split(QLatin1Char('/'), QString::SkipEmptyParts);
 }
 
 void Query::addTypes(const QStringList& typeList)
@@ -321,7 +321,7 @@ Query Query::fromSearchUrl(const QUrl& url)
 
 QString Query::titleFromQueryUrl(const QUrl& url)
 {
-    return url.queryItemValue("title");
+    return url.queryItemValue(QLatin1String("title"));
 }
 
 bool Query::operator==(const Query& rhs) const

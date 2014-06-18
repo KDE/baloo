@@ -117,7 +117,7 @@ void FileModifyJob::doStart()
 
         if (!QFile::exists(fileMap.url())) {
             setError(Error_FileDoesNotExist);
-            setErrorText("Does not exist " + fileMap.url());
+            setErrorText(QString::fromLatin1("Does not exist %1").arg(fileMap.url()));
             emitResult();
             return;
         }

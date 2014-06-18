@@ -213,7 +213,7 @@ void App::saveChanges()
     m_updatedFiles.clear();
 
     XapianDatabase xapDb(m_path);
-    for (int i = 0; i<m_results.size(); i++) {
+    for (int i = 0; i<m_results.size(); ++i) {
         Result& res = m_results[i];
         res.finish();
 

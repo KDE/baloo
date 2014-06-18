@@ -149,7 +149,7 @@ bool BasicIndexingQueue::shouldIndex(FileMapping& file, const QString& mimetype)
     }
 
     XapianDocument doc = m_db->xapianDatabase()->document(file.id());
-    QString dtStr = doc.fetchTermStartsWith("DT_M");
+    const QString dtStr = doc.fetchTermStartsWith("DT_M");
     if (dtStr.isEmpty()) {
         return true;
     }

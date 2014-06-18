@@ -63,7 +63,7 @@ void XattrDetector::Private::init()
 
     Q_FOREACH (const QString& mountPath, mountPaths) {
         while (1) {
-            QString randFile = "baloo-xattr-check-" + QUuid::createUuid().toString();
+            QString randFile = QLatin1String("baloo-xattr-check-") + QUuid::createUuid().toString();
             const QString url = mountPath + QDir::separator() + randFile;
             if (QFile::exists(url))
                 continue;
@@ -88,7 +88,7 @@ void XattrDetector::Private::init()
             break;
         }
     }
-    m_unSupportedPaths << "/tmp" << "/proc";
+    m_unSupportedPaths << QLatin1String("/tmp") << QLatin1String("/proc");
     kDebug() << "supportedPaths:" << m_supportedPaths;
     kDebug() << "UnsupportedPaths:" << m_unSupportedPaths;
     m_initialized = true;

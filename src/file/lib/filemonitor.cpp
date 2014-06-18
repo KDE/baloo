@@ -59,7 +59,7 @@ void FileMonitor::addFile(const QString& fileUrl)
 
 void FileMonitor::addFile(const QUrl& url)
 {
-    QString localFile = url.toLocalFile();
+    const QString localFile = url.toLocalFile();
     if (localFile.size())
         addFile(localFile);
 }

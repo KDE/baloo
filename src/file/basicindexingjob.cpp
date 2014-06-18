@@ -100,7 +100,7 @@ bool BasicIndexingJob::index()
 
     baloo_getxattr(m_file.url(), QLatin1String("user.xdg.tags"), &val);
     if (!val.isEmpty()) {
-        QStringList tags = val.split(QLatin1Char(','), QString::SkipEmptyParts);
+        const QStringList tags = val.split(QLatin1Char(','), QString::SkipEmptyParts);
         Q_FOREACH (const QString& tag, tags) {
             doc.indexText(tag, QLatin1String("TA"));
             doc.addBoolTerm(QLatin1String("TAG-") + tag);

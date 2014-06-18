@@ -321,15 +321,21 @@ ResultIterator EmailQuery::exec()
     AgePostingSource ps(0);
     query = Xapian::Query(Xapian::Query::OP_AND_MAYBE, query, Xapian::Query(&ps));
 
-    Xapian::Enquire enquire(db);
-    enquire.set_query(query);
+    try {
+        Xapian::Enquire enquire(db);
+        enquire.set_query(query);
 
-    if (d->limit == 0)
-        d->limit = 1000000;
+        if (d->limit == 0)
+            d->limit = 1000000;
 
-    Xapian::MSet mset = enquire.get_mset(0, d->limit);
+        Xapian::MSet mset = enquire.get_mset(0, d->limit);
 
-    ResultIterator iter;
-    iter.d->init(mset);
-    return iter;
+        ResultIterator iter;
+        iter.d->init(mset);
+        return iter;
+    }
+    catch (const Xapian::Error &e) {
+        kWarning() << QString::fromStdString(e.get_type()) << QString::fromStdString(e.get_description());
+        return ResultIterator();
+    }
 }
