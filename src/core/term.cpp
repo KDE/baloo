@@ -241,23 +241,23 @@ QVariantMap Term::toVariantMap() const
         return map;
 
     case Contains:
-        op = "$ct";
+        op = QLatin1String("$ct");
         break;
 
     case Greater:
-        op = "$gt";
+        op = QLatin1String("$gt");
         break;
 
     case GreaterEqual:
-        op = "$gte";
+        op = QLatin1String("$gte");
         break;
 
     case Less:
-        op = "$lt";
+        op = QLatin1String("$lt");
         break;
 
     case LessEqual:
-        op = "$lte";
+        op = QLatin1String("$lte");
         break;
 
     default:
@@ -280,7 +280,7 @@ namespace {
             if (!dt.isValid())
                 return var;
 
-            if (!var.toString().contains("T")) {
+            if (!var.toString().contains(QLatin1String("T"))) {
                 return QVariant(var.toDate());
             }
             return dt;
@@ -297,12 +297,12 @@ Term Term::fromVariantMap(const QVariantMap& map)
     Term term;
 
     QString andOrString;
-    if (map.contains("$and")) {
-        andOrString = "$and";
+    if (map.contains(QLatin1String("$and"))) {
+        andOrString = QLatin1String("$and");
         term.setOperation(And);
     }
-    else if (map.contains("$or")) {
-        andOrString = "$or";
+    else if (map.contains(QLatin1String("$or"))) {
+        andOrString = QLatin1String("$or");
         term.setOperation(Or);
     }
 
@@ -328,15 +328,15 @@ Term Term::fromVariantMap(const QVariantMap& map)
 
         QString op = map.keys().first();
         Term::Comparator com;
-        if (op == "$ct")
+        if (op == QLatin1String("$ct"))
             com = Contains;
-        else if (op == "$gt")
+        else if (op == QLatin1String("$gt"))
             com = Greater;
-        else if (op == "$gte")
+        else if (op == QLatin1String("$gte"))
             com = GreaterEqual;
-        else if (op == "$lt")
+        else if (op == QLatin1String("$lt"))
             com = Less;
-        else if (op == "$lte")
+        else if (op == QLatin1String("$lte"))
             com = LessEqual;
         else
             return term;

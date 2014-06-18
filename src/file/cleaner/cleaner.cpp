@@ -79,7 +79,7 @@ void Cleaner::start()
             q.exec();
             m_commitQueue->remove(id);
 
-            numDocuments++;
+            ++numDocuments;
         }
 
         if (numDocuments && numDocuments % 1000 == 0) {
