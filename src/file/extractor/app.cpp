@@ -68,7 +68,7 @@ App::App(QObject* parent)
     FileIndexerConfig config;
 
     m_results.reserve(args->count());
-    for (int i=0; i<args->count(); i++) {
+    for (int i=0; i<args->count(); ++i) {
         FileMapping mapping = FileMapping(args->arg(i).toUInt());
         QString url;
 

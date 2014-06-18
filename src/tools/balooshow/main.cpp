@@ -75,7 +75,7 @@ int main(int argc, char* argv[])
     // The Resource Uri
     //
     QVector<QString> urls;
-    for (int i = 0; i < args->count(); i++) {
+    for (int i = 0; i < args->count(); ++i) {
         const QString url = args->url(i).toLocalFile();
         if (QFile::exists(url)) {
             urls.append(url);

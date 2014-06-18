@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
     QStringList failFiles = QString::fromUtf8(failArr).split(",", QString::SkipEmptyParts);
     QStringList timeoutFiles = QString::fromUtf8(timeoutArr).split(",", QString::SkipEmptyParts);
 
-    for (int i = 0; i < args->count(); i++) {
+    for (int i = 0; i < args->count(); ++i) {
         QString fid = args->arg(i);
         if (failFiles.contains(fid)) {
             // kill oneself

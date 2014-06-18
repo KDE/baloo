@@ -80,7 +80,7 @@ void FileIndexingQueue::processNextIteration()
     QVector<uint> files;
     files.reserve(m_batchSize);
 
-    for (int i=0; i<m_batchSize && m_fileQueue.size(); i++) {
+    for (int i=0; i<m_batchSize && m_fileQueue.size(); ++i) {
         files << m_fileQueue.pop();
     }
 

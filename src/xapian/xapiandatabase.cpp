@@ -169,7 +169,7 @@ Xapian::WritableDatabase XapianDatabase::createWritableDb()
 {
     // We need to keep sleeping for a required amount, until we reach
     // a threshold. That's when we decide to abort?
-    for (int i = 1; i <= 20; i++) {
+    for (int i = 1; i <= 20; ++i) {
         try {
             Xapian::WritableDatabase wdb(m_path, Xapian::DB_CREATE_OR_OPEN);
             return wdb;
