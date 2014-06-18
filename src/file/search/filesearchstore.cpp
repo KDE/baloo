@@ -111,7 +111,7 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
             if (com == Term::Greater)
                 val++;
 
-            for (int i=val; i<=10; i++) {
+            for (int i=val; i<=10; ++i) {
                 QByteArray arr = 'R' + QByteArray::number(i);
                 terms << arr.constData();
             }
@@ -120,7 +120,7 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
             if (com == Term::Less)
                 val--;
 
-            for (int i=1; i<=val; i++) {
+            for (int i=1; i<=val; ++i) {
                 QByteArray arr = 'R' + QByteArray::number(i);
                 terms << arr.constData();
             }

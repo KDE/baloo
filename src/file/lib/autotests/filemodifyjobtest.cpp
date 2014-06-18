@@ -91,10 +91,10 @@ void FileModifyJobTest::testSingleFile()
     Xapian::TermIterator iter = doc.termlist_begin();
     QCOMPARE(*iter, std::string("Ccomment"));
 
-    iter++;
+    ++iter;
     QCOMPARE(*iter, std::string("Cuser"));
 
-    iter++;
+    ++iter;
     QCOMPARE(*iter, std::string("R5"));
 }
 
@@ -156,13 +156,13 @@ void FileModifyJobTest::testXapianUpdate()
 
     Xapian::TermIterator iter = doc.termlist_begin();
     QCOMPARE(*iter, std::string("R4"));
-    iter++;
+    ++iter;
     QCOMPARE(*iter, std::string("TAG-Round-Tag"));
-    iter++;
+    ++iter;
     QCOMPARE(*iter, std::string("TAround"));
-    iter++;
+    ++iter;
     QCOMPARE(*iter, std::string("TAtag"));
-    iter++;
+    ++iter;
     QCOMPARE(iter, doc.termlist_end());
 
     // Add another term, and make sure it is not removed
@@ -184,15 +184,15 @@ void FileModifyJobTest::testXapianUpdate()
 
     iter = doc.termlist_begin();
     QCOMPARE(*iter, std::string("R5"));
-    iter++;
+    ++iter;
     QCOMPARE(*iter, std::string("RATING"));
-    iter++;
+    ++iter;
     QCOMPARE(*iter, std::string("TAG-Square-Tag"));
-    iter++;
+    ++iter;
     QCOMPARE(*iter, std::string("TAsquare"));
-    iter++;
+    ++iter;
     QCOMPARE(*iter, std::string("TAtag"));
-    iter++;
+    ++iter;
     QCOMPARE(iter, doc.termlist_end());
 }
 

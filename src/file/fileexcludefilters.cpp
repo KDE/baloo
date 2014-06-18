@@ -159,7 +159,7 @@ int Baloo::defaultExcludeFilterListVersion()
 QStringList Baloo::sourceCodeMimeTypes()
 {
     QStringList l;
-    for (int i = 0; s_sourceCodeMimeTypes[i]; i++)
+    for (int i = 0; s_sourceCodeMimeTypes[i]; ++i)
         l << QLatin1String(s_sourceCodeMimeTypes[i]);
 
     return l;

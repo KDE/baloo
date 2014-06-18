@@ -100,7 +100,7 @@ int main(int argc, char* argv[])
     QTextStream out(stdout);
 
     QString queryStr = args->arg(0);
-    for (int i = 1; i < args->count(); i++) {
+    for (int i = 1; i < args->count(); ++i) {
         queryStr += " ";
         queryStr += args->arg(i);
     }
