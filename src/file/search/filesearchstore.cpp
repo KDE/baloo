@@ -145,7 +145,7 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
         else {
             KFileMetaData::PropertyInfo pi = KFileMetaData::PropertyInfo::fromName(property);
             int propPrefix = static_cast<int>(pi.property());
-            p = ('X' + QString::number(propPrefix)).toUtf8().constData();
+            p = QString('X' + QString::number(propPrefix)).toUtf8().constData();
         }
 
         const QByteArray arr = value.toString().toUtf8();

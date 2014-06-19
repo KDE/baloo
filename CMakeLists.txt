@@ -49,6 +49,7 @@ include(ConfigureChecks.cmake)
 
 add_definitions(-DQT_NO_KEYWORDS)
 add_definitions(${KDE4_ENABLE_EXCEPTIONS})
+add_definitions(-DQT_USE_QSTRINGBUILDER)
 
 include_directories(
   ${QT_INCLUDES}

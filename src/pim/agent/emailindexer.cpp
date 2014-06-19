@@ -164,7 +164,7 @@ void EmailIndexer::insert(const QByteArray& key, const KMime::Types::Mailbox::Li
         m_termGen->index_text_without_positions(mbox.address().data(), 1, key.data());
         m_termGen->index_text_without_positions(mbox.address().data(), 1);
 
-        m_doc->add_term((key + mbox.address()).data());
+        m_doc->add_term(QByteArray(key + mbox.address()).data());
         m_doc->add_term(mbox.address().data());
 
         //

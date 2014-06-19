@@ -161,7 +161,7 @@ void MetadataMoverTest::testMoveFolder()
 
     QVERIFY(query.exec());
     QVERIFY(query.next());
-    QCOMPARE(query.value(0).toString(), newFolderUrl + "/1");
+    QCOMPARE(query.value(0).toString(), QString(newFolderUrl + "/1"));
     QVERIFY(!query.next());
 
     query.prepare("select url from files where id = ?;");
@@ -169,7 +169,7 @@ void MetadataMoverTest::testMoveFolder()
 
     QVERIFY(query.exec());
     QVERIFY(query.next());
-    QCOMPARE(query.value(0).toString(), newFolderUrl + "/2");
+    QCOMPARE(query.value(0).toString(), QString(newFolderUrl + "/2"));
     QVERIFY(!query.next());
 }
 
