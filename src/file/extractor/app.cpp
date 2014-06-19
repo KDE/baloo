@@ -53,7 +53,7 @@ App::App(QObject* parent)
     if (!args->getOption("db").isEmpty()) {
         m_path = args->getOption("db");
     } else {
-        m_path = KGlobal::dirs()->localxdgdatadir() + "baloo/file";
+        m_path = KGlobal::dirs()->localxdgdatadir() + QLatin1String("baloo/file");
     }
 
     m_db.setPath(m_path);
@@ -128,7 +128,7 @@ void App::processNextUrl()
     // have trouble processing them
     //
     if (mimetype == QLatin1String("text/plain")) {
-        if (!url.endsWith(".txt")) {
+        if (!url.endsWith(QLatin1String(".txt"))) {
             mimetype.clear();
         }
 
@@ -267,7 +267,7 @@ void App::printDebug()
     }
 
     // Print the io usage
-    QFile file("/proc/self/io");
+    QFile file(QLatin1String("/proc/self/io"));
     file.open(QIODevice::ReadOnly | QIODevice::Text);
 
     QTextStream fs(&file);
@@ -278,25 +278,25 @@ void App::printDebug()
     while (!stream.atEnd()) {
         QString str = stream.readLine();
 
-        QString rchar("rchar: ");
+        QString rchar(QLatin1String("rchar: "));
         if (str.startsWith(rchar)) {
             ulong amt = str.mid(rchar.size()).toULong();
             qDebug() << "Read:" << amt / 1024  << "kb";
         }
 
-        QString wchar("wchar: ");
+        QString wchar(QLatin1String("wchar: "));
         if (str.startsWith(wchar)) {
             ulong amt = str.mid(wchar.size()).toULong();
             qDebug() << "Write:" << amt / 1024  << "kb";
         }
 
-        QString read("read_bytes: ");
+        QString read(QLatin1String("read_bytes: "));
         if (str.startsWith(read)) {
             ulong amt = str.mid(read.size()).toULong();
             qDebug() << "Actual Reads:" << amt / 1024  << "kb";
         }
 
-        QString write("write_bytes: ");
+        QString write(QLatin1String("write_bytes: "));
         if (str.startsWith(write)) {
             ulong amt = str.mid(write.size()).toULong();
             qDebug() << "Actual Writes:" << amt / 1024  << "kb";

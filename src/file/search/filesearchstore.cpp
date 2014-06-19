@@ -44,15 +44,15 @@ FileSearchStore::FileSearchStore(QObject* parent)
     , m_sqlDb(0)
     , m_sqlMutex(QMutex::Recursive)
 {
-    const QString path = KGlobal::dirs()->localxdgdatadir() + "baloo/file/";
+    const QString path = KGlobal::dirs()->localxdgdatadir() + QLatin1String("baloo/file/");
     setDbPath(path);
 
-    m_prefixes.insert("filename", "F");
-    m_prefixes.insert("mimetype", "M");
-    m_prefixes.insert("rating", "R");
-    m_prefixes.insert("tag", "TA");
-    m_prefixes.insert("tags", "TA");
-    m_prefixes.insert("usercomment", "C");
+    m_prefixes.insert(QLatin1String("filename"), "F");
+    m_prefixes.insert(QLatin1String("mimetype"), "M");
+    m_prefixes.insert(QLatin1String("rating"), "R");
+    m_prefixes.insert(QLatin1String("tag"), "TA");
+    m_prefixes.insert(QLatin1String("tags"), "TA");
+    m_prefixes.insert(QLatin1String("usercomment"), "C");
 }
 
 FileSearchStore::~FileSearchStore()
@@ -66,11 +66,11 @@ void FileSearchStore::setDbPath(const QString& path)
 {
     XapianSearchStore::setDbPath(path);
 
-    const QString conName = "filesearchstore" + QString::number(qrand());
+    const QString conName = QLatin1String("filesearchstore") + QString::number(qrand());
 
     delete m_sqlDb;
-    m_sqlDb = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE", conName));
-    m_sqlDb->setDatabaseName(dbPath() + "/fileMap.sqlite3");
+    m_sqlDb = new QSqlDatabase(QSqlDatabase::addDatabase(QLatin1String("QSQLITE"), conName));
+    m_sqlDb->setDatabaseName(dbPath() + QLatin1String("/fileMap.sqlite3"));
     m_sqlDb->open();
 }
 
@@ -145,7 +145,7 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
         else {
             KFileMetaData::PropertyInfo pi = KFileMetaData::PropertyInfo::fromName(property);
             int propPrefix = static_cast<int>(pi.property());
-            p = QString('X' + QString::number(propPrefix)).toUtf8().constData();
+            p = QString(QLatin1Char('X') + QString::number(propPrefix)).toUtf8().constData();
         }
 
         const QByteArray arr = value.toString().toUtf8();

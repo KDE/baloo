@@ -85,7 +85,7 @@ ServerConfigModule::~ServerConfigModule()
 void ServerConfigModule::load()
 {
     // File indexer settings
-    KConfig config("baloofilerc");
+    KConfig config(QLatin1String("baloofilerc"));
     KConfigGroup group = config.group("General");
 
     KConfigGroup basicSettings = config.group("Basic Settings");
@@ -107,7 +107,7 @@ void ServerConfigModule::save()
     QStringList excludeFolders = m_folderSelectionWidget->excludeFolders();
 
     // Change the settings
-    KConfig config("baloofilerc");
+    KConfig config(QLatin1String("baloofilerc"));
     KConfigGroup basicSettings = config.group("Basic Settings");
 
     bool mountPointsEx = m_folderSelectionWidget->allMountPointsExcluded();

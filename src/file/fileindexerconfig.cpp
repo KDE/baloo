@@ -35,7 +35,7 @@ namespace
 bool isDirHidden(QDir& dir)
 {
 #ifdef __unix__
-    return dir.absolutePath().contains("/.");
+    return dir.absolutePath().contains(QLatin1String("/."));
 #else
     if (QFileInfo(dir.path()).isHidden())
         return true;
@@ -51,7 +51,7 @@ using namespace Baloo;
 
 FileIndexerConfig::FileIndexerConfig(QObject* parent)
     : QObject(parent)
-    , m_config("baloofilerc", KConfig::SimpleConfig)
+    , m_config(QLatin1String("baloofilerc"), KConfig::SimpleConfig)
     , m_indexHidden(false)
 {
     KDirWatch* dirWatch = KDirWatch::self();
@@ -171,7 +171,7 @@ bool FileIndexerConfig::shouldFolderBeIndexed(const QString& path) const
 
         // check the exclude filters for all components of the path
         // after folder
-        const QStringList pathComponents = path.mid(folder.count()).split('/', QString::SkipEmptyParts);
+        const QStringList pathComponents = path.mid(folder.count()).split(QLatin1Char('/'), QString::SkipEmptyParts);
         Q_FOREACH (const QString& c, pathComponents) {
             if (!shouldFileBeIndexed(c)) {
                 return false;
@@ -322,7 +322,7 @@ bool FileIndexerConfig::buildFolderCache()
     QSet<QString> includeSet = includeFoldersPlain.toSet();
     QSet<QString> excludeSet = excludeFoldersPlain.toSet();
 
-    Entry& generalEntry = m_entries[ "General" ];
+    Entry& generalEntry = m_entries[ QLatin1String("General") ];
     fillIncludeFolderChanges(generalEntry, includeSet, &includeAdded, &includeRemoved);
     fillExcludeFolderChanges(generalEntry, excludeSet, &excludeAdded, &excludeRemoved);
 
@@ -334,7 +334,7 @@ bool FileIndexerConfig::buildFolderCache()
     //
     QStringList groupList = m_config.groupList();
     Q_FOREACH (const QString& groupName, groupList) {
-        if (!groupName.startsWith("Device-"))
+        if (!groupName.startsWith(QLatin1String("Device-")))
             continue;
 
         KConfigGroup group = m_config.group(groupName);

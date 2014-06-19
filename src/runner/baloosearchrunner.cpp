@@ -42,7 +42,7 @@ SearchRunner::SearchRunner(QObject* parent, const QString& serviceId)
 
 void SearchRunner::init()
 {
-    Plasma::RunnerSyntax syntax(":q", i18n("Search through files, emails and contacts"));
+    Plasma::RunnerSyntax syntax(QLatin1String(":q"), i18n("Search through files, emails and contacts"));
 }
 
 SearchRunner::~SearchRunner()
@@ -54,7 +54,7 @@ void SearchRunner::match(Plasma::RunnerContext& context)
     Baloo::Query query;
     query.setSearchString(context.query());
 
-    query.setType("Email");
+    query.setType(QLatin1String("Email"));
     query.setLimit(10);
     QLinkedList<Plasma::QueryMatch> mailMatches;
     Baloo::ResultIterator it = query.exec();
@@ -62,7 +62,7 @@ void SearchRunner::match(Plasma::RunnerContext& context)
     while (context.isValid() && it.next()) {
         Plasma::QueryMatch match(this);
         match.setIcon(KIcon(it.icon()));
-        match.setId(it.id());
+        match.setId(QString::fromLatin1(it.id()));
         match.setText(it.text());
         match.setData(it.url());
         match.setType(Plasma::QueryMatch::PossibleMatch);
@@ -73,7 +73,7 @@ void SearchRunner::match(Plasma::RunnerContext& context)
     if (!context.isValid())
         return;
 
-    query.setType("File");
+    query.setType(QLatin1String("File"));
     query.setLimit(10 - qMin(5, mailMatches.count()));
     int matchesAdded = 0;
     it = query.exec();
@@ -81,7 +81,7 @@ void SearchRunner::match(Plasma::RunnerContext& context)
     while (context.isValid() && it.next()) {
         Plasma::QueryMatch match(this);
         match.setIcon(KIcon(it.icon()));
-        match.setId(it.id());
+        match.setId(QString::fromLatin1(it.id()));
         match.setText(it.text());
         match.setData(it.url());
         match.setType(Plasma::QueryMatch::PossibleMatch);

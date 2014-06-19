@@ -31,7 +31,7 @@ using namespace Baloo;
 
 void FileMonitorTest::test()
 {
-    QString file("/tmp/t");
+    QString file(QLatin1String("/tmp/t"));
     FileMonitor monitor;
     monitor.addFile(file);
 

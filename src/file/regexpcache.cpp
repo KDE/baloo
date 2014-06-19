@@ -47,7 +47,7 @@ bool RegExpCache::exactMatch(const QString& s) const
 bool RegExpCache::filenameMatch(const QString& path) const
 {
     QString name;
-    int i = path.lastIndexOf('/');
+    const int i = path.lastIndexOf(QLatin1Char('/'));
     if (i >= 0)
         name = path.mid(i + 1);
     else

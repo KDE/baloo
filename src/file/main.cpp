@@ -55,7 +55,7 @@ int main(int argc, char** argv)
     KUniqueApplication app(true);
     app.disableSessionManagement();
 
-    KConfig config("baloofilerc");
+    KConfig config(QLatin1String("baloofilerc"));
     KConfigGroup group = config.group("Basic Settings");
     bool indexingEnabled = group.readEntry("Indexing-Enabled", true);
 
@@ -65,7 +65,7 @@ int main(int argc, char** argv)
     }
 
 
-    if (!QDBusConnection::sessionBus().registerService("org.kde.baloo.file")) {
+    if (!QDBusConnection::sessionBus().registerService(QLatin1String("org.kde.baloo.file"))) {
         kError() << "Failed to register via dbus. Another instance is running";
         return 1;
     }
@@ -73,7 +73,7 @@ int main(int argc, char** argv)
     // Crash Handling
     KCrash::setFlags(KCrash::AutoRestart);
 
-    const QString path = KGlobal::dirs()->localxdgdatadir() + "baloo/file/";
+    const QString path = KGlobal::dirs()->localxdgdatadir() + QLatin1String("baloo/file/");
 
     Database db;
     db.setPath(path);

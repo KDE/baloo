@@ -52,7 +52,7 @@ int main(int argc, char** argv)
     if (argc != 2) {
         kError() << "Proper args required";
     }
-    app.m_query = argv[1];
+    app.m_query = QString::fromUtf8(argv[1]);
 
     return app.exec();
 }

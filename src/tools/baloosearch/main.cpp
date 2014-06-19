@@ -37,8 +37,8 @@ QString highlightBold(const QString& input)
     QLatin1String colorEnd("\033[0;0m");
 
     QString out(input);
-    out.replace("<b>", colorStart);
-    out.replace("</b>", colorEnd);
+    out.replace(QLatin1String("<b>"), colorStart);
+    out.replace(QLatin1String("</b>"), colorEnd);
 
     return out;
 }
@@ -76,7 +76,7 @@ int main(int argc, char* argv[])
 
     int queryLimit = 10;
     int offset = 0;
-    QString typeStr = "File";
+    QString typeStr = QLatin1String("File");
 
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
     if (args->count() == 0) {
@@ -92,7 +92,7 @@ int main(int argc, char* argv[])
         offset = args->getOption("offset").toInt();
 
     if(args->isSet("email"))
-        typeStr = "Email";
+        typeStr = QLatin1String("Email");
 
     QCoreApplication app(argc, argv);
     KComponentData comp(aboutData);
@@ -101,7 +101,7 @@ int main(int argc, char* argv[])
 
     QString queryStr = args->arg(0);
     for (int i = 1; i < args->count(); ++i) {
-        queryStr += " ";
+        queryStr += QLatin1String(" ");
         queryStr += args->arg(i);
     }
 
@@ -120,11 +120,11 @@ int main(int argc, char* argv[])
 
         QString title;
         if (url.isLocalFile()) {
-            title = colorString(QString::number(fid), 31) + " " + colorString(url.toLocalFile(), 32);
+            title = colorString(QString::number(fid), 31) + QLatin1String(" ") + colorString(url.toLocalFile(), 32);
         }
         else {
             title = colorString(QString::fromUtf8(iter.id()), 31);
-            title += " ";
+            title += QLatin1String(" ");
             title += colorString(iter.text(), 32);
         }
 

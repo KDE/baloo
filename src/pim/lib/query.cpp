@@ -51,26 +51,26 @@ Query* Query::fromJSON(const QByteArray& json)
         return 0;
     }
 
-    const QString type = result["type"].toString().toLower();
-    if (type != "contact") {
+    const QString type = result[QLatin1String("type")].toString().toLower();
+    if (type != QLatin1String("contact")) {
         kError() << "Can only handle contact queries";
         return 0;
     }
 
     ContactQuery* cq = new ContactQuery();
-    cq->matchName(result["name"].toString());
-    cq->matchNickname(result["nick"].toString());
-    cq->matchEmail(result["email"].toString());
-    cq->matchUID(result["uid"].toString());
-    cq->match(result["$"].toString());
+    cq->matchName(result[QLatin1String("name")].toString());
+    cq->matchNickname(result[QLatin1String("nick")].toString());
+    cq->matchEmail(result[QLatin1String("email")].toString());
+    cq->matchUID(result[QLatin1String("uid")].toString());
+    cq->match(result[QLatin1String("$")].toString());
 
-    const QString criteria = result["matchCriteria"].toString().toLower();
-    if (criteria == "exact")
+    const QString criteria = result[QLatin1String("matchCriteria")].toString().toLower();
+    if (criteria == QLatin1String("exact"))
         cq->setMatchCriteria(ContactQuery::ExactMatch);
-    else if (criteria == "startswith")
+    else if (criteria == QLatin1String("startswith"))
         cq->setMatchCriteria(ContactQuery::StartsWithMatch);
 
-    cq->setLimit(result["limit"].toInt());
+    cq->setLimit(result[QLatin1String("limit")].toInt());
 
     return cq;
 }

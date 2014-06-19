@@ -30,21 +30,21 @@ using namespace Baloo;
 ContactSearchStore::ContactSearchStore(QObject* parent)
     : PIMSearchStore(parent)
 {
-    m_prefix.insert("name", "NA");
-    m_prefix.insert("nick", "NI");
-    m_prefix.insert("email", ""); // Email currently doesn't map to anything
-    m_prefix.insert("collection", "C");
+    m_prefix.insert(QLatin1String("name"), QLatin1String("NA"));
+    m_prefix.insert(QLatin1String("nick"), QLatin1String("NI"));
+    m_prefix.insert(QLatin1String("email"), QLatin1String("")); // Email currently doesn't map to anything
+    m_prefix.insert(QLatin1String("collection"), QLatin1String("C"));
 
 
-    m_valueProperties.insert("birthday", 0);
-    m_valueProperties.insert("anniversary", 1);
+    m_valueProperties.insert(QLatin1String("birthday"), 0);
+    m_valueProperties.insert(QLatin1String("anniversary"), 1);
 
-    setDbPath(findDatabase("contacts"));
+    setDbPath(findDatabase(QLatin1String("contacts")));
 }
 
 QStringList ContactSearchStore::types()
 {
-    return QStringList() << "Akonadi" << "Contact";
+    return QStringList() << QLatin1String("Akonadi") << QLatin1String("Contact");
 }
 
 BALOO_EXPORT_SEARCHSTORE(Baloo::ContactSearchStore, "baloo_contactsearchstore")

@@ -87,8 +87,8 @@ bool ContactIndexer::indexContact(const Akonadi::Item& item)
     doc.indexText(addresse.nickName());
     doc.indexText(addresse.uid());
 
-    doc.indexText(name, "NA");
-    doc.indexText(addresse.nickName(), "NI");
+    doc.indexText(name, QLatin1String("NA"));
+    doc.indexText(addresse.nickName(), QLatin1String("NI"));
 
     Q_FOREACH (const QString& email, addresse.emails()) {
         doc.addTerm(email);
@@ -100,7 +100,7 @@ bool ContactIndexer::indexContact(const Akonadi::Item& item)
                "Item does not have a valid parent collection");
 
     const Akonadi::Entity::Id colId = item.parentCollection().id();
-    doc.addBoolTerm(colId, "C");
+    doc.addBoolTerm(colId, QLatin1String("C"));
 
     if (addresse.birthday().isValid()) {
         const QString julianDay = QString::number(addresse.birthday().date().toJulianDay());
@@ -127,7 +127,7 @@ void ContactIndexer::indexContactGroup(const Akonadi::Item& item)
 
     const QString name = group.name();
     doc.indexText(name);
-    doc.indexText(name, "NA");
+    doc.indexText(name, QLatin1String("NA"));
 
 
     // Parent collection
@@ -135,7 +135,7 @@ void ContactIndexer::indexContactGroup(const Akonadi::Item& item)
                "Item does not have a valid parent collection");
 
     const Akonadi::Entity::Id colId = item.parentCollection().id();
-    doc.addBoolTerm(colId, "C");
+    doc.addBoolTerm(colId, QLatin1String("C"));
     m_db->replaceDocument(item.id(), doc);
 }
 
@@ -199,7 +199,7 @@ void ContactIndexer::move(const Akonadi::Item::Id& itemId,
     const QByteArray tt = 'C' + QByteArray::number(to);
 
     doc.removeTermStartsWith(ft.data());
-    doc.addBoolTerm(tt.data());
+    doc.addBoolTerm(QString::fromLatin1(tt.data()));
     m_db->replaceDocument(doc.doc().get_docid(), doc);
 }
 

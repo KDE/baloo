@@ -58,18 +58,18 @@ bool BasicIndexingJob::index()
     QFileInfo fileInfo(m_file.url());
 
     XapianDocument doc;
-    doc.addTerm(m_mimetype, "M");
+    doc.addTerm(m_mimetype, QLatin1String("M"));
     doc.indexText(fileInfo.fileName(), 1000);
-    doc.indexText(fileInfo.fileName(), "F", 1000);
+    doc.indexText(fileInfo.fileName(), QLatin1String("F"), 1000);
 
     // Modified Date
     QDateTime mod = fileInfo.lastModified();
     const QString dtm = mod.toString(Qt::ISODate);
 
-    doc.addBoolTerm(dtm, "DT_M");
-    doc.addBoolTerm(mod.date().year(), "DT_MY");
-    doc.addBoolTerm(mod.date().month(), "DT_MM");
-    doc.addBoolTerm(mod.date().day(), "DT_MD");
+    doc.addBoolTerm(dtm, QLatin1String("DT_M"));
+    doc.addBoolTerm(mod.date().year(), QLatin1String("DT_MY"));
+    doc.addBoolTerm(mod.date().month(), QLatin1String("DT_MM"));
+    doc.addBoolTerm(mod.date().day(), QLatin1String("DT_MD"));
 
     const QString timeTStr = QString::number(mod.toTime_t());
     doc.addValue(0, timeTStr);
@@ -79,18 +79,18 @@ bool BasicIndexingJob::index()
     QVector<KFileMetaData::Type::Type> tList = typesForMimeType(m_mimetype);
     Q_FOREACH (KFileMetaData::Type::Type type, tList) {
         QString tstr = KFileMetaData::TypeInfo(type).name().toLower();
-        doc.addBoolTerm(tstr, "T");
+        doc.addBoolTerm(tstr, QLatin1String("T"));
     }
 
     if (fileInfo.isDir()) {
-        doc.addBoolTerm("folder", "T");
+        doc.addBoolTerm(QLatin1String("folder"), QLatin1String("T"));
 
         // This is an optimization for folders. They do not need to go through
         // file indexing, so there are no indexers for folders
-        doc.addBoolTerm("Z2");
+        doc.addBoolTerm(QLatin1String("Z2"));
     }
     else {
-        doc.addBoolTerm("Z1");
+        doc.addBoolTerm(QLatin1String("Z1"));
     }
 
     //

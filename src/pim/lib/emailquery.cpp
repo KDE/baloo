@@ -183,7 +183,7 @@ void EmailQuery::setRead(bool read)
 
 ResultIterator EmailQuery::exec()
 {
-    const QString dir = KGlobal::dirs()->localxdgdatadir() + "baloo/email/";
+    const QString dir = KGlobal::dirs()->localxdgdatadir() + QLatin1String("baloo/email/");
     Xapian::Database db;
     try {
         db = Xapian::Database(QFile::encodeName(dir).constData());
@@ -301,7 +301,7 @@ ResultIterator EmailQuery::exec()
         parser.set_database(db);
         parser.set_default_op(Xapian::Query::OP_AND);
 
-        QStringList list = d->matchString.split(QRegExp("\\s"), QString::SkipEmptyParts);
+        QStringList list = d->matchString.split(QRegExp(QLatin1String("\\s")), QString::SkipEmptyParts);
         Q_FOREACH (const QString& s, list) {
             const QByteArray ba = s.toUtf8();
             m_queries << parser.parse_query(ba.constData(),

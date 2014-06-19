@@ -49,7 +49,7 @@ void FileModifyJobTest::testSingleFile()
 
     File file(fileUrl);
     file.setRating(5);
-    file.setUserComment("User Comment");
+    file.setUserComment(QLatin1String("User Comment"));
 
     FileModifyJob* job = new FileModifyJob(file);
     QVERIFY(job->exec());
@@ -65,12 +65,12 @@ void FileModifyJobTest::testSingleFile()
         QVERIFY(len > 0);
         QCOMPARE(value.toInt(), 5);
 
-        len = baloo_getxattr(fileUrl, "user.xdg.tags", &value);
+        len = baloo_getxattr(fileUrl, QLatin1String("user.xdg.tags"), &value);
         QCOMPARE(len, 0);
 
-        len = baloo_getxattr(fileUrl, "user.xdg.comment", &value);
+        len = baloo_getxattr(fileUrl, QLatin1String("user.xdg.comment"), &value);
         QVERIFY(len > 0);
-        QCOMPARE(value, QString("User Comment"));
+        QCOMPARE(value, QLatin1String("User Comment"));
     }
     else {
         kWarning() << "Xattr not supported on this filesystem";
@@ -119,11 +119,11 @@ void FileModifyJobTest::testMultiFileRating()
 
     XattrDetector detector;
     if (detector.isSupported(tmpFile1.fileName())) {
-        int len = baloo_getxattr(fileUrl1, "user.baloo.rating", &value);
+        int len = baloo_getxattr(fileUrl1, QLatin1String("user.baloo.rating"), &value);
         QVERIFY(len > 0);
         QCOMPARE(value.toInt(), 5);
 
-        len = baloo_getxattr(fileUrl2, "user.baloo.rating", &value);
+        len = baloo_getxattr(fileUrl2, QLatin1String("user.baloo.rating"), &value);
         QVERIFY(len > 0);
         QCOMPARE(value.toInt(), 5);
     }
@@ -140,7 +140,7 @@ void FileModifyJobTest::testXapianUpdate()
 
     File file(fileUrl);
     file.setRating(4);
-    file.addTag("Round-Tag");
+    file.addTag(QLatin1String("Round-Tag"));
 
     FileModifyJob* job = new FileModifyJob(file);
     QVERIFY(job->exec());
@@ -175,7 +175,7 @@ void FileModifyJobTest::testXapianUpdate()
     }
 
     file.setRating(5);
-    file.setTags(QStringList() << "Square-Tag");
+    file.setTags(QStringList() << QLatin1String("Square-Tag"));
     job = new FileModifyJob(file);
     QVERIFY(job->exec());
 
@@ -202,7 +202,7 @@ void FileModifyJobTest::testFolder()
     f.open();
 
     // We use the same prefix as the tmpfile
-    KTempDir dir(f.fileName().mid(0, f.fileName().lastIndexOf('/') + 1));
+    KTempDir dir(f.fileName().mid(0, f.fileName().lastIndexOf(QLatin1Char('/')) + 1));
     const QString url = dir.name();
 
     File file(url);

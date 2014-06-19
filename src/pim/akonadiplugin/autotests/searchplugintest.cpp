@@ -87,10 +87,10 @@ private:
 
 private Q_SLOTS:
     void init() {
-        emailDir = QDir::tempPath() + "/searchplugintest/baloo/email/";
-        emailContactsDir = QDir::tempPath() + "/searchplugintest/baloo/emailcontacts/";
-        contactsDir = QDir::tempPath() + "/searchplugintest/baloo/contacts/";
-        noteDir = QDir::tempPath() + "/searchplugintest/baloo/notes/";
+        emailDir = QDir::tempPath() + QLatin1String("/searchplugintest/baloo/email/");
+        emailContactsDir = QDir::tempPath() + QLatin1String("/searchplugintest/baloo/emailcontacts/");
+        contactsDir = QDir::tempPath() + QLatin1String("/searchplugintest/baloo/contacts/");
+        noteDir = QDir::tempPath() + QLatin1String("/searchplugintest/baloo/notes/");
 
         QDir dir;
         QVERIFY(removeDir(emailDir));
@@ -116,12 +116,12 @@ private Q_SLOTS:
             msg->subject()->from7BitString("subject1");
             msg->contentType()->setMimeType("text/plain");
             msg->setBody("body1 mälmöö");
-            msg->from()->addAddress("john@test.com", "John Doe");
-            msg->to()->addAddress("jane@test.com", "Jane Doe");
+            msg->from()->addAddress("john@test.com", QLatin1String("John Doe"));
+            msg->to()->addAddress("jane@test.com", QLatin1String("Jane Doe"));
             msg->date()->setDateTime(KDateTime(QDate(2013,11,10), QTime(12,0,0)));
             msg->assemble();
 
-            Akonadi::Item item("message/rfc822");
+            Akonadi::Item item(QLatin1String("message/rfc822"));
             item.setId(1);
             item.setSize(1000);
             item.setPayload(msg);
@@ -139,13 +139,13 @@ private Q_SLOTS:
             b->setBody( "body2" );
             msg->addContent( b, true );
 
-            msg->from()->addAddress("john@test.com", "John Doe");
-            msg->to()->addAddress("jane@test.com", "Jane Doe");
+            msg->from()->addAddress("john@test.com", QLatin1String("John Doe"));
+            msg->to()->addAddress("jane@test.com", QLatin1String("Jane Doe"));
             msg->date()->setDateTime(KDateTime(QDate(2013,11,10), QTime(13,0,0)));
             msg->organization()->from7BitString("kde");
             msg->assemble();
 
-            Akonadi::Item item("message/rfc822");
+            Akonadi::Item item(QLatin1String("message/rfc822"));
             item.setId(2);
             item.setSize(1002);
             item.setPayload(msg);
@@ -163,13 +163,13 @@ private Q_SLOTS:
             b->setBody( "body3" );
             msg->addContent( b, true );
 
-            msg->from()->addAddress("john@test.com", "John Doe");
-            msg->to()->addAddress("jane@test.com", "Jane Doe");
+            msg->from()->addAddress("john@test.com", QLatin1String("John Doe"));
+            msg->to()->addAddress("jane@test.com", QLatin1String("Jane Doe"));
             msg->date()->setDateTime(KDateTime(QDate(2014,11,10), QTime(13,0,0)));
             msg->organization()->from7BitString("kde5");
             msg->assemble();
 
-            Akonadi::Item item("message/rfc822");
+            Akonadi::Item item(QLatin1String("message/rfc822"));
             item.setId(3);
             item.setSize(1002);
             item.setPayload(msg);
@@ -187,10 +187,10 @@ private Q_SLOTS:
             b->setBody( "body4" );
             msg->addContent( b, true );
 
-            msg->from()->addAddress("john@test.com", "John Doe");
-            msg->to()->addAddress("jane@test.com", "Jane Doe");
-            msg->cc()->addAddress("cc@test.com", "Jane Doe");
-            msg->bcc()->addAddress("bcc@test.com", "Jane Doe");
+            msg->from()->addAddress("john@test.com", QLatin1String("John Doe"));
+            msg->to()->addAddress("jane@test.com", QLatin1String("Jane Doe"));
+            msg->cc()->addAddress("cc@test.com", QLatin1String("Jane Doe"));
+            msg->bcc()->addAddress("bcc@test.com", QLatin1String("Jane Doe"));
             msg->date()->setDateTime(KDateTime(QDate(2014,11,11), QTime(13,0,0)));
             msg->replyTo()->from7BitString("test@kde.org");
             KMime::Headers::Generic *header = new KMime::Headers::Generic( "Resent-From", msg.get(), QLatin1String("resent@kde.org"), "utf-8" );
@@ -200,7 +200,7 @@ private Q_SLOTS:
 
             msg->assemble();
 
-            Akonadi::Item item("message/rfc822");
+            Akonadi::Item item(QLatin1String("message/rfc822"));
             item.setId(4);
             item.setSize(1002);
             item.setPayload(msg);
@@ -218,12 +218,12 @@ private Q_SLOTS:
             b->setBody( "tags" );
             msg->addContent( b, true );
 
-            msg->from()->addAddress("john@test.com", "John Doe");
-            msg->to()->addAddress("jane@test.com", "Jane Doe");
+            msg->from()->addAddress("john@test.com", QLatin1String("John Doe"));
+            msg->to()->addAddress("jane@test.com", QLatin1String("Jane Doe"));
             msg->date()->setDateTime(KDateTime(QDate(2014,11,11), QTime(13,0,0)));
             msg->assemble();
 
-            Akonadi::Item item("message/rfc822");
+            Akonadi::Item item(QLatin1String("message/rfc822"));
             item.setId(5);
             item.setSize(1002);
             item.setPayload(msg);
@@ -257,12 +257,12 @@ private Q_SLOTS:
             b->setBody( "body5" );
             msg->addContent( b, true );
 
-            msg->from()->addAddress("john@test.com", "John Doe");
-            msg->to()->addAddress("jane@test.com", "Jane Doe");
+            msg->from()->addAddress("john@test.com", QLatin1String("John Doe"));
+            msg->to()->addAddress("jane@test.com", QLatin1String("Jane Doe"));
             msg->date()->setDateTime(KDateTime(QDate(2014,11,11), QTime(13,0,0)));
             msg->assemble();
 
-            Akonadi::Item item("message/rfc822");
+            Akonadi::Item item(QLatin1String("message/rfc822"));
             item.setId(6);
             item.setSize(50);
             item.setPayload(msg);
@@ -273,11 +273,11 @@ private Q_SLOTS:
         //Contact item
         {
             KABC::Addressee addressee;
-            addressee.setUid("uid1");
-            addressee.setName("John Doe");
-            addressee.setFormattedName("John Doe");
-            addressee.setNickName("JD");
-            addressee.setEmails(QStringList() << "john@test.com");
+            addressee.setUid(QLatin1String("uid1"));
+            addressee.setName(QLatin1String("John Doe"));
+            addressee.setFormattedName(QLatin1String("John Doe"));
+            addressee.setNickName(QLatin1String("JD"));
+            addressee.setEmails(QStringList() << QLatin1String("john@test.com"));
             addressee.setBirthday(QDateTime(QDate(2000, 01, 01)));
             Akonadi::Item item(KABC::Addressee::mimeType());
             item.setId(100);
@@ -287,9 +287,9 @@ private Q_SLOTS:
         }
         {
             KABC::Addressee addressee;
-            addressee.setUid("uid2");
-            addressee.setName("Jane Doe");
-            addressee.setEmails(QStringList() << "jane@test.com");
+            addressee.setUid(QLatin1String("uid2"));
+            addressee.setName(QLatin1String("Jane Doe"));
+            addressee.setEmails(QStringList() << QLatin1String("jane@test.com"));
             addressee.setBirthday(QDateTime(QDate(2001, 01, 01)));
             Akonadi::Item item(KABC::Addressee::mimeType());
             item.setId(101);
@@ -299,9 +299,9 @@ private Q_SLOTS:
         }
         {
             KABC::Addressee addressee;
-            addressee.setUid("uid2");
-            addressee.setName("Jane Doe");
-            addressee.setEmails(QStringList() << "JANE@TEST.COM");
+            addressee.setUid(QLatin1String("uid2"));
+            addressee.setName(QLatin1String("Jane Doe"));
+            addressee.setEmails(QStringList() << QLatin1String("JANE@TEST.COM"));
             addressee.setBirthday(QDateTime(QDate(2001, 01, 01)));
             Akonadi::Item item(KABC::Addressee::mimeType());
             item.setId(102);
@@ -311,7 +311,7 @@ private Q_SLOTS:
         }
         {
             KABC::ContactGroup group;
-            group.setName("group1");
+            group.setName(QLatin1String("group1"));
             Akonadi::Item item(KABC::ContactGroup::mimeType());
             item.setId(103);
             item.setPayload(group);
@@ -320,7 +320,7 @@ private Q_SLOTS:
         }
         {
             KABC::ContactGroup group;
-            group.setName("group3");
+            group.setName(QLatin1String("group3"));
             Akonadi::Item item(KABC::ContactGroup::mimeType());
             item.setId(104);
             item.setPayload(group);
@@ -341,7 +341,7 @@ private Q_SLOTS:
             msg->addContent( b, true );
             msg->assemble();
 
-            Akonadi::Item item("text/x-vnd.akonadi.note");
+            Akonadi::Item item(QLatin1String("text/x-vnd.akonadi.note"));
             item.setId(1000);
             item.setSize(1002);
             item.setPayload(msg);
@@ -360,7 +360,7 @@ private Q_SLOTS:
             msg->addContent( b, true );
             msg->assemble();
 
-            Akonadi::Item item("text/x-vnd.akonadi.note");
+            Akonadi::Item item(QLatin1String("text/x-vnd.akonadi.note"));
             item.setId(1001);
             item.setSize(1002);
             item.setPayload(msg);
@@ -379,7 +379,7 @@ private Q_SLOTS:
             msg->addContent( b, true );
             msg->assemble();
 
-            Akonadi::Item item("text/x-vnd.akonadi.note");
+            Akonadi::Item item(QLatin1String("text/x-vnd.akonadi.note"));
             item.setId(1002);
             item.setSize(1002);
             item.setPayload(msg);
@@ -405,10 +405,10 @@ private Q_SLOTS:
         QTest::addColumn<QList<qint64> >("collections");
         QTest::addColumn<QStringList>("mimeTypes");
         QTest::addColumn<QSet<qint64> >("expectedResult");
-        const QStringList notesMimeTypes = QStringList() << "text/x-vnd.akonadi.note";
+        const QStringList notesMimeTypes = QStringList() << QLatin1String("text/x-vnd.akonadi.note");
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, "note", Akonadi::SearchTerm::CondEqual));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, QLatin1String("note"), Akonadi::SearchTerm::CondEqual));
 
             QList<qint64> collections = QList<qint64>() << 5;
             QSet<qint64> result = QSet<qint64>() << 1000;
@@ -416,7 +416,7 @@ private Q_SLOTS:
         }
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, "note1", Akonadi::SearchTerm::CondEqual));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, QLatin1String("note1"), Akonadi::SearchTerm::CondEqual));
 
             QList<qint64> collections = QList<qint64>() << 5;
             QSet<qint64> result ;
@@ -424,8 +424,8 @@ private Q_SLOTS:
         }
         {
             Akonadi::SearchQuery query(Akonadi::SearchTerm::RelOr);
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, "note", Akonadi::SearchTerm::CondEqual));
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Body, "note", Akonadi::SearchTerm::CondEqual));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, QLatin1String("note"), Akonadi::SearchTerm::CondEqual));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Body, QLatin1String("note"), Akonadi::SearchTerm::CondEqual));
 
             QList<qint64> collections = QList<qint64>() << 5;
             QSet<qint64> result = QSet<qint64>() << 1000 << 1001;
@@ -433,8 +433,8 @@ private Q_SLOTS:
         }
         {
             Akonadi::SearchQuery query(Akonadi::SearchTerm::RelAnd);
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, "note3", Akonadi::SearchTerm::CondEqual));
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Body, "note3", Akonadi::SearchTerm::CondEqual));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject,QLatin1String( "note3"), Akonadi::SearchTerm::CondEqual));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Body, QLatin1String("note3"), Akonadi::SearchTerm::CondEqual));
 
             QList<qint64> collections = QList<qint64>() << 5;
             QSet<qint64> result = QSet<qint64>() << 1002;
@@ -442,7 +442,7 @@ private Q_SLOTS:
         }
         {
             Akonadi::SearchQuery query;
-            Akonadi::EmailSearchTerm term(Akonadi::EmailSearchTerm::Subject, "note3", Akonadi::SearchTerm::CondEqual);
+            Akonadi::EmailSearchTerm term(Akonadi::EmailSearchTerm::Subject, QLatin1String("note3"), Akonadi::SearchTerm::CondEqual);
             term.setIsNegated(true);
             query.addTerm(term);
             QList<qint64> collections = QList<qint64>() << 5;
@@ -468,7 +468,7 @@ private Q_SLOTS:
 #if 1
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Name, "John", Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Name, QLatin1String("John"), Akonadi::SearchTerm::CondContains));
 
             QList<qint64> collections;
             QSet<qint64> result = QSet<qint64>() << 100;
@@ -476,7 +476,7 @@ private Q_SLOTS:
         }
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Name, "John", Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Name, QLatin1String("John"), Akonadi::SearchTerm::CondContains));
 
             QList<qint64> collections = QList<qint64>() << 4;
             QSet<qint64> result;
@@ -484,7 +484,7 @@ private Q_SLOTS:
         }
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Name, "john", Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Name, QLatin1String("john"), Akonadi::SearchTerm::CondContains));
 
             QList<qint64> collections = QList<qint64>() << 3;
             QSet<qint64> result = QSet<qint64>() << 100;
@@ -492,7 +492,7 @@ private Q_SLOTS:
         }
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Nickname, "JD", Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Nickname, QLatin1String("JD"), Akonadi::SearchTerm::CondContains));
 
             QList<qint64> collections = QList<qint64>() << 3;
             QSet<qint64> result = QSet<qint64>() << 100;
@@ -500,7 +500,7 @@ private Q_SLOTS:
         }
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Uid, "uid1", Akonadi::SearchTerm::CondEqual));
+            query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Uid, QLatin1String("uid1"), Akonadi::SearchTerm::CondEqual));
 
             QList<qint64> collections = QList<qint64>() << 3;
             QSet<qint64> result = QSet<qint64>() << 100;
@@ -508,7 +508,7 @@ private Q_SLOTS:
         }
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Email, "JANE@TEST.COM", Akonadi::SearchTerm::CondEqual));
+            query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Email, QLatin1String("JANE@TEST.COM"), Akonadi::SearchTerm::CondEqual));
 
             QList<qint64> collections = QList<qint64>() << 3;
             QSet<qint64> result = QSet<qint64>() << 101 << 102;
@@ -516,7 +516,7 @@ private Q_SLOTS:
         }
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Name, "Doe", Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Name, QLatin1String("Doe"), Akonadi::SearchTerm::CondContains));
 
             QList<qint64> collections;
             QSet<qint64> result = QSet<qint64>() << 100 << 101 << 102;
@@ -524,7 +524,7 @@ private Q_SLOTS:
         }
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Name, "Do", Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Name, QLatin1String("Do"), Akonadi::SearchTerm::CondContains));
 
             QList<qint64> collections;
             QSet<qint64> result = QSet<qint64>() << 100 << 101 << 102;
@@ -533,7 +533,7 @@ private Q_SLOTS:
 #endif
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Name, "group1", Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Name, QLatin1String("group1"), Akonadi::SearchTerm::CondContains));
 
             QList<qint64> collections;
             QSet<qint64> result = QSet<qint64>() << 103;
@@ -541,7 +541,7 @@ private Q_SLOTS:
         }
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Name, "group2", Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Name, QLatin1String("group2"), Akonadi::SearchTerm::CondContains));
 
             QList<qint64> collections;
             QSet<qint64> result;
@@ -549,7 +549,7 @@ private Q_SLOTS:
         }
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Name, "group3", Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Name, QLatin1String("group3"), Akonadi::SearchTerm::CondContains));
 
             QList<qint64> collections = QList<qint64>() << 4;
             QSet<qint64> result = QSet<qint64>() << 104;
@@ -557,7 +557,7 @@ private Q_SLOTS:
         }
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Name, "group3", Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Name, QLatin1String("group3"), Akonadi::SearchTerm::CondContains));
 
             QList<qint64> collections = QList<qint64>() << 3;
             QSet<qint64> result;
@@ -567,7 +567,7 @@ private Q_SLOTS:
 #if 0 //Doesn't work for the moment
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Name, "oe", Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::ContactSearchTerm(Akonadi::ContactSearchTerm::Name, QLatin1String("oe"), Akonadi::SearchTerm::CondContains));
 
             QList<qint64> collections;
             QSet<qint64> result = QSet<qint64>() << 100 << 101 << 102;
@@ -581,19 +581,19 @@ private Q_SLOTS:
         QTest::addColumn<QList<qint64> >("collections");
         QTest::addColumn<QStringList>("mimeTypes");
         QTest::addColumn<QSet<qint64> >("expectedResult");
-        const QStringList emailMimeTypes = QStringList() << "message/rfc822";
+        const QStringList emailMimeTypes = QStringList() << QLatin1String("message/rfc822");
         const QList<qint64> allEmailCollections = QList<qint64>() << 1 << 2;
 #if 1
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, "subject1", Akonadi::SearchTerm::CondEqual));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, QLatin1String("subject1"), Akonadi::SearchTerm::CondEqual));
             QList<qint64> collections = QList<qint64>() << 1;
             QSet<qint64> result= QSet<qint64>() << 1;
             QTest::newRow("find subject equal") << QString::fromLatin1(query.toJSON()) << collections << emailMimeTypes << result;
         }
         {
             Akonadi::SearchQuery query;
-            Akonadi::EmailSearchTerm term(Akonadi::EmailSearchTerm::Subject, "subject1", Akonadi::SearchTerm::CondEqual);
+            Akonadi::EmailSearchTerm term(Akonadi::EmailSearchTerm::Subject, QLatin1String("subject1"), Akonadi::SearchTerm::CondEqual);
             term.setIsNegated(true);
             query.addTerm(term);
             QList<qint64> collections = QList<qint64>() << 2;
@@ -602,59 +602,59 @@ private Q_SLOTS:
         }
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, "subject", Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, QLatin1String("subject"), Akonadi::SearchTerm::CondContains));
             QSet<qint64> result= QSet<qint64>() << 1 << 2 << 3 << 4;
             QTest::newRow("find subject contains") << QString::fromLatin1(query.toJSON()) << allEmailCollections << emailMimeTypes << result;
         }
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Body, "body", Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Body, QLatin1String("body"), Akonadi::SearchTerm::CondContains));
             QList<qint64> collections = QList<qint64>() << 1 << 2 << 3 << 4;
             QSet<qint64> result= QSet<qint64>() << 1 << 2 << 3 << 4 << 6;
             QTest::newRow("find body contains") << QString::fromLatin1(query.toJSON()) << collections << emailMimeTypes << result;
         }
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Body, "mälmöö", Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Body, QLatin1String("mälmöö"), Akonadi::SearchTerm::CondContains));
             QSet<qint64> result= QSet<qint64>() << 1;
             QTest::newRow("find utf8 body contains") << QString::fromLatin1(query.toJSON()) << allEmailCollections << emailMimeTypes << result;
         }
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Headers, "From:", Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Headers, QLatin1String("From:"), Akonadi::SearchTerm::CondContains));
             QSet<qint64> result= QSet<qint64>() << 1 << 2 << 3 << 4 << 5 << 6;
             QTest::newRow("find header contains") << QString::fromLatin1(query.toJSON()) << allEmailCollections << emailMimeTypes << result;
         }
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Message, "body", Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Message, QLatin1String("body"), Akonadi::SearchTerm::CondContains));
             QSet<qint64> result= QSet<qint64>() << 1 << 2 << 3 << 4 << 6;
             QTest::newRow("find message contains") << QString::fromLatin1(query.toJSON()) << allEmailCollections << emailMimeTypes << result;
         }
         {
             Akonadi::SearchQuery query(Akonadi::SearchTerm::RelOr);
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, "subject1", Akonadi::SearchTerm::CondEqual));
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, "subject2", Akonadi::SearchTerm::CondEqual));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, QLatin1String("subject1"), Akonadi::SearchTerm::CondEqual));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, QLatin1String("subject2"), Akonadi::SearchTerm::CondEqual));
             QSet<qint64> result= QSet<qint64>() << 1 << 2;
             QTest::newRow("or term") << QString::fromLatin1(query.toJSON()) << allEmailCollections << emailMimeTypes << result;
         }
         {
             Akonadi::SearchQuery query(Akonadi::SearchTerm::RelAnd);
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, "subject1", Akonadi::SearchTerm::CondEqual));
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Body, "body1", Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, QLatin1String("subject1"), Akonadi::SearchTerm::CondEqual));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Body, QLatin1String("body1"), Akonadi::SearchTerm::CondContains));
             QSet<qint64> result= QSet<qint64>() << 1;
             QTest::newRow("and term") << QString::fromLatin1(query.toJSON()) << allEmailCollections << emailMimeTypes << result;
         }
         {
             Akonadi::SearchQuery query(Akonadi::SearchTerm::RelAnd);
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, "subject1", Akonadi::SearchTerm::CondEqual));
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Body, "body2", Akonadi::SearchTerm::CondEqual));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, QLatin1String("subject1"), Akonadi::SearchTerm::CondEqual));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Body, QLatin1String("body2"), Akonadi::SearchTerm::CondEqual));
             QSet<qint64> result;
             QTest::newRow("and term equal") << QString::fromLatin1(query.toJSON()) << allEmailCollections << emailMimeTypes << result;
         }
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, "subject", Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, QLatin1String("subject"), Akonadi::SearchTerm::CondContains));
             QList<qint64> collections = QList<qint64>() << 1;
             QSet<qint64> result= QSet<qint64>() << 1;
             QTest::newRow("filter by collection") << QString::fromLatin1(query.toJSON()) << collections << emailMimeTypes << result;
@@ -775,52 +775,52 @@ private Q_SLOTS:
         }
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderCC, "Jane Doe <cc@test.com>", Akonadi::SearchTerm::CondEqual));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderCC, QLatin1String("Jane Doe <cc@test.com>"), Akonadi::SearchTerm::CondEqual));
             QSet<qint64> result = QSet<qint64>() << 4;
             QTest::newRow("find by header cc") << QString::fromLatin1(query.toJSON()) << allEmailCollections << emailMimeTypes << result;
         }
 
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderCC, "cc@test.com", Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderCC, QLatin1String("cc@test.com"), Akonadi::SearchTerm::CondContains));
             QSet<qint64> result = QSet<qint64>() << 4;
             QTest::newRow("find by header cc (contains)") << QString::fromLatin1(query.toJSON()) << allEmailCollections << emailMimeTypes << result;
         }
 
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderOrganization, "kde", Akonadi::SearchTerm::CondEqual));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderOrganization, QLatin1String("kde"), Akonadi::SearchTerm::CondEqual));
             QSet<qint64> result = QSet<qint64>() << 2;
             QTest::newRow("find by header organization (equal)") << QString::fromLatin1(query.toJSON()) << allEmailCollections << emailMimeTypes << result;
         }
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderOrganization, "kde", Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderOrganization, QLatin1String("kde"), Akonadi::SearchTerm::CondContains));
             QSet<qint64> result = QSet<qint64>() << 2 << 3;
             QTest::newRow("find by header organization (contains)") << QString::fromLatin1(query.toJSON()) << allEmailCollections << emailMimeTypes << result;
         }
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderBCC, "Jane Doe <bcc@test.com>", Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderBCC, QLatin1String("Jane Doe <bcc@test.com>"), Akonadi::SearchTerm::CondContains));
             QSet<qint64> result = QSet<qint64>() << 4;
             QTest::newRow("find by header bcc") << QString::fromLatin1(query.toJSON()) << allEmailCollections << emailMimeTypes << result;
         }
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderReplyTo, "test@kde.org", Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderReplyTo, QLatin1String("test@kde.org"), Akonadi::SearchTerm::CondContains));
             QSet<qint64> result = QSet<qint64>() << 4;
             QTest::newRow("find by reply to") << QString::fromLatin1(query.toJSON()) << allEmailCollections << emailMimeTypes << result;
         }
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderListId, "kde-pim.kde.org", Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderListId, QLatin1String("kde-pim.kde.org"), Akonadi::SearchTerm::CondContains));
             QSet<qint64> result = QSet<qint64>() << 4;
             QTest::newRow("find by list id") << QString::fromLatin1(query.toJSON()) << allEmailCollections << emailMimeTypes << result;
         }
         {
             Akonadi::SearchQuery query(Akonadi::SearchTerm::RelOr);
             query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::MessageStatus, QString::fromLatin1(Akonadi::MessageFlags::Deleted), Akonadi::SearchTerm::CondContains));
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderListId, "kde-pim.kde.org", Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderListId, QLatin1String("kde-pim.kde.org"), Akonadi::SearchTerm::CondContains));
 
             QSet<qint64> result = QSet<qint64>() << 4 << 5;
             QTest::newRow("find by message by deleted status or headerListId") << QString::fromLatin1(query.toJSON()) << allEmailCollections << emailMimeTypes << result;
@@ -828,7 +828,7 @@ private Q_SLOTS:
         {
             Akonadi::SearchQuery query(Akonadi::SearchTerm::RelOr);
             query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::MessageStatus, QString::fromLatin1(Akonadi::MessageFlags::Deleted), Akonadi::SearchTerm::CondContains));
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderListId, "kde-pim.kde.org", Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderListId, QLatin1String("kde-pim.kde.org"), Akonadi::SearchTerm::CondContains));
 
             QList<qint64> collections;
             QSet<qint64> result = QSet<qint64>() << 4 << 5;
@@ -837,20 +837,20 @@ private Q_SLOTS:
         {
             Akonadi::SearchQuery query(Akonadi::SearchTerm::RelAnd);
             query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::MessageStatus, QString::fromLatin1(Akonadi::MessageFlags::Deleted), Akonadi::SearchTerm::CondContains));
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderListId, "kde-pim.kde.org", Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderListId, QLatin1String("kde-pim.kde.org"), Akonadi::SearchTerm::CondContains));
 
             QSet<qint64> result;
             QTest::newRow("find by message by deleted status and headerListId") << QString::fromLatin1(query.toJSON()) << allEmailCollections << emailMimeTypes << result;
         }
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Message, "subject", Akonadi::SearchTerm::CondEqual));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Message, QLatin1String("subject"), Akonadi::SearchTerm::CondEqual));
             QSet<qint64> result = QSet<qint64>() << 1 << 2 << 3 << 4 << 5 << 6;
             QTest::newRow("find by message term") << QString::fromLatin1(query.toJSON()) << allEmailCollections << emailMimeTypes << result;
         }
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderCC, "CC@TEST.com", Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderCC, QLatin1String("CC@TEST.com"), Akonadi::SearchTerm::CondContains));
             QSet<qint64> result = QSet<qint64>() << 4;
             QTest::newRow("find by header cc (contains) with case") << QString::fromLatin1(query.toJSON()) << allEmailCollections << emailMimeTypes << result;
         }
@@ -858,7 +858,7 @@ private Q_SLOTS:
         {
             Akonadi::SearchQuery query;
             //Change in qt/qtx11extras[stable]: remove QtWidgets dependency
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, "extras", Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, QLatin1String("extras"), Akonadi::SearchTerm::CondContains));
             QSet<qint64> result = QSet<qint64>() << 6;
             QTest::newRow("search extras in subject") << QString::fromLatin1(query.toJSON()) << allEmailCollections << emailMimeTypes << result;
         }
@@ -866,21 +866,21 @@ private Q_SLOTS:
         {
             Akonadi::SearchQuery query;
             //Change in qt/qtx11extras[stable]: remove QtWidgets dependency
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, "change", Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, QLatin1String("change"), Akonadi::SearchTerm::CondContains));
             QSet<qint64> result = QSet<qint64>() << 6;
             QTest::newRow("search \"change\" in subject") << QString::fromLatin1(query.toJSON()) << allEmailCollections << emailMimeTypes << result;
         }
         {
             Akonadi::SearchQuery query;
             //Change in qt/qtx11extras[stable]: remove QtWidgets dependency
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, "qtx11extras", Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::Subject, QLatin1String("qtx11extras"), Akonadi::SearchTerm::CondContains));
             QSet<qint64> result = QSet<qint64>() << 6;
             QTest::newRow("search qtx11extras in subject") << QString::fromLatin1(query.toJSON()) << allEmailCollections << emailMimeTypes << result;
         }
 #endif
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderFrom, "test.com", Akonadi::SearchTerm::CondContains));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderFrom, QLatin1String("test.com"), Akonadi::SearchTerm::CondContains));
             QSet<qint64> result = QSet<qint64>() << 1 << 2 << 3 << 4 << 5 << 6;
             QTest::newRow("search by from email part") << QString::fromLatin1(query.toJSON()) << allEmailCollections << emailMimeTypes << result;
         }

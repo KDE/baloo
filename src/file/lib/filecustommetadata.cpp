@@ -81,7 +81,7 @@ QString Baloo::customFileMetaData(const QString& url, const QString& key)
 
         QSqlDatabase db = fileMetadataDb();
         QSqlQuery q(db);
-        q.prepare("select value from files where id = ? and property = ?");
+        q.prepare(QLatin1String("select value from files where id = ? and property = ?"));
         q.addBindValue(fileMap.id());
         q.addBindValue(key);
 
