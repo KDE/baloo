@@ -58,7 +58,7 @@ void PassTypeHints::registerHints(const QString &type, const QString &hints)
 QList<Baloo::Term> PassTypeHints::run(const QList<Baloo::Term> &match) const
 {
     QList<Baloo::Term> rs;
-    QString value = stringValueIfLiteral(match.at(0)).toLower();
+    const QString value = stringValueIfLiteral(match.at(0)).toLower();
 
     if (value.isNull()) {
         return rs;

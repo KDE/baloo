@@ -27,7 +27,7 @@
 QList<Baloo::Term> PassFileNames::run(const QList<Baloo::Term> &match) const
 {
     QList<Baloo::Term> rs;
-    QString value = stringValueIfLiteral(match.at(0));
+    const QString value = stringValueIfLiteral(match.at(0));
 
     if (value.contains(QLatin1Char('.'))) {
         if (value.contains(QLatin1Char('*')) || value.contains(QLatin1Char('?'))) {

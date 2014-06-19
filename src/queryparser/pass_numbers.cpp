@@ -51,7 +51,7 @@ QList<Baloo::Term> PassNumbers::run(const QList<Baloo::Term> &match) const
     QList<Baloo::Term> rs;
 
     // Convert a string to a number
-    QString value = stringValueIfLiteral(match.at(0));
+    const QString value = stringValueIfLiteral(match.at(0));
 
     if (number_names.contains(value)) {
         // Named number

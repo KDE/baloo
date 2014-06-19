@@ -256,7 +256,7 @@ QStringList QueryParser::Private::split(const QString &query, bool is_user_query
         }
     }
 
-    if (part.size() > 0) {
+    if (!part.isEmpty()) {
         parts.append(part);
     }
 
