@@ -227,9 +227,9 @@ QVariantMap Term::toVariantMap() const
         }
 
         if (d->m_op == And)
-            map["$and"] = variantList;
+            map[QLatin1String("$and")] = variantList;
         else
-            map["$or"] = variantList;
+            map[QLatin1String("$or")] = variantList;
 
         return map;
     }
