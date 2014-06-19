@@ -80,7 +80,7 @@ void Result::append(const QString& text)
 void Result::addType(KFileMetaData::Type::Type type)
 {
     KFileMetaData::TypeInfo ti(type);
-    QString t = 'T' + ti.name().toLower();
+    const QString t = QLatin1Char('T') + ti.name().toLower();
     m_doc.add_boolean_term(t.toUtf8().constData());
 }
 

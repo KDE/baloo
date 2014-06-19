@@ -75,7 +75,7 @@ KIO::UDSEntry createMonthUDSEntry(int month, int year)
 
 KIO::UDSEntry createDayUDSEntry(const QDate& date)
 {
-    KIO::UDSEntry uds = createFolderUDSEntry(date.toString("yyyy-MM-dd"),
+    KIO::UDSEntry uds = createFolderUDSEntry(date.toString(QLatin1String("yyyy-MM-dd")),
                         KGlobal::locale()->formatDate(date, KLocale::FancyLongDate),
                         date);
 
@@ -145,7 +145,7 @@ void TimelineProtocol::listDir(const KUrl& url)
 
     case DayFolder: {
         Query query;
-        query.addType("File");
+        query.addType(QLatin1String("File"));
         query.setDateFilter(m_date.year(), m_date.month(), m_date.day());
 
         ResultIterator it = query.exec();
@@ -224,7 +224,7 @@ void TimelineProtocol::stat(const KUrl& url)
 void TimelineProtocol::listDays(int month, int year)
 {
     const int days = KGlobal::locale()->calendar()->daysInMonth(year, month);
-    for (int day = 1; day <= days; day++) {
+    for (int day = 1; day <= days; ++day) {
         QDate date(year, month, day);
 
         if (date <= QDate::currentDate() && filesInDate(date)) {
@@ -236,7 +236,7 @@ void TimelineProtocol::listDays(int month, int year)
 bool TimelineProtocol::filesInDate(const QDate& date)
 {
     Query query;
-    query.addType("File");
+    query.addType(QLatin1String("File"));
     query.setLimit(1);
     query.setDateFilter(date.year(), date.month(), date.day());
 
@@ -248,7 +248,7 @@ bool TimelineProtocol::filesInDate(const QDate& date)
 void TimelineProtocol::listThisYearsMonths()
 {
     Query query;
-    query.addType("File");
+    query.addType(QLatin1String("File"));
     query.setLimit(1);
 
     int year = QDate::currentDate().year();

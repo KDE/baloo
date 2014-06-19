@@ -91,7 +91,7 @@ int main(int argc, char* argv[])
 
     Q_FOREACH (const QString& url, urls) {
         Baloo::File ifile;
-        if (url.startsWith("file:")) {
+        if (url.startsWith(QLatin1String("file:"))) {
             ifile.setId(url.toUtf8());
         }
         else {
@@ -105,7 +105,7 @@ int main(int argc, char* argv[])
 
         if (fid && !file.url().isEmpty()) {
             text = colorString(QString::number(fid), 31);
-            text += " ";
+            text += QLatin1String(" ");
             text += colorString(file.url(), 32);
             stream << text << endl;
         }
@@ -124,7 +124,7 @@ int main(int argc, char* argv[])
             stream << "\t" << "Rating: " << file.rating() << endl;
 
         if (!file.tags().isEmpty())
-            stream << "\t" << "Tags: " << file.tags().join(", ") << endl;
+            stream << "\t" << "Tags: " << file.tags().join(QLatin1String(", ")) << endl;
 
         if (!file.userComment().isEmpty())
             stream << "\t" << "User Comment: " << file.userComment() << endl;

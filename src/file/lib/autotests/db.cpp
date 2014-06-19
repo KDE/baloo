@@ -39,10 +39,10 @@ std::string fileIndexDbPath()
 // FIXME: Avoid duplicating this code!
 QSqlDatabase fileMappingDb()
 {
-    QSqlDatabase sqlDb = QSqlDatabase::database("fileMappingDb");
+    QSqlDatabase sqlDb = QSqlDatabase::database(QLatin1String("fileMappingDb"));
     if (!sqlDb.isValid()) {
-        sqlDb = QSqlDatabase::addDatabase("QSQLITE", "fileMappingDb");
-        sqlDb.setDatabaseName(dir.name() + "fileMap.sqlite3");
+        sqlDb = QSqlDatabase::addDatabase(QLatin1String("QSQLITE"), QLatin1String("fileMappingDb"));
+        sqlDb.setDatabaseName(dir.name() + QLatin1String("fileMap.sqlite3"));
     }
 
     if (!sqlDb.open()) {
@@ -51,20 +51,20 @@ QSqlDatabase fileMappingDb()
     }
 
     const QStringList tables = sqlDb.tables();
-    if (tables.contains("files")) {
+    if (tables.contains(QLatin1String("files"))) {
         return sqlDb;
     }
 
     QSqlQuery query(sqlDb);
-    bool ret = query.exec("CREATE TABLE files("
+    bool ret = query.exec(QLatin1String("CREATE TABLE files("
                           "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                          "url TEXT NOT NULL UNIQUE)");
+                          "url TEXT NOT NULL UNIQUE)"));
     if (!ret) {
         kDebug() << "Could not create tags table" << query.lastError().text();
         return sqlDb;
     }
 
-    ret = query.exec("CREATE INDEX fileUrl_index ON files (url)");
+    ret = query.exec(QLatin1String("CREATE INDEX fileUrl_index ON files (url)"));
     if (!ret) {
         kDebug() << "Could not create tags index" << query.lastError().text();
         return sqlDb;
@@ -75,10 +75,10 @@ QSqlDatabase fileMappingDb()
 
 QSqlDatabase fileMetadataDb()
 {
-    QSqlDatabase sqlDb = QSqlDatabase::database("fileMetadataDb");
+    QSqlDatabase sqlDb = QSqlDatabase::database(QLatin1String("fileMetadataDb"));
     if (!sqlDb.isValid()) {
-        sqlDb = QSqlDatabase::addDatabase("QSQLITE", "fileMetadataDb");
-        sqlDb.setDatabaseName(dir.name() + "fileMetadData.sqlite3");
+        sqlDb = QSqlDatabase::addDatabase(QLatin1String("QSQLITE"), QLatin1String("fileMetadataDb"));
+        sqlDb.setDatabaseName(dir.name() + QLatin1String("fileMetadData.sqlite3"));
     }
 
     if (!sqlDb.open()) {
@@ -87,23 +87,23 @@ QSqlDatabase fileMetadataDb()
     }
 
     const QStringList tables = sqlDb.tables();
-    if (tables.contains("files")) {
+    if (tables.contains(QLatin1String("files"))) {
         return sqlDb;
     }
 
     QSqlQuery query(sqlDb);
-    bool ret = query.exec("CREATE TABLE files("
+    bool ret = query.exec(QLatin1String("CREATE TABLE files("
                           "id INTEGER NOT NULL, "
                           "property TEXT NOT NULL, "
                           "value TEXT NOT NULL, "
-                          "UNIQUE(id, property) ON CONFLICT REPLACE)");
+                          "UNIQUE(id, property) ON CONFLICT REPLACE)"));
 
     if (!ret) {
         kDebug() << "Could not create tags table" << query.lastError().text();
         return sqlDb;
     }
 
-    ret = query.exec("CREATE INDEX fileprop_index ON files (property)");
+    ret = query.exec(QLatin1String("CREATE INDEX fileprop_index ON files (property)"));
     if (!ret) {
         kDebug() << "Could not create tags index" << query.lastError().text();
         return sqlDb;

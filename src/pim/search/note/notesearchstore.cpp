@@ -30,16 +30,16 @@ using namespace Baloo;
 NoteSearchStore::NoteSearchStore(QObject* parent)
     : PIMSearchStore(parent)
 {
-    m_prefix.insert("subject", "SU");
-    m_prefix.insert("collection", "C");
-    m_prefix.insert("body", "BO");
+    m_prefix.insert(QLatin1String("subject"), QLatin1String("SU"));
+    m_prefix.insert(QLatin1String("collection"), QLatin1String("C"));
+    m_prefix.insert(QLatin1String("body"), QLatin1String("BO"));
 
-    setDbPath(findDatabase("notes"));
+    setDbPath(findDatabase(QLatin1String("notes")));
 }
 
 QStringList NoteSearchStore::types()
 {
-    return QStringList() << "Akonadi" << "Note";
+    return QStringList() << QLatin1String("Akonadi") << QLatin1String("Note");
 }
 
 BALOO_EXPORT_SEARCHSTORE(Baloo::NoteSearchStore, "baloo_notesearchstore")

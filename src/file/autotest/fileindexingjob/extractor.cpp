@@ -62,8 +62,8 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    QStringList failFiles = QString::fromUtf8(failArr).split(",", QString::SkipEmptyParts);
-    QStringList timeoutFiles = QString::fromUtf8(timeoutArr).split(",", QString::SkipEmptyParts);
+    QStringList failFiles = QString::fromUtf8(failArr).split(QLatin1String(","), QString::SkipEmptyParts);
+    QStringList timeoutFiles = QString::fromUtf8(timeoutArr).split(QLatin1String(","), QString::SkipEmptyParts);
 
     for (int i = 0; i < args->count(); ++i) {
         QString fid = args->arg(i);

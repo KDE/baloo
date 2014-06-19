@@ -35,7 +35,7 @@ using namespace KAuth;
  */
 bool raiselimitPermanently(int newLimit)
 {
-    QFile sysctl("/etc/sysctl.d/97-kde-baloo-filewatch-inotify.conf");
+    QFile sysctl(QLatin1String("/etc/sysctl.d/97-kde-baloo-filewatch-inotify.conf"));
     //Just overwrite the existing file.
     if (sysctl.open(QIODevice::WriteOnly)) {
         QTextStream sysc(&sysctl);
@@ -51,7 +51,7 @@ ActionReply FileWatchHelper::raiselimit(QVariantMap args)
     Q_UNUSED(args);
 
     // Open the procfs file that controls the number of inotify user watches
-    QFile inotctl("/proc/sys/fs/inotify/max_user_watches");
+    QFile inotctl(QLatin1String("/proc/sys/fs/inotify/max_user_watches"));
     if (!inotctl.open(QIODevice::ReadWrite))
         return ActionReply::HelperErrorReply;
     QTextStream inot(&inotctl);

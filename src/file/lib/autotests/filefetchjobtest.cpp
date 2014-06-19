@@ -47,7 +47,7 @@ void FileFetchJobTest::init()
 
     // Clear the sqlite db
     QSqlDatabase sqlDb = fileMappingDb();
-    sqlDb.exec("delete from files");
+    sqlDb.exec(QLatin1String("delete from files"));
 }
 
 void FileFetchJobTest::testXapianData()
@@ -56,8 +56,8 @@ void FileFetchJobTest::testXapianData()
 
     using namespace KFileMetaData;
     PropertyMap map;
-    map.insert(Property::Album, "value1");
-    map.insert(Property::Artist, "value2");
+    map.insert(Property::Album, QLatin1String("value1"));
+    map.insert(Property::Artist, QLatin1String("value2"));
 
     QByteArray json = serializer.serialize(toVariantMap(map));
     QVERIFY(!json.isEmpty());
@@ -109,12 +109,12 @@ void FileFetchJobTest::testExtendedAttributes()
     QVERIFY(baloo_setxattr(fileName, QLatin1String("user.baloo.rating"), rat) != -1);
 
     QStringList tags;
-    tags << "TagA" << "TagB";
+    tags << QLatin1String("TagA") << QLatin1String("TagB");
 
-    QString tagStr = tags.join(",");
+    QString tagStr = tags.join(QLatin1String(","));
     QVERIFY(baloo_setxattr(fileName, QLatin1String("user.xdg.tags"), tagStr) != -1);
 
-    const QString userComment("UserComment");
+    const QString userComment(QLatin1String("UserComment"));
     QVERIFY(baloo_setxattr(fileName, QLatin1String("user.xdg.comment"), userComment) != -1);
 
     FileFetchJob* job = new FileFetchJob(tempFile.fileName());
@@ -132,7 +132,7 @@ void FileFetchJobTest::testFolder()
     f.open();
 
     // We use the same prefix as the tmpfile
-    KTempDir tmpDir(f.fileName().mid(0, f.fileName().lastIndexOf('/') + 1));
+    KTempDir tmpDir(f.fileName().mid(0, f.fileName().lastIndexOf(QLatin1Char('/')) + 1));
     QString fileName = tmpDir.name();
 
     XattrDetector detector;
@@ -149,12 +149,12 @@ void FileFetchJobTest::testFolder()
     QVERIFY(baloo_setxattr(fileName, QLatin1String("user.baloo.rating"), rat) != -1);
 
     QStringList tags;
-    tags << "TagA" << "TagB";
+    tags << QLatin1String("TagA") << QLatin1String("TagB");
 
-    QString tagStr = tags.join(",");
+    QString tagStr = tags.join(QLatin1String(","));
     QVERIFY(baloo_setxattr(fileName, QLatin1String("user.xdg.tags"), tagStr) != -1);
 
-    const QString userComment("UserComment");
+    const QString userComment(QLatin1String("UserComment"));
     QVERIFY(baloo_setxattr(fileName, QLatin1String("user.xdg.comment"), userComment) != -1);
 
     FileFetchJob* job = new FileFetchJob(tmpDir.name());

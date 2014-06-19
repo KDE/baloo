@@ -378,7 +378,7 @@ void KInotify::slotEvent(int socket)
 //            kDebug() << path << "EventCreate";
             if (event->mask & IN_ISDIR) {
                 // FIXME: store the mode and flags somewhere
-                addWatch(path, d->mode, d->flags);
+                addWatch(QString::fromUtf8(path), d->mode, d->flags);
             }
             Q_EMIT created(QFile::decodeName(path), event->mask & IN_ISDIR);
         }
@@ -428,11 +428,11 @@ void KInotify::slotEvent(int socket)
                 Q_EMIT moved(QFile::decodeName(oldPath), QFile::decodeName(path));
             } else {
                 kDebug() << "No cookie for move information of" << path << "simulating new file event";
-                Q_EMIT created(path, event->mask & IN_ISDIR);
+                Q_EMIT created(QString::fromUtf8(path), event->mask & IN_ISDIR);
 
                 // also simulate a closed write since that is what triggers indexing of files in the file watcher
                 if (!(event->mask & IN_ISDIR)) {
-                    Q_EMIT closedWrite(path);
+                    Q_EMIT closedWrite(QString::fromUtf8(path));
                 }
             }
         }
@@ -473,7 +473,7 @@ void KInotify::slotClearCookies()
     QHashIterator<int, QPair<QByteArray, WatchFlags> > it(d->cookies);
     while (it.hasNext()) {
         it.next();
-        removeWatch(it.value().first);
+        removeWatch(QString::fromUtf8(it.value().first));
         Q_EMIT deleted(QFile::decodeName(it.value().first), it.value().second & IN_ISDIR);
     }
 

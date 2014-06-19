@@ -84,7 +84,7 @@ int main(int argc, char* argv[])
     QString command = args->arg(0);
     if (command == QLatin1String("status")) {
         QDBusConnection bus = QDBusConnection::sessionBus();
-        bool running = bus.interface()->isServiceRegistered("org.kde.baloo.file");
+        bool running = bus.interface()->isServiceRegistered(QLatin1String("org.kde.baloo.file"));
 
         if (running) {
             out << "Baloo File Indexer is running\n";
@@ -93,7 +93,7 @@ int main(int argc, char* argv[])
             out << "Baloo File Indexer is NOT running\n";
         }
 
-        const QString path = KGlobal::dirs()->localxdgdatadir() + "baloo/file/";
+        const QString path = KGlobal::dirs()->localxdgdatadir() + QLatin1String("baloo/file/");
 
         XapianDatabase database(path);
         Xapian::Database* xdb = database.db();
@@ -140,7 +140,7 @@ int main(int argc, char* argv[])
             isEnabled = false;
         }
 
-        KConfig config("baloofilerc");
+        KConfig config(QLatin1String("baloofilerc"));
         KConfigGroup basicSettings = config.group("Basic Settings");
         basicSettings.writeEntry("Indexing-Enabled", isEnabled);
 

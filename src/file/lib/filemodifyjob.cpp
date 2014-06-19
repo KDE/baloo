@@ -131,7 +131,7 @@ void FileModifyJob::doStart()
         }
 
         if (d->tagsSet) {
-            QString tags = d->tags.join(",");
+            const QString tags = d->tags.join(QLatin1String(","));
             setCustomFileMetaData(furl, QLatin1String("user.xdg.tags"), tags);
         }
 
@@ -150,16 +150,16 @@ void FileModifyJob::doStart()
 
         const int rating = d->rating;
         if (rating > 0) {
-            doc.addBoolTerm(rating, "R");
+            doc.addBoolTerm(rating, QLatin1String("R"));
         }
 
         Q_FOREACH (const QString& tag, d->tags) {
-            doc.indexText(tag, "TA");
-            doc.addBoolTerm(tag, "TAG-");
+            doc.indexText(tag, QLatin1String("TA"));
+            doc.addBoolTerm(tag, QLatin1String("TAG-"));
         }
 
         if (!d->comment.isEmpty()) {
-            doc.indexText(d->comment, "C");
+            doc.indexText(d->comment, QLatin1String("C"));
         }
 
         d->m_db->replaceDocument(fileMap.id(), doc.doc());

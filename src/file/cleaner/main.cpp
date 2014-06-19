@@ -54,14 +54,14 @@ int main(int argc, char* argv[])
     QApplication app(argc, argv);
     KComponentData data(aboutData, KComponentData::RegisterAsMainComponent);
 
-    if (!QDBusConnection::sessionBus().registerService("org.kde.baloo.file.cleaner")) {
+    if (!QDBusConnection::sessionBus().registerService(QLatin1String("org.kde.baloo.file.cleaner"))) {
         kError() << "Failed to register via dbus. Another instance is running";
         return 1;
     }
 
-    const QString path = KGlobal::dirs()->localxdgdatadir() + "baloo/file/";
+    const QString path = KGlobal::dirs()->localxdgdatadir() + QLatin1String("baloo/file/");
 
-    KConfig config("baloofilerc");
+    KConfig config(QLatin1String("baloofilerc"));
     KConfigGroup group = config.group("Basic Settings");
     bool indexingEnabled = group.readEntry("Indexing-Enabled", true);
     if (!indexingEnabled) {

@@ -74,7 +74,7 @@ void Cleaner::start()
         if (removeIt) {
             qDebug() << id << url;
             QSqlQuery q(sqlDb);
-            q.prepare("delete from files where id = ?");
+            q.prepare(QLatin1String("delete from files where id = ?"));
             q.addBindValue(id);
             q.exec();
             m_commitQueue->remove(id);

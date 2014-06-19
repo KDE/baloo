@@ -228,29 +228,29 @@ QByteArray Query::toJSON()
     QVariantMap map;
 
     if (!d->m_types.isEmpty())
-        map["type"] = d->m_types;
+        map[QLatin1String("type")] = d->m_types;
 
     if (d->m_limit != defaultLimit)
-        map["limit"] = d->m_limit;
+        map[QLatin1String("limit")] = d->m_limit;
 
     if (d->m_offset)
-        map["offset"] = d->m_offset;
+        map[QLatin1String("offset")] = d->m_offset;
 
     if (!d->m_searchString.isEmpty())
-        map["searchString"] = d->m_searchString;
+        map[QLatin1String("searchString")] = d->m_searchString;
 
     if (d->m_term.isValid())
-        map["term"] = QVariant(d->m_term.toVariantMap());
+        map[QLatin1String("term")] = QVariant(d->m_term.toVariantMap());
 
     if (d->m_yearFilter >= 0)
-        map["yearFilter"] = d->m_yearFilter;
+        map[QLatin1String("yearFilter")] = d->m_yearFilter;
     if (d->m_monthFilter >= 0)
-        map["monthFilter"] = d->m_monthFilter;
+        map[QLatin1String("monthFilter")] = d->m_monthFilter;
     if (d->m_dayFilter >= 0)
-        map["dayFilter"] = d->m_dayFilter;
+        map[QLatin1String("dayFilter")] = d->m_dayFilter;
 
     if (d->m_customOptions.size())
-        map["customOptions"] = d->m_customOptions;
+        map[QLatin1String("customOptions")] = d->m_customOptions;
 
     QJson::Serializer serializer;
     return serializer.serialize(map);
@@ -263,28 +263,28 @@ Query Query::fromJSON(const QByteArray& arr)
     const QVariantMap map = parser.parse(arr).toMap();
 
     Query query;
-    query.d->m_types = map["type"].toStringList();
+    query.d->m_types = map[QLatin1String("type")].toStringList();
 
-    if (map.contains("limit"))
-        query.d->m_limit = map["limit"].toUInt();
+    if (map.contains(QLatin1String("limit")))
+        query.d->m_limit = map[QLatin1String("limit")].toUInt();
     else
         query.d->m_limit = defaultLimit;
 
-    query.d->m_offset = map["offset"].toUInt();
-    query.d->m_searchString = map["searchString"].toString();
-    query.d->m_term = Term::fromVariantMap(map["term"].toMap());
+    query.d->m_offset = map[QLatin1String("offset")].toUInt();
+    query.d->m_searchString = map[QLatin1String("searchString")].toString();
+    query.d->m_term = Term::fromVariantMap(map[QLatin1String("term")].toMap());
 
-    if (map.contains("yearFilter"))
-        query.d->m_yearFilter = map["yearFilter"].toInt();
-    if (map.contains("monthFilter"))
-        query.d->m_monthFilter = map["monthFilter"].toInt();
-    if (map.contains("dayFilter"))
-        query.d->m_dayFilter = map["dayFilter"].toInt();
+    if (map.contains(QLatin1String("yearFilter")))
+        query.d->m_yearFilter = map[QLatin1String("yearFilter")].toInt();
+    if (map.contains(QLatin1String("monthFilter")))
+        query.d->m_monthFilter = map[QLatin1String("monthFilter")].toInt();
+    if (map.contains(QLatin1String("dayFilter")))
+        query.d->m_dayFilter = map[QLatin1String("dayFilter")].toInt();
 
-    if (map.contains("customOptions")) {
-        QVariant var = map["customOptions"];
+    if (map.contains(QLatin1String("customOptions"))) {
+        QVariant var = map[QLatin1String("customOptions")];
         if (var.type() == QVariant::Hash) {
-            query.d->m_customOptions = map["customOptions"].toHash();
+            query.d->m_customOptions = map[QLatin1String("customOptions")].toHash();
         }
         else if (var.type() == QVariant::Map) {
             QVariantMap map = var.toMap();

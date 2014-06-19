@@ -37,12 +37,12 @@ PIMSearchStore::PIMSearchStore(QObject* parent) : XapianSearchStore(parent)
 
 QStringList PIMSearchStore::types()
 {
-    return QStringList() << "Akonadi";
+    return QStringList() << QLatin1String("Akonadi");
 }
 
 QString PIMSearchStore::findDatabase(const QString& dbName) const
 {
-    QString basePath = "baloo";
+    QString basePath = QLatin1String("baloo");
     if (Akonadi::ServerManager::hasInstanceIdentifier()) {
         basePath = QString::fromLatin1("baloo/instances/%1").arg(Akonadi::ServerManager::instanceIdentifier());
     }

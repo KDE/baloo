@@ -49,10 +49,10 @@ void BasicIndexingQueueTest::testSimpleDirectoryStructure()
     QString p = dir->name();
 
     QStringList includeFolders;
-    includeFolders << dir->name() + "home";
+    includeFolders << dir->name() + QLatin1String("home");
 
     QStringList excludeFolders;
-    excludeFolders << dir->name() + "home/kde";
+    excludeFolders << dir->name() + QLatin1String("home/kde");
 
     Test::writeIndexerConfig(includeFolders, excludeFolders);
 
@@ -63,7 +63,7 @@ void BasicIndexingQueueTest::testSimpleDirectoryStructure()
 
     FileIndexerConfig config;
     BasicIndexingQueue queue(&db, &config);
-    queue.enqueue(FileMapping(p + "home"));
+    queue.enqueue(FileMapping(p + QLatin1String("home")));
 
     QSignalSpy spy(&queue, SIGNAL(newDocument(uint,Xapian::Document)));
     queue.resume();

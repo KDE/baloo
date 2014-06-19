@@ -41,7 +41,7 @@ ActiveFileQueueTest::ActiveFileQueueTest()
 
 void ActiveFileQueueTest::testTimeout()
 {
-    QString myUrl("/tmp");
+    QString myUrl(QLatin1String("/tmp"));
 
     // enqueue one url and then make sure it is not emitted before the timeout
     ActiveFileQueue queue;
@@ -76,7 +76,7 @@ void ActiveFileQueueTest::testTimeout()
 
 void ActiveFileQueueTest::testRequeue()
 {
-    QString myUrl("/tmp");
+    QString myUrl(QLatin1String("/tmp"));
 
     // enqueue one url and then make sure it is not emitted before the timeout
     ActiveFileQueue queue;

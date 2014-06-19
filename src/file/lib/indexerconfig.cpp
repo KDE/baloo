@@ -45,14 +45,14 @@ IndexerConfig::~IndexerConfig()
 
 bool IndexerConfig::balooEnabled() const
 {
-    KConfig config("baloofilerc");
+    KConfig config(QLatin1String("baloofilerc"));
     KConfigGroup group = config.group("Basic Settings");
     return group.readEntry("Enabled", true);
 }
 
 bool IndexerConfig::fileIndexingEnabled() const
 {
-    KConfig config("baloofilerc");
+    KConfig config(QLatin1String("baloofilerc"));
     KConfigGroup group = config.group("Basic Settings");
     return config.group("Basic Settings").readEntry("Indexing-Enabled", true);
 }

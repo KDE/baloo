@@ -49,6 +49,10 @@ configure_file(config.h.cmake ${CMAKE_BINARY_DIR}/config.h)
 
 add_definitions(-DQT_NO_KEYWORDS)
 add_definitions(${KDE4_ENABLE_EXCEPTIONS})
+add_definitions(-DQT_USE_QSTRINGBUILDER)
+add_definitions( -DQT_NO_CAST_FROM_ASCII )
+add_definitions( -DQT_NO_CAST_TO_ASCII )
+
 
 include_directories(
   ${CMAKE_BINARY_DIR}

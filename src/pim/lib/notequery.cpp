@@ -78,7 +78,7 @@ int NoteQuery::limit() const
 
 ResultIterator NoteQuery::exec()
 {
-    const QString dir = KGlobal::dirs()->localxdgdatadir() + "baloo/notes/";
+    const QString dir = KGlobal::dirs()->localxdgdatadir() + QLatin1String("baloo/notes/");
 
     Xapian::Database db;
     try {

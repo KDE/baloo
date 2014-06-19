@@ -139,7 +139,7 @@ bool FileMapping::remove(QSqlDatabase db)
     QSqlQuery query(db);
 
     if (!m_url.isEmpty()) {
-        query.prepare("delete from files where url = ?");
+        query.prepare(QLatin1String("delete from files where url = ?"));
         query.addBindValue(m_url);
         if (!query.exec()) {
             kError() << query.lastError().text();
@@ -147,7 +147,7 @@ bool FileMapping::remove(QSqlDatabase db)
         }
     }
     else {
-        query.prepare("delete from files where id = ?");
+        query.prepare(QLatin1String("delete from files where id = ?"));
         query.addBindValue(m_id);
         if (!query.exec()) {
             kError() << query.lastError().text();

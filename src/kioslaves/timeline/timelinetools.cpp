@@ -117,7 +117,7 @@ Baloo::TimelineFolderType Baloo::parseTimelineUrl(const KUrl& url, QDate* date, 
                 return MonthFolder;
         } else {
             kDebug() << "parsing " << dateString;
-            *date = applyRelativeDateModificators(QDate::fromString(dateString, "yyyy-MM-dd"), url.queryItems());
+            *date = applyRelativeDateModificators(QDate::fromString(dateString, QLatin1String("yyyy-MM-dd")), url.queryItems());
             // only in day folders we can have filenames
             kDebug() << url << "is day folder:" << *date;
             if (date->isValid())

@@ -69,7 +69,7 @@ void App::main()
 #endif
 
     ContactQuery q;
-    q.matchEmail("t");
+    q.matchEmail(QLatin1String("t"));
     q.setMatchCriteria(ContactQuery::StartsWithMatch);
 
     ResultIterator iter = q.exec();
