@@ -191,6 +191,8 @@ void Query::removeCustomOption(const QString& option)
     d->m_customOptions.remove(option);
 }
 
+Q_GLOBAL_STATIC_WITH_ARGS(QList<SearchStore*>, s_searchStores, (SearchStore::searchStores()));
+
 ResultIterator Query::exec()
 {
     // vHanda: Maybe this should default to allow searches on all search stores?
@@ -198,10 +200,8 @@ ResultIterator Query::exec()
     if (types().isEmpty())
         return ResultIterator();
 
-    static QList<SearchStore*> stores = SearchStore::searchStores();
-
     SearchStore* storeMatch = 0;
-    Q_FOREACH (SearchStore* store, stores) {
+    Q_FOREACH (SearchStore* store, *s_searchStores()) {
         bool matches = true;
         Q_FOREACH (const QString& type, types()) {
             if (!store->types().contains(type)) {
