@@ -37,7 +37,7 @@
 
 #include <xapian.h>
 
-#include <kfilemetadata/properties.h>
+#include <Properties>
 
 using namespace Baloo;
 

@@ -28,8 +28,8 @@
 #include <QJsonObject>
 
 #include <QDateTime>
-#include <kfilemetadata/propertyinfo.h>
-#include <kfilemetadata/typeinfo.h>
+#include <PropertyInfo>
+#include <TypeInfo>
 
 // In order to use it in a vector
 Result::Result(): ExtractionResult(QString(), QString()), m_docId(0), m_readOnly(false)

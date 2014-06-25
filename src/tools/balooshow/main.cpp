@@ -33,7 +33,7 @@
 #include "filefetchjob.h"
 #include "searchstore.h" // for deserialize
 
-#include <kfilemetadata/propertyinfo.h>
+#include <PropertyInfo>
 
 QString colorString(const QString& input, int color)
 {

@@ -35,7 +35,8 @@
 #include <QSqlError>
 #include <QDBusConnection>
 
-#include <kfilemetadata/propertyinfo.h>
+#include <ExtractorPlugin>
+#include <PropertyInfo>
 
 #include <iostream>
 

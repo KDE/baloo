@@ -5,8 +5,7 @@ find_package(ECM 0.0.12 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules" ${ECM_MODULE_PATH})
 
 find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Widgets DBus Test Sql)
-find_package(KF5 REQUIRED COMPONENTS I18n Config Service IdleTime KCMUtils Auth Runner Crash Solid KIO KDELibs4Support)
-find_package(KFileMetaData 4.97 REQUIRED)
+find_package(KF5 REQUIRED COMPONENTS I18n Config Service IdleTime KCMUtils Auth Runner Crash Solid KIO KDELibs4Support FileMetaData)
 
 include(ECMSetupVersion)
 include(ECMAddTests)
@@ -52,13 +51,6 @@ find_package(Xapian CONFIG)
 set_package_properties(Xapian PROPERTIES
     DESCRIPTION "The Xapian search engine library"
     URL "http://xapian.org"
-    TYPE REQUIRED
-)
-
-find_package(KFileMetaData CONFIG)
-set_package_properties(KFileMetaData PROPERTIES
-    DESCRIPTION "A library for extracting file metadata"
-    URL "https://projects.kde.org/kfilemetadata"
     TYPE REQUIRED
 )
 

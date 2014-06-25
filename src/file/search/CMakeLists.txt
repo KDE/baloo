@@ -4,7 +4,7 @@ target_link_libraries(baloo_filesearchstore
     Qt5::Core
     Qt5::Sql
     ${XAPIAN_LIBRARIES}
-    ${KFILEMETADATA_LIBRARY}
+    KF5::FileMetaData
     KF5::BalooCore
     KF5::BalooFiles
     KF5::BalooXapian

@@ -25,7 +25,7 @@
 
 #include <QString>
 #include <QStringList>
-#include <kfilemetadata/properties.h>
+#include <Properties>
 
 namespace Baloo {
 

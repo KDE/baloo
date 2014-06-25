@@ -27,8 +27,7 @@
 #include <QStringList>
 #include <QMimeDatabase>
 
-#include <kfilemetadata/extractorpluginmanager.h>
-#include <kfilemetadata/extractorplugin.h>
+#include <ExtractorPluginManager>
 
 #include "result.h"
 #include "../database.h"
