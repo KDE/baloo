@@ -19,11 +19,12 @@ add_library(KF5BalooFiles SHARED ${FILE_LIB_SRCS})
 add_library(KF5::BalooFiles ALIAS KF5BalooFiles)
 
 
-target_link_libraries(KF5BalooFiles PUBLIC
+target_link_libraries(KF5BalooFiles
+    PUBLIC
     Qt5::Core
     KF5::CoreAddons
-)
-target_link_libraries(KF5BalooFiles PRIVATE
+
+    PRIVATE
     KF5::FileMetaData
     KF5::ConfigCore
     Qt5::DBus
