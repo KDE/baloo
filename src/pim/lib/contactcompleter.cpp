@@ -43,11 +43,23 @@ QStringList ContactCompleter::complete()
     Xapian::Database db;
     try {
         db = Xapian::Database(QFile::encodeName(dir).constData());
-    }
-    catch (const Xapian::DatabaseError& e) {
+    } catch (const Xapian::DatabaseError& e) {
         kWarning() << QString::fromStdString(e.get_type()) << QString::fromStdString(e.get_description());
         return QStringList();
+    } catch (const Xapian::DatabaseOpeningError&) {
+        kError() << "Xapian Database does not exist at " << dir;
+        return QStringList();
+    } catch (const Xapian::DatabaseCorruptError&) {
+        kError() << "Xapian Database corrupted";
+        return QStringList();
+    } catch (const Xapian::DatabaseError& e) {
+        kWarning() << QString::fromStdString(e.get_type()) << QString::fromStdString(e.get_description());
+        return QStringList();
+    } catch (...) {
+        kError() << "Random exception, but we do not want to crash";
+        return QStringList();
     }
+
 
     Xapian::QueryParser parser;
     parser.set_database(db);

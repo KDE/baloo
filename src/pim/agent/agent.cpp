@@ -182,6 +182,9 @@ void BalooIndexingAgent::createIndexers()
     catch (const Xapian::DatabaseError &e) {
         delete indexer;
         kError() << "Failed to create email indexer:" << QString::fromStdString(e.get_msg());
+    } catch (...) {
+        delete indexer;
+        kError() << "Random exception, but we do not want to crash";
     }
 
     try {
@@ -192,7 +195,11 @@ void BalooIndexingAgent::createIndexers()
     catch (const Xapian::DatabaseError &e) {
         delete indexer;
         kError() << "Failed to create contact indexer:" << QString::fromStdString(e.get_msg());
+    } catch (...) {
+        delete indexer;
+        kError() << "Random exception, but we do not want to crash";
     }
+
 
     try {
         QDir().mkpath(akonotesIndexingPath());
@@ -202,6 +209,9 @@ void BalooIndexingAgent::createIndexers()
     catch (const Xapian::DatabaseError &e) {
         delete indexer;
         kError() << "Failed to create akonotes indexer:" << QString::fromStdString(e.get_msg());
+    } catch (...) {
+        delete indexer;
+        kError() << "Random exception, but we do not want to crash";
     }
 
     try {
@@ -212,6 +222,9 @@ void BalooIndexingAgent::createIndexers()
     catch (const Xapian::DatabaseError &e) {
         delete indexer;
         kError() << "Failed to create akonotes indexer:" << QString::fromStdString(e.get_msg());
+    } catch (...) {
+        delete indexer;
+        kError() << "Random exception, but we do not want to crash";
     }
 }
 

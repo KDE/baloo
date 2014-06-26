@@ -83,8 +83,17 @@ ResultIterator NoteQuery::exec()
     Xapian::Database db;
     try {
         db = Xapian::Database(QFile::encodeName(dir).constData());
+    } catch (const Xapian::DatabaseOpeningError&) {
+        kError() << "Xapian Database does not exist at " << dir;
+        return ResultIterator();
+    } catch (const Xapian::DatabaseCorruptError&) {
+        kError() << "Xapian Database corrupted";
+        return ResultIterator();
     } catch (const Xapian::DatabaseError& e) {
         kWarning() << "Failed to open Xapian database:" << QString::fromStdString(e.get_error_string());
+        return ResultIterator();
+    } catch (...) {
+        kError() << "Random exception, but we do not want to crash";
         return ResultIterator();
     }
 
