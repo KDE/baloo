@@ -1,30 +1,14 @@
-# Do not modify this file. Any change will be overwritten by CMake.
+@PACKAGE_INIT@
 
-# Config file for Baloo. This file will define:
-# BALOO_INCLUDE_DIR - The Baloo include directory
-# BALOO_LIBRARIES - The library needed to use Baloo
+find_dependency(Qt5Core)
+find_dependency(KF5CoreAddons "@KF5_VERSION@")
+find_dependency(Xapian)
 
-get_filename_component(_currentDir ${CMAKE_CURRENT_LIST_FILE} PATH) # The current directory
-get_filename_component(rootDir ${_currentDir}/@relInstallDir@ ABSOLUTE) # The install prefix
+include(FeatureSummary)
 
-# The library version
-set(BALOO_VERSION_MAJOR @BALOO_VERSION_MAJOR@)
-set(BALOO_VERSION_MINOR @BALOO_VERSION_MINOR@)
-set(BALOO_VERSION_RELEASE @BALOO_VERSION_RELEASE@)
-set(BALOO_VERSION ${BALOO_VERSION_MAJOR}.${BALOO_VERSION_MINOR}.${BALOO_VERSION_RELEASE})
+set_package_properties(Xapian PROPERTIES
+    DESCRIPTION "The Xapian search engine library"
+    URL "http://xapian.org"
+)
 
-
-# Include directory
-set(BALOO_INSTALL_PREFIX "${rootDir}")
-set(BALOO_INCLUDE_DIR "@INCLUDE_INSTALL_DIR@")
-set(Baloo_FOUND true)
-
-include(${_currentDir}/KF5BalooTargets.cmake)
-
-set(BALOO_CORE_LIBRARY KF5::BalooCore)
-set(BALOO_FILE_LIBRARY KF5::BalooFiles)
-set(BALOO_PIM_LIBRARY baloopim)
-set(BALOO_QUERYPARSER_LIBRARY balooqueryparser)
-
-# Set the library variable
-set(BALOO_LIBRARIES KF5::BalooCore KF5::BalooFiles ${BALOO_PIM_LIBRARY})
+include("${CMAKE_CURRENT_LIST_DIR}/KF5BalooTargets.cmake")
