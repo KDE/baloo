@@ -23,9 +23,9 @@ target_link_libraries(KF5BalooFiles
     PUBLIC
     Qt5::Core
     KF5::CoreAddons
+    KF5::FileMetaData
 
     PRIVATE
-    KF5::FileMetaData
     KF5::ConfigCore
     Qt5::DBus
     Qt5::Sql

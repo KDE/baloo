@@ -2,6 +2,7 @@
 
 find_dependency(Qt5Core)
 find_dependency(KF5CoreAddons "@KF5_VERSION@")
+find_dependency(KF5FileMetaData)
 find_dependency(Xapian)
 
 include(FeatureSummary)
