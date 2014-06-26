@@ -44,8 +44,7 @@ target_include_directories(KF5BalooFiles INTERFACE "$<INSTALL_INTERFACE:${KF5_IN
 
 generate_export_header(KF5BalooFiles BASE_NAME BALOO_FILE EXPORT_FILE_NAME file_export.h)
 
-install(TARGETS KF5BalooFiles ${INSTALL_TARGETS_DEFAULT_ARGS})
-install(TARGETS KF5BalooFiles EXPORT BalooLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS KF5BalooFiles EXPORT KF5BalooTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 ecm_generate_headers(KF5BalooFiles_CamelCase_HEADERS
     HEADER_NAMES

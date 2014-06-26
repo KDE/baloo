@@ -102,10 +102,10 @@ install(FILES
     DESTINATION ${CMAKECONFIG_INSTALL_DIR}
     COMPONENT devel
 )
-install(EXPORT BalooLibraryTargets
+install(EXPORT KF5BalooTargets
         NAMESPACE KF5::
-        DESTINATION ${LIB_INSTALL_DIR}/cmake/KF5Baloo
-        FILE KF5BalooTargetsWithPrefix.cmake)
+        DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
+        FILE KF5BalooTargets.cmake)
 
 
 feature_summary(WHAT ALL

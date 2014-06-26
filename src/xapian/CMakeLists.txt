@@ -23,6 +23,6 @@ set_target_properties(KF5BalooXapian PROPERTIES
 
 generate_export_header(KF5BalooXapian BASE_NAME BALOO_XAPIAN EXPORT_FILE_NAME xapian_export.h)
 
-install(TARGETS KF5BalooXapian EXPORT BalooLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS KF5BalooXapian EXPORT KF5BalooTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 add_subdirectory(autotests)
