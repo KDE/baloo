@@ -2,7 +2,7 @@ project(Baloo)
 cmake_minimum_required(VERSION 2.8.12)
 
 find_package(ECM 0.0.14 REQUIRED NO_MODULE)
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules" ${ECM_MODULE_PATH})
+set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 
 find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Widgets DBus Test Sql)
 find_package(KF5 REQUIRED COMPONENTS I18n Config Service IdleTime KCMUtils Auth Runner Crash Solid KIO KDELibs4Support FileMetaData)
@@ -55,6 +55,7 @@ set_package_properties(Xapian PROPERTIES
 )
 
 add_definitions(-DQT_NO_KEYWORDS)
+
 # Turn exceptions on
 kde_enable_exceptions()
 
@@ -94,6 +95,7 @@ install(FILES
     DESTINATION ${CMAKECONFIG_INSTALL_DIR}
     COMPONENT devel
 )
+
 install(EXPORT KF5BalooTargets
         NAMESPACE KF5::
         DESTINATION "${CMAKECONFIG_INSTALL_DIR}"

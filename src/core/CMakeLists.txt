@@ -13,8 +13,10 @@ add_library(KF5BalooCore SHARED ${CORE_SRCS})
 
 add_library(KF5::BalooCore ALIAS KF5BalooCore)
 
-target_link_libraries(KF5BalooCore PUBLIC Qt5::Core)
-target_link_libraries(KF5BalooCore PRIVATE
+target_link_libraries(KF5BalooCore
+    PUBLIC
+    Qt5::Core
+    PRIVATE
     KF5::Service
     ${XAPIAN_LIBRARIES}
 )
