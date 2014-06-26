@@ -23,7 +23,7 @@
 #ifndef EXTRACTIONRESULT_H
 #define EXTRACTIONRESULT_H
 
-#include <ExtractionResult>
+#include <KFileMetaData/ExtractionResult>
 #include <xapian.h>
 
 class Result : public KFileMetaData::ExtractionResult

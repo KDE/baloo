@@ -29,7 +29,7 @@
 #include <QDateTime>
 #include <QStringList>
 
-#include <TypeInfo>
+#include <KFileMetaData/TypeInfo>
 #include <QDebug>
 
 using namespace Baloo;

@@ -35,7 +35,7 @@
 #include <QDebug>
 #include <QMimeDatabase>
 
-#include <PropertyInfo>
+#include <KFileMetaData/PropertyInfo>
 
 using namespace Baloo;
 

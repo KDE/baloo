@@ -25,7 +25,7 @@
 
 #include <QString>
 #include <QStringList>
-#include <Properties>
+#include <KFileMetaData/Properties>
 
 namespace Baloo {
 

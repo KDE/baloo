@@ -26,7 +26,7 @@
 #include "filemapping.h"
 #include <xapian.h>
 
-#include <Types>
+#include <KFileMetaData/Types>
 #include <QSqlDatabase>
 
 namespace Baloo {
