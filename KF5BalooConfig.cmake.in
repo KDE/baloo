@@ -19,7 +19,7 @@ set(BALOO_INSTALL_PREFIX "${rootDir}")
 set(BALOO_INCLUDE_DIR "@INCLUDE_INSTALL_DIR@")
 set(Baloo_FOUND true)
 
-include(${_currentDir}/KF5BalooTargetsWithPrefix.cmake)
+include(${_currentDir}/KF5BalooTargets.cmake)
 
 set(BALOO_CORE_LIBRARY KF5::BalooCore)
 set(BALOO_FILE_LIBRARY KF5::BalooFiles)
