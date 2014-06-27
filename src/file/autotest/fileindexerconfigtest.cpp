@@ -291,5 +291,3 @@ void FileIndexerConfigTest::testExcludeFilterOnFolders()
 }
 
 QTEST_MAIN(FileIndexerConfigTest)
-
-#include "fileindexerconfigtest.moc"

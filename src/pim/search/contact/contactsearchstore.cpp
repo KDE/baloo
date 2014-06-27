@@ -46,4 +46,3 @@ QStringList ContactSearchStore::types()
     return QStringList() << "Akonadi" << "Contact";
 }
 
-#include "contactsearchstore.moc"

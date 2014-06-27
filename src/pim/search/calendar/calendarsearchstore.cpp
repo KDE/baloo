@@ -37,4 +37,3 @@ QStringList CalendarSearchStore::types()
     return QStringList() << "Akonadi" << "Calendar";
 }
 
-#include "calendarsearchstore.moc"

@@ -75,4 +75,3 @@ void TermGeneratorTest::testAccetCharacters()
 
 QTEST_MAIN(TermGeneratorTest)
 
-#include "termgeneratortest.moc"

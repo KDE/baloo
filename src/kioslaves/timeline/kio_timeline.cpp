@@ -267,4 +267,3 @@ extern "C"
     }
 }
 
-#include "kio_timeline.moc"
