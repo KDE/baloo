@@ -44,10 +44,10 @@ int main(int argc, char** argv)
     lowerSchedulingPriority();
     lowerPriority();
 
-    KAboutData aboutData("baloo_file", i18n("Baloo File"), "0.1",
+    KAboutData aboutData(QLatin1String("baloo_file"), i18n("Baloo File"), QLatin1String("0.1"),
                          i18n("An application to handle file metadata"),
                          KAboutLicense::LGPL_V2);
-    aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), "me@vhanda.in", "http://vhanda.in");
+    aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QLatin1String("me@vhanda.in"), QLatin1String("http://vhanda.in"));
 
     KAboutData::setApplicationData(aboutData);
 
@@ -56,7 +56,7 @@ int main(int argc, char** argv)
     //KUniqueApplication app(true);
     //app.disableSessionManagement();
 
-    KConfig config("baloofilerc");
+    KConfig config(QLatin1String("baloofilerc"));
     KConfigGroup group = config.group("Basic Settings");
     bool indexingEnabled = group.readEntry("Indexing-Enabled", true);
 
@@ -66,7 +66,7 @@ int main(int argc, char** argv)
     }
 
 
-    if (!QDBusConnection::sessionBus().registerService("org.kde.baloo.file")) {
+    if (!QDBusConnection::sessionBus().registerService(QLatin1String("org.kde.baloo.file"))) {
         qWarning() << "Failed to register via dbus. Another instance is running";
         return 1;
     }
@@ -74,7 +74,7 @@ int main(int argc, char** argv)
     // Crash Handling
     KCrash::setFlags(KCrash::AutoRestart);
 
-    const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/baloo/file/";
+    const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/file/");
 
     Database db;
     db.setPath(path);

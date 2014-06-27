@@ -38,8 +38,8 @@ QString highlightBold(const QString& input)
     QLatin1String colorEnd("\033[0;0m");
 
     QString out(input);
-    out.replace("<b>", colorStart);
-    out.replace("</b>", colorEnd);
+    out.replace(QLatin1String("<b>"), colorStart);
+    out.replace(QLatin1String("</b>"), colorEnd);
 
     return out;
 }
@@ -54,54 +54,54 @@ QString colorString(const QString& input, int color)
 
 int main(int argc, char* argv[])
 {
-    KAboutData aboutData("baloosearch",
+    KAboutData aboutData(QLatin1String("baloosearch"),
                          i18n("Baloo Search"),
-                         "0.1",
+                         QLatin1String("0.1"),
                          i18n("Baloo Search - A debugging tool"),
                          KAboutLicense::GPL,
                          i18n("(c) 2013, Vishesh Handa"));
-    aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), "me@vhanda.in");
+    aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QLatin1String("me@vhanda.in"));
 
     KAboutData::setApplicationData(aboutData);
     QCoreApplication app(argc, argv);
 
     QCommandLineParser parser;
-    parser.addOption(QCommandLineOption(QStringList() << "l" << "limit",
-                                        "The maximum number of results",
-                                        "limit"));
-    parser.addOption(QCommandLineOption(QStringList() << "o" << "offset",
-                                        "Offset from which to start the search",
-                                        "offset"));
-    parser.addOption(QCommandLineOption(QStringList() << "t" << "type",
-                                        "Type of data to be searched",
-                                        "typeStr"));
-    parser.addOption(QCommandLineOption(QStringList() << "e" << "email",
-                                        "If set, search for email"));
-    parser.addPositionalArgument("query", "List of words to query for");
+    parser.addOption(QCommandLineOption(QStringList() << QLatin1String("l") << QLatin1String("limit"),
+                                        QLatin1String("The maximum number of results"),
+                                        QLatin1String("limit")));
+    parser.addOption(QCommandLineOption(QStringList() << QLatin1String("o") << QLatin1String("offset"),
+                                        QLatin1String("Offset from which to start the search"),
+                                        QLatin1String("offset")));
+    parser.addOption(QCommandLineOption(QStringList() << QLatin1String("t") << QLatin1String("type"),
+                                        QLatin1String("Type of data to be searched"),
+                                        QLatin1String("typeStr")));
+    parser.addOption(QCommandLineOption(QStringList() << QLatin1String("e") << QLatin1String("email"),
+                                        QLatin1String("If set, search for email")));
+    parser.addPositionalArgument(QLatin1String("query"), QLatin1String("List of words to query for"));
     parser.process(app);
 
     int queryLimit = 10;
     int offset = 0;
-    QString typeStr = "File";
+    QString typeStr = QLatin1String("File");
 
     QStringList args = parser.positionalArguments();
     if (args.isEmpty()) {
         parser.showHelp(1);
     }
 
-    if(parser.isSet("type"))
-        typeStr = parser.value("type");
-    if(parser.isSet("limit"))
-        queryLimit = parser.value("limit").toInt();
-    if(parser.isSet("offset"))
-        offset = parser.value("offset").toInt();
+    if(parser.isSet(QLatin1String("type")))
+        typeStr = parser.value(QLatin1String("type"));
+    if(parser.isSet(QLatin1String("limit")))
+        queryLimit = parser.value(QLatin1String("limit")).toInt();
+    if(parser.isSet(QLatin1String("offset")))
+        offset = parser.value(QLatin1String("offset")).toInt();
 
-    if(parser.isSet("email"))
-        typeStr = "Email";
+    if(parser.isSet(QLatin1String("email")))
+        typeStr = QLatin1String("Email");
 
     QTextStream out(stdout);
 
-    QString queryStr = args.join(" ");
+    QString queryStr = args.join(QLatin1String(" "));
 
     Baloo::Query query;
     query.addType(typeStr);
@@ -118,11 +118,11 @@ int main(int argc, char* argv[])
 
         QString title;
         if (url.isLocalFile()) {
-            title = colorString(QString::number(fid), 31) + " " + colorString(url.toLocalFile(), 32);
+            title = colorString(QString::number(fid), 31) + QLatin1String(" ") + colorString(url.toLocalFile(), 32);
         }
         else {
             title = colorString(QString::fromUtf8(iter.id()), 31);
-            title += " ";
+            title += QLatin1String(" ");
             title += colorString(iter.text(), 32);
         }
 

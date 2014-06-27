@@ -42,7 +42,7 @@ void writeIndexerConfig(const QStringList& includeFolders,
                         const QStringList& excludeFilters = QStringList(),
                         bool indexHidden = false)
 {
-    KConfig fileIndexerConfig("baloofilerc");
+    KConfig fileIndexerConfig(QLatin1String("baloofilerc"));
     fileIndexerConfig.group("General").writePathEntry("folders", includeFolders);
     fileIndexerConfig.group("General").writePathEntry("exclude folders", excludeFolders);
     fileIndexerConfig.group("General").writeEntry("exclude filters", excludeFilters);
@@ -62,12 +62,12 @@ QTemporaryDir* createTmpFolders(const QStringList& folders)
     }
     Q_FOREACH (const QString & f, folders) {
         QDir dir(tmpDir->path());
-        Q_FOREACH (const QString & sf, f.split('/', QString::SkipEmptyParts)) {
+        Q_FOREACH (const QString & sf, f.split(QLatin1Char('/'), QString::SkipEmptyParts)) {
             if (!dir.exists(sf)) {
                 dir.mkdir(sf);
             }
 #ifdef Q_OS_WIN
-            if(sf.startsWith(".")) {
+            if(sf.startsWith(QLatin1String("."))) {
                 if(!SetFileAttributesW(reinterpret_cast<const WCHAR*>((dir.path() + "/" + sf).utf16()), FILE_ATTRIBUTE_HIDDEN)) {
                     qWarning("failed to set 'hidden' attribute!");
                 }
@@ -91,14 +91,14 @@ QTemporaryDir* createTmpFilesAndFolders(const QStringList& list)
         tmpDir = new QTemporaryDir(QLatin1String("/tmp/"));
     }
     Q_FOREACH (const QString& f, list) {
-        if (f.endsWith('/')) {
+        if (f.endsWith(QLatin1Char('/'))) {
             QDir dir(tmpDir->path());
-            Q_FOREACH (const QString & sf, f.split('/', QString::SkipEmptyParts)) {
+            Q_FOREACH (const QString & sf, f.split(QLatin1Char('/'), QString::SkipEmptyParts)) {
                 if (!dir.exists(sf)) {
                     dir.mkdir(sf);
                 }
 #ifdef Q_OS_WIN
-                if(sf.startsWith(".")) {
+                if(sf.startsWith(QLatin1String("."))) {
                     if(!SetFileAttributesW(reinterpret_cast<const WCHAR*>((dir.path() + "/" + sf).utf16()), FILE_ATTRIBUTE_HIDDEN)) {
                         qWarning("failed to set 'hidden' attribute!");
                     }
@@ -108,7 +108,7 @@ QTemporaryDir* createTmpFilesAndFolders(const QStringList& list)
             }
         }
         else {
-            QFile file(tmpDir->path() + '/' + f);
+            QFile file(tmpDir->path() + QLatin1Char('/') + f);
             file.open(QIODevice::WriteOnly);
 
             QTextStream stream(&file);

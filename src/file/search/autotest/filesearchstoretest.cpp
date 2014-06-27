@@ -101,7 +101,7 @@ void FileSearchStoreTest::insertRating(int id, int rating)
 {
     Xapian::Document doc;
 
-    QString str = 'R' + QString::number(rating);
+    QString str = QLatin1Char('R') + QString::number(rating);
     doc.add_term(str.toUtf8().constData());
 
     std::string dir = m_tempDir->path().toUtf8().constData();
@@ -116,17 +116,17 @@ void FileSearchStoreTest::insertRating(int id, int rating)
 
 void FileSearchStoreTest::testSimpleSearchString()
 {
-    QString url1("/home/t/a");
+    QString url1(QLatin1String("/home/t/a"));
     uint id1 = insertUrl(url1);
-    insertText(id1, "This is sample text");
+    insertText(id1, QLatin1String("This is sample text"));
 
-    QString url2("/home/t/b");
+    QString url2(QLatin1String("/home/t/b"));
     uint id2 = insertUrl(url2);
-    insertText(id2, "sample sample more sample text");
+    insertText(id2, QLatin1String("sample sample more sample text"));
 
     Query q;
-    q.addType("File");
-    q.setSearchString("Sample");
+    q.addType(QLatin1String("File"));
+    q.setSearchString(QLatin1String("Sample"));
 
     int qid = m_store->exec(q);
     QCOMPARE(qid, 1);
@@ -147,29 +147,29 @@ void FileSearchStoreTest::testSimpleSearchString()
 
 void FileSearchStoreTest::testIncludeDir()
 {
-    QString url1("/home/t/a");
+    QString url1(QLatin1String("/home/t/a"));
     uint id1 = insertUrl(url1);
-    insertText(id1, "This is sample text");
+    insertText(id1, QLatin1String("This is sample text"));
 
-    QString url2("/home/t/b");
+    QString url2(QLatin1String("/home/t/b"));
     uint id2 = insertUrl(url2);
-    insertText(id2, "sample sample more sample text");
+    insertText(id2, QLatin1String("sample sample more sample text"));
 
-    QString url3("/home/garden/b");
+    QString url3(QLatin1String("/home/garden/b"));
     uint id3 = insertUrl(url3);
-    insertText(id3, "The grass is green in the garden.");
+    insertText(id3, QLatin1String("The grass is green in the garden."));
 
-    QString url4("/home/tt/b");
+    QString url4(QLatin1String("/home/tt/b"));
     uint id4 = insertUrl(url4);
-    insertText(id4, "Let's see if this works.");
+    insertText(id4, QLatin1String("Let's see if this works."));
 
-    QString url5("/home/t/c");
+    QString url5(QLatin1String("/home/t/c"));
     uint id5 = insertUrl(url5);
-    insertText(id5, "sample sample more sample text");
+    insertText(id5, QLatin1String("sample sample more sample text"));
 
     Query q;
-    q.addType("File");
-    q.addCustomOption("includeFolder", QVariant("/home/t"));
+    q.addType(QLatin1String("File"));
+    q.addCustomOption(QLatin1String("includeFolder"), QVariant(QLatin1String("/home/t")));
 
     int qid = m_store->exec(q);
     QCOMPARE(qid, 1);
@@ -194,32 +194,32 @@ void FileSearchStoreTest::testIncludeDir()
 
 void FileSearchStoreTest::testRatings()
 {
-    QString url1("/home/t/a");
+    QString url1(QLatin1String("/home/t/a"));
     uint id1 = insertUrl(url1);
     insertRating(id1, 2);
 
-    QString url2("/home/t/b");
+    QString url2(QLatin1String("/home/t/b"));
     uint id2 = insertUrl(url2);
     insertRating(id2, 4);
 
-    QString url3("/home/garden/b");
+    QString url3(QLatin1String("/home/garden/b"));
     uint id3 = insertUrl(url3);
     insertRating(id3, 6);
 
-    QString url4("/home/tt/b");
+    QString url4(QLatin1String("/home/tt/b"));
     uint id4 = insertUrl(url4);
     insertRating(id4, 10);
 
-    QString url5("/home/tt/c");
+    QString url5(QLatin1String("/home/tt/c"));
     uint id5 = insertUrl(url5);
-    insertText(id5, "Test text");
+    insertText(id5, QLatin1String("Test text"));
 
     //
     // Less than 5
     //
     Query q;
-    q.addType("File");
-    q.setTerm(Term("rating", 5, Term::Less));
+    q.addType(QLatin1String("File"));
+    q.setTerm(Term(QLatin1String("rating"), 5, Term::Less));
 
     int qid1 = m_store->exec(q);
     QCOMPARE(qid1, 1);
@@ -233,7 +233,7 @@ void FileSearchStoreTest::testRatings()
     //
     // Greater than 6
     //
-    q.setTerm(Term("rating", 6, Term::Greater));
+    q.setTerm(Term(QLatin1String("rating"), 6, Term::Greater));
 
     int qid2 = m_store->exec(q);
     QCOMPARE(qid2, 2);

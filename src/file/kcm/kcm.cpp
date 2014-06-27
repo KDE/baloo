@@ -58,18 +58,18 @@ ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args
     : KCModule(parent, args)
 {
     KAboutData* about = new KAboutData(
-        "kcm_baloofile", i18n("Configure Desktop Search"),
-        "0.1", QString(), KAboutLicense::GPL,
+        QLatin1String("kcm_baloofile"), i18n("Configure Desktop Search"),
+        QLatin1String("0.1"), QString(), KAboutLicense::GPL,
         i18n("Copyright 2007-2010 Sebastian Trüg"));
-    about->addAuthor(i18n("Sebastian Trüg"), QString(), "trueg@kde.org");
-    about->addAuthor(i18n("Vishesh Handa"), QString(), "vhanda@kde.org");
+    about->addAuthor(i18n("Sebastian Trüg"), QString(), QLatin1String("trueg@kde.org"));
+    about->addAuthor(i18n("Vishesh Handa"), QString(), QLatin1String("vhanda@kde.org"));
     setAboutData(about);
     setButtons(Help | Apply | Default);
 
     setupUi(this);
 
     int pixelSize = style()->pixelMetric(QStyle::PM_LargeIconSize);
-    QPixmap pixmap = QIcon::fromTheme("baloo").pixmap(QSize(pixelSize, pixelSize));
+    const QPixmap pixmap = QIcon::fromTheme(QLatin1String("baloo")).pixmap(QSize(pixelSize, pixelSize));
     m_pixmapLabel->setPixmap(pixmap);
 
     connect(m_folderSelectionWidget, SIGNAL(changed()),
@@ -89,7 +89,7 @@ ServerConfigModule::~ServerConfigModule()
 void ServerConfigModule::load()
 {
     // File indexer settings
-    KConfig config("baloofilerc");
+    KConfig config(QLatin1String("baloofilerc"));
     KConfigGroup group = config.group("General");
 
     KConfigGroup basicSettings = config.group("Basic Settings");
@@ -111,7 +111,7 @@ void ServerConfigModule::save()
     QStringList excludeFolders = m_folderSelectionWidget->excludeFolders();
 
     // Change the settings
-    KConfig config("baloofilerc");
+    KConfig config(QLatin1String("baloofilerc"));
     KConfigGroup basicSettings = config.group("Basic Settings");
 
     bool mountPointsEx = m_folderSelectionWidget->allMountPointsExcluded();
@@ -160,7 +160,7 @@ void ServerConfigModule::defaults()
 
 void ServerConfigModule::folderSelectionChanged()
 {
-    bool disabled = m_folderSelectionWidget->allMountPointsExcluded();
+    const bool disabled = m_folderSelectionWidget->allMountPointsExcluded();
     m_enableCheckbox->setChecked(!disabled);
 }
 

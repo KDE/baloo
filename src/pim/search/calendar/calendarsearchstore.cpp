@@ -27,13 +27,13 @@ using namespace Baloo;
 CalendarSearchStore::CalendarSearchStore(QObject* parent)
     : PIMSearchStore(parent)
 {
-    m_prefix.insert("collection", "C");
+    m_prefix.insert(QLatin1String("collection"), QLatin1String("C"));
 
-    setDbPath(findDatabase("calendars"));
+    setDbPath(findDatabase(QLatin1String("calendars")));
 }
 
 QStringList CalendarSearchStore::types()
 {
-    return QStringList() << "Akonadi" << "Calendar";
+    return QStringList() << QLatin1String("Akonadi") << QLatin1String("Calendar");
 }
 

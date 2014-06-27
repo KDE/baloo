@@ -39,15 +39,27 @@ ContactCompleter::ContactCompleter(const QString& prefix, int limit)
 
 QStringList ContactCompleter::complete()
 {
-    const QString dir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/baloo/emailContacts/";
+    const QString dir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/emailContacts/");
     Xapian::Database db;
     try {
         db = Xapian::Database(QFile::encodeName(dir).constData());
-    }
-    catch (const Xapian::DatabaseError& e) {
+    } catch (const Xapian::DatabaseError& e) {
         qWarning() << QString::fromStdString(e.get_type()) << QString::fromStdString(e.get_description());
         return QStringList();
+    } catch (const Xapian::DatabaseOpeningError&) {
+        qWarning() << "Xapian Database does not exist at " << dir;
+        return QStringList();
+    } catch (const Xapian::DatabaseCorruptError&) {
+        qWarning() << "Xapian Database corrupted";
+        return QStringList();
+    } catch (const Xapian::DatabaseError& e) {
+        qWarning() << QString::fromStdString(e.get_type()) << QString::fromStdString(e.get_description());
+        return QStringList();
+    } catch (...) {
+        qWarning() << "Random exception, but we do not want to crash";
+        return QStringList();
     }
+
 
     Xapian::QueryParser parser;
     parser.set_database(db);

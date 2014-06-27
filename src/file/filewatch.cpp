@@ -161,8 +161,8 @@ void FileWatch::slotFileDeleted(const QString& urlString, bool isDir)
 {
     // Directories must always end with a trailing slash '/'
     QString url = urlString;
-    if (isDir && url[ url.length() - 1 ] != '/') {
-        url.append('/');
+    if (isDir && url[ url.length() - 1 ] != QLatin1Char('/')) {
+        url.append(QLatin1Char('/'));
     }
     slotFilesDeleted(QStringList(url));
 }
@@ -197,9 +197,9 @@ void FileWatch::slotFileClosedAfterWrite(const QString& path)
 void FileWatch::connectToKDirNotify()
 {
     // monitor KIO for changes
-    QDBusConnection::sessionBus().connect(QString(), QString(), "org.kde.KDirNotify", "FileMoved",
+    QDBusConnection::sessionBus().connect(QString(), QString(), QLatin1String("org.kde.KDirNotify"), QLatin1String("FileMoved"),
                                           this, SIGNAL(slotFileMoved(QString,QString)));
-    QDBusConnection::sessionBus().connect(QString(), QString(), "org.kde.KDirNotify", "FilesRemoved",
+    QDBusConnection::sessionBus().connect(QString(), QString(), QLatin1String("org.kde.KDirNotify"), QLatin1String("FilesRemoved"),
                                           this, SIGNAL(slotFilesDeleted(QStringList)));
 }
 
@@ -216,8 +216,8 @@ bool raiseWatchLimit()
     // FIXME: vHanda: FIX ME!!
     return false;
     /*
-    KAuth::Action limitAction("org.kde.baloo.filewatch.raiselimit");
-    limitAction.setHelperID("org.kde.baloo.filewatch")
+    KAuth::Action limitAction(QLatin1String("org.kde.baloo.filewatch.raiselimit"));
+    limitAction.setHelperID(QLatin1String("org.kde.baloo.filewatch"))
 
     KAuth::ActionReply reply = limitAction.execute();
     if (reply.failed()) {

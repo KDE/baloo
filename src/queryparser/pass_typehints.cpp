@@ -26,25 +26,25 @@
 
 PassTypeHints::PassTypeHints()
 {
-    registerHints("File",
+    registerHints(QLatin1String("File"),
         i18nc("List of words representing a file", "file files"));
-    registerHints("Image",
+    registerHints(QLatin1String("Image"),
         i18nc("List of words representing an image", "image images picture pictures photo photos"));
-    registerHints("Video",
+    registerHints(QLatin1String("Video"),
         i18nc("List of words representing a video", "video videos movie movies film films"));
-    registerHints("Audio",
+    registerHints(QLatin1String("Audio"),
         i18nc("List of words representing an audio file", "music musics"));
-    registerHints("Document",
+    registerHints(QLatin1String("Document"),
         i18nc("List of words representing a document", "document documents"));
-    registerHints("Email",
+    registerHints(QLatin1String("Email"),
         i18nc("List of words representing an email", "mail mails email emails e-mail e-mails message messages"));
-    registerHints("Archive",
+    registerHints(QLatin1String("Archive"),
         i18nc("List of words representing an archive", "archive archives tarball tarballs zip"));
-    registerHints("Folder",
+    registerHints(QLatin1String("Folder"),
         i18nc("List of words representing a folder", "folder folders directory directories"));
-    registerHints("Contact",
+    registerHints(QLatin1String("Contact"),
         i18nc("List of words representing a contact", "contact contacts person people"));
-    registerHints("Note",
+    registerHints(QLatin1String("Note"),
         i18nc("List of words representing a note", "note notes"));
 }
 
@@ -58,7 +58,7 @@ void PassTypeHints::registerHints(const QString &type, const QString &hints)
 QList<Baloo::Term> PassTypeHints::run(const QList<Baloo::Term> &match) const
 {
     QList<Baloo::Term> rs;
-    QString value = stringValueIfLiteral(match.at(0)).toLower();
+    const QString value = stringValueIfLiteral(match.at(0)).toLower();
 
     if (value.isNull()) {
         return rs;
@@ -66,7 +66,7 @@ QList<Baloo::Term> PassTypeHints::run(const QList<Baloo::Term> &match) const
 
     if (type_hints.contains(value)) {
         rs.append(Baloo::Term(
-            "_k_typehint",
+            QLatin1String("_k_typehint"),
             type_hints.value(value),
             Baloo::Term::Equal
         ));

@@ -10,6 +10,7 @@ find_package(KF5Abc REQUIRED)
 find_package(KF5Mime REQUIRED)
 find_package(KF5PimUtils REQUIRED)
 find_package(KF5AkonadiMime REQUIRED)
+find_package(KF5CalendarCore REQUIRED)
 #find_package(KF5ItemModels REQUIRED)
 
 
@@ -35,10 +36,11 @@ target_link_libraries(akonadi_baloo_indexer
     KF5::Mime
     KF5::Abc
     KF5::AkonadiAgentBase
-    ${XAPIAN_LIBRARIES}
     KF5::PimUtils
     KF5::ItemModels
     KF5::BalooXapian
+    KF5::PimUtils
+    KF5::CalendarCore
 )
 
 install(TARGETS akonadi_baloo_indexer ${INSTALL_TARGETS_DEFAULT_ARGS})

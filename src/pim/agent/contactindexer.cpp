@@ -28,15 +28,28 @@
 #include <Collection>
 
 ContactIndexer::ContactIndexer(const QString& path):
-    AbstractIndexer()
+    AbstractIndexer(), m_db( 0 )
 {
-    m_db = new Baloo::XapianDatabase(path, true);
+    try {
+        m_db = new Baloo::XapianDatabase(path, true);
+    }
+    catch (const Xapian::DatabaseCorruptError& err) {
+        kError() << "Database Corrupted - What did you do?";
+        kError() << err.get_error_string();
+        m_db = 0;
+    }
+    catch (const Xapian::Error &e) {
+        kError() << QString::fromStdString(e.get_type()) << QString::fromStdString(e.get_description());
+        m_db = 0;
+    }
 }
 
 ContactIndexer::~ContactIndexer()
 {
-    m_db->commit();
-    delete m_db;
+    if (m_db) {
+        m_db->commit();
+        delete m_db;
+    }
 }
 
 QStringList ContactIndexer::mimeTypes() const
@@ -46,6 +59,8 @@ QStringList ContactIndexer::mimeTypes() const
 
 bool ContactIndexer::indexContact(const Akonadi::Item& item)
 {
+    if (!m_db)
+        return false;
     KABC::Addressee addresse;
     try {
         addresse = item.payload<KABC::Addressee>();
@@ -72,8 +87,8 @@ bool ContactIndexer::indexContact(const Akonadi::Item& item)
     doc.indexText(addresse.nickName());
     doc.indexText(addresse.uid());
 
-    doc.indexText(name, "NA");
-    doc.indexText(addresse.nickName(), "NI");
+    doc.indexText(name, QLatin1String("NA"));
+    doc.indexText(addresse.nickName(), QLatin1String("NI"));
 
     Q_FOREACH (const QString& email, addresse.emails()) {
         doc.addTerm(email);
@@ -85,7 +100,7 @@ bool ContactIndexer::indexContact(const Akonadi::Item& item)
                "Item does not have a valid parent collection");
 
     const Akonadi::Entity::Id colId = item.parentCollection().id();
-    doc.addBoolTerm(colId, "C");
+    doc.addBoolTerm(colId, QLatin1String("C"));
 
     if (addresse.birthday().isValid()) {
         const QString julianDay = QString::number(addresse.birthday().date().toJulianDay());
@@ -99,6 +114,8 @@ bool ContactIndexer::indexContact(const Akonadi::Item& item)
 
 void ContactIndexer::indexContactGroup(const Akonadi::Item& item)
 {
+    if (!m_db)
+        return;
     KABC::ContactGroup group;
     try {
         group = item.payload<KABC::ContactGroup>();
@@ -110,7 +127,7 @@ void ContactIndexer::indexContactGroup(const Akonadi::Item& item)
 
     const QString name = group.name();
     doc.indexText(name);
-    doc.indexText(name, "NA");
+    doc.indexText(name, QLatin1String("NA"));
 
 
     // Parent collection
@@ -118,7 +135,7 @@ void ContactIndexer::indexContactGroup(const Akonadi::Item& item)
                "Item does not have a valid parent collection");
 
     const Akonadi::Entity::Id colId = item.parentCollection().id();
-    doc.addBoolTerm(colId, "C");
+    doc.addBoolTerm(colId, QLatin1String("C"));
     m_db->replaceDocument(item.id(), doc);
 }
 
@@ -132,11 +149,14 @@ void ContactIndexer::index(const Akonadi::Item& item)
 
 void ContactIndexer::remove(const Akonadi::Item& item)
 {
-    m_db->deleteDocument(item.id());
+    if (m_db)
+        m_db->deleteDocument(item.id());
 }
 
 void ContactIndexer::remove(const Akonadi::Collection& collection)
 {
+    if (!m_db)
+        return;
     try {
         Xapian::Database* db = m_db->db();
         Xapian::Query query('C'+ QString::number(collection.id()).toStdString());
@@ -157,13 +177,16 @@ void ContactIndexer::remove(const Akonadi::Collection& collection)
 
 void ContactIndexer::commit()
 {
-    m_db->commit();
+    if (!m_db)
+        m_db->commit();
 }
 
 void ContactIndexer::move(const Akonadi::Item::Id& itemId,
                         const Akonadi::Entity::Id& from,
                         const Akonadi::Entity::Id& to)
 {
+    if (!m_db)
+        return;
     Baloo::XapianDocument doc;
     try {
         doc = m_db->document(itemId);
@@ -176,7 +199,7 @@ void ContactIndexer::move(const Akonadi::Item::Id& itemId,
     const QByteArray tt = 'C' + QByteArray::number(to);
 
     doc.removeTermStartsWith(ft.data());
-    doc.addBoolTerm(tt.data());
+    doc.addBoolTerm(QString::fromLatin1(tt.data()));
     m_db->replaceDocument(doc.doc().get_docid(), doc);
 }
 

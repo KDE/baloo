@@ -90,14 +90,14 @@ void FileFetchJob::doStart()
         const QString& url = file.url();
         if (url.size() && !QFile::exists(url)) {
             setError(Error_FileDoesNotExist);
-            setErrorText("File " + url + " does not exist");
+            setErrorText(QLatin1String("File ") + url + QLatin1String(" does not exist"));
             emitResult();
             return;
         }
 
         if (file.id().size() && !file.id().startsWith("file")) {
             setError(Error_InvalidId);
-            setErrorText("Invalid Id " + QString::fromUtf8(file.id()));
+            setErrorText(QLatin1String("Invalid Id ") + QString::fromUtf8(file.id()));
             emitResult();
             return;
         }
@@ -157,7 +157,7 @@ void FileFetchJob::Private::fetchUserMetadata(File& file)
     QString comment = customFileMetaData(url, QLatin1String("user.xdg.comment"));
 
     file.setRating(rating.toInt());
-    file.setTags(tags.split(',', QString::SkipEmptyParts));
+    file.setTags(tags.split(QLatin1Char(','), QString::SkipEmptyParts));
     file.setUserComment(comment);
 }
 

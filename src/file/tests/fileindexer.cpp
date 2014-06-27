@@ -57,7 +57,7 @@ void FileIndexer::doStart()
 
     QStringList args;
     args << QString::number(m_id);
-    args << "--db" << m_customPath;
+    args << QLatin1String("--db") << m_customPath;
 
     m_process = new QProcess(this);
     connect(m_process, SIGNAL(finished(int,QProcess::ExitStatus)),

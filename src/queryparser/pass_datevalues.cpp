@@ -62,7 +62,7 @@ QList<Baloo::Term> PassDateValues::run(const QList<Baloo::Term> &match) const
             bool value_is_integer;
             long long value = term.value().toLongLong(&value_is_integer);
 
-            if (term.property().startsWith("_k_date")) {
+            if (term.property().startsWith(QLatin1String("_k_date"))) {
                 // The term is already a date part, no need to change it
                 rs.append(term);
                 continue;

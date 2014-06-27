@@ -43,7 +43,7 @@ void FileIndexingJobTest::init()
 void FileIndexingJobTest::testFileFail()
 {
     QVector<uint> files;
-    for (int i = 0; i<40; i++) {
+    for (int i = 0; i<40; ++i) {
         files << i;
     }
 
@@ -61,7 +61,7 @@ void FileIndexingJobTest::testFileFail()
 void FileIndexingJobTest::testMultiFileFail()
 {
     QVector<uint> files;
-    for (int i = 0; i<40; i++) {
+    for (int i = 0; i<40; ++i) {
         files << i;
     }
 
@@ -98,7 +98,7 @@ void FileIndexingJobTest::testNormalExecution()
 void FileIndexingJobTest::testTimeout()
 {
     QVector<uint> files;
-    for (int i = 0; i<40; i++) {
+    for (int i = 0; i<40; ++i) {
         files << i;
     }
 

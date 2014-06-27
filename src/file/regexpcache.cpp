@@ -44,7 +44,6 @@ bool RegExpCache::exactMatch(const QString& s) const
     return false;
 }
 
-
 void RegExpCache::rebuildCacheFromFilterList(const QStringList& filters)
 {
     m_regexpCache.clear();
@@ -52,7 +51,7 @@ void RegExpCache::rebuildCacheFromFilterList(const QStringList& filters)
         QString f = filter;
         f.replace(QLatin1Char('?'), QLatin1Char('.'));
         f.replace(QStringLiteral("*"), QStringLiteral(".*"));
-        f = "^" + f + "$";
+        f = QLatin1String("^") + f + QLatin1String("$");
 
         m_regexpCache.append(QRegularExpression(f));
     }

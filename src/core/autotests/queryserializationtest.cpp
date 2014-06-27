@@ -35,8 +35,8 @@ void QuerySerializationTest::testBasic()
     Query query;
     query.setLimit(5);
     query.setOffset(1);
-    query.setSearchString("Bookie");
-    query.addType("File/Audio");
+    query.setSearchString(QLatin1String("Bookie"));
+    query.addType(QLatin1String("File/Audio"));
 
     QByteArray json = query.toJSON();
     Query q = Query::fromJSON(json);
@@ -45,15 +45,15 @@ void QuerySerializationTest::testBasic()
     QCOMPARE(q.offset(), static_cast<uint>(1));
     QCOMPARE(q.searchString(), QLatin1String("Bookie"));
     QCOMPARE(q.types().size(), 2);
-    QVERIFY(q.types().contains("File"));
-    QVERIFY(q.types().contains("Audio"));
+    QVERIFY(q.types().contains(QLatin1String("File")));
+    QVERIFY(q.types().contains(QLatin1String("Audio")));
 
     QCOMPARE(q, query);
 }
 
 void QuerySerializationTest::testTerm()
 {
-    Term term("property", "value");
+    Term term(QLatin1String("property"), QLatin1String("value"));
 
     Query query;
     query.setTerm(term);
@@ -63,7 +63,7 @@ void QuerySerializationTest::testTerm()
 
     Term t = q.term();
     QCOMPARE(t.property(), QLatin1String("property"));
-    QCOMPARE(t.value(), QVariant("value"));
+    QCOMPARE(t.value(), QVariant(QLatin1String("value")));
     QCOMPARE(q.term(), term);
 
     QCOMPARE(q, query);
@@ -71,8 +71,8 @@ void QuerySerializationTest::testTerm()
 
 void QuerySerializationTest::testAndTerm()
 {
-    Term term1("prop1", 1);
-    Term term2("prop2", 2);
+    Term term1(QLatin1String("prop1"), 1);
+    Term term2(QLatin1String("prop2"), 2);
 
     Term term(Term::And);
     term.addSubTerm(term1);
@@ -96,7 +96,7 @@ void QuerySerializationTest::testAndTerm()
 
 void QuerySerializationTest::testDateTerm()
 {
-    Term term("prop", QDate::currentDate());
+    Term term(QLatin1String("prop"), QDate::currentDate());
 
     Query query;
     query.setTerm(term);
@@ -117,7 +117,7 @@ void QuerySerializationTest::testDateTimeTerm()
     QDateTime dt = QDateTime::currentDateTime();
     dt.setTime(QTime(dt.time().hour(), dt.time().minute(), dt.time().second()));
 
-    Term term("prop", dt);
+    Term term(QLatin1String("prop"), dt);
 
     Query query;
     query.setTerm(term);
@@ -136,17 +136,17 @@ void QuerySerializationTest::testDateTimeTerm()
 void QuerySerializationTest::testCustomOptions()
 {
     Query query;
-    query.addType("File");
-    query.addCustomOption("includeFolders", "/home/vishesh/");
-    query.addCustomOption("op1", 5);
+    query.addType(QLatin1String("File"));
+    query.addCustomOption(QLatin1String("includeFolders"), QLatin1String("/home/vishesh/"));
+    query.addCustomOption(QLatin1String("op1"), 5);
 
     QByteArray json = query.toJSON();
     Query q = Query::fromJSON(json);
 
     QVariantMap options = q.customOptions();
     QCOMPARE(options.size(), 2);
-    QCOMPARE(options.value("includeFolders"), QVariant("/home/vishesh/"));
-    QCOMPARE(options.value("op1"), QVariant(5));
+    QCOMPARE(options.value(QLatin1String("includeFolders")), QVariant(QLatin1String("/home/vishesh/")));
+    QCOMPARE(options.value(QLatin1String("op1")), QVariant(5));
 
     QCOMPARE(query, q);
 }

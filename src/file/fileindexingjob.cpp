@@ -71,7 +71,7 @@ void FileIndexingJob::start(const QVector<uint>& files)
         args << QString::number(file);
 
     if (!m_customDbPath.isEmpty()) {
-        args << "--db" << m_customDbPath;
+        args << QLatin1String("--db") << m_customDbPath;
     }
     qDebug() << args;
 

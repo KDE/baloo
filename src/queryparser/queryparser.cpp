@@ -238,7 +238,7 @@ QStringList QueryParser::Private::split(const QString &query, bool is_user_query
 
                 part.append(c);
             }
-        } else if (c == '"') {
+        } else if (c == QLatin1Char('"')) {
             between_quotes = !between_quotes;
         } else {
             if (is_user_query && part.length() == 1 && separators.contains(part.at(0))) {
@@ -256,7 +256,7 @@ QStringList QueryParser::Private::split(const QString &query, bool is_user_query
         }
     }
 
-    if (part.size() > 0) {
+    if (!part.isEmpty()) {
         parts.append(part);
     }
 
@@ -266,17 +266,17 @@ QStringList QueryParser::Private::split(const QString &query, bool is_user_query
 void QueryParser::Private::runPasses(int cursor_position, QueryParser::ParserFlags flags)
 {
     // Prepare literal values
-    runPass(pass_splitunits, cursor_position, "%1");
-    runPass(pass_numbers, cursor_position, "%1");
-    runPass(pass_filesize, cursor_position, "%1 %2");
-    runPass(pass_typehints, cursor_position, "%1");
+    runPass(pass_splitunits, cursor_position, QLatin1String("%1"));
+    runPass(pass_numbers, cursor_position, QLatin1String("%1"));
+    runPass(pass_filesize, cursor_position, QLatin1String("%1 %2"));
+    runPass(pass_typehints, cursor_position, QLatin1String("%1"));
 
     if (flags & DetectFilenamePattern) {
-        runPass(pass_filenames, cursor_position, "%1");
+        runPass(pass_filenames, cursor_position, QLatin1String("%1"));
     }
 
     // Date-time periods
-    runPass(pass_periodnames, cursor_position, "%1");
+    runPass(pass_periodnames, cursor_position, QLatin1String("%1"));
 
     pass_dateperiods.setKind(PassDatePeriods::VariablePeriod, PassDatePeriods::Offset);
     runPass(pass_dateperiods, cursor_position,
@@ -573,7 +573,7 @@ Term QueryParser::Private::tuneTerm(Term term, Query &query)
         switch (value.type())
         {
         case QVariant::String:
-            query.setSearchString(query.searchString() + value.toString() + ' ');
+            query.setSearchString(query.searchString() + value.toString() + QLatin1Char(' '));
 
             // The term is not needed anymore
             term = Term();

@@ -48,26 +48,26 @@
 
 namespace {
     QString dbPath(const QString& dbName) {
-        QString basePath = "baloo";
+        QString basePath = QLatin1String("baloo");
         if (Akonadi::ServerManager::hasInstanceIdentifier()) {
             basePath = QString::fromLatin1("baloo/instances/%1").arg(Akonadi::ServerManager::instanceIdentifier());
         }
         return KGlobal::dirs()->localxdgdatadir() + QString::fromLatin1("%1/%2/").arg(basePath, dbName);
     }
     QString emailIndexingPath() {
-        return dbPath("email");
+        return dbPath(QLatin1String("email"));
     }
     QString contactIndexingPath() {
-        return dbPath("contacts");
+        return dbPath(QLatin1String("contacts"));
     }
     QString emailContactsIndexingPath() {
-        return dbPath("emailContacts");
+        return dbPath(QLatin1String("emailContacts"));
     }
     QString akonotesIndexingPath() {
-        return dbPath("notes");
+        return dbPath(QLatin1String("notes"));
     }
     QString calendarIndexingPath() {
-        return dbPath("calendars");
+        return dbPath(QLatin1String("calendars"));
     }
 }
 
@@ -81,7 +81,7 @@ BalooIndexingAgent::BalooIndexingAgent(const QString& id)
     lowerSchedulingPriority();
     lowerPriority();
 
-    KConfig config("baloorc");
+    KConfig config(QLatin1String("baloorc"));
     KConfigGroup group = config.group("Akonadi");
     const int agentIndexingVersion = group.readEntry("agentIndexingVersion", 0);
     if (agentIndexingVersion<INDEXING_AGENT_VERSION) {
@@ -126,7 +126,7 @@ BalooIndexingAgent::BalooIndexingAgent(const QString& id)
     // Cleanup agentsrc after migration to 4.13
     Akonadi::AgentManager* agentManager = Akonadi::AgentManager::self();
     const Akonadi::AgentInstance::List allAgents = agentManager->instances();
-    const QStringList oldFeeders = QStringList() << "akonadi_nepomuk_feeder";
+    const QStringList oldFeeders = QStringList() << QLatin1String("akonadi_nepomuk_feeder");
     // Cannot use agentManager->instance(oldInstanceName) here, it wouldn't find broken instances.
     Q_FOREACH( const Akonadi::AgentInstance& inst, allAgents ) {
         if ( oldFeeders.contains( inst.identifier() ) ) {
@@ -184,6 +184,9 @@ void BalooIndexingAgent::createIndexers()
     catch (const Xapian::DatabaseError &e) {
         delete indexer;
         qWarning() << "Failed to create email indexer:" << QString::fromStdString(e.get_msg());
+    } catch (...) {
+        delete indexer;
+        kError() << "Random exception, but we do not want to crash";
     }
 
     try {
@@ -194,7 +197,11 @@ void BalooIndexingAgent::createIndexers()
     catch (const Xapian::DatabaseError &e) {
         delete indexer;
         qWarning() << "Failed to create contact indexer:" << QString::fromStdString(e.get_msg());
+    } catch (...) {
+        delete indexer;
+        kError() << "Random exception, but we do not want to crash";
     }
+
 
     try {
         QDir().mkpath(akonotesIndexingPath());
@@ -204,6 +211,9 @@ void BalooIndexingAgent::createIndexers()
     catch (const Xapian::DatabaseError &e) {
         delete indexer;
         qWarning() << "Failed to create akonotes indexer:" << QString::fromStdString(e.get_msg());
+    } catch (...) {
+        delete indexer;
+        kError() << "Random exception, but we do not want to crash";
     }
 
     try {
@@ -214,6 +224,9 @@ void BalooIndexingAgent::createIndexers()
     catch (const Xapian::DatabaseError &e) {
         delete indexer;
         kError() << "Failed to create akonotes indexer:" << QString::fromStdString(e.get_msg());
+    } catch (...) {
+        delete indexer;
+        kError() << "Random exception, but we do not want to crash";
     }
 }
 
@@ -243,7 +256,7 @@ QList<AbstractIndexer*> BalooIndexingAgent::indexersForCollection(const Akonadi:
 
 QDateTime BalooIndexingAgent::loadLastItemMTime(const QDateTime &defaultDt) const
 {
-    KConfig config("baloorc");
+    KConfig config(QLatin1String("baloorc"));
     KConfigGroup group = config.group("Akonadi");
     const QDateTime dt = group.readEntry("lastItem", defaultDt);
     //read entry always reads in the local timezone it seems
@@ -426,7 +439,7 @@ void BalooIndexingAgent::processNext()
 
 void BalooIndexingAgent::slotItemsReceived(const Akonadi::Item::List& items)
 {
-    KConfig config("baloorc");
+    KConfig config(QLatin1String("baloorc"));
     KConfigGroup group = config.group("Akonadi");
 
     const bool initialDone = group.readEntry("initialIndexingDone", false);
@@ -458,7 +471,7 @@ void BalooIndexingAgent::slotItemFetchFinished(KJob* job)
     m_jobs.removeOne(job);
     percent((float(totalJobs - m_jobs.count()) / float(totalJobs)) * 100);
     if (m_jobs.isEmpty()) {
-        KConfig config("baloorc");
+        KConfig config(QLatin1String("baloorc"));
         KConfigGroup group = config.group("Akonadi");
         group.writeEntry("initialIndexingDone", true);
         group.writeEntry("agentIndexingVersion", INDEXING_AGENT_VERSION);

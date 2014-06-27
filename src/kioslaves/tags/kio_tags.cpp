@@ -99,8 +99,8 @@ void TagsProtocol::listDir(const QUrl& url)
 
     case TagUrl: {
         Query q;
-        q.addType("File");
-        q.setTerm(Term("tag", tag));
+        q.addType(QLatin1String("File"));
+        q.setTerm(Term(QLatin1String("tag"), tag));
 
         ResultIterator it = q.exec();
         while (it.next()) {
@@ -347,7 +347,7 @@ void TagsProtocol::mimetype(const QUrl& url)
 
     case RootUrl:
     case TagUrl:
-        mimeType("inode/directory");
+        mimeType(QLatin1String("inode/directory"));
         finished();
         return;
 

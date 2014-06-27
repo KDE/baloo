@@ -66,7 +66,7 @@ uint MetadataMoverTest::insertUrl(const QString& url)
 
 void MetadataMoverTest::testRemoveFile()
 {
-    const QString url("/home/vishesh/t");
+    const QString url(QLatin1String("/home/vishesh/t"));
     uint fid = insertUrl(url);
 
     MetadataMover mover(m_db, this);
@@ -79,7 +79,7 @@ void MetadataMoverTest::testRemoveFile()
     QCOMPARE(spy.at(0).first().toUInt(), fid);
 
     QSqlQuery query(m_db->sqlDatabase());
-    query.prepare("select count(*) from files;");
+    query.prepare(QLatin1String("select count(*) from files;"));
     QVERIFY(query.exec());
     QVERIFY(query.next());
     QCOMPARE(query.value(0).toInt(), 0);
@@ -87,12 +87,12 @@ void MetadataMoverTest::testRemoveFile()
 
 void MetadataMoverTest::testMoveFile()
 {
-    const QString url("/home/vishesh/t");
+    const QString url(QLatin1String("/home/vishesh/t"));
     uint fid = insertUrl(url);
 
     MetadataMover mover(m_db, this);
 
-    const QString newUrl("/home/vishesh/p");
+    const QString newUrl(QLatin1String("/home/vishesh/p"));
     mover.moveFileMetadata(url, newUrl);
 
     QEventLoop loop;
@@ -100,13 +100,13 @@ void MetadataMoverTest::testMoveFile()
     loop.exec();
 
     QSqlQuery query(m_db->sqlDatabase());
-    query.prepare("select count(*) from files;");
+    query.prepare(QLatin1String("select count(*) from files;"));
     QVERIFY(query.exec());
     QVERIFY(query.next());
     QCOMPARE(query.value(0).toInt(), 1);
     QVERIFY(!query.next());
 
-    query.prepare("select url from files where id = ?;");
+    query.prepare(QLatin1String("select url from files where id = ?;"));
     query.addBindValue(fid);
 
     QVERIFY(query.exec());
@@ -117,26 +117,26 @@ void MetadataMoverTest::testMoveFile()
 
 void MetadataMoverTest::testMoveFolder()
 {
-    const QString folderUrl(m_tempDir->path() + "/folder");
+    const QString folderUrl(m_tempDir->path() + QLatin1String("/folder"));
     uint folId = insertUrl(folderUrl);
 
     // The directory needs to be created because moveFileMetadata checks if it is
     // a directory in order to do the more complicated sql query to rename the
     // files in that folder
     QDir dir(m_tempDir->path());
-    dir.mkdir("folder");
+    dir.mkdir(QLatin1String("folder"));
     QVERIFY(QDir(folderUrl).exists());
 
-    const QString fileUrl1(folderUrl + "/1");
+    const QString fileUrl1(folderUrl + QLatin1String("/1"));
     uint fid1 = insertUrl(fileUrl1);
 
-    const QString fileUrl2(folderUrl + "/2");
+    const QString fileUrl2(folderUrl + QLatin1String("/2"));
     uint fid2 = insertUrl(fileUrl2);
 
     MetadataMover mover(m_db, this);
 
-    const QString newFolderUrl(m_tempDir->path() + "/p");
-    dir.rename("folder", "p");
+    const QString newFolderUrl(m_tempDir->path() + QLatin1String("/p"));
+    dir.rename(QLatin1String("folder"), QLatin1String("p"));
     mover.moveFileMetadata(folderUrl, newFolderUrl);
 
     QEventLoop loop;
@@ -144,13 +144,13 @@ void MetadataMoverTest::testMoveFolder()
     loop.exec();
 
     QSqlQuery query(m_db->sqlDatabase());
-    query.prepare("select count(*) from files;");
+    query.prepare(QLatin1String("select count(*) from files;"));
     QVERIFY(query.exec());
     QVERIFY(query.next());
     QCOMPARE(query.value(0).toInt(), 3);
     QVERIFY(!query.next());
 
-    query.prepare("select url from files where id = ?;");
+    query.prepare(QLatin1String("select url from files where id = ?;"));
     query.addBindValue(folId);
 
     QVERIFY(query.exec());
@@ -158,20 +158,20 @@ void MetadataMoverTest::testMoveFolder()
     QCOMPARE(query.value(0).toString(), newFolderUrl);
     QVERIFY(!query.next());
 
-    query.prepare("select url from files where id = ?;");
+    query.prepare(QLatin1String("select url from files where id = ?;"));
     query.addBindValue(fid1);
 
     QVERIFY(query.exec());
     QVERIFY(query.next());
-    QCOMPARE(query.value(0).toString(), newFolderUrl + "/1");
+    QCOMPARE(query.value(0).toString(), QString(newFolderUrl + QLatin1String("/1")));
     QVERIFY(!query.next());
 
-    query.prepare("select url from files where id = ?;");
+    query.prepare(QLatin1String("select url from files where id = ?;"));
     query.addBindValue(fid2);
 
     QVERIFY(query.exec());
     QVERIFY(query.next());
-    QCOMPARE(query.value(0).toString(), newFolderUrl + "/2");
+    QCOMPARE(query.value(0).toString(), QString(newFolderUrl + QLatin1String("/2")));
     QVERIFY(!query.next());
 }
 

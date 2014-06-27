@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
     QCoreApplication app(argc, argv);
 
     QCommandLineParser parser;
-    parser.addPositionalArgument("url", QString());
+    parser.addPositionalArgument(QLatin1String("url"), QString());
     parser.addHelpOption();
 
     parser.process(app);
@@ -53,8 +53,8 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    QStringList failFiles = QString::fromUtf8(failArr).split(",", QString::SkipEmptyParts);
-    QStringList timeoutFiles = QString::fromUtf8(timeoutArr).split(",", QString::SkipEmptyParts);
+    QStringList failFiles = QString::fromUtf8(failArr).split(QLatin1String(","), QString::SkipEmptyParts);
+    QStringList timeoutFiles = QString::fromUtf8(timeoutArr).split(QLatin1String(","), QString::SkipEmptyParts);
 
     Q_FOREACH (const QString& fid, args) {
         if (failFiles.contains(fid)) {

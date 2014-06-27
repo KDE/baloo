@@ -51,7 +51,7 @@ FileMonitor::~FileMonitor()
 void FileMonitor::addFile(const QString& fileUrl)
 {
     QString f = fileUrl;
-    if (f.endsWith('/'))
+    if (f.endsWith(QLatin1Char('/')))
         f = f.mid(0, f.length()-1);
 
     d->m_files.insert(f);
@@ -59,7 +59,7 @@ void FileMonitor::addFile(const QString& fileUrl)
 
 void FileMonitor::addFile(const QUrl& url)
 {
-    QString localFile = url.toLocalFile();
+    const QString localFile = url.toLocalFile();
     if (localFile.size())
         addFile(localFile);
 }

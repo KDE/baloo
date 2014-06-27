@@ -127,7 +127,7 @@ void App::processNextUrl()
     // have trouble processing them
     //
     if (mimetype == QLatin1String("text/plain")) {
-        if (!url.endsWith(".txt")) {
+        if (!url.endsWith(QLatin1String(".txt"))) {
             qDebug() << "text/plain does not end with .txt. Ignoring";
             mimetype.clear();
         }
@@ -213,7 +213,7 @@ void App::saveChanges()
     m_updatedFiles.clear();
 
     XapianDatabase xapDb(m_path);
-    for (int i = 0; i<m_results.size(); i++) {
+    for (int i = 0; i<m_results.size(); ++i) {
         Result& res = m_results[i];
         res.finish();
 
@@ -228,10 +228,6 @@ void App::saveChanges()
     xapDb.commit();
     m_db.sqlDatabase().commit();
 
-    m_results.clear();
-    m_termCount = 0;
-    m_updatedFiles.clear();
-
     QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/files"),
                                                       QLatin1String("org.kde"),
                                                       QLatin1String("changed"));
@@ -242,6 +238,10 @@ void App::saveChanges()
     message.setArguments(vl);
 
     QDBusConnection::sessionBus().send(message);
+
+    m_results.clear();
+    m_termCount = 0;
+    m_updatedFiles.clear();
 
     if (m_debugEnabled) {
         printDebug();
@@ -267,7 +267,7 @@ void App::printDebug()
     }
 
     // Print the io usage
-    QFile file("/proc/self/io");
+    QFile file(QLatin1String("/proc/self/io"));
     file.open(QIODevice::ReadOnly | QIODevice::Text);
 
     QTextStream fs(&file);
@@ -278,25 +278,25 @@ void App::printDebug()
     while (!stream.atEnd()) {
         QString str = stream.readLine();
 
-        QString rchar("rchar: ");
+        QString rchar(QLatin1String("rchar: "));
         if (str.startsWith(rchar)) {
             ulong amt = str.mid(rchar.size()).toULong();
             qDebug() << "Read:" << amt / 1024  << "kb";
         }
 
-        QString wchar("wchar: ");
+        QString wchar(QLatin1String("wchar: "));
         if (str.startsWith(wchar)) {
             ulong amt = str.mid(wchar.size()).toULong();
             qDebug() << "Write:" << amt / 1024  << "kb";
         }
 
-        QString read("read_bytes: ");
+        QString read(QLatin1String("read_bytes: "));
         if (str.startsWith(read)) {
             ulong amt = str.mid(read.size()).toULong();
             qDebug() << "Actual Reads:" << amt / 1024  << "kb";
         }
 
-        QString write("write_bytes: ");
+        QString write(QLatin1String("write_bytes: "));
         if (str.startsWith(write)) {
             ulong amt = str.mid(write.size()).toULong();
             qDebug() << "Actual Writes:" << amt / 1024  << "kb";

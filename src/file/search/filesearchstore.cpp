@@ -43,15 +43,15 @@ FileSearchStore::FileSearchStore(QObject* parent)
     : XapianSearchStore(parent)
     , m_sqlMutex(QMutex::Recursive)
 {
-    const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/baloo/file/";
+    const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/file/");
     setDbPath(path);
 
-    m_prefixes.insert("filename", "F");
-    m_prefixes.insert("mimetype", "M");
-    m_prefixes.insert("rating", "R");
-    m_prefixes.insert("tag", "TA");
-    m_prefixes.insert("tags", "TA");
-    m_prefixes.insert("usercomment", "C");
+    m_prefixes.insert(QLatin1String("filename"), "F");
+    m_prefixes.insert(QLatin1String("mimetype"), "M");
+    m_prefixes.insert(QLatin1String("rating"), "R");
+    m_prefixes.insert(QLatin1String("tag"), "TA");
+    m_prefixes.insert(QLatin1String("tags"), "TA");
+    m_prefixes.insert(QLatin1String("usercomment"), "C");
 }
 
 FileSearchStore::~FileSearchStore()
@@ -67,24 +67,24 @@ void FileSearchStore::setDbPath(const QString& path)
 {
     XapianSearchStore::setDbPath(path);
 
-    const QString conName = "filesearchstore" + QString::number(qrand());
+    const QString conName = QLatin1String("filesearchstore") + QString::number(qrand());
 
-    m_sqlDb = QSqlDatabase::addDatabase("QSQLITE", conName);
-    m_sqlDb.setDatabaseName(dbPath() + "/fileMap.sqlite3");
+    m_sqlDb = QSqlDatabase::addDatabase(QLatin1String("QSQLITE"), conName);
+    m_sqlDb.setDatabaseName(dbPath() + QLatin1String("/fileMap.sqlite3"));
     m_sqlDb.open();
 }
 
 QStringList FileSearchStore::types()
 {
-    return QStringList() << "File" << "Audio" << "Video" << "Document" << "Image" << "Archive" << "Folder";
+    return QStringList() << QLatin1String("File") << QLatin1String("Audio") << QLatin1String("Video") << QLatin1String("Document") << QLatin1String("Image") << QLatin1String("Archive") << QLatin1String("Folder");
 }
 
 Xapian::Query FileSearchStore::convertTypes(const QStringList& types)
 {
     Xapian::Query xapQ;
     Q_FOREACH (const QString& type, types) {
-        QString t = 'T' + type.toLower();
-        if (t == "Tfile")
+        const QString t = QLatin1Char('T') + type.toLower();
+        if (t == QLatin1String("Tfile"))
             continue;
 
         const QByteArray arr = t.toUtf8();
@@ -111,7 +111,7 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
             if (com == Term::Greater)
                 val++;
 
-            for (int i=val; i<=10; i++) {
+            for (int i=val; i<=10; ++i) {
                 QByteArray arr = 'R' + QByteArray::number(i);
                 terms << arr.constData();
             }
@@ -120,7 +120,7 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
             if (com == Term::Less)
                 val--;
 
-            for (int i=1; i<=val; i++) {
+            for (int i=1; i<=val; ++i) {
                 QByteArray arr = 'R' + QByteArray::number(i);
                 terms << arr.constData();
             }
@@ -145,7 +145,7 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
         else {
             KFileMetaData::PropertyInfo pi = KFileMetaData::PropertyInfo::fromName(property);
             int propPrefix = static_cast<int>(pi.property());
-            p = ('X' + QString::number(propPrefix)).toUtf8().constData();
+            p = QString(QLatin1Char('X') + QString::number(propPrefix)).toUtf8().constData();
         }
 
         const QByteArray arr = value.toString().toUtf8();
@@ -153,7 +153,7 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
         return parser.parse_query(arr.constData(), flags, p);
     }
 
-    if ((property.compare("modified", Qt::CaseInsensitive) == 0)
+    if ((property.compare(QLatin1String("modified"), Qt::CaseInsensitive) == 0)
         && (com == Term::Equal || com == Term::Greater ||
             com == Term::GreaterEqual || com == Term::Less || com == Term::LessEqual))
     {
@@ -231,7 +231,7 @@ QString FileSearchStore::icon(int queryId)
 
 Xapian::Query FileSearchStore::applyCustomOptions(const Xapian::Query& q, const QVariantMap& options)
 {
-    QMap<QString, QVariant>::const_iterator it = options.constFind("includeFolder");
+    QMap<QString, QVariant>::const_iterator it = options.constFind(QLatin1String("includeFolder"));
     if (it == options.constEnd()) {
         return q;
     }

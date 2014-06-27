@@ -33,8 +33,8 @@ PathFilterPostingSource::PathFilterPostingSource(QSqlDatabase* sqlDb, const QStr
     , m_includeDir(includeDir)
     , m_first(false)
 {
-    if (!m_includeDir.endsWith('/'))
-        m_includeDir.append('/');
+    if (!m_includeDir.endsWith(QLatin1Char('/')))
+        m_includeDir.append(QLatin1Char('/'));
 }
 
 PathFilterPostingSource::~PathFilterPostingSource()

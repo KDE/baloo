@@ -80,7 +80,7 @@ Baloo::TimelineFolderType Baloo::parseTimelineUrl(const QUrl& url, QDate* date, 
     *date = QDate();
 
     QString path = url.path();
-    if (path.endsWith('/'))
+    if (path.endsWith(QLatin1Char('/')))
         path = path.mid(0, path.length()-1);
 
     if (path.isEmpty() || path == QLatin1String("/")) {
@@ -125,7 +125,7 @@ Baloo::TimelineFolderType Baloo::parseTimelineUrl(const QUrl& url, QDate* date, 
                 map.insert(pair.first, pair.second);
             }
 
-            *date = applyRelativeDateModificators(QDate::fromString(dateString, "yyyy-MM-dd"), map);
+            *date = applyRelativeDateModificators(QDate::fromString(dateString, QLatin1String("yyyy-MM-dd")), map);
             // only in day folders we can have filenames
             qDebug() << url << "is day folder:" << *date;
             if (date->isValid())

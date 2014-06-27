@@ -30,19 +30,46 @@
 
 
 EmailIndexer::EmailIndexer(const QString& path, const QString& contactDbPath):
-    AbstractIndexer(), m_doc( 0 ), m_termGen( 0 )
+    AbstractIndexer(), m_doc( 0 ), m_termGen( 0 ), m_contactDb( 0 )
 {
-    m_db = new Xapian::WritableDatabase(path.toUtf8().constData(), Xapian::DB_CREATE_OR_OPEN);
-    m_contactDb = new Xapian::WritableDatabase(contactDbPath.toUtf8().constData(), Xapian::DB_CREATE_OR_OPEN);
+    try {
+        m_db = new Xapian::WritableDatabase(path.toUtf8().constData(), Xapian::DB_CREATE_OR_OPEN);
+    }
+    catch (const Xapian::DatabaseCorruptError& err) {
+        kError() << "Database Corrupted - What did you do?";
+        kError() << err.get_error_string();
+        m_db = 0;
+    }
+    catch (const Xapian::Error &e) {
+        kError() << QString::fromStdString(e.get_type()) << QString::fromStdString(e.get_description());
+        m_db = 0;
+    }
+
+    try {
+        m_contactDb = new Xapian::WritableDatabase(contactDbPath.toUtf8().constData(), Xapian::DB_CREATE_OR_OPEN);
+    }
+    catch (const Xapian::DatabaseCorruptError& err) {
+        kError() << "Database Corrupted - What did you do?";
+        kError() << err.get_error_string();
+        m_contactDb = 0;
+    }
+    catch (const Xapian::Error &e) {
+        kError() << QString::fromStdString(e.get_type()) << QString::fromStdString(e.get_description());
+        m_contactDb = 0;
+    }
 }
 
 EmailIndexer::~EmailIndexer()
 {
-    m_db->commit();
-    delete m_db;
+    if (m_db) {
+        m_db->commit();
+        delete m_db;
+    }
 
-    m_contactDb->commit();
-    delete m_contactDb;
+    if (m_contactDb) {
+        m_contactDb->commit();
+        delete m_contactDb;
+    }
 }
 
 QStringList EmailIndexer::mimeTypes() const
@@ -52,6 +79,8 @@ QStringList EmailIndexer::mimeTypes() const
 
 void EmailIndexer::index(const Akonadi::Item& item)
 {
+    if (!m_db)
+        return;
     Akonadi::MessageStatus status;
     status.setStatusFromFlags(item.flags());
     if (status.isSpam())
@@ -126,6 +155,8 @@ namespace {
 // Add once with a prefix and once without
 void EmailIndexer::insert(const QByteArray& key, const KMime::Types::Mailbox::List& list)
 {
+    if (!m_contactDb)
+        return;
     Q_FOREACH (const KMime::Types::Mailbox& mbox, list) {
         std::string name(mbox.name().toUtf8().constData());
         m_termGen->index_text_without_positions(name, 1, key.data());
@@ -133,7 +164,7 @@ void EmailIndexer::insert(const QByteArray& key, const KMime::Types::Mailbox::Li
         m_termGen->index_text_without_positions(mbox.address().data(), 1, key.data());
         m_termGen->index_text_without_positions(mbox.address().data(), 1);
 
-        m_doc->add_term((key + mbox.address()).data());
+        m_doc->add_term(QByteArray(key + mbox.address()).data());
         m_doc->add_term(mbox.address().data());
 
         //
@@ -293,6 +324,8 @@ void EmailIndexer::updateFlags(const Akonadi::Item& item,
                                const QSet<QByteArray>& added,
                                const QSet<QByteArray>& removed)
 {
+    if (!m_db)
+        return;
     Xapian::Document doc;
     try {
         doc = m_db->get_document(item.id());
@@ -330,6 +363,8 @@ void EmailIndexer::updateFlags(const Akonadi::Item& item,
 
 void EmailIndexer::remove(const Akonadi::Item& item)
 {
+    if (!m_db)
+        return;
     try {
         m_db->delete_document(item.id());
         //TODO remove contacts from contact db?
@@ -341,6 +376,8 @@ void EmailIndexer::remove(const Akonadi::Item& item)
 
 void EmailIndexer::remove(const Akonadi::Collection& collection)
 {
+    if (!m_db)
+        return;
     try {
         Xapian::Query query('C'+ QString::number(collection.id()).toStdString());
         Xapian::Enquire enquire(*m_db);
@@ -362,6 +399,8 @@ void EmailIndexer::move(const Akonadi::Item::Id& itemId,
                         const Akonadi::Entity::Id& from,
                         const Akonadi::Entity::Id& to)
 {
+    if (!m_db)
+        return;
     Xapian::Document doc;
     try {
         doc = m_db->get_document(itemId);
@@ -381,6 +420,8 @@ void EmailIndexer::move(const Akonadi::Item::Id& itemId,
 
 void EmailIndexer::commit()
 {
-    m_db->commit();
-    m_contactDb->commit();
+    if (m_db)
+        m_db->commit();
+    if (m_contactDb)
+        m_contactDb->commit();
 }

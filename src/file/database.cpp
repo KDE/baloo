@@ -59,8 +59,8 @@ bool Database::init(bool sqlOnly)
         m_xapianDb = new Baloo::XapianDatabase(m_path);
     }
 
-    m_sqlDb = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE"));
-    m_sqlDb->setDatabaseName(m_path + "/fileMap.sqlite3");
+    m_sqlDb = new QSqlDatabase(QSqlDatabase::addDatabase(QLatin1String("QSQLITE")));
+    m_sqlDb->setDatabaseName(m_path + QLatin1String("/fileMap.sqlite3"));
 
     if (!m_sqlDb->open()) {
         qDebug() << "Failed to open db" << m_sqlDb->lastError().text();
@@ -68,20 +68,20 @@ bool Database::init(bool sqlOnly)
     }
 
     const QStringList tables = m_sqlDb->tables();
-    if (tables.contains("files")) {
+    if (tables.contains(QLatin1String("files"))) {
         return true;
     }
 
     QSqlQuery query(*m_sqlDb);
-    bool ret = query.exec("CREATE TABLE files("
+    bool ret = query.exec(QLatin1String("CREATE TABLE files("
                           "id INTEGER PRIMARY KEY, "
-                          "url TEXT NOT NULL UNIQUE)");
+                          "url TEXT NOT NULL UNIQUE)"));
     if (!ret) {
         qDebug() << "Could not create tags table" << query.lastError().text();
         return false;
     }
 
-    ret = query.exec("CREATE INDEX fileUrl_index ON files (url)");
+    ret = query.exec(QLatin1String("CREATE INDEX fileUrl_index ON files (url)"));
     if (!ret) {
         qDebug() << "Could not create tags index" << query.lastError().text();
         return false;
@@ -91,7 +91,7 @@ bool Database::init(bool sqlOnly)
     // WAL Journaling mode has much lower io writes than the traditional journal
     // based indexing.
     //
-    ret = query.exec("PRAGMA journal_mode = WAL");
+    ret = query.exec(QLatin1String("PRAGMA journal_mode = WAL"));
     if (!ret) {
         qDebug() << "Could not set WAL journaling mode" << query.lastError().text();
         return false;
@@ -109,8 +109,8 @@ QString Database::path()
 void Database::setPath(const QString& path)
 {
     m_path = path;
-    if (!m_path.endsWith('/'))
-        m_path.append('/');
+    if (!m_path.endsWith(QLatin1Char('/')))
+        m_path.append(QLatin1Char('/'));
 }
 
 bool Database::isInitialized()

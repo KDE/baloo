@@ -66,7 +66,7 @@ int main(int argc, char** argv)
 
 App::App(int& argc, char** argv, int flags)
     : QApplication(argc, argv, flags)
-    , m_indexer("/tmp/xap", "/tmp/xapC")
+    , m_indexer(QLatin1String("/tmp/xap"), QLatin1String("/tmp/xapC"))
 {
     QTimer::singleShot(0, this, SLOT(main()));
 }
@@ -96,7 +96,7 @@ void App::slotRootCollectionsFetched(KJob* kjob)
     while (it.hasNext()) {
         const Akonadi::Collection& c = it.next();
         const QStringList mimeTypes = c.contentMimeTypes();
-        if (!c.contentMimeTypes().contains("message/rfc822"))
+        if (!c.contentMimeTypes().contains(QLatin1String("message/rfc822")))
             it.remove();
     }
 
@@ -161,7 +161,7 @@ void App::slotIndexed()
     qDebug() << "Index Time:" << m_indexTime/1000.0 << " seconds";
 
     // Print the io usage
-    QFile file("/proc/self/io");
+    QFile file(QLatin1String("/proc/self/io"));
     file.open(QIODevice::ReadOnly | QIODevice::Text);
 
     QTextStream fs(&file);
@@ -172,25 +172,25 @@ void App::slotIndexed()
     while (!stream.atEnd()) {
         QString str = stream.readLine();
 
-        QString rchar("rchar: ");
+        QString rchar(QLatin1String("rchar: "));
         if (str.startsWith(rchar)) {
             ulong amt = str.mid(rchar.size()).toULong();
             qDebug() << "Read:" << amt / 1024  << "kb";
         }
 
-        QString wchar("wchar: ");
+        QString wchar(QLatin1String("wchar: "));
         if (str.startsWith(wchar)) {
             ulong amt = str.mid(wchar.size()).toULong();
             qDebug() << "Write:" << amt / 1024  << "kb";
         }
 
-        QString read("read_bytes: ");
+        QString read(QLatin1String("read_bytes: "));
         if (str.startsWith(read)) {
             ulong amt = str.mid(read.size()).toULong();
             qDebug() << "Actual Reads:" << amt / 1024  << "kb";
         }
 
-        QString write("write_bytes: ");
+        QString write(QLatin1String("write_bytes: "));
         if (str.startsWith(write)) {
             ulong amt = str.mid(write.size()).toULong();
             qDebug() << "Actual Writes:" << amt / 1024  << "kb";

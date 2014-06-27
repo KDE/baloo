@@ -51,7 +51,7 @@ bool ResultIterator::next()
         return (d->m_iter != d->m_end);
     }
 
-    d->m_iter++;
+    ++d->m_iter;
     return (d->m_iter != d->m_end);
 }
 

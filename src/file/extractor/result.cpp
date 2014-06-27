@@ -46,7 +46,7 @@ void Result::add(KFileMetaData::Property::Property property, const QVariant& val
     QString p = QString::number(static_cast<int>(property));
     m_map.insertMulti(p, value);
 
-    QString prefix = QLatin1String("X") + p;
+    QString prefix = QLatin1Char('X') + p;
 
     if (value.type() == QVariant::Bool) {
         m_doc.add_boolean_term(prefix.toUtf8().constData());
@@ -81,7 +81,7 @@ void Result::append(const QString& text)
 void Result::addType(KFileMetaData::Type::Type type)
 {
     KFileMetaData::TypeInfo ti(type);
-    QString t = 'T' + ti.name().toLower();
+    const QString t = QLatin1Char('T') + ti.name().toLower();
     m_doc.add_boolean_term(t.toUtf8().constData());
 }
 

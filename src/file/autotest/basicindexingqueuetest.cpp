@@ -48,11 +48,11 @@ void BasicIndexingQueueTest::testSimpleDirectoryStructure()
     QScopedPointer<QTemporaryDir> dir(Test::createTmpFilesAndFolders(dirs));
 
     QStringList includeFolders;
-    includeFolders << dir->path() + "/home";
+    includeFolders << dir->path() + QLatin1String("/home");
     qDebug() << includeFolders;
 
     QStringList excludeFolders;
-    excludeFolders << dir->path() + "/home/kde";
+    excludeFolders << dir->path() + QLatin1String("/home/kde");
 
     Test::writeIndexerConfig(includeFolders, excludeFolders);
 
@@ -69,7 +69,7 @@ void BasicIndexingQueueTest::testSimpleDirectoryStructure()
     QSignalSpy spyStarted(&queue, SIGNAL(startedIndexing()));
     QSignalSpy spyFinished(&queue, SIGNAL(finishedIndexing()));
 
-    queue.enqueue(FileMapping(dir->path() + "/home"));
+    queue.enqueue(FileMapping(dir->path() + QLatin1String("/home")));
 
     QEventLoop loop;
     connect(&queue, SIGNAL(finishedIndexing()), &loop, SLOT(quit()));
@@ -93,11 +93,11 @@ void BasicIndexingQueueTest::testSimpleDirectoryStructure()
         urls << fileMap.url();
     }
 
-    QString home = dir->path() + "/home";
+    QString home = dir->path() + QLatin1String("/home");
 
     QStringList expectedUrls;
-    expectedUrls << home << home + "/1" << home + "/2" << home + "/docs"
-                 << home + "/docs/1";
+    expectedUrls << home << home + QLatin1String("/1") << home + QLatin1String("/2") << home + QLatin1String("/docs")
+                 << home + QLatin1String("/docs/1");
 
     QCOMPARE(urls, expectedUrls);
 }

@@ -183,12 +183,21 @@ void EmailQuery::setRead(bool read)
 
 ResultIterator EmailQuery::exec()
 {
-    const QString dir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/baloo/email/";
+    const QString dir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/email/");
     Xapian::Database db;
     try {
         db = Xapian::Database(QFile::encodeName(dir).constData());
+    } catch (const Xapian::DatabaseOpeningError&) {
+        qWarning() << "Xapian Database does not exist at " << dir;
+        return ResultIterator();
+    } catch (const Xapian::DatabaseCorruptError&) {
+        qWarning() << "Xapian Database corrupted";
+        return ResultIterator();
     } catch (const Xapian::DatabaseError& e) {
         qWarning() << "Failed to open Xapian database:" << QString::fromStdString(e.get_error_string());
+        return ResultIterator();
+    } catch (...) {
+        qWarning() << "Random exception, but we do not want to crash";
         return ResultIterator();
     }
 
@@ -301,7 +310,7 @@ ResultIterator EmailQuery::exec()
         parser.set_database(db);
         parser.set_default_op(Xapian::Query::OP_AND);
 
-        const QStringList list = d->matchString.split(QRegExp("\\s"), QString::SkipEmptyParts);
+        const QStringList list = d->matchString.split(QRegExp(QLatin1String("\\s")), QString::SkipEmptyParts);
         Q_FOREACH (const QString& s, list) {
             const QByteArray ba = s.toUtf8();
             m_queries << parser.parse_query(ba.constData(),
@@ -321,15 +330,21 @@ ResultIterator EmailQuery::exec()
     AgePostingSource ps(0);
     query = Xapian::Query(Xapian::Query::OP_AND_MAYBE, query, Xapian::Query(&ps));
 
-    Xapian::Enquire enquire(db);
-    enquire.set_query(query);
+    try {
+        Xapian::Enquire enquire(db);
+        enquire.set_query(query);
 
-    if (d->limit == 0)
-        d->limit = 1000000;
+        if (d->limit == 0)
+            d->limit = 1000000;
 
-    Xapian::MSet mset = enquire.get_mset(0, d->limit);
+        Xapian::MSet mset = enquire.get_mset(0, d->limit);
 
-    ResultIterator iter;
-    iter.d->init(mset);
-    return iter;
+        ResultIterator iter;
+        iter.d->init(mset);
+        return iter;
+    }
+    catch (const Xapian::Error &e) {
+        qWarning() << QString::fromStdString(e.get_type()) << QString::fromStdString(e.get_description());
+        return ResultIterator();
+    }
 }

@@ -53,7 +53,7 @@ void Baloo::setCustomFileMetaData(const QString& url, const QString& key, const 
 
         QSqlDatabase db = fileMetadataDb();
         QSqlQuery q(db);
-        q.prepare("insert or replace into files (id, property, value) VALUES (?, ?, ?)");
+        q.prepare(QLatin1String("insert or replace into files (id, property, value) VALUES (?, ?, ?)"));
         q.addBindValue(fileMap.id());
         q.addBindValue(key);
         q.addBindValue(value);
@@ -80,7 +80,7 @@ QString Baloo::customFileMetaData(const QString& url, const QString& key)
 
         QSqlDatabase db = fileMetadataDb();
         QSqlQuery q(db);
-        q.prepare("select value from files where id = ? and property = ?");
+        q.prepare(QLatin1String("select value from files where id = ? and property = ?"));
         q.addBindValue(fileMap.id());
         q.addBindValue(key);
 

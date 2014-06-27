@@ -50,15 +50,15 @@ void FileFetchJobTest::init()
 
     // Clear the sqlite db
     QSqlDatabase sqlDb = fileMappingDb();
-    sqlDb.exec("delete from files");
+    sqlDb.exec(QLatin1String("delete from files"));
 }
 
 void FileFetchJobTest::testXapianData()
 {
     using namespace KFileMetaData;
     PropertyMap map;
-    map.insert(Property::Album, "value1");
-    map.insert(Property::Artist, "value2");
+    map.insert(Property::Album, QLatin1String("value1"));
+    map.insert(Property::Artist, QLatin1String("value2"));
 
     QJsonObject jo = QJsonObject::fromVariantMap(toVariantMap(map));
     QJsonDocument jdoc;
@@ -114,12 +114,12 @@ void FileFetchJobTest::testExtendedAttributes()
     QVERIFY(baloo_setxattr(fileName, QLatin1String("user.baloo.rating"), rat) != -1);
 
     QStringList tags;
-    tags << "TagA" << "TagB";
+    tags << QLatin1String("TagA") << QLatin1String("TagB");
 
-    QString tagStr = tags.join(",");
+    QString tagStr = tags.join(QLatin1String(","));
     QVERIFY(baloo_setxattr(fileName, QLatin1String("user.xdg.tags"), tagStr) != -1);
 
-    const QString userComment("UserComment");
+    const QString userComment(QLatin1String("UserComment"));
     QVERIFY(baloo_setxattr(fileName, QLatin1String("user.xdg.comment"), userComment) != -1);
 
     FileFetchJob* job = new FileFetchJob(tempFile.fileName());
@@ -151,12 +151,12 @@ void FileFetchJobTest::testFolder()
     QVERIFY(baloo_setxattr(fileName, QLatin1String("user.baloo.rating"), rat) != -1);
 
     QStringList tags;
-    tags << "TagA" << "TagB";
+    tags << QLatin1String("TagA") << QLatin1String("TagB");
 
-    QString tagStr = tags.join(",");
+    QString tagStr = tags.join(QLatin1String(","));
     QVERIFY(baloo_setxattr(fileName, QLatin1String("user.xdg.tags"), tagStr) != -1);
 
-    const QString userComment("UserComment");
+    const QString userComment(QLatin1String("UserComment"));
     QVERIFY(baloo_setxattr(fileName, QLatin1String("user.xdg.comment"), userComment) != -1);
 
     FileFetchJob* job = new FileFetchJob(fileName);

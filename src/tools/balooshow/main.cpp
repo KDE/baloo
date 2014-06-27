@@ -45,19 +45,19 @@ QString colorString(const QString& input, int color)
 
 int main(int argc, char* argv[])
 {
-    KAboutData aboutData("balooshow",
+    KAboutData aboutData(QLatin1String("balooshow"),
                          i18n("Baloo Show"),
-                         "0.1",
+                         QLatin1String("0.1"),
                          i18n("The Baloo data Viewer - A debugging tool"),
                          KAboutLicense::GPL,
                          i18n("(c) 2012, Vishesh Handa"));
-    aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), "me@vhanda.in");
+    aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QLatin1String("me@vhanda.in"));
 
     KAboutData::setApplicationData(aboutData);
     QCoreApplication app(argc, argv);
 
     QCommandLineParser parser;
-    parser.addPositionalArgument("files", "The file urls");
+    parser.addPositionalArgument(QLatin1String("files"), QLatin1String("The file urls"));
     parser.process(app);
 
     QStringList args = parser.positionalArguments();
@@ -85,7 +85,7 @@ int main(int argc, char* argv[])
 
     Q_FOREACH (const QString& url, urls) {
         Baloo::File ifile;
-        if (url.startsWith("file:")) {
+        if (url.startsWith(QLatin1String("file:"))) {
             ifile.setId(url.toUtf8());
         }
         else {
@@ -99,7 +99,7 @@ int main(int argc, char* argv[])
 
         if (fid && !file.url().isEmpty()) {
             text = colorString(QString::number(fid), 31);
-            text += " ";
+            text += QLatin1String(" ");
             text += colorString(file.url(), 32);
             stream << text << endl;
         }
@@ -118,7 +118,7 @@ int main(int argc, char* argv[])
             stream << "\t" << "Rating: " << file.rating() << endl;
 
         if (!file.tags().isEmpty())
-            stream << "\t" << "Tags: " << file.tags().join(", ") << endl;
+            stream << "\t" << "Tags: " << file.tags().join(QLatin1String(", ")) << endl;
 
         if (!file.userComment().isEmpty())
             stream << "\t" << "User Comment: " << file.userComment() << endl;

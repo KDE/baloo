@@ -81,7 +81,7 @@ PassDatePeriods::Period PassDatePeriods::periodFromName(const QString &name) con
 
 QString PassDatePeriods::propertyName(Period period, bool offset)
 {
-    return QString("_k_date_%1_%2")
+    return QString::fromLatin1("_k_date_%1_%2")
         .arg(nameOfPeriod(period))
         .arg(QLatin1String(offset ? "offset" : "value"));
 }

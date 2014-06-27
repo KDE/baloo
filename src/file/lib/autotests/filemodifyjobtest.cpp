@@ -50,7 +50,7 @@ void FileModifyJobTest::testSingleFile()
 
     File file(fileUrl);
     file.setRating(5);
-    file.setUserComment("User Comment");
+    file.setUserComment(QLatin1String("User Comment"));
 
     FileModifyJob* job = new FileModifyJob(file);
     QVERIFY(job->exec());
@@ -66,12 +66,12 @@ void FileModifyJobTest::testSingleFile()
         QVERIFY(len > 0);
         QCOMPARE(value.toInt(), 5);
 
-        len = baloo_getxattr(fileUrl, "user.xdg.tags", &value);
+        len = baloo_getxattr(fileUrl, QLatin1String("user.xdg.tags"), &value);
         QCOMPARE(len, 0);
 
-        len = baloo_getxattr(fileUrl, "user.xdg.comment", &value);
+        len = baloo_getxattr(fileUrl, QLatin1String("user.xdg.comment"), &value);
         QVERIFY(len > 0);
-        QCOMPARE(value, QString("User Comment"));
+        QCOMPARE(value, QLatin1String("User Comment"));
     }
     else {
         qWarning() << "Xattr not supported on this filesystem";
@@ -92,10 +92,10 @@ void FileModifyJobTest::testSingleFile()
     Xapian::TermIterator iter = doc.termlist_begin();
     QCOMPARE(*iter, std::string("Ccomment"));
 
-    iter++;
+    ++iter;
     QCOMPARE(*iter, std::string("Cuser"));
 
-    iter++;
+    ++iter;
     QCOMPARE(*iter, std::string("R5"));
 }
 
@@ -120,11 +120,11 @@ void FileModifyJobTest::testMultiFileRating()
 
     XattrDetector detector;
     if (detector.isSupported(tmpFile1.fileName())) {
-        int len = baloo_getxattr(fileUrl1, "user.baloo.rating", &value);
+        int len = baloo_getxattr(fileUrl1, QLatin1String("user.baloo.rating"), &value);
         QVERIFY(len > 0);
         QCOMPARE(value.toInt(), 5);
 
-        len = baloo_getxattr(fileUrl2, "user.baloo.rating", &value);
+        len = baloo_getxattr(fileUrl2, QLatin1String("user.baloo.rating"), &value);
         QVERIFY(len > 0);
         QCOMPARE(value.toInt(), 5);
     }
@@ -141,7 +141,7 @@ void FileModifyJobTest::testXapianUpdate()
 
     File file(fileUrl);
     file.setRating(4);
-    file.addTag("Round-Tag");
+    file.addTag(QLatin1String("Round-Tag"));
 
     FileModifyJob* job = new FileModifyJob(file);
     QVERIFY(job->exec());
@@ -157,13 +157,13 @@ void FileModifyJobTest::testXapianUpdate()
 
     Xapian::TermIterator iter = doc.termlist_begin();
     QCOMPARE(*iter, std::string("R4"));
-    iter++;
+    ++iter;
     QCOMPARE(*iter, std::string("TAG-Round-Tag"));
-    iter++;
+    ++iter;
     QCOMPARE(*iter, std::string("TAround"));
-    iter++;
+    ++iter;
     QCOMPARE(*iter, std::string("TAtag"));
-    iter++;
+    ++iter;
     QCOMPARE(iter, doc.termlist_end());
 
     // Add another term, and make sure it is not removed
@@ -176,7 +176,7 @@ void FileModifyJobTest::testXapianUpdate()
     }
 
     file.setRating(5);
-    file.setTags(QStringList() << "Square-Tag");
+    file.setTags(QStringList() << QLatin1String("Square-Tag"));
     job = new FileModifyJob(file);
     QVERIFY(job->exec());
 
@@ -185,15 +185,15 @@ void FileModifyJobTest::testXapianUpdate()
 
     iter = doc.termlist_begin();
     QCOMPARE(*iter, std::string("R5"));
-    iter++;
+    ++iter;
     QCOMPARE(*iter, std::string("RATING"));
-    iter++;
+    ++iter;
     QCOMPARE(*iter, std::string("TAG-Square-Tag"));
-    iter++;
+    ++iter;
     QCOMPARE(*iter, std::string("TAsquare"));
-    iter++;
+    ++iter;
     QCOMPARE(*iter, std::string("TAtag"));
-    iter++;
+    ++iter;
     QCOMPARE(iter, doc.termlist_end());
 }
 

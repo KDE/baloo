@@ -144,7 +144,7 @@ namespace {
         const std::string stdString(string.toLower().toUtf8().constData());
         Xapian::TermIterator it = db->allterms_begin(stdString);
         Xapian::TermIterator end = db->allterms_end(stdString);
-        for (; it != end; it++) {
+        for (; it != end; ++it) {
             Term term;
             term.t = *it;
             term.count = db->get_collection_freq(term.t);
@@ -179,7 +179,7 @@ namespace {
 Xapian::Query XapianSearchStore::constructSearchQuery(const QString& str)
 {
     QVector<Xapian::Query> queries;
-    QRegExp splitRegex("[\\s.+*/\\-=]");
+    QRegExp splitRegex(QLatin1String("[\\s.+*/\\-=]"));
     QStringList list = str.split(splitRegex, QString::SkipEmptyParts);
 
     QMutableListIterator<QString> iter(list);
@@ -192,7 +192,7 @@ Xapian::Query XapianSearchStore::constructSearchQuery(const QString& str)
     }
 
     if (!list.isEmpty()) {
-        std::string stdStr(list.join(" ").toUtf8().constData());
+        std::string stdStr(list.join(QLatin1String(" ")).toUtf8().constData());
 
         Xapian::QueryParser parser;
         parser.set_database(*m_db);
@@ -302,7 +302,7 @@ bool XapianSearchStore::next(int queryId)
     else {
         res.lastId = *res.it;
         res.lastUrl.clear();
-        res.it++;
+        ++res.it;
     }
 
     return !atEnd;

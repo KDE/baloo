@@ -105,13 +105,22 @@ void ContactQuery::setMatchCriteria(ContactQuery::MatchCriteria m)
 
 ResultIterator ContactQuery::exec()
 {
-    const QString dir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/baloo/contacts/";
+    const QString dir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/contacts/");
     Xapian::Database db;
 
     try {
         db = Xapian::Database(QFile::encodeName(dir).constData());
+    } catch (const Xapian::DatabaseOpeningError&) {
+        qWarning() << "Xapian Database does not exist at " << dir;
+        return ResultIterator();
+    } catch (const Xapian::DatabaseCorruptError&) {
+        qWarning() << "Xapian Database corrupted";
+        return ResultIterator();
     } catch (const Xapian::DatabaseError& e) {
         qWarning() << "Failed to open Xapian database:" << QString::fromStdString(e.get_error_string());
+        return ResultIterator();
+    } catch (...) {
+        qWarning() << "Random exception, but we do not want to crash";
         return ResultIterator();
     }
 
@@ -181,19 +190,24 @@ ResultIterator ContactQuery::exec()
             m_queries << parser.parse_query(d->uid.toStdString(), Xapian::QueryParser::FLAG_PARTIAL);
         }
     }
+    try {
+        Xapian::Query query(Xapian::Query::OP_OR, m_queries.begin(), m_queries.end());
+        qDebug() << query.get_description().c_str();
 
-    Xapian::Query query(Xapian::Query::OP_OR, m_queries.begin(), m_queries.end());
-    qDebug() << query.get_description().c_str();
+        Xapian::Enquire enquire(db);
+        enquire.set_query(query);
 
-    Xapian::Enquire enquire(db);
-    enquire.set_query(query);
+        if (d->limit == 0)
+            d->limit = 10000;
 
-    if (d->limit == 0)
-        d->limit = 10000;
+        Xapian::MSet matches = enquire.get_mset(0, d->limit);
 
-    Xapian::MSet matches = enquire.get_mset(0, d->limit);
-
-    ResultIterator iter;
-    iter.d->init(matches);
-    return iter;
+        ResultIterator iter;
+        iter.d->init(matches);
+        return iter;
+    }
+    catch (const Xapian::Error &e) {
+        qWarning() << QString::fromStdString(e.get_type()) << QString::fromStdString(e.get_description());
+        return ResultIterator();
+    }
 }

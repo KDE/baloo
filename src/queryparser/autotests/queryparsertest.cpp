@@ -43,7 +43,7 @@ namespace QTest {
 
 void QueryParserTest::testSearchString()
 {
-    QString search_string("correct horse battery staple ");
+    QString search_string(QLatin1String("correct horse battery staple "));
 
     QCOMPARE(
         QueryParser::parseQuery(search_string).searchString(),
@@ -54,24 +54,24 @@ void QueryParserTest::testSearchString()
 void QueryParserTest::testNumbers()
 {
     QCOMPARE(
-        QueryParser::parseQuery("size > 1024"),
-        Query(Term("size", 1024LL, Term::Greater))
+        QueryParser::parseQuery(QLatin1String("size > 1024")),
+        Query(Term(QLatin1String("size"), 1024LL, Term::Greater))
     );
 }
 
 void QueryParserTest::testDecimal()
 {
     QCOMPARE(
-        QueryParser::parseQuery("size > 1024.38"),
-        Query(Term("size", 1024.38, Term::Greater))
+        QueryParser::parseQuery(QLatin1String("size > 1024.38")),
+        Query(Term(QLatin1String("size"), 1024.38, Term::Greater))
     );
 }
 
 void QueryParserTest::testFilesize()
 {
     QCOMPARE(
-        QueryParser::parseQuery("size > 2K"),
-        Query(Term("size", 2048, Term::Greater))
+        QueryParser::parseQuery(QLatin1String("size > 2K")),
+        Query(Term(QLatin1String("size"), 2048, Term::Greater))
     );
 }
 
@@ -85,7 +85,7 @@ void QueryParserTest::testDatetime()
     expected.setTerm(Term());
 
     QCOMPARE(
-        QueryParser::parseQuery("today"),
+        QueryParser::parseQuery(QLatin1String("today")),
         expected
     );
 
@@ -94,7 +94,7 @@ void QueryParserTest::testDatetime()
     expected.setDateFilter(now.date().year(), now.date().month(), now.date().day());
 
     QCOMPARE(
-        QueryParser::parseQuery("yesterday"),
+        QueryParser::parseQuery(QLatin1String("yesterday")),
         expected
     );
 
@@ -102,7 +102,7 @@ void QueryParserTest::testDatetime()
     expected.setDateFilter(2011, 1, 2);
 
     QCOMPARE(
-        QueryParser::parseQuery("January 2, 2011"),
+        QueryParser::parseQuery(QLatin1String("January 2, 2011")),
         expected
     );
 }
@@ -110,8 +110,8 @@ void QueryParserTest::testDatetime()
 void QueryParserTest::testFilename()
 {
     QCOMPARE(
-        QueryParser::parseQuery("\"*.txt\"", QueryParser::DetectFilenamePattern),
-        Query(Term("filename", QRegExp("^.*\\\\.txt$"), Term::Contains))
+        QueryParser::parseQuery(QLatin1String("\"*.txt\""), QueryParser::DetectFilenamePattern),
+        Query(Term(QLatin1String("filename"), QRegExp(QLatin1String("^.*\\\\.txt$")), Term::Contains))
     );
 }
 
@@ -119,10 +119,10 @@ void QueryParserTest::testTypehints()
 {
     Query expected;
 
-    expected.setType("Email");
+    expected.setType(QLatin1String("Email"));
 
     QCOMPARE(
-        QueryParser::parseQuery("emails"),
+        QueryParser::parseQuery(QLatin1String("emails")),
         expected
     );
 }
@@ -130,20 +130,20 @@ void QueryParserTest::testTypehints()
 void QueryParserTest::testReduction()
 {
     QCOMPARE(
-        QueryParser::parseQuery("size > 2K and size < 3K"),
-        Query(Term("size", 2048, Term::Greater) && Term("size", 3072, Term::Less))
+        QueryParser::parseQuery(QLatin1String("size > 2K and size < 3K")),
+        Query(Term(QLatin1String("size"), 2048, Term::Greater) && Term(QLatin1String("size"), 3072, Term::Less))
     );
     QCOMPARE(
-        QueryParser::parseQuery("size > 2K or size < 3K"),
-        Query(Term("size", 2048, Term::Greater) || Term("size", 3072, Term::Less))
+        QueryParser::parseQuery(QLatin1String("size > 2K or size < 3K")),
+        Query(Term(QLatin1String("size"), 2048, Term::Greater) || Term(QLatin1String("size"), 3072, Term::Less))
     );
 }
 
 void QueryParserTest::testTags()
 {
     QCOMPARE(
-        QueryParser::parseQuery("tagged as Important"),
-        Query(Term("tags", "Important", Term::Contains))
+        QueryParser::parseQuery(QLatin1String("tagged as Important")),
+        Query(Term(QLatin1String("tags"), QLatin1String("Important"), Term::Contains))
     );
 }
 

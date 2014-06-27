@@ -56,21 +56,21 @@ void stop()
 
 int main(int argc, char* argv[])
 {
-    KAboutData aboutData("balooctl", i18n("balooctl"), "0.1");
-    aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), "me@vhanda.in");
+    KAboutData aboutData(QLatin1String("balooctl"), i18n("balooctl"), QLatin1String("0.1"));
+    aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QLatin1String("me@vhanda.in"));
 
     KAboutData::setApplicationData(aboutData);
     QCoreApplication app(argc, argv);
 
     QCommandLineParser parser;
-    parser.addPositionalArgument("command", i18n("The command to execute"));
+    parser.addPositionalArgument(QLatin1String("command"), i18n("The command to execute"));
 
-    parser.addPositionalArgument("status", i18n("Print the status of the indexer"));
-    parser.addPositionalArgument("enable", i18n("Enable the file indexer"));
-    parser.addPositionalArgument("disable", i18n("Disable the file indexer"));
-    parser.addPositionalArgument("start", i18n("Start the file indexer"));
-    parser.addPositionalArgument("stop", i18n("Stop the file indexer"));
-    parser.addPositionalArgument("restart", i18n("Restart the file indexer"));
+    parser.addPositionalArgument(QLatin1String("status"), i18n("Print the status of the indexer"));
+    parser.addPositionalArgument(QLatin1String("enable"), i18n("Enable the file indexer"));
+    parser.addPositionalArgument(QLatin1String("disable"), i18n("Disable the file indexer"));
+    parser.addPositionalArgument(QLatin1String("start"), i18n("Start the file indexer"));
+    parser.addPositionalArgument(QLatin1String("stop"), i18n("Stop the file indexer"));
+    parser.addPositionalArgument(QLatin1String("restart"), i18n("Restart the file indexer"));
 
     parser.process(app);
     if (parser.positionalArguments().isEmpty()) {
@@ -83,7 +83,7 @@ int main(int argc, char* argv[])
     QString command = parser.positionalArguments().first();
     if (command == QLatin1String("status")) {
         QDBusConnection bus = QDBusConnection::sessionBus();
-        bool running = bus.interface()->isServiceRegistered("org.kde.baloo.file");
+        bool running = bus.interface()->isServiceRegistered(QLatin1String("org.kde.baloo.file"));
 
         if (running) {
             out << "Baloo File Indexer is running\n";
@@ -92,7 +92,7 @@ int main(int argc, char* argv[])
             out << "Baloo File Indexer is NOT running\n";
         }
 
-        const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/baloo/file/";
+        const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/file/");
 
         XapianDatabase database(path);
         Xapian::Database* xdb = database.db();
@@ -139,7 +139,7 @@ int main(int argc, char* argv[])
             isEnabled = false;
         }
 
-        KConfig config("baloofilerc");
+        KConfig config(QLatin1String("baloofilerc"));
         KConfigGroup basicSettings = config.group("Basic Settings");
         basicSettings.writeEntry("Indexing-Enabled", isEnabled);
 
