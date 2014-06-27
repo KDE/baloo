@@ -98,3 +98,5 @@ void RemovableDeviceIndexNotification::slotActionActivated(uint action)
         break;
     }
 }
+
+#include "removabledeviceindexnotification.moc"

@@ -376,17 +376,17 @@ void KInotifyTest::testMoveRootFolder()
 void KInotifyTest::testFileClosedAfterWrite()
 {
     QTemporaryDir dir;
-    touchFile(dir.path() + "/file");
+    touchFile(dir.path() + QLatin1String("/file"));
 
     KInotify kn;
     kn.addWatch(dir.path(), KInotify::EventAll);
 
     QSignalSpy spy(&kn, SIGNAL(closedWrite(QString)));
-    touchFile(dir.path() + "/file");
+    touchFile(dir.path() + QLatin1String("/file"));
 
     waitForSignal(&kn, SIGNAL(closedWrite(QString)));
     QCOMPARE(spy.count(), 1);
-    QCOMPARE(spy.at(0).first().toString(), dir.path() + "/file");
+    QCOMPARE(spy.at(0).first().toString(), QString(dir.path() + QLatin1String("/file")));
 }
 
 

@@ -33,7 +33,7 @@ int main(int argc, char** argv)
     QCoreApplication app(argc, argv);
 
     QCommandLineParser parser;
-    parser.addPositionalArgument("file", QLatin1String("The file url"));
+    parser.addPositionalArgument(QLatin1String("file"), QLatin1String("The file url"));
     parser.process(app);
 
     QStringList args = parser.positionalArguments();

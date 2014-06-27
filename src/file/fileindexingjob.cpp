@@ -172,3 +172,6 @@ bool FileIndexingJob::doResume()
         start(m_args);
     return true;
 }
+
+
+#include "fileindexingjob.moc"

@@ -37,21 +37,21 @@ int main(int argc, char* argv[])
     lowerPriority();
 
     QCoreApplication app(argc, argv);
-    QCoreApplication::setApplicationName("Baloo File Extractor");
-    QCoreApplication::setApplicationVersion("0.1");
+    QCoreApplication::setApplicationName(QLatin1String("Baloo File Extractor"));
+    QCoreApplication::setApplicationVersion(QLatin1String("0.1"));
 
     QCommandLineParser parser;
     parser.setApplicationDescription(i18n("The File Extractor extracts the file metadata and text"));
     parser.addHelpOption();
     parser.addVersionOption();
 
-    parser.addPositionalArgument("urls", i18n("The URL/id of the files to be indexed"));
-    parser.addOption(QCommandLineOption("debug", i18n("Print the data being indexed")));
-    parser.addOption(QCommandLineOption("bdata", i18n("Print the QVariantMap in Base64 encoding")));
-    parser.addOption(QCommandLineOption("ignoreConfig", i18n("Ignore the baloofilerc config and always index the file")));
+    parser.addPositionalArgument(QLatin1String("urls"), i18n("The URL/id of the files to be indexed"));
+    parser.addOption(QCommandLineOption(QLatin1String("debug"), i18n("Print the data being indexed")));
+    parser.addOption(QCommandLineOption(QLatin1String("bdata"), i18n("Print the QVariantMap in Base64 encoding")));
+    parser.addOption(QCommandLineOption(QLatin1String("ignoreConfig"), i18n("Ignore the baloofilerc config and always index the file")));
 
-    const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/baloo/file";
-    parser.addOption(QCommandLineOption("db", i18n("Specify a custom path for the database"),
+    const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/file");
+    parser.addOption(QCommandLineOption(QLatin1String("db"), i18n("Specify a custom path for the database"),
                                         i18n("path"), path));
 
     parser.process(app);
@@ -62,15 +62,15 @@ int main(int argc, char* argv[])
         parser.showHelp(1);
     }
 
-    if (parser.isSet("bdata") && args.size() > 1) {
+    if (parser.isSet(QLatin1String("bdata")) && args.size() > 1) {
         fprintf(stderr, "bdata can only accept one url/id\n\n");
         parser.showHelp(1);
     }
 
-    Baloo::App appObject(parser.value("db"));
-    appObject.setBData(parser.isSet("bdata"));
-    appObject.setDebug(parser.isSet("debug"));
-    appObject.setIgnoreConfig(parser.isSet("ignoreConfig"));
+    Baloo::App appObject(parser.value(QLatin1String("db")));
+    appObject.setBData(parser.isSet(QLatin1String("bdata")));
+    appObject.setDebug(parser.isSet(QLatin1String("debug")));
+    appObject.setIgnoreConfig(parser.isSet(QLatin1String("ignoreConfig")));
     appObject.startProcessing(args);
 
     return app.exec();

@@ -162,3 +162,5 @@ void ActiveFileQueue::slotTimer()
         d->m_queueTimer.stop();
     }
 }
+
+#include "activefilequeue.moc"

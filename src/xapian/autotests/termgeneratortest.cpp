@@ -49,9 +49,9 @@ void TermGeneratorTest::testWordBoundaries()
     QStringList words = allWords(doc);
 
     QStringList expectedWords;
-    expectedWords << "32.3" << "brown" << "can't" << "feet" << "fox" << "jump"
-                  << "no" << "quick" << "right" << "the" << "txt" << "wrong"
-                  << "xx";
+    expectedWords << QLatin1String("32.3") << QLatin1String("brown") << QLatin1String("can't") << QLatin1String("feet") << QLatin1String("fox") << QLatin1String("jump")
+                  << QLatin1String("no") << QLatin1String("quick") << QLatin1String("right") << QLatin1String("the") << QLatin1String("txt") << QLatin1String("wrong")
+                  << QLatin1String("xx");
 
     QCOMPARE(words, expectedWords);
 }
@@ -67,7 +67,7 @@ void TermGeneratorTest::testAccetCharacters()
     QStringList words = allWords(doc);
 
     QStringList expectedWords;
-    expectedWords << "esta" << "como" << "kug";
+    expectedWords << QLatin1String("esta") << QLatin1String("como") << QLatin1String("kug");
 
     QEXPECT_FAIL("", "Xapian does not handle diarectics", Continue);
     QCOMPARE(words, expectedWords);
@@ -75,3 +75,4 @@ void TermGeneratorTest::testAccetCharacters()
 
 QTEST_MAIN(TermGeneratorTest)
 
+#include "termgeneratortest.moc"

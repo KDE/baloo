@@ -234,8 +234,8 @@ bool alreadyExcluded(const QList<QPair<QString, bool> >& folders, const QString&
     bool included = false;
     for (int i = 0; i < folders.count(); ++i) {
         QString path = QUrl(folders[i].first).path();
-        if (!path.endsWith('/'))
-            path.append('/');
+        if (!path.endsWith(QLatin1Char('/')))
+            path.append(QLatin1Char('/'));
 
         if (f != folders[i].first && f.startsWith(path)) {
             included = folders[i].second;

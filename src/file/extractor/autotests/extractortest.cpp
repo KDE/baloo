@@ -34,7 +34,7 @@ void ExtractorTest::test()
 {
     QTemporaryDir dbDir;
     dbDir.setAutoRemove(false);
-    const QString fileUrl = dbDir.path() + "/testFile.txt";
+    const QString fileUrl = dbDir.path() + QLatin1String("/testFile.txt");
 
     QFile file(fileUrl);
     file.open(QIODevice::WriteOnly);
@@ -42,10 +42,10 @@ void ExtractorTest::test()
     stream << "Some words";
     file.close();
 
-    QString exe = QStandardPaths::findExecutable("baloo_file_extractor");
+    QString exe = QStandardPaths::findExecutable(QLatin1String("baloo_file_extractor"));
 
     QStringList args;
-    args << fileUrl << "--db" << dbDir.path() << "--ignoreConfig";
+    args << fileUrl << QLatin1String("--db") << dbDir.path() << QLatin1String("--ignoreConfig");
 
     QProcess process;
     process.start(exe, args);
@@ -64,11 +64,13 @@ void ExtractorTest::test()
         words << QString::fromUtf8(str.c_str(), str.length());
     }
 
-    QVERIFY(words.contains("some"));
-    QVERIFY(words.contains("words"));
-    QVERIFY(words.contains("testfile"));
-    QVERIFY(words.contains("txt"));
-    QVERIFY(words.contains("Z2"));
+    QVERIFY(words.contains(QLatin1String("some")));
+    QVERIFY(words.contains(QLatin1String("words")));
+    QVERIFY(words.contains(QLatin1String("testfile")));
+    QVERIFY(words.contains(QLatin1String("txt")));
+    QVERIFY(words.contains(QLatin1String("Z2")));
 }
 
 QTEST_MAIN(ExtractorTest)
+
+#include "extractortest.moc"

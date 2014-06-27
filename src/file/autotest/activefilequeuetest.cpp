@@ -117,3 +117,5 @@ void ActiveFileQueueTest::testRequeue()
 }
 
 QTEST_MAIN(ActiveFileQueueTest)
+
+#include "activefilequeuetest.moc"

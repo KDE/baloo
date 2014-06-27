@@ -336,3 +336,5 @@ bool RemovableMediaCache::Entry::isMounted() const
         return false;
     }
 }
+
+#include "removablemediacache.moc"

@@ -41,3 +41,4 @@ QStringList NoteSearchStore::types()
     return QStringList() << QLatin1String("Akonadi") << QLatin1String("Note");
 }
 
+#include "notesearchstore.moc"
