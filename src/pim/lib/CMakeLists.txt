@@ -37,7 +37,7 @@ set_target_properties(baloopim PROPERTIES
     SOVERSION ${BALOO_SOVERSION}
 )
 
-install(TARGETS baloopim EXPORT BalooLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS baloopim EXPORT BalooLibraryTargets ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES
     query.h

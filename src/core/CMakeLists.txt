@@ -43,7 +43,7 @@ ecm_generate_headers(KF5BalooCore_CamelCase_HEADERS
     REQUIRED_HEADERS KF5BalooCore_HEADERS
 )
 
-install(TARGETS KF5BalooCore EXPORT KF5BalooTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS KF5BalooCore EXPORT KF5BalooTargets ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
 install(FILES baloosearchstore.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
 
 install(FILES

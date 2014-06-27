@@ -32,7 +32,7 @@ set_target_properties(balooqueryparser PROPERTIES
     SOVERSION ${BALOO_VERSION_MAJOR}
 )
 
-install(TARGETS balooqueryparser EXPORT BalooLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS balooqueryparser EXPORT BalooLibraryTargets ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES
     completionproposal.h
