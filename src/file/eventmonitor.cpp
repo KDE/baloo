@@ -95,6 +95,3 @@ void EventMonitor::slotResumeFromIdle()
         Q_EMIT idleStatusChanged(false);
     }
 }
-
-
-#include "eventmonitor.moc"

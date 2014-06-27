@@ -72,5 +72,3 @@ void ExtractorTest::test()
 }
 
 QTEST_MAIN(ExtractorTest)
-
-#include "extractortest.moc"
