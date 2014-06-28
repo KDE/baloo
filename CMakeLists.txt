@@ -35,16 +35,6 @@ find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Widgets DBus Test Sql)
 
 find_package(KF5 ${KF5_VERSION} REQUIRED COMPONENTS I18n Config Service IdleTime KCMUtils Auth Runner Crash Solid KIO KDELibs4Support FileMetaData)
 
-find_package(Qt5Test ${QT_MIN_VERSION} CONFIG QUIET)
-set_package_properties(Qt5Test PROPERTIES
-         PURPOSE "Required for tests"
-         TYPE OPTIONAL
-         )
-add_feature_info("Qt5Test" Qt5Test_FOUND "Required for building tests")
-if (NOT Qt5Test_FOUND)
-    set(BUILD_TESTING OFF CACHE BOOL "Build the testing tree.")
-endif()
-
 if (KDEPIM_SUPPORT_BUILD)
   find_package(KF5Akonadi CONFIG)
   set_package_properties(KF5Akonadi PROPERTIES
