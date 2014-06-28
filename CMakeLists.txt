@@ -4,8 +4,11 @@ cmake_minimum_required(VERSION 2.8.12)
 find_package(ECM 0.0.14 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 
+# FIXME? Increase ?
+set(KF5_VERSION "4.97.0")
+
 find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Widgets DBus Test Sql)
-find_package(KF5 REQUIRED COMPONENTS I18n Config Service IdleTime KCMUtils Auth Runner Crash Solid KIO KDELibs4Support FileMetaData)
+find_package(KF5 ${KF5_VERSION} REQUIRED COMPONENTS I18n Config Service IdleTime KCMUtils Auth Runner Crash Solid KIO KDELibs4Support FileMetaData)
 
 include(ECMSetupVersion)
 include(ECMAddTests)
@@ -59,10 +62,12 @@ add_definitions(-DQT_NO_KEYWORDS)
 # Turn exceptions on
 kde_enable_exceptions()
 
-set(KF5_VERSION "5.0.0")
-ecm_setup_version(${KF5_VERSION} VARIABLE_PREFIX BALOO
+set(BALOO_VERSION "4.97.0")
+ecm_setup_version(${BALOO_VERSION} VARIABLE_PREFIX BALOO
                         VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/baloo_version.h"
-                        PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF5BalooConfigVersion.cmake")
+                        PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF5BalooConfigVersion.cmake"
+                        SOVERSION 5
+)
 add_definitions(-DQT_USE_QSTRINGBUILDER)
 add_definitions( -DQT_NO_CAST_FROM_ASCII )
 add_definitions( -DQT_NO_CAST_TO_ASCII )
