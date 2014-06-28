@@ -1,21 +1,39 @@
-project(Baloo)
 cmake_minimum_required(VERSION 2.8.12)
 
+project(Baloo)
+
+# ECM setup
 find_package(ECM 0.0.14 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 
+include(GenerateExportHeader)
+include(ECMGenerateHeaders)
+include(ECMPackageConfigHelpers)
+include(ECMSetupVersion)
+include(FeatureSummary)
+include(KDEInstallDirs)
+include(KDECMakeSettings)
+include(KDEFrameworkCompilerSettings)
+include(ECMInstallIcons)
+include(ECMAddTests)
+
 # FIXME? Increase ?
 set(KF5_VERSION "4.97.0")
+set(BALOO_VERSION "4.97.0")
 
+ecm_setup_version(${BALOO_VERSION} VARIABLE_PREFIX BALOO
+                        VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/baloo_version.h"
+                        PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF5BalooConfigVersion.cmake"
+                        SOVERSION 5
+)
+
+# Temporary option untill kdepimlibs is ok. Activate it if you want to compile kdepim
+option(KDEPIM_SUPPORT_BUILD "Build baloo kdepim support" FALSE)
+
+# Build dependencies
 find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Widgets DBus Test Sql)
+
 find_package(KF5 ${KF5_VERSION} REQUIRED COMPONENTS I18n Config Service IdleTime KCMUtils Auth Runner Crash Solid KIO KDELibs4Support FileMetaData)
-
-include(ECMSetupVersion)
-include(ECMAddTests)
-include(ECMInstallIcons)
-
-include(GenerateExportHeader)
-include(FeatureSummary)
 
 find_package(Qt5Test ${QT_MIN_VERSION} CONFIG QUIET)
 set_package_properties(Qt5Test PROPERTIES
@@ -27,26 +45,12 @@ if (NOT Qt5Test_FOUND)
     set(BUILD_TESTING OFF CACHE BOOL "Build the testing tree.")
 endif()
 
-include(KDEInstallDirs)
-include(KDECMakeSettings)
-include(KDECompilerSettings)
-include(ECMGenerateHeaders)
-
-# Temporary option untill kdepimlibs is ok. Activate it if you want to compile kdepim
-option(KDEPIM_SUPPORT_BUILD "Build baloo kdepim support" FALSE)
-
 if (KDEPIM_SUPPORT_BUILD)
-  find_package(KF5Akonadi CONFIG REQUIRED)
+  find_package(KF5Akonadi CONFIG)
   set_package_properties(KF5Akonadi PROPERTIES
       DESCRIPTION "The KDEPIM libraries"
       URL "http://www.kde.org"
       TYPE REQUIRED
-  )
-  set(AkonadiServer_MIN_VERSION "1.70.41")
-  find_package(Akonadi ${AkonadiServer_MIN_VERSION} CONFIG REQUIRED)
-  set_package_properties(Akonadi PROPERTIES
-    URL "http://akonadi-project.org"
-    TYPE REQUIRED
   )
 endif()
 
@@ -57,21 +61,13 @@ set_package_properties(Xapian PROPERTIES
     TYPE REQUIRED
 )
 
+# Compiler flags
 add_definitions(-DQT_NO_KEYWORDS)
+# FIXME src/kioslaves/timeline/kio_timeline.cpp:168
+remove_definitions(-DQT_NO_URL_CAST_FROM_STRING)
 
 # Turn exceptions on
 kde_enable_exceptions()
-
-set(BALOO_VERSION "4.97.0")
-ecm_setup_version(${BALOO_VERSION} VARIABLE_PREFIX BALOO
-                        VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/baloo_version.h"
-                        PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF5BalooConfigVersion.cmake"
-                        SOVERSION 5
-)
-add_definitions(-DQT_USE_QSTRINGBUILDER)
-add_definitions( -DQT_NO_CAST_FROM_ASCII )
-add_definitions( -DQT_NO_CAST_TO_ASCII )
-
 
 include_directories(
   ${XAPIAN_INCLUDE_DIR}
@@ -84,13 +80,12 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/xapian
 )
 
+# Targets
 add_subdirectory(src)
 add_subdirectory(icons)
 
 # Config files
 set(CMAKECONFIG_INSTALL_DIR "${CMAKECONFIG_INSTALL_PREFIX}/KF5Baloo")
-
-include(ECMPackageConfigHelpers)
 
 ecm_configure_package_config_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/KF5BalooConfig.cmake.in"
@@ -110,6 +105,11 @@ install(EXPORT KF5BalooTargets
         DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
         FILE KF5BalooTargets.cmake)
 
+install(FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/baloo_version.h"
+    DESTINATION ${KF5_INCLUDE_INSTALL_DIR}
+    COMPONENT Devel
+)
 
 feature_summary(WHAT ALL
     INCLUDE_QUIET_PACKAGES
