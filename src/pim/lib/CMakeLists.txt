@@ -14,9 +14,6 @@ set(BALOO_PIM_LIB_SRCS
     ../search/email/agepostingsource.cpp
 )
 
-find_package(KF5KDELibs4Support REQUIRED)
-find_package(KF5ItemModels REQUIRED)
-
 add_library(baloopim SHARED ${BALOO_PIM_LIB_SRCS})
 
 generate_export_header(baloopim BASE_NAME BALOO_PIM EXPORT_FILE_NAME pim_export.h)

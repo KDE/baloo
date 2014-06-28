@@ -1,9 +1,5 @@
 kde_enable_exceptions()
 
-find_package(KF5KDELibs4Support REQUIRED)
-find_package(KF5AkonadiMime REQUIRED)
-find_package(KF5Abc REQUIRED)
-find_package(KF5PimUtils REQUIRED)
 add_library(akonadi_baloo_searchplugin
  MODULE 
     searchplugin.cpp

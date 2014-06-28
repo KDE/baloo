@@ -1,17 +1,8 @@
 kde_enable_exceptions()
 include_directories(
     ${XAPIAN_INCLUDE_DIR}
-    ${KDEPIMLIBS_INCLUDE_DIRS}
     ${CMAKE_CURRENT_BINARY_DIR}
 )
-
-find_package(KF5KDELibs4Support REQUIRED)
-find_package(KF5Abc REQUIRED)
-find_package(KF5Mime REQUIRED)
-find_package(KF5PimUtils REQUIRED)
-find_package(KF5AkonadiMime REQUIRED)
-find_package(KF5CalendarCore REQUIRED)
-#find_package(KF5ItemModels REQUIRED)
 
 
 set(akonadi_baloo_indexer_SRCS
