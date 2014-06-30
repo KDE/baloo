@@ -191,6 +191,7 @@ void App::processNextUrl()
                     KFileMetaData::PropertyInfo pi(prop);
                     map.insert(pi.name(), it.value());
                 }
+                qDebug() << map;
                 s << map;
             }
 

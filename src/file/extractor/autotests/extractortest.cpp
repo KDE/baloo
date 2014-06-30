@@ -22,11 +22,12 @@
 
 #include <QTest>
 #include <QProcess>
+#include <QTemporaryFile>
 #include <QTemporaryDir>
-#include <QFile>
 #include <QTextStream>
 #include <QStandardPaths>
 #include <QDebug>
+#include <QDir>
 
 #include "xapiandatabase.h"
 
@@ -69,6 +70,35 @@ void ExtractorTest::test()
     QVERIFY(words.contains(QLatin1String("testfile")));
     QVERIFY(words.contains(QLatin1String("txt")));
     QVERIFY(words.contains(QLatin1String("Z2")));
+}
+
+void ExtractorTest::testBData()
+{
+    QTemporaryFile file;
+    file.setFileName(QDir::tempPath() + QLatin1String("/baloo_extractor_autotest.txt"));
+    QVERIFY(file.open());
+
+    QTextStream stream(&file);
+    stream << "Sample\nText";
+    stream.flush();
+
+    QString exe = QStandardPaths::findExecutable(QLatin1String("baloo_file_extractor"));
+
+    QStringList args;
+    args << QLatin1String("--bdata");
+    args << file.fileName();
+
+    QProcess process;
+    process.start(exe, args);
+    QVERIFY(process.waitForFinished(1000));
+
+    QByteArray bytearray = QByteArray::fromBase64(process.readAllStandardOutput());
+    QVariantMap data;
+    QDataStream in(&bytearray, QIODevice::ReadOnly);
+    in >> data;
+
+    QCOMPARE(data.size(), 1);
+    QCOMPARE(data.value(QLatin1String("lineCount")).toInt(), 2);
 }
 
 QTEST_MAIN(ExtractorTest)
