@@ -292,7 +292,7 @@ void BalooIndexingAgent::slotRootCollectionsFetched(KJob* kjob)
         job->setProperty("collectionsCount", cList.size());
 
         if (!m_lastItemMTime.isNull()) {
-            KDateTime dt(m_lastItemMTime, KDateTime::Spec::UTC());
+            QDateTime dt = m_lastItemMTime.toTimeSpec(Qt::UTC);
             job->fetchScope().setFetchChangedSince(dt);
         }
 
