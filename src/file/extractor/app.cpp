@@ -84,7 +84,7 @@ App::App(QObject* parent)
             url = args->url(i).toLocalFile();
         }
 
-        if (QFile::exists(url) && config.shouldBeIndexed(url)) {
+        if (QFile::exists(url) && (m_bData || config.shouldBeIndexed(url))) {
             m_urls << url;
         } else {
             // id or url was looked up, but file deleted
@@ -191,6 +191,7 @@ void App::processNextUrl()
                     KFileMetaData::PropertyInfo pi(prop);
                     map.insert(pi.name(), it.value());
                 }
+                qDebug() << map;
                 s << map;
             }
 
