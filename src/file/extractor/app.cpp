@@ -107,7 +107,7 @@ void App::processNextUrl()
     const QString url = m_urls.takeFirst();
     QString mimetype = m_mimeDb.mimeTypeForFile(url).name();
 
-    if (!m_ignoreConfig) {
+    if (!ignoreConfig()) {
         bool shouldIndex = m_config.shouldBeIndexed(url) && m_config.shouldMimeTypeBeIndexed(mimetype);
         if (!shouldIndex) {
             qDebug() << url << "should not be indexed. Ignoring";
@@ -304,4 +304,9 @@ void App::printDebug()
         }
     }
 
+}
+
+bool App::ignoreConfig() const
+{
+    return m_ignoreConfig || m_bData;
 }

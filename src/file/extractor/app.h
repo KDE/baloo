@@ -57,6 +57,7 @@ Q_SIGNALS:
 
 private:
     void printDebug();
+    bool ignoreConfig() const;
 
     QVector<Result> m_results;
     QStringList m_urls;
