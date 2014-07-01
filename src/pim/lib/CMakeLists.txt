@@ -35,6 +35,7 @@ target_link_libraries(KF5BalooPim
 set_target_properties(KF5BalooPim PROPERTIES
     VERSION ${BALOO_VERSION_STRING}
     SOVERSION ${BALOO_SOVERSION}
+    EXPORT_NAME BalooPim
 )
 
 install(TARGETS KF5BalooPim EXPORT KF5BalooTargets ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
