@@ -7,7 +7,7 @@ set(XAPIAN_SRCS
     termgenerator.cpp
 )
 
-add_library(KF5BalooXapian SHARED ${XAPIAN_SRCS})
+add_library(KF5BalooXapian ${XAPIAN_SRCS})
 add_library(KF5::BalooXapian ALIAS KF5BalooXapian)
 
 target_link_libraries(KF5BalooXapian PUBLIC

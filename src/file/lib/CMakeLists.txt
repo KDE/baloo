@@ -15,7 +15,7 @@ set(FILE_LIB_SRCS
     filecustommetadata.cpp
 )
 
-add_library(KF5BalooFiles SHARED ${FILE_LIB_SRCS})
+add_library(KF5BalooFiles ${FILE_LIB_SRCS})
 add_library(KF5::BalooFiles ALIAS KF5BalooFiles)
 
 

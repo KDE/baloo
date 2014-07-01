@@ -14,7 +14,7 @@ set(BALOO_PIM_LIB_SRCS
     ../search/email/agepostingsource.cpp
 )
 
-add_library(KF5BalooPim SHARED ${BALOO_PIM_LIB_SRCS})
+add_library(KF5BalooPim ${BALOO_PIM_LIB_SRCS})
 
 
 add_library(KF5::BalooPim ALIAS KF5BalooPim)

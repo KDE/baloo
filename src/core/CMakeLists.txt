@@ -9,7 +9,7 @@ set(CORE_SRCS
     result.cpp
 )
 
-add_library(KF5BalooCore SHARED ${CORE_SRCS})
+add_library(KF5BalooCore ${CORE_SRCS})
 
 add_library(KF5::BalooCore ALIAS KF5BalooCore)
 

@@ -19,7 +19,7 @@ set(QUERYPARSER_SRCS
     utils.cpp
 )
 
-add_library(balooqueryparser SHARED ${QUERYPARSER_SRCS})
+add_library(balooqueryparser ${QUERYPARSER_SRCS})
 
 target_link_libraries(balooqueryparser
     KF5::BalooCore
