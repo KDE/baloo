@@ -14,11 +14,14 @@ set(BALOO_PIM_LIB_SRCS
     ../search/email/agepostingsource.cpp
 )
 
-add_library(baloopim SHARED ${BALOO_PIM_LIB_SRCS})
+add_library(KF5BalooPim SHARED ${BALOO_PIM_LIB_SRCS})
 
-generate_export_header(baloopim BASE_NAME BALOO_PIM EXPORT_FILE_NAME pim_export.h)
 
-target_link_libraries(baloopim
+add_library(KF5::BalooPim ALIAS KF5BalooPim)
+
+generate_export_header(KF5BalooPim BASE_NAME BALOO_PIM EXPORT_FILE_NAME pim_export.h)
+
+target_link_libraries(KF5BalooPim
     PUBLIC
     Qt5::Core
 
@@ -29,12 +32,13 @@ target_link_libraries(baloopim
     ${XAPIAN_LIBRARIES}
 )
 
-set_target_properties(baloopim PROPERTIES
+set_target_properties(KF5BalooPim PROPERTIES
     VERSION ${BALOO_VERSION_STRING}
     SOVERSION ${BALOO_SOVERSION}
 )
 
-install(TARGETS baloopim EXPORT BalooLibraryTargets ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS KF5BalooPim EXPORT KF5BalooTargets ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
+
 
 install(FILES
     query.h
