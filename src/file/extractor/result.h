@@ -30,7 +30,7 @@ class Result : public KFileMetaData::ExtractionResult
 {
 public:
     Result();
-    Result(const QString& url, const QString& mimetype);
+    Result(const QString& url, const QString& mimetype, const Flags& flags = ExtractEverything);
 
     virtual void add(KFileMetaData::Property::Property property, const QVariant& value);
     virtual void append(const QString& text);

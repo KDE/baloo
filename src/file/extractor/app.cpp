@@ -154,7 +154,12 @@ void App::processNextUrl()
     file.setId(basicIndexer.id());
     Xapian::Document doc = basicIndexer.document();
 
-    Result result(url, mimetype);
+    KFileMetaData::ExtractionResult::Flags flags = KFileMetaData::ExtractionResult::ExtractEverything;
+    if (m_bData) {
+        flags = KFileMetaData::ExtractionResult::ExtractMetaData;
+    }
+
+    Result result(url, mimetype, flags);
     result.setId(file.id());
     result.setDocument(doc);
     result.setReadOnly(m_bData);

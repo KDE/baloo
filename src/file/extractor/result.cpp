@@ -36,8 +36,8 @@ Result::Result(): ExtractionResult(QString(), QString()), m_docId(0), m_readOnly
 {
 }
 
-Result::Result(const QString& url, const QString& mimetype)
-    : KFileMetaData::ExtractionResult(url, mimetype), m_docId(0), m_readOnly(false)
+Result::Result(const QString& url, const QString& mimetype, const Flags& flags)
+    : KFileMetaData::ExtractionResult(url, mimetype, flags), m_docId(0), m_readOnly(false)
 {
 }
 
