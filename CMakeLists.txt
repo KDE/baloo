@@ -17,9 +17,8 @@ include(KDEFrameworkCompilerSettings)
 include(ECMInstallIcons)
 include(ECMAddTests)
 
-# FIXME? Increase ?
-set(KF5_VERSION "4.97.0")
-set(BALOO_VERSION "4.97.0")
+set(KF5_VERSION "5.0.0")
+set(BALOO_VERSION "4.98.0")
 
 ecm_setup_version(${BALOO_VERSION} VARIABLE_PREFIX BALOO
                         VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/baloo_version.h"
