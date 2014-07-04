@@ -23,6 +23,7 @@
 #include <KIdleTime>
 
 #include <QtDBus/QDBusInterface>
+#include <Solid/PowerManagement>
 
 // TODO: Make idle timeout configurable?
 static int s_idleTimeout = 1000 * 60 * 2; // 2 min
@@ -33,16 +34,15 @@ EventMonitor::EventMonitor(QObject* parent)
     : QObject(parent)
 {
     // monitor the powermanagement to not drain the battery
-    // FIXME: Solid no longer supports all of this
-//    connect(Solid::PowerManagement::notifier(), SIGNAL(appShouldConserveResourcesChanged(bool)),
-//            this, SLOT(slotPowerManagementStatusChanged(bool)));
+    connect(Solid::PowerManagement::notifier(), SIGNAL(appShouldConserveResourcesChanged(bool)),
+            this, SLOT(slotPowerManagementStatusChanged(bool)));
 
     // setup idle time
     KIdleTime* idleTime = KIdleTime::instance();
     connect(idleTime, SIGNAL(timeoutReached(int)), this, SLOT(slotIdleTimeoutReached()));
     connect(idleTime, SIGNAL(resumingFromIdle()), this, SLOT(slotResumeFromIdle()));
 
-    m_isOnBattery = false;//Solid::PowerManagement::appShouldConserveResources();
+    m_isOnBattery = Solid::PowerManagement::appShouldConserveResources();
     m_isIdle = false;
     m_enabled = false;
 }

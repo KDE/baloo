@@ -60,6 +60,7 @@ target_link_libraries(baloo_file
     KF5::BalooCore
     KF5::BalooFiles
     KF5::BalooXapian
+    KF5::KDELibs4Support # For Solid
 )
 
 install(TARGETS baloo_file ${INSTALL_TARGETS_DEFAULT_ARGS})
