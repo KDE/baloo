@@ -133,11 +133,6 @@ public:
 Q_SIGNALS:
     void configChanged();
 
-    void includeFolderListChanged(const QStringList& added, const QStringList& removed);
-    void excludeFolderListChanged(const QStringList& added, const QStringList& removed);
-    void fileExcludeFiltersChanged();
-    void mimeTypeFiltersChanged();
-
 public Q_SLOTS:
     /**
      * Reread the config from disk and update the configuration cache.
@@ -146,7 +141,7 @@ public Q_SLOTS:
      *
      * \return \c true if the config has actually changed
      */
-    bool forceConfigUpdate();
+    void forceConfigUpdate();
 
     /**
      * Should be called once the initial indexing is done, ie. all folders
@@ -165,13 +160,11 @@ private:
      */
     bool folderInFolderList(const QString& path, QString& folder) const;
 
-    // These functions return true if the new cache is different from the old one
-    // They also emit signals to indicate how they are different
-    bool buildFolderCache();
-    bool buildExcludeFilterRegExpCache();
-    bool buildMimeTypeCache();
+    void buildFolderCache();
+    void buildExcludeFilterRegExpCache();
+    void buildMimeTypeCache();
 
-    mutable KConfig m_config;
+    KConfig m_config;
 
     /// Caching cleaned up list (no duplicates, no useless entries, etc.)
     QList<QPair<QString, bool> > m_folderCache;
@@ -179,32 +172,11 @@ private:
     /// cache of regexp objects for all exclude filters
     /// to prevent regexp parsing over and over
     RegExpCache m_excludeFilterRegExpCache;
-    QSet<QString> m_prevFileFilters;
 
     /// A set of mimetypes which should never be indexed
     QSet<QString> m_excludeMimetypes;
 
     bool m_indexHidden;
-
-    static FileIndexerConfig* s_self;
-
-    //
-    // Use to save the previous data in order to inform clients of the changes
-    //
-    struct Entry {
-        QSet<QString> includes;
-        QSet<QString> excludes;
-    };
-    QHash<QString, Entry> m_entries;
-
-    /**
-     * Fills the \p includeAdded and \p includeRemoved lists with the changes
-     * that have occurred between \p entry and \p include
-     */
-    void fillIncludeFolderChanges(const Entry& entry, const QSet<QString>& include,
-                                  QStringList* includeAdded, QStringList* includeRemoved);
-    void fillExcludeFolderChanges(const Entry& entry, const QSet<QString>& exclude,
-                                  QStringList* excludeAdded, QStringList* excludeRemoved);
 };
 }
 
