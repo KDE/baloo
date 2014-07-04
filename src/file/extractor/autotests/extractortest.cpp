@@ -19,6 +19,7 @@
  */
 
 #include "extractortest.h"
+#include "config.h"
 
 #include <QTest>
 #include <QProcess>
@@ -74,19 +75,13 @@ void ExtractorTest::test()
 
 void ExtractorTest::testBData()
 {
-    QTemporaryFile file;
-    file.setFileName(QDir::tempPath() + QLatin1String("/baloo_extractor_autotest.txt"));
-    QVERIFY(file.open());
-
-    QTextStream stream(&file);
-    stream << "Sample\nText";
-    stream.flush();
+    QString fileUrl(TESTS_SAMPLE_FILES_PATH + QDir::separator() + QStringLiteral("test.mp3"));
 
     QString exe = QStandardPaths::findExecutable(QLatin1String("baloo_file_extractor"));
 
     QStringList args;
     args << QLatin1String("--bdata");
-    args << file.fileName();
+    args << fileUrl;
 
     QProcess process;
     process.start(exe, args);
@@ -97,8 +92,9 @@ void ExtractorTest::testBData()
     QDataStream in(&bytearray, QIODevice::ReadOnly);
     in >> data;
 
-    QCOMPARE(data.size(), 1);
-    QCOMPARE(data.value(QLatin1String("lineCount")).toInt(), 2);
+    QCOMPARE(data.size(), 2);
+    QCOMPARE(data.value(QLatin1String("channels")).toInt(), 2);
+    QCOMPARE(data.value(QLatin1String("sampleRate")).toInt(), 44100);
 }
 
 QTEST_MAIN(ExtractorTest)
