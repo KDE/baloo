@@ -99,6 +99,8 @@ void BasicIndexingQueueTest::testSimpleDirectoryStructure()
     expectedUrls << home << home + QLatin1String("/1") << home + QLatin1String("/2") << home + QLatin1String("/docs")
                  << home + QLatin1String("/docs/1");
 
+    qDebug() << urls;
+    qDebug() << expectedUrls;
     QCOMPARE(urls, expectedUrls);
 }
 

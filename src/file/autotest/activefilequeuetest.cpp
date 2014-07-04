@@ -91,9 +91,10 @@ void ActiveFileQueueTest::testRequeue()
     // The signal should be emitted immediately
     QCOMPARE(spy.count(), 1);
     QCOMPARE(spy.takeFirst().first().value<QString>(), myUrl);
+    QVERIFY(spy.isEmpty());
 
     queue.enqueueUrl(myUrl);
-    // wait for 2 seconds
+    // wait for 1 seconds
     loopWait(1000);
 
     // the signal should not have been emitted yet
@@ -102,14 +103,16 @@ void ActiveFileQueueTest::testRequeue()
     // re-queue the url
     queue.enqueueUrl(myUrl);
 
-    // wait another 2 seconds
-    loopWait(2000);
+    // wait another 1 seconds
+    loopWait(1000);
 
-    // the signal should not have been emitted yet
+    // the signal should not have been emitted yet, because after re-queing it
+    // it should wait a total of 3 seconds before emitting it
+    // 3 seconds = timeout value
     QVERIFY(spy.isEmpty());
 
-    // wait another 2 seconds
-    loopWait(2000);
+    // wait another 3 seconds
+    loopWait(3000);
 
     // now the signal should have been emitted
     QCOMPARE(spy.count(), 1);
