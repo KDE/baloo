@@ -23,7 +23,7 @@
 #include "db.h"
 #include "file.h"
 #include "searchstore.h"
-#include "filecustommetadata.h"
+#include "baloo_xattr_p.h"
 
 #include "xapiandatabase.h"
 #include "xapiandocument.h"
@@ -127,16 +127,16 @@ void FileModifyJob::doStart()
 
         if (d->ratingSet) {
             const QString rat = QString::number(d->rating);
-            setCustomFileMetaData(furl, QLatin1String("user.baloo.rating"), rat);
+            baloo_setxattr(furl, QLatin1String("user.baloo.rating"), rat);
         }
 
         if (d->tagsSet) {
             const QString tags = d->tags.join(QLatin1String(","));
-            setCustomFileMetaData(furl, QLatin1String("user.xdg.tags"), tags);
+            baloo_setxattr(furl, QLatin1String("user.xdg.tags"), tags);
         }
 
         if (d->commentSet) {
-            setCustomFileMetaData(furl, QLatin1String("user.xdg.comment"), d->comment);
+            baloo_setxattr(furl, QLatin1String("user.xdg.comment"), d->comment);
         }
 
         // Save in Xapian

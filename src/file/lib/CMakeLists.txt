@@ -11,8 +11,6 @@ set(FILE_LIB_SRCS
     ../fileindexerconfig.cpp
     ../regexpcache.cpp
     ../fileexcludefilters.cpp
-    xattrdetector.cpp
-    filecustommetadata.cpp
 )
 
 add_library(KF5BalooFiles ${FILE_LIB_SRCS})
@@ -72,5 +70,4 @@ install(FILES
     COMPONENT Devel
 )
 
-add_subdirectory(tests)
 add_subdirectory(autotests)

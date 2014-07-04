@@ -20,8 +20,8 @@
 
 #include "filemodifyjobtest.h"
 #include "filemodifyjob.h"
+#include "xattrdetector.h"
 #include "../baloo_xattr_p.h"
-#include "../xattrdetector.h"
 #include "../db.h"
 #include "filemapping.h"
 #include "file.h"

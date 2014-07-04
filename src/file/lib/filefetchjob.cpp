@@ -26,7 +26,7 @@
 #include "file.h"
 #include "file_p.h"
 #include "searchstore.h"
-#include "filecustommetadata.h"
+#include "baloo_xattr_p.h"
 
 #include <QTimer>
 #include <QFile>
@@ -152,9 +152,15 @@ void FileFetchJob::doStart()
 void FileFetchJob::Private::fetchUserMetadata(File& file)
 {
     const QString url = file.url();
-    QString rating = customFileMetaData(url, QLatin1String("user.baloo.rating"));
-    QString tags = customFileMetaData(url, QLatin1String("user.xdg.tags"));
-    QString comment = customFileMetaData(url, QLatin1String("user.xdg.comment"));
+
+    QString rating;
+    baloo_getxattr(url, QLatin1String("user.baloo.rating"), &rating);
+
+    QString tags;
+    baloo_getxattr(url, QLatin1String("user.xdg.tags"), &tags);
+
+    QString comment;
+    baloo_getxattr(url, QLatin1String("user.xdg.comment"), &comment);
 
     file.setRating(rating.toInt());
     file.setTags(tags.split(QLatin1Char(','), QString::SkipEmptyParts));

@@ -3,11 +3,10 @@
 #
 set(filefetchjobtest_SRC filefetchjobtest.cpp
                          db.cpp
+                         xattrdetector.cpp
                          ../filefetchjob.cpp
                          ../filemapping.cpp
-                         ../file.cpp
-                         ../xattrdetector.cpp
-                         ../filecustommetadata.cpp)
+                         ../file.cpp)
 
 ecm_add_test(${filefetchjobtest_SRC}
     TEST_NAME "filefetchjobtest"
@@ -28,11 +27,10 @@ ecm_add_test(${filefetchjobtest_SRC}
 #
 set(filemodifyjobtest_SRC filemodifyjobtest.cpp
                           db.cpp
+                          xattrdetector.cpp
                           ../filemodifyjob.cpp
                           ../filemapping.cpp
-                          ../file.cpp
-                          ../xattrdetector.cpp
-                          ../filecustommetadata.cpp)
+                          ../file.cpp)
 
 ecm_add_test(${filemodifyjobtest_SRC}
     TEST_NAME "filemodifyjobtest"

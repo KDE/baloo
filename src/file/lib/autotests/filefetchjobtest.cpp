@@ -20,9 +20,9 @@
 
 #include "filefetchjobtest.h"
 #include "filefetchjob.h"
+#include "xattrdetector.h"
 #include "../baloo_xattr_p.h"
 #include "../db.h"
-#include "../xattrdetector.h"
 #include "filemapping.h"
 #include "file.h"
 
@@ -100,11 +100,12 @@ void FileFetchJobTest::testExtendedAttributes()
     tempFile.open();
 
     QString fileName = tempFile.fileName();
+    /*
     XattrDetector detector;
     if (!detector.isSupported(fileName)) {
         qWarning() << "Xattr not supported on this filesystem";
         return;
-    }
+    }*/
 
     FileMapping fileMap(tempFile.fileName());
     QSqlDatabase sqlDb = fileMappingDb();
