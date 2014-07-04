@@ -32,7 +32,7 @@ option(KDEPIM_SUPPORT_BUILD "Build baloo kdepim support" FALSE)
 # Build dependencies
 find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Widgets DBus Test Sql)
 
-find_package(KF5 ${KF5_VERSION} REQUIRED COMPONENTS I18n Config Service IdleTime KCMUtils Auth Runner Crash Solid KIO KDELibs4Support)
+find_package(KF5 ${KF5_VERSION} REQUIRED COMPONENTS I18n Config Service IdleTime KCMUtils Auth Crash Solid KIO KDELibs4Support)
 find_package(KF5 ${BALOO_VERSION} REQUIRED COMPONENTS FileMetaData)
 
 if (KDEPIM_SUPPORT_BUILD)
