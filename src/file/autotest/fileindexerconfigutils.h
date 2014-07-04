@@ -28,6 +28,7 @@
 #include <QDir>
 #include <QTextStream>
 #include <QTemporaryDir>
+#include <QStandardPaths>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -42,6 +43,7 @@ void writeIndexerConfig(const QStringList& includeFolders,
                         const QStringList& excludeFilters = QStringList(),
                         bool indexHidden = false)
 {
+    QStandardPaths::setTestModeEnabled(true);
     KConfig fileIndexerConfig(QLatin1String("baloofilerc"));
     fileIndexerConfig.group("General").writePathEntry("folders", includeFolders);
     fileIndexerConfig.group("General").writePathEntry("exclude folders", excludeFolders);
