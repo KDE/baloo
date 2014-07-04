@@ -99,9 +99,13 @@ void BasicIndexingQueueTest::testSimpleDirectoryStructure()
     expectedUrls << home << home + QLatin1String("/1") << home + QLatin1String("/2") << home + QLatin1String("/docs")
                  << home + QLatin1String("/docs/1");
 
-    qDebug() << urls;
-    qDebug() << expectedUrls;
-    QCOMPARE(urls, expectedUrls);
+    // Based on the locale the default sorting order could be different.
+    // Plus, we don't care about the order. We just want the same files
+    // to be indexed
+    QCOMPARE(expectedUrls.size(), urls.size());
+    Q_FOREACH (const QString& url, expectedUrls) {
+        QVERIFY(urls.count(url) == 1);
+    }
 }
 
 QTEST_MAIN(BasicIndexingQueueTest)
