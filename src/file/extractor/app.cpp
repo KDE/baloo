@@ -64,7 +64,7 @@ void App::startProcessing(const QStringList& args)
         QString url;
 
         // arg is an id
-        if (mapping.fetch(m_db.sqlDatabase())) {
+        if (!m_bData && mapping.fetch(m_db.sqlDatabase())) {
             url = mapping.url();
             if (!QFile::exists(url)) {
                 mapping.remove(m_db.sqlDatabase());
@@ -143,6 +143,9 @@ void App::processNextUrl()
         if (!file.fetch(m_db.sqlDatabase())) {
             file.create(m_db.sqlDatabase());
         }
+    }
+    else {
+        file.setId(-1);
     }
 
     // We always run the basic indexing again. This is mostly so that the proper
