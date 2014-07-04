@@ -37,6 +37,7 @@
 
 #include <QDBusConnection>
 #include <QApplication>
+#include <QSessionManager>
 
 int main(int argc, char** argv)
 {
@@ -53,8 +54,12 @@ int main(int argc, char** argv)
 
     QApplication app(argc, argv);
     app.setQuitOnLastWindowClosed(false);
-    //KUniqueApplication app(true);
-    //app.disableSessionManagement();
+
+    auto disableSessionManagement = [](QSessionManager &sm) {
+        sm.setRestartHint(QSessionManager::RestartNever);
+    };
+    QObject::connect(&app, &QGuiApplication::commitDataRequest, disableSessionManagement);
+    QObject::connect(&app, &QGuiApplication::saveStateRequest, disableSessionManagement);
 
     KConfig config(QLatin1String("baloofilerc"));
     KConfigGroup group = config.group("Basic Settings");
