@@ -94,15 +94,15 @@ void FileIndexingQueue::processNextIteration()
 
 void FileIndexingQueue::slotFinishedIndexingFile(KJob* job)
 {
+    Q_ASSERT(job == m_indexJob);
+    m_indexJob = 0;
+
     // The process would have modified the db
     m_db->xapianDatabase()->db()->reopen();
     if (m_fileQueue.isEmpty()) {
         fillQueue();
     }
     finishIteration();
-
-    Q_ASSERT(job == m_indexJob);
-    m_indexJob = 0;
 }
 
 void FileIndexingQueue::slotIndexingFailed(uint id)
