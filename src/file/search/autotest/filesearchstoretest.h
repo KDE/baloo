@@ -46,6 +46,7 @@ private Q_SLOTS:
     void testSimpleSearchString();
     void testIncludeDir();
     void testRatings();
+    void testEmptySearchString();
 
 private:
     QTemporaryDir* m_tempDir;

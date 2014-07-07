@@ -232,6 +232,10 @@ int XapianSearchStore::exec(const Query& query)
             xapQ = applyCustomOptions(xapQ, query.customOptions());
             xapQ = finalizeQuery(xapQ);
 
+            if (xapQ.empty()) {
+                // Return all the results
+                xapQ = Xapian::Query(std::string());
+            }
             Xapian::Enquire enquire(*m_db);
             enquire.set_query(xapQ);
 

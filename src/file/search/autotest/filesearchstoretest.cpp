@@ -243,5 +243,47 @@ void FileSearchStoreTest::testRatings()
     QVERIFY(!m_store->next(qid2));
 }
 
+void FileSearchStoreTest::testEmptySearchString()
+{
+    QString url1(QLatin1String("/home/t/a"));
+    uint id1 = insertUrl(url1);
+    insertText(id1, QLatin1String("File A"));
+
+    QString url2(QLatin1String("/home/t/b"));
+    uint id2 = insertUrl(url2);
+    insertText(id2, QLatin1String("File B"));
+
+    QString url3(QLatin1String("/home/garden/b"));
+    uint id3 = insertUrl(url3);
+    insertText(id3, QLatin1String("Garden B"));
+
+    QString url4(QLatin1String("/home/tt/b"));
+    uint id4 = insertUrl(url4);
+    insertText(id4, QLatin1String("TT B"));
+
+    QString url5(QLatin1String("/home/tt/c"));
+    uint id5 = insertUrl(url5);
+    insertText(id5, QLatin1String("TT C"));
+
+    Query q;
+    q.addType(QLatin1String("File"));
+
+    int qid1 = m_store->exec(q);
+    QCOMPARE(qid1, 1);
+
+    QVERIFY(m_store->next(qid1));
+    QCOMPARE(m_store->id(qid1), serialize("file", id1));
+    QVERIFY(m_store->next(qid1));
+    QCOMPARE(m_store->id(qid1), serialize("file", id2));
+    QVERIFY(m_store->next(qid1));
+    QCOMPARE(m_store->id(qid1), serialize("file", id3));
+    QVERIFY(m_store->next(qid1));
+    QCOMPARE(m_store->id(qid1), serialize("file", id4));
+    QVERIFY(m_store->next(qid1));
+    QCOMPARE(m_store->id(qid1), serialize("file", id5));
+    QVERIFY(!m_store->next(qid1));
+}
+
+
 
 QTEST_MAIN(Baloo::FileSearchStoreTest)
