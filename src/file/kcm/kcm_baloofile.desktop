@@ -7,8 +7,8 @@ X-KDE-ServiceTypes=KCModule
 X-KDE-Library=kcm_baloofile
 X-KDE-ParentApp=kcontrol
 
-X-KDE-System-Settings-Parent-Category=applications
-X-KDE-Weight=70
+X-KDE-System-Settings-Parent-Category=search
+X-KDE-Weight=20
 
 Name=File Search
 Name[ca]=Cerca de fitxers
