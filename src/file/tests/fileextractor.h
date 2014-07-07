@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef BALOO_FILEINDEXER_H
-#define BALOO_FILEINDEXER_H
+#ifndef BALOO_FILEEXTRACTOR_H
+#define BALOO_FILEEXTRACTOR_H
 
 #include <KJob>
 #include <QProcess>
@@ -28,11 +28,11 @@
 
 namespace Baloo {
 
-class FileIndexer : public KJob
+class FileExtractor : public KJob
 {
     Q_OBJECT
 public:
-    FileIndexer(uint id, const QString& url);
+    FileExtractor(uint id, const QString& url);
 
     virtual void start();
     void setCustomPath(const QString& path);
@@ -58,4 +58,4 @@ private:
 
 }
 
-#endif // BALOO_FILEINDEXER_H
+#endif

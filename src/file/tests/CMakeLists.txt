@@ -3,29 +3,18 @@ include_directories(
 )
 
 add_executable(indexerconfigtest
-               indexerconfigtest.cpp
-               ../fileindexerconfig.cpp
-               ../regexpcache.cpp
-               ../fileexcludefilters.cpp)
+               indexerconfigtest.cpp)
 
 target_link_libraries(indexerconfigtest
   Qt5::Core
   KF5::CoreAddons
   KF5::ConfigCore
   KF5::BalooCore
+  baloofilecommon
 )
 
 add_executable(basicindexingqueuetest-manual
                     basicindexingqueuetest.cpp
-                    ../fileindexerconfig.cpp
-                    ../regexpcache.cpp
-                    ../fileexcludefilters.cpp
-                    ../basicindexingqueue.cpp
-                    ../indexingqueue.cpp
-                    ../basicindexingjob.cpp
-                    ../database.cpp
-                    ../lib/filemapping.cpp
-                    ../commitqueue.cpp
 )
 
 target_link_libraries(basicindexingqueuetest-manual
@@ -37,20 +26,12 @@ target_link_libraries(basicindexingqueuetest-manual
   ${XAPIAN_LIBRARIES}
   KF5::BalooCore
   KF5::BalooXapian
+  baloofilecommon
 )
 
 add_executable(fileindexingqueuetest-manual
                     fileindexingqueuetest.cpp
-                    fileindexer.cpp
-                    ../fileindexerconfig.cpp
-                    ../regexpcache.cpp
-                    ../fileexcludefilters.cpp
-                    ../basicindexingqueue.cpp
-                    ../indexingqueue.cpp
-                    ../basicindexingjob.cpp
-                    ../database.cpp
-                    ../lib/filemapping.cpp
-                    ../commitqueue.cpp
+                    fileextractor.cpp
 )
 
 target_link_libraries(fileindexingqueuetest-manual
@@ -62,6 +43,7 @@ target_link_libraries(fileindexingqueuetest-manual
   ${XAPIAN_LIBRARIES}
   KF5::BalooCore
   KF5::BalooXapian
+  baloofilecommon
 )
 
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")

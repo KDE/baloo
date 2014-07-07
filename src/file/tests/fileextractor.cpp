@@ -18,7 +18,7 @@
  *
  */
 
-#include "fileindexer.h"
+#include "fileextractor.h"
 
 #include <QTime>
 #include <QTimer>
@@ -29,7 +29,7 @@
 
 using namespace Baloo;
 
-FileIndexer::FileIndexer(uint id, const QString& url)
+FileExtractor::FileExtractor(uint id, const QString& url)
     : KJob()
     , m_id(id)
     , m_url(url)
@@ -37,17 +37,17 @@ FileIndexer::FileIndexer(uint id, const QString& url)
 {
 }
 
-void FileIndexer::setCustomPath(const QString& path)
+void FileExtractor::setCustomPath(const QString& path)
 {
     m_customPath = path;
 }
 
-void FileIndexer::start()
+void FileExtractor::start()
 {
     QTimer::singleShot(0, this, SLOT(doStart()));
 }
 
-void FileIndexer::doStart()
+void FileExtractor::doStart()
 {
     // Get the mimetype - used for stats later
     m_mimeType = QMimeDatabase().mimeTypeForFile(m_url, QMimeDatabase::MatchExtension).name();
@@ -69,7 +69,7 @@ void FileIndexer::doStart()
     m_process->start(exe, args);
 }
 
-void FileIndexer::slotIndexedFile(int, QProcess::ExitStatus)
+void FileExtractor::slotIndexedFile(int, QProcess::ExitStatus)
 {
     m_elapsed = m_timer.elapsed();
 
@@ -77,12 +77,12 @@ void FileIndexer::slotIndexedFile(int, QProcess::ExitStatus)
     return;
 }
 
-int FileIndexer::elapsed() const
+int FileExtractor::elapsed() const
 {
     return m_elapsed;
 }
 
-QString FileIndexer::mimeType() const
+QString FileExtractor::mimeType() const
 {
     return m_mimeType;
 }

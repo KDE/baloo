@@ -19,12 +19,11 @@ ecm_add_test(activefilequeuetest.cpp ../activefilequeue.cpp
 set(metadatamover_SRC
     metadatamovertest.cpp
     ../metadatamover.cpp
-    ../database.cpp
-    ../lib/filemapping.cpp)
+)
 
 ecm_add_test(${metadatamover_SRC}
     TEST_NAME "metadatamovertest"
-    LINK_LIBRARIES Qt5::Test Qt5::Sql ${XAPIAN_LIBRARIES} KF5::BalooXapian
+    LINK_LIBRARIES Qt5::Test Qt5::Sql ${XAPIAN_LIBRARIES} KF5::BalooXapian baloofilecommon
 )
 
 #
@@ -42,14 +41,11 @@ ecm_add_test(${fileMonitor_SRC}
 #
 set(indexingConfig_SRC
     fileindexerconfigtest.cpp
-    ../fileindexerconfig.cpp
-    ../regexpcache.cpp
-    ../fileexcludefilters.cpp
 )
 
 ecm_add_test(${indexingConfig_SRC}
     TEST_NAME "fileindexerconfigtest"
-    LINK_LIBRARIES Qt5::Test KF5::ConfigCore KF5::CoreAddons
+    LINK_LIBRARIES Qt5::Test KF5::ConfigCore KF5::CoreAddons baloofilecommon
 )
 
 #
@@ -58,21 +54,13 @@ ecm_add_test(${indexingConfig_SRC}
 
 set(basicIndexingQueue_SRC
     basicindexingqueuetest.cpp
-    ../basicindexingqueue.cpp
-    ../basicindexingjob.cpp
-    ../indexingqueue.cpp
-    ../fileindexerconfig.cpp
-    ../fileexcludefilters.cpp
-    ../regexpcache.cpp
-    ../database.cpp
-    ../util.cpp
-    ../lib/filemapping.cpp
 )
 
 ecm_add_test(${basicIndexingQueue_SRC}
     TEST_NAME basicindexingqueuetest
     LINK_LIBRARIES Qt5::Test Qt5::Sql KF5::FileMetaData KF5::ConfigCore
                    KF5::CoreAddons ${XAPIAN_LIBRARIES} KF5::BalooXapian
+                   baloofilecommon
 )
 
 #
@@ -80,13 +68,12 @@ ecm_add_test(${basicIndexingQueue_SRC}
 #
 set(regexpcache_SRCS
     regularexpcachebenchmark.cpp
-    ../regexpcache.cpp
-    ../fileexcludefilters.cpp
 )
 
 ecm_add_test(${regexpcache_SRCS}
     TEST_NAME "regexpcachebenchmark"
-    LINK_LIBRARIES Qt5::Test KF5::ConfigCore KF5::CoreAddons
+    LINK_LIBRARIES Qt5::Test KF5::ConfigCore KF5::CoreAddons baloofilecommon
 )
 
 add_subdirectory(fileindexingjob)
+#add_subdirectory(scheduler)
