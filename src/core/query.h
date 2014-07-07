@@ -50,7 +50,11 @@ public:
      * This is generally used to filter only Files, Emails, Tags, etc
      *
      * One can add multiple types in one go by separating individual types
-     * with a '/'. Eg - "File/Audio"
+     * with a '/'. Eg - "File/Audio".
+     *
+     * Please note that the types are ANDed together. So searching for "Image"
+     * and "Video" will probably never return any results. Have a look at
+     * KFileMetaData::TypeInfo for a list of type names.
      */
     void addType(const QString& type);
     void addTypes(const QStringList& typeList);
