@@ -72,6 +72,7 @@ void FileIndexingJob::start(const QVector<uint>& files)
 
     if (!m_customDbPath.isEmpty()) {
         args << QLatin1String("--db") << m_customDbPath;
+        args << QLatin1String("--ignoreConfig");
     }
     qDebug() << args;
 

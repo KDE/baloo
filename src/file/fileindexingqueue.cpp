@@ -26,6 +26,7 @@
 #include "util.h"
 #include "database.h"
 
+#include <QStandardPaths>
 #include <QDebug>
 
 using namespace Baloo;
@@ -33,12 +34,18 @@ using namespace Baloo;
 FileIndexingQueue::FileIndexingQueue(Database* db, QObject* parent)
     : IndexingQueue(parent)
     , m_db(db)
+    , m_testMode(false)
     , m_indexJob(0)
 {
     m_maxSize = 1200;
     m_batchSize = 40;
 
     m_fileQueue.reserve(m_maxSize);
+
+    const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/file/");
+    if (db->path() != path) {
+        m_testMode = true;
+    }
 }
 
 void FileIndexingQueue::fillQueue()
@@ -86,6 +93,9 @@ void FileIndexingQueue::processNextIteration()
 
     Q_ASSERT(m_indexJob == 0);
     m_indexJob = new FileIndexingJob(files, this);
+    if (m_testMode) {
+        m_indexJob->setCustomDbPath(m_db->path());
+    }
     connect(m_indexJob, SIGNAL(indexingFailed(uint)), this, SLOT(slotIndexingFailed(uint)));
     connect(m_indexJob, SIGNAL(finished(KJob*)), SLOT(slotFinishedIndexingFile(KJob*)));
 

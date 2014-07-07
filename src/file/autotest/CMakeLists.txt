@@ -76,4 +76,4 @@ ecm_add_test(${regexpcache_SRCS}
 )
 
 add_subdirectory(fileindexingjob)
-#add_subdirectory(scheduler)
+add_subdirectory(scheduler)

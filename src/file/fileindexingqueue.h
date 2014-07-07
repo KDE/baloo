@@ -65,6 +65,7 @@ private:
 
     int m_maxSize;
     int m_batchSize;
+    bool m_testMode;
 
     FileIndexingJob* m_indexJob;
 };

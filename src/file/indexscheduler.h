@@ -32,6 +32,7 @@ class FileIndexingQueue;
 class FileIndexerConfig;
 class CommitQueue;
 class EventMonitor;
+class SchedulerTest;
 
 /**
  * The IndexScheduler is responsible for controlling the indexing
@@ -144,6 +145,8 @@ private:
     QString m_oldStatus;
 
     Database* m_db;
+
+    friend class SchedulerTest;
 };
 }
 
