@@ -294,10 +294,10 @@ QString IndexScheduler::userStatusString() const
 
     if (suspended) {
         return i18nc("@info:status", "File indexer is suspended.");
-    } else if (indexing) {
-        return i18nc("@info:status", "Indexing files for desktop search.");
     } else if (processing) {
         return i18nc("@info:status", "Scanning for recent changes in files for desktop search");
+    } else if (indexing) {
+        return i18nc("@info:status", "Indexing files for desktop search.");
     } else {
         return i18nc("@info:status", "File indexer is idle.");
     }

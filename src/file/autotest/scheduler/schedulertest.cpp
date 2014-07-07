@@ -23,7 +23,9 @@
 #include "../../indexscheduler.h"
 #include "../../database.h"
 #include "../../fileindexerconfig.h"
-#include <commitqueue.h>
+#include "../../commitqueue.h"
+#include "../../basicindexingqueue.h"
+#include "../../fileindexingqueue.h"
 #include "xapiandatabase.h"
 
 #include <QTest>
@@ -61,6 +63,17 @@ void SchedulerTest::test()
     QSignalSpy spy2(&scheduler, SIGNAL(basicIndexingDone()));
     QSignalSpy spy3(&scheduler, SIGNAL(fileIndexingDone()));
 
+    QVERIFY(!scheduler.isIndexing());
+    QVERIFY(!scheduler.isSuspended());
+    QVERIFY(scheduler.m_basicIQ->isEmpty());
+    QVERIFY(scheduler.m_fileIQ->isEmpty());
+    QVERIFY(scheduler.m_commitQ->isEmpty());
+    QCOMPARE(scheduler.userStatusString(), QString("File indexer is idle."));
+
+    QStringList statuses;
+    connect(&scheduler, &IndexScheduler::statusStringChanged,
+            [&]() { statuses << scheduler.userStatusString(); });
+
     scheduler.updateAll();
     QEventLoop loop;
     connect(&scheduler, SIGNAL(indexingStopped()), &loop, SLOT(quit()));
@@ -69,6 +82,18 @@ void SchedulerTest::test()
     QCOMPARE(spy1.size(), 1);
     QCOMPARE(spy2.size(), 1);
     QCOMPARE(spy3.size(), 1);
+
+    QVERIFY(!scheduler.isIndexing());
+    QVERIFY(!scheduler.isSuspended());
+    QVERIFY(scheduler.m_basicIQ->isEmpty());
+    QVERIFY(scheduler.m_fileIQ->isEmpty());
+    QVERIFY(scheduler.m_commitQ->isEmpty());
+    QCOMPARE(scheduler.userStatusString(), QString("File indexer is idle."));
+
+    QCOMPARE(statuses.size(), 3);
+    QVERIFY(statuses[0].contains("recent changes", Qt::CaseInsensitive));
+    QVERIFY(statuses[1].contains("indexing", Qt::CaseInsensitive));
+    QVERIFY(statuses[2].contains("idle", Qt::CaseInsensitive));
 
     Xapian::Database* xdb = db.xapianDatabase()->db();
     xdb->reopen();
