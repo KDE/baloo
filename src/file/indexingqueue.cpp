@@ -99,6 +99,12 @@ void IndexingQueue::setDelay(int msec)
     m_delay = msec;
 }
 
+int IndexingQueue::delay() const
+{
+    return m_delay;
+}
+
+
 void IndexingQueue::doResume()
 {
 }

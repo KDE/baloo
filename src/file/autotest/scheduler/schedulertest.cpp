@@ -177,6 +177,7 @@ void SchedulerTest::testBatterySuspend()
     scheduler.m_commitQ->commit();
     QVERIFY(!scheduler.m_fileIQ->isEmpty());
     QVERIFY(!scheduler.m_fileIQ->isSuspended());
+    QCOMPARE(scheduler.m_fileIQ->delay(), 500);
 
     data = fetchIndexingData(db);
     // Folders automatically go to phase2
@@ -210,5 +211,48 @@ void SchedulerTest::testBatterySuspend()
     QCOMPARE(data.failed, 0);
 }
 
+void SchedulerTest::testIdle()
+{
+    QTemporaryDir dbDir;
+    Database db;
+    db.setPath(dbDir.path());
+    db.init();
+
+    uint numFiles = 10;
+    QTemporaryDir fileDir;
+    for (uint i = 0; i < numFiles-1; i++) {
+        QFile file(fileDir.path() + QDir::separator() + QString::number(i) + QLatin1String(".txt"));
+        file.open(QIODevice::WriteOnly);
+
+        QTextStream stream(&file);
+        stream << i;
+    }
+
+    Test::writeIndexerConfig(QStringList() << fileDir.path(), QStringList());
+
+    FileIndexerConfig config;
+    IndexScheduler scheduler(&db, &config);
+
+    scheduler.updateAll();
+    QEventLoop loop;
+    connect(&scheduler, SIGNAL(basicIndexingDone()), &loop, SLOT(quit()));
+    loop.exec();
+    disconnect(&scheduler, SIGNAL(basicIndexingDone()), &loop, SLOT(quit()));
+
+    QVERIFY(scheduler.m_basicIQ->isEmpty());
+
+    QVERIFY(!scheduler.m_fileIQ->isSuspended());
+    QCOMPARE(scheduler.m_fileIQ->delay(), 500);
+
+    scheduler.m_eventMonitor->slotIdleTimeoutReached();
+
+    QVERIFY(!scheduler.m_fileIQ->isSuspended());
+    QCOMPARE(scheduler.m_fileIQ->delay(), 0);
+
+    scheduler.m_eventMonitor->slotResumeFromIdle();
+
+    QVERIFY(!scheduler.m_fileIQ->isSuspended());
+    QCOMPARE(scheduler.m_fileIQ->delay(), 500);
+}
 
 QTEST_MAIN(SchedulerTest)

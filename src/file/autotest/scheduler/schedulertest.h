@@ -42,6 +42,7 @@ private:
 private Q_SLOTS:
     void test();
     void testBatterySuspend();
+    void testIdle();
 };
 
 }
