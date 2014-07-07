@@ -56,6 +56,23 @@ void TermGeneratorTest::testWordBoundaries()
     QCOMPARE(words, expectedWords);
 }
 
+void TermGeneratorTest::testUnderscore_splitting()
+{
+    QString str = QString::fromLatin1("Hello_Howdy");
+
+    Xapian::Document doc;
+    TermGenerator termGen(&doc);
+    termGen.indexText(str);
+
+    QStringList words = allWords(doc);
+
+    QStringList expectedWords;
+    expectedWords << QLatin1String("hello") << QLatin1String("howdy");
+
+    QEXPECT_FAIL("", "Xapian does not split on _", Continue);
+    QCOMPARE(words, expectedWords);
+}
+
 void TermGeneratorTest::testAccetCharacters()
 {
     QString str = QString::fromLatin1("Como está Kûg");

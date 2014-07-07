@@ -29,6 +29,7 @@ class TermGeneratorTest : public QObject
 
 private Q_SLOTS:
     void testWordBoundaries();
+    void testUnderscore_splitting();
     void testAccetCharacters();
 };
 
