@@ -113,6 +113,8 @@ QStringList FileIndexerConfig::excludeFilters() const
 
         // write the config directly since the KCM does not have support for the version yet
         // TODO: make this class public and use it in the KCM
+        KConfig config(m_config.name());
+        KConfigGroup cfg = config.group("General");
         cfg.writeEntry("exclude filters", QStringList::fromSet(filters));
         cfg.writeEntry("exclude filters version", defaultExcludeFilterListVersion());
     }
