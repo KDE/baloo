@@ -85,6 +85,9 @@ void XapianDatabase::replaceDocument(uint id, const Xapian::Document& doc)
 
 void XapianDatabase::deleteDocument(uint id)
 {
+    if (id == 0)
+        return;
+
     if (m_writeOnly) {
         try {
             m_wDb.delete_document(id);
