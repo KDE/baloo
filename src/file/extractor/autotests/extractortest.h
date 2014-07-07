@@ -29,6 +29,7 @@ class ExtractorTest : public QObject
 private Q_SLOTS:
     void test();
     void testBData();
+    void testFileDeletion();
 };
 
 #endif // EXTRACTORTEST_H

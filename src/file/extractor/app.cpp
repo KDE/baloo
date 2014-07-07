@@ -95,7 +95,7 @@ void App::startProcessing(const QStringList& args)
 void App::processNextUrl()
 {
     if (m_urls.isEmpty()) {
-        if (m_results.isEmpty()) {
+        if (m_results.isEmpty() && m_docsToDelete.isEmpty()) {
             QCoreApplication::instance()->exit(0);
         }
         else {
@@ -216,7 +216,7 @@ void App::processNextUrl()
 
 void App::saveChanges()
 {
-    if (m_results.isEmpty())
+    if (m_results.isEmpty() && m_docsToDelete.isEmpty())
         return;
 
     m_updatedFiles.clear();
@@ -233,6 +233,7 @@ void App::saveChanges()
     Q_FOREACH (int docid, m_docsToDelete) {
         xapDb.deleteDocument(docid);
     }
+    m_docsToDelete.clear();
 
     xapDb.commit();
     m_db.sqlDatabase().commit();

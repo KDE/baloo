@@ -31,11 +31,11 @@
 #include <QDir>
 
 #include "xapiandatabase.h"
+#include "xapiandocument.h"
 
 void ExtractorTest::test()
 {
     QTemporaryDir dbDir;
-    dbDir.setAutoRemove(false);
     const QString fileUrl = dbDir.path() + QLatin1String("/testFile.txt");
 
     QFile file(fileUrl);
@@ -96,5 +96,45 @@ void ExtractorTest::testBData()
     QCOMPARE(data.value(QLatin1String("channels")).toInt(), 2);
     QCOMPARE(data.value(QLatin1String("sampleRate")).toInt(), 44100);
 }
+
+void ExtractorTest::testFileDeletion()
+{
+    QTemporaryDir dbDir;
+
+    Baloo::XapianDatabase xapDb(dbDir.path());
+    Baloo::XapianDocument doc;
+    doc.indexText("Random text which does not matter");
+    xapDb.replaceDocument(1, doc);
+    xapDb.commit();
+
+    QCOMPARE(xapDb.db()->get_doccount(), static_cast<uint>(1));
+    try {
+        Xapian::Document doc = xapDb.db()->get_document(1);
+        QCOMPARE(doc.termlist_count(), static_cast<uint>(6));
+    }
+    catch (...) {
+        QVERIFY2(false, "Document not committed");
+    }
+
+    QString exe = QStandardPaths::findExecutable(QLatin1String("baloo_file_extractor"));
+
+    QStringList args;
+    args << "1" << QLatin1String("--db") << dbDir.path() << QLatin1String("--ignoreConfig");
+
+    QProcess process;
+    process.start(exe, args);
+    QVERIFY(process.waitForFinished(1000));
+
+    // The document should have been deleted from the db
+    xapDb.db()->reopen();
+    QCOMPARE(xapDb.db()->get_doccount(), static_cast<uint>(0));
+    try {
+        Xapian::Document doc = xapDb.db()->get_document(1);
+        QVERIFY2(false, "The document should no longer exist");
+    }
+    catch (...) {
+    }
+}
+
 
 QTEST_MAIN(ExtractorTest)
