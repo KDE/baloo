@@ -27,6 +27,7 @@
 #include "xapiandatabase.h"
 
 #include <QTest>
+#include <QSignalSpy>
 #include <QTemporaryDir>
 #include <QTextStream>
 
@@ -55,17 +56,19 @@ void SchedulerTest::test()
 
     FileIndexerConfig config;
     IndexScheduler scheduler(&db, &config);
-    scheduler.updateAll();
 
+    QSignalSpy spy1(&scheduler, SIGNAL(indexingStarted()));
+    QSignalSpy spy2(&scheduler, SIGNAL(basicIndexingDone()));
+    QSignalSpy spy3(&scheduler, SIGNAL(fileIndexingDone()));
+
+    scheduler.updateAll();
     QEventLoop loop;
     connect(&scheduler, SIGNAL(indexingStopped()), &loop, SLOT(quit()));
+    loop.exec();
 
-    // FIXME: The function is called twice because after the basic IQ is done
-    // it checks if the file IQ is empty, and if it is it returns the stoppedSignal
-    // The fileIQ is emtpy in this case because the commit queue still hasn't
-    // committed the data
-    loop.exec();
-    loop.exec();
+    QCOMPARE(spy1.size(), 1);
+    QCOMPARE(spy2.size(), 1);
+    QCOMPARE(spy3.size(), 1);
 
     Xapian::Database* xdb = db.xapianDatabase()->db();
     xdb->reopen();

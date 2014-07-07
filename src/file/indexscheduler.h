@@ -105,7 +105,7 @@ private Q_SLOTS:
     void slotConfigChanged();
 
     void slotStartedIndexing();
-    void slotFinishedIndexing();
+    void slotFinishedBasicIndexing();
 
     // Event Monitor integration
     void slotScheduleIndexing();

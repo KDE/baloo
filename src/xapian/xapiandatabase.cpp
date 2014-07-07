@@ -99,6 +99,11 @@ void XapianDatabase::deleteDocument(uint id)
     m_docsToRemove << id;
 }
 
+bool XapianDatabase::haveChanges() const
+{
+    return !m_docsToAdd.isEmpty() || !m_docsToRemove.isEmpty();
+}
+
 void XapianDatabase::commit()
 {
     if (m_writeOnly) {
@@ -111,7 +116,7 @@ void XapianDatabase::commit()
         return;
     }
 
-    if (m_docsToAdd.isEmpty() && m_docsToRemove.isEmpty()) {
+    if (!haveChanges()) {
         return;
     }
 

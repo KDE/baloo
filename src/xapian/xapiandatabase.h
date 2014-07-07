@@ -65,6 +65,12 @@ public:
         return m_db;
     }
 
+    /**
+     * Returns true if the XapianDatabase has changes which need to
+     * be committed
+     */
+    bool haveChanges() const;
+
 private:
     Xapian::Database* m_db;
     Xapian::WritableDatabase m_wDb;

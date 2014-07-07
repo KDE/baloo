@@ -47,6 +47,12 @@ Baloo::CommitQueue::~CommitQueue()
     commit();
 }
 
+bool Baloo::CommitQueue::isEmpty() const
+{
+    // We could only have sqlite changes, but we typically always have both
+    return !m_db->xapianDatabase()->haveChanges();
+}
+
 void Baloo::CommitQueue::add(unsigned id, Xapian::Document doc)
 {
     m_db->xapianDatabase()->replaceDocument(id, doc);

@@ -40,6 +40,8 @@ public:
     CommitQueue(Database* db, QObject* parent = 0);
     ~CommitQueue();
 
+    bool isEmpty() const;
+
 public Q_SLOTS:
     void add(unsigned id, Xapian::Document doc);
     void remove(unsigned docid);

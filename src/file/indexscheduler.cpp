@@ -49,9 +49,9 @@ IndexScheduler::IndexScheduler(Database* db, FileIndexerConfig* config, QObject*
     connect(m_fileIQ, SIGNAL(finishedIndexing()), this, SIGNAL(fileIndexingDone()));
 
     connect(m_basicIQ, SIGNAL(startedIndexing()), this, SLOT(slotStartedIndexing()));
-    connect(m_basicIQ, SIGNAL(finishedIndexing()), this, SLOT(slotFinishedIndexing()));
+    connect(m_basicIQ, SIGNAL(finishedIndexing()), this, SLOT(slotFinishedBasicIndexing()));
     connect(m_fileIQ, SIGNAL(startedIndexing()), this, SLOT(slotStartedIndexing()));
-    connect(m_fileIQ, SIGNAL(finishedIndexing()), this, SLOT(slotFinishedIndexing()));
+    connect(m_fileIQ, SIGNAL(finishedIndexing()), this, SLOT(slotScheduleIndexing()));
 
     // Status String
     connect(m_basicIQ, SIGNAL(startedIndexing()), this, SLOT(emitStatusStringChanged()));
@@ -143,16 +143,11 @@ void IndexScheduler::slotStartedIndexing()
     setIndexingStarted(true);
 }
 
-void IndexScheduler::slotFinishedIndexing()
+void IndexScheduler::slotFinishedBasicIndexing()
 {
     if (m_basicIQ->isEmpty()) {
         m_fileIQ->fillQueue();
-        if (!m_fileIQ->isEmpty())
-            slotScheduleIndexing();
-    }
-
-    if (m_basicIQ->isEmpty() && m_fileIQ->isEmpty()) {
-        setIndexingStarted(false);
+        slotScheduleIndexing();
     }
 }
 
@@ -284,6 +279,10 @@ void IndexScheduler::slotScheduleIndexing()
             m_fileIQ->resume();
         else
             m_fileIQ->suspend();
+    }
+
+    if (m_basicIQ->isEmpty() && m_fileIQ->isEmpty() && m_commitQ->isEmpty()) {
+        setIndexingStarted(false);
     }
 }
 
