@@ -47,6 +47,7 @@ private Q_SLOTS:
     void testIncludeDir();
     void testRatings();
     void testEmptySearchString();
+    void testAllVideos();
 
 private:
     QTemporaryDir* m_tempDir;
@@ -54,6 +55,7 @@ private:
     FileSearchStore* m_store;
 
     uint insertUrl(const QString& url);
+    void insertType(int id, const QString& type);
     void insertText(int id, const QString& text);
     void insertRating(int id, int rating);
 };

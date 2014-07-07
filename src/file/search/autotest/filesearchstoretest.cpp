@@ -80,6 +80,21 @@ uint FileSearchStoreTest::insertUrl(const QString& url)
     return file.id();
 }
 
+void FileSearchStoreTest::insertType(int id, const QString& type)
+{
+    Xapian::Document doc;
+    doc.add_term(("T" + type.toLower()).toUtf8().constData());
+
+    std::string dir = m_tempDir->path().toUtf8().constData();
+    QScopedPointer<Xapian::WritableDatabase> wdb(new Xapian::WritableDatabase(dir,
+                                                                              Xapian::DB_CREATE_OR_OPEN));
+    wdb->replace_document(id, doc);
+    wdb->commit();
+
+    m_db->xapianDatabase()->db()->reopen();
+
+}
+
 void FileSearchStoreTest::insertText(int id, const QString& text)
 {
     Xapian::Document doc;
@@ -281,6 +296,33 @@ void FileSearchStoreTest::testEmptySearchString()
     QCOMPARE(m_store->id(qid1), serialize("file", id4));
     QVERIFY(m_store->next(qid1));
     QCOMPARE(m_store->id(qid1), serialize("file", id5));
+    QVERIFY(!m_store->next(qid1));
+}
+
+void FileSearchStoreTest::testAllVideos()
+{
+    QString url1(QLatin1String("/home/t/a"));
+    uint id1 = insertUrl(url1);
+    insertType(id1, QLatin1String("Video"));
+
+    QString url2(QLatin1String("/home/t/b"));
+    uint id2 = insertUrl(url2);
+    insertType(id2, QLatin1String("Image"));
+
+    QString url3(QLatin1String("/home/garden/b"));
+    uint id3 = insertUrl(url3);
+    insertType(id3, QLatin1String("Video"));
+
+    Query q;
+    q.addType(QLatin1String("Video"));
+
+    int qid1 = m_store->exec(q);
+    QCOMPARE(qid1, 1);
+
+    QVERIFY(m_store->next(qid1));
+    QCOMPARE(m_store->id(qid1), serialize("file", id1));
+    QVERIFY(m_store->next(qid1));
+    QCOMPARE(m_store->id(qid1), serialize("file", id3));
     QVERIFY(!m_store->next(qid1));
 }
 
