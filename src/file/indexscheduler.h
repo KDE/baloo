@@ -105,7 +105,6 @@ private Q_SLOTS:
     void slotConfigChanged();
 
     void slotStartedIndexing();
-    void slotFinishedBasicIndexing();
 
     // Event Monitor integration
     void slotScheduleIndexing();
@@ -119,8 +118,8 @@ private:
     // no signal is emitted twice
     void setIndexingStarted(bool started);
 
-    bool scheduleBasicQueue();
-    bool scheduleFileQueue();
+    bool shouldRunBasicQueue();
+    bool shouldRunFileQueue();
     void setStateFromEvent();
 
     bool m_indexing;

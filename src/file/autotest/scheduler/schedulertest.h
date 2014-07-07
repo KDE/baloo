@@ -23,13 +23,25 @@
 
 #include <QObject>
 
+class Database;
+
 namespace Baloo {
 
 class SchedulerTest : public QObject
 {
     Q_OBJECT
+private:
+    struct IndexingData {
+        int phaseOne;
+        int phaseTwo;
+        int failed;
+    };
+
+    IndexingData fetchIndexingData(Database& db);
+
 private Q_SLOTS:
     void test();
+    void testBatterySuspend();
 };
 
 }

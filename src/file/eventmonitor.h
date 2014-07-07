@@ -28,6 +28,7 @@
 
 namespace Baloo
 {
+class SchedulerTest;
 
 class EventMonitor : public QObject
 {
@@ -70,6 +71,8 @@ private:
     bool m_enabled;
     bool m_isIdle;
     bool m_isOnBattery;
+
+    friend class SchedulerTest;
 };
 }
 

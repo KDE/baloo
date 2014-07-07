@@ -49,7 +49,7 @@ IndexScheduler::IndexScheduler(Database* db, FileIndexerConfig* config, QObject*
     connect(m_fileIQ, SIGNAL(finishedIndexing()), this, SIGNAL(fileIndexingDone()));
 
     connect(m_basicIQ, SIGNAL(startedIndexing()), this, SLOT(slotStartedIndexing()));
-    connect(m_basicIQ, SIGNAL(finishedIndexing()), this, SLOT(slotFinishedBasicIndexing()));
+    connect(m_basicIQ, SIGNAL(finishedIndexing()), this, SLOT(slotScheduleIndexing()));
     connect(m_fileIQ, SIGNAL(startedIndexing()), this, SLOT(slotStartedIndexing()));
     connect(m_fileIQ, SIGNAL(finishedIndexing()), this, SLOT(slotScheduleIndexing()));
 
@@ -143,14 +143,6 @@ void IndexScheduler::slotStartedIndexing()
     setIndexingStarted(true);
 }
 
-void IndexScheduler::slotFinishedBasicIndexing()
-{
-    if (m_basicIQ->isEmpty()) {
-        m_fileIQ->fillQueue();
-        slotScheduleIndexing();
-    }
-}
-
 void IndexScheduler::updateDir(const QString& path, UpdateDirFlags flags)
 {
     m_basicIQ->enqueue(FileMapping(path), flags);
@@ -217,7 +209,7 @@ void IndexScheduler::setStateFromEvent()
     }
 }
 
-bool IndexScheduler::scheduleBasicQueue()
+bool IndexScheduler::shouldRunBasicQueue()
 {
     switch (m_state) {
         case State_Suspended:
@@ -232,7 +224,7 @@ bool IndexScheduler::scheduleBasicQueue()
 }
 
 
-bool IndexScheduler::scheduleFileQueue()
+bool IndexScheduler::shouldRunFileQueue()
 {
     if (!m_basicIQ->isEmpty()){
         qDebug() << "Basic queue not empty, so no file queue.";
@@ -260,7 +252,7 @@ void IndexScheduler::slotScheduleIndexing()
     setStateFromEvent();
 
     //Should we run the basic queue?
-    bool runBasic = scheduleBasicQueue();
+    bool runBasic = shouldRunBasicQueue();
 
     //If we should not, stop.
     if (!runBasic) {
@@ -268,17 +260,20 @@ void IndexScheduler::slotScheduleIndexing()
         m_fileIQ->suspend();
     }
     else {
-        //Run the basic queue if it isn't empty
+        // Run the basic queue if it isn't empty
         if (!m_basicIQ->isEmpty()) {
-            m_basicIQ->setDelay(0);
             m_basicIQ->resume();
         }
-        //Consider running the file queue:
-        //this will only happen if the basic queue is not empty.
-        if (scheduleFileQueue())
+
+        // Consider running the file queue:
+        // this will only happen if the basic queue is not empty.
+        if (shouldRunFileQueue()) {
+            m_fileIQ->fillQueue();
             m_fileIQ->resume();
-        else
+        }
+        else {
             m_fileIQ->suspend();
+        }
     }
 
     if (m_basicIQ->isEmpty() && m_fileIQ->isEmpty() && m_commitQ->isEmpty()) {
