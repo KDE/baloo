@@ -347,6 +347,3 @@ QSet<qint64> SearchPlugin::search(const QString &akonadiQuery, const QList<qint6
     qDebug() << "Got" << resultSet.count() << "results";
     return resultSet;
 }
-
-//QT5
-//Q_EXPORT_PLUGIN2(akonadi_baloo_searchplugin, SearchPlugin)
