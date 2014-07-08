@@ -38,7 +38,7 @@ set_package_properties(QJSON PROPERTIES
     TYPE REQUIRED
 )
 
-find_package(Akonadi 1.12.1 CONFIG)
+find_package(Akonadi 1.12.90 CONFIG)
 set_package_properties(Akonadi PROPERTIES
     URL "http://akonadi-project.org"
     TYPE REQUIRED
