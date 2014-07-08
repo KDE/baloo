@@ -36,6 +36,7 @@
 #include <QDBusConnectionInterface>
 
 #include "xapiandatabase.h"
+#include "filestatistics.h"
 
 using namespace Baloo;
 
@@ -180,5 +181,13 @@ int main(int argc, char* argv[])
             start();
     }
 
+    if (command == QStringLiteral("fileStatistics")) {
+        const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/file/");
+
+        XapianDatabase database(path);
+        FileStatistics stats(database);
+        stats.compute();
+        stats.print();
+    }
     return 0;
 }

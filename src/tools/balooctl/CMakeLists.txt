@@ -1,4 +1,4 @@
-set(SRCS main.cpp)
+set(SRCS main.cpp filestatistics.cpp)
 
 add_executable(balooctl ${SRCS})
 
