@@ -82,6 +82,8 @@ void SchedulerTest::test()
 
     FileIndexerConfig config;
     IndexScheduler scheduler(&db, &config);
+    scheduler.m_fileIQ->setBatchSize(2);
+    scheduler.m_fileIQ->setMaxSize(10);
 
     QSignalSpy spy1(&scheduler, SIGNAL(indexingStarted()));
     QSignalSpy spy2(&scheduler, SIGNAL(basicIndexingDone()));

@@ -47,6 +47,9 @@ public:
 
     void clear();
 
+    void setMaxSize(int size) { m_maxSize = size; }
+    void setBatchSize(int size) { m_batchSize = size; }
+
 Q_SIGNALS:
     void newDocument(uint docid, const Xapian::Document& doc);
 
