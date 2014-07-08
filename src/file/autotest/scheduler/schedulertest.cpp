@@ -34,6 +34,8 @@
 #include <QTemporaryDir>
 #include <QTextStream>
 
+#include <Solid/PowerManagement>
+
 using namespace Baloo;
 
 SchedulerTest::IndexingData SchedulerTest::fetchIndexingData(Database& db)
@@ -84,6 +86,10 @@ void SchedulerTest::test()
     IndexScheduler scheduler(&db, &config);
     scheduler.m_fileIQ->setBatchSize(2);
     scheduler.m_fileIQ->setMaxSize(10);
+    scheduler.m_fileIQ->setTestMode(true);
+    scheduler.m_eventMonitor->disconnect(&scheduler);
+    scheduler.m_eventMonitor->m_isIdle = false;
+    scheduler.m_eventMonitor->m_isOnBattery = false;
 
     QSignalSpy spy1(&scheduler, SIGNAL(indexingStarted()));
     QSignalSpy spy2(&scheduler, SIGNAL(basicIndexingDone()));
@@ -155,6 +161,11 @@ void SchedulerTest::testBatterySuspend()
 
     FileIndexerConfig config;
     IndexScheduler scheduler(&db, &config);
+    scheduler.m_fileIQ->setTestMode(true);
+    scheduler.m_eventMonitor->m_isIdle = false;
+    scheduler.m_eventMonitor->m_isOnBattery = false;
+    Solid::PowerManagement::notifier()->disconnect(scheduler.m_eventMonitor);
+
     // Seems to intefere with the rest of the world
     // FIXME: Maybe we should remove this completely?
     disconnect(scheduler.m_config, SIGNAL(configChanged()), &scheduler, SLOT(slotConfigChanged()));
@@ -234,6 +245,10 @@ void SchedulerTest::testIdle()
 
     FileIndexerConfig config;
     IndexScheduler scheduler(&db, &config);
+    scheduler.m_fileIQ->setTestMode(true);
+    scheduler.m_eventMonitor->m_isIdle = false;
+    scheduler.m_eventMonitor->m_isOnBattery = false;
+    Solid::PowerManagement::notifier()->disconnect(scheduler.m_eventMonitor);
 
     scheduler.updateAll();
     QEventLoop loop;

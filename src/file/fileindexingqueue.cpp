@@ -41,11 +41,6 @@ FileIndexingQueue::FileIndexingQueue(Database* db, QObject* parent)
     m_batchSize = 40;
 
     m_fileQueue.reserve(m_maxSize);
-
-    const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/file/");
-    if (db->path() != path) {
-        m_testMode = true;
-    }
 }
 
 void FileIndexingQueue::fillQueue()
