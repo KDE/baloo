@@ -27,6 +27,7 @@
 #include <KConfig>
 #include <KConfigGroup>
 #include <QDebug>
+#include <QFileInfo>
 #include <iostream>
 
 #include "filewatch.h"
@@ -80,6 +81,12 @@ int main(int argc, char** argv)
     KCrash::setFlags(KCrash::AutoRestart);
 
     const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/file/");
+    QFileInfo dirInfo(path);
+    if (!dirInfo.permission(QFile::WriteOwner)) {
+        QTextStream err(stderr);
+        err << path << " does not have write permissions. Aborting\n";
+        return 1;
+    }
 
     Database db;
     db.setPath(path);
