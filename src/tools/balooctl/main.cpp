@@ -55,6 +55,24 @@ void stop()
     QDBusConnection::sessionBus().call(message);
 }
 
+void suspend()
+{
+    QDBusMessage message = QDBusMessage::createMethodCall(QLatin1String("org.kde.baloo.file"),
+                                                          QLatin1String("/indexer"),
+                                                          QLatin1String("org.kde.baloo.file"),
+                                                          QLatin1String("suspend"));
+    QDBusConnection::sessionBus().call(message);
+}
+
+void resume()
+{
+    QDBusMessage message = QDBusMessage::createMethodCall(QLatin1String("org.kde.baloo.file"),
+                                                          QLatin1String("/indexer"),
+                                                          QLatin1String("org.kde.baloo.file"),
+                                                          QLatin1String("resume"));
+    QDBusConnection::sessionBus().call(message);
+}
+
 int main(int argc, char* argv[])
 {
     KAboutData aboutData(QLatin1String("balooctl"), i18n("balooctl"), QLatin1String("0.1"));
@@ -72,6 +90,8 @@ int main(int argc, char* argv[])
     parser.addPositionalArgument(QLatin1String("start"), i18n("Start the file indexer"));
     parser.addPositionalArgument(QLatin1String("stop"), i18n("Stop the file indexer"));
     parser.addPositionalArgument(QLatin1String("restart"), i18n("Restart the file indexer"));
+    parser.addPositionalArgument(QLatin1String("suspend"), i18n("Suspend the file indexer"));
+    parser.addPositionalArgument(QLatin1String("resume"), i18n("Resume the file indexer"));
 
     parser.process(app);
     if (parser.positionalArguments().isEmpty()) {
@@ -179,6 +199,18 @@ int main(int argc, char* argv[])
             stop();
         if (shouldStart)
             start();
+    }
+
+    if (command == QStringLiteral("suspend")) {
+        suspend();
+        out << "File Indexer suspended\n";
+        return 0;
+    }
+
+    if (command == QStringLiteral("resume")) {
+        resume();
+        out << "File Indexer resumed\n";
+        return 0;
     }
 
     if (command == QStringLiteral("fileStatistics")) {
