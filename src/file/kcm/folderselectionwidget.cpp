@@ -201,10 +201,6 @@ void FolderSelectionWidget::slotAddButtonClicked()
         return;
     }
 
-    // vHanda: Maybe we should be showing a message?
-    if (url == QLatin1String("/home"))
-        url = QDir::homePath();
-
     if (!url.endsWith(QDir::separator()))
         url.append(QDir::separator());
 
@@ -329,7 +325,8 @@ bool FolderSelectionWidget::shouldShowMountPoint(const QString& mountPoint)
         return false;
 
     // The user's home directory is forcibly added so we can ignore /home
-    if (mountPoint.startsWith(QLatin1String("/home")))
+    // if /home actually contains the home direcory
+    if (mountPoint.startsWith(QStringLiteral("/home")) && QDir::homePath().startsWith(QStringLiteral("/home")))
         return false;
 
     return true;
