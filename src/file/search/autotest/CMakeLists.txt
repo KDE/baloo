@@ -7,6 +7,7 @@ include_directories(
 set(filesearchstore_SRCS filesearchstoretest.cpp
                    ../filesearchstore.cpp
                    ../pathfilterpostingsource.cpp
+                   ../wildcardpostingsource.cpp
                    ../../lib/filemapping.cpp
                    ../../database.cpp
 )

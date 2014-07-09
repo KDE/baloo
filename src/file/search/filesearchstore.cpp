@@ -25,6 +25,7 @@
 #include "query.h"
 #include "filemapping.h"
 #include "pathfilterpostingsource.h"
+#include "wildcardpostingsource.h"
 
 #include <xapian.h>
 #include <QVector>
@@ -131,6 +132,11 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
         }
 
         return Xapian::Query(Xapian::Query::OP_OR, terms.begin(), terms.end());
+    }
+
+    if (property == QStringLiteral("filename") && value.toString().contains('*')) {
+        WildcardPostingSource ws(value.toString(), QStringLiteral("F"));
+        return Xapian::Query(&ws);
     }
 
     if (com == Term::Contains) {

@@ -95,6 +95,26 @@ void FileSearchStoreTest::insertType(int id, const QString& type)
 
 }
 
+void FileSearchStoreTest::insertExactText(int id, const QString& text, const QString& prefix)
+{
+    Xapian::Document doc;
+    try {
+        doc = m_db->xapianDatabase()->db()->get_document(id);
+    }
+    catch (...) {
+    }
+
+    doc.add_term((prefix + text).toUtf8().constData());
+
+    std::string dir = m_tempDir->path().toUtf8().constData();
+    QScopedPointer<Xapian::WritableDatabase> wdb(new Xapian::WritableDatabase(dir,
+                                                                              Xapian::DB_CREATE_OR_OPEN));
+    wdb->replace_document(id, doc);
+    wdb->commit();
+
+    m_db->xapianDatabase()->db()->reopen();
+}
+
 void FileSearchStoreTest::insertText(int id, const QString& text)
 {
     Xapian::Document doc;
@@ -326,6 +346,59 @@ void FileSearchStoreTest::testAllVideos()
     QVERIFY(!m_store->next(qid1));
 }
 
+void FileSearchStoreTest::testFileNameSearch()
+{
+    QString url1(QLatin1String("/home/t/a"));
+    uint id1 = insertUrl(url1);
+    insertExactText(id1, QLatin1String("flowering"), "F");
+    insertExactText(id1, QLatin1String("dork"), "F");
+    insertExactText(id1, QLatin1String("dork"), "A");
+    insertExactText(id1, QLatin1String("dork"), "G");
+
+    QString url2(QLatin1String("/home/t/b"));
+    uint id2 = insertUrl(url2);
+    insertExactText(id2, QLatin1String("powering"), "F");
+    insertExactText(id2, QLatin1String("fire"), "F");
+    insertExactText(id2, QLatin1String("dork"), "A");
+    insertExactText(id2, QLatin1String("dork"), "G");
+
+    QString url3(QLatin1String("/home/garden/b"));
+    uint id3 = insertUrl(url3);
+    insertExactText(id3, QLatin1String("does"), "F");
+    insertExactText(id3, QLatin1String("not"), "F");
+    insertExactText(id3, QLatin1String("dork"), "A");
+    insertExactText(id3, QLatin1String("dork"), "G");
+
+    Query q;
+    q.addType(QLatin1String("File"));
+    q.setTerm(Term("filename", "dork"));
+
+    int qid1 = m_store->exec(q);
+    QCOMPARE(qid1, 1);
+    QVERIFY(m_store->next(qid1));
+    QCOMPARE(m_store->id(qid1), serialize("file", id1));
+    QVERIFY(!m_store->next(qid1));
+
+    q.setTerm(Term("filename", "do*"));
+
+    int qid2 = m_store->exec(q);
+    QCOMPARE(qid2, 2);
+    QVERIFY(m_store->next(qid2));
+    QCOMPARE(m_store->id(qid2), serialize("file", id1));
+    QVERIFY(m_store->next(qid2));
+    QCOMPARE(m_store->id(qid2), serialize("file", id3));
+    QVERIFY(!m_store->next(qid2));
+
+    q.setTerm(Term("filename", "*ing"));
+
+    int qid3 = m_store->exec(q);
+    QCOMPARE(qid3, 3);
+    QVERIFY(m_store->next(qid3));
+    QCOMPARE(m_store->id(qid3), serialize("file", id1));
+    QVERIFY(m_store->next(qid3));
+    QCOMPARE(m_store->id(qid3), serialize("file", id2));
+    QVERIFY(!m_store->next(qid3));
+}
 
 
 QTEST_MAIN(Baloo::FileSearchStoreTest)

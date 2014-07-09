@@ -1,4 +1,7 @@
-add_library(baloo_filesearchstore MODULE pathfilterpostingsource.cpp filesearchstore.cpp)
+add_library(baloo_filesearchstore MODULE
+    wildcardpostingsource.cpp
+    pathfilterpostingsource.cpp
+    filesearchstore.cpp)
 
 target_link_libraries(baloo_filesearchstore
     Qt5::Core
