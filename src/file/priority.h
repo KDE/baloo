@@ -20,7 +20,9 @@
 #define _NEPOMUK_LINUX_PRIORITY_H_
 
 bool lowerIOPriority();
+/// Sets the priority to batch
 bool lowerSchedulingPriority();
+bool setIdleSchedulingPriority();
 bool lowerPriority();
 
 #endif // _NEPOMUK_LINUX_PRIORITY_H_

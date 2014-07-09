@@ -33,7 +33,7 @@
 int main(int argc, char* argv[])
 {
     lowerIOPriority();
-    lowerSchedulingPriority();
+    setIdleSchedulingPriority();
     lowerPriority();
 
     QCoreApplication app(argc, argv);
