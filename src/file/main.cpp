@@ -53,6 +53,7 @@ int main(int argc, char** argv)
 
     KAboutData::setApplicationData(aboutData);
 
+    QApplication::setDesktopSettingsAware(false);
     QApplication app(argc, argv);
     app.setQuitOnLastWindowClosed(false);
 
