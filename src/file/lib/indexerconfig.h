@@ -32,7 +32,6 @@ public:
     IndexerConfig();
     ~IndexerConfig();
 
-    bool balooEnabled() const;
     bool fileIndexingEnabled() const;
 
     bool shouldBeIndexed(const QString& path) const;

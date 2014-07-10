@@ -43,13 +43,6 @@ IndexerConfig::~IndexerConfig()
     delete d;
 }
 
-bool IndexerConfig::balooEnabled() const
-{
-    KConfig config(QLatin1String("baloofilerc"));
-    KConfigGroup group = config.group("Basic Settings");
-    return group.readEntry("Enabled", true);
-}
-
 bool IndexerConfig::fileIndexingEnabled() const
 {
     KConfig config(QLatin1String("baloofilerc"));
