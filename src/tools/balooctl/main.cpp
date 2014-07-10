@@ -134,8 +134,8 @@ int main(int argc, char* argv[])
         int total = xdb->get_doccount();
 
         out << "Indexed " << phaseTwo << " / " << total << " files\n";
-        out << "Failed to index " << failed << " files\n";
         if (failed) {
+            out << "Failed to index " << failed << " files\n";
             out << "File IDs: ";
             Xapian::MSetIterator iter = mset.begin();
             for (; iter != mset.end(); ++iter) {
