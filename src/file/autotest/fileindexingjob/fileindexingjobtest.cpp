@@ -36,8 +36,8 @@ void FileIndexingJobTest::init()
     path = QByteArray(BALOO_TEMP_PATH) + ";" + path;
 #endif
 
-    setenv("PATH", path.constData(), 1);
-    unsetenv("BALOO_EXTRACTOR_FAIL_FILE");
+    qputenv("PATH", path);
+    qunsetenv("BALOO_EXTRACTOR_FAIL_FILE");
 }
 
 void FileIndexingJobTest::testFileFail()
@@ -47,7 +47,7 @@ void FileIndexingJobTest::testFileFail()
         files << i;
     }
 
-    putenv("BALOO_EXTRACTOR_FAIL_FILE=5");
+    qputenv("BALOO_EXTRACTOR_FAIL_FILE", QByteArray("5"));
     FileIndexingJob* job = new FileIndexingJob(files);
 
     QSignalSpy spy(job, SIGNAL(indexingFailed(uint)));
@@ -65,7 +65,7 @@ void FileIndexingJobTest::testMultiFileFail()
         files << i;
     }
 
-    putenv("BALOO_EXTRACTOR_FAIL_FILE=5,18,19");
+    qputenv("BALOO_EXTRACTOR_FAIL_FILE", QByteArray("5,18,19"));
     FileIndexingJob* job = new FileIndexingJob(files);
 
     QSignalSpy spy(job, SIGNAL(indexingFailed(uint)));
@@ -102,7 +102,7 @@ void FileIndexingJobTest::testTimeout()
         files << i;
     }
 
-    putenv("BALOO_EXTRACTOR_TIMEOUT_FILE=5");
+    qputenv("BALOO_EXTRACTOR_TIMEOUT_FILE", QByteArray("5"));
     FileIndexingJob* job = new FileIndexingJob(files);
     job->setTimeoutInterval(100);
 
