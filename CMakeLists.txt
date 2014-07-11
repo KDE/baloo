@@ -23,7 +23,7 @@ set(BALOO_VERSION "5.0.0")
 ecm_setup_version(${BALOO_VERSION} VARIABLE_PREFIX BALOO
                         VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/baloo_version.h"
                         PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF5BalooConfigVersion.cmake"
-                        SOVERSION 5
+                        SOVERSION 1
 )
 
 # Temporary option untill kdepimlibs is ok. Activate it if you want to compile kdepim
