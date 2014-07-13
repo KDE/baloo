@@ -138,8 +138,7 @@ void BalooIndexingAgent::itemChanged(const Akonadi::Item& item, const QSet<QByte
     if (pi.isEmpty()) {
         return;
     }
-    m_index.index(item);
-    m_index.scheduleCommit();
+    m_scheduler.addItem(item);
 }
 
 void BalooIndexingAgent::itemsFlagsChanged(const Akonadi::Item::List& items,
