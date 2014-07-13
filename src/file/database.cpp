@@ -114,7 +114,7 @@ void Database::setPath(const QString& path)
     if (!m_path.endsWith(QLatin1Char('/')))
         m_path.append(QLatin1Char('/'));
 
-    QDir().mkdir(m_path);
+    QDir().mkpath(m_path);
 }
 
 bool Database::isInitialized()
