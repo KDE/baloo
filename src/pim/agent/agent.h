@@ -1,6 +1,7 @@
 /*
  * This file is part of the KDE Baloo Project
  * Copyright (C) 2012  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2014  Christian Mollekopf <mollekopf@kolabsys.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,6 +30,8 @@
 #include <QTimer>
 #include <QDateTime>
 #include <QList>
+#include "scheduler.h"
+#include "index.h"
 
 class KJob;
 class AbstractIndexer;
@@ -64,33 +67,12 @@ public:
     virtual void cleanup();
 
 private Q_SLOTS:
-    void findUnindexedItems();
-    void slotRootCollectionsFetched(KJob* job);
-    void slotItemFetchFinished(KJob* job);
-
-    void processNext();
-    void slotItemsReceived(const Akonadi::Item::List& items);
-    void slotCommitTimerElapsed();
     void onAbortRequested();
     void onOnlineChanged(bool online);
 
 private:
-    qlonglong indexedItemsInDatabase(const std::string& term, const QString& dbPath) const;
-    QDateTime loadLastItemMTime(const QDateTime& defaultDt = QDateTime()) const;
-    void createIndexers();
-    void addIndexer(AbstractIndexer *indexer);
-    AbstractIndexer* indexerForItem(const Akonadi::Item& item) const;
-    QList<AbstractIndexer*> indexersForCollection(const Akonadi::Collection& collection) const;
-
-    Akonadi::Item::List m_items;
-    QTimer m_timer;
-    QDateTime m_lastItemMTime;
-    QList<KJob*> m_jobs;
-
-    QMap<QString, AbstractIndexer* > m_indexers;
-
-    QTimer m_commitTimer;
-    bool m_inProgress;
+    Index m_index;
+    Scheduler m_scheduler;
 };
 
 #endif // AGENT_H
