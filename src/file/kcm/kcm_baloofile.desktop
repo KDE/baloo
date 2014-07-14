@@ -12,6 +12,7 @@ X-KDE-Weight=20
 
 Name=File Search
 Name[ca]=Cerca de fitxers
+Name[en_GB]=File Search
 Name[es]=Búsqueda de archivos
 Name[fi]=Tiedostohaku
 Name[nds]=Dateisöök
@@ -31,6 +32,7 @@ Name[uk]=Пошук файлів
 Name[x-test]=xxFile Searchxx
 Comment=Configure File Search Backend
 Comment[ca]=Configura el dorsal per a la cerca de fitxers
+Comment[en_GB]=Configure File Search Backend
 Comment[es]=Configurar el motor de la búsqueda de archivos
 Comment[fi]=Tiedostohaun taustajärjestelmän asetukset
 Comment[nds]=Dateisöök-Hülpprogramm instellen
