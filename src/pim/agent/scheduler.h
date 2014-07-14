@@ -24,8 +24,8 @@
 
 #include <QObject>
 #include <QQueue>
-#include <Akonadi/Collection>
-#include <Akonadi/Item>
+#include <AkonadiCore/Collection>
+#include <AkonadiCore/Item>
 #include "index.h"
 
 class CollectionIndexingJob;

@@ -22,8 +22,8 @@
 #define COLLECTIONINDEXINGJOB_H
 
 #include <KJob>
-#include <Akonadi/Item>
-#include <Akonadi/Collection>
+#include <AkonadiCore/Item>
+#include <AkonadiCore/Collection>
 #include <QTime>
 #include "index.h"
 

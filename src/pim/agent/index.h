@@ -23,8 +23,8 @@
 #define INDEX_H
 #include <QObject>
 #include <QTimer>
-#include <Akonadi/Collection>
-#include <akonadi/item.h>
+#include <AkonadiCore/Collection>
+#include <AkonadiCore/item.h>
 #include "abstractindexer.h"
 
 /**
