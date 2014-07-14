@@ -13,6 +13,9 @@ set(akonadi_baloo_indexer_SRCS
     akonotesindexer.cpp
     calendarindexer.cpp
     ../../file/priority.cpp
+    scheduler.cpp
+    collectionindexingjob.cpp
+    index.cpp
 )
 
 qt5_add_dbus_adaptor(akonadi_baloo_indexer_SRCS org.freedesktop.Akonadi.BalooIndexer.xml agent.h BalooIndexingAgent)

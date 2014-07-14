@@ -1,6 +1,7 @@
 /*
  * This file is part of the KDE Baloo Project
  * Copyright (C) 2013  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2014  Christian Mollekopf <mollekopf@kolabsys.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -34,6 +35,9 @@
 #include <ItemFetchScope>
 #include <ChangeRecorder>
 #include <CollectionFetchJob>
+#include <AkonadiCore/CollectionFetchScope>
+#include <AkonadiCore/CollectionStatistics>
+
 #include <AgentManager>
 #include <ServerManager>
 
@@ -46,36 +50,11 @@
 
 #include <QFile>
 
-namespace {
-    QString dbPath(const QString& dbName) {
-        QString basePath = QLatin1String("baloo");
-        if (Akonadi::ServerManager::hasInstanceIdentifier()) {
-            basePath = QString::fromLatin1("baloo/instances/%1").arg(Akonadi::ServerManager::instanceIdentifier());
-        }
-        return KGlobal::dirs()->localxdgdatadir() + QString::fromLatin1("%1/%2/").arg(basePath, dbName);
-    }
-    QString emailIndexingPath() {
-        return dbPath(QLatin1String("email"));
-    }
-    QString contactIndexingPath() {
-        return dbPath(QLatin1String("contacts"));
-    }
-    QString emailContactsIndexingPath() {
-        return dbPath(QLatin1String("emailContacts"));
-    }
-    QString akonotesIndexingPath() {
-        return dbPath(QLatin1String("notes"));
-    }
-    QString calendarIndexingPath() {
-        return dbPath(QLatin1String("calendars"));
-    }
-}
-
 #define INDEXING_AGENT_VERSION 4
 
 BalooIndexingAgent::BalooIndexingAgent(const QString& id)
     : AgentBase(id),
-      m_inProgress(false)
+    m_scheduler(m_index, QSharedPointer<JobFactory>(new JobFactory))
 {
     lowerIOPriority();
     lowerSchedulingPriority();
@@ -85,16 +64,13 @@ BalooIndexingAgent::BalooIndexingAgent(const QString& id)
     KConfigGroup group = config.group("Akonadi");
     const int agentIndexingVersion = group.readEntry("agentIndexingVersion", 0);
     if (agentIndexingVersion<INDEXING_AGENT_VERSION) {
-        group.deleteEntry("lastItem");
-        group.deleteEntry("initialIndexingDone");
+        m_index.removeDatabase();
+        QTimer::singleShot(0, &m_scheduler, SLOT(scheduleCompleteSync()));
         group.writeEntry("agentIndexingVersion", INDEXING_AGENT_VERSION);
         group.sync();
     }
 
-    QTimer::singleShot(0, this, SLOT(findUnindexedItems()));
-
-    createIndexers();
-    if (m_indexers.isEmpty()) {
+    if (!m_index.createIndexers()) {
         Q_EMIT status(Broken, i18nc("@info:status", "No indexers available"));
         setOnline(false);
     } else {
@@ -105,14 +81,8 @@ BalooIndexingAgent::BalooIndexingAgent(const QString& id)
     connect(this, SIGNAL(onlineChanged(bool)),
             this, SLOT(onOnlineChanged(bool)));
 
-    m_timer.setInterval(10);
-    m_timer.setSingleShot(true);
-    connect(&m_timer, SIGNAL(timeout()), this, SLOT(processNext()));
-
-    m_commitTimer.setInterval(1000);
-    m_commitTimer.setSingleShot(true);
-    connect(&m_commitTimer, SIGNAL(timeout()),
-            this, SLOT(slotCommitTimerElapsed()));
+    connect(&m_scheduler, SIGNAL(status(int,QString)), this, SIGNAL(status(int,QString)));
+    connect(&m_scheduler, SIGNAL(percent(int)), this, SIGNAL(percent(int)));
 
     changeRecorder()->setAllMonitored(true);
     changeRecorder()->itemFetchScope().setCacheOnly(true);
@@ -138,187 +108,24 @@ BalooIndexingAgent::BalooIndexingAgent(const QString& id)
 
 BalooIndexingAgent::~BalooIndexingAgent()
 {
-    qDeleteAll(m_indexers.values().toSet());
-    m_indexers.clear();
 }
 
 void BalooIndexingAgent::reindexCollection(const qlonglong id)
 {
     
-    qDebug() << "Reindexing collection " << id;
-}
-
-qlonglong BalooIndexingAgent::indexedItemsInDatabase(const std::string& term, const QString& dbPath) const
-{
-    Xapian::Database db;
-    try {
-        db = Xapian::Database(QFile::encodeName(dbPath).constData());
-    } catch (const Xapian::DatabaseError& e) {
-        qWarning() << "Failed to open database" << dbPath << ":" << QString::fromStdString(e.get_msg());
-        return 0;
-    }
-
-    const qlonglong count = db.get_termfreq(term);
-    return count;
+    kDebug() << "Reindexing collection " << id;
+    m_scheduler.scheduleCollection(Akonadi::Collection(id), true);
 }
 
 qlonglong BalooIndexingAgent::indexedItems(const qlonglong id)
 {
-    qDebug() << id;
-
-    const std::string term = QString::fromLatin1("C%1").arg(id).toStdString();
-    return indexedItemsInDatabase(term, emailIndexingPath())
-            + indexedItemsInDatabase(term, contactIndexingPath())
-            + indexedItemsInDatabase(term, akonotesIndexingPath());
+    return m_index.indexedItems(id);
 }
-
-void BalooIndexingAgent::createIndexers()
-{
-    AbstractIndexer *indexer = 0;
-    try {
-        QDir().mkpath(emailIndexingPath());
-        QDir().mkpath(emailContactsIndexingPath());
-        indexer = new EmailIndexer(emailIndexingPath(), emailContactsIndexingPath());
-        addIndexer(indexer);
-    }
-    catch (const Xapian::DatabaseError &e) {
-        delete indexer;
-        qWarning() << "Failed to create email indexer:" << QString::fromStdString(e.get_msg());
-    } catch (...) {
-        delete indexer;
-        kError() << "Random exception, but we do not want to crash";
-    }
-
-    try {
-        QDir().mkpath(contactIndexingPath());
-        indexer = new ContactIndexer(contactIndexingPath());
-        addIndexer(indexer);
-    }
-    catch (const Xapian::DatabaseError &e) {
-        delete indexer;
-        qWarning() << "Failed to create contact indexer:" << QString::fromStdString(e.get_msg());
-    } catch (...) {
-        delete indexer;
-        kError() << "Random exception, but we do not want to crash";
-    }
-
-
-    try {
-        QDir().mkpath(akonotesIndexingPath());
-        indexer = new AkonotesIndexer(akonotesIndexingPath());
-        addIndexer(indexer);
-    }
-    catch (const Xapian::DatabaseError &e) {
-        delete indexer;
-        qWarning() << "Failed to create akonotes indexer:" << QString::fromStdString(e.get_msg());
-    } catch (...) {
-        delete indexer;
-        kError() << "Random exception, but we do not want to crash";
-    }
-
-    try {
-        QDir().mkpath(calendarIndexingPath());
-        indexer = new CalendarIndexer(calendarIndexingPath());
-        addIndexer(indexer);
-    }
-    catch (const Xapian::DatabaseError &e) {
-        delete indexer;
-        kError() << "Failed to create akonotes indexer:" << QString::fromStdString(e.get_msg());
-    } catch (...) {
-        delete indexer;
-        kError() << "Random exception, but we do not want to crash";
-    }
-}
-
-void BalooIndexingAgent::addIndexer(AbstractIndexer* indexer)
-{
-    Q_FOREACH (const QString& mimeType, indexer->mimeTypes()) {
-        m_indexers.insert(mimeType, indexer);
-    }
-}
-
-AbstractIndexer* BalooIndexingAgent::indexerForItem(const Akonadi::Item& item) const
-{
-    return m_indexers.value(item.mimeType());
-}
-
-QList<AbstractIndexer*> BalooIndexingAgent::indexersForCollection(const Akonadi::Collection& collection) const
-{
-    QList<AbstractIndexer*> indexers;
-    Q_FOREACH (const QString& mimeType, collection.contentMimeTypes()) {
-        AbstractIndexer *i = m_indexers.value(mimeType);
-        if (i) {
-            indexers.append(i);
-        }
-    }
-    return indexers;
-}
-
-QDateTime BalooIndexingAgent::loadLastItemMTime(const QDateTime &defaultDt) const
-{
-    KConfig config(QLatin1String("baloorc"));
-    KConfigGroup group = config.group("Akonadi");
-    const QDateTime dt = group.readEntry("lastItem", defaultDt);
-    //read entry always reads in the local timezone it seems
-    return QDateTime(dt.date(), dt.time(), Qt::UTC);
-}
-
-void BalooIndexingAgent::findUnindexedItems()
-{
-    if (!isOnline()) {
-        return;
-    }
-    if (m_inProgress) {
-        return;
-    }
-    m_inProgress = true;
-
-    m_lastItemMTime = loadLastItemMTime();
-
-    Akonadi::CollectionFetchJob* job = new Akonadi::CollectionFetchJob(Akonadi::Collection::root(),
-                                                                        Akonadi::CollectionFetchJob::Recursive);
-    connect(job, SIGNAL(finished(KJob*)), this, SLOT(slotRootCollectionsFetched(KJob*)));
-    job->start();
-}
-
-void BalooIndexingAgent::slotRootCollectionsFetched(KJob* kjob)
-{
-    Akonadi::CollectionFetchJob* cjob = qobject_cast<Akonadi::CollectionFetchJob*>(kjob);
-    Akonadi::Collection::List cList = cjob->collections();
-
-    status(Running, i18n("Indexing PIM data"));
-    Q_FOREACH (const Akonadi::Collection& c, cList) {
-        Akonadi::ItemFetchJob* job = new Akonadi::ItemFetchJob(c);
-        job->setProperty("collectionsCount", cList.size());
-
-        if (!m_lastItemMTime.isNull()) {
-            QDateTime dt = m_lastItemMTime.toTimeSpec(Qt::UTC);
-            job->fetchScope().setFetchChangedSince(dt);
-        }
-
-        job->fetchScope().fetchFullPayload(true);
-        job->fetchScope().setCacheOnly(true);
-        job->fetchScope().setIgnoreRetrievalErrors(true);
-        job->fetchScope().setFetchRemoteIdentification(false);
-        job->fetchScope().setFetchModificationTime(true);
-        job->fetchScope().setAncestorRetrieval(Akonadi::ItemFetchScope::Parent);
-        job->setDeliveryOption(Akonadi::ItemFetchJob::EmitItemsIndividually);
-
-        connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),
-                this, SLOT(slotItemsReceived(Akonadi::Item::List)));
-        connect(job, SIGNAL(finished(KJob*)), this, SLOT(slotItemFetchFinished(KJob*)));
-        job->start();
-        m_jobs << job;
-    }
-}
-
 
 void BalooIndexingAgent::itemAdded(const Akonadi::Item& item, const Akonadi::Collection& collection)
 {
     Q_UNUSED(collection);
-
-    m_items << item;
-    m_timer.start();
+    m_scheduler.addItem(item);
 }
 
 void BalooIndexingAgent::itemChanged(const Akonadi::Item& item, const QSet<QByteArray>& partIdentifiers)
@@ -335,17 +142,7 @@ void BalooIndexingAgent::itemChanged(const Akonadi::Item& item, const QSet<QByte
     if (pi.isEmpty()) {
         return;
     }
-
-    AbstractIndexer *indexer = indexerForItem(item);
-    if (indexer) {
-        try {
-            indexer->remove(item);
-        } catch (const Xapian::Error &e) {
-            qWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
-        }
-        m_items << item;
-        m_timer.start();
-    }
+    m_scheduler.addItem(item);
 }
 
 void BalooIndexingAgent::itemsFlagsChanged(const Akonadi::Item::List& items,
@@ -353,65 +150,28 @@ void BalooIndexingAgent::itemsFlagsChanged(const Akonadi::Item::List& items,
                                            const QSet<QByteArray>& removedFlags)
 {
     // Akonadi always sends batch of items of the same type
-    AbstractIndexer *indexer = indexerForItem(items.first());
-    if (!indexer) {
-        return;
-    }
-
-    Q_FOREACH (const Akonadi::Item& item, items) {
-        try {
-            indexer->updateFlags(item, addedFlags, removedFlags);
-        } catch (const Xapian::Error &e) {
-            qWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
-        }
-    }
-    m_commitTimer.start();
+    m_index.updateFlags(items, addedFlags, removedFlags);
+    m_index.scheduleCommit();
 }
 
 void BalooIndexingAgent::itemsRemoved(const Akonadi::Item::List& items)
 {
-    AbstractIndexer *indexer = indexerForItem(items.first());
-    if (!indexer) {
-        return;
-    }
-
-    Q_FOREACH (const Akonadi::Item& item, items) {
-        try {
-            indexer->remove(item);
-        } catch (const Xapian::Error &e) {
-            qWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
-        }
-    }
-    m_commitTimer.start();
+    m_index.remove(items);
+    m_index.scheduleCommit();
 }
 
 void BalooIndexingAgent::collectionRemoved(const Akonadi::Collection& collection)
 {
-    Q_FOREACH (AbstractIndexer *indexer, indexersForCollection(collection)) {
-        try {
-            indexer->remove(collection);
-        } catch (const Xapian::Error &e) {
-            qWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
-        }
-    }
-    m_commitTimer.start();
+    m_index.remove(collection);
+    m_index.scheduleCommit();
 }
 
 void BalooIndexingAgent::itemsMoved(const Akonadi::Item::List& items,
                                     const Akonadi::Collection& sourceCollection,
                                     const Akonadi::Collection& destinationCollection)
 {
-    AbstractIndexer *indexer = indexerForItem(items.first());
-    if (!indexer)
-       return;
-    Q_FOREACH (const Akonadi::Item& item, items) {
-        try {
-            indexer->move(item.id(), sourceCollection.id(), destinationCollection.id());
-        } catch (const Xapian::Error &e) {
-            qWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
-        }
-    }
-    m_commitTimer.start();
+    m_index.move(items, sourceCollection, destinationCollection);
+    m_index.scheduleCommit();
 }
 
 void BalooIndexingAgent::cleanup()
@@ -420,86 +180,13 @@ void BalooIndexingAgent::cleanup()
     Akonadi::AgentBase::cleanup();
 }
 
-void BalooIndexingAgent::processNext()
-{
-    Akonadi::ItemFetchJob* job = new Akonadi::ItemFetchJob(m_items);
-    m_items.clear();
-    job->fetchScope().fetchFullPayload(true);
-    job->fetchScope().setCacheOnly(true);
-    job->fetchScope().setIgnoreRetrievalErrors(true);
-    job->fetchScope().setFetchRemoteIdentification(false);
-    job->fetchScope().setFetchModificationTime(true);
-    job->fetchScope().setAncestorRetrieval(Akonadi::ItemFetchScope::Parent);
-    job->setDeliveryOption(Akonadi::ItemFetchJob::EmitItemsIndividually);
-
-    connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),
-            this, SLOT(slotItemsReceived(Akonadi::Item::List)));
-    job->start();
-}
-
-void BalooIndexingAgent::slotItemsReceived(const Akonadi::Item::List& items)
+void BalooIndexingAgent::onAbortRequested()
 {
     KConfig config(QLatin1String("baloorc"));
     KConfigGroup group = config.group("Akonadi");
-
-    const bool initialDone = group.readEntry("initialIndexingDone", false);
-    QDateTime dt = loadLastItemMTime(QDateTime::fromMSecsSinceEpoch(1));
-
-    Q_FOREACH (const Akonadi::Item& item, items) {
-        AbstractIndexer *indexer = indexerForItem(item);
-        if (!indexer) {
-            continue;
-        }
-
-        try {
-            indexer->index(item);
-        } catch (const Xapian::Error &e) {
-            qWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
-        }
-
-        dt = qMax(dt, item.modificationTime());
-    }
-    if (initialDone)
-        group.writeEntry("lastItem", dt);
-
-    m_commitTimer.start();
-}
-
-void BalooIndexingAgent::slotItemFetchFinished(KJob* job)
-{
-    const int totalJobs = job->property("collectionsCount").toInt();
-    m_jobs.removeOne(job);
-    percent((float(totalJobs - m_jobs.count()) / float(totalJobs)) * 100);
-    if (m_jobs.isEmpty()) {
-        KConfig config(QLatin1String("baloorc"));
-        KConfigGroup group = config.group("Akonadi");
-        group.writeEntry("initialIndexingDone", true);
-        group.writeEntry("agentIndexingVersion", INDEXING_AGENT_VERSION);
-        status(Idle, i18n("Ready"));
-        m_inProgress = false;
-    }
-}
-
-
-void BalooIndexingAgent::slotCommitTimerElapsed()
-{
-    Q_FOREACH (AbstractIndexer *indexer, m_indexers) {
-        try {
-            indexer->commit();
-        } catch (const Xapian::Error &e) {
-            qWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
-        }
-    }
-}
-
-void BalooIndexingAgent::onAbortRequested()
-{
-    Q_FOREACH (KJob *job, m_jobs) {
-        job->kill(KJob::Quietly);
-    }
-    m_jobs.clear();
-    m_inProgress = false;
-    status(Idle, i18n("Ready"));
+    group.writeEntry("aborted", true);
+    group.sync();
+    m_scheduler.abort();
 }
 
 void BalooIndexingAgent::onOnlineChanged(bool online)
@@ -509,7 +196,15 @@ void BalooIndexingAgent::onOnlineChanged(bool online)
 
     // Index items that might have changed while we were offline
     if (online) {
-        findUnindexedItems();
+        //We only reindex if this is not a regular start
+        KConfig config(QLatin1String("baloorc"));
+        KConfigGroup group = config.group("Akonadi");
+        const bool aborted = group.readEntry("aborted", false);
+        if (aborted) {
+            group.writeEntry("aborted", false);
+            group.sync();
+            m_scheduler.scheduleCompleteSync();
+        }
     } else {
         // Abort ongoing indexing when switched to offline
         onAbortRequested();
