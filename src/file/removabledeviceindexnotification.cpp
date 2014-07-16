@@ -39,7 +39,7 @@ RemovableDeviceIndexNotification::RemovableDeviceIndexNotification(const Baloo::
     m_medium(medium)
 {
     setTitle(i18nc("@title", "New removable device detected"));
-    setText(i18nc("@info", "Do you want files on removable device <resource>%1</resource> to be indexed for fast desktop searches?", m_medium->device().description()));
+    setText(xi18nc("@info", "Do you want files on removable device <resource>%1</resource> to be indexed for fast desktop searches?", m_medium->device().description()));
     setPixmap(KIcon(QLatin1String("nepomuk")).pixmap(32, 32));
 
     setActions(QStringList()
