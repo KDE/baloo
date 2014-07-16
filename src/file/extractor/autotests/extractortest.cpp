@@ -49,6 +49,7 @@ void ExtractorTest::testBData()
     process.start(exe, args);
     QVERIFY(process.waitForFinished(1000));
 
+    qDebug() << process.readAllStandardError();
     QByteArray bytearray = QByteArray::fromBase64(process.readAllStandardOutput());
     QVariantMap data;
     QDataStream in(&bytearray, QIODevice::ReadOnly);
