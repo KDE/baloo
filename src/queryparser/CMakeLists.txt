@@ -1,3 +1,5 @@
+add_definitions(-DTRANSLATION_DOMAIN=\"baloo_queryparser\")
+
 add_definitions(${KDE4_ENABLE_EXCEPTIONS})
 
 set(QUERYPARSER_SRCS

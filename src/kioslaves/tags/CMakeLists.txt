@@ -1,3 +1,5 @@
+add_definitions(-DTRANSLATION_DOMAIN=\"kio_tags\")
+
 add_library(kio_tags MODULE kio_tags.cpp)
 
 target_link_libraries(kio_tags

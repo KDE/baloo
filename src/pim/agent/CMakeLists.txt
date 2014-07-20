@@ -1,3 +1,5 @@
+add_definitions(-DTRANSLATION_DOMAIN=\"akonadi_baloo_indexer\")
+
 kde_enable_exceptions()
 include_directories(
     ${XAPIAN_INCLUDE_DIR}

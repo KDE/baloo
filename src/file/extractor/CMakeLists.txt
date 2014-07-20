@@ -1,3 +1,6 @@
+remove_definitions(-DTRANSLATION_DOMAIN=\"baloo_file\")
+add_definitions(-DTRANSLATION_DOMAIN=\"baloo_file_extractor\")
+
 set(EXTRACTOR_SRCS
   main.cpp
   app.cpp

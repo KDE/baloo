@@ -1,3 +1,6 @@
+remove_definitions(-DTRANSLATION_DOMAIN=\"baloo_file\")
+add_definitions(-DTRANSLATION_DOMAIN=\"kcm_baloofile\")
+
 set(kcm_file_SRCS
   kcm.cpp
   ../fileexcludefilters.cpp

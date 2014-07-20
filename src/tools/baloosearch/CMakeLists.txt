@@ -1,3 +1,5 @@
+add_definitions(-DTRANSLATION_DOMAIN=\"baloosearch\")
+
 set(BALOO_SEARCH_SRCS main.cpp)
 
 add_executable(baloosearch ${BALOO_SEARCH_SRCS})

@@ -1,3 +1,5 @@
+add_definitions(-DTRANSLATION_DOMAIN=\"baloo_file\")
+
 kde_enable_exceptions()
 
 add_subdirectory(lib)
