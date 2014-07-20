@@ -1,3 +1,5 @@
+add_definitions(-DTRANSLATION_DOMAIN=\"kio_baloosearch\")
+
 add_library(kio_baloosearch MODULE kio_search.cpp)
 
 target_link_libraries(kio_baloosearch

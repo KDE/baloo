@@ -1,3 +1,5 @@
+add_definitions(-DTRANSLATION_DOMAIN=\"balooshow\")
+
 set(SRCS main.cpp)
 
 add_executable(balooshow ${SRCS})

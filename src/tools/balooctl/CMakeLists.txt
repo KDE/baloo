@@ -1,3 +1,5 @@
+add_definitions(-DTRANSLATION_DOMAIN=\"balooctl\")
+
 set(SRCS main.cpp filestatistics.cpp)
 
 add_executable(balooctl ${SRCS})
