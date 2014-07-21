@@ -38,6 +38,8 @@ set_target_properties(KF5BalooPim PROPERTIES
     EXPORT_NAME BalooPim
 )
 
+target_include_directories(KF5BalooPim INTERFACE "$<INSTALL_INTERFACE:${KF5_INCLUDE_INSTALL_DIR}/Baloo>")
+
 install(TARGETS KF5BalooPim EXPORT KF5BalooTargets ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
 
 
@@ -51,7 +53,8 @@ install(FILES
     resultiterator.h
     ${CMAKE_CURRENT_BINARY_DIR}/pim_export.h
 
-    DESTINATION ${INCLUDE_INSTALL_DIR}/baloo/pim COMPONENT Devel
+    DESTINATION ${KF5_INCLUDE_INSTALL_DIR}/Baloo/baloo/pim
+    COMPONENT Devel
 )
 
 #REACTIVATE it
