@@ -61,9 +61,11 @@ bool Database::init(bool sqlOnly)
 
     m_sqlDb = new QSqlDatabase(QSqlDatabase::addDatabase(QLatin1String("QSQLITE")));
     m_sqlDb->setDatabaseName(m_path + QLatin1String("/fileMap.sqlite3"));
+    kDebug() << m_path << QFile::exists(m_path);
 
     if (!m_sqlDb->open()) {
         qDebug() << "Failed to open db" << m_sqlDb->lastError().text();
+        qDebug() << m_sqlDb->lastError();
         return false;
     }
 
@@ -111,6 +113,8 @@ void Database::setPath(const QString& path)
     m_path = path;
     if (!m_path.endsWith(QLatin1Char('/')))
         m_path.append(QLatin1Char('/'));
+
+    QDir().mkpath(m_path);
 }
 
 bool Database::isInitialized()
