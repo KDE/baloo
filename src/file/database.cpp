@@ -61,7 +61,7 @@ bool Database::init(bool sqlOnly)
 
     m_sqlDb = new QSqlDatabase(QSqlDatabase::addDatabase(QLatin1String("QSQLITE")));
     m_sqlDb->setDatabaseName(m_path + QLatin1String("/fileMap.sqlite3"));
-    kDebug() << m_path << QFile::exists(m_path);
+    qDebug() << m_path << QFile::exists(m_path);
 
     if (!m_sqlDb->open()) {
         qDebug() << "Failed to open db" << m_sqlDb->lastError().text();
