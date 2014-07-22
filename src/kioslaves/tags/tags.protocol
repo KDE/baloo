@@ -1,5 +1,5 @@
 [Protocol]
-exec=kio_tags
+exec=tags
 protocol=tags
 input=none
 output=filesystem

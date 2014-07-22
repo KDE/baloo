@@ -1,5 +1,5 @@
 [Protocol]
-exec=kio_timeline
+exec=timeline
 protocol=timeline
 input=none
 output=filesystem

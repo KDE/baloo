@@ -1,5 +1,5 @@
 [Protocol]
-exec=kio_baloosearch
+exec=baloosearch
 protocol=baloosearch
 input=none
 output=filesystem
