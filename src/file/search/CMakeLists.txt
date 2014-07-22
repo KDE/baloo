@@ -1,9 +1,9 @@
-add_library(baloo_filesearchstore MODULE
+add_library(filesearchstore MODULE
     wildcardpostingsource.cpp
     pathfilterpostingsource.cpp
     filesearchstore.cpp)
 
-target_link_libraries(baloo_filesearchstore
+target_link_libraries(filesearchstore
     Qt5::Core
     Qt5::Sql
     ${XAPIAN_LIBRARIES}
@@ -14,6 +14,6 @@ target_link_libraries(baloo_filesearchstore
 )
 
 install(FILES baloo_filesearchstore.desktop DESTINATION ${SERVICES_INSTALL_DIR})
-install(TARGETS baloo_filesearchstore DESTINATION ${PLUGIN_INSTALL_DIR})
+install(TARGETS filesearchstore DESTINATION ${PLUGIN_INSTALL_DIR}/kf5/baloo)
 
 add_subdirectory(autotest)
