@@ -24,20 +24,18 @@
 #include <KPluginFactory>
 #include <KPluginLoader>
 #include <KAboutData>
-#include <KSharedConfig>
-#include <KDirWatch>
 #include <QDebug>
 #include <QStandardPaths>
 #include <KLocalizedString>
-#include <KConfigGroup>
 
-#include <QStyle>
 #include <QPushButton>
 #include <QDir>
 #include <QProcess>
 #include <QDBusConnection>
 #include <QDBusMessage>
 #include <QDBusPendingCall>
+
+#include "indexerconfig.h"
 
 K_PLUGIN_FACTORY(BalooConfigModuleFactory, registerPlugin<Baloo::ServerConfigModule>();)
 K_EXPORT_PLUGIN(BalooConfigModuleFactory("kcm_baloofile"))
@@ -88,16 +86,13 @@ ServerConfigModule::~ServerConfigModule()
 
 void ServerConfigModule::load()
 {
-    // File indexer settings
-    KConfig config(QLatin1String("baloofilerc"));
-    KConfigGroup group = config.group("General");
+    Baloo::IndexerConfig config;
 
-    KConfigGroup basicSettings = config.group("Basic Settings");
-    m_previouslyEnabled = basicSettings.readEntry("Indexing-Enabled", true);
+    m_previouslyEnabled = config.fileIndexingEnabled();
     m_enableCheckbox->setChecked(m_previouslyEnabled);
 
-    QStringList includeFolders = group.readPathEntry("folders", defaultFolders());
-    QStringList excludeFolders = group.readPathEntry("exclude folders", QStringList());
+    QStringList includeFolders = config.includeFolders();
+    QStringList excludeFolders = config.excludeFolders();
     m_folderSelectionWidget->setFolders(includeFolders, excludeFolders);
 
     // All values loaded -> no changes
@@ -110,24 +105,19 @@ void ServerConfigModule::save()
     QStringList includeFolders = m_folderSelectionWidget->includeFolders();
     QStringList excludeFolders = m_folderSelectionWidget->excludeFolders();
 
-    // Change the settings
-    KConfig config(QLatin1String("baloofilerc"));
-    KConfigGroup basicSettings = config.group("Basic Settings");
-
     bool mountPointsEx = m_folderSelectionWidget->allMountPointsExcluded();
 
     bool enabled = m_enableCheckbox->isChecked();
     if (mountPointsEx)
         enabled = false;
 
-    basicSettings.writeEntry("Indexing-Enabled", enabled);
-
-    // 2.2 Update normals paths
-    config.group("General").writePathEntry("folders", includeFolders);
-    config.group("General").writePathEntry("exclude folders", excludeFolders);
+    Baloo::IndexerConfig config;
+    config.setFileIndexingEnabled(enabled);
+    config.setIncludeFolders(includeFolders);
+    config.setExcludeFolders(excludeFolders);
 
     if (m_previouslyEnabled != enabled) {
-        config.group("General").deleteEntry("first run");
+        config.setFirstRun(true);
     }
 
     // Start Baloo
