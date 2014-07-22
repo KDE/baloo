@@ -109,7 +109,7 @@ bool BasicIndexingQueue::process(FileMapping& file, UpdateDirFlags flags)
     if (info.isDir()) {
         if (forced || indexingRequired) {
             startedIndexing = true;
-            index(file, mimetype);
+            index(file, mimetype, flags);
         }
 
         // We don't want to follow system links
@@ -123,7 +123,7 @@ bool BasicIndexingQueue::process(FileMapping& file, UpdateDirFlags flags)
         }
     } else if (info.isFile() && (forced || indexingRequired)) {
         startedIndexing = true;
-        index(file, mimetype);
+        index(file, mimetype, flags);
     }
 
     return startedIndexing;
@@ -174,13 +174,29 @@ bool BasicIndexingQueue::shouldIndexContents(const QString& dir)
     return m_config->shouldFolderBeIndexed(dir);
 }
 
-void BasicIndexingQueue::index(const FileMapping& file, const QString& mimetype)
+void BasicIndexingQueue::index(const FileMapping& file, const QString& mimetype,
+                               UpdateDirFlags flags)
 {
     qDebug() << file.id() << file.url();
 
-    BasicIndexingJob job(&m_db->sqlDatabase(), file, mimetype);
-    if (job.index()) {
-        Q_EMIT newDocument(job.id(), job.document());
+    bool xattrOnly = (flags & Baloo::ExtendedAttributesOnly);
+
+    if (!xattrOnly) {
+        BasicIndexingJob job(&m_db->sqlDatabase(), file, mimetype);
+        if (job.index()) {
+            Q_EMIT newDocument(job.id(), job.document());
+        }
+    }
+    else {
+        XapianDocument doc = m_db->xapianDatabase()->document(file.id());
+
+        doc.removeTermStartsWith("R");
+        doc.removeTermStartsWith("TA");
+        doc.removeTermStartsWith("TAG");
+        doc.removeTermStartsWith("C");
+
+        BasicIndexingJob::indexXAttr(file.url(), doc);
+        Q_EMIT newDocument(file.id(), doc.doc());
     }
 
     QTimer::singleShot(0, this, SLOT(finishIteration()));

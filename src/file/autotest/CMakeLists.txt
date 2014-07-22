@@ -54,6 +54,7 @@ ecm_add_test(${indexingConfig_SRC}
 
 set(basicIndexingQueue_SRC
     basicindexingqueuetest.cpp
+    ../lib/autotests/xattrdetector.cpp
 )
 
 ecm_add_test(${basicIndexingQueue_SRC}

@@ -31,6 +31,8 @@
 
 namespace Baloo {
 
+class XapianDocument;
+
 class BasicIndexingJob
 {
 public:
@@ -41,6 +43,12 @@ public:
 
     Xapian::Document document() { return m_doc; }
     uint id() { return m_id; }
+
+    /**
+     * Adds the data for all the extended attributes of \p url
+     * in the document \p doc
+     */
+    static void indexXAttr(const QString& url, XapianDocument& doc);
 
 private:
     QVector<KFileMetaData::Type::Type> typesForMimeType(const QString& mimeType) const;

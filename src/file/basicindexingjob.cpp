@@ -93,12 +93,18 @@ bool BasicIndexingJob::index()
         doc.addBoolTerm(QLatin1String("Z1"));
     }
 
-    //
-    // X-Attr terms
-    //
+    indexXAttr(m_file.url(), doc);
+
+    m_id = m_file.id();
+    m_doc = doc.doc();
+    return true;
+}
+
+void BasicIndexingJob::indexXAttr(const QString& url, XapianDocument& doc)
+{
     QString val;
 
-    baloo_getxattr(m_file.url(), QLatin1String("user.xdg.tags"), &val);
+    baloo_getxattr(url, QLatin1String("user.xdg.tags"), &val);
     if (!val.isEmpty()) {
         const QStringList tags = val.split(QLatin1Char(','), QString::SkipEmptyParts);
         Q_FOREACH (const QString& tag, tags) {
@@ -108,20 +114,16 @@ bool BasicIndexingJob::index()
     }
 
     val.clear();
-    baloo_getxattr(m_file.url(), QLatin1String("user.baloo.rating"), &val);
+    baloo_getxattr(url, QLatin1String("user.baloo.rating"), &val);
     if (!val.isEmpty()) {
         doc.addBoolTerm(val, QLatin1String("R"));
     }
 
     val.clear();
-    baloo_getxattr(m_file.url(), QLatin1String("user.xdg.comment"), &val);
+    baloo_getxattr(url, QLatin1String("user.xdg.comment"), &val);
     if (!val.isEmpty()) {
         doc.indexText(val, QLatin1String("C"));
     }
-
-    m_id = m_file.id();
-    m_doc = doc.doc();
-    return true;
 }
 
 QVector<KFileMetaData::Type::Type> BasicIndexingJob::typesForMimeType(const QString& mimeType) const
