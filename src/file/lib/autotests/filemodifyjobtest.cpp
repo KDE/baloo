@@ -76,27 +76,6 @@ void FileModifyJobTest::testSingleFile()
     else {
         qWarning() << "Xattr not supported on this filesystem";
     }
-
-    //
-    // Check in Xapian
-    //
-    FileMapping fileMap(fileUrl);
-    QSqlDatabase sqlDb = fileMappingDb();
-    QVERIFY(fileMap.fetch(sqlDb));
-
-    const std::string xapianPath = fileIndexDbPath();
-    Xapian::Database db(xapianPath);
-
-    Xapian::Document doc = db.get_document(fileMap.id());
-
-    Xapian::TermIterator iter = doc.termlist_begin();
-    QCOMPARE(*iter, std::string("Ccomment"));
-
-    ++iter;
-    QCOMPARE(*iter, std::string("Cuser"));
-
-    ++iter;
-    QCOMPARE(*iter, std::string("R5"));
 }
 
 void FileModifyJobTest::testMultiFileRating()
@@ -131,70 +110,6 @@ void FileModifyJobTest::testMultiFileRating()
     else {
         qWarning() << "Xattr not supported on this filesystem";
     }
-}
-
-void FileModifyJobTest::testXapianUpdate()
-{
-    QTemporaryFile tmpFile;
-    tmpFile.open();
-    const QString fileUrl = tmpFile.fileName();
-
-    File file(fileUrl);
-    file.setRating(4);
-    file.addTag(QLatin1String("Round-Tag"));
-
-    FileModifyJob* job = new FileModifyJob(file);
-    QVERIFY(job->exec());
-
-    FileMapping fileMap(fileUrl);
-    QSqlDatabase sqlDb = fileMappingDb();
-    QVERIFY(fileMap.fetch(sqlDb));
-
-    const std::string xapianPath = fileIndexDbPath();
-    Xapian::Database db(xapianPath);
-
-    Xapian::Document doc = db.get_document(fileMap.id());
-
-    Xapian::TermIterator iter = doc.termlist_begin();
-    QCOMPARE(*iter, std::string("R4"));
-    ++iter;
-    QCOMPARE(*iter, std::string("TAG-Round-Tag"));
-    ++iter;
-    QCOMPARE(*iter, std::string("TAround"));
-    ++iter;
-    QCOMPARE(*iter, std::string("TAtag"));
-    ++iter;
-    QCOMPARE(iter, doc.termlist_end());
-
-    // Add another term, and make sure it is not removed
-    doc.add_term("RATING");
-    {
-        const std::string xapianPath = fileIndexDbPath();
-        Xapian::WritableDatabase db(xapianPath, Xapian::DB_CREATE_OR_OPEN);
-        db.replace_document(fileMap.id(), doc);
-        db.commit();
-    }
-
-    file.setRating(5);
-    file.setTags(QStringList() << QLatin1String("Square-Tag"));
-    job = new FileModifyJob(file);
-    QVERIFY(job->exec());
-
-    db.reopen();
-    doc = db.get_document(fileMap.id());
-
-    iter = doc.termlist_begin();
-    QCOMPARE(*iter, std::string("R5"));
-    ++iter;
-    QCOMPARE(*iter, std::string("RATING"));
-    ++iter;
-    QCOMPARE(*iter, std::string("TAG-Square-Tag"));
-    ++iter;
-    QCOMPARE(*iter, std::string("TAsquare"));
-    ++iter;
-    QCOMPARE(*iter, std::string("TAtag"));
-    ++iter;
-    QCOMPARE(iter, doc.termlist_end());
 }
 
 void FileModifyJobTest::testFolder()

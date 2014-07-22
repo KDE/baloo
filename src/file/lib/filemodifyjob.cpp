@@ -25,16 +25,10 @@
 #include "searchstore.h"
 #include "baloo_xattr_p.h"
 
-#include "xapiandatabase.h"
-#include "xapiandocument.h"
-
 #include <QDebug>
-
 #include <QTimer>
 #include <QFile>
 #include <QStringList>
-
-#include <xapian.h>
 
 #include <QDBusMessage>
 #include <QDBusConnection>
@@ -52,14 +46,11 @@ public:
     bool commentSet;
     bool tagsSet;
 
-    XapianDatabase* m_db;
-
     Private()
         : rating(0)
         , ratingSet(false)
         , commentSet(false)
         , tagsSet(false)
-        , m_db(0)
     {}
 };
 
@@ -102,7 +93,7 @@ void FileModifyJob::doStart()
             fileMap.setId(id);
         }
 
-        if (!fileMap.fetched()) {
+        if (fileMap.url().isEmpty()) {
             if (fileMap.empty()) {
                 setError(Error_EmptyFile);
                 setErrorText(QLatin1String("Invalid Argument"));
@@ -111,7 +102,10 @@ void FileModifyJob::doStart()
             }
 
             if (!fileMap.fetch(fileMappingDb())) {
-                fileMap.create(fileMappingDb());
+                setError(Error_EmptyFile);
+                setErrorText(QLatin1String("Invalid Argument"));
+                emitResult();
+                return;
             }
         }
 
@@ -138,32 +132,6 @@ void FileModifyJob::doStart()
         if (d->commentSet) {
             baloo_setxattr(furl, QLatin1String("user.xdg.comment"), d->comment);
         }
-
-        // Save in Xapian
-        d->m_db = new XapianDatabase(QString::fromUtf8(fileIndexDbPath().c_str()));
-        XapianDocument doc = d->m_db->document(fileMap.id());
-
-        doc.removeTermStartsWith("R");
-        doc.removeTermStartsWith("TA");
-        doc.removeTermStartsWith("TAG");
-        doc.removeTermStartsWith("C");
-
-        const int rating = d->rating;
-        if (rating > 0) {
-            doc.addBoolTerm(rating, QLatin1String("R"));
-        }
-
-        Q_FOREACH (const QString& tag, d->tags) {
-            doc.indexText(tag, QLatin1String("TA"));
-            doc.addBoolTerm(tag, QLatin1String("TAG-"));
-        }
-
-        if (!d->comment.isEmpty()) {
-            doc.indexText(d->comment, QLatin1String("C"));
-        }
-
-        d->m_db->replaceDocument(fileMap.id(), doc.doc());
-        d->m_db->commit();
     }
 
     // Notify the world?
