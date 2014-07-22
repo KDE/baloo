@@ -1,5 +1,6 @@
-/* This file is part of the KDE Project
+/*
    Copyright (c) 2008-2009 Sebastian Trueg <trueg@kde.org>
+   Copyright (c) 2012-2014 Vishesh Handa <me@vhanda.in>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -16,8 +17,8 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef _NEPOMUK_FILEINDEXER_SERVICE_CONFIG_H_
-#define _NEPOMUK_FILEINDEXER_SERVICE_CONFIG_H_
+#ifndef _BALOO_FILEINDEXER_SERVICE_CONFIG_H_
+#define _BALOO_FILEINDEXER_SERVICE_CONFIG_H_
 
 #include <QtCore/QObject>
 #include <QtCore/QList>
@@ -43,13 +44,6 @@ public:
      */
     FileIndexerConfig(QObject* parent = 0);
     ~FileIndexerConfig();
-
-    /**
-     * A cleaned up list of all include and exclude folders
-     * with their respective include/exclude flag sorted by
-     * path. None of the paths have trailing slashes.
-     */
-    QList<QPair<QString, bool> > folders() const;
 
     /**
      * The folders to search for files to analyze. Cached and cleaned up.
@@ -178,6 +172,7 @@ private:
 
     bool m_indexHidden;
 };
+
 }
 
 #endif

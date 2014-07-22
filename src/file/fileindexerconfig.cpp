@@ -71,12 +71,6 @@ FileIndexerConfig::~FileIndexerConfig()
 }
 
 
-QList<QPair<QString, bool> > FileIndexerConfig::folders() const
-{
-    return m_folderCache;
-}
-
-
 QStringList FileIndexerConfig::includeFolders() const
 {
     QStringList fl;
