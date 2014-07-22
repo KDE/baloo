@@ -1,6 +1,6 @@
 /* This file is part of the KDE Project
    Copyright (c) 2007-2011 Sebastian Trueg <trueg@kde.org>
-   Copyright (c) 2012-2013 Vishesh Handa <me@vhanda.in>
+   Copyright (c) 2012-2014 Vishesh Handa <me@vhanda.in>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -138,10 +138,11 @@ void FileWatch::watchFolder(const QString& path)
 {
     qDebug() << path;
 #ifdef BUILD_KINOTIFY
-    if (m_dirWatch && !m_dirWatch->watchingPath(path))
-        m_dirWatch->addWatch(path,
-                             KInotify::WatchEvents(KInotify::EventMove | KInotify::EventDelete | KInotify::EventDeleteSelf | KInotify::EventCloseWrite | KInotify::EventCreate),
-                             KInotify::WatchFlags());
+    if (m_dirWatch && !m_dirWatch->watchingPath(path)) {
+        KInotify::WatchEvents flags(KInotify::EventMove | KInotify::EventDelete | KInotify::EventDeleteSelf
+                                    | KInotify::EventCloseWrite | KInotify::EventCreate);
+        m_dirWatch->addWatch(path, flags, KInotify::WatchFlags());
+    }
 #endif
 }
 
