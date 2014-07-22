@@ -26,7 +26,6 @@ set(file_static_lib_SRCS
     fileexcludefilters.cpp
     lib/filemapping.cpp
 
-    # removabledeviceindexnotification.cpp
     # removablemediacache.cpp
 )
 
