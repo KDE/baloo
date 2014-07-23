@@ -31,6 +31,8 @@ private Q_SLOTS:
     void testWordBoundaries();
     void testUnderscore_splitting();
     void testAccetCharacters();
+    void testUnicodeCanoicalComposition();
+    void testUnicodeCompatibleComposition();
 };
 
 #endif // TERMGENERATORTEST_H

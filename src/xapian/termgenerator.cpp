@@ -55,7 +55,11 @@ void TermGenerator::indexText(const QString& text, const QString& prefix, int wd
             end = bf.position();
 
             QString str = text.mid(start, end - start);
-            QByteArray arr = str.toLower().toUtf8();
+
+            // Get the string ready for saving
+            str = str.toLower();
+            str = str.normalized(QString::NormalizationForm_KC);
+            QByteArray arr = str.toUtf8();
 
             QByteArray finalArr = par + arr;
             m_doc->add_term(finalArr.constData(), finalArr.size());

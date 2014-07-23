@@ -90,5 +90,38 @@ void TermGeneratorTest::testAccetCharacters()
     QCOMPARE(words, expectedWords);
 }
 
+void TermGeneratorTest::testUnicodeCanoicalComposition()
+{
+    QString str = QLatin1Literal("mañana");
+    QString str2 = str.normalized(QString::NormalizationForm_D);
+
+    Xapian::Document doc;
+    TermGenerator termGen(&doc);
+    termGen.indexText(str2);
+
+    QStringList words = allWords(doc);
+    QCOMPARE(words.size(), 1);
+
+    QString output = words.first();
+    QCOMPARE(str, output);
+}
+
+void TermGeneratorTest::testUnicodeCompatibleComposition()
+{
+    // The 0xfb00 corresponds to U+FB00 which is a 'ff'
+    QString str = QLatin1Literal("maffab");
+    QString str2 = QLatin1Literal("ma") + QChar(0xfb00) + QStringLiteral("ab");
+
+    Xapian::Document doc;
+    TermGenerator termGen(&doc);
+    termGen.indexText(str2);
+
+    QStringList words = allWords(doc);
+    QCOMPARE(words.size(), 1);
+
+    QString output = words.first();
+    QCOMPARE(str, output);
+}
+
 QTEST_MAIN(TermGeneratorTest)
 
