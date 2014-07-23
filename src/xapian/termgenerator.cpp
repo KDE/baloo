@@ -70,10 +70,12 @@ void TermGenerator::indexText(const QString& text, const QString& prefix, int wd
             }
 
             str = cleanString.normalized(QString::NormalizationForm_KC);
-            QByteArray arr = str.toUtf8();
+            Q_FOREACH (const QString& term, str.split(QLatin1Char('_'), QString::SkipEmptyParts)) {
+                QByteArray arr = term.toUtf8();
 
-            QByteArray finalArr = par + arr;
-            m_doc->add_term(finalArr.constData(), finalArr.size());
+                QByteArray finalArr = par + arr;
+                m_doc->add_term(finalArr.constData(), finalArr.size());
+            }
         }
     }
 }

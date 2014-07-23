@@ -69,7 +69,6 @@ void TermGeneratorTest::testUnderscore_splitting()
     QStringList expectedWords;
     expectedWords << QLatin1String("hello") << QLatin1String("howdy");
 
-    QEXPECT_FAIL("", "Xapian does not split on _", Continue);
     QCOMPARE(words, expectedWords);
 }
 
