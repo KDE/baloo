@@ -20,9 +20,11 @@
 
 #include "queryparsertest.h"
 #include "../queryparser.h"
+#include "../xapiandatabase.h"
 
 #include <QTest>
 #include <QDebug>
+#include <QTemporaryDir>
 
 using namespace Baloo;
 
@@ -31,9 +33,6 @@ void QueryParserTest::testSimpleQuery()
     QueryParser parser;
 
     Xapian::Query query = parser.parseQuery("The song of Ice and Fire");
-
-    QList<std::string> terms;
-    terms << "the" << "song" << "of" << "ice" << "and" << "fire";
 
     QList<Xapian::Query> queries;
     queries << Xapian::Query("the", 1, 1);
@@ -47,5 +46,168 @@ void QueryParserTest::testSimpleQuery()
 
     QCOMPARE(query.serialise(), q.serialise());
 }
+
+void QueryParserTest::testPhraseSearch()
+{
+    QueryParser parser;
+
+    Xapian::Query query = parser.parseQuery("The \"song of Ice\" Fire");
+
+    QList<Xapian::Query> phraseQueries;
+    phraseQueries << Xapian::Query("song", 1, 2);
+    phraseQueries << Xapian::Query("of", 1, 3);
+    phraseQueries << Xapian::Query("ice", 1, 4);
+
+    QList<Xapian::Query> queries;
+    queries << Xapian::Query("the", 1, 1);
+    queries << Xapian::Query(Xapian::Query::OP_PHRASE, phraseQueries.begin(), phraseQueries.end());
+    queries << Xapian::Query("fire", 1, 5);
+
+    Xapian::Query q(Xapian::Query::OP_AND, queries.begin(), queries.end());
+    QCOMPARE(query.serialise(), q.serialise());
+}
+
+void QueryParserTest::testPhraseSearch_sameLimiter()
+{
+    QueryParser parser;
+
+    Xapian::Query query = parser.parseQuery("The \"song of Ice' and Fire");
+
+    QList<Xapian::Query> queries;
+    queries << Xapian::Query("the", 1, 1);
+    queries << Xapian::Query("song", 1, 2);
+    queries << Xapian::Query("of", 1, 3);
+    queries << Xapian::Query("ice", 1, 4);
+    queries << Xapian::Query("and", 1, 5);
+    queries << Xapian::Query("fire", 1, 6);
+
+    Xapian::Query q(Xapian::Query::OP_AND, queries.begin(), queries.end());
+
+    QEXPECT_FAIL("", "The Xapian Query parser is stupid", Continue);
+    QCOMPARE(query.serialise(), q.serialise());
+}
+
+void QueryParserTest::testPhraseSearchEmail()
+{
+    QueryParser parser;
+
+    Xapian::Query query = parser.parseQuery("The \"song@ice.com\" Fire");
+
+    QList<Xapian::Query> phraseQueries;
+    phraseQueries << Xapian::Query("song", 1, 2);
+    phraseQueries << Xapian::Query("ice", 1, 3);
+    phraseQueries << Xapian::Query("com", 1, 4);
+
+    QList<Xapian::Query> queries;
+    queries << Xapian::Query("the", 1, 1);
+    queries << Xapian::Query(Xapian::Query::OP_PHRASE, phraseQueries.begin(), phraseQueries.end());
+    queries << Xapian::Query("fire", 1, 5);
+
+    Xapian::Query q(Xapian::Query::OP_AND, queries.begin(), queries.end());
+    QCOMPARE(query.serialise(), q.serialise());
+}
+
+void QueryParserTest::testAccentSearch()
+{
+    QueryParser parser;
+
+    Xapian::Query query = parser.parseQuery("sóng");
+    Xapian::Query q("song", 1, 1);
+
+    QEXPECT_FAIL("", "The Xapian Query parser does not remove accents", Continue);
+    QCOMPARE(query.serialise(), q.serialise());
+}
+
+void QueryParserTest::testUnderscoreSplitting()
+{
+    QueryParser parser;
+
+    Xapian::Query query = parser.parseQuery("The_Fire");
+
+    QList<Xapian::Query> queries;
+    queries << Xapian::Query("the", 1, 1);
+    queries << Xapian::Query("fire", 1, 2);
+
+    Xapian::Query q(Xapian::Query::OP_AND, queries.begin(), queries.end());
+
+    QEXPECT_FAIL("", "The Xapian Query does not split on _", Continue);
+    QCOMPARE(query.serialise(), q.serialise());
+}
+
+
+void QueryParserTest::testWordExpansion()
+{
+    QTemporaryDir dir;
+    XapianDatabase db(dir.path(), true);
+
+    Xapian::Document doc;
+    doc.add_term("hell");
+    doc.add_term("hello");
+    doc.add_term("hellog");
+    doc.add_term("hi");
+    doc.add_term("hibrid");
+
+    db.replaceDocument(1, doc);
+    Xapian::Database* xap = db.db();
+
+    QueryParser parser;
+    parser.setDatabase(xap);
+
+    Xapian::Query query = parser.parseQuery("hell");
+    //qDebug() << query.get_description().c_str();
+
+    QList<Xapian::Query> synQueries;
+    synQueries << Xapian::Query("hell", 1, 1);
+    synQueries << Xapian::Query("hello", 1, 1);
+    synQueries << Xapian::Query("hellog", 1, 1);
+
+    Xapian::Query q1(Xapian::Query::OP_SYNONYM, synQueries.begin(), synQueries.end());
+
+    // Xapian makes the queries weirdly. It adds the first term as an OR
+    // in the end as well. This seems rather strange.
+    QList<Xapian::Query> queries;
+    queries << q1;
+    queries << Xapian::Query("hell", 1, 1);
+
+    Xapian::Query q(Xapian::Query::OP_OR, queries.begin(), queries.end());
+    //qDebug() << q.get_description().c_str();
+
+    QCOMPARE(query.serialise(), q.serialise());
+
+    //
+    // Try expanding everything
+    //
+    query = parser.parseQuery("hel hi");
+    //qDebug() << query.get_description().c_str();
+
+    {
+        QList<Xapian::Query> synQueries;
+        synQueries << Xapian::Query("hell", 1, 1);
+        synQueries << Xapian::Query("hello", 1, 1);
+        synQueries << Xapian::Query("hellog", 1, 1);
+
+        Xapian::Query q1(Xapian::Query::OP_SYNONYM, synQueries.begin(), synQueries.end());
+
+        synQueries.clear();
+        synQueries << Xapian::Query("hi", 1, 2);
+        synQueries << Xapian::Query("hibrid", 1, 2);
+
+        Xapian::Query q2(Xapian::Query::OP_SYNONYM, synQueries.begin(), synQueries.end());
+
+        QList<Xapian::Query> queries;
+        queries << q1;
+        queries << Xapian::Query("hel", 1, 1);
+        queries << q2;
+        queries << Xapian::Query("hi", 1, 2);
+
+        Xapian::Query q(Xapian::Query::OP_OR, queries.begin(), queries.end());
+        //qDebug() << q.get_description().c_str();
+
+        QEXPECT_FAIL("", "The Xapian Query parser does not expand each term. Only the last one", Continue);
+        QCOMPARE(query.serialise(), q.serialise());
+    }
+}
+
+
 
 QTEST_MAIN(QueryParserTest)

@@ -29,6 +29,13 @@ class QueryParserTest : public QObject
 
 private Q_SLOTS:
     void testSimpleQuery();
+    void testPhraseSearch();
+    void testPhraseSearch_sameLimiter();
+    void testPhraseSearchEmail();
+    void testAccentSearch();
+    void testUnderscoreSplitting();
+
+    void testWordExpansion();
 };
 
 #endif // QUERYPARSERTEST_H
