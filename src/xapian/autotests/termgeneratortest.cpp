@@ -84,26 +84,10 @@ void TermGeneratorTest::testAccetCharacters()
     QStringList words = allWords(doc);
 
     QStringList expectedWords;
-    expectedWords << QLatin1String("esta") << QLatin1String("como") << QLatin1String("kug");
+    expectedWords << QLatin1String("como") << QLatin1String("esta") << QLatin1String("kug");
 
     QEXPECT_FAIL("", "Xapian does not handle diarectics", Continue);
     QCOMPARE(words, expectedWords);
-}
-
-void TermGeneratorTest::testUnicodeCanoicalComposition()
-{
-    QString str = QLatin1Literal("mañana");
-    QString str2 = str.normalized(QString::NormalizationForm_D);
-
-    Xapian::Document doc;
-    TermGenerator termGen(&doc);
-    termGen.indexText(str2);
-
-    QStringList words = allWords(doc);
-    QCOMPARE(words.size(), 1);
-
-    QString output = words.first();
-    QCOMPARE(str, output);
 }
 
 void TermGeneratorTest::testUnicodeCompatibleComposition()
