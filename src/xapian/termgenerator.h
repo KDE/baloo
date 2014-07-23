@@ -35,9 +35,14 @@ public:
     void indexText(const QString& text);
     void indexText(const QString& text, const QString& prefix, int wdfInc = 1);
 
+    void setPosition(int position);
+    int position() const;
+
 private:
     Xapian::Document* m_doc;
     Xapian::TermGenerator m_termGen;
+
+    int m_position;
 };
 }
 

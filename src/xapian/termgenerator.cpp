@@ -27,6 +27,7 @@ using namespace Baloo;
 
 TermGenerator::TermGenerator(Xapian::Document* doc)
     : m_doc(doc)
+    , m_position(1)
 {
     if (doc) {
         m_termGen.set_document(*doc);
@@ -41,6 +42,8 @@ void TermGenerator::indexText(const QString& text)
 void TermGenerator::indexText(const QString& text, const QString& prefix, int wdfInc)
 {
     const QByteArray par = prefix.toUtf8();
+    //const QByteArray ta = text.toUtf8();
+    //m_termGen.index_text(ta.constData(), wdfInc, par.constData());
 
     int start = 0;
     int end = 0;
@@ -74,8 +77,22 @@ void TermGenerator::indexText(const QString& text, const QString& prefix, int wd
                 QByteArray arr = term.toUtf8();
 
                 QByteArray finalArr = par + arr;
-                m_doc->add_term(finalArr.constData(), finalArr.size());
+                std::string stdString(finalArr.constData(), finalArr.size());
+                m_doc->add_posting(stdString, m_position, wdfInc);
+
+                m_position++;
             }
         }
     }
 }
+
+int TermGenerator::position() const
+{
+    return m_position;
+}
+
+void TermGenerator::setPosition(int position)
+{
+    m_position = position;
+}
+

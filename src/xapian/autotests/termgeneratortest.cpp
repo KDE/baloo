@@ -20,9 +20,11 @@
 
 #include "termgeneratortest.h"
 #include "../termgenerator.h"
+#include "../xapiandatabase.h"
 
 #include <QTest>
 #include <QDebug>
+#include <QTemporaryDir>
 
 using namespace Baloo;
 
@@ -119,6 +121,45 @@ void TermGeneratorTest::testEmails()
     expectedWords << QLatin1String("in") << QLatin1String("me") << QLatin1String("vhanda");
 
     QCOMPARE(words, expectedWords);
+}
+
+void TermGeneratorTest::testWordPositions()
+{
+    QTemporaryDir dir;
+    XapianDatabase db(dir.path(), true);
+
+    Xapian::Document doc;
+    TermGenerator termGen(&doc);
+
+    QString str = QString::fromLatin1("Hello hi how hi");
+    termGen.indexText(str);
+
+    db.replaceDocument(1, doc);
+
+    Xapian::Database* xap = db.db();
+
+    Xapian::PositionIterator it = xap->positionlist_begin(1, "hello");
+    Xapian::PositionIterator end = xap->positionlist_end(1, "hello");
+    QVERIFY(it != end);
+    QCOMPARE(*it, (uint)1);
+    it++;
+    QVERIFY(it == end);
+
+    it = xap->positionlist_begin(1, "hi");
+    end = xap->positionlist_end(1, "hi");
+    QVERIFY(it != end);
+    QCOMPARE(*it, (uint)2);
+    it++;
+    QCOMPARE(*it, (uint)4);
+    it++;
+    QVERIFY(it == end);
+
+    it = xap->positionlist_begin(1, "how");
+    end = xap->positionlist_end(1, "how");
+    QVERIFY(it != end);
+    QCOMPARE(*it, (uint)3);
+    it++;
+    QVERIFY(it == end);
 }
 
 QTEST_MAIN(TermGeneratorTest)

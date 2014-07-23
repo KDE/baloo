@@ -33,6 +33,7 @@ private Q_SLOTS:
     void testAccetCharacters();
     void testUnicodeCompatibleComposition();
     void testEmails();
+    void testWordPositions();
 };
 
 #endif // TERMGENERATORTEST_H
