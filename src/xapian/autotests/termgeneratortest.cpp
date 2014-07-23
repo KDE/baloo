@@ -86,7 +86,6 @@ void TermGeneratorTest::testAccetCharacters()
     QStringList expectedWords;
     expectedWords << QLatin1String("como") << QLatin1String("esta") << QLatin1String("kug");
 
-    QEXPECT_FAIL("", "Xapian does not handle diarectics", Continue);
     QCOMPARE(words, expectedWords);
 }
 

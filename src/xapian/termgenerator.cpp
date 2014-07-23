@@ -58,7 +58,18 @@ void TermGenerator::indexText(const QString& text, const QString& prefix, int wd
 
             // Get the string ready for saving
             str = str.toLower();
-            str = str.normalized(QString::NormalizationForm_KC);
+
+            // Remove all accents
+            const QString denormalized = str.normalized(QString::NormalizationForm_KD);
+            QString cleanString;
+            Q_FOREACH (const QChar& ch, denormalized) {
+                auto cat = ch.category();
+                if (cat != QChar::Mark_NonSpacing && cat != QChar::Mark_SpacingCombining && cat != QChar::Mark_Enclosing) {
+                    cleanString.append(ch);
+                }
+            }
+
+            str = cleanString.normalized(QString::NormalizationForm_KC);
             QByteArray arr = str.toUtf8();
 
             QByteArray finalArr = par + arr;
