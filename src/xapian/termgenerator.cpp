@@ -20,6 +20,9 @@
 
 #include "termgenerator.h"
 
+#include <QTextBoundaryFinder>
+#include <QDebug>
+
 using namespace Baloo;
 
 TermGenerator::TermGenerator(Xapian::Document* doc)
@@ -37,7 +40,25 @@ void TermGenerator::indexText(const QString& text)
 
 void TermGenerator::indexText(const QString& text, const QString& prefix, int wdfInc)
 {
-    const QByteArray tarr = text.toUtf8();
     const QByteArray par = prefix.toUtf8();
-    m_termGen.index_text(tarr.constData(), wdfInc, par.constData());
+
+    int start = 0;
+    int end = 0;
+
+    QTextBoundaryFinder bf(QTextBoundaryFinder::Word, text);
+    for (; bf.position() != -1; bf.toNextBoundary()) {
+        if (bf.boundaryReasons() & QTextBoundaryFinder::StartOfItem) {
+            start = bf.position();
+            continue;
+        }
+        else if (bf.boundaryReasons() & QTextBoundaryFinder::EndOfItem) {
+            end = bf.position();
+
+            QString str = text.mid(start, end - start);
+            QByteArray arr = str.toLower().toUtf8();
+
+            QByteArray finalArr = par + arr;
+            m_doc->add_term(finalArr.constData(), finalArr.size());
+        }
+    }
 }
