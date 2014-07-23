@@ -23,10 +23,11 @@
 
 #include <QString>
 #include <xapian.h>
+#include "xapian_export.h"
 
 namespace Baloo {
 
-class TermGenerator
+class BALOO_XAPIAN_EXPORT TermGenerator
 {
 public:
     TermGenerator(Xapian::Document* doc);
