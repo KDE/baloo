@@ -32,6 +32,7 @@ private Q_SLOTS:
     void testUnderscore_splitting();
     void testAccetCharacters();
     void testUnicodeCompatibleComposition();
+    void testEmails();
 };
 
 #endif // TERMGENERATORTEST_H

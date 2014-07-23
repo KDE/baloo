@@ -105,5 +105,21 @@ void TermGeneratorTest::testUnicodeCompatibleComposition()
     QCOMPARE(str, output);
 }
 
+void TermGeneratorTest::testEmails()
+{
+    QString str = QString::fromLatin1("me@vhanda.in");
+
+    Xapian::Document doc;
+    TermGenerator termGen(&doc);
+    termGen.indexText(str);
+
+    QStringList words = allWords(doc);
+
+    QStringList expectedWords;
+    expectedWords << QLatin1String("in") << QLatin1String("me") << QLatin1String("vhanda");
+
+    QCOMPARE(words, expectedWords);
+}
+
 QTEST_MAIN(TermGeneratorTest)
 
