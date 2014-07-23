@@ -61,8 +61,9 @@ public:
     Xapian::Database* db() {
         if (m_db) {
             m_db->reopen();
+            return m_db;
         }
-        return m_db;
+        return &m_wDb;
     }
 
     /**
