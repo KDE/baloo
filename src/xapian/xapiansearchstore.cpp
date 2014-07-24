@@ -23,6 +23,7 @@
 #include "xapiansearchstore.h"
 #include "term.h"
 #include "query.h"
+#include "queryparser.h"
 
 #include <QVector>
 #include <QStringList>
@@ -123,86 +124,12 @@ Xapian::Query XapianSearchStore::andQuery(const Xapian::Query& a, const Xapian::
         return Xapian::Query(Xapian::Query::OP_AND, a, b);
 }
 
-namespace {
-    struct Term {
-        std::string t;
-        uint count;
-
-        // pop_heap pops the largest element, we want the smallest to be popped
-        bool operator < (const Term& rhs) const {
-            return count > rhs.count;
-        }
-    };
-
-    Xapian::Query makeQuery(const QString& string, Xapian::Database* db)
-    {
-        // Lets just keep the top x (+1 for push_heap)
-        static const int MaxTerms = 100;
-        QList<Term> topTerms;
-        topTerms.reserve(MaxTerms + 1);
-
-        const std::string stdString(string.toLower().toUtf8().constData());
-        Xapian::TermIterator it = db->allterms_begin(stdString);
-        Xapian::TermIterator end = db->allterms_end(stdString);
-        for (; it != end; ++it) {
-            Term term;
-            term.t = *it;
-            term.count = db->get_collection_freq(term.t);
-
-            if (topTerms.size() < MaxTerms) {
-                topTerms.push_back(term);
-                std::push_heap(topTerms.begin(), topTerms.end());
-            }
-            else {
-                // Remove the term with the min count
-                topTerms.push_back(term);
-                std::push_heap(topTerms.begin(), topTerms.end());
-
-                std::pop_heap(topTerms.begin(), topTerms.end());
-                topTerms.pop_back();
-            }
-        }
-
-        QVector<std::string> termStrings;
-        termStrings.reserve(topTerms.size());
-
-        Q_FOREACH (const Term& term, topTerms) {
-            termStrings << term.t;
-        }
-
-        Xapian::Query finalQ(Xapian::Query::OP_SYNONYM, termStrings.begin(), termStrings.end());
-        return finalQ;
-    }
-}
-
 
 Xapian::Query XapianSearchStore::constructSearchQuery(const QString& str)
 {
-    QVector<Xapian::Query> queries;
-    QRegExp splitRegex(QLatin1String("[\\s.+*/\\-=]"));
-    QStringList list = str.split(splitRegex, QString::SkipEmptyParts);
-
-    QMutableListIterator<QString> iter(list);
-    while (iter.hasNext()) {
-        const QString str = iter.next();
-        if (str.size() <= 3) {
-            queries << makeQuery(str, m_db);
-            iter.remove();
-        }
-    }
-
-    if (!list.isEmpty()) {
-        std::string stdStr(list.join(QLatin1String(" ")).toUtf8().constData());
-
-        Xapian::QueryParser parser;
-        parser.set_database(*m_db);
-        parser.set_default_op(Xapian::Query::OP_AND);
-
-        int flags = Xapian::QueryParser::FLAG_DEFAULT | Xapian::QueryParser::FLAG_PARTIAL;
-        queries << parser.parse_query(stdStr, flags);
-    }
-
-    return Xapian::Query(Xapian::Query::OP_AND, queries.begin(), queries.end());
+    QueryParser parser;
+    parser.setDatabase(m_db);
+    return parser.parseQuery(str);
 }
 
 int XapianSearchStore::exec(const Query& query)

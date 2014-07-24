@@ -26,6 +26,7 @@
 #include "filemapping.h"
 #include "pathfilterpostingsource.h"
 #include "wildcardpostingsource.h"
+#include "queryparser.h"
 
 #include <xapian.h>
 #include <QVector>
@@ -140,8 +141,8 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
     }
 
     if (com == Term::Contains) {
-        Xapian::QueryParser parser;
-        parser.set_database(*xapianDb());
+        QueryParser parser;
+        parser.setDatabase(xapianDb());
 
         std::string p;
         QHash<QString, std::string>::const_iterator it = m_prefixes.constFind(property.toLower());
@@ -154,9 +155,7 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
             p = QString(QLatin1Char('X') + QString::number(propPrefix)).toUtf8().constData();
         }
 
-        const QByteArray arr = value.toString().toUtf8();
-        int flags = Xapian::QueryParser::FLAG_DEFAULT | Xapian::QueryParser::FLAG_PARTIAL;
-        return parser.parse_query(arr.constData(), flags, p);
+        return parser.parseQuery(value.toString(), QString::fromUtf8(p.c_str(), p.length()));
     }
 
     if ((property.compare(QLatin1String("modified"), Qt::CaseInsensitive) == 0)

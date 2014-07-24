@@ -33,7 +33,7 @@ public:
     QueryParser();
 
     void setDatabase(Xapian::Database* db);
-    Xapian::Query parseQuery(const QString& str);
+    Xapian::Query parseQuery(const QString& str, const QString& prefix = QString());
 
 private:
     Xapian::Database* m_db;

@@ -103,7 +103,7 @@ namespace {
     }
 }
 
-Xapian::Query QueryParser::parseQuery(const QString& text)
+Xapian::Query QueryParser::parseQuery(const QString& text, const QString& prefix)
 {
     /*
     Xapian::QueryParser parser;
@@ -196,7 +196,9 @@ Xapian::Query QueryParser::parseQuery(const QString& text)
             }
 
             str = cleanString.normalized(QString::NormalizationForm_KC);
-            Q_FOREACH (const QString& term, str.split(QLatin1Char('_'), QString::SkipEmptyParts)) {
+            Q_FOREACH (const QString& t, str.split(QLatin1Char('_'), QString::SkipEmptyParts)) {
+                const QString term = prefix + t;
+
                 position++;
                 if (inDoubleQuotes || inSingleQuotes || inPhrase) {
                     phraseQueries << makeQuery(term, position, m_db);
