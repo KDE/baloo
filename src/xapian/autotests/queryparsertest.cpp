@@ -52,6 +52,7 @@ void QueryParserTest::testPhraseSearch()
     QueryParser parser;
 
     Xapian::Query query = parser.parseQuery("The \"song of Ice\" Fire");
+    //qDebug() << query.get_description().c_str();
 
     QList<Xapian::Query> phraseQueries;
     phraseQueries << Xapian::Query("song", 1, 2);
@@ -64,7 +65,7 @@ void QueryParserTest::testPhraseSearch()
     queries << Xapian::Query("fire", 1, 5);
 
     Xapian::Query q(Xapian::Query::OP_AND, queries.begin(), queries.end());
-    QEXPECT_FAIL("", "The custom query parser does not support phrases", Continue);
+    //qDebug() << q.get_description().c_str();
     QCOMPARE(query.serialise(), q.serialise());
 }
 
@@ -73,6 +74,7 @@ void QueryParserTest::testPhraseSearch_sameLimiter()
     QueryParser parser;
 
     Xapian::Query query = parser.parseQuery("The \"song of Ice' and Fire");
+    //qDebug() << query.get_description().c_str();
 
     QList<Xapian::Query> queries;
     queries << Xapian::Query("the", 1, 1);
@@ -83,6 +85,7 @@ void QueryParserTest::testPhraseSearch_sameLimiter()
     queries << Xapian::Query("fire", 1, 6);
 
     Xapian::Query q(Xapian::Query::OP_AND, queries.begin(), queries.end());
+    //qDebug() << q.get_description().c_str();
 
     QCOMPARE(query.serialise(), q.serialise());
 }
@@ -91,7 +94,7 @@ void QueryParserTest::testPhraseSearchEmail()
 {
     QueryParser parser;
 
-    Xapian::Query query = parser.parseQuery("The \"song@ice.com\" Fire");
+    Xapian::Query query = parser.parseQuery("The song@ice.com Fire");
 
     QList<Xapian::Query> phraseQueries;
     phraseQueries << Xapian::Query("song", 1, 2);
