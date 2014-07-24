@@ -92,6 +92,15 @@ namespace {
         Xapian::Query finalQ(Xapian::Query::OP_SYNONYM, queries.begin(), queries.end());
         return finalQ;
     }
+
+    bool containsSpace(const QString& string) {
+        Q_FOREACH (const QChar& ch, string) {
+            if (ch.isSpace())
+                return true;
+        }
+
+        return false;
+    }
 }
 
 Xapian::Query QueryParser::parseQuery(const QString& text)
@@ -122,9 +131,8 @@ Xapian::Query QueryParser::parseQuery(const QString& text)
 
     bool inDoubleQuotes = false;
     bool inSingleQuotes = false;
+    bool inPhrase = false;
 
-    // TODO: Mark in phrase when certain words are separated by punctuations
-    // TODO: Each word sepearted by x, auto expand it to each of these
     QTextBoundaryFinder bf(QTextBoundaryFinder::Word, text);
     for (; bf.position() != -1; bf.toNextBoundary()) {
         if (bf.boundaryReasons() & QTextBoundaryFinder::StartOfItem) {
@@ -132,32 +140,37 @@ Xapian::Query QueryParser::parseQuery(const QString& text)
             // Check the previous delimiter
             int pos = bf.position();
             if (pos != end) {
-                QString delim = text.mid(end, pos-end).simplified();
-                //qDebug() << "D" << delim;
-                if (!delim.isEmpty()) {
-                    QChar ch = delim.at(delim.length() - 1);
-                    if (ch == QLatin1Char('"')) {
-                        if (inDoubleQuotes) {
-                            //qDebug() << "Pushign to query";
-                            queries << Xapian::Query(Xapian::Query::OP_PHRASE, phraseQueries.begin(), phraseQueries.end());
-                            phraseQueries.clear();
-                            inDoubleQuotes = false;
-                        }
-                        else {
-                            //qDebug() << "entering double" << bf.position();
-                            inDoubleQuotes = true;
-                        }
+                QString delim = text.mid(end, pos-end);
+                if (delim.contains(QLatin1Char('"'))) {
+                    if (inDoubleQuotes) {
+                        queries << Xapian::Query(Xapian::Query::OP_PHRASE, phraseQueries.begin(), phraseQueries.end());
+                        phraseQueries.clear();
+                        inDoubleQuotes = false;
                     }
-                    else if (ch == QLatin1Char('\'')) {
-                        if (inSingleQuotes) {
-                            queries << Xapian::Query(Xapian::Query::OP_PHRASE, phraseQueries.begin(), phraseQueries.end());
-                            phraseQueries.clear();
-                            inSingleQuotes = false;
-                        }
-                        else {
-                            inSingleQuotes = true;
-                        }
+                    else {
+                        inDoubleQuotes = true;
                     }
+                }
+                else if (delim.contains(QLatin1Char('\''))) {
+                    if (inSingleQuotes) {
+                        queries << Xapian::Query(Xapian::Query::OP_PHRASE, phraseQueries.begin(), phraseQueries.end());
+                        phraseQueries.clear();
+                        inSingleQuotes = false;
+                    }
+                    else {
+                        inSingleQuotes = true;
+                    }
+                }
+                else if (!containsSpace(delim)) {
+                    if (!inPhrase) {
+                        phraseQueries << queries.takeLast();
+                    }
+                    inPhrase = true;
+                }
+                else if (inPhrase && !phraseQueries.isEmpty()) {
+                    queries << Xapian::Query(Xapian::Query::OP_PHRASE, phraseQueries.begin(), phraseQueries.end());
+                    phraseQueries.clear();
+                    inPhrase = false;
                 }
             }
 
@@ -185,16 +198,20 @@ Xapian::Query QueryParser::parseQuery(const QString& text)
             str = cleanString.normalized(QString::NormalizationForm_KC);
             Q_FOREACH (const QString& term, str.split(QLatin1Char('_'), QString::SkipEmptyParts)) {
                 position++;
-                if (inDoubleQuotes || inSingleQuotes) {
-                    //qDebug() << "P" <<  term;
+                if (inDoubleQuotes || inSingleQuotes || inPhrase) {
                     phraseQueries << makeQuery(term, position, m_db);
                 }
                 else {
-                    //qDebug() << "N" <<  term;
                     queries << makeQuery(term, position, m_db);
                 }
             }
         }
+    }
+
+    if (inPhrase) {
+        queries << Xapian::Query(Xapian::Query::OP_PHRASE, phraseQueries.begin(), phraseQueries.end());
+        phraseQueries.clear();
+        inPhrase = false;
     }
 
     if (!phraseQueries.isEmpty()) {

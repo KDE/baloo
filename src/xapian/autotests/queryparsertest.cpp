@@ -107,7 +107,6 @@ void QueryParserTest::testPhraseSearchEmail()
     queries << Xapian::Query("fire", 1, 5);
 
     Xapian::Query q(Xapian::Query::OP_AND, queries.begin(), queries.end());
-    QEXPECT_FAIL("", "The custom query parser does not support phrases", Continue);
     QCOMPARE(query.serialise(), q.serialise());
 }
 
