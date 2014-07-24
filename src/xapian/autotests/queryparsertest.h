@@ -28,6 +28,7 @@ class QueryParserTest : public QObject
     Q_OBJECT
 
 private Q_SLOTS:
+    void testSinglePrefixWord();
     void testSimpleQuery();
     void testPhraseSearch();
     void testPhraseSearch_sameLimiter();

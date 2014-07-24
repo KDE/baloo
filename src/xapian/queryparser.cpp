@@ -60,7 +60,7 @@ namespace {
         QList<Term> topTerms;
         topTerms.reserve(MaxTerms + 1);
 
-        const std::string stdString(string.toLower().toUtf8().constData());
+        const std::string stdString(string.toUtf8().constData());
         Xapian::TermIterator it = db->allterms_begin(stdString);
         Xapian::TermIterator end = db->allterms_end(stdString);
         for (; it != end; ++it) {

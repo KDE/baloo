@@ -28,6 +28,15 @@
 
 using namespace Baloo;
 
+void QueryParserTest::testSinglePrefixWord()
+{
+    QueryParser parser;
+
+    Xapian::Query query = parser.parseQuery("The", "F");
+    Xapian::Query q("Fthe", 1, 1);
+    QCOMPARE(query.serialise(), q.serialise());
+}
+
 void QueryParserTest::testSimpleQuery()
 {
     QueryParser parser;
