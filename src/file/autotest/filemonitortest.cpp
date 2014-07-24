@@ -29,10 +29,21 @@
 
 using namespace Baloo;
 
+void FileMonitorTest::init()
+{
+   // monitor =  FileMonitor();
+}
+
+void FileMonitorTest::cleanup()
+{
+    //monitor.de
+}
+
 void FileMonitorTest::test()
 {
-    QString file(QLatin1String("/tmp/t"));
     FileMonitor monitor;
+
+    QString file(QLatin1String("/tmp/t"));
     monitor.addFile(file);
 
     QSignalSpy spy(&monitor, SIGNAL(fileMetaDataChanged(QString)));
@@ -65,5 +76,113 @@ void FileMonitorTest::test()
     QCOMPARE(var.type(), QVariant::String);
     QCOMPARE(var.toString(), file);
 }
+
+void FileMonitorTest::testAddFileShouldReturnOneFileIfOneFileAdded()
+{
+    FileMonitor monitor;
+
+    QString filePath = getValidFilePath();
+    monitor.addFile(filePath);
+
+    QStringList actualList= monitor.files();
+
+    QCOMPARE(actualList.count(),1);
+    QCOMPARE(actualList.first(),filePath);
+}
+
+void FileMonitorTest::testAddFileShouldReturnTwoFilesIfTwoFilesAdded()
+{
+    FileMonitor monitor;
+
+    QString filePath1 = getValidFilePath();
+    QString filePath2 = getValidFilePath();
+    monitor.addFile(filePath1);
+    monitor.addFile(filePath2);
+
+    QStringList actualList= monitor.files();
+
+    QCOMPARE(actualList.count(),2);
+    QVERIFY(actualList.contains(filePath1));
+    QVERIFY(actualList.contains(filePath2));
+}
+
+void FileMonitorTest::testAddFileShouldRemoveTailingSlash()
+{
+    FileMonitor monitor;
+
+    QString filePath1(QLatin1String("/tmp/t/"));
+    QString expectedFilePath(QLatin1String("/tmp/t"));
+    monitor.addFile(filePath1);
+
+    QStringList actualList= monitor.files();
+    QCOMPARE(actualList.first(),expectedFilePath);
+}
+
+void FileMonitorTest::testAddFileShouldNotAddNotLocalUrl()
+{
+     FileMonitor monitor;
+     QUrl fileUrl(QLatin1String("http://sdf.df"));
+
+     monitor.addFile(fileUrl);
+     QStringList actualList= monitor.files();
+
+     QCOMPARE(actualList.count(),0);
+}
+
+void FileMonitorTest::testAddFileShouldAddLocalUrl()
+{
+     FileMonitor monitor;
+     QUrl fileUrl(QLatin1String("/tmp/t"));
+
+     monitor.addFile(fileUrl);
+     QStringList actualList= monitor.files();
+
+     QCOMPARE(actualList.count(),0);
+}
+void FileMonitorTest::testClearIfClearAfterOneFileAddedFilesShouldReturn0Items()
+{
+    FileMonitor monitor;
+    QUrl fileUrl(QLatin1String("/tmp/t"));
+
+    monitor.addFile(fileUrl);
+
+    QStringList actualList= monitor.files();
+
+    QCOMPARE(actualList.count(),0);
+}
+void FileMonitorTest::testSetFilesIfSetFilesWithOneElementFilesShouldReturn1Item()
+{
+    FileMonitor monitor;
+
+    QStringList files = QStringList(getValidFilePath() );
+
+    monitor.setFiles(files);
+    QStringList actualList= monitor.files();
+
+    QCOMPARE(actualList.count(),1);
+}
+
+QString FileMonitorTest::getValidFilePath()
+{
+    QString file(QLatin1String("/tmp/"));
+    file.append(getRandomString(8));
+    return file;
+}
+
+QString FileMonitorTest::getRandomString(int length) const
+{
+   const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
+   // assuming you want random strings of 12 characters
+
+   QString randomString;
+   for(int i=0; i<length; ++i)
+   {
+       int index = qrand() % possibleCharacters.length();
+       QChar nextChar = possibleCharacters.at(index);
+       randomString.append(nextChar);
+   }
+   return randomString;
+}
+
 
 QTEST_MAIN(FileMonitorTest)

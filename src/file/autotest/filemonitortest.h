@@ -28,8 +28,22 @@ namespace Baloo {
 class FileMonitorTest : public QObject
 {
     Q_OBJECT
+
+
+private:
+    QString getValidFilePath();
+    QString getRandomString(int length) const;
 private Q_SLOTS:
     void test();
+    void init();
+    void cleanup();
+    void testAddFileShouldReturnOneFileIfOneFileAdded();
+    void testAddFileShouldReturnTwoFilesIfTwoFilesAdded();
+    void testAddFileShouldRemoveTailingSlash();
+    void testAddFileShouldNotAddNotLocalUrl();
+    void testAddFileShouldAddLocalUrl();
+    void testClearIfClearAfterOneFileAddedFilesShouldReturn0Items();
+    void testSetFilesIfSetFilesWithOneElementFilesShouldReturn1Item();
 };
 
 }
