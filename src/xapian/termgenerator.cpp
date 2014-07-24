@@ -39,6 +39,12 @@ void TermGenerator::indexText(const QString& text)
     indexText(text, QString());
 }
 
+void TermGenerator::setDocument(Xapian::Document* doc)
+{
+    m_doc = doc;
+}
+
+
 void TermGenerator::indexText(const QString& text, const QString& prefix, int wdfInc)
 {
     const QByteArray par = prefix.toUtf8();

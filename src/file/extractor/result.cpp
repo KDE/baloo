@@ -32,12 +32,21 @@
 #include <KFileMetaData/TypeInfo>
 
 // In order to use it in a vector
-Result::Result(): ExtractionResult(QString(), QString()), m_docId(0), m_readOnly(false)
+Result::Result()
+    : ExtractionResult(QString(), QString())
+    , m_docId(0)
+    , m_termGen(0)
+    , m_termGenForText(0)
+    , m_readOnly(false)
 {
 }
 
 Result::Result(const QString& url, const QString& mimetype, const Flags& flags)
-    : KFileMetaData::ExtractionResult(url, mimetype, flags), m_docId(0), m_readOnly(false)
+    : KFileMetaData::ExtractionResult(url, mimetype, flags)
+    , m_docId(0)
+    , m_termGen(0)
+    , m_termGenForText(0)
+    , m_readOnly(false)
 {
 }
 
@@ -60,21 +69,21 @@ void Result::add(KFileMetaData::Property::Property property, const QVariant& val
         m_doc.add_term(term.toUtf8().constData());
     }
     else {
-        const QByteArray val = value.toString().toUtf8();
+        const QString val = value.toString();
         if (val.isEmpty())
             return;
 
-        m_termGen.index_text(val.constData(), 1, prefix.toUtf8().constData());
+        m_termGen.indexText(val, prefix);
         KFileMetaData::PropertyInfo pi(property);
         if (pi.shouldBeIndexed())
-            m_termGen.index_text(val.constData());
+            m_termGen.indexText(val);
     }
 }
 
 void Result::append(const QString& text)
 {
     if (!m_readOnly) {
-        m_termGenForText.index_text(text.toUtf8().constData());
+        m_termGenForText.indexText(text);
     }
 }
 
@@ -103,13 +112,13 @@ void Result::setDocument(const Xapian::Document& doc)
 {
     m_doc = doc;
     // All document metadata are indexed from position 1000
-    m_termGen.set_document(m_doc);
-    m_termGen.set_termpos(1000);
+    m_termGen.setDocument(&m_doc);
+    m_termGen.setPosition(1000);
 
     // All document plain text starts from 10000. This is done to avoid
     // clashes with the term positions
-    m_termGenForText.set_document(m_doc);
-    m_termGenForText.set_termpos(10000);
+    m_termGenForText.setDocument(&m_doc);
+    m_termGenForText.setPosition(10000);
 }
 
 void Result::setId(uint id)

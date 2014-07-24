@@ -38,6 +38,8 @@ public:
     void setPosition(int position);
     int position() const;
 
+    void setDocument(Xapian::Document* doc);
+
 private:
     Xapian::Document* m_doc;
     Xapian::TermGenerator m_termGen;
