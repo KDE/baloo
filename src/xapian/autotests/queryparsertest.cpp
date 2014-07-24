@@ -160,25 +160,16 @@ void QueryParserTest::testWordExpansion()
     synQueries << Xapian::Query("hello", 1, 1);
     synQueries << Xapian::Query("hellog", 1, 1);
 
-    Xapian::Query q1(Xapian::Query::OP_SYNONYM, synQueries.begin(), synQueries.end());
-
-    // Xapian makes the queries weirdly. It adds the first term as an OR
-    // in the end as well. This seems rather strange.
-    QList<Xapian::Query> queries;
-    queries << q1;
-    queries << Xapian::Query("hell", 1, 1);
-
-    Xapian::Query q(Xapian::Query::OP_OR, queries.begin(), queries.end());
+    Xapian::Query q(Xapian::Query::OP_SYNONYM, synQueries.begin(), synQueries.end());
     //qDebug() << q.get_description().c_str();
 
-    QEXPECT_FAIL("", "The Query parser does not currently support expansion", Continue);
     QCOMPARE(query.serialise(), q.serialise());
 
     //
     // Try expanding everything
     //
     query = parser.parseQuery("hel hi");
-    //qDebug() << query.get_description().c_str();
+    // qDebug() << query.get_description().c_str();
 
     {
         QList<Xapian::Query> synQueries;
@@ -196,14 +187,11 @@ void QueryParserTest::testWordExpansion()
 
         QList<Xapian::Query> queries;
         queries << q1;
-        queries << Xapian::Query("hel", 1, 1);
         queries << q2;
-        queries << Xapian::Query("hi", 1, 2);
 
-        Xapian::Query q(Xapian::Query::OP_OR, queries.begin(), queries.end());
-        //qDebug() << q.get_description().c_str();
+        Xapian::Query q(Xapian::Query::OP_AND, queries.begin(), queries.end());
+        // qDebug() << q.get_description().c_str();
 
-        QEXPECT_FAIL("", "The Xapian Query parser does not expand each term. Only the last one", Continue);
         QCOMPARE(query.serialise(), q.serialise());
     }
 }

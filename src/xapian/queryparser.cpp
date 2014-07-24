@@ -36,6 +36,64 @@ void QueryParser::setDatabase(Xapian::Database* db)
     m_db = db;
 }
 
+namespace {
+    struct Term {
+        std::string t;
+        uint count;
+
+        // pop_heap pops the largest element, we want the smallest to be popped
+        bool operator < (const Term& rhs) const {
+            return count > rhs.count;
+        }
+    };
+
+    Xapian::Query makeQuery(const QString& string, int position, Xapian::Database* db)
+    {
+        if (!db) {
+            QByteArray arr = string.toUtf8();
+            std::string stdString(arr.constData(), arr.size());
+            return Xapian::Query(stdString, 1, position);
+        }
+
+        // Lets just keep the top x (+1 for push_heap)
+        static const int MaxTerms = 100;
+        QList<Term> topTerms;
+        topTerms.reserve(MaxTerms + 1);
+
+        const std::string stdString(string.toLower().toUtf8().constData());
+        Xapian::TermIterator it = db->allterms_begin(stdString);
+        Xapian::TermIterator end = db->allterms_end(stdString);
+        for (; it != end; ++it) {
+            Term term;
+            term.t = *it;
+            term.count = db->get_collection_freq(term.t);
+
+            if (topTerms.size() < MaxTerms) {
+                topTerms.push_back(term);
+                std::push_heap(topTerms.begin(), topTerms.end());
+            }
+            else {
+                // Remove the term with the min count
+                topTerms.push_back(term);
+                std::push_heap(topTerms.begin(), topTerms.end());
+
+                std::pop_heap(topTerms.begin(), topTerms.end());
+                topTerms.pop_back();
+            }
+        }
+
+        QVector<Xapian::Query> queries;
+        queries.reserve(topTerms.size());
+
+        Q_FOREACH (const Term& term, topTerms) {
+            queries << Xapian::Query(term.t, 1, position);
+        }
+
+        Xapian::Query finalQ(Xapian::Query::OP_SYNONYM, queries.begin(), queries.end());
+        return finalQ;
+    }
+}
+
 Xapian::Query QueryParser::parseQuery(const QString& text)
 {
     /*
@@ -92,11 +150,8 @@ Xapian::Query QueryParser::parseQuery(const QString& text)
 
             str = cleanString.normalized(QString::NormalizationForm_KC);
             Q_FOREACH (const QString& term, str.split(QLatin1Char('_'), QString::SkipEmptyParts)) {
-                QByteArray arr = term.toUtf8();
-                std::string stdString(arr.constData(), arr.size());
-
                 position++;
-                queries << Xapian::Query(stdString, 1, position);
+                queries << makeQuery(term, position, m_db);
             }
         }
     }
