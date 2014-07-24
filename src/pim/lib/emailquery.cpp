@@ -54,6 +54,7 @@ class EmailQuery::Private
 
     EmailQuery::OpType opType;
     int limit;
+    bool splitSearchMatchString;
 };
 
 EmailQuery::Private::Private():
@@ -61,7 +62,8 @@ EmailQuery::Private::Private():
     read('0'),
     attachment('0'),
     opType(OpAnd),
-    limit(0)
+    limit(0),
+    splitSearchMatchString(true)
 {
 }
 
@@ -74,6 +76,11 @@ EmailQuery::EmailQuery():
 EmailQuery::~EmailQuery()
 {
     delete d;
+}
+
+void EmailQuery::setSplitSearchMatchString(bool split)
+{
+    d->splitSearchMatchString = split;
 }
 
 void EmailQuery::setSearchType(EmailQuery::OpType op)
@@ -309,10 +316,15 @@ ResultIterator EmailQuery::exec()
         Xapian::QueryParser parser;
         parser.set_database(db);
         parser.set_default_op(Xapian::Query::OP_AND);
-
-        const QStringList list = d->matchString.split(QRegExp(QLatin1String("\\s")), QString::SkipEmptyParts);
-        Q_FOREACH (const QString& s, list) {
-            const QByteArray ba = s.toUtf8();
+        if (d->splitSearchMatchString) {
+            const QStringList list = d->matchString.split(QRegExp(QLatin1String("\\s")), QString::SkipEmptyParts);
+            Q_FOREACH (const QString& s, list) {
+                const QByteArray ba = s.toUtf8();
+                m_queries << parser.parse_query(ba.constData(),
+                                                Xapian::QueryParser::FLAG_PARTIAL);
+            }
+        } else {
+            const QByteArray ba = d->matchString.toUtf8();
             m_queries << parser.parse_query(ba.constData(),
                                             Xapian::QueryParser::FLAG_PARTIAL);
         }
