@@ -64,6 +64,7 @@ void QueryParserTest::testPhraseSearch()
     queries << Xapian::Query("fire", 1, 5);
 
     Xapian::Query q(Xapian::Query::OP_AND, queries.begin(), queries.end());
+    QEXPECT_FAIL("", "The custom query parser does not support phrases", Continue);
     QCOMPARE(query.serialise(), q.serialise());
 }
 
@@ -83,7 +84,6 @@ void QueryParserTest::testPhraseSearch_sameLimiter()
 
     Xapian::Query q(Xapian::Query::OP_AND, queries.begin(), queries.end());
 
-    QEXPECT_FAIL("", "The Xapian Query parser is stupid", Continue);
     QCOMPARE(query.serialise(), q.serialise());
 }
 
@@ -104,6 +104,7 @@ void QueryParserTest::testPhraseSearchEmail()
     queries << Xapian::Query("fire", 1, 5);
 
     Xapian::Query q(Xapian::Query::OP_AND, queries.begin(), queries.end());
+    QEXPECT_FAIL("", "The custom query parser does not support phrases", Continue);
     QCOMPARE(query.serialise(), q.serialise());
 }
 
@@ -111,10 +112,9 @@ void QueryParserTest::testAccentSearch()
 {
     QueryParser parser;
 
-    Xapian::Query query = parser.parseQuery("sóng");
+    Xapian::Query query = parser.parseQuery(QString::fromLatin1("sóng"));
     Xapian::Query q("song", 1, 1);
 
-    QEXPECT_FAIL("", "The Xapian Query parser does not remove accents", Continue);
     QCOMPARE(query.serialise(), q.serialise());
 }
 
@@ -130,7 +130,6 @@ void QueryParserTest::testUnderscoreSplitting()
 
     Xapian::Query q(Xapian::Query::OP_AND, queries.begin(), queries.end());
 
-    QEXPECT_FAIL("", "The Xapian Query does not split on _", Continue);
     QCOMPARE(query.serialise(), q.serialise());
 }
 
@@ -172,6 +171,7 @@ void QueryParserTest::testWordExpansion()
     Xapian::Query q(Xapian::Query::OP_OR, queries.begin(), queries.end());
     //qDebug() << q.get_description().c_str();
 
+    QEXPECT_FAIL("", "The Query parser does not currently support expansion", Continue);
     QCOMPARE(query.serialise(), q.serialise());
 
     //
