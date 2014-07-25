@@ -43,6 +43,8 @@ public:
         OpOr
     };
 
+    void setSplitSearchMatchString(bool split);
+
     void setSearchType(OpType op);
 
     void setInvolves(const QStringList& involves);

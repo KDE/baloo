@@ -101,6 +101,9 @@ protected:
 
     Xapian::Database* xapianDb();
 
+protected:
+    QMutex m_mutex;
+
 private:
     Xapian::Query toXapianQuery(const Term& term);
     Xapian::Query toXapianQuery(Xapian::Query::op op, const QList<Term>& terms);
@@ -119,7 +122,6 @@ private:
     int m_nextId;
 
     QString m_dbPath;
-    QMutex m_mutex;
 
     Xapian::Database* m_db;
 };
