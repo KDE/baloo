@@ -85,7 +85,7 @@ void ExtractorTest::testBData()
 
     QProcess process;
     process.start(exe, args);
-    QVERIFY(process.waitForFinished(1000));
+    QVERIFY(process.waitForFinished(10000));
 
     qDebug() << process.readAllStandardError();
     QByteArray bytearray = QByteArray::fromBase64(process.readAllStandardOutput());
@@ -124,7 +124,7 @@ void ExtractorTest::testFileDeletion()
 
     QProcess process;
     process.start(exe, args);
-    QVERIFY(process.waitForFinished(1000));
+    QVERIFY(process.waitForFinished(10000));
 
     // The document should have been deleted from the db
     xapDb.db()->reopen();
