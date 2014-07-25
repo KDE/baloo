@@ -1,3 +1,9 @@
+include(ECMMarkAsTest)
+
+set(QT_REQUIRED_VERSION "5.2.0")
+find_package(Qt5Test ${QT_REQUIRED_VERSION} CONFIG REQUIRED)
+
+
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/..
 )
@@ -18,10 +24,12 @@ set(searchplugintest_SRCS
 
 add_definitions(-DBALOO_NO_PLUGINS=TRUE)
 
-kde4_add_unit_test(searchplugintest NOGUI ${searchplugintest_SRCS})
-target_link_libraries(searchplugintest
-    ${QT_QTTEST_LIBRARY}
+add_executable( searchplugintest ${searchplugintest_SRCS} )
+add_test( searchplugintest searchplugintest )
+ecm_mark_as_test(searchplugintest)
 
+target_link_libraries(searchplugintest
+    Qt5::Test
     KF5::AkonadiCore
     KF5::AkonadiMime
     KF5::Mime
