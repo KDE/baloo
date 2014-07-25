@@ -118,7 +118,7 @@ private Q_SLOTS:
             msg->setBody("body1 mälmöö");
             msg->from()->addAddress("john@test.com", QLatin1String("John Doe"));
             msg->to()->addAddress("jane@test.com", QLatin1String("Jane Doe"));
-            msg->date()->setDateTime(KDateTime(QDate(2013,11,10), QTime(12,0,0)));
+            msg->date()->setDateTime(QDateTime(QDate(2013,11,10), QTime(12,0,0)));
             msg->assemble();
 
             Akonadi::Item item(QLatin1String("message/rfc822"));
@@ -141,7 +141,7 @@ private Q_SLOTS:
 
             msg->from()->addAddress("john@test.com", QLatin1String("John Doe"));
             msg->to()->addAddress("jane@test.com", QLatin1String("Jane Doe"));
-            msg->date()->setDateTime(KDateTime(QDate(2013,11,10), QTime(13,0,0)));
+            msg->date()->setDateTime(QDateTime(QDate(2013,11,10), QTime(13,0,0)));
             msg->organization()->from7BitString("kde");
             msg->assemble();
 
@@ -165,7 +165,7 @@ private Q_SLOTS:
 
             msg->from()->addAddress("john@test.com", QLatin1String("John Doe"));
             msg->to()->addAddress("jane@test.com", QLatin1String("Jane Doe"));
-            msg->date()->setDateTime(KDateTime(QDate(2014,11,10), QTime(13,0,0)));
+            msg->date()->setDateTime(QDateTime(QDate(2014,11,10), QTime(13,0,0)));
             msg->organization()->from7BitString("kde5");
             msg->assemble();
 
@@ -191,7 +191,7 @@ private Q_SLOTS:
             msg->to()->addAddress("jane@test.com", QLatin1String("Jane Doe"));
             msg->cc()->addAddress("cc@test.com", QLatin1String("Jane Doe"));
             msg->bcc()->addAddress("bcc@test.com", QLatin1String("Jane Doe"));
-            msg->date()->setDateTime(KDateTime(QDate(2014,11,11), QTime(13,0,0)));
+            msg->date()->setDateTime(QDateTime(QDate(2014,11,11), QTime(13,0,0)));
             msg->replyTo()->from7BitString("test@kde.org");
             KMime::Headers::Generic *header = new KMime::Headers::Generic( "Resent-From", msg.get(), QLatin1String("resent@kde.org"), "utf-8" );
             msg->setHeader( header );
@@ -220,7 +220,7 @@ private Q_SLOTS:
 
             msg->from()->addAddress("john@test.com", QLatin1String("John Doe"));
             msg->to()->addAddress("jane@test.com", QLatin1String("Jane Doe"));
-            msg->date()->setDateTime(KDateTime(QDate(2014,11,11), QTime(13,0,0)));
+            msg->date()->setDateTime(QDateTime(QDate(2014,11,11), QTime(13,0,0)));
             msg->assemble();
 
             Akonadi::Item item(QLatin1String("message/rfc822"));
@@ -259,7 +259,7 @@ private Q_SLOTS:
 
             msg->from()->addAddress("john@test.com", QLatin1String("John Doe"));
             msg->to()->addAddress("jane@test.com", QLatin1String("Jane Doe"));
-            msg->date()->setDateTime(KDateTime(QDate(2014,11,11), QTime(13,0,0)));
+            msg->date()->setDateTime(QDateTime(QDate(2014,11,11), QTime(13,0,0)));
             msg->assemble();
 
             Akonadi::Item item(QLatin1String("message/rfc822"));
@@ -736,14 +736,14 @@ private Q_SLOTS:
         }
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderDate, KDateTime(QDate(2013, 11, 10), QTime(12, 30, 0)).dateTime(), Akonadi::SearchTerm::CondGreaterOrEqual));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderDate, QDateTime(QDate(2013, 11, 10), QTime(12, 30, 0)), Akonadi::SearchTerm::CondGreaterOrEqual));
             QSet<qint64> result = QSet<qint64>() << 2 << 3 << 4 << 5 << 6;
             QTest::newRow("find by date") << QString::fromLatin1(query.toJSON()) << allEmailCollections << emailMimeTypes << result;
         }
 
         {
             Akonadi::SearchQuery query;
-            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderDate, KDateTime(QDate(2013, 11, 10), QTime(12, 0, 0)).dateTime(), Akonadi::SearchTerm::CondEqual));
+            query.addTerm(Akonadi::EmailSearchTerm(Akonadi::EmailSearchTerm::HeaderDate, QDateTime(QDate(2013, 11, 10), QTime(12, 0, 0)), Akonadi::SearchTerm::CondEqual));
             QSet<qint64> result = QSet<qint64>() << 1;
             QTest::newRow("find by date equal") << QString::fromLatin1(query.toJSON()) << allEmailCollections << emailMimeTypes << result;
         }

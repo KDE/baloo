@@ -23,4 +23,4 @@ install(FILES akonadibaloosearchplugin.desktop
 
 
 #REACTIVATE
-#add_subdirectory(autotests)
+add_subdirectory(autotests)

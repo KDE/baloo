@@ -100,6 +100,8 @@ Xapian::Query EmailSearchStore::constructQuery(const QString& property, const QV
 QString EmailSearchStore::text(int queryId)
 {
     Xapian::Document doc = docForQuery(queryId);
+
+    QMutexLocker lock(&m_mutex);
     std::string data;
     try {
         data = doc.get_data();
