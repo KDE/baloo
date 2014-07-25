@@ -31,22 +31,20 @@ using namespace Baloo;
 
 void FileMonitorTest::init()
 {
-   // monitor =  FileMonitor();
+    m_sut = new FileMonitor();
 }
 
 void FileMonitorTest::cleanup()
 {
-    //monitor.de
+    delete m_sut;
 }
 
 void FileMonitorTest::test()
 {
-    FileMonitor monitor;
+    QString file = getRandomValidFilePath();
+    m_sut->addFile(file);
 
-    QString file(QLatin1String("/tmp/t"));
-    monitor.addFile(file);
-
-    QSignalSpy spy(&monitor, SIGNAL(fileMetaDataChanged(QString)));
+    QSignalSpy spy(m_sut, SIGNAL(fileMetaDataChanged(QString)));
 
     QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/files"),
                                                       QLatin1String("org.kde"),
@@ -63,7 +61,7 @@ void FileMonitorTest::test()
     QDBusConnection::sessionBus().send(message);
 
     QEventLoop loop;
-    connect(&monitor, SIGNAL(fileMetaDataChanged(QString)),
+    connect(m_sut, SIGNAL(fileMetaDataChanged(QString)),
             &loop, SLOT(quit()));
     loop.exec();
 
@@ -79,12 +77,10 @@ void FileMonitorTest::test()
 
 void FileMonitorTest::testAddFileShouldReturnOneFileIfOneFileAdded()
 {
-    FileMonitor monitor;
+    QString filePath = getRandomValidFilePath();
+    m_sut->addFile(filePath);
 
-    QString filePath = getValidFilePath();
-    monitor.addFile(filePath);
-
-    QStringList actualList= monitor.files();
+    QStringList actualList= m_sut->files();
 
     QCOMPARE(actualList.count(),1);
     QCOMPARE(actualList.first(),filePath);
@@ -92,14 +88,12 @@ void FileMonitorTest::testAddFileShouldReturnOneFileIfOneFileAdded()
 
 void FileMonitorTest::testAddFileShouldReturnTwoFilesIfTwoFilesAdded()
 {
-    FileMonitor monitor;
+    QString filePath1 = getRandomValidFilePath();
+    QString filePath2 = getRandomValidFilePath();
+    m_sut->addFile(filePath1);
+    m_sut->addFile(filePath2);
 
-    QString filePath1 = getValidFilePath();
-    QString filePath2 = getValidFilePath();
-    monitor.addFile(filePath1);
-    monitor.addFile(filePath2);
-
-    QStringList actualList= monitor.files();
+    QStringList actualList= m_sut->files();
 
     QCOMPARE(actualList.count(),2);
     QVERIFY(actualList.contains(filePath1));
@@ -108,61 +102,62 @@ void FileMonitorTest::testAddFileShouldReturnTwoFilesIfTwoFilesAdded()
 
 void FileMonitorTest::testAddFileShouldRemoveTailingSlash()
 {
-    FileMonitor monitor;
+    QString expectedFilePath = getRandomValidFilePath();
+    QString filePath(expectedFilePath);
+    filePath.append("/");
 
-    QString filePath1(QLatin1String("/tmp/t/"));
-    QString expectedFilePath(QLatin1String("/tmp/t"));
-    monitor.addFile(filePath1);
+    m_sut->addFile(filePath);
 
-    QStringList actualList= monitor.files();
+    QStringList actualList= m_sut->files();
     QCOMPARE(actualList.first(),expectedFilePath);
 }
 
 void FileMonitorTest::testAddFileShouldNotAddNotLocalUrl()
 {
-     FileMonitor monitor;
-     QUrl fileUrl(QLatin1String("http://sdf.df"));
+     QUrl fileUrl(getRandomValidWebUrl());
 
-     monitor.addFile(fileUrl);
-     QStringList actualList= monitor.files();
+     m_sut->addFile(fileUrl);
+     QStringList actualList= m_sut->files();
 
      QCOMPARE(actualList.count(),0);
 }
 
 void FileMonitorTest::testAddFileShouldAddLocalUrl()
 {
-     FileMonitor monitor;
-     QUrl fileUrl(QLatin1String("/tmp/t"));
+     QUrl fileUrl(getRandomValidFilePath());
 
-     monitor.addFile(fileUrl);
-     QStringList actualList= monitor.files();
+     m_sut->addFile(fileUrl);
+     QStringList actualList= m_sut->files();
 
      QCOMPARE(actualList.count(),0);
 }
 void FileMonitorTest::testClearIfClearAfterOneFileAddedFilesShouldReturn0Items()
 {
-    FileMonitor monitor;
-    QUrl fileUrl(QLatin1String("/tmp/t"));
+    QUrl fileUrl(getRandomValidFilePath());
 
-    monitor.addFile(fileUrl);
+    m_sut->addFile(fileUrl);
 
-    QStringList actualList= monitor.files();
+    QStringList actualList= m_sut->files();
 
     QCOMPARE(actualList.count(),0);
 }
 void FileMonitorTest::testSetFilesIfSetFilesWithOneElementFilesShouldReturn1Item()
 {
-    FileMonitor monitor;
+    QStringList files = QStringList(getRandomValidFilePath() );
 
-    QStringList files = QStringList(getValidFilePath() );
-
-    monitor.setFiles(files);
-    QStringList actualList= monitor.files();
+    m_sut->setFiles(files);
+    QStringList actualList= m_sut->files();
 
     QCOMPARE(actualList.count(),1);
 }
 
-QString FileMonitorTest::getValidFilePath()
+QString FileMonitorTest::getRandomValidWebUrl()
+{
+    QString file = "http://" + getRandomString(4) +".com/"+ getRandomString(4);
+    return file;
+}
+
+QString FileMonitorTest::getRandomValidFilePath()
 {
     QString file(QLatin1String("/tmp/"));
     file.append(getRandomString(8));

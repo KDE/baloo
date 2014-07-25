@@ -22,7 +22,7 @@
 #define FILEMONITORTEST_H
 
 #include <QObject>
-
+#include "filemonitor.h"
 namespace Baloo {
 
 class FileMonitorTest : public QObject
@@ -31,8 +31,10 @@ class FileMonitorTest : public QObject
 
 
 private:
-    QString getValidFilePath();
+    QString getRandomValidFilePath();
+    QString getRandomValidWebUrl();
     QString getRandomString(int length) const;
+    FileMonitor* m_sut;
 private Q_SLOTS:
     void test();
     void init();
