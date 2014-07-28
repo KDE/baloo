@@ -62,7 +62,7 @@ private:
     QSqlDatabase m_sqlDb;
     QMutex m_sqlMutex;
 
-    QHash<QString, std::string> m_prefixes;
+    QHash<QString, QString> m_prefixes;
 };
 
 }
