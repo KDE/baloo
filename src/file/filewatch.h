@@ -43,6 +43,7 @@ public:
 
 Q_SIGNALS:
     void indexFile(const QString& string);
+    void indexXAttr(const QString& path);
     void fileRemoved(int id);
 
     void installedWatches();
@@ -53,6 +54,7 @@ private Q_SLOTS:
     void slotFilesDeleted(const QStringList& path);
     void slotFileCreated(const QString& path, bool isDir);
     void slotFileClosedAfterWrite(const QString&);
+    void slotAttributeChanged(const QString& path);
     void connectToKDirNotify();
 #ifdef BUILD_KINOTIFY
     void slotInotifyWatchUserLimitReached(const QString&);

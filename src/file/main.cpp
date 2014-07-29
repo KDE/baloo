@@ -101,6 +101,8 @@ int main(int argc, char** argv)
 
     QObject::connect(&filewatcher, SIGNAL(indexFile(QString)),
                      &fileIndexer, SLOT(indexFile(QString)));
+    QObject::connect(&filewatcher, SIGNAL(indexXAttr(QString)),
+                     &fileIndexer, SLOT(indexXAttr(QString)));
     QObject::connect(&filewatcher, SIGNAL(installedWatches()),
                      &fileIndexer, SLOT(update()));
     QObject::connect(&filewatcher, SIGNAL(fileRemoved(int)),

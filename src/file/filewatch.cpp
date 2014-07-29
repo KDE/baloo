@@ -109,6 +109,8 @@ FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
             this, SLOT(slotFileCreated(QString,bool)));
     connect(m_dirWatch, SIGNAL(closedWrite(QString)),
             this, SLOT(slotFileClosedAfterWrite(QString)));
+    connect(m_dirWatch, SIGNAL(attributeChanged(QString)),
+            this, SLOT(slotAttributeChanged(QString)));
     connect(m_dirWatch, SIGNAL(watchUserLimitReached(QString)),
             this, SLOT(slotInotifyWatchUserLimitReached(QString)));
     connect(m_dirWatch, SIGNAL(installedWatches()),
@@ -140,7 +142,9 @@ void FileWatch::watchFolder(const QString& path)
 #ifdef BUILD_KINOTIFY
     if (m_dirWatch && !m_dirWatch->watchingPath(path)) {
         KInotify::WatchEvents flags(KInotify::EventMove | KInotify::EventDelete | KInotify::EventDeleteSelf
-                                    | KInotify::EventCloseWrite | KInotify::EventCreate);
+                                    | KInotify::EventCloseWrite | KInotify::EventCreate
+                                    | KInotify::EventAttributeChange);
+
         m_dirWatch->addWatch(path, flags, KInotify::WatchFlags());
     }
 #endif
@@ -193,6 +197,11 @@ void FileWatch::slotFileClosedAfterWrite(const QString& path)
             dirModification.secsTo(current) <= 1000 * 60) {
         m_fileModificationQueue->enqueueUrl(path);
     }
+}
+
+void FileWatch::slotAttributeChanged(const QString& path)
+{
+    Q_EMIT indexXAttr(path);
 }
 
 void FileWatch::connectToKDirNotify()

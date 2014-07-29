@@ -87,6 +87,12 @@ public Q_SLOTS:
      */
     void indexFile(const QString& path);
 
+    /**
+     * Send the url for indexing, but only index the extended attributes
+     * of the file
+     */
+    void indexXattr(const QString& path);
+
 Q_SIGNALS:
     // Indexing State
     void indexingStarted();

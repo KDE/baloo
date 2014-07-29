@@ -139,6 +139,11 @@ void FileIndexer::indexFile(const QString& path)
     }
 }
 
+void FileIndexer::indexXAttr(const QString& path)
+{
+    m_indexScheduler->indexXattr(path);
+}
+
 
 void FileIndexer::indexFolder(const QString& path, bool recursive, bool forced)
 {

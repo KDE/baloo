@@ -189,6 +189,11 @@ void IndexScheduler::indexFile(const QString& path)
     m_basicIQ->enqueue(FileMapping(path));
 }
 
+void IndexScheduler::indexXattr(const QString& path)
+{
+    m_basicIQ->enqueue(FileMapping(path), ExtendedAttributesOnly);
+}
+
 void IndexScheduler::setStateFromEvent()
 {
    //Don't change the state if already suspended
