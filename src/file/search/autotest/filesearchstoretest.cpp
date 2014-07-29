@@ -398,6 +398,15 @@ void FileSearchStoreTest::testFileNameSearch()
     QVERIFY(m_store->next(qid3));
     QCOMPARE(m_store->id(qid3), serialize("file", id2));
     QVERIFY(!m_store->next(qid3));
+
+    // Exact match
+    q.setTerm(Term("filename", "dork", Term::Equal));
+
+    int qid4 = m_store->exec(q);
+    QCOMPARE(qid4, 4);
+    QVERIFY(m_store->next(qid4));
+    QCOMPARE(m_store->id(qid4), serialize("file", id1));
+    QVERIFY(!m_store->next(qid4));
 }
 
 

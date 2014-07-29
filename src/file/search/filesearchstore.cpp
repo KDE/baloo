@@ -48,12 +48,12 @@ FileSearchStore::FileSearchStore(QObject* parent)
     const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/file/");
     setDbPath(path);
 
-    m_prefixes.insert(QLatin1String("filename"), "F");
-    m_prefixes.insert(QLatin1String("mimetype"), "M");
-    m_prefixes.insert(QLatin1String("rating"), "R");
-    m_prefixes.insert(QLatin1String("tag"), "TA");
-    m_prefixes.insert(QLatin1String("tags"), "TA");
-    m_prefixes.insert(QLatin1String("usercomment"), "C");
+    m_prefixes.insert(QStringLiteral("filename"), QStringLiteral("F"));
+    m_prefixes.insert(QStringLiteral("mimetype"), QStringLiteral("M"));
+    m_prefixes.insert(QStringLiteral("rating"), QStringLiteral("R"));
+    m_prefixes.insert(QStringLiteral("tag"), QStringLiteral("TA"));
+    m_prefixes.insert(QStringLiteral("tags"), QStringLiteral("TA"));
+    m_prefixes.insert(QStringLiteral("usercomment"), QStringLiteral("C"));
 }
 
 FileSearchStore::~FileSearchStore()
@@ -144,18 +144,18 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
         QueryParser parser;
         parser.setDatabase(xapianDb());
 
-        std::string p;
-        QHash<QString, std::string>::const_iterator it = m_prefixes.constFind(property.toLower());
+        QString prefix;
+        auto it = m_prefixes.constFind(property.toLower());
         if (it != m_prefixes.constEnd()) {
-            p = it.value();
+            prefix = it.value();
         }
         else {
             KFileMetaData::PropertyInfo pi = KFileMetaData::PropertyInfo::fromName(property);
             int propPrefix = static_cast<int>(pi.property());
-            p = QString(QLatin1Char('X') + QString::number(propPrefix)).toUtf8().constData();
+            prefix = QLatin1Char('X') + QString::number(propPrefix);
         }
 
-        return parser.parseQuery(value.toString(), QString::fromUtf8(p.c_str(), p.length()));
+        return parser.parseQuery(value.toString(), prefix);
     }
 
     if ((property.compare(QLatin1String("modified"), Qt::CaseInsensitive) == 0)
@@ -194,7 +194,12 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
         }
     }
 
-    const QByteArray arr = value.toString().toUtf8();
+    QString prefix;
+    auto it = m_prefixes.constFind(property.toLower());
+    if (it != m_prefixes.constEnd()) {
+        prefix = it.value();
+    }
+    const QByteArray arr = (prefix + value.toString()).toUtf8();
     return Xapian::Query(arr.constData());
 }
 
