@@ -89,11 +89,7 @@ void MetadataMover::removeMetadata(const QString& url)
 void MetadataMover::updateMetadata(const QString& from, const QString& to)
 {
     qDebug() << from << "->" << to;
-    if (from.isEmpty() || to.isEmpty()) {
-        qWarning() << "Paths Empty - File a bug" << from << to;
-        return;
-    }
-
+    Q_ASSERT(!from.isEmpty() && !to.isEmpty());
     Q_ASSERT(from[from.size()-1] != QLatin1Char('/'));
     Q_ASSERT(to[to.size()-1] != QLatin1Char('/'));
 
