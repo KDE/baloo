@@ -103,7 +103,7 @@ bool BasicIndexingQueue::process(FileMapping& file, UpdateDirFlags flags)
 
     bool forced = flags & ForceUpdate;
     bool recursive = flags & UpdateRecursive;
-    bool indexingRequired = shouldIndex(file, mimetype);
+    bool indexingRequired = (flags & ExtendedAttributesOnly) || shouldIndex(file, mimetype);
 
     QFileInfo info(file.url());
     if (info.isDir()) {

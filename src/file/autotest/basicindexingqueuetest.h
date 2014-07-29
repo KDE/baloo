@@ -32,6 +32,7 @@ class BasicIndexingQueueTest : public QObject
 private Q_SLOTS:
     void testSimpleDirectoryStructure();
     void textExtendedAttributeIndexing();
+    void textNormalAndThenExtendedAttributeIndexing();
 };
 
 }
