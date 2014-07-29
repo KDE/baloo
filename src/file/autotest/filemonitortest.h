@@ -30,11 +30,7 @@ class FileMonitorTest : public QObject
     Q_OBJECT
 
 
-private:
-    QString getRandomValidFilePath();
-    QString getRandomValidWebUrl();
-    QString getRandomString(int length) const;
-    FileMonitor* m_sut;
+
 private Q_SLOTS:
     void test();
     void init();
@@ -46,6 +42,13 @@ private Q_SLOTS:
     void testAddFileShouldAddLocalUrl();
     void testClearIfClearAfterOneFileAddedFilesShouldReturn0Items();
     void testSetFilesIfSetFilesWithOneElementFilesShouldReturn1Item();
+    
+private:
+    QString getRandomValidFilePath();
+    QString getRandomValidWebUrl();
+    QString getRandomString(int length) const;
+    FileMonitor* m_sut;
+    
 };
 
 }

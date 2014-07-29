@@ -47,8 +47,8 @@ void FileMonitorTest::test()
     QSignalSpy spy(m_sut, SIGNAL(fileMetaDataChanged(QString)));
 
     QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/files"),
-                                                      QLatin1String("org.kde"),
-                                                      QLatin1String("changed"));
+                           QLatin1String("org.kde"),
+                           QLatin1String("changed"));
 
     QList<QString> list;
     list << file;
@@ -80,10 +80,10 @@ void FileMonitorTest::testAddFileShouldReturnOneFileIfOneFileAdded()
     QString filePath = getRandomValidFilePath();
     m_sut->addFile(filePath);
 
-    QStringList actualList= m_sut->files();
+    QStringList actualList = m_sut->files();
 
-    QCOMPARE(actualList.count(),1);
-    QCOMPARE(actualList.first(),filePath);
+    QCOMPARE(actualList.count(), 1);
+    QCOMPARE(actualList.first(), filePath);
 }
 
 void FileMonitorTest::testAddFileShouldReturnTwoFilesIfTwoFilesAdded()
@@ -93,9 +93,9 @@ void FileMonitorTest::testAddFileShouldReturnTwoFilesIfTwoFilesAdded()
     m_sut->addFile(filePath1);
     m_sut->addFile(filePath2);
 
-    QStringList actualList= m_sut->files();
+    QStringList actualList = m_sut->files();
 
-    QCOMPARE(actualList.count(),2);
+    QCOMPARE(actualList.count(), 2);
     QVERIFY(actualList.contains(filePath1));
     QVERIFY(actualList.contains(filePath2));
 }
@@ -108,28 +108,28 @@ void FileMonitorTest::testAddFileShouldRemoveTailingSlash()
 
     m_sut->addFile(filePath);
 
-    QStringList actualList= m_sut->files();
-    QCOMPARE(actualList.first(),expectedFilePath);
+    QStringList actualList = m_sut->files();
+    QCOMPARE(actualList.first(), expectedFilePath);
 }
 
 void FileMonitorTest::testAddFileShouldNotAddNotLocalUrl()
 {
-     QUrl fileUrl(getRandomValidWebUrl());
+    QUrl fileUrl(getRandomValidWebUrl());
 
-     m_sut->addFile(fileUrl);
-     QStringList actualList= m_sut->files();
+    m_sut->addFile(fileUrl);
+    QStringList actualList = m_sut->files();
 
-     QCOMPARE(actualList.count(),0);
+    QCOMPARE(actualList.count(), 0);
 }
 
 void FileMonitorTest::testAddFileShouldAddLocalUrl()
 {
-     QUrl fileUrl(getRandomValidFilePath());
+    QUrl fileUrl(getRandomValidFilePath());
 
-     m_sut->addFile(fileUrl);
-     QStringList actualList= m_sut->files();
+    m_sut->addFile(fileUrl);
+    QStringList actualList = m_sut->files();
 
-     QCOMPARE(actualList.count(),0);
+    QCOMPARE(actualList.count(), 0);
 }
 void FileMonitorTest::testClearIfClearAfterOneFileAddedFilesShouldReturn0Items()
 {
@@ -137,23 +137,23 @@ void FileMonitorTest::testClearIfClearAfterOneFileAddedFilesShouldReturn0Items()
 
     m_sut->addFile(fileUrl);
 
-    QStringList actualList= m_sut->files();
+    QStringList actualList = m_sut->files();
 
-    QCOMPARE(actualList.count(),0);
+    QCOMPARE(actualList.count(), 0);
 }
 void FileMonitorTest::testSetFilesIfSetFilesWithOneElementFilesShouldReturn1Item()
 {
-    QStringList files = QStringList(getRandomValidFilePath() );
+    QStringList files = QStringList(getRandomValidFilePath());
 
     m_sut->setFiles(files);
-    QStringList actualList= m_sut->files();
+    QStringList actualList = m_sut->files();
 
-    QCOMPARE(actualList.count(),1);
+    QCOMPARE(actualList.count(), 1);
 }
 
 QString FileMonitorTest::getRandomValidWebUrl()
 {
-    QString file = "http://" + getRandomString(4) +".com/"+ getRandomString(4);
+    QString file = "http://" + getRandomString(4) + ".com/" + getRandomString(4);
     return file;
 }
 
@@ -166,17 +166,17 @@ QString FileMonitorTest::getRandomValidFilePath()
 
 QString FileMonitorTest::getRandomString(int length) const
 {
-   const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
-   // assuming you want random strings of 12 characters
+    const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
+    // assuming you want random strings of 12 characters
 
-   QString randomString;
-   for(int i=0; i<length; ++i)
-   {
-       int index = qrand() % possibleCharacters.length();
-       QChar nextChar = possibleCharacters.at(index);
-       randomString.append(nextChar);
-   }
-   return randomString;
+    QString randomString;
+    for(int i=0; i<length; ++i)
+    {
+        int index = qrand() % possibleCharacters.length();
+        QChar nextChar = possibleCharacters.at(index);
+        randomString.append(nextChar);
+    }
+    return randomString;
 }
 
 
