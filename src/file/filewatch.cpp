@@ -23,6 +23,7 @@
 #include "activefilequeue.h"
 #include "regexpcache.h"
 #include "database.h"
+#include "pendingfile.h"
 
 #ifdef BUILD_KINOTIFY
 #include "kinotify.h"
@@ -94,8 +95,8 @@ FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
             this, SIGNAL(fileRemoved(int)));
 
     m_fileModificationQueue = new ActiveFileQueue(this);
-    connect(m_fileModificationQueue, SIGNAL(urlTimeout(QString)),
-            this, SLOT(slotActiveFileQueueTimeout(QString)));
+    connect(m_fileModificationQueue, SIGNAL(urlTimeout(PendingFile)),
+            this, SLOT(slotActiveFileQueueTimeout(PendingFile)));
 
 #ifdef BUILD_KINOTIFY
     // monitor the file system for changes (restricted by the inotify limit)
@@ -107,6 +108,8 @@ FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
             this, SLOT(slotFileDeleted(QString,bool)));
     connect(m_dirWatch, SIGNAL(created(QString,bool)),
             this, SLOT(slotFileCreated(QString,bool)));
+    connect(m_dirWatch, SIGNAL(modified(QString)),
+            this, SLOT(slotFileModified(QString)));
     connect(m_dirWatch, SIGNAL(closedWrite(QString)),
             this, SLOT(slotFileClosedAfterWrite(QString)));
     connect(m_dirWatch, SIGNAL(attributeChanged(QString)),
@@ -143,7 +146,7 @@ void FileWatch::watchFolder(const QString& path)
     if (m_dirWatch && !m_dirWatch->watchingPath(path)) {
         KInotify::WatchEvents flags(KInotify::EventMove | KInotify::EventDelete | KInotify::EventDeleteSelf
                                     | KInotify::EventCloseWrite | KInotify::EventCreate
-                                    | KInotify::EventAttributeChange);
+                                    | KInotify::EventAttributeChange | KInotify::EventModify);
 
         m_dirWatch->addWatch(path, flags, KInotify::WatchFlags());
     }
@@ -156,12 +159,6 @@ void FileWatch::slotFileMoved(const QString& urlFrom, const QString& urlTo)
 }
 
 
-void FileWatch::slotFilesDeleted(const QStringList& paths)
-{
-    m_metadataMover->removeFileMetadata(paths);
-}
-
-
 void FileWatch::slotFileDeleted(const QString& urlString, bool isDir)
 {
     // Directories must always end with a trailing slash '/'
@@ -169,7 +166,11 @@ void FileWatch::slotFileDeleted(const QString& urlString, bool isDir)
     if (isDir && url[ url.length() - 1 ] != QLatin1Char('/')) {
         url.append(QLatin1Char('/'));
     }
-    slotFilesDeleted(QStringList(url));
+
+    PendingFile file(url);
+    file.setDeleted();
+
+    m_fileModificationQueue->enqueueUrl(file);
 }
 
 
@@ -178,8 +179,20 @@ void FileWatch::slotFileCreated(const QString& path, bool isDir)
     // we only need the file creation event for folders
     // file creation is always followed by a CloseAfterWrite event
     if (isDir) {
-        Q_EMIT indexFile(path);
+        PendingFile file(path);
+        file.setCreated();
+
+        m_fileModificationQueue->enqueueUrl(file);
     }
+}
+
+void FileWatch::slotFileModified(const QString& path)
+{
+    PendingFile file(path);
+    file.setModified();
+
+    //qDebug() << "MOD" << path;
+    m_fileModificationQueue->enqueueUrl(file);
 }
 
 void FileWatch::slotFileClosedAfterWrite(const QString& path)
@@ -193,15 +206,20 @@ void FileWatch::slotFileClosedAfterWrite(const QString& path)
     // This is being done cause many applications open the file under write mode, do not
     // make any modifications and then close the file. This results in us getting
     // the FileClosedAfterWrite event
-    if (fileModification.secsTo(current) <= 1000 * 60 ||
-            dirModification.secsTo(current) <= 1000 * 60) {
-        m_fileModificationQueue->enqueueUrl(path);
+    if (fileModification.secsTo(current) <= 1000 * 60 || dirModification.secsTo(current) <= 1000 * 60) {
+        PendingFile file(path);
+        file.setClosedOnWrite();
+        //qDebug() << "CLOSE" << path;
+        m_fileModificationQueue->enqueueUrl(file);
     }
 }
 
 void FileWatch::slotAttributeChanged(const QString& path)
 {
-    Q_EMIT indexXAttr(path);
+    PendingFile file(path);
+    file.setAttributeChanged();
+
+    m_fileModificationQueue->enqueueUrl(file);
 }
 
 void FileWatch::connectToKDirNotify()
@@ -276,10 +294,21 @@ void FileWatch::updateIndexedFoldersWatches()
 #endif
 }
 
-void FileWatch::slotActiveFileQueueTimeout(const QString& url)
+void FileWatch::slotActiveFileQueueTimeout(const PendingFile& file)
 {
-    qDebug() << url;
-    Q_EMIT indexFile(url);
+    qDebug() << file.path();
+    if (file.shouldRemoveIndex()) {
+        m_metadataMover->removeFileMetadata(file.path());
+    }
+    else if (file.shouldIndexContents()) {
+        Q_EMIT indexFile(file.path());
+    }
+    else if (file.shouldIndexXAttrOnly()) {
+        Q_EMIT indexXAttr(file.path());
+    }
+    else {
+        Q_ASSERT_X(false, "FileWatch", "The PendingFile should always have some flags set");
+    }
 }
 
 void FileWatch::slotMovedWithoutData(const QString& url)

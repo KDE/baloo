@@ -1,5 +1,5 @@
 /*
-   This file is part of the Nepomuk KDE project.
+   This file is part of the KDE Baloo project.
    Copyright (C) 2011 Sebastian Trueg <trueg@kde.org>
    Copyright (C) 2013 Vishesh Handa <me@vhanda.in>
 
@@ -25,24 +25,24 @@
 #include <QQueue>
 #include <QHash>
 #include <QTimer>
-
+#include <QDebug>
 
 namespace
 {
 class Entry
 {
 public:
-    Entry(const QString& url, int c);
+    Entry(const Baloo::PendingFile& file, int c);
     bool operator==(const Entry& other) const;
 
     /// The file url
-    QString url;
+    Baloo::PendingFile file;
     /// The seconds left in this entry
     int cnt;
 };
 
-Entry::Entry(const QString& u, int c)
-    : url(u),
+Entry::Entry(const Baloo::PendingFile& file_, int c)
+    : file(file_),
       cnt(c)
 {
 }
@@ -50,13 +50,14 @@ Entry::Entry(const QString& u, int c)
 bool Entry::operator==(const Entry& other) const
 {
     // we ignore the counter since we need this for the search in queueUrl only
-    return url == other.url;
+    return file == other.file;
 }
 }
 
 
 Q_DECLARE_TYPEINFO(Entry, Q_MOVABLE_TYPE);
 
+using namespace Baloo;
 
 class ActiveFileQueue::Private
 {
@@ -94,24 +95,25 @@ ActiveFileQueue::~ActiveFileQueue()
     delete d;
 }
 
-void ActiveFileQueue::enqueueUrl(const QString& url)
+void ActiveFileQueue::enqueueUrl(const PendingFile& file)
 {
-    Entry defaultEntry(url, d->m_queueTimeout);
+    Entry defaultEntry(file, d->m_queueTimeout);
 
     // If the url is already in the queue update its timestamp
     QQueue<Entry>::iterator it = qFind(d->m_queue.begin(), d->m_queue.end(), defaultEntry);
     if (it != d->m_queue.end()) {
         it->cnt = d->m_queueTimeout;
+        it->file.merge(file);
     } else {
         // We check if we just emitted the url, if so we move it to the normal queue
-        QHash<QString, int>::iterator iter = d->m_emittedEntries.find(url);
+        QHash<QString, int>::iterator iter = d->m_emittedEntries.find(file.path());
         if (iter != d->m_emittedEntries.end()) {
             d->m_queue.enqueue(defaultEntry);
             d->m_emittedEntries.erase(iter);
         } else {
             // It's not in any of the queues
-            Q_EMIT urlTimeout(url);
-            d->m_emittedEntries.insert(url, d->m_emittedTimeout);
+            Q_EMIT urlTimeout(file);
+            d->m_emittedEntries.insert(file.path(), d->m_emittedTimeout);
         }
     }
 
@@ -140,9 +142,9 @@ void ActiveFileQueue::slotTimer()
         entry.cnt--;
         if (entry.cnt <= 0) {
             // Insert into the emitted queue
-            d->m_emittedEntries.insert(entry.url, d->m_emittedTimeout);
+            d->m_emittedEntries.insert(entry.file.path(), d->m_emittedTimeout);
 
-            Q_EMIT urlTimeout(entry.url);
+            Q_EMIT urlTimeout(entry.file);
             it.remove();
         }
     }

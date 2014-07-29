@@ -1,6 +1,7 @@
 /*
-   This file is part of the Nepomuk KDE project.
+   This file is part of the KDE Baloo project.
    Copyright (C) 2011 Sebastian Trueg <trueg@kde.org>
+   Copyright (C) 2013-2014 Vishesh Handa <me@vhanda.in>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -22,8 +23,12 @@
 #ifndef ACTIVEFILEQUEUE_H
 #define ACTIVEFILEQUEUE_H
 
+#include "pendingfile.h"
+
 #include <QObject>
 #include <QString>
+
+namespace Baloo {
 
 /**
  * The active file queue maintains a queue of file paths
@@ -52,10 +57,10 @@ public:
     ~ActiveFileQueue();
 
 Q_SIGNALS:
-    void urlTimeout(const QString& url);
+    void urlTimeout(const PendingFile& file);
 
 public Q_SLOTS:
-    void enqueueUrl(const QString& url);
+    void enqueueUrl(const PendingFile& file);
 
     /**
      * Set the timeout in seconds. Be aware that the timeout
@@ -78,5 +83,7 @@ private:
     class Private;
     Private* const d;
 };
+
+}
 
 #endif // ACTIVEFILEQUEUE_H

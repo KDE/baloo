@@ -26,6 +26,7 @@
 #include <qsignalspy.h>
 #include <qtimer.h>
 
+using namespace Baloo;
 
 namespace
 {
@@ -39,6 +40,7 @@ void loopWait(int msecs)
 
 ActiveFileQueueTest::ActiveFileQueueTest()
 {
+    qRegisterMetaType<Baloo::PendingFile>("PendingFile");
 }
 
 void ActiveFileQueueTest::testTimeout()
@@ -50,12 +52,12 @@ void ActiveFileQueueTest::testTimeout()
     queue.setTimeout(3);
     queue.setWaitTimeout(2);
 
-    QSignalSpy spy(&queue, SIGNAL(urlTimeout(QString)));
+    QSignalSpy spy(&queue, SIGNAL(urlTimeout(PendingFile)));
     queue.enqueueUrl(myUrl);
 
     // The signal should be emitted immediately
     QCOMPARE(spy.count(), 1);
-    QCOMPARE(spy.takeFirst().first().value<QString>(), myUrl);
+    QCOMPARE(spy.takeFirst().first().value<PendingFile>().path(), myUrl);
 
     // wait for 1 seconds
     loopWait(1000);
@@ -73,7 +75,7 @@ void ActiveFileQueueTest::testTimeout()
 
     // now the signal should have been emitted
     QCOMPARE(spy.count(), 1);
-    QCOMPARE(spy.takeFirst().first().value<QString>(), myUrl);
+    QCOMPARE(spy.takeFirst().first().value<PendingFile>().path(), myUrl);
 }
 
 void ActiveFileQueueTest::testRequeue()
@@ -85,12 +87,12 @@ void ActiveFileQueueTest::testRequeue()
     queue.setTimeout(3);
     queue.setWaitTimeout(2);
 
-    QSignalSpy spy(&queue, SIGNAL(urlTimeout(QString)));
+    QSignalSpy spy(&queue, SIGNAL(urlTimeout(PendingFile)));
     queue.enqueueUrl(myUrl);
 
     // The signal should be emitted immediately
     QCOMPARE(spy.count(), 1);
-    QCOMPARE(spy.takeFirst().first().value<QString>(), myUrl);
+    QCOMPARE(spy.takeFirst().first().value<PendingFile>().path(), myUrl);
     QVERIFY(spy.isEmpty());
 
     queue.enqueueUrl(myUrl);
@@ -116,7 +118,7 @@ void ActiveFileQueueTest::testRequeue()
 
     // now the signal should have been emitted
     QCOMPARE(spy.count(), 1);
-    QCOMPARE(spy.takeFirst().first().value<QString>(), myUrl);
+    QCOMPARE(spy.takeFirst().first().value<PendingFile>().path(), myUrl);
 }
 
 QTEST_MAIN(ActiveFileQueueTest)

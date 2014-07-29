@@ -20,18 +20,17 @@
 #define _FILE_WATCH_H_
 
 #include <QObject>
-#include <QtCore/QVariant>
-#include <QtCore/QSet>
+#include "pendingfile.h"
 
 class KInotify;
-class ActiveFileQueue;
 class Database;
 
 namespace Baloo
 {
-
 class MetadataMover;
 class FileIndexerConfig;
+class ActiveFileQueue;
+class FileWatchTest;
 
 class FileWatch : public QObject
 {
@@ -51,10 +50,10 @@ Q_SIGNALS:
 private Q_SLOTS:
     void slotFileMoved(const QString& from, const QString& to);
     void slotFileDeleted(const QString& urlString, bool isDir);
-    void slotFilesDeleted(const QStringList& path);
     void slotFileCreated(const QString& path, bool isDir);
     void slotFileClosedAfterWrite(const QString&);
     void slotAttributeChanged(const QString& path);
+    void slotFileModified(const QString& path);
     void connectToKDirNotify();
 #ifdef BUILD_KINOTIFY
     void slotInotifyWatchUserLimitReached(const QString&);
@@ -81,7 +80,7 @@ private Q_SLOTS:
      */
     //void slotDeviceTeardownRequested(const Baloo::RemovableMediaCache::Entry*);
 
-    void slotActiveFileQueueTimeout(const QString& url);
+    void slotActiveFileQueueTimeout(const PendingFile& file);
 
 private:
     /** Watch a folder, provided it is not already watched*/
@@ -98,6 +97,8 @@ private:
 
     /// queue used to "compress" constant file modifications like downloads
     ActiveFileQueue* m_fileModificationQueue;
+
+    friend class FileWatchTest;
 };
 }
 
