@@ -112,8 +112,8 @@ void ActiveFileQueue::enqueueUrl(const PendingFile& file)
             d->m_emittedEntries.erase(iter);
         } else {
             // It's not in any of the queues
-            Q_EMIT urlTimeout(file);
-            d->m_emittedEntries.insert(file.path(), d->m_emittedTimeout);
+            defaultEntry.cnt = 0;
+            d->m_queue.enqueue(defaultEntry);
         }
     }
 
@@ -121,6 +121,13 @@ void ActiveFileQueue::enqueueUrl(const PendingFile& file)
     if (!d->m_queueTimer.isActive()) {
         d->m_queueTimer.start();
     }
+
+    //
+    // The 10 msecs is completely arbitrary. We want to aggregate
+    // events instead of instantly emitting timeout as we typically get the
+    // same file multiple times but with different flags
+    //
+    QTimer::singleShot(10, this, SLOT(slotRemoveEmptyEntries()));
 }
 
 void ActiveFileQueue::setTimeout(int seconds)
@@ -131,6 +138,22 @@ void ActiveFileQueue::setTimeout(int seconds)
 void ActiveFileQueue::setWaitTimeout(int seconds)
 {
     d->m_emittedTimeout = seconds;
+}
+
+void ActiveFileQueue::slotRemoveEmptyEntries()
+{
+    // we run through the queue, decrease each counter and emit each entry which has a count of 0
+    QMutableListIterator<Entry> it(d->m_queue);
+    while (it.hasNext()) {
+        Entry& entry = it.next();
+        if (entry.cnt <= 0) {
+            // Insert into the emitted queue
+            d->m_emittedEntries.insert(entry.file.path(), d->m_emittedTimeout);
+
+            Q_EMIT urlTimeout(entry.file);
+            it.remove();
+        }
+    }
 }
 
 void ActiveFileQueue::slotTimer()

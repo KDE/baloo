@@ -78,6 +78,7 @@ public Q_SLOTS:
 
 private Q_SLOTS:
     void slotTimer();
+    void slotRemoveEmptyEntries();
 
 private:
     class Private;

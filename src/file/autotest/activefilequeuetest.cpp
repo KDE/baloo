@@ -56,6 +56,7 @@ void ActiveFileQueueTest::testTimeout()
     queue.enqueueUrl(myUrl);
 
     // The signal should be emitted immediately
+    QTest::qWait(20);
     QCOMPARE(spy.count(), 1);
     QCOMPARE(spy.takeFirst().first().value<PendingFile>().path(), myUrl);
 
@@ -91,6 +92,7 @@ void ActiveFileQueueTest::testRequeue()
     queue.enqueueUrl(myUrl);
 
     // The signal should be emitted immediately
+    QTest::qWait(20);
     QCOMPARE(spy.count(), 1);
     QCOMPARE(spy.takeFirst().first().value<PendingFile>().path(), myUrl);
     QVERIFY(spy.isEmpty());
