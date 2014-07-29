@@ -52,7 +52,12 @@ public:
 
     QString fetchTermStartsWith(const QByteArray& term);
 
-    void removeTermStartsWith(const QByteArray& prefix);
+    /**
+     * Remove all the terms which start with the prefix \p prefix
+     *
+     * \return true if the document was modified
+     */
+    bool removeTermStartsWith(const QByteArray& prefix);
 private:
     Xapian::Document m_doc;
     TermGenerator m_termGen;

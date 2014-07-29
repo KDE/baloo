@@ -100,8 +100,9 @@ bool BasicIndexingJob::index()
     return true;
 }
 
-void BasicIndexingJob::indexXAttr(const QString& url, XapianDocument& doc)
+bool BasicIndexingJob::indexXAttr(const QString& url, XapianDocument& doc)
 {
+    bool modified = false;
     QString val;
 
     baloo_getxattr(url, QLatin1String("user.xdg.tags"), &val);
@@ -111,19 +112,25 @@ void BasicIndexingJob::indexXAttr(const QString& url, XapianDocument& doc)
             doc.indexText(tag, QLatin1String("TA"));
             doc.addBoolTerm(QLatin1String("TAG-") + tag);
         }
+
+        modified = true;
     }
 
     val.clear();
     baloo_getxattr(url, QLatin1String("user.baloo.rating"), &val);
     if (!val.isEmpty()) {
         doc.addBoolTerm(val, QLatin1String("R"));
+        modified = true;
     }
 
     val.clear();
     baloo_getxattr(url, QLatin1String("user.xdg.comment"), &val);
     if (!val.isEmpty()) {
         doc.indexText(val, QLatin1String("C"));
+        modified = true;
     }
+
+    return modified;
 }
 
 QVector<KFileMetaData::Type::Type> BasicIndexingJob::typesForMimeType(const QString& mimeType) const

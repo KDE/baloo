@@ -47,8 +47,10 @@ public:
     /**
      * Adds the data for all the extended attributes of \p url
      * in the document \p doc
+     *
+     * \return Returns true if the \p doc was modified
      */
-    static void indexXAttr(const QString& url, XapianDocument& doc);
+    static bool indexXAttr(const QString& url, XapianDocument& doc);
 
 private:
     QVector<KFileMetaData::Type::Type> typesForMimeType(const QString& mimeType) const;

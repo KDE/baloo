@@ -91,8 +91,10 @@ QString XapianDocument::fetchTermStartsWith(const QByteArray& term)
     }
 }
 
-void XapianDocument::removeTermStartsWith(const QByteArray& prefix)
+bool XapianDocument::removeTermStartsWith(const QByteArray& prefix)
 {
+    bool modified = false;
+
     Xapian::TermIterator it = m_doc.termlist_begin();
     it.skip_to(prefix.constData());
     while (it != m_doc.termlist_end()){
@@ -115,6 +117,9 @@ void XapianDocument::removeTermStartsWith(const QByteArray& prefix)
 
         ++it;
         m_doc.remove_term(t);
+        modified = true;
     }
+
+    return modified;
 }
 

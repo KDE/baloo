@@ -33,6 +33,7 @@ private Q_SLOTS:
     void testSimpleDirectoryStructure();
     void textExtendedAttributeIndexing();
     void textNormalAndThenExtendedAttributeIndexing();
+    void testExtendedAttributeIndexingWhenEmpty();
 };
 
 }

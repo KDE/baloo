@@ -190,13 +190,16 @@ void BasicIndexingQueue::index(const FileMapping& file, const QString& mimetype,
     else {
         XapianDocument doc = m_db->xapianDatabase()->document(file.id());
 
-        doc.removeTermStartsWith("R");
-        doc.removeTermStartsWith("TA");
-        doc.removeTermStartsWith("TAG");
-        doc.removeTermStartsWith("C");
+        bool modified = false;
+        modified |= doc.removeTermStartsWith("R");
+        modified |= doc.removeTermStartsWith("TA");
+        modified |= doc.removeTermStartsWith("TAG");
+        modified |= doc.removeTermStartsWith("C");
 
-        BasicIndexingJob::indexXAttr(file.url(), doc);
-        Q_EMIT newDocument(file.id(), doc.doc());
+        modified |= BasicIndexingJob::indexXAttr(file.url(), doc);
+        if (modified) {
+            Q_EMIT newDocument(file.id(), doc.doc());
+        }
     }
 
     QTimer::singleShot(0, this, SLOT(finishIteration()));
