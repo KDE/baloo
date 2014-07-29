@@ -60,17 +60,7 @@ void MetadataMover::moveFileMetadata(const QString& from, const QString& to)
 void MetadataMover::removeFileMetadata(const QString& file)
 {
     Q_ASSERT(!file.isEmpty() && file != QLatin1String("/"));
-    removeFileMetadata(QStringList() << file);
-}
-
-
-void MetadataMover::removeFileMetadata(const QStringList& files)
-{
-    qDebug() << files;
-
-    Q_FOREACH (const QString& file, files) {
-        removeMetadata(file);
-    }
+    removeMetadata(file);
 }
 
 
