@@ -84,7 +84,7 @@ void FileWatchTest::testFileCreation()
     QString fileUrl(includeDir.path() + "/t1");
     QVERIFY(createFile(fileUrl));
 
-    QTest::qWait(10);
+    QTest::qWait(50);
 
     QCOMPARE(spyIndex.count(), 1);
     QCOMPARE(spyIndexXattr.count(), 0);
