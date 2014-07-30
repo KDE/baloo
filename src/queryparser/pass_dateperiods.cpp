@@ -93,7 +93,7 @@ QList<Baloo::Term> PassDatePeriods::run(const QList<Baloo::Term> &match) const
     Period p = period;
     long long v = value;
 
-    if (p == VariablePeriod) {
+    if (p == VariablePeriod && !match.isEmpty()) {
         // Parse the period from match.at(0)
         QString period_name = stringValueIfLiteral(match.at(0));
 
