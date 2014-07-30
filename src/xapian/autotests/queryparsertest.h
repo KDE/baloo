@@ -31,6 +31,7 @@ private Q_SLOTS:
     void testSinglePrefixWord();
     void testSimpleQuery();
     void testPhraseSearch();
+    void testPhraseSearchOnly();
     void testPhraseSearch_sameLimiter();
     void testPhraseSearchEmail();
     void testAccentSearch();

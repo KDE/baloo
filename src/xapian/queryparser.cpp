@@ -162,7 +162,7 @@ Xapian::Query QueryParser::parseQuery(const QString& text, const QString& prefix
                     }
                 }
                 else if (!containsSpace(delim)) {
-                    if (!inPhrase) {
+                    if (!inPhrase && !queries.isEmpty()) {
                         phraseQueries << queries.takeLast();
                     }
                     inPhrase = true;

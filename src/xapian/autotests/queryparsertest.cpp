@@ -78,6 +78,22 @@ void QueryParserTest::testPhraseSearch()
     QCOMPARE(query.serialise(), q.serialise());
 }
 
+void QueryParserTest::testPhraseSearchOnly()
+{
+    QueryParser parser;
+
+    Xapian::Query query = parser.parseQuery("/opt/pro");
+    //qDebug() << query.get_description().c_str();
+
+    QList<Xapian::Query> queries;
+    queries << Xapian::Query("opt", 1, 1);
+    queries << Xapian::Query("pro", 1, 2);
+
+    Xapian::Query q(Xapian::Query::OP_PHRASE, queries.begin(), queries.end());
+    //qDebug() << q.get_description().c_str();
+    QCOMPARE(query.serialise(), q.serialise());
+}
+
 void QueryParserTest::testPhraseSearch_sameLimiter()
 {
     QueryParser parser;
