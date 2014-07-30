@@ -103,4 +103,25 @@ inline int baloo_setxattr(const QString& path, const QString& name, const QStrin
 #endif
 }
 
+
+inline int baloo_removexattr(const QString& path, const QString& name)
+{
+    const QByteArray p = QFile::encodeName(path);
+    const char* encodedPath = p.constData();
+
+    const QByteArray n = name.toUtf8();
+    const char* attributeName = n.constData();
+
+    #if defined(Q_OS_LINUX) || (defined(__GLIBC__) && !defined(__stub_removexattr))
+        return removexattr(encodedPath, attributeName);
+    #elif defined(Q_OS_MAC)
+        return removexattr(encodedPath, attributeName, XATTR_NOFOLLOW );
+    #elif defined(Q_OS_FREEBSD) || defined(Q_OS_NETBSD)
+        return removexattr (encodedPath, attributeName);
+    #else
+        return -1;
+    #endif
+
+}
+
 #endif // BALOO_XATTR_P_H

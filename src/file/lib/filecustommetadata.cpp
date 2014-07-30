@@ -37,7 +37,17 @@ K_GLOBAL_STATIC(XattrDetector, g_detector)
 
 void Baloo::setCustomFileMetaData(const QString& url, const QString& key, const QString& value)
 {
-    if (g_detector->isSupported(url)) {
+    bool isValueEmpty = value.isEmpty();
+    bool isSupported = g_detector->isSupported(url);
+
+    if (isSupported && isValueEmpty) {
+        int r = baloo_removexattr(url,key);
+        if (r == -1) {
+            qWarning() << "Could not delete xattr for" << url << key;
+            return;
+        }
+    }
+    else if (isSupported && !isValueEmpty) {
         int r = baloo_setxattr(url, key, value);
         if (r == -1) {
             kError() << "Could not store xattr for" << url << key << value;
