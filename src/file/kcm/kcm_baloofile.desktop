@@ -12,7 +12,7 @@ X-KDE-Weight=20
 
 Name=Desktop Search
 Name[ca]=Cerca a l'escriptori
-Name[cs]=Hledání na ploše
+Name[cs]=Vyhledávací služby
 Name[en_GB]=Desktop Search
 Name[es]=Búsqueda de escritorio
 Name[fi]=Työpöytähaku
@@ -34,7 +34,7 @@ Name[uk]=Стільничний пошук
 Name[x-test]=xxDesktop Searchxx
 Comment=Configure Desktop Search
 Comment[ca]=Configura la cerca a l'escriptori
-Comment[cs]=Nastavit hledání na ploše
+Comment[cs]=Nastavit vyhledávací služby
 Comment[en_GB]=Configure Desktop Search
 Comment[es]=Configurar la búsqueda del escritorio
 Comment[fi]=Työpöytähaun asetukset
