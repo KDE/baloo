@@ -2,7 +2,7 @@ project(baloo)
 
 set(BALOO_VERSION_MAJOR 4)
 set(BALOO_VERSION_MINOR 13)
-set(BALOO_VERSION_RELEASE 96)
+set(BALOO_VERSION_RELEASE 97)
 set(BALOO_VERSION "${BALOO_VERSION_MAJOR}.${BALOO_VERSION_MINOR}.${BALOO_VERSION_RELEASE}")
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules" ${CMAKE_MODULE_PATH})
@@ -10,7 +10,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules" ${CMAKE_MODULE_PATH})
 find_package(KDE4 REQUIRED)
 include(KDE4Defaults)
 
-find_package(KdepimLibs 4.13.80 CONFIG)
+find_package(KdepimLibs 4.13.97 CONFIG)
 set_package_properties(KdepimLibs PROPERTIES
     DESCRIPTION "The KDEPIM libraries"
     URL "http://www.kde.org"
