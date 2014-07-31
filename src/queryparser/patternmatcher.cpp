@@ -45,7 +45,7 @@ int PatternMatcher::captureCount() const
     int capture;
 
     Q_FOREACH(const QString &p, pattern) {
-        if (p.at(0) == QLatin1Char('%')) {
+        if (p.at(0) == QLatin1Char('$')) {
             capture = p.mid(1).toInt();
 
             if (capture > max_capture) {
@@ -62,10 +62,12 @@ int PatternMatcher::matchPattern(int first_term_index,
                                  int &start_position,
                                  int &end_position) const
 {
+    Q_ASSERT(first_term_index < terms.count());
+
     int pattern_index = 0;
     int term_index = first_term_index;
     bool has_matched_a_literal = false;
-    bool match_anything = false;        // Match "%%"
+    bool match_anything = false;        // Match "$$"
     bool contains_catchall = false;
 
     start_position = 1 << 30;
@@ -80,7 +82,7 @@ int PatternMatcher::matchPattern(int first_term_index,
         start_position = qMin(start_position, termStart(term));
         end_position = qMax(end_position, termEnd(term));
 
-        if (pattern.at(pattern_index) == QLatin1String("%%")) {
+        if (pattern.at(pattern_index) == QLatin1String("$$")) {
             // Start to match anything
             match_anything = true;
             contains_catchall = true;
@@ -125,7 +127,7 @@ int PatternMatcher::matchPattern(int first_term_index,
     }
 
     if (contains_catchall || pattern_index == pattern.count()) {
-        // Patterns containing "%%" typically end with an optional terminating
+        // Patterns containing "$$" typically end with an optional terminating
         // term. Allow them to match even if we reach the end of the term list
         // without encountering the terminating term.
         return (term_index - first_term_index);
@@ -136,7 +138,7 @@ int PatternMatcher::matchPattern(int first_term_index,
 
 bool PatternMatcher::matchTerm(const Baloo::Term &term, const QString &pattern, int &capture_index) const
 {
-    if (pattern.at(0) == QLatin1Char('%')) {
+    if (pattern.at(0) == QLatin1Char('$')) {
         // Placeholder
         capture_index = pattern.mid(1).toInt() - 1;
 
@@ -168,7 +170,7 @@ void PatternMatcher::addCompletionProposal(int first_pattern_index_not_matching,
     // user types "sent to size > 2M", that is seen here as "sent to <comparison>".
     if (!terms.at(first_term_index_not_matching - 1).property().isNull()) {
         if (--first_term_index_not_matching < 0) {
-            return; // Avoid an underflow when the pattern is only "%1" for instance.
+            return; // Avoid an underflow when the pattern is only "$1" for instance.
         }
     }
 
@@ -197,11 +199,11 @@ void PatternMatcher::addCompletionProposal(int first_pattern_index_not_matching,
     for (int i=0; i<user_friendly_pattern.count(); ++i) {
         QString &part = user_friendly_pattern[i];
 
-        if (part == QLatin1String("%%")) {
-            // pattern_parts_to_replace and i cannot be used as %% can hide
+        if (part == QLatin1String("$$")) {
+            // pattern_parts_to_replace and i cannot be used as $$ can hide
             // many terms matched by the pattern. Don't touch the pattern.
             break;
-        } else if (part.startsWith(QLatin1Char('%'))) {
+        } else if (part.startsWith(QLatin1Char('$'))) {
             continue;
         }
 

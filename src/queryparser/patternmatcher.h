@@ -79,7 +79,7 @@ class PatternMatcher
                         index = -1;
                     }
 
-                    // If the pattern contains "%%", terms are appended to the end
+                    // If the pattern contains "$$", terms are appended to the end
                     // of matched_terms. Remove them now that they are not needed anymore
                     while (matched_terms.count() > capture_count) {
                         matched_terms.removeLast();

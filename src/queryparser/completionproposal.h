@@ -46,7 +46,7 @@ class BALOO_QUERYPARSER_EXPORT CompletionProposal
         /**
          * \brief Data-type used by the first placeholder of the pattern
          *
-         * If the pattern is "sent by %1", the type of "%1" is Contact. This
+         * If the pattern is "sent by ?1", the type of "$1" is Contact. This
          * way, a GUI can show to the user a list of his or her contacts.
          */
         enum Type
@@ -60,13 +60,13 @@ class BALOO_QUERYPARSER_EXPORT CompletionProposal
 
         /**
          * \param pattern list of terms matched by the proposal ("sent",
-         *                "by", "%1" for instance)
+         *                "by", "$1" for instance)
          * \param last_matched_part index of the last part of the mattern
          *                          that has been matched against the user
          *                          query
          * \param position position in the user query of the pattern matched
          * \param length length in the user query of the terms matched
-         * \param type if the pattern contains "%1", this is the type of
+         * \param type if the pattern contains "$1", this is the type of
          *             the value matched by this placeholder
          * \param description human description of the pattern
          */
@@ -104,7 +104,7 @@ class BALOO_QUERYPARSER_EXPORT CompletionProposal
         int length() const;
 
         /**
-         * \return type of the value represented by the "%1" term in the pattern
+         * \return type of the value represented by the "$1" term in the pattern
          */
         Type type() const;
 
