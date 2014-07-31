@@ -310,7 +310,7 @@ QUrl RemovableMediaCache::Entry::constructLocalFileUrl(const QUrl& filexUrl) con
         if (sa->isAccessible()) {
             // the base of the path: the mount path
             QUrl fileUrl(sa->filePath());
-            fileUrl.addPath(QUrl::fromEncoded(filexUrl.toEncoded().mid(m_urlPrefix.count())).toString());
+            fileUrl.setPath(QUrl::fromEncoded(filexUrl.toEncoded().mid(m_urlPrefix.count())).toString());
             return fileUrl;
         }
     }

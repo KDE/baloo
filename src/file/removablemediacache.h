@@ -1,5 +1,5 @@
 /*
-   This file is part of the Nepomuk KDE project.
+   This file is part of the KDE Baloo project.
    Copyright (C) 2011 Sebastian Trueg <trueg@kde.org>
 
    This library is free software; you can redistribute it and/or
@@ -22,9 +22,9 @@
 #ifndef REMOVABLEMEDIACACHE_H
 #define REMOVABLEMEDIACACHE_H
 
-#include <QtCore/QObject>
-#include <QtCore/QMutex>
-#include <QtCore/QSet>
+#include <QObject>
+#include <QMutex>
+#include <QSet>
 
 #include <Solid/Device>
 
@@ -36,10 +36,7 @@ namespace Baloo
 
 /**
  * The removable media cache provides access to all removable
- * media that are supported by Nepomuk. It allows to convert
- * URLs the way RemovableMediaModel requires it and provides
- * more or less unique URIs for each device allowing to store
- * device-specific configuration.
+ * media that are supported by Baloo.
  */
 class RemovableMediaCache : public QObject
 {

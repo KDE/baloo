@@ -25,7 +25,7 @@ set(file_static_lib_SRCS
     regexpcache.cpp
     fileexcludefilters.cpp
     lib/filemapping.cpp
-    # removablemediacache.cpp
+    removablemediacache.cpp
 
     # File Watcher
     filewatch.cpp
