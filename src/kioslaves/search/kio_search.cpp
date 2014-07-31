@@ -83,6 +83,7 @@ void SearchProtocol::listDir(const QUrl& url)
     }
 
     Query q = Query::fromSearchUrl(url);
+    q.setSortingOption(Query::SortNone);
     ResultIterator it = q.exec();
 
     while (it.next()) {
