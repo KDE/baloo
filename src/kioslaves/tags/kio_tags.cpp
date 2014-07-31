@@ -101,6 +101,7 @@ void TagsProtocol::listDir(const QUrl& url)
         Query q;
         q.addType(QLatin1String("File"));
         q.setTerm(Term(QLatin1String("tag"), tag));
+        q.setSortingOption(Query::SortNone);
 
         ResultIterator it = q.exec();
         while (it.next()) {
