@@ -409,5 +409,37 @@ void FileSearchStoreTest::testFileNameSearch()
     QVERIFY(!m_store->next(qid4));
 }
 
+void FileSearchStoreTest::testSortingNone()
+{
+    insertText(1, QLatin1String("Power A"));
+    insertText(2, QLatin1String("Power Power B"));
+
+    Query q;
+    q.addType(QLatin1String("File"));
+    q.setSearchString("Power");
+
+    int qid;
+
+    // Auto sort - Based on frequency
+    qid = m_store->exec(q);
+    QCOMPARE(qid, 1);
+    QVERIFY(m_store->next(qid));
+    QCOMPARE(m_store->id(qid), serialize("file", 2));
+    QVERIFY(m_store->next(qid));
+    QCOMPARE(m_store->id(qid), serialize("file", 1));
+    QVERIFY(!m_store->next(qid));
+
+    // no sort
+    q.setSortingOption(Query::SortNone);
+
+    qid = m_store->exec(q);
+    QCOMPARE(qid, 2);
+    QVERIFY(m_store->next(qid));
+    QCOMPARE(m_store->id(qid), serialize("file", 1));
+    QVERIFY(m_store->next(qid));
+    QCOMPARE(m_store->id(qid), serialize("file", 2));
+    QVERIFY(!m_store->next(qid));
+}
+
 
 QTEST_MAIN(Baloo::FileSearchStoreTest)

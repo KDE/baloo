@@ -50,6 +50,7 @@ private Q_SLOTS:
     void testAllVideos();
 
     void testFileNameSearch();
+    void testSortingNone();
 private:
     QTemporaryDir* m_tempDir;
     Database* m_db;

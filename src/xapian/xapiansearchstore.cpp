@@ -166,6 +166,10 @@ int XapianSearchStore::exec(const Query& query)
             Xapian::Enquire enquire(*m_db);
             enquire.set_query(xapQ);
 
+            if (query.sortingOption() == Query::SortNone) {
+                enquire.set_weighting_scheme(Xapian::BoolWeight());
+            }
+
             Result& res = m_queryMap[m_nextId++];
             res.mset = enquire.get_mset(query.offset(), query.limit());
             res.it = res.mset.begin();

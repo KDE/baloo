@@ -94,7 +94,36 @@ public:
     int monthFilter() const;
     int dayFilter() const;
 
-    // FIXME: Sorting?
+    enum SortingOption {
+        /**
+         * The results are returned in the most efficient order. They can
+         * be returned in any order.
+         */
+        SortNone,
+
+        /**
+         * The results are returned in the order the SearchStore decides
+         * should be ideal. This criteria could be based on any factors.
+         * Read the documentation for the corresponding search store.
+         */
+        SortAuto,
+
+        /**
+         * The results are returned based on the explicit property specified.
+         * The implementation of this depends on the search store.
+         */
+        SortProperty
+    };
+
+    void setSortingOption(SortingOption option);
+    SortingOption sortingOption() const;
+
+    /**
+     * Sets the property that should be used for sorting. This automatically
+     * set the sorting mechanism to SortProperty
+     */
+    void setSortingProperty(const QString& property);
+    QString sortingProperty() const;
 
     /**
      * Adds a custom option which any search backend could use
