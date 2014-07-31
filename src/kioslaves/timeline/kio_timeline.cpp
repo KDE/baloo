@@ -140,6 +140,7 @@ void TimelineProtocol::listDir(const QUrl& url)
         Query query;
         query.addType(QLatin1String("File"));
         query.setDateFilter(m_date.year(), m_date.month(), m_date.day());
+        query.setSortingOption(Query::SortNone);
 
         ResultIterator it = query.exec();
         while (it.next()) {
@@ -231,6 +232,7 @@ bool TimelineProtocol::filesInDate(const QDate& date)
     query.addType(QLatin1String("File"));
     query.setLimit(1);
     query.setDateFilter(date.year(), date.month(), date.day());
+    query.setSortingOption(Query::SortNone);
 
     ResultIterator it = query.exec();
     return it.next();
@@ -242,6 +244,7 @@ void TimelineProtocol::listThisYearsMonths()
     Query query;
     query.addType(QLatin1String("File"));
     query.setLimit(1);
+    query.setSortingOption(Query::SortNone);
 
     int year = QDate::currentDate().year();
     int currentMonth = QDate::currentDate().month();
