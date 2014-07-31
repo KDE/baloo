@@ -57,6 +57,7 @@ void FileIndexingQueue::fillQueue()
         Xapian::Database* db = m_db->xapianDatabase()->db();
         Xapian::Enquire enquire(*db);
         enquire.set_query(Xapian::Query("Z1"));
+        enquire.set_weighting_scheme(Xapian::BoolWeight());
 
         Xapian::MSet mset = enquire.get_mset(0, m_maxSize - m_fileQueue.size());
         Xapian::MSetIterator it = mset.begin();
