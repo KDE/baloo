@@ -58,7 +58,6 @@ private Q_SLOTS:
 #ifdef BUILD_KINOTIFY
     void slotInotifyWatchUserLimitReached(const QString&);
 #endif
-    void slotMovedWithoutData(const QString& url);
 
     /**
      * To be called whenever the list of indexed folders changes. This is done because
@@ -66,21 +65,6 @@ private Q_SLOTS:
      * non-indexed folders are not.
      */
     void updateIndexedFoldersWatches();
-
-    /**
-     * Connected to each removable media. Adds a watch for the mount point,
-     * cleans up the index with respect to removed files, and optionally
-     * tells the indexer service to run on the mount path.
-     */
-    //void slotDeviceMounted(const Baloo::RemovableMediaCache::Entry*);
-
-    /**
-     * Connected to each removable media.
-     * Removes all the watches that were added for that removable media
-     */
-    //void slotDeviceTeardownRequested(const Baloo::RemovableMediaCache::Entry*);
-
-    void slotActiveFileQueueTimeout(const PendingFile& file);
 
 private:
     /** Watch a folder, provided it is not already watched*/

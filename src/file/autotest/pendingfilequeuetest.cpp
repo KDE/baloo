@@ -40,7 +40,6 @@ void loopWait(int msecs)
 
 PendingFileQueueTest::PendingFileQueueTest()
 {
-    qRegisterMetaType<Baloo::PendingFile>("PendingFile");
 }
 
 void PendingFileQueueTest::testTimeout()
@@ -52,18 +51,20 @@ void PendingFileQueueTest::testTimeout()
     queue.setTimeout(3);
     queue.setWaitTimeout(2);
 
-    QSignalSpy spy(&queue, SIGNAL(urlTimeout(PendingFile)));
-    queue.enqueueUrl(myUrl);
+    QSignalSpy spy(&queue, SIGNAL(indexFile(QString)));
+    PendingFile file(myUrl);
+    file.setModified();
+    queue.enqueueUrl(file);
 
     // The signal should be emitted immediately
     QTest::qWait(20);
     QCOMPARE(spy.count(), 1);
-    QCOMPARE(spy.takeFirst().first().value<PendingFile>().path(), myUrl);
+    QCOMPARE(spy.takeFirst().first().toString(), myUrl);
 
     // wait for 1 seconds
     loopWait(1000);
 
-    queue.enqueueUrl(myUrl);
+    queue.enqueueUrl(file);
     // the signal should not have been emitted yet
     QVERIFY(spy.isEmpty());
 
@@ -76,7 +77,7 @@ void PendingFileQueueTest::testTimeout()
 
     // now the signal should have been emitted
     QCOMPARE(spy.count(), 1);
-    QCOMPARE(spy.takeFirst().first().value<PendingFile>().path(), myUrl);
+    QCOMPARE(spy.takeFirst().first().toString(), myUrl);
 }
 
 void PendingFileQueueTest::testRequeue()
@@ -88,16 +89,18 @@ void PendingFileQueueTest::testRequeue()
     queue.setTimeout(3);
     queue.setWaitTimeout(2);
 
-    QSignalSpy spy(&queue, SIGNAL(urlTimeout(PendingFile)));
-    queue.enqueueUrl(myUrl);
+    QSignalSpy spy(&queue, SIGNAL(indexFile(QString)));
+    PendingFile file(myUrl);
+    file.setModified();
+    queue.enqueueUrl(file);
 
     // The signal should be emitted immediately
     QTest::qWait(20);
     QCOMPARE(spy.count(), 1);
-    QCOMPARE(spy.takeFirst().first().value<PendingFile>().path(), myUrl);
+    QCOMPARE(spy.takeFirst().first().toString(), myUrl);
     QVERIFY(spy.isEmpty());
 
-    queue.enqueueUrl(myUrl);
+    queue.enqueueUrl(file);
     // wait for 1 seconds
     loopWait(1000);
 
@@ -105,7 +108,7 @@ void PendingFileQueueTest::testRequeue()
     QVERIFY(spy.isEmpty());
 
     // re-queue the url
-    queue.enqueueUrl(myUrl);
+    queue.enqueueUrl(file);
 
     // wait another 1 seconds
     loopWait(1000);
@@ -120,7 +123,7 @@ void PendingFileQueueTest::testRequeue()
 
     // now the signal should have been emitted
     QCOMPARE(spy.count(), 1);
-    QCOMPARE(spy.takeFirst().first().value<PendingFile>().path(), myUrl);
+    QCOMPARE(spy.takeFirst().first().toString(), myUrl);
 }
 
 QTEST_MAIN(PendingFileQueueTest)

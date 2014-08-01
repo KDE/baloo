@@ -32,7 +32,7 @@ namespace Baloo {
 class PendingFile
 {
 public:
-    PendingFile(const QString& path = QString());
+    explicit PendingFile(const QString& path = QString());
 
     QString path() const;
     void setPath(const QString& path);

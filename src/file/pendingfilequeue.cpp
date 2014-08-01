@@ -113,7 +113,16 @@ void PendingFileQueue::slotRemoveEmptyEntries()
             // Insert into the emitted queue
             m_emittedEntries.insert(entry.file.path(), m_emittedTimeout);
 
-            Q_EMIT urlTimeout(entry.file);
+            const PendingFile& file = entry.file;
+            if (file.shouldRemoveIndex()) {
+                Q_EMIT removeFileIndex(file.path());
+            } else if (file.shouldIndexContents()) {
+                Q_EMIT indexFile(file.path());
+            } else if (file.shouldIndexXAttrOnly()) {
+                Q_EMIT indexXAttr(file.path());
+            } else {
+                Q_ASSERT_X(false, "FileWatch", "The PendingFile should always have some flags set");
+            }
             it.remove();
         }
     }
@@ -130,7 +139,16 @@ void PendingFileQueue::slotTimer()
             // Insert into the emitted queue
             m_emittedEntries.insert(entry.file.path(), m_emittedTimeout);
 
-            Q_EMIT urlTimeout(entry.file);
+            const PendingFile& file = entry.file;
+            if (file.shouldRemoveIndex()) {
+                Q_EMIT removeFileIndex(file.path());
+            } else if (file.shouldIndexContents()) {
+                Q_EMIT indexFile(file.path());
+            } else if (file.shouldIndexXAttrOnly()) {
+                Q_EMIT indexXAttr(file.path());
+            } else {
+                Q_ASSERT_X(false, "FileWatch", "The PendingFile should always have some flags set");
+            }
             it.remove();
         }
     }

@@ -60,7 +60,9 @@ public:
     ~PendingFileQueue();
 
 Q_SIGNALS:
-    void urlTimeout(const PendingFile& file);
+    void indexFile(const QString& fileUrl);
+    void indexXAttr(const QString& fileUrl);
+    void removeFileIndex(const QString& fileUrl);
 
 public Q_SLOTS:
     void enqueueUrl(const PendingFile& file);

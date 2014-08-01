@@ -90,13 +90,17 @@ FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
 {
     m_metadataMover = new MetadataMover(m_db, this);
     connect(m_metadataMover, SIGNAL(movedWithoutData(QString)),
-            this, SLOT(slotMovedWithoutData(QString)));
+            this, SIGNAL(indexFile(QString)));
     connect(m_metadataMover, SIGNAL(fileRemoved(int)),
             this, SIGNAL(fileRemoved(int)));
 
     m_pendingFileQueue = new PendingFileQueue(this);
-    connect(m_pendingFileQueue, SIGNAL(urlTimeout(PendingFile)),
-            this, SLOT(slotActiveFileQueueTimeout(PendingFile)));
+    connect(m_pendingFileQueue, SIGNAL(indexFile(QString)),
+            this, SIGNAL(indexFile(QString)));
+    connect(m_pendingFileQueue, SIGNAL(indexXAttr(QString)),
+            this, SIGNAL(indexXAttr(QString)));
+    connect(m_pendingFileQueue, SIGNAL(removeFileIndex(QString)),
+            m_metadataMover, SLOT(removeFileMetadata(QString)));
 
 #ifdef BUILD_KINOTIFY
     // monitor the file system for changes (restricted by the inotify limit)
@@ -292,27 +296,5 @@ void FileWatch::updateIndexedFoldersWatches()
         }
     }
 #endif
-}
-
-void FileWatch::slotActiveFileQueueTimeout(const PendingFile& file)
-{
-    qDebug() << file.path();
-    if (file.shouldRemoveIndex()) {
-        m_metadataMover->removeFileMetadata(file.path());
-    }
-    else if (file.shouldIndexContents()) {
-        Q_EMIT indexFile(file.path());
-    }
-    else if (file.shouldIndexXAttrOnly()) {
-        Q_EMIT indexXAttr(file.path());
-    }
-    else {
-        Q_ASSERT_X(false, "FileWatch", "The PendingFile should always have some flags set");
-    }
-}
-
-void FileWatch::slotMovedWithoutData(const QString& url)
-{
-    Q_EMIT indexFile(url);
 }
 
