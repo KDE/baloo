@@ -20,7 +20,7 @@
 #include "filewatch.h"
 #include "metadatamover.h"
 #include "fileindexerconfig.h"
-#include "activefilequeue.h"
+#include "pendingfilequeue.h"
 #include "regexpcache.h"
 #include "database.h"
 #include "pendingfile.h"
@@ -94,8 +94,8 @@ FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
     connect(m_metadataMover, SIGNAL(fileRemoved(int)),
             this, SIGNAL(fileRemoved(int)));
 
-    m_fileModificationQueue = new ActiveFileQueue(this);
-    connect(m_fileModificationQueue, SIGNAL(urlTimeout(PendingFile)),
+    m_pendingFileQueue = new PendingFileQueue(this);
+    connect(m_pendingFileQueue, SIGNAL(urlTimeout(PendingFile)),
             this, SLOT(slotActiveFileQueueTimeout(PendingFile)));
 
 #ifdef BUILD_KINOTIFY
@@ -170,7 +170,7 @@ void FileWatch::slotFileDeleted(const QString& urlString, bool isDir)
     PendingFile file(url);
     file.setDeleted();
 
-    m_fileModificationQueue->enqueueUrl(file);
+    m_pendingFileQueue->enqueueUrl(file);
 }
 
 
@@ -182,7 +182,7 @@ void FileWatch::slotFileCreated(const QString& path, bool isDir)
         PendingFile file(path);
         file.setCreated();
 
-        m_fileModificationQueue->enqueueUrl(file);
+        m_pendingFileQueue->enqueueUrl(file);
     }
 }
 
@@ -192,7 +192,7 @@ void FileWatch::slotFileModified(const QString& path)
     file.setModified();
 
     //qDebug() << "MOD" << path;
-    m_fileModificationQueue->enqueueUrl(file);
+    m_pendingFileQueue->enqueueUrl(file);
 }
 
 void FileWatch::slotFileClosedAfterWrite(const QString& path)
@@ -210,7 +210,7 @@ void FileWatch::slotFileClosedAfterWrite(const QString& path)
         PendingFile file(path);
         file.setClosedOnWrite();
         //qDebug() << "CLOSE" << path;
-        m_fileModificationQueue->enqueueUrl(file);
+        m_pendingFileQueue->enqueueUrl(file);
     }
 }
 
@@ -219,7 +219,7 @@ void FileWatch::slotAttributeChanged(const QString& path)
     PendingFile file(path);
     file.setAttributeChanged();
 
-    m_fileModificationQueue->enqueueUrl(file);
+    m_pendingFileQueue->enqueueUrl(file);
 }
 
 void FileWatch::connectToKDirNotify()

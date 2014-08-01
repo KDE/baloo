@@ -7,8 +7,8 @@ if(CMAKE_SYSTEM_NAME MATCHES "Linux")
   )
 endif()
 
-ecm_add_test(activefilequeuetest.cpp ../activefilequeue.cpp ../pendingfile.cpp
-    TEST_NAME "activefilequeuetest"
+ecm_add_test(pendingfilequeuetest.cpp ../pendingfilequeue.cpp ../pendingfile.cpp
+    TEST_NAME "pendingfilequeuetest"
     LINK_LIBRARIES Qt5::Test
 )
 

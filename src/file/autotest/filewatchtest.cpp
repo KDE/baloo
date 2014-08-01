@@ -23,7 +23,7 @@
 #include "fileindexerconfigutils.h"
 #include "database.h"
 #include "fileindexerconfig.h"
-#include "activefilequeue.h"
+#include "pendingfilequeue.h"
 #include "../lib/autotests/xattrdetector.h"
 #include "../lib/baloo_xattr_p.h"
 #include "filemapping.h"
@@ -68,8 +68,8 @@ void FileWatchTest::testFileCreation()
     FileIndexerConfig config;
 
     FileWatch fileWatch(&db, &config);
-    fileWatch.m_fileModificationQueue->setTimeout(0);
-    fileWatch.m_fileModificationQueue->setWaitTimeout(0);
+    fileWatch.m_pendingFileQueue->setTimeout(0);
+    fileWatch.m_pendingFileQueue->setWaitTimeout(0);
 
     /*QEventLoop loop;
     connect(&fileWatch, &FileWatch::installedWatches, &loop, &QEventLoop::quit);

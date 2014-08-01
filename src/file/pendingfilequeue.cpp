@@ -20,7 +20,7 @@
    License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "activefilequeue.h"
+#include "pendingfilequeue.h"
 
 #include <QQueue>
 #include <QHash>
@@ -59,7 +59,7 @@ Q_DECLARE_TYPEINFO(Entry, Q_MOVABLE_TYPE);
 
 using namespace Baloo;
 
-class ActiveFileQueue::Private
+class PendingFileQueue::Private
 {
 public:
     QQueue<Entry> m_queue;
@@ -74,7 +74,7 @@ public:
 };
 
 
-ActiveFileQueue::ActiveFileQueue(QObject* parent)
+PendingFileQueue::PendingFileQueue(QObject* parent)
     : QObject(parent),
       d(new Private())
 {
@@ -90,12 +90,12 @@ ActiveFileQueue::ActiveFileQueue(QObject* parent)
     d->m_queueTimer.setInterval(1000);
 }
 
-ActiveFileQueue::~ActiveFileQueue()
+PendingFileQueue::~PendingFileQueue()
 {
     delete d;
 }
 
-void ActiveFileQueue::enqueueUrl(const PendingFile& file)
+void PendingFileQueue::enqueueUrl(const PendingFile& file)
 {
     Entry defaultEntry(file, d->m_queueTimeout);
 
@@ -130,17 +130,17 @@ void ActiveFileQueue::enqueueUrl(const PendingFile& file)
     QTimer::singleShot(10, this, SLOT(slotRemoveEmptyEntries()));
 }
 
-void ActiveFileQueue::setTimeout(int seconds)
+void PendingFileQueue::setTimeout(int seconds)
 {
     d->m_queueTimeout = seconds;
 }
 
-void ActiveFileQueue::setWaitTimeout(int seconds)
+void PendingFileQueue::setWaitTimeout(int seconds)
 {
     d->m_emittedTimeout = seconds;
 }
 
-void ActiveFileQueue::slotRemoveEmptyEntries()
+void PendingFileQueue::slotRemoveEmptyEntries()
 {
     // we run through the queue, decrease each counter and emit each entry which has a count of 0
     QMutableListIterator<Entry> it(d->m_queue);
@@ -156,7 +156,7 @@ void ActiveFileQueue::slotRemoveEmptyEntries()
     }
 }
 
-void ActiveFileQueue::slotTimer()
+void PendingFileQueue::slotTimer()
 {
     // we run through the queue, decrease each counter and emit each entry which has a count of 0
     QMutableListIterator<Entry> it(d->m_queue);

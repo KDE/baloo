@@ -19,8 +19,8 @@
    License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "activefilequeuetest.h"
-#include "../activefilequeue.h"
+#include "pendingfilequeuetest.h"
+#include "../pendingfilequeue.h"
 
 #include <qtest.h>
 #include <qsignalspy.h>
@@ -38,17 +38,17 @@ void loopWait(int msecs)
 }
 }
 
-ActiveFileQueueTest::ActiveFileQueueTest()
+PendingFileQueueTest::PendingFileQueueTest()
 {
     qRegisterMetaType<Baloo::PendingFile>("PendingFile");
 }
 
-void ActiveFileQueueTest::testTimeout()
+void PendingFileQueueTest::testTimeout()
 {
     QString myUrl(QLatin1String("/tmp"));
 
     // enqueue one url and then make sure it is not emitted before the timeout
-    ActiveFileQueue queue;
+    PendingFileQueue queue;
     queue.setTimeout(3);
     queue.setWaitTimeout(2);
 
@@ -79,12 +79,12 @@ void ActiveFileQueueTest::testTimeout()
     QCOMPARE(spy.takeFirst().first().value<PendingFile>().path(), myUrl);
 }
 
-void ActiveFileQueueTest::testRequeue()
+void PendingFileQueueTest::testRequeue()
 {
     QString myUrl(QLatin1String("/tmp"));
 
     // enqueue one url and then make sure it is not emitted before the timeout
-    ActiveFileQueue queue;
+    PendingFileQueue queue;
     queue.setTimeout(3);
     queue.setWaitTimeout(2);
 
@@ -123,4 +123,4 @@ void ActiveFileQueueTest::testRequeue()
     QCOMPARE(spy.takeFirst().first().value<PendingFile>().path(), myUrl);
 }
 
-QTEST_MAIN(ActiveFileQueueTest)
+QTEST_MAIN(PendingFileQueueTest)

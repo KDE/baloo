@@ -29,7 +29,7 @@ set(file_static_lib_SRCS
 
     # File Watcher
     filewatch.cpp
-    activefilequeue.cpp
+    pendingfilequeue.cpp
     metadatamover.cpp
     pendingfile.cpp
 )

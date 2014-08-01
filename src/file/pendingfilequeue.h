@@ -20,8 +20,8 @@
    License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ACTIVEFILEQUEUE_H
-#define ACTIVEFILEQUEUE_H
+#ifndef PENDINGFILEQUEUE_H
+#define PENDINGFILEQUEUE_H
 
 #include "pendingfile.h"
 
@@ -48,13 +48,13 @@ namespace Baloo {
  *
  * \author Sebastian Trueg <trueg@ĸde.org>
  */
-class ActiveFileQueue : public QObject
+class PendingFileQueue : public QObject
 {
     Q_OBJECT
 
 public:
-    ActiveFileQueue(QObject* parent = 0);
-    ~ActiveFileQueue();
+    PendingFileQueue(QObject* parent = 0);
+    ~PendingFileQueue();
 
 Q_SIGNALS:
     void urlTimeout(const PendingFile& file);
@@ -87,4 +87,4 @@ private:
 
 }
 
-#endif // ACTIVEFILEQUEUE_H
+#endif

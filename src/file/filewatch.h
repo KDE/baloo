@@ -29,7 +29,7 @@ namespace Baloo
 {
 class MetadataMover;
 class FileIndexerConfig;
-class ActiveFileQueue;
+class PendingFileQueue;
 class FileWatchTest;
 
 class FileWatch : public QObject
@@ -95,8 +95,8 @@ private:
     KInotify* m_dirWatch;
 #endif
 
-    /// queue used to "compress" constant file modifications like downloads
-    ActiveFileQueue* m_fileModificationQueue;
+    /// queue used to "compress" multiple file events like downloads
+    PendingFileQueue* m_pendingFileQueue;
 
     friend class FileWatchTest;
 };

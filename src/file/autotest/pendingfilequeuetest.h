@@ -24,12 +24,12 @@
 
 #include <QObject>
 
-class ActiveFileQueueTest : public QObject
+class PendingFileQueueTest : public QObject
 {
     Q_OBJECT
 
 public:
-    ActiveFileQueueTest();
+    PendingFileQueueTest();
 
 private Q_SLOTS:
     void testTimeout();
