@@ -27,6 +27,9 @@
 
 #include <QObject>
 #include <QString>
+#include <QQueue>
+#include <QHash>
+#include <QTimer>
 
 namespace Baloo {
 
@@ -80,11 +83,32 @@ private Q_SLOTS:
     void slotTimer();
     void slotRemoveEmptyEntries();
 
+public:
+    // So that it can be declared a movable type
+    struct Entry
+    {
+    public:
+        Entry(const Baloo::PendingFile& file, int c);
+        bool operator==(const Entry& other) const;
+
+        Baloo::PendingFile file;
+        /// The seconds left in this entry
+        int cnt;
+    };
+
 private:
-    class Private;
-    Private* const d;
+    QQueue<Entry> m_queue;
+    int m_queueTimeout;
+
+    QTimer m_queueTimer;
+
+    /// Contains a set of all the entries for which we emitted the urlTimeout sigal
+    QHash<QString, int> m_emittedEntries;
+    int m_emittedTimeout;
 };
 
 }
+
+Q_DECLARE_TYPEINFO(Baloo::PendingFileQueue::Entry, Q_MOVABLE_TYPE);
 
 #endif

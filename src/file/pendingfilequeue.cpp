@@ -22,104 +22,67 @@
 
 #include "pendingfilequeue.h"
 
-#include <QQueue>
-#include <QHash>
-#include <QTimer>
 #include <QDebug>
 
-namespace
-{
-class Entry
-{
-public:
-    Entry(const Baloo::PendingFile& file, int c);
-    bool operator==(const Entry& other) const;
+using namespace Baloo;
 
-    /// The file url
-    Baloo::PendingFile file;
-    /// The seconds left in this entry
-    int cnt;
-};
-
-Entry::Entry(const Baloo::PendingFile& file_, int c)
+PendingFileQueue::Entry::Entry(const Baloo::PendingFile& file_, int c)
     : file(file_),
       cnt(c)
 {
 }
 
-bool Entry::operator==(const Entry& other) const
+bool PendingFileQueue::Entry::operator==(const Entry& other) const
 {
     // we ignore the counter since we need this for the search in queueUrl only
     return file == other.file;
 }
-}
-
-
-Q_DECLARE_TYPEINFO(Entry, Q_MOVABLE_TYPE);
-
-using namespace Baloo;
-
-class PendingFileQueue::Private
-{
-public:
-    QQueue<Entry> m_queue;
-    int m_queueTimeout;
-
-    QTimer m_queueTimer;
-
-    /// Contains a set of all the entries for which we emitted the urlTimeout sigal
-    QHash<QString, int> m_emittedEntries;
-    int m_emittedTimeout;
-
-};
 
 
 PendingFileQueue::PendingFileQueue(QObject* parent)
-    : QObject(parent),
-      d(new Private())
+    : QObject(parent)
 {
     // we default to 5 seconds
-    d->m_queueTimeout = 5;
-    d->m_emittedTimeout = 5;
+    m_queueTimeout = 5;
+    m_emittedTimeout = 5;
 
     // setup the timer
-    connect(&d->m_queueTimer, SIGNAL(timeout()),
+    connect(&m_queueTimer, SIGNAL(timeout()),
             this, SLOT(slotTimer()));
 
     // we check in 1 sec intervals
-    d->m_queueTimer.setInterval(1000);
+    m_queueTimer.setInterval(1000);
 }
 
 PendingFileQueue::~PendingFileQueue()
 {
-    delete d;
 }
 
 void PendingFileQueue::enqueueUrl(const PendingFile& file)
 {
-    Entry defaultEntry(file, d->m_queueTimeout);
+    Entry defaultEntry(file, m_queueTimeout);
 
     // If the url is already in the queue update its timestamp
-    QQueue<Entry>::iterator it = qFind(d->m_queue.begin(), d->m_queue.end(), defaultEntry);
-    if (it != d->m_queue.end()) {
-        it->cnt = d->m_queueTimeout;
+    QQueue<Entry>::iterator it = qFind(m_queue.begin(), m_queue.end(), defaultEntry);
+    if (it != m_queue.end()) {
+        it->cnt = m_queueTimeout;
         it->file.merge(file);
     } else {
         // We check if we just emitted the url, if so we move it to the normal queue
-        QHash<QString, int>::iterator iter = d->m_emittedEntries.find(file.path());
-        if (iter != d->m_emittedEntries.end()) {
-            d->m_queue.enqueue(defaultEntry);
-            d->m_emittedEntries.erase(iter);
+        QHash<QString, int>::iterator iter = m_emittedEntries.find(file.path());
+        if (iter != m_emittedEntries.end()) {
+            m_queue.enqueue(defaultEntry);
+            m_emittedEntries.erase(iter);
         } else {
             // It's not in any of the queues
             defaultEntry.cnt = 0;
-            d->m_queue.enqueue(defaultEntry);
+            m_queue.enqueue(defaultEntry);
         }
     }
 
     // make sure the timer is running
-    if (!d->m_queueTimer.isActive()) {
-        d->m_queueTimer.start();
+    if (!m_queueTimer.isActive()) {
+        m_queueTimer.start();
     }
 
     //
@@ -132,23 +95,23 @@ void PendingFileQueue::enqueueUrl(const PendingFile& file)
 
 void PendingFileQueue::setTimeout(int seconds)
 {
-    d->m_queueTimeout = seconds;
+    m_queueTimeout = seconds;
 }
 
 void PendingFileQueue::setWaitTimeout(int seconds)
 {
-    d->m_emittedTimeout = seconds;
+    m_emittedTimeout = seconds;
 }
 
 void PendingFileQueue::slotRemoveEmptyEntries()
 {
     // we run through the queue, decrease each counter and emit each entry which has a count of 0
-    QMutableListIterator<Entry> it(d->m_queue);
+    QMutableListIterator<Entry> it(m_queue);
     while (it.hasNext()) {
         Entry& entry = it.next();
         if (entry.cnt <= 0) {
             // Insert into the emitted queue
-            d->m_emittedEntries.insert(entry.file.path(), d->m_emittedTimeout);
+            m_emittedEntries.insert(entry.file.path(), m_emittedTimeout);
 
             Q_EMIT urlTimeout(entry.file);
             it.remove();
@@ -159,13 +122,13 @@ void PendingFileQueue::slotRemoveEmptyEntries()
 void PendingFileQueue::slotTimer()
 {
     // we run through the queue, decrease each counter and emit each entry which has a count of 0
-    QMutableListIterator<Entry> it(d->m_queue);
+    QMutableListIterator<Entry> it(m_queue);
     while (it.hasNext()) {
         Entry& entry = it.next();
         entry.cnt--;
         if (entry.cnt <= 0) {
             // Insert into the emitted queue
-            d->m_emittedEntries.insert(entry.file.path(), d->m_emittedTimeout);
+            m_emittedEntries.insert(entry.file.path(), m_emittedTimeout);
 
             Q_EMIT urlTimeout(entry.file);
             it.remove();
@@ -173,7 +136,7 @@ void PendingFileQueue::slotTimer()
     }
 
     // Run through all the emitted entires and remove them
-    QMutableHashIterator<QString, int> iter(d->m_emittedEntries);
+    QMutableHashIterator<QString, int> iter(m_emittedEntries);
     while (iter.hasNext()) {
         iter.next();
         iter.value()--;
@@ -183,7 +146,7 @@ void PendingFileQueue::slotTimer()
     }
 
     // stop the timer in case we have nothing left to do
-    if (d->m_queue.isEmpty() && d->m_emittedEntries.isEmpty()) {
-        d->m_queueTimer.stop();
+    if (m_queue.isEmpty() && m_emittedEntries.isEmpty()) {
+        m_queueTimer.stop();
     }
 }
