@@ -46,7 +46,7 @@ class BALOO_QUERYPARSER_EXPORT CompletionProposal
         /**
          * \brief Data-type used by the first placeholder of the pattern
          *
-         * If the pattern is "sent by ?1", the type of "$1" is Contact. This
+         * If the pattern is "sent by $1", the type of "$1" is Contact. This
          * way, a GUI can show to the user a list of his or her contacts.
          */
         enum Type
