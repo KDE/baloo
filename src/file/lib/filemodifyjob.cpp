@@ -121,16 +121,28 @@ void FileModifyJob::doStart()
 
         if (d->ratingSet) {
             const QString rat = QString::number(d->rating);
-            baloo_setxattr(furl, QLatin1String("user.baloo.rating"), rat);
+            if (!rat.isEmpty()) {
+                baloo_setxattr(furl, QStringLiteral("user.baloo.rating"), rat);
+            } else {
+                baloo_removexattr(furl, QStringLiteral("user.baloo.rating"));
+            }
         }
 
         if (d->tagsSet) {
             const QString tags = d->tags.join(QLatin1String(","));
-            baloo_setxattr(furl, QLatin1String("user.xdg.tags"), tags);
+            if (!tags.isEmpty()) {
+                baloo_setxattr(furl, QStringLiteral("user.xdg.tags"), tags);
+            } else {
+                baloo_removexattr(furl, QStringLiteral("user.xdg.tags"));
+            }
         }
 
         if (d->commentSet) {
-            baloo_setxattr(furl, QLatin1String("user.xdg.comment"), d->comment);
+            if (!d->comment.isEmpty()) {
+                baloo_setxattr(furl, QStringLiteral("user.xdg.comment"), d->comment);
+            } else {
+                baloo_removexattr(furl, QStringLiteral("user.xdg.comment"));
+            }
         }
     }
 
