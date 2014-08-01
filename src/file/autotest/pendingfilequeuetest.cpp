@@ -28,16 +28,6 @@
 
 using namespace Baloo;
 
-namespace
-{
-void loopWait(int msecs)
-{
-    QEventLoop loop;
-    QTimer::singleShot(msecs, &loop, SLOT(quit()));
-    loop.exec();
-}
-}
-
 PendingFileQueueTest::PendingFileQueueTest()
 {
 }
@@ -62,18 +52,18 @@ void PendingFileQueueTest::testTimeout()
     QCOMPARE(spy.takeFirst().first().toString(), myUrl);
 
     // wait for 1 seconds
-    loopWait(1000);
+    QTest::qWait(1000);
 
     queue.enqueueUrl(file);
     // the signal should not have been emitted yet
     QVERIFY(spy.isEmpty());
 
     // wait for 1 seconds
-    loopWait(1000);
+    QTest::qWait(1000);
     QVERIFY(spy.isEmpty());
 
     // wait another 2 seconds
-    loopWait(2000);
+    QTest::qWait(2000);
 
     // now the signal should have been emitted
     QCOMPARE(spy.count(), 1);
@@ -102,7 +92,7 @@ void PendingFileQueueTest::testRequeue()
 
     queue.enqueueUrl(file);
     // wait for 1 seconds
-    loopWait(1000);
+    QTest::qWait(1000);
 
     // the signal should not have been emitted yet
     QVERIFY(spy.isEmpty());
@@ -111,7 +101,7 @@ void PendingFileQueueTest::testRequeue()
     queue.enqueueUrl(file);
 
     // wait another 1 seconds
-    loopWait(1000);
+    QTest::qWait(1000);
 
     // the signal should not have been emitted yet, because after re-queing it
     // it should wait a total of 3 seconds before emitting it
@@ -119,7 +109,7 @@ void PendingFileQueueTest::testRequeue()
     QVERIFY(spy.isEmpty());
 
     // wait another 3 seconds
-    loopWait(3000);
+    QTest::qWait(3000);
 
     // now the signal should have been emitted
     QCOMPARE(spy.count(), 1);
