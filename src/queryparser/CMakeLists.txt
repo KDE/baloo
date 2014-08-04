@@ -1,3 +1,5 @@
+add_definitions(-DTRANSLATION_DOMAIN=\"baloo_queryparser\")
+
 add_definitions(${KDE4_ENABLE_EXCEPTIONS})
 
 set(QUERYPARSER_SRCS
@@ -19,12 +21,10 @@ set(QUERYPARSER_SRCS
     utils.cpp
 )
 
-kde4_add_library(balooqueryparser SHARED ${QUERYPARSER_SRCS})
+add_library(balooqueryparser ${QUERYPARSER_SRCS})
 
 target_link_libraries(balooqueryparser
-    ${QT_QTCORE_LIBRARY}
-    ${KDE4_KDECORE_LIBRARY}
-    baloocore
+    KF5::BalooCore
 )
 
 set_target_properties(balooqueryparser PROPERTIES
@@ -32,14 +32,12 @@ set_target_properties(balooqueryparser PROPERTIES
     SOVERSION ${BALOO_VERSION_MAJOR}
 )
 
-install(TARGETS balooqueryparser EXPORT BalooLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS balooqueryparser EXPORT BalooLibraryTargets ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES
     completionproposal.h
     queryparser.h
-
     queryparser_export.h
-
     DESTINATION ${INCLUDE_INSTALL_DIR}/baloo COMPONENT Devel
 )
 

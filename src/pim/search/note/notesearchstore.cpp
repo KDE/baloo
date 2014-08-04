@@ -22,8 +22,7 @@
 
 #include "notesearchstore.h"
 
-#include <KStandardDirs>
-#include <KDebug>
+#include <QDebug>
 
 using namespace Baloo;
 
@@ -42,4 +41,3 @@ QStringList NoteSearchStore::types()
     return QStringList() << QLatin1String("Akonadi") << QLatin1String("Note");
 }
 
-BALOO_EXPORT_SEARCHSTORE(Baloo::NoteSearchStore, "baloo_notesearchstore")

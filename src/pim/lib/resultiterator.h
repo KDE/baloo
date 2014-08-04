@@ -25,7 +25,7 @@
 
 #include "pim_export.h"
 
-#include <Akonadi/Item>
+#include <Item>
 
 namespace Baloo {
 namespace PIM {

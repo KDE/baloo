@@ -24,10 +24,11 @@
 #include "term.h"
 #include "query.h"
 
-#include <KDebug>
-#include <KUrl>
-#include <KStandardDirs>
-#include <Akonadi/ServerManager>
+#include <QDebug>
+#include <QUrl>
+#include <QUrlQuery>
+#include <QStandardPaths>
+//#include <Akonadi/ServerManager>
 
 using namespace Baloo;
 
@@ -43,10 +44,10 @@ QStringList PIMSearchStore::types()
 QString PIMSearchStore::findDatabase(const QString& dbName) const
 {
     QString basePath = QLatin1String("baloo");
-    if (Akonadi::ServerManager::hasInstanceIdentifier()) {
-        basePath = QString::fromLatin1("baloo/instances/%1").arg(Akonadi::ServerManager::instanceIdentifier());
-    }
-    return KGlobal::dirs()->localxdgdatadir() + QString::fromLatin1("%1/%2/").arg(basePath, dbName);
+//    if (Akonadi::ServerManager::hasInstanceIdentifier()) {
+//        basePath = QString::fromLatin1("baloo/instances/%1").arg(Akonadi::ServerManager::instanceIdentifier());
+//    }
+    return QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QString::fromLatin1("/%1/%2/").arg(basePath, dbName);
 }
 
 Xapian::Query PIMSearchStore::constructQuery(const QString& property, const QVariant& value,
@@ -81,7 +82,7 @@ Xapian::Query PIMSearchStore::constructQuery(const QString& property, const QVar
 
     if (m_valueProperties.contains(prop) && (com == Term::Equal || com == Term::Greater || com == Term::GreaterEqual || com == Term::Less || com == Term::LessEqual)) {
         qlonglong numVal = value.toLongLong();
-        kDebug() << value << numVal;
+        qDebug() << value << numVal;
         if (com == Term::Greater) {
             ++numVal;
         }
@@ -118,9 +119,12 @@ Xapian::Query PIMSearchStore::constructQuery(const QString& property, const QVar
 
 QUrl PIMSearchStore::constructUrl(const Xapian::docid& docid)
 {
-    KUrl url;
-    url.setProtocol(QLatin1String("akonadi"));
-    url.addQueryItem(QLatin1String("item"), QString::number(docid));
+    QUrl url;
+    url.setScheme(QLatin1String("akonadi"));
+
+    QUrlQuery query;
+    query.addQueryItem(QLatin1String("item"), QString::number(docid));
+    url.setQuery(query);
 
     return url;
 }

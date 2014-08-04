@@ -25,7 +25,7 @@
 #include "xapian.h"
 #include "../search/email/agepostingsource.h"
 
-#include <KStandardDirs>
+#include <QStandardPaths>
 
 #include <QFile>
 
@@ -190,21 +190,21 @@ void EmailQuery::setRead(bool read)
 
 ResultIterator EmailQuery::exec()
 {
-    const QString dir = KGlobal::dirs()->localxdgdatadir() + QLatin1String("baloo/email/");
+    const QString dir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/email/");
     Xapian::Database db;
     try {
         db = Xapian::Database(QFile::encodeName(dir).constData());
     } catch (const Xapian::DatabaseOpeningError&) {
-        kError() << "Xapian Database does not exist at " << dir;
+        qWarning() << "Xapian Database does not exist at " << dir;
         return ResultIterator();
     } catch (const Xapian::DatabaseCorruptError&) {
-        kError() << "Xapian Database corrupted";
+        qWarning() << "Xapian Database corrupted";
         return ResultIterator();
     } catch (const Xapian::DatabaseError& e) {
-        kWarning() << "Failed to open Xapian database:" << QString::fromStdString(e.get_error_string());
+        qWarning() << "Failed to open Xapian database:" << QString::fromStdString(e.get_error_string());
         return ResultIterator();
     } catch (...) {
-        kError() << "Random exception, but we do not want to crash";
+        qWarning() << "Random exception, but we do not want to crash";
         return ResultIterator();
     }
 
@@ -356,7 +356,7 @@ ResultIterator EmailQuery::exec()
         return iter;
     }
     catch (const Xapian::Error &e) {
-        kWarning() << QString::fromStdString(e.get_type()) << QString::fromStdString(e.get_description());
+        qWarning() << QString::fromStdString(e.get_type()) << QString::fromStdString(e.get_description());
         return ResultIterator();
     }
 }

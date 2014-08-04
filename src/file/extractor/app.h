@@ -25,12 +25,13 @@
 
 #include <QVector>
 #include <QStringList>
+#include <QMimeDatabase>
 
-#include <kfilemetadata/extractorpluginmanager.h>
-#include <kfilemetadata/extractorplugin.h>
+#include <KFileMetaData/ExtractorPluginManager>
 
 #include "result.h"
 #include "../database.h"
+#include "../fileindexerconfig.h"
 #include "filemapping.h"
 
 namespace Baloo {
@@ -39,8 +40,13 @@ class App : public QObject
 {
     Q_OBJECT
 public:
-    explicit App(QObject* parent = 0);
-    ~App();
+    explicit App(const QString& path, QObject* parent = 0);
+
+    void setDebug(bool status) { m_debugEnabled = status; }
+    void setBData(bool status) { m_bData = status; }
+    void setIgnoreConfig(bool status) { m_ignoreConfig = status; }
+
+    void startProcessing(const QStringList& args);
 
 private Q_SLOTS:
     void processNextUrl();
@@ -51,21 +57,26 @@ Q_SIGNALS:
 
 private:
     void printDebug();
+    bool ignoreConfig() const;
 
     QVector<Result> m_results;
     QStringList m_urls;
     bool m_bData;
     bool m_debugEnabled;
+    bool m_ignoreConfig;
 
     QString m_path;
 
     Database m_db;
+    QMimeDatabase m_mimeDb;
 
     KFileMetaData::ExtractorPluginManager m_manager;
 
     int m_termCount;
     QList<QString> m_updatedFiles;
     QVector<uint> m_docsToDelete;
+
+    FileIndexerConfig m_config;
 };
 
 }

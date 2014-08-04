@@ -22,14 +22,33 @@
 #define FILEMONITORTEST_H
 
 #include <QObject>
-
+#include "filemonitor.h"
 namespace Baloo {
 
 class FileMonitorTest : public QObject
 {
     Q_OBJECT
+
+
+
 private Q_SLOTS:
     void test();
+    void init();
+    void cleanup();
+    void testAddFileShouldReturnOneFileIfOneFileAdded();
+    void testAddFileShouldReturnTwoFilesIfTwoFilesAdded();
+    void testAddFileShouldRemoveTailingSlash();
+    void testAddFileShouldNotAddNotLocalUrl();
+    void testAddFileShouldAddLocalUrl();
+    void testClearIfClearAfterOneFileAddedFilesShouldReturn0Items();
+    void testSetFilesIfSetFilesWithOneElementFilesShouldReturn1Item();
+    
+private:
+    QString getRandomValidFilePath();
+    QString getRandomValidWebUrl();
+    QString getRandomString(int length) const;
+    FileMonitor* m_sut;
+    
 };
 
 }

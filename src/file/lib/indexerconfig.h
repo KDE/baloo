@@ -32,10 +32,23 @@ public:
     IndexerConfig();
     ~IndexerConfig();
 
-    bool balooEnabled() const;
     bool fileIndexingEnabled() const;
+    void setFileIndexingEnabled(bool enabled) const;
 
     bool shouldBeIndexed(const QString& path) const;
+
+    QStringList includeFolders() const;
+    QStringList excludeFolders() const;
+
+    void setIncludeFolders(const QStringList& includeFolders);
+    void setExcludeFolders(const QStringList& excludeFolders);
+
+    /**
+     * The first run indicates if the File Indexer has ever been run before
+     * and made a successful pass over all the files.
+     */
+    bool firstRun() const;
+    void setFirstRun(bool firstRun) const;
 
 private:
     class Private;

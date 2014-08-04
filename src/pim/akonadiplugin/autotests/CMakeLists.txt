@@ -1,3 +1,9 @@
+include(ECMMarkAsTest)
+
+set(QT_REQUIRED_VERSION "5.2.0")
+find_package(Qt5Test ${QT_REQUIRED_VERSION} CONFIG REQUIRED)
+
+
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/..
 )
@@ -18,16 +24,18 @@ set(searchplugintest_SRCS
 
 add_definitions(-DBALOO_NO_PLUGINS=TRUE)
 
-kde4_add_unit_test(searchplugintest NOGUI ${searchplugintest_SRCS})
+add_executable( searchplugintest ${searchplugintest_SRCS} )
+add_test( searchplugintest searchplugintest )
+ecm_mark_as_test(searchplugintest)
+
 target_link_libraries(searchplugintest
-    ${QT_QTTEST_LIBRARY}
-    ${KDE4_KDECORE_LIBS}
-    ${KDEPIMLIBS_AKONADI_LIBS}
-    ${KDEPIMLIBS_AKONADI_KMIME_LIBS}
-    ${KDEPIMLIBS_KMIME_LIBS}
-    ${KDEPIMLIBS_KABC_LIBS}
+    Qt5::Test
+    KF5::AkonadiCore
+    KF5::AkonadiMime
+    KF5::Mime
+    KF5::Abc
     ${XAPIAN_LIBRARIES}
-    ${KDEPIMLIBS_KPIMUTILS_LIBS}
-    baloocore
-    balooxapian
+    KF5::PimUtils
+    KF5::BalooCore
+    KF5::BalooXapian
 )

@@ -1,15 +1,11 @@
-add_definitions(${KDE4_ENABLE_EXCEPTIONS})
+add_definitions(-DTRANSLATION_DOMAIN=\"baloo_file\")
+
+kde_enable_exceptions()
 
 add_subdirectory(lib)
 add_subdirectory(search)
 
-set(file_SRCS
-    # Filewatch
-    filewatch.cpp
-    activefilequeue.cpp
-    metadatamover.cpp
-    database.cpp
-
+set(file_static_lib_SRCS
     # File Indexer
     fileindexer.cpp
     fileindexerconfig.cpp
@@ -24,39 +20,70 @@ set(file_SRCS
     util.cpp
 
     # Common
+    database.cpp
     priority.cpp
     regexpcache.cpp
     fileexcludefilters.cpp
-    # removabledeviceindexnotification.cpp
-    # removablemediacache.cpp
+    lib/filemapping.cpp
+    removablemediacache.cpp
 
-    main.cpp
+    # File Watcher
+    filewatch.cpp
+    pendingfilequeue.cpp
+    metadatamover.cpp
+    pendingfile.cpp
 )
 
+set(BUILD_KINOTIFY False)
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
-    set(file_SRCS
-        ${file_SRCS}
+    set(BUILD_KINOTIFY True)
+    set(file_static_lib_SRCS
+        ${file_static_lib_SRCS}
         kinotify.cpp
     )
     add_definitions(-DBUILD_KINOTIFY)
 endif()
 
-kde4_add_executable(baloo_file ${file_SRCS})
+add_library(baloofilecommon STATIC ${file_static_lib_SRCS})
+target_link_libraries(baloofilecommon
+    Qt5::Sql
+    Qt5::DBus
+    KF5::KIOWidgets
+    KF5::IdleTime
+    KF5::I18n
+    KF5::Solid
+    KF5::Auth
+    KF5::FileMetaData
+    KF5::Crash
+    KF5::ConfigCore
+    ${XAPIAN_LIBRARIES}
+    KF5::BalooCore
+    KF5::BalooXapian
+    KF5::KDELibs4Support # For Solid
+)
+
+set(file_SRCS
+    main.cpp
+)
+
+add_executable(baloo_file ${file_SRCS})
 
 target_link_libraries(baloo_file
-    ${QT_QTCORE_LIBRARY}
-    ${QT_QTSQL_LIBRARY}
-    ${KDE4_KDECORE_LIBS}
-    ${KDE4_KIO_LIBS}
-    ${KDE4_KDEUI_LIBS}
-    ${KDE4_KIDLETIME_LIBS}
-    ${KDE4_SOLID_LIBS}
-    ${KFILEMETADATA_LIBRARY}
+    Qt5::Sql
+    Qt5::DBus
+    KF5::KIOWidgets
+    KF5::IdleTime
+    KF5::I18n
+    KF5::Solid
+    KF5::Auth
+    KF5::FileMetaData
+    KF5::Crash
+    KF5::ConfigCore
     ${XAPIAN_LIBRARIES}
-    ${QJSON_LIBRARIES}
-    baloocore
-    baloofiles
-    balooxapian
+    KF5::BalooCore
+    KF5::BalooXapian
+    KF5::KDELibs4Support # For Solid
+    baloofilecommon
 )
 
 install(TARGETS baloo_file ${INSTALL_TARGETS_DEFAULT_ARGS})

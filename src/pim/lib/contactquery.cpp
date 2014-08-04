@@ -24,9 +24,11 @@
 #include "resultiterator_p.h"
 #include "xapian.h"
 
+#include <QDebug>
+
 #include <QList>
-#include <KDebug>
-#include <KStandardDirs>
+#include <QDebug>
+#include <QStandardPaths>
 
 #include <QFile>
 
@@ -103,22 +105,22 @@ void ContactQuery::setMatchCriteria(ContactQuery::MatchCriteria m)
 
 ResultIterator ContactQuery::exec()
 {
-    const QString dir = KGlobal::dirs()->localxdgdatadir() + QLatin1String("baloo/contacts/");
+    const QString dir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/contacts/");
     Xapian::Database db;
 
     try {
         db = Xapian::Database(QFile::encodeName(dir).constData());
     } catch (const Xapian::DatabaseOpeningError&) {
-        kError() << "Xapian Database does not exist at " << dir;
+        qWarning() << "Xapian Database does not exist at " << dir;
         return ResultIterator();
     } catch (const Xapian::DatabaseCorruptError&) {
-        kError() << "Xapian Database corrupted";
+        qWarning() << "Xapian Database corrupted";
         return ResultIterator();
     } catch (const Xapian::DatabaseError& e) {
-        kWarning() << "Failed to open Xapian database:" << QString::fromStdString(e.get_error_string());
+        qWarning() << "Failed to open Xapian database:" << QString::fromStdString(e.get_error_string());
         return ResultIterator();
     } catch (...) {
-        kError() << "Random exception, but we do not want to crash";
+        qWarning() << "Random exception, but we do not want to crash";
         return ResultIterator();
     }
 
@@ -190,7 +192,7 @@ ResultIterator ContactQuery::exec()
     }
     try {
         Xapian::Query query(Xapian::Query::OP_OR, m_queries.begin(), m_queries.end());
-        kDebug() << query.get_description().c_str();
+        qDebug() << query.get_description().c_str();
 
         Xapian::Enquire enquire(db);
         enquire.set_query(query);
@@ -205,7 +207,7 @@ ResultIterator ContactQuery::exec()
         return iter;
     }
     catch (const Xapian::Error &e) {
-        kWarning() << QString::fromStdString(e.get_type()) << QString::fromStdString(e.get_description());
+        qWarning() << QString::fromStdString(e.get_type()) << QString::fromStdString(e.get_description());
         return ResultIterator();
     }
 }

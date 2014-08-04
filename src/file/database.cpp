@@ -29,7 +29,7 @@
 #include <QSqlQuery>
 #include <QSqlError>
 
-#include <KDebug>
+#include <QDebug>
 
 Database::Database(QObject* parent)
     : QObject(parent)
@@ -61,11 +61,11 @@ bool Database::init(bool sqlOnly)
 
     m_sqlDb = new QSqlDatabase(QSqlDatabase::addDatabase(QLatin1String("QSQLITE")));
     m_sqlDb->setDatabaseName(m_path + QLatin1String("/fileMap.sqlite3"));
-    kDebug() << m_path << QFile::exists(m_path);
+    qDebug() << m_path << QFile::exists(m_path);
 
     if (!m_sqlDb->open()) {
-        kDebug() << "Failed to open db" << m_sqlDb->lastError().text();
-        kDebug() << m_sqlDb->lastError();
+        qDebug() << "Failed to open db" << m_sqlDb->lastError().text();
+        qDebug() << m_sqlDb->lastError();
         return false;
     }
 
@@ -79,13 +79,13 @@ bool Database::init(bool sqlOnly)
                           "id INTEGER PRIMARY KEY, "
                           "url TEXT NOT NULL UNIQUE)"));
     if (!ret) {
-        kDebug() << "Could not create tags table" << query.lastError().text();
+        qDebug() << "Could not create tags table" << query.lastError().text();
         return false;
     }
 
     ret = query.exec(QLatin1String("CREATE INDEX fileUrl_index ON files (url)"));
     if (!ret) {
-        kDebug() << "Could not create tags index" << query.lastError().text();
+        qDebug() << "Could not create tags index" << query.lastError().text();
         return false;
     }
 
@@ -95,7 +95,7 @@ bool Database::init(bool sqlOnly)
     //
     ret = query.exec(QLatin1String("PRAGMA journal_mode = WAL"));
     if (!ret) {
-        kDebug() << "Could not set WAL journaling mode" << query.lastError().text();
+        qDebug() << "Could not set WAL journaling mode" << query.lastError().text();
         return false;
     }
 

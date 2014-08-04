@@ -39,49 +39,49 @@ public:
      * List all files and folders tagged with the corresponding tag, along with
      * additional tags that can be used to filter the results
      */
-    void listDir(const KUrl& url);
+    void listDir(const QUrl& url);
 
     /**
      * Will be forwarded for files.
      */
-    void get(const KUrl& url);
+    void get(const QUrl& url);
 
     /**
      * Not supported.
      */
-    void put(const KUrl& url, int permissions, KIO::JobFlags flags);
+    void put(const QUrl& url, int permissions, KIO::JobFlags flags);
 
     /**
      * Files and folders can be copied to the virtual folders resulting
      * is assignment of the corresponding tag.
      */
-    void copy(const KUrl& src, const KUrl& dest, int permissions, KIO::JobFlags flags);
+    void copy(const QUrl& src, const QUrl& dest, int permissions, KIO::JobFlags flags);
 
     /**
      * File renaming will be forwarded.
      * Folder renaming results in renaming of the tag.
      */
-    void rename(const KUrl& src, const KUrl& dest, KIO::JobFlags flags);
+    void rename(const QUrl& src, const QUrl& dest, KIO::JobFlags flags);
 
     /**
      * File deletion means remocing the tag
      * Folder deletion will result in deletion of the tag.
      */
-    void del(const KUrl& url, bool isfile);
+    void del(const QUrl& url, bool isfile);
 
     /**
      * Files will be forwarded.
      * Tags will be created as virtual folders.
      */
-    void mimetype(const KUrl& url);
+    void mimetype(const QUrl& url);
 
     /**
      * Files will be forwarded.
      * Tags will be created as virtual folders.
      */
-    void stat(const KUrl& url);
+    void stat(const QUrl& url);
 protected:
-    virtual bool rewriteUrl(const KUrl& url, KUrl& newURL);
+    virtual bool rewriteUrl(const QUrl& url, QUrl& newURL);
 
 private:
     enum ParseResult {
@@ -90,9 +90,9 @@ private:
         FileUrl,
         InvalidUrl
     };
-    ParseResult parseUrl(const KUrl& url, QString& tag, QString& fileUrl, bool ignoreErrors = false);
+    ParseResult parseUrl(const QUrl& url, QString& tag, QString& fileUrl, bool ignoreErrors = false);
 
-    bool splitUrl(const KUrl& url, QList<QString>& tags, QString& filename);
+    bool splitUrl(const QUrl& url, QList<QString>& tags, QString& filename);
 
     QString decodeFileUrl(const QString& urlString);
     QString encodeFileUrl(const QString& url);

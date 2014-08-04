@@ -61,9 +61,16 @@ public:
     Xapian::Database* db() {
         if (m_db) {
             m_db->reopen();
+            return m_db;
         }
-        return m_db;
+        return &m_wDb;
     }
+
+    /**
+     * Returns true if the XapianDatabase has changes which need to
+     * be committed
+     */
+    bool haveChanges() const;
 
 private:
     Xapian::Database* m_db;

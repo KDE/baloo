@@ -20,18 +20,17 @@
 #define _FILE_WATCH_H_
 
 #include <QObject>
-#include <QtCore/QVariant>
-#include <QtCore/QSet>
+#include "pendingfile.h"
 
 class KInotify;
-class ActiveFileQueue;
 class Database;
 
 namespace Baloo
 {
-
 class MetadataMover;
 class FileIndexerConfig;
+class PendingFileQueue;
+class FileWatchTest;
 
 class FileWatch : public QObject
 {
@@ -43,6 +42,7 @@ public:
 
 Q_SIGNALS:
     void indexFile(const QString& string);
+    void indexXAttr(const QString& path);
     void fileRemoved(int id);
 
     void installedWatches();
@@ -50,14 +50,14 @@ Q_SIGNALS:
 private Q_SLOTS:
     void slotFileMoved(const QString& from, const QString& to);
     void slotFileDeleted(const QString& urlString, bool isDir);
-    void slotFilesDeleted(const QStringList& path);
     void slotFileCreated(const QString& path, bool isDir);
     void slotFileClosedAfterWrite(const QString&);
+    void slotAttributeChanged(const QString& path);
+    void slotFileModified(const QString& path);
     void connectToKDirNotify();
 #ifdef BUILD_KINOTIFY
     void slotInotifyWatchUserLimitReached(const QString&);
 #endif
-    void slotMovedWithoutData(const QString& url);
 
     /**
      * To be called whenever the list of indexed folders changes. This is done because
@@ -65,21 +65,6 @@ private Q_SLOTS:
      * non-indexed folders are not.
      */
     void updateIndexedFoldersWatches();
-
-    /**
-     * Connected to each removable media. Adds a watch for the mount point,
-     * cleans up the index with respect to removed files, and optionally
-     * tells the indexer service to run on the mount path.
-     */
-    //void slotDeviceMounted(const Baloo::RemovableMediaCache::Entry*);
-
-    /**
-     * Connected to each removable media.
-     * Removes all the watches that were added for that removable media
-     */
-    //void slotDeviceTeardownRequested(const Baloo::RemovableMediaCache::Entry*);
-
-    void slotActiveFileQueueTimeout(const QString& url);
 
 private:
     /** Watch a folder, provided it is not already watched*/
@@ -94,8 +79,10 @@ private:
     KInotify* m_dirWatch;
 #endif
 
-    /// queue used to "compress" constant file modifications like downloads
-    ActiveFileQueue* m_fileModificationQueue;
+    /// queue used to "compress" multiple file events like downloads
+    PendingFileQueue* m_pendingFileQueue;
+
+    friend class FileWatchTest;
 };
 }
 

@@ -1,6 +1,6 @@
 /*
    This file is part of the Nepomuk KDE project.
-   Copyright (C) 2010-13 Vishesh Handa <handa.vish@gmail.com>
+   Copyright (C) 2010-14 Vishesh Handa <handa.vish@gmail.com>
    Copyright (C) 2010-2011 Sebastian Trueg <trueg@kde.org>
 
    This library is free software; you can redistribute it and/or
@@ -23,57 +23,55 @@
 #include "app.h"
 #include "../priority.h"
 
-#include <KAboutData>
-#include <KCmdLineArgs>
-#include <KLocale>
-#include <KComponentData>
-#include <QApplication>
+#include <KLocalizedString>
+#include <QStandardPaths>
 
-#include <KDebug>
+#include <QCoreApplication>
+#include <QCommandLineParser>
+#include <QCommandLineOption>
 
 int main(int argc, char* argv[])
 {
     lowerIOPriority();
-    lowerSchedulingPriority();
+    setIdleSchedulingPriority();
     lowerPriority();
 
-    KAboutData aboutData("baloo_file_extractor", 0, ki18n("Baloo File Extractor"),
-                         "0.1",
-                         ki18n("The File Extractor extracts the file metadata and text"),
-                         KAboutData::License_LGPL_V2,
-                         ki18n("(C) 2013, Vishesh Handa"));
-    aboutData.addAuthor(ki18n("Vishesh Handa"), ki18n("Maintainer"), "me@vhanda.in");
+    QCoreApplication app(argc, argv);
+    QCoreApplication::setApplicationName(QLatin1String("Baloo File Extractor"));
+    QCoreApplication::setApplicationVersion(QLatin1String("0.1"));
 
-    KCmdLineArgs::init(argc, argv, &aboutData);
+    QCommandLineParser parser;
+    parser.setApplicationDescription(i18n("The File Extractor extracts the file metadata and text"));
+    parser.addHelpOption();
+    parser.addVersionOption();
 
-    KCmdLineOptions options;
-    options.add("+[url]", ki18n("The URL/id of the files to be indexed"));
-    options.add("debug", ki18n("Print the data being indexed"));
-    options.add("bdata", ki18n("Print the QVariantMap in Base64 encoding"));
-    // FIXME: Set a proper string after the freeze. This option is just for debugging
-    options.add("db <url>", KLocalizedString());
+    parser.addPositionalArgument(QLatin1String("urls"), i18n("The URL/id of the files to be indexed"));
+    parser.addOption(QCommandLineOption(QLatin1String("debug"), i18n("Print the data being indexed")));
+    parser.addOption(QCommandLineOption(QLatin1String("bdata"), i18n("Print the QVariantMap in Base64 encoding")));
+    parser.addOption(QCommandLineOption(QLatin1String("ignoreConfig"), i18n("Ignore the baloofilerc config and always index the file")));
 
-    KCmdLineArgs::addCmdLineOptions(options);
-    const KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
+    const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/file");
+    parser.addOption(QCommandLineOption(QLatin1String("db"), i18n("Specify a custom path for the database"),
+                                        i18n("path"), path));
 
-    int argCount = args->count();
-    if (argCount == 0) {
-        QTextStream err(stderr);
-        err << "Must input url/id of the file to be indexed";
+    parser.process(app);
 
-        return 1;
+    QStringList args = parser.positionalArguments();
+    if (args.isEmpty()) {
+        fprintf(stderr, "The url/id of the file is missing\n\n");
+        parser.showHelp(1);
     }
 
-    if (args->isSet("bdata") && argCount > 1) {
-        QTextStream err(stderr);
-        err << "bdata can only accept one url/id";
-
-        return 1;
+    if (parser.isSet(QLatin1String("bdata")) && args.size() > 1) {
+        fprintf(stderr, "bdata can only accept one url/id\n\n");
+        parser.showHelp(1);
     }
 
-    QApplication app(argc, argv);
-    KComponentData data(aboutData, KComponentData::RegisterAsMainComponent);
+    Baloo::App appObject(parser.value(QLatin1String("db")));
+    appObject.setBData(parser.isSet(QLatin1String("bdata")));
+    appObject.setDebug(parser.isSet(QLatin1String("debug")));
+    appObject.setIgnoreConfig(parser.isSet(QLatin1String("ignoreConfig")));
+    appObject.startProcessing(args);
 
-    Baloo::App appObject;
     return app.exec();
 }

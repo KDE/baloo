@@ -22,7 +22,7 @@
 #include "fileindexerconfig.h"
 #include "util.h"
 
-#include <KDebug>
+#include <QDebug>
 
 #include <QDBusConnection>
 #include <QCoreApplication>
@@ -139,6 +139,11 @@ void FileIndexer::indexFile(const QString& path)
     }
 }
 
+void FileIndexer::indexXAttr(const QString& path)
+{
+    m_indexScheduler->indexXattr(path);
+}
+
 
 void FileIndexer::indexFolder(const QString& path, bool recursive, bool forced)
 {
@@ -150,7 +155,7 @@ void FileIndexer::indexFolder(const QString& path, bool recursive, bool forced)
         else
             dirPath = info.absolutePath();
 
-        kDebug() << "Updating : " << dirPath;
+        qDebug() << "Updating : " << dirPath;
 
         UpdateDirFlags flags;
         if (recursive)

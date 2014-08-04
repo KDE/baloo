@@ -23,7 +23,7 @@
 #include "contactindexer.h"
 #include "akonotesindexer.h"
 #include "calendarindexer.h"
-#include <Akonadi/ServerManager>
+#include <AkonadiCore/ServerManager>
 #include <KGlobal>
 #include <KStandardDirs>
 #include <QDir>
@@ -91,7 +91,7 @@ static void removeDir(const QString& dirName)
 
 void Index::removeDatabase()
 {
-    kDebug() << "Removing database";
+    qDebug() << "Removing database";
     removeDir(emailIndexingPath());
     removeDir(contactIndexingPath());
     removeDir(emailContactsIndexingPath());
@@ -131,7 +131,7 @@ void Index::index(const Akonadi::Item& item)
     try {
         indexer->index(item);
     } catch (const Xapian::Error &e) {
-        kWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
+        qWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
     }
 }
 
@@ -146,7 +146,7 @@ void Index::move(const Akonadi::Item::List& items, const Akonadi::Collection& fr
         try {
             indexer->move(item.id(), from.id(), to.id());
         } catch (const Xapian::Error &e) {
-            kWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
+            qWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
         }
     }
 }
@@ -162,7 +162,7 @@ void Index::updateFlags(const Akonadi::Item::List& items, const QSet<QByteArray>
         try {
             indexer->updateFlags(item, addedFlags, removedFlags);
         } catch (const Xapian::Error &e) {
-            kWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
+            qWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
         }
     }
 }
@@ -175,7 +175,7 @@ void Index::remove(const QSet< Akonadi::Entity::Id >& ids, const QStringList& mi
             try {
                 indexer->remove(Akonadi::Item(id));
             } catch (const Xapian::Error &e) {
-                kWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
+                qWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
             }
         }
     }
@@ -191,7 +191,7 @@ void Index::remove(const Akonadi::Item::List& items)
         try {
             indexer->remove(item);
         } catch (const Xapian::Error &e) {
-            kWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
+            qWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
         }
     }
 }
@@ -202,7 +202,7 @@ void Index::remove(const Akonadi::Collection& col)
         try {
             indexer->remove(col);
         } catch (const Xapian::Error &e) {
-            kWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
+            qWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
         }
     }
 }
@@ -225,11 +225,11 @@ bool Index::createIndexers()
     }
     catch (const Xapian::DatabaseError &e) {
         delete indexer;
-        kError() << "Failed to create email indexer:" << QString::fromStdString(e.get_msg());
+        qCritical() << "Failed to create email indexer:" << QString::fromStdString(e.get_msg());
     }
     catch (...) {
         delete indexer;
-        kError() << "Random exception, but we do not want to crash";
+        qCritical() << "Random exception, but we do not want to crash";
     }
 
     try {
@@ -239,11 +239,11 @@ bool Index::createIndexers()
     }
     catch (const Xapian::DatabaseError &e) {
         delete indexer;
-        kError() << "Failed to create contact indexer:" << QString::fromStdString(e.get_msg());
+        qCritical() << "Failed to create contact indexer:" << QString::fromStdString(e.get_msg());
     }
     catch (...) {
         delete indexer;
-        kError() << "Random exception, but we do not want to crash";
+        qCritical() << "Random exception, but we do not want to crash";
     }
 
     try {
@@ -253,11 +253,11 @@ bool Index::createIndexers()
     }
     catch (const Xapian::DatabaseError &e) {
         delete indexer;
-        kError() << "Failed to create akonotes indexer:" << QString::fromStdString(e.get_msg());
+        qCritical() << "Failed to create akonotes indexer:" << QString::fromStdString(e.get_msg());
     }
     catch (...) {
         delete indexer;
-        kError() << "Random exception, but we do not want to crash";
+        qCritical() << "Random exception, but we do not want to crash";
     }
 
     try {
@@ -267,11 +267,11 @@ bool Index::createIndexers()
     }
     catch (const Xapian::DatabaseError &e) {
         delete indexer;
-        kError() << "Failed to create akonotes indexer:" << QString::fromStdString(e.get_msg());
+        qCritical() << "Failed to create akonotes indexer:" << QString::fromStdString(e.get_msg());
     }
     catch (...) {
         delete indexer;
-        kError() << "Random exception, but we do not want to crash";
+        qCritical() << "Random exception, but we do not want to crash";
     }
 
     return !m_indexer.isEmpty();
@@ -291,7 +291,7 @@ void Index::commit()
         try {
             indexer->commit();
         } catch (const Xapian::Error &e) {
-            kWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
+            qWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
         }
     }
 }
@@ -302,7 +302,7 @@ void Index::findIndexedInDatabase(QSet<Akonadi::Entity::Id> &indexed, Akonadi::E
     try {
         db = Xapian::Database(QFile::encodeName(dbPath).constData());
     } catch (const Xapian::DatabaseError& e) {
-        kError() << "Failed to open database" << dbPath << ":" << QString::fromStdString(e.get_msg());
+        qCritical() << "Failed to open database" << dbPath << ":" << QString::fromStdString(e.get_msg());
         return;
     }
     const std::string term = QString::fromLatin1("C%1").arg(collectionId).toStdString();
@@ -340,7 +340,7 @@ qlonglong Index::indexedItemsInDatabase(const std::string& term, const QString& 
     try {
         db = Xapian::Database(QFile::encodeName(dbPath).constData());
     } catch (const Xapian::DatabaseError& e) {
-        kError() << "Failed to open database" << dbPath << ":" << QString::fromStdString(e.get_msg());
+        qCritical() << "Failed to open database" << dbPath << ":" << QString::fromStdString(e.get_msg());
         return 0;
     }
     return db.get_termfreq(term);

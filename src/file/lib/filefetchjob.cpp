@@ -26,15 +26,17 @@
 #include "file.h"
 #include "file_p.h"
 #include "searchstore.h"
-#include "filecustommetadata.h"
+#include "baloo_xattr_p.h"
 
 #include <QTimer>
 #include <QFile>
 
-#include <xapian.h>
-#include <qjson/parser.h>
+#include <QJsonDocument>
+#include <QJsonObject>
 
-#include <KDebug>
+#include <xapian.h>
+
+#include <QDebug>
 
 #include <sys/types.h>
 
@@ -105,7 +107,7 @@ void FileFetchJob::doStart()
         fileMap.setUrl(file.url());
 
         if (!fileMap.fetch(fileMappingDb())) {
-            kDebug() << "No file index information found" << url;
+            qDebug() << "No file index information found" << url;
             // TODO: Send file for indexing!!
 
             d->fetchUserMetadata(file);
@@ -126,18 +128,19 @@ void FileFetchJob::doStart()
             std::string docData = doc.get_data();
             const QByteArray arr(docData.c_str(), docData.length());
 
-            QJson::Parser parser;
-            QVariantMap varMap = parser.parse(arr).toMap();
+            QJsonDocument jdoc = QJsonDocument::fromJson(arr);
+            const QVariantMap varMap = jdoc.object().toVariantMap();
+
             file.d->propertyMap = KFileMetaData::toPropertyMap(varMap);
         }
         catch (const Xapian::DocNotFoundError&){
             // Send file for indexing to baloo_file
         }
         catch (const Xapian::InvalidArgumentError& err) {
-            kError() << err.get_msg().c_str();
+            qWarning() << err.get_msg().c_str();
         }
         catch (const Xapian::Error& err) {
-            kError() << "Xapian error of type" << err.get_type() << ":" << err.get_msg().c_str();
+            qWarning() << "Xapian error of type" << err.get_type() << ":" << err.get_msg().c_str();
         }
 
         d->fetchUserMetadata(file);
@@ -149,9 +152,15 @@ void FileFetchJob::doStart()
 void FileFetchJob::Private::fetchUserMetadata(File& file)
 {
     const QString url = file.url();
-    QString rating = customFileMetaData(url, QLatin1String("user.baloo.rating"));
-    QString tags = customFileMetaData(url, QLatin1String("user.xdg.tags"));
-    QString comment = customFileMetaData(url, QLatin1String("user.xdg.comment"));
+
+    QString rating;
+    baloo_getxattr(url, QLatin1String("user.baloo.rating"), &rating);
+
+    QString tags;
+    baloo_getxattr(url, QLatin1String("user.xdg.tags"), &tags);
+
+    QString comment;
+    baloo_getxattr(url, QLatin1String("user.xdg.comment"), &comment);
 
     file.setRating(rating.toInt());
     file.setTags(tags.split(QLatin1Char(','), QString::SkipEmptyParts));

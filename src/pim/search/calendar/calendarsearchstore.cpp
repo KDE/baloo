@@ -22,9 +22,6 @@
 
 #include "calendarsearchstore.h"
 
-#include <KStandardDirs>
-#include <KDebug>
-
 using namespace Baloo;
 
 CalendarSearchStore::CalendarSearchStore(QObject* parent)
@@ -40,4 +37,3 @@ QStringList CalendarSearchStore::types()
     return QStringList() << QLatin1String("Akonadi") << QLatin1String("Calendar");
 }
 
-BALOO_EXPORT_SEARCHSTORE(Baloo::CalendarSearchStore, "baloo_calendarsearchstore")

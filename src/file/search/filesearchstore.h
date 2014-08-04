@@ -33,7 +33,9 @@ namespace Baloo {
 class FileSearchStore : public XapianSearchStore
 {
     Q_OBJECT
+    Q_PLUGIN_METADATA(IID "org.kde.baloo.file" FILE "baloofilesearchstore.json")
     Q_INTERFACES(Baloo::SearchStore)
+
 public:
     FileSearchStore(QObject* parent = 0);
     virtual ~FileSearchStore();
@@ -49,7 +51,7 @@ protected:
                                          Term::Comparator com);
 
     virtual Xapian::Query constructFilterQuery(int year, int month, int day);
-    virtual Xapian::Query applyCustomOptions(const Xapian::Query& q, const QVariantHash& options);
+    virtual Xapian::Query applyCustomOptions(const Xapian::Query& q, const QVariantMap& options);
 
     virtual Xapian::Query convertTypes(const QStringList& types);
     virtual QUrl constructUrl(const Xapian::docid& docid);
@@ -57,10 +59,10 @@ protected:
     virtual QByteArray idPrefix() { return QByteArray("file"); }
 
 private:
-    QSqlDatabase* m_sqlDb;
+    QSqlDatabase m_sqlDb;
     QMutex m_sqlMutex;
 
-    QHash<QString, std::string> m_prefixes;
+    QHash<QString, QString> m_prefixes;
 };
 
 }

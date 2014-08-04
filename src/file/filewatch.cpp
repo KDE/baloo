@@ -1,6 +1,6 @@
 /* This file is part of the KDE Project
    Copyright (c) 2007-2011 Sebastian Trueg <trueg@kde.org>
-   Copyright (c) 2012-2013 Vishesh Handa <me@vhanda.in>
+   Copyright (c) 2012-2014 Vishesh Handa <me@vhanda.in>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -20,9 +20,10 @@
 #include "filewatch.h"
 #include "metadatamover.h"
 #include "fileindexerconfig.h"
-#include "activefilequeue.h"
+#include "pendingfilequeue.h"
 #include "regexpcache.h"
 #include "database.h"
+#include "pendingfile.h"
 
 #ifdef BUILD_KINOTIFY
 #include "kinotify.h"
@@ -32,7 +33,7 @@
 #include <QtCore/QThread>
 #include <QtDBus/QDBusConnection>
 
-#include <KDebug>
+#include <QDebug>
 #include <KConfigGroup>
 
 #ifdef BUILD_KINOTIFY
@@ -89,13 +90,17 @@ FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
 {
     m_metadataMover = new MetadataMover(m_db, this);
     connect(m_metadataMover, SIGNAL(movedWithoutData(QString)),
-            this, SLOT(slotMovedWithoutData(QString)));
+            this, SIGNAL(indexFile(QString)));
     connect(m_metadataMover, SIGNAL(fileRemoved(int)),
             this, SIGNAL(fileRemoved(int)));
 
-    m_fileModificationQueue = new ActiveFileQueue(this);
-    connect(m_fileModificationQueue, SIGNAL(urlTimeout(QString)),
-            this, SLOT(slotActiveFileQueueTimeout(QString)));
+    m_pendingFileQueue = new PendingFileQueue(this);
+    connect(m_pendingFileQueue, SIGNAL(indexFile(QString)),
+            this, SIGNAL(indexFile(QString)));
+    connect(m_pendingFileQueue, SIGNAL(indexXAttr(QString)),
+            this, SIGNAL(indexXAttr(QString)));
+    connect(m_pendingFileQueue, SIGNAL(removeFileIndex(QString)),
+            m_metadataMover, SLOT(removeFileMetadata(QString)));
 
 #ifdef BUILD_KINOTIFY
     // monitor the file system for changes (restricted by the inotify limit)
@@ -107,8 +112,12 @@ FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
             this, SLOT(slotFileDeleted(QString,bool)));
     connect(m_dirWatch, SIGNAL(created(QString,bool)),
             this, SLOT(slotFileCreated(QString,bool)));
+    connect(m_dirWatch, SIGNAL(modified(QString)),
+            this, SLOT(slotFileModified(QString)));
     connect(m_dirWatch, SIGNAL(closedWrite(QString)),
             this, SLOT(slotFileClosedAfterWrite(QString)));
+    connect(m_dirWatch, SIGNAL(attributeChanged(QString)),
+            this, SLOT(slotAttributeChanged(QString)));
     connect(m_dirWatch, SIGNAL(watchUserLimitReached(QString)),
             this, SLOT(slotInotifyWatchUserLimitReached(QString)));
     connect(m_dirWatch, SIGNAL(installedWatches()),
@@ -136,24 +145,21 @@ FileWatch::~FileWatch()
 // FIXME: listen to Create for folders!
 void FileWatch::watchFolder(const QString& path)
 {
-    kDebug() << path;
+    qDebug() << path;
 #ifdef BUILD_KINOTIFY
-    if (m_dirWatch && !m_dirWatch->watchingPath(path))
-        m_dirWatch->addWatch(path,
-                             KInotify::WatchEvents(KInotify::EventMove | KInotify::EventDelete | KInotify::EventDeleteSelf | KInotify::EventCloseWrite | KInotify::EventCreate),
-                             KInotify::WatchFlags());
+    if (m_dirWatch && !m_dirWatch->watchingPath(path)) {
+        KInotify::WatchEvents flags(KInotify::EventMove | KInotify::EventDelete | KInotify::EventDeleteSelf
+                                    | KInotify::EventCloseWrite | KInotify::EventCreate
+                                    | KInotify::EventAttributeChange | KInotify::EventModify);
+
+        m_dirWatch->addWatch(path, flags, KInotify::WatchFlags());
+    }
 #endif
 }
 
 void FileWatch::slotFileMoved(const QString& urlFrom, const QString& urlTo)
 {
     m_metadataMover->moveFileMetadata(urlFrom, urlTo);
-}
-
-
-void FileWatch::slotFilesDeleted(const QStringList& paths)
-{
-    m_metadataMover->removeFileMetadata(paths);
 }
 
 
@@ -164,7 +170,11 @@ void FileWatch::slotFileDeleted(const QString& urlString, bool isDir)
     if (isDir && url[ url.length() - 1 ] != QLatin1Char('/')) {
         url.append(QLatin1Char('/'));
     }
-    slotFilesDeleted(QStringList(url));
+
+    PendingFile file(url);
+    file.setDeleted();
+
+    m_pendingFileQueue->enqueueUrl(file);
 }
 
 
@@ -173,8 +183,20 @@ void FileWatch::slotFileCreated(const QString& path, bool isDir)
     // we only need the file creation event for folders
     // file creation is always followed by a CloseAfterWrite event
     if (isDir) {
-        Q_EMIT indexFile(path);
+        PendingFile file(path);
+        file.setCreated();
+
+        m_pendingFileQueue->enqueueUrl(file);
     }
+}
+
+void FileWatch::slotFileModified(const QString& path)
+{
+    PendingFile file(path);
+    file.setModified();
+
+    //qDebug() << "MOD" << path;
+    m_pendingFileQueue->enqueueUrl(file);
 }
 
 void FileWatch::slotFileClosedAfterWrite(const QString& path)
@@ -188,10 +210,20 @@ void FileWatch::slotFileClosedAfterWrite(const QString& path)
     // This is being done cause many applications open the file under write mode, do not
     // make any modifications and then close the file. This results in us getting
     // the FileClosedAfterWrite event
-    if (fileModification.secsTo(current) <= 1000 * 60 ||
-            dirModification.secsTo(current) <= 1000 * 60) {
-        m_fileModificationQueue->enqueueUrl(path);
+    if (fileModification.secsTo(current) <= 1000 * 60 || dirModification.secsTo(current) <= 1000 * 60) {
+        PendingFile file(path);
+        file.setClosedOnWrite();
+        //qDebug() << "CLOSE" << path;
+        m_pendingFileQueue->enqueueUrl(file);
     }
+}
+
+void FileWatch::slotAttributeChanged(const QString& path)
+{
+    PendingFile file(path);
+    file.setAttributeChanged();
+
+    m_pendingFileQueue->enqueueUrl(file);
 }
 
 void FileWatch::connectToKDirNotify()
@@ -213,14 +245,18 @@ void FileWatch::connectToKDirNotify()
 //a helper which modifies /proc/sys/fs/inotify/max_user_watches
 bool raiseWatchLimit()
 {
+    // FIXME: vHanda: FIX ME!!
+    return false;
+    /*
     KAuth::Action limitAction(QLatin1String("org.kde.baloo.filewatch.raiselimit"));
-    limitAction.setHelperID(QLatin1String("org.kde.baloo.filewatch"));
+    limitAction.setHelperID(QLatin1String("org.kde.baloo.filewatch"))
 
     KAuth::ActionReply reply = limitAction.execute();
     if (reply.failed()) {
         return false;
     }
     return true;
+    */
 }
 
 //This slot is connected to a signal emitted in KInotify when
@@ -228,7 +264,7 @@ bool raiseWatchLimit()
 void FileWatch::slotInotifyWatchUserLimitReached(const QString& path)
 {
     if (raiseWatchLimit()) {
-        kDebug() << "Successfully raised watch limit, re-adding " << path;
+        qDebug() << "Successfully raised watch limit, re-adding " << path;
         if (m_dirWatch)
             m_dirWatch->resetUserLimit();
         watchFolder(path);
@@ -260,16 +296,5 @@ void FileWatch::updateIndexedFoldersWatches()
         }
     }
 #endif
-}
-
-void FileWatch::slotActiveFileQueueTimeout(const QString& url)
-{
-    kDebug() << url;
-    Q_EMIT indexFile(url);
-}
-
-void FileWatch::slotMovedWithoutData(const QString& url)
-{
-    Q_EMIT indexFile(url);
 }
 

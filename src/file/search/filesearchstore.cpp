@@ -25,40 +25,43 @@
 #include "query.h"
 #include "filemapping.h"
 #include "pathfilterpostingsource.h"
+#include "wildcardpostingsource.h"
+#include "queryparser.h"
 
 #include <xapian.h>
 #include <QVector>
 #include <QDate>
+#include <QUrl>
+#include <QStandardPaths>
 
-#include <KStandardDirs>
-#include <KDebug>
-#include <KUrl>
-#include <KMimeType>
+#include <QDebug>
+#include <QMimeDatabase>
 
-#include <kfilemetadata/propertyinfo.h>
+#include <KFileMetaData/PropertyInfo>
 
 using namespace Baloo;
 
 FileSearchStore::FileSearchStore(QObject* parent)
     : XapianSearchStore(parent)
-    , m_sqlDb(0)
     , m_sqlMutex(QMutex::Recursive)
 {
-    const QString path = KGlobal::dirs()->localxdgdatadir() + QLatin1String("baloo/file/");
+    const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/file/");
     setDbPath(path);
 
-    m_prefixes.insert(QLatin1String("filename"), "F");
-    m_prefixes.insert(QLatin1String("mimetype"), "M");
-    m_prefixes.insert(QLatin1String("rating"), "R");
-    m_prefixes.insert(QLatin1String("tag"), "TA");
-    m_prefixes.insert(QLatin1String("tags"), "TA");
-    m_prefixes.insert(QLatin1String("usercomment"), "C");
+    m_prefixes.insert(QStringLiteral("filename"), QStringLiteral("F"));
+    m_prefixes.insert(QStringLiteral("mimetype"), QStringLiteral("M"));
+    m_prefixes.insert(QStringLiteral("rating"), QStringLiteral("R"));
+    m_prefixes.insert(QStringLiteral("tag"), QStringLiteral("TA"));
+    m_prefixes.insert(QStringLiteral("tags"), QStringLiteral("TA"));
+    m_prefixes.insert(QStringLiteral("usercomment"), QStringLiteral("C"));
 }
 
 FileSearchStore::~FileSearchStore()
 {
-    const QString conName = m_sqlDb->connectionName();
-    delete m_sqlDb;
+    const QString conName = m_sqlDb.connectionName();
+    m_sqlDb.close();
+    m_sqlDb = QSqlDatabase();
+
     QSqlDatabase::removeDatabase(conName);
 }
 
@@ -68,10 +71,9 @@ void FileSearchStore::setDbPath(const QString& path)
 
     const QString conName = QLatin1String("filesearchstore") + QString::number(qrand());
 
-    delete m_sqlDb;
-    m_sqlDb = new QSqlDatabase(QSqlDatabase::addDatabase(QLatin1String("QSQLITE"), conName));
-    m_sqlDb->setDatabaseName(dbPath() + QLatin1String("/fileMap.sqlite3"));
-    m_sqlDb->open();
+    m_sqlDb = QSqlDatabase::addDatabase(QLatin1String("QSQLITE"), conName);
+    m_sqlDb.setDatabaseName(dbPath() + QLatin1String("/fileMap.sqlite3"));
+    m_sqlDb.open();
 }
 
 QStringList FileSearchStore::types()
@@ -133,24 +135,27 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
         return Xapian::Query(Xapian::Query::OP_OR, terms.begin(), terms.end());
     }
 
-    if (com == Term::Contains) {
-        Xapian::QueryParser parser;
-        parser.set_database(*xapianDb());
+    if (property == QStringLiteral("filename") && value.toString().contains('*')) {
+        WildcardPostingSource ws(value.toString(), QStringLiteral("F"));
+        return Xapian::Query(&ws);
+    }
 
-        std::string p;
-        QHash<QString, std::string>::const_iterator it = m_prefixes.constFind(property.toLower());
+    if (com == Term::Contains) {
+        QueryParser parser;
+        parser.setDatabase(xapianDb());
+
+        QString prefix;
+        auto it = m_prefixes.constFind(property.toLower());
         if (it != m_prefixes.constEnd()) {
-            p = it.value();
+            prefix = it.value();
         }
         else {
             KFileMetaData::PropertyInfo pi = KFileMetaData::PropertyInfo::fromName(property);
             int propPrefix = static_cast<int>(pi.property());
-            p = QString(QLatin1Char('X') + QString::number(propPrefix)).toUtf8().constData();
+            prefix = QLatin1Char('X') + QString::number(propPrefix);
         }
 
-        const QByteArray arr = value.toString().toUtf8();
-        int flags = Xapian::QueryParser::FLAG_DEFAULT | Xapian::QueryParser::FLAG_PARTIAL;
-        return parser.parse_query(arr.constData(), flags, p);
+        return parser.parseQuery(value.toString(), prefix);
     }
 
     if ((property.compare(QLatin1String("modified"), Qt::CaseInsensitive) == 0)
@@ -189,7 +194,12 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
         }
     }
 
-    const QByteArray arr = value.toString().toUtf8();
+    QString prefix;
+    auto it = m_prefixes.constFind(property.toLower());
+    if (it != m_prefixes.constEnd()) {
+        prefix = it.value();
+    }
+    const QByteArray arr = (prefix + value.toString()).toUtf8();
     return Xapian::Query(arr.constData());
 }
 
@@ -213,34 +223,31 @@ QUrl FileSearchStore::constructUrl(const Xapian::docid& docid)
     QMutexLocker lock(&m_sqlMutex);
 
     FileMapping file(docid);
-    file.fetch(*m_sqlDb);
+    file.fetch(m_sqlDb);
 
     return QUrl::fromLocalFile(file.url());
 }
 
 QString FileSearchStore::text(int queryId)
 {
-    return KUrl(url(queryId)).fileName();
+    return url(queryId).fileName();
 }
 
 QString FileSearchStore::icon(int queryId)
 {
-    KMimeType::Ptr mime = KMimeType::findByUrl(url(queryId));
-    return mime->iconName();
+    return QMimeDatabase().mimeTypeForFile(url(queryId).toLocalFile()).iconName();
 }
 
 
-Xapian::Query FileSearchStore::applyCustomOptions(const Xapian::Query& q, const QVariantHash& options)
+Xapian::Query FileSearchStore::applyCustomOptions(const Xapian::Query& q, const QVariantMap& options)
 {
-    QHash<QString, QVariant>::const_iterator it = options.constFind(QLatin1String("includeFolder"));
+    QMap<QString, QVariant>::const_iterator it = options.constFind(QLatin1String("includeFolder"));
     if (it == options.constEnd()) {
         return q;
     }
 
     QString includeDir = it.value().toString();
 
-    PathFilterPostingSource ps(m_sqlDb, includeDir);
+    PathFilterPostingSource ps(&m_sqlDb, includeDir);
     return andQuery(q, Xapian::Query(&ps));
 }
-
-BALOO_EXPORT_SEARCHSTORE(Baloo::FileSearchStore, "baloo_filesearchstore")

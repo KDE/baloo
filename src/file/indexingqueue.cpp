@@ -21,7 +21,7 @@
 #include "indexingqueue.h"
 
 #include <QtCore/QTimer>
-#include <KDebug>
+#include <QDebug>
 
 using namespace Baloo;
 
@@ -99,10 +99,21 @@ void IndexingQueue::setDelay(int msec)
     m_delay = msec;
 }
 
+int IndexingQueue::delay() const
+{
+    return m_delay;
+}
+
+
 void IndexingQueue::doResume()
 {
 }
 
 void IndexingQueue::doSuspend()
 {
+}
+
+bool IndexingQueue::isSuspended() const
+{
+    return m_suspended;
 }

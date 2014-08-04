@@ -22,6 +22,7 @@
 #define BASICINDEXINGQUEUETEST_H
 
 #include <QObject>
+#include <xapian.h>
 
 namespace Baloo {
 
@@ -30,9 +31,13 @@ class BasicIndexingQueueTest : public QObject
     Q_OBJECT
 private Q_SLOTS:
     void testSimpleDirectoryStructure();
-
+    void textExtendedAttributeIndexing();
+    void textNormalAndThenExtendedAttributeIndexing();
+    void testExtendedAttributeIndexingWhenEmpty();
 };
 
 }
+
+Q_DECLARE_METATYPE(Xapian::Document);
 
 #endif // BASICINDEXINGQUEUETEST_H

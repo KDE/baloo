@@ -23,43 +23,31 @@
 #include "../database.h"
 #include "../priority.h"
 
-#include <KAboutData>
-#include <KCmdLineArgs>
-#include <KLocale>
-#include <KComponentData>
-#include <QApplication>
-#include <QDBusConnection>
-#include <QFile>
-#include <QDir>
-
-#include <KDebug>
-#include <KStandardDirs>
+#include <KConfig>
 #include <KConfigGroup>
+
+#include <QStandardPaths>
+#include <QCoreApplication>
+#include <QCommandLineParser>
+#include <QDBusConnection>
+#include <QDebug>
+#include <QDir>
 
 int main(int argc, char* argv[])
 {
     lowerIOPriority();
-    lowerSchedulingPriority();
+    setIdleSchedulingPriority();
     lowerPriority();
 
-    KAboutData aboutData("baloo_file_cleaner", 0, ki18n("Baloo File Cleaner"),
-                         "0.1",
-                         ki18n("Cleans up stale file index information"),
-                         KAboutData::License_LGPL_V2,
-                         ki18n("(C) 2014, Vishesh Handa"));
-    aboutData.addAuthor(ki18n("Vishesh Handa"), ki18n("Maintainer"), "me@vhanda.in");
-
-    KCmdLineArgs::init(argc, argv, &aboutData);
-
-    QApplication app(argc, argv);
-    KComponentData data(aboutData, KComponentData::RegisterAsMainComponent);
+    QCoreApplication app(argc, argv);
 
     if (!QDBusConnection::sessionBus().registerService(QLatin1String("org.kde.baloo.file.cleaner"))) {
-        kError() << "Failed to register via dbus. Another instance is running";
+        qWarning() << "Failed to register via dbus. Another instance is running";
         return 1;
     }
 
-    const QString path = KGlobal::dirs()->localxdgdatadir() + QLatin1String("baloo/file/");
+    const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)
+                         + QLatin1String("/baloo/file");
 
     KConfig config(QLatin1String("baloofilerc"));
     KConfigGroup group = config.group("Basic Settings");

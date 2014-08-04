@@ -1,10 +1,13 @@
-set(SRCS main.cpp)
+add_definitions(-DTRANSLATION_DOMAIN=\"baloosearch\")
 
-kde4_add_executable(baloosearch ${SRCS})
+set(BALOO_SEARCH_SRCS main.cpp)
+
+add_executable(baloosearch ${BALOO_SEARCH_SRCS})
 
 target_link_libraries(baloosearch
-  ${KDE4_KDECORE_LIBS}
-  baloocore
+  KF5::I18n
+  KF5::CoreAddons
+  KF5::BalooCore
 )
 
 install(TARGETS baloosearch DESTINATION ${BIN_INSTALL_DIR})

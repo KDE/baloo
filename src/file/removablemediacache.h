@@ -1,5 +1,5 @@
 /*
-   This file is part of the Nepomuk KDE project.
+   This file is part of the KDE Baloo project.
    Copyright (C) 2011 Sebastian Trueg <trueg@kde.org>
 
    This library is free software; you can redistribute it and/or
@@ -22,13 +22,13 @@
 #ifndef REMOVABLEMEDIACACHE_H
 #define REMOVABLEMEDIACACHE_H
 
-#include <QtCore/QObject>
-#include <QtCore/QMutex>
-#include <QtCore/QSet>
+#include <QObject>
+#include <QMutex>
+#include <QSet>
 
 #include <Solid/Device>
 
-#include <KUrl>
+#include <QUrl>
 
 
 namespace Baloo
@@ -36,10 +36,7 @@ namespace Baloo
 
 /**
  * The removable media cache provides access to all removable
- * media that are supported by Nepomuk. It allows to convert
- * URLs the way RemovableMediaModel requires it and provides
- * more or less unique URIs for each device allowing to store
- * device-specific configuration.
+ * media that are supported by Baloo.
  */
 class RemovableMediaCache : public QObject
 {
@@ -60,8 +57,8 @@ public:
          * take place. It is, thus, suitable for queries.
          */
         QString constructRelativeUrlString(const QString& path) const;
-        KUrl constructRelativeUrl(const QString& path) const;
-        KUrl constructLocalFileUrl(const KUrl& filexUrl) const;
+        QUrl constructRelativeUrl(const QString& path) const;
+        QUrl constructLocalFileUrl(const QUrl& filexUrl) const;
 
         Solid::Device device() const {
             return m_device;
@@ -81,7 +78,7 @@ public:
     };
 
     const Entry* findEntryByFilePath(const QString& path) const;
-    const Entry* findEntryByUrl(const KUrl& url) const;
+    const Entry* findEntryByUrl(const QUrl& url) const;
 
     /**
      * Searches for entries which are mounted at a path which starts with
@@ -99,7 +96,7 @@ public:
      * URL which can be converted to a local one.
      * This method is primarily used for performance gain.
      */
-    bool hasRemovableSchema(const KUrl& url) const;
+    bool hasRemovableSchema(const QUrl& url) const;
 
     /**
      * Returns true if they are no devices in the RemoveableMediaCache

@@ -21,7 +21,6 @@
 #define _BALOO_FILEINDEXER_INDEX_SCHEDULER_H_
 
 #include "basicindexingqueue.h" // Required for UpdateDirFlags
-//#include "removablemediacache.h"
 #include "filemapping.h"
 
 class Database;
@@ -33,6 +32,7 @@ class FileIndexingQueue;
 class FileIndexerConfig;
 class CommitQueue;
 class EventMonitor;
+class SchedulerTest;
 
 /**
  * The IndexScheduler is responsible for controlling the indexing
@@ -45,21 +45,6 @@ class IndexScheduler : public QObject
     Q_OBJECT
 
 public:
-    /**
-     * @brief Represents the current state of the indexer
-     *
-     * The enumes are assigned with fixed numbers because they will be
-     * transferred via dBus
-     *
-     * @see FileIndexer::status()
-     */
-    enum State {
-        State_Normal = 0,
-        State_UserIdle = 1,
-        State_OnBattery = 2,
-        State_Suspended = 3
-    };
-
     IndexScheduler(Database* db, FileIndexerConfig* config, QObject* parent = 0);
     ~IndexScheduler();
 
@@ -102,6 +87,12 @@ public Q_SLOTS:
      */
     void indexFile(const QString& path);
 
+    /**
+     * Send the url for indexing, but only index the extended attributes
+     * of the file
+     */
+    void indexXattr(const QString& path);
+
 Q_SIGNALS:
     // Indexing State
     void indexingStarted();
@@ -120,12 +111,10 @@ private Q_SLOTS:
     void slotConfigChanged();
 
     void slotStartedIndexing();
-    void slotFinishedIndexing();
 
     // Event Monitor integration
     void slotScheduleIndexing();
 
-    //void slotTeardownRequested(const RemovableMediaCache::Entry* entry);
     void emitStatusStringChanged();
 
 private:
@@ -135,12 +124,9 @@ private:
     // no signal is emitted twice
     void setIndexingStarted(bool started);
 
-    bool scheduleBasicQueue();
-    bool scheduleFileQueue();
+    bool shouldRunBasicQueue();
+    bool shouldRunFileQueue();
     void setStateFromEvent();
-
-    void addClearFolders(const QStringList& add, const QStringList& clear);
-
 
     bool m_indexing;
 
@@ -153,10 +139,19 @@ private:
 
     EventMonitor* m_eventMonitor;
 
+    enum State {
+        State_Normal = 0,
+        State_UserIdle = 1,
+        State_OnBattery = 2,
+        State_Suspended = 3
+    };
     State m_state;
+
     QString m_oldStatus;
 
     Database* m_db;
+
+    friend class SchedulerTest;
 };
 }
 

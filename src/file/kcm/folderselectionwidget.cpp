@@ -24,13 +24,13 @@
 #include <Solid/StorageAccess>
 #include <Solid/StorageDrive>
 
-#include <KIcon>
-#include <KDebug>
-#include <KFileDialog>
+#include <QIcon>
+#include <QDebug>
+#include <QFileDialog>
 
 #include <QDir>
 #include <QTimer>
-#include <KUrl>
+#include <QUrl>
 #include <KLocalizedString>
 #include <QBoxLayout>
 #include <QSpacerItem>
@@ -54,12 +54,12 @@ FolderSelectionWidget::FolderSelectionWidget(QWidget* parent, Qt::WindowFlags f)
     hLayout->addItem(spacer);
 
     m_addButton = new QPushButton(this);
-    m_addButton->setIcon(KIcon(QLatin1String("list-add")));
+    m_addButton->setIcon(QIcon::fromTheme(QLatin1String("list-add")));
     connect(m_addButton, SIGNAL(clicked(bool)),
             this, SLOT(slotAddButtonClicked()));
 
     m_removeButton = new QPushButton(this);
-    m_removeButton->setIcon(KIcon(QLatin1String("list-remove")));
+    m_removeButton->setIcon(QIcon::fromTheme(QLatin1String("list-remove")));
     m_removeButton->setEnabled(false);
     connect(m_removeButton, SIGNAL(clicked(bool)),
             this, SLOT(slotRemoveButtonClicked()));
@@ -134,7 +134,7 @@ void FolderSelectionWidget::setFolders(QStringList includeDirs, QStringList excl
         item->setData(Qt::DisplayRole, display);
         item->setData(Qt::WhatsThisRole, url);
         item->setData(UrlRole, url);
-        item->setData(Qt::DecorationRole, KIcon(iconName(url)));
+        item->setData(Qt::DecorationRole, QIcon(iconName(url)));
         item->setToolTip(makeHomePretty(url));
 
         m_listWidget->addItem(item);
@@ -196,14 +196,10 @@ QString FolderSelectionWidget::fetchMountPoint(const QString& url) const
 
 void FolderSelectionWidget::slotAddButtonClicked()
 {
-    QString url = KFileDialog::getExistingDirectory(KUrl(), this, i18n("Select the folder which should be excluded"));
+    QString url = QFileDialog::getExistingDirectory(this, i18n("Select the folder which should be excluded"));
     if (url.isEmpty()) {
         return;
     }
-
-    // vHanda: Maybe we should be showing a message?
-    if (url == QLatin1String("/home"))
-        url = QDir::homePath();
 
     if (!url.endsWith(QDir::separator()))
         url.append(QDir::separator());
@@ -222,7 +218,7 @@ void FolderSelectionWidget::slotAddButtonClicked()
         QString existingUrl = item->data(UrlRole).toString();
 
         if (existingUrl == url) {
-            QString name = KUrl(QUrl::fromLocalFile(url)).fileName();
+            QString name = QUrl::fromLocalFile(url).fileName();
             showMessage(i18n("Folder %1 is already excluded").arg(name));
 
             deleteList << item;
@@ -243,7 +239,7 @@ void FolderSelectionWidget::slotAddButtonClicked()
                 url = existingUrl;
                 deleteList << item;
 
-                QString name = KUrl(QUrl::fromLocalFile(url)).fileName();
+                QString name = QUrl::fromLocalFile(url).fileName();
                 showMessage(i18n("Folder's parent %1 is already excluded").arg(name));
             }
         }
@@ -256,7 +252,7 @@ void FolderSelectionWidget::slotAddButtonClicked()
     item->setData(Qt::DisplayRole, display);
     item->setData(Qt::WhatsThisRole, url);
     item->setData(UrlRole, url);
-    item->setData(Qt::DecorationRole, KIcon(iconName(url)));
+    item->setData(Qt::DecorationRole, QIcon::fromTheme(iconName(url)));
     item->setToolTip(makeHomePretty(url));
 
     m_listWidget->addItem(item);
@@ -329,7 +325,8 @@ bool FolderSelectionWidget::shouldShowMountPoint(const QString& mountPoint)
         return false;
 
     // The user's home directory is forcibly added so we can ignore /home
-    if (mountPoint.startsWith(QLatin1String("/home")))
+    // if /home actually contains the home direcory
+    if (mountPoint.startsWith(QStringLiteral("/home")) && QDir::homePath().startsWith(QStringLiteral("/home")))
         return false;
 
     return true;

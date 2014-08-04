@@ -25,10 +25,8 @@
 #include "fileindexerconfig.h"
 #include "database.h"
 
-#include <qjson/serializer.h>
-
-#include <KDebug>
-#include <KStandardDirs>
+#include <QDebug>
+#include <QStandardPaths>
 
 #include <QtCore/QFileInfo>
 #include <QtCore/QTimer>
@@ -63,7 +61,7 @@ void FileIndexingJob::start()
 void FileIndexingJob::start(const QVector<uint>& files)
 {
     // setup the external process which does the actual indexing
-    static const QString exe = KStandardDirs::findExe(QLatin1String("baloo_file_extractor"));
+    static const QString exe = QStandardPaths::findExecutable(QLatin1String("baloo_file_extractor"));
 
     Q_ASSERT(m_process == 0);
     m_process = new QProcess(this);
@@ -74,8 +72,9 @@ void FileIndexingJob::start(const QVector<uint>& files)
 
     if (!m_customDbPath.isEmpty()) {
         args << QLatin1String("--db") << m_customDbPath;
+        args << QLatin1String("--ignoreConfig");
     }
-    kDebug() << args;
+    qDebug() << args;
 
     connect(m_process, SIGNAL(finished(int,QProcess::ExitStatus)),
             this, SLOT(slotIndexedFile(int,QProcess::ExitStatus)));
@@ -112,8 +111,8 @@ void FileIndexingJob::slotIndexedFile(int, QProcess::ExitStatus exitStatus)
     // Here it is!
     if (m_args.size() == 1) {
         uint doc = m_args.first();
-        kError() << "Indexer crashed while indexing" << doc;
-        kError() << "Blacklisting this file";
+        qWarning() << "Indexer crashed while indexing" << doc;
+        qWarning() << "Blacklisting this file";
         Q_EMIT indexingFailed(doc);
 
         if (m_files.isEmpty()) {
@@ -174,6 +173,3 @@ bool FileIndexingJob::doResume()
         start(m_args);
     return true;
 }
-
-
-#include "fileindexingjob.moc"

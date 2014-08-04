@@ -22,13 +22,13 @@
 
 #include "query.h"
 
-#include <QApplication>
+#include <QCoreApplication>
 #include <QTimer>
-#include <KDebug>
+#include <QDebug>
 
 #include <iostream>
 
-class App : public QApplication {
+class App : public QCoreApplication {
     Q_OBJECT
 public:
     App(int& argc, char** argv, int flags = ApplicationFlags);
@@ -44,7 +44,7 @@ int main(int argc, char** argv)
     App app(argc, argv);
 
     if (argc != 2) {
-        kError() << "Proper args required";
+        qWarning() << "Proper args required";
     }
     app.m_query = QString::fromLatin1(argv[1]);
 
@@ -52,7 +52,7 @@ int main(int argc, char** argv)
 }
 
 App::App(int& argc, char** argv, int flags)
-    : QApplication(argc, argv, flags)
+    : QCoreApplication(argc, argv, flags)
 {
     QTimer::singleShot(0, this, SLOT(main()));
 }
@@ -73,6 +73,5 @@ void App::main()
 
     quit();
 }
-
 
 #include "querytest.moc"

@@ -24,10 +24,11 @@
 
 #include <KConfig>
 #include <KConfigGroup>
-#include <KTempDir>
 
 #include <QDir>
 #include <QTextStream>
+#include <QTemporaryDir>
+#include <QStandardPaths>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -42,6 +43,7 @@ void writeIndexerConfig(const QStringList& includeFolders,
                         const QStringList& excludeFilters = QStringList(),
                         bool indexHidden = false)
 {
+    QStandardPaths::setTestModeEnabled(true);
     KConfig fileIndexerConfig(QLatin1String("baloofilerc"));
     fileIndexerConfig.group("General").writePathEntry("folders", includeFolders);
     fileIndexerConfig.group("General").writePathEntry("exclude folders", excludeFolders);
@@ -50,18 +52,18 @@ void writeIndexerConfig(const QStringList& includeFolders,
     fileIndexerConfig.sync();
 }
 
-KTempDir* createTmpFolders(const QStringList& folders)
+QTemporaryDir* createTmpFolders(const QStringList& folders)
 {
-    KTempDir* tmpDir = new KTempDir();
+    QTemporaryDir* tmpDir = new QTemporaryDir();
     // If the temporary directory is in a hidden folder, then the tests will fail,
     // so we use /tmp/ instead.
     // TODO: Find a better solution
-    if (QFileInfo(tmpDir->name()).isHidden()) {
+    if (QFileInfo(tmpDir->path()).isHidden()) {
         delete tmpDir;
-        tmpDir = new KTempDir(QLatin1String("/tmp/"));
+        tmpDir = new QTemporaryDir(QLatin1String("/tmp/"));
     }
     Q_FOREACH (const QString & f, folders) {
-        QDir dir(tmpDir->name());
+        QDir dir(tmpDir->path());
         Q_FOREACH (const QString & sf, f.split(QLatin1Char('/'), QString::SkipEmptyParts)) {
             if (!dir.exists(sf)) {
                 dir.mkdir(sf);
@@ -80,19 +82,19 @@ KTempDir* createTmpFolders(const QStringList& folders)
 }
 
 
-KTempDir* createTmpFilesAndFolders(const QStringList& list)
+QTemporaryDir* createTmpFilesAndFolders(const QStringList& list)
 {
-    KTempDir* tmpDir = new KTempDir();
+    QTemporaryDir* tmpDir = new QTemporaryDir();
     // If the temporary directory is in a hidden folder, then the tests will fail,
     // so we use /tmp/ instead.
     // TODO: Find a better solution
-    if (QFileInfo(tmpDir->name()).isHidden()) {
+    if (QFileInfo(tmpDir->path()).isHidden()) {
         delete tmpDir;
-        tmpDir = new KTempDir(QLatin1String("/tmp/"));
+        tmpDir = new QTemporaryDir(QLatin1String("/tmp/"));
     }
     Q_FOREACH (const QString& f, list) {
         if (f.endsWith(QLatin1Char('/'))) {
-            QDir dir(tmpDir->name());
+            QDir dir(tmpDir->path());
             Q_FOREACH (const QString & sf, f.split(QLatin1Char('/'), QString::SkipEmptyParts)) {
                 if (!dir.exists(sf)) {
                     dir.mkdir(sf);
@@ -108,7 +110,7 @@ KTempDir* createTmpFilesAndFolders(const QStringList& list)
             }
         }
         else {
-            QFile file(tmpDir->name() + f);
+            QFile file(tmpDir->path() + QLatin1Char('/') + f);
             file.open(QIODevice::WriteOnly);
 
             QTextStream stream(&file);

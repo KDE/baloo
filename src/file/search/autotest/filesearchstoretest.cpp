@@ -27,8 +27,8 @@
 #include "query.h"
 #include "term.h"
 
-#include "qtest_kde.h"
-#include <KDebug>
+#include <QDebug>
+#include <QtTest>
 
 #include <xapian.h>
 
@@ -48,12 +48,12 @@ void FileSearchStoreTest::init()
     cleanupTestCase();
 
     m_db = new Database(this);
-    m_tempDir = new KTempDir();
-    m_db->setPath(m_tempDir->name());
+    m_tempDir = new QTemporaryDir();
+    m_db->setPath(m_tempDir->path());
     m_db->init();
 
     m_store = new FileSearchStore(this);
-    m_store->setDbPath(m_tempDir->name());
+    m_store->setDbPath(m_tempDir->path());
 }
 
 void FileSearchStoreTest::initTestCase()
@@ -80,6 +80,41 @@ uint FileSearchStoreTest::insertUrl(const QString& url)
     return file.id();
 }
 
+void FileSearchStoreTest::insertType(int id, const QString& type)
+{
+    Xapian::Document doc;
+    doc.add_term(("T" + type.toLower()).toUtf8().constData());
+
+    std::string dir = m_tempDir->path().toUtf8().constData();
+    QScopedPointer<Xapian::WritableDatabase> wdb(new Xapian::WritableDatabase(dir,
+                                                                              Xapian::DB_CREATE_OR_OPEN));
+    wdb->replace_document(id, doc);
+    wdb->commit();
+
+    m_db->xapianDatabase()->db()->reopen();
+
+}
+
+void FileSearchStoreTest::insertExactText(int id, const QString& text, const QString& prefix)
+{
+    Xapian::Document doc;
+    try {
+        doc = m_db->xapianDatabase()->db()->get_document(id);
+    }
+    catch (...) {
+    }
+
+    doc.add_term((prefix + text).toUtf8().constData());
+
+    std::string dir = m_tempDir->path().toUtf8().constData();
+    QScopedPointer<Xapian::WritableDatabase> wdb(new Xapian::WritableDatabase(dir,
+                                                                              Xapian::DB_CREATE_OR_OPEN));
+    wdb->replace_document(id, doc);
+    wdb->commit();
+
+    m_db->xapianDatabase()->db()->reopen();
+}
+
 void FileSearchStoreTest::insertText(int id, const QString& text)
 {
     Xapian::Document doc;
@@ -88,7 +123,7 @@ void FileSearchStoreTest::insertText(int id, const QString& text)
     termGen.set_document(doc);
     termGen.index_text(text.toUtf8().constData());
 
-    std::string dir = m_tempDir->name().toUtf8().constData();
+    std::string dir = m_tempDir->path().toUtf8().constData();
     QScopedPointer<Xapian::WritableDatabase> wdb(new Xapian::WritableDatabase(dir,
                                                                               Xapian::DB_CREATE_OR_OPEN));
     wdb->replace_document(id, doc);
@@ -104,7 +139,7 @@ void FileSearchStoreTest::insertRating(int id, int rating)
     QString str = QLatin1Char('R') + QString::number(rating);
     doc.add_term(str.toUtf8().constData());
 
-    std::string dir = m_tempDir->name().toUtf8().constData();
+    std::string dir = m_tempDir->path().toUtf8().constData();
     QScopedPointer<Xapian::WritableDatabase> wdb(new Xapian::WritableDatabase(dir,
                                                                               Xapian::DB_CREATE_OR_OPEN));
     wdb->replace_document(id, doc);
@@ -243,5 +278,168 @@ void FileSearchStoreTest::testRatings()
     QVERIFY(!m_store->next(qid2));
 }
 
+void FileSearchStoreTest::testEmptySearchString()
+{
+    QString url1(QLatin1String("/home/t/a"));
+    uint id1 = insertUrl(url1);
+    insertText(id1, QLatin1String("File A"));
 
-QTEST_KDEMAIN_CORE(Baloo::FileSearchStoreTest)
+    QString url2(QLatin1String("/home/t/b"));
+    uint id2 = insertUrl(url2);
+    insertText(id2, QLatin1String("File B"));
+
+    QString url3(QLatin1String("/home/garden/b"));
+    uint id3 = insertUrl(url3);
+    insertText(id3, QLatin1String("Garden B"));
+
+    QString url4(QLatin1String("/home/tt/b"));
+    uint id4 = insertUrl(url4);
+    insertText(id4, QLatin1String("TT B"));
+
+    QString url5(QLatin1String("/home/tt/c"));
+    uint id5 = insertUrl(url5);
+    insertText(id5, QLatin1String("TT C"));
+
+    Query q;
+    q.addType(QLatin1String("File"));
+
+    int qid1 = m_store->exec(q);
+    QCOMPARE(qid1, 1);
+
+    QVERIFY(m_store->next(qid1));
+    QCOMPARE(m_store->id(qid1), serialize("file", id1));
+    QVERIFY(m_store->next(qid1));
+    QCOMPARE(m_store->id(qid1), serialize("file", id2));
+    QVERIFY(m_store->next(qid1));
+    QCOMPARE(m_store->id(qid1), serialize("file", id3));
+    QVERIFY(m_store->next(qid1));
+    QCOMPARE(m_store->id(qid1), serialize("file", id4));
+    QVERIFY(m_store->next(qid1));
+    QCOMPARE(m_store->id(qid1), serialize("file", id5));
+    QVERIFY(!m_store->next(qid1));
+}
+
+void FileSearchStoreTest::testAllVideos()
+{
+    QString url1(QLatin1String("/home/t/a"));
+    uint id1 = insertUrl(url1);
+    insertType(id1, QLatin1String("Video"));
+
+    QString url2(QLatin1String("/home/t/b"));
+    uint id2 = insertUrl(url2);
+    insertType(id2, QLatin1String("Image"));
+
+    QString url3(QLatin1String("/home/garden/b"));
+    uint id3 = insertUrl(url3);
+    insertType(id3, QLatin1String("Video"));
+
+    Query q;
+    q.addType(QLatin1String("Video"));
+
+    int qid1 = m_store->exec(q);
+    QCOMPARE(qid1, 1);
+
+    QVERIFY(m_store->next(qid1));
+    QCOMPARE(m_store->id(qid1), serialize("file", id1));
+    QVERIFY(m_store->next(qid1));
+    QCOMPARE(m_store->id(qid1), serialize("file", id3));
+    QVERIFY(!m_store->next(qid1));
+}
+
+void FileSearchStoreTest::testFileNameSearch()
+{
+    QString url1(QLatin1String("/home/t/a"));
+    uint id1 = insertUrl(url1);
+    insertExactText(id1, QLatin1String("flowering"), "F");
+    insertExactText(id1, QLatin1String("dork"), "F");
+    insertExactText(id1, QLatin1String("dork"), "A");
+    insertExactText(id1, QLatin1String("dork"), "G");
+
+    QString url2(QLatin1String("/home/t/b"));
+    uint id2 = insertUrl(url2);
+    insertExactText(id2, QLatin1String("powering"), "F");
+    insertExactText(id2, QLatin1String("fire"), "F");
+    insertExactText(id2, QLatin1String("dork"), "A");
+    insertExactText(id2, QLatin1String("dork"), "G");
+
+    QString url3(QLatin1String("/home/garden/b"));
+    uint id3 = insertUrl(url3);
+    insertExactText(id3, QLatin1String("does"), "F");
+    insertExactText(id3, QLatin1String("not"), "F");
+    insertExactText(id3, QLatin1String("dork"), "A");
+    insertExactText(id3, QLatin1String("dork"), "G");
+
+    Query q;
+    q.addType(QLatin1String("File"));
+    q.setTerm(Term("filename", "dork"));
+
+    int qid1 = m_store->exec(q);
+    QCOMPARE(qid1, 1);
+    QVERIFY(m_store->next(qid1));
+    QCOMPARE(m_store->id(qid1), serialize("file", id1));
+    QVERIFY(!m_store->next(qid1));
+
+    q.setTerm(Term("filename", "do*"));
+
+    int qid2 = m_store->exec(q);
+    QCOMPARE(qid2, 2);
+    QVERIFY(m_store->next(qid2));
+    QCOMPARE(m_store->id(qid2), serialize("file", id1));
+    QVERIFY(m_store->next(qid2));
+    QCOMPARE(m_store->id(qid2), serialize("file", id3));
+    QVERIFY(!m_store->next(qid2));
+
+    q.setTerm(Term("filename", "*ing"));
+
+    int qid3 = m_store->exec(q);
+    QCOMPARE(qid3, 3);
+    QVERIFY(m_store->next(qid3));
+    QCOMPARE(m_store->id(qid3), serialize("file", id1));
+    QVERIFY(m_store->next(qid3));
+    QCOMPARE(m_store->id(qid3), serialize("file", id2));
+    QVERIFY(!m_store->next(qid3));
+
+    // Exact match
+    q.setTerm(Term("filename", "dork", Term::Equal));
+
+    int qid4 = m_store->exec(q);
+    QCOMPARE(qid4, 4);
+    QVERIFY(m_store->next(qid4));
+    QCOMPARE(m_store->id(qid4), serialize("file", id1));
+    QVERIFY(!m_store->next(qid4));
+}
+
+void FileSearchStoreTest::testSortingNone()
+{
+    insertText(1, QLatin1String("Power A"));
+    insertText(2, QLatin1String("Power Power B"));
+
+    Query q;
+    q.addType(QLatin1String("File"));
+    q.setSearchString("Power");
+
+    int qid;
+
+    // Auto sort - Based on frequency
+    qid = m_store->exec(q);
+    QCOMPARE(qid, 1);
+    QVERIFY(m_store->next(qid));
+    QCOMPARE(m_store->id(qid), serialize("file", 2));
+    QVERIFY(m_store->next(qid));
+    QCOMPARE(m_store->id(qid), serialize("file", 1));
+    QVERIFY(!m_store->next(qid));
+
+    // no sort
+    q.setSortingOption(Query::SortNone);
+
+    qid = m_store->exec(q);
+    QCOMPARE(qid, 2);
+    QVERIFY(m_store->next(qid));
+    QCOMPARE(m_store->id(qid), serialize("file", 1));
+    QVERIFY(m_store->next(qid));
+    QCOMPARE(m_store->id(qid), serialize("file", 2));
+    QVERIFY(!m_store->next(qid));
+}
+
+
+QTEST_MAIN(Baloo::FileSearchStoreTest)

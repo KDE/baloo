@@ -1,6 +1,6 @@
 /* This file is part of the KDE Project
    Copyright (c) 2008-2010 Sebastian Trueg <trueg@kde.org>
-   Copyright (c) 2013      Vishesh Handa <me@vhanda.in>
+   Copyright (c) 2013-2014 Vishesh Handa <me@vhanda.in>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -20,13 +20,14 @@
 #include "fileindexerconfig.h"
 #include "fileexcludefilters.h"
 
+#include <QUrl>
 #include <QStringList>
 #include <QDir>
 
 #include <KDirWatch>
-#include <KStandardDirs>
+#include <QStandardPaths>
 #include <KConfigGroup>
-#include <KDebug>
+#include <QDebug>
 
 
 namespace
@@ -59,7 +60,7 @@ FileIndexerConfig::FileIndexerConfig(QObject* parent)
             this, SLOT(slotConfigDirty()));
     connect(dirWatch, SIGNAL(created(QString)),
             this, SLOT(slotConfigDirty()));
-    dirWatch->addFile(KStandardDirs::locateLocal("config", m_config.name()));
+    dirWatch->addFile(QStandardPaths::locate(QStandardPaths::ConfigLocation, m_config.name()));
 
     forceConfigUpdate();
 }
@@ -67,12 +68,6 @@ FileIndexerConfig::FileIndexerConfig(QObject* parent)
 
 FileIndexerConfig::~FileIndexerConfig()
 {
-}
-
-
-QList<QPair<QString, bool> > FileIndexerConfig::folders() const
-{
-    return m_folderCache;
 }
 
 
@@ -112,6 +107,8 @@ QStringList FileIndexerConfig::excludeFilters() const
 
         // write the config directly since the KCM does not have support for the version yet
         // TODO: make this class public and use it in the KCM
+        KConfig config(m_config.name());
+        KConfigGroup cfg = config.group("General");
         cfg.writeEntry("exclude filters", QStringList::fromSet(filters));
         cfg.writeEntry("exclude filters version", defaultExcludeFilterListVersion());
     }
@@ -128,8 +125,8 @@ bool FileIndexerConfig::indexHiddenFilesAndFolders() const
 
 void FileIndexerConfig::slotConfigDirty()
 {
-    if (forceConfigUpdate())
-        Q_EMIT configChanged();
+    forceConfigUpdate();
+    Q_EMIT configChanged();
 }
 
 
@@ -204,7 +201,7 @@ bool FileIndexerConfig::folderInFolderList(const QString& path)
 
 bool FileIndexerConfig::folderInFolderList(const QString& path, QString& folder) const
 {
-    const QString p = KUrl(path).path(KUrl::RemoveTrailingSlash);
+    const QString p = QUrl(path).adjusted(QUrl::StripTrailingSlash).path();
 
     // we traverse the list backwards to catch all exclude folders
     int i = m_folderCache.count();
@@ -232,8 +229,11 @@ bool alreadyExcluded(const QList<QPair<QString, bool> >& folders, const QString&
 {
     bool included = false;
     for (int i = 0; i < folders.count(); ++i) {
-        if (f != folders[i].first &&
-                f.startsWith(KUrl(folders[i].first).path(KUrl::AddTrailingSlash))) {
+        QString path = QUrl(folders[i].first).path();
+        if (!path.endsWith(QLatin1Char('/')))
+            path.append(QLatin1Char('/'));
+
+        if (f != folders[i].first && f.startsWith(path)) {
             included = folders[i].second;
         }
     }
@@ -247,7 +247,7 @@ void insertSortFolders(const QStringList& folders, bool include, QList<QPair<QSt
 {
     Q_FOREACH (const QString& f, folders) {
         int pos = 0;
-        QString path = KUrl(f).path(KUrl::RemoveTrailingSlash);
+        QString path = QUrl(f).adjusted(QUrl::StripTrailingSlash).path();
         while (result.count() > pos &&
                 result[pos].first < path)
             ++pos;
@@ -274,38 +274,8 @@ void cleanupList(QList<QPair<QString, bool> >& result)
 }
 }
 
-
-void FileIndexerConfig::fillIncludeFolderChanges(const FileIndexerConfig::Entry& entry, const QSet<QString>& include, QStringList* includeAdded, QStringList* includeRemoved)
+void FileIndexerConfig::buildFolderCache()
 {
-    QStringList added = QSet<QString>(include).subtract(entry.includes).toList();
-    QStringList removed = QSet<QString>(entry.includes).subtract(include).toList();
-
-    if (includeAdded)
-        includeAdded->append(added);
-
-    if (includeRemoved)
-        includeRemoved->append(removed);
-}
-
-void FileIndexerConfig::fillExcludeFolderChanges(const FileIndexerConfig::Entry& entry, const QSet<QString>& exclude, QStringList* excludeAdded, QStringList* excludeRemoved)
-{
-    QStringList added = QSet<QString>(exclude).subtract(entry.excludes).toList();
-    QStringList removed = QSet<QString>(entry.excludes).subtract(exclude).toList();
-
-    if (excludeAdded)
-        excludeAdded->append(added);
-
-    if (excludeRemoved)
-        excludeRemoved->append(removed);
-}
-
-
-bool FileIndexerConfig::buildFolderCache()
-{
-
-    //
-    // General folders
-    //
     KConfigGroup group = m_config.group("General");
     QStringList includeFoldersPlain = group.readPathEntry("folders", QStringList() << QDir::homePath());
     QStringList excludeFoldersPlain = group.readPathEntry("exclude folders", QStringList());
@@ -314,122 +284,30 @@ bool FileIndexerConfig::buildFolderCache()
     insertSortFolders(includeFoldersPlain, true, m_folderCache);
     insertSortFolders(excludeFoldersPlain, false, m_folderCache);
 
-    QStringList includeAdded;
-    QStringList includeRemoved;
-    QStringList excludeAdded;
-    QStringList excludeRemoved;;
-
-    QSet<QString> includeSet = includeFoldersPlain.toSet();
-    QSet<QString> excludeSet = excludeFoldersPlain.toSet();
-
-    Entry& generalEntry = m_entries[ QLatin1String("General") ];
-    fillIncludeFolderChanges(generalEntry, includeSet, &includeAdded, &includeRemoved);
-    fillExcludeFolderChanges(generalEntry, excludeSet, &excludeAdded, &excludeRemoved);
-
-    generalEntry.includes = includeSet;
-    generalEntry.excludes = excludeSet;
-
-    //
-    // Removable Media
-    //
-    QStringList groupList = m_config.groupList();
-    Q_FOREACH (const QString& groupName, groupList) {
-        if (!groupName.startsWith(QLatin1String("Device-")))
-            continue;
-
-        KConfigGroup group = m_config.group(groupName);
-        QString mountPath = group.readEntry("mount path", QString());
-        if (mountPath.isEmpty())
-            continue;
-
-        QStringList includes = group.readPathEntry("folders", QStringList());
-        QStringList excludes = group.readPathEntry("exclude folders", QStringList());
-
-        QStringList includeFoldersPlain;
-        Q_FOREACH (const QString& path, includes)
-            includeFoldersPlain << mountPath + path;
-
-        QStringList excludeFoldersPlain;
-        Q_FOREACH (const QString& path, excludes)
-            excludeFoldersPlain << mountPath + path;
-
-        insertSortFolders(includeFoldersPlain, true, m_folderCache);
-        insertSortFolders(excludeFoldersPlain, false, m_folderCache);
-
-        QSet<QString> includeSet = includeFoldersPlain.toSet();
-        QSet<QString> excludeSet = excludeFoldersPlain.toSet();
-
-        Entry& cacheEntry = m_entries[ groupName ];
-        fillIncludeFolderChanges(cacheEntry, includeSet, &includeAdded, &includeRemoved);
-        fillExcludeFolderChanges(cacheEntry, excludeSet, &excludeAdded, &excludeRemoved);
-
-        cacheEntry.includes = includeSet;
-        cacheEntry.excludes = excludeSet;
-    }
-
     cleanupList(m_folderCache);
-
-    bool changed = false;
-    if (!includeAdded.isEmpty() || !includeRemoved.isEmpty()) {
-        Q_EMIT includeFolderListChanged(includeAdded, includeRemoved);
-        changed = true;
-    }
-
-    if (!excludeAdded.isEmpty() || !excludeRemoved.isEmpty()) {
-        Q_EMIT excludeFolderListChanged(excludeAdded, excludeRemoved);
-        changed = true;
-    }
-
-    return changed;
 }
 
 
-bool FileIndexerConfig::buildExcludeFilterRegExpCache()
+void FileIndexerConfig::buildExcludeFilterRegExpCache()
 {
     QStringList newFilters = excludeFilters();
     m_excludeFilterRegExpCache.rebuildCacheFromFilterList(newFilters);
-
-    QSet<QString> newFilterSet = newFilters.toSet();
-    if (m_prevFileFilters != newFilterSet) {
-        m_prevFileFilters = newFilterSet;
-        Q_EMIT fileExcludeFiltersChanged();
-        return true;
-    }
-
-    return false;
 }
 
-bool FileIndexerConfig::buildMimeTypeCache()
+void FileIndexerConfig::buildMimeTypeCache()
 {
-    QStringList newMimeExcludes = m_config.group("General").readPathEntry("exclude mimetypes", defaultExcludeMimetypes());
-
-    QSet<QString> newMimeExcludeSet = newMimeExcludes.toSet();
-    if (m_excludeMimetypes != newMimeExcludeSet) {
-        m_excludeMimetypes = newMimeExcludeSet;
-        Q_EMIT mimeTypeFiltersChanged();
-        return true;
-    }
-
-    return false;
+    m_excludeMimetypes = m_config.group("General").readPathEntry("exclude mimetypes", defaultExcludeMimetypes()).toSet();
 }
 
-
-bool FileIndexerConfig::forceConfigUpdate()
+void FileIndexerConfig::forceConfigUpdate()
 {
     m_config.reparseConfiguration();
-    bool changed = false;
 
-    changed = buildFolderCache() || changed;
-    changed = buildExcludeFilterRegExpCache() || changed;
-    changed = buildMimeTypeCache() || changed;
+    buildFolderCache();
+    buildExcludeFilterRegExpCache();
+    buildMimeTypeCache();
 
-    bool hidden = m_config.group("General").readEntry("index hidden folders", false);
-    if (hidden != m_indexHidden) {
-        m_indexHidden = hidden;
-        changed = true;
-    }
-
-    return changed;
+    m_indexHidden = m_config.group("General").readEntry("index hidden folders", false);
 }
 
 void FileIndexerConfig::setInitialRun(bool isInitialRun)

@@ -37,7 +37,6 @@ public:
 public Q_SLOTS:
     void moveFileMetadata(const QString& from, const QString& to);
     void removeFileMetadata(const QString& file);
-    void removeFileMetadata(const QStringList& files);
 
 Q_SIGNALS:
     /**

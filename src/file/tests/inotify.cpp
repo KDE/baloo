@@ -36,6 +36,17 @@ int main(int argc, char** argv)
     QObject::connect(&inotify, SIGNAL(installedWatches()),
                      &app, SLOT(quit()));
 
+    QObject::connect(&inotify, &KInotify::attributeChanged,
+                     [](const QString& fileUrl) { qDebug() << "AttrbuteChanged:" << fileUrl; });
+    QObject::connect(&inotify, &KInotify::created,
+                     [](const QString& fileUrl, bool isDir) { qDebug() << "Created:" << fileUrl << isDir; });
+    QObject::connect(&inotify, &KInotify::deleted,
+                     [](const QString& fileUrl, bool isDir) { qDebug() << "Deleted:" << fileUrl << isDir; });
+    QObject::connect(&inotify, &KInotify::modified,
+                     [](const QString& fileUrl) { qDebug() << "Modified:" << fileUrl; });
+    QObject::connect(&inotify, &KInotify::closedWrite,
+                     [](const QString& fileUrl) { qDebug() << "ClosedWrite:" << fileUrl; });
+
     QTime timer;
     timer.start();
 

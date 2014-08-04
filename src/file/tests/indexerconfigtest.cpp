@@ -22,54 +22,38 @@
 
 #include "../fileindexerconfig.h"
 
-#include <KAboutData>
-#include <KApplication>
-#include <KCmdLineArgs>
-#include <KDebug>
-#include <KMimeType>
+#include <QCoreApplication>
+#include <QCommandLineParser>
+#include <QFileInfo>
+#include <QMimeDatabase>
 
-#include <QTimer>
-
-#include <KUrl>
 #include <iostream>
 
 int main(int argc, char** argv)
 {
-    KAboutData aboutData("indexerconfigtest",
-                         "indexerconfigtest",
-                         ki18n("indexerconfigtest"),
-                         "0.1",
-                         ki18n("indexerconfigtest"),
-                         KAboutData::License_GPL,
-                         ki18n("(c) 2014, Vishesh Handa"),
-                         KLocalizedString(),
-                         "http://kde.org");
-    aboutData.addAuthor(ki18n("Vishesh Handa"), ki18n("Maintainer"), "me@vhanda.in");
-
-    KCmdLineArgs::init(argc, argv, &aboutData);
-
-    KCmdLineOptions options;
-    options.add("+file", ki18n("The file URL"));
-    KCmdLineArgs::addCmdLineOptions(options);
-
-    KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
-
     QCoreApplication app(argc, argv);
-    KComponentData comp(aboutData);
 
-    if (args->count() == 0)
-        KCmdLineArgs::usage();
+    QCommandLineParser parser;
+    parser.addPositionalArgument(QLatin1String("file"), QLatin1String("The file url"));
+    parser.process(app);
+
+    if (parser.positionalArguments().isEmpty()) {
+        parser.showHelp(1);
+    }
 
     Baloo::FileIndexerConfig config;
 
-    const QUrl url = args->url(0);
-    bool shouldIndex = config.shouldBeIndexed(url.toLocalFile());
+    const QString arg = parser.positionalArguments().first();
+    const QString url = QFileInfo(arg).absoluteFilePath();
 
-    QString mimetype = KMimeType::findByUrl(url)->name();
-    QString fastMimetype = KMimeType::findByUrl(url, 0, true, true)->name();
+    bool shouldIndex = config.shouldBeIndexed(url);
+
+    QMimeDatabase m_mimeDb;
+    QString mimetype = m_mimeDb.mimeTypeForFile(url, QMimeDatabase::MatchExtension).name();
+    QString fastMimetype = m_mimeDb.mimeTypeForFile(url).name();
 
     bool shouldIndexMimetype = config.shouldMimeTypeBeIndexed(fastMimetype);
-    std::cout << url.toLocalFile().toUtf8().constData() << "\n"
+    std::cout << url.toUtf8().constData() << "\n"
               << "Should Index: " << std::boolalpha << shouldIndex << "\n"
               << "Should Index Mimetype: " << std::boolalpha << shouldIndexMimetype << "\n"
               << "Fast Mimetype: " << fastMimetype.toUtf8().constData() << std::endl

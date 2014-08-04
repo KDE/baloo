@@ -1,5 +1,5 @@
 /*
-   This file is part of the Nepomuk KDE project.
+   This file is part of the KDE Baloo project.
    Copyright (C) 2010 Sebastian Trueg <trueg@kde.org>
 
    This library is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 #define _REGEXP_CACHE_H_
 
 #include <QList>
-#include <QRegExp>
+#include <QRegularExpression>
 
 class RegExpCache
 {
@@ -32,16 +32,11 @@ public:
     ~RegExpCache();
 
     bool exactMatch(const QString& s) const;
-    bool filenameMatch(const QString& path) const;
 
     void rebuildCacheFromFilterList(const QStringList& filters);
 
-    QList<QRegExp> regExps() const {
-        return m_regexpCache;
-    }
-
 private:
-    QList<QRegExp> m_regexpCache;
+    QList<QRegularExpression> m_regexpCache;
 };
 
 #endif

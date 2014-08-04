@@ -1,24 +1,31 @@
-add_definitions(${KDE4_ENABLE_EXCEPTIONS})
+kde_enable_exceptions()
 
 set(XAPIAN_SRCS
     xapiansearchstore.cpp
     xapiandocument.cpp
     xapiandatabase.cpp
+    termgenerator.cpp
+    queryparser.cpp
 )
 
-kde4_add_library(balooxapian SHARED ${XAPIAN_SRCS})
+add_library(KF5BalooXapian ${XAPIAN_SRCS})
+add_library(KF5::BalooXapian ALIAS KF5BalooXapian)
 
-target_link_libraries(balooxapian
-    ${QT_QTCORE_LIBRARY}
-    ${QJSON_LIBRARIES}
-    ${KDE4_KDECORE_LIBRARY}
+target_link_libraries(KF5BalooXapian PUBLIC
+    Qt5::Core
     ${XAPIAN_LIBRARIES}
-    baloocore
+    KF5::BalooCore
 )
 
-set_target_properties(balooxapian PROPERTIES
-    VERSION ${BALOO_VERSION}
-    SOVERSION ${BALOO_VERSION_MAJOR}
+set_target_properties(KF5BalooXapian PROPERTIES
+    VERSION ${BALOO_VERSION_STRING}
+    SOVERSION ${BALOO_SOVERSION}
+    EXPORT_NAME BalooXapian
 )
 
-install(TARGETS balooxapian EXPORT BalooLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+generate_export_header(KF5BalooXapian BASE_NAME BALOO_XAPIAN EXPORT_FILE_NAME xapian_export.h)
+
+install(TARGETS KF5BalooXapian EXPORT KF5BalooTargets ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
+
+add_subdirectory(autotests)
+add_subdirectory(tests)

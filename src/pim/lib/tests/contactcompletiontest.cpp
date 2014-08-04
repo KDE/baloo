@@ -25,7 +25,7 @@
 #include <iostream>
 #include <QCoreApplication>
 #include <QTimer>
-#include <KDebug>
+#include <QDebug>
 
 #include <Akonadi/ItemFetchJob>
 #include <Akonadi/ItemFetchScope>
@@ -50,7 +50,7 @@ int main(int argc, char** argv)
     App app(argc, argv);
 
     if (argc != 2) {
-        kError() << "Proper args required";
+        qWarning() << "Proper args required";
     }
     app.m_query = QString::fromUtf8(argv[1]);
 
@@ -73,7 +73,7 @@ void App::main()
     Q_FOREACH (const QString& em, emails)
         std::cout << em.toUtf8().data() << std::endl;
 
-    kDebug() << timer.elapsed();
+    qDebug() << timer.elapsed();
     quit();
 }
 

@@ -1,0 +1,11 @@
+maintainer: vhanda
+description: Baloo provides searching and indexing infrastucture with an emphasis on files
+tier: 3
+type: solution
+platforms:
+    - name: Linux
+    - name: Windows
+    - name: MacOSX
+portingAid: false
+deprecated: false
+release: true

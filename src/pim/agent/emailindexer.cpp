@@ -22,7 +22,7 @@
 
 #include "emailindexer.h"
 
-#include <Akonadi/Collection>
+#include <Collection>
 #include <Akonadi/KMime/MessageFlags>
 
 #include <QTextDocument>
@@ -36,12 +36,12 @@ EmailIndexer::EmailIndexer(const QString& path, const QString& contactDbPath):
         m_db = new Xapian::WritableDatabase(path.toUtf8().constData(), Xapian::DB_CREATE_OR_OPEN);
     }
     catch (const Xapian::DatabaseCorruptError& err) {
-        kError() << "Database Corrupted - What did you do?";
-        kError() << err.get_error_string();
+        qWarning() << "Database Corrupted - What did you do?";
+        qWarning() << err.get_error_string();
         m_db = 0;
     }
     catch (const Xapian::Error &e) {
-        kError() << QString::fromStdString(e.get_type()) << QString::fromStdString(e.get_description());
+        qWarning() << QString::fromStdString(e.get_type()) << QString::fromStdString(e.get_description());
         m_db = 0;
     }
 
@@ -49,12 +49,12 @@ EmailIndexer::EmailIndexer(const QString& path, const QString& contactDbPath):
         m_contactDb = new Xapian::WritableDatabase(contactDbPath.toUtf8().constData(), Xapian::DB_CREATE_OR_OPEN);
     }
     catch (const Xapian::DatabaseCorruptError& err) {
-        kError() << "Database Corrupted - What did you do?";
-        kError() << err.get_error_string();
+        qWarning() << "Database Corrupted - What did you do?";
+        qWarning() << err.get_error_string();
         m_contactDb = 0;
     }
     catch (const Xapian::Error &e) {
-        kError() << QString::fromStdString(e.get_type()) << QString::fromStdString(e.get_description());
+        qWarning() << QString::fromStdString(e.get_type()) << QString::fromStdString(e.get_description());
         m_contactDb = 0;
     }
 }
@@ -200,7 +200,7 @@ void EmailIndexer::process(const KMime::Message::Ptr& msg)
     KMime::Headers::Subject* subject = msg->subject(false);
     if (subject) {
         std::string str(subject->asUnicodeString().toUtf8().constData());
-        kDebug() << "Indexing" << str.c_str();
+        qDebug() << "Indexing" << str.c_str();
         m_termGen->index_text_without_positions(str, 1, "SU");
         m_termGen->index_text_without_positions(str, 100);
         m_doc->set_data(str);

@@ -47,9 +47,12 @@ public:
 
     void clear();
 
+    void setMaxSize(int size) { m_maxSize = size; }
+    void setBatchSize(int size) { m_batchSize = size; }
+    void setTestMode(bool mode) { m_testMode = mode; }
+
 Q_SIGNALS:
     void newDocument(uint docid, const Xapian::Document& doc);
-    void deleteDocument(unsigned docid);
 
 protected:
     virtual void processNextIteration();
@@ -66,6 +69,7 @@ private:
 
     int m_maxSize;
     int m_batchSize;
+    bool m_testMode;
 
     FileIndexingJob* m_indexJob;
 };

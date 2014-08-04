@@ -23,21 +23,19 @@
 #include "../fileindexerconfig.h"
 #include "fileindexerconfigutils.h"
 
-#include <KTempDir>
+#include <QTemporaryDir>
 
 #include <QtCore/QFile>
 #include <QtCore/QDir>
 #include <QtCore/QScopedPointer>
-
-
-#include "qtest_kde.h"
+#include <QTest>
 
 using namespace Baloo::Test;
 
 void FileIndexerConfigTest::testShouldFolderBeIndexed()
 {
     // create the full folder hierarchy
-    KTempDir* mainDir = createTmpFolders(QStringList()
+    QTemporaryDir* mainDir = createTmpFolders(QStringList()
                                          << indexedRootDir
                                          << indexedSubDir
                                          << indexedSubSubDir
@@ -51,7 +49,7 @@ void FileIndexerConfigTest::testShouldFolderBeIndexed()
                                          << ignoredRootDir
                                          << excludedRootDir);
 
-    const QString dirPrefix = mainDir->name();
+    const QString dirPrefix = mainDir->path();
 
     // write the config
     writeIndexerConfig(QStringList()
@@ -122,7 +120,7 @@ void FileIndexerConfigTest::testShouldFolderBeIndexed()
 void FileIndexerConfigTest::testShouldBeIndexed()
 {
     // create the full folder hierarchy
-    KTempDir* mainDir = createTmpFolders(QStringList()
+    QTemporaryDir* mainDir = createTmpFolders(QStringList()
                                          << indexedRootDir
                                          << indexedSubDir
                                          << indexedSubSubDir
@@ -136,7 +134,7 @@ void FileIndexerConfigTest::testShouldBeIndexed()
                                          << ignoredRootDir
                                          << excludedRootDir);
 
-    const QString dirPrefix = mainDir->name();
+    const QString dirPrefix = mainDir->path();
 
     // write the config
     writeIndexerConfig(QStringList()
@@ -249,7 +247,7 @@ void FileIndexerConfigTest::testExcludeFilterOnFolders()
     const QString includedSubSubDir = includedSubDir + QLatin1String("/sub");
 
     // create the full folder hierarchy
-    QScopedPointer<KTempDir> mainDir(createTmpFolders(QStringList()
+    QScopedPointer<QTemporaryDir> mainDir(createTmpFolders(QStringList()
                                      << indexedRootDir
                                      << excludedSubDir1
                                      << excludedSubSubDir1
@@ -257,7 +255,7 @@ void FileIndexerConfigTest::testExcludeFilterOnFolders()
                                      << excludedSubSubDir2
                                      << includedSubDir));
 
-    const QString dirPrefix = mainDir->name();
+    const QString dirPrefix = mainDir->path();
 
     // write the config with the exclude filters
     writeIndexerConfig(QStringList()
@@ -292,6 +290,4 @@ void FileIndexerConfigTest::testExcludeFilterOnFolders()
     QVERIFY(cfg->shouldFolderBeIndexed(dirPrefix + includedSubSubDir + fileName));
 }
 
-QTEST_KDEMAIN_CORE(FileIndexerConfigTest)
-
-#include "fileindexerconfigtest.moc"
+QTEST_MAIN(FileIndexerConfigTest)

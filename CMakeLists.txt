@@ -1,21 +1,48 @@
-project(baloo)
+cmake_minimum_required(VERSION 2.8.12)
 
-set(BALOO_VERSION_MAJOR 4)
-set(BALOO_VERSION_MINOR 14)
-set(BALOO_VERSION_RELEASE 61)
-set(BALOO_VERSION "${BALOO_VERSION_MAJOR}.${BALOO_VERSION_MINOR}.${BALOO_VERSION_RELEASE}")
+project(Baloo)
 
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules" ${CMAKE_MODULE_PATH})
+# ECM setup
+find_package(ECM 1.0.0 REQUIRED NO_MODULE)
+set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 
-find_package(KDE4 REQUIRED)
-include(KDE4Defaults)
+include(GenerateExportHeader)
+include(ECMGenerateHeaders)
+include(ECMPackageConfigHelpers)
+include(ECMSetupVersion)
+include(FeatureSummary)
+include(KDEInstallDirs)
+include(KDECMakeSettings)
+include(KDEFrameworkCompilerSettings)
+include(ECMInstallIcons)
+include(ECMAddTests)
 
-find_package(KdepimLibs 4.13.97 CONFIG)
-set_package_properties(KdepimLibs PROPERTIES
-    DESCRIPTION "The KDEPIM libraries"
-    URL "http://www.kde.org"
-    TYPE REQUIRED
+set(KF5_VERSION "5.0.0")
+set(BALOO_VERSION "5.0.0")
+
+ecm_setup_version(${BALOO_VERSION} VARIABLE_PREFIX BALOO
+                        VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/baloo_version.h"
+                        PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF5BalooConfigVersion.cmake"
+                        SOVERSION 1
 )
+
+# Temporary option untill kdepimlibs is ok. Activate it if you want to compile kdepim
+option(KDEPIM_SUPPORT_BUILD "Build baloo kdepim support" FALSE)
+
+# Build dependencies
+find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Widgets DBus Test Sql)
+
+find_package(KF5 ${KF5_VERSION} REQUIRED COMPONENTS I18n Config Service IdleTime KCMUtils Auth Crash Solid KIO KDELibs4Support)
+find_package(KF5 ${BALOO_VERSION} REQUIRED COMPONENTS FileMetaData)
+
+if (KDEPIM_SUPPORT_BUILD)
+  find_package(KF5Akonadi CONFIG)
+  set_package_properties(KF5Akonadi PROPERTIES
+      DESCRIPTION "The KDEPIM libraries"
+      URL "http://www.kde.org"
+      TYPE REQUIRED
+  )
+endif()
 
 find_package(Xapian CONFIG)
 set_package_properties(Xapian PROPERTIES
@@ -24,67 +51,55 @@ set_package_properties(Xapian PROPERTIES
     TYPE REQUIRED
 )
 
-find_package(KFileMetaData CONFIG)
-set_package_properties(KFileMetaData PROPERTIES
-    DESCRIPTION "A library for extracting file metadata"
-    URL "https://projects.kde.org/kfilemetadata"
-    TYPE REQUIRED
-)
-
-find_package(QJSON)
-set_package_properties(QJSON PROPERTIES
-    DESCRIPTION "Qt library for handling JSON data"
-    URL "http://qjson.sourceforge.net/"
-    TYPE REQUIRED
-)
-
-find_package(Akonadi 1.12.90 CONFIG)
-set_package_properties(Akonadi PROPERTIES
-    URL "http://akonadi-project.org"
-    TYPE REQUIRED
-)
-
-include(ConfigureChecks.cmake)
-configure_file(config.h.cmake ${CMAKE_BINARY_DIR}/config.h)
-
+# Compiler flags
 add_definitions(-DQT_NO_KEYWORDS)
-add_definitions(${KDE4_ENABLE_EXCEPTIONS})
-add_definitions(-DQT_USE_QSTRINGBUILDER)
-add_definitions( -DQT_NO_CAST_FROM_ASCII )
-add_definitions( -DQT_NO_CAST_TO_ASCII )
+# FIXME src/kioslaves/timeline/kio_timeline.cpp:168
+remove_definitions(-DQT_NO_URL_CAST_FROM_STRING)
 
+# Turn exceptions on
+kde_enable_exceptions()
 
 include_directories(
-  ${CMAKE_BINARY_DIR}
-  ${QT_INCLUDES}
-  ${QJSON_INCLUDE_DIR}
-  ${KFILEMETADATA_INCLUDE_DIR}
   ${XAPIAN_INCLUDE_DIR}
-  ${KDEPIMLIBS_INCLUDE_DIRS}
-  ${AKONADI_INCLUDE_DIR}
-  ${KDE4_INCLUDES}
   ${CMAKE_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/file/lib
+  ${CMAKE_BINARY_DIR}/src/file/lib
+  ${CMAKE_BINARY_DIR}/src/xapian
   ${CMAKE_SOURCE_DIR}/src/xapian
 )
 
+# Targets
 add_subdirectory(src)
 add_subdirectory(icons)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/BalooConfig.cmake.in
-               ${CMAKE_CURRENT_BINARY_DIR}/BalooConfig.cmake @ONLY)
+# Config files
+set(CMAKECONFIG_INSTALL_DIR "${CMAKECONFIG_INSTALL_PREFIX}/KF5Baloo")
 
-# this file is used by to check if the installed version can be used.
-macro_write_basic_cmake_version_file(${CMAKE_CURRENT_BINARY_DIR}/BalooConfigVersion.cmake
-                                     ${BALOO_VERSION_MAJOR} ${BALOO_VERSION_MINOR} ${BALOO_VERSION_RELEASE})
+ecm_configure_package_config_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/KF5BalooConfig.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/KF5BalooConfig.cmake"
+    INSTALL_DESTINATION ${CMAKECONFIG_INSTALL_DIR}
+)
 
+install(FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/KF5BalooConfig.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/KF5BalooConfigVersion.cmake"
+    DESTINATION ${CMAKECONFIG_INSTALL_DIR}
+    COMPONENT devel
+)
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/BalooConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/BalooConfigVersion.cmake
-        DESTINATION ${LIB_INSTALL_DIR}/cmake/Baloo)
-install(EXPORT BalooLibraryTargets
-        DESTINATION ${LIB_INSTALL_DIR}/cmake/Baloo
-        FILE BalooTargetsWithPrefix.cmake)
+install(EXPORT KF5BalooTargets
+        NAMESPACE KF5::
+        DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
+        FILE KF5BalooTargets.cmake)
+
+install(FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/baloo_version.h"
+    DESTINATION ${KF5_INCLUDE_INSTALL_DIR}
+    COMPONENT Devel
+)
 
 feature_summary(WHAT ALL
     INCLUDE_QUIET_PACKAGES

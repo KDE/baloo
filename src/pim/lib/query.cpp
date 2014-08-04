@@ -22,11 +22,12 @@
 
 #include "query.h"
 #include "contactquery.h"
+#include <qjsondocument.h>
 
 #include <QVariant>
-#include <KDebug>
+#include <QDebug>
 
-#include <qjson/parser.h>
+#include <QJsonDocument>
 
 using namespace Baloo::PIM;
 
@@ -42,18 +43,17 @@ Query::~Query()
 
 Query* Query::fromJSON(const QByteArray& json)
 {
-    QJson::Parser parser;
-    bool ok = false;
-
-    QVariantMap result = parser.parse(json, &ok).toMap();
-    if (!ok) {
-        kError() << "Could not parse json query";
+    QJsonParseError error;
+    QJsonDocument doc = QJsonDocument::fromJson(json, &error);
+    if (doc.isNull()) {
+        qWarning() << "Could not parse json query" << error.errorString();
         return 0;
     }
 
+    QVariantMap result = doc.toVariant().toMap();
     const QString type = result[QLatin1String("type")].toString().toLower();
     if (type != QLatin1String("contact")) {
-        kError() << "Can only handle contact queries";
+        qWarning() << "Can only handle contact queries";
         return 0;
     }
 

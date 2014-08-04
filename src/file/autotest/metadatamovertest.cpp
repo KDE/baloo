@@ -25,7 +25,9 @@
 #include <QSignalSpy>
 #include <QSqlQuery>
 
-#include "qtest_kde.h"
+#include <QTest>
+#include <QTimer>
+#include <QDir>
 
 using namespace Baloo;
 
@@ -39,9 +41,9 @@ MetadataMoverTest::MetadataMoverTest(QObject* parent)
 void MetadataMoverTest::init()
 {
 
-    m_tempDir = new KTempDir();
+    m_tempDir = new QTemporaryDir();
     m_db = new Database(this);
-    m_db->setPath(m_tempDir->name());
+    m_db->setPath(m_tempDir->path());
     m_db->init();
 }
 
@@ -115,13 +117,13 @@ void MetadataMoverTest::testMoveFile()
 
 void MetadataMoverTest::testMoveFolder()
 {
-    const QString folderUrl(m_tempDir->name() + QLatin1String("folder"));
+    const QString folderUrl(m_tempDir->path() + QLatin1String("/folder"));
     uint folId = insertUrl(folderUrl);
 
     // The directory needs to be created because moveFileMetadata checks if it is
     // a directory in order to do the more complicated sql query to rename the
     // files in that folder
-    QDir dir(m_tempDir->name());
+    QDir dir(m_tempDir->path());
     dir.mkdir(QLatin1String("folder"));
     QVERIFY(QDir(folderUrl).exists());
 
@@ -133,7 +135,7 @@ void MetadataMoverTest::testMoveFolder()
 
     MetadataMover mover(m_db, this);
 
-    const QString newFolderUrl(m_tempDir->name() + QLatin1String("p"));
+    const QString newFolderUrl(m_tempDir->path() + QLatin1String("/p"));
     dir.rename(QLatin1String("folder"), QLatin1String("p"));
     mover.moveFileMetadata(folderUrl, newFolderUrl);
 
@@ -173,4 +175,4 @@ void MetadataMoverTest::testMoveFolder()
     QVERIFY(!query.next());
 }
 
-QTEST_KDEMAIN_CORE(MetadataMoverTest)
+QTEST_MAIN(MetadataMoverTest)

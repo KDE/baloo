@@ -23,7 +23,7 @@
 #include "commitqueue.h"
 #include "database.h"
 
-#include <KDebug>
+#include <QDebug>
 #include <KDiskFreeSpaceInfo>
 #include <QCoreApplication>
 
@@ -45,6 +45,12 @@ Baloo::CommitQueue::CommitQueue(Database* db, QObject* parent)
 Baloo::CommitQueue::~CommitQueue()
 {
     commit();
+}
+
+bool Baloo::CommitQueue::isEmpty() const
+{
+    // We could only have sqlite changes, but we typically always have both
+    return !m_db->xapianDatabase()->haveChanges();
 }
 
 void Baloo::CommitQueue::add(unsigned id, Xapian::Document doc)
@@ -73,14 +79,14 @@ void Baloo::CommitQueue::commit()
     // The 200 mb is arbitrary
     KDiskFreeSpaceInfo info = KDiskFreeSpaceInfo::freeSpaceInfo(m_db->path());
     if (info.isValid() && info.available() <= 200 * 1024 * 1024) {
-        kError() << "Low disk space. Aborting!!";
+        qWarning() << "Low disk space. Aborting!!";
         QCoreApplication::instance()->quit();
         return;
     }
 
     m_db->sqlDatabase().commit();
     m_db->sqlDatabase().transaction();
-    kDebug() << "SQL Committed";
+    qDebug() << "SQL Committed";
 
     m_db->xapianDatabase()->commit();
 

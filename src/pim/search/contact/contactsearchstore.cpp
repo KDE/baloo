@@ -22,8 +22,7 @@
 
 #include "contactsearchstore.h"
 
-#include <KStandardDirs>
-#include <KDebug>
+#include <QDebug>
 
 using namespace Baloo;
 
@@ -47,4 +46,3 @@ QStringList ContactSearchStore::types()
     return QStringList() << QLatin1String("Akonadi") << QLatin1String("Contact");
 }
 
-BALOO_EXPORT_SEARCHSTORE(Baloo::ContactSearchStore, "baloo_contactsearchstore")

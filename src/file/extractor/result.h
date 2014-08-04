@@ -23,14 +23,15 @@
 #ifndef EXTRACTIONRESULT_H
 #define EXTRACTIONRESULT_H
 
-#include <kfilemetadata/extractionresult.h>
+#include <KFileMetaData/ExtractionResult>
 #include <xapian.h>
+#include "termgenerator.h"
 
 class Result : public KFileMetaData::ExtractionResult
 {
 public:
     Result();
-    Result(const QString& url, const QString& mimetype);
+    Result(const QString& url, const QString& mimetype, const Flags& flags = ExtractEverything);
 
     virtual void add(KFileMetaData::Property::Property property, const QVariant& value);
     virtual void append(const QString& text);
@@ -61,8 +62,8 @@ public:
 private:
     uint m_docId;
     Xapian::Document m_doc;
-    Xapian::TermGenerator m_termGen;
-    Xapian::TermGenerator m_termGenForText;
+    Baloo::TermGenerator m_termGen;
+    Baloo::TermGenerator m_termGenForText;
 
     QVariantMap m_map;
     bool m_readOnly;

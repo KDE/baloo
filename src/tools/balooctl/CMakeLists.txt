@@ -1,12 +1,17 @@
-set(SRCS main.cpp)
+add_definitions(-DTRANSLATION_DOMAIN=\"balooctl\")
 
-kde4_add_executable(balooctl ${SRCS})
+set(SRCS main.cpp filestatistics.cpp)
+
+add_executable(balooctl ${SRCS})
 
 target_link_libraries(balooctl
-    ${KDE4_KDECORE_LIBS}
+    Qt5::DBus
+    KF5::CoreAddons
+    KF5::ConfigCore
+    KF5::I18n
     ${XAPIAN_LIBRARIES}
-    baloofiles
-    balooxapian
+    KF5::BalooFiles
+    KF5::BalooXapian
 )
 
 install(TARGETS balooctl DESTINATION ${BIN_INSTALL_DIR})

@@ -20,16 +20,14 @@
  *
  */
 
-#include <KComponentData>
 #include <KAboutData>
-#include <KStandardDirs>
-#include <KCmdLineArgs>
-#include <KUniqueApplication>
 #include <KCrash>
+#include <KLocalizedString>
 
 #include <KConfig>
 #include <KConfigGroup>
-#include <KDebug>
+#include <QDebug>
+#include <QFileInfo>
 #include <iostream>
 
 #include "filewatch.h"
@@ -39,6 +37,8 @@
 #include "priority.h"
 
 #include <QDBusConnection>
+#include <QApplication>
+#include <QSessionManager>
 
 int main(int argc, char** argv)
 {
@@ -46,14 +46,22 @@ int main(int argc, char** argv)
     lowerSchedulingPriority();
     lowerPriority();
 
-    KAboutData aboutData("baloo_file", "baloo_file", ki18n("Baloo File"), "0.1",
-                         ki18n("An application to handle file metadata"),
-                         KAboutData::License_GPL_V2);
+    KAboutData aboutData(QLatin1String("baloo_file"), i18n("Baloo File"), QLatin1String("0.1"),
+                         i18n("An application to handle file metadata"),
+                         KAboutLicense::LGPL_V2);
+    aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QLatin1String("me@vhanda.in"), QLatin1String("http://vhanda.in"));
 
-    KCmdLineArgs::init(argc, argv, &aboutData);
+    KAboutData::setApplicationData(aboutData);
 
-    KUniqueApplication app(true);
-    app.disableSessionManagement();
+    QApplication::setDesktopSettingsAware(false);
+    QApplication app(argc, argv);
+    app.setQuitOnLastWindowClosed(false);
+
+    auto disableSessionManagement = [](QSessionManager &sm) {
+        sm.setRestartHint(QSessionManager::RestartNever);
+    };
+    QObject::connect(&app, &QGuiApplication::commitDataRequest, disableSessionManagement);
+    QObject::connect(&app, &QGuiApplication::saveStateRequest, disableSessionManagement);
 
     KConfig config(QLatin1String("baloofilerc"));
     KConfigGroup group = config.group("Basic Settings");
@@ -66,14 +74,20 @@ int main(int argc, char** argv)
 
 
     if (!QDBusConnection::sessionBus().registerService(QLatin1String("org.kde.baloo.file"))) {
-        kError() << "Failed to register via dbus. Another instance is running";
+        qWarning() << "Failed to register via dbus. Another instance is running";
         return 1;
     }
 
     // Crash Handling
     KCrash::setFlags(KCrash::AutoRestart);
 
-    const QString path = KGlobal::dirs()->localxdgdatadir() + QLatin1String("baloo/file/");
+    const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/file/");
+    QFileInfo dirInfo(path);
+    if (!dirInfo.permission(QFile::WriteOwner)) {
+        QTextStream err(stderr);
+        err << path << " does not have write permissions. Aborting\n";
+        return 1;
+    }
 
     Database db;
     db.setPath(path);
@@ -87,6 +101,8 @@ int main(int argc, char** argv)
 
     QObject::connect(&filewatcher, SIGNAL(indexFile(QString)),
                      &fileIndexer, SLOT(indexFile(QString)));
+    QObject::connect(&filewatcher, SIGNAL(indexXAttr(QString)),
+                     &fileIndexer, SLOT(indexXAttr(QString)));
     QObject::connect(&filewatcher, SIGNAL(installedWatches()),
                      &fileIndexer, SLOT(update()));
     QObject::connect(&filewatcher, SIGNAL(fileRemoved(int)),

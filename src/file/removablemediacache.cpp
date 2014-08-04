@@ -32,7 +32,7 @@
 #include <Solid/OpticalDisc>
 #include <Solid/Predicate>
 
-#include <KDebug>
+#include <QDebug>
 
 #include <QtCore/QMutexLocker>
 
@@ -116,10 +116,10 @@ RemovableMediaCache::Entry* RemovableMediaCache::createCacheEntry(const Solid::D
 
     Entry entry(dev);
     if (!entry.url().isEmpty()) {
-        kDebug() << "Usable" << dev.udi();
+        qDebug() << "Usable" << dev.udi();
 
         // we only add to this set and never remove. This is no problem as this is a small set
-        m_usedSchemas.insert(KUrl(entry.url()).scheme());
+        m_usedSchemas.insert(QUrl(entry.url()).scheme());
 
         const Solid::StorageAccess* storage = dev.as<Solid::StorageAccess>();
         connect(storage, SIGNAL(accessibilityChanged(bool,QString)),
@@ -133,7 +133,7 @@ RemovableMediaCache::Entry* RemovableMediaCache::createCacheEntry(const Solid::D
 
         return &it.value();
     } else {
-        kDebug() << "Cannot use device due to empty identifier:" << dev.udi();
+        qDebug() << "Cannot use device due to empty identifier:" << dev.udi();
         return 0;
     }
 }
@@ -157,7 +157,7 @@ const RemovableMediaCache::Entry* RemovableMediaCache::findEntryByFilePath(const
 }
 
 
-const RemovableMediaCache::Entry* RemovableMediaCache::findEntryByUrl(const KUrl& url) const
+const RemovableMediaCache::Entry* RemovableMediaCache::findEntryByUrl(const QUrl& url) const
 {
     QMutexLocker lock(&m_entryCacheMutex);
 
@@ -191,7 +191,7 @@ QList<const RemovableMediaCache::Entry*> RemovableMediaCache::findEntriesByMount
 }
 
 
-bool RemovableMediaCache::hasRemovableSchema(const KUrl& url) const
+bool RemovableMediaCache::hasRemovableSchema(const QUrl& url) const
 {
     return m_usedSchemas.contains(url.scheme());
 }
@@ -206,7 +206,7 @@ bool RemovableMediaCache::isEmpty() const
 
 void RemovableMediaCache::slotSolidDeviceAdded(const QString& udi)
 {
-    kDebug() << udi;
+    qDebug() << udi;
 
     if (isUsableVolume(udi)) {
         createCacheEntry(Solid::Device(udi));
@@ -219,7 +219,7 @@ void RemovableMediaCache::slotSolidDeviceRemoved(const QString& udi)
     QMutexLocker lock(&m_entryCacheMutex);
     QHash< QString, Entry >::iterator it = m_metadataCache.find(udi);
     if (it != m_metadataCache.end()) {
-        kDebug() << "Found removable storage volume for Nepomuk undocking:" << udi;
+        qDebug() << "Found removable storage volume for Nepomuk undocking:" << udi;
         Q_EMIT deviceRemoved(&it.value());
         m_metadataCache.erase(it);
     }
@@ -228,7 +228,7 @@ void RemovableMediaCache::slotSolidDeviceRemoved(const QString& udi)
 
 void RemovableMediaCache::slotAccessibilityChanged(bool accessible, const QString& udi)
 {
-    kDebug() << accessible << udi;
+    qDebug() << accessible << udi;
 
     //
     // cache new mount path
@@ -238,7 +238,7 @@ void RemovableMediaCache::slotAccessibilityChanged(bool accessible, const QStrin
     Q_ASSERT(entry != 0);
 
     if (accessible) {
-        kDebug() << udi << "accessible at" << entry->device().as<Solid::StorageAccess>()->filePath()
+        qDebug() << udi << "accessible at" << entry->device().as<Solid::StorageAccess>()->filePath()
                  << "with identifier" << entry->url();
         Q_EMIT deviceMounted(entry);
     }
@@ -298,19 +298,19 @@ QString RemovableMediaCache::Entry::constructRelativeUrlString(const QString& pa
     return QString();
 }
 
-KUrl RemovableMediaCache::Entry::constructRelativeUrl(const QString& path) const
+QUrl RemovableMediaCache::Entry::constructRelativeUrl(const QString& path) const
 {
-    return KUrl(constructRelativeUrlString(path));
+    return QUrl(constructRelativeUrlString(path));
 }
 
 
-KUrl RemovableMediaCache::Entry::constructLocalFileUrl(const KUrl& filexUrl) const
+QUrl RemovableMediaCache::Entry::constructLocalFileUrl(const QUrl& filexUrl) const
 {
     if (const Solid::StorageAccess* sa = m_device.as<Solid::StorageAccess>()) {
         if (sa->isAccessible()) {
             // the base of the path: the mount path
-            KUrl fileUrl(sa->filePath());
-            fileUrl.addPath(QUrl::fromEncoded(filexUrl.toEncoded().mid(m_urlPrefix.count())).toString());
+            QUrl fileUrl(sa->filePath());
+            fileUrl.setPath(QUrl::fromEncoded(filexUrl.toEncoded().mid(m_urlPrefix.count())).toString());
             return fileUrl;
         }
     }
@@ -336,5 +336,3 @@ bool RemovableMediaCache::Entry::isMounted() const
         return false;
     }
 }
-
-#include "removablemediacache.moc"

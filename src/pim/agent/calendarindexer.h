@@ -25,8 +25,8 @@
 
 #include "abstractindexer.h"
 
-#include <Akonadi/Collection>
-#include <Akonadi/Item>
+#include <AkonadiCore/Collection>
+#include <AkonadiCore/Item>
 #include <KCalCore/Journal>
 #include <KCalCore/Event>
 #include <KCalCore/Todo>

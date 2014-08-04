@@ -28,11 +28,11 @@
 
 #include "xapiandocument.h"
 
-#include <KDebug>
-#include <KMimeType>
+#include <QDebug>
 
 #include <QDateTime>
 #include <QTimer>
+#include <QUrl>
 
 using namespace Baloo;
 
@@ -73,7 +73,7 @@ void BasicIndexingQueue::enqueue(const FileMapping& file)
 
 void BasicIndexingQueue::enqueue(const FileMapping& file, UpdateDirFlags flags)
 {
-    kDebug() << file.url();
+    qDebug() << file.url();
     m_paths.push(qMakePair(file, flags));
     callForNextIteration();
 }
@@ -99,18 +99,17 @@ bool BasicIndexingQueue::process(FileMapping& file, UpdateDirFlags flags)
     // This mimetype may not be completely accurate, but that's okay. This is
     // just the initial phase of indexing. The second phase can try to find
     // a more accurate mimetype.
-    QString mimetype = KMimeType::findByUrl(QUrl::fromLocalFile(file.url()), 0,
-                                            true /*is Local*/, true /*Fast*/)->name();
+    QString mimetype = m_mimeDb.mimeTypeForFile(file.url(), QMimeDatabase::MatchExtension).name();
 
     bool forced = flags & ForceUpdate;
     bool recursive = flags & UpdateRecursive;
-    bool indexingRequired = shouldIndex(file, mimetype);
+    bool indexingRequired = (flags & ExtendedAttributesOnly) || shouldIndex(file, mimetype);
 
     QFileInfo info(file.url());
     if (info.isDir()) {
         if (forced || indexingRequired) {
             startedIndexing = true;
-            index(file, mimetype);
+            index(file, mimetype, flags);
         }
 
         // We don't want to follow system links
@@ -124,7 +123,7 @@ bool BasicIndexingQueue::process(FileMapping& file, UpdateDirFlags flags)
         }
     } else if (info.isFile() && (forced || indexingRequired)) {
         startedIndexing = true;
-        index(file, mimetype);
+        index(file, mimetype, flags);
     }
 
     return startedIndexing;
@@ -175,13 +174,32 @@ bool BasicIndexingQueue::shouldIndexContents(const QString& dir)
     return m_config->shouldFolderBeIndexed(dir);
 }
 
-void BasicIndexingQueue::index(const FileMapping& file, const QString& mimetype)
+void BasicIndexingQueue::index(const FileMapping& file, const QString& mimetype,
+                               UpdateDirFlags flags)
 {
-    kDebug() << file.id() << file.url();
+    qDebug() << file.id() << file.url();
 
-    BasicIndexingJob job(&m_db->sqlDatabase(), file, mimetype);
-    if (job.index()) {
-        Q_EMIT newDocument(job.id(), job.document());
+    bool xattrOnly = (flags & Baloo::ExtendedAttributesOnly);
+
+    if (!xattrOnly) {
+        BasicIndexingJob job(&m_db->sqlDatabase(), file, mimetype);
+        if (job.index()) {
+            Q_EMIT newDocument(job.id(), job.document());
+        }
+    }
+    else {
+        XapianDocument doc = m_db->xapianDatabase()->document(file.id());
+
+        bool modified = false;
+        modified |= doc.removeTermStartsWith("R");
+        modified |= doc.removeTermStartsWith("TA");
+        modified |= doc.removeTermStartsWith("TAG");
+        modified |= doc.removeTermStartsWith("C");
+
+        modified |= BasicIndexingJob::indexXAttr(file.url(), doc);
+        if (modified) {
+            Q_EMIT newDocument(file.id(), doc.doc());
+        }
     }
 
     QTimer::singleShot(0, this, SLOT(finishIteration()));

@@ -1,3 +1,6 @@
+remove_definitions(-DTRANSLATION_DOMAIN=\"baloo_file\")
+add_definitions(-DTRANSLATION_DOMAIN=\"baloo_file_extractor\")
+
 set(EXTRACTOR_SRCS
   main.cpp
   app.cpp
@@ -11,17 +14,17 @@ set(EXTRACTOR_SRCS
   ../fileexcludefilters.cpp
 )
 
-kde4_add_executable(baloo_file_extractor ${EXTRACTOR_SRCS})
+add_executable(baloo_file_extractor ${EXTRACTOR_SRCS})
 
 target_link_libraries(baloo_file_extractor
-  ${QT_QTSQL_LIBRARY}
-  ${KDE4_KDECORE_LIBS}
-  ${KDE4_KDEUI_LIBS}
-  ${KFILEMETADATA_LIBRARY}
+  Qt5::Sql
+  Qt5::DBus
+  KF5::FileMetaData
+  KF5::I18n
+  KF5::Service
   ${XAPIAN_LIBRARIES}
-  ${QJSON_LIBRARIES}
-  baloofiles
-  balooxapian
+  KF5::BalooFiles
+  KF5::BalooXapian
 )
 
 install(TARGETS baloo_file_extractor DESTINATION ${BIN_INSTALL_DIR})

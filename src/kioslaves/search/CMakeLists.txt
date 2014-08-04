@@ -1,9 +1,14 @@
-kde4_add_plugin(kio_baloosearch kio_search.cpp)
+add_definitions(-DTRANSLATION_DOMAIN=\"kio_baloosearch\")
+
+add_library(kio_baloosearch MODULE kio_search.cpp)
 
 target_link_libraries(kio_baloosearch
-  ${KDE4_KIO_LIBS}
-  baloocore
+  KF5::KIOWidgets
+  KF5::I18n
+  KF5::BalooCore
 )
 
-install(TARGETS kio_baloosearch DESTINATION ${PLUGIN_INSTALL_DIR})
+set_target_properties(kio_baloosearch PROPERTIES OUTPUT_NAME "baloosearch")
+
+install(TARGETS kio_baloosearch DESTINATION ${PLUGIN_INSTALL_DIR}/kf5/kio)
 install(FILES baloosearch.protocol DESTINATION ${SERVICES_INSTALL_DIR})

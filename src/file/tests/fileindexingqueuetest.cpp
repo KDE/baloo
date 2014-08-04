@@ -20,12 +20,12 @@
  *
  */
 
-#include <KDebug>
-#include <KTempDir>
+#include <QDebug>
+#include <QTemporaryDir>
 #include <QTime>
 #include <QCoreApplication>
 
-#include "fileindexer.h"
+#include "fileextractor.h"
 
 #include "../basicindexingqueue.h"
 #include "../commitqueue.h"
@@ -35,10 +35,10 @@
 
 int main(int argc, char** argv)
 {
-    KTempDir tempDir;
+    QTemporaryDir tempDir;
 
     Database db;
-    db.setPath(tempDir.name());
+    db.setPath(tempDir.path());
     db.init();
 
     Baloo::FileIndexerConfig config;
@@ -73,7 +73,7 @@ int main(int argc, char** argv)
         if (!fileMap.fetch(db.sqlDatabase()))
             continue;
 
-        Baloo::FileIndexer* job = new Baloo::FileIndexer(fileMap.id(), fileMap.url());
+        auto job = new Baloo::FileExtractor(fileMap.id(), fileMap.url());
         job->setCustomPath(db.path());
         job->exec();
 

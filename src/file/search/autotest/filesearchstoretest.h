@@ -24,7 +24,7 @@
 #define BALOO_FILESEARCHSTORETEST_H
 
 #include <QObject>
-#include <KTempDir>
+#include <QTemporaryDir>
 
 class Database;
 
@@ -46,13 +46,19 @@ private Q_SLOTS:
     void testSimpleSearchString();
     void testIncludeDir();
     void testRatings();
+    void testEmptySearchString();
+    void testAllVideos();
 
+    void testFileNameSearch();
+    void testSortingNone();
 private:
-    KTempDir* m_tempDir;
+    QTemporaryDir* m_tempDir;
     Database* m_db;
     FileSearchStore* m_store;
 
     uint insertUrl(const QString& url);
+    void insertType(int id, const QString& type);
+    void insertExactText(int id, const QString& text, const QString& prefix);
     void insertText(int id, const QString& text);
     void insertRating(int id, int rating);
 };

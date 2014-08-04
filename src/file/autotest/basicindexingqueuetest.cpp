@@ -24,11 +24,13 @@
 #include "../fileindexerconfig.h"
 #include "../basicindexingqueue.h"
 #include "../database.h"
+#include "../lib/autotests/xattrdetector.h"
+#include "../lib/baloo_xattr_p.h"
 
-#include "qtest_kde.h"
-
+#include <QTest>
 #include <QSignalSpy>
 #include <QEventLoop>
+#include <QDebug>
 
 using namespace Baloo;
 
@@ -45,28 +47,31 @@ void BasicIndexingQueueTest::testSimpleDirectoryStructure()
     dirs << QLatin1String("home/docs/");
     dirs << QLatin1String("home/docs/1");
 
-    QScopedPointer<KTempDir> dir(Test::createTmpFilesAndFolders(dirs));
-    QString p = dir->name();
+    QScopedPointer<QTemporaryDir> dir(Test::createTmpFilesAndFolders(dirs));
 
     QStringList includeFolders;
-    includeFolders << dir->name() + QLatin1String("home");
+    includeFolders << dir->path() + QLatin1String("/home");
+    qDebug() << includeFolders;
 
     QStringList excludeFolders;
-    excludeFolders << dir->name() + QLatin1String("home/kde");
+    excludeFolders << dir->path() + QLatin1String("/home/kde");
 
     Test::writeIndexerConfig(includeFolders, excludeFolders);
 
-    KTempDir dbDir;
+    QTemporaryDir dbDir;
     Database db;
-    db.setPath(dbDir.name());
+    db.setPath(dbDir.path());
     db.init();
 
     FileIndexerConfig config;
     BasicIndexingQueue queue(&db, &config);
-    queue.enqueue(FileMapping(p + QLatin1String("home")));
+    QCOMPARE(queue.isSuspended(), false);
 
     QSignalSpy spy(&queue, SIGNAL(newDocument(uint,Xapian::Document)));
-    queue.resume();
+    QSignalSpy spyStarted(&queue, SIGNAL(startedIndexing()));
+    QSignalSpy spyFinished(&queue, SIGNAL(finishedIndexing()));
+
+    queue.enqueue(FileMapping(dir->path() + QLatin1String("/home")));
 
     QEventLoop loop;
     connect(&queue, SIGNAL(finishedIndexing()), &loop, SLOT(quit()));
@@ -74,6 +79,279 @@ void BasicIndexingQueueTest::testSimpleDirectoryStructure()
 
     // kde and kde/1 are not indexed
     QCOMPARE(spy.count(), 5);
+    QCOMPARE(spyStarted.count(), 1);
+    QCOMPARE(spyFinished.count(), 1);
+
+    QStringList urls;
+    for (int i = 0; i < spy.count(); i++) {
+        QVariantList args = spy.at(i);
+        QCOMPARE(args.size(), 2);
+
+        int id = args[0].toInt();
+        QVERIFY(id > 0);
+
+        FileMapping fileMap(id);
+        QVERIFY(fileMap.fetch(db.sqlDatabase()));
+        urls << fileMap.url();
+    }
+
+    QString home = dir->path() + QLatin1String("/home");
+
+    QStringList expectedUrls;
+    expectedUrls << home << home + QLatin1String("/1") << home + QLatin1String("/2") << home + QLatin1String("/docs")
+                 << home + QLatin1String("/docs/1");
+
+    // Based on the locale the default sorting order could be different.
+    // Plus, we don't care about the order. We just want the same files
+    // to be indexed
+    QCOMPARE(expectedUrls.size(), urls.size());
+    Q_FOREACH (const QString& url, expectedUrls) {
+        QVERIFY(urls.count(url) == 1);
+    }
 }
 
-QTEST_KDEMAIN_CORE(BasicIndexingQueueTest)
+
+void BasicIndexingQueueTest::textExtendedAttributeIndexing()
+{
+    qRegisterMetaType<Xapian::Document>("Xapian::Document");
+
+    QStringList dirs;
+    dirs << QLatin1String("home/");
+    dirs << QLatin1String("home/1");
+
+    QScopedPointer<QTemporaryDir> dir(Test::createTmpFilesAndFolders(dirs));
+
+    QStringList includeFolders;
+    includeFolders << dir->path() + QLatin1String("/home");
+
+    QStringList excludeFolders;
+    Test::writeIndexerConfig(includeFolders, excludeFolders);
+
+    QTemporaryDir dbDir;
+    Database db;
+    db.setPath(dbDir.path());
+    db.init();
+
+    FileIndexerConfig config;
+    BasicIndexingQueue queue(&db, &config);
+
+    // Index the file once
+    // Write xattr stuff
+    XattrDetector detector;
+    if (!detector.isSupported(dbDir.path())) {
+        qWarning() << "Xattr not supported on this filesystem";
+        return;
+    }
+
+    const QString fileName = dir->path() + QStringLiteral("/home/1");
+    QString rat = QString::number(4);
+    QVERIFY(baloo_setxattr(fileName, QLatin1String("user.baloo.rating"), rat) != -1);
+
+    QStringList tags;
+    tags << QLatin1String("TagA") << QLatin1String("TagB");
+
+    QString tagStr = tags.join(QLatin1String(","));
+    QVERIFY(baloo_setxattr(fileName, QLatin1String("user.xdg.tags"), tagStr) != -1);
+
+    const QString userComment(QLatin1String("UserComment"));
+    QVERIFY(baloo_setxattr(fileName, QLatin1String("user.xdg.comment"), userComment) != -1);
+
+    QSignalSpy spy(&queue, SIGNAL(newDocument(uint,Xapian::Document)));
+
+    queue.enqueue(FileMapping(fileName), Baloo::ExtendedAttributesOnly);
+
+    QEventLoop loop;
+    connect(&queue, SIGNAL(finishedIndexing()), &loop, SLOT(quit()));
+    loop.exec();
+
+    QCOMPARE(spy.size(), 1);
+    int id = spy.first().at(0).toInt();
+    Xapian::Document doc = spy.first().at(1).value<Xapian::Document>();
+    spy.clear();
+
+    Xapian::TermIterator iter = doc.termlist_begin();
+    QCOMPARE(*iter, std::string("Cusercomment"));
+    ++iter;
+    QCOMPARE(*iter, std::string("R4"));
+    ++iter;
+    QCOMPARE(*iter, std::string("TAG-TagA"));
+    ++iter;
+    QCOMPARE(*iter, std::string("TAG-TagB"));
+    ++iter;
+    QCOMPARE(*iter, std::string("TAtaga"));
+    ++iter;
+    QCOMPARE(*iter, std::string("TAtagb"));
+    ++iter;
+    QCOMPARE(iter, doc.termlist_end());
+
+    db.xapianDatabase()->replaceDocument(id, doc);
+    db.xapianDatabase()->commit();
+
+    QVERIFY(baloo_setxattr(fileName, QLatin1String("user.xdg.comment"), QStringLiteral("noob")) != -1);
+
+    queue.enqueue(FileMapping(fileName), Baloo::ExtendedAttributesOnly);
+    loop.exec();
+
+    {
+        QCOMPARE(spy.size(), 1);
+        Xapian::Document doc = spy.first().at(1).value<Xapian::Document>();
+        spy.clear();
+
+        Xapian::TermIterator iter = doc.termlist_begin();
+        QCOMPARE(*iter, std::string("Cnoob"));
+        ++iter;
+        QCOMPARE(*iter, std::string("R4"));
+        ++iter;
+        QCOMPARE(*iter, std::string("TAG-TagA"));
+        ++iter;
+        QCOMPARE(*iter, std::string("TAG-TagB"));
+        ++iter;
+        QCOMPARE(*iter, std::string("TAtaga"));
+        ++iter;
+        QCOMPARE(*iter, std::string("TAtagb"));
+        ++iter;
+        QCOMPARE(iter, doc.termlist_end());
+    }
+}
+
+void BasicIndexingQueueTest::textNormalAndThenExtendedAttributeIndexing()
+{
+    qRegisterMetaType<Xapian::Document>("Xapian::Document");
+
+    QStringList dirs;
+    dirs << QLatin1String("home/");
+    dirs << QLatin1String("home/1");
+
+    QScopedPointer<QTemporaryDir> dir(Test::createTmpFilesAndFolders(dirs));
+
+    QStringList includeFolders;
+    includeFolders << dir->path() + QLatin1String("/home");
+
+    QStringList excludeFolders;
+    Test::writeIndexerConfig(includeFolders, excludeFolders);
+
+    QTemporaryDir dbDir;
+    Database db;
+    db.setPath(dbDir.path());
+    db.init();
+
+    FileIndexerConfig config;
+    BasicIndexingQueue queue(&db, &config);
+
+    // Index the file once
+    // Write xattr stuff
+    XattrDetector detector;
+    if (!detector.isSupported(dbDir.path())) {
+        qWarning() << "Xattr not supported on this filesystem";
+        return;
+    }
+
+    const QString fileName = dir->path() + QStringLiteral("/home/1");
+    QString rat = QString::number(4);
+    QVERIFY(baloo_setxattr(fileName, QLatin1String("user.baloo.rating"), rat) != -1);
+
+    QStringList tags;
+    tags << QLatin1String("TagA") << QLatin1String("TagB");
+
+    QString tagStr = tags.join(QLatin1String(","));
+    QVERIFY(baloo_setxattr(fileName, QLatin1String("user.xdg.tags"), tagStr) != -1);
+
+    const QString userComment(QLatin1String("UserComment"));
+    QVERIFY(baloo_setxattr(fileName, QLatin1String("user.xdg.comment"), userComment) != -1);
+
+    QSignalSpy spy(&queue, SIGNAL(newDocument(uint,Xapian::Document)));
+
+    queue.enqueue(FileMapping(fileName));
+
+    QEventLoop loop;
+    connect(&queue, SIGNAL(finishedIndexing()), &loop, SLOT(quit()));
+    loop.exec();
+
+    QCOMPARE(spy.size(), 1);
+    int id = spy.first().at(0).toInt();
+    Xapian::Document doc = spy.first().at(1).value<Xapian::Document>();
+    spy.clear();
+
+    Xapian::TermIterator iter = doc.termlist_begin();
+    iter.skip_to("C");
+    QCOMPARE(*iter, std::string("Cusercomment"));
+    iter.skip_to("R");
+    QCOMPARE(*iter, std::string("R4"));
+    ++iter;
+    QCOMPARE(*iter, std::string("TAG-TagA"));
+    ++iter;
+    QCOMPARE(*iter, std::string("TAG-TagB"));
+    ++iter;
+    QCOMPARE(*iter, std::string("TAtaga"));
+    ++iter;
+    QCOMPARE(*iter, std::string("TAtagb"));
+
+    db.xapianDatabase()->replaceDocument(id, doc);
+    db.xapianDatabase()->commit();
+
+    QVERIFY(baloo_setxattr(fileName, QLatin1String("user.xdg.comment"), QStringLiteral("noob")) != -1);
+
+    queue.enqueue(FileMapping(fileName), Baloo::ExtendedAttributesOnly);
+    loop.exec();
+
+    {
+        QCOMPARE(spy.size(), 1);
+        Xapian::Document doc = spy.first().at(1).value<Xapian::Document>();
+        spy.clear();
+
+        Xapian::TermIterator iter = doc.termlist_begin();
+        QCOMPARE(*iter, std::string("Cnoob"));
+        ++iter;
+        QCOMPARE(*iter, std::string("R4"));
+        ++iter;
+        QCOMPARE(*iter, std::string("TAG-TagA"));
+        ++iter;
+        QCOMPARE(*iter, std::string("TAG-TagB"));
+        ++iter;
+        QCOMPARE(*iter, std::string("TAtaga"));
+        ++iter;
+        QCOMPARE(*iter, std::string("TAtagb"));
+        ++iter;
+        QCOMPARE(iter, doc.termlist_end());
+    }
+
+}
+
+void BasicIndexingQueueTest::testExtendedAttributeIndexingWhenEmpty()
+{
+    qRegisterMetaType<Xapian::Document>("Xapian::Document");
+
+    QStringList dirs;
+    dirs << QLatin1String("home/");
+    dirs << QLatin1String("home/1");
+
+    QScopedPointer<QTemporaryDir> dir(Test::createTmpFilesAndFolders(dirs));
+
+    QStringList includeFolders;
+    includeFolders << dir->path() + QLatin1String("/home");
+
+    QStringList excludeFolders;
+    Test::writeIndexerConfig(includeFolders, excludeFolders);
+
+    QTemporaryDir dbDir;
+    Database db;
+    db.setPath(dbDir.path());
+    db.init();
+
+    FileIndexerConfig config;
+    BasicIndexingQueue queue(&db, &config);
+
+    const QString fileName = dir->path() + QStringLiteral("/home/1");
+
+    QSignalSpy spy(&queue, SIGNAL(newDocument(uint,Xapian::Document)));
+    queue.enqueue(FileMapping(fileName), Baloo::ExtendedAttributesOnly);
+
+    QEventLoop loop;
+    connect(&queue, SIGNAL(finishedIndexing()), &loop, SLOT(quit()));
+    loop.exec();
+
+    QCOMPARE(spy.size(), 0);
+}
+
+
+QTEST_MAIN(BasicIndexingQueueTest)

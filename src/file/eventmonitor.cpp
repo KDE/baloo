@@ -19,12 +19,11 @@
 
 #include "eventmonitor.h"
 
-#include <KDebug>
+#include <QDebug>
 #include <KIdleTime>
 
-#include <Solid/PowerManagement>
-
 #include <QtDBus/QDBusInterface>
+#include <Solid/PowerManagement>
 
 // TODO: Make idle timeout configurable?
 static int s_idleTimeout = 1000 * 60 * 2; // 2 min
@@ -96,6 +95,3 @@ void EventMonitor::slotResumeFromIdle()
         Q_EMIT idleStatusChanged(false);
     }
 }
-
-
-#include "eventmonitor.moc"

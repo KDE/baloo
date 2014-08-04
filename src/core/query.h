@@ -50,7 +50,11 @@ public:
      * This is generally used to filter only Files, Emails, Tags, etc
      *
      * One can add multiple types in one go by separating individual types
-     * with a '/'. Eg - "File/Audio"
+     * with a '/'. Eg - "File/Audio".
+     *
+     * Please note that the types are ANDed together. So searching for "Image"
+     * and "Video" will probably never return any results. Have a look at
+     * KFileMetaData::TypeInfo for a list of type names.
      */
     void addType(const QString& type);
     void addTypes(const QStringList& typeList);
@@ -90,7 +94,36 @@ public:
     int monthFilter() const;
     int dayFilter() const;
 
-    // FIXME: Sorting?
+    enum SortingOption {
+        /**
+         * The results are returned in the most efficient order. They can
+         * be returned in any order.
+         */
+        SortNone,
+
+        /**
+         * The results are returned in the order the SearchStore decides
+         * should be ideal. This criteria could be based on any factors.
+         * Read the documentation for the corresponding search store.
+         */
+        SortAuto,
+
+        /**
+         * The results are returned based on the explicit property specified.
+         * The implementation of this depends on the search store.
+         */
+        SortProperty
+    };
+
+    void setSortingOption(SortingOption option);
+    SortingOption sortingOption() const;
+
+    /**
+     * Sets the property that should be used for sorting. This automatically
+     * set the sorting mechanism to SortProperty
+     */
+    void setSortingProperty(const QString& property);
+    QString sortingProperty() const;
 
     /**
      * Adds a custom option which any search backend could use
@@ -102,7 +135,7 @@ public:
     void addCustomOption(const QString& option, const QVariant& value);
     void removeCustomOption(const QString& option);
     QVariant customOption(const QString& option) const;
-    QVariantHash customOptions() const;
+    QVariantMap customOptions() const;
 
     ResultIterator exec();
 

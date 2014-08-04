@@ -23,7 +23,7 @@
 #include "resultiterator.h"
 #include "searchstore.h"
 #include "result.h"
-#include <KDebug>
+#include <QDebug>
 
 using namespace Baloo;
 

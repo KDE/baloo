@@ -1,6 +1,6 @@
 /*
  * This file is part of the KDE Baloo Project
- * Copyright (C) 2013  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2013-2014  Vishesh Handa <me@vhanda.in>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,56 +24,47 @@
 #include "../basicindexingjob.h"
 #include "../database.h"
 #include "xapiandatabase.h"
-#include "../fileindexerconfig.h"
 
-#include <KCmdLineArgs>
-#include <KMimeType>
-#include <KStandardDirs>
-#include <KDebug>
+#include <QDebug>
+#include <QCoreApplication>
 
 #include <QTimer>
-#include <QtCore/QFileInfo>
+#include <QFileInfo>
 #include <QDBusMessage>
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QDBusConnection>
-#include <KApplication>
-#include <kfilemetadata/propertyinfo.h>
+
+#include <KFileMetaData/ExtractorPlugin>
+#include <KFileMetaData/PropertyInfo>
 
 #include <iostream>
 
 using namespace Baloo;
 
-App::App(QObject* parent)
+App::App(const QString& path, QObject* parent)
     : QObject(parent)
+    , m_path(path)
     , m_termCount(0)
 {
-    const KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
-
-    if (!args->getOption("db").isEmpty()) {
-        m_path = args->getOption("db");
-    } else {
-        m_path = KGlobal::dirs()->localxdgdatadir() + QLatin1String("baloo/file");
-    }
-
     m_db.setPath(m_path);
     if (!m_db.init(true /*sql db only*/)) {
         QTimer::singleShot(0, QCoreApplication::instance(), SLOT(quit()));
         return;
     }
 
-    m_bData = args->isSet("bdata");
-    m_debugEnabled = args->isSet("debug");
+    connect(this, SIGNAL(saved()), this, SLOT(processNextUrl()), Qt::QueuedConnection);
+}
 
-    FileIndexerConfig config;
-
-    m_results.reserve(args->count());
-    for (int i=0; i<args->count(); ++i) {
-        FileMapping mapping = FileMapping(args->arg(i).toUInt());
+void App::startProcessing(const QStringList& args)
+{
+    m_results.reserve(args.size());
+    Q_FOREACH (const QString& arg, args) {
+        FileMapping mapping = FileMapping(arg.toUInt());
         QString url;
 
         // arg is an id
-        if (mapping.fetch(m_db.sqlDatabase())) {
+        if (!m_bData && mapping.fetch(m_db.sqlDatabase())) {
             url = mapping.url();
             if (!QFile::exists(url)) {
                 mapping.remove(m_db.sqlDatabase());
@@ -81,14 +72,14 @@ App::App(QObject* parent)
             }
         } else {
             // arg is a url
-            url = args->url(i).toLocalFile();
+            url = QFileInfo(arg).absoluteFilePath();
         }
 
-        if (QFile::exists(url) && (m_bData || config.shouldBeIndexed(url))) {
+        if (QFile::exists(url)) {
             m_urls << url;
         } else {
             // id or url was looked up, but file deleted
-            kDebug() << url << "does not exist or should not be indexed";
+            qDebug() << url << "does not exist";
 
             // Try to delete it as an id:
             // it may have been deleted from the FileMapping db as well.
@@ -98,19 +89,13 @@ App::App(QObject* parent)
         }
     }
 
-    connect(this, SIGNAL(saved()), this, SLOT(processNextUrl()), Qt::QueuedConnection);
-
     QTimer::singleShot(0, this, SLOT(processNextUrl()));
-}
-
-App::~App()
-{
 }
 
 void App::processNextUrl()
 {
     if (m_urls.isEmpty()) {
-        if (m_results.isEmpty()) {
+        if (m_results.isEmpty() && m_docsToDelete.isEmpty()) {
             QCoreApplication::instance()->exit(0);
         }
         else {
@@ -120,7 +105,21 @@ void App::processNextUrl()
     }
 
     const QString url = m_urls.takeFirst();
-    QString mimetype = KMimeType::findByUrl(KUrl::fromLocalFile(url))->name();
+    QString mimetype = m_mimeDb.mimeTypeForFile(url).name();
+
+    if (!ignoreConfig()) {
+        bool shouldIndex = m_config.shouldBeIndexed(url) && m_config.shouldMimeTypeBeIndexed(mimetype);
+        if (!shouldIndex) {
+            qDebug() << url << "should not be indexed. Ignoring";
+
+            FileMapping mapping(url);
+            mapping.remove(m_db.sqlDatabase());
+            m_docsToDelete << mapping.id();
+
+            QTimer::singleShot(0, this, SLOT(processNextUrl()));
+            return;
+        }
+    }
 
     //
     // HACK: We only want to index plain text files which end with a .txt
@@ -129,6 +128,7 @@ void App::processNextUrl()
     //
     if (mimetype == QLatin1String("text/plain")) {
         if (!url.endsWith(QLatin1String(".txt"))) {
+            qDebug() << "text/plain does not end with .txt. Ignoring";
             mimetype.clear();
         }
 
@@ -144,6 +144,9 @@ void App::processNextUrl()
             file.create(m_db.sqlDatabase());
         }
     }
+    else {
+        file.setId(-1);
+    }
 
     // We always run the basic indexing again. This is mostly so that the proper
     // mimetype is set and we get proper type information.
@@ -154,7 +157,12 @@ void App::processNextUrl()
     file.setId(basicIndexer.id());
     Xapian::Document doc = basicIndexer.document();
 
-    Result result(url, mimetype);
+    KFileMetaData::ExtractionResult::Flags flags = KFileMetaData::ExtractionResult::ExtractEverything;
+    if (m_bData) {
+        flags = KFileMetaData::ExtractionResult::ExtractMetaData;
+    }
+
+    Result result(url, mimetype, flags);
     result.setId(file.id());
     result.setDocument(doc);
     result.setReadOnly(m_bData);
@@ -208,7 +216,7 @@ void App::processNextUrl()
 
 void App::saveChanges()
 {
-    if (m_results.isEmpty())
+    if (m_results.isEmpty() && m_docsToDelete.isEmpty())
         return;
 
     m_updatedFiles.clear();
@@ -225,6 +233,7 @@ void App::saveChanges()
     Q_FOREACH (int docid, m_docsToDelete) {
         xapDb.deleteDocument(docid);
     }
+    m_docsToDelete.clear();
 
     xapDb.commit();
     m_db.sqlDatabase().commit();
@@ -304,4 +313,9 @@ void App::printDebug()
         }
     }
 
+}
+
+bool App::ignoreConfig() const
+{
+    return m_ignoreConfig || m_bData;
 }

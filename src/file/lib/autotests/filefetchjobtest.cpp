@@ -20,21 +20,24 @@
 
 #include "filefetchjobtest.h"
 #include "filefetchjob.h"
+#include "xattrdetector.h"
 #include "../baloo_xattr_p.h"
 #include "../db.h"
-#include "../xattrdetector.h"
 #include "filemapping.h"
 #include "file.h"
 
-#include "qtest_kde.h"
 #include <QSqlQuery>
-#include <KTempDir>
-#include <KDebug>
+#include <QDebug>
+#include <QTest>
+#include <QTemporaryFile>
+#include <QTemporaryDir>
 
-#include <qjson/serializer.h>
+#include <QJsonDocument>
+#include <QJsonObject>
+
 #include <xapian.h>
 
-#include <kfilemetadata/properties.h>
+#include <KFileMetaData/Properties>
 
 using namespace Baloo;
 
@@ -52,14 +55,16 @@ void FileFetchJobTest::init()
 
 void FileFetchJobTest::testXapianData()
 {
-    QJson::Serializer serializer;
-
     using namespace KFileMetaData;
     PropertyMap map;
     map.insert(Property::Album, QLatin1String("value1"));
     map.insert(Property::Artist, QLatin1String("value2"));
 
-    QByteArray json = serializer.serialize(toVariantMap(map));
+    QJsonObject jo = QJsonObject::fromVariantMap(toVariantMap(map));
+    QJsonDocument jdoc;
+    jdoc.setObject(jo);
+
+    QByteArray json = jdoc.toJson();
     QVERIFY(!json.isEmpty());
 
     Xapian::Document doc;
@@ -95,11 +100,12 @@ void FileFetchJobTest::testExtendedAttributes()
     tempFile.open();
 
     QString fileName = tempFile.fileName();
+    /*
     XattrDetector detector;
     if (!detector.isSupported(fileName)) {
-        kWarning() << "Xattr not supported on this filesystem";
+        qWarning() << "Xattr not supported on this filesystem";
         return;
-    }
+    }*/
 
     FileMapping fileMap(tempFile.fileName());
     QSqlDatabase sqlDb = fileMappingDb();
@@ -128,20 +134,17 @@ void FileFetchJobTest::testExtendedAttributes()
 
 void FileFetchJobTest::testFolder()
 {
-    QTemporaryFile f(QLatin1String(BUILDDIR "testFolder.XXXXXX"));
-    f.open();
-
     // We use the same prefix as the tmpfile
-    KTempDir tmpDir(f.fileName().mid(0, f.fileName().lastIndexOf(QLatin1Char('/')) + 1));
-    QString fileName = tmpDir.name();
+    QTemporaryDir tmpDir;
+    QString fileName = tmpDir.path();
 
     XattrDetector detector;
     if (!detector.isSupported(fileName)) {
-        kWarning() << "Xattr not supported on this filesystem";
+        qWarning() << "Xattr not supported on this filesystem";
         return;
     }
 
-    FileMapping fileMap(tmpDir.name());
+    FileMapping fileMap(fileName);
     QSqlDatabase sqlDb = fileMappingDb();
     QVERIFY(fileMap.create(sqlDb));
 
@@ -157,7 +160,7 @@ void FileFetchJobTest::testFolder()
     const QString userComment(QLatin1String("UserComment"));
     QVERIFY(baloo_setxattr(fileName, QLatin1String("user.xdg.comment"), userComment) != -1);
 
-    FileFetchJob* job = new FileFetchJob(tmpDir.name());
+    FileFetchJob* job = new FileFetchJob(fileName);
     job->exec();
     File file = job->file();
 
@@ -166,4 +169,4 @@ void FileFetchJobTest::testFolder()
     QCOMPARE(file.userComment(), userComment);
 }
 
-QTEST_KDEMAIN_CORE(FileFetchJobTest)
+QTEST_MAIN(FileFetchJobTest)

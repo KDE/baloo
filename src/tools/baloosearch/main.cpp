@@ -21,14 +21,15 @@
  */
 
 #include <QCoreApplication>
+#include <QCommandLineParser>
+#include <QCommandLineOption>
 #include <QUrl>
+#include <QDebug>
 
-#include <KCmdLineArgs>
 #include <KAboutData>
-#include <KLocale>
-#include <KComponentData>
-#include <KDebug>
+#include <KLocalizedString>
 
+#include <iostream>
 #include "query.h"
 
 QString highlightBold(const QString& input)
@@ -53,57 +54,54 @@ QString colorString(const QString& input, int color)
 
 int main(int argc, char* argv[])
 {
-    KAboutData aboutData("baloosearch",
-                         "baloosearch",
-                         ki18n("Baloo Search"),
-                         "0.1",
-                         ki18n("Baloo Search - A debugging tool"),
-                         KAboutData::License_GPL,
-                         ki18n("(c) 2013, Vishesh Handa"),
-                         KLocalizedString(),
-                         "http://kde.org");
-    aboutData.addAuthor(ki18n("Vishesh Handa"), ki18n("Maintainer"), "me@vhanda.in");
+    KAboutData aboutData(QLatin1String("baloosearch"),
+                         i18n("Baloo Search"),
+                         QLatin1String("0.1"),
+                         i18n("Baloo Search - A debugging tool"),
+                         KAboutLicense::GPL,
+                         i18n("(c) 2013, Vishesh Handa"));
+    aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QLatin1String("me@vhanda.in"));
 
-    KCmdLineArgs::init(argc, argv, &aboutData);
+    KAboutData::setApplicationData(aboutData);
+    QCoreApplication app(argc, argv);
 
-    KCmdLineOptions options;
-    options.add("l").add("limit <queryLimit>",  ki18n("Number of results to return"));
-    options.add("o").add("offset <offset>",  ki18n("Offset from which start the search"));
-    options.add("t").add("type <typeStr>",  ki18n("Type of data to be searched"));
-    options.add("e").add("email",  ki18n("If set, search through emails"));
-    options.add("+query", ki18n("The words to search for"));
-    KCmdLineArgs::addCmdLineOptions(options);
+    QCommandLineParser parser;
+    parser.addOption(QCommandLineOption(QStringList() << QLatin1String("l") << QLatin1String("limit"),
+                                        QLatin1String("The maximum number of results"),
+                                        QLatin1String("limit")));
+    parser.addOption(QCommandLineOption(QStringList() << QLatin1String("o") << QLatin1String("offset"),
+                                        QLatin1String("Offset from which to start the search"),
+                                        QLatin1String("offset")));
+    parser.addOption(QCommandLineOption(QStringList() << QLatin1String("t") << QLatin1String("type"),
+                                        QLatin1String("Type of data to be searched"),
+                                        QLatin1String("typeStr")));
+    parser.addOption(QCommandLineOption(QStringList() << QLatin1String("e") << QLatin1String("email"),
+                                        QLatin1String("If set, search for email")));
+    parser.addPositionalArgument(QLatin1String("query"), QLatin1String("List of words to query for"));
+    parser.process(app);
 
     int queryLimit = 10;
     int offset = 0;
     QString typeStr = QLatin1String("File");
 
-    KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
-    if (args->count() == 0) {
-        KCmdLineArgs::usage();
-        return 1;
+    QStringList args = parser.positionalArguments();
+    if (args.isEmpty()) {
+        parser.showHelp(1);
     }
 
-    if(args->isSet("type"))
-        typeStr = args->getOption("type");
-    if(args->isSet("limit"))
-        queryLimit = args->getOption("limit").toInt();
-    if(args->isSet("offset"))
-        offset = args->getOption("offset").toInt();
+    if(parser.isSet(QLatin1String("type")))
+        typeStr = parser.value(QLatin1String("type"));
+    if(parser.isSet(QLatin1String("limit")))
+        queryLimit = parser.value(QLatin1String("limit")).toInt();
+    if(parser.isSet(QLatin1String("offset")))
+        offset = parser.value(QLatin1String("offset")).toInt();
 
-    if(args->isSet("email"))
+    if(parser.isSet(QLatin1String("email")))
         typeStr = QLatin1String("Email");
-
-    QCoreApplication app(argc, argv);
-    KComponentData comp(aboutData);
 
     QTextStream out(stdout);
 
-    QString queryStr = args->arg(0);
-    for (int i = 1; i < args->count(); ++i) {
-        queryStr += QLatin1String(" ");
-        queryStr += args->arg(i);
-    }
+    QString queryStr = args.join(QLatin1String(" "));
 
     Baloo::Query query;
     query.addType(typeStr);

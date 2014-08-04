@@ -21,7 +21,7 @@
  */
 
 #include <QTest>
-#include <Akonadi/Collection>
+#include <AkonadiCore/Collection>
 #include <KABC/Addressee>
 #include <QDir>
 
@@ -83,10 +83,10 @@ private Q_SLOTS:
         removeDir(notesDir);
         QVERIFY(dir.mkpath(notesDir));
 
-        kDebug() << "indexing sample data";
-        kDebug() << emailDir;
-        kDebug() << emailContactsDir;
-        kDebug() << notesDir;
+        qDebug() << "indexing sample data";
+        qDebug() << emailDir;
+        qDebug() << emailContactsDir;
+        qDebug() << notesDir;
 
 //         EmailIndexer emailIndexer(emailDir, emailContactsDir);
 //         ContactIndexer contactIndexer(contactsDir);
@@ -110,12 +110,12 @@ private Q_SLOTS:
         Baloo::EmailSearchStore *emailSearchStore = new Baloo::EmailSearchStore(this);
         emailSearchStore->setDbPath(emailDir);
         int res = emailSearchStore->exec(query);
-        kDebug() << res;
+        qDebug() << res;
         while (emailSearchStore->next(res)) {
             const int fid = Baloo::deserialize("akonadi", emailSearchStore->id(res));
             resultSet << fid;
         }
-        kDebug() << resultSet;
+        qDebug() << resultSet;
         return resultSet;
     }
 

@@ -26,12 +26,14 @@
 
 #include <QString>
 #include <QStringList>
+#include <QSharedPointer>
 #include <QList>
+#include <QUrlQuery>
 
-#include <KDebug>
+#include <QDebug>
 
-#include <qjson/serializer.h>
-#include <qjson/parser.h>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 using namespace Baloo;
 
@@ -45,6 +47,7 @@ public:
         m_yearFilter = -1;
         m_monthFilter = -1;
         m_dayFilter = -1;
+        m_sortingOption = SortAuto;
     }
     Term m_term;
 
@@ -57,7 +60,9 @@ public:
     int m_monthFilter;
     int m_dayFilter;
 
-    QVariantHash m_customOptions;
+    SortingOption m_sortingOption;
+    QString m_sortingProperty;
+    QVariantMap m_customOptions;
 };
 
 Query::Query()
@@ -171,6 +176,27 @@ int Query::dayFilter() const
     return d->m_dayFilter;
 }
 
+void Query::setSortingOption(Query::SortingOption option)
+{
+    d->m_sortingOption = option;
+}
+
+Query::SortingOption Query::sortingOption() const
+{
+    return d->m_sortingOption;
+}
+
+void Query::setSortingProperty(const QString& property)
+{
+    d->m_sortingOption = SortProperty;
+    d->m_sortingProperty = property;
+}
+
+QString Query::sortingProperty() const
+{
+    return d->m_sortingProperty;
+}
+
 void Query::addCustomOption(const QString& option, const QVariant& value)
 {
     d->m_customOptions.insert(option, value);
@@ -181,7 +207,7 @@ QVariant Query::customOption(const QString& option) const
     return d->m_customOptions.value(option);
 }
 
-QVariantHash Query::customOptions() const
+QVariantMap Query::customOptions() const
 {
     return d->m_customOptions;
 }
@@ -191,7 +217,7 @@ void Query::removeCustomOption(const QString& option)
     d->m_customOptions.remove(option);
 }
 
-Q_GLOBAL_STATIC_WITH_ARGS(QList<SearchStore*>, s_searchStores, (SearchStore::searchStores()));
+Q_GLOBAL_STATIC_WITH_ARGS(SearchStore::List, s_searchStores, (SearchStore::searchStores()))
 
 ResultIterator Query::exec()
 {
@@ -201,7 +227,7 @@ ResultIterator Query::exec()
         return ResultIterator();
 
     SearchStore* storeMatch = 0;
-    Q_FOREACH (SearchStore* store, *s_searchStores()) {
+    Q_FOREACH (QSharedPointer<SearchStore> store, *s_searchStores) {
         bool matches = true;
         Q_FOREACH (const QString& type, types()) {
             if (!store->types().contains(type)) {
@@ -211,7 +237,7 @@ ResultIterator Query::exec()
         }
 
         if (matches) {
-            storeMatch = store;
+            storeMatch = store.data();
             break;
         }
     }
@@ -249,18 +275,25 @@ QByteArray Query::toJSON()
     if (d->m_dayFilter >= 0)
         map[QLatin1String("dayFilter")] = d->m_dayFilter;
 
+    if (d->m_sortingOption != SortAuto)
+        map[QLatin1String("sortingOption")] = static_cast<int>(d->m_sortingOption);
+    if (!d->m_sortingProperty.isEmpty())
+        map[QLatin1String("sortingProperty")] = d->m_sortingProperty;
+
     if (d->m_customOptions.size())
         map[QLatin1String("customOptions")] = d->m_customOptions;
 
-    QJson::Serializer serializer;
-    return serializer.serialize(map);
+    QJsonObject jo = QJsonObject::fromVariantMap(map);
+    QJsonDocument jdoc;
+    jdoc.setObject(jo);
+    return jdoc.toJson();
 }
 
 // static
 Query Query::fromJSON(const QByteArray& arr)
 {
-    QJson::Parser parser;
-    const QVariantMap map = parser.parse(arr).toMap();
+    QJsonDocument jdoc = QJsonDocument::fromJson(arr);
+    const QVariantMap map = jdoc.object().toVariantMap();
 
     Query query;
     query.d->m_types = map[QLatin1String("type")].toStringList();
@@ -281,16 +314,25 @@ Query Query::fromJSON(const QByteArray& arr)
     if (map.contains(QLatin1String("dayFilter")))
         query.d->m_dayFilter = map[QLatin1String("dayFilter")].toInt();
 
+    if (map.contains(QLatin1String("sortingOption"))) {
+        int option = map.value("sortingOption").toInt();
+        query.d->m_sortingOption = static_cast<SortingOption>(option);
+    }
+
+    if (map.contains(QLatin1String("sortingProperty"))) {
+        query.d->m_sortingProperty = map.value("sortingProperty").toString();
+    }
+
     if (map.contains(QLatin1String("customOptions"))) {
         QVariant var = map[QLatin1String("customOptions")];
-        if (var.type() == QVariant::Hash) {
-            query.d->m_customOptions = map[QLatin1String("customOptions")].toHash();
+        if (var.type() == QVariant::Map) {
+            query.d->m_customOptions = map[QLatin1String("customOptions")].toMap();
         }
-        else if (var.type() == QVariant::Map) {
-            QVariantMap map = var.toMap();
+        else if (var.type() == QVariant::Hash) {
+            QVariantHash hash = var.toHash();
 
-            QMap<QString, QVariant>::const_iterator it = map.constBegin();
-            for (; it != map.constEnd(); ++it)
+            QHash<QString, QVariant>::const_iterator it = hash.constBegin();
+            for (; it != hash.constEnd(); ++it)
                 query.d->m_customOptions.insert(it.key(), it.value());
         }
     }
@@ -302,11 +344,14 @@ QUrl Query::toSearchUrl(const QString& title)
 {
     QUrl url;
     url.setScheme(QLatin1String("baloosearch"));
-    url.addQueryItem(QLatin1String("json"), QString::fromUtf8(toJSON()));
+
+    QUrlQuery urlQuery;
+    urlQuery.addQueryItem(QLatin1String("json"), QString::fromUtf8(toJSON()));
 
     if (title.size())
-        url.addQueryItem(QLatin1String("title"), title);
+        urlQuery.addQueryItem(QLatin1String("title"), title);
 
+    url.setQuery(urlQuery);
     return url;
 }
 
@@ -315,13 +360,15 @@ Query Query::fromSearchUrl(const QUrl& url)
     if (url.scheme() != QLatin1String("baloosearch"))
         return Query();
 
-    QString jsonString = url.queryItemValue(QLatin1String("json"));
+    QUrlQuery urlQuery(url);
+    QString jsonString = urlQuery.queryItemValue(QLatin1String("json"));
     return Query::fromJSON(jsonString.toUtf8());
 }
 
 QString Query::titleFromQueryUrl(const QUrl& url)
 {
-    return url.queryItemValue(QLatin1String("title"));
+    QUrlQuery urlQuery(url);
+    return urlQuery.queryItemValue(QLatin1String("title"));
 }
 
 bool Query::operator==(const Query& rhs) const
@@ -329,7 +376,8 @@ bool Query::operator==(const Query& rhs) const
     if (rhs.d->m_limit != d->m_limit || rhs.d->m_offset != d->m_offset ||
         rhs.d->m_dayFilter != d->m_dayFilter || rhs.d->m_monthFilter != d->m_monthFilter ||
         rhs.d->m_yearFilter != d->m_yearFilter || rhs.d->m_customOptions != d->m_customOptions ||
-        rhs.d->m_searchString != d->m_searchString )
+        rhs.d->m_searchString != d->m_searchString || rhs.d->m_sortingProperty != d->m_sortingProperty ||
+        rhs.d->m_sortingOption != d->m_sortingOption)
     {
         return false;
     }

@@ -20,12 +20,8 @@
  *
  */
 
-#include <KAboutData>
-#include <KCmdLineArgs>
-#include <KLocale>
-#include <KComponentData>
-
-#include <QApplication>
+#include <QCoreApplication>
+#include <QCommandLineParser>
 #include <QTextStream>
 #include <QDebug>
 
@@ -35,26 +31,21 @@
 
 int main(int argc, char* argv[])
 {
-    KAboutData aboutData("baloo_file_extractor_dummy", 0, KLocalizedString(),
-                         "0.1", KLocalizedString());
+    QCoreApplication app(argc, argv);
 
-    KCmdLineArgs::init(argc, argv, &aboutData);
+    QCommandLineParser parser;
+    parser.addPositionalArgument(QLatin1String("url"), QString());
+    parser.addHelpOption();
 
-    KCmdLineOptions options;
-    options.add("+[url]", KLocalizedString());
+    parser.process(app);
 
-    KCmdLineArgs::addCmdLineOptions(options);
-    const KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
-
-    int argCount = args->count();
-    if (argCount == 0) {
+    QStringList args = parser.positionalArguments();
+    if (args.size() == 0) {
         QTextStream err(stderr);
         err << "Must input url/id of the file to be indexed";
 
         return 1;
     }
-
-    KComponentData data(aboutData, KComponentData::RegisterAsMainComponent);
 
     QByteArray failArr = qgetenv("BALOO_EXTRACTOR_FAIL_FILE");
     QByteArray timeoutArr = qgetenv("BALOO_EXTRACTOR_TIMEOUT_FILE");
@@ -65,8 +56,7 @@ int main(int argc, char* argv[])
     QStringList failFiles = QString::fromUtf8(failArr).split(QLatin1String(","), QString::SkipEmptyParts);
     QStringList timeoutFiles = QString::fromUtf8(timeoutArr).split(QLatin1String(","), QString::SkipEmptyParts);
 
-    for (int i = 0; i < args->count(); ++i) {
-        QString fid = args->arg(i);
+    Q_FOREACH (const QString& fid, args) {
         if (failFiles.contains(fid)) {
             // kill oneself
             raise(SIGKILL);
@@ -75,7 +65,7 @@ int main(int argc, char* argv[])
 
         if (timeoutFiles.contains(fid)) {
             // 100 msecs
-            usleep(100 * 1000);
+            usleep(500 * 1000);
         }
     }
 

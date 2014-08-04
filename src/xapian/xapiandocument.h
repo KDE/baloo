@@ -25,6 +25,7 @@
 #include <QString>
 
 #include "xapian_export.h"
+#include "termgenerator.h"
 
 namespace Baloo {
 
@@ -51,10 +52,15 @@ public:
 
     QString fetchTermStartsWith(const QByteArray& term);
 
-    void removeTermStartsWith(const QByteArray& prefix);
+    /**
+     * Remove all the terms which start with the prefix \p prefix
+     *
+     * \return true if the document was modified
+     */
+    bool removeTermStartsWith(const QByteArray& prefix);
 private:
     Xapian::Document m_doc;
-    Xapian::TermGenerator m_termGen;
+    TermGenerator m_termGen;
 };
 }
 

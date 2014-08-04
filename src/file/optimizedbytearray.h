@@ -25,7 +25,7 @@
 #include <QVector>
 #include <QByteArray>
 #include <QSet>
-#include <KDebug>
+#include <QDebug>
 
 /**
  * This class holds a QByteArray which corresponds to a file url in a

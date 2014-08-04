@@ -43,13 +43,6 @@ IndexerConfig::~IndexerConfig()
     delete d;
 }
 
-bool IndexerConfig::balooEnabled() const
-{
-    KConfig config(QLatin1String("baloofilerc"));
-    KConfigGroup group = config.group("Basic Settings");
-    return group.readEntry("Enabled", true);
-}
-
 bool IndexerConfig::fileIndexingEnabled() const
 {
     KConfig config(QLatin1String("baloofilerc"));
@@ -57,8 +50,47 @@ bool IndexerConfig::fileIndexingEnabled() const
     return config.group("Basic Settings").readEntry("Indexing-Enabled", true);
 }
 
+
+void IndexerConfig::setFileIndexingEnabled(bool enabled) const
+{
+    KConfig config(QLatin1String("baloofilerc"));
+    KConfigGroup basicSettings = config.group("Basic Settings");
+    basicSettings.writeEntry("Indexing-Enabled", enabled);
+}
+
 bool IndexerConfig::shouldBeIndexed(const QString& path) const
 {
     return d->m_config.shouldBeIndexed(path);
 }
 
+QStringList IndexerConfig::excludeFolders() const
+{
+    return d->m_config.excludeFolders();
+}
+
+QStringList IndexerConfig::includeFolders() const
+{
+    return d->m_config.includeFolders();
+}
+
+void IndexerConfig::setExcludeFolders(const QStringList& excludeFolders)
+{
+    KConfig config(QLatin1String("baloofilerc"));
+    config.group("General").writePathEntry("exclude folders", excludeFolders);
+}
+
+void IndexerConfig::setIncludeFolders(const QStringList& includeFolders)
+{
+    KConfig config(QLatin1String("baloofilerc"));
+    config.group("General").writePathEntry("folders", includeFolders);
+}
+
+bool IndexerConfig::firstRun() const
+{
+    return d->m_config.isInitialRun();
+}
+
+void IndexerConfig::setFirstRun(bool firstRun) const
+{
+    d->m_config.setInitialRun(firstRun);
+}

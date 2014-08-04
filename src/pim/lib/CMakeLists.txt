@@ -1,5 +1,5 @@
+kde_enable_exceptions()
 include_directories(
-    ${KDEPIMLIBS_INCLUDE_DIRS}
     ${XAPIAN_INCLUDE_DIR}
 )
 
@@ -14,23 +14,34 @@ set(BALOO_PIM_LIB_SRCS
     ../search/email/agepostingsource.cpp
 )
 
-add_definitions(${KDE4_ENABLE_EXCEPTIONS})
+add_library(KF5BalooPim ${BALOO_PIM_LIB_SRCS})
 
-kde4_add_library(baloopim SHARED ${BALOO_PIM_LIB_SRCS})
 
-target_link_libraries(baloopim
-    ${QT_QTCORE_LIBRARY}
-    ${KDE4_KDECORE_LIBRARY}
-    ${QJSON_LIBRARIES}
+add_library(KF5::BalooPim ALIAS KF5BalooPim)
+
+generate_export_header(KF5BalooPim BASE_NAME BALOO_PIM EXPORT_FILE_NAME pim_export.h)
+
+target_link_libraries(KF5BalooPim
+    PUBLIC
+    Qt5::Core
+
+    PRIVATE
+    KF5::KDELibs4Support
+    KF5::AkonadiCore
+    KF5::ItemModels
     ${XAPIAN_LIBRARIES}
 )
 
-set_target_properties(baloopim PROPERTIES
-    VERSION ${BALOO_VERSION}
-    SOVERSION ${BALOO_VERSION_MAJOR}
+set_target_properties(KF5BalooPim PROPERTIES
+    VERSION ${BALOO_VERSION_STRING}
+    SOVERSION ${BALOO_SOVERSION}
+    EXPORT_NAME BalooPim
 )
 
-install(TARGETS baloopim EXPORT BalooLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+target_include_directories(KF5BalooPim INTERFACE "$<INSTALL_INTERFACE:${KF5_INCLUDE_INSTALL_DIR}/Baloo>")
+
+install(TARGETS KF5BalooPim EXPORT KF5BalooTargets ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
+
 
 install(FILES
     query.h
@@ -40,9 +51,11 @@ install(FILES
     notequery.h
 
     resultiterator.h
-    pim_export.h
+    ${CMAKE_CURRENT_BINARY_DIR}/pim_export.h
 
-    DESTINATION ${INCLUDE_INSTALL_DIR}/baloo/pim COMPONENT Devel
+    DESTINATION ${KF5_INCLUDE_INSTALL_DIR}/Baloo/baloo/pim
+    COMPONENT Devel
 )
 
-add_subdirectory(tests)
+#REACTIVATE it
+#add_subdirectory(tests)

@@ -58,6 +58,9 @@ public:
      * resources.
      */
     void setDelay(int msec);
+    int delay() const;
+
+    bool isSuspended() const;
 
 public Q_SLOTS:
     void suspend();

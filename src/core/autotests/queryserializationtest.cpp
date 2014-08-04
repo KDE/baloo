@@ -23,9 +23,9 @@
 #include <term.h>
 #include "term.h"
 
-#include <qtest_kde.h>
+#include <QtTest>
 
-#include <KDebug>
+#include <QDebug>
 
 using namespace Baloo;
 
@@ -143,7 +143,7 @@ void QuerySerializationTest::testCustomOptions()
     QByteArray json = query.toJSON();
     Query q = Query::fromJSON(json);
 
-    QVariantHash options = q.customOptions();
+    QVariantMap options = q.customOptions();
     QCOMPARE(options.size(), 2);
     QCOMPARE(options.value(QLatin1String("includeFolders")), QVariant(QLatin1String("/home/vishesh/")));
     QCOMPARE(options.value(QLatin1String("op1")), QVariant(5));
@@ -152,4 +152,4 @@ void QuerySerializationTest::testCustomOptions()
 }
 
 
-QTEST_KDEMAIN_CORE(QuerySerializationTest)
+QTEST_MAIN(QuerySerializationTest)

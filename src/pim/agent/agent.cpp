@@ -31,19 +31,22 @@
 
 #include "src/file/priority.h"
 
-#include <Akonadi/ItemFetchJob>
-#include <Akonadi/ItemFetchScope>
-#include <Akonadi/ChangeRecorder>
-#include <Akonadi/CollectionFetchJob>
-#include <Akonadi/CollectionFetchScope>
-#include <Akonadi/CollectionStatistics>
-#include <Akonadi/AgentManager>
-#include <Akonadi/ServerManager>
+#include <ItemFetchJob>
+#include <ItemFetchScope>
+#include <ChangeRecorder>
+#include <CollectionFetchJob>
+#include <AkonadiCore/CollectionFetchScope>
+#include <AkonadiCore/CollectionStatistics>
 
-#include <KStandardDirs>
+#include <AgentManager>
+#include <ServerManager>
+
 #include <KConfig>
 #include <KConfigGroup>
 #include <KLocalizedString>
+#include <KGlobal>
+#include <KStandardDirs>
+#include <KDebug>
 
 #include <QFile>
 
@@ -97,7 +100,7 @@ BalooIndexingAgent::BalooIndexingAgent(const QString& id)
     // Cannot use agentManager->instance(oldInstanceName) here, it wouldn't find broken instances.
     Q_FOREACH( const Akonadi::AgentInstance& inst, allAgents ) {
         if ( oldFeeders.contains( inst.identifier() ) ) {
-            kDebug() << "Removing old nepomuk feeder" << inst.identifier();
+            qDebug() << "Removing old nepomuk feeder" << inst.identifier();
             agentManager->removeInstance( inst );
         }
     }
@@ -109,6 +112,7 @@ BalooIndexingAgent::~BalooIndexingAgent()
 
 void BalooIndexingAgent::reindexCollection(const qlonglong id)
 {
+    
     kDebug() << "Reindexing collection " << id;
     m_scheduler.scheduleCollection(Akonadi::Collection(id), true);
 }

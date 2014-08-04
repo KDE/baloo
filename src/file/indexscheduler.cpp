@@ -28,8 +28,8 @@
 #include "eventmonitor.h"
 #include "database.h"
 
-#include <KDebug>
-#include <KLocale>
+#include <QDebug>
+#include <KLocalizedString>
 
 using namespace Baloo;
 
@@ -42,11 +42,6 @@ IndexScheduler::IndexScheduler(Database* db, FileIndexerConfig* config, QObject*
     Q_ASSERT(m_config);
     connect(m_config, SIGNAL(configChanged()), this, SLOT(slotConfigChanged()));
 
-    // Stop indexing when a device is unmounted
-    // RemovableMediaCache* cache = new RemovableMediaCache(this);
-    // connect(cache, SIGNAL(deviceTeardownRequested(const RemovableMediaCache::Entry*)),
-    //        this, SLOT(slotTeardownRequested(const RemovableMediaCache::Entry*)));
-
     m_basicIQ = new BasicIndexingQueue(m_db, m_config, this);
     m_fileIQ = new FileIndexingQueue(m_db, this);
 
@@ -54,9 +49,9 @@ IndexScheduler::IndexScheduler(Database* db, FileIndexerConfig* config, QObject*
     connect(m_fileIQ, SIGNAL(finishedIndexing()), this, SIGNAL(fileIndexingDone()));
 
     connect(m_basicIQ, SIGNAL(startedIndexing()), this, SLOT(slotStartedIndexing()));
-    connect(m_basicIQ, SIGNAL(finishedIndexing()), this, SLOT(slotFinishedIndexing()));
+    connect(m_basicIQ, SIGNAL(finishedIndexing()), this, SLOT(slotScheduleIndexing()));
     connect(m_fileIQ, SIGNAL(startedIndexing()), this, SLOT(slotStartedIndexing()));
-    connect(m_fileIQ, SIGNAL(finishedIndexing()), this, SLOT(slotFinishedIndexing()));
+    connect(m_fileIQ, SIGNAL(finishedIndexing()), this, SLOT(slotScheduleIndexing()));
 
     // Status String
     connect(m_basicIQ, SIGNAL(startedIndexing()), this, SLOT(emitStatusStringChanged()));
@@ -148,19 +143,6 @@ void IndexScheduler::slotStartedIndexing()
     setIndexingStarted(true);
 }
 
-void IndexScheduler::slotFinishedIndexing()
-{
-    if (m_basicIQ->isEmpty()) {
-        m_fileIQ->fillQueue();
-        if (!m_fileIQ->isEmpty())
-            slotScheduleIndexing();
-    }
-
-    if (m_basicIQ->isEmpty() && m_fileIQ->isEmpty()) {
-        setIndexingStarted(false);
-    }
-}
-
 void IndexScheduler::updateDir(const QString& path, UpdateDirFlags flags)
 {
     m_basicIQ->enqueue(FileMapping(path), flags);
@@ -207,42 +189,36 @@ void IndexScheduler::indexFile(const QString& path)
     m_basicIQ->enqueue(FileMapping(path));
 }
 
-/*
-void IndexScheduler::slotTeardownRequested(const RemovableMediaCache::Entry* entry)
+void IndexScheduler::indexXattr(const QString& path)
 {
-    const QString path = entry->mountPath();
-
-    m_basicIQ->clear(path);
-    m_fileIQ->clear(path);
+    m_basicIQ->enqueue(FileMapping(path), ExtendedAttributesOnly);
 }
-*/
-
 
 void IndexScheduler::setStateFromEvent()
 {
    //Don't change the state if already suspended
     if (m_state == State_Suspended) {
-        kDebug() << "Suspended";
+        qDebug() << "Suspended";
     }
     else if (m_eventMonitor->isOnBattery()) {
-        kDebug() << "Battery";
+        qDebug() << "Battery";
         m_state = State_OnBattery;
     }
     else if (m_eventMonitor->isIdle()) {
-        kDebug() << "Idle";
+        qDebug() << "Idle";
         m_state = State_UserIdle;
     }
     else {
-        kDebug() << "Normal";
+        qDebug() << "Normal";
         m_state = State_Normal;
     }
 }
 
-bool IndexScheduler::scheduleBasicQueue()
+bool IndexScheduler::shouldRunBasicQueue()
 {
     switch (m_state) {
         case State_Suspended:
-            kDebug() << "No basic queue: suspended";
+            qDebug() << "No basic queue: suspended";
             return false;
         case State_OnBattery:
         case State_UserIdle:
@@ -253,16 +229,16 @@ bool IndexScheduler::scheduleBasicQueue()
 }
 
 
-bool IndexScheduler::scheduleFileQueue()
+bool IndexScheduler::shouldRunFileQueue()
 {
     if (!m_basicIQ->isEmpty()){
-        kDebug() << "Basic queue not empty, so no file queue.";
+        qDebug() << "Basic queue not empty, so no file queue.";
         return false;
     }
     switch (m_state) {
         case State_Suspended:
         case State_OnBattery:
-            kDebug() << "No file queue: suspended or on battery";
+            qDebug() << "No file queue: suspended or on battery";
             return false;
         case State_UserIdle:
             m_fileIQ->setDelay(0);
@@ -281,7 +257,7 @@ void IndexScheduler::slotScheduleIndexing()
     setStateFromEvent();
 
     //Should we run the basic queue?
-    bool runBasic = scheduleBasicQueue();
+    bool runBasic = shouldRunBasicQueue();
 
     //If we should not, stop.
     if (!runBasic) {
@@ -289,17 +265,24 @@ void IndexScheduler::slotScheduleIndexing()
         m_fileIQ->suspend();
     }
     else {
-        //Run the basic queue if it isn't empty
+        // Run the basic queue if it isn't empty
         if (!m_basicIQ->isEmpty()) {
-            m_basicIQ->setDelay(0);
             m_basicIQ->resume();
         }
-        //Consider running the file queue:
-        //this will only happen if the basic queue is not empty.
-        if (scheduleFileQueue())
+
+        // Consider running the file queue:
+        // this will only happen if the basic queue is not empty.
+        if (shouldRunFileQueue()) {
+            m_fileIQ->fillQueue();
             m_fileIQ->resume();
-        else
+        }
+        else {
             m_fileIQ->suspend();
+        }
+    }
+
+    if (m_basicIQ->isEmpty() && m_fileIQ->isEmpty() && m_commitQ->isEmpty()) {
+        setIndexingStarted(false);
     }
 }
 
@@ -311,10 +294,10 @@ QString IndexScheduler::userStatusString() const
 
     if (suspended) {
         return i18nc("@info:status", "File indexer is suspended.");
-    } else if (indexing) {
-        return i18nc("@info:status", "Indexing files for desktop search.");
     } else if (processing) {
         return i18nc("@info:status", "Scanning for recent changes in files for desktop search");
+    } else if (indexing) {
+        return i18nc("@info:status", "Indexing files for desktop search.");
     } else {
         return i18nc("@info:status", "File indexer is idle.");
     }

@@ -1,4 +1,4 @@
 [Desktop Entry]
 Type=Service
 X-KDE-ServiceTypes=BalooSearchStore
-X-KDE-Library=baloo_calendarsearchstore
+X-KDE-Library=kf5/baloo/calendarsearchstore

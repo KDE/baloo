@@ -1,38 +1,29 @@
-project(filewatch_tests)
+include(ECMAddTests)
 
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
-  set(kinotifytest_SRC kinotifytest.cpp ../kinotify.cpp)
-  kde4_add_unit_test(kinotifytest TESTNAME nepomuk-kinotifytest NOGUI ${kinotifytest_SRC})
-  target_link_libraries(kinotifytest
-    ${QT_QTTEST_LIBRARY}
-    ${KDE4_KDECORE_LIBS}
+  ecm_add_test(kinotifytest.cpp ../kinotify.cpp
+    TEST_NAME "kinotifytest"
+    LINK_LIBRARIES Qt5::Test KF5::CoreAddons
   )
-endif(CMAKE_SYSTEM_NAME MATCHES "Linux")
+endif()
 
-set(activefilequeuetest_SRC activefilequeuetest.cpp ../activefilequeue.cpp)
-kde4_add_unit_test(activefilequeuetest TESTNAME nepomuk-activefilequeuetest NOGUI ${activefilequeuetest_SRC})
-target_link_libraries(activefilequeuetest
-  ${QT_QTTEST_LIBRARY}
-  ${KDE4_KDECORE_LIBS}
+ecm_add_test(pendingfilequeuetest.cpp ../pendingfilequeue.cpp ../pendingfile.cpp
+    TEST_NAME "pendingfilequeuetest"
+    LINK_LIBRARIES Qt5::Test
 )
 
 #
 # Metadata Mover
 #
+
 set(metadatamover_SRC
     metadatamovertest.cpp
     ../metadatamover.cpp
-    ../database.cpp
-    ../lib/filemapping.cpp)
+)
 
-kde4_add_unit_test(metadatamovertest NOGUI ${metadatamover_SRC})
-set_target_properties(metadatamovertest PROPERTIES COMPILE_FLAGS -DBALOO_FILE_EXPORT=)
-target_link_libraries(metadatamovertest
-  ${QT_QTTEST_LIBRARY}
-  ${QT_QTSQL_LIBRARY}
-  ${KDE4_KDECORE_LIBS}
-  ${XAPIAN_LIBRARIES}
-  balooxapian
+ecm_add_test(${metadatamover_SRC}
+    TEST_NAME "metadatamovertest"
+    LINK_LIBRARIES Qt5::Test Qt5::Sql ${XAPIAN_LIBRARIES} KF5::BalooXapian baloofilecommon
 )
 
 #
@@ -40,12 +31,19 @@ target_link_libraries(metadatamovertest
 #
 set(fileMonitor_SRC filemonitortest.cpp)
 
-kde4_add_unit_test(filemonitortest NOGUI ${fileMonitor_SRC})
+ecm_add_test(${fileMonitor_SRC}
+    TEST_NAME "filemonitortest"
+    LINK_LIBRARIES Qt5::Test Qt5::DBus KF5::BalooFiles
+)
 
-target_link_libraries(filemonitortest
-  ${QT_QTTEST_LIBRARY}
-  ${KDE4_KDECORE_LIBS}
-  baloofiles
+#
+# File Watch
+#
+set(fileWatch_SRC filewatchtest.cpp ../lib/autotests/xattrdetector.cpp)
+
+ecm_add_test(${fileWatch_SRC}
+    TEST_NAME "filewatchtest"
+    LINK_LIBRARIES Qt5::Test Qt5::DBus KF5::BalooFiles baloofilecommon
 )
 
 #
@@ -53,16 +51,11 @@ target_link_libraries(filemonitortest
 #
 set(indexingConfig_SRC
     fileindexerconfigtest.cpp
-    ../fileindexerconfig.cpp
-    ../regexpcache.cpp
-    ../fileexcludefilters.cpp
 )
 
-kde4_add_unit_test(fileindexerconfigtest NOGUI ${indexingConfig_SRC})
-
-target_link_libraries(fileindexerconfigtest
-  ${QT_QTTEST_LIBRARY}
-  ${KDE4_KDECORE_LIBS}
+ecm_add_test(${indexingConfig_SRC}
+    TEST_NAME "fileindexerconfigtest"
+    LINK_LIBRARIES Qt5::Test KF5::ConfigCore KF5::CoreAddons baloofilecommon
 )
 
 #
@@ -71,26 +64,27 @@ target_link_libraries(fileindexerconfigtest
 
 set(basicIndexingQueue_SRC
     basicindexingqueuetest.cpp
-    ../basicindexingqueue.cpp
-    ../basicindexingjob.cpp
-    ../indexingqueue.cpp
-    ../fileindexerconfig.cpp
-    ../fileexcludefilters.cpp
-    ../regexpcache.cpp
-    ../database.cpp
-    ../util.cpp
-    ../lib/filemapping.cpp
+    ../lib/autotests/xattrdetector.cpp
 )
 
-kde4_add_unit_test(basicindexingqueuetest NOGUI ${basicIndexingQueue_SRC})
-set_target_properties(basicindexingqueuetest PROPERTIES COMPILE_FLAGS -DBALOO_FILE_EXPORT=)
-target_link_libraries(basicindexingqueuetest
-  ${QT_QTTEST_LIBRARY}
-  ${QT_QTSQL_LIBRARY}
-  ${KDE4_KDECORE_LIBS}
-  ${KFILEMETADATA_LIBRARY}
-  ${XAPIAN_LIBRARIES}
-  balooxapian
+ecm_add_test(${basicIndexingQueue_SRC}
+    TEST_NAME basicindexingqueuetest
+    LINK_LIBRARIES Qt5::Test Qt5::Sql KF5::FileMetaData KF5::ConfigCore
+                   KF5::CoreAddons ${XAPIAN_LIBRARIES} KF5::BalooXapian
+                   baloofilecommon
+)
+
+#
+# Regexp cahce benchmark
+#
+set(regexpcache_SRCS
+    regularexpcachebenchmark.cpp
+)
+
+ecm_add_test(${regexpcache_SRCS}
+    TEST_NAME "regexpcachebenchmark"
+    LINK_LIBRARIES Qt5::Test KF5::ConfigCore KF5::CoreAddons baloofilecommon
 )
 
 add_subdirectory(fileindexingjob)
+add_subdirectory(scheduler)

@@ -23,11 +23,11 @@
 #ifndef TERM_H
 #define TERM_H
 
+#include "core_export.h"
+
 #include <QString>
 #include <QVariant>
 #include <QDebug>
-
-#include "core_export.h"
 
 namespace Baloo {
 

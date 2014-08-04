@@ -22,7 +22,7 @@
 
 #include "searchstore.h"
 
-#include <KDebug>
+#include <QDebug>
 #include <KService>
 #include <KServiceTypeTrader>
 #include <QThreadStorage>
@@ -59,31 +59,36 @@ QString SearchStore::property(int, const QString&)
     return QString();
 }
 
-K_GLOBAL_STATIC(QList<SearchStore*>, s_overrideSearchStores)
+Q_GLOBAL_STATIC(SearchStore::List, s_overrideSearchStores)
 
 void SearchStore::overrideSearchStores(const QList<SearchStore*> &overrideSearchStores)
 {
-    *s_overrideSearchStores = overrideSearchStores;
+    List* list = &(*s_overrideSearchStores);
+    list->clear();
+
+    Q_FOREACH (SearchStore* store, overrideSearchStores) {
+        list->append(QSharedPointer<SearchStore>(store));
+    }
 }
 
 //
 // Search Stores
 //
 // static
-QList<SearchStore*> SearchStore::searchStores()
+SearchStore::List SearchStore::searchStores()
 {
     static QMutex mutex;
     QMutexLocker lock(&mutex);
 
     if (s_overrideSearchStores && !s_overrideSearchStores->isEmpty()) {
-        kDebug() << "Overriding search stores.";
+        qDebug() << "Overriding search stores.";
         return *s_overrideSearchStores;
     }
 
     // Get all the plugins
     KService::List plugins = KServiceTypeTrader::self()->query(QLatin1String("BalooSearchStore"));
 
-    QList<Baloo::SearchStore*> stores;
+    List stores;
     KService::List::const_iterator it;
     for (it = plugins.constBegin(); it != plugins.constEnd(); ++it) {
         KService::Ptr service = *it;
@@ -99,11 +104,11 @@ QList<SearchStore*> SearchStore::searchStores()
             st = qobject_cast<Baloo::SearchStore*>(instance);
         }
         if (st) {
-            stores << st;
+            stores << QSharedPointer<SearchStore>(st);
         }
         else {
-            kError() << "Could not create SearchStore: " << service->library();
-            kError() << pluginLoader.errorString();
+            qWarning() << "Could not create SearchStore: " << service->library();
+            qWarning() << pluginLoader.errorString();
         }
     }
 

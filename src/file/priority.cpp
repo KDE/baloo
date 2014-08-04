@@ -91,7 +91,6 @@ bool lowerPriority()
 }
 
 
-// FIXME: is this really useful? Should we better use SCHED_IDLE?
 bool lowerSchedulingPriority()
 {
 #ifdef SCHED_BATCH
@@ -99,6 +98,18 @@ bool lowerSchedulingPriority()
     memset( &param, 0, sizeof(param) );
     param.sched_priority = 0;
     return !sched_setscheduler( 0, SCHED_BATCH, &param );
+#else
+    return false;
+#endif
+}
+
+bool setIdleSchedulingPriority()
+{
+#ifdef SCHED_IDLE
+    struct sched_param param;
+    memset( &param, 0, sizeof(param) );
+    param.sched_priority = 0;
+    return !sched_setscheduler( 0, SCHED_IDLE, &param );
 #else
     return false;
 #endif

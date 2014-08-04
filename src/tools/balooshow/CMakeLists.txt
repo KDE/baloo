@@ -1,11 +1,15 @@
+add_definitions(-DTRANSLATION_DOMAIN=\"balooshow\")
+
 set(SRCS main.cpp)
 
-kde4_add_executable(balooshow ${SRCS})
+add_executable(balooshow ${SRCS})
 
 target_link_libraries(balooshow
-    ${KDE4_KDECORE_LIBS}
-    ${KFILEMETADATA_LIBRARY}
-    baloofiles
+    KF5::BalooCore
+    KF5::BalooFiles
+    KF5::FileMetaData
+    KF5::CoreAddons
+    KF5::I18n
 )
 
 install(TARGETS balooshow DESTINATION ${BIN_INSTALL_DIR})

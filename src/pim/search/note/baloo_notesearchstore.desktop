@@ -1,4 +1,4 @@
 [Desktop Entry]
 Type=Service
 X-KDE-ServiceTypes=BalooSearchStore
-X-KDE-Library=baloo_notesearchstore
+X-KDE-Library=kf5/baloo/notesearchstore

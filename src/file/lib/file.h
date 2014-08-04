@@ -24,7 +24,7 @@
 #define _BALOO_FILE_H
 
 #include "filefetchjob.h"
-#include <kfilemetadata/properties.h>
+#include <KFileMetaData/Properties>
 
 namespace Baloo {
 

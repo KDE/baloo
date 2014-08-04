@@ -19,22 +19,21 @@
 */
 
 #include <QCoreApplication>
-#include <QHash>
+#include <QCommandLineParser>
+#include <QCommandLineOption>
 #include <QUrl>
 #include <QFile>
+#include <QFileInfo>
+#include <QTextStream>
 
-#include <KCmdLineArgs>
 #include <KAboutData>
-#include <KLocale>
-#include <KComponentData>
-#include <KDebug>
-#include <KUrl>
+#include <KLocalizedString>
 
 #include "file.h"
 #include "filefetchjob.h"
 #include "searchstore.h" // for deserialize
 
-#include <kfilemetadata/propertyinfo.h>
+#include <KFileMetaData/PropertyInfo>
 
 QString colorString(const QString& input, int color)
 {
@@ -46,42 +45,37 @@ QString colorString(const QString& input, int color)
 
 int main(int argc, char* argv[])
 {
-    KAboutData aboutData("balooshow",
-                         "balooshow",
-                         ki18n("Baloo Show"),
-                         "0.1",
-                         ki18n("The Baloo data Viewer - A debugging tool"),
-                         KAboutData::License_GPL,
-                         ki18n("(c) 2012, Vishesh Handa"),
-                         KLocalizedString(),
-                         "http://kde.org");
-    aboutData.addAuthor(ki18n("Vishesh Handa"), ki18n("Maintainer"), "me@vhanda.in");
+    KAboutData aboutData(QLatin1String("balooshow"),
+                         i18n("Baloo Show"),
+                         QLatin1String("0.1"),
+                         i18n("The Baloo data Viewer - A debugging tool"),
+                         KAboutLicense::GPL,
+                         i18n("(c) 2012, Vishesh Handa"));
+    aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QLatin1String("me@vhanda.in"));
 
-    KCmdLineArgs::init(argc, argv, &aboutData);
-
-    KCmdLineOptions options;
-    options.add("+resource", ki18n("The file URL"));
-    KCmdLineArgs::addCmdLineOptions(options);
-
-    KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
-
+    KAboutData::setApplicationData(aboutData);
     QCoreApplication app(argc, argv);
-    KComponentData comp(aboutData);
 
-    if (args->count() == 0)
-        KCmdLineArgs::usage();
+    QCommandLineParser parser;
+    parser.addPositionalArgument(QLatin1String("files"), QLatin1String("The file urls"));
+    parser.process(app);
+
+    QStringList args = parser.positionalArguments();
+
+    if (args.isEmpty()) {
+        parser.showHelp(1);
+    }
 
     //
     // The Resource Uri
     //
-    QVector<QString> urls;
-    for (int i = 0; i < args->count(); ++i) {
-        const QString url = args->url(i).toLocalFile();
+    QStringList urls;
+    Q_FOREACH (const QString& arg, args) {
+        const QString url = QFileInfo(arg).absoluteFilePath();
         if (QFile::exists(url)) {
             urls.append(url);
-        }
-        else {
-            urls.append(QLatin1String("file:") + args->arg(i));
+        } else {
+            urls.append(QLatin1String("file:") + arg);
         }
     }
 

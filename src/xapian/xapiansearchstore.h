@@ -38,6 +38,7 @@ class BALOO_XAPIAN_EXPORT XapianSearchStore : public SearchStore
 {
 public:
     explicit XapianSearchStore(QObject* parent = 0);
+    virtual ~XapianSearchStore();
 
     virtual int exec(const Query& query);
     virtual void close(int queryId);
@@ -71,7 +72,7 @@ protected:
     /**
      * Create a query for any custom options.
      */
-    virtual Xapian::Query applyCustomOptions(const Xapian::Query& q, const QVariantHash& options);
+    virtual Xapian::Query applyCustomOptions(const Xapian::Query& q, const QVariantMap& options);
 
     /**
      * Returns the url for the document with id \p docid.

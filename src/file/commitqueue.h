@@ -40,6 +40,8 @@ public:
     CommitQueue(Database* db, QObject* parent = 0);
     ~CommitQueue();
 
+    bool isEmpty() const;
+
 public Q_SLOTS:
     void add(unsigned id, Xapian::Document doc);
     void remove(unsigned docid);
@@ -52,6 +54,13 @@ Q_SIGNALS:
 private:
     void startTimers();
 
+    //
+    // The idea behind having two timers is that each time we get a file
+    // the small timer is restarted. So if we keep getting loads of files
+    // the data will never be committed.
+    // We use a large timer, which is only started if it is not running
+    // This way the data will always be committed after a certain uppper limit
+    //
     QTimer m_smallTimer;
     QTimer m_largeTimer;
     Database* m_db;

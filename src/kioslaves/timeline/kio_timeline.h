@@ -39,19 +39,19 @@ public:
     /**
      * List all files and folders tagged with the corresponding tag.
      */
-    void listDir(const KUrl& url);
+    void listDir(const QUrl& url);
 
     /**
      * Files will be forwarded.
      * Folders will be created as virtual folders.
      */
-    void mimetype(const KUrl& url);
+    void mimetype(const QUrl& url);
 
     /**
      * Files will be forwarded.
      * Folders will be created as virtual folders.
      */
-    void stat(const KUrl& url);
+    void stat(const QUrl& url);
 
 private:
     void listDays(int month, int year);

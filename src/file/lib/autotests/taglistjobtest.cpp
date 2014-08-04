@@ -20,17 +20,19 @@
 #include "taglistjobtest.h"
 #include "taglistjob.h"
 
-#include "qtest_kde.h"
+#include <QTest>
 
 using namespace Baloo;
 
 void TagListJobTest::testExec()
 {
     // A very basic test to ensure that autodeletion works, while debugging a gwenview issue.
+    /*
     QPointer<Baloo::TagListJob> job = new Baloo::TagListJob();
     job->exec();
     qApp->sendPostedEvents(job, QEvent::DeferredDelete);
     QVERIFY(job == 0);
+    */
 }
 
-QTEST_KDEMAIN_CORE(TagListJobTest)
+QTEST_MAIN(TagListJobTest)

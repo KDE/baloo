@@ -1,13 +1,11 @@
-kde4_add_plugin(baloo_emailsearchstore agepostingsource.cpp emailsearchstore.cpp ../pimsearchstore.cpp)
+add_library(emailsearchstore MODULE agepostingsource.cpp emailsearchstore.cpp ../pimsearchstore.cpp)
 
-target_link_libraries(baloo_emailsearchstore
-    ${QT_QTCORE_LIBRARY}
-    ${KDE4_KDECORE_LIBRARY}
-    ${KDEPIMLIBS_AKONADI_LIBS}
+target_link_libraries(emailsearchstore
+    Qt5::Core
     ${XAPIAN_LIBRARIES}
-    baloocore
-    balooxapian
+    KF5::BalooCore
+    KF5::BalooXapian
 )
 
 install(FILES baloo_emailsearchstore.desktop DESTINATION ${SERVICES_INSTALL_DIR})
-install(TARGETS baloo_emailsearchstore DESTINATION ${PLUGIN_INSTALL_DIR})
+install(TARGETS emailsearchstore DESTINATION ${PLUGIN_INSTALL_DIR}/kf5/baloo)

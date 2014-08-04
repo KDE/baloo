@@ -26,6 +26,7 @@
 
 #include <QStack>
 #include <QPair>
+#include <QMimeDatabase>
 #include <xapian.h>
 
 
@@ -57,7 +58,12 @@ enum UpdateDirFlag {
      * The files in the folder should be updated regardless
      * of their state.
      */
-    ForceUpdate = 0x4
+    ForceUpdate = 0x4,
+
+    /**
+     * Only update the extended attributes of the file
+     */
+    ExtendedAttributesOnly = 0x8
 };
 Q_DECLARE_FLAGS(UpdateDirFlags, UpdateDirFlag)
 
@@ -92,7 +98,7 @@ private:
      * This method does not need to be synchronous. The indexing operation may be started
      * and on completion, the finishedIndexing method should be called
      */
-    void index(const FileMapping& file, const QString& mimetype);
+    void index(const FileMapping& file, const QString& mimetype, UpdateDirFlags flags);
 
     bool shouldIndex(FileMapping& file, const QString& mimetype) const;
     bool shouldIndexContents(const QString& dir);
@@ -111,6 +117,7 @@ private:
 
     Database* m_db;
     FileIndexerConfig* m_config;
+    QMimeDatabase m_mimeDb;
 };
 
 }

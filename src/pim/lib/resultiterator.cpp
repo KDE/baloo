@@ -57,6 +57,6 @@ bool ResultIterator::next()
 
 Akonadi::Entity::Id ResultIterator::id()
 {
-    //kDebug() << d->m_iter.get_rank() << d->m_iter.get_weight();
+    //qDebug() << d->m_iter.get_rank() << d->m_iter.get_weight();
     return *(d->m_iter);
 }

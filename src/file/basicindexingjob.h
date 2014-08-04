@@ -26,10 +26,12 @@
 #include "filemapping.h"
 #include <xapian.h>
 
-#include <kfilemetadata/types.h>
+#include <KFileMetaData/Types>
 #include <QSqlDatabase>
 
 namespace Baloo {
+
+class XapianDocument;
 
 class BasicIndexingJob
 {
@@ -41,6 +43,14 @@ public:
 
     Xapian::Document document() { return m_doc; }
     uint id() { return m_id; }
+
+    /**
+     * Adds the data for all the extended attributes of \p url
+     * in the document \p doc
+     *
+     * \return Returns true if the \p doc was modified
+     */
+    static bool indexXAttr(const QString& url, XapianDocument& doc);
 
 private:
     QVector<KFileMetaData::Type::Type> typesForMimeType(const QString& mimeType) const;

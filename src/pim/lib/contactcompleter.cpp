@@ -23,8 +23,8 @@
 #include "contactcompleter.h"
 #include <xapian.h>
 
-#include <KStandardDirs>
-#include <KDebug>
+#include <QStandardPaths>
+#include <QDebug>
 
 #include <QFile>
 
@@ -39,21 +39,21 @@ ContactCompleter::ContactCompleter(const QString& prefix, int limit)
 
 QStringList ContactCompleter::complete()
 {
-    const QString dir = KGlobal::dirs()->localxdgdatadir() + QLatin1String("baloo/emailContacts/");
+    const QString dir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/emailContacts/");
     Xapian::Database db;
     try {
         db = Xapian::Database(QFile::encodeName(dir).constData());
     } catch (const Xapian::DatabaseOpeningError&) {
-        kError() << "Xapian Database does not exist at " << dir;
+        qWarning() << "Xapian Database does not exist at " << dir;
         return QStringList();
     } catch (const Xapian::DatabaseCorruptError&) {
-        kError() << "Xapian Database corrupted";
+        qWarning() << "Xapian Database corrupted";
         return QStringList();
     } catch (const Xapian::DatabaseError& e) {
-        kWarning() << QString::fromStdString(e.get_type()) << QString::fromStdString(e.get_description());
+        qWarning() << QString::fromStdString(e.get_type()) << QString::fromStdString(e.get_description());
         return QStringList();
     } catch (...) {
-        kError() << "Random exception, but we do not want to crash";
+        qWarning() << "Random exception, but we do not want to crash";
         return QStringList();
     }
 

@@ -26,13 +26,15 @@
 #include "util.h"
 #include "database.h"
 
-#include <KDebug>
+#include <QStandardPaths>
+#include <QDebug>
 
 using namespace Baloo;
 
 FileIndexingQueue::FileIndexingQueue(Database* db, QObject* parent)
     : IndexingQueue(parent)
     , m_db(db)
+    , m_testMode(false)
     , m_indexJob(0)
 {
     m_maxSize = 1200;
@@ -55,6 +57,7 @@ void FileIndexingQueue::fillQueue()
         Xapian::Database* db = m_db->xapianDatabase()->db();
         Xapian::Enquire enquire(*db);
         enquire.set_query(Xapian::Query("Z1"));
+        enquire.set_weighting_scheme(Xapian::BoolWeight());
 
         Xapian::MSet mset = enquire.get_mset(0, m_maxSize - m_fileQueue.size());
         Xapian::MSetIterator it = mset.begin();
@@ -86,6 +89,9 @@ void FileIndexingQueue::processNextIteration()
 
     Q_ASSERT(m_indexJob == 0);
     m_indexJob = new FileIndexingJob(files, this);
+    if (m_testMode) {
+        m_indexJob->setCustomDbPath(m_db->path());
+    }
     connect(m_indexJob, SIGNAL(indexingFailed(uint)), this, SLOT(slotIndexingFailed(uint)));
     connect(m_indexJob, SIGNAL(finished(KJob*)), SLOT(slotFinishedIndexingFile(KJob*)));
 

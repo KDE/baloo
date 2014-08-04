@@ -36,6 +36,7 @@ private Q_SLOTS:
     void testRenameFolder();
     void testMoveFolder();
     void testMoveRootFolder();
+    void testFileClosedAfterWrite();
 };
 
 #endif // KINOTIFYTEST_H

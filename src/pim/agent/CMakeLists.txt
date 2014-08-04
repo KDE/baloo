@@ -1,10 +1,11 @@
+add_definitions(-DTRANSLATION_DOMAIN=\"akonadi_baloo_indexer\")
+
+kde_enable_exceptions()
 include_directories(
     ${XAPIAN_INCLUDE_DIR}
-    ${KDEPIMLIBS_INCLUDE_DIRS}
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-add_definitions(${KDE4_ENABLE_EXCEPTIONS})
 
 set(akonadi_baloo_indexer_SRCS
     abstractindexer.cpp
@@ -19,26 +20,29 @@ set(akonadi_baloo_indexer_SRCS
     index.cpp
 )
 
-qt4_add_dbus_adaptor(akonadi_baloo_indexer_SRCS org.freedesktop.Akonadi.BalooIndexer.xml agent.h BalooIndexingAgent)
+qt5_add_dbus_adaptor(akonadi_baloo_indexer_SRCS org.freedesktop.Akonadi.BalooIndexer.xml agent.h BalooIndexingAgent)
 
-kde4_add_executable(akonadi_baloo_indexer ${akonadi_baloo_indexer_SRCS})
+add_executable(akonadi_baloo_indexer ${akonadi_baloo_indexer_SRCS})
 
 target_link_libraries(akonadi_baloo_indexer
-    ${QT_QTCORE_LIBRARY}
-    ${KDE4_KDECORE_LIBRARY}
-    ${KDEPIMLIBS_AKONADI_LIBS}
-    ${KDEPIMLIBS_AKONADI_KMIME_LIBS}
-    ${KDEPIMLIBS_KMIME_LIBS}
-    ${KDEPIMLIBS_KABC_LIBS}
-    ${XAPIAN_LIBRARIES}
-    ${KDEPIMLIBS_KPIMUTILS_LIBS}
-    ${KDEPIMLIBS_KCALCORE_LIBS}
-    balooxapian
+    Qt5::Core
+    KF5::KDELibs4Support
+    KF5::AkonadiCore
+    KF5::AkonadiMime
+    KF5::Mime
+    KF5::Abc
+    KF5::AkonadiAgentBase
+    KF5::PimUtils
+    KF5::ItemModels
+    KF5::BalooXapian
+    KF5::PimUtils
+    KF5::CalendarCore
 )
 
 install(TARGETS akonadi_baloo_indexer ${INSTALL_TARGETS_DEFAULT_ARGS})
 install(FILES akonadibalooindexingagent.desktop
         DESTINATION "${CMAKE_INSTALL_PREFIX}/share/akonadi/agents")
-
-add_subdirectory(tests)
-add_subdirectory(autotests)
+#reactivate
+#add_subdirectory(tests)
+#REACTIVATE
+#add_subdirectory(autotests)

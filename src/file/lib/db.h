@@ -30,6 +30,4 @@ std::string fileIndexDbPath();
 QSqlDatabase fileMappingDb(const QString& path);
 QSqlDatabase fileMappingDb();
 
-QSqlDatabase fileMetadataDb();
-
 #endif // DBFUNCTIONS_H

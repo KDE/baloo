@@ -1,5 +1,5 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
+ * This file is part of the KDE Baloo Project
  * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
  *
  * This library is free software; you can redistribute it and/or
@@ -19,35 +19,73 @@
  */
 
 #include "extractortest.h"
+#include "config.h"
 
 #include <QTest>
 #include <QProcess>
-#include <QTextStream>
 #include <QTemporaryFile>
+#include <QTemporaryDir>
+#include <QTextStream>
+#include <QStandardPaths>
 #include <QDebug>
 #include <QDir>
 
-#include <KStandardDirs>
+#include "xapiandatabase.h"
+#include "xapiandocument.h"
 
-void ExtractorTest::testBData()
+void ExtractorTest::test()
 {
-    QTemporaryFile file;
-    file.setFileName(QDir::tempPath() + QLatin1String("/baloo_extractor_autotest.txt"));
-    QVERIFY(file.open());
+    QTemporaryDir dbDir;
+    const QString fileUrl = dbDir.path() + QLatin1String("/testFile.txt");
 
+    QFile file(fileUrl);
+    file.open(QIODevice::WriteOnly);
     QTextStream stream(&file);
-    stream << "Sample\nText";
-    stream.flush();
+    stream << "Some words";
+    file.close();
 
-    static const QString exe = KStandardDirs::findExe(QLatin1String("baloo_file_extractor"));
+    QString exe = QStandardPaths::findExecutable(QLatin1String("baloo_file_extractor"));
 
     QStringList args;
-    args << QLatin1String("--bdata");
-    args << file.fileName();
+    args << fileUrl << QLatin1String("--db") << dbDir.path() << QLatin1String("--ignoreConfig");
 
     QProcess process;
     process.start(exe, args);
-    QVERIFY(process.waitForFinished(1000));
+    process.setProcessChannelMode(QProcess::MergedChannels);
+    QVERIFY(process.waitForFinished(10000));
+
+    Baloo::XapianDatabase xapDb(dbDir.path());
+    Xapian::Database* db = xapDb.db();
+    QCOMPARE((int)db->get_doccount(), 1);
+
+    Xapian::Document doc = db->get_document(1);
+
+    QStringList words;
+    for (auto it = doc.termlist_begin(); it != doc.termlist_end(); it++) {
+        std::string str = *it;
+        words << QString::fromUtf8(str.c_str(), str.length());
+    }
+
+    QVERIFY(words.contains(QLatin1String("some")));
+    QVERIFY(words.contains(QLatin1String("words")));
+    QVERIFY(words.contains(QLatin1String("testfile")));
+    QVERIFY(words.contains(QLatin1String("txt")));
+    QVERIFY(words.contains(QLatin1String("Z2")));
+}
+
+void ExtractorTest::testBData()
+{
+    QString fileUrl(TESTS_SAMPLE_FILES_PATH + QDir::separator() + QStringLiteral("test.mp3"));
+
+    QString exe = QStandardPaths::findExecutable(QLatin1String("baloo_file_extractor"));
+
+    QStringList args;
+    args << QLatin1String("--bdata");
+    args << fileUrl;
+
+    QProcess process;
+    process.start(exe, args);
+    QVERIFY(process.waitForFinished(10000));
 
     qDebug() << process.readAllStandardError();
     QByteArray bytearray = QByteArray::fromBase64(process.readAllStandardOutput());
@@ -55,8 +93,48 @@ void ExtractorTest::testBData()
     QDataStream in(&bytearray, QIODevice::ReadOnly);
     in >> data;
 
-    QCOMPARE(data.size(), 1);
-    QCOMPARE(data.value(QLatin1String("lineCount")).toInt(), 2);
+    QCOMPARE(data.size(), 2);
+    QCOMPARE(data.value(QLatin1String("channels")).toInt(), 2);
+    QCOMPARE(data.value(QLatin1String("sampleRate")).toInt(), 44100);
+}
+
+void ExtractorTest::testFileDeletion()
+{
+    QTemporaryDir dbDir;
+
+    Baloo::XapianDatabase xapDb(dbDir.path());
+    Baloo::XapianDocument doc;
+    doc.indexText("Random text which does not matter");
+    xapDb.replaceDocument(1, doc);
+    xapDb.commit();
+
+    QCOMPARE(xapDb.db()->get_doccount(), static_cast<uint>(1));
+    try {
+        Xapian::Document doc = xapDb.db()->get_document(1);
+        QCOMPARE(doc.termlist_count(), static_cast<uint>(6));
+    }
+    catch (...) {
+        QVERIFY2(false, "Document not committed");
+    }
+
+    QString exe = QStandardPaths::findExecutable(QLatin1String("baloo_file_extractor"));
+
+    QStringList args;
+    args << "1" << QLatin1String("--db") << dbDir.path() << QLatin1String("--ignoreConfig");
+
+    QProcess process;
+    process.start(exe, args);
+    QVERIFY(process.waitForFinished(10000));
+
+    // The document should have been deleted from the db
+    xapDb.db()->reopen();
+    QCOMPARE(xapDb.db()->get_doccount(), static_cast<uint>(0));
+    try {
+        Xapian::Document doc = xapDb.db()->get_document(1);
+        QVERIFY2(false, "The document should no longer exist");
+    }
+    catch (...) {
+    }
 }
 
 

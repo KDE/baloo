@@ -24,10 +24,9 @@
 #include <KPluginFactory>
 #include <KPluginLoader>
 #include <KAboutData>
-#include <KSharedConfig>
-#include <KDirWatch>
-#include <KDebug>
-#include <KStandardDirs>
+#include <QDebug>
+#include <QStandardPaths>
+#include <KLocalizedString>
 
 #include <QPushButton>
 #include <QDir>
@@ -36,8 +35,10 @@
 #include <QDBusMessage>
 #include <QDBusPendingCall>
 
+#include "indexerconfig.h"
+
 K_PLUGIN_FACTORY(BalooConfigModuleFactory, registerPlugin<Baloo::ServerConfigModule>();)
-K_EXPORT_PLUGIN(BalooConfigModuleFactory("kcm_baloofile", "kcm_baloofile"))
+K_EXPORT_PLUGIN(BalooConfigModuleFactory("kcm_baloofile"))
 
 
 namespace
@@ -52,20 +53,21 @@ QStringList defaultFolders()
 using namespace Baloo;
 
 ServerConfigModule::ServerConfigModule(QWidget* parent, const QVariantList& args)
-    : KCModule(BalooConfigModuleFactory::componentData(), parent, args)
+    : KCModule(parent, args)
 {
     KAboutData* about = new KAboutData(
-        "kcm_baloofile", "kcm_baloofile", ki18n("Configure Desktop Search"),
-        KDE_VERSION_STRING, KLocalizedString(), KAboutData::License_GPL,
-        ki18n("Copyright 2007-2010 Sebastian Trüg"));
-    about->addAuthor(ki18n("Sebastian Trüg"), KLocalizedString(), "trueg@kde.org");
-    about->addAuthor(ki18n("Vishesh Handa"), KLocalizedString(), "vhanda@kde.org");
+        QLatin1String("kcm_baloofile"), i18n("Configure Desktop Search"),
+        QLatin1String("0.1"), QString(), KAboutLicense::GPL,
+        i18n("Copyright 2007-2010 Sebastian Trüg"));
+    about->addAuthor(i18n("Sebastian Trüg"), QString(), QLatin1String("trueg@kde.org"));
+    about->addAuthor(i18n("Vishesh Handa"), QString(), QLatin1String("vhanda@kde.org"));
     setAboutData(about);
     setButtons(Help | Apply | Default);
 
     setupUi(this);
 
-    const QPixmap pixmap = KIcon(QLatin1String("baloo")).pixmap(IconSize(KIconLoader::Desktop));
+    int pixelSize = style()->pixelMetric(QStyle::PM_LargeIconSize);
+    const QPixmap pixmap = QIcon::fromTheme(QLatin1String("baloo")).pixmap(QSize(pixelSize, pixelSize));
     m_pixmapLabel->setPixmap(pixmap);
 
     connect(m_folderSelectionWidget, SIGNAL(changed()),
@@ -84,16 +86,13 @@ ServerConfigModule::~ServerConfigModule()
 
 void ServerConfigModule::load()
 {
-    // File indexer settings
-    KConfig config(QLatin1String("baloofilerc"));
-    KConfigGroup group = config.group("General");
+    Baloo::IndexerConfig config;
 
-    KConfigGroup basicSettings = config.group("Basic Settings");
-    m_previouslyEnabled = basicSettings.readEntry("Indexing-Enabled", true);
+    m_previouslyEnabled = config.fileIndexingEnabled();
     m_enableCheckbox->setChecked(m_previouslyEnabled);
 
-    QStringList includeFolders = group.readPathEntry("folders", defaultFolders());
-    QStringList excludeFolders = group.readPathEntry("exclude folders", QStringList());
+    QStringList includeFolders = config.includeFolders();
+    QStringList excludeFolders = config.excludeFolders();
     m_folderSelectionWidget->setFolders(includeFolders, excludeFolders);
 
     // All values loaded -> no changes
@@ -106,29 +105,24 @@ void ServerConfigModule::save()
     QStringList includeFolders = m_folderSelectionWidget->includeFolders();
     QStringList excludeFolders = m_folderSelectionWidget->excludeFolders();
 
-    // Change the settings
-    KConfig config(QLatin1String("baloofilerc"));
-    KConfigGroup basicSettings = config.group("Basic Settings");
-
     bool mountPointsEx = m_folderSelectionWidget->allMountPointsExcluded();
 
     bool enabled = m_enableCheckbox->isChecked();
     if (mountPointsEx)
         enabled = false;
 
-    basicSettings.writeEntry("Indexing-Enabled", enabled);
-
-    // 2.2 Update normals paths
-    config.group("General").writePathEntry("folders", includeFolders);
-    config.group("General").writePathEntry("exclude folders", excludeFolders);
+    Baloo::IndexerConfig config;
+    config.setFileIndexingEnabled(enabled);
+    config.setIncludeFolders(includeFolders);
+    config.setExcludeFolders(excludeFolders);
 
     if (m_previouslyEnabled != enabled) {
-        config.group("General").deleteEntry("first run");
+        config.setFirstRun(true);
     }
 
     // Start Baloo
     if (enabled) {
-        const QString exe = KStandardDirs::findExe(QLatin1String("baloo_file"));
+        const QString exe = QStandardPaths::findExecutable(QLatin1String("baloo_file"));
         QProcess::startDetached(exe);
     }
     else {
@@ -141,7 +135,7 @@ void ServerConfigModule::save()
     }
 
     // Start cleaner
-    const QString exe = KStandardDirs::findExe(QLatin1String("baloo_file_cleaner"));
+    const QString exe = QStandardPaths::findExecutable(QLatin1String("baloo_file_cleaner"));
     QProcess::startDetached(exe);
 
     // all values saved -> no changes

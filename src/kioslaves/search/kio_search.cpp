@@ -22,21 +22,21 @@
 #include "query.h"
 #include "resultiterator.h"
 
+#include <QUrl>
 #include <KUser>
-#include <KDebug>
+#include <QDebug>
+#include <QCoreApplication>
 #include <KSharedConfig>
-#include <KApplication>
+#include <KLocalizedString>
 
 #include <KIO/Job>
-#include <KIO/NetAccess>
-#include <kde_file.h>
 
 using namespace Baloo;
 
 namespace
 {
 
-KIO::UDSEntry statSearchFolder(const KUrl& url)
+KIO::UDSEntry statSearchFolder(const QUrl& url)
 {
     KIO::UDSEntry uds;
     uds.insert(KIO::UDSEntry::UDS_ACCESS, 0700);
@@ -56,9 +56,9 @@ KIO::UDSEntry statSearchFolder(const KUrl& url)
     return uds;
 }
 
-bool isRootUrl(const KUrl& url)
+bool isRootUrl(const QUrl& url)
 {
-    const QString path = url.path(KUrl::RemoveTrailingSlash);
+    const QString path = url.path();
     return (!url.hasQuery() &&
             (path.isEmpty() || path == QLatin1String("/")));
 }
@@ -75,25 +75,25 @@ SearchProtocol::~SearchProtocol()
 {
 }
 
-void SearchProtocol::listDir(const KUrl& url)
+void SearchProtocol::listDir(const QUrl& url)
 {
     // list the root folder
     if (isRootUrl(url)) {
-        listEntry(KIO::UDSEntry(), true);
         finished();
     }
 
     Query q = Query::fromSearchUrl(url);
+    q.setSortingOption(Query::SortNone);
     ResultIterator it = q.exec();
 
     while (it.next()) {
         KIO::UDSEntry uds;
-        const KUrl url(it.url());
+        const QUrl url(it.url());
 
         if (url.isLocalFile()) {
             // Code from kdelibs/kioslaves/file.cpp
-            KDE_struct_stat statBuf;
-            if (KDE_stat(QFile::encodeName(url.toLocalFile()).data(), &statBuf) == 0) {
+            QT_STATBUF statBuf;
+            if (QT_LSTAT(QFile::encodeName(url.toLocalFile()).data(), &statBuf) == 0) {
                 uds.insert(KIO::UDSEntry::UDS_MODIFICATION_TIME, statBuf.st_mtime);
                 uds.insert(KIO::UDSEntry::UDS_ACCESS_TIME, statBuf.st_atime);
                 uds.insert(KIO::UDSEntry::UDS_SIZE, statBuf.st_size);
@@ -112,10 +112,7 @@ void SearchProtocol::listDir(const KUrl& url)
         } else {
             // not a local file
             KIO::StatJob* job = KIO::stat(url, KIO::HideProgressInfo);
-            // we do not want to wait for the event loop to delete the job
-            QScopedPointer<KIO::StatJob> sp(job);
-            job->setAutoDelete(false);
-            if (KIO::NetAccess::synchronousRun(job, 0)) {
+            if (job->exec()) {
                 uds = job->statResult();
             } else {
                 continue;
@@ -129,22 +126,21 @@ void SearchProtocol::listDir(const KUrl& url)
         if (url.isLocalFile())
             uds.insert(KIO::UDSEntry::UDS_LOCAL_PATH, url.toLocalFile());
 
-        listEntry(uds, false);
+        listEntry(uds);
     }
 
-    listEntry(KIO::UDSEntry(), true);
     finished();
 }
 
 
-void SearchProtocol::mimetype(const KUrl&)
+void SearchProtocol::mimetype(const QUrl&)
 {
     mimeType(QLatin1String("inode/directory"));
     finished();
 }
 
 
-void SearchProtocol::stat(const KUrl& url)
+void SearchProtocol::stat(const QUrl& url)
 {
     // the root folder
     if (isRootUrl(url)) {
@@ -162,31 +158,24 @@ void SearchProtocol::stat(const KUrl& url)
         finished();
     }
 
-    // kDebug() << "Stat search folder" << url;
+    // qDebug() << "Stat search folder" << url;
     statEntry(statSearchFolder(url));
     finished();
 
     /*else {
-        error(KIO::ERR_CANNOT_ENTER_DIRECTORY, url.prettyUrl());
+        error(KIO::ERR_CANNOT_ENTER_DIRECTORY, url.toString());
         return;
     }*/
 }
 
 extern "C"
 {
-    KDE_EXPORT int kdemain(int argc, char** argv)
+    Q_DECL_EXPORT int kdemain(int argc, char** argv)
     {
-        // necessary to use other kio slaves
-        KComponentData comp("kio_baloosearch");
         QCoreApplication app(argc, argv);
-
-        kDebug() << "Starting baloosearch slave " << getpid();
-
+        app.setApplicationName(QStringLiteral("kio_baloosearch"));
         Baloo::SearchProtocol slave(argv[2], argv[3]);
         slave.dispatchLoop();
-
-        kDebug() << "baloosearch slave Done";
-
         return 0;
     }
 }

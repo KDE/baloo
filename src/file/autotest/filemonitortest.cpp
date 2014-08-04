@@ -21,7 +21,7 @@
 #include "filemonitortest.h"
 #include "filemonitor.h"
 
-#include <qtest_kde.h>
+#include <QTest>
 #include <QSignalSpy>
 
 #include <QDBusConnection>
@@ -29,17 +29,26 @@
 
 using namespace Baloo;
 
+void FileMonitorTest::init()
+{
+    m_sut = new FileMonitor();
+}
+
+void FileMonitorTest::cleanup()
+{
+    delete m_sut;
+}
+
 void FileMonitorTest::test()
 {
-    QString file(QLatin1String("/tmp/t"));
-    FileMonitor monitor;
-    monitor.addFile(file);
+    QString file = getRandomValidFilePath();
+    m_sut->addFile(file);
 
-    QSignalSpy spy(&monitor, SIGNAL(fileMetaDataChanged(QString)));
+    QSignalSpy spy(m_sut, SIGNAL(fileMetaDataChanged(QString)));
 
     QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/files"),
-                                                      QLatin1String("org.kde"),
-                                                      QLatin1String("changed"));
+                           QLatin1String("org.kde"),
+                           QLatin1String("changed"));
 
     QList<QString> list;
     list << file;
@@ -50,7 +59,11 @@ void FileMonitorTest::test()
     message.setArguments(vl);
 
     QDBusConnection::sessionBus().send(message);
-    QTest::qWait(20);
+
+    QEventLoop loop;
+    connect(m_sut, SIGNAL(fileMetaDataChanged(QString)),
+            &loop, SLOT(quit()));
+    loop.exec();
 
     QCOMPARE(spy.count(), 1);
 
@@ -61,5 +74,110 @@ void FileMonitorTest::test()
     QCOMPARE(var.type(), QVariant::String);
     QCOMPARE(var.toString(), file);
 }
+
+void FileMonitorTest::testAddFileShouldReturnOneFileIfOneFileAdded()
+{
+    QString filePath = getRandomValidFilePath();
+    m_sut->addFile(filePath);
+
+    QStringList actualList = m_sut->files();
+
+    QCOMPARE(actualList.count(), 1);
+    QCOMPARE(actualList.first(), filePath);
+}
+
+void FileMonitorTest::testAddFileShouldReturnTwoFilesIfTwoFilesAdded()
+{
+    QString filePath1 = getRandomValidFilePath();
+    QString filePath2 = getRandomValidFilePath();
+    m_sut->addFile(filePath1);
+    m_sut->addFile(filePath2);
+
+    QStringList actualList = m_sut->files();
+
+    QCOMPARE(actualList.count(), 2);
+    QVERIFY(actualList.contains(filePath1));
+    QVERIFY(actualList.contains(filePath2));
+}
+
+void FileMonitorTest::testAddFileShouldRemoveTailingSlash()
+{
+    QString expectedFilePath = getRandomValidFilePath();
+    QString filePath(expectedFilePath);
+    filePath.append("/");
+
+    m_sut->addFile(filePath);
+
+    QStringList actualList = m_sut->files();
+    QCOMPARE(actualList.first(), expectedFilePath);
+}
+
+void FileMonitorTest::testAddFileShouldNotAddNotLocalUrl()
+{
+    QUrl fileUrl(getRandomValidWebUrl());
+
+    m_sut->addFile(fileUrl);
+    QStringList actualList = m_sut->files();
+
+    QCOMPARE(actualList.count(), 0);
+}
+
+void FileMonitorTest::testAddFileShouldAddLocalUrl()
+{
+    QUrl fileUrl(getRandomValidFilePath());
+
+    m_sut->addFile(fileUrl);
+    QStringList actualList = m_sut->files();
+
+    QCOMPARE(actualList.count(), 0);
+}
+void FileMonitorTest::testClearIfClearAfterOneFileAddedFilesShouldReturn0Items()
+{
+    QUrl fileUrl(getRandomValidFilePath());
+
+    m_sut->addFile(fileUrl);
+
+    QStringList actualList = m_sut->files();
+
+    QCOMPARE(actualList.count(), 0);
+}
+void FileMonitorTest::testSetFilesIfSetFilesWithOneElementFilesShouldReturn1Item()
+{
+    QStringList files = QStringList(getRandomValidFilePath());
+
+    m_sut->setFiles(files);
+    QStringList actualList = m_sut->files();
+
+    QCOMPARE(actualList.count(), 1);
+}
+
+QString FileMonitorTest::getRandomValidWebUrl()
+{
+    QString file = "http://" + getRandomString(4) + ".com/" + getRandomString(4);
+    return file;
+}
+
+QString FileMonitorTest::getRandomValidFilePath()
+{
+    QString file(QLatin1String("/tmp/"));
+    file.append(getRandomString(8));
+    return file;
+}
+
+QString FileMonitorTest::getRandomString(int length) const
+{
+    const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
+    // assuming you want random strings of 12 characters
+
+    QString randomString;
+    for(int i=0; i<length; ++i)
+    {
+        int index = qrand() % possibleCharacters.length();
+        QChar nextChar = possibleCharacters.at(index);
+        randomString.append(nextChar);
+    }
+    return randomString;
+}
+
 
 QTEST_MAIN(FileMonitorTest)

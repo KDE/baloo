@@ -29,8 +29,8 @@
 #include <QDateTime>
 #include <QStringList>
 
-#include <kfilemetadata/typeinfo.h>
-#include <KDebug>
+#include <KFileMetaData/TypeInfo>
+#include <QDebug>
 
 using namespace Baloo;
 
@@ -50,7 +50,7 @@ bool BasicIndexingJob::index()
 {
     if (m_file.id() == 0) {
         if (!m_file.create(*m_sqlDb)) {
-            kError() << "Cannot create fileMapping for" << m_file.url();
+            qWarning() << "Cannot create fileMapping for" << m_file.url();
             return false;
         }
     }
@@ -93,35 +93,44 @@ bool BasicIndexingJob::index()
         doc.addBoolTerm(QLatin1String("Z1"));
     }
 
-    //
-    // X-Attr terms
-    //
+    indexXAttr(m_file.url(), doc);
+
+    m_id = m_file.id();
+    m_doc = doc.doc();
+    return true;
+}
+
+bool BasicIndexingJob::indexXAttr(const QString& url, XapianDocument& doc)
+{
+    bool modified = false;
     QString val;
 
-    baloo_getxattr(m_file.url(), QLatin1String("user.xdg.tags"), &val);
+    baloo_getxattr(url, QLatin1String("user.xdg.tags"), &val);
     if (!val.isEmpty()) {
         const QStringList tags = val.split(QLatin1Char(','), QString::SkipEmptyParts);
         Q_FOREACH (const QString& tag, tags) {
             doc.indexText(tag, QLatin1String("TA"));
             doc.addBoolTerm(QLatin1String("TAG-") + tag);
         }
+
+        modified = true;
     }
 
     val.clear();
-    baloo_getxattr(m_file.url(), QLatin1String("user.baloo.rating"), &val);
+    baloo_getxattr(url, QLatin1String("user.baloo.rating"), &val);
     if (!val.isEmpty()) {
         doc.addBoolTerm(val, QLatin1String("R"));
+        modified = true;
     }
 
     val.clear();
-    baloo_getxattr(m_file.url(), QLatin1String("user.xdg.comment"), &val);
+    baloo_getxattr(url, QLatin1String("user.xdg.comment"), &val);
     if (!val.isEmpty()) {
         doc.indexText(val, QLatin1String("C"));
+        modified = true;
     }
 
-    m_id = m_file.id();
-    m_doc = doc.doc();
-    return true;
+    return modified;
 }
 
 QVector<KFileMetaData::Type::Type> BasicIndexingJob::typesForMimeType(const QString& mimeType) const

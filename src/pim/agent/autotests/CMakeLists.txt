@@ -15,17 +15,15 @@ set(indexer_SRCS
 )
 
 set(indexer_LIBS
-    ${QT_QTTEST_LIBRARY}
-    ${KDE4_KDECORE_LIBS}
-    ${KDEPIMLIBS_AKONADI_LIBS}
-    ${KDEPIMLIBS_AKONADI_KMIME_LIBS}
-    ${KDEPIMLIBS_KMIME_LIBS}
-    ${KDEPIMLIBS_KABC_LIBS}
-    ${KDEPIMLIBS_KCALCORE_LIBS}
+    KF5::AkonadiCore
+    KF5::AkonadiMime
+    KF5::KMime
+    KF5::Abc
     ${XAPIAN_LIBRARIES}
-    ${KDEPIMLIBS_KPIMUTILS_LIBS}
-    baloocore
-    balooxapian
+    KF5::PimUtils
+    KF5::BalooCore
+    KF5::BalooXapian
+    Qt5::Test
 )
 
 set(indexertest_SRCS
