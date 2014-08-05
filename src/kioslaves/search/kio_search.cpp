@@ -23,6 +23,7 @@
 #include "resultiterator.h"
 
 #include <QUrl>
+#include <QUrlQuery>
 #include <KUser>
 #include <QDebug>
 #include <QCoreApplication>
@@ -47,7 +48,8 @@ KIO::UDSEntry statSearchFolder(const QUrl& url)
     uds.insert(KIO::UDSEntry::UDS_DISPLAY_TYPE, i18n("Query folder"));
     uds.insert(KIO::UDSEntry::UDS_URL, url.url());
 
-    QString title = url.queryItemValue(QLatin1String("title"));
+    QUrlQuery query(url);
+    QString title = query.queryItemValue(QLatin1String("title"));
     if (title.size()) {
         uds.insert(KIO::UDSEntry::UDS_NAME, title);
         uds.insert(KIO::UDSEntry::UDS_DISPLAY_NAME, title);

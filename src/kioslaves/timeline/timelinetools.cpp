@@ -25,6 +25,7 @@
 #include <QDate>
 #include <QRegExp>
 #include <QDebug>
+#include <QUrlQuery>
 
 #include <KCalendarSystem>
 #include <KLocalizedString>
@@ -119,7 +120,8 @@ Baloo::TimelineFolderType Baloo::parseTimelineUrl(const QUrl& url, QDate* date, 
         } else {
             qDebug() << "parsing " << dateString;
             typedef QPair<QString, QString> StringPair;
-            QList<StringPair> queryItems = url.queryItems();
+            QUrlQuery query(url);
+            QList<StringPair> queryItems = query.queryItems();
             QMap<QString, QString> map;
             Q_FOREACH (const StringPair& pair, queryItems) {
                 map.insert(pair.first, pair.second);

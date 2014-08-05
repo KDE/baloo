@@ -161,7 +161,7 @@ const RemovableMediaCache::Entry* RemovableMediaCache::findEntryByUrl(const QUrl
 {
     QMutexLocker lock(&m_entryCacheMutex);
 
-    const QString encodedUrl = QString::fromAscii(url.toEncoded());
+    const QString encodedUrl = QString::fromLatin1(url.toEncoded());
     for (QHash<QString, Entry>::const_iterator it = m_metadataCache.constBegin();
             it != m_metadataCache.constEnd(); ++it) {
         const Entry& entry = *it;
