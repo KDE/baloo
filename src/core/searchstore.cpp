@@ -23,10 +23,12 @@
 #include "searchstore.h"
 
 #include <QDebug>
-#include <KService>
-#include <KServiceTypeTrader>
 #include <QThreadStorage>
 #include <QMutex>
+#include <QSharedPointer>
+#include <QCoreApplication>
+#include <QPluginLoader>
+#include <QDir>
 
 using namespace Baloo;
 
@@ -86,29 +88,50 @@ SearchStore::List SearchStore::searchStores()
     }
 
     // Get all the plugins
-    KService::List plugins = KServiceTypeTrader::self()->query(QLatin1String("BalooSearchStore"));
+    QStringList plugins;
+    QStringList pluginPaths;
 
-    List stores;
-    KService::List::const_iterator it;
-    for (it = plugins.constBegin(); it != plugins.constEnd(); ++it) {
-        KService::Ptr service = *it;
+    QStringList paths = QCoreApplication::libraryPaths();
+    Q_FOREACH (const QString& libraryPath, paths) {
+        QString path(libraryPath + QStringLiteral("/kf5/baloo"));
+        QDir dir(path);
 
-        KPluginLoader pluginLoader(*service);
-        Baloo::SearchStore* st = 0;
-
-        // We're not using the KPluginFactory since we don't need it and it requires
-        // KGlobal::locale() to be initialized from the main thread. And we have no way of
-        // doing this if this code gets called from a non-kde application in a thread (akonadi).
-        QObject* instance = pluginLoader.instance();
-        if (instance) {
-            st = qobject_cast<Baloo::SearchStore*>(instance);
+        if (!dir.exists()) {
+            continue;
         }
-        if (st) {
-            stores << QSharedPointer<SearchStore>(st);
+
+        QStringList entryList = dir.entryList(QDir::Files | QDir::NoDotAndDotDot);
+        Q_FOREACH (const QString& fileName, entryList) {
+            if (plugins.contains(fileName))
+                continue;
+
+            pluginPaths << dir.absoluteFilePath(fileName);
+        }
+    }
+    plugins.clear();
+
+    SearchStore::List stores;
+    Q_FOREACH (const QString& pluginPath, pluginPaths) {
+        QPluginLoader loader(pluginPath);
+
+        if (!loader.load()) {
+            qWarning() << "Could not create Baloo Search Store: " << pluginPath;
+            qWarning() << loader.errorString();
+            continue;
+        }
+
+        QObject* obj = loader.instance();
+        if (obj) {
+            SearchStore* ex = qobject_cast<SearchStore*>(obj);
+            if (ex) {
+                stores << QSharedPointer<SearchStore>(ex);
+            } else {
+                qDebug() << "Plugin could not be converted to an Baloo::SearchStore";
+                qDebug() << pluginPath;
+            }
         }
         else {
-            qWarning() << "Could not create SearchStore: " << service->library();
-            qWarning() << pluginLoader.errorString();
+            qDebug() << "Plugin could not create instance" << pluginPath;
         }
     }
 

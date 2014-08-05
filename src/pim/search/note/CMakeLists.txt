@@ -7,5 +7,4 @@ target_link_libraries(notesearchstore
     KF5::BalooXapian
 )
 
-install(FILES baloo_notesearchstore.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 install(TARGETS notesearchstore DESTINATION ${PLUGIN_INSTALL_DIR}/kf5/baloo)

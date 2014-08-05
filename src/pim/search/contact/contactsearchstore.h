@@ -32,7 +32,7 @@ class ContactSearchStore : public PIMSearchStore
     Q_OBJECT
     Q_INTERFACES(Baloo::SearchStore)
 #ifndef BALOO_NO_PLUGINS
-    Q_PLUGIN_METADATA(IID "org.kde.baloo.contacts" FILE "baloocontactsearchstore.json")
+    Q_PLUGIN_METADATA(IID "org.kde.Baloo.SearchStore")
 #endif
 public:
     ContactSearchStore(QObject* parent = 0);

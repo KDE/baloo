@@ -7,5 +7,4 @@ target_link_libraries(calendarsearchstore
     KF5::BalooXapian
 )
 
-install(FILES baloo_calendarsearchstore.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 install(TARGETS calendarsearchstore DESTINATION ${PLUGIN_INSTALL_DIR}/kf5/baloo)

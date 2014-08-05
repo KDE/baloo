@@ -7,5 +7,4 @@ target_link_libraries(contactsearchstore
     KF5::BalooXapian
 )
 
-install(FILES baloo_contactsearchstore.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 install(TARGETS contactsearchstore DESTINATION ${PLUGIN_INSTALL_DIR}/kf5/baloo)
