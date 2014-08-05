@@ -21,7 +21,7 @@ target_link_libraries(baloo_file_extractor
   Qt5::DBus
   KF5::FileMetaData
   KF5::I18n
-  KF5::Service
+  KF5::ConfigCore
   ${XAPIAN_LIBRARIES}
   KF5::BalooFiles
   KF5::BalooXapian
