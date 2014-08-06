@@ -105,6 +105,7 @@ SearchStore::List SearchStore::searchStores()
             if (plugins.contains(fileName))
                 continue;
 
+            plugins << fileName;
             pluginPaths << dir.absoluteFilePath(fileName);
         }
     }
