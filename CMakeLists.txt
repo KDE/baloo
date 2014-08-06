@@ -26,6 +26,7 @@ ecm_setup_version(${BALOO_VERSION} VARIABLE_PREFIX BALOO
                         SOVERSION 1
 )
 
+option(BALOO_LIBRARIES_ONLY "If true, compiles only the Baloo libraries, without binaries, kioslaves." OFF)
 # Temporary option untill kdepimlibs is ok. Activate it if you want to compile kdepim
 option(KDEPIM_SUPPORT_BUILD "Build baloo kdepim support" FALSE)
 
