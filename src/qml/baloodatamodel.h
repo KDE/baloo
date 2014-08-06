@@ -1,0 +1,88 @@
+/*
+ *   Copyright 2014 Antonis Tsiapaliokas <antonis.tsiapaliokas@kde.org>
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU Library General Public License as
+ *   published by the Free Software Foundation; either version 2, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU Library General Public License for more details
+ *
+ *   You should have received a copy of the GNU Library General Public
+ *   License along with this program; if not, write to the
+ *   Free Software Foundation, Inc.,
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
+#ifndef BALOODATAMODEL_H
+#define BALOODATAMODEL_H
+
+
+#include "result.h"
+
+#include <QAbstractListModel>
+#include <QString>
+
+class Query : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(QString type READ type WRITE setType NOTIFY typeChanged)
+    Q_PROPERTY(int limit READ limit WRITE setLimit NOTIFY limitChanged)
+
+public:
+    Query(QObject *parent = nullptr);
+    ~Query();
+
+    void setType(const QString &type);
+    QString type() const;
+
+    void setLimit(const int &limit);
+    int limit() const;
+
+Q_SIGNALS:
+    void typeChanged();
+    void limitChanged();
+
+private:
+    QString m_type;
+    int m_limit;
+
+};
+
+class BalooDataModel : public QAbstractListModel
+{
+    Q_OBJECT
+    Q_PROPERTY(Query* query READ query WRITE setQuery NOTIFY queryChanged)
+
+public:
+    BalooDataModel(QObject *parent = nullptr);
+    ~BalooDataModel();
+    int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
+
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+
+    QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
+
+    enum Roles {
+        IdRole = Qt::UserRole + 1,
+        UrlRole = Qt::UserRole + 2
+    };
+
+    void setQuery(Query *query);
+    Query* query() const;
+
+Q_SIGNALS:
+    void queryChanged();
+
+private Q_SLOTS:
+    void populateModel();
+
+private:
+    QList<Baloo::Result> m_balooEntryList;
+    Query *m_query;
+};
+
+#endif
