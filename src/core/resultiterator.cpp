@@ -27,22 +27,21 @@
 
 using namespace Baloo;
 
-ResultIteratorPrivate::ResultIteratorPrivate()
-    : queryId(0)
-    , store(0)
-{
-}
-
-/*
- * FIXME: The linker complains if it is not present in the header.
-ResultIteratorPrivate::~ResultIteratorPrivate()
-{
-    if (store) {
-        store->close(queryId);
+class Baloo::ResultIteratorPrivate : public QSharedData {
+public:
+    ResultIteratorPrivate()
+        : queryId(0)
+        , store(0) {
     }
-}
-*/
 
+    ~ResultIteratorPrivate() {
+        if (store)
+            store->close(queryId);
+    }
+
+    int queryId;
+    SearchStore* store;
+};
 
 ResultIterator::ResultIterator(int id, SearchStore* store)
     : d(new ResultIteratorPrivate)
@@ -53,6 +52,15 @@ ResultIterator::ResultIterator(int id, SearchStore* store)
 
 ResultIterator::ResultIterator()
     : d(new ResultIteratorPrivate)
+{
+}
+
+ResultIterator::ResultIterator(const ResultIterator& rhs)
+    : d(rhs.d)
+{
+}
+
+ResultIterator::~ResultIterator()
 {
 }
 

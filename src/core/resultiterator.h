@@ -32,24 +32,15 @@ namespace Baloo {
 
 class SearchStore;
 class Result;
-
-// TODO: Move this to another file?
-class ResultIteratorPrivate : public QSharedData {
-public:
-    ResultIteratorPrivate();
-    ~ResultIteratorPrivate() {
-        if (store)
-            store->close(queryId);
-    }
-
-    int queryId;
-    SearchStore* store;
-};
+class ResultIteratorPrivate;
 
 class BALOO_CORE_EXPORT ResultIterator
 {
 public:
     ResultIterator();
+    ResultIterator(const ResultIterator& rhs);
+    ~ResultIterator();
+
     // internal
     ResultIterator(int id, SearchStore* store);
 
