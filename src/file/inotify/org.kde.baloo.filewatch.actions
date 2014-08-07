@@ -1,7 +1,8 @@
 [org.kde.baloo.filewatch.raiselimit]
 Name=Folder Watch Limit
+Name[ar]=حدّ مراقبة المجلدات
 Name[bs]=Ograničenje praćenja direktorija
-Name[ca]=Límit de vigilància de carpetes
+Name[ca]=Límit de vigilància de les carpetes
 Name[ca@valencia]=Límit de vigilància de carpetes
 Name[cs]=Limit sledovaných složek
 Name[da]=Grænse for mappeovervågning
@@ -37,8 +38,9 @@ Name[x-test]=xxFolder Watch Limitxx
 Name[zh_CN]=文件夹监视限制
 Name[zh_TW]=資料夾監看限制
 Description=To avoid missing file changes, raise the inotify folder watch limit
+Description[ar]=لتجنب تفويت تغييرات الملفات، ارفع حدّ مراقبة المجلد في inotify
 Description[bs]=Da izbjegnete nedostajuće izmjene datoteka, povećajte limit za inofity direktorij.
-Description[ca]=Per evitar la pèrdua de canvis de fitxers, eleveu el límit de vigilància de carpetes de l'«inotify»
+Description[ca]=Per evitar la pèrdua de canvis als fitxers, eleveu el límit de vigilància de les carpetes de l'«inotify»
 Description[ca@valencia]=Per evitar la pèrdua de canvis de fitxers, eleveu el límit de vigilància de carpetes de l'«inotify»
 Description[cs]=Abyste nepřehlédli změny souborů, zvyšte limit sledovaných složek inotify
 Description[da]=Hæv inotify mappeovervågningsgrænsen for ikke at gå glip af filændringer
