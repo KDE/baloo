@@ -61,6 +61,7 @@ App::App(QObject* parent)
         QTimer::singleShot(0, QCoreApplication::instance(), SLOT(quit()));
         return;
     }
+    m_db.sqlDatabase().transaction();
 
     m_bData = args->isSet("bdata");
     m_debugEnabled = args->isSet("debug");
