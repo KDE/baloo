@@ -52,6 +52,7 @@ App::App(const QString& path, QObject* parent)
         QTimer::singleShot(0, QCoreApplication::instance(), SLOT(quit()));
         return;
     }
+    m_db.sqlDatabase().transaction();
 
     connect(this, SIGNAL(saved()), this, SLOT(processNextUrl()), Qt::QueuedConnection);
 }
