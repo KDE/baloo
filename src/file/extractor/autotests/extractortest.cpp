@@ -86,6 +86,7 @@ void ExtractorTest::testBData()
     QProcess process;
     process.start(exe, args);
     QVERIFY(process.waitForFinished(10000));
+    QCOMPARE(process.exitStatus(), QProcess::NormalExit);
 
     qDebug() << process.readAllStandardError();
     QByteArray bytearray = QByteArray::fromBase64(process.readAllStandardOutput());
