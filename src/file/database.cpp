@@ -115,6 +115,12 @@ void Database::setPath(const QString& path)
         m_path.append(QLatin1Char('/'));
 
     QDir().mkpath(m_path);
+
+    QFileInfo dirInfo(path);
+    if (!dirInfo.permission(QFile::WriteOwner)) {
+        qCritical() << path << "does not have write permissions. Aborting";
+        exit(1);
+    }
 }
 
 bool Database::isInitialized()
