@@ -24,6 +24,7 @@ Name[uk]=Пошук файлів
 Name[x-test]=xxFile Searchxx
 Comment=Configure File Search Backend
 Comment[es]=Configurar el motor de la búsqueda de archivos
+Comment[fi]=Tiedostohaun taustajärjestelmän asetukset
 Comment[nds]=Dateisöök-Hülpprogramm instellen
 Comment[nl]=Backend van bestand zoeken instellen
 Comment[pl]=Ustawienia silnika wyszukiwania plików
