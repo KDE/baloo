@@ -135,6 +135,7 @@ void BalooDataModel::populateModel()
     Baloo::ResultIterator it = query.exec();
 
     beginResetModel();
+    m_balooEntryList.clear();
     while (it.next()) {
         Baloo::Result res = it.result();
         m_balooEntryList << res;
