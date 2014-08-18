@@ -26,7 +26,7 @@
 #include "filemapping.h"
 #include "pathfilterpostingsource.h"
 #include "wildcardpostingsource.h"
-#include "queryparser.h"
+#include "xapianqueryparser.h"
 
 #include <xapian.h>
 #include <QVector>
@@ -141,7 +141,7 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
     }
 
     if (com == Term::Contains) {
-        QueryParser parser;
+        XapianQueryParser parser;
         parser.setDatabase(xapianDb());
 
         QString prefix;

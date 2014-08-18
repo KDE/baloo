@@ -19,7 +19,7 @@
  */
 
 #include "queryparsertest.h"
-#include "../queryparser.h"
+#include "../xapianqueryparser.h"
 #include "../xapiandatabase.h"
 
 #include <QTest>
@@ -30,7 +30,7 @@ using namespace Baloo;
 
 void QueryParserTest::testSinglePrefixWord()
 {
-    QueryParser parser;
+    XapianQueryParser parser;
 
     Xapian::Query query = parser.parseQuery("The", "F");
     Xapian::Query q("Fthe", 1, 1);
@@ -39,7 +39,7 @@ void QueryParserTest::testSinglePrefixWord()
 
 void QueryParserTest::testSimpleQuery()
 {
-    QueryParser parser;
+    XapianQueryParser parser;
 
     Xapian::Query query = parser.parseQuery("The song of Ice and Fire");
 
@@ -58,7 +58,7 @@ void QueryParserTest::testSimpleQuery()
 
 void QueryParserTest::testPhraseSearch()
 {
-    QueryParser parser;
+    XapianQueryParser parser;
 
     Xapian::Query query = parser.parseQuery("The \"song of Ice\" Fire");
     //qDebug() << query.get_description().c_str();
@@ -80,7 +80,7 @@ void QueryParserTest::testPhraseSearch()
 
 void QueryParserTest::testPhraseSearchOnly()
 {
-    QueryParser parser;
+    XapianQueryParser parser;
 
     Xapian::Query query = parser.parseQuery("/opt/pro");
     //qDebug() << query.get_description().c_str();
@@ -96,7 +96,7 @@ void QueryParserTest::testPhraseSearchOnly()
 
 void QueryParserTest::testPhraseSearch_sameLimiter()
 {
-    QueryParser parser;
+    XapianQueryParser parser;
 
     Xapian::Query query = parser.parseQuery("The \"song of Ice' and Fire");
     //qDebug() << query.get_description().c_str();
@@ -117,7 +117,7 @@ void QueryParserTest::testPhraseSearch_sameLimiter()
 
 void QueryParserTest::testPhraseSearchEmail()
 {
-    QueryParser parser;
+    XapianQueryParser parser;
 
     Xapian::Query query = parser.parseQuery("The song@ice.com Fire");
 
@@ -137,7 +137,7 @@ void QueryParserTest::testPhraseSearchEmail()
 
 void QueryParserTest::testAccentSearch()
 {
-    QueryParser parser;
+    XapianQueryParser parser;
 
     Xapian::Query query = parser.parseQuery(QString::fromLatin1("sóng"));
     Xapian::Query q("song", 1, 1);
@@ -147,7 +147,7 @@ void QueryParserTest::testAccentSearch()
 
 void QueryParserTest::testUnderscoreSplitting()
 {
-    QueryParser parser;
+    XapianQueryParser parser;
 
     Xapian::Query query = parser.parseQuery("The_Fire");
 
@@ -176,7 +176,7 @@ void QueryParserTest::testWordExpansion()
     db.replaceDocument(1, doc);
     Xapian::Database* xap = db.db();
 
-    QueryParser parser;
+    XapianQueryParser parser;
     parser.setDatabase(xap);
 
     Xapian::Query query = parser.parseQuery("hell");

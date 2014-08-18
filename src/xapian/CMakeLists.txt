@@ -5,7 +5,7 @@ set(XAPIAN_SRCS
     xapiandocument.cpp
     xapiandatabase.cpp
     xapiantermgenerator.cpp
-    queryparser.cpp
+    xapianqueryparser.cpp
 )
 
 add_library(KF5BalooXapian ${XAPIAN_SRCS})

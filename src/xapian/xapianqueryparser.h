@@ -27,10 +27,10 @@
 
 namespace Baloo {
 
-class BALOO_XAPIAN_EXPORT QueryParser
+class BALOO_XAPIAN_EXPORT XapianQueryParser
 {
 public:
-    QueryParser();
+    XapianQueryParser();
 
     void setDatabase(Xapian::Database* db);
     Xapian::Query parseQuery(const QString& str, const QString& prefix = QString());

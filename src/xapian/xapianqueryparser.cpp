@@ -18,7 +18,7 @@
  *
  */
 
-#include "queryparser.h"
+#include "xapianqueryparser.h"
 
 #include <QTextBoundaryFinder>
 #include <QStringList>
@@ -26,12 +26,12 @@
 
 using namespace Baloo;
 
-QueryParser::QueryParser()
+XapianQueryParser::XapianQueryParser()
     : m_db(0)
 {
 }
 
-void QueryParser::setDatabase(Xapian::Database* db)
+void XapianQueryParser::setDatabase(Xapian::Database* db)
 {
     m_db = db;
 }
@@ -103,7 +103,7 @@ namespace {
     }
 }
 
-Xapian::Query QueryParser::parseQuery(const QString& text, const QString& prefix)
+Xapian::Query XapianQueryParser::parseQuery(const QString& text, const QString& prefix)
 {
     /*
     Xapian::QueryParser parser;

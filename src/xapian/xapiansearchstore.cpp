@@ -21,9 +21,9 @@
  */
 
 #include "xapiansearchstore.h"
+#include "xapianqueryparser.h"
 #include "term.h"
 #include "query.h"
-#include "queryparser.h"
 
 #include <QVector>
 #include <QStringList>
@@ -127,7 +127,7 @@ Xapian::Query XapianSearchStore::andQuery(const Xapian::Query& a, const Xapian::
 
 Xapian::Query XapianSearchStore::constructSearchQuery(const QString& str)
 {
-    QueryParser parser;
+    XapianQueryParser parser;
     parser.setDatabase(m_db);
     return parser.parseQuery(str);
 }
