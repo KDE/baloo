@@ -4,7 +4,7 @@ set(XAPIAN_SRCS
     xapiansearchstore.cpp
     xapiandocument.cpp
     xapiandatabase.cpp
-    termgenerator.cpp
+    xapiantermgenerator.cpp
     queryparser.cpp
 )
 

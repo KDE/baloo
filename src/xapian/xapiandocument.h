@@ -25,7 +25,7 @@
 #include <QString>
 
 #include "xapian_export.h"
-#include "termgenerator.h"
+#include "xapiantermgenerator.h"
 
 namespace Baloo {
 
@@ -60,7 +60,7 @@ public:
     bool removeTermStartsWith(const QByteArray& prefix);
 private:
     Xapian::Document m_doc;
-    TermGenerator m_termGen;
+    XapianTermGenerator m_termGen;
 };
 }
 

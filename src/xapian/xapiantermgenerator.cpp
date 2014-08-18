@@ -18,14 +18,14 @@
  *
  */
 
-#include "termgenerator.h"
+#include "xapiantermgenerator.h"
 
 #include <QTextBoundaryFinder>
 #include <QDebug>
 
 using namespace Baloo;
 
-TermGenerator::TermGenerator(Xapian::Document* doc)
+XapianTermGenerator::XapianTermGenerator(Xapian::Document* doc)
     : m_doc(doc)
     , m_position(1)
 {
@@ -34,18 +34,18 @@ TermGenerator::TermGenerator(Xapian::Document* doc)
     }
 }
 
-void TermGenerator::indexText(const QString& text)
+void XapianTermGenerator::indexText(const QString& text)
 {
     indexText(text, QString());
 }
 
-void TermGenerator::setDocument(Xapian::Document* doc)
+void XapianTermGenerator::setDocument(Xapian::Document* doc)
 {
     m_doc = doc;
 }
 
 
-void TermGenerator::indexText(const QString& text, const QString& prefix, int wdfInc)
+void XapianTermGenerator::indexText(const QString& text, const QString& prefix, int wdfInc)
 {
     const QByteArray par = prefix.toUtf8();
     //const QByteArray ta = text.toUtf8();
@@ -92,12 +92,12 @@ void TermGenerator::indexText(const QString& text, const QString& prefix, int wd
     }
 }
 
-int TermGenerator::position() const
+int XapianTermGenerator::position() const
 {
     return m_position;
 }
 
-void TermGenerator::setPosition(int position)
+void XapianTermGenerator::setPosition(int position)
 {
     m_position = position;
 }

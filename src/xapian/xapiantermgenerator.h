@@ -27,10 +27,10 @@
 
 namespace Baloo {
 
-class BALOO_XAPIAN_EXPORT TermGenerator
+class BALOO_XAPIAN_EXPORT XapianTermGenerator
 {
 public:
-    TermGenerator(Xapian::Document* doc);
+    XapianTermGenerator(Xapian::Document* doc);
 
     void indexText(const QString& text);
     void indexText(const QString& text, const QString& prefix, int wdfInc = 1);

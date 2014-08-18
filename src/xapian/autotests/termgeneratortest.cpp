@@ -19,7 +19,7 @@
  */
 
 #include "termgeneratortest.h"
-#include "../termgenerator.h"
+#include "../xapiantermgenerator.h"
 #include "../xapiandatabase.h"
 
 #include <QTest>
@@ -45,7 +45,7 @@ void TermGeneratorTest::testWordBoundaries()
     QString str = QString::fromLatin1("The quick (\"brown\") 'fox' can't jump 32.3 feet, right? No-Wrong;xx.txt");
 
     Xapian::Document doc;
-    TermGenerator termGen(&doc);
+    XapianTermGenerator termGen(&doc);
     termGen.indexText(str);
 
     QStringList words = allWords(doc);
@@ -63,7 +63,7 @@ void TermGeneratorTest::testUnderscore_splitting()
     QString str = QString::fromLatin1("Hello_Howdy");
 
     Xapian::Document doc;
-    TermGenerator termGen(&doc);
+    XapianTermGenerator termGen(&doc);
     termGen.indexText(str);
 
     QStringList words = allWords(doc);
@@ -79,7 +79,7 @@ void TermGeneratorTest::testAccetCharacters()
     QString str = QString::fromLatin1("Como está Kûg");
 
     Xapian::Document doc;
-    TermGenerator termGen(&doc);
+    XapianTermGenerator termGen(&doc);
     termGen.indexText(str);
 
     QStringList words = allWords(doc);
@@ -97,7 +97,7 @@ void TermGeneratorTest::testUnicodeCompatibleComposition()
     QString str2 = QLatin1Literal("ma") + QChar(0xfb00) + QStringLiteral("ab");
 
     Xapian::Document doc;
-    TermGenerator termGen(&doc);
+    XapianTermGenerator termGen(&doc);
     termGen.indexText(str2);
 
     QStringList words = allWords(doc);
@@ -112,7 +112,7 @@ void TermGeneratorTest::testEmails()
     QString str = QString::fromLatin1("me@vhanda.in");
 
     Xapian::Document doc;
-    TermGenerator termGen(&doc);
+    XapianTermGenerator termGen(&doc);
     termGen.indexText(str);
 
     QStringList words = allWords(doc);
@@ -129,7 +129,7 @@ void TermGeneratorTest::testWordPositions()
     XapianDatabase db(dir.path(), true);
 
     Xapian::Document doc;
-    TermGenerator termGen(&doc);
+    XapianTermGenerator termGen(&doc);
 
     QString str = QString::fromLatin1("Hello hi how hi");
     termGen.indexText(str);

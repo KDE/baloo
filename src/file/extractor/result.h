@@ -24,8 +24,7 @@
 #define EXTRACTIONRESULT_H
 
 #include <KFileMetaData/ExtractionResult>
-#include <xapian.h>
-#include "termgenerator.h"
+#include "xapiantermgenerator.h"
 
 class Result : public KFileMetaData::ExtractionResult
 {
@@ -62,8 +61,8 @@ public:
 private:
     uint m_docId;
     Xapian::Document m_doc;
-    Baloo::TermGenerator m_termGen;
-    Baloo::TermGenerator m_termGenForText;
+    Baloo::XapianTermGenerator m_termGen;
+    Baloo::XapianTermGenerator m_termGenForText;
 
     QVariantMap m_map;
     bool m_readOnly;
