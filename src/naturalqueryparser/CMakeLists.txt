@@ -16,6 +16,7 @@ set(QUERYPARSER_SRCS
     pass_typehints.cpp
     patternmatcher.cpp
     naturalqueryparser.cpp
+    naturalfilequeryparser.cpp
     utils.cpp
 )
 

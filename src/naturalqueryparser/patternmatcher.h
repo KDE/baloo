@@ -32,7 +32,7 @@ namespace Baloo { class NaturalQueryParser; }
 class PatternMatcher
 {
     public:
-        PatternMatcher(Baloo::NaturalQueryParser *parser,
+        PatternMatcher(const Baloo::NaturalQueryParser *parser,
                        QList<Baloo::Term> &terms,
                        int cursor_position,
                        const QStringList &pattern,
@@ -100,7 +100,7 @@ class PatternMatcher
                                    int first_term_index_not_matching) const;
 
     private:
-        Baloo::NaturalQueryParser *parser;
+        const Baloo::NaturalQueryParser *parser;
         QList<Baloo::Term> &terms;
         int cursor_position;
         QStringList pattern;

@@ -23,7 +23,7 @@
 
 #include <QRegExp>
 
-PatternMatcher::PatternMatcher(Baloo::NaturalQueryParser *parser,
+PatternMatcher::PatternMatcher(const Baloo::NaturalQueryParser *parser,
                                QList<Baloo::Term> &terms,
                                int cursor_position,
                                const QStringList &pattern,

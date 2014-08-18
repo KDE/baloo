@@ -21,15 +21,15 @@
 #define _BALOO_NATURAL_QUERY_PARSER_H_
 
 #include "query.h"
+#include "completionproposal.h"
 #include "naturalqueryparser_export.h"
 
 #include <QtCore/QString>
 
 class PatternMatcher;
+class PassProperties;
 
 namespace Baloo {
-class CompletionProposal;
-
 /**
  * \class NaturalQueryParser naturalqueryparser.h baloo/naturalqueryparser.h
  *
@@ -112,7 +112,7 @@ public:
     /**
      * Destructor
      */
-    ~NaturalQueryParser();
+    virtual ~NaturalQueryParser();
 
     /**
      * Flags to change the behaviour of the parser.
@@ -134,25 +134,6 @@ public:
     /**
      * Parse a user query.
      *
-     * \return The parsed query or an invalid Query object
-     * in case the parsing failed.
-     */
-    Query parse( const QString& query ) const;
-
-    /**
-     * Parse a user query.
-     *
-     * \param query The query string to parse
-     * \param flags a set of flags influencing the parsing process.
-     *
-     * \return The parsed query or an invalid Query object
-     * in case the parsing failed.
-     */
-    Query parse( const QString& query, ParserFlags flags ) const;
-
-    /**
-     * Parse a user query.
-     *
      * \param query The query string to parse
      * \param flags a set of flags influencing the parsing process.
      * \param cursor_position position of the cursor in a line edit used
@@ -162,7 +143,9 @@ public:
      * \return The parsed query or an invalid Query object
      * in case the parsing failed.
      */
-    Query parse( const QString& query, ParserFlags flags, int cursor_position ) const;
+    Query parse(const QString& query,
+                ParserFlags flags = NoParserFlags,
+                int cursor_position = -1) const;
 
     /**
      * List of completion proposals related to the previously parsed query
@@ -172,28 +155,23 @@ public:
      */
     QList<CompletionProposal *> completionProposals() const;
 
-    /**
-     * Convenience method to quickly parse a query without creating an object.
-     *
-     * \warning The parser caches many useful information that is slow to
-     *          retrieve from the Baloo database. If you have to parse
-     *          many queries, consider using a QueryParser object.
-     *
-     * \return The parsed query or an invalid Query object
-     * in case the parsing failed.
-     */
-    static Query parseQuery( const QString& query );
-
-    /**
-     * \overload
-     *
-     * \param query The query string to parse
-     * \param flags a set of flags influencing the parsing process.
-     */
-    static Query parseQuery( const QString& query, ParserFlags flags );
-
 private:
-    void addCompletionProposal(CompletionProposal *proposal);
+    void addCompletionProposal(CompletionProposal *proposal) const;
+    QStringList split(const QString &query, bool is_user_query, QList<int> *positions = NULL) const;
+    QList<Term> &terms() const;
+
+protected:
+    virtual void addSpecificPatterns(int cursor_position, NaturalQueryParser::ParserFlags flags) const;
+
+    template<typename T>
+    void runPass(const T &pass,
+                 int cursor_position,
+                 const QString &pattern,
+                 const KLocalizedString &description = KLocalizedString(),
+                 CompletionProposal::Type type = CompletionProposal::NoType) const;
+
+    // Some passes that subclass may want to use
+    PassProperties &passProperties() const;
 
 private:
     struct Private;
