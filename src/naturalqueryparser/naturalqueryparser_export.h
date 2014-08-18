@@ -26,13 +26,13 @@
 #ifndef BALOO_QUERYPARSER_EXPORT
 # if defined(KDELIBS_STATIC_LIBS)
    /* No export/import for static libraries */
-#  define BALOO_QUERYPARSER_EXPORT
+#  define BALOO_NATURALQUERYPARSER_EXPORT
 # elif defined(MAKE_BALOOQUERYPARSER_LIB)
    /* We are building this library */
-#  define BALOO_QUERYPARSER_EXPORT KDE_EXPORT
+#  define BALOO_NATURALQUERYPARSER_EXPORT KDE_EXPORT
 # else
    /* We are using this library */
-#  define BALOO_QUERYPARSER_EXPORT KDE_IMPORT
+#  define BALOO_NATURALQUERYPARSER_EXPORT KDE_IMPORT
 # endif
 #endif
 

@@ -18,12 +18,12 @@
 */
 
 #include "patternmatcher.h"
-#include "queryparser.h"
+#include "naturalqueryparser.h"
 #include "utils.h"
 
 #include <QRegExp>
 
-PatternMatcher::PatternMatcher(Baloo::QueryParser *parser,
+PatternMatcher::PatternMatcher(Baloo::NaturalQueryParser *parser,
                                QList<Baloo::Term> &terms,
                                int cursor_position,
                                const QStringList &pattern,

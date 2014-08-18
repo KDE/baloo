@@ -17,7 +17,7 @@
    Boston, MA 02110-1301, USA.
 */
 
-#include "queryparser.h"
+#include "naturalqueryparser.h"
 #include "patternmatcher.h"
 #include "completionproposal.h"
 #include "utils.h"
@@ -74,7 +74,7 @@ struct DateTimeSpec {
     }
 };
 
-struct QueryParser::Private
+struct NaturalQueryParser::Private
 {
     Private()
     : separators(i18nc(
@@ -85,7 +85,7 @@ struct QueryParser::Private
 
     QStringList split(const QString &query, bool is_user_query, QList<int> *positions = NULL);
 
-    void runPasses(int cursor_position, QueryParser::ParserFlags flags);
+    void runPasses(int cursor_position, NaturalQueryParser::ParserFlags flags);
     template<typename T>
     void runPass(const T &pass,
                  int cursor_position,
@@ -102,7 +102,7 @@ struct QueryParser::Private
                             const Term &term);
     Term tuneTerm(Term term, Query &query);
 
-    QueryParser *parser;
+    NaturalQueryParser *parser;
     QList<Term> terms;
     QList<CompletionProposal *> proposals;
 
@@ -124,39 +124,39 @@ struct QueryParser::Private
     QString separators;
 };
 
-QueryParser::QueryParser()
+NaturalQueryParser::NaturalQueryParser()
 : d(new Private)
 {
     d->parser = this;
 }
 
-QueryParser::~QueryParser()
+NaturalQueryParser::~NaturalQueryParser()
 {
     qDeleteAll(d->proposals);
     delete d;
 }
 
-Query QueryParser::parse(const QString &query) const
+Query NaturalQueryParser::parse(const QString &query) const
 {
     return parse(query, NoParserFlags);
 }
 
-Query QueryParser::parse(const QString &query, ParserFlags flags) const
+Query NaturalQueryParser::parse(const QString &query, ParserFlags flags) const
 {
     return parse(query, flags, -1);
 }
 
-Query QueryParser::parseQuery(const QString &query, ParserFlags flags)
+Query NaturalQueryParser::parseQuery(const QString &query, ParserFlags flags)
 {
-    return QueryParser().parse(query, flags);
+    return NaturalQueryParser().parse(query, flags);
 }
 
-Query QueryParser::parseQuery(const QString &query)
+Query NaturalQueryParser::parseQuery(const QString &query)
 {
-    return QueryParser().parse(query);
+    return NaturalQueryParser().parse(query);
 }
 
-Query QueryParser::parse(const QString &query, ParserFlags flags, int cursor_position) const
+Query NaturalQueryParser::parse(const QString &query, ParserFlags flags, int cursor_position) const
 {
     qDeleteAll(d->proposals);
 
@@ -201,17 +201,17 @@ Query QueryParser::parse(const QString &query, ParserFlags flags, int cursor_pos
     return rs;
 }
 
-QList<CompletionProposal *> QueryParser::completionProposals() const
+QList<CompletionProposal *> NaturalQueryParser::completionProposals() const
 {
     return d->proposals;
 }
 
-void QueryParser::addCompletionProposal(CompletionProposal *proposal)
+void NaturalQueryParser::addCompletionProposal(CompletionProposal *proposal)
 {
     d->proposals.append(proposal);
 }
 
-QStringList QueryParser::Private::split(const QString &query, bool is_user_query, QList<int> *positions)
+QStringList NaturalQueryParser::Private::split(const QString &query, bool is_user_query, QList<int> *positions)
 {
     QStringList parts;
     QString part;
@@ -263,7 +263,7 @@ QStringList QueryParser::Private::split(const QString &query, bool is_user_query
     return parts;
 }
 
-void QueryParser::Private::runPasses(int cursor_position, QueryParser::ParserFlags flags)
+void NaturalQueryParser::Private::runPasses(int cursor_position, NaturalQueryParser::ParserFlags flags)
 {
     // Prepare literal values
     runPass(pass_splitunits, cursor_position, QLatin1String("$1"));
@@ -441,7 +441,7 @@ void QueryParser::Private::runPasses(int cursor_position, QueryParser::ParserFla
 }
 
 template<typename T>
-void QueryParser::Private::runPass(const T &pass,
+void NaturalQueryParser::Private::runPass(const T &pass,
                                    int cursor_position,
                                    const QString &pattern,
                                    const KLocalizedString &description,
@@ -463,7 +463,7 @@ void QueryParser::Private::runPass(const T &pass,
 /*
  * Term tuning (setting the right properties of comparisons, etc)
  */
-Term QueryParser::Private::intervalComparison(const QString &prop,
+Term NaturalQueryParser::Private::intervalComparison(const QString &prop,
                                               const Term &min,
                                               const Term &max)
 {
@@ -482,10 +482,10 @@ Term QueryParser::Private::intervalComparison(const QString &prop,
     return total;
 }
 
-Term QueryParser::Private::dateTimeComparison(const QString &prop,
+Term NaturalQueryParser::Private::dateTimeComparison(const QString &prop,
                                               const Term &term)
 {
-    KCalendarSystem *cal = KCalendarSystem::create(KGlobal::locale()->calendarSystem());
+    const KCalendarSystem *cal = KLocale::global()->calendar();
     QDateTime start_date_time = term.value().toDateTime();
 
     QDate start_date(start_date_time.date());
@@ -537,7 +537,7 @@ Term QueryParser::Private::dateTimeComparison(const QString &prop,
     );
 }
 
-Term QueryParser::Private::tuneTerm(Term term, Query &query)
+Term NaturalQueryParser::Private::tuneTerm(Term term, Query &query)
 {
     // Recurse in the subterms
     QList<Term> subterms;
@@ -684,7 +684,7 @@ Term QueryParser::Private::tuneTerm(Term term, Query &query)
 /*
  * Datetime-folding
  */
-void QueryParser::Private::handleDateTimeComparison(DateTimeSpec &spec, const Term &term)
+void NaturalQueryParser::Private::handleDateTimeComparison(DateTimeSpec &spec, const Term &term)
 {
     QString property = term.property();     // Name like _k_date_week_offset|value
     QString type = property.section(QLatin1Char('_'), 3, 3);
@@ -720,7 +720,7 @@ static int fieldValue(const Field &field, bool in_defined_period, int now_value,
 
 static Term buildDateTimeLiteral(const DateTimeSpec &spec)
 {
-    KCalendarSystem *calendar = KCalendarSystem::create(KGlobal::locale()->calendarSystem());
+    const KCalendarSystem *calendar = KLocale::global()->calendar();
     QDate cdate = QDate::currentDate();
     QTime ctime = QTime::currentTime();
 
@@ -831,11 +831,10 @@ static Term buildDateTimeLiteral(const DateTimeSpec &spec)
         qMax(last_defined_date, last_defined_time)
     );
 
-    delete calendar;
     return Term(QString(), rs, Term::Equal);
 }
 
-void QueryParser::Private::foldDateTimes()
+void NaturalQueryParser::Private::foldDateTimes()
 {
     QList<Term> new_terms;
 

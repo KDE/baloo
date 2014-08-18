@@ -17,11 +17,11 @@
    Boston, MA 02110-1301, USA.
  */
 
-#ifndef _BALOO_QUERY_PARSER_H_
-#define _BALOO_QUERY_PARSER_H_
+#ifndef _BALOO_NATURAL_QUERY_PARSER_H_
+#define _BALOO_NATURAL_QUERY_PARSER_H_
 
 #include "query.h"
-#include "queryparser_export.h"
+#include "naturalqueryparser_export.h"
 
 #include <QtCore/QString>
 
@@ -31,15 +31,15 @@ namespace Baloo {
 class CompletionProposal;
 
 /**
- * \class QueryParser queryparser.h baloo/queryparser.h
+ * \class NaturalQueryParser naturalqueryparser.h baloo/naturalqueryparser.h
  *
  * \brief Parser for desktop user queries.
  *
  * \warning This is NOT a SPARQL parser.
- * \note Don't forget to insert the "baloo_queryparser" localization catalog
+ * \note Don't forget to insert the "baloo_naturalqueryparser" localization catalog
  *       for this class to be localized. Do so using KLocale::insertCatalog.
  *
- * The QueryParser can be used to parse user queries, ie. queries that the user
+ * The NaturalQueryParser can be used to parse user queries, ie. queries that the user
  * would enter in any search interface, and convert them into Query instances.
  *
  * The syntax is language-dependent and as natural as possible. Words are
@@ -49,7 +49,7 @@ class CompletionProposal;
  * Natural date-times can also be used and are recognized as date-time
  * literals. "sent on March 6" and "created last week" work as expected.
  *
- * \section queryparser_examples Examples
+ * \section naturalqueryparser_examples Examples
  *
  * %Query everything that contains the term "baloo":
  * \code
@@ -99,7 +99,7 @@ class CompletionProposal;
  *
  * \since 4.14
  */
-class BALOO_QUERYPARSER_EXPORT QueryParser
+class BALOO_NATURALQUERYPARSER_EXPORT NaturalQueryParser
 {
     friend class ::PatternMatcher;
 
@@ -107,12 +107,12 @@ public:
     /**
      * Create a new query parser.
      */
-    QueryParser();
+    NaturalQueryParser();
 
     /**
      * Destructor
      */
-    ~QueryParser();
+    ~NaturalQueryParser();
 
     /**
      * Flags to change the behaviour of the parser.
@@ -202,6 +202,6 @@ private:
 
 }
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(Baloo::QueryParser::ParserFlags)
+Q_DECLARE_OPERATORS_FOR_FLAGS(Baloo::NaturalQueryParser::ParserFlags)
 
 #endif

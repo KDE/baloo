@@ -1,7 +1,5 @@
 add_definitions(-DTRANSLATION_DOMAIN=\"baloo_queryparser\")
 
-add_definitions(${KDE4_ENABLE_EXCEPTIONS})
-
 set(QUERYPARSER_SRCS
     completionproposal.cpp
     pass_comparators.cpp
@@ -17,27 +15,28 @@ set(QUERYPARSER_SRCS
     pass_subqueries.cpp
     pass_typehints.cpp
     patternmatcher.cpp
-    queryparser.cpp
+    naturalqueryparser.cpp
     utils.cpp
 )
 
-add_library(balooqueryparser ${QUERYPARSER_SRCS})
+add_library(baloonaturalqueryparser ${QUERYPARSER_SRCS})
 
-target_link_libraries(balooqueryparser
+target_link_libraries(baloonaturalqueryparser
     KF5::BalooCore
+    KF5::KDELibs4Support
 )
 
-set_target_properties(balooqueryparser PROPERTIES
+set_target_properties(baloonaturalqueryparser PROPERTIES
     VERSION ${BALOO_VERSION}
     SOVERSION ${BALOO_VERSION_MAJOR}
 )
 
-install(TARGETS balooqueryparser EXPORT BalooLibraryTargets ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS baloonaturalqueryparser EXPORT BalooLibraryTargets ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES
     completionproposal.h
-    queryparser.h
-    queryparser_export.h
+    naturalqueryparser.h
+    naturalqueryparser_export.h
     DESTINATION ${INCLUDE_INSTALL_DIR}/baloo COMPONENT Devel
 )
 

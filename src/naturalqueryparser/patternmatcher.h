@@ -27,12 +27,12 @@
 
 #include <QtCore/QStringList>
 
-namespace Baloo { class QueryParser; }
+namespace Baloo { class NaturalQueryParser; }
 
 class PatternMatcher
 {
     public:
-        PatternMatcher(Baloo::QueryParser *parser,
+        PatternMatcher(Baloo::NaturalQueryParser *parser,
                        QList<Baloo::Term> &terms,
                        int cursor_position,
                        const QStringList &pattern,
@@ -100,7 +100,7 @@ class PatternMatcher
                                    int first_term_index_not_matching) const;
 
     private:
-        Baloo::QueryParser *parser;
+        Baloo::NaturalQueryParser *parser;
         QList<Baloo::Term> &terms;
         int cursor_position;
         QStringList pattern;
