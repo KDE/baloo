@@ -35,31 +35,6 @@
 
 #include <QDebug>
 
-#include <QtCore/QMutexLocker>
-
-
-namespace
-{
-bool isUsableVolume(const Solid::Device& dev)
-{
-    if (dev.is<Solid::StorageAccess>()) {
-        if (dev.is<Solid::StorageVolume>() &&
-                dev.parent().is<Solid::StorageDrive>() &&
-                (dev.parent().as<Solid::StorageDrive>()->isRemovable() ||
-                 dev.parent().as<Solid::StorageDrive>()->isHotpluggable())) {
-            const Solid::StorageVolume* volume = dev.as<Solid::StorageVolume>();
-            if (!volume->isIgnored() && volume->usage() == Solid::StorageVolume::FileSystem)
-                return true;
-        } else if (dev.is<Solid::NetworkShare>()) {
-            return !dev.as<Solid::NetworkShare>()->url().isEmpty();
-        }
-    }
-
-    // fallback
-    return false;
-}
-}
-
 using namespace Baloo;
 
 StorageDevices::StorageDevices(QObject* parent)
@@ -179,22 +154,31 @@ bool StorageDevices::Entry::isMounted() const
 
 bool StorageDevices::Entry::isUsable() const
 {
-    bool usable = false;
+    bool usable = true;
 
-    if (m_device.is<Solid::StorageVolume>()) {
-        if (m_device.is<Solid::OpticalDisc>() || m_device.is<Solid::NetworkShare>()) {
+    const Solid::Device& dev = m_device;
+    if (dev.is<Solid::StorageVolume>() && dev.parent().is<Solid::StorageDrive>()) {
+        auto parent = dev.parent().as<Solid::StorageDrive>();
+        if (parent->isRemovable() || parent->isHotpluggable()) {
             usable = false;
         }
-        // FIXME: We need to check for removable as well?
-        //else if (m_device.parent().as<Solid::StorageDrive>.isHotpluggable()) {
-        //    usable = false;
-        //}
-    } else {
+
+        const Solid::StorageVolume* volume = dev.as<Solid::StorageVolume>();
+        if (volume->isIgnored() || volume->usage() != Solid::StorageVolume::FileSystem) {
+            usable = false;
+        }
+    }
+
+    if (dev.is<Solid::NetworkShare>()) {
+        usable = false;
+    } else if (dev.is<Solid::OpticalDisc>()) {
         usable = false;
     }
 
-    if (const Solid::StorageAccess* sa = m_device.as<Solid::StorageAccess>()) {
-        usable = sa->isAccessible();
+    if (usable) {
+        if (const Solid::StorageAccess* sa = dev.as<Solid::StorageAccess>()) {
+            usable = sa->isAccessible();
+        }
     }
 
     return usable;

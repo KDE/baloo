@@ -55,3 +55,8 @@ if(CMAKE_SYSTEM_NAME MATCHES "Linux")
     endif()
 endif(CMAKE_SYSTEM_NAME MATCHES "Linux")
 
+#
+# Storage Devices
+#
+add_executable(storagedevicestest storagedevicestest.cpp ../storagedevices.cpp)
+target_link_libraries(storagedevicestest Qt5::Core KF5::Solid)
