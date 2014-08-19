@@ -154,6 +154,10 @@ bool StorageDevices::Entry::isMounted() const
 
 bool StorageDevices::Entry::isUsable() const
 {
+    if (mountPath().isEmpty()) {
+        return false;
+    }
+
     bool usable = true;
 
     const Solid::Device& dev = m_device;

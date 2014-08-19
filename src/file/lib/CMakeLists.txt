@@ -9,6 +9,7 @@ set(FILE_LIB_SRCS
 
     indexerconfig.cpp
     ../fileindexerconfig.cpp
+    ../storagedevices.cpp
     ../regexpcache.cpp
     ../fileexcludefilters.cpp
 )

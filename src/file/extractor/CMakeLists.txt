@@ -10,6 +10,7 @@ set(EXTRACTOR_SRCS
   ../database.cpp
   ../util.cpp
   ../fileindexerconfig.cpp
+  ../storagedevices.cpp
   ../regexpcache.cpp
   ../fileexcludefilters.cpp
 )
@@ -22,6 +23,7 @@ target_link_libraries(baloo_file_extractor
   KF5::FileMetaData
   KF5::I18n
   KF5::ConfigCore
+  KF5::Solid
   ${XAPIAN_LIBRARIES}
   KF5::BalooFiles
   KF5::BalooXapian

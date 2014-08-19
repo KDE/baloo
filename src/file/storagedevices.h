@@ -24,13 +24,8 @@
 #define REMOVABLEMEDIACACHE_H
 
 #include <QObject>
-#include <QMutex>
-#include <QSet>
 
 #include <Solid/Device>
-
-#include <QUrl>
-
 
 namespace Baloo
 {
@@ -66,6 +61,9 @@ public:
          */
         bool isUsable() const;
 
+        QString udi() const {
+            return m_device.udi();
+        }
     private:
         Solid::Device m_device;
     };

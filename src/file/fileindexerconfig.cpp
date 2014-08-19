@@ -19,6 +19,7 @@
 
 #include "fileindexerconfig.h"
 #include "fileexcludefilters.h"
+#include "storagedevices.h"
 
 #include <QUrl>
 #include <QStringList>
@@ -54,6 +55,7 @@ FileIndexerConfig::FileIndexerConfig(QObject* parent)
     : QObject(parent)
     , m_config(QLatin1String("baloofilerc"), KConfig::SimpleConfig)
     , m_indexHidden(false)
+    , m_devices(new StorageDevices(this))
 {
     KDirWatch* dirWatch = KDirWatch::self();
     connect(dirWatch, SIGNAL(dirty(QString)),
@@ -279,6 +281,17 @@ void FileIndexerConfig::buildFolderCache()
     KConfigGroup group = m_config.group("General");
     QStringList includeFoldersPlain = group.readPathEntry("folders", QStringList() << QDir::homePath());
     QStringList excludeFoldersPlain = group.readPathEntry("exclude folders", QStringList());
+
+    // Add all removable media and network shares as ignored unless they have
+    // been explicitly added in the include list
+    for (auto device: m_devices->allMedia()) {
+        const QString mountPath = device.mountPath();
+        if (!device.isUsable() && !mountPath.isEmpty()) {
+            if (!includeFoldersPlain.contains(mountPath)) {
+                excludeFoldersPlain << mountPath;
+            }
+        }
+    }
 
     m_folderCache.clear();
     insertSortFolders(includeFoldersPlain, true, m_folderCache);
