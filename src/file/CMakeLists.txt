@@ -26,7 +26,7 @@ if (NOT BALOO_LIBRARIES_ONLY)
         regexpcache.cpp
         fileexcludefilters.cpp
         lib/filemapping.cpp
-        removablemediacache.cpp
+        storagedevices.cpp
 
         # File Watcher
         filewatch.cpp

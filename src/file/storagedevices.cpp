@@ -20,7 +20,7 @@
    License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "removablemediacache.h"
+#include "storagedevices.h"
 
 #include <Solid/DeviceNotifier>
 #include <Solid/DeviceInterface>
@@ -62,7 +62,7 @@ bool isUsableVolume(const Solid::Device& dev)
 
 using namespace Baloo;
 
-RemovableMediaCache::RemovableMediaCache(QObject* parent)
+StorageDevices::StorageDevices(QObject* parent)
     : QObject(parent)
 {
     initCacheEntries();
@@ -74,12 +74,12 @@ RemovableMediaCache::RemovableMediaCache(QObject* parent)
 }
 
 
-RemovableMediaCache::~RemovableMediaCache()
+StorageDevices::~StorageDevices()
 {
 }
 
 
-void RemovableMediaCache::initCacheEntries()
+void StorageDevices::initCacheEntries()
 {
     QList<Solid::Device> devices
         = Solid::Device::listFromQuery(QLatin1String("StorageVolume.usage=='FileSystem'"))
@@ -89,12 +89,12 @@ void RemovableMediaCache::initCacheEntries()
     }
 }
 
-QList<RemovableMediaCache::Entry> RemovableMediaCache::allMedia() const
+QList<StorageDevices::Entry> StorageDevices::allMedia() const
 {
     return m_metadataCache.values();
 }
 
-RemovableMediaCache::Entry* RemovableMediaCache::createCacheEntry(const Solid::Device& dev)
+StorageDevices::Entry* StorageDevices::createCacheEntry(const Solid::Device& dev)
 {
     Entry entry(dev);
     if (dev.udi().isEmpty())
@@ -110,13 +110,13 @@ RemovableMediaCache::Entry* RemovableMediaCache::createCacheEntry(const Solid::D
     return &it.value();
 }
 
-bool RemovableMediaCache::isEmpty() const
+bool StorageDevices::isEmpty() const
 {
     return m_metadataCache.isEmpty();
 }
 
 
-void RemovableMediaCache::slotSolidDeviceAdded(const QString& udi)
+void StorageDevices::slotSolidDeviceAdded(const QString& udi)
 {
     qDebug() << udi;
     Entry* e = createCacheEntry(Solid::Device(udi));
@@ -126,7 +126,7 @@ void RemovableMediaCache::slotSolidDeviceAdded(const QString& udi)
 }
 
 
-void RemovableMediaCache::slotSolidDeviceRemoved(const QString& udi)
+void StorageDevices::slotSolidDeviceRemoved(const QString& udi)
 {
     QHash< QString, Entry >::iterator it = m_metadataCache.find(udi);
     if (it != m_metadataCache.end()) {
@@ -137,7 +137,7 @@ void RemovableMediaCache::slotSolidDeviceRemoved(const QString& udi)
 }
 
 
-void RemovableMediaCache::slotAccessibilityChanged(bool accessible, const QString& udi)
+void StorageDevices::slotAccessibilityChanged(bool accessible, const QString& udi)
 {
     qDebug() << accessible << udi;
     Q_UNUSED(accessible);
@@ -150,16 +150,16 @@ void RemovableMediaCache::slotAccessibilityChanged(bool accessible, const QStrin
     Q_EMIT deviceAccessibilityChanged(entry);
 }
 
-RemovableMediaCache::Entry::Entry()
+StorageDevices::Entry::Entry()
 {
 }
 
-RemovableMediaCache::Entry::Entry(const Solid::Device& device)
+StorageDevices::Entry::Entry(const Solid::Device& device)
     : m_device(device)
 {
 }
 
-QString RemovableMediaCache::Entry::mountPath() const
+QString StorageDevices::Entry::mountPath() const
 {
     if (const Solid::StorageAccess* sa = m_device.as<Solid::StorageAccess>()) {
         return sa->filePath();
@@ -168,7 +168,7 @@ QString RemovableMediaCache::Entry::mountPath() const
     }
 }
 
-bool RemovableMediaCache::Entry::isMounted() const
+bool StorageDevices::Entry::isMounted() const
 {
     if (const Solid::StorageAccess* sa = m_device.as<Solid::StorageAccess>()) {
         return sa->isAccessible();
@@ -177,7 +177,7 @@ bool RemovableMediaCache::Entry::isMounted() const
     }
 }
 
-bool RemovableMediaCache::Entry::isUsable() const
+bool StorageDevices::Entry::isUsable() const
 {
     bool usable = false;
 

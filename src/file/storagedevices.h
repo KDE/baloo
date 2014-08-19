@@ -39,13 +39,13 @@ namespace Baloo
  * The removable media cache
  * media that are supported by Baloo.
  */
-class RemovableMediaCache : public QObject
+class StorageDevices : public QObject
 {
     Q_OBJECT
 
 public:
-    RemovableMediaCache(QObject* parent = 0);
-    ~RemovableMediaCache();
+    StorageDevices(QObject* parent = 0);
+    ~StorageDevices();
 
     class Entry
     {
@@ -74,9 +74,9 @@ public:
     bool isEmpty() const;
 
 Q_SIGNALS:
-    void deviceAdded(const Baloo::RemovableMediaCache::Entry* entry);
-    void deviceRemoved(const Baloo::RemovableMediaCache::Entry* entry);
-    void deviceAccessibilityChanged(const Baloo::RemovableMediaCache::Entry* entry);
+    void deviceAdded(const Baloo::StorageDevices::Entry* entry);
+    void deviceRemoved(const Baloo::StorageDevices::Entry* entry);
+    void deviceAccessibilityChanged(const Baloo::StorageDevices::Entry* entry);
 
 private Q_SLOTS:
     void slotSolidDeviceAdded(const QString& udi);
