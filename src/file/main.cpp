@@ -46,7 +46,7 @@ int main(int argc, char** argv)
     lowerSchedulingPriority();
     lowerPriority();
 
-    KAboutData aboutData(QLatin1String("baloo_file"), i18n("Baloo File"), QLatin1String("0.1"),
+    KAboutData aboutData(QLatin1String("baloo_file"), i18n("Baloo File"), PROJECT_VERSION,
                          i18n("An application to handle file metadata"),
                          KAboutLicense::LGPL_V2);
     aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QLatin1String("me@vhanda.in"), QLatin1String("http://vhanda.in"));

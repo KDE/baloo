@@ -68,6 +68,7 @@ if (NOT BALOO_LIBRARIES_ONLY)
     )
 
     add_executable(baloo_file ${file_SRCS})
+    target_compile_definitions(baloo_file PRIVATE -DPROJECT_VERSION="${PROJECT_VERSION}")
 
     target_link_libraries(baloo_file
         Qt5::Sql

@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8.12)
 
 project(Baloo)
+set(PROJECT_VERSION "5.0.95")
 
 # ECM setup
 find_package(ECM 1.0.0 REQUIRED NO_MODULE)
@@ -18,9 +19,8 @@ include(ECMInstallIcons)
 include(ECMAddTests)
 
 set(KF5_VERSION "5.0.0")
-set(BALOO_VERSION "5.0.0")
 
-ecm_setup_version(${BALOO_VERSION} VARIABLE_PREFIX BALOO
+ecm_setup_version(${PROJECT_VERSION} VARIABLE_PREFIX BALOO
                         VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/baloo_version.h"
                         PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF5BalooConfigVersion.cmake"
                         SOVERSION 1
@@ -34,7 +34,7 @@ option(KDEPIM_SUPPORT_BUILD "Build baloo kdepim support" FALSE)
 find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Widgets Quick DBus Test Sql)
 
 find_package(KF5 ${KF5_VERSION} REQUIRED COMPONENTS I18n Config IdleTime KCMUtils Auth Crash Solid KIO KDELibs4Support)
-find_package(KF5 ${BALOO_VERSION} REQUIRED COMPONENTS FileMetaData)
+find_package(KF5 ${PROJECT_VERSION} REQUIRED COMPONENTS FileMetaData)
 
 if (KDEPIM_SUPPORT_BUILD)
   find_package(KF5Akonadi CONFIG)

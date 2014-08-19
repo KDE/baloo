@@ -3,6 +3,7 @@ add_definitions(-DTRANSLATION_DOMAIN=\"balooshow\")
 set(SRCS main.cpp)
 
 add_executable(balooshow ${SRCS})
+target_compile_definitions(balooshow PRIVATE -DPROJECT_VERSION="${PROJECT_VERSION}")
 
 target_link_libraries(balooshow
     KF5::BalooCore

@@ -3,6 +3,7 @@ add_definitions(-DTRANSLATION_DOMAIN=\"baloosearch\")
 set(BALOO_SEARCH_SRCS main.cpp)
 
 add_executable(baloosearch ${BALOO_SEARCH_SRCS})
+target_compile_definitions(baloosearch PRIVATE -DPROJECT_VERSION="${PROJECT_VERSION}")
 
 target_link_libraries(baloosearch
   KF5::I18n

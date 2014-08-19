@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
 {
     KAboutData aboutData(QLatin1String("balooshow"),
                          i18n("Baloo Show"),
-                         QLatin1String("0.1"),
+                         PROJECT_VERSION,
                          i18n("The Baloo data Viewer - A debugging tool"),
                          KAboutLicense::GPL,
                          i18n("(c) 2012, Vishesh Handa"));

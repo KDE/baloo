@@ -75,7 +75,7 @@ void resume()
 
 int main(int argc, char* argv[])
 {
-    KAboutData aboutData(QLatin1String("balooctl"), i18n("balooctl"), QLatin1String("0.1"));
+    KAboutData aboutData(QLatin1String("balooctl"), i18n("balooctl"), PROJECT_VERSION);
     aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QLatin1String("me@vhanda.in"));
 
     KAboutData::setApplicationData(aboutData);
