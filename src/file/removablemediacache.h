@@ -1,6 +1,7 @@
 /*
    This file is part of the KDE Baloo project.
    Copyright (C) 2011 Sebastian Trueg <trueg@kde.org>
+   Copyright (C) 2014 Vishesh Handa <vhanda@kde.org>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -35,7 +36,7 @@ namespace Baloo
 {
 
 /**
- * The removable media cache provides access to all removable
+ * The removable media cache
  * media that are supported by Baloo.
  */
 class RemovableMediaCache : public QObject
@@ -52,68 +53,35 @@ public:
         Entry();
         Entry(const Solid::Device& device);
 
-        /**
-         * Does the same as constructRelativeUrl except that no char conversion will ever
-         * take place. It is, thus, suitable for queries.
-         */
-        QString constructRelativeUrlString(const QString& path) const;
-        QUrl constructRelativeUrl(const QString& path) const;
-        QUrl constructLocalFileUrl(const QUrl& filexUrl) const;
-
         Solid::Device device() const {
             return m_device;
-        }
-        QString url() const {
-            return m_urlPrefix;
         }
 
         bool isMounted() const;
         QString mountPath() const;
 
+        /**
+         * Returns true if Baloo should be indexing this
+         * Currently we only index permanentaly mounted media
+         */
+        bool isUsable() const;
+
     private:
         Solid::Device m_device;
-
-        /// The prefix to be used for URLs
-        QString m_urlPrefix;
     };
 
-    const Entry* findEntryByFilePath(const QString& path) const;
-    const Entry* findEntryByUrl(const QUrl& url) const;
-
-    /**
-     * Searches for entries which are mounted at a path which starts with
-     * the given one. Example: a \p path \p /media will result in all
-     * entries which are mounted under \p /media like \p /media/disk1 or
-     * \p /media/cdrom.
-     */
-    QList<const Entry*> findEntriesByMountPath(const QString& path) const;
-
-    QList<const Entry*> allMedia() const;
-
-    /**
-     * Returns true if the URL might be pointing to a file on a
-     * removable device as handled by this class, ie. a non-local
-     * URL which can be converted to a local one.
-     * This method is primarily used for performance gain.
-     */
-    bool hasRemovableSchema(const QUrl& url) const;
-
-    /**
-     * Returns true if they are no devices in the RemoveableMediaCache
-     */
+    QList<Entry> allMedia() const;
     bool isEmpty() const;
 
 Q_SIGNALS:
     void deviceAdded(const Baloo::RemovableMediaCache::Entry* entry);
     void deviceRemoved(const Baloo::RemovableMediaCache::Entry* entry);
-    void deviceMounted(const Baloo::RemovableMediaCache::Entry* entry);
-    void deviceTeardownRequested(const Baloo::RemovableMediaCache::Entry* entry);
+    void deviceAccessibilityChanged(const Baloo::RemovableMediaCache::Entry* entry);
 
 private Q_SLOTS:
     void slotSolidDeviceAdded(const QString& udi);
     void slotSolidDeviceRemoved(const QString& udi);
     void slotAccessibilityChanged(bool accessible, const QString& udi);
-    void slotTeardownRequested(const QString& udi);
 
 private:
     void initCacheEntries();
@@ -122,13 +90,6 @@ private:
 
     /// maps Solid UDI to Entry
     QHash<QString, Entry> m_metadataCache;
-
-    /// contains all schemas that are used as url prefixes in m_metadataCache
-    /// this is used to avoid trying to convert each and every resource in
-    /// convertFilexUrl
-    QSet<QString> m_usedSchemas;
-
-    mutable QMutex m_entryCacheMutex;
 };
 
 } // namespace Baloo

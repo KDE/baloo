@@ -1,6 +1,7 @@
 /*
-   This file is part of the Nepomuk KDE project.
+   This file is part of the KDE Baloo project.
    Copyright (C) 2011 Sebastian Trueg <trueg@kde.org>
+   Copyright (C) 2014 Vishesh Handa <vhanda@kde.org>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -57,19 +58,12 @@ bool isUsableVolume(const Solid::Device& dev)
     // fallback
     return false;
 }
-
-bool isUsableVolume(const QString& udi)
-{
-    Solid::Device dev(udi);
-    return isUsableVolume(dev);
-}
 }
 
 using namespace Baloo;
 
 RemovableMediaCache::RemovableMediaCache(QObject* parent)
     : QObject(parent)
-    , m_entryCacheMutex(QMutex::Recursive)
 {
     initCacheEntries();
 
@@ -91,115 +85,33 @@ void RemovableMediaCache::initCacheEntries()
         = Solid::Device::listFromQuery(QLatin1String("StorageVolume.usage=='FileSystem'"))
           + Solid::Device::listFromType(Solid::DeviceInterface::NetworkShare);
     Q_FOREACH (const Solid::Device& dev, devices) {
-        if (isUsableVolume(dev)) {
-            if (Entry* entry = createCacheEntry(dev)) {
-                const Solid::StorageAccess* storage = entry->device().as<Solid::StorageAccess>();
-                if (storage && storage->isAccessible())
-                    slotAccessibilityChanged(true, dev.udi());
-            }
-        }
+        createCacheEntry(dev);
     }
 }
 
-QList<const RemovableMediaCache::Entry*> RemovableMediaCache::allMedia() const
+QList<RemovableMediaCache::Entry> RemovableMediaCache::allMedia() const
 {
-    QMutexLocker lock(&m_entryCacheMutex);
-    QList<const Entry*> media;
-    for (QHash<QString, Entry>::const_iterator it = m_metadataCache.begin(); it != m_metadataCache.end(); ++it)
-        media.append(&(*it));
-    return media;
+    return m_metadataCache.values();
 }
 
 RemovableMediaCache::Entry* RemovableMediaCache::createCacheEntry(const Solid::Device& dev)
 {
-    QMutexLocker lock(&m_entryCacheMutex);
-
     Entry entry(dev);
-    if (!entry.url().isEmpty()) {
-        qDebug() << "Usable" << dev.udi();
-
-        // we only add to this set and never remove. This is no problem as this is a small set
-        m_usedSchemas.insert(QUrl(entry.url()).scheme());
-
-        const Solid::StorageAccess* storage = dev.as<Solid::StorageAccess>();
-        connect(storage, SIGNAL(accessibilityChanged(bool,QString)),
-                this, SLOT(slotAccessibilityChanged(bool,QString)));
-        connect(storage, SIGNAL(teardownRequested(QString)),
-                this, SLOT(slotTeardownRequested(QString)));
-
-        QHash<QString, Entry>::iterator it = m_metadataCache.insert(dev.udi(), entry);
-
-        Q_EMIT deviceAdded(&it.value());
-
-        return &it.value();
-    } else {
-        qDebug() << "Cannot use device due to empty identifier:" << dev.udi();
+    if (dev.udi().isEmpty())
         return 0;
-    }
+
+    auto it = m_metadataCache.insert(dev.udi(), entry);
+
+    const Solid::StorageAccess* storage = dev.as<Solid::StorageAccess>();
+    connect(storage, SIGNAL(accessibilityChanged(bool,QString)),
+            this, SLOT(slotAccessibilityChanged(bool,QString)));
+    //connect(storage, SIGNAL(teardownRequested(QString)),
+    //        this, SLOT(slotTeardownRequested(QString)));
+    return &it.value();
 }
-
-
-const RemovableMediaCache::Entry* RemovableMediaCache::findEntryByFilePath(const QString& path) const
-{
-    QMutexLocker lock(&m_entryCacheMutex);
-
-    for (QHash<QString, Entry>::const_iterator it = m_metadataCache.begin();
-            it != m_metadataCache.end(); ++it) {
-        const Entry& entry = *it;
-        const Solid::StorageAccess* storage = entry.device().as<Solid::StorageAccess>();
-        if (storage &&
-                storage->isAccessible() &&
-                path.startsWith(storage->filePath()))
-            return &entry;
-    }
-
-    return 0;
-}
-
-
-const RemovableMediaCache::Entry* RemovableMediaCache::findEntryByUrl(const QUrl& url) const
-{
-    QMutexLocker lock(&m_entryCacheMutex);
-
-    const QString encodedUrl = QString::fromLatin1(url.toEncoded());
-    for (QHash<QString, Entry>::const_iterator it = m_metadataCache.constBegin();
-            it != m_metadataCache.constEnd(); ++it) {
-        const Entry& entry = *it;
-        if (encodedUrl.startsWith(entry.url())) {
-            return &entry;
-        }
-    }
-
-    return 0;
-}
-
-
-QList<const RemovableMediaCache::Entry*> RemovableMediaCache::findEntriesByMountPath(const QString& path) const
-{
-    QMutexLocker lock(&m_entryCacheMutex);
-
-    QList<const Entry*> entries;
-    for (QHash<QString, Entry>::const_iterator it = m_metadataCache.constBegin();
-            it != m_metadataCache.constEnd(); ++it) {
-        const Entry& entry = *it;
-        if (entry.isMounted() &&
-                entry.mountPath().startsWith(path)) {
-            entries.append(&entry);
-        }
-    }
-    return entries;
-}
-
-
-bool RemovableMediaCache::hasRemovableSchema(const QUrl& url) const
-{
-    return m_usedSchemas.contains(url.scheme());
-}
-
 
 bool RemovableMediaCache::isEmpty() const
 {
-    QMutexLocker lock(&m_entryCacheMutex);
     return m_metadataCache.isEmpty();
 }
 
@@ -207,19 +119,18 @@ bool RemovableMediaCache::isEmpty() const
 void RemovableMediaCache::slotSolidDeviceAdded(const QString& udi)
 {
     qDebug() << udi;
-
-    if (isUsableVolume(udi)) {
-        createCacheEntry(Solid::Device(udi));
+    Entry* e = createCacheEntry(Solid::Device(udi));
+    if (e) {
+        Q_EMIT deviceAdded(e);
     }
 }
 
 
 void RemovableMediaCache::slotSolidDeviceRemoved(const QString& udi)
 {
-    QMutexLocker lock(&m_entryCacheMutex);
     QHash< QString, Entry >::iterator it = m_metadataCache.find(udi);
     if (it != m_metadataCache.end()) {
-        qDebug() << "Found removable storage volume for Nepomuk undocking:" << udi;
+        qDebug() << "Found removable storage volume for Baloo undocking:" << udi;
         Q_EMIT deviceRemoved(&it.value());
         m_metadataCache.erase(it);
     }
@@ -229,94 +140,23 @@ void RemovableMediaCache::slotSolidDeviceRemoved(const QString& udi)
 void RemovableMediaCache::slotAccessibilityChanged(bool accessible, const QString& udi)
 {
     qDebug() << accessible << udi;
+    Q_UNUSED(accessible);
 
     //
     // cache new mount path
     //
-    QMutexLocker lock(&m_entryCacheMutex);
     Entry* entry = &m_metadataCache[udi];
     Q_ASSERT(entry != 0);
-
-    if (accessible) {
-        qDebug() << udi << "accessible at" << entry->device().as<Solid::StorageAccess>()->filePath()
-                 << "with identifier" << entry->url();
-        Q_EMIT deviceMounted(entry);
-    }
+    Q_EMIT deviceAccessibilityChanged(entry);
 }
-
-void RemovableMediaCache::slotTeardownRequested(const QString& udi)
-{
-    QMutexLocker lock(&m_entryCacheMutex);
-    Entry* entry = &m_metadataCache[udi];
-    Q_ASSERT(entry != 0);
-
-    Q_EMIT deviceTeardownRequested(entry);
-}
-
-
 
 RemovableMediaCache::Entry::Entry()
 {
 }
 
-
 RemovableMediaCache::Entry::Entry(const Solid::Device& device)
     : m_device(device)
 {
-    if (device.is<Solid::StorageVolume>()) {
-        const Solid::StorageVolume* volume = m_device.as<Solid::StorageVolume>();
-        if (device.is<Solid::OpticalDisc>() &&
-                !volume->label().isEmpty()) {
-            // we use the label as is - it is not even close to unique but
-            // so far we have nothing better
-
-            // QUrl does convert the host to lower case
-            QString label = volume->label().toLower();
-            // QUrl does not allow spaces in the host
-            label.replace(' ', '_');
-
-            m_urlPrefix = QLatin1String("optical://") + label;
-        } else if (!volume->uuid().isEmpty()) {
-            // we always use lower-case uuids
-            m_urlPrefix = QLatin1String("filex://") + volume->uuid().toLower();
-        }
-    } else if (device.is<Solid::NetworkShare>()) {
-        m_urlPrefix = device.as<Solid::NetworkShare>()->url().toString();
-    }
-}
-
-QString RemovableMediaCache::Entry::constructRelativeUrlString(const QString& path) const
-{
-    if (const Solid::StorageAccess* sa = m_device.as<Solid::StorageAccess>()) {
-        if (sa->isAccessible()) {
-            const QString relativePath = path.mid(sa->filePath().count());
-            return m_urlPrefix + relativePath;
-        }
-    }
-
-    // fallback
-    return QString();
-}
-
-QUrl RemovableMediaCache::Entry::constructRelativeUrl(const QString& path) const
-{
-    return QUrl(constructRelativeUrlString(path));
-}
-
-
-QUrl RemovableMediaCache::Entry::constructLocalFileUrl(const QUrl& filexUrl) const
-{
-    if (const Solid::StorageAccess* sa = m_device.as<Solid::StorageAccess>()) {
-        if (sa->isAccessible()) {
-            // the base of the path: the mount path
-            QUrl fileUrl(sa->filePath());
-            fileUrl.setPath(QUrl::fromEncoded(filexUrl.toEncoded().mid(m_urlPrefix.count())).toString());
-            return fileUrl;
-        }
-    }
-
-    // fallback
-    return QString();
 }
 
 QString RemovableMediaCache::Entry::mountPath() const
@@ -336,3 +176,27 @@ bool RemovableMediaCache::Entry::isMounted() const
         return false;
     }
 }
+
+bool RemovableMediaCache::Entry::isUsable() const
+{
+    bool usable = false;
+
+    if (m_device.is<Solid::StorageVolume>()) {
+        if (m_device.is<Solid::OpticalDisc>() || m_device.is<Solid::NetworkShare>()) {
+            usable = false;
+        }
+        // FIXME: We need to check for removable as well?
+        //else if (m_device.parent().as<Solid::StorageDrive>.isHotpluggable()) {
+        //    usable = false;
+        //}
+    } else {
+        usable = false;
+    }
+
+    if (const Solid::StorageAccess* sa = m_device.as<Solid::StorageAccess>()) {
+        usable = sa->isAccessible();
+    }
+
+    return usable;
+}
+
