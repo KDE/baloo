@@ -20,7 +20,7 @@
 #ifndef _BALOO_NATURAL_QUERY_PARSER_H_
 #define _BALOO_NATURAL_QUERY_PARSER_H_
 
-#include "query.h"
+#include "baloo/query.h"
 #include "completionproposal.h"
 #include "naturalqueryparser_export.h"
 
