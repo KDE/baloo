@@ -39,6 +39,7 @@ private Q_SLOTS:
     void testTypehints();
     void testReduction();
     void testTags();
+    void testPropertyInfo();
 };
 }
 

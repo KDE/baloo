@@ -11,6 +11,7 @@ set(QUERYPARSER_SRCS
     pass_numbers.cpp
     pass_periodnames.cpp
     pass_properties.cpp
+    pass_propertyinfo.cpp
     pass_splitunits.cpp
     pass_subqueries.cpp
     pass_typehints.cpp
@@ -25,6 +26,7 @@ add_library(baloonaturalqueryparser ${QUERYPARSER_SRCS})
 target_link_libraries(baloonaturalqueryparser
     KF5::BalooCore
     KF5::KDELibs4Support
+    KF5::FileMetaData
 )
 
 set_target_properties(baloonaturalqueryparser PROPERTIES

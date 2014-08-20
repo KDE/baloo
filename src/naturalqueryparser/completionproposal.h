@@ -56,6 +56,7 @@ class BALOO_NATURALQUERYPARSER_EXPORT CompletionProposal
             Tag,            /*!< A valid tag name */
             Contact,        /*!< Something that can be parsed unambiguously to a contact (a contact name, email, pseudo, etc) */
             Email,          /*!< An e-mail address */
+            PropertyName,   /*!< A property name. List of these names can be found in kde:kfilemetadata/src/propertyinfo.h */
         };
 
         /**

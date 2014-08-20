@@ -63,6 +63,10 @@ public:
 
 protected:
     virtual void addSpecificPatterns(int cursor_position, NaturalQueryParser::ParserFlags flags) const;
+
+private:
+    struct Private;
+    Private *d;
 };
 
 }

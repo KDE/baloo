@@ -147,4 +147,12 @@ void NaturalQueryParserTest::testTags()
     );
 }
 
+void NaturalQueryParserTest::testPropertyInfo()
+{
+    QCOMPARE(
+        NaturalFileQueryParser::parseQuery(QLatin1String("bitRate > 44000")),
+        Query(Term(QLatin1String("bitRate"), 44000, Term::Greater))
+    );
+}
+
 QTEST_KDEMAIN_CORE(NaturalQueryParserTest)

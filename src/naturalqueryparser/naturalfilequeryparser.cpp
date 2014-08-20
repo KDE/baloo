@@ -20,17 +20,24 @@
 #include "naturalfilequeryparser.h"
 #include "naturalqueryparser_p.h"
 #include "pass_properties.h"
+#include "pass_propertyinfo.h"
 
 using namespace Baloo;
 
+struct NaturalFileQueryParser::Private
+{
+    PassPropertyInfo pass_propertyinfo;
+};
+
 NaturalFileQueryParser::NaturalFileQueryParser()
+: d(new Private)
 {
 }
 
 NaturalFileQueryParser::~NaturalFileQueryParser()
 {
+    delete d;
 }
-
 
 void NaturalFileQueryParser::addSpecificPatterns(int cursor_position, NaturalQueryParser::ParserFlags flags) const
 {
@@ -73,6 +80,11 @@ void NaturalFileQueryParser::addSpecificPatterns(int cursor_position, NaturalQue
     runPass(passProperties(), cursor_position,
         i18nc("A document is associated with a tag", "tagged as $1;has tag $1;tag is $1;# $1"),
         ki18n("Tag name"), CompletionProposal::Tag);
+
+    // Generic properties using a simpler and more discoverable syntax
+    runPass(d->pass_propertyinfo, cursor_position,
+        i18nc("$1 is a property name (non-translatable unfortunately) and $2 is the value against which the property is matched. Note that the equal/greater/smaller sign has already been folded in $2", "$1 is $2;$1 $2"),
+        ki18n("File property"), CompletionProposal::PropertyName);
 }
 
 Query NaturalFileQueryParser::parseQuery(const QString& query, ParserFlags flags)
