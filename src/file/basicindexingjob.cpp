@@ -58,7 +58,7 @@ bool BasicIndexingJob::index()
     QFileInfo fileInfo(m_file.url());
 
     XapianDocument doc;
-    doc.addTerm(m_mimetype, QLatin1String("M"));
+    doc.addBoolTerm(m_mimetype, QLatin1String("M"));
     doc.indexText(fileInfo.fileName(), 1000);
     doc.indexText(fileInfo.fileName(), QLatin1String("F"), 1000);
 
