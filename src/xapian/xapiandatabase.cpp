@@ -193,6 +193,10 @@ Xapian::WritableDatabase XapianDatabase::createWritableDb()
             kError() << err.get_error_string();
             return Xapian::WritableDatabase();
         }
+        catch (const std::exception& err) {
+            kError() << "Unknown exception: " << err.what();
+            return Xapian::WritableDatabase();
+        }
         catch (...) {
             kError() << "Bananana Error";
             return Xapian::WritableDatabase();
