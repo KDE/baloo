@@ -122,7 +122,8 @@ int PatternMatcher::matchPattern(int first_term_index,
     }
 
     // See if the partially matched pattern can be used to provide a completion proposal
-    if (has_matched_a_literal && term_index - first_term_index > 0) {
+    if ((has_matched_a_literal || completion_type == Baloo::CompletionProposal::PropertyName) &&
+        term_index - first_term_index > 0) {
         addCompletionProposal(pattern_index, first_term_index, term_index);
     }
 
@@ -169,7 +170,7 @@ void PatternMatcher::addCompletionProposal(int first_pattern_index_not_matching,
     // Don't count terms that are not literal terms. This avoids problems when the
     // user types "sent to size > 2M", that is seen here as "sent to <comparison>".
     if (!terms.at(first_term_index_not_matching - 1).property().isNull()) {
-        if (--first_term_index_not_matching < 0) {
+        if (--first_term_index_not_matching <= 0) {
             return; // Avoid an underflow when the pattern is only "$1" for instance.
         }
     }
