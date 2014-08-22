@@ -23,27 +23,54 @@
 
 #include "term.h"
 
-#include <klocalizedstring.h>
+#include <kcalendarsystem.h>
+#include <klocale.h>
 
 PassPeriodNames::PassPeriodNames()
 {
-    registerNames(day_names, i18nc(
-        "Day names, starting at the first day of the week (Monday for the Gregorian Calendar)",
-        "monday tuesday wednesday thursday friday saturday sunday"
-    ));
-    registerNames(month_names, i18nc(
-        "Month names, starting at the first of the year",
-        "january february march april may june july august september october november december"
-    ));
+    const KCalendarSystem *cal = KLocale::global()->calendar();
+
+    // List of all the day names (try to get as many days as the calendar can provide)
+    for (int day=1;
+         insertName(day_names,
+                    day,
+                    cal->weekDayName(day, KCalendarSystem::ShortDayName),
+                    cal->weekDayName(day, KCalendarSystem::LongDayName));
+         ++day) {
+    }
+
+    // List of all the month names (NOTE: Using the current year, and a previous
+    // year that is a leap year (or not a leap year if the current year is one))
+    int years[2];
+
+    years[0] = cal->year(QDate::currentDate());
+    years[1] = years[0];
+
+    while (cal->isLeapYear(years[0]) == cal->isLeapYear(years[1])) {
+        --years[1];
+    }
+
+    for (int year=0; year<2; ++year) {
+        for (int month=1;
+             insertName(month_names,
+                        month,
+                        cal->monthName(month, years[year], KCalendarSystem::ShortName),
+                        cal->monthName(month, years[year], KCalendarSystem::LongName));
+             ++month) {
+        }
+    }
 }
 
-void PassPeriodNames::registerNames(QHash<QString, long long> &table, const QString &names)
+bool PassPeriodNames::insertName(QHash<QString, int> &hash, int value, const QString &shortName, const QString &longName)
 {
-    const QStringList list = names.split(QLatin1Char(' '));
-
-    for (int i=0; i<list.count(); ++i) {
-        table.insert(list.at(i), i + 1);    // Count from 1 as calendars do this
+    if (shortName.isEmpty() || longName.isEmpty()) {
+        return false;
     }
+
+    hash.insert(shortName.toLower(), value);
+    hash.insert(longName.toLower(), value);
+
+    return true;
 }
 
 QList<Baloo::Term> PassPeriodNames::run(const QList<Baloo::Term> &match) const
@@ -52,7 +79,7 @@ QList<Baloo::Term> PassPeriodNames::run(const QList<Baloo::Term> &match) const
     QString name = stringValueIfLiteral(match.at(0)).toLower();
 
     PassDatePeriods::Period period = PassDatePeriods::VariablePeriod;
-    long long value;
+    int value;
 
     if (day_names.contains(name)) {
         period = PassDatePeriods::DayOfWeek;
@@ -65,7 +92,7 @@ QList<Baloo::Term> PassPeriodNames::run(const QList<Baloo::Term> &match) const
     if (period != PassDatePeriods::VariablePeriod) {
         rs.append(Baloo::Term(
             PassDatePeriods::propertyName(period, false),
-            value,
+            QVariant((long long)value),
             Baloo::Term::Equal
         ));
     }
