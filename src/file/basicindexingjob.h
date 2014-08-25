@@ -36,7 +36,8 @@ class XapianDocument;
 class BasicIndexingJob
 {
 public:
-    BasicIndexingJob(QSqlDatabase* db, const FileMapping& file, const QString& mimetype);
+    BasicIndexingJob(QSqlDatabase* db, const FileMapping& file,
+                     const QString& mimetype, bool onlyBasicIndexing);
     ~BasicIndexingJob();
 
     bool index();
@@ -58,6 +59,7 @@ private:
     QSqlDatabase* m_sqlDb;
     FileMapping m_file;
     QString m_mimetype;
+    bool m_onlyBasicIndexing;
 
     uint m_id;
     Xapian::Document m_doc;

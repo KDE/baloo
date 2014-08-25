@@ -63,6 +63,8 @@ public:
 
     bool indexHiddenFilesAndFolders() const;
 
+    bool onlyBasicIndexing() const;
+
     /**
      * true the first time the service is run (or after manually
      * tampering with the config.
@@ -174,6 +176,7 @@ private:
     QSet<QString> m_excludeMimetypes;
 
     bool m_indexHidden;
+    bool m_onlyBasicIndexing;
 
     StorageDevices* m_devices;
 };

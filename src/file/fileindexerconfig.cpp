@@ -125,6 +125,11 @@ bool FileIndexerConfig::indexHiddenFilesAndFolders() const
     return m_indexHidden;
 }
 
+bool FileIndexerConfig::onlyBasicIndexing() const
+{
+    return m_onlyBasicIndexing;
+}
+
 void FileIndexerConfig::slotConfigDirty()
 {
     forceConfigUpdate();
@@ -321,6 +326,7 @@ void FileIndexerConfig::forceConfigUpdate()
     buildMimeTypeCache();
 
     m_indexHidden = m_config.group("General").readEntry("index hidden folders", false);
+    m_onlyBasicIndexing = m_config.group("General").readEntry("only basic indexing", false);
 }
 
 void FileIndexerConfig::setInitialRun(bool isInitialRun)

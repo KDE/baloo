@@ -34,10 +34,12 @@
 
 using namespace Baloo;
 
-BasicIndexingJob::BasicIndexingJob(QSqlDatabase* db, const FileMapping& file, const QString& mimetype)
+BasicIndexingJob::BasicIndexingJob(QSqlDatabase* db, const FileMapping& file,
+                                   const QString& mimetype, bool onlyBasicIndexing)
     : m_sqlDb(db)
     , m_file(file)
     , m_mimetype(mimetype)
+    , m_onlyBasicIndexing(onlyBasicIndexing)
     , m_id(0)
 {
 }
@@ -87,6 +89,10 @@ bool BasicIndexingJob::index()
 
         // This is an optimization for folders. They do not need to go through
         // file indexing, so there are no indexers for folders
+        doc.addBoolTerm(QLatin1String("Z2"));
+    }
+    else if (m_onlyBasicIndexing) {
+        // This is to prevent indexing if option in config is set to do so
         doc.addBoolTerm(QLatin1String("Z2"));
     }
     else {

@@ -182,7 +182,7 @@ void BasicIndexingQueue::index(const FileMapping& file, const QString& mimetype,
     bool xattrOnly = (flags & Baloo::ExtendedAttributesOnly);
 
     if (!xattrOnly) {
-        BasicIndexingJob job(&m_db->sqlDatabase(), file, mimetype);
+        BasicIndexingJob job(&m_db->sqlDatabase(), file, mimetype, m_config->onlyBasicIndexing());
         if (job.index()) {
             Q_EMIT newDocument(job.id(), job.document());
         }
