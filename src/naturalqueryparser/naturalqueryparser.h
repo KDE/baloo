@@ -101,8 +101,6 @@ namespace Baloo {
  */
 class BALOO_NATURALQUERYPARSER_EXPORT NaturalQueryParser
 {
-    friend class ::PatternMatcher;
-
 public:
     /**
      * Create a new query parser.
@@ -176,6 +174,8 @@ protected:
 private:
     struct Private;
     Private* const d;
+
+    friend class ::PatternMatcher;
 };
 
 }

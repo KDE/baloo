@@ -35,8 +35,6 @@ namespace Baloo {
  */
 class BALOO_NATURALQUERYPARSER_EXPORT NaturalFileQueryParser : public NaturalQueryParser
 {
-    friend class ::PatternMatcher;
-
 public:
     /**
      * Create a new query parser.

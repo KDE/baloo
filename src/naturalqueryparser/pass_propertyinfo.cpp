@@ -38,6 +38,7 @@ PassPropertyInfo::PassPropertyInfo()
 
 QList<Baloo::Term> PassPropertyInfo::run(const QList<Baloo::Term> &match) const
 {
+    Q_ASSERT(match.count() == 2);
     QList<Baloo::Term> rs;
     QString propertyName = stringValueIfLiteral(match.at(0));
     Baloo::Term term = match.at(1);
