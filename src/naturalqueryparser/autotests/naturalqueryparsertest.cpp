@@ -18,11 +18,11 @@
  *
  */
 
-#include "queryparsertest.h"
+#include "naturalqueryparsertest.h"
 #include "query.h"
 #include "term.h"
 
-#include "../queryparser.h"
+#include "../naturalfilequeryparser.h"
 
 #include <qtest_kde.h>
 
@@ -41,41 +41,41 @@ namespace QTest {
 }
 
 
-void QueryParserTest::testSearchString()
+void NaturalQueryParserTest::testSearchString()
 {
     QString search_string(QLatin1String("correct horse battery staple "));
 
     QCOMPARE(
-        QueryParser::parseQuery(search_string).searchString(),
+        NaturalFileQueryParser::parseQuery(search_string).searchString(),
         search_string
     );
 }
 
-void QueryParserTest::testNumbers()
+void NaturalQueryParserTest::testNumbers()
 {
     QCOMPARE(
-        QueryParser::parseQuery(QLatin1String("size > 1024")),
+        NaturalFileQueryParser::parseQuery(QLatin1String("size > 1024")),
         Query(Term(QLatin1String("size"), 1024LL, Term::Greater))
     );
 }
 
-void QueryParserTest::testDecimal()
+void NaturalQueryParserTest::testDecimal()
 {
     QCOMPARE(
-        QueryParser::parseQuery(QLatin1String("size > 1024.38")),
+        NaturalFileQueryParser::parseQuery(QLatin1String("size > 1024.38")),
         Query(Term(QLatin1String("size"), 1024.38, Term::Greater))
     );
 }
 
-void QueryParserTest::testFilesize()
+void NaturalQueryParserTest::testFilesize()
 {
     QCOMPARE(
-        QueryParser::parseQuery(QLatin1String("size > 2K")),
+        NaturalFileQueryParser::parseQuery(QLatin1String("size > 2K")),
         Query(Term(QLatin1String("size"), 2048, Term::Greater))
     );
 }
 
-void QueryParserTest::testDatetime()
+void NaturalQueryParserTest::testDatetime()
 {
     Query expected;
     QDateTime now = QDateTime::currentDateTime();
@@ -85,7 +85,7 @@ void QueryParserTest::testDatetime()
     expected.setTerm(Term());
 
     QCOMPARE(
-        QueryParser::parseQuery(QLatin1String("today")),
+        NaturalFileQueryParser::parseQuery(QLatin1String("today")),
         expected
     );
 
@@ -94,7 +94,7 @@ void QueryParserTest::testDatetime()
     expected.setDateFilter(now.date().year(), now.date().month(), now.date().day());
 
     QCOMPARE(
-        QueryParser::parseQuery(QLatin1String("yesterday")),
+        NaturalFileQueryParser::parseQuery(QLatin1String("yesterday")),
         expected
     );
 
@@ -102,49 +102,57 @@ void QueryParserTest::testDatetime()
     expected.setDateFilter(2011, 1, 2);
 
     QCOMPARE(
-        QueryParser::parseQuery(QLatin1String("January 2, 2011")),
+        NaturalFileQueryParser::parseQuery(QLatin1String("January 2, 2011")),
         expected
     );
 }
 
-void QueryParserTest::testFilename()
+void NaturalQueryParserTest::testFilename()
 {
     QCOMPARE(
-        QueryParser::parseQuery(QLatin1String("\"*.txt\""), QueryParser::DetectFilenamePattern),
+        NaturalFileQueryParser::parseQuery(QLatin1String("\"*.txt\""), NaturalQueryParser::DetectFilenamePattern),
         Query(Term(QLatin1String("filename"), QRegExp(QLatin1String("^.*\\\\.txt$")), Term::Contains))
     );
 }
 
-void QueryParserTest::testTypehints()
+void NaturalQueryParserTest::testTypehints()
 {
     Query expected;
 
     expected.setType(QLatin1String("Email"));
 
     QCOMPARE(
-        QueryParser::parseQuery(QLatin1String("emails")),
+        NaturalFileQueryParser::parseQuery(QLatin1String("emails")),
         expected
     );
 }
 
-void QueryParserTest::testReduction()
+void NaturalQueryParserTest::testReduction()
 {
     QCOMPARE(
-        QueryParser::parseQuery(QLatin1String("size > 2K and size < 3K")),
+        NaturalFileQueryParser::parseQuery(QLatin1String("size > 2K and size < 3K")),
         Query(Term(QLatin1String("size"), 2048, Term::Greater) && Term(QLatin1String("size"), 3072, Term::Less))
     );
     QCOMPARE(
-        QueryParser::parseQuery(QLatin1String("size > 2K or size < 3K")),
+        NaturalFileQueryParser::parseQuery(QLatin1String("size > 2K or size < 3K")),
         Query(Term(QLatin1String("size"), 2048, Term::Greater) || Term(QLatin1String("size"), 3072, Term::Less))
     );
 }
 
-void QueryParserTest::testTags()
+void NaturalQueryParserTest::testTags()
 {
     QCOMPARE(
-        QueryParser::parseQuery(QLatin1String("tagged as Important")),
+        NaturalFileQueryParser::parseQuery(QLatin1String("tagged as Important")),
         Query(Term(QLatin1String("tags"), QLatin1String("Important"), Term::Contains))
     );
 }
 
-QTEST_KDEMAIN_CORE(QueryParserTest)
+void NaturalQueryParserTest::testPropertyInfo()
+{
+    QCOMPARE(
+        NaturalFileQueryParser::parseQuery(QLatin1String("bitRate > 44000")),
+        Query(Term(QLatin1String("bitRate"), 44000, Term::Greater))
+    );
+}
+
+QTEST_KDEMAIN_CORE(NaturalQueryParserTest)

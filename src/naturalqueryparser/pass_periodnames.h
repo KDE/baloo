@@ -34,11 +34,10 @@ class PassPeriodNames
         QList<Baloo::Term> run(const QList<Baloo::Term> &match) const;
 
     private:
-        void registerNames(QHash<QString, long long> &table, const QString &names);
+        bool insertName(QHash<QString, int> &hash, int value, const QString &shortName, const QString &longName);
 
-    private:
-        QHash<QString, long long> day_names;
-        QHash<QString, long long> month_names;
+        QHash<QString, int> day_names;
+        QHash<QString, int> month_names;
 };
 
 #endif

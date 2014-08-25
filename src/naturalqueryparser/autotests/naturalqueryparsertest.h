@@ -18,14 +18,14 @@
  *
  */
 
-#ifndef BALOO_QUERYPARSERTEST_H
-#define BALOO_QUERYPARSERTEST_H
+#ifndef BALOO_NATURALQUERYPARSERTEST_H
+#define BALOO_NATURALQUERYPARSERTEST_H
 
 #include <QObject>
 
 namespace Baloo {
 
-class QueryParserTest : public QObject
+class NaturalQueryParserTest : public QObject
 {
     Q_OBJECT
 
@@ -39,6 +39,7 @@ private Q_SLOTS:
     void testTypehints();
     void testReduction();
     void testTags();
+    void testPropertyInfo();
 };
 }
 

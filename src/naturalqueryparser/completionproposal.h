@@ -23,7 +23,7 @@
 #include <QtCore/QtGlobal>
 #include <QtCore/QStringList>
 
-#include "queryparser_export.h"
+#include "naturalqueryparser_export.h"
 #include "klocalizedstring.h"
 
 namespace Baloo
@@ -37,7 +37,7 @@ namespace Baloo
  * matches and that the user may want to use. In this case, one or more
  * completion proposals are used to describe what patterns can be used.
  */
-class BALOO_QUERYPARSER_EXPORT CompletionProposal
+class BALOO_NATURALQUERYPARSER_EXPORT CompletionProposal
 {
     private:
         Q_DISABLE_COPY(CompletionProposal)
@@ -56,6 +56,7 @@ class BALOO_QUERYPARSER_EXPORT CompletionProposal
             Tag,            /*!< A valid tag name */
             Contact,        /*!< Something that can be parsed unambiguously to a contact (a contact name, email, pseudo, etc) */
             Email,          /*!< An e-mail address */
+            PropertyName,   /*!< A property name. List of these names can be found in kde:kfilemetadata/src/propertyinfo.h */
         };
 
         /**

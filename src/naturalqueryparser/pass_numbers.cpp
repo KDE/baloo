@@ -26,7 +26,7 @@
 
 PassNumbers::PassNumbers()
 {
-    registerNames(0, i18nc("Space-separated list of words meaning 0", "zero naught null"));
+    registerNames(0, i18nc("Space-separated list of words meaning 0", "zero nought null"));
     registerNames(1, i18nc("Space-separated list of words meaning 1", "one a first"));
     registerNames(2, i18nc("Space-separated list of words meaning 2", "two second"));
     registerNames(3, i18nc("Space-separated list of words meaning 3", "three third"));

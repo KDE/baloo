@@ -17,8 +17,8 @@
    Boston, MA 02110-1301, USA.
 */
 
-#include "queryparser.h"
-#include "patternmatcher.h"
+#include "naturalqueryparser.h"
+#include "naturalqueryparser_p.h"
 #include "completionproposal.h"
 #include "utils.h"
 
@@ -74,7 +74,7 @@ struct DateTimeSpec {
     }
 };
 
-struct QueryParser::Private
+struct NaturalQueryParser::Private
 {
     Private()
     : separators(i18nc(
@@ -83,15 +83,6 @@ struct QueryParser::Private
     {
     }
 
-    QStringList split(const QString &query, bool is_user_query, QList<int> *positions = NULL);
-
-    void runPasses(int cursor_position, QueryParser::ParserFlags flags);
-    template<typename T>
-    void runPass(const T &pass,
-                 int cursor_position,
-                 const QString &pattern,
-                 const KLocalizedString &description = KLocalizedString(),
-                 CompletionProposal::Type type = CompletionProposal::NoType);
     void foldDateTimes();
     void handleDateTimeComparison(DateTimeSpec &spec, const Term &term);
 
@@ -102,7 +93,7 @@ struct QueryParser::Private
                             const Term &term);
     Term tuneTerm(Term term, Query &query);
 
-    QueryParser *parser;
+    NaturalQueryParser *parser;
     QList<Term> terms;
     QList<CompletionProposal *> proposals;
 
@@ -124,39 +115,19 @@ struct QueryParser::Private
     QString separators;
 };
 
-QueryParser::QueryParser()
+NaturalQueryParser::NaturalQueryParser()
 : d(new Private)
 {
     d->parser = this;
 }
 
-QueryParser::~QueryParser()
+NaturalQueryParser::~NaturalQueryParser()
 {
     qDeleteAll(d->proposals);
     delete d;
 }
 
-Query QueryParser::parse(const QString &query) const
-{
-    return parse(query, NoParserFlags);
-}
-
-Query QueryParser::parse(const QString &query, ParserFlags flags) const
-{
-    return parse(query, flags, -1);
-}
-
-Query QueryParser::parseQuery(const QString &query, ParserFlags flags)
-{
-    return QueryParser().parse(query, flags);
-}
-
-Query QueryParser::parseQuery(const QString &query)
-{
-    return QueryParser().parse(query);
-}
-
-Query QueryParser::parse(const QString &query, ParserFlags flags, int cursor_position) const
+Query NaturalQueryParser::parse(const QString &query, ParserFlags flags, int cursor_position) const
 {
     qDeleteAll(d->proposals);
 
@@ -165,7 +136,7 @@ Query QueryParser::parse(const QString &query, ParserFlags flags, int cursor_pos
 
     // Split the query into terms
     QList<int> positions;
-    QStringList parts = d->split(query, true, &positions);
+    QStringList parts = split(query, true, &positions);
 
     for (int i=0; i<parts.count(); ++i) {
         const QString &part = parts.at(i);
@@ -189,7 +160,7 @@ Query QueryParser::parse(const QString &query, ParserFlags flags, int cursor_pos
     }
 
     // Run the parsing passes
-    d->runPasses(cursor_position, flags);
+    addSpecificPatterns(cursor_position, flags);
 
     // Product the query
     int unused;
@@ -201,17 +172,126 @@ Query QueryParser::parse(const QString &query, ParserFlags flags, int cursor_pos
     return rs;
 }
 
-QList<CompletionProposal *> QueryParser::completionProposals() const
+QList<CompletionProposal *> NaturalQueryParser::completionProposals() const
 {
     return d->proposals;
 }
 
-void QueryParser::addCompletionProposal(CompletionProposal *proposal)
+void NaturalQueryParser::addSpecificPatterns(int cursor_position, NaturalQueryParser::ParserFlags flags) const
+{
+    // Prepare literal values
+    runPass(d->pass_splitunits, cursor_position, QLatin1String("$1"));
+    runPass(d->pass_numbers, cursor_position, QLatin1String("$1"));
+    runPass(d->pass_filesize, cursor_position, QLatin1String("$1 $2"));
+    runPass(d->pass_typehints, cursor_position, QLatin1String("$1"));
+
+    if (flags & DetectFilenamePattern) {
+        runPass(d->pass_filenames, cursor_position, QLatin1String("$1"));
+    }
+
+    // Date-time periods
+    runPass(d->pass_periodnames, cursor_position, QLatin1String("$1"));
+
+    d->pass_dateperiods.setKind(PassDatePeriods::VariablePeriod, PassDatePeriods::Offset);
+    runPass(d->pass_dateperiods, cursor_position,
+        i18nc("Adding an offset to a period of time ($1=period, $2=offset)", "in $2 $1"));
+    d->pass_dateperiods.setKind(PassDatePeriods::VariablePeriod, PassDatePeriods::InvertedOffset);
+    runPass(d->pass_dateperiods, cursor_position,
+        i18nc("Removing an offset from a period of time ($1=period, $2=offset)", "$2 $1 ago"));
+
+    d->pass_dateperiods.setKind(PassDatePeriods::Day, PassDatePeriods::Offset, 1);
+    runPass(d->pass_dateperiods, cursor_position,
+        i18nc("In one day", "tomorrow"),
+        ki18n("Tomorrow"));
+    d->pass_dateperiods.setKind(PassDatePeriods::Day, PassDatePeriods::Offset, -1);
+    runPass(d->pass_dateperiods, cursor_position,
+        i18nc("One day ago", "yesterday"),
+        ki18n("Yesterday"));
+    d->pass_dateperiods.setKind(PassDatePeriods::Day, PassDatePeriods::Offset, 0);
+    runPass(d->pass_dateperiods, cursor_position,
+        i18nc("The current day", "today"),
+        ki18n("Today"));
+
+    d->pass_dateperiods.setKind(PassDatePeriods::VariablePeriod, PassDatePeriods::Value, 1);
+    runPass(d->pass_dateperiods, cursor_position,
+        i18nc("First period (first day, month, etc)", "first $1"),
+        ki18n("First week, month, day, ..."));
+    d->pass_dateperiods.setKind(PassDatePeriods::VariablePeriod, PassDatePeriods::Value, -1);
+    runPass(d->pass_dateperiods, cursor_position,
+        i18nc("Last period (last day, month, etc)", "last $1 of"),
+        ki18n("Last week, month, day, ..."));
+    d->pass_dateperiods.setKind(PassDatePeriods::VariablePeriod, PassDatePeriods::Value);
+    runPass(d->pass_dateperiods, cursor_position,
+        i18nc("Setting the value of a period, as in 'third week' ($1=period, $2=value)", "$2 $1"));
+
+    d->pass_dateperiods.setKind(PassDatePeriods::VariablePeriod, PassDatePeriods::Offset, 1);
+    runPass(d->pass_dateperiods, cursor_position,
+        i18nc("Adding 1 to a period of time", "next $1"),
+        ki18n("Next week, month, day, ..."));
+    d->pass_dateperiods.setKind(PassDatePeriods::VariablePeriod, PassDatePeriods::Offset, -1);
+    runPass(d->pass_dateperiods, cursor_position,
+        i18nc("Removing 1 to a period of time", "last $1"),
+        ki18n("Previous week, month, day, ..."));
+
+    // Setting values of date-time periods (14:30, June 6, etc)
+    d->pass_datevalues.setPm(true);
+    runPass(d->pass_datevalues, cursor_position,
+        i18nc("An hour ($5) and an optional minute ($6), PM", "at $5 :|\\. $6 pm;at $5 h pm;at $5 pm;$5 : $6 pm;$5 h pm;$5 pm"),
+        ki18n("A time after midday"));
+    d->pass_datevalues.setPm(false);
+    runPass(d->pass_datevalues, cursor_position,
+        i18nc("An hour ($5) and an optional minute ($6), AM", "at $5 :|\\. $6 am;at $5 \\. $6;at $5 h am;at $5 am;at $5;$5 :|\\. $6 am;$5 : $6 : $7;$5 : $6;$5 h am;$5 h;$5 am"),
+        ki18n("A time"));
+
+    runPass(d->pass_datevalues, cursor_position, i18nc(
+        "A year ($1), month ($2), day ($3), day of week ($4), hour ($5), "
+            "minute ($6), second ($7), in every combination supported by your language",
+        "$3 of $2 $1;$3 st|nd|rd|th $2 $1;$3 st|nd|rd|th of $2 $1;"
+        "$3 of $2;$3 st|nd|rd|th $2;$3 st|nd|rd|th of $2;$2 $3 st|nd|rd|th;$2 $3;$2 $1;"
+        "$1 - $2 - $3;$1 - $2;$3 / $2 / $1;$3 / $2;"
+        "in $2 $1; in $1;, $1"
+    ));
+
+    // Fold date-time properties into real DateTime values
+    d->foldDateTimes();
+
+    // Decimal values
+    runPass(d->pass_decimalvalues, cursor_position,
+        i18nc("Decimal values with an integer ($1) and decimal ($2) part", "$1 \\. $2"),
+        ki18n("A decimal value")
+    );
+
+    // Comparators
+    d->pass_comparators.setComparator(Term::Contains);
+    runPass(d->pass_comparators, cursor_position,
+        i18nc("Equality", "contains|containing $1"),
+        ki18n("Containing"));
+    d->pass_comparators.setComparator(Term::Greater);
+    runPass(d->pass_comparators, cursor_position,
+        i18nc("Strictly greater", "greater|bigger|more than $1;at least $1;> $1"),
+        ki18n("Greater than"));
+    runPass(d->pass_comparators, cursor_position,
+        i18nc("After in time", "after|since $1"),
+        ki18n("After"), CompletionProposal::DateTime);
+    d->pass_comparators.setComparator(Term::Less);
+    runPass(d->pass_comparators, cursor_position,
+        i18nc("Strictly smaller", "smaller|less|lesser than $1;at most $1;< $1"),
+        ki18n("Smaller than"));
+    runPass(d->pass_comparators, cursor_position,
+        i18nc("Before in time", "before|until $1"),
+        ki18n("Before"), CompletionProposal::DateTime);
+    d->pass_comparators.setComparator(Term::Equal);
+    runPass(d->pass_comparators, cursor_position,
+        i18nc("Equality", "equal|equals|= $1;equal to $1"),
+        ki18n("Equal to"));
+}
+
+void NaturalQueryParser::addCompletionProposal(CompletionProposal *proposal) const
 {
     d->proposals.append(proposal);
 }
 
-QStringList QueryParser::Private::split(const QString &query, bool is_user_query, QList<int> *positions)
+QStringList NaturalQueryParser::split(const QString &query, bool is_user_query, QList<int> *positions) const
 {
     QStringList parts;
     QString part;
@@ -223,7 +303,7 @@ QStringList QueryParser::Private::split(const QString &query, bool is_user_query
         QChar c = query.at(i);
 
         if (!between_quotes && (is_user_query || part != QLatin1String("$")) &&
-            (split_at_every_char || c.isSpace() || (is_user_query && separators.contains(c)))) {
+            (split_at_every_char || c.isSpace() || (is_user_query && d->separators.contains(c)))) {
             // If there is a cluster of several spaces in the input, part may be empty
             if (part.size() > 0) {
                 parts.append(part);
@@ -241,7 +321,7 @@ QStringList QueryParser::Private::split(const QString &query, bool is_user_query
         } else if (c == QLatin1Char('"')) {
             between_quotes = !between_quotes;
         } else {
-            if (is_user_query && part.length() == 1 && separators.contains(part.at(0))) {
+            if (is_user_query && part.length() == 1 && d->separators.contains(part.at(0))) {
                 // The part contains only a separator, split "-KMail" to "-", "KMail"
                 parts.append(part);
                 part.clear();
@@ -263,207 +343,20 @@ QStringList QueryParser::Private::split(const QString &query, bool is_user_query
     return parts;
 }
 
-void QueryParser::Private::runPasses(int cursor_position, QueryParser::ParserFlags flags)
+QList<Term> &NaturalQueryParser::terms() const
 {
-    // Prepare literal values
-    runPass(pass_splitunits, cursor_position, QLatin1String("$1"));
-    runPass(pass_numbers, cursor_position, QLatin1String("$1"));
-    runPass(pass_filesize, cursor_position, QLatin1String("$1 $2"));
-    runPass(pass_typehints, cursor_position, QLatin1String("$1"));
-
-    if (flags & DetectFilenamePattern) {
-        runPass(pass_filenames, cursor_position, QLatin1String("$1"));
-    }
-
-    // Date-time periods
-    runPass(pass_periodnames, cursor_position, QLatin1String("$1"));
-
-    pass_dateperiods.setKind(PassDatePeriods::VariablePeriod, PassDatePeriods::Offset);
-    runPass(pass_dateperiods, cursor_position,
-        i18nc("Adding an offset to a period of time ($1=period, $2=offset)", "in $2 $1"));
-    pass_dateperiods.setKind(PassDatePeriods::VariablePeriod, PassDatePeriods::InvertedOffset);
-    runPass(pass_dateperiods, cursor_position,
-        i18nc("Removing an offset from a period of time ($1=period, $2=offset)", "$2 $1 ago"));
-
-    pass_dateperiods.setKind(PassDatePeriods::Day, PassDatePeriods::Offset, 1);
-    runPass(pass_dateperiods, cursor_position,
-        i18nc("In one day", "tomorrow"),
-        ki18n("Tomorrow"));
-    pass_dateperiods.setKind(PassDatePeriods::Day, PassDatePeriods::Offset, -1);
-    runPass(pass_dateperiods, cursor_position,
-        i18nc("One day ago", "yesterday"),
-        ki18n("Yesterday"));
-    pass_dateperiods.setKind(PassDatePeriods::Day, PassDatePeriods::Offset, 0);
-    runPass(pass_dateperiods, cursor_position,
-        i18nc("The current day", "today"),
-        ki18n("Today"));
-
-    pass_dateperiods.setKind(PassDatePeriods::VariablePeriod, PassDatePeriods::Value, 1);
-    runPass(pass_dateperiods, cursor_position,
-        i18nc("First period (first day, month, etc)", "first $1"),
-        ki18n("First week, month, day, ..."));
-    pass_dateperiods.setKind(PassDatePeriods::VariablePeriod, PassDatePeriods::Value, -1);
-    runPass(pass_dateperiods, cursor_position,
-        i18nc("Last period (last day, month, etc)", "last $1 of"),
-        ki18n("Last week, month, day, ..."));
-    pass_dateperiods.setKind(PassDatePeriods::VariablePeriod, PassDatePeriods::Value);
-    runPass(pass_dateperiods, cursor_position,
-        i18nc("Setting the value of a period, as in 'third week' ($1=period, $2=value)", "$2 $1"));
-
-    pass_dateperiods.setKind(PassDatePeriods::VariablePeriod, PassDatePeriods::Offset, 1);
-    runPass(pass_dateperiods, cursor_position,
-        i18nc("Adding 1 to a period of time", "next $1"),
-        ki18n("Next week, month, day, ..."));
-    pass_dateperiods.setKind(PassDatePeriods::VariablePeriod, PassDatePeriods::Offset, -1);
-    runPass(pass_dateperiods, cursor_position,
-        i18nc("Removing 1 to a period of time", "last $1"),
-        ki18n("Previous week, month, day, ..."));
-
-    // Setting values of date-time periods (14:30, June 6, etc)
-    pass_datevalues.setPm(true);
-    runPass(pass_datevalues, cursor_position,
-        i18nc("An hour ($5) and an optional minute ($6), PM", "at $5 :|\\. $6 pm;at $5 h pm;at $5 pm;$5 : $6 pm;$5 h pm;$5 pm"),
-        ki18n("A time after midday"));
-    pass_datevalues.setPm(false);
-    runPass(pass_datevalues, cursor_position,
-        i18nc("An hour ($5) and an optional minute ($6), AM", "at $5 :|\\. $6 am;at $5 \\. $6;at $5 h am;at $5 am;at $5;$5 :|\\. $6 am;$5 : $6 : $7;$5 : $6;$5 h am;$5 h;$5 am"),
-        ki18n("A time"));
-
-    runPass(pass_datevalues, cursor_position, i18nc(
-        "A year ($1), month ($2), day ($3), day of week ($4), hour ($5), "
-            "minute ($6), second ($7), in every combination supported by your language",
-        "$3 of $2 $1;$3 st|nd|rd|th $2 $1;$3 st|nd|rd|th of $2 $1;"
-        "$3 of $2;$3 st|nd|rd|th $2;$3 st|nd|rd|th of $2;$2 $3 st|nd|rd|th;$2 $3;$2 $1;"
-        "$1 - $2 - $3;$1 - $2;$3 / $2 / $1;$3 / $2;"
-        "in $2 $1; in $1;, $1"
-    ));
-
-    // Fold date-time properties into real DateTime values
-    foldDateTimes();
-
-    // Decimal values
-    runPass(pass_decimalvalues, cursor_position,
-        i18nc("Decimal values with an integer ($1) and decimal ($2) part", "$1 \\. $2"),
-        ki18n("A decimal value")
-    );
-
-    // Comparators
-    pass_comparators.setComparator(Term::Contains);
-    runPass(pass_comparators, cursor_position,
-        i18nc("Equality", "contains|containing $1"),
-        ki18n("Containing"));
-    pass_comparators.setComparator(Term::Greater);
-    runPass(pass_comparators, cursor_position,
-        i18nc("Strictly greater", "greater|bigger|more than $1;at least $1;> $1"),
-        ki18n("Greater than"));
-    runPass(pass_comparators, cursor_position,
-        i18nc("After in time", "after|since $1"),
-        ki18n("After"), CompletionProposal::DateTime);
-    pass_comparators.setComparator(Term::Less);
-    runPass(pass_comparators, cursor_position,
-        i18nc("Strictly smaller", "smaller|less|lesser than $1;at most $1;< $1"),
-        ki18n("Smaller than"));
-    runPass(pass_comparators, cursor_position,
-        i18nc("Before in time", "before|until $1"),
-        ki18n("Before"), CompletionProposal::DateTime);
-    pass_comparators.setComparator(Term::Equal);
-    runPass(pass_comparators, cursor_position,
-        i18nc("Equality", "equal|equals|= $1;equal to $1"),
-        ki18n("Equal to"));
-
-    // Properties associated with any Baloo resource
-    pass_properties.setProperty(QLatin1String("rating"), PassProperties::Integer);
-    runPass(pass_properties, cursor_position,
-        i18nc("Numeric rating of a resource", "rated as $1;rated $1;score is $1;score|scored $1;having $1 stars|star"),
-        ki18n("Rating (0 to 10)"), CompletionProposal::NoType);
-    pass_properties.setProperty(QLatin1String("usercomment"), PassProperties::String);
-    runPass(pass_properties, cursor_position,
-        i18nc("Comment of a resource", "described as $1;description|comment is $1;described|description|comment $1"),
-        ki18n("Comment or description"), CompletionProposal::NoType);
-
-    // Email-related properties
-    pass_properties.setProperty(QLatin1String("from"), PassProperties::EmailAddress);
-    runPass(pass_properties, cursor_position,
-        i18nc("Sender of an e-mail", "sent by $1;from $1;sender is $1;sender $1"),
-        ki18n("Sender of an e-mail"), CompletionProposal::Email);
-    pass_properties.setProperty(QLatin1String("subject"), PassProperties::String);
-    runPass(pass_properties, cursor_position,
-        i18nc("Subject of an e-mail or note", "title|subject is $1;title|subject $1;titled $1"),
-        ki18n("Subject"));
-    pass_properties.setProperty(QLatin1String("to"), PassProperties::EmailAddress);
-    runPass(pass_properties, cursor_position,
-        i18nc("Recipient of an e-mail", "sent to $1;to $1;recipient is $1;recipient $1"),
-        ki18n("Recipient of an e-mail"), CompletionProposal::Email);
-    pass_properties.setProperty(QLatin1String("_k_datesent"), PassProperties::DateTime);
-    runPass(pass_properties, cursor_position,
-        i18nc("Sending date-time", "sent at|on $1;sent $1"),
-        ki18n("Date of sending"), CompletionProposal::DateTime);
-    pass_properties.setProperty(QLatin1String("_k_datereceived"), PassProperties::DateTime);
-    runPass(pass_properties, cursor_position,
-        i18nc("Receiving date-time", "received at|on $1;received $1;reception is $1"),
-        ki18n("Date of reception"), CompletionProposal::DateTime);
-
-    // File-related properties
-    pass_properties.setProperty(QLatin1String("author"), PassProperties::Contact);
-    runPass(pass_properties, cursor_position,
-        i18nc("Author of a document", "written|created|composed by $1;author is $1;by $1"),
-        ki18n("Author"), CompletionProposal::Contact);
-    pass_properties.setProperty(QLatin1String("size"), PassProperties::IntegerOrDouble);
-    runPass(pass_properties, cursor_position,
-        i18nc("Size of a file", "size is $1;size $1;being $1 large;$1 large"),
-        ki18n("Size"));
-    pass_properties.setProperty(QLatin1String("filename"), PassProperties::String);
-    runPass(pass_properties, cursor_position,
-        i18nc("Name of a file or contact", "name is $1;name $1;named $1"),
-        ki18n("Name"));
-    pass_properties.setProperty(QLatin1String("_k_datecreated"), PassProperties::DateTime);
-    runPass(pass_properties, cursor_position,
-        i18nc("Date of creation", "created|dated at|on|in|of $1;created|dated $1;creation date|time|datetime is $1"),
-        ki18n("Date of creation"), CompletionProposal::DateTime);
-    pass_properties.setProperty(QLatin1String("_k_datemodified"), PassProperties::DateTime);
-    runPass(pass_properties, cursor_position,
-        i18nc("Date of last modification", "modified|edited at|on $1;modified|edited $1;modification|edition date|time|datetime is $1"),
-        ki18n("Date of last modification"), CompletionProposal::DateTime);
-
-    // Tags
-    pass_properties.setProperty(QLatin1String("tags"), PassProperties::Tag);
-    runPass(pass_properties, cursor_position,
-        i18nc("A document is associated with a tag", "tagged as $1;has tag $1;tag is $1;# $1"),
-        ki18n("Tag name"), CompletionProposal::Tag);
-
-#if 0
-    // Different kinds of properties that need subqueries
-    pass_subqueries.setProperty(QLatin1String("relatedto"));
-    runPass(pass_subqueries, cursor_position,
-        i18nc("Related to a subquery", "related to $$ ,"),
-        ki18n("Match items related to others"));
-#endif
+    return d->terms;
 }
 
-template<typename T>
-void QueryParser::Private::runPass(const T &pass,
-                                   int cursor_position,
-                                   const QString &pattern,
-                                   const KLocalizedString &description,
-                                   CompletionProposal::Type type)
+PassProperties &NaturalQueryParser::passProperties() const
 {
-    // Split the pattern at ";" characters, as a locale can have more than one
-    // pattern that can be used for a given rule
-    QStringList rules = pattern.split(QLatin1Char(';'));
-
-    Q_FOREACH(const QString &rule, rules) {
-        // Split the rule into parts that have to be matched
-        QStringList parts = split(rule, false);
-        PatternMatcher matcher(parser, terms, cursor_position, parts, type, description);
-
-        matcher.runPass(pass);
-    }
+    return d->pass_properties;
 }
 
 /*
  * Term tuning (setting the right properties of comparisons, etc)
  */
-Term QueryParser::Private::intervalComparison(const QString &prop,
+Term NaturalQueryParser::Private::intervalComparison(const QString &prop,
                                               const Term &min,
                                               const Term &max)
 {
@@ -482,10 +375,10 @@ Term QueryParser::Private::intervalComparison(const QString &prop,
     return total;
 }
 
-Term QueryParser::Private::dateTimeComparison(const QString &prop,
+Term NaturalQueryParser::Private::dateTimeComparison(const QString &prop,
                                               const Term &term)
 {
-    KCalendarSystem *cal = KCalendarSystem::create(KGlobal::locale()->calendarSystem());
+    const KCalendarSystem *cal = KLocale::global()->calendar();
     QDateTime start_date_time = term.value().toDateTime();
 
     QDate start_date(start_date_time.date());
@@ -537,7 +430,7 @@ Term QueryParser::Private::dateTimeComparison(const QString &prop,
     );
 }
 
-Term QueryParser::Private::tuneTerm(Term term, Query &query)
+Term NaturalQueryParser::Private::tuneTerm(Term term, Query &query)
 {
     // Recurse in the subterms
     QList<Term> subterms;
@@ -684,7 +577,7 @@ Term QueryParser::Private::tuneTerm(Term term, Query &query)
 /*
  * Datetime-folding
  */
-void QueryParser::Private::handleDateTimeComparison(DateTimeSpec &spec, const Term &term)
+void NaturalQueryParser::Private::handleDateTimeComparison(DateTimeSpec &spec, const Term &term)
 {
     QString property = term.property();     // Name like _k_date_week_offset|value
     QString type = property.section(QLatin1Char('_'), 3, 3);
@@ -720,7 +613,7 @@ static int fieldValue(const Field &field, bool in_defined_period, int now_value,
 
 static Term buildDateTimeLiteral(const DateTimeSpec &spec)
 {
-    KCalendarSystem *calendar = KCalendarSystem::create(KGlobal::locale()->calendarSystem());
+    const KCalendarSystem *calendar = KLocale::global()->calendar();
     QDate cdate = QDate::currentDate();
     QTime ctime = QTime::currentTime();
 
@@ -831,11 +724,10 @@ static Term buildDateTimeLiteral(const DateTimeSpec &spec)
         qMax(last_defined_date, last_defined_time)
     );
 
-    delete calendar;
     return Term(QString(), rs, Term::Equal);
 }
 
-void QueryParser::Private::foldDateTimes()
+void NaturalQueryParser::Private::foldDateTimes()
 {
     QList<Term> new_terms;
 
