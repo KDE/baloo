@@ -31,6 +31,7 @@ Name[sv]=Filsökning
 Name[uk]=Пошук файлів
 Name[x-test]=xxFile Searchxx
 Comment=Configure File Search Backend
+Comment[ca]=Configura el dorsal per a cercar als fitxers
 Comment[da]=Indstil motor for filsøgning
 Comment[en_GB]=Configure File Search Backend
 Comment[es]=Configurar el motor de la búsqueda de archivos
