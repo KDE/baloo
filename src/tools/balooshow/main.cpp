@@ -25,6 +25,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QTextStream>
+#include <QStandardPaths>
 
 #include <KAboutData>
 #include <KLocalizedString>
@@ -34,6 +35,9 @@
 #include "searchstore.h" // for deserialize
 
 #include <KFileMetaData/PropertyInfo>
+
+#include "src/xapian/xapiandatabase.h"
+#include "src/xapian/xapiandocument.h"
 
 QString colorString(const QString& input, int color)
 {
@@ -58,6 +62,9 @@ int main(int argc, char* argv[])
 
     QCommandLineParser parser;
     parser.addPositionalArgument(QLatin1String("files"), QLatin1String("The file urls"));
+    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("x") << QStringLiteral("xapian"),
+                                        QStringLiteral("Print internal xapian info")));
+    parser.addHelpOption();
     parser.process(app);
 
     QStringList args = parser.positionalArguments();
@@ -122,6 +129,54 @@ int main(int argc, char* argv[])
 
         if (!file.userComment().isEmpty())
             stream << "\t" << "User Comment: " << file.userComment() << endl;
+
+        if (parser.isSet(QStringLiteral("xapian"))) {
+            const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)
+                                + QLatin1String("/baloo/file");
+
+            Baloo::XapianDatabase db(path);
+            Baloo::XapianDocument xapDoc = db.document(fid);
+            Xapian::Document doc = xapDoc.doc();
+
+            QStringList prefixedWords;
+            QStringList normalWords;
+            QHash<int, QStringList> propertyWords;
+
+            for (auto it = doc.termlist_begin(); it != doc.termlist_end(); ++it) {
+                std::string str = *it;
+                QString word = QString::fromUtf8(str.c_str(), str.length());
+
+                if (word[0].isUpper()) {
+                    if (word[0] == QLatin1Char('X')) {
+                        int posOfNonNumeric = 1;
+                        while (word[posOfNonNumeric].isNumber() && posOfNonNumeric < 3) {
+                            posOfNonNumeric++;
+                        }
+
+                        int propNum = word.mid(1, posOfNonNumeric-1).toInt();
+                        QString value = word.mid(posOfNonNumeric);
+
+                        propertyWords[propNum].append(value);
+                    }
+                    else {
+                        prefixedWords << word;
+                    }
+                } else {
+                    normalWords << word;
+                }
+            }
+
+            stream << "\nXapian Internal Info\n" << endl;
+            stream << "Words: " << normalWords.join(" ") << endl << endl;
+            stream << "Prefixed Words: " << prefixedWords.join(" ") << endl << endl;
+
+            for (auto it = propertyWords.constBegin(); it != propertyWords.constEnd(); it++) {
+                auto prop = static_cast<KFileMetaData::Property::Property>(it.key());
+                KFileMetaData::PropertyInfo pi(prop);
+
+                stream << pi.name() << ": " << it.value().join(" ") << endl;
+            }
+        }
     }
 
     return 0;
