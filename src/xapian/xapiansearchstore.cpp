@@ -106,9 +106,6 @@ Xapian::Query XapianSearchStore::toXapianQuery(const Term& term)
         return negate(term.isNegated(), toXapianQuery(Xapian::Query::OP_OR, term.subTerms()));
     }
 
-    if (term.property().isEmpty())
-        return Xapian::Query();
-
     return negate(term.isNegated(), constructQuery(term.property(), term.value(), term.comparator()));
 }
 

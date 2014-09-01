@@ -1,6 +1,6 @@
 /*
  * This file is part of the KDE Baloo Project
- * Copyright (C) 2013  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2013-2014 Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,6 +27,7 @@
 #include "pathfilterpostingsource.h"
 #include "wildcardpostingsource.h"
 #include "xapianqueryparser.h"
+#include "xapiantermgenerator.h"
 
 #include <xapian.h>
 #include <QVector>
@@ -145,14 +146,16 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
         parser.setDatabase(xapianDb());
 
         QString prefix;
-        auto it = m_prefixes.constFind(property.toLower());
-        if (it != m_prefixes.constEnd()) {
-            prefix = it.value();
-        }
-        else {
-            KFileMetaData::PropertyInfo pi = KFileMetaData::PropertyInfo::fromName(property);
-            int propPrefix = static_cast<int>(pi.property());
-            prefix = QLatin1Char('X') + QString::number(propPrefix);
+        if (!property.isEmpty()) {
+            auto it = m_prefixes.constFind(property.toLower());
+            if (it != m_prefixes.constEnd()) {
+                prefix = it.value();
+            }
+            else {
+                KFileMetaData::PropertyInfo pi = KFileMetaData::PropertyInfo::fromName(property);
+                int propPrefix = static_cast<int>(pi.property());
+                prefix = QLatin1Char('X') + QString::number(propPrefix);
+            }
         }
 
         return parser.parseQuery(value.toString(), prefix);
@@ -194,13 +197,34 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
         }
     }
 
-    QString prefix;
-    auto it = m_prefixes.constFind(property.toLower());
-    if (it != m_prefixes.constEnd()) {
-        prefix = it.value();
+    if (com == Term::Equal) {
+        // We use the TermGenerator to normalize the words in the value and to
+        // split it into other words. If we split the words, we then add them as a
+        // phrase query.
+        QStringList terms = XapianTermGenerator::termList(value.toString());
+
+        QByteArray prefix;
+        auto it = m_prefixes.constFind(property.toLower());
+        if (it != m_prefixes.constEnd()) {
+            prefix = it.value().toUtf8();
+        }
+
+        QList<Xapian::Query> queries;
+        for (const QString& term : terms) {
+            QByteArray arr = prefix + term.toUtf8();
+            queries << Xapian::Query(arr.constData());
+        }
+
+        if (queries.isEmpty()) {
+            return Xapian::Query();
+        } else if (queries.size() == 1) {
+            return queries.first();
+        } else {
+            return Xapian::Query(Xapian::Query::OP_PHRASE, queries.begin(), queries.end());
+        }
     }
-    const QByteArray arr = (prefix + value.toString()).toUtf8();
-    return Xapian::Query(arr.constData());
+
+    return Xapian::Query();
 }
 
 Xapian::Query FileSearchStore::constructFilterQuery(int year, int month, int day)

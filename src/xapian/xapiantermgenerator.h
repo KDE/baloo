@@ -40,6 +40,7 @@ public:
 
     void setDocument(Xapian::Document* doc);
 
+    static QStringList termList(const QString& text);
 private:
     Xapian::Document* m_doc;
     Xapian::TermGenerator m_termGen;

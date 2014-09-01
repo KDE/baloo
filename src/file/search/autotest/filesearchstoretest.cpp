@@ -180,6 +180,33 @@ void FileSearchStoreTest::testSimpleSearchString()
     m_store->close(qid);
 }
 
+void FileSearchStoreTest::testPropertyValueEqual()
+{
+    QString url1(QLatin1String("/home/t/a"));
+    uint id1 = insertUrl(url1);
+    insertText(id1, QLatin1String("This is sample text"));
+
+    QString url2(QLatin1String("/home/t/b"));
+    uint id2 = insertUrl(url2);
+    insertText(id2, QLatin1String("sample sample more sample but not text"));
+
+    Query q;
+    q.setTerm(Term(QString(), "Sample text", Baloo::Term::Equal));
+    q.addType(QLatin1String("File"));
+
+    int qid = m_store->exec(q);
+    QCOMPARE(qid, 1);
+    QVERIFY(m_store->next(qid));
+    QCOMPARE(m_store->id(qid), serialize("file", id1));
+    QCOMPARE(m_store->url(qid), QUrl::fromLocalFile(url1));
+
+    QVERIFY(!m_store->next(qid));
+    QVERIFY(m_store->id(qid).isEmpty());
+    QVERIFY(m_store->url(qid).isEmpty());
+
+    m_store->close(qid);
+}
+
 void FileSearchStoreTest::testIncludeDir()
 {
     QString url1(QLatin1String("/home/t/a"));

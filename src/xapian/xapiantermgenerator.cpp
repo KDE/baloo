@@ -45,15 +45,12 @@ void XapianTermGenerator::setDocument(Xapian::Document* doc)
 }
 
 
-void XapianTermGenerator::indexText(const QString& text, const QString& prefix, int wdfInc)
+QStringList XapianTermGenerator::termList(const QString& text)
 {
-    const QByteArray par = prefix.toUtf8();
-    //const QByteArray ta = text.toUtf8();
-    //m_termGen.index_text(ta.constData(), wdfInc, par.constData());
-
     int start = 0;
     int end = 0;
 
+    QStringList list;
     QTextBoundaryFinder bf(QTextBoundaryFinder::Word, text);
     for (; bf.position() != -1; bf.toNextBoundary()) {
         if (bf.boundaryReasons() & QTextBoundaryFinder::StartOfItem) {
@@ -79,16 +76,28 @@ void XapianTermGenerator::indexText(const QString& text, const QString& prefix, 
             }
 
             str = cleanString.normalized(QString::NormalizationForm_KC);
-            Q_FOREACH (const QString& term, str.split(QLatin1Char('_'), QString::SkipEmptyParts)) {
-                QByteArray arr = term.toUtf8();
-
-                QByteArray finalArr = par + arr;
-                std::string stdString(finalArr.constData(), finalArr.size());
-                m_doc->add_posting(stdString, m_position, wdfInc);
-
-                m_position++;
-            }
+            list << str.split(QLatin1Char('_'), QString::SkipEmptyParts);
         }
+    }
+
+    return list;
+}
+
+void XapianTermGenerator::indexText(const QString& text, const QString& prefix, int wdfInc)
+{
+    const QByteArray par = prefix.toUtf8();
+    //const QByteArray ta = text.toUtf8();
+    //m_termGen.index_text(ta.constData(), wdfInc, par.constData());
+
+    QStringList terms = termList(text);
+    for (const QString& term : terms) {
+        QByteArray arr = term.toUtf8();
+
+        QByteArray finalArr = par + arr;
+        std::string stdString(finalArr.constData(), finalArr.size());
+        m_doc->add_posting(stdString, m_position, wdfInc);
+
+        m_position++;
     }
 }
 

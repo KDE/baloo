@@ -44,6 +44,7 @@ private Q_SLOTS:
     void cleanupTestCase();
 
     void testSimpleSearchString();
+    void testPropertyValueEqual();
     void testIncludeDir();
     void testRatings();
     void testEmptySearchString();
