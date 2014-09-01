@@ -1,4 +1,4 @@
-add_definitions(-DTRANSLATION_DOMAIN=\"baloo_queryparser\")
+add_definitions(-DTRANSLATION_DOMAIN=\"baloo_naturalqueryparser\")
 
 set(QUERYPARSER_SRCS
     completionproposal.cpp
