@@ -1,5 +1,3 @@
-include(ECMAddTests)
-
 #
 # Query Serialization
 #
@@ -10,3 +8,10 @@ ecm_add_test(${querySerialization_SRC}
     LINK_LIBRARIES Qt5::Test KF5::BalooCore
 )
 
+#
+# Advanced Query Parser
+#
+ecm_add_test(advancedqueryparsertest.cpp
+    TEST_NAME "advancedqueryparsertest"
+    LINK_LIBRARIES Qt5::Test KF5::BalooCore
+)

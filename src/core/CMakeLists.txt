@@ -7,6 +7,7 @@ set(CORE_SRCS
     queryrunnable.cpp
     resultiterator.cpp
     result.cpp
+    advancedqueryparser.cpp
 )
 
 add_library(KF5BalooCore ${CORE_SRCS})
