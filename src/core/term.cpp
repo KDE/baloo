@@ -185,6 +185,16 @@ Term::Operation Term::operation() const
     return d->m_op;
 }
 
+bool Term::empty() const
+{
+    return isEmpty();
+}
+
+bool Term::isEmpty() const
+{
+    return d->m_property.isEmpty() && d->m_value.isNull() && d->m_subTerms.isEmpty();
+}
+
 QString Term::property() const
 {
     return d->m_property;

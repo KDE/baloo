@@ -69,13 +69,6 @@ public:
      */
     Term(const QString& property, const QVariant& value, Comparator c = Auto);
 
-    // Removing Range based terms for now
-    // FIXME: Add range based terms
-    /**
-     * The property must fall within the range \p start <= \p value <= \p end
-     */
-    //Term(const QString& property, const QVariant& start, const QVariant& end);
-
     /**
      * This term is a combination of other terms
      */
@@ -107,6 +100,9 @@ public:
 
     void setOperation(Operation op);
     Operation operation() const;
+
+    bool isEmpty() const;
+    bool empty() const;
 
     /**
      * Return the property this term is targetting
