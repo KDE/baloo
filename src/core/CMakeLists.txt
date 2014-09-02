@@ -16,9 +16,6 @@ add_library(KF5::BalooCore ALIAS KF5BalooCore)
 target_link_libraries(KF5BalooCore
     PUBLIC
     Qt5::Core
-    PRIVATE
-    KF5::Service
-    ${XAPIAN_LIBRARIES}
 )
 
 set_target_properties(KF5BalooCore PROPERTIES
