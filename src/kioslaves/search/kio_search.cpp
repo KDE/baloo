@@ -1,6 +1,6 @@
 /*
    Copyright (C) 2008-2010 by Sebastian Trueg <trueg at kde.org>
-   Copyright (C) 2012-2013 by Vishesh Handa <me@vhanda.in>
+   Copyright (C) 2012-2014 by Vishesh Handa <me@vhanda.in>
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -21,13 +21,13 @@
 
 #include "query.h"
 #include "resultiterator.h"
+#include "advancedqueryparser.h"
 
 #include <QUrl>
 #include <QUrlQuery>
 #include <KUser>
 #include <QDebug>
 #include <QCoreApplication>
-#include <KSharedConfig>
 #include <KLocalizedString>
 
 #include <KIO/Job>
@@ -44,7 +44,7 @@ KIO::UDSEntry statSearchFolder(const QUrl& url)
     uds.insert(KIO::UDSEntry::UDS_USER, KUser().loginName());
     uds.insert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
     uds.insert(KIO::UDSEntry::UDS_MIME_TYPE, QString::fromLatin1("inode/directory"));
-    uds.insert(KIO::UDSEntry::UDS_ICON_OVERLAY_NAMES, QLatin1String("nepomuk"));
+    uds.insert(KIO::UDSEntry::UDS_ICON_OVERLAY_NAMES, QLatin1String("baloo"));
     uds.insert(KIO::UDSEntry::UDS_DISPLAY_TYPE, i18n("Query folder"));
     uds.insert(KIO::UDSEntry::UDS_URL, url.url());
 
@@ -82,9 +82,23 @@ void SearchProtocol::listDir(const QUrl& url)
     // list the root folder
     if (isRootUrl(url)) {
         finished();
+        return;
     }
 
-    Query q = Query::fromSearchUrl(url);
+    Query q;
+
+    QUrlQuery urlQuery(url);
+    if (urlQuery.hasQueryItem("json")) {
+        QString jsonString = urlQuery.queryItemValue(QStringLiteral("json"));
+        q = Query::fromJSON(jsonString.toUtf8());
+    } else if (urlQuery.hasQueryItem("query")) {
+        QString queryString = urlQuery.queryItemValue(QStringLiteral("query"));
+
+        AdvancedQueryParser aqp;
+        q.setTerm(aqp.parse(queryString));
+        q.setType("File");
+    }
+
     q.setSortingOption(Query::SortNone);
     ResultIterator it = q.exec();
 
