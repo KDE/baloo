@@ -112,6 +112,14 @@ Term::Term(Term::Operation op, const QList<Term>& t)
     d->m_subTerms = t;
 }
 
+Term::Term(const Term& lhs, Term::Operation op, const Term& rhs)
+    : d(new Private)
+{
+    d->m_op = op;
+    d->m_subTerms << lhs;
+    d->m_subTerms << rhs;
+}
+
 Term::~Term()
 {
     delete d;
