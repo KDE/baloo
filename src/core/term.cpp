@@ -381,3 +381,58 @@ Term& Term::operator=(const Term& rhs)
     *d = *rhs.d;
     return *this;
 }
+
+namespace {
+    QString comparatorToString(Baloo::Term::Comparator c) {
+        switch (c) {
+        case Baloo::Term::Auto:
+            return "Auto";
+        case Baloo::Term::Equal:
+            return "=";
+        case Baloo::Term::Contains:
+            return ":";
+        case Baloo::Term::Less:
+            return "<";
+        case Baloo::Term::LessEqual:
+            return "<=";
+        case Baloo::Term::Greater:
+            return ">";
+        case Baloo::Term::GreaterEqual:
+            return ">=";
+        }
+
+        return QString();
+    }
+
+    QString operationToString(Baloo::Term::Operation op) {
+        switch (op) {
+        case Baloo::Term::None:
+            return "NONE";
+        case Baloo::Term::And:
+            return "AND";
+        case Baloo::Term::Or:
+            return "OR";
+        }
+
+        return QString();
+    }
+}
+
+QDebug operator <<(QDebug d, const Baloo::Term& t)
+{
+    if (t.subTerms().isEmpty()) {
+        d << QString::fromLatin1("(%1 %2 %3 (%4))").arg(t.property(),
+                                                        comparatorToString(t.comparator()),
+                                                        t.value().toString(),
+                                                        t.value().typeName()).toUtf8().constData();
+    }
+    else {
+        d << "(" << operationToString(t.operation()).toUtf8().constData();
+        for (const Term& term : t.subTerms()) {
+            d << term;
+        }
+        d << ")";
+
+    }
+    return d;
+}

@@ -154,10 +154,8 @@ inline Term operator !(const Term& rhs) {
     return t;
 }
 
-inline QDebug operator << (QDebug d, const Term& t) {
-    d << t.toVariantMap();
-    return d;
 }
 
-}
+BALOO_CORE_EXPORT QDebug operator <<(QDebug d, const Baloo::Term& t);
+
 #endif // TERM_H
