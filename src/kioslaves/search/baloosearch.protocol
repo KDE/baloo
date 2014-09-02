@@ -11,6 +11,6 @@ makedir=false
 moving=false
 listing=Name,Type,Size,Date,AccessDate,Access,Owner,Group,Link
 source=false
-Icon=nepomuk
+Icon=baloo
 Class=:local
 maxInstances=20
