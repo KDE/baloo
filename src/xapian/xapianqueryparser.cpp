@@ -226,5 +226,8 @@ Xapian::Query XapianQueryParser::parseQuery(const QString& text, const QString& 
         phraseQueries.clear();
     }
 
+    if (queries.size() == 1) {
+        return queries.first();
+    }
     return Xapian::Query(Xapian::Query::OP_AND, queries.begin(), queries.end());
 }
