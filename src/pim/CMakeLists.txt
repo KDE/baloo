@@ -1,6 +1,7 @@
 if (KDEPIM_SUPPORT_BUILD)
-  set(AkonadiServer_MIN_VERSION "1.72.43")
-  find_package(Akonadi ${AkonadiServer_MIN_VERSION} CONFIG REQUIRED)
+  set(KF5AkonadiServer_MIN_VERSION "5.0.40")
+  find_package(KF5AkonadiServer ${KF5AkonadiServer_MIN_VERSION} CONFIG REQUIRED)
+
 
   set(KDEPIMLIBS_LIB_VERSION "4.70.0")
 
