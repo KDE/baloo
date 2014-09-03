@@ -41,7 +41,13 @@ Term AdvancedQueryParser::parse(const QString& text)
         QString prop = match.captured(1);
         QString value = match.captured(2);
 
-        subTerms << Term(prop, value);
+        bool converted = false;
+        int intValue = value.toInt(&converted);
+        if (converted) {
+            subTerms << Term(prop, intValue);
+        } else {
+            subTerms << Term(prop, value);
+        }
     }
     Term propertyTerm(Term::And, subTerms);
     if (propertyTerm.subTerms().size() == 1) {
