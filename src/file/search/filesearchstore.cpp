@@ -224,9 +224,10 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
         }
 
         QList<Xapian::Query> queries;
+        int position = 1;
         for (const QString& term : terms) {
             QByteArray arr = (prefix + term).toUtf8();
-            queries << Xapian::Query(arr.constData());
+            queries << Xapian::Query(arr.constData(), 1, position++);
         }
 
         if (queries.isEmpty()) {
