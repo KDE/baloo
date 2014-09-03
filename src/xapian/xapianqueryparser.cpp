@@ -28,6 +28,7 @@ using namespace Baloo;
 
 XapianQueryParser::XapianQueryParser()
     : m_db(0)
+    , m_autoExpand(true)
 {
 }
 
@@ -209,7 +210,11 @@ Xapian::Query XapianQueryParser::parseQuery(const QString& text, const QString& 
                     phraseQueries << Xapian::Query(str, 1, position);
                 }
                 else {
-                    queries << makeQuery(term, position, m_db);
+                    if (m_autoExpand) {
+                        queries << makeQuery(term, position, m_db);
+                    } else {
+                        queries << Xapian::Query(term.toUtf8().constData(), 1, position);
+                    }
                 }
             }
         }

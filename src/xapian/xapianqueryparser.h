@@ -35,8 +35,15 @@ public:
     void setDatabase(Xapian::Database* db);
     Xapian::Query parseQuery(const QString& str, const QString& prefix = QString());
 
+    /**
+     * Set if each word in the string should be treated as a partial word
+     * and should be expanded to every possible word.
+     */
+    void setAutoExapand(bool autoexpand);
+
 private:
     Xapian::Database* m_db;
+    bool m_autoExpand;
 };
 
 }
