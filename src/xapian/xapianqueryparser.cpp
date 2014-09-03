@@ -89,6 +89,9 @@ namespace {
             queries << Xapian::Query(term.t, 1, position);
         }
 
+        if (queries.isEmpty()) {
+            return Xapian::Query(string.toUtf8().constData(), 1, position);
+        }
         Xapian::Query finalQ(Xapian::Query::OP_SYNONYM, queries.begin(), queries.end());
         return finalQ;
     }

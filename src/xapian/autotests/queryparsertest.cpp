@@ -221,6 +221,13 @@ void QueryParserTest::testWordExpansion()
 
         QCOMPARE(query.serialise(), q.serialise());
     }
+
+    {
+        Xapian::Query query = parser.parseQuery("rubbish");
+        Xapian::Query q = Xapian::Query("rubbish", 1, 1);
+
+        QCOMPARE(query.serialise(), q.serialise());
+    }
 }
 
 
