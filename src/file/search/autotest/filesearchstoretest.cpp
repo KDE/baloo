@@ -468,5 +468,16 @@ void FileSearchStoreTest::testSortingNone()
     QVERIFY(!m_store->next(qid));
 }
 
+void FileSearchStoreTest::testInvalidProperties()
+{
+    Query q;
+    q.addType(QLatin1String("File"));
+    q.setTerm(Term("NoNExistingProperty", QVariant(1)));
+
+    int qid = m_store->exec(q);
+    QCOMPARE(qid, 0);
+    QVERIFY(!m_store->next(qid));
+}
+
 
 QTEST_MAIN(Baloo::FileSearchStoreTest)

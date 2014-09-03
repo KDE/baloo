@@ -1,6 +1,6 @@
 /*
  * This file is part of the KDE Baloo Project
- * Copyright (C) 2013  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2013-2014  Vishesh Handa <me@vhanda.in>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -145,6 +145,12 @@ int XapianSearchStore::exec(const Query& query)
             }
 
             Xapian::Query xapQ = toXapianQuery(query.term());
+            // The term was not properly converted. Lets abort. The properties
+            // must not exist
+            if (!query.term().empty() && xapQ.empty()) {
+                qDebug() << query.term() << "could not be processed. Aborting";
+                return 0;
+            }
             if (query.searchString().size()) {
                 QString str = query.searchString();
 

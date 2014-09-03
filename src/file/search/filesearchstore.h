@@ -63,6 +63,8 @@ private:
     QMutex m_sqlMutex;
 
     QHash<QString, QString> m_prefixes;
+
+    QString fetchPrefix(const QString& property) const;
 };
 
 }

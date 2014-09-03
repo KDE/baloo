@@ -97,6 +97,23 @@ Xapian::Query FileSearchStore::convertTypes(const QStringList& types)
     return xapQ;
 }
 
+QString FileSearchStore::fetchPrefix(const QString& property) const
+{
+    auto it = m_prefixes.constFind(property.toLower());
+    if (it != m_prefixes.constEnd()) {
+        return it.value();
+    }
+    else {
+        KFileMetaData::PropertyInfo pi = KFileMetaData::PropertyInfo::fromName(property);
+        if (pi.property() == KFileMetaData::Property::Empty) {
+            qDebug() << "Property" << property << "not found";
+            return QString();
+        }
+        int propPrefix = static_cast<int>(pi.property());
+        return QLatin1Char('X') + QString::number(propPrefix);
+    }
+}
+
 Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVariant& value,
                                               Term::Comparator com)
 {
@@ -147,14 +164,9 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
 
         QString prefix;
         if (!property.isEmpty()) {
-            auto it = m_prefixes.constFind(property.toLower());
-            if (it != m_prefixes.constEnd()) {
-                prefix = it.value();
-            }
-            else {
-                KFileMetaData::PropertyInfo pi = KFileMetaData::PropertyInfo::fromName(property);
-                int propPrefix = static_cast<int>(pi.property());
-                prefix = QLatin1Char('X') + QString::number(propPrefix);
+            prefix = fetchPrefix(property);
+            if (prefix.isEmpty()) {
+                return Xapian::Query();
             }
         }
 
@@ -203,15 +215,17 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
         // phrase query.
         QStringList terms = XapianTermGenerator::termList(value.toString());
 
-        QByteArray prefix;
-        auto it = m_prefixes.constFind(property.toLower());
-        if (it != m_prefixes.constEnd()) {
-            prefix = it.value().toUtf8();
+        QString prefix;
+        if (!property.isEmpty()) {
+            prefix = fetchPrefix(property);
+            if (prefix.isEmpty()) {
+                return Xapian::Query();
+            }
         }
 
         QList<Xapian::Query> queries;
         for (const QString& term : terms) {
-            QByteArray arr = prefix + term.toUtf8();
+            QByteArray arr = (prefix + term).toUtf8();
             queries << Xapian::Query(arr.constData());
         }
 
