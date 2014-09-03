@@ -45,24 +45,17 @@ KIO::UDSEntry statSearchFolder(const QUrl& url)
     uds.insert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
     uds.insert(KIO::UDSEntry::UDS_MIME_TYPE, QString::fromLatin1("inode/directory"));
     uds.insert(KIO::UDSEntry::UDS_ICON_OVERLAY_NAMES, QLatin1String("baloo"));
-    uds.insert(KIO::UDSEntry::UDS_DISPLAY_TYPE, i18n("Query folder"));
+    uds.insert(KIO::UDSEntry::UDS_DISPLAY_TYPE, i18n("Search Folder"));
     uds.insert(KIO::UDSEntry::UDS_URL, url.url());
 
     QUrlQuery query(url);
     QString title = query.queryItemValue(QLatin1String("title"));
-    if (title.size()) {
+    if (!title.isEmpty()) {
         uds.insert(KIO::UDSEntry::UDS_NAME, title);
         uds.insert(KIO::UDSEntry::UDS_DISPLAY_NAME, title);
     }
 
     return uds;
-}
-
-bool isRootUrl(const QUrl& url)
-{
-    const QString path = url.path();
-    return (!url.hasQuery() &&
-            (path.isEmpty() || path == QLatin1String("/")));
 }
 
 }
@@ -79,12 +72,6 @@ SearchProtocol::~SearchProtocol()
 
 void SearchProtocol::listDir(const QUrl& url)
 {
-    // list the root folder
-    if (isRootUrl(url)) {
-        finished();
-        return;
-    }
-
     Query q;
 
     QUrlQuery urlQuery(url);
@@ -158,30 +145,8 @@ void SearchProtocol::mimetype(const QUrl&)
 
 void SearchProtocol::stat(const QUrl& url)
 {
-    // the root folder
-    if (isRootUrl(url)) {
-        //
-        // stat the root path
-        //
-        KIO::UDSEntry uds;
-        uds.insert(KIO::UDSEntry::UDS_NAME, QString::fromLatin1("/"));
-        uds.insert(KIO::UDSEntry::UDS_DISPLAY_NAME, i18n("Desktop Queries"));
-        uds.insert(KIO::UDSEntry::UDS_ICON_NAME, QString::fromLatin1("nepomuk"));
-        uds.insert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
-        uds.insert(KIO::UDSEntry::UDS_MIME_TYPE, QString::fromLatin1("inode/directory"));
-
-        statEntry(uds);
-        finished();
-    }
-
-    // qDebug() << "Stat search folder" << url;
     statEntry(statSearchFolder(url));
     finished();
-
-    /*else {
-        error(KIO::ERR_CANNOT_ENTER_DIRECTORY, url.toString());
-        return;
-    }*/
 }
 
 extern "C"
