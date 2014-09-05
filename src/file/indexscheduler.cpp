@@ -29,6 +29,8 @@
 #include "database.h"
 
 #include <QDebug>
+#include <QDBusMessage>
+#include <QDBusConnection>
 #include <KLocalizedString>
 
 using namespace Baloo;
@@ -68,6 +70,7 @@ IndexScheduler::IndexScheduler(Database* db, FileIndexerConfig* config, QObject*
 
     m_commitQ = new CommitQueue(m_db, this);
     connect(m_commitQ, SIGNAL(committed()), this, SLOT(slotScheduleIndexing()));
+    connect(m_commitQ, SIGNAL(committed()), this, SLOT(slotNotifyCommitted()));
     connect(m_basicIQ, SIGNAL(newDocument(uint,Xapian::Document)),
             m_commitQ, SLOT(add(uint,Xapian::Document)));
     connect(m_fileIQ, SIGNAL(newDocument(uint,Xapian::Document)),
@@ -315,4 +318,13 @@ void IndexScheduler::emitStatusStringChanged()
 void IndexScheduler::removeFileData(int id)
 {
     m_commitQ->remove(id);
+}
+
+void IndexScheduler::slotNotifyCommitted()
+{
+    QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/files"),
+                                                      QLatin1String("org.kde.baloo"),
+                                                      QLatin1String("updated"));
+
+    QDBusConnection::sessionBus().send(message);
 }

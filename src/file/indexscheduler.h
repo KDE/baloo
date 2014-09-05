@@ -116,6 +116,7 @@ private Q_SLOTS:
     void slotScheduleIndexing();
 
     void emitStatusStringChanged();
+    void slotNotifyCommitted();
 
 private:
     void queueAllFoldersForUpdate(bool forceUpdate = false);
