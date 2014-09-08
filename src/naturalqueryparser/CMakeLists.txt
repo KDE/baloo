@@ -32,7 +32,7 @@ target_link_libraries(KF5BalooNaturalQueryParser
 
 set_target_properties(KF5BalooNaturalQueryParser PROPERTIES
     VERSION ${BALOO_VERSION}
-    SOVERSION ${BALOO_VERSION_MAJOR}
+    SOVERSION ${BALOO_SOVERSION}
     EXPORT_NAME BalooNaturalQueryParser
 )
 
