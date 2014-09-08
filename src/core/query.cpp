@@ -361,14 +361,14 @@ Query Query::fromSearchUrl(const QUrl& url)
         return Query();
 
     QUrlQuery urlQuery(url);
-    QString jsonString = urlQuery.queryItemValue(QLatin1String("json"));
+    QString jsonString = urlQuery.queryItemValue(QLatin1String("json"), QUrl::FullyDecoded);
     return Query::fromJSON(jsonString.toUtf8());
 }
 
 QString Query::titleFromQueryUrl(const QUrl& url)
 {
     QUrlQuery urlQuery(url);
-    return urlQuery.queryItemValue(QLatin1String("title"));
+    return urlQuery.queryItemValue(QLatin1String("title"), QUrl::FullyDecoded);
 }
 
 bool Query::operator==(const Query& rhs) const

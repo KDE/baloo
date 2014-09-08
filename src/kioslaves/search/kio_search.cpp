@@ -49,7 +49,7 @@ KIO::UDSEntry statSearchFolder(const QUrl& url)
     uds.insert(KIO::UDSEntry::UDS_URL, url.url());
 
     QUrlQuery query(url);
-    QString title = query.queryItemValue(QLatin1String("title"));
+    QString title = query.queryItemValue(QLatin1String("title"), QUrl::FullyDecoded);
     if (!title.isEmpty()) {
         uds.insert(KIO::UDSEntry::UDS_NAME, title);
         uds.insert(KIO::UDSEntry::UDS_DISPLAY_NAME, title);
@@ -76,10 +76,10 @@ void SearchProtocol::listDir(const QUrl& url)
 
     QUrlQuery urlQuery(url);
     if (urlQuery.hasQueryItem("json")) {
-        QString jsonString = urlQuery.queryItemValue(QStringLiteral("json"));
+        QString jsonString = urlQuery.queryItemValue(QStringLiteral("json"), QUrl::FullyDecoded);
         q = Query::fromJSON(jsonString.toUtf8());
     } else if (urlQuery.hasQueryItem("query")) {
-        QString queryString = urlQuery.queryItemValue(QStringLiteral("query"));
+        QString queryString = urlQuery.queryItemValue(QStringLiteral("query"), QUrl::FullyDecoded);
 
         AdvancedQueryParser aqp;
         q.setTerm(aqp.parse(queryString));
