@@ -117,7 +117,7 @@ inline int baloo_removexattr(const QString& path, const QString& name)
     #elif defined(Q_OS_MAC)
         return removexattr(encodedPath, attributeName, XATTR_NOFOLLOW );
     #elif defined(Q_OS_FREEBSD) || defined(Q_OS_NETBSD)
-        return removexattr (encodedPath, attributeName);
+        return extattr_delete_file (encodedPath, EXTATTR_NAMESPACE_USER, attributeName);
     #else
         return -1;
     #endif
