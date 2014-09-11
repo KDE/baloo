@@ -67,7 +67,9 @@ QStringList XapianTermGenerator::termList(const QString& text)
 
             // Remove all accents
             const QString denormalized = str.normalized(QString::NormalizationForm_KD);
+
             QString cleanString;
+            cleanString.reserve(denormalized.size());
             Q_FOREACH (const QChar& ch, denormalized) {
                 auto cat = ch.category();
                 if (cat != QChar::Mark_NonSpacing && cat != QChar::Mark_SpacingCombining && cat != QChar::Mark_Enclosing) {
