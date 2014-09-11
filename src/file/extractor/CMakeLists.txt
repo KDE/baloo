@@ -8,7 +8,6 @@ set(EXTRACTOR_SRCS
   ../priority.cpp
   ../basicindexingjob.cpp
   ../database.cpp
-  ../util.cpp
   ../fileindexerconfig.cpp
   ../storagedevices.cpp
   ../regexpcache.cpp

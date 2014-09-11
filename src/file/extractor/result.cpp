@@ -21,7 +21,6 @@
  */
 
 #include "result.h"
-#include "../util.h"
 
 #include <QDebug>
 #include <QJsonDocument>
@@ -105,7 +104,6 @@ void Result::finish()
     QJsonDocument jdoc;
     jdoc.setObject(jo);
     m_doc.set_data(jdoc.toJson().constData());
-    Baloo::updateIndexingLevel(m_doc, 2);
 }
 
 void Result::setDocument(const Xapian::Document& doc)
