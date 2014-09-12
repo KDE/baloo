@@ -9,6 +9,8 @@ X-KDE-Kded-load-on-demand=false
 X-KDE-Kded-phase=1
 
 Name=Search Folder Updater
+Name[ca]=Actualitzador de les carpetes de cerca
+Name[en_GB]=Search Folder Updater
 Name[hu]=Keresésfrissítő
 Name[nl]=Bijwerker van map zoeken
 Name[pt]=Actualização das Pastas de Pesquisa
@@ -18,6 +20,8 @@ Name[sv]=Uppdateringsverktyg för sökkataloger
 Name[uk]=Засіб оновлення тек пошуку
 Name[x-test]=xxSearch Folder Updaterxx
 Comment=Allows automatic updates of Search Folders
+Comment[ca]=Permet l'actualització automàtica de les carpetes de cerca
+Comment[en_GB]=Allows automatic updates of Search Folders
 Comment[hu]=Lehetővé teszi a keresési mappák automatikus frissítését
 Comment[nl]=Staat automatisch bijwerken van zoekmappen toe
 Comment[pt]=Permite as actualizações automáticas das Pastas de Pesquisa
