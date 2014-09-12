@@ -18,7 +18,7 @@ include(ECMInstallIcons)
 include(ECMAddTests)
 
 set(KF5_VERSION "5.0.1")
-set(BALOO_VERSION "5.0.0")
+set(BALOO_VERSION "5.0.2")
 
 ecm_setup_version(${BALOO_VERSION} VARIABLE_PREFIX BALOO
                         VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/baloo_version.h"
