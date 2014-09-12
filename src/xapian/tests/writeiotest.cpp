@@ -25,6 +25,8 @@
 #include <QTemporaryDir>
 #include <QTime>
 #include <QUuid>
+#include <QFileInfo>
+#include <QDir>
 #include <QCoreApplication>
 #include <QCommandLineParser>
 #include <QCommandLineOption>
@@ -76,6 +78,15 @@ int main(int argc, char** argv)
     db.commit();
 
     printIOUsage();
+
+    int dbSize = 0;
+    QDir dbDir(tempDir.path());
+    for (const QFileInfo& file : dbDir.entryInfoList(QDir::Files)) {
+        qDebug() << file.fileName() << file.size() / 1024 << "kb";
+        dbSize += file.size();
+
+    }
+    qDebug() << "Database Size:" << dbSize / 1024 << "kb";
 
     return app.exec();
 }
