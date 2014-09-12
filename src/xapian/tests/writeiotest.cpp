@@ -24,7 +24,10 @@
 #include <QDebug>
 #include <QTemporaryDir>
 #include <QTime>
+#include <QUuid>
 #include <QCoreApplication>
+#include <QCommandLineParser>
+#include <QCommandLineOption>
 
 #include "xapiandatabase.h"
 #include "xapiandocument.h"
@@ -32,27 +35,47 @@
 
 int main(int argc, char** argv)
 {
+    QCoreApplication app(argc, argv);
+
+    QCommandLineParser parser;
+    parser.addPositionalArgument(QLatin1String("num"), QLatin1String("The number of terms. Each term is of length 10"));
+    parser.addOption(QCommandLineOption(QStringList () << "p" << "position", QStringLiteral("Add positional information")));
+    parser.addHelpOption();
+    parser.process(app);
+
+    QStringList args = parser.positionalArguments();
+    if (args.size() != 1) {
+        parser.showHelp(1);
+    }
+
     QTemporaryDir tempDir;
     tempDir.setAutoRemove(false);
 
     Baloo::XapianDatabase db(tempDir.path(), true);
-    Baloo::XapianDocument doc;
-
-    for (int i=1000; i<3000; i++) {
-        doc.indexText("A" + QString::number(i));
-    }
-    db.replaceDocument(1, doc);
-    db.commit();
-    printIOUsage();
-
-    for (int i=1000; i<4000; i++) {
-        doc.indexText("A" + QString::number(i));
-    }
-    db.replaceDocument(2, doc);
-    db.commit();
 
     qDebug() << tempDir.path();
     printIOUsage();
+    qDebug() << "Creating the document";
 
-    return 0;
+    Baloo::XapianDocument doc;
+    int size = args.first().toInt();
+
+    for (int i = 0; i < size; i++) {
+        QByteArray term = QUuid::createUuid().toByteArray().mid(1, 10);
+
+        if (parser.isSet("p")) {
+            std::string stdString(term.constData(), term.length());
+            doc.doc().add_posting(stdString, i);
+        }
+        else {
+            doc.addTerm(QString::fromUtf8(term));
+        }
+    }
+
+    db.replaceDocument(1, doc);
+    db.commit();
+
+    printIOUsage();
+
+    return app.exec();
 }
