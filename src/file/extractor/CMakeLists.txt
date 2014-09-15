@@ -20,7 +20,6 @@ target_link_libraries(baloo_file_extractor
   Qt5::Sql
   Qt5::DBus
   KF5::FileMetaData
-  KF5::I18n
   KF5::ConfigCore
   KF5::Solid
   ${XAPIAN_LIBRARIES}
