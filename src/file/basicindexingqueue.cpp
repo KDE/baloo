@@ -174,7 +174,7 @@ bool BasicIndexingQueue::shouldIndexContents(const QString& dir)
     return m_config->shouldFolderBeIndexed(dir);
 }
 
-void BasicIndexingQueue::index(const FileMapping& file, const QString& mimetype,
+void BasicIndexingQueue::index(FileMapping& file, const QString& mimetype,
                                UpdateDirFlags flags)
 {
     qDebug() << file.id() << file.url();
@@ -182,9 +182,16 @@ void BasicIndexingQueue::index(const FileMapping& file, const QString& mimetype,
     bool xattrOnly = (flags & Baloo::ExtendedAttributesOnly);
 
     if (!xattrOnly) {
-        BasicIndexingJob job(&m_db->sqlDatabase(), file, mimetype, m_config->onlyBasicIndexing());
-        if (job.index()) {
-            Q_EMIT newDocument(job.id(), job.document());
+        if (file.id() == 0) {
+            if (!file.create(m_db->sqlDatabase())) {
+                qWarning() << "Cannot create fileMapping for" << file.url();
+            }
+            else {
+                BasicIndexingJob job(file, mimetype, m_config->onlyBasicIndexing());
+                if (job.index()) {
+                    Q_EMIT newDocument(job.id(), job.document());
+                }
+            }
         }
     }
     else {

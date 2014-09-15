@@ -152,7 +152,7 @@ void App::processNextUrl()
     // We always run the basic indexing again. This is mostly so that the proper
     // mimetype is set and we get proper type information.
     // The mimetype fetched in the BasicIQ is fast but not accurate
-    BasicIndexingJob basicIndexer(&m_db.sqlDatabase(), file, mimetype, true /*Indexing Level 2*/);
+    BasicIndexingJob basicIndexer(file, mimetype, true /*Indexing Level 2*/);
     basicIndexer.index();
 
     file.setId(basicIndexer.id());

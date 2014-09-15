@@ -98,7 +98,7 @@ private:
      * This method does not need to be synchronous. The indexing operation may be started
      * and on completion, the finishedIndexing method should be called
      */
-    void index(const FileMapping& file, const QString& mimetype, UpdateDirFlags flags);
+    void index(FileMapping& file, const QString& mimetype, UpdateDirFlags flags);
 
     bool shouldIndex(FileMapping& file, const QString& mimetype) const;
     bool shouldIndexContents(const QString& dir);

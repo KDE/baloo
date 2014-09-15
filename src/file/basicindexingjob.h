@@ -27,7 +27,6 @@
 #include <xapian.h>
 
 #include <KFileMetaData/Types>
-#include <QSqlDatabase>
 
 namespace Baloo {
 
@@ -36,8 +35,8 @@ class XapianDocument;
 class BasicIndexingJob
 {
 public:
-    BasicIndexingJob(QSqlDatabase* db, const FileMapping& file,
-                     const QString& mimetype, bool onlyBasicIndexing);
+    BasicIndexingJob(const FileMapping& file, const QString& mimetype,
+                     bool onlyBasicIndexing);
     ~BasicIndexingJob();
 
     bool index();
@@ -56,7 +55,6 @@ public:
 private:
     QVector<KFileMetaData::Type::Type> typesForMimeType(const QString& mimeType) const;
 
-    QSqlDatabase* m_sqlDb;
     FileMapping m_file;
     QString m_mimetype;
     bool m_onlyBasicIndexing;

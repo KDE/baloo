@@ -67,7 +67,7 @@ set(basicIndexingJob_SRC
 
 ecm_add_test(${basicIndexingJob_SRC}
     TEST_NAME "basicfileindexingjobtest"
-    LINK_LIBRARIES Qt5::Test Qt5::Sql ${XAPIAN_LIBRARIES}
+    LINK_LIBRARIES Qt5::Test ${XAPIAN_LIBRARIES}
     KF5::BalooXapian baloofilecommon
 )
 

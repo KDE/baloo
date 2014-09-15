@@ -34,10 +34,9 @@
 
 using namespace Baloo;
 
-BasicIndexingJob::BasicIndexingJob(QSqlDatabase* db, const FileMapping& file,
-                                   const QString& mimetype, bool onlyBasicIndexing)
-    : m_sqlDb(db)
-    , m_file(file)
+BasicIndexingJob::BasicIndexingJob(const FileMapping& file, const QString& mimetype,
+                                   bool onlyBasicIndexing)
+    : m_file(file)
     , m_mimetype(mimetype)
     , m_onlyBasicIndexing(onlyBasicIndexing)
     , m_id(0)
@@ -50,13 +49,6 @@ BasicIndexingJob::~BasicIndexingJob()
 
 bool BasicIndexingJob::index()
 {
-    if (m_file.id() == 0) {
-        if (!m_file.create(*m_sqlDb)) {
-            qWarning() << "Cannot create fileMapping for" << m_file.url();
-            return false;
-        }
-    }
-
     QFileInfo fileInfo(m_file.url());
 
     XapianDocument doc;

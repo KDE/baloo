@@ -21,17 +21,11 @@
 #include "basicindexingjobtest.h"
 
 #include "../basicindexingjob.h"
-#include "../database.h"
-#include "../lib/filemapping.h"
-
 #include <xapian.h>
 #include "xapiandocument.h"
 
 #include <QMimeDatabase>
-#include <QDebug>
 #include <QTest>
-#include <QTemporaryDir>
-#include <QDir>
 #include <QTemporaryFile>
 
 using namespace Baloo;
@@ -42,22 +36,11 @@ void BasicIndexingJobTest::testOnlyBasicIndexing()
     tempFile.open();
     FileMapping file(tempFile.fileName());
 
-    QTemporaryDir dbDir;
-    Database db;
-    if (dbDir.isValid()) {
-        db.setPath(dbDir.path());
-        db.init();
-    }
-    else {
-        qDebug() << "Unable to create temporary directory for database";
-        return;
-    }
-
     QMimeDatabase m_mimeDb;
     QString mimetype = m_mimeDb.mimeTypeForFile(file.url(), QMimeDatabase::MatchExtension).name();
 
     // test basic job
-    BasicIndexingJob jobBasic(&db.sqlDatabase(), file, mimetype, true);
+    BasicIndexingJob jobBasic(file, mimetype, true);
     jobBasic.index();
     XapianDocument docForBasic(jobBasic.document());
     QCOMPARE(docForBasic.fetchTermStartsWith("Z"), QStringLiteral("Z2"));
