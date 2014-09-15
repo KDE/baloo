@@ -24,6 +24,7 @@
 #define EXTRACTOR_APP_H
 
 #include <QVector>
+#include <QFileInfo>
 #include <QStringList>
 #include <QMimeDatabase>
 
@@ -40,43 +41,53 @@ class App : public QObject
 {
     Q_OBJECT
 public:
-    explicit App(const QString& path, QObject* parent = 0);
+    explicit App(QObject* parent = 0);
 
     void setDebug(bool status) { m_debugEnabled = status; }
     void setBData(bool status) { m_bData = status; }
-    void setIgnoreConfig(bool status) { m_ignoreConfig = status; }
-
-    void startProcessing(const QStringList& args);
+    void setFollowConfig(bool follow);
+    bool followConfig() const;
+    void process(const QString &urlOrId);
 
 private Q_SLOTS:
-    void processNextUrl();
     void saveChanges();
 
 Q_SIGNALS:
     void saved();
 
 private:
+    void sendBinaryData(const Result &result);
+    void indexed(const QString &pathOrId);
     void printDebug();
-    bool ignoreConfig() const;
 
     QVector<Result> m_results;
     QStringList m_urls;
     bool m_bData;
     bool m_debugEnabled;
-    bool m_ignoreConfig;
+    bool m_followConfig;
 
-    QString m_path;
+    QString m_lastPathOrId;
+    QString m_dbPath;
 
-    Database m_db;
+    Database *m_db;
     QMimeDatabase m_mimeDb;
 
     KFileMetaData::ExtractorPluginManager m_manager;
 
     int m_termCount;
-    QList<QString> m_updatedFiles;
     QVector<uint> m_docsToDelete;
 
     FileIndexerConfig m_config;
+
+    // short-use variables that we keep around for re-use
+    // avoids reallocating more than absolutely necessary
+    // all use of these variables must be kept within a single method
+    // once the method is left (including calling another method in the class
+    // the variables may be set to new values. beware!
+    QFileInfo m_fileInfo;
+    FileMapping m_mapping;
+
+    QDataStream m_stdout;
 };
 
 }

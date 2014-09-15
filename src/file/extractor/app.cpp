@@ -30,10 +30,8 @@
 
 #include <QTimer>
 #include <QFileInfo>
-#include <QDBusMessage>
 #include <QSqlQuery>
 #include <QSqlError>
-#include <QDBusConnection>
 
 #include <KFileMetaData/ExtractorPlugin>
 #include <KFileMetaData/PropertyInfo>
@@ -42,82 +40,122 @@
 
 using namespace Baloo;
 
-App::App(const QString& path, QObject* parent)
-    : QObject(parent)
-    , m_path(path)
-    , m_termCount(0)
+App::App(parent)
+    : QObject(parent),
+      m_termCount(0),
+      m_followConfig(true),
+      m_bData(false),
+      m_debugEnabled(false),
+      m_dbPath(QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/file")),
+      m_db(0),
+      m_stdout(stdout, QIODevice::WriteOnly)
 {
-    m_db.setPath(m_path);
-    if (!m_db.init(true /*sql db only*/)) {
-        QTimer::singleShot(0, QCoreApplication::instance(), SLOT(quit()));
-        return;
-    }
-    m_db.sqlDatabase().transaction();
-
-    connect(this, SIGNAL(saved()), this, SLOT(processNextUrl()), Qt::QueuedConnection);
 }
 
-void App::startProcessing(const QStringList& args)
+App::~App()
 {
-    m_results.reserve(args.size());
-    Q_FOREACH (const QString& arg, args) {
-        FileMapping mapping = FileMapping(arg.toUInt());
-        QString url;
+    saveChanges();
+    QMetaObject::invokeMethod(QCoreApplication::instance(), "quit", Qt::QueuedConnection);
+}
 
-        // arg is an id
-        if (!m_bData && mapping.fetch(m_db.sqlDatabase())) {
-            url = mapping.url();
-            if (!QFile::exists(url)) {
-                mapping.remove(m_db.sqlDatabase());
-                continue;
+void App::initDb()
+{
+    if (m_db) {
+        return;
+    }
+
+    m_db = new Database(this);
+    m_db->setPath(m_dbPath);
+    if (!m_db->init(true /*sql db only*/)) {
+        deleteLater();
+        return;
+    }
+
+    m_db->sqlDatabase().transaction();
+}
+
+void App::setDatabasePath(const QString &path)
+{
+    if (m_dbPath != path) {
+        saveChanges();
+        delete m_db;
+        m_db = nullptr;
+        m_dbPath = path;
+    }
+}
+
+void App::indexed(const QString &pathOrId)
+{
+    m_stdout << 'i' << pathOrId << "\n";
+    m_stdout.flush();
+}
+
+void App::process(const QString &pathOrId)
+{
+    if (m_store) {
+        initDb();
+    }
+
+    m_lastPathOrId = pathOrId;
+    QString path;
+    bool isId = false;
+
+    if (m_store) {
+        bool ok = false;
+        uint id = pathOrId.toUint(&ok);
+
+        if (ok) {
+            m_mapping.setUrl(QString());
+            m_mapping.setId(id);
+
+            if (m_mapping.fetch(m_db->sqlDatabase())) {
+                isId = true;
+                path = m_mapping.url();
             }
-        } else {
-            // arg is a url
-            url = QFileInfo(arg).absoluteFilePath();
-        }
-
-        if (QFile::exists(url)) {
-            m_urls << url;
-        } else {
-            // id or url was looked up, but file deleted
-            qDebug() << url << "does not exist";
-
-            // Try to delete it as an id:
-            // it may have been deleted from the FileMapping db as well.
-            // The worst that can happen is deleting nothing.
-            mapping.remove(m_db.sqlDatabase());
-            m_docsToDelete << mapping.id();
         }
     }
 
-    QTimer::singleShot(0, this, SLOT(processNextUrl()));
-}
+    if (!isId) {
+        m_fileInfo.setPath(path);
+        path = m_fileInfo.absoluteFilePath();
+        m_mapping.setUrl(path);
+        m_mapping.setId(-1);
+    }
 
-void App::processNextUrl()
-{
-    if (m_urls.isEmpty()) {
-        if (m_results.isEmpty() && m_docsToDelete.isEmpty()) {
-            QCoreApplication::instance()->exit(0);
+    if (!QFile::exists(path)) {
+        // id or url was looked up, but file deleted
+        qDebug() << path << "does not exist";
+
+        if (m_store) {
+            if (isId || m_mapping.fetch(m_db->sqlDatabase())) {
+                m_mapping.remove(m_db->sqlDatabase());
+            }
+
+            m_docsToDelete << m_mapping.id();
         }
-        else {
-            saveChanges();
-        }
+
+        indexed(pathOrId);
         return;
     }
 
-    const QString url = m_urls.takeFirst();
-    QString mimetype = m_mimeDb.mimeTypeForFile(url).name();
+    const QString mimetype = m_mimeDb.mimeTypeForFile(path).name();
 
-    if (!ignoreConfig()) {
-        bool shouldIndex = m_config.shouldBeIndexed(url) && m_config.shouldMimeTypeBeIndexed(mimetype);
+    if (followConfig()) {
+        bool shouldIndex = m_config.shouldBeIndexed(path) && m_config.shouldMimeTypeBeIndexed(mimetype);
         if (!shouldIndex) {
-            qDebug() << url << "should not be indexed. Ignoring";
+            qDebug() << path << "should not be indexed. Ignoring";
 
-            FileMapping mapping(url);
-            mapping.remove(m_db.sqlDatabase());
-            m_docsToDelete << mapping.id();
+            if (m_store) {
+                // if isId then the m_mapping is already fetched
+                if (!isId) {
+                    m_mapping.fetch(m_db->sqlDatabase());
+                }
 
-            QTimer::singleShot(0, this, SLOT(processNextUrl()));
+                mapping.remove(m_db->sqlDatabase());
+                m_docsToDelete << mapping.id();
+            }
+
+            indexed(pathOrId);
             return;
         }
     }
@@ -127,138 +165,125 @@ void App::processNextUrl()
     // Also, we're ignoring txt files which are greater tha 50 Mb as we
     // have trouble processing them
     //
+    //TODO: more than just .txt pls, e.g. .md? or is markdown mimetyped as markdown?
     if (mimetype == QLatin1String("text/plain")) {
         if (!url.endsWith(QLatin1String(".txt"))) {
             qDebug() << "text/plain does not end with .txt. Ignoring";
             mimetype.clear();
         }
 
-        QFileInfo fileInfo(url);
-        if (fileInfo.size() >= 50 * 1024 * 1024 ) {
+        m_fileInfo(path);
+        if (m_fileInfo.size() >= 50 * 1024 * 1024 ) {
             mimetype.clear();
         }
     }
 
-    FileMapping file(url);
-    if (!m_bData) {
-        if (!file.fetch(m_db.sqlDatabase())) {
-            file.create(m_db.sqlDatabase());
-        }
-    }
-    else {
-        file.setId(-1);
+    if (!m_store) {
+        m_mapping.setId(-1);
+    } else if (!isId && !m_mapping.fetch(m_db->sqlDatabase())) {
+        // if isId, then we already fetched the mapping and know it exists
+        m_mapping.create(m_db->sqlDatabase());
     }
 
     // We always run the basic indexing again. This is mostly so that the proper
     // mimetype is set and we get proper type information.
     // The mimetype fetched in the BasicIQ is fast but not accurate
-    BasicIndexingJob basicIndexer(file, mimetype, true /*Indexing Level 2*/);
+    BasicIndexingJob basicIndexer(m_mapping, mimetype, true /*Indexing Level 2*/);
     basicIndexer.index();
 
-    file.setId(basicIndexer.id());
     Xapian::Document doc = basicIndexer.document();
 
+    //FIXME: allowing for both m_bData and m_store breaks this binary assumption
     KFileMetaData::ExtractionResult::Flags flags = KFileMetaData::ExtractionResult::ExtractEverything;
     if (m_bData) {
         flags = KFileMetaData::ExtractionResult::ExtractMetaData;
     }
 
-    Result result(url, mimetype, flags);
+    Result result(path, mimetype, flags);
     result.setId(file.id());
     result.setDocument(doc);
     result.setReadOnly(m_bData);
 
-    QList<KFileMetaData::ExtractorPlugin*> exList = m_manager.fetchExtractors(mimetype);
+    QList<KFileMetaData::ExtractorPlugin *> exList = m_manager.fetchExtractors(mimetype);
 
-    Q_FOREACH (KFileMetaData::ExtractorPlugin* plugin, exList) {
+    for (KFileMetaData::ExtractorPlugin *plugin: exList) {
         plugin->extract(&result);
     }
-    m_results << result;
-    m_termCount += result.document().termlist_count();
 
     // Documents with these many terms occupy about 10 mb
-    if (m_termCount >= 10000 && !m_bData) {
-        saveChanges();
-        return;
+    if (m_bData) {
+        sendBinaryData(result);
     }
 
-    if (m_urls.isEmpty()) {
-        if (m_bData) {
-            QByteArray arr;
-            QDataStream s(&arr, QIODevice::WriteOnly);
+    if (m_store) {
+        m_results << result;
+        m_termCount += result.document().termlist_count();
 
-            Q_FOREACH (const Result& res, m_results) {
-                QVariantMap map;
-
-                QMapIterator<QString, QVariant> it(res.map());
-                while (it.hasNext()) {
-                    it.next();
-                    int propNum = it.key().toInt();
-
-                    using namespace KFileMetaData::Property;
-                    Property prop = static_cast<Property>(propNum);
-                    KFileMetaData::PropertyInfo pi(prop);
-                    map.insert(pi.name(), it.value());
-                }
-                qDebug() << map;
-                s << map;
-            }
-
-            std::cout << arr.toBase64().constData();
-            m_results.clear();
-        }
-        else {
+        if (m_termCount >= 10000) {
             saveChanges();
         }
     }
 
-    QTimer::singleShot(0, this, SLOT(processNextUrl()));
+    indexed(pathOrId);
+}
+
+void App::sendBinaryData(const Result &result)
+{
+    QVariantMap map;
+
+    QMapIterator<QString, QVariant> it(res.map());
+    while (it.hasNext()) {
+        it.next();
+        int propNum = it.key().toInt();
+
+        using namespace KFileMetaData::Property;
+        Property prop = static_cast<Property>(propNum);
+        KFileMetaData::PropertyInfo pi(prop);
+        map.insert(pi.name(), it.value());
+    }
+
+    //qDebug() << map;
+    QByteArray arr;
+    QDataStream s(&arr, QIODevice::WriteOnly);
+    s << map;
+    m_stdout << 'b' << s << "\n";
+    m_stdout.flush();
 }
 
 void App::saveChanges()
 {
-    if (m_results.isEmpty() && m_docsToDelete.isEmpty())
+    if (!m_db) {
         return;
-
-    m_updatedFiles.clear();
-
-    XapianDatabase xapDb(m_path);
-    for (int i = 0; i<m_results.size(); ++i) {
-        Result& res = m_results[i];
-        res.finish();
-
-        xapDb.replaceDocument(res.id(), res.document());
-        m_updatedFiles << res.inputUrl();
     }
 
-    Q_FOREACH (int docid, m_docsToDelete) {
-        xapDb.deleteDocument(docid);
+    if (m_results.isEmpty() && m_docsToDelete.isEmpty()) {
+        return;
+    }
+
+    XapianDatabase xapDb(m_dbPath);
+    for (const auto &result: m_results) {
+        result.finish();
+        xapDb.replaceDocument(result.id(), result.document());
+    }
+    m_results.clear();
+
+    for (auto docId: m_docsToDelete) {
+        xapDb.deleteDocument(docId);
     }
     m_docsToDelete.clear();
 
     xapDb.commit();
-    m_db.sqlDatabase().commit();
+    m_db->sqlDatabase().commit();
+    m_db->sqlDatabase().transaction();
 
-    QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/files"),
-                                                      QLatin1String("org.kde"),
-                                                      QLatin1String("changed"));
-
-    QVariantList vl;
-    vl.reserve(1);
-    vl << QVariant(m_updatedFiles);
-    message.setArguments(vl);
-
-    QDBusConnection::sessionBus().send(message);
-
-    m_results.clear();
     m_termCount = 0;
-    m_updatedFiles.clear();
 
     if (m_debugEnabled) {
         printDebug();
     }
 
-    Q_EMIT saved();
+    m_stdout << 's' << m_lastPathOrId << "\n";
+    m_stdout.flush();
 }
 
 void App::printDebug()
@@ -316,7 +341,12 @@ void App::printDebug()
 
 }
 
-bool App::ignoreConfig() const
+bool App::setFollowConfig(bool follow)
 {
-    return m_ignoreConfig || m_bData;
+    m_followConfig = follow;
+}
+
+bool App::followConfig() const
+{
+    return m_followConfig && !m_bData;
 }
