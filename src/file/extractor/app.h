@@ -88,6 +88,7 @@ private:
     QFileInfo m_fileInfo;
     FileMapping m_mapping;
 
+    QTextStream m_stdin;
     QTextStream m_stdout;
 };
 

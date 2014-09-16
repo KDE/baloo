@@ -32,7 +32,7 @@
 #include <QFileInfo>
 #include <QSqlQuery>
 #include <QSqlError>
-//#include <QSocketNotifier>
+#include <QSocketNotifier>
 
 #include <KFileMetaData/ExtractorPlugin>
 #include <KFileMetaData/PropertyInfo>
@@ -50,9 +50,11 @@ App::App(QObject *parent)
       m_dbPath(QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/file")),
       m_db(0),
       m_termCount(0),
+      m_stdin(stdin, QIODevice::ReadOnly),
       m_stdout(stdout, QIODevice::WriteOnly)
 {
-//    QSocketNotifier *notifier = new QSocketNotifier(stdin, this);
+    QSocketNotifier *notifier = new QSocketNotifier(fileno(stdin), QSocketNotifier::Read, this);
+    connect(notifier, &QSocketNotifier::activated, this, &App::processNextCommand);
 }
 
 App::~App()
