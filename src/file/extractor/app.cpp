@@ -41,7 +41,7 @@ using namespace Baloo;
 
 App::App(QObject *parent)
     : QObject(parent),
-      m_bData(false),
+      m_sendBinaryData(false),
       m_store(true),
       m_debugEnabled(false),
       m_followConfig(true),
@@ -130,7 +130,7 @@ void App::processNextCommand()
 
     switch (code) {
         case 'b':
-            m_bData = convertToBool(command, code);
+            m_sendBinaryData = convertToBool(command, code);
             break;
 
         case 'c':
@@ -282,7 +282,7 @@ void App::indexFile(const QString &pathOrId)
     }
 
     // Documents with these many terms occupy about 10 mb
-    if (m_bData) {
+    if (m_sendBinaryData) {
         sendBinaryData(result);
     }
 

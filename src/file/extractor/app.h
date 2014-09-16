@@ -60,7 +60,7 @@ private:
     void printDebug();
 
     QVector<Result> m_results;
-    bool m_bData;
+    bool m_sendBinaryData;
     bool m_store;
     bool m_debugEnabled;
     bool m_followConfig;
