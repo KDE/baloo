@@ -193,11 +193,8 @@ void App::process(const QString &pathOrId)
 
     Xapian::Document doc = basicIndexer.document();
 
-    //FIXME: allowing for both m_bData and m_store breaks this binary assumption
-    KFileMetaData::ExtractionResult::Flags flags = KFileMetaData::ExtractionResult::ExtractEverything;
-    if (m_bData) {
-        flags = KFileMetaData::ExtractionResult::ExtractMetaData;
-    }
+    KFileMetaData::ExtractionResult::Flags flags = m_store ? KFileMetaData::ExtractionResult::ExtractEverything;
+                                                           : KFileMetaData::ExtractionResult::ExtractMetaData;
 
     Result result(path, mimetype, flags);
     result.setId(file.id());
