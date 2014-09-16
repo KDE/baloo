@@ -32,6 +32,7 @@
 #include <QFileInfo>
 #include <QSqlQuery>
 #include <QSqlError>
+//#include <QSocketNotifier>
 
 #include <KFileMetaData/ExtractorPlugin>
 #include <KFileMetaData/PropertyInfo>
@@ -40,16 +41,18 @@
 
 using namespace Baloo;
 
-App::App(parent)
+App::App(QObject *parent)
     : QObject(parent),
-      m_termCount(0),
-      m_followConfig(true),
       m_bData(false),
+      m_store(true),
       m_debugEnabled(false),
+      m_followConfig(true),
       m_dbPath(QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/file")),
       m_db(0),
+      m_termCount(0),
       m_stdout(stdout, QIODevice::WriteOnly)
 {
+//    QSocketNotifier *notifier = new QSocketNotifier(stdin, this);
 }
 
 App::~App()
@@ -74,6 +77,16 @@ void App::initDb()
     m_db->sqlDatabase().transaction();
 }
 
+void App::setFollowConfig(bool follow)
+{
+    m_followConfig = follow;
+}
+
+bool App::followConfig() const
+{
+    return m_followConfig && !m_bData;
+}
+
 void App::setDatabasePath(const QString &path)
 {
     if (m_dbPath != path) {
@@ -84,13 +97,28 @@ void App::setDatabasePath(const QString &path)
     }
 }
 
-void App::indexed(const QString &pathOrId)
+void App::setDebug(bool status)
+{
+    m_debugEnabled = status;
+}
+
+void App::setBData(bool status)
+{
+    m_bData = status;
+}
+
+void App::indexingCompleted(const QString &pathOrId)
 {
     m_stdout << 'i' << pathOrId << "\n";
     m_stdout.flush();
 }
 
-void App::process(const QString &pathOrId)
+void App::processNextCommand()
+{
+    //TODO: incoming commands
+}
+
+void App::indexFile(const QString &pathOrId)
 {
     if (m_store) {
         initDb();
@@ -102,7 +130,7 @@ void App::process(const QString &pathOrId)
 
     if (m_store) {
         bool ok = false;
-        uint id = pathOrId.toUint(&ok);
+        uint id = pathOrId.toUInt(&ok);
 
         if (ok) {
             m_mapping.setUrl(QString());
@@ -116,7 +144,7 @@ void App::process(const QString &pathOrId)
     }
 
     if (!isId) {
-        m_fileInfo.setPath(path);
+        m_fileInfo.setFile(path);
         path = m_fileInfo.absoluteFilePath();
         m_mapping.setUrl(path);
         m_mapping.setId(-1);
@@ -134,16 +162,16 @@ void App::process(const QString &pathOrId)
             m_docsToDelete << m_mapping.id();
         }
 
-        indexed(pathOrId);
+        indexingCompleted(pathOrId);
         return;
     }
 
-    const QString mimetype = m_mimeDb.mimeTypeForFile(path).name();
+    QString mimetype = m_mimeDb.mimeTypeForFile(path).name();
 
     if (followConfig()) {
         bool shouldIndex = m_config.shouldBeIndexed(path) && m_config.shouldMimeTypeBeIndexed(mimetype);
         if (!shouldIndex) {
-            qDebug() << path << "should not be indexed. Ignoring";
+            qDebug() << path << "should not be indexingCompleted. Ignoring";
 
             if (m_store) {
                 // if isId then the m_mapping is already fetched
@@ -151,11 +179,11 @@ void App::process(const QString &pathOrId)
                     m_mapping.fetch(m_db->sqlDatabase());
                 }
 
-                mapping.remove(m_db->sqlDatabase());
-                m_docsToDelete << mapping.id();
+                m_mapping.remove(m_db->sqlDatabase());
+                m_docsToDelete << m_mapping.id();
             }
 
-            indexed(pathOrId);
+            indexingCompleted(pathOrId);
             return;
         }
     }
@@ -167,14 +195,15 @@ void App::process(const QString &pathOrId)
     //
     //TODO: more than just .txt pls, e.g. .md? or is markdown mimetyped as markdown?
     if (mimetype == QLatin1String("text/plain")) {
-        if (!url.endsWith(QLatin1String(".txt"))) {
+        if (!path.endsWith(QLatin1String(".txt"))) {
             qDebug() << "text/plain does not end with .txt. Ignoring";
             mimetype.clear();
-        }
+        } else {
+            m_fileInfo.setFile(path);
 
-        m_fileInfo(path);
-        if (m_fileInfo.size() >= 50 * 1024 * 1024 ) {
-            mimetype.clear();
+            if (m_fileInfo.size() >= 50 * 1024 * 1024 ) {
+                mimetype.clear();
+            }
         }
     }
 
@@ -193,11 +222,11 @@ void App::process(const QString &pathOrId)
 
     Xapian::Document doc = basicIndexer.document();
 
-    KFileMetaData::ExtractionResult::Flags flags = m_store ? KFileMetaData::ExtractionResult::ExtractEverything;
+    KFileMetaData::ExtractionResult::Flags flags = m_store ? KFileMetaData::ExtractionResult::ExtractEverything
                                                            : KFileMetaData::ExtractionResult::ExtractMetaData;
 
     Result result(path, mimetype, flags);
-    result.setId(file.id());
+    result.setId(m_mapping.id());
     result.setDocument(doc);
     result.setReadOnly(m_bData);
 
@@ -221,14 +250,14 @@ void App::process(const QString &pathOrId)
         }
     }
 
-    indexed(pathOrId);
+    indexingCompleted(pathOrId);
 }
 
 void App::sendBinaryData(const Result &result)
 {
     QVariantMap map;
 
-    QMapIterator<QString, QVariant> it(res.map());
+    QMapIterator<QString, QVariant> it(result.map());
     while (it.hasNext()) {
         it.next();
         int propNum = it.key().toInt();
@@ -241,9 +270,12 @@ void App::sendBinaryData(const Result &result)
 
     //qDebug() << map;
     QByteArray arr;
-    QDataStream s(&arr, QIODevice::WriteOnly);
-    s << map;
-    m_stdout << 'b' << s << "\n";
+    {
+        QDataStream s(&arr, QIODevice::WriteOnly);
+        s << map;
+    }
+
+    m_stdout << 'b' << arr << "\n";
     m_stdout.flush();
 }
 
@@ -258,7 +290,7 @@ void App::saveChanges()
     }
 
     XapianDatabase xapDb(m_dbPath);
-    for (const auto &result: m_results) {
+    for (auto &result: m_results) {
         result.finish();
         xapDb.replaceDocument(result.id(), result.document());
     }
@@ -338,12 +370,3 @@ void App::printDebug()
 
 }
 
-bool App::setFollowConfig(bool follow)
-{
-    m_followConfig = follow;
-}
-
-bool App::followConfig() const
-{
-    return m_followConfig && !m_bData;
-}

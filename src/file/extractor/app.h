@@ -27,6 +27,7 @@
 #include <QFileInfo>
 #include <QStringList>
 #include <QMimeDatabase>
+#include <QTextStream>
 
 #include <KFileMetaData/ExtractorPluginManager>
 
@@ -41,28 +42,28 @@ class App : public QObject
 {
     Q_OBJECT
 public:
-    explicit App(QObject* parent = 0);
+    explicit App(QObject *parent = 0);
+    ~App();
 
-    void setDebug(bool status) { m_debugEnabled = status; }
-    void setBData(bool status) { m_bData = status; }
+    void setDebug(bool status);
+    void setBData(bool status);
     void setFollowConfig(bool follow);
     bool followConfig() const;
-    void process(const QString &urlOrId);
-
-private Q_SLOTS:
-    void saveChanges();
-
-Q_SIGNALS:
-    void saved();
+    void indexFile(const QString &urlOrId);
 
 private:
+    void setDatabasePath(const QString &path);
+    void initDb();
+    void saveChanges();
+    void processNextCommand();
     void sendBinaryData(const Result &result);
-    void indexed(const QString &pathOrId);
+    void indexingCompleted(const QString &pathOrId);
     void printDebug();
 
     QVector<Result> m_results;
     QStringList m_urls;
     bool m_bData;
+    bool m_store;
     bool m_debugEnabled;
     bool m_followConfig;
 
@@ -87,7 +88,7 @@ private:
     QFileInfo m_fileInfo;
     FileMapping m_mapping;
 
-    QDataStream m_stdout;
+    QTextStream m_stdout;
 };
 
 }
