@@ -13,14 +13,17 @@ storage or other output being generated before exit.
 
 In (to extractor on its stdin)
 ==============================
+Boolean settings take a + for true and - for false
+
 Command         Args            Meaning
 -------         ----------      -----------------------
-b               <+|->           binary out: + == results are sent to stdout, - == no stdout
-d               <+|->           + == results are saved to the db, - == no db storage
+b               <+|->           send serialized QVariantMap of results after indexing
+c               <+|->           follow config to determinine indexability
+d               <+|->           save to the database
 i               <path>          index the file at path
-s               <path>          path to store the database at
-q                               exit process
-z               <+|->           + == debug on; - == debug off
+s               <path>          path to store the database files
+q                               quit process
+z               <+|->           enable debugging
 
 Out (from extractor on its stdout)
 ==================================

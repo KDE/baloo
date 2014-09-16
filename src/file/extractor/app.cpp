@@ -26,9 +26,7 @@
 #include "xapiandatabase.h"
 
 #include <QDebug>
-#include <QCoreApplication>
 
-#include <QTimer>
 #include <QFileInfo>
 #include <QSqlQuery>
 #include <QSqlError>
@@ -53,14 +51,13 @@ App::App(QObject *parent)
       m_stdin(stdin, QIODevice::ReadOnly),
       m_stdout(stdout, QIODevice::WriteOnly)
 {
-    QSocketNotifier *notifier = new QSocketNotifier(fileno(stdin), QSocketNotifier::Read, this);
-    connect(notifier, &QSocketNotifier::activated, this, &App::processNextCommand);
+    m_stdinNotifier = new QSocketNotifier(fileno(stdin), QSocketNotifier::Read, this);
+    connect(m_stdinNotifier, &QSocketNotifier::activated, this, &App::processNextCommand);
 }
 
 App::~App()
 {
     saveChanges();
-    QMetaObject::invokeMethod(QCoreApplication::instance(), "quit", Qt::QueuedConnection);
 }
 
 void App::initDb()
@@ -72,21 +69,11 @@ void App::initDb()
     m_db = new Database(this);
     m_db->setPath(m_dbPath);
     if (!m_db->init(true /*sql db only*/)) {
-        deleteLater();
+        exit();
         return;
     }
 
     m_db->sqlDatabase().transaction();
-}
-
-void App::setFollowConfig(bool follow)
-{
-    m_followConfig = follow;
-}
-
-bool App::followConfig() const
-{
-    return m_followConfig && !m_bData;
 }
 
 void App::setDatabasePath(const QString &path)
@@ -99,25 +86,81 @@ void App::setDatabasePath(const QString &path)
     }
 }
 
-void App::setDebug(bool status)
-{
-    m_debugEnabled = status;
-}
-
-void App::setBData(bool status)
-{
-    m_bData = status;
-}
-
 void App::indexingCompleted(const QString &pathOrId)
 {
     m_stdout << 'i' << pathOrId << "\n";
     m_stdout.flush();
 }
 
+void App::exit(const QString &error)
+{
+    if (!error.isEmpty()) {
+        qDebug() << error;
+    }
+
+    delete m_stdinNotifier; // make sure we get no more input to process!
+    m_stdinNotifier = 0;
+    deleteLater();
+}
+
+bool App::convertToBool(const QString &command, char code)
+{
+    if (command == "+") {
+        return true;
+    } else if (command != "-") {
+        exit(QString("Unknown command after code %1: %2").arg(code).arg(command));
+    }
+
+    return false;
+}
+
 void App::processNextCommand()
 {
-    //TODO: incoming commands
+    QString command;
+    m_stdin >> command;
+
+    if (command.isEmpty()) {
+        // stdin has closed on us
+        exit();
+        return;
+    }
+
+    char code = command[0].toLatin1();
+    command.remove(0, 1);
+
+    switch (code) {
+        case 'b':
+            m_bData = convertToBool(command, code);
+            break;
+
+        case 'c':
+            m_followConfig = convertToBool(command, code);
+            break;
+
+        case 'd':
+            m_store = convertToBool(command, code);
+            break;
+
+        case 'i':
+            indexFile(command);
+            break;
+
+        case 's':
+            setDatabasePath(command);
+            break;
+
+        case 'q':
+            exit();
+            break;
+
+        case 'z':
+            m_debugEnabled = convertToBool(command, code);
+            break;
+
+        default:
+            exit("Unknown command code: " + code);
+            break;
+    }
 }
 
 void App::indexFile(const QString &pathOrId)
@@ -146,7 +189,7 @@ void App::indexFile(const QString &pathOrId)
     }
 
     if (!isId) {
-        m_fileInfo.setFile(path);
+        m_fileInfo.setFile(pathOrId);
         path = m_fileInfo.absoluteFilePath();
         m_mapping.setUrl(path);
         m_mapping.setId(-1);
@@ -170,7 +213,7 @@ void App::indexFile(const QString &pathOrId)
 
     QString mimetype = m_mimeDb.mimeTypeForFile(path).name();
 
-    if (followConfig()) {
+    if (m_followConfig) {
         bool shouldIndex = m_config.shouldBeIndexed(path) && m_config.shouldMimeTypeBeIndexed(mimetype);
         if (!shouldIndex) {
             qDebug() << path << "should not be indexingCompleted. Ignoring";
@@ -230,7 +273,7 @@ void App::indexFile(const QString &pathOrId)
     Result result(path, mimetype, flags);
     result.setId(m_mapping.id());
     result.setDocument(doc);
-    result.setReadOnly(m_bData);
+    result.setReadOnly(!m_store);
 
     QList<KFileMetaData::ExtractorPlugin *> exList = m_manager.fetchExtractors(mimetype);
 
@@ -270,7 +313,6 @@ void App::sendBinaryData(const Result &result)
         map.insert(pi.name(), it.value());
     }
 
-    //qDebug() << map;
     QByteArray arr;
     {
         QDataStream s(&arr, QIODevice::WriteOnly);
@@ -319,7 +361,7 @@ void App::saveChanges()
 
 void App::printDebug()
 {
-    Q_FOREACH (const Result& res, m_results) {
+    for (const Result& res: m_results) {
         qDebug() << res.inputUrl();
         QMapIterator<QString, QVariant> it(res.map());
         while (it.hasNext()) {

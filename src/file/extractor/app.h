@@ -36,6 +36,8 @@
 #include "../fileindexerconfig.h"
 #include "filemapping.h"
 
+class QSocketNotifier;
+
 namespace Baloo {
 
 class App : public QObject
@@ -45,23 +47,19 @@ public:
     explicit App(QObject *parent = 0);
     ~App();
 
-    void setDebug(bool status);
-    void setBData(bool status);
-    void setFollowConfig(bool follow);
-    bool followConfig() const;
-    void indexFile(const QString &urlOrId);
-
 private:
+    void exit(const QString &error = QString());
+    void indexFile(const QString &urlOrId);
     void setDatabasePath(const QString &path);
     void initDb();
     void saveChanges();
+    bool convertToBool(const QString &command, char code);
     void processNextCommand();
     void sendBinaryData(const Result &result);
     void indexingCompleted(const QString &pathOrId);
     void printDebug();
 
     QVector<Result> m_results;
-    QStringList m_urls;
     bool m_bData;
     bool m_store;
     bool m_debugEnabled;
@@ -90,6 +88,7 @@ private:
 
     QTextStream m_stdin;
     QTextStream m_stdout;
+    QSocketNotifier *m_stdinNotifier;
 };
 
 }
