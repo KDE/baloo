@@ -47,10 +47,84 @@ void AdvancedQueryParserTest::testStringAndProperty()
 {
     AdvancedQueryParser parser;
     Term term = parser.parse("stars artist:Coldplay fire");
+    Term expectedTerm(Term::And);
 
-    Term artistTerm("artist", "Coldplay");
-    Term textTerm("", "stars fire");
-    Term expectedTerm = textTerm && artistTerm;
+    expectedTerm.addSubTerm(Term("", "stars"));
+    expectedTerm.addSubTerm(Term("artist", "Coldplay"));
+    expectedTerm.addSubTerm(Term("", "fire"));
+
+    QCOMPARE(term, expectedTerm);
+}
+
+void AdvancedQueryParserTest::testLogicalOps()
+{
+    // AND
+    AdvancedQueryParser parser;
+    Term term = parser.parse("artist:Coldplay AND type:song");
+    Term expectedTerm(Term::And);
+
+    expectedTerm.addSubTerm(Term("artist", "Coldplay"));
+    expectedTerm.addSubTerm(Term("type", "song"));
+
+    QCOMPARE(term, expectedTerm);
+
+    // OR
+    term = parser.parse("artist:Coldplay OR type:song");
+    expectedTerm = Term(Term::Or);
+
+    expectedTerm.addSubTerm(Term("artist", "Coldplay"));
+    expectedTerm.addSubTerm(Term("type", "song"));
+
+    QCOMPARE(term, expectedTerm);
+
+    // AND then OR
+    term = parser.parse("artist:Coldplay AND type:song OR stars");
+    expectedTerm = Term(Term::Or);
+
+    expectedTerm.addSubTerm(Term("artist", "Coldplay") && Term("type", "song"));
+    expectedTerm.addSubTerm(Term("", "stars"));
+
+    QCOMPARE(term, expectedTerm);
+
+    // OR then AND
+    term = parser.parse("artist:Coldplay OR type:song AND stars");
+    expectedTerm = Term(Term::And);
+
+    expectedTerm.addSubTerm(Term("artist", "Coldplay") || Term("type", "song"));
+    expectedTerm.addSubTerm(Term("", "stars"));
+
+    QCOMPARE(term, expectedTerm);
+
+    // Multiple ANDs
+    term = parser.parse("artist:Coldplay AND type:song AND stars");
+    expectedTerm = Term(Term::And);
+
+    expectedTerm.addSubTerm(Term("artist", "Coldplay"));
+    expectedTerm.addSubTerm(Term("type", "song"));
+    expectedTerm.addSubTerm(Term("", "stars"));
+
+    QCOMPARE(term, expectedTerm);
+
+    // Multiple ORs
+    term = parser.parse("artist:Coldplay OR type:song OR stars");
+    expectedTerm = Term(Term::Or);
+
+    expectedTerm.addSubTerm(Term("artist", "Coldplay"));
+    expectedTerm.addSubTerm(Term("type", "song"));
+    expectedTerm.addSubTerm(Term("", "stars"));
+
+    QCOMPARE(term, expectedTerm);
+}
+
+void AdvancedQueryParserTest::testNesting()
+{
+    AdvancedQueryParser parser;
+    Term term = parser.parse("artist:Coldplay AND (type:song OR stars) fire");
+    Term expectedTerm(Term::And);
+
+    expectedTerm.addSubTerm(Term("artist", "Coldplay"));
+    expectedTerm.addSubTerm(Term("type", "song") || Term("", "stars"));
+    expectedTerm.addSubTerm(Term("", "fire"));
 
     QCOMPARE(term, expectedTerm);
 }

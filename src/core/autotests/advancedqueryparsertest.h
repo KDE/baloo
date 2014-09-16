@@ -31,6 +31,8 @@ private Q_SLOTS:
     void testSimpleProperty();
     void testSimpleString();
     void testStringAndProperty();
+    void testLogicalOps();
+    void testNesting();
 };
 
 #endif // ADVANCEDQUERYPARSERTEST_H
