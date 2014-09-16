@@ -26,6 +26,7 @@
 #include <QStandardPaths>
 
 #include <QCoreApplication>
+#include <QDebug>
 
 int main(int argc, char* argv[])
 {
@@ -37,6 +38,9 @@ int main(int argc, char* argv[])
     QCoreApplication::setApplicationName(QLatin1String("Baloo File Extractor"));
     QCoreApplication::setApplicationVersion(QLatin1String("0.1"));
 
-    Baloo::App appObject;
-    return app.exec();
+    Baloo::App *appObject = new Baloo::App;
+    QObject::connect(appObject, &QObject::destroyed,
+                     &app, &QCoreApplication::quit);
+    int rv = app.exec();
+    return rv;
 }
