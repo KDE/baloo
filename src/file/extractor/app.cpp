@@ -238,7 +238,6 @@ void App::indexFile(const QString &pathOrId)
     // Also, we're ignoring txt files which are greater tha 50 Mb as we
     // have trouble processing them
     //
-    //TODO: more than just .txt pls, e.g. .md? or is markdown mimetyped as markdown?
     if (mimetype == QLatin1String("text/plain")) {
         if (!path.endsWith(QLatin1String(".txt"))) {
             qDebug() << "text/plain does not end with .txt. Ignoring";
@@ -281,7 +280,8 @@ void App::indexFile(const QString &pathOrId)
         plugin->extract(&result);
     }
 
-    // Documents with these many terms occupy about 10 mb
+    indexingCompleted(pathOrId);
+
     if (m_sendBinaryData) {
         sendBinaryData(result);
     }
@@ -290,12 +290,11 @@ void App::indexFile(const QString &pathOrId)
         m_results << result;
         m_termCount += result.document().termlist_count();
 
+        // Documents with these many terms occupy about 10 mb
         if (m_termCount >= 10000) {
             saveChanges();
         }
     }
-
-    indexingCompleted(pathOrId);
 }
 
 void App::sendBinaryData(const Result &result)
