@@ -36,6 +36,11 @@ public:
     Xapian::Query parseQuery(const QString& str, const QString& prefix = QString());
 
     /**
+     * Expands word to every possible option which it can be expanded to.
+     */
+    Xapian::Query expandWord(const QString& word, const QString& prefix = QString());
+
+    /**
      * Set if each word in the string should be treated as a partial word
      * and should be expanded to every possible word.
      */

@@ -479,5 +479,29 @@ void FileSearchStoreTest::testInvalidProperties()
     QVERIFY(!m_store->next(qid));
 }
 
+void FileSearchStoreTest::testModifiedProperty()
+{
+    QDateTime dt(QDate(2013, 12, 02), QTime(12, 2, 2));
+    insertExactText(1, dt.toString(Qt::ISODate), "DT_M");
+    insertExactText(2, QDateTime::currentDateTime().toString(Qt::ISODate), "DT_M");
+
+    Query q;
+    q.addType(QLatin1String("File"));
+    q.setTerm(Term(("modified"), dt.date(), Term::Equal));
+
+    int qid = m_store->exec(q);
+
+    QVERIFY(m_store->next(qid));
+    QCOMPARE(m_store->id(qid), serialize("file", 1));
+    QVERIFY(!m_store->next(qid));
+
+    q.setTerm(Term(("modified"), dt, Term::Equal));
+
+    qid = m_store->exec(q);
+
+    QVERIFY(m_store->next(qid));
+    QCOMPARE(m_store->id(qid), serialize("file", 1));
+    QVERIFY(!m_store->next(qid));
+}
 
 QTEST_MAIN(Baloo::FileSearchStoreTest)

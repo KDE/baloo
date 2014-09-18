@@ -236,3 +236,26 @@ Xapian::Query XapianQueryParser::parseQuery(const QString& text, const QString& 
     }
     return Xapian::Query(Xapian::Query::OP_AND, queries.begin(), queries.end());
 }
+
+void XapianQueryParser::setAutoExapand(bool autoexpand)
+{
+    m_autoExpand = autoexpand;
+}
+
+Xapian::Query XapianQueryParser::expandWord(const QString& word, const QString& prefix)
+{
+    const std::string stdString((prefix + word).toUtf8().constData());
+    Xapian::TermIterator it = m_db->allterms_begin(stdString);
+    Xapian::TermIterator end = m_db->allterms_end(stdString);
+
+    QList<Xapian::Query> queries;
+    for (; it != end; ++it) {
+        queries << Xapian::Query(*it);
+    }
+
+    if (queries.isEmpty()) {
+        return Xapian::Query(stdString);
+    }
+    Xapian::Query finalQ(Xapian::Query::OP_SYNONYM, queries.begin(), queries.end());
+    return finalQ;
+}

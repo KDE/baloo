@@ -158,6 +158,52 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
         return Xapian::Query(&ws);
     }
 
+    if (property.compare(QLatin1String("modified"), Qt::CaseInsensitive) == 0) {
+        if (com == Term::Equal || com == Term::Contains) {
+            XapianQueryParser parser;
+            parser.setDatabase(xapianDb());
+
+            QString val;
+            if (value.type() == QVariant::Date) {
+                val = value.toDate().toString(Qt::ISODate);
+            } else if (value.type() == QVariant::DateTime) {
+                val = value.toDateTime().toString(Qt::ISODate);
+            }
+
+            return parser.expandWord(val, QStringLiteral("DT_M"));
+        }
+
+        if (com == Term::Greater || com == Term::GreaterEqual ||
+            com == Term::Less || com == Term::LessEqual)
+        {
+            qlonglong numVal = 0;
+            int slotNumber = 0;
+
+            if (value.type() == QVariant::DateTime) {
+                slotNumber = 0;
+                numVal = value.toDateTime().toTime_t();
+            }
+            else if (value.type() == QVariant::Date) {
+                slotNumber = 1;
+                numVal = value.toDate().toJulianDay();
+            }
+
+            if (com == Term::Greater) {
+                ++numVal;
+            }
+            if (com == Term::Less) {
+                --numVal;
+            }
+
+            if (com == Term::GreaterEqual || com == Term::Greater) {
+                return Xapian::Query(Xapian::Query::OP_VALUE_GE, slotNumber, QString::number(numVal).toStdString());
+            }
+            else if (com == Term::LessEqual || com == Term::Less) {
+                return Xapian::Query(Xapian::Query::OP_VALUE_LE, slotNumber, QString::number(numVal).toStdString());
+            }
+        }
+    }
+
     if (com == Term::Contains) {
         XapianQueryParser parser;
         parser.setDatabase(xapianDb());
@@ -171,42 +217,6 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
         }
 
         return parser.parseQuery(value.toString(), prefix);
-    }
-
-    if ((property.compare(QLatin1String("modified"), Qt::CaseInsensitive) == 0)
-        && (com == Term::Equal || com == Term::Greater ||
-            com == Term::GreaterEqual || com == Term::Less || com == Term::LessEqual))
-    {
-        qlonglong numVal = 0;
-        int slotNumber = 0;
-
-        if (value.type() == QVariant::DateTime) {
-            slotNumber = 0;
-            numVal = value.toDateTime().toTime_t();
-        }
-        else if (value.type() == QVariant::Date) {
-            slotNumber = 1;
-            numVal = value.toDate().toJulianDay();
-        }
-
-        if (com == Term::Greater) {
-            ++numVal;
-        }
-        if (com == Term::Less) {
-            --numVal;
-        }
-
-        if (com == Term::GreaterEqual || com == Term::Greater) {
-            return Xapian::Query(Xapian::Query::OP_VALUE_GE, slotNumber, QString::number(numVal).toStdString());
-        }
-        else if (com == Term::LessEqual || com == Term::Less) {
-            return Xapian::Query(Xapian::Query::OP_VALUE_LE, slotNumber, QString::number(numVal).toStdString());
-        }
-        else if (com == Term::Equal) {
-            const Xapian::Query gtQuery(Xapian::Query::OP_VALUE_GE, slotNumber, QString::number(numVal).toStdString());
-            const Xapian::Query ltQuery(Xapian::Query::OP_VALUE_LE, slotNumber, QString::number(numVal).toStdString());
-            return Xapian::Query(Xapian::Query::OP_AND, gtQuery, ltQuery);
-        }
     }
 
     if (com == Term::Equal) {

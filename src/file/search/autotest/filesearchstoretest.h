@@ -54,6 +54,7 @@ private Q_SLOTS:
     void testSortingNone();
 
     void testInvalidProperties();
+    void testModifiedProperty();
 private:
     QTemporaryDir* m_tempDir;
     Database* m_db;
