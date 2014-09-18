@@ -22,6 +22,7 @@
 
 #include <QStringList>
 #include <QStack>
+#include <QDate>
 
 using namespace Baloo;
 
@@ -107,6 +108,22 @@ static void addTermToStack(QStack<Term>& stack, const Term& termInConstruction, 
     stack.top().addSubTerm(termInConstruction);
 }
 
+static QVariant tokenToVariant(const QString& token)
+{
+    bool okay = false;
+    int intValue = token.toInt(&okay);
+    if (okay) {
+        return QVariant(intValue);
+    }
+
+    QDate date = QDate::fromString(token, Qt::ISODate);
+    if (date.isValid() && !date.isNull()) {
+        return date;
+    }
+
+    return token;
+}
+
 Term AdvancedQueryParser::parse(const QString& text)
 {
     // The parser does not do any look-ahead but has to store some state
@@ -122,23 +139,30 @@ Term AdvancedQueryParser::parse(const QString& text)
     // Lex the input string
     QStringList tokens = lex(text);
 
-    for (const auto &token : tokens) {
+    for (const QString &token : tokens) {
         // If a key and an operator have been parsed, now is time for a value
         if (valueExpected) {
             // When the parser encounters a literal, it puts it in the value of
             // termInConstruction so that "foo bar baz" is parsed as expected.
             termInConstruction.setProperty(termInConstruction.value().toString());
-            termInConstruction.setValue(token);
 
+            QVariant value = tokenToVariant(token);
+            if (value.type() != QVariant::String) {
+                if (termInConstruction.comparator() == Term::Contains) {
+                    termInConstruction.setComparator(Term::Equal);
+                }
+            }
+
+            termInConstruction.setValue(value);
             valueExpected = false;
             continue;
         }
 
         // Handle the logic operators
-        if (token == QLatin1String("AND")) {
+        if (token == QStringLiteral("AND")) {
             nextOp = Term::And;
             continue;
-        } else if (token == QLatin1String("OR")) {
+        } else if (token == QStringLiteral("OR")) {
             nextOp = Term::Or;
             continue;
         }

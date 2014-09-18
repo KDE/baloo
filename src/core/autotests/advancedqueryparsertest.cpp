@@ -129,4 +129,25 @@ void AdvancedQueryParserTest::testNesting()
     QCOMPARE(term, expectedTerm);
 }
 
+void AdvancedQueryParserTest::testDifferentTypes()
+{
+    // Integers
+    AdvancedQueryParser parser;
+    Term term = parser.parse("width:500");
+
+    Term expectedTerm("width", 500);
+    QCOMPARE(term, expectedTerm);
+
+    term = parser.parse("width<500");
+
+    expectedTerm = Term("width", 500, Term::Less);
+    QCOMPARE(term, expectedTerm);
+
+    // Date
+    term = parser.parse("modified:2014-12-02");
+
+    expectedTerm = Term("modified", QDate(2014, 12, 02));
+    QCOMPARE(term, expectedTerm);
+}
+
 QTEST_MAIN(AdvancedQueryParserTest);
