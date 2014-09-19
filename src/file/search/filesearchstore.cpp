@@ -121,6 +121,13 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
     if (value.isNull())
         return Xapian::Query();
 
+    //
+    // Sanitize the values
+    //
+    if (value.type() == QVariant::Int && com == Term::Contains) {
+        com = Term::Equal;
+    }
+
     if (property.compare(QLatin1String("rating"), Qt::CaseInsensitive) == 0) {
         int val = value.toInt();
         if (val == 0)
