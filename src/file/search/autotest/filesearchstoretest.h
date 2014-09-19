@@ -55,6 +55,7 @@ private Q_SLOTS:
 
     void testInvalidProperties();
     void testModifiedProperty();
+    void testDateTimeProperty();
 private:
     QTemporaryDir* m_tempDir;
     Database* m_db;

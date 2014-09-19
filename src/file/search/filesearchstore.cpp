@@ -204,6 +204,23 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
         }
     }
 
+    if (value.type() == QVariant::Date || value.type() == QVariant::DateTime) {
+        if (com == Term::Equal || com == Term::Contains) {
+            XapianQueryParser parser;
+            parser.setDatabase(xapianDb());
+
+            QString val;
+            if (value.type() == QVariant::Date) {
+                val = value.toDate().toString(Qt::ISODate);
+            } else if (value.type() == QVariant::DateTime) {
+                val = value.toDateTime().toString(Qt::ISODate);
+            }
+
+            return parser.expandWord(val, fetchPrefix(property));
+        }
+        // FIXME: Should we expressly forbid other comparisons?
+    }
+
     if (com == Term::Contains) {
         XapianQueryParser parser;
         parser.setDatabase(xapianDb());

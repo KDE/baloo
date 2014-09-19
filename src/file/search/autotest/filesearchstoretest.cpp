@@ -31,6 +31,8 @@
 #include <QtTest>
 
 #include <xapian.h>
+#include <kfilemetadata/properties.h>
+#include <kfilemetadata/propertyinfo.h>
 
 
 using namespace Baloo;
@@ -496,6 +498,34 @@ void FileSearchStoreTest::testModifiedProperty()
     QVERIFY(!m_store->next(qid));
 
     q.setTerm(Term(("modified"), dt, Term::Equal));
+
+    qid = m_store->exec(q);
+
+    QVERIFY(m_store->next(qid));
+    QCOMPARE(m_store->id(qid), serialize("file", 1));
+    QVERIFY(!m_store->next(qid));
+}
+
+void FileSearchStoreTest::testDateTimeProperty()
+{
+    KFileMetaData::PropertyInfo propInfo(KFileMetaData::Property::CreationDate);
+    QString prefix = "X" + QString::number((int)propInfo.property());
+
+    QDateTime dt(QDate(2013, 12, 02), QTime(12, 2, 2));
+    insertExactText(1, dt.toString(Qt::ISODate), prefix);
+    insertExactText(2, QDateTime::currentDateTime().toString(Qt::ISODate), prefix);
+
+    Query q;
+    q.addType(QLatin1String("File"));
+    q.setTerm(Term(propInfo.name(), dt.date(), Term::Equal));
+
+    int qid = m_store->exec(q);
+
+    QVERIFY(m_store->next(qid));
+    QCOMPARE(m_store->id(qid), serialize("file", 1));
+    QVERIFY(!m_store->next(qid));
+
+    q.setTerm(Term((propInfo.name()), dt, Term::Equal));
 
     qid = m_store->exec(q);
 
