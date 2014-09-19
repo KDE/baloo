@@ -63,6 +63,10 @@ void Result::add(KFileMetaData::Property::Property property, const QVariant& val
         const QString term = prefix + value.toString();
         m_doc.add_term(term.toUtf8().constData());
     }
+    else if (value.type() == QVariant::Date) {
+        const QString term = prefix + value.toDate().toString(Qt::ISODate);
+        m_doc.add_term(term.toUtf8().constData());
+    }
     else if (value.type() == QVariant::DateTime) {
         const QString term = prefix + value.toDateTime().toString(Qt::ISODate);
         m_doc.add_term(term.toUtf8().constData());
