@@ -29,7 +29,7 @@ Out (from extractor on its stdout)
 ==================================
 Command         Args            Meaning
 -------         ----------      -----------------------
-b               <data>          binary output of results from last indexing
+b               <size><data>    size followed by binary output of results from last indexing
 i               <path>          indexed the file at path
 s               <path>          saved all pending file data up to <path>
 

@@ -318,7 +318,7 @@ void App::sendBinaryData(const Result &result)
         s << map;
     }
 
-    m_stdout << 'b' << arr << "\n";
+    m_stdout << 'b' << arr.size() << arr << "\n";
     m_stdout.flush();
 }
 
