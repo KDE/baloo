@@ -1,5 +1,6 @@
 set(FILE_LIB_SRCS
     file.cpp
+    extractorclient.cpp
     filefetchjob.cpp
     filemodifyjob.cpp
     filemapping.cpp
@@ -47,6 +48,7 @@ install(TARGETS KF5BalooFiles EXPORT KF5BalooTargets ${KF5_INSTALL_TARGETS_DEFAU
 
 ecm_generate_headers(KF5BalooFiles_CamelCase_HEADERS
     HEADER_NAMES
+    ExtractorClient
     File
     FileFetchJob
     FileModifyjob
