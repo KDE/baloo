@@ -118,54 +118,58 @@ bool App::convertToBool(const QString &command, char code)
 
 void App::processNextCommand()
 {
-    QString command;
-    m_stdin >> command;
+    bool emptyIsFailure = true;
+    while (emptyIsFailure || !m_stdin.atEnd()) {
+        emptyIsFailure = false;
+        QString command;
+        m_stdin >> command;
 
-    if (command.isEmpty()) {
-        // stdin has closed on us
-        exit();
-        return;
-    }
-
-    char code = command[0].toLatin1();
-    command = command.remove(0, 1).trimmed();
-
-    switch (code) {
-        case 'b':
-            m_sendBinaryData = convertToBool(command, code);
-            break;
-
-        case 'c':
-            m_followConfig = convertToBool(command, code);
-            break;
-
-        case 'd':
-            m_store = convertToBool(command, code);
-            break;
-
-        case 'i':
-            indexFile(command);
-            break;
-
-        case 'f':
-            saveChanges();
-            break;
-
-        case 's':
-            setDatabasePath(command);
-            break;
-
-        case 'q':
+        if (command.isEmpty()) {
+            // stdin has closed on us
             exit();
-            break;
+            return;
+        }
 
-        case 'z':
-            m_debugEnabled = convertToBool(command, code);
-            break;
+        char code = command[0].toLatin1();
+        command = command.remove(0, 1).trimmed();
 
-        default:
-            exit("Unknown command code: " + code);
-            break;
+        switch (code) {
+            case 'b':
+                m_sendBinaryData = convertToBool(command, code);
+                break;
+
+            case 'c':
+                m_followConfig = convertToBool(command, code);
+                break;
+
+            case 'd':
+                m_store = convertToBool(command, code);
+                break;
+
+            case 'i':
+                indexFile(command);
+                break;
+
+            case 'f':
+                saveChanges();
+                break;
+
+            case 's':
+                setDatabasePath(command);
+                break;
+
+            case 'q':
+                exit();
+                break;
+
+            case 'z':
+                m_debugEnabled = convertToBool(command, code);
+                break;
+
+            default:
+                exit("Unknown command code: " + code);
+                break;
+        }
     }
 }
 
