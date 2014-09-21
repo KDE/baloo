@@ -155,7 +155,7 @@ ExtractorClient::ExtractorClient(QObject *parent)
       d(new Private(this))
 {
     const QString exe = QStandardPaths::findExecutable(QLatin1String("baloo_file_extractor_worker"));
-    connect(d->extractor, SIGNAL(finish(int,QProcess::ExitStatus)), this, SLOT(extractorDead()));
+    connect(d->extractor, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(extractorDead()));
     connect(d->extractor, SIGNAL(readyReadStandardOutput()), this, SLOT(readResponse()));
     connect(d->extractor, SIGNAL(started()), this, SLOT(extractorStarted()));
     d->extractor->setProcessChannelMode(QProcess::SeparateChannels);
