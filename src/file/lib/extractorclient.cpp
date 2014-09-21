@@ -65,6 +65,7 @@ void ExtractorClient::Private::extractorStarted()
     writeStream.setDevice(extractor);
     if (!commandQueue.isEmpty()) {
         writeStream << commandQueue;
+        writeStream.flush();
         commandQueue.clear();
     }
 }
@@ -169,32 +170,38 @@ bool ExtractorClient::isValid() const
 
 void ExtractorClient::setBinaryOutput(bool binaryOutput)
 {
-    d->writeStream << 'b' << (binaryOutput ? '+' : '-');
+    d->writeStream << 'b' << (binaryOutput ? '+' : '-') << "\n";
+    d->writeStream.flush();
 }
 
 void ExtractorClient::setFollowConfig(bool followConfig)
 {
-    d->writeStream << 'c' << (followConfig ? '+' : '-');
+    d->writeStream << 'c' << (followConfig ? '+' : '-') << "\n";
+    d->writeStream.flush();
 }
 
 void ExtractorClient::setSaveToDatabase(bool saveToDatabase)
 {
-    d->writeStream << 'd' << (saveToDatabase ? '+' : '-');
+    d->writeStream << 'd' << (saveToDatabase ? '+' : '-') << "\n";
+    d->writeStream.flush();
 }
 
 void ExtractorClient::setDatabasePath(const QString &path)
 {
-    d->writeStream << 's' << path;
+    d->writeStream << 's' << path << "\n";
+    d->writeStream.flush();
 }
 
 void ExtractorClient::enableDebuging(bool debugging)
 {
-    d->writeStream << 'z' << (debugging ? '+' : '-');
+    d->writeStream << 'z' << (debugging ? '+' : '-') << "\n";
+    d->writeStream.flush();
 }
 
 void ExtractorClient::indexFile(const QString &file)
 {
-    d->writeStream << 'i' << file;
+    d->writeStream << 'i' << file << "\n";
+    d->writeStream.flush();
 }
 
 } // namespace Baloo
