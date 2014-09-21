@@ -53,8 +53,8 @@ public:
 
     ExtractorClient *q;
     QProcess *extractor;
-    QTextStream writeStream;
     QByteArray commandQueue;
+    QTextStream writeStream;
     CommandState commandState;
     int binaryDataLength;
     QByteArray binaryDataBuffer;
