@@ -28,4 +28,15 @@ target_link_libraries(baloo_file_extractor_worker
 
 install(TARGETS baloo_file_extractor_worker DESTINATION ${BIN_INSTALL_DIR})
 
+add_executable(baloo_file_extractor
+               baloo_file_extractor.cpp)
+
+target_link_libraries(baloo_file_extractor
+  KF5::I18n
+  KF5::BalooFiles
+)
+
+install(TARGETS baloo_file_extractor DESTINATION ${BIN_INSTALL_DIR})
+
+
 add_subdirectory(autotests)
