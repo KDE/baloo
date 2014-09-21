@@ -57,7 +57,9 @@ App::App(QObject *parent)
 
 App::~App()
 {
-    saveChanges();
+    if (m_db && !(m_results.isEmpty() && m_docsToDelete.isEmpty())) {
+        saveChanges();
+    }
 }
 
 void App::initDb()
