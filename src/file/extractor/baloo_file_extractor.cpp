@@ -59,6 +59,7 @@ int main(int argc, char* argv[])
     }
 
     Baloo::ExtractorClient *client = new Baloo::ExtractorClient;
+    QObject::connect(client, &Baloo::ExtractorClient::extractorDied, &app, QCoreApplication::quit);
     if (parser.isSet(QLatin1String("bdata"))) {
         client->setBinaryOutput(true);
         client->setSaveToDatabase(false);
