@@ -42,7 +42,7 @@ public:
     Private(ExtractorClient *parent)
         : q(parent),
           extractor(new QProcess(q)),
-          writeStream(commandQueue, QIODevice::WriteOnly),
+          writeStream(&commandQueue, QIODevice::WriteOnly),
           commandState(NoCommand)
     {
     }
