@@ -84,7 +84,9 @@ void ExtractorClient::Private::readResponse()
 
     if (commandState == NoCommand) {
         char code;
-        extractor->getChar(&code);
+        if (!extractor->getChar(&code)) {
+            return;
+        }
 
         switch (code) {
             case 'b': {
@@ -143,12 +145,18 @@ void ExtractorClient::Private::readResponse()
         }
     } else if (extractor->canReadLine()) {
         const QString result = extractor->readLine().trimmed();
+
         if (commandState == Indexed) {
             Q_EMIT q->fileIndexed(result);
         } else if (commandState == Saved) {
             Q_EMIT q->dataSaved(result);
         }
+
         commandState = NoCommand;
+    }
+
+    if (extractor->bytesAvailable() > 0) {
+        readResponse();
     }
 }
 
@@ -219,6 +227,7 @@ void ExtractorClient::indexingComplete()
     d->writeStream << "f\n";
     d->writeStream.flush();
 }
+
 } // namespace Baloo
 
 #include "moc_extractorclient.cpp"
