@@ -61,7 +61,8 @@ Command         Args            Meaning
 -------         ----------      -----------------------
 b               <+|->           send serialized QVariantMap of results after indexing
 c               <+|->           follow config to determinine indexability
-d               <+|->           save to the database
+d               <+|->           store data in the database
+f               <+|->           indexing is finished for now (commits data to database)
 i               <path>          index the file at path
 s               <path>          path to store the database files
 q                               quit process

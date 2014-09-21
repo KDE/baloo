@@ -43,6 +43,7 @@ public:
     void enableDebuging(bool debugging);
 
     void indexFile(const QString &file);
+    void indexingComplete();
 
 Q_SIGNALS:
     void extractorDied();

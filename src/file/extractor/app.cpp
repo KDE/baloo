@@ -145,6 +145,10 @@ void App::processNextCommand()
             indexFile(command);
             break;
 
+        case 'f':
+            saveChanges();
+            break;
+
         case 's':
             setDatabasePath(command);
             break;
@@ -324,31 +328,26 @@ void App::sendBinaryData(const Result &result)
 
 void App::saveChanges()
 {
-    if (!m_db) {
-        return;
+    if (m_db && !(m_results.isEmpty() && m_docsToDelete.isEmpty())) {
+        XapianDatabase xapDb(m_dbPath);
+        for (auto &result: m_results) {
+            result.finish();
+            xapDb.replaceDocument(result.id(), result.document());
+        }
+        m_results.clear();
+
+        for (auto docId: m_docsToDelete) {
+            xapDb.deleteDocument(docId);
+        }
+        m_docsToDelete.clear();
+
+        xapDb.commit();
+        m_db->sqlDatabase().commit();
+        m_db->sqlDatabase().transaction();
+
+        m_termCount = 0;
+        m_lastPathOrId.clear();
     }
-
-    if (m_results.isEmpty() && m_docsToDelete.isEmpty()) {
-        return;
-    }
-
-    XapianDatabase xapDb(m_dbPath);
-    for (auto &result: m_results) {
-        result.finish();
-        xapDb.replaceDocument(result.id(), result.document());
-    }
-    m_results.clear();
-
-    for (auto docId: m_docsToDelete) {
-        xapDb.deleteDocument(docId);
-    }
-    m_docsToDelete.clear();
-
-    xapDb.commit();
-    m_db->sqlDatabase().commit();
-    m_db->sqlDatabase().transaction();
-
-    m_termCount = 0;
 
     if (m_debugEnabled) {
         printDebug();

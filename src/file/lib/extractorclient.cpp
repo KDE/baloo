@@ -205,6 +205,11 @@ void ExtractorClient::indexFile(const QString &file)
     d->writeStream.flush();
 }
 
+void ExtractorClient::indexingComplete()
+{
+    d->writeStream << "f\n";
+    d->writeStream.flush();
+}
 } // namespace Baloo
 
 #include "moc_extractorclient.cpp"
