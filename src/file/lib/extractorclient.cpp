@@ -182,7 +182,7 @@ void ExtractorClient::setSaveToDatabase(bool saveToDatabase)
     d->writeStream << 'd' << (saveToDatabase ? '+' : '-');
 }
 
-void ExtractorClient::setDatabasePath(bool path)
+void ExtractorClient::setDatabasePath(const QString &path)
 {
     d->writeStream << 's' << path;
 }

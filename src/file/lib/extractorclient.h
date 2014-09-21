@@ -37,7 +37,7 @@ public:
     void setBinaryOutput(bool binaryOutput);
     void setFollowConfig(bool followConfig);
     void setSaveToDatabase(bool saveToDatabase);
-    void setDatabasePath(bool path);
+    void setDatabasePath(const QString &path);
     void enableDebuging(bool debugging);
 
     void indexFile(const QString &file);
