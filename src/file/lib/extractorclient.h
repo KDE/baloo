@@ -33,6 +33,7 @@ class BALOO_FILE_EXPORT ExtractorClient : public QObject
 
 public:
     ExtractorClient(QObject *parent = 0);
+    ~ExtractorClient();
 
     bool isValid() const;
 

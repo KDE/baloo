@@ -164,6 +164,15 @@ ExtractorClient::ExtractorClient(QObject *parent)
     d->extractor->start(exe);
 }
 
+ExtractorClient::~ExtractorClient()
+{
+    if (d->extractor) {
+        indexingComplete();
+    }
+
+    delete d;
+}
+
 bool ExtractorClient::isValid() const
 {
     return d->extractor;
