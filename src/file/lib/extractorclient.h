@@ -22,10 +22,12 @@
 
 #include <QObject>
 
+#include "file_export.h"
+
 namespace Baloo
 {
 
-class ExtractorClient : public QObject
+class BALOO_FILE_EXPORT ExtractorClient : public QObject
 {
     Q_OBJECT
 
