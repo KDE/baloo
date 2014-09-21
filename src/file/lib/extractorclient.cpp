@@ -142,13 +142,13 @@ void ExtractorClient::Private::readResponse()
             }
         }
     } else if (extractor->canReadLine()) {
-        commandState = NoCommand;
         const QString result = extractor->readLine().trimmed();
         if (commandState == Indexed) {
             Q_EMIT q->fileIndexed(result);
         } else if (commandState == Saved) {
             Q_EMIT q->dataSaved(result);
         }
+        commandState = NoCommand;
     }
 }
 
