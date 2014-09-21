@@ -14,9 +14,9 @@ set(EXTRACTOR_SRCS
   ../fileexcludefilters.cpp
 )
 
-add_executable(baloo_file_extractor ${EXTRACTOR_SRCS})
+add_executable(baloo_file_extractor_worker ${EXTRACTOR_SRCS})
 
-target_link_libraries(baloo_file_extractor
+target_link_libraries(baloo_file_extractor_worker
   Qt5::Sql
   KF5::FileMetaData
   KF5::ConfigCore
@@ -26,6 +26,6 @@ target_link_libraries(baloo_file_extractor
   KF5::BalooXapian
 )
 
-install(TARGETS baloo_file_extractor DESTINATION ${BIN_INSTALL_DIR})
+install(TARGETS baloo_file_extractor_worker DESTINATION ${BIN_INSTALL_DIR})
 
 add_subdirectory(autotests)
