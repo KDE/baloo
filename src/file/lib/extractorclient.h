@@ -52,8 +52,9 @@ private:
     class Private;
     Private * const d;
 
-    Q_PRIVATE_SLOT(d, void readResponse())
+    Q_PRIVATE_SLOT(d, void extractorStarted())
     Q_PRIVATE_SLOT(d, void extractorDead())
+    Q_PRIVATE_SLOT(d, void readResponse())
 };
 
 } // namespace Baloo
