@@ -22,13 +22,15 @@
 
 #include "baloo_file_extractor.h"
 
-#include <KLocalizedString>
-#include <QStandardPaths>
+#include <iostream>
 
-#include <QCoreApplication>
-#include <QDebug>
 #include <QCommandLineParser>
 #include <QCommandLineOption>
+#include <QCoreApplication>
+#include <QDebug>
+#include <QStandardPaths>
+
+#include <KLocalizedString>
 
 #include "../lib/extractorclient.h"
 
@@ -40,12 +42,15 @@ FileIndexWaiter::FileIndexWaiter(const QStringList &files, QObject *parent)
 
 void FileIndexWaiter::fileIndexed(const QString &file)
 {
+    std::cout << "Indexed " << file.toLocal8Bit().constData() << std::endl;
     m_files.removeOne(file);
 }
 
 void FileIndexWaiter::dataSaved(const QString &file)
 {
+    std::cout << "Saved data up to " << file.toLocal8Bit().constData() << std::endl;
     if (m_files.isEmpty()) {
+        std::cout << "Finished!" << std::endl;
         qApp->quit();
     }
 }
@@ -84,23 +89,28 @@ int main(int argc, char* argv[])
     QObject::connect(client, &Baloo::ExtractorClient::fileIndexed, waiter, &FileIndexWaiter::fileIndexed);
     QObject::connect(client, &Baloo::ExtractorClient::dataSaved, waiter, &FileIndexWaiter::dataSaved);
     if (parser.isSet(QLatin1String("bdata"))) {
+        std::cout << "Requesting binary data output" << std::endl;
         client->setBinaryOutput(true);
         client->setSaveToDatabase(false);
     }
 
     if (parser.isSet(QLatin1String("debug"))) {
+        std::cout << "Turning on debug" << std::endl;
         client->enableDebuging(true);
     }
 
     if (parser.isSet(QLatin1String("ignoreConfig"))) {
+        std::cout << "Directing to ignore configuration" << std::endl;
         client->setFollowConfig(false);
     }
 
     if (parser.isSet(QLatin1String("db"))) {
+        std::cout << "Setting database path to " << parser.value(QLatin1String("db")).toLocal8Bit().constData() << std::endl;
         client->setDatabasePath(parser.value(QLatin1String("db")));
     }
 
     for (const QString &file: args) {
+        std::cout << "Requesting to index " << file.toLocal8Bit().constData() << std::endl;
         client->indexFile(file);
     }
 
