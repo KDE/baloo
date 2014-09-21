@@ -126,7 +126,7 @@ void App::processNextCommand()
     }
 
     char code = command[0].toLatin1();
-    command.remove(0, 1);
+    command = command.remove(0, 1).trimmed();
 
     switch (code) {
         case 'b':
