@@ -348,7 +348,6 @@ void App::saveChanges()
         m_db->sqlDatabase().transaction();
 
         m_termCount = 0;
-        m_lastPathOrId.clear();
     }
 
     if (m_debugEnabled) {
@@ -357,6 +356,7 @@ void App::saveChanges()
 
     m_stdout << 's' << m_lastPathOrId << "\n";
     m_stdout.flush();
+    m_lastPathOrId.clear();
 }
 
 void App::printDebug()
