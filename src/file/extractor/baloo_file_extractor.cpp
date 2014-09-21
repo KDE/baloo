@@ -20,6 +20,8 @@
    License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "baloo_file_extractor.h"
+
 #include <KLocalizedString>
 #include <QStandardPaths>
 
@@ -29,6 +31,24 @@
 #include <QCommandLineOption>
 
 #include "../lib/extractorclient.h"
+
+FileIndexWaiter::FileIndexWaiter(const QStringList &files, QObject *parent)
+    : QObject(parent),
+      m_files(files)
+{
+}
+
+void FileIndexWaiter::fileIndexed(const QString &file)
+{
+    m_files.removeOne(file);
+}
+
+void FileIndexWaiter::dataSaved(const QString &file)
+{
+    if (m_files.isEmpty()) {
+        qApp->quit();
+    }
+}
 
 int main(int argc, char* argv[])
 {
@@ -58,8 +78,11 @@ int main(int argc, char* argv[])
         parser.showHelp(1);
     }
 
+    FileIndexWaiter *waiter = new FileIndexWaiter(args);
     Baloo::ExtractorClient *client = new Baloo::ExtractorClient;
     QObject::connect(client, &Baloo::ExtractorClient::extractorDied, &app, QCoreApplication::quit);
+    QObject::connect(client, &Baloo::ExtractorClient::fileIndexed, waiter, &FileIndexWaiter::fileIndexed);
+    QObject::connect(client, &Baloo::ExtractorClient::dataSaved, waiter, &FileIndexWaiter::dataSaved);
     if (parser.isSet(QLatin1String("bdata"))) {
         client->setBinaryOutput(true);
         client->setSaveToDatabase(false);
@@ -78,9 +101,9 @@ int main(int argc, char* argv[])
     }
 
     for (const QString &file: args) {
-        qDebug() << "going to index" << file;
         client->indexFile(file);
     }
 
+    client->indexingComplete();
     return app.exec();
 }
