@@ -181,7 +181,7 @@ bool BasicIndexingQueue::shouldIndexContents(const QString& dir)
 void BasicIndexingQueue::index(FileMapping& file, const QString& mimetype,
                                UpdateDirFlags flags)
 {
-    qDebug() << file.id() << file.url();
+    //qDebug() << file.id() << file.url();
 
     bool xattrOnly = (flags & Baloo::ExtendedAttributesOnly);
 
