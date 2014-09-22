@@ -119,6 +119,7 @@ void FileIndexingQueue::processNextIteration()
 
 void FileIndexingQueue::finishedIndexingFile(const QString &url)
 {
+    Q_UNUSED(url)
     ++m_batchCount;
 
     if (m_batchCount >= m_batchSize) {
@@ -140,6 +141,7 @@ void FileIndexingQueue::indexingFailed()
 
 void FileIndexingQueue::dataSaved(const QString &lastUrlSaved)
 {
+    Q_UNUSED(lastUrlSaved)
     if (!m_queueQuery.isActive()) {
         // indexing is done for now, so lets release the extractor process
         m_extractor->deleteLater();
