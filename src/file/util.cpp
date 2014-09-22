@@ -22,8 +22,10 @@
 
 #include "util.h"
 
+#include <QDebug>
 #include <QString>
 #include <QSqlQuery>
+#include <QSqlError>
 #include <QVariant>
 
 namespace Baloo
@@ -56,9 +58,9 @@ void updateIndexingLevel(const QString &url, IndexingLevel level, QSqlDatabase &
     //NOTE: doing these one-at-a-time will become noticeably expensive on larger datasets
     //TODO: profile this method to see what could be improved performance-wise
     QSqlQuery query(db);
-    query.prepare(QLatin1String("UPDATE files SET indexingLevel = ? WHERE url = ?"));
-    query.addBindValue(level);
-    query.addBindValue(url);
+    query.prepare(QLatin1String("UPDATE files SET indexingLevel = :level WHERE url = :url"));
+    query.bindValue(":level", level);
+    query.bindValue(":url", url);
     query.exec();
 }
 

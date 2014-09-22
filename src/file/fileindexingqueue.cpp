@@ -42,16 +42,42 @@ FileIndexingQueue::FileIndexingQueue(Database* db, QObject* parent)
     , m_maxQueueSize(1200)
     , m_extractor(0)
 {
-    m_queueQuery.prepare("SELECT url FROM files WHERE indexingLevel > ? AND indexingLevel < ? LIMIT ?");
-    m_queueQuery.addBindValue(SkipIndexing);
-    m_queueQuery.addBindValue(CompletelyIndexed);
-    m_queueQuery.addBindValue(m_maxQueueSize);
+    prepareQueueQuery();
+}
+
+void FileIndexingQueue::setMaxSize(int size)
+{
+    m_maxQueueSize = size;
+    prepareQueueQuery();
+}
+
+void FileIndexingQueue::setBatchSize(int size)
+{
+    m_batchSize = size;
+}
+
+void FileIndexingQueue::setTestMode(bool mode)
+{
+    m_testMode = mode;
+}
+
+void FileIndexingQueue::prepareQueueQuery()
+{
+    m_queueQuery.prepare("SELECT url, indexingLevel FROM files WHERE indexingLevel > :levelMin AND indexingLevel < :levelMax LIMIT :limit");
+    m_queueQuery.bindValue(":levelMin", SkipIndexing);
+    m_queueQuery.bindValue(":levelMax", PendingSave);
+    m_queueQuery.bindValue(":limit", m_maxQueueSize);
 }
 
 void FileIndexingQueue::fillQueue()
 {
     if (!m_queueQuery.isActive()) {
         m_queueQuery.exec();
+        if (m_queueQuery.next()) {
+            m_queueQuery.seek(-1);
+        } else {
+            m_queueQuery.finish();
+        }
     }
 }
 
@@ -70,16 +96,17 @@ void FileIndexingQueue::processNextIteration()
 
         if (m_testMode) {
             m_extractor->enableDebuging(true);
-            m_extractor->setDatabasePath(m_db->path());
+            m_extractor->setFollowConfig(false);
         }
+
+        m_extractor->setDatabasePath(m_db->path());
     }
 
     if (!m_queueQuery.next()) {
         m_queueQuery.finish();
         fillQueue();
-        if (!m_queueQuery.next()) {
-            // still nothing.. we're done! :)
-            m_queueQuery.finish();
+        if (!m_queueQuery.isActive()) {
+            // we're done! :)
             m_extractor->indexingComplete();
             finishIteration();
             return;
@@ -93,9 +120,6 @@ void FileIndexingQueue::processNextIteration()
 void FileIndexingQueue::finishedIndexingFile(const QString &url)
 {
     ++m_batchCount;
-    if (!url.isEmpty()) {
-        m_pendingSave << url;
-    }
 
     if (m_batchCount >= m_batchSize) {
         m_batchCount = 0;
@@ -108,7 +132,7 @@ void FileIndexingQueue::finishedIndexingFile(const QString &url)
 void FileIndexingQueue::indexingFailed()
 {
     updateIndexingLevel(m_currentUrl, SkipIndexing, m_db->sqlDatabase());
-    delete m_extractor;
+    m_extractor->deleteLater();
     m_extractor = 0;
 
     finishedIndexingFile(QString());
@@ -116,33 +140,10 @@ void FileIndexingQueue::indexingFailed()
 
 void FileIndexingQueue::dataSaved(const QString &lastUrlSaved)
 {
-    QStringListIterator it(m_pendingSave);
-    while (it.hasNext()) {
-        const QString url = it.next();
-        updateIndexingLevel(url, CompletelyIndexed, m_db->sqlDatabase());
-
-        if (url == lastUrlSaved) {
-            break;
-        }
-    }
-
-    if (it.hasNext()) {
-        // incomplete save; we still are waiting on urls to be saved
-        QStringList remainder;
-        while (it.hasNext()) {
-            remainder << it.next();
-        }
-
-        m_pendingSave = remainder;
-    } else {
-        // we got them all... move on
-        m_pendingSave.clear();
-
-        if (!m_queueQuery.isActive()) {
-            // indexing is done for now, so lets release the extractor process
-            delete m_extractor;
-            m_extractor = 0;
-        }
+    if (!m_queueQuery.isActive()) {
+        // indexing is done for now, so lets release the extractor process
+        m_extractor->deleteLater();
+        m_extractor = 0;
     }
 }
 

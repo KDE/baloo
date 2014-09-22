@@ -36,7 +36,8 @@ enum IndexingLevel {
     SkipIndexing = -1,
     NotIndexed = 0,
     PendingFullIndexing = 1,
-    CompletelyIndexed = 2
+    PendingSave = 2,
+    CompletelyIndexed = 3
 };
 
 void updateIndexingLevel(Xapian::Document &doc, IndexingLevel level);

@@ -48,9 +48,9 @@ public:
 
     void clear();
 
-    void setMaxSize(int size) { m_maxQueueSize = size; }
-    void setBatchSize(int size) { m_batchSize = size; }
-    void setTestMode(bool mode) { m_testMode = mode; }
+    void setMaxSize(int size);
+    void setBatchSize(int size);
+    void setTestMode(bool mode);
 
 Q_SIGNALS:
     void newDocument(uint docid, const Xapian::Document& doc);
@@ -66,6 +66,8 @@ private Q_SLOTS:
     void dataSaved(const QString &url);
 
 private:
+    void prepareQueueQuery();
+
     QStack<uint> m_fileQueue;
     Database* m_db;
     QSqlQuery m_queueQuery;
