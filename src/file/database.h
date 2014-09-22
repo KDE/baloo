@@ -44,12 +44,17 @@ public:
     Baloo::XapianDatabase* xapianDatabase();
 
 private:
+    bool updateSqlSchema(int fromVersion);
+    bool createSqlSchema();
+
     QString m_path;
     QString m_connectionName;
     bool m_initialized;
 
     Baloo::XapianDatabase* m_xapianDb;
     QSqlDatabase* m_sqlDb;
+
+    static const int CURRENT_SQL_SCHEMA_VERSION = 2;
 };
 
 #endif // _BALOO_FILE_DATABASE_H

@@ -51,8 +51,9 @@ Database::~Database()
 
 bool Database::init(bool sqlOnly)
 {
-    if (m_initialized)
+    if (m_initialized) {
         return true;
+    }
 
     if (!sqlOnly) {
         // Create the Xapian DB
@@ -69,15 +70,70 @@ bool Database::init(bool sqlOnly)
         return false;
     }
 
-    const QStringList tables = m_sqlDb->tables();
-    if (tables.contains(QLatin1String("files"))) {
-        return true;
+    int version = 1;
+    QSqlQuery query(*m_sqlDb);
+    bool ret = query.exec(QLatin1String("SELECT version FROM version"));
+    if (ret && query.first()) {
+        int version = query.value(0).toInt();
+        if (version >= CURRENT_SQL_SCHEMA_VERSION) {
+            return true;
+        }
     }
 
+    if (m_sqlDb->tables().contains(QLatin1String("files"))) {
+        return updateSqlSchema(version);
+    } else if (version > 1) {
+        return updateSqlSchema(version);
+    }
+
+    return createSqlSchema();
+}
+
+bool Database::updateSqlSchema(int fromVersion)
+{
+    if (fromVersion == 1) {
+        QSqlQuery query(*m_sqlDb);
+        bool ret = query.exec("ALTER TABLE files ADD COLUMN indexingState int NOT NULL DEFAULT 0");
+        if (!ret) {
+            qDebug() << "Could not update files table" << query.lastError().text();
+            return false;
+        }
+
+        // mark all files as beig done; BasicIndexing can reset this as needed
+        query.exec("UPDATE files SET indexingState = 2");
+
+        ret = query.exec(QLatin1String("CREATE TABLE version (version int NOT NULL)"));
+        if (!ret) {
+            qDebug() << "Could not create version table" << query.lastError().text();
+            return false;
+        }
+    }
+
+    if (fromVersion < CURRENT_SQL_SCHEMA_VERSION) {
+        QSqlQuery query(*m_sqlDb);
+        bool ret = query.exec(QLatin1String("DELETE FROM version; INSERT INTO version (version) VALUES (") + QString::number(CURRENT_SQL_SCHEMA_VERSION) + ")");
+        if (!ret) {
+            qDebug() << "Could not store new version" << query.lastError().text();
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool Database::createSqlSchema()
+{
     QSqlQuery query(*m_sqlDb);
-    bool ret = query.exec(QLatin1String("CREATE TABLE files("
-                          "id INTEGER PRIMARY KEY, "
-                          "url TEXT NOT NULL UNIQUE)"));
+    bool ret = query.exec(QLatin1String("CREATE TABLE version (version int NOT NULL)"));
+    if (!ret) {
+        qDebug() << "Could not create version table" << query.lastError().text();
+        return false;
+    }
+
+    ret = query.exec(QLatin1String("CREATE TABLE files("
+                                   "id INTEGER PRIMARY KEY, "
+                                   "url TEXT NOT NULL UNIQUE, "
+                                   "indexingState int NOT NULL DEFAULT 0)"));
     if (!ret) {
         qDebug() << "Could not create tags table" << query.lastError().text();
         return false;
