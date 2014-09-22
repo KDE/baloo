@@ -27,6 +27,7 @@
 #include "../../basicindexingqueue.h"
 #include "../../fileindexingqueue.h"
 #include "../../eventmonitor.h"
+#include "../../util.h"
 #include "xapiandatabase.h"
 
 #include <QTest>
@@ -40,24 +41,27 @@ using namespace Baloo;
 
 SchedulerTest::IndexingData SchedulerTest::fetchIndexingData(Database& db)
 {
-    Xapian::Database* xdb = db.xapianDatabase()->db();
-    xdb->reopen();
-    Xapian::Enquire enquire(*xdb);
-
     IndexingData data;
 
-    enquire.set_query(Xapian::Query("Z1"));
-    Xapian::MSet mset = enquire.get_mset(0, 10000000);
-    data.phaseOne = mset.size();
+    QSqlQuery query(db.sqlDatabase());
+    query.prepare("SELECT count(url) FROM files WHERE indexingLevel = :level");
 
-    enquire.set_query(Xapian::Query("Z2"));
-    mset = enquire.get_mset(0, 10000000);
-    data.phaseTwo = mset.size();
+    query.bindValue(":level", PendingFullIndexing);
+    query.exec();
+    query.first();
+    data.phaseOne = query.value(0).toInt();
 
-    enquire.set_query(Xapian::Query("Z-1"));
-    mset = enquire.get_mset(0, 10000000);
-    data.failed = mset.size();
+    query.bindValue(":level", CompletelyIndexed);
+    query.exec();
+    query.first();
+    data.phaseTwo = query.value(0).toInt();
 
+    query.bindValue(":level", SkipIndexing);
+    query.exec();
+    query.first();
+    data.failed = query.value(0).toInt();
+
+    qDebug() << "FOOOO";
     return data;
 }
 

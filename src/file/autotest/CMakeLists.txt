@@ -86,5 +86,4 @@ ecm_add_test(${regexpcache_SRCS}
     LINK_LIBRARIES Qt5::Test KF5::ConfigCore KF5::CoreAddons baloofilecommon
 )
 
-add_subdirectory(fileindexingjob)
 add_subdirectory(scheduler)
