@@ -192,8 +192,12 @@ void BasicIndexingQueue::index(FileMapping& file, const QString& mimetype,
             }
             else {
                 BasicIndexingJob job(file, mimetype);
-                if (job.index(m_config->onlyBasicIndexing() ? BasicIndexingJob::CompletedIndexing
-                                                            : BasicIndexingJob::OngoingIndexing)) {
+                if (job.index()) {
+                    IndexingLevel level = PendingFullIndexing;
+                    if (m_config->onlyBasicIndexing() || mimetype == QLatin1String("inode/directory")) {
+                        level = CompletelyIndexed;
+                    }
+                    updateIndexingLevel(file.url(), level, m_db->sqlDatabase());
                     Q_EMIT newDocument(job.id(), job.document());
                 }
             }

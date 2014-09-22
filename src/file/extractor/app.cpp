@@ -23,6 +23,7 @@
 #include "app.h"
 #include "../basicindexingjob.h"
 #include "../database.h"
+#include "../util.h"
 #include "xapiandatabase.h"
 
 #include <QDebug>
@@ -272,7 +273,7 @@ void App::indexFile(const QString &pathOrId)
     // mimetype is set and we get proper type information.
     // The mimetype fetched in the BasicIQ is fast but not accurate
     BasicIndexingJob basicIndexer(m_mapping, mimetype);
-    basicIndexer.index(BasicIndexingJob::CompletedIndexing);
+    basicIndexer.index();
 
     Xapian::Document doc = basicIndexer.document();
 
@@ -291,6 +292,7 @@ void App::indexFile(const QString &pathOrId)
     }
 
     indexingCompleted(pathOrId);
+    updateIndexingLevel(m_mapping.url(), Baloo::CompletelyIndexed, m_db->sqlDatabase());
 
     if (m_sendBinaryData) {
         sendBinaryData(result);

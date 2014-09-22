@@ -46,7 +46,7 @@ BasicIndexingJob::~BasicIndexingJob()
 {
 }
 
-bool BasicIndexingJob::index(IndexingStage stage)
+bool BasicIndexingJob::index()
 {
     QFileInfo fileInfo(m_file.url());
 
@@ -77,15 +77,6 @@ bool BasicIndexingJob::index(IndexingStage stage)
 
     if (fileInfo.isDir()) {
         doc.addBoolTerm(QLatin1String("folder"), QLatin1String("T"));
-
-        // This is an optimization for folders. They do not need to go through
-        // file indexing, so there are no indexers for folders
-        updateIndexingLevel(doc, CompletelyIndexed);
-    } else if (stage == CompletedIndexing) {
-        // This is to prevent indexing if option in config is set to do so
-        updateIndexingLevel(doc, CompletelyIndexed);
-    } else {
-        updateIndexingLevel(doc, PendingFullIndexing);
     }
 
     indexXAttr(m_file.url(), doc);

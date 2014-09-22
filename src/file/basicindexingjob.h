@@ -35,14 +35,10 @@ class XapianDocument;
 class BasicIndexingJob
 {
 public:
-    enum IndexingStage {
-        OngoingIndexing = 0,
-        CompletedIndexing = 1
-    };
     BasicIndexingJob(const FileMapping& file, const QString& mimetype);
     ~BasicIndexingJob();
 
-    bool index(IndexingStage stage);
+    bool index();
 
     Xapian::Document document() { return m_doc; }
     uint id() { return m_id; }
