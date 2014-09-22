@@ -119,7 +119,7 @@ void FileIndexingQueue::slotIndexingFailed(uint id)
     Xapian::Document doc;
     try {
         Xapian::Document doc = m_db->xapianDatabase()->db()->get_document(id);
-        updateIndexingLevel(doc, -1);
+        updateIndexingLevel(doc, SkipIndexing);
         Q_EMIT newDocument(id, doc);
     } catch (const Xapian::Error& err) {
     }

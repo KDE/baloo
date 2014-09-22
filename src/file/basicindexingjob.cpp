@@ -24,6 +24,7 @@
 #include "database.h"
 #include "xapiandocument.h"
 #include "lib/baloo_xattr_p.h"
+#include "util.h"
 
 #include <QFileInfo>
 #include <QDateTime>
@@ -79,14 +80,12 @@ bool BasicIndexingJob::index(IndexingStage stage)
 
         // This is an optimization for folders. They do not need to go through
         // file indexing, so there are no indexers for folders
-        doc.addBoolTerm(QLatin1String("Z2"));
-    }
-    else if (stage == CompletedIndexing) {
+        updateIndexingLevel(doc, CompletelyIndexed);
+    } else if (stage == CompletedIndexing) {
         // This is to prevent indexing if option in config is set to do so
-        doc.addBoolTerm(QLatin1String("Z2"));
-    }
-    else {
-        doc.addBoolTerm(QLatin1String("Z1"));
+        updateIndexingLevel(doc, CompletelyIndexed);
+    } else {
+        updateIndexingLevel(doc, PendingFullIndexing);
     }
 
     indexXAttr(m_file.url(), doc);

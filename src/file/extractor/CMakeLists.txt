@@ -12,6 +12,7 @@ set(EXTRACTOR_SRCS
   ../storagedevices.cpp
   ../regexpcache.cpp
   ../fileexcludefilters.cpp
+  ../util.cpp
 )
 
 add_executable(baloo_file_extractor_worker ${EXTRACTOR_SRCS})

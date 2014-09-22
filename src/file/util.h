@@ -24,11 +24,20 @@
 #define _BALOO_FILEINDEXER_UTIL_H_
 
 #include <xapian.h>
+#include "xapiandocument.h"
 
 namespace Baloo
 {
 
-void updateIndexingLevel(Xapian::Document& doc, int level);
+enum IndexingLevel {
+    SkipIndexing = -1,
+    NotIndexed = 0,
+    PendingFullIndexing = 1,
+    CompletelyIndexed = 2
+};
+
+void updateIndexingLevel(Xapian::Document &doc, IndexingLevel level);
+void updateIndexingLevel(Baloo::XapianDocument &doc, IndexingLevel level);
 
 }
 #endif

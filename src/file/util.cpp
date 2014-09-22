@@ -21,11 +21,13 @@
  */
 
 #include "util.h"
-#include <xapian.h>
 
 #include <QString>
 
-void Baloo::updateIndexingLevel(Xapian::Document& doc, int level)
+namespace Baloo
+{
+
+void updateIndexingLevel(Xapian::Document& doc, IndexingLevel level)
 {
     Xapian::TermIterator it = doc.termlist_begin();
     it.skip_to("Z");
@@ -38,5 +40,14 @@ void Baloo::updateIndexingLevel(Xapian::Document& doc, int level)
     }
 
     const QString term = QLatin1Char('Z') + QString::number(level);
-    doc.add_term(term.toUtf8().constData());
+    doc.add_boolean_term(term.toUtf8().constData());
 }
+
+void updateIndexingLevel(Baloo::XapianDocument &doc, IndexingLevel level)
+{
+    const QString term = QLatin1Char('Z') + QString::number(level);
+    doc.addBoolTerm(term);
+}
+
+} // namespace Baloo
+
