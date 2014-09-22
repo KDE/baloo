@@ -142,7 +142,4 @@ void MetadataMover::updateMetadata(const QString& from, const QString& to)
     if (!query.exec(queryStr)) {
         qWarning() << "Big query failed:" << query.lastError().text();
     }
-
-    m_db->sqlDatabase().commit();
-    m_db->sqlDatabase().transaction();
 }

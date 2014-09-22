@@ -86,7 +86,6 @@ int main(int argc, char** argv)
     Database db;
     db.setPath(path);
     db.init();
-    db.sqlDatabase().transaction();
 
     Baloo::FileIndexerConfig indexerConfig;
     Baloo::FileWatch filewatcher(&db, &indexerConfig, &app);

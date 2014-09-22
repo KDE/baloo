@@ -84,10 +84,6 @@ void Baloo::CommitQueue::commit()
         return;
     }
 
-    m_db->sqlDatabase().commit();
-    m_db->sqlDatabase().transaction();
-    qDebug() << "SQL Committed";
-
     m_db->xapianDatabase()->commit();
 
     m_smallTimer.stop();
