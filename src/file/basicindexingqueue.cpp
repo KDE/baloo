@@ -132,16 +132,19 @@ bool BasicIndexingQueue::process(FileMapping& file, UpdateDirFlags flags)
 bool BasicIndexingQueue::shouldIndex(FileMapping& file, const QString& mimetype) const
 {
     bool shouldBeIndexed = m_config->shouldBeIndexed(file.url());
-    if (!shouldBeIndexed)
+    if (!shouldBeIndexed) {
         return false;
+    }
 
     bool shouldIndexType = m_config->shouldMimeTypeBeIndexed(mimetype);
-    if (!shouldIndexType)
+    if (!shouldIndexType) {
         return false;
+    }
 
     QFileInfo fileInfo(file.url());
-    if (!fileInfo.exists())
+    if (!fileInfo.exists()) {
         return false;
+    }
 
     if (!file.fetch(m_db->sqlDatabase())) {
         return true;
@@ -156,8 +159,9 @@ bool BasicIndexingQueue::shouldIndex(FileMapping& file, const QString& mimetype)
     // A folders mtime is updated when a new file is added / removed / renamed
     // we don't really need to reindex a folder when that happens
     // In fact, we never need to reindex a folder
-    if (mimetype == QLatin1String("inode/directory"))
+    if (mimetype == QLatin1String("inode/directory")) {
         return false;
+    }
 
     // The 4 is for "DT_M"
     const QDateTime mtime = QDateTime::fromString(dtStr.mid(4), Qt::ISODate);

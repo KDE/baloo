@@ -67,15 +67,15 @@ void IndexingQueue::suspend()
 void IndexingQueue::callForNextIteration()
 {
     // If already called callForNextIteration
-    if (m_sentEvent)
+    if (m_sentEvent) {
         return;
+    }
 
     if (isEmpty()) {
         Q_EMIT finishedIndexing();
         m_shouldEmitStartSignal = true;
         return;
-    }
-    else if (m_shouldEmitStartSignal) {
+    } else if (m_shouldEmitStartSignal) {
         Q_EMIT startedIndexing();
         m_shouldEmitStartSignal = false;
     }
