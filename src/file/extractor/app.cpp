@@ -75,8 +75,6 @@ void App::initDb()
         exit();
         return;
     }
-
-    m_db->sqlDatabase().transaction();
 }
 
 void App::setDatabasePath(const QString &path)
@@ -203,7 +201,7 @@ void App::indexFile(const QString &pathOrId)
         m_fileInfo.setFile(pathOrId);
         path = m_fileInfo.absoluteFilePath();
         m_mapping.setUrl(path);
-        m_mapping.setId(-1);
+        m_mapping.setId(0);
     }
 
     if (!QFile::exists(path)) {
@@ -211,10 +209,7 @@ void App::indexFile(const QString &pathOrId)
         qDebug() << path << "does not exist";
 
         if (m_store) {
-            if (isId || m_mapping.fetch(m_db->sqlDatabase())) {
-                m_mapping.remove(m_db->sqlDatabase());
-            }
-
+            m_mapping.remove(m_db->sqlDatabase());
             m_docsToDelete << m_mapping.id();
         }
 
@@ -227,14 +222,9 @@ void App::indexFile(const QString &pathOrId)
     if (m_followConfig) {
         bool shouldIndex = m_config.shouldBeIndexed(path) && m_config.shouldMimeTypeBeIndexed(mimetype);
         if (!shouldIndex) {
-            qDebug() << path << "should not be indexingCompleted. Ignoring";
+            qDebug() << path << "should not be indexed. Ignoring";
 
             if (m_store) {
-                // if isId then the m_mapping is already fetched
-                if (!isId) {
-                    m_mapping.fetch(m_db->sqlDatabase());
-                }
-
                 m_mapping.remove(m_db->sqlDatabase());
                 m_docsToDelete << m_mapping.id();
             }
@@ -291,8 +281,8 @@ void App::indexFile(const QString &pathOrId)
         plugin->extract(&result);
     }
 
+    updateIndexingLevel(m_mapping.url(), Baloo::PendingSave, m_db->sqlDatabase());
     indexingCompleted(pathOrId);
-    updateIndexingLevel(m_mapping.url(), Baloo::CompletelyIndexed, m_db->sqlDatabase());
 
     if (m_sendBinaryData) {
         sendBinaryData(result);
@@ -336,7 +326,7 @@ void App::sendBinaryData(const Result &result)
 
 void App::saveChanges()
 {
-    if (m_db && !(m_results.isEmpty() && m_docsToDelete.isEmpty())) {
+    if (!(m_results.isEmpty() && m_docsToDelete.isEmpty())) {
         XapianDatabase xapDb(m_dbPath);
         for (auto &result: m_results) {
             result.finish();
@@ -350,10 +340,17 @@ void App::saveChanges()
         m_docsToDelete.clear();
 
         xapDb.commit();
-        m_db->sqlDatabase().commit();
-        m_db->sqlDatabase().transaction();
 
         m_termCount = 0;
+    }
+
+    if (m_db) {
+        // reset all files that were pending save
+        QSqlQuery resetQuery(m_db->sqlDatabase());
+        resetQuery.prepare("UPDATE files SET indexingLevel = ? WHERE indexingLevel = ?");
+        resetQuery.addBindValue(CompletelyIndexed);
+        resetQuery.addBindValue(PendingSave);
+        resetQuery.exec();
     }
 
     if (m_debugEnabled) {
