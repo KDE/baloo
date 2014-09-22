@@ -93,14 +93,14 @@ bool Database::updateSqlSchema(int fromVersion)
 {
     if (fromVersion == 1) {
         QSqlQuery query(*m_sqlDb);
-        bool ret = query.exec("ALTER TABLE files ADD COLUMN indexingState int NOT NULL DEFAULT 0");
+        bool ret = query.exec("ALTER TABLE files ADD COLUMN indexingLevel int NOT NULL DEFAULT 0");
         if (!ret) {
             qDebug() << "Could not update files table" << query.lastError().text();
             return false;
         }
 
         // mark all files as beig done; BasicIndexing can reset this as needed
-        query.exec("UPDATE files SET indexingState = 2");
+        query.exec("UPDATE files SET indexingLevel = 2");
 
         ret = query.exec(QLatin1String("CREATE TABLE version (version int NOT NULL)"));
         if (!ret) {
@@ -133,7 +133,7 @@ bool Database::createSqlSchema()
     ret = query.exec(QLatin1String("CREATE TABLE files("
                                    "id INTEGER PRIMARY KEY, "
                                    "url TEXT NOT NULL UNIQUE, "
-                                   "indexingState int NOT NULL DEFAULT 0)"));
+                                   "indexingLevel int NOT NULL DEFAULT 0)"));
     if (!ret) {
         qDebug() << "Could not create tags table" << query.lastError().text();
         return false;
