@@ -73,32 +73,6 @@ void ExtractorTest::test()
     QVERIFY(words.contains(QLatin1String("Z2")));
 }
 
-void ExtractorTest::testBData()
-{
-    QString fileUrl(TESTS_SAMPLE_FILES_PATH + QDir::separator() + QStringLiteral("test.mp3"));
-
-    QString exe = QStandardPaths::findExecutable(QLatin1String("baloo_file_extractor"));
-
-    QStringList args;
-    args << QLatin1String("--bdata");
-    args << fileUrl;
-
-    QProcess process;
-    process.start(exe, args);
-    QVERIFY(process.waitForFinished(10000));
-    QCOMPARE(process.exitStatus(), QProcess::NormalExit);
-
-    qDebug() << process.readAllStandardError();
-    QByteArray bytearray = QByteArray::fromBase64(process.readAllStandardOutput());
-    QVariantMap data;
-    QDataStream in(&bytearray, QIODevice::ReadOnly);
-    in >> data;
-
-    QCOMPARE(data.size(), 2);
-    QCOMPARE(data.value(QLatin1String("channels")).toInt(), 2);
-    QCOMPARE(data.value(QLatin1String("sampleRate")).toInt(), 44100);
-}
-
 void ExtractorTest::testFileDeletion()
 {
     QTemporaryDir dbDir;

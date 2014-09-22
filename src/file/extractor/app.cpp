@@ -65,7 +65,7 @@ void App::startProcessing(const QStringList& args)
         QString url;
 
         // arg is an id
-        if (!m_bData && mapping.fetch(m_db.sqlDatabase())) {
+        if (mapping.fetch(m_db.sqlDatabase())) {
             url = mapping.url();
             if (!QFile::exists(url)) {
                 mapping.remove(m_db.sqlDatabase());
@@ -140,13 +140,8 @@ void App::processNextUrl()
     }
 
     FileMapping file(url);
-    if (!m_bData) {
-        if (!file.fetch(m_db.sqlDatabase())) {
-            file.create(m_db.sqlDatabase());
-        }
-    }
-    else {
-        file.setId(-1);
+    if (!file.fetch(m_db.sqlDatabase())) {
+        file.create(m_db.sqlDatabase());
     }
 
     // We always run the basic indexing again. This is mostly so that the proper
@@ -158,15 +153,9 @@ void App::processNextUrl()
     file.setId(basicIndexer.id());
     Xapian::Document doc = basicIndexer.document();
 
-    KFileMetaData::ExtractionResult::Flags flags = KFileMetaData::ExtractionResult::ExtractEverything;
-    if (m_bData) {
-        flags = KFileMetaData::ExtractionResult::ExtractMetaData;
-    }
-
-    Result result(url, mimetype, flags);
+    Result result(url, mimetype, KFileMetaData::ExtractionResult::ExtractEverything);
     result.setId(file.id());
     result.setDocument(doc);
-    result.setReadOnly(m_bData);
 
     QList<KFileMetaData::ExtractorPlugin*> exList = m_manager.fetchExtractors(mimetype);
 
@@ -177,39 +166,13 @@ void App::processNextUrl()
     m_termCount += result.document().termlist_count();
 
     // Documents with these many terms occupy about 10 mb
-    if (m_termCount >= 10000 && !m_bData) {
+    if (m_termCount >= 10000) {
         saveChanges();
         return;
     }
 
     if (m_urls.isEmpty()) {
-        if (m_bData) {
-            QByteArray arr;
-            QDataStream s(&arr, QIODevice::WriteOnly);
-
-            Q_FOREACH (const Result& res, m_results) {
-                QVariantMap map;
-
-                QMapIterator<QString, QVariant> it(res.map());
-                while (it.hasNext()) {
-                    it.next();
-                    int propNum = it.key().toInt();
-
-                    using namespace KFileMetaData::Property;
-                    Property prop = static_cast<Property>(propNum);
-                    KFileMetaData::PropertyInfo pi(prop);
-                    map.insert(pi.name(), it.value());
-                }
-                qDebug() << map;
-                s << map;
-            }
-
-            std::cout << arr.toBase64().constData();
-            m_results.clear();
-        }
-        else {
-            saveChanges();
-        }
+        saveChanges();
     }
 
     QTimer::singleShot(0, this, SLOT(processNextUrl()));
@@ -318,5 +281,5 @@ void App::printDebug()
 
 bool App::ignoreConfig() const
 {
-    return m_ignoreConfig || m_bData;
+    return m_ignoreConfig;
 }

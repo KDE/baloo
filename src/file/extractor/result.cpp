@@ -36,7 +36,6 @@ Result::Result()
     , m_docId(0)
     , m_termGen(0)
     , m_termGenForText(0)
-    , m_readOnly(false)
 {
 }
 
@@ -45,7 +44,6 @@ Result::Result(const QString& url, const QString& mimetype, const Flags& flags)
     , m_docId(0)
     , m_termGen(0)
     , m_termGenForText(0)
-    , m_readOnly(false)
 {
 }
 
@@ -85,9 +83,7 @@ void Result::add(KFileMetaData::Property::Property property, const QVariant& val
 
 void Result::append(const QString& text)
 {
-    if (!m_readOnly) {
-        m_termGenForText.indexText(text);
-    }
+    m_termGenForText.indexText(text);
 }
 
 void Result::addType(KFileMetaData::Type::Type type)
@@ -95,11 +91,6 @@ void Result::addType(KFileMetaData::Type::Type type)
     KFileMetaData::TypeInfo ti(type);
     const QString t = QLatin1Char('T') + ti.name().toLower();
     m_doc.add_boolean_term(t.toUtf8().constData());
-}
-
-void Result::setReadOnly(bool readOnly)
-{
-    m_readOnly = readOnly;
 }
 
 void Result::finish()

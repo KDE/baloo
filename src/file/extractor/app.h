@@ -43,7 +43,6 @@ public:
     explicit App(const QString& path, QObject* parent = 0);
 
     void setDebug(bool status) { m_debugEnabled = status; }
-    void setBData(bool status) { m_bData = status; }
     void setIgnoreConfig(bool status) { m_ignoreConfig = status; }
 
     void startProcessing(const QStringList& args);
@@ -61,7 +60,6 @@ private:
 
     QVector<Result> m_results;
     QStringList m_urls;
-    bool m_bData;
     bool m_debugEnabled;
     bool m_ignoreConfig;
 
