@@ -24,6 +24,9 @@
 #define _BALOO_FILEINDEXER_UTIL_H_
 
 #include <xapian.h>
+
+#include <QSqlDatabase>
+
 #include "xapiandocument.h"
 
 namespace Baloo
@@ -38,6 +41,7 @@ enum IndexingLevel {
 
 void updateIndexingLevel(Xapian::Document &doc, IndexingLevel level);
 void updateIndexingLevel(Baloo::XapianDocument &doc, IndexingLevel level);
+void updateIndexingLevel(const QString &url, IndexingLevel level, QSqlDatabase &db);
 
 }
 #endif

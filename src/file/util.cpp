@@ -23,6 +23,8 @@
 #include "util.h"
 
 #include <QString>
+#include <QSqlQuery>
+#include <QVariant>
 
 namespace Baloo
 {
@@ -47,6 +49,17 @@ void updateIndexingLevel(Baloo::XapianDocument &doc, IndexingLevel level)
 {
     const QString term = QLatin1Char('Z') + QString::number(level);
     doc.addBoolTerm(term);
+}
+
+void updateIndexingLevel(const QString &url, IndexingLevel level, QSqlDatabase &db)
+{
+    //NOTE: doing these one-at-a-time will become noticeably expensive on larger datasets
+    //TODO: profile this method to see what could be improved performance-wise
+    QSqlQuery query(db);
+    query.prepare(QLatin1String("UPDATE files SET indexingLevel = ? WHERE url = ?"));
+    query.addBindValue(level);
+    query.addBindValue(url);
+    query.exec();
 }
 
 } // namespace Baloo
