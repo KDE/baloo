@@ -1,7 +1,7 @@
 /*
    This file is part of the KDE Baloo project.
    Copyright (C) 2011 Sebastian Trueg <trueg@kde.org>
-   Copyright (C) 2013 Vishesh Handa <me@vhanda.in>
+   Copyright (C) 2013-2014 Vishesh Handa <me@vhanda.in>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -23,147 +23,165 @@
 #include "pendingfilequeue.h"
 
 #include <QDebug>
+#include <QDateTime>
 
 using namespace Baloo;
-
-PendingFileQueue::Entry::Entry(const Baloo::PendingFile& file_, int c)
-    : file(file_),
-      cnt(c)
-{
-}
-
-bool PendingFileQueue::Entry::operator==(const Entry& other) const
-{
-    // we ignore the counter since we need this for the search in queueUrl only
-    return file == other.file;
-}
-
 
 PendingFileQueue::PendingFileQueue(QObject* parent)
     : QObject(parent)
 {
-    // we default to 5 seconds
-    m_queueTimeout = 5;
-    m_emittedTimeout = 5;
+    m_cacheTimer.setInterval(10);
+    m_cacheTimer.setSingleShot(true);
+    connect(&m_cacheTimer, &QTimer::timeout, this, &PendingFileQueue::processCache);
 
-    // setup the timer
-    connect(&m_queueTimer, &QTimer::timeout, this, &PendingFileQueue::slotTimer);
+    m_trackingTime = 120;
 
-    // we check in 1 sec intervals
-    m_queueTimer.setInterval(1000);
+    m_clearRecentlyEmittedTimer.setInterval(m_trackingTime * 1000);
+    m_clearRecentlyEmittedTimer.setSingleShot(true);
+    connect(&m_clearRecentlyEmittedTimer, &QTimer::timeout,
+            this, &PendingFileQueue::clearRecentlyEmitted);
+
+    m_minTimeout = 5;
+    m_maxTimeout = 60;
+    m_pendingFilesTimer.setInterval(m_minTimeout);
+    m_pendingFilesTimer.setSingleShot(true);
+    connect(&m_pendingFilesTimer, &QTimer::timeout,
+            this, &PendingFileQueue::processPendingFiles);
 }
 
 PendingFileQueue::~PendingFileQueue()
 {
 }
 
-void PendingFileQueue::enqueueUrl(const PendingFile& file)
+void PendingFileQueue::enqueue(const PendingFile& file)
 {
-    Entry defaultEntry(file, m_queueTimeout);
-
-    // If the url is already in the queue update its timestamp
-    QQueue<Entry>::iterator it = qFind(m_queue.begin(), m_queue.end(), defaultEntry);
-    if (it != m_queue.end()) {
-        it->cnt = m_queueTimeout;
-        it->file.merge(file);
+    int i = m_cache.indexOf(file);
+    if (i == -1) {
+        m_cache << file;
     } else {
-        // We check if we just emitted the url, if so we move it to the normal queue
-        QHash<QString, int>::iterator iter = m_emittedEntries.find(file.path());
-        if (iter != m_emittedEntries.end()) {
-            m_queue.enqueue(defaultEntry);
-            m_emittedEntries.erase(iter);
+        m_cache[i].merge(file);
+    }
+
+    m_cacheTimer.start();
+}
+
+void PendingFileQueue::processCache()
+{
+    QTime currentTime = QTime::currentTime();
+
+    for (const PendingFile& file : m_cache) {
+        if (file.shouldRemoveIndex()) {
+            Q_EMIT removeFileIndex(file.path());
+
+            m_recentlyEmitted.remove(file.path());
+            m_pendingFiles.remove(file.path());
+        }
+        else if (file.shouldIndexXAttrOnly()) {
+            Q_EMIT indexXAttr(file.path());
+        }
+        else if (file.shouldIndexContents()) {
+            if (m_pendingFiles.contains(file.path())) {
+                QTime time = m_pendingFiles[file.path()];
+
+                int secondsLeft = currentTime.secsTo(time);
+                secondsLeft = qBound(m_minTimeout, secondsLeft * 2, m_maxTimeout);
+
+                time = currentTime.addSecs(secondsLeft);
+                m_pendingFiles[file.path()] = time;
+            }
+            else if (m_recentlyEmitted.contains(file.path())) {
+                QTime time = currentTime.addSecs(m_minTimeout);
+                m_pendingFiles[file.path()] = time;
+            }
+            else {
+                Q_EMIT indexFile(file.path());
+                m_recentlyEmitted.insert(file.path(), currentTime);
+            }
         } else {
-            // It's not in any of the queues
-            defaultEntry.cnt = 0;
-            m_queue.enqueue(defaultEntry);
+            Q_ASSERT_X(false, "FileWatch", "The PendingFile should always have some flags set");
         }
     }
 
-    // make sure the timer is running
-    if (!m_queueTimer.isActive()) {
-        m_queueTimer.start();
+    m_cache.clear();
+
+    if (!m_pendingFiles.isEmpty() && !m_pendingFilesTimer.isActive()) {
+        m_pendingFilesTimer.setInterval(m_minTimeout * 1000);
+        m_pendingFilesTimer.start();
     }
 
-    //
-    // The 10 msecs is completely arbitrary. We want to aggregate
-    // events instead of instantly emitting timeout as we typically get the
-    // same file multiple times but with different flags
-    //
-    QTimer::singleShot(10, this, SLOT(slotRemoveEmptyEntries()));
+    if (!m_recentlyEmitted.isEmpty() && !m_clearRecentlyEmittedTimer.isActive()) {
+        m_clearRecentlyEmittedTimer.setInterval(m_trackingTime * 1000);
+        m_clearRecentlyEmittedTimer.start();
+    }
 }
 
-void PendingFileQueue::setTimeout(int seconds)
+void PendingFileQueue::clearRecentlyEmitted()
 {
-    m_queueTimeout = seconds;
-}
+    QTime time = QTime::currentTime();
+    int nextUpdate = m_trackingTime;
 
-void PendingFileQueue::setWaitTimeout(int seconds)
-{
-    m_emittedTimeout = seconds;
-}
-
-void PendingFileQueue::slotRemoveEmptyEntries()
-{
-    // we run through the queue, decrease each counter and emit each entry which has a count of 0
-    QMutableListIterator<Entry> it(m_queue);
+    QMutableHashIterator<QString, QTime> it(m_recentlyEmitted);
     while (it.hasNext()) {
-        Entry& entry = it.next();
-        if (entry.cnt <= 0) {
-            // Insert into the emitted queue
-            m_emittedEntries.insert(entry.file.path(), m_emittedTimeout);
+        it.next();
 
-            const PendingFile& file = entry.file;
-            if (file.shouldRemoveIndex()) {
-                Q_EMIT removeFileIndex(file.path());
-            } else if (file.shouldIndexContents()) {
-                Q_EMIT indexFile(file.path());
-            } else if (file.shouldIndexXAttrOnly()) {
-                Q_EMIT indexXAttr(file.path());
-            } else {
-                Q_ASSERT_X(false, "FileWatch", "The PendingFile should always have some flags set");
-            }
+        int secondsSinceEmitted = it.value().secsTo(time);
+        if (secondsSinceEmitted >= m_trackingTime) {
+            it.remove();
+        } else {
+            int timeLeft = m_trackingTime - secondsSinceEmitted;
+            nextUpdate = qMin(nextUpdate, timeLeft);
+        }
+    }
+
+    if (!m_recentlyEmitted.isEmpty()) {
+        m_clearRecentlyEmittedTimer.setInterval(nextUpdate * 1000);
+        m_clearRecentlyEmittedTimer.start();
+    }
+}
+
+void PendingFileQueue::processPendingFiles()
+{
+    QTime currentTime = QTime::currentTime();
+    int nextUpdate = m_maxTimeout;
+
+    QMutableHashIterator<QString, QTime> it(m_pendingFiles);
+    while (it.hasNext()) {
+        it.next();
+
+        int secondsLeft = currentTime.secsTo(it.value());
+        if (secondsLeft <= 0) {
+            Q_EMIT indexFile(it.key());
+            m_recentlyEmitted.insert(it.key(), currentTime);
+
             it.remove();
         }
+        else {
+            nextUpdate = qMin(secondsLeft, nextUpdate);
+        }
+    }
+
+    if (!m_pendingFiles.isEmpty()) {
+        m_pendingFilesTimer.setInterval(nextUpdate * 1000);
+        m_pendingFilesTimer.start();
+    }
+
+    if (!m_recentlyEmitted.isEmpty() && !m_clearRecentlyEmittedTimer.isActive()) {
+        m_clearRecentlyEmittedTimer.setInterval(m_trackingTime * 1000);
+        m_clearRecentlyEmittedTimer.start();
     }
 }
 
-void PendingFileQueue::slotTimer()
+void PendingFileQueue::setTrackingTime(int seconds)
 {
-    // we run through the queue, decrease each counter and emit each entry which has a count of 0
-    QMutableListIterator<Entry> it(m_queue);
-    while (it.hasNext()) {
-        Entry& entry = it.next();
-        entry.cnt--;
-        if (entry.cnt <= 0) {
-            // Insert into the emitted queue
-            m_emittedEntries.insert(entry.file.path(), m_emittedTimeout);
+    m_trackingTime = seconds;
+}
 
-            const PendingFile& file = entry.file;
-            if (file.shouldRemoveIndex()) {
-                Q_EMIT removeFileIndex(file.path());
-            } else if (file.shouldIndexContents()) {
-                Q_EMIT indexFile(file.path());
-            } else if (file.shouldIndexXAttrOnly()) {
-                Q_EMIT indexXAttr(file.path());
-            } else {
-                Q_ASSERT_X(false, "FileWatch", "The PendingFile should always have some flags set");
-            }
-            it.remove();
-        }
-    }
+void PendingFileQueue::setMinimumTimeout(int seconds)
+{
+    m_minTimeout = seconds;
+}
 
-    // Run through all the emitted entires and remove them
-    QMutableHashIterator<QString, int> iter(m_emittedEntries);
-    while (iter.hasNext()) {
-        iter.next();
-        iter.value()--;
-        if (iter.value() <= 0) {
-            iter.remove();
-        }
-    }
-
-    // stop the timer in case we have nothing left to do
-    if (m_queue.isEmpty() && m_emittedEntries.isEmpty()) {
-        m_queueTimer.stop();
-    }
+void PendingFileQueue::setMaximumTimeout(int seconds)
+{
+    m_maxTimeout = seconds;
 }

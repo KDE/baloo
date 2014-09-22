@@ -27,29 +27,14 @@
 
 #include <QObject>
 #include <QString>
-#include <QQueue>
 #include <QHash>
 #include <QTimer>
+#include <QVector>
 
 namespace Baloo {
 
 /**
- * The active file queue maintains a queue of file paths
- * with a timestamp.
  *
- * When a file enters the queue, it will immediately time out.
- * If the file has just timed out (default is upto 5 seconds), then it will
- * time out after a given time. As soon as a file is queued again its timestamp
- * will be reset and the timing restarts.
- *
- * This allows to "compress" file modification events of downloads
- * and the like into a single event resulting in a smoother
- * experience for the user.
- *
- * Whereas modification events which occur only one will immediately
- * be sent forward.
- *
- * \author Sebastian Trueg <trueg@ĸde.org>
  */
 class PendingFileQueue : public QObject
 {
@@ -65,52 +50,49 @@ Q_SIGNALS:
     void removeFileIndex(const QString& fileUrl);
 
 public Q_SLOTS:
-    void enqueueUrl(const PendingFile& file);
+    void enqueue(const PendingFile& file);
 
     /**
-     * Set the timeout in seconds. Be aware that the timeout
-     * will not be exact. For internal reasons the queue tries
-     * to roughly match the configured timeout. It only guarantees
-     * that the timeout will be between \p seconds and \p seconds+1.
+     * The number of seconds the file should be tracked after it has
+     * been emitted. This defaults to 2 minutes
      */
-    void setTimeout(int seconds);
+    void setTrackingTime(int seconds);
 
     /**
-     * Sets the timeout in seconds, that the queue should track the url
-     * once it has already been emitted.
+     * Set the minimum amount of seconds a file should be kept in the queue
+     * on receiving successive modifications events.
      */
-    void setWaitTimeout(int seconds);
+    void setMinimumTimeout(int seconds);
+    void setMaximumTimeout(int seconds);
 
 private Q_SLOTS:
-    void slotTimer();
-    void slotRemoveEmptyEntries();
-
-public:
-    // So that it can be declared a movable type
-    struct Entry
-    {
-    public:
-        Entry(const Baloo::PendingFile& file, int c);
-        bool operator==(const Entry& other) const;
-
-        Baloo::PendingFile file;
-        /// The seconds left in this entry
-        int cnt;
-    };
+    void processCache();
+    void processPendingFiles();
+    void clearRecentlyEmitted();
 
 private:
-    QQueue<Entry> m_queue;
-    int m_queueTimeout;
+    QVector<PendingFile> m_cache;
 
-    QTimer m_queueTimer;
+    QTimer m_cacheTimer;
+    QTimer m_clearRecentlyEmittedTimer;
+    QTimer m_pendingFilesTimer;
 
-    /// Contains a set of all the entries for which we emitted the urlTimeout sigal
-    QHash<QString, int> m_emittedEntries;
-    int m_emittedTimeout;
+    /**
+     * Holds the list of files that were recently emitted along with
+     * the time they were last emitted.
+     */
+    QHash<QString, QTime> m_recentlyEmitted;
+
+    /**
+     * The QTime contains the time when these file events should be processed.
+     */
+    QHash<QString, QTime> m_pendingFiles;
+
+    int m_minTimeout;
+    int m_maxTimeout;
+    int m_trackingTime;
 };
 
 }
-
-Q_DECLARE_TYPEINFO(Baloo::PendingFileQueue::Entry, Q_MOVABLE_TYPE);
 
 #endif

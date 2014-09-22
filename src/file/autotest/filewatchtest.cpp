@@ -68,8 +68,9 @@ void FileWatchTest::testFileCreation()
     FileIndexerConfig config;
 
     FileWatch fileWatch(&db, &config);
-    fileWatch.m_pendingFileQueue->setTimeout(0);
-    fileWatch.m_pendingFileQueue->setWaitTimeout(0);
+    fileWatch.m_pendingFileQueue->setMaximumTimeout(0);
+    fileWatch.m_pendingFileQueue->setMinimumTimeout(0);
+    fileWatch.m_pendingFileQueue->setTrackingTime(0);
 
     /*QEventLoop loop;
     connect(&fileWatch, &FileWatch::installedWatches, &loop, &QEventLoop::quit);

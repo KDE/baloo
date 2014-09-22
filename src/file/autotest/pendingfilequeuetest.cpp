@@ -1,6 +1,7 @@
 /*
-   This file is part of the Nepomuk KDE project.
+   This file is part of the KDE Baloo project.
    Copyright (C) 2011 Sebastian Trueg <trueg@kde.org>
+   Copyright (C) 2013-2014 Vishesh Handa <vhanda@kde.org>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -25,6 +26,7 @@
 #include <qtest.h>
 #include <qsignalspy.h>
 #include <qtimer.h>
+#include <QDebug>
 
 using namespace Baloo;
 
@@ -34,84 +36,65 @@ PendingFileQueueTest::PendingFileQueueTest()
 
 void PendingFileQueueTest::testTimeout()
 {
-    QString myUrl(QLatin1String("/tmp"));
+    QString myUrl("/tmp");
 
-    // enqueue one url and then make sure it is not emitted before the timeout
     PendingFileQueue queue;
-    queue.setTimeout(3);
-    queue.setWaitTimeout(2);
+    queue.setMinimumTimeout(2);
 
     QSignalSpy spy(&queue, SIGNAL(indexFile(QString)));
+
     PendingFile file(myUrl);
     file.setModified();
-    queue.enqueueUrl(file);
+    queue.enqueue(file);
 
     // The signal should be emitted immediately
     QTest::qWait(20);
     QCOMPARE(spy.count(), 1);
     QCOMPARE(spy.takeFirst().first().toString(), myUrl);
 
-    // wait for 1 seconds
-    QTest::qWait(1000);
+    // Enqueue the url again. This time it should wait for should wait for the
+    // minimumTimeout
+    queue.enqueue(file);
 
-    queue.enqueueUrl(file);
-    // the signal should not have been emitted yet
-    QVERIFY(spy.isEmpty());
-
-    // wait for 1 seconds
     QTest::qWait(1000);
     QVERIFY(spy.isEmpty());
 
-    // wait another 2 seconds
-    QTest::qWait(2000);
-
-    // now the signal should have been emitted
+    QTest::qWait(1100);
     QCOMPARE(spy.count(), 1);
     QCOMPARE(spy.takeFirst().first().toString(), myUrl);
 }
 
 void PendingFileQueueTest::testRequeue()
 {
-    QString myUrl(QLatin1String("/tmp"));
+    QString myUrl("/tmp");
 
-    // enqueue one url and then make sure it is not emitted before the timeout
     PendingFileQueue queue;
-    queue.setTimeout(3);
-    queue.setWaitTimeout(2);
+    queue.setMinimumTimeout(2);
+    queue.setMaximumTimeout(5);
 
     QSignalSpy spy(&queue, SIGNAL(indexFile(QString)));
+
     PendingFile file(myUrl);
     file.setModified();
-    queue.enqueueUrl(file);
+    queue.enqueue(file);
 
     // The signal should be emitted immediately
     QTest::qWait(20);
     QCOMPARE(spy.count(), 1);
     QCOMPARE(spy.takeFirst().first().toString(), myUrl);
+
+    // Send many events
+    queue.enqueue(file);
+    QTest::qWait(20);
+    queue.enqueue(file);
+    QTest::qWait(20);
+    queue.enqueue(file);
+    QTest::qWait(20);
+
+    QTest::qWait(3500);
     QVERIFY(spy.isEmpty());
 
-    queue.enqueueUrl(file);
-    // wait for 1 seconds
-    QTest::qWait(1000);
-
-    // the signal should not have been emitted yet
-    QVERIFY(spy.isEmpty());
-
-    // re-queue the url
-    queue.enqueueUrl(file);
-
-    // wait another 1 seconds
-    QTest::qWait(1000);
-
-    // the signal should not have been emitted yet, because after re-queing it
-    // it should wait a total of 3 seconds before emitting it
-    // 3 seconds = timeout value
-    QVERIFY(spy.isEmpty());
-
-    // wait another 3 seconds
-    QTest::qWait(3000);
-
-    // now the signal should have been emitted
+    QTest::qWait(1600);
     QCOMPARE(spy.count(), 1);
     QCOMPARE(spy.takeFirst().first().toString(), myUrl);
 }

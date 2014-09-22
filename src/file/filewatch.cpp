@@ -160,7 +160,7 @@ void FileWatch::slotFileDeleted(const QString& urlString, bool isDir)
     PendingFile file(url);
     file.setDeleted();
 
-    m_pendingFileQueue->enqueueUrl(file);
+    m_pendingFileQueue->enqueue(file);
 }
 
 
@@ -172,7 +172,7 @@ void FileWatch::slotFileCreated(const QString& path, bool isDir)
         PendingFile file(path);
         file.setCreated();
 
-        m_pendingFileQueue->enqueueUrl(file);
+        m_pendingFileQueue->enqueue(file);
     }
 }
 
@@ -182,7 +182,7 @@ void FileWatch::slotFileModified(const QString& path)
     file.setModified();
 
     //qDebug() << "MOD" << path;
-    m_pendingFileQueue->enqueueUrl(file);
+    m_pendingFileQueue->enqueue(file);
 }
 
 void FileWatch::slotFileClosedAfterWrite(const QString& path)
@@ -200,7 +200,7 @@ void FileWatch::slotFileClosedAfterWrite(const QString& path)
         PendingFile file(path);
         file.setClosedOnWrite();
         //qDebug() << "CLOSE" << path;
-        m_pendingFileQueue->enqueueUrl(file);
+        m_pendingFileQueue->enqueue(file);
     }
 }
 
@@ -209,7 +209,7 @@ void FileWatch::slotAttributeChanged(const QString& path)
     PendingFile file(path);
     file.setAttributeChanged();
 
-    m_pendingFileQueue->enqueueUrl(file);
+    m_pendingFileQueue->enqueue(file);
 }
 
 void FileWatch::connectToKDirNotify()
