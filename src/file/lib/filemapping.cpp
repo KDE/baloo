@@ -66,19 +66,18 @@ void FileMapping::setUrl(const QString& url)
 
 bool FileMapping::fetched()
 {
-    if (m_id == 0 || m_url.isEmpty())
-        return false;
-
-    return true;
+    return m_id != 0 && !m_url.isEmpty();
 }
 
 bool FileMapping::fetch(QSqlDatabase db)
 {
-    if (fetched())
+    if (fetched()) {
         return true;
+    }
 
-    if (m_id == 0 && m_url.isEmpty())
+    if (m_id == 0 && m_url.isEmpty()) {
         return false;
+    }
 
     if (m_url.isEmpty()) {
         QSqlQuery query(db);
@@ -92,8 +91,7 @@ bool FileMapping::fetch(QSqlDatabase db)
         }
 
         m_url = query.value(0).toString();
-    }
-    else {
+    } else {
         QSqlQuery query(db);
         query.setForwardOnly(true);
         query.prepare(QLatin1String("select id from files where url = ?"));
@@ -135,8 +133,9 @@ bool FileMapping::create(QSqlDatabase db)
 
 bool FileMapping::remove(QSqlDatabase db)
 {
-    if (m_url.isEmpty() && m_id == 0)
+    if (m_url.isEmpty() && m_id == 0) {
         return false;
+    }
 
     QSqlQuery query(db);
 
