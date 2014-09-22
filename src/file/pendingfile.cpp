@@ -66,16 +66,11 @@ bool PendingFile::shouldRemoveIndex() const
 
 void PendingFile::merge(const PendingFile& file)
 {
-    if (file.m_attributesChanged)
-        m_attributesChanged = true;
-    if (file.m_closedOnWrite)
-        m_closedOnWrite = true;
-    if (file.m_created)
-        m_created = true;
-    if (file.m_deleted)
-        m_deleted = true;
-    if (file.m_modified)
-        m_modified = true;
+    m_attributesChanged |= file.m_attributesChanged;
+    m_closedOnWrite |= file.m_closedOnWrite;
+    m_created |= file.m_created;
+    m_deleted |= file.m_deleted;
+    m_modified |= file.m_modified;
 }
 
 void PendingFile::printFlags() const
