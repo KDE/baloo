@@ -59,19 +59,6 @@ ecm_add_test(${indexingConfig_SRC}
 )
 
 #
-# Basic Indexing Job Test
-#
-set(basicIndexingJob_SRC
-    basicindexingjobtest.cpp
-)
-
-ecm_add_test(${basicIndexingJob_SRC}
-    TEST_NAME "basicfileindexingjobtest"
-    LINK_LIBRARIES Qt5::Test ${XAPIAN_LIBRARIES}
-    KF5::BalooXapian baloofilecommon
-)
-
-#
 # Basic Indexing Queue Test
 #
 

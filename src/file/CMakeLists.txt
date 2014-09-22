@@ -16,7 +16,6 @@ if (NOT BALOO_LIBRARIES_ONLY)
         fileindexingqueue.cpp
         commitqueue.cpp
         basicindexingjob.cpp
-        fileindexingjob.cpp
         eventmonitor.cpp
         util.cpp
 
@@ -26,6 +25,7 @@ if (NOT BALOO_LIBRARIES_ONLY)
         regexpcache.cpp
         fileexcludefilters.cpp
         lib/filemapping.cpp
+        lib/extractorclient.cpp
         storagedevices.cpp
 
         # File Watcher

@@ -29,13 +29,14 @@
 #include <xapian.h>
 
 #include <QStack>
+#include <QSqlQuery>
 #include <KJob>
 
 class Database;
 
 namespace Baloo
 {
-class FileIndexingJob;
+class ExtractorClient;
 
 class FileIndexingQueue : public IndexingQueue
 {
@@ -47,7 +48,7 @@ public:
 
     void clear();
 
-    void setMaxSize(int size) { m_maxSize = size; }
+    void setMaxSize(int size) { m_maxQueueSize = size; }
     void setBatchSize(int size) { m_batchSize = size; }
     void setTestMode(bool mode) { m_testMode = mode; }
 
@@ -60,18 +61,24 @@ protected:
     virtual void doResume();
 
 private Q_SLOTS:
-    void slotFinishedIndexingFile(KJob* job);
-    void slotIndexingFailed(uint doc);
+    void finishedIndexingFile(const QString &url);
+    void indexingFailed();
+    void dataSaved(const QString &url);
 
 private:
     QStack<uint> m_fileQueue;
     Database* m_db;
+    QSqlQuery m_queueQuery;
+    QStringList m_pendingSave;
+    QString m_currentUrl;
 
-    int m_maxSize;
-    int m_batchSize;
     bool m_testMode;
+    bool m_suspended;
+    int m_batchCount;
+    int m_batchSize;
+    int m_maxQueueSize;
 
-    FileIndexingJob* m_indexJob;
+    ExtractorClient *m_extractor;
 };
 }
 

@@ -22,9 +22,9 @@
 
 
 #include "fileindexingqueue.h"
-#include "fileindexingjob.h"
 #include "util.h"
 #include "database.h"
+#include "lib/extractorclient.h"
 
 #include <QStandardPaths>
 #include <QDebug>
@@ -34,114 +34,131 @@ using namespace Baloo;
 FileIndexingQueue::FileIndexingQueue(Database* db, QObject* parent)
     : IndexingQueue(parent)
     , m_db(db)
+    , m_queueQuery(m_db->sqlDatabase())
     , m_testMode(false)
-    , m_indexJob(0)
+    , m_suspended(false)
+    , m_batchCount(0)
+    , m_batchSize(40)
+    , m_maxQueueSize(1200)
+    , m_extractor(0)
 {
-    m_maxSize = 1200;
-    m_batchSize = 40;
-
-    m_fileQueue.reserve(m_maxSize);
+    m_queueQuery.prepare("SELECT url FROM files WHERE indexingLevel > ? AND indexingLevel < ? LIMIT ?");
+    m_queueQuery.addBindValue(SkipIndexing);
+    m_queueQuery.addBindValue(CompletelyIndexed);
+    m_queueQuery.addBindValue(m_maxQueueSize);
 }
 
 void FileIndexingQueue::fillQueue()
 {
-    if (m_fileQueue.size() >= m_maxSize) {
-        return;
-    }
-
-    // We do not want to refill the queue when a job is going on
-    // this will result in unnecessary duplicates
-    if (m_indexJob) {
-        return;
-    }
-
-    try {
-        Xapian::Database* db = m_db->xapianDatabase()->db();
-        Xapian::Enquire enquire(*db);
-        enquire.set_query(Xapian::Query("Z1"));
-        enquire.set_weighting_scheme(Xapian::BoolWeight());
-
-        Xapian::MSet mset = enquire.get_mset(0, m_maxSize - m_fileQueue.size());
-        Xapian::MSetIterator it = mset.begin();
-        for (; it != mset.end(); ++it) {
-            m_fileQueue << *it;
-        }
-    }
-    catch (const Xapian::DatabaseModifiedError&) {
-        fillQueue();
-    }
-    catch (const Xapian::Error&) {
-        return;
+    if (!m_queueQuery.isActive()) {
+        m_queueQuery.exec();
     }
 }
 
 bool FileIndexingQueue::isEmpty()
 {
-    return m_fileQueue.isEmpty();
+    return !m_queueQuery.isActive();
 }
 
 void FileIndexingQueue::processNextIteration()
 {
-    QVector<uint> files;
-    files.reserve(m_batchSize);
+    if (!m_extractor) {
+        m_extractor = new ExtractorClient;
+        QObject::connect(m_extractor, &Baloo::ExtractorClient::extractorDied, this, &FileIndexingQueue::indexingFailed);
+        QObject::connect(m_extractor, &Baloo::ExtractorClient::fileIndexed, this, &FileIndexingQueue::finishedIndexingFile);
+        QObject::connect(m_extractor, &Baloo::ExtractorClient::dataSaved, this, &FileIndexingQueue::dataSaved);
 
-    for (int i=0; i<m_batchSize && m_fileQueue.size(); ++i) {
-        files << m_fileQueue.pop();
+        if (m_testMode) {
+            m_extractor->enableDebuging(true);
+            m_extractor->setDatabasePath(m_db->path());
+        }
     }
 
-    Q_ASSERT(m_indexJob == 0);
-    m_indexJob = new FileIndexingJob(files, this);
-    if (m_testMode) {
-        m_indexJob->setCustomDbPath(m_db->path());
-    }
-    connect(m_indexJob, SIGNAL(indexingFailed(uint)), this, SLOT(slotIndexingFailed(uint)));
-    connect(m_indexJob, SIGNAL(finished(KJob*)), SLOT(slotFinishedIndexingFile(KJob*)));
-
-    m_indexJob->start();
-}
-
-void FileIndexingQueue::slotFinishedIndexingFile(KJob* job)
-{
-    Q_ASSERT(job == m_indexJob);
-    m_indexJob = 0;
-
-    // The process would have modified the db
-    m_db->xapianDatabase()->db()->reopen();
-    if (m_fileQueue.isEmpty()) {
+    if (!m_queueQuery.next()) {
+        m_queueQuery.finish();
         fillQueue();
+        if (!m_queueQuery.next()) {
+            // still nothing.. we're done! :)
+            m_queueQuery.finish();
+            m_extractor->indexingComplete();
+            finishIteration();
+            return;
+        }
     }
-    finishIteration();
+
+    m_currentUrl = m_queueQuery.value(0).toString();
+    m_extractor->indexFile(m_currentUrl);
 }
 
-void FileIndexingQueue::slotIndexingFailed(uint id)
+void FileIndexingQueue::finishedIndexingFile(const QString &url)
 {
-    m_db->xapianDatabase()->db()->reopen();
-    Xapian::Document doc;
-    try {
-        Xapian::Document doc = m_db->xapianDatabase()->db()->get_document(id);
-        updateIndexingLevel(doc, SkipIndexing);
-        Q_EMIT newDocument(id, doc);
-    } catch (const Xapian::Error& err) {
+    ++m_batchCount;
+    if (!url.isEmpty()) {
+        m_pendingSave << url;
+    }
+
+    if (m_batchCount >= m_batchSize) {
+        m_batchCount = 0;
+        finishIteration();
+    } else if (!m_suspended) {
+        processNextIteration();
     }
 }
 
+void FileIndexingQueue::indexingFailed()
+{
+    updateIndexingLevel(m_currentUrl, SkipIndexing, m_db->sqlDatabase());
+    delete m_extractor;
+    m_extractor = 0;
+
+    finishedIndexingFile(QString());
+}
+
+void FileIndexingQueue::dataSaved(const QString &lastUrlSaved)
+{
+    QStringListIterator it(m_pendingSave);
+    while (it.hasNext()) {
+        const QString url = it.next();
+        updateIndexingLevel(url, CompletelyIndexed, m_db->sqlDatabase());
+
+        if (url == lastUrlSaved) {
+            break;
+        }
+    }
+
+    if (it.hasNext()) {
+        // incomplete save; we still are waiting on urls to be saved
+        QStringList remainder;
+        while (it.hasNext()) {
+            remainder << it.next();
+        }
+
+        m_pendingSave = remainder;
+    } else {
+        // we got them all... move on
+        m_pendingSave.clear();
+
+        if (!m_queueQuery.isActive()) {
+            // indexing is done for now, so lets release the extractor process
+            delete m_extractor;
+            m_extractor = 0;
+        }
+    }
+}
 
 void FileIndexingQueue::clear()
 {
-    m_fileQueue.clear();
+    m_queueQuery.finish();
 }
 
 void FileIndexingQueue::doResume()
 {
-    if (m_indexJob) {
-        m_indexJob->resume();
-    }
+    m_suspended = false;
+    processNextIteration();
 }
 
 void FileIndexingQueue::doSuspend()
 {
-    if (m_indexJob) {
-        m_indexJob->suspend();
-    }
+    m_suspended = true;
 }
 
