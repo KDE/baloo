@@ -34,11 +34,9 @@
 
 using namespace Baloo;
 
-BasicIndexingJob::BasicIndexingJob(const FileMapping& file, const QString& mimetype,
-                                   bool onlyBasicIndexing)
+BasicIndexingJob::BasicIndexingJob(const FileMapping& file, const QString& mimetype)
     : m_file(file)
     , m_mimetype(mimetype)
-    , m_onlyBasicIndexing(onlyBasicIndexing)
     , m_id(0)
 {
 }
@@ -47,7 +45,7 @@ BasicIndexingJob::~BasicIndexingJob()
 {
 }
 
-bool BasicIndexingJob::index()
+bool BasicIndexingJob::index(IndexingStage stage)
 {
     QFileInfo fileInfo(m_file.url());
 
@@ -83,7 +81,7 @@ bool BasicIndexingJob::index()
         // file indexing, so there are no indexers for folders
         doc.addBoolTerm(QLatin1String("Z2"));
     }
-    else if (m_onlyBasicIndexing) {
+    else if (stage == CompletedIndexing) {
         // This is to prevent indexing if option in config is set to do so
         doc.addBoolTerm(QLatin1String("Z2"));
     }

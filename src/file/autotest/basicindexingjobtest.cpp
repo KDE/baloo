@@ -40,8 +40,8 @@ void BasicIndexingJobTest::testOnlyBasicIndexing()
     QString mimetype = m_mimeDb.mimeTypeForFile(file.url(), QMimeDatabase::MatchExtension).name();
 
     // test basic job
-    BasicIndexingJob jobBasic(file, mimetype, true);
-    jobBasic.index();
+    BasicIndexingJob jobBasic(file, mimetype);
+    jobBasic.index(BasicIndexingJob::CompletedIndexing);
     XapianDocument docForBasic(jobBasic.document());
     QCOMPARE(docForBasic.fetchTermStartsWith("Z"), QStringLiteral("Z2"));
 }

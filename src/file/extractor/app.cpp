@@ -271,8 +271,8 @@ void App::indexFile(const QString &pathOrId)
     // We always run the basic indexing again. This is mostly so that the proper
     // mimetype is set and we get proper type information.
     // The mimetype fetched in the BasicIQ is fast but not accurate
-    BasicIndexingJob basicIndexer(m_mapping, mimetype, true /*Indexing Level 2*/);
-    basicIndexer.index();
+    BasicIndexingJob basicIndexer(m_mapping, mimetype);
+    basicIndexer.index(BasicIndexingJob::CompletedIndexing);
 
     Xapian::Document doc = basicIndexer.document();
 

@@ -191,8 +191,9 @@ void BasicIndexingQueue::index(FileMapping& file, const QString& mimetype,
                 qWarning() << "Cannot create fileMapping for" << file.url();
             }
             else {
-                BasicIndexingJob job(file, mimetype, m_config->onlyBasicIndexing());
-                if (job.index()) {
+                BasicIndexingJob job(file, mimetype);
+                if (job.index(m_config->onlyBasicIndexing() ? BasicIndexingJob::CompletedIndexing
+                                                            : BasicIndexingJob::OngoingIndexing)) {
                     Q_EMIT newDocument(job.id(), job.document());
                 }
             }
