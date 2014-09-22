@@ -112,11 +112,13 @@ bool FileMapping::fetch(QSqlDatabase db)
 
 bool FileMapping::create(QSqlDatabase db)
 {
-    if (m_id)
+    if (m_id) {
         return false;
+    }
 
-    if (m_url.isEmpty())
+    if (m_url.isEmpty()) {
         return false;
+    }
 
     QSqlQuery query(db);
     query.prepare(QLatin1String("insert into files (url) VALUES (?)"));
