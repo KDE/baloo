@@ -35,7 +35,7 @@
 #include <QSqlError>
 #include <QDBusConnection>
 
-#include <KFileMetaData/ExtractorPlugin>
+#include <KFileMetaData/Extractor>
 #include <KFileMetaData/PropertyInfo>
 
 #include <iostream>
@@ -157,10 +157,10 @@ void App::processNextUrl()
     result.setId(file.id());
     result.setDocument(doc);
 
-    QList<KFileMetaData::ExtractorPlugin*> exList = m_manager.fetchExtractors(mimetype);
+    QList<KFileMetaData::Extractor*> exList = m_extractorCollection.fetchExtractors(mimetype);
 
-    Q_FOREACH (KFileMetaData::ExtractorPlugin* plugin, exList) {
-        plugin->extract(&result);
+    Q_FOREACH (KFileMetaData::Extractor* ex, exList) {
+        ex->extract(&result);
     }
     m_results << result;
     m_termCount += result.document().termlist_count();

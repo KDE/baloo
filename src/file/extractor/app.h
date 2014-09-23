@@ -27,7 +27,7 @@
 #include <QStringList>
 #include <QMimeDatabase>
 
-#include <KFileMetaData/ExtractorPluginManager>
+#include <KFileMetaData/ExtractorCollection>
 
 #include "result.h"
 #include "../database.h"
@@ -68,7 +68,7 @@ private:
     Database m_db;
     QMimeDatabase m_mimeDb;
 
-    KFileMetaData::ExtractorPluginManager m_manager;
+    KFileMetaData::ExtractorCollection m_extractorCollection;
 
     int m_termCount;
     QList<QString> m_updatedFiles;
