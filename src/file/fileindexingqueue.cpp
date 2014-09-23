@@ -108,7 +108,6 @@ void FileIndexingQueue::processNextIteration()
         if (!m_queueQuery.isActive()) {
             // we're done! :)
             m_extractor->indexingComplete();
-            finishIteration();
             return;
         }
     }
@@ -146,6 +145,7 @@ void FileIndexingQueue::dataSaved(const QString &lastUrlSaved)
         // indexing is done for now, so lets release the extractor process
         m_extractor->deleteLater();
         m_extractor = 0;
+        finishIteration();
     }
 }
 
