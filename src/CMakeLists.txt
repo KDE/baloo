@@ -1,7 +1,6 @@
 add_subdirectory(core)
 add_subdirectory(xapian)
 add_subdirectory(file)
-add_subdirectory(pim)
 if (NOT BALOO_LIBRARIES_ONLY)
     add_subdirectory(kioslaves)
     add_subdirectory(tools)
