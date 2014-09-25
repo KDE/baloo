@@ -75,24 +75,6 @@ public:
     KFileMetaData::PropertyMap properties() const;
     QVariant property(KFileMetaData::Property::Property property) const;
 
-    /**
-     * Set the rating for the file. This will not be saved until
-     * a FileModifyJob is called
-     */
-    void setRating(int rating);
-    int rating() const;
-
-    /**
-     * Add a tag to the list of tags. This will not be saved until
-     * a FileModifyJob is called.
-     */
-    void addTag(const QString& tag);
-    void setTags(const QStringList& tags);
-    QStringList tags() const;
-
-    QString userComment() const;
-    void setUserComment(const QString& comment);
-
 private:
     FilePrivate* d;
     friend class FileFetchJob;

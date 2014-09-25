@@ -20,8 +20,6 @@
 
 #include "filefetchjobtest.h"
 #include "filefetchjob.h"
-#include "xattrdetector.h"
-#include "../baloo_xattr_p.h"
 #include "../db.h"
 #include "filemapping.h"
 #include "file.h"
@@ -89,84 +87,7 @@ void FileFetchJobTest::testXapianData()
     File file = job->file();
 
     QCOMPARE(file.properties(), map);
-    QCOMPARE(file.rating(), 0);
-    QVERIFY(file.tags().isEmpty());
-    QVERIFY(file.userComment().isEmpty());
 }
 
-void FileFetchJobTest::testExtendedAttributes()
-{
-    QTemporaryFile tempFile(QLatin1String(BUILDDIR "testExtendedAttributes.XXXXXX"));
-    tempFile.open();
-
-    QString fileName = tempFile.fileName();
-    /*
-    XattrDetector detector;
-    if (!detector.isSupported(fileName)) {
-        qWarning() << "Xattr not supported on this filesystem";
-        return;
-    }*/
-
-    FileMapping fileMap(tempFile.fileName());
-    QSqlDatabase sqlDb = fileMappingDb();
-    QVERIFY(fileMap.create(sqlDb));
-
-    QString rat = QString::number(7);
-    QVERIFY(baloo_setxattr(fileName, QLatin1String("user.baloo.rating"), rat) != -1);
-
-    QStringList tags;
-    tags << QLatin1String("TagA") << QLatin1String("TagB");
-
-    QString tagStr = tags.join(QLatin1String(","));
-    QVERIFY(baloo_setxattr(fileName, QLatin1String("user.xdg.tags"), tagStr) != -1);
-
-    const QString userComment(QLatin1String("UserComment"));
-    QVERIFY(baloo_setxattr(fileName, QLatin1String("user.xdg.comment"), userComment) != -1);
-
-    FileFetchJob* job = new FileFetchJob(tempFile.fileName());
-    job->exec();
-    File file = job->file();
-
-    QCOMPARE(file.rating(), 7);
-    QCOMPARE(file.tags(), tags);
-    QCOMPARE(file.userComment(), userComment);
-}
-
-void FileFetchJobTest::testFolder()
-{
-    // We use the same prefix as the tmpfile
-    QTemporaryDir tmpDir;
-    QString fileName = tmpDir.path();
-
-    XattrDetector detector;
-    if (!detector.isSupported(fileName)) {
-        qWarning() << "Xattr not supported on this filesystem";
-        return;
-    }
-
-    FileMapping fileMap(fileName);
-    QSqlDatabase sqlDb = fileMappingDb();
-    QVERIFY(fileMap.create(sqlDb));
-
-    QString rat = QString::number(7);
-    QVERIFY(baloo_setxattr(fileName, QLatin1String("user.baloo.rating"), rat) != -1);
-
-    QStringList tags;
-    tags << QLatin1String("TagA") << QLatin1String("TagB");
-
-    QString tagStr = tags.join(QLatin1String(","));
-    QVERIFY(baloo_setxattr(fileName, QLatin1String("user.xdg.tags"), tagStr) != -1);
-
-    const QString userComment(QLatin1String("UserComment"));
-    QVERIFY(baloo_setxattr(fileName, QLatin1String("user.xdg.comment"), userComment) != -1);
-
-    FileFetchJob* job = new FileFetchJob(fileName);
-    job->exec();
-    File file = job->file();
-
-    QCOMPARE(file.rating(), 7);
-    QCOMPARE(file.tags(), tags);
-    QCOMPARE(file.userComment(), userComment);
-}
 
 QTEST_MAIN(FileFetchJobTest)

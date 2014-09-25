@@ -91,39 +91,3 @@ QVariant File::property(KFileMetaData::Property::Property property) const
 {
     return d->propertyMap.value(property);
 }
-
-void File::setRating(int rating)
-{
-    d->rating = rating;
-}
-
-int File::rating() const
-{
-    return d->rating;
-}
-
-void File::addTag(const QString& tag)
-{
-    if (!d->tags.contains(tag))
-        d->tags << tag;
-}
-
-void File::setTags(const QStringList& tags)
-{
-    d->tags = tags;
-}
-
-QStringList File::tags() const
-{
-    return d->tags;
-}
-
-void File::setUserComment(const QString& comment)
-{
-    d->userComment = comment;
-}
-
-QString File::userComment() const
-{
-    return d->userComment;
-}

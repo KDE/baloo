@@ -45,8 +45,6 @@ using namespace Baloo;
 class FileFetchJob::Private {
 public:
     QList<File> m_files;
-
-    void fetchUserMetadata(File& file);
 };
 
 FileFetchJob::FileFetchJob(const QString& url, QObject* parent)
@@ -110,7 +108,6 @@ void FileFetchJob::doStart()
             qDebug() << "No file index information found" << url;
             // TODO: Send file for indexing!!
 
-            d->fetchUserMetadata(file);
             Q_EMIT fileReceived(file);
             emitResult();
             return;
@@ -143,28 +140,9 @@ void FileFetchJob::doStart()
             qWarning() << "Xapian error of type" << err.get_type() << ":" << err.get_msg().c_str();
         }
 
-        d->fetchUserMetadata(file);
         Q_EMIT fileReceived(file);
     }
     emitResult();
-}
-
-void FileFetchJob::Private::fetchUserMetadata(File& file)
-{
-    const QString url = file.url();
-
-    QString rating;
-    baloo_getxattr(url, QLatin1String("user.baloo.rating"), &rating);
-
-    QString tags;
-    baloo_getxattr(url, QLatin1String("user.xdg.tags"), &tags);
-
-    QString comment;
-    baloo_getxattr(url, QLatin1String("user.xdg.comment"), &comment);
-
-    file.setRating(rating.toInt());
-    file.setTags(tags.split(QLatin1Char(','), QString::SkipEmptyParts));
-    file.setUserComment(comment);
 }
 
 File FileFetchJob::file() const

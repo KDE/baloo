@@ -34,7 +34,6 @@
 #include <QDir>
 
 #include "file.h"
-#include "filemodifyjob.h"
 #include "filefetchjob.h"
 #include "taglistjob.h"
 
@@ -205,6 +204,8 @@ void TagsProtocol::copy(const QUrl& src, const QUrl& dest, int, KIO::JobFlags)
         return;
 
     case FileUrl:
+        /*
+         * FIXME: Do we really need to support copy operations?
         Baloo::FileFetchJob* job = new Baloo::FileFetchJob(fileUrl);
         job->exec();
         Baloo::File file = job->file();
@@ -212,6 +213,7 @@ void TagsProtocol::copy(const QUrl& src, const QUrl& dest, int, KIO::JobFlags)
         file.addTag(tag);
         Baloo::FileModifyJob* mjob = new Baloo::FileModifyJob(file);
         mjob->exec();
+        */
 
         finished();
         return;

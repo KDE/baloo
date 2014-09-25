@@ -121,15 +121,6 @@ int main(int argc, char* argv[])
             stream << "\t" << pi.displayName() << ": " << it.value().toString() << endl;
         }
 
-        if (file.rating())
-            stream << "\t" << "Rating: " << file.rating() << endl;
-
-        if (!file.tags().isEmpty())
-            stream << "\t" << "Tags: " << file.tags().join(QLatin1String(", ")) << endl;
-
-        if (!file.userComment().isEmpty())
-            stream << "\t" << "User Comment: " << file.userComment() << endl;
-
         if (parser.isSet(QStringLiteral("xapian"))) {
             const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)
                                 + QLatin1String("/baloo/file");
