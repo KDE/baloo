@@ -8,6 +8,19 @@ set(CORE_SRCS
     resultiterator.cpp
     result.cpp
     advancedqueryparser.cpp
+
+    file.cpp
+    filefetchjob.cpp
+    filemapping.cpp
+    filemonitor.cpp
+    taglistjob.cpp
+    db.cpp
+
+    indexerconfig.cpp
+    ../file/fileindexerconfig.cpp
+    ../file/storagedevices.cpp
+    ../file/regexpcache.cpp
+    ../file/fileexcludefilters.cpp
 )
 
 add_library(KF5BalooCore ${CORE_SRCS})
@@ -17,6 +30,15 @@ add_library(KF5::BalooCore ALIAS KF5BalooCore)
 target_link_libraries(KF5BalooCore
     PUBLIC
     Qt5::Core
+    KF5::CoreAddons
+    KF5::FileMetaData
+
+    PRIVATE
+    KF5::ConfigCore
+    Qt5::DBus
+    Qt5::Sql
+    KF5::Solid
+    ${XAPIAN_LIBRARIES}
 )
 
 set_target_properties(KF5BalooCore PROPERTIES
@@ -36,6 +58,12 @@ ecm_generate_headers(KF5BalooCore_CamelCase_HEADERS
     Result
     ResultIterator
     SearchStore
+
+    File
+    FileFetchJob
+    FileMonitor
+    TagListJob
+    IndexerConfig
 
     PREFIX baloo
     REQUIRED_HEADERS KF5BalooCore_HEADERS

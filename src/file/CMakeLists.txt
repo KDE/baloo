@@ -2,7 +2,6 @@ add_definitions(-DTRANSLATION_DOMAIN=\"baloo_file\")
 
 kde_enable_exceptions()
 
-add_subdirectory(lib)
 add_subdirectory(search)
 
 if (NOT BALOO_LIBRARIES_ONLY)
@@ -25,7 +24,7 @@ if (NOT BALOO_LIBRARIES_ONLY)
         priority.cpp
         regexpcache.cpp
         fileexcludefilters.cpp
-        lib/filemapping.cpp
+        ../core/filemapping.cpp
         storagedevices.cpp
 
         # File Watcher

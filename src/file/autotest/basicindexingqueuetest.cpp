@@ -24,8 +24,8 @@
 #include "../fileindexerconfig.h"
 #include "../basicindexingqueue.h"
 #include "../database.h"
-#include "../lib/autotests/xattrdetector.h"
-#include "../lib/baloo_xattr_p.h"
+#include "../../core/autotests/xattrdetector.h"
+#include "../core/baloo_xattr_p.h"
 
 #include <QTest>
 #include <QSignalSpy>

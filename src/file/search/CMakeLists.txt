@@ -9,7 +9,6 @@ target_link_libraries(filesearchstore
     ${XAPIAN_LIBRARIES}
     KF5::FileMetaData
     KF5::BalooCore
-    KF5::BalooFiles
     KF5::BalooXapian
 )
 

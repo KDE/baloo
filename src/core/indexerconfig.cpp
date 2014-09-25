@@ -19,9 +19,9 @@
  */
 
 #include "indexerconfig.h"
-#include "../fileindexerconfig.h"
-#include "../fileexcludefilters.h"
-#include "../regexpcache.h"
+#include "../file/fileindexerconfig.h"
+#include "../file/fileexcludefilters.h"
+#include "../file/regexpcache.h"
 
 #include <KConfig>
 #include <KConfigGroup>

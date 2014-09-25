@@ -11,7 +11,7 @@ target_link_libraries(balooctl
     KF5::ConfigCore
     KF5::I18n
     ${XAPIAN_LIBRARIES}
-    KF5::BalooFiles
+    KF5::BalooCore
     KF5::BalooXapian
 )
 

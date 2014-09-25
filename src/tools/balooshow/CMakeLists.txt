@@ -7,7 +7,6 @@ target_compile_definitions(balooshow PRIVATE -DPROJECT_VERSION="${PROJECT_VERSIO
 
 target_link_libraries(balooshow
     KF5::BalooCore
-    KF5::BalooFiles
     KF5::BalooXapian
     KF5::FileMetaData
     KF5::CoreAddons

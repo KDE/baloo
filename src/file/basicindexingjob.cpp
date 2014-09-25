@@ -23,7 +23,7 @@
 #include "basicindexingjob.h"
 #include "database.h"
 #include "xapiandocument.h"
-#include "lib/baloo_xattr_p.h"
+#include "baloo_xattr_p.h"
 
 #include <QFileInfo>
 #include <QDateTime>
