@@ -21,13 +21,13 @@
  */
 
 #include "searchstore.h"
+#include "filesearchstore.h"
 
 #include <QDebug>
 #include <QThreadStorage>
 #include <QMutex>
 #include <QSharedPointer>
 #include <QCoreApplication>
-#include <QPluginLoader>
 #include <QDir>
 
 using namespace Baloo;
@@ -87,54 +87,8 @@ SearchStore::List SearchStore::searchStores()
         return *s_overrideSearchStores;
     }
 
-    // Get all the plugins
-    QStringList plugins;
-    QStringList pluginPaths;
-
-    QStringList paths = QCoreApplication::libraryPaths();
-    Q_FOREACH (const QString& libraryPath, paths) {
-        QString path(libraryPath + QStringLiteral("/kf5/baloo"));
-        QDir dir(path);
-
-        if (!dir.exists()) {
-            continue;
-        }
-
-        QStringList entryList = dir.entryList(QDir::Files | QDir::NoDotAndDotDot);
-        Q_FOREACH (const QString& fileName, entryList) {
-            if (plugins.contains(fileName))
-                continue;
-
-            plugins << fileName;
-            pluginPaths << dir.absoluteFilePath(fileName);
-        }
-    }
-    plugins.clear();
-
     SearchStore::List stores;
-    Q_FOREACH (const QString& pluginPath, pluginPaths) {
-        QPluginLoader loader(pluginPath);
-
-        if (!loader.load()) {
-            qWarning() << "Could not create Baloo Search Store: " << pluginPath;
-            qWarning() << loader.errorString();
-            continue;
-        }
-
-        QObject* obj = loader.instance();
-        if (obj) {
-            SearchStore* ex = qobject_cast<SearchStore*>(obj);
-            if (ex) {
-                stores << QSharedPointer<SearchStore>(ex);
-            } else {
-                qDebug() << "Plugin could not be converted to an Baloo::SearchStore";
-                qDebug() << pluginPath;
-            }
-        }
-        else {
-            qDebug() << "Plugin could not create instance" << pluginPath;
-        }
-    }
+    stores << QSharedPointer<SearchStore>(new FileSearchStore());
 
     return stores;
 }

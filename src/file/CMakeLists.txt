@@ -2,8 +2,6 @@ add_definitions(-DTRANSLATION_DOMAIN=\"baloo_file\")
 
 kde_enable_exceptions()
 
-add_subdirectory(search)
-
 if (NOT BALOO_LIBRARIES_ONLY)
     set(file_static_lib_SRCS
         # File Indexer

@@ -22,7 +22,7 @@
 
 #include "query.h"
 #include "term.h"
-#include "searchstore.h"
+#include "filesearchstore.h"
 
 #include <QString>
 #include <QStringList>

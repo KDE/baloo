@@ -22,7 +22,7 @@
 
 #include "filesearchstoretest.h"
 #include "filesearchstore.h"
-#include "../../database.h"
+#include "../../file/database.h"
 #include "filemapping.h"
 #include "query.h"
 #include "term.h"

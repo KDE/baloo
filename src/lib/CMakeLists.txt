@@ -21,6 +21,12 @@ set(CORE_SRCS
     ../file/storagedevices.cpp
     ../file/regexpcache.cpp
     ../file/fileexcludefilters.cpp
+
+    # Search Store
+    xapiansearchstore.cpp
+    wildcardpostingsource.cpp
+    pathfilterpostingsource.cpp
+    filesearchstore.cpp
 )
 
 add_library(KF5BalooCore ${CORE_SRCS})
@@ -38,7 +44,7 @@ target_link_libraries(KF5BalooCore
     Qt5::DBus
     Qt5::Sql
     KF5::Solid
-    ${XAPIAN_LIBRARIES}
+    KF5::BalooXapian
 )
 
 set_target_properties(KF5BalooCore PROPERTIES

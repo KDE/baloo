@@ -25,7 +25,6 @@
 
 #include "searchstore.h"
 #include "term.h"
-#include "xapian_export.h"
 #include <xapian.h>
 #include <QMutex>
 
@@ -34,7 +33,7 @@ namespace Baloo {
 /**
  * Implements a search store using Xapian
  */
-class BALOO_XAPIAN_EXPORT XapianSearchStore : public SearchStore
+class XapianSearchStore : public SearchStore
 {
 public:
     explicit XapianSearchStore(QObject* parent = 0);
