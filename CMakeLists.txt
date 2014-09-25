@@ -27,23 +27,12 @@ ecm_setup_version(${PROJECT_VERSION} VARIABLE_PREFIX BALOO
 )
 
 option(BALOO_LIBRARIES_ONLY "If true, compiles only the Baloo libraries, without binaries, kioslaves." OFF)
-# Temporary option untill kdepimlibs is ok. Activate it if you want to compile kdepim
-option(KDEPIM_SUPPORT_BUILD "Build baloo kdepim support" FALSE)
 
 # Build dependencies
 find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Widgets Quick DBus Test Sql)
 
 find_package(KF5 ${KF5_VERSION} REQUIRED COMPONENTS I18n Config IdleTime KCMUtils Auth Crash Solid KIO KDELibs4Support)
 find_package(KF5 ${PROJECT_VERSION} REQUIRED COMPONENTS FileMetaData)
-
-if (KDEPIM_SUPPORT_BUILD)
-  find_package(KF5Akonadi CONFIG)
-  set_package_properties(KF5Akonadi PROPERTIES
-      DESCRIPTION "The KDEPIM libraries"
-      URL "http://www.kde.org"
-      TYPE REQUIRED
-  )
-endif()
 
 find_package(Xapian CONFIG)
 set_package_properties(Xapian PROPERTIES
