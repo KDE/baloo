@@ -24,7 +24,7 @@ if (NOT BALOO_LIBRARIES_ONLY)
         priority.cpp
         regexpcache.cpp
         fileexcludefilters.cpp
-        ../core/filemapping.cpp
+        ../lib/filemapping.cpp
         storagedevices.cpp
 
         # File Watcher

@@ -37,7 +37,7 @@ class FilePrivate;
  * It needs to be filled via the FileFetchJob, and any modifications made
  * are not saved until the FileModifyJob is called.
  */
-class BALOO_FILE_EXPORT File
+class BALOO_CORE_EXPORT File
 {
 public:
     File();

@@ -1,6 +1,6 @@
 /*
  * <one line to give the library's name and an idea of what it does.>
- * Copyright (C) 2013  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,37 +18,23 @@
  *
  */
 
-#ifndef _BALOO_FILEMONITOR_H
-#define _BALOO_FILEMONITOR_H
+#ifndef BALOO_TAGLISTJOB_H
+#define BALOO_TAGLISTJOB_H
 
-#include <QObject>
-#include <QUrl>
-
-#include "file_export.h"
+#include <KJob>
+#include "core_export.h"
 
 namespace Baloo {
 
-class BALOO_FILE_EXPORT FileMonitor : public QObject
+class BALOO_CORE_EXPORT TagListJob : public KJob
 {
     Q_OBJECT
 public:
-    explicit FileMonitor(QObject* parent = 0);
-    virtual ~FileMonitor();
+    explicit TagListJob(QObject* parent = 0);
+    virtual ~TagListJob();
 
-    void addFile(const QString& fileUrl);
-    void addFile(const QUrl& url);
-
-    void setFiles(const QStringList& fileList);
-
-    QStringList files() const;
-
-    void clear();
-
-Q_SIGNALS:
-    void fileMetaDataChanged(const QString& fileUrl);
-
-private Q_SLOTS:
-    void slotFileMetaDataChanged(const QStringList& fileUrl);
+    virtual void start();
+    QStringList tags();
 
 private:
     class Private;
@@ -56,4 +42,5 @@ private:
 };
 
 }
-#endif // _BALOO_FILEMONITOR_H
+
+#endif // BALOO_TAGLISTJOB_H

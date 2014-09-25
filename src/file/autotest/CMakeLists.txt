@@ -39,7 +39,7 @@ ecm_add_test(${fileMonitor_SRC}
 #
 # File Watch
 #
-set(fileWatch_SRC filewatchtest.cpp ../../core/autotests/xattrdetector.cpp)
+set(fileWatch_SRC filewatchtest.cpp ../../lib/autotests/xattrdetector.cpp)
 
 ecm_add_test(${fileWatch_SRC}
     TEST_NAME "filewatchtest"
@@ -77,7 +77,7 @@ ecm_add_test(${basicIndexingJob_SRC}
 
 set(basicIndexingQueue_SRC
     basicindexingqueuetest.cpp
-    ../../core/autotests/xattrdetector.cpp
+    ../../lib/autotests/xattrdetector.cpp
 )
 
 ecm_add_test(${basicIndexingQueue_SRC}

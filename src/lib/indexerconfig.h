@@ -22,11 +22,11 @@
 #define BALOO_INDEXERCONFIG_H
 
 #include <QObject>
-#include "file_export.h"
+#include "core_export.h"
 
 namespace Baloo {
 
-class BALOO_FILE_EXPORT IndexerConfig
+class BALOO_CORE_EXPORT IndexerConfig
 {
 public:
     IndexerConfig();

@@ -8,7 +8,7 @@ set(filesearchstore_SRCS filesearchstoretest.cpp
                    ../filesearchstore.cpp
                    ../pathfilterpostingsource.cpp
                    ../wildcardpostingsource.cpp
-                   ../../../core/filemapping.cpp
+                   ../../../lib/filemapping.cpp
                    ../../database.cpp
 )
 

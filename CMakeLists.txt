@@ -63,10 +63,8 @@ kde_enable_exceptions()
 include_directories(
   ${XAPIAN_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}
-  ${CMAKE_SOURCE_DIR}/src/core
-  ${CMAKE_BINARY_DIR}/src/core
-  ${CMAKE_SOURCE_DIR}/src/file/lib
-  ${CMAKE_BINARY_DIR}/src/file/lib
+  ${CMAKE_SOURCE_DIR}/src/lib
+  ${CMAKE_BINARY_DIR}/src/lib
   ${CMAKE_BINARY_DIR}/src/xapian
   ${CMAKE_SOURCE_DIR}/src/xapian
 )

@@ -24,7 +24,7 @@
 #include "database.h"
 #include "fileindexerconfig.h"
 #include "pendingfilequeue.h"
-#include "../../core/autotests/xattrdetector.h"
+#include "../../lib/autotests/xattrdetector.h"
 #include "baloo_xattr_p.h"
 #include "filemapping.h"
 

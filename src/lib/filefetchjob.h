@@ -20,54 +20,52 @@
  *
  */
 
-#ifndef FILEMAPPING_H
-#define FILEMAPPING_H
+#ifndef _BALOO_FILEFETCHJOB_H
+#define _BALOO_FILEFETCHJOB_H
 
-#include <QString>
-#include <QSqlDatabase>
-#include "file_export.h"
+#include "core_export.h"
+#include <KJob>
 
 namespace Baloo {
 
-class BALOO_FILE_EXPORT FileMapping
+class File;
+
+/**
+ * The FileFetchJob is responsible for fetching the indexed
+ * metadata for a particular file. If the file does not
+ * contain any indexed metadata then no data will be returned.
+ * However, the file will be sent for indexing.
+ */
+class BALOO_CORE_EXPORT FileFetchJob : public KJob
 {
+    Q_OBJECT
 public:
-    FileMapping();
-    explicit FileMapping(const QString& url);
-    explicit FileMapping(uint id);
+    FileFetchJob(const QString& url, QObject* parent = 0);
+    FileFetchJob(const File& file, QObject* parent = 0);
+    FileFetchJob(const QStringList& urls, QObject* parent = 0);
+    ~FileFetchJob();
 
-    uint id() const;
-    QString url() const;
+    virtual void start();
 
-    void setUrl(const QString& url);
-    void setId(uint id);
+    enum Errors {
+        Error_FileDoesNotExist = 1,
+        Error_InvalidId
+    };
 
-    bool fetched();
-    bool empty() const;
+    File file() const;
+    QList<File> files() const;
 
-    void clear();
+Q_SIGNALS:
+    void fileReceived(const Baloo::File& file);
 
-    /**
-     * Fetch the corresponding url or Id depending on what is not
-     * available.
-     *
-     * Returns true if fetching was successful
-     */
-    bool fetch(QSqlDatabase db);
-
-    /**
-     * Creates the corresponding url <-> id mapping
-     */
-    bool create(QSqlDatabase db);
-
-    bool remove(QSqlDatabase db);
-
-    bool operator ==(const FileMapping& rhs) const;
+private Q_SLOTS:
+    void doStart();
 
 private:
-    QString m_url;
-    uint m_id;
+    class Private;
+    Private* d;
 };
 
 }
-#endif // FILEMAPPING_H
+
+#endif // _BALOO_FILEFETCHJOB_H
