@@ -39,11 +39,6 @@ public:
     explicit SearchStore(QObject* parent = 0);
     virtual ~SearchStore();
 
-    /**
-     * Override search stores for testing
-     */
-    static void overrideSearchStores(const QList<SearchStore*> &overrideSearchStores);
-
     typedef QList< QSharedPointer<SearchStore> > List;
 
     /**

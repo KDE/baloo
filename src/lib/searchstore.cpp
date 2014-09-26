@@ -51,18 +51,6 @@ QString SearchStore::property(int, const QString&)
     return QString();
 }
 
-Q_GLOBAL_STATIC(SearchStore::List, s_overrideSearchStores)
-
-void SearchStore::overrideSearchStores(const QList<SearchStore*> &overrideSearchStores)
-{
-    List* list = &(*s_overrideSearchStores);
-    list->clear();
-
-    Q_FOREACH (SearchStore* store, overrideSearchStores) {
-        list->append(QSharedPointer<SearchStore>(store));
-    }
-}
-
 //
 // Search Stores
 //
@@ -71,11 +59,6 @@ SearchStore::List SearchStore::searchStores()
 {
     static QMutex mutex;
     QMutexLocker lock(&mutex);
-
-    if (s_overrideSearchStores && !s_overrideSearchStores->isEmpty()) {
-        qDebug() << "Overriding search stores.";
-        return *s_overrideSearchStores;
-    }
 
     SearchStore::List stores;
     stores << QSharedPointer<SearchStore>(new FileSearchStore());
