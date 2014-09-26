@@ -28,13 +28,11 @@
 #include <QHash>
 #include <QUrl>
 
-#include "core_export.h"
-
 namespace Baloo {
 
 class Query;
 
-class BALOO_CORE_EXPORT SearchStore : public QObject
+class SearchStore : public QObject
 {
     Q_OBJECT
 public:

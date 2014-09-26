@@ -61,7 +61,6 @@ ecm_generate_headers(KF5Baloo_CamelCase_HEADERS
     QueryRunnable
     Result
     ResultIterator
-    SearchStore
 
     File
     FileFetchJob

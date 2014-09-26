@@ -62,6 +62,7 @@ set(filesearchstore_SRCS filesearchstoretest.cpp
                    ../wildcardpostingsource.cpp
                    ../filemapping.cpp
                    ../xapiansearchstore.cpp
+                   ../searchstore.cpp
                    ../../file/database.cpp
 )
 
