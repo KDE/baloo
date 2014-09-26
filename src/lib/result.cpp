@@ -56,16 +56,6 @@ QByteArray Result::id() const
     return d->id;
 }
 
-QString Result::icon() const
-{
-    return d->icon;
-}
-
-void Result::setIcon(const QString& icon)
-{
-    d->icon = icon;
-}
-
 QUrl Result::url() const
 {
     return d->url;

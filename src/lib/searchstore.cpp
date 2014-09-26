@@ -46,11 +46,6 @@ QUrl SearchStore::url(int)
     return QUrl();
 }
 
-QString SearchStore::icon(int)
-{
-    return QString();
-}
-
 QString SearchStore::property(int, const QString&)
 {
     return QString();

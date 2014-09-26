@@ -301,11 +301,6 @@ QUrl FileSearchStore::constructUrl(const Xapian::docid& docid)
     return QUrl::fromLocalFile(file.url());
 }
 
-QString FileSearchStore::icon(int queryId)
-{
-    return QMimeDatabase().mimeTypeForFile(url(queryId).toLocalFile()).iconName();
-}
-
 Xapian::Query FileSearchStore::applyIncludeFolder(const Xapian::Query& q, const QString& includeFolder)
 {
     if (includeFolder.isEmpty()) {

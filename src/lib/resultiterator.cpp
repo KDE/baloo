@@ -88,19 +88,10 @@ QUrl ResultIterator::url() const
         return QUrl();
 }
 
-QString ResultIterator::icon() const
-{
-    if (d->store)
-        return d->store->icon(d->queryId);
-    else
-        return QString();
-}
-
 Result ResultIterator::result() const
 {
     Result res;
     res.setId(id());
-    res.setIcon(icon());
     res.setUrl(url());
 
     return res;

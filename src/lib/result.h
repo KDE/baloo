@@ -42,15 +42,6 @@ public:
     void setId(const QByteArray& id);
 
     /**
-     * Returns an icon that could be used when displaying
-     * the result.
-     *
-     * Most often there is no icon
-     */
-    QString icon() const;
-    void setIcon(const QString& icon);
-
-    /**
      * Represents the url of the item returned. The item
      * may not always contain a url
      */

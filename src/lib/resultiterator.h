@@ -49,8 +49,6 @@ public:
     QByteArray id() const;
     QUrl url() const;
 
-    QString icon() const;
-
     Result result() const;
 private:
     QExplicitlySharedDataPointer<ResultIteratorPrivate> d;
