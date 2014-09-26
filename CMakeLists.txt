@@ -26,8 +26,6 @@ ecm_setup_version(${PROJECT_VERSION} VARIABLE_PREFIX BALOO
                         SOVERSION 1
 )
 
-option(BALOO_LIBRARIES_ONLY "If true, compiles only the Baloo libraries, without binaries, kioslaves." OFF)
-
 # Build dependencies
 find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Widgets Quick DBus Test Sql)
 
