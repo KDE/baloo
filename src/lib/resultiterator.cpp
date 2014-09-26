@@ -66,26 +66,20 @@ ResultIterator::~ResultIterator()
 
 bool ResultIterator::next()
 {
-    if (d->store)
-        return d->store->next(d->queryId);
-    else
-        return false;
+    Q_ASSERT(d->store);
+    return d->store->next(d->queryId);
 }
 
 QByteArray ResultIterator::id() const
 {
-    if (d->store)
-        return d->store->id(d->queryId);
-    else
-        return QByteArray();
+    Q_ASSERT(d->store);
+    return d->store->id(d->queryId);
 }
 
 QUrl ResultIterator::url() const
 {
-    if (d->store)
-        return d->store->url(d->queryId);
-    else
-        return QUrl();
+    Q_ASSERT(d->store);
+    return d->store->url(d->queryId);
 }
 
 Result ResultIterator::result() const
