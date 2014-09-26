@@ -67,8 +67,7 @@ public:
      * Set some text which should be used to search for Items. This
      * contain a single word or an entire sentence.
      *
-     * Each search backend will interpret it in its own way, and try
-     * to give the best possible results.
+     * This will OVERRIDE any Term that has been set
      */
     void setSearchString(const QString& str);
     QString searchString() const;

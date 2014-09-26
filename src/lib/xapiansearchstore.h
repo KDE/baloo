@@ -107,8 +107,6 @@ private:
     Xapian::Query toXapianQuery(const Term& term);
     Xapian::Query toXapianQuery(Xapian::Query::op op, const QList<Term>& terms);
 
-    Xapian::Query constructSearchQuery(const QString& str);
-
     struct Result {
         Xapian::MSet mset;
         Xapian::MSetIterator it;

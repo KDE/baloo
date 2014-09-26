@@ -20,13 +20,12 @@
 #ifndef BALOO_ADVANCEDQUERYPARSER_H
 #define BALOO_ADVANCEDQUERYPARSER_H
 
-#include "core_export.h"
 #include "query.h"
 #include "term.h"
 
 namespace Baloo {
 
-class BALOO_CORE_EXPORT AdvancedQueryParser
+class AdvancedQueryParser
 {
 public:
     AdvancedQueryParser();

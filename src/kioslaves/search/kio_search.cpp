@@ -21,7 +21,6 @@
 
 #include "query.h"
 #include "resultiterator.h"
-#include "advancedqueryparser.h"
 
 #include <QUrl>
 #include <QUrlQuery>
@@ -81,8 +80,7 @@ void SearchProtocol::listDir(const QUrl& url)
     } else if (urlQuery.hasQueryItem("query")) {
         QString queryString = urlQuery.queryItemValue(QStringLiteral("query"), QUrl::FullyDecoded);
 
-        AdvancedQueryParser aqp;
-        q.setTerm(aqp.parse(queryString));
+        q.setSearchString(queryString);
         q.setType("File");
     }
 

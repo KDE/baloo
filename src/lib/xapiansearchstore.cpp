@@ -121,14 +121,6 @@ Xapian::Query XapianSearchStore::andQuery(const Xapian::Query& a, const Xapian::
         return Xapian::Query(Xapian::Query::OP_AND, a, b);
 }
 
-
-Xapian::Query XapianSearchStore::constructSearchQuery(const QString& str)
-{
-    XapianQueryParser parser;
-    parser.setDatabase(m_db);
-    return parser.parseQuery(str);
-}
-
 int XapianSearchStore::exec(const Query& query)
 {
     if (!m_db)
@@ -151,12 +143,7 @@ int XapianSearchStore::exec(const Query& query)
                 qDebug() << query.term() << "could not be processed. Aborting";
                 return 0;
             }
-            if (query.searchString().size()) {
-                QString str = query.searchString();
 
-                Xapian::Query q = constructSearchQuery(str);
-                xapQ = andQuery(xapQ, q);
-            }
             xapQ = andQuery(xapQ, convertTypes(query.types()));
             xapQ = andQuery(xapQ, constructFilterQuery(query.yearFilter(), query.monthFilter(), query.dayFilter()));
             xapQ = applyCustomOptions(xapQ, query.customOptions());

@@ -127,11 +127,13 @@ Term::~Term()
 
 bool Term::isValid() const
 {
-    if (d->m_property.isEmpty()) {
-        if (d->m_op == Term::None)
-            return false;
+    // Terms with an operator but no subterms are still valid
+    if (d->m_op != Term::None) {
+        return true;
+    }
 
-        return d->m_property.isEmpty() && d->m_value.isNull();
+    if (d->m_comp == Term::Auto) {
+        return false;
     }
 
     return true;

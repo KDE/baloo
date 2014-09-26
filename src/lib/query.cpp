@@ -23,6 +23,7 @@
 #include "query.h"
 #include "term.h"
 #include "filesearchstore.h"
+#include "advancedqueryparser.h"
 
 #include <QString>
 #include <QStringList>
@@ -132,6 +133,9 @@ QString Query::searchString() const
 void Query::setSearchString(const QString& str)
 {
     d->m_searchString = str;
+
+    AdvancedQueryParser parser;
+    d->m_term = parser.parse(str);
 }
 
 uint Query::limit() const
