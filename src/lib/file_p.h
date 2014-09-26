@@ -34,10 +34,6 @@ public:
     QByteArray id;
     QString url;
     KFileMetaData::PropertyMap propertyMap;
-
-    int rating;
-    QStringList tags;
-    QString userComment;
 };
 
 }

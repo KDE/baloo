@@ -34,7 +34,6 @@
 #include <QDir>
 
 #include "file.h"
-#include "filefetchjob.h"
 #include "taglistjob.h"
 
 #include "query.h"

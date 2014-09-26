@@ -8,7 +8,6 @@ set(BALOO_LIB_SRCS
     advancedqueryparser.cpp
 
     file.cpp
-    filefetchjob.cpp
     filemapping.cpp
     filemonitor.cpp
     taglistjob.cpp
@@ -63,7 +62,6 @@ ecm_generate_headers(KF5Baloo_CamelCase_HEADERS
     ResultIterator
 
     File
-    FileFetchJob
     FileMonitor
     TagListJob
     IndexerConfig

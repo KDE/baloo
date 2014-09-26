@@ -31,7 +31,6 @@
 #include <KLocalizedString>
 
 #include "file.h"
-#include "filefetchjob.h"
 #include "searchstore.h" // for deserialize
 
 #include <KFileMetaData/PropertyInfo>
@@ -87,21 +86,17 @@ int main(int argc, char* argv[])
     }
 
     QTextStream stream(stdout);
-    Baloo::FileFetchJob* job;
     QString text;
 
     Q_FOREACH (const QString& url, urls) {
-        Baloo::File ifile;
+        Baloo::File file;
         if (url.startsWith(QLatin1String("file:"))) {
-            ifile.setId(url.toUtf8());
+            file.load(url.toUtf8());
         }
         else {
-            ifile.setUrl(url);
+            file.load(url);
         }
-        job = new Baloo::FileFetchJob(ifile);
-        job->exec();
 
-        Baloo::File file = job->file();
         int fid = Baloo::deserialize("file", file.id());
 
         if (fid && !file.url().isEmpty()) {

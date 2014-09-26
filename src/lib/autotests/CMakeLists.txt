@@ -21,7 +21,6 @@ ecm_add_test(advancedqueryparsertest.cpp ../advancedqueryparser.cpp
 #
 set(filefetchjobtest_SRC filefetchjobtest.cpp
                          db.cpp
-                         ../filefetchjob.cpp
                          ../filemapping.cpp
                          ../file.cpp)
 
@@ -41,7 +40,7 @@ ecm_add_test(${filefetchjobtest_SRC}
 
 # Pass CMAKE_CURRENT_BINARY_DIR so tests can use it to create some of the
 # temporary files they need (as XattrDetector blacklists /tmp by default).
-set_target_properties(filefetchjobtest PROPERTIES COMPILE_FLAGS -DBUILDDIR="\\"${CMAKE_CURRENT_BINARY_DIR}/\\""\ -DBALOO_FILE_EXPORT=)
+#set_target_properties(filefetchjobtest PROPERTIES COMPILE_FLAGS -DBUILDDIR="\\"${CMAKE_CURRENT_BINARY_DIR}/\\""\ -DBALOO_FILE_EXPORT=)
 
 #
 # TagList Job

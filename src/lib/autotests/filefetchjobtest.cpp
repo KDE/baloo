@@ -19,7 +19,6 @@
  */
 
 #include "filefetchjobtest.h"
-#include "filefetchjob.h"
 #include "../db.h"
 #include "filemapping.h"
 #include "file.h"
@@ -82,9 +81,8 @@ void FileFetchJobTest::testXapianData()
         db.commit();
     }
 
-    FileFetchJob* job = new FileFetchJob(tempFile.fileName());
-    job->exec();
-    File file = job->file();
+    File file(tempFile.fileName());
+    QVERIFY(file.load());
 
     QCOMPARE(file.properties(), map);
 }

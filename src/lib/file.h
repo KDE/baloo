@@ -23,7 +23,7 @@
 #ifndef _BALOO_FILE_H
 #define _BALOO_FILE_H
 
-#include "filefetchjob.h"
+#include "core_export.h"
 #include <KFileMetaData/Properties>
 
 namespace Baloo {
@@ -34,8 +34,6 @@ class FilePrivate;
  * @short Provides acess to all File Metadata
  *
  * The File class acts as a temporary container for all the file metadata.
- * It needs to be filled via the FileFetchJob, and any modifications made
- * are not saved until the FileModifyJob is called.
  */
 class BALOO_CORE_EXPORT File
 {
@@ -53,20 +51,16 @@ public:
 
     const File& operator =(const File& f);
 
-    static File fromId(const QByteArray& id);
-
     /**
      * The local url of the file
      */
     QString url() const;
-    void setUrl(const QString& url);
 
     /**
      * Represents a unique identifier for this file. This identifier
      * is unique and will never change unlike the url of the file
      */
     QByteArray id() const;
-    void setId(const QByteArray& id);
 
     /**
      * Gives a variant map of the properties that have been extracted
@@ -75,9 +69,14 @@ public:
     KFileMetaData::PropertyMap properties() const;
     QVariant property(KFileMetaData::Property::Property property) const;
 
+    // FIXME: More descriptive error?
+    bool load();
+    bool load(const QByteArray& id);
+    bool load(const QString& url);
+
+    // FIXME: From id?
 private:
     FilePrivate* d;
-    friend class FileFetchJob;
 };
 
 }
