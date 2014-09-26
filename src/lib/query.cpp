@@ -63,7 +63,7 @@ public:
 
     SortingOption m_sortingOption;
     QString m_sortingProperty;
-    QVariantMap m_customOptions;
+    QString m_includeFolder;
 };
 
 Query::Query()
@@ -201,25 +201,16 @@ QString Query::sortingProperty() const
     return d->m_sortingProperty;
 }
 
-void Query::addCustomOption(const QString& option, const QVariant& value)
+QString Query::includeFolder() const
 {
-    d->m_customOptions.insert(option, value);
+    return d->m_includeFolder;
 }
 
-QVariant Query::customOption(const QString& option) const
+void Query::setIncludeFolder(const QString& folder)
 {
-    return d->m_customOptions.value(option);
+    d->m_includeFolder = folder;
 }
 
-QVariantMap Query::customOptions() const
-{
-    return d->m_customOptions;
-}
-
-void Query::removeCustomOption(const QString& option)
-{
-    d->m_customOptions.remove(option);
-}
 
 Q_GLOBAL_STATIC_WITH_ARGS(SearchStore::List, s_searchStores, (SearchStore::searchStores()))
 
@@ -284,8 +275,8 @@ QByteArray Query::toJSON()
     if (!d->m_sortingProperty.isEmpty())
         map[QLatin1String("sortingProperty")] = d->m_sortingProperty;
 
-    if (d->m_customOptions.size())
-        map[QLatin1String("customOptions")] = d->m_customOptions;
+    if (!d->m_includeFolder.isEmpty())
+        map[QLatin1String("includeFolder")] = d->m_includeFolder;
 
     QJsonObject jo = QJsonObject::fromVariantMap(map);
     QJsonDocument jdoc;
@@ -327,18 +318,8 @@ Query Query::fromJSON(const QByteArray& arr)
         query.d->m_sortingProperty = map.value("sortingProperty").toString();
     }
 
-    if (map.contains(QLatin1String("customOptions"))) {
-        QVariant var = map[QLatin1String("customOptions")];
-        if (var.type() == QVariant::Map) {
-            query.d->m_customOptions = map[QLatin1String("customOptions")].toMap();
-        }
-        else if (var.type() == QVariant::Hash) {
-            QVariantHash hash = var.toHash();
-
-            QHash<QString, QVariant>::const_iterator it = hash.constBegin();
-            for (; it != hash.constEnd(); ++it)
-                query.d->m_customOptions.insert(it.key(), it.value());
-        }
+    if (map.contains(QLatin1String("includeFolder"))) {
+        query.d->m_includeFolder = map.value("includeFolder").toString();
     }
 
     return query;
@@ -379,7 +360,7 @@ bool Query::operator==(const Query& rhs) const
 {
     if (rhs.d->m_limit != d->m_limit || rhs.d->m_offset != d->m_offset ||
         rhs.d->m_dayFilter != d->m_dayFilter || rhs.d->m_monthFilter != d->m_monthFilter ||
-        rhs.d->m_yearFilter != d->m_yearFilter || rhs.d->m_customOptions != d->m_customOptions ||
+        rhs.d->m_yearFilter != d->m_yearFilter || rhs.d->m_includeFolder != d->m_includeFolder ||
         rhs.d->m_searchString != d->m_searchString || rhs.d->m_sortingProperty != d->m_sortingProperty ||
         rhs.d->m_sortingOption != d->m_sortingOption)
     {

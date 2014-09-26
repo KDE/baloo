@@ -233,7 +233,7 @@ void FileSearchStoreTest::testIncludeDir()
 
     Query q;
     q.addType(QLatin1String("File"));
-    q.addCustomOption(QLatin1String("includeFolder"), QVariant(QLatin1String("/home/t")));
+    q.setIncludeFolder(QStringLiteral("/home/t"));
 
     int qid = m_store->exec(q);
     QCOMPARE(qid, 1);

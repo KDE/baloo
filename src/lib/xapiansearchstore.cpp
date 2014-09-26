@@ -146,7 +146,7 @@ int XapianSearchStore::exec(const Query& query)
 
             xapQ = andQuery(xapQ, convertTypes(query.types()));
             xapQ = andQuery(xapQ, constructFilterQuery(query.yearFilter(), query.monthFilter(), query.dayFilter()));
-            xapQ = applyCustomOptions(xapQ, query.customOptions());
+            xapQ = applyIncludeFolder(xapQ, query.includeFolder());
             xapQ = finalizeQuery(xapQ);
 
             if (xapQ.empty()) {
@@ -277,8 +277,8 @@ Xapian::Query XapianSearchStore::finalizeQuery(const Xapian::Query& query)
     return query;
 }
 
-Xapian::Query XapianSearchStore::applyCustomOptions(const Xapian::Query& q, const QVariantMap& options)
+Xapian::Query XapianSearchStore::applyIncludeFolder(const Xapian::Query& q, const QString& includeFolder)
 {
-    Q_UNUSED(options);
+    Q_UNUSED(includeFolder);
     return q;
 }

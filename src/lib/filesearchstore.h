@@ -50,7 +50,7 @@ protected:
                                          Term::Comparator com);
 
     virtual Xapian::Query constructFilterQuery(int year, int month, int day);
-    virtual Xapian::Query applyCustomOptions(const Xapian::Query& q, const QVariantMap& options);
+    virtual Xapian::Query applyIncludeFolder(const Xapian::Query& q, const QString& includeFolder);
 
     virtual Xapian::Query convertTypes(const QStringList& types);
     virtual QUrl constructUrl(const Xapian::docid& docid);

@@ -137,16 +137,13 @@ void QuerySerializationTest::testCustomOptions()
 {
     Query query;
     query.addType(QLatin1String("File"));
-    query.addCustomOption(QLatin1String("includeFolders"), QLatin1String("/home/vishesh/"));
-    query.addCustomOption(QLatin1String("op1"), 5);
+    query.setIncludeFolder(QStringLiteral("/home/vishesh"));
 
     QByteArray json = query.toJSON();
     Query q = Query::fromJSON(json);
 
-    QVariantMap options = q.customOptions();
-    QCOMPARE(options.size(), 2);
-    QCOMPARE(options.value(QLatin1String("includeFolders")), QVariant(QLatin1String("/home/vishesh/")));
-    QCOMPARE(options.value(QLatin1String("op1")), QVariant(5));
+    QString includeFolder = q.includeFolder();
+    QCOMPARE(includeFolder, QStringLiteral("/home/vishesh"));
 
     QCOMPARE(query, q);
 }

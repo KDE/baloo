@@ -125,16 +125,10 @@ public:
     QString sortingProperty() const;
 
     /**
-     * Adds a custom option which any search backend could use
-     * to configure the query result.
-     *
-     * Each backend has their own custom options which should be
-     * looked up in their corresponding documentation
+     * Only files in this folder will be returned
      */
-    void addCustomOption(const QString& option, const QVariant& value);
-    void removeCustomOption(const QString& option);
-    QVariant customOption(const QString& option) const;
-    QVariantMap customOptions() const;
+    void setIncludeFolder(const QString& folder);
+    QString includeFolder() const;
 
     ResultIterator exec();
 

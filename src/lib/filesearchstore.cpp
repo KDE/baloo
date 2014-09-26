@@ -306,16 +306,12 @@ QString FileSearchStore::icon(int queryId)
     return QMimeDatabase().mimeTypeForFile(url(queryId).toLocalFile()).iconName();
 }
 
-
-Xapian::Query FileSearchStore::applyCustomOptions(const Xapian::Query& q, const QVariantMap& options)
+Xapian::Query FileSearchStore::applyIncludeFolder(const Xapian::Query& q, const QString& includeFolder)
 {
-    QMap<QString, QVariant>::const_iterator it = options.constFind(QLatin1String("includeFolder"));
-    if (it == options.constEnd()) {
+    if (includeFolder.isEmpty()) {
         return q;
     }
 
-    QString includeDir = it.value().toString();
-
-    PathFilterPostingSource ps(&m_sqlDb, includeDir);
+    PathFilterPostingSource ps(&m_sqlDb, includeFolder);
     return andQuery(q, Xapian::Query(&ps));
 }
