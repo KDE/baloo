@@ -55,7 +55,7 @@ if (NOT BALOO_LIBRARIES_ONLY)
         KF5::Crash
         KF5::ConfigCore
         ${XAPIAN_LIBRARIES}
-        KF5::BalooCore
+        KF5::Baloo
         KF5::BalooXapian
         KF5::KDELibs4Support # For Solid
     )
@@ -79,7 +79,7 @@ if (NOT BALOO_LIBRARIES_ONLY)
         KF5::Crash
         KF5::ConfigCore
         ${XAPIAN_LIBRARIES}
-        KF5::BalooCore
+        KF5::Baloo
         KF5::BalooXapian
         KF5::KDELibs4Support # For Solid
         baloofilecommon

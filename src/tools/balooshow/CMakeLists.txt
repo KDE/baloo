@@ -6,7 +6,7 @@ add_executable(balooshow ${SRCS})
 target_compile_definitions(balooshow PRIVATE -DPROJECT_VERSION="${PROJECT_VERSION}")
 
 target_link_libraries(balooshow
-    KF5::BalooCore
+    KF5::Baloo
     KF5::BalooXapian
     KF5::FileMetaData
     KF5::CoreAddons

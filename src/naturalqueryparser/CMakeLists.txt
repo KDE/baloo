@@ -25,7 +25,7 @@ add_library(KF5BalooNaturalQueryParser ${QUERYPARSER_SRCS})
 add_library(KF5::BalooNaturalQueryParser ALIAS KF5BalooNaturalQueryParser)
 
 target_link_libraries(KF5BalooNaturalQueryParser
-    KF5::BalooCore
+    KF5::Baloo
     KF5::KDELibs4Support
     KF5::FileMetaData
 )

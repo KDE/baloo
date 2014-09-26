@@ -8,7 +8,7 @@ target_compile_definitions(baloosearch PRIVATE -DPROJECT_VERSION="${PROJECT_VERS
 target_link_libraries(baloosearch
   KF5::I18n
   KF5::CoreAddons
-  KF5::BalooCore
+  KF5::Baloo
 )
 
 install(TARGETS baloosearch DESTINATION ${BIN_INSTALL_DIR})

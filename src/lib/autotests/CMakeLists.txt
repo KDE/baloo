@@ -5,7 +5,7 @@ set(querySerialization_SRC queryserializationtest.cpp)
 
 ecm_add_test(${querySerialization_SRC}
     TEST_NAME "queryserializationtest"
-    LINK_LIBRARIES Qt5::Test KF5::BalooCore
+    LINK_LIBRARIES Qt5::Test KF5::Baloo
 )
 
 #
@@ -13,7 +13,7 @@ ecm_add_test(${querySerialization_SRC}
 #
 ecm_add_test(advancedqueryparsertest.cpp
     TEST_NAME "advancedqueryparsertest"
-    LINK_LIBRARIES Qt5::Test KF5::BalooCore
+    LINK_LIBRARIES Qt5::Test KF5::Baloo
 )
 
 #
@@ -36,7 +36,7 @@ ecm_add_test(${filefetchjobtest_SRC}
         Qt5::Sql
         Qt5::DBus
         ${XAPIAN_LIBRARIES}
-        KF5::BalooCore
+        KF5::Baloo
 )
 
 # Pass CMAKE_CURRENT_BINARY_DIR so tests can use it to create some of the
@@ -50,7 +50,7 @@ ecm_add_test(taglistjobtest.cpp
     TEST_NAME "taglistjobtest"
     LINK_LIBRARIES
         Qt5::Test
-        KF5::BalooCore
+        KF5::Baloo
 )
 
 #
@@ -73,6 +73,6 @@ ecm_add_test(${filesearchstore_SRCS}
         Qt5::Test
         ${XAPIAN_LIBRARIES}
         KF5::FileMetaData
-        KF5::BalooCore
+        KF5::Baloo
         KF5::BalooXapian
 )

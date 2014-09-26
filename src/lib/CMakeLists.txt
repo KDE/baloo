@@ -1,6 +1,4 @@
-kde_enable_exceptions()
-
-set(CORE_SRCS
+set(BALOO_LIB_SRCS
     searchstore.cpp
     term.cpp
     query.cpp
@@ -29,11 +27,11 @@ set(CORE_SRCS
     filesearchstore.cpp
 )
 
-add_library(KF5BalooCore ${CORE_SRCS})
+add_library(KF5Baloo ${BALOO_LIB_SRCS})
 
-add_library(KF5::BalooCore ALIAS KF5BalooCore)
+add_library(KF5::Baloo ALIAS KF5Baloo)
 
-target_link_libraries(KF5BalooCore
+target_link_libraries(KF5Baloo
     PUBLIC
     Qt5::Core
     KF5::CoreAddons
@@ -47,16 +45,16 @@ target_link_libraries(KF5BalooCore
     KF5::BalooXapian
 )
 
-set_target_properties(KF5BalooCore PROPERTIES
+set_target_properties(KF5Baloo PROPERTIES
     VERSION ${BALOO_VERSION_STRING}
     SOVERSION ${BALOO_SOVERSION}
-    EXPORT_NAME BalooCore
+    EXPORT_NAME Baloo
 )
-target_include_directories(KF5BalooCore INTERFACE "$<INSTALL_INTERFACE:${KF5_INCLUDE_INSTALL_DIR}/Baloo>")
+target_include_directories(KF5Baloo INTERFACE "$<INSTALL_INTERFACE:${KF5_INCLUDE_INSTALL_DIR}/Baloo>")
 
-generate_export_header(KF5BalooCore BASE_NAME BALOO_CORE EXPORT_FILE_NAME core_export.h)
+generate_export_header(KF5Baloo BASE_NAME BALOO_CORE EXPORT_FILE_NAME core_export.h)
 
-ecm_generate_headers(KF5BalooCore_CamelCase_HEADERS
+ecm_generate_headers(KF5Baloo_CamelCase_HEADERS
     HEADER_NAMES
     Term
     Query
@@ -72,20 +70,20 @@ ecm_generate_headers(KF5BalooCore_CamelCase_HEADERS
     IndexerConfig
 
     PREFIX baloo
-    REQUIRED_HEADERS KF5BalooCore_HEADERS
+    REQUIRED_HEADERS KF5Baloo_HEADERS
 )
 
-install(TARGETS KF5BalooCore EXPORT KF5BalooTargets ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS KF5Baloo EXPORT KF5BalooTargets ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/core_export.h
-    ${KF5BalooCore_HEADERS}
+    ${KF5Baloo_HEADERS}
     DESTINATION ${KF5_INCLUDE_INSTALL_DIR}/Baloo/baloo
     COMPONENT Devel
 )
 
 install(FILES
-    ${KF5BalooCore_CamelCase_HEADERS}
+    ${KF5Baloo_CamelCase_HEADERS}
     DESTINATION ${KF5_INCLUDE_INSTALL_DIR}/Baloo/Baloo
     COMPONENT Devel
 )
