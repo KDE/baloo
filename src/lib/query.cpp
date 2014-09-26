@@ -212,36 +212,12 @@ void Query::setIncludeFolder(const QString& folder)
 }
 
 
-Q_GLOBAL_STATIC_WITH_ARGS(SearchStore::List, s_searchStores, (SearchStore::searchStores()))
+Q_GLOBAL_STATIC_WITH_ARGS(QSharedPointer<FileSearchStore>, s_fileSearchStore, (new FileSearchStore));
 
 ResultIterator Query::exec()
 {
-    // vHanda: Maybe this should default to allow searches on all search stores?
-    Q_ASSERT_X(!types().isEmpty(), "Baloo::Query::exec", "A query is being initialized without a type");
-    if (types().isEmpty())
-        return ResultIterator();
-
-    SearchStore* storeMatch = 0;
-    Q_FOREACH (QSharedPointer<SearchStore> store, *s_searchStores) {
-        bool matches = true;
-        Q_FOREACH (const QString& type, types()) {
-            if (!store->types().contains(type)) {
-                matches = false;
-                break;
-            }
-        }
-
-        if (matches) {
-            storeMatch = store.data();
-            break;
-        }
-    }
-
-    if (!storeMatch)
-        return ResultIterator();
-
-    int id = storeMatch->exec(*this);
-    return ResultIterator(id, storeMatch);
+    int id = (*s_fileSearchStore)->exec(*this);
+    return ResultIterator(id, &(**s_fileSearchStore));
 }
 
 QByteArray Query::toJSON()

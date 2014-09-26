@@ -41,16 +41,6 @@ SearchStore::~SearchStore()
 {
 }
 
-QUrl SearchStore::url(int)
-{
-    return QUrl();
-}
-
-QString SearchStore::property(int, const QString&)
-{
-    return QString();
-}
-
 //
 // Search Stores
 //

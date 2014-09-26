@@ -64,8 +64,7 @@ public:
 
     virtual QByteArray id(int queryId) = 0;
 
-    virtual QUrl url(int queryId);
-    virtual QString property(int queryId, const QString& propName);
+    virtual QUrl url(int queryId) = 0;
 };
 
 //
