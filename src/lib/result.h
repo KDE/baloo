@@ -42,13 +42,6 @@ public:
     void setId(const QByteArray& id);
 
     /**
-     * Some text that can be used to display the result
-     * to the user
-     */
-    QString text() const;
-    void setText(const QString& text);
-
-    /**
      * Returns an icon that could be used when displaying
      * the result.
      *

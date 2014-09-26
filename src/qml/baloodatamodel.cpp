@@ -89,7 +89,7 @@ QVariant BalooDataModel::data(const QModelIndex &index, int role) const
 
     switch (role) {
     case Qt::DisplayRole:
-        return m_balooEntryList.at(index.row()).text();
+        return m_balooEntryList.at(index.row()).url().fileName();
     case Qt::DecorationRole:
         return m_balooEntryList.at(index.row()).icon();
     case IdRole:

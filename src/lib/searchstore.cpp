@@ -51,11 +51,6 @@ QString SearchStore::icon(int)
     return QString();
 }
 
-QString SearchStore::text(int)
-{
-    return QString();
-}
-
 QString SearchStore::property(int, const QString&)
 {
     return QString();

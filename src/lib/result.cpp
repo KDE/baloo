@@ -27,7 +27,6 @@ using namespace Baloo;
 class Result::Private {
 public:
     QByteArray id;
-    QString text;
     QString icon;
     QUrl url;
 };
@@ -55,16 +54,6 @@ void Result::setId(const QByteArray& id)
 QByteArray Result::id() const
 {
     return d->id;
-}
-
-void Result::setText(const QString& text)
-{
-    d->text = text;
-}
-
-QString Result::text() const
-{
-    return d->text;
 }
 
 QString Result::icon() const

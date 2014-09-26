@@ -42,7 +42,6 @@ public:
 
     virtual void setDbPath(const QString& path);
     virtual QStringList types();
-    virtual QString text(int queryId);
     virtual QString icon(int queryId);
 
 protected:

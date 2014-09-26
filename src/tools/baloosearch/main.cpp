@@ -123,7 +123,7 @@ int main(int argc, char* argv[])
         else {
             title = colorString(QString::fromUtf8(iter.id()), 31);
             title += QLatin1String(" ");
-            title += colorString(iter.text(), 32);
+            title += colorString(url.fileName(), 32);
         }
 
         out << "  " << title << endl;

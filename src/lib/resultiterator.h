@@ -49,7 +49,6 @@ public:
     QByteArray id() const;
     QUrl url() const;
 
-    QString text() const;
     QString icon() const;
 
     Result result() const;

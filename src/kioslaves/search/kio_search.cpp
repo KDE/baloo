@@ -120,7 +120,7 @@ void SearchProtocol::listDir(const QUrl& url)
             }
         }
 
-        uds.insert(KIO::UDSEntry::UDS_NAME, it.text());
+        uds.insert(KIO::UDSEntry::UDS_NAME, url.fileName());
         uds.insert(KIO::UDSEntry::UDS_URL, url.url());
 
         // set the local path so that KIO can handle the rest
