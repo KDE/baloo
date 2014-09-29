@@ -10,6 +10,7 @@ X-KDE-Kded-phase=1
 
 Name=Search Folder Updater
 Name[ca]=Actualitzador de les carpetes de cerca
+Name[de]=Suchordner-Aktualisierung
 Name[es]=Actualizador de la carpeta de búsquedas
 Name[hu]=Keresésfrissítő
 Name[nl]=Bijwerker van map zoeken
@@ -21,6 +22,7 @@ Name[uk]=Засіб оновлення тек пошуку
 Name[x-test]=xxSearch Folder Updaterxx
 Comment=Allows automatic updates of Search Folders
 Comment[ca]=Permet l'actualització automàtica de les carpetes de cerca
+Comment[de]=Ermöglicht die automatische Aktualisierung von Suchordnern
 Comment[es]=Permite actualizaciones automáticas de las carpetas de búsqueda
 Comment[hu]=Lehetővé teszi a keresési mappák automatikus frissítését
 Comment[nl]=Staat automatisch bijwerken van zoekmappen toe
