@@ -22,7 +22,7 @@
 
 #include "term.h"
 
-static double scales[] = {
+static const double scales[] = {
     1.0,
     0.1,
     0.01,

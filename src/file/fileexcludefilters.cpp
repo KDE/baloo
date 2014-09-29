@@ -20,7 +20,7 @@
 
 namespace
 {
-const char* s_defaultFileExcludeFilters[] = {
+const char* const s_defaultFileExcludeFilters[] = {
     // tmp files
     "*~",
     "*.part",
@@ -76,7 +76,7 @@ const char* s_defaultFileExcludeFilters[] = {
 
 const int s_defaultFileExcludeFiltersVersion = 2;
 
-const char* s_defaultFolderExcludeFilters[] = {
+const char* const s_defaultFolderExcludeFilters[] = {
     "po",
 
     // VCS
@@ -106,7 +106,7 @@ const char* s_defaultFolderExcludeFilters[] = {
 
 const int s_defaultFolderExcludeFiltersVersion = 1;
 
-const char* s_sourceCodeMimeTypes[] = {
+const char* const s_sourceCodeMimeTypes[] = {
     "text/css",
     "text/x-c++src",
     "text/x-c++hdr",

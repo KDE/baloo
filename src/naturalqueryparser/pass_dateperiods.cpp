@@ -67,7 +67,7 @@ void PassDatePeriods::setKind(PassDatePeriods::Period period, PassDatePeriods::V
 
 QString PassDatePeriods::nameOfPeriod(Period period)
 {
-    static const char *period_names[] = {
+    static const char *const period_names[] = {
         "year", "month", "week", "dayofweek", "day", "hour", "minute", "second", ""
     };
 
