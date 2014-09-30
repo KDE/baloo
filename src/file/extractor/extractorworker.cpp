@@ -174,6 +174,11 @@ void ExtractorWorker::processNextCommand()
 
 void ExtractorWorker::indexFile(const QString &pathOrId)
 {
+    if (pathOrId.isEmpty()) {
+        indexingCompleted(pathOrId);
+        return;
+    }
+
     if (m_store) {
         initDb();
     }
