@@ -47,8 +47,7 @@ PendingFileQueue::PendingFileQueue(QObject* parent)
     m_emittedTimeout = 5;
 
     // setup the timer
-    connect(&m_queueTimer, SIGNAL(timeout()),
-            this, SLOT(slotTimer()));
+    connect(&m_queueTimer, &QTimer::timeout, this, &PendingFileQueue::slotTimer);
 
     // we check in 1 sec intervals
     m_queueTimer.setInterval(1000);

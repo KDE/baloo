@@ -55,17 +55,14 @@ FolderSelectionWidget::FolderSelectionWidget(QWidget* parent, Qt::WindowFlags f)
 
     m_addButton = new QPushButton(this);
     m_addButton->setIcon(QIcon::fromTheme(QLatin1String("list-add")));
-    connect(m_addButton, SIGNAL(clicked(bool)),
-            this, SLOT(slotAddButtonClicked()));
+    connect(m_addButton, &QPushButton::clicked, this, &FolderSelectionWidget::slotAddButtonClicked);
 
     m_removeButton = new QPushButton(this);
     m_removeButton->setIcon(QIcon::fromTheme(QLatin1String("list-remove")));
     m_removeButton->setEnabled(false);
-    connect(m_removeButton, SIGNAL(clicked(bool)),
-            this, SLOT(slotRemoveButtonClicked()));
+    connect(m_removeButton, &QPushButton::clicked, this, &FolderSelectionWidget::slotRemoveButtonClicked);
 
-    connect(m_listWidget, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),
-            this, SLOT(slotCurrentItemChanged(QListWidgetItem*,QListWidgetItem*)));
+    connect(m_listWidget, &QListWidget::currentItemChanged, this, &FolderSelectionWidget::slotCurrentItemChanged);
 
     hLayout->addWidget(m_addButton);
     hLayout->addWidget(m_removeButton);

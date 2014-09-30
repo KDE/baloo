@@ -93,14 +93,10 @@ int main(int argc, char** argv)
 
     Baloo::FileIndexer fileIndexer(&db, &indexerConfig, &app);
 
-    QObject::connect(&filewatcher, SIGNAL(indexFile(QString)),
-                     &fileIndexer, SLOT(indexFile(QString)));
-    QObject::connect(&filewatcher, SIGNAL(indexXAttr(QString)),
-                     &fileIndexer, SLOT(indexXAttr(QString)));
-    QObject::connect(&filewatcher, SIGNAL(installedWatches()),
-                     &fileIndexer, SLOT(update()));
-    QObject::connect(&filewatcher, SIGNAL(fileRemoved(int)),
-                     &fileIndexer, SLOT(removeFileData(int)));
+    QObject::connect(&filewatcher, &Baloo::FileWatch::indexFile, &fileIndexer, &Baloo::FileIndexer::indexFile);
+    QObject::connect(&filewatcher, &Baloo::FileWatch::indexXAttr, &fileIndexer, &Baloo::FileIndexer::indexXAttr);
+    QObject::connect(&filewatcher, &Baloo::FileWatch::installedWatches, &fileIndexer, &Baloo::FileIndexer::update);
+    QObject::connect(&filewatcher, &Baloo::FileWatch::fileRemoved, &fileIndexer, &Baloo::FileIndexer::removeFileData);
 
     return app.exec();
 }

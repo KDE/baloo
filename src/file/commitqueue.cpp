@@ -35,11 +35,11 @@ Baloo::CommitQueue::CommitQueue(Database* db, QObject* parent)
 {
     m_smallTimer.setSingleShot(true);
     m_smallTimer.setInterval(200);
-    connect(&m_smallTimer, SIGNAL(timeout()), this, SLOT(commit()));
+    connect(&m_smallTimer, &QTimer::timeout, this, &CommitQueue::commit);
 
     m_largeTimer.setSingleShot(true);
     m_largeTimer.setInterval(10000);
-    connect(&m_largeTimer, SIGNAL(timeout()), this, SLOT(commit()));
+    connect(&m_largeTimer, &QTimer::timeout, this, &CommitQueue::commit);
 }
 
 Baloo::CommitQueue::~CommitQueue()

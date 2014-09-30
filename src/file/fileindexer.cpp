@@ -41,16 +41,11 @@ FileIndexer::FileIndexer(Database* db, FileIndexerConfig* config, QObject* paren
     m_indexScheduler = new IndexScheduler(db, config, this);
 
     // setup status connections
-    connect(m_indexScheduler, SIGNAL(statusStringChanged()),
-            this, SIGNAL(statusChanged()));
-    connect(m_indexScheduler, SIGNAL(indexingStarted()),
-            this, SIGNAL(indexingStarted()));
-    connect(m_indexScheduler, SIGNAL(indexingStopped()),
-            this, SIGNAL(indexingStopped()));
-    connect(m_indexScheduler, SIGNAL(fileIndexingDone()),
-            this, SIGNAL(fileIndexingDone()));
-    connect(m_indexScheduler, SIGNAL(basicIndexingDone()),
-            this, SLOT(slotBasicIndexingDone()));
+    connect(m_indexScheduler, &IndexScheduler::statusStringChanged, this, &FileIndexer::statusChanged);
+    connect(m_indexScheduler, &IndexScheduler::indexingStarted, this, &FileIndexer::indexingStarted);
+    connect(m_indexScheduler, &IndexScheduler::indexingStopped, this, &FileIndexer::indexingStopped);
+    connect(m_indexScheduler, &IndexScheduler::fileIndexingDone, this, &FileIndexer::fileIndexingDone);
+    connect(m_indexScheduler, &IndexScheduler::basicIndexingDone, this, &FileIndexer::slotBasicIndexingDone);
 
     QDBusConnection bus = QDBusConnection::sessionBus();
     bus.registerObject(QLatin1String("/indexer"), this,

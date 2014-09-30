@@ -221,7 +221,7 @@ KInotify::KInotify(QObject* parent)
     // after the EventMoveFrom event has occurred
     d->cookieExpireTimer.setInterval(1000);
     d->cookieExpireTimer.setSingleShot(true);
-    connect(&d->cookieExpireTimer, SIGNAL(timeout()), this, SLOT(slotClearCookies()));
+    connect(&d->cookieExpireTimer, &QTimer::timeout, this, &KInotify::slotClearCookies);
 }
 
 

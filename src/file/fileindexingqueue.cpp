@@ -92,8 +92,8 @@ void FileIndexingQueue::processNextIteration()
     if (m_testMode) {
         m_indexJob->setCustomDbPath(m_db->path());
     }
-    connect(m_indexJob, SIGNAL(indexingFailed(uint)), this, SLOT(slotIndexingFailed(uint)));
-    connect(m_indexJob, SIGNAL(finished(KJob*)), SLOT(slotFinishedIndexingFile(KJob*)));
+    connect(m_indexJob, &FileIndexingJob::indexingFailed, this, &FileIndexingQueue::slotIndexingFailed);
+    connect(m_indexJob, &FileIndexingJob::finished, this, &FileIndexingQueue::slotFinishedIndexingFile);
 
     m_indexJob->start();
 }

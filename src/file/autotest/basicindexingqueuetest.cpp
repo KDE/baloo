@@ -74,7 +74,7 @@ void BasicIndexingQueueTest::testSimpleDirectoryStructure()
     queue.enqueue(FileMapping(dir->path() + QLatin1String("/home")));
 
     QEventLoop loop;
-    connect(&queue, SIGNAL(finishedIndexing()), &loop, SLOT(quit()));
+    connect(&queue, &BasicIndexingQueue::finishedIndexing, &loop, &QEventLoop::quit);
     loop.exec();
 
     // kde and kde/1 are not indexed
@@ -161,7 +161,7 @@ void BasicIndexingQueueTest::textExtendedAttributeIndexing()
     queue.enqueue(FileMapping(fileName), Baloo::ExtendedAttributesOnly);
 
     QEventLoop loop;
-    connect(&queue, SIGNAL(finishedIndexing()), &loop, SLOT(quit()));
+    connect(&queue, &BasicIndexingQueue::finishedIndexing, &loop, &QEventLoop::quit);
     loop.exec();
 
     QCOMPARE(spy.size(), 1);
@@ -264,7 +264,7 @@ void BasicIndexingQueueTest::textNormalAndThenExtendedAttributeIndexing()
     queue.enqueue(FileMapping(fileName));
 
     QEventLoop loop;
-    connect(&queue, SIGNAL(finishedIndexing()), &loop, SLOT(quit()));
+    connect(&queue, &BasicIndexingQueue::finishedIndexing, &loop, &QEventLoop::quit);
     loop.exec();
 
     QCOMPARE(spy.size(), 1);
@@ -347,7 +347,7 @@ void BasicIndexingQueueTest::testExtendedAttributeIndexingWhenEmpty()
     queue.enqueue(FileMapping(fileName), Baloo::ExtendedAttributesOnly);
 
     QEventLoop loop;
-    connect(&queue, SIGNAL(finishedIndexing()), &loop, SLOT(quit()));
+    connect(&queue, &BasicIndexingQueue::finishedIndexing, &loop, &QEventLoop::quit);
     loop.exec();
 
     QCOMPARE(spy.size(), 0);

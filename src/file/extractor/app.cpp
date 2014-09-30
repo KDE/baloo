@@ -54,7 +54,7 @@ App::App(const QString& path, QObject* parent)
     }
     m_db.sqlDatabase().transaction();
 
-    connect(this, SIGNAL(saved()), this, SLOT(processNextUrl()), Qt::QueuedConnection);
+    connect(this, &App::saved, this, &App::processNextUrl, Qt::QueuedConnection);
 }
 
 void App::startProcessing(const QStringList& args)

@@ -103,12 +103,11 @@ void SchedulerTest::test()
     QCOMPARE(scheduler.userStatusString(), QString("File indexer is idle."));
 
     QStringList statuses;
-    connect(&scheduler, &IndexScheduler::statusStringChanged,
-            [&]() { statuses << scheduler.userStatusString(); });
+    connect(&scheduler, &IndexScheduler::statusStringChanged, [&]() { statuses << scheduler.userStatusString(); });
 
     scheduler.updateAll();
     QEventLoop loop;
-    connect(&scheduler, SIGNAL(indexingStopped()), &loop, SLOT(quit()));
+    connect(&scheduler, &IndexScheduler::indexingStopped, &loop, &QEventLoop::quit);
     loop.exec();
 
     QCOMPARE(spy1.size(), 1);
@@ -172,9 +171,9 @@ void SchedulerTest::testBatterySuspend()
 
     scheduler.updateAll();
     QEventLoop loop;
-    connect(&scheduler, SIGNAL(basicIndexingDone()), &loop, SLOT(quit()));
+    connect(&scheduler, &IndexScheduler::basicIndexingDone, &loop, &QEventLoop::quit);
     loop.exec();
-    disconnect(&scheduler, SIGNAL(basicIndexingDone()), &loop, SLOT(quit()));
+    disconnect(&scheduler, &IndexScheduler::basicIndexingDone, &loop, &QEventLoop::quit);
 
     QVERIFY(scheduler.m_basicIQ->isEmpty());
 
@@ -211,7 +210,7 @@ void SchedulerTest::testBatterySuspend()
     QSignalSpy spy2(&scheduler, SIGNAL(basicIndexingDone()));
     QSignalSpy spy3(&scheduler, SIGNAL(fileIndexingDone()));
 
-    connect(&scheduler, SIGNAL(fileIndexingDone()), &loop, SLOT(quit()));
+    connect(&scheduler, &IndexScheduler::fileIndexingDone, &loop, &QEventLoop::quit);
     loop.exec();
 
     QCOMPARE(spy1.size(), 0);
@@ -252,9 +251,9 @@ void SchedulerTest::testIdle()
 
     scheduler.updateAll();
     QEventLoop loop;
-    connect(&scheduler, SIGNAL(basicIndexingDone()), &loop, SLOT(quit()));
+    connect(&scheduler, &IndexScheduler::basicIndexingDone, &loop, &QEventLoop::quit);
     loop.exec();
-    disconnect(&scheduler, SIGNAL(basicIndexingDone()), &loop, SLOT(quit()));
+    disconnect(&scheduler, &IndexScheduler::basicIndexingDone, &loop, &QEventLoop::quit);
 
     QVERIFY(scheduler.m_basicIQ->isEmpty());
 
