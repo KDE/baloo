@@ -61,7 +61,6 @@ SchedulerTest::IndexingData SchedulerTest::fetchIndexingData(Database& db)
     query.first();
     data.failed = query.value(0).toInt();
 
-    qDebug() << "FOOOO";
     return data;
 }
 
@@ -72,7 +71,7 @@ void SchedulerTest::test()
     db.setPath(dbDir.path());
     db.init();
 
-    uint numFiles = 20;
+    const uint numFiles = 20;
     QTemporaryDir fileDir;
     // The -1 is because the folder which contains all these files will also
     // be indexed, and will count as a file
@@ -149,7 +148,7 @@ void SchedulerTest::testBatterySuspend()
     db.setPath(dbDir.path());
     db.init();
 
-    uint numFiles = 10;
+    const uint numFiles = 10;
     QTemporaryDir fileDir;
     // The -1 is because the folder which contains all these files will also
     // be indexed, and will count as a file
@@ -183,23 +182,19 @@ void SchedulerTest::testBatterySuspend()
     QVERIFY(scheduler.m_basicIQ->isEmpty());
 
     IndexingData data = fetchIndexingData(db);
-    QCOMPARE(data.phaseOne, 0);
+    QCOMPARE(data.phaseOne, (int)numFiles);
     QCOMPARE(data.phaseTwo, 0);
     QCOMPARE(data.failed, 0);
 
-    // The changes have still not been committed, so the fileIQ will be empty
-    QVERIFY(scheduler.m_fileIQ->isEmpty());
     QVERIFY(!scheduler.m_fileIQ->isSuspended());
 
     scheduler.m_commitQ->commit();
-    QVERIFY(!scheduler.m_fileIQ->isEmpty());
     QVERIFY(!scheduler.m_fileIQ->isSuspended());
     QCOMPARE(scheduler.m_fileIQ->delay(), 500);
 
     data = fetchIndexingData(db);
-    // Folders automatically go to phase2
-    QCOMPARE(data.phaseOne, (int)numFiles-1);
-    QCOMPARE(data.phaseTwo, 1);
+    QCOMPARE(data.phaseOne, (int)numFiles);
+    QCOMPARE(data.phaseTwo, 0);
     QCOMPARE(data.failed, 0);
 
     // Conserve resources
