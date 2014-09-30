@@ -61,11 +61,6 @@ int main(int argc, char* argv[])
         parser.showHelp(1);
     }
 
-    if (parser.isSet(QLatin1String("bdata")) && args.size() > 1) {
-        fprintf(stderr, "bdata can only accept one url/id\n\n");
-        parser.showHelp(1);
-    }
-
     Baloo::App appObject(parser.value(QLatin1String("db")));
     appObject.setDebug(parser.isSet(QLatin1String("debug")));
     appObject.setIgnoreConfig(parser.isSet(QLatin1String("ignoreConfig")));
