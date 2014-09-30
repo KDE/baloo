@@ -20,7 +20,7 @@
  *
  */
 
-#include "app.h"
+#include "extractorworker.h"
 #include "../basicindexingjob.h"
 #include "../database.h"
 #include "../util.h"
@@ -40,7 +40,7 @@
 
 using namespace Baloo;
 
-App::App(QObject *parent)
+ExtractorWorker::ExtractorWorker(QObject *parent)
     : QObject(parent),
       m_sendBinaryData(false),
       m_store(true),
@@ -53,17 +53,17 @@ App::App(QObject *parent)
       m_stdout(stdout, QIODevice::WriteOnly)
 {
     m_stdinNotifier = new QSocketNotifier(fileno(stdin), QSocketNotifier::Read, this);
-    connect(m_stdinNotifier, &QSocketNotifier::activated, this, &App::processNextCommand);
+    connect(m_stdinNotifier, &QSocketNotifier::activated, this, &ExtractorWorker::processNextCommand);
 }
 
-App::~App()
+ExtractorWorker::~ExtractorWorker()
 {
     if (m_db && !(m_results.isEmpty() && m_docsToDelete.isEmpty())) {
         saveChanges();
     }
 }
 
-void App::initDb()
+void ExtractorWorker::initDb()
 {
     if (m_db) {
         return;
@@ -77,7 +77,7 @@ void App::initDb()
     }
 }
 
-void App::setDatabasePath(const QString &path)
+void ExtractorWorker::setDatabasePath(const QString &path)
 {
     if (m_dbPath != path) {
         saveChanges();
@@ -87,13 +87,13 @@ void App::setDatabasePath(const QString &path)
     }
 }
 
-void App::indexingCompleted(const QString &pathOrId)
+void ExtractorWorker::indexingCompleted(const QString &pathOrId)
 {
     m_stdout << 'i' << pathOrId << "\n";
     m_stdout.flush();
 }
 
-void App::exit(const QString &error)
+void ExtractorWorker::exit(const QString &error)
 {
     if (!error.isEmpty()) {
         qDebug() << error;
@@ -104,7 +104,7 @@ void App::exit(const QString &error)
     deleteLater();
 }
 
-bool App::convertToBool(const QString &command, char code)
+bool ExtractorWorker::convertToBool(const QString &command, char code)
 {
     if (command == "+") {
         return true;
@@ -115,7 +115,7 @@ bool App::convertToBool(const QString &command, char code)
     return false;
 }
 
-void App::processNextCommand()
+void ExtractorWorker::processNextCommand()
 {
     bool emptyIsFailure = true;
     while (emptyIsFailure || !m_stdin.atEnd()) {
@@ -172,7 +172,7 @@ void App::processNextCommand()
     }
 }
 
-void App::indexFile(const QString &pathOrId)
+void ExtractorWorker::indexFile(const QString &pathOrId)
 {
     if (m_store) {
         initDb();
@@ -299,7 +299,7 @@ void App::indexFile(const QString &pathOrId)
     }
 }
 
-void App::sendBinaryData(const Result &result)
+void ExtractorWorker::sendBinaryData(const Result &result)
 {
     QVariantMap map;
 
@@ -324,7 +324,7 @@ void App::sendBinaryData(const Result &result)
     m_stdout.flush();
 }
 
-void App::saveChanges()
+void ExtractorWorker::saveChanges()
 {
     if (!(m_results.isEmpty() && m_docsToDelete.isEmpty())) {
         XapianDatabase xapDb(m_dbPath);
@@ -362,7 +362,7 @@ void App::saveChanges()
     m_lastPathOrId.clear();
 }
 
-void App::printDebug()
+void ExtractorWorker::printDebug()
 {
     for (const Result& res: m_results) {
         qDebug() << res.inputUrl();

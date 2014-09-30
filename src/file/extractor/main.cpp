@@ -20,7 +20,7 @@
    License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "app.h"
+#include "extractorworker.h"
 #include "../priority.h"
 
 #include <QStandardPaths>
@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
     QCoreApplication::setApplicationName(QLatin1String("Baloo File Extractor"));
     QCoreApplication::setApplicationVersion(QLatin1String("0.1"));
 
-    Baloo::App *appObject = new Baloo::App;
+    Baloo::ExtractorWorker *appObject = new Baloo::ExtractorWorker;
     QObject::connect(appObject, &QObject::destroyed,
                      &app, &QCoreApplication::quit);
     int rv = app.exec();

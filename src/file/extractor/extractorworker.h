@@ -40,12 +40,12 @@ class QSocketNotifier;
 
 namespace Baloo {
 
-class App : public QObject
+class ExtractorWorker : public QObject
 {
     Q_OBJECT
 public:
-    explicit App(QObject *parent = 0);
-    ~App();
+    explicit ExtractorWorker(QObject *parent = 0);
+    ~ExtractorWorker();
 
 private:
     void exit(const QString &error = QString());

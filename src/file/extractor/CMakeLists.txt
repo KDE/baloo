@@ -2,8 +2,8 @@ remove_definitions(-DTRANSLATION_DOMAIN=\"baloo_file\")
 add_definitions(-DTRANSLATION_DOMAIN=\"baloo_file_extractor\")
 
 set(EXTRACTOR_SRCS
+  extractorworker.cpp
   main.cpp
-  app.cpp
   result.cpp
   ../priority.cpp
   ../basicindexingjob.cpp
