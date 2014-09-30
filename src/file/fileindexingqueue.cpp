@@ -105,7 +105,9 @@ void FileIndexingQueue::processNextIteration()
     if (!m_queueQuery.next()) {
         m_queueQuery.finish();
         fillQueue();
-        if (!m_queueQuery.isActive()) {
+        if (m_queueQuery.isActive()) {
+            m_queueQuery.next();
+        } else {
             // we're done! :)
             m_extractor->indexingComplete();
             return;
