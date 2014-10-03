@@ -49,7 +49,8 @@ public:
 
     enum Errors {
         Error_FileDoesNotExist = 1,
-        Error_InvalidId
+        Error_InvalidId,
+        Error_CouldNotOpenDatabase
     };
 
     File file() const;

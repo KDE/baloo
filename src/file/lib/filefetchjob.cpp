@@ -84,6 +84,17 @@ void FileFetchJob::start()
 
 void FileFetchJob::doStart()
 {
+    QScopedPointer<Xapian::Database> db;
+    try {
+        db.reset(new Xapian::Database(fileIndexDbPath()));
+    }
+    catch (const Xapian::Error& err) {
+        setError(Error_CouldNotOpenDatabase);
+        setErrorText(QLatin1String("Could not open database ") + fileIndexDbPath());
+        emitResult();
+        return;
+    }
+
     QList<File>::iterator it = d->m_files.begin();
     for (; it != d->m_files.end(); ++it) {
         File& file = *it;
@@ -106,41 +117,35 @@ void FileFetchJob::doStart()
         fileMap.setId(deserialize("file", file.id()));
         fileMap.setUrl(file.url());
 
-        if (!fileMap.fetch(fileMappingDb())) {
+        if (fileMap.fetch(fileMappingDb())) {
+            const int id = fileMap.id();
+            file.setId(serialize("file", id));
+            file.setUrl(fileMap.url());
+
+            // Fetch data from Xapian
+            try {
+                Xapian::Document doc = db->get_document(id);
+
+                std::string docData = doc.get_data();
+                const QByteArray arr(docData.c_str(), docData.length());
+
+                QJsonDocument jdoc = QJsonDocument::fromJson(arr);
+                const QVariantMap varMap = jdoc.object().toVariantMap();
+
+                file.d->propertyMap = KFileMetaData::toPropertyMap(varMap);
+            }
+            catch (const Xapian::DocNotFoundError&){
+                // Send file for indexing to baloo_file
+            }
+            catch (const Xapian::InvalidArgumentError& err) {
+                qWarning() << err.get_msg().c_str();
+            }
+            catch (const Xapian::Error& err) {
+                qWarning() << "Xapian error of type" << err.get_type() << ":" << err.get_msg().c_str();
+            }
+        } else {
             qDebug() << "No file index information found" << url;
             // TODO: Send file for indexing!!
-
-            d->fetchUserMetadata(file);
-            Q_EMIT fileReceived(file);
-            emitResult();
-            return;
-        }
-
-        const int id = fileMap.id();
-        file.setId(serialize("file", id));
-        file.setUrl(fileMap.url());
-
-        // Fetch data from Xapian
-        try {
-            Xapian::Database db(fileIndexDbPath());
-            Xapian::Document doc = db.get_document(id);
-
-            std::string docData = doc.get_data();
-            const QByteArray arr(docData.c_str(), docData.length());
-
-            QJsonDocument jdoc = QJsonDocument::fromJson(arr);
-            const QVariantMap varMap = jdoc.object().toVariantMap();
-
-            file.d->propertyMap = KFileMetaData::toPropertyMap(varMap);
-        }
-        catch (const Xapian::DocNotFoundError&){
-            // Send file for indexing to baloo_file
-        }
-        catch (const Xapian::InvalidArgumentError& err) {
-            qWarning() << err.get_msg().c_str();
-        }
-        catch (const Xapian::Error& err) {
-            qWarning() << "Xapian error of type" << err.get_type() << ":" << err.get_msg().c_str();
         }
 
         d->fetchUserMetadata(file);
