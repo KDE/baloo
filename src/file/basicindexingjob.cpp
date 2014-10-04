@@ -131,7 +131,7 @@ bool BasicIndexingJob::indexXAttr(const QString& url, XapianDocument& doc)
     return modified;
 }
 
-QVector<KFileMetaData::Type::Type> BasicIndexingJob::typesForMimeType(const QString& mimeType) const
+QVector<KFileMetaData::Type::Type> BasicIndexingJob::typesForMimeType(const QString& mimeType)
 {
     using namespace KFileMetaData;
     QVector<Type::Type> types;

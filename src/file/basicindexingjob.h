@@ -53,7 +53,7 @@ public:
     static bool indexXAttr(const QString& url, XapianDocument& doc);
 
 private:
-    QVector<KFileMetaData::Type::Type> typesForMimeType(const QString& mimeType) const;
+    static QVector<KFileMetaData::Type::Type> typesForMimeType(const QString& mimeType);
 
     FileMapping m_file;
     QString m_mimetype;
@@ -61,6 +61,8 @@ private:
 
     uint m_id;
     Xapian::Document m_doc;
+
+    friend class BasicIndexingJobTest;
 };
 
 }
