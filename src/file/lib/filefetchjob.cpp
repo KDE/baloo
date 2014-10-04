@@ -90,7 +90,7 @@ void FileFetchJob::doStart()
     }
     catch (const Xapian::Error& err) {
         setError(Error_CouldNotOpenDatabase);
-        setErrorText(QLatin1String("Could not open database ") + fileIndexDbPath());
+        setErrorText(QLatin1String("Could not open database ") + QString::fromStdString(fileIndexDbPath()));
         emitResult();
         return;
     }
