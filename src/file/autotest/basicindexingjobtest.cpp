@@ -59,7 +59,7 @@ void BasicIndexingJobTest::testBasicIndexing()
 
     // filename
     QStringList terms = {"filename", "txt"};
-    for (const QString term: terms) {
+    for (const QString& term: terms) {
         QCOMPARE(docForNormal.fetchTermStartsWith(term.toUtf8()), term);
         QByteArray prefix = "F";
         QByteArray termWithPrefix = prefix + term.toUtf8();
