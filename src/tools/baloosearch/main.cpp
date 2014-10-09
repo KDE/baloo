@@ -77,6 +77,9 @@ int main(int argc, char* argv[])
                                         QLatin1String("typeStr")));
     parser.addOption(QCommandLineOption(QStringList() << QLatin1String("e") << QLatin1String("email"),
                                         QLatin1String("If set, search for email")));
+    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("d") << QStringLiteral("directory"),
+                                        QStringLiteral("Limit search to specified directory"),
+                                        QStringLiteral("directory")));
     parser.addPositionalArgument(QLatin1String("query"), QLatin1String("List of words to query for"));
     parser.process(app);
 
@@ -95,7 +98,6 @@ int main(int argc, char* argv[])
         queryLimit = parser.value(QLatin1String("limit")).toInt();
     if(parser.isSet(QLatin1String("offset")))
         offset = parser.value(QLatin1String("offset")).toInt();
-
     if(parser.isSet(QLatin1String("email")))
         typeStr = QLatin1String("Email");
 
@@ -108,6 +110,8 @@ int main(int argc, char* argv[])
     query.setSearchString(queryStr);
     query.setLimit(queryLimit);
     query.setOffset(offset);
+    if(parser.isSet(QStringLiteral("directory")))
+        query.addCustomOption("includeFolder", parser.value(QStringLiteral("directory")));
 
     out << "\n";
     Baloo::ResultIterator iter = query.exec();
