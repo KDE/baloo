@@ -44,11 +44,10 @@ int main(int argc, char** argv)
     QCoreApplication app(argc, argv);
 
     Baloo::BasicIndexingQueue basicIQ(&db, &config);
-    QObject::connect(&basicIQ, SIGNAL(finishedIndexing()), &app, SLOT(quit()));
+    QObject::connect(&basicIQ, &Baloo::BasicIndexingQueue::finishedIndexing, &app, &QCoreApplication::quit);
 
     Baloo::CommitQueue commitQueue(&db);
-    QObject::connect(&basicIQ, SIGNAL(newDocument(uint,Xapian::Document)),
-                     &commitQueue, SLOT(add(uint,Xapian::Document)));
+    QObject::connect(&basicIQ, &Baloo::BasicIndexingQueue::newDocument, &commitQueue, &Baloo::CommitQueue::add);
 
     basicIQ.enqueue(Baloo::FileMapping(QDir::homePath()));
 

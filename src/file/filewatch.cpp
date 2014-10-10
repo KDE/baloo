@@ -89,39 +89,26 @@ FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
 #endif
 {
     m_metadataMover = new MetadataMover(m_db, this);
-    connect(m_metadataMover, SIGNAL(movedWithoutData(QString)),
-            this, SIGNAL(indexFile(QString)));
-    connect(m_metadataMover, SIGNAL(fileRemoved(int)),
-            this, SIGNAL(fileRemoved(int)));
+    connect(m_metadataMover, &MetadataMover::movedWithoutData, this, &FileWatch::indexFile);
+    connect(m_metadataMover, &MetadataMover::fileRemoved, this, &FileWatch::fileRemoved);
 
     m_pendingFileQueue = new PendingFileQueue(this);
-    connect(m_pendingFileQueue, SIGNAL(indexFile(QString)),
-            this, SIGNAL(indexFile(QString)));
-    connect(m_pendingFileQueue, SIGNAL(indexXAttr(QString)),
-            this, SIGNAL(indexXAttr(QString)));
-    connect(m_pendingFileQueue, SIGNAL(removeFileIndex(QString)),
-            m_metadataMover, SLOT(removeFileMetadata(QString)));
+    connect(m_pendingFileQueue, &PendingFileQueue::indexFile, this, &FileWatch::indexFile);
+    connect(m_pendingFileQueue, &PendingFileQueue::indexXAttr, this, &FileWatch::indexXAttr);
+    connect(m_pendingFileQueue, &PendingFileQueue::removeFileIndex, m_metadataMover, &MetadataMover::removeFileMetadata);
 
 #ifdef BUILD_KINOTIFY
     // monitor the file system for changes (restricted by the inotify limit)
     m_dirWatch = new IgnoringKInotify(m_config, this);
 
-    connect(m_dirWatch, SIGNAL(moved(QString,QString)),
-            this, SLOT(slotFileMoved(QString,QString)));
-    connect(m_dirWatch, SIGNAL(deleted(QString,bool)),
-            this, SLOT(slotFileDeleted(QString,bool)));
-    connect(m_dirWatch, SIGNAL(created(QString,bool)),
-            this, SLOT(slotFileCreated(QString,bool)));
-    connect(m_dirWatch, SIGNAL(modified(QString)),
-            this, SLOT(slotFileModified(QString)));
-    connect(m_dirWatch, SIGNAL(closedWrite(QString)),
-            this, SLOT(slotFileClosedAfterWrite(QString)));
-    connect(m_dirWatch, SIGNAL(attributeChanged(QString)),
-            this, SLOT(slotAttributeChanged(QString)));
-    connect(m_dirWatch, SIGNAL(watchUserLimitReached(QString)),
-            this, SLOT(slotInotifyWatchUserLimitReached(QString)));
-    connect(m_dirWatch, SIGNAL(installedWatches()),
-            this, SIGNAL(installedWatches()));
+    connect(m_dirWatch, &KInotify::moved, this, &FileWatch::slotFileMoved);
+    connect(m_dirWatch, &KInotify::deleted, this, &FileWatch::slotFileDeleted);
+    connect(m_dirWatch, &KInotify::created, this, &FileWatch::slotFileCreated);
+    connect(m_dirWatch, &KInotify::modified, this, &FileWatch::slotFileModified);
+    connect(m_dirWatch, &KInotify::closedWrite, this, &FileWatch::slotFileClosedAfterWrite);
+    connect(m_dirWatch, &KInotify::attributeChanged, this, &FileWatch::slotAttributeChanged);
+    connect(m_dirWatch, &KInotify::watchUserLimitReached, this, &FileWatch::slotInotifyWatchUserLimitReached);
+    connect(m_dirWatch, &KInotify::installedWatches, this, &FileWatch::installedWatches);
 
     // Watch all indexed folders
     QStringList folders = m_config->includeFolders();
@@ -132,8 +119,7 @@ FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
     connectToKDirNotify();
 #endif
 
-    connect(m_config, SIGNAL(configChanged()),
-            this, SLOT(updateIndexedFoldersWatches()));
+    connect(m_config, &Baloo::FileIndexerConfig::configChanged, this, &FileWatch::updateIndexedFoldersWatches);
 }
 
 

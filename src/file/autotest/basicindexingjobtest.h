@@ -28,7 +28,7 @@ class BasicIndexingJobTest : public QObject
 {
     Q_OBJECT
 private Q_SLOTS:
-    void testOnlyBasicIndexing();
+    void testBasicIndexing();
 };
 
 }

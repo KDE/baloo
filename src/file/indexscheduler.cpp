@@ -42,39 +42,35 @@ IndexScheduler::IndexScheduler(Database* db, FileIndexerConfig* config, QObject*
     , m_db(db)
 {
     Q_ASSERT(m_config);
-    connect(m_config, SIGNAL(configChanged()), this, SLOT(slotConfigChanged()));
+    connect(m_config, &FileIndexerConfig::configChanged, this, &IndexScheduler::slotConfigChanged);
 
     m_basicIQ = new BasicIndexingQueue(m_db, m_config, this);
     m_fileIQ = new FileIndexingQueue(m_db, this);
 
-    connect(m_basicIQ, SIGNAL(finishedIndexing()), this, SIGNAL(basicIndexingDone()));
-    connect(m_fileIQ, SIGNAL(finishedIndexing()), this, SIGNAL(fileIndexingDone()));
+    connect(m_basicIQ, &BasicIndexingQueue::finishedIndexing, this, &IndexScheduler::basicIndexingDone);
+    connect(m_fileIQ, &FileIndexingQueue::finishedIndexing, this, &IndexScheduler::fileIndexingDone);
 
-    connect(m_basicIQ, SIGNAL(startedIndexing()), this, SLOT(slotStartedIndexing()));
-    connect(m_basicIQ, SIGNAL(finishedIndexing()), this, SLOT(slotScheduleIndexing()));
-    connect(m_fileIQ, SIGNAL(startedIndexing()), this, SLOT(slotStartedIndexing()));
-    connect(m_fileIQ, SIGNAL(finishedIndexing()), this, SLOT(slotScheduleIndexing()));
+    connect(m_basicIQ, &BasicIndexingQueue::startedIndexing, this, &IndexScheduler::slotStartedIndexing);
+    connect(m_basicIQ, &BasicIndexingQueue::finishedIndexing, this, &IndexScheduler::slotScheduleIndexing);
+    connect(m_fileIQ, &FileIndexingQueue::startedIndexing, this, &IndexScheduler::slotStartedIndexing);
+    connect(m_fileIQ, &FileIndexingQueue::finishedIndexing, this, &IndexScheduler::slotScheduleIndexing);
 
     // Status String
-    connect(m_basicIQ, SIGNAL(startedIndexing()), this, SLOT(emitStatusStringChanged()));
-    connect(m_basicIQ, SIGNAL(finishedIndexing()), this, SLOT(emitStatusStringChanged()));
-    connect(m_fileIQ, SIGNAL(startedIndexing()), this, SLOT(emitStatusStringChanged()));
-    connect(m_fileIQ, SIGNAL(finishedIndexing()), this, SLOT(emitStatusStringChanged()));
-    connect(this, SIGNAL(indexingSuspended(bool)), this, SLOT(emitStatusStringChanged()));
+    connect(m_basicIQ, &BasicIndexingQueue::startedIndexing, this, &IndexScheduler::emitStatusStringChanged);
+    connect(m_basicIQ, &BasicIndexingQueue::finishedIndexing, this, &IndexScheduler::emitStatusStringChanged);
+    connect(m_fileIQ, &FileIndexingQueue::startedIndexing, this, &IndexScheduler::emitStatusStringChanged);
+    connect(m_fileIQ, &FileIndexingQueue::finishedIndexing, this, &IndexScheduler::emitStatusStringChanged);
+    connect(this, &IndexScheduler::indexingSuspended, this, &IndexScheduler::emitStatusStringChanged);
 
     m_eventMonitor = new EventMonitor(this);
-    connect(m_eventMonitor, SIGNAL(idleStatusChanged(bool)),
-            this, SLOT(slotScheduleIndexing()));
-    connect(m_eventMonitor, SIGNAL(powerManagementStatusChanged(bool)),
-            this, SLOT(slotScheduleIndexing()));
+    connect(m_eventMonitor, &EventMonitor::idleStatusChanged, this, &IndexScheduler::slotScheduleIndexing);
+    connect(m_eventMonitor, &EventMonitor::powerManagementStatusChanged, this, &IndexScheduler::slotScheduleIndexing);
 
     m_commitQ = new CommitQueue(m_db, this);
-    connect(m_commitQ, SIGNAL(committed()), this, SLOT(slotScheduleIndexing()));
-    connect(m_commitQ, SIGNAL(committed()), this, SLOT(slotNotifyCommitted()));
-    connect(m_basicIQ, SIGNAL(newDocument(uint,Xapian::Document)),
-            m_commitQ, SLOT(add(uint,Xapian::Document)));
-    connect(m_fileIQ, SIGNAL(newDocument(uint,Xapian::Document)),
-            m_commitQ, SLOT(add(uint,Xapian::Document)));
+    connect(m_commitQ, &CommitQueue::committed, this, &IndexScheduler::slotScheduleIndexing);
+    connect(m_commitQ, &CommitQueue::committed, this, &IndexScheduler::slotNotifyCommitted);
+    connect(m_basicIQ, &BasicIndexingQueue::newDocument, m_commitQ, &CommitQueue::add);
+    connect(m_fileIQ, &FileIndexingQueue::newDocument, m_commitQ, &CommitQueue::add);
 
     m_state = State_Normal;
     slotScheduleIndexing();
@@ -276,7 +272,9 @@ void IndexScheduler::slotScheduleIndexing()
         // Consider running the file queue:
         // this will only happen if the basic queue is not empty.
         if (shouldRunFileQueue()) {
-            m_fileIQ->fillQueue();
+            if (m_fileIQ->isEmpty()) {
+                m_fileIQ->fillQueue();
+            }
             m_fileIQ->resume();
         }
         else {

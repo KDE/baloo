@@ -58,10 +58,8 @@ FileIndexerConfig::FileIndexerConfig(QObject* parent)
     , m_devices(new StorageDevices(this))
 {
     KDirWatch* dirWatch = KDirWatch::self();
-    connect(dirWatch, SIGNAL(dirty(QString)),
-            this, SLOT(slotConfigDirty()));
-    connect(dirWatch, SIGNAL(created(QString)),
-            this, SLOT(slotConfigDirty()));
+    connect(dirWatch, &KDirWatch::dirty, this, &FileIndexerConfig::slotConfigDirty);
+    connect(dirWatch, &KDirWatch::created, this, &FileIndexerConfig::slotConfigDirty);
     dirWatch->addFile(QStandardPaths::locate(QStandardPaths::ConfigLocation, m_config.name()));
 
     forceConfigUpdate();

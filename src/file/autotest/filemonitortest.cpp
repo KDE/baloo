@@ -61,8 +61,7 @@ void FileMonitorTest::test()
     QDBusConnection::sessionBus().send(message);
 
     QEventLoop loop;
-    connect(m_sut, SIGNAL(fileMetaDataChanged(QString)),
-            &loop, SLOT(quit()));
+    connect(m_sut, &FileMonitor::fileMetaDataChanged, &loop, &QEventLoop::quit);
     loop.exec();
 
     QCOMPARE(spy.count(), 1);
