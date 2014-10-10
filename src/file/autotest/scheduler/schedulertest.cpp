@@ -167,7 +167,8 @@ void SchedulerTest::testBatterySuspend()
 
     // Seems to intefere with the rest of the world
     // FIXME: Maybe we should remove this completely?
-    disconnect(scheduler.m_config, SIGNAL(configChanged()), &scheduler, SLOT(slotConfigChanged()));
+    disconnect(scheduler.m_config, &FileIndexerConfig::configChanged,
+               &scheduler, &IndexScheduler::slotConfigChanged);
 
     scheduler.updateAll();
     QEventLoop loop;
