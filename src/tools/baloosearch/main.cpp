@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
                          i18n("Baloo Search - A debugging tool"),
                          KAboutLicense::GPL,
                          i18n("(c) 2013, Vishesh Handa"));
-    aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QLatin1String("me@vhanda.in"));
+    aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QLatin1String("vhanda@kde.org"));
 
     KAboutData::setApplicationData(aboutData);
     QCoreApplication app(argc, argv);
@@ -75,8 +75,6 @@ int main(int argc, char* argv[])
     parser.addOption(QCommandLineOption(QStringList() << QLatin1String("t") << QLatin1String("type"),
                                         QLatin1String("Type of data to be searched"),
                                         QLatin1String("typeStr")));
-    parser.addOption(QCommandLineOption(QStringList() << QLatin1String("e") << QLatin1String("email"),
-                                        QLatin1String("If set, search for email")));
     parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("d") << QStringLiteral("directory"),
                                         QStringLiteral("Limit search to specified directory"),
                                         QStringLiteral("directory")));
@@ -85,7 +83,7 @@ int main(int argc, char* argv[])
 
     int queryLimit = 10;
     int offset = 0;
-    QString typeStr = QLatin1String("File");
+    QString typeStr;
 
     QStringList args = parser.positionalArguments();
     if (args.isEmpty()) {
@@ -98,8 +96,6 @@ int main(int argc, char* argv[])
         queryLimit = parser.value(QLatin1String("limit")).toInt();
     if(parser.isSet(QLatin1String("offset")))
         offset = parser.value(QLatin1String("offset")).toInt();
-    if(parser.isSet(QLatin1String("email")))
-        typeStr = QLatin1String("Email");
 
     QTextStream out(stdout);
 
