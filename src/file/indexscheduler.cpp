@@ -272,7 +272,9 @@ void IndexScheduler::slotScheduleIndexing()
         // Consider running the file queue:
         // this will only happen if the basic queue is not empty.
         if (shouldRunFileQueue()) {
-            m_fileIQ->fillQueue();
+            if (m_fileIQ->isEmpty()) {
+                m_fileIQ->fillQueue();
+            }
             m_fileIQ->resume();
         }
         else {
