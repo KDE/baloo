@@ -35,8 +35,8 @@ using namespace Baloo;
 
 XapianSearchStore::XapianSearchStore(QObject* parent)
     : SearchStore(parent)
-    , m_nextId(1)
     , m_mutex(QMutex::Recursive)
+    , m_nextId(1)
     , m_db(0)
 {
 }
