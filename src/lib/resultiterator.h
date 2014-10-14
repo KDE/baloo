@@ -24,8 +24,8 @@
 #define _BALOO_CORE_RESULT_ITERATOR_H
 
 #include "core_export.h"
-#include "searchstore.h"
 
+#include <QUrl>
 #include <QExplicitlySharedDataPointer>
 
 namespace Baloo {

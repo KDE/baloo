@@ -31,6 +31,7 @@
 
 #include <iostream>
 #include "query.h"
+#include "searchstore.h"
 
 QString highlightBold(const QString& input)
 {
