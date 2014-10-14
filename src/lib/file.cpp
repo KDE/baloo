@@ -21,7 +21,6 @@
  */
 
 #include "file.h"
-#include "file_p.h"
 #include "filemapping.h"
 #include "searchstore.h"
 #include "db.h"
@@ -35,18 +34,25 @@
 
 using namespace Baloo;
 
+class File::Private {
+public:
+    QByteArray id;
+    QString url;
+    KFileMetaData::PropertyMap propertyMap;
+};
+
 File::File()
-    : d(new FilePrivate)
+    : d(new Private)
 {
 }
 
 File::File(const File& f)
-    : d(new FilePrivate(*f.d))
+    : d(new Private(*f.d))
 {
 }
 
 File::File(const QString& url)
-    : d(new FilePrivate)
+    : d(new Private)
 {
     d->url = url;
 }
@@ -59,7 +65,7 @@ File::~File()
 const File& File::operator=(const File& f)
 {
     delete d;
-    d = new FilePrivate(*f.d);
+    d = new Private(*f.d);
     return *this;
 }
 

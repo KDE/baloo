@@ -28,8 +28,6 @@
 
 namespace Baloo {
 
-class FilePrivate;
-
 /**
  * @short Provides acess to all File Metadata
  *
@@ -76,7 +74,8 @@ public:
 
     // FIXME: From id?
 private:
-    FilePrivate* d;
+    class Private;
+    Private* d;
 };
 
 }
