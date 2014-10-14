@@ -115,7 +115,7 @@ bool BasicIndexingJob::indexXAttr(const QString& url, XapianDocument& doc)
     }
 
     int rating = userMetaData.rating();
-    if (rating != -1) {
+    if (rating) {
         doc.addBoolTerm(QString::number(rating), QStringLiteral("R"));
         modified = true;
     }
