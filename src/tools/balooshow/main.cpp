@@ -99,10 +99,10 @@ int main(int argc, char* argv[])
 
         int fid = Baloo::deserialize("file", file.id());
 
-        if (fid && !file.url().isEmpty()) {
+        if (fid && !file.path().isEmpty()) {
             text = colorString(QString::number(fid), 31);
             text += QLatin1String(" ");
-            text += colorString(file.url(), 32);
+            text += colorString(file.path(), 32);
             stream << text << endl;
         }
         else {

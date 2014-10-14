@@ -68,7 +68,7 @@ QByteArray File::id() const
     return d->id;
 }
 
-QString File::url() const
+QString File::path() const
 {
     return d->url;
 }

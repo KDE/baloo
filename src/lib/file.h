@@ -54,7 +54,7 @@ public:
     /**
      * The local url of the file
      */
-    QString url() const;
+    QString path() const;
 
     /**
      * Represents a unique identifier for this file. This identifier
