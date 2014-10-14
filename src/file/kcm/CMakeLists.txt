@@ -21,7 +21,7 @@ target_link_libraries(kcm_baloofile
   KF5::KCMUtils
   KF5::I18n
   KF5::Solid
-  KF5::BalooFiles
+  KF5::Baloo
 
   Qt5::DBus
   Qt5::Widgets

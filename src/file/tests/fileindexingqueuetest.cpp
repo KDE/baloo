@@ -31,7 +31,7 @@
 #include "../commitqueue.h"
 #include "../database.h"
 #include "../fileindexerconfig.h"
-#include "../lib/filemapping.h"
+#include "filemapping.h"
 
 int main(int argc, char** argv)
 {

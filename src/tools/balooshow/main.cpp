@@ -31,7 +31,6 @@
 #include <KLocalizedString>
 
 #include "file.h"
-#include "filefetchjob.h"
 #include "searchstore.h" // for deserialize
 
 #include <KFileMetaData/PropertyInfo>
@@ -87,27 +86,23 @@ int main(int argc, char* argv[])
     }
 
     QTextStream stream(stdout);
-    Baloo::FileFetchJob* job;
     QString text;
 
     Q_FOREACH (const QString& url, urls) {
-        Baloo::File ifile;
+        Baloo::File file;
         if (url.startsWith(QLatin1String("file:"))) {
-            ifile.setId(url.toUtf8());
+            file.load(url.toUtf8());
         }
         else {
-            ifile.setUrl(url);
+            file.load(url);
         }
-        job = new Baloo::FileFetchJob(ifile);
-        job->exec();
 
-        Baloo::File file = job->file();
         int fid = Baloo::deserialize("file", file.id());
 
-        if (fid && !file.url().isEmpty()) {
+        if (fid && !file.path().isEmpty()) {
             text = colorString(QString::number(fid), 31);
             text += QLatin1String(" ");
-            text += colorString(file.url(), 32);
+            text += colorString(file.path(), 32);
             stream << text << endl;
         }
         else {
@@ -120,15 +115,6 @@ int main(int argc, char* argv[])
             KFileMetaData::PropertyInfo pi(it.key());
             stream << "\t" << pi.displayName() << ": " << it.value().toString() << endl;
         }
-
-        if (file.rating())
-            stream << "\t" << "Rating: " << file.rating() << endl;
-
-        if (!file.tags().isEmpty())
-            stream << "\t" << "Tags: " << file.tags().join(QLatin1String(", ")) << endl;
-
-        if (!file.userComment().isEmpty())
-            stream << "\t" << "User Comment: " << file.userComment() << endl;
 
         if (parser.isSet(QStringLiteral("xapian"))) {
             const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)

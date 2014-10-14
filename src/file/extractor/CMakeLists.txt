@@ -24,7 +24,7 @@ target_link_libraries(baloo_file_extractor
   KF5::ConfigCore
   KF5::Solid
   ${XAPIAN_LIBRARIES}
-  KF5::BalooFiles
+  KF5::Baloo
   KF5::BalooXapian
 )
 

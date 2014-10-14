@@ -20,6 +20,8 @@
 #include "baloodatamodel.h"
 #include "query.h"
 
+#include <QMimeDatabase>
+
 Query::Query(QObject *parent)
     : QObject(parent)
 {
@@ -89,9 +91,11 @@ QVariant BalooDataModel::data(const QModelIndex &index, int role) const
 
     switch (role) {
     case Qt::DisplayRole:
-        return m_balooEntryList.at(index.row()).text();
-    case Qt::DecorationRole:
-        return m_balooEntryList.at(index.row()).icon();
+        return m_balooEntryList.at(index.row()).url().fileName();
+    case Qt::DecorationRole: {
+        QString localUrl = m_balooEntryList.at(index.row()).url().toLocalFile();
+        return QMimeDatabase().mimeTypeForFile(localUrl).iconName();
+    }
     case IdRole:
         return m_balooEntryList.at(index.row()).id();
     case UrlRole:

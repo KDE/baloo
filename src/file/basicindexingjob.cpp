@@ -23,13 +23,13 @@
 #include "basicindexingjob.h"
 #include "database.h"
 #include "xapiandocument.h"
-#include "lib/baloo_xattr_p.h"
 
 #include <QFileInfo>
 #include <QDateTime>
 #include <QStringList>
 
 #include <KFileMetaData/TypeInfo>
+#include <KFileMetaData/UserMetaData>
 #include <QDebug>
 
 using namespace Baloo;
@@ -101,30 +101,28 @@ bool BasicIndexingJob::index()
 bool BasicIndexingJob::indexXAttr(const QString& url, XapianDocument& doc)
 {
     bool modified = false;
-    QString val;
 
-    baloo_getxattr(url, QLatin1String("user.xdg.tags"), &val);
-    if (!val.isEmpty()) {
-        const QStringList tags = val.split(QLatin1Char(','), QString::SkipEmptyParts);
+    KFileMetaData::UserMetaData userMetaData(url);
+
+    QStringList tags = userMetaData.tags();
+    if (!tags.isEmpty()) {
         Q_FOREACH (const QString& tag, tags) {
-            doc.indexText(tag, QLatin1String("TA"));
-            doc.addBoolTerm(QLatin1String("TAG-") + tag);
+            doc.indexText(tag, QStringLiteral("TA"));
+            doc.addBoolTerm(QStringLiteral("TAG-") + tag);
         }
 
         modified = true;
     }
 
-    val.clear();
-    baloo_getxattr(url, QLatin1String("user.baloo.rating"), &val);
-    if (!val.isEmpty()) {
-        doc.addBoolTerm(val, QLatin1String("R"));
+    int rating = userMetaData.rating();
+    if (rating) {
+        doc.addBoolTerm(QString::number(rating), QStringLiteral("R"));
         modified = true;
     }
 
-    val.clear();
-    baloo_getxattr(url, QLatin1String("user.xdg.comment"), &val);
-    if (!val.isEmpty()) {
-        doc.indexText(val, QLatin1String("C"));
+    QString comment = userMetaData.userComment();
+    if (!comment.isEmpty()) {
+        doc.indexText(comment, QStringLiteral("C"));
         modified = true;
     }
 

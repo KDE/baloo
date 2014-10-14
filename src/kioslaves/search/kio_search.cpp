@@ -21,7 +21,6 @@
 
 #include "query.h"
 #include "resultiterator.h"
-#include "advancedqueryparser.h"
 
 #include <QUrl>
 #include <QUrlQuery>
@@ -81,8 +80,7 @@ void SearchProtocol::listDir(const QUrl& url)
     } else if (urlQuery.hasQueryItem("query")) {
         QString queryString = urlQuery.queryItemValue(QStringLiteral("query"), QUrl::FullyDecoded);
 
-        AdvancedQueryParser aqp;
-        q.setTerm(aqp.parse(queryString));
+        q.setSearchString(queryString);
         q.setType("File");
     }
 
@@ -122,7 +120,7 @@ void SearchProtocol::listDir(const QUrl& url)
             }
         }
 
-        uds.insert(KIO::UDSEntry::UDS_NAME, it.text());
+        uds.insert(KIO::UDSEntry::UDS_NAME, url.fileName());
         uds.insert(KIO::UDSEntry::UDS_URL, url.url());
 
         // set the local path so that KIO can handle the rest

@@ -26,8 +26,6 @@ ecm_setup_version(${PROJECT_VERSION} VARIABLE_PREFIX BALOO
                         SOVERSION 1
 )
 
-option(BALOO_LIBRARIES_ONLY "If true, compiles only the Baloo libraries, without binaries, kioslaves." OFF)
-
 # Build dependencies
 find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Widgets Quick DBus Test Sql)
 
@@ -52,10 +50,8 @@ kde_enable_exceptions()
 include_directories(
   ${XAPIAN_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}
-  ${CMAKE_SOURCE_DIR}/src/core
-  ${CMAKE_BINARY_DIR}/src/core
-  ${CMAKE_SOURCE_DIR}/src/file/lib
-  ${CMAKE_BINARY_DIR}/src/file/lib
+  ${CMAKE_SOURCE_DIR}/src/lib
+  ${CMAKE_BINARY_DIR}/src/lib
   ${CMAKE_BINARY_DIR}/src/xapian
   ${CMAKE_SOURCE_DIR}/src/xapian
 )

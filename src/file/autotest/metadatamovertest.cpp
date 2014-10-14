@@ -20,7 +20,7 @@
 
 #include "metadatamovertest.h"
 #include "../metadatamover.h"
-#include "../lib/filemapping.h"
+#include "filemapping.h"
 
 #include <QSignalSpy>
 #include <QSqlQuery>

@@ -33,17 +33,17 @@ set(fileMonitor_SRC filemonitortest.cpp)
 
 ecm_add_test(${fileMonitor_SRC}
     TEST_NAME "filemonitortest"
-    LINK_LIBRARIES Qt5::Test Qt5::DBus KF5::BalooFiles
+    LINK_LIBRARIES Qt5::Test Qt5::DBus KF5::Baloo
 )
 
 #
 # File Watch
 #
-set(fileWatch_SRC filewatchtest.cpp ../lib/autotests/xattrdetector.cpp)
+set(fileWatch_SRC filewatchtest.cpp ../../lib/autotests/xattrdetector.cpp)
 
 ecm_add_test(${fileWatch_SRC}
     TEST_NAME "filewatchtest"
-    LINK_LIBRARIES Qt5::Test Qt5::DBus KF5::BalooFiles baloofilecommon
+    LINK_LIBRARIES Qt5::Test Qt5::DBus KF5::Baloo baloofilecommon
 )
 
 #
@@ -77,7 +77,7 @@ ecm_add_test(${basicIndexingJob_SRC}
 
 set(basicIndexingQueue_SRC
     basicindexingqueuetest.cpp
-    ../lib/autotests/xattrdetector.cpp
+    ../../lib/autotests/xattrdetector.cpp
 )
 
 ecm_add_test(${basicIndexingQueue_SRC}

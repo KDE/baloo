@@ -1,7 +1,6 @@
 kde_enable_exceptions()
 
 set(XAPIAN_SRCS
-    xapiansearchstore.cpp
     xapiandocument.cpp
     xapiandatabase.cpp
     xapiantermgenerator.cpp
@@ -14,7 +13,6 @@ add_library(KF5::BalooXapian ALIAS KF5BalooXapian)
 target_link_libraries(KF5BalooXapian PUBLIC
     Qt5::Core
     ${XAPIAN_LIBRARIES}
-    KF5::BalooCore
 )
 
 set_target_properties(KF5BalooXapian PROPERTIES

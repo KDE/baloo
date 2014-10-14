@@ -5,7 +5,7 @@ add_library(kio_baloosearch MODULE kio_search.cpp)
 target_link_libraries(kio_baloosearch
   KF5::KIOCore
   KF5::I18n
-  KF5::BalooCore
+  KF5::Baloo
 )
 
 set_target_properties(kio_baloosearch PROPERTIES OUTPUT_NAME "baloosearch")

@@ -9,7 +9,7 @@ target_link_libraries(indexerconfigtest
   Qt5::Core
   KF5::CoreAddons
   KF5::ConfigCore
-  KF5::BalooCore
+  KF5::Baloo
   baloofilecommon
 )
 
@@ -24,7 +24,7 @@ target_link_libraries(basicindexingqueuetest-manual
   KF5::KIOCore
   KF5::ConfigCore
   ${XAPIAN_LIBRARIES}
-  KF5::BalooCore
+  KF5::Baloo
   KF5::BalooXapian
   baloofilecommon
 )
@@ -41,7 +41,7 @@ target_link_libraries(fileindexingqueuetest-manual
   KF5::KIOCore
   KF5::ConfigCore
   ${XAPIAN_LIBRARIES}
-  KF5::BalooCore
+  KF5::Baloo
   KF5::BalooXapian
   baloofilecommon
 )
