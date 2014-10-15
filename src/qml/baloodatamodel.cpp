@@ -147,4 +147,3 @@ void BalooDataModel::populateModel()
     endResetModel();
 }
 
-#include "baloodatamodel.moc"
