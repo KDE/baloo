@@ -11,6 +11,11 @@ X-KDE-System-Settings-Parent-Category=search
 X-KDE-Weight=20
 
 Name=File Search
+Name[ca]=Cerca de fitxers
+Name[fi]=Tiedostohaku
+Name[nl]=Bestanden zoeken
+Name[sl]=Iskanje datotek
+Name[sv]=Filsökning
 Comment=Configure File Search
 X-KDE-Keywords=Search, File, Baloo
 X-KDE-Keywords[ar]=Search, File, Baloo, بحث, ملف, بالو, ملفات, البحث, الملفات,
