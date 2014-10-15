@@ -49,6 +49,7 @@ void RegExpCache::rebuildCacheFromFilterList(const QStringList& filters)
     m_regexpCache.clear();
     Q_FOREACH (const QString& filter, filters) {
         QString f = filter;
+        f.replace(QLatin1Char('.'), QStringLiteral("\\."));
         f.replace(QLatin1Char('?'), QLatin1Char('.'));
         f.replace(QStringLiteral("*"), QStringLiteral(".*"));
         f = QLatin1String("^") + f + QLatin1String("$");
