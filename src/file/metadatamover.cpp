@@ -114,6 +114,8 @@ void MetadataMover::updateMetadata(const QString& from, const QString& to)
     }
 
     if (!QFileInfo(to).isDir()) {
+        m_db->sqlDatabase().commit();
+        m_db->sqlDatabase().transaction();
         return;
     }
 
