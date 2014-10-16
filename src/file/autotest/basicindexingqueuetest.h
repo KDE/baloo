@@ -34,6 +34,7 @@ private Q_SLOTS:
     void textExtendedAttributeIndexing();
     void textNormalAndThenExtendedAttributeIndexing();
     void testExtendedAttributeIndexingWhenEmpty();
+    void testFileModifications();
 };
 
 }

@@ -185,13 +185,14 @@ void BasicIndexingQueue::index(FileMapping& file, const QString& mimetype,
         if (file.id() == 0) {
             if (!file.create(m_db->sqlDatabase())) {
                 qWarning() << "Cannot create fileMapping for" << file.url();
+                QTimer::singleShot(0, this, SLOT(finishIteration()));
+                return;
             }
-            else {
-                BasicIndexingJob job(file, mimetype, m_config->onlyBasicIndexing());
-                if (job.index()) {
-                    Q_EMIT newDocument(job.id(), job.document());
-                }
-            }
+        }
+
+        BasicIndexingJob job(file, mimetype, m_config->onlyBasicIndexing());
+        if (job.index()) {
+            Q_EMIT newDocument(job.id(), job.document());
         }
     }
     else {
