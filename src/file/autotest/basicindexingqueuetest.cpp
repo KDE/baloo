@@ -353,5 +353,48 @@ void BasicIndexingQueueTest::testExtendedAttributeIndexingWhenEmpty()
     QCOMPARE(spy.size(), 0);
 }
 
+void BasicIndexingQueueTest::testFileModifications()
+{
+    qRegisterMetaType<Xapian::Document>("Xapian::Document");
+
+    QStringList dirs;
+    dirs << QLatin1String("home/");
+    dirs << QLatin1String("home/1");
+
+    QScopedPointer<QTemporaryDir> dir(Test::createTmpFilesAndFolders(dirs));
+
+    QStringList includeFolders;
+    includeFolders << dir->path() + QLatin1String("/home");
+
+    QStringList excludeFolders;
+    Test::writeIndexerConfig(includeFolders, excludeFolders);
+
+    QTemporaryDir dbDir;
+    Database db;
+    db.setPath(dbDir.path());
+    db.init();
+
+    FileIndexerConfig config;
+    BasicIndexingQueue queue(&db, &config);
+
+    const QString fileName = dir->path() + QStringLiteral("/home/1");
+
+    QSignalSpy spy(&queue, SIGNAL(newDocument(uint,Xapian::Document)));
+    queue.enqueue(FileMapping(fileName), Baloo::AutoUpdateFolder);
+
+    QEventLoop loop;
+    connect(&queue, &BasicIndexingQueue::finishedIndexing, &loop, &QEventLoop::quit);
+    loop.exec();
+
+    QCOMPARE(spy.size(), 1);
+    spy.takeFirst();
+
+    // Again
+    queue.enqueue(FileMapping(fileName), Baloo::AutoUpdateFolder);
+    loop.exec();
+
+    QCOMPARE(spy.size(), 1);
+}
+
 
 QTEST_MAIN(BasicIndexingQueueTest)
