@@ -13,3 +13,5 @@ set_package_properties(Xapian PROPERTIES
 )
 
 include("${CMAKE_CURRENT_LIST_DIR}/KF5BalooTargets.cmake")
+
+set(BALOO_DBUS_INTERFACES_DIR "${PACKAGE_PREFIX_DIR}/@DBUS_INTERFACES_INSTALL_DIR@")
