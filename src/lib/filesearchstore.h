@@ -33,7 +33,6 @@ namespace Baloo {
 class FileSearchStore : public XapianSearchStore
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.kde.baloo.file")
     Q_INTERFACES(Baloo::SearchStore)
 
 public:

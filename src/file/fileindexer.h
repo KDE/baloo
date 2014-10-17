@@ -36,7 +36,7 @@ class FileIndexerConfig;
 class FileIndexer : public QObject
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "org.kde.baloo.file")
+    Q_CLASSINFO("D-Bus Interface", "org.kde.baloo")
 
 public:
     FileIndexer(Database* db, FileIndexerConfig* config, QObject* parent = 0);

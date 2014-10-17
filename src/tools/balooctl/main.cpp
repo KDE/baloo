@@ -48,27 +48,27 @@ void start()
 
 void stop()
 {
-    QDBusMessage message = QDBusMessage::createMethodCall(QLatin1String("org.kde.baloo.file"),
+    QDBusMessage message = QDBusMessage::createMethodCall(QLatin1String("org.kde.baloo"),
                                                           QLatin1String("/indexer"),
-                                                          QLatin1String("org.kde.baloo.file"),
+                                                          QLatin1String("org.kde.baloo"),
                                                           QLatin1String("quit"));
     QDBusConnection::sessionBus().call(message);
 }
 
 void suspend()
 {
-    QDBusMessage message = QDBusMessage::createMethodCall(QLatin1String("org.kde.baloo.file"),
+    QDBusMessage message = QDBusMessage::createMethodCall(QLatin1String("org.kde.baloo"),
                                                           QLatin1String("/indexer"),
-                                                          QLatin1String("org.kde.baloo.file"),
+                                                          QLatin1String("org.kde.baloo"),
                                                           QLatin1String("suspend"));
     QDBusConnection::sessionBus().call(message);
 }
 
 void resume()
 {
-    QDBusMessage message = QDBusMessage::createMethodCall(QLatin1String("org.kde.baloo.file"),
+    QDBusMessage message = QDBusMessage::createMethodCall(QLatin1String("org.kde.baloo"),
                                                           QLatin1String("/indexer"),
-                                                          QLatin1String("org.kde.baloo.file"),
+                                                          QLatin1String("org.kde.baloo"),
                                                           QLatin1String("resume"));
     QDBusConnection::sessionBus().call(message);
 }
@@ -104,7 +104,7 @@ int main(int argc, char* argv[])
     QString command = parser.positionalArguments().first();
     if (command == QLatin1String("status")) {
         QDBusConnection bus = QDBusConnection::sessionBus();
-        bool running = bus.interface()->isServiceRegistered(QLatin1String("org.kde.baloo.file"));
+        bool running = bus.interface()->isServiceRegistered(QLatin1String("org.kde.baloo"));
 
         if (running) {
             out << "Baloo File Indexer is running\n";

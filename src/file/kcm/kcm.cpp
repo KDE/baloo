@@ -126,9 +126,9 @@ void ServerConfigModule::save()
         QProcess::startDetached(exe);
     }
     else {
-        QDBusMessage message = QDBusMessage::createMethodCall(QLatin1String("org.kde.baloo.file"),
+        QDBusMessage message = QDBusMessage::createMethodCall(QLatin1String("org.kde.baloo"),
                                                               QLatin1String("/indexer"),
-                                                              QLatin1String("org.kde.baloo.file"),
+                                                              QLatin1String("org.kde.baloo"),
                                                               QLatin1String("quit"));
 
         QDBusConnection::sessionBus().asyncCall(message);

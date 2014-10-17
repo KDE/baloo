@@ -73,7 +73,7 @@ int main(int argc, char** argv)
     }
 
 
-    if (!QDBusConnection::sessionBus().registerService(QLatin1String("org.kde.baloo.file"))) {
+    if (!QDBusConnection::sessionBus().registerService(QLatin1String("org.kde.baloo"))) {
         qWarning() << "Failed to register via dbus. Another instance is running";
         return 1;
     }
