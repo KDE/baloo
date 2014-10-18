@@ -36,6 +36,7 @@ Name[x-test]=xxSearch Folder Updaterxx
 Name[zh_TW]=搜尋資料夾更新器
 Comment=Allows automatic updates of Search Folders
 Comment[ca]=Permet l'actualització automàtica de les carpetes de cerca
+Comment[cs]=Umožňuje automatickou aktualizaci prohledávaných složek
 Comment[da]=Tillad automatisk opdatering af søgemapper
 Comment[de]=Ermöglicht die automatische Aktualisierung von Suchordnern
 Comment[el]=Επιτρέπει την αυτόματη ενημέρωση των φακέλων αναζήτησης
