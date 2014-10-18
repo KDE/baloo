@@ -31,6 +31,7 @@ Name[uk]=Засіб оновлення тек пошуку
 Name[x-test]=xxSearch Folder Updaterxx
 Comment=Allows automatic updates of Search Folders
 Comment[ca]=Permet l'actualització automàtica de les carpetes de cerca
+Comment[cs]=Umožňuje automatickou aktualizaci prohledávaných složek
 Comment[de]=Ermöglicht die automatische Aktualisierung von Suchordnern
 Comment[el]=Επιτρέπει την αυτόματη ενημέρωση των φακέλων αναζήτησης
 Comment[es]=Permite actualizaciones automáticas de las carpetas de búsqueda
