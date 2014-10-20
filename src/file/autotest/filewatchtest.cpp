@@ -85,8 +85,7 @@ void FileWatchTest::testFileCreation()
     QString fileUrl(includeDir.path() + "/t1");
     QVERIFY(createFile(fileUrl));
 
-    QTest::qWait(50);
-
+    spyIndex.wait();
     QCOMPARE(spyIndex.count(), 1);
     QCOMPARE(spyIndexXattr.count(), 0);
     QCOMPARE(spyIndexRemove.count(), 0);
@@ -99,8 +98,8 @@ void FileWatchTest::testFileCreation()
     // Modify the file
     //
     modifyFile(fileUrl);
-    QTest::qWait(1100);
 
+    spyIndex.wait();
     QCOMPARE(spyIndex.count(), 1);
     QCOMPARE(spyIndexXattr.count(), 0);
     QCOMPARE(spyIndexRemove.count(), 0);
@@ -121,8 +120,7 @@ void FileWatchTest::testFileCreation()
     const QString userComment(QLatin1String("UserComment"));
     QVERIFY(baloo_setxattr(fileUrl, QLatin1String("user.xdg.comment"), userComment) != -1);
 
-    QTest::qWait(1100);
-
+    spyIndex.wait();
     QCOMPARE(spyIndex.count(), 0);
     QCOMPARE(spyIndexXattr.count(), 1);
     QCOMPARE(spyIndexRemove.count(), 0);
@@ -139,8 +137,7 @@ void FileWatchTest::testFileCreation()
 
     QFile(fileUrl).remove();
 
-    QTest::qWait(1100);
-
+    spyIndex.wait();
     QCOMPARE(spyIndex.count(), 0);
     QCOMPARE(spyIndexXattr.count(), 0);
     QCOMPARE(spyIndexRemove.count(), 1);
