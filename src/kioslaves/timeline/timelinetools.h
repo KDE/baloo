@@ -23,6 +23,7 @@
 class QString;
 
 #include <QDate>
+#include <QUrl>
 
 namespace Baloo
 {
