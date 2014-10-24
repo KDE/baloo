@@ -29,7 +29,7 @@
 
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QFile>
+#include <QFileInfo>
 #include <QDebug>
 
 using namespace Baloo;
@@ -54,7 +54,7 @@ File::File(const File& f)
 File::File(const QString& url)
     : d(new Private)
 {
-    d->url = url;
+    d->url = QFileInfo(url).canonicalFilePath();
 }
 
 File::~File()
@@ -97,7 +97,7 @@ bool File::load(const QByteArray& id)
 
 bool File::load(const QString& url)
 {
-    d->url = url;
+    d->url = QFileInfo(url).canonicalFilePath();
     return load();
 }
 
