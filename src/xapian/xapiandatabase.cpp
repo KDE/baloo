@@ -72,6 +72,7 @@ void XapianDatabase::replaceDocument(uint id, const XapianDocument& doc)
 
 void XapianDatabase::replaceDocument(uint id, const Xapian::Document& doc)
 {
+    Q_ASSERT(id != 0);
     if (m_writeOnly) {
         try {
             m_wDb.replace_document(id, doc);
