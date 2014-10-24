@@ -128,7 +128,8 @@ void XapianDatabase::commit()
         try {
             wdb.replace_document(doc.first, doc.second);
         }
-        catch (const Xapian::Error&) {
+        catch (const Xapian::Error& err) {
+            qDebug() << "ERROR" << err.get_description().c_str();
         }
     }
 
@@ -137,7 +138,8 @@ void XapianDatabase::commit()
         try {
             wdb.delete_document(id);
         }
-        catch (const Xapian::Error&) {
+        catch (const Xapian::Error& err) {
+            qDebug() << "ERROR" << err.get_description().c_str();
         }
     }
 
