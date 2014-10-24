@@ -140,6 +140,7 @@ public:
     static QString titleFromQueryUrl(const QUrl& url);
 
     bool operator == (const Query& rhs) const;
+    bool operator != (const Query& rhs) const;
 
     Query& operator=(const Query& rhs);
 

@@ -354,6 +354,11 @@ bool Query::operator==(const Query& rhs) const
     return d->m_term == rhs.d->m_term;
 }
 
+bool Query::operator!=(const Query& rhs) const
+{
+    return !(*this == rhs);
+}
+
 Query& Query::operator=(const Query& rhs)
 {
     *d = *rhs.d;
