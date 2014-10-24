@@ -177,19 +177,20 @@ bool BasicIndexingQueue::shouldIndexContents(const QString& dir)
 void BasicIndexingQueue::index(FileMapping& file, const QString& mimetype,
                                UpdateDirFlags flags)
 {
-    qDebug() << file.id() << file.url();
-
-    bool xattrOnly = (flags & Baloo::ExtendedAttributesOnly);
-
-    if (!xattrOnly) {
-        if (file.id() == 0) {
+    if (!file.fetched()) {
+        if (!file.fetch(m_db->sqlDatabase())) {
             if (!file.create(m_db->sqlDatabase())) {
                 qWarning() << "Cannot create fileMapping for" << file.url();
                 QTimer::singleShot(0, this, SLOT(finishIteration()));
                 return;
             }
         }
+    }
 
+    qDebug() << file.id() << file.url();
+
+    bool xattrOnly = (flags & Baloo::ExtendedAttributesOnly);
+    if (!xattrOnly) {
         BasicIndexingJob job(file, mimetype, m_config->onlyBasicIndexing());
         if (job.index()) {
             Q_EMIT newDocument(job.id(), job.document());
