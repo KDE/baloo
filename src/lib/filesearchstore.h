@@ -51,7 +51,7 @@ protected:
     virtual Xapian::Query applyIncludeFolder(const Xapian::Query& q, const QString& includeFolder);
 
     virtual Xapian::Query convertTypes(const QStringList& types);
-    virtual QUrl constructUrl(const Xapian::docid& docid);
+    virtual QString constructFilePath(const Xapian::docid& docid);
 
     virtual QByteArray idPrefix() { return QByteArray("file"); }
 

@@ -89,43 +89,31 @@ void SearchProtocol::listDir(const QUrl& url)
 
     while (it.next()) {
         KIO::UDSEntry uds;
-        const QUrl url(it.url());
+        const QString filePath(it.filePath());
 
-        if (url.isLocalFile()) {
-            // Code from kdelibs/kioslaves/file.cpp
-            QT_STATBUF statBuf;
-            if (QT_LSTAT(QFile::encodeName(url.toLocalFile()).data(), &statBuf) == 0) {
-                uds.insert(KIO::UDSEntry::UDS_MODIFICATION_TIME, statBuf.st_mtime);
-                uds.insert(KIO::UDSEntry::UDS_ACCESS_TIME, statBuf.st_atime);
-                uds.insert(KIO::UDSEntry::UDS_SIZE, statBuf.st_size);
-                uds.insert(KIO::UDSEntry::UDS_USER, statBuf.st_uid);
-                uds.insert(KIO::UDSEntry::UDS_GROUP, statBuf.st_gid);
+        // Code from kdelibs/kioslaves/file.cpp
+        QT_STATBUF statBuf;
+        if (QT_LSTAT(QFile::encodeName(filePath).data(), &statBuf) == 0) {
+            uds.insert(KIO::UDSEntry::UDS_MODIFICATION_TIME, statBuf.st_mtime);
+            uds.insert(KIO::UDSEntry::UDS_ACCESS_TIME, statBuf.st_atime);
+            uds.insert(KIO::UDSEntry::UDS_SIZE, statBuf.st_size);
+            uds.insert(KIO::UDSEntry::UDS_USER, statBuf.st_uid);
+            uds.insert(KIO::UDSEntry::UDS_GROUP, statBuf.st_gid);
 
-                mode_t type = statBuf.st_mode & S_IFMT;
-                mode_t access = statBuf.st_mode & 07777;
+            mode_t type = statBuf.st_mode & S_IFMT;
+            mode_t access = statBuf.st_mode & 07777;
 
-                uds.insert(KIO::UDSEntry::UDS_FILE_TYPE, type);
-                uds.insert(KIO::UDSEntry::UDS_ACCESS, access);
-            }
-            else {
-                continue;
-            }
-        } else {
-            // not a local file
-            KIO::StatJob* job = KIO::stat(url, KIO::HideProgressInfo);
-            if (job->exec()) {
-                uds = job->statResult();
-            } else {
-                continue;
-            }
+            uds.insert(KIO::UDSEntry::UDS_FILE_TYPE, type);
+            uds.insert(KIO::UDSEntry::UDS_ACCESS, access);
+        }
+        else {
+            continue;
         }
 
+        QUrl url = QUrl::fromLocalFile(filePath);
         uds.insert(KIO::UDSEntry::UDS_NAME, url.fileName());
         uds.insert(KIO::UDSEntry::UDS_URL, url.url());
-
-        // set the local path so that KIO can handle the rest
-        if (url.isLocalFile())
-            uds.insert(KIO::UDSEntry::UDS_LOCAL_PATH, url.toLocalFile());
+        uds.insert(KIO::UDSEntry::UDS_LOCAL_PATH, filePath);
 
         listEntry(uds);
     }

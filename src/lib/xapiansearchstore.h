@@ -44,7 +44,7 @@ public:
     virtual bool next(int queryId);
 
     virtual QByteArray id(int queryId);
-    virtual QUrl url(int queryId);
+    virtual QString filePath(int queryId);
 
     /**
      * Set the path of the xapian database
@@ -76,7 +76,7 @@ protected:
     /**
      * Returns the url for the document with id \p docid.
      */
-    virtual QUrl constructUrl(const Xapian::docid& docid) = 0;
+    virtual QString constructFilePath(const Xapian::docid& docid) = 0;
 
     /**
      * Gives a list of types which have been provided with the query.
@@ -112,7 +112,7 @@ private:
         Xapian::MSetIterator it;
 
         uint lastId;
-        QUrl lastUrl;
+        QString lastUrl;
     };
 
     QHash<int, Result> m_queryMap;

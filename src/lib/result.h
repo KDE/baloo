@@ -45,8 +45,8 @@ public:
      * Represents the url of the item returned. The item
      * may not always contain a url
      */
-    QUrl url() const;
-    void setUrl(const QUrl& url);
+    QString filePath() const;
+    void setFilePath(const QString& filePath);
 
     Result& operator=(const Result& rhs);
 

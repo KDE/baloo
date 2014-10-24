@@ -78,12 +78,12 @@ KIO::UDSEntry createDayUDSEntry(const QDate& date)
     return uds;
 }
 
-KIO::UDSEntry createFileUDSEntry(const QUrl& fileUrl)
+KIO::UDSEntry createFileUDSEntry(const QString& filePath)
 {
     KIO::UDSEntry uds;
     // Code from kdelibs/kioslaves/file.cpp
     QT_STATBUF statBuf;
-    if( QT_LSTAT(QFile::encodeName(fileUrl.toLocalFile()).data(), &statBuf) == 0) {
+    if( QT_LSTAT(QFile::encodeName(filePath).data(), &statBuf) == 0) {
         uds.insert(KIO::UDSEntry::UDS_MODIFICATION_TIME, statBuf.st_mtime);
         uds.insert(KIO::UDSEntry::UDS_ACCESS_TIME, statBuf.st_atime);
         uds.insert(KIO::UDSEntry::UDS_SIZE, statBuf.st_size);
@@ -95,6 +95,7 @@ KIO::UDSEntry createFileUDSEntry(const QUrl& fileUrl)
 
         uds.insert(KIO::UDSEntry::UDS_FILE_TYPE, type);
         uds.insert(KIO::UDSEntry::UDS_ACCESS, access);
+        QUrl fileUrl = QUrl::fromLocalFile(filePath);
         uds.insert(KIO::UDSEntry::UDS_URL, fileUrl.url());
         uds.insert(KIO::UDSEntry::UDS_NAME, fileUrl.fileName());
     }
@@ -144,7 +145,7 @@ void TimelineProtocol::listDir(const QUrl& url)
 
         ResultIterator it = query.exec();
         while (it.next()) {
-            KIO::UDSEntry uds = createFileUDSEntry(it.url());
+            KIO::UDSEntry uds = createFileUDSEntry(it.filePath());
             if (uds.count())
                 listEntry(uds);
         }

@@ -169,15 +169,15 @@ void FileSearchStoreTest::testSimpleSearchString()
     QCOMPARE(qid, 1);
     QVERIFY(m_store->next(qid));
     QCOMPARE(m_store->id(qid), serialize("file", id2));
-    QCOMPARE(m_store->url(qid), QUrl::fromLocalFile(url2));
+    QCOMPARE(m_store->filePath(qid), url2);
 
     QVERIFY(m_store->next(qid));
     QCOMPARE(m_store->id(qid), serialize("file", id1));
-    QCOMPARE(m_store->url(qid), QUrl::fromLocalFile(url1));
+    QCOMPARE(m_store->filePath(qid), url1);
 
     QVERIFY(!m_store->next(qid));
     QVERIFY(m_store->id(qid).isEmpty());
-    QVERIFY(m_store->url(qid).isEmpty());
+    QVERIFY(m_store->filePath(qid).isEmpty());
 
     m_store->close(qid);
 }
@@ -200,11 +200,11 @@ void FileSearchStoreTest::testPropertyValueEqual()
     QCOMPARE(qid, 1);
     QVERIFY(m_store->next(qid));
     QCOMPARE(m_store->id(qid), serialize("file", id1));
-    QCOMPARE(m_store->url(qid), QUrl::fromLocalFile(url1));
+    QCOMPARE(m_store->filePath(qid), url1);
 
     QVERIFY(!m_store->next(qid));
     QVERIFY(m_store->id(qid).isEmpty());
-    QVERIFY(m_store->url(qid).isEmpty());
+    QVERIFY(m_store->filePath(qid).isEmpty());
 
     m_store->close(qid);
 }
@@ -239,19 +239,19 @@ void FileSearchStoreTest::testIncludeDir()
     QCOMPARE(qid, 1);
     QVERIFY(m_store->next(qid));
     QCOMPARE(m_store->id(qid), serialize("file", id1));
-    QCOMPARE(m_store->url(qid), QUrl::fromLocalFile(url1));
+    QCOMPARE(m_store->filePath(qid), url1);
 
     QVERIFY(m_store->next(qid));
     QCOMPARE(m_store->id(qid), serialize("file", id2));
-    QCOMPARE(m_store->url(qid), QUrl::fromLocalFile(url2));
+    QCOMPARE(m_store->filePath(qid), url2);
 
     QVERIFY(m_store->next(qid));
     QCOMPARE(m_store->id(qid), serialize("file", id5));
-    QCOMPARE(m_store->url(qid), QUrl::fromLocalFile(url5));
+    QCOMPARE(m_store->filePath(qid), url5);
 
     QVERIFY(!m_store->next(qid));
     QVERIFY(m_store->id(qid).isEmpty());
-    QVERIFY(m_store->url(qid).isEmpty());
+    QVERIFY(m_store->filePath(qid).isEmpty());
 
     m_store->close(qid);
 }

@@ -196,18 +196,18 @@ QByteArray XapianSearchStore::id(int queryId)
     return serialize(idPrefix(), res.lastId);
 }
 
-QUrl XapianSearchStore::url(int queryId)
+QString XapianSearchStore::filePath(int queryId)
 {
     QMutexLocker lock(&m_mutex);
     Result& res = m_queryMap[queryId];
 
     if (!res.lastId)
-        return QUrl();
+        return QString();
 
     if (!res.lastUrl.isEmpty())
         return res.lastUrl;
 
-    res.lastUrl = constructUrl(res.lastId);
+    res.lastUrl = constructFilePath(res.lastId);
     return res.lastUrl;
 }
 

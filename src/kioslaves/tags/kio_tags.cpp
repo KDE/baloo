@@ -103,7 +103,7 @@ void TagsProtocol::listDir(const QUrl& url)
 
         ResultIterator it = q.exec();
         while (it.next()) {
-            const QUrl url = it.url();
+            const QUrl url = QUrl::fromLocalFile(it.filePath());
             const QString fileUrl = url.toLocalFile();
 
             // Somehow stat the file

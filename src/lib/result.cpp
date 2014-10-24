@@ -27,8 +27,7 @@ using namespace Baloo;
 class Result::Private {
 public:
     QByteArray id;
-    QString icon;
-    QUrl url;
+    QString filePath;
 };
 
 Result::Result()
@@ -56,14 +55,14 @@ QByteArray Result::id() const
     return d->id;
 }
 
-QUrl Result::url() const
+QString Result::filePath() const
 {
-    return d->url;
+    return d->filePath;
 }
 
-void Result::setUrl(const QUrl& url)
+void Result::setFilePath(const QString& path)
 {
-    d->url = url;
+    d->filePath = path;
 }
 
 Result& Result::operator=(const Result& rhs)

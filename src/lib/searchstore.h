@@ -64,7 +64,7 @@ public:
 
     virtual QByteArray id(int queryId) = 0;
 
-    virtual QUrl url(int queryId) = 0;
+    virtual QString filePath(int queryId) = 0;
 };
 
 //

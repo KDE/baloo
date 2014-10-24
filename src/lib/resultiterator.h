@@ -47,7 +47,7 @@ public:
     bool next();
 
     QByteArray id() const;
-    QUrl url() const;
+    QString filePath() const;
 
     Result result() const;
 private:

@@ -90,16 +90,18 @@ QVariant BalooDataModel::data(const QModelIndex &index, int role) const
     }
 
     switch (role) {
-    case Qt::DisplayRole:
-        return m_balooEntryList.at(index.row()).url().fileName();
+    case Qt::DisplayRole: {
+        const QUrl url = QUrl::fromLocalFile(m_balooEntryList.at(index.row()).filePath());
+        return url.fileName();
+    }
     case Qt::DecorationRole: {
-        QString localUrl = m_balooEntryList.at(index.row()).url().toLocalFile();
+        QString localUrl = m_balooEntryList.at(index.row()).filePath();
         return QMimeDatabase().mimeTypeForFile(localUrl).iconName();
     }
     case IdRole:
         return m_balooEntryList.at(index.row()).id();
     case UrlRole:
-        return m_balooEntryList.at(index.row()).url();
+        return m_balooEntryList.at(index.row()).filePath();
     default:
         return QVariant();
     }

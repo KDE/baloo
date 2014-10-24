@@ -76,17 +76,17 @@ QByteArray ResultIterator::id() const
     return d->store->id(d->queryId);
 }
 
-QUrl ResultIterator::url() const
+QString ResultIterator::filePath() const
 {
     Q_ASSERT(d->store);
-    return d->store->url(d->queryId);
+    return d->store->filePath(d->queryId);
 }
 
 Result ResultIterator::result() const
 {
     Result res;
     res.setId(id());
-    res.setUrl(url());
+    res.setFilePath(filePath());
 
     return res;
 }
