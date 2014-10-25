@@ -41,6 +41,9 @@ public:
     void setDocument(Xapian::Document* doc);
 
     static QStringList termList(const QString& text);
+
+    // Trim all terms to this size
+    const static int maxTermSize = 25;
 private:
     Xapian::Document* m_doc;
     Xapian::TermGenerator m_termGen;
