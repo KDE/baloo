@@ -37,6 +37,7 @@ void XapianDocument::addTerm(const QString& term, const QString& prefix)
 {
     QByteArray arr = prefix.toUtf8();
     arr += term.toUtf8();
+    arr = arr.mid(0, XapianTermGenerator::maxTermSize);
 
     m_doc.add_term(arr.constData());
 }
@@ -50,6 +51,7 @@ void XapianDocument::addBoolTerm(const QString& term, const QString& prefix)
 {
     QByteArray arr = prefix.toUtf8();
     arr += term.toUtf8();
+    arr = arr.mid(0, XapianTermGenerator::maxTermSize);
 
     m_doc.add_boolean_term(arr.constData());
 }
