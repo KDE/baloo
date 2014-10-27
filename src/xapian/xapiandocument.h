@@ -58,6 +58,8 @@ public:
      * \return true if the document was modified
      */
     bool removeTermStartsWith(const QByteArray& prefix);
+
+    QByteArray value(int slot) const;
 private:
     Xapian::Document m_doc;
     XapianTermGenerator m_termGen;

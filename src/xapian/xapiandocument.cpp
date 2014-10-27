@@ -125,3 +125,8 @@ bool XapianDocument::removeTermStartsWith(const QByteArray& prefix)
     return modified;
 }
 
+QByteArray XapianDocument::value(int slot) const
+{
+    std::string val = m_doc.get_value(slot);
+    return QByteArray(val.c_str(), val.length());
+}
