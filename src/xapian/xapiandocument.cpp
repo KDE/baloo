@@ -19,6 +19,7 @@
  */
 
 #include "xapiandocument.h"
+#include <QDebug>
 
 using namespace Baloo;
 
@@ -127,6 +128,13 @@ bool XapianDocument::removeTermStartsWith(const QByteArray& prefix)
 
 QByteArray XapianDocument::value(int slot) const
 {
-    std::string val = m_doc.get_value(slot);
-    return QByteArray(val.c_str(), val.length());
+    try {
+        std::string val = m_doc.get_value(slot);
+        return QByteArray(val.c_str(), val.length());
+    }
+    catch (const Xapian::Error& err) {
+        qDebug() << err.get_description().c_str();
+    }
+
+    return QByteArray();
 }
