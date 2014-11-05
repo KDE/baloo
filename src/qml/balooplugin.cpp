@@ -24,7 +24,7 @@
 #include <QQmlContext>
 #include <QtQml>
 
-#include "baloodatamodel.h"
+#include "queryresultsmodel.h"
 
 void BalooPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
@@ -35,7 +35,7 @@ void BalooPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("org.kde.baloo"));
 
-    qmlRegisterType<BalooDataModel>(uri, 0, 1, "BalooDataModel");
+    qmlRegisterType<QueryResultsModel>(uri, 0, 1, "QueryResultsModel");
     qmlRegisterType<Query>(uri, 0, 1, "Query");
 }
 

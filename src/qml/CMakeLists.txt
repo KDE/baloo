@@ -1,6 +1,6 @@
 set(balooplugin_SRCS
     balooplugin.cpp
-    baloodatamodel.cpp
+    queryresultsmodel.cpp
     )
 
 add_library(balooplugin SHARED ${balooplugin_SRCS})

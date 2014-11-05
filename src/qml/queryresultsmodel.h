@@ -29,37 +29,37 @@
 class Query : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString type READ type WRITE setType NOTIFY typeChanged)
+    Q_PROPERTY(QString searchString READ searchString WRITE setSearchString NOTIFY searchStringChanged)
     Q_PROPERTY(int limit READ limit WRITE setLimit NOTIFY limitChanged)
 
 public:
     Query(QObject *parent = nullptr);
     ~Query();
 
-    void setType(const QString &type);
-    QString type() const;
+    void setSearchString(const QString &searchString);
+    QString searchString() const;
 
     void setLimit(const int &limit);
     int limit() const;
 
 Q_SIGNALS:
-    void typeChanged();
+    void searchStringChanged();
     void limitChanged();
 
 private:
-    QString m_type;
+    QString m_searchString;
     int m_limit;
 
 };
 
-class BalooDataModel : public QAbstractListModel
+class QueryResultsModel : public QAbstractListModel
 {
     Q_OBJECT
     Q_PROPERTY(Query* query READ query WRITE setQuery NOTIFY queryChanged)
 
 public:
-    BalooDataModel(QObject *parent = nullptr);
-    ~BalooDataModel();
+    QueryResultsModel(QObject *parent = nullptr);
+    ~QueryResultsModel();
     int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;

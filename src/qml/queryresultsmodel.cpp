@@ -17,7 +17,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include "baloodatamodel.h"
+#include "queryresultsmodel.h"
 #include "query.h"
 
 #include <QMimeDatabase>
@@ -31,19 +31,19 @@ Query::~Query()
 {
 }
 
-void Query::setType(const QString &type)
+void Query::setSearchString(const QString &searchString)
 {
-    if (m_type == type) {
+    if (m_searchString == searchString) {
         return;
     }
 
-    m_type = type;
-    Q_EMIT typeChanged();
+    m_searchString = searchString;
+    Q_EMIT searchStringChanged();
 }
 
-QString Query::type() const
+QString Query::searchString() const
 {
-    return m_type;
+    return m_searchString;
 }
 
 void Query::setLimit(const int &limit)
@@ -61,20 +61,20 @@ int Query::limit() const
     return m_limit;
 }
 
-BalooDataModel::BalooDataModel(QObject *parent)
+QueryResultsModel::QueryResultsModel(QObject *parent)
     : QAbstractListModel(parent),
       m_query(new Query(this))
 {
     qRegisterMetaType<Baloo::ResultIterator>("Baloo::ResultIterator");
-    connect(m_query, &Query::typeChanged, this, &BalooDataModel::populateModel);
-    connect(m_query, &Query::limitChanged, this, &BalooDataModel::populateModel);
+    connect(m_query, &Query::searchStringChanged, this, &QueryResultsModel::populateModel);
+    connect(m_query, &Query::limitChanged, this, &QueryResultsModel::populateModel);
 }
 
-BalooDataModel::~BalooDataModel()
+QueryResultsModel::~QueryResultsModel()
 {
 }
 
-QHash<int, QByteArray> BalooDataModel::roleNames() const
+QHash<int, QByteArray> QueryResultsModel::roleNames() const
 {
     QHash<int, QByteArray> roleNames = QAbstractListModel::roleNames();
     roleNames[IdRole] = "id";
@@ -83,7 +83,7 @@ QHash<int, QByteArray> BalooDataModel::roleNames() const
     return roleNames;
 }
 
-QVariant BalooDataModel::data(const QModelIndex &index, int role) const
+QVariant QueryResultsModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid()) {
         return QVariant();
@@ -107,7 +107,7 @@ QVariant BalooDataModel::data(const QModelIndex &index, int role) const
     }
 }
 
-int BalooDataModel::rowCount(const QModelIndex &parent) const
+int QueryResultsModel::rowCount(const QModelIndex &parent) const
 {
     if (parent.isValid()) {
         return 0;
@@ -116,7 +116,7 @@ int BalooDataModel::rowCount(const QModelIndex &parent) const
     return m_balooEntryList.count();
 }
 
-void BalooDataModel::setQuery(Query *query)
+void QueryResultsModel::setQuery(Query *query)
 {
     if (m_query == query) {
         return;
@@ -128,15 +128,15 @@ void BalooDataModel::setQuery(Query *query)
     Q_EMIT queryChanged();
 }
 
-Query* BalooDataModel::query() const
+Query* QueryResultsModel::query() const
 {
     return m_query;
 }
 
-void BalooDataModel::populateModel()
+void QueryResultsModel::populateModel()
 {
     Baloo::Query query;
-    query.setType(m_query->type());
+    query.setSearchString(m_query->searchString());
     query.setLimit(m_query->limit());
     Baloo::ResultIterator it = query.exec();
 
