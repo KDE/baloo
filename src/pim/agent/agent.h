@@ -87,7 +87,8 @@ private:
     QDateTime m_lastItemMTime;
     QList<KJob*> m_jobs;
 
-    QMap<QString, AbstractIndexer* > m_indexers;
+    QList<AbstractIndexer*> m_listIndexer;
+    QHash<QString, AbstractIndexer* > m_indexers;
 
     QTimer m_commitTimer;
     bool m_inProgress;

@@ -230,6 +230,7 @@ void BalooIndexingAgent::createIndexers()
 
 void BalooIndexingAgent::addIndexer(AbstractIndexer* indexer)
 {
+    m_listIndexer.append(indexer);
     Q_FOREACH (const QString& mimeType, indexer->mimeTypes()) {
         m_indexers.insert(mimeType, indexer);
     }
@@ -481,7 +482,7 @@ void BalooIndexingAgent::slotItemFetchFinished(KJob* job)
 
 void BalooIndexingAgent::slotCommitTimerElapsed()
 {
-    Q_FOREACH (AbstractIndexer *indexer, m_indexers) {
+    Q_FOREACH (AbstractIndexer *indexer, m_listIndexer) {
         try {
             indexer->commit();
         } catch (const Xapian::Error &e) {
