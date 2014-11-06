@@ -177,7 +177,7 @@ void ContactIndexer::remove(const Akonadi::Collection& collection)
 
 void ContactIndexer::commit()
 {
-    if (!m_db)
+    if (m_db)
         m_db->commit();
 }
 
