@@ -164,6 +164,7 @@ QVector<KFileMetaData::Type::Type> BasicIndexingJob::typesForMimeType(const QStr
         // Microsoft
         typeMapper.insert(QLatin1String("text/plain"), Type::Document);
         typeMapper.insert(QLatin1String("application/msword"), Type::Document);
+        typeMapper.insert(QLatin1String("application/x-scribus"), Type::Document);
         typeMapper.insert(QLatin1String("application/vnd.ms-powerpoint"), Type::Document);
         typeMapper.insert(QLatin1String("application/vnd.ms-powerpoint"), Type::Presentation);
         typeMapper.insert(QLatin1String("application/vnd.ms-excel"), Type::Document);
