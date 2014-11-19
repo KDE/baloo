@@ -23,7 +23,7 @@
 #include <QCoreApplication>
 #include <QCommandLineParser>
 #include <QCommandLineOption>
-#include <QUrl>
+#include <QFileInfo>
 #include <QDebug>
 
 #include <KAboutData>
@@ -91,11 +91,11 @@ int main(int argc, char* argv[])
         parser.showHelp(1);
     }
 
-    if(parser.isSet(QLatin1String("type")))
+    if (parser.isSet(QLatin1String("type")))
         typeStr = parser.value(QLatin1String("type"));
-    if(parser.isSet(QLatin1String("limit")))
+    if (parser.isSet(QLatin1String("limit")))
         queryLimit = parser.value(QLatin1String("limit")).toInt();
-    if(parser.isSet(QLatin1String("offset")))
+    if (parser.isSet(QLatin1String("offset")))
         offset = parser.value(QLatin1String("offset")).toInt();
 
     QTextStream out(stdout);
@@ -107,8 +107,11 @@ int main(int argc, char* argv[])
     query.setSearchString(queryStr);
     query.setLimit(queryLimit);
     query.setOffset(offset);
-    if(parser.isSet(QStringLiteral("directory")))
-        query.setIncludeFolder(parser.value(QStringLiteral("directory")));
+
+    if (parser.isSet(QStringLiteral("directory"))) {
+        QString folderName = parser.value(QStringLiteral("directory"));
+        query.setIncludeFolder(QFileInfo(folderName).canonicalFilePath());
+    }
 
     out << "\n";
     Baloo::ResultIterator iter = query.exec();
