@@ -15,7 +15,6 @@
     </method>
     <method name="indexFolder">
       <arg name="path" type="s" direction="in" />
-      <arg name="recursive" type="b" direction="in" />
       <arg name="forced" type="b" direction="in" />
     </method>
     <method name="indexFile">

@@ -159,7 +159,7 @@ void IndexScheduler::queueAllFoldersForUpdate(bool forceUpdate)
 {
     m_basicIQ->clear();
 
-    UpdateDirFlags flags = UpdateRecursive | AutoUpdateFolder;
+    UpdateDirFlags flags = AutoUpdateFolder;
     if (forceUpdate)
         flags |= ForceUpdate;
 

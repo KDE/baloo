@@ -63,14 +63,6 @@ bool BasicIndexingQueue::isEmpty()
     return m_paths.isEmpty();
 }
 
-void BasicIndexingQueue::enqueue(const FileMapping& file)
-{
-    UpdateDirFlags flags;
-    flags |= UpdateRecursive;
-
-    enqueue(file, flags);
-}
-
 void BasicIndexingQueue::enqueue(const FileMapping& file, UpdateDirFlags flags)
 {
     qDebug() << file.url();
@@ -102,7 +94,6 @@ bool BasicIndexingQueue::process(FileMapping& file, UpdateDirFlags flags)
     QString mimetype = m_mimeDb.mimeTypeForFile(file.url(), QMimeDatabase::MatchExtension).name();
 
     bool forced = flags & ForceUpdate;
-    bool recursive = flags & UpdateRecursive;
     bool indexingRequired = (flags & ExtendedAttributesOnly) || shouldIndex(file, mimetype);
 
     QFileInfo info(file.url());
@@ -113,7 +104,7 @@ bool BasicIndexingQueue::process(FileMapping& file, UpdateDirFlags flags)
         }
 
         // We don't want to follow system links
-        if (recursive && !info.isSymLink() && shouldIndexContents(file.url())) {
+        if (!info.isSymLink() && shouldIndexContents(file.url())) {
             QDir::Filters dirFilter = QDir::NoDotAndDotDot | QDir::Readable | QDir::Files | QDir::Dirs;
 
             QDirIterator it(file.url(), dirFilter);

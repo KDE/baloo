@@ -127,7 +127,7 @@ void FileIndexer::indexFile(const QString& path)
 {
     QFileInfo info(path);
     if (info.isDir()) {
-        indexFolder(path, false /*non-recursive*/, false /*not-forced*/);
+        indexFolder(path, false /*not-forced*/);
     }
     else {
         m_indexScheduler->indexFile(path);
@@ -140,7 +140,7 @@ void FileIndexer::indexXAttr(const QString& path)
 }
 
 
-void FileIndexer::indexFolder(const QString& path, bool recursive, bool forced)
+void FileIndexer::indexFolder(const QString& path, bool forced)
 {
     QFileInfo info(path);
     if (info.exists()) {
@@ -153,8 +153,6 @@ void FileIndexer::indexFolder(const QString& path, bool recursive, bool forced)
         qDebug() << "Updating : " << dirPath;
 
         UpdateDirFlags flags;
-        if (recursive)
-            flags |= UpdateRecursive;
         if (forced)
             flags |= ForceUpdate;
 

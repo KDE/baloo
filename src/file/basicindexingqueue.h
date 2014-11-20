@@ -44,11 +44,6 @@ enum UpdateDirFlag {
     NoUpdateFlags = 0x0,
 
     /**
-     * The folder should be updated recursive
-     */
-    UpdateRecursive = 0x1,
-
-    /**
      * The folder has been scheduled to update by the
      * update system, not by a call to updateDir
      */
@@ -84,8 +79,7 @@ Q_SIGNALS:
     void newDocument(unsigned id, Xapian::Document doc);
 
 public Q_SLOTS:
-    void enqueue(const FileMapping& file);
-    void enqueue(const FileMapping& file, UpdateDirFlags flags);
+    void enqueue(const FileMapping& file, UpdateDirFlags flags = UpdateDirFlags());
 
     void clear();
     void clear(const QString& path);

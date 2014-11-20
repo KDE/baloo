@@ -81,7 +81,7 @@ public Q_SLOTS:
     /**
      * Index a folder independent of its configuration status.
      */
-    Q_SCRIPTABLE void indexFolder(const QString& path, bool recursive, bool forced);
+    Q_SCRIPTABLE void indexFolder(const QString& path, bool forced);
 
     /**
      * Index a specific file
