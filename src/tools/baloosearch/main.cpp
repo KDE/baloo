@@ -80,6 +80,7 @@ int main(int argc, char* argv[])
                                         QStringLiteral("Limit search to specified directory"),
                                         QStringLiteral("directory")));
     parser.addPositionalArgument(QLatin1String("query"), QLatin1String("List of words to query for"));
+    parser.addHelpOption();
     parser.process(app);
 
     int queryLimit = 10;
