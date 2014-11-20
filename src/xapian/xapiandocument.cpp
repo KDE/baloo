@@ -89,7 +89,8 @@ QString XapianDocument::fetchTermStartsWith(const QByteArray& term)
         std::string str = *it;
         return QString::fromUtf8(str.c_str(), str.length());
     }
-    catch (const Xapian::Error&) {
+    catch (const Xapian::Error& err) {
+        qDebug() << "ERROR" << err.get_description().c_str();
         return QString();
     }
 }
