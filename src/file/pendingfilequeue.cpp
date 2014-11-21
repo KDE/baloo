@@ -43,7 +43,7 @@ PendingFileQueue::PendingFileQueue(QObject* parent)
 
     m_minTimeout = 5;
     m_maxTimeout = 60;
-    m_pendingFilesTimer.setInterval(m_minTimeout);
+    m_pendingFilesTimer.setInterval(m_minTimeout * 1000);
     m_pendingFilesTimer.setSingleShot(true);
     connect(&m_pendingFilesTimer, &QTimer::timeout,
             this, &PendingFileQueue::processPendingFiles);

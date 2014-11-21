@@ -59,7 +59,7 @@ void PendingFileQueueTest::testTimeout()
     QTest::qWait(1000);
     QVERIFY(spy.isEmpty());
 
-    QTest::qWait(1100);
+    QVERIFY(spy.wait(2000));
     QCOMPARE(spy.count(), 1);
     QCOMPARE(spy.takeFirst().first().toString(), myUrl);
 }
@@ -94,7 +94,7 @@ void PendingFileQueueTest::testRequeue()
     QTest::qWait(3500);
     QVERIFY(spy.isEmpty());
 
-    QTest::qWait(1600);
+    QVERIFY(spy.wait(2500));
     QCOMPARE(spy.count(), 1);
     QCOMPARE(spy.takeFirst().first().toString(), myUrl);
 }
