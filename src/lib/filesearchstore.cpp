@@ -55,6 +55,8 @@ FileSearchStore::FileSearchStore(QObject* parent)
     m_prefixes.insert(QStringLiteral("tag"), QStringLiteral("TA"));
     m_prefixes.insert(QStringLiteral("tags"), QStringLiteral("TA"));
     m_prefixes.insert(QStringLiteral("usercomment"), QStringLiteral("C"));
+    m_prefixes.insert(QStringLiteral("type"), QStringLiteral("T"));
+    m_prefixes.insert(QStringLiteral("kind"), QStringLiteral("T"));
 }
 
 FileSearchStore::~FileSearchStore()

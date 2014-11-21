@@ -46,11 +46,7 @@ public:
     /**
      * Add a type to the results of the query.
      *
-     * Each Item in the result must contain one of the types.
-     * This is generally used to filter only Files, Emails, Tags, etc
-     *
-     * One can add multiple types in one go by separating individual types
-     * with a '/'. Eg - "File/Audio".
+     * Every file has a higher level type such as "Audio", "Video", "Image", "Document", etc.
      *
      * Please note that the types are ANDed together. So searching for "Image"
      * and "Video" will probably never return any results. Have a look at
