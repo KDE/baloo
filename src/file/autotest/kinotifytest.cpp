@@ -18,7 +18,6 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "kinotifytest.h"
 #include "../kinotify.h"
 
 #include <QTemporaryDir>
@@ -31,6 +30,22 @@
 #include <QTimer>
 #include <QDir>
 #include <QTest>
+
+class KInotifyTest : public QObject
+{
+    Q_OBJECT
+
+private Q_SLOTS:
+    void testDeleteFile();
+    void testDeleteFolder();
+    void testCreateFolder();
+    void testRenameFile();
+    void testMoveFile();
+    void testRenameFolder();
+    void testMoveFolder();
+    void testMoveRootFolder();
+    void testFileClosedAfterWrite();
+};
 
 namespace
 {
@@ -391,3 +406,5 @@ void KInotifyTest::testFileClosedAfterWrite()
 
 
 QTEST_MAIN(KInotifyTest)
+
+#include "kinotifytest.moc"

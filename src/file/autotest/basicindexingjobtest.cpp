@@ -18,8 +18,6 @@
  *
  */
 
-#include "basicindexingjobtest.h"
-
 #include "../basicindexingjob.h"
 #include <xapian.h>
 #include "xapiandocument.h"
@@ -33,7 +31,16 @@
 #include <QFile>
 #include <KFileMetaData/TypeInfo>
 
+namespace Baloo {
 
+class BasicIndexingJobTest : public QObject
+{
+    Q_OBJECT
+private Q_SLOTS:
+    void testBasicIndexing();
+};
+
+}
 using namespace Baloo;
 
 void BasicIndexingJobTest::testBasicIndexing()
@@ -108,3 +115,5 @@ void BasicIndexingJobTest::testBasicIndexing()
 }
 
 QTEST_MAIN(BasicIndexingJobTest)
+
+#include "basicindexingjobtest.moc"

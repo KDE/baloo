@@ -19,7 +19,6 @@
    License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "fileindexerconfigtest.h"
 #include "../fileindexerconfig.h"
 #include "fileindexerconfigutils.h"
 
@@ -31,6 +30,16 @@
 #include <QTest>
 
 using namespace Baloo::Test;
+
+class FileIndexerConfigTest : public QObject
+{
+    Q_OBJECT
+
+private Q_SLOTS:
+    void testShouldFolderBeIndexed();
+    void testShouldBeIndexed();
+    void testExcludeFilterOnFolders();
+};
 
 void FileIndexerConfigTest::testShouldFolderBeIndexed()
 {
@@ -291,3 +300,5 @@ void FileIndexerConfigTest::testExcludeFilterOnFolders()
 }
 
 QTEST_MAIN(FileIndexerConfigTest)
+
+#include "fileindexerconfigtest.moc"

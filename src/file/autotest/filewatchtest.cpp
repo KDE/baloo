@@ -18,7 +18,6 @@
  *
  */
 
-#include "filewatchtest.h"
 #include "filewatch.h"
 #include "fileindexerconfigutils.h"
 #include "database.h"
@@ -31,6 +30,17 @@
 #include <QTest>
 #include <QSignalSpy>
 #include <QTemporaryDir>
+
+namespace Baloo {
+
+class FileWatchTest : public QObject
+{
+    Q_OBJECT
+private Q_SLOTS:
+    void testFileCreation();
+};
+
+}
 
 using namespace Baloo;
 
@@ -50,6 +60,7 @@ namespace {
         stream << "1";
     }
 }
+
 void FileWatchTest::testFileCreation()
 {
     QTemporaryDir includeDir;
@@ -144,3 +155,5 @@ void FileWatchTest::testFileCreation()
 }
 
 QTEST_MAIN(FileWatchTest);
+
+#include "filewatchtest.moc"

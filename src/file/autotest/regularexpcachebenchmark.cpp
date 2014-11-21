@@ -18,7 +18,6 @@
  *
  */
 
-#include "regularexpcachebenchmark.h"
 #include "../regexpcache.h"
 #include "../fileexcludefilters.h"
 
@@ -26,6 +25,13 @@
 #include <QDir>
 #include <QDirIterator>
 #include <QDebug>
+
+class RegularExpCacheBenchmark : public QObject
+{
+    Q_OBJECT
+private Q_SLOTS:
+    void test();
+};
 
 void RegularExpCacheBenchmark::test()
 {
@@ -45,8 +51,8 @@ void RegularExpCacheBenchmark::test()
         }
 
     }
-
-
 }
 
 QTEST_MAIN(RegularExpCacheBenchmark)
+
+#include "regularexpcachebenchmark.moc"

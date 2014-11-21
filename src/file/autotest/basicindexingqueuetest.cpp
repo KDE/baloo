@@ -1,5 +1,4 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
  * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
  *
  * This library is free software; you can redistribute it and/or
@@ -18,7 +17,6 @@
  *
  */
 
-#include "basicindexingqueuetest.h"
 #include "fileindexerconfigutils.h"
 
 #include "../fileindexerconfig.h"
@@ -33,6 +31,19 @@
 #include <QDebug>
 
 using namespace Baloo;
+
+class BasicIndexingQueueTest : public QObject
+{
+    Q_OBJECT
+private Q_SLOTS:
+    void testSimpleDirectoryStructure();
+    void textExtendedAttributeIndexing();
+    void textNormalAndThenExtendedAttributeIndexing();
+    void testExtendedAttributeIndexingWhenEmpty();
+    void testFileModifications();
+};
+
+Q_DECLARE_METATYPE(Xapian::Document);
 
 void BasicIndexingQueueTest::testSimpleDirectoryStructure()
 {
@@ -398,3 +409,5 @@ void BasicIndexingQueueTest::testFileModifications()
 
 
 QTEST_MAIN(BasicIndexingQueueTest)
+
+#include "basicindexingqueuetest.moc"

@@ -20,7 +20,6 @@
    License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "pendingfilequeuetest.h"
 #include "../pendingfilequeue.h"
 
 #include <qtest.h>
@@ -29,6 +28,18 @@
 #include <QDebug>
 
 using namespace Baloo;
+
+class PendingFileQueueTest : public QObject
+{
+    Q_OBJECT
+
+public:
+    PendingFileQueueTest();
+
+private Q_SLOTS:
+    void testTimeout();
+    void testRequeue();
+};
 
 PendingFileQueueTest::PendingFileQueueTest()
 {
@@ -100,3 +111,5 @@ void PendingFileQueueTest::testRequeue()
 }
 
 QTEST_MAIN(PendingFileQueueTest)
+
+#include "pendingfilequeuetest.moc"
