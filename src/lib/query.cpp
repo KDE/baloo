@@ -62,7 +62,6 @@ public:
     int m_dayFilter;
 
     SortingOption m_sortingOption;
-    QString m_sortingProperty;
     QString m_includeFolder;
 };
 
@@ -190,17 +189,6 @@ Query::SortingOption Query::sortingOption() const
     return d->m_sortingOption;
 }
 
-void Query::setSortingProperty(const QString& property)
-{
-    d->m_sortingOption = SortProperty;
-    d->m_sortingProperty = property;
-}
-
-QString Query::sortingProperty() const
-{
-    return d->m_sortingProperty;
-}
-
 QString Query::includeFolder() const
 {
     return d->m_includeFolder;
@@ -248,8 +236,6 @@ QByteArray Query::toJSON()
 
     if (d->m_sortingOption != SortAuto)
         map[QLatin1String("sortingOption")] = static_cast<int>(d->m_sortingOption);
-    if (!d->m_sortingProperty.isEmpty())
-        map[QLatin1String("sortingProperty")] = d->m_sortingProperty;
 
     if (!d->m_includeFolder.isEmpty())
         map[QLatin1String("includeFolder")] = d->m_includeFolder;
@@ -290,9 +276,6 @@ Query Query::fromJSON(const QByteArray& arr)
         query.d->m_sortingOption = static_cast<SortingOption>(option);
     }
 
-    if (map.contains(QLatin1String("sortingProperty"))) {
-        query.d->m_sortingProperty = map.value("sortingProperty").toString();
-    }
 
     if (map.contains(QLatin1String("includeFolder"))) {
         query.d->m_includeFolder = map.value("includeFolder").toString();
@@ -337,7 +320,7 @@ bool Query::operator==(const Query& rhs) const
     if (rhs.d->m_limit != d->m_limit || rhs.d->m_offset != d->m_offset ||
         rhs.d->m_dayFilter != d->m_dayFilter || rhs.d->m_monthFilter != d->m_monthFilter ||
         rhs.d->m_yearFilter != d->m_yearFilter || rhs.d->m_includeFolder != d->m_includeFolder ||
-        rhs.d->m_searchString != d->m_searchString || rhs.d->m_sortingProperty != d->m_sortingProperty ||
+        rhs.d->m_searchString != d->m_searchString ||
         rhs.d->m_sortingOption != d->m_sortingOption)
     {
         return false;

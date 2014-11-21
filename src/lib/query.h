@@ -97,28 +97,17 @@ public:
         SortNone,
 
         /**
-         * The results are returned in the order the SearchStore decides
-         * should be ideal. This criteria could be based on any factors.
-         * Read the documentation for the corresponding search store.
+         * The results are returned in the order Baloo decides
+         * should be ideal. This criteria is based on the mtime of the
+         * file and internal word frequency.
+         *
+         * This is the default sorting mechanism.
          */
-        SortAuto,
-
-        /**
-         * The results are returned based on the explicit property specified.
-         * The implementation of this depends on the search store.
-         */
-        SortProperty
+        SortAuto
     };
 
     void setSortingOption(SortingOption option);
     SortingOption sortingOption() const;
-
-    /**
-     * Sets the property that should be used for sorting. This automatically
-     * set the sorting mechanism to SortProperty
-     */
-    void setSortingProperty(const QString& property);
-    QString sortingProperty() const;
 
     /**
      * Only files in this folder will be returned
