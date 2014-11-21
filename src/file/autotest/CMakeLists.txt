@@ -90,12 +90,16 @@ ecm_add_test(${basicIndexingQueue_SRC}
 #
 # Regexp cahce benchmark
 #
-set(regexpcache_SRCS
-    regularexpcachebenchmark.cpp
+ecm_add_test(regularexpcachebenchmark.cpp
+    TEST_NAME "regexpcachebenchmark"
+    LINK_LIBRARIES Qt5::Test KF5::ConfigCore KF5::CoreAddons baloofilecommon
 )
 
-ecm_add_test(${regexpcache_SRCS}
-    TEST_NAME "regexpcachebenchmark"
+#
+# Filtered Dir Iterator
+#
+ecm_add_test(filtereddiriteratortest.cpp
+    TEST_NAME "filtereddiriteratortest"
     LINK_LIBRARIES Qt5::Test KF5::ConfigCore KF5::CoreAddons baloofilecommon
 )
 

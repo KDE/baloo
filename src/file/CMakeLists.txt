@@ -23,6 +23,7 @@ set(file_static_lib_SRCS
     fileexcludefilters.cpp
     ../lib/filemapping.cpp
     storagedevices.cpp
+    filtereddiriterator.cpp
 
     # File Watcher
     filewatch.cpp
