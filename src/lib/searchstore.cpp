@@ -40,18 +40,3 @@ SearchStore::SearchStore(QObject* parent)
 SearchStore::~SearchStore()
 {
 }
-
-//
-// Search Stores
-//
-// static
-SearchStore::List SearchStore::searchStores()
-{
-    static QMutex mutex;
-    QMutexLocker lock(&mutex);
-
-    SearchStore::List stores;
-    stores << QSharedPointer<SearchStore>(new FileSearchStore());
-
-    return stores;
-}

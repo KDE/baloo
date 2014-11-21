@@ -39,14 +39,6 @@ public:
     explicit SearchStore(QObject* parent = 0);
     virtual ~SearchStore();
 
-    typedef QList< QSharedPointer<SearchStore> > List;
-
-    /**
-     * Gives a list of available search stores. These stores must be managed and
-     * deleted by the caller
-     */
-    static List searchStores();
-
     /**
      * Returns a list of types which can be searched for
      * in this store
