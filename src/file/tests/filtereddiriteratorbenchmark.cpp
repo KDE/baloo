@@ -26,6 +26,7 @@
 
 #include "../filtereddiriterator.h"
 #include "../fileindexerconfig.h"
+#include "util.h"
 
 using namespace Baloo;
 
@@ -36,13 +37,18 @@ int main(int argc, char** argv)
     QTime timer;
     timer.start();
 
+    int num = 0;
     FileIndexerConfig config;
     for (const QString& dir : config.includeFolders()) {
         FilteredDirIterator it(&config, dir);
         while (!it.next().isEmpty()) {
+            num++;
         }
     }
 
+    std::cout << "Num Files: " << num << std::endl;
     std::cout << "Elapsed: " << timer.elapsed() << std::endl;
+    printIOUsage();
+
     return 0;
 }
