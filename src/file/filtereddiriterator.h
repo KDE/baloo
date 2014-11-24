@@ -34,13 +34,18 @@ public:
         FilesAndDirs,
         DirsOnly
     };
-    // Maybe we want to expose recursive over here?
     FilteredDirIterator(FileIndexerConfig* config, const QString& folder, Filter filter = FilesAndDirs);
 
     QString next();
-
     QString filePath() const;
+
 private:
+    /**
+     * Checks if the folder should be indexed. It only performs filename checks
+     * on the filename, not on every part of the path.
+     */
+    bool shouldIndexFolder(const QString& filePath) const;
+
     FileIndexerConfig* m_config;
 
     QDirIterator* m_currentIter;

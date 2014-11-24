@@ -33,6 +33,7 @@ class FilteredDirIteratorTest : public QObject
 private Q_SLOTS:
     void testFiles();
     void testFolders();
+    void testAddingExcludedFolder();
 };
 
 using namespace Baloo;
@@ -108,6 +109,28 @@ void FilteredDirIteratorTest::testFolders()
     }
     QSet<QString> expected = {"/home", "/home/docs", "/home/fire"};
     QCOMPARE(list, expected);
+}
+
+void FilteredDirIteratorTest::testAddingExcludedFolder()
+{
+    // Given
+    QStringList dirs;
+    dirs << QLatin1String("home/");
+    dirs << QLatin1String("home/kde");
+    QScopedPointer<QTemporaryDir> dir(Test::createTmpFilesAndFolders(dirs));
+
+    QStringList includeFolders;
+    includeFolders << dir->path() + QLatin1String("/home");
+
+    QStringList excludeFolders;
+    excludeFolders << dir->path() + QLatin1String("/home/kde");
+
+    Test::writeIndexerConfig(includeFolders, excludeFolders);
+
+    FileIndexerConfig config;
+    FilteredDirIterator it(&config, excludeFolders.first());
+
+    QVERIFY(it.next().isEmpty());
 }
 
 

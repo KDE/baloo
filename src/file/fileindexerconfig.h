@@ -129,6 +129,13 @@ public:
      */
     bool folderInFolderList(const QString& path);
 
+    /**
+     * Check if \p path is in the list of folders to be indexed taking
+     * include and exclude folders into account.
+     * \p folder is set to the folder which was the reason for the descision.
+     */
+    bool folderInFolderList(const QString& path, QString& folder) const;
+
 Q_SIGNALS:
     void configChanged();
 
@@ -152,12 +159,6 @@ private Q_SLOTS:
     void slotConfigDirty();
 
 private:
-    /**
-     * Check if \p path is in the list of folders to be indexed taking
-     * include and exclude folders into account.
-     * \p folder is set to the folder which was the reason for the descision.
-     */
-    bool folderInFolderList(const QString& path, QString& folder) const;
 
     void buildFolderCache();
     void buildExcludeFilterRegExpCache();

@@ -27,7 +27,9 @@ using namespace Baloo;
 
 FilteredDirIterator::FilteredDirIterator(FileIndexerConfig* config, const QString& folder, Filter filter)
     : m_config(config)
+    , m_currentIter(0)
     , m_filters(QDir::NoDotAndDotDot | QDir::Readable | QDir::NoSymLinks)
+    , m_firstItem(false)
 {
     if (filter == DirsOnly) {
         m_filters |= QDir::Dirs;
@@ -35,9 +37,10 @@ FilteredDirIterator::FilteredDirIterator(FileIndexerConfig* config, const QStrin
         m_filters |= (QDir::Files | QDir::Dirs);
     }
 
-    QDirIterator* it = new QDirIterator(folder, m_filters);
-    m_currentIter = it;
-    m_firstItem = true;
+    if (m_config->shouldFolderBeIndexed(folder)) {
+        m_currentIter = new QDirIterator(folder, m_filters);
+        m_firstItem = true;
+    }
 }
 
 QString FilteredDirIterator::next()
@@ -64,31 +67,30 @@ QString FilteredDirIterator::next()
         }
     }
 
-    // vHanda: We do not really need this QFileInfo, we can just use the filters
     m_filePath = m_currentIter->next();
-    if (m_filePath.endsWith('.')) {
-        m_filePath = m_filePath.mid(0, m_filePath.length() - 2);
-    }
     QFileInfo info(m_filePath);
 
-    bool runAgain = false;
     if (info.isDir()) {
-        if (m_config->shouldFolderBeIndexed(m_filePath)) {
+        if (shouldIndexFolder(m_filePath)) {
             QDirIterator* it = new QDirIterator(m_filePath, m_filters);
             m_iterators.push(it);
+            return m_filePath;
         } else {
-            runAgain = true;
+            return next();
         }
     }
     else if (info.isFile()) {
-        runAgain = !m_config->shouldBeIndexed(m_filePath);
+        bool shouldIndexHidden = m_config->indexHiddenFilesAndFolders();
+        bool shouldIndexFile = (!info.isHidden() || shouldIndexHidden) && m_config->shouldFileBeIndexed(info.fileName());
+        if (shouldIndexFile) {
+            return m_filePath;
+        } else {
+            return next();
+        }
     }
-
-    if (runAgain) {
+    else {
         return next();
     }
-
-    return m_filePath;
 }
 
 QString FilteredDirIterator::filePath() const
@@ -96,4 +98,23 @@ QString FilteredDirIterator::filePath() const
     return m_filePath;
 }
 
+bool FilteredDirIterator::shouldIndexFolder(const QString& path) const
+{
+    QString folder;
+    if (m_config->folderInFolderList(path, folder)) {
+        // we always index the folders in the list
+        // ignoring the name filters
+        if (folder == path)
+            return true;
+
+        // check for hidden folders
+        QFileInfo fi(path);
+        if (!m_config->indexHiddenFilesAndFolders() && fi.isHidden())
+            return false;
+
+        return m_config->shouldFileBeIndexed(fi.fileName());
+    }
+
+    return false;
+}
 
