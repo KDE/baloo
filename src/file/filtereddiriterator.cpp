@@ -68,7 +68,7 @@ QString FilteredDirIterator::next()
     }
 
     m_filePath = m_currentIter->next();
-    QFileInfo info(m_filePath);
+    const QFileInfo info = m_currentIter->fileInfo();
 
     if (info.isDir()) {
         if (shouldIndexFolder(m_filePath)) {
