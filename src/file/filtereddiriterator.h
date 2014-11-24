@@ -1,5 +1,4 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
  * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
  *
  * This library is free software; you can redistribute it and/or
@@ -32,11 +31,11 @@ class FilteredDirIterator
 {
 public:
     enum Filter {
-        Files,
-        Dirs
+        FilesAndDirs,
+        DirsOnly
     };
     // Maybe we want to expose recursive over here?
-    FilteredDirIterator(FileIndexerConfig* config, const QString& folder, Filter filter);
+    FilteredDirIterator(FileIndexerConfig* config, const QString& folder, Filter filter = FilesAndDirs);
 
     QString next();
 

@@ -60,7 +60,7 @@ void FilteredDirIteratorTest::testFiles()
     Test::writeIndexerConfig(includeFolders, excludeFolders);
 
     FileIndexerConfig config;
-    FilteredDirIterator it(&config, includeFolders.first(), FilteredDirIterator::Files);
+    FilteredDirIterator it(&config, includeFolders.first());
 
     QSet<QString> list;
     while (!it.next().isEmpty()) {
@@ -97,7 +97,7 @@ void FilteredDirIteratorTest::testFolders()
     Test::writeIndexerConfig(includeFolders, excludeFolders);
 
     FileIndexerConfig config;
-    FilteredDirIterator it(&config, includeFolders.first(), FilteredDirIterator::Dirs);
+    FilteredDirIterator it(&config, includeFolders.first(), FilteredDirIterator::DirsOnly);
 
     QSet<QString> list;
     while (!it.next().isEmpty()) {

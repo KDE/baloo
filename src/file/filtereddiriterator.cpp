@@ -1,5 +1,4 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
  * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
  *
  * This library is free software; you can redistribute it and/or
@@ -30,9 +29,9 @@ FilteredDirIterator::FilteredDirIterator(FileIndexerConfig* config, const QStrin
     : m_config(config)
     , m_filters(QDir::NoDotAndDotDot | QDir::Readable | QDir::NoSymLinks)
 {
-    if (filter == Dirs) {
+    if (filter == DirsOnly) {
         m_filters |= QDir::Dirs;
-    } else if (filter == Files) {
+    } else if (filter == FilesAndDirs) {
         m_filters |= (QDir::Files | QDir::Dirs);
     }
 
