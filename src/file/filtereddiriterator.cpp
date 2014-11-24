@@ -37,7 +37,7 @@ FilteredDirIterator::FilteredDirIterator(FileIndexerConfig* config, const QStrin
         m_filters |= (QDir::Files | QDir::Dirs);
     }
 
-    if (m_config->shouldFolderBeIndexed(folder)) {
+    if (!m_config || m_config->shouldFolderBeIndexed(folder)) {
         m_currentIter = new QDirIterator(folder, m_filters);
         m_firstItem = true;
     }
@@ -85,8 +85,12 @@ QString FilteredDirIterator::next()
         }
     }
     else if (info.isFile()) {
-        bool shouldIndexHidden = m_config->indexHiddenFilesAndFolders();
-        bool shouldIndexFile = (!info.isHidden() || shouldIndexHidden) && m_config->shouldFileBeIndexed(info.fileName());
+        bool shouldIndexHidden = false;
+        if (m_config)
+            shouldIndexHidden = m_config->indexHiddenFilesAndFolders();
+
+        bool shouldIndexFile = (!info.isHidden() || shouldIndexHidden)
+                               && (!m_config || m_config->shouldFileBeIndexed(info.fileName()));
         if (shouldIndexFile) {
             return m_filePath;
         } else {
@@ -105,6 +109,10 @@ QString FilteredDirIterator::filePath() const
 
 bool FilteredDirIterator::shouldIndexFolder(const QString& path) const
 {
+    if (!m_config) {
+        return true;
+    }
+
     QString folder;
     if (m_config->folderInFolderList(path, folder)) {
         // we always index the folders in the list

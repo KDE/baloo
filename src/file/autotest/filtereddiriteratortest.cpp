@@ -34,6 +34,7 @@ private Q_SLOTS:
     void testFiles();
     void testFolders();
     void testAddingExcludedFolder();
+    void testNoConfig();
 };
 
 using namespace Baloo;
@@ -48,6 +49,7 @@ void FilteredDirIteratorTest::testFiles()
     dirs << QLatin1String("home/kde/");
     dirs << QLatin1String("home/kde/1");
     dirs << QLatin1String("home/docs/");
+    dirs << QLatin1String("home/docs/.fire");
     dirs << QLatin1String("home/docs/1");
 
     QScopedPointer<QTemporaryDir> dir(Test::createTmpFilesAndFolders(dirs));
@@ -116,7 +118,7 @@ void FilteredDirIteratorTest::testAddingExcludedFolder()
     // Given
     QStringList dirs;
     dirs << QLatin1String("home/");
-    dirs << QLatin1String("home/kde");
+    dirs << QLatin1String("home/kde/");
     QScopedPointer<QTemporaryDir> dir(Test::createTmpFilesAndFolders(dirs));
 
     QStringList includeFolders;
@@ -133,6 +135,36 @@ void FilteredDirIteratorTest::testAddingExcludedFolder()
     QVERIFY(it.next().isEmpty());
 }
 
+void FilteredDirIteratorTest::testNoConfig()
+{
+    // Given
+    QStringList dirs;
+    dirs << QLatin1String("home/");
+    dirs << QLatin1String("home/1");
+    dirs << QLatin1String("home/kde/");
+    dirs << QLatin1String("home/kde/2");
+    QScopedPointer<QTemporaryDir> dir(Test::createTmpFilesAndFolders(dirs));
+
+    QStringList includeFolders;
+    includeFolders << dir->path() + QLatin1String("/home");
+
+    QStringList excludeFolders;
+    excludeFolders << dir->path() + QLatin1String("/home/kde");
+
+    Test::writeIndexerConfig(includeFolders, excludeFolders);
+
+    FilteredDirIterator it(0, includeFolders.first());
+
+    QSet<QString> list;
+    while (!it.next().isEmpty()) {
+        QString path = it.filePath();
+        path = path.mid(dir->path().length());
+
+        list << path;
+    }
+    QSet<QString> expected = {"/home", "/home/1", "/home/kde", "/home/kde/2"};
+    QCOMPARE(list, expected);
+}
 
 QTEST_MAIN(FilteredDirIteratorTest)
 
