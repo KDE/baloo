@@ -43,6 +43,11 @@ FilteredDirIterator::FilteredDirIterator(FileIndexerConfig* config, const QStrin
     }
 }
 
+FilteredDirIterator::~FilteredDirIterator()
+{
+    delete m_currentIter;
+}
+
 QString FilteredDirIterator::next()
 {
     if (m_firstItem) {
@@ -60,8 +65,9 @@ QString FilteredDirIterator::next()
         delete m_currentIter;
         m_currentIter = 0;
 
-        if (!m_iterators.isEmpty()) {
-            m_currentIter = m_iterators.pop();
+        if (!m_paths.isEmpty()) {
+            const QString path = m_paths.pop();
+            m_currentIter = new QDirIterator(path, m_filters);
         } else {
             return QString();
         }
@@ -72,8 +78,7 @@ QString FilteredDirIterator::next()
 
     if (info.isDir()) {
         if (shouldIndexFolder(m_filePath)) {
-            QDirIterator* it = new QDirIterator(m_filePath, m_filters);
-            m_iterators.push(it);
+            m_paths.push(m_filePath);
             return m_filePath;
         } else {
             return next();

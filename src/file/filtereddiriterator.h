@@ -35,6 +35,7 @@ public:
         DirsOnly
     };
     FilteredDirIterator(FileIndexerConfig* config, const QString& folder, Filter filter = FilesAndDirs);
+    ~FilteredDirIterator();
 
     QString next();
     QString filePath() const;
@@ -49,7 +50,7 @@ private:
     FileIndexerConfig* m_config;
 
     QDirIterator* m_currentIter;
-    QStack<QDirIterator*> m_iterators;
+    QStack<QString> m_paths;
     QDir::Filters m_filters;
 
     QString m_filePath;
