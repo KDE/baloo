@@ -60,3 +60,6 @@ endif(CMAKE_SYSTEM_NAME MATCHES "Linux")
 #
 add_executable(storagedevicestest storagedevicestest.cpp)
 target_link_libraries(storagedevicestest Qt5::Core KF5::Solid baloofilecommon)
+
+add_executable(filtereddiriteratorbenchmark filtereddiriteratorbenchmark.cpp)
+target_link_libraries(filtereddiriteratorbenchmark Qt5::Core baloofilecommon)
