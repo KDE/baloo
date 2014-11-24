@@ -21,6 +21,7 @@
  */
 
 #include <QCoreApplication>
+#include <QCommandLineParser>
 #include <QTime>
 #include <iostream>
 
@@ -34,13 +35,26 @@ int main(int argc, char** argv)
 {
     QCoreApplication app(argc, argv);
 
+    QCommandLineParser parser;
+    parser.addPositionalArgument("folder", "Folder to test on", "folderName");
+    parser.process(app);
+
+    QScopedPointer<FileIndexerConfig> config;
+
+    QStringList includeFolders;
+    if (!parser.positionalArguments().isEmpty()) {
+        QString folder = parser.positionalArguments().first();
+        includeFolders << QFileInfo(folder).absoluteFilePath();
+    } else {
+        config.reset(new FileIndexerConfig);
+        includeFolders = config->includeFolders();
+    }
     QTime timer;
     timer.start();
 
     int num = 0;
-    FileIndexerConfig config;
-    for (const QString& dir : config.includeFolders()) {
-        FilteredDirIterator it(&config, dir);
+    for (const QString& dir : includeFolders) {
+        FilteredDirIterator it(config.data(), dir);
         while (!it.next().isEmpty()) {
             num++;
         }
