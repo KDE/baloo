@@ -1,6 +1,6 @@
 /* This file is part of the KDE libraries
    Copyright (C) 2007-2010 Sebastian Trueg <trueg@kde.org>
-   Copyright (C) 2012 Vishesh Handa <me@vhanda.in>
+   Copyright (C) 2012-2014 Vishesh Handa <vhanda@kde.org>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -20,6 +20,8 @@
 
 #include "kinotify.h"
 #include "optimizedbytearray.h"
+#include "fileindexerconfig.h"
+#include "filtereddiriterator.h"
 
 #include <QSocketNotifier>
 #include <QHash>
@@ -69,16 +71,16 @@ class KInotify::Private
 {
 public:
     Private(KInotify* parent)
-        : userLimitReachedSignaled(false),
-          m_inotifyFd(-1),
-          m_notifier(0),
-          q(parent) {
+        : userLimitReachedSignaled(false)
+        , m_dirIter(0)
+        , m_inotifyFd(-1)
+        , m_notifier(0)
+        , q(parent) {
     }
 
     ~Private() {
         close();
-        while (!dirIterators.isEmpty())
-            delete dirIterators.takeFirst();
+        delete m_dirIter;
     }
 
     QHash<int, QPair<QByteArray, WatchFlags> > cookies;
@@ -92,8 +94,9 @@ public:
     QHash<OptimizedByteArray, int> pathWatchHash;
     QSet<QByteArray> pathCache;
 
-    /// A list of all the current dirIterators
-    QLinkedList<QDirIterator*> dirIterators;
+    Baloo::FileIndexerConfig* config;
+    QStringList m_paths;
+    Baloo::FilteredDirIterator* m_dirIter;
 
     unsigned char eventBuffer[EVENT_BUFFER_SIZE];
 
@@ -120,10 +123,7 @@ public:
     bool addWatch(const QString& path) {
         WatchEvents newMode = mode;
         WatchFlags newFlags = flags;
-        //Encode the path
-        if (!q->filterWatch(path, newMode, newFlags)) {
-            return false;
-        }
+
         // we always need the unmount event to maintain our path hash
         const int mask = newMode | newFlags | EventUnmount | FlagExclUnlink;
 
@@ -136,7 +136,7 @@ public:
             pathWatchHash.insert(normalized, wd);
             return true;
         } else {
-            qDebug() << "Failed to create watch for" << path;
+            qDebug() << "Failed to create watch for" << path << strerror(errno);
             //If we could not create the watch because we have hit the limit, try raising it.
             if (errno == ENOSPC) {
                 //If we can't, fall back to signalling
@@ -167,23 +167,20 @@ public:
             return false;
         }
 
-        if (!dirIterators.isEmpty()) {
-            QDirIterator* it = dirIterators.front();
-            if (it->hasNext()) {
-                QString dirPath = it->next();
-                if (addWatch(dirPath)) {
-                    // IMPORTANT: We do not follow system links. Ever.
-                    QDirIterator* iter = new QDirIterator(dirPath, QDir::Dirs | QDir::NoDotAndDotDot | QDir::NoSymLinks);
-                    dirIterators.prepend(iter);
-                    addedWatchSuccessfully = true;
-                }
+        if (!m_dirIter || m_dirIter->next().isEmpty()) {
+            if (!m_paths.isEmpty()) {
+                m_dirIter = new Baloo::FilteredDirIterator(config, m_paths.takeFirst(), Baloo::FilteredDirIterator::DirsOnly);
             } else {
-                delete dirIterators.takeFirst();
+                delete m_dirIter;
+                m_dirIter = 0;
             }
+        } else {
+            QString path = m_dirIter->filePath();
+            addedWatchSuccessfully = addWatch(path);
         }
 
         // asynchronously add the next batch
-        if (!dirIterators.isEmpty()) {
+        if (m_dirIter) {
             QMetaObject::invokeMethod(q, "_k_addWatches", Qt::QueuedConnection);
         }
         else {
@@ -213,10 +210,11 @@ private:
 };
 
 
-KInotify::KInotify(QObject* parent)
-    : QObject(parent),
-      d(new Private(this))
+KInotify::KInotify(Baloo::FileIndexerConfig* config, QObject* parent)
+    : QObject(parent)
+    , d(new Private(this))
 {
+    d->config = config;
     // 1 second is more than enough time for the EventMoveTo event to occur
     // after the EventMoveFrom event has occurred
     d->cookieExpireTimer.setInterval(1000);
@@ -272,31 +270,31 @@ bool KInotify::addWatch(const QString& path, WatchEvents mode, WatchFlags flags)
 
     d->mode = mode;
     d->flags = flags;
-    //If the inotify user limit has been signaled,
-    //just queue this folder for watching.
-    if (d->userLimitReachedSignaled) {
-        QDirIterator* iter = new QDirIterator(path, QDir::Dirs | QDir::NoDotAndDotDot | QDir::NoSymLinks);
-        d->dirIterators.prepend(iter);
+    // If the inotify user limit has been signaled,
+    // just queue this folder for watching.
+    if (d->m_dirIter || d->userLimitReachedSignaled) {
+        d->m_paths << path;
         return false;
     }
 
-    if (!(d->addWatch(path)))
-        return false;
-    QDirIterator* iter = new QDirIterator(path, QDir::Dirs | QDir::NoDotAndDotDot | QDir::NoSymLinks);
-    d->dirIterators.prepend(iter);
+    d->m_dirIter = new Baloo::FilteredDirIterator(d->config, path, Baloo::FilteredDirIterator::DirsOnly);
     return d->_k_addWatches();
 }
 
 
 bool KInotify::removeWatch(const QString& path)
 {
-    // Stop all of the dirIterators which contain path
-    QMutableLinkedListIterator<QDirIterator*> iter(d->dirIterators);
+    // Stop all of the iterators which contain path
+    QMutableListIterator<QString> iter(d->m_paths);
     while (iter.hasNext()) {
-        QDirIterator* dirIter = iter.next();
-        if (dirIter->path().startsWith(path)) {
+        if (iter.next().startsWith(path)) {
             iter.remove();
-            delete dirIter;
+        }
+    }
+    if (d->m_dirIter) {
+        if (d->m_dirIter->filePath().startsWith(path)) {
+            delete d->m_dirIter;
+            d->m_dirIter = 0;
         }
     }
 
@@ -312,15 +310,6 @@ bool KInotify::removeWatch(const QString& path)
             ++it;
         }
     }
-    return true;
-}
-
-
-bool KInotify::filterWatch(const QString& path, WatchEvents& modes, WatchFlags& flags)
-{
-    Q_UNUSED(path);
-    Q_UNUSED(modes);
-    Q_UNUSED(flags);
     return true;
 }
 

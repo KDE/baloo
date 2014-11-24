@@ -1,9 +1,9 @@
 include(ECMAddTests)
 
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
-  ecm_add_test(kinotifytest.cpp ../kinotify.cpp
+  ecm_add_test(kinotifytest.cpp
     TEST_NAME "kinotifytest"
-    LINK_LIBRARIES Qt5::Test KF5::CoreAddons
+    LINK_LIBRARIES Qt5::Test KF5::CoreAddons baloofilecommon
   )
 endif()
 

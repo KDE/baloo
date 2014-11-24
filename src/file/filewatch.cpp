@@ -36,48 +36,6 @@
 #include <QDebug>
 #include <KConfigGroup>
 
-#ifdef BUILD_KINOTIFY
-namespace
-{
-/**
- * A variant of KInotify which ignores all paths in the Nepomuk
- * ignore list.
- */
-class IgnoringKInotify : public KInotify
-{
-public:
-    IgnoringKInotify(Baloo::FileIndexerConfig* config, QObject* parent);
-    ~IgnoringKInotify();
-
-protected:
-    bool filterWatch(const QString& path, WatchEvents& modes, WatchFlags& flags);
-
-private:
-    Baloo::FileIndexerConfig* m_config;
-};
-
-IgnoringKInotify::IgnoringKInotify(Baloo::FileIndexerConfig* config, QObject* parent)
-    : KInotify(parent)
-    , m_config(config)
-{
-}
-
-IgnoringKInotify::~IgnoringKInotify()
-{
-}
-
-//
-// Non-indexed directories are never watched as their metadata is stored
-// in the extended attributes for the file as is never lost. Unless your filesystem
-// does not support xattr, then you're out of luck. Sorry.
-//
-bool IgnoringKInotify::filterWatch(const QString& path, WatchEvents&, WatchFlags&)
-{
-    return m_config->shouldFolderBeIndexed(path);
-}
-}
-#endif // BUILD_KINOTIFY
-
 using namespace Baloo;
 
 FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
@@ -99,7 +57,7 @@ FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
 
 #ifdef BUILD_KINOTIFY
     // monitor the file system for changes (restricted by the inotify limit)
-    m_dirWatch = new IgnoringKInotify(m_config, this);
+    m_dirWatch = new KInotify(m_config, this);
 
     connect(m_dirWatch, &KInotify::moved, this, &FileWatch::slotFileMoved);
     connect(m_dirWatch, &KInotify::deleted, this, &FileWatch::slotFileDeleted);

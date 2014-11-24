@@ -22,6 +22,10 @@
 
 #include <QObject>
 
+namespace Baloo {
+    class FileIndexerConfig;
+}
+
 /**
  * A simple wrapper around inotify which only allows
  * to add folders recursively.
@@ -34,7 +38,7 @@ class KInotify : public QObject
     Q_OBJECT
 
 public:
-    KInotify(QObject* parent = 0);
+    explicit KInotify(Baloo::FileIndexerConfig* config, QObject* parent = 0);
     virtual ~KInotify();
 
     /**
@@ -99,13 +103,6 @@ public:
      * Call this when the inotify limit has been increased.
      */
     void resetUserLimit();
-
-protected:
-    /**
-     * Called for every folder that is being watched.
-     * Returns true if the watch should be add or false if it should NOT be added.
-     */
-    virtual bool filterWatch(const QString& path, WatchEvents& modes, WatchFlags& flags);
 
 public Q_SLOTS:
     virtual bool addWatch(const QString& path, WatchEvents modes, WatchFlags flags = WatchFlags());

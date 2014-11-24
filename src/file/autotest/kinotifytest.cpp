@@ -1,5 +1,6 @@
 /*
    Copyright (C) 2010 by Sebastian Trueg <trueg at kde.org>
+   Copyright (C) 2014 by Vishesh Handa <vhanda@kde.org>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -60,6 +61,7 @@ void touchFile(const QString& path)
 void mkdir(const QString& path)
 {
     QDir().mkpath(path);
+    QVERIFY(QDir(path).exists());
 }
 
 void waitForSignal(QObject* object, const char* signal, int timeout = 500)
@@ -79,8 +81,10 @@ void KInotifyTest::testDeleteFile()
     touchFile(f1);
 
     // start the inotify watcher
-    KInotify kn;
+    KInotify kn(0 /*no config*/);
+    QSignalSpy initSpy(&kn, SIGNAL(installedWatches()));
     kn.addWatch(dir.path(), KInotify::EventAll);
+    initSpy.wait();
 
     // listen to the desired signal
     QSignalSpy spy(&kn, SIGNAL(deleted(QString,bool)));
@@ -101,8 +105,10 @@ void KInotifyTest::testDeleteFolder()
     mkdir(d1);
 
     // start the inotify watcher
-    KInotify kn;
+    KInotify kn(0 /*no config*/);
+    QSignalSpy initSpy(&kn, SIGNAL(installedWatches()));
     kn.addWatch(dir.path(), KInotify::EventAll);
+    initSpy.wait();
 
     // listen to the desired signal
     QSignalSpy spy(&kn, SIGNAL(deleted(QString,bool)));
@@ -122,8 +128,10 @@ void KInotifyTest::testCreateFolder()
     QTemporaryDir dir;
 
     // start the inotify watcher
-    KInotify kn;
+    KInotify kn(0 /*no config*/);
+    QSignalSpy initSpy(&kn, SIGNAL(installedWatches()));
     kn.addWatch(dir.path(), KInotify::EventAll);
+    initSpy.wait();
 
     // listen to the desired signal
     QSignalSpy createdSpy(&kn, SIGNAL(created(QString,bool)));
@@ -161,8 +169,10 @@ void KInotifyTest::testRenameFile()
     touchFile(f1);
 
     // start the inotify watcher
-    KInotify kn;
+    KInotify kn(0 /*no config*/);
+    QSignalSpy initSpy(&kn, SIGNAL(installedWatches()));
     kn.addWatch(dir.path(), KInotify::EventAll);
+    initSpy.wait();
 
     // listen to the desired signal
     QSignalSpy spy(&kn, SIGNAL(moved(QString,QString)));
@@ -201,9 +211,11 @@ void KInotifyTest::testMoveFile()
     touchFile(src);
 
     // start the inotify watcher
-    KInotify kn;
+    KInotify kn(0 /*no config*/);
+    QSignalSpy initSpy(&kn, SIGNAL(installedWatches()));
     kn.addWatch(dir1.path(), KInotify::EventAll);
     kn.addWatch(dir2.path(), KInotify::EventAll);
+    initSpy.wait();
 
     // listen to the desired signal
     QSignalSpy spy(&kn, SIGNAL(moved(QString,QString)));
@@ -239,8 +251,10 @@ void KInotifyTest::testRenameFolder()
     mkdir(f1);
 
     // start the inotify watcher
-    KInotify kn;
+    KInotify kn(0 /*no config*/);
+    QSignalSpy initSpy(&kn, SIGNAL(installedWatches()));
     kn.addWatch(dir.path(), KInotify::EventAll);
+    initSpy.wait();
 
     // listen to the desired signal
     QSignalSpy spy(&kn, SIGNAL(moved(QString,QString)));
@@ -303,9 +317,11 @@ void KInotifyTest::testMoveFolder()
     mkdir(src);
 
     // start the inotify watcher
-    KInotify kn;
+    KInotify kn(0 /*no config*/);
+    QSignalSpy initSpy(&kn, SIGNAL(installedWatches()));
     kn.addWatch(dir1.path(), KInotify::EventAll);
     kn.addWatch(dir2.path(), KInotify::EventAll);
+    initSpy.wait();
 
     // listen to the desired signal
     QSignalSpy spy(&kn, SIGNAL(moved(QString,QString)));
@@ -366,8 +382,10 @@ void KInotifyTest::testMoveRootFolder()
     mkdir(src);
 
     // start watching the new subfolder only
-    KInotify kn;
+    KInotify kn(0 /*no config*/);
+    QSignalSpy initSpy(&kn, SIGNAL(installedWatches()));
     kn.addWatch(src, KInotify::EventAll);
+    initSpy.wait();
 
     // listen for the moved signal
     QSignalSpy spy(&kn, SIGNAL(moved(QString,QString)));
@@ -393,8 +411,10 @@ void KInotifyTest::testFileClosedAfterWrite()
     QTemporaryDir dir;
     touchFile(dir.path() + QLatin1String("/file"));
 
-    KInotify kn;
+    KInotify kn(0 /*no config*/);
+    QSignalSpy initSpy(&kn, SIGNAL(installedWatches()));
     kn.addWatch(dir.path(), KInotify::EventAll);
+    initSpy.wait();
 
     QSignalSpy spy(&kn, SIGNAL(closedWrite(QString)));
     touchFile(dir.path() + QLatin1String("/file"));
