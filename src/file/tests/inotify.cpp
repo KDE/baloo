@@ -50,7 +50,10 @@ int main(int argc, char** argv)
     QTime timer;
     timer.start();
 
-    inotify.addWatch(QDir::homePath(), KInotify::EventAll);
+    KInotify::WatchEvents flags(KInotify::EventMove | KInotify::EventDelete | KInotify::EventDeleteSelf
+                                | KInotify::EventCloseWrite | KInotify::EventCreate
+                                | KInotify::EventAttributeChange | KInotify::EventModify);
+    inotify.addWatch(QDir::homePath(), flags);
     app.exec();
 
     std::cout << "Elapsed: " << timer.elapsed() << std::endl;
