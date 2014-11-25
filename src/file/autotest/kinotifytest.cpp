@@ -82,9 +82,7 @@ void KInotifyTest::testDeleteFile()
 
     // start the inotify watcher
     KInotify kn(0 /*no config*/);
-    QSignalSpy initSpy(&kn, SIGNAL(installedWatches()));
     kn.addWatch(dir.path(), KInotify::EventAll);
-    initSpy.wait();
 
     // listen to the desired signal
     QSignalSpy spy(&kn, SIGNAL(deleted(QString,bool)));
@@ -106,9 +104,7 @@ void KInotifyTest::testDeleteFolder()
 
     // start the inotify watcher
     KInotify kn(0 /*no config*/);
-    QSignalSpy initSpy(&kn, SIGNAL(installedWatches()));
     kn.addWatch(dir.path(), KInotify::EventAll);
-    initSpy.wait();
 
     // listen to the desired signal
     QSignalSpy spy(&kn, SIGNAL(deleted(QString,bool)));
@@ -129,9 +125,7 @@ void KInotifyTest::testCreateFolder()
 
     // start the inotify watcher
     KInotify kn(0 /*no config*/);
-    QSignalSpy initSpy(&kn, SIGNAL(installedWatches()));
     kn.addWatch(dir.path(), KInotify::EventAll);
-    initSpy.wait();
 
     // listen to the desired signal
     QSignalSpy createdSpy(&kn, SIGNAL(created(QString,bool)));
@@ -170,9 +164,7 @@ void KInotifyTest::testRenameFile()
 
     // start the inotify watcher
     KInotify kn(0 /*no config*/);
-    QSignalSpy initSpy(&kn, SIGNAL(installedWatches()));
     kn.addWatch(dir.path(), KInotify::EventAll);
-    initSpy.wait();
 
     // listen to the desired signal
     QSignalSpy spy(&kn, SIGNAL(moved(QString,QString)));
@@ -212,10 +204,8 @@ void KInotifyTest::testMoveFile()
 
     // start the inotify watcher
     KInotify kn(0 /*no config*/);
-    QSignalSpy initSpy(&kn, SIGNAL(installedWatches()));
     kn.addWatch(dir1.path(), KInotify::EventAll);
     kn.addWatch(dir2.path(), KInotify::EventAll);
-    initSpy.wait();
 
     // listen to the desired signal
     QSignalSpy spy(&kn, SIGNAL(moved(QString,QString)));
@@ -252,9 +242,7 @@ void KInotifyTest::testRenameFolder()
 
     // start the inotify watcher
     KInotify kn(0 /*no config*/);
-    QSignalSpy initSpy(&kn, SIGNAL(installedWatches()));
     kn.addWatch(dir.path(), KInotify::EventAll);
-    initSpy.wait();
 
     // listen to the desired signal
     QSignalSpy spy(&kn, SIGNAL(moved(QString,QString)));
@@ -318,10 +306,8 @@ void KInotifyTest::testMoveFolder()
 
     // start the inotify watcher
     KInotify kn(0 /*no config*/);
-    QSignalSpy initSpy(&kn, SIGNAL(installedWatches()));
     kn.addWatch(dir1.path(), KInotify::EventAll);
     kn.addWatch(dir2.path(), KInotify::EventAll);
-    initSpy.wait();
 
     // listen to the desired signal
     QSignalSpy spy(&kn, SIGNAL(moved(QString,QString)));
@@ -383,9 +369,7 @@ void KInotifyTest::testMoveRootFolder()
 
     // start watching the new subfolder only
     KInotify kn(0 /*no config*/);
-    QSignalSpy initSpy(&kn, SIGNAL(installedWatches()));
     kn.addWatch(src, KInotify::EventAll);
-    initSpy.wait();
 
     // listen for the moved signal
     QSignalSpy spy(&kn, SIGNAL(moved(QString,QString)));
@@ -412,9 +396,7 @@ void KInotifyTest::testFileClosedAfterWrite()
     touchFile(dir.path() + QLatin1String("/file"));
 
     KInotify kn(0 /*no config*/);
-    QSignalSpy initSpy(&kn, SIGNAL(installedWatches()));
     kn.addWatch(dir.path(), KInotify::EventAll);
-    initSpy.wait();
 
     QSignalSpy spy(&kn, SIGNAL(closedWrite(QString)));
     touchFile(dir.path() + QLatin1String("/file"));

@@ -161,22 +161,26 @@ public:
         bool addedWatchSuccessfully = false;
 
         //Do nothing if the inotify user limit has been signaled.
-        //This means that we will not empty the dirIterators while
-        //waiting for authentication.
         if (userLimitReachedSignaled) {
             return false;
         }
 
-        if (!m_dirIter || m_dirIter->next().isEmpty()) {
-            if (!m_paths.isEmpty()) {
-                m_dirIter = new Baloo::FilteredDirIterator(config, m_paths.takeFirst(), Baloo::FilteredDirIterator::DirsOnly);
+        // It is much faster to add watches in batches instead of adding each one
+        // asynchronously. Try out the inotify test to compare results.
+        for (int i = 0; i < 1000; i++) {
+            if (!m_dirIter || m_dirIter->next().isEmpty()) {
+                if (!m_paths.isEmpty()) {
+                    delete m_dirIter;
+                    m_dirIter = new Baloo::FilteredDirIterator(config, m_paths.takeFirst(), Baloo::FilteredDirIterator::DirsOnly);
+                } else {
+                    delete m_dirIter;
+                    m_dirIter = 0;
+                    break;
+                }
             } else {
-                delete m_dirIter;
-                m_dirIter = 0;
+                QString path = m_dirIter->filePath();
+                addedWatchSuccessfully = addWatch(path);
             }
-        } else {
-            QString path = m_dirIter->filePath();
-            addedWatchSuccessfully = addWatch(path);
         }
 
         // asynchronously add the next batch
