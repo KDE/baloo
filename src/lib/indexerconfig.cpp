@@ -1,6 +1,6 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
- * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
+ * This file is part of the KDE Baloo Project
+ * Copyright (C) 2014  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -25,6 +25,7 @@
 
 #include <KConfig>
 #include <KConfigGroup>
+#include <Kdelibs4Migration>
 
 using namespace Baloo;
 
@@ -45,7 +46,7 @@ IndexerConfig::~IndexerConfig()
 
 bool IndexerConfig::fileIndexingEnabled() const
 {
-    KConfig config(QLatin1String("baloofilerc"));
+    KConfig config(QStringLiteral("baloofilerc"));
     KConfigGroup group = config.group("Basic Settings");
     return config.group("Basic Settings").readEntry("Indexing-Enabled", true);
 }
@@ -53,9 +54,16 @@ bool IndexerConfig::fileIndexingEnabled() const
 
 void IndexerConfig::setFileIndexingEnabled(bool enabled) const
 {
-    KConfig config(QLatin1String("baloofilerc"));
+    KConfig config(QStringLiteral("baloofilerc"));
     KConfigGroup basicSettings = config.group("Basic Settings");
     basicSettings.writeEntry("Indexing-Enabled", enabled);
+
+    {
+        Kdelibs4Migration kde4;
+        KConfig config(kde4.locateLocal("config", QStringLiteral("baloofilerc")));
+        KConfigGroup basicSettings = config.group("Basic Settings");
+        basicSettings.writeEntry("Indexing-Enabled", enabled);
+    }
 }
 
 bool IndexerConfig::shouldBeIndexed(const QString& path) const
@@ -75,14 +83,26 @@ QStringList IndexerConfig::includeFolders() const
 
 void IndexerConfig::setExcludeFolders(const QStringList& excludeFolders)
 {
-    KConfig config(QLatin1String("baloofilerc"));
+    KConfig config(QStringLiteral("baloofilerc"));
     config.group("General").writePathEntry("exclude folders", excludeFolders);
+
+    {
+        Kdelibs4Migration kde4;
+        KConfig config(kde4.locateLocal("config", QStringLiteral("baloofilerc")));
+        config.group("General").writePathEntry("exclude folders", excludeFolders);
+    }
 }
 
 void IndexerConfig::setIncludeFolders(const QStringList& includeFolders)
 {
-    KConfig config(QLatin1String("baloofilerc"));
+    KConfig config(QStringLiteral("baloofilerc"));
     config.group("General").writePathEntry("folders", includeFolders);
+
+    {
+        Kdelibs4Migration kde4;
+        KConfig config(kde4.locateLocal("config", QStringLiteral("baloofilerc")));
+        config.group("General").writePathEntry("folders", includeFolders);
+    }
 }
 
 bool IndexerConfig::firstRun() const
@@ -93,4 +113,10 @@ bool IndexerConfig::firstRun() const
 void IndexerConfig::setFirstRun(bool firstRun) const
 {
     d->m_config.setInitialRun(firstRun);
+
+    {
+        Kdelibs4Migration kde4;
+        KConfig config(kde4.locateLocal("config", QStringLiteral("baloofilerc")));
+        config.group("General").writeEntry("first run", firstRun);
+    }
 }
