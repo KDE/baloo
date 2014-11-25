@@ -77,7 +77,7 @@ bool BasicIndexingJob::index()
     }
 
     if (fileInfo.isDir()) {
-        doc.addBoolTerm(QLatin1String("folder"), QLatin1String("T"));
+        doc.addBoolTerm(QStringLiteral("Tfolder"));
 
         // This is an optimization for folders. They do not need to go through
         // file indexing, so there are no indexers for folders
