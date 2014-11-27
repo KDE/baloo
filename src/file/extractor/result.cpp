@@ -50,7 +50,22 @@ Result::Result(const QString& url, const QString& mimetype, const Flags& flags)
 void Result::add(KFileMetaData::Property::Property property, const QVariant& value)
 {
     QString p = QString::number(static_cast<int>(property));
-    m_map.insertMulti(p, value);
+    if (!value.isNull()) {
+        if (!m_map.contains(p)) {
+            m_map.insert(p, value);
+        } else {
+            QVariant prev = m_map.value(p);
+            QVariantList list;
+            if (prev.type() == QVariant::List) {
+                list = prev.toList();
+            } else {
+                list << prev;
+            }
+
+            list << value;
+            m_map.insert(p, QVariant(list));
+        }
+    }
 
     QString prefix = QLatin1Char('X') + p;
 
