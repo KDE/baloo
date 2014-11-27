@@ -112,8 +112,19 @@ int main(int argc, char* argv[])
         KFileMetaData::PropertyMap propMap = file.properties();
         KFileMetaData::PropertyMap::const_iterator it = propMap.constBegin();
         for (; it != propMap.constEnd(); ++it) {
+            QString str;
+            if (it.value().type() == QVariant::List) {
+                QStringList list;
+                for (const QVariant& var : it.value().toList()) {
+                    list << var.toString();
+                }
+                str = list.join(", ");
+            } else {
+                str = it.value().toString();
+            }
+
             KFileMetaData::PropertyInfo pi(it.key());
-            stream << "\t" << pi.displayName() << ": " << it.value().toString() << endl;
+            stream << "\t" << pi.displayName() << ": " << str << endl;
         }
 
         if (parser.isSet(QStringLiteral("xapian"))) {
