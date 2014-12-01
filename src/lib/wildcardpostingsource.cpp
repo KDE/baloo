@@ -25,6 +25,7 @@
 using namespace Baloo;
 
 WildcardPostingSource::WildcardPostingSource(const QString& word, const QString& prefix)
+    : m_first(true)
 {
     m_word = word;
     m_prefix = prefix.toUtf8();

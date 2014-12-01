@@ -34,6 +34,7 @@ FileExtractor::FileExtractor(uint id, const QString& url)
     , m_id(id)
     , m_url(url)
     , m_process(0)
+    , m_elapsed(0)
 {
 }
 

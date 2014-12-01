@@ -24,6 +24,7 @@
 
 Query::Query(QObject *parent)
     : QObject(parent)
+    , m_limit(0)
 {
 }
 

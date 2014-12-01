@@ -27,6 +27,8 @@ using namespace Baloo;
 
 FileStatistics::FileStatistics(XapianDatabase& xapDb)
     : m_xapDb(xapDb)
+    , m_totalNumDocuments(0)
+    , m_totalNumTerms(0)
 {
 }
 

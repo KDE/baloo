@@ -72,6 +72,7 @@ class KInotify::Private
 public:
     Private(KInotify* parent)
         : userLimitReachedSignaled(false)
+        , config(0)
         , m_dirIter(0)
         , m_inotifyFd(-1)
         , m_notifier(0)
