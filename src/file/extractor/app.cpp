@@ -46,6 +46,8 @@ App::App(const QString& path, QObject* parent)
     : QObject(parent)
     , m_path(path)
     , m_termCount(0)
+    , m_debugEnabled(false)
+    , m_ignoreConfig(false)
 {
     m_db.setPath(m_path);
     if (!m_db.init(true /*sql db only*/)) {
