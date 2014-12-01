@@ -28,6 +28,7 @@
 #include <QUrl>
 #include <QCoreApplication>
 #include <QSqlQuery>
+#include <QSqlError>
 #include <QDebug>
 
 using namespace Baloo;
@@ -45,7 +46,11 @@ void Cleaner::start()
 {
     QSqlDatabase sqlDb = m_db->sqlDatabase();
     QSqlQuery query(sqlDb);
-    query.exec(QLatin1String("select id, url from files"));
+    if (!query.exec(QLatin1String("select id, url from files"))) {
+        qDebug() << "Could not execute SQL query:" << query.lastError().text();
+        QCoreApplication::instance()->quit();
+        return;
+    }
 
     FileIndexerConfig config;
     QMimeDatabase mimeDb;
