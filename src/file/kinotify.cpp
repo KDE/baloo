@@ -35,20 +35,16 @@
 #include <sys/utsname.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/ioctl.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
 #include <dirent.h>
+#include <stropts.h>
 
 
 namespace
 {
-const int EVENT_STRUCT_SIZE = sizeof(struct inotify_event);
-
-// we need one event to fit into the buffer, the problem is that the name
-// is a variable length array
-const int EVENT_BUFFER_SIZE = EVENT_STRUCT_SIZE + 1024 * 16;
-
 QByteArray stripTrailingSlash(const QByteArray& path)
 {
     QByteArray p(path);
@@ -98,8 +94,6 @@ public:
     Baloo::FileIndexerConfig* config;
     QStringList m_paths;
     Baloo::FilteredDirIterator* m_dirIter;
-
-    unsigned char eventBuffer[EVENT_BUFFER_SIZE];
 
     // FIXME: only stored from the last addWatch call
     WatchEvents mode;
@@ -321,17 +315,27 @@ bool KInotify::removeWatch(const QString& path)
 
 void KInotify::slotEvent(int socket)
 {
-    // read at least one event
-    const int len = read(socket, d->eventBuffer, EVENT_BUFFER_SIZE);
+    int avail;
+    if (ioctl(socket, FIONREAD, &avail) == EINVAL) {
+        qDebug() << "Did not receive an entire inotify event.";
+        return;
+    }
+
+    char* buffer = (char*)malloc(avail);
+
+    const int len = read(socket, buffer, avail);
+    Q_ASSERT(len == avail);
+
     int i = 0;
-    while (i < len && len - i >= EVENT_STRUCT_SIZE) {
-        const struct inotify_event* event = (struct inotify_event*)&d->eventBuffer[i];
+    while (i < len) {
+        const struct inotify_event* event = (struct inotify_event*)&buffer[i];
 
         QByteArray path;
 
         // Overflow happens sometimes if we process the events too slowly
         if (event->wd < 0 && (event->mask & EventQueueOverflow)) {
             qWarning() << "Inotify - too many event - Overflowed";
+            free(buffer);
             return;
         }
 
@@ -452,12 +456,14 @@ void KInotify::slotEvent(int socket)
 //             qDebug() << path << "EventIgnored";
         }
 
-        i += EVENT_STRUCT_SIZE + event->len;
+        i += sizeof(struct inotify_event) + event->len;
     }
 
     if (len < 0) {
         qDebug() << "Failed to read event.";
     }
+
+    free(buffer);
 }
 
 void KInotify::slotClearCookies()
