@@ -25,7 +25,6 @@
 #include "pendingfilequeue.h"
 #include "../../lib/autotests/xattrdetector.h"
 #include "baloo_xattr_p.h"
-#include "filemapping.h"
 
 #include <QTest>
 #include <QSignalSpy>
@@ -143,9 +142,6 @@ void FileWatchTest::testFileCreation()
     //
     // Delete the file
     //
-    FileMapping fileMap(fileUrl);
-    fileMap.create(db.sqlDatabase());
-
     QFile(fileUrl).remove();
 
     spyIndex.wait();

@@ -65,6 +65,26 @@ XapianDatabase::~XapianDatabase()
     delete m_db;
 }
 
+
+void XapianDatabase::addDocument(const XapianDocument& doc)
+{
+    addDocument(doc.doc());
+}
+
+void XapianDatabase::addDocument(const Xapian::Document& doc)
+{
+    if (m_writeOnly) {
+        try {
+            m_wDb.add_document(doc);
+        }
+        catch (const Xapian::Error&) {
+        }
+        return;
+    }
+    m_docsToAdd << qMakePair(0, doc);
+
+}
+
 void XapianDatabase::replaceDocument(uint id, const XapianDocument& doc)
 {
     replaceDocument(id, doc.doc());
@@ -126,7 +146,11 @@ void XapianDatabase::commit()
     qDebug() << "Adding:" << m_docsToAdd.size() << "docs";
     Q_FOREACH (const DocIdPair& doc, m_docsToAdd) {
         try {
-            wdb.replace_document(doc.first, doc.second);
+            if (doc.first) {
+                wdb.replace_document(doc.first, doc.second);
+            } else {
+                wdb.add_document(doc.second);
+            }
         }
         catch (const Xapian::Error& err) {
             qDebug() << "ERROR" << err.get_description().c_str();

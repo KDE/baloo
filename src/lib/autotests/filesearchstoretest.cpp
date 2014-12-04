@@ -76,10 +76,17 @@ void FileSearchStoreTest::cleanupTestCase()
 
 uint FileSearchStoreTest::insertUrl(const QString& url)
 {
-    FileMapping file(url);
-    file.create(m_db->sqlDatabase());
+    Xapian::Document doc;
+    doc.add_value(3, url.toUtf8().constData());
 
-    return file.id();
+    std::string dir = m_tempDir->path().toUtf8().constData();
+    QScopedPointer<Xapian::WritableDatabase> wdb(new Xapian::WritableDatabase(dir,
+                                                                              Xapian::DB_CREATE_OR_OPEN));
+    int id = wdb->add_document(doc);
+    wdb->commit();
+
+    m_db->xapianDatabase()->db()->reopen();
+    return id;
 }
 
 void FileSearchStoreTest::insertType(int id, const QString& type)
@@ -119,15 +126,20 @@ void FileSearchStoreTest::insertExactText(int id, const QString& text, const QSt
 
 void FileSearchStoreTest::insertText(int id, const QString& text)
 {
+    std::string dir = m_tempDir->path().toUtf8().constData();
+    QScopedPointer<Xapian::WritableDatabase> wdb(new Xapian::WritableDatabase(dir,
+                                                                              Xapian::DB_CREATE_OR_OPEN));
     Xapian::Document doc;
+    try {
+        doc = wdb->get_document(id);
+    }
+    catch (...) {
+    }
 
     Xapian::TermGenerator termGen;
     termGen.set_document(doc);
     termGen.index_text(text.toUtf8().constData());
 
-    std::string dir = m_tempDir->path().toUtf8().constData();
-    QScopedPointer<Xapian::WritableDatabase> wdb(new Xapian::WritableDatabase(dir,
-                                                                              Xapian::DB_CREATE_OR_OPEN));
     wdb->replace_document(id, doc);
     wdb->commit();
 
@@ -153,33 +165,37 @@ void FileSearchStoreTest::insertRating(int id, int rating)
 
 void FileSearchStoreTest::testSimpleSearchString()
 {
-    QString url1(QLatin1String("/home/t/a"));
-    uint id1 = insertUrl(url1);
-    insertText(id1, QLatin1String("This is sample text"));
+    QBENCHMARK {
+        QString url1(QLatin1String("/home/t/a"));
+        uint id1 = insertUrl(url1);
+        insertText(id1, QLatin1String("This is sample text"));
 
-    QString url2(QLatin1String("/home/t/b"));
-    uint id2 = insertUrl(url2);
-    insertText(id2, QLatin1String("sample sample more sample text"));
+        QString url2(QLatin1String("/home/t/b"));
+        uint id2 = insertUrl(url2);
+        insertText(id2, QLatin1String("sample sample more sample text"));
 
-    Query q;
-    q.addType(QLatin1String("File"));
-    q.setSearchString(QLatin1String("Sample"));
+        Query q;
+        q.addType(QLatin1String("File"));
+        q.setSearchString(QLatin1String("Sample"));
 
-    int qid = m_store->exec(q);
-    QCOMPARE(qid, 1);
-    QVERIFY(m_store->next(qid));
-    QCOMPARE(m_store->id(qid), serialize("file", id2));
-    QCOMPARE(m_store->filePath(qid), url2);
+        int qid = m_store->exec(q);
+        //QCOMPARE(qid, 1);
+        QVERIFY(m_store->next(qid));
+        QCOMPARE(m_store->id(qid), serialize("file", id2));
+        QCOMPARE(m_store->filePath(qid), url2);
 
-    QVERIFY(m_store->next(qid));
-    QCOMPARE(m_store->id(qid), serialize("file", id1));
-    QCOMPARE(m_store->filePath(qid), url1);
+        QVERIFY(m_store->next(qid));
+        QCOMPARE(m_store->id(qid), serialize("file", id1));
+        QCOMPARE(m_store->filePath(qid), url1);
 
-    QVERIFY(!m_store->next(qid));
-    QVERIFY(m_store->id(qid).isEmpty());
-    QVERIFY(m_store->filePath(qid).isEmpty());
+        QVERIFY(!m_store->next(qid));
+        QVERIFY(m_store->id(qid).isEmpty());
+        QVERIFY(m_store->filePath(qid).isEmpty());
 
-    m_store->close(qid);
+        m_store->close(qid);
+        cleanupTestCase();
+        init();
+    }
 }
 
 void FileSearchStoreTest::testPropertyValueEqual()

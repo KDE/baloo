@@ -37,10 +37,9 @@ public:
     QString path();
     void setPath(const QString& path);
 
-    bool init(bool sqlOnly = false);
+    bool init();
     bool isInitialized();
 
-    QSqlDatabase& sqlDatabase();
     Baloo::XapianDatabase* xapianDatabase();
 
 private:
@@ -49,7 +48,6 @@ private:
     bool m_initialized;
 
     Baloo::XapianDatabase* m_xapianDb;
-    QSqlDatabase* m_sqlDb;
 };
 
 #endif // _BALOO_FILE_DATABASE_H

@@ -23,7 +23,6 @@
 #include "filemapping.h"
 #include "file.h"
 
-#include <QSqlQuery>
 #include <QDebug>
 #include <QTest>
 #include <QTemporaryFile>
@@ -44,10 +43,6 @@ void FileFetchJobTest::init()
     // Create the Xapian DB
     const std::string xapianPath = fileIndexDbPath();
     Xapian::WritableDatabase db(xapianPath, Xapian::DB_CREATE_OR_OPEN);
-
-    // Clear the sqlite db
-    QSqlDatabase sqlDb = fileMappingDb();
-    sqlDb.exec(QLatin1String("delete from files"));
 }
 
 void FileFetchJobTest::testXapianData()
@@ -70,14 +65,13 @@ void FileFetchJobTest::testXapianData()
     QTemporaryFile tempFile;
     tempFile.open();
 
-    FileMapping fileMap(tempFile.fileName());
-    QSqlDatabase sqlDb = fileMappingDb();
-    QVERIFY(fileMap.create(sqlDb));
+    doc.add_value(3, tempFile.fileName().toUtf8().constData());
+    doc.add_boolean_term(("P" + tempFile.fileName()).toUtf8().constData());
 
     {
         const std::string xapianPath = fileIndexDbPath();
         Xapian::WritableDatabase db(xapianPath, Xapian::DB_CREATE_OR_OPEN);
-        db.replace_document(fileMap.id(), doc);
+        db.add_document(doc);
         db.commit();
     }
 

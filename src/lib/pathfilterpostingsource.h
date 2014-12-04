@@ -25,14 +25,14 @@
 
 #include <xapian.h>
 #include <QString>
-#include <QSqlDatabase>
+#include "xapiandatabase.h"
 
 namespace Baloo {
 
 class PathFilterPostingSource : public Xapian::PostingSource
 {
 public:
-    PathFilterPostingSource(QSqlDatabase* sqlDb, const QString& includeDir);
+    PathFilterPostingSource(const QString& includeDir);
     virtual ~PathFilterPostingSource();
 
     virtual void init(const Xapian::Database& db);
@@ -40,7 +40,7 @@ public:
     virtual Xapian::docid get_docid() const;
 
     virtual void next(Xapian::weight min_wt);
-    virtual void skip_to(Xapian::docid did, Xapian::weight min_wt);
+    //virtual void skip_to(Xapian::docid did, Xapian::weight min_wt);
     virtual bool at_end() const;
 
     virtual Xapian::doccount get_termfreq_min() const;
@@ -48,12 +48,11 @@ public:
     virtual Xapian::doccount get_termfreq_max() const;
 
     virtual PostingSource* clone() const {
-        return new PathFilterPostingSource(m_sqlDb, m_includeDir);
+        return new PathFilterPostingSource(m_includeDir);
     }
 private:
     bool isMatch(uint docid);
 
-    QSqlDatabase* m_sqlDb;
     QString m_includeDir;
 
     Xapian::Database m_db;

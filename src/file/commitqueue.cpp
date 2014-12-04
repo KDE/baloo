@@ -55,7 +55,11 @@ bool Baloo::CommitQueue::isEmpty() const
 
 void Baloo::CommitQueue::add(unsigned id, Xapian::Document doc)
 {
-    m_db->xapianDatabase()->replaceDocument(id, doc);
+    if (id) {
+        m_db->xapianDatabase()->replaceDocument(id, doc);
+    } else {
+        m_db->xapianDatabase()->addDocument(doc);
+    }
     startTimers();
 }
 
@@ -83,10 +87,6 @@ void Baloo::CommitQueue::commit()
         QCoreApplication::instance()->quit();
         return;
     }
-
-    m_db->sqlDatabase().commit();
-    m_db->sqlDatabase().transaction();
-    qDebug() << "SQL Committed";
 
     m_db->xapianDatabase()->commit();
 

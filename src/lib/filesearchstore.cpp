@@ -44,7 +44,6 @@ using namespace Baloo;
 
 FileSearchStore::FileSearchStore(QObject* parent)
     : XapianSearchStore(parent)
-    , m_sqlMutex(QMutex::Recursive)
 {
     const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/file/");
     setDbPath(path);
@@ -61,22 +60,11 @@ FileSearchStore::FileSearchStore(QObject* parent)
 
 FileSearchStore::~FileSearchStore()
 {
-    const QString conName = m_sqlDb.connectionName();
-    m_sqlDb.close();
-    m_sqlDb = QSqlDatabase();
-
-    QSqlDatabase::removeDatabase(conName);
 }
 
 void FileSearchStore::setDbPath(const QString& path)
 {
     XapianSearchStore::setDbPath(path);
-
-    const QString conName = QLatin1String("filesearchstore") + QString::number(qrand());
-
-    m_sqlDb = QSqlDatabase::addDatabase(QLatin1String("QSQLITE"), conName);
-    m_sqlDb.setDatabaseName(dbPath() + QLatin1String("/fileMap.sqlite3"));
-    m_sqlDb.open();
 }
 
 QStringList FileSearchStore::types()
@@ -295,10 +283,10 @@ Xapian::Query FileSearchStore::constructFilterQuery(int year, int month, int day
 
 QString FileSearchStore::constructFilePath(const Xapian::docid& docid)
 {
-    QMutexLocker lock(&m_sqlMutex);
+    QMutexLocker lock(&m_mutex);
 
     FileMapping file(docid);
-    file.fetch(m_sqlDb);
+    file.fetch(m_db);
 
     return file.url();
 }
@@ -309,6 +297,6 @@ Xapian::Query FileSearchStore::applyIncludeFolder(const Xapian::Query& q, const 
         return q;
     }
 
-    PathFilterPostingSource ps(&m_sqlDb, includeFolder);
+    PathFilterPostingSource ps(includeFolder);
     return andQuery(q, Xapian::Query(&ps));
 }

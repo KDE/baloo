@@ -47,10 +47,12 @@ public:
     void indexText(const QString& text, const QString& prefix, int wdfInc = 1);
 
     void addValue(int pos, const QString& value);
+    void addValue(int pos, const QByteArray& value);
 
     Xapian::Document doc() const;
 
     QString fetchTermStartsWith(const QByteArray& term);
+    QStringList fetchTermsStartsWith(const QByteArray& term);
 
     /**
      * Remove all the terms which start with the prefix \p prefix
@@ -58,6 +60,8 @@ public:
      * \return true if the document was modified
      */
     bool removeTermStartsWith(const QByteArray& prefix);
+    void removeTerm(const QByteArray& term);
+    void removeTerm(const QString& term);
 
     QByteArray value(int slot) const;
 private:

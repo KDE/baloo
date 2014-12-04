@@ -24,9 +24,6 @@
 #define FILESEARCHSTORE_H
 
 #include "xapiansearchstore.h"
-#include <QSqlDatabase>
-
-#include <QMutex>
 
 namespace Baloo {
 
@@ -56,9 +53,6 @@ protected:
     virtual QByteArray idPrefix() { return QByteArray("file"); }
 
 private:
-    QSqlDatabase m_sqlDb;
-    QMutex m_sqlMutex;
-
     QHash<QString, QString> m_prefixes;
 
     QString fetchPrefix(const QString& property) const;

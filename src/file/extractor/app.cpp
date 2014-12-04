@@ -50,11 +50,10 @@ App::App(const QString& path, QObject* parent)
     , m_ignoreConfig(false)
 {
     m_db.setPath(m_path);
-    if (!m_db.init(true /*sql db only*/)) {
+    if (!m_db.init()) {
         QTimer::singleShot(0, QCoreApplication::instance(), SLOT(quit()));
         return;
     }
-    m_db.sqlDatabase().transaction();
 
     connect(this, &App::saved, this, &App::processNextUrl, Qt::QueuedConnection);
 }
@@ -67,10 +66,10 @@ void App::startProcessing(const QStringList& args)
         QString url;
 
         // arg is an id
-        if (mapping.fetch(m_db.sqlDatabase())) {
+        if (mapping.fetch(m_db.xapianDatabase())) {
             url = mapping.url();
             if (!QFile::exists(url)) {
-                mapping.remove(m_db.sqlDatabase());
+                m_docsToDelete << mapping.id();
                 continue;
             }
         } else {
@@ -87,7 +86,6 @@ void App::startProcessing(const QStringList& args)
             // Try to delete it as an id:
             // it may have been deleted from the FileMapping db as well.
             // The worst that can happen is deleting nothing.
-            mapping.remove(m_db.sqlDatabase());
             m_docsToDelete << mapping.id();
         }
     }
@@ -116,7 +114,7 @@ void App::processNextUrl()
             qDebug() << url << "should not be indexed. Ignoring";
 
             FileMapping mapping(url);
-            mapping.remove(m_db.sqlDatabase());
+            mapping.fetch(m_db.xapianDatabase());
             m_docsToDelete << mapping.id();
 
             QTimer::singleShot(0, this, SLOT(processNextUrl()));
@@ -141,10 +139,9 @@ void App::processNextUrl()
         }
     }
 
+    // FIXME: DOuble fetchign!! Not good.
     FileMapping file(url);
-    if (!file.fetch(m_db.sqlDatabase())) {
-        file.create(m_db.sqlDatabase());
-    }
+    file.fetch(m_db.xapianDatabase());
 
     // We always run the basic indexing again. This is mostly so that the proper
     // mimetype is set and we get proper type information.
@@ -192,7 +189,10 @@ void App::saveChanges()
         Result& res = m_results[i];
         res.finish();
 
-        xapDb.replaceDocument(res.id(), res.document());
+        if (res.id())
+            xapDb.replaceDocument(res.id(), res.document());
+        else
+            xapDb.addDocument(res.document());
         m_updatedFiles << res.inputUrl();
     }
 
@@ -202,7 +202,6 @@ void App::saveChanges()
     m_docsToDelete.clear();
 
     xapDb.commit();
-    m_db.sqlDatabase().commit();
 
     QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/files"),
                                                       QLatin1String("org.kde"),

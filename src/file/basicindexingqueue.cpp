@@ -134,7 +134,7 @@ bool BasicIndexingQueue::shouldIndex(FileMapping& file, const QString& mimetype)
     if (!fileInfo.exists())
         return false;
 
-    if (!file.fetch(m_db->sqlDatabase())) {
+    if (!file.fetch(m_db->xapianDatabase())) {
         return true;
     }
 
@@ -167,13 +167,7 @@ void BasicIndexingQueue::index(FileMapping& file, const QString& mimetype,
                                UpdateDirFlags flags)
 {
     if (!file.fetched()) {
-        if (!file.fetch(m_db->sqlDatabase())) {
-            if (!file.create(m_db->sqlDatabase())) {
-                qWarning() << "Cannot create fileMapping for" << file.url();
-                QTimer::singleShot(0, this, SLOT(finishIteration()));
-                return;
-            }
-        }
+        file.fetch(m_db->xapianDatabase());
     }
 
     qDebug() << file.id() << file.url();

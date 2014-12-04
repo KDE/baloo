@@ -65,9 +65,12 @@ bool BasicIndexingJob::index()
     doc.addBoolTerm(mod.date().month(), QLatin1String("DT_MM"));
     doc.addBoolTerm(mod.date().day(), QLatin1String("DT_MD"));
 
-    const QString timeTStr = QString::number(mod.toTime_t());
+    const QByteArray timeTStr = QByteArray::number(mod.toTime_t());
     doc.addValue(0, timeTStr);
-    doc.addValue(1, QString::number(mod.date().toJulianDay()));
+    doc.addValue(1, QByteArray::number(mod.date().toJulianDay()));
+    doc.addValue(2, QByteArray::number(fileInfo.created().toMSecsSinceEpoch()));
+    doc.addValue(3, m_file.url());
+    doc.addBoolTerm(m_file.url(), "P");
 
     // Types
     QVector<KFileMetaData::Type::Type> tList = typesForMimeType(m_mimetype);

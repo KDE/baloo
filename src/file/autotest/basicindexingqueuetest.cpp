@@ -98,12 +98,8 @@ void BasicIndexingQueueTest::testSimpleDirectoryStructure()
         QVariantList args = spy.at(i);
         QCOMPARE(args.size(), 2);
 
-        int id = args[0].toInt();
-        QVERIFY(id > 0);
-
-        FileMapping fileMap(id);
-        QVERIFY(fileMap.fetch(db.sqlDatabase()));
-        urls << fileMap.url();
+        Xapian::Document doc = args[1].value<Xapian::Document>();
+        urls << QString::fromUtf8(doc.get_value(3).c_str());
     }
 
     QString home = dir->path() + QLatin1String("/home");

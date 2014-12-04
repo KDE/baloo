@@ -1,6 +1,5 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
- * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2014  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -50,9 +49,10 @@ void XapianDocument::addBoolTerm(int term, const QString& prefix)
 
 void XapianDocument::addBoolTerm(const QString& term, const QString& prefix)
 {
+    // We're not truncating the terms over here as bool terms are often used
+    // to store data
     QByteArray arr = prefix.toUtf8();
     arr += term.toUtf8();
-    arr = arr.mid(0, XapianTermGenerator::maxTermSize);
 
     m_doc.add_boolean_term(arr.constData());
 }
@@ -77,6 +77,11 @@ void XapianDocument::addValue(int pos, const QString& value)
     m_doc.add_value(pos, value.toUtf8().constData());
 }
 
+void XapianDocument::addValue(int pos, const QByteArray& value)
+{
+    m_doc.add_value(pos, value.constData());
+}
+
 QString XapianDocument::fetchTermStartsWith(const QByteArray& term)
 {
     try {
@@ -92,6 +97,44 @@ QString XapianDocument::fetchTermStartsWith(const QByteArray& term)
     catch (const Xapian::Error& err) {
         qDebug() << "ERROR" << err.get_description().c_str();
         return QString();
+    }
+}
+
+QStringList XapianDocument::fetchTermsStartsWith(const QByteArray& prefix)
+{
+    try {
+        Xapian::TermIterator it = m_doc.termlist_begin();
+        it.skip_to(prefix.constData());
+
+        QStringList terms;
+        while (it != m_doc.termlist_end()){
+            const std::string t = *it;
+            const QByteArray term = QByteArray::fromRawData(t.c_str(), t.size());
+            if (!term.startsWith(prefix)) {
+                break;
+            }
+
+            // The term should not just be the prefix
+            if (term.size() <= prefix.size()) {
+                break;
+            }
+
+            // The term should not contain any more upper case letters
+            if (isupper(term.at(prefix.size()))) {
+                ++it;
+                continue;
+            }
+
+            ++it;
+
+            terms << QString::fromUtf8(term);
+        }
+
+        return terms;
+    }
+    catch (const Xapian::Error& err) {
+        qDebug() << "ERROR" << err.get_description().c_str();
+        return QStringList();
     }
 }
 
@@ -125,6 +168,17 @@ bool XapianDocument::removeTermStartsWith(const QByteArray& prefix)
     }
 
     return modified;
+}
+
+void XapianDocument::removeTerm(const QByteArray& term)
+{
+    std::string str(term.constData());
+    m_doc.remove_term(str);
+}
+
+void XapianDocument::removeTerm(const QString& term)
+{
+    removeTerm(term.toUtf8());
 }
 
 QByteArray XapianDocument::value(int slot) const

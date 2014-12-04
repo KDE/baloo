@@ -44,6 +44,8 @@ Cleaner::Cleaner(Database* db, QObject* parent)
 
 void Cleaner::start()
 {
+    // FIXME: The cleaner needs to be fixed!!
+    /*
     QSqlDatabase sqlDb = m_db->sqlDatabase();
     QSqlQuery query(sqlDb);
     if (!query.exec(QLatin1String("select id, url from files"))) {
@@ -93,5 +95,6 @@ void Cleaner::start()
 
     m_commitQueue->commit();
     QCoreApplication::instance()->quit();
+    */
 }
 

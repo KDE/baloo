@@ -24,8 +24,7 @@
 #include "filemapping.h"
 #include "searchstore.h"
 #include "db.h"
-
-#include <xapian.h>
+#include "xapiandocument.h"
 
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -116,16 +115,16 @@ bool File::load()
     fileMap.setId(deserialize("file", d->id));
     fileMap.setUrl(d->url);
 
-    if (!fileMap.fetch(fileMappingDb())) {
-        return true;
-    }
-
-    d->id = serialize("file", fileMap.id());
-    d->url = fileMap.url();
-
     // Fetch data from Xapian
     try {
         Xapian::Database db(fileIndexDbPath());
+        if (!fileMap.fetch(&db)) {
+            return true;
+        }
+
+        d->id = serialize("file", fileMap.id());
+        d->url = fileMap.url();
+
         Xapian::Document doc = db.get_document(fileMap.id());
 
         std::string docData = doc.get_data();

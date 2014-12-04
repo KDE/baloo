@@ -22,8 +22,10 @@
 #include "../metadatamover.h"
 #include "filemapping.h"
 
+#include "xapiandatabase.h"
+#include "xapiandocument.h"
+
 #include <QSignalSpy>
-#include <QSqlQuery>
 
 #include <QTest>
 #include <QTimer>
@@ -40,7 +42,6 @@ MetadataMoverTest::MetadataMoverTest(QObject* parent)
 
 void MetadataMoverTest::init()
 {
-
     m_tempDir = new QTemporaryDir();
     m_db = new Database(this);
     m_db->setPath(m_tempDir->path());
@@ -58,10 +59,23 @@ void MetadataMoverTest::cleanupTestCase()
 
 uint MetadataMoverTest::insertUrl(const QString& url)
 {
-    FileMapping file(url);
-    file.create(m_db->sqlDatabase());
+    XapianDocument doc;
+    doc.addValue(3, url);
+    doc.addBoolTerm(url, "P");
 
-    return file.id();
+    m_db->xapianDatabase()->addDocument(doc);
+    m_db->xapianDatabase()->commit();
+
+    XapianDocument doc2 = m_db->xapianDatabase()->document(1);
+    Xapian::Enquire enquire(*m_db->xapianDatabase()->db());
+    enquire.set_query(Xapian::Query(("P" + url).toUtf8().constData()));
+    enquire.set_weighting_scheme(Xapian::BoolWeight());
+
+    Xapian::MSet mset = enquire.get_mset(0, 1);
+    Xapian::MSetIterator miter = mset.begin();
+    Q_ASSERT(miter != mset.end());
+
+    return *miter;
 }
 
 void MetadataMoverTest::testRemoveFile()
@@ -78,11 +92,8 @@ void MetadataMoverTest::testRemoveFile()
     QCOMPARE(spy.at(0).size(), 1);
     QCOMPARE(spy.at(0).first().toUInt(), fid);
 
-    QSqlQuery query(m_db->sqlDatabase());
-    query.prepare(QLatin1String("select count(*) from files;"));
-    QVERIFY(query.exec());
-    QVERIFY(query.next());
-    QCOMPARE(query.value(0).toInt(), 0);
+    Xapian::Database* db = m_db->xapianDatabase()->db();
+    QVERIFY(db->get_doccount() == 0);
 }
 
 void MetadataMoverTest::testMoveFile()
@@ -99,20 +110,14 @@ void MetadataMoverTest::testMoveFile()
     QTimer::singleShot(5, &loop, SLOT(quit()));
     loop.exec();
 
-    QSqlQuery query(m_db->sqlDatabase());
-    query.prepare(QLatin1String("select count(*) from files;"));
-    QVERIFY(query.exec());
-    QVERIFY(query.next());
-    QCOMPARE(query.value(0).toInt(), 1);
-    QVERIFY(!query.next());
+    Xapian::Database* db = m_db->xapianDatabase()->db();
+    QVERIFY(db->get_doccount() == 1);
 
-    query.prepare(QLatin1String("select url from files where id = ?;"));
-    query.addBindValue(fid);
-
-    QVERIFY(query.exec());
-    QVERIFY(query.next());
-    QCOMPARE(query.value(0).toString(), newUrl);
-    QVERIFY(!query.next());
+    XapianDocument doc = m_db->xapianDatabase()->document(fid);
+    QCOMPARE(QString::fromUtf8(doc.value(3)), newUrl);
+    QString str = "P" + newUrl;
+    QCOMPARE(doc.fetchTermStartsWith("P"), str);
+    QCOMPARE(doc.fetchTermsStartsWith("P").size(), 1);
 }
 
 void MetadataMoverTest::testMoveFolder()
@@ -143,36 +148,31 @@ void MetadataMoverTest::testMoveFolder()
     QTimer::singleShot(5, &loop, SLOT(quit()));
     loop.exec();
 
-    QSqlQuery query(m_db->sqlDatabase());
-    query.prepare(QLatin1String("select count(*) from files;"));
-    QVERIFY(query.exec());
-    QVERIFY(query.next());
-    QCOMPARE(query.value(0).toInt(), 3);
-    QVERIFY(!query.next());
+    Xapian::Database* db = m_db->xapianDatabase()->db();
+    QVERIFY(db->get_doccount() == 3);
 
-    query.prepare(QLatin1String("select url from files where id = ?;"));
-    query.addBindValue(folId);
+    // Folder
+    XapianDocument doc = m_db->xapianDatabase()->document(folId);
+    QCOMPARE(QString::fromUtf8(doc.value(3)), newFolderUrl);
+    QString str = "P" + newFolderUrl;
+    QCOMPARE(doc.fetchTermStartsWith("P"), str);
+    QCOMPARE(doc.fetchTermsStartsWith("P").size(), 1);
 
-    QVERIFY(query.exec());
-    QVERIFY(query.next());
-    QCOMPARE(query.value(0).toString(), newFolderUrl);
-    QVERIFY(!query.next());
+    // File 1
+    doc = m_db->xapianDatabase()->document(fid1);
+    str = newFolderUrl + "/1";
+    QCOMPARE(QString::fromUtf8(doc.value(3)), str);
+    str = "P" + str;
+    QCOMPARE(doc.fetchTermStartsWith("P"), str);
+    QCOMPARE(doc.fetchTermsStartsWith("P").size(), 1);
 
-    query.prepare(QLatin1String("select url from files where id = ?;"));
-    query.addBindValue(fid1);
-
-    QVERIFY(query.exec());
-    QVERIFY(query.next());
-    QCOMPARE(query.value(0).toString(), QString(newFolderUrl + QLatin1String("/1")));
-    QVERIFY(!query.next());
-
-    query.prepare(QLatin1String("select url from files where id = ?;"));
-    query.addBindValue(fid2);
-
-    QVERIFY(query.exec());
-    QVERIFY(query.next());
-    QCOMPARE(query.value(0).toString(), QString(newFolderUrl + QLatin1String("/2")));
-    QVERIFY(!query.next());
+    // File 2
+    doc = m_db->xapianDatabase()->document(fid2);
+    str = newFolderUrl + "/2";
+    QCOMPARE(QString::fromUtf8(doc.value(3)), str);
+    str = "P" + str;
+    QCOMPARE(doc.fetchTermStartsWith("P"), str);
+    QCOMPARE(doc.fetchTermsStartsWith("P").size(), 1);
 }
 
 QTEST_MAIN(MetadataMoverTest)

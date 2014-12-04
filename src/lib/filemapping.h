@@ -24,8 +24,8 @@
 #define FILEMAPPING_H
 
 #include <QString>
-#include <QSqlDatabase>
 #include "core_export.h"
+#include "xapiandatabase.h"
 
 namespace Baloo {
 
@@ -53,14 +53,8 @@ public:
      *
      * Returns true if fetching was successful
      */
-    bool fetch(QSqlDatabase db);
-
-    /**
-     * Creates the corresponding url <-> id mapping
-     */
-    bool create(QSqlDatabase db);
-
-    bool remove(QSqlDatabase db);
+    bool fetch(XapianDatabase* db);
+    bool fetch(Xapian::Database* db);
 
     bool operator ==(const FileMapping& rhs) const;
 

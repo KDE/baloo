@@ -21,10 +21,8 @@
  */
 
 #include "filemapping.h"
+#include "xapiandocument.h"
 #include <QDebug>
-
-#include <QSqlQuery>
-#include <QSqlError>
 
 using namespace Baloo;
 
@@ -72,7 +70,7 @@ bool FileMapping::fetched()
     return true;
 }
 
-bool FileMapping::fetch(QSqlDatabase db)
+bool FileMapping::fetch(XapianDatabase* db)
 {
     if (fetched())
         return true;
@@ -81,83 +79,68 @@ bool FileMapping::fetch(QSqlDatabase db)
         return false;
 
     if (m_url.isEmpty()) {
-        QSqlQuery query(db);
-        query.setForwardOnly(true);
-        query.prepare(QLatin1String("select url from files where id = ?"));
-        query.addBindValue(m_id);
-        query.exec();
+        XapianDocument doc = db->document(m_id);
+        m_url = QString::fromUtf8(doc.value(3));
 
-        if (!query.next()) {
-            return false;
-        }
-
-        m_url = query.value(0).toString();
+        return !m_url.isEmpty();
     }
     else {
-        QSqlQuery query(db);
-        query.setForwardOnly(true);
-        query.prepare(QLatin1String("select id from files where url = ?"));
-        query.addBindValue(m_url);
-        query.exec();
+        // FIXME: Need to catch exceptions!
+        Xapian::Enquire enquire(*db->db());
+        enquire.set_query(Xapian::Query(("P" + m_url).toUtf8().constData()));
+        enquire.set_weighting_scheme(Xapian::BoolWeight());
 
-        if (!query.next()) {
+        Xapian::MSet mset = enquire.get_mset(0, 1);
+        Xapian::MSetIterator it = mset.begin();
+        if (it == mset.end()) {
             return false;
         }
 
-        m_id = query.value(0).toUInt();
+        m_id = *it;
+        return true;
     }
 
     return true;
 }
 
-bool FileMapping::create(QSqlDatabase db)
+bool FileMapping::fetch(Xapian::Database* db)
 {
-    if (m_id)
+    if (fetched())
+        return true;
+
+    if (m_id == 0 && m_url.isEmpty())
         return false;
 
-    if (m_url.isEmpty())
-        return false;
+    try {
+        if (m_url.isEmpty()) {
+            Xapian::Document doc = db->get_document(m_id);
+            std::string str = doc.get_value(3);
+            m_url = QString::fromUtf8(str.c_str(), str.length());
 
-    QSqlQuery query(db);
-    query.prepare(QLatin1String("insert into files (url) VALUES (?)"));
-    query.addBindValue(m_url);
+            return !m_url.isEmpty();
+        }
+        else {
+            // FIXME: Need to catch exceptions!
+            Xapian::Enquire enquire(*db);
+            enquire.set_query(Xapian::Query(("P" + m_url).toUtf8().constData()));
+            enquire.set_weighting_scheme(Xapian::BoolWeight());
 
-    if (!query.exec()) {
-        qWarning() << query.lastError().text();
-        return false;
-    }
+            Xapian::MSet mset = enquire.get_mset(0, 1);
+            Xapian::MSetIterator it = mset.begin();
+            if (it == mset.end())
+                return false;
 
-    m_id = query.lastInsertId().toUInt();
-    return true;
-}
-
-bool FileMapping::remove(QSqlDatabase db)
-{
-    if (m_url.isEmpty() && m_id == 0)
-        return false;
-
-    QSqlQuery query(db);
-
-    if (!m_url.isEmpty()) {
-        query.prepare(QLatin1String("delete from files where url = ?"));
-        query.addBindValue(m_url);
-        if (!query.exec()) {
-            qWarning() << query.lastError().text();
-            return false;
+            m_id = *it;
+            return true;
         }
     }
-    else {
-        query.prepare(QLatin1String("delete from files where id = ?"));
-        query.addBindValue(m_id);
-        if (!query.exec()) {
-            qWarning() << query.lastError().text();
-            return false;
-        }
+    catch (...) {
+        return false;
     }
 
     return true;
-}
 
+}
 
 void FileMapping::clear()
 {

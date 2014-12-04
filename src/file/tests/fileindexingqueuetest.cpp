@@ -69,7 +69,7 @@ int main(int argc, char** argv)
     uint totalTime = 0;
     for (; it != mset.end(); ++it) {
         Baloo::FileMapping fileMap(*it);
-        if (!fileMap.fetch(db.sqlDatabase()))
+        if (!fileMap.fetch(db.xapianDatabase()))
             continue;
 
         auto job = new Baloo::FileExtractor(fileMap.id(), fileMap.url());

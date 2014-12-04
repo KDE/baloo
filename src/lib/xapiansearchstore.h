@@ -103,7 +103,6 @@ protected:
 protected:
     QMutex m_mutex;
 
-private:
     Xapian::Query toXapianQuery(const Term& term);
     Xapian::Query toXapianQuery(Xapian::Query::op op, const QList<Term>& terms);
 

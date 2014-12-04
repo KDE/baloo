@@ -23,14 +23,11 @@
 #include "pathfilterpostingsource.h"
 #include "filemapping.h"
 #include <QDebug>
-#include <QSqlQuery>
-#include <QSqlError>
 
 using namespace Baloo;
 
-PathFilterPostingSource::PathFilterPostingSource(QSqlDatabase* sqlDb, const QString& includeDir)
-    : m_sqlDb(sqlDb)
-    , m_includeDir(includeDir)
+PathFilterPostingSource::PathFilterPostingSource(const QString& includeDir)
+    : m_includeDir(includeDir)
     , m_first(false)
 {
     if (!m_includeDir.endsWith(QLatin1Char('/')))
@@ -53,7 +50,7 @@ bool PathFilterPostingSource::isMatch(uint docid)
 {
     FileMapping fileMap(docid);
 
-    if (!fileMap.fetch(*m_sqlDb)) {
+    if (!fileMap.fetch(&m_db)) {
         return false;
     }
 
@@ -84,6 +81,7 @@ void PathFilterPostingSource::next(Xapian::weight)
     } while (!isMatch(*m_iter));
 }
 
+/*
 void PathFilterPostingSource::skip_to(Xapian::docid did, Xapian::weight)
 {
     m_iter.skip_to(did);
@@ -94,32 +92,22 @@ void PathFilterPostingSource::skip_to(Xapian::docid did, Xapian::weight)
     if (isMatch(*m_iter))
         return;
 
-    QSqlQuery query(*m_sqlDb);
-    /*
-     * sqlite prepare is buggy
-    query.prepare("select id from files where id > :id and url like ':f%' limit 1");
-    query.bindValue(":id", did);
-    query.bindValue(":f", m_includeDir);
-    */
+    FileMapping filemap(m_includeDir);
+    Xapian::Database* db = m_xapDb->db();
 
-    QString str;
-    str += QLatin1String("select id from files where id >= ") + QString::number(did);
-    str += QLatin1String(" and url like '") + m_includeDir + QLatin1String("%' limit 1");
+    QByteArray term = ("P" + m_includeDir).toUtf8();
+    auto it = db->allterms_begin(term.constData());
+    auto end = db->allterms_begin(term.constData());
 
-    if (!query.exec(str)) {
-        m_iter = m_end;
-        qDebug() << query.lastError().text();
-        return;
-    }
-
-    if (!query.next()) {
+    if (it == end) {
         m_iter = m_end;
         return;
     }
 
-    int id = query.value(0).toInt();
+    int id = *it;
     m_iter.skip_to(id);
 }
+*/
 
 
 bool PathFilterPostingSource::at_end() const

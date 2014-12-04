@@ -36,6 +36,7 @@ ecm_add_test(${filefetchjobtest_SRC}
         Qt5::DBus
         ${XAPIAN_LIBRARIES}
         KF5::Baloo
+        KF5BalooXapian
 )
 
 # Pass CMAKE_CURRENT_BINARY_DIR so tests can use it to create some of the
@@ -75,4 +76,12 @@ ecm_add_test(${filesearchstore_SRCS}
         KF5::FileMetaData
         KF5::Baloo
         KF5::BalooXapian
+)
+
+ecm_add_test(filemappingbenchmark.cpp
+    TEST_NAME "filemappingbenchmark"
+    LINK_LIBRARIES
+        Qt5::Test
+        KF5::Baloo
+        baloofilecommon
 )

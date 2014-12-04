@@ -25,79 +25,28 @@
 #include <QStringList>
 #include <QDir>
 
-#include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QSqlError>
-
 #include <QDebug>
 
 Database::Database(QObject* parent)
     : QObject(parent)
     , m_initialized(false)
     , m_xapianDb(0)
-    , m_sqlDb(0)
 
 {
 }
 
 Database::~Database()
 {
-    QString name = m_sqlDb->connectionName();
-    delete m_sqlDb;
     delete m_xapianDb;
-
-    QSqlDatabase::removeDatabase(name);
 }
 
-bool Database::init(bool sqlOnly)
+bool Database::init()
 {
     if (m_initialized)
         return true;
 
-    if (!sqlOnly) {
-        // Create the Xapian DB
-        m_xapianDb = new Baloo::XapianDatabase(m_path);
-    }
-
-    m_sqlDb = new QSqlDatabase(QSqlDatabase::addDatabase(QLatin1String("QSQLITE")));
-    m_sqlDb->setDatabaseName(m_path + QLatin1String("/fileMap.sqlite3"));
-    qDebug() << m_path << QFile::exists(m_path);
-
-    if (!m_sqlDb->open()) {
-        qDebug() << "Failed to open db" << m_sqlDb->lastError().text();
-        qDebug() << m_sqlDb->lastError();
-        return false;
-    }
-
-    const QStringList tables = m_sqlDb->tables();
-    if (tables.contains(QLatin1String("files"))) {
-        return true;
-    }
-
-    QSqlQuery query(*m_sqlDb);
-    bool ret = query.exec(QLatin1String("CREATE TABLE files("
-                          "id INTEGER PRIMARY KEY, "
-                          "url TEXT NOT NULL UNIQUE)"));
-    if (!ret) {
-        qDebug() << "Could not create tags table" << query.lastError().text();
-        return false;
-    }
-
-    ret = query.exec(QLatin1String("CREATE INDEX fileUrl_index ON files (url)"));
-    if (!ret) {
-        qDebug() << "Could not create tags index" << query.lastError().text();
-        return false;
-    }
-
-    //
-    // WAL Journaling mode has much lower io writes than the traditional journal
-    // based indexing.
-    //
-    ret = query.exec(QLatin1String("PRAGMA journal_mode = WAL"));
-    if (!ret) {
-        qDebug() << "Could not set WAL journaling mode" << query.lastError().text();
-        return false;
-    }
+    // Create the Xapian DB
+    m_xapianDb = new Baloo::XapianDatabase(m_path);
 
     m_initialized = true;
     return true;
@@ -126,11 +75,6 @@ void Database::setPath(const QString& path)
 bool Database::isInitialized()
 {
     return m_initialized;
-}
-
-QSqlDatabase& Database::sqlDatabase()
-{
-    return *m_sqlDb;
 }
 
 Baloo::XapianDatabase* Database::xapianDatabase()
