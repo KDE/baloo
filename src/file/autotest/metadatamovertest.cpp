@@ -30,8 +30,16 @@
 #include <QTest>
 #include <QTimer>
 #include <QDir>
+#include <QCryptographicHash>
 
 using namespace Baloo;
+
+static QByteArray sha1Hash(const QString& str)
+{
+    QCryptographicHash hash(QCryptographicHash::Sha1);
+    hash.addData(str.toUtf8());
+    return hash.result();
+}
 
 MetadataMoverTest::MetadataMoverTest(QObject* parent)
     : QObject(parent)
@@ -61,14 +69,15 @@ uint MetadataMoverTest::insertUrl(const QString& url)
 {
     XapianDocument doc;
     doc.addValue(3, url);
-    doc.addBoolTerm(url, "P");
+    doc.addBoolTerm(sha1Hash(url), "P-");
 
     m_db->xapianDatabase()->addDocument(doc);
     m_db->xapianDatabase()->commit();
 
-    XapianDocument doc2 = m_db->xapianDatabase()->document(1);
     Xapian::Enquire enquire(*m_db->xapianDatabase()->db());
-    enquire.set_query(Xapian::Query(("P" + url).toUtf8().constData()));
+
+    QByteArray arr = "P-" + sha1Hash(url);
+    enquire.set_query(Xapian::Query(arr.constData()));
     enquire.set_weighting_scheme(Xapian::BoolWeight());
 
     Xapian::MSet mset = enquire.get_mset(0, 1);
@@ -115,8 +124,8 @@ void MetadataMoverTest::testMoveFile()
 
     XapianDocument doc = m_db->xapianDatabase()->document(fid);
     QCOMPARE(QString::fromUtf8(doc.value(3)), newUrl);
-    QString str = "P" + newUrl;
-    QCOMPARE(doc.fetchTermStartsWith("P"), str);
+    QByteArray arr = "P" + sha1Hash(newUrl);
+    QCOMPARE(doc.fetchTermStartsWith("P"), QString::fromUtf8(arr));
     QCOMPARE(doc.fetchTermsStartsWith("P").size(), 1);
 }
 
@@ -154,24 +163,24 @@ void MetadataMoverTest::testMoveFolder()
     // Folder
     XapianDocument doc = m_db->xapianDatabase()->document(folId);
     QCOMPARE(QString::fromUtf8(doc.value(3)), newFolderUrl);
-    QString str = "P" + newFolderUrl;
-    QCOMPARE(doc.fetchTermStartsWith("P"), str);
+    QByteArray arr = "P" + sha1Hash(newFolderUrl);
+    QCOMPARE(doc.fetchTermStartsWith("P"), QString::fromUtf8(arr));
     QCOMPARE(doc.fetchTermsStartsWith("P").size(), 1);
 
     // File 1
     doc = m_db->xapianDatabase()->document(fid1);
-    str = newFolderUrl + "/1";
+    QString str = newFolderUrl + "/1";
     QCOMPARE(QString::fromUtf8(doc.value(3)), str);
-    str = "P" + str;
-    QCOMPARE(doc.fetchTermStartsWith("P"), str);
+    arr = "P" + sha1Hash(str);
+    QCOMPARE(doc.fetchTermStartsWith("P"), QString::fromUtf8(arr));
     QCOMPARE(doc.fetchTermsStartsWith("P").size(), 1);
 
     // File 2
     doc = m_db->xapianDatabase()->document(fid2);
     str = newFolderUrl + "/2";
     QCOMPARE(QString::fromUtf8(doc.value(3)), str);
-    str = "P" + str;
-    QCOMPARE(doc.fetchTermStartsWith("P"), str);
+    arr = "P" + sha1Hash(str);
+    QCOMPARE(doc.fetchTermStartsWith("P"), QString::fromUtf8(arr));
     QCOMPARE(doc.fetchTermsStartsWith("P").size(), 1);
 }
 

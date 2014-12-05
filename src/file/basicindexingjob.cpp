@@ -27,6 +27,7 @@
 #include <QFileInfo>
 #include <QDateTime>
 #include <QStringList>
+#include <QCryptographicHash>
 
 #include <KFileMetaData/TypeInfo>
 #include <KFileMetaData/UserMetaData>
@@ -69,8 +70,14 @@ bool BasicIndexingJob::index()
     doc.addValue(0, timeTStr);
     doc.addValue(1, QByteArray::number(mod.date().toJulianDay()));
     doc.addValue(2, QByteArray::number(fileInfo.created().toMSecsSinceEpoch()));
-    doc.addValue(3, m_file.url());
-    doc.addBoolTerm(m_file.url(), "P");
+
+    // Store the URL
+    QByteArray urlArr = m_file.url().toUtf8();
+    doc.addValue(3, urlArr);
+
+    QCryptographicHash hash(QCryptographicHash::Sha1);
+    hash.addData(urlArr);
+    doc.addBoolTerm(hash.result(), "P-");
 
     // Types
     QVector<KFileMetaData::Type::Type> tList = typesForMimeType(m_mimetype);

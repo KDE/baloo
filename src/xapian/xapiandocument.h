@@ -41,6 +41,7 @@ public:
 
     void addTerm(const QString& term, const QString& prefix = QString());
     void addBoolTerm(const QString& term, const QString& prefix = QString());
+    void addBoolTerm(const QByteArray& term, const QByteArray& prefix = QByteArray());
     void addBoolTerm(int term, const QString& prefix);
 
     void indexText(const QString& text, int wdfInc = 1);

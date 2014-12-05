@@ -57,6 +57,14 @@ void XapianDocument::addBoolTerm(const QString& term, const QString& prefix)
     m_doc.add_boolean_term(arr.constData());
 }
 
+void XapianDocument::addBoolTerm(const QByteArray& term, const QByteArray& prefix)
+{
+    QByteArray arr = prefix;
+    arr += term;
+
+    m_doc.add_boolean_term(arr.constData());
+}
+
 void XapianDocument::indexText(const QString& text, const QString& prefix, int wdfInc)
 {
     m_termGen.indexText(text, prefix, wdfInc);

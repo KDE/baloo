@@ -26,8 +26,8 @@
 #include <QTimer>
 #include <QFileInfo>
 #include <QStringList>
-
 #include <QDebug>
+#include <QCryptographicHash>
 
 using namespace Baloo;
 
@@ -96,9 +96,13 @@ void MetadataMover::updateMetadata(const QString& from, const QString& to)
         XapianDocument doc = m_db->xapianDatabase()->document(fromFile.id());
 
         // Change the file path
-        doc.addValue(3, to);
+        QByteArray toArr = to.toUtf8();
+        doc.addValue(3, toArr);
         doc.removeTermStartsWith("P");
-        doc.addBoolTerm(to, "P");
+
+        QCryptographicHash hash(QCryptographicHash::Sha1);
+        hash.addData(toArr);
+        doc.addBoolTerm(hash.result(), "P");
 
         // Change the file name
         const QStringRef fromFileName = from.midRef(from.lastIndexOf('/'));
@@ -118,6 +122,7 @@ void MetadataMover::updateMetadata(const QString& from, const QString& to)
         }
 
         m_db->xapianDatabase()->replaceDocument(fromFile.id(), doc);
+        XapianDocument doc2 = m_db->xapianDatabase()->document(fromFile.id());
     }
     else {
         //
@@ -133,29 +138,28 @@ void MetadataMover::updateMetadata(const QString& from, const QString& to)
     //
     Xapian::Database* db = m_db->xapianDatabase()->db();
 
-    auto it = db->allterms_begin(("P" + from + "/").toUtf8().constData());
-    auto end = db->allterms_end(("P" + from + "/").toUtf8().constData());
+    auto it = db->allterms_begin(("P-" + from + "/").toUtf8().constData());
+    auto end = db->allterms_end(("P-" + from + "/").toUtf8().constData());
 
     for (; it != end; it++) {
         std::string term = *it;
 
-        Xapian::Enquire enquire(*db);
-        enquire.set_query(Xapian::Query(term));
-        enquire.set_weighting_scheme(Xapian::BoolWeight());
+        auto iter = db->postlist_begin(term);
+        Q_ASSERT(iter != db->postlist_end(term));
 
-        Xapian::MSet mset = enquire.get_mset(0, 1);
-        Xapian::MSetIterator miter = mset.begin();
-        Q_ASSERT(miter != mset.end());
+        int id = *iter;
 
-        int id = *miter;
-
-        const QString path = QString::fromUtf8(term.c_str()).mid(1);
+        std::string pathStr = db->get_document(id).get_value(3);
+        const QString path = QString::fromUtf8(pathStr.c_str(), pathStr.length());
         const QString newPath = to + path.mid(from.length());
 
         XapianDocument doc = m_db->xapianDatabase()->document(id);
         doc.addValue(3, newPath);
         doc.removeTermStartsWith("P");
-        doc.addBoolTerm(newPath, "P");
+
+        QCryptographicHash hash(QCryptographicHash::Sha1);
+        hash.addData(newPath.toUtf8());
+        doc.addBoolTerm(hash.result(), "P-");
 
         m_db->xapianDatabase()->replaceDocument(id, doc);
     }

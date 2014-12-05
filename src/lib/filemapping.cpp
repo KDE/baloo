@@ -22,7 +22,9 @@
 
 #include "filemapping.h"
 #include "xapiandocument.h"
+
 #include <QDebug>
+#include <QCryptographicHash>
 
 using namespace Baloo;
 
@@ -85,9 +87,14 @@ bool FileMapping::fetch(XapianDatabase* db)
         return !m_url.isEmpty();
     }
     else {
+        QCryptographicHash hash(QCryptographicHash::Sha1);
+        hash.addData(m_url.toUtf8());
+
         // FIXME: Need to catch exceptions!
         Xapian::Enquire enquire(*db->db());
-        enquire.set_query(Xapian::Query(("P" + m_url).toUtf8().constData()));
+
+        QByteArray arr = "P-" + hash.result();
+        enquire.set_query(Xapian::Query(arr.constData()));
         enquire.set_weighting_scheme(Xapian::BoolWeight());
 
         Xapian::MSet mset = enquire.get_mset(0, 1);
