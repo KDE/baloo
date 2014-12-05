@@ -24,10 +24,6 @@
 #include <QStringList>
 
 #include <QTemporaryDir>
-#include <QDebug>
-
-#include <QSqlQuery>
-#include <QSqlError>
 
 static QTemporaryDir dir;
 

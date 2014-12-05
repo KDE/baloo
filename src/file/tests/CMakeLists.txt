@@ -19,7 +19,6 @@ add_executable(basicindexingqueuetest-manual
 
 target_link_libraries(basicindexingqueuetest-manual
   Qt5::Core
-  Qt5::Sql
   KF5::FileMetaData
   KF5::KIOCore
   KF5::ConfigCore
@@ -36,7 +35,6 @@ add_executable(fileindexingqueuetest-manual
 
 target_link_libraries(fileindexingqueuetest-manual
   Qt5::Core
-  Qt5::Sql
   KF5::FileMetaData
   KF5::KIOCore
   KF5::ConfigCore

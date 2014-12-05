@@ -21,12 +21,10 @@
 #include "filewatch.h"
 #include "filemapping.h"
 #include "database.h"
-#include <xapiandocument.h>
+#include "xapiandocument.h"
 
 #include <QTimer>
 #include <QFileInfo>
-#include <QSqlQuery>
-#include <QSqlError>
 #include <QStringList>
 
 #include <QDebug>

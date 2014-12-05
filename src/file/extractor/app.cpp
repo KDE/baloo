@@ -31,8 +31,6 @@
 #include <QTimer>
 #include <QFileInfo>
 #include <QDBusMessage>
-#include <QSqlQuery>
-#include <QSqlError>
 #include <QDBusConnection>
 
 #include <KFileMetaData/Extractor>

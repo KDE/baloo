@@ -49,7 +49,6 @@ Baloo::CommitQueue::~CommitQueue()
 
 bool Baloo::CommitQueue::isEmpty() const
 {
-    // We could only have sqlite changes, but we typically always have both
     return !m_db->xapianDatabase()->haveChanges();
 }
 

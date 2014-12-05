@@ -23,7 +23,7 @@ set(metadatamover_SRC
 
 ecm_add_test(${metadatamover_SRC}
     TEST_NAME "metadatamovertest"
-    LINK_LIBRARIES Qt5::Test Qt5::Sql ${XAPIAN_LIBRARIES} KF5::BalooXapian baloofilecommon
+    LINK_LIBRARIES Qt5::Test ${XAPIAN_LIBRARIES} KF5::BalooXapian baloofilecommon
 )
 
 #
@@ -82,7 +82,7 @@ set(basicIndexingQueue_SRC
 
 ecm_add_test(${basicIndexingQueue_SRC}
     TEST_NAME basicindexingqueuetest
-    LINK_LIBRARIES Qt5::Test Qt5::Sql KF5::FileMetaData KF5::ConfigCore
+    LINK_LIBRARIES Qt5::Test KF5::FileMetaData KF5::ConfigCore
                    KF5::CoreAddons ${XAPIAN_LIBRARIES} KF5::BalooXapian
                    baloofilecommon
 )

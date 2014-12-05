@@ -17,7 +17,6 @@ set(EXTRACTOR_SRCS
 add_executable(baloo_file_extractor ${EXTRACTOR_SRCS})
 
 target_link_libraries(baloo_file_extractor
-  Qt5::Sql
   Qt5::DBus
   KF5::FileMetaData
   KF5::I18n

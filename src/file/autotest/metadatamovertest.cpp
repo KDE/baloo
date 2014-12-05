@@ -126,7 +126,7 @@ void MetadataMoverTest::testMoveFolder()
     uint folId = insertUrl(folderUrl);
 
     // The directory needs to be created because moveFileMetadata checks if it is
-    // a directory in order to do the more complicated sql query to rename the
+    // a directory in order to do the more complicated query to rename the
     // files in that folder
     QDir dir(m_tempDir->path());
     dir.mkdir(QLatin1String("folder"));

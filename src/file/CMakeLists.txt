@@ -44,7 +44,6 @@ endif()
 
 add_library(baloofilecommon STATIC ${file_static_lib_SRCS})
 target_link_libraries(baloofilecommon
-    Qt5::Sql
     Qt5::DBus
     KF5::KIOWidgets
     KF5::IdleTime
@@ -68,7 +67,6 @@ add_executable(baloo_file ${file_SRCS})
 target_compile_definitions(baloo_file PRIVATE -DPROJECT_VERSION="${PROJECT_VERSION}")
 
 target_link_libraries(baloo_file
-    Qt5::Sql
     Qt5::DBus
     KF5::KIOWidgets
     KF5::IdleTime

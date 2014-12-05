@@ -27,8 +27,6 @@
 #include <QFile>
 #include <QUrl>
 #include <QCoreApplication>
-#include <QSqlQuery>
-#include <QSqlError>
 #include <QDebug>
 
 using namespace Baloo;
@@ -46,10 +44,8 @@ void Cleaner::start()
 {
     // FIXME: The cleaner needs to be fixed!!
     /*
-    QSqlDatabase sqlDb = m_db->sqlDatabase();
-    QSqlQuery query(sqlDb);
     if (!query.exec(QLatin1String("select id, url from files"))) {
-        qDebug() << "Could not execute SQL query:" << query.lastError().text();
+        qDebug() << "Could not execute query:" << query.lastError().text();
         QCoreApplication::instance()->quit();
         return;
     }
@@ -79,7 +75,6 @@ void Cleaner::start()
 
         if (removeIt) {
             qDebug() << id << url;
-            QSqlQuery q(sqlDb);
             q.prepare(QLatin1String("delete from files where id = ?"));
             q.addBindValue(id);
             q.exec();

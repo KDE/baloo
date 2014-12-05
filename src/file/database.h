@@ -24,7 +24,6 @@
 #define _BALOO_FILE_DATABASE_H
 
 #include <QObject>
-#include <QSqlDatabase>
 
 #include "xapiandatabase.h"
 

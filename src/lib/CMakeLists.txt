@@ -39,7 +39,6 @@ target_link_libraries(KF5Baloo
     PRIVATE
     KF5::ConfigCore
     Qt5::DBus
-    Qt5::Sql
     KF5::Solid
     KF5::BalooXapian
 )

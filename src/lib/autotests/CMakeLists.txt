@@ -32,7 +32,6 @@ ecm_add_test(${filefetchjobtest_SRC}
         KF5::ConfigCore
         KF5::Solid
         Qt5::Test
-        Qt5::Sql
         Qt5::DBus
         ${XAPIAN_LIBRARIES}
         KF5::Baloo
@@ -70,7 +69,6 @@ ecm_add_test(${filesearchstore_SRCS}
     TEST_NAME "filesearchstoretest"
     LINK_LIBRARIES
         Qt5::Core
-        Qt5::Sql
         Qt5::Test
         ${XAPIAN_LIBRARIES}
         KF5::FileMetaData
