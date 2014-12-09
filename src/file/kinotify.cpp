@@ -40,8 +40,6 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <dirent.h>
-#include <stropts.h>
-
 
 namespace
 {
