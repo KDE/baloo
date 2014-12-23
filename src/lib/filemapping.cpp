@@ -24,7 +24,6 @@
 #include "xapiandocument.h"
 
 #include <QDebug>
-#include <QCryptographicHash>
 
 using namespace Baloo;
 
@@ -72,44 +71,6 @@ bool FileMapping::fetched()
     return true;
 }
 
-bool FileMapping::fetch(XapianDatabase* db)
-{
-    if (fetched())
-        return true;
-
-    if (m_id == 0 && m_url.isEmpty())
-        return false;
-
-    if (m_url.isEmpty()) {
-        XapianDocument doc = db->document(m_id);
-        m_url = QString::fromUtf8(doc.value(3));
-
-        return !m_url.isEmpty();
-    }
-    else {
-        QCryptographicHash hash(QCryptographicHash::Sha1);
-        hash.addData(m_url.toUtf8());
-
-        // FIXME: Need to catch exceptions!
-        Xapian::Enquire enquire(*db->db());
-
-        QByteArray arr = "P-" + hash.result();
-        enquire.set_query(Xapian::Query(arr.constData()));
-        enquire.set_weighting_scheme(Xapian::BoolWeight());
-
-        Xapian::MSet mset = enquire.get_mset(0, 1);
-        Xapian::MSetIterator it = mset.begin();
-        if (it == mset.end()) {
-            return false;
-        }
-
-        m_id = *it;
-        return true;
-    }
-
-    return true;
-}
-
 bool FileMapping::fetch(Xapian::Database* db)
 {
     if (fetched())
@@ -128,17 +89,40 @@ bool FileMapping::fetch(Xapian::Database* db)
         }
         else {
             // FIXME: Need to catch exceptions!
-            Xapian::Enquire enquire(*db);
-            enquire.set_query(Xapian::Query(("P" + m_url).toUtf8().constData()));
-            enquire.set_weighting_scheme(Xapian::BoolWeight());
+            QByteArray arr = m_url.toUtf8();
+            if (arr.size() > 240) {
+                QByteArray p1 = "P1" + arr.mid(0, 240);
+                QByteArray p2 = "P2" + arr.mid(240);
 
-            Xapian::MSet mset = enquire.get_mset(0, 1);
-            Xapian::MSetIterator it = mset.begin();
-            if (it == mset.end())
-                return false;
+                Xapian::Query q1(p1.constData());
+                Xapian::Query q2(p2.constData());
 
-            m_id = *it;
-            return true;
+                Xapian::Enquire enquire(*db);
+                enquire.set_query(Xapian::Query(Xapian::Query::OP_AND, q1, q2));
+                enquire.set_weighting_scheme(Xapian::BoolWeight());
+
+                Xapian::MSet mset = enquire.get_mset(0, 1);
+                Xapian::MSetIterator it = mset.begin();
+                if (it == mset.end())
+                    return false;
+
+                m_id = *it;
+                return true;
+            }
+            else {
+                Xapian::Enquire enquire(*db);
+                QByteArray arrWithPrefix = "P-" + arr;
+                enquire.set_query(Xapian::Query(arrWithPrefix.constData()));
+                enquire.set_weighting_scheme(Xapian::BoolWeight());
+
+                Xapian::MSet mset = enquire.get_mset(0, 1);
+                Xapian::MSetIterator it = mset.begin();
+                if (it == mset.end())
+                    return false;
+
+                m_id = *it;
+                return true;
+            }
         }
     }
     catch (...) {

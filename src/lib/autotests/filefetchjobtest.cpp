@@ -66,7 +66,7 @@ void FileFetchJobTest::testXapianData()
     tempFile.open();
 
     doc.add_value(3, tempFile.fileName().toUtf8().constData());
-    doc.add_boolean_term(("P" + tempFile.fileName()).toUtf8().constData());
+    doc.add_boolean_term(("P-" + tempFile.fileName()).toUtf8().constData());
 
     {
         const std::string xapianPath = fileIndexDbPath();

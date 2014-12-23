@@ -53,7 +53,6 @@ public:
      *
      * Returns true if fetching was successful
      */
-    bool fetch(XapianDatabase* db);
     bool fetch(Xapian::Database* db);
 
     bool operator ==(const FileMapping& rhs) const;

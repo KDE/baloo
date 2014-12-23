@@ -61,7 +61,7 @@ void FileMappingBenchmark::test()
     QBENCHMARK {
         for (int i = 1; i <= 5000; i++) {
             FileMapping map(i);
-            map.fetch(&db);
+            map.fetch(db.db());
         }
     }
 }

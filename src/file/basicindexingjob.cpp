@@ -1,6 +1,6 @@
 /*
  * This file is part of the KDE Baloo Project
- * Copyright (C) 2013  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2013-2014 Vishesh Handa <me@vhanda.in>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,7 +27,6 @@
 #include <QFileInfo>
 #include <QDateTime>
 #include <QStringList>
-#include <QCryptographicHash>
 
 #include <KFileMetaData/TypeInfo>
 #include <KFileMetaData/UserMetaData>
@@ -75,9 +74,16 @@ bool BasicIndexingJob::index()
     QByteArray urlArr = m_file.url().toUtf8();
     doc.addValue(3, urlArr);
 
-    QCryptographicHash hash(QCryptographicHash::Sha1);
-    hash.addData(urlArr);
-    doc.addBoolTerm(hash.result(), "P-");
+    if (urlArr.size() > 240) {
+        QByteArray p1 = urlArr.mid(0, 240);
+        QByteArray p2 = urlArr.mid(240);
+
+        doc.addBoolTerm(p1, "P1");
+        doc.addBoolTerm(p2, "P2");
+    }
+    else {
+        doc.addBoolTerm(urlArr, "P-");
+    }
 
     // Types
     QVector<KFileMetaData::Type::Type> tList = typesForMimeType(m_mimetype);

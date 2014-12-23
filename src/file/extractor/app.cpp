@@ -64,7 +64,7 @@ void App::startProcessing(const QStringList& args)
         QString url;
 
         // arg is an id
-        if (mapping.fetch(m_db.xapianDatabase())) {
+        if (mapping.fetch(m_db.xapianDatabase()->db())) {
             url = mapping.url();
             if (!QFile::exists(url)) {
                 m_docsToDelete << mapping.id();
@@ -112,7 +112,7 @@ void App::processNextUrl()
             qDebug() << url << "should not be indexed. Ignoring";
 
             FileMapping mapping(url);
-            mapping.fetch(m_db.xapianDatabase());
+            mapping.fetch(m_db.xapianDatabase()->db());
             m_docsToDelete << mapping.id();
 
             QTimer::singleShot(0, this, SLOT(processNextUrl()));
@@ -139,7 +139,7 @@ void App::processNextUrl()
 
     // FIXME: DOuble fetchign!! Not good.
     FileMapping file(url);
-    file.fetch(m_db.xapianDatabase());
+    file.fetch(m_db.xapianDatabase()->db());
 
     // We always run the basic indexing again. This is mostly so that the proper
     // mimetype is set and we get proper type information.

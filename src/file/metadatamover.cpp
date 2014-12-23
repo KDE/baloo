@@ -27,7 +27,6 @@
 #include <QFileInfo>
 #include <QStringList>
 #include <QDebug>
-#include <QCryptographicHash>
 
 using namespace Baloo;
 
@@ -73,7 +72,7 @@ void MetadataMover::removeMetadata(const QString& url)
     Q_ASSERT(!url.isEmpty());
 
     FileMapping file(url);
-    file.fetch(m_db->xapianDatabase());
+    file.fetch(m_db->xapianDatabase()->db());
 
     if (file.id()) {
         m_db->xapianDatabase()->deleteDocument(file.id());
@@ -92,7 +91,7 @@ void MetadataMover::updateMetadata(const QString& from, const QString& to)
     Q_ASSERT(to[to.size()-1] != QLatin1Char('/'));
 
     FileMapping fromFile(from);
-    if (fromFile.fetch(m_db->xapianDatabase())) {
+    if (fromFile.fetch(m_db->xapianDatabase()->db())) {
         XapianDocument doc = m_db->xapianDatabase()->document(fromFile.id());
 
         // Change the file path
@@ -100,9 +99,16 @@ void MetadataMover::updateMetadata(const QString& from, const QString& to)
         doc.addValue(3, toArr);
         doc.removeTermStartsWith("P");
 
-        QCryptographicHash hash(QCryptographicHash::Sha1);
-        hash.addData(toArr);
-        doc.addBoolTerm(hash.result(), "P");
+        if (toArr.size() > 240) {
+            QByteArray p1 = toArr.mid(0, 240);
+            QByteArray p2 = toArr.mid(240);
+
+            doc.addBoolTerm(p1, "P1");
+            doc.addBoolTerm(p2, "P2");
+        }
+        else {
+            doc.addBoolTerm(toArr, "P-");
+        }
 
         // Change the file name
         const QStringRef fromFileName = from.midRef(from.lastIndexOf('/'));
@@ -157,9 +163,17 @@ void MetadataMover::updateMetadata(const QString& from, const QString& to)
         doc.addValue(3, newPath);
         doc.removeTermStartsWith("P");
 
-        QCryptographicHash hash(QCryptographicHash::Sha1);
-        hash.addData(newPath.toUtf8());
-        doc.addBoolTerm(hash.result(), "P-");
+        QByteArray arr = newPath.toUtf8();
+        if (arr.size() > 240) {
+            QByteArray p1 = arr.mid(0, 240);
+            QByteArray p2 = arr.mid(240);
+
+            doc.addBoolTerm(p1, "P1");
+            doc.addBoolTerm(p2, "P2");
+        }
+        else {
+            doc.addBoolTerm(arr, "P-");
+        }
 
         m_db->xapianDatabase()->replaceDocument(id, doc);
     }

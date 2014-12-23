@@ -134,7 +134,7 @@ bool BasicIndexingQueue::shouldIndex(FileMapping& file, const QString& mimetype)
     if (!fileInfo.exists())
         return false;
 
-    if (!file.fetch(m_db->xapianDatabase())) {
+    if (!file.fetch(m_db->xapianDatabase()->db())) {
         return true;
     }
 
@@ -167,7 +167,7 @@ void BasicIndexingQueue::index(FileMapping& file, const QString& mimetype,
                                UpdateDirFlags flags)
 {
     if (!file.fetched()) {
-        file.fetch(m_db->xapianDatabase());
+        file.fetch(m_db->xapianDatabase()->db());
     }
 
     qDebug() << file.id() << file.url();

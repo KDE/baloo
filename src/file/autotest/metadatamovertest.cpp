@@ -1,6 +1,6 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
- * Copyright (C) 2013  Vishesh Handa <me@vhanda.in>
+ * This file is part of the KDE Baloo Project
+ * Copyright (C) 2013-2014  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -30,16 +30,8 @@
 #include <QTest>
 #include <QTimer>
 #include <QDir>
-#include <QCryptographicHash>
 
 using namespace Baloo;
-
-static QByteArray sha1Hash(const QString& str)
-{
-    QCryptographicHash hash(QCryptographicHash::Sha1);
-    hash.addData(str.toUtf8());
-    return hash.result();
-}
 
 MetadataMoverTest::MetadataMoverTest(QObject* parent)
     : QObject(parent)
@@ -69,14 +61,14 @@ uint MetadataMoverTest::insertUrl(const QString& url)
 {
     XapianDocument doc;
     doc.addValue(3, url);
-    doc.addBoolTerm(sha1Hash(url), "P-");
+    doc.addBoolTerm(url, "P-");
 
     m_db->xapianDatabase()->addDocument(doc);
     m_db->xapianDatabase()->commit();
 
     Xapian::Enquire enquire(*m_db->xapianDatabase()->db());
 
-    QByteArray arr = "P-" + sha1Hash(url);
+    QByteArray arr = "P-" + url.toUtf8();
     enquire.set_query(Xapian::Query(arr.constData()));
     enquire.set_weighting_scheme(Xapian::BoolWeight());
 
@@ -124,7 +116,7 @@ void MetadataMoverTest::testMoveFile()
 
     XapianDocument doc = m_db->xapianDatabase()->document(fid);
     QCOMPARE(QString::fromUtf8(doc.value(3)), newUrl);
-    QByteArray arr = "P" + sha1Hash(newUrl);
+    QByteArray arr = "P-" + newUrl.toUtf8();
     QCOMPARE(doc.fetchTermStartsWith("P"), QString::fromUtf8(arr));
     QCOMPARE(doc.fetchTermsStartsWith("P").size(), 1);
 }
@@ -163,7 +155,7 @@ void MetadataMoverTest::testMoveFolder()
     // Folder
     XapianDocument doc = m_db->xapianDatabase()->document(folId);
     QCOMPARE(QString::fromUtf8(doc.value(3)), newFolderUrl);
-    QByteArray arr = "P" + sha1Hash(newFolderUrl);
+    QByteArray arr = "P-" + newFolderUrl.toUtf8();
     QCOMPARE(doc.fetchTermStartsWith("P"), QString::fromUtf8(arr));
     QCOMPARE(doc.fetchTermsStartsWith("P").size(), 1);
 
@@ -171,7 +163,7 @@ void MetadataMoverTest::testMoveFolder()
     doc = m_db->xapianDatabase()->document(fid1);
     QString str = newFolderUrl + "/1";
     QCOMPARE(QString::fromUtf8(doc.value(3)), str);
-    arr = "P" + sha1Hash(str);
+    arr = "P-" + str.toUtf8();
     QCOMPARE(doc.fetchTermStartsWith("P"), QString::fromUtf8(arr));
     QCOMPARE(doc.fetchTermsStartsWith("P").size(), 1);
 
@@ -179,7 +171,7 @@ void MetadataMoverTest::testMoveFolder()
     doc = m_db->xapianDatabase()->document(fid2);
     str = newFolderUrl + "/2";
     QCOMPARE(QString::fromUtf8(doc.value(3)), str);
-    arr = "P" + sha1Hash(str);
+    arr = "P-" + str.toUtf8();
     QCOMPARE(doc.fetchTermStartsWith("P"), QString::fromUtf8(arr));
     QCOMPARE(doc.fetchTermsStartsWith("P").size(), 1);
 }
