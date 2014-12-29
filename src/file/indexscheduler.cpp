@@ -222,7 +222,6 @@ bool IndexScheduler::shouldRunBasicQueue()
         case State_OnBattery:
         case State_UserIdle:
         case State_Normal:
-        default:
             return true;
     }
 }
@@ -244,8 +243,6 @@ bool IndexScheduler::shouldRunFileQueue()
             return true;
         case State_Normal:
             m_fileIQ->setDelay(500);
-            return true;
-        default:
             return true;
     }
 }
