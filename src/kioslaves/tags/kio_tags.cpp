@@ -129,6 +129,7 @@ void TagsProtocol::listDir(const QUrl& url)
         }
 
         finished();
+        return;
     }
 
     case FileUrl:
