@@ -167,7 +167,7 @@ void TimelineProtocol::mimetype(const QUrl& url)
     case CalendarFolder:
     case MonthFolder:
     case DayFolder:
-        mimetype(QString::fromLatin1("inode/directory"));
+        mimetype(QUrl(QString::fromLatin1("inode/directory")));
         break;
 
     default:

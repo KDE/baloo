@@ -284,7 +284,7 @@ void TagsProtocol::rename(const QUrl& src, const QUrl& dest, KIO::JobFlags flags
         destUrl.resize(lastIndex + 1);
         destUrl.append(dest.fileName());
 
-        ForwardingSlaveBase::rename(fileUrl, QUrl(destUrl), flags);
+        ForwardingSlaveBase::rename(QUrl(fileUrl), QUrl(destUrl), flags);
         return;
     }
     }
