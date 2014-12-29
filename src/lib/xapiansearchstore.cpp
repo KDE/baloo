@@ -173,8 +173,6 @@ int XapianSearchStore::exec(const Query& query)
             return 0;
         }
     }
-
-    return 0;
 }
 
 void XapianSearchStore::close(int queryId)
