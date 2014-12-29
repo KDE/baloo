@@ -120,6 +120,7 @@ void FileIndexingQueue::slotIndexingFailed(uint id)
         updateIndexingLevel(doc, -1);
         Q_EMIT newDocument(id, doc);
     } catch (const Xapian::Error& err) {
+        qDebug() << err.get_description().c_str();
     }
 }
 
