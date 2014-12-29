@@ -153,7 +153,7 @@ void TimelineProtocol::listDir(const QUrl& url)
         break;
     }
 
-    default:
+    case NoFolder:
         error(KIO::ERR_DOES_NOT_EXIST, url.toString());
         break;
     }
@@ -170,7 +170,7 @@ void TimelineProtocol::mimetype(const QUrl& url)
         mimetype(QUrl(QString::fromLatin1("inode/directory")));
         break;
 
-    default:
+    case NoFolder:
         error(KIO::ERR_DOES_NOT_EXIST, url.toString());
         break;
     }
@@ -208,7 +208,7 @@ void TimelineProtocol::stat(const QUrl& url)
         }
         break;
 
-    default:
+    case NoFolder:
         error(KIO::ERR_DOES_NOT_EXIST, url.toString());
         break;
     }
