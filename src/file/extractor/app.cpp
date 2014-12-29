@@ -127,17 +127,21 @@ void App::processNextUrl()
 
     //
     // HACK: We only want to index plain text files which end with a .txt
-    // Also, we're ignoring txt files which are greater tha 50 Mb as we
-    // have trouble processing them
     //
     if (mimetype == QLatin1String("text/plain")) {
         if (!url.endsWith(QLatin1String(".txt"))) {
             qDebug() << "text/plain does not end with .txt. Ignoring";
             mimetype.clear();
         }
+    }
 
+    //
+    // HACK: Also, we're ignoring ttext files which are greater tha 10 Mb as we
+    // have trouble processing them
+    //
+    if (mimetype.startsWith(QStringLiteral("text/"))) {
         QFileInfo fileInfo(url);
-        if (fileInfo.size() >= 50 * 1024 * 1024 ) {
+        if (fileInfo.size() >= 10 * 1024 * 1024 ) {
             mimetype.clear();
         }
     }
