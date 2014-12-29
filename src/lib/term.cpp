@@ -280,8 +280,8 @@ QVariantMap Term::toVariantMap() const
         op = QLatin1String("$lte");
         break;
 
-    default:
-        return QVariantMap();
+    case Auto:
+        Q_ASSERT(0);
     }
 
     QVariantMap m;
