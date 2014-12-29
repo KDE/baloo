@@ -21,13 +21,11 @@
 
 #include <kauth.h>
 
-using namespace KAuth;
-
 class FileWatchHelper : public QObject
 {
     Q_OBJECT
 
 public Q_SLOTS:
-    ActionReply raiselimit(QVariantMap args);
+    KAuth::ActionReply raiselimit(QVariantMap args);
 };
 
