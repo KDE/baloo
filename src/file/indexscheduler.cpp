@@ -224,6 +224,9 @@ bool IndexScheduler::shouldRunBasicQueue()
         case State_Normal:
             return true;
     }
+
+    Q_ASSERT(0);
+    return false;
 }
 
 
@@ -245,6 +248,9 @@ bool IndexScheduler::shouldRunFileQueue()
             m_fileIQ->setDelay(500);
             return true;
     }
+
+    Q_ASSERT(0);
+    return false;
 }
 
 void IndexScheduler::slotScheduleIndexing()
