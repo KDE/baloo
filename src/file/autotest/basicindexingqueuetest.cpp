@@ -208,7 +208,7 @@ void BasicIndexingQueueTest::textExtendedAttributeIndexing()
         Xapian::Document doc = spy.first().at(1).value<Xapian::Document>();
         spy.clear();
 
-        Xapian::TermIterator iter = doc.termlist_begin();
+        iter = doc.termlist_begin();
         QCOMPARE(*iter, std::string("Cnoob"));
         ++iter;
         QCOMPARE(*iter, std::string("R4"));
@@ -310,7 +310,7 @@ void BasicIndexingQueueTest::textNormalAndThenExtendedAttributeIndexing()
         Xapian::Document doc = spy.first().at(1).value<Xapian::Document>();
         spy.clear();
 
-        Xapian::TermIterator iter = doc.termlist_begin();
+        iter = doc.termlist_begin();
         QCOMPARE(*iter, std::string("Cnoob"));
         ++iter;
         QCOMPARE(*iter, std::string("R4"));

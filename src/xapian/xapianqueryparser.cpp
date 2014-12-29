@@ -206,8 +206,8 @@ Xapian::Query XapianQueryParser::parseQuery(const QString& text, const QString& 
                 position++;
                 if (inDoubleQuotes || inSingleQuotes || inPhrase) {
                     const QByteArray arr = term.toUtf8();
-                    const std::string str(arr.constData(), arr.length());
-                    phraseQueries << Xapian::Query(str, 1, position);
+                    const std::string stdStr(arr.constData(), arr.length());
+                    phraseQueries << Xapian::Query(stdStr, 1, position);
                 }
                 else {
                     if (m_autoExpand) {

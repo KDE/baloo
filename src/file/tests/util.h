@@ -33,10 +33,10 @@ inline void printIOUsage()
     file.open(QIODevice::ReadOnly | QIODevice::Text);
 
     QTextStream fs(&file);
-    QString str = fs.readAll();
+    QString fileContents = fs.readAll();
 
     qDebug() << "------- IO ---------";
-    QTextStream stream(&str);
+    QTextStream stream(&fileContents);
     while (!stream.atEnd()) {
         QString str = stream.readLine();
 
