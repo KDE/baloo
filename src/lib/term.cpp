@@ -280,8 +280,8 @@ QVariantMap Term::toVariantMap() const
         op = QLatin1String("$lte");
         break;
 
-    default:
-        return QVariantMap();
+    case Auto:
+        Q_ASSERT(0);
     }
 
     QVariantMap m;
@@ -342,11 +342,11 @@ Term Term::fromVariantMap(const QVariantMap& map)
 
     QVariant value = map.value(prop);
     if (value.type() == QVariant::Map) {
-        QVariantMap map = value.toMap();
-        if (map.size() != 1)
+        QVariantMap mapVal = value.toMap();
+        if (mapVal.size() != 1)
             return term;
 
-        QString op = map.keys().first();
+        QString op = mapVal.keys().first();
         Term::Comparator com;
         if (op == QLatin1String("$ct"))
             com = Contains;
@@ -362,7 +362,7 @@ Term Term::fromVariantMap(const QVariantMap& map)
             return term;
 
         term.setComparator(com);
-        term.setValue(tryConvert(map.value(op)));
+        term.setValue(tryConvert(mapVal.value(op)));
 
         return term;
     }

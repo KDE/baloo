@@ -41,8 +41,6 @@ set_package_properties(Xapian PROPERTIES
 
 # Compiler flags
 add_definitions(-DQT_NO_KEYWORDS)
-# FIXME src/kioslaves/timeline/kio_timeline.cpp:168
-remove_definitions(-DQT_NO_URL_CAST_FROM_STRING)
 
 # Turn exceptions on
 kde_enable_exceptions()

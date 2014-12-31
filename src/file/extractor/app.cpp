@@ -24,6 +24,7 @@
 #include "../basicindexingjob.h"
 #include "../database.h"
 #include "xapiandatabase.h"
+#include "../tests/util.h"
 
 #include <QDebug>
 #include <QCoreApplication>
@@ -42,10 +43,10 @@ using namespace Baloo;
 
 App::App(const QString& path, QObject* parent)
     : QObject(parent)
-    , m_path(path)
-    , m_termCount(0)
     , m_debugEnabled(false)
     , m_ignoreConfig(false)
+    , m_path(path)
+    , m_termCount(0)
 {
     m_db.setPath(m_path);
     if (!m_db.init()) {
@@ -122,17 +123,21 @@ void App::processNextUrl()
 
     //
     // HACK: We only want to index plain text files which end with a .txt
-    // Also, we're ignoring txt files which are greater tha 50 Mb as we
-    // have trouble processing them
     //
     if (mimetype == QLatin1String("text/plain")) {
         if (!url.endsWith(QLatin1String(".txt"))) {
             qDebug() << "text/plain does not end with .txt. Ignoring";
             mimetype.clear();
         }
+    }
 
+    //
+    // HACK: Also, we're ignoring ttext files which are greater tha 10 Mb as we
+    // have trouble processing them
+    //
+    if (mimetype.startsWith(QStringLiteral("text/"))) {
         QFileInfo fileInfo(url);
-        if (fileInfo.size() >= 50 * 1024 * 1024 ) {
+        if (fileInfo.size() >= 10 * 1024 * 1024 ) {
             mimetype.clear();
         }
     }
@@ -239,43 +244,7 @@ void App::printDebug()
         }
     }
 
-    // Print the io usage
-    QFile file(QLatin1String("/proc/self/io"));
-    file.open(QIODevice::ReadOnly | QIODevice::Text);
-
-    QTextStream fs(&file);
-    QString str = fs.readAll();
-
-    qDebug() << "------- IO ---------";
-    QTextStream stream(&str);
-    while (!stream.atEnd()) {
-        QString str = stream.readLine();
-
-        QString rchar(QLatin1String("rchar: "));
-        if (str.startsWith(rchar)) {
-            ulong amt = str.mid(rchar.size()).toULong();
-            qDebug() << "Read:" << amt / 1024  << "kb";
-        }
-
-        QString wchar(QLatin1String("wchar: "));
-        if (str.startsWith(wchar)) {
-            ulong amt = str.mid(wchar.size()).toULong();
-            qDebug() << "Write:" << amt / 1024  << "kb";
-        }
-
-        QString read(QLatin1String("read_bytes: "));
-        if (str.startsWith(read)) {
-            ulong amt = str.mid(read.size()).toULong();
-            qDebug() << "Actual Reads:" << amt / 1024  << "kb";
-        }
-
-        QString write(QLatin1String("write_bytes: "));
-        if (str.startsWith(write)) {
-            ulong amt = str.mid(write.size()).toULong();
-            qDebug() << "Actual Writes:" << amt / 1024  << "kb";
-        }
-    }
-
+    printIOUsage();
 }
 
 bool App::ignoreConfig() const
