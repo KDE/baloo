@@ -112,3 +112,20 @@ void Database::commit()
     Q_ASSERT(rc == 0);
 }
 
+QVector<int> Database::exec(const QVector<QByteArray>& query)
+{
+    Q_ASSERT(!query.isEmpty());
+
+    PostingList result = m_postingDB->get(query[0]);
+    for (int i = 1; i < query.size(); i++) {
+        PostingList list = m_postingDB->get(query[1]);
+
+        AndPostingList andOp(result, list);
+        andOp.compute();
+        result = andOp.result();
+    }
+
+    return result;
+}
+
+

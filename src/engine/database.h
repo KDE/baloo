@@ -44,6 +44,9 @@ public:
     Document document(uint id);
 
     void commit();
+
+    QVector<int> exec(const QVector<QByteArray>& query);
+
 private:
     PostingDB* m_postingDB;
     DocumentDB* m_documentDB;
