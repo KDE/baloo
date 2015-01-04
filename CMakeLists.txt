@@ -5,7 +5,7 @@ set(PROJECT_VERSION "5.1.90")
 
 # ECM setup
 find_package(ECM 1.2.0 REQUIRED NO_MODULE)
-set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${ECM_MODULE_PATH})
 
 include(GenerateExportHeader)
 include(ECMGenerateHeaders)
@@ -39,6 +39,8 @@ set_package_properties(Xapian PROPERTIES
     TYPE REQUIRED
 )
 
+find_package(LMDB REQUIRED)
+
 # Compiler flags
 add_definitions(-DQT_NO_KEYWORDS)
 
@@ -47,6 +49,7 @@ kde_enable_exceptions()
 
 include_directories(
   ${XAPIAN_INCLUDE_DIR}
+  ${LMDB_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/lib
   ${CMAKE_BINARY_DIR}/src/lib
