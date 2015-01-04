@@ -12,3 +12,8 @@ ecm_add_test(documentdbtest.cpp ../documentdb.cpp ../andpostinglist.cpp
     TEST_NAME "documentdbtest"
     LINK_LIBRARIES Qt5::Test ${LMDB_LIBRARIES}
 )
+
+ecm_add_test(databasetest.cpp ../database.cpp ../document.cpp ../documentdb.cpp ../postingdb.cpp
+    TEST_NAME "databasetest"
+    LINK_LIBRARIES Qt5::Test ${LMDB_LIBRARIES}
+)

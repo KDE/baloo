@@ -18,31 +18,39 @@
  *
  */
 
-#ifndef _BALOO_DOCUMENTDB_H
-#define _BALOO_DOCUMENTDB_H
+#ifndef BALOO_DATABASE_H
+#define BALOO_DATABASE_H
 
+#include <QString>
 #include <lmdb.h>
-#include <QVector>
 
 namespace Baloo {
 
-class DocumentDB
+class Document;
+class PostingDB;
+class DocumentDB;
+
+class Database
 {
 public:
-    explicit DocumentDB(MDB_env* env, MDB_txn* txn);
-    ~DocumentDB();
+    Database(const QString& path);
+    ~Database();
 
-    void put(uint docId, const QVector< QByteArray >& list);
-    QVector<QByteArray> get(uint docId);
+    // FIXME: Return codes?
+    void addDocument(const Document& doc);
+    void removeDocument(uint id);
 
-    void del(uint docId);
+    bool hasDocument(uint id);
+    Document document(uint id);
 
+    void commit();
 private:
+    PostingDB* m_postingDB;
+    DocumentDB* m_documentDB;
+
     MDB_env* m_env;
     MDB_txn* m_txn;
-
-    MDB_dbi m_dbi;
 };
 }
 
-#endif // DOCUMENTDB_H
+#endif // BALOO_DATABASE_H

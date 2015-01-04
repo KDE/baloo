@@ -18,31 +18,31 @@
  *
  */
 
-#ifndef _BALOO_DOCUMENTDB_H
-#define _BALOO_DOCUMENTDB_H
+#ifndef BALOO_DOCUMENT_H
+#define BALOO_DOCUMENT_H
 
-#include <lmdb.h>
+#include <QByteArray>
 #include <QVector>
 
 namespace Baloo {
 
-class DocumentDB
+class Database;
+
+class Document
 {
 public:
-    explicit DocumentDB(MDB_env* env, MDB_txn* txn);
-    ~DocumentDB();
+    void addTerm(const QByteArray& term);
 
-    void put(uint docId, const QVector< QByteArray >& list);
-    QVector<QByteArray> get(uint docId);
+    uint id() const;
+    void setId(uint id);
 
-    void del(uint docId);
-
+    bool operator ==(const Document& rhs) const;
 private:
-    MDB_env* m_env;
-    MDB_txn* m_txn;
+    uint m_id;
+    QVector<QByteArray> m_terms;
 
-    MDB_dbi m_dbi;
+    friend class Database;
 };
 }
 
-#endif // DOCUMENTDB_H
+#endif // BALOO_DOCUMENT_H

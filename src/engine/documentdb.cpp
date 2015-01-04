@@ -95,3 +95,15 @@ QVector<QByteArray> DocumentDB::get(uint docId)
 
     return list;
 }
+
+void DocumentDB::del(uint docId)
+{
+    Q_ASSERT(docId > 0);
+
+    MDB_val key;
+    key.mv_size = sizeof(uint);
+    key.mv_data = static_cast<void*>(&docId);
+
+    int rc = mdb_del(m_txn, m_dbi, &key, 0);
+    Q_ASSERT(rc == 0);
+}

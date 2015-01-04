@@ -18,31 +18,44 @@
  *
  */
 
-#ifndef _BALOO_DOCUMENTDB_H
-#define _BALOO_DOCUMENTDB_H
+#include "../database.h"
+#include "../document.h"
 
-#include <lmdb.h>
-#include <QVector>
+#include <QTest>
+#include <QTemporaryDir>
 
-namespace Baloo {
+using namespace Baloo;
 
-class DocumentDB
+class DatabaseTest : public QObject
 {
-public:
-    explicit DocumentDB(MDB_env* env, MDB_txn* txn);
-    ~DocumentDB();
-
-    void put(uint docId, const QVector< QByteArray >& list);
-    QVector<QByteArray> get(uint docId);
-
-    void del(uint docId);
-
-private:
-    MDB_env* m_env;
-    MDB_txn* m_txn;
-
-    MDB_dbi m_dbi;
+    Q_OBJECT
+private Q_SLOTS:
+    void test();
 };
+
+void DatabaseTest::test()
+{
+    QTemporaryDir dir;
+
+    Database db(dir.path());
+    QCOMPARE(db.hasDocument(1), false);
+
+    Document doc;
+    doc.setId(1);
+    doc.addTerm("a");
+    doc.addTerm("ab");
+    doc.addTerm("abc");
+    doc.addTerm("power");
+
+    db.addDocument(doc);
+    QCOMPARE(db.hasDocument(1), true);
+    QCOMPARE(db.document(1), doc);
+
+    db.removeDocument(1);
+    QCOMPARE(db.hasDocument(1), false);
+    QCOMPARE(db.document(1), Document());
 }
 
-#endif // DOCUMENTDB_H
+QTEST_MAIN(DatabaseTest)
+
+#include "databasetest.moc"
