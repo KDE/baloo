@@ -32,6 +32,43 @@ namespace Baloo {
 
 class Term;
 
+/**
+ * The Query class is the central class to query to search for files from the Index.
+ * This class can be used in multiple ways -
+ *
+ * \section "Query Parser" - This can be used by setting the search string via setSearchString.
+ * The parser recognizes words along with AND / OR and parenthesis and specific properties.
+ *
+ * @example -
+ * "Fire" -> Looks for all files which contain the word "Fire"
+ *
+ * @example -
+ * "Fire OR water" -> Looks for files which contain either "Fire" or "Water". The capitalization
+ * of the words doesn't matter as that will be ignored internally. However, OR and AND have to
+ * be in upper case.
+ *
+ * @example -
+ * "artist:Coldplay" -> Look for any files with the artist "Coldplay"
+ *
+ * @example -
+ * "artist:(Coldplay OR Maroon5) power" -> Look for files with the artist Coldplay or Maroon5 and
+ * the word "power"
+ *
+ * @example -
+ * "artist:'Noah and the Whale'" -> Look for files with the artist "Noah and the Whale"
+ *
+ * @example -
+ * "type:Audio title:Fix" -> Look for Audio files which contains the title "Fix" in its title.
+ *
+ * The Query Parser recognizes a large number of properties. These property names can be looked
+ * up in KFileMetaData::Property::Property. The type of the file can mentioned with the property
+ * 'type' or 'kind'.
+ *
+ *  \section "Manual Query Creation" - The query can also be created by manually using the Term
+ * class and generate an entire query. Either this approach or the Query Parser approach should
+ * be used. They both cannot be used at the same time, as the Query Parser will overwrite the main
+ * Term.
+ */
 class BALOO_CORE_EXPORT Query
 {
 public:
