@@ -15,7 +15,7 @@ LuceneDocument::LuceneDocument(const Lucene::DocumentPtr& doc)
 void LuceneDocument::addField(const QString& field, const QString& value, Lucene::Field::Store store, 
                                        Lucene::Field::Index index)
 {
-    m_doc->add(Lucene::newLucene<Lucene::Field>(field.toStdWString(), value.toStdWString(), store, index);
+    m_doc->add(Lucene::newLucene<Lucene::Field>(field.toStdWString(), value.toStdWString(), store, index));
 }
 
 void LuceneDocument::addField(const QString& field, const int value, Lucene::Field::Store store, 
