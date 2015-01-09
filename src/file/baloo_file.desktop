@@ -9,3 +9,14 @@ OnlyShowIn=KDE;GNOME;Unity;XFCE
 NoDisplay=true
 
 Name=Baloo File Daemon
+Name[ca]=Dimoni de fitxers Baloo
+Name[es]=Demonio de archivos de Baloo
+Name[fi]=Baloo-tiedostopalvelu
+Name[fr]=Démon de fichier Baloo
+Name[nb]=Baloo fil-daemon
+Name[nl]=Baloo bestandsdeamon
+Name[pt]=Serviço de Ficheiros do Baloo
+Name[pt_BR]=Serviço de arquivos do Baloo
+Name[sv]=Baloo-fildemon
+Name[uk]=Фонова служба обробки файлів Baloo
+Name[x-test]=xxBaloo File Daemonxx
