@@ -1,5 +1,5 @@
 #include "luceneindexwriter.h"
-#include <QDebug>
+#include<qt/QtCore/QtGlobal>
 using namespace Baloo;
 
 LuceneIndexWriter::LuceneIndexWriter(const QString& path)
@@ -10,7 +10,7 @@ LuceneIndexWriter::LuceneIndexWriter(const QString& path)
             Lucene::IndexWriter::DEFAULT_MAX_FIELD_LENGTH);
     }
     catch (Lucene::LuceneException& e) {
-         qWarning() << "Exception:" << e.getError().c_str();
+         qWarning() << "Exception:" << e.getError();
     }
 }
 
@@ -25,6 +25,6 @@ LuceneIndexWriter::addDocument(Lucene::DocumentPtr& doc)
         m_indexWriter->addDocument(doc);
     }
     catch (Lucene::LuceneException &e) {
-        qWarning() << "Exception" << e.getError().c_str();
+        qWarning() << "Exception" << e.getError();
     }
 }

@@ -1,8 +1,8 @@
 #ifndef BALOO_LUCENEDOCUMENT_H
 #define BALOO_LUCENEDOCUMENT_H
 
-#include <LuceneHeaders.h>
-#include <QString>
+#include <lucene++/LuceneHeaders.h>
+#include <qt/QtCore/QString>
 
 namespace Baloo {
 
@@ -27,4 +27,4 @@ private:
 };
 }
 
-#endif //BALOO_LUCENEDOCUMENT_H
+#endif
