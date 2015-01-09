@@ -5,7 +5,7 @@ set(PROJECT_VERSION "5.1.90")
 
 # ECM setup
 find_package(ECM 1.2.0 REQUIRED NO_MODULE)
-set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
+set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 include(GenerateExportHeader)
 include(ECMGenerateHeaders)
@@ -39,6 +39,9 @@ set_package_properties(Xapian PROPERTIES
     TYPE REQUIRED
 )
 
+find_package(LucenePlusPlus REQUIRED)
+find_package(Boost COMPONENTS system REQUIRED)
+
 # Compiler flags
 add_definitions(-DQT_NO_KEYWORDS)
 # FIXME src/kioslaves/timeline/kio_timeline.cpp:168
@@ -54,6 +57,7 @@ include_directories(
   ${CMAKE_BINARY_DIR}/src/lib
   ${CMAKE_BINARY_DIR}/src/xapian
   ${CMAKE_SOURCE_DIR}/src/xapian
+  ${LucenePlusPlus_INCLUDE_DIRS}
 )
 
 # Targets

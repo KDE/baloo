@@ -1,4 +1,4 @@
-#ifndef BALOO_LUCENEIDEXWRITER_H
+#ifndef BALOO_LUCENEINDEXWRITER_H
 #define BALOO_LUCENEINDEXWRITER_H
 
 #include <lucene++/LuceneHeaders.h>
@@ -6,13 +6,16 @@
 
 namespace Baloo {
 class LuceneIndexWriter {
+public:
     LuceneIndexWriter(const QString& path);
     ~LuceneIndexWriter();
     
-    void addDocument(const Lucene::DocumentPtr& doc);
-    void addDocument(const LuceneDocument& doc);
+    void addDocument(LuceneDocument& doc);
+    void addDocument(Lucene::DocumentPtr doc);
     
 private:
     Lucene::IndexWriterPtr m_indexWriter;
 };
 }
+
+#endif // BALOO_LUCENEINDEXWRITER_H

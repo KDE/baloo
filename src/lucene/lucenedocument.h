@@ -2,7 +2,7 @@
 #define BALOO_LUCENEDOCUMENT_H
 
 #include <lucene++/LuceneHeaders.h>
-#include <qt/QtCore/QString>
+#include <QString>
 
 namespace Baloo {
 
@@ -11,6 +11,7 @@ namespace Baloo {
  */
 class LuceneDocument
 {
+public:
     LuceneDocument();
     LuceneDocument(const Lucene::DocumentPtr& doc);
 
@@ -27,4 +28,4 @@ private:
 };
 }
 
-#endif
+#endif //BALOO_LUCENEDOCUMENT_H
