@@ -24,7 +24,8 @@
 #define BASICINDEXINGJOB_H
 
 #include "filemapping.h"
-#include <xapian.h>
+//#include <xapian.h>
+#include<lucene++/LuceneHeaders.h>
 
 #include <KFileMetaData/Types>
 
@@ -41,7 +42,7 @@ public:
 
     bool index();
 
-    Xapian::Document document() { return m_doc; }
+    Lucene::DocumentPtr document() { return m_doc; }
     uint id() { return m_id; }
 
     /**
@@ -60,7 +61,7 @@ private:
     bool m_onlyBasicIndexing;
 
     uint m_id;
-    Xapian::Document m_doc;
+    Lucene::DocumentPtr m_doc;
 
     friend class BasicIndexingJobTest;
 };

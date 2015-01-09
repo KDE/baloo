@@ -24,6 +24,18 @@ void LuceneDocument::addField(const QString& field, const int value, Lucene::Fie
     addField(field, QString::number(value), store, index);
 }
 
+void LuceneDocument::addBoolTerm(const QString& term, const QString& prefix)
+{
+  addField(prefix, term, Lucene::Field::STORE_NO, Lucene::Field::INDEX_NOT_ANALYZED);
+}
+
+void LuceneDocument::indexText(const QString& term, const QString& prefix)
+{
+    addField(prefix, term, Lucene::AbstractField::STORE_YES, Lucene::AbstractField::INDEX_ANALYZED);
+}
+
+
+
 Lucene::DocumentPtr LuceneDocument::doc() const
 {
     return m_doc;

@@ -20,6 +20,10 @@ public:
     void addField(const QString& field, const int value, Lucene::Field::Store store, 
                                   Lucene::Field::Index index);
 
+    //helper functions which minimize changes to existing codebase
+    void addBoolTerm(const QString& term, const QString& prefix);
+    void indexText(const QString& term, const QString& prefix = QStringLiteral("content"));
+
     Lucene::DocumentPtr doc() const;
 
 

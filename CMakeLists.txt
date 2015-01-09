@@ -58,6 +58,8 @@ include_directories(
   ${CMAKE_BINARY_DIR}/src/xapian
   ${CMAKE_SOURCE_DIR}/src/xapian
   ${LucenePlusPlus_INCLUDE_DIRS}
+  ${CMAKE_SOURCE_DIR}/src/lucene
+  ${CMAKE_BINARY_DIR}/src/lucene
 )
 
 # Targets

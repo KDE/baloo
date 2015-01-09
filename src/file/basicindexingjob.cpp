@@ -22,7 +22,8 @@
 
 #include "basicindexingjob.h"
 #include "database.h"
-#include "xapiandocument.h"
+//#include "xapiandocument.h"
+#include "lucenedocument.h"
 
 #include <QFileInfo>
 #include <QDateTime>
@@ -51,10 +52,11 @@ bool BasicIndexingJob::index()
 {
     QFileInfo fileInfo(m_file.url());
 
-    XapianDocument doc;
+    LuceneDocument doc;
     doc.addBoolTerm(m_mimetype, QLatin1String("M"));
-    doc.indexText(fileInfo.fileName(), 1000);
-    doc.indexText(fileInfo.fileName(), QLatin1String("F"), 1000);
+    doc.indexText(fileInfo.fileName());
+    doc.indexText(fileInfo.fileName(), QLatin1String("F"));
+    //TODO couldn't find a method to increment the frequency for name terms manually
 
     // Modified Date
     QDateTime mod = fileInfo.lastModified();
@@ -66,7 +68,7 @@ bool BasicIndexingJob::index()
     doc.addBoolTerm(mod.date().day(), QLatin1String("DT_MD"));
 
     const QByteArray timeTStr = QByteArray::number(mod.toTime_t());
-    doc.addValue(0, timeTStr);
+    /*doc.addValue(0, timeTStr);
     doc.addValue(1, QByteArray::number(mod.date().toJulianDay()));
     doc.addValue(2, QByteArray::number(fileInfo.created().toMSecsSinceEpoch()));
 
@@ -83,7 +85,8 @@ bool BasicIndexingJob::index()
     }
     else {
         doc.addBoolTerm(urlArr, "P-");
-    }
+    }*/
+    //TODO lucene supports facets but lucene++ hasn't implemented it, find solution???
 
     // Types
     QVector<KFileMetaData::Type::Type> tList = typesForMimeType(m_mimetype);
@@ -93,18 +96,18 @@ bool BasicIndexingJob::index()
     }
 
     if (fileInfo.isDir()) {
-        doc.addBoolTerm(QStringLiteral("Tfolder"));
+        doc.addBoolTerm(QStringLiteral("folder"), QStringLiteral("Z"));
 
         // This is an optimization for folders. They do not need to go through
         // file indexing, so there are no indexers for folders
-        doc.addBoolTerm(QLatin1String("Z2"));
+        doc.addBoolTerm(QStringLiteral("2"), QStringLiteral("Z"));
     }
     else if (m_onlyBasicIndexing) {
         // This is to prevent indexing if option in config is set to do so
-        doc.addBoolTerm(QLatin1String("Z2"));
+        doc.addBoolTerm(QStringLiteral("2"), QStringLiteral("Z"));
     }
     else {
-        doc.addBoolTerm(QLatin1String("Z1"));
+        doc.addBoolTerm(QStringLiteral("1"), QStringLiteral("Z"));
     }
 
     indexXAttr(m_file.url(), doc);
@@ -124,7 +127,7 @@ bool BasicIndexingJob::indexXAttr(const QString& url, XapianDocument& doc)
     if (!tags.isEmpty()) {
         Q_FOREACH (const QString& tag, tags) {
             doc.indexText(tag, QStringLiteral("TA"));
-            doc.addBoolTerm(QStringLiteral("TAG-") + tag);
+            doc.addBoolTerm(QStringLiteral(tag), QStringLiteral("TAG-"));
         }
 
         modified = true;
