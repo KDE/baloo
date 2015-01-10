@@ -39,8 +39,8 @@ Database::Database(const QString& path)
     mdb_env_open(m_env, arr.constData(), 0, 0664);
     mdb_txn_begin(m_env, NULL, 0, &m_txn);
 
-    m_postingDB = new PostingDB(m_env, m_txn);
-    m_documentDB = new DocumentDB(m_env, m_txn);
+    m_postingDB = new PostingDB(m_txn);
+    m_documentDB = new DocumentDB(m_txn);
 }
 
 Database::~Database()

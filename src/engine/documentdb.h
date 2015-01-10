@@ -30,7 +30,7 @@ namespace Baloo {
 class BALOO_ENGINE_EXPORT DocumentDB
 {
 public:
-    explicit DocumentDB(MDB_env* env, MDB_txn* txn);
+    explicit DocumentDB(MDB_txn* txn);
     ~DocumentDB();
 
     void put(uint docId, const QVector< QByteArray >& list);
@@ -39,7 +39,6 @@ public:
     void del(uint docId);
 
 private:
-    MDB_env* m_env;
     MDB_txn* m_txn;
 
     MDB_dbi m_dbi;

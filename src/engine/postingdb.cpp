@@ -24,9 +24,8 @@
 
 using namespace Baloo;
 
-PostingDB::PostingDB(MDB_env* env, MDB_txn* txn)
-    : m_env(env)
-    , m_txn(txn)
+PostingDB::PostingDB(MDB_txn* txn)
+    : m_txn(txn)
 {
     Q_ASSERT(txn != 0);
 
@@ -36,7 +35,7 @@ PostingDB::PostingDB(MDB_env* env, MDB_txn* txn)
 
 PostingDB::~PostingDB()
 {
-    mdb_dbi_close(m_env, m_dbi);
+    mdb_dbi_close(mdb_txn_env(m_txn), m_dbi);
 }
 
 void PostingDB::put(const QByteArray& term, const PostingList& list)

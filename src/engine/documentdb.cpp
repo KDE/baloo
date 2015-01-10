@@ -24,9 +24,8 @@
 
 using namespace Baloo;
 
-DocumentDB::DocumentDB(MDB_env* env, MDB_txn* txn)
-    : m_env(env)
-    , m_txn(txn)
+DocumentDB::DocumentDB(MDB_txn* txn)
+    : m_txn(txn)
 {
     Q_ASSERT(txn != 0);
 
@@ -36,7 +35,7 @@ DocumentDB::DocumentDB(MDB_env* env, MDB_txn* txn)
 
 DocumentDB::~DocumentDB()
 {
-    mdb_dbi_close(m_env, m_dbi);
+    mdb_dbi_close(mdb_txn_env(m_txn), m_dbi);
 }
 
 void DocumentDB::put(uint docId, const QVector<QByteArray>& list)

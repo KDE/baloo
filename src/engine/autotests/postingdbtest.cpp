@@ -48,7 +48,7 @@ void PostingDBTest::test()
     mdb_env_open(env, path.constData(), 0, 0664);
     mdb_txn_begin(env, NULL, 0, &txn);
 
-    PostingDB db(env, txn);
+    PostingDB db(txn);
 
     QByteArray word("fire");
     PostingList list = {1, 5, 6};

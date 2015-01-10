@@ -48,7 +48,7 @@ void DocumentDBTest::test()
     mdb_env_open(env, path.constData(), 0, 0664);
     mdb_txn_begin(env, NULL, 0, &txn);
 
-    DocumentDB db(env, txn);
+    DocumentDB db(txn);
 
     QVector<QByteArray> list = {"a", "aab", "abc"};
     db.put(1, list);

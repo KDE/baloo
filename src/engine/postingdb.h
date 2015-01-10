@@ -35,7 +35,7 @@ class DBPostingIterator;
 class BALOO_ENGINE_EXPORT PostingDB
 {
 public:
-    explicit PostingDB(MDB_env* env, MDB_txn* txn);
+    explicit PostingDB(MDB_txn* txn);
     ~PostingDB();
 
     void put(const QByteArray& term, const PostingList& list);
@@ -44,7 +44,6 @@ public:
     DBPostingIterator* iter(const QByteArray& term);
 
 private:
-    MDB_env* m_env;
     MDB_txn* m_txn;
 
     MDB_dbi m_dbi;
