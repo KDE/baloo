@@ -55,6 +55,10 @@ void DatabaseTest::test()
     QCOMPARE(result.size(), 1);
     QCOMPARE(result[0], 1);
 
+    result = db.exec({"abc", "a"});
+    QCOMPARE(result.size(), 1);
+    QCOMPARE(result[0], 1);
+
     db.removeDocument(1);
     QCOMPARE(db.hasDocument(1), false);
     QCOMPARE(db.document(1), Document());
