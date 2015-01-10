@@ -17,3 +17,8 @@ ecm_add_test(databasetest.cpp ../database.cpp ../document.cpp ../documentdb.cpp 
     TEST_NAME "databasetest"
     LINK_LIBRARIES Qt5::Test ${LMDB_LIBRARIES}
 )
+
+ecm_add_test(andpostingiteratortest.cpp
+    TEST_NAME "andpostingiteratortest"
+    LINK_LIBRARIES Qt5::Test KF5::BalooEngine
+)
