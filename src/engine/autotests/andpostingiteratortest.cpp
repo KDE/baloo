@@ -35,19 +35,22 @@ private Q_SLOTS:
 void AndPostingIteratorTest::test()
 {
     QVector<uint> l1 = {1, 3, 5, 7};
-    QVector<uint> l2 = {3, 4, 5, 9, 11};
+    QVector<uint> l2 = {3, 4, 5, 7, 9, 11};
+    QVector<uint> l3 = {1, 3, 7};
 
     VectorPostingIterator it1(l1);
     VectorPostingIterator it2(l2);
+    VectorPostingIterator it3(l3);
 
-    QVector<PostingIterator*> vec = {&it1, &it2};
+    QVector<PostingIterator*> vec = {&it1, &it2, &it3};
     AndPostingIterator it(vec);
-
     QCOMPARE(it.docId(), static_cast<uint>(0));
-    QCOMPARE(it.next(), static_cast<uint>(3));
-    QCOMPARE(it.docId(), static_cast<uint>(3));
-    QCOMPARE(it.next(), static_cast<uint>(5));
-    QCOMPARE(it.docId(), static_cast<uint>(5));
+
+    QVector<uint> result = {3, 7};
+    for (uint val : result) {
+        QCOMPARE(it.next(), static_cast<uint>(val));
+        QCOMPARE(it.docId(), static_cast<uint>(val));
+    }
     QCOMPARE(it.next(), static_cast<uint>(0));
     QCOMPARE(it.docId(), static_cast<uint>(0));
 }
