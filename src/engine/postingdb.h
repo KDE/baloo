@@ -21,14 +21,18 @@
 #ifndef BALOO_POSTINGDB_H
 #define BALOO_POSTINGDB_H
 
-#include <QByteArray>
-#include <lmdb.h>
+#include "postingiterator.h"
 
-#include "andpostinglist.h"
+#include <QByteArray>
+#include <QVector>
+#include <lmdb.h>
 
 namespace Baloo {
 
-class PostingDB
+typedef QVector<int> PostingList;
+class DBPostingIterator;
+
+class BALOO_ENGINE_EXPORT PostingDB
 {
 public:
     explicit PostingDB(MDB_env* env, MDB_txn* txn);
@@ -37,11 +41,26 @@ public:
     void put(const QByteArray& term, const PostingList& list);
     PostingList get(const QByteArray& term);
 
+    DBPostingIterator* iter(const QByteArray& term);
+
 private:
     MDB_env* m_env;
     MDB_txn* m_txn;
 
     MDB_dbi m_dbi;
+};
+
+
+class DBPostingIterator : public PostingIterator {
+public:
+    DBPostingIterator(void* data, uint size);
+    virtual uint docId();
+    virtual uint next();
+
+private:
+    void* m_data;
+    uint m_size;
+    int m_pos;
 };
 
 }

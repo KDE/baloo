@@ -1,6 +1,10 @@
 set(BALOO_ENGINE_SRCS
-    postingiterator.cpp
     andpostingiterator.cpp
+    database.cpp
+    document.cpp
+    documentdb.cpp
+    postingdb.cpp
+    postingiterator.cpp
     vectorpostingiterator.cpp
 )
 
@@ -11,6 +15,7 @@ target_link_libraries(KF5BalooEngine
     PUBLIC
     Qt5::Core
     KF5::CoreAddons
+    ${LMDB_LIBRARIES}
 )
 
 set_target_properties(KF5BalooEngine PROPERTIES

@@ -23,6 +23,8 @@
 #include "documentdb.h"
 #include "document.h"
 
+#include "andpostingiterator.h"
+
 #include <QFile>
 
 using namespace Baloo;
@@ -116,13 +118,32 @@ QVector<int> Database::exec(const QVector<QByteArray>& query)
 {
     Q_ASSERT(!query.isEmpty());
 
-    PostingList result = m_postingDB->get(query[0]);
-    for (int i = 1; i < query.size(); i++) {
-        PostingList list = m_postingDB->get(query[1]);
+    QVector<PostingIterator*> list;
+    list.reserve(query.size());
 
-        AndPostingList andOp(result, list);
-        andOp.compute();
-        result = andOp.result();
+    for (const QByteArray& term : query) {
+        PostingIterator* iter = m_postingDB->iter(term);
+        if (iter) {
+            list << iter;
+        }
+    }
+
+    if (list.isEmpty()) {
+        return QVector<int>();
+    }
+
+    QVector<int> result;
+    if (list.size() == 1) {
+        PostingIterator* it = list.first();
+        while (it->next()) {
+            result << it->docId();
+        }
+        return result;
+    }
+
+    AndPostingIterator it(list);
+    while (it.next()) {
+        result << it.docId();
     }
 
     return result;

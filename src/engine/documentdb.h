@@ -21,12 +21,13 @@
 #ifndef _BALOO_DOCUMENTDB_H
 #define _BALOO_DOCUMENTDB_H
 
+#include "engine_export.h"
 #include <lmdb.h>
 #include <QVector>
 
 namespace Baloo {
 
-class DocumentDB
+class BALOO_ENGINE_EXPORT DocumentDB
 {
 public:
     explicit DocumentDB(MDB_env* env, MDB_txn* txn);

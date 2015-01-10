@@ -39,28 +39,6 @@ PostingDB::~PostingDB()
     mdb_dbi_close(m_env, m_dbi);
 }
 
-PostingList PostingDB::get(const QByteArray& term)
-{
-    MDB_val key;
-    key.mv_size = term.size();
-    key.mv_data = static_cast<void*>(const_cast<char*>(term.constData()));
-
-    MDB_val val;
-    int rc = mdb_get(m_txn, m_dbi, &key, &val);
-    if (rc == MDB_NOTFOUND) {
-        return PostingList();
-    }
-    Q_ASSERT(rc == 0);
-
-    PostingList list;
-    list.reserve(val.mv_size);
-
-    for (int i = 0; i < (val.mv_size / sizeof(int)); i++) {
-        list << static_cast<int*>(val.mv_data)[i];
-    }
-    return list;
-}
-
 void PostingDB::put(const QByteArray& term, const PostingList& list)
 {
     MDB_val key;
@@ -74,3 +52,77 @@ void PostingDB::put(const QByteArray& term, const PostingList& list)
     int rc = mdb_put(m_txn, m_dbi, &key, &val, 0);
     Q_ASSERT(rc == 0);
 }
+
+PostingList PostingDB::get(const QByteArray& term)
+{
+    MDB_val key;
+    key.mv_size = term.size();
+    key.mv_data = static_cast<void*>(const_cast<char*>(term.constData()));
+
+    MDB_val val;
+    int rc = mdb_get(m_txn, m_dbi, &key, &val);
+    if (rc == MDB_NOTFOUND) {
+        return PostingList();
+    }
+    Q_ASSERT(rc == 0);
+
+
+    PostingList list;
+    list.reserve(val.mv_size);
+
+    for (int i = 0; i < (val.mv_size / sizeof(int)); i++) {
+        list << static_cast<int*>(val.mv_data)[i];
+    }
+    return list;
+}
+
+DBPostingIterator* PostingDB::iter(const QByteArray& term)
+{
+    MDB_val key;
+    key.mv_size = term.size();
+    key.mv_data = static_cast<void*>(const_cast<char*>(term.constData()));
+
+    MDB_val val;
+    int rc = mdb_get(m_txn, m_dbi, &key, &val);
+    if (rc == MDB_NOTFOUND) {
+        return 0;
+    }
+    Q_ASSERT(rc == 0);
+
+    return new DBPostingIterator(val.mv_data, val.mv_size);
+}
+
+
+//
+// Posting Iterator
+//
+DBPostingIterator::DBPostingIterator(void* data, uint size)
+    : m_data(data)
+    , m_size(size)
+    , m_pos(-1)
+{
+}
+
+uint DBPostingIterator::docId()
+{
+    uint size = m_size / sizeof(int);
+    if (m_pos < 0 || m_pos >= size) {
+        return 0;
+    }
+
+    int* arr = static_cast<int*>(m_data);
+    return arr[m_pos];
+}
+
+uint DBPostingIterator::next()
+{
+    m_pos++;
+    uint size = m_size / sizeof(int);
+    if (m_pos >= size) {
+        return 0;
+    }
+
+    int* arr = static_cast<int*>(m_data);
+    return arr[m_pos];
+}
+

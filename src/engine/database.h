@@ -21,6 +21,7 @@
 #ifndef BALOO_DATABASE_H
 #define BALOO_DATABASE_H
 
+#include "engine_export.h"
 #include <QString>
 #include <lmdb.h>
 
@@ -30,7 +31,7 @@ class Document;
 class PostingDB;
 class DocumentDB;
 
-class Database
+class BALOO_ENGINE_EXPORT Database
 {
 public:
     Database(const QString& path);

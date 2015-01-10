@@ -21,6 +21,7 @@
 #ifndef BALOO_DOCUMENT_H
 #define BALOO_DOCUMENT_H
 
+#include "engine_export.h"
 #include <QByteArray>
 #include <QVector>
 
@@ -28,7 +29,7 @@ namespace Baloo {
 
 class Database;
 
-class Document
+class BALOO_ENGINE_EXPORT Document
 {
 public:
     void addTerm(const QByteArray& term);
