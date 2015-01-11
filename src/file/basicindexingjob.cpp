@@ -22,7 +22,6 @@
 
 #include "basicindexingjob.h"
 #include "database.h"
-//#include "xapiandocument.h"
 #include "lucenedocument.h"
 
 #include <QFileInfo>
@@ -53,61 +52,50 @@ bool BasicIndexingJob::index()
     QFileInfo fileInfo(m_file.url());
 
     LuceneDocument doc;
-    doc.addBoolTerm(m_mimetype, QLatin1String("M"));
+    doc.addIndexedField(QStringLiteral("M"), m_mimetype);
+    doc.indexText(fileInfo.fileName(), QStringLiteral("F"));
     doc.indexText(fileInfo.fileName());
-    doc.indexText(fileInfo.fileName(), QLatin1String("F"));
-    //TODO couldn't find a method to increment the frequency for name terms manually
 
     // Modified Date
     QDateTime mod = fileInfo.lastModified();
     const QString dtm = mod.toString(Qt::ISODate);
 
-    doc.addBoolTerm(dtm, QLatin1String("DT_M"));
-    doc.addBoolTerm(mod.date().year(), QLatin1String("DT_MY"));
-    doc.addBoolTerm(mod.date().month(), QLatin1String("DT_MM"));
-    doc.addBoolTerm(mod.date().day(), QLatin1String("DT_MD"));
+    //we are using numberic field here so that we can do range queries using dates and time
+    doc.addIndexedField(QStringLiteral("DT_M"), dtm);
+    doc.addNumericField(QStringLiteral("DT_MY"), mod.date().year());
+    doc.addNumericField(QStringLiteral("DT_MM"), mod.date().month());
+    doc.addNumericField(QStringLiteral("DT_MD"), mod.date().day());
 
-    const QByteArray timeTStr = QByteArray::number(mod.toTime_t());
-    /*doc.addValue(0, timeTStr);
-    doc.addValue(1, QByteArray::number(mod.date().toJulianDay()));
+    //TODO check if we actually need to store mtime value as long as numbericfield doesn't support uint
+    doc.addNumericField(QStringLiteral("M_TIME"), mod.toTime_t(), true);
+    doc.addNumericField(QStringLiteral("M_DATE"), mod.date().toJulianDay(), true);
+    doc.addNumericField(QStringLiteral("CREATED"), fileInfo.created().toMSecsSinceEpoch(), true);
     doc.addValue(2, QByteArray::number(fileInfo.created().toMSecsSinceEpoch()));
 
     // Store the URL
-    QByteArray urlArr = m_file.url().toUtf8();
-    doc.addValue(3, urlArr);
-
-    if (urlArr.size() > 240) {
-        QByteArray p1 = urlArr.mid(0, 240);
-        QByteArray p2 = urlArr.mid(240);
-
-        doc.addBoolTerm(p1, "P1");
-        doc.addBoolTerm(p2, "P2");
-    }
-    else {
-        doc.addBoolTerm(urlArr, "P-");
-    }*/
-    //TODO lucene supports facets but lucene++ hasn't implemented it, find solution???
+    doc.addIndexedField(QStringLiteral("URL"), m_file.url());
+    //TODO check how long paths can we store using lucene
 
     // Types
     QVector<KFileMetaData::Type::Type> tList = typesForMimeType(m_mimetype);
     Q_FOREACH (KFileMetaData::Type::Type type, tList) {
         QString tstr = KFileMetaData::TypeInfo(type).name().toLower();
-        doc.addBoolTerm(tstr, QLatin1String("T"));
+        doc.addIndexedField(QStringLiteral("T"), tstr);
     }
 
     if (fileInfo.isDir()) {
-        doc.addBoolTerm(QStringLiteral("folder"), QStringLiteral("Z"));
+        doc.addIndexedField(QStringLiteral("Z"), QStringLiteral("folder"));
 
         // This is an optimization for folders. They do not need to go through
         // file indexing, so there are no indexers for folders
-        doc.addBoolTerm(QStringLiteral("2"), QStringLiteral("Z"));
+        doc.addIndexedField(QStringLiteral("Z"), QStringLiteral("2"));
     }
     else if (m_onlyBasicIndexing) {
         // This is to prevent indexing if option in config is set to do so
-        doc.addBoolTerm(QStringLiteral("2"), QStringLiteral("Z"));
+        doc.addIndexedField(QStringLiteral("Z"), QStringLiteral("2"));
     }
     else {
-        doc.addBoolTerm(QStringLiteral("1"), QStringLiteral("Z"));
+        doc.addIndexedField(QStringLiteral("Z"), QStringLiteral("1"));
     }
 
     indexXAttr(m_file.url(), doc);
@@ -117,7 +105,7 @@ bool BasicIndexingJob::index()
     return true;
 }
 
-bool BasicIndexingJob::indexXAttr(const QString& url, XapianDocument& doc)
+bool BasicIndexingJob::indexXAttr(const QString& url, LuceneDocument& doc)
 {
     bool modified = false;
 
@@ -127,7 +115,7 @@ bool BasicIndexingJob::indexXAttr(const QString& url, XapianDocument& doc)
     if (!tags.isEmpty()) {
         Q_FOREACH (const QString& tag, tags) {
             doc.indexText(tag, QStringLiteral("TA"));
-            doc.addBoolTerm(QStringLiteral(tag), QStringLiteral("TAG-"));
+            doc.addIndexedField(QStringLiteral("TAG-"),tag);
         }
 
         modified = true;
@@ -135,7 +123,7 @@ bool BasicIndexingJob::indexXAttr(const QString& url, XapianDocument& doc)
 
     int rating = userMetaData.rating();
     if (rating) {
-        doc.addBoolTerm(QString::number(rating), QStringLiteral("R"));
+        doc.addIndexedField(QStringLiteral("R"), QString::number(rating));
         modified = true;
     }
 

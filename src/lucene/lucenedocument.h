@@ -14,21 +14,18 @@ class LuceneDocument
 public:
     LuceneDocument();
     LuceneDocument(const Lucene::DocumentPtr& doc);
-
-    void addField(const QString &field, const QString &value, Lucene::Field::Store store,
-                  Lucene::Field::Index index);
-    void addField(const QString& field, const int value, Lucene::Field::Store store, 
-                                  Lucene::Field::Index index);
-
-    //helper functions which minimize changes to existing codebase
-    void addBoolTerm(const QString& term, const QString& prefix);
+    void addIndexedField(const QString& field, const QString& value, bool stored = 1);
+    void addNumericField( const QString& name, long int value, bool storeLong = 0);
     void indexText(const QString& term, const QString& prefix = QStringLiteral("content"));
-
     Lucene::DocumentPtr doc() const;
 
 
 private:
     Lucene::DocumentPtr m_doc;
+    void addField(const QString &field, const QString &value, Lucene::Field::Store store,
+                  Lucene::Field::Index index);
+    void addField(const QString& field, int value, Lucene::Field::Store store,
+                                  Lucene::Field::Index index);
 };
 }
 

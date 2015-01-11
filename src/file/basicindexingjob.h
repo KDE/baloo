@@ -24,7 +24,6 @@
 #define BASICINDEXINGJOB_H
 
 #include "filemapping.h"
-//#include <xapian.h>
 #include<lucene++/LuceneHeaders.h>
 
 #include <KFileMetaData/Types>
