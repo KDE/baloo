@@ -19,8 +19,8 @@
  */
 
 #include "../basicindexingjob.h"
-#include <xapian.h>
-#include "xapiandocument.h"
+#include <lucene++/LuceneHeaders.h>
+#include "lucenedocument.h"
 
 #include <QMimeDatabase>
 #include <QTest>
@@ -58,60 +58,51 @@ void BasicIndexingJobTest::testBasicIndexing()
     bool onlyBasicIndexing = false;
     BasicIndexingJob jobNormal(file, mimetype, onlyBasicIndexing);
     jobNormal.index();
-    XapianDocument docForNormal(jobNormal.document());
+    LuceneDocument docForNormal(jobNormal.document());
 
     // mimetype
-    QCOMPARE(docForNormal.fetchTermStartsWith("M").remove(0, 1), mimetype);
+    QCOMPARE(docForNormal.getFieldValues(QStringLiteral("M")).at(0), mimetype);
 
 
     // filename
-    QStringList terms = {"filename", "txt"};
-    for (const QString& term: terms) {
-        QCOMPARE(docForNormal.fetchTermStartsWith(term.toUtf8()), term);
-        QByteArray prefix = "F";
-        QByteArray termWithPrefix = prefix + term.toUtf8();
-        QCOMPARE(docForNormal.fetchTermStartsWith(termWithPrefix).remove(0, prefix.size()), term);
-    }
-
+    // we are not tokenizing the name right now, as it will be done by lucene when adding doc to index
+    QCOMPARE(docForNormal.getFieldValues("F").at(0), fileInfo.fileName());
+    QCOMPARE(docForNormal.getFieldValues("content").at(0), fileInfo.fileName());
     // modified date
     QDateTime mod = fileInfo.lastModified();
-    const QString dtm = "DT_M" % mod.toString(Qt::ISODate);
-    const QString dtmY = "DT_MY" % QString::number(mod.date().year());
-    const QString dtmM = "DT_MM" % QString::number(mod.date().month());
-    const QString dtmD = "DT_MD" % QString::number(mod.date().day());
+    QCOMPARE(docForNormal.getFieldValues("DT_M").at(0), mod.toString(Qt::ISODate));
+    QCOMPARE(docForNormal.getFieldValues("DT_MY").at(0), QString::number(mod.date().year()));
+    QCOMPARE(docForNormal.getFieldValues("DT_MM").at(0), QString::number(mod.date().month()));
+    QCOMPARE(docForNormal.getFieldValues("DT_MD").at(0), QString::number(mod.date().day()));
+    QCOMPARE(docForNormal.getFieldValues("M_TIME").at(0), QString::number(mod.toTime_t()));
+    QCOMPARE(docForNormal.getFieldValues("M_DATE").at(0), QString::number(mod.date().toJulianDay()));
+    QCOMPARE(docForNormal.getFieldValues("CREATED").at(0), QString::number(fileInfo.created().toMSecsSinceEpoch()));
 
-    QCOMPARE(docForNormal.fetchTermStartsWith("DT_M"), dtm);
-    QCOMPARE(docForNormal.fetchTermStartsWith("DT_MY"), dtmY);
-    QCOMPARE(docForNormal.fetchTermStartsWith("DT_MM"), dtmM);
-    QCOMPARE(docForNormal.fetchTermStartsWith("DT_MD"), dtmD);
-
-    const QString time_t = QString::fromStdString(docForNormal.doc().get_value(0));
-    const QString julanDay = QString::fromStdString(docForNormal.doc().get_value(1));
-    QCOMPARE(time_t, QString::number(mod.toTime_t()));
-    QCOMPARE(julanDay, QString::number(mod.date().toJulianDay()));
+    QCOMPARE(docForNormal.getFieldValues("URL").at(0), file.url());
 
     // types
     QVector<KFileMetaData::Type::Type> tList = BasicIndexingJob::typesForMimeType(mimetype);
+    QStringList types = docForNormal.getFieldValues("T");
+    QStringList t_check;
     Q_FOREACH (KFileMetaData::Type::Type type, tList) {
-        QByteArray prefix = "T";
         QString typeStr = KFileMetaData::TypeInfo(type).name().toLower();
-        QByteArray typeWithPrefix = prefix + typeStr.toUtf8();
-        QCOMPARE(docForNormal.fetchTermStartsWith(typeWithPrefix).remove(0, prefix.size()), typeStr);
-
+        t_check.push_back(typeStr);
     }
+    QCOMPARE(types, t_check);
 
     // folder, basicindexing only
+    //TODO make a test in which this actually runs
     if (fileInfo.isDir()) {
-        QCOMPARE(docForNormal.fetchTermStartsWith("T"), QStringLiteral("T"));
+        QCOMPARE(docForNormal.getFieldValues("Z"), QStringList() << "folder" << "2");
     }
 
-    QCOMPARE(docForNormal.fetchTermStartsWith("Z"), QStringLiteral("Z1"));
+    QCOMPARE(docForNormal.getFieldValues("Z").at(0), QStringLiteral("1"));
 
-    // set up XapianDocument for basic indexing mode only
+    // set up LuceneDocument for basic indexing mode only
     BasicIndexingJob jobBasic(file, mimetype, true);
     jobBasic.index();
-    XapianDocument docForBasic(jobBasic.document());
-    QCOMPARE(docForBasic.fetchTermStartsWith("Z"), QStringLiteral("Z2"));
+    LuceneDocument docForBasic(jobBasic.document());
+    QCOMPARE(docForBasic.getFieldValues("Z").at(0), QStringLiteral("2"));
 }
 
 QTEST_MAIN(BasicIndexingJobTest)

@@ -24,13 +24,12 @@
 #define BASICINDEXINGJOB_H
 
 #include "filemapping.h"
-#include<lucene++/LuceneHeaders.h>
+#include <lucene++/LuceneHeaders.h>
+#include "lucenedocument.h"
 
 #include <KFileMetaData/Types>
 
 namespace Baloo {
-
-class XapianDocument;
 
 class BasicIndexingJob
 {
@@ -50,7 +49,7 @@ public:
      *
      * \return Returns true if the \p doc was modified
      */
-    static bool indexXAttr(const QString& url, XapianDocument& doc);
+    static bool indexXAttr(const QString& url, LuceneDocument& doc);
 
 private:
     static QVector<KFileMetaData::Type::Type> typesForMimeType(const QString& mimeType);

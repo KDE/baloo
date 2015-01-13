@@ -1,10 +1,12 @@
 #include "lucenedocument.h"
+#include <QStringList>
 
 using namespace Baloo;
 
 
 LuceneDocument::LuceneDocument()
 {
+    m_doc = Lucene::newLucene<Lucene::Document>();
 }
 
 LuceneDocument::LuceneDocument(const Lucene::DocumentPtr& doc)
@@ -37,7 +39,7 @@ void LuceneDocument::addIndexedField(const QString& field, const QString& value,
 
 void LuceneDocument::addNumericField(const QString& name, long int value, bool storeLong)
 {
-    Lucene::NumericFieldPtr numericField = Lucene::newLucene<Lucene::NumericField>(name.toStdWString();
+    Lucene::NumericFieldPtr numericField = Lucene::newLucene<Lucene::NumericField>(name.toStdWString());
     if (storeLong) {
 	numericField->setLongValue(value);
     }
@@ -53,7 +55,15 @@ void LuceneDocument::indexText(const QString& term, const QString& prefix)
     //TODO check what sort of analyzer lucene uses by default
 }
 
-
+QStringList LuceneDocument::getFieldValues(const QString& field)
+{
+    Lucene::Collection<Lucene::String> values = m_doc->getValues(field.toStdWString());
+    QStringList vals;
+    for (Lucene::Collection<Lucene::String>::iterator it = values.begin(); it != values.end(); ++it) {
+        vals << QString::fromStdWString(*it);
+    }
+    return vals;
+}
 
 Lucene::DocumentPtr LuceneDocument::doc() const
 {

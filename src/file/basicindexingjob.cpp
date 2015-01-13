@@ -22,7 +22,6 @@
 
 #include "basicindexingjob.h"
 #include "database.h"
-#include "lucenedocument.h"
 
 #include <QFileInfo>
 #include <QDateTime>
@@ -70,7 +69,6 @@ bool BasicIndexingJob::index()
     doc.addNumericField(QStringLiteral("M_TIME"), mod.toTime_t(), true);
     doc.addNumericField(QStringLiteral("M_DATE"), mod.date().toJulianDay(), true);
     doc.addNumericField(QStringLiteral("CREATED"), fileInfo.created().toMSecsSinceEpoch(), true);
-    doc.addValue(2, QByteArray::number(fileInfo.created().toMSecsSinceEpoch()));
 
     // Store the URL
     doc.addIndexedField(QStringLiteral("URL"), m_file.url());

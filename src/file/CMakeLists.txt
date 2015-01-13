@@ -57,6 +57,9 @@ target_link_libraries(baloofilecommon
     KF5::Baloo
     KF5::BalooXapian
     KF5::KDELibs4Support # For Solid
+    KF5::BalooLucene
+    ${LucenePlusPlus_LIBRARIES}
+    ${Boost_LIBRARIES}
 )
 
 set(file_SRCS

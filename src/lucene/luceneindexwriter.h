@@ -3,16 +3,17 @@
 
 #include <lucene++/LuceneHeaders.h>
 #include "lucenedocument.h"
+#include "lucene_export.h"
 
 namespace Baloo {
-class LuceneIndexWriter {
+class BALOO_LUCENE_EXPORT LuceneIndexWriter {
 public:
     LuceneIndexWriter(const QString& path);
     ~LuceneIndexWriter();
-    
+
     void addDocument(LuceneDocument& doc);
     void addDocument(Lucene::DocumentPtr doc);
-    
+
 private:
     Lucene::IndexWriterPtr m_indexWriter;
 };

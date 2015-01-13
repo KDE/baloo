@@ -3,13 +3,14 @@
 
 #include <lucene++/LuceneHeaders.h>
 #include <QString>
+#include "lucene_export.h"
 
 namespace Baloo {
 
 /**
  * This class is a wraper over a lucene doc for providing Qt APIs
  */
-class LuceneDocument
+class BALOO_LUCENE_EXPORT LuceneDocument
 {
 public:
     LuceneDocument();
@@ -18,6 +19,7 @@ public:
     void addNumericField( const QString& name, long int value, bool storeLong = 0);
     void indexText(const QString& term, const QString& prefix = QStringLiteral("content"));
     Lucene::DocumentPtr doc() const;
+    QStringList getFieldValues(const QString& field);
 
 
 private:
