@@ -3,6 +3,7 @@ set(BALOO_ENGINE_SRCS
     database.cpp
     document.cpp
     documentdb.cpp
+    documenturldb.cpp
     positiondb.cpp
     postingdb.cpp
     postingiterator.cpp
