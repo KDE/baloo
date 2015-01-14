@@ -18,7 +18,6 @@ ecm_add_test(pendingfilequeuetest.cpp ../pendingfilequeue.cpp ../pendingfile.cpp
 
 set(metadatamover_SRC
     metadatamovertest.cpp
-    ../metadatamover.cpp
 )
 
 ecm_add_test(${metadatamover_SRC}
