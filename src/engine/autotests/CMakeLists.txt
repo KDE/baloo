@@ -27,3 +27,8 @@ ecm_add_test(documenturldbtest.cpp
     TEST_NAME "documenturldbtest"
     LINK_LIBRARIES Qt5::Test KF5::BalooEngine
 )
+
+ecm_add_test(urldocumentdbtest.cpp
+    TEST_NAME "urldocumentdbtest"
+    LINK_LIBRARIES Qt5::Test KF5::BalooEngine
+)
