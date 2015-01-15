@@ -21,7 +21,7 @@
  */
 
 #include "filemapping.h"
-#include "xapiandocument.h"
+#include "lucenedocument.h"
 
 #include <QDebug>
 
@@ -71,7 +71,7 @@ bool FileMapping::fetched()
     return true;
 }
 
-bool FileMapping::fetch(Xapian::Database* db)
+bool FileMapping::fetch(Lucene::IndexReaderPtr reader)
 {
     if (fetched())
         return true;
@@ -81,48 +81,17 @@ bool FileMapping::fetch(Xapian::Database* db)
 
     try {
         if (m_url.isEmpty()) {
-            Xapian::Document doc = db->get_document(m_id);
-            std::string str = doc.get_value(3);
-            m_url = QString::fromUtf8(str.c_str(), str.length());
-
+            LuceneDocument doc(reader->document(m_id));
+            m_url = doc.getFieldValues("URL").at(0)
             return !m_url.isEmpty();
         }
         else {
             // FIXME: Need to catch exceptions!
-            QByteArray arr = m_url.toUtf8();
-            if (arr.size() > 240) {
-                QByteArray p1 = "P1" + arr.mid(0, 240);
-                QByteArray p2 = "P2" + arr.mid(240);
-
-                Xapian::Query q1(p1.constData());
-                Xapian::Query q2(p2.constData());
-
-                Xapian::Enquire enquire(*db);
-                enquire.set_query(Xapian::Query(Xapian::Query::OP_AND, q1, q2));
-                enquire.set_weighting_scheme(Xapian::BoolWeight());
-
-                Xapian::MSet mset = enquire.get_mset(0, 1);
-                Xapian::MSetIterator it = mset.begin();
-                if (it == mset.end())
-                    return false;
-
-                m_id = *it;
-                return true;
-            }
-            else {
-                Xapian::Enquire enquire(*db);
-                QByteArray arrWithPrefix = "P-" + arr;
-                enquire.set_query(Xapian::Query(arrWithPrefix.constData()));
-                enquire.set_weighting_scheme(Xapian::BoolWeight());
-
-                Xapian::MSet mset = enquire.get_mset(0, 1);
-                Xapian::MSetIterator it = mset.begin();
-                if (it == mset.end())
-                    return false;
-
-                m_id = *it;
-                return true;
-            }
+            Lucene::SearcherPtr searcher = Lucene::newLucene<Lucene::Searcher>(reader);
+            Lucene::TermPtr term = Lucene::newLucene<Lucene::Term>("URL", m_url.toStdWString());
+            Lucene::TermQueryPtr query = Lucene::newLucene<Lucene::TermQuery>(term);
+            Lucene::TopDocsPtr topDocs = searcher->search(query, 1);
+            m_id = topDocs->scoreDocs.at(0)->doc;
         }
     }
     catch (...) {

@@ -25,7 +25,7 @@
 
 #include <QString>
 #include "core_export.h"
-#include "xapiandatabase.h"
+#include <lucene++/LuceneHeaders.h>
 
 namespace Baloo {
 
@@ -53,7 +53,7 @@ public:
      *
      * Returns true if fetching was successful
      */
-    bool fetch(Xapian::Database* db);
+    bool fetch(Lucene::IndexReaderPtr reader);
 
     bool operator ==(const FileMapping& rhs) const;
 
