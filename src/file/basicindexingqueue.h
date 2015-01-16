@@ -27,7 +27,7 @@
 #include <QStack>
 #include <QPair>
 #include <QMimeDatabase>
-#include <xapian.h>
+#include "luceneindexwriter.h"
 
 
 class Database;
@@ -71,12 +71,12 @@ class BasicIndexingQueue: public IndexingQueue
 {
     Q_OBJECT
 public:
-    explicit BasicIndexingQueue(Database* db, FileIndexerConfig* config, QObject* parent = 0);
+    explicit BasicIndexingQueue(Baloo::LuceneIndexWriter* indexWriter, Baloo::FileIndexerConfig* config, QObject* parent = 0);
 
     virtual bool isEmpty();
 
 Q_SIGNALS:
-    void newDocument(unsigned id, Xapian::Document doc);
+    void newDocument(unsigned id, Lucene::DocumentPtr);
 
 public Q_SLOTS:
     void enqueue(const FileMapping& file, UpdateDirFlags flags = UpdateDirFlags());
@@ -109,7 +109,7 @@ private:
 
     QStack< QPair<FileMapping, UpdateDirFlags> > m_paths;
 
-    Database* m_db;
+    Lucene::IndexReaderPtr m_reader;
     FileIndexerConfig* m_config;
     QMimeDatabase m_mimeDb;
 };

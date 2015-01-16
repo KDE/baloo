@@ -65,6 +65,18 @@ QStringList LuceneDocument::getFieldValues(const QString& field)
     return vals;
 }
 
+bool LuceneDocument::removeFields(QString& field)
+{
+    bool modified = true;
+    if (!m_doc->getField()) {
+        modified = false;
+    }
+    else {
+        m_doc->removeFields(field.toStdWString());
+    }
+    return modified;
+}
+
 Lucene::DocumentPtr LuceneDocument::doc() const
 {
     return m_doc;

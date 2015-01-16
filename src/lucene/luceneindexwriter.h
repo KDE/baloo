@@ -13,6 +13,8 @@ public:
 
     void addDocument(LuceneDocument& doc);
     void addDocument(Lucene::DocumentPtr doc);
+    void commit(bool optimize = 0);
+    Lucene::IndexWriterPtr indexWriter();
 
 private:
     Lucene::IndexWriterPtr m_indexWriter;

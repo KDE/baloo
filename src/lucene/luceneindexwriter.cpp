@@ -29,3 +29,22 @@ void LuceneIndexWriter::addDocument(Lucene::DocumentPtr doc)
         qWarning() << "Exception" << e.getError().c_str();
     }
 }
+
+void LuceneIndexWriter::commit(bool optimize)
+{
+    try {
+        if (optimize){
+            m_indexWriter->optimize();
+        }
+        m_indexWriter->commit();
+    }
+    catch (Lucene::LuceneException &e) {
+        qWarning() << "Exception" << e.getError().c_str();
+    }
+}
+
+Lucene::IndexWriterPtr LuceneIndexWriter::indexWriter()
+{
+    return m_indexWriter;
+}
+

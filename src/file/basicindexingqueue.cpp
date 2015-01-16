@@ -18,7 +18,6 @@
 */
 
 
-#include <xapian.h>
 #include "basicindexingqueue.h"
 #include "fileindexerconfig.h"
 #include "util.h"
@@ -26,7 +25,7 @@
 #include "database.h"
 #include "filemapping.h"
 
-#include "xapiandocument.h"
+#include "lucenedocument.h"
 
 #include <QDebug>
 
@@ -36,9 +35,9 @@
 
 using namespace Baloo;
 
-BasicIndexingQueue::BasicIndexingQueue(Database* db, FileIndexerConfig* config, QObject* parent)
+BasicIndexingQueue::BasicIndexingQueue(Lucene::IndexReaderPtr reader, FileIndexerConfig* config, QObject* parent)
     : IndexingQueue(parent)
-    , m_db(db)
+    , m_reader(reader)
     , m_config(config)
 {
 }
@@ -133,14 +132,14 @@ bool BasicIndexingQueue::shouldIndex(FileMapping& file, const QString& mimetype)
     QFileInfo fileInfo(file.url());
     if (!fileInfo.exists())
         return false;
-
-    if (!file.fetch(m_db->xapianDatabase()->db())) {
+    //TODO uses experimental API needs testing
+    if (!file.fetch(m_reader)) {
         return true;
     }
 
-    XapianDocument doc = m_db->xapianDatabase()->document(file.id());
-    const QByteArray dtStr = doc.value(0);
-    if (dtStr.isEmpty()) {
+    LuceneDocument doc(m_reader->document());
+    const QString time_t = doc.getFieldValues("M_TIME").at(0);
+    if (time_t.isEmpty()) {
         return true;
     }
 
@@ -150,7 +149,7 @@ bool BasicIndexingQueue::shouldIndex(FileMapping& file, const QString& mimetype)
     if (mimetype == QLatin1String("inode/directory"))
         return false;
 
-    const uint time_t = dtStr.toUInt();
+    const uint time_t = time_t.toUInt();
     if (time_t != fileInfo.lastModified().toTime_t()) {
         return true;
     }
@@ -167,7 +166,7 @@ void BasicIndexingQueue::index(FileMapping& file, const QString& mimetype,
                                UpdateDirFlags flags)
 {
     if (!file.fetched()) {
-        file.fetch(m_db->xapianDatabase()->db());
+        file.fetch(m_reader);
     }
 
     qDebug() << file.id() << file.url();
@@ -180,13 +179,13 @@ void BasicIndexingQueue::index(FileMapping& file, const QString& mimetype,
         }
     }
     else {
-        XapianDocument doc = m_db->xapianDatabase()->document(file.id());
+        LuceneDocument doc(m_reader->document(file.id()));
 
         bool modified = false;
-        modified |= doc.removeTermStartsWith("R");
-        modified |= doc.removeTermStartsWith("TA");
-        modified |= doc.removeTermStartsWith("TAG");
-        modified |= doc.removeTermStartsWith("C");
+        modified |= doc.removeFields("R");
+        modified |= doc.removeFields("TA");
+        modified |= doc.removeFields("TAG");
+        modified |= doc.removeFields("C");
 
         modified |= BasicIndexingJob::indexXAttr(file.url(), doc);
         if (modified) {

@@ -20,6 +20,7 @@ public:
     void indexText(const QString& term, const QString& prefix = QStringLiteral("content"));
     Lucene::DocumentPtr doc() const;
     QStringList getFieldValues(const QString& field);
+    bool removeFields(QString& field);
 
 
 private:
