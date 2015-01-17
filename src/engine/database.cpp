@@ -21,6 +21,9 @@
 #include "database.h"
 #include "postingdb.h"
 #include "documentdb.h"
+#include "documenturldb.h"
+#include "urldocumentdb.h"
+
 #include "document.h"
 
 #include "andpostingiterator.h"
@@ -32,7 +35,7 @@ using namespace Baloo;
 Database::Database(const QString& path)
 {
     mdb_env_create(&m_env);
-    mdb_env_set_maxdbs(m_env, 2);
+    mdb_env_set_maxdbs(m_env, 4);
 
     // The directory needs to be created before opening the environment
     QByteArray arr = QFile::encodeName(path);
@@ -41,12 +44,16 @@ Database::Database(const QString& path)
 
     m_postingDB = new PostingDB(m_txn);
     m_documentDB = new DocumentDB(m_txn);
+    m_docUrlDB = new DocumentUrlDB(m_txn);
+    m_urlDocDB = new UrlDocumentDB(m_txn);
 }
 
 Database::~Database()
 {
     delete m_postingDB;
     delete m_documentDB;
+    delete m_docUrlDB;
+    delete m_urlDocDB;
 
     mdb_txn_commit(m_txn);
     mdb_env_close(m_env);
@@ -65,6 +72,8 @@ void Database::addDocument(const Document& doc)
     }
 
     m_documentDB->put(id, doc.m_terms);
+    m_docUrlDB->put(id, doc.url());
+    m_urlDocDB->put(doc.url(), id);
 }
 
 void Database::removeDocument(uint id)
@@ -84,6 +93,10 @@ void Database::removeDocument(uint id)
     }
 
     m_documentDB->del(id);
+
+    QByteArray url = m_docUrlDB->get(id);
+    m_docUrlDB->del(id);
+    m_urlDocDB->del(url);
 }
 
 bool Database::hasDocument(uint id)
@@ -104,8 +117,21 @@ Document Database::document(uint id)
     Document doc;
     doc.m_id = id;
     doc.m_terms = terms;
+    doc.m_url = m_docUrlDB->get(id);
 
     return doc;
+}
+
+uint Database::documentId(const QByteArray& url)
+{
+    Q_ASSERT(!url.isEmpty());
+    return m_urlDocDB->get(url);
+}
+
+QByteArray Database::documentUrl(uint id)
+{
+    Q_ASSERT(id > 0);
+    return m_docUrlDB->get(id);
 }
 
 void Database::commit()

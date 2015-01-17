@@ -37,10 +37,14 @@ public:
     uint id() const;
     void setId(uint id);
 
+    QByteArray url() const;
+    void setUrl(const QByteArray& url);
+
     bool operator ==(const Document& rhs) const;
 private:
     uint m_id;
     QVector<QByteArray> m_terms;
+    QByteArray m_url;
 
     friend class Database;
 };

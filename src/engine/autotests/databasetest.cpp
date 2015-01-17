@@ -40,8 +40,11 @@ void DatabaseTest::test()
     Database db(dir.path());
     QCOMPARE(db.hasDocument(1), false);
 
+    const QByteArray url("/home/file");
+
     Document doc;
     doc.setId(1);
+    doc.setUrl(url);
     doc.addTerm("a");
     doc.addTerm("ab");
     doc.addTerm("abc");
@@ -59,9 +62,15 @@ void DatabaseTest::test()
     QCOMPARE(result.size(), 1);
     QCOMPARE(result[0], 1);
 
+    QCOMPARE(db.documentUrl(1), url);
+    QCOMPARE(db.documentId(url), static_cast<uint>(1));
+
     db.removeDocument(1);
     QCOMPARE(db.hasDocument(1), false);
     QCOMPARE(db.document(1), Document());
+
+    QCOMPARE(db.documentUrl(1), QByteArray());
+    QCOMPARE(db.documentId(url), static_cast<uint>(0));
 }
 
 QTEST_MAIN(DatabaseTest)

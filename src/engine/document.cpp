@@ -37,7 +37,17 @@ void Document::setId(uint id)
     m_id = id;
 }
 
+void Document::setUrl(const QByteArray& url)
+{
+    m_url = url;
+}
+
+QByteArray Document::url() const
+{
+    return m_url;
+}
+
 bool Document::operator==(const Document& rhs) const
 {
-    return m_id == rhs.m_id && m_terms == rhs.m_terms;
+    return m_id == rhs.m_id && m_terms == rhs.m_terms && m_url == rhs.m_url;
 }

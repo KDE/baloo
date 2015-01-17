@@ -30,6 +30,8 @@ namespace Baloo {
 class Document;
 class PostingDB;
 class DocumentDB;
+class DocumentUrlDB;
+class UrlDocumentDB;
 
 class BALOO_ENGINE_EXPORT Database
 {
@@ -46,11 +48,17 @@ public:
 
     void commit();
 
+    QByteArray documentUrl(uint id);
+    uint documentId(const QByteArray& url);
+
     QVector<int> exec(const QVector<QByteArray>& query);
 
 private:
     PostingDB* m_postingDB;
     DocumentDB* m_documentDB;
+
+    DocumentUrlDB* m_docUrlDB;
+    UrlDocumentDB* m_urlDocDB;
 
     MDB_env* m_env;
     MDB_txn* m_txn;
