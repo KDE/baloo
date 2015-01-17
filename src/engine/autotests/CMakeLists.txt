@@ -32,3 +32,8 @@ ecm_add_test(urldocumentdbtest.cpp
     TEST_NAME "urldocumentdbtest"
     LINK_LIBRARIES Qt5::Test KF5::BalooEngine
 )
+
+ecm_add_test(indexingleveldbtest.cpp
+    TEST_NAME "indexingleveldbtest"
+    LINK_LIBRARIES Qt5::Test KF5::BalooEngine
+)
