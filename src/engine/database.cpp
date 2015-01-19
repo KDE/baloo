@@ -28,6 +28,7 @@
 #include "document.h"
 
 #include "andpostingiterator.h"
+#include "documentvaluedb.h"
 
 #include <QFile>
 
@@ -36,7 +37,7 @@ using namespace Baloo;
 Database::Database(const QString& path)
 {
     mdb_env_create(&m_env);
-    mdb_env_set_maxdbs(m_env, 5);
+    mdb_env_set_maxdbs(m_env, 6);
 
     // The directory needs to be created before opening the environment
     QByteArray arr = QFile::encodeName(path);
@@ -47,6 +48,7 @@ Database::Database(const QString& path)
     m_documentDB = new DocumentDB(m_txn);
     m_docUrlDB = new DocumentUrlDB(m_txn);
     m_urlDocDB = new UrlDocumentDB(m_txn);
+    m_docValueDB = new DocumentValueDB(m_txn);
     m_indexingLevelDB = new IndexingLevelDB(m_txn);
 }
 
@@ -56,6 +58,8 @@ Database::~Database()
     delete m_documentDB;
     delete m_docUrlDB;
     delete m_urlDocDB;
+    delete m_docValueDB;
+    delete m_indexingLevelDB;
 
     mdb_txn_commit(m_txn);
     mdb_env_close(m_env);
@@ -79,6 +83,11 @@ void Database::addDocument(const Document& doc)
 
     if (doc.indexingLevel()) {
         m_indexingLevelDB->put(doc.id());
+    }
+    if (!doc.m_slots.isEmpty()) {
+        for (auto it = doc.m_slots.constBegin(); it != doc.m_slots.constEnd(); it++) {
+            m_docValueDB->put(doc.id(), it.key(), it.value());
+        }
     }
 }
 
@@ -105,6 +114,7 @@ void Database::removeDocument(uint id)
     m_urlDocDB->del(url);
 
     m_indexingLevelDB->del(id);
+    m_docValueDB->del(id);
 }
 
 bool Database::hasDocument(uint id)

@@ -63,11 +63,15 @@ public:
     //        Currently we're only using them in tests, which is again strange
     QVector<QByteArray> terms() const { return m_terms; }
 
+    void addValue(int slotNum, const QByteArray& arr);
+
 private:
     uint m_id;
     QVector<QByteArray> m_terms;
     QByteArray m_url;
     int m_indexingLevel;
+
+    QMap<uint, QByteArray> m_slots;
 
     friend class Database;
 };

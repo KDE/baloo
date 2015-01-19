@@ -31,6 +31,7 @@ class Document;
 class PostingDB;
 class DocumentDB;
 class DocumentUrlDB;
+class DocumentValueDB;
 class UrlDocumentDB;
 class IndexingLevelDB;
 
@@ -61,6 +62,7 @@ private:
     DocumentUrlDB* m_docUrlDB;
     UrlDocumentDB* m_urlDocDB;
 
+    DocumentValueDB* m_docValueDB;
     IndexingLevelDB* m_indexingLevelDB;
 
     MDB_env* m_env;

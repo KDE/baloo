@@ -76,6 +76,11 @@ void Document::setIndexingLevel(int level)
     m_indexingLevel = level;
 }
 
+void Document::addValue(int slotNum, const QByteArray& arr)
+{
+    m_slots[slotNum] = arr;
+}
+
 bool Document::operator==(const Document& rhs) const
 {
     return m_id == rhs.m_id && m_terms == rhs.m_terms && m_url == rhs.m_url
