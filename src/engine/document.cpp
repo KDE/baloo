@@ -22,6 +22,11 @@
 
 using namespace Baloo;
 
+Document::Document()
+    : m_indexingLevel(0)
+{
+}
+
 void Document::addTerm(const QByteArray& term)
 {
     m_terms << term;
@@ -47,7 +52,18 @@ QByteArray Document::url() const
     return m_url;
 }
 
+int Document::indexingLevel() const
+{
+    return m_indexingLevel;
+}
+
+void Document::setIndexingLevel(int level)
+{
+    m_indexingLevel = level;
+}
+
 bool Document::operator==(const Document& rhs) const
 {
-    return m_id == rhs.m_id && m_terms == rhs.m_terms && m_url == rhs.m_url;
+    return m_id == rhs.m_id && m_terms == rhs.m_terms && m_url == rhs.m_url
+           && m_indexingLevel == rhs.m_indexingLevel;
 }

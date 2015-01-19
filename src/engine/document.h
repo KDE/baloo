@@ -32,6 +32,8 @@ class Database;
 class BALOO_ENGINE_EXPORT Document
 {
 public:
+    Document();
+
     void addTerm(const QByteArray& term);
 
     uint id() const;
@@ -41,10 +43,19 @@ public:
     void setUrl(const QByteArray& url);
 
     bool operator ==(const Document& rhs) const;
+
+    /**
+     * Setting the level to 0 indicates that you do not want the level
+     * to be stored
+     */
+    void setIndexingLevel(int level);
+    int indexingLevel() const;
+
 private:
     uint m_id;
     QVector<QByteArray> m_terms;
     QByteArray m_url;
+    int m_indexingLevel;
 
     friend class Database;
 };

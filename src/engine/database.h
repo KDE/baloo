@@ -32,6 +32,7 @@ class PostingDB;
 class DocumentDB;
 class DocumentUrlDB;
 class UrlDocumentDB;
+class IndexingLevelDB;
 
 class BALOO_ENGINE_EXPORT Database
 {
@@ -59,6 +60,8 @@ private:
 
     DocumentUrlDB* m_docUrlDB;
     UrlDocumentDB* m_urlDocDB;
+
+    IndexingLevelDB* m_indexingLevelDB;
 
     MDB_env* m_env;
     MDB_txn* m_txn;

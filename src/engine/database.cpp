@@ -23,6 +23,7 @@
 #include "documentdb.h"
 #include "documenturldb.h"
 #include "urldocumentdb.h"
+#include "indexingleveldb.h"
 
 #include "document.h"
 
@@ -46,6 +47,7 @@ Database::Database(const QString& path)
     m_documentDB = new DocumentDB(m_txn);
     m_docUrlDB = new DocumentUrlDB(m_txn);
     m_urlDocDB = new UrlDocumentDB(m_txn);
+    m_indexingLevelDB = new IndexingLevelDB(m_txn);
 }
 
 Database::~Database()
@@ -74,6 +76,10 @@ void Database::addDocument(const Document& doc)
     m_documentDB->put(id, doc.m_terms);
     m_docUrlDB->put(id, doc.url());
     m_urlDocDB->put(doc.url(), id);
+
+    if (doc.indexingLevel()) {
+        m_indexingLevelDB->put(doc.id());
+    }
 }
 
 void Database::removeDocument(uint id)
@@ -97,6 +103,8 @@ void Database::removeDocument(uint id)
     QByteArray url = m_docUrlDB->get(id);
     m_docUrlDB->del(id);
     m_urlDocDB->del(url);
+
+    m_indexingLevelDB->del(id);
 }
 
 bool Database::hasDocument(uint id)
