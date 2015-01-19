@@ -25,21 +25,23 @@
 #include "fileindexingjob.h"
 #include "util.h"
 #include "database.h"
-
+#include "filemapping.h"
 #include <QStandardPaths>
 #include <QDebug>
 
+#include "lucenedocument.h"
+
 using namespace Baloo;
 
-FileIndexingQueue::FileIndexingQueue(Database* db, QObject* parent)
+FileIndexingQueue::FileIndexingQueue(LuceneIndex *index, QObject* parent)
     : IndexingQueue(parent)
-    , m_db(db)
+    , m_index(index)
     , m_testMode(false)
     , m_indexJob(0)
 {
     m_maxSize = 1200;
     m_batchSize = 40;
-
+    m_reader = index->IndexReader();
     m_fileQueue.reserve(m_maxSize);
 }
 
@@ -52,24 +54,15 @@ void FileIndexingQueue::fillQueue()
     // this will result in unnecessary duplicates
     if (m_indexJob)
         return;
-
-    try {
-        Xapian::Database* db = m_db->xapianDatabase()->db();
-        Xapian::Enquire enquire(*db);
-        enquire.set_query(Xapian::Query("Z1"));
-        enquire.set_weighting_scheme(Xapian::BoolWeight());
-
-        Xapian::MSet mset = enquire.get_mset(0, m_maxSize - m_fileQueue.size());
-        Xapian::MSetIterator it = mset.begin();
-        for (; it != mset.end(); ++it) {
-            m_fileQueue << *it;
-        }
-    }
-    catch (const Xapian::DatabaseModifiedError&) {
-        fillQueue();
-    }
-    catch (const Xapian::Error&) {
-        return;
+    Lucene::SearcherPtr searcher = Lucene::newLucene<Lucene::IndexSearcher>(m_reader);
+    Lucene::TermPtr term = Lucene::newLucene<Lucene::Term>(L"Z", L"1");
+    Lucene::TermQueryPtr query = Lucene::newLucene<Lucene::TermQuery>(term);
+    Lucene::TopDocsPtr topdocs = searcher->search(query, m_maxSize - m_fileQueue.size());
+    Lucene::Collection<Lucene::ScoreDocPtr> scoreDocs = topdocs->scoreDocs;
+    Lucene::Collection<Lucene::ScoreDocPtr>::iterator it = scoreDocs.begin();
+    for (; it != scoreDocs.end(); ++it) {
+        LuceneDocument doc(m_reader->document(*it->doc));
+        m_fileQueue << doc.getFieldValues("URL").at(0);
     }
 }
 
@@ -80,7 +73,7 @@ bool FileIndexingQueue::isEmpty()
 
 void FileIndexingQueue::processNextIteration()
 {
-    QVector<uint> files;
+    QVector<QString> files;
     files.reserve(m_batchSize);
 
     for (int i=0; i<m_batchSize && m_fileQueue.size(); ++i) {
@@ -90,7 +83,7 @@ void FileIndexingQueue::processNextIteration()
     Q_ASSERT(m_indexJob == 0);
     m_indexJob = new FileIndexingJob(files, this);
     if (m_testMode) {
-        m_indexJob->setCustomDbPath(m_db->path());
+        m_indexJob->setCustomDbPath(m_testModePath);
     }
     connect(m_indexJob, &FileIndexingJob::indexingFailed, this, &FileIndexingQueue::slotIndexingFailed);
     connect(m_indexJob, &FileIndexingJob::finished, this, &FileIndexingQueue::slotFinishedIndexingFile);
@@ -104,23 +97,23 @@ void FileIndexingQueue::slotFinishedIndexingFile(KJob* job)
     m_indexJob = 0;
 
     // The process would have modified the db
-    m_db->xapianDatabase()->db()->reopen();
+    m_reader->reopen();
     if (m_fileQueue.isEmpty()) {
         fillQueue();
     }
     finishIteration();
 }
 
-void FileIndexingQueue::slotIndexingFailed(uint id)
+void FileIndexingQueue::slotIndexingFailed(QString& path)
 {
-    m_db->xapianDatabase()->db()->reopen();
-    Xapian::Document doc;
-    try {
-        Xapian::Document doc = m_db->xapianDatabase()->db()->get_document(id);
-        updateIndexingLevel(doc, -1);
-        Q_EMIT newDocument(id, doc);
-    } catch (const Xapian::Error& err) {
-    }
+    m_reader->reopen();
+    LuceneDocument doc;
+    FileMapping map(path);
+    map.fetch();
+    LuceneDocument doc(m_reader->document(map.id()));
+    doc.removeFields("Z");
+    doc.addIndexedField("Z", "-1");
+    Q_EMIT newDocument(map.id(), doc);
 }
 
 

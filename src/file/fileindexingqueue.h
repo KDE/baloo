@@ -26,7 +26,7 @@
 
 #include "indexingqueue.h"
 #include "filemapping.h"
-#include <xapian.h>
+#include "luceneindex.h"
 
 #include <QStack>
 #include <KJob>
@@ -41,7 +41,7 @@ class FileIndexingQueue : public IndexingQueue
 {
     Q_OBJECT
 public:
-    FileIndexingQueue(Database* db, QObject* parent = 0);
+    FileIndexingQueue(LuceneIndex *index, QObject* parent = 0);
     virtual bool isEmpty();
     virtual void fillQueue();
 
@@ -49,10 +49,10 @@ public:
 
     void setMaxSize(int size) { m_maxSize = size; }
     void setBatchSize(int size) { m_batchSize = size; }
-    void setTestMode(bool mode) { m_testMode = mode; }
+    void setTestMode(bool mode, QString path = QString()) { m_testMode = mode; m_testModePath = QString(); }
 
 Q_SIGNALS:
-    void newDocument(uint docid, const Xapian::Document& doc);
+    void newDocument(uint docid, const Lucene::DocumentPtr doc);
 
 protected:
     virtual void processNextIteration();
@@ -64,12 +64,14 @@ private Q_SLOTS:
     void slotIndexingFailed(uint doc);
 
 private:
-    QStack<uint> m_fileQueue;
-    Database* m_db;
+    QStack<QString> m_fileQueue;
+    LuceneIndex *m_index;
+    Lucene::IndexReaderPtr m_reader;
 
     int m_maxSize;
     int m_batchSize;
     bool m_testMode;
+    QString m_testModePath;
 
     FileIndexingJob* m_indexJob;
 };
