@@ -82,16 +82,17 @@ bool FileMapping::fetch(Lucene::IndexReaderPtr reader)
     try {
         if (m_url.isEmpty()) {
             LuceneDocument doc(reader->document(m_id));
-            m_url = doc.getFieldValues("URL").at(0)
+            m_url = doc.getFieldValues("URL").at(0);
             return !m_url.isEmpty();
         }
         else {
             // FIXME: Need to catch exceptions!
-            Lucene::SearcherPtr searcher = Lucene::newLucene<Lucene::Searcher>(reader);
-            Lucene::TermPtr term = Lucene::newLucene<Lucene::Term>("URL", m_url.toStdWString());
+            Lucene::SearcherPtr searcher = Lucene::newLucene<Lucene::IndexSearcher>(reader);
+            Lucene::TermPtr term = Lucene::newLucene<Lucene::Term>(L"URL", m_url.toStdWString());
             Lucene::TermQueryPtr query = Lucene::newLucene<Lucene::TermQuery>(term);
             Lucene::TopDocsPtr topDocs = searcher->search(query, 1);
-            m_id = topDocs->scoreDocs.at(0)->doc;
+            m_id = topDocs->scoreDocs[0]->doc;
+            searcher->close();
         }
     }
     catch (...) {
