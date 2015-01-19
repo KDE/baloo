@@ -6,10 +6,10 @@
 #include "lucene_export.h"
 
 namespace Baloo {
-class BALOO_LUCENE_EXPORT LuceneIndexWriter {
+class BALOO_LUCENE_EXPORT LuceneIndex {
 public:
-    LuceneIndexWriter(const QString& path);
-    ~LuceneIndexWriter();
+    LuceneIndex(const QString& path);
+    ~LuceneIndex();
 
     void addDocument(LuceneDocument& doc);
     void addDocument(Lucene::DocumentPtr doc);
@@ -18,6 +18,7 @@ public:
 
 private:
     Lucene::IndexWriterPtr m_indexWriter;
+    Lucene::IndexReaderPtr m_indexReader;
 };
 }
 

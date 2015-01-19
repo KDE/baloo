@@ -2,7 +2,7 @@ kde_enable_exceptions()
 
 set(LUCENE_SRCS
     lucenedocument.cpp
-    luceneindexwriter.cpp
+    luceneindex.cpp
 )
 
 add_library(KF5BalooLucene ${LUCENE_SRCS})

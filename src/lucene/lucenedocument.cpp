@@ -68,7 +68,7 @@ QStringList LuceneDocument::getFieldValues(const QString& field)
 bool LuceneDocument::removeFields(QString& field)
 {
     bool modified = true;
-    if (!m_doc->getField()) {
+    if (!m_doc->getField(field.toStdWString())) {
         modified = false;
     }
     else {
