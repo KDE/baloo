@@ -20,6 +20,8 @@
 
 #include "document.h"
 
+#include <algorithm>
+
 using namespace Baloo;
 
 Document::Document()
@@ -30,6 +32,17 @@ Document::Document()
 void Document::addTerm(const QByteArray& term)
 {
     m_terms << term;
+    std::sort(m_terms.begin(), m_terms.end());
+}
+
+void Document::addPositionTerm(const QByteArray& term, int position, int wdfInc)
+{
+    m_terms << term;
+    std::sort(m_terms.begin(), m_terms.end());
+
+    // FIXME: We need to start storing this information as well
+    Q_UNUSED(position);
+    Q_UNUSED(wdfInc);
 }
 
 uint Document::id() const

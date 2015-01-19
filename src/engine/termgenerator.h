@@ -1,6 +1,6 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
- * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
+ * This file is part of the KDE Baloo project.
+ * Copyright (C) 2014-2015 Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,15 +22,16 @@
 #define BALOO_TOKENIZER_H
 
 #include <QString>
-#include <xapian.h>
-#include "xapian_export.h"
+#include "engine_export.h"
 
 namespace Baloo {
 
-class BALOO_XAPIAN_EXPORT XapianTermGenerator
+class Document;
+
+class BALOO_ENGINE_EXPORT TermGenerator
 {
 public:
-    XapianTermGenerator(Xapian::Document* doc);
+    TermGenerator(Document* doc);
 
     void indexText(const QString& text);
     void indexText(const QString& text, const QString& prefix, int wdfInc = 1);
@@ -38,16 +39,12 @@ public:
     void setPosition(int position);
     int position() const;
 
-    void setDocument(Xapian::Document* doc);
-
     static QStringList termList(const QString& text);
 
     // Trim all terms to this size
     const static int maxTermSize = 25;
 private:
-    Xapian::Document* m_doc;
-    Xapian::TermGenerator m_termGen;
-
+    Document* m_doc;
     int m_position;
 };
 }

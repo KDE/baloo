@@ -29,12 +29,19 @@ namespace Baloo {
 
 class Database;
 
+/**
+ * A document represents a file which is being indexed inside Baloo's engine.
+ */
 class BALOO_ENGINE_EXPORT Document
 {
 public:
     Document();
 
     void addTerm(const QByteArray& term);
+    void addPositionTerm(const QByteArray& term, int position = 0, int wdfInc = 1);
+
+    void indexText(const QString& text);
+    void indexText(const QString& text, const QByteArray& prefix);
 
     uint id() const;
     void setId(uint id);
@@ -50,6 +57,10 @@ public:
      */
     void setIndexingLevel(int level);
     int indexingLevel() const;
+
+    // FIXME: No one should really ever need all the terms.
+    //        Currently we're only using them in tests, which is again strange
+    QVector<QByteArray> terms() const { return m_terms; }
 
 private:
     uint m_id;

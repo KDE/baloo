@@ -1,6 +1,6 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
- * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
+ * This file is part of the KDE Baloo project.
+ * Copyright (C) 2014-2015 Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,34 +18,26 @@
  *
  */
 
-#include "xapiantermgenerator.h"
+#include "termgenerator.h"
+#include "document.h"
 
 #include <QTextBoundaryFinder>
 #include <QDebug>
 
 using namespace Baloo;
 
-XapianTermGenerator::XapianTermGenerator(Xapian::Document* doc)
+TermGenerator::TermGenerator(Document* doc)
     : m_doc(doc)
     , m_position(1)
 {
-    if (doc) {
-        m_termGen.set_document(*doc);
-    }
 }
 
-void XapianTermGenerator::indexText(const QString& text)
+void TermGenerator::indexText(const QString& text)
 {
     indexText(text, QString());
 }
 
-void XapianTermGenerator::setDocument(Xapian::Document* doc)
-{
-    m_doc = doc;
-}
-
-
-QStringList XapianTermGenerator::termList(const QString& text)
+QStringList TermGenerator::termList(const QString& text)
 {
     int start = 0;
     int end = 0;
@@ -85,11 +77,9 @@ QStringList XapianTermGenerator::termList(const QString& text)
     return list;
 }
 
-void XapianTermGenerator::indexText(const QString& text, const QString& prefix, int wdfInc)
+void TermGenerator::indexText(const QString& text, const QString& prefix, int wdfInc)
 {
     const QByteArray par = prefix.toUtf8();
-    //const QByteArray ta = text.toUtf8();
-    //m_termGen.index_text(ta.constData(), wdfInc, par.constData());
 
     QStringList terms = termList(text);
     for (const QString& term : terms) {
@@ -97,19 +87,18 @@ void XapianTermGenerator::indexText(const QString& text, const QString& prefix, 
 
         QByteArray finalArr = par + arr;
         finalArr = finalArr.mid(0, maxTermSize);
-        std::string stdString(finalArr.constData(), finalArr.size());
-        m_doc->add_posting(stdString, m_position, wdfInc);
 
+        m_doc->addPositionTerm(finalArr, m_position, wdfInc);
         m_position++;
     }
 }
 
-int XapianTermGenerator::position() const
+int TermGenerator::position() const
 {
     return m_position;
 }
 
-void XapianTermGenerator::setPosition(int position)
+void TermGenerator::setPosition(int position)
 {
     m_position = position;
 }
