@@ -23,6 +23,7 @@
 
 #include "engine_export.h"
 #include <QByteArray>
+#include <QDebug>
 #include <QVector>
 
 namespace Baloo {
@@ -70,6 +71,12 @@ private:
 
     friend class Database;
 };
+
+inline QDebug operator<<(QDebug dbg, const Document &doc) {
+    dbg << doc.id() << doc.terms() << doc.url() << doc.indexingLevel();
+    return dbg;
+}
+
 }
 
 #endif // BALOO_DOCUMENT_H

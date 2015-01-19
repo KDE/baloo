@@ -26,7 +26,7 @@ IndexingLevelDB::IndexingLevelDB(MDB_txn* txn)
     : m_txn(txn)
 {
 
-    int rc = mdb_dbi_open(txn, "documenturldb", MDB_CREATE | MDB_INTEGERKEY, &m_dbi);
+    int rc = mdb_dbi_open(txn, "indexingleveldb", MDB_CREATE | MDB_INTEGERKEY, &m_dbi);
     Q_ASSERT(rc == 0);
 }
 
@@ -83,5 +83,8 @@ void IndexingLevelDB::del(uint docId)
     key.mv_data = static_cast<void*>(&docId);
 
     int rc = mdb_del(m_txn, m_dbi, &key, 0);
+    if (rc == MDB_NOTFOUND) {
+        return;
+    }
     Q_ASSERT(rc == 0);
 }

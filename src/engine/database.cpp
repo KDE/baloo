@@ -36,7 +36,7 @@ using namespace Baloo;
 Database::Database(const QString& path)
 {
     mdb_env_create(&m_env);
-    mdb_env_set_maxdbs(m_env, 4);
+    mdb_env_set_maxdbs(m_env, 5);
 
     // The directory needs to be created before opening the environment
     QByteArray arr = QFile::encodeName(path);

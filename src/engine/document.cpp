@@ -25,7 +25,8 @@
 using namespace Baloo;
 
 Document::Document()
-    : m_indexingLevel(0)
+    : m_id(0)
+    , m_indexingLevel(0)
 {
 }
 
