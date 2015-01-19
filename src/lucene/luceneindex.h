@@ -15,10 +15,10 @@ public:
     void addDocument(Lucene::DocumentPtr doc);
     void commit(bool optimize = 0);
     Lucene::IndexWriterPtr indexWriter() { return m_indexWriter; }
-    Lucene::IndexReaderPtr IndexReader() { return m_indexReader; }
+    Lucene::IndexReaderPtr IndexReader();
+
 private:
     Lucene::IndexWriterPtr m_indexWriter;
-    Lucene::IndexReaderPtr m_indexReader;
 };
 }
 
