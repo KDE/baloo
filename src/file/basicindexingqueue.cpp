@@ -35,9 +35,9 @@
 
 using namespace Baloo;
 
-BasicIndexingQueue::BasicIndexingQueue(Lucene::IndexReaderPtr reader, FileIndexerConfig* config, QObject* parent)
+BasicIndexingQueue::BasicIndexingQueue(LuceneIndex* index, FileIndexerConfig* config, QObject* parent)
     : IndexingQueue(parent)
-    , m_reader(reader)
+    , m_index(index)
     , m_config(config)
 {
 }
@@ -132,12 +132,11 @@ bool BasicIndexingQueue::shouldIndex(FileMapping& file, const QString& mimetype)
     QFileInfo fileInfo(file.url());
     if (!fileInfo.exists())
         return false;
-    //TODO uses experimental API needs testing
-    if (!file.fetch(m_reader)) {
+    if (!file.fetch(m_index->IndexReader())) {
         return true;
     }
 
-    LuceneDocument doc(m_reader->document());
+    LuceneDocument doc(m_index->IndexReader()->document());
     const QString time_t = doc.getFieldValues("M_TIME").at(0);
     if (time_t.isEmpty()) {
         return true;
@@ -166,7 +165,7 @@ void BasicIndexingQueue::index(FileMapping& file, const QString& mimetype,
                                UpdateDirFlags flags)
 {
     if (!file.fetched()) {
-        file.fetch(m_reader);
+        file.fetch(m_index->IndexReader());
     }
 
     qDebug() << file.id() << file.url();
@@ -179,7 +178,7 @@ void BasicIndexingQueue::index(FileMapping& file, const QString& mimetype,
         }
     }
     else {
-        LuceneDocument doc(m_reader->document(file.id()));
+        LuceneDocument doc(m_index->IndexReader()->document(file.id()));
 
         bool modified = false;
         modified |= doc.removeFields("R");

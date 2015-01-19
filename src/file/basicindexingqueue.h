@@ -27,7 +27,7 @@
 #include <QStack>
 #include <QPair>
 #include <QMimeDatabase>
-#include "luceneindexwriter.h"
+#include "luceneindex.h"
 
 
 class Database;
@@ -71,7 +71,7 @@ class BasicIndexingQueue: public IndexingQueue
 {
     Q_OBJECT
 public:
-    explicit BasicIndexingQueue(Baloo::LuceneIndexWriter* indexWriter, Baloo::FileIndexerConfig* config, QObject* parent = 0);
+    explicit BasicIndexingQueue(LuceneIndex *index, Baloo::FileIndexerConfig* config, QObject* parent = 0);
 
     virtual bool isEmpty();
 
@@ -109,7 +109,7 @@ private:
 
     QStack< QPair<FileMapping, UpdateDirFlags> > m_paths;
 
-    Lucene::IndexReaderPtr m_reader;
+    LuceneIndex* m_index;
     FileIndexerConfig* m_config;
     QMimeDatabase m_mimeDb;
 };

@@ -1,4 +1,4 @@
-#include "luceneindexwriter.h"
+#include "luceneindex.h"
 #include <QDebug>
 
 using namespace Baloo;
@@ -51,8 +51,4 @@ void LuceneIndex::commit(bool optimize)
     }
 }
 
-Lucene::IndexWriterPtr LuceneIndex::indexWriter()
-{
-    return m_indexWriter;
-}
 
