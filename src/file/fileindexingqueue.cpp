@@ -73,7 +73,7 @@ bool FileIndexingQueue::isEmpty()
 
 void FileIndexingQueue::processNextIteration()
 {
-    QVector<QString> files;
+    QStringList files;
     files.reserve(m_batchSize);
 
     for (int i=0; i<m_batchSize && m_fileQueue.size(); ++i) {
@@ -109,7 +109,7 @@ void FileIndexingQueue::slotIndexingFailed(QString& path)
     m_reader->reopen();
     LuceneDocument doc;
     FileMapping map(path);
-    map.fetch();
+    map.fetch(m_reader);
     LuceneDocument doc(m_reader->document(map.id()));
     doc.removeFields("Z");
     doc.addIndexedField("Z", "-1");

@@ -40,7 +40,7 @@ class FileIndexingJob : public KJob
     Q_OBJECT
 
 public:
-    FileIndexingJob(const QVector<uint>& files, QObject* parent = 0);
+    FileIndexingJob(const QStringList& files, QObject* parent = 0);
 
     /**
      * Set a custom path which should be sent to the baloo_file_extractor
@@ -63,7 +63,7 @@ Q_SIGNALS:
     /**
      * This signal is emitted when the indexing fails on a particular document
      */
-    void indexingFailed(uint document);
+    void indexingFailed(QString& path);
 
 protected:
     virtual bool doSuspend();
@@ -74,13 +74,13 @@ private Q_SLOTS:
     void slotProcessTimerTimeout();
 
 private:
-    void start(const QVector<uint>& files);
+    void start(const QVector<QString>& files);
 
     /// holds the files which still need to be indexed
-    QStack< QVector<uint> > m_files;
+    QStack<QStringList> m_files;
 
     /// holds the files which have been sent to the process
-    QVector<uint> m_args;
+    QStringList m_args;
 
     QProcess* m_process;
     QTimer* m_processTimer;
