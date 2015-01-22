@@ -23,11 +23,10 @@
 
 #include "fileindexingqueue.h"
 #include "fileindexingjob.h"
-#include "util.h"
-#include "database.h"
 #include "filemapping.h"
 #include <QStandardPaths>
 #include <QDebug>
+#include <QString>
 
 #include "lucenedocument.h"
 
@@ -61,7 +60,8 @@ void FileIndexingQueue::fillQueue()
     Lucene::Collection<Lucene::ScoreDocPtr> scoreDocs = topdocs->scoreDocs;
     Lucene::Collection<Lucene::ScoreDocPtr>::iterator it = scoreDocs.begin();
     for (; it != scoreDocs.end(); ++it) {
-        LuceneDocument doc(m_reader->document(*it->doc));
+        Lucene::ScoreDocPtr scoreDoc = *it;
+        LuceneDocument doc(m_reader->document(scoreDoc->doc));
         m_fileQueue << doc.getFieldValues("URL").at(0);
     }
 }
@@ -83,7 +83,7 @@ void FileIndexingQueue::processNextIteration()
     Q_ASSERT(m_indexJob == 0);
     m_indexJob = new FileIndexingJob(files, this);
     if (m_testMode) {
-        m_indexJob->setCustomDbPath(m_testModePath);
+        m_indexJob->setCustomDbPath(m_index->path());
     }
     connect(m_indexJob, &FileIndexingJob::indexingFailed, this, &FileIndexingQueue::slotIndexingFailed);
     connect(m_indexJob, &FileIndexingJob::finished, this, &FileIndexingQueue::slotFinishedIndexingFile);
@@ -104,16 +104,15 @@ void FileIndexingQueue::slotFinishedIndexingFile(KJob* job)
     finishIteration();
 }
 
-void FileIndexingQueue::slotIndexingFailed(QString& path)
+void FileIndexingQueue::slotIndexingFailed(const QString& url)
 {
     m_reader->reopen();
-    LuceneDocument doc;
-    FileMapping map(path);
+    FileMapping map(url);
     map.fetch(m_reader);
     LuceneDocument doc(m_reader->document(map.id()));
     doc.removeFields("Z");
     doc.addIndexedField("Z", "-1");
-    Q_EMIT newDocument(map.id(), doc);
+    Q_EMIT newDocument(map.id(), doc.doc());
 }
 
 

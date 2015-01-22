@@ -50,7 +50,7 @@ bool Baloo::CommitQueue::isEmpty() const
     return !m_index->haveChanges();
 }
 
-void Baloo::CommitQueue::add(unsigned id, Xapian::Document doc)
+void Baloo::CommitQueue::add(unsigned id, Lucene::DocumentPtr doc)
 {
     if (id) {
         LuceneDocument lDoc(doc);
@@ -80,7 +80,7 @@ void Baloo::CommitQueue::startTimers()
 void Baloo::CommitQueue::commit()
 {
     // The 200 mb is arbitrary
-    KDiskFreeSpaceInfo info = KDiskFreeSpaceInfo::freeSpaceInfo(m_db->path());
+    KDiskFreeSpaceInfo info = KDiskFreeSpaceInfo::freeSpaceInfo(m_index->path());
     if (info.isValid() && info.available() <= 200 * 1024 * 1024) {
         qWarning() << "Low disk space. Aborting!!";
         QCoreApplication::instance()->quit();

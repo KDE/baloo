@@ -49,7 +49,7 @@ public:
 
     void setMaxSize(int size) { m_maxSize = size; }
     void setBatchSize(int size) { m_batchSize = size; }
-    void setTestMode(bool mode, QString path = QString()) { m_testMode = mode; m_testModePath = QString(); }
+    void setTestMode(bool mode) { m_testMode = mode; }
 
 Q_SIGNALS:
     void newDocument(uint docid, const Lucene::DocumentPtr doc);
@@ -61,7 +61,7 @@ protected:
 
 private Q_SLOTS:
     void slotFinishedIndexingFile(KJob* job);
-    void slotIndexingFailed(uint doc);
+    void slotIndexingFailed(const QString& url);
 
 private:
     QStack<QString> m_fileQueue;

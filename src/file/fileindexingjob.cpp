@@ -21,9 +21,7 @@
 */
 
 #include "fileindexingjob.h"
-#include "util.h"
 #include "fileindexerconfig.h"
-#include "database.h"
 
 #include <QDebug>
 #include <QStandardPaths>
@@ -108,7 +106,7 @@ void FileIndexingJob::slotIndexedFile(int, QProcess::ExitStatus exitStatus)
 
     // Here it is!
     if (m_args.size() == 1) {
-        QString doc = m_args.first();
+        const QString doc = m_args.first();
         qWarning() << "Indexer crashed while indexing" << doc;
         qWarning() << "Blacklisting this file";
         Q_EMIT indexingFailed(doc);

@@ -63,7 +63,7 @@ Q_SIGNALS:
     /**
      * This signal is emitted when the indexing fails on a particular document
      */
-    void indexingFailed(QString& path);
+    void indexingFailed(const QString& url);
 
 protected:
     virtual bool doSuspend();
@@ -74,7 +74,7 @@ private Q_SLOTS:
     void slotProcessTimerTimeout();
 
 private:
-    void start(const QVector<QString>& files);
+    void start(const QStringList& files);
 
     /// holds the files which still need to be indexed
     QStack<QStringList> m_files;

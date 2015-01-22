@@ -5,6 +5,7 @@
 using namespace Baloo;
 
 LuceneIndex::LuceneIndex(const QString& path)
+    : m_path(path)
 {
     try {
         m_indexWriter = Lucene::newLucene<Lucene::IndexWriter>(Lucene::FSDirectory::open(path.toStdWString()),
