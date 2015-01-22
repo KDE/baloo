@@ -13,12 +13,17 @@ public:
 
     void addDocument(LuceneDocument& doc);
     void addDocument(Lucene::DocumentPtr doc);
+    void replaceDocument(const QString& url, const Lucene::DocumentPtr& doc);
+    void deleteDocument(const QString& url);
     void commit(bool optimize = 0);
+    bool haveChanges() { return m_haveChanges; }
+    Lucene::TermPtr makeTerm(const QString& field, const QString& value);
     Lucene::IndexWriterPtr indexWriter() { return m_indexWriter; }
     Lucene::IndexReaderPtr IndexReader();
 
 private:
     Lucene::IndexWriterPtr m_indexWriter;
+    bool m_haveChanges = false;
 };
 }
 

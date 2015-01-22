@@ -21,17 +21,15 @@
  */
 
 #include "commitqueue.h"
-#include "database.h"
+#include "lucenedocument.h"
 
 #include <QDebug>
 #include <KDiskFreeSpaceInfo>
 #include <QCoreApplication>
 
-#include "xapiandocument.h"
-
-Baloo::CommitQueue::CommitQueue(Database* db, QObject* parent)
+Baloo::CommitQueue::CommitQueue(LuceneIndex *index, QObject* parent)
     : QObject(parent)
-    , m_db(db)
+    , m_index(index)
 {
     m_smallTimer.setSingleShot(true);
     m_smallTimer.setInterval(200);
@@ -49,22 +47,24 @@ Baloo::CommitQueue::~CommitQueue()
 
 bool Baloo::CommitQueue::isEmpty() const
 {
-    return !m_db->xapianDatabase()->haveChanges();
+    return !m_index->haveChanges();
 }
 
 void Baloo::CommitQueue::add(unsigned id, Xapian::Document doc)
 {
     if (id) {
-        m_db->xapianDatabase()->replaceDocument(id, doc);
+        LuceneDocument lDoc(doc);
+        QString url = lDoc.getFieldValues("URL").at(0);
+        m_index->replaceDocument(url, doc);
     } else {
-        m_db->xapianDatabase()->addDocument(doc);
+        m_index->addDocument(doc);
     }
     startTimers();
 }
 
-void Baloo::CommitQueue::remove(unsigned int docid)
+void Baloo::CommitQueue::remove(const QString& url)
 {
-    m_db->xapianDatabase()->deleteDocument(docid);
+    m_index->deleteDocument(url);
     startTimers();
 }
 
@@ -87,7 +87,7 @@ void Baloo::CommitQueue::commit()
         return;
     }
 
-    m_db->xapianDatabase()->commit();
+    m_index->commit();
 
     m_smallTimer.stop();
     m_largeTimer.stop();

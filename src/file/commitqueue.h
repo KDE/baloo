@@ -27,9 +27,8 @@
 #include <QTimer>
 #include <QVector>
 #include <QPair>
-#include <xapian.h>
-
-class Database;
+#include <lucene++/LuceneHeaders.h>
+#include "luceneindex.h"
 
 namespace Baloo {
 
@@ -37,14 +36,14 @@ class CommitQueue : public QObject
 {
     Q_OBJECT
 public:
-    CommitQueue(Database* db, QObject* parent = 0);
+    CommitQueue(LuceneIndex *index, QObject* parent = 0);
     ~CommitQueue();
 
     bool isEmpty() const;
 
 public Q_SLOTS:
-    void add(unsigned id, Xapian::Document doc);
-    void remove(unsigned docid);
+    void add(unsigned id, Lucene::DocumentPtr doc);
+    void remove(const QString& url);
 
     void commit();
 
@@ -63,7 +62,7 @@ private:
     //
     QTimer m_smallTimer;
     QTimer m_largeTimer;
-    Database* m_db;
+    LuceneIndex* m_index;
 };
 
 }

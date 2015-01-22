@@ -1,5 +1,6 @@
 #include "luceneindex.h"
 #include <QDebug>
+#include <QString>
 
 using namespace Baloo;
 
@@ -34,6 +35,24 @@ void LuceneIndex::addDocument(Lucene::DocumentPtr doc)
     catch (Lucene::LuceneException &e) {
         qWarning() << "Exception" << e.getError().c_str();
     }
+    m_haveChanges = true;
+}
+
+void LuceneIndex::replaceDocument(const QString& url, const Lucene::DocumentPtr& doc)
+{
+    m_indexWriter->updateDocument(makeTerm(QStringLiteral("URL"), url), doc);
+    m_haveChanges = true;
+}
+
+void LuceneIndex::deleteDocument(const QString& url)
+{
+    m_indexWriter->deleteDocuments( makeTerm(QStringLiteral("URL"), url) );
+}
+
+Lucene::TermPtr LuceneIndex::makeTerm(const QString& field, const QString& value)
+{
+    Lucene::TermPtr term = Lucene::newLucene<Lucene::Term>(field.toStdWString(), value.toStdWString());
+    return term;
 }
 
 Lucene::IndexReaderPtr LuceneIndex::IndexReader()
@@ -52,6 +71,7 @@ void LuceneIndex::commit(bool optimize)
     catch (Lucene::LuceneException &e) {
         qWarning() << "Exception" << e.getError().c_str();
     }
+    m_haveChanges = false;
 }
 
 
