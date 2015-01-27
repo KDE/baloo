@@ -22,7 +22,7 @@
 
 #include <QtCore/QTimer>
 
-class Database;
+class LuceneIndex;
 
 namespace Baloo
 {
@@ -39,7 +39,7 @@ class FileIndexer : public QObject
     Q_CLASSINFO("D-Bus Interface", "org.kde.baloo")
 
 public:
-    FileIndexer(Database* db, FileIndexerConfig* config, QObject* parent = 0);
+    FileIndexer(LuceneIndex *index, FileIndexerConfig* config, QObject* parent = 0);
     ~FileIndexer();
 
 Q_SIGNALS:

@@ -35,17 +35,17 @@
 
 using namespace Baloo;
 
-IndexScheduler::IndexScheduler(Database* db, FileIndexerConfig* config, QObject* parent)
+IndexScheduler::IndexScheduler(LuceneIndex* index, FileIndexerConfig* config, QObject* parent)
     : QObject(parent)
     , m_indexing(false)
     , m_config(config)
-    , m_db(db)
+    , m_index(index)
 {
     Q_ASSERT(m_config);
     connect(m_config, &FileIndexerConfig::configChanged, this, &IndexScheduler::slotConfigChanged);
 
-    m_basicIQ = new BasicIndexingQueue(m_db, m_config, this);
-    m_fileIQ = new FileIndexingQueue(m_db, this);
+    m_basicIQ = new BasicIndexingQueue(m_index, m_config, this);
+    m_fileIQ = new FileIndexingQueue(m_index, this);
 
     connect(m_basicIQ, &BasicIndexingQueue::finishedIndexing, this, &IndexScheduler::basicIndexingDone);
     connect(m_fileIQ, &FileIndexingQueue::finishedIndexing, this, &IndexScheduler::fileIndexingDone);
@@ -66,7 +66,7 @@ IndexScheduler::IndexScheduler(Database* db, FileIndexerConfig* config, QObject*
     connect(m_eventMonitor, &EventMonitor::idleStatusChanged, this, &IndexScheduler::slotScheduleIndexing);
     connect(m_eventMonitor, &EventMonitor::powerManagementStatusChanged, this, &IndexScheduler::slotScheduleIndexing);
 
-    m_commitQ = new CommitQueue(m_db, this);
+    m_commitQ = new CommitQueue(m_index, this);
     connect(m_commitQ, &CommitQueue::committed, this, &IndexScheduler::slotScheduleIndexing);
     connect(m_commitQ, &CommitQueue::committed, this, &IndexScheduler::slotNotifyCommitted);
     connect(m_basicIQ, &BasicIndexingQueue::newDocument, m_commitQ, &CommitQueue::add);

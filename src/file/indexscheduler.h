@@ -23,7 +23,7 @@
 #include "basicindexingqueue.h" // Required for UpdateDirFlags
 #include "filemapping.h"
 
-class Database;
+class LuceneIndex;
 
 namespace Baloo
 {
@@ -45,7 +45,7 @@ class IndexScheduler : public QObject
     Q_OBJECT
 
 public:
-    IndexScheduler(Database* db, FileIndexerConfig* config, QObject* parent = 0);
+    IndexScheduler(LuceneIndex* index, FileIndexerConfig* config, QObject* parent = 0);
     ~IndexScheduler();
 
     bool isSuspended() const;
@@ -150,7 +150,7 @@ private:
 
     QString m_oldStatus;
 
-    Database* m_db;
+    LuceneIndex* m_index;
 
     friend class SchedulerTest;
 };

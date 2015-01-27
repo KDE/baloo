@@ -29,7 +29,7 @@
 
 using namespace Baloo;
 
-FileIndexer::FileIndexer(Database* db, FileIndexerConfig* config, QObject* parent)
+FileIndexer::FileIndexer(LuceneIndex *index, FileIndexerConfig* config, QObject* parent)
     : QObject(parent)
     , m_config(config)
     , m_startupUpdateDone(false)
@@ -38,7 +38,7 @@ FileIndexer::FileIndexer(Database* db, FileIndexerConfig* config, QObject* paren
 
     // setup the actual index scheduler
     // ==============================================================
-    m_indexScheduler = new IndexScheduler(db, config, this);
+    m_indexScheduler = new IndexScheduler(index, config, this);
 
     // setup status connections
     connect(m_indexScheduler, &IndexScheduler::statusStringChanged, this, &FileIndexer::statusChanged);
