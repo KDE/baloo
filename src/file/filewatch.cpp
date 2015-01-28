@@ -38,15 +38,15 @@
 
 using namespace Baloo;
 
-FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
+FileWatch::FileWatch(LuceneIndex* index, FileIndexerConfig* config, QObject* parent)
     : QObject(parent)
-    , m_db(db)
+    , m_index(index)
     , m_config(config)
 #ifdef BUILD_KINOTIFY
     , m_dirWatch(0)
 #endif
 {
-    m_metadataMover = new MetadataMover(m_db, this);
+    m_metadataMover = new MetadataMover(m_index, this);
     connect(m_metadataMover, &MetadataMover::movedWithoutData, this, &FileWatch::indexFile);
     connect(m_metadataMover, &MetadataMover::fileRemoved, this, &FileWatch::fileRemoved);
 

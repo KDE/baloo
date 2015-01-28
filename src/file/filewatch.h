@@ -23,7 +23,7 @@
 #include "pendingfile.h"
 
 class KInotify;
-class Database;
+class LuceneIndex;
 
 namespace Baloo
 {
@@ -37,7 +37,7 @@ class FileWatch : public QObject
     Q_OBJECT
 
 public:
-    FileWatch(Database* db, FileIndexerConfig* config, QObject* parent = 0);
+    FileWatch(LuceneIndex* index, FileIndexerConfig* config, QObject* parent = 0);
     ~FileWatch();
 
 Q_SIGNALS:
@@ -70,7 +70,7 @@ private:
     /** Watch a folder, provided it is not already watched*/
     void watchFolder(const QString& path);
 
-    Database* m_db;
+    LuceneIndex* m_index;
 
     MetadataMover* m_metadataMover;
     FileIndexerConfig* m_config;
