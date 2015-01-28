@@ -17,12 +17,12 @@ public:
     void deleteDocument(const QString& url);
     void commit(bool optimize = 0);
     bool haveChanges() { return m_haveChanges; }
-    Lucene::TermPtr makeTerm(const QString& field, const QString& value);
     Lucene::IndexWriterPtr indexWriter() { return m_indexWriter; }
     QString path() { return m_path; }
     Lucene::IndexReaderPtr IndexReader();
 
 private:
+    Lucene::TermPtr makeTerm(const QString& field, const QString& value);
     Lucene::IndexWriterPtr m_indexWriter;
     bool m_haveChanges = false;
     QString m_path;

@@ -62,6 +62,7 @@ QStringList LuceneDocument::getFieldValues(const QString& field)
     for (Lucene::Collection<Lucene::String>::iterator it = values.begin(); it != values.end(); ++it) {
         vals << QString::fromStdWString(*it);
     }
+    Q_ASSERT(vals.size() != 0);
     return vals;
 }
 
