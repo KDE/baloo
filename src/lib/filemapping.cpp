@@ -62,6 +62,9 @@ void FileMapping::setId(uint id)
 void FileMapping::setUrl(const QString& url)
 {
     m_url = url;
+    if (m_url.endsWith('/')) {
+        m_url = m_url.mid(0, m_url.length() - 1);
+    }
 }
 
 bool FileMapping::fetched()
