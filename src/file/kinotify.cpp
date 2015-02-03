@@ -54,7 +54,7 @@ QByteArray stripTrailingSlash(const QByteArray& path)
 QByteArray concatPath(const QByteArray& p1, const QByteArray& p2)
 {
     QByteArray p(p1);
-    if (p.isEmpty() || p[p.length() - 1] != '/')
+    if (p.isEmpty() || (!p2.isEmpty() && p[p.length() - 1] != '/'))
         p.append('/');
     p.append(p2);
     return p;
