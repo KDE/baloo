@@ -136,6 +136,9 @@ QByteArray XapianDocument::value(int slot) const
     catch (const Xapian::Error& err) {
         qDebug() << err.get_description().c_str();
     }
+    catch (...) {
+        // bug 343602
+    }
 
     return QByteArray();
 }

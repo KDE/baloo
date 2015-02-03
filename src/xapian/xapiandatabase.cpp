@@ -123,20 +123,20 @@ void XapianDatabase::commit()
 
     Xapian::WritableDatabase wdb = createWritableDb();
 
-    qDebug() << "Adding:" << m_docsToAdd.size() << "docs";
-    Q_FOREACH (const DocIdPair& doc, m_docsToAdd) {
+    qDebug() << "Removing:" << m_docsToRemove.size() << "docs";
+    Q_FOREACH (Xapian::docid id, m_docsToRemove) {
         try {
-            wdb.replace_document(doc.first, doc.second);
+            wdb.delete_document(id);
         }
         catch (const Xapian::Error& err) {
             qDebug() << "ERROR" << err.get_description().c_str();
         }
     }
 
-    qDebug() << "Removing:" << m_docsToRemove.size() << "docs";
-    Q_FOREACH (Xapian::docid id, m_docsToRemove) {
+    qDebug() << "Adding:" << m_docsToAdd.size() << "docs";
+    Q_FOREACH (const DocIdPair& doc, m_docsToAdd) {
         try {
-            wdb.delete_document(id);
+            wdb.replace_document(doc.first, doc.second);
         }
         catch (const Xapian::Error& err) {
             qDebug() << "ERROR" << err.get_description().c_str();
