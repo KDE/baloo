@@ -53,7 +53,6 @@ bool BasicIndexingJob::index()
     LuceneDocument doc;
     doc.addIndexedField(QStringLiteral("M"), m_mimetype);
     doc.indexText(fileInfo.fileName(), QStringLiteral("F"));
-    doc.indexText(fileInfo.fileName());
 
     // Modified Date
     QDateTime mod = fileInfo.lastModified();

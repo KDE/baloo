@@ -91,7 +91,9 @@ bool FileMapping::fetch(Lucene::IndexReaderPtr reader)
             Lucene::TermPtr term = Lucene::newLucene<Lucene::Term>(L"URL", m_url.toStdWString());
             Lucene::TermQueryPtr query = Lucene::newLucene<Lucene::TermQuery>(term);
             Lucene::TopDocsPtr topDocs = searcher->search(query, 1);
-            m_id = topDocs->scoreDocs[0]->doc;
+            if (topDocs->scoreDocs.size() != 0) {
+                m_id = topDocs->scoreDocs[0]->doc;
+            }
             searcher->close();
         }
     }

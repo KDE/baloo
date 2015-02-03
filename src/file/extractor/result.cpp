@@ -34,16 +34,12 @@
 Result::Result()
     : ExtractionResult(QString(), QString())
     , m_docId(0)
-    , m_termGen(0)
-    , m_termGenForText(0)
 {
 }
 
 Result::Result(const QString& url, const QString& mimetype, const Flags& flags)
     : KFileMetaData::ExtractionResult(url, mimetype, flags)
     , m_docId(0)
-    , m_termGen(0)
-    , m_termGenForText(0)
 {
 }
 
@@ -70,42 +66,41 @@ void Result::add(KFileMetaData::Property::Property property, const QVariant& val
     QString prefix = QLatin1Char('X') + p;
 
     if (value.type() == QVariant::Bool) {
-        m_doc.add_boolean_term(prefix.toUtf8().constData());
+        //FIXME how do we handle this properly?
+        m_doc.addIndexedField(prefix, value.toString());
     }
     else if (value.type() == QVariant::Int) {
-        const QString term = prefix + value.toString();
-        m_doc.add_term(term.toUtf8().constData());
+        m_doc.addNumericField(prefix, value.toInt());
     }
     else if (value.type() == QVariant::Date) {
-        const QString term = prefix + value.toDate().toString(Qt::ISODate);
-        m_doc.add_term(term.toUtf8().constData());
+        const QString date = value.toDate().toString(Qt::ISODate);
+        m_doc.addIndexedField(prefix, date);
     }
     else if (value.type() == QVariant::DateTime) {
-        const QString term = prefix + value.toDateTime().toString(Qt::ISODate);
-        m_doc.add_term(term.toUtf8().constData());
+        const QString dateTime = value.toDateTime().toString(Qt::ISODate);
+        m_doc.addIndexedField(prefix, dateTime);
     }
     else {
         const QString val = value.toString();
         if (val.isEmpty())
             return;
 
-        m_termGen.indexText(val, prefix);
+        m_doc.indexText(val, prefix);
         KFileMetaData::PropertyInfo pi(property);
         if (pi.shouldBeIndexed())
-            m_termGen.indexText(val);
+            m_doc.indexText(val);
     }
 }
 
 void Result::append(const QString& text)
 {
-    m_termGenForText.indexText(text);
+    m_doc.indexText(text);
 }
 
 void Result::addType(KFileMetaData::Type::Type type)
 {
     KFileMetaData::TypeInfo ti(type);
-    const QString t = QLatin1Char('T') + ti.name().toLower();
-    m_doc.add_boolean_term(t.toUtf8().constData());
+    m_doc.addIndexedField(QStringLiteral("T"), ti.name().toLower());
 }
 
 void Result::finish()
@@ -113,20 +108,12 @@ void Result::finish()
     QJsonObject jo = QJsonObject::fromVariantMap(m_map);
     QJsonDocument jdoc;
     jdoc.setObject(jo);
-    m_doc.set_data(jdoc.toJson().constData());
+    m_doc.addBinaryField(QStringLiteral("prop_json"), jdoc.toJson());
 }
 
-void Result::setDocument(const Xapian::Document& doc)
+void Result::setDocument(const Baloo::LuceneDocument& doc)
 {
     m_doc = doc;
-    // All document metadata are indexed from position 1000
-    m_termGen.setDocument(&m_doc);
-    m_termGen.setPosition(1000);
-
-    // All document plain text starts from 10000. This is done to avoid
-    // clashes with the term positions
-    m_termGenForText.setDocument(&m_doc);
-    m_termGenForText.setPosition(10000);
 }
 
 void Result::setId(uint id)

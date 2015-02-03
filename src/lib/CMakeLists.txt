@@ -1,17 +1,17 @@
 set(BALOO_LIB_SRCS
-    searchstore.cpp
-    term.cpp
-    query.cpp
-    queryrunnable.cpp
-    resultiterator.cpp
-    result.cpp
-    advancedqueryparser.cpp
+    #searchstore.cpp
+    #term.cpp
+    #query.cpp
+    #queryrunnable.cpp
+    #resultiterator.cpp
+    #result.cpp
+    #advancedqueryparser.cpp
 
-    file.cpp
+    #file.cpp
     filemapping.cpp
     filemonitor.cpp
-    taglistjob.cpp
-    db.cpp
+    #taglistjob.cpp
+    #db.cpp
 
     indexerconfig.cpp
     ../file/fileindexerconfig.cpp
@@ -20,10 +20,10 @@ set(BALOO_LIB_SRCS
     ../file/fileexcludefilters.cpp
 
     # Search Store
-    xapiansearchstore.cpp
-    wildcardpostingsource.cpp
-    pathfilterpostingsource.cpp
-    filesearchstore.cpp
+    #xapiansearchstore.cpp
+    #wildcardpostingsource.cpp
+    #pathfilterpostingsource.cpp
+    #filesearchstore.cpp
 )
 
 add_library(KF5Baloo ${BALOO_LIB_SRCS})
@@ -40,7 +40,7 @@ target_link_libraries(KF5Baloo
     KF5::ConfigCore
     Qt5::DBus
     KF5::Solid
-    KF5::BalooXapian
+    KF5::BalooLucene
 )
 
 set_target_properties(KF5Baloo PROPERTIES

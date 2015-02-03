@@ -3,6 +3,7 @@
 
 #include <lucene++/LuceneHeaders.h>
 #include <QString>
+#include <QByteArray>
 #include "lucene_export.h"
 
 namespace Baloo {
@@ -18,6 +19,7 @@ public:
     void addIndexedField(const QString& field, const QString& value, bool stored = 1);
     void addNumericField( const QString& name, long int value, bool storeLong = 0);
     void indexText(const QString& term, const QString& prefix = QStringLiteral("content"));
+    void addBinaryField(const QString& name, QByteArray value);
     Lucene::DocumentPtr doc() const;
     QStringList getFieldValues(const QString& field);
     bool removeFields(const QString& field);

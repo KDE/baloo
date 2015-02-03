@@ -22,8 +22,6 @@
 
 #include "app.h"
 #include "../basicindexingjob.h"
-#include "../database.h"
-#include "xapiandatabase.h"
 
 #include <QDebug>
 #include <QCoreApplication>
@@ -47,44 +45,33 @@ App::App(const QString& path, QObject* parent)
     , m_debugEnabled(false)
     , m_ignoreConfig(false)
 {
-    m_db.setPath(m_path);
-    if (!m_db.init()) {
-        QTimer::singleShot(0, QCoreApplication::instance(), SLOT(quit()));
-        return;
-    }
-
+    m_index = new LuceneIndex(m_path);
+    m_reader = m_index->IndexReader();
     connect(this, &App::saved, this, &App::processNextUrl, Qt::QueuedConnection);
+}
+
+App::~App()
+{
+    delete m_index;
 }
 
 void App::startProcessing(const QStringList& args)
 {
     m_results.reserve(args.size());
     Q_FOREACH (const QString& arg, args) {
-        FileMapping mapping = FileMapping(arg.toUInt());
+        FileMapping mapping = FileMapping(arg);
         QString url;
 
-        // arg is an id
-        if (mapping.fetch(m_db.xapianDatabase()->db())) {
-            url = mapping.url();
-            if (!QFile::exists(url)) {
-                m_docsToDelete << mapping.id();
-                continue;
-            }
-        } else {
-            // arg is a url
-            url = QFileInfo(arg).absoluteFilePath();
-        }
-
+        url = QFileInfo(arg).absoluteFilePath();
         if (QFile::exists(url)) {
             m_urls << url;
         } else {
             // id or url was looked up, but file deleted
             qDebug() << url << "does not exist";
 
-            // Try to delete it as an id:
             // it may have been deleted from the FileMapping db as well.
             // The worst that can happen is deleting nothing.
-            m_docsToDelete << mapping.id();
+            m_docsToDelete << url;
         }
     }
 
@@ -111,9 +98,7 @@ void App::processNextUrl()
         if (!shouldIndex) {
             qDebug() << url << "should not be indexed. Ignoring";
 
-            FileMapping mapping(url);
-            mapping.fetch(m_db.xapianDatabase()->db());
-            m_docsToDelete << mapping.id();
+            m_docsToDelete << url;
 
             QTimer::singleShot(0, this, SLOT(processNextUrl()));
             return;
@@ -139,7 +124,7 @@ void App::processNextUrl()
 
     // FIXME: DOuble fetchign!! Not good.
     FileMapping file(url);
-    file.fetch(m_db.xapianDatabase()->db());
+    file.fetch(m_reader);
 
     // We always run the basic indexing again. This is mostly so that the proper
     // mimetype is set and we get proper type information.
@@ -148,7 +133,7 @@ void App::processNextUrl()
     basicIndexer.index();
 
     file.setId(basicIndexer.id());
-    Xapian::Document doc = basicIndexer.document();
+    LuceneDocument doc(basicIndexer.document());
 
     Result result(url, mimetype, KFileMetaData::ExtractionResult::ExtractEverything);
     result.setId(file.id());
@@ -160,7 +145,7 @@ void App::processNextUrl()
         ex->extract(&result);
     }
     m_results << result;
-    m_termCount += result.document().termlist_count();
+    m_termCount += result.document().doc()->getFields().size();
 
     // Documents with these many terms occupy about 10 mb
     if (m_termCount >= 10000) {
@@ -182,24 +167,24 @@ void App::saveChanges()
 
     m_updatedFiles.clear();
 
-    XapianDatabase xapDb(m_path);
     for (int i = 0; i<m_results.size(); ++i) {
         Result& res = m_results[i];
         res.finish();
 
         if (res.id())
-            xapDb.replaceDocument(res.id(), res.document());
+            m_index->replaceDocument(res.inputUrl(), res.document().doc());
         else
-            xapDb.addDocument(res.document());
+            m_index->addDocument(res.document());
         m_updatedFiles << res.inputUrl();
     }
 
-    Q_FOREACH (int docid, m_docsToDelete) {
-        xapDb.deleteDocument(docid);
+    Q_FOREACH (const QString& docUrl, m_docsToDelete) {
+        m_index->deleteDocument(docUrl);
     }
     m_docsToDelete.clear();
 
-    xapDb.commit();
+    m_index->commit();
+    m_reader = m_index->IndexReader();
 
     QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/files"),
                                                       QLatin1String("org.kde"),

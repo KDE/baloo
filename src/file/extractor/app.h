@@ -30,9 +30,9 @@
 #include <KFileMetaData/ExtractorCollection>
 
 #include "result.h"
-#include "../database.h"
 #include "../fileindexerconfig.h"
 #include "filemapping.h"
+#include "luceneindex.h"
 
 namespace Baloo {
 
@@ -41,7 +41,7 @@ class App : public QObject
     Q_OBJECT
 public:
     explicit App(const QString& path, QObject* parent = 0);
-
+    ~App();
     void setDebug(bool status) { m_debugEnabled = status; }
     void setIgnoreConfig(bool status) { m_ignoreConfig = status; }
 
@@ -64,15 +64,16 @@ private:
     bool m_ignoreConfig;
 
     QString m_path;
+    LuceneIndex* m_index;
+    Lucene::IndexReaderPtr m_reader;
 
-    Database m_db;
     QMimeDatabase m_mimeDb;
 
     KFileMetaData::ExtractorCollection m_extractorCollection;
 
     int m_termCount;
     QList<QString> m_updatedFiles;
-    QVector<uint> m_docsToDelete;
+    QStringList m_docsToDelete;
 
     FileIndexerConfig m_config;
 };

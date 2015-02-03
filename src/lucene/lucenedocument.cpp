@@ -66,6 +66,18 @@ QStringList LuceneDocument::getFieldValues(const QString& field)
     return vals;
 }
 
+void LuceneDocument::addBinaryField(const QString& name, QByteArray value)
+{
+    //TODO test if this works as intended
+    Lucene::ByteArray array;
+    array.resize(value.size());
+    for (int i = 0; i < value.size(); ++i) {
+        array[i] = value.at(i);
+    }
+    Lucene::FieldPtr field = Lucene::newLucene<Lucene::Field>(name.toStdWString(), array, Lucene::Field::STORE_YES);
+    m_doc->add(field);
+}
+
 bool LuceneDocument::removeFields(const QString& field)
 {
     bool modified = true;
