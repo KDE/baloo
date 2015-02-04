@@ -1,6 +1,6 @@
 /*
  * This file is part of the KDE Baloo Project
- * Copyright (C) 2013-2014 Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2013-2015 Vishesh Handa <me@vhanda.in>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,8 +21,6 @@
  */
 
 #include "basicindexingjob.h"
-#include "database.h"
-#include "xapiandocument.h"
 
 #include <QFileInfo>
 #include <QDateTime>
@@ -34,12 +32,11 @@
 
 using namespace Baloo;
 
-BasicIndexingJob::BasicIndexingJob(const FileMapping& file, const QString& mimetype,
+BasicIndexingJob::BasicIndexingJob(const QString& filePath, const QString& mimetype,
                                    bool onlyBasicIndexing)
-    : m_file(file)
+    : m_filePath(filePath)
     , m_mimetype(mimetype)
     , m_onlyBasicIndexing(onlyBasicIndexing)
-    , m_id(0)
 {
 }
 
@@ -49,72 +46,58 @@ BasicIndexingJob::~BasicIndexingJob()
 
 bool BasicIndexingJob::index()
 {
-    QFileInfo fileInfo(m_file.url());
+    QFileInfo fileInfo(m_filePath);
 
-    XapianDocument doc;
-    doc.addBoolTerm(m_mimetype, QLatin1String("M"));
+    Document doc;
+    doc.addBoolTerm(m_mimetype.toUtf8(), QByteArray("M"));
     doc.indexText(fileInfo.fileName(), 1000);
-    doc.indexText(fileInfo.fileName(), QLatin1String("F"), 1000);
+    doc.indexText(fileInfo.fileName(), QByteArray("F"), 1000);
 
     // Modified Date
     QDateTime mod = fileInfo.lastModified();
-    const QString dtm = mod.toString(Qt::ISODate);
+    const QByteArray dtm = mod.toString(Qt::ISODate).toUtf8();
 
-    doc.addBoolTerm(dtm, QLatin1String("DT_M"));
-    doc.addBoolTerm(mod.date().year(), QLatin1String("DT_MY"));
-    doc.addBoolTerm(mod.date().month(), QLatin1String("DT_MM"));
-    doc.addBoolTerm(mod.date().day(), QLatin1String("DT_MD"));
+    doc.addBoolTerm(dtm, QByteArray("DT_M"));
+    doc.addBoolTerm(QByteArray::number(mod.date().year()), QByteArray("DT_MY"));
+    doc.addBoolTerm(QByteArray::number(mod.date().month()), QByteArray("DT_MM"));
+    doc.addBoolTerm(QByteArray::number(mod.date().day()), QByteArray("DT_MD"));
 
     const QByteArray timeTStr = QByteArray::number(mod.toTime_t());
     doc.addValue(0, timeTStr);
     doc.addValue(1, QByteArray::number(mod.date().toJulianDay()));
     doc.addValue(2, QByteArray::number(fileInfo.created().toMSecsSinceEpoch()));
 
-    // Store the URL
-    QByteArray urlArr = m_file.url().toUtf8();
-    doc.addValue(3, urlArr);
-
-    if (urlArr.size() > 240) {
-        QByteArray p1 = urlArr.mid(0, 240);
-        QByteArray p2 = urlArr.mid(240);
-
-        doc.addBoolTerm(p1, "P1");
-        doc.addBoolTerm(p2, "P2");
-    }
-    else {
-        doc.addBoolTerm(urlArr, "P-");
-    }
+    doc.setUrl(m_filePath.toUtf8());
 
     // Types
     QVector<KFileMetaData::Type::Type> tList = typesForMimeType(m_mimetype);
     Q_FOREACH (KFileMetaData::Type::Type type, tList) {
         QString tstr = KFileMetaData::TypeInfo(type).name().toLower();
-        doc.addBoolTerm(tstr, QLatin1String("T"));
+        doc.addBoolTerm(tstr.toUtf8(), QByteArray("T"));
     }
 
     if (fileInfo.isDir()) {
-        doc.addBoolTerm(QStringLiteral("Tfolder"));
+        doc.addBoolTerm(QByteArray("Tfolder"));
 
         // This is an optimization for folders. They do not need to go through
         // file indexing, so there are no indexers for folders
-        doc.addBoolTerm(QLatin1String("Z2"));
+        doc.addBoolTerm(QByteArray("Z2"));
     }
     else if (m_onlyBasicIndexing) {
         // This is to prevent indexing if option in config is set to do so
-        doc.addBoolTerm(QLatin1String("Z2"));
+        doc.addBoolTerm(QByteArray("Z2"));
     }
     else {
-        doc.addBoolTerm(QLatin1String("Z1"));
+        doc.addBoolTerm(QByteArray("Z1"));
     }
 
-    indexXAttr(m_file.url(), doc);
+    indexXAttr(m_filePath, doc);
 
-    m_id = m_file.id();
-    m_doc = doc.doc();
+    m_doc = doc;
     return true;
 }
 
-bool BasicIndexingJob::indexXAttr(const QString& url, XapianDocument& doc)
+bool BasicIndexingJob::indexXAttr(const QString& url, Document& doc)
 {
     bool modified = false;
 
@@ -123,8 +106,8 @@ bool BasicIndexingJob::indexXAttr(const QString& url, XapianDocument& doc)
     QStringList tags = userMetaData.tags();
     if (!tags.isEmpty()) {
         Q_FOREACH (const QString& tag, tags) {
-            doc.indexText(tag, QStringLiteral("TA"));
-            doc.addBoolTerm(QStringLiteral("TAG-") + tag);
+            doc.indexText(tag, QByteArray("TA"));
+            doc.addBoolTerm(QByteArray("TAG-") + tag.toUtf8());
         }
 
         modified = true;
@@ -132,13 +115,13 @@ bool BasicIndexingJob::indexXAttr(const QString& url, XapianDocument& doc)
 
     int rating = userMetaData.rating();
     if (rating) {
-        doc.addBoolTerm(QString::number(rating), QStringLiteral("R"));
+        doc.addBoolTerm(QByteArray::number(rating), QByteArray("R"));
         modified = true;
     }
 
     QString comment = userMetaData.userComment();
     if (!comment.isEmpty()) {
-        doc.indexText(comment, QStringLiteral("C"));
+        doc.indexText(comment, QByteArray("C"));
         modified = true;
     }
 

@@ -36,6 +36,11 @@ void Document::addTerm(const QByteArray& term)
     std::sort(m_terms.begin(), m_terms.end());
 }
 
+void Document::addBoolTerm(const QByteArray& term, const QByteArray& prefix)
+{
+    addTerm(prefix + term);
+}
+
 void Document::addPositionTerm(const QByteArray& term, int position, int wdfInc)
 {
     m_terms << term;
@@ -85,4 +90,14 @@ bool Document::operator==(const Document& rhs) const
 {
     return m_id == rhs.m_id && m_terms == rhs.m_terms && m_url == rhs.m_url
            && m_indexingLevel == rhs.m_indexingLevel;
+}
+
+void Document::indexText(const QString& text, const QByteArray& prefix, int wfdInc)
+{
+
+}
+
+void Document::indexText(const QString& text, int wdfInc)
+{
+
 }

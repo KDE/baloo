@@ -39,10 +39,11 @@ public:
     Document();
 
     void addTerm(const QByteArray& term);
+    void addBoolTerm(const QByteArray& term, const QByteArray& prefix = QByteArray());
     void addPositionTerm(const QByteArray& term, int position = 0, int wdfInc = 1);
 
-    void indexText(const QString& text);
-    void indexText(const QString& text, const QByteArray& prefix);
+    void indexText(const QString& text, int wdfInc = 1);
+    void indexText(const QString& text, const QByteArray& prefix, int wfdInc = 1);
 
     uint id() const;
     void setId(uint id);
