@@ -105,7 +105,7 @@ void ExtractorTest::testFileDeletion()
     QCOMPARE((int)reader->document(0)->getFields().size(), 2);
 
     QString exe = QStandardPaths::findExecutable(QLatin1String("baloo_file_extractor"));
-
+    
     QStringList args;
     args << randomUrl << QLatin1String("--db") << dbDir.path() << QLatin1String("--ignoreConfig");
     QProcess process;
@@ -113,7 +113,7 @@ void ExtractorTest::testFileDeletion()
     QVERIFY(process.waitForFinished(10000));
     // The document should have been deleted from the db
 
-    reader->reopen();
+    reader = index.IndexReader();
     QCOMPARE((int)reader->numDocs(), 0);
 }
 
