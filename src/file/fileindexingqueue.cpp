@@ -97,7 +97,7 @@ void FileIndexingQueue::slotFinishedIndexingFile(KJob* job)
     m_indexJob = 0;
 
     // The process would have modified the db
-    m_reader->reopen();
+    m_reader = m_index->IndexReader();
     if (m_fileQueue.isEmpty()) {
         fillQueue();
     }
@@ -106,7 +106,7 @@ void FileIndexingQueue::slotFinishedIndexingFile(KJob* job)
 
 void FileIndexingQueue::slotIndexingFailed(const QString& url)
 {
-    m_reader->reopen();
+    m_reader = m_index->IndexReader();
     FileMapping map(url);
     map.fetch(m_reader);
     LuceneDocument doc(m_reader->document(map.id()));
