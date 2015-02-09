@@ -27,7 +27,6 @@
 #include <QTemporaryDir>
 #include <QTextStream>
 #include <QStandardPaths>
-#include <QDebug>
 #include <QDir>
 
 #include "xapiandatabase.h"

@@ -22,7 +22,6 @@
 #include <QCommandLineOption>
 #include <QCommandLineParser>
 #include <QFile>
-#include <QDebug>
 
 #include <KAboutData>
 #include <KConfig>
@@ -30,6 +29,7 @@
 #include <KLocalizedString>
 #include <QStandardPaths>
 #include <QProcess>
+#include <QTextStream>
 
 #include <QDBusMessage>
 #include <QDBusConnection>

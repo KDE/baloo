@@ -29,7 +29,6 @@
 #include "xapiandocument.h"
 
 #include <QDebug>
-
 #include <QDateTime>
 #include <QTimer>
 #include <QUrl>

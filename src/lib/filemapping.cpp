@@ -21,10 +21,11 @@
  */
 
 #include "filemapping.h"
-#include <QDebug>
 
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QVariant>
+#include <QDebug>
 
 using namespace Baloo;
 

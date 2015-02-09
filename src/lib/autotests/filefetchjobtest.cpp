@@ -24,7 +24,6 @@
 #include "file.h"
 
 #include <QSqlQuery>
-#include <QDebug>
 #include <QTest>
 #include <QTemporaryFile>
 #include <QTemporaryDir>

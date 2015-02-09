@@ -31,8 +31,6 @@
 #include <QList>
 #include <QUrlQuery>
 
-#include <QDebug>
-
 #include <QJsonDocument>
 #include <QJsonObject>
 

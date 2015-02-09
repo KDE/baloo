@@ -28,7 +28,6 @@
 #include <QTest>
 #include <QSignalSpy>
 #include <QEventLoop>
-#include <QDebug>
 
 using namespace Baloo;
 
@@ -62,7 +61,6 @@ void BasicIndexingQueueTest::testSimpleDirectoryStructure()
 
     QStringList includeFolders;
     includeFolders << dir->path() + QLatin1String("/home");
-    qDebug() << includeFolders;
 
     QStringList excludeFolders;
     excludeFolders << dir->path() + QLatin1String("/home/kde");

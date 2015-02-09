@@ -20,8 +20,6 @@
 
 #include "wildcardpostingsource.h"
 
-#include <QDebug>
-
 using namespace Baloo;
 
 WildcardPostingSource::WildcardPostingSource(const QString& word, const QString& prefix)

@@ -21,7 +21,7 @@
 #include "xapiantermgenerator.h"
 
 #include <QTextBoundaryFinder>
-#include <QDebug>
+#include <QStringList>
 
 using namespace Baloo;
 

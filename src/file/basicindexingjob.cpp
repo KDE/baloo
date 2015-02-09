@@ -30,7 +30,6 @@
 
 #include <KFileMetaData/TypeInfo>
 #include <KFileMetaData/UserMetaData>
-#include <QDebug>
 
 using namespace Baloo;
 

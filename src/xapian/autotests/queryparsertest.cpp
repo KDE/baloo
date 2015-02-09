@@ -23,7 +23,6 @@
 #include "../xapiandatabase.h"
 
 #include <QTest>
-#include <QDebug>
 #include <QTemporaryDir>
 
 using namespace Baloo;
@@ -61,7 +60,6 @@ void QueryParserTest::testPhraseSearch()
     XapianQueryParser parser;
 
     Xapian::Query query = parser.parseQuery("The \"song of Ice\" Fire");
-    //qDebug() << query.get_description().c_str();
 
     QList<Xapian::Query> phraseQueries;
     phraseQueries << Xapian::Query("song", 1, 2);
@@ -74,7 +72,6 @@ void QueryParserTest::testPhraseSearch()
     queries << Xapian::Query("fire", 1, 5);
 
     Xapian::Query q(Xapian::Query::OP_AND, queries.begin(), queries.end());
-    //qDebug() << q.get_description().c_str();
     QCOMPARE(query.serialise(), q.serialise());
 }
 
@@ -83,14 +80,12 @@ void QueryParserTest::testPhraseSearchOnly()
     XapianQueryParser parser;
 
     Xapian::Query query = parser.parseQuery("/opt/pro");
-    //qDebug() << query.get_description().c_str();
 
     QList<Xapian::Query> queries;
     queries << Xapian::Query("opt", 1, 1);
     queries << Xapian::Query("pro", 1, 2);
 
     Xapian::Query q(Xapian::Query::OP_PHRASE, queries.begin(), queries.end());
-    //qDebug() << q.get_description().c_str();
     QCOMPARE(query.serialise(), q.serialise());
 }
 
@@ -99,7 +94,6 @@ void QueryParserTest::testPhraseSearch_sameLimiter()
     XapianQueryParser parser;
 
     Xapian::Query query = parser.parseQuery("The \"song of Ice' and Fire");
-    //qDebug() << query.get_description().c_str();
 
     QList<Xapian::Query> queries;
     queries << Xapian::Query("the", 1, 1);
@@ -110,7 +104,6 @@ void QueryParserTest::testPhraseSearch_sameLimiter()
     queries << Xapian::Query("fire", 1, 6);
 
     Xapian::Query q(Xapian::Query::OP_AND, queries.begin(), queries.end());
-    //qDebug() << q.get_description().c_str();
 
     QCOMPARE(query.serialise(), q.serialise());
 }
@@ -180,7 +173,6 @@ void QueryParserTest::testWordExpansion()
     parser.setDatabase(xap);
 
     Xapian::Query query = parser.parseQuery("hell");
-    //qDebug() << query.get_description().c_str();
 
     QList<Xapian::Query> synQueries;
     synQueries << Xapian::Query("hell", 1, 1);
@@ -188,7 +180,6 @@ void QueryParserTest::testWordExpansion()
     synQueries << Xapian::Query("hellog", 1, 1);
 
     Xapian::Query q(Xapian::Query::OP_SYNONYM, synQueries.begin(), synQueries.end());
-    //qDebug() << q.get_description().c_str();
 
     QCOMPARE(query.serialise(), q.serialise());
 
@@ -196,7 +187,6 @@ void QueryParserTest::testWordExpansion()
     // Try expanding everything
     //
     query = parser.parseQuery("hel hi");
-    // qDebug() << query.get_description().c_str();
 
     {
         QList<Xapian::Query> synQueries;
@@ -217,7 +207,6 @@ void QueryParserTest::testWordExpansion()
         queries << q2;
 
         Xapian::Query q(Xapian::Query::OP_AND, queries.begin(), queries.end());
-        // qDebug() << q.get_description().c_str();
 
         QCOMPARE(query.serialise(), q.serialise());
     }

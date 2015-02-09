@@ -21,14 +21,6 @@
  */
 
 #include "searchstore.h"
-#include "filesearchstore.h"
-
-#include <QDebug>
-#include <QThreadStorage>
-#include <QMutex>
-#include <QSharedPointer>
-#include <QCoreApplication>
-#include <QDir>
 
 using namespace Baloo;
 

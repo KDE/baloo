@@ -24,7 +24,7 @@
 #include <QCommandLineParser>
 #include <QCommandLineOption>
 #include <QFileInfo>
-#include <QDebug>
+#include <QTextStream>
 
 #include <KAboutData>
 #include <KLocalizedString>

@@ -24,7 +24,6 @@
 
 #include <QMimeDatabase>
 #include <QTest>
-#include <QDebug>
 #include <QFileInfo>
 #include <QDateTime>
 #include <QTemporaryDir>
