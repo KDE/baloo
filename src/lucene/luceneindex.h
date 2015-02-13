@@ -23,9 +23,9 @@ public:
     Lucene::IndexWriterPtr indexWriter() { return m_indexWriter; }
     QString path() { return m_path; }
     Lucene::IndexReaderPtr IndexReader();
+    static Lucene::TermPtr makeTerm(const QString& field, const QString& value);
 
 private:
-    Lucene::TermPtr makeTerm(const QString& field, const QString& value);
     Lucene::IndexWriterPtr openWriter();
     void reopenReader();
 
