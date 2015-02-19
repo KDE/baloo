@@ -69,15 +69,23 @@ void Database::addDocument(const Document& doc)
 {
     Q_ASSERT(doc.id() > 0);
 
+    QVector<QByteArray> docTerms;
+    docTerms.reserve(doc.m_terms.size());
+
     const uint id = doc.id();
-    for (const QByteArray& term : doc.m_terms) {
+    QMapIterator<QByteArray, Document::TermData> it(doc.m_terms);
+    while (it.hasNext()) {
+        const QByteArray term = it.next().key();
+
         PostingList list = m_postingDB->get(term);
         list << id;
 
         m_postingDB->put(term, list);
+
+        docTerms.append(term);
     }
 
-    m_documentDB->put(id, doc.m_terms);
+    m_documentDB->put(id, docTerms);
     m_docUrlDB->put(id, doc.url());
     m_urlDocDB->put(doc.url(), id);
 
@@ -119,25 +127,8 @@ void Database::removeDocument(uint id)
 
 bool Database::hasDocument(uint id)
 {
-    // FIXME: Find a better way!
-    return (document(id).id() == id);
-}
-
-Document Database::document(uint id)
-{
     Q_ASSERT(id > 0);
-
-    QVector<QByteArray> terms = m_documentDB->get(id);
-    if (terms.isEmpty()) {
-        return Document();
-    }
-
-    Document doc;
-    doc.m_id = id;
-    doc.m_terms = terms;
-    doc.m_url = m_docUrlDB->get(id);
-
-    return doc;
+    return m_documentDB->contains(id);
 }
 
 uint Database::documentId(const QByteArray& url)

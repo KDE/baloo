@@ -31,27 +31,28 @@ namespace Baloo {
 class Database;
 
 /**
- * A document represents a file which is being indexed inside Baloo's engine.
+ * A document represents a file to be indexed in the Baloo engine.
+ *
+ * It's a large collection of words along with their respective poistions and frequencies.
+ * One typically never needs to have all of this in memory except when creating the
+ * Document for indexing.
+ *
+ * This is why Documents can be created and saved into the database, but not fetched.
  */
 class BALOO_ENGINE_EXPORT Document
 {
 public:
     Document();
 
-    void addTerm(const QByteArray& term);
-    void addBoolTerm(const QByteArray& term, const QByteArray& prefix = QByteArray());
+    void addTerm(const QByteArray& term, int wdfInc = 1);
+    void addBoolTerm(const QByteArray& term);
     void addPositionTerm(const QByteArray& term, int position = 0, int wdfInc = 1);
-
-    void indexText(const QString& text, int wdfInc = 1);
-    void indexText(const QString& text, const QByteArray& prefix, int wfdInc = 1);
 
     uint id() const;
     void setId(uint id);
 
     QByteArray url() const;
     void setUrl(const QByteArray& url);
-
-    bool operator ==(const Document& rhs) const;
 
     /**
      * Setting the level to 0 indicates that you do not want the level
@@ -60,15 +61,19 @@ public:
     void setIndexingLevel(int level);
     int indexingLevel() const;
 
-    // FIXME: No one should really ever need all the terms.
-    //        Currently we're only using them in tests, which is again strange
-    QVector<QByteArray> terms() const { return m_terms; }
-
     void addValue(int slotNum, const QByteArray& arr);
 
 private:
     uint m_id;
-    QVector<QByteArray> m_terms;
+
+    struct TermData {
+        int wdf;
+        QVector<uint> positions;
+
+        TermData() : wdf(0) {}
+    };
+    QMap<QByteArray, TermData> m_terms;
+
     QByteArray m_url;
     int m_indexingLevel;
 
@@ -78,7 +83,7 @@ private:
 };
 
 inline QDebug operator<<(QDebug dbg, const Document &doc) {
-    dbg << doc.id() << doc.terms() << doc.url() << doc.indexingLevel();
+    dbg << doc.id() << doc.url() << doc.indexingLevel();
     return dbg;
 }
 

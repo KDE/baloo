@@ -20,8 +20,6 @@
 
 #include "document.h"
 
-#include <algorithm>
-
 using namespace Baloo;
 
 Document::Document()
@@ -30,25 +28,22 @@ Document::Document()
 {
 }
 
-void Document::addTerm(const QByteArray& term)
+void Document::addTerm(const QByteArray& term, int wdfInc)
 {
-    m_terms << term;
-    std::sort(m_terms.begin(), m_terms.end());
+    m_terms[term].wdf += wdfInc;
 }
 
-void Document::addBoolTerm(const QByteArray& term, const QByteArray& prefix)
+
+void Document::addBoolTerm(const QByteArray& term)
 {
-    addTerm(prefix + term);
+    m_terms[term].wdf = 0;
 }
 
 void Document::addPositionTerm(const QByteArray& term, int position, int wdfInc)
 {
-    m_terms << term;
-    std::sort(m_terms.begin(), m_terms.end());
-
-    // FIXME: We need to start storing this information as well
-    Q_UNUSED(position);
-    Q_UNUSED(wdfInc);
+    TermData& td = m_terms[term];
+    td.wdf += wdfInc;
+    td.positions += position;
 }
 
 uint Document::id() const
@@ -84,20 +79,4 @@ void Document::setIndexingLevel(int level)
 void Document::addValue(int slotNum, const QByteArray& arr)
 {
     m_slots[slotNum] = arr;
-}
-
-bool Document::operator==(const Document& rhs) const
-{
-    return m_id == rhs.m_id && m_terms == rhs.m_terms && m_url == rhs.m_url
-           && m_indexingLevel == rhs.m_indexingLevel;
-}
-
-void Document::indexText(const QString& text, const QByteArray& prefix, int wfdInc)
-{
-
-}
-
-void Document::indexText(const QString& text, int wdfInc)
-{
-
 }

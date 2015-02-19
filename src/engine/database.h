@@ -46,7 +46,6 @@ public:
     void removeDocument(uint id);
 
     bool hasDocument(uint id);
-    Document document(uint id);
 
     void commit();
 

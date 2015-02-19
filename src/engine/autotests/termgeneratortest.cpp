@@ -32,9 +32,12 @@ namespace {
     QStringList allWords(const Document& doc)
     {
         QStringList words;
+        // FIXME:
+        /*
         for (const QByteArray& ba : doc.terms()) {
             words << QString::fromUtf8(ba);
         }
+        */
 
         return words;
     }

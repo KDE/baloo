@@ -52,6 +52,7 @@ void DatabaseTest::test()
 
     db.addDocument(doc);
     QCOMPARE(db.hasDocument(1), true);
+    /*
     QCOMPARE(db.document(1), doc);
 
     QVector<int> result = db.exec({"abc"});
@@ -71,6 +72,7 @@ void DatabaseTest::test()
 
     QCOMPARE(db.documentUrl(1), QByteArray());
     QCOMPARE(db.documentId(url), static_cast<uint>(0));
+    */
 }
 
 QTEST_MAIN(DatabaseTest)

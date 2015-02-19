@@ -36,6 +36,7 @@ public:
     void put(uint docId, const QVector< QByteArray >& list);
     QVector<QByteArray> get(uint docId);
 
+    bool contains(uint docId);
     void del(uint docId);
 
 private:
