@@ -29,6 +29,7 @@ namespace Baloo {
 
 class Document;
 class PostingDB;
+class PositionDB;
 class DocumentDB;
 class DocumentUrlDB;
 class DocumentValueDB;
@@ -57,6 +58,7 @@ public:
 private:
     PostingDB* m_postingDB;
     DocumentDB* m_documentDB;
+    PositionDB* m_positionDB;
 
     DocumentUrlDB* m_docUrlDB;
     UrlDocumentDB* m_urlDocDB;

@@ -33,8 +33,11 @@ struct PositionInfo {
     uint docId;
     QVector<uint> positions;
 
+    PositionInfo(uint id = 0, const QVector<uint> posList = QVector<uint>())
+        : docId(id), positions(posList) {}
+
     bool operator ==(const PositionInfo& rhs) {
-        return docId == rhs.docId && positions == rhs.positions;
+        return docId == rhs.docId;
     }
 };
 

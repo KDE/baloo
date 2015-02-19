@@ -24,6 +24,7 @@
 #include "documenturldb.h"
 #include "urldocumentdb.h"
 #include "indexingleveldb.h"
+#include "positiondb.h"
 
 #include "document.h"
 
@@ -37,7 +38,7 @@ using namespace Baloo;
 Database::Database(const QString& path)
 {
     mdb_env_create(&m_env);
-    mdb_env_set_maxdbs(m_env, 6);
+    mdb_env_set_maxdbs(m_env, 7);
 
     // The directory needs to be created before opening the environment
     QByteArray arr = QFile::encodeName(path);
@@ -46,6 +47,7 @@ Database::Database(const QString& path)
 
     m_postingDB = new PostingDB(m_txn);
     m_documentDB = new DocumentDB(m_txn);
+    m_positionDB = new PositionDB(m_txn);
     m_docUrlDB = new DocumentUrlDB(m_txn);
     m_urlDocDB = new UrlDocumentDB(m_txn);
     m_docValueDB = new DocumentValueDB(m_txn);
@@ -56,6 +58,7 @@ Database::~Database()
 {
     delete m_postingDB;
     delete m_documentDB;
+    delete m_positionDB;
     delete m_docUrlDB;
     delete m_urlDocDB;
     delete m_docValueDB;
@@ -77,12 +80,21 @@ void Database::addDocument(const Document& doc)
     while (it.hasNext()) {
         const QByteArray term = it.next().key();
 
+        // FIXME: This list needs to be properly sorted, and duplicats need
+        //        to be removed
         PostingList list = m_postingDB->get(term);
         list << id;
 
         m_postingDB->put(term, list);
-
         docTerms.append(term);
+
+        // PositionInfo
+        QVector<PositionInfo> posInfoList = m_positionDB->get(term);
+
+        PositionInfo pi(id, it.value().positions);
+        posInfoList << pi;
+
+        m_positionDB->put(term, posInfoList);
     }
 
     m_documentDB->put(id, docTerms);
@@ -113,6 +125,9 @@ void Database::removeDocument(uint id)
         list.removeOne(id);
 
         m_postingDB->put(term, list);
+
+        QVector<PositionInfo> posInfoList = m_positionDB->get(term);
+        posInfoList.removeOne(PositionInfo(id));
     }
 
     m_documentDB->del(id);
