@@ -18,21 +18,21 @@
  *
  */
 
-#include "../postingdb.h"
+#include "documenturldb.h"
 
 #include <QTest>
 #include <QTemporaryDir>
 
 using namespace Baloo;
 
-class PostingDBTest : public QObject
+class DocumentUrlDBTest : public QObject
 {
     Q_OBJECT
 private Q_SLOTS:
     void test();
 };
 
-void PostingDBTest::test()
+void DocumentUrlDBTest::test()
 {
     QTemporaryDir dir;
 
@@ -48,18 +48,20 @@ void PostingDBTest::test()
     mdb_env_open(env, path.constData(), 0, 0664);
     mdb_txn_begin(env, NULL, 0, &txn);
 
-    PostingDB db(txn);
+    DocumentUrlDB db(txn);
 
-    QByteArray word("fire");
-    PostingList list = {1, 5, 6};
+    QByteArray arr = "/home/blah";
+    db.put(1, arr);
 
-    db.put(word, list);
-    QCOMPARE(db.get(word), list);
+    QCOMPARE(db.get(1), arr);
+
+    db.del(1);
+    QCOMPARE(db.get(1), QByteArray());
 
     mdb_txn_abort(txn);
     mdb_env_close(env);
 }
 
-QTEST_MAIN(PostingDBTest)
+QTEST_MAIN(DocumentUrlDBTest)
 
-#include "postingdbtest.moc"
+#include "documenturldbtest.moc"

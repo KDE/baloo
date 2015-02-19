@@ -18,21 +18,21 @@
  *
  */
 
-#include "../indexingleveldb.h"
+#include "urldocumentdb.h"
 
 #include <QTest>
 #include <QTemporaryDir>
 
 using namespace Baloo;
 
-class IndexingLevelDBTest : public QObject
+class UrlDocumentDBTest : public QObject
 {
     Q_OBJECT
 private Q_SLOTS:
     void test();
 };
 
-void IndexingLevelDBTest::test()
+void UrlDocumentDBTest::test()
 {
     QTemporaryDir dir;
 
@@ -48,19 +48,20 @@ void IndexingLevelDBTest::test()
     mdb_env_open(env, path.constData(), 0, 0664);
     mdb_txn_begin(env, NULL, 0, &txn);
 
-    IndexingLevelDB db(txn);
+    UrlDocumentDB db(txn);
 
-    QCOMPARE(db.contains(1), false);
-    db.put(1);
-    QCOMPARE(db.contains(1), true);
+    QByteArray arr = "/home/blah";
+    db.put(arr, 1);
 
-    db.del(1);
-    QCOMPARE(db.contains(1), false);
+    QCOMPARE(db.get(arr), static_cast<uint>(1));
+
+    db.del(arr);
+    QCOMPARE(db.get(arr), static_cast<uint>(0));
 
     mdb_txn_abort(txn);
     mdb_env_close(env);
 }
 
-QTEST_MAIN(IndexingLevelDBTest)
+QTEST_MAIN(UrlDocumentDBTest)
 
-#include "indexingleveldbtest.moc"
+#include "urldocumentdbtest.moc"

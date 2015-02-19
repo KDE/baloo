@@ -18,8 +18,8 @@
  *
  */
 
-#include "../database.h"
-#include "../document.h"
+#include "database.h"
+#include "document.h"
 
 #include <QTest>
 #include <QTemporaryDir>

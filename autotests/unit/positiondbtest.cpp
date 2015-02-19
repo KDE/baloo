@@ -18,27 +18,26 @@
  *
  */
 
-#include "../documentdb.h"
+#include "positiondb.h"
 
 #include <QTest>
 #include <QTemporaryDir>
 
 using namespace Baloo;
 
-class DocumentDBTest : public QObject
+class PositionDBTest : public QObject
 {
     Q_OBJECT
 private Q_SLOTS:
     void test();
 };
 
-void DocumentDBTest::test()
+void PositionDBTest::test()
 {
     QTemporaryDir dir;
 
     MDB_env* env;
     MDB_txn* txn;
-    char sval[32];
 
     mdb_env_create(&env);
     mdb_env_set_maxdbs(env, 1);
@@ -48,17 +47,27 @@ void DocumentDBTest::test()
     mdb_env_open(env, path.constData(), 0, 0664);
     mdb_txn_begin(env, NULL, 0, &txn);
 
-    DocumentDB db(txn);
+    PositionDB db(txn);
 
-    QVector<QByteArray> list = {"a", "aab", "abc"};
-    db.put(1, list);
+    QByteArray word("fire");
+    PositionInfo pos1;
+    pos1.docId = 1;
+    pos1.positions = QVector<uint>() << 1 << 5 << 6;
 
-    QCOMPARE(db.get(1), list);
+    PositionInfo pos2;
+    pos2.docId = 5;
+    pos2.positions = QVector<uint>() << 41 << 96 << 116;
+
+    QVector<PositionInfo> list = {pos1, pos2};
+
+    db.put(word, list);
+    QVector<PositionInfo> res = db.get(word);
+    QCOMPARE(res, list);
 
     mdb_txn_abort(txn);
     mdb_env_close(env);
 }
 
-QTEST_MAIN(DocumentDBTest)
+QTEST_MAIN(PositionDBTest)
 
-#include "documentdbtest.moc"
+#include "positiondbtest.moc"

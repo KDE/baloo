@@ -34,5 +34,3 @@ set_target_properties(KF5BalooEngine PROPERTIES
 generate_export_header(KF5BalooEngine BASE_NAME BALOO_ENGINE EXPORT_FILE_NAME engine_export.h)
 
 install(TARGETS KF5BalooEngine EXPORT KF5BalooTargets ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
-
-add_subdirectory(autotests)
