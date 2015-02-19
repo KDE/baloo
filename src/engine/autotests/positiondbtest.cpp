@@ -50,18 +50,18 @@ void PositionDBTest::test()
     PositionDB db(txn);
 
     QByteArray word("fire");
-    Position pos1;
+    PositionInfo pos1;
     pos1.docId = 1;
     pos1.positions = QVector<uint>() << 1 << 5 << 6;
 
-    Position pos2;
+    PositionInfo pos2;
     pos2.docId = 5;
     pos2.positions = QVector<uint>() << 41 << 96 << 116;
 
-    QVector<Position> list = {pos1, pos2};
+    QVector<PositionInfo> list = {pos1, pos2};
 
     db.put(word, list);
-    QVector<Position> res = db.get(word);
+    QVector<PositionInfo> res = db.get(word);
     QCOMPARE(res, list);
 
     mdb_txn_abort(txn);

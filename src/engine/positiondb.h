@@ -29,11 +29,11 @@
 
 namespace Baloo {
 
-struct Position {
+struct PositionInfo {
     uint docId;
     QVector<uint> positions;
 
-    bool operator ==(const Position& rhs) {
+    bool operator ==(const PositionInfo& rhs) {
         return docId == rhs.docId && positions == rhs.positions;
     }
 };
@@ -44,15 +44,15 @@ public:
     explicit PositionDB(MDB_txn* txn);
     ~PositionDB();
 
-    void put(const QByteArray& term, const QVector<Position>& list);
-    QVector<Position> get(const QByteArray& term);
+    void put(const QByteArray& term, const QVector<PositionInfo>& list);
+    QVector<PositionInfo> get(const QByteArray& term);
 
 private:
     MDB_txn* m_txn;
     MDB_dbi m_dbi;
 };
 
-inline QDebug operator<<(QDebug dbg, const Position &pos) {
+inline QDebug operator<<(QDebug dbg, const PositionInfo &pos) {
     dbg << "(" << pos.docId << "-->" << pos.positions << ")";
     return dbg;
 }

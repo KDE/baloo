@@ -38,7 +38,7 @@ PositionDB::~PositionDB()
     mdb_dbi_close(mdb_txn_env(m_txn), m_dbi);
 }
 
-void PositionDB::put(const QByteArray& term, const QVector<Position>& list)
+void PositionDB::put(const QByteArray& term, const QVector<PositionInfo>& list)
 {
     MDB_val key;
     key.mv_size = term.size();
@@ -47,7 +47,7 @@ void PositionDB::put(const QByteArray& term, const QVector<Position>& list)
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
 
-    for (const Position& pos : list) {
+    for (const PositionInfo& pos : list) {
         stream << pos.docId;
         stream << pos.positions;
     }
@@ -60,7 +60,7 @@ void PositionDB::put(const QByteArray& term, const QVector<Position>& list)
     Q_ASSERT(rc == 0);
 }
 
-QVector<Position> PositionDB::get(const QByteArray& term)
+QVector<PositionInfo> PositionDB::get(const QByteArray& term)
 {
     MDB_val key;
     key.mv_size = term.size();
@@ -69,16 +69,16 @@ QVector<Position> PositionDB::get(const QByteArray& term)
     MDB_val val;
     int rc = mdb_get(m_txn, m_dbi, &key, &val);
     if (rc == MDB_NOTFOUND) {
-        return QVector<Position>();
+        return QVector<PositionInfo>();
     }
     Q_ASSERT(rc == 0);
 
     QByteArray data = QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size);
     QDataStream stream(&data, QIODevice::ReadOnly);
 
-    QVector<Position> vec;
+    QVector<PositionInfo> vec;
     while (!stream.atEnd()) {
-        Position pos;
+        PositionInfo pos;
         stream >> pos.docId;
         stream >> pos.positions;
 
