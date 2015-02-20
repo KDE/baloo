@@ -22,12 +22,12 @@
 #define BALOO_DATABASE_H
 
 #include "engine_export.h"
+#include "document.h"
 #include <QString>
 #include <lmdb.h>
 
 namespace Baloo {
 
-class Document;
 class PostingDB;
 class PositionDB;
 class DocumentDB;
@@ -68,6 +68,21 @@ private:
 
     MDB_env* m_env;
     MDB_txn* m_txn;
+
+    //
+    // In memory operations
+    //
+    enum OperationType {
+        AddDocument,
+        RemoveDocument
+    };
+
+    struct Operation {
+        OperationType type;
+        Document doc;
+    };
+
+    QVector<Operation> m_pendingOperations;
 };
 }
 

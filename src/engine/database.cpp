@@ -39,6 +39,7 @@ Database::Database(const QString& path)
 {
     mdb_env_create(&m_env);
     mdb_env_set_maxdbs(m_env, 7);
+    mdb_env_set_mapsize(m_env, 10485760);
 
     // The directory needs to be created before opening the environment
     QByteArray arr = QFile::encodeName(path);
@@ -72,75 +73,25 @@ void Database::addDocument(const Document& doc)
 {
     Q_ASSERT(doc.id() > 0);
 
-    QVector<QByteArray> docTerms;
-    docTerms.reserve(doc.m_terms.size());
+    Operation op;
+    op.type = AddDocument;
+    op.doc = doc;
 
-    const uint id = doc.id();
-    QMapIterator<QByteArray, Document::TermData> it(doc.m_terms);
-    while (it.hasNext()) {
-        const QByteArray term = it.next().key();
-
-        // FIXME: This list needs to be properly sorted, and duplicats need
-        //        to be removed
-        PostingList list = m_postingDB->get(term);
-        list << id;
-
-        m_postingDB->put(term, list);
-        docTerms.append(term);
-
-        // PositionInfo
-        QVector<PositionInfo> posInfoList = m_positionDB->get(term);
-
-        PositionInfo pi(id, it.value().positions);
-        posInfoList << pi;
-
-        m_positionDB->put(term, posInfoList);
-    }
-
-    m_documentDB->put(id, docTerms);
-
-    if (!doc.url().isEmpty()) {
-        m_docUrlDB->put(id, doc.url());
-        m_urlDocDB->put(doc.url(), id);
-    }
-
-    if (doc.indexingLevel()) {
-        m_indexingLevelDB->put(doc.id());
-    }
-    if (!doc.m_slots.isEmpty()) {
-        for (auto it = doc.m_slots.constBegin(); it != doc.m_slots.constEnd(); it++) {
-            m_docValueDB->put(doc.id(), it.key(), it.value());
-        }
-    }
+    m_pendingOperations << op;
 }
 
 void Database::removeDocument(uint id)
 {
     Q_ASSERT(id > 0);
 
-    QVector<QByteArray> terms = m_documentDB->get(id);
-    if (terms.isEmpty()) {
-        return;
-    }
+    Document doc;
+    doc.setId(id);
 
-    for (const QByteArray& term : terms) {
-        PostingList list = m_postingDB->get(term);
-        list.removeOne(id);
+    Operation op;
+    op.type = AddDocument;
+    op.doc = doc;
 
-        m_postingDB->put(term, list);
-
-        QVector<PositionInfo> posInfoList = m_positionDB->get(term);
-        posInfoList.removeOne(PositionInfo(id));
-    }
-
-    m_documentDB->del(id);
-
-    QByteArray url = m_docUrlDB->get(id);
-    m_docUrlDB->del(id);
-    m_urlDocDB->del(url);
-
-    m_indexingLevelDB->del(id);
-    m_docValueDB->del(id);
+    m_pendingOperations << op;
 }
 
 bool Database::hasDocument(uint id)
@@ -163,6 +114,108 @@ QByteArray Database::documentUrl(uint id)
 
 void Database::commit()
 {
+    QMap<QByteArray, PostingList> postingMap;
+    QMap<QByteArray, QVector<PositionInfo> > positionMap;
+
+    for (const Operation& op : m_pendingOperations) {
+        const uint id = op.doc.id();
+        const Document& doc = op.doc;
+
+        if (op.type == AddDocument) {
+            QVector<QByteArray> docTerms;
+            docTerms.reserve(doc.m_terms.size());
+
+            QMapIterator<QByteArray, Document::TermData> it(doc.m_terms);
+            while (it.hasNext()) {
+                const QByteArray term = it.next().key();
+                docTerms.append(term);
+
+                postingMap[term] << id;
+
+                const Document::TermData td = it.value();
+                if (!td.positions.isEmpty()) {
+                    PositionInfo pi(id, it.value().positions);
+                    positionMap[term] << pi;
+                }
+            }
+
+            m_documentDB->put(id, docTerms);
+
+            if (!doc.url().isEmpty()) {
+                m_docUrlDB->put(id, doc.url());
+                m_urlDocDB->put(doc.url(), id);
+            }
+
+            if (doc.indexingLevel()) {
+                m_indexingLevelDB->put(doc.id());
+            }
+            if (!doc.m_slots.isEmpty()) {
+                for (auto it = doc.m_slots.constBegin(); it != doc.m_slots.constEnd(); it++) {
+                    m_docValueDB->put(doc.id(), it.key(), it.value());
+                }
+            }
+        }
+        else if (op.type == RemoveDocument) {
+            QVector<QByteArray> terms = m_documentDB->get(id);
+            if (terms.isEmpty()) {
+                return;
+            }
+
+            for (const QByteArray& term : terms) {
+                // FIXME: The will not update stuff correctly!
+                PostingList list = m_postingDB->get(term);
+                list.removeOne(id);
+
+                m_postingDB->put(term, list);
+
+                QVector<PositionInfo> posInfoList = m_positionDB->get(term);
+                posInfoList.removeOne(PositionInfo(id));
+            }
+
+            m_documentDB->del(id);
+
+            QByteArray url = m_docUrlDB->get(id);
+            m_docUrlDB->del(id);
+            m_urlDocDB->del(url);
+
+            m_indexingLevelDB->del(id);
+            m_docValueDB->del(id);
+        }
+    }
+
+    m_pendingOperations.clear();
+
+    //
+    // Process postingList and positionList
+    //
+    QMapIterator<QByteArray, PostingList> it(postingMap);
+    while (it.hasNext()) {
+        it.next();
+        const QByteArray term = it.key();
+
+        PostingList list = m_postingDB->get(term);
+        list << it.value();
+
+        std::sort(list.begin(), list.end());
+        list.erase(std::unique(list.begin(), list.end()), list.end());
+
+        m_postingDB->put(term, list);
+    }
+
+    QMapIterator<QByteArray, QVector<PositionInfo> > iter(positionMap);
+    while (iter.hasNext()) {
+        iter.next();
+        const QByteArray term = iter.key();
+
+        QVector<PositionInfo> list = m_positionDB->get(term);
+        list << iter.value();
+
+        std::sort(list.begin(), list.end());
+        list.erase(std::unique(list.begin(), list.end()), list.end());
+
+        m_positionDB->put(term, list);
+    }
+
     int rc = mdb_txn_commit(m_txn);
     Q_ASSERT(rc == 0);
 }
@@ -201,5 +254,3 @@ QVector<int> Database::exec(const QVector<QByteArray>& query)
 
     return result;
 }
-
-

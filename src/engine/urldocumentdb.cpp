@@ -20,6 +20,8 @@
 
 #include "urldocumentdb.h"
 
+#include <QDebug>
+
 using namespace Baloo;
 
 UrlDocumentDB::UrlDocumentDB(MDB_txn* txn)

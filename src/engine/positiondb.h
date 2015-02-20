@@ -39,6 +39,10 @@ struct PositionInfo {
     bool operator ==(const PositionInfo& rhs) {
         return docId == rhs.docId;
     }
+
+    bool operator <(const PositionInfo& rhs) {
+        return docId < rhs.docId;
+    }
 };
 
 class BALOO_ENGINE_EXPORT PositionDB
