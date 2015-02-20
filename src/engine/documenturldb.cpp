@@ -39,6 +39,7 @@ DocumentUrlDB::~DocumentUrlDB()
 void DocumentUrlDB::put(uint docId, const QByteArray& url)
 {
     Q_ASSERT(docId > 0);
+    Q_ASSERT(!url.isEmpty());
 
     MDB_val key;
     key.mv_size = sizeof(uint);

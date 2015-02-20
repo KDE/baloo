@@ -38,6 +38,9 @@ UrlDocumentDB::~UrlDocumentDB()
 
 void UrlDocumentDB::put(const QByteArray& url, uint docId)
 {
+    Q_ASSERT(docId > 0);
+    Q_ASSERT(!url.isEmpty());
+
     MDB_val key;
     key.mv_size = url.size();
     key.mv_data = static_cast<void*>(const_cast<char*>(url.constData()));
@@ -52,6 +55,8 @@ void UrlDocumentDB::put(const QByteArray& url, uint docId)
 
 uint UrlDocumentDB::get(const QByteArray& url)
 {
+    Q_ASSERT(!url.isEmpty());
+
     MDB_val key;
     key.mv_size = url.size();
     key.mv_data = static_cast<void*>(const_cast<char*>(url.constData()));
@@ -68,6 +73,8 @@ uint UrlDocumentDB::get(const QByteArray& url)
 
 void UrlDocumentDB::del(const QByteArray& url)
 {
+    Q_ASSERT(!url.isEmpty());
+
     MDB_val key;
     key.mv_size = url.size();
     key.mv_data = static_cast<void*>(const_cast<char*>(url.constData()));
