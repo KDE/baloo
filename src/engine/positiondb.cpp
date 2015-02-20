@@ -40,6 +40,9 @@ PositionDB::~PositionDB()
 
 void PositionDB::put(const QByteArray& term, const QVector<PositionInfo>& list)
 {
+    Q_ASSERT(!term.isEmpty());
+    Q_ASSERT(!list.isEmpty());
+
     MDB_val key;
     key.mv_size = term.size();
     key.mv_data = static_cast<void*>(const_cast<char*>(term.constData()));
@@ -62,6 +65,8 @@ void PositionDB::put(const QByteArray& term, const QVector<PositionInfo>& list)
 
 QVector<PositionInfo> PositionDB::get(const QByteArray& term)
 {
+    Q_ASSERT(!term.isEmpty());
+
     MDB_val key;
     key.mv_size = term.size();
     key.mv_data = static_cast<void*>(const_cast<char*>(term.constData()));
