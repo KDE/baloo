@@ -48,14 +48,16 @@ void IndexingLevelDBTest::test()
     mdb_env_open(env, path.constData(), 0, 0664);
     mdb_txn_begin(env, NULL, 0, &txn);
 
-    IndexingLevelDB db(txn);
+    {
+        IndexingLevelDB db(txn);
 
-    QCOMPARE(db.contains(1), false);
-    db.put(1);
-    QCOMPARE(db.contains(1), true);
+        QCOMPARE(db.contains(1), false);
+        db.put(1);
+        QCOMPARE(db.contains(1), true);
 
-    db.del(1);
-    QCOMPARE(db.contains(1), false);
+        db.del(1);
+        QCOMPARE(db.contains(1), false);
+    }
 
     mdb_txn_abort(txn);
     mdb_env_close(env);

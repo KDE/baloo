@@ -48,12 +48,14 @@ void DocumentDBTest::test()
     mdb_env_open(env, path.constData(), 0, 0664);
     mdb_txn_begin(env, NULL, 0, &txn);
 
-    DocumentDB db(txn);
+    {
+        DocumentDB db(txn);
 
-    QVector<QByteArray> list = {"a", "aab", "abc"};
-    db.put(1, list);
+        QVector<QByteArray> list = {"a", "aab", "abc"};
+        db.put(1, list);
 
-    QCOMPARE(db.get(1), list);
+        QCOMPARE(db.get(1), list);
+    }
 
     mdb_txn_abort(txn);
     mdb_env_close(env);

@@ -48,15 +48,17 @@ void UrlDocumentDBTest::test()
     mdb_env_open(env, path.constData(), 0, 0664);
     mdb_txn_begin(env, NULL, 0, &txn);
 
-    UrlDocumentDB db(txn);
+    {
+        UrlDocumentDB db(txn);
 
-    QByteArray arr = "/home/blah";
-    db.put(arr, 1);
+        QByteArray arr = "/home/blah";
+        db.put(arr, 1);
 
-    QCOMPARE(db.get(arr), static_cast<uint>(1));
+        QCOMPARE(db.get(arr), static_cast<uint>(1));
 
-    db.del(arr);
-    QCOMPARE(db.get(arr), static_cast<uint>(0));
+        db.del(arr);
+        QCOMPARE(db.get(arr), static_cast<uint>(0));
+    }
 
     mdb_txn_abort(txn);
     mdb_env_close(env);

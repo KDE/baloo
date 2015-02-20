@@ -47,22 +47,24 @@ void DocumentValueDBTest::test()
     mdb_env_open(env, path.constData(), 0, 0664);
     mdb_txn_begin(env, NULL, 0, &txn);
 
-    DocumentValueDB db(txn);
-    QByteArray arr1("foo");
-    QByteArray arr2("goo");
+    {
+        DocumentValueDB db(txn);
+        QByteArray arr1("foo");
+        QByteArray arr2("goo");
 
-    db.put(1, 0, arr1);
-    db.put(1, 6, arr2);
-    db.put(2, 4, arr1);
+        db.put(1, 0, arr1);
+        db.put(1, 6, arr2);
+        db.put(2, 4, arr1);
 
-    QCOMPARE(db.get(1, 0), arr1);
-    QCOMPARE(db.get(1, 6), arr2);
-    QCOMPARE(db.get(2, 4), arr1);
+        QCOMPARE(db.get(1, 0), arr1);
+        QCOMPARE(db.get(1, 6), arr2);
+        QCOMPARE(db.get(2, 4), arr1);
 
-    db.del(1);
-    QCOMPARE(db.get(1, 0), QByteArray());
-    QCOMPARE(db.get(1, 6), QByteArray());
-    QCOMPARE(db.get(2, 4), arr1);
+        db.del(1);
+        QCOMPARE(db.get(1, 0), QByteArray());
+        QCOMPARE(db.get(1, 6), QByteArray());
+        QCOMPARE(db.get(2, 4), arr1);
+    }
 
     mdb_txn_abort(txn);
     mdb_env_close(env);

@@ -38,7 +38,6 @@ void DocumentUrlDBTest::test()
 
     MDB_env* env;
     MDB_txn* txn;
-    char sval[32];
 
     mdb_env_create(&env);
     mdb_env_set_maxdbs(env, 1);
@@ -48,15 +47,17 @@ void DocumentUrlDBTest::test()
     mdb_env_open(env, path.constData(), 0, 0664);
     mdb_txn_begin(env, NULL, 0, &txn);
 
-    DocumentUrlDB db(txn);
+    {
+        DocumentUrlDB db(txn);
 
-    QByteArray arr = "/home/blah";
-    db.put(1, arr);
+        QByteArray arr = "/home/blah";
+        db.put(1, arr);
 
-    QCOMPARE(db.get(1), arr);
+        QCOMPARE(db.get(1), arr);
 
-    db.del(1);
-    QCOMPARE(db.get(1), QByteArray());
+        db.del(1);
+        QCOMPARE(db.get(1), QByteArray());
+    }
 
     mdb_txn_abort(txn);
     mdb_env_close(env);

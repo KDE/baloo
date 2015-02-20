@@ -47,22 +47,24 @@ void PositionDBTest::test()
     mdb_env_open(env, path.constData(), 0, 0664);
     mdb_txn_begin(env, NULL, 0, &txn);
 
-    PositionDB db(txn);
+    {
+        PositionDB db(txn);
 
-    QByteArray word("fire");
-    PositionInfo pos1;
-    pos1.docId = 1;
-    pos1.positions = QVector<uint>() << 1 << 5 << 6;
+        QByteArray word("fire");
+        PositionInfo pos1;
+        pos1.docId = 1;
+        pos1.positions = QVector<uint>() << 1 << 5 << 6;
 
-    PositionInfo pos2;
-    pos2.docId = 5;
-    pos2.positions = QVector<uint>() << 41 << 96 << 116;
+        PositionInfo pos2;
+        pos2.docId = 5;
+        pos2.positions = QVector<uint>() << 41 << 96 << 116;
 
-    QVector<PositionInfo> list = {pos1, pos2};
+        QVector<PositionInfo> list = {pos1, pos2};
 
-    db.put(word, list);
-    QVector<PositionInfo> res = db.get(word);
-    QCOMPARE(res, list);
+        db.put(word, list);
+        QVector<PositionInfo> res = db.get(word);
+        QCOMPARE(res, list);
+    }
 
     mdb_txn_abort(txn);
     mdb_env_close(env);

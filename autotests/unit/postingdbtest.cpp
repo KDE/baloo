@@ -48,13 +48,15 @@ void PostingDBTest::test()
     mdb_env_open(env, path.constData(), 0, 0664);
     mdb_txn_begin(env, NULL, 0, &txn);
 
-    PostingDB db(txn);
+    {
+        PostingDB db(txn);
 
-    QByteArray word("fire");
-    PostingList list = {1, 5, 6};
+        QByteArray word("fire");
+        PostingList list = {1, 5, 6};
 
-    db.put(word, list);
-    QCOMPARE(db.get(word), list);
+        db.put(word, list);
+        QCOMPARE(db.get(word), list);
+    }
 
     mdb_txn_abort(txn);
     mdb_env_close(env);
