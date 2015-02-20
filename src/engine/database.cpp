@@ -98,8 +98,11 @@ void Database::addDocument(const Document& doc)
     }
 
     m_documentDB->put(id, docTerms);
-    m_docUrlDB->put(id, doc.url());
-    m_urlDocDB->put(doc.url(), id);
+
+    if (!doc.url().isEmpty()) {
+        m_docUrlDB->put(id, doc.url());
+        m_urlDocDB->put(doc.url(), id);
+    }
 
     if (doc.indexingLevel()) {
         m_indexingLevelDB->put(doc.id());
