@@ -279,3 +279,8 @@ QVector<int> Database::exec(const QVector<QByteArray>& query)
 
     return result;
 }
+
+QVector<uint> Database::fetchIndexingLevel(int size)
+{
+    return m_indexingLevelDB->fetchItems(size);
+}

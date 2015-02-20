@@ -88,3 +88,28 @@ void IndexingLevelDB::del(uint docId)
     }
     Q_ASSERT_X(rc == 0, "IndexingLevelDB::del", mdb_strerror(rc));
 }
+
+QVector<uint> IndexingLevelDB::fetchItems(int size)
+{
+    Q_ASSERT(size > 0);
+
+    MDB_cursor* cursor;
+    mdb_cursor_open(m_txn, m_dbi, &cursor);
+
+    QVector<uint> vec;
+
+    for (int i = 0; i < size; i++) {
+        MDB_val key;
+        int rc = mdb_cursor_get(cursor, &key, 0, MDB_NEXT);
+        if (rc == MDB_NOTFOUND) {
+            break;
+        }
+        Q_ASSERT_X(rc == 0, "IndexingLevelDB::fetchItems", mdb_strerror(rc));
+
+        uint id = *(static_cast<int*>(key.mv_data));
+        vec << id;
+    }
+    mdb_cursor_close(cursor);
+
+    return vec;
+}

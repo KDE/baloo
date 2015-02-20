@@ -23,6 +23,7 @@
 
 #include "engine_export.h"
 #include <QByteArray>
+#include <QVector>
 #include <lmdb.h>
 
 namespace Baloo {
@@ -36,6 +37,8 @@ public:
     void put(uint docId);
     bool contains(uint docId);
     void del(uint docID);
+
+    QVector<uint> fetchItems(int size);
 
 private:
     MDB_txn* m_txn;

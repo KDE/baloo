@@ -89,7 +89,7 @@ void DocumentValueDB::del(uint docId)
     while(1) {
         int rc = mdb_cursor_get(cursor, &key, 0, MDB_SET_RANGE);
         if (rc == MDB_NOTFOUND) {
-            return;
+            break;
         }
         Q_ASSERT_X(rc == 0, "DocumentValueDB::del", mdb_strerror(rc));
 
@@ -102,4 +102,6 @@ void DocumentValueDB::del(uint docId)
         rc = mdb_cursor_del(cursor, 0);
         Q_ASSERT_X(rc == 0, "DocumentValueDB::del", mdb_strerror(rc));
     }
+
+    mdb_cursor_close(cursor);
 }

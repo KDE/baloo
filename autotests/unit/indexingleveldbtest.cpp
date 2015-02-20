@@ -30,6 +30,7 @@ class IndexingLevelDBTest : public QObject
     Q_OBJECT
 private Q_SLOTS:
     void test();
+    void testFetchItems();
 };
 
 void IndexingLevelDBTest::test()
@@ -38,7 +39,6 @@ void IndexingLevelDBTest::test()
 
     MDB_env* env;
     MDB_txn* txn;
-    char sval[32];
 
     mdb_env_create(&env);
     mdb_env_set_maxdbs(env, 1);
@@ -61,6 +61,39 @@ void IndexingLevelDBTest::test()
 
     mdb_txn_abort(txn);
     mdb_env_close(env);
+}
+
+void IndexingLevelDBTest::testFetchItems()
+{
+    QTemporaryDir dir;
+
+    MDB_env* env;
+    MDB_txn* txn;
+
+    mdb_env_create(&env);
+    mdb_env_set_maxdbs(env, 1);
+
+    // The directory needs to be created before opening the environment
+    QByteArray path = QFile::encodeName(dir.path());
+    mdb_env_open(env, path.constData(), 0, 0664);
+    mdb_txn_begin(env, NULL, 0, &txn);
+
+    {
+        IndexingLevelDB db(txn);
+
+        db.put(1);
+        db.put(6);
+        db.put(8);
+
+        QVector<uint> acVec = db.fetchItems(10);
+        QVector<uint> exVec = {1, 6, 8};
+
+        QCOMPARE(acVec, exVec);
+    }
+
+    mdb_txn_abort(txn);
+    mdb_env_close(env);
+
 }
 
 QTEST_MAIN(IndexingLevelDBTest)

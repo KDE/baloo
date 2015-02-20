@@ -59,6 +59,7 @@ public:
 
     QVector<int> exec(const QVector<QByteArray>& query);
 
+    QVector<uint> fetchIndexingLevel(int size);
 private:
     QString m_path;
 
