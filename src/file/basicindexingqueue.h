@@ -27,14 +27,12 @@
 #include <QStack>
 #include <QPair>
 #include <QMimeDatabase>
-#include <xapian.h>
-
-
-class Database;
 
 namespace Baloo
 {
 
+class Database;
+class Document;
 class FileIndexerConfig;
 
 enum UpdateDirFlag {
@@ -76,7 +74,7 @@ public:
     virtual bool isEmpty();
 
 Q_SIGNALS:
-    void newDocument(unsigned id, Xapian::Document doc);
+    void newDocument(unsigned id, const Document& doc);
 
 public Q_SLOTS:
     void enqueue(const FileMapping& file, UpdateDirFlags flags = UpdateDirFlags());

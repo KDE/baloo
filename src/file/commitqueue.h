@@ -25,13 +25,11 @@
 
 #include <QObject>
 #include <QTimer>
-#include <QVector>
-#include <QPair>
-#include <xapian.h>
-
-class Database;
 
 namespace Baloo {
+
+class Database;
+class Document;
 
 class CommitQueue : public QObject
 {
@@ -43,7 +41,7 @@ public:
     bool isEmpty() const;
 
 public Q_SLOTS:
-    void add(unsigned id, Xapian::Document doc);
+    void add(unsigned id, const Document& doc);
     void remove(unsigned docid);
 
     void commit();

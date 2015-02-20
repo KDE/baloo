@@ -1,6 +1,6 @@
 /*
-    <one line to give the library's name and an idea of what it does.>
-    Copyright (C) 2012  Vishesh Handa <me@vhanda.in>
+    This file is part of the KDE Baloo project.
+    Copyright (C) 2012-2015  Vishesh Handa <vhanda@kde.org>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -18,21 +18,15 @@
 */
 
 
-#include <xapian.h>
 #include "basicindexingqueue.h"
 #include "fileindexerconfig.h"
-#include "util.h"
 #include "basicindexingjob.h"
 #include "database.h"
 #include "filemapping.h"
 
-#include "xapiandocument.h"
-
 #include <QDebug>
-
 #include <QDateTime>
 #include <QTimer>
-#include <QUrl>
 
 using namespace Baloo;
 
@@ -134,12 +128,11 @@ bool BasicIndexingQueue::shouldIndex(FileMapping& file, const QString& mimetype)
     if (!fileInfo.exists())
         return false;
 
-    if (!file.fetch(m_db->xapianDatabase()->db())) {
+    if (!file.fetch(m_db)) {
         return true;
     }
 
-    XapianDocument doc = m_db->xapianDatabase()->document(file.id());
-    const QByteArray dtStr = doc.value(0);
+    const QByteArray dtStr = m_db->documentSlot(file.id(), 0);
     if (dtStr.isEmpty()) {
         return true;
     }
@@ -167,19 +160,21 @@ void BasicIndexingQueue::index(FileMapping& file, const QString& mimetype,
                                UpdateDirFlags flags)
 {
     if (!file.fetched()) {
-        file.fetch(m_db->xapianDatabase()->db());
+        file.fetch(m_db);
     }
 
     qDebug() << file.id() << file.url();
 
     bool xattrOnly = (flags & Baloo::ExtendedAttributesOnly);
     if (!xattrOnly) {
-        BasicIndexingJob job(file, mimetype, m_config->onlyBasicIndexing());
+        BasicIndexingJob job(file.url(), mimetype, m_config->onlyBasicIndexing());
         if (job.index()) {
-            Q_EMIT newDocument(job.id(), job.document());
+            Q_EMIT newDocument(0, job.document());
         }
     }
     else {
+        // FIXME: Re-index only the xattr. How!!
+        /*
         XapianDocument doc = m_db->xapianDatabase()->document(file.id());
 
         bool modified = false;
@@ -192,6 +187,7 @@ void BasicIndexingQueue::index(FileMapping& file, const QString& mimetype,
         if (modified) {
             Q_EMIT newDocument(file.id(), doc.doc());
         }
+        */
     }
 
     QTimer::singleShot(0, this, SLOT(finishIteration()));

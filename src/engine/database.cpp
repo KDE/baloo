@@ -32,14 +32,22 @@
 #include "documentvaluedb.h"
 
 #include <QFile>
+#include <QFileInfo>
 
 using namespace Baloo;
 
 Database::Database(const QString& path)
+    : m_path(path)
 {
+    QFileInfo dirInfo(path);
+    if (!dirInfo.permission(QFile::WriteOwner)) {
+        qCritical() << path << "does not have write permissions. Aborting";
+        exit(1);
+    }
+
     mdb_env_create(&m_env);
     mdb_env_set_maxdbs(m_env, 7);
-    mdb_env_set_mapsize(m_env, 10485760);
+    mdb_env_set_mapsize(m_env, 104857600);
 
     // The directory needs to be created before opening the environment
     QByteArray arr = QFile::encodeName(path);
@@ -67,6 +75,11 @@ Database::~Database()
 
     mdb_txn_commit(m_txn);
     mdb_env_close(m_env);
+}
+
+QString Database::path() const
+{
+    return m_path;
 }
 
 void Database::addDocument(const Document& doc)
@@ -110,6 +123,13 @@ QByteArray Database::documentUrl(uint id)
 {
     Q_ASSERT(id > 0);
     return m_docUrlDB->get(id);
+}
+
+
+QByteArray Database::documentSlot(uint id, uint slotNum)
+{
+    Q_ASSERT(id > 0);
+    return m_docValueDB->get(id, slotNum);
 }
 
 void Database::commit()
@@ -218,6 +238,11 @@ void Database::commit()
 
     int rc = mdb_txn_commit(m_txn);
     Q_ASSERT(rc == 0);
+}
+
+bool Database::hasChanges() const
+{
+    return !m_pendingOperations.isEmpty();
 }
 
 QVector<int> Database::exec(const QVector<QByteArray>& query)

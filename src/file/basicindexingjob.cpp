@@ -96,6 +96,10 @@ bool BasicIndexingJob::index()
 
     indexXAttr(m_filePath, doc);
 
+    // FIXME: This is not a good way!
+    static uint gId = 0;
+    doc.setId(++gId);
+
     m_doc = doc;
     return true;
 }

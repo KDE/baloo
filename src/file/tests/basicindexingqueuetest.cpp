@@ -25,10 +25,10 @@
 #include <QTime>
 #include <QCoreApplication>
 
-#include "../basicindexingqueue.h"
-#include "../commitqueue.h"
-#include "../database.h"
-#include "../fileindexerconfig.h"
+#include "basicindexingqueue.h"
+#include "commitqueue.h"
+#include "database.h"
+#include "fileindexerconfig.h"
 #include "filemapping.h"
 #include "util.h"
 
@@ -36,9 +36,8 @@ int main(int argc, char** argv)
 {
     QTemporaryDir tempDir;
 
-    Database db;
-    db.setPath(tempDir.path());
-    db.init();
+    Baloo::Database db(tempDir.path());
+    //db.init();
 
     Baloo::FileIndexerConfig config;
     QCoreApplication app(argc, argv);

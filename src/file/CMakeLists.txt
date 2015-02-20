@@ -5,27 +5,26 @@
 set(file_static_lib_SRCS
     # File Indexer
 #    fileindexer.cpp
-#     fileindexerconfig.cpp
+     fileindexerconfig.cpp
 #     indexscheduler.cpp
-#     indexingqueue.cpp
-#     basicindexingqueue.cpp
+     indexingqueue.cpp
+     basicindexingqueue.cpp
 #     fileindexingqueue.cpp
-#     commitqueue.cpp
+     commitqueue.cpp
      basicindexingjob.cpp
 #     fileindexingjob.cpp
-#     eventmonitor.cpp
+     eventmonitor.cpp
 #     util.cpp
 #
 #     # Common
-#     database.cpp
-#     priority.cpp
-#     regexpcache.cpp
-#     fileexcludefilters.cpp
-#     ../lib/filemapping.cpp
-#     storagedevices.cpp
-#     filtereddiriterator.cpp
-#
-#     # File Watcher
+     priority.cpp
+     regexpcache.cpp
+     fileexcludefilters.cpp
+     ../lib/filemapping.cpp
+     storagedevices.cpp
+     filtereddiriterator.cpp
+
+     # File Watcher
 #     filewatch.cpp
 #     pendingfilequeue.cpp
 #     metadatamover.cpp
@@ -42,6 +41,7 @@ set(file_static_lib_SRCS
 #     add_definitions(-DBUILD_KINOTIFY)
 # endif()
 #
+
 add_library(baloofilecommon STATIC ${file_static_lib_SRCS})
 target_link_libraries(baloofilecommon
     Qt5::DBus
@@ -53,7 +53,7 @@ target_link_libraries(baloofilecommon
     KF5::FileMetaData
     KF5::Crash
     KF5::ConfigCore
-#    KF5::Baloo
+    KF5::BalooEngine
     KF5::KDELibs4Support # For Solid
 )
 #
@@ -86,7 +86,7 @@ target_link_libraries(baloofilecommon
 # install(FILES org.kde.baloo.file.indexer.xml DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
 #
 add_subdirectory(autotest)
-#add_subdirectory(tests)
+add_subdirectory(tests)
 #add_subdirectory(extractor)
 #add_subdirectory(inotify)
 #add_subdirectory(cleaner)

@@ -24,12 +24,13 @@
 #define FILEMAPPING_H
 
 #include <QString>
-#include "core_export.h"
-#include "xapiandatabase.h"
+//#include "core_export.h"
 
 namespace Baloo {
 
-class BALOO_CORE_EXPORT FileMapping
+class Database;
+
+class FileMapping
 {
 public:
     FileMapping();
@@ -53,7 +54,7 @@ public:
      *
      * Returns true if fetching was successful
      */
-    bool fetch(Xapian::Database* db);
+    bool fetch(Database* db);
 
     bool operator ==(const FileMapping& rhs) const;
 

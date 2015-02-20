@@ -21,7 +21,7 @@
  */
 
 #include "filemapping.h"
-#include "xapiandocument.h"
+#include "database.h"
 
 #include <QDebug>
 
@@ -71,7 +71,7 @@ bool FileMapping::fetched()
     return true;
 }
 
-bool FileMapping::fetch(Xapian::Database* db)
+bool FileMapping::fetch(Database* db)
 {
     if (fetched())
         return true;
@@ -79,58 +79,14 @@ bool FileMapping::fetch(Xapian::Database* db)
     if (m_id == 0 && m_url.isEmpty())
         return false;
 
-    try {
-        if (m_url.isEmpty()) {
-            Xapian::Document doc = db->get_document(m_id);
-            std::string str = doc.get_value(3);
-            m_url = QString::fromUtf8(str.c_str(), str.length());
-
-            return !m_url.isEmpty();
-        }
-        else {
-            // FIXME: Need to catch exceptions!
-            QByteArray arr = m_url.toUtf8();
-            if (arr.size() > 240) {
-                QByteArray p1 = "P1" + arr.mid(0, 240);
-                QByteArray p2 = "P2" + arr.mid(240);
-
-                Xapian::Query q1(p1.constData());
-                Xapian::Query q2(p2.constData());
-
-                Xapian::Enquire enquire(*db);
-                enquire.set_query(Xapian::Query(Xapian::Query::OP_AND, q1, q2));
-                enquire.set_weighting_scheme(Xapian::BoolWeight());
-
-                Xapian::MSet mset = enquire.get_mset(0, 1);
-                Xapian::MSetIterator it = mset.begin();
-                if (it == mset.end())
-                    return false;
-
-                m_id = *it;
-                return true;
-            }
-            else {
-                Xapian::Enquire enquire(*db);
-                QByteArray arrWithPrefix = "P-" + arr;
-                enquire.set_query(Xapian::Query(arrWithPrefix.constData()));
-                enquire.set_weighting_scheme(Xapian::BoolWeight());
-
-                Xapian::MSet mset = enquire.get_mset(0, 1);
-                Xapian::MSetIterator it = mset.begin();
-                if (it == mset.end())
-                    return false;
-
-                m_id = *it;
-                return true;
-            }
-        }
+    if (m_url.isEmpty()) {
+        m_url = QString::fromUtf8(db->documentUrl(m_id));
+        return !m_url.isEmpty();
     }
-    catch (...) {
-        return false;
+    else {
+        m_id = db->documentId(m_url.toUtf8());
+        return m_id;
     }
-
-    return true;
-
 }
 
 void FileMapping::clear()

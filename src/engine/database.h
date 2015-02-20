@@ -42,6 +42,8 @@ public:
     Database(const QString& path);
     ~Database();
 
+    QString path() const;
+
     // FIXME: Return codes?
     void addDocument(const Document& doc);
     void removeDocument(uint id);
@@ -49,13 +51,17 @@ public:
     bool hasDocument(uint id);
 
     void commit();
+    bool hasChanges() const;
 
     QByteArray documentUrl(uint id);
     uint documentId(const QByteArray& url);
+    QByteArray documentSlot(uint id, uint slotNum);
 
     QVector<int> exec(const QVector<QByteArray>& query);
 
 private:
+    QString m_path;
+
     PostingDB* m_postingDB;
     DocumentDB* m_documentDB;
     PositionDB* m_positionDB;

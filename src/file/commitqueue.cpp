@@ -27,8 +27,6 @@
 #include <KDiskFreeSpaceInfo>
 #include <QCoreApplication>
 
-#include "xapiandocument.h"
-
 Baloo::CommitQueue::CommitQueue(Database* db, QObject* parent)
     : QObject(parent)
     , m_db(db)
@@ -49,22 +47,18 @@ Baloo::CommitQueue::~CommitQueue()
 
 bool Baloo::CommitQueue::isEmpty() const
 {
-    return !m_db->xapianDatabase()->haveChanges();
+    return !m_db->hasChanges();
 }
 
-void Baloo::CommitQueue::add(unsigned id, Xapian::Document doc)
+void Baloo::CommitQueue::add(unsigned id, const Document& doc)
 {
-    if (id) {
-        m_db->xapianDatabase()->replaceDocument(id, doc);
-    } else {
-        m_db->xapianDatabase()->addDocument(doc);
-    }
+    m_db->addDocument(doc);
     startTimers();
 }
 
-void Baloo::CommitQueue::remove(unsigned int docid)
+void Baloo::CommitQueue::remove(unsigned int docId)
 {
-    m_db->xapianDatabase()->deleteDocument(docid);
+    m_db->removeDocument(docId);
     startTimers();
 }
 
@@ -87,7 +81,7 @@ void Baloo::CommitQueue::commit()
         return;
     }
 
-    m_db->xapianDatabase()->commit();
+    m_db->commit();
 
     m_smallTimer.stop();
     m_largeTimer.stop();
