@@ -20,13 +20,12 @@
 #ifndef _BALOO_FILEINDEXER_SERVICE_H_
 #define _BALOO_FILEINDEXER_SERVICE_H_
 
-#include <QtCore/QTimer>
-
-class Database;
+#include <QTimer>
 
 namespace Baloo
 {
 
+class Database;
 class IndexScheduler;
 class FileIndexerConfig;
 

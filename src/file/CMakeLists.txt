@@ -1,46 +1,43 @@
-#add_definitions(-DTRANSLATION_DOMAIN=\"baloo_file\")
-#
-#kde_enable_exceptions()
-#
+add_definitions(-DTRANSLATION_DOMAIN=\"baloo_file\")
+
 set(file_static_lib_SRCS
     # File Indexer
-#    fileindexer.cpp
-     fileindexerconfig.cpp
-#     indexscheduler.cpp
-     indexingqueue.cpp
-     basicindexingqueue.cpp
-#     fileindexingqueue.cpp
-     commitqueue.cpp
-     basicindexingjob.cpp
-#     fileindexingjob.cpp
-     eventmonitor.cpp
-#     util.cpp
-#
-#     # Common
-     priority.cpp
-     regexpcache.cpp
-     fileexcludefilters.cpp
-     ../lib/filemapping.cpp
-     storagedevices.cpp
-     filtereddiriterator.cpp
+    fileindexer.cpp
+    fileindexerconfig.cpp
+    indexscheduler.cpp
+    indexingqueue.cpp
+    basicindexingqueue.cpp
+    fileindexingqueue.cpp
+    commitqueue.cpp
+    basicindexingjob.cpp
+    fileindexingjob.cpp
+    eventmonitor.cpp
+
+    # Common
+    priority.cpp
+    regexpcache.cpp
+    fileexcludefilters.cpp
+    ../lib/filemapping.cpp
+    storagedevices.cpp
+    filtereddiriterator.cpp
 
      # File Watcher
 #     filewatch.cpp
-#     pendingfilequeue.cpp
+    pendingfilequeue.cpp
 #     metadatamover.cpp
-#     pendingfile.cpp
+    pendingfile.cpp
 )
-#
-# set(BUILD_KINOTIFY False)
-# if(CMAKE_SYSTEM_NAME MATCHES "Linux")
-#     set(BUILD_KINOTIFY True)
-#     set(file_static_lib_SRCS
-#         ${file_static_lib_SRCS}
-#         kinotify.cpp
-#     )
-#     add_definitions(-DBUILD_KINOTIFY)
-# endif()
-#
+
+set(BUILD_KINOTIFY False)
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+    set(BUILD_KINOTIFY True)
+    set(file_static_lib_SRCS
+        ${file_static_lib_SRCS}
+        kinotify.cpp
+    )
+    add_definitions(-DBUILD_KINOTIFY)
+endif()
+
 
 add_library(baloofilecommon STATIC ${file_static_lib_SRCS})
 target_link_libraries(baloofilecommon

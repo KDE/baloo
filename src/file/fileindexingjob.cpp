@@ -21,9 +21,7 @@
 */
 
 #include "fileindexingjob.h"
-#include "util.h"
 #include "fileindexerconfig.h"
-#include "database.h"
 
 #include <QDebug>
 #include <QStandardPaths>

@@ -20,7 +20,6 @@
 #include "fileindexer.h"
 #include "indexscheduler.h"
 #include "fileindexerconfig.h"
-#include "util.h"
 
 #include <QDebug>
 

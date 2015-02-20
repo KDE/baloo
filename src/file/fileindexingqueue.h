@@ -26,15 +26,14 @@
 
 #include "indexingqueue.h"
 #include "filemapping.h"
-#include <xapian.h>
 
 #include <QStack>
 #include <KJob>
 
-class Database;
-
 namespace Baloo
 {
+class Database;
+class Document;
 class FileIndexingJob;
 
 class FileIndexingQueue : public IndexingQueue
@@ -52,7 +51,7 @@ public:
     void setTestMode(bool mode) { m_testMode = mode; }
 
 Q_SIGNALS:
-    void newDocument(uint docid, const Xapian::Document& doc);
+    void newDocument(uint docid, const Document& doc);
 
 protected:
     virtual void processNextIteration();

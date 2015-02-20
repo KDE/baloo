@@ -1,6 +1,6 @@
 /*
  * This file is part of the KDE Baloo Project
- * Copyright (C) 2012-2013  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2012-2015  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -23,7 +23,6 @@
 
 #include "fileindexingqueue.h"
 #include "fileindexingjob.h"
-#include "util.h"
 #include "database.h"
 
 #include <QStandardPaths>
@@ -53,24 +52,8 @@ void FileIndexingQueue::fillQueue()
     if (m_indexJob)
         return;
 
-    try {
-        Xapian::Database* db = m_db->xapianDatabase()->db();
-        Xapian::Enquire enquire(*db);
-        enquire.set_query(Xapian::Query("Z1"));
-        enquire.set_weighting_scheme(Xapian::BoolWeight());
-
-        Xapian::MSet mset = enquire.get_mset(0, m_maxSize - m_fileQueue.size());
-        Xapian::MSetIterator it = mset.begin();
-        for (; it != mset.end(); ++it) {
-            m_fileQueue << *it;
-        }
-    }
-    catch (const Xapian::DatabaseModifiedError&) {
-        fillQueue();
-    }
-    catch (const Xapian::Error&) {
-        return;
-    }
+    QVector<uint> newItems = m_db->fetchIndexingLevel(m_maxSize - m_fileQueue.size());
+    m_fileQueue << newItems;
 }
 
 bool FileIndexingQueue::isEmpty()
@@ -104,7 +87,7 @@ void FileIndexingQueue::slotFinishedIndexingFile(KJob* job)
     m_indexJob = 0;
 
     // The process would have modified the db
-    m_db->xapianDatabase()->db()->reopen();
+    // m_db->xapianDatabase()->db()->reopen();
     if (m_fileQueue.isEmpty()) {
         fillQueue();
     }
@@ -113,6 +96,8 @@ void FileIndexingQueue::slotFinishedIndexingFile(KJob* job)
 
 void FileIndexingQueue::slotIndexingFailed(uint id)
 {
+    /*
+     * FIXME: Hanlde indexingFailed
     m_db->xapianDatabase()->db()->reopen();
     Xapian::Document doc;
     try {
@@ -122,6 +107,7 @@ void FileIndexingQueue::slotIndexingFailed(uint id)
     } catch (const Xapian::Error& err) {
         qDebug() << err.get_description().c_str();
     }
+    */
 }
 
 
