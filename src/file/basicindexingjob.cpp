@@ -21,6 +21,7 @@
  */
 
 #include "basicindexingjob.h"
+#include "termgenerator.h"
 
 #include <QFileInfo>
 #include <QDateTime>
@@ -49,18 +50,20 @@ bool BasicIndexingJob::index()
     QFileInfo fileInfo(m_filePath);
 
     Document doc;
-    doc.addBoolTerm(m_mimetype.toUtf8(), QByteArray("M"));
-    doc.indexText(fileInfo.fileName(), 1000);
-    doc.indexText(fileInfo.fileName(), QByteArray("F"), 1000);
+    doc.addBoolTerm(QByteArray("M") + m_mimetype.toUtf8());
+
+    TermGenerator tg(&doc);
+    tg.indexText(fileInfo.fileName(), 1000);
+    tg.indexText(fileInfo.fileName(), QStringLiteral("F"));
 
     // Modified Date
     QDateTime mod = fileInfo.lastModified();
     const QByteArray dtm = mod.toString(Qt::ISODate).toUtf8();
 
-    doc.addBoolTerm(dtm, QByteArray("DT_M"));
-    doc.addBoolTerm(QByteArray::number(mod.date().year()), QByteArray("DT_MY"));
-    doc.addBoolTerm(QByteArray::number(mod.date().month()), QByteArray("DT_MM"));
-    doc.addBoolTerm(QByteArray::number(mod.date().day()), QByteArray("DT_MD"));
+    doc.addBoolTerm(QByteArray("DT_M") + dtm);
+    doc.addBoolTerm(QByteArray("DT_MY") + QByteArray::number(mod.date().year()));
+    doc.addBoolTerm(QByteArray("DT_MM") + QByteArray::number(mod.date().month()));
+    doc.addBoolTerm(QByteArray("DT_MD") + QByteArray::number(mod.date().day()));
 
     const QByteArray timeTStr = QByteArray::number(mod.toTime_t());
     doc.addValue(0, timeTStr);
@@ -73,7 +76,7 @@ bool BasicIndexingJob::index()
     QVector<KFileMetaData::Type::Type> tList = typesForMimeType(m_mimetype);
     Q_FOREACH (KFileMetaData::Type::Type type, tList) {
         QString tstr = KFileMetaData::TypeInfo(type).name().toLower();
-        doc.addBoolTerm(tstr.toUtf8(), QByteArray("T"));
+        doc.addBoolTerm(QByteArray("T") + tstr.toUtf8());
     }
 
     if (fileInfo.isDir()) {
@@ -103,10 +106,11 @@ bool BasicIndexingJob::indexXAttr(const QString& url, Document& doc)
 
     KFileMetaData::UserMetaData userMetaData(url);
 
+    TermGenerator tg(&doc);
     QStringList tags = userMetaData.tags();
     if (!tags.isEmpty()) {
         Q_FOREACH (const QString& tag, tags) {
-            doc.indexText(tag, QByteArray("TA"));
+            tg.indexText(tag, QStringLiteral("TA"));
             doc.addBoolTerm(QByteArray("TAG-") + tag.toUtf8());
         }
 
@@ -115,13 +119,13 @@ bool BasicIndexingJob::indexXAttr(const QString& url, Document& doc)
 
     int rating = userMetaData.rating();
     if (rating) {
-        doc.addBoolTerm(QByteArray::number(rating), QByteArray("R"));
+        doc.addBoolTerm(QByteArray("R") + QByteArray::number(rating));
         modified = true;
     }
 
     QString comment = userMetaData.userComment();
     if (!comment.isEmpty()) {
-        doc.indexText(comment, QByteArray("C"));
+        tg.indexText(comment, QStringLiteral("C"));
         modified = true;
     }
 

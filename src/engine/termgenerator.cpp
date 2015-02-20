@@ -32,9 +32,9 @@ TermGenerator::TermGenerator(Document* doc)
 {
 }
 
-void TermGenerator::indexText(const QString& text)
+void TermGenerator::indexText(const QString& text, int wdfInc)
 {
-    indexText(text, QString());
+    indexText(text, QString(), wdfInc);
 }
 
 QStringList TermGenerator::termList(const QString& text)

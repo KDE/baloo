@@ -33,7 +33,7 @@ class BALOO_ENGINE_EXPORT TermGenerator
 public:
     TermGenerator(Document* doc);
 
-    void indexText(const QString& text);
+    void indexText(const QString& text, int wdfInc = 1);
     void indexText(const QString& text, const QString& prefix, int wdfInc = 1);
 
     void setPosition(int position);
