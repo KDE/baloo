@@ -27,7 +27,7 @@ IndexingLevelDB::IndexingLevelDB(MDB_txn* txn)
 {
 
     int rc = mdb_dbi_open(txn, "indexingleveldb", MDB_CREATE | MDB_INTEGERKEY, &m_dbi);
-    Q_ASSERT(rc == 0);
+    Q_ASSERT_X(rc == 0, "IndexingLevelDB", mdb_strerror(rc));
 }
 
 IndexingLevelDB::~IndexingLevelDB()
@@ -52,7 +52,7 @@ void IndexingLevelDB::put(uint docId)
     if (rc == MDB_MAP_FULL) {
         Q_ASSERT_X(0, "", "Database is full. You need to increase the map size");
     }
-    Q_ASSERT(rc == 0);
+    Q_ASSERT_X(rc == 0, "IndexingLevelDB::put", mdb_strerror(rc));
 }
 
 bool IndexingLevelDB::contains(uint docId)
@@ -69,7 +69,7 @@ bool IndexingLevelDB::contains(uint docId)
     if (rc == MDB_NOTFOUND) {
         return false;
     }
-    Q_ASSERT(rc == 0);
+    Q_ASSERT_X(rc == 0, "IndexingLevelDB::contains", mdb_strerror(rc));
 
     return true;
 }
@@ -86,5 +86,5 @@ void IndexingLevelDB::del(uint docId)
     if (rc == MDB_NOTFOUND) {
         return;
     }
-    Q_ASSERT(rc == 0);
+    Q_ASSERT_X(rc == 0, "IndexingLevelDB::del", mdb_strerror(rc));
 }

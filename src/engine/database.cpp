@@ -237,7 +237,7 @@ void Database::commit()
     }
 
     int rc = mdb_txn_commit(m_txn);
-    Q_ASSERT(rc == 0);
+    Q_ASSERT_X(rc == 0, "Database::commit", mdb_strerror(rc));
 }
 
 bool Database::hasChanges() const

@@ -28,7 +28,7 @@ DocumentValueDB::DocumentValueDB(MDB_txn* txn)
     Q_ASSERT(txn != 0);
 
     int rc = mdb_dbi_open(txn, "documentvaluedb", MDB_CREATE | MDB_INTEGERKEY, &m_dbi);
-    Q_ASSERT(rc == 0);
+    Q_ASSERT_X(rc == 0, "DocumentValueDB", mdb_strerror(rc));
 }
 
 DocumentValueDB::~DocumentValueDB()
@@ -53,7 +53,7 @@ void DocumentValueDB::put(uint docId, uint slotNum, const QByteArray& value)
     if (rc == MDB_MAP_FULL) {
         Q_ASSERT_X(0, "", "Database is full. You need to increase the map size");
     }
-    Q_ASSERT(rc == 0);
+    Q_ASSERT_X(rc == 0, "DocumentValueDB::put", mdb_strerror(rc));
 }
 
 QByteArray DocumentValueDB::get(uint docId, uint slotNum)
@@ -70,7 +70,7 @@ QByteArray DocumentValueDB::get(uint docId, uint slotNum)
     if (rc == MDB_NOTFOUND) {
         return QByteArray();
     }
-    Q_ASSERT(rc == 0);
+    Q_ASSERT_X(rc == 0, "DocumentValueDB::get", mdb_strerror(rc));
 
     return QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size);
 }
@@ -91,7 +91,7 @@ void DocumentValueDB::del(uint docId)
         if (rc == MDB_NOTFOUND) {
             return;
         }
-        Q_ASSERT(rc == 0);
+        Q_ASSERT_X(rc == 0, "DocumentValueDB::del", mdb_strerror(rc));
 
         uint* keyArr = static_cast<uint*>(key.mv_data);
         uint fetchedId = keyArr[0];
@@ -100,6 +100,6 @@ void DocumentValueDB::del(uint docId)
             break;
 
         rc = mdb_cursor_del(cursor, 0);
-        Q_ASSERT(rc == 0);
+        Q_ASSERT_X(rc == 0, "DocumentValueDB::del", mdb_strerror(rc));
     }
 }

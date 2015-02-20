@@ -28,7 +28,7 @@ DocumentUrlDB::DocumentUrlDB(MDB_txn* txn)
     Q_ASSERT(txn != 0);
 
     int rc = mdb_dbi_open(txn, "documenturldb", MDB_CREATE | MDB_INTEGERKEY, &m_dbi);
-    Q_ASSERT(rc == 0);
+    Q_ASSERT_X(rc == 0, "DocumentUrlDB", mdb_strerror(rc));
 }
 
 DocumentUrlDB::~DocumentUrlDB()
@@ -53,7 +53,7 @@ void DocumentUrlDB::put(uint docId, const QByteArray& url)
     if (rc == MDB_MAP_FULL) {
         Q_ASSERT_X(0, "", "Database is full. You need to increase the map size");
     }
-    Q_ASSERT(rc == 0);
+    Q_ASSERT_X(rc == 0, "DocumentUrlDB::put", mdb_strerror(rc));
 }
 
 QByteArray DocumentUrlDB::get(uint docId)
@@ -69,7 +69,7 @@ QByteArray DocumentUrlDB::get(uint docId)
     if (rc == MDB_NOTFOUND) {
         return QByteArray();
     }
-    Q_ASSERT(rc == 0);
+    Q_ASSERT_X(rc == 0, "DocumentUrlDB::get", mdb_strerror(rc));
 
     return QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size);
 }
@@ -83,5 +83,5 @@ void DocumentUrlDB::del(uint docId)
     key.mv_data = static_cast<void*>(&docId);
 
     int rc = mdb_del(m_txn, m_dbi, &key, 0);
-    Q_ASSERT(rc == 0);
+    Q_ASSERT_X(rc == 0, "DocumentUrlDB::del", mdb_strerror(rc));
 }

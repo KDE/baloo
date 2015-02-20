@@ -30,7 +30,7 @@ PositionDB::PositionDB(MDB_txn* txn)
     Q_ASSERT(txn != 0);
 
     int rc = mdb_dbi_open(txn, "positiondb", MDB_CREATE, &m_dbi);
-    Q_ASSERT(rc == 0);
+    Q_ASSERT_X(rc == 0, "PositionDB", mdb_strerror(rc));
 }
 
 PositionDB::~PositionDB()
@@ -60,7 +60,7 @@ void PositionDB::put(const QByteArray& term, const QVector<PositionInfo>& list)
     val.mv_data = static_cast<void*>(data.data());
 
     int rc = mdb_put(m_txn, m_dbi, &key, &val, 0);
-    Q_ASSERT(rc == 0);
+    Q_ASSERT_X(rc == 0, "PositionDB::put", mdb_strerror(rc));
 }
 
 QVector<PositionInfo> PositionDB::get(const QByteArray& term)
@@ -76,7 +76,7 @@ QVector<PositionInfo> PositionDB::get(const QByteArray& term)
     if (rc == MDB_NOTFOUND) {
         return QVector<PositionInfo>();
     }
-    Q_ASSERT(rc == 0);
+    Q_ASSERT_X(rc == 0, "PositionDB::get", mdb_strerror(rc));
 
     QByteArray data = QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size);
     QDataStream stream(&data, QIODevice::ReadOnly);

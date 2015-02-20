@@ -30,7 +30,7 @@ UrlDocumentDB::UrlDocumentDB(MDB_txn* txn)
     Q_ASSERT(txn != 0);
 
     int rc = mdb_dbi_open(txn, "urldocumentdb", MDB_CREATE, &m_dbi);
-    Q_ASSERT(rc == 0);
+    Q_ASSERT_X(rc == 0, "UrlDocumentDB", mdb_strerror(rc));
 }
 
 UrlDocumentDB::~UrlDocumentDB()
@@ -52,7 +52,7 @@ void UrlDocumentDB::put(const QByteArray& url, uint docId)
     val.mv_data = &docId;
 
     int rc = mdb_put(m_txn, m_dbi, &key, &val, 0);
-    Q_ASSERT(rc == 0);
+    Q_ASSERT_X(rc == 0, "UrlDocumentDB::put", mdb_strerror(rc));
 }
 
 uint UrlDocumentDB::get(const QByteArray& url)
@@ -68,7 +68,7 @@ uint UrlDocumentDB::get(const QByteArray& url)
     if (rc == MDB_NOTFOUND) {
         return 0;
     }
-    Q_ASSERT(rc == 0);
+    Q_ASSERT_X(rc == 0, "UrlDocumentDB::get", mdb_strerror(rc));
 
     return *static_cast<int*>(val.mv_data);
 }
@@ -82,6 +82,6 @@ void UrlDocumentDB::del(const QByteArray& url)
     key.mv_data = static_cast<void*>(const_cast<char*>(url.constData()));
 
     int rc = mdb_del(m_txn, m_dbi, &key, 0);
-    Q_ASSERT(rc == 0);
+    Q_ASSERT_X(rc == 0, "UrlDocumentDB::del", mdb_strerror(rc));
 }
 

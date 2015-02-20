@@ -30,7 +30,7 @@ DocumentDB::DocumentDB(MDB_txn* txn)
     Q_ASSERT(txn != 0);
 
     int rc = mdb_dbi_open(txn, "documentdb", MDB_CREATE | MDB_INTEGERKEY, &m_dbi);
-    Q_ASSERT(rc == 0);
+    Q_ASSERT_X(rc == 0, "DocumentDB", mdb_strerror(rc));
 }
 
 DocumentDB::~DocumentDB()
@@ -41,6 +41,7 @@ DocumentDB::~DocumentDB()
 void DocumentDB::put(uint docId, const QVector<QByteArray>& list)
 {
     Q_ASSERT(docId > 0);
+    Q_ASSERT(!list.isEmpty());
 
     MDB_val key;
     key.mv_size = sizeof(uint);
@@ -59,7 +60,7 @@ void DocumentDB::put(uint docId, const QVector<QByteArray>& list)
     val.mv_data = static_cast<void*>(full.data());
 
     int rc = mdb_put(m_txn, m_dbi, &key, &val, 0);
-    Q_ASSERT(rc == 0);
+    Q_ASSERT_X(rc == 0, "DocumentDB::put", mdb_strerror(rc));
 }
 
 QVector<QByteArray> DocumentDB::get(uint docId)
@@ -75,7 +76,7 @@ QVector<QByteArray> DocumentDB::get(uint docId)
     if (rc == MDB_NOTFOUND) {
         return QVector<QByteArray>();
     }
-    Q_ASSERT(rc == 0);
+    Q_ASSERT_X(rc == 0, "DocumentDB::get", mdb_strerror(rc));
 
     QVector<QByteArray> list;
     QByteArray full = QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size);
@@ -104,7 +105,7 @@ void DocumentDB::del(uint docId)
     key.mv_data = static_cast<void*>(&docId);
 
     int rc = mdb_del(m_txn, m_dbi, &key, 0);
-    Q_ASSERT(rc == 0);
+    Q_ASSERT_X(rc == 0, "DocumentDB::del", mdb_strerror(rc));
 }
 
 bool DocumentDB::contains(uint docId)
@@ -121,7 +122,7 @@ bool DocumentDB::contains(uint docId)
     if (rc == MDB_NOTFOUND) {
         return false;
     }
-    Q_ASSERT(rc == 0);
+    Q_ASSERT_X(rc == 0, "DocumentDB::contains", mdb_strerror(rc));
 
     return true;
 }

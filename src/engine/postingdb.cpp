@@ -30,7 +30,7 @@ PostingDB::PostingDB(MDB_txn* txn)
     Q_ASSERT(txn != 0);
 
     int rc = mdb_dbi_open(txn, "postingdb", MDB_CREATE, &m_dbi);
-    Q_ASSERT(rc == 0);
+    Q_ASSERT_X(rc == 0, "PostingDB", mdb_strerror(rc));
 }
 
 PostingDB::~PostingDB()
@@ -40,6 +40,9 @@ PostingDB::~PostingDB()
 
 void PostingDB::put(const QByteArray& term, const PostingList& list)
 {
+    Q_ASSERT(!term.isEmpty());
+    Q_ASSERT(!list.isEmpty());
+
     MDB_val key;
     key.mv_size = term.size();
     key.mv_data = static_cast<void*>(const_cast<char*>(term.constData()));
@@ -49,11 +52,13 @@ void PostingDB::put(const QByteArray& term, const PostingList& list)
     val.mv_data = static_cast<void*>(const_cast<int*>(list.constData()));
 
     int rc = mdb_put(m_txn, m_dbi, &key, &val, 0);
-    Q_ASSERT(rc == 0);
+    Q_ASSERT_X(rc == 0, "PostingDB::put", mdb_strerror(rc));
 }
 
 PostingList PostingDB::get(const QByteArray& term)
 {
+    Q_ASSERT(!term.isEmpty());
+
     MDB_val key;
     key.mv_size = term.size();
     key.mv_data = static_cast<void*>(const_cast<char*>(term.constData()));
@@ -63,8 +68,7 @@ PostingList PostingDB::get(const QByteArray& term)
     if (rc == MDB_NOTFOUND) {
         return PostingList();
     }
-    Q_ASSERT(rc == 0);
-
+    Q_ASSERT_X(rc == 0, "PostingDB::get", mdb_strerror(rc));
 
     PostingList list;
     list.reserve(val.mv_size);
@@ -86,7 +90,7 @@ DBPostingIterator* PostingDB::iter(const QByteArray& term)
     if (rc == MDB_NOTFOUND) {
         return 0;
     }
-    Q_ASSERT(rc == 0);
+    Q_ASSERT_X(rc == 0, "PostingDB::iter", mdb_strerror(rc));
 
     return new DBPostingIterator(val.mv_data, val.mv_size);
 }
