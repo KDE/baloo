@@ -71,7 +71,7 @@ private:
     UrlDocumentDB* m_urlDocDB;
 
     DocumentValueDB* m_docValueDB;
-    IndexingLevelDB* m_indexingLevelDB;
+    IndexingLevelDB* m_contentIndexingDB;
 
     MDB_env* m_env;
     MDB_txn* m_txn;

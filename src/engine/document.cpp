@@ -24,7 +24,7 @@ using namespace Baloo;
 
 Document::Document()
     : m_id(0)
-    , m_indexingLevel(0)
+    , m_contentIndexing(false)
 {
 }
 
@@ -66,14 +66,14 @@ QByteArray Document::url() const
     return m_url;
 }
 
-int Document::indexingLevel() const
+bool Document::contentIndexing() const
 {
-    return m_indexingLevel;
+    return m_contentIndexing;
 }
 
-void Document::setIndexingLevel(int level)
+void Document::setContentIndexing(bool val)
 {
-    m_indexingLevel = level;
+    m_contentIndexing = val;
 }
 
 void Document::addValue(int slotNum, const QByteArray& arr)

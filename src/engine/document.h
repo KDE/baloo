@@ -55,11 +55,11 @@ public:
     void setUrl(const QByteArray& url);
 
     /**
-     * Setting the level to 0 indicates that you do not want the level
-     * to be stored
+     * This flag is used to signify if the file needs its contents to be indexed.
+     * It defaults to false
      */
-    void setIndexingLevel(int level);
-    int indexingLevel() const;
+    void setContentIndexing(bool val);
+    bool contentIndexing() const;
 
     void addValue(int slotNum, const QByteArray& arr);
 
@@ -75,7 +75,7 @@ private:
     QMap<QByteArray, TermData> m_terms;
 
     QByteArray m_url;
-    int m_indexingLevel;
+    bool m_contentIndexing;
 
     QMap<uint, QByteArray> m_slots;
 
@@ -83,7 +83,7 @@ private:
 };
 
 inline QDebug operator<<(QDebug dbg, const Document &doc) {
-    dbg << doc.id() << doc.url() << doc.indexingLevel();
+    dbg << doc.id() << doc.url();
     return dbg;
 }
 

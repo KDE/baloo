@@ -60,7 +60,7 @@ Database::Database(const QString& path)
     m_docUrlDB = new DocumentUrlDB(m_txn);
     m_urlDocDB = new UrlDocumentDB(m_txn);
     m_docValueDB = new DocumentValueDB(m_txn);
-    m_indexingLevelDB = new IndexingLevelDB(m_txn);
+    m_contentIndexingDB = new IndexingLevelDB(m_txn);
 }
 
 Database::~Database()
@@ -71,7 +71,7 @@ Database::~Database()
     delete m_docUrlDB;
     delete m_urlDocDB;
     delete m_docValueDB;
-    delete m_indexingLevelDB;
+    delete m_contentIndexingDB;
 
     mdb_txn_commit(m_txn);
     mdb_env_close(m_env);
@@ -166,8 +166,8 @@ void Database::commit()
                 m_urlDocDB->put(doc.url(), id);
             }
 
-            if (doc.indexingLevel()) {
-                m_indexingLevelDB->put(doc.id());
+            if (doc.contentIndexing()) {
+                m_contentIndexingDB->put(doc.id());
             }
             if (!doc.m_slots.isEmpty()) {
                 for (auto it = doc.m_slots.constBegin(); it != doc.m_slots.constEnd(); it++) {
@@ -198,7 +198,7 @@ void Database::commit()
             m_docUrlDB->del(id);
             m_urlDocDB->del(url);
 
-            m_indexingLevelDB->del(id);
+            m_contentIndexingDB->del(id);
             m_docValueDB->del(id);
         }
     }
@@ -282,5 +282,5 @@ QVector<int> Database::exec(const QVector<QByteArray>& query)
 
 QVector<uint> Database::fetchIndexingLevel(int size)
 {
-    return m_indexingLevelDB->fetchItems(size);
+    return m_contentIndexingDB->fetchItems(size);
 }
