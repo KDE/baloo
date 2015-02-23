@@ -25,8 +25,6 @@
 #include <QStringList>
 #include <QDBusConnection>
 
-#include <QDebug>
-
 using namespace Baloo;
 
 class FileMonitor::Private {

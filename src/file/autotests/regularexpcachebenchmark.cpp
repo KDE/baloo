@@ -24,7 +24,6 @@
 #include <QTest>
 #include <QDir>
 #include <QDirIterator>
-#include <QDebug>
 
 class RegularExpCacheBenchmark : public QObject
 {

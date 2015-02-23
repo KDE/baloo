@@ -25,7 +25,6 @@
 #include <qtest.h>
 #include <qsignalspy.h>
 #include <qtimer.h>
-#include <QDebug>
 
 using namespace Baloo;
 

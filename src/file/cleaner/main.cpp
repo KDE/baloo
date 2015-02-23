@@ -30,8 +30,8 @@
 #include <QCoreApplication>
 #include <QCommandLineParser>
 #include <QDBusConnection>
-#include <QDebug>
 #include <QDir>
+#include <QDebug>
 
 int main(int argc, char* argv[])
 {

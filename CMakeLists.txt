@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.12)
 
 project(Baloo)
-set(PROJECT_VERSION "5.1.90")
+set(PROJECT_VERSION "5.6.90")
 
 # ECM setup
 find_package(ECM 1.2.0 REQUIRED NO_MODULE)

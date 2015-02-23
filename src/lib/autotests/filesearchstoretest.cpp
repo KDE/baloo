@@ -27,7 +27,6 @@
 #include "query.h"
 #include "term.h"
 
-#include <QDebug>
 #include <QtTest>
 
 #include <xapian.h>

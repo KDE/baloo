@@ -21,6 +21,7 @@
 #include "query.h"
 
 #include <QMimeDatabase>
+#include <QUrl>
 
 Query::Query(QObject *parent)
     : QObject(parent)

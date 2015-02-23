@@ -25,8 +25,6 @@
 
 #include <QtTest>
 
-#include <QDebug>
-
 using namespace Baloo;
 
 // Test a simple query with no terms

@@ -22,7 +22,7 @@
 
 #include <QTextBoundaryFinder>
 #include <QStringList>
-#include <QDebug>
+#include <QVector>
 
 using namespace Baloo;
 

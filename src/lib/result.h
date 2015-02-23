@@ -25,7 +25,6 @@
 
 #include <QString>
 #include <QByteArray>
-#include <QUrl>
 
 #include "core_export.h"
 
@@ -42,8 +41,7 @@ public:
     void setId(const QByteArray& id);
 
     /**
-     * Represents the url of the item returned. The item
-     * may not always contain a url
+     * Represents the file path of the item returned.
      */
     QString filePath() const;
     void setFilePath(const QString& filePath);

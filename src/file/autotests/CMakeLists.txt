@@ -14,10 +14,9 @@
 # Metadata Mover
 #
 
-#set(metadatamover_SRC
-#    metadatamovertest.cpp
-#    ../metadatamover.cpp
-#)
+set(metadatamover_SRC
+    metadatamovertest.cpp
+)
 
 #ecm_add_test(${metadatamover_SRC}
 #    TEST_NAME "metadatamovertest"

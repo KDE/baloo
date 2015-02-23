@@ -22,7 +22,7 @@
 #include "document.h"
 
 #include <QTextBoundaryFinder>
-#include <QDebug>
+#include <QStringList>
 
 using namespace Baloo;
 

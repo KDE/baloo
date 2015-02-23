@@ -25,7 +25,6 @@
 
 #include "core_export.h"
 
-#include <QUrl>
 #include <QExplicitlySharedDataPointer>
 
 namespace Baloo {

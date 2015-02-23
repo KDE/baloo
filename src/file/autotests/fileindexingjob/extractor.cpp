@@ -23,7 +23,6 @@
 #include <QCoreApplication>
 #include <QCommandLineParser>
 #include <QTextStream>
-#include <QDebug>
 
 #include <signal.h>
 #include <iostream>

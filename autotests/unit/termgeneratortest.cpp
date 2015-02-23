@@ -22,7 +22,6 @@
 #include "document.h"
 
 #include <QTest>
-#include <QDebug>
 #include <QTemporaryDir>
 
 using namespace Baloo;

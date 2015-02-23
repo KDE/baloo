@@ -25,7 +25,6 @@
 
 #include <QTemporaryDir>
 #include <QTest>
-#include <QDebug>
 
 class FilteredDirIteratorTest : public QObject
 {

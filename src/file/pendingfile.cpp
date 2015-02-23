@@ -41,6 +41,9 @@ QString PendingFile::path() const
 void PendingFile::setPath(const QString& path)
 {
     m_path = path;
+    if (m_path.endsWith('/')) {
+        m_path = m_path.mid(0, m_path.length() - 1);
+    }
 }
 
 bool PendingFile::shouldIndexContents() const

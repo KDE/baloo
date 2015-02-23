@@ -63,7 +63,7 @@ KIO::UDSEntry createUDSEntryForTag(const QString& tag)
     uds.insert(KIO::UDSEntry::UDS_DISPLAY_TYPE, i18n("Tag"));
     uds.insert(KIO::UDSEntry::UDS_ACCESS, 0700);
     uds.insert(KIO::UDSEntry::UDS_USER, KUser().loginName());
-    uds.insert(KIO::UDSEntry::UDS_ICON_NAME, QLatin1String("feed-subscribe"));
+    uds.insert(KIO::UDSEntry::UDS_ICON_NAME, QLatin1String("tag"));
 
     return uds;
 }
@@ -158,7 +158,7 @@ void TagsProtocol::stat(const QUrl& url)
         uds.insert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
         uds.insert(KIO::UDSEntry::UDS_MIME_TYPE, QString::fromLatin1("inode/directory"));
 
-        uds.insert(KIO::UDSEntry::UDS_ICON_OVERLAY_NAMES, QLatin1String("feed-subscribe"));
+        uds.insert(KIO::UDSEntry::UDS_ICON_OVERLAY_NAMES, QLatin1String("tag"));
         uds.insert(KIO::UDSEntry::UDS_DISPLAY_TYPE, i18n("Tag"));
 
         uds.insert(KIO::UDSEntry::UDS_NAME, QLatin1String("."));
