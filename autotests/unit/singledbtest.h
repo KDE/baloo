@@ -1,5 +1,4 @@
 /*
-   This file is part of the KDE Baloo project.
  * Copyright (C) 2015  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
@@ -18,29 +17,43 @@
  *
  */
 
-#include "postingdb.h"
-#include "singledbtest.h"
+#ifndef _BALOO_SINGLEDBTEST_H
+#define _BALOO_SINGLEDBTEST_H
 
-using namespace Baloo;
+#include <QObject>
+#include <QTemporaryDir>
+#include <QTest>
 
-class PostingDBTest : public SingleDBTest
+#include <lmdb.h>
+
+class SingleDBTest : public QObject
 {
     Q_OBJECT
 private Q_SLOTS:
-    void test();
+    void init()
+    {
+        m_tempDir = new QTemporaryDir();
+
+        mdb_env_create(&m_env);
+        mdb_env_set_maxdbs(m_env, 1);
+
+        // The directory needs to be created before opening the environment
+        QByteArray path = QFile::encodeName(m_tempDir->path());
+        mdb_env_open(m_env, path.constData(), 0, 0664);
+        mdb_txn_begin(m_env, NULL, 0, &m_txn);
+    }
+
+    void cleanup()
+    {
+        mdb_txn_abort(m_txn);
+        mdb_env_close(m_env);
+        delete m_tempDir;
+    }
+
+protected:
+    MDB_env* m_env;
+    MDB_txn* m_txn;
+    QTemporaryDir* m_tempDir;
 };
 
-void PostingDBTest::test()
-{
-    PostingDB db(m_txn);
-
-    QByteArray word("fire");
-    PostingList list = {1, 5, 6};
-
-    db.put(word, list);
-    QCOMPARE(db.get(word), list);
-}
-
-QTEST_MAIN(PostingDBTest)
-
-#include "postingdbtest.moc"
+#endif // SINGLEDBTEST_H

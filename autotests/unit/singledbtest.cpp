@@ -18,29 +18,4 @@
  *
  */
 
-#include "postingdb.h"
 #include "singledbtest.h"
-
-using namespace Baloo;
-
-class PostingDBTest : public SingleDBTest
-{
-    Q_OBJECT
-private Q_SLOTS:
-    void test();
-};
-
-void PostingDBTest::test()
-{
-    PostingDB db(m_txn);
-
-    QByteArray word("fire");
-    PostingList list = {1, 5, 6};
-
-    db.put(word, list);
-    QCOMPARE(db.get(word), list);
-}
-
-QTEST_MAIN(PostingDBTest)
-
-#include "postingdbtest.moc"
