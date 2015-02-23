@@ -63,6 +63,9 @@ public:
 
     void addValue(int slotNum, const QByteArray& arr);
 
+    // FIXME: Save the document data in the db
+    void setData(const QByteArray& data);
+
 private:
     uint m_id;
 
@@ -78,6 +81,7 @@ private:
     bool m_contentIndexing;
 
     QMap<uint, QByteArray> m_slots;
+    QByteArray m_data;
 
     friend class Database;
 };

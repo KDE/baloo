@@ -30,7 +30,7 @@
 #include <KFileMetaData/ExtractorCollection>
 
 #include "result.h"
-#include "../database.h"
+#include "database.h"
 #include "../fileindexerconfig.h"
 #include "filemapping.h"
 

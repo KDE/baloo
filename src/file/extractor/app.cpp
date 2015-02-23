@@ -1,6 +1,6 @@
 /*
  * This file is part of the KDE Baloo Project
- * Copyright (C) 2013-2014  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2013-2015  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,8 +22,6 @@
 
 #include "app.h"
 #include "../basicindexingjob.h"
-#include "../database.h"
-#include "xapiandatabase.h"
 #include "../tests/util.h"
 
 #include <QDebug>
@@ -46,14 +44,10 @@ App::App(const QString& path, QObject* parent)
     , m_debugEnabled(false)
     , m_ignoreConfig(false)
     , m_path(path)
+    , m_db(path)
     , m_termCount(0)
 {
-    m_db.setPath(m_path);
-    if (!m_db.init()) {
-        QTimer::singleShot(0, QCoreApplication::instance(), SLOT(quit()));
-        return;
-    }
-
+    // FIXME: What if DB initialization fails?
     connect(this, &App::saved, this, &App::processNextUrl, Qt::QueuedConnection);
 }
 
@@ -65,7 +59,8 @@ void App::startProcessing(const QStringList& args)
         QString url;
 
         // arg is an id
-        if (mapping.fetch(m_db.xapianDatabase()->db())) {
+        // FIXME: Maybe we can use QFileInfo instead of checking with the db?
+        if (mapping.fetch(&m_db)) {
             url = mapping.url();
             if (!QFile::exists(url)) {
                 m_docsToDelete << mapping.id();
@@ -113,7 +108,7 @@ void App::processNextUrl()
             qDebug() << url << "should not be indexed. Ignoring";
 
             FileMapping mapping(url);
-            mapping.fetch(m_db.xapianDatabase()->db());
+            mapping.fetch(&m_db);
             m_docsToDelete << mapping.id();
 
             QTimer::singleShot(0, this, SLOT(processNextUrl()));
@@ -144,19 +139,19 @@ void App::processNextUrl()
 
     // FIXME: DOuble fetchign!! Not good.
     FileMapping file(url);
-    file.fetch(m_db.xapianDatabase()->db());
+    file.fetch(&m_db);
 
     // We always run the basic indexing again. This is mostly so that the proper
     // mimetype is set and we get proper type information.
     // The mimetype fetched in the BasicIQ is fast but not accurate
-    BasicIndexingJob basicIndexer(file, mimetype, true /*Indexing Level 2*/);
+    BasicIndexingJob basicIndexer(url, mimetype, true /*Indexing Level 2*/);
     basicIndexer.index();
 
-    file.setId(basicIndexer.id());
-    Xapian::Document doc = basicIndexer.document();
+    // FIXME: What if we do not have an ID?
+    Baloo::Document doc = basicIndexer.document();
+    doc.setId(file.id());
 
     Result result(url, mimetype, KFileMetaData::ExtractionResult::ExtractEverything);
-    result.setId(file.id());
     result.setDocument(doc);
 
     QList<KFileMetaData::Extractor*> exList = m_extractorCollection.fetchExtractors(mimetype);
@@ -165,6 +160,9 @@ void App::processNextUrl()
         ex->extract(&result);
     }
     m_results << result;
+
+    /*
+     * FIXME: What if our term list becomes too high?
     m_termCount += result.document().termlist_count();
 
     // Documents with these many terms occupy about 10 mb
@@ -172,6 +170,7 @@ void App::processNextUrl()
         saveChanges();
         return;
     }
+    */
 
     if (m_urls.isEmpty()) {
         saveChanges();
@@ -187,24 +186,20 @@ void App::saveChanges()
 
     m_updatedFiles.clear();
 
-    XapianDatabase xapDb(m_path);
     for (int i = 0; i<m_results.size(); ++i) {
         Result& res = m_results[i];
         res.finish();
 
-        if (res.id())
-            xapDb.replaceDocument(res.id(), res.document());
-        else
-            xapDb.addDocument(res.document());
+        m_db.addDocument(res.document());
         m_updatedFiles << res.inputUrl();
     }
 
     Q_FOREACH (int docid, m_docsToDelete) {
-        xapDb.deleteDocument(docid);
+        m_db.removeDocument(docid);
     }
     m_docsToDelete.clear();
 
-    xapDb.commit();
+    m_db.commit();
 
     QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/files"),
                                                       QLatin1String("org.kde"),

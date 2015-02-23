@@ -1,6 +1,6 @@
 /*
  * This file is part of the KDE Baloo Project
- * Copyright (C) 2013  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2013-2015  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -70,19 +70,19 @@ void Result::add(KFileMetaData::Property::Property property, const QVariant& val
     QString prefix = QLatin1Char('X') + p;
 
     if (value.type() == QVariant::Bool) {
-        m_doc.add_boolean_term(prefix.toUtf8().constData());
+        m_doc.addBoolTerm(prefix.toUtf8());
     }
     else if (value.type() == QVariant::Int) {
         const QString term = prefix + value.toString();
-        m_doc.add_term(term.toUtf8().constData());
+        m_doc.addBoolTerm(term.toUtf8());
     }
     else if (value.type() == QVariant::Date) {
         const QString term = prefix + value.toDate().toString(Qt::ISODate);
-        m_doc.add_term(term.toUtf8().constData());
+        m_doc.addBoolTerm(term.toUtf8());
     }
     else if (value.type() == QVariant::DateTime) {
         const QString term = prefix + value.toDateTime().toString(Qt::ISODate);
-        m_doc.add_term(term.toUtf8().constData());
+        m_doc.addBoolTerm(term.toUtf8());
     }
     else {
         const QString val = value.toString();
@@ -105,7 +105,7 @@ void Result::addType(KFileMetaData::Type::Type type)
 {
     KFileMetaData::TypeInfo ti(type);
     const QString t = QLatin1Char('T') + ti.name().toLower();
-    m_doc.add_boolean_term(t.toUtf8().constData());
+    m_doc.addBoolTerm(t.toUtf8());
 }
 
 void Result::finish()
@@ -113,10 +113,10 @@ void Result::finish()
     QJsonObject jo = QJsonObject::fromVariantMap(m_map);
     QJsonDocument jdoc;
     jdoc.setObject(jo);
-    m_doc.set_data(jdoc.toJson().constData());
+    m_doc.setData(jdoc.toJson());
 }
 
-void Result::setDocument(const Xapian::Document& doc)
+void Result::setDocument(const Baloo::Document& doc)
 {
     m_doc = doc;
     // All document metadata are indexed from position 1000
@@ -127,11 +127,6 @@ void Result::setDocument(const Xapian::Document& doc)
     // clashes with the term positions
     m_termGenForText.setDocument(&m_doc);
     m_termGenForText.setPosition(10000);
-}
-
-void Result::setId(uint id)
-{
-    m_docId = id;
 }
 
 uint Result::id() const

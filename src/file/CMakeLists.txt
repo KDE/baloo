@@ -84,6 +84,6 @@ target_link_libraries(baloofilecommon
 #
 add_subdirectory(autotest)
 add_subdirectory(tests)
-#add_subdirectory(extractor)
+add_subdirectory(extractor)
 #add_subdirectory(inotify)
 #add_subdirectory(cleaner)

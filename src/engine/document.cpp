@@ -80,3 +80,8 @@ void Document::addValue(int slotNum, const QByteArray& arr)
 {
     m_slots[slotNum] = arr;
 }
+
+void Document::setData(const QByteArray& data)
+{
+    m_data = data;
+}
