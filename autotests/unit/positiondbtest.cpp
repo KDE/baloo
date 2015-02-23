@@ -19,13 +19,11 @@
  */
 
 #include "positiondb.h"
-
-#include <QTest>
-#include <QTemporaryDir>
+#include "singledbtest.h"
 
 using namespace Baloo;
 
-class PositionDBTest : public QObject
+class PositionDBTest : public SingleDBTest
 {
     Q_OBJECT
 private Q_SLOTS:
@@ -34,40 +32,22 @@ private Q_SLOTS:
 
 void PositionDBTest::test()
 {
-    QTemporaryDir dir;
+    PositionDB db(m_txn);
 
-    MDB_env* env;
-    MDB_txn* txn;
+    QByteArray word("fire");
+    PositionInfo pos1;
+    pos1.docId = 1;
+    pos1.positions = QVector<uint>() << 1 << 5 << 6;
 
-    mdb_env_create(&env);
-    mdb_env_set_maxdbs(env, 1);
+    PositionInfo pos2;
+    pos2.docId = 5;
+    pos2.positions = QVector<uint>() << 41 << 96 << 116;
 
-    // The directory needs to be created before opening the environment
-    QByteArray path = QFile::encodeName(dir.path());
-    mdb_env_open(env, path.constData(), 0, 0664);
-    mdb_txn_begin(env, NULL, 0, &txn);
+    QVector<PositionInfo> list = {pos1, pos2};
 
-    {
-        PositionDB db(txn);
-
-        QByteArray word("fire");
-        PositionInfo pos1;
-        pos1.docId = 1;
-        pos1.positions = QVector<uint>() << 1 << 5 << 6;
-
-        PositionInfo pos2;
-        pos2.docId = 5;
-        pos2.positions = QVector<uint>() << 41 << 96 << 116;
-
-        QVector<PositionInfo> list = {pos1, pos2};
-
-        db.put(word, list);
-        QVector<PositionInfo> res = db.get(word);
-        QCOMPARE(res, list);
-    }
-
-    mdb_txn_abort(txn);
-    mdb_env_close(env);
+    db.put(word, list);
+    QVector<PositionInfo> res = db.get(word);
+    QCOMPARE(res, list);
 }
 
 QTEST_MAIN(PositionDBTest)

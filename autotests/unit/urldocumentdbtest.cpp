@@ -19,13 +19,11 @@
  */
 
 #include "urldocumentdb.h"
-
-#include <QTest>
-#include <QTemporaryDir>
+#include "singledbtest.h"
 
 using namespace Baloo;
 
-class UrlDocumentDBTest : public QObject
+class UrlDocumentDBTest : public SingleDBTest
 {
     Q_OBJECT
 private Q_SLOTS:
@@ -34,34 +32,15 @@ private Q_SLOTS:
 
 void UrlDocumentDBTest::test()
 {
-    QTemporaryDir dir;
+    UrlDocumentDB db(m_txn);
 
-    MDB_env* env;
-    MDB_txn* txn;
-    char sval[32];
+    QByteArray arr = "/home/blah";
+    db.put(arr, 1);
 
-    mdb_env_create(&env);
-    mdb_env_set_maxdbs(env, 1);
+    QCOMPARE(db.get(arr), static_cast<uint>(1));
 
-    // The directory needs to be created before opening the environment
-    QByteArray path = QFile::encodeName(dir.path());
-    mdb_env_open(env, path.constData(), 0, 0664);
-    mdb_txn_begin(env, NULL, 0, &txn);
-
-    {
-        UrlDocumentDB db(txn);
-
-        QByteArray arr = "/home/blah";
-        db.put(arr, 1);
-
-        QCOMPARE(db.get(arr), static_cast<uint>(1));
-
-        db.del(arr);
-        QCOMPARE(db.get(arr), static_cast<uint>(0));
-    }
-
-    mdb_txn_abort(txn);
-    mdb_env_close(env);
+    db.del(arr);
+    QCOMPARE(db.get(arr), static_cast<uint>(0));
 }
 
 QTEST_MAIN(UrlDocumentDBTest)

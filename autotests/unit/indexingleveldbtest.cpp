@@ -19,13 +19,11 @@
  */
 
 #include "indexingleveldb.h"
-
-#include <QTest>
-#include <QTemporaryDir>
+#include "singledbtest.h"
 
 using namespace Baloo;
 
-class IndexingLevelDBTest : public QObject
+class IndexingLevelDBTest : public SingleDBTest
 {
     Q_OBJECT
 private Q_SLOTS:
@@ -35,65 +33,28 @@ private Q_SLOTS:
 
 void IndexingLevelDBTest::test()
 {
-    QTemporaryDir dir;
+    IndexingLevelDB db(m_txn);
 
-    MDB_env* env;
-    MDB_txn* txn;
+    QCOMPARE(db.contains(1), false);
+    db.put(1);
+    QCOMPARE(db.contains(1), true);
 
-    mdb_env_create(&env);
-    mdb_env_set_maxdbs(env, 1);
-
-    // The directory needs to be created before opening the environment
-    QByteArray path = QFile::encodeName(dir.path());
-    mdb_env_open(env, path.constData(), 0, 0664);
-    mdb_txn_begin(env, NULL, 0, &txn);
-
-    {
-        IndexingLevelDB db(txn);
-
-        QCOMPARE(db.contains(1), false);
-        db.put(1);
-        QCOMPARE(db.contains(1), true);
-
-        db.del(1);
-        QCOMPARE(db.contains(1), false);
-    }
-
-    mdb_txn_abort(txn);
-    mdb_env_close(env);
+    db.del(1);
+    QCOMPARE(db.contains(1), false);
 }
 
 void IndexingLevelDBTest::testFetchItems()
 {
-    QTemporaryDir dir;
+    IndexingLevelDB db(m_txn);
 
-    MDB_env* env;
-    MDB_txn* txn;
+    db.put(1);
+    db.put(6);
+    db.put(8);
 
-    mdb_env_create(&env);
-    mdb_env_set_maxdbs(env, 1);
+    QVector<uint> acVec = db.fetchItems(10);
+    QVector<uint> exVec = {1, 6, 8};
 
-    // The directory needs to be created before opening the environment
-    QByteArray path = QFile::encodeName(dir.path());
-    mdb_env_open(env, path.constData(), 0, 0664);
-    mdb_txn_begin(env, NULL, 0, &txn);
-
-    {
-        IndexingLevelDB db(txn);
-
-        db.put(1);
-        db.put(6);
-        db.put(8);
-
-        QVector<uint> acVec = db.fetchItems(10);
-        QVector<uint> exVec = {1, 6, 8};
-
-        QCOMPARE(acVec, exVec);
-    }
-
-    mdb_txn_abort(txn);
-    mdb_env_close(env);
-
+    QCOMPARE(acVec, exVec);
 }
 
 QTEST_MAIN(IndexingLevelDBTest)

@@ -19,13 +19,11 @@
  */
 
 #include "documentdb.h"
-
-#include <QTest>
-#include <QTemporaryDir>
+#include "singledbtest.h"
 
 using namespace Baloo;
 
-class DocumentDBTest : public QObject
+class DocumentDBTest : public SingleDBTest
 {
     Q_OBJECT
 private Q_SLOTS:
@@ -34,31 +32,12 @@ private Q_SLOTS:
 
 void DocumentDBTest::test()
 {
-    QTemporaryDir dir;
+    DocumentDB db(m_txn);
 
-    MDB_env* env;
-    MDB_txn* txn;
-    char sval[32];
+    QVector<QByteArray> list = {"a", "aab", "abc"};
+    db.put(1, list);
 
-    mdb_env_create(&env);
-    mdb_env_set_maxdbs(env, 1);
-
-    // The directory needs to be created before opening the environment
-    QByteArray path = QFile::encodeName(dir.path());
-    mdb_env_open(env, path.constData(), 0, 0664);
-    mdb_txn_begin(env, NULL, 0, &txn);
-
-    {
-        DocumentDB db(txn);
-
-        QVector<QByteArray> list = {"a", "aab", "abc"};
-        db.put(1, list);
-
-        QCOMPARE(db.get(1), list);
-    }
-
-    mdb_txn_abort(txn);
-    mdb_env_close(env);
+    QCOMPARE(db.get(1), list);
 }
 
 QTEST_MAIN(DocumentDBTest)
