@@ -18,7 +18,6 @@
  *
  */
 
-#include "termgeneratortest.h"
 #include "termgenerator.h"
 #include "document.h"
 
@@ -27,6 +26,21 @@
 #include <QTemporaryDir>
 
 using namespace Baloo;
+
+#include <QObject>
+
+class TermGeneratorTest : public QObject
+{
+    Q_OBJECT
+
+private Q_SLOTS:
+    void testWordBoundaries();
+    void testUnderscore_splitting();
+    void testAccetCharacters();
+    void testUnicodeCompatibleComposition();
+    void testEmails();
+    void testWordPositions();
+};
 
 namespace {
     QStringList allWords(const Document& doc)
@@ -42,6 +56,7 @@ namespace {
         return words;
     }
 }
+
 void TermGeneratorTest::testWordBoundaries()
 {
     QString str = QString::fromLatin1("The quick (\"brown\") 'fox' can't jump 32.3 feet, right? No-Wrong;xx.txt");
@@ -162,3 +177,4 @@ void TermGeneratorTest::testWordPositions()
 
 QTEST_MAIN(TermGeneratorTest)
 
+#include "termgeneratortest.moc"
