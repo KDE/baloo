@@ -1,49 +1,20 @@
-ecm_add_test(positiondbtest.cpp
-    TEST_NAME "positiondbtest"
-    LINK_LIBRARIES Qt5::Test KF5::BalooEngine
-)
+MACRO(BALOO_ENGINE_AUTO_TESTS)
+  FOREACH(_testname ${ARGN})
+    ecm_add_test(${_testname}.cpp singledbtest.cpp
+        TEST_NAME ${_testname}
+        LINK_LIBRARIES Qt5::Test KF5::BalooEngine
+    )
+  ENDFOREACH()
+ENDMACRO()
 
-ecm_add_test(postingdbtest.cpp singledbtest.cpp
-    TEST_NAME "postingdbtest"
-    LINK_LIBRARIES Qt5::Test KF5::BalooEngine
-)
-
-ecm_add_test(documentdbtest.cpp
-    TEST_NAME "documentdbtest"
-    LINK_LIBRARIES Qt5::Test KF5::BalooEngine
-)
-
-ecm_add_test(databasetest.cpp
-    TEST_NAME "databasetest"
-    LINK_LIBRARIES Qt5::Test KF5::BalooEngine
-)
-
-ecm_add_test(andpostingiteratortest.cpp
-    TEST_NAME "andpostingiteratortest"
-    LINK_LIBRARIES Qt5::Test KF5::BalooEngine
-)
-
-ecm_add_test(documenturldbtest.cpp
-    TEST_NAME "documenturldbtest"
-    LINK_LIBRARIES Qt5::Test KF5::BalooEngine
-)
-
-ecm_add_test(urldocumentdbtest.cpp
-    TEST_NAME "urldocumentdbtest"
-    LINK_LIBRARIES Qt5::Test KF5::BalooEngine
-)
-
-ecm_add_test(indexingleveldbtest.cpp
-    TEST_NAME "indexingleveldbtest"
-    LINK_LIBRARIES Qt5::Test KF5::BalooEngine
-)
-
-ecm_add_test(termgeneratortest.cpp
-    TEST_NAME "termgeneratortest"
-    LINK_LIBRARIES Qt5::Test KF5::BalooEngine
-)
-
-ecm_add_test(documentvaluedbtest.cpp
-    TEST_NAME "documentvaluedbtest"
-    LINK_LIBRARIES Qt5::Test KF5::BalooEngine
+baloo_engine_auto_tests(
+    positiondbtest
+    postingdbtest
+    documentdbtest
+    databasetest
+    andpostingiteratortest
+    documenturldbtest
+    urldocumentdbtest
+    indexingleveldbtest
+    documentvaluedbtest
 )
