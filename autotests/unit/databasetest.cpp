@@ -51,6 +51,7 @@ void DatabaseTest::test()
     doc.addTerm("power");
 
     db.addDocument(doc);
+    db.commit();
     QCOMPARE(db.hasDocument(1), true);
     /*
     QCOMPARE(db.document(1), doc);
