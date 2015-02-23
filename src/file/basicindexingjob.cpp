@@ -81,17 +81,10 @@ bool BasicIndexingJob::index()
 
     if (fileInfo.isDir()) {
         doc.addBoolTerm(QByteArray("Tfolder"));
-
-        // This is an optimization for folders. They do not need to go through
-        // file indexing, so there are no indexers for folders
-        doc.addBoolTerm(QByteArray("Z2"));
+        // For folders we do not need to go through file indexing, so we do not set contentIndexing
     }
-    else if (m_onlyBasicIndexing) {
-        // This is to prevent indexing if option in config is set to do so
-        doc.addBoolTerm(QByteArray("Z2"));
-    }
-    else {
-        doc.addBoolTerm(QByteArray("Z1"));
+    else if (!m_onlyBasicIndexing) {
+        doc.setContentIndexing(true);
     }
 
     indexXAttr(m_filePath, doc);
