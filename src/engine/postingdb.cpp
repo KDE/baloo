@@ -49,7 +49,7 @@ void PostingDB::put(const QByteArray& term, const PostingList& list)
 
     MDB_val val;
     val.mv_size = list.size() * sizeof(int);
-    val.mv_data = static_cast<void*>(const_cast<int*>(list.constData()));
+    val.mv_data = static_cast<void*>(const_cast<uint*>(list.constData()));
 
     int rc = mdb_put(m_txn, m_dbi, &key, &val, 0);
     Q_ASSERT_X(rc == 0, "PostingDB::put", mdb_strerror(rc));

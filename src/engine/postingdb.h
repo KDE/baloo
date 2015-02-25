@@ -29,7 +29,7 @@
 
 namespace Baloo {
 
-typedef QVector<int> PostingList;
+typedef QVector<uint> PostingList;
 class DBPostingIterator;
 
 class BALOO_ENGINE_EXPORT PostingDB
@@ -45,7 +45,6 @@ public:
 
 private:
     MDB_txn* m_txn;
-
     MDB_dbi m_dbi;
 };
 

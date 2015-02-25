@@ -64,10 +64,10 @@ void DatabaseTest::test()
 
     QCOMPARE(db.m_docUrlDB->get(1), url);
     QCOMPARE(db.m_urlDocDB->get(url), static_cast<uint>(1));
-    QCOMPARE(db.m_postingDB->get("a"), QVector<int>() << 1);
-    QCOMPARE(db.m_postingDB->get("ab"), QVector<int>() << 1);
-    QCOMPARE(db.m_postingDB->get("abc"), QVector<int>() << 1);
-    QCOMPARE(db.m_postingDB->get("power"), QVector<int>() << 1);
+    QCOMPARE(db.m_postingDB->get("a"), QVector<uint>() << 1);
+    QCOMPARE(db.m_postingDB->get("ab"), QVector<uint>() << 1);
+    QCOMPARE(db.m_postingDB->get("abc"), QVector<uint>() << 1);
+    QCOMPARE(db.m_postingDB->get("power"), QVector<uint>() << 1);
 
     /*
     QCOMPARE(db.document(1), doc);
