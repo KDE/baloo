@@ -30,7 +30,6 @@
 namespace Baloo {
 
 typedef QVector<uint> PostingList;
-class DBPostingIterator;
 
 class BALOO_ENGINE_EXPORT PostingDB
 {
@@ -41,25 +40,13 @@ public:
     void put(const QByteArray& term, const PostingList& list);
     PostingList get(const QByteArray& term);
 
-    DBPostingIterator* iter(const QByteArray& term);
+    PostingIterator* iter(const QByteArray& term);
 
 private:
     MDB_txn* m_txn;
     MDB_dbi m_dbi;
 };
 
-
-class DBPostingIterator : public PostingIterator {
-public:
-    DBPostingIterator(void* data, uint size);
-    virtual uint docId();
-    virtual uint next();
-
-private:
-    void* m_data;
-    uint m_size;
-    int m_pos;
-};
 
 }
 

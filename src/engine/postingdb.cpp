@@ -79,7 +79,19 @@ PostingList PostingDB::get(const QByteArray& term)
     return list;
 }
 
-DBPostingIterator* PostingDB::iter(const QByteArray& term)
+class DBPostingIterator : public PostingIterator {
+public:
+    DBPostingIterator(void* data, uint size);
+    virtual uint docId();
+    virtual uint next();
+
+private:
+    void* m_data;
+    uint m_size;
+    int m_pos;
+};
+
+PostingIterator* PostingDB::iter(const QByteArray& term)
 {
     MDB_val key;
     key.mv_size = term.size();
@@ -94,7 +106,6 @@ DBPostingIterator* PostingDB::iter(const QByteArray& term)
 
     return new DBPostingIterator(val.mv_data, val.mv_size);
 }
-
 
 //
 // Posting Iterator
