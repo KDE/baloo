@@ -36,6 +36,8 @@ class DocumentValueDB;
 class UrlDocumentDB;
 class IndexingLevelDB;
 
+class DatabaseTest;
+
 class BALOO_ENGINE_EXPORT Database
 {
 public:
@@ -90,6 +92,8 @@ private:
     };
 
     QVector<Operation> m_pendingOperations;
+
+    friend class DatabaseTest;
 };
 }
 

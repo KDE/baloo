@@ -25,11 +25,11 @@
 #include "urldocumentdb.h"
 #include "indexingleveldb.h"
 #include "positiondb.h"
+#include "documentvaluedb.h"
 
 #include "document.h"
 
 #include "andpostingiterator.h"
-#include "documentvaluedb.h"
 
 #include <QFile>
 #include <QFileInfo>

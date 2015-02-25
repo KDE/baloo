@@ -21,12 +21,20 @@
 #include "database.h"
 #include "document.h"
 
+#include "postingdb.h"
+#include "documentdb.h"
+#include "documenturldb.h"
+#include "urldocumentdb.h"
+#include "indexingleveldb.h"
+#include "positiondb.h"
+#include "documentvaluedb.h"
+
 #include <QTest>
 #include <QTemporaryDir>
 
 using namespace Baloo;
 
-class DatabaseTest : public QObject
+class Baloo::DatabaseTest : public QObject
 {
     Q_OBJECT
 private Q_SLOTS:
@@ -53,6 +61,14 @@ void DatabaseTest::test()
     db.addDocument(doc);
     db.commit();
     QCOMPARE(db.hasDocument(1), true);
+
+    QCOMPARE(db.m_docUrlDB->get(1), url);
+    QCOMPARE(db.m_urlDocDB->get(url), static_cast<uint>(1));
+    QCOMPARE(db.m_postingDB->get("a"), QVector<int>() << 1);
+    QCOMPARE(db.m_postingDB->get("ab"), QVector<int>() << 1);
+    QCOMPARE(db.m_postingDB->get("abc"), QVector<int>() << 1);
+    QCOMPARE(db.m_postingDB->get("power"), QVector<int>() << 1);
+
     /*
     QCOMPARE(db.document(1), doc);
 
