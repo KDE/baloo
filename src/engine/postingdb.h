@@ -41,6 +41,7 @@ public:
     PostingList get(const QByteArray& term);
 
     PostingIterator* iter(const QByteArray& term);
+    PostingIterator* prefixIter(const QByteArray& term);
 
 private:
     MDB_txn* m_txn;

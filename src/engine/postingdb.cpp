@@ -19,6 +19,7 @@
  */
 
 #include "postingdb.h"
+#include "orpostingiterator.h"
 
 #include <QDebug>
 
@@ -140,3 +141,51 @@ uint DBPostingIterator::next()
     return arr[m_pos];
 }
 
+PostingIterator* PostingDB::prefixIter(const QByteArray& term)
+{
+    MDB_val key;
+    key.mv_size = term.size();
+    key.mv_data = static_cast<void*>(const_cast<char*>(term.constData()));
+
+    MDB_cursor* cursor;
+    mdb_cursor_open(m_txn, m_dbi, &cursor);
+
+    QVector<PostingIterator*> termIterators;
+
+    MDB_val val;
+    int rc = mdb_cursor_get(cursor, &key, &val, MDB_SET_RANGE);
+    if (rc == MDB_NOTFOUND) {
+        mdb_cursor_close(cursor);
+        return 0;
+    }
+    Q_ASSERT_X(rc == 0, "PostingDB::prefixIter", mdb_strerror(rc));
+
+    const QByteArray arr = QByteArray::fromRawData(static_cast<char*>(key.mv_data), key.mv_size);
+    if (!arr.startsWith(term)) {
+        mdb_cursor_close(cursor);
+        return 0;
+    }
+    termIterators << new DBPostingIterator(val.mv_data, val.mv_size);
+
+    while (1) {
+        int rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
+        if (rc == MDB_NOTFOUND) {
+            break;
+        }
+        Q_ASSERT_X(rc == 0, "PostingDB::prefixIter", mdb_strerror(rc));
+
+        const QByteArray arr = QByteArray::fromRawData(static_cast<char*>(key.mv_data), key.mv_size);
+        if (!arr.startsWith(term)) {
+            break;
+        }
+        termIterators << new DBPostingIterator(val.mv_data, val.mv_size);
+    }
+
+    if (termIterators.isEmpty()) {
+        mdb_cursor_close(cursor);
+        return 0;
+    }
+
+    mdb_cursor_close(cursor);
+    return new OrPostingIterator(termIterators);
+}

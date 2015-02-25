@@ -26,7 +26,7 @@
 
 namespace Baloo {
 
-class BALOO_ENGINE_EXPORT OrPostingIterator : PostingIterator
+class BALOO_ENGINE_EXPORT OrPostingIterator : public PostingIterator
 {
 public:
     OrPostingIterator(QVector<PostingIterator*> iterators);

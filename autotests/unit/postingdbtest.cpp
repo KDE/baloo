@@ -27,19 +27,34 @@ class PostingDBTest : public SingleDBTest
 {
     Q_OBJECT
 private Q_SLOTS:
-    void test();
+    void test() {
+        PostingDB db(m_txn);
+
+        QByteArray word("fire");
+        PostingList list = {1, 5, 6};
+
+        db.put(word, list);
+        QCOMPARE(db.get(word), list);
+    }
+
+    void testPrefixIter() {
+        PostingDB db(m_txn);
+
+        db.put("abc", {1, 4, 5, 9, 11});
+        db.put("fir", {1, 3, 5});
+        db.put("fire", {1, 8, 9});
+        db.put("fore", {2, 3, 5});
+
+        PostingIterator* it = db.prefixIter("fi");
+        QVERIFY(it);
+
+        QVector<uint> result = {1, 3, 5, 8, 9};
+        for (uint val : result) {
+            QCOMPARE(it->next(), static_cast<uint>(val));
+            QCOMPARE(it->docId(), static_cast<uint>(val));
+        }
+    }
 };
-
-void PostingDBTest::test()
-{
-    PostingDB db(m_txn);
-
-    QByteArray word("fire");
-    PostingList list = {1, 5, 6};
-
-    db.put(word, list);
-    QCOMPARE(db.get(word), list);
-}
 
 QTEST_MAIN(PostingDBTest)
 
