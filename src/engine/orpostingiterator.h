@@ -18,18 +18,18 @@
  *
  */
 
-#ifndef BALOO_ANDPOSTINGITERATOR_H
-#define BALOO_ANDPOSTINGITERATOR_H
+#ifndef BALOO_ORPOSTINGITERATOR_H
+#define BALOO_ORPOSTINGITERATOR_H
 
 #include "postingiterator.h"
 #include <QVector>
 
 namespace Baloo {
 
-class BALOO_ENGINE_EXPORT AndPostingIterator : PostingIterator
+class BALOO_ENGINE_EXPORT OrPostingIterator : PostingIterator
 {
 public:
-    AndPostingIterator(QVector<PostingIterator*> iterators);
+    OrPostingIterator(QVector<PostingIterator*> iterators);
 
     virtual uint next();
     virtual uint docId();
@@ -38,7 +38,6 @@ private:
     QVector<PostingIterator*> m_iterators;
     uint m_docId;
 };
-
 }
 
-#endif // BALOO_ANDPOSTINGITERATOR_H
+#endif // BALOO_ORPOSTINGITERATOR_H

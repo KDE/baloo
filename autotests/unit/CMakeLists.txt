@@ -12,11 +12,14 @@ baloo_engine_auto_tests(
     postingdbtest
     documentdbtest
     databasetest
-    andpostingiteratortest
     documenturldbtest
     urldocumentdbtest
     indexingleveldbtest
     documentvaluedbtest
 
     termgeneratortest
+
+    # Query
+    andpostingiteratortest
+    orpostingiteratortest
 )
