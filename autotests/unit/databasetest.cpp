@@ -46,6 +46,7 @@ void DatabaseTest::test()
     QTemporaryDir dir;
 
     Database db(dir.path());
+    QVERIFY(db.open());
     QCOMPARE(db.hasDocument(1), false);
 
     const QByteArray url("/home/file");

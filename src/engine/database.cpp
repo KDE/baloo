@@ -38,29 +38,9 @@ using namespace Baloo;
 
 Database::Database(const QString& path)
     : m_path(path)
+    , m_env(0)
+    , m_txn(0)
 {
-    QFileInfo dirInfo(path);
-    if (!dirInfo.permission(QFile::WriteOwner)) {
-        qCritical() << path << "does not have write permissions. Aborting";
-        exit(1);
-    }
-
-    mdb_env_create(&m_env);
-    mdb_env_set_maxdbs(m_env, 7);
-    mdb_env_set_mapsize(m_env, 104857600);
-
-    // The directory needs to be created before opening the environment
-    QByteArray arr = QFile::encodeName(path);
-    mdb_env_open(m_env, arr.constData(), 0, 0664);
-    mdb_txn_begin(m_env, NULL, 0, &m_txn);
-
-    m_postingDB = new PostingDB(m_txn);
-    m_documentDB = new DocumentDB(m_txn);
-    m_positionDB = new PositionDB(m_txn);
-    m_docUrlDB = new DocumentUrlDB(m_txn);
-    m_urlDocDB = new UrlDocumentDB(m_txn);
-    m_docValueDB = new DocumentValueDB(m_txn);
-    m_contentIndexingDB = new IndexingLevelDB(m_txn);
 }
 
 Database::~Database()
@@ -75,6 +55,34 @@ Database::~Database()
 
     mdb_txn_commit(m_txn);
     mdb_env_close(m_env);
+}
+
+bool Database::open()
+{
+    QFileInfo dirInfo(m_path);
+    if (!dirInfo.permission(QFile::WriteOwner)) {
+        qCritical() << m_path << "does not have write permissions. Aborting";
+        return false;
+    }
+
+    mdb_env_create(&m_env);
+    mdb_env_set_maxdbs(m_env, 7);
+    mdb_env_set_mapsize(m_env, 104857600);
+
+    // The directory needs to be created before opening the environment
+    QByteArray arr = QFile::encodeName(m_path);
+    mdb_env_open(m_env, arr.constData(), 0, 0664);
+    mdb_txn_begin(m_env, NULL, 0, &m_txn);
+
+    m_postingDB = new PostingDB(m_txn);
+    m_documentDB = new DocumentDB(m_txn);
+    m_positionDB = new PositionDB(m_txn);
+    m_docUrlDB = new DocumentUrlDB(m_txn);
+    m_urlDocDB = new UrlDocumentDB(m_txn);
+    m_docValueDB = new DocumentValueDB(m_txn);
+    m_contentIndexingDB = new IndexingLevelDB(m_txn);
+
+    return true;
 }
 
 QString Database::path() const

@@ -46,6 +46,11 @@ public:
 
     QString path() const;
 
+    /**
+     * Open the Database in Read + Write mode
+     */
+    bool open();
+
     // FIXME: Return codes?
     void addDocument(const Document& doc);
     void removeDocument(uint id);
