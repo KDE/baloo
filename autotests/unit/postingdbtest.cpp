@@ -37,6 +37,24 @@ private Q_SLOTS:
         QCOMPARE(db.get(word), list);
     }
 
+    void testTermIter() {
+        PostingDB db(m_txn);
+
+        db.put("abc", {1, 4, 5, 9, 11});
+        db.put("fir", {1, 3, 5});
+        db.put("fire", {1, 8, 9});
+        db.put("fore", {2, 3, 5});
+
+        PostingIterator* it = db.iter("fir");
+        QVERIFY(it);
+
+        QVector<uint> result = {1, 3, 5};
+        for (uint val : result) {
+            QCOMPARE(it->next(), static_cast<uint>(val));
+            QCOMPARE(it->docId(), static_cast<uint>(val));
+        }
+    }
+
     void testPrefixIter() {
         PostingDB db(m_txn);
 
