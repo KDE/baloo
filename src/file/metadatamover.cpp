@@ -21,7 +21,6 @@
 #include "filewatch.h"
 #include "filemapping.h"
 #include "database.h"
-#include "xapiandocument.h"
 
 #include <QTimer>
 #include <QFileInfo>
@@ -55,7 +54,7 @@ void MetadataMover::moveFileMetadata(const QString& from, const QString& to)
     // and finally update the old statements
     updateMetadata(from, to);
 
-    m_db->xapianDatabase()->commit();
+    //m_db->xapianDatabase()->commit();
 }
 
 void MetadataMover::removeFileMetadata(const QString& file)
@@ -63,7 +62,7 @@ void MetadataMover::removeFileMetadata(const QString& file)
     Q_ASSERT(!file.isEmpty() && file != QLatin1String("/"));
     removeMetadata(file);
 
-    m_db->xapianDatabase()->commit();
+    //m_db->xapianDatabase()->commit();
 }
 
 
@@ -72,10 +71,10 @@ void MetadataMover::removeMetadata(const QString& url)
     Q_ASSERT(!url.isEmpty());
 
     FileMapping file(url);
-    file.fetch(m_db->xapianDatabase()->db());
+    file.fetch(m_db);
 
     if (file.id()) {
-        m_db->xapianDatabase()->deleteDocument(file.id());
+        m_db->removeDocument(file.id());
         // FIXME: Is this signal still really required?
         //        We are just deleting it right now
         Q_EMIT fileRemoved(file.id());
@@ -90,6 +89,7 @@ void MetadataMover::updateMetadata(const QString& from, const QString& to)
     Q_ASSERT(from[from.size()-1] != QLatin1Char('/'));
     Q_ASSERT(to[to.size()-1] != QLatin1Char('/'));
 
+    /*
     FileMapping fromFile(from);
     if (fromFile.fetch(m_db->xapianDatabase()->db())) {
         XapianDocument doc = m_db->xapianDatabase()->document(fromFile.id());
@@ -177,4 +177,5 @@ void MetadataMover::updateMetadata(const QString& from, const QString& to)
 
         m_db->xapianDatabase()->replaceDocument(id, doc);
     }
+    */
 }

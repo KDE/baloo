@@ -22,9 +22,9 @@ set(file_static_lib_SRCS
     filtereddiriterator.cpp
 
      # File Watcher
-#     filewatch.cpp
+    filewatch.cpp
     pendingfilequeue.cpp
-#     metadatamover.cpp
+    metadatamover.cpp
     pendingfile.cpp
 )
 

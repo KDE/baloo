@@ -23,10 +23,10 @@
 #include "pendingfile.h"
 
 class KInotify;
-class Database;
 
 namespace Baloo
 {
+class Database;
 class MetadataMover;
 class FileIndexerConfig;
 class PendingFileQueue;

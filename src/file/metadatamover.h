@@ -22,10 +22,10 @@
 
 #include <QObject>
 
-class Database;
-
 namespace Baloo
 {
+
+class Database;
 
 class MetadataMover : public QObject
 {
