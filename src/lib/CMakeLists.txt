@@ -22,7 +22,6 @@ set(BALOO_LIB_SRCS
     # Search Store
     xapiansearchstore.cpp
     wildcardpostingsource.cpp
-    pathfilterpostingsource.cpp
     filesearchstore.cpp
 )
 

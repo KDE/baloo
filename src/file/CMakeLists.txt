@@ -62,17 +62,6 @@ add_executable(baloo_file ${file_SRCS})
 target_compile_definitions(baloo_file PRIVATE -DPROJECT_VERSION="${PROJECT_VERSION}")
 
 target_link_libraries(baloo_file
-    Qt5::DBus
-    KF5::KIOWidgets
-    KF5::IdleTime
-    KF5::I18n
-    KF5::Solid
-    KF5::Auth
-    KF5::FileMetaData
-    KF5::Crash
-    KF5::ConfigCore
-    KF5::BalooEngine
-    KF5::KDELibs4Support # For Solid
     baloofilecommon
 )
 
