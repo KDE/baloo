@@ -83,9 +83,8 @@ int main(int argc, char** argv)
 
     const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/file/");
 
-    Database db;
-    db.setPath(path);
-    db.init();
+    Baloo::Database db(path);
+    //db.init();
 
     Baloo::FileIndexerConfig indexerConfig;
     Baloo::FileWatch filewatcher(&db, &indexerConfig, &app);

@@ -54,37 +54,34 @@ target_link_libraries(baloofilecommon
     KF5::KDELibs4Support # For Solid
 )
 
-#set(file_SRCS
-#    main.cpp
-#)
+set(file_SRCS
+    main.cpp
+)
 
-#add_executable(baloo_file ${file_SRCS})
-#target_compile_definitions(baloo_file PRIVATE -DPROJECT_VERSION="${PROJECT_VERSION}")
+add_executable(baloo_file ${file_SRCS})
+target_compile_definitions(baloo_file PRIVATE -DPROJECT_VERSION="${PROJECT_VERSION}")
 
-#target_link_libraries(baloo_file
-#    Qt5::Sql
-#    Qt5::DBus
-#    KF5::KIOWidgets
-#    KF5::IdleTime
-#    KF5::I18n
-#    KF5::Solid
-#    KF5::Auth
-#    KF5::FileMetaData
-#    KF5::Crash
-#    KF5::ConfigCore
-#    ${XAPIAN_LIBRARIES}
-#    KF5::Baloo
-#    KF5::BalooXapian
-#    KF5::KDELibs4Support # For Solid
-#    baloofilecommon
-#)
-#
-#install(TARGETS baloo_file ${INSTALL_TARGETS_DEFAULT_ARGS})
-#install(FILES baloo_file.desktop DESTINATION ${AUTOSTART_INSTALL_DIR})
-#install(FILES org.kde.baloo.file.indexer.xml DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
-#
+target_link_libraries(baloo_file
+    Qt5::DBus
+    KF5::KIOWidgets
+    KF5::IdleTime
+    KF5::I18n
+    KF5::Solid
+    KF5::Auth
+    KF5::FileMetaData
+    KF5::Crash
+    KF5::ConfigCore
+    KF5::BalooEngine
+    KF5::KDELibs4Support # For Solid
+    baloofilecommon
+)
+
+install(TARGETS baloo_file ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(FILES baloo_file.desktop DESTINATION ${AUTOSTART_INSTALL_DIR})
+install(FILES org.kde.baloo.file.indexer.xml DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
+
 add_subdirectory(autotests)
 add_subdirectory(tests)
 add_subdirectory(extractor)
-#add_subdirectory(inotify)
+add_subdirectory(inotify)
 #add_subdirectory(cleaner)
