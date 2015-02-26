@@ -37,7 +37,8 @@ int main(int argc, char** argv)
     QTemporaryDir tempDir;
 
     Baloo::Database db(tempDir.path());
-    //db.init();
+    db.open();
+    db.transaction();
 
     Baloo::FileIndexerConfig config;
     QCoreApplication app(argc, argv);

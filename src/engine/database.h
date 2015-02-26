@@ -45,10 +45,6 @@ public:
     ~Database();
 
     QString path() const;
-
-    /**
-     * Open the Database in Read + Write mode
-     */
     bool open();
 
     // FIXME: Return codes?
@@ -57,7 +53,15 @@ public:
 
     bool hasDocument(uint id);
 
+    /**
+     * Starts a transaction in which the database can be modified.
+     * It is necessary to start a transaction in order to use any
+     * of the Database functions.
+     */
+    void transaction();
     void commit();
+    void abort();
+
     bool hasChanges() const;
 
     QByteArray documentUrl(uint id);
@@ -70,6 +74,9 @@ public:
 private:
     QString m_path;
 
+    MDB_env* m_env;
+    MDB_txn* m_txn;
+
     PostingDB* m_postingDB;
     DocumentDB* m_documentDB;
     PositionDB* m_positionDB;
@@ -79,9 +86,6 @@ private:
 
     DocumentValueDB* m_docValueDB;
     IndexingLevelDB* m_contentIndexingDB;
-
-    MDB_env* m_env;
-    MDB_txn* m_txn;
 
     //
     // In memory operations

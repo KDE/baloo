@@ -40,6 +40,13 @@ Database::Database(const QString& path)
     : m_path(path)
     , m_env(0)
     , m_txn(0)
+    , m_postingDB(0)
+    , m_documentDB(0)
+    , m_positionDB(0)
+    , m_docUrlDB(0)
+    , m_urlDocDB(0)
+    , m_docValueDB(0)
+    , m_contentIndexingDB(0)
 {
 }
 
@@ -53,7 +60,9 @@ Database::~Database()
     delete m_docValueDB;
     delete m_contentIndexingDB;
 
-    mdb_txn_commit(m_txn);
+    if (m_txn) {
+        abort();
+    }
     mdb_env_close(m_env);
 }
 
@@ -72,17 +81,50 @@ bool Database::open()
     // The directory needs to be created before opening the environment
     QByteArray arr = QFile::encodeName(m_path);
     mdb_env_open(m_env, arr.constData(), 0, 0664);
-    mdb_txn_begin(m_env, NULL, 0, &m_txn);
-
-    m_postingDB = new PostingDB(m_txn);
-    m_documentDB = new DocumentDB(m_txn);
-    m_positionDB = new PositionDB(m_txn);
-    m_docUrlDB = new DocumentUrlDB(m_txn);
-    m_urlDocDB = new UrlDocumentDB(m_txn);
-    m_docValueDB = new DocumentValueDB(m_txn);
-    m_contentIndexingDB = new IndexingLevelDB(m_txn);
 
     return true;
+}
+
+void Database::transaction()
+{
+    Q_ASSERT(m_txn == 0);
+    int rc = mdb_txn_begin(m_env, NULL, 0, &m_txn);
+    Q_ASSERT_X(rc == 0, "Database::transaction", mdb_strerror(rc));
+
+    if (!m_positionDB)
+        m_postingDB = new PostingDB(m_txn);
+    else
+        m_positionDB->setTransaction(m_txn);
+
+    if (!m_documentDB)
+        m_documentDB = new DocumentDB(m_txn);
+    else
+        m_documentDB->setTransaction(m_txn);
+
+    if (!m_positionDB)
+        m_positionDB = new PositionDB(m_txn);
+    else
+        m_positionDB->setTransaction(m_txn);
+
+    if (!m_docUrlDB)
+        m_docUrlDB = new DocumentUrlDB(m_txn);
+    else
+        m_docUrlDB->setTransaction(m_txn);
+
+    if (!m_urlDocDB)
+        m_urlDocDB = new UrlDocumentDB(m_txn);
+    else
+        m_urlDocDB->setTransaction(m_txn);
+
+    if (!m_docValueDB)
+        m_docValueDB = new DocumentValueDB(m_txn);
+    else
+        m_docUrlDB->setTransaction(m_txn);
+
+    if (!m_contentIndexingDB)
+        m_contentIndexingDB = new IndexingLevelDB(m_txn);
+    else
+        m_contentIndexingDB->setTransaction(m_txn);
 }
 
 QString Database::path() const
@@ -92,6 +134,7 @@ QString Database::path() const
 
 void Database::addDocument(const Document& doc)
 {
+    Q_ASSERT(m_txn);
     Q_ASSERT(doc.id() > 0);
 
     Operation op;
@@ -103,6 +146,7 @@ void Database::addDocument(const Document& doc)
 
 void Database::removeDocument(uint id)
 {
+    Q_ASSERT(m_txn);
     Q_ASSERT(id > 0);
 
     Document doc;
@@ -123,12 +167,14 @@ bool Database::hasDocument(uint id)
 
 uint Database::documentId(const QByteArray& url)
 {
+    Q_ASSERT(m_txn);
     Q_ASSERT(!url.isEmpty());
     return m_urlDocDB->get(url);
 }
 
 QByteArray Database::documentUrl(uint id)
 {
+    Q_ASSERT(m_txn);
     Q_ASSERT(id > 0);
     return m_docUrlDB->get(id);
 }
@@ -136,15 +182,18 @@ QByteArray Database::documentUrl(uint id)
 
 QByteArray Database::documentSlot(uint id, uint slotNum)
 {
+    Q_ASSERT(m_txn);
     Q_ASSERT(id > 0);
     return m_docValueDB->get(id, slotNum);
 }
 
 void Database::commit()
 {
+    Q_ASSERT(m_txn);
     QMap<QByteArray, PostingList> postingMap;
     QMap<QByteArray, QVector<PositionInfo> > positionMap;
 
+    qDebug() << "PendingOperations:" << m_pendingOperations.size();
     for (const Operation& op : m_pendingOperations) {
         const uint id = op.doc.id();
         const Document& doc = op.doc;
@@ -178,8 +227,8 @@ void Database::commit()
                 m_contentIndexingDB->put(doc.id());
             }
             if (!doc.m_slots.isEmpty()) {
-                for (auto it = doc.m_slots.constBegin(); it != doc.m_slots.constEnd(); it++) {
-                    m_docValueDB->put(doc.id(), it.key(), it.value());
+                for (auto iter = doc.m_slots.constBegin(); iter != doc.m_slots.constEnd(); iter++) {
+                    m_docValueDB->put(doc.id(), iter.key(), iter.value());
                 }
             }
         }
@@ -246,15 +295,27 @@ void Database::commit()
 
     int rc = mdb_txn_commit(m_txn);
     Q_ASSERT_X(rc == 0, "Database::commit", mdb_strerror(rc));
+
+    m_txn = 0;
+}
+
+void Database::abort()
+{
+    Q_ASSERT(m_txn);
+
+    mdb_txn_abort(m_txn);
+    m_txn = 0;
 }
 
 bool Database::hasChanges() const
 {
+    Q_ASSERT(m_txn);
     return !m_pendingOperations.isEmpty();
 }
 
 QVector<int> Database::exec(const QVector<QByteArray>& query)
 {
+    Q_ASSERT(m_txn);
     Q_ASSERT(!query.isEmpty());
 
     QVector<PostingIterator*> list;
@@ -290,5 +351,7 @@ QVector<int> Database::exec(const QVector<QByteArray>& query)
 
 QVector<uint> Database::fetchIndexingLevel(int size)
 {
+    Q_ASSERT(m_txn);
+    Q_ASSERT(size > 0);
     return m_contentIndexingDB->fetchItems(size);
 }

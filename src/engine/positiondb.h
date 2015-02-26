@@ -22,6 +22,8 @@
 #define BALOO_POSITIONDB_H
 
 #include "engine_export.h"
+#include "postingiterator.h"
+
 #include <QByteArray>
 #include <QVector>
 #include <QDebug>
@@ -54,6 +56,9 @@ public:
     void put(const QByteArray& term, const QVector<PositionInfo>& list);
     QVector<PositionInfo> get(const QByteArray& term);
 
+    void setTransaction(MDB_txn* txn) {
+        m_txn = txn;
+    }
 private:
     MDB_txn* m_txn;
     MDB_dbi m_dbi;

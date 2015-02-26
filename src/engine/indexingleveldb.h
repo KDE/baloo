@@ -40,6 +40,9 @@ public:
 
     QVector<uint> fetchItems(int size);
 
+    void setTransaction(MDB_txn* txn) {
+        m_txn = txn;
+    }
 private:
     MDB_txn* m_txn;
     MDB_dbi m_dbi;

@@ -43,6 +43,9 @@ public:
     PostingIterator* iter(const QByteArray& term);
     PostingIterator* prefixIter(const QByteArray& term);
 
+    void setTransaction(MDB_txn* txn) {
+        m_txn = txn;
+    }
 private:
     MDB_txn* m_txn;
     MDB_dbi m_dbi;

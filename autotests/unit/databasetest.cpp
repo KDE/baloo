@@ -47,6 +47,7 @@ void DatabaseTest::test()
 
     Database db(dir.path());
     QVERIFY(db.open());
+    db.transaction();
     QCOMPARE(db.hasDocument(1), false);
 
     const QByteArray url("/home/file");
@@ -61,6 +62,7 @@ void DatabaseTest::test()
 
     db.addDocument(doc);
     db.commit();
+    db.transaction();
     QCOMPARE(db.hasDocument(1), true);
 
     QCOMPARE(db.m_docUrlDB->get(1), url);
