@@ -42,6 +42,7 @@ void UrlDocumentDB::put(const QByteArray& url, uint docId)
 {
     Q_ASSERT(docId > 0);
     Q_ASSERT(!url.isEmpty());
+    Q_ASSERT(!url.endsWith('/'));
 
     MDB_val key;
     key.mv_size = url.size();
