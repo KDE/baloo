@@ -21,27 +21,66 @@
 #include "urldocumentdb.h"
 #include "singledbtest.h"
 
+#include <QVector>
+
 using namespace Baloo;
 
 class UrlDocumentDBTest : public SingleDBTest
 {
     Q_OBJECT
 private Q_SLOTS:
-    void test();
+    void test() {
+        UrlDocumentDB db(m_txn);
+
+        QByteArray arr = "/home/blah";
+        db.put(arr, 1);
+
+        QCOMPARE(db.get(arr), static_cast<uint>(1));
+
+        db.del(arr);
+        QCOMPARE(db.get(arr), static_cast<uint>(0));
+    }
+
+    void testIter() {
+        UrlDocumentDB db(m_txn);
+
+        db.put("/home/v", 1);
+        db.put("/home/v1", 2);
+        db.put("/home/v2", 3);
+        db.put("/home/b", 4);
+        db.put("/home/w", 5);
+
+        PostingIterator* it = db.prefixIter("/home/v");
+        QVERIFY(it);
+
+        QVector<uint> result = {1, 2, 3};
+        for (uint val : result) {
+            QCOMPARE(it->next(), static_cast<uint>(val));
+            QCOMPARE(it->docId(), static_cast<uint>(val));
+        }
+
+        it = db.prefixIter("/home/w");
+        QVERIFY(it);
+
+        result = {5};
+        for (uint val : result) {
+            QCOMPARE(it->next(), static_cast<uint>(val));
+            QCOMPARE(it->docId(), static_cast<uint>(val));
+        }
+
+        it = db.prefixIter("/home/b");
+        QVERIFY(it);
+
+        result = {4};
+        for (uint val : result) {
+            QCOMPARE(it->next(), static_cast<uint>(val));
+            QCOMPARE(it->docId(), static_cast<uint>(val));
+        }
+
+        it = db.prefixIter("/home/f");
+        QVERIFY(it == 0);
+    }
 };
-
-void UrlDocumentDBTest::test()
-{
-    UrlDocumentDB db(m_txn);
-
-    QByteArray arr = "/home/blah";
-    db.put(arr, 1);
-
-    QCOMPARE(db.get(arr), static_cast<uint>(1));
-
-    db.del(arr);
-    QCOMPARE(db.get(arr), static_cast<uint>(0));
-}
 
 QTEST_MAIN(UrlDocumentDBTest)
 

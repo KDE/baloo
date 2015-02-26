@@ -85,3 +85,94 @@ void UrlDocumentDB::del(const QByteArray& url)
     Q_ASSERT_X(rc == 0, "UrlDocumentDB::del", mdb_strerror(rc));
 }
 
+//
+// Iter
+//
+
+class UrlPostingIterator : public PostingIterator {
+public:
+    UrlPostingIterator(const QByteArray& url, MDB_cursor* cursor, uint docID)
+        : m_url(url), m_cursor(cursor), m_docId(docID), m_first(true)
+    {}
+
+    virtual ~UrlPostingIterator() {
+        if (m_cursor) {
+            mdb_cursor_close(m_cursor);
+        }
+    }
+
+    virtual uint docId() {
+        if (m_first) {
+            return 0;
+        }
+        return m_docId;
+    }
+    virtual uint next();
+
+private:
+    const QByteArray m_url;
+    MDB_cursor* m_cursor;
+    uint m_docId;
+    bool m_first;
+};
+
+uint UrlPostingIterator::next()
+{
+    if (m_first) {
+        m_first = false;
+        return m_docId;
+    }
+
+    MDB_val key;
+    MDB_val val;
+
+    int rc = mdb_cursor_get(m_cursor, &key, &val, MDB_NEXT);
+    if (rc == MDB_NOTFOUND) {
+        mdb_cursor_close(m_cursor);
+        m_cursor = 0;
+        m_docId = 0;
+        return 0;
+    }
+    Q_ASSERT_X(rc == 0, "UrlPostingIterator::next", mdb_strerror(rc));
+
+    const QByteArray arr = QByteArray::fromRawData(static_cast<char*>(key.mv_data), key.mv_size);
+    if (!arr.startsWith(m_url)) {
+        mdb_cursor_close(m_cursor);
+        m_cursor = 0;
+        m_docId = 0;
+        return 0;
+    }
+
+    m_docId = *static_cast<uint*>(val.mv_data);
+    return m_docId;
+}
+
+PostingIterator* UrlDocumentDB::prefixIter(const QByteArray& url)
+{
+    MDB_val key;
+    key.mv_size = url.size();
+    key.mv_data = static_cast<void*>(const_cast<char*>(url.constData()));
+
+    MDB_cursor* cursor;
+    mdb_cursor_open(m_txn, m_dbi, &cursor);
+
+    QVector<PostingIterator*> termIterators;
+
+    MDB_val val;
+    int rc = mdb_cursor_get(cursor, &key, &val, MDB_SET_RANGE);
+    if (rc == MDB_NOTFOUND) {
+        mdb_cursor_close(cursor);
+        return 0;
+    }
+    Q_ASSERT_X(rc == 0, "UrlDocumentDB::prefixIter", mdb_strerror(rc));
+
+
+    const QByteArray arr = QByteArray::fromRawData(static_cast<char*>(key.mv_data), key.mv_size);
+    if (!arr.startsWith(url)) {
+        mdb_cursor_close(cursor);
+        return 0;
+    }
+
+    uint id = *static_cast<uint*>(val.mv_data);
+    return new UrlPostingIterator(url, cursor, id);
+}

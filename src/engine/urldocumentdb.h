@@ -22,6 +22,8 @@
 #define BALOO_URLDOCUMENTDB_H
 
 #include "engine_export.h"
+#include "postingiterator.h"
+
 #include <QByteArray>
 #include <lmdb.h>
 
@@ -36,6 +38,8 @@ public:
     void put(const QByteArray& url, uint docId);
     uint get(const QByteArray& url);
     void del(const QByteArray& url);
+
+    PostingIterator* prefixIter(const QByteArray& url);
 
 private:
     MDB_txn* m_txn;
