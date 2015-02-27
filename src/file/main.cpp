@@ -81,10 +81,11 @@ int main(int argc, char** argv)
     // Crash Handling
     KCrash::setFlags(KCrash::AutoRestart);
 
-    const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/file/");
+    const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo");
 
     Baloo::Database db(path);
-    //db.init();
+    db.open();
+    db.transaction();
 
     Baloo::FileIndexerConfig indexerConfig;
     Baloo::FileWatch filewatcher(&db, &indexerConfig, &app);
