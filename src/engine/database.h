@@ -34,7 +34,7 @@ class DocumentDB;
 class DocumentUrlDB;
 class DocumentValueDB;
 class UrlDocumentDB;
-class IndexingLevelDB;
+class DocumentIdDB;
 
 class DatabaseTest;
 
@@ -85,7 +85,7 @@ private:
     UrlDocumentDB* m_urlDocDB;
 
     DocumentValueDB* m_docValueDB;
-    IndexingLevelDB* m_contentIndexingDB;
+    DocumentIdDB* m_contentIndexingDB;
 
     //
     // In memory operations

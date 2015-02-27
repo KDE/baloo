@@ -5,7 +5,7 @@ set(BALOO_ENGINE_SRCS
     documentdb.cpp
     documenturldb.cpp
     documentvaluedb.cpp
-    indexingleveldb.cpp
+    documentiddb.cpp
     orpostingiterator.cpp
     positiondb.cpp
     postingdb.cpp

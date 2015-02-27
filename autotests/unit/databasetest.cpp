@@ -25,7 +25,7 @@
 #include "documentdb.h"
 #include "documenturldb.h"
 #include "urldocumentdb.h"
-#include "indexingleveldb.h"
+#include "documentiddb.h"
 #include "positiondb.h"
 #include "documentvaluedb.h"
 

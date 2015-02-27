@@ -14,7 +14,7 @@ baloo_engine_auto_tests(
     databasetest
     documenturldbtest
     urldocumentdbtest
-    indexingleveldbtest
+    documentiddbtest
     documentvaluedbtest
 
     termgeneratortest

@@ -18,11 +18,11 @@
  *
  */
 
-#include "indexingleveldb.h"
+#include "documentiddb.h"
 
 using namespace Baloo;
 
-IndexingLevelDB::IndexingLevelDB(MDB_txn* txn)
+DocumentIdDB::DocumentIdDB(MDB_txn* txn)
     : m_txn(txn)
 {
 
@@ -30,12 +30,12 @@ IndexingLevelDB::IndexingLevelDB(MDB_txn* txn)
     Q_ASSERT_X(rc == 0, "IndexingLevelDB", mdb_strerror(rc));
 }
 
-IndexingLevelDB::~IndexingLevelDB()
+DocumentIdDB::~DocumentIdDB()
 {
     mdb_dbi_close(mdb_txn_env(m_txn), m_dbi);
 }
 
-void IndexingLevelDB::put(uint docId)
+void DocumentIdDB::put(uint docId)
 {
     Q_ASSERT(docId > 0);
 
@@ -55,7 +55,7 @@ void IndexingLevelDB::put(uint docId)
     Q_ASSERT_X(rc == 0, "IndexingLevelDB::put", mdb_strerror(rc));
 }
 
-bool IndexingLevelDB::contains(uint docId)
+bool DocumentIdDB::contains(uint docId)
 {
     Q_ASSERT(docId > 0);
 
@@ -74,7 +74,7 @@ bool IndexingLevelDB::contains(uint docId)
     return true;
 }
 
-void IndexingLevelDB::del(uint docId)
+void DocumentIdDB::del(uint docId)
 {
     Q_ASSERT(docId > 0);
 
@@ -89,7 +89,7 @@ void IndexingLevelDB::del(uint docId)
     Q_ASSERT_X(rc == 0, "IndexingLevelDB::del", mdb_strerror(rc));
 }
 
-QVector<uint> IndexingLevelDB::fetchItems(int size)
+QVector<uint> DocumentIdDB::fetchItems(int size)
 {
     Q_ASSERT(size > 0);
 

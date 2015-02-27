@@ -23,7 +23,7 @@
 #include "documentdb.h"
 #include "documenturldb.h"
 #include "urldocumentdb.h"
-#include "indexingleveldb.h"
+#include "documentiddb.h"
 #include "positiondb.h"
 #include "documentvaluedb.h"
 
@@ -122,7 +122,7 @@ void Database::transaction()
         m_docUrlDB->setTransaction(m_txn);
 
     if (!m_contentIndexingDB)
-        m_contentIndexingDB = new IndexingLevelDB(m_txn);
+        m_contentIndexingDB = new DocumentIdDB(m_txn);
     else
         m_contentIndexingDB->setTransaction(m_txn);
 }

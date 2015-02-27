@@ -18,45 +18,36 @@
  *
  */
 
-#include "indexingleveldb.h"
-#include "singledbtest.h"
+#ifndef BALOO_INDEXINGLEVELDB_H
+#define BALOO_INDEXINGLEVELDB_H
 
-using namespace Baloo;
+#include "engine_export.h"
+#include <QByteArray>
+#include <QVector>
+#include <lmdb.h>
 
-class IndexingLevelDBTest : public SingleDBTest
+namespace Baloo {
+
+class BALOO_ENGINE_EXPORT DocumentIdDB
 {
-    Q_OBJECT
-private Q_SLOTS:
-    void test();
-    void testFetchItems();
+public:
+    explicit DocumentIdDB(MDB_txn* txn);
+    ~DocumentIdDB();
+
+    void put(uint docId);
+    bool contains(uint docId);
+    void del(uint docID);
+
+    QVector<uint> fetchItems(int size);
+
+    void setTransaction(MDB_txn* txn) {
+        m_txn = txn;
+    }
+private:
+    MDB_txn* m_txn;
+    MDB_dbi m_dbi;
 };
 
-void IndexingLevelDBTest::test()
-{
-    IndexingLevelDB db(m_txn);
-
-    QCOMPARE(db.contains(1), false);
-    db.put(1);
-    QCOMPARE(db.contains(1), true);
-
-    db.del(1);
-    QCOMPARE(db.contains(1), false);
 }
 
-void IndexingLevelDBTest::testFetchItems()
-{
-    IndexingLevelDB db(m_txn);
-
-    db.put(1);
-    db.put(6);
-    db.put(8);
-
-    QVector<uint> acVec = db.fetchItems(10);
-    QVector<uint> exVec = {1, 6, 8};
-
-    QCOMPARE(acVec, exVec);
-}
-
-QTEST_MAIN(IndexingLevelDBTest)
-
-#include "indexingleveldbtest.moc"
+#endif // BALOO_INDEXINGLEVELDB_H
