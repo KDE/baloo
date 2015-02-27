@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
     parser.addOption(QCommandLineOption(QLatin1String("debug"), i18n("Print the data being indexed")));
     parser.addOption(QCommandLineOption(QLatin1String("ignoreConfig"), i18n("Ignore the baloofilerc config and always index the file")));
 
-    const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/file");
+    const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo");
     parser.addOption(QCommandLineOption(QLatin1String("db"), i18n("Specify a custom path for the database"),
                                         i18n("path"), path));
 

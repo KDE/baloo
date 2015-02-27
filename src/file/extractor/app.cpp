@@ -53,6 +53,9 @@ App::App(const QString& path, QObject* parent)
 
 void App::startProcessing(const QStringList& args)
 {
+    m_db.open();
+    m_db.transaction();
+
     m_results.reserve(args.size());
     Q_FOREACH (const QString& arg, args) {
         FileMapping mapping = FileMapping(arg.toUInt());
@@ -200,6 +203,7 @@ void App::saveChanges()
     m_docsToDelete.clear();
 
     m_db.commit();
+    m_db.transaction();
 
     QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/files"),
                                                       QLatin1String("org.kde"),

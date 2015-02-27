@@ -23,12 +23,5 @@
 
 #include <QObject>
 
-class ExtractorTest : public QObject
-{
-    Q_OBJECT
-private Q_SLOTS:
-    void test();
-    void testFileDeletion();
-};
 
 #endif // EXTRACTORTEST_H
