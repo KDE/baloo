@@ -26,6 +26,7 @@
 #include "documentiddb.h"
 #include "positiondb.h"
 #include "documentvaluedb.h"
+#include "documentdatadb.h"
 
 #include "document.h"
 
@@ -46,6 +47,7 @@ Database::Database(const QString& path)
     , m_docUrlDB(0)
     , m_urlDocDB(0)
     , m_docValueDB(0)
+    , m_docDataDB(0)
     , m_contentIndexingDB(0)
 {
 }
@@ -58,6 +60,7 @@ Database::~Database()
     delete m_docUrlDB;
     delete m_urlDocDB;
     delete m_docValueDB;
+    delete m_docDataDB;
     delete m_contentIndexingDB;
 
     if (m_txn) {
@@ -75,7 +78,7 @@ bool Database::open()
     }
 
     mdb_env_create(&m_env);
-    mdb_env_set_maxdbs(m_env, 7);
+    mdb_env_set_maxdbs(m_env, 8);
     mdb_env_set_mapsize(m_env, 1048576000);
 
     // The directory needs to be created before opening the environment
@@ -120,6 +123,11 @@ void Database::transaction()
         m_docValueDB = new DocumentValueDB(m_txn);
     else
         m_docUrlDB->setTransaction(m_txn);
+
+    if (!m_docDataDB)
+        m_docDataDB = new DocumentDataDB("documentdatadb", m_txn);
+    else
+        m_docDataDB->setTransaction(m_txn);
 
     if (!m_contentIndexingDB)
         m_contentIndexingDB = new DocumentIdDB(m_txn);
@@ -187,6 +195,13 @@ QByteArray Database::documentSlot(uint id, uint slotNum)
     return m_docValueDB->get(id, slotNum);
 }
 
+QByteArray Database::documentData(uint id)
+{
+    Q_ASSERT(m_txn);
+    Q_ASSERT(id > 0);
+    return m_docDataDB->get(id);
+}
+
 void Database::commit()
 {
     Q_ASSERT(m_txn);
@@ -231,6 +246,10 @@ void Database::commit()
                     m_docValueDB->put(doc.id(), iter.key(), iter.value());
                 }
             }
+
+            if (!doc.m_data.isEmpty()) {
+                m_docDataDB->put(id, doc.m_data);
+            }
         }
         else if (op.type == RemoveDocument) {
             QVector<QByteArray> terms = m_documentDB->get(id);
@@ -257,6 +276,7 @@ void Database::commit()
 
             m_contentIndexingDB->del(id);
             m_docValueDB->del(id);
+            m_docDataDB->del(id);
         }
     }
 

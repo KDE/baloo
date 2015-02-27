@@ -31,6 +31,7 @@ namespace Baloo {
 class PostingDB;
 class PositionDB;
 class DocumentDB;
+class DocumentDataDB;
 class DocumentUrlDB;
 class DocumentValueDB;
 class UrlDocumentDB;
@@ -67,6 +68,7 @@ public:
     QByteArray documentUrl(uint id);
     uint documentId(const QByteArray& url);
     QByteArray documentSlot(uint id, uint slotNum);
+    QByteArray documentData(uint id);
 
     QVector<int> exec(const QVector<QByteArray>& query);
 
@@ -85,6 +87,7 @@ private:
     UrlDocumentDB* m_urlDocDB;
 
     DocumentValueDB* m_docValueDB;
+    DocumentDataDB* m_docDataDB;
     DocumentIdDB* m_contentIndexingDB;
 
     //

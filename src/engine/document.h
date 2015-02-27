@@ -63,7 +63,6 @@ public:
 
     void addValue(int slotNum, const QByteArray& arr);
 
-    // FIXME: Save the document data in the db
     void setData(const QByteArray& data);
 
 private:
