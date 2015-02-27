@@ -20,9 +20,9 @@ set(BALOO_LIB_SRCS
     ../file/fileexcludefilters.cpp
 
     # Search Store
-    xapiansearchstore.cpp
-    wildcardpostingsource.cpp
-    filesearchstore.cpp
+    # xapiansearchstore.cpp
+    # wildcardpostingsource.cpp
+    # filesearchstore.cpp
 )
 
 add_library(KF5Baloo ${BALOO_LIB_SRCS})
@@ -39,7 +39,7 @@ target_link_libraries(KF5Baloo
     KF5::ConfigCore
     Qt5::DBus
     KF5::Solid
-    KF5::BalooXapian
+    KF5::BalooEngine
 )
 
 set_target_properties(KF5Baloo PROPERTIES
@@ -83,5 +83,5 @@ install(FILES
     COMPONENT Devel
 )
 
-add_subdirectory(tests)
-add_subdirectory(autotests)
+#add_subdirectory(tests)
+#add_subdirectory(autotests)

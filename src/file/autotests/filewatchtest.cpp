@@ -71,9 +71,8 @@ void FileWatchTest::testFileCreation()
     Test::writeIndexerConfig(includeFolders, excludeFolders);
 
     QTemporaryDir dbDir;
-    Database db;
-    db.setPath(dbDir.path());
-    db.init();
+    Database db(dbDir.path());
+    db.open();
 
     FileIndexerConfig config;
 

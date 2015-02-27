@@ -21,7 +21,7 @@
 #ifndef METADATAMOVERTEST_H
 #define METADATAMOVERTEST_H
 
-#include "../database.h"
+#include "database.h"
 #include <QTemporaryDir>
 
 namespace Baloo {

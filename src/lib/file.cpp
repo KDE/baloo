@@ -24,7 +24,7 @@
 #include "filemapping.h"
 #include "searchstore.h"
 #include "db.h"
-#include "xapiandocument.h"
+//#include "xapiandocument.h"
 
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -103,6 +103,8 @@ bool File::load(const QString& url)
 
 bool File::load()
 {
+    /*
+     * FIXME: File::load
     const QString& url = d->url;
     if (url.size() && !QFile::exists(url)) {
         //setError(Error_FileDoesNotExist);
@@ -147,6 +149,7 @@ bool File::load()
         qWarning() << "Xapian error of type" << err.get_type() << ":" << err.get_msg().c_str();
         return false;
     }
+    */
 
     return true;
 }

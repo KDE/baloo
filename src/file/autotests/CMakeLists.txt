@@ -1,14 +1,14 @@
-#if(CMAKE_SYSTEM_NAME MATCHES "Linux")
-#  ecm_add_test(kinotifytest.cpp
-#    TEST_NAME "kinotifytest"
-#    LINK_LIBRARIES Qt5::Test KF5::CoreAddons baloofilecommon
-#  )
-#endif()
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+  ecm_add_test(kinotifytest.cpp
+    TEST_NAME "kinotifytest"
+    LINK_LIBRARIES Qt5::Test KF5::CoreAddons baloofilecommon
+  )
+endif()
 
-#ecm_add_test(pendingfilequeuetest.cpp ../pendingfilequeue.cpp ../pendingfile.cpp
-#    TEST_NAME "pendingfilequeuetest"
-#    LINK_LIBRARIES Qt5::Test
-#)
+ecm_add_test(pendingfilequeuetest.cpp ../pendingfilequeue.cpp ../pendingfile.cpp
+    TEST_NAME "pendingfilequeuetest"
+    LINK_LIBRARIES Qt5::Test
+)
 
 #
 # Metadata Mover
@@ -26,34 +26,34 @@ set(metadatamover_SRC
 #
 # File Monitor
 #
-#set(fileMonitor_SRC filemonitortest.cpp)
-#
-#ecm_add_test(${fileMonitor_SRC}
-#    TEST_NAME "filemonitortest"
-#    LINK_LIBRARIES Qt5::Test Qt5::DBus KF5::Baloo
-#)
+set(fileMonitor_SRC filemonitortest.cpp)
+
+ecm_add_test(${fileMonitor_SRC}
+    TEST_NAME "filemonitortest"
+    LINK_LIBRARIES Qt5::Test Qt5::DBus KF5::Baloo
+)
 
 #
 # File Watch
 #
-#set(fileWatch_SRC filewatchtest.cpp ../../lib/autotests/xattrdetector.cpp)
-#
-#ecm_add_test(${fileWatch_SRC}
-#    TEST_NAME "filewatchtest"
-#    LINK_LIBRARIES Qt5::Test Qt5::DBus KF5::Baloo baloofilecommon
-#)
+set(fileWatch_SRC filewatchtest.cpp ../../lib/autotests/xattrdetector.cpp)
+
+ecm_add_test(${fileWatch_SRC}
+    TEST_NAME "filewatchtest"
+    LINK_LIBRARIES Qt5::Test Qt5::DBus KF5::Baloo baloofilecommon
+)
 
 #
 # File Indexing Config
 #
-#set(indexingConfig_SRC
-#    fileindexerconfigtest.cpp
-#)
-#
-#ecm_add_test(${indexingConfig_SRC}
-#    TEST_NAME "fileindexerconfigtest"
-#    LINK_LIBRARIES Qt5::Test KF5::ConfigCore KF5::CoreAddons baloofilecommon
-#)
+set(indexingConfig_SRC
+    fileindexerconfigtest.cpp
+)
+
+ecm_add_test(${indexingConfig_SRC}
+    TEST_NAME "fileindexerconfigtest"
+    LINK_LIBRARIES Qt5::Test KF5::ConfigCore KF5::CoreAddons baloofilecommon
+)
 
 #
 # Basic Indexing Job Test
@@ -86,18 +86,18 @@ ecm_add_test(${basicIndexingJob_SRC}
 #
 # Regexp cahce benchmark
 #
-#ecm_add_test(regularexpcachebenchmark.cpp
-#    TEST_NAME "regexpcachebenchmark"
-#    LINK_LIBRARIES Qt5::Test KF5::ConfigCore KF5::CoreAddons baloofilecommon
-#)
+ecm_add_test(regularexpcachebenchmark.cpp
+    TEST_NAME "regexpcachebenchmark"
+    LINK_LIBRARIES Qt5::Test KF5::ConfigCore KF5::CoreAddons baloofilecommon
+)
 
 #
 # Filtered Dir Iterator
 #
-#ecm_add_test(filtereddiriteratortest.cpp
-#    TEST_NAME "filtereddiriteratortest"
-#    LINK_LIBRARIES Qt5::Test KF5::ConfigCore KF5::CoreAddons baloofilecommon
-#)
-#
+ecm_add_test(filtereddiriteratortest.cpp
+    TEST_NAME "filtereddiriteratortest"
+    LINK_LIBRARIES Qt5::Test KF5::ConfigCore KF5::CoreAddons baloofilecommon
+)
+
 #add_subdirectory(fileindexingjob)
 #add_subdirectory(scheduler)

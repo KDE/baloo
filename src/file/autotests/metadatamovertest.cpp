@@ -43,9 +43,8 @@ MetadataMoverTest::MetadataMoverTest(QObject* parent)
 void MetadataMoverTest::init()
 {
     m_tempDir = new QTemporaryDir();
-    m_db = new Database(this);
-    m_db->setPath(m_tempDir->path());
-    m_db->init();
+    m_db = new Database(m_tempDir->path());
+    m_db->open();
 }
 
 void MetadataMoverTest::cleanupTestCase()

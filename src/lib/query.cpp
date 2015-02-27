@@ -22,7 +22,6 @@
 
 #include "query.h"
 #include "term.h"
-#include "filesearchstore.h"
 #include "advancedqueryparser.h"
 
 #include <QString>
@@ -198,12 +197,14 @@ void Query::setIncludeFolder(const QString& folder)
 }
 
 
-Q_GLOBAL_STATIC_WITH_ARGS(QSharedPointer<FileSearchStore>, s_fileSearchStore, (new FileSearchStore));
+//Q_GLOBAL_STATIC_WITH_ARGS(QSharedPointer<FileSearchStore>, s_fileSearchStore, (new FileSearchStore));
 
 ResultIterator Query::exec()
 {
-    int id = (*s_fileSearchStore)->exec(*this);
-    return ResultIterator(id, &(**s_fileSearchStore));
+//    int id = (*s_fileSearchStore)->exec(*this);
+//    return ResultIterator(id, &(**s_fileSearchStore));
+    // FIXME: Query::exec
+    return ResultIterator(0, 0);
 }
 
 QByteArray Query::toJSON()

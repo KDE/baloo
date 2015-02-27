@@ -21,7 +21,6 @@
 #include "taglistjob.h"
 #include "db.h"
 
-#include <xapian.h>
 #include <QStringList>
 
 using namespace Baloo;
@@ -44,6 +43,8 @@ TagListJob::~TagListJob()
 
 void TagListJob::start()
 {
+    /*
+     * FIXME: TagListJob
     try {
         Xapian::Database xapianDb(fileIndexDbPath());
         Xapian::TermIterator it = xapianDb.allterms_begin("TAG-");
@@ -59,6 +60,7 @@ void TagListJob::start()
     }
     catch (const Xapian::DatabaseOpeningError&) {
     }
+    */
 
     emitResult();
 }
