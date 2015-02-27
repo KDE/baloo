@@ -1,13 +1,24 @@
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
   ecm_add_test(kinotifytest.cpp
     TEST_NAME "kinotifytest"
-    LINK_LIBRARIES Qt5::Test KF5::CoreAddons baloofilecommon
+    LINK_LIBRARIES Qt5::Test baloofilecommon
   )
 endif()
 
-ecm_add_test(pendingfilequeuetest.cpp ../pendingfilequeue.cpp ../pendingfile.cpp
-    TEST_NAME "pendingfilequeuetest"
-    LINK_LIBRARIES Qt5::Test
+MACRO(BALOO_FILE_AUTO_TESTS)
+  FOREACH(_testname ${ARGN})
+    ecm_add_test(${_testname}.cpp TEST_NAME ${_testname} LINK_LIBRARIES Qt5::Test baloofilecommon KF5::Baloo)
+  ENDFOREACH()
+ENDMACRO()
+
+# FIXME: Why is the FileMonitor test over here?
+baloo_file_auto_tests(
+    pendingfilequeuetest
+    filemonitortest
+    fileindexerconfigtest
+    basicindexingjobtest
+    regularexpcachebenchmark
+    filtereddiriteratortest
 )
 
 #
@@ -23,15 +34,6 @@ set(metadatamover_SRC
 #    LINK_LIBRARIES Qt5::Test ${XAPIAN_LIBRARIES} KF5::BalooXapian baloofilecommon
 #)
 
-#
-# File Monitor
-#
-set(fileMonitor_SRC filemonitortest.cpp)
-
-ecm_add_test(${fileMonitor_SRC}
-    TEST_NAME "filemonitortest"
-    LINK_LIBRARIES Qt5::Test Qt5::DBus KF5::Baloo
-)
 
 #
 # File Watch
@@ -43,29 +45,7 @@ ecm_add_test(${fileWatch_SRC}
     LINK_LIBRARIES Qt5::Test Qt5::DBus KF5::Baloo baloofilecommon
 )
 
-#
-# File Indexing Config
-#
-set(indexingConfig_SRC
-    fileindexerconfigtest.cpp
-)
 
-ecm_add_test(${indexingConfig_SRC}
-    TEST_NAME "fileindexerconfigtest"
-    LINK_LIBRARIES Qt5::Test KF5::ConfigCore KF5::CoreAddons baloofilecommon
-)
-
-#
-# Basic Indexing Job Test
-#
-set(basicIndexingJob_SRC
-    basicindexingjobtest.cpp
-)
-
-ecm_add_test(${basicIndexingJob_SRC}
-    TEST_NAME "basicfileindexingjobtest"
-    LINK_LIBRARIES Qt5::Test baloofilecommon
-)
 
 #
 # Basic Indexing Queue Test
@@ -83,21 +63,6 @@ ecm_add_test(${basicIndexingJob_SRC}
 #                   baloofilecommon
 #)
 
-#
-# Regexp cahce benchmark
-#
-ecm_add_test(regularexpcachebenchmark.cpp
-    TEST_NAME "regexpcachebenchmark"
-    LINK_LIBRARIES Qt5::Test KF5::ConfigCore KF5::CoreAddons baloofilecommon
-)
 
-#
-# Filtered Dir Iterator
-#
-ecm_add_test(filtereddiriteratortest.cpp
-    TEST_NAME "filtereddiriteratortest"
-    LINK_LIBRARIES Qt5::Test KF5::ConfigCore KF5::CoreAddons baloofilecommon
-)
-
-#add_subdirectory(fileindexingjob)
+add_subdirectory(fileindexingjob)
 #add_subdirectory(scheduler)
