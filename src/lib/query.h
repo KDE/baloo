@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef QUERY_H
-#define QUERY_H
+#ifndef BALOO_QUERY_H
+#define BALOO_QUERY_H
 
 #include "core_export.h"
 #include "resultiterator.h"
@@ -135,4 +135,4 @@ private:
 };
 
 }
-#endif // QUERY_H
+#endif // BALOO_QUERY_H

@@ -74,8 +74,8 @@ void BasicIndexingJobTest::testBasicIndexing()
     QCOMPARE(docForNormal.getFieldValues("DT_MY").at(0), QString::number(mod.date().year()));
     QCOMPARE(docForNormal.getFieldValues("DT_MM").at(0), QString::number(mod.date().month()));
     QCOMPARE(docForNormal.getFieldValues("DT_MD").at(0), QString::number(mod.date().day()));
-    QCOMPARE(docForNormal.getFieldValues("M_TIME").at(0), QString::number(mod.toTime_t()));
-    QCOMPARE(docForNormal.getFieldValues("M_DATE").at(0), QString::number(mod.date().toJulianDay()));
+    QCOMPARE(docForNormal.getFieldValues("time_t").at(0), QString::number(mod.toTime_t()));
+    QCOMPARE(docForNormal.getFieldValues("j_day").at(0), QString::number(mod.date().toJulianDay()));
     QCOMPARE(docForNormal.getFieldValues("CREATED").at(0), QString::number(fileInfo.created().toMSecsSinceEpoch()));
 
     QCOMPARE(docForNormal.getFieldValues("URL").at(0), file.url());

@@ -23,11 +23,11 @@
 #ifndef FILESEARCHSTORE_H
 #define FILESEARCHSTORE_H
 
-#include "xapiansearchstore.h"
+#include "lucenesearchstore.h"
 
 namespace Baloo {
 
-class FileSearchStore : public XapianSearchStore
+class FileSearchStore : public LuceneSearchStore
 {
     Q_OBJECT
     Q_INTERFACES(Baloo::SearchStore)
@@ -36,19 +36,19 @@ public:
     FileSearchStore(QObject* parent = 0);
     virtual ~FileSearchStore();
 
-    virtual void setDbPath(const QString& path);
+    virtual void setIndexPath(const QString& path);
     virtual QStringList types();
 
 protected:
-    virtual Xapian::Query constructQuery(const QString& property,
+    virtual Lucene::QueryPtr constructQuery(const QString& property,
                                          const QVariant& value,
                                          Term::Comparator com);
 
-    virtual Xapian::Query constructFilterQuery(int year, int month, int day);
-    virtual Xapian::Query applyIncludeFolder(const Xapian::Query& q, const QString& includeFolder);
+    virtual Lucene::QueryPtr constructFilterQuery(int year, int month, int day);
+    virtual Lucene::QueryPtr applyIncludeFolder(const Lucene::QueryPtr& q, QString includeFolder);
 
-    virtual Xapian::Query convertTypes(const QStringList& types);
-    virtual QString constructFilePath(const Xapian::docid& docid);
+    virtual Lucene::QueryPtr convertTypes(const QStringList& types);
+    virtual QString constructFilePath(int docid);
 
     virtual QByteArray idPrefix() { return QByteArray("file"); }
 

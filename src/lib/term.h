@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef TERM_H
-#define TERM_H
+#ifndef BALOO_TERM_H
+#define BALOO_TERM_H
 
 #include "core_export.h"
 
@@ -155,4 +155,4 @@ inline Term operator !(const Term& rhs) {
 
 BALOO_CORE_EXPORT QDebug operator <<(QDebug d, const Baloo::Term& t);
 
-#endif // TERM_H
+#endif // BALOO_TERM_H

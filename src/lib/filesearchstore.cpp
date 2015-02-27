@@ -8,7 +8,7 @@
  * version 2.1 of the License, or (at your option) version 3, or any
  * later version accepted by the membership of KDE e.V. (or its
  * successor approved by the membership of KDE e.V.), which shall
- * act as a proxy defined in Section 6 of version 3 of the license.
+ * act as a proxy defined in Section 6 of vCMakeFiles/KF5Baloo.dir/filesearchstore.cpp.o: In function `Baloo::LuceneSearchStore::~LuceneSearchStore()':ersion 3 of the license.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -22,18 +22,14 @@
 
 #include "filesearchstore.h"
 #include "term.h"
-#include "query.h"
 #include "filemapping.h"
-#include "pathfilterpostingsource.h"
-#include "wildcardpostingsource.h"
-#include "xapianqueryparser.h"
 #include "xapiantermgenerator.h"
 
-#include <xapian.h>
 #include <QVector>
 #include <QDate>
 #include <QUrl>
 #include <QStandardPaths>
+#include <climits>
 
 #include <QDebug>
 #include <QMimeDatabase>
@@ -43,10 +39,10 @@
 using namespace Baloo;
 
 FileSearchStore::FileSearchStore(QObject* parent)
-    : XapianSearchStore(parent)
+    : LuceneSearchStore(parent)
 {
     const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/file/");
-    setDbPath(path);
+    setIndexPath(path);
 
     m_prefixes.insert(QStringLiteral("filename"), QStringLiteral("F"));
     m_prefixes.insert(QStringLiteral("mimetype"), QStringLiteral("M"));
@@ -62,9 +58,9 @@ FileSearchStore::~FileSearchStore()
 {
 }
 
-void FileSearchStore::setDbPath(const QString& path)
+void FileSearchStore::setIndexPath(const QString& path)
 {
-    XapianSearchStore::setDbPath(path);
+    Baloo::LuceneSearchStore::setIndexPath(path);
 }
 
 QStringList FileSearchStore::types()
@@ -72,19 +68,17 @@ QStringList FileSearchStore::types()
     return QStringList() << QLatin1String("File") << QLatin1String("Audio") << QLatin1String("Video") << QLatin1String("Document") << QLatin1String("Image") << QLatin1String("Archive") << QLatin1String("Folder");
 }
 
-Xapian::Query FileSearchStore::convertTypes(const QStringList& types)
+Lucene::QueryPtr FileSearchStore::convertTypes(const QStringList& types)
 {
-    Xapian::Query xapQ;
+    Lucene::BooleanQueryPtr boolQuery = Lucene::newLucene<Lucene::BooleanQuery>();
     Q_FOREACH (const QString& type, types) {
-        const QString t = QLatin1Char('T') + type.toLower();
-        if (t == QLatin1String("Tfile"))
+        if (type == QLatin1String("file"))
             continue;
-
-        const QByteArray arr = t.toUtf8();
-        xapQ = andQuery(xapQ, Xapian::Query(arr.constData()));
+        Lucene::TermPtr term = Lucene::newLucene<Lucene::Term>(L"T", type.toLower().toStdWString());
+        boolQuery->add(Lucene::newLucene<Lucene::TermQuery>(term), Lucene::BooleanClause::MUST);
     }
 
-    return xapQ;
+    return boolQuery->rewrite(m_reader);
 }
 
 QString FileSearchStore::fetchPrefix(const QString& property) const
@@ -104,61 +98,48 @@ QString FileSearchStore::fetchPrefix(const QString& property) const
     }
 }
 
-Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVariant& value,
+Lucene::QueryPtr FileSearchStore::constructQuery(const QString& property, const QVariant& value,
                                               Term::Comparator com)
 {
     // FIXME: Handle cases where only the property is specified
-    if (value.isNull())
-        return Xapian::Query();
-
+    Lucene::QueryPtr emptyQuery = Lucene::newLucene<Lucene::BooleanQuery>();
+    if (value.isNull()) {
+        return emptyQuery;
+    }
     //
     // Sanitize the values
     //
     if (value.type() == QVariant::Int && com == Term::Contains) {
         com = Term::Equal;
     }
-
     if (property.compare(QLatin1String("rating"), Qt::CaseInsensitive) == 0) {
         int val = value.toInt();
         if (val == 0)
-            return Xapian::Query();
-
-        QVector<std::string> terms;
-        if (com == Term::Greater || com == Term::GreaterEqual) {
-            if (com == Term::Greater)
-                val++;
-
-            for (int i=val; i<=10; ++i) {
-                QByteArray arr = 'R' + QByteArray::number(i);
-                terms << arr.constData();
-            }
+            return emptyQuery;
+        Lucene::NumericRangeQueryPtr rangeQuery;
+        switch (com) {
+            case Term::GreaterEqual :
+            case Term::Greater :
+                rangeQuery = Lucene::NumericRangeQuery::newIntRange(L"R", val, 10, com == Term::GreaterEqual, true);
+                break;
+            case Term::LessEqual :
+            case Term::Less :
+                rangeQuery = Lucene::NumericRangeQuery::newIntRange(L"R", 1, val, true, com == Term::LessEqual);
+                break;
+            default:
+                break;
         }
-        else if (com == Term::Less || com == Term::LessEqual) {
-            if (com == Term::Less)
-                val--;
-
-            for (int i=1; i<=val; ++i) {
-                QByteArray arr = 'R' + QByteArray::number(i);
-                terms << arr.constData();
-            }
-        }
-        else if (com == Term::Equal) {
-            QByteArray arr = 'R' + QByteArray::number(val);
-            terms << arr.constData();
-        }
-
-        return Xapian::Query(Xapian::Query::OP_OR, terms.begin(), terms.end());
+        return rangeQuery->rewrite(m_reader);
     }
 
     if (property == QStringLiteral("filename") && value.toString().contains('*')) {
-        WildcardPostingSource ws(value.toString(), QStringLiteral("F"));
-        return Xapian::Query(&ws);
+        Lucene::TermPtr term = Lucene::newLucene<Lucene::Term>(L"F", value.toString().toStdWString());
+        Lucene::WildcardQueryPtr wildCardQuery = Lucene::newLucene<Lucene::WildcardQuery>(term);
+        return wildCardQuery->rewrite(m_reader);
     }
 
     if (property.compare(QLatin1String("modified"), Qt::CaseInsensitive) == 0) {
         if (com == Term::Equal || com == Term::Contains) {
-            XapianQueryParser parser;
-            parser.setDatabase(xapianDb());
 
             QString val;
             if (value.type() == QVariant::Date) {
@@ -166,45 +147,49 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
             } else if (value.type() == QVariant::DateTime) {
                 val = value.toDateTime().toString(Qt::ISODate);
             }
-
-            return parser.expandWord(val, QStringLiteral("DT_M"));
+            Lucene::TermPtr term = Lucene::newLucene<Lucene::Term>(L"DT_M", val.toStdWString());
+            Lucene::PrefixQueryPtr preQuery = Lucene::newLucene<Lucene::PrefixQuery>(term);
+            return preQuery->rewrite(m_reader);
         }
 
         if (com == Term::Greater || com == Term::GreaterEqual ||
             com == Term::Less || com == Term::LessEqual)
         {
             qlonglong numVal = 0;
-            int slotNumber = 0;
+            QString field;
+            // we intialize max to  max value of long, just in case we can't get current time to limit queries
+            //TODO check if lucene's implicit cast to long causes loss of data??
+            qint64 max = LONG_MAX;
 
             if (value.type() == QVariant::DateTime) {
-                slotNumber = 0;
+                field = "time_t";
                 numVal = value.toDateTime().toTime_t();
+                max = QDateTime::currentDateTime().toTime_t();
             }
             else if (value.type() == QVariant::Date) {
-                slotNumber = 1;
+                field = "j_day";
                 numVal = value.toDate().toJulianDay();
+                max = QDate::currentDate().toJulianDay();
             }
 
-            if (com == Term::Greater) {
-                ++numVal;
+            Lucene::NumericRangeQueryPtr rangeQuery;
+            switch (com) {
+                case Term::GreaterEqual :
+                case Term::Greater :
+                    rangeQuery = Lucene::NumericRangeQuery::newLongRange(field.toStdWString(), numVal, max, com == Term::GreaterEqual, true);
+                    break;
+                case Term::LessEqual :
+                case Term::Less :
+                    rangeQuery = Lucene::NumericRangeQuery::newLongRange(field.toStdWString(), 0, numVal, false, com == Term::LessEqual);
+                default :
+                    break;
             }
-            if (com == Term::Less) {
-                --numVal;
-            }
-
-            if (com == Term::GreaterEqual || com == Term::Greater) {
-                return Xapian::Query(Xapian::Query::OP_VALUE_GE, slotNumber, QString::number(numVal).toStdString());
-            }
-            else if (com == Term::LessEqual || com == Term::Less) {
-                return Xapian::Query(Xapian::Query::OP_VALUE_LE, slotNumber, QString::number(numVal).toStdString());
-            }
+            return rangeQuery->rewrite(m_reader);
         }
     }
 
     if (value.type() == QVariant::Date || value.type() == QVariant::DateTime) {
         if (com == Term::Equal || com == Term::Contains) {
-            XapianQueryParser parser;
-            parser.setDatabase(xapianDb());
 
             QString val;
             if (value.type() == QVariant::Date) {
@@ -212,25 +197,25 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
             } else if (value.type() == QVariant::DateTime) {
                 val = value.toDateTime().toString(Qt::ISODate);
             }
-
-            return parser.expandWord(val, fetchPrefix(property));
+            Lucene::TermPtr term = Lucene::newLucene<Lucene::Term>(fetchPrefix(property).toStdWString(), val.toStdWString());
+            Lucene::PrefixQueryPtr preQuery = Lucene::newLucene<Lucene::PrefixQuery>(term);
+            return preQuery->rewrite(m_reader);
         }
         // FIXME: Should we expressly forbid other comparisons?
     }
 
     if (com == Term::Contains) {
-        XapianQueryParser parser;
-        parser.setDatabase(xapianDb());
-
         QString prefix;
         if (!property.isEmpty()) {
             prefix = fetchPrefix(property);
             if (prefix.isEmpty()) {
-                return Xapian::Query();
+                Lucene::QueryPtr emptyQuery = Lucene::newLucene<Lucene::BooleanQuery>();
+                return emptyQuery;
             }
         }
-
-        return parser.parseQuery(value.toString(), prefix);
+        Lucene::TermPtr term = Lucene::newLucene<Lucene::Term>(prefix.toStdWString(), value.toString().toStdWString());
+        Lucene::PrefixQueryPtr preQuery = Lucene::newLucene<Lucene::PrefixQuery>(term);
+        return preQuery->rewrite(m_reader);
     }
 
     if (com == Term::Equal) {
@@ -239,64 +224,67 @@ Xapian::Query FileSearchStore::constructQuery(const QString& property, const QVa
         // phrase query.
         QStringList terms = XapianTermGenerator::termList(value.toString());
 
-        QString prefix;
+        // If no property is specified we default queries to use content field
+        QString prefix = "content";
         if (!property.isEmpty()) {
             prefix = fetchPrefix(property);
             if (prefix.isEmpty()) {
-                return Xapian::Query();
+                Lucene::QueryPtr emptyQuery = Lucene::newLucene<Lucene::BooleanQuery>();
+                return emptyQuery;
             }
         }
 
-        QList<Xapian::Query> queries;
-        int position = 1;
-        for (const QString& term : terms) {
-            QByteArray arr = (prefix + term).toUtf8();
-            queries << Xapian::Query(arr.constData(), 1, position++);
-        }
 
-        if (queries.isEmpty()) {
-            return Xapian::Query();
-        } else if (queries.size() == 1) {
-            return queries.first();
-        } else {
-            return Xapian::Query(Xapian::Query::OP_PHRASE, queries.begin(), queries.end());
+        Lucene::PhraseQueryPtr phraseQ = Lucene::newLucene<Lucene::PhraseQuery>();
+        for (const QString& term : terms) {
+            Lucene::TermPtr luceneTerm = Lucene::newLucene<Lucene::Term>(prefix.toStdWString(), term.toStdWString());
+            phraseQ->add(luceneTerm);
         }
+        return phraseQ->rewrite(m_reader);
+    }
+    return Lucene::newLucene<Lucene::BooleanQuery>();
+}
+
+Lucene::QueryPtr FileSearchStore::constructFilterQuery(int year, int month, int day)
+{
+    Lucene::BooleanQueryPtr boolQuery = Lucene::newLucene<Lucene::BooleanQuery>();
+
+    if (year != -1) {
+        // we need to use range queries with same start and end when matching exact values for numeric fields
+        Lucene::NumericRangeQueryPtr rangeQ = Lucene::NumericRangeQuery::newIntRange(L"DT_MY", year, year, true, true);
+        boolQuery->add(rangeQ->rewrite(m_reader), Lucene::BooleanClause::MUST);
+    }
+    if (month != -1) {
+        Lucene::NumericRangeQueryPtr rangeQ = Lucene::NumericRangeQuery::newIntRange(L"DT_MM", month, month, true, true);
+        boolQuery->add(rangeQ->rewrite(m_reader), Lucene::BooleanClause::MUST);
+    }
+    if (day != -1) {
+        Lucene::NumericRangeQueryPtr rangeQ = Lucene::NumericRangeQuery::newIntRange(L"DT_MD", day, day, true, true);
+        boolQuery->add(rangeQ->rewrite(m_reader), Lucene::BooleanClause::MUST);
     }
 
-    return Xapian::Query();
+    return boolQuery->rewrite(m_reader);
 }
 
-Xapian::Query FileSearchStore::constructFilterQuery(int year, int month, int day)
-{
-    QVector<std::string> vector;
-    vector.reserve(3);
-
-    if (year != -1)
-        vector << QString::fromLatin1("DT_MY%1").arg(year).toUtf8().constData();
-    if (month != -1)
-        vector << QString::fromLatin1("DT_MM%1").arg(month).toUtf8().constData();
-    if (day != -1)
-        vector << QString::fromLatin1("DT_MD%1").arg(day).toUtf8().constData();
-
-    return Xapian::Query(Xapian::Query::OP_AND, vector.begin(), vector.end());
-}
-
-QString FileSearchStore::constructFilePath(const Xapian::docid& docid)
+QString FileSearchStore::constructFilePath(int docid)
 {
     QMutexLocker lock(&m_mutex);
 
     FileMapping file(docid);
-    file.fetch(m_db);
+    file.fetch(m_reader);
 
     return file.url();
 }
 
-Xapian::Query FileSearchStore::applyIncludeFolder(const Xapian::Query& q, const QString& includeFolder)
+Lucene::QueryPtr FileSearchStore::applyIncludeFolder(const Lucene::QueryPtr& q, QString includeFolder)
 {
     if (includeFolder.isEmpty()) {
         return q;
     }
-
-    PathFilterPostingSource ps(includeFolder);
-    return andQuery(q, Xapian::Query(&ps));
+    if (!includeFolder.endsWith(QLatin1Char('/'))) {
+        includeFolder.append(QLatin1Char('/'));
+    }
+    Lucene::PrefixQueryPtr urlQuery = Lucene::newLucene<Lucene::PrefixQuery>(
+        Lucene::newLucene<Lucene::Term>(L"URL", includeFolder.toStdWString()) );
+    return andQuery(q, urlQuery->rewrite(m_reader));
 }

@@ -53,6 +53,7 @@ bool BasicIndexingJob::index()
     LuceneDocument doc;
     doc.addIndexedField(QStringLiteral("M"), m_mimetype);
     doc.indexText(fileInfo.fileName(), QStringLiteral("F"));
+    doc.indexText(fileInfo.fileName());
 
     // Modified Date
     QDateTime mod = fileInfo.lastModified();
@@ -64,9 +65,8 @@ bool BasicIndexingJob::index()
     doc.addNumericField(QStringLiteral("DT_MM"), mod.date().month());
     doc.addNumericField(QStringLiteral("DT_MD"), mod.date().day());
 
-    //TODO check if we actually need to store mtime value as long as numbericfield doesn't support uint
-    doc.addNumericField(QStringLiteral("M_TIME"), mod.toTime_t(), true);
-    doc.addNumericField(QStringLiteral("M_DATE"), mod.date().toJulianDay(), true);
+    doc.addNumericField(QStringLiteral("time_t"), mod.toTime_t(), true);
+    doc.addNumericField(QStringLiteral("j_day"), mod.date().toJulianDay(), true);
     doc.addNumericField(QStringLiteral("CREATED"), fileInfo.created().toMSecsSinceEpoch(), true);
 
     // Store the URL
@@ -120,7 +120,7 @@ bool BasicIndexingJob::indexXAttr(const QString& url, LuceneDocument& doc)
 
     int rating = userMetaData.rating();
     if (rating) {
-        doc.addIndexedField(QStringLiteral("R"), QString::number(rating));
+        doc.addNumericField(QStringLiteral("R"), QString::number(rating));
         modified = true;
     }
 
