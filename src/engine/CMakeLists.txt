@@ -3,6 +3,7 @@ set(BALOO_ENGINE_SRCS
     database.cpp
     document.cpp
     documentdb.cpp
+    documentdatadb.cpp
     documenturldb.cpp
     documentvaluedb.cpp
     documentiddb.cpp
