@@ -83,4 +83,4 @@ install(FILES
     COMPONENT Devel
 )
 
-#add_subdirectory(autotests)
+add_subdirectory(autotests)

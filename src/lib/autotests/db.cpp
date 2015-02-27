@@ -27,7 +27,7 @@
 
 static QTemporaryDir dir;
 
-std::string fileIndexDbPath()
+QString fileIndexDbPath()
 {
-    return dir.path().toUtf8().constData();
+    return dir.path();
 }

@@ -27,7 +27,7 @@
 
 static const QString xdgDataDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
 
-std::string fileIndexDbPath()
+QString fileIndexDbPath()
 {
-    return (xdgDataDir + QLatin1String("/baloo/file")).toUtf8().constData();
+    return xdgDataDir + QLatin1String("/baloo");
 }

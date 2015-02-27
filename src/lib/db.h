@@ -25,6 +25,6 @@
 
 #include <QString>
 
-std::string fileIndexDbPath();
+QString fileIndexDbPath();
 
 #endif // DBFUNCTIONS_H

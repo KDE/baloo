@@ -18,10 +18,11 @@
  *
  */
 
-#include "filefetchjobtest.h"
 #include "../db.h"
 #include "filemapping.h"
 #include "file.h"
+#include "document.h"
+#include "database.h"
 
 #include <QDebug>
 #include <QTest>
@@ -37,17 +38,17 @@
 
 using namespace Baloo;
 
-void FileFetchJobTest::init()
+class FileFetchJobTest : public QObject
 {
-    // TODO: Remove the old xapian DB?
-    // Create the Xapian DB
-    const std::string xapianPath = fileIndexDbPath();
-    Xapian::WritableDatabase db(xapianPath, Xapian::DB_CREATE_OR_OPEN);
-}
+    Q_OBJECT
+private Q_SLOTS:
+    void test();
+};
 
-void FileFetchJobTest::testXapianData()
+void FileFetchJobTest::test()
 {
     using namespace KFileMetaData;
+
     PropertyMap map;
     map.insert(Property::Album, QLatin1String("value1"));
     map.insert(Property::Artist, QLatin1String("value2"));
@@ -59,27 +60,28 @@ void FileFetchJobTest::testXapianData()
     QByteArray json = jdoc.toJson();
     QVERIFY(!json.isEmpty());
 
-    Xapian::Document doc;
-    doc.set_data(json.constData());
-
     QTemporaryFile tempFile;
     tempFile.open();
 
-    doc.add_value(3, tempFile.fileName().toUtf8().constData());
-    doc.add_boolean_term(("P-" + tempFile.fileName()).toUtf8().constData());
+    Document doc;
+    doc.setData(json);
+    doc.setUrl(tempFile.fileName().toUtf8());
+    doc.setId(5);
+    doc.addTerm("testterm");
 
     {
-        const std::string xapianPath = fileIndexDbPath();
-        Xapian::WritableDatabase db(xapianPath, Xapian::DB_CREATE_OR_OPEN);
-        db.add_document(doc);
+        Database db(fileIndexDbPath());
+        db.open();
+        db.transaction();
+        db.addDocument(doc);
         db.commit();
     }
 
     File file(tempFile.fileName());
     QVERIFY(file.load());
-
     QCOMPARE(file.properties(), map);
 }
 
-
 QTEST_MAIN(FileFetchJobTest)
+
+#include "filefetchjobtest.moc"
