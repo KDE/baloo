@@ -1,11 +1,11 @@
 set(BALOO_LIB_SRCS
-    #searchstore.cpp
-    #term.cpp
-    #query.cpp
+    searchstore.cpp
+    term.cpp
+    query.cpp
     #queryrunnable.cpp
-    #resultiterator.cpp
-    #result.cpp
-    #advancedqueryparser.cpp
+    resultiterator.cpp
+    result.cpp
+    advancedqueryparser.cpp
 
     #file.cpp
     filemapping.cpp
@@ -23,7 +23,8 @@ set(BALOO_LIB_SRCS
     #xapiansearchstore.cpp
     #wildcardpostingsource.cpp
     #pathfilterpostingsource.cpp
-    #filesearchstore.cpp
+    filesearchstore.cpp
+    lucenesearchstore.cpp
 )
 
 add_library(KF5Baloo ${BALOO_LIB_SRCS})
@@ -35,12 +36,14 @@ target_link_libraries(KF5Baloo
     Qt5::Core
     KF5::CoreAddons
     KF5::FileMetaData
+    ${LucenePlusPlus_LIBRARIES}
 
     PRIVATE
     KF5::ConfigCore
     Qt5::DBus
     KF5::Solid
     KF5::BalooLucene
+    KF5::BalooXapian
 )
 
 set_target_properties(KF5Baloo PROPERTIES
@@ -84,5 +87,5 @@ install(FILES
     COMPONENT Devel
 )
 
-add_subdirectory(tests)
+#add_subdirectory(tests)
 add_subdirectory(autotests)

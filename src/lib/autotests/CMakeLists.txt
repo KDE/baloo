@@ -1,7 +1,7 @@
 #
 # Query Serialization
 #
-set(querySerialization_SRC queryserializationtest.cpp)
+#[[set(querySerialization_SRC queryserializationtest.cpp)
 
 ecm_add_test(${querySerialization_SRC}
     TEST_NAME "queryserializationtest"
@@ -51,18 +51,15 @@ ecm_add_test(taglistjobtest.cpp
         Qt5::Test
         KF5::Baloo
 )
-
+]]
 #
 # Search Store
 #
 set(filesearchstore_SRCS filesearchstoretest.cpp
                    ../filesearchstore.cpp
-                   ../pathfilterpostingsource.cpp
-                   ../wildcardpostingsource.cpp
                    ../filemapping.cpp
-                   ../xapiansearchstore.cpp
+                   ../lucenesearchstore.cpp
                    ../searchstore.cpp
-                   ../../file/database.cpp
 )
 
 ecm_add_test(${filesearchstore_SRCS}
@@ -74,12 +71,15 @@ ecm_add_test(${filesearchstore_SRCS}
         KF5::FileMetaData
         KF5::Baloo
         KF5::BalooXapian
+        KF5::BalooLucene
+        ${LucenePlusPlus_LIBRARIES}
 )
 
-ecm_add_test(filemappingbenchmark.cpp
+#[[ecm_add_test(filemappingbenchmark.cpp
     TEST_NAME "filemappingbenchmark"
     LINK_LIBRARIES
         Qt5::Test
         KF5::Baloo
         baloofilecommon
 )
+]]
