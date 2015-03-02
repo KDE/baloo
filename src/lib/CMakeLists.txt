@@ -1,5 +1,4 @@
 set(BALOO_LIB_SRCS
-    searchstore.cpp
     term.cpp
     query.cpp
     queryrunnable.cpp
@@ -20,9 +19,8 @@ set(BALOO_LIB_SRCS
     ../file/fileexcludefilters.cpp
 
     # Search Store
-    # xapiansearchstore.cpp
-    # wildcardpostingsource.cpp
-    # filesearchstore.cpp
+    searchstore.cpp
+    enginesearchstore.cpp
 )
 
 add_library(KF5Baloo ${BALOO_LIB_SRCS})

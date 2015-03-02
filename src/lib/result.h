@@ -37,8 +37,8 @@ public:
     Result(const Result& rhs);
     ~Result();
 
-    QByteArray id() const;
-    void setId(const QByteArray& id);
+    uint id() const;
+    void setId(const uint& id);
 
     /**
      * Represents the file path of the item returned.

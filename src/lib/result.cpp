@@ -26,7 +26,7 @@ using namespace Baloo;
 
 class Result::Private {
 public:
-    QByteArray id;
+    uint id;
     QString filePath;
 };
 
@@ -45,12 +45,12 @@ Result::~Result()
     delete d;
 }
 
-void Result::setId(const QByteArray& id)
+void Result::setId(const uint& id)
 {
     d->id = id;
 }
 
-QByteArray Result::id() const
+uint Result::id() const
 {
     return d->id;
 }

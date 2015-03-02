@@ -1,6 +1,6 @@
 /*
  * This file is part of the KDE Baloo Project
- * Copyright (C) 2013  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2013-2015 Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -118,8 +118,7 @@ int main(int argc, char* argv[])
     Baloo::ResultIterator iter = query.exec();
     while (iter.next()) {
         const QString filePath = iter.filePath();
-        const QByteArray id = iter.id();
-        int fid = Baloo::deserialize("file", id);
+        uint fid = iter.id();
 
         QString title = colorString(QString::number(fid), 31) + QLatin1String(" ") + colorString(filePath, 32);
 

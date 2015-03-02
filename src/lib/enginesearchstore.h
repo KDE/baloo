@@ -1,5 +1,5 @@
 /*
- * This file is part of the KDE Baloo Project
+   This file is part of the KDE Baloo project.
  * Copyright (C) 2015  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
@@ -18,55 +18,30 @@
  *
  */
 
-#ifndef BALOO_ENGINEQUERY_H
-#define BALOO_ENGINEQUERY_H
+#ifndef BALOO_ENGINESEARCHSTORE_H
+#define BALOO_ENGINESEARCHSTORE_H
 
-#include "engine_export.h"
-#include <QByteArray>
-#include <QVector>
+#include "searchstore.h"
 
 namespace Baloo {
 
-class BALOO_ENGINE_EXPORT EngineQuery
+class Database;
+
+class EngineSearchStore : public SearchStore
 {
 public:
-    enum Operation {
-        Equal,
-        And,
-        Or
-    };
+    EngineSearchStore();
+    ~EngineSearchStore();
 
-    EngineQuery();
-    EngineQuery(const QByteArray& term, int pos = 0);
-    EngineQuery(const QVector<EngineQuery> subQueries, Operation op);
+    QStringList types();
 
-    QByteArray term() const {
-        return m_term;
-    }
-
-    int pos() const {
-        return m_pos;
-    }
-
-    Operation op() const {
-        return m_op;
-    }
-
-    bool leaf() const {
-        return !m_term.isEmpty();
-    }
-
-    QVector<EngineQuery> subQueries() const {
-        return m_subQueries;
-    }
+    QVector<uint> exec(const Query& query);
+    QString filePath(uint id);
 
 private:
-    QByteArray m_term;
-    int m_pos;
-
-    Operation m_op;
-    QVector<EngineQuery> m_subQueries;
+    Database* m_db;
 };
+
 }
 
-#endif
+#endif // BALOO_ENGINESEARCHSTORE_H

@@ -21,37 +21,35 @@
  */
 
 #include "resultiterator.h"
-#include "searchstore.h"
+#include "enginesearchstore.h"
 #include "result.h"
+
+#include <QVector>
 
 using namespace Baloo;
 
-class Baloo::ResultIteratorPrivate : public QSharedData {
+class Baloo::ResultIteratorPrivate {
 public:
     ResultIteratorPrivate()
-        : queryId(0)
-        , store(0) {
+        : store(0) {
     }
 
     ~ResultIteratorPrivate() {
-        if (store)
-            store->close(queryId);
     }
 
-    int queryId;
-    SearchStore* store;
+    QVector<uint> results;
+    int pos;
+    EngineSearchStore* store;
 };
 
-ResultIterator::ResultIterator(int id, SearchStore* store)
+ResultIterator::ResultIterator(const QVector<uint>& vec, EngineSearchStore* store)
     : d(new ResultIteratorPrivate)
 {
-    d->queryId = id;
-    d->store = store;
-}
+    Q_ASSERT(store);
 
-ResultIterator::ResultIterator()
-    : d(new ResultIteratorPrivate)
-{
+    d->results = vec;
+    d->store = store;
+    d->pos = -1;
 }
 
 ResultIterator::ResultIterator(const ResultIterator& rhs)
@@ -61,24 +59,24 @@ ResultIterator::ResultIterator(const ResultIterator& rhs)
 
 ResultIterator::~ResultIterator()
 {
+    delete d;
 }
 
 bool ResultIterator::next()
 {
-    Q_ASSERT(d->store);
-    return d->store->next(d->queryId);
+    d->pos++;
+    return d->pos < d->results.size();
 }
 
-QByteArray ResultIterator::id() const
+uint ResultIterator::id() const
 {
-    Q_ASSERT(d->store);
-    return d->store->id(d->queryId);
+    Q_ASSERT(d->pos >= 0 && d->pos < d->results.size());
+    return d->results.at(d->pos);
 }
 
 QString ResultIterator::filePath() const
 {
-    Q_ASSERT(d->store);
-    return d->store->filePath(d->queryId);
+    return d->store->filePath(id());
 }
 
 Result ResultIterator::result() const

@@ -25,18 +25,15 @@
 
 #include <QObject>
 #include <QString>
-#include <QHash>
-#include <QUrl>
 
 namespace Baloo {
 
 class Query;
 
-class SearchStore : public QObject
+class SearchStore
 {
-    Q_OBJECT
 public:
-    explicit SearchStore(QObject* parent = 0);
+    SearchStore();
     virtual ~SearchStore();
 
     /**
@@ -47,16 +44,9 @@ public:
 
     /**
      * Executes the particular query synchronously.
-     *
-     * \return Returns a integer representating the integer
      */
-    virtual int exec(const Query& query) = 0;
-    virtual bool next(int queryId) = 0;
-    virtual void close(int queryId) = 0;
-
-    virtual QByteArray id(int queryId) = 0;
-
-    virtual QString filePath(int queryId) = 0;
+    virtual QVector<uint> exec(const Query& query) = 0;
+    virtual QString filePath(uint id) = 0;
 };
 
 //
@@ -72,7 +62,5 @@ inline int deserialize(const QByteArray& namespace_, const QByteArray& str) {
 }
 
 }
-
-Q_DECLARE_INTERFACE(Baloo::SearchStore, "org.kde.Baloo.SearchStore")
 
 #endif // _BALOO_SEARCHSTORE_H

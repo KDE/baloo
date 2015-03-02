@@ -24,8 +24,7 @@
 
 using namespace Baloo;
 
-SearchStore::SearchStore(QObject* parent)
-    : QObject(parent)
+SearchStore::SearchStore()
 {
 }
 
