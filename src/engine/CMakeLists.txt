@@ -12,6 +12,7 @@ set(BALOO_ENGINE_SRCS
     positiondb.cpp
     postingdb.cpp
     postingiterator.cpp
+    queryparser.cpp
     termgenerator.cpp
     urldocumentdb.cpp
     vectorpostingiterator.cpp

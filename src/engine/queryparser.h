@@ -1,6 +1,6 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
- * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
+ * This file is part of the KDE Baloo Project
+ * Copyright (C) 2014-2015  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,24 +21,26 @@
 #ifndef BALOO_QUERYPARSER_H
 #define BALOO_QUERYPARSER_H
 
+#include "engine_export.h"
 #include <QString>
-#include <xapian.h>
-#include "xapian_export.h"
 
 namespace Baloo {
 
-class BALOO_XAPIAN_EXPORT XapianQueryParser
+class Database;
+class EngineQuery;
+
+class BALOO_ENGINE_EXPORT QueryParser
 {
 public:
-    XapianQueryParser();
+    QueryParser();
 
-    void setDatabase(Xapian::Database* db);
-    Xapian::Query parseQuery(const QString& str, const QString& prefix = QString());
+    void setDatabase(Database* db);
+    EngineQuery parseQuery(const QString& str, const QString& prefix = QString());
 
     /**
      * Expands word to every possible option which it can be expanded to.
      */
-    Xapian::Query expandWord(const QString& word, const QString& prefix = QString());
+    EngineQuery expandWord(const QString& word, const QString& prefix = QString());
 
     /**
      * Set if each word in the string should be treated as a partial word
@@ -47,7 +49,7 @@ public:
     void setAutoExapand(bool autoexpand);
 
 private:
-    Xapian::Database* m_db;
+    Database* m_db;
     bool m_autoExpand;
 };
 

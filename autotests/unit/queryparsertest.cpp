@@ -29,7 +29,7 @@ using namespace Baloo;
 
 void QueryParserTest::testSinglePrefixWord()
 {
-    XapianQueryParser parser;
+    QueryParser parser;
 
     Xapian::Query query = parser.parseQuery("The", "F");
     Xapian::Query q("Fthe", 1, 1);
@@ -38,7 +38,7 @@ void QueryParserTest::testSinglePrefixWord()
 
 void QueryParserTest::testSimpleQuery()
 {
-    XapianQueryParser parser;
+    QueryParser parser;
 
     Xapian::Query query = parser.parseQuery("The song of Ice and Fire");
 
@@ -57,7 +57,7 @@ void QueryParserTest::testSimpleQuery()
 
 void QueryParserTest::testPhraseSearch()
 {
-    XapianQueryParser parser;
+    QueryParser parser;
 
     Xapian::Query query = parser.parseQuery("The \"song of Ice\" Fire");
 
@@ -77,7 +77,7 @@ void QueryParserTest::testPhraseSearch()
 
 void QueryParserTest::testPhraseSearchOnly()
 {
-    XapianQueryParser parser;
+    QueryParser parser;
 
     Xapian::Query query = parser.parseQuery("/opt/pro");
 
@@ -91,7 +91,7 @@ void QueryParserTest::testPhraseSearchOnly()
 
 void QueryParserTest::testPhraseSearch_sameLimiter()
 {
-    XapianQueryParser parser;
+    QueryParser parser;
 
     Xapian::Query query = parser.parseQuery("The \"song of Ice' and Fire");
 
@@ -110,7 +110,7 @@ void QueryParserTest::testPhraseSearch_sameLimiter()
 
 void QueryParserTest::testPhraseSearchEmail()
 {
-    XapianQueryParser parser;
+    QueryParser parser;
 
     Xapian::Query query = parser.parseQuery("The song@ice.com Fire");
 
@@ -130,7 +130,7 @@ void QueryParserTest::testPhraseSearchEmail()
 
 void QueryParserTest::testAccentSearch()
 {
-    XapianQueryParser parser;
+    QueryParser parser;
 
     Xapian::Query query = parser.parseQuery(QString::fromLatin1("sóng"));
     Xapian::Query q("song", 1, 1);
@@ -140,7 +140,7 @@ void QueryParserTest::testAccentSearch()
 
 void QueryParserTest::testUnderscoreSplitting()
 {
-    XapianQueryParser parser;
+    QueryParser parser;
 
     Xapian::Query query = parser.parseQuery("The_Fire");
 
@@ -169,7 +169,7 @@ void QueryParserTest::testWordExpansion()
     db.replaceDocument(1, doc);
     Xapian::Database* xap = db.db();
 
-    XapianQueryParser parser;
+    QueryParser parser;
     parser.setDatabase(xap);
 
     Xapian::Query query = parser.parseQuery("hell");

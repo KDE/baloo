@@ -1,6 +1,6 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
- * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
+ * This file is part of the KDE Baloo Project
+ * Copyright (C) 2014-2015  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,9 @@
  *
  */
 
-#include "xapianqueryparser.h"
+#include "queryparser.h"
+#include "database.h"
+#include "enginequery.h"
 
 #include <QTextBoundaryFinder>
 #include <QStringList>
@@ -26,13 +28,13 @@
 
 using namespace Baloo;
 
-XapianQueryParser::XapianQueryParser()
+QueryParser::QueryParser()
     : m_db(0)
     , m_autoExpand(true)
 {
 }
 
-void XapianQueryParser::setDatabase(Xapian::Database* db)
+void QueryParser::setDatabase(Database* db)
 {
     m_db = db;
 }
@@ -48,6 +50,7 @@ namespace {
         }
     };
 
+    /*
     Xapian::Query makeQuery(const QString& string, int position, Xapian::Database* db)
     {
         if (!db) {
@@ -96,6 +99,7 @@ namespace {
         Xapian::Query finalQ(Xapian::Query::OP_SYNONYM, queries.begin(), queries.end());
         return finalQ;
     }
+    */
 
     bool containsSpace(const QString& string) {
         Q_FOREACH (const QChar& ch, string) {
@@ -107,7 +111,7 @@ namespace {
     }
 }
 
-Xapian::Query XapianQueryParser::parseQuery(const QString& text, const QString& prefix)
+EngineQuery QueryParser::parseQuery(const QString& text, const QString& prefix)
 {
     /*
     Xapian::QueryParser parser;
@@ -123,9 +127,10 @@ Xapian::Query XapianQueryParser::parseQuery(const QString& text, const QString& 
     */
 
     if (text.isEmpty()) {
-        return Xapian::Query();
+        return EngineQuery();
     }
 
+    /*
     QList<Xapian::Query> queries;
     QList<Xapian::Query> phraseQueries;
 
@@ -235,15 +240,18 @@ Xapian::Query XapianQueryParser::parseQuery(const QString& text, const QString& 
         return queries.first();
     }
     return Xapian::Query(Xapian::Query::OP_AND, queries.begin(), queries.end());
+    */
+    return EngineQuery();
 }
 
-void XapianQueryParser::setAutoExapand(bool autoexpand)
+void QueryParser::setAutoExapand(bool autoexpand)
 {
     m_autoExpand = autoexpand;
 }
 
-Xapian::Query XapianQueryParser::expandWord(const QString& word, const QString& prefix)
+EngineQuery QueryParser::expandWord(const QString& word, const QString& prefix)
 {
+    /*
     const std::string stdString((prefix + word).toUtf8().constData());
     Xapian::TermIterator it = m_db->allterms_begin(stdString);
     Xapian::TermIterator end = m_db->allterms_end(stdString);
@@ -258,4 +266,7 @@ Xapian::Query XapianQueryParser::expandWord(const QString& word, const QString& 
     }
     Xapian::Query finalQ(Xapian::Query::OP_SYNONYM, queries.begin(), queries.end());
     return finalQ;
+    */
+
+    return EngineQuery();
 }
