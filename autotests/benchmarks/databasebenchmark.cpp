@@ -40,6 +40,8 @@ void DatabaseBenchmark::test()
 
     QTemporaryDir dir;
     Database db(dir.path());
+    db.open();
+    db.transaction();
 
     QDateTime dt = QDateTime::currentDateTime();
     uint i = 1;
