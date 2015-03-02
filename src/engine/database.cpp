@@ -29,8 +29,10 @@
 #include "documentdatadb.h"
 
 #include "document.h"
+#include "enginequery.h"
 
 #include "andpostingiterator.h"
+#include "orpostingiterator.h"
 
 #include <QFile>
 #include <QFileInfo>
@@ -333,45 +335,61 @@ bool Database::hasChanges() const
     return !m_pendingOperations.isEmpty();
 }
 
-QVector<uint> Database::exec(const QVector<QByteArray>& query)
-{
-    Q_ASSERT(m_txn);
-    Q_ASSERT(!query.isEmpty());
-
-    QVector<PostingIterator*> list;
-    list.reserve(query.size());
-
-    for (const QByteArray& term : query) {
-        PostingIterator* iter = m_postingDB->iter(term);
-        if (iter) {
-            list << iter;
-        }
-    }
-
-    if (list.isEmpty()) {
-        return QVector<uint>();
-    }
-
-    QVector<uint> result;
-    if (list.size() == 1) {
-        PostingIterator* it = list.first();
-        while (it->next()) {
-            result << it->docId();
-        }
-        return result;
-    }
-
-    AndPostingIterator it(list);
-    while (it.next()) {
-        result << it.docId();
-    }
-
-    return result;
-}
-
 QVector<uint> Database::fetchIndexingLevel(int size)
 {
     Q_ASSERT(m_txn);
     Q_ASSERT(size > 0);
     return m_contentIndexingDB->fetchItems(size);
+}
+
+//
+// Queries
+//
+
+PostingIterator* Database::toPostingIterator(const EngineQuery& query)
+{
+    if (query.leaf()) {
+        if (query.pos() == 0) {
+            return m_postingDB->iter(query.term());
+        } else {
+            // FIXME: Implement position iterator
+            return 0;
+        }
+    }
+
+    Q_ASSERT(!query.subQueries().isEmpty());
+
+    QVector<PostingIterator*> vec;
+    vec.reserve(query.subQueries().size());
+
+    for (const EngineQuery& q : query.subQueries()) {
+        vec << toPostingIterator(q);
+    }
+
+    if (query.op() == EngineQuery::And) {
+        return new AndPostingIterator(vec);
+    } else if (query.op() == EngineQuery::Or) {
+        return new OrPostingIterator(vec);
+    }
+
+    Q_ASSERT(0);
+    return 0;
+}
+
+QVector<uint> Database::exec(const EngineQuery& query, int limit)
+{
+    Q_ASSERT(m_txn);
+
+    QVector<uint> results;
+    PostingIterator* it = toPostingIterator(query);
+    if (!it) {
+        return results;
+    }
+
+    while (it->next() && limit) {
+        results << it->docId();
+        limit--;
+    }
+
+    return results;
 }

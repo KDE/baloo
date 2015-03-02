@@ -36,6 +36,8 @@ class DocumentUrlDB;
 class DocumentValueDB;
 class UrlDocumentDB;
 class DocumentIdDB;
+class EngineQuery;
+class PostingIterator;
 
 class DatabaseTest;
 
@@ -70,7 +72,7 @@ public:
     QByteArray documentSlot(uint id, uint slotNum);
     QByteArray documentData(uint id);
 
-    QVector<uint> exec(const QVector<QByteArray>& query);
+    QVector<uint> exec(const EngineQuery& query, int limit = -1);
 
     QVector<uint> fetchIndexingLevel(int size);
 private:
@@ -106,6 +108,8 @@ private:
     QVector<Operation> m_pendingOperations;
 
     friend class DatabaseTest;
+
+    PostingIterator* toPostingIterator(const EngineQuery& query);
 };
 }
 
