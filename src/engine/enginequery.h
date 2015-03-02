@@ -32,12 +32,14 @@ class BALOO_ENGINE_EXPORT EngineQuery
 public:
     enum Operation {
         Equal,
+        StartsWith,
         And,
         Or
     };
 
     EngineQuery();
     EngineQuery(const QByteArray& term, int pos = 0);
+    EngineQuery(const QByteArray& term, Operation op, int pos = 0);
     EngineQuery(const QVector<EngineQuery> subQueries, Operation op);
 
     QByteArray term() const {
@@ -62,9 +64,9 @@ public:
 
 private:
     QByteArray m_term;
+    Operation m_op;
     int m_pos;
 
-    Operation m_op;
     QVector<EngineQuery> m_subQueries;
 };
 }

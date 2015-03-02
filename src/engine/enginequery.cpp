@@ -24,11 +24,20 @@ using namespace Baloo;
 
 EngineQuery::EngineQuery()
     : m_pos(0)
+    , m_op(Equal)
 {
 }
 
 EngineQuery::EngineQuery(const QByteArray& term, int pos)
     : m_term(term)
+    , m_pos(pos)
+    , m_op(Equal)
+{
+}
+
+EngineQuery::EngineQuery(const QByteArray& term, EngineQuery::Operation op, int pos)
+    : m_term(term)
+    , m_op(op)
     , m_pos(pos)
 {
 }
@@ -39,4 +48,3 @@ EngineQuery::EngineQuery(const QVector<EngineQuery> subQueries, Operation op)
     , m_subQueries(subQueries)
 {
 }
-
