@@ -1,6 +1,6 @@
 /*
  * This file is part of the KDE Baloo Project
- * Copyright (C) 2013  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2013-2015  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,13 +21,47 @@
  */
 
 #include "searchstore.h"
+#include "query.h"
+
+#include "database.h"
+#include "enginequery.h"
+
+#include <QStandardPaths>
 
 using namespace Baloo;
 
 SearchStore::SearchStore()
+    : m_db(0)
 {
+    const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/");
+    m_db = new Database(path);
+    m_db->open();
+    m_db->transaction();
 }
 
 SearchStore::~SearchStore()
 {
+    delete m_db;
+}
+
+QStringList SearchStore::types()
+{
+    return QStringList() << QLatin1String("Audio") << QLatin1String("Video") << QLatin1String("Document")
+                         << QLatin1String("Image") << QLatin1String("Archive") << QLatin1String("Folder");
+}
+
+QVector<uint> SearchStore::exec(const Query& query)
+{
+    if (!query.searchString().isEmpty()) {
+        EngineQuery eq(query.searchString().toUtf8());
+        return m_db->exec(eq);
+    }
+
+    return QVector<uint>();
+}
+
+QString SearchStore::filePath(uint id)
+{
+    Q_ASSERT(id > 0);
+    return m_db->documentUrl(id);
 }

@@ -18,9 +18,7 @@ set(BALOO_LIB_SRCS
     ../file/regexpcache.cpp
     ../file/fileexcludefilters.cpp
 
-    # Search Store
     searchstore.cpp
-    enginesearchstore.cpp
 )
 
 add_library(KF5Baloo ${BALOO_LIB_SRCS})

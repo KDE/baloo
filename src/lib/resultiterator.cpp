@@ -21,7 +21,7 @@
  */
 
 #include "resultiterator.h"
-#include "enginesearchstore.h"
+#include "searchstore.h"
 #include "result.h"
 
 #include <QVector>
@@ -39,10 +39,10 @@ public:
 
     QVector<uint> results;
     int pos;
-    EngineSearchStore* store;
+    SearchStore* store;
 };
 
-ResultIterator::ResultIterator(const QVector<uint>& vec, EngineSearchStore* store)
+ResultIterator::ResultIterator(const QVector<uint>& vec, SearchStore* store)
     : d(new ResultIteratorPrivate)
 {
     Q_ASSERT(store);

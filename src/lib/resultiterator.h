@@ -29,7 +29,7 @@
 
 namespace Baloo {
 
-class EngineSearchStore;
+class SearchStore;
 class Result;
 class ResultIteratorPrivate;
 
@@ -46,7 +46,7 @@ public:
 
     Result result() const;
 private:
-    ResultIterator(const QVector<uint>& vec, EngineSearchStore* store);
+    ResultIterator(const QVector<uint>& vec, SearchStore* store);
     ResultIteratorPrivate* d;
 
     friend class Query;

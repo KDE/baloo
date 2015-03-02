@@ -1,6 +1,6 @@
 /*
  * This file is part of the KDE Baloo Project
- * Copyright (C) 2013  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2013-2015  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -23,43 +23,27 @@
 #ifndef _BALOO_SEARCHSTORE_H
 #define _BALOO_SEARCHSTORE_H
 
-#include <QObject>
 #include <QString>
 
 namespace Baloo {
 
 class Query;
+class Database;
 
 class SearchStore
 {
 public:
     SearchStore();
-    virtual ~SearchStore();
+    ~SearchStore();
 
-    /**
-     * Returns a list of types which can be searched for
-     * in this store
-     */
-    virtual QStringList types() = 0;
+    QStringList types();
 
-    /**
-     * Executes the particular query synchronously.
-     */
-    virtual QVector<uint> exec(const Query& query) = 0;
-    virtual QString filePath(uint id) = 0;
+    QVector<uint> exec(const Query& query);
+    QString filePath(uint id);
+
+private:
+    Database* m_db;
 };
-
-//
-// Convenience functions
-//
-inline QByteArray serialize(const QByteArray& namespace_, int id) {
-    return namespace_ + ':' + QByteArray::number(id);
-}
-
-inline int deserialize(const QByteArray& namespace_, const QByteArray& str) {
-    // The +1 is for the ':'
-    return str.mid(namespace_.size() + 1).toInt();
-}
 
 }
 

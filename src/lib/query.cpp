@@ -23,8 +23,7 @@
 #include "query.h"
 #include "term.h"
 #include "advancedqueryparser.h"
-
-#include "enginesearchstore.h"
+#include "searchstore.h"
 
 #include <QString>
 #include <QStringList>
@@ -199,12 +198,12 @@ void Query::setIncludeFolder(const QString& folder)
 }
 
 
-Q_GLOBAL_STATIC_WITH_ARGS(QSharedPointer<EngineSearchStore>, s_searchStore, (new EngineSearchStore));
+Q_GLOBAL_STATIC_WITH_ARGS(QSharedPointer<SearchStore>, s_searchStore, (new SearchStore));
 
 ResultIterator Query::exec()
 {
     QVector<uint> vec = (*s_searchStore)->exec(*this);
-    EngineSearchStore* ess = &(**s_searchStore);
+    SearchStore* ess = &(**s_searchStore);
     return ResultIterator(vec, ess);
 }
 
