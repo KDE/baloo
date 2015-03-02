@@ -333,7 +333,7 @@ bool Database::hasChanges() const
     return !m_pendingOperations.isEmpty();
 }
 
-QVector<int> Database::exec(const QVector<QByteArray>& query)
+QVector<uint> Database::exec(const QVector<QByteArray>& query)
 {
     Q_ASSERT(m_txn);
     Q_ASSERT(!query.isEmpty());
@@ -349,10 +349,10 @@ QVector<int> Database::exec(const QVector<QByteArray>& query)
     }
 
     if (list.isEmpty()) {
-        return QVector<int>();
+        return QVector<uint>();
     }
 
-    QVector<int> result;
+    QVector<uint> result;
     if (list.size() == 1) {
         PostingIterator* it = list.first();
         while (it->next()) {

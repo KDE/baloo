@@ -70,7 +70,7 @@ public:
     QByteArray documentSlot(uint id, uint slotNum);
     QByteArray documentData(uint id);
 
-    QVector<int> exec(const QVector<QByteArray>& query);
+    QVector<uint> exec(const QVector<QByteArray>& query);
 
     QVector<uint> fetchIndexingLevel(int size);
 private:
