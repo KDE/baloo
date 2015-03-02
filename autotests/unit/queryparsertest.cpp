@@ -39,8 +39,6 @@ private Q_SLOTS:
     void testPhraseSearchEmail();
     void testAccentSearch();
     void testUnderscoreSplitting();
-
-    void testWordExpansion();
 };
 
 void QueryParserTest::testSinglePrefixWord()
@@ -171,76 +169,6 @@ void QueryParserTest::testUnderscoreSplitting()
 
     QCOMPARE(query, q);
 }
-
-
-void QueryParserTest::testWordExpansion()
-{
-    /*
-    QTemporaryDir dir;
-    XapianDatabase db(dir.path(), true);
-
-    Xapian::Document doc;
-    doc.add_term("hell");
-    doc.add_term("hello");
-    doc.add_term("hellog");
-    doc.add_term("hi");
-    doc.add_term("hibrid");
-
-    db.replaceDocument(1, doc);
-    Xapian::Database* xap = db.db();
-
-    QueryParser parser;
-    parser.setDatabase(xap);
-
-    EngineQuery query = parser.parseQuery("hell");
-
-    QVector<EngineQuery> synQueries;
-    synQueries << EngineQuery("hell", 1, 1);
-    synQueries << EngineQuery("hello", 1, 1);
-    synQueries << EngineQuery("hellog", 1, 1);
-
-    EngineQuery q(EngineQuery::OP_SYNONYM, synQueries.begin(), synQueries.end());
-
-    QCOMPARE(query, q);
-
-    //
-    // Try expanding everything
-    //
-    query = parser.parseQuery("hel hi");
-
-    {
-        QVector<EngineQuery> synQueries;
-        synQueries << EngineQuery("hell", 1, 1);
-        synQueries << EngineQuery("hello", 1, 1);
-        synQueries << EngineQuery("hellog", 1, 1);
-
-        EngineQuery q1(EngineQuery::OP_SYNONYM, synQueries.begin(), synQueries.end());
-
-        synQueries.clear();
-        synQueries << EngineQuery("hi", 1, 2);
-        synQueries << EngineQuery("hibrid", 1, 2);
-
-        EngineQuery q2(EngineQuery::OP_SYNONYM, synQueries.begin(), synQueries.end());
-
-        QVector<EngineQuery> queries;
-        queries << q1;
-        queries << q2;
-
-        EngineQuery q(EngineQuery::OP_AND, queries.begin(), queries.end());
-
-        QCOMPARE(query, q);
-    }
-
-    {
-        EngineQuery query = parser.parseQuery("rubbish");
-        EngineQuery q = EngineQuery("rubbish", 1, 1);
-
-        QCOMPARE(query, q);
-    }
-    */
-}
-
-
 
 QTEST_MAIN(QueryParserTest)
 

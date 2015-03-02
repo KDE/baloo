@@ -33,57 +33,6 @@ QueryParser::QueryParser()
 }
 
 namespace {
-    /*
-    EngineQuery makeQuery(const QString& string, int position, Xapian::Database* db)
-    {
-        if (!db) {
-            QByteArray arr = string.toUtf8();
-            std::string stdString(arr.constData(), arr.size());
-            return EngineQuery(stdString, 1, position);
-        }
-
-        // Lets just keep the top x (+1 for push_heap)
-        static const int MaxTerms = 100;
-        QVector<Term> topTerms;
-        topTerms.reserve(MaxTerms + 1);
-
-        const std::string stdString(string.toUtf8().constData());
-        Xapian::TermIterator it = db->allterms_begin(stdString);
-        Xapian::TermIterator end = db->allterms_end(stdString);
-        for (; it != end; ++it) {
-            Term term;
-            term.t = *it;
-            term.count = db->get_collection_freq(term.t);
-
-            if (topTerms.size() < MaxTerms) {
-                topTerms.push_back(term);
-                std::push_heap(topTerms.begin(), topTerms.end());
-            }
-            else {
-                // Remove the term with the min count
-                topTerms.push_back(term);
-                std::push_heap(topTerms.begin(), topTerms.end());
-
-                std::pop_heap(topTerms.begin(), topTerms.end());
-                topTerms.pop_back();
-            }
-        }
-
-        QVector<EngineQuery> queries;
-        queries.reserve(topTerms.size());
-
-        Q_FOREACH (const Term& term, topTerms) {
-            queries << EngineQuery(term.t, 1, position);
-        }
-
-        if (queries.isEmpty()) {
-            return EngineQuery(string.toUtf8().constData(), 1, position);
-        }
-        EngineQuery finalQ(EngineQuery::OP_SYNONYM, queries.begin(), queries.end());
-        return finalQ;
-    }
-    */
-
     bool containsSpace(const QString& string) {
         Q_FOREACH (const QChar& ch, string) {
             if (ch.isSpace())
