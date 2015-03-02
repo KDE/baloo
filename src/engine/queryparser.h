@@ -26,7 +26,6 @@
 
 namespace Baloo {
 
-class Database;
 class EngineQuery;
 
 class BALOO_ENGINE_EXPORT QueryParser
@@ -34,13 +33,7 @@ class BALOO_ENGINE_EXPORT QueryParser
 public:
     QueryParser();
 
-    void setDatabase(Database* db);
     EngineQuery parseQuery(const QString& str, const QString& prefix = QString());
-
-    /**
-     * Expands word to every possible option which it can be expanded to.
-     */
-    EngineQuery expandWord(const QString& word, const QString& prefix = QString());
 
     /**
      * Set if each word in the string should be treated as a partial word
@@ -49,7 +42,6 @@ public:
     void setAutoExapand(bool autoexpand);
 
 private:
-    Database* m_db;
     bool m_autoExpand;
 };
 

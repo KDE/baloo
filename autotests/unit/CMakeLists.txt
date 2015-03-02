@@ -19,6 +19,7 @@ baloo_engine_auto_tests(
     documentdatadbtest
 
     termgeneratortest
+    queryparsertest
 
     # Query
     andpostingiteratortest

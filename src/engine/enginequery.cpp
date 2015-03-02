@@ -37,8 +37,8 @@ EngineQuery::EngineQuery(const QByteArray& term, int pos)
 
 EngineQuery::EngineQuery(const QByteArray& term, EngineQuery::Operation op, int pos)
     : m_term(term)
-    , m_op(op)
     , m_pos(pos)
+    , m_op(op)
 {
 }
 

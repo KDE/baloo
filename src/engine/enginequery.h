@@ -22,8 +22,10 @@
 #define BALOO_ENGINEQUERY_H
 
 #include "engine_export.h"
+
 #include <QByteArray>
 #include <QVector>
+#include <QDebug>
 
 namespace Baloo {
 
@@ -34,7 +36,8 @@ public:
         Equal,
         StartsWith,
         And,
-        Or
+        Or,
+        Phrase
     };
 
     EngineQuery();
@@ -62,13 +65,22 @@ public:
         return m_subQueries;
     }
 
+    bool operator ==(const EngineQuery& q) const {
+        return m_term == q.m_term && m_pos == q.m_pos && m_op == q.m_op && m_subQueries == q.m_subQueries;
+    }
 private:
     QByteArray m_term;
-    Operation m_op;
     int m_pos;
+    Operation m_op;
 
     QVector<EngineQuery> m_subQueries;
 };
+
+} // namespace Baloo
+
+inline QDebug operator << (QDebug d, const Baloo::EngineQuery& q) {
+    d << "(" << q.term() << q.pos() << q.op() << q.subQueries() << ")";
+    return d;
 }
 
 #endif

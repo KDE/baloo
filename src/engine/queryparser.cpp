@@ -19,7 +19,6 @@
  */
 
 #include "queryparser.h"
-#include "database.h"
 #include "enginequery.h"
 
 #include <QTextBoundaryFinder>
@@ -29,39 +28,23 @@
 using namespace Baloo;
 
 QueryParser::QueryParser()
-    : m_db(0)
-    , m_autoExpand(true)
+    : m_autoExpand(true)
 {
-}
-
-void QueryParser::setDatabase(Database* db)
-{
-    m_db = db;
 }
 
 namespace {
-    struct Term {
-        std::string t;
-        uint count;
-
-        // pop_heap pops the largest element, we want the smallest to be popped
-        bool operator < (const Term& rhs) const {
-            return count > rhs.count;
-        }
-    };
-
     /*
-    Xapian::Query makeQuery(const QString& string, int position, Xapian::Database* db)
+    EngineQuery makeQuery(const QString& string, int position, Xapian::Database* db)
     {
         if (!db) {
             QByteArray arr = string.toUtf8();
             std::string stdString(arr.constData(), arr.size());
-            return Xapian::Query(stdString, 1, position);
+            return EngineQuery(stdString, 1, position);
         }
 
         // Lets just keep the top x (+1 for push_heap)
         static const int MaxTerms = 100;
-        QList<Term> topTerms;
+        QVector<Term> topTerms;
         topTerms.reserve(MaxTerms + 1);
 
         const std::string stdString(string.toUtf8().constData());
@@ -86,17 +69,17 @@ namespace {
             }
         }
 
-        QVector<Xapian::Query> queries;
+        QVector<EngineQuery> queries;
         queries.reserve(topTerms.size());
 
         Q_FOREACH (const Term& term, topTerms) {
-            queries << Xapian::Query(term.t, 1, position);
+            queries << EngineQuery(term.t, 1, position);
         }
 
         if (queries.isEmpty()) {
-            return Xapian::Query(string.toUtf8().constData(), 1, position);
+            return EngineQuery(string.toUtf8().constData(), 1, position);
         }
-        Xapian::Query finalQ(Xapian::Query::OP_SYNONYM, queries.begin(), queries.end());
+        EngineQuery finalQ(EngineQuery::OP_SYNONYM, queries.begin(), queries.end());
         return finalQ;
     }
     */
@@ -113,26 +96,10 @@ namespace {
 
 EngineQuery QueryParser::parseQuery(const QString& text, const QString& prefix)
 {
-    /*
-    Xapian::QueryParser parser;
-    parser.set_default_op(Xapian::Query::OP_AND);
+    Q_ASSERT(!text.isEmpty());
 
-    if (m_db)
-        parser.set_database(*m_db);
-
-    int flags = Xapian::QueryParser::FLAG_PHRASE | Xapian::QueryParser::FLAG_PARTIAL;
-
-    std::string stdString(text.toUtf8().constData());
-    return parser.parse_query(stdString, flags);
-    */
-
-    if (text.isEmpty()) {
-        return EngineQuery();
-    }
-
-    /*
-    QList<Xapian::Query> queries;
-    QList<Xapian::Query> phraseQueries;
+    QVector<EngineQuery> queries;
+    QVector<EngineQuery> phraseQueries;
 
     int start = 0;
     int end = 0;
@@ -152,7 +119,7 @@ EngineQuery QueryParser::parseQuery(const QString& text, const QString& prefix)
                 QString delim = text.mid(end, pos-end);
                 if (delim.contains(QLatin1Char('"'))) {
                     if (inDoubleQuotes) {
-                        queries << Xapian::Query(Xapian::Query::OP_PHRASE, phraseQueries.begin(), phraseQueries.end());
+                        queries << EngineQuery(phraseQueries, EngineQuery::Phrase);
                         phraseQueries.clear();
                         inDoubleQuotes = false;
                     }
@@ -162,7 +129,7 @@ EngineQuery QueryParser::parseQuery(const QString& text, const QString& prefix)
                 }
                 else if (delim.contains(QLatin1Char('\''))) {
                     if (inSingleQuotes) {
-                        queries << Xapian::Query(Xapian::Query::OP_PHRASE, phraseQueries.begin(), phraseQueries.end());
+                        queries << EngineQuery(phraseQueries, EngineQuery::Phrase);
                         phraseQueries.clear();
                         inSingleQuotes = false;
                     }
@@ -177,7 +144,7 @@ EngineQuery QueryParser::parseQuery(const QString& text, const QString& prefix)
                     inPhrase = true;
                 }
                 else if (inPhrase && !phraseQueries.isEmpty()) {
-                    queries << Xapian::Query(Xapian::Query::OP_PHRASE, phraseQueries.begin(), phraseQueries.end());
+                    queries << EngineQuery(phraseQueries, EngineQuery::Phrase);
                     phraseQueries.clear();
                     inPhrase = false;
                 }
@@ -207,18 +174,17 @@ EngineQuery QueryParser::parseQuery(const QString& text, const QString& prefix)
             str = cleanString.normalized(QString::NormalizationForm_KC);
             Q_FOREACH (const QString& t, str.split(QLatin1Char('_'), QString::SkipEmptyParts)) {
                 const QString term = prefix + t;
+                const QByteArray arr = term.toUtf8();
 
                 position++;
                 if (inDoubleQuotes || inSingleQuotes || inPhrase) {
-                    const QByteArray arr = term.toUtf8();
-                    const std::string stdStr(arr.constData(), arr.length());
-                    phraseQueries << Xapian::Query(stdStr, 1, position);
+                    phraseQueries << EngineQuery(arr, position);
                 }
                 else {
                     if (m_autoExpand) {
-                        queries << makeQuery(term, position, m_db);
+                        queries << EngineQuery(arr, EngineQuery::StartsWith, position);
                     } else {
-                        queries << Xapian::Query(term.toUtf8().constData(), 1, position);
+                        queries << EngineQuery(arr, position);
                     }
                 }
             }
@@ -226,7 +192,7 @@ EngineQuery QueryParser::parseQuery(const QString& text, const QString& prefix)
     }
 
     if (inPhrase) {
-        queries << Xapian::Query(Xapian::Query::OP_PHRASE, phraseQueries.begin(), phraseQueries.end());
+        queries << EngineQuery(phraseQueries, EngineQuery::Phrase);
         phraseQueries.clear();
         inPhrase = false;
     }
@@ -239,34 +205,10 @@ EngineQuery QueryParser::parseQuery(const QString& text, const QString& prefix)
     if (queries.size() == 1) {
         return queries.first();
     }
-    return Xapian::Query(Xapian::Query::OP_AND, queries.begin(), queries.end());
-    */
-    return EngineQuery();
+    return EngineQuery(queries, EngineQuery::And);
 }
 
 void QueryParser::setAutoExapand(bool autoexpand)
 {
     m_autoExpand = autoexpand;
-}
-
-EngineQuery QueryParser::expandWord(const QString& word, const QString& prefix)
-{
-    /*
-    const std::string stdString((prefix + word).toUtf8().constData());
-    Xapian::TermIterator it = m_db->allterms_begin(stdString);
-    Xapian::TermIterator end = m_db->allterms_end(stdString);
-
-    QList<Xapian::Query> queries;
-    for (; it != end; ++it) {
-        queries << Xapian::Query(*it);
-    }
-
-    if (queries.isEmpty()) {
-        return Xapian::Query(stdString);
-    }
-    Xapian::Query finalQ(Xapian::Query::OP_SYNONYM, queries.begin(), queries.end());
-    return finalQ;
-    */
-
-    return EngineQuery();
 }
