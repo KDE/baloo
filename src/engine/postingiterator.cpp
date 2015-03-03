@@ -31,3 +31,8 @@ uint PostingIterator::skipTo(uint docId)
     Q_ASSERT(0);
     return 0;
 }
+
+QVector<uint> PostingIterator::positions()
+{
+    return QVector<uint>();
+}

@@ -21,7 +21,7 @@
 #ifndef BALOO_POSTINGITERATOR_H
 #define BALOO_POSTINGITERATOR_H
 
-#include <QTypeInfo>
+#include <QVector>
 #include "engine_export.h"
 
 namespace Baloo {
@@ -40,6 +40,8 @@ public:
     virtual uint next() = 0;
     virtual uint docId() = 0;
     virtual uint skipTo(uint docId);
+
+    virtual QVector<uint> positions();
 };
 }
 

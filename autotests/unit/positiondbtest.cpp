@@ -27,28 +27,58 @@ class PositionDBTest : public SingleDBTest
 {
     Q_OBJECT
 private Q_SLOTS:
-    void test();
+    void test() {
+        PositionDB db(m_txn);
+
+        QByteArray word("fire");
+        PositionInfo pos1;
+        pos1.docId = 1;
+        pos1.positions = QVector<uint>() << 1 << 5 << 6;
+
+        PositionInfo pos2;
+        pos2.docId = 5;
+        pos2.positions = QVector<uint>() << 41 << 96 << 116;
+
+        QVector<PositionInfo> list = {pos1, pos2};
+
+        db.put(word, list);
+        QVector<PositionInfo> res = db.get(word);
+        QCOMPARE(res, list);
+    }
+
+    void testIter() {
+        PositionDB db(m_txn);
+
+        QByteArray word("fire");
+        PositionInfo pos1;
+        pos1.docId = 1;
+        pos1.positions = QVector<uint>() << 1 << 5 << 6;
+
+        PositionInfo pos2;
+        pos2.docId = 5;
+        pos2.positions = QVector<uint>() << 41 << 96 << 116;
+
+        QVector<PositionInfo> list = {pos1, pos2};
+
+        db.put(word, list);
+
+        PostingIterator* it = db.iter(word);
+        QCOMPARE(it->docId(), static_cast<uint>(0));
+        QVERIFY(it->positions().isEmpty());
+
+        QCOMPARE(it->next(), static_cast<uint>(1));
+        QCOMPARE(it->docId(), static_cast<uint>(1));
+        QCOMPARE(it->positions(), pos1.positions);
+
+        QCOMPARE(it->next(), static_cast<uint>(5));
+        QCOMPARE(it->docId(), static_cast<uint>(5));
+        QCOMPARE(it->positions(), pos2.positions);
+
+        QCOMPARE(it->next(), static_cast<uint>(0));
+        QCOMPARE(it->docId(), static_cast<uint>(0));
+        QVERIFY(it->positions().isEmpty());
+    }
 };
-
-void PositionDBTest::test()
-{
-    PositionDB db(m_txn);
-
-    QByteArray word("fire");
-    PositionInfo pos1;
-    pos1.docId = 1;
-    pos1.positions = QVector<uint>() << 1 << 5 << 6;
-
-    PositionInfo pos2;
-    pos2.docId = 5;
-    pos2.positions = QVector<uint>() << 41 << 96 << 116;
-
-    QVector<PositionInfo> list = {pos1, pos2};
-
-    db.put(word, list);
-    QVector<PositionInfo> res = db.get(word);
-    QCOMPARE(res, list);
-}
 
 QTEST_MAIN(PositionDBTest)
 

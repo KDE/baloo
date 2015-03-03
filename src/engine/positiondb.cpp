@@ -21,6 +21,7 @@
 #include "positiondb.h"
 
 #include <QDataStream>
+#include <QDebug>
 
 using namespace Baloo;
 
@@ -91,4 +92,56 @@ QVector<PositionInfo> PositionDB::get(const QByteArray& term)
     }
 
     return vec;
+}
+
+//
+// Query
+//
+
+class DBPositionIterator : public PostingIterator {
+public:
+    DBPositionIterator(char* data, uint size)
+        : m_data(data, size)
+        , stream(&m_data, QIODevice::ReadOnly)
+    {}
+
+    virtual uint next() {
+        if (stream.atEnd()) {
+            pos.docId = 0;
+            pos.positions.clear();
+            return 0;
+        }
+
+        stream >> pos.docId;
+        stream >> pos.positions;
+
+        return pos.docId;
+    }
+    virtual uint docId() {
+        return pos.docId;
+    }
+    virtual QVector<uint> positions() {
+        return pos.positions;
+    }
+
+private:
+    QByteArray m_data;
+    QDataStream stream;
+    PositionInfo pos;
+};
+
+PostingIterator* PositionDB::iter(const QByteArray& term)
+{
+    MDB_val key;
+    key.mv_size = term.size();
+    key.mv_data = static_cast<void*>(const_cast<char*>(term.constData()));
+
+    MDB_val val;
+    int rc = mdb_get(m_txn, m_dbi, &key, &val);
+    if (rc == MDB_NOTFOUND) {
+        return 0;
+    }
+    Q_ASSERT_X(rc == 0, "PositionDB::iter", mdb_strerror(rc));
+
+    return new DBPositionIterator(static_cast<char*>(val.mv_data), val.mv_size);
 }

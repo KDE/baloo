@@ -56,6 +56,8 @@ public:
     void put(const QByteArray& term, const QVector<PositionInfo>& list);
     QVector<PositionInfo> get(const QByteArray& term);
 
+    PostingIterator* iter(const QByteArray& term);
+
     void setTransaction(MDB_txn* txn) {
         m_txn = txn;
     }
