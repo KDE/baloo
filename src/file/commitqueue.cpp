@@ -82,7 +82,7 @@ void Baloo::CommitQueue::commit()
     }
 
     m_db->commit();
-    m_db->transaction();
+    m_db->transaction(Database::ReadWrite);
 
     m_smallTimer.stop();
     m_largeTimer.stop();

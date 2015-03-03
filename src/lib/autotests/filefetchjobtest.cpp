@@ -72,7 +72,7 @@ void FileFetchJobTest::test()
     {
         Database db(fileIndexDbPath());
         db.open();
-        db.transaction();
+        db.transaction(Database::ReadWrite);
         db.addDocument(doc);
         db.commit();
     }

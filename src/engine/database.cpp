@@ -90,10 +90,12 @@ bool Database::open()
     return true;
 }
 
-void Database::transaction()
+void Database::transaction(Database::TransactionType type)
 {
     Q_ASSERT(m_txn == 0);
-    int rc = mdb_txn_begin(m_env, NULL, 0, &m_txn);
+
+    uint flags = type == ReadOnly ? MDB_RDONLY : 0;
+    int rc = mdb_txn_begin(m_env, NULL, flags, &m_txn);
     Q_ASSERT_X(rc == 0, "Database::transaction", mdb_strerror(rc));
 
     if (!m_positionDB)

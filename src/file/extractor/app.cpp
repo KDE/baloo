@@ -61,7 +61,7 @@ void App::startProcessing(const QStringList& args)
 
 void App::process()
 {
-    m_db.transaction();
+    m_db.transaction(Database::ReadWrite);
 
     Q_FOREACH (const QString& arg, m_args) {
         bool ok = false;

@@ -38,7 +38,7 @@ int main(int argc, char** argv)
 
     Baloo::Database db(tempDir.path());
     db.open();
-    db.transaction();
+    db.transaction(Baloo::Database::ReadWrite);
 
     Baloo::FileIndexerConfig config;
     QCoreApplication app(argc, argv);

@@ -36,7 +36,7 @@ SearchStore::SearchStore()
     const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/");
     m_db = new Database(path);
     m_db->open();
-    m_db->transaction();
+    m_db->transaction(Database::ReadOnly);
 }
 
 SearchStore::~SearchStore()

@@ -62,7 +62,7 @@ void ExtractorTest::test()
 
     Baloo::Database db(dbDir.path());
     db.open();
-    db.transaction();
+    db.transaction(Baloo::Database::ReadWrite);
 
     qDebug() << db.documentUrl(1);
     /*

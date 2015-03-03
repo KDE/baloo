@@ -37,10 +37,10 @@ private Q_SLOTS:
         db = new Database(dir->path());
         db->open();
 
-        db->transaction();
+        db->transaction(Database::ReadWrite);
         insertDocuments();
         db->commit();
-        db->transaction();
+        db->transaction(Database::ReadOnly);
     }
 
     void cleanup() {

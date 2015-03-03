@@ -56,12 +56,17 @@ public:
 
     bool hasDocument(uint id);
 
+    enum TransactionType {
+        ReadOnly,
+        ReadWrite
+    };
+
     /**
      * Starts a transaction in which the database can be modified.
      * It is necessary to start a transaction in order to use any
      * of the Database functions.
      */
-    void transaction();
+    void transaction(TransactionType type);
     void commit();
     void abort();
 

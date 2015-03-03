@@ -113,7 +113,7 @@ bool File::load()
 
     Database db(fileIndexDbPath());
     db.open();
-    db.transaction();
+    db.transaction(Database::ReadOnly);
 
     FileMapping fileMap;
     fileMap.setId(d->id);
