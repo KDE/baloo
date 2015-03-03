@@ -351,18 +351,13 @@ QVector<uint> Database::fetchIndexingLevel(int size)
 PostingIterator* Database::toPostingIterator(const EngineQuery& query)
 {
     if (query.leaf()) {
-        if (query.pos() == 0) {
-            if (query.op() == EngineQuery::Equal) {
-                return m_postingDB->iter(query.term());
-            } else if (query.op() == EngineQuery::StartsWith) {
-                return m_postingDB->prefixIter(query.term());
-            } else {
-                Q_ASSERT(0);
-            }
+        if (query.op() == EngineQuery::Equal) {
+            return m_postingDB->iter(query.term());
+        } else if (query.op() == EngineQuery::StartsWith) {
+            return m_postingDB->prefixIter(query.term());
         } else {
-            // FIXME: Implement position iterator
             Q_ASSERT(0);
-            return 0;
+            // FIXME: Implement position iterator
         }
     }
 

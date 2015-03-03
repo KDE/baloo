@@ -25,6 +25,7 @@
 
 #include "database.h"
 #include "enginequery.h"
+#include "queryparser.h"
 
 #include <QStandardPaths>
 
@@ -53,7 +54,8 @@ QStringList SearchStore::types()
 QVector<uint> SearchStore::exec(const Query& query)
 {
     if (!query.searchString().isEmpty()) {
-        EngineQuery eq(query.searchString().toUtf8());
+        QueryParser parser;
+        EngineQuery eq = parser.parseQuery(query.searchString());
         return m_db->exec(eq);
     }
 
