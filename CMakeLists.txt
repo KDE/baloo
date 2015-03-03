@@ -62,6 +62,7 @@ include_directories(
 # Targets
 add_subdirectory(src)
 add_subdirectory(icons)
+add_subdirectory(tests)
 add_subdirectory(autotests)
 
 # Config files

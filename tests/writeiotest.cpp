@@ -1,7 +1,7 @@
 
 /*
  * This file is part of the KDE Baloo Project
- * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2014-2015 Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,9 +31,9 @@
 #include <QCommandLineParser>
 #include <QCommandLineOption>
 
-#include "xapiandatabase.h"
-#include "xapiandocument.h"
-#include "../../file/tests/util.h"
+#include "database.h"
+#include "document.h"
+#include "../src/file/tests/util.h"
 
 int main(int argc, char** argv)
 {
@@ -53,28 +53,30 @@ int main(int argc, char** argv)
     QTemporaryDir tempDir;
     tempDir.setAutoRemove(false);
 
-    Baloo::XapianDatabase db(tempDir.path(), true);
+    Baloo::Database db(tempDir.path());
+    db.open();
+    db.transaction(Baloo::Database::ReadWrite);
 
     qDebug() << tempDir.path();
     printIOUsage();
     qDebug() << "Creating the document";
 
-    Baloo::XapianDocument doc;
+    Baloo::Document doc;
     int size = args.first().toInt();
 
     for (int i = 0; i < size; i++) {
         QByteArray term = QUuid::createUuid().toByteArray().mid(1, 10);
 
         if (parser.isSet("p")) {
-            std::string stdString(term.constData(), term.length());
-            doc.doc().add_posting(stdString, i);
+            doc.addPositionTerm(term, i);
         }
         else {
-            doc.addTerm(QString::fromUtf8(term));
+            doc.addTerm(term);
         }
     }
+    doc.setId(1);
 
-    db.replaceDocument(1, doc);
+    db.addDocument(doc);
     db.commit();
 
     printIOUsage();
