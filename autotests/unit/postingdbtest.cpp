@@ -72,6 +72,29 @@ private Q_SLOTS:
             QCOMPARE(it->docId(), static_cast<uint>(val));
         }
     }
+
+    void testRegExpIter() {
+        PostingDB db(m_txn);
+
+        db.put("abc", {1, 4, 5, 9, 11});
+        db.put("fir", {1, 3, 5, 7});
+        db.put("fire", {1, 8});
+        db.put("fore", {2, 3, 5});
+        db.put("zib", {4, 5, 6});
+
+        PostingIterator* it = db.regexpIter(QRegularExpression(".re"), QByteArray("f"));
+        QVERIFY(it);
+
+        QVector<uint> result = {1, 2, 3, 5, 8};
+        for (uint val : result) {
+            QCOMPARE(it->next(), static_cast<uint>(val));
+            QCOMPARE(it->docId(), static_cast<uint>(val));
+        }
+
+        // Non existing
+        it = db.regexpIter(QRegularExpression("dub"), QByteArray("f"));
+        QVERIFY(it == 0);
+    }
 };
 
 QTEST_MAIN(PostingDBTest)

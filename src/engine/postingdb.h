@@ -25,6 +25,8 @@
 
 #include <QByteArray>
 #include <QVector>
+#include <QRegularExpression>
+
 #include <lmdb.h>
 
 namespace Baloo {
@@ -42,6 +44,7 @@ public:
 
     PostingIterator* iter(const QByteArray& term);
     PostingIterator* prefixIter(const QByteArray& term);
+    PostingIterator* regexpIter(const QRegularExpression& regexp, const QByteArray& prefix);
 
     void setTransaction(MDB_txn* txn) {
         m_txn = txn;
