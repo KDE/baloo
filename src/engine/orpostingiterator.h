@@ -29,7 +29,7 @@ namespace Baloo {
 class BALOO_ENGINE_EXPORT OrPostingIterator : public PostingIterator
 {
 public:
-    OrPostingIterator(QVector<PostingIterator*> iterators);
+    OrPostingIterator(const QVector<PostingIterator*>& iterators);
 
     virtual uint next();
     virtual uint docId();

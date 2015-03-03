@@ -22,7 +22,7 @@
 
 using namespace Baloo;
 
-OrPostingIterator::OrPostingIterator(QVector<PostingIterator*> iterators)
+OrPostingIterator::OrPostingIterator(const QVector<PostingIterator*>& iterators)
     : m_iterators(iterators)
     , m_docId(0)
 {
