@@ -9,6 +9,7 @@ set(BALOO_ENGINE_SRCS
     documentiddb.cpp
     enginequery.cpp
     orpostingiterator.cpp
+    phraseanditerator.cpp
     positiondb.cpp
     postingdb.cpp
     postingiterator.cpp
@@ -16,6 +17,7 @@ set(BALOO_ENGINE_SRCS
     termgenerator.cpp
     urldocumentdb.cpp
     vectorpostingiterator.cpp
+    vectorpositioninfoiterator.cpp
 )
 
 add_library(KF5BalooEngine ${BALOO_ENGINE_SRCS})
