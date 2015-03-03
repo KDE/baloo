@@ -1,6 +1,6 @@
 add_subdirectory(engine)
 add_subdirectory(lib)
 add_subdirectory(file)
-#add_subdirectory(kioslaves)
+add_subdirectory(kioslaves)
 add_subdirectory(tools)
 #add_subdirectory(qml)
