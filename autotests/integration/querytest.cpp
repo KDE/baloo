@@ -52,6 +52,7 @@ private Q_SLOTS:
     void testTermStartsWith();
     void testTermAnd();
     void testTermOr();
+    void testTermPhrase();
 
 private:
     QTemporaryDir* dir;
@@ -77,7 +78,7 @@ void QueryTest::insertDocuments()
     addDocument("The quick brown foxed jumped over the crazy dog", 100, "/h/v/fire");
     addDocument("The night is dark and full of terror", 110, "/h/v/water");
     addDocument("Don't feel sorry for yourself. Only assholes do that", 120, "/h/v/air");
-    addDocument("Only the dead stay 17 forever", 130, "/h/v/earth");
+    addDocument("Only the dead stay 17 forever. crazy", 130, "/h/v/earth");
 }
 
 void QueryTest::testTermEqual()
@@ -117,6 +118,18 @@ void QueryTest::testTermOr()
     EngineQuery q(queries, EngineQuery::Or);
 
     QVector<uint> result = {100, 110};
+    QCOMPARE(db->exec(q), result);
+}
+
+void QueryTest::testTermPhrase()
+{
+    QVector<EngineQuery> queries;
+    queries << EngineQuery("the");
+    queries << EngineQuery("crazy");
+
+    EngineQuery q(queries, EngineQuery::Phrase);
+
+    QVector<uint> result = {100};
     QCOMPARE(db->exec(q), result);
 }
 

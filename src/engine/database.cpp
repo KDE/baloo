@@ -33,6 +33,7 @@
 
 #include "andpostingiterator.h"
 #include "orpostingiterator.h"
+#include "phraseanditerator.h"
 
 #include <QFile>
 #include <QFileInfo>
@@ -365,6 +366,15 @@ PostingIterator* Database::toPostingIterator(const EngineQuery& query)
 
     QVector<PostingIterator*> vec;
     vec.reserve(query.subQueries().size());
+
+    if (query.op() == EngineQuery::Phrase) {
+        for (const EngineQuery& q : query.subQueries()) {
+            Q_ASSERT_X(q.leaf(), "Database::toPostingIterator", "Phrase queries must contain leaf queries");
+            vec << m_positionDB->iter(q.term());
+        }
+
+        return new PhraseAndIterator(vec);
+    }
 
     for (const EngineQuery& q : query.subQueries()) {
         vec << toPostingIterator(q);
