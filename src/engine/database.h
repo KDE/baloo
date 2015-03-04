@@ -79,7 +79,10 @@ public:
 
     QVector<quint64> exec(const EngineQuery& query, int limit = -1);
 
-    QVector<quint64> fetchIndexingLevel(int size);
+    QVector<quint64> fetchPhaseOneIds(int size);
+    uint phaseOneSize();
+    uint size();
+
 private:
     QString m_path;
 

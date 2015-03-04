@@ -338,12 +338,25 @@ bool Database::hasChanges() const
     return !m_pendingOperations.isEmpty();
 }
 
-QVector<quint64> Database::fetchIndexingLevel(int size)
+QVector<quint64> Database::fetchPhaseOneIds(int size)
 {
     Q_ASSERT(m_txn);
     Q_ASSERT(size > 0);
     return m_contentIndexingDB->fetchItems(size);
 }
+
+uint Database::phaseOneSize()
+{
+    Q_ASSERT(m_txn);
+    return m_contentIndexingDB->size();
+}
+
+uint Database::size()
+{
+    Q_ASSERT(m_txn);
+    return m_docUrlDB->size();
+}
+
 
 //
 // Queries

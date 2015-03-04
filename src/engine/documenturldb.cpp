@@ -85,3 +85,12 @@ void DocumentUrlDB::del(quint64 docId)
     int rc = mdb_del(m_txn, m_dbi, &key, 0);
     Q_ASSERT_X(rc == 0, "DocumentUrlDB::del", mdb_strerror(rc));
 }
+
+uint DocumentUrlDB::size()
+{
+    MDB_stat stat;
+    int rc = mdb_stat(m_txn, m_dbi, &stat);
+    Q_ASSERT_X(rc == 0, "DocumentIdDB::size", mdb_strerror(rc));
+
+    return stat.ms_entries;
+}
