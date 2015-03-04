@@ -39,6 +39,7 @@ public:
     void del(quint64 docID);
 
     QVector<quint64> fetchItems(int size);
+    uint size();
 
     void setTransaction(MDB_txn* txn) {
         m_txn = txn;

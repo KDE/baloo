@@ -29,6 +29,16 @@ class DocIdDBTest : public SingleDBTest
 private Q_SLOTS:
     void test();
     void testFetchItems();
+
+    void testSize()
+    {
+        DocumentIdDB db(m_txn);
+
+        db.put(1);
+        db.put(6);
+        db.put(8);
+        QCOMPARE(db.size(), static_cast<uint>(3));
+    }
 };
 
 void DocIdDBTest::test()

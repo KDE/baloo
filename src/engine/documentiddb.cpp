@@ -113,3 +113,13 @@ QVector<quint64> DocumentIdDB::fetchItems(int size)
 
     return vec;
 }
+
+uint DocumentIdDB::size()
+{
+    MDB_stat stat;
+    int rc = mdb_stat(m_txn, m_dbi, &stat);
+    Q_ASSERT_X(rc == 0, "DocumentIdDB::size", mdb_strerror(rc));
+
+    return stat.ms_entries;
+}
+
