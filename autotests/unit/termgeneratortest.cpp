@@ -28,7 +28,7 @@ using namespace Baloo;
 
 #include <QObject>
 
-class TermGeneratorTest : public QObject
+class Baloo::TermGeneratorTest : public QObject
 {
     Q_OBJECT
 
@@ -39,22 +39,12 @@ private Q_SLOTS:
     void testUnicodeCompatibleComposition();
     void testEmails();
     void testWordPositions();
-};
 
-namespace {
-    QStringList allWords(const Document& doc)
+    QList<QByteArray> allWords(const Document& doc)
     {
-        QStringList words;
-        // FIXME:
-        /*
-        for (const QByteArray& ba : doc.terms()) {
-            words << QString::fromUtf8(ba);
-        }
-        */
-
-        return words;
+        return doc.m_terms.keys();
     }
-}
+};
 
 void TermGeneratorTest::testWordBoundaries()
 {
@@ -64,12 +54,12 @@ void TermGeneratorTest::testWordBoundaries()
     TermGenerator termGen(&doc);
     termGen.indexText(str);
 
-    QStringList words = allWords(doc);
+    QList<QByteArray> words = allWords(doc);
 
-    QStringList expectedWords;
-    expectedWords << QLatin1String("32.3") << QLatin1String("brown") << QLatin1String("can't") << QLatin1String("feet") << QLatin1String("fox") << QLatin1String("jump")
-                  << QLatin1String("no") << QLatin1String("quick") << QLatin1String("right") << QLatin1String("the") << QLatin1String("txt") << QLatin1String("wrong")
-                  << QLatin1String("xx");
+    QList<QByteArray> expectedWords;
+    expectedWords << QByteArray("32.3") << QByteArray("brown") << QByteArray("can't") << QByteArray("feet") << QByteArray("fox") << QByteArray("jump")
+                  << QByteArray("no") << QByteArray("quick") << QByteArray("right") << QByteArray("the") << QByteArray("txt") << QByteArray("wrong")
+                  << QByteArray("xx");
 
     QCOMPARE(words, expectedWords);
 }
@@ -82,10 +72,10 @@ void TermGeneratorTest::testUnderscore_splitting()
     TermGenerator termGen(&doc);
     termGen.indexText(str);
 
-    QStringList words = allWords(doc);
+    QList<QByteArray> words = allWords(doc);
 
-    QStringList expectedWords;
-    expectedWords << QLatin1String("hello") << QLatin1String("howdy");
+    QList<QByteArray> expectedWords;
+    expectedWords << QByteArray("hello") << QByteArray("howdy");
 
     QCOMPARE(words, expectedWords);
 }
@@ -98,10 +88,10 @@ void TermGeneratorTest::testAccetCharacters()
     TermGenerator termGen(&doc);
     termGen.indexText(str);
 
-    QStringList words = allWords(doc);
+    QList<QByteArray> words = allWords(doc);
 
-    QStringList expectedWords;
-    expectedWords << QLatin1String("como") << QLatin1String("esta") << QLatin1String("kug");
+    QList<QByteArray> expectedWords;
+    expectedWords << QByteArray("como") << QByteArray("esta") << QByteArray("kug");
 
     QCOMPARE(words, expectedWords);
 }
@@ -116,11 +106,11 @@ void TermGeneratorTest::testUnicodeCompatibleComposition()
     TermGenerator termGen(&doc);
     termGen.indexText(str2);
 
-    QStringList words = allWords(doc);
+    QList<QByteArray> words = allWords(doc);
     QCOMPARE(words.size(), 1);
 
-    QString output = words.first();
-    QCOMPARE(str, output);
+    QByteArray output = words.first();
+    QCOMPARE(str.toUtf8(), output);
 }
 
 void TermGeneratorTest::testEmails()
@@ -131,10 +121,10 @@ void TermGeneratorTest::testEmails()
     TermGenerator termGen(&doc);
     termGen.indexText(str);
 
-    QStringList words = allWords(doc);
+    QList<QByteArray> words = allWords(doc);
 
-    QStringList expectedWords;
-    expectedWords << QLatin1String("in") << QLatin1String("me") << QLatin1String("vhanda");
+    QList<QByteArray> expectedWords;
+    expectedWords << QByteArray("in") << QByteArray("me") << QByteArray("vhanda");
 
     QCOMPARE(words, expectedWords);
 }

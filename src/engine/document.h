@@ -29,6 +29,7 @@
 namespace Baloo {
 
 class Database;
+class TermGeneratorTest;
 
 /**
  * A document represents a file to be indexed in the Baloo engine.
@@ -83,6 +84,7 @@ private:
     QByteArray m_data;
 
     friend class Database;
+    friend class TermGeneratorTest;
 };
 
 inline QDebug operator<<(QDebug dbg, const Document &doc) {
