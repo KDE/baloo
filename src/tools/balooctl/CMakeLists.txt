@@ -1,6 +1,6 @@
 add_definitions(-DTRANSLATION_DOMAIN=\"balooctl\")
 
-set(SRCS main.cpp filestatistics.cpp)
+set(SRCS main.cpp)
 
 add_executable(balooctl ${SRCS})
 target_compile_definitions(balooctl PRIVATE -DPROJECT_VERSION="${PROJECT_VERSION}")
@@ -10,9 +10,8 @@ target_link_libraries(balooctl
     KF5::CoreAddons
     KF5::ConfigCore
     KF5::I18n
-    ${XAPIAN_LIBRARIES}
     KF5::Baloo
-    KF5::BalooXapian
+    KF5::BalooEngine
 )
 
 install(TARGETS balooctl DESTINATION ${BIN_INSTALL_DIR})

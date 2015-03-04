@@ -52,7 +52,7 @@ void FileIndexingQueue::fillQueue()
     if (m_indexJob)
         return;
 
-    QVector<quint64> newItems = m_db->fetchIndexingLevel(m_maxSize - m_fileQueue.size());
+    QVector<quint64> newItems = m_db->fetchPhaseOneIds(m_maxSize - m_fileQueue.size());
     m_fileQueue << newItems;
 }
 
