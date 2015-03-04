@@ -26,17 +26,14 @@
 #include <QFileInfo>
 #include <QTextStream>
 #include <QStandardPaths>
+#include <QDebug>
 
 #include <KAboutData>
 #include <KLocalizedString>
 
 #include "file.h"
-#include "searchstore.h" // for deserialize
-
 #include <KFileMetaData/PropertyInfo>
 
-#include "src/xapian/xapiandatabase.h"
-#include "src/xapian/xapiandocument.h"
 
 QString colorString(const QString& input, int color)
 {
@@ -61,8 +58,8 @@ int main(int argc, char* argv[])
 
     QCommandLineParser parser;
     parser.addPositionalArgument(QLatin1String("files"), QLatin1String("The file urls"));
-    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("x") << QStringLiteral("xapian"),
-                                        QStringLiteral("Print internal xapian info")));
+    //parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("x") << QStringLiteral("xapian"),
+    //                                    QStringLiteral("Print internal xapian info")));
     parser.addHelpOption();
     parser.process(app);
 
@@ -73,7 +70,7 @@ int main(int argc, char* argv[])
     }
 
     //
-    // The Resource Uri
+    // File Urls
     //
     QStringList urls;
     Q_FOREACH (const QString& arg, args) {
@@ -91,13 +88,13 @@ int main(int argc, char* argv[])
     Q_FOREACH (const QString& url, urls) {
         Baloo::File file;
         if (url.startsWith(QLatin1String("file:"))) {
-            file.load(url.toUtf8());
+            file.load(url.mid(5).toULongLong());
         }
         else {
             file.load(url);
         }
 
-        int fid = Baloo::deserialize("file", file.id());
+        quint64 fid = file.id();
 
         if (fid && !file.path().isEmpty()) {
             text = colorString(QString::number(fid), 31);
@@ -127,6 +124,7 @@ int main(int argc, char* argv[])
             stream << "\t" << pi.displayName() << ": " << str << endl;
         }
 
+        /*
         if (parser.isSet(QStringLiteral("xapian"))) {
             const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)
                                 + QLatin1String("/baloo/file");
@@ -174,6 +172,7 @@ int main(int argc, char* argv[])
                 stream << pi.name() << ": " << it.value().join(" ") << endl;
             }
         }
+        */
     }
 
     return 0;
