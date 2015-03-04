@@ -41,8 +41,8 @@ public:
     bool isEmpty() const;
 
 public Q_SLOTS:
-    void add(unsigned id, const Document& doc);
-    void remove(unsigned docid);
+    void add(const Baloo::Document& doc);
+    void remove(quint64 docid);
 
     void commit();
 

@@ -73,7 +73,7 @@ public:
     virtual bool isEmpty();
 
 Q_SIGNALS:
-    void newDocument(unsigned id, const Document& doc);
+    void newDocument(const Document& doc);
 
 public Q_SLOTS:
     void enqueue(const QString& filePath, UpdateDirFlags flags = UpdateDirFlags());

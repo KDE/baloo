@@ -51,7 +51,7 @@ public:
     void setTestMode(bool mode) { m_testMode = mode; }
 
 Q_SIGNALS:
-    void newDocument(quint64 docid, const Document& doc);
+    void newDocument(const Document& doc);
 
 protected:
     virtual void processNextIteration();

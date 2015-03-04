@@ -50,13 +50,13 @@ bool Baloo::CommitQueue::isEmpty() const
     return !m_db->hasChanges();
 }
 
-void Baloo::CommitQueue::add(unsigned id, const Document& doc)
+void Baloo::CommitQueue::add(const Document& doc)
 {
     m_db->addDocument(doc);
     startTimers();
 }
 
-void Baloo::CommitQueue::remove(unsigned int docId)
+void Baloo::CommitQueue::remove(quint64 docId)
 {
     m_db->removeDocument(docId);
     startTimers();

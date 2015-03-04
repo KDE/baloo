@@ -165,7 +165,7 @@ void BasicIndexingQueue::index(const QString& file, const QString& mimetype,
     if (!xattrOnly) {
         BasicIndexingJob job(file, mimetype, m_config->onlyBasicIndexing());
         if (job.index()) {
-            Q_EMIT newDocument(0, job.document());
+            Q_EMIT newDocument(job.document());
         }
     }
     else {
