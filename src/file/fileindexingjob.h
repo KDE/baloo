@@ -28,8 +28,6 @@
 #include <QVector>
 #include <QStack>
 
-#include "filemapping.h"
-
 class QTimer;
 
 namespace Baloo

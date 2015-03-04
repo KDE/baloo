@@ -25,7 +25,6 @@
 #define FILEINDEXINGQUEUE_H
 
 #include "indexingqueue.h"
-#include "filemapping.h"
 
 #include <QStack>
 #include <KJob>

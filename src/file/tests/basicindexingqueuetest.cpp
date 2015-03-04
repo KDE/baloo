@@ -29,7 +29,6 @@
 #include "commitqueue.h"
 #include "database.h"
 #include "fileindexerconfig.h"
-#include "filemapping.h"
 #include "util.h"
 
 int main(int argc, char** argv)

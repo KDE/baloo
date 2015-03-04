@@ -21,13 +21,11 @@
 #define _BALOO_FILEINDEXER_INDEX_SCHEDULER_H_
 
 #include "basicindexingqueue.h" // Required for UpdateDirFlags
-#include "filemapping.h"
-
-class Database;
 
 namespace Baloo
 {
 
+class Database;
 class FileIndexingQueue;
 class FileIndexerConfig;
 class CommitQueue;
