@@ -29,7 +29,7 @@
 
 using namespace Baloo;
 
-FileExtractor::FileExtractor(uint id, const QString& url)
+FileExtractor::FileExtractor(quint64 id, const QString& url)
     : KJob()
     , m_id(id)
     , m_url(url)

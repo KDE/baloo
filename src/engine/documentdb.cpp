@@ -38,13 +38,13 @@ DocumentDB::~DocumentDB()
     mdb_dbi_close(mdb_txn_env(m_txn), m_dbi);
 }
 
-void DocumentDB::put(uint docId, const QVector<QByteArray>& list)
+void DocumentDB::put(quint64 docId, const QVector<QByteArray>& list)
 {
     Q_ASSERT(docId > 0);
     Q_ASSERT(!list.isEmpty());
 
     MDB_val key;
-    key.mv_size = sizeof(uint);
+    key.mv_size = sizeof(quint64);
     key.mv_data = static_cast<void*>(&docId);
 
     // We need to put this in one huge byte-array
@@ -63,12 +63,12 @@ void DocumentDB::put(uint docId, const QVector<QByteArray>& list)
     Q_ASSERT_X(rc == 0, "DocumentDB::put", mdb_strerror(rc));
 }
 
-QVector<QByteArray> DocumentDB::get(uint docId)
+QVector<QByteArray> DocumentDB::get(quint64 docId)
 {
     Q_ASSERT(docId > 0);
 
     MDB_val key;
-    key.mv_size = sizeof(uint);
+    key.mv_size = sizeof(quint64);
     key.mv_data = static_cast<void*>(&docId);
 
     MDB_val val;
@@ -96,24 +96,24 @@ QVector<QByteArray> DocumentDB::get(uint docId)
     return list;
 }
 
-void DocumentDB::del(uint docId)
+void DocumentDB::del(quint64 docId)
 {
     Q_ASSERT(docId > 0);
 
     MDB_val key;
-    key.mv_size = sizeof(uint);
+    key.mv_size = sizeof(quint64);
     key.mv_data = static_cast<void*>(&docId);
 
     int rc = mdb_del(m_txn, m_dbi, &key, 0);
     Q_ASSERT_X(rc == 0, "DocumentDB::del", mdb_strerror(rc));
 }
 
-bool DocumentDB::contains(uint docId)
+bool DocumentDB::contains(quint64 docId)
 {
     Q_ASSERT(docId > 0);
 
     MDB_val key;
-    key.mv_size = sizeof(uint);
+    key.mv_size = sizeof(quint64);
     key.mv_data = static_cast<void*>(&docId);
 
     // FIXME: We don't need val

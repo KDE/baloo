@@ -46,12 +46,12 @@ void Document::addPositionTerm(const QByteArray& term, int position, int wdfInc)
     td.positions += position;
 }
 
-uint Document::id() const
+quint64 Document::id() const
 {
     return m_id;
 }
 
-void Document::setId(uint id)
+void Document::setId(quint64 id)
 {
     m_id = id;
 }

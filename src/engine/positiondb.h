@@ -32,10 +32,10 @@
 namespace Baloo {
 
 struct PositionInfo {
-    uint docId;
+    quint64 docId;
     QVector<uint> positions;
 
-    PositionInfo(uint id = 0, const QVector<uint> posList = QVector<uint>())
+    PositionInfo(quint64 id = 0, const QVector<uint> posList = QVector<uint>())
         : docId(id), positions(posList) {}
 
     bool operator ==(const PositionInfo& rhs) {

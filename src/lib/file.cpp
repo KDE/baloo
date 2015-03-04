@@ -34,7 +34,7 @@ using namespace Baloo;
 
 class File::Private {
 public:
-    uint id;
+    quint64 id;
     QString url;
     KFileMetaData::PropertyMap propertyMap;
 
@@ -69,7 +69,7 @@ const File& File::operator=(const File& f)
     return *this;
 }
 
-uint File::id() const
+quint64 File::id() const
 {
     return d->id;
 }
@@ -89,7 +89,7 @@ QVariant File::property(KFileMetaData::Property::Property property) const
     return d->propertyMap.value(property);
 }
 
-bool File::load(const uint id)
+bool File::load(const quint64 id)
 {
     d->id = id;
     return load();

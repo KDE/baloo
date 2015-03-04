@@ -52,7 +52,7 @@ void FileIndexingQueue::fillQueue()
     if (m_indexJob)
         return;
 
-    QVector<uint> newItems = m_db->fetchIndexingLevel(m_maxSize - m_fileQueue.size());
+    QVector<quint64> newItems = m_db->fetchIndexingLevel(m_maxSize - m_fileQueue.size());
     m_fileQueue << newItems;
 }
 
@@ -63,7 +63,7 @@ bool FileIndexingQueue::isEmpty()
 
 void FileIndexingQueue::processNextIteration()
 {
-    QVector<uint> files;
+    QVector<quint64> files;
     files.reserve(m_batchSize);
 
     for (int i=0; i<m_batchSize && m_fileQueue.size(); ++i) {
@@ -94,7 +94,7 @@ void FileIndexingQueue::slotFinishedIndexingFile(KJob* job)
     finishIteration();
 }
 
-void FileIndexingQueue::slotIndexingFailed(uint id)
+void FileIndexingQueue::slotIndexingFailed(quint64 id)
 {
     /*
      * FIXME: Hanlde indexingFailed

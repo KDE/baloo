@@ -38,7 +38,7 @@ UrlDocumentDB::~UrlDocumentDB()
     mdb_dbi_close(mdb_txn_env(m_txn), m_dbi);
 }
 
-void UrlDocumentDB::put(const QByteArray& url, uint docId)
+void UrlDocumentDB::put(const QByteArray& url, quint64 docId)
 {
     Q_ASSERT(docId > 0);
     Q_ASSERT(!url.isEmpty());
@@ -56,7 +56,7 @@ void UrlDocumentDB::put(const QByteArray& url, uint docId)
     Q_ASSERT_X(rc == 0, "UrlDocumentDB::put", mdb_strerror(rc));
 }
 
-uint UrlDocumentDB::get(const QByteArray& url)
+quint64 UrlDocumentDB::get(const QByteArray& url)
 {
     Q_ASSERT(!url.isEmpty());
 
@@ -92,7 +92,7 @@ void UrlDocumentDB::del(const QByteArray& url)
 
 class UrlPostingIterator : public PostingIterator {
 public:
-    UrlPostingIterator(const QByteArray& url, MDB_cursor* cursor, uint docID)
+    UrlPostingIterator(const QByteArray& url, MDB_cursor* cursor, quint64 docID)
         : m_url(url), m_cursor(cursor), m_docId(docID), m_first(true)
     {}
 
@@ -102,22 +102,22 @@ public:
         }
     }
 
-    virtual uint docId() {
+    virtual quint64 docId() {
         if (m_first) {
             return 0;
         }
         return m_docId;
     }
-    virtual uint next();
+    virtual quint64 next();
 
 private:
     const QByteArray m_url;
     MDB_cursor* m_cursor;
-    uint m_docId;
+    quint64 m_docId;
     bool m_first;
 };
 
-uint UrlPostingIterator::next()
+quint64 UrlPostingIterator::next()
 {
     if (m_first) {
         m_first = false;
@@ -144,7 +144,7 @@ uint UrlPostingIterator::next()
         return 0;
     }
 
-    m_docId = *static_cast<uint*>(val.mv_data);
+    m_docId = *static_cast<quint64*>(val.mv_data);
     return m_docId;
 }
 
@@ -174,6 +174,6 @@ PostingIterator* UrlDocumentDB::prefixIter(const QByteArray& url)
         return 0;
     }
 
-    uint id = *static_cast<uint*>(val.mv_data);
+    quint64 id = *static_cast<quint64*>(val.mv_data);
     return new UrlPostingIterator(url, cursor, id);
 }

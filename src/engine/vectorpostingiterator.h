@@ -29,13 +29,13 @@ namespace Baloo {
 class BALOO_ENGINE_EXPORT VectorPostingIterator :  public PostingIterator
 {
 public:
-    VectorPostingIterator(const QVector<uint>& values);
+    VectorPostingIterator(const QVector<quint64>& values);
 
-    virtual uint docId();
-    virtual uint next();
+    virtual quint64 docId();
+    virtual quint64 next();
 
 private:
-    QVector<uint> m_values;
+    QVector<quint64> m_values;
     int m_pos;
 };
 

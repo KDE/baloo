@@ -32,12 +32,12 @@ class BALOO_ENGINE_EXPORT PhraseAndIterator : public PostingIterator
 public:
     PhraseAndIterator(const QVector<PostingIterator*>& iterators);
 
-    uint next();
-    uint docId();
+    quint64 next();
+    quint64 docId();
 
 private:
     const QVector<PostingIterator*> m_iterators;
-    uint m_docId;
+    quint64 m_docId;
 
     bool checkIfPositionsMatch();
 };

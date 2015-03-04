@@ -24,6 +24,7 @@
 #define _BALOO_ID_UTILS_
 
 #include <qplatformdefs.h>
+#include <qglobal.h>
 
 namespace Baloo {
 
@@ -31,24 +32,24 @@ namespace Baloo {
  * Convert the QT_STATBUF into a 64 bit unique identifier for the file.
  * This identifier is combination of the device id and inode number.
  */
-inline uint64_t statBufToId(const QT_STATBUF& stBuf)
+inline quint64 statBufToId(const QT_STATBUF& stBuf)
 {
-    uint32_t arr[2];
+    quint64 arr[2];
     arr[0] = stBuf.st_dev;
     arr[1] = stBuf.st_ino;
 
-    return *(reinterpret_cast<uint64_t*>(arr));
+    return *(reinterpret_cast<quint64*>(arr));
 }
 
-inline uint32_t idToInode(uint64_t id)
+inline quint32 idToInode(quint64 id)
 {
-    uint32_t* arr = reinterpret_cast<uint32_t*>(&id);
+    quint32* arr = reinterpret_cast<quint32*>(&id);
     return arr[1];
 }
 
-inline uint32_t idToDeviceId(uint64_t id)
+inline quint32 idToDeviceId(quint64 id)
 {
-    uint32_t* arr = reinterpret_cast<uint32_t*>(&id);
+    quint32* arr = reinterpret_cast<quint32*>(&id);
     return arr[0];
 }
 

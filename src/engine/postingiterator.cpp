@@ -26,7 +26,7 @@ PostingIterator::~PostingIterator()
 {
 }
 
-uint PostingIterator::skipTo(uint docId)
+quint64 PostingIterator::skipTo(quint64 docId)
 {
     Q_ASSERT(0);
     return 0;

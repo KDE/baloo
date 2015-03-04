@@ -105,7 +105,7 @@ public:
         , stream(&m_data, QIODevice::ReadOnly)
     {}
 
-    virtual uint next() {
+    virtual quint64 next() {
         if (stream.atEnd()) {
             pos.docId = 0;
             pos.positions.clear();
@@ -117,7 +117,7 @@ public:
 
         return pos.docId;
     }
-    virtual uint docId() {
+    virtual quint64 docId() {
         return pos.docId;
     }
     virtual QVector<uint> positions() {

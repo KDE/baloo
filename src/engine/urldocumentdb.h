@@ -35,8 +35,8 @@ public:
     explicit UrlDocumentDB(MDB_txn* txn);
     ~UrlDocumentDB();
 
-    void put(const QByteArray& url, uint docId);
-    uint get(const QByteArray& url);
+    void put(const QByteArray& url, quint64 docId);
+    quint64 get(const QByteArray& url);
     void del(const QByteArray& url);
 
     PostingIterator* prefixIter(const QByteArray& url);

@@ -42,7 +42,7 @@ private Q_SLOTS:
     void testMoveFolder();
 
 private:
-    uint insertUrl(const QString& url);
+    quint64 insertUrl(const QString& url);
 
     Database* m_db;
     QTemporaryDir* m_tempDir;

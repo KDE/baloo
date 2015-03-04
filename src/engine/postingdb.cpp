@@ -49,8 +49,8 @@ void PostingDB::put(const QByteArray& term, const PostingList& list)
     key.mv_data = static_cast<void*>(const_cast<char*>(term.constData()));
 
     MDB_val val;
-    val.mv_size = list.size() * sizeof(int);
-    val.mv_data = static_cast<void*>(const_cast<uint*>(list.constData()));
+    val.mv_size = list.size() * sizeof(quint64);
+    val.mv_data = static_cast<void*>(const_cast<quint64*>(list.constData()));
 
     int rc = mdb_put(m_txn, m_dbi, &key, &val, 0);
     Q_ASSERT_X(rc == 0, "PostingDB::put", mdb_strerror(rc));
@@ -72,10 +72,10 @@ PostingList PostingDB::get(const QByteArray& term)
     Q_ASSERT_X(rc == 0, "PostingDB::get", mdb_strerror(rc));
 
     PostingList list;
-    list.reserve(val.mv_size);
+    list.reserve(val.mv_size / sizeof(quint64));
 
-    for (int i = 0; i < (val.mv_size / sizeof(int)); i++) {
-        list << static_cast<int*>(val.mv_data)[i];
+    for (int i = 0; i < (val.mv_size / sizeof(quint64)); i++) {
+        list << static_cast<quint64*>(val.mv_data)[i];
     }
     return list;
 }
@@ -83,8 +83,8 @@ PostingList PostingDB::get(const QByteArray& term)
 class DBPostingIterator : public PostingIterator {
 public:
     DBPostingIterator(void* data, uint size);
-    virtual uint docId();
-    virtual uint next();
+    virtual quint64 docId();
+    virtual quint64 next();
 
 private:
     void* m_data;
@@ -118,26 +118,26 @@ DBPostingIterator::DBPostingIterator(void* data, uint size)
 {
 }
 
-uint DBPostingIterator::docId()
+quint64 DBPostingIterator::docId()
 {
-    uint size = m_size / sizeof(int);
+    int size = m_size / sizeof(quint64);
     if (m_pos < 0 || m_pos >= size) {
         return 0;
     }
 
-    int* arr = static_cast<int*>(m_data);
+    quint64* arr = static_cast<quint64*>(m_data);
     return arr[m_pos];
 }
 
-uint DBPostingIterator::next()
+quint64 DBPostingIterator::next()
 {
     m_pos++;
-    uint size = m_size / sizeof(int);
+    int size = m_size / sizeof(quint64);
     if (m_pos >= size) {
         return 0;
     }
 
-    int* arr = static_cast<int*>(m_data);
+    quint64* arr = static_cast<quint64*>(m_data);
     return arr[m_pos];
 }
 

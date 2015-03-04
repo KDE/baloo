@@ -157,7 +157,7 @@ void Database::addDocument(const Document& doc)
     m_pendingOperations << op;
 }
 
-void Database::removeDocument(uint id)
+void Database::removeDocument(quint64 id)
 {
     Q_ASSERT(m_txn);
     Q_ASSERT(id > 0);
@@ -172,20 +172,20 @@ void Database::removeDocument(uint id)
     m_pendingOperations << op;
 }
 
-bool Database::hasDocument(uint id)
+bool Database::hasDocument(quint64 id)
 {
     Q_ASSERT(id > 0);
     return m_documentDB->contains(id);
 }
 
-uint Database::documentId(const QByteArray& url)
+quint64 Database::documentId(const QByteArray& url)
 {
     Q_ASSERT(m_txn);
     Q_ASSERT(!url.isEmpty());
     return m_urlDocDB->get(url);
 }
 
-QByteArray Database::documentUrl(uint id)
+QByteArray Database::documentUrl(quint64 id)
 {
     Q_ASSERT(m_txn);
     Q_ASSERT(id > 0);
@@ -193,14 +193,14 @@ QByteArray Database::documentUrl(uint id)
 }
 
 
-QByteArray Database::documentSlot(uint id, uint slotNum)
+QByteArray Database::documentSlot(quint64 id, quint64 slotNum)
 {
     Q_ASSERT(m_txn);
     Q_ASSERT(id > 0);
     return m_docValueDB->get(id, slotNum);
 }
 
-QByteArray Database::documentData(uint id)
+QByteArray Database::documentData(quint64 id)
 {
     Q_ASSERT(m_txn);
     Q_ASSERT(id > 0);
@@ -215,7 +215,7 @@ void Database::commit()
 
     qDebug() << "PendingOperations:" << m_pendingOperations.size();
     for (const Operation& op : m_pendingOperations) {
-        const uint id = op.doc.id();
+        const quint64 id = op.doc.id();
         const Document& doc = op.doc;
 
         if (op.type == AddDocument) {
@@ -338,7 +338,7 @@ bool Database::hasChanges() const
     return !m_pendingOperations.isEmpty();
 }
 
-QVector<uint> Database::fetchIndexingLevel(int size)
+QVector<quint64> Database::fetchIndexingLevel(int size)
 {
     Q_ASSERT(m_txn);
     Q_ASSERT(size > 0);
@@ -390,11 +390,11 @@ PostingIterator* Database::toPostingIterator(const EngineQuery& query)
     return 0;
 }
 
-QVector<uint> Database::exec(const EngineQuery& query, int limit)
+QVector<quint64> Database::exec(const EngineQuery& query, int limit)
 {
     Q_ASSERT(m_txn);
 
-    QVector<uint> results;
+    QVector<quint64> results;
     PostingIterator* it = toPostingIterator(query);
     if (!it) {
         return results;

@@ -32,10 +32,10 @@ public:
     explicit DocumentDataDB(const char* name, MDB_txn* txn);
     ~DocumentDataDB();
 
-    void put(uint docId, const QByteArray& data);
-    QByteArray get(uint docId);
+    void put(quint64 docId, const QByteArray& data);
+    QByteArray get(quint64 docId);
 
-    void del(uint docId);
+    void del(quint64 docId);
 
     void setTransaction(MDB_txn* txn) {
         m_txn = txn;

@@ -31,7 +31,7 @@
 
 namespace Baloo {
 
-typedef QVector<uint> PostingList;
+typedef QVector<quint64> PostingList;
 
 class BALOO_ENGINE_EXPORT PostingDB
 {

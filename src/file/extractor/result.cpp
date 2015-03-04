@@ -129,7 +129,7 @@ void Result::setDocument(const Baloo::Document& doc)
     m_termGenForText.setPosition(10000);
 }
 
-uint Result::id() const
+quint64 Result::id() const
 {
     return m_docId;
 }

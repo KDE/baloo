@@ -35,13 +35,13 @@ DocumentDataDB::~DocumentDataDB()
     mdb_dbi_close(mdb_txn_env(m_txn), m_dbi);
 }
 
-void DocumentDataDB::put(uint docId, const QByteArray& url)
+void DocumentDataDB::put(quint64 docId, const QByteArray& url)
 {
     Q_ASSERT(docId > 0);
     Q_ASSERT(!url.isEmpty());
 
     MDB_val key;
-    key.mv_size = sizeof(uint);
+    key.mv_size = sizeof(quint64);
     key.mv_data = static_cast<void*>(&docId);
 
     MDB_val val;
@@ -52,12 +52,12 @@ void DocumentDataDB::put(uint docId, const QByteArray& url)
     Q_ASSERT_X(rc == 0, "DocumentDataDB::put", mdb_strerror(rc));
 }
 
-QByteArray DocumentDataDB::get(uint docId)
+QByteArray DocumentDataDB::get(quint64 docId)
 {
     Q_ASSERT(docId > 0);
 
     MDB_val key;
-    key.mv_size = sizeof(uint);
+    key.mv_size = sizeof(quint64);
     key.mv_data = static_cast<void*>(&docId);
 
     MDB_val val;
@@ -70,12 +70,12 @@ QByteArray DocumentDataDB::get(uint docId)
     return QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size);
 }
 
-void DocumentDataDB::del(uint docId)
+void DocumentDataDB::del(quint64 docId)
 {
     Q_ASSERT(docId > 0);
 
     MDB_val key;
-    key.mv_size = sizeof(uint);
+    key.mv_size = sizeof(quint64);
     key.mv_data = static_cast<void*>(&docId);
 
     int rc = mdb_del(m_txn, m_dbi, &key, 0);

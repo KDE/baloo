@@ -33,10 +33,10 @@ public:
     explicit DocumentUrlDB(MDB_txn* txn);
     ~DocumentUrlDB();
 
-    void put(uint docId, const QByteArray& url);
-    QByteArray get(uint docId);
+    void put(quint64 docId, const QByteArray& url);
+    QByteArray get(quint64 docId);
 
-    void del(uint docId);
+    void del(quint64 docId);
 
     void setTransaction(MDB_txn* txn) {
         m_txn = txn;

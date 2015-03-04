@@ -202,7 +202,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(QSharedPointer<SearchStore>, s_searchStore, (new Searc
 
 ResultIterator Query::exec()
 {
-    QVector<uint> vec = (*s_searchStore)->exec(*this);
+    QVector<quint64> vec = (*s_searchStore)->exec(*this);
     SearchStore* ess = &(**s_searchStore);
     return ResultIterator(vec, ess);
 }

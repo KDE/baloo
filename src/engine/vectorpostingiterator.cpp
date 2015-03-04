@@ -22,13 +22,13 @@
 
 using namespace Baloo;
 
-VectorPostingIterator::VectorPostingIterator(const QVector<uint>& values)
+VectorPostingIterator::VectorPostingIterator(const QVector<quint64>& values)
     : m_values(values)
     , m_pos(-1)
 {
 }
 
-uint VectorPostingIterator::docId()
+quint64 VectorPostingIterator::docId()
 {
     if (m_pos < 0 || m_pos >= m_values.size()) {
         return 0;
@@ -37,7 +37,7 @@ uint VectorPostingIterator::docId()
     return m_values[m_pos];
 }
 
-uint VectorPostingIterator::next()
+quint64 VectorPostingIterator::next()
 {
     m_pos++;
     if (m_pos >= m_values.size()) {

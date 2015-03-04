@@ -35,13 +35,13 @@ class FileMapping
 public:
     FileMapping();
     explicit FileMapping(const QString& url);
-    explicit FileMapping(uint id);
+    explicit FileMapping(quint64 id);
 
-    uint id() const;
+    quint64 id() const;
     QString url() const;
 
     void setUrl(const QString& url);
-    void setId(uint id);
+    void setId(quint64 id);
 
     bool fetched();
     bool empty() const;
@@ -60,7 +60,7 @@ public:
 
 private:
     QString m_url;
-    uint m_id;
+    quint64 m_id;
 };
 
 }

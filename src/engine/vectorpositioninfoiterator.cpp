@@ -28,7 +28,7 @@ VectorPositionInfoIterator::VectorPositionInfoIterator(const QVector<PositionInf
 {
 }
 
-uint VectorPositionInfoIterator::next()
+quint64 VectorPositionInfoIterator::next()
 {
     m_pos++;
     if (m_pos >= m_vector.size()) {
@@ -39,7 +39,7 @@ uint VectorPositionInfoIterator::next()
     return m_vector[m_pos].docId;
 }
 
-uint VectorPositionInfoIterator::docId()
+quint64 VectorPositionInfoIterator::docId()
 {
     if (m_pos < 0 || m_pos >= m_vector.size()) {
         return 0;

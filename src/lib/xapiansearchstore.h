@@ -110,7 +110,7 @@ protected:
         Xapian::MSet mset;
         Xapian::MSetIterator it;
 
-        uint lastId;
+        quint64 lastId;
         QString lastUrl;
     };
 

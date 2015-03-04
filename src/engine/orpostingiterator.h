@@ -31,12 +31,12 @@ class BALOO_ENGINE_EXPORT OrPostingIterator : public PostingIterator
 public:
     OrPostingIterator(const QVector<PostingIterator*>& iterators);
 
-    virtual uint next();
-    virtual uint docId();
+    virtual quint64 next();
+    virtual quint64 docId();
 
 private:
     QVector<PostingIterator*> m_iterators;
-    uint m_docId;
+    quint64 m_docId;
 };
 }
 

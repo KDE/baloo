@@ -51,7 +51,7 @@ public:
     void setTestMode(bool mode) { m_testMode = mode; }
 
 Q_SIGNALS:
-    void newDocument(uint docid, const Document& doc);
+    void newDocument(quint64 docid, const Document& doc);
 
 protected:
     virtual void processNextIteration();
@@ -60,10 +60,10 @@ protected:
 
 private Q_SLOTS:
     void slotFinishedIndexingFile(KJob* job);
-    void slotIndexingFailed(uint doc);
+    void slotIndexingFailed(quint64 doc);
 
 private:
-    QStack<uint> m_fileQueue;
+    QStack<quint64> m_fileQueue;
     Database* m_db;
 
     int m_maxSize;

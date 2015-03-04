@@ -59,7 +59,7 @@ private:
     Database* db;
 
     void insertDocuments();
-    void addDocument(const QString& text, uint id, const QByteArray& url)
+    void addDocument(const QString& text, quint64 id, const QByteArray& url)
     {
         Document doc;
 
@@ -85,7 +85,7 @@ void QueryTest::testTermEqual()
 {
     EngineQuery q("the");
 
-    QVector<uint> result = {100, 110, 130};
+    QVector<quint64> result = {100, 110, 130};
     QCOMPARE(db->exec(q), result);
 }
 
@@ -93,7 +93,7 @@ void QueryTest::testTermStartsWith()
 {
     EngineQuery q("for", EngineQuery::StartsWith);
 
-    QVector<uint> result = {120, 130};
+    QVector<quint64> result = {120, 130};
     QCOMPARE(db->exec(q), result);
 }
 
@@ -105,7 +105,7 @@ void QueryTest::testTermAnd()
 
     EngineQuery q(queries, EngineQuery::And);
 
-    QVector<uint> result = {120};
+    QVector<quint64> result = {120};
     QCOMPARE(db->exec(q), result);
 }
 
@@ -117,7 +117,7 @@ void QueryTest::testTermOr()
 
     EngineQuery q(queries, EngineQuery::Or);
 
-    QVector<uint> result = {100, 110};
+    QVector<quint64> result = {100, 110};
     QCOMPARE(db->exec(q), result);
 }
 
@@ -129,7 +129,7 @@ void QueryTest::testTermPhrase()
 
     EngineQuery q(queries, EngineQuery::Phrase);
 
-    QVector<uint> result = {100};
+    QVector<quint64> result = {100};
     QCOMPARE(db->exec(q), result);
 }
 

@@ -35,10 +35,10 @@ private Q_SLOTS:
         QByteArray arr = "/home/blah";
         db.put(arr, 1);
 
-        QCOMPARE(db.get(arr), static_cast<uint>(1));
+        QCOMPARE(db.get(arr), static_cast<quint64>(1));
 
         db.del(arr);
-        QCOMPARE(db.get(arr), static_cast<uint>(0));
+        QCOMPARE(db.get(arr), static_cast<quint64>(0));
     }
 
     void testIter() {
@@ -53,28 +53,28 @@ private Q_SLOTS:
         PostingIterator* it = db.prefixIter("/home/v");
         QVERIFY(it);
 
-        QVector<uint> result = {1, 2, 3};
-        for (uint val : result) {
-            QCOMPARE(it->next(), static_cast<uint>(val));
-            QCOMPARE(it->docId(), static_cast<uint>(val));
+        QVector<quint64> result = {1, 2, 3};
+        for (quint64 val : result) {
+            QCOMPARE(it->next(), static_cast<quint64>(val));
+            QCOMPARE(it->docId(), static_cast<quint64>(val));
         }
 
         it = db.prefixIter("/home/w");
         QVERIFY(it);
 
         result = {5};
-        for (uint val : result) {
-            QCOMPARE(it->next(), static_cast<uint>(val));
-            QCOMPARE(it->docId(), static_cast<uint>(val));
+        for (quint64 val : result) {
+            QCOMPARE(it->next(), static_cast<quint64>(val));
+            QCOMPARE(it->docId(), static_cast<quint64>(val));
         }
 
         it = db.prefixIter("/home/b");
         QVERIFY(it);
 
         result = {4};
-        for (uint val : result) {
-            QCOMPARE(it->next(), static_cast<uint>(val));
-            QCOMPARE(it->docId(), static_cast<uint>(val));
+        for (quint64 val : result) {
+            QCOMPARE(it->next(), static_cast<quint64>(val));
+            QCOMPARE(it->docId(), static_cast<quint64>(val));
         }
 
         it = db.prefixIter("/home/f");

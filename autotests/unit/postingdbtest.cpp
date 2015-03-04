@@ -48,10 +48,10 @@ private Q_SLOTS:
         PostingIterator* it = db.iter("fir");
         QVERIFY(it);
 
-        QVector<uint> result = {1, 3, 5};
-        for (uint val : result) {
-            QCOMPARE(it->next(), static_cast<uint>(val));
-            QCOMPARE(it->docId(), static_cast<uint>(val));
+        QVector<quint64> result = {1, 3, 5};
+        for (quint64 val : result) {
+            QCOMPARE(it->next(), static_cast<quint64>(val));
+            QCOMPARE(it->docId(), static_cast<quint64>(val));
         }
     }
 
@@ -66,10 +66,10 @@ private Q_SLOTS:
         PostingIterator* it = db.prefixIter("fi");
         QVERIFY(it);
 
-        QVector<uint> result = {1, 3, 5, 8, 9};
-        for (uint val : result) {
-            QCOMPARE(it->next(), static_cast<uint>(val));
-            QCOMPARE(it->docId(), static_cast<uint>(val));
+        QVector<quint64> result = {1, 3, 5, 8, 9};
+        for (quint64 val : result) {
+            QCOMPARE(it->next(), static_cast<quint64>(val));
+            QCOMPARE(it->docId(), static_cast<quint64>(val));
         }
     }
 
@@ -85,10 +85,10 @@ private Q_SLOTS:
         PostingIterator* it = db.regexpIter(QRegularExpression(".re"), QByteArray("f"));
         QVERIFY(it);
 
-        QVector<uint> result = {1, 2, 3, 5, 8};
-        for (uint val : result) {
-            QCOMPARE(it->next(), static_cast<uint>(val));
-            QCOMPARE(it->docId(), static_cast<uint>(val));
+        QVector<quint64> result = {1, 2, 3, 5, 8};
+        for (quint64 val : result) {
+            QCOMPARE(it->next(), static_cast<quint64>(val));
+            QCOMPARE(it->docId(), static_cast<quint64>(val));
         }
 
         // Non existing

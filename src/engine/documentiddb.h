@@ -34,11 +34,11 @@ public:
     explicit DocumentIdDB(MDB_txn* txn);
     ~DocumentIdDB();
 
-    void put(uint docId);
-    bool contains(uint docId);
-    void del(uint docID);
+    void put(quint64 docId);
+    bool contains(quint64 docId);
+    void del(quint64 docID);
 
-    QVector<uint> fetchItems(int size);
+    QVector<quint64> fetchItems(int size);
 
     void setTransaction(MDB_txn* txn) {
         m_txn = txn;

@@ -67,16 +67,16 @@ void PhraseAndIteratorTest::test()
 
     QVector<PostingIterator*> vec = {&it1, &it2};
     PhraseAndIterator it(vec);
-    QCOMPARE(it.docId(), static_cast<uint>(0));
+    QCOMPARE(it.docId(), static_cast<quint64>(0));
 
     // The Query is "term1 term2". term1 must appear one position before term2
-    QVector<uint> result = {2};
-    for (uint val : result) {
-        QCOMPARE(it.next(), static_cast<uint>(val));
-        QCOMPARE(it.docId(), static_cast<uint>(val));
+    QVector<quint64> result = {2};
+    for (quint64 val : result) {
+        QCOMPARE(it.next(), static_cast<quint64>(val));
+        QCOMPARE(it.docId(), static_cast<quint64>(val));
     }
-    QCOMPARE(it.next(), static_cast<uint>(0));
-    QCOMPARE(it.docId(), static_cast<uint>(0));
+    QCOMPARE(it.next(), static_cast<quint64>(0));
+    QCOMPARE(it.docId(), static_cast<quint64>(0));
 }
 
 

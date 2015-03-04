@@ -28,12 +28,12 @@ AndPostingIterator::AndPostingIterator(const QVector<PostingIterator*>& iterator
 {
 }
 
-uint AndPostingIterator::docId()
+quint64 AndPostingIterator::docId()
 {
     return m_docId;
 }
 
-uint AndPostingIterator::next()
+quint64 AndPostingIterator::next()
 {
     if (m_iterators.isEmpty()) {
         m_docId = 0;

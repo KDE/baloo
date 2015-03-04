@@ -56,7 +56,7 @@ void MetadataMoverTest::cleanupTestCase()
     m_tempDir = 0;
 }
 
-uint MetadataMoverTest::insertUrl(const QString& url)
+quint64 MetadataMoverTest::insertUrl(const QString& url)
 {
     XapianDocument doc;
     doc.addValue(3, url);
@@ -81,7 +81,7 @@ uint MetadataMoverTest::insertUrl(const QString& url)
 void MetadataMoverTest::testRemoveFile()
 {
     const QString url(QLatin1String("/home/vishesh/t"));
-    uint fid = insertUrl(url);
+    quint64 fid = insertUrl(url);
 
     MetadataMover mover(m_db, this);
 
@@ -90,7 +90,7 @@ void MetadataMoverTest::testRemoveFile()
 
     QCOMPARE(spy.size(), 1);
     QCOMPARE(spy.at(0).size(), 1);
-    QCOMPARE(spy.at(0).first().toUInt(), fid);
+    QCOMPARE(spy.at(0).first().toULongLong(), fid);
 
     Xapian::Database* db = m_db->xapianDatabase()->db();
     QVERIFY(db->get_doccount() == 0);
@@ -99,7 +99,7 @@ void MetadataMoverTest::testRemoveFile()
 void MetadataMoverTest::testMoveFile()
 {
     const QString url(QLatin1String("/home/vishesh/t"));
-    uint fid = insertUrl(url);
+    quint64 fid = insertUrl(url);
 
     MetadataMover mover(m_db, this);
 
@@ -123,7 +123,7 @@ void MetadataMoverTest::testMoveFile()
 void MetadataMoverTest::testMoveFolder()
 {
     const QString folderUrl(m_tempDir->path() + QLatin1String("/folder"));
-    uint folId = insertUrl(folderUrl);
+    quint64 folId = insertUrl(folderUrl);
 
     // The directory needs to be created because moveFileMetadata checks if it is
     // a directory in order to do the more complicated query to rename the
@@ -133,10 +133,10 @@ void MetadataMoverTest::testMoveFolder()
     QVERIFY(QDir(folderUrl).exists());
 
     const QString fileUrl1(folderUrl + QLatin1String("/1"));
-    uint fid1 = insertUrl(fileUrl1);
+    quint64 fid1 = insertUrl(fileUrl1);
 
     const QString fileUrl2(folderUrl + QLatin1String("/2"));
-    uint fid2 = insertUrl(fileUrl2);
+    quint64 fid2 = insertUrl(fileUrl2);
 
     MetadataMover mover(m_db, this);
 

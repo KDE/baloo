@@ -35,12 +35,12 @@ DocumentIdDB::~DocumentIdDB()
     mdb_dbi_close(mdb_txn_env(m_txn), m_dbi);
 }
 
-void DocumentIdDB::put(uint docId)
+void DocumentIdDB::put(quint64 docId)
 {
     Q_ASSERT(docId > 0);
 
     MDB_val key;
-    key.mv_size = sizeof(uint);
+    key.mv_size = sizeof(quint64);
     key.mv_data = static_cast<void*>(&docId);
 
     // FIXME: Is the val even required?
@@ -55,12 +55,12 @@ void DocumentIdDB::put(uint docId)
     Q_ASSERT_X(rc == 0, "IndexingLevelDB::put", mdb_strerror(rc));
 }
 
-bool DocumentIdDB::contains(uint docId)
+bool DocumentIdDB::contains(quint64 docId)
 {
     Q_ASSERT(docId > 0);
 
     MDB_val key;
-    key.mv_size = sizeof(uint);
+    key.mv_size = sizeof(quint64);
     key.mv_data = static_cast<void*>(&docId);
 
     // FIXME: We don't need val
@@ -74,12 +74,12 @@ bool DocumentIdDB::contains(uint docId)
     return true;
 }
 
-void DocumentIdDB::del(uint docId)
+void DocumentIdDB::del(quint64 docId)
 {
     Q_ASSERT(docId > 0);
 
     MDB_val key;
-    key.mv_size = sizeof(uint);
+    key.mv_size = sizeof(quint64);
     key.mv_data = static_cast<void*>(&docId);
 
     int rc = mdb_del(m_txn, m_dbi, &key, 0);
@@ -89,14 +89,14 @@ void DocumentIdDB::del(uint docId)
     Q_ASSERT_X(rc == 0, "IndexingLevelDB::del", mdb_strerror(rc));
 }
 
-QVector<uint> DocumentIdDB::fetchItems(int size)
+QVector<quint64> DocumentIdDB::fetchItems(int size)
 {
     Q_ASSERT(size > 0);
 
     MDB_cursor* cursor;
     mdb_cursor_open(m_txn, m_dbi, &cursor);
 
-    QVector<uint> vec;
+    QVector<quint64> vec;
 
     for (int i = 0; i < size; i++) {
         MDB_val key;
@@ -106,7 +106,7 @@ QVector<uint> DocumentIdDB::fetchItems(int size)
         }
         Q_ASSERT_X(rc == 0, "IndexingLevelDB::fetchItems", mdb_strerror(rc));
 
-        uint id = *(static_cast<int*>(key.mv_data));
+        quint64 id = *(static_cast<int*>(key.mv_data));
         vec << id;
     }
     mdb_cursor_close(cursor);

@@ -48,8 +48,8 @@ public:
     void addBoolTerm(const QByteArray& term);
     void addPositionTerm(const QByteArray& term, int position = 0, int wdfInc = 1);
 
-    uint id() const;
-    void setId(uint id);
+    quint64 id() const;
+    void setId(quint64 id);
 
     QByteArray url() const;
     void setUrl(const QByteArray& url);
@@ -66,7 +66,7 @@ public:
     void setData(const QByteArray& data);
 
 private:
-    uint m_id;
+    quint64 m_id;
 
     struct TermData {
         int wdf;
@@ -79,7 +79,7 @@ private:
     QByteArray m_url;
     bool m_contentIndexing;
 
-    QMap<uint, QByteArray> m_slots;
+    QMap<quint64, QByteArray> m_slots;
     QByteArray m_data;
 
     friend class Database;

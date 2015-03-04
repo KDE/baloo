@@ -52,9 +52,9 @@ public:
 
     // FIXME: Return codes?
     void addDocument(const Document& doc);
-    void removeDocument(uint id);
+    void removeDocument(quint64 id);
 
-    bool hasDocument(uint id);
+    bool hasDocument(quint64 id);
 
     enum TransactionType {
         ReadOnly,
@@ -72,14 +72,14 @@ public:
 
     bool hasChanges() const;
 
-    QByteArray documentUrl(uint id);
-    uint documentId(const QByteArray& url);
-    QByteArray documentSlot(uint id, uint slotNum);
-    QByteArray documentData(uint id);
+    QByteArray documentUrl(quint64 id);
+    quint64 documentId(const QByteArray& url);
+    QByteArray documentSlot(quint64 id, quint64 slotNum);
+    QByteArray documentData(quint64 id);
 
-    QVector<uint> exec(const EngineQuery& query, int limit = -1);
+    QVector<quint64> exec(const EngineQuery& query, int limit = -1);
 
-    QVector<uint> fetchIndexingLevel(int size);
+    QVector<quint64> fetchIndexingLevel(int size);
 private:
     QString m_path;
 

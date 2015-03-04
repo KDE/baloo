@@ -66,11 +66,11 @@ void DatabaseTest::test()
     QCOMPARE(db.hasDocument(1), true);
 
     QCOMPARE(db.m_docUrlDB->get(1), url);
-    QCOMPARE(db.m_urlDocDB->get(url), static_cast<uint>(1));
-    QCOMPARE(db.m_postingDB->get("a"), QVector<uint>() << 1);
-    QCOMPARE(db.m_postingDB->get("ab"), QVector<uint>() << 1);
-    QCOMPARE(db.m_postingDB->get("abc"), QVector<uint>() << 1);
-    QCOMPARE(db.m_postingDB->get("power"), QVector<uint>() << 1);
+    QCOMPARE(db.m_urlDocDB->get(url), static_cast<quint64>(1));
+    QCOMPARE(db.m_postingDB->get("a"), QVector<quint64>() << 1);
+    QCOMPARE(db.m_postingDB->get("ab"), QVector<quint64>() << 1);
+    QCOMPARE(db.m_postingDB->get("abc"), QVector<quint64>() << 1);
+    QCOMPARE(db.m_postingDB->get("power"), QVector<quint64>() << 1);
 
     /*
     QCOMPARE(db.document(1), doc);
@@ -84,14 +84,14 @@ void DatabaseTest::test()
     QCOMPARE(result[0], 1);
 
     QCOMPARE(db.documentUrl(1), url);
-    QCOMPARE(db.documentId(url), static_cast<uint>(1));
+    QCOMPARE(db.documentId(url), static_cast<quint64>(1));
 
     db.removeDocument(1);
     QCOMPARE(db.hasDocument(1), false);
     QCOMPARE(db.document(1), Document());
 
     QCOMPARE(db.documentUrl(1), QByteArray());
-    QCOMPARE(db.documentId(url), static_cast<uint>(0));
+    QCOMPARE(db.documentId(url), static_cast<quint64>(0));
     */
 }
 

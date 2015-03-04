@@ -61,7 +61,7 @@ private:
     Database* m_db;
     FileSearchStore* m_store;
 
-    uint insertUrl(const QString& url);
+    quint64 insertUrl(const QString& url);
     void insertType(int id, const QString& type);
     void insertExactText(int id, const QString& text, const QString& prefix);
     void insertText(int id, const QString& text);

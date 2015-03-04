@@ -63,19 +63,19 @@ private Q_SLOTS:
         db.put(word, list);
 
         PostingIterator* it = db.iter(word);
-        QCOMPARE(it->docId(), static_cast<uint>(0));
+        QCOMPARE(it->docId(), static_cast<quint64>(0));
         QVERIFY(it->positions().isEmpty());
 
-        QCOMPARE(it->next(), static_cast<uint>(1));
-        QCOMPARE(it->docId(), static_cast<uint>(1));
+        QCOMPARE(it->next(), static_cast<quint64>(1));
+        QCOMPARE(it->docId(), static_cast<quint64>(1));
         QCOMPARE(it->positions(), pos1.positions);
 
-        QCOMPARE(it->next(), static_cast<uint>(5));
-        QCOMPARE(it->docId(), static_cast<uint>(5));
+        QCOMPARE(it->next(), static_cast<quint64>(5));
+        QCOMPARE(it->docId(), static_cast<quint64>(5));
         QCOMPARE(it->positions(), pos2.positions);
 
-        QCOMPARE(it->next(), static_cast<uint>(0));
-        QCOMPARE(it->docId(), static_cast<uint>(0));
+        QCOMPARE(it->next(), static_cast<quint64>(0));
+        QCOMPARE(it->docId(), static_cast<quint64>(0));
         QVERIFY(it->positions().isEmpty());
     }
 };

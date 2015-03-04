@@ -38,8 +38,8 @@ public:
 
     QStringList types();
 
-    QVector<uint> exec(const Query& query);
-    QString filePath(uint id);
+    QVector<quint64> exec(const Query& query);
+    QString filePath(quint64 id);
 
 private:
     Database* m_db;

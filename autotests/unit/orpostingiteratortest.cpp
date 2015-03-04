@@ -34,9 +34,9 @@ private Q_SLOTS:
 
 void OrPostingIteratorTest::test()
 {
-    QVector<uint> l1 = {1, 3, 5, 7};
-    QVector<uint> l2 = {3, 4, 5, 7, 9, 11};
-    QVector<uint> l3 = {1, 3, 7};
+    QVector<quint64> l1 = {1, 3, 5, 7};
+    QVector<quint64> l2 = {3, 4, 5, 7, 9, 11};
+    QVector<quint64> l3 = {1, 3, 7};
 
     VectorPostingIterator it1(l1);
     VectorPostingIterator it2(l2);
@@ -44,15 +44,15 @@ void OrPostingIteratorTest::test()
 
     QVector<PostingIterator*> vec = {&it1, &it2, &it3};
     OrPostingIterator it(vec);
-    QCOMPARE(it.docId(), static_cast<uint>(0));
+    QCOMPARE(it.docId(), static_cast<quint64>(0));
 
-    QVector<uint> result = {1, 3, 4, 5, 7, 9, 11};
-    for (uint val : result) {
-        QCOMPARE(it.next(), static_cast<uint>(val));
-        QCOMPARE(it.docId(), static_cast<uint>(val));
+    QVector<quint64> result = {1, 3, 4, 5, 7, 9, 11};
+    for (quint64 val : result) {
+        QCOMPARE(it.next(), static_cast<quint64>(val));
+        QCOMPARE(it.docId(), static_cast<quint64>(val));
     }
-    QCOMPARE(it.next(), static_cast<uint>(0));
-    QCOMPARE(it.docId(), static_cast<uint>(0));
+    QCOMPARE(it.next(), static_cast<quint64>(0));
+    QCOMPARE(it.docId(), static_cast<quint64>(0));
 }
 
 

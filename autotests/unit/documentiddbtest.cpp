@@ -51,8 +51,8 @@ void DocIdDBTest::testFetchItems()
     db.put(6);
     db.put(8);
 
-    QVector<uint> acVec = db.fetchItems(10);
-    QVector<uint> exVec = {1, 6, 8};
+    QVector<quint64> acVec = db.fetchItems(10);
+    QVector<quint64> exVec = {1, 6, 8};
 
     QCOMPARE(acVec, exVec);
 }

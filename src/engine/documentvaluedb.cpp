@@ -36,13 +36,13 @@ DocumentValueDB::~DocumentValueDB()
     mdb_dbi_close(mdb_txn_env(m_txn), m_dbi);
 }
 
-void DocumentValueDB::put(uint docId, uint slotNum, const QByteArray& value)
+void DocumentValueDB::put(quint64 docId, quint64 slotNum, const QByteArray& value)
 {
     Q_ASSERT(docId > 0);
 
-    uint keyArr[2] = {docId, slotNum};
+    quint64 keyArr[2] = {docId, slotNum};
     MDB_val key;
-    key.mv_size = sizeof(uint) + sizeof(uint);
+    key.mv_size = sizeof(quint64) + sizeof(quint64);
     key.mv_data = static_cast<void*>(&keyArr);
 
     MDB_val val;
@@ -56,13 +56,13 @@ void DocumentValueDB::put(uint docId, uint slotNum, const QByteArray& value)
     Q_ASSERT_X(rc == 0, "DocumentValueDB::put", mdb_strerror(rc));
 }
 
-QByteArray DocumentValueDB::get(uint docId, uint slotNum)
+QByteArray DocumentValueDB::get(quint64 docId, quint64 slotNum)
 {
     Q_ASSERT(docId > 0);
 
-    uint keyArr[2] = {docId, slotNum};
+    quint64 keyArr[2] = {docId, slotNum};
     MDB_val key;
-    key.mv_size = sizeof(uint) + sizeof(uint);
+    key.mv_size = sizeof(quint64) + sizeof(quint64);
     key.mv_data = static_cast<void*>(&keyArr);
 
     MDB_val val;
@@ -75,13 +75,13 @@ QByteArray DocumentValueDB::get(uint docId, uint slotNum)
     return QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size);
 }
 
-void DocumentValueDB::del(uint docId)
+void DocumentValueDB::del(quint64 docId)
 {
     Q_ASSERT(docId > 0);
 
-    uint keyArr[2] = {docId, 0};
+    quint64 keyArr[2] = {docId, 0};
     MDB_val key;
-    key.mv_size = sizeof(uint) + sizeof(uint);
+    key.mv_size = sizeof(quint64) + sizeof(quint64);
     key.mv_data = static_cast<void*>(&keyArr);
 
     MDB_cursor* cursor;
@@ -93,8 +93,8 @@ void DocumentValueDB::del(uint docId)
         }
         Q_ASSERT_X(rc == 0, "DocumentValueDB::del", mdb_strerror(rc));
 
-        uint* keyArr = static_cast<uint*>(key.mv_data);
-        uint fetchedId = keyArr[0];
+        quint64* keyArr = static_cast<quint64*>(key.mv_data);
+        quint64 fetchedId = keyArr[0];
 
         if (fetchedId != docId)
             break;

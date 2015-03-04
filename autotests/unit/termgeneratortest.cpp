@@ -152,23 +152,23 @@ void TermGeneratorTest::testWordPositions()
     Xapian::PositionIterator it = xap->positionlist_begin(1, "hello");
     Xapian::PositionIterator end = xap->positionlist_end(1, "hello");
     QVERIFY(it != end);
-    QCOMPARE(*it, (uint)1);
+    QCOMPARE(*it, (quint64)1);
     it++;
     QVERIFY(it == end);
 
     it = xap->positionlist_begin(1, "hi");
     end = xap->positionlist_end(1, "hi");
     QVERIFY(it != end);
-    QCOMPARE(*it, (uint)2);
+    QCOMPARE(*it, (quint64)2);
     it++;
-    QCOMPARE(*it, (uint)4);
+    QCOMPARE(*it, (quint64)4);
     it++;
     QVERIFY(it == end);
 
     it = xap->positionlist_begin(1, "how");
     end = xap->positionlist_end(1, "how");
     QVERIFY(it != end);
-    QCOMPARE(*it, (uint)3);
+    QCOMPARE(*it, (quint64)3);
     it++;
     QVERIFY(it == end);
     */

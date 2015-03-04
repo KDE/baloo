@@ -31,8 +31,8 @@ class BALOO_ENGINE_EXPORT VectorPositionInfoIterator : public PostingIterator
 public:
     VectorPositionInfoIterator(const QVector<PositionInfo>& vector);
 
-    virtual uint docId();
-    virtual uint next();
+    virtual quint64 docId();
+    virtual quint64 next();
     virtual QVector<uint> positions();
 
 private:

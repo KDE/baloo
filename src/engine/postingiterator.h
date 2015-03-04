@@ -37,9 +37,9 @@ class BALOO_ENGINE_EXPORT PostingIterator
 public:
     virtual ~PostingIterator();
 
-    virtual uint next() = 0;
-    virtual uint docId() = 0;
-    virtual uint skipTo(uint docId);
+    virtual quint64 next() = 0;
+    virtual quint64 docId() = 0;
+    virtual quint64 skipTo(quint64 docId);
 
     virtual QVector<uint> positions();
 };

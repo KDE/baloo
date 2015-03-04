@@ -76,7 +76,7 @@ void BasicIndexingQueueTest::testSimpleDirectoryStructure()
     BasicIndexingQueue queue(&db, &config);
     QCOMPARE(queue.isSuspended(), false);
 
-    QSignalSpy spy(&queue, SIGNAL(newDocument(uint,Xapian::Document)));
+    QSignalSpy spy(&queue, SIGNAL(newDocument(quint64,Xapian::Document)));
     QSignalSpy spyStarted(&queue, SIGNAL(startedIndexing()));
     QSignalSpy spyFinished(&queue, SIGNAL(finishedIndexing()));
 
@@ -161,7 +161,7 @@ void BasicIndexingQueueTest::textExtendedAttributeIndexing()
     const QString userComment(QLatin1String("UserComment"));
     QVERIFY(baloo_setxattr(fileName, QLatin1String("user.xdg.comment"), userComment) != -1);
 
-    QSignalSpy spy(&queue, SIGNAL(newDocument(uint,Xapian::Document)));
+    QSignalSpy spy(&queue, SIGNAL(newDocument(quint64,Xapian::Document)));
 
     queue.enqueue(FileMapping(fileName), Baloo::ExtendedAttributesOnly);
 
@@ -264,7 +264,7 @@ void BasicIndexingQueueTest::textNormalAndThenExtendedAttributeIndexing()
     const QString userComment(QLatin1String("UserComment"));
     QVERIFY(baloo_setxattr(fileName, QLatin1String("user.xdg.comment"), userComment) != -1);
 
-    QSignalSpy spy(&queue, SIGNAL(newDocument(uint,Xapian::Document)));
+    QSignalSpy spy(&queue, SIGNAL(newDocument(quint64,Xapian::Document)));
 
     queue.enqueue(FileMapping(fileName));
 
@@ -348,7 +348,7 @@ void BasicIndexingQueueTest::testExtendedAttributeIndexingWhenEmpty()
 
     const QString fileName = dir->path() + QStringLiteral("/home/1");
 
-    QSignalSpy spy(&queue, SIGNAL(newDocument(uint,Xapian::Document)));
+    QSignalSpy spy(&queue, SIGNAL(newDocument(quint64,Xapian::Document)));
     queue.enqueue(FileMapping(fileName), Baloo::ExtendedAttributesOnly);
 
     QEventLoop loop;
@@ -384,7 +384,7 @@ void BasicIndexingQueueTest::testFileModifications()
 
     const QString fileName = dir->path() + QStringLiteral("/home/1");
 
-    QSignalSpy spy(&queue, SIGNAL(newDocument(uint,Xapian::Document)));
+    QSignalSpy spy(&queue, SIGNAL(newDocument(quint64,Xapian::Document)));
     queue.enqueue(FileMapping(fileName), Baloo::AutoUpdateFolder);
 
     QEventLoop loop;

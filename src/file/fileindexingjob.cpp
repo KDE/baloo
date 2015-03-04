@@ -31,7 +31,7 @@
 
 using namespace Baloo;
 
-FileIndexingJob::FileIndexingJob(const QVector<uint>& files, QObject* parent)
+FileIndexingJob::FileIndexingJob(const QVector<quint64>& files, QObject* parent)
     : KJob(parent)
     , m_process(0)
     , m_suspended(false)
@@ -56,7 +56,7 @@ void FileIndexingJob::start()
     start(m_args);
 }
 
-void FileIndexingJob::start(const QVector<uint>& files)
+void FileIndexingJob::start(const QVector<quint64>& files)
 {
     // setup the external process which does the actual indexing
     static const QString exe = QStandardPaths::findExecutable(QLatin1String("baloo_file_extractor"));
@@ -65,7 +65,7 @@ void FileIndexingJob::start(const QVector<uint>& files)
     m_process = new QProcess(this);
 
     QStringList args;
-    Q_FOREACH (const uint& file, files)
+    Q_FOREACH (const quint64& file, files)
         args << QString::number(file);
 
     if (!m_customDbPath.isEmpty()) {
@@ -108,7 +108,7 @@ void FileIndexingJob::slotIndexedFile(int, QProcess::ExitStatus exitStatus)
 
     // Here it is!
     if (m_args.size() == 1) {
-        uint doc = m_args.first();
+        quint64 doc = m_args.first();
         qWarning() << "Indexer crashed while indexing" << doc;
         qWarning() << "Blacklisting this file";
         Q_EMIT indexingFailed(doc);

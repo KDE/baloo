@@ -40,7 +40,7 @@ public:
 
     void setDocument(const Baloo::Document& doc);
 
-    uint id() const;
+    quint64 id() const;
     QVariantMap map() const;
 
     Baloo::Document& document() {
@@ -54,7 +54,7 @@ public:
     void finish();
 
 private:
-    uint m_docId;
+    quint64 m_docId;
     Baloo::Document m_doc;
     Baloo::TermGenerator m_termGen;
     Baloo::TermGenerator m_termGenForText;

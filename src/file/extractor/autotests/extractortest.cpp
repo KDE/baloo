@@ -96,10 +96,10 @@ void ExtractorTest::testFileDeletion()
     xapDb.replaceDocument(1, doc);
     xapDb.commit();
 
-    QCOMPARE(xapDb.db()->get_doccount(), static_cast<uint>(1));
+    QCOMPARE(xapDb.db()->get_doccount(), static_cast<quint64>(1));
     try {
         Xapian::Document doc = xapDb.db()->get_document(1);
-        QCOMPARE(doc.termlist_count(), static_cast<uint>(6));
+        QCOMPARE(doc.termlist_count(), static_cast<quint64>(6));
     }
     catch (...) {
         QVERIFY2(false, "Document not committed");
@@ -116,7 +116,7 @@ void ExtractorTest::testFileDeletion()
 
     // The document should have been deleted from the db
     xapDb.db()->reopen();
-    QCOMPARE(xapDb.db()->get_doccount(), static_cast<uint>(0));
+    QCOMPARE(xapDb.db()->get_doccount(), static_cast<quint64>(0));
     try {
         Xapian::Document doc = xapDb.db()->get_document(1);
         QVERIFY2(false, "The document should no longer exist");

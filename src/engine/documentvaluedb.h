@@ -29,16 +29,17 @@
 
 namespace Baloo {
 
+// FIXME: DocumentValueDB does not need 64 bit keys. Just one character will do.
 class BALOO_ENGINE_EXPORT DocumentValueDB
 {
 public:
     explicit DocumentValueDB(MDB_txn* txn);
     ~DocumentValueDB();
 
-    void put(uint docId, uint key, const QByteArray& value);
-    QByteArray get(uint docId, uint key);
+    void put(quint64 docId, quint64 key, const QByteArray& value);
+    QByteArray get(quint64 docId, quint64 key);
 
-    void del(uint docId);
+    void del(quint64 docId);
 
     void setTransaction(MDB_txn* txn) {
         m_txn = txn;

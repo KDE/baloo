@@ -49,7 +49,7 @@ private Q_SLOTS:
     void process();
 
 private:
-    void index(const QString& filePath, uint id);
+    void index(const QString& filePath, quint64 id);
     bool ignoreConfig() const;
 
     QStringList m_args;

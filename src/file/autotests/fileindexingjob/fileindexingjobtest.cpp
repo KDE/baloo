@@ -42,52 +42,52 @@ void FileIndexingJobTest::init()
 
 void FileIndexingJobTest::testFileFail()
 {
-    QVector<uint> files;
-    for (int i = 0; i<40; ++i) {
+    QVector<quint64> files;
+    for (int i = 0; i < 40; ++i) {
         files << i;
     }
 
     qputenv("BALOO_EXTRACTOR_FAIL_FILE", QByteArray("5"));
     FileIndexingJob* job = new FileIndexingJob(files);
 
-    QSignalSpy spy(job, SIGNAL(indexingFailed(uint)));
+    QSignalSpy spy(job, SIGNAL(indexingFailed(quint64)));
     QVERIFY(job->exec());
 
     QCOMPARE(spy.count(), 1);
     QCOMPARE(spy.at(0).size(), 1);
-    QCOMPARE(spy.at(0).first().toUInt(), (uint)5);
+    QCOMPARE(spy.at(0).first().toULongLong(), (quint64)5);
 }
 
 void FileIndexingJobTest::testMultiFileFail()
 {
-    QVector<uint> files;
-    for (int i = 0; i<40; ++i) {
+    QVector<quint64> files;
+    for (int i = 0; i < 40; ++i) {
         files << i;
     }
 
     qputenv("BALOO_EXTRACTOR_FAIL_FILE", QByteArray("5,18,19"));
     FileIndexingJob* job = new FileIndexingJob(files);
 
-    QSignalSpy spy(job, SIGNAL(indexingFailed(uint)));
+    QSignalSpy spy(job, SIGNAL(indexingFailed(quint64)));
     QVERIFY(job->exec());
 
     QCOMPARE(spy.count(), 3);
     QCOMPARE(spy.at(0).size(), 1);
-    QCOMPARE(spy.at(0).first().toUInt(), (uint)5);
+    QCOMPARE(spy.at(0).first().toULongLong(), (quint64)5);
     QCOMPARE(spy.at(1).size(), 1);
-    QCOMPARE(spy.at(1).first().toUInt(), (uint)18);
+    QCOMPARE(spy.at(1).first().toULongLong(), (quint64)18);
     QCOMPARE(spy.at(2).size(), 1);
-    QCOMPARE(spy.at(2).first().toUInt(), (uint)19);
+    QCOMPARE(spy.at(2).first().toULongLong(), (quint64)19);
 }
 
 void FileIndexingJobTest::testNormalExecution()
 {
-    QVector<uint> files;
+    QVector<quint64> files;
     files << 1 << 2 << 3 << 4 << 5 << 6;
 
     FileIndexingJob* job = new FileIndexingJob(files);
 
-    QSignalSpy spy1(job, SIGNAL(indexingFailed(uint)));
+    QSignalSpy spy1(job, SIGNAL(indexingFailed(quint64)));
     QSignalSpy spy2(job, SIGNAL(finished(KJob*)));
     QVERIFY(job->exec());
 
@@ -97,7 +97,7 @@ void FileIndexingJobTest::testNormalExecution()
 
 void FileIndexingJobTest::testTimeout()
 {
-    QVector<uint> files;
+    QVector<quint64> files;
     for (int i = 0; i<40; ++i) {
         files << i;
     }
@@ -106,12 +106,12 @@ void FileIndexingJobTest::testTimeout()
     FileIndexingJob* job = new FileIndexingJob(files);
     job->setTimeoutInterval(100);
 
-    QSignalSpy spy(job, SIGNAL(indexingFailed(uint)));
+    QSignalSpy spy(job, SIGNAL(indexingFailed(quint64)));
     QVERIFY(job->exec());
 
     QCOMPARE(spy.count(), 1);
     QCOMPARE(spy.at(0).size(), 1);
-    QCOMPARE(spy.at(0).first().toUInt(), (uint)5);
+    QCOMPARE(spy.at(0).first().toULongLong(), (quint64)5);
 }
 
 

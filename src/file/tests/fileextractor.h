@@ -32,7 +32,7 @@ class FileExtractor : public KJob
 {
     Q_OBJECT
 public:
-    FileExtractor(uint id, const QString& url);
+    FileExtractor(quint64 id, const QString& url);
 
     virtual void start();
     void setCustomPath(const QString& path);

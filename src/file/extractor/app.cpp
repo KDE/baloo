@@ -65,7 +65,7 @@ void App::process()
 
     Q_FOREACH (const QString& arg, m_args) {
         bool ok = false;
-        uint id = arg.toUInt(&ok);
+        quint64 id = arg.toULongLong(&ok);
 
         QString filePath;
         if (ok && !QFile::exists(arg)) {
@@ -106,7 +106,7 @@ void App::process()
     QCoreApplication::instance()->exit(0);
 }
 
-void App::index(const QString& url, uint id)
+void App::index(const QString& url, quint64 id)
 {
     QString mimetype = m_mimeDb.mimeTypeForFile(url).name();
 

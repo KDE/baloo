@@ -51,7 +51,7 @@ QStringList SearchStore::types()
                          << QLatin1String("Image") << QLatin1String("Archive") << QLatin1String("Folder");
 }
 
-QVector<uint> SearchStore::exec(const Query& query)
+QVector<quint64> SearchStore::exec(const Query& query)
 {
     if (!query.searchString().isEmpty()) {
         QueryParser parser;
@@ -59,10 +59,10 @@ QVector<uint> SearchStore::exec(const Query& query)
         return m_db->exec(eq);
     }
 
-    return QVector<uint>();
+    return QVector<quint64>();
 }
 
-QString SearchStore::filePath(uint id)
+QString SearchStore::filePath(quint64 id)
 {
     Q_ASSERT(id > 0);
     return m_db->documentUrl(id);

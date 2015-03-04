@@ -37,12 +37,12 @@ public:
     ~ResultIteratorPrivate() {
     }
 
-    QVector<uint> results;
+    QVector<quint64> results;
     int pos;
     SearchStore* store;
 };
 
-ResultIterator::ResultIterator(const QVector<uint>& vec, SearchStore* store)
+ResultIterator::ResultIterator(const QVector<quint64>& vec, SearchStore* store)
     : d(new ResultIteratorPrivate)
 {
     Q_ASSERT(store);
@@ -68,7 +68,7 @@ bool ResultIterator::next()
     return d->pos < d->results.size();
 }
 
-uint ResultIterator::id() const
+quint64 ResultIterator::id() const
 {
     Q_ASSERT(d->pos >= 0 && d->pos < d->results.size());
     return d->results.at(d->pos);

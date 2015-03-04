@@ -73,7 +73,7 @@ void FileSearchStoreTest::cleanupTestCase()
     m_tempDir = 0;
 }
 
-uint FileSearchStoreTest::insertUrl(const QString& url)
+quint64 FileSearchStoreTest::insertUrl(const QString& url)
 {
     Xapian::Document doc;
     doc.add_value(3, url.toUtf8().constData());
@@ -166,11 +166,11 @@ void FileSearchStoreTest::testSimpleSearchString()
 {
     QBENCHMARK {
         QString url1(QLatin1String("/home/t/a"));
-        uint id1 = insertUrl(url1);
+        quint64 id1 = insertUrl(url1);
         insertText(id1, QLatin1String("This is sample text"));
 
         QString url2(QLatin1String("/home/t/b"));
-        uint id2 = insertUrl(url2);
+        quint64 id2 = insertUrl(url2);
         insertText(id2, QLatin1String("sample sample more sample text"));
 
         Query q;
@@ -200,11 +200,11 @@ void FileSearchStoreTest::testSimpleSearchString()
 void FileSearchStoreTest::testPropertyValueEqual()
 {
     QString url1(QLatin1String("/home/t/a"));
-    uint id1 = insertUrl(url1);
+    quint64 id1 = insertUrl(url1);
     insertText(id1, QLatin1String("This is sample text"));
 
     QString url2(QLatin1String("/home/t/b"));
-    uint id2 = insertUrl(url2);
+    quint64 id2 = insertUrl(url2);
     insertText(id2, QLatin1String("sample sample more sample but not text"));
 
     Query q;
@@ -227,23 +227,23 @@ void FileSearchStoreTest::testPropertyValueEqual()
 void FileSearchStoreTest::testIncludeDir()
 {
     QString url1(QLatin1String("/home/t/a"));
-    uint id1 = insertUrl(url1);
+    quint64 id1 = insertUrl(url1);
     insertText(id1, QLatin1String("This is sample text"));
 
     QString url2(QLatin1String("/home/t/b"));
-    uint id2 = insertUrl(url2);
+    quint64 id2 = insertUrl(url2);
     insertText(id2, QLatin1String("sample sample more sample text"));
 
     QString url3(QLatin1String("/home/garden/b"));
-    uint id3 = insertUrl(url3);
+    quint64 id3 = insertUrl(url3);
     insertText(id3, QLatin1String("The grass is green in the garden."));
 
     QString url4(QLatin1String("/home/tt/b"));
-    uint id4 = insertUrl(url4);
+    quint64 id4 = insertUrl(url4);
     insertText(id4, QLatin1String("Let's see if this works."));
 
     QString url5(QLatin1String("/home/t/c"));
-    uint id5 = insertUrl(url5);
+    quint64 id5 = insertUrl(url5);
     insertText(id5, QLatin1String("sample sample more sample text"));
 
     Query q;
@@ -274,23 +274,23 @@ void FileSearchStoreTest::testIncludeDir()
 void FileSearchStoreTest::testRatings()
 {
     QString url1(QLatin1String("/home/t/a"));
-    uint id1 = insertUrl(url1);
+    quint64 id1 = insertUrl(url1);
     insertRating(id1, 2);
 
     QString url2(QLatin1String("/home/t/b"));
-    uint id2 = insertUrl(url2);
+    quint64 id2 = insertUrl(url2);
     insertRating(id2, 4);
 
     QString url3(QLatin1String("/home/garden/b"));
-    uint id3 = insertUrl(url3);
+    quint64 id3 = insertUrl(url3);
     insertRating(id3, 6);
 
     QString url4(QLatin1String("/home/tt/b"));
-    uint id4 = insertUrl(url4);
+    quint64 id4 = insertUrl(url4);
     insertRating(id4, 10);
 
     QString url5(QLatin1String("/home/tt/c"));
-    uint id5 = insertUrl(url5);
+    quint64 id5 = insertUrl(url5);
     insertText(id5, QLatin1String("Test text"));
 
     //
@@ -325,23 +325,23 @@ void FileSearchStoreTest::testRatings()
 void FileSearchStoreTest::testEmptySearchString()
 {
     QString url1(QLatin1String("/home/t/a"));
-    uint id1 = insertUrl(url1);
+    quint64 id1 = insertUrl(url1);
     insertText(id1, QLatin1String("File A"));
 
     QString url2(QLatin1String("/home/t/b"));
-    uint id2 = insertUrl(url2);
+    quint64 id2 = insertUrl(url2);
     insertText(id2, QLatin1String("File B"));
 
     QString url3(QLatin1String("/home/garden/b"));
-    uint id3 = insertUrl(url3);
+    quint64 id3 = insertUrl(url3);
     insertText(id3, QLatin1String("Garden B"));
 
     QString url4(QLatin1String("/home/tt/b"));
-    uint id4 = insertUrl(url4);
+    quint64 id4 = insertUrl(url4);
     insertText(id4, QLatin1String("TT B"));
 
     QString url5(QLatin1String("/home/tt/c"));
-    uint id5 = insertUrl(url5);
+    quint64 id5 = insertUrl(url5);
     insertText(id5, QLatin1String("TT C"));
 
     Query q;
@@ -366,15 +366,15 @@ void FileSearchStoreTest::testEmptySearchString()
 void FileSearchStoreTest::testAllVideos()
 {
     QString url1(QLatin1String("/home/t/a"));
-    uint id1 = insertUrl(url1);
+    quint64 id1 = insertUrl(url1);
     insertType(id1, QLatin1String("Video"));
 
     QString url2(QLatin1String("/home/t/b"));
-    uint id2 = insertUrl(url2);
+    quint64 id2 = insertUrl(url2);
     insertType(id2, QLatin1String("Image"));
 
     QString url3(QLatin1String("/home/garden/b"));
-    uint id3 = insertUrl(url3);
+    quint64 id3 = insertUrl(url3);
     insertType(id3, QLatin1String("Video"));
 
     Query q;
@@ -393,21 +393,21 @@ void FileSearchStoreTest::testAllVideos()
 void FileSearchStoreTest::testFileNameSearch()
 {
     QString url1(QLatin1String("/home/t/a"));
-    uint id1 = insertUrl(url1);
+    quint64 id1 = insertUrl(url1);
     insertExactText(id1, QLatin1String("flowering"), "F");
     insertExactText(id1, QLatin1String("dork"), "F");
     insertExactText(id1, QLatin1String("dork"), "A");
     insertExactText(id1, QLatin1String("dork"), "G");
 
     QString url2(QLatin1String("/home/t/b"));
-    uint id2 = insertUrl(url2);
+    quint64 id2 = insertUrl(url2);
     insertExactText(id2, QLatin1String("powering"), "F");
     insertExactText(id2, QLatin1String("fire"), "F");
     insertExactText(id2, QLatin1String("dork"), "A");
     insertExactText(id2, QLatin1String("dork"), "G");
 
     QString url3(QLatin1String("/home/garden/b"));
-    uint id3 = insertUrl(url3);
+    quint64 id3 = insertUrl(url3);
     insertExactText(id3, QLatin1String("does"), "F");
     insertExactText(id3, QLatin1String("not"), "F");
     insertExactText(id3, QLatin1String("dork"), "A");

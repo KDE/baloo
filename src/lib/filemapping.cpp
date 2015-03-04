@@ -37,12 +37,12 @@ FileMapping::FileMapping(const QString& url)
     m_url = url;
 }
 
-FileMapping::FileMapping(uint id)
+FileMapping::FileMapping(quint64 id)
 {
     m_id = id;
 }
 
-uint FileMapping::id() const
+quint64 FileMapping::id() const
 {
     return m_id;
 }
@@ -52,7 +52,7 @@ QString FileMapping::url() const
     return m_url;
 }
 
-void FileMapping::setId(uint id)
+void FileMapping::setId(quint64 id)
 {
     m_id = id;
 }

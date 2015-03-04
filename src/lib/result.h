@@ -37,8 +37,8 @@ public:
     Result(const Result& rhs);
     ~Result();
 
-    uint id() const;
-    void setId(const uint& id);
+    quint64 id() const;
+    void setId(const quint64& id);
 
     /**
      * Represents the file path of the item returned.

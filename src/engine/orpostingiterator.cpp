@@ -28,12 +28,12 @@ OrPostingIterator::OrPostingIterator(const QVector<PostingIterator*>& iterators)
 {
 }
 
-uint OrPostingIterator::docId()
+quint64 OrPostingIterator::docId()
 {
     return m_docId;
 }
 
-uint OrPostingIterator::next()
+quint64 OrPostingIterator::next()
 {
     m_docId = 0;
     if (m_iterators.isEmpty()) {
