@@ -22,6 +22,7 @@
 
 #include "basicindexingjob.h"
 #include "termgenerator.h"
+#include "idutils.h"
 
 #include <QFileInfo>
 #include <QDateTime>
@@ -88,9 +89,12 @@ bool BasicIndexingJob::index()
 
     indexXAttr(m_filePath, doc);
 
-    // FIXME: This is not a good way!
-    static uint gId = 0;
-    doc.setId(++gId);
+    QT_STATBUF statBuf;
+    if (QT_LSTAT(QFile::encodeName(m_filePath).data(), &statBuf) != 0) {
+        return false;
+    }
+
+    doc.setId(statBufToId(statBuf));
 
     m_doc = doc;
     return true;
