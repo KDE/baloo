@@ -144,7 +144,7 @@ void IndexScheduler::slotStartedIndexing()
 
 void IndexScheduler::updateDir(const QString& path, UpdateDirFlags flags)
 {
-    m_basicIQ->enqueue(FileMapping(path), flags);
+    m_basicIQ->enqueue(path, flags);
     slotScheduleIndexing();
 }
 
@@ -165,7 +165,7 @@ void IndexScheduler::queueAllFoldersForUpdate(bool forceUpdate)
 
     // update everything again in case the folders changed
     Q_FOREACH (const QString& f, m_config->includeFolders()) {
-        m_basicIQ->enqueue(FileMapping(f), flags);
+        m_basicIQ->enqueue(f, flags);
     }
 
     // Required to switch off the FileIQ
@@ -185,12 +185,12 @@ void IndexScheduler::slotConfigChanged()
 
 void IndexScheduler::indexFile(const QString& path)
 {
-    m_basicIQ->enqueue(FileMapping(path));
+    m_basicIQ->enqueue(path);
 }
 
 void IndexScheduler::indexXattr(const QString& path)
 {
-    m_basicIQ->enqueue(FileMapping(path), ExtendedAttributesOnly);
+    m_basicIQ->enqueue(path, ExtendedAttributesOnly);
 }
 
 void IndexScheduler::setStateFromEvent()

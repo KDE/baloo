@@ -49,7 +49,7 @@ int main(int argc, char** argv)
     Baloo::CommitQueue commitQueue(&db);
     QObject::connect(&basicIQ, &Baloo::BasicIndexingQueue::newDocument, &commitQueue, &Baloo::CommitQueue::add);
 
-    basicIQ.enqueue(Baloo::FileMapping(QDir::homePath()));
+    basicIQ.enqueue(QDir::homePath());
 
     QTime timer;
     timer.start();

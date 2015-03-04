@@ -22,7 +22,6 @@
 #include "fileindexerconfig.h"
 #include "basicindexingjob.h"
 #include "database.h"
-#include "filemapping.h"
 
 #include <QDebug>
 #include <QDateTime>
@@ -44,10 +43,10 @@ void BasicIndexingQueue::clear()
 
 void BasicIndexingQueue::clear(const QString& path)
 {
-    QMutableVectorIterator< QPair<FileMapping, UpdateDirFlags> > it(m_paths);
+    QMutableVectorIterator< QPair<QString, UpdateDirFlags> > it(m_paths);
     while (it.hasNext()) {
         it.next();
-        if (it.value().first.url().startsWith(path))
+        if (it.value().first.startsWith(path))
             it.remove();
     }
 }
@@ -57,9 +56,9 @@ bool BasicIndexingQueue::isEmpty()
     return m_paths.isEmpty();
 }
 
-void BasicIndexingQueue::enqueue(const FileMapping& file, UpdateDirFlags flags)
+void BasicIndexingQueue::enqueue(const QString& file, UpdateDirFlags flags)
 {
-    qDebug() << file.url();
+    qDebug() << file;
     m_paths.push(qMakePair(file, flags));
     callForNextIteration();
 }
@@ -69,7 +68,7 @@ void BasicIndexingQueue::processNextIteration()
     bool processingFile = false;
 
     if (!m_paths.isEmpty()) {
-        QPair<FileMapping, UpdateDirFlags> pair = m_paths.pop();
+        QPair<QString, UpdateDirFlags> pair = m_paths.pop();
         processingFile = process(pair.first, pair.second);
     }
 
@@ -78,19 +77,19 @@ void BasicIndexingQueue::processNextIteration()
 }
 
 
-bool BasicIndexingQueue::process(FileMapping& file, UpdateDirFlags flags)
+bool BasicIndexingQueue::process(const QString& file, UpdateDirFlags flags)
 {
     bool startedIndexing = false;
 
     // This mimetype may not be completely accurate, but that's okay. This is
     // just the initial phase of indexing. The second phase can try to find
     // a more accurate mimetype.
-    QString mimetype = m_mimeDb.mimeTypeForFile(file.url(), QMimeDatabase::MatchExtension).name();
+    QString mimetype = m_mimeDb.mimeTypeForFile(file, QMimeDatabase::MatchExtension).name();
 
     bool forced = flags & ForceUpdate;
     bool indexingRequired = (flags & ExtendedAttributesOnly) || shouldIndex(file, mimetype);
 
-    QFileInfo info(file.url());
+    QFileInfo info(file);
     if (info.isDir()) {
         if (forced || indexingRequired) {
             startedIndexing = true;
@@ -98,12 +97,12 @@ bool BasicIndexingQueue::process(FileMapping& file, UpdateDirFlags flags)
         }
 
         // We don't want to follow system links
-        if (!info.isSymLink() && shouldIndexContents(file.url())) {
+        if (!info.isSymLink() && shouldIndexContents(file)) {
             QDir::Filters dirFilter = QDir::NoDotAndDotDot | QDir::Readable | QDir::Files | QDir::Dirs;
 
-            QDirIterator it(file.url(), dirFilter);
+            QDirIterator it(file, dirFilter);
             while (it.hasNext()) {
-                m_paths.push(qMakePair(FileMapping(it.next()), flags));
+                m_paths.push(qMakePair(it.next(), flags));
             }
         }
     } else if (info.isFile() && (forced || indexingRequired)) {
@@ -114,9 +113,9 @@ bool BasicIndexingQueue::process(FileMapping& file, UpdateDirFlags flags)
     return startedIndexing;
 }
 
-bool BasicIndexingQueue::shouldIndex(FileMapping& file, const QString& mimetype) const
+bool BasicIndexingQueue::shouldIndex(const QString& file, const QString& mimetype) const
 {
-    bool shouldBeIndexed = m_config->shouldBeIndexed(file.url());
+    bool shouldBeIndexed = m_config->shouldBeIndexed(file);
     if (!shouldBeIndexed)
         return false;
 
@@ -124,15 +123,16 @@ bool BasicIndexingQueue::shouldIndex(FileMapping& file, const QString& mimetype)
     if (!shouldIndexType)
         return false;
 
-    QFileInfo fileInfo(file.url());
+    QFileInfo fileInfo(file);
     if (!fileInfo.exists())
         return false;
 
-    if (!file.fetch(m_db)) {
+    quint64 fileId = m_db->documentId(file.toUtf8());
+    if (!fileId) {
         return true;
     }
 
-    const QByteArray dtStr = m_db->documentSlot(file.id(), 0);
+    const QByteArray dtStr = m_db->documentSlot(fileId, 0);
     if (dtStr.isEmpty()) {
         return true;
     }
@@ -156,18 +156,14 @@ bool BasicIndexingQueue::shouldIndexContents(const QString& dir)
     return m_config->shouldFolderBeIndexed(dir);
 }
 
-void BasicIndexingQueue::index(FileMapping& file, const QString& mimetype,
+void BasicIndexingQueue::index(const QString& file, const QString& mimetype,
                                UpdateDirFlags flags)
 {
-    if (!file.fetched()) {
-        file.fetch(m_db);
-    }
-
-    qDebug() << file.id() << file.url();
+    //qDebug() << file.url();
 
     bool xattrOnly = (flags & Baloo::ExtendedAttributesOnly);
     if (!xattrOnly) {
-        BasicIndexingJob job(file.url(), mimetype, m_config->onlyBasicIndexing());
+        BasicIndexingJob job(file, mimetype, m_config->onlyBasicIndexing());
         if (job.index()) {
             Q_EMIT newDocument(0, job.document());
         }
