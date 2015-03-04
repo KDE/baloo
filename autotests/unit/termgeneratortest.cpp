@@ -137,31 +137,20 @@ void TermGeneratorTest::testWordPositions()
     QString str = QString::fromLatin1("Hello hi how hi");
     termGen.indexText(str);
 
-    /*
-     * FIXME: Verify positional information!
-    Xapian::PositionIterator it = xap->positionlist_begin(1, "hello");
-    Xapian::PositionIterator end = xap->positionlist_end(1, "hello");
-    QVERIFY(it != end);
-    QCOMPARE(*it, (quint64)1);
-    it++;
-    QVERIFY(it == end);
+    QList<QByteArray> words = allWords(doc);
 
-    it = xap->positionlist_begin(1, "hi");
-    end = xap->positionlist_end(1, "hi");
-    QVERIFY(it != end);
-    QCOMPARE(*it, (quint64)2);
-    it++;
-    QCOMPARE(*it, (quint64)4);
-    it++;
-    QVERIFY(it == end);
+    QList<QByteArray> expectedWords;
+    expectedWords << QByteArray("hello") << QByteArray("hi") << QByteArray("how");
+    QCOMPARE(words, expectedWords);
 
-    it = xap->positionlist_begin(1, "how");
-    end = xap->positionlist_end(1, "how");
-    QVERIFY(it != end);
-    QCOMPARE(*it, (quint64)3);
-    it++;
-    QVERIFY(it == end);
-    */
+    QVector<uint> posInfo1 = doc.m_terms.value("hello").positions;
+    QCOMPARE(posInfo1, QVector<uint>() << 1);
+
+    QVector<uint> posInfo2 = doc.m_terms.value("hi").positions;
+    QCOMPARE(posInfo2, QVector<uint>() << 2 << 4);
+
+    QVector<uint> posInfo3 = doc.m_terms.value("how").positions;
+    QCOMPARE(posInfo3, QVector<uint>() << 3);
 }
 
 QTEST_MAIN(TermGeneratorTest)
