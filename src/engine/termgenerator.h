@@ -40,6 +40,10 @@ public:
     void indexText(const QString& text, int wdfInc = 1);
     void indexText(const QString& text, const QByteArray& prefix, int wdfInc = 1);
 
+    void indexXattrText(const QString& text, const QByteArray& prefix, int wdfInc = 1);
+    void indexFileNameText(const QString& text, int wdfInc = 1);
+    void indexFileNameText(const QString& text, const QByteArray& prefix, int wdfInc = 1);
+
     void setPosition(int position);
     int position() const;
 

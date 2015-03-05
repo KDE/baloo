@@ -53,8 +53,8 @@ bool BasicIndexingJob::index()
     doc.addBoolTerm(QByteArray("M") + m_mimetype.toUtf8());
 
     TermGenerator tg(&doc);
-    tg.indexText(fileInfo.fileName(), 1000);
-    tg.indexText(fileInfo.fileName(), QByteArray("F"));
+    tg.indexFileNameText(fileInfo.fileName(), 1000);
+    tg.indexFileNameText(fileInfo.fileName(), QByteArray("F"));
 
     // Modified Date
     QDateTime mod = fileInfo.lastModified();
@@ -110,8 +110,8 @@ bool BasicIndexingJob::indexXAttr(const QString& url, Document& doc)
     QStringList tags = userMetaData.tags();
     if (!tags.isEmpty()) {
         Q_FOREACH (const QString& tag, tags) {
-            tg.indexText(tag, QByteArray("TA"));
-            doc.addBoolTerm(QByteArray("TAG-") + tag.toUtf8());
+            tg.indexXattrText(tag, QByteArray("TA"));
+            doc.addXattrBoolTerm(QByteArray("TAG-") + tag.toUtf8());
         }
 
         modified = true;
@@ -119,13 +119,13 @@ bool BasicIndexingJob::indexXAttr(const QString& url, Document& doc)
 
     int rating = userMetaData.rating();
     if (rating) {
-        doc.addBoolTerm(QByteArray("R") + QByteArray::number(rating));
+        doc.addXattrBoolTerm(QByteArray("R") + QByteArray::number(rating));
         modified = true;
     }
 
     QString comment = userMetaData.userComment();
     if (!comment.isEmpty()) {
-        tg.indexText(comment, QByteArray("C"));
+        tg.indexXattrText(comment, QByteArray("C"));
         modified = true;
     }
 

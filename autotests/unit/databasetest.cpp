@@ -59,6 +59,8 @@ void DatabaseTest::test()
     doc.addTerm("ab");
     doc.addTerm("abc");
     doc.addTerm("power");
+    doc.addXattrTerm("system");
+    doc.addFileNameTerm("link");
 
     db.addDocument(doc);
     db.commit();
@@ -71,6 +73,8 @@ void DatabaseTest::test()
     QCOMPARE(db.m_postingDB->get("ab"), QVector<quint64>() << 1);
     QCOMPARE(db.m_postingDB->get("abc"), QVector<quint64>() << 1);
     QCOMPARE(db.m_postingDB->get("power"), QVector<quint64>() << 1);
+    QCOMPARE(db.m_postingDB->get("system"), QVector<quint64>() << 1);
+    QCOMPARE(db.m_postingDB->get("link"), QVector<quint64>() << 1);
 
     /*
     QCOMPARE(db.document(1), doc);

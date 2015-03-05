@@ -45,8 +45,10 @@ Database::Database(const QString& path)
     , m_env(0)
     , m_txn(0)
     , m_postingDB(0)
-    , m_documentDB(0)
     , m_positionDB(0)
+    , m_documentTermsDB(0)
+    , m_documentXattrTermsDB(0)
+    , m_documentFileNameTermsDB(0)
     , m_docUrlDB(0)
     , m_urlDocDB(0)
     , m_docValueDB(0)
@@ -58,8 +60,10 @@ Database::Database(const QString& path)
 Database::~Database()
 {
     delete m_postingDB;
-    delete m_documentDB;
     delete m_positionDB;
+    delete m_documentTermsDB;
+    delete m_documentXattrTermsDB;
+    delete m_documentFileNameTermsDB;
     delete m_docUrlDB;
     delete m_urlDocDB;
     delete m_docValueDB;
@@ -81,7 +85,7 @@ bool Database::open()
     }
 
     mdb_env_create(&m_env);
-    mdb_env_set_maxdbs(m_env, 8);
+    mdb_env_set_maxdbs(m_env, 10);
     mdb_env_set_mapsize(m_env, 1048576000);
 
     // The directory needs to be created before opening the environment
@@ -104,15 +108,25 @@ void Database::transaction(Database::TransactionType type)
     else
         m_positionDB->setTransaction(m_txn);
 
-    if (!m_documentDB)
-        m_documentDB = new DocumentDB(m_txn);
-    else
-        m_documentDB->setTransaction(m_txn);
-
     if (!m_positionDB)
         m_positionDB = new PositionDB(m_txn);
     else
         m_positionDB->setTransaction(m_txn);
+
+    if (!m_documentTermsDB)
+        m_documentTermsDB = new DocumentDB(m_txn);
+    else
+        m_documentTermsDB->setTransaction(m_txn);
+
+    if (!m_documentXattrTermsDB)
+        m_documentXattrTermsDB = new DocumentDB(m_txn);
+    else
+        m_documentXattrTermsDB->setTransaction(m_txn);
+
+    if (!m_documentFileNameTermsDB)
+        m_documentFileNameTermsDB = new DocumentDB(m_txn);
+    else
+        m_documentFileNameTermsDB->setTransaction(m_txn);
 
     if (!m_docUrlDB)
         m_docUrlDB = new DocumentUrlDB(m_txn);
@@ -175,7 +189,7 @@ void Database::removeDocument(quint64 id)
 bool Database::hasDocument(quint64 id)
 {
     Q_ASSERT(id > 0);
-    return m_documentDB->contains(id);
+    return m_documentTermsDB->contains(id);
 }
 
 quint64 Database::documentId(const QByteArray& url)
@@ -236,7 +250,47 @@ void Database::commit()
                 }
             }
 
-            m_documentDB->put(id, docTerms);
+            m_documentTermsDB->put(id, docTerms);
+
+            QVector<QByteArray> docXattrTerms;
+            docXattrTerms.reserve(doc.m_xattrTerms.size());
+
+            it = QMapIterator<QByteArray, Document::TermData>(doc.m_xattrTerms);
+            while (it.hasNext()) {
+                const QByteArray term = it.next().key();
+                docXattrTerms.append(term);
+
+                postingMap[term] << id;
+
+                const Document::TermData td = it.value();
+                if (!td.positions.isEmpty()) {
+                    PositionInfo pi(id, it.value().positions);
+                    positionMap[term] << pi;
+                }
+            }
+
+            if (!docXattrTerms.isEmpty())
+                m_documentXattrTermsDB->put(id, docXattrTerms);
+
+            QVector<QByteArray> docFileNameTerms;
+            docFileNameTerms.reserve(doc.m_fileNameTerms.size());
+
+            it = QMapIterator<QByteArray, Document::TermData>(doc.m_fileNameTerms);
+            while (it.hasNext()) {
+                const QByteArray term = it.next().key();
+                docFileNameTerms.append(term);
+
+                postingMap[term] << id;
+
+                const Document::TermData td = it.value();
+                if (!td.positions.isEmpty()) {
+                    PositionInfo pi(id, it.value().positions);
+                    positionMap[term] << pi;
+                }
+            }
+
+            if (!docFileNameTerms.isEmpty())
+                m_documentXattrTermsDB->put(id, docFileNameTerms);
 
             if (!doc.url().isEmpty()) {
                 m_docUrlDB->put(id, doc.url());
@@ -257,7 +311,7 @@ void Database::commit()
             }
         }
         else if (op.type == RemoveDocument) {
-            QVector<QByteArray> terms = m_documentDB->get(id);
+            QVector<QByteArray> terms = m_documentTermsDB->get(id) + m_documentXattrTermsDB->get(id) + m_documentFileNameTermsDB->get(id);
             if (terms.isEmpty()) {
                 return;
             }
@@ -273,7 +327,9 @@ void Database::commit()
                 posInfoList.removeOne(PositionInfo(id));
             }
 
-            m_documentDB->del(id);
+            m_documentTermsDB->del(id);
+            m_documentXattrTermsDB->del(id);
+            m_documentFileNameTermsDB->del(id);
 
             QByteArray url = m_docUrlDB->get(id);
             m_docUrlDB->del(id);

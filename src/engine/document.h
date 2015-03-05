@@ -49,6 +49,13 @@ public:
     void addBoolTerm(const QByteArray& term);
     void addPositionTerm(const QByteArray& term, int position = 0, int wdfInc = 1);
 
+    void addXattrTerm(const QByteArray& term, int wdfInc = 1);
+    void addXattrBoolTerm(const QByteArray& term);
+    void addXattrPositionTerm(const QByteArray& term, int position = 0, int wdfInc = 1);
+
+    void addFileNameTerm(const QByteArray& term, int wdfInc = 1);
+    void addFileNamePositionTerm(const QByteArray& term, int position = 0, int wdfInc = 1);
+
     quint64 id() const;
     void setId(quint64 id);
 
@@ -76,6 +83,8 @@ private:
         TermData() : wdf(0) {}
     };
     QMap<QByteArray, TermData> m_terms;
+    QMap<QByteArray, TermData> m_xattrTerms;
+    QMap<QByteArray, TermData> m_fileNameTerms;
 
     QByteArray m_url;
     bool m_contentIndexing;

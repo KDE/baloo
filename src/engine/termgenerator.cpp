@@ -91,6 +91,40 @@ void TermGenerator::indexText(const QString& text, const QByteArray& prefix, int
     }
 }
 
+void TermGenerator::indexFileNameText(const QString& text, const QByteArray& prefix, int wdfInc)
+{
+    QStringList terms = termList(text);
+    for (const QString& term : terms) {
+        QByteArray arr = term.toUtf8();
+
+        QByteArray finalArr = prefix + arr;
+        finalArr = finalArr.mid(0, maxTermSize);
+
+        m_doc->addFileNamePositionTerm(finalArr, m_position, wdfInc);
+        m_position++;
+    }
+}
+
+void TermGenerator::indexFileNameText(const QString& text, int wdfInc)
+{
+    indexFileNameText(text, QByteArray(), wdfInc);
+}
+
+void TermGenerator::indexXattrText(const QString& text, const QByteArray& prefix, int wdfInc)
+{
+    QStringList terms = termList(text);
+    for (const QString& term : terms) {
+        QByteArray arr = term.toUtf8();
+
+        QByteArray finalArr = prefix + arr;
+        finalArr = finalArr.mid(0, maxTermSize);
+
+        m_doc->addXattrPositionTerm(finalArr, m_position, wdfInc);
+        m_position++;
+    }
+
+}
+
 int TermGenerator::position() const
 {
     return m_position;

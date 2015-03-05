@@ -90,8 +90,11 @@ private:
     MDB_txn* m_txn;
 
     PostingDB* m_postingDB;
-    DocumentDB* m_documentDB;
     PositionDB* m_positionDB;
+
+    DocumentDB* m_documentTermsDB;
+    DocumentDB* m_documentXattrTermsDB;
+    DocumentDB* m_documentFileNameTermsDB;
 
     DocumentUrlDB* m_docUrlDB;
     UrlDocumentDB* m_urlDocDB;
