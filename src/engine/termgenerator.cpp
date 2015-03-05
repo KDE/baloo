@@ -34,7 +34,7 @@ TermGenerator::TermGenerator(Document* doc)
 
 void TermGenerator::indexText(const QString& text, int wdfInc)
 {
-    indexText(text, QString(), wdfInc);
+    indexText(text, QByteArray(), wdfInc);
 }
 
 QStringList TermGenerator::termList(const QString& text)
@@ -77,15 +77,13 @@ QStringList TermGenerator::termList(const QString& text)
     return list;
 }
 
-void TermGenerator::indexText(const QString& text, const QString& prefix, int wdfInc)
+void TermGenerator::indexText(const QString& text, const QByteArray& prefix, int wdfInc)
 {
-    const QByteArray par = prefix.toUtf8();
-
     QStringList terms = termList(text);
     for (const QString& term : terms) {
         QByteArray arr = term.toUtf8();
 
-        QByteArray finalArr = par + arr;
+        QByteArray finalArr = prefix + arr;
         finalArr = finalArr.mid(0, maxTermSize);
 
         m_doc->addPositionTerm(finalArr, m_position, wdfInc);

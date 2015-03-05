@@ -49,8 +49,9 @@ Result::Result(const QString& url, const QString& mimetype, const Flags& flags)
 
 void Result::add(KFileMetaData::Property::Property property, const QVariant& value)
 {
-    QString p = QString::number(static_cast<int>(property));
+    int propNum = static_cast<int>(property);
     if (!value.isNull()) {
+        QString p = QString::number(propNum);
         if (!m_map.contains(p)) {
             m_map.insert(p, value);
         } else {
@@ -67,22 +68,22 @@ void Result::add(KFileMetaData::Property::Property property, const QVariant& val
         }
     }
 
-    QString prefix = QLatin1Char('X') + p;
+    QByteArray prefix = 'X' + QByteArray::number(propNum);
 
     if (value.type() == QVariant::Bool) {
-        m_doc.addBoolTerm(prefix.toUtf8());
+        m_doc.addBoolTerm(prefix);
     }
     else if (value.type() == QVariant::Int) {
-        const QString term = prefix + value.toString();
-        m_doc.addBoolTerm(term.toUtf8());
+        const QByteArray term = prefix + value.toString().toUtf8();
+        m_doc.addBoolTerm(term);
     }
     else if (value.type() == QVariant::Date) {
-        const QString term = prefix + value.toDate().toString(Qt::ISODate);
-        m_doc.addBoolTerm(term.toUtf8());
+        const QByteArray term = prefix + value.toDate().toString(Qt::ISODate).toUtf8();
+        m_doc.addBoolTerm(term);
     }
     else if (value.type() == QVariant::DateTime) {
-        const QString term = prefix + value.toDateTime().toString(Qt::ISODate);
-        m_doc.addBoolTerm(term.toUtf8());
+        const QByteArray term = prefix + value.toDateTime().toString(Qt::ISODate).toUtf8();
+        m_doc.addBoolTerm(term);
     }
     else {
         const QString val = value.toString();

@@ -54,7 +54,7 @@ bool BasicIndexingJob::index()
 
     TermGenerator tg(&doc);
     tg.indexText(fileInfo.fileName(), 1000);
-    tg.indexText(fileInfo.fileName(), QStringLiteral("F"));
+    tg.indexText(fileInfo.fileName(), QByteArray("F"));
 
     // Modified Date
     QDateTime mod = fileInfo.lastModified();
@@ -110,7 +110,7 @@ bool BasicIndexingJob::indexXAttr(const QString& url, Document& doc)
     QStringList tags = userMetaData.tags();
     if (!tags.isEmpty()) {
         Q_FOREACH (const QString& tag, tags) {
-            tg.indexText(tag, QStringLiteral("TA"));
+            tg.indexText(tag, QByteArray("TA"));
             doc.addBoolTerm(QByteArray("TAG-") + tag.toUtf8());
         }
 
@@ -125,7 +125,7 @@ bool BasicIndexingJob::indexXAttr(const QString& url, Document& doc)
 
     QString comment = userMetaData.userComment();
     if (!comment.isEmpty()) {
-        tg.indexText(comment, QStringLiteral("C"));
+        tg.indexText(comment, QByteArray("C"));
         modified = true;
     }
 
