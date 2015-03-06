@@ -60,10 +60,10 @@ bool BasicIndexingJob::index()
     QDateTime mod = fileInfo.lastModified();
     const QByteArray dtm = mod.toString(Qt::ISODate).toUtf8();
 
-    doc.addBoolTerm(QByteArray("DT_M") + dtm);
-    doc.addBoolTerm(QByteArray("DT_MY") + QByteArray::number(mod.date().year()));
-    doc.addBoolTerm(QByteArray("DT_MM") + QByteArray::number(mod.date().month()));
-    doc.addBoolTerm(QByteArray("DT_MD") + QByteArray::number(mod.date().day()));
+    doc.addBoolTerm(QByteArray("D") + dtm);
+    doc.addBoolTerm(QByteArray("Y") + QByteArray::number(mod.date().year()));
+    doc.addBoolTerm(QByteArray("G") + QByteArray::number(mod.date().month()));
+    doc.addBoolTerm(QByteArray("A") + QByteArray::number(mod.date().day()));
 
     const QByteArray timeTStr = QByteArray::number(mod.toTime_t());
     doc.addValue(0, timeTStr);
