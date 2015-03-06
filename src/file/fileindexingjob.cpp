@@ -65,7 +65,7 @@ void FileIndexingJob::start(const QVector<quint64>& files)
     m_process = new QProcess(this);
 
     QStringList args;
-    Q_FOREACH (const quint64& file, files)
+    for (quint64 file : files)
         args << QString::number(file);
 
     if (!m_customDbPath.isEmpty()) {
