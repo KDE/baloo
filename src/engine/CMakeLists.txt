@@ -8,6 +8,7 @@ set(BALOO_ENGINE_SRCS
     documentvaluedb.cpp
     documentiddb.cpp
     enginequery.cpp
+    idtreedb.cpp
     orpostingiterator.cpp
     phraseanditerator.cpp
     positiondb.cpp

@@ -17,6 +17,7 @@ baloo_engine_auto_tests(
     documentiddbtest
     documentvaluedbtest
     documentdatadbtest
+    idtreedbtest
 
     termgeneratortest
     queryparsertest

@@ -18,42 +18,42 @@
  *
  */
 
-#include "documenturldb.h"
+#include "idtreedb.h"
 
 using namespace Baloo;
 
-DocumentUrlDB::DocumentUrlDB(MDB_txn* txn)
+IdTreeDB::IdTreeDB(MDB_txn* txn)
     : m_txn(txn)
 {
     Q_ASSERT(txn != 0);
 
-    int rc = mdb_dbi_open(txn, "documenturldb", MDB_CREATE | MDB_INTEGERKEY, &m_dbi);
-    Q_ASSERT_X(rc == 0, "DocumentUrlDB", mdb_strerror(rc));
+    int rc = mdb_dbi_open(txn, "idtree", MDB_CREATE | MDB_INTEGERKEY, &m_dbi);
+    Q_ASSERT_X(rc == 0, "IdTreeDB", mdb_strerror(rc));
 }
 
-DocumentUrlDB::~DocumentUrlDB()
+IdTreeDB::~IdTreeDB()
 {
     mdb_dbi_close(mdb_txn_env(m_txn), m_dbi);
 }
 
-void DocumentUrlDB::put(quint64 docId, const QByteArray& url)
+void IdTreeDB::put(quint64 docId, const QVector<quint64> subDocIds)
 {
     Q_ASSERT(docId > 0);
-    Q_ASSERT(!url.isEmpty());
+    Q_ASSERT(!subDocIds.isEmpty());
 
     MDB_val key;
     key.mv_size = sizeof(quint64);
     key.mv_data = static_cast<void*>(&docId);
 
     MDB_val val;
-    val.mv_size = url.size();
-    val.mv_data = static_cast<void*>(const_cast<char*>(url.constData()));
+    val.mv_size = subDocIds.size() * sizeof(quint64);
+    val.mv_data = static_cast<void*>(const_cast<quint64*>(subDocIds.constData()));
 
     int rc = mdb_put(m_txn, m_dbi, &key, &val, 0);
-    Q_ASSERT_X(rc == 0, "DocumentUrlDB::put", mdb_strerror(rc));
+    Q_ASSERT_X(rc == 0, "IdTreeDB::put", mdb_strerror(rc));
 }
 
-QByteArray DocumentUrlDB::get(quint64 docId)
+QVector<quint64> IdTreeDB::get(quint64 docId)
 {
     Q_ASSERT(docId > 0);
 
@@ -64,14 +64,20 @@ QByteArray DocumentUrlDB::get(quint64 docId)
     MDB_val val;
     int rc = mdb_get(m_txn, m_dbi, &key, &val);
     if (rc == MDB_NOTFOUND) {
-        return QByteArray();
+        return QVector<quint64>();
     }
-    Q_ASSERT_X(rc == 0, "DocumentUrlDB::get", mdb_strerror(rc));
+    Q_ASSERT_X(rc == 0, "IdTreeeDB::get", mdb_strerror(rc));
 
-    return QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size);
+    QVector<quint64> list;
+    list.reserve(val.mv_size / sizeof(quint64));
+
+    for (int i = 0; i < (val.mv_size / sizeof(quint64)); i++) {
+        list << static_cast<quint64*>(val.mv_data)[i];
+    }
+    return list;
 }
 
-void DocumentUrlDB::del(quint64 docId)
+void IdTreeDB::del(quint64 docId)
 {
     Q_ASSERT(docId > 0);
 
@@ -80,14 +86,6 @@ void DocumentUrlDB::del(quint64 docId)
     key.mv_data = static_cast<void*>(&docId);
 
     int rc = mdb_del(m_txn, m_dbi, &key, 0);
-    Q_ASSERT_X(rc == 0, "DocumentUrlDB::del", mdb_strerror(rc));
+    Q_ASSERT_X(rc == 0, "IdTreeDB::del", mdb_strerror(rc));
 }
 
-uint DocumentUrlDB::size()
-{
-    MDB_stat stat;
-    int rc = mdb_stat(m_txn, m_dbi, &stat);
-    Q_ASSERT_X(rc == 0, "DocumentIdDB::size", mdb_strerror(rc));
-
-    return stat.ms_entries;
-}
