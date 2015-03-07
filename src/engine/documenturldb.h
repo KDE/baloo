@@ -21,11 +21,12 @@
 #ifndef BALOO_DOCUMENTURLDB_H
 #define BALOO_DOCUMENTURLDB_H
 
-#include <QByteArray>
-#include <lmdb.h>
-#include "engine_export.h"
+#include "idtreedb.h"
+#include "idfilenamedb.h"
 
 namespace Baloo {
+
+class UrlTest;
 
 class BALOO_ENGINE_EXPORT DocumentUrlDB
 {
@@ -37,14 +38,16 @@ public:
     QByteArray get(quint64 docId);
 
     void del(quint64 docId);
-    uint size();
 
     void setTransaction(MDB_txn* txn) {
-        m_txn = txn;
+        m_idFilename.setTransaction(txn);
+        m_idTree.setTransaction(txn);
     }
 private:
-    MDB_txn* m_txn;
-    MDB_dbi m_dbi;
+    IdFilenameDB m_idFilename;
+    IdTreeDB m_idTree;
+
+    friend class UrlTest;
 };
 
 }

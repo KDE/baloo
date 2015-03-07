@@ -34,7 +34,7 @@ namespace Baloo {
  */
 inline quint64 statBufToId(const QT_STATBUF& stBuf)
 {
-    quint64 arr[2];
+    quint32 arr[2];
     arr[0] = stBuf.st_dev;
     arr[1] = stBuf.st_ino;
 

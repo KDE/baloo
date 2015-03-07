@@ -19,75 +19,132 @@
  */
 
 #include "documenturldb.h"
+#include "idutils.h"
+
+#include <qplatformdefs.h>
+#include <QPair>
+#include <QDebug>
 
 using namespace Baloo;
 
 DocumentUrlDB::DocumentUrlDB(MDB_txn* txn)
-    : m_txn(txn)
+    : m_idFilename(txn)
+    , m_idTree(txn)
 {
-    Q_ASSERT(txn != 0);
-
-    int rc = mdb_dbi_open(txn, "documenturldb", MDB_CREATE | MDB_INTEGERKEY, &m_dbi);
-    Q_ASSERT_X(rc == 0, "DocumentUrlDB", mdb_strerror(rc));
 }
 
 DocumentUrlDB::~DocumentUrlDB()
 {
-    mdb_dbi_close(mdb_txn_env(m_txn), m_dbi);
 }
 
 void DocumentUrlDB::put(quint64 docId, const QByteArray& url)
 {
     Q_ASSERT(docId > 0);
     Q_ASSERT(!url.isEmpty());
+    Q_ASSERT(!url.endsWith('/'));
 
-    MDB_val key;
-    key.mv_size = sizeof(quint64);
-    key.mv_data = static_cast<void*>(&docId);
+    typedef QPair<quint64, QByteArray> IdNamePath;
+    QVector<IdNamePath> list;
 
-    MDB_val val;
-    val.mv_size = url.size();
-    val.mv_data = static_cast<void*>(const_cast<char*>(url.constData()));
+    QByteArray arr = url;
+    while (!arr.isEmpty()) {
+        QT_STATBUF statBuf;
+        if (QT_LSTAT(arr.constData(), &statBuf) != 0) {
+            Q_ASSERT(0);
+        }
+        quint64 id = statBufToId(statBuf);
 
-    int rc = mdb_put(m_txn, m_dbi, &key, &val, 0);
-    Q_ASSERT_X(rc == 0, "DocumentUrlDB::put", mdb_strerror(rc));
+        int pos = arr.lastIndexOf('/');
+        QByteArray name = arr.mid(pos + 1);
+
+        list.prepend(qMakePair(id, name));
+        arr.resize(pos);
+    }
+
+    for (int i = 0; i < list.size(); i++) {
+        quint64 id = list[i].first;
+        QByteArray name = list[i].second;
+
+        // Update the IdTree
+        quint64 parentId = 0;
+        if (i) {
+            parentId = list[i-1].first;
+
+            QVector<quint64> subDocs = m_idTree.get(parentId);
+            subDocs.append(id);
+
+            std::sort(subDocs.begin(), subDocs.end());
+            subDocs.erase(std::unique(subDocs.begin(), subDocs.end()), subDocs.end());
+
+            m_idTree.put(parentId, subDocs);
+        }
+
+        // Update the IdFileName
+        IdFilenameDB::FilePath path;
+        path.parentId = parentId;
+        path.name = name;
+
+        m_idFilename.put(id, path);
+    }
 }
 
 QByteArray DocumentUrlDB::get(quint64 docId)
 {
     Q_ASSERT(docId > 0);
 
-    MDB_val key;
-    key.mv_size = sizeof(quint64);
-    key.mv_data = static_cast<void*>(&docId);
-
-    MDB_val val;
-    int rc = mdb_get(m_txn, m_dbi, &key, &val);
-    if (rc == MDB_NOTFOUND) {
+    auto path = m_idFilename.get(docId);
+    if (path.name.isEmpty()) {
         return QByteArray();
     }
-    Q_ASSERT_X(rc == 0, "DocumentUrlDB::get", mdb_strerror(rc));
 
-    return QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size);
+    QList<QByteArray> list = {path.name};
+    quint64 id = path.parentId;
+    while (id) {
+        auto p = m_idFilename.get(id);
+        Q_ASSERT(!p.name.isEmpty());
+
+        list.prepend(p.name);
+        id = p.parentId;
+    }
+
+    return '/' + list.join('/');
 }
 
 void DocumentUrlDB::del(quint64 docId)
 {
     Q_ASSERT(docId > 0);
 
-    MDB_val key;
-    key.mv_size = sizeof(quint64);
-    key.mv_data = static_cast<void*>(&docId);
+    // FIXME: Maybe this can be combined into one?
+    auto path = m_idFilename.get(docId);
+    if (path.name.isEmpty()) {
+        return;
+    }
+    m_idFilename.del(docId);
 
-    int rc = mdb_del(m_txn, m_dbi, &key, 0);
-    Q_ASSERT_X(rc == 0, "DocumentUrlDB::del", mdb_strerror(rc));
-}
+    QVector<quint64> subDocs = m_idTree.get(path.parentId);
+    subDocs.removeOne(docId);
 
-uint DocumentUrlDB::size()
-{
-    MDB_stat stat;
-    int rc = mdb_stat(m_txn, m_dbi, &stat);
-    Q_ASSERT_X(rc == 0, "DocumentIdDB::size", mdb_strerror(rc));
+    if (!subDocs.isEmpty()) {
+        m_idTree.put(path.parentId, subDocs);
+    } else {
+        m_idTree.del(path.parentId);
 
-    return stat.ms_entries;
+        //
+        // Delete every parent directory which only has 1 child
+        //
+        quint64 id = path.parentId;
+        while (id) {
+            auto path = m_idFilename.get(id);
+            Q_ASSERT(!path.name.isEmpty());
+            QVector<quint64> subDocs = m_idTree.get(path.parentId);
+            if (subDocs.size() == 1) {
+                m_idTree.del(path.parentId);
+                m_idFilename.del(id);
+            } else {
+                break;
+            }
+
+            id = path.parentId;
+        }
+    }
 }

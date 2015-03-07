@@ -410,7 +410,7 @@ uint Database::phaseOneSize()
 uint Database::size()
 {
     Q_ASSERT(m_txn);
-    return m_docUrlDB->size();
+    return m_documentTermsDB->size();
 }
 
 

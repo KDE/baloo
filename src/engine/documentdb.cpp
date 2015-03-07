@@ -126,3 +126,12 @@ bool DocumentDB::contains(quint64 docId)
 
     return true;
 }
+
+uint DocumentDB::size()
+{
+    MDB_stat stat;
+    int rc = mdb_stat(m_txn, m_dbi, &stat);
+    Q_ASSERT_X(rc == 0, "DocumentDB::size", mdb_strerror(rc));
+
+    return stat.ms_entries;
+}
