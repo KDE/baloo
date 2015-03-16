@@ -38,7 +38,6 @@ IdTreeDB::~IdTreeDB()
 
 void IdTreeDB::put(quint64 docId, const QVector<quint64> subDocIds)
 {
-    Q_ASSERT(docId > 0);
     Q_ASSERT(!subDocIds.isEmpty());
 
     MDB_val key;
@@ -55,8 +54,6 @@ void IdTreeDB::put(quint64 docId, const QVector<quint64> subDocIds)
 
 QVector<quint64> IdTreeDB::get(quint64 docId)
 {
-    Q_ASSERT(docId > 0);
-
     MDB_val key;
     key.mv_size = sizeof(quint64);
     key.mv_data = static_cast<void*>(&docId);
@@ -79,8 +76,6 @@ QVector<quint64> IdTreeDB::get(quint64 docId)
 
 void IdTreeDB::del(quint64 docId)
 {
-    Q_ASSERT(docId > 0);
-
     MDB_val key;
     key.mv_size = sizeof(quint64);
     key.mv_data = static_cast<void*>(&docId);

@@ -50,6 +50,7 @@ void DocumentUrlDB::put(quint64 docId, const QByteArray& url)
     while (!arr.isEmpty()) {
         QT_STATBUF statBuf;
         if (QT_LSTAT(arr.constData(), &statBuf) != 0) {
+            qWarning() << "FilePath does not exist:" << arr;
             Q_ASSERT(0);
         }
         quint64 id = statBufToId(statBuf);
@@ -69,21 +70,23 @@ void DocumentUrlDB::put(quint64 docId, const QByteArray& url)
         quint64 parentId = 0;
         if (i) {
             parentId = list[i-1].first;
-
-            QVector<quint64> subDocs = m_idTree.get(parentId);
-            subDocs.append(id);
-
-            std::sort(subDocs.begin(), subDocs.end());
-            subDocs.erase(std::unique(subDocs.begin(), subDocs.end()), subDocs.end());
-
-            m_idTree.put(parentId, subDocs);
         }
+
+        QVector<quint64> subDocs = m_idTree.get(parentId);
+        subDocs.append(id);
+
+        std::sort(subDocs.begin(), subDocs.end());
+        subDocs.erase(std::unique(subDocs.begin(), subDocs.end()), subDocs.end());
+
+        //qDebug() << parentId << subDocs;
+        m_idTree.put(parentId, subDocs);
 
         // Update the IdFileName
         IdFilenameDB::FilePath path;
         path.parentId = parentId;
         path.name = name;
 
+        //qDebug() << id << path.parentId << path.name;
         m_idFilename.put(id, path);
     }
 }
