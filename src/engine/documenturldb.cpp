@@ -151,3 +151,12 @@ void DocumentUrlDB::del(quint64 docId)
         }
     }
 }
+
+void DocumentUrlDB::rename(quint64 docId, const QByteArray& newFileName)
+{
+    Q_ASSERT(docId > 0);
+
+    auto path = m_idFilename.get(docId);
+    path.name = newFileName;
+    m_idFilename.put(docId, path);
+}

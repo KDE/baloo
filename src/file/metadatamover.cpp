@@ -80,7 +80,6 @@ void MetadataMover::removeMetadata(const QString& url)
     }
 }
 
-
 void MetadataMover::updateMetadata(const QString& from, const QString& to)
 {
     qDebug() << from << "->" << to;
@@ -88,48 +87,8 @@ void MetadataMover::updateMetadata(const QString& from, const QString& to)
     Q_ASSERT(from[from.size()-1] != QLatin1Char('/'));
     Q_ASSERT(to[to.size()-1] != QLatin1Char('/'));
 
-    /*
     FileMapping fromFile(from);
-    if (fromFile.fetch(m_db->xapianDatabase()->db())) {
-        XapianDocument doc = m_db->xapianDatabase()->document(fromFile.id());
-
-        // Change the file path
-        QByteArray toArr = to.toUtf8();
-        doc.addValue(3, toArr);
-        doc.removeTermStartsWith("P");
-
-        if (toArr.size() > 240) {
-            QByteArray p1 = toArr.mid(0, 240);
-            QByteArray p2 = toArr.mid(240);
-
-            doc.addBoolTerm(p1, "P1");
-            doc.addBoolTerm(p2, "P2");
-        }
-        else {
-            doc.addBoolTerm(toArr, "P-");
-        }
-
-        // Change the file name
-        const QStringRef fromFileName = from.midRef(from.lastIndexOf('/'));
-        const QStringRef toFileName = to.midRef(to.lastIndexOf('/'));
-
-        if (fromFileName != toFileName) {
-            QStringList terms = doc.fetchTermsStartsWith("F");
-            doc.removeTermStartsWith("F");
-
-            for (const QString& term: terms) {
-                doc.removeTerm(term.mid(1)); // 1 is to remove the F
-            }
-
-            QString filename = toFileName.toString();
-            doc.indexText(filename, 1000);
-            doc.indexText(filename, QLatin1String("F"), 1000);
-        }
-
-        m_db->xapianDatabase()->replaceDocument(fromFile.id(), doc);
-        XapianDocument doc2 = m_db->xapianDatabase()->document(fromFile.id());
-    }
-    else {
+    if (!fromFile.fetch(m_db)) {
         //
         // If we have no metadata yet we need to tell the file indexer so it can
         // create the metadata in case the target folder is configured to be indexed.
@@ -138,43 +97,5 @@ void MetadataMover::updateMetadata(const QString& from, const QString& to)
         return;
     }
 
-    //
-    // Iterate over all terms starting with the path and change them
-    //
-    Xapian::Database* db = m_db->xapianDatabase()->db();
-
-    auto it = db->allterms_begin(("P-" + from + "/").toUtf8().constData());
-    auto end = db->allterms_end(("P-" + from + "/").toUtf8().constData());
-
-    for (; it != end; it++) {
-        std::string term = *it;
-
-        auto iter = db->postlist_begin(term);
-        Q_ASSERT(iter != db->postlist_end(term));
-
-        int id = *iter;
-
-        std::string pathStr = db->get_document(id).get_value(3);
-        const QString path = QString::fromUtf8(pathStr.c_str(), pathStr.length());
-        const QString newPath = to + path.mid(from.length());
-
-        XapianDocument doc = m_db->xapianDatabase()->document(id);
-        doc.addValue(3, newPath);
-        doc.removeTermStartsWith("P");
-
-        QByteArray arr = newPath.toUtf8();
-        if (arr.size() > 240) {
-            QByteArray p1 = arr.mid(0, 240);
-            QByteArray p2 = arr.mid(240);
-
-            doc.addBoolTerm(p1, "P1");
-            doc.addBoolTerm(p2, "P2");
-        }
-        else {
-            doc.addBoolTerm(arr, "P-");
-        }
-
-        m_db->xapianDatabase()->replaceDocument(id, doc);
-    }
-    */
+    m_db->renameFilePath(QFile::encodeName(from), QFile::encodeName(to));
 }

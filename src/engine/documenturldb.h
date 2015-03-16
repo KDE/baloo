@@ -38,6 +38,7 @@ public:
     QByteArray get(quint64 docId);
 
     void del(quint64 docId);
+    void rename(quint64 docId, const QByteArray& newFileName);
 
     void setTransaction(MDB_txn* txn) {
         m_idFilename.setTransaction(txn);
