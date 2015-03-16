@@ -80,6 +80,49 @@ PostingList PostingDB::get(const QByteArray& term)
     return list;
 }
 
+QList<QByteArray> PostingDB::fetchTermsStartingWith(const QByteArray& term)
+{
+    MDB_val key;
+    key.mv_size = term.size();
+    key.mv_data = static_cast<void*>(const_cast<char*>(term.constData()));
+
+    MDB_cursor* cursor;
+    mdb_cursor_open(m_txn, m_dbi, &cursor);
+
+    int rc = mdb_cursor_get(cursor, &key, 0, MDB_SET_RANGE);
+    if (rc == MDB_NOTFOUND) {
+        mdb_cursor_close(cursor);
+        return QList<QByteArray>();
+    }
+    Q_ASSERT_X(rc == 0, "PostingDB::fetchTermsStartingWith", mdb_strerror(rc));
+
+    const QByteArray arr = QByteArray::fromRawData(static_cast<char*>(key.mv_data), key.mv_size);
+    if (!arr.startsWith(term)) {
+        mdb_cursor_close(cursor);
+        return QList<QByteArray>();
+    }
+
+    QList<QByteArray> terms;
+    terms << arr;
+
+    while (1) {
+        rc = mdb_cursor_get(cursor, &key, 0, MDB_NEXT);
+        if (rc == MDB_NOTFOUND) {
+            break;
+        }
+        Q_ASSERT_X(rc == 0, "PostingDB::fetchTermsStartingWith", mdb_strerror(rc));
+
+        const QByteArray arr = QByteArray::fromRawData(static_cast<char*>(key.mv_data), key.mv_size);
+        if (!arr.startsWith(term)) {
+            break;
+        }
+        terms << arr;
+    }
+
+    mdb_cursor_close(cursor);
+    return terms;
+}
+
 class DBPostingIterator : public PostingIterator {
 public:
     DBPostingIterator(void* data, uint size);

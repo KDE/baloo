@@ -95,6 +95,19 @@ private Q_SLOTS:
         it = db.regexpIter(QRegularExpression("dub"), QByteArray("f"));
         QVERIFY(it == 0);
     }
+
+    void testFetchTermsStartingWith() {
+        PostingDB db(m_txn);
+
+        db.put("abc", {1, 4, 5, 9, 11});
+        db.put("fir", {1, 3, 5, 7});
+        db.put("fire", {1, 8});
+        db.put("fore", {2, 3, 5});
+        db.put("zib", {4, 5, 6});
+
+        QList<QByteArray> list = {"fir", "fire", "fore"};
+        QCOMPARE(db.fetchTermsStartingWith("f"), list);
+    }
 };
 
 QTEST_MAIN(PostingDBTest)

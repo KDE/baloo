@@ -46,6 +46,8 @@ public:
     PostingIterator* prefixIter(const QByteArray& term);
     PostingIterator* regexpIter(const QRegularExpression& regexp, const QByteArray& prefix);
 
+    QList<QByteArray> fetchTermsStartingWith(const QByteArray& term);
+
     void setTransaction(MDB_txn* txn) {
         m_txn = txn;
     }

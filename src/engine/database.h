@@ -82,6 +82,7 @@ public:
     uint phaseOneSize();
     uint size();
 
+    QList<QByteArray> fetchTermsStartingWith(const QByteArray& term);
 private:
     QString m_path;
 

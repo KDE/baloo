@@ -394,6 +394,12 @@ QVector<quint64> Database::fetchPhaseOneIds(int size)
     return m_contentIndexingDB->fetchItems(size);
 }
 
+QList<QByteArray> Database::fetchTermsStartingWith(const QByteArray& term)
+{
+    Q_ASSERT(term.size() > 0);
+    return m_postingDB->fetchTermsStartingWith(term);
+}
+
 uint Database::phaseOneSize()
 {
     Q_ASSERT(m_txn);
