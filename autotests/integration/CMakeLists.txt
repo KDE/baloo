@@ -9,5 +9,4 @@ ENDMACRO()
 
 baloo_engine_auto_tests(
     querytest
-    urltest
 )
