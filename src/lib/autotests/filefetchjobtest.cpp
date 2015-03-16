@@ -23,6 +23,7 @@
 #include "file.h"
 #include "document.h"
 #include "database.h"
+#include "idutils.h"
 
 #include <QDebug>
 #include <QTest>
@@ -66,7 +67,7 @@ void FileFetchJobTest::test()
     Document doc;
     doc.setData(json);
     doc.setUrl(tempFile.fileName().toUtf8());
-    doc.setId(5);
+    doc.setId(filePathToId(doc.url()));
     doc.addTerm("testterm");
 
     {
