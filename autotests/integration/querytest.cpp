@@ -59,14 +59,13 @@ private:
     Database* db;
 
     void insertDocuments();
-    void addDocument(const QString& text, quint64 id, const QByteArray& url)
+    void addDocument(const QString& text, quint64 id)
     {
         Document doc;
 
         TermGenerator tg(&doc);
         tg.indexText(text);
         doc.setId(id);
-        doc.setUrl(url);
 
         db->addDocument(doc);
     }
@@ -75,10 +74,10 @@ private:
 
 void QueryTest::insertDocuments()
 {
-    addDocument("The quick brown foxed jumped over the crazy dog", 100, "/h/v/fire");
-    addDocument("The night is dark and full of terror", 110, "/h/v/water");
-    addDocument("Don't feel sorry for yourself. Only assholes do that", 120, "/h/v/air");
-    addDocument("Only the dead stay 17 forever. crazy", 130, "/h/v/earth");
+    addDocument("The quick brown foxed jumped over the crazy dog", 100);
+    addDocument("The night is dark and full of terror", 110);
+    addDocument("Don't feel sorry for yourself. Only assholes do that", 120);
+    addDocument("Only the dead stay 17 forever. crazy", 130);
 }
 
 void QueryTest::testTermEqual()
