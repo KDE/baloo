@@ -28,6 +28,8 @@
 #include "positiondb.h"
 #include "documentvaluedb.h"
 
+#include "idutils.h"
+
 #include <QTest>
 #include <QTemporaryDir>
 
@@ -40,6 +42,12 @@ private Q_SLOTS:
     void test();
 };
 
+static void touchFile(const QByteArray& path) {
+    QFile file(QString::fromUtf8(path));
+    file.open(QIODevice::WriteOnly);
+    file.write("data");
+}
+
 void DatabaseTest::test()
 {
     QTemporaryDir dir;
@@ -47,12 +55,15 @@ void DatabaseTest::test()
     Database db(dir.path());
     QVERIFY(db.open());
     db.transaction(Database::ReadWrite);
-    QCOMPARE(db.hasDocument(1), false);
 
-    const QByteArray url("/home/file");
+    const QByteArray url(dir.path().toUtf8() + "/file");
+    touchFile(url);
+    quint64 id = filePathToId(url);
+
+    QCOMPARE(db.hasDocument(id), false);
 
     Document doc;
-    doc.setId(1);
+    doc.setId(id);
     doc.setUrl(url);
     doc.addTerm("a");
     doc.addTerm("ab");
@@ -64,15 +75,15 @@ void DatabaseTest::test()
     db.addDocument(doc);
     db.commit();
     db.transaction(Database::ReadOnly);
-    QCOMPARE(db.hasDocument(1), true);
+    QCOMPARE(db.hasDocument(id), true);
 
-    QCOMPARE(db.m_docUrlDB->get(1), url);
-    QCOMPARE(db.m_postingDB->get("a"), QVector<quint64>() << 1);
-    QCOMPARE(db.m_postingDB->get("ab"), QVector<quint64>() << 1);
-    QCOMPARE(db.m_postingDB->get("abc"), QVector<quint64>() << 1);
-    QCOMPARE(db.m_postingDB->get("power"), QVector<quint64>() << 1);
-    QCOMPARE(db.m_postingDB->get("system"), QVector<quint64>() << 1);
-    QCOMPARE(db.m_postingDB->get("link"), QVector<quint64>() << 1);
+    QCOMPARE(db.m_docUrlDB->get(id), url);
+    QCOMPARE(db.m_postingDB->get("a"), QVector<quint64>() << id);
+    QCOMPARE(db.m_postingDB->get("ab"), QVector<quint64>() << id);
+    QCOMPARE(db.m_postingDB->get("abc"), QVector<quint64>() << id);
+    QCOMPARE(db.m_postingDB->get("power"), QVector<quint64>() << id);
+    QCOMPARE(db.m_postingDB->get("system"), QVector<quint64>() << id);
+    QCOMPARE(db.m_postingDB->get("link"), QVector<quint64>() << id);
 
     /*
     QCOMPARE(db.document(1), doc);
