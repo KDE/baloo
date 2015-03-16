@@ -290,7 +290,7 @@ void Database::commit()
             }
 
             if (!docFileNameTerms.isEmpty())
-                m_documentXattrTermsDB->put(id, docFileNameTerms);
+                m_documentFileNameTermsDB->put(id, docFileNameTerms);
 
             if (!doc.url().isEmpty()) {
                 m_docUrlDB->put(id, doc.url());
