@@ -67,7 +67,6 @@ QueryResultsModel::QueryResultsModel(QObject *parent)
     : QAbstractListModel(parent),
       m_query(new Query(this))
 {
-    qRegisterMetaType<Baloo::ResultIterator>("Baloo::ResultIterator");
     connect(m_query, &Query::searchStringChanged, this, &QueryResultsModel::populateModel);
     connect(m_query, &Query::limitChanged, this, &QueryResultsModel::populateModel);
 }
