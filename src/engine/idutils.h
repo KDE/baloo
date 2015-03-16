@@ -41,6 +41,15 @@ inline quint64 statBufToId(const QT_STATBUF& stBuf)
     return *(reinterpret_cast<quint64*>(arr));
 }
 
+inline quint64 filePathToId(const QByteArray& filePath)
+{
+    QT_STATBUF statBuf;
+    if (QT_LSTAT(filePath.constData(), &statBuf) != 0) {
+        return 0;
+    }
+    return statBufToId(statBuf);
+}
+
 inline quint32 idToInode(quint64 id)
 {
     quint32* arr = reinterpret_cast<quint32*>(&id);

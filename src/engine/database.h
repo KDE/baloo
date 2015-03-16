@@ -34,7 +34,6 @@ class DocumentDB;
 class DocumentDataDB;
 class DocumentUrlDB;
 class DocumentValueDB;
-class UrlDocumentDB;
 class DocumentIdDB;
 class EngineQuery;
 class PostingIterator;
@@ -97,7 +96,6 @@ private:
     DocumentDB* m_documentFileNameTermsDB;
 
     DocumentUrlDB* m_docUrlDB;
-    UrlDocumentDB* m_urlDocDB;
 
     DocumentValueDB* m_docValueDB;
     DocumentDataDB* m_docDataDB;

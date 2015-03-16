@@ -22,7 +22,6 @@
 #include "postingdb.h"
 #include "documentdb.h"
 #include "documenturldb.h"
-#include "urldocumentdb.h"
 #include "documentiddb.h"
 #include "positiondb.h"
 #include "documentvaluedb.h"
@@ -34,6 +33,8 @@
 #include "andpostingiterator.h"
 #include "orpostingiterator.h"
 #include "phraseanditerator.h"
+
+#include "idutils.h"
 
 #include <QFile>
 #include <QFileInfo>
@@ -50,7 +51,6 @@ Database::Database(const QString& path)
     , m_documentXattrTermsDB(0)
     , m_documentFileNameTermsDB(0)
     , m_docUrlDB(0)
-    , m_urlDocDB(0)
     , m_docValueDB(0)
     , m_docDataDB(0)
     , m_contentIndexingDB(0)
@@ -65,7 +65,6 @@ Database::~Database()
     delete m_documentXattrTermsDB;
     delete m_documentFileNameTermsDB;
     delete m_docUrlDB;
-    delete m_urlDocDB;
     delete m_docValueDB;
     delete m_docDataDB;
     delete m_contentIndexingDB;
@@ -85,7 +84,7 @@ bool Database::open()
     }
 
     mdb_env_create(&m_env);
-    mdb_env_set_maxdbs(m_env, 10);
+    mdb_env_set_maxdbs(m_env, 9);
     mdb_env_set_mapsize(m_env, 1048576000);
 
     // The directory needs to be created before opening the environment
@@ -132,11 +131,6 @@ void Database::transaction(Database::TransactionType type)
         m_docUrlDB = new DocumentUrlDB(m_txn);
     else
         m_docUrlDB->setTransaction(m_txn);
-
-    if (!m_urlDocDB)
-        m_urlDocDB = new UrlDocumentDB(m_txn);
-    else
-        m_urlDocDB->setTransaction(m_txn);
 
     if (!m_docValueDB)
         m_docValueDB = new DocumentValueDB(m_txn);
@@ -196,7 +190,8 @@ quint64 Database::documentId(const QByteArray& url)
 {
     Q_ASSERT(m_txn);
     Q_ASSERT(!url.isEmpty());
-    return m_urlDocDB->get(url);
+
+    return filePathToId(url);
 }
 
 QByteArray Database::documentUrl(quint64 id)
@@ -294,7 +289,6 @@ void Database::commit()
 
             if (!doc.url().isEmpty()) {
                 m_docUrlDB->put(id, doc.url());
-                m_urlDocDB->put(doc.url(), id);
             }
 
             if (doc.contentIndexing()) {
@@ -333,7 +327,6 @@ void Database::commit()
 
             QByteArray url = m_docUrlDB->get(id);
             m_docUrlDB->del(id);
-            m_urlDocDB->del(url);
 
             m_contentIndexingDB->del(id);
             m_docValueDB->del(id);

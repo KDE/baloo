@@ -13,7 +13,6 @@ baloo_engine_auto_tests(
     documentdbtest
     databasetest
     documenturldbtest
-    urldocumentdbtest
     documentiddbtest
     documentvaluedbtest
     documentdatadbtest

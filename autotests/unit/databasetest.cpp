@@ -24,7 +24,6 @@
 #include "postingdb.h"
 #include "documentdb.h"
 #include "documenturldb.h"
-#include "urldocumentdb.h"
 #include "documentiddb.h"
 #include "positiondb.h"
 #include "documentvaluedb.h"
@@ -68,7 +67,6 @@ void DatabaseTest::test()
     QCOMPARE(db.hasDocument(1), true);
 
     QCOMPARE(db.m_docUrlDB->get(1), url);
-    QCOMPARE(db.m_urlDocDB->get(url), static_cast<quint64>(1));
     QCOMPARE(db.m_postingDB->get("a"), QVector<quint64>() << 1);
     QCOMPARE(db.m_postingDB->get("ab"), QVector<quint64>() << 1);
     QCOMPARE(db.m_postingDB->get("abc"), QVector<quint64>() << 1);
