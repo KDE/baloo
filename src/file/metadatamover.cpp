@@ -54,7 +54,8 @@ void MetadataMover::moveFileMetadata(const QString& from, const QString& to)
     // and finally update the old statements
     updateMetadata(from, to);
 
-    //m_db->xapianDatabase()->commit();
+    m_db->commit();
+    m_db->transaction(Database::ReadWrite);
 }
 
 void MetadataMover::removeFileMetadata(const QString& file)
@@ -62,7 +63,8 @@ void MetadataMover::removeFileMetadata(const QString& file)
     Q_ASSERT(!file.isEmpty() && file != QLatin1String("/"));
     removeMetadata(file);
 
-    //m_db->xapianDatabase()->commit();
+    m_db->commit();
+    m_db->transaction(Database::ReadWrite);
 }
 
 
@@ -75,9 +77,6 @@ void MetadataMover::removeMetadata(const QString& url)
 
     if (file.id()) {
         m_db->removeDocument(file.id());
-        // FIXME: Is this signal still really required?
-        //        We are just deleting it right now
-        Q_EMIT fileRemoved(file.id());
     }
 }
 

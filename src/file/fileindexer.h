@@ -92,11 +92,6 @@ public Q_SLOTS:
      */
     Q_SCRIPTABLE void indexXAttr(const QString& path);
 
-    /**
-     * Remove all index information regarding the file with id \p id
-     */
-    Q_SCRIPTABLE void removeFileData(int id);
-
 private Q_SLOTS:
     void slotBasicIndexingDone();
 

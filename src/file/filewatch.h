@@ -43,7 +43,6 @@ public:
 Q_SIGNALS:
     void indexFile(const QString& string);
     void indexXAttr(const QString& path);
-    void fileRemoved(int id);
 
     void installedWatches();
 

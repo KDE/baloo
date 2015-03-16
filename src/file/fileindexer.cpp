@@ -159,11 +159,6 @@ void FileIndexer::indexFolder(const QString& path, bool forced)
     }
 }
 
-void FileIndexer::removeFileData(int id)
-{
-    m_indexScheduler->removeFileData(id);
-}
-
 void FileIndexer::quit() const
 {
     QCoreApplication::instance()->quit();

@@ -95,7 +95,6 @@ int main(int argc, char** argv)
     QObject::connect(&filewatcher, &Baloo::FileWatch::indexFile, &fileIndexer, &Baloo::FileIndexer::indexFile);
     QObject::connect(&filewatcher, &Baloo::FileWatch::indexXAttr, &fileIndexer, &Baloo::FileIndexer::indexXAttr);
     QObject::connect(&filewatcher, &Baloo::FileWatch::installedWatches, &fileIndexer, &Baloo::FileIndexer::update);
-    QObject::connect(&filewatcher, &Baloo::FileWatch::fileRemoved, &fileIndexer, &Baloo::FileIndexer::removeFileData);
 
     return app.exec();
 }

@@ -1,6 +1,6 @@
 /* This file is part of the KDE Project
    Copyright (c) 2008-2010 Sebastian Trueg <trueg@kde.org>
-   Copyright (c) 2010-2013 Vishesh Handa <handa.vish@gmail.com>
+   Copyright (c) 2010-2015 Vishesh Handa <vhanda@kde.org>
 
    Parts of this file are based on code from Strigi
    Copyright (C) 2006-2007 Jos van den Oever <jos@vandenoever.info>
@@ -314,11 +314,6 @@ void IndexScheduler::emitStatusStringChanged()
         Q_EMIT statusStringChanged();
         m_oldStatus = status;
     }
-}
-
-void IndexScheduler::removeFileData(int id)
-{
-    m_commitQ->remove(id);
 }
 
 void IndexScheduler::slotNotifyCommitted()

@@ -54,8 +54,6 @@ public:
      */
     QString userStatusString() const;
 
-    void removeFileData(int id);
-
 public Q_SLOTS:
     void suspend();
     void resume();
