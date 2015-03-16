@@ -7,7 +7,6 @@ set(BALOO_LIB_SRCS
     advancedqueryparser.cpp
 
     file.cpp
-    filemapping.cpp
     filemonitor.cpp
     taglistjob.cpp
     db.cpp

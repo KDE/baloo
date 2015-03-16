@@ -17,7 +17,6 @@ set(file_static_lib_SRCS
     priority.cpp
     regexpcache.cpp
     fileexcludefilters.cpp
-    ../lib/filemapping.cpp
     storagedevices.cpp
     filtereddiriterator.cpp
 

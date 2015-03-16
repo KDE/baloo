@@ -21,7 +21,6 @@ ecm_add_test(advancedqueryparsertest.cpp ../advancedqueryparser.cpp
 #
 set(filefetchjobtest_SRC filefetchjobtest.cpp
                          db.cpp
-                         ../filemapping.cpp
                          ../file.cpp)
 
 ecm_add_test(${filefetchjobtest_SRC}
@@ -53,7 +52,6 @@ ecm_add_test(taglistjobtest.cpp
 #                   ../filesearchstore.cpp
 #                   ../pathfilterpostingsource.cpp
 #                   ../wildcardpostingsource.cpp
-#                   ../filemapping.cpp
 #                   ../xapiansearchstore.cpp
 #                   ../searchstore.cpp
 #                   ../../file/database.cpp
@@ -70,10 +68,3 @@ ecm_add_test(taglistjobtest.cpp
 #        KF5::BalooXapian
 #)
 #
-#ecm_add_test(filemappingbenchmark.cpp
-#    TEST_NAME "filemappingbenchmark"
-#    LINK_LIBRARIES
-#        Qt5::Test
-#        KF5::Baloo
-#        baloofilecommon
-#)

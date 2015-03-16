@@ -19,7 +19,6 @@
 
 #include "metadatamover.h"
 #include "filewatch.h"
-#include "filemapping.h"
 #include "database.h"
 
 #include <QTimer>
@@ -72,11 +71,9 @@ void MetadataMover::removeMetadata(const QString& url)
 {
     Q_ASSERT(!url.isEmpty());
 
-    FileMapping file(url);
-    file.fetch(m_db);
-
-    if (file.id()) {
-        m_db->removeDocument(file.id());
+    quint64 id = m_db->documentId(QFile::encodeName(url));
+    if (id) {
+        m_db->removeDocument(id);
     }
 }
 
@@ -87,8 +84,8 @@ void MetadataMover::updateMetadata(const QString& from, const QString& to)
     Q_ASSERT(from[from.size()-1] != QLatin1Char('/'));
     Q_ASSERT(to[to.size()-1] != QLatin1Char('/'));
 
-    FileMapping fromFile(from);
-    if (!fromFile.fetch(m_db)) {
+    quint64 id = m_db->documentId(QFile::encodeName(to));
+    if (!id) {
         //
         // If we have no metadata yet we need to tell the file indexer so it can
         // create the metadata in case the target folder is configured to be indexed.

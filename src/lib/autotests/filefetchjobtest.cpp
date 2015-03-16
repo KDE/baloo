@@ -19,7 +19,6 @@
  */
 
 #include "../db.h"
-#include "filemapping.h"
 #include "file.h"
 #include "document.h"
 #include "database.h"

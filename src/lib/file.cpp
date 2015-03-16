@@ -21,7 +21,6 @@
  */
 
 #include "file.h"
-#include "filemapping.h"
 #include "db.h"
 #include "database.h"
 
@@ -115,12 +114,14 @@ bool File::load()
     db.open();
     db.transaction(Database::ReadOnly);
 
-    FileMapping fileMap;
-    fileMap.setId(d->id);
-    fileMap.setUrl(d->url);
-    fileMap.fetch(&db);
+    if (!d->id) {
+        d->id = db.documentId(QFile::encodeName(d->url));
+        if (!d->id) {
+            return false;
+        }
+    }
 
-    QByteArray arr = db.documentData(fileMap.id());
+    QByteArray arr = db.documentData(d->id);
     if (arr.isEmpty()) {
         return false;
     }
