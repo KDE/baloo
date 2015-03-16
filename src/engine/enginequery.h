@@ -57,6 +57,10 @@ public:
         return m_op;
     }
 
+    void setOp(const Operation& op) {
+        m_op = op;
+    }
+
     bool leaf() const {
         return !m_term.isEmpty();
     }
@@ -79,7 +83,16 @@ private:
 } // namespace Baloo
 
 inline QDebug operator << (QDebug d, const Baloo::EngineQuery& q) {
-    d << "(" << q.term() << q.pos() << q.op() << q.subQueries() << ")";
+    if (q.op() == Baloo::EngineQuery::And) {
+        d << "[AND " << q.subQueries() << "]";
+    } else if (q.op() == Baloo::EngineQuery::Or) {
+        d << "[OR " << q.subQueries() << "]";
+    } else if (q.op() == Baloo::EngineQuery::Phrase) {
+        d << "[PHRASE " << q.subQueries() << "]";
+    } else {
+        Q_ASSERT(q.subQueries().isEmpty());
+        d << "(" << q.term() << q.pos() << q.op() << ")";
+    }
     return d;
 }
 

@@ -118,8 +118,6 @@ void QueryParserTest::testPhraseSearch_sameLimiter()
 
     EngineQuery q(queries, EngineQuery::And);
 
-//    qDebug() << q;
-//    qDebug() << query;
     QCOMPARE(query, q);
 }
 
@@ -140,8 +138,6 @@ void QueryParserTest::testPhraseSearchEmail()
     queries << EngineQuery("fire", EngineQuery::StartsWith, 5);
 
     EngineQuery q(queries, EngineQuery::And);
-    // qDebug() << q;
-    // qDebug() << query;
     QCOMPARE(query, q);
 }
 

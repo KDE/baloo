@@ -88,7 +88,9 @@ EngineQuery QueryParser::parseQuery(const QString& text, const QString& prefix)
                 }
                 else if (!containsSpace(delim)) {
                     if (!inPhrase && !queries.isEmpty()) {
-                        phraseQueries << queries.takeLast();
+                        EngineQuery q = queries.takeLast();
+                        q.setOp(EngineQuery::Equal);
+                        phraseQueries << q;
                     }
                     inPhrase = true;
                 }
@@ -147,6 +149,9 @@ EngineQuery QueryParser::parseQuery(const QString& text, const QString& prefix)
     }
 
     if (!phraseQueries.isEmpty()) {
+        for (EngineQuery& q : phraseQueries) {
+            q.setOp(EngineQuery::StartsWith);
+        }
         queries << phraseQueries;
         phraseQueries.clear();
     }
