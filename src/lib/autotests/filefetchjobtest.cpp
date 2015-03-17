@@ -32,8 +32,6 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-#include <xapian.h>
-
 #include <KFileMetaData/Properties>
 
 using namespace Baloo;

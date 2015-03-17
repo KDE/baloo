@@ -32,14 +32,12 @@ find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Widgets Quick DBus Test)
 find_package(KF5 ${KF5_VERSION} REQUIRED COMPONENTS I18n Config IdleTime Auth Crash Solid KIO KDELibs4Support)
 find_package(KF5 ${PROJECT_VERSION} REQUIRED COMPONENTS FileMetaData)
 
-find_package(Xapian CONFIG)
-set_package_properties(Xapian PROPERTIES
-    DESCRIPTION "The Xapian search engine library"
-    URL "http://xapian.org"
+find_package(LMDB)
+set_package_properties(LMDB PROPERTIES
+    DESCRIPTION "Lightning Memory-Mapped Database (LMDB)"
+    URL "http://symas.com/mdb"
     TYPE REQUIRED
 )
-
-find_package(LMDB REQUIRED)
 
 # Compiler flags
 add_definitions(-DQT_NO_KEYWORDS)
@@ -48,13 +46,10 @@ add_definitions(-DQT_NO_KEYWORDS)
 kde_enable_exceptions()
 
 include_directories(
-  ${XAPIAN_INCLUDE_DIR}
   ${LMDB_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/lib
   ${CMAKE_BINARY_DIR}/src/lib
-  ${CMAKE_BINARY_DIR}/src/xapian
-  ${CMAKE_SOURCE_DIR}/src/xapian
   ${CMAKE_BINARY_DIR}/src/engine
   ${CMAKE_SOURCE_DIR}/src/engine
 )

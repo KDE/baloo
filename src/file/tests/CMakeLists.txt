@@ -31,9 +31,7 @@ target_link_libraries(basicindexingqueuetest-manual
 #  KF5::FileMetaData
 #  KF5::KIOCore
 #  KF5::ConfigCore
-#  ${XAPIAN_LIBRARIES}
 #  KF5::Baloo
-#  KF5::BalooXapian
 #  baloofilecommon
 #)
 
