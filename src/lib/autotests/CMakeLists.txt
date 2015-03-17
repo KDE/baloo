@@ -36,16 +36,6 @@ ecm_add_test(${filefetchjobtest_SRC}
 #set_target_properties(filefetchjobtest PROPERTIES COMPILE_FLAGS -DBUILDDIR="\\"${CMAKE_CURRENT_BINARY_DIR}/\\""\ -DBALOO_FILE_EXPORT=)
 
 #
-# TagList Job
-#
-ecm_add_test(taglistjobtest.cpp
-    TEST_NAME "taglistjobtest"
-    LINK_LIBRARIES
-        Qt5::Test
-        KF5::Baloo
-)
-
-#
 # Search Store
 #
 #set(filesearchstore_SRCS filesearchstoretest.cpp
