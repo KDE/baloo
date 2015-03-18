@@ -21,6 +21,7 @@
 #include "documenturldb.h"
 #include "idutils.h"
 
+#include <algorithm>
 #include <qplatformdefs.h>
 #include <QPair>
 #include <QDebug>
@@ -72,23 +73,39 @@ void DocumentUrlDB::put(quint64 docId, const QByteArray& url)
             parentId = list[i-1].first;
         }
 
-        QVector<quint64> subDocs = m_idTree.get(parentId);
-        subDocs.append(id);
-
-        std::sort(subDocs.begin(), subDocs.end());
-        subDocs.erase(std::unique(subDocs.begin(), subDocs.end()), subDocs.end());
-
-        //qDebug() << parentId << subDocs;
-        m_idTree.put(parentId, subDocs);
-
-        // Update the IdFileName
-        IdFilenameDB::FilePath path;
-        path.parentId = parentId;
-        path.name = name;
-
-        //qDebug() << id << path.parentId << path.name;
-        m_idFilename.put(id, path);
+        add(id, parentId, name);
     }
+}
+
+void DocumentUrlDB::add(quint64 id, quint64 parentId, const QByteArray& name)
+{
+    QVector<quint64> subDocs = m_idTree.get(parentId);
+
+    // Find if the id exists
+    auto it = std::upper_bound(subDocs.begin(), subDocs.end(), id);
+    it--;
+
+    // Merge the id if it does not
+    if (*it != id) {
+        subDocs.append(id);
+        for (int i = subDocs.size() - 2 ; i >= 0; i--) {
+            if (subDocs[i] > id) {
+                subDocs[i+1] = subDocs[i];
+                subDocs[i] = id;
+            } else {
+                break;
+            }
+        }
+    }
+
+    m_idTree.put(parentId, subDocs);
+
+    // Update the IdFileName
+    IdFilenameDB::FilePath path;
+    path.parentId = parentId;
+    path.name = name;
+
+    m_idFilename.put(id, path);
 }
 
 QByteArray DocumentUrlDB::get(quint64 docId)

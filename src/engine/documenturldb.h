@@ -45,6 +45,8 @@ public:
         m_idTree.setTransaction(txn);
     }
 private:
+    void add(quint64 id, quint64 parentId, const QByteArray& name);
+
     IdFilenameDB m_idFilename;
     IdTreeDB m_idTree;
 
