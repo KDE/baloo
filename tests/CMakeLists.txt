@@ -9,3 +9,10 @@ target_link_libraries(memorytest
     KF5::BalooEngine
 )
 ecm_mark_as_test(memorytest)
+
+add_executable(documenturldb documenturldbtest.cpp)
+target_link_libraries(documenturldb
+    Qt5::Core
+    KF5::BalooEngine
+)
+ecm_mark_as_test(documenturldb)
