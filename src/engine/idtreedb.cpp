@@ -66,8 +66,9 @@ QVector<quint64> IdTreeDB::get(quint64 docId)
     Q_ASSERT_X(rc == 0, "IdTreeeDB::get", mdb_strerror(rc));
 
     QVector<quint64> list;
-    list.reserve(val.mv_size / sizeof(quint64));
+    list.resize(val.mv_size / sizeof(quint64));
 
+    // FIXME: This still makes a copy of the data. Perhaps we can avoid that?
     memcpy(list.data(), val.mv_data, val.mv_size);
     return list;
 }
