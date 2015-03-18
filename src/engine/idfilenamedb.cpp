@@ -84,6 +84,23 @@ IdFilenameDB::FilePath IdFilenameDB::get(quint64 docId)
     return path;
 }
 
+bool IdFilenameDB::contains(quint64 docId)
+{
+    Q_ASSERT(docId > 0);
+
+    MDB_val key;
+    key.mv_size = sizeof(quint64);
+    key.mv_data = static_cast<void*>(&docId);
+
+    MDB_val val;
+    int rc = mdb_get(m_txn, m_dbi, &key, &val);
+    if (rc == MDB_NOTFOUND) {
+        return false;
+    }
+    Q_ASSERT_X(rc == 0, "IdfilenameDB::contains", mdb_strerror(rc));
+    return true;
+}
+
 void IdFilenameDB::del(quint64 docId)
 {
     Q_ASSERT(docId > 0);

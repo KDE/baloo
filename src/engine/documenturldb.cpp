@@ -45,16 +45,32 @@ void DocumentUrlDB::put(quint64 docId, const QByteArray& url)
     Q_ASSERT(!url.endsWith('/'));
 
     typedef QPair<quint64, QByteArray> IdNamePath;
-    QVector<IdNamePath> list;
 
     QByteArray arr = url;
+    //
+    // id and parent
+    //
+    {
+        quint64 id = filePathToId(arr);
+        Q_ASSERT(id == docId);
+
+        int pos = arr.lastIndexOf('/');
+        QByteArray name = arr.mid(pos + 1);
+
+        arr.resize(pos);
+        quint64 parentId = filePathToId(arr);
+
+        add(id, parentId, name);
+        if (m_idFilename.contains(parentId))
+            return;
+    }
+
+    //
+    // The rest of the path
+    //
+    QVector<IdNamePath> list;
     while (!arr.isEmpty()) {
-        QT_STATBUF statBuf;
-        if (QT_LSTAT(arr.constData(), &statBuf) != 0) {
-            qWarning() << "FilePath does not exist:" << arr;
-            Q_ASSERT(0);
-        }
-        quint64 id = statBufToId(statBuf);
+        quint64 id = filePathToId(arr);
 
         int pos = arr.lastIndexOf('/');
         QByteArray name = arr.mid(pos + 1);

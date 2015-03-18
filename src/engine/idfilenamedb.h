@@ -44,6 +44,7 @@ public:
     };
     void put(quint64 docId, const FilePath& path);
     FilePath get(quint64 docId);
+    bool contains(quint64 docId);
     void del(quint64 docId);
 
     void setTransaction(MDB_txn* txn) {
