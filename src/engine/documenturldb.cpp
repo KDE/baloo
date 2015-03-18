@@ -98,19 +98,15 @@ void DocumentUrlDB::add(quint64 id, quint64 parentId, const QByteArray& name)
     QVector<quint64> subDocs = m_idTree.get(parentId);
 
     // Find if the id exists
-    auto it = std::upper_bound(subDocs.begin(), subDocs.end(), id);
-    it--;
-
-    // Merge the id if it does not
-    if (*it != id) {
+    if (subDocs.isEmpty()) {
         subDocs.append(id);
-        for (int i = subDocs.size() - 2 ; i >= 0; i--) {
-            if (subDocs[i] > id) {
-                subDocs[i+1] = subDocs[i];
-                subDocs[i] = id;
-            } else {
-                break;
-            }
+    } else {
+        auto it = std::upper_bound(subDocs.begin(), subDocs.end(), id);
+
+        // Merge the id if it does not
+        auto prev = it - 1;
+        if (*prev != id) {
+            subDocs.insert(it, id);
         }
     }
 
