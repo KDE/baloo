@@ -27,6 +27,8 @@
 
 namespace Baloo {
 
+class PostingIterator;
+
 class BALOO_ENGINE_EXPORT IdTreeDB
 {
 public:
@@ -40,6 +42,13 @@ public:
     void setTransaction(MDB_txn* txn) {
         m_txn = txn;
     }
+
+    /**
+     * Returns an iterator which will return all the docIds which use \p docId
+     * are the parent docID.
+     */
+    PostingIterator* iter(quint64 docId);
+
 private:
     MDB_txn* m_txn;
     MDB_dbi m_dbi;

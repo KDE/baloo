@@ -19,6 +19,10 @@
  */
 
 #include "idtreedb.h"
+#include "postingiterator.h"
+
+#include <QDebug>
+#include <algorithm>
 
 using namespace Baloo;
 
@@ -83,3 +87,58 @@ void IdTreeDB::del(quint64 docId)
     Q_ASSERT_X(rc == 0, "IdTreeDB::del", mdb_strerror(rc));
 }
 
+//
+// Iter
+//
+class IdTreePostingIterator : public PostingIterator {
+public:
+    IdTreePostingIterator(IdTreeDB* db, const QVector<quint64> list)
+        : m_db(db), m_idList(list), m_pos(-1) {}
+
+    quint64 docId() {
+        if (m_pos >= 0 && m_pos < m_resultList.size())
+            return m_resultList[m_pos];
+        return 0;
+    }
+
+    quint64 next() {
+        if (m_resultList.isEmpty() && m_idList.isEmpty()) {
+            return 0;
+        }
+
+        if (m_resultList.isEmpty()) {
+            while (!m_idList.isEmpty()) {
+                quint64 id = m_idList.takeLast();
+                m_idList << m_db->get(id);
+                m_resultList << id;
+            }
+            std::sort(m_resultList.begin(), m_resultList.end());
+            m_pos = 0;
+        }
+        else {
+            if (m_pos < m_resultList.size())
+                m_pos++;
+            else
+                m_resultList.clear();
+        }
+
+        if (m_pos < m_resultList.size())
+            return m_resultList[m_pos];
+        else
+            return 0;
+    }
+
+private:
+    IdTreeDB* m_db;
+    int m_pos;
+    QVector<quint64> m_idList;
+    QVector<quint64> m_resultList;
+};
+
+PostingIterator* IdTreeDB::iter(quint64 docId)
+{
+    Q_ASSERT(docId > 0);
+
+    QVector<quint64> list = {docId};
+    return new IdTreePostingIterator(this, list);
+}

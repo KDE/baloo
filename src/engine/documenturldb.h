@@ -27,6 +27,7 @@
 namespace Baloo {
 
 class UrlTest;
+class PostingIterator;
 
 class BALOO_ENGINE_EXPORT DocumentUrlDB
 {
@@ -44,6 +45,11 @@ public:
         m_idFilename.setTransaction(txn);
         m_idTree.setTransaction(txn);
     }
+
+    PostingIterator* iter(quint64 docId) {
+        return m_idTree.iter(docId);
+    }
+
 private:
     void add(quint64 id, quint64 parentId, const QByteArray& name);
 
