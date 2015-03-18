@@ -68,9 +68,7 @@ QVector<quint64> IdTreeDB::get(quint64 docId)
     QVector<quint64> list;
     list.reserve(val.mv_size / sizeof(quint64));
 
-    for (int i = 0; i < (val.mv_size / sizeof(quint64)); i++) {
-        list << static_cast<quint64*>(val.mv_data)[i];
-    }
+    memcpy(list.data(), val.mv_data, val.mv_size);
     return list;
 }
 
