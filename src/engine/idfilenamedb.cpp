@@ -20,8 +20,6 @@
 
 #include "idfilenamedb.h"
 
-#include <QDataStream>
-
 using namespace Baloo;
 
 IdFilenameDB::IdFilenameDB(MDB_txn* txn)
@@ -47,9 +45,9 @@ void IdFilenameDB::put(quint64 docId, const FilePath& path)
     key.mv_size = sizeof(quint64);
     key.mv_data = static_cast<void*>(&docId);
 
-    QByteArray data;
-    QDataStream stream(&data, QIODevice::WriteOnly);
-    stream << path.parentId << path.name;
+    QByteArray data(8 + path.name.size(), Qt::Uninitialized);
+    memcpy(data.data(), &path.parentId, 8);
+    memcpy(data.data() + 8, path.name.data(), path.name.size());
 
     MDB_val val;
     val.mv_size = data.size();
@@ -76,11 +74,9 @@ IdFilenameDB::FilePath IdFilenameDB::get(quint64 docId)
     }
     Q_ASSERT_X(rc == 0, "IdfilenameDB::get", mdb_strerror(rc));
 
-    QByteArray data = QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size);
-    QDataStream stream(&data, QIODevice::ReadOnly);
+    path.parentId = static_cast<quint64*>(val.mv_data)[0];
+    path.name = QByteArray::fromRawData(static_cast<char*>(val.mv_data) + 8, val.mv_size - 8);
 
-    stream >> path.parentId;
-    stream >> path.name;
     return path;
 }
 
