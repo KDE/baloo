@@ -49,7 +49,7 @@ int main(int argc, char** argv)
 
     // The directory needs to be created before opening the environment
     QByteArray path = QFile::encodeName(tempDir.path());
-    mdb_env_open(env, path.constData(), 0, 0664);
+    mdb_env_open(env, path.constData(), MDB_NOMEMINIT | MDB_WRITEMAP, 0664);
     mdb_txn_begin(env, NULL, 0, &txn);
 
     {
