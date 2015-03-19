@@ -38,11 +38,14 @@ struct PositionInfo {
     PositionInfo(quint64 id = 0, const QVector<uint> posList = QVector<uint>())
         : docId(id), positions(posList) {}
 
-    bool operator ==(const PositionInfo& rhs) {
+    bool operator ==(const PositionInfo& rhs) const {
         return docId == rhs.docId;
     }
+    bool operator !=(const PositionInfo& rhs) const {
+        return docId != rhs.docId;
+    }
 
-    bool operator <(const PositionInfo& rhs) {
+    bool operator <(const PositionInfo& rhs) const {
         return docId < rhs.docId;
     }
 };
@@ -72,5 +75,7 @@ inline QDebug operator<<(QDebug dbg, const PositionInfo &pos) {
 }
 
 }
+
+Q_DECLARE_TYPEINFO(Baloo::PositionInfo, Q_MOVABLE_TYPE);
 
 #endif // BALOO_POSITIONDB_H

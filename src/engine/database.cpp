@@ -154,33 +154,6 @@ QString Database::path() const
     return m_path;
 }
 
-void Database::addDocument(const Document& doc)
-{
-    Q_ASSERT(m_txn);
-    Q_ASSERT(doc.id() > 0);
-
-    Operation op;
-    op.type = AddDocument;
-    op.doc = doc;
-
-    m_pendingOperations << op;
-}
-
-void Database::removeDocument(quint64 id)
-{
-    Q_ASSERT(m_txn);
-    Q_ASSERT(id > 0);
-
-    Document doc;
-    doc.setId(id);
-
-    Operation op;
-    op.type = AddDocument;
-    op.doc = doc;
-
-    m_pendingOperations << op;
-}
-
 bool Database::hasDocument(quint64 id)
 {
     Q_ASSERT(id > 0);
@@ -217,156 +190,171 @@ QByteArray Database::documentData(quint64 id)
     return m_docDataDB->get(id);
 }
 
+void Database::addDocument(const Document& doc)
+{
+    Q_ASSERT(m_txn);
+    Q_ASSERT(doc.id() > 0);
+
+    quint64 id = doc.id();
+
+    QVector<QByteArray> docTerms;
+    docTerms.reserve(doc.m_terms.size());
+
+    QMapIterator<QByteArray, Document::TermData> it(doc.m_terms);
+    while (it.hasNext()) {
+        const QByteArray term = it.next().key();
+        docTerms.append(term);
+
+        Operation op;
+        op.type = AddId;
+        op.data.docId = id;
+        op.data.positions = it.value().positions;
+
+        m_pendingOperations[term].append(op);
+    }
+
+    m_documentTermsDB->put(id, docTerms);
+
+    QVector<QByteArray> docXattrTerms;
+    docXattrTerms.reserve(doc.m_xattrTerms.size());
+
+    it = QMapIterator<QByteArray, Document::TermData>(doc.m_xattrTerms);
+    while (it.hasNext()) {
+        const QByteArray term = it.next().key();
+        docXattrTerms.append(term);
+
+        Operation op;
+        op.type = AddId;
+        op.data.docId = id;
+        op.data.positions = it.value().positions;
+
+        m_pendingOperations[term].append(op);
+    }
+
+    if (!docXattrTerms.isEmpty())
+        m_documentXattrTermsDB->put(id, docXattrTerms);
+
+    QVector<QByteArray> docFileNameTerms;
+    docFileNameTerms.reserve(doc.m_fileNameTerms.size());
+
+    it = QMapIterator<QByteArray, Document::TermData>(doc.m_fileNameTerms);
+    while (it.hasNext()) {
+        const QByteArray term = it.next().key();
+        docFileNameTerms.append(term);
+
+        Operation op;
+        op.type = AddId;
+        op.data.docId = id;
+        op.data.positions = it.value().positions;
+
+        m_pendingOperations[term].append(op);
+    }
+
+    if (!docFileNameTerms.isEmpty())
+        m_documentFileNameTermsDB->put(id, docFileNameTerms);
+
+    if (!doc.url().isEmpty()) {
+        m_docUrlDB->put(id, doc.url());
+    }
+
+    if (doc.contentIndexing()) {
+        m_contentIndexingDB->put(doc.id());
+    }
+    if (!doc.m_slots.isEmpty()) {
+        for (auto iter = doc.m_slots.constBegin(); iter != doc.m_slots.constEnd(); iter++) {
+            m_docValueDB->put(doc.id(), iter.key(), iter.value());
+        }
+    }
+
+    if (!doc.m_data.isEmpty()) {
+        m_docDataDB->put(id, doc.m_data);
+    }
+}
+
+void Database::removeDocument(quint64 id)
+{
+    Q_ASSERT(m_txn);
+    Q_ASSERT(id > 0);
+
+    // FIXME: Optimize this. We do not need to combine them into one big vector
+    QVector<QByteArray> terms = m_documentTermsDB->get(id) + m_documentXattrTermsDB->get(id) + m_documentFileNameTermsDB->get(id);
+    if (terms.isEmpty()) {
+        return;
+    }
+
+    for (const QByteArray& term : terms) {
+        Operation op;
+        op.type = RemoveId;
+        op.data.docId = id;
+
+        m_pendingOperations[term].append(op);
+    }
+
+    m_documentTermsDB->del(id);
+    m_documentXattrTermsDB->del(id);
+    m_documentFileNameTermsDB->del(id);
+
+    m_docUrlDB->del(id);
+
+    m_contentIndexingDB->del(id);
+    m_docValueDB->del(id);
+    m_docDataDB->del(id);
+}
+
+template<typename T>
+static void insert(QVector<T>& vec, const T& id)
+{
+    if (vec.isEmpty()) {
+        vec.append(id);
+    } else {
+        auto it = std::upper_bound(vec.begin(), vec.end(), id);
+
+        // Merge the id if it does not
+        auto prev = it - 1;
+        if (*prev != id) {
+            vec.insert(it, id);
+        }
+    }
+}
+
 void Database::commit()
 {
     Q_ASSERT(m_txn);
-    QMap<QByteArray, PostingList> postingMap;
-    QMap<QByteArray, QVector<PositionInfo> > positionMap;
 
     qDebug() << "PendingOperations:" << m_pendingOperations.size();
-    for (const Operation& op : m_pendingOperations) {
-        const quint64 id = op.doc.id();
-        const Document& doc = op.doc;
+    QHashIterator<QByteArray, QVector<Operation> > iter(m_pendingOperations);
+    while (iter.hasNext()) {
+        iter.next();
 
-        if (op.type == AddDocument) {
-            QVector<QByteArray> docTerms;
-            docTerms.reserve(doc.m_terms.size());
+        const QByteArray& term = iter.key();
+        const QVector<Operation> operations = iter.value();
 
-            QMapIterator<QByteArray, Document::TermData> it(doc.m_terms);
-            while (it.hasNext()) {
-                const QByteArray term = it.next().key();
-                docTerms.append(term);
+        PostingList list = m_postingDB->get(term);
+        QVector<PositionInfo> positionList;// = m_positionDB->get(term); // FIXME: We do not need to fetch this for all the terms
 
-                postingMap[term] << id;
+        for (const Operation& op : operations) {
+            quint64 id = op.data.docId;
 
-                const Document::TermData td = it.value();
-                if (!td.positions.isEmpty()) {
-                    PositionInfo pi(id, it.value().positions);
-                    positionMap[term] << pi;
+            if (op.type == AddId) {
+                insert(list, id);
+
+                if (!op.data.positions.isEmpty()) {
+                    insert(positionList, op.data);
                 }
             }
-
-            m_documentTermsDB->put(id, docTerms);
-
-            QVector<QByteArray> docXattrTerms;
-            docXattrTerms.reserve(doc.m_xattrTerms.size());
-
-            it = QMapIterator<QByteArray, Document::TermData>(doc.m_xattrTerms);
-            while (it.hasNext()) {
-                const QByteArray term = it.next().key();
-                docXattrTerms.append(term);
-
-                postingMap[term] << id;
-
-                const Document::TermData td = it.value();
-                if (!td.positions.isEmpty()) {
-                    PositionInfo pi(id, it.value().positions);
-                    positionMap[term] << pi;
-                }
-            }
-
-            if (!docXattrTerms.isEmpty())
-                m_documentXattrTermsDB->put(id, docXattrTerms);
-
-            QVector<QByteArray> docFileNameTerms;
-            docFileNameTerms.reserve(doc.m_fileNameTerms.size());
-
-            it = QMapIterator<QByteArray, Document::TermData>(doc.m_fileNameTerms);
-            while (it.hasNext()) {
-                const QByteArray term = it.next().key();
-                docFileNameTerms.append(term);
-
-                postingMap[term] << id;
-
-                const Document::TermData td = it.value();
-                if (!td.positions.isEmpty()) {
-                    PositionInfo pi(id, it.value().positions);
-                    positionMap[term] << pi;
-                }
-            }
-
-            if (!docFileNameTerms.isEmpty())
-                m_documentFileNameTermsDB->put(id, docFileNameTerms);
-
-            if (!doc.url().isEmpty()) {
-                m_docUrlDB->put(id, doc.url());
-            }
-
-            if (doc.contentIndexing()) {
-                m_contentIndexingDB->put(doc.id());
-            }
-            if (!doc.m_slots.isEmpty()) {
-                for (auto iter = doc.m_slots.constBegin(); iter != doc.m_slots.constEnd(); iter++) {
-                    m_docValueDB->put(doc.id(), iter.key(), iter.value());
-                }
-            }
-
-            if (!doc.m_data.isEmpty()) {
-                m_docDataDB->put(id, doc.m_data);
+            else {
+                list.removeOne(id);
+                positionList.removeOne(PositionInfo(id));
             }
         }
-        else if (op.type == RemoveDocument) {
-            QVector<QByteArray> terms = m_documentTermsDB->get(id) + m_documentXattrTermsDB->get(id) + m_documentFileNameTermsDB->get(id);
-            if (terms.isEmpty()) {
-                return;
-            }
 
-            for (const QByteArray& term : terms) {
-                // FIXME: The will not update stuff correctly!
-                PostingList list = m_postingDB->get(term);
-                list.removeOne(id);
-
-                m_postingDB->put(term, list);
-
-                QVector<PositionInfo> posInfoList = m_positionDB->get(term);
-                posInfoList.removeOne(PositionInfo(id));
-            }
-
-            m_documentTermsDB->del(id);
-            m_documentXattrTermsDB->del(id);
-            m_documentFileNameTermsDB->del(id);
-
-            QByteArray url = m_docUrlDB->get(id);
-            m_docUrlDB->del(id);
-
-            m_contentIndexingDB->del(id);
-            m_docValueDB->del(id);
-            m_docDataDB->del(id);
+        m_postingDB->put(term, list);
+        if (!positionList.isEmpty()) {
+            m_positionDB->put(term, positionList);
         }
     }
 
     m_pendingOperations.clear();
-
-    //
-    // Process postingList and positionList
-    //
-    QMapIterator<QByteArray, PostingList> it(postingMap);
-    while (it.hasNext()) {
-        it.next();
-        const QByteArray term = it.key();
-
-        PostingList list = m_postingDB->get(term);
-        list << it.value();
-
-        std::sort(list.begin(), list.end());
-        list.erase(std::unique(list.begin(), list.end()), list.end());
-
-        m_postingDB->put(term, list);
-    }
-
-    QMapIterator<QByteArray, QVector<PositionInfo> > iter(positionMap);
-    while (iter.hasNext()) {
-        iter.next();
-        const QByteArray term = iter.key();
-
-        QVector<PositionInfo> list = m_positionDB->get(term);
-        list << iter.value();
-
-        std::sort(list.begin(), list.end());
-        list.erase(std::unique(list.begin(), list.end()), list.end());
-
-        m_positionDB->put(term, list);
-    }
 
     int rc = mdb_txn_commit(m_txn);
     Q_ASSERT_X(rc == 0, "Database::commit", mdb_strerror(rc));

@@ -26,6 +26,8 @@
 #include <QString>
 #include <lmdb.h>
 
+#include "positiondb.h" // reqd for PositionInfo
+
 namespace Baloo {
 
 class PostingDB;
@@ -107,22 +109,25 @@ private:
     //
     // In memory operations
     //
+public: // for the Q_MOVABLE_TYPE
     enum OperationType {
-        AddDocument,
-        RemoveDocument
+        AddId,
+        RemoveId
     };
-
     struct Operation {
         OperationType type;
-        Document doc;
+        PositionInfo data;
     };
+private:
 
-    QVector<Operation> m_pendingOperations;
+    QHash<QByteArray, QVector<Operation> > m_pendingOperations;
 
     friend class DatabaseTest;
 
     PostingIterator* toPostingIterator(const EngineQuery& query);
 };
 }
+
+Q_DECLARE_TYPEINFO(Baloo::Database::Operation, Q_MOVABLE_TYPE);
 
 #endif // BALOO_DATABASE_H
