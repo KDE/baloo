@@ -65,12 +65,12 @@ bool BasicIndexingJob::index()
     doc.addBoolTerm(QByteArray("G") + QByteArray::number(mod.date().month()));
     doc.addBoolTerm(QByteArray("A") + QByteArray::number(mod.date().day()));
 
-    const QByteArray timeTStr = QByteArray::number(mod.toTime_t());
-    doc.addValue(0, timeTStr);
+    doc.addValue(0, QByteArray::number(mod.toTime_t()));
     doc.addValue(1, QByteArray::number(mod.date().toJulianDay()));
     doc.addValue(2, QByteArray::number(fileInfo.created().toMSecsSinceEpoch()));
 
-    doc.setUrl(m_filePath.toUtf8());
+    const QByteArray url = QFile::encodeName(m_filePath);
+    doc.setUrl(url);
 
     // Types
     QVector<KFileMetaData::Type::Type> tList = typesForMimeType(m_mimetype);
@@ -90,7 +90,8 @@ bool BasicIndexingJob::index()
     indexXAttr(m_filePath, doc);
 
     QT_STATBUF statBuf;
-    if (QT_LSTAT(QFile::encodeName(m_filePath).data(), &statBuf) != 0) {
+    if (QT_LSTAT(url.data(), &statBuf) != 0) {
+        qDebug() << "Could not stat" << m_filePath;
         return false;
     }
 
