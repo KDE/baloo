@@ -16,3 +16,11 @@ target_link_libraries(documenturldb
     KF5::BalooEngine
 )
 ecm_mark_as_test(documenturldb)
+
+add_executable(basicindexingtest basicindexingtest.cpp ../src/file/basicindexingjob.cpp)
+target_link_libraries(basicindexingtest
+    Qt5::Core
+    KF5::BalooEngine
+    KF5::FileMetaData
+)
+ecm_mark_as_test(basicindexingtest)
