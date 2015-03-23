@@ -47,17 +47,27 @@ BasicIndexingJob::~BasicIndexingJob()
 
 bool BasicIndexingJob::index()
 {
-    QFileInfo fileInfo(m_filePath);
+    const QByteArray url = QFile::encodeName(m_filePath);
+
+    QT_STATBUF statBuf;
+    if (QT_LSTAT(url.data(), &statBuf) != 0) {
+        qDebug() << "Could not stat" << m_filePath;
+        return false;
+    }
 
     Document doc;
+    doc.setId(statBufToId(statBuf));
+    doc.setUrl(url);
     doc.addBoolTerm(QByteArray("M") + m_mimetype.toUtf8());
 
+    QString fileName = url.mid(url.lastIndexOf('/') + 1);
+
     TermGenerator tg(&doc);
-    tg.indexFileNameText(fileInfo.fileName(), 1000);
-    tg.indexFileNameText(fileInfo.fileName(), QByteArray("F"));
+    tg.indexFileNameText(fileName, 1000);
+    tg.indexFileNameText(fileName, QByteArray("F"));
 
     // Modified Date
-    QDateTime mod = fileInfo.lastModified();
+    QDateTime mod = QDateTime::fromTime_t(statBuf.st_mtime);
     const QByteArray dtm = mod.toString(Qt::ISODate).toUtf8();
 
     doc.addBoolTerm(QByteArray("D") + dtm);
@@ -67,10 +77,7 @@ bool BasicIndexingJob::index()
 
     doc.addValue(0, QByteArray::number(mod.toTime_t()));
     doc.addValue(1, QByteArray::number(mod.date().toJulianDay()));
-    doc.addValue(2, QByteArray::number(fileInfo.created().toMSecsSinceEpoch()));
-
-    const QByteArray url = QFile::encodeName(m_filePath);
-    doc.setUrl(url);
+    doc.addValue(2, QByteArray::number(static_cast<uint>(statBuf.st_ctime)));
 
     // Types
     QVector<KFileMetaData::Type::Type> tList = typesForMimeType(m_mimetype);
@@ -79,7 +86,7 @@ bool BasicIndexingJob::index()
         doc.addBoolTerm(QByteArray("T") + tstr.toUtf8());
     }
 
-    if (fileInfo.isDir()) {
+    if (S_ISDIR(statBuf.st_mode)) {
         doc.addBoolTerm(QByteArray("Tfolder"));
         // For folders we do not need to go through file indexing, so we do not set contentIndexing
     }
@@ -88,14 +95,6 @@ bool BasicIndexingJob::index()
     }
 
     indexXAttr(m_filePath, doc);
-
-    QT_STATBUF statBuf;
-    if (QT_LSTAT(url.data(), &statBuf) != 0) {
-        qDebug() << "Could not stat" << m_filePath;
-        return false;
-    }
-
-    doc.setId(statBufToId(statBuf));
 
     m_doc = doc;
     return true;
