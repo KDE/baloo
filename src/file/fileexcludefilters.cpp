@@ -95,6 +95,7 @@ const char* const s_defaultFolderExcludeFilters[] = {
     ".obj",
     ".pch",
     ".uic",
+    "__pycache__",
 
     //misc
     "core-dumps",

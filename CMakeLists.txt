@@ -29,7 +29,7 @@ ecm_setup_version(${PROJECT_VERSION} VARIABLE_PREFIX BALOO
 # Build dependencies
 find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Widgets Quick DBus Test)
 
-find_package(KF5 ${KF5_VERSION} REQUIRED COMPONENTS I18n Config IdleTime Auth Crash Solid KIO KDELibs4Support)
+find_package(KF5 ${KF5_VERSION} REQUIRED COMPONENTS I18n Config IdleTime Auth Crash Solid KIO KDELibs4Support DBusAddons)
 find_package(KF5 ${PROJECT_VERSION} REQUIRED COMPONENTS FileMetaData)
 
 find_package(LMDB)
