@@ -36,9 +36,9 @@ public:
     ~DocumentTimeDB();
 
     struct TimeInfo {
-        quint64 mTime;
-        quint64 cTime;
-        quint64 julianDay;
+        quint32 mTime;
+        quint32 cTime;
+        quint32 julianDay;
 
         bool operator == (const TimeInfo& rhs) const {
             return mTime == rhs.mTime && cTime == rhs.cTime && julianDay == rhs.julianDay;
