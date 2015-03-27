@@ -146,9 +146,7 @@ void App::index(const QString& url, quint64 id)
     BasicIndexingJob basicIndexer(url, mimetype, true /*Indexing Level 2*/);
     basicIndexer.index();
 
-    // FIXME: What if we do not have an ID?
     Baloo::Document doc = basicIndexer.document();
-    doc.setId(id);
 
     Result result(url, mimetype, KFileMetaData::ExtractionResult::ExtractEverything);
     result.setDocument(doc);
@@ -160,7 +158,7 @@ void App::index(const QString& url, quint64 id)
     }
 
     result.finish();
-    m_db.addDocument(result.document());
+    m_db.replaceDocument(result.document(), Database::DocumentTerms | Database::DocumentData);
 
     m_updatedFiles << url;
 }
