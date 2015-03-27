@@ -470,7 +470,7 @@ void Database::commit()
         const QVector<Operation> operations = iter.value();
 
         PostingList list = m_postingDB->get(term);
-        QVector<PositionInfo> positionList;// = m_positionDB->get(term); // FIXME: We do not need to fetch this for all the terms
+        QVector<PositionInfo> positionList = m_positionDB->get(term); // FIXME: We do not need to fetch this for all the terms
 
         for (const Operation& op : operations) {
             quint64 id = op.data.docId;
