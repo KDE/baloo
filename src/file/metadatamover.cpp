@@ -18,13 +18,11 @@
 */
 
 #include "metadatamover.h"
-#include "filewatch.h"
 #include "database.h"
+#include "basicindexingjob.h"
 
-#include <QTimer>
-#include <QFileInfo>
-#include <QStringList>
 #include <QDebug>
+#include <QFile>
 
 using namespace Baloo;
 
@@ -94,5 +92,7 @@ void MetadataMover::updateMetadata(const QString& from, const QString& to)
         return;
     }
 
-    m_db->renameFilePath(QFile::encodeName(from), QFile::encodeName(to));
+    BasicIndexingJob job(QFile::encodeName(to), QString(), true);
+    job.index();
+    m_db->renameFilePath(QFile::encodeName(from), job.document());
 }

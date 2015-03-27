@@ -75,7 +75,7 @@ public:
         ReadWrite
     };
 
-    void renameFilePath(const QByteArray& origFilePath, const QByteArray& newFilePath);
+    void renameFilePath(const QByteArray& origFilePath, const Document& newDoc);
 
     /**
      * Starts a transaction in which the database can be modified.

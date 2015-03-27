@@ -608,10 +608,13 @@ QVector<quint64> Database::exec(const EngineQuery& query, int limit)
 //
 // File path rename
 //
-void Database::renameFilePath(const QByteArray& origFilePath, const QByteArray& newFilePath)
+void Database::renameFilePath(const QByteArray& origFilePath, const Document& doc)
 {
+    const QByteArray newFilePath = doc.url();
+
     // Get the id
     quint64 id = filePathToId(newFilePath);
+    // FIXME: What about if the fileId changes because we have moved it to another device?
     Q_ASSERT(id);
 
     QByteArray oldFileName = origFilePath.mid(origFilePath.lastIndexOf('/'));
@@ -620,35 +623,6 @@ void Database::renameFilePath(const QByteArray& origFilePath, const QByteArray& 
     // Update the id -> url db
     m_docUrlDB->rename(id, newFileName);
 
-    // Remove the old filename terms from postingdb and positiondb
-    QVector<QByteArray> oldTerms = m_documentFileNameTermsDB->get(id);
-    for (const QByteArray& term: oldTerms) {
-        auto list = m_postingDB->get(term);
-        list.removeOne(id);
-        m_postingDB->put(term, list);
-
-        auto posList = m_positionDB->get(term);
-        posList.removeOne(PositionInfo(id));
-        m_positionDB->put(term, posList);
-    }
-
-    // Generate the new terms
-    QString filename = QFile::decodeName(newFileName);
-    Document doc;
-    TermGenerator tg(&doc);
-    tg.indexFileNameText(filename, 1000);
-    tg.indexFileNameText(filename, QByteArray("F"));
-
-    auto newTerms = doc.m_fileNameTerms;
-
-    //
-    // Update the postingdb and positiondb with the new filename terms
-    // FIXME: Perhaps re-use some of the existing architecture from commit?
-    //        This case will be identical to updating the xattr of the file
-    //
-    Q_ASSERT(0);
-
-    // Update the docFileNameTerms db
-    // m_documentFileNameTermsDB->put(id, newTerms.uniqueKeys());
+    replaceDocument(doc, FileNameTerms);
 }
 
