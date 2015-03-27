@@ -26,7 +26,7 @@
 #include "documenturldb.h"
 #include "documentiddb.h"
 #include "positiondb.h"
-#include "documentvaluedb.h"
+#include "documenttimedb.h"
 
 #include "idutils.h"
 
@@ -71,6 +71,9 @@ void DatabaseTest::test()
     doc.addTerm("power");
     doc.addXattrTerm("system");
     doc.addFileNameTerm("link");
+    doc.setMTime(1);
+    doc.setCTime(2);
+    doc.setJulianDay(3);
 
     db.addDocument(doc);
     db.commit();

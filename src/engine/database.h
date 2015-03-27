@@ -35,7 +35,7 @@ class PositionDB;
 class DocumentDB;
 class DocumentDataDB;
 class DocumentUrlDB;
-class DocumentValueDB;
+class DocumentTimeDB;
 class DocumentIdDB;
 class EngineQuery;
 class PostingIterator;
@@ -77,8 +77,10 @@ public:
 
     QByteArray documentUrl(quint64 id);
     quint64 documentId(const QByteArray& url);
-    QByteArray documentSlot(quint64 id, quint64 slotNum);
     QByteArray documentData(quint64 id);
+
+    quint64 documentMTime(quint64 id);
+    quint64 documentCTime(quint64 id);
 
     QVector<quint64> exec(const EngineQuery& query, int limit = -1);
 
@@ -102,7 +104,7 @@ private:
 
     DocumentUrlDB* m_docUrlDB;
 
-    DocumentValueDB* m_docValueDB;
+    DocumentTimeDB* m_docTimeDB;
     DocumentDataDB* m_docDataDB;
     DocumentIdDB* m_contentIndexingDB;
 

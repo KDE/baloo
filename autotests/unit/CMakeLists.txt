@@ -14,8 +14,8 @@ baloo_engine_auto_tests(
     databasetest
     documenturldbtest
     documentiddbtest
-    documentvaluedbtest
     documentdatadbtest
+    documenttimedbtest
     idtreedbtest
     idfilenamedbtest
 

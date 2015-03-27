@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef BALOO_DOCUMENTVALUEDB_H
-#define BALOO_DOCUMENTVALUEDB_H
+#ifndef BALOO_DOCUMENTIMEDB_H
+#define BALOO_DOCUMENTIMEDB_H
 
 #include "engine_export.h"
 
@@ -29,15 +29,23 @@
 
 namespace Baloo {
 
-// FIXME: DocumentValueDB does not need 64 bit keys. Just one character will do.
-class BALOO_ENGINE_EXPORT DocumentValueDB
+class BALOO_ENGINE_EXPORT DocumentTimeDB
 {
 public:
-    explicit DocumentValueDB(MDB_txn* txn);
-    ~DocumentValueDB();
+    explicit DocumentTimeDB(MDB_txn* txn);
+    ~DocumentTimeDB();
 
-    void put(quint64 docId, quint64 key, const QByteArray& value);
-    QByteArray get(quint64 docId, quint64 key);
+    struct TimeInfo {
+        quint64 mTime;
+        quint64 cTime;
+        quint64 julianDay;
+
+        bool operator == (const TimeInfo& rhs) const {
+            return mTime == rhs.mTime && cTime == rhs.cTime && julianDay == rhs.julianDay;
+        }
+    };
+    void put(quint64 docId, const TimeInfo& info);
+    TimeInfo get(quint64 docId);
 
     void del(quint64 docId);
 

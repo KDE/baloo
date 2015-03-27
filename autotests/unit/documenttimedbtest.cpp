@@ -18,38 +18,34 @@
  *
  */
 
-#include "documentvaluedb.h"
+#include "documenttimedb.h"
 #include "singledbtest.h"
 
 using namespace Baloo;
 
-class DocumentValueDBTest : public SingleDBTest
+class DocumentTimeDBTest : public SingleDBTest
 {
     Q_OBJECT
 private Q_SLOTS:
     void test();
 };
 
-void DocumentValueDBTest::test()
+void DocumentTimeDBTest::test()
 {
-    DocumentValueDB db(m_txn);
-    QByteArray arr1("foo");
-    QByteArray arr2("goo");
+    DocumentTimeDB db(m_txn);
 
-    db.put(1, 0, arr1);
-    db.put(1, 6, arr2);
-    db.put(2, 4, arr1);
+    DocumentTimeDB::TimeInfo info;
+    info.mTime = 5;
+    info.cTime = 6;
+    info.julianDay = 7;
 
-    QCOMPARE(db.get(1, 0), arr1);
-    QCOMPARE(db.get(1, 6), arr2);
-    QCOMPARE(db.get(2, 4), arr1);
+    db.put(1, info);
+    QCOMPARE(db.get(1), info);
 
     db.del(1);
-    QCOMPARE(db.get(1, 0), QByteArray());
-    QCOMPARE(db.get(1, 6), QByteArray());
-    QCOMPARE(db.get(2, 4), arr1);
+    QCOMPARE(db.get(1), DocumentTimeDB::TimeInfo());
 }
 
-QTEST_MAIN(DocumentValueDBTest)
+QTEST_MAIN(DocumentTimeDBTest)
 
-#include "documentvaluedbtest.moc"
+#include "documenttimedbtest.moc"

@@ -5,7 +5,7 @@ set(BALOO_ENGINE_SRCS
     documentdb.cpp
     documentdatadb.cpp
     documenturldb.cpp
-    documentvaluedb.cpp
+    documenttimedb.cpp
     documentiddb.cpp
     enginequery.cpp
     idtreedb.cpp

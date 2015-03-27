@@ -24,7 +24,7 @@
 #include "documenturldb.h"
 #include "documentiddb.h"
 #include "positiondb.h"
-#include "documentvaluedb.h"
+#include "documenttimedb.h"
 #include "documentdatadb.h"
 
 #include "document.h"
@@ -52,7 +52,7 @@ Database::Database(const QString& path)
     , m_documentXattrTermsDB(0)
     , m_documentFileNameTermsDB(0)
     , m_docUrlDB(0)
-    , m_docValueDB(0)
+    , m_docTimeDB(0)
     , m_docDataDB(0)
     , m_contentIndexingDB(0)
 {
@@ -66,7 +66,7 @@ Database::~Database()
     delete m_documentXattrTermsDB;
     delete m_documentFileNameTermsDB;
     delete m_docUrlDB;
-    delete m_docValueDB;
+    delete m_docTimeDB;
     delete m_docDataDB;
     delete m_contentIndexingDB;
 
@@ -103,10 +103,10 @@ void Database::transaction(Database::TransactionType type)
     int rc = mdb_txn_begin(m_env, NULL, flags, &m_txn);
     Q_ASSERT_X(rc == 0, "Database::transaction", mdb_strerror(rc));
 
-    if (!m_positionDB)
+    if (!m_postingDB)
         m_postingDB = new PostingDB(m_txn);
     else
-        m_positionDB->setTransaction(m_txn);
+        m_postingDB->setTransaction(m_txn);
 
     if (!m_positionDB)
         m_positionDB = new PositionDB(m_txn);
@@ -133,10 +133,10 @@ void Database::transaction(Database::TransactionType type)
     else
         m_docUrlDB->setTransaction(m_txn);
 
-    if (!m_docValueDB)
-        m_docValueDB = new DocumentValueDB(m_txn);
+    if (!m_docTimeDB)
+        m_docTimeDB = new DocumentTimeDB(m_txn);
     else
-        m_docUrlDB->setTransaction(m_txn);
+        m_docTimeDB->setTransaction(m_txn);
 
     if (!m_docDataDB)
         m_docDataDB = new DocumentDataDB("documentdatadb", m_txn);
@@ -176,11 +176,16 @@ QByteArray Database::documentUrl(quint64 id)
 }
 
 
-QByteArray Database::documentSlot(quint64 id, quint64 slotNum)
+quint64 Database::documentMTime(quint64 id)
 {
     Q_ASSERT(m_txn);
-    Q_ASSERT(id > 0);
-    return m_docValueDB->get(id, slotNum);
+    return m_docTimeDB->get(id).mTime;
+}
+
+quint64 Database::documentCTime(quint64 id)
+{
+    Q_ASSERT(m_txn);
+    return m_docTimeDB->get(id).cTime;
 }
 
 QByteArray Database::documentData(quint64 id)
@@ -200,6 +205,8 @@ void Database::addDocument(const Document& doc)
     QVector<QByteArray> docTerms;
     docTerms.reserve(doc.m_terms.size());
 
+    // FIXME: Add asserts to make sure the document does not already exist
+    //        Otherwise we will have strange stale data
     QMapIterator<QByteArray, Document::TermData> it(doc.m_terms);
     while (it.hasNext()) {
         const QByteArray term = it.next().key();
@@ -260,11 +267,13 @@ void Database::addDocument(const Document& doc)
     if (doc.contentIndexing()) {
         m_contentIndexingDB->put(doc.id());
     }
-    if (!doc.m_slots.isEmpty()) {
-        for (auto iter = doc.m_slots.constBegin(); iter != doc.m_slots.constEnd(); iter++) {
-            m_docValueDB->put(doc.id(), iter.key(), iter.value());
-        }
-    }
+
+    DocumentTimeDB::TimeInfo info;
+    info.mTime = doc.m_mTime;
+    info.cTime = doc.m_cTime;
+    info.julianDay = doc.m_julianDay;
+
+    m_docTimeDB->put(id, info);
 
     if (!doc.m_data.isEmpty()) {
         m_docDataDB->put(id, doc.m_data);
@@ -297,7 +306,7 @@ void Database::removeDocument(quint64 id)
     m_docUrlDB->del(id);
 
     m_contentIndexingDB->del(id);
-    m_docValueDB->del(id);
+    m_docTimeDB->del(id);
     m_docDataDB->del(id);
 }
 

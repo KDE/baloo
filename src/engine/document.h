@@ -69,7 +69,9 @@ public:
     void setContentIndexing(bool val);
     bool contentIndexing() const;
 
-    void addValue(int slotNum, const QByteArray& arr);
+    void setMTime(quint64 val) { m_mTime = val; }
+    void setCTime(quint64 val) { m_cTime = val; }
+    void setJulianDay(quint64 val) { m_julianDay = val; }
 
     void setData(const QByteArray& data);
 
@@ -89,7 +91,9 @@ private:
     QByteArray m_url;
     bool m_contentIndexing;
 
-    QMap<quint64, QByteArray> m_slots;
+    quint64 m_mTime;
+    quint64 m_cTime;
+    quint64 m_julianDay;
     QByteArray m_data;
 
     friend class Database;

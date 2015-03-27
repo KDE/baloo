@@ -75,9 +75,9 @@ bool BasicIndexingJob::index()
     doc.addBoolTerm(QByteArray("G") + QByteArray::number(mod.date().month()));
     doc.addBoolTerm(QByteArray("A") + QByteArray::number(mod.date().day()));
 
-    doc.addValue(0, QByteArray::number(mod.toTime_t()));
-    doc.addValue(1, QByteArray::number(mod.date().toJulianDay()));
-    doc.addValue(2, QByteArray::number(static_cast<uint>(statBuf.st_ctime)));
+    doc.setMTime(mod.toTime_t());
+    doc.setCTime(statBuf.st_ctime);
+    doc.setJulianDay(mod.date().toJulianDay());
 
     // Types
     QVector<KFileMetaData::Type::Type> tList = typesForMimeType(m_mimetype);

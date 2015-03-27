@@ -132,19 +132,16 @@ bool BasicIndexingQueue::shouldIndex(const QString& file, const QString& mimetyp
         return true;
     }
 
-    const QByteArray dtStr = m_db->documentSlot(fileId, 0);
-    if (dtStr.isEmpty()) {
-        return true;
-    }
-
     // A folders mtime is updated when a new file is added / removed / renamed
     // we don't really need to reindex a folder when that happens
     // In fact, we never need to reindex a folder
     if (mimetype == QLatin1String("inode/directory"))
         return false;
 
-    const uint time_t = dtStr.toUInt();
-    if (time_t != fileInfo.lastModified().toTime_t()) {
+    quint64 mTime = m_db->documentMTime(fileId);
+    Q_ASSERT(mTime);
+
+    if (mTime != fileInfo.lastModified().toTime_t()) {
         return true;
     }
 
