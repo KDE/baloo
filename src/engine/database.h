@@ -55,6 +55,19 @@ public:
     void addDocument(const Document& doc);
     void removeDocument(quint64 id);
 
+    enum DocumentOperation {
+        DocumentTerms =  1,
+        FileNameTerms =  2,
+        XAttrTerms    =  4,
+        DocumentData  =  8,
+        DocumentUrl   = 16,
+        DocumentTime  = 32,
+        Everything    = DocumentTerms | FileNameTerms | XAttrTerms | DocumentData | DocumentUrl | DocumentTime
+    };
+    Q_DECLARE_FLAGS(DocumentOperations, DocumentOperation)
+
+    void replaceDocument(const Document& doc, const DocumentOperations& operations);
+
     bool hasDocument(quint64 id);
 
     enum TransactionType {
@@ -84,6 +97,7 @@ public:
 
     QVector<quint64> exec(const EngineQuery& query, int limit = -1);
 
+    void setPhaseOne(quint64 id);
     QVector<quint64> fetchPhaseOneIds(int size);
     uint phaseOneSize();
     uint size();
@@ -131,5 +145,6 @@ private:
 }
 
 Q_DECLARE_TYPEINFO(Baloo::Database::Operation, Q_MOVABLE_TYPE);
+Q_DECLARE_OPERATORS_FOR_FLAGS(Baloo::Database::DocumentOperations);
 
 #endif // BALOO_DATABASE_H

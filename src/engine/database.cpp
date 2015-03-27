@@ -195,6 +195,13 @@ QByteArray Database::documentData(quint64 id)
     return m_docDataDB->get(id);
 }
 
+void Database::setPhaseOne(quint64 id)
+{
+    Q_ASSERT(m_txn);
+    Q_ASSERT(id > 0);
+    m_contentIndexingDB->put(id);
+}
+
 void Database::addDocument(const Document& doc)
 {
     Q_ASSERT(m_txn);
@@ -308,6 +315,129 @@ void Database::removeDocument(quint64 id)
     m_contentIndexingDB->del(id);
     m_docTimeDB->del(id);
     m_docDataDB->del(id);
+}
+
+void Database::replaceDocument(const Document& doc, const Database::DocumentOperations& operations)
+{
+    Q_ASSERT(m_txn);
+    Q_ASSERT(doc.id() > 0);
+
+    const quint64 id = doc.id();
+
+    if (operations & DocumentTerms) {
+        QVector<QByteArray> prevTerms = m_documentTermsDB->get(id);
+        for (const QByteArray& term : prevTerms) {
+            Operation op;
+            op.type = RemoveId;
+            op.data.docId = id;
+
+            m_pendingOperations[term].append(op);
+        }
+
+        QVector<QByteArray> docTerms;
+        docTerms.reserve(doc.m_terms.size());
+
+        QMapIterator<QByteArray, Document::TermData> it(doc.m_terms);
+        while (it.hasNext()) {
+            const QByteArray term = it.next().key();
+            docTerms.append(term);
+
+            Operation op;
+            op.type = AddId;
+            op.data.docId = id;
+            op.data.positions = it.value().positions;
+
+            m_pendingOperations[term].append(op);
+        }
+
+        m_documentTermsDB->put(id, docTerms);
+    }
+
+    if (operations & XAttrTerms) {
+        QVector<QByteArray> prevTerms = m_documentXattrTermsDB->get(id);
+        for (const QByteArray& term : prevTerms) {
+            Operation op;
+            op.type = RemoveId;
+            op.data.docId = id;
+
+            m_pendingOperations[term].append(op);
+        }
+
+        QVector<QByteArray> docXattrTerms;
+        docXattrTerms.reserve(doc.m_xattrTerms.size());
+
+        QMapIterator<QByteArray, Document::TermData> it(doc.m_xattrTerms);
+        while (it.hasNext()) {
+            const QByteArray term = it.next().key();
+            docXattrTerms.append(term);
+
+            Operation op;
+            op.type = AddId;
+            op.data.docId = id;
+            op.data.positions = it.value().positions;
+
+            m_pendingOperations[term].append(op);
+        }
+
+        if (!docXattrTerms.isEmpty())
+            m_documentXattrTermsDB->put(id, docXattrTerms);
+    }
+
+    if (operations & FileNameTerms) {
+        QVector<QByteArray> prevTerms = m_documentFileNameTermsDB->get(id);
+        for (const QByteArray& term : prevTerms) {
+            Operation op;
+            op.type = RemoveId;
+            op.data.docId = id;
+
+            m_pendingOperations[term].append(op);
+        }
+
+        QVector<QByteArray> docFileNameTerms;
+        docFileNameTerms.reserve(doc.m_fileNameTerms.size());
+
+        QMapIterator<QByteArray, Document::TermData> it(doc.m_fileNameTerms);
+        while (it.hasNext()) {
+            const QByteArray term = it.next().key();
+            docFileNameTerms.append(term);
+
+            Operation op;
+            op.type = AddId;
+            op.data.docId = id;
+            op.data.positions = it.value().positions;
+
+            m_pendingOperations[term].append(op);
+        }
+
+        if (!docFileNameTerms.isEmpty())
+            m_documentFileNameTermsDB->put(id, docFileNameTerms);
+    }
+
+    if (operations & DocumentUrl) {
+        // FIXME: Replacing the documentUrl is actually quite complicated!
+        Q_ASSERT(0);
+        m_docUrlDB->put(id, doc.url());
+    }
+
+    // FIXME: What about contentIndexing?
+    /*
+    if (doc.contentIndexing()) {
+        m_contentIndexingDB->put(doc.id());
+    }
+    */
+
+    if (operations & DocumentTime) {
+        DocumentTimeDB::TimeInfo info;
+        info.mTime = doc.m_mTime;
+        info.cTime = doc.m_cTime;
+        info.julianDay = doc.m_julianDay;
+
+        m_docTimeDB->put(id, info);
+    }
+
+    if (operations & DocumentData) {
+        m_docDataDB->put(id, doc.m_data);
+    }
 }
 
 template<typename T>
