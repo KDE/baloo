@@ -323,6 +323,7 @@ void Database::replaceDocument(const Document& doc, const Database::DocumentOper
     Q_ASSERT(doc.id() > 0);
 
     const quint64 id = doc.id();
+    Q_ASSERT_X(hasDocument(id), "Database::replaceDocument", "Document does not exist");
 
     if (operations & DocumentTerms) {
         QVector<QByteArray> prevTerms = m_documentTermsDB->get(id);

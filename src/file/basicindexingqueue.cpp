@@ -159,28 +159,30 @@ void BasicIndexingQueue::index(const QString& file, const QString& mimetype,
     //qDebug() << file.url();
 
     bool xattrOnly = (flags & Baloo::ExtendedAttributesOnly);
-    if (!xattrOnly) {
+    bool newDoc = m_db->hasDocument(m_db->documentId(QFile::encodeName(file)));
+
+    if (newDoc) {
+        BasicIndexingJob job(file, mimetype, m_config->onlyBasicIndexing());
+        job.index();
+
+        m_db->addDocument(job.document());
+        Q_EMIT newDocument();
+    }
+
+    else if (!xattrOnly) {
         BasicIndexingJob job(file, mimetype, m_config->onlyBasicIndexing());
         if (job.index()) {
-            Q_EMIT newDocument(job.document());
+            m_db->replaceDocument(job.document(), Database::DocumentTime);
+            m_db->setPhaseOne(job.document().id());
+            Q_EMIT newDocument();
         }
     }
     else {
-        // FIXME: Re-index only the xattr. How!!
-        /*
-        XapianDocument doc = m_db->xapianDatabase()->document(file.id());
-
-        bool modified = false;
-        modified |= doc.removeTermStartsWith("R");
-        modified |= doc.removeTermStartsWith("TA");
-        modified |= doc.removeTermStartsWith("TAG");
-        modified |= doc.removeTermStartsWith("C");
-
-        modified |= BasicIndexingJob::indexXAttr(file.url(), doc);
-        if (modified) {
-            Q_EMIT newDocument(file.id(), doc.doc());
+        BasicIndexingJob job(file, mimetype, m_config->onlyBasicIndexing());
+        if (job.index()) {
+            m_db->replaceDocument(job.document(), Database::XAttrTerms);
+            Q_EMIT newDocument();
         }
-        */
     }
 
     QTimer::singleShot(0, this, SLOT(finishIteration()));

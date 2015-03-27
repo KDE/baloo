@@ -50,9 +50,8 @@ bool Baloo::CommitQueue::isEmpty() const
     return !m_db->hasChanges();
 }
 
-void Baloo::CommitQueue::add(const Document& doc)
+void Baloo::CommitQueue::add()
 {
-    m_db->addDocument(doc);
     startTimers();
 }
 
