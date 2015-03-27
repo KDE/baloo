@@ -139,8 +139,6 @@ bool BasicIndexingQueue::shouldIndex(const QString& file, const QString& mimetyp
         return false;
 
     quint64 mTime = m_db->documentMTime(fileId);
-    Q_ASSERT(mTime);
-
     if (mTime != fileInfo.lastModified().toTime_t()) {
         return true;
     }
@@ -156,10 +154,8 @@ bool BasicIndexingQueue::shouldIndexContents(const QString& dir)
 void BasicIndexingQueue::index(const QString& file, const QString& mimetype,
                                UpdateDirFlags flags)
 {
-    //qDebug() << file.url();
-
     bool xattrOnly = (flags & Baloo::ExtendedAttributesOnly);
-    bool newDoc = m_db->hasDocument(m_db->documentId(QFile::encodeName(file)));
+    bool newDoc = !m_db->hasDocument(m_db->documentId(QFile::encodeName(file)));
 
     if (newDoc) {
         BasicIndexingJob job(file, mimetype, m_config->onlyBasicIndexing());
