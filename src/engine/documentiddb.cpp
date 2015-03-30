@@ -104,7 +104,7 @@ QVector<quint64> DocumentIdDB::fetchItems(int size)
         }
         Q_ASSERT_X(rc == 0, "IndexingLevelDB::fetchItems", mdb_strerror(rc));
 
-        quint64 id = *(static_cast<int*>(key.mv_data));
+        quint64 id = *(static_cast<quint64*>(key.mv_data));
         vec << id;
     }
     mdb_cursor_close(cursor);
