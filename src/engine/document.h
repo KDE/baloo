@@ -28,7 +28,7 @@
 
 namespace Baloo {
 
-class Database;
+class WriteTransaction;
 class TermGeneratorTest;
 
 /**
@@ -96,7 +96,7 @@ private:
     quint32 m_julianDay;
     QByteArray m_data;
 
-    friend class Database;
+    friend class WriteTransaction;
     friend class TermGeneratorTest;
 };
 

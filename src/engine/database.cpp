@@ -34,6 +34,7 @@
 #include "orpostingiterator.h"
 #include "phraseanditerator.h"
 
+#include "writetransaction.h"
 #include "idutils.h"
 
 #include <QFile>
@@ -54,6 +55,7 @@ Database::Database(const QString& path)
     , m_docTimeDB(0)
     , m_docDataDB(0)
     , m_contentIndexingDB(0)
+    , m_writeTrans(0)
 {
 }
 
@@ -68,6 +70,7 @@ Database::~Database()
     delete m_docTimeDB;
     delete m_docDataDB;
     delete m_contentIndexingDB;
+    delete m_writeTrans;
 
     if (m_txn) {
         abort();
@@ -146,6 +149,12 @@ void Database::transaction(Database::TransactionType type)
         m_contentIndexingDB = new DocumentIdDB(m_txn);
     else
         m_contentIndexingDB->setTransaction(m_txn);
+
+    if (type == ReadWrite) {
+        Q_ASSERT(m_writeTrans == 0);
+        m_writeTrans = new WriteTransaction(m_postingDB, m_positionDB, m_documentTermsDB, m_documentXattrTermsDB,
+                                            m_documentFileNameTermsDB, m_docUrlDB, m_docTimeDB, m_docDataDB, m_contentIndexingDB);
+    }
 }
 
 QString Database::path() const
@@ -186,325 +195,11 @@ QByteArray Database::documentData(quint64 id)
     return m_docDataDB->get(id);
 }
 
-void Database::setPhaseOne(quint64 id)
-{
-    Q_ASSERT(m_txn);
-    Q_ASSERT(id > 0);
-    m_contentIndexingDB->put(id);
-}
-
-void Database::addDocument(const Document& doc)
-{
-    Q_ASSERT(m_txn);
-    Q_ASSERT(doc.id() > 0);
-
-    quint64 id = doc.id();
-
-    QVector<QByteArray> docTerms;
-    docTerms.reserve(doc.m_terms.size());
-
-    // FIXME: Add asserts to make sure the document does not already exist
-    //        Otherwise we will have strange stale data
-    QMapIterator<QByteArray, Document::TermData> it(doc.m_terms);
-    while (it.hasNext()) {
-        const QByteArray term = it.next().key();
-        docTerms.append(term);
-
-        Operation op;
-        op.type = AddId;
-        op.data.docId = id;
-        op.data.positions = it.value().positions;
-
-        m_pendingOperations[term].append(op);
-    }
-
-    m_documentTermsDB->put(id, docTerms);
-
-    QVector<QByteArray> docXattrTerms;
-    docXattrTerms.reserve(doc.m_xattrTerms.size());
-
-    it = QMapIterator<QByteArray, Document::TermData>(doc.m_xattrTerms);
-    while (it.hasNext()) {
-        const QByteArray term = it.next().key();
-        docXattrTerms.append(term);
-
-        Operation op;
-        op.type = AddId;
-        op.data.docId = id;
-        op.data.positions = it.value().positions;
-
-        m_pendingOperations[term].append(op);
-    }
-
-    if (!docXattrTerms.isEmpty())
-        m_documentXattrTermsDB->put(id, docXattrTerms);
-
-    QVector<QByteArray> docFileNameTerms;
-    docFileNameTerms.reserve(doc.m_fileNameTerms.size());
-
-    it = QMapIterator<QByteArray, Document::TermData>(doc.m_fileNameTerms);
-    while (it.hasNext()) {
-        const QByteArray term = it.next().key();
-        docFileNameTerms.append(term);
-
-        Operation op;
-        op.type = AddId;
-        op.data.docId = id;
-        op.data.positions = it.value().positions;
-
-        m_pendingOperations[term].append(op);
-    }
-
-    if (!docFileNameTerms.isEmpty())
-        m_documentFileNameTermsDB->put(id, docFileNameTerms);
-
-    if (!doc.url().isEmpty()) {
-        m_docUrlDB->put(id, doc.url());
-    }
-
-    if (doc.contentIndexing()) {
-        m_contentIndexingDB->put(doc.id());
-    }
-
-    DocumentTimeDB::TimeInfo info;
-    info.mTime = doc.m_mTime;
-    info.cTime = doc.m_cTime;
-    info.julianDay = doc.m_julianDay;
-
-    m_docTimeDB->put(id, info);
-
-    if (!doc.m_data.isEmpty()) {
-        m_docDataDB->put(id, doc.m_data);
-    }
-}
-
-void Database::removeDocument(quint64 id)
-{
-    Q_ASSERT(m_txn);
-    Q_ASSERT(id > 0);
-
-    // FIXME: Optimize this. We do not need to combine them into one big vector
-    QVector<QByteArray> terms = m_documentTermsDB->get(id) + m_documentXattrTermsDB->get(id) + m_documentFileNameTermsDB->get(id);
-    if (terms.isEmpty()) {
-        return;
-    }
-
-    for (const QByteArray& term : terms) {
-        Operation op;
-        op.type = RemoveId;
-        op.data.docId = id;
-
-        m_pendingOperations[term].append(op);
-    }
-
-    m_documentTermsDB->del(id);
-    m_documentXattrTermsDB->del(id);
-    m_documentFileNameTermsDB->del(id);
-
-    m_docUrlDB->del(id);
-
-    m_contentIndexingDB->del(id);
-    m_docTimeDB->del(id);
-    m_docDataDB->del(id);
-}
-
-void Database::replaceDocument(const Document& doc, const Database::DocumentOperations& operations)
-{
-    Q_ASSERT(m_txn);
-    Q_ASSERT(doc.id() > 0);
-
-    const quint64 id = doc.id();
-    Q_ASSERT_X(hasDocument(id), "Database::replaceDocument", "Document does not exist");
-
-    if (operations & DocumentTerms) {
-        QVector<QByteArray> prevTerms = m_documentTermsDB->get(id);
-        for (const QByteArray& term : prevTerms) {
-            Operation op;
-            op.type = RemoveId;
-            op.data.docId = id;
-
-            m_pendingOperations[term].append(op);
-        }
-
-        QVector<QByteArray> docTerms;
-        docTerms.reserve(doc.m_terms.size());
-
-        QMapIterator<QByteArray, Document::TermData> it(doc.m_terms);
-        while (it.hasNext()) {
-            const QByteArray term = it.next().key();
-            docTerms.append(term);
-
-            Operation op;
-            op.type = AddId;
-            op.data.docId = id;
-            op.data.positions = it.value().positions;
-
-            m_pendingOperations[term].append(op);
-        }
-
-        m_documentTermsDB->put(id, docTerms);
-    }
-
-    if (operations & XAttrTerms) {
-        QVector<QByteArray> prevTerms = m_documentXattrTermsDB->get(id);
-        for (const QByteArray& term : prevTerms) {
-            Operation op;
-            op.type = RemoveId;
-            op.data.docId = id;
-
-            m_pendingOperations[term].append(op);
-        }
-
-        QVector<QByteArray> docXattrTerms;
-        docXattrTerms.reserve(doc.m_xattrTerms.size());
-
-        QMapIterator<QByteArray, Document::TermData> it(doc.m_xattrTerms);
-        while (it.hasNext()) {
-            const QByteArray term = it.next().key();
-            docXattrTerms.append(term);
-
-            Operation op;
-            op.type = AddId;
-            op.data.docId = id;
-            op.data.positions = it.value().positions;
-
-            m_pendingOperations[term].append(op);
-        }
-
-        if (!docXattrTerms.isEmpty())
-            m_documentXattrTermsDB->put(id, docXattrTerms);
-    }
-
-    if (operations & FileNameTerms) {
-        QVector<QByteArray> prevTerms = m_documentFileNameTermsDB->get(id);
-        for (const QByteArray& term : prevTerms) {
-            Operation op;
-            op.type = RemoveId;
-            op.data.docId = id;
-
-            m_pendingOperations[term].append(op);
-        }
-
-        QVector<QByteArray> docFileNameTerms;
-        docFileNameTerms.reserve(doc.m_fileNameTerms.size());
-
-        QMapIterator<QByteArray, Document::TermData> it(doc.m_fileNameTerms);
-        while (it.hasNext()) {
-            const QByteArray term = it.next().key();
-            docFileNameTerms.append(term);
-
-            Operation op;
-            op.type = AddId;
-            op.data.docId = id;
-            op.data.positions = it.value().positions;
-
-            m_pendingOperations[term].append(op);
-        }
-
-        if (!docFileNameTerms.isEmpty())
-            m_documentFileNameTermsDB->put(id, docFileNameTerms);
-    }
-
-    if (operations & DocumentUrl) {
-        // FIXME: Replacing the documentUrl is actually quite complicated!
-        Q_ASSERT(0);
-        m_docUrlDB->put(id, doc.url());
-    }
-
-    // FIXME: What about contentIndexing?
-    /*
-    if (doc.contentIndexing()) {
-        m_contentIndexingDB->put(doc.id());
-    }
-    */
-
-    if (operations & DocumentTime) {
-        DocumentTimeDB::TimeInfo info;
-        info.mTime = doc.m_mTime;
-        info.cTime = doc.m_cTime;
-        info.julianDay = doc.m_julianDay;
-
-        m_docTimeDB->put(id, info);
-    }
-
-    if (operations & DocumentData) {
-        m_docDataDB->put(id, doc.m_data);
-    }
-}
-
-template<typename T>
-static void insert(QVector<T>& vec, const T& id)
-{
-    if (vec.isEmpty()) {
-        vec.append(id);
-    } else {
-        auto it = std::upper_bound(vec.begin(), vec.end(), id);
-
-        // Merge the id if it does not
-        auto prev = it - 1;
-        if (*prev != id) {
-            vec.insert(it, id);
-        }
-    }
-}
-
-void Database::commit()
-{
-    Q_ASSERT(m_txn);
-
-    qDebug() << "PendingOperations:" << m_pendingOperations.size();
-    QHashIterator<QByteArray, QVector<Operation> > iter(m_pendingOperations);
-    while (iter.hasNext()) {
-        iter.next();
-
-        const QByteArray& term = iter.key();
-        const QVector<Operation> operations = iter.value();
-
-        PostingList list = m_postingDB->get(term);
-        QVector<PositionInfo> positionList = m_positionDB->get(term); // FIXME: We do not need to fetch this for all the terms
-
-        for (const Operation& op : operations) {
-            quint64 id = op.data.docId;
-
-            if (op.type == AddId) {
-                insert(list, id);
-
-                if (!op.data.positions.isEmpty()) {
-                    insert(positionList, op.data);
-                }
-            }
-            else {
-                list.removeOne(id);
-                positionList.removeOne(PositionInfo(id));
-            }
-        }
-
-        m_postingDB->put(term, list);
-        if (!positionList.isEmpty()) {
-            m_positionDB->put(term, positionList);
-        }
-    }
-
-    m_pendingOperations.clear();
-
-    int rc = mdb_txn_commit(m_txn);
-    Q_ASSERT_X(rc == 0, "Database::commit", mdb_strerror(rc));
-
-    m_txn = 0;
-}
-
-void Database::abort()
-{
-    Q_ASSERT(m_txn);
-
-    mdb_txn_abort(m_txn);
-    m_txn = 0;
-}
-
 bool Database::hasChanges() const
 {
     Q_ASSERT(m_txn);
-    return !m_pendingOperations.isEmpty();
+    Q_ASSERT(m_writeTrans);
+    return m_writeTrans->hasChanges();
 }
 
 QVector<quint64> Database::fetchPhaseOneIds(int size)
@@ -532,6 +227,70 @@ uint Database::size()
     return m_documentTermsDB->size();
 }
 
+//
+// Write Operations
+//
+void Database::setPhaseOne(quint64 id)
+{
+    Q_ASSERT(m_txn);
+    Q_ASSERT(id > 0);
+    Q_ASSERT(m_writeTrans);
+    m_contentIndexingDB->put(id);
+}
+
+void Database::addDocument(const Document& doc)
+{
+    Q_ASSERT(m_txn);
+    Q_ASSERT(doc.id() > 0);
+    Q_ASSERT(m_writeTrans);
+
+    m_writeTrans->addDocument(doc);
+}
+
+void Database::removeDocument(quint64 id)
+{
+    Q_ASSERT(m_txn);
+    Q_ASSERT(id > 0);
+    Q_ASSERT(m_writeTrans);
+
+    m_writeTrans->removeDocument(id);
+}
+
+void Database::replaceDocument(const Document& doc, Database::DocumentOperations operations)
+{
+    Q_ASSERT(m_txn);
+    Q_ASSERT(doc.id() > 0);
+    Q_ASSERT(m_writeTrans);
+    Q_ASSERT_X(hasDocument(doc.id()), "Database::replaceDocument", "Document does not exist");
+
+    m_writeTrans->replaceDocument(doc, operations);
+}
+
+void Database::commit()
+{
+    Q_ASSERT(m_txn);
+    Q_ASSERT(m_writeTrans);
+
+    m_writeTrans->commit();
+    delete m_writeTrans;
+    m_writeTrans = 0;
+
+    int rc = mdb_txn_commit(m_txn);
+    Q_ASSERT_X(rc == 0, "Database::commit", mdb_strerror(rc));
+
+    m_txn = 0;
+}
+
+void Database::abort()
+{
+    Q_ASSERT(m_txn);
+
+    mdb_txn_abort(m_txn);
+    m_txn = 0;
+
+    delete m_writeTrans;
+    m_writeTrans = 0;
+}
 
 //
 // Queries

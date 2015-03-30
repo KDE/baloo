@@ -26,8 +26,6 @@
 #include <QString>
 #include <lmdb.h>
 
-#include "positiondb.h" // reqd for PositionInfo
-
 namespace Baloo {
 
 class PostingDB;
@@ -39,6 +37,7 @@ class DocumentTimeDB;
 class DocumentIdDB;
 class EngineQuery;
 class PostingIterator;
+class WriteTransaction;
 
 class DatabaseTest;
 
@@ -66,7 +65,7 @@ public:
     };
     Q_DECLARE_FLAGS(DocumentOperations, DocumentOperation)
 
-    void replaceDocument(const Document& doc, const DocumentOperations& operations);
+    void replaceDocument(const Document& doc, DocumentOperations operations);
 
     bool hasDocument(quint64 id);
 
@@ -121,21 +120,7 @@ private:
     DocumentDataDB* m_docDataDB;
     DocumentIdDB* m_contentIndexingDB;
 
-    //
-    // In memory operations
-    //
-public: // for the Q_MOVABLE_TYPE
-    enum OperationType {
-        AddId,
-        RemoveId
-    };
-    struct Operation {
-        OperationType type;
-        PositionInfo data;
-    };
-private:
-
-    QHash<QByteArray, QVector<Operation> > m_pendingOperations;
+    WriteTransaction* m_writeTrans;
 
     friend class DatabaseTest;
 
@@ -143,7 +128,6 @@ private:
 };
 }
 
-Q_DECLARE_TYPEINFO(Baloo::Database::Operation, Q_MOVABLE_TYPE);
 Q_DECLARE_OPERATORS_FOR_FLAGS(Baloo::Database::DocumentOperations);
 
 #endif // BALOO_DATABASE_H
