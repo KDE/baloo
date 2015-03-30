@@ -70,7 +70,7 @@ void App::process()
 
         QString filePath;
         if (ok && !QFile::exists(arg)) {
-            filePath = QString::fromUtf8(m_db.documentUrl(id));
+            filePath = QFile::decodeName(m_db.documentUrl(id));
         } else {
             filePath = arg;
             id = filePathToId(QFile::encodeName(filePath));
