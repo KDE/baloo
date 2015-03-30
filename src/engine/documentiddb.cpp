@@ -38,6 +38,7 @@ DocumentIdDB::~DocumentIdDB()
 void DocumentIdDB::put(quint64 docId)
 {
     Q_ASSERT(docId > 0);
+    Q_ASSERT(!contains(docId));
 
     MDB_val key;
     key.mv_size = sizeof(quint64);
@@ -49,9 +50,6 @@ void DocumentIdDB::put(quint64 docId)
     val.mv_data = 0;
 
     int rc = mdb_put(m_txn, m_dbi, &key, &val, 0);
-    if (rc == MDB_MAP_FULL) {
-        Q_ASSERT_X(0, "", "Database is full. You need to increase the map size");
-    }
     Q_ASSERT_X(rc == 0, "IndexingLevelDB::put", mdb_strerror(rc));
 }
 
