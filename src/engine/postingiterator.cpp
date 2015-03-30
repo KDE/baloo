@@ -26,10 +26,12 @@ PostingIterator::~PostingIterator()
 {
 }
 
-quint64 PostingIterator::skipTo(quint64 docId)
+quint64 PostingIterator::skipTo(quint64 id)
 {
-    Q_ASSERT(0);
-    return 0;
+    while (docId() && docId() < id) {
+        next();
+    }
+    return docId();
 }
 
 QVector<uint> PostingIterator::positions()

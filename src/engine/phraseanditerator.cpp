@@ -98,10 +98,7 @@ quint64 PhraseAndIterator::next()
             return 0;
         }
 
-        // FIXME: Maybe we could use skipTo over here?
-        while (iter->docId() < m_docId) {
-            iter->next();
-        }
+        iter->skipTo(m_docId);
 
         if (m_docId != iter->docId()) {
             return next();
