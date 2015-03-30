@@ -90,8 +90,8 @@ bool Database::open()
     mdb_env_set_mapsize(m_env, 1048576000);
 
     // The directory needs to be created before opening the environment
-    QByteArray arr = QFile::encodeName(m_path);
-    mdb_env_open(m_env, arr.constData(), 0, 0664);
+    QByteArray arr = QFile::encodeName(m_path) + "/index";
+    mdb_env_open(m_env, arr.constData(), MDB_NOSUBDIR, 0664);
 
     return true;
 }
