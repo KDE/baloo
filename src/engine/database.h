@@ -88,6 +88,7 @@ public:
     bool hasChanges() const;
 
     QByteArray documentUrl(quint64 id);
+    quint64 documentId(quint64 parentId, const QByteArray& fileName);
     QByteArray documentData(quint64 id);
 
     quint64 documentMTime(quint64 id);

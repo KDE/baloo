@@ -108,6 +108,26 @@ private Q_SLOTS:
     void testDuplicateId() {
     }
 
+    void testGetId() {
+        QTemporaryDir dir;
+        const QByteArray path = QFile::encodeName(dir.path());
+        quint64 id = filePathToId(path);
+
+        QByteArray filePath1(path + "/file");
+        touchFile(filePath1);
+        quint64 id1 = filePathToId(filePath1);
+        QByteArray filePath2(path + "/file2");
+        touchFile(filePath2);
+        quint64 id2 = filePathToId(filePath2);
+
+        DocumentUrlDB db(m_txn);
+        db.put(id, path);
+        db.put(id1, filePath1);
+        db.put(id2, filePath2);
+
+        QCOMPARE(db.getId(id, QByteArray("file")), id1);
+        QCOMPARE(db.getId(id, QByteArray("file2")), id2);
+    }
 protected:
     MDB_env* m_env;
     MDB_txn* m_txn;

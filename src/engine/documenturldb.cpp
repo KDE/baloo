@@ -190,3 +190,20 @@ void DocumentUrlDB::rename(quint64 docId, const QByteArray& newFileName)
     path.name = newFileName;
     m_idFilename.put(docId, path);
 }
+
+quint64 DocumentUrlDB::getId(quint64 docId, const QByteArray& fileName)
+{
+    Q_ASSERT(docId > 0);
+    Q_ASSERT(!fileName.isEmpty());
+
+    QVector<quint64> subFiles = m_idTree.get(docId);
+    for (quint64 id : subFiles) {
+        IdFilenameDB::FilePath path = m_idFilename.get(id);
+        if (path.name == fileName) {
+            return id;
+        }
+    }
+
+    return 0;
+}
+

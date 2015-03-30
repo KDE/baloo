@@ -41,6 +41,8 @@ public:
     void del(quint64 docId);
     void rename(quint64 docId, const QByteArray& newFileName);
 
+    quint64 getId(quint64 docId, const QByteArray& fileName);
+
     void setTransaction(MDB_txn* txn) {
         m_idFilename.setTransaction(txn);
         m_idTree.setTransaction(txn);

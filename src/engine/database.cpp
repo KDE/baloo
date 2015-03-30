@@ -174,6 +174,14 @@ QByteArray Database::documentUrl(quint64 id)
     return m_docUrlDB->get(id);
 }
 
+quint64 Database::documentId(quint64 parentId, const QByteArray& fileName)
+{
+    Q_ASSERT(m_txn);
+    Q_ASSERT(parentId > 0);
+    Q_ASSERT(!fileName.isEmpty());
+
+    return m_docUrlDB->getId(parentId, fileName);
+}
 
 quint64 Database::documentMTime(quint64 id)
 {
