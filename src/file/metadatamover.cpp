@@ -61,8 +61,10 @@ void MetadataMover::removeFileMetadata(const QString& file)
     Q_ASSERT(!file.isEmpty() && file != QLatin1String("/"));
     removeMetadata(file);
 
+    // FIXME: We do not want to commit this so often!!
     m_db->commit();
     m_db->transaction(Database::ReadWrite);
+    qDebug();
 }
 
 
@@ -70,10 +72,18 @@ void MetadataMover::removeMetadata(const QString& url)
 {
     Q_ASSERT(!url.isEmpty());
 
-    quint64 id = filePathToId(QFile::encodeName(url));
-    if (id) {
-        m_db->removeDocument(id);
+    int i = url.lastIndexOf('/');
+    const QString dirPath = url.mid(0, i);
+    const QString filename = url.mid(i + 1);
+
+    quint64 parentId = filePathToId(QFile::encodeName(dirPath));
+    quint64 id = m_db->documentId(parentId, QFile::encodeName(filename));
+
+    if (!id) {
+        return;
     }
+
+    m_db->removeDocument(id);
 }
 
 void MetadataMover::updateMetadata(const QString& from, const QString& to)
@@ -83,18 +93,24 @@ void MetadataMover::updateMetadata(const QString& from, const QString& to)
     Q_ASSERT(from[from.size()-1] != QLatin1Char('/'));
     Q_ASSERT(to[to.size()-1] != QLatin1Char('/'));
 
-    quint64 id = filePathToId(QFile::encodeName(to));
-    // FIXME: This would never happen!
-    if (!id) {
+    QByteArray toPath = QFile::encodeName(to);
+    quint64 id = filePathToId(toPath);
+    if (!m_db->hasDocument(id)) {
         //
         // If we have no metadata yet we need to tell the file indexer so it can
         // create the metadata in case the target folder is configured to be indexed.
         //
+        qDebug() << "Moved without data";
         Q_EMIT movedWithoutData(to);
         return;
     }
 
-    BasicIndexingJob job(QFile::encodeName(to), QString(), true);
+    BasicIndexingJob job(toPath, QString(), true);
     job.index();
-    m_db->renameFilePath(QFile::encodeName(from), job.document());
+    m_db->renameFilePath(id, job.document());
+
+    // Possible scenarios
+    // 1. file moves to the same device - id is preserved
+    // 2. file moves to a different device - id is not preserved
+
 }

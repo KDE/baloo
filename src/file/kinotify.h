@@ -17,8 +17,8 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef _KINOTIFY_H_
-#define _KINOTIFY_H_
+#ifndef KINOTIFY_H_
+#define KINOTIFY_H_
 
 #include <QObject>
 

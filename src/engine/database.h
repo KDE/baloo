@@ -74,7 +74,7 @@ public:
         ReadWrite
     };
 
-    void renameFilePath(const QByteArray& origFilePath, const Document& newDoc);
+    void renameFilePath(quint64 id, const Document& newDoc);
 
     /**
      * Starts a transaction in which the database can be modified.

@@ -19,20 +19,8 @@ baloo_file_auto_tests(
     basicindexingjobtest
     regularexpcachebenchmark
     filtereddiriteratortest
+    metadatamovertest
 )
-
-#
-# Metadata Mover
-#
-
-set(metadatamover_SRC
-    metadatamovertest.cpp
-)
-
-#ecm_add_test(${metadatamover_SRC}
-#    TEST_NAME "metadatamovertest"
-#    LINK_LIBRARIES Qt5::Test ${XAPIAN_LIBRARIES} KF5::BalooXapian baloofilecommon
-#)
 
 
 #

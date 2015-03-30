@@ -365,21 +365,16 @@ QVector<quint64> Database::exec(const EngineQuery& query, int limit)
 //
 // File path rename
 //
-void Database::renameFilePath(const QByteArray& origFilePath, const Document& doc)
+void Database::renameFilePath(quint64 id, const Document& newDoc)
 {
-    const QByteArray newFilePath = doc.url();
-
-    // Get the id
-    quint64 id = filePathToId(newFilePath);
-    // FIXME: What about if the fileId changes because we have moved it to another device?
     Q_ASSERT(id);
 
-    QByteArray oldFileName = origFilePath.mid(origFilePath.lastIndexOf('/'));
-    QByteArray newFileName = newFilePath.mid(newFilePath.lastIndexOf('/'));
+    const QByteArray newFilePath = newDoc.url();
+    const QByteArray newFileName = newFilePath.mid(newFilePath.lastIndexOf('/'));
 
     // Update the id -> url db
     m_docUrlDB->rename(id, newFileName);
 
-    replaceDocument(doc, FileNameTerms);
+    replaceDocument(newDoc, FileNameTerms);
 }
 
