@@ -18,8 +18,6 @@
  *
  */
 
-#include "extractortest.h"
-
 #include <QTest>
 #include <QProcess>
 #include <QTemporaryFile>

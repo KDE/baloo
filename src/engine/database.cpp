@@ -70,7 +70,6 @@ Database::~Database()
     delete m_docTimeDB;
     delete m_docDataDB;
     delete m_contentIndexingDB;
-    delete m_writeTrans;
 
     if (m_txn) {
         abort();
