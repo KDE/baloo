@@ -35,7 +35,6 @@
 #include "phraseanditerator.h"
 
 #include "idutils.h"
-#include "termgenerator.h"
 
 #include <QFile>
 #include <QFileInfo>
@@ -158,14 +157,6 @@ bool Database::hasDocument(quint64 id)
 {
     Q_ASSERT(id > 0);
     return m_documentTermsDB->contains(id);
-}
-
-quint64 Database::documentId(const QByteArray& url)
-{
-    Q_ASSERT(m_txn);
-    Q_ASSERT(!url.isEmpty());
-
-    return filePathToId(url);
 }
 
 QByteArray Database::documentUrl(quint64 id)

@@ -24,6 +24,7 @@
 #include "../basicindexingjob.h"
 #include "../tests/util.h"
 #include "result.h"
+#include "idutils.h"
 
 #include <QDebug>
 #include <QCoreApplication>
@@ -72,7 +73,7 @@ void App::process()
             filePath = QString::fromUtf8(m_db.documentUrl(id));
         } else {
             filePath = arg;
-            id = m_db.documentId(filePath.toUtf8());
+            id = filePathToId(QFile::encodeName(filePath));
         }
 
         if (!QFile::exists(filePath)) {

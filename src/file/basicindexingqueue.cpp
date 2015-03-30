@@ -22,6 +22,7 @@
 #include "fileindexerconfig.h"
 #include "basicindexingjob.h"
 #include "database.h"
+#include "idutils.h"
 
 #include <QDebug>
 #include <QDateTime>
@@ -127,7 +128,7 @@ bool BasicIndexingQueue::shouldIndex(const QString& file, const QString& mimetyp
     if (!fileInfo.exists())
         return false;
 
-    quint64 fileId = m_db->documentId(file.toUtf8());
+    quint64 fileId = filePathToId(QFile::encodeName(file));
     if (!fileId) {
         return true;
     }
@@ -155,7 +156,7 @@ void BasicIndexingQueue::index(const QString& file, const QString& mimetype,
                                UpdateDirFlags flags)
 {
     bool xattrOnly = (flags & Baloo::ExtendedAttributesOnly);
-    bool newDoc = !m_db->hasDocument(m_db->documentId(QFile::encodeName(file)));
+    bool newDoc = !m_db->hasDocument(filePathToId(QFile::encodeName(file)));
 
     if (newDoc) {
         BasicIndexingJob job(file, mimetype, m_config->onlyBasicIndexing());

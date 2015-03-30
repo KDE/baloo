@@ -23,6 +23,7 @@
 #include "file.h"
 #include "db.h"
 #include "database.h"
+#include "idutils.h"
 
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -115,7 +116,7 @@ bool File::load()
     db.transaction(Database::ReadOnly);
 
     if (!d->id) {
-        d->id = db.documentId(QFile::encodeName(d->url));
+        d->id = filePathToId(QFile::encodeName(d->url));
         if (!d->id) {
             return false;
         }

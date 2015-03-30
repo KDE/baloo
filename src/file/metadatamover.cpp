@@ -20,6 +20,7 @@
 #include "metadatamover.h"
 #include "database.h"
 #include "basicindexingjob.h"
+#include "idutils.h"
 
 #include <QDebug>
 #include <QFile>
@@ -69,7 +70,7 @@ void MetadataMover::removeMetadata(const QString& url)
 {
     Q_ASSERT(!url.isEmpty());
 
-    quint64 id = m_db->documentId(QFile::encodeName(url));
+    quint64 id = filePathToId(QFile::encodeName(url));
     if (id) {
         m_db->removeDocument(id);
     }
@@ -82,7 +83,8 @@ void MetadataMover::updateMetadata(const QString& from, const QString& to)
     Q_ASSERT(from[from.size()-1] != QLatin1Char('/'));
     Q_ASSERT(to[to.size()-1] != QLatin1Char('/'));
 
-    quint64 id = m_db->documentId(QFile::encodeName(to));
+    quint64 id = filePathToId(QFile::encodeName(to));
+    // FIXME: This would never happen!
     if (!id) {
         //
         // If we have no metadata yet we need to tell the file indexer so it can
