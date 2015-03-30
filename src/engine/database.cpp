@@ -370,7 +370,7 @@ void Database::renameFilePath(quint64 id, const Document& newDoc)
     Q_ASSERT(id);
 
     const QByteArray newFilePath = newDoc.url();
-    const QByteArray newFileName = newFilePath.mid(newFilePath.lastIndexOf('/'));
+    const QByteArray newFileName = newFilePath.mid(newFilePath.lastIndexOf('/') + 1);
 
     // Update the id -> url db
     m_docUrlDB->rename(id, newFileName);

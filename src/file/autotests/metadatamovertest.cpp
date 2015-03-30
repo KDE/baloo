@@ -1,6 +1,6 @@
 /*
  * This file is part of the KDE Baloo Project
- * Copyright (C) 2013-2014  Vishesh Handa <vhanda@kde.org>
+ * Copyright (C) 2013-2015  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -106,87 +106,66 @@ void MetadataMoverTest::testRemoveFile()
     QVERIFY(!m_db->hasDocument(fid));
 }
 
+static void touchFile(const QString& path)
+{
+    QFile file(path);
+    file.open(QIODevice::WriteOnly);
+    QTextStream s(&file);
+    s << "random";
+}
+static void mkdir(const QString& path)
+{
+    QDir().mkpath(path);
+    QVERIFY(QDir(path).exists());
+}
+
 void MetadataMoverTest::testMoveFile()
 {
-    /*
-    const QString url(QLatin1String("/home/vishesh/t"));
+    QTemporaryDir dir;
+
+    QString url = dir.path() + "/file";
+    touchFile(url);
     quint64 fid = insertUrl(url);
 
+    m_db->commit();
+    m_db->transaction(Database::ReadWrite);
+
+    QVERIFY(m_db->hasDocument(fid));
     MetadataMover mover(m_db, this);
+    QString url2 = dir.path() + "/file2";
+    QFile::rename(url, url2);
+    mover.moveFileMetadata(QFile::encodeName(url), QFile::encodeName(url2));
 
-    const QString newUrl(QLatin1String("/home/vishesh/p"));
-    mover.moveFileMetadata(url, newUrl);
-
-    QEventLoop loop;
-    QTimer::singleShot(5, &loop, SLOT(quit()));
-    loop.exec();
-
-    Xapian::Database* db = m_db->xapianDatabase()->db();
-    QVERIFY(db->get_doccount() == 1);
-
-    XapianDocument doc = m_db->xapianDatabase()->document(fid);
-    QCOMPARE(QString::fromUtf8(doc.value(3)), newUrl);
-    QByteArray arr = "P-" + newUrl.toUtf8();
-    QCOMPARE(doc.fetchTermStartsWith("P"), QString::fromUtf8(arr));
-    QCOMPARE(doc.fetchTermsStartsWith("P").size(), 1);
-    */
+    QVERIFY(m_db->hasDocument(fid));
+    QCOMPARE(m_db->documentUrl(fid), QFile::encodeName(url2));
 }
 
 void MetadataMoverTest::testMoveFolder()
 {
-    /*
-    const QString folderUrl(m_tempDir->path() + QLatin1String("/folder"));
-    quint64 folId = insertUrl(folderUrl);
+    QTemporaryDir dir;
 
-    // The directory needs to be created because moveFileMetadata checks if it is
-    // a directory in order to do the more complicated query to rename the
-    // files in that folder
-    QDir dir(m_tempDir->path());
-    dir.mkdir(QLatin1String("folder"));
-    QVERIFY(QDir(folderUrl).exists());
+    QString folder = dir.path() + "/folder";
+    mkdir(folder);
+    quint64 did = insertUrl(folder);
 
-    const QString fileUrl1(folderUrl + QLatin1String("/1"));
-    quint64 fid1 = insertUrl(fileUrl1);
+    QString fileUrl = folder + "/file";
+    touchFile(fileUrl);
+    quint64 fid = insertUrl(fileUrl);
 
-    const QString fileUrl2(folderUrl + QLatin1String("/2"));
-    quint64 fid2 = insertUrl(fileUrl2);
+    m_db->commit();
+    m_db->transaction(Database::ReadWrite);
+    QVERIFY(m_db->hasDocument(did));
+    QVERIFY(m_db->hasDocument(fid));
 
+    QString newFolderUrl = dir.path() + "/dir";
+    QFile::rename(folder, newFolderUrl);
     MetadataMover mover(m_db, this);
+    mover.moveFileMetadata(QFile::encodeName(folder), QFile::encodeName(newFolderUrl));
 
-    const QString newFolderUrl(m_tempDir->path() + QLatin1String("/p"));
-    dir.rename(QLatin1String("folder"), QLatin1String("p"));
-    mover.moveFileMetadata(folderUrl, newFolderUrl);
-
-    QEventLoop loop;
-    QTimer::singleShot(5, &loop, SLOT(quit()));
-    loop.exec();
-
-    Xapian::Database* db = m_db->xapianDatabase()->db();
-    QVERIFY(db->get_doccount() == 3);
-
-    // Folder
-    XapianDocument doc = m_db->xapianDatabase()->document(folId);
-    QCOMPARE(QString::fromUtf8(doc.value(3)), newFolderUrl);
-    QByteArray arr = "P-" + newFolderUrl.toUtf8();
-    QCOMPARE(doc.fetchTermStartsWith("P"), QString::fromUtf8(arr));
-    QCOMPARE(doc.fetchTermsStartsWith("P").size(), 1);
-
-    // File 1
-    doc = m_db->xapianDatabase()->document(fid1);
-    QString str = newFolderUrl + "/1";
-    QCOMPARE(QString::fromUtf8(doc.value(3)), str);
-    arr = "P-" + str.toUtf8();
-    QCOMPARE(doc.fetchTermStartsWith("P"), QString::fromUtf8(arr));
-    QCOMPARE(doc.fetchTermsStartsWith("P").size(), 1);
-
-    // File 2
-    doc = m_db->xapianDatabase()->document(fid2);
-    str = newFolderUrl + "/2";
-    QCOMPARE(QString::fromUtf8(doc.value(3)), str);
-    arr = "P-" + str.toUtf8();
-    QCOMPARE(doc.fetchTermStartsWith("P"), QString::fromUtf8(arr));
-    QCOMPARE(doc.fetchTermsStartsWith("P").size(), 1);
-    */
+    QVERIFY(m_db->hasDocument(did));
+    QVERIFY(m_db->hasDocument(fid));
+    QCOMPARE(m_db->documentUrl(did), QFile::encodeName(newFolderUrl));
+    QCOMPARE(m_db->documentUrl(fid), QFile::encodeName(newFolderUrl + "/file"));
 }
 
 QTEST_MAIN(MetadataMoverTest)
