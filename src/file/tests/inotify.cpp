@@ -58,4 +58,6 @@ int main(int argc, char** argv)
 
     std::cout << "Elapsed: " << timer.elapsed() << std::endl;
     printIOUsage();
+
+    return app.exec();
 }
