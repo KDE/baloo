@@ -66,6 +66,9 @@ void FileFetchJobTest::test()
     doc.setUrl(tempFile.fileName().toUtf8());
     doc.setId(filePathToId(doc.url()));
     doc.addTerm("testterm");
+    doc.setMTime(1);
+    doc.setCTime(1);
+    doc.setJulianDay(1);
 
     {
         Database db(fileIndexDbPath());
