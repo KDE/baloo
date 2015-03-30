@@ -62,6 +62,10 @@ void DatabaseBenchmark::test()
         doc.addBoolTerm(QByteArray("DT_MM") + QByteArray::number(mod.date().month()));
         doc.addBoolTerm(QByteArray("DT_MD") + QByteArray::number(mod.date().day()));
 
+        doc.setMTime(1);
+        doc.setCTime(2);
+        doc.setJulianDay(3);
+
         db.addDocument(doc);
     }
     db.commit();
