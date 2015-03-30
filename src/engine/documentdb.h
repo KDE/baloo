@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef _BALOO_DOCUMENTDB_H
-#define _BALOO_DOCUMENTDB_H
+#ifndef BALOO_DOCUMENTDB_H
+#define BALOO_DOCUMENTDB_H
 
 #include "engine_export.h"
 #include <lmdb.h>
@@ -49,4 +49,4 @@ private:
 };
 }
 
-#endif // DOCUMENTDB_H
+#endif // BALOO_DOCUMENTDB_H

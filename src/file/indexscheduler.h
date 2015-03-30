@@ -17,8 +17,8 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef _BALOO_FILEINDEXER_INDEX_SCHEDULER_H_
-#define _BALOO_FILEINDEXER_INDEX_SCHEDULER_H_
+#ifndef BALOO_FILEINDEXER_INDEX_SCHEDULER_H_
+#define BALOO_FILEINDEXER_INDEX_SCHEDULER_H_
 
 #include "basicindexingqueue.h" // Required for UpdateDirFlags
 

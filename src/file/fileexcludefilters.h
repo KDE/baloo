@@ -16,8 +16,8 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef _FILE_EXCLUDE_FILTERS_H_
-#define _FILE_EXCLUDE_FILTERS_H_
+#ifndef FILE_EXCLUDE_FILTERS_H_
+#define FILE_EXCLUDE_FILTERS_H_
 
 #include <QtCore/QStringList>
 

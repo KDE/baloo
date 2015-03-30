@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef _BALOO_FILE_H
-#define _BALOO_FILE_H
+#ifndef BALOO_FILE_H
+#define BALOO_FILE_H
 
 #include "core_export.h"
 #include <KFileMetaData/Properties>
@@ -80,4 +80,4 @@ private:
 
 }
 
-#endif // _BALOO_FILE_H
+#endif // BALOO_FILE_H

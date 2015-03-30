@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef _BALOO_SINGLEDBTEST_H
-#define _BALOO_SINGLEDBTEST_H
+#ifndef BALOO_SINGLEDBTEST_H
+#define BALOO_SINGLEDBTEST_H
 
 #include <QObject>
 #include <QTemporaryDir>

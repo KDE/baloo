@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef _BALOO_KIO_TAGS_H_
-#define _BALOO_KIO_TAGS_H_
+#ifndef BALOO_KIO_TAGS_H_
+#define BALOO_KIO_TAGS_H_
 
 #include <KIO/ForwardingSlaveBase>
 
@@ -99,4 +99,4 @@ private:
 };
 }
 
-#endif // _BALOO_KIO_TAGS_H_
+#endif // BALOO_KIO_TAGS_H_

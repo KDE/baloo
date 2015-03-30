@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef _BALOO_CORE_RESULT_ITERATOR_H
-#define _BALOO_CORE_RESULT_ITERATOR_H
+#ifndef BALOO_CORE_RESULT_ITERATOR_H
+#define BALOO_CORE_RESULT_ITERATOR_H
 
 #include "core_export.h"
 
@@ -53,4 +53,4 @@ private:
 };
 
 }
-#endif // _BALOO_CORE_RESULT_ITERATOR_H
+#endif // BALOO_CORE_RESULT_ITERATOR_H

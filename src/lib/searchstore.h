@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef _BALOO_SEARCHSTORE_H
-#define _BALOO_SEARCHSTORE_H
+#ifndef BALOO_SEARCHSTORE_H
+#define BALOO_SEARCHSTORE_H
 
 #include <QString>
 
@@ -47,4 +47,4 @@ private:
 
 }
 
-#endif // _BALOO_SEARCHSTORE_H
+#endif // BALOO_SEARCHSTORE_H

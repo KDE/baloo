@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef _BALOO_SEARCH_KDED_MODULE_H_
-#define _BALOO_SEARCH_KDED_MODULE_H_
+#ifndef BALOO_SEARCH_KDED_MODULE_H_
+#define BALOO_SEARCH_KDED_MODULE_H_
 
 #include <KDEDModule>
 #include <kdirnotify.h>

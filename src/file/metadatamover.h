@@ -17,8 +17,8 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef _METADATA_MOVER_H_
-#define _METADATA_MOVER_H_
+#ifndef BALOO_METADATA_MOVER_H_
+#define BALOO_METADATA_MOVER_H_
 
 #include <QObject>
 

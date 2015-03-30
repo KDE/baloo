@@ -20,8 +20,8 @@
    License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _BALOO_INDEXING_JOB_H_
-#define _BALOO_INDEXING_JOB_H_
+#ifndef BALOO_INDEXING_JOB_H_
+#define BALOO_INDEXING_JOB_H_
 
 #include <KJob>
 #include <QProcess>

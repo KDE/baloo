@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef _BALOO_ID_UTILS_
-#define _BALOO_ID_UTILS_
+#ifndef BALOO_ID_UTILS_
+#define BALOO_ID_UTILS_
 
 #include <qplatformdefs.h>
 #include <qglobal.h>

@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef _BALOO_CORE_RESULT_H
-#define _BALOO_CORE_RESULT_H
+#ifndef BALOO_CORE_RESULT_H
+#define BALOO_CORE_RESULT_H
 
 #include <QString>
 #include <QByteArray>
@@ -55,4 +55,4 @@ private:
 
 }
 
-#endif // _BALOO_CORE_RESULT_H
+#endif // BALOO_CORE_RESULT_H

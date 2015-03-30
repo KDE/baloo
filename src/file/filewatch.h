@@ -16,8 +16,8 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef _FILE_WATCH_H_
-#define _FILE_WATCH_H_
+#ifndef BALOO_FILE_WATCH_H_
+#define BALOO_FILE_WATCH_H_
 
 #include <QObject>
 #include "pendingfile.h"

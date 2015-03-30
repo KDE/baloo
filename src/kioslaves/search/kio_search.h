@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef _BALOO_KIO_SEARCH_H_
-#define _BALOO_KIO_SEARCH_H_
+#ifndef BALOO_KIO_SEARCH_H_
+#define BALOO_KIO_SEARCH_H_
 
 #include <kio/slavebase.h>
 

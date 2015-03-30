@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef _BALOO_FILEMONITOR_H
-#define _BALOO_FILEMONITOR_H
+#ifndef BALOO_FILEMONITOR_H
+#define BALOO_FILEMONITOR_H
 
 #include <QObject>
 #include <QUrl>
@@ -56,4 +56,4 @@ private:
 };
 
 }
-#endif // _BALOO_FILEMONITOR_H
+#endif // BALOO_FILEMONITOR_H
