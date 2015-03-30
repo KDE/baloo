@@ -32,6 +32,7 @@
 #include <KLocalizedString>
 
 #include "file.h"
+#include "idutils.h"
 #include <KFileMetaData/PropertyInfo>
 
 
@@ -98,6 +99,10 @@ int main(int argc, char* argv[])
 
         if (fid && !file.path().isEmpty()) {
             text = colorString(QString::number(fid), 31);
+            text += QLatin1String(" ");
+            text += colorString(QString::number(Baloo::idToDeviceId(fid)), 28);
+            text += QLatin1String(" ");
+            text += colorString(QString::number(Baloo::idToInode(fid)), 28);
             text += QLatin1String(" ");
             text += colorString(file.path(), 32);
             stream << text << endl;
