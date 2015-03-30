@@ -81,13 +81,14 @@ bool BasicIndexingJob::index()
 
     // Types
     QVector<KFileMetaData::Type::Type> tList = typesForMimeType(m_mimetype);
-    Q_FOREACH (KFileMetaData::Type::Type type, tList) {
-        QString tstr = KFileMetaData::TypeInfo(type).name().toLower();
-        doc.addBoolTerm(QByteArray("T") + tstr.toUtf8());
+    for (KFileMetaData::Type::Type type : tList) {
+        QByteArray num = QByteArray::number(static_cast<int>(type));
+        doc.addBoolTerm(QByteArray("T") + num);
     }
 
     if (S_ISDIR(statBuf.st_mode)) {
-        doc.addBoolTerm(QByteArray("Tfolder"));
+        static const QByteArray type = QByteArray("T") + QByteArray::number(static_cast<int>(KFileMetaData::Type::Folder));
+        doc.addBoolTerm(type);
         // For folders we do not need to go through file indexing, so we do not set contentIndexing
     }
     else if (!m_onlyBasicIndexing) {
