@@ -80,6 +80,21 @@ PostingList PostingDB::get(const QByteArray& term)
     return list;
 }
 
+void PostingDB::del(const QByteArray& term)
+{
+    Q_ASSERT(!term.isEmpty());
+
+    MDB_val key;
+    key.mv_size = term.size();
+    key.mv_data = static_cast<void*>(const_cast<char*>(term.constData()));
+
+    int rc = mdb_del(m_txn, m_dbi, &key, 0);
+    if (rc == MDB_NOTFOUND) {
+        return;
+    }
+    Q_ASSERT_X(rc == 0, "PostingDB::del", mdb_strerror(rc));
+}
+
 QList<QByteArray> PostingDB::fetchTermsStartingWith(const QByteArray& term)
 {
     MDB_val key;

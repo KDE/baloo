@@ -58,6 +58,7 @@ public:
 
     void put(const QByteArray& term, const QVector<PositionInfo>& list);
     QVector<PositionInfo> get(const QByteArray& term);
+    void del(const QByteArray& term);
 
     PostingIterator* iter(const QByteArray& term);
 

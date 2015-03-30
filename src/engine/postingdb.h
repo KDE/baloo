@@ -41,6 +41,7 @@ public:
 
     void put(const QByteArray& term, const PostingList& list);
     PostingList get(const QByteArray& term);
+    void del(const QByteArray& term);
 
     PostingIterator* iter(const QByteArray& term);
     PostingIterator* prefixIter(const QByteArray& term);

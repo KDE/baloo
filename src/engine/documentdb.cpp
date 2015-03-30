@@ -105,6 +105,9 @@ void DocumentDB::del(quint64 docId)
     key.mv_data = static_cast<void*>(&docId);
 
     int rc = mdb_del(m_txn, m_dbi, &key, 0);
+    if (rc == MDB_NOTFOUND) {
+        return;
+    }
     Q_ASSERT_X(rc == 0, "DocumentDB::del", mdb_strerror(rc));
 }
 

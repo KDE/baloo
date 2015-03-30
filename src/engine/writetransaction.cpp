@@ -216,6 +216,8 @@ void WriteTransaction::replaceDocument(const Document& doc, Database::DocumentOp
 
         if (!docXattrTerms.isEmpty())
             m_documentXattrTermsDB->put(id, docXattrTerms);
+        else
+            m_documentXattrTermsDB->del(id);
     }
 
     if (operations & Database::FileNameTerms) {
@@ -246,6 +248,8 @@ void WriteTransaction::replaceDocument(const Document& doc, Database::DocumentOp
 
         if (!docFileNameTerms.isEmpty())
             m_documentFileNameTermsDB->put(id, docFileNameTerms);
+        else
+            m_documentFileNameTermsDB->del(id);
     }
 
     if (operations & Database::DocumentUrl) {
@@ -320,9 +324,16 @@ void WriteTransaction::commit()
             }
         }
 
-        m_postingDB->put(term, list);
+        if (!list.isEmpty()) {
+            m_postingDB->put(term, list);
+        } else {
+            m_postingDB->del(term);
+        }
+
         if (!positionList.isEmpty()) {
             m_positionDB->put(term, positionList);
+        } else {
+            m_positionDB->del(term);
         }
     }
 
