@@ -84,3 +84,22 @@ void DocumentDataDB::del(quint64 docId)
     }
     Q_ASSERT_X(rc == 0, "DocumentUrlDB::del", mdb_strerror(rc));
 }
+
+bool DocumentDataDB::contains(quint64 docId)
+{
+    Q_ASSERT(docId > 0);
+
+    MDB_val key;
+    key.mv_size = sizeof(quint64);
+    key.mv_data = static_cast<void*>(&docId);
+
+    // FIXME: We don't need val
+    MDB_val val;
+    int rc = mdb_get(m_txn, m_dbi, &key, &val);
+    if (rc == MDB_NOTFOUND) {
+        return false;
+    }
+    Q_ASSERT_X(rc == 0, "DocumentDataDB::contains", mdb_strerror(rc));
+
+    return true;
+}

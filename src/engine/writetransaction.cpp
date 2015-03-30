@@ -49,12 +49,16 @@ WriteTransaction::WriteTransaction(PostingDB* postingDB, PositionDB* positionDB,
 void WriteTransaction::addDocument(const Document& doc)
 {
     quint64 id = doc.id();
+    Q_ASSERT(!m_documentTermsDB->contains(id));
+    Q_ASSERT(!m_documentXattrTermsDB->contains(id));
+    Q_ASSERT(!m_documentFileNameTermsDB->contains(id));
+    Q_ASSERT(!m_docTimeDB->contains(id));
+    Q_ASSERT(!m_docDataDB->contains(id));
+    Q_ASSERT(!m_contentIndexingDB->contains(id));
 
     QVector<QByteArray> docTerms;
     docTerms.reserve(doc.m_terms.size());
 
-    // FIXME: Add asserts to make sure the document does not already exist
-    //        Otherwise we will have strange stale data
     QMapIterator<QByteArray, Document::TermData> it(doc.m_terms);
     while (it.hasNext()) {
         const QByteArray term = it.next().key();
