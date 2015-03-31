@@ -66,16 +66,8 @@ bool BasicIndexingJob::index()
     tg.indexFileNameText(fileName, 1000);
     tg.indexFileNameText(fileName, QByteArray("F"));
 
-    // Modified Date
-    QDateTime mod = QDateTime::fromTime_t(statBuf.st_mtime);
-    const QByteArray dtm = mod.toString(Qt::ISODate).toUtf8();
-
-    doc.addBoolTerm(QByteArray("D") + dtm);
-    doc.addBoolTerm(QByteArray("Y") + QByteArray::number(mod.date().year()));
-    doc.addBoolTerm(QByteArray("G") + QByteArray::number(mod.date().month()));
-    doc.addBoolTerm(QByteArray("A") + QByteArray::number(mod.date().day()));
-
-    doc.setMTime(mod.toTime_t());
+    // Time
+    doc.setMTime(statBuf.st_mtime);
     doc.setCTime(statBuf.st_ctime);
 
     // Types
