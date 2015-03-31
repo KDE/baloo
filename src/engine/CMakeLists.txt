@@ -24,6 +24,7 @@ set(BALOO_ENGINE_SRCS
 
     postingcodec.cpp
     positioncodec.cpp
+    doctermscodec.cpp
 )
 
 add_library(KF5BalooEngine ${BALOO_ENGINE_SRCS})

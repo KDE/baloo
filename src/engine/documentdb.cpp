@@ -19,6 +19,7 @@
  */
 
 #include "documentdb.h"
+#include "doctermscodec.h"
 
 #include <QDebug>
 
@@ -47,17 +48,12 @@ void DocumentDB::put(quint64 docId, const QVector<QByteArray>& list)
     key.mv_size = sizeof(quint64);
     key.mv_data = static_cast<void*>(&docId);
 
-    // We need to put this in one huge byte-array
-    // FIXME: Ideally, the data should be provided in such a manner. Not in this vector
-    QByteArray full;
-    for (const QByteArray& ba : list) {
-        full.append(ba);
-        full.append('\0');
-    }
+    DocTermsCodec codec;
+    QByteArray arr = codec.encode(list);
 
     MDB_val val;
-    val.mv_size = full.size();
-    val.mv_data = static_cast<void*>(full.data());
+    val.mv_size = arr.size();
+    val.mv_data = static_cast<void*>(arr.data());
 
     int rc = mdb_put(m_txn, m_dbi, &key, &val, 0);
     Q_ASSERT_X(rc == 0, "DocumentDB::put", mdb_strerror(rc));
@@ -78,22 +74,10 @@ QVector<QByteArray> DocumentDB::get(quint64 docId)
     }
     Q_ASSERT_X(rc == 0, "DocumentDB::get", mdb_strerror(rc));
 
-    QVector<QByteArray> list;
-    QByteArray full = QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size);
+    QByteArray arr = QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size);
 
-    int prevWordBoundary = 0;
-    for (int i = 0; i < full.size(); i++) {
-        if (full[i] == '\0') {
-            QByteArray arr = QByteArray::fromRawData(full.constData() + prevWordBoundary,
-                                                     i - prevWordBoundary);
-
-            list << arr;
-            prevWordBoundary = i + 1;
-            i++;
-        }
-    }
-
-    return list;
+    DocTermsCodec codec;
+    return codec.decode(arr);
 }
 
 void DocumentDB::del(quint64 docId)
