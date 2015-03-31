@@ -20,6 +20,7 @@
 
 #include "postingdb.h"
 #include "orpostingiterator.h"
+#include "postingcodec.h"
 
 #include <QDebug>
 
@@ -48,9 +49,12 @@ void PostingDB::put(const QByteArray& term, const PostingList& list)
     key.mv_size = term.size();
     key.mv_data = static_cast<void*>(const_cast<char*>(term.constData()));
 
+    PostingCodec codec;
+    QByteArray arr = codec.encode(list);
+
     MDB_val val;
-    val.mv_size = list.size() * sizeof(quint64);
-    val.mv_data = static_cast<void*>(const_cast<quint64*>(list.constData()));
+    val.mv_size = arr.size();
+    val.mv_data = static_cast<void*>(arr.data());
 
     int rc = mdb_put(m_txn, m_dbi, &key, &val, 0);
     Q_ASSERT_X(rc == 0, "PostingDB::put", mdb_strerror(rc));
@@ -71,13 +75,10 @@ PostingList PostingDB::get(const QByteArray& term)
     }
     Q_ASSERT_X(rc == 0, "PostingDB::get", mdb_strerror(rc));
 
-    PostingList list;
-    list.reserve(val.mv_size / sizeof(quint64));
+    QByteArray arr = QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size);
 
-    for (int i = 0; i < (val.mv_size / sizeof(quint64)); i++) {
-        list << static_cast<quint64*>(val.mv_data)[i];
-    }
-    return list;
+    PostingCodec codec;
+    return codec.decode(arr);
 }
 
 void PostingDB::del(const QByteArray& term)
@@ -145,8 +146,7 @@ public:
     virtual quint64 next();
 
 private:
-    void* m_data;
-    uint m_size;
+    QVector<quint64> m_vec;
     int m_pos;
 };
 
@@ -170,33 +170,29 @@ PostingIterator* PostingDB::iter(const QByteArray& term)
 // Posting Iterator
 //
 DBPostingIterator::DBPostingIterator(void* data, uint size)
-    : m_data(data)
-    , m_size(size)
-    , m_pos(-1)
+    : m_pos(-1)
 {
+    PostingCodec codec;
+    m_vec = codec.decode(QByteArray::fromRawData(static_cast<char*>(data), size));
 }
 
 quint64 DBPostingIterator::docId()
 {
-    int size = m_size / sizeof(quint64);
-    if (m_pos < 0 || m_pos >= size) {
+    if (m_pos < 0 || m_pos >= m_vec.size()) {
         return 0;
     }
 
-    quint64* arr = static_cast<quint64*>(m_data);
-    return arr[m_pos];
+    return m_vec[m_pos];
 }
 
 quint64 DBPostingIterator::next()
 {
     m_pos++;
-    int size = m_size / sizeof(quint64);
-    if (m_pos >= size) {
+    if (m_pos >= m_vec.size()) {
         return 0;
     }
 
-    quint64* arr = static_cast<quint64*>(m_data);
-    return arr[m_pos];
+    return m_vec[m_pos];
 }
 
 PostingIterator* PostingDB::prefixIter(const QByteArray& term)
