@@ -1,5 +1,5 @@
 /*
-   This file is part of the KDE Baloo project.
+ * This file is part of the KDE Baloo project.
  * Copyright (C) 2015  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
@@ -19,8 +19,8 @@
  */
 
 #include "positiondb.h"
+#include "positioncodec.h"
 
-#include <QDataStream>
 #include <QDebug>
 
 using namespace Baloo;
@@ -48,13 +48,8 @@ void PositionDB::put(const QByteArray& term, const QVector<PositionInfo>& list)
     key.mv_size = term.size();
     key.mv_data = static_cast<void*>(const_cast<char*>(term.constData()));
 
-    QByteArray data;
-    QDataStream stream(&data, QIODevice::WriteOnly);
-
-    for (const PositionInfo& pos : list) {
-        stream << pos.docId;
-        stream << pos.positions;
-    }
+    PositionCodec codec;
+    QByteArray data = codec.encode(list);
 
     MDB_val val;
     val.mv_size = data.size();
@@ -80,18 +75,9 @@ QVector<PositionInfo> PositionDB::get(const QByteArray& term)
     Q_ASSERT_X(rc == 0, "PositionDB::get", mdb_strerror(rc));
 
     QByteArray data = QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size);
-    QDataStream stream(&data, QIODevice::ReadOnly);
 
-    QVector<PositionInfo> vec;
-    while (!stream.atEnd()) {
-        PositionInfo pos;
-        stream >> pos.docId;
-        stream >> pos.positions;
-
-        vec << pos;
-    }
-
-    return vec;
+    PositionCodec codec;
+    return codec.decode(data);
 }
 
 void PositionDB::del(const QByteArray& term)
@@ -116,33 +102,38 @@ void PositionDB::del(const QByteArray& term)
 class DBPositionIterator : public PostingIterator {
 public:
     DBPositionIterator(char* data, uint size)
-        : m_data(data, size)
-        , stream(&m_data, QIODevice::ReadOnly)
-    {}
+        : m_pos(-1)
+    {
+        PositionCodec codec;
+        m_vec = codec.decode(QByteArray::fromRawData(static_cast<char*>(data), size));
+    }
 
     virtual quint64 next() {
-        if (stream.atEnd()) {
-            pos.docId = 0;
-            pos.positions.clear();
+        m_pos++;
+        if (m_pos >= m_vec.size()) {
             return 0;
         }
 
-        stream >> pos.docId;
-        stream >> pos.positions;
+        return m_vec[m_pos].docId;
+    }
 
-        return pos.docId;
-    }
     virtual quint64 docId() {
-        return pos.docId;
+        if (m_pos < 0 || m_pos >= m_vec.size()) {
+            return 0;
+        }
+        return m_vec[m_pos].docId;
     }
+
     virtual QVector<uint> positions() {
-        return pos.positions;
+        if (m_pos < 0 || m_pos >= m_vec.size()) {
+            return QVector<uint>();
+        }
+        return m_vec[m_pos].positions;
     }
 
 private:
-    QByteArray m_data;
-    QDataStream stream;
-    PositionInfo pos;
+    QVector<PositionInfo> m_vec;
+    int m_pos;
 };
 
 PostingIterator* PositionDB::iter(const QByteArray& term)

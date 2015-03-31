@@ -23,6 +23,7 @@ set(BALOO_ENGINE_SRCS
     writetransaction.cpp
 
     postingcodec.cpp
+    positioncodec.cpp
 )
 
 add_library(KF5BalooEngine ${BALOO_ENGINE_SRCS})
