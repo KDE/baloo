@@ -10,6 +10,7 @@ set(BALOO_ENGINE_SRCS
     enginequery.cpp
     idtreedb.cpp
     idfilenamedb.cpp
+    mtimedb.cpp
     orpostingiterator.cpp
     phraseanditerator.cpp
     positiondb.cpp
