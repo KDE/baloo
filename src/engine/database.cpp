@@ -26,6 +26,7 @@
 #include "positiondb.h"
 #include "documenttimedb.h"
 #include "documentdatadb.h"
+#include "mtimedb.h"
 
 #include "document.h"
 #include "enginequery.h"
@@ -55,6 +56,7 @@ Database::Database(const QString& path)
     , m_docTimeDB(0)
     , m_docDataDB(0)
     , m_contentIndexingDB(0)
+    , m_mtimeDB(0)
     , m_writeTrans(0)
 {
 }
@@ -70,6 +72,7 @@ Database::~Database()
     delete m_docTimeDB;
     delete m_docDataDB;
     delete m_contentIndexingDB;
+    delete m_mtimeDB;
 
     if (m_txn) {
         abort();
@@ -149,10 +152,16 @@ void Database::transaction(Database::TransactionType type)
     else
         m_contentIndexingDB->setTransaction(m_txn);
 
+    if (!m_mtimeDB)
+        m_mtimeDB = new MTimeDB(m_txn);
+    else
+        m_mtimeDB->setTransaction(m_txn);
+
     if (type == ReadWrite) {
         Q_ASSERT(m_writeTrans == 0);
         m_writeTrans = new WriteTransaction(m_postingDB, m_positionDB, m_documentTermsDB, m_documentXattrTermsDB,
-                                            m_documentFileNameTermsDB, m_docUrlDB, m_docTimeDB, m_docDataDB, m_contentIndexingDB);
+                                            m_documentFileNameTermsDB, m_docUrlDB, m_docTimeDB, m_docDataDB,
+                                            m_contentIndexingDB, m_mtimeDB);
     }
 }
 

@@ -34,13 +34,15 @@ class DocumentDataDB;
 class DocumentUrlDB;
 class DocumentTimeDB;
 class DocumentIdDB;
+class MTimeDB;
 
 class WriteTransaction
 {
 public:
     WriteTransaction(PostingDB* postingDB, PositionDB* positionDB, DocumentDB* docTerms,
                      DocumentDB* docXattrTerms, DocumentDB* docFileNameTerms, DocumentUrlDB* docUrlDB,
-                     DocumentTimeDB* docTimeDB, DocumentDataDB* docDataDB, DocumentIdDB* contentIndexingDB);
+                     DocumentTimeDB* docTimeDB, DocumentDataDB* docDataDB, DocumentIdDB* contentIndexingDB,
+                     MTimeDB* mtimeDB);
 
     void addDocument(const Document& doc);
     void removeDocument(quint64 id);
@@ -74,6 +76,7 @@ private:
     DocumentTimeDB* m_docTimeDB;
     DocumentDataDB* m_docDataDB;
     DocumentIdDB* m_contentIndexingDB;
+    MTimeDB* m_mtimeDB;
 };
 }
 

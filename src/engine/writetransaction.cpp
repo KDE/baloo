@@ -27,13 +27,15 @@
 #include "positiondb.h"
 #include "documenttimedb.h"
 #include "documentdatadb.h"
+#include "mtimedb.h"
 
 using namespace Baloo;
 
 WriteTransaction::WriteTransaction(PostingDB* postingDB, PositionDB* positionDB,
                                    DocumentDB* docTerms, DocumentDB* docXattrTerms, DocumentDB* docFileNameTerms,
                                    DocumentUrlDB* docUrlDB, DocumentTimeDB* docTimeDB,
-                                   DocumentDataDB* docDataDB, DocumentIdDB* contentIndexingDB)
+                                   DocumentDataDB* docDataDB, DocumentIdDB* contentIndexingDB,
+                                   MTimeDB* mtimeDB)
     : m_postingDB(postingDB)
     , m_positionDB(positionDB)
     , m_documentTermsDB(docTerms)
@@ -43,6 +45,7 @@ WriteTransaction::WriteTransaction(PostingDB* postingDB, PositionDB* positionDB,
     , m_docTimeDB(docTimeDB)
     , m_docDataDB(docDataDB)
     , m_contentIndexingDB(contentIndexingDB)
+    , m_mtimeDB(mtimeDB)
 {
 }
 
@@ -125,6 +128,7 @@ void WriteTransaction::addDocument(const Document& doc)
     info.cTime = doc.m_cTime;
 
     m_docTimeDB->put(id, info);
+    m_mtimeDB->put(doc.m_mTime, id);
 
     if (!doc.m_data.isEmpty()) {
         m_docDataDB->put(id, doc.m_data);
@@ -154,7 +158,11 @@ void WriteTransaction::removeDocument(quint64 id)
     m_docUrlDB->del(id);
 
     m_contentIndexingDB->del(id);
+
+    DocumentTimeDB::TimeInfo info = m_docTimeDB->get(id);
     m_docTimeDB->del(id);
+    m_mtimeDB->del(info.mTime, id);
+
     m_docDataDB->del(id);
 }
 
@@ -274,6 +282,7 @@ void WriteTransaction::replaceDocument(const Document& doc, Database::DocumentOp
         info.cTime = doc.m_cTime;
 
         m_docTimeDB->put(id, info);
+        m_mtimeDB->put(doc.m_mTime, id);
     }
 
     if (operations & Database::DocumentData) {

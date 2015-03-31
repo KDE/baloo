@@ -35,6 +35,7 @@ class DocumentDataDB;
 class DocumentUrlDB;
 class DocumentTimeDB;
 class DocumentIdDB;
+class MTimeDB;
 class EngineQuery;
 class PostingIterator;
 class WriteTransaction;
@@ -120,6 +121,7 @@ private:
     DocumentTimeDB* m_docTimeDB;
     DocumentDataDB* m_docDataDB;
     DocumentIdDB* m_contentIndexingDB;
+    MTimeDB* m_mtimeDB;
 
     WriteTransaction* m_writeTrans;
 
