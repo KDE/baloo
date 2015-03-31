@@ -71,7 +71,6 @@ public:
 
     void setMTime(quint32 val) { m_mTime = val; }
     void setCTime(quint32 val) { m_cTime = val; }
-    void setJulianDay(quint32 val) { m_julianDay = val; }
 
     void setData(const QByteArray& data);
 
@@ -93,7 +92,6 @@ private:
 
     quint32 m_mTime;
     quint32 m_cTime;
-    quint32 m_julianDay;
     QByteArray m_data;
 
     friend class WriteTransaction;

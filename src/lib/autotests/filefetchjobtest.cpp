@@ -68,7 +68,6 @@ void FileFetchJobTest::test()
     doc.addTerm("testterm");
     doc.setMTime(1);
     doc.setCTime(1);
-    doc.setJulianDay(1);
 
     {
         Database db(fileIndexDbPath());

@@ -77,7 +77,6 @@ bool BasicIndexingJob::index()
 
     doc.setMTime(mod.toTime_t());
     doc.setCTime(statBuf.st_ctime);
-    doc.setJulianDay(mod.date().toJulianDay());
 
     // Types
     QVector<KFileMetaData::Type::Type> tList = typesForMimeType(m_mimetype);

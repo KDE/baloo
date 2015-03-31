@@ -73,7 +73,6 @@ void DatabaseTest::test()
     doc.addFileNameTerm("link");
     doc.setMTime(1);
     doc.setCTime(2);
-    doc.setJulianDay(3);
 
     db.addDocument(doc);
     db.commit();

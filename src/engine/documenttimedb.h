@@ -38,10 +38,9 @@ public:
     struct TimeInfo {
         quint32 mTime;
         quint32 cTime;
-        quint32 julianDay;
 
         bool operator == (const TimeInfo& rhs) const {
-            return mTime == rhs.mTime && cTime == rhs.cTime && julianDay == rhs.julianDay;
+            return mTime == rhs.mTime && cTime == rhs.cTime;
         }
     };
     void put(quint64 docId, const TimeInfo& info);

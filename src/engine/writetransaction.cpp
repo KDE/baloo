@@ -123,7 +123,6 @@ void WriteTransaction::addDocument(const Document& doc)
     DocumentTimeDB::TimeInfo info;
     info.mTime = doc.m_mTime;
     info.cTime = doc.m_cTime;
-    info.julianDay = doc.m_julianDay;
 
     m_docTimeDB->put(id, info);
 
@@ -273,7 +272,6 @@ void WriteTransaction::replaceDocument(const Document& doc, Database::DocumentOp
         DocumentTimeDB::TimeInfo info;
         info.mTime = doc.m_mTime;
         info.cTime = doc.m_cTime;
-        info.julianDay = doc.m_julianDay;
 
         m_docTimeDB->put(id, info);
     }

@@ -68,7 +68,6 @@ private:
         doc.setId(id);
         doc.setMTime(1);
         doc.setCTime(2);
-        doc.setJulianDay(3);
 
         db->addDocument(doc);
     }

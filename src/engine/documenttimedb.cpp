@@ -41,7 +41,6 @@ void DocumentTimeDB::put(quint64 docId, const TimeInfo& info)
     Q_ASSERT(docId > 0);
     Q_ASSERT(info.mTime);
     Q_ASSERT(info.cTime);
-    Q_ASSERT(info.julianDay);
 
     MDB_val key;
     key.mv_size = sizeof(quint64);

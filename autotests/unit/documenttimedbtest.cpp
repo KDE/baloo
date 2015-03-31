@@ -37,7 +37,6 @@ void DocumentTimeDBTest::test()
     DocumentTimeDB::TimeInfo info;
     info.mTime = 5;
     info.cTime = 6;
-    info.julianDay = 7;
 
     db.put(1, info);
     QCOMPARE(db.get(1), info);
