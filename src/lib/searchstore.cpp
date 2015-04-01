@@ -68,11 +68,9 @@ QVector<quint64> SearchStore::exec(const Term& term, int limit)
 {
     EngineQuery query = constructQuery(term);
     if (query.empty()) {
-        qDebug() << "Empty";
         return QVector<quint64>();
     }
 
-    qDebug() << "LALAL";
     return m_db->exec(query, limit);
 }
 
@@ -102,6 +100,21 @@ QByteArray SearchStore::fetchPrefix(const QByteArray& property) const
 
 EngineQuery SearchStore::constructQuery(const Term& term)
 {
+    if (term.operation() == Term::And || term.operation() == Term::Or) {
+        QVector<EngineQuery> vec;
+        for (const Term& t : term.subTerms()) {
+            EngineQuery q = constructQuery(t);
+            if (!q.empty())
+                vec << q;
+        }
+
+        if (vec.isEmpty()) {
+            return EngineQuery();
+        }
+
+        return EngineQuery(vec, term.operation() == Term::And ? EngineQuery::And : EngineQuery::Or);
+    }
+
     const QVariant value = term.value();
     if (value.isNull()) {
         return EngineQuery();
