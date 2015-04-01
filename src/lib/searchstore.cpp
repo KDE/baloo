@@ -29,6 +29,8 @@
 
 #include <QStandardPaths>
 
+#include <KFileMetaData/PropertyInfo>
+
 using namespace Baloo;
 
 SearchStore::SearchStore()
@@ -38,6 +40,15 @@ SearchStore::SearchStore()
     m_db = new Database(path);
     m_db->open();
     m_db->transaction(Database::ReadOnly);
+
+    m_prefixes.insert(QByteArray("filename"), QByteArray("F"));
+    m_prefixes.insert(QByteArray("mimetype"), QByteArray("M"));
+    m_prefixes.insert(QByteArray("rating"), QByteArray("R"));
+    m_prefixes.insert(QByteArray("tag"), QByteArray("TA"));
+    m_prefixes.insert(QByteArray("tags"), QByteArray("TA"));
+    m_prefixes.insert(QByteArray("usercomment"), QByteArray("C"));
+    m_prefixes.insert(QByteArray("type"), QByteArray("T"));
+    m_prefixes.insert(QByteArray("kind"), QByteArray("T"));
 }
 
 SearchStore::~SearchStore()
@@ -66,4 +77,22 @@ QString SearchStore::filePath(quint64 id)
 {
     Q_ASSERT(id > 0);
     return m_db->documentUrl(id);
+}
+
+QByteArray SearchStore::fetchPrefix(const QByteArray& property) const
+{
+    auto it = m_prefixes.constFind(property.toLower());
+    if (it != m_prefixes.constEnd()) {
+        return it.value();
+    }
+    else {
+        KFileMetaData::PropertyInfo pi = KFileMetaData::PropertyInfo::fromName(property);
+        if (pi.property() == KFileMetaData::Property::Empty) {
+            qDebug() << "Property" << property << "not found";
+            return QByteArray();
+        }
+        int propPrefix = static_cast<int>(pi.property());
+        return 'X' + QByteArray::number(propPrefix);
+    }
+
 }

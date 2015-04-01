@@ -24,6 +24,7 @@
 #define BALOO_SEARCHSTORE_H
 
 #include <QString>
+#include <QHash>
 
 namespace Baloo {
 
@@ -42,7 +43,10 @@ public:
     QString filePath(quint64 id);
 
 private:
+    QByteArray fetchPrefix(const QByteArray& property) const;
+
     Database* m_db;
+    QHash<QByteArray, QByteArray> m_prefixes;
 };
 
 }

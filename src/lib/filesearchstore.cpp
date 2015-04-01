@@ -281,16 +281,6 @@ Xapian::Query FileSearchStore::constructFilterQuery(int year, int month, int day
     return Xapian::Query(Xapian::Query::OP_AND, vector.begin(), vector.end());
 }
 
-QString FileSearchStore::constructFilePath(const Xapian::docid& docid)
-{
-    QMutexLocker lock(&m_mutex);
-
-    FileMapping file(docid);
-    file.fetch(m_db);
-
-    return file.url();
-}
-
 Xapian::Query FileSearchStore::applyIncludeFolder(const Xapian::Query& q, const QString& includeFolder)
 {
     if (includeFolder.isEmpty()) {
