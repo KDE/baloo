@@ -83,7 +83,7 @@ int main(int argc, char* argv[])
     parser.addHelpOption();
     parser.process(app);
 
-    int queryLimit = 10;
+    int queryLimit = -1;
     int offset = 0;
     QString typeStr;
 
