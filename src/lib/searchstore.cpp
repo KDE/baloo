@@ -21,15 +21,17 @@
  */
 
 #include "searchstore.h"
-#include "query.h"
+#include "term.h"
 
 #include "database.h"
 #include "enginequery.h"
 #include "queryparser.h"
+#include "termgenerator.h"
 
 #include <QStandardPaths>
 
 #include <KFileMetaData/PropertyInfo>
+#include <KFileMetaData/TypeInfo>
 
 using namespace Baloo;
 
@@ -62,15 +64,16 @@ QStringList SearchStore::types()
                          << QLatin1String("Image") << QLatin1String("Archive") << QLatin1String("Folder");
 }
 
-QVector<quint64> SearchStore::exec(const Query& query)
+QVector<quint64> SearchStore::exec(const Term& term, int limit)
 {
-    if (!query.searchString().isEmpty()) {
-        QueryParser parser;
-        EngineQuery eq = parser.parseQuery(query.searchString());
-        return m_db->exec(eq);
+    EngineQuery query = constructQuery(term);
+    if (query.empty()) {
+        qDebug() << "Empty";
+        return QVector<quint64>();
     }
 
-    return QVector<quint64>();
+    qDebug() << "LALAL";
+    return m_db->exec(query, limit);
 }
 
 QString SearchStore::filePath(quint64 id)
@@ -96,3 +99,71 @@ QByteArray SearchStore::fetchPrefix(const QByteArray& property) const
     }
 
 }
+
+EngineQuery SearchStore::constructQuery(const Term& term)
+{
+    const QVariant value = term.value();
+    if (value.isNull()) {
+        return EngineQuery();
+    }
+
+    QByteArray property = term.property().toLower().toUtf8();
+    // TODO:
+    // Handle Ratings - or generic integer queries
+    // Handle FileNames
+    // Handle "modified"
+
+    if (property == "type" || property == "kind") {
+        KFileMetaData::TypeInfo ti = KFileMetaData::TypeInfo::fromName(value.toString());
+        int num = static_cast<int>(ti.type());
+
+        return EngineQuery('T' + QByteArray::number(num));
+    }
+
+    auto com = term.comparator();
+    if (com == Term::Contains) {
+        QByteArray prefix;
+        if (!property.isEmpty()) {
+            prefix = fetchPrefix(property);
+            if (prefix.isEmpty()) {
+                return EngineQuery();
+            }
+        }
+
+        QueryParser parser;
+        return parser.parseQuery(value.toString(), prefix);
+    }
+
+    if (com == Term::Equal) {
+        // We use the TermGenerator to normalize the words in the value and to
+        // split it into other words. If we split the words, we then add them as a
+        // phrase query.
+        QStringList terms = TermGenerator::termList(value.toString());
+
+        QByteArray prefix;
+        if (!property.isEmpty()) {
+            prefix = fetchPrefix(property);
+            if (prefix.isEmpty()) {
+                return EngineQuery();
+            }
+        }
+
+        QVector<EngineQuery> queries;
+        int position = 1;
+        for (const QString& term : terms) {
+            QByteArray arr = (prefix + term).toUtf8();
+            queries << EngineQuery(arr, position++);
+        }
+
+        if (queries.isEmpty()) {
+            return EngineQuery();
+        } else if (queries.size() == 1) {
+            return queries.first();
+        } else {
+            return EngineQuery(queries, EngineQuery::Phrase);
+        }
+    }
+
+    return EngineQuery();
+}
+

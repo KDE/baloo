@@ -28,8 +28,9 @@
 
 namespace Baloo {
 
-class Query;
+class Term;
 class Database;
+class EngineQuery;
 
 class SearchStore
 {
@@ -39,7 +40,7 @@ public:
 
     QStringList types();
 
-    QVector<quint64> exec(const Query& query);
+    QVector<quint64> exec(const Term& term, int limit);
     QString filePath(quint64 id);
 
 private:
@@ -47,6 +48,8 @@ private:
 
     Database* m_db;
     QHash<QByteArray, QByteArray> m_prefixes;
+
+    EngineQuery constructQuery(const Term& term);
 };
 
 }

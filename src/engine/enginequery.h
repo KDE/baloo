@@ -65,6 +65,10 @@ public:
         return !m_term.isEmpty();
     }
 
+    bool empty() {
+        return m_subQueries.isEmpty() && m_term.isEmpty();
+    }
+
     QVector<EngineQuery> subQueries() const {
         return m_subQueries;
     }
