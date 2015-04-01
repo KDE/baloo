@@ -1,6 +1,6 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
- * Copyright (C) 2013  Vishesh Handa <me@vhanda.in>
+ * This file is part of the KDE Baloo Project
+ * Copyright (C) 2013-2015  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,7 +20,6 @@
 
 #include "queryserializationtest.h"
 #include "query.h"
-#include <term.h>
 #include "term.h"
 
 #include <QtTest>
@@ -51,83 +50,46 @@ void QuerySerializationTest::testBasic()
 
 void QuerySerializationTest::testTerm()
 {
-    Term term(QLatin1String("property"), QLatin1String("value"));
-
     Query query;
-    query.setTerm(term);
+    query.setSearchString("prop:value");
 
     QByteArray json = query.toJSON();
     Query q = Query::fromJSON(json);
-
-    Term t = q.term();
-    QCOMPARE(t.property(), QLatin1String("property"));
-    QCOMPARE(t.value(), QVariant(QLatin1String("value")));
-    QCOMPARE(q.term(), term);
 
     QCOMPARE(q, query);
 }
 
 void QuerySerializationTest::testAndTerm()
 {
-    Term term1(QLatin1String("prop1"), 1);
-    Term term2(QLatin1String("prop2"), 2);
-
-    Term term(Term::And);
-    term.addSubTerm(term1);
-    term.addSubTerm(term2);
-
     Query query;
-    query.setTerm(term);
+    query.setSearchString("prop1:1 AND prop2:2");
 
     QByteArray json = query.toJSON();
     Query q = Query::fromJSON(json);
 
-    Term t = q.term();
-    QCOMPARE(t.subTerms().size(), 2);
-    QCOMPARE(t.subTerms().at(0), term1);
-    QCOMPARE(t.subTerms().at(1), term2);
-
-    QCOMPARE(t, term);
     QCOMPARE(q, query);
-
 }
 
 void QuerySerializationTest::testDateTerm()
 {
-    Term term(QLatin1String("prop"), QDate::currentDate());
-
     Query query;
-    query.setTerm(term);
+    query.setSearchString("prop:2015-05-01");
 
     QByteArray json = query.toJSON();
     Query q = Query::fromJSON(json);
 
-    Term t = q.term();
-    QCOMPARE(t.value(), term.value());
-    QCOMPARE(t.value().typeName(), term.value().typeName());
-    QCOMPARE(t.property(), term.property());
+    QCOMPARE(q, query);
 }
 
 void QuerySerializationTest::testDateTimeTerm()
 {
-    // This is hack being done so that the milliseconds are ignored
-    // the internal QJson serializer throws away the msecs
-    QDateTime dt = QDateTime::currentDateTime();
-    dt.setTime(QTime(dt.time().hour(), dt.time().minute(), dt.time().second()));
-
-    Term term(QLatin1String("prop"), dt);
-
     Query query;
-    query.setTerm(term);
+    query.setSearchString("prop:2015-05-01T23:44:11");
 
     QByteArray json = query.toJSON();
     Query q = Query::fromJSON(json);
 
-    Term t = q.term();
-    QCOMPARE(t.value().typeName(), term.value().typeName());
-    QCOMPARE(t.value().toDateTime(), term.value().toDateTime());
-    QCOMPARE(t.value(), term.value());
-    QCOMPARE(t.property(), term.property());
+    QCOMPARE(q, query);
 }
 
 

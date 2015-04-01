@@ -97,9 +97,8 @@ void TagsProtocol::listDir(const QUrl& url)
 
     case TagUrl: {
         Query q;
-        q.addType(QLatin1String("File"));
-        q.setTerm(Term(QLatin1String("tag"), tag));
         q.setSortingOption(Query::SortNone);
+        q.setSearchString(QStringLiteral("tag:") + tag);
 
         ResultIterator it = q.exec();
         while (it.next()) {

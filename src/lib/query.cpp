@@ -68,12 +68,6 @@ Query::Query()
 {
 }
 
-Query::Query(const Term& t)
-    : d(new Private)
-{
-    d->m_term = t;
-}
-
 Query::Query(const Query& rhs)
     : d(new Private(*rhs.d))
 {
@@ -82,16 +76,6 @@ Query::Query(const Query& rhs)
 Query::~Query()
 {
     delete d;
-}
-
-void Query::setTerm(const Term& t)
-{
-    d->m_term = t;
-}
-
-Term Query::term() const
-{
-    return d->m_term;
 }
 
 void Query::addType(const QString& type)

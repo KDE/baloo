@@ -11,7 +11,7 @@ ecm_add_test(${querySerialization_SRC}
 #
 # Advanced Query Parser
 #
-ecm_add_test(advancedqueryparsertest.cpp ../advancedqueryparser.cpp
+ecm_add_test(advancedqueryparsertest.cpp ../advancedqueryparser.cpp ../term.cpp
     TEST_NAME "advancedqueryparsertest"
     LINK_LIBRARIES Qt5::Test KF5::Baloo
 )

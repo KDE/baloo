@@ -48,7 +48,6 @@ generate_export_header(KF5Baloo BASE_NAME BALOO_CORE EXPORT_FILE_NAME core_expor
 
 ecm_generate_headers(KF5Baloo_CamelCase_HEADERS
     HEADER_NAMES
-    Term
     Query
     QueryRunnable
     Result
