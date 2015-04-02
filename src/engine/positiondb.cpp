@@ -20,6 +20,8 @@
 
 #include "positiondb.h"
 #include "positioncodec.h"
+#include "positioninfo.h"
+#include "postingiterator.h"
 
 #include <QDebug>
 
@@ -138,6 +140,8 @@ private:
 
 PostingIterator* PositionDB::iter(const QByteArray& term)
 {
+    Q_ASSERT(!term.isEmpty());
+
     MDB_val key;
     key.mv_size = term.size();
     key.mv_data = static_cast<void*>(const_cast<char*>(term.constData()));

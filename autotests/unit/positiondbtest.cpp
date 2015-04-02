@@ -19,6 +19,8 @@
  */
 
 #include "positiondb.h"
+#include "positioninfo.h"
+#include "postingiterator.h"
 #include "singledbtest.h"
 
 using namespace Baloo;

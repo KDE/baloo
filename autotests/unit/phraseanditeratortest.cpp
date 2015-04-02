@@ -20,6 +20,7 @@
 
 #include "phraseanditerator.h"
 #include "vectorpositioninfoiterator.h"
+#include "positioninfo.h"
 
 #include <QTest>
 

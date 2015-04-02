@@ -1,5 +1,5 @@
 /*
- * This file is part of the KDE Baloo project.
+ * <one line to give the library's name and an idea of what it does.>
  * Copyright (C) 2015  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
@@ -18,41 +18,41 @@
  *
  */
 
-#ifndef BALOO_POSITIONDB_H
-#define BALOO_POSITIONDB_H
-
-#include "engine_export.h"
+#ifndef BALOO_POSITIONINFO_H
+#define BALOO_POSITIONINFO_H
 
 #include <QByteArray>
 #include <QVector>
-#include <lmdb.h>
+#include <QDebug>
 
 namespace Baloo {
 
-class PositionInfo;
-class PostingIterator;
+struct PositionInfo {
+    quint64 docId;
+    QVector<uint> positions;
 
-class BALOO_ENGINE_EXPORT PositionDB
-{
-public:
-    explicit PositionDB(MDB_txn* txn);
-    ~PositionDB();
+    PositionInfo(quint64 id = 0, const QVector<uint> posList = QVector<uint>())
+        : docId(id), positions(posList) {}
 
-    void put(const QByteArray& term, const QVector<PositionInfo>& list);
-    QVector<PositionInfo> get(const QByteArray& term);
-    void del(const QByteArray& term);
-
-    PostingIterator* iter(const QByteArray& term);
-
-    void setTransaction(MDB_txn* txn) {
-        m_txn = txn;
+    bool operator ==(const PositionInfo& rhs) const {
+        return docId == rhs.docId;
     }
-private:
-    MDB_txn* m_txn;
-    MDB_dbi m_dbi;
+    bool operator !=(const PositionInfo& rhs) const {
+        return docId != rhs.docId;
+    }
+
+    bool operator <(const PositionInfo& rhs) const {
+        return docId < rhs.docId;
+    }
 };
+
+inline QDebug operator<<(QDebug dbg, const PositionInfo &pos) {
+    dbg << "(" << pos.docId << "-->" << pos.positions << ")";
+    return dbg;
+}
 
 }
 
+Q_DECLARE_TYPEINFO(Baloo::PositionInfo, Q_MOVABLE_TYPE);
 
-#endif // BALOO_POSITIONDB_H
+#endif // BALOO_POSITIONINFO_H

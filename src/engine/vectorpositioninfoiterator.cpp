@@ -19,6 +19,7 @@
  */
 
 #include "vectorpositioninfoiterator.h"
+#include "positioninfo.h"
 
 using namespace Baloo;
 

@@ -19,6 +19,7 @@
  */
 
 #include "positioncodec.h"
+#include "positioninfo.h"
 
 #include <QDataStream>
 

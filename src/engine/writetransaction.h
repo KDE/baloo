@@ -1,5 +1,5 @@
 /*
-   This file is part of the KDE Baloo project.
+ * This file is part of the KDE Baloo project.
  * Copyright (C) 2015  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 
 #include "engine_export.h"
 #include "database.h"
-#include "positiondb.h" // reqd for PositionInfo
+#include "positioninfo.h"
 
 namespace Baloo {
 
