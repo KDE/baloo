@@ -51,7 +51,9 @@ public:
     QString path() const;
     bool open();
 
-    // FIXME: Return codes?
+    //
+    // Write Methods
+    //
     void addDocument(const Document& doc);
     void removeDocument(quint64 id);
 
@@ -67,15 +69,17 @@ public:
     Q_DECLARE_FLAGS(DocumentOperations, DocumentOperation)
 
     void replaceDocument(const Document& doc, DocumentOperations operations);
+    void setPhaseOne(quint64 id);
 
-    bool hasDocument(quint64 id);
+    void renameFilePath(quint64 id, const Document& newDoc);
 
+    //
+    // Transaction Handling
+    //
     enum TransactionType {
         ReadOnly,
         ReadWrite
     };
-
-    void renameFilePath(quint64 id, const Document& newDoc);
 
     /**
      * Starts a transaction in which the database can be modified.
@@ -88,6 +92,10 @@ public:
 
     bool hasChanges() const;
 
+    //
+    // Getters
+    //
+    bool hasDocument(quint64 id);
     QByteArray documentUrl(quint64 id);
     quint64 documentId(quint64 parentId, const QByteArray& fileName);
     QByteArray documentData(quint64 id);
@@ -97,7 +105,6 @@ public:
 
     QVector<quint64> exec(const EngineQuery& query, int limit = -1);
 
-    void setPhaseOne(quint64 id);
     QVector<quint64> fetchPhaseOneIds(int size);
     uint phaseOneSize();
     uint size();
