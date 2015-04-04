@@ -27,7 +27,8 @@
 
 namespace Baloo {
 
-struct PositionInfo {
+class PositionInfo {
+public:
     quint64 docId;
     QVector<uint> positions;
 
