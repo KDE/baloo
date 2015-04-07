@@ -105,7 +105,7 @@ private Q_SLOTS:
         db.put("fore", {2, 3, 5});
         db.put("zib", {4, 5, 6});
 
-        QList<QByteArray> list = {"fir", "fire", "fore"};
+        QVector<QByteArray> list = {"fir", "fire", "fore"};
         QCOMPARE(db.fetchTermsStartingWith("f"), list);
     }
 };

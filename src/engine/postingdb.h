@@ -54,7 +54,7 @@ public:
     PostingIterator* prefixIter(const QByteArray& term);
     PostingIterator* regexpIter(const QRegularExpression& regexp, const QByteArray& prefix);
 
-    QList<QByteArray> fetchTermsStartingWith(const QByteArray& term);
+    QVector<QByteArray> fetchTermsStartingWith(const QByteArray& term);
 
 private:
     MDB_txn* m_txn;

@@ -64,7 +64,7 @@ public:
     uint phaseOneSize();
     uint size();
 
-    QList<QByteArray> fetchTermsStartingWith(const QByteArray& term);
+    QVector<QByteArray> fetchTermsStartingWith(const QByteArray& term);
 
     //
     // Transaction handling

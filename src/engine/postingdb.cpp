@@ -112,7 +112,7 @@ void PostingDB::del(const QByteArray& term)
     Q_ASSERT_X(rc == 0, "PostingDB::del", mdb_strerror(rc));
 }
 
-QList<QByteArray> PostingDB::fetchTermsStartingWith(const QByteArray& term)
+QVector< QByteArray > PostingDB::fetchTermsStartingWith(const QByteArray& term)
 {
     MDB_val key;
     key.mv_size = term.size();
@@ -124,17 +124,17 @@ QList<QByteArray> PostingDB::fetchTermsStartingWith(const QByteArray& term)
     int rc = mdb_cursor_get(cursor, &key, 0, MDB_SET_RANGE);
     if (rc == MDB_NOTFOUND) {
         mdb_cursor_close(cursor);
-        return QList<QByteArray>();
+        return QVector<QByteArray>();
     }
     Q_ASSERT_X(rc == 0, "PostingDB::fetchTermsStartingWith", mdb_strerror(rc));
 
     const QByteArray arr = QByteArray::fromRawData(static_cast<char*>(key.mv_data), key.mv_size);
     if (!arr.startsWith(term)) {
         mdb_cursor_close(cursor);
-        return QList<QByteArray>();
+        return QVector<QByteArray>();
     }
 
-    QList<QByteArray> terms;
+    QVector<QByteArray> terms;
     terms << arr;
 
     while (1) {

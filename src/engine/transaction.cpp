@@ -145,7 +145,7 @@ QVector<quint64> Transaction::fetchPhaseOneIds(int size)
     return contentIndexingDb.fetchItems(size);
 }
 
-QList<QByteArray> Transaction::fetchTermsStartingWith(const QByteArray& term)
+QVector< QByteArray > Transaction::fetchTermsStartingWith(const QByteArray& term)
 {
     Q_ASSERT(term.size() > 0);
 

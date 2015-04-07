@@ -48,7 +48,7 @@ void TagListJob::start()
     Database db(fileIndexDbPath());
     db.open();
 
-    QList<QByteArray> tagList;
+    QVector<QByteArray> tagList;
     {
         Transaction tr(db, Transaction::ReadOnly);
         tagList = tr.fetchTermsStartingWith("TAG-");
