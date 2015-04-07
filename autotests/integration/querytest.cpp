@@ -23,6 +23,7 @@
 #include "document.h"
 #include "termgenerator.h"
 #include "enginequery.h"
+#include "idutils.h"
 
 #include <QTest>
 #include <QTemporaryDir>
@@ -59,34 +60,56 @@ private:
     Database* db;
 
     void insertDocuments(Transaction* tr);
-    void addDocument(Transaction* tr,const QString& text, quint64 id)
+    void addDocument(Transaction* tr,const QString& text, quint64 id, const QString& url)
     {
         Document doc;
+        doc.setUrl(QFile::encodeName(url));
+
+        QString fileName = url.mid(url.lastIndexOf('/') + 1);
 
         TermGenerator tg(&doc);
         tg.indexText(text);
+        tg.indexFileNameText(fileName);
         doc.setId(id);
         doc.setMTime(1);
         doc.setCTime(2);
 
         tr->addDocument(doc);
     }
+
+    quint64 m_id1;
+    quint64 m_id2;
+    quint64 m_id3;
+    quint64 m_id4;
 };
 
+static quint64 touchFile(const QString& path) {
+    QFile file(path);
+    file.open(QIODevice::WriteOnly);
+    file.write("data");
+    file.close();
+
+    return filePathToId(QFile::encodeName(path));
+}
 
 void QueryTest::insertDocuments(Transaction* tr)
 {
-    addDocument(tr, "The quick brown foxed jumped over the crazy dog", 100);
-    addDocument(tr, "The night is dark and full of terror", 110);
-    addDocument(tr, "Don't feel sorry for yourself. Only assholes do that", 120);
-    addDocument(tr, "Only the dead stay 17 forever. crazy", 130);
+    m_id1 = touchFile(dir->path() + "/file1");
+    m_id2 = touchFile(dir->path() + "/file2");
+    m_id3 = touchFile(dir->path() + "/file3");
+    m_id4 = touchFile(dir->path() + "/file4");
+
+    addDocument(tr, "The quick brown foxed jumped over the crazy dog", m_id1, dir->path() + "/file1");
+    addDocument(tr, "The night is dark and full of terror", m_id2, dir->path() + "/file2");
+    addDocument(tr, "Don't feel sorry for yourself. Only assholes do that", m_id3, dir->path() + "/file3");
+    addDocument(tr, "Only the dead stay 17 forever. crazy", m_id4, dir->path() + "/file4");
 }
 
 void QueryTest::testTermEqual()
 {
     EngineQuery q("the");
 
-    QVector<quint64> result = {100, 110, 130};
+    QVector<quint64> result = {m_id1, m_id2, m_id4};
     Transaction tr(db, Transaction::ReadOnly);
     QCOMPARE(tr.exec(q), result);
 }
@@ -95,7 +118,7 @@ void QueryTest::testTermStartsWith()
 {
     EngineQuery q("for", EngineQuery::StartsWith);
 
-    QVector<quint64> result = {120, 130};
+    QVector<quint64> result = {m_id3, m_id4};
     Transaction tr(db, Transaction::ReadOnly);
     QCOMPARE(tr.exec(q), result);
 }
@@ -108,7 +131,7 @@ void QueryTest::testTermAnd()
 
     EngineQuery q(queries, EngineQuery::And);
 
-    QVector<quint64> result = {120};
+    QVector<quint64> result = {m_id3};
     Transaction tr(db, Transaction::ReadOnly);
     QCOMPARE(tr.exec(q), result);
 }
@@ -121,7 +144,7 @@ void QueryTest::testTermOr()
 
     EngineQuery q(queries, EngineQuery::Or);
 
-    QVector<quint64> result = {100, 110};
+    QVector<quint64> result = {m_id1, m_id2};
     Transaction tr(db, Transaction::ReadOnly);
     QCOMPARE(tr.exec(q), result);
 }
@@ -134,7 +157,7 @@ void QueryTest::testTermPhrase()
 
     EngineQuery q(queries, EngineQuery::Phrase);
 
-    QVector<quint64> result = {100};
+    QVector<quint64> result = {m_id1};
     Transaction tr(db, Transaction::ReadOnly);
     QCOMPARE(tr.exec(q), result);
 }

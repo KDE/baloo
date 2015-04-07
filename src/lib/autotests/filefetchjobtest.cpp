@@ -67,6 +67,7 @@ void FileFetchJobTest::test()
     doc.setUrl(tempFile.fileName().toUtf8());
     doc.setId(filePathToId(doc.url()));
     doc.addTerm("testterm");
+    doc.addFileNameTerm("filename");
     doc.setMTime(1);
     doc.setCTime(1);
 

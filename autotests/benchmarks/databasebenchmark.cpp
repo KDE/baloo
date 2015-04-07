@@ -36,6 +36,7 @@ private Q_SLOTS:
 
 void DatabaseBenchmark::test()
 {
+    /*
     QTime timer;
     timer.start();
 
@@ -53,7 +54,7 @@ void DatabaseBenchmark::test()
 
         QByteArray fileName = "file" + QByteArray::number(i);
         doc.addTerm(fileName);
-        doc.addTerm("F" + fileName);
+        doc.addFileNameTerm("F" + fileName);
 
         QDateTime mod = dt.addDays(-1 * i);
         const QByteArray dtm = mod.toString(Qt::ISODate).toUtf8();
@@ -71,6 +72,7 @@ void DatabaseBenchmark::test()
     tr.commit();
 
     qDebug() << i << timer.elapsed();
+    */
 }
 
 QTEST_MAIN(DatabaseBenchmark)

@@ -61,12 +61,9 @@ void WriteTransaction::addDocument(const Document& doc)
         documentXattrTermsDB.put(id, docXattrTerms);
 
     QVector<QByteArray> docFileNameTerms = addTerms(id, doc.m_fileNameTerms);
-    if (!docFileNameTerms.isEmpty())
-        documentFileNameTermsDB.put(id, docFileNameTerms);
+    documentFileNameTermsDB.put(id, docFileNameTerms);
 
-    if (!doc.url().isEmpty()) {
-        docUrlDB.put(id, doc.url());
-    }
+    docUrlDB.put(id, doc.url());
 
     if (doc.contentIndexing()) {
         contentIndexingDB.put(doc.id());
@@ -245,7 +242,6 @@ void WriteTransaction::commit()
     PostingDB postingDB(m_dbis.postingDbi, m_txn);
     PositionDB positionDB(m_dbis.positionDBi, m_txn);
 
-    qDebug() << "PendingOperations:" << m_pendingOperations.size();
     QHashIterator<QByteArray, QVector<Operation> > iter(m_pendingOperations);
     while (iter.hasNext()) {
         iter.next();
