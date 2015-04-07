@@ -142,9 +142,7 @@ void WriteTransaction::removeDocument(quint64 id)
 
     // FIXME: Optimize this. We do not need to combine them into one big vector
     QVector<QByteArray> terms = documentTermsDB.get(id) + documentXattrTermsDB.get(id) + documentFileNameTermsDB.get(id);
-    if (terms.isEmpty()) {
-        return;
-    }
+    Q_ASSERT(!terms.isEmpty());
 
     for (const QByteArray& term : terms) {
         Operation op;
