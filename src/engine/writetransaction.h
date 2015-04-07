@@ -59,6 +59,8 @@ private:
      * Returns the list of all the terms.
      */
     QVector<QByteArray> addTerms(quint64 id, const QMap<QByteArray, Document::TermData>& terms);
+    QVector<QByteArray> replaceTerms(quint64 id, const QVector<QByteArray>& prevTerms,
+                                     const QMap<QByteArray, Document::TermData>& terms);
 
     QHash<QByteArray, QVector<Operation> > m_pendingOperations;
 

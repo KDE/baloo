@@ -158,58 +158,14 @@ void WriteTransaction::replaceDocument(const Document& doc, Transaction::Documen
 
     if (operations & Transaction::DocumentTerms) {
         QVector<QByteArray> prevTerms = documentTermsDB.get(id);
-        for (const QByteArray& term : prevTerms) {
-            Operation op;
-            op.type = RemoveId;
-            op.data.docId = id;
-
-            m_pendingOperations[term].append(op);
-        }
-
-        QVector<QByteArray> docTerms;
-        docTerms.reserve(doc.m_terms.size());
-
-        QMapIterator<QByteArray, Document::TermData> it(doc.m_terms);
-        while (it.hasNext()) {
-            const QByteArray term = it.next().key();
-            docTerms.append(term);
-
-            Operation op;
-            op.type = AddId;
-            op.data.docId = id;
-            op.data.positions = it.value().positions;
-
-            m_pendingOperations[term].append(op);
-        }
+        QVector<QByteArray> docTerms = replaceTerms(id, prevTerms, doc.m_terms);
 
         documentTermsDB.put(id, docTerms);
     }
 
     if (operations & Transaction::XAttrTerms) {
         QVector<QByteArray> prevTerms = documentXattrTermsDB.get(id);
-        for (const QByteArray& term : prevTerms) {
-            Operation op;
-            op.type = RemoveId;
-            op.data.docId = id;
-
-            m_pendingOperations[term].append(op);
-        }
-
-        QVector<QByteArray> docXattrTerms;
-        docXattrTerms.reserve(doc.m_xattrTerms.size());
-
-        QMapIterator<QByteArray, Document::TermData> it(doc.m_xattrTerms);
-        while (it.hasNext()) {
-            const QByteArray term = it.next().key();
-            docXattrTerms.append(term);
-
-            Operation op;
-            op.type = AddId;
-            op.data.docId = id;
-            op.data.positions = it.value().positions;
-
-            m_pendingOperations[term].append(op);
-        }
+        QVector<QByteArray> docXattrTerms = replaceTerms(id, prevTerms, doc.m_xattrTerms);
 
         if (!docXattrTerms.isEmpty())
             documentXattrTermsDB.put(id, docXattrTerms);
@@ -219,29 +175,7 @@ void WriteTransaction::replaceDocument(const Document& doc, Transaction::Documen
 
     if (operations & Transaction::FileNameTerms) {
         QVector<QByteArray> prevTerms = documentFileNameTermsDB.get(id);
-        for (const QByteArray& term : prevTerms) {
-            Operation op;
-            op.type = RemoveId;
-            op.data.docId = id;
-
-            m_pendingOperations[term].append(op);
-        }
-
-        QVector<QByteArray> docFileNameTerms;
-        docFileNameTerms.reserve(doc.m_fileNameTerms.size());
-
-        QMapIterator<QByteArray, Document::TermData> it(doc.m_fileNameTerms);
-        while (it.hasNext()) {
-            const QByteArray term = it.next().key();
-            docFileNameTerms.append(term);
-
-            Operation op;
-            op.type = AddId;
-            op.data.docId = id;
-            op.data.positions = it.value().positions;
-
-            m_pendingOperations[term].append(op);
-        }
+        QVector<QByteArray> docFileNameTerms = replaceTerms(id, prevTerms, doc.m_fileNameTerms);
 
         if (!docFileNameTerms.isEmpty())
             documentFileNameTermsDB.put(id, docFileNameTerms);
@@ -274,6 +208,20 @@ void WriteTransaction::replaceDocument(const Document& doc, Transaction::Documen
     if (operations & Transaction::DocumentData) {
         docDataDB.put(id, doc.m_data);
     }
+}
+
+QVector< QByteArray > WriteTransaction::replaceTerms(quint64 id, const QVector<QByteArray>& prevTerms,
+                                                     const QMap<QByteArray, Document::TermData>& terms)
+{
+    for (const QByteArray& term : prevTerms) {
+        Operation op;
+        op.type = RemoveId;
+        op.data.docId = id;
+
+        m_pendingOperations[term].append(op);
+    }
+
+    return addTerms(id, terms);
 }
 
 template<typename T>
