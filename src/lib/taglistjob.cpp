@@ -21,6 +21,7 @@
 #include "taglistjob.h"
 #include "db.h"
 #include "database.h"
+#include "transaction.h"
 
 #include <QStringList>
 
@@ -46,9 +47,12 @@ void TagListJob::start()
 {
     Database db(fileIndexDbPath());
     db.open();
-    db.transaction(Database::ReadOnly);
 
-    QList<QByteArray> tagList = db.fetchTermsStartingWith("TAG-");
+    QList<QByteArray> tagList;
+    {
+        Transaction tr(db, Transaction::ReadOnly);
+        tagList = tr.fetchTermsStartingWith("TAG-");
+    }
     d->tags.reserve(tagList.size());
     for (const QByteArray& ba : tagList) {
         d->tags << QString::fromUtf8(ba.mid(4));

@@ -26,6 +26,7 @@ namespace Baloo
 {
 
 class Database;
+class Transaction;
 
 class MetadataMover : public QObject
 {
@@ -53,13 +54,13 @@ private:
     /**
      * Remove the metadata for file \p url
      */
-    void removeMetadata(const QString& url);
+    void removeMetadata(Transaction* tr, const QString& url);
 
     /**
      * Recursively update the nie:url and nie:isPartOf properties
      * of the resource describing \p from.
      */
-    void updateMetadata(const QString& from, const QString& to);
+    void updateMetadata(Transaction* tr, const QString& from, const QString& to);
 
     Database* m_db;
 };

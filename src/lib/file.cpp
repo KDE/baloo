@@ -23,6 +23,7 @@
 #include "file.h"
 #include "db.h"
 #include "database.h"
+#include "transaction.h"
 #include "idutils.h"
 
 #include <QJsonDocument>
@@ -113,7 +114,6 @@ bool File::load()
 
     Database db(fileIndexDbPath());
     db.open();
-    db.transaction(Database::ReadOnly);
 
     if (!d->id) {
         d->id = filePathToId(QFile::encodeName(d->url));
@@ -122,7 +122,11 @@ bool File::load()
         }
     }
 
-    QByteArray arr = db.documentData(d->id);
+    QByteArray arr;
+    {
+        Transaction tr(db, Transaction::ReadOnly);
+        arr = tr.documentData(d->id);
+    }
     if (arr.isEmpty()) {
         return false;
     }

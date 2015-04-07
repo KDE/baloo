@@ -30,6 +30,7 @@
 #include <QMimeDatabase>
 
 #include "database.h"
+#include "transaction.h"
 #include "src/file/basicindexingjob.h"
 
 using namespace Baloo;
@@ -43,7 +44,8 @@ int main(int argc, char** argv)
 
     Database db(tempDir.path());
     db.open();
-    db.transaction(Database::ReadWrite);
+
+    Transaction tr(db, Transaction::ReadWrite);
 
     QMimeDatabase mimeDb;
     {
@@ -59,14 +61,14 @@ int main(int argc, char** argv)
             BasicIndexingJob job(path, mimetype, false);
             job.index();
 
-            db.addDocument(job.document());
+            tr.addDocument(job.document());
             num++;
 
             if ((num % 10000) == 0) {
                 qDebug() << num;
             }
         }
-        db.commit();
+        tr.commit();
 
         qDebug() << "Done" << timer.elapsed() << "msecs";
         app.exec();

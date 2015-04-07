@@ -21,6 +21,7 @@
 #include "metadatamover.h"
 
 #include "database.h"
+#include "transaction.h"
 #include "document.h"
 #include "basicindexingjob.h"
 
@@ -67,7 +68,6 @@ void MetadataMoverTest::init()
     m_tempDir = new QTemporaryDir();
     m_db = new Database(m_tempDir->path());
     m_db->open();
-    m_db->transaction(Database::ReadWrite);
 }
 
 void MetadataMoverTest::cleanupTestCase()
@@ -84,7 +84,9 @@ quint64 MetadataMoverTest::insertUrl(const QString& url)
     BasicIndexingJob job(url, QStringLiteral("text/plain"), false);
     job.index();
 
-    m_db->addDocument(job.document());
+    Transaction tr(m_db, Transaction::ReadWrite);
+    tr.addDocument(job.document());
+    tr.commit();
     return job.document().id();
 }
 
@@ -95,15 +97,19 @@ void MetadataMoverTest::testRemoveFile()
     QString url = file.fileName();
     quint64 fid = insertUrl(url);
 
-    m_db->commit();
-    m_db->transaction(Database::ReadWrite);
+    {
+        Transaction tr(m_db, Transaction::ReadOnly);
+        QVERIFY(tr.hasDocument(fid));
+    }
 
-    QVERIFY(m_db->hasDocument(fid));
     MetadataMover mover(m_db, this);
     file.remove();
     mover.removeFileMetadata(url);
 
-    QVERIFY(!m_db->hasDocument(fid));
+    {
+        Transaction tr(m_db, Transaction::ReadOnly);
+        QVERIFY(!tr.hasDocument(fid));
+    }
 }
 
 static void touchFile(const QString& path)
@@ -127,17 +133,21 @@ void MetadataMoverTest::testMoveFile()
     touchFile(url);
     quint64 fid = insertUrl(url);
 
-    m_db->commit();
-    m_db->transaction(Database::ReadWrite);
+    {
+        Transaction tr(m_db, Transaction::ReadOnly);
+        QVERIFY(tr.hasDocument(fid));
+    }
 
-    QVERIFY(m_db->hasDocument(fid));
     MetadataMover mover(m_db, this);
     QString url2 = dir.path() + "/file2";
     QFile::rename(url, url2);
     mover.moveFileMetadata(QFile::encodeName(url), QFile::encodeName(url2));
 
-    QVERIFY(m_db->hasDocument(fid));
-    QCOMPARE(m_db->documentUrl(fid), QFile::encodeName(url2));
+    {
+        Transaction tr(m_db, Transaction::ReadOnly);
+        QVERIFY(tr.hasDocument(fid));
+        QCOMPARE(tr.documentUrl(fid), QFile::encodeName(url2));
+    }
 }
 
 void MetadataMoverTest::testMoveFolder()
@@ -152,20 +162,24 @@ void MetadataMoverTest::testMoveFolder()
     touchFile(fileUrl);
     quint64 fid = insertUrl(fileUrl);
 
-    m_db->commit();
-    m_db->transaction(Database::ReadWrite);
-    QVERIFY(m_db->hasDocument(did));
-    QVERIFY(m_db->hasDocument(fid));
+    {
+        Transaction tr(m_db, Transaction::ReadOnly);
+        QVERIFY(tr.hasDocument(did));
+        QVERIFY(tr.hasDocument(fid));
+    }
 
     QString newFolderUrl = dir.path() + "/dir";
     QFile::rename(folder, newFolderUrl);
     MetadataMover mover(m_db, this);
     mover.moveFileMetadata(QFile::encodeName(folder), QFile::encodeName(newFolderUrl));
 
-    QVERIFY(m_db->hasDocument(did));
-    QVERIFY(m_db->hasDocument(fid));
-    QCOMPARE(m_db->documentUrl(did), QFile::encodeName(newFolderUrl));
-    QCOMPARE(m_db->documentUrl(fid), QFile::encodeName(newFolderUrl + "/file"));
+    {
+        Transaction tr(m_db, Transaction::ReadOnly);
+        QVERIFY(tr.hasDocument(did));
+        QVERIFY(tr.hasDocument(fid));
+        QCOMPARE(tr.documentUrl(did), QFile::encodeName(newFolderUrl));
+        QCOMPARE(tr.documentUrl(fid), QFile::encodeName(newFolderUrl + "/file"));
+    }
 }
 
 QTEST_MAIN(MetadataMoverTest)

@@ -19,6 +19,7 @@
  */
 
 #include "database.h"
+#include "transaction.h"
 #include "document.h"
 
 #include <QTest>
@@ -41,7 +42,7 @@ void DatabaseBenchmark::test()
     QTemporaryDir dir;
     Database db(dir.path());
     db.open();
-    db.transaction(Database::ReadWrite);
+    Transaction tr(db, Transaction::ReadWrite);
 
     QDateTime dt = QDateTime::currentDateTime();
     uint i = 1;
@@ -65,9 +66,9 @@ void DatabaseBenchmark::test()
         doc.setMTime(1);
         doc.setCTime(2);
 
-        db.addDocument(doc);
+        tr.addDocument(doc);
     }
-    db.commit();
+    tr.commit();
 
     qDebug() << i << timer.elapsed();
 }

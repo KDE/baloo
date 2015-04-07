@@ -22,6 +22,7 @@
 
 #include "commitqueue.h"
 #include "database.h"
+#include "transaction.h"
 
 #include <QDebug>
 #include <KDiskFreeSpaceInfo>
@@ -47,7 +48,8 @@ Baloo::CommitQueue::~CommitQueue()
 
 bool Baloo::CommitQueue::isEmpty() const
 {
-    return !m_db->hasChanges();
+    // FIXME: How do we implement this?
+    return true;//!m_db->hasChanges();
 }
 
 void Baloo::CommitQueue::add()
@@ -57,7 +59,8 @@ void Baloo::CommitQueue::add()
 
 void Baloo::CommitQueue::remove(quint64 docId)
 {
-    m_db->removeDocument(docId);
+    Transaction tr(m_db, Transaction::ReadWrite);
+    tr.removeDocument(docId);
     startTimers();
 }
 
@@ -72,6 +75,7 @@ void Baloo::CommitQueue::startTimers()
 
 void Baloo::CommitQueue::commit()
 {
+    // FIXME: The commit queue seems to make very little sense now!
     // The 200 mb is arbitrary
     KDiskFreeSpaceInfo info = KDiskFreeSpaceInfo::freeSpaceInfo(m_db->path());
     if (info.isValid() && info.available() <= 200 * 1024 * 1024) {
@@ -79,9 +83,6 @@ void Baloo::CommitQueue::commit()
         QCoreApplication::instance()->quit();
         return;
     }
-
-    m_db->commit();
-    m_db->transaction(Database::ReadWrite);
 
     m_smallTimer.stop();
     m_largeTimer.stop();

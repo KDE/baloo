@@ -22,6 +22,7 @@
 #include "fileindexerconfig.h"
 #include "basicindexingjob.h"
 #include "database.h"
+#include "transaction.h"
 #include "idutils.h"
 
 #include <QDebug>
@@ -139,7 +140,8 @@ bool BasicIndexingQueue::shouldIndex(const QString& file, const QString& mimetyp
     if (mimetype == QLatin1String("inode/directory"))
         return false;
 
-    quint64 mTime = m_db->documentMTime(fileId);
+    Transaction tr(m_db, Transaction::ReadOnly);
+    quint64 mTime = tr.documentMTime(fileId);
     if (mTime != fileInfo.lastModified().toTime_t()) {
         return true;
     }
@@ -155,32 +157,34 @@ bool BasicIndexingQueue::shouldIndexContents(const QString& dir)
 void BasicIndexingQueue::index(const QString& file, const QString& mimetype,
                                UpdateDirFlags flags)
 {
+    Transaction tr(m_db, Transaction::ReadWrite);
     bool xattrOnly = (flags & Baloo::ExtendedAttributesOnly);
-    bool newDoc = !m_db->hasDocument(filePathToId(QFile::encodeName(file)));
+    bool newDoc = !tr.hasDocument(filePathToId(QFile::encodeName(file)));
 
     if (newDoc) {
         BasicIndexingJob job(file, mimetype, m_config->onlyBasicIndexing());
         job.index();
 
-        m_db->addDocument(job.document());
+        tr.addDocument(job.document());
         Q_EMIT newDocument();
     }
 
     else if (!xattrOnly) {
         BasicIndexingJob job(file, mimetype, m_config->onlyBasicIndexing());
         if (job.index()) {
-            m_db->replaceDocument(job.document(), Database::DocumentTime);
-            m_db->setPhaseOne(job.document().id());
+            tr.replaceDocument(job.document(), Transaction::DocumentTime);
+            tr.setPhaseOne(job.document().id());
             Q_EMIT newDocument();
         }
     }
     else {
         BasicIndexingJob job(file, mimetype, m_config->onlyBasicIndexing());
         if (job.index()) {
-            m_db->replaceDocument(job.document(), Database::XAttrTerms);
+            tr.replaceDocument(job.document(), Transaction::XAttrTerms);
             Q_EMIT newDocument();
         }
     }
 
+    tr.commit();
     QTimer::singleShot(0, this, SLOT(finishIteration()));
 }

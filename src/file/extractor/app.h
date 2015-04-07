@@ -34,6 +34,8 @@
 
 namespace Baloo {
 
+class Transaction;
+
 class App : public QObject
 {
     Q_OBJECT
@@ -49,7 +51,7 @@ private Q_SLOTS:
     void process();
 
 private:
-    void index(const QString& filePath, quint64 id);
+    void index(Transaction* tr, const QString& filePath, quint64 id);
     bool ignoreConfig() const;
 
     QStringList m_args;

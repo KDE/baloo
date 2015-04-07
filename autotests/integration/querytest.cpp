@@ -19,6 +19,7 @@
  */
 
 #include "database.h"
+#include "transaction.h"
 #include "document.h"
 #include "termgenerator.h"
 #include "enginequery.h"
@@ -37,10 +38,9 @@ private Q_SLOTS:
         db = new Database(dir->path());
         db->open();
 
-        db->transaction(Database::ReadWrite);
-        insertDocuments();
-        db->commit();
-        db->transaction(Database::ReadOnly);
+        Transaction tr(db, Transaction::ReadWrite);
+        insertDocuments(&tr);
+        tr.commit();
     }
 
     void cleanup() {
@@ -58,8 +58,8 @@ private:
     QTemporaryDir* dir;
     Database* db;
 
-    void insertDocuments();
-    void addDocument(const QString& text, quint64 id)
+    void insertDocuments(Transaction* tr);
+    void addDocument(Transaction* tr,const QString& text, quint64 id)
     {
         Document doc;
 
@@ -69,17 +69,17 @@ private:
         doc.setMTime(1);
         doc.setCTime(2);
 
-        db->addDocument(doc);
+        tr->addDocument(doc);
     }
 };
 
 
-void QueryTest::insertDocuments()
+void QueryTest::insertDocuments(Transaction* tr)
 {
-    addDocument("The quick brown foxed jumped over the crazy dog", 100);
-    addDocument("The night is dark and full of terror", 110);
-    addDocument("Don't feel sorry for yourself. Only assholes do that", 120);
-    addDocument("Only the dead stay 17 forever. crazy", 130);
+    addDocument(tr, "The quick brown foxed jumped over the crazy dog", 100);
+    addDocument(tr, "The night is dark and full of terror", 110);
+    addDocument(tr, "Don't feel sorry for yourself. Only assholes do that", 120);
+    addDocument(tr, "Only the dead stay 17 forever. crazy", 130);
 }
 
 void QueryTest::testTermEqual()
@@ -87,7 +87,8 @@ void QueryTest::testTermEqual()
     EngineQuery q("the");
 
     QVector<quint64> result = {100, 110, 130};
-    QCOMPARE(db->exec(q), result);
+    Transaction tr(db, Transaction::ReadOnly);
+    QCOMPARE(tr.exec(q), result);
 }
 
 void QueryTest::testTermStartsWith()
@@ -95,7 +96,8 @@ void QueryTest::testTermStartsWith()
     EngineQuery q("for", EngineQuery::StartsWith);
 
     QVector<quint64> result = {120, 130};
-    QCOMPARE(db->exec(q), result);
+    Transaction tr(db, Transaction::ReadOnly);
+    QCOMPARE(tr.exec(q), result);
 }
 
 void QueryTest::testTermAnd()
@@ -107,7 +109,8 @@ void QueryTest::testTermAnd()
     EngineQuery q(queries, EngineQuery::And);
 
     QVector<quint64> result = {120};
-    QCOMPARE(db->exec(q), result);
+    Transaction tr(db, Transaction::ReadOnly);
+    QCOMPARE(tr.exec(q), result);
 }
 
 void QueryTest::testTermOr()
@@ -119,7 +122,8 @@ void QueryTest::testTermOr()
     EngineQuery q(queries, EngineQuery::Or);
 
     QVector<quint64> result = {100, 110};
-    QCOMPARE(db->exec(q), result);
+    Transaction tr(db, Transaction::ReadOnly);
+    QCOMPARE(tr.exec(q), result);
 }
 
 void QueryTest::testTermPhrase()
@@ -131,7 +135,8 @@ void QueryTest::testTermPhrase()
     EngineQuery q(queries, EngineQuery::Phrase);
 
     QVector<quint64> result = {100};
-    QCOMPARE(db->exec(q), result);
+    Transaction tr(db, Transaction::ReadOnly);
+    QCOMPARE(tr.exec(q), result);
 }
 
 

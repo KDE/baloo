@@ -36,6 +36,7 @@
 #include <QDBusConnectionInterface>
 
 #include "database.h"
+#include "transaction.h"
 //#include "filestatistics.h"
 
 using namespace Baloo;
@@ -128,10 +129,11 @@ int main(int argc, char* argv[])
 
         Database db(path);
         db.open();
-        db.transaction(Database::ReadOnly);
 
-        uint phaseOne = db.phaseOneSize();
-        uint total = db.size();
+        Transaction tr(db, Transaction::ReadOnly);
+
+        uint phaseOne = tr.phaseOneSize();
+        uint total = tr.size();
 
         out << "Indexed " << total - phaseOne << " / " << total << " files\n";
         /*

@@ -19,6 +19,7 @@
  */
 
 #include "database.h"
+#include "transaction.h"
 #include "document.h"
 
 #include "postingdb.h"
@@ -54,13 +55,14 @@ void DatabaseTest::test()
 
     Database db(dir.path());
     QVERIFY(db.open());
-    db.transaction(Database::ReadWrite);
+
+    Transaction tr(db, Transaction::ReadWrite);
 
     const QByteArray url(dir.path().toUtf8() + "/file");
     touchFile(url);
     quint64 id = filePathToId(url);
 
-    QCOMPARE(db.hasDocument(id), false);
+    QCOMPARE(tr.hasDocument(id), false);
 
     Document doc;
     doc.setId(id);
@@ -74,13 +76,14 @@ void DatabaseTest::test()
     doc.setMTime(1);
     doc.setCTime(2);
 
-    db.addDocument(doc);
-    db.commit();
-    db.transaction(Database::ReadOnly);
-    QCOMPARE(db.hasDocument(id), true);
+    tr.addDocument(doc);
+    tr.commit();
 
-    PostingDB postingDb(db.m_dbis.postingDbi, db.m_txn);
-    DocumentUrlDB docUrlDb(db.m_dbis.idTreeDbi, db.m_dbis.idFilenameDbi, db.m_txn);
+    Transaction tr2(db, Transaction::ReadOnly);
+    QCOMPARE(tr2.hasDocument(id), true);
+
+    PostingDB postingDb(db.m_dbis.postingDbi, tr2.m_txn);
+    DocumentUrlDB docUrlDb(db.m_dbis.idTreeDbi, db.m_dbis.idFilenameDbi, tr2.m_txn);
 
     QCOMPARE(docUrlDb.get(id), url);
     QCOMPARE(postingDb.get("a"), QVector<quint64>() << id);

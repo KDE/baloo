@@ -24,6 +24,7 @@
 #include "term.h"
 
 #include "database.h"
+#include "transaction.h"
 #include "enginequery.h"
 #include "queryparser.h"
 #include "termgenerator.h"
@@ -41,7 +42,6 @@ SearchStore::SearchStore()
     const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/");
     m_db = new Database(path);
     m_db->open();
-    m_db->transaction(Database::ReadOnly);
 
     m_prefixes.insert(QByteArray("filename"), QByteArray("F"));
     m_prefixes.insert(QByteArray("mimetype"), QByteArray("M"));
@@ -71,13 +71,16 @@ QVector<quint64> SearchStore::exec(const Term& term, int limit)
         return QVector<quint64>();
     }
 
-    return m_db->exec(query, limit);
+    Transaction tr(m_db, Transaction::ReadOnly);
+    return tr.exec(query, limit);
 }
 
 QString SearchStore::filePath(quint64 id)
 {
     Q_ASSERT(id > 0);
-    return m_db->documentUrl(id);
+
+    Transaction tr(m_db, Transaction::ReadOnly);
+    return tr.documentUrl(id);
 }
 
 QByteArray SearchStore::fetchPrefix(const QByteArray& property) const

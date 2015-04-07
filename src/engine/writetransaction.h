@@ -22,10 +22,12 @@
 #define BALOO_WRITETRANSACTION_H
 
 #include "engine_export.h"
-#include "database.h"
+#include "transaction.h"
 #include "positioninfo.h"
 
 namespace Baloo {
+
+class Document;
 
 class WriteTransaction
 {
@@ -37,7 +39,7 @@ public:
 
     void addDocument(const Document& doc);
     void removeDocument(quint64 id);
-    void replaceDocument(const Document& doc, Database::DocumentOperations operations);
+    void replaceDocument(const Document& doc, Transaction::DocumentOperations operations);
     void commit();
 
     bool hasChanges() const {

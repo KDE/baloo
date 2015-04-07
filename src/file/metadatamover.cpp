@@ -19,6 +19,7 @@
 
 #include "metadatamover.h"
 #include "database.h"
+#include "transaction.h"
 #include "basicindexingjob.h"
 #include "idutils.h"
 
@@ -45,30 +46,29 @@ void MetadataMover::moveFileMetadata(const QString& from, const QString& to)
     Q_ASSERT(!from.isEmpty() && from != QLatin1String("/"));
     Q_ASSERT(!to.isEmpty() && to != QLatin1String("/"));
 
+    Transaction tr(m_db, Transaction::ReadWrite);
+
     // We do NOT get deleted messages for overwritten files! Thus, we
     // have to remove all metadata for overwritten files first.
-    removeMetadata(to);
+    removeMetadata(&tr, to);
 
     // and finally update the old statements
-    updateMetadata(from, to);
+    updateMetadata(&tr, from, to);
 
-    m_db->commit();
-    m_db->transaction(Database::ReadWrite);
+    tr.commit();
 }
 
 void MetadataMover::removeFileMetadata(const QString& file)
 {
     Q_ASSERT(!file.isEmpty() && file != QLatin1String("/"));
-    removeMetadata(file);
 
-    // FIXME: We do not want to commit this so often!!
-    m_db->commit();
-    m_db->transaction(Database::ReadWrite);
-    qDebug();
+    Transaction tr(m_db, Transaction::ReadWrite);
+    removeMetadata(&tr, file);
+    tr.commit();
 }
 
 
-void MetadataMover::removeMetadata(const QString& url)
+void MetadataMover::removeMetadata(Transaction* tr, const QString& url)
 {
     Q_ASSERT(!url.isEmpty());
 
@@ -77,16 +77,16 @@ void MetadataMover::removeMetadata(const QString& url)
     const QString filename = url.mid(i + 1);
 
     quint64 parentId = filePathToId(QFile::encodeName(dirPath));
-    quint64 id = m_db->documentId(parentId, QFile::encodeName(filename));
+    quint64 id = tr->documentId(parentId, QFile::encodeName(filename));
 
     if (!id) {
         return;
     }
 
-    m_db->removeDocument(id);
+    tr->removeDocument(id);
 }
 
-void MetadataMover::updateMetadata(const QString& from, const QString& to)
+void MetadataMover::updateMetadata(Transaction* tr, const QString& from, const QString& to)
 {
     qDebug() << from << "->" << to;
     Q_ASSERT(!from.isEmpty() && !to.isEmpty());
@@ -96,7 +96,7 @@ void MetadataMover::updateMetadata(const QString& from, const QString& to)
     QByteArray toPath = QFile::encodeName(to);
     quint64 id = filePathToId(toPath);
     Q_ASSERT_X(id, "MetadataMover::updateMetadata", "toUrl does not exist");
-    if (!m_db->hasDocument(id)) {
+    if (!tr->hasDocument(id)) {
         //
         // If we have no metadata yet we need to tell the file indexer so it can
         // create the metadata in case the target folder is configured to be indexed.
@@ -108,10 +108,9 @@ void MetadataMover::updateMetadata(const QString& from, const QString& to)
 
     BasicIndexingJob job(toPath, QString(), true);
     job.index();
-    m_db->renameFilePath(id, job.document());
+    tr->renameFilePath(id, job.document());
 
     // Possible scenarios
     // 1. file moves to the same device - id is preserved
     // 2. file moves to a different device - id is not preserved
-
 }

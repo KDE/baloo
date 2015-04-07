@@ -22,6 +22,7 @@
 #include "file.h"
 #include "document.h"
 #include "database.h"
+#include "transaction.h"
 #include "idutils.h"
 
 #include <QDebug>
@@ -72,9 +73,9 @@ void FileFetchJobTest::test()
     {
         Database db(fileIndexDbPath());
         db.open();
-        db.transaction(Database::ReadWrite);
-        db.addDocument(doc);
-        db.commit();
+        Transaction tr(db, Transaction::ReadWrite);
+        tr.addDocument(doc);
+        tr.commit();
     }
 
     File file(tempFile.fileName());

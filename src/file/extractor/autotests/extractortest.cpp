@@ -27,6 +27,7 @@
 #include <QDir>
 
 #include "database.h"
+#include "transaction.h"
 #include "document.h"
 
 class ExtractorTest : public QObject
@@ -60,9 +61,9 @@ void ExtractorTest::test()
 
     Baloo::Database db(dbDir.path());
     db.open();
-    db.transaction(Baloo::Database::ReadWrite);
 
-    qDebug() << db.documentUrl(1);
+    Baloo::Transaction tr(db, Baloo::Transaction::ReadWrite);
+    qDebug() << tr.documentUrl(1);
     /*
     Xapian::Database* db = db.db();
     QCOMPARE((int)db->get_doccount(), 1);

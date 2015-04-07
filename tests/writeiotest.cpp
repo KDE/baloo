@@ -33,6 +33,7 @@
 
 #include "database.h"
 #include "document.h"
+#include "transaction.h"
 #include "../src/file/tests/util.h"
 
 int main(int argc, char** argv)
@@ -55,7 +56,6 @@ int main(int argc, char** argv)
 
     Baloo::Database db(tempDir.path());
     db.open();
-    db.transaction(Baloo::Database::ReadWrite);
 
     qDebug() << tempDir.path();
     printIOUsage();
@@ -76,8 +76,9 @@ int main(int argc, char** argv)
     }
     doc.setId(1);
 
-    db.addDocument(doc);
-    db.commit();
+    Baloo::Transaction tr(db, Baloo::Transaction::ReadWrite);
+    tr.addDocument(doc);
+    tr.commit();
 
     printIOUsage();
 

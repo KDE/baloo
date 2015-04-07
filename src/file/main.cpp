@@ -85,7 +85,6 @@ int main(int argc, char** argv)
 
     Baloo::Database db(path);
     db.open();
-    db.transaction(Baloo::Database::ReadWrite);
 
     Baloo::FileIndexerConfig indexerConfig;
     Baloo::FileWatch filewatcher(&db, &indexerConfig, &app);

@@ -25,6 +25,7 @@
 #include "../tests/util.h"
 #include "result.h"
 #include "idutils.h"
+#include "transaction.h"
 
 #include <QDebug>
 #include <QCoreApplication>
@@ -62,7 +63,9 @@ void App::startProcessing(const QStringList& args)
 
 void App::process()
 {
-    m_db.transaction(Database::ReadWrite);
+    // FIXME: The transaction is open for way too long. We should just open it for when we're
+    //        committing the data not during the extraction.
+    Transaction tr(m_db, Transaction::ReadWrite);
 
     Q_FOREACH (const QString& arg, m_args) {
         bool ok = false;
@@ -70,21 +73,21 @@ void App::process()
 
         QString filePath;
         if (ok && !QFile::exists(arg)) {
-            filePath = QFile::decodeName(m_db.documentUrl(id));
+            filePath = QFile::decodeName(tr.documentUrl(id));
         } else {
             filePath = arg;
             id = filePathToId(QFile::encodeName(filePath));
         }
 
         if (!QFile::exists(filePath)) {
-            m_db.removeDocument(id);
+            tr.removeDocument(id);
             continue;
         }
 
-        index(filePath, id);
+        index(&tr, filePath, id);
     }
 
-    m_db.commit();
+    tr.commit();
 
     QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/files"),
                                                       QLatin1String("org.kde"),
@@ -107,7 +110,7 @@ void App::process()
     QCoreApplication::instance()->exit(0);
 }
 
-void App::index(const QString& url, quint64 id)
+void App::index(Transaction* tr, const QString& url, quint64 id)
 {
     QString mimetype = m_mimeDb.mimeTypeForFile(url).name();
 
@@ -115,7 +118,7 @@ void App::index(const QString& url, quint64 id)
         bool shouldIndex = m_config.shouldBeIndexed(url) && m_config.shouldMimeTypeBeIndexed(mimetype);
         if (!shouldIndex) {
             // FIXME: This should never be happening!
-            m_db.removeDocument(id);
+            tr->removeDocument(id);
             return;
         }
     }
@@ -159,7 +162,7 @@ void App::index(const QString& url, quint64 id)
     }
 
     result.finish();
-    m_db.replaceDocument(result.document(), Database::DocumentTerms | Database::DocumentData);
+    tr->replaceDocument(result.document(), Transaction::DocumentTerms | Transaction::DocumentData);
 
     m_updatedFiles << url;
 }
