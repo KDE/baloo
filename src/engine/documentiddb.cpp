@@ -22,17 +22,34 @@
 
 using namespace Baloo;
 
-DocumentIdDB::DocumentIdDB(MDB_txn* txn)
+DocumentIdDB::DocumentIdDB(MDB_dbi dbi, MDB_txn* txn)
     : m_txn(txn)
+    , m_dbi(dbi)
 {
-
-    int rc = mdb_dbi_open(txn, "indexingleveldb", MDB_CREATE | MDB_INTEGERKEY, &m_dbi);
-    Q_ASSERT_X(rc == 0, "IndexingLevelDB", mdb_strerror(rc));
+    Q_ASSERT(txn != 0);
+    Q_ASSERT(dbi != 0);
 }
 
 DocumentIdDB::~DocumentIdDB()
 {
-    mdb_dbi_close(mdb_txn_env(m_txn), m_dbi);
+}
+
+MDB_dbi DocumentIdDB::create(MDB_txn* txn)
+{
+    MDB_dbi dbi;
+    int rc = mdb_dbi_open(txn, "indexingleveldb", MDB_CREATE | MDB_INTEGERKEY, &dbi);
+    Q_ASSERT_X(rc == 0, "IndexingLevelDB::create", mdb_strerror(rc));
+
+    return dbi;
+}
+
+MDB_dbi DocumentIdDB::open(MDB_txn* txn)
+{
+    MDB_dbi dbi;
+    int rc = mdb_dbi_open(txn, "indexingleveldb", MDB_INTEGERKEY, &dbi);
+    Q_ASSERT_X(rc == 0, "IndexingLevelDB::create", mdb_strerror(rc));
+
+    return dbi;
 }
 
 void DocumentIdDB::put(quint64 docId)

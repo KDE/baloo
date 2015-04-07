@@ -27,18 +27,34 @@
 
 using namespace Baloo;
 
-PositionDB::PositionDB(MDB_txn* txn)
+PositionDB::PositionDB(MDB_dbi dbi, MDB_txn* txn)
     : m_txn(txn)
+    , m_dbi(dbi)
 {
     Q_ASSERT(txn != 0);
-
-    int rc = mdb_dbi_open(txn, "positiondb", MDB_CREATE, &m_dbi);
-    Q_ASSERT_X(rc == 0, "PositionDB", mdb_strerror(rc));
+    Q_ASSERT(dbi != 0);
 }
 
 PositionDB::~PositionDB()
 {
-    mdb_dbi_close(mdb_txn_env(m_txn), m_dbi);
+}
+
+MDB_dbi PositionDB::create(MDB_txn* txn)
+{
+    MDB_dbi dbi;
+    int rc = mdb_dbi_open(txn, "positiondb", MDB_CREATE, &dbi);
+    Q_ASSERT_X(rc == 0, "PositionDB::create", mdb_strerror(rc));
+
+    return dbi;
+}
+
+MDB_dbi PositionDB::open(MDB_txn* txn)
+{
+    MDB_dbi dbi;
+    int rc = mdb_dbi_open(txn, "positiondb", 0, &dbi);
+    Q_ASSERT_X(rc == 0, "PositionDB::open", mdb_strerror(rc));
+
+    return dbi;
 }
 
 void PositionDB::put(const QByteArray& term, const QVector<PositionInfo>& list)

@@ -25,18 +25,34 @@
 
 using namespace Baloo;
 
-DocumentDB::DocumentDB(MDB_txn* txn)
+DocumentDB::DocumentDB(MDB_dbi dbi, MDB_txn* txn)
     : m_txn(txn)
+    , m_dbi(dbi)
 {
     Q_ASSERT(txn != 0);
-
-    int rc = mdb_dbi_open(txn, "documentdb", MDB_CREATE | MDB_INTEGERKEY, &m_dbi);
-    Q_ASSERT_X(rc == 0, "DocumentDB", mdb_strerror(rc));
+    Q_ASSERT(dbi != 0);
 }
 
 DocumentDB::~DocumentDB()
 {
-    mdb_dbi_close(mdb_txn_env(m_txn), m_dbi);
+}
+
+MDB_dbi DocumentDB::create(MDB_txn* txn)
+{
+    MDB_dbi dbi;
+    int rc = mdb_dbi_open(txn, "documentdb", MDB_CREATE | MDB_INTEGERKEY, &dbi);
+    Q_ASSERT_X(rc == 0, "DocumentDB::create", mdb_strerror(rc));
+
+    return dbi;
+}
+
+MDB_dbi DocumentDB::open(MDB_txn* txn)
+{
+    MDB_dbi dbi;
+    int rc = mdb_dbi_open(txn, "documentdb", MDB_CREATE | MDB_INTEGERKEY, &dbi);
+    Q_ASSERT_X(rc == 0, "DocumentDB::open", mdb_strerror(rc));
+
+    return dbi;
 }
 
 void DocumentDB::put(quint64 docId, const QVector<QByteArray>& list)

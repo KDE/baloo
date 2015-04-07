@@ -32,7 +32,7 @@ private Q_SLOTS:
 
     void testSize()
     {
-        DocumentIdDB db(m_txn);
+        DocumentIdDB db(DocumentIdDB::create(m_txn), m_txn);
 
         db.put(1);
         db.put(6);
@@ -43,7 +43,7 @@ private Q_SLOTS:
 
 void DocIdDBTest::test()
 {
-    DocumentIdDB db(m_txn);
+    DocumentIdDB db(DocumentIdDB::create(m_txn), m_txn);
 
     QCOMPARE(db.contains(1), false);
     db.put(1);
@@ -55,7 +55,7 @@ void DocIdDBTest::test()
 
 void DocIdDBTest::testFetchItems()
 {
-    DocumentIdDB db(m_txn);
+    DocumentIdDB db(DocumentIdDB::create(m_txn), m_txn);
 
     db.put(1);
     db.put(6);

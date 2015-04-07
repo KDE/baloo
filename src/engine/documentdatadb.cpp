@@ -21,18 +21,34 @@
 
 using namespace Baloo;
 
-DocumentDataDB::DocumentDataDB(const char* name, MDB_txn* txn)
+DocumentDataDB::DocumentDataDB(MDB_dbi dbi, MDB_txn* txn)
     : m_txn(txn)
+    , m_dbi(dbi)
 {
     Q_ASSERT(txn != 0);
-
-    int rc = mdb_dbi_open(txn, name, MDB_CREATE | MDB_INTEGERKEY, &m_dbi);
-    Q_ASSERT_X(rc == 0, "DocumentUrlDB", mdb_strerror(rc));
+    Q_ASSERT(dbi != 0);
 }
 
 DocumentDataDB::~DocumentDataDB()
 {
-    mdb_dbi_close(mdb_txn_env(m_txn), m_dbi);
+}
+
+MDB_dbi DocumentDataDB::create(MDB_txn* txn)
+{
+    MDB_dbi dbi;
+    int rc = mdb_dbi_open(txn, "documentdatadb", MDB_CREATE | MDB_INTEGERKEY, &dbi);
+    Q_ASSERT_X(rc == 0, "DocumentUrlDB::create", mdb_strerror(rc));
+
+    return dbi;
+}
+
+MDB_dbi DocumentDataDB::open(MDB_txn* txn)
+{
+    MDB_dbi dbi;
+    int rc = mdb_dbi_open(txn, "documentdatadb", MDB_INTEGERKEY, &dbi);
+    Q_ASSERT_X(rc == 0, "DocumentUrlDB::create", mdb_strerror(rc));
+
+    return dbi;
 }
 
 void DocumentDataDB::put(quint64 docId, const QByteArray& url)

@@ -32,7 +32,7 @@ class PostingIterator;
 class BALOO_ENGINE_EXPORT DocumentUrlDB
 {
 public:
-    explicit DocumentUrlDB(MDB_txn* txn);
+    explicit DocumentUrlDB(MDB_dbi idTreeDb, MDB_dbi idFileNameDb, MDB_txn* txn);
     ~DocumentUrlDB();
 
     void put(quint64 docId, const QByteArray& url);
@@ -43,20 +43,17 @@ public:
 
     quint64 getId(quint64 docId, const QByteArray& fileName);
 
-    void setTransaction(MDB_txn* txn) {
-        m_idFilename.setTransaction(txn);
-        m_idTree.setTransaction(txn);
-    }
-
     PostingIterator* iter(quint64 docId) {
-        return m_idTree.iter(docId);
+        IdTreeDB db(m_idTreeDbi, m_txn);
+        return db.iter(docId);
     }
 
 private:
     void add(quint64 id, quint64 parentId, const QByteArray& name);
 
-    IdFilenameDB m_idFilename;
-    IdTreeDB m_idTree;
+    MDB_txn* m_txn;
+    MDB_dbi m_idFilenameDbi;
+    MDB_dbi m_idTreeDbi;
 
     friend class UrlTest;
 };

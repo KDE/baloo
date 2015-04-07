@@ -30,8 +30,11 @@ namespace Baloo {
 class BALOO_ENGINE_EXPORT IdFilenameDB
 {
 public:
-    explicit IdFilenameDB(MDB_txn* txn);
+    IdFilenameDB(MDB_dbi dbi, MDB_txn* txn);
     ~IdFilenameDB();
+
+    static MDB_dbi create(MDB_txn* txn);
+    static MDB_dbi open(MDB_txn* txn);
 
     struct FilePath {
         quint64 parentId;
@@ -47,9 +50,6 @@ public:
     bool contains(quint64 docId);
     void del(quint64 docId);
 
-    void setTransaction(MDB_txn* txn) {
-        m_txn = txn;
-    }
 private:
     MDB_txn* m_txn;
     MDB_dbi m_dbi;

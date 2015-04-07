@@ -47,33 +47,12 @@ Database::Database(const QString& path)
     : m_path(path)
     , m_env(0)
     , m_txn(0)
-    , m_postingDB(0)
-    , m_positionDB(0)
-    , m_documentTermsDB(0)
-    , m_documentXattrTermsDB(0)
-    , m_documentFileNameTermsDB(0)
-    , m_docUrlDB(0)
-    , m_docTimeDB(0)
-    , m_docDataDB(0)
-    , m_contentIndexingDB(0)
-    , m_mtimeDB(0)
     , m_writeTrans(0)
 {
 }
 
 Database::~Database()
 {
-    delete m_postingDB;
-    delete m_positionDB;
-    delete m_documentTermsDB;
-    delete m_documentXattrTermsDB;
-    delete m_documentFileNameTermsDB;
-    delete m_docUrlDB;
-    delete m_docTimeDB;
-    delete m_docDataDB;
-    delete m_contentIndexingDB;
-    delete m_mtimeDB;
-
     if (m_txn) {
         abort();
     }
@@ -107,61 +86,29 @@ void Database::transaction(Database::TransactionType type)
     int rc = mdb_txn_begin(m_env, NULL, flags, &m_txn);
     Q_ASSERT_X(rc == 0, "Database::transaction", mdb_strerror(rc));
 
-    if (!m_postingDB)
-        m_postingDB = new PostingDB(m_txn);
-    else
-        m_postingDB->setTransaction(m_txn);
+    // First time
+    if (m_dbis.postingDbi == 0) {
+        m_dbis.postingDbi = PostingDB::create(m_txn);
+        m_dbis.positionDBi = PositionDB::create(m_txn);
 
-    if (!m_positionDB)
-        m_positionDB = new PositionDB(m_txn);
-    else
-        m_positionDB->setTransaction(m_txn);
+        // FIXME: All of these are the same
+        m_dbis.docTermsDbi = DocumentDB::create(m_txn);
+        m_dbis.docFilenameTermsDbi = DocumentDB::create(m_txn);
+        m_dbis.docXattrTermsDbi = DocumentDB::create(m_txn);
 
-    if (!m_documentTermsDB)
-        m_documentTermsDB = new DocumentDB(m_txn);
-    else
-        m_documentTermsDB->setTransaction(m_txn);
+        m_dbis.idTreeDbi = IdTreeDB::create(m_txn);
+        m_dbis.idFilenameDbi = IdFilenameDB::create(m_txn);
 
-    if (!m_documentXattrTermsDB)
-        m_documentXattrTermsDB = new DocumentDB(m_txn);
-    else
-        m_documentXattrTermsDB->setTransaction(m_txn);
+        m_dbis.docTimeDbi = DocumentTimeDB::create(m_txn);
+        m_dbis.docDataDbi = DocumentDataDB::create(m_txn);
+        m_dbis.contentIndexingDbi = DocumentIdDB::create(m_txn);
 
-    if (!m_documentFileNameTermsDB)
-        m_documentFileNameTermsDB = new DocumentDB(m_txn);
-    else
-        m_documentFileNameTermsDB->setTransaction(m_txn);
-
-    if (!m_docUrlDB)
-        m_docUrlDB = new DocumentUrlDB(m_txn);
-    else
-        m_docUrlDB->setTransaction(m_txn);
-
-    if (!m_docTimeDB)
-        m_docTimeDB = new DocumentTimeDB(m_txn);
-    else
-        m_docTimeDB->setTransaction(m_txn);
-
-    if (!m_docDataDB)
-        m_docDataDB = new DocumentDataDB("documentdatadb", m_txn);
-    else
-        m_docDataDB->setTransaction(m_txn);
-
-    if (!m_contentIndexingDB)
-        m_contentIndexingDB = new DocumentIdDB(m_txn);
-    else
-        m_contentIndexingDB->setTransaction(m_txn);
-
-    if (!m_mtimeDB)
-        m_mtimeDB = new MTimeDB(m_txn);
-    else
-        m_mtimeDB->setTransaction(m_txn);
+        m_dbis.mtimeDbi = MTimeDB::create(m_txn);
+    }
 
     if (type == ReadWrite) {
         Q_ASSERT(m_writeTrans == 0);
-        m_writeTrans = new WriteTransaction(m_postingDB, m_positionDB, m_documentTermsDB, m_documentXattrTermsDB,
-                                            m_documentFileNameTermsDB, m_docUrlDB, m_docTimeDB, m_docDataDB,
-                                            m_contentIndexingDB, m_mtimeDB);
+        m_writeTrans = new WriteTransaction(m_dbis, m_txn);
     }
 }
 
@@ -173,14 +120,18 @@ QString Database::path() const
 bool Database::hasDocument(quint64 id)
 {
     Q_ASSERT(id > 0);
-    return m_documentTermsDB->contains(id);
+
+    DocumentDB docTermsDB(m_dbis.docTermsDbi, m_txn);
+    return docTermsDB.contains(id);
 }
 
 QByteArray Database::documentUrl(quint64 id)
 {
     Q_ASSERT(m_txn);
     Q_ASSERT(id > 0);
-    return m_docUrlDB->get(id);
+
+    DocumentUrlDB docUrlDb(m_dbis.idTreeDbi, m_dbis.idFilenameDbi, m_txn);
+    return docUrlDb.get(id);
 }
 
 quint64 Database::documentId(quint64 parentId, const QByteArray& fileName)
@@ -189,26 +140,33 @@ quint64 Database::documentId(quint64 parentId, const QByteArray& fileName)
     Q_ASSERT(parentId > 0);
     Q_ASSERT(!fileName.isEmpty());
 
-    return m_docUrlDB->getId(parentId, fileName);
+    DocumentUrlDB docUrlDb(m_dbis.idTreeDbi, m_dbis.idFilenameDbi, m_txn);
+    return docUrlDb.getId(parentId, fileName);
 }
 
 quint64 Database::documentMTime(quint64 id)
 {
     Q_ASSERT(m_txn);
-    return m_docTimeDB->get(id).mTime;
+
+    DocumentTimeDB docTimeDb(m_dbis.docTermsDbi, m_txn);
+    return docTimeDb.get(id).mTime;
 }
 
 quint64 Database::documentCTime(quint64 id)
 {
     Q_ASSERT(m_txn);
-    return m_docTimeDB->get(id).cTime;
+
+    DocumentTimeDB docTimeDb(m_dbis.docTermsDbi, m_txn);
+    return docTimeDb.get(id).cTime;
 }
 
 QByteArray Database::documentData(quint64 id)
 {
     Q_ASSERT(m_txn);
     Q_ASSERT(id > 0);
-    return m_docDataDB->get(id);
+
+    DocumentDataDB docDataDb(m_dbis.docDataDbi, m_txn);
+    return docDataDb.get(id);
 }
 
 bool Database::hasChanges() const
@@ -222,25 +180,33 @@ QVector<quint64> Database::fetchPhaseOneIds(int size)
 {
     Q_ASSERT(m_txn);
     Q_ASSERT(size > 0);
-    return m_contentIndexingDB->fetchItems(size);
+
+    DocumentIdDB contentIndexingDb(m_dbis.contentIndexingDbi, m_txn);
+    return contentIndexingDb.fetchItems(size);
 }
 
 QList<QByteArray> Database::fetchTermsStartingWith(const QByteArray& term)
 {
     Q_ASSERT(term.size() > 0);
-    return m_postingDB->fetchTermsStartingWith(term);
+
+    PostingDB postingDb(m_dbis.postingDbi, m_txn);
+    return postingDb.fetchTermsStartingWith(term);
 }
 
 uint Database::phaseOneSize()
 {
     Q_ASSERT(m_txn);
-    return m_contentIndexingDB->size();
+
+    DocumentIdDB contentIndexingDb(m_dbis.contentIndexingDbi, m_txn);
+    return contentIndexingDb.size();
 }
 
 uint Database::size()
 {
     Q_ASSERT(m_txn);
-    return m_documentTermsDB->size();
+
+    DocumentDB docTermsDb(m_dbis.docTermsDbi, m_txn);
+    return docTermsDb.size();
 }
 
 //
@@ -251,7 +217,9 @@ void Database::setPhaseOne(quint64 id)
     Q_ASSERT(m_txn);
     Q_ASSERT(id > 0);
     Q_ASSERT(m_writeTrans);
-    m_contentIndexingDB->put(id);
+
+    DocumentIdDB contentIndexingDb(m_dbis.contentIndexingDbi, m_txn);
+    contentIndexingDb.put(id);
 }
 
 void Database::addDocument(const Document& doc)
@@ -314,11 +282,14 @@ void Database::abort()
 
 PostingIterator* Database::toPostingIterator(const EngineQuery& query)
 {
+    PostingDB postingDb(m_dbis.postingDbi, m_txn);
+    PositionDB positionDb(m_dbis.positionDBi, m_txn);
+
     if (query.leaf()) {
         if (query.op() == EngineQuery::Equal) {
-            return m_postingDB->iter(query.term());
+            return postingDb.iter(query.term());
         } else if (query.op() == EngineQuery::StartsWith) {
-            return m_postingDB->prefixIter(query.term());
+            return postingDb.prefixIter(query.term());
         } else {
             Q_ASSERT(0);
             // FIXME: Implement position iterator
@@ -333,7 +304,7 @@ PostingIterator* Database::toPostingIterator(const EngineQuery& query)
     if (query.op() == EngineQuery::Phrase) {
         for (const EngineQuery& q : query.subQueries()) {
             Q_ASSERT_X(q.leaf(), "Database::toPostingIterator", "Phrase queries must contain leaf queries");
-            vec << m_positionDB->iter(q.term());
+            vec << positionDb.iter(q.term());
         }
 
         return new PhraseAndIterator(vec);
@@ -382,7 +353,8 @@ void Database::renameFilePath(quint64 id, const Document& newDoc)
     const QByteArray newFileName = newFilePath.mid(newFilePath.lastIndexOf('/') + 1);
 
     // Update the id -> url db
-    m_docUrlDB->rename(id, newFileName);
+    DocumentUrlDB docUrlDb(m_dbis.idTreeDbi, m_dbis.idFilenameDbi, m_txn);
+    docUrlDb.rename(id, newFileName);
 
     replaceDocument(newDoc, FileNameTerms);
 }

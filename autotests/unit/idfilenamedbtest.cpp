@@ -28,7 +28,7 @@ class BALOO_ENGINE_EXPORT IdFilenameDBTest : public SingleDBTest
     Q_OBJECT
 private Q_SLOTS:
     void test() {
-        IdFilenameDB db(m_txn);
+        IdFilenameDB db(IdFilenameDB::create(m_txn), m_txn);
 
         IdFilenameDB::FilePath path;
         path.parentId = 5;

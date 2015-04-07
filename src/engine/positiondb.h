@@ -35,8 +35,11 @@ class PostingIterator;
 class BALOO_ENGINE_EXPORT PositionDB
 {
 public:
-    explicit PositionDB(MDB_txn* txn);
+    explicit PositionDB(MDB_dbi dbi, MDB_txn* txn);
     ~PositionDB();
+
+    static MDB_dbi create(MDB_txn* txn);
+    static MDB_dbi open(MDB_txn* txn);
 
     void put(const QByteArray& term, const QVector<PositionInfo>& list);
     QVector<PositionInfo> get(const QByteArray& term);
@@ -44,9 +47,6 @@ public:
 
     PostingIterator* iter(const QByteArray& term);
 
-    void setTransaction(MDB_txn* txn) {
-        m_txn = txn;
-    }
 private:
     MDB_txn* m_txn;
     MDB_dbi m_dbi;

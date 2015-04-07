@@ -27,22 +27,13 @@
 
 namespace Baloo {
 
-class PostingDB;
-class PositionDB;
-class DocumentDB;
-class DocumentDataDB;
-class DocumentUrlDB;
-class DocumentTimeDB;
-class DocumentIdDB;
-class MTimeDB;
-
 class WriteTransaction
 {
 public:
-    WriteTransaction(PostingDB* postingDB, PositionDB* positionDB, DocumentDB* docTerms,
-                     DocumentDB* docXattrTerms, DocumentDB* docFileNameTerms, DocumentUrlDB* docUrlDB,
-                     DocumentTimeDB* docTimeDB, DocumentDataDB* docDataDB, DocumentIdDB* contentIndexingDB,
-                     MTimeDB* mtimeDB);
+    WriteTransaction(DatabaseDbis dbis, MDB_txn* txn)
+        : m_txn(txn)
+        , m_dbis(dbis)
+    {}
 
     void addDocument(const Document& doc);
     void removeDocument(quint64 id);
@@ -64,19 +55,8 @@ public:
 private:
     QHash<QByteArray, QVector<Operation> > m_pendingOperations;
 
-    PostingDB* m_postingDB;
-    PositionDB* m_positionDB;
-
-    DocumentDB* m_documentTermsDB;
-    DocumentDB* m_documentXattrTermsDB;
-    DocumentDB* m_documentFileNameTermsDB;
-
-    DocumentUrlDB* m_docUrlDB;
-
-    DocumentTimeDB* m_docTimeDB;
-    DocumentDataDB* m_docDataDB;
-    DocumentIdDB* m_contentIndexingDB;
-    MTimeDB* m_mtimeDB;
+    MDB_txn* m_txn;
+    DatabaseDbis m_dbis;
 };
 }
 

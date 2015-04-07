@@ -53,7 +53,7 @@ int main(int argc, char** argv)
     mdb_txn_begin(env, NULL, 0, &txn);
 
     {
-        DocumentUrlDB db(txn);
+        DocumentUrlDB db(IdTreeDB::create(txn), IdFilenameDB::create(txn), txn);
         QTime timer;
         timer.start();
 

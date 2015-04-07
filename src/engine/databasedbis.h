@@ -18,40 +18,45 @@
  *
  */
 
-#ifndef BALOO_IDTREEDB_H
-#define BALOO_IDTREEDB_H
+#ifndef BALOO_DATABASE_DBIS_H
+#define BALOO_DATABASE_DBIS_H
 
-#include "engine_export.h"
 #include <lmdb.h>
-#include <QVector>
 
 namespace Baloo {
 
-class PostingIterator;
-
-class BALOO_ENGINE_EXPORT IdTreeDB
-{
+class DatabaseDbis {
 public:
-    IdTreeDB(MDB_dbi dbi, MDB_txn* txn);
-    ~IdTreeDB();
+    MDB_dbi postingDbi;
+    MDB_dbi positionDBi;
 
-    static MDB_dbi create(MDB_txn* txn);
-    static MDB_dbi open(MDB_txn* txn);
+    MDB_dbi docTermsDbi;
+    MDB_dbi docFilenameTermsDbi;
+    MDB_dbi docXattrTermsDbi;
 
-    void put(quint64 docId, const QVector<quint64> subDocIds);
-    QVector<quint64> get(quint64 docId);
-    void del(quint64 docId);
+    MDB_dbi idTreeDbi;
+    MDB_dbi idFilenameDbi;
 
-    /**
-     * Returns an iterator which will return all the docIds which use \p docId
-     * are the parent docID.
-     */
-    PostingIterator* iter(quint64 docId);
+    MDB_dbi docTimeDbi;
+    MDB_dbi docDataDbi;
+    MDB_dbi contentIndexingDbi;
 
-private:
-    MDB_txn* m_txn;
-    MDB_dbi m_dbi;
+    MDB_dbi mtimeDbi;
+
+    DatabaseDbis()
+        : postingDbi(0)
+        , positionDBi(0)
+        , docTermsDbi(0)
+        , docFilenameTermsDbi(0)
+        , docXattrTermsDbi(0)
+        , idTreeDbi(0)
+        , idFilenameDbi(0)
+        , docTimeDbi(0)
+        , docDataDbi(0)
+        , contentIndexingDbi(0)
+        , mtimeDbi(0)
+    {}
 };
-}
 
-#endif // BALOO_IDTREEDB_H
+}
+#endif

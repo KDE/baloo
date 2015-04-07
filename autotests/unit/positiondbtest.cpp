@@ -30,7 +30,7 @@ class PositionDBTest : public SingleDBTest
     Q_OBJECT
 private Q_SLOTS:
     void test() {
-        PositionDB db(m_txn);
+        PositionDB db(PositionDB::create(m_txn), m_txn);
 
         QByteArray word("fire");
         PositionInfo pos1;
@@ -49,7 +49,7 @@ private Q_SLOTS:
     }
 
     void testIter() {
-        PositionDB db(m_txn);
+        PositionDB db(PositionDB::create(m_txn), m_txn);
 
         QByteArray word("fire");
         PositionInfo pos1;

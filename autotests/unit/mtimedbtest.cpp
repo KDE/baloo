@@ -28,7 +28,7 @@ class MTimeDBTest : public SingleDBTest
     Q_OBJECT
 private Q_SLOTS:
     void test() {
-        MTimeDB db(m_txn);
+        MTimeDB db(MTimeDB::create(m_txn), m_txn);
 
         db.put(5, 1);
         QCOMPARE(db.get(5), QVector<quint64>() << 1);
@@ -37,7 +37,7 @@ private Q_SLOTS:
     }
 
     void testMultiple() {
-        MTimeDB db(m_txn);
+        MTimeDB db(MTimeDB::create(m_txn), m_txn);
 
         db.put(5, 1);
         db.put(5, 2);

@@ -29,9 +29,10 @@
 
 using namespace Baloo;
 
-DocumentUrlDB::DocumentUrlDB(MDB_txn* txn)
-    : m_idFilename(txn)
-    , m_idTree(txn)
+DocumentUrlDB::DocumentUrlDB(MDB_dbi idTreeDb, MDB_dbi idFilenameDb, MDB_txn* txn)
+    : m_txn(txn)
+    , m_idTreeDbi(idTreeDb)
+    , m_idFilenameDbi(idFilenameDb)
 {
 }
 
@@ -44,6 +45,8 @@ void DocumentUrlDB::put(quint64 docId, const QByteArray& url)
     Q_ASSERT(docId > 0);
     Q_ASSERT(!url.isEmpty());
     Q_ASSERT(!url.endsWith('/'));
+
+    IdFilenameDB idFilenameDb(m_idFilenameDbi, m_txn);
 
     typedef QPair<quint64, QByteArray> IdNamePath;
 
@@ -62,7 +65,7 @@ void DocumentUrlDB::put(quint64 docId, const QByteArray& url)
         quint64 parentId = filePathToId(arr);
 
         add(id, parentId, name);
-        if (m_idFilename.contains(parentId))
+        if (idFilenameDb.contains(parentId))
             return;
     }
 
@@ -96,7 +99,13 @@ void DocumentUrlDB::put(quint64 docId, const QByteArray& url)
 
 void DocumentUrlDB::add(quint64 id, quint64 parentId, const QByteArray& name)
 {
-    QVector<quint64> subDocs = m_idTree.get(parentId);
+    Q_ASSERT(id > 0);
+    Q_ASSERT(!name.isEmpty());
+
+    IdFilenameDB idFilenameDb(m_idFilenameDbi, m_txn);
+    IdTreeDB idTreeDb(m_idTreeDbi, m_txn);
+
+    QVector<quint64> subDocs = idTreeDb.get(parentId);
 
     // Find if the id exists
     if (subDocs.isEmpty()) {
@@ -111,21 +120,23 @@ void DocumentUrlDB::add(quint64 id, quint64 parentId, const QByteArray& name)
         }
     }
 
-    m_idTree.put(parentId, subDocs);
+    idTreeDb.put(parentId, subDocs);
 
     // Update the IdFileName
     IdFilenameDB::FilePath path;
     path.parentId = parentId;
     path.name = name;
 
-    m_idFilename.put(id, path);
+    idFilenameDb.put(id, path);
 }
 
 QByteArray DocumentUrlDB::get(quint64 docId)
 {
     Q_ASSERT(docId > 0);
 
-    auto path = m_idFilename.get(docId);
+    IdFilenameDB idFilenameDb(m_idFilenameDbi, m_txn);
+
+    auto path = idFilenameDb.get(docId);
     if (path.name.isEmpty()) {
         return QByteArray();
     }
@@ -133,7 +144,7 @@ QByteArray DocumentUrlDB::get(quint64 docId)
     QList<QByteArray> list = {path.name};
     quint64 id = path.parentId;
     while (id) {
-        auto p = m_idFilename.get(id);
+        auto p = idFilenameDb.get(id);
         Q_ASSERT(!p.name.isEmpty());
 
         list.prepend(p.name);
@@ -147,32 +158,35 @@ void DocumentUrlDB::del(quint64 docId)
 {
     Q_ASSERT(docId > 0);
 
+    IdFilenameDB idFilenameDb(m_idFilenameDbi, m_txn);
+    IdTreeDB idTreeDb(m_idTreeDbi, m_txn);
+
     // FIXME: Maybe this can be combined into one?
-    auto path = m_idFilename.get(docId);
+    auto path = idFilenameDb.get(docId);
     if (path.name.isEmpty()) {
         return;
     }
-    m_idFilename.del(docId);
+    idFilenameDb.del(docId);
 
-    QVector<quint64> subDocs = m_idTree.get(path.parentId);
+    QVector<quint64> subDocs = idTreeDb.get(path.parentId);
     subDocs.removeOne(docId);
 
     if (!subDocs.isEmpty()) {
-        m_idTree.put(path.parentId, subDocs);
+        idTreeDb.put(path.parentId, subDocs);
     } else {
-        m_idTree.del(path.parentId);
+        idTreeDb.del(path.parentId);
 
         //
         // Delete every parent directory which only has 1 child
         //
         quint64 id = path.parentId;
         while (id) {
-            auto path = m_idFilename.get(id);
+            auto path = idFilenameDb.get(id);
             Q_ASSERT(!path.name.isEmpty());
-            QVector<quint64> subDocs = m_idTree.get(path.parentId);
+            QVector<quint64> subDocs = idTreeDb.get(path.parentId);
             if (subDocs.size() == 1) {
-                m_idTree.del(path.parentId);
-                m_idFilename.del(id);
+                idTreeDb.del(path.parentId);
+                idFilenameDb.del(id);
             } else {
                 break;
             }
@@ -186,9 +200,11 @@ void DocumentUrlDB::rename(quint64 docId, const QByteArray& newFileName)
 {
     Q_ASSERT(docId > 0);
 
-    auto path = m_idFilename.get(docId);
+    IdFilenameDB idFilenameDb(m_idFilenameDbi, m_txn);
+
+    auto path = idFilenameDb.get(docId);
     path.name = newFileName;
-    m_idFilename.put(docId, path);
+    idFilenameDb.put(docId, path);
 }
 
 quint64 DocumentUrlDB::getId(quint64 docId, const QByteArray& fileName)
@@ -196,9 +212,12 @@ quint64 DocumentUrlDB::getId(quint64 docId, const QByteArray& fileName)
     Q_ASSERT(docId > 0);
     Q_ASSERT(!fileName.isEmpty());
 
-    QVector<quint64> subFiles = m_idTree.get(docId);
+    IdFilenameDB idFilenameDb(m_idFilenameDbi, m_txn);
+    IdTreeDB idTreeDb(m_idTreeDbi, m_txn);
+
+    QVector<quint64> subFiles = idTreeDb.get(docId);
     for (quint64 id : subFiles) {
-        IdFilenameDB::FilePath path = m_idFilename.get(id);
+        IdFilenameDB::FilePath path = idFilenameDb.get(id);
         if (path.name == fileName) {
             return id;
         }

@@ -26,18 +26,34 @@
 
 using namespace Baloo;
 
-IdTreeDB::IdTreeDB(MDB_txn* txn)
+IdTreeDB::IdTreeDB(MDB_dbi dbi, MDB_txn* txn)
     : m_txn(txn)
+    , m_dbi(dbi)
 {
     Q_ASSERT(txn != 0);
-
-    int rc = mdb_dbi_open(txn, "idtree", MDB_CREATE | MDB_INTEGERKEY, &m_dbi);
-    Q_ASSERT_X(rc == 0, "IdTreeDB", mdb_strerror(rc));
+    Q_ASSERT(dbi != 0);
 }
 
 IdTreeDB::~IdTreeDB()
 {
-    mdb_dbi_close(mdb_txn_env(m_txn), m_dbi);
+}
+
+MDB_dbi IdTreeDB::create(MDB_txn* txn)
+{
+    MDB_dbi dbi;
+    int rc = mdb_dbi_open(txn, "idtree", MDB_CREATE | MDB_INTEGERKEY, &dbi);
+    Q_ASSERT_X(rc == 0, "IdTreeDB::create", mdb_strerror(rc));
+
+    return dbi;
+}
+
+MDB_dbi IdTreeDB::open(MDB_txn* txn)
+{
+    MDB_dbi dbi;
+    int rc = mdb_dbi_open(txn, "idtree", MDB_INTEGERKEY, &dbi);
+    Q_ASSERT_X(rc == 0, "IdTreeDB::open", mdb_strerror(rc));
+
+    return dbi;
 }
 
 void IdTreeDB::put(quint64 docId, const QVector<quint64> subDocIds)

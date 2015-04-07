@@ -30,8 +30,11 @@ namespace Baloo {
 class BALOO_ENGINE_EXPORT DocumentDB
 {
 public:
-    explicit DocumentDB(MDB_txn* txn);
+    DocumentDB(MDB_dbi dbi, MDB_txn* txn);
     ~DocumentDB();
+
+    static MDB_dbi create(MDB_txn* txn);
+    static MDB_dbi open(MDB_txn* txn);
 
     void put(quint64 docId, const QVector< QByteArray >& list);
     QVector<QByteArray> get(quint64 docId);
@@ -40,9 +43,6 @@ public:
     void del(quint64 docId);
     uint size();
 
-    void setTransaction(MDB_txn* txn) {
-        m_txn = txn;
-    }
 private:
     MDB_txn* m_txn;
     MDB_dbi m_dbi;

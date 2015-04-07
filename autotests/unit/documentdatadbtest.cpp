@@ -28,7 +28,7 @@ class DocumentDataDBTest : public SingleDBTest
     Q_OBJECT
 private Q_SLOTS:
     void test() {
-        DocumentDataDB db("testdb", m_txn);
+        DocumentDataDB db(DocumentDataDB::create(m_txn), m_txn);
 
         QByteArray arr = "/home/blah";
         db.put(1, arr);

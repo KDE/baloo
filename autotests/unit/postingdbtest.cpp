@@ -28,7 +28,7 @@ class PostingDBTest : public SingleDBTest
     Q_OBJECT
 private Q_SLOTS:
     void test() {
-        PostingDB db(m_txn);
+        PostingDB db(PostingDB::create(m_txn), m_txn);
 
         QByteArray word("fire");
         PostingList list = {1, 5, 6};
@@ -38,7 +38,7 @@ private Q_SLOTS:
     }
 
     void testTermIter() {
-        PostingDB db(m_txn);
+        PostingDB db(PostingDB::create(m_txn), m_txn);
 
         db.put("abc", {1, 4, 5, 9, 11});
         db.put("fir", {1, 3, 5});
@@ -56,7 +56,7 @@ private Q_SLOTS:
     }
 
     void testPrefixIter() {
-        PostingDB db(m_txn);
+        PostingDB db(PostingDB::create(m_txn), m_txn);
 
         db.put("abc", {1, 4, 5, 9, 11});
         db.put("fir", {1, 3, 5});
@@ -74,7 +74,7 @@ private Q_SLOTS:
     }
 
     void testRegExpIter() {
-        PostingDB db(m_txn);
+        PostingDB db(PostingDB::create(m_txn), m_txn);
 
         db.put("abc", {1, 4, 5, 9, 11});
         db.put("fir", {1, 3, 5, 7});
@@ -97,7 +97,7 @@ private Q_SLOTS:
     }
 
     void testFetchTermsStartingWith() {
-        PostingDB db(m_txn);
+        PostingDB db(PostingDB::create(m_txn), m_txn);
 
         db.put("abc", {1, 4, 5, 9, 11});
         db.put("fir", {1, 3, 5, 7});

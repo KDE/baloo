@@ -31,33 +31,25 @@
 
 using namespace Baloo;
 
-WriteTransaction::WriteTransaction(PostingDB* postingDB, PositionDB* positionDB,
-                                   DocumentDB* docTerms, DocumentDB* docXattrTerms, DocumentDB* docFileNameTerms,
-                                   DocumentUrlDB* docUrlDB, DocumentTimeDB* docTimeDB,
-                                   DocumentDataDB* docDataDB, DocumentIdDB* contentIndexingDB,
-                                   MTimeDB* mtimeDB)
-    : m_postingDB(postingDB)
-    , m_positionDB(positionDB)
-    , m_documentTermsDB(docTerms)
-    , m_documentXattrTermsDB(docXattrTerms)
-    , m_documentFileNameTermsDB(docFileNameTerms)
-    , m_docUrlDB(docUrlDB)
-    , m_docTimeDB(docTimeDB)
-    , m_docDataDB(docDataDB)
-    , m_contentIndexingDB(contentIndexingDB)
-    , m_mtimeDB(mtimeDB)
-{
-}
-
 void WriteTransaction::addDocument(const Document& doc)
 {
     quint64 id = doc.id();
-    Q_ASSERT(!m_documentTermsDB->contains(id));
-    Q_ASSERT(!m_documentXattrTermsDB->contains(id));
-    Q_ASSERT(!m_documentFileNameTermsDB->contains(id));
-    Q_ASSERT(!m_docTimeDB->contains(id));
-    Q_ASSERT(!m_docDataDB->contains(id));
-    Q_ASSERT(!m_contentIndexingDB->contains(id));
+
+    DocumentDB documentTermsDB(m_dbis.docTermsDbi, m_txn);
+    DocumentDB documentXattrTermsDB(m_dbis.docXattrTermsDbi, m_txn);
+    DocumentDB documentFileNameTermsDB(m_dbis.docFilenameTermsDbi, m_txn);
+    DocumentTimeDB docTimeDB(m_dbis.docTimeDbi, m_txn);
+    DocumentDataDB docDataDB(m_dbis.docDataDbi, m_txn);
+    DocumentIdDB contentIndexingDB(m_dbis.contentIndexingDbi, m_txn);
+    MTimeDB mtimeDB(m_dbis.mtimeDbi, m_txn);
+    DocumentUrlDB docUrlDB(m_dbis.idTreeDbi, m_dbis.idFilenameDbi, m_txn);
+
+    Q_ASSERT(!documentTermsDB.contains(id));
+    Q_ASSERT(!documentXattrTermsDB.contains(id));
+    Q_ASSERT(!documentFileNameTermsDB.contains(id));
+    Q_ASSERT(!docTimeDB.contains(id));
+    Q_ASSERT(!docDataDB.contains(id));
+    Q_ASSERT(!contentIndexingDB.contains(id));
 
     QVector<QByteArray> docTerms;
     docTerms.reserve(doc.m_terms.size());
@@ -75,7 +67,7 @@ void WriteTransaction::addDocument(const Document& doc)
         m_pendingOperations[term].append(op);
     }
 
-    m_documentTermsDB->put(id, docTerms);
+    documentTermsDB.put(id, docTerms);
 
     QVector<QByteArray> docXattrTerms;
     docXattrTerms.reserve(doc.m_xattrTerms.size());
@@ -94,7 +86,7 @@ void WriteTransaction::addDocument(const Document& doc)
     }
 
     if (!docXattrTerms.isEmpty())
-        m_documentXattrTermsDB->put(id, docXattrTerms);
+        documentXattrTermsDB.put(id, docXattrTerms);
 
     QVector<QByteArray> docFileNameTerms;
     docFileNameTerms.reserve(doc.m_fileNameTerms.size());
@@ -113,32 +105,41 @@ void WriteTransaction::addDocument(const Document& doc)
     }
 
     if (!docFileNameTerms.isEmpty())
-        m_documentFileNameTermsDB->put(id, docFileNameTerms);
+        documentFileNameTermsDB.put(id, docFileNameTerms);
 
     if (!doc.url().isEmpty()) {
-        m_docUrlDB->put(id, doc.url());
+        docUrlDB.put(id, doc.url());
     }
 
     if (doc.contentIndexing()) {
-        m_contentIndexingDB->put(doc.id());
+        contentIndexingDB.put(doc.id());
     }
 
     DocumentTimeDB::TimeInfo info;
     info.mTime = doc.m_mTime;
     info.cTime = doc.m_cTime;
 
-    m_docTimeDB->put(id, info);
-    m_mtimeDB->put(doc.m_mTime, id);
+    docTimeDB.put(id, info);
+    mtimeDB.put(doc.m_mTime, id);
 
     if (!doc.m_data.isEmpty()) {
-        m_docDataDB->put(id, doc.m_data);
+        docDataDB.put(id, doc.m_data);
     }
 }
 
 void WriteTransaction::removeDocument(quint64 id)
 {
+    DocumentDB documentTermsDB(m_dbis.docTermsDbi, m_txn);
+    DocumentDB documentXattrTermsDB(m_dbis.docXattrTermsDbi, m_txn);
+    DocumentDB documentFileNameTermsDB(m_dbis.docFilenameTermsDbi, m_txn);
+    DocumentTimeDB docTimeDB(m_dbis.docTimeDbi, m_txn);
+    DocumentDataDB docDataDB(m_dbis.docDataDbi, m_txn);
+    DocumentIdDB contentIndexingDB(m_dbis.contentIndexingDbi, m_txn);
+    MTimeDB mtimeDB(m_dbis.mtimeDbi, m_txn);
+    DocumentUrlDB docUrlDB(m_dbis.idTreeDbi, m_dbis.idFilenameDbi, m_txn);
+
     // FIXME: Optimize this. We do not need to combine them into one big vector
-    QVector<QByteArray> terms = m_documentTermsDB->get(id) + m_documentXattrTermsDB->get(id) + m_documentFileNameTermsDB->get(id);
+    QVector<QByteArray> terms = documentTermsDB.get(id) + documentXattrTermsDB.get(id) + documentFileNameTermsDB.get(id);
     if (terms.isEmpty()) {
         return;
     }
@@ -151,27 +152,35 @@ void WriteTransaction::removeDocument(quint64 id)
         m_pendingOperations[term].append(op);
     }
 
-    m_documentTermsDB->del(id);
-    m_documentXattrTermsDB->del(id);
-    m_documentFileNameTermsDB->del(id);
+    documentTermsDB.del(id);
+    documentXattrTermsDB.del(id);
+    documentFileNameTermsDB.del(id);
 
-    m_docUrlDB->del(id);
+    docUrlDB.del(id);
 
-    m_contentIndexingDB->del(id);
+    contentIndexingDB.del(id);
 
-    DocumentTimeDB::TimeInfo info = m_docTimeDB->get(id);
-    m_docTimeDB->del(id);
-    m_mtimeDB->del(info.mTime, id);
+    DocumentTimeDB::TimeInfo info = docTimeDB.get(id);
+    docTimeDB.del(id);
+    mtimeDB.del(info.mTime, id);
 
-    m_docDataDB->del(id);
+    docDataDB.del(id);
 }
 
 void WriteTransaction::replaceDocument(const Document& doc, Database::DocumentOperations operations)
 {
+    DocumentDB documentTermsDB(m_dbis.docTermsDbi, m_txn);
+    DocumentDB documentXattrTermsDB(m_dbis.docXattrTermsDbi, m_txn);
+    DocumentDB documentFileNameTermsDB(m_dbis.docFilenameTermsDbi, m_txn);
+    DocumentTimeDB docTimeDB(m_dbis.docTimeDbi, m_txn);
+    DocumentDataDB docDataDB(m_dbis.docDataDbi, m_txn);
+    MTimeDB mtimeDB(m_dbis.mtimeDbi, m_txn);
+    DocumentUrlDB docUrlDB(m_dbis.idTreeDbi, m_dbis.idFilenameDbi, m_txn);
+
     const quint64 id = doc.id();
 
     if (operations & Database::DocumentTerms) {
-        QVector<QByteArray> prevTerms = m_documentTermsDB->get(id);
+        QVector<QByteArray> prevTerms = documentTermsDB.get(id);
         for (const QByteArray& term : prevTerms) {
             Operation op;
             op.type = RemoveId;
@@ -196,11 +205,11 @@ void WriteTransaction::replaceDocument(const Document& doc, Database::DocumentOp
             m_pendingOperations[term].append(op);
         }
 
-        m_documentTermsDB->put(id, docTerms);
+        documentTermsDB.put(id, docTerms);
     }
 
     if (operations & Database::XAttrTerms) {
-        QVector<QByteArray> prevTerms = m_documentXattrTermsDB->get(id);
+        QVector<QByteArray> prevTerms = documentXattrTermsDB.get(id);
         for (const QByteArray& term : prevTerms) {
             Operation op;
             op.type = RemoveId;
@@ -226,13 +235,13 @@ void WriteTransaction::replaceDocument(const Document& doc, Database::DocumentOp
         }
 
         if (!docXattrTerms.isEmpty())
-            m_documentXattrTermsDB->put(id, docXattrTerms);
+            documentXattrTermsDB.put(id, docXattrTerms);
         else
-            m_documentXattrTermsDB->del(id);
+            documentXattrTermsDB.del(id);
     }
 
     if (operations & Database::FileNameTerms) {
-        QVector<QByteArray> prevTerms = m_documentFileNameTermsDB->get(id);
+        QVector<QByteArray> prevTerms = documentFileNameTermsDB.get(id);
         for (const QByteArray& term : prevTerms) {
             Operation op;
             op.type = RemoveId;
@@ -258,15 +267,15 @@ void WriteTransaction::replaceDocument(const Document& doc, Database::DocumentOp
         }
 
         if (!docFileNameTerms.isEmpty())
-            m_documentFileNameTermsDB->put(id, docFileNameTerms);
+            documentFileNameTermsDB.put(id, docFileNameTerms);
         else
-            m_documentFileNameTermsDB->del(id);
+            documentFileNameTermsDB.del(id);
     }
 
     if (operations & Database::DocumentUrl) {
         // FIXME: Replacing the documentUrl is actually quite complicated!
         Q_ASSERT(0);
-        m_docUrlDB->put(id, doc.url());
+        docUrlDB.put(id, doc.url());
     }
 
     // FIXME: What about contentIndexing?
@@ -281,12 +290,12 @@ void WriteTransaction::replaceDocument(const Document& doc, Database::DocumentOp
         info.mTime = doc.m_mTime;
         info.cTime = doc.m_cTime;
 
-        m_docTimeDB->put(id, info);
-        m_mtimeDB->put(doc.m_mTime, id);
+        docTimeDB.put(id, info);
+        mtimeDB.put(doc.m_mTime, id);
     }
 
     if (operations & Database::DocumentData) {
-        m_docDataDB->put(id, doc.m_data);
+        docDataDB.put(id, doc.m_data);
     }
 }
 
@@ -308,6 +317,9 @@ static void insert(QVector<T>& vec, const T& id)
 
 void WriteTransaction::commit()
 {
+    PostingDB postingDB(m_dbis.postingDbi, m_txn);
+    PositionDB positionDB(m_dbis.positionDBi, m_txn);
+
     qDebug() << "PendingOperations:" << m_pendingOperations.size();
     QHashIterator<QByteArray, QVector<Operation> > iter(m_pendingOperations);
     while (iter.hasNext()) {
@@ -316,8 +328,8 @@ void WriteTransaction::commit()
         const QByteArray& term = iter.key();
         const QVector<Operation> operations = iter.value();
 
-        PostingList list = m_postingDB->get(term);
-        QVector<PositionInfo> positionList = m_positionDB->get(term); // FIXME: We do not need to fetch this for all the terms
+        PostingList list = postingDB.get(term);
+        QVector<PositionInfo> positionList = positionDB.get(term); // FIXME: We do not need to fetch this for all the terms
 
         for (const Operation& op : operations) {
             quint64 id = op.data.docId;
@@ -336,15 +348,15 @@ void WriteTransaction::commit()
         }
 
         if (!list.isEmpty()) {
-            m_postingDB->put(term, list);
+            postingDB.put(term, list);
         } else {
-            m_postingDB->del(term);
+            postingDB.del(term);
         }
 
         if (!positionList.isEmpty()) {
-            m_positionDB->put(term, positionList);
+            positionDB.put(term, positionList);
         } else {
-            m_positionDB->del(term);
+            positionDB.del(term);
         }
     }
 

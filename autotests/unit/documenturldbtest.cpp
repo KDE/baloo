@@ -74,7 +74,7 @@ private Q_SLOTS:
         touchFile(filePath);
         quint64 id = filePathToId(filePath);
 
-        DocumentUrlDB db(m_txn);
+        DocumentUrlDB db(IdTreeDB::create(m_txn), IdFilenameDB::create(m_txn), m_txn);
         db.put(id, filePath);
 
         QCOMPARE(db.get(id), filePath);
@@ -93,7 +93,7 @@ private Q_SLOTS:
         touchFile(filePath2);
         quint64 id2 = filePathToId(filePath2);
 
-        DocumentUrlDB db(m_txn);
+        DocumentUrlDB db(IdTreeDB::create(m_txn), IdFilenameDB::create(m_txn), m_txn);
         db.put(id1, filePath1);
         db.put(id2, filePath2);
 
@@ -120,7 +120,7 @@ private Q_SLOTS:
         touchFile(filePath2);
         quint64 id2 = filePathToId(filePath2);
 
-        DocumentUrlDB db(m_txn);
+        DocumentUrlDB db(IdTreeDB::create(m_txn), IdFilenameDB::create(m_txn), m_txn);
         db.put(id, path);
         db.put(id1, filePath1);
         db.put(id2, filePath2);

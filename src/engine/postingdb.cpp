@@ -26,18 +26,34 @@
 
 using namespace Baloo;
 
-PostingDB::PostingDB(MDB_txn* txn)
+PostingDB::PostingDB(MDB_dbi dbi, MDB_txn* txn)
     : m_txn(txn)
+    , m_dbi(dbi)
 {
     Q_ASSERT(txn != 0);
-
-    int rc = mdb_dbi_open(txn, "postingdb", MDB_CREATE, &m_dbi);
-    Q_ASSERT_X(rc == 0, "PostingDB", mdb_strerror(rc));
+    Q_ASSERT(dbi != 0);
 }
 
 PostingDB::~PostingDB()
 {
-    mdb_dbi_close(mdb_txn_env(m_txn), m_dbi);
+}
+
+MDB_dbi PostingDB::create(MDB_txn* txn)
+{
+    MDB_dbi dbi;
+    int rc = mdb_dbi_open(txn, "postingdb", MDB_CREATE, &dbi);
+    Q_ASSERT_X(rc == 0, "PostingDB::create", mdb_strerror(rc));
+
+    return dbi;
+}
+
+MDB_dbi PostingDB::open(MDB_txn* txn)
+{
+    MDB_dbi dbi;
+    int rc = mdb_dbi_open(txn, "postingdb", 0, &dbi);
+    Q_ASSERT_X(rc == 0, "PostingDB::open", mdb_strerror(rc));
+
+    return dbi;
 }
 
 void PostingDB::put(const QByteArray& term, const PostingList& list)

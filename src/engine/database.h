@@ -23,19 +23,13 @@
 
 #include "engine_export.h"
 #include "document.h"
+#include "databasedbis.h"
+
 #include <QString>
 #include <lmdb.h>
 
 namespace Baloo {
 
-class PostingDB;
-class PositionDB;
-class DocumentDB;
-class DocumentDataDB;
-class DocumentUrlDB;
-class DocumentTimeDB;
-class DocumentIdDB;
-class MTimeDB;
 class EngineQuery;
 class PostingIterator;
 class WriteTransaction;
@@ -116,20 +110,7 @@ private:
     MDB_env* m_env;
     MDB_txn* m_txn;
 
-    PostingDB* m_postingDB;
-    PositionDB* m_positionDB;
-
-    DocumentDB* m_documentTermsDB;
-    DocumentDB* m_documentXattrTermsDB;
-    DocumentDB* m_documentFileNameTermsDB;
-
-    DocumentUrlDB* m_docUrlDB;
-
-    DocumentTimeDB* m_docTimeDB;
-    DocumentDataDB* m_docDataDB;
-    DocumentIdDB* m_contentIndexingDB;
-    MTimeDB* m_mtimeDB;
-
+    DatabaseDbis m_dbis;
     WriteTransaction* m_writeTrans;
 
     friend class DatabaseTest;

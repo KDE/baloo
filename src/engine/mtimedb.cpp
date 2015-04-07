@@ -22,18 +22,34 @@
 
 using namespace Baloo;
 
-MTimeDB::MTimeDB(MDB_txn* txn)
+MTimeDB::MTimeDB(MDB_dbi dbi, MDB_txn* txn)
     : m_txn(txn)
+    , m_dbi(dbi)
 {
     Q_ASSERT(txn != 0);
-
-    int rc = mdb_dbi_open(txn, "mtimedb", MDB_CREATE | MDB_INTEGERKEY | MDB_DUPSORT | MDB_DUPFIXED | MDB_INTEGERDUP, &m_dbi);
-    Q_ASSERT_X(rc == 0, "MTimeDB", mdb_strerror(rc));
+    Q_ASSERT(dbi != 0);
 }
 
 MTimeDB::~MTimeDB()
 {
-    mdb_dbi_close(mdb_txn_env(m_txn), m_dbi);
+}
+
+MDB_dbi MTimeDB::create(MDB_txn* txn)
+{
+    MDB_dbi dbi;
+    int rc = mdb_dbi_open(txn, "mtimedb", MDB_CREATE | MDB_INTEGERKEY | MDB_DUPSORT | MDB_DUPFIXED | MDB_INTEGERDUP, &dbi);
+    Q_ASSERT_X(rc == 0, "MTimeDB::create", mdb_strerror(rc));
+
+    return dbi;
+}
+
+MDB_dbi MTimeDB::open(MDB_txn* txn)
+{
+    MDB_dbi dbi;
+    int rc = mdb_dbi_open(txn, "mtimedb", MDB_INTEGERKEY | MDB_DUPSORT | MDB_DUPFIXED | MDB_INTEGERDUP, &dbi);
+    Q_ASSERT_X(rc == 0, "MTimeDB::open", mdb_strerror(rc));
+
+    return dbi;
 }
 
 void MTimeDB::put(quint32 mtime, quint64 docId)

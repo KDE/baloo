@@ -40,8 +40,11 @@ typedef QVector<quint64> PostingList;
 class BALOO_ENGINE_EXPORT PostingDB
 {
 public:
-    explicit PostingDB(MDB_txn* txn);
+    PostingDB(MDB_dbi, MDB_txn* txn);
     ~PostingDB();
+
+    static MDB_dbi create(MDB_txn* txn);
+    static MDB_dbi open(MDB_txn* txn);
 
     void put(const QByteArray& term, const PostingList& list);
     PostingList get(const QByteArray& term);
@@ -53,9 +56,6 @@ public:
 
     QList<QByteArray> fetchTermsStartingWith(const QByteArray& term);
 
-    void setTransaction(MDB_txn* txn) {
-        m_txn = txn;
-    }
 private:
     MDB_txn* m_txn;
     MDB_dbi m_dbi;

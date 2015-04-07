@@ -32,7 +32,7 @@ private Q_SLOTS:
 
 void DocumentTimeDBTest::test()
 {
-    DocumentTimeDB db(m_txn);
+    DocumentTimeDB db(DocumentTimeDB::create(m_txn), m_txn);
 
     DocumentTimeDB::TimeInfo info;
     info.mTime = 5;

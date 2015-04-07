@@ -79,13 +79,16 @@ void DatabaseTest::test()
     db.transaction(Database::ReadOnly);
     QCOMPARE(db.hasDocument(id), true);
 
-    QCOMPARE(db.m_docUrlDB->get(id), url);
-    QCOMPARE(db.m_postingDB->get("a"), QVector<quint64>() << id);
-    QCOMPARE(db.m_postingDB->get("ab"), QVector<quint64>() << id);
-    QCOMPARE(db.m_postingDB->get("abc"), QVector<quint64>() << id);
-    QCOMPARE(db.m_postingDB->get("power"), QVector<quint64>() << id);
-    QCOMPARE(db.m_postingDB->get("system"), QVector<quint64>() << id);
-    QCOMPARE(db.m_postingDB->get("link"), QVector<quint64>() << id);
+    PostingDB postingDb(db.m_dbis.postingDbi, db.m_txn);
+    DocumentUrlDB docUrlDb(db.m_dbis.idTreeDbi, db.m_dbis.idFilenameDbi, db.m_txn);
+
+    QCOMPARE(docUrlDb.get(id), url);
+    QCOMPARE(postingDb.get("a"), QVector<quint64>() << id);
+    QCOMPARE(postingDb.get("ab"), QVector<quint64>() << id);
+    QCOMPARE(postingDb.get("abc"), QVector<quint64>() << id);
+    QCOMPARE(postingDb.get("power"), QVector<quint64>() << id);
+    QCOMPARE(postingDb.get("system"), QVector<quint64>() << id);
+    QCOMPARE(postingDb.get("link"), QVector<quint64>() << id);
 
     /*
     QCOMPARE(db.document(1), doc);

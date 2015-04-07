@@ -29,7 +29,7 @@ class BALOO_ENGINE_EXPORT IdTreeDBTest : public SingleDBTest
     Q_OBJECT
 private Q_SLOTS:
     void test() {
-        IdTreeDB db(m_txn);
+        IdTreeDB db(IdTreeDB::create(m_txn), m_txn);
 
         QVector<quint64> val = {5, 6, 7};
         db.put(1, val);
@@ -41,7 +41,7 @@ private Q_SLOTS:
     }
 
     void testIter() {
-        IdTreeDB db(m_txn);
+        IdTreeDB db(IdTreeDB::create(m_txn), m_txn);
 
         db.put(1, {5, 6, 7, 8});
         db.put(6, {9, 11, 19});

@@ -32,8 +32,11 @@ namespace Baloo {
 class BALOO_ENGINE_EXPORT DocumentTimeDB
 {
 public:
-    explicit DocumentTimeDB(MDB_txn* txn);
+    DocumentTimeDB(MDB_dbi dbi, MDB_txn* txn);
     ~DocumentTimeDB();
+
+    static MDB_dbi create(MDB_txn* txn);
+    static MDB_dbi open(MDB_txn* txn);
 
     struct TimeInfo {
         quint32 mTime;
@@ -49,9 +52,6 @@ public:
     void del(quint64 docId);
     bool contains(quint64 docId);
 
-    void setTransaction(MDB_txn* txn) {
-        m_txn = txn;
-    }
 private:
     MDB_txn* m_txn;
     MDB_dbi m_dbi;

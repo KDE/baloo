@@ -22,18 +22,34 @@
 
 using namespace Baloo;
 
-DocumentTimeDB::DocumentTimeDB(MDB_txn* txn)
+DocumentTimeDB::DocumentTimeDB(MDB_dbi dbi, MDB_txn* txn)
     : m_txn(txn)
+    , m_dbi(dbi)
 {
     Q_ASSERT(txn != 0);
-
-    int rc = mdb_dbi_open(txn, "documenttimedb", MDB_CREATE | MDB_INTEGERKEY, &m_dbi);
-    Q_ASSERT_X(rc == 0, "DocumentTimeDB", mdb_strerror(rc));
+    Q_ASSERT(dbi != 0);
 }
 
 DocumentTimeDB::~DocumentTimeDB()
 {
-    mdb_dbi_close(mdb_txn_env(m_txn), m_dbi);
+}
+
+MDB_dbi DocumentTimeDB::create(MDB_txn* txn)
+{
+    MDB_dbi dbi;
+    int rc = mdb_dbi_open(txn, "documenttimedb", MDB_CREATE | MDB_INTEGERKEY, &dbi);
+    Q_ASSERT_X(rc == 0, "DocumentTimeDB::create", mdb_strerror(rc));
+
+    return dbi;
+}
+
+MDB_dbi DocumentTimeDB::open(MDB_txn* txn)
+{
+    MDB_dbi dbi;
+    int rc = mdb_dbi_open(txn, "documenttimedb", MDB_INTEGERKEY, &dbi);
+    Q_ASSERT_X(rc == 0, "DocumentTimeDB::create", mdb_strerror(rc));
+
+    return dbi;
 }
 
 void DocumentTimeDB::put(quint64 docId, const TimeInfo& info)
