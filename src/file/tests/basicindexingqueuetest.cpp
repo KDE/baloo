@@ -26,7 +26,6 @@
 #include <QCoreApplication>
 
 #include "basicindexingqueue.h"
-#include "commitqueue.h"
 #include "database.h"
 #include "fileindexerconfig.h"
 #include "util.h"
@@ -44,16 +43,12 @@ int main(int argc, char** argv)
     Baloo::BasicIndexingQueue basicIQ(&db, &config);
     QObject::connect(&basicIQ, &Baloo::BasicIndexingQueue::finishedIndexing, &app, &QCoreApplication::quit);
 
-    Baloo::CommitQueue commitQueue(&db);
-    QObject::connect(&basicIQ, &Baloo::BasicIndexingQueue::newDocument, &commitQueue, &Baloo::CommitQueue::add);
-
     basicIQ.enqueue(QDir::homePath());
 
     QTime timer;
     timer.start();
     int ret = app.exec();
 
-    commitQueue.commit();
     qDebug() << "Elapsed:" << timer.elapsed();
 
     printIOUsage();

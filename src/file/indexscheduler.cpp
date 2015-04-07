@@ -24,7 +24,6 @@
 #include "fileindexerconfig.h"
 #include "fileindexingqueue.h"
 #include "basicindexingqueue.h"
-#include "commitqueue.h"
 #include "eventmonitor.h"
 #include "database.h"
 
@@ -65,12 +64,6 @@ IndexScheduler::IndexScheduler(Database* db, FileIndexerConfig* config, QObject*
     m_eventMonitor = new EventMonitor(this);
     connect(m_eventMonitor, &EventMonitor::idleStatusChanged, this, &IndexScheduler::slotScheduleIndexing);
     connect(m_eventMonitor, &EventMonitor::powerManagementStatusChanged, this, &IndexScheduler::slotScheduleIndexing);
-
-    m_commitQ = new CommitQueue(m_db, this);
-    connect(m_commitQ, &CommitQueue::committed, this, &IndexScheduler::slotScheduleIndexing);
-    connect(m_commitQ, &CommitQueue::committed, this, &IndexScheduler::slotNotifyCommitted);
-    connect(m_basicIQ, &BasicIndexingQueue::newDocument, m_commitQ, &CommitQueue::add);
-    connect(m_fileIQ, &FileIndexingQueue::newDocument, m_commitQ, &CommitQueue::add);
 
     m_state = State_Normal;
     slotScheduleIndexing();
@@ -285,7 +278,7 @@ void IndexScheduler::slotScheduleIndexing()
         }
     }
 
-    if (m_basicIQ->isEmpty() && m_fileIQ->isEmpty() && m_commitQ->isEmpty()) {
+    if (m_basicIQ->isEmpty() && m_fileIQ->isEmpty()) {
         setIndexingStarted(false);
     }
 }
@@ -316,6 +309,7 @@ void IndexScheduler::emitStatusStringChanged()
     }
 }
 
+// FIXME: This is now never called cause we do not have a commit queue
 void IndexScheduler::slotNotifyCommitted()
 {
     QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/files"),

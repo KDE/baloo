@@ -1,6 +1,6 @@
 /* This file is part of the KDE Project
    Copyright (c) 2008-2010 Sebastian Trueg <trueg@kde.org>
-   Copyright (c) 2012 Vishesh Handa <me@vhanda.in>
+   Copyright (c) 2012-2015 Vishesh Handa <vhanda@kde.org>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -28,7 +28,6 @@ namespace Baloo
 class Database;
 class FileIndexingQueue;
 class FileIndexerConfig;
-class CommitQueue;
 class EventMonitor;
 class SchedulerTest;
 
@@ -132,7 +131,6 @@ private:
     // Queues
     BasicIndexingQueue* m_basicIQ;
     FileIndexingQueue* m_fileIQ;
-    CommitQueue* m_commitQ;
 
     EventMonitor* m_eventMonitor;
 

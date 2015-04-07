@@ -8,7 +8,6 @@ set(file_static_lib_SRCS
     indexingqueue.cpp
     basicindexingqueue.cpp
     fileindexingqueue.cpp
-    commitqueue.cpp
     basicindexingjob.cpp
     fileindexingjob.cpp
     eventmonitor.cpp

@@ -23,7 +23,6 @@
 #include "../../indexscheduler.h"
 #include "../../database.h"
 #include "../../fileindexerconfig.h"
-#include "../../commitqueue.h"
 #include "../../basicindexingqueue.h"
 #include "../../fileindexingqueue.h"
 #include "../../eventmonitor.h"

@@ -166,7 +166,6 @@ void BasicIndexingQueue::index(const QString& file, const QString& mimetype,
         job.index();
 
         tr.addDocument(job.document());
-        Q_EMIT newDocument();
     }
 
     else if (!xattrOnly) {
@@ -174,14 +173,12 @@ void BasicIndexingQueue::index(const QString& file, const QString& mimetype,
         if (job.index()) {
             tr.replaceDocument(job.document(), Transaction::DocumentTime);
             tr.setPhaseOne(job.document().id());
-            Q_EMIT newDocument();
         }
     }
     else {
         BasicIndexingJob job(file, mimetype, m_config->onlyBasicIndexing());
         if (job.index()) {
             tr.replaceDocument(job.document(), Transaction::XAttrTerms);
-            Q_EMIT newDocument();
         }
     }
 

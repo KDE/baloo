@@ -49,9 +49,6 @@ public:
     void setBatchSize(int size) { m_batchSize = size; }
     void setTestMode(bool mode) { m_testMode = mode; }
 
-Q_SIGNALS:
-    void newDocument(const Document& doc);
-
 protected:
     virtual void processNextIteration();
     virtual void doSuspend();

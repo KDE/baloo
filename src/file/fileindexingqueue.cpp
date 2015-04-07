@@ -102,17 +102,9 @@ void FileIndexingQueue::slotFinishedIndexingFile(KJob* job)
 void FileIndexingQueue::slotIndexingFailed(quint64 id)
 {
     /*
-     * FIXME: Hanlde indexingFailed
-    m_db->xapianDatabase()->db()->reopen();
-    Xapian::Document doc;
-    try {
-        Xapian::Document doc = m_db->xapianDatabase()->db()->get_document(id);
-        updateIndexingLevel(doc, -1);
-        Q_EMIT newDocument(id, doc);
-    } catch (const Xapian::Error& err) {
-        qDebug() << err.get_description().c_str();
-    }
-    */
+     * FIXME: Handle indexing failed
+     * Ideally, update the indexing level!
+     */
 }
 
 
