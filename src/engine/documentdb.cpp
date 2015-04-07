@@ -37,19 +37,19 @@ DocumentDB::~DocumentDB()
 {
 }
 
-MDB_dbi DocumentDB::create(MDB_txn* txn)
+MDB_dbi DocumentDB::create(const char* name, MDB_txn* txn)
 {
     MDB_dbi dbi;
-    int rc = mdb_dbi_open(txn, "documentdb", MDB_CREATE | MDB_INTEGERKEY, &dbi);
+    int rc = mdb_dbi_open(txn, name, MDB_CREATE | MDB_INTEGERKEY, &dbi);
     Q_ASSERT_X(rc == 0, "DocumentDB::create", mdb_strerror(rc));
 
     return dbi;
 }
 
-MDB_dbi DocumentDB::open(MDB_txn* txn)
+MDB_dbi DocumentDB::open(const char* name, MDB_txn* txn)
 {
     MDB_dbi dbi;
-    int rc = mdb_dbi_open(txn, "documentdb", MDB_CREATE | MDB_INTEGERKEY, &dbi);
+    int rc = mdb_dbi_open(txn, name, MDB_CREATE | MDB_INTEGERKEY, &dbi);
     Q_ASSERT_X(rc == 0, "DocumentDB::open", mdb_strerror(rc));
 
     return dbi;

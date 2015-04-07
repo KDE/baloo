@@ -68,7 +68,7 @@ bool Database::open()
     }
 
     mdb_env_create(&m_env);
-    mdb_env_set_maxdbs(m_env, 9);
+    mdb_env_set_maxdbs(m_env, 11);
     mdb_env_set_mapsize(m_env, 1048576000);
 
     // The directory needs to be created before opening the environment
@@ -92,9 +92,9 @@ void Database::transaction(Database::TransactionType type)
         m_dbis.positionDBi = PositionDB::create(m_txn);
 
         // FIXME: All of these are the same
-        m_dbis.docTermsDbi = DocumentDB::create(m_txn);
-        m_dbis.docFilenameTermsDbi = DocumentDB::create(m_txn);
-        m_dbis.docXattrTermsDbi = DocumentDB::create(m_txn);
+        m_dbis.docTermsDbi = DocumentDB::create("docterms", m_txn);
+        m_dbis.docFilenameTermsDbi = DocumentDB::create("docfilenameterms", m_txn);
+        m_dbis.docXattrTermsDbi = DocumentDB::create("docxatrrterms", m_txn);
 
         m_dbis.idTreeDbi = IdTreeDB::create(m_txn);
         m_dbis.idFilenameDbi = IdFilenameDB::create(m_txn);

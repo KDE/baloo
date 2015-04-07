@@ -33,8 +33,8 @@ public:
     DocumentDB(MDB_dbi dbi, MDB_txn* txn);
     ~DocumentDB();
 
-    static MDB_dbi create(MDB_txn* txn);
-    static MDB_dbi open(MDB_txn* txn);
+    static MDB_dbi create(const char* name, MDB_txn* txn);
+    static MDB_dbi open(const char* name, MDB_txn* txn);
 
     void put(quint64 docId, const QVector< QByteArray >& list);
     QVector<QByteArray> get(quint64 docId);

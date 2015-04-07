@@ -32,7 +32,7 @@ private Q_SLOTS:
 
 void DocumentDBTest::test()
 {
-    DocumentDB db(DocumentDB::create(m_txn), m_txn);
+    DocumentDB db(DocumentDB::create("db", m_txn), m_txn);
 
     QVector<QByteArray> list = {"a", "aab", "abc"};
     db.put(1, list);
