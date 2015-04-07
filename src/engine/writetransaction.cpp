@@ -53,59 +53,14 @@ void WriteTransaction::addDocument(const Document& doc)
     Q_ASSERT(!docDataDB.contains(id));
     Q_ASSERT(!contentIndexingDB.contains(id));
 
-    QVector<QByteArray> docTerms;
-    docTerms.reserve(doc.m_terms.size());
-
-    QMapIterator<QByteArray, Document::TermData> it(doc.m_terms);
-    while (it.hasNext()) {
-        const QByteArray term = it.next().key();
-        docTerms.append(term);
-
-        Operation op;
-        op.type = AddId;
-        op.data.docId = id;
-        op.data.positions = it.value().positions;
-
-        m_pendingOperations[term].append(op);
-    }
-
+    QVector<QByteArray> docTerms = addTerms(id, doc.m_terms);
     documentTermsDB.put(id, docTerms);
 
-    QVector<QByteArray> docXattrTerms;
-    docXattrTerms.reserve(doc.m_xattrTerms.size());
-
-    it = QMapIterator<QByteArray, Document::TermData>(doc.m_xattrTerms);
-    while (it.hasNext()) {
-        const QByteArray term = it.next().key();
-        docXattrTerms.append(term);
-
-        Operation op;
-        op.type = AddId;
-        op.data.docId = id;
-        op.data.positions = it.value().positions;
-
-        m_pendingOperations[term].append(op);
-    }
-
+    QVector<QByteArray> docXattrTerms = addTerms(id, doc.m_xattrTerms);
     if (!docXattrTerms.isEmpty())
         documentXattrTermsDB.put(id, docXattrTerms);
 
-    QVector<QByteArray> docFileNameTerms;
-    docFileNameTerms.reserve(doc.m_fileNameTerms.size());
-
-    it = QMapIterator<QByteArray, Document::TermData>(doc.m_fileNameTerms);
-    while (it.hasNext()) {
-        const QByteArray term = it.next().key();
-        docFileNameTerms.append(term);
-
-        Operation op;
-        op.type = AddId;
-        op.data.docId = id;
-        op.data.positions = it.value().positions;
-
-        m_pendingOperations[term].append(op);
-    }
-
+    QVector<QByteArray> docFileNameTerms = addTerms(id, doc.m_fileNameTerms);
     if (!docFileNameTerms.isEmpty())
         documentFileNameTermsDB.put(id, docFileNameTerms);
 
@@ -128,6 +83,28 @@ void WriteTransaction::addDocument(const Document& doc)
         docDataDB.put(id, doc.m_data);
     }
 }
+
+QVector<QByteArray> WriteTransaction::addTerms(quint64 id, const QMap<QByteArray, Document::TermData>& terms)
+{
+    QVector<QByteArray> termList;
+    termList.reserve(terms.size());
+
+    QMapIterator<QByteArray, Document::TermData> it(terms);
+    while (it.hasNext()) {
+        const QByteArray term = it.next().key();
+        termList.append(term);
+
+        Operation op;
+        op.type = AddId;
+        op.data.docId = id;
+        op.data.positions = it.value().positions;
+
+        m_pendingOperations[term].append(op);
+    }
+
+    return termList;
+}
+
 
 void WriteTransaction::removeDocument(quint64 id)
 {

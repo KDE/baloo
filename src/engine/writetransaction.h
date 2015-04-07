@@ -24,10 +24,9 @@
 #include "engine_export.h"
 #include "transaction.h"
 #include "positioninfo.h"
+#include "document.h"
 
 namespace Baloo {
-
-class Document;
 
 class WriteTransaction
 {
@@ -55,6 +54,12 @@ public:
     };
 
 private:
+    /*
+     * Adds an 'addId' operation to the pending queue for each term.
+     * Returns the list of all the terms.
+     */
+    QVector<QByteArray> addTerms(quint64 id, const QMap<QByteArray, Document::TermData>& terms);
+
     QHash<QByteArray, QVector<Operation> > m_pendingOperations;
 
     MDB_txn* m_txn;
