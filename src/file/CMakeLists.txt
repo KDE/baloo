@@ -41,7 +41,6 @@ endif()
 add_library(baloofilecommon STATIC ${file_static_lib_SRCS})
 target_link_libraries(baloofilecommon
     Qt5::DBus
-    KF5::KIOWidgets
     KF5::IdleTime
     KF5::I18n
     KF5::Solid
