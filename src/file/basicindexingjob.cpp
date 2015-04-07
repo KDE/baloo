@@ -140,8 +140,6 @@ QVector<KFileMetaData::Type::Type> BasicIndexingJob::typesForMimeType(const QStr
         types << Type::Document;
     if (mimeType.contains(QLatin1String("text")))
         types << Type::Text;
-    //if (mimeType.contains(QLatin1String("font")))
-    //    types << "Font";
 
     if (mimeType.contains(QLatin1String("powerpoint"))) {
         types << Type::Presentation;
@@ -151,8 +149,6 @@ QVector<KFileMetaData::Type::Type> BasicIndexingJob::typesForMimeType(const QStr
         types << Type::Spreadsheet;
         types << Type::Document;
     }
-    //if (mimeType.contains(QLatin1String("text/html")))
-    //    types << "Html";
 
     static QMultiHash<QString, Type::Type> typeMapper;
     if (typeMapper.isEmpty()) {
@@ -219,15 +215,7 @@ QVector<KFileMetaData::Type::Type> BasicIndexingJob::typesForMimeType(const QStr
         typeMapper.insert(QLatin1String("application/x-gtar"), Type::Archive);
         typeMapper.insert(QLatin1String("application/zip"), Type::Archive);
 
-        // Special images
-        /*
-        typeMapper.insert(QLatin1String("image/vnd.microsoft.icon"), "Icon");
-        typeMapper.insert(QLatin1String("image/svg+xml"), "Image");
-
-        // Fonts
-        typeMapper.insert(QLatin1String("application/vnd.ms-fontobject"), "Font");
-        typeMapper.insert(QLatin1String("application/vnd.ms-opentype"), "Font");
-        */
+        typeMapper.insert(QLatin1String("image/svg+xml"), Type::Image);
     }
 
     types << typeMapper.values(mimeType).toVector();
