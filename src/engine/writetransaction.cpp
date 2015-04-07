@@ -114,17 +114,11 @@ void WriteTransaction::removeDocument(quint64 id)
     MTimeDB mtimeDB(m_dbis.mtimeDbi, m_txn);
     DocumentUrlDB docUrlDB(m_dbis.idTreeDbi, m_dbis.idFilenameDbi, m_txn);
 
-    // FIXME: Optimize this. We do not need to combine them into one big vector
-    QVector<QByteArray> terms = documentTermsDB.get(id) + documentXattrTermsDB.get(id) + documentFileNameTermsDB.get(id);
-    Q_ASSERT(!terms.isEmpty());
+    Q_ASSERT((documentTermsDB.size() + documentXattrTermsDB.size() + documentFileNameTermsDB.size()) > 0);
 
-    for (const QByteArray& term : terms) {
-        Operation op;
-        op.type = RemoveId;
-        op.data.docId = id;
-
-        m_pendingOperations[term].append(op);
-    }
+    removeTerms(id, documentTermsDB.get(id));
+    removeTerms(id, documentXattrTermsDB.get(id));
+    removeTerms(id, documentFileNameTermsDB.get(id));
 
     documentTermsDB.del(id);
     documentXattrTermsDB.del(id);
@@ -139,6 +133,17 @@ void WriteTransaction::removeDocument(quint64 id)
     mtimeDB.del(info.mTime, id);
 
     docDataDB.del(id);
+}
+
+void WriteTransaction::removeTerms(quint64 id, const QVector<QByteArray>& terms)
+{
+    for (const QByteArray& term : terms) {
+        Operation op;
+        op.type = RemoveId;
+        op.data.docId = id;
+
+        m_pendingOperations[term].append(op);
+    }
 }
 
 void WriteTransaction::replaceDocument(const Document& doc, Transaction::DocumentOperations operations)

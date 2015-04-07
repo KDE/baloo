@@ -61,6 +61,7 @@ private:
     QVector<QByteArray> addTerms(quint64 id, const QMap<QByteArray, Document::TermData>& terms);
     QVector<QByteArray> replaceTerms(quint64 id, const QVector<QByteArray>& prevTerms,
                                      const QMap<QByteArray, Document::TermData>& terms);
+    void removeTerms(quint64 id, const QVector<QByteArray>& terms);
 
     QHash<QByteArray, QVector<Operation> > m_pendingOperations;
 
