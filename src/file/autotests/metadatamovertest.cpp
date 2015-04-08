@@ -46,6 +46,7 @@ private Q_SLOTS:
     void cleanupTestCase();
 
     void testRemoveFile();
+    void testRenameFile();
     void testMoveFile();
     void testMoveFolder();
 
@@ -125,11 +126,37 @@ static void mkdir(const QString& path)
     QVERIFY(QDir(path).exists());
 }
 
-void MetadataMoverTest::testMoveFile()
+void MetadataMoverTest::testRenameFile()
 {
     QTemporaryDir dir;
 
     QString url = dir.path() + "/file";
+    touchFile(url);
+    quint64 fid = insertUrl(url);
+
+    {
+        Transaction tr(m_db, Transaction::ReadOnly);
+        QVERIFY(tr.hasDocument(fid));
+    }
+
+    MetadataMover mover(m_db, this);
+    QString url2 = dir.path() + "/file2";
+    QFile::rename(url, url2);
+    mover.moveFileMetadata(QFile::encodeName(url), QFile::encodeName(url2));
+
+    {
+        Transaction tr(m_db, Transaction::ReadOnly);
+        QVERIFY(tr.hasDocument(fid));
+        QCOMPARE(tr.documentUrl(fid), QFile::encodeName(url2));
+    }
+}
+
+void MetadataMoverTest::testMoveFile()
+{
+    QTemporaryDir dir;
+    QDir().mkpath(dir.path() + "/a/b/c");
+
+    QString url = dir.path() + "/a/b/c/file";
     touchFile(url);
     quint64 fid = insertUrl(url);
 

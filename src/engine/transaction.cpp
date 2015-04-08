@@ -309,12 +309,11 @@ void Transaction::renameFilePath(quint64 id, const Document& newDoc)
 {
     Q_ASSERT(id);
 
-    const QByteArray newFilePath = newDoc.url();
-    const QByteArray newFileName = newFilePath.mid(newFilePath.lastIndexOf('/') + 1);
-
     // Update the id -> url db
+    // TODO: Use something more efficient than a del + put
     DocumentUrlDB docUrlDb(m_dbis.idTreeDbi, m_dbis.idFilenameDbi, m_txn);
-    docUrlDb.rename(id, newFileName);
+    docUrlDb.del(id);
+    docUrlDb.put(id, newDoc.url());
 
     replaceDocument(newDoc, FileNameTerms);
 }
