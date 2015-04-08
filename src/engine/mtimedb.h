@@ -27,6 +27,8 @@
 
 namespace Baloo {
 
+class PostingIterator;
+
 /**
  * The MTime DB maps the file mtime to its id. This allows us to do
  * fast searches of files between a certain time range.
@@ -44,6 +46,14 @@ public:
     QVector<quint64> get(quint64 mtime);
 
     void del(quint32 mtime, quint64 docId);
+
+    enum Comparator {
+        Equal,
+        LessEqualThan,
+        GreaterEqualThan
+    };
+    PostingIterator* iter(quint32 mtime, Comparator com);
+
 private:
     MDB_txn* m_txn;
     MDB_dbi m_dbi;

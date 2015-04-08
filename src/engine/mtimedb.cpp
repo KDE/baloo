@@ -19,6 +19,7 @@
  */
 
 #include "mtimedb.h"
+#include "vectorpostingiterator.h"
 
 using namespace Baloo;
 
@@ -124,4 +125,61 @@ void MTimeDB::del(quint32 mtime, quint64 docId)
         return;
     }
     Q_ASSERT_X(rc == 0, "DocumentDB::del", mdb_strerror(rc));
+}
+
+//
+// Posting Iterator
+//
+
+PostingIterator* MTimeDB::iter(quint32 mtime, MTimeDB::Comparator com)
+{
+    if (com == Equal) {
+        return new VectorPostingIterator(get(mtime));
+    }
+
+    MDB_val key;
+    key.mv_size = sizeof(quint32);
+    key.mv_data = &mtime;
+
+    MDB_cursor* cursor;
+    mdb_cursor_open(m_txn, m_dbi, &cursor);
+
+    QVector<quint64> results;
+
+    MDB_val val;
+    int rc = mdb_cursor_get(cursor, &key, &val, MDB_SET_RANGE);
+    if (rc == MDB_NOTFOUND) {
+        mdb_cursor_close(cursor);
+        return 0;
+    }
+    Q_ASSERT_X(rc == 0, "MTimeDB::iter", mdb_strerror(rc));
+
+    results << *static_cast<quint64*>(val.mv_data);
+
+    if (com == GreaterEqualThan) {
+        while (1) {
+            rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
+            if (rc == MDB_NOTFOUND) {
+                break;
+            }
+            Q_ASSERT_X(rc == 0, "MTimeDB::iter >=", mdb_strerror(rc));
+
+            results << *static_cast<quint64*>(val.mv_data);
+        }
+    }
+    else {
+        while (1) {
+            rc = mdb_cursor_get(cursor, &key, &val, MDB_PREV);
+            if (rc == MDB_NOTFOUND) {
+                break;
+            }
+            Q_ASSERT_X(rc == 0, "MTimeDB::iter >=", mdb_strerror(rc));
+
+            quint64 id = *static_cast<quint64*>(val.mv_data);
+            results.push_front(id);
+        }
+    }
+
+    mdb_cursor_close(cursor);
+    return new VectorPostingIterator(results);
 }
