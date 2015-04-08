@@ -144,8 +144,6 @@ PostingIterator* MTimeDB::iter(quint32 mtime, MTimeDB::Comparator com)
     MDB_cursor* cursor;
     mdb_cursor_open(m_txn, m_dbi, &cursor);
 
-    QVector<quint64> results;
-
     MDB_val val;
     int rc = mdb_cursor_get(cursor, &key, &val, MDB_SET_RANGE);
     if (rc == MDB_NOTFOUND) {
@@ -154,6 +152,7 @@ PostingIterator* MTimeDB::iter(quint32 mtime, MTimeDB::Comparator com)
     }
     Q_ASSERT_X(rc == 0, "MTimeDB::iter", mdb_strerror(rc));
 
+    QVector<quint64> results;
     results << *static_cast<quint64*>(val.mv_data);
 
     if (com == GreaterEqualThan) {
@@ -178,6 +177,44 @@ PostingIterator* MTimeDB::iter(quint32 mtime, MTimeDB::Comparator com)
             quint64 id = *static_cast<quint64*>(val.mv_data);
             results.push_front(id);
         }
+    }
+
+    mdb_cursor_close(cursor);
+    return new VectorPostingIterator(results);
+}
+
+PostingIterator* MTimeDB::iterRange(quint32 beginTime, quint32 endTime)
+{
+    MDB_val key;
+    key.mv_size = sizeof(quint32);
+    key.mv_data = &beginTime;
+
+    MDB_cursor* cursor;
+    mdb_cursor_open(m_txn, m_dbi, &cursor);
+
+    MDB_val val;
+    int rc = mdb_cursor_get(cursor, &key, &val, MDB_SET_RANGE);
+    if (rc == MDB_NOTFOUND) {
+        mdb_cursor_close(cursor);
+        return 0;
+    }
+    Q_ASSERT_X(rc == 0, "MTimeDB::iterRange", mdb_strerror(rc));
+
+    QVector<quint64> results;
+    results << *static_cast<quint64*>(val.mv_data);
+
+    while (1) {
+        rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
+        if (rc == MDB_NOTFOUND) {
+            break;
+        }
+        Q_ASSERT_X(rc == 0, "MTimeDB::iter >=", mdb_strerror(rc));
+
+        quint32 time = *static_cast<quint32*>(key.mv_data);
+        if (time > endTime) {
+            break;
+        }
+        results << *static_cast<quint64*>(val.mv_data);
     }
 
     mdb_cursor_close(cursor);

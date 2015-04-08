@@ -53,6 +53,7 @@ public:
         GreaterEqualThan
     };
     PostingIterator* iter(quint32 mtime, Comparator com);
+    PostingIterator* iterRange(quint32 beginTime, quint32 endTime);
 
 private:
     MDB_txn* m_txn;
