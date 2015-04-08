@@ -24,8 +24,13 @@ baloo_file_auto_tests(
 #
 # File Watch
 #
-set(fileWatch_SRC filewatchtest.cpp ../lib/xattrdetector.cpp)
+set(BUILD_KINOTIFY False)
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+    set(BUILD_KINOTIFY True)
+    add_definitions(-DBUILD_KINOTIFY)
+endif()
 
+set(fileWatch_SRC filewatchtest.cpp ../lib/xattrdetector.cpp)
 ecm_add_test(${fileWatch_SRC}
     TEST_NAME "filewatchtest"
     LINK_LIBRARIES Qt5::Test Qt5::DBus KF5::Baloo baloofilecommon

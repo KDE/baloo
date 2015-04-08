@@ -81,41 +81,38 @@ void FileWatchTest::testFileCreation()
     fileWatch.m_pendingFileQueue->setMinimumTimeout(0);
     fileWatch.m_pendingFileQueue->setTrackingTime(0);
 
-    /*QEventLoop loop;
-    connect(&fileWatch, &FileWatch::installedWatches, &loop, &QEventLoop::quit);
-    loop.exec();
-    */
+    //QSignalSpy spy(&fileWatch, SIGNAL(installedWatches()));
+    //QVERIFY(spy.isValid());
+    //QVERIFY(spy.wait());
 
     QSignalSpy spyIndex(&fileWatch, SIGNAL(indexFile(QString)));
     QSignalSpy spyIndexXattr(&fileWatch, SIGNAL(indexXAttr(QString)));
-    QSignalSpy spyIndexRemove(&fileWatch, SIGNAL(fileRemoved(int)));
+
+    QVERIFY(spyIndex.isValid());
+    QVERIFY(spyIndexXattr.isValid());
 
     // Create a file and see if it is indexed
     QString fileUrl(includeDir.path() + "/t1");
     QVERIFY(createFile(fileUrl));
 
-    spyIndex.wait();
+    QVERIFY(spyIndex.wait());
     QCOMPARE(spyIndex.count(), 1);
     QCOMPARE(spyIndexXattr.count(), 0);
-    QCOMPARE(spyIndexRemove.count(), 0);
 
     spyIndex.clear();
     spyIndexXattr.clear();
-    spyIndexRemove.clear();
 
     //
     // Modify the file
     //
     modifyFile(fileUrl);
 
-    spyIndex.wait();
+    QVERIFY(spyIndex.wait());
     QCOMPARE(spyIndex.count(), 1);
     QCOMPARE(spyIndexXattr.count(), 0);
-    QCOMPARE(spyIndexRemove.count(), 0);
 
     spyIndex.clear();
     spyIndexXattr.clear();
-    spyIndexRemove.clear();
 
     //
     // Set an Xattr
@@ -129,24 +126,12 @@ void FileWatchTest::testFileCreation()
     const QString userComment(QLatin1String("UserComment"));
     QVERIFY(baloo_setxattr(fileUrl, QLatin1String("user.xdg.comment"), userComment) != -1);
 
-    spyIndex.wait();
+    QVERIFY(spyIndex.wait());
     QCOMPARE(spyIndex.count(), 0);
     QCOMPARE(spyIndexXattr.count(), 1);
-    QCOMPARE(spyIndexRemove.count(), 0);
 
     spyIndex.clear();
     spyIndexXattr.clear();
-    spyIndexRemove.clear();
-
-    //
-    // Delete the file
-    //
-    QFile(fileUrl).remove();
-
-    spyIndex.wait();
-    QCOMPARE(spyIndex.count(), 0);
-    QCOMPARE(spyIndexXattr.count(), 0);
-    QCOMPARE(spyIndexRemove.count(), 1);
 }
 
 QTEST_MAIN(FileWatchTest);

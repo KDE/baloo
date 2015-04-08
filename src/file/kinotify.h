@@ -105,7 +105,7 @@ public:
     void resetUserLimit();
 
 public Q_SLOTS:
-    virtual bool addWatch(const QString& path, WatchEvents modes, WatchFlags flags = WatchFlags());
+    bool addWatch(const QString& path, WatchEvents modes, WatchFlags flags = WatchFlags());
     bool removeWatch(const QString& path);
 
 Q_SIGNALS:
