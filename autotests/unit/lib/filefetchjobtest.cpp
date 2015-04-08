@@ -18,7 +18,7 @@
  *
  */
 
-#include "../db.h"
+#include "src/lib/db.h"
 #include "file.h"
 #include "document.h"
 #include "database.h"

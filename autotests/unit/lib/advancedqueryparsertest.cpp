@@ -19,7 +19,7 @@
  */
 
 #include "advancedqueryparsertest.h"
-#include "../advancedqueryparser.h"
+#include "advancedqueryparser.h"
 
 #include <QTest>
 

@@ -19,7 +19,7 @@
  */
 
 #include "fileindexingjobtest.h"
-#include "../../fileindexingjob.h"
+#include "fileindexingjob.h"
 
 #include <QSignalSpy>
 #include <QTest>

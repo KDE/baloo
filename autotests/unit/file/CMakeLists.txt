@@ -26,7 +26,7 @@ baloo_file_auto_tests(
 #
 # File Watch
 #
-set(fileWatch_SRC filewatchtest.cpp ../../lib/autotests/xattrdetector.cpp)
+set(fileWatch_SRC filewatchtest.cpp ../lib/xattrdetector.cpp)
 
 ecm_add_test(${fileWatch_SRC}
     TEST_NAME "filewatchtest"

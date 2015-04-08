@@ -76,5 +76,3 @@ install(FILES
     DESTINATION ${KF5_INCLUDE_INSTALL_DIR}/Baloo/Baloo
     COMPONENT Devel
 )
-
-add_subdirectory(autotests)

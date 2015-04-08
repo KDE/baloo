@@ -19,7 +19,7 @@
    License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../fileindexerconfig.h"
+#include "fileindexerconfig.h"
 #include "fileindexerconfigutils.h"
 
 #include <QTemporaryDir>

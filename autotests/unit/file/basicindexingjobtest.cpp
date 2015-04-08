@@ -18,7 +18,7 @@
  *
  */
 
-#include "../basicindexingjob.h"
+#include "basicindexingjob.h"
 
 #include <QMimeDatabase>
 #include <QTest>

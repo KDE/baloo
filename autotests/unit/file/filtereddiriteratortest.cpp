@@ -20,8 +20,8 @@
 */
 
 #include "fileindexerconfigutils.h"
-#include "../filtereddiriterator.h"
-#include "../fileindexerconfig.h"
+#include "filtereddiriterator.h"
+#include "fileindexerconfig.h"
 
 #include <QTemporaryDir>
 #include <QTest>

@@ -18,8 +18,8 @@
  *
  */
 
-#include "../regexpcache.h"
-#include "../fileexcludefilters.h"
+#include "regexpcache.h"
+#include "fileexcludefilters.h"
 
 #include <QTest>
 #include <QDir>

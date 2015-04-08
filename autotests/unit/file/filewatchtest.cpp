@@ -23,7 +23,7 @@
 #include "database.h"
 #include "fileindexerconfig.h"
 #include "pendingfilequeue.h"
-#include "../../lib/autotests/xattrdetector.h"
+#include "../lib/xattrdetector.h"
 #include "baloo_xattr_p.h"
 
 #include <QTest>

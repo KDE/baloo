@@ -19,7 +19,7 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "../kinotify.h"
+#include "kinotify.h"
 
 #include <QTemporaryDir>
 #include <KRandom>

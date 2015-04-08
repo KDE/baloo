@@ -1,30 +1,3 @@
-MACRO(BALOO_ENGINE_AUTO_TESTS)
-  FOREACH(_testname ${ARGN})
-    ecm_add_test(${_testname}.cpp singledbtest.cpp
-        TEST_NAME ${_testname}
-        LINK_LIBRARIES Qt5::Test KF5::BalooEngine
-    )
-  ENDFOREACH()
-ENDMACRO()
-
-baloo_engine_auto_tests(
-    positiondbtest
-    postingdbtest
-    documentdbtest
-    databasetest
-    documenturldbtest
-    documentiddbtest
-    documentdatadbtest
-    documenttimedbtest
-    idtreedbtest
-    idfilenamedbtest
-    mtimedbtest
-
-    termgeneratortest
-    queryparsertest
-
-    # Query
-    andpostingiteratortest
-    orpostingiteratortest
-    phraseanditeratortest
-)
+add_subdirectory(engine)
+add_subdirectory(file)
+add_subdirectory(lib)
