@@ -21,8 +21,8 @@
  */
 
 #include "app.h"
-#include "../basicindexingjob.h"
-#include "../tests/util.h"
+#include "basicindexingjob.h"
+#include "tests/file/util.h"
 #include "result.h"
 #include "idutils.h"
 #include "transaction.h"

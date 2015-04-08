@@ -20,44 +20,49 @@
  *
  */
 
-#include "../fileindexerconfig.h"
-
 #include <QCoreApplication>
 #include <QCommandLineParser>
-#include <QFileInfo>
-#include <QMimeDatabase>
-
+#include <QTime>
 #include <iostream>
+
+#include "filtereddiriterator.h"
+#include "fileindexerconfig.h"
+#include "util.h"
+
+using namespace Baloo;
 
 int main(int argc, char** argv)
 {
     QCoreApplication app(argc, argv);
 
     QCommandLineParser parser;
-    parser.addPositionalArgument(QLatin1String("file"), QLatin1String("The file url"));
+    parser.addPositionalArgument("folder", "Folder to test on", "folderName");
     parser.process(app);
 
-    if (parser.positionalArguments().isEmpty()) {
-        parser.showHelp(1);
+    QScopedPointer<FileIndexerConfig> config;
+
+    QStringList includeFolders;
+    if (!parser.positionalArguments().isEmpty()) {
+        QString folder = parser.positionalArguments().first();
+        includeFolders << QFileInfo(folder).absoluteFilePath();
+    } else {
+        config.reset(new FileIndexerConfig);
+        includeFolders = config->includeFolders();
+    }
+    QTime timer;
+    timer.start();
+
+    int num = 0;
+    for (const QString& dir : includeFolders) {
+        FilteredDirIterator it(config.data(), dir);
+        while (!it.next().isEmpty()) {
+            num++;
+        }
     }
 
-    Baloo::FileIndexerConfig config;
+    std::cout << "Num Files: " << num << std::endl;
+    std::cout << "Elapsed: " << timer.elapsed() << std::endl;
+    printIOUsage();
 
-    const QString arg = parser.positionalArguments().first();
-    const QString url = QFileInfo(arg).absoluteFilePath();
-
-    bool shouldIndex = config.shouldBeIndexed(url);
-
-    QMimeDatabase m_mimeDb;
-    QString mimetype = m_mimeDb.mimeTypeForFile(url, QMimeDatabase::MatchExtension).name();
-    QString fastMimetype = m_mimeDb.mimeTypeForFile(url).name();
-
-    bool shouldIndexMimetype = config.shouldMimeTypeBeIndexed(fastMimetype);
-    std::cout << url.toUtf8().constData() << "\n"
-              << "Should Index: " << std::boolalpha << shouldIndex << "\n"
-              << "Should Index Mimetype: " << std::boolalpha << shouldIndexMimetype << "\n"
-              << "Fast Mimetype: " << fastMimetype.toUtf8().constData() << std::endl
-              << "Slow Mimetype: " << mimetype.toUtf8().constData() << std::endl;
-
-    return 0; //app.exec();
+    return 0;
 }

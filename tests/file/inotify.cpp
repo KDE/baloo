@@ -25,7 +25,7 @@
 #include <QTime>
 #include <iostream>
 
-#include "../kinotify.h"
+#include "kinotify.h"
 #include "util.h"
 
 int main(int argc, char** argv)

@@ -46,6 +46,9 @@ FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
     , m_dirWatch(0)
 #endif
 {
+    Q_ASSERT(db);
+    Q_ASSERT(config);
+
     m_metadataMover = new MetadataMover(m_db, this);
     connect(m_metadataMover, &MetadataMover::movedWithoutData, this, &FileWatch::indexFile);
 

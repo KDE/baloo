@@ -34,7 +34,7 @@
 #include "database.h"
 #include "document.h"
 #include "transaction.h"
-#include "../src/file/tests/util.h"
+#include "tests/file/util.h"
 
 int main(int argc, char** argv)
 {

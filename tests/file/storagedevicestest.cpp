@@ -23,7 +23,7 @@
 #include <QCoreApplication>
 #include <QDebug>
 
-#include "../storagedevices.h"
+#include "storagedevices.h"
 
 using namespace Baloo;
 

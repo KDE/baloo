@@ -27,11 +27,10 @@
 
 #include "fileextractor.h"
 
-#include "../basicindexingqueue.h"
-#include "../commitqueue.h"
-#include "../database.h"
-#include "../fileindexerconfig.h"
-#include "filemapping.h"
+#include "basicindexingqueue.h"
+#include "commitqueue.h"
+#include "database.h"
+#include "fileindexerconfig.h"
 
 int main(int argc, char** argv)
 {
