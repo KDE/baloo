@@ -240,7 +240,7 @@ void Transaction::abort()
 // Queries
 //
 
-PostingIterator* Transaction::toPostingIterator(const EngineQuery& query)
+PostingIterator* Transaction::postingIterator(const EngineQuery& query)
 {
     PostingDB postingDb(m_dbis.postingDbi, m_txn);
     PositionDB positionDb(m_dbis.positionDBi, m_txn);
@@ -271,7 +271,7 @@ PostingIterator* Transaction::toPostingIterator(const EngineQuery& query)
     }
 
     for (const EngineQuery& q : query.subQueries()) {
-        vec << toPostingIterator(q);
+        vec << postingIterator(q);
     }
 
     if (query.op() == EngineQuery::And) {
@@ -289,7 +289,7 @@ QVector<quint64> Transaction::exec(const EngineQuery& query, int limit)
     Q_ASSERT(m_txn);
 
     QVector<quint64> results;
-    PostingIterator* it = toPostingIterator(query);
+    PostingIterator* it = postingIterator(query);
     if (!it) {
         return results;
     }

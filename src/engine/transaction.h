@@ -59,6 +59,7 @@ public:
     quint64 documentCTime(quint64 id);
 
     QVector<quint64> exec(const EngineQuery& query, int limit = -1);
+    PostingIterator* postingIterator(const EngineQuery& query);
 
     QVector<quint64> fetchPhaseOneIds(int size);
     uint phaseOneSize();
@@ -96,7 +97,6 @@ public:
 
 private:
     Transaction(const Transaction& rhs);
-    PostingIterator* toPostingIterator(const EngineQuery& query);
 
     const DatabaseDbis& m_dbis;
     MDB_txn* m_txn;
