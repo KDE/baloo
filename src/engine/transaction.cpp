@@ -252,7 +252,6 @@ PostingIterator* Transaction::postingIterator(const EngineQuery& query)
             return postingDb.prefixIter(query.term());
         } else {
             Q_ASSERT(0);
-            // FIXME: Implement position iterator
         }
     }
 

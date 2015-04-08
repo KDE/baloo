@@ -109,7 +109,6 @@ bool DocumentDataDB::contains(quint64 docId)
     key.mv_size = sizeof(quint64);
     key.mv_data = static_cast<void*>(&docId);
 
-    // FIXME: We don't need val
     MDB_val val;
     int rc = mdb_get(m_txn, m_dbi, &key, &val);
     if (rc == MDB_NOTFOUND) {

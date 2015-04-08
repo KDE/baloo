@@ -34,9 +34,11 @@ private Q_SLOTS:
         db.put(1, arr);
 
         QCOMPARE(db.get(1), arr);
+        QVERIFY(db.contains(1));
 
         db.del(1);
         QCOMPARE(db.get(1), QByteArray());
+        QVERIFY(!db.contains(1));
     }
 };
 
