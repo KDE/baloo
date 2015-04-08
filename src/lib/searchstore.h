@@ -38,8 +38,6 @@ public:
     SearchStore();
     ~SearchStore();
 
-    QStringList types();
-
     QVector<quint64> exec(const Term& term, int limit);
     QString filePath(quint64 id);
 

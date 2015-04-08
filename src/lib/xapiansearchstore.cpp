@@ -20,68 +20,6 @@
  *
  */
 
-#include "xapiansearchstore.h"
-#include "xapianqueryparser.h"
-#include "term.h"
-#include "query.h"
-
-#include <QVector>
-#include <QStringList>
-#include <QTime>
-#include <QDebug>
-
-#include <algorithm>
-
-using namespace Baloo;
-
-Xapian::Query XapianSearchStore::toXapianQuery(Xapian::Query::op op, const QList<Term>& terms)
-{
-    Q_ASSERT_X(op == Xapian::Query::OP_AND || op == Xapian::Query::OP_OR,
-               "XapianSearchStore::toXapianQuery", "The op must be AND / OR");
-
-    QVector<Xapian::Query> queries;
-    queries.reserve(terms.size());
-
-    Q_FOREACH (const Term& term, terms) {
-        Xapian::Query q = toXapianQuery(term);
-        queries << q;
-    }
-
-    return Xapian::Query(op, queries.begin(), queries.end());
-}
-
-static Xapian::Query negate(bool shouldNegate, const Xapian::Query &query)
-{
-    if (shouldNegate) {
-        return Xapian::Query(Xapian::Query::OP_AND_NOT, Xapian::Query::MatchAll, query);
-    }
-    return query;
-}
-
-Xapian::Query XapianSearchStore::toXapianQuery(const Term& term)
-{
-    if (term.operation() == Term::And) {
-        return negate(term.isNegated(), toXapianQuery(Xapian::Query::OP_AND, term.subTerms()));
-    }
-    if (term.operation() == Term::Or) {
-        return negate(term.isNegated(), toXapianQuery(Xapian::Query::OP_OR, term.subTerms()));
-    }
-
-    return negate(term.isNegated(), constructQuery(term.property(), term.value(), term.comparator()));
-}
-
-Xapian::Query XapianSearchStore::andQuery(const Xapian::Query& a, const Xapian::Query& b)
-{
-    if (a.empty() && !b.empty())
-        return b;
-    if (!a.empty() && b.empty())
-        return a;
-    if (a.empty() && b.empty())
-        return Xapian::Query();
-    else
-        return Xapian::Query(Xapian::Query::OP_AND, a, b);
-}
-
 int XapianSearchStore::exec(const Query& query)
 {
     if (!m_db)

@@ -59,12 +59,6 @@ SearchStore::~SearchStore()
     delete m_db;
 }
 
-QStringList SearchStore::types()
-{
-    return QStringList() << QLatin1String("Audio") << QLatin1String("Video") << QLatin1String("Document")
-                         << QLatin1String("Image") << QLatin1String("Archive") << QLatin1String("Folder");
-}
-
 QVector<quint64> SearchStore::exec(const Term& term, int limit)
 {
     EngineQuery query = constructQuery(term);
