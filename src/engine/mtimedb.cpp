@@ -155,7 +155,7 @@ PostingIterator* MTimeDB::iter(quint32 mtime, MTimeDB::Comparator com)
     QVector<quint64> results;
     results << *static_cast<quint64*>(val.mv_data);
 
-    if (com == GreaterEqualThan) {
+    if (com == GreaterEqual) {
         while (1) {
             rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
             if (rc == MDB_NOTFOUND) {

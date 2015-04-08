@@ -59,7 +59,7 @@ private Q_SLOTS:
         db.put(8, 5);
         db.put(9, 6);
 
-        PostingIterator* it = db.iter(6, MTimeDB::GreaterEqualThan);
+        PostingIterator* it = db.iter(6, MTimeDB::GreaterEqual);
         QVERIFY(it);
 
         QVector<quint64> result = {2, 3, 4, 5, 6};
@@ -68,7 +68,7 @@ private Q_SLOTS:
             QCOMPARE(it->docId(), static_cast<quint64>(val));
         }
 
-        it = db.iter(7, MTimeDB::LessEqualThan);
+        it = db.iter(7, MTimeDB::LessEqual);
         QVERIFY(it);
 
         result = {1, 2, 3};

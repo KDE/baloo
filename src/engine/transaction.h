@@ -22,6 +22,7 @@
 #define BALOO_TRANSACTION_H
 
 #include "databasedbis.h"
+#include "mtimedb.h"
 #include "engine_export.h"
 
 #include <QString>
@@ -59,7 +60,11 @@ public:
     quint64 documentCTime(quint64 id);
 
     QVector<quint64> exec(const EngineQuery& query, int limit = -1);
+
     PostingIterator* postingIterator(const EngineQuery& query);
+    PostingIterator* mTimeIter(quint32 mtime, MTimeDB::Comparator com);
+    PostingIterator* mTimeRangeIter(quint32 beginTime, quint32 endTime);
+    PostingIterator* docUrlIter(quint64 id);
 
     QVector<quint64> fetchPhaseOneIds(int size);
     uint phaseOneSize();

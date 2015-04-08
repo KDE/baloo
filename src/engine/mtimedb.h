@@ -49,8 +49,8 @@ public:
 
     enum Comparator {
         Equal,
-        LessEqualThan,
-        GreaterEqualThan
+        LessEqual,
+        GreaterEqual
     };
     PostingIterator* iter(quint32 mtime, Comparator com);
     PostingIterator* iterRange(quint32 beginTime, quint32 endTime);

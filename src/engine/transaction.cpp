@@ -284,6 +284,24 @@ PostingIterator* Transaction::postingIterator(const EngineQuery& query)
     return 0;
 }
 
+PostingIterator* Transaction::mTimeIter(quint32 mtime, MTimeDB::Comparator com)
+{
+    MTimeDB mTimeDb(m_dbis.mtimeDbi, m_txn);
+    return mTimeDb.iter(mtime, com);
+}
+
+PostingIterator* Transaction::mTimeRangeIter(quint32 beginTime, quint32 endTime)
+{
+    MTimeDB mTimeDb(m_dbis.mtimeDbi, m_txn);
+    return mTimeDb.iterRange(beginTime, endTime);
+}
+
+PostingIterator* Transaction::docUrlIter(quint64 id)
+{
+    DocumentUrlDB docUrlDb(m_dbis.idTreeDbi, m_dbis.idFilenameDbi, m_txn);
+    return docUrlDb.iter(id);
+}
+
 QVector<quint64> Transaction::exec(const EngineQuery& query, int limit)
 {
     Q_ASSERT(m_txn);
