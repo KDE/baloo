@@ -33,6 +33,7 @@
 
 #include <KFileMetaData/PropertyInfo>
 #include <KFileMetaData/TypeInfo>
+#include <KFileMetaData/Types>
 
 using namespace Baloo;
 
@@ -131,6 +132,10 @@ EngineQuery SearchStore::constructQuery(const Term& term)
 
     if (property == "type" || property == "kind") {
         KFileMetaData::TypeInfo ti = KFileMetaData::TypeInfo::fromName(value.toString());
+        if (ti == KFileMetaData::Type::Empty) {
+            qDebug() << "Type" << value.toString() << "does not exist";
+            return EngineQuery();
+        }
         int num = static_cast<int>(ti.type());
 
         return EngineQuery('T' + QByteArray::number(num));
