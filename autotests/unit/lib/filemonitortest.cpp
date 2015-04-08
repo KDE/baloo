@@ -18,7 +18,6 @@
  *
  */
 
-#include "filemonitortest.h"
 #include "filemonitor.h"
 
 #include <QTest>
@@ -28,6 +27,29 @@
 #include <QDBusMessage>
 
 using namespace Baloo;
+
+class FileMonitorTest : public QObject
+{
+    Q_OBJECT
+private Q_SLOTS:
+    void test();
+    void init();
+    void cleanup();
+    void testAddFileShouldReturnOneFileIfOneFileAdded();
+    void testAddFileShouldReturnTwoFilesIfTwoFilesAdded();
+    void testAddFileShouldRemoveTailingSlash();
+    void testAddFileShouldNotAddNotLocalUrl();
+    void testAddFileShouldAddLocalUrl();
+    void testClearIfClearAfterOneFileAddedFilesShouldReturn0Items();
+    void testSetFilesIfSetFilesWithOneElementFilesShouldReturn1Item();
+
+private:
+    QString getRandomValidFilePath();
+    QString getRandomValidWebUrl();
+    QString getRandomString(int length) const;
+    FileMonitor* m_sut;
+
+};
 
 void FileMonitorTest::init()
 {
@@ -180,3 +202,5 @@ QString FileMonitorTest::getRandomString(int length) const
 
 
 QTEST_MAIN(FileMonitorTest)
+
+#include "filemonitortest.moc"

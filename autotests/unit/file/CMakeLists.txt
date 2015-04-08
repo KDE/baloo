@@ -11,10 +11,8 @@ MACRO(BALOO_FILE_AUTO_TESTS)
   ENDFOREACH()
 ENDMACRO()
 
-# FIXME: Why is the FileMonitor test over here?
 baloo_file_auto_tests(
     pendingfilequeuetest
-    filemonitortest
     fileindexerconfigtest
     basicindexingjobtest
     regularexpcachebenchmark
