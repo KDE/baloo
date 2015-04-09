@@ -61,7 +61,8 @@ void WriteTransaction::addDocument(const Document& doc)
         documentXattrTermsDB.put(id, docXattrTerms);
 
     QVector<QByteArray> docFileNameTerms = addTerms(id, doc.m_fileNameTerms);
-    documentFileNameTermsDB.put(id, docFileNameTerms);
+    if (!docFileNameTerms.isEmpty())
+        documentFileNameTermsDB.put(id, docFileNameTerms);
 
     docUrlDB.put(id, doc.url());
 
