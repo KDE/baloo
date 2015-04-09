@@ -51,22 +51,22 @@ QString UnIndexedFileIterator::mimetype() const
 
 QString UnIndexedFileIterator::next()
 {
-    const QString filePath = m_iter.next();
-    if (filePath.isEmpty()) {
-        m_mimetype.clear();
-        return QString();
+    while (1) {
+        const QString filePath = m_iter.next();
+        if (filePath.isEmpty()) {
+            m_mimetype.clear();
+            return QString();
+        }
+
+        // This mimetype may not be completely accurate, but that's okay. This is
+        // just the initial phase of indexing. The second phase can try to find
+        // a more accurate mimetype.
+        m_mimetype = m_mimeDb.mimeTypeForFile(filePath, QMimeDatabase::MatchExtension).name();
+
+        if (shouldIndex(filePath, m_mimetype)) {
+            return filePath;
+        }
     }
-
-    // This mimetype may not be completely accurate, but that's okay. This is
-    // just the initial phase of indexing. The second phase can try to find
-    // a more accurate mimetype.
-    m_mimetype = m_mimeDb.mimeTypeForFile(filePath, QMimeDatabase::MatchExtension).name();
-
-    if (!shouldIndex(filePath, m_mimetype)) {
-        return next();
-    }
-
-    return filePath;
 }
 
 bool UnIndexedFileIterator::shouldIndex(const QString& filePath, const QString& mimetype)
