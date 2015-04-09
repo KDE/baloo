@@ -31,8 +31,8 @@ using namespace Baloo;
 
 DocumentUrlDB::DocumentUrlDB(MDB_dbi idTreeDb, MDB_dbi idFilenameDb, MDB_txn* txn)
     : m_txn(txn)
-    , m_idTreeDbi(idTreeDb)
     , m_idFilenameDbi(idFilenameDb)
+    , m_idTreeDbi(idTreeDb)
 {
 }
 
