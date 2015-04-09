@@ -34,9 +34,11 @@ namespace Baloo {
  */
 inline quint64 statBufToId(const QT_STATBUF& stBuf)
 {
+    // We're loosing 32 bits of info, so this could potentially break
+    // on file systems with really large inode and device ids
     quint32 arr[2];
-    arr[0] = stBuf.st_dev;
-    arr[1] = stBuf.st_ino;
+    arr[0] = static_cast<quint32>(stBuf.st_dev);
+    arr[1] = static_cast<quint32>(stBuf.st_ino);
 
     return *(reinterpret_cast<quint64*>(arr));
 }
