@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef _KIO_TIMELINE_H_
-#define _KIO_TIMELINE_H_
+#ifndef KIO_TIMELINE_H_
+#define KIO_TIMELINE_H_
 
 #include <kio/slavebase.h>
 
@@ -64,4 +64,4 @@ private:
 };
 }
 
-#endif // _KIO_TIMELINE_H_
+#endif // KIO_TIMELINE_H_
