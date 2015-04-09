@@ -17,6 +17,7 @@ baloo_file_auto_tests(
     basicindexingjobtest
     regularexpcachebenchmark
     filtereddiriteratortest
+    unindexedfileiteratortest
     metadatamovertest
 )
 

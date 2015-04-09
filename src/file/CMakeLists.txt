@@ -18,6 +18,7 @@ set(file_static_lib_SRCS
     fileexcludefilters.cpp
     storagedevices.cpp
     filtereddiriterator.cpp
+    unindexedfileiterator.cpp
 
      # File Watcher
     filewatch.cpp
