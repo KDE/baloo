@@ -34,6 +34,7 @@ class Baloo::TermGeneratorTest : public QObject
 
 private Q_SLOTS:
     void testWordBoundaries();
+    void testUnderscoreWord();
     void testUnderscore_splitting();
     void testAccetCharacters();
     void testUnicodeCompatibleComposition();
@@ -61,6 +62,23 @@ void TermGeneratorTest::testWordBoundaries()
                   << QByteArray("no") << QByteArray("quick") << QByteArray("right") << QByteArray("the") << QByteArray("txt") << QByteArray("wrong")
                   << QByteArray("xx");
 
+    QCOMPARE(words, expectedWords);
+}
+
+void TermGeneratorTest::testUnderscoreWord()
+{
+    QString str = QString::fromLatin1("_plant");
+
+    Document doc;
+    TermGenerator termGen(&doc);
+    termGen.indexText(str);
+
+    QList<QByteArray> words = allWords(doc);
+
+    QList<QByteArray> expectedWords;
+    expectedWords << QByteArray("plant");
+
+    QEXPECT_FAIL("", "words starting with underscore are ignored", Abort);
     QCOMPARE(words, expectedWords);
 }
 
