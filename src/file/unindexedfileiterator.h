@@ -45,6 +45,7 @@ public:
 
     QString next();
     QString filePath() const;
+    QString mimetype() const;
 
 private:
     bool shouldIndex(const QString& filePath, const QString& mimetype);
@@ -54,6 +55,7 @@ private:
     FilteredDirIterator m_iter;
 
     QMimeDatabase m_mimeDb;
+    QString m_mimetype;
 };
 
 }
