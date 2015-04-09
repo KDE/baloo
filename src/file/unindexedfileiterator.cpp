@@ -85,13 +85,15 @@ bool UnIndexedFileIterator::shouldIndex(const QString& filePath, const QString& 
         return true;
     }
 
+    quint64 mTime = m_transaction->documentMTime(fileId);
+
     // A folders mtime is updated when a new file is added / removed / renamed
     // we don't really need to reindex a folder when that happens
     // In fact, we never need to reindex a folder
-    if (mimetype == QLatin1String("inode/directory"))
+    if (mTime && mimetype == QLatin1String("inode/directory")) {
         return false;
+    }
 
-    quint64 mTime = m_transaction->documentMTime(fileId);
     if (mTime != fileInfo.lastModified().toTime_t()) {
         return true;
     }
