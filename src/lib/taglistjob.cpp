@@ -46,7 +46,7 @@ TagListJob::~TagListJob()
 void TagListJob::start()
 {
     Database db(fileIndexDbPath());
-    db.open();
+    db.open(Database::OpenDatabase);
 
     QVector<QByteArray> tagList;
     {

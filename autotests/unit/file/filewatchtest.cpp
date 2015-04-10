@@ -72,7 +72,7 @@ void FileWatchTest::testFileCreation()
 
     QTemporaryDir dbDir;
     Database db(dbDir.path());
-    db.open();
+    db.open(Baloo::Database::CreateDatabase);
 
     FileIndexerConfig config;
 

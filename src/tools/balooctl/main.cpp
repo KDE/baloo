@@ -128,7 +128,7 @@ int main(int argc, char* argv[])
         const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/");
 
         Database db(path);
-        db.open();
+        db.open(Baloo::Database::OpenDatabase);
 
         Transaction tr(db, Transaction::ReadOnly);
 

@@ -113,7 +113,7 @@ bool File::load()
     }
 
     Database db(fileIndexDbPath());
-    db.open();
+    db.open(Database::OpenDatabase);
 
     if (!d->id) {
         d->id = filePathToId(QFile::encodeName(d->url));

@@ -35,7 +35,12 @@ public:
     ~Database();
 
     QString path() const;
-    bool open();
+
+    enum OpenMode {
+        CreateDatabase,
+        OpenDatabase
+    };
+    bool open(OpenMode mode);
 
 private:
     QString m_path;

@@ -60,7 +60,7 @@ void ExtractorTest::test()
     QVERIFY(process.waitForFinished(10000));
 
     Baloo::Database db(dbDir.path());
-    db.open();
+    db.open(Baloo::Database::CreateDatabase);
 
     Baloo::Transaction tr(db, Baloo::Transaction::ReadWrite);
     qDebug() << tr.documentUrl(1);

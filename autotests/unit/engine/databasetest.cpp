@@ -54,7 +54,7 @@ void DatabaseTest::test()
     QTemporaryDir dir;
 
     Database db(dir.path());
-    QVERIFY(db.open());
+    QVERIFY(db.open(Database::CreateDatabase));
 
     Transaction tr(db, Transaction::ReadWrite);
 

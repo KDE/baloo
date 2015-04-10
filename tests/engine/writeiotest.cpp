@@ -55,7 +55,7 @@ int main(int argc, char** argv)
     tempDir.setAutoRemove(false);
 
     Baloo::Database db(tempDir.path());
-    db.open();
+    db.open(Baloo::Database::CreateDatabase);
 
     qDebug() << tempDir.path();
     printIOUsage();

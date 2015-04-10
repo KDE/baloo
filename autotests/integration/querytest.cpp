@@ -37,7 +37,7 @@ private Q_SLOTS:
     void init() {
         dir = new QTemporaryDir();
         db = new Database(dir->path());
-        db->open();
+        db->open(Database::CreateDatabase);
 
         Transaction tr(db, Transaction::ReadWrite);
         insertDocuments(&tr);

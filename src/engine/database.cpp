@@ -55,7 +55,7 @@ Database::~Database()
     mdb_env_close(m_env);
 }
 
-bool Database::open()
+bool Database::open(OpenMode mode)
 {
     QFileInfo dirInfo(m_path);
     if (!dirInfo.permission(QFile::WriteOwner)) {
@@ -73,28 +73,50 @@ bool Database::open()
 
     //
     // Individual Databases
-    // FIXME: These only need to be opened, not created each time
     //
     MDB_txn* txn;
-    int rc = mdb_txn_begin(m_env, NULL, 0, &txn);
-    Q_ASSERT_X(rc == 0, "Database::transaction begin", mdb_strerror(rc));
-    m_dbis.postingDbi = PostingDB::create(txn);
-    m_dbis.positionDBi = PositionDB::create(txn);
+    if (mode == OpenDatabase) {
+        int rc = mdb_txn_begin(m_env, NULL, MDB_RDONLY, &txn);
+        Q_ASSERT_X(rc == 0, "Database::transaction ro begin", mdb_strerror(rc));
+        m_dbis.postingDbi = PostingDB::open(txn);
+        m_dbis.positionDBi = PositionDB::open(txn);
 
-    m_dbis.docTermsDbi = DocumentDB::create("docterms", txn);
-    m_dbis.docFilenameTermsDbi = DocumentDB::create("docfilenameterms", txn);
-    m_dbis.docXattrTermsDbi = DocumentDB::create("docxatrrterms", txn);
+        m_dbis.docTermsDbi = DocumentDB::open("docterms", txn);
+        m_dbis.docFilenameTermsDbi = DocumentDB::open("docfilenameterms", txn);
+        m_dbis.docXattrTermsDbi = DocumentDB::open("docxatrrterms", txn);
 
-    m_dbis.idTreeDbi = IdTreeDB::create(txn);
-    m_dbis.idFilenameDbi = IdFilenameDB::create(txn);
+        m_dbis.idTreeDbi = IdTreeDB::create(txn);
+        m_dbis.idFilenameDbi = IdFilenameDB::open(txn);
 
-    m_dbis.docTimeDbi = DocumentTimeDB::create(txn);
-    m_dbis.docDataDbi = DocumentDataDB::create(txn);
-    m_dbis.contentIndexingDbi = DocumentIdDB::create(txn);
+        m_dbis.docTimeDbi = DocumentTimeDB::open(txn);
+        m_dbis.docDataDbi = DocumentDataDB::open(txn);
+        m_dbis.contentIndexingDbi = DocumentIdDB::open(txn);
 
-    m_dbis.mtimeDbi = MTimeDB::create(txn);
-    rc = mdb_txn_commit(txn);
-    Q_ASSERT_X(rc == 0, "Database::transaction commit", mdb_strerror(rc));
+        m_dbis.mtimeDbi = MTimeDB::open(txn);
+        rc = mdb_txn_commit(txn);
+        Q_ASSERT_X(rc == 0, "Database::transaction ro commit", mdb_strerror(rc));
+    }
+    else {
+        int rc = mdb_txn_begin(m_env, NULL, 0, &txn);
+        Q_ASSERT_X(rc == 0, "Database::transaction begin", mdb_strerror(rc));
+        m_dbis.postingDbi = PostingDB::create(txn);
+        m_dbis.positionDBi = PositionDB::create(txn);
+
+        m_dbis.docTermsDbi = DocumentDB::create("docterms", txn);
+        m_dbis.docFilenameTermsDbi = DocumentDB::create("docfilenameterms", txn);
+        m_dbis.docXattrTermsDbi = DocumentDB::create("docxatrrterms", txn);
+
+        m_dbis.idTreeDbi = IdTreeDB::create(txn);
+        m_dbis.idFilenameDbi = IdFilenameDB::create(txn);
+
+        m_dbis.docTimeDbi = DocumentTimeDB::create(txn);
+        m_dbis.docDataDbi = DocumentDataDB::create(txn);
+        m_dbis.contentIndexingDbi = DocumentIdDB::create(txn);
+
+        m_dbis.mtimeDbi = MTimeDB::create(txn);
+        rc = mdb_txn_commit(txn);
+        Q_ASSERT_X(rc == 0, "Database::transaction commit", mdb_strerror(rc));
+    }
 
     return true;
 }

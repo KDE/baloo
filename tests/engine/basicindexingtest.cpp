@@ -43,7 +43,7 @@ int main(int argc, char** argv)
     qDebug() << tempDir.path();
 
     Database db(tempDir.path());
-    db.open();
+    db.open(Baloo::Database::CreateDatabase);
 
     Transaction tr(db, Transaction::ReadWrite);
 

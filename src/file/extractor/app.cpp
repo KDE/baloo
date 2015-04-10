@@ -49,7 +49,7 @@ App::App(const QString& path, QObject* parent)
     , m_db(path)
     , m_termCount(0)
 {
-    if (!m_db.open()) {
+    if (!m_db.open(Database::OpenDatabase)) {
         qCritical() << "Failed to open the database";
         exit(1);
     }

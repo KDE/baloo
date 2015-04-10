@@ -42,7 +42,7 @@ SearchStore::SearchStore()
 {
     const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/");
     m_db = new Database(path);
-    m_db->open();
+    m_db->open(Database::OpenDatabase);
 
     m_prefixes.insert(QByteArray("filename"), QByteArray("F"));
     m_prefixes.insert(QByteArray("mimetype"), QByteArray("M"));
