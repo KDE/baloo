@@ -95,7 +95,7 @@ public:
 
     /**
      * Only a maximum of \p limit results will be returned.
-     * By default the limit is 100000.
+     * By default the value is -1
      */
     void setLimit(uint limit);
     uint limit() const;
