@@ -81,8 +81,8 @@ bool Transaction::hasDocument(quint64 id)
 {
     Q_ASSERT(id > 0);
 
-    DocumentDB docTermsDB(m_dbis.docTermsDbi, m_txn);
-    return docTermsDB.contains(id);
+    IdFilenameDB idFilenameDb(m_dbis.idFilenameDbi, m_txn);
+    return idFilenameDb.contains(id);
 }
 
 QByteArray Transaction::documentUrl(quint64 id)
