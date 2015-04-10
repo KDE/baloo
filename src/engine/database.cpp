@@ -58,7 +58,7 @@ Database::~Database()
 bool Database::open(OpenMode mode)
 {
     QFileInfo dirInfo(m_path);
-    if (!dirInfo.permission(QFile::WriteOwner)) {
+    if (mode == CreateDatabase && !dirInfo.permission(QFile::WriteOwner)) {
         qCritical() << m_path << "does not have write permissions. Aborting";
         return false;
     }
