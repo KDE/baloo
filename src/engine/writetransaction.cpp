@@ -192,13 +192,6 @@ void WriteTransaction::replaceDocument(const Document& doc, Transaction::Documen
         docUrlDB.put(id, doc.url());
     }
 
-    // FIXME: What about contentIndexing?
-    /*
-    if (doc.contentIndexing()) {
-        m_contentIndexingDB->put(doc.id());
-    }
-    */
-
     if (operations & Transaction::DocumentTime) {
         DocumentTimeDB::TimeInfo info;
         info.mTime = doc.m_mTime;

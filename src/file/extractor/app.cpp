@@ -163,6 +163,7 @@ void App::index(Transaction* tr, const QString& url, quint64 id)
 
     result.finish();
     tr->replaceDocument(result.document(), Transaction::DocumentTerms | Transaction::DocumentData);
+    tr->removePhaseOne(doc.id());
 
     m_updatedFiles << url;
 }

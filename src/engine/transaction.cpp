@@ -182,6 +182,16 @@ void Transaction::setPhaseOne(quint64 id)
     contentIndexingDb.put(id);
 }
 
+void Transaction::removePhaseOne(quint64 id)
+{
+    Q_ASSERT(m_txn);
+    Q_ASSERT(id > 0);
+    Q_ASSERT(m_writeTrans);
+
+    DocumentIdDB contentIndexingDb(m_dbis.contentIndexingDbi, m_txn);
+    contentIndexingDb.del(id);
+}
+
 void Transaction::addDocument(const Document& doc)
 {
     Q_ASSERT(m_txn);
