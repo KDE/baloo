@@ -89,8 +89,8 @@ bool BasicIndexingQueue::process(const QString& file, UpdateDirFlags flags)
     //bool indexingRequired = (flags & ExtendedAttributesOnly);// || shouldIndex(file, mimetype);
 
     Transaction tr(m_db, Transaction::ReadWrite);
-    // FIXME: Does this take files?
 
+    // FIXME: Does this take files?
     UnIndexedFileIterator it(m_config, &tr, file);
     while (!it.next().isEmpty()) {
         index(&tr, it.filePath(), it.mimetype(), flags);
@@ -99,6 +99,8 @@ bool BasicIndexingQueue::process(const QString& file, UpdateDirFlags flags)
 
     if (startedIndexing) {
         tr.commit();
+    } else {
+        tr.abort();
     }
 
     return startedIndexing;

@@ -46,22 +46,28 @@ using namespace Baloo;
 
 Transaction::Transaction(const Database& db, Transaction::TransactionType type)
     : m_dbis(db.m_dbis)
+    , m_writeTrans(0)
 {
     uint flags = type == ReadOnly ? MDB_RDONLY : 0;
     int rc = mdb_txn_begin(db.m_env, NULL, flags, &m_txn);
     Q_ASSERT_X(rc == 0, "Transaction", mdb_strerror(rc));
 
-    m_writeTrans = new WriteTransaction(m_dbis, m_txn);
+    if (type == ReadWrite) {
+        m_writeTrans = new WriteTransaction(m_dbis, m_txn);
+    }
 }
 
 Transaction::Transaction(Database* db, Transaction::TransactionType type)
     : m_dbis(db->m_dbis)
+    , m_writeTrans(0)
 {
     uint flags = type == ReadOnly ? MDB_RDONLY : 0;
     int rc = mdb_txn_begin(db->m_env, NULL, flags, &m_txn);
     Q_ASSERT_X(rc == 0, "Transaction", mdb_strerror(rc));
 
-    m_writeTrans = new WriteTransaction(m_dbis, m_txn);
+    if (type == ReadWrite) {
+        m_writeTrans = new WriteTransaction(m_dbis, m_txn);
+    }
 }
 
 Transaction::Transaction(const Transaction& rhs)
@@ -72,6 +78,9 @@ Transaction::Transaction(const Transaction& rhs)
 
 Transaction::~Transaction()
 {
+    if (m_writeTrans)
+        qWarning() << "Closing an active WriteTransaction without calling abort/commit";
+
     if (m_txn) {
         abort();
     }
