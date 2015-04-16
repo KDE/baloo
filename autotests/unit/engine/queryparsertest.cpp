@@ -39,6 +39,7 @@ private Q_SLOTS:
     void testPhraseSearchEmail();
     void testAccentSearch();
     void testUnderscoreSplitting();
+    void testAutoExpand();
 };
 
 void QueryParserTest::testSinglePrefixWord()
@@ -164,6 +165,36 @@ void QueryParserTest::testUnderscoreSplitting()
     EngineQuery q(queries, EngineQuery::And);
 
     QCOMPARE(query, q);
+}
+
+void QueryParserTest::testAutoExpand()
+{
+    QueryParser parser;
+    parser.setAutoExapand(false);
+
+    {
+        EngineQuery query = parser.parseQuery("the fire");
+
+        QVector<EngineQuery> queries;
+        queries << EngineQuery("the", EngineQuery::Equal, 1);
+        queries << EngineQuery("fire", EngineQuery::Equal, 2);
+
+        EngineQuery q(queries, EngineQuery::And);
+
+        QCOMPARE(query, q);
+    }
+
+    {
+        EngineQuery query = parser.parseQuery("'the fire");
+
+        QVector<EngineQuery> queries;
+        queries << EngineQuery("the", EngineQuery::Equal, 1);
+        queries << EngineQuery("fire", EngineQuery::Equal, 2);
+
+        EngineQuery q(queries, EngineQuery::And);
+
+        QCOMPARE(query, q);
+    }
 }
 
 QTEST_MAIN(QueryParserTest)

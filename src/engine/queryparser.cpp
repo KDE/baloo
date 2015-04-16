@@ -150,7 +150,11 @@ EngineQuery QueryParser::parseQuery(const QString& text, const QString& prefix)
 
     if (!phraseQueries.isEmpty()) {
         for (EngineQuery& q : phraseQueries) {
-            q.setOp(EngineQuery::StartsWith);
+            if (m_autoExpand) {
+                q.setOp(EngineQuery::StartsWith);
+            } else {
+                q.setOp(EngineQuery::Equal);
+            }
         }
         queries << phraseQueries;
         phraseQueries.clear();
