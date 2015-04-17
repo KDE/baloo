@@ -70,6 +70,8 @@ bool Database::open(OpenMode mode)
     // The directory needs to be created before opening the environment
     QByteArray arr = QFile::encodeName(m_path) + "/index";
     mdb_env_open(m_env, arr.constData(), MDB_NOSUBDIR, 0664);
+    int rc = mdb_reader_check(m_env, 0);
+    Q_ASSERT_X(rc == 0, "Database::open reader_check", mdb_strerror(rc));
 
     //
     // Individual Databases
