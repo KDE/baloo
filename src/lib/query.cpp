@@ -193,6 +193,10 @@ ResultIterator Query::exec()
         }
     }
 
+    if (!d->m_includeFolder.isEmpty()) {
+        term = term && Term(QStringLiteral("includefolder"), d->m_includeFolder);
+    }
+
     QVector<quint64> vec = (*s_searchStore)->exec(term, d->m_limit);
     SearchStore* ess = &(**s_searchStore);
     return ResultIterator(vec, ess);

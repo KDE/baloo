@@ -31,8 +31,10 @@
 
 #include "andpostingiterator.h"
 #include "orpostingiterator.h"
+#include "idutils.h"
 
 #include <QStandardPaths>
+#include <QFile>
 
 #include <KFileMetaData/PropertyInfo>
 #include <KFileMetaData/TypeInfo>
@@ -135,13 +137,6 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
     }
 
     QByteArray property = term.property().toLower().toUtf8();
-    QByteArray prefix;
-    if (!property.isEmpty()) {
-        prefix = fetchPrefix(property);
-        if (prefix.isEmpty()) {
-            return 0;
-        }
-    }
 
     // TODO:
     // Handle Ratings - or generic integer queries
@@ -151,6 +146,28 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
     if (property == "type" || property == "kind") {
         EngineQuery q = constructTypeQuery(value.toString());
         return tr->postingIterator(q);
+    }
+    else if (property == "includefolder") {
+        const QByteArray folder = QFile::encodeName(value.toString());
+
+        Q_ASSERT(!folder.isEmpty());
+        Q_ASSERT(folder.startsWith('/'));
+
+        quint64 id = filePathToId(folder);
+        if (!id) {
+            qDebug() << "Folder" << value.toString() << "does not exist";
+            return 0;
+        }
+
+        return tr->docUrlIter(id);
+    }
+
+    QByteArray prefix;
+    if (!property.isEmpty()) {
+        prefix = fetchPrefix(property);
+        if (prefix.isEmpty()) {
+            return 0;
+        }
     }
 
     auto com = term.comparator();
