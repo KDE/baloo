@@ -107,7 +107,7 @@ void IdTreeDB::del(quint64 docId)
 //
 class IdTreePostingIterator : public PostingIterator {
 public:
-    IdTreePostingIterator(IdTreeDB* db, const QVector<quint64> list)
+    IdTreePostingIterator(const IdTreeDB& db, const QVector<quint64> list)
         : m_db(db), m_idList(list), m_pos(-1) {}
 
     quint64 docId() {
@@ -124,7 +124,7 @@ public:
         if (m_resultList.isEmpty()) {
             while (!m_idList.isEmpty()) {
                 quint64 id = m_idList.takeLast();
-                m_idList << m_db->get(id);
+                m_idList << m_db.get(id);
                 m_resultList << id;
             }
             std::sort(m_resultList.begin(), m_resultList.end());
@@ -144,7 +144,7 @@ public:
     }
 
 private:
-    IdTreeDB* m_db;
+    IdTreeDB m_db;
     int m_pos;
     QVector<quint64> m_idList;
     QVector<quint64> m_resultList;
@@ -155,5 +155,5 @@ PostingIterator* IdTreeDB::iter(quint64 docId)
     Q_ASSERT(docId > 0);
 
     QVector<quint64> list = {docId};
-    return new IdTreePostingIterator(this, list);
+    return new IdTreePostingIterator(*this, list);
 }
