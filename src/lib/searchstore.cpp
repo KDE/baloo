@@ -29,6 +29,9 @@
 #include "queryparser.h"
 #include "termgenerator.h"
 
+#include "andpostingiterator.h"
+#include "orpostingiterator.h"
+
 #include <QStandardPaths>
 
 #include <KFileMetaData/PropertyInfo>
@@ -61,13 +64,19 @@ SearchStore::~SearchStore()
 
 QVector<quint64> SearchStore::exec(const Term& term, int limit)
 {
-    EngineQuery query = constructQuery(term);
-    if (query.empty()) {
+    Transaction tr(m_db, Transaction::ReadOnly);
+    PostingIterator* it = constructQuery(&tr, term);
+    if (!it) {
         return QVector<quint64>();
     }
 
-    Transaction tr(m_db, Transaction::ReadOnly);
-    return tr.exec(query, limit);
+    QVector<quint64> results;
+    while (it->next() && limit) {
+        results << it->docId();
+        limit--;
+    }
+
+    return results;
 }
 
 QString SearchStore::filePath(quint64 id)
@@ -96,64 +105,66 @@ QByteArray SearchStore::fetchPrefix(const QByteArray& property) const
 
 }
 
-EngineQuery SearchStore::constructQuery(const Term& term)
+PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
 {
+    Q_ASSERT(tr);
+
     if (term.operation() == Term::And || term.operation() == Term::Or) {
-        QVector<EngineQuery> vec;
+        QVector<PostingIterator*> vec;
         for (const Term& t : term.subTerms()) {
-            EngineQuery q = constructQuery(t);
-            if (!q.empty())
-                vec << q;
+            PostingIterator* piter = constructQuery(tr, t);
+            if (piter) {
+                vec << piter;
+            }
         }
 
         if (vec.isEmpty()) {
-            return EngineQuery();
+            return 0;
         }
 
-        return EngineQuery(vec, term.operation() == Term::And ? EngineQuery::And : EngineQuery::Or);
+        if (term.operation() == Term::And) {
+            return new AndPostingIterator(vec);
+        } else {
+            return new OrPostingIterator(vec);
+        }
     }
 
     const QVariant value = term.value();
     if (value.isNull()) {
-        return EngineQuery();
+        return 0;
     }
 
     QByteArray property = term.property().toLower().toUtf8();
+    QByteArray prefix;
+    if (!property.isEmpty()) {
+        prefix = fetchPrefix(property);
+        if (prefix.isEmpty()) {
+            return 0;
+        }
+    }
+
     // TODO:
     // Handle Ratings - or generic integer queries
     // Handle FileNames
     // Handle "modified"
 
     if (property == "type" || property == "kind") {
-        return constructTypeQuery(value.toString());
+        EngineQuery q = constructTypeQuery(value.toString());
+        return tr->postingIterator(q);
     }
 
     auto com = term.comparator();
     if (com == Term::Contains) {
-        QByteArray prefix;
-        if (!property.isEmpty()) {
-            prefix = fetchPrefix(property);
-            if (prefix.isEmpty()) {
-                return EngineQuery();
-            }
-        }
-
-        return constructContainsQuery(prefix, value.toString());
+        EngineQuery q = constructContainsQuery(prefix, value.toString());
+        return tr->postingIterator(q);
     }
 
     if (com == Term::Equal) {
-        QByteArray prefix;
-        if (!property.isEmpty()) {
-            prefix = fetchPrefix(property);
-            if (prefix.isEmpty()) {
-                return EngineQuery();
-            }
-        }
-
-        return constructEqualsQuery(prefix, value.toString());
+        EngineQuery q = constructEqualsQuery(prefix, value.toString());
+        return tr->postingIterator(q);
     }
 
-    return EngineQuery();
+    return 0;
 }
 
 EngineQuery SearchStore::constructContainsQuery(const QByteArray& prefix, const QString& value)
@@ -172,7 +183,7 @@ EngineQuery SearchStore::constructEqualsQuery(const QByteArray& prefix, const QS
     QVector<EngineQuery> queries;
     int position = 1;
     for (const QString& term : terms) {
-        QByteArray arr = (prefix + term).toUtf8();
+        QByteArray arr = prefix + term.toUtf8();
         queries << EngineQuery(arr, position++);
     }
 
