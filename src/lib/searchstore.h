@@ -48,6 +48,11 @@ private:
     QHash<QByteArray, QByteArray> m_prefixes;
 
     EngineQuery constructQuery(const Term& term);
+    EngineQuery constructContainsQuery(const QByteArray& prefix, const QString& value);
+    EngineQuery constructEqualsQuery(const QByteArray& prefix, const QString& value);
+
+    EngineQuery constructTypeQuery(const QString& type);
+    EngineQuery constructFilenameQuery(const QByteArray& term);
 };
 
 }

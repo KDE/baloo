@@ -125,14 +125,7 @@ EngineQuery SearchStore::constructQuery(const Term& term)
     // Handle "modified"
 
     if (property == "type" || property == "kind") {
-        KFileMetaData::TypeInfo ti = KFileMetaData::TypeInfo::fromName(value.toString());
-        if (ti == KFileMetaData::Type::Empty) {
-            qDebug() << "Type" << value.toString() << "does not exist";
-            return EngineQuery();
-        }
-        int num = static_cast<int>(ti.type());
-
-        return EngineQuery('T' + QByteArray::number(num));
+        return constructTypeQuery(value.toString());
     }
 
     auto com = term.comparator();
@@ -145,16 +138,10 @@ EngineQuery SearchStore::constructQuery(const Term& term)
             }
         }
 
-        QueryParser parser;
-        return parser.parseQuery(value.toString(), prefix);
+        return constructContainsQuery(prefix, value.toString());
     }
 
     if (com == Term::Equal) {
-        // We use the TermGenerator to normalize the words in the value and to
-        // split it into other words. If we split the words, we then add them as a
-        // phrase query.
-        QStringList terms = TermGenerator::termList(value.toString());
-
         QByteArray prefix;
         if (!property.isEmpty()) {
             prefix = fetchPrefix(property);
@@ -163,22 +150,56 @@ EngineQuery SearchStore::constructQuery(const Term& term)
             }
         }
 
-        QVector<EngineQuery> queries;
-        int position = 1;
-        for (const QString& term : terms) {
-            QByteArray arr = (prefix + term).toUtf8();
-            queries << EngineQuery(arr, position++);
-        }
-
-        if (queries.isEmpty()) {
-            return EngineQuery();
-        } else if (queries.size() == 1) {
-            return queries.first();
-        } else {
-            return EngineQuery(queries, EngineQuery::Phrase);
-        }
+        return constructEqualsQuery(prefix, value.toString());
     }
 
     return EngineQuery();
 }
 
+EngineQuery SearchStore::constructContainsQuery(const QByteArray& prefix, const QString& value)
+{
+    QueryParser parser;
+    return parser.parseQuery(value, prefix);
+}
+
+EngineQuery SearchStore::constructEqualsQuery(const QByteArray& prefix, const QString& value)
+{
+    // We use the TermGenerator to normalize the words in the value and to
+    // split it into other words. If we split the words, we then add them as a
+    // phrase query.
+    QStringList terms = TermGenerator::termList(value);
+
+    QVector<EngineQuery> queries;
+    int position = 1;
+    for (const QString& term : terms) {
+        QByteArray arr = (prefix + term).toUtf8();
+        queries << EngineQuery(arr, position++);
+    }
+
+    if (queries.isEmpty()) {
+        return EngineQuery();
+    } else if (queries.size() == 1) {
+        return queries.first();
+    } else {
+        return EngineQuery(queries, EngineQuery::Phrase);
+    }
+}
+
+EngineQuery SearchStore::constructTypeQuery(const QString& value)
+{
+    Q_ASSERT(!value.isEmpty());
+
+    KFileMetaData::TypeInfo ti = KFileMetaData::TypeInfo::fromName(value);
+    if (ti == KFileMetaData::Type::Empty) {
+        qDebug() << "Type" << value << "does not exist";
+        return EngineQuery();
+    }
+    int num = static_cast<int>(ti.type());
+
+    return EngineQuery('T' + QByteArray::number(num));
+}
+
+EngineQuery SearchStore::constructFilenameQuery(const QByteArray& term)
+{
+    return EngineQuery();
+}
