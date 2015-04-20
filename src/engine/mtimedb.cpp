@@ -185,6 +185,9 @@ PostingIterator* MTimeDB::iter(quint32 mtime, MTimeDB::Comparator com)
 
 PostingIterator* MTimeDB::iterRange(quint32 beginTime, quint32 endTime)
 {
+    Q_ASSERT(beginTime);
+    Q_ASSERT(endTime);
+
     MDB_val key;
     key.mv_size = sizeof(quint32);
     key.mv_data = &beginTime;

@@ -161,6 +161,10 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
 
         return tr->docUrlIter(id);
     }
+    else if (property == "modified" || property == "mtime") {
+        const QDateTime dt = value.toDateTime();
+        return constructMTimeQuery(tr, dt, term.comparator());
+    }
 
     QByteArray prefix;
     if (!property.isEmpty()) {
@@ -230,4 +234,32 @@ EngineQuery SearchStore::constructTypeQuery(const QString& value)
 EngineQuery SearchStore::constructFilenameQuery(const QByteArray& term)
 {
     return EngineQuery();
+}
+
+PostingIterator* SearchStore::constructMTimeQuery(Transaction* tr, const QDateTime& dt, Term::Comparator com)
+{
+    quint32 timet = dt.toTime_t();
+
+    MTimeDB::Comparator mtimeCom;
+    if (com == Term::Equal) {
+        mtimeCom = MTimeDB::Equal;
+        quint32 end = QDateTime(dt.date().addDays(1)).toTime_t() - 1;
+
+        return tr->mTimeRangeIter(timet, end);
+    }
+    else if (com == Term::GreaterEqual) {
+        mtimeCom = MTimeDB::GreaterEqual;
+    } else if (com == Term::Greater) {
+        timet++;
+        mtimeCom = MTimeDB::GreaterEqual;
+    } else if (com == Term::LessEqual) {
+        mtimeCom = MTimeDB::LessEqual;
+    } else if (com == Term::Less) {
+        mtimeCom = MTimeDB::LessEqual;
+        timet--;
+    } else {
+        Q_ASSERT_X(0, "SearchStore::constructQuery", "mtime query must contain a valid comparator");
+    }
+
+    return tr->mTimeIter(timet, mtimeCom);
 }

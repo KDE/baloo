@@ -24,7 +24,9 @@
 #define BALOO_SEARCHSTORE_H
 
 #include <QString>
+#include <QDateTime>
 #include <QHash>
+#include "term.h"
 
 namespace Baloo {
 
@@ -57,6 +59,7 @@ private:
     EngineQuery constructFilenameQuery(const QByteArray& term);
 
     PostingIterator* constructRatingQuery(Transaction* tr, int rating);
+    PostingIterator* constructMTimeQuery(Transaction* tr, const QDateTime& dt, Term::Comparator com);
 };
 
 }
