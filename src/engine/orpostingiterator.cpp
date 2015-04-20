@@ -26,6 +26,8 @@ OrPostingIterator::OrPostingIterator(const QVector<PostingIterator*>& iterators)
     : m_iterators(iterators)
     , m_docId(0)
 {
+    for (auto iter : iterators)
+        Q_ASSERT(iter);
 }
 
 quint64 OrPostingIterator::docId()

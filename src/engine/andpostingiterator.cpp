@@ -26,6 +26,8 @@ AndPostingIterator::AndPostingIterator(const QVector<PostingIterator*>& iterator
     : m_iterators(iterators)
     , m_docId(0)
 {
+    for (auto iter : iterators)
+        Q_ASSERT(iter);
 }
 
 quint64 AndPostingIterator::docId()

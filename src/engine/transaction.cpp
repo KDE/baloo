@@ -274,14 +274,20 @@ PostingIterator* Transaction::postingIterator(const EngineQuery& query)
     if (query.op() == EngineQuery::Phrase) {
         for (const EngineQuery& q : query.subQueries()) {
             Q_ASSERT_X(q.leaf(), "Transaction::toPostingIterator", "Phrase queries must contain leaf queries");
-            vec << positionDb.iter(q.term());
+            auto it = positionDb.iter(q.term());
+            if (it) {
+                vec << it;
+            }
         }
 
         return new PhraseAndIterator(vec);
     }
 
     for (const EngineQuery& q : query.subQueries()) {
-        vec << postingIterator(q);
+        auto it = postingIterator(q);
+        if (it) {
+            vec << it;
+        }
     }
 
     if (query.op() == EngineQuery::And) {
