@@ -266,7 +266,9 @@ PostingIterator* Transaction::postingIterator(const EngineQuery& query)
         }
     }
 
-    Q_ASSERT(!query.subQueries().isEmpty());
+    if (query.subQueries().isEmpty()) {
+        return 0;
+    }
 
     QVector<PostingIterator*> vec;
     vec.reserve(query.subQueries().size());
