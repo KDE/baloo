@@ -205,10 +205,12 @@ bool raiseWatchLimit()
     */
 }
 
-//This slot is connected to a signal emitted in KInotify when
-//inotify_add_watch fails with ENOSPC.
+// This slot is connected to a signal emitted in KInotify when
+// inotify_add_watch fails with ENOSPC.
 void FileWatch::slotInotifyWatchUserLimitReached(const QString& path)
 {
+    Q_ASSERT_X(0, "Baloo::FileWatch", "inotify limit is too low. Please increase it");
+
     if (raiseWatchLimit()) {
         qDebug() << "Successfully raised watch limit, re-adding " << path;
         if (m_dirWatch)
