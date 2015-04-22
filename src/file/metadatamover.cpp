@@ -95,7 +95,11 @@ void MetadataMover::updateMetadata(Transaction* tr, const QString& from, const Q
 
     QByteArray toPath = QFile::encodeName(to);
     quint64 id = filePathToId(toPath);
-    Q_ASSERT_X(id, "MetadataMover::updateMetadata", "toUrl does not exist");
+    if (!id) {
+        qWarning() << "File moved to path which now no longer exists -" << to;
+        return;
+    }
+
     if (!tr->hasDocument(id)) {
         //
         // If we have no metadata yet we need to tell the file indexer so it can
