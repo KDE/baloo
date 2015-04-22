@@ -20,6 +20,8 @@
 
 #include "documentiddb.h"
 
+#include <QDebug>
+
 using namespace Baloo;
 
 DocumentIdDB::DocumentIdDB(MDB_dbi dbi, MDB_txn* txn)
@@ -55,7 +57,6 @@ MDB_dbi DocumentIdDB::open(MDB_txn* txn)
 void DocumentIdDB::put(quint64 docId)
 {
     Q_ASSERT(docId > 0);
-    Q_ASSERT(!contains(docId));
 
     MDB_val key;
     key.mv_size = sizeof(quint64);
@@ -65,7 +66,12 @@ void DocumentIdDB::put(quint64 docId)
     val.mv_size = 0;
     val.mv_data = 0;
 
-    int rc = mdb_put(m_txn, m_dbi, &key, &val, 0);
+    int rc = mdb_put(m_txn, m_dbi, &key, &val, MDB_NOOVERWRITE);
+    if (rc == MDB_KEYEXIST) {
+        qWarning() << "File" << docId << "already exists. This probably means this file has"
+                                         " a hard-link to another file";
+        return;
+    }
     Q_ASSERT_X(rc == 0, "IndexingLevelDB::put", mdb_strerror(rc));
 }
 
