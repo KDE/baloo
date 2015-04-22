@@ -1,6 +1,5 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
- * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2014  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -19,8 +18,8 @@
  */
 
 #include "cleaner.h"
-#include "../database.h"
-#include "../fileindexerconfig.h"
+#include "database.h"
+#include "fileindexerconfig.h"
 
 #include <QMimeDatabase>
 #include <QTimer>
@@ -35,8 +34,6 @@ Cleaner::Cleaner(Database* db, QObject* parent)
     : QObject(parent)
     , m_db(db)
 {
-    m_commitQueue = new CommitQueue(m_db, this);
-
     QTimer::singleShot(0, this, SLOT(start()));
 }
 

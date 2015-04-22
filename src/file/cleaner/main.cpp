@@ -20,8 +20,9 @@
 */
 
 #include "cleaner.h"
-#include "../database.h"
-#include "../priority.h"
+#include "database.h"
+#include "priority.h"
+#include "fileindexerconfig.h"
 
 #include <KConfig>
 #include <KConfigGroup>
@@ -47,23 +48,18 @@ int main(int argc, char* argv[])
     }
 
     const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)
-                         + QLatin1String("/baloo/file");
+                         + QStringLiteral("/baloo");
 
-    KConfig config(QLatin1String("baloofilerc"));
-    KConfigGroup group = config.group("Basic Settings");
-    bool indexingEnabled = group.readEntry("Indexing-Enabled", true);
-    if (!indexingEnabled) {
-        QDir dir(path);
-        Q_FOREACH (const QString& file, dir.entryList(QDir::Files)) {
-            dir.remove(file);
-        }
-        QFile::remove(path);
+    Baloo::FileIndexerConfig indexerConfig;
+    if (!indexerConfig.indexingEnabled()) {
+        QFile::remove(path + QStringLiteral("/index"));
+        QFile::remove(path + QStringLiteral("/index-lock"));
         return 0;
     }
 
-    Database db;
-    db.setPath(path);
-    db.init();
+
+    Baloo::Database db(path);
+    db.open(Baloo::Database::OpenDatabase);
 
     Baloo::Cleaner cleaner(&db);
     return app.exec();

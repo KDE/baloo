@@ -70,4 +70,4 @@ install(FILES org.kde.baloo.file.indexer.xml DESTINATION ${DBUS_INTERFACES_INSTA
 
 add_subdirectory(extractor)
 add_subdirectory(inotify)
-#add_subdirectory(cleaner)
+add_subdirectory(cleaner)
