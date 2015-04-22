@@ -136,6 +136,14 @@ public:
      */
     bool folderInFolderList(const QString& path, QString& folder) const;
 
+    /**
+     * Returns the internal version number of the Baloo database
+     */
+    int databaseVersion() const;
+    void setDatabaseVersion(int version);
+
+    bool indexingEnabled() const;
+
 Q_SIGNALS:
     void configChanged();
 

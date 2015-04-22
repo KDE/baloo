@@ -342,3 +342,20 @@ bool FileIndexerConfig::initialUpdateDisabled() const
 {
     return m_config.group("General").readEntry("disable initial update", true);
 }
+
+int FileIndexerConfig::databaseVersion() const
+{
+    return m_config.group("General").readEntry("dbVersion", 0);
+}
+
+void FileIndexerConfig::setDatabaseVersion(int version)
+{
+    m_config.group("General").writeEntry("dbVersion", version);
+    m_config.sync();
+}
+
+bool FileIndexerConfig::indexingEnabled() const
+{
+    return m_config.group("Basic Settings").readEntry("Indexing-Enabled", true);
+}
+

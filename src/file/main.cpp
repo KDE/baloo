@@ -35,6 +35,7 @@
 #include "database.h"
 #include "fileindexerconfig.h"
 #include "priority.h"
+#include "migrator.h"
 
 #include <QDBusConnection>
 #include <QApplication>
@@ -63,11 +64,8 @@ int main(int argc, char** argv)
     QObject::connect(&app, &QGuiApplication::commitDataRequest, disableSessionManagement);
     QObject::connect(&app, &QGuiApplication::saveStateRequest, disableSessionManagement);
 
-    KConfig config(QLatin1String("baloofilerc"));
-    KConfigGroup group = config.group("Basic Settings");
-    bool indexingEnabled = group.readEntry("Indexing-Enabled", true);
-
-    if (!indexingEnabled) {
+    Baloo::FileIndexerConfig indexerConfig;
+    if (!indexerConfig.indexingEnabled()) {
         std::cout << "Baloo File Indexing has been disabled" << std::endl;
         return 0;
     }
@@ -83,12 +81,15 @@ int main(int argc, char** argv)
 
     const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo");
 
+    Baloo::Migrator migrator(path, &indexerConfig);
+    if (migrator.migrationRequired()) {
+        migrator.migrate();
+    }
+
     Baloo::Database db(path);
     db.open(Baloo::Database::CreateDatabase);
 
-    Baloo::FileIndexerConfig indexerConfig;
     Baloo::FileWatch filewatcher(&db, &indexerConfig, &app);
-
     Baloo::FileIndexer fileIndexer(&db, &indexerConfig, &app);
 
     QObject::connect(&filewatcher, &Baloo::FileWatch::indexFile, &fileIndexer, &Baloo::FileIndexer::indexFile);
