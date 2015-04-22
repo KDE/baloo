@@ -126,6 +126,10 @@ bool File::load()
     {
         Transaction tr(db, Transaction::ReadOnly);
         arr = tr.documentData(d->id);
+
+        if (d->url.isEmpty()) {
+            d->url = tr.documentUrl(d->id);
+        }
     }
     if (arr.isEmpty()) {
         return false;
