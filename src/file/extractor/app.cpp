@@ -129,6 +129,7 @@ void App::index(Transaction* tr, const QString& url, quint64 id)
     if (mimetype == QLatin1String("text/plain")) {
         if (!url.endsWith(QLatin1String(".txt"))) {
             qDebug() << "text/plain does not end with .txt. Ignoring";
+            tr->removePhaseOne(id);
             return;
         }
     }
@@ -140,6 +141,7 @@ void App::index(Transaction* tr, const QString& url, quint64 id)
     if (mimetype.startsWith(QStringLiteral("text/"))) {
         QFileInfo fileInfo(url);
         if (fileInfo.size() >= 10 * 1024 * 1024) {
+            tr->removePhaseOne(id);
             return;
         }
     }
