@@ -55,8 +55,6 @@ SearchStore::SearchStore()
     m_prefixes.insert(QByteArray("tag"), QByteArray("TA"));
     m_prefixes.insert(QByteArray("tags"), QByteArray("TA"));
     m_prefixes.insert(QByteArray("usercomment"), QByteArray("C"));
-    m_prefixes.insert(QByteArray("type"), QByteArray("T"));
-    m_prefixes.insert(QByteArray("kind"), QByteArray("T"));
 }
 
 SearchStore::~SearchStore()
@@ -164,6 +162,30 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
     else if (property == "modified" || property == "mtime") {
         const QDateTime dt = value.toDateTime();
         return constructMTimeQuery(tr, dt, term.comparator());
+    }
+    else if (property == "rating") {
+        bool okay = false;
+        int rating = value.toInt(&okay);
+        if (!okay) {
+            qDebug() << "Rating comparisons must be with an integer";
+            return 0;
+        }
+
+        PostingDB::Comparator pcom;
+        if (term.comparator() == Term::Greater || term.comparator() == Term::GreaterEqual) {
+            pcom = PostingDB::GreaterEqual;
+            if (term.comparator() == Term::Greater && rating)
+                rating--;
+        }
+        else if (term.comparator() == Term::Less || term.comparator() == Term::LessEqual) {
+            pcom = PostingDB::LessEqual;
+            if (term.comparator() == Term::Less)
+                rating++;
+        }
+
+        const QByteArray prefix = "R";
+        const QByteArray val = QByteArray::number(rating);
+        return tr->postingCompIterator(prefix, val, pcom);
     }
 
     QByteArray prefix;

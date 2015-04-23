@@ -23,6 +23,7 @@
 
 #include "databasedbis.h"
 #include "mtimedb.h"
+#include "postingdb.h"
 #include "engine_export.h"
 
 #include <QString>
@@ -62,6 +63,7 @@ public:
     QVector<quint64> exec(const EngineQuery& query, int limit = -1);
 
     PostingIterator* postingIterator(const EngineQuery& query);
+    PostingIterator* postingCompIterator(const QByteArray& prefix, const QByteArray& value, PostingDB::Comparator com);
     PostingIterator* mTimeIter(quint32 mtime, MTimeDB::Comparator com);
     PostingIterator* mTimeRangeIter(quint32 beginTime, quint32 endTime);
     PostingIterator* docUrlIter(quint64 id);

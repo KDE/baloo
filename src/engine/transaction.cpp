@@ -302,6 +302,12 @@ PostingIterator* Transaction::postingIterator(const EngineQuery& query)
     return 0;
 }
 
+PostingIterator* Transaction::postingCompIterator(const QByteArray& prefix, const QByteArray& value, PostingDB::Comparator com)
+{
+    PostingDB postingDb(m_dbis.postingDbi, m_txn);
+    return postingDb.compIter(prefix, value, com);
+}
+
 PostingIterator* Transaction::mTimeIter(quint32 mtime, MTimeDB::Comparator com)
 {
     MTimeDB mTimeDb(m_dbis.mtimeDbi, m_txn);
