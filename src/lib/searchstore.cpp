@@ -108,6 +108,7 @@ QByteArray SearchStore::fetchPrefix(const QByteArray& property) const
 PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
 {
     Q_ASSERT(tr);
+    Q_ASSERT(term.comparator() != Term::Auto);
 
     if (term.operation() == Term::And || term.operation() == Term::Or) {
         QVector<PostingIterator*> vec;
@@ -137,9 +138,9 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
     QByteArray property = term.property().toLower().toUtf8();
 
     // TODO:
-    // Handle Ratings - or generic integer queries
-    // Handle FileNames
-    // Handle "modified"
+    // Handle regular expression queries
+    // Handle wildcard queries
+    // Handle datetime queries
 
     if (property == "type" || property == "kind") {
         EngineQuery q = constructTypeQuery(value.toString());
@@ -205,6 +206,25 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
     if (com == Term::Equal) {
         EngineQuery q = constructEqualsQuery(prefix, value.toString());
         return tr->postingIterator(q);
+    }
+
+    QVariant val = term.value();
+    if (val.type() == QVariant::Int) {
+        int intVal = value.toInt();
+
+        PostingDB::Comparator pcom;
+        if (term.comparator() == Term::Greater || term.comparator() == Term::GreaterEqual) {
+            pcom = PostingDB::GreaterEqual;
+            if (term.comparator() == Term::Greater && intVal)
+                intVal--;
+        }
+        else if (term.comparator() == Term::Less || term.comparator() == Term::LessEqual) {
+            pcom = PostingDB::LessEqual;
+            if (term.comparator() == Term::Less)
+                intVal++;
+        }
+
+        return tr->postingCompIterator(prefix, QByteArray::number(intVal), pcom);
     }
 
     return 0;
