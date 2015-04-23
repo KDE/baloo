@@ -54,6 +54,12 @@ public:
     PostingIterator* prefixIter(const QByteArray& term);
     PostingIterator* regexpIter(const QRegularExpression& regexp, const QByteArray& prefix);
 
+    enum Comparator {
+        LessEqual,
+        GreaterEqual
+    };
+    PostingIterator* compIter(const QByteArray& prefix, const QByteArray& val, Comparator com);
+
     QVector<QByteArray> fetchTermsStartingWith(const QByteArray& term);
 
 private:

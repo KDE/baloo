@@ -316,3 +316,61 @@ PostingIterator* PostingDB::regexpIter(const QRegularExpression& regexp, const Q
     mdb_cursor_close(cursor);
     return new OrPostingIterator(termIterators);
 }
+
+PostingIterator* PostingDB::compIter(const QByteArray& prefix, const QByteArray& comVal, PostingDB::Comparator com)
+{
+    Q_ASSERT(!prefix.isEmpty());
+    Q_ASSERT(!comVal.isEmpty());
+
+    MDB_val key;
+    key.mv_size = prefix.size();
+    key.mv_data = static_cast<void*>(const_cast<char*>(prefix.constData()));
+
+    MDB_cursor* cursor;
+    mdb_cursor_open(m_txn, m_dbi, &cursor);
+
+    QVector<PostingIterator*> termIterators;
+
+    MDB_val val;
+    int rc = mdb_cursor_get(cursor, &key, &val, MDB_SET_RANGE);
+    if (rc == MDB_NOTFOUND) {
+        mdb_cursor_close(cursor);
+        return 0;
+    }
+    Q_ASSERT_X(rc == 0, "PostingDB::compIter", mdb_strerror(rc));
+
+    const QByteArray arr = QByteArray::fromRawData(static_cast<char*>(key.mv_data), key.mv_size);
+    if (!arr.startsWith(prefix)) {
+        mdb_cursor_close(cursor);
+        return 0;
+    }
+    const QByteArray term = arr.mid(prefix.length());
+    if ((com == LessEqual && term <= comVal) || (com == GreaterEqual && term >= comVal)) {
+        termIterators << new DBPostingIterator(val.mv_data, val.mv_size);
+    }
+
+    while (1) {
+        rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
+        if (rc == MDB_NOTFOUND) {
+            break;
+        }
+        Q_ASSERT_X(rc == 0, "PostingDB::compIter", mdb_strerror(rc));
+
+        const QByteArray arr = QByteArray::fromRawData(static_cast<char*>(key.mv_data), key.mv_size);
+        if (!arr.startsWith(prefix)) {
+            break;
+        }
+        const QByteArray term = arr.mid(prefix.length());
+        if ((com == LessEqual && term <= comVal) || (com == GreaterEqual && term >= comVal)) {
+            termIterators << new DBPostingIterator(val.mv_data, val.mv_size);
+        }
+    }
+
+    if (termIterators.isEmpty()) {
+        mdb_cursor_close(cursor);
+        return 0;
+    }
+
+    mdb_cursor_close(cursor);
+    return new OrPostingIterator(termIterators);
+}
