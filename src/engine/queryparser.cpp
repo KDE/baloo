@@ -28,7 +28,7 @@
 using namespace Baloo;
 
 QueryParser::QueryParser()
-    : m_autoExpand(true)
+    : m_autoExpandSize(3)
 {
 }
 
@@ -132,7 +132,7 @@ EngineQuery QueryParser::parseQuery(const QString& text, const QString& prefix)
                     phraseQueries << EngineQuery(arr, position);
                 }
                 else {
-                    if (m_autoExpand) {
+                    if (m_autoExpandSize && arr.size() >= m_autoExpandSize) {
                         queries << EngineQuery(arr, EngineQuery::StartsWith, position);
                     } else {
                         queries << EngineQuery(arr, position);
@@ -150,7 +150,7 @@ EngineQuery QueryParser::parseQuery(const QString& text, const QString& prefix)
 
     if (!phraseQueries.isEmpty()) {
         for (EngineQuery& q : phraseQueries) {
-            if (m_autoExpand) {
+            if (m_autoExpandSize && q.term().size() >= m_autoExpandSize) {
                 q.setOp(EngineQuery::StartsWith);
             } else {
                 q.setOp(EngineQuery::Equal);
@@ -166,7 +166,7 @@ EngineQuery QueryParser::parseQuery(const QString& text, const QString& prefix)
     return EngineQuery(queries, EngineQuery::And);
 }
 
-void QueryParser::setAutoExapand(bool autoexpand)
+void QueryParser::setAutoExapandSize(int size)
 {
-    m_autoExpand = autoexpand;
+    m_autoExpandSize = size;
 }

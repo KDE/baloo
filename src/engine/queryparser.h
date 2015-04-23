@@ -36,13 +36,16 @@ public:
     EngineQuery parseQuery(const QString& str, const QString& prefix = QString());
 
     /**
-     * Set if each word in the string should be treated as a partial word
-     * and should be expanded to every possible word.
+     * Set if each word in the string whose length >= \p size should be treated as
+     * a partial word and should be expanded to every possible word.
+     *
+     * By default this value is 3.
+     * Setting this value to 0 disable auto expand.
      */
-    void setAutoExapand(bool autoexpand);
+    void setAutoExapandSize(int size);
 
 private:
-    bool m_autoExpand;
+    int m_autoExpandSize;
 };
 
 }

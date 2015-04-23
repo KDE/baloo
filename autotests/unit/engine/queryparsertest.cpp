@@ -45,6 +45,7 @@ private Q_SLOTS:
 void QueryParserTest::testSinglePrefixWord()
 {
     QueryParser parser;
+    parser.setAutoExapandSize(1);
 
     EngineQuery query = parser.parseQuery("The", "F");
     EngineQuery q("Fthe", EngineQuery::StartsWith, 1);
@@ -54,6 +55,7 @@ void QueryParserTest::testSinglePrefixWord()
 void QueryParserTest::testSimpleQuery()
 {
     QueryParser parser;
+    parser.setAutoExapandSize(1);
 
     EngineQuery query = parser.parseQuery("The song of Ice and Fire");
 
@@ -106,6 +108,7 @@ void QueryParserTest::testPhraseSearchOnly()
 void QueryParserTest::testPhraseSearch_sameLimiter()
 {
     QueryParser parser;
+    parser.setAutoExapandSize(1);
 
     EngineQuery query = parser.parseQuery("The \"song of Ice' and Fire");
 
@@ -170,7 +173,7 @@ void QueryParserTest::testUnderscoreSplitting()
 void QueryParserTest::testAutoExpand()
 {
     QueryParser parser;
-    parser.setAutoExapand(false);
+    parser.setAutoExapandSize(0);
 
     {
         EngineQuery query = parser.parseQuery("the fire");
@@ -190,6 +193,19 @@ void QueryParserTest::testAutoExpand()
         QVector<EngineQuery> queries;
         queries << EngineQuery("the", EngineQuery::Equal, 1);
         queries << EngineQuery("fire", EngineQuery::Equal, 2);
+
+        EngineQuery q(queries, EngineQuery::And);
+
+        QCOMPARE(query, q);
+    }
+
+    parser.setAutoExapandSize(4);
+    {
+        EngineQuery query = parser.parseQuery("the fire");
+
+        QVector<EngineQuery> queries;
+        queries << EngineQuery("the", EngineQuery::Equal, 1);
+        queries << EngineQuery("fire", EngineQuery::StartsWith, 2);
 
         EngineQuery q(queries, EngineQuery::And);
 
