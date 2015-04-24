@@ -131,18 +131,10 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
 
     Q_ASSERT(term.value().isValid());
     Q_ASSERT(term.comparator() != Term::Auto);
+    Q_ASSERT(term.comparator() == Term::Contains ? term.value().type() == QVariant::String : true);
 
     const QVariant value = term.value();
-    if (value.isNull()) {
-        return 0;
-    }
-
-    QByteArray property = term.property().toLower().toUtf8();
-
-    // TODO:
-    // Handle regular expression queries
-    // Handle wildcard queries
-    // Handle datetime queries
+    const QByteArray property = term.property().toLower().toUtf8();
 
     if (property == "type" || property == "kind") {
         EngineQuery q = constructTypeQuery(value.toString());
@@ -163,8 +155,36 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
         return tr->docUrlIter(id);
     }
     else if (property == "modified" || property == "mtime") {
-        const QDateTime dt = value.toDateTime();
-        return constructMTimeQuery(tr, dt, term.comparator());
+        if (value.type() == QVariant::ByteArray) {
+            QByteArray ba = value.toByteArray();
+            Q_ASSERT(ba.size() >= 4);
+
+            int year = ba.mid(0, 4).toInt();
+            int month = ba.mid(4, 2).toInt();
+            int day = ba.mid(6, 2).toInt();
+
+            Q_ASSERT(year);
+
+            month = month > 0 && month <= 12 ? month : 1;
+            day = day > 0 && day <= 31 ? day : 1;
+
+            QDate startDate(year, month, day);
+            QDate endDate(startDate);
+
+            if (month == 1)
+                endDate.setYMD(endDate.year(), 12, endDate.day());
+            if (day == 1)
+                endDate.setYMD(endDate.year(), endDate.month(), endDate.daysInMonth());
+
+            return tr->mTimeRangeIter(QDateTime(startDate).toTime_t(), QDateTime(endDate).toTime_t());
+        }
+        else if (value.type() == QVariant::Date || value.type() == QVariant::DateTime) {
+            const QDateTime dt = value.toDateTime();
+            return constructMTimeQuery(tr, dt, term.comparator());
+        }
+        else {
+            Q_ASSERT_X(0, "SearchStore::constructQuery", "modified property must contain date/datetime values");
+        }
     }
     else if (property == "rating") {
         bool okay = false;
@@ -184,6 +204,9 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
             pcom = PostingDB::LessEqual;
             if (term.comparator() == Term::Less)
                 rating++;
+        }
+        else {
+            Q_ASSERT(0);
         }
 
         const QByteArray prefix = "R";
@@ -224,6 +247,9 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
             pcom = PostingDB::LessEqual;
             if (term.comparator() == Term::Less)
                 intVal++;
+        }
+        else {
+            Q_ASSERT(0);
         }
 
         return tr->postingCompIterator(prefix, QByteArray::number(intVal), pcom);
@@ -275,13 +301,9 @@ EngineQuery SearchStore::constructTypeQuery(const QString& value)
     return EngineQuery('T' + QByteArray::number(num));
 }
 
-EngineQuery SearchStore::constructFilenameQuery(const QByteArray& term)
-{
-    return EngineQuery();
-}
-
 PostingIterator* SearchStore::constructMTimeQuery(Transaction* tr, const QDateTime& dt, Term::Comparator com)
 {
+    Q_ASSERT(dt.isValid());
     quint32 timet = dt.toTime_t();
 
     MTimeDB::Comparator mtimeCom;

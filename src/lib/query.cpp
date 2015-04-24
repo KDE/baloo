@@ -43,9 +43,9 @@ public:
     Private() {
         m_limit = defaultLimit;
         m_offset = 0;
-        m_yearFilter = -1;
-        m_monthFilter = -1;
-        m_dayFilter = -1;
+        m_yearFilter = 0;
+        m_monthFilter = 0;
+        m_dayFilter = 0;
         m_sortingOption = SortAuto;
     }
     Term m_term;
@@ -195,6 +195,18 @@ ResultIterator Query::exec()
 
     if (!d->m_includeFolder.isEmpty()) {
         term = term && Term(QStringLiteral("includefolder"), d->m_includeFolder);
+    }
+
+    if (d->m_yearFilter || d->m_monthFilter || d->m_dayFilter) {
+        QByteArray ba = QByteArray::number(d->m_yearFilter);
+        if (d->m_monthFilter < 10)
+            ba += '0';
+        ba += QByteArray::number(d->m_monthFilter);
+        if (d->m_dayFilter < 10)
+            ba += '0';
+        ba += QByteArray::number(d->m_dayFilter);
+
+        term = term && Term(QStringLiteral("modified"), ba, Term::Equal);
     }
 
     QVector<quint64> vec = (*s_searchStore)->exec(term, d->m_limit);

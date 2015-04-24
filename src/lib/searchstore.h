@@ -56,7 +56,6 @@ private:
     EngineQuery constructContainsQuery(const QByteArray& prefix, const QString& value);
     EngineQuery constructEqualsQuery(const QByteArray& prefix, const QString& value);
     EngineQuery constructTypeQuery(const QString& type);
-    EngineQuery constructFilenameQuery(const QByteArray& term);
 
     PostingIterator* constructRatingQuery(Transaction* tr, int rating);
     PostingIterator* constructMTimeQuery(Transaction* tr, const QDateTime& dt, Term::Comparator com);
