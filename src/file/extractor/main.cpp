@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
 
     QCoreApplication app(argc, argv);
     QCoreApplication::setApplicationName(QLatin1String("Baloo File Extractor"));
-    QCoreApplication::setApplicationVersion(QLatin1String("0.1"));
+    QCoreApplication::setApplicationVersion(PROJECT_VERSION);
 
     QCommandLineParser parser;
     parser.setApplicationDescription(i18n("The File Extractor extracts the file metadata and text"));
