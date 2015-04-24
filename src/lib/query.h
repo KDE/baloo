@@ -30,8 +30,6 @@
 
 namespace Baloo {
 
-class QuerySerializationTest;
-
 /**
  * The Query class is the central class to query to search for files from the Index.
  *

@@ -18,13 +18,26 @@
  *
  */
 
-#include "queryserializationtest.h"
 #include "query.h"
 #include "term.h"
 
-#include <QtTest>
+#include <QTest>
 
 using namespace Baloo;
+
+class QuerySerializationTest : public QObject
+{
+    Q_OBJECT
+
+private Q_SLOTS:
+    void testBasic();
+    void testTerm();
+    void testAndTerm();
+    void testDateTerm();
+    void testDateTimeTerm();
+
+    void testCustomOptions();
+};
 
 // Test a simple query with no terms
 void QuerySerializationTest::testBasic()
@@ -110,3 +123,5 @@ void QuerySerializationTest::testCustomOptions()
 
 
 QTEST_MAIN(QuerySerializationTest)
+
+#include "queryserializationtest.moc"
