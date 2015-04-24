@@ -66,12 +66,7 @@ void DocumentIdDB::put(quint64 docId)
     val.mv_size = 0;
     val.mv_data = 0;
 
-    int rc = mdb_put(m_txn, m_dbi, &key, &val, MDB_NOOVERWRITE);
-    if (rc == MDB_KEYEXIST) {
-        qWarning() << "File" << docId << "already exists. This probably means this file has"
-                                         " a hard-link to another file";
-        return;
-    }
+    int rc = mdb_put(m_txn, m_dbi, &key, &val, 0);
     Q_ASSERT_X(rc == 0, "IndexingLevelDB::put", mdb_strerror(rc));
 }
 
