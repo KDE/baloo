@@ -153,6 +153,7 @@ void App::index(Transaction* tr, const QString& url, quint64 id)
     basicIndexer.index();
 
     Baloo::Document doc = basicIndexer.document();
+    Q_ASSERT_X(doc.id() == id, "App::index", "The file id seems to have changed");
 
     Result result(url, mimetype, KFileMetaData::ExtractionResult::ExtractEverything);
     result.setDocument(doc);
