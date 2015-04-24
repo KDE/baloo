@@ -129,21 +129,34 @@ private:
     Private* d;
 };
 
-inline Term operator &&(const Term& lhs, const Term& rhs) {
+inline Term operator &&(const Term& lhs, const Term& rhs)
+{
+    if (lhs.isEmpty())
+        return rhs;
+    else if (rhs.isEmpty())
+        return lhs;
+
     Term t(Term::And);
     t.addSubTerm(lhs);
     t.addSubTerm(rhs);
     return t;
 }
 
-inline Term operator ||(const Term& lhs, const Term& rhs) {
+inline Term operator ||(const Term& lhs, const Term& rhs)
+{
+    if (lhs.isEmpty())
+        return rhs;
+    else if (rhs.isEmpty())
+        return lhs;
+
     Term t(Term::Or);
     t.addSubTerm(lhs);
     t.addSubTerm(rhs);
     return t;
 }
 
-inline Term operator !(const Term& rhs) {
+inline Term operator !(const Term& rhs)
+{
     Term t(rhs);
     t.setNegation(!rhs.isNegated());
     return t;
