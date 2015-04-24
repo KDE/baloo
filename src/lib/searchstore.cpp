@@ -173,10 +173,10 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
 
             if (month == 1)
                 endDate.setYMD(endDate.year(), 12, endDate.day());
-            if (day == 1)
+            else if (day == 1)
                 endDate.setYMD(endDate.year(), endDate.month(), endDate.daysInMonth());
 
-            return tr->mTimeRangeIter(QDateTime(startDate).toTime_t(), QDateTime(endDate).toTime_t());
+            return tr->mTimeRangeIter(QDateTime(startDate).toTime_t(), QDateTime(endDate, QTime(23, 59, 59)).toTime_t());
         }
         else if (value.type() == QVariant::Date || value.type() == QVariant::DateTime) {
             const QDateTime dt = value.toDateTime();
