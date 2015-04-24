@@ -22,6 +22,7 @@ target_link_libraries(baloo_file_extractor
   KF5::ConfigCore
   KF5::Solid
   KF5::BalooEngine
+  KF5::Crash
 )
 
 install(TARGETS baloo_file_extractor DESTINATION ${BIN_INSTALL_DIR})
