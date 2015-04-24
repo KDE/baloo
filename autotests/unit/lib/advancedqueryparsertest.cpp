@@ -1,6 +1,6 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
- * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
+ * This file is part of the KDE Baloo Project
+ * Copyright (C) 2014  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,12 +18,24 @@
  *
  */
 
-#include "advancedqueryparsertest.h"
 #include "advancedqueryparser.h"
 
 #include <QTest>
 
 using namespace Baloo;
+
+class AdvancedQueryParserTest : public QObject
+{
+    Q_OBJECT
+private Q_SLOTS:
+
+    void testSimpleProperty();
+    void testSimpleString();
+    void testStringAndProperty();
+    void testLogicalOps();
+    void testNesting();
+    void testDifferentTypes();
+};
 
 void AdvancedQueryParserTest::testSimpleProperty()
 {
@@ -151,3 +163,5 @@ void AdvancedQueryParserTest::testDifferentTypes()
 }
 
 QTEST_MAIN(AdvancedQueryParserTest);
+
+#include "advancedqueryparsertest.moc"
