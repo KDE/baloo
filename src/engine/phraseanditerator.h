@@ -31,6 +31,7 @@ class BALOO_ENGINE_EXPORT PhraseAndIterator : public PostingIterator
 {
 public:
     PhraseAndIterator(const QVector<PostingIterator*>& iterators);
+    ~PhraseAndIterator();
 
     quint64 next();
     quint64 docId();

@@ -28,6 +28,13 @@ PhraseAndIterator::PhraseAndIterator(const QVector<PostingIterator*>& iterators)
     : m_iterators(iterators)
     , m_docId(0)
 {
+    for (auto iter : iterators)
+        Q_ASSERT(iter);
+}
+
+PhraseAndIterator::~PhraseAndIterator()
+{
+    qDeleteAll(m_iterators);
 }
 
 quint64 PhraseAndIterator::docId()

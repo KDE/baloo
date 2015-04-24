@@ -38,11 +38,11 @@ void AndPostingIteratorTest::test()
     QVector<quint64> l2 = {3, 4, 5, 7, 9, 11};
     QVector<quint64> l3 = {1, 3, 7};
 
-    VectorPostingIterator it1(l1);
-    VectorPostingIterator it2(l2);
-    VectorPostingIterator it3(l3);
+    VectorPostingIterator* it1 = new VectorPostingIterator(l1);
+    VectorPostingIterator* it2 = new VectorPostingIterator(l2);
+    VectorPostingIterator* it3 = new VectorPostingIterator(l3);
 
-    QVector<PostingIterator*> vec = {&it1, &it2, &it3};
+    QVector<PostingIterator*> vec = {it1, it2, it3};
     AndPostingIterator it(vec);
     QCOMPARE(it.docId(), static_cast<quint64>(0));
 

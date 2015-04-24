@@ -63,10 +63,10 @@ void PhraseAndIteratorTest::test()
     QVector<PositionInfo> vec2;
     vec2 << pi3 << pi4 << pi5;
 
-    VectorPositionInfoIterator it1(vec1);
-    VectorPositionInfoIterator it2(vec2);
+    VectorPositionInfoIterator* it1 = new VectorPositionInfoIterator(vec1);
+    VectorPositionInfoIterator* it2 = new VectorPositionInfoIterator(vec2);
 
-    QVector<PostingIterator*> vec = {&it1, &it2};
+    QVector<PostingIterator*> vec = {it1, it2};
     PhraseAndIterator it(vec);
     QCOMPARE(it.docId(), static_cast<quint64>(0));
 

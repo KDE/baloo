@@ -30,6 +30,11 @@ AndPostingIterator::AndPostingIterator(const QVector<PostingIterator*>& iterator
         Q_ASSERT(iter);
 }
 
+AndPostingIterator::~AndPostingIterator()
+{
+    qDeleteAll(m_iterators);
+}
+
 quint64 AndPostingIterator::docId()
 {
     return m_docId;

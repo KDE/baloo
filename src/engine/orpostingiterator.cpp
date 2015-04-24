@@ -30,6 +30,11 @@ OrPostingIterator::OrPostingIterator(const QVector<PostingIterator*>& iterators)
         Q_ASSERT(iter);
 }
 
+OrPostingIterator::~OrPostingIterator()
+{
+    qDeleteAll(m_iterators);
+}
+
 quint64 OrPostingIterator::docId()
 {
     return m_docId;

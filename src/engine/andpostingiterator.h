@@ -30,6 +30,7 @@ class BALOO_ENGINE_EXPORT AndPostingIterator : public PostingIterator
 {
 public:
     AndPostingIterator(const QVector<PostingIterator*>& iterators);
+    ~AndPostingIterator();
 
     virtual quint64 next();
     virtual quint64 docId();
