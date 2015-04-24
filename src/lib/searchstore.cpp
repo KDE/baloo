@@ -108,7 +108,6 @@ QByteArray SearchStore::fetchPrefix(const QByteArray& property) const
 PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
 {
     Q_ASSERT(tr);
-    Q_ASSERT(term.comparator() != Term::Auto);
 
     if (term.operation() == Term::And || term.operation() == Term::Or) {
         QVector<PostingIterator*> vec;
@@ -129,6 +128,9 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
             return new OrPostingIterator(vec);
         }
     }
+
+    Q_ASSERT(term.value().isValid());
+    Q_ASSERT(term.comparator() != Term::Auto);
 
     const QVariant value = term.value();
     if (value.isNull()) {
