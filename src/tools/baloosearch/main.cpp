@@ -33,26 +33,6 @@
 #include "query.h"
 #include "searchstore.h"
 
-QString highlightBold(const QString& input)
-{
-    QLatin1String colorStart("\033[0;33m");
-    QLatin1String colorEnd("\033[0;0m");
-
-    QString out(input);
-    out.replace(QLatin1String("<b>"), colorStart);
-    out.replace(QLatin1String("</b>"), colorEnd);
-
-    return out;
-}
-
-QString colorString(const QString& input, int color)
-{
-    QString colorStart = QString::fromLatin1("\033[0;%1m").arg(color);
-    QLatin1String colorEnd("\033[0;0m");
-
-    return colorStart + input + colorEnd;
-}
-
 int main(int argc, char* argv[])
 {
     KAboutData aboutData(QLatin1String("baloosearch"),
@@ -60,7 +40,7 @@ int main(int argc, char* argv[])
                          PROJECT_VERSION,
                          i18n("Baloo Search - A debugging tool"),
                          KAboutLicense::GPL,
-                         i18n("(c) 2013, Vishesh Handa"));
+                         i18n("(c) 2013-15, Vishesh Handa"));
     aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QLatin1String("vhanda@kde.org"));
 
     KAboutData::setApplicationData(aboutData);
@@ -114,17 +94,10 @@ int main(int argc, char* argv[])
         query.setIncludeFolder(QFileInfo(folderName).canonicalFilePath());
     }
 
-    out << "\n";
     Baloo::ResultIterator iter = query.exec();
     while (iter.next()) {
         const QString filePath = iter.filePath();
-        //quint64 fid = iter.id();
-
-        //QString title = colorString(QString::number(fid), 31) + QLatin1String(" ") + colorString(filePath, 32);
-        QString title = colorString(filePath, 32);
-
-        out << "  " << title << endl;
-        out << endl;
+        out << filePath << endl;
     }
 
     return 0;
