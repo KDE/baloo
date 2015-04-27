@@ -86,6 +86,10 @@ int main(int argc, char** argv)
         migrator.migrate();
     }
 
+    if (!QFile::exists(path + "/index")) {
+        indexerConfig.setInitialRun(true);
+    }
+
     Baloo::Database db(path);
     db.open(Baloo::Database::CreateDatabase);
 
