@@ -75,7 +75,15 @@ public:
     QVector<QByteArray> fetchTermsStartingWith(const QByteArray& term);
 
     //
+    // Introspecing document data
+    //
+    QVector<QByteArray> documentTerms(quint64 docId);
+    QVector<QByteArray> documentFileNameTerms(quint64 docId);
+    QVector<QByteArray> documentXattrTerms(quint64 docId);
+
+    //
     // Transaction handling
+    //
     void commit();
     void abort();
     bool hasChanges() const;

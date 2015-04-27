@@ -359,3 +359,31 @@ void Transaction::renameFilePath(quint64 id, const Document& newDoc)
 
     replaceDocument(newDoc, FileNameTerms);
 }
+
+//
+// Introspection
+//
+
+QVector<QByteArray> Transaction::documentTerms(quint64 docId)
+{
+    Q_ASSERT(docId);
+
+    DocumentDB documentTermsDB(m_dbis.docTermsDbi, m_txn);
+    return documentTermsDB.get(docId);
+}
+
+QVector<QByteArray> Transaction::documentFileNameTerms(quint64 docId)
+{
+    Q_ASSERT(docId);
+
+    DocumentDB documentFileNameTermsDB(m_dbis.docFilenameTermsDbi, m_txn);
+    return documentFileNameTermsDB.get(docId);
+}
+
+QVector<QByteArray> Transaction::documentXattrTerms(quint64 docId)
+{
+    Q_ASSERT(docId);
+
+    DocumentDB documentXattrTermsDB(m_dbis.docXattrTermsDbi, m_txn);
+    return documentXattrTermsDB.get(docId);
+}

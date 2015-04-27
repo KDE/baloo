@@ -33,6 +33,9 @@
 
 #include "file.h"
 #include "idutils.h"
+#include "database.h"
+#include "transaction.h"
+
 #include <KFileMetaData/PropertyInfo>
 
 
@@ -59,8 +62,8 @@ int main(int argc, char* argv[])
 
     QCommandLineParser parser;
     parser.addPositionalArgument(QLatin1String("files"), QLatin1String("The file urls"));
-    //parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("x") << QStringLiteral("xapian"),
-    //                                    QStringLiteral("Print internal xapian info")));
+    parser.addOption(QCommandLineOption(QStringList() << QLatin1String("x"),
+                                        QLatin1String("Print internal info")));
     parser.addHelpOption();
     parser.process(app);
 
@@ -129,22 +132,36 @@ int main(int argc, char* argv[])
             stream << "\t" << pi.displayName() << ": " << str << endl;
         }
 
-        /*
-        if (parser.isSet(QStringLiteral("xapian"))) {
+        if (parser.isSet(QStringLiteral("x"))) {
             const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)
-                                + QLatin1String("/baloo/file");
+                                + QLatin1String("/baloo");
 
-            Baloo::XapianDatabase db(path);
-            Baloo::XapianDocument xapDoc = db.document(fid);
-            Xapian::Document doc = xapDoc.doc();
+            Baloo::Database db(path);
+            db.open(Baloo::Database::OpenDatabase);
 
-            QStringList prefixedWords;
-            QStringList normalWords;
+            Baloo::Transaction tr(db, Baloo::Transaction::ReadOnly);
+            QVector<QByteArray> terms = tr.documentTerms(fid);
+            QVector<QByteArray> fileNameTerms = tr.documentFileNameTerms(fid);
+            QVector<QByteArray> xAttrTerms = tr.documentXattrTerms(fid);
+
+            auto join = [](const QVector<QByteArray>& v) {
+                QByteArray ba;
+                for (const QByteArray& arr : v) {
+                    ba.append(arr);
+                    ba.append(' ');
+                }
+                return ba;
+            };
+
+            stream << "Internal Info\n";
+            stream << "Terms: " << join(terms) << "\n";
+            stream << "File Name Terms: " << join(fileNameTerms) << "\n";
+            stream << "XAttr Terms: " << join(xAttrTerms) << "\n\n";
+
             QHash<int, QStringList> propertyWords;
 
-            for (auto it = doc.termlist_begin(); it != doc.termlist_end(); ++it) {
-                std::string str = *it;
-                QString word = QString::fromUtf8(str.c_str(), str.length());
+            for (const QByteArray& arr : terms) {
+                QString word = QString::fromUtf8(arr);
 
                 if (word[0].isUpper()) {
                     if (word[0] == QLatin1Char('X')) {
@@ -158,17 +175,8 @@ int main(int argc, char* argv[])
 
                         propertyWords[propNum].append(value);
                     }
-                    else {
-                        prefixedWords << word;
-                    }
-                } else {
-                    normalWords << word;
                 }
             }
-
-            stream << "\nXapian Internal Info\n" << endl;
-            stream << "Words: " << normalWords.join(" ") << endl << endl;
-            stream << "Prefixed Words: " << prefixedWords.join(" ") << endl << endl;
 
             for (auto it = propertyWords.constBegin(); it != propertyWords.constEnd(); it++) {
                 auto prop = static_cast<KFileMetaData::Property::Property>(it.key());
@@ -177,7 +185,6 @@ int main(int argc, char* argv[])
                 stream << pi.name() << ": " << it.value().join(" ") << endl;
             }
         }
-        */
     }
 
     return 0;
