@@ -153,7 +153,7 @@ int main(int argc, char* argv[])
                 return ba;
             };
 
-            stream << "Internal Info\n";
+            stream << "\nInternal Info\n";
             stream << "Terms: " << join(terms) << "\n";
             stream << "File Name Terms: " << join(fileNameTerms) << "\n";
             stream << "XAttr Terms: " << join(xAttrTerms) << "\n\n";
@@ -166,12 +166,12 @@ int main(int argc, char* argv[])
                 if (word[0].isUpper()) {
                     if (word[0] == QLatin1Char('X')) {
                         int posOfNonNumeric = 1;
-                        while (word[posOfNonNumeric].isNumber() && posOfNonNumeric < 3) {
+                        while (word[posOfNonNumeric] != '-') {
                             posOfNonNumeric++;
                         }
 
                         int propNum = word.mid(1, posOfNonNumeric-1).toInt();
-                        QString value = word.mid(posOfNonNumeric);
+                        QString value = word.mid(posOfNonNumeric + 1);
 
                         propertyWords[propNum].append(value);
                     }

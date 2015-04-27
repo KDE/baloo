@@ -100,7 +100,7 @@ QByteArray SearchStore::fetchPrefix(const QByteArray& property) const
             return QByteArray();
         }
         int propPrefix = static_cast<int>(pi.property());
-        return 'X' + QByteArray::number(propPrefix);
+        return 'X' + QByteArray::number(propPrefix) + '-';
     }
 
 }

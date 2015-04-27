@@ -68,7 +68,7 @@ void Result::add(KFileMetaData::Property::Property property, const QVariant& val
         }
     }
 
-    QByteArray prefix = 'X' + QByteArray::number(propNum);
+    QByteArray prefix = 'X' + QByteArray::number(propNum) + '-';
 
     if (value.type() == QVariant::Bool) {
         m_doc.addBoolTerm(prefix);
