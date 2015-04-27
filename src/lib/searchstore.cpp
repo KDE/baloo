@@ -65,34 +65,29 @@ SearchStore::~SearchStore()
     delete m_db;
 }
 
-QVector<quint64> SearchStore::exec(const Term& term, int limit)
+QStringList SearchStore::exec(const Term& term, int limit)
 {
     if (!m_db) {
-        return QVector<quint64>();
+        return QStringList();
     }
 
     Transaction tr(m_db, Transaction::ReadOnly);
     PostingIterator* it = constructQuery(&tr, term);
     if (!it) {
-        return QVector<quint64>();
+        return QStringList();
     }
 
-    QVector<quint64> results;
+    QStringList results;
     while (it->next() && limit) {
-        results << it->docId();
+        Q_ASSERT(it->docId() > 0);
+        const QString filePath = tr.documentUrl(it->docId());
+        Q_ASSERT(!filePath.isEmpty());
+
+        results << filePath;
         limit--;
     }
 
     return results;
-}
-
-QString SearchStore::filePath(quint64 id)
-{
-    Q_ASSERT(id > 0);
-    Q_ASSERT(m_db);
-
-    Transaction tr(m_db, Transaction::ReadOnly);
-    return tr.documentUrl(id);
 }
 
 QByteArray SearchStore::fetchPrefix(const QByteArray& property) const

@@ -78,7 +78,6 @@ QueryResultsModel::~QueryResultsModel()
 QHash<int, QByteArray> QueryResultsModel::roleNames() const
 {
     QHash<int, QByteArray> roleNames = QAbstractListModel::roleNames();
-    roleNames[IdRole] = "id";
     roleNames[UrlRole] = "url";
 
     return roleNames;
@@ -99,8 +98,6 @@ QVariant QueryResultsModel::data(const QModelIndex &index, int role) const
         QString localUrl = m_balooEntryList.at(index.row()).filePath();
         return QMimeDatabase().mimeTypeForFile(localUrl).iconName();
     }
-    case IdRole:
-        return m_balooEntryList.at(index.row()).id();
     case UrlRole:
         return m_balooEntryList.at(index.row()).filePath();
     default:

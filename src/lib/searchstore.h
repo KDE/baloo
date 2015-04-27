@@ -42,8 +42,7 @@ public:
     SearchStore();
     ~SearchStore();
 
-    QVector<quint64> exec(const Term& term, int limit);
-    QString filePath(quint64 id);
+    QStringList exec(const Term& term, int limit);
 
 private:
     QByteArray fetchPrefix(const QByteArray& property) const;

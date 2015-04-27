@@ -26,7 +26,6 @@ using namespace Baloo;
 
 class Result::Private {
 public:
-    quint64 id;
     QString filePath;
 };
 
@@ -43,16 +42,6 @@ Result::Result(const Result& rhs)
 Result::~Result()
 {
     delete d;
-}
-
-void Result::setId(const quint64& id)
-{
-    d->id = id;
-}
-
-quint64 Result::id() const
-{
-    return d->id;
 }
 
 QString Result::filePath() const

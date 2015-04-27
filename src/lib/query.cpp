@@ -209,9 +209,8 @@ ResultIterator Query::exec()
         term = term && Term(QStringLiteral("modified"), ba, Term::Equal);
     }
 
-    QVector<quint64> vec = (*s_searchStore)->exec(term, d->m_limit);
-    SearchStore* ess = &(**s_searchStore);
-    return ResultIterator(vec, ess);
+    QStringList result = (*s_searchStore)->exec(term, d->m_limit);
+    return ResultIterator(result);
 }
 
 QByteArray Query::toJSON()

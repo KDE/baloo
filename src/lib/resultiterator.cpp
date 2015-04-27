@@ -31,24 +31,19 @@ using namespace Baloo;
 class Baloo::ResultIteratorPrivate {
 public:
     ResultIteratorPrivate()
-        : store(0) {
-    }
+    {}
 
     ~ResultIteratorPrivate() {
     }
 
-    QVector<quint64> results;
+    QStringList results;
     int pos;
-    SearchStore* store;
 };
 
-ResultIterator::ResultIterator(const QVector<quint64>& vec, SearchStore* store)
+ResultIterator::ResultIterator(const QStringList& results)
     : d(new ResultIteratorPrivate)
 {
-    Q_ASSERT(store);
-
-    d->results = vec;
-    d->store = store;
+    d->results = results;
     d->pos = -1;
 }
 
@@ -68,21 +63,15 @@ bool ResultIterator::next()
     return d->pos < d->results.size();
 }
 
-quint64 ResultIterator::id() const
+QString ResultIterator::filePath() const
 {
     Q_ASSERT(d->pos >= 0 && d->pos < d->results.size());
     return d->results.at(d->pos);
 }
 
-QString ResultIterator::filePath() const
-{
-    return d->store->filePath(id());
-}
-
 Result ResultIterator::result() const
 {
     Result res;
-    res.setId(id());
     res.setFilePath(filePath());
 
     return res;

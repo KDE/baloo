@@ -41,12 +41,11 @@ public:
 
     bool next();
 
-    quint64 id() const;
     QString filePath() const;
 
     Result result() const;
 private:
-    ResultIterator(const QVector<quint64>& vec, SearchStore* store);
+    ResultIterator(const QStringList& results);
     ResultIteratorPrivate* d;
 
     friend class Query;

@@ -118,9 +118,10 @@ int main(int argc, char* argv[])
     Baloo::ResultIterator iter = query.exec();
     while (iter.next()) {
         const QString filePath = iter.filePath();
-        quint64 fid = iter.id();
+        //quint64 fid = iter.id();
 
-        QString title = colorString(QString::number(fid), 31) + QLatin1String(" ") + colorString(filePath, 32);
+        //QString title = colorString(QString::number(fid), 31) + QLatin1String(" ") + colorString(filePath, 32);
+        QString title = colorString(filePath, 32);
 
         out << "  " << title << endl;
         out << endl;
