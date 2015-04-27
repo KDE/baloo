@@ -87,7 +87,7 @@ bool Database::open(OpenMode mode)
         m_dbis.docFilenameTermsDbi = DocumentDB::open("docfilenameterms", txn);
         m_dbis.docXattrTermsDbi = DocumentDB::open("docxatrrterms", txn);
 
-        m_dbis.idTreeDbi = IdTreeDB::create(txn);
+        m_dbis.idTreeDbi = IdTreeDB::open(txn);
         m_dbis.idFilenameDbi = IdFilenameDB::open(txn);
 
         m_dbis.docTimeDbi = DocumentTimeDB::open(txn);
@@ -95,6 +95,11 @@ bool Database::open(OpenMode mode)
         m_dbis.contentIndexingDbi = DocumentIdDB::open(txn);
 
         m_dbis.mtimeDbi = MTimeDB::open(txn);
+
+        if (!m_dbis.isValid()) {
+            mdb_txn_abort(txn);
+            return false;
+        }
         rc = mdb_txn_commit(txn);
         Q_ASSERT_X(rc == 0, "Database::transaction ro commit", mdb_strerror(rc));
     }
@@ -116,6 +121,12 @@ bool Database::open(OpenMode mode)
         m_dbis.contentIndexingDbi = DocumentIdDB::create(txn);
 
         m_dbis.mtimeDbi = MTimeDB::create(txn);
+
+        Q_ASSERT(m_dbis.isValid());
+        if (!m_dbis.isValid()) {
+            mdb_txn_abort(txn);
+            return false;
+        }
         rc = mdb_txn_commit(txn);
         Q_ASSERT_X(rc == 0, "Database::transaction commit", mdb_strerror(rc));
     }

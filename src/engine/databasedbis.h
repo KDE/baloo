@@ -56,6 +56,11 @@ public:
         , contentIndexingDbi(0)
         , mtimeDbi(0)
     {}
+
+    bool isValid() {
+        return postingDbi && positionDBi && docTermsDbi && docFilenameTermsDbi && docXattrTermsDbi &&
+               idTreeDbi && idFilenameDbi && docTimeDbi && docDataDbi && contentIndexingDbi && mtimeDbi;
+    }
 };
 
 }

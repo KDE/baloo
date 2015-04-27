@@ -47,7 +47,10 @@ SearchStore::SearchStore()
 {
     const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/");
     m_db = new Database(path);
-    m_db->open(Database::OpenDatabase);
+    if (!m_db->open(Database::OpenDatabase)) {
+        delete m_db;
+        m_db = 0;
+    }
 
     m_prefixes.insert(QByteArray("filename"), QByteArray("F"));
     m_prefixes.insert(QByteArray("mimetype"), QByteArray("M"));
@@ -64,6 +67,10 @@ SearchStore::~SearchStore()
 
 QVector<quint64> SearchStore::exec(const Term& term, int limit)
 {
+    if (!m_db) {
+        return QVector<quint64>();
+    }
+
     Transaction tr(m_db, Transaction::ReadOnly);
     PostingIterator* it = constructQuery(&tr, term);
     if (!it) {
@@ -82,6 +89,7 @@ QVector<quint64> SearchStore::exec(const Term& term, int limit)
 QString SearchStore::filePath(quint64 id)
 {
     Q_ASSERT(id > 0);
+    Q_ASSERT(m_db);
 
     Transaction tr(m_db, Transaction::ReadOnly);
     return tr.documentUrl(id);

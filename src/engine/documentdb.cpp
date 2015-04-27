@@ -49,7 +49,10 @@ MDB_dbi DocumentDB::create(const char* name, MDB_txn* txn)
 MDB_dbi DocumentDB::open(const char* name, MDB_txn* txn)
 {
     MDB_dbi dbi;
-    int rc = mdb_dbi_open(txn, name, MDB_CREATE | MDB_INTEGERKEY, &dbi);
+    int rc = mdb_dbi_open(txn, name, MDB_INTEGERKEY, &dbi);
+    if (rc == MDB_NOTFOUND) {
+        return 0;
+    }
     Q_ASSERT_X(rc == 0, "DocumentDB::open", mdb_strerror(rc));
 
     return dbi;

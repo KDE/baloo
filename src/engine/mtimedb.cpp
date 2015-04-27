@@ -48,6 +48,9 @@ MDB_dbi MTimeDB::open(MDB_txn* txn)
 {
     MDB_dbi dbi;
     int rc = mdb_dbi_open(txn, "mtimedb", MDB_INTEGERKEY | MDB_DUPSORT | MDB_DUPFIXED | MDB_INTEGERDUP, &dbi);
+    if (rc == MDB_NOTFOUND) {
+        return 0;
+    }
     Q_ASSERT_X(rc == 0, "MTimeDB::open", mdb_strerror(rc));
 
     return dbi;

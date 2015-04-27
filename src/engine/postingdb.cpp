@@ -51,6 +51,9 @@ MDB_dbi PostingDB::open(MDB_txn* txn)
 {
     MDB_dbi dbi;
     int rc = mdb_dbi_open(txn, "postingdb", 0, &dbi);
+    if (rc == MDB_NOTFOUND) {
+        return 0;
+    }
     Q_ASSERT_X(rc == 0, "PostingDB::open", mdb_strerror(rc));
 
     return dbi;
