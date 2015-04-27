@@ -77,6 +77,7 @@ void MetadataMover::removeMetadata(Transaction* tr, const QString& url)
     const QString filename = url.mid(i + 1);
 
     quint64 parentId = filePathToId(QFile::encodeName(dirPath));
+    Q_ASSERT(parentId);
     quint64 id = tr->documentId(parentId, QFile::encodeName(filename));
 
     if (!id) {
