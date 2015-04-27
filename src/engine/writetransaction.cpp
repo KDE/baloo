@@ -162,6 +162,7 @@ void WriteTransaction::replaceDocument(const Document& doc, Transaction::Documen
     const quint64 id = doc.id();
 
     if (operations & Transaction::DocumentTerms) {
+        Q_ASSERT(!doc.m_terms.isEmpty());
         QVector<QByteArray> prevTerms = documentTermsDB.get(id);
         QVector<QByteArray> docTerms = replaceTerms(id, prevTerms, doc.m_terms);
 
