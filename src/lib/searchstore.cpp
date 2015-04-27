@@ -206,12 +206,12 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
         if (term.comparator() == Term::Greater || term.comparator() == Term::GreaterEqual) {
             pcom = PostingDB::GreaterEqual;
             if (term.comparator() == Term::Greater && rating)
-                rating--;
+                rating++;
         }
         else if (term.comparator() == Term::Less || term.comparator() == Term::LessEqual) {
             pcom = PostingDB::LessEqual;
             if (term.comparator() == Term::Less)
-                rating++;
+                rating--;
         }
         else {
             Q_ASSERT(0);
@@ -249,12 +249,12 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
         if (term.comparator() == Term::Greater || term.comparator() == Term::GreaterEqual) {
             pcom = PostingDB::GreaterEqual;
             if (term.comparator() == Term::Greater && intVal)
-                intVal--;
+                intVal++;
         }
         else if (term.comparator() == Term::Less || term.comparator() == Term::LessEqual) {
             pcom = PostingDB::LessEqual;
             if (term.comparator() == Term::Less)
-                intVal++;
+                intVal--;
         }
         else {
             Q_ASSERT(0);
