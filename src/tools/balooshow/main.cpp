@@ -91,16 +91,17 @@ int main(int argc, char* argv[])
 
     Q_FOREACH (const QString& url, urls) {
         Baloo::File file;
+        bool loaded = false;
         if (url.startsWith(QLatin1String("file:"))) {
-            file.load(url.mid(5).toULongLong());
+            loaded = file.load(url.mid(5).toULongLong());
         }
         else {
-            file.load(url);
+            loaded = file.load(url);
         }
 
         quint64 fid = file.id();
 
-        if (fid && !file.path().isEmpty()) {
+        if (loaded) {
             text = colorString(QString::number(fid), 31);
             text += QLatin1String(" ");
             text += colorString(QString::number(Baloo::idToDeviceId(fid)), 28);
