@@ -27,4 +27,7 @@ baloo_engine_auto_tests(
     andpostingiteratortest
     orpostingiteratortest
     phraseanditeratortest
+
+    # Codecs
+    postingcodectest
 )

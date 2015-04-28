@@ -18,24 +18,31 @@
  *
  */
 
-#ifndef BALOO_POSTINGCODEC_H
-#define BALOO_POSTINGCODEC_H
+#include "postingcodec.h"
 
-#include "engine_export.h"
-#include <QByteArray>
-#include <QVector>
+#include <QObject>
+#include <QTemporaryDir>
+#include <QTest>
 
-namespace Baloo {
+using namespace Baloo;
 
-class BALOO_ENGINE_EXPORT PostingCodec
+class PostingCodecTest : public QObject
 {
-public:
-    PostingCodec();
+    Q_OBJECT
+private Q_SLOTS:
+    void test() {
+        PostingCodec codec;
 
-    QByteArray encode(const QVector<quint64>& list);
-    QVector<quint64> decode(const QByteArray& arr);
+        QVector<quint64> vec = {1, 2, 9, 12};
+        QByteArray arr = codec.encode(vec);
+        QVERIFY(!arr.isEmpty());
+
+        QVector<quint64> vec2 = codec.decode(arr);
+        QCOMPARE(vec2, vec);
+    }
+
 };
 
-}
+QTEST_MAIN(PostingCodecTest)
 
-#endif // BALOO_POSTINGCODEC_H
+#include "postingcodectest.moc"
