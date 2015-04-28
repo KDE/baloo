@@ -138,7 +138,7 @@ bool BasicIndexingQueue::shouldIndex(FileMapping& file, const QString& mimetype)
     }
 
     XapianDocument doc = m_db->xapianDatabase()->document(file.id());
-    const QByteArray dtStr = doc.value(0);
+    const QString dtStr = doc.fetchTermStartsWith("DT_M");
     if (dtStr.isEmpty()) {
         return true;
     }
@@ -149,8 +149,10 @@ bool BasicIndexingQueue::shouldIndex(FileMapping& file, const QString& mimetype)
     if (mimetype == QLatin1String("inode/directory"))
         return false;
 
-    const uint time_t = dtStr.toUInt();
-    if (time_t != fileInfo.lastModified().toTime_t()) {
+    // The 4 is for "DT_M"
+    const QDateTime mtime = QDateTime::fromString(dtStr.mid(4), Qt::ISODate);
+
+    if (mtime != fileInfo.lastModified()) {
         return true;
     }
 
