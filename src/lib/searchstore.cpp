@@ -72,7 +72,7 @@ QStringList SearchStore::exec(const Term& term, int limit)
     }
 
     Transaction tr(m_db, Transaction::ReadOnly);
-    PostingIterator* it = constructQuery(&tr, term);
+    QScopedPointer<PostingIterator> it(constructQuery(&tr, term));
     if (!it) {
         return QStringList();
     }
