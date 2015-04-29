@@ -34,7 +34,7 @@ private Q_SLOTS:
     void testStringAndProperty();
     void testLogicalOps();
     void testNesting();
-    void testDifferentTypes();
+    void testDateTime();
     void testOperators();
 };
 
@@ -142,24 +142,20 @@ void AdvancedQueryParserTest::testNesting()
     QCOMPARE(term, expectedTerm);
 }
 
-void AdvancedQueryParserTest::testDifferentTypes()
+void AdvancedQueryParserTest::testDateTime()
 {
     // Integers
     AdvancedQueryParser parser;
-    Term term = parser.parse("width:500");
+    Term term;
+    Term expectedTerm;
 
-    Term expectedTerm("width", 500);
-    QCOMPARE(term, expectedTerm);
-
-    term = parser.parse("width<500");
-
-    expectedTerm = Term("width", 500, Term::Less);
-    QCOMPARE(term, expectedTerm);
-
-    // Date
     term = parser.parse("modified:2014-12-02");
-
     expectedTerm = Term("modified", QDate(2014, 12, 02));
+    QCOMPARE(term, expectedTerm);
+
+    term = parser.parse("modified:\"2014-12-02T23:22:1\"");
+    expectedTerm = Term("modified", QDateTime(QDate(2014, 12, 02), QTime(23, 22, 1)));
+    QEXPECT_FAIL("", "AQP cannot handle datetime", Abort);
     QCOMPARE(term, expectedTerm);
 }
 
