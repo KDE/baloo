@@ -208,6 +208,10 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
             if (term.comparator() == Term::Less)
                 rating--;
         }
+        else if (term.comparator() == Term::Equal) {
+            EngineQuery q = constructEqualsQuery("R", value.toString());
+            return tr->postingIterator(q);
+        }
         else {
             Q_ASSERT(0);
         }
