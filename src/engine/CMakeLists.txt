@@ -22,10 +22,6 @@ set(BALOO_ENGINE_SRCS
     vectorpostingiterator.cpp
     vectorpositioninfoiterator.cpp
     writetransaction.cpp
-
-    postingcodec.cpp
-    positioncodec.cpp
-    doctermscodec.cpp
 )
 
 add_library(KF5BalooEngine ${BALOO_ENGINE_SRCS})
@@ -36,6 +32,8 @@ target_link_libraries(KF5BalooEngine
     Qt5::Core
     KF5::CoreAddons
     ${LMDB_LIBRARIES}
+    PRIVATE
+    KF5BalooCodecs
 )
 
 set_target_properties(KF5BalooEngine PROPERTIES

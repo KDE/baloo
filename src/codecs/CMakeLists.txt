@@ -1,0 +1,13 @@
+set(BALOO_CODECS_SRCS
+    doctermscodec.cpp
+    positioncodec.cpp
+    postingcodec.cpp
+)
+
+add_library(KF5BalooCodecs STATIC ${BALOO_CODECS_SRCS})
+add_library(KF5::BalooCodecs ALIAS KF5BalooCodecs)
+
+target_link_libraries(KF5BalooCodecs
+    Qt5::Core
+    KF5::CoreAddons
+)
