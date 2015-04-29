@@ -21,13 +21,12 @@
 #ifndef BALOO_POSTINGCODEC_H
 #define BALOO_POSTINGCODEC_H
 
-#include "engine_export.h"
 #include <QByteArray>
 #include <QVector>
 
 namespace Baloo {
 
-class BALOO_ENGINE_EXPORT PostingCodec
+class PostingCodec
 {
 public:
     PostingCodec();
