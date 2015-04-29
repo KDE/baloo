@@ -35,6 +35,7 @@ private Q_SLOTS:
     void testLogicalOps();
     void testNesting();
     void testDifferentTypes();
+    void testOperators();
 };
 
 void AdvancedQueryParserTest::testSimpleProperty()
@@ -159,6 +160,37 @@ void AdvancedQueryParserTest::testDifferentTypes()
     term = parser.parse("modified:2014-12-02");
 
     expectedTerm = Term("modified", QDate(2014, 12, 02));
+    QCOMPARE(term, expectedTerm);
+}
+
+void AdvancedQueryParserTest::testOperators()
+{
+    AdvancedQueryParser parser;
+    Term term;
+    Term expectedTerm;
+
+    term = parser.parse("width:500");
+    expectedTerm = Term("width", 500, Term::Equal);
+    QCOMPARE(term, expectedTerm);
+
+    term = parser.parse("width=500");
+    expectedTerm = Term("width", 500, Term::Equal);
+    QCOMPARE(term, expectedTerm);
+
+    term = parser.parse("width<500");
+    expectedTerm = Term("width", 500, Term::Less);
+    QCOMPARE(term, expectedTerm);
+
+    term = parser.parse("width<=500");
+    expectedTerm = Term("width", 500, Term::LessEqual);
+    QCOMPARE(term, expectedTerm);
+
+    term = parser.parse("width>500");
+    expectedTerm = Term("width", 500, Term::Greater);
+    QCOMPARE(term, expectedTerm);
+
+    term = parser.parse("width>=500");
+    expectedTerm = Term("width", 500, Term::GreaterEqual);
     QCOMPARE(term, expectedTerm);
 }
 
