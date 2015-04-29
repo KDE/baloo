@@ -55,12 +55,6 @@ public:
     QString path() const;
 
     /**
-     * Represents a unique identifier for this file. This identifier
-     * is unique and will never change unlike the url of the file
-     */
-    quint64 id() const;
-
-    /**
      * Gives a variant map of the properties that have been extracted
      * from the file by the indexer
      */
@@ -69,10 +63,8 @@ public:
 
     // FIXME: More descriptive error?
     bool load();
-    bool load(const quint64 id);
     bool load(const QString& url);
 
-    // FIXME: From id?
 private:
     class Private;
     Private* d;

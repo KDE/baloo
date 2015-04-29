@@ -70,11 +70,6 @@ const File& File::operator=(const File& f)
     return *this;
 }
 
-quint64 File::id() const
-{
-    return d->id;
-}
-
 QString File::path() const
 {
     return d->url;
@@ -88,12 +83,6 @@ KFileMetaData::PropertyMap File::properties() const
 QVariant File::property(KFileMetaData::Property::Property property) const
 {
     return d->propertyMap.value(property);
-}
-
-bool File::load(const quint64 id)
-{
-    d->id = id;
-    return load();
 }
 
 bool File::load(const QString& url)
@@ -115,11 +104,9 @@ bool File::load()
     Database db(fileIndexDbPath());
     db.open(Database::OpenDatabase);
 
+    d->id = filePathToId(QFile::encodeName(d->url));
     if (!d->id) {
-        d->id = filePathToId(QFile::encodeName(d->url));
-        if (!d->id) {
-            return false;
-        }
+        return false;
     }
 
     QByteArray arr;

@@ -31,7 +31,9 @@
 #include <KAboutData>
 #include <KLocalizedString>
 
-#include "file.h"
+#include <QJsonDocument>
+#include <QJsonObject>
+
 #include "idutils.h"
 #include "database.h"
 #include "transaction.h"
@@ -89,33 +91,40 @@ int main(int argc, char* argv[])
     QTextStream stream(stdout);
     QString text;
 
+    const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QStringLiteral("/baloo");
+
+    Baloo::Database db(path);
+    db.open(Baloo::Database::OpenDatabase);
+
+    Baloo::Transaction tr(db, Baloo::Transaction::ReadOnly);
+
     Q_FOREACH (const QString& url, urls) {
-        Baloo::File file;
-        bool loaded = false;
+        quint64 fid = 0;
         if (url.startsWith(QLatin1String("file:"))) {
-            loaded = file.load(url.mid(5).toULongLong());
-        }
-        else {
-            loaded = file.load(url);
+            fid = url.mid(5).toULongLong();
+        } else {
+            fid = Baloo::filePathToId(QFile::encodeName(url));
         }
 
-        quint64 fid = file.id();
-
-        if (loaded) {
+        bool hasFile = tr.hasDocument(fid);
+        if (hasFile) {
             text = colorString(QString::number(fid), 31);
             text += QLatin1String(" ");
             text += colorString(QString::number(Baloo::idToDeviceId(fid)), 28);
             text += QLatin1String(" ");
             text += colorString(QString::number(Baloo::idToInode(fid)), 28);
             text += QLatin1String(" ");
-            text += colorString(file.path(), 32);
+            text += colorString(url, 32);
             stream << text << endl;
         }
         else {
             stream << "No index information found" << endl;
+            continue;
         }
 
-        KFileMetaData::PropertyMap propMap = file.properties();
+        const QJsonDocument jdoc = QJsonDocument::fromJson(tr.documentData(fid));
+        const QVariantMap varMap = jdoc.object().toVariantMap();
+        KFileMetaData::PropertyMap propMap = KFileMetaData::toPropertyMap(varMap);
         KFileMetaData::PropertyMap::const_iterator it = propMap.constBegin();
         for (; it != propMap.constEnd(); ++it) {
             QString str;
@@ -134,13 +143,6 @@ int main(int argc, char* argv[])
         }
 
         if (parser.isSet(QStringLiteral("x"))) {
-            const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)
-                                + QLatin1String("/baloo");
-
-            Baloo::Database db(path);
-            db.open(Baloo::Database::OpenDatabase);
-
-            Baloo::Transaction tr(db, Baloo::Transaction::ReadOnly);
             QVector<QByteArray> terms = tr.documentTerms(fid);
             QVector<QByteArray> fileNameTerms = tr.documentFileNameTerms(fid);
             QVector<QByteArray> xAttrTerms = tr.documentXattrTerms(fid);
