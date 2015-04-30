@@ -2,6 +2,8 @@ set(BALOO_CODECS_SRCS
     doctermscodec.cpp
     positioncodec.cpp
     postingcodec.cpp
+
+    coding.cpp
 )
 
 add_library(KF5BalooCodecs STATIC ${BALOO_CODECS_SRCS})
