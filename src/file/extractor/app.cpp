@@ -26,8 +26,8 @@
 #include "result.h"
 #include "idutils.h"
 #include "transaction.h"
+#include "baloodebug.h"
 
-#include <QDebug>
 #include <QCoreApplication>
 
 #include <QTimer>
@@ -128,7 +128,7 @@ void App::index(Transaction* tr, const QString& url, quint64 id)
     //
     if (mimetype == QLatin1String("text/plain")) {
         if (!url.endsWith(QLatin1String(".txt"))) {
-            qDebug() << "text/plain does not end with .txt. Ignoring";
+            qCDebug(BALOO) << "text/plain does not end with .txt. Ignoring";
             tr->removePhaseOne(id);
             return;
         }

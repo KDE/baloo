@@ -23,6 +23,7 @@
 #include "basicindexingjob.h"
 #include "termgenerator.h"
 #include "idutils.h"
+#include "baloodebug.h"
 
 #include <QFileInfo>
 #include <QDateTime>
@@ -51,7 +52,7 @@ bool BasicIndexingJob::index()
 
     QT_STATBUF statBuf;
     if (QT_LSTAT(url.data(), &statBuf) != 0) {
-        qDebug() << "Could not stat" << m_filePath;
+        qCDebug(BALOO) << "Could not stat" << m_filePath;
         return false;
     }
 

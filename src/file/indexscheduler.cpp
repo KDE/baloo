@@ -25,9 +25,8 @@
 #include "fileindexingqueue.h"
 #include "basicindexingqueue.h"
 #include "eventmonitor.h"
-#include "database.h"
+#include "baloodebug.h"
 
-#include <QDebug>
 #include <QDBusMessage>
 #include <QDBusConnection>
 #include <KLocalizedString>
@@ -190,18 +189,18 @@ void IndexScheduler::setStateFromEvent()
 {
    //Don't change the state if already suspended
     if (m_state == State_Suspended) {
-        qDebug() << "Suspended";
+        qCDebug(BALOO) << "Suspended";
     }
     else if (m_eventMonitor->isOnBattery()) {
-        qDebug() << "Battery";
+        qCDebug(BALOO) << "Battery";
         m_state = State_OnBattery;
     }
     else if (m_eventMonitor->isIdle()) {
-        qDebug() << "Idle";
+        qCDebug(BALOO) << "Idle";
         m_state = State_UserIdle;
     }
     else {
-        qDebug() << "Normal";
+        qCDebug(BALOO) << "Normal";
         m_state = State_Normal;
     }
 }
@@ -210,7 +209,7 @@ bool IndexScheduler::shouldRunBasicQueue()
 {
     switch (m_state) {
         case State_Suspended:
-            qDebug() << "No basic queue: suspended";
+            qCDebug(BALOO) << "No basic queue: suspended";
             return false;
         case State_OnBattery:
         case State_UserIdle:
@@ -226,13 +225,13 @@ bool IndexScheduler::shouldRunBasicQueue()
 bool IndexScheduler::shouldRunFileQueue()
 {
     if (!m_basicIQ->isEmpty()){
-        qDebug() << "Basic queue not empty, so no file queue.";
+        qCDebug(BALOO) << "Basic queue not empty, so no file queue.";
         return false;
     }
     switch (m_state) {
         case State_Suspended:
         case State_OnBattery:
-            qDebug() << "No file queue: suspended or on battery";
+            qCDebug(BALOO) << "No file queue: suspended or on battery";
             return false;
         case State_UserIdle:
             m_fileIQ->setDelay(0);

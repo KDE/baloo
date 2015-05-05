@@ -20,8 +20,7 @@
 #include "fileindexer.h"
 #include "indexscheduler.h"
 #include "fileindexerconfig.h"
-
-#include <QDebug>
+#include "baloodebug.h"
 
 #include <QDBusConnection>
 #include <QCoreApplication>
@@ -149,7 +148,7 @@ void FileIndexer::indexFolder(const QString& path, bool forced)
         else
             dirPath = info.absolutePath();
 
-        qDebug() << "Updating : " << dirPath;
+        qCDebug(BALOO) << "Updating : " << dirPath;
 
         UpdateDirFlags flags;
         if (forced)

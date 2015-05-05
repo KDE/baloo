@@ -22,8 +22,8 @@
 #include "transaction.h"
 #include "basicindexingjob.h"
 #include "idutils.h"
+#include "baloodebug.h"
 
-#include <QDebug>
 #include <QFile>
 
 using namespace Baloo;
@@ -42,7 +42,7 @@ MetadataMover::~MetadataMover()
 
 void MetadataMover::moveFileMetadata(const QString& from, const QString& to)
 {
-//    qDebug() << from << to;
+//    qCDebug(BALOO) << from << to;
     Q_ASSERT(!from.isEmpty() && from != QLatin1String("/"));
     Q_ASSERT(!to.isEmpty() && to != QLatin1String("/"));
 
@@ -89,7 +89,7 @@ void MetadataMover::removeMetadata(Transaction* tr, const QString& url)
 
 void MetadataMover::updateMetadata(Transaction* tr, const QString& from, const QString& to)
 {
-    qDebug() << from << "->" << to;
+    qCDebug(BALOO) << from << "->" << to;
     Q_ASSERT(!from.isEmpty() && !to.isEmpty());
     Q_ASSERT(from[from.size()-1] != QLatin1Char('/'));
     Q_ASSERT(to[to.size()-1] != QLatin1Char('/'));
@@ -106,7 +106,7 @@ void MetadataMover::updateMetadata(Transaction* tr, const QString& from, const Q
         // If we have no metadata yet we need to tell the file indexer so it can
         // create the metadata in case the target folder is configured to be indexed.
         //
-        qDebug() << "Moved without data";
+        qCDebug(BALOO) << "Moved without data";
         Q_EMIT movedWithoutData(to);
         return;
     }

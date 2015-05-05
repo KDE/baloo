@@ -22,6 +22,7 @@
 
 #include "fileindexingjob.h"
 #include "fileindexerconfig.h"
+#include "baloodebug.h"
 
 #include <QDebug>
 #include <QStandardPaths>
@@ -72,7 +73,7 @@ void FileIndexingJob::start(const QVector<quint64>& files)
         args << QLatin1String("--db") << m_customDbPath;
         args << QLatin1String("--ignoreConfig");
     }
-    qDebug() << args;
+    qCDebug(BALOO) << args;
 
     connect(m_process, SIGNAL(finished(int,QProcess::ExitStatus)),
             this, SLOT(slotIndexedFile(int,QProcess::ExitStatus)));
@@ -104,7 +105,7 @@ void FileIndexingJob::slotIndexedFile(int, QProcess::ExitStatus exitStatus)
     }
 
     // Failed to index. We must figure out which was the offending file
-    qDebug() << "Indexing failed. Trying to determine offending file";
+    qCDebug(BALOO) << "Indexing failed. Trying to determine offending file";
 
     // Here it is!
     if (m_args.size() == 1) {
@@ -138,7 +139,7 @@ void FileIndexingJob::slotIndexedFile(int, QProcess::ExitStatus exitStatus)
 void FileIndexingJob::slotProcessTimerTimeout()
 {
     // Emulate a crash so that we narrow down the file which is taking too long
-    qDebug() << "Process took too long killing";
+    qCDebug(BALOO) << "Process took too long killing";
     slotIndexedFile(1, QProcess::CrashExit);
 }
 

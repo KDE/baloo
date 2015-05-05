@@ -25,8 +25,8 @@
 #include "transaction.h"
 #include "unindexedfileiterator.h"
 #include "idutils.h"
+#include "baloodebug.h"
 
-#include <QDebug>
 #include <QDateTime>
 #include <QTimer>
 
@@ -61,7 +61,7 @@ bool BasicIndexingQueue::isEmpty()
 
 void BasicIndexingQueue::enqueue(const QString& file, UpdateDirFlags flags)
 {
-    qDebug() << file;
+    qCDebug(BALOO) << file;
     m_paths.push(qMakePair(file, flags));
     callForNextIteration();
 }

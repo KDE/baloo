@@ -21,6 +21,7 @@
 */
 
 #include "storagedevices.h"
+#include "baloodebug.h"
 
 #include <Solid/DeviceNotifier>
 #include <Solid/DeviceInterface>
@@ -32,8 +33,6 @@
 #include <Solid/NetworkShare>
 #include <Solid/OpticalDisc>
 #include <Solid/Predicate>
-
-#include <QDebug>
 
 using namespace Baloo;
 
@@ -93,7 +92,7 @@ bool StorageDevices::isEmpty() const
 
 void StorageDevices::slotSolidDeviceAdded(const QString& udi)
 {
-    qDebug() << udi;
+    qCDebug(BALOO) << udi;
     Entry* e = createCacheEntry(Solid::Device(udi));
     if (e) {
         Q_EMIT deviceAdded(e);
@@ -105,7 +104,7 @@ void StorageDevices::slotSolidDeviceRemoved(const QString& udi)
 {
     QHash< QString, Entry >::iterator it = m_metadataCache.find(udi);
     if (it != m_metadataCache.end()) {
-        qDebug() << "Found removable storage volume for Baloo undocking:" << udi;
+        qCDebug(BALOO) << "Found removable storage volume for Baloo undocking:" << udi;
         Q_EMIT deviceRemoved(&it.value());
         m_metadataCache.erase(it);
     }
@@ -114,7 +113,7 @@ void StorageDevices::slotSolidDeviceRemoved(const QString& udi)
 
 void StorageDevices::slotAccessibilityChanged(bool accessible, const QString& udi)
 {
-    qDebug() << accessible << udi;
+    qCDebug(BALOO) << accessible << udi;
     Q_UNUSED(accessible);
 
     //

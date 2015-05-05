@@ -20,6 +20,7 @@ set(file_static_lib_SRCS
     filtereddiriterator.cpp
     unindexedfileiterator.cpp
     migrator.cpp
+    baloodebug.cpp
 
      # File Watcher
     filewatch.cpp

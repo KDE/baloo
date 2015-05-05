@@ -42,7 +42,7 @@ void Cleaner::start()
     // FIXME: The cleaner needs to be fixed!!
     /*
     if (!query.exec(QLatin1String("select id, url from files"))) {
-        qDebug() << "Could not execute query:" << query.lastError().text();
+        qCDebug(BALOO) << "Could not execute query:" << query.lastError().text();
         QCoreApplication::instance()->quit();
         return;
     }
@@ -71,7 +71,7 @@ void Cleaner::start()
         }
 
         if (removeIt) {
-            qDebug() << id << url;
+            qCDebug(BALOO) << id << url;
             q.prepare(QLatin1String("delete from files where id = ?"));
             q.addBindValue(id);
             q.exec();
