@@ -22,7 +22,6 @@
 
 #include "resultiterator.h"
 #include "searchstore.h"
-#include "result.h"
 
 #include <QVector>
 
@@ -67,12 +66,4 @@ QString ResultIterator::filePath() const
 {
     Q_ASSERT(d->pos >= 0 && d->pos < d->results.size());
     return d->results.at(d->pos);
-}
-
-Result ResultIterator::result() const
-{
-    Result res;
-    res.setFilePath(filePath());
-
-    return res;
 }

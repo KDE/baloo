@@ -91,15 +91,15 @@ QVariant QueryResultsModel::data(const QModelIndex &index, int role) const
 
     switch (role) {
     case Qt::DisplayRole: {
-        const QUrl url = QUrl::fromLocalFile(m_balooEntryList.at(index.row()).filePath());
+        const QUrl url = QUrl::fromLocalFile(m_balooEntryList.at(index.row()));
         return url.fileName();
     }
     case Qt::DecorationRole: {
-        QString localUrl = m_balooEntryList.at(index.row()).filePath();
+        QString localUrl = m_balooEntryList.at(index.row());
         return QMimeDatabase().mimeTypeForFile(localUrl).iconName();
     }
     case UrlRole:
-        return m_balooEntryList.at(index.row()).filePath();
+        return m_balooEntryList.at(index.row());
     default:
         return QVariant();
     }
@@ -141,8 +141,7 @@ void QueryResultsModel::populateModel()
     beginResetModel();
     m_balooEntryList.clear();
     while (it.next()) {
-        Baloo::Result res = it.result();
-        m_balooEntryList << res;
+        m_balooEntryList << it.filePath();
     }
     endResetModel();
 }

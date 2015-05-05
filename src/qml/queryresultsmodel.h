@@ -20,9 +20,6 @@
 #ifndef BALOODATAMODEL_H
 #define BALOODATAMODEL_H
 
-
-#include "result.h"
-
 #include <QAbstractListModel>
 #include <QString>
 
@@ -80,7 +77,7 @@ private Q_SLOTS:
     void populateModel();
 
 private:
-    QList<Baloo::Result> m_balooEntryList;
+    QStringList m_balooEntryList;
     Query *m_query;
 };
 

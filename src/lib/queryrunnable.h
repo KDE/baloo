@@ -24,7 +24,6 @@
 #define QUERYRUNNABLE_H
 
 #include "query.h"
-#include "result.h"
 #include <QRunnable>
 #include <QObject>
 
@@ -41,7 +40,7 @@ public:
     void stop();
 
 Q_SIGNALS:
-    void queryResult(Baloo::QueryRunnable* queryRunnable, const Baloo::Result& result);
+    void queryResult(Baloo::QueryRunnable* queryRunnable, const QString& filePath);
     void finished(Baloo::QueryRunnable* queryRunnable);
 
 private:

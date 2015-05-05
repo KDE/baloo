@@ -3,7 +3,6 @@ set(BALOO_LIB_SRCS
     query.cpp
     queryrunnable.cpp
     resultiterator.cpp
-    result.cpp
     advancedqueryparser.cpp
 
     file.cpp
@@ -51,7 +50,6 @@ ecm_generate_headers(KF5Baloo_CamelCase_HEADERS
     HEADER_NAMES
     Query
     QueryRunnable
-    Result
     ResultIterator
 
     File

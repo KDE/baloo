@@ -40,10 +40,8 @@ public:
     ~ResultIterator();
 
     bool next();
-
     QString filePath() const;
 
-    Result result() const;
 private:
     ResultIterator(const QStringList& results);
     ResultIteratorPrivate* d;
