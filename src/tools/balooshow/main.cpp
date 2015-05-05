@@ -98,10 +98,11 @@ int main(int argc, char* argv[])
 
     Baloo::Transaction tr(db, Baloo::Transaction::ReadOnly);
 
-    Q_FOREACH (const QString& url, urls) {
+    for (QString url : urls) {
         quint64 fid = 0;
         if (url.startsWith(QLatin1String("file:"))) {
             fid = url.mid(5).toULongLong();
+            url = QFile::decodeName(tr.documentUrl(fid));
         } else {
             fid = Baloo::filePathToId(QFile::encodeName(url));
         }
