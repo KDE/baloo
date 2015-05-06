@@ -165,7 +165,7 @@ public:
     virtual quint64 next();
 
 private:
-    QVector<quint64> m_vec;
+    const QVector<quint64> m_vec;
     int m_pos;
 };
 
@@ -190,9 +190,8 @@ PostingIterator* PostingDB::iter(const QByteArray& term)
 //
 DBPostingIterator::DBPostingIterator(void* data, uint size)
     : m_pos(-1)
+    , m_vec(PostingCodec().decode(QByteArray::fromRawData(static_cast<char*>(data), size)))
 {
-    PostingCodec codec;
-    m_vec = codec.decode(QByteArray::fromRawData(static_cast<char*>(data), size));
 }
 
 quint64 DBPostingIterator::docId()
