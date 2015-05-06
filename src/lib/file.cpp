@@ -35,11 +35,8 @@ using namespace Baloo;
 
 class File::Private {
 public:
-    quint64 id;
     QString url;
     KFileMetaData::PropertyMap propertyMap;
-
-    Private() : id(0) {}
 };
 
 File::File()
@@ -94,29 +91,22 @@ bool File::load(const QString& url)
 bool File::load()
 {
     const QString& url = d->url;
-    if (!url.isEmpty() && !QFile::exists(url)) {
-        //setError(Error_FileDoesNotExist);
-        //setErrorText(QLatin1String("File ") + url + QLatin1String(" does not exist"));
-        //emitResult();
+    if (url.isEmpty() || !QFile::exists(url)) {
         return false;
     }
 
     Database db(fileIndexDbPath());
     db.open(Database::OpenDatabase);
 
-    d->id = filePathToId(QFile::encodeName(d->url));
-    if (!d->id) {
+    quint64 id = filePathToId(QFile::encodeName(d->url));
+    if (!id) {
         return false;
     }
 
     QByteArray arr;
     {
         Transaction tr(db, Transaction::ReadOnly);
-        arr = tr.documentData(d->id);
-
-        if (d->url.isEmpty()) {
-            d->url = tr.documentUrl(d->id);
-        }
+        arr = tr.documentData(id);
     }
     if (arr.isEmpty()) {
         return false;
