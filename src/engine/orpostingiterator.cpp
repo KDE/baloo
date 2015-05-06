@@ -50,10 +50,14 @@ quint64 OrPostingIterator::next()
     QMutableVectorIterator<PostingIterator*> mit(m_iterators);
     while (mit.hasNext()) {
         PostingIterator* iter = mit.next();
+        if (!iter) {
+            continue;
+        }
 
         // First or last element
         if (iter->docId() == 0 && iter->next() == 0) {
-            mit.remove();
+            delete mit.value();
+            mit.value() = 0;
             continue;
         }
 
@@ -65,7 +69,7 @@ quint64 OrPostingIterator::next()
     mit.toFront();
     while (mit.hasNext()) {
         PostingIterator* iter = mit.next();
-        if (iter->docId() <= m_docId) {
+        if (iter && iter->docId() <= m_docId) {
             iter->next();
         }
     }
