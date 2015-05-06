@@ -34,7 +34,7 @@ public:
     ~PhraseAndIterator();
 
     quint64 next();
-    quint64 docId();
+    quint64 docId() const;
 
 private:
     const QVector<PostingIterator*> m_iterators;

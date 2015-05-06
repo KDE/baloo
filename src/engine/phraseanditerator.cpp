@@ -37,7 +37,7 @@ PhraseAndIterator::~PhraseAndIterator()
     qDeleteAll(m_iterators);
 }
 
-quint64 PhraseAndIterator::docId()
+quint64 PhraseAndIterator::docId() const
 {
     return m_docId;
 }

@@ -138,7 +138,7 @@ public:
         return m_vec[m_pos].docId;
     }
 
-    virtual quint64 docId() {
+    virtual quint64 docId() const {
         if (m_pos < 0 || m_pos >= m_vec.size()) {
             return 0;
         }

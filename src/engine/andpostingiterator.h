@@ -33,7 +33,7 @@ public:
     ~AndPostingIterator();
 
     virtual quint64 next();
-    virtual quint64 docId();
+    virtual quint64 docId() const;
 
 private:
     const QVector<PostingIterator*> m_iterators;

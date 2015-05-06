@@ -38,7 +38,7 @@ public:
     virtual ~PostingIterator();
 
     virtual quint64 next() = 0;
-    virtual quint64 docId() = 0;
+    virtual quint64 docId() const = 0;
     virtual quint64 skipTo(quint64 docId);
 
     virtual QVector<uint> positions();

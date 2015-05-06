@@ -35,7 +35,7 @@ AndPostingIterator::~AndPostingIterator()
     qDeleteAll(m_iterators);
 }
 
-quint64 AndPostingIterator::docId()
+quint64 AndPostingIterator::docId() const
 {
     return m_docId;
 }

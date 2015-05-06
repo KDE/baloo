@@ -161,7 +161,7 @@ QVector< QByteArray > PostingDB::fetchTermsStartingWith(const QByteArray& term)
 class DBPostingIterator : public PostingIterator {
 public:
     DBPostingIterator(void* data, uint size);
-    virtual quint64 docId();
+    virtual quint64 docId() const;
     virtual quint64 next();
 
 private:
@@ -194,7 +194,7 @@ DBPostingIterator::DBPostingIterator(void* data, uint size)
 {
 }
 
-quint64 DBPostingIterator::docId()
+quint64 DBPostingIterator::docId() const
 {
     if (m_pos < 0 || m_pos >= m_vec.size()) {
         return 0;

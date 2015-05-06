@@ -40,7 +40,7 @@ quint64 VectorPositionInfoIterator::next()
     return m_vector[m_pos].docId;
 }
 
-quint64 VectorPositionInfoIterator::docId()
+quint64 VectorPositionInfoIterator::docId() const
 {
     if (m_pos < 0 || m_pos >= m_vector.size()) {
         return 0;

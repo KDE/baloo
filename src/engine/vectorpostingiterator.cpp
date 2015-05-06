@@ -28,7 +28,7 @@ VectorPostingIterator::VectorPostingIterator(const QVector<quint64>& values)
 {
 }
 
-quint64 VectorPostingIterator::docId()
+quint64 VectorPostingIterator::docId() const
 {
     if (m_pos < 0 || m_pos >= m_values.size()) {
         return 0;

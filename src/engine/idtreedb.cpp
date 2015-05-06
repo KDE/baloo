@@ -113,7 +113,7 @@ public:
     IdTreePostingIterator(const IdTreeDB& db, const QVector<quint64> list)
         : m_db(db), m_idList(list), m_pos(-1) {}
 
-    quint64 docId() {
+    quint64 docId() const {
         if (m_pos >= 0 && m_pos < m_resultList.size())
             return m_resultList[m_pos];
         return 0;
