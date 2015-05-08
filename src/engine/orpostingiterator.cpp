@@ -47,16 +47,16 @@ quint64 OrPostingIterator::next()
         return 0;
     }
 
-    for (int i = 0; i < m_iterators.size(); i++) {
-        PostingIterator* iter = m_iterators[i];
+    for (auto it = m_iterators.begin(), end = m_iterators.end(); it != end; it++) {
+        PostingIterator* iter = *it;
         if (!iter) {
             continue;
         }
 
         // First or last element
         if (iter->docId() == 0 && iter->next() == 0) {
-            delete m_iterators[i];
-            m_iterators[i] = 0;
+            delete iter;
+            *it = Q_NULLPTR;
             continue;
         }
 
@@ -65,8 +65,8 @@ quint64 OrPostingIterator::next()
         }
     }
 
-    for (int i = 0; i < m_iterators.size(); i++) {
-        PostingIterator* iter = m_iterators[i];
+    for (auto it = m_iterators.cbegin(), end = m_iterators.cend(); it != end; it++) {
+        PostingIterator* iter = *it;
         if (iter && iter->docId() <= m_docId) {
             iter->next();
         }
