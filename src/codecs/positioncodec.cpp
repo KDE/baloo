@@ -20,8 +20,7 @@
 
 #include "positioncodec.h"
 #include "positioninfo.h"
-
-#include <QDataStream>
+#include "coding.h"
 
 using namespace Baloo;
 
@@ -36,24 +35,38 @@ QByteArray PositionCodec::encode(const QVector<PositionInfo>& list)
     QDataStream stream(&data, QIODevice::WriteOnly);
 
     for (const PositionInfo& pos : list) {
-        stream << pos.docId;
-        stream << pos.positions;
-    }
+        putFixed64(&data, pos.docId);
+        putFixed32(&data, pos.positions.size());
+        for (uint p : pos.positions) {
+            putFixed32(&data, p);
+        }
+   }
 
     return data;
 }
 
 QVector<PositionInfo> PositionCodec::decode(const QByteArray& arr)
 {
-    QDataStream stream(const_cast<QByteArray*>(&arr), QIODevice::ReadOnly);
+    char* data = const_cast<char*>(arr.data());
+    char* end = data + arr.size();
 
     QVector<PositionInfo> vec;
-    while (!stream.atEnd()) {
-        PositionInfo pos;
-        stream >> pos.docId;
-        stream >> pos.positions;
+    while (data < end) {
+        PositionInfo info;
 
-        vec << pos;
+        info.docId = *reinterpret_cast<quint64*>(data);
+        data += sizeof(quint64);
+
+        quint32 size = *reinterpret_cast<quint32*>(data);
+        data += sizeof(quint32);
+
+        info.positions.resize(size);
+        for (int i = 0; i < size; i++) {
+            info.positions[i] = *reinterpret_cast<quint32*>(data);
+            data += sizeof(quint32);
+        }
+
+        vec << info;
     }
 
     return vec;
