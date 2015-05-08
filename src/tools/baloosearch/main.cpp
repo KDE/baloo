@@ -25,6 +25,7 @@
 #include <QCommandLineOption>
 #include <QFileInfo>
 #include <QTextStream>
+#include <QElapsedTimer>
 
 #include <KAboutData>
 #include <KLocalizedString>
@@ -94,11 +95,15 @@ int main(int argc, char* argv[])
         query.setIncludeFolder(QFileInfo(folderName).canonicalFilePath());
     }
 
+    QElapsedTimer timer;
+    timer.start();
+
     Baloo::ResultIterator iter = query.exec();
     while (iter.next()) {
         const QString filePath = iter.filePath();
         out << filePath << endl;
     }
+    out << "Elapsed: " << timer.nsecsElapsed() / 1000000.0 << " msecs" << endl;
 
     return 0;
 }
