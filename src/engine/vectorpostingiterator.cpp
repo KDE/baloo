@@ -39,11 +39,12 @@ quint64 VectorPostingIterator::docId() const
 
 quint64 VectorPostingIterator::next()
 {
-    m_pos++;
-    if (m_pos >= m_values.size()) {
+    if (m_pos >= m_values.size() - 1) {
+        m_pos = m_values.size();
         m_values.clear();
         return 0;
     }
 
+    m_pos++;
     return m_values[m_pos];
 }

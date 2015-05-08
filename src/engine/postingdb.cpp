@@ -205,11 +205,12 @@ quint64 DBPostingIterator::docId() const
 
 quint64 DBPostingIterator::next()
 {
-    m_pos++;
-    if (m_pos >= m_vec.size()) {
+    if (m_pos >= m_vec.size() - 1) {
+        m_pos = m_vec.size();
         return 0;
     }
 
+    m_pos++;
     return m_vec[m_pos];
 }
 
