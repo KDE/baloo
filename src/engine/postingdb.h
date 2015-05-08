@@ -63,6 +63,9 @@ public:
     QVector<QByteArray> fetchTermsStartingWith(const QByteArray& term);
 
 private:
+    template <typename Validator>
+    PostingIterator* iter(const QByteArray& prefix, Validator validate);
+
     MDB_txn* m_txn;
     MDB_dbi m_dbi;
 };

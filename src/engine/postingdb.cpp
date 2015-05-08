@@ -213,56 +213,8 @@ quint64 DBPostingIterator::next()
     return m_vec[m_pos];
 }
 
-PostingIterator* PostingDB::prefixIter(const QByteArray& term)
-{
-    MDB_val key;
-    key.mv_size = term.size();
-    key.mv_data = static_cast<void*>(const_cast<char*>(term.constData()));
-
-    MDB_cursor* cursor;
-    mdb_cursor_open(m_txn, m_dbi, &cursor);
-
-    QVector<PostingIterator*> termIterators;
-
-    MDB_val val;
-    int rc = mdb_cursor_get(cursor, &key, &val, MDB_SET_RANGE);
-    if (rc == MDB_NOTFOUND) {
-        mdb_cursor_close(cursor);
-        return 0;
-    }
-    Q_ASSERT_X(rc == 0, "PostingDB::prefixIter", mdb_strerror(rc));
-
-    const QByteArray arr = QByteArray::fromRawData(static_cast<char*>(key.mv_data), key.mv_size);
-    if (!arr.startsWith(term)) {
-        mdb_cursor_close(cursor);
-        return 0;
-    }
-    termIterators << new DBPostingIterator(val.mv_data, val.mv_size);
-
-    while (1) {
-        rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
-        if (rc == MDB_NOTFOUND) {
-            break;
-        }
-        Q_ASSERT_X(rc == 0, "PostingDB::prefixIter", mdb_strerror(rc));
-
-        const QByteArray arr = QByteArray::fromRawData(static_cast<char*>(key.mv_data), key.mv_size);
-        if (!arr.startsWith(term)) {
-            break;
-        }
-        termIterators << new DBPostingIterator(val.mv_data, val.mv_size);
-    }
-
-    if (termIterators.isEmpty()) {
-        mdb_cursor_close(cursor);
-        return 0;
-    }
-
-    mdb_cursor_close(cursor);
-    return new OrPostingIterator(termIterators);
-}
-
-PostingIterator* PostingDB::regexpIter(const QRegularExpression& regexp, const QByteArray& prefix)
+template <typename Validator>
+PostingIterator* PostingDB::iter(const QByteArray& prefix, Validator validate)
 {
     Q_ASSERT(!prefix.isEmpty());
 
@@ -288,8 +240,7 @@ PostingIterator* PostingDB::regexpIter(const QRegularExpression& regexp, const Q
         mdb_cursor_close(cursor);
         return 0;
     }
-    const QString term = QString::fromUtf8(arr.mid(prefix.length()));
-    if (regexp.match(term).hasMatch()) {
+    if (validate(arr)) {
         termIterators << new DBPostingIterator(val.mv_data, val.mv_size);
     }
 
@@ -304,8 +255,7 @@ PostingIterator* PostingDB::regexpIter(const QRegularExpression& regexp, const Q
         if (!arr.startsWith(prefix)) {
             break;
         }
-        const QString term = QString::fromUtf8(arr.mid(prefix.length()));
-        if (regexp.match(term).hasMatch()) {
+        if (validate(arr)) {
             termIterators << new DBPostingIterator(val.mv_data, val.mv_size);
         }
     }
@@ -319,60 +269,34 @@ PostingIterator* PostingDB::regexpIter(const QRegularExpression& regexp, const Q
     return new OrPostingIterator(termIterators);
 }
 
+PostingIterator* PostingDB::prefixIter(const QByteArray& prefix)
+{
+    auto validate = [] (const QByteArray& arr) {
+        Q_UNUSED(arr);
+        return true;
+    };
+    return iter(prefix, validate);
+}
+
+PostingIterator* PostingDB::regexpIter(const QRegularExpression& regexp, const QByteArray& prefix)
+{
+    int prefixLen = prefix.length();
+    auto validate = [&regexp, prefixLen] (const QByteArray& arr) {
+        QString term = QString::fromUtf8(arr.mid(prefixLen));
+        return regexp.match(term).hasMatch();
+    };
+
+    return iter(prefix, validate);
+}
+
 PostingIterator* PostingDB::compIter(const QByteArray& prefix, const QByteArray& comVal, PostingDB::Comparator com)
 {
-    Q_ASSERT(!prefix.isEmpty());
     Q_ASSERT(!comVal.isEmpty());
-
-    MDB_val key;
-    key.mv_size = prefix.size();
-    key.mv_data = static_cast<void*>(const_cast<char*>(prefix.constData()));
-
-    MDB_cursor* cursor;
-    mdb_cursor_open(m_txn, m_dbi, &cursor);
-
-    QVector<PostingIterator*> termIterators;
-
-    MDB_val val;
-    int rc = mdb_cursor_get(cursor, &key, &val, MDB_SET_RANGE);
-    if (rc == MDB_NOTFOUND) {
-        mdb_cursor_close(cursor);
-        return 0;
-    }
-    Q_ASSERT_X(rc == 0, "PostingDB::compIter", mdb_strerror(rc));
-
-    const QByteArray arr = QByteArray::fromRawData(static_cast<char*>(key.mv_data), key.mv_size);
-    if (!arr.startsWith(prefix)) {
-        mdb_cursor_close(cursor);
-        return 0;
-    }
-    const QByteArray term = arr.mid(prefix.length());
-    if ((com == LessEqual && term <= comVal) || (com == GreaterEqual && term >= comVal)) {
-        termIterators << new DBPostingIterator(val.mv_data, val.mv_size);
-    }
-
-    while (1) {
-        rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
-        if (rc == MDB_NOTFOUND) {
-            break;
-        }
-        Q_ASSERT_X(rc == 0, "PostingDB::compIter", mdb_strerror(rc));
-
-        const QByteArray arr = QByteArray::fromRawData(static_cast<char*>(key.mv_data), key.mv_size);
-        if (!arr.startsWith(prefix)) {
-            break;
-        }
-        const QByteArray term = arr.mid(prefix.length());
-        if ((com == LessEqual && term <= comVal) || (com == GreaterEqual && term >= comVal)) {
-            termIterators << new DBPostingIterator(val.mv_data, val.mv_size);
-        }
-    }
-
-    if (termIterators.isEmpty()) {
-        mdb_cursor_close(cursor);
-        return 0;
-    }
-
-    mdb_cursor_close(cursor);
-    return new OrPostingIterator(termIterators);
+    int prefixLen = prefix.length();
+    auto validate = [prefixLen, &comVal, com] (const QByteArray& arr) {
+        //FIXME: avoid copying
+        QByteArray term = arr.mid(prefixLen);
+        return ((com == LessEqual && term <= comVal) || (com == GreaterEqual && term >= comVal));
+    };
+    return iter(prefix, validate);
 }
