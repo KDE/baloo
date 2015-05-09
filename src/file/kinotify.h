@@ -39,7 +39,7 @@ class KInotify : public QObject
 
 public:
     explicit KInotify(Baloo::FileIndexerConfig* config, QObject* parent = 0);
-    virtual ~KInotify();
+    ~KInotify() Q_DECL_OVERRIDE;
 
     /**
      * Inotify events that can occur. Use with addWatch

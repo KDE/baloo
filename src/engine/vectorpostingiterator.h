@@ -31,8 +31,8 @@ class BALOO_ENGINE_EXPORT VectorPostingIterator :  public PostingIterator
 public:
     VectorPostingIterator(const QVector<quint64>& values);
 
-    virtual quint64 docId() const;
-    virtual quint64 next();
+    quint64 docId() const Q_DECL_OVERRIDE;
+    quint64 next() Q_DECL_OVERRIDE;
 
 private:
     QVector<quint64> m_values;

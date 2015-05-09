@@ -55,7 +55,7 @@ public:
      */
     void setTimeoutInterval(int msec);
 
-    virtual void start();
+    void start() Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
     /**
@@ -64,8 +64,8 @@ Q_SIGNALS:
     void indexingFailed(quint64 document);
 
 protected:
-    virtual bool doSuspend();
-    virtual bool doResume();
+    bool doSuspend() Q_DECL_OVERRIDE;
+    bool doResume() Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
     void slotIndexedFile(int exitCode, QProcess::ExitStatus exitStatus);

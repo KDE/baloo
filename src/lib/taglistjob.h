@@ -31,9 +31,9 @@ class BALOO_CORE_EXPORT TagListJob : public KJob
     Q_OBJECT
 public:
     explicit TagListJob(QObject* parent = 0);
-    virtual ~TagListJob();
+    ~TagListJob() Q_DECL_OVERRIDE;
 
-    virtual void start();
+    void start() Q_DECL_OVERRIDE;
     QStringList tags();
 
 private:

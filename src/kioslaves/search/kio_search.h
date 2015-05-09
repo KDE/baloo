@@ -33,7 +33,7 @@ class SearchProtocol : public KIO::SlaveBase
 
 public:
     SearchProtocol(const QByteArray& poolSocket, const QByteArray& appSocket);
-    virtual ~SearchProtocol();
+    ~SearchProtocol() Q_DECL_OVERRIDE;
 
     /**
      *

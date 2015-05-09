@@ -34,7 +34,7 @@ class TimelineProtocol : public KIO::SlaveBase
 {
 public:
     TimelineProtocol(const QByteArray& poolSocket, const QByteArray& appSocket);
-    virtual ~TimelineProtocol();
+    ~TimelineProtocol() Q_DECL_OVERRIDE;
 
     /**
      * List all files and folders tagged with the corresponding tag.
