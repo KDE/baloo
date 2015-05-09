@@ -70,7 +70,7 @@ class BasicIndexingQueue: public IndexingQueue
 public:
     explicit BasicIndexingQueue(Database* db, FileIndexerConfig* config, QObject* parent = 0);
 
-    virtual bool isEmpty();
+    bool isEmpty() Q_DECL_OVERRIDE;
 
 public Q_SLOTS:
     void enqueue(const QString& filePath, UpdateDirFlags flags = UpdateDirFlags());
@@ -79,7 +79,7 @@ public Q_SLOTS:
     void clear(const QString& path);
 
 protected:
-    virtual void processNextIteration();
+    void processNextIteration() Q_DECL_OVERRIDE;
 
 private:
     /**

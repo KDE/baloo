@@ -40,8 +40,8 @@ class FileIndexingQueue : public IndexingQueue
     Q_OBJECT
 public:
     FileIndexingQueue(Database* db, QObject* parent = 0);
-    virtual bool isEmpty();
-    virtual void fillQueue();
+    bool isEmpty() Q_DECL_OVERRIDE;
+    void fillQueue() Q_DECL_OVERRIDE;
 
     void clear();
 
@@ -50,9 +50,9 @@ public:
     void setTestMode(bool mode) { m_testMode = mode; }
 
 protected:
-    virtual void processNextIteration();
-    virtual void doSuspend();
-    virtual void doResume();
+    void processNextIteration() Q_DECL_OVERRIDE;
+    void doSuspend() Q_DECL_OVERRIDE;
+    void doResume() Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
     void slotFinishedIndexingFile(KJob* job);

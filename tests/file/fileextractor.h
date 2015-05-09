@@ -34,7 +34,7 @@ class FileExtractor : public KJob
 public:
     FileExtractor(quint64 id, const QString& url);
 
-    virtual void start();
+    void start() Q_DECL_OVERRIDE;
     void setCustomPath(const QString& path);
 
     QString mimeType() const;

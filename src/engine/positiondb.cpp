@@ -129,7 +129,7 @@ public:
         m_vec = codec.decode(QByteArray::fromRawData(static_cast<char*>(data), size));
     }
 
-    virtual quint64 next() {
+    quint64 next() Q_DECL_OVERRIDE {
         m_pos++;
         if (m_pos >= m_vec.size()) {
             return 0;
@@ -138,14 +138,14 @@ public:
         return m_vec[m_pos].docId;
     }
 
-    virtual quint64 docId() const {
+    quint64 docId() const Q_DECL_OVERRIDE {
         if (m_pos < 0 || m_pos >= m_vec.size()) {
             return 0;
         }
         return m_vec[m_pos].docId;
     }
 
-    virtual QVector<uint> positions() {
+    QVector<uint> positions() Q_DECL_OVERRIDE {
         if (m_pos < 0 || m_pos >= m_vec.size()) {
             return QVector<uint>();
         }

@@ -39,7 +39,7 @@ class XattrDetector : public QObject
 {
 public:
     explicit XattrDetector(QObject* parent = 0);
-    virtual ~XattrDetector();
+    ~XattrDetector() Q_DECL_OVERRIDE;
 
     /**
      * Checks if the give local url \p path supports
