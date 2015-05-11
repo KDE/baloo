@@ -214,6 +214,7 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
         }
         else {
             Q_ASSERT(0);
+            return 0;
         }
 
         const QByteArray prefix = "R";
@@ -257,6 +258,7 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
         }
         else {
             Q_ASSERT(0);
+            return 0;
         }
 
         return tr->postingCompIterator(prefix, QByteArray::number(intVal), pcom);
@@ -332,6 +334,7 @@ PostingIterator* SearchStore::constructMTimeQuery(Transaction* tr, const QDateTi
         timet--;
     } else {
         Q_ASSERT_X(0, "SearchStore::constructQuery", "mtime query must contain a valid comparator");
+        return 0;
     }
 
     return tr->mTimeIter(timet, mtimeCom);
