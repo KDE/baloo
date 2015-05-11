@@ -141,13 +141,7 @@ void putVarint64(QByteArray* dst, quint64 v) {
     dst->append(buf, ptr - buf);
 }
 
-/*
-void PutLengthPrefixedSlice(std::string* dst, const Slice& value) {
-    PutVarint32(dst, value.size());
-    dst->append(value.data(), value.size());
-}
-
-int VarintLength(uint64_t v) {
+int varintLength(uint64_t v) {
     int len = 1;
     while (v >= 128) {
         v >>= 7;
@@ -156,12 +150,11 @@ int VarintLength(uint64_t v) {
     return len;
 }
 
-const char* GetVarint32PtrFallback(const char* p,
-                                   const char* limit,
-                                   uint32_t* value) {
-    uint32_t result = 0;
-    for (uint32_t shift = 0; shift <= 28 && p < limit; shift += 7) {
-        uint32_t byte = *(reinterpret_cast<const unsigned char*>(p));
+char* getVarint32PtrFallback(char* p, char* limit, quint32* value)
+{
+    quint32 result = 0;
+    for (quint32 shift = 0; shift <= 28 && p < limit; shift += 7) {
+        quint32 byte = *(reinterpret_cast<const unsigned char*>(p));
         p++;
         if (byte & 128) {
             // More bytes are present
@@ -169,28 +162,28 @@ const char* GetVarint32PtrFallback(const char* p,
         } else {
             result |= (byte << shift);
             *value = result;
-            return reinterpret_cast<const char*>(p);
+            return reinterpret_cast<char*>(p);
         }
     }
     return NULL;
 }
 
-bool GetVarint32(Slice* input, uint32_t* value) {
-    const char* p = input->data();
-    const char* limit = p + input->size();
-    const char* q = GetVarint32Ptr(p, limit, value);
+bool getVarint32(QByteArray* input, quint32* value) {
+    char* p = input->data();
+    char* limit = p + input->size();
+    char* q = getVarint32Ptr(p, limit, value);
     if (q == NULL) {
         return false;
     } else {
-        *input = Slice(q, limit - q);
+        *input = QByteArray::fromRawData(q, limit - q);
         return true;
     }
 }
 
-const char* GetVarint64Ptr(const char* p, const char* limit, uint64_t* value) {
-    uint64_t result = 0;
+const char* GetVarint64Ptr(const char* p, const char* limit, quint64* value) {
+    quint64 result = 0;
     for (uint32_t shift = 0; shift <= 63 && p < limit; shift += 7) {
-        uint64_t byte = *(reinterpret_cast<const unsigned char*>(p));
+        quint64 byte = *(reinterpret_cast<const unsigned char*>(p));
         p++;
         if (byte & 128) {
             // More bytes are present
@@ -204,39 +197,35 @@ const char* GetVarint64Ptr(const char* p, const char* limit, uint64_t* value) {
     return NULL;
 }
 
-bool GetVarint64(Slice* input, uint64_t* value) {
+bool getVarint64(QByteArray* input, quint64* value) {
     const char* p = input->data();
     const char* limit = p + input->size();
     const char* q = GetVarint64Ptr(p, limit, value);
     if (q == NULL) {
         return false;
     } else {
-        *input = Slice(q, limit - q);
+        *input = QByteArray::fromRawData(q, limit - q);
         return true;
     }
 }
 
-const char* GetLengthPrefixedSlice(const char* p, const char* limit,
-                                   Slice* result) {
-    uint32_t len;
-    p = GetVarint32Ptr(p, limit, &len);
-    if (p == NULL) return NULL;
-    if (p + len > limit) return NULL;
-    *result = Slice(p, len);
-    return p + len;
+bool getFixed32(QByteArray* input, quint32* value)
+{
+    char* p = const_cast<char*>(input->data());
+    *value = *reinterpret_cast<quint32*>(p);
+
+    *input = QByteArray::fromRawData(p + sizeof(quint32), input->size() - sizeof(quint32));
+    return true;
+
 }
 
-bool GetLengthPrefixedSlice(Slice* input, Slice* result) {
-    uint32_t len;
-    if (GetVarint32(input, &len) &&
-            input->size() >= len) {
-        *result = Slice(input->data(), len);
-        input->remove_prefix(len);
-        return true;
-    } else {
-        return false;
-    }
+bool getFixed64(QByteArray* input, quint64* value)
+{
+    char* p = const_cast<char*>(input->data());
+    *value = *reinterpret_cast<quint64*>(p);
+
+    *input = QByteArray::fromRawData(p + sizeof(quint64), input->size() - sizeof(quint64));
+    return true;
 }
-*/
 
 }
