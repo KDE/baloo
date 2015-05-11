@@ -25,6 +25,8 @@ using namespace Baloo;
 Document::Document()
     : m_id(0)
     , m_contentIndexing(false)
+    , m_mTime(0)
+    , m_cTime(0)
 {
 }
 
