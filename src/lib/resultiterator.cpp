@@ -29,7 +29,7 @@ using namespace Baloo;
 
 class Baloo::ResultIteratorPrivate {
 public:
-    ResultIteratorPrivate()
+    ResultIteratorPrivate() : pos(-1)
     {}
 
     ~ResultIteratorPrivate() {
