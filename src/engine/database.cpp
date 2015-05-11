@@ -65,7 +65,7 @@ bool Database::open(OpenMode mode)
 
     mdb_env_create(&m_env);
     mdb_env_set_maxdbs(m_env, 11);
-    mdb_env_set_mapsize(m_env, static_cast<size_t>(1024) * 1024 * 1024 * 50); // 50 gb
+    mdb_env_set_mapsize(m_env, static_cast<size_t>(1024) * 1024 * 1024 * 5); // 5 gb
 
     // The directory needs to be created before opening the environment
     QByteArray arr = QFile::encodeName(m_path) + "/index";
