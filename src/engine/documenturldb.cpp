@@ -194,6 +194,8 @@ void DocumentUrlDB::del(quint64 docId)
             id = path.parentId;
         }
     }
+
+    Q_ASSERT(idTreeDb.get(docId).isEmpty());
 }
 
 void DocumentUrlDB::rename(quint64 docId, const QByteArray& newFileName)
