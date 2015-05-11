@@ -52,6 +52,7 @@
 #define BALOO_STORAGE_LEVELDB_UTIL_CODING_H
 
 #include <QByteArray>
+#include <QVector>
 
 namespace Baloo {
 
@@ -60,6 +61,9 @@ void putFixed32(QByteArray* dst, quint32 value);
 void putFixed64(QByteArray* dst, quint64 value);
 void putVarint32(QByteArray* dst, quint32 value);
 void putVarint64(QByteArray* dst, quint64 value);
+
+void putDifferentialVarInt32(QByteArray* dst, const QVector<quint32>& values);
+char* getDifferentialVarInt32(char* input, char* limit, QVector<quint32>* values);
 
 // Standard Get... routines parse a value from the beginning of a Slice
 // and advance the slice past the parsed value.

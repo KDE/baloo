@@ -36,10 +36,7 @@ QByteArray PositionCodec::encode(const QVector<PositionInfo>& list)
 
     for (const PositionInfo& pos : list) {
         putFixed64(&data, pos.docId);
-        putVarint32(&data, pos.positions.size());
-        for (uint p : pos.positions) {
-            putVarint32(&data, p);
-        }
+        putDifferentialVarInt32(&data, pos.positions);
    }
 
     return data;
@@ -54,16 +51,9 @@ QVector<PositionInfo> PositionCodec::decode(const QByteArray& arr)
     while (data < end) {
         PositionInfo info;
 
-        info.docId = *reinterpret_cast<quint64*>(data);
+        info.docId = decodeFixed64(data);
         data += sizeof(quint64);
-
-        quint32 size;
-        data = getVarint32Ptr(data, end, &size);
-
-        info.positions.resize(size);
-        for (int i = 0; i < size; i++) {
-            data = getVarint32Ptr(data, end, &info.positions[i]);
-        }
+        data = getDifferentialVarInt32(data, end, &info.positions);
 
         vec << info;
     }
