@@ -52,7 +52,7 @@
 
 namespace Baloo {
 
-void EncodeFixed32(char* buf, uint32_t value) {
+void encodeFixed32(char* buf, uint32_t value) {
     if (1 /*port::kLittleEndian*/) {
         memcpy(buf, &value, sizeof(value));
     } else {
@@ -63,7 +63,7 @@ void EncodeFixed32(char* buf, uint32_t value) {
     }
 }
 
-void EncodeFixed64(char* buf, uint64_t value) {
+void encodeFixed64(char* buf, uint64_t value) {
     if (1 /*port::kLittleEndian*/) {
         memcpy(buf, &value, sizeof(value));
     } else {
@@ -80,17 +80,17 @@ void EncodeFixed64(char* buf, uint64_t value) {
 
 void putFixed32(QByteArray* dst, quint32 value) {
     char buf[sizeof(value)];
-    EncodeFixed32(buf, value);
+    encodeFixed32(buf, value);
     dst->append(buf, sizeof(buf));
 }
 
 void putFixed64(QByteArray* dst, quint64 value) {
     char buf[sizeof(value)];
-    EncodeFixed64(buf, value);
+    encodeFixed64(buf, value);
     dst->append(buf, sizeof(buf));
 }
 
-char* EncodeVarint32(char* dst, uint32_t v) {
+char* encodeVarint32(char* dst, uint32_t v) {
     // Operate on characters as unsigneds
     unsigned char* ptr = reinterpret_cast<unsigned char*>(dst);
     static const int B = 128;
@@ -120,11 +120,11 @@ char* EncodeVarint32(char* dst, uint32_t v) {
 
 void putVarint32(QByteArray* dst, quint32 v) {
     char buf[5];
-    char* ptr = EncodeVarint32(buf, v);
+    char* ptr = encodeVarint32(buf, v);
     dst->append(buf, ptr - buf);
 }
 
-char* EncodeVarint64(char* dst, uint64_t v) {
+char* encodeVarint64(char* dst, uint64_t v) {
     static const int B = 128;
     unsigned char* ptr = reinterpret_cast<unsigned char*>(dst);
     while (v >= B) {
@@ -137,7 +137,7 @@ char* EncodeVarint64(char* dst, uint64_t v) {
 
 void putVarint64(QByteArray* dst, quint64 v) {
     char buf[10];
-    char* ptr = EncodeVarint64(buf, v);
+    char* ptr = encodeVarint64(buf, v);
     dst->append(buf, ptr - buf);
 }
 
@@ -180,7 +180,7 @@ bool getVarint32(QByteArray* input, quint32* value) {
     }
 }
 
-const char* GetVarint64Ptr(const char* p, const char* limit, quint64* value) {
+const char* getVarint64Ptr(const char* p, const char* limit, quint64* value) {
     quint64 result = 0;
     for (uint32_t shift = 0; shift <= 63 && p < limit; shift += 7) {
         quint64 byte = *(reinterpret_cast<const unsigned char*>(p));
@@ -200,7 +200,7 @@ const char* GetVarint64Ptr(const char* p, const char* limit, quint64* value) {
 bool getVarint64(QByteArray* input, quint64* value) {
     const char* p = input->data();
     const char* limit = p + input->size();
-    const char* q = GetVarint64Ptr(p, limit, value);
+    const char* q = getVarint64Ptr(p, limit, value);
     if (q == NULL) {
         return false;
     } else {

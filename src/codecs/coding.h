@@ -77,21 +77,21 @@ bool getVarint64(QByteArray* input, quint64* value);
 // NULL on error.  These routines only look at bytes in the range
 // [p..limit-1]
 extern const char* GetVarint32Ptr(const char* p,const char* limit, quint32* v);
-extern const char* GetVarint64Ptr(const char* p,const char* limit, quint64* v);
+extern const char* getVarint64Ptr(const char* p,const char* limit, quint64* v);
 
 // Returns the length of the varint32 or varint64 encoding of "v"
 extern int varintLength(uint64_t v);
 
 // Lower-level versions of Put... that write directly into a character buffer
 // REQUIRES: dst has enough space for the value being written
-extern void EncodeFixed32(char* dst, uint32_t value);
-extern void EncodeFixed64(char* dst, uint64_t value);
+extern void encodeFixed32(char* dst, uint32_t value);
+extern void encodeFixed64(char* dst, uint64_t value);
 
 // Lower-level versions of Put... that write directly into a character buffer
 // and return a pointer just past the last byte written.
 // REQUIRES: dst has enough space for the value being written
-extern char* EncodeVarint32(char* dst, uint32_t value);
-extern char* EncodeVarint64(char* dst, uint64_t value);
+extern char* encodeVarint32(char* dst, uint32_t value);
+extern char* encodeVarint64(char* dst, uint64_t value);
 
 // Lower-level versions of Get... that read directly from a character buffer
 // without any bounds checking.
