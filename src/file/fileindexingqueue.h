@@ -25,16 +25,14 @@
 #define FILEINDEXINGQUEUE_H
 
 #include "indexingqueue.h"
-#include "filemapping.h"
-#include <xapian.h>
 
 #include <QStack>
 #include <KJob>
 
-class Database;
-
 namespace Baloo
 {
+class Database;
+class Document;
 class FileIndexingJob;
 
 class FileIndexingQueue : public IndexingQueue
@@ -42,8 +40,8 @@ class FileIndexingQueue : public IndexingQueue
     Q_OBJECT
 public:
     FileIndexingQueue(Database* db, QObject* parent = 0);
-    virtual bool isEmpty();
-    virtual void fillQueue();
+    bool isEmpty() Q_DECL_OVERRIDE;
+    void fillQueue() Q_DECL_OVERRIDE;
 
     void clear();
 
@@ -51,20 +49,17 @@ public:
     void setBatchSize(int size) { m_batchSize = size; }
     void setTestMode(bool mode) { m_testMode = mode; }
 
-Q_SIGNALS:
-    void newDocument(uint docid, const Xapian::Document& doc);
-
 protected:
-    virtual void processNextIteration();
-    virtual void doSuspend();
-    virtual void doResume();
+    void processNextIteration() Q_DECL_OVERRIDE;
+    void doSuspend() Q_DECL_OVERRIDE;
+    void doResume() Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
     void slotFinishedIndexingFile(KJob* job);
-    void slotIndexingFailed(uint doc);
+    void slotIndexingFailed(quint64 doc);
 
 private:
-    QStack<uint> m_fileQueue;
+    QStack<quint64> m_fileQueue;
     Database* m_db;
 
     int m_maxSize;

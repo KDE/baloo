@@ -22,6 +22,7 @@
 #include "optimizedbytearray.h"
 #include "fileindexerconfig.h"
 #include "filtereddiriterator.h"
+#include "baloodebug.h"
 
 #include <QSocketNotifier>
 #include <QHash>
@@ -105,7 +106,7 @@ public:
     }
 
     void close() {
-        qDebug();
+        qCDebug(BALOO);
         delete m_notifier;
         m_notifier = 0;
 
@@ -123,17 +124,17 @@ public:
         const QByteArray encpath = QFile::encodeName(path);
         int wd = inotify_add_watch(inotify(), encpath.data(), mask);
         if (wd > 0) {
-//             qDebug() << "Successfully added watch for" << path << watchPathHash.count();
+//             qCDebug(BALOO) << "Successfully added watch for" << path << watchPathHash.count();
             OptimizedByteArray normalized(stripTrailingSlash(encpath), pathCache);
             watchPathHash.insert(wd, normalized);
             pathWatchHash.insert(normalized, wd);
             return true;
         } else {
-            qDebug() << "Failed to create watch for" << path << strerror(errno);
+            qCDebug(BALOO) << "Failed to create watch for" << path << strerror(errno);
             //If we could not create the watch because we have hit the limit, try raising it.
             if (errno == ENOSPC) {
                 //If we can't, fall back to signalling
-                qDebug() << "User limit reached. Count: " << watchPathHash.count();
+                qCDebug(BALOO) << "User limit reached. Count: " << watchPathHash.count();
                 userLimitReachedSignaled = true;
                 Q_EMIT q->watchUserLimitReached(path);
             }
@@ -142,7 +143,7 @@ public:
     }
 
     void removeWatch(int wd) {
-        qDebug() << wd << watchPathHash[wd].toByteArray();
+        qCDebug(BALOO) << wd << watchPathHash[wd].toByteArray();
         pathWatchHash.remove(watchPathHash.take(wd));
         inotify_rm_watch(inotify(), wd);
     }
@@ -189,12 +190,12 @@ public:
 
 private:
     void open() {
-        qDebug();
+        qCDebug(BALOO);
         m_inotifyFd = inotify_init();
         delete m_notifier;
         if (m_inotifyFd > 0) {
             fcntl(m_inotifyFd, F_SETFD, FD_CLOEXEC);
-            qDebug() << "Successfully opened connection to inotify:" << m_inotifyFd;
+            qCDebug(BALOO) << "Successfully opened connection to inotify:" << m_inotifyFd;
             m_notifier = new QSocketNotifier(m_inotifyFd, QSocketNotifier::Read);
             connect(m_notifier, SIGNAL(activated(int)), q, SLOT(slotEvent(int)));
         }
@@ -239,7 +240,7 @@ bool KInotify::available() const
             if (sscanf(uts.release, "%d.%d", &major, &minor) != 2)
                 return false; // *shrug*
         } else if (major * 1000000 + minor * 1000 + patch < 2006014) { // <2.6.14
-            qDebug() << "Can't use INotify, Linux kernel too old";
+            qCDebug(BALOO) << "Can't use INotify, Linux kernel too old";
             return false;
         }
 
@@ -263,7 +264,7 @@ void KInotify::resetUserLimit()
 
 bool KInotify::addWatch(const QString& path, WatchEvents mode, WatchFlags flags)
 {
-    qDebug() << path;
+    qCDebug(BALOO) << path;
 
     d->mode = mode;
     d->flags = flags;
@@ -315,7 +316,7 @@ void KInotify::slotEvent(int socket)
 {
     int avail;
     if (ioctl(socket, FIONREAD, &avail) == EINVAL) {
-        qDebug() << "Did not receive an entire inotify event.";
+        qCDebug(BALOO) << "Did not receive an entire inotify event.";
         return;
     }
 
@@ -353,23 +354,23 @@ void KInotify::slotEvent(int socket)
 
         // now signal the event
         if (event->mask & EventAccess) {
-//            qDebug() << path << "EventAccess";
+//            qCDebug(BALOO) << path << "EventAccess";
             Q_EMIT accessed(QFile::decodeName(path));
         }
         if (event->mask & EventAttributeChange) {
-//            qDebug() << path << "EventAttributeChange";
+//            qCDebug(BALOO) << path << "EventAttributeChange";
             Q_EMIT attributeChanged(QFile::decodeName(path));
         }
         if (event->mask & EventCloseWrite) {
-//            qDebug() << path << "EventCloseWrite";
+//            qCDebug(BALOO) << path << "EventCloseWrite";
             Q_EMIT closedWrite(QFile::decodeName(path));
         }
         if (event->mask & EventCloseRead) {
-//            qDebug() << path << "EventCloseRead";
+//            qCDebug(BALOO) << path << "EventCloseRead";
             Q_EMIT closedRead(QFile::decodeName(path));
         }
         if (event->mask & EventCreate) {
-//            qDebug() << path << "EventCreate";
+//            qCDebug(BALOO) << path << "EventCreate";
             if (event->mask & IN_ISDIR) {
                 // FIXME: store the mode and flags somewhere
                 addWatch(QString::fromUtf8(path), d->mode, d->flags);
@@ -377,26 +378,26 @@ void KInotify::slotEvent(int socket)
             Q_EMIT created(QFile::decodeName(path), event->mask & IN_ISDIR);
         }
         if (event->mask & EventDeleteSelf) {
-            qDebug() << path << "EventDeleteSelf";
+            qCDebug(BALOO) << path << "EventDeleteSelf";
             d->removeWatch(event->wd);
             Q_EMIT deleted(QFile::decodeName(path), event->mask & IN_ISDIR);
         }
         if (event->mask & EventDelete) {
-//            qDebug() << path << "EventDelete";
+//            qCDebug(BALOO) << path << "EventDelete";
             // we watch all folders recursively. Thus, folder removing is reported in DeleteSelf.
             if (!(event->mask & IN_ISDIR))
                 Q_EMIT deleted(QFile::decodeName(path), false);
         }
         if (event->mask & EventModify) {
-//            qDebug() << path << "EventModify";
+//            qCDebug(BALOO) << path << "EventModify";
             Q_EMIT modified(QFile::decodeName(path));
         }
         if (event->mask & EventMoveSelf) {
-//            qDebug() << path << "EventMoveSelf";
+//            qCDebug(BALOO) << path << "EventMoveSelf";
             qWarning() << "EventMoveSelf: THIS CASE IS NOT HANDLED PROPERLY!";
         }
         if (event->mask & EventMoveFrom) {
-//            qDebug() << path << "EventMoveFrom";
+//            qCDebug(BALOO) << path << "EventMoveFrom";
             d->cookies[event->cookie] = qMakePair(path, WatchFlags(event->mask));
             d->cookieExpireTimer.start();
         }
@@ -410,7 +411,7 @@ void KInotify::slotEvent(int socket)
                     OptimizedByteArray optimOldPath(oldPath, d->pathCache);
                     QHash<OptimizedByteArray, int>::iterator it = d->pathWatchHash.find(optimOldPath);
                     if (it != d->pathWatchHash.end()) {
-                        qDebug() << oldPath << path;
+                        qCDebug(BALOO) << oldPath << path;
                         const int wd = it.value();
                         OptimizedByteArray optimPath(path, d->pathCache);
                         d->watchPathHash[wd] = optimPath;
@@ -418,10 +419,10 @@ void KInotify::slotEvent(int socket)
                         d->pathWatchHash.insert(optimPath, wd);
                     }
                 }
-//                qDebug() << oldPath << "EventMoveTo" << path;
+//                qCDebug(BALOO) << oldPath << "EventMoveTo" << path;
                 Q_EMIT moved(QFile::decodeName(oldPath), QFile::decodeName(path));
             } else {
-                qDebug() << "No cookie for move information of" << path << "simulating new file event";
+                qCDebug(BALOO) << "No cookie for move information of" << path << "simulating new file event";
                 Q_EMIT created(QString::fromUtf8(path), event->mask & IN_ISDIR);
 
                 // also simulate a closed write since that is what triggers indexing of files in the file watcher
@@ -431,11 +432,11 @@ void KInotify::slotEvent(int socket)
             }
         }
         if (event->mask & EventOpen) {
-//            qDebug() << path << "EventOpen";
+//            qCDebug(BALOO) << path << "EventOpen";
             Q_EMIT opened(QFile::decodeName(path));
         }
         if (event->mask & EventUnmount) {
-//            qDebug() << path << "EventUnmount. removing from path hash";
+//            qCDebug(BALOO) << path << "EventUnmount. removing from path hash";
             if (event->mask & IN_ISDIR) {
                 d->removeWatch(event->wd);
             }
@@ -447,18 +448,18 @@ void KInotify::slotEvent(int socket)
         }
         if (event->mask & EventQueueOverflow) {
             // This should not happen since we grab all events as soon as they arrive
-            qDebug() << path << "EventQueueOverflow";
+            qCDebug(BALOO) << path << "EventQueueOverflow";
 //            Q_EMIT queueOverflow();
         }
         if (event->mask & EventIgnored) {
-//             qDebug() << path << "EventIgnored";
+//             qCDebug(BALOO) << path << "EventIgnored";
         }
 
         i += sizeof(struct inotify_event) + event->len;
     }
 
     if (len < 0) {
-        qDebug() << "Failed to read event.";
+        qCDebug(BALOO) << "Failed to read event.";
     }
 
     free(buffer);

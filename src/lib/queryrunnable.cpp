@@ -42,8 +42,6 @@ QueryRunnable::QueryRunnable(const Query& query, QObject* parent)
 {
     d->m_query = query;
     d->m_stop = false;
-
-    qRegisterMetaType<Baloo::Result>("Baloo::Result");
 }
 
 QueryRunnable::~QueryRunnable()
@@ -60,7 +58,7 @@ void QueryRunnable::run()
 {
     ResultIterator it = d->m_query.exec();
     while (!d->stopRequested() && it.next()) {
-        Q_EMIT queryResult(this, it.result());
+        Q_EMIT queryResult(this, it.filePath());
     }
 
     Q_EMIT finished(this);

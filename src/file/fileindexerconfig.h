@@ -17,8 +17,8 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef _BALOO_FILEINDEXER_SERVICE_CONFIG_H_
-#define _BALOO_FILEINDEXER_SERVICE_CONFIG_H_
+#ifndef BALOO_FILEINDEXER_SERVICE_CONFIG_H_
+#define BALOO_FILEINDEXER_SERVICE_CONFIG_H_
 
 #include <QtCore/QObject>
 #include <QtCore/QList>
@@ -135,6 +135,14 @@ public:
      * \p folder is set to the folder which was the reason for the descision.
      */
     bool folderInFolderList(const QString& path, QString& folder) const;
+
+    /**
+     * Returns the internal version number of the Baloo database
+     */
+    int databaseVersion() const;
+    void setDatabaseVersion(int version);
+
+    bool indexingEnabled() const;
 
 Q_SIGNALS:
     void configChanged();

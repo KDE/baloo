@@ -17,8 +17,8 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef _KINOTIFY_H_
-#define _KINOTIFY_H_
+#ifndef KINOTIFY_H_
+#define KINOTIFY_H_
 
 #include <QObject>
 
@@ -39,7 +39,7 @@ class KInotify : public QObject
 
 public:
     explicit KInotify(Baloo::FileIndexerConfig* config, QObject* parent = 0);
-    virtual ~KInotify();
+    ~KInotify() Q_DECL_OVERRIDE;
 
     /**
      * Inotify events that can occur. Use with addWatch
@@ -105,7 +105,7 @@ public:
     void resetUserLimit();
 
 public Q_SLOTS:
-    virtual bool addWatch(const QString& path, WatchEvents modes, WatchFlags flags = WatchFlags());
+    bool addWatch(const QString& path, WatchEvents modes, WatchFlags flags = WatchFlags());
     bool removeWatch(const QString& path);
 
 Q_SIGNALS:

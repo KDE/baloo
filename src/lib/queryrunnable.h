@@ -24,7 +24,6 @@
 #define QUERYRUNNABLE_H
 
 #include "query.h"
-#include "result.h"
 #include <QRunnable>
 #include <QObject>
 
@@ -35,13 +34,13 @@ class BALOO_CORE_EXPORT QueryRunnable : public QObject, public QRunnable
     Q_OBJECT
 public:
     QueryRunnable(const Query& query, QObject* parent = 0);
-    virtual ~QueryRunnable();
-    virtual void run();
+    ~QueryRunnable() Q_DECL_OVERRIDE;
+    void run() Q_DECL_OVERRIDE;
 
     void stop();
 
 Q_SIGNALS:
-    void queryResult(Baloo::QueryRunnable* queryRunnable, const Baloo::Result& result);
+    void queryResult(Baloo::QueryRunnable* queryRunnable, const QString& filePath);
     void finished(Baloo::QueryRunnable* queryRunnable);
 
 private:

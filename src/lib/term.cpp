@@ -21,6 +21,7 @@
  */
 
 #include "term.h"
+
 #include <QVariant>
 #include <QDateTime>
 

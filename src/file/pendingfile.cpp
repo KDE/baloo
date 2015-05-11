@@ -19,7 +19,7 @@
  */
 
 #include "pendingfile.h"
-#include <QDebug>
+#include "baloodebug.h"
 
 using namespace Baloo;
 
@@ -78,9 +78,9 @@ void PendingFile::merge(const PendingFile& file)
 
 void PendingFile::printFlags() const
 {
-    qDebug() << "AttributesChanged:" << m_attributesChanged;
-    qDebug() << "ClosedOnWrite:" << m_closedOnWrite;
-    qDebug() << "Created:" << m_created;
-    qDebug() << "Deleted:" << m_deleted;
-    qDebug() << "Modified:" << m_modified;
+    qCDebug(BALOO) << "AttributesChanged:" << m_attributesChanged;
+    qCDebug(BALOO) << "ClosedOnWrite:" << m_closedOnWrite;
+    qCDebug(BALOO) << "Created:" << m_created;
+    qCDebug(BALOO) << "Deleted:" << m_deleted;
+    qCDebug(BALOO) << "Modified:" << m_modified;
 }

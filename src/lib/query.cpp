@@ -22,8 +22,8 @@
 
 #include "query.h"
 #include "term.h"
-#include "filesearchstore.h"
 #include "advancedqueryparser.h"
+#include "searchstore.h"
 
 #include <QString>
 #include <QStringList>
@@ -36,16 +36,16 @@
 
 using namespace Baloo;
 
-const int defaultLimit = 100000;
+const int defaultLimit = -1;
 
 class Baloo::Query::Private {
 public:
     Private() {
         m_limit = defaultLimit;
         m_offset = 0;
-        m_yearFilter = -1;
-        m_monthFilter = -1;
-        m_dayFilter = -1;
+        m_yearFilter = 0;
+        m_monthFilter = 0;
+        m_dayFilter = 0;
         m_sortingOption = SortAuto;
     }
     Term m_term;
@@ -68,12 +68,6 @@ Query::Query()
 {
 }
 
-Query::Query(const Term& t)
-    : d(new Private)
-{
-    d->m_term = t;
-}
-
 Query::Query(const Query& rhs)
     : d(new Private(*rhs.d))
 {
@@ -82,16 +76,6 @@ Query::Query(const Query& rhs)
 Query::~Query()
 {
     delete d;
-}
-
-void Query::setTerm(const Term& t)
-{
-    d->m_term = t;
-}
-
-Term Query::term() const
-{
-    return d->m_term;
 }
 
 void Query::addType(const QString& type)
@@ -198,12 +182,35 @@ void Query::setIncludeFolder(const QString& folder)
 }
 
 
-Q_GLOBAL_STATIC_WITH_ARGS(QSharedPointer<FileSearchStore>, s_fileSearchStore, (new FileSearchStore));
+Q_GLOBAL_STATIC_WITH_ARGS(QSharedPointer<SearchStore>, s_searchStore, (new SearchStore));
 
 ResultIterator Query::exec()
 {
-    int id = (*s_fileSearchStore)->exec(*this);
-    return ResultIterator(id, &(**s_fileSearchStore));
+    Term term(d->m_term);
+    if (!d->m_types.isEmpty()) {
+        for (const QString& type : d->m_types) {
+            term = term && Term(QStringLiteral("type"), type);
+        }
+    }
+
+    if (!d->m_includeFolder.isEmpty()) {
+        term = term && Term(QStringLiteral("includefolder"), d->m_includeFolder);
+    }
+
+    if (d->m_yearFilter || d->m_monthFilter || d->m_dayFilter) {
+        QByteArray ba = QByteArray::number(d->m_yearFilter);
+        if (d->m_monthFilter < 10)
+            ba += '0';
+        ba += QByteArray::number(d->m_monthFilter);
+        if (d->m_dayFilter < 10)
+            ba += '0';
+        ba += QByteArray::number(d->m_dayFilter);
+
+        term = term && Term(QStringLiteral("modified"), ba, Term::Equal);
+    }
+
+    QStringList result = (*s_searchStore)->exec(term, d->m_limit);
+    return ResultIterator(result);
 }
 
 QByteArray Query::toJSON()

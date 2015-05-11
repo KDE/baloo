@@ -1,6 +1,6 @@
 /*
  * This file is part of the KDE Baloo Project
- * Copyright (C) 2013  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2013-2015 Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -25,6 +25,7 @@
 #include <QCommandLineOption>
 #include <QFileInfo>
 #include <QTextStream>
+#include <QElapsedTimer>
 
 #include <KAboutData>
 #include <KLocalizedString>
@@ -33,26 +34,6 @@
 #include "query.h"
 #include "searchstore.h"
 
-QString highlightBold(const QString& input)
-{
-    QLatin1String colorStart("\033[0;33m");
-    QLatin1String colorEnd("\033[0;0m");
-
-    QString out(input);
-    out.replace(QLatin1String("<b>"), colorStart);
-    out.replace(QLatin1String("</b>"), colorEnd);
-
-    return out;
-}
-
-QString colorString(const QString& input, int color)
-{
-    QString colorStart = QString::fromLatin1("\033[0;%1m").arg(color);
-    QLatin1String colorEnd("\033[0;0m");
-
-    return colorStart + input + colorEnd;
-}
-
 int main(int argc, char* argv[])
 {
     KAboutData aboutData(QLatin1String("baloosearch"),
@@ -60,7 +41,7 @@ int main(int argc, char* argv[])
                          PROJECT_VERSION,
                          i18n("Baloo Search - A debugging tool"),
                          KAboutLicense::GPL,
-                         i18n("(c) 2013, Vishesh Handa"));
+                         i18n("(c) 2013-15, Vishesh Handa"));
     aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QLatin1String("vhanda@kde.org"));
 
     KAboutData::setApplicationData(aboutData);
@@ -83,7 +64,7 @@ int main(int argc, char* argv[])
     parser.addHelpOption();
     parser.process(app);
 
-    int queryLimit = 10;
+    int queryLimit = -1;
     int offset = 0;
     QString typeStr;
 
@@ -114,18 +95,15 @@ int main(int argc, char* argv[])
         query.setIncludeFolder(QFileInfo(folderName).canonicalFilePath());
     }
 
-    out << "\n";
+    QElapsedTimer timer;
+    timer.start();
+
     Baloo::ResultIterator iter = query.exec();
     while (iter.next()) {
         const QString filePath = iter.filePath();
-        const QByteArray id = iter.id();
-        int fid = Baloo::deserialize("file", id);
-
-        QString title = colorString(QString::number(fid), 31) + QLatin1String(" ") + colorString(filePath, 32);
-
-        out << "  " << title << endl;
-        out << endl;
+        out << filePath << endl;
     }
+    out << "Elapsed: " << timer.nsecsElapsed() / 1000000.0 << " msecs" << endl;
 
     return 0;
 }

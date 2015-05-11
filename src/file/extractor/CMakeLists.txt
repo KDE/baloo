@@ -7,25 +7,24 @@ set(EXTRACTOR_SRCS
   result.cpp
   ../priority.cpp
   ../basicindexingjob.cpp
-  ../database.cpp
   ../fileindexerconfig.cpp
   ../storagedevices.cpp
   ../regexpcache.cpp
   ../fileexcludefilters.cpp
+  ../baloodebug.cpp
 )
 
 add_executable(baloo_file_extractor ${EXTRACTOR_SRCS})
+target_compile_definitions(baloo_file_extractor PRIVATE -DPROJECT_VERSION="${PROJECT_VERSION}")
 
 target_link_libraries(baloo_file_extractor
-  Qt5::Sql
   Qt5::DBus
   KF5::FileMetaData
   KF5::I18n
   KF5::ConfigCore
   KF5::Solid
-  ${XAPIAN_LIBRARIES}
-  KF5::Baloo
-  KF5::BalooXapian
+  KF5::BalooEngine
+  KF5::Crash
 )
 
 install(TARGETS baloo_file_extractor DESTINATION ${BIN_INSTALL_DIR})

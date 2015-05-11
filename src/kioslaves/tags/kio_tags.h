@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef _BALOO_KIO_TAGS_H_
-#define _BALOO_KIO_TAGS_H_
+#ifndef BALOO_KIO_TAGS_H_
+#define BALOO_KIO_TAGS_H_
 
 #include <KIO/ForwardingSlaveBase>
 
@@ -33,7 +33,7 @@ class TagsProtocol : public KIO::ForwardingSlaveBase
     Q_OBJECT
 public:
     TagsProtocol(const QByteArray& pool_socket, const QByteArray& app_socket);
-    virtual ~TagsProtocol();
+    ~TagsProtocol() Q_DECL_OVERRIDE;
 
     /**
      * List all files and folders tagged with the corresponding tag, along with
@@ -81,7 +81,7 @@ public:
      */
     void stat(const QUrl& url);
 protected:
-    virtual bool rewriteUrl(const QUrl& url, QUrl& newURL);
+    bool rewriteUrl(const QUrl& url, QUrl& newURL) Q_DECL_OVERRIDE;
 
 private:
     enum ParseResult {
@@ -99,4 +99,4 @@ private:
 };
 }
 
-#endif // _BALOO_KIO_TAGS_H_
+#endif // BALOO_KIO_TAGS_H_

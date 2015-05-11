@@ -1,6 +1,5 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
- * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2014  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -19,16 +18,14 @@
  */
 
 #include "cleaner.h"
-#include "../database.h"
-#include "../fileindexerconfig.h"
+#include "database.h"
+#include "fileindexerconfig.h"
 
 #include <QMimeDatabase>
 #include <QTimer>
 #include <QFile>
 #include <QUrl>
 #include <QCoreApplication>
-#include <QSqlQuery>
-#include <QSqlError>
 #include <QDebug>
 
 using namespace Baloo;
@@ -37,17 +34,15 @@ Cleaner::Cleaner(Database* db, QObject* parent)
     : QObject(parent)
     , m_db(db)
 {
-    m_commitQueue = new CommitQueue(m_db, this);
-
     QTimer::singleShot(0, this, SLOT(start()));
 }
 
 void Cleaner::start()
 {
-    QSqlDatabase sqlDb = m_db->sqlDatabase();
-    QSqlQuery query(sqlDb);
+    // FIXME: The cleaner needs to be fixed!!
+    /*
     if (!query.exec(QLatin1String("select id, url from files"))) {
-        qDebug() << "Could not execute SQL query:" << query.lastError().text();
+        qCDebug(BALOO) << "Could not execute query:" << query.lastError().text();
         QCoreApplication::instance()->quit();
         return;
     }
@@ -76,8 +71,7 @@ void Cleaner::start()
         }
 
         if (removeIt) {
-            qDebug() << id << url;
-            QSqlQuery q(sqlDb);
+            qCDebug(BALOO) << id << url;
             q.prepare(QLatin1String("delete from files where id = ?"));
             q.addBindValue(id);
             q.exec();
@@ -93,5 +87,6 @@ void Cleaner::start()
 
     m_commitQueue->commit();
     QCoreApplication::instance()->quit();
+    */
 }
 

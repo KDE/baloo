@@ -16,8 +16,8 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef _NEPOMUK_LINUX_PRIORITY_H_
-#define _NEPOMUK_LINUX_PRIORITY_H_
+#ifndef BALOO_LINUX_PRIORITY_H_
+#define BALOO_LINUX_PRIORITY_H_
 
 bool lowerIOPriority();
 /// Sets the priority to batch
@@ -25,4 +25,4 @@ bool lowerSchedulingPriority();
 bool setIdleSchedulingPriority();
 bool lowerPriority();
 
-#endif // _NEPOMUK_LINUX_PRIORITY_H_
+#endif // BALOO_LINUX_PRIORITY_H_

@@ -17,16 +17,15 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef _BALOO_FILEINDEXER_SERVICE_H_
-#define _BALOO_FILEINDEXER_SERVICE_H_
+#ifndef BALOO_FILEINDEXER_SERVICE_H_
+#define BALOO_FILEINDEXER_SERVICE_H_
 
-#include <QtCore/QTimer>
-
-class Database;
+#include <QTimer>
 
 namespace Baloo
 {
 
+class Database;
 class IndexScheduler;
 class FileIndexerConfig;
 
@@ -92,11 +91,6 @@ public Q_SLOTS:
      * Index only the extended attributes of the file
      */
     Q_SCRIPTABLE void indexXAttr(const QString& path);
-
-    /**
-     * Remove all index information regarding the file with id \p id
-     */
-    Q_SCRIPTABLE void removeFileData(int id);
 
 private Q_SLOTS:
     void slotBasicIndexingDone();

@@ -23,26 +23,21 @@
 #ifndef BASICINDEXINGJOB_H
 #define BASICINDEXINGJOB_H
 
-#include "filemapping.h"
-#include <xapian.h>
-
 #include <KFileMetaData/Types>
+#include "document.h"
 
 namespace Baloo {
-
-class XapianDocument;
 
 class BasicIndexingJob
 {
 public:
-    BasicIndexingJob(const FileMapping& file, const QString& mimetype,
+    BasicIndexingJob(const QString& filePath, const QString& mimetype,
                      bool onlyBasicIndexing);
     ~BasicIndexingJob();
 
     bool index();
 
-    Xapian::Document document() { return m_doc; }
-    uint id() { return m_id; }
+    Document document() { return m_doc; }
 
     /**
      * Adds the data for all the extended attributes of \p url
@@ -50,17 +45,16 @@ public:
      *
      * \return Returns true if the \p doc was modified
      */
-    static bool indexXAttr(const QString& url, XapianDocument& doc);
+    static bool indexXAttr(const QString& url, Document& doc);
 
 private:
     static QVector<KFileMetaData::Type::Type> typesForMimeType(const QString& mimeType);
 
-    FileMapping m_file;
+    QString m_filePath;
     QString m_mimetype;
     bool m_onlyBasicIndexing;
 
-    uint m_id;
-    Xapian::Document m_doc;
+    Document m_doc;
 
     friend class BasicIndexingJobTest;
 };

@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef _KIO_TIMELINE_H_
-#define _KIO_TIMELINE_H_
+#ifndef KIO_TIMELINE_H_
+#define KIO_TIMELINE_H_
 
 #include <kio/slavebase.h>
 
@@ -34,7 +34,7 @@ class TimelineProtocol : public KIO::SlaveBase
 {
 public:
     TimelineProtocol(const QByteArray& poolSocket, const QByteArray& appSocket);
-    virtual ~TimelineProtocol();
+    ~TimelineProtocol() Q_DECL_OVERRIDE;
 
     /**
      * List all files and folders tagged with the corresponding tag.
@@ -64,4 +64,4 @@ private:
 };
 }
 
-#endif // _KIO_TIMELINE_H_
+#endif // KIO_TIMELINE_H_

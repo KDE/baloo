@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2014-2015  Vishesh Handa <vhanda@kde.org>
  * Copyright (C) 2014  Denis Steckelmacher <steckdenis@yahoo.fr>
  *
  * This library is free software; you can redistribute it and/or
@@ -70,6 +70,14 @@ static QStringList lex(const QString& text)
 
             // Operators are tokens themselves
             if (isOperator(c)) {
+                if (tokens.size() > 1) {
+                    QString last = tokens.last();
+                    if (last.size() == 1 && isOperator(last[0])) {
+                        last.append(c);
+                        tokens[tokens.size() - 1] = last;
+                        continue;
+                    }
+                }
                 tokens.append(QString(c));
             }
 
@@ -177,12 +185,22 @@ Term AdvancedQueryParser::parse(const QString& text)
             case '=':
                 comparator = Term::Equal;
                 break;
-            case '<':
-                comparator = Term::Less;
+            case '<': {
+                if (token.size() == 1) {
+                    comparator = Term::Less;
+                } else if (token[1] == '=') {
+                    comparator = Term::LessEqual;
+                }
                 break;
-            case '>':
-                comparator = Term::Greater;
+            }
+            case '>': {
+                if (token.size() == 1) {
+                    comparator = Term::Greater;
+                } else if (token[1] == '=') {
+                    comparator = Term::GreaterEqual;
+                }
                 break;
+            }
             case '(':
                 if (!termInConstruction.isEmpty()) {
                     addTermToStack(stack, termInConstruction, ops.top());

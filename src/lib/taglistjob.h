@@ -1,6 +1,6 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
- * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
+ * This file is part of the KDE Baloo Project
+ * Copyright (C) 2014  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,9 +31,9 @@ class BALOO_CORE_EXPORT TagListJob : public KJob
     Q_OBJECT
 public:
     explicit TagListJob(QObject* parent = 0);
-    virtual ~TagListJob();
+    ~TagListJob() Q_DECL_OVERRIDE;
 
-    virtual void start();
+    void start() Q_DECL_OVERRIDE;
     QStringList tags();
 
 private:

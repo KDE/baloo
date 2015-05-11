@@ -81,7 +81,6 @@ void SearchProtocol::listDir(const QUrl& url)
         QString queryString = urlQuery.queryItemValue(QStringLiteral("query"), QUrl::FullyDecoded);
 
         q.setSearchString(queryString);
-        q.setType("File");
     }
 
     q.setSortingOption(Query::SortNone);

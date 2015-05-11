@@ -1,6 +1,6 @@
 /*
-    <one line to give the library's name and an idea of what it does.>
-    Copyright (C) 2012  Vishesh Handa <me@vhanda.in>
+    This file is part of the KDE Baloo project.
+    Copyright (C) 2012-2015  Vishesh Handa <vhanda@kde.org>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -18,20 +18,17 @@
 */
 
 
-#include <xapian.h>
 #include "basicindexingqueue.h"
 #include "fileindexerconfig.h"
-#include "util.h"
 #include "basicindexingjob.h"
 #include "database.h"
-#include "filemapping.h"
+#include "transaction.h"
+#include "unindexedfileiterator.h"
+#include "idutils.h"
+#include "baloodebug.h"
 
-#include "xapiandocument.h"
-
-#include <QDebug>
 #include <QDateTime>
 #include <QTimer>
-#include <QUrl>
 
 using namespace Baloo;
 
@@ -49,10 +46,10 @@ void BasicIndexingQueue::clear()
 
 void BasicIndexingQueue::clear(const QString& path)
 {
-    QMutableVectorIterator< QPair<FileMapping, UpdateDirFlags> > it(m_paths);
+    QMutableVectorIterator< QPair<QString, UpdateDirFlags> > it(m_paths);
     while (it.hasNext()) {
         it.next();
-        if (it.value().first.url().startsWith(path))
+        if (it.value().first.startsWith(path))
             it.remove();
     }
 }
@@ -62,9 +59,9 @@ bool BasicIndexingQueue::isEmpty()
     return m_paths.isEmpty();
 }
 
-void BasicIndexingQueue::enqueue(const FileMapping& file, UpdateDirFlags flags)
+void BasicIndexingQueue::enqueue(const QString& file, UpdateDirFlags flags)
 {
-    qDebug() << file.url();
+    qCDebug(BALOO) << file;
     m_paths.push(qMakePair(file, flags));
     callForNextIteration();
 }
@@ -74,7 +71,7 @@ void BasicIndexingQueue::processNextIteration()
     bool processingFile = false;
 
     if (!m_paths.isEmpty()) {
-        QPair<FileMapping, UpdateDirFlags> pair = m_paths.pop();
+        QPair<QString, UpdateDirFlags> pair = m_paths.pop();
         processingFile = process(pair.first, pair.second);
     }
 
@@ -83,119 +80,58 @@ void BasicIndexingQueue::processNextIteration()
 }
 
 
-bool BasicIndexingQueue::process(FileMapping& file, UpdateDirFlags flags)
+bool BasicIndexingQueue::process(const QString& file, UpdateDirFlags flags)
 {
     bool startedIndexing = false;
 
-    // This mimetype may not be completely accurate, but that's okay. This is
-    // just the initial phase of indexing. The second phase can try to find
-    // a more accurate mimetype.
-    QString mimetype = m_mimeDb.mimeTypeForFile(file.url(), QMimeDatabase::MatchExtension).name();
+    // FIXME: forced flags and XAttr only!
+    //bool forced = flags & ForceUpdate;
+    //bool indexingRequired = (flags & ExtendedAttributesOnly);// || shouldIndex(file, mimetype);
 
-    bool forced = flags & ForceUpdate;
-    bool indexingRequired = (flags & ExtendedAttributesOnly) || shouldIndex(file, mimetype);
+    Transaction tr(m_db, Transaction::ReadWrite);
 
-    QFileInfo info(file.url());
-    if (info.isDir()) {
-        if (forced || indexingRequired) {
-            startedIndexing = true;
-            index(file, mimetype, flags);
-        }
-
-        // We don't want to follow system links
-        if (!info.isSymLink() && shouldIndexContents(file.url())) {
-            QDir::Filters dirFilter = QDir::NoDotAndDotDot | QDir::Readable | QDir::Files | QDir::Dirs;
-
-            QDirIterator it(file.url(), dirFilter);
-            while (it.hasNext()) {
-                m_paths.push(qMakePair(FileMapping(it.next()), flags));
-            }
-        }
-    } else if (info.isFile() && (forced || indexingRequired)) {
+    // FIXME: Does this take files?
+    UnIndexedFileIterator it(m_config, &tr, file);
+    while (!it.next().isEmpty()) {
+        index(&tr, it.filePath(), it.mimetype(), flags);
         startedIndexing = true;
-        index(file, mimetype, flags);
+    }
+
+    if (startedIndexing) {
+        tr.commit();
+    } else {
+        tr.abort();
     }
 
     return startedIndexing;
 }
 
-bool BasicIndexingQueue::shouldIndex(FileMapping& file, const QString& mimetype) const
-{
-    bool shouldBeIndexed = m_config->shouldBeIndexed(file.url());
-    if (!shouldBeIndexed)
-        return false;
-
-    bool shouldIndexType = m_config->shouldMimeTypeBeIndexed(mimetype);
-    if (!shouldIndexType)
-        return false;
-
-    QFileInfo fileInfo(file.url());
-    if (!fileInfo.exists())
-        return false;
-
-    if (!file.fetch(m_db->sqlDatabase())) {
-        return true;
-    }
-
-    XapianDocument doc = m_db->xapianDatabase()->document(file.id());
-    const QByteArray dtStr = doc.value(0);
-    if (dtStr.isEmpty()) {
-        return true;
-    }
-
-    // A folders mtime is updated when a new file is added / removed / renamed
-    // we don't really need to reindex a folder when that happens
-    // In fact, we never need to reindex a folder
-    if (mimetype == QLatin1String("inode/directory"))
-        return false;
-
-    const uint time_t = dtStr.toUInt();
-    if (time_t != fileInfo.lastModified().toTime_t()) {
-        return true;
-    }
-
-    return false;
-}
-
-bool BasicIndexingQueue::shouldIndexContents(const QString& dir)
-{
-    return m_config->shouldFolderBeIndexed(dir);
-}
-
-void BasicIndexingQueue::index(FileMapping& file, const QString& mimetype,
+void BasicIndexingQueue::index(Transaction* tr, const QString& file, const QString& mimetype,
                                UpdateDirFlags flags)
 {
-    if (!file.fetched()) {
-        if (!file.fetch(m_db->sqlDatabase())) {
-            if (!file.create(m_db->sqlDatabase())) {
-                qWarning() << "Cannot create fileMapping for" << file.url();
-                QTimer::singleShot(0, this, SLOT(finishIteration()));
-                return;
-            }
-        }
-    }
-
-    qDebug() << file.id() << file.url();
+    Q_ASSERT(tr);
 
     bool xattrOnly = (flags & Baloo::ExtendedAttributesOnly);
-    if (!xattrOnly) {
+    bool newDoc = !tr->hasDocument(filePathToId(QFile::encodeName(file)));
+
+    if (newDoc) {
+        BasicIndexingJob job(file, mimetype, m_config->onlyBasicIndexing());
+        job.index();
+
+        tr->addDocument(job.document());
+    }
+
+    else if (!xattrOnly) {
         BasicIndexingJob job(file, mimetype, m_config->onlyBasicIndexing());
         if (job.index()) {
-            Q_EMIT newDocument(job.id(), job.document());
+            tr->replaceDocument(job.document(), Transaction::DocumentTime);
+            tr->setPhaseOne(job.document().id());
         }
     }
     else {
-        XapianDocument doc = m_db->xapianDatabase()->document(file.id());
-
-        bool modified = false;
-        modified |= doc.removeTermStartsWith("R");
-        modified |= doc.removeTermStartsWith("TA");
-        modified |= doc.removeTermStartsWith("TAG");
-        modified |= doc.removeTermStartsWith("C");
-
-        modified |= BasicIndexingJob::indexXAttr(file.url(), doc);
-        if (modified) {
-            Q_EMIT newDocument(file.id(), doc.doc());
+        BasicIndexingJob job(file, mimetype, m_config->onlyBasicIndexing());
+        if (job.index()) {
+            tr->replaceDocument(job.document(), Transaction::XAttrTerms);
         }
     }
 

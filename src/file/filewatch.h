@@ -16,17 +16,17 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef _FILE_WATCH_H_
-#define _FILE_WATCH_H_
+#ifndef BALOO_FILE_WATCH_H_
+#define BALOO_FILE_WATCH_H_
 
 #include <QObject>
 #include "pendingfile.h"
 
 class KInotify;
-class Database;
 
 namespace Baloo
 {
+class Database;
 class MetadataMover;
 class FileIndexerConfig;
 class PendingFileQueue;
@@ -43,7 +43,6 @@ public:
 Q_SIGNALS:
     void indexFile(const QString& string);
     void indexXAttr(const QString& path);
-    void fileRemoved(int id);
 
     void installedWatches();
 

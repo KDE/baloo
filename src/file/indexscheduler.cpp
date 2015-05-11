@@ -1,6 +1,6 @@
 /* This file is part of the KDE Project
    Copyright (c) 2008-2010 Sebastian Trueg <trueg@kde.org>
-   Copyright (c) 2010-2013 Vishesh Handa <handa.vish@gmail.com>
+   Copyright (c) 2010-2015 Vishesh Handa <vhanda@kde.org>
 
    Parts of this file are based on code from Strigi
    Copyright (C) 2006-2007 Jos van den Oever <jos@vandenoever.info>
@@ -24,11 +24,9 @@
 #include "fileindexerconfig.h"
 #include "fileindexingqueue.h"
 #include "basicindexingqueue.h"
-#include "commitqueue.h"
 #include "eventmonitor.h"
-#include "database.h"
+#include "baloodebug.h"
 
-#include <QDebug>
 #include <QDBusMessage>
 #include <QDBusConnection>
 #include <KLocalizedString>
@@ -65,12 +63,6 @@ IndexScheduler::IndexScheduler(Database* db, FileIndexerConfig* config, QObject*
     m_eventMonitor = new EventMonitor(this);
     connect(m_eventMonitor, &EventMonitor::idleStatusChanged, this, &IndexScheduler::slotScheduleIndexing);
     connect(m_eventMonitor, &EventMonitor::powerManagementStatusChanged, this, &IndexScheduler::slotScheduleIndexing);
-
-    m_commitQ = new CommitQueue(m_db, this);
-    connect(m_commitQ, &CommitQueue::committed, this, &IndexScheduler::slotScheduleIndexing);
-    connect(m_commitQ, &CommitQueue::committed, this, &IndexScheduler::slotNotifyCommitted);
-    connect(m_basicIQ, &BasicIndexingQueue::newDocument, m_commitQ, &CommitQueue::add);
-    connect(m_fileIQ, &FileIndexingQueue::newDocument, m_commitQ, &CommitQueue::add);
 
     m_state = State_Normal;
     slotScheduleIndexing();
@@ -144,7 +136,7 @@ void IndexScheduler::slotStartedIndexing()
 
 void IndexScheduler::updateDir(const QString& path, UpdateDirFlags flags)
 {
-    m_basicIQ->enqueue(FileMapping(path), flags);
+    m_basicIQ->enqueue(path, flags);
     slotScheduleIndexing();
 }
 
@@ -165,7 +157,7 @@ void IndexScheduler::queueAllFoldersForUpdate(bool forceUpdate)
 
     // update everything again in case the folders changed
     Q_FOREACH (const QString& f, m_config->includeFolders()) {
-        m_basicIQ->enqueue(FileMapping(f), flags);
+        m_basicIQ->enqueue(f, flags);
     }
 
     // Required to switch off the FileIQ
@@ -185,30 +177,30 @@ void IndexScheduler::slotConfigChanged()
 
 void IndexScheduler::indexFile(const QString& path)
 {
-    m_basicIQ->enqueue(FileMapping(path));
+    m_basicIQ->enqueue(path);
 }
 
 void IndexScheduler::indexXattr(const QString& path)
 {
-    m_basicIQ->enqueue(FileMapping(path), ExtendedAttributesOnly);
+    m_basicIQ->enqueue(path, ExtendedAttributesOnly);
 }
 
 void IndexScheduler::setStateFromEvent()
 {
    //Don't change the state if already suspended
     if (m_state == State_Suspended) {
-        qDebug() << "Suspended";
+        qCDebug(BALOO) << "Suspended";
     }
     else if (m_eventMonitor->isOnBattery()) {
-        qDebug() << "Battery";
+        qCDebug(BALOO) << "Battery";
         m_state = State_OnBattery;
     }
     else if (m_eventMonitor->isIdle()) {
-        qDebug() << "Idle";
+        qCDebug(BALOO) << "Idle";
         m_state = State_UserIdle;
     }
     else {
-        qDebug() << "Normal";
+        qCDebug(BALOO) << "Normal";
         m_state = State_Normal;
     }
 }
@@ -217,7 +209,7 @@ bool IndexScheduler::shouldRunBasicQueue()
 {
     switch (m_state) {
         case State_Suspended:
-            qDebug() << "No basic queue: suspended";
+            qCDebug(BALOO) << "No basic queue: suspended";
             return false;
         case State_OnBattery:
         case State_UserIdle:
@@ -233,13 +225,13 @@ bool IndexScheduler::shouldRunBasicQueue()
 bool IndexScheduler::shouldRunFileQueue()
 {
     if (!m_basicIQ->isEmpty()){
-        qDebug() << "Basic queue not empty, so no file queue.";
+        qCDebug(BALOO) << "Basic queue not empty, so no file queue.";
         return false;
     }
     switch (m_state) {
         case State_Suspended:
         case State_OnBattery:
-            qDebug() << "No file queue: suspended or on battery";
+            qCDebug(BALOO) << "No file queue: suspended or on battery";
             return false;
         case State_UserIdle:
             m_fileIQ->setDelay(0);
@@ -285,7 +277,7 @@ void IndexScheduler::slotScheduleIndexing()
         }
     }
 
-    if (m_basicIQ->isEmpty() && m_fileIQ->isEmpty() && m_commitQ->isEmpty()) {
+    if (m_basicIQ->isEmpty() && m_fileIQ->isEmpty()) {
         setIndexingStarted(false);
     }
 }
@@ -316,11 +308,7 @@ void IndexScheduler::emitStatusStringChanged()
     }
 }
 
-void IndexScheduler::removeFileData(int id)
-{
-    m_commitQ->remove(id);
-}
-
+// FIXME: This is now never called cause we do not have a commit queue
 void IndexScheduler::slotNotifyCommitted()
 {
     QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/files"),
