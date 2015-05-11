@@ -130,6 +130,40 @@ void putVarint64(QByteArray* dst, quint64 v)
     dst->append(buf, ptr - buf);
 }
 
+void putDifferentialVarInt32(QByteArray* dst, const QVector<quint32>& values)
+{
+    putVarint32(dst, values.size());
+    if (values.isEmpty()) {
+        return;
+    }
+
+    quint32 v = values.first();
+    putVarint32(dst, v);
+    for (int i = 1; i < values.size(); i++) {
+        quint32 n = values[i];
+        putVarint32(dst, n - v);
+        v = n;
+    }
+}
+
+char* getDifferentialVarInt32(char* p, char* limit, QVector<quint32>* values)
+{
+    quint32 size;
+    p = getVarint32Ptr(p, limit, &size);
+
+    quint32 v = 0;
+    while (p < limit && size) {
+        quint32 n;
+        p = getVarint32Ptr(p, limit, &n);
+
+        values->append(n + v);
+        v += n;
+        size--;
+    }
+
+    return p;
+}
+
 int varintLength(quint64 v)
 {
     int len = 1;
