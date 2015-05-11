@@ -62,12 +62,6 @@ Transaction::Transaction(Database* db, Transaction::TransactionType type)
 {
 }
 
-Transaction::Transaction(const Transaction& rhs)
-    : m_dbis(rhs.m_dbis)
-{
-    Q_ASSERT(0);
-}
-
 Transaction::~Transaction()
 {
     if (m_writeTrans)

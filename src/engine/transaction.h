@@ -112,7 +112,7 @@ public:
     void renameFilePath(quint64 id, const Document& newDoc);
 
 private:
-    Transaction(const Transaction& rhs);
+    Transaction(const Transaction& rhs) = delete;
 
     const DatabaseDbis& m_dbis;
     MDB_txn* m_txn;
