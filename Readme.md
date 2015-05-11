@@ -1,6 +1,6 @@
 # Baloo
 
-[![Coverity Scan Build Status]](https://scan.coverity.com/projects/3259/badge.svg)](https://scan.coverity.com/projects/3259)
+[![Coverity Scan Build Status](https://scan.coverity.com/projects/3259/badge.svg)](https://scan.coverity.com/projects/3259)
 
 Baloo provides file search and indexing.
 
