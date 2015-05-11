@@ -32,7 +32,6 @@ PositionCodec::PositionCodec()
 QByteArray PositionCodec::encode(const QVector<PositionInfo>& list)
 {
     QByteArray data;
-    QDataStream stream(&data, QIODevice::WriteOnly);
 
     for (const PositionInfo& pos : list) {
         putFixed64(&data, pos.docId);
