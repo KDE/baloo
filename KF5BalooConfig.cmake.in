@@ -5,13 +5,13 @@ set(BALOO_DBUS_INTERFACES_DIR "${PACKAGE_PREFIX_DIR}/@DBUS_INTERFACES_INSTALL_DI
 find_dependency(Qt5Core)
 find_dependency(KF5CoreAddons "@KF5_VERSION@")
 find_dependency(KF5FileMetaData "@BALOO_VERSION@")
-find_dependency(Xapian)
+#find_dependency(LMDB)
 
 include(FeatureSummary)
 
-set_package_properties(Xapian PROPERTIES
-    DESCRIPTION "The Xapian search engine library"
-    URL "http://xapian.org"
+set_package_properties(LMDB PROPERTIES
+    DESCRIPTION "The Lightning Memory-Mapped Databse (LMDB)"
+    URL "http://symas.com/mdb"
 )
 
 include("${CMAKE_CURRENT_LIST_DIR}/KF5BalooTargets.cmake")

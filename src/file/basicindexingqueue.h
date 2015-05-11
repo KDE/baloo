@@ -22,19 +22,16 @@
 #define BASICINDEXINGQUEUE_H
 
 #include "indexingqueue.h"
-#include "filemapping.h"
 
 #include <QStack>
 #include <QPair>
-#include <QMimeDatabase>
-#include <xapian.h>
-
-
-class Database;
 
 namespace Baloo
 {
 
+class Database;
+class Transaction;
+class Document;
 class FileIndexerConfig;
 
 enum UpdateDirFlag {
@@ -73,29 +70,23 @@ class BasicIndexingQueue: public IndexingQueue
 public:
     explicit BasicIndexingQueue(Database* db, FileIndexerConfig* config, QObject* parent = 0);
 
-    virtual bool isEmpty();
-
-Q_SIGNALS:
-    void newDocument(unsigned id, Xapian::Document doc);
+    bool isEmpty() Q_DECL_OVERRIDE;
 
 public Q_SLOTS:
-    void enqueue(const FileMapping& file, UpdateDirFlags flags = UpdateDirFlags());
+    void enqueue(const QString& filePath, UpdateDirFlags flags = UpdateDirFlags());
 
     void clear();
     void clear(const QString& path);
 
 protected:
-    virtual void processNextIteration();
+    void processNextIteration() Q_DECL_OVERRIDE;
 
 private:
     /**
      * This method does not need to be synchronous. The indexing operation may be started
      * and on completion, the finishedIndexing method should be called
      */
-    void index(FileMapping& file, const QString& mimetype, UpdateDirFlags flags);
-
-    bool shouldIndex(FileMapping& file, const QString& mimetype) const;
-    bool shouldIndexContents(const QString& dir);
+    void index(Transaction* tr, const QString& file, const QString& mimetype, UpdateDirFlags flags);
 
     /**
      * Check if the \p path needs to be indexed based on the \p flags
@@ -105,13 +96,12 @@ private:
      * \return \c true the path is being indexed
      * \return \c false the path did not meet the criteria
      */
-    bool process(FileMapping& file, UpdateDirFlags flags);
+    bool process(const QString& file, UpdateDirFlags flags);
 
-    QStack< QPair<FileMapping, UpdateDirFlags> > m_paths;
+    QStack< QPair<QString, UpdateDirFlags> > m_paths;
 
     Database* m_db;
     FileIndexerConfig* m_config;
-    QMimeDatabase m_mimeDb;
 };
 
 }

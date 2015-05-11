@@ -1,5 +1,6 @@
+add_subdirectory(codecs)
+add_subdirectory(engine)
 add_subdirectory(lib)
-add_subdirectory(xapian)
 add_subdirectory(file)
 add_subdirectory(kioslaves)
 add_subdirectory(tools)

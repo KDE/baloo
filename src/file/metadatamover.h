@@ -1,5 +1,6 @@
 /* This file is part of the KDE Project
    Copyright (c) 2009-2011 Sebastian Trueg <trueg@kde.org>
+   Copyright (c) 2013-2014 Vishesh Handa <vhanda@kde.org>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -16,15 +17,16 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef _METADATA_MOVER_H_
-#define _METADATA_MOVER_H_
+#ifndef BALOO_METADATA_MOVER_H_
+#define BALOO_METADATA_MOVER_H_
 
 #include <QObject>
 
-class Database;
-
 namespace Baloo
 {
+
+class Database;
+class Transaction;
 
 class MetadataMover : public QObject
 {
@@ -48,23 +50,17 @@ Q_SIGNALS:
      */
     void movedWithoutData(const QString& path);
 
-    /**
-     * Emitted when file with id \p id has been removed. This is emitted
-     * so that the clients using this id can update their databases.
-     */
-    void fileRemoved(int id);
-
 private:
     /**
      * Remove the metadata for file \p url
      */
-    void removeMetadata(const QString& url);
+    void removeMetadata(Transaction* tr, const QString& url);
 
     /**
      * Recursively update the nie:url and nie:isPartOf properties
      * of the resource describing \p from.
      */
-    void updateMetadata(const QString& from, const QString& to);
+    void updateMetadata(Transaction* tr, const QString& from, const QString& to);
 
     Database* m_db;
 };

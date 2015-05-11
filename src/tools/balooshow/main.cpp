@@ -26,17 +26,20 @@
 #include <QFileInfo>
 #include <QTextStream>
 #include <QStandardPaths>
+#include <QDebug>
 
 #include <KAboutData>
 #include <KLocalizedString>
 
-#include "file.h"
-#include "searchstore.h" // for deserialize
+#include <QJsonDocument>
+#include <QJsonObject>
+
+#include "idutils.h"
+#include "database.h"
+#include "transaction.h"
 
 #include <KFileMetaData/PropertyInfo>
 
-#include "src/xapian/xapiandatabase.h"
-#include "src/xapian/xapiandocument.h"
 
 QString colorString(const QString& input, int color)
 {
@@ -61,8 +64,8 @@ int main(int argc, char* argv[])
 
     QCommandLineParser parser;
     parser.addPositionalArgument(QLatin1String("files"), QLatin1String("The file urls"));
-    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("x") << QStringLiteral("xapian"),
-                                        QStringLiteral("Print internal xapian info")));
+    parser.addOption(QCommandLineOption(QStringList() << QLatin1String("x"),
+                                        QLatin1String("Print internal info")));
     parser.addHelpOption();
     parser.process(app);
 
@@ -73,7 +76,7 @@ int main(int argc, char* argv[])
     }
 
     //
-    // The Resource Uri
+    // File Urls
     //
     QStringList urls;
     Q_FOREACH (const QString& arg, args) {
@@ -88,28 +91,41 @@ int main(int argc, char* argv[])
     QTextStream stream(stdout);
     QString text;
 
-    Q_FOREACH (const QString& url, urls) {
-        Baloo::File file;
+    const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QStringLiteral("/baloo");
+
+    Baloo::Database db(path);
+    db.open(Baloo::Database::OpenDatabase);
+
+    Baloo::Transaction tr(db, Baloo::Transaction::ReadOnly);
+
+    for (QString url : urls) {
+        quint64 fid = 0;
         if (url.startsWith(QLatin1String("file:"))) {
-            file.load(url.toUtf8());
-        }
-        else {
-            file.load(url);
+            fid = url.mid(5).toULongLong();
+            url = QFile::decodeName(tr.documentUrl(fid));
+        } else {
+            fid = Baloo::filePathToId(QFile::encodeName(url));
         }
 
-        int fid = Baloo::deserialize("file", file.id());
-
-        if (fid && !file.path().isEmpty()) {
+        bool hasFile = tr.hasDocument(fid);
+        if (hasFile) {
             text = colorString(QString::number(fid), 31);
             text += QLatin1String(" ");
-            text += colorString(file.path(), 32);
+            text += colorString(QString::number(Baloo::idToDeviceId(fid)), 28);
+            text += QLatin1String(" ");
+            text += colorString(QString::number(Baloo::idToInode(fid)), 28);
+            text += QLatin1String(" ");
+            text += colorString(url, 32);
             stream << text << endl;
         }
         else {
             stream << "No index information found" << endl;
+            continue;
         }
 
-        KFileMetaData::PropertyMap propMap = file.properties();
+        const QJsonDocument jdoc = QJsonDocument::fromJson(tr.documentData(fid));
+        const QVariantMap varMap = jdoc.object().toVariantMap();
+        KFileMetaData::PropertyMap propMap = KFileMetaData::toPropertyMap(varMap);
         KFileMetaData::PropertyMap::const_iterator it = propMap.constBegin();
         for (; it != propMap.constEnd(); ++it) {
             QString str;
@@ -127,45 +143,44 @@ int main(int argc, char* argv[])
             stream << "\t" << pi.displayName() << ": " << str << endl;
         }
 
-        if (parser.isSet(QStringLiteral("xapian"))) {
-            const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)
-                                + QLatin1String("/baloo/file");
+        if (parser.isSet(QStringLiteral("x"))) {
+            QVector<QByteArray> terms = tr.documentTerms(fid);
+            QVector<QByteArray> fileNameTerms = tr.documentFileNameTerms(fid);
+            QVector<QByteArray> xAttrTerms = tr.documentXattrTerms(fid);
 
-            Baloo::XapianDatabase db(path);
-            Baloo::XapianDocument xapDoc = db.document(fid);
-            Xapian::Document doc = xapDoc.doc();
+            auto join = [](const QVector<QByteArray>& v) {
+                QByteArray ba;
+                for (const QByteArray& arr : v) {
+                    ba.append(arr);
+                    ba.append(' ');
+                }
+                return ba;
+            };
 
-            QStringList prefixedWords;
-            QStringList normalWords;
+            stream << "\nInternal Info\n";
+            stream << "Terms: " << join(terms) << "\n";
+            stream << "File Name Terms: " << join(fileNameTerms) << "\n";
+            stream << "XAttr Terms: " << join(xAttrTerms) << "\n\n";
+
             QHash<int, QStringList> propertyWords;
 
-            for (auto it = doc.termlist_begin(); it != doc.termlist_end(); ++it) {
-                std::string str = *it;
-                QString word = QString::fromUtf8(str.c_str(), str.length());
+            for (const QByteArray& arr : terms) {
+                QString word = QString::fromUtf8(arr);
 
                 if (word[0].isUpper()) {
                     if (word[0] == QLatin1Char('X')) {
                         int posOfNonNumeric = 1;
-                        while (word[posOfNonNumeric].isNumber() && posOfNonNumeric < 3) {
+                        while (word[posOfNonNumeric] != '-') {
                             posOfNonNumeric++;
                         }
 
                         int propNum = word.mid(1, posOfNonNumeric-1).toInt();
-                        QString value = word.mid(posOfNonNumeric);
+                        QString value = word.mid(posOfNonNumeric + 1);
 
                         propertyWords[propNum].append(value);
                     }
-                    else {
-                        prefixedWords << word;
-                    }
-                } else {
-                    normalWords << word;
                 }
             }
-
-            stream << "\nXapian Internal Info\n" << endl;
-            stream << "Words: " << normalWords.join(" ") << endl << endl;
-            stream << "Prefixed Words: " << prefixedWords.join(" ") << endl << endl;
 
             for (auto it = propertyWords.constBegin(); it != propertyWords.constEnd(); it++) {
                 auto prop = static_cast<KFileMetaData::Property::Property>(it.key());

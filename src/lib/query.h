@@ -1,6 +1,6 @@
 /*
  * This file is part of the KDE Baloo Project
- * Copyright (C) 2013  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2013-2015  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef QUERY_H
-#define QUERY_H
+#ifndef BALOO_QUERY_H
+#define BALOO_QUERY_H
 
 #include "core_export.h"
 #include "resultiterator.h"
@@ -30,14 +30,11 @@
 
 namespace Baloo {
 
-class Term;
-
 /**
  * The Query class is the central class to query to search for files from the Index.
- * This class can be used in multiple ways -
  *
- * \section "Query Parser" - This can be used by setting the search string via setSearchString.
- * The parser recognizes words along with AND / OR and parenthesis and specific properties.
+ * This class has an inbuilt parser which recognizes words along with AND / OR and parenthesis
+ * and specific properties. This can be used with the setSearchString method
  *
  * @example -
  * "Fire" -> Looks for all files which contain the word "Fire"
@@ -63,22 +60,13 @@ class Term;
  * The Query Parser recognizes a large number of properties. These property names can be looked
  * up in KFileMetaData::Property::Property. The type of the file can mentioned with the property
  * 'type' or 'kind'.
- *
- *  \section "Manual Query Creation" - The query can also be created by manually using the Term
- * class and generate an entire query. Either this approach or the Query Parser approach should
- * be used. They both cannot be used at the same time, as the Query Parser will overwrite the main
- * Term.
  */
 class BALOO_CORE_EXPORT Query
 {
 public:
     Query();
-    Query(const Term& t);
     Query(const Query& rhs);
     ~Query();
-
-    void setTerm(const Term& t);
-    Term term() const;
 
     /**
      * Add a type to the results of the query.
@@ -99,15 +87,13 @@ public:
     /**
      * Set some text which should be used to search for Items. This
      * contain a single word or an entire sentence.
-     *
-     * This will OVERRIDE any Term that has been set
      */
     void setSearchString(const QString& str);
     QString searchString() const;
 
     /**
      * Only a maximum of \p limit results will be returned.
-     * By default the limit is 100000.
+     * By default the value is -1
      */
     void setLimit(uint limit);
     uint limit() const;
@@ -118,9 +104,9 @@ public:
     /**
      * Filter the results in the specified date range.
      *
-     * The year/month/day may be set to -1 in order to ignore it.
+     * The year/month/day may be set to 0 in order to ignore it.
      */
-    void setDateFilter(int year, int month = -1, int day = -1);
+    void setDateFilter(int year, int month = 0, int day = 0);
 
     int yearFilter() const;
     int monthFilter() const;
@@ -172,4 +158,4 @@ private:
 };
 
 }
-#endif // QUERY_H
+#endif // BALOO_QUERY_H

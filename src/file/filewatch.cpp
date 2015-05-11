@@ -24,6 +24,7 @@
 #include "regexpcache.h"
 #include "database.h"
 #include "pendingfile.h"
+#include "baloodebug.h"
 
 #ifdef BUILD_KINOTIFY
 #include "kinotify.h"
@@ -33,7 +34,6 @@
 #include <QtCore/QThread>
 #include <QtDBus/QDBusConnection>
 
-#include <QDebug>
 #include <KConfigGroup>
 
 using namespace Baloo;
@@ -46,9 +46,11 @@ FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
     , m_dirWatch(0)
 #endif
 {
+    Q_ASSERT(db);
+    Q_ASSERT(config);
+
     m_metadataMover = new MetadataMover(m_db, this);
     connect(m_metadataMover, &MetadataMover::movedWithoutData, this, &FileWatch::indexFile);
-    connect(m_metadataMover, &MetadataMover::fileRemoved, this, &FileWatch::fileRemoved);
 
     m_pendingFileQueue = new PendingFileQueue(this);
     connect(m_pendingFileQueue, &PendingFileQueue::indexFile, this, &FileWatch::indexFile);
@@ -89,7 +91,7 @@ FileWatch::~FileWatch()
 // FIXME: listen to Create for folders!
 void FileWatch::watchFolder(const QString& path)
 {
-    qDebug() << path;
+    qCDebug(BALOO) << path;
 #ifdef BUILD_KINOTIFY
     if (m_dirWatch && !m_dirWatch->watchingPath(path)) {
         KInotify::WatchEvents flags(KInotify::EventMove | KInotify::EventDelete | KInotify::EventDeleteSelf
@@ -139,7 +141,7 @@ void FileWatch::slotFileModified(const QString& path)
     PendingFile file(path);
     file.setModified();
 
-    //qDebug() << "MOD" << path;
+    //qCDebug(BALOO) << "MOD" << path;
     m_pendingFileQueue->enqueue(file);
 }
 
@@ -157,7 +159,7 @@ void FileWatch::slotFileClosedAfterWrite(const QString& path)
     if (fileModification.secsTo(current) <= 1000 * 60 || dirModification.secsTo(current) <= 1000 * 60) {
         PendingFile file(path);
         file.setClosedOnWrite();
-        //qDebug() << "CLOSE" << path;
+        //qCDebug(BALOO) << "CLOSE" << path;
         m_pendingFileQueue->enqueue(file);
     }
 }
@@ -203,12 +205,14 @@ bool raiseWatchLimit()
     */
 }
 
-//This slot is connected to a signal emitted in KInotify when
-//inotify_add_watch fails with ENOSPC.
+// This slot is connected to a signal emitted in KInotify when
+// inotify_add_watch fails with ENOSPC.
 void FileWatch::slotInotifyWatchUserLimitReached(const QString& path)
 {
+    Q_ASSERT_X(0, "Baloo::FileWatch", "inotify limit is too low. Please increase it");
+
     if (raiseWatchLimit()) {
-        qDebug() << "Successfully raised watch limit, re-adding " << path;
+        qCDebug(BALOO) << "Successfully raised watch limit, re-adding " << path;
         if (m_dirWatch)
             m_dirWatch->resetUserLimit();
         watchFolder(path);

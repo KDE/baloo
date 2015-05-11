@@ -21,9 +21,8 @@
 */
 
 #include "fileindexingjob.h"
-#include "util.h"
 #include "fileindexerconfig.h"
-#include "database.h"
+#include "baloodebug.h"
 
 #include <QDebug>
 #include <QStandardPaths>
@@ -33,7 +32,7 @@
 
 using namespace Baloo;
 
-FileIndexingJob::FileIndexingJob(const QVector<uint>& files, QObject* parent)
+FileIndexingJob::FileIndexingJob(const QVector<quint64>& files, QObject* parent)
     : KJob(parent)
     , m_process(0)
     , m_suspended(false)
@@ -58,7 +57,7 @@ void FileIndexingJob::start()
     start(m_args);
 }
 
-void FileIndexingJob::start(const QVector<uint>& files)
+void FileIndexingJob::start(const QVector<quint64>& files)
 {
     // setup the external process which does the actual indexing
     static const QString exe = QStandardPaths::findExecutable(QLatin1String("baloo_file_extractor"));
@@ -67,14 +66,14 @@ void FileIndexingJob::start(const QVector<uint>& files)
     m_process = new QProcess(this);
 
     QStringList args;
-    Q_FOREACH (const uint& file, files)
+    for (quint64 file : files)
         args << QString::number(file);
 
     if (!m_customDbPath.isEmpty()) {
         args << QLatin1String("--db") << m_customDbPath;
         args << QLatin1String("--ignoreConfig");
     }
-    qDebug() << args;
+    qCDebug(BALOO) << args;
 
     connect(m_process, SIGNAL(finished(int,QProcess::ExitStatus)),
             this, SLOT(slotIndexedFile(int,QProcess::ExitStatus)));
@@ -106,11 +105,11 @@ void FileIndexingJob::slotIndexedFile(int, QProcess::ExitStatus exitStatus)
     }
 
     // Failed to index. We must figure out which was the offending file
-    qDebug() << "Indexing failed. Trying to determine offending file";
+    qCDebug(BALOO) << "Indexing failed. Trying to determine offending file";
 
     // Here it is!
     if (m_args.size() == 1) {
-        uint doc = m_args.first();
+        quint64 doc = m_args.first();
         qWarning() << "Indexer crashed while indexing" << doc;
         qWarning() << "Blacklisting this file";
         Q_EMIT indexingFailed(doc);
@@ -140,7 +139,7 @@ void FileIndexingJob::slotIndexedFile(int, QProcess::ExitStatus exitStatus)
 void FileIndexingJob::slotProcessTimerTimeout()
 {
     // Emulate a crash so that we narrow down the file which is taking too long
-    qDebug() << "Process took too long killing";
+    qCDebug(BALOO) << "Process took too long killing";
     slotIndexedFile(1, QProcess::CrashExit);
 }
 

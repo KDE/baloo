@@ -1,6 +1,6 @@
 /* This file is part of the KDE Project
    Copyright (c) 2008-2010 Sebastian Trueg <trueg@kde.org>
-   Copyright (c) 2012 Vishesh Handa <me@vhanda.in>
+   Copyright (c) 2012-2015 Vishesh Handa <vhanda@kde.org>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -17,20 +17,17 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef _BALOO_FILEINDEXER_INDEX_SCHEDULER_H_
-#define _BALOO_FILEINDEXER_INDEX_SCHEDULER_H_
+#ifndef BALOO_FILEINDEXER_INDEX_SCHEDULER_H_
+#define BALOO_FILEINDEXER_INDEX_SCHEDULER_H_
 
 #include "basicindexingqueue.h" // Required for UpdateDirFlags
-#include "filemapping.h"
-
-class Database;
 
 namespace Baloo
 {
 
+class Database;
 class FileIndexingQueue;
 class FileIndexerConfig;
-class CommitQueue;
 class EventMonitor;
 class SchedulerTest;
 
@@ -55,8 +52,6 @@ public:
      * A user readable description of the scheduler's status
      */
     QString userStatusString() const;
-
-    void removeFileData(int id);
 
 public Q_SLOTS:
     void suspend();
@@ -136,7 +131,6 @@ private:
     // Queues
     BasicIndexingQueue* m_basicIQ;
     FileIndexingQueue* m_fileIQ;
-    CommitQueue* m_commitQ;
 
     EventMonitor* m_eventMonitor;
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of the KDE Baloo Project
- * Copyright (C) 2013  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2013-2015  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,59 +20,46 @@
  *
  */
 
-#ifndef _BALOO_SEARCHSTORE_H
-#define _BALOO_SEARCHSTORE_H
+#ifndef BALOO_SEARCHSTORE_H
+#define BALOO_SEARCHSTORE_H
 
-#include <QObject>
 #include <QString>
+#include <QDateTime>
 #include <QHash>
-#include <QUrl>
+#include "term.h"
 
 namespace Baloo {
 
-class Query;
+class Term;
+class Database;
+class Transaction;
+class EngineQuery;
+class PostingIterator;
 
-class SearchStore : public QObject
+class SearchStore
 {
-    Q_OBJECT
 public:
-    explicit SearchStore(QObject* parent = 0);
-    virtual ~SearchStore();
+    SearchStore();
+    ~SearchStore();
 
-    /**
-     * Returns a list of types which can be searched for
-     * in this store
-     */
-    virtual QStringList types() = 0;
+    QStringList exec(const Term& term, int limit);
 
-    /**
-     * Executes the particular query synchronously.
-     *
-     * \return Returns a integer representating the integer
-     */
-    virtual int exec(const Query& query) = 0;
-    virtual bool next(int queryId) = 0;
-    virtual void close(int queryId) = 0;
+private:
+    QByteArray fetchPrefix(const QByteArray& property) const;
 
-    virtual QByteArray id(int queryId) = 0;
+    Database* m_db;
+    QHash<QByteArray, QByteArray> m_prefixes;
 
-    virtual QString filePath(int queryId) = 0;
+    PostingIterator* constructQuery(Transaction* tr, const Term& term);
+
+    EngineQuery constructContainsQuery(const QByteArray& prefix, const QString& value);
+    EngineQuery constructEqualsQuery(const QByteArray& prefix, const QString& value);
+    EngineQuery constructTypeQuery(const QString& type);
+
+    PostingIterator* constructRatingQuery(Transaction* tr, int rating);
+    PostingIterator* constructMTimeQuery(Transaction* tr, const QDateTime& dt, Term::Comparator com);
 };
 
-//
-// Convenience functions
-//
-inline QByteArray serialize(const QByteArray& namespace_, int id) {
-    return namespace_ + ':' + QByteArray::number(id);
 }
 
-inline int deserialize(const QByteArray& namespace_, const QByteArray& str) {
-    // The +1 is for the ':'
-    return str.mid(namespace_.size() + 1).toInt();
-}
-
-}
-
-Q_DECLARE_INTERFACE(Baloo::SearchStore, "org.kde.Baloo.SearchStore")
-
-#endif // _BALOO_SEARCHSTORE_H
+#endif // BALOO_SEARCHSTORE_H

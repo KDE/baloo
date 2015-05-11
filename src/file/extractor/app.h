@@ -29,12 +29,12 @@
 
 #include <KFileMetaData/ExtractorCollection>
 
-#include "result.h"
-#include "../database.h"
+#include "database.h"
 #include "../fileindexerconfig.h"
-#include "filemapping.h"
 
 namespace Baloo {
+
+class Transaction;
 
 class App : public QObject
 {
@@ -48,22 +48,16 @@ public:
     void startProcessing(const QStringList& args);
 
 private Q_SLOTS:
-    void processNextUrl();
-    void saveChanges();
-
-Q_SIGNALS:
-    void saved();
+    void process();
 
 private:
-    void printDebug();
+    void index(Transaction* tr, const QString& filePath, quint64 id);
     bool ignoreConfig() const;
 
-    QVector<Result> m_results;
-    QStringList m_urls;
+    QStringList m_args;
+
     bool m_debugEnabled;
     bool m_ignoreConfig;
-
-    QString m_path;
 
     Database m_db;
     QMimeDatabase m_mimeDb;
@@ -72,7 +66,6 @@ private:
 
     int m_termCount;
     QList<QString> m_updatedFiles;
-    QVector<uint> m_docsToDelete;
 
     FileIndexerConfig m_config;
 };

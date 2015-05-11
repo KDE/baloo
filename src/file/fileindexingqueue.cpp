@@ -1,6 +1,6 @@
 /*
  * This file is part of the KDE Baloo Project
- * Copyright (C) 2012-2013  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2012-2015  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -23,8 +23,8 @@
 
 #include "fileindexingqueue.h"
 #include "fileindexingjob.h"
-#include "util.h"
 #include "database.h"
+#include "transaction.h"
 
 #include <QStandardPaths>
 #include <QDebug>
@@ -53,24 +53,12 @@ void FileIndexingQueue::fillQueue()
     if (m_indexJob)
         return;
 
-    try {
-        Xapian::Database* db = m_db->xapianDatabase()->db();
-        Xapian::Enquire enquire(*db);
-        enquire.set_query(Xapian::Query("Z1"));
-        enquire.set_weighting_scheme(Xapian::BoolWeight());
-
-        Xapian::MSet mset = enquire.get_mset(0, m_maxSize - m_fileQueue.size());
-        Xapian::MSetIterator it = mset.begin();
-        for (; it != mset.end(); ++it) {
-            m_fileQueue << *it;
-        }
+    QVector<quint64> newItems;
+    {
+        Transaction tr(m_db, Transaction::ReadOnly);
+        newItems = tr.fetchPhaseOneIds(m_maxSize - m_fileQueue.size());
     }
-    catch (const Xapian::DatabaseModifiedError&) {
-        fillQueue();
-    }
-    catch (const Xapian::Error&) {
-        return;
-    }
+    m_fileQueue << newItems;
 }
 
 bool FileIndexingQueue::isEmpty()
@@ -80,7 +68,7 @@ bool FileIndexingQueue::isEmpty()
 
 void FileIndexingQueue::processNextIteration()
 {
-    QVector<uint> files;
+    QVector<quint64> files;
     files.reserve(m_batchSize);
 
     for (int i=0; i<m_batchSize && m_fileQueue.size(); ++i) {
@@ -104,24 +92,19 @@ void FileIndexingQueue::slotFinishedIndexingFile(KJob* job)
     m_indexJob = 0;
 
     // The process would have modified the db
-    m_db->xapianDatabase()->db()->reopen();
+    // m_db->xapianDatabase()->db()->reopen();
     if (m_fileQueue.isEmpty()) {
         fillQueue();
     }
     finishIteration();
 }
 
-void FileIndexingQueue::slotIndexingFailed(uint id)
+void FileIndexingQueue::slotIndexingFailed(quint64 id)
 {
-    m_db->xapianDatabase()->db()->reopen();
-    Xapian::Document doc;
-    try {
-        Xapian::Document doc = m_db->xapianDatabase()->db()->get_document(id);
-        updateIndexingLevel(doc, -1);
-        Q_EMIT newDocument(id, doc);
-    } catch (const Xapian::Error& err) {
-        qDebug() << err.get_description().c_str();
-    }
+    /*
+     * FIXME: Handle indexing failed
+     * Ideally, update the indexing level!
+     */
 }
 
 

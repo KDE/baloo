@@ -20,12 +20,12 @@
  *
  */
 
-#ifndef _BALOO_CORE_RESULT_ITERATOR_H
-#define _BALOO_CORE_RESULT_ITERATOR_H
+#ifndef BALOO_CORE_RESULT_ITERATOR_H
+#define BALOO_CORE_RESULT_ITERATOR_H
 
 #include "core_export.h"
 
-#include <QExplicitlySharedDataPointer>
+#include <QString>
 
 namespace Baloo {
 
@@ -36,22 +36,18 @@ class ResultIteratorPrivate;
 class BALOO_CORE_EXPORT ResultIterator
 {
 public:
-    ResultIterator();
     ResultIterator(const ResultIterator& rhs);
     ~ResultIterator();
 
-    // internal
-    ResultIterator(int id, SearchStore* store);
-
     bool next();
-
-    QByteArray id() const;
     QString filePath() const;
 
-    Result result() const;
 private:
-    QExplicitlySharedDataPointer<ResultIteratorPrivate> d;
+    ResultIterator(const QStringList& results);
+    ResultIteratorPrivate* d;
+
+    friend class Query;
 };
 
 }
-#endif // _BALOO_CORE_RESULT_ITERATOR_H
+#endif // BALOO_CORE_RESULT_ITERATOR_H

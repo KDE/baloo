@@ -1,6 +1,6 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
- * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
+ * This file is part of the KDE Baloo Project
+ * Copyright (C) 2014-2015  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,8 +20,9 @@
 
 #include "taglistjob.h"
 #include "db.h"
+#include "database.h"
+#include "transaction.h"
 
-#include <xapian.h>
 #include <QStringList>
 
 using namespace Baloo;
@@ -44,20 +45,17 @@ TagListJob::~TagListJob()
 
 void TagListJob::start()
 {
-    try {
-        Xapian::Database xapianDb(fileIndexDbPath());
-        Xapian::TermIterator it = xapianDb.allterms_begin("TAG-");
-        Xapian::TermIterator end = xapianDb.allterms_end("TAG-");
+    Database db(fileIndexDbPath());
+    db.open(Database::OpenDatabase);
 
-        for (; it != end; ++it ) {
-            std::string str = *it;
-            const QString tag = QString::fromUtf8(str.c_str(), str.length());
-            if (tag.startsWith(QLatin1String("TAG-"))) {
-                d->tags << tag.mid(4);
-            }
-        }
+    QVector<QByteArray> tagList;
+    {
+        Transaction tr(db, Transaction::ReadOnly);
+        tagList = tr.fetchTermsStartingWith("TAG-");
     }
-    catch (const Xapian::DatabaseOpeningError&) {
+    d->tags.reserve(tagList.size());
+    for (const QByteArray& ba : tagList) {
+        d->tags << QString::fromUtf8(ba.mid(4));
     }
 
     emitResult();

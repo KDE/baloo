@@ -67,7 +67,6 @@ QueryResultsModel::QueryResultsModel(QObject *parent)
     : QAbstractListModel(parent),
       m_query(new Query(this))
 {
-    qRegisterMetaType<Baloo::ResultIterator>("Baloo::ResultIterator");
     connect(m_query, &Query::searchStringChanged, this, &QueryResultsModel::populateModel);
     connect(m_query, &Query::limitChanged, this, &QueryResultsModel::populateModel);
 }
@@ -79,7 +78,6 @@ QueryResultsModel::~QueryResultsModel()
 QHash<int, QByteArray> QueryResultsModel::roleNames() const
 {
     QHash<int, QByteArray> roleNames = QAbstractListModel::roleNames();
-    roleNames[IdRole] = "id";
     roleNames[UrlRole] = "url";
 
     return roleNames;
@@ -93,17 +91,15 @@ QVariant QueryResultsModel::data(const QModelIndex &index, int role) const
 
     switch (role) {
     case Qt::DisplayRole: {
-        const QUrl url = QUrl::fromLocalFile(m_balooEntryList.at(index.row()).filePath());
+        const QUrl url = QUrl::fromLocalFile(m_balooEntryList.at(index.row()));
         return url.fileName();
     }
     case Qt::DecorationRole: {
-        QString localUrl = m_balooEntryList.at(index.row()).filePath();
+        QString localUrl = m_balooEntryList.at(index.row());
         return QMimeDatabase().mimeTypeForFile(localUrl).iconName();
     }
-    case IdRole:
-        return m_balooEntryList.at(index.row()).id();
     case UrlRole:
-        return m_balooEntryList.at(index.row()).filePath();
+        return m_balooEntryList.at(index.row());
     default:
         return QVariant();
     }
@@ -145,8 +141,7 @@ void QueryResultsModel::populateModel()
     beginResetModel();
     m_balooEntryList.clear();
     while (it.next()) {
-        Baloo::Result res = it.result();
-        m_balooEntryList << res;
+        m_balooEntryList << it.filePath();
     }
     endResetModel();
 }

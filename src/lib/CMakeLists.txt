@@ -1,14 +1,11 @@
 set(BALOO_LIB_SRCS
-    searchstore.cpp
     term.cpp
     query.cpp
     queryrunnable.cpp
     resultiterator.cpp
-    result.cpp
     advancedqueryparser.cpp
 
     file.cpp
-    filemapping.cpp
     filemonitor.cpp
     taglistjob.cpp
     db.cpp
@@ -18,12 +15,9 @@ set(BALOO_LIB_SRCS
     ../file/storagedevices.cpp
     ../file/regexpcache.cpp
     ../file/fileexcludefilters.cpp
+    ../file/baloodebug.cpp
 
-    # Search Store
-    xapiansearchstore.cpp
-    wildcardpostingsource.cpp
-    pathfilterpostingsource.cpp
-    filesearchstore.cpp
+    searchstore.cpp
 )
 
 add_library(KF5Baloo ${BALOO_LIB_SRCS})
@@ -39,9 +33,8 @@ target_link_libraries(KF5Baloo
     PRIVATE
     KF5::ConfigCore
     Qt5::DBus
-    Qt5::Sql
     KF5::Solid
-    KF5::BalooXapian
+    KF5::BalooEngine
 )
 
 set_target_properties(KF5Baloo PROPERTIES
@@ -55,10 +48,8 @@ generate_export_header(KF5Baloo BASE_NAME BALOO_CORE EXPORT_FILE_NAME core_expor
 
 ecm_generate_headers(KF5Baloo_CamelCase_HEADERS
     HEADER_NAMES
-    Term
     Query
     QueryRunnable
-    Result
     ResultIterator
 
     File
@@ -84,6 +75,3 @@ install(FILES
     DESTINATION ${KF5_INCLUDE_INSTALL_DIR}/Baloo/Baloo
     COMPONENT Devel
 )
-
-add_subdirectory(tests)
-add_subdirectory(autotests)

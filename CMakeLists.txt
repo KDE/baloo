@@ -5,7 +5,7 @@ set(PROJECT_VERSION "5.9.90")
 
 # ECM setup
 find_package(ECM 1.2.0 REQUIRED NO_MODULE)
-set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${ECM_MODULE_PATH})
 
 include(GenerateExportHeader)
 include(ECMGenerateHeaders)
@@ -27,15 +27,15 @@ ecm_setup_version(${PROJECT_VERSION} VARIABLE_PREFIX BALOO
 )
 
 # Build dependencies
-find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Widgets Quick DBus Test Sql)
+find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Widgets Quick DBus Test)
 
 find_package(KF5 ${KF5_VERSION} REQUIRED COMPONENTS I18n Config IdleTime Auth Crash Solid KIO KDELibs4Support DBusAddons)
 find_package(KF5 ${PROJECT_VERSION} REQUIRED COMPONENTS FileMetaData)
 
-find_package(Xapian CONFIG)
-set_package_properties(Xapian PROPERTIES
-    DESCRIPTION "The Xapian search engine library"
-    URL "http://xapian.org"
+find_package(LMDB)
+set_package_properties(LMDB PROPERTIES
+    DESCRIPTION "Lightning Memory-Mapped Database (LMDB)"
+    URL "http://symas.com/mdb"
     TYPE REQUIRED
 )
 
@@ -46,17 +46,22 @@ add_definitions(-DQT_NO_KEYWORDS)
 kde_enable_exceptions()
 
 include_directories(
-  ${XAPIAN_INCLUDE_DIR}
+  ${LMDB_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/lib
   ${CMAKE_BINARY_DIR}/src/lib
-  ${CMAKE_BINARY_DIR}/src/xapian
-  ${CMAKE_SOURCE_DIR}/src/xapian
+  ${CMAKE_SOURCE_DIR}/src/codecs
+  ${CMAKE_BINARY_DIR}/src/engine
+  ${CMAKE_SOURCE_DIR}/src/engine
+  ${CMAKE_BINARY_DIR}/src/file
+  ${CMAKE_SOURCE_DIR}/src/file
 )
 
 # Targets
 add_subdirectory(src)
 add_subdirectory(icons)
+add_subdirectory(tests)
+add_subdirectory(autotests)
 
 # Config files
 set(CMAKECONFIG_INSTALL_DIR "${CMAKECONFIG_INSTALL_PREFIX}/KF5Baloo")

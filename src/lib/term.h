@@ -20,10 +20,8 @@
  *
  */
 
-#ifndef TERM_H
-#define TERM_H
-
-#include "core_export.h"
+#ifndef BALOO_TERM_H
+#define BALOO_TERM_H
 
 #include <QString>
 #include <QVariant>
@@ -31,7 +29,7 @@
 
 namespace Baloo {
 
-class BALOO_CORE_EXPORT Term
+class Term
 {
 public:
     enum Comparator {
@@ -131,21 +129,34 @@ private:
     Private* d;
 };
 
-inline Term operator &&(const Term& lhs, const Term& rhs) {
+inline Term operator &&(const Term& lhs, const Term& rhs)
+{
+    if (lhs.isEmpty())
+        return rhs;
+    else if (rhs.isEmpty())
+        return lhs;
+
     Term t(Term::And);
     t.addSubTerm(lhs);
     t.addSubTerm(rhs);
     return t;
 }
 
-inline Term operator ||(const Term& lhs, const Term& rhs) {
+inline Term operator ||(const Term& lhs, const Term& rhs)
+{
+    if (lhs.isEmpty())
+        return rhs;
+    else if (rhs.isEmpty())
+        return lhs;
+
     Term t(Term::Or);
     t.addSubTerm(lhs);
     t.addSubTerm(rhs);
     return t;
 }
 
-inline Term operator !(const Term& rhs) {
+inline Term operator !(const Term& rhs)
+{
     Term t(rhs);
     t.setNegation(!rhs.isNegated());
     return t;
@@ -153,6 +164,6 @@ inline Term operator !(const Term& rhs) {
 
 }
 
-BALOO_CORE_EXPORT QDebug operator <<(QDebug d, const Baloo::Term& t);
+QDebug operator <<(QDebug d, const Baloo::Term& t);
 
-#endif // TERM_H
+#endif

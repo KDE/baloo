@@ -21,11 +21,10 @@
  */
 
 #include "file.h"
-#include "filemapping.h"
-#include "searchstore.h"
 #include "db.h"
-
-#include <xapian.h>
+#include "database.h"
+#include "transaction.h"
+#include "idutils.h"
 
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -36,7 +35,6 @@ using namespace Baloo;
 
 class File::Private {
 public:
-    QByteArray id;
     QString url;
     KFileMetaData::PropertyMap propertyMap;
 };
@@ -69,11 +67,6 @@ const File& File::operator=(const File& f)
     return *this;
 }
 
-QByteArray File::id() const
-{
-    return d->id;
-}
-
 QString File::path() const
 {
     return d->url;
@@ -89,65 +82,39 @@ QVariant File::property(KFileMetaData::Property::Property property) const
     return d->propertyMap.value(property);
 }
 
-bool File::load(const QByteArray& id)
-{
-    d->id = id;
-    return load();
-}
-
 bool File::load(const QString& url)
 {
     d->url = QFileInfo(url).canonicalFilePath();
     return load();
 }
 
-
 bool File::load()
 {
     const QString& url = d->url;
-    if (url.size() && !QFile::exists(url)) {
-        //setError(Error_FileDoesNotExist);
-        //setErrorText(QLatin1String("File ") + url + QLatin1String(" does not exist"));
-        //emitResult();
+    if (url.isEmpty() || !QFile::exists(url)) {
         return false;
     }
 
-    FileMapping fileMap;
-    fileMap.setId(deserialize("file", d->id));
-    fileMap.setUrl(d->url);
+    Database db(fileIndexDbPath());
+    db.open(Database::OpenDatabase);
 
-    if (!fileMap.fetch(fileMappingDb())) {
-        return true;
-    }
-
-    d->id = serialize("file", fileMap.id());
-    d->url = fileMap.url();
-
-    // Fetch data from Xapian
-    try {
-        Xapian::Database db(fileIndexDbPath());
-        Xapian::Document doc = db.get_document(fileMap.id());
-
-        std::string docData = doc.get_data();
-        const QByteArray arr(docData.c_str(), docData.length());
-
-        QJsonDocument jdoc = QJsonDocument::fromJson(arr);
-        const QVariantMap varMap = jdoc.object().toVariantMap();
-
-        d->propertyMap = KFileMetaData::toPropertyMap(varMap);
-    }
-    catch (const Xapian::DocNotFoundError&){
-        // Send file for indexing to baloo_file
+    quint64 id = filePathToId(QFile::encodeName(d->url));
+    if (!id) {
         return false;
     }
-    catch (const Xapian::InvalidArgumentError& err) {
-        qWarning() << err.get_msg().c_str();
+
+    QByteArray arr;
+    {
+        Transaction tr(db, Transaction::ReadOnly);
+        arr = tr.documentData(id);
+    }
+    if (arr.isEmpty()) {
         return false;
     }
-    catch (const Xapian::Error& err) {
-        qWarning() << "Xapian error of type" << err.get_type() << ":" << err.get_msg().c_str();
-        return false;
-    }
+
+    const QJsonDocument jdoc = QJsonDocument::fromJson(arr);
+    const QVariantMap varMap = jdoc.object().toVariantMap();
+    d->propertyMap = KFileMetaData::toPropertyMap(varMap);
 
     return true;
 }

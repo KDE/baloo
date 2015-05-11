@@ -23,11 +23,8 @@
 #ifndef DBFUNCTIONS_H
 #define DBFUNCTIONS_H
 
-#include <QSqlDatabase>
+#include <QString>
 
-std::string fileIndexDbPath();
-
-QSqlDatabase fileMappingDb(const QString& path);
-QSqlDatabase fileMappingDb();
+QString fileIndexDbPath();
 
 #endif // DBFUNCTIONS_H

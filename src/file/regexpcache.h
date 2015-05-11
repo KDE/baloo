@@ -19,8 +19,8 @@
    License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _REGEXP_CACHE_H_
-#define _REGEXP_CACHE_H_
+#ifndef REGEXP_CACHE_H_
+#define REGEXP_CACHE_H_
 
 #include <QList>
 #include <QRegularExpression>

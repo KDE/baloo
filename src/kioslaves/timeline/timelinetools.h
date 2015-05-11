@@ -17,8 +17,8 @@
    Boston, MA 02110-1301, USA.
  */
 
-#ifndef _BALOO_TIMELINE_TOOLS_H_
-#define _BALOO_TIMELINE_TOOLS_H_
+#ifndef BALOO_TIMELINE_TOOLS_H_
+#define BALOO_TIMELINE_TOOLS_H_
 
 class QString;
 

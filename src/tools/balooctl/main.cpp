@@ -35,8 +35,9 @@
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
 
-#include "xapiandatabase.h"
-#include "filestatistics.h"
+#include "database.h"
+#include "transaction.h"
+//#include "filestatistics.h"
 
 using namespace Baloo;
 
@@ -124,27 +125,18 @@ int main(int argc, char* argv[])
             out << "Baloo File Indexer is NOT running\n";
         }
 
-        const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/file/");
+        const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/");
 
-        XapianDatabase database(path);
-        Xapian::Database* xdb = database.db();
-        Xapian::Enquire enquire(*xdb);
+        Database db(path);
+        db.open(Baloo::Database::OpenDatabase);
 
-        enquire.set_query(Xapian::Query("Z1"));
-        Xapian::MSet mset = enquire.get_mset(0, 10000000);
-        int phaseOne = mset.size();
+        Transaction tr(db, Transaction::ReadOnly);
 
-        enquire.set_query(Xapian::Query("Z2"));
-        mset = enquire.get_mset(0, 10000000);
-        int phaseTwo = mset.size();
+        uint phaseOne = tr.phaseOneSize();
+        uint total = tr.size();
 
-        enquire.set_query(Xapian::Query("Z-1"));
-        mset = enquire.get_mset(0, 10000000);
-        int failed = mset.size();
-
-        int total = xdb->get_doccount();
-
-        out << "Indexed " << phaseTwo << " / " << total << " files\n";
+        out << "Indexed " << total - phaseOne << " / " << total << " files\n";
+        /*
         if (failed) {
             out << "Failed to index " << failed << " files\n";
             out << "File IDs: ";
@@ -154,11 +146,8 @@ int main(int argc, char* argv[])
             }
             out << "\n";
         }
+        */
 
-        int actualTotal = phaseOne + phaseTwo + failed;
-        if (actualTotal != total) {
-            out << total - actualTotal << " files not accounted for\n";
-        }
         return 0;
     }
 
@@ -231,12 +220,14 @@ int main(int argc, char* argv[])
     }
 
     if (command == QStringLiteral("fileStatistics")) {
-        const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/file/");
+        const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/");
 
+        /*
         XapianDatabase database(path);
         FileStatistics stats(database);
         stats.compute();
         stats.print();
+        */
     }
     return 0;
 }

@@ -139,7 +139,6 @@ void TimelineProtocol::listDir(const QUrl& url)
 
     case DayFolder: {
         Query query;
-        query.addType(QLatin1String("File"));
         query.setDateFilter(m_date.year(), m_date.month(), m_date.day());
         query.setSortingOption(Query::SortNone);
 
@@ -230,7 +229,6 @@ void TimelineProtocol::listDays(int month, int year)
 bool TimelineProtocol::filesInDate(const QDate& date)
 {
     Query query;
-    query.addType(QLatin1String("File"));
     query.setLimit(1);
     query.setDateFilter(date.year(), date.month(), date.day());
     query.setSortingOption(Query::SortNone);
@@ -243,7 +241,6 @@ bool TimelineProtocol::filesInDate(const QDate& date)
 void TimelineProtocol::listThisYearsMonths()
 {
     Query query;
-    query.addType(QLatin1String("File"));
     query.setLimit(1);
     query.setSortingOption(Query::SortNone);
 

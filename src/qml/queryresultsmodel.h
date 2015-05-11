@@ -20,9 +20,6 @@
 #ifndef BALOODATAMODEL_H
 #define BALOODATAMODEL_H
 
-
-#include "result.h"
-
 #include <QAbstractListModel>
 #include <QString>
 
@@ -67,8 +64,7 @@ public:
     QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
 
     enum Roles {
-        IdRole = Qt::UserRole + 1,
-        UrlRole = Qt::UserRole + 2
+        UrlRole = Qt::UserRole + 1
     };
 
     void setQuery(Query *query);
@@ -81,7 +77,7 @@ private Q_SLOTS:
     void populateModel();
 
 private:
-    QList<Baloo::Result> m_balooEntryList;
+    QStringList m_balooEntryList;
     Query *m_query;
 };
 
