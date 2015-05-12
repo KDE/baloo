@@ -189,8 +189,8 @@ PostingIterator* PostingDB::iter(const QByteArray& term)
 // Posting Iterator
 //
 DBPostingIterator::DBPostingIterator(void* data, uint size)
-    : m_pos(-1)
-    , m_vec(PostingCodec().decode(QByteArray::fromRawData(static_cast<char*>(data), size)))
+    : m_vec(PostingCodec().decode(QByteArray::fromRawData(static_cast<char*>(data), size)))
+    , m_pos(-1)
 {
 }
 
