@@ -39,6 +39,10 @@ public:
     QByteArray get(quint64 docId);
 
     void del(quint64 docId);
+    /**
+     * If \p url is empty then the docId is deleted
+     */
+    void replace(quint64 docId, const QByteArray& url);
     void rename(quint64 docId, const QByteArray& newFileName);
 
     quint64 getId(quint64 docId, const QByteArray& fileName);
