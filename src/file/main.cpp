@@ -1,6 +1,6 @@
 /*
  * This file is part of the KDE Baloo Project
- * Copyright (C) 2013  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2013-2015  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,8 +24,6 @@
 #include <KCrash>
 #include <KLocalizedString>
 
-#include <KConfig>
-#include <KConfigGroup>
 #include <QDebug>
 #include <QFileInfo>
 #include <iostream>
@@ -47,10 +45,8 @@ int main(int argc, char** argv)
     lowerSchedulingPriority();
     lowerPriority();
 
-    KAboutData aboutData(QLatin1String("baloo_file"), i18n("Baloo File"), PROJECT_VERSION,
-                         i18n("An application to handle file metadata"),
-                         KAboutLicense::LGPL_V2);
-    aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QLatin1String("me@vhanda.in"), QLatin1String("http://vhanda.in"));
+    KAboutData aboutData(QStringLiteral("baloo"), i18n("Baloo File Indexing Daemon"), PROJECT_VERSION);
+    aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QStringLiteral("vhanda@kde.org"), QStringLiteral("http://vhanda.in"));
 
     KAboutData::setApplicationData(aboutData);
 
@@ -71,7 +67,7 @@ int main(int argc, char** argv)
     }
 
 
-    if (!QDBusConnection::sessionBus().registerService(QLatin1String("org.kde.baloo"))) {
+    if (!QDBusConnection::sessionBus().registerService(QStringLiteral("org.kde.baloo"))) {
         qWarning() << "Failed to register via dbus. Another instance is running";
         return 1;
     }
@@ -79,7 +75,7 @@ int main(int argc, char** argv)
     // Crash Handling
     KCrash::setFlags(KCrash::AutoRestart);
 
-    const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo");
+    const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QStringLiteral("/baloo");
 
     Baloo::Migrator migrator(path, &indexerConfig);
     if (migrator.migrationRequired()) {
