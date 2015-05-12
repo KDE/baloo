@@ -346,10 +346,8 @@ void Transaction::renameFilePath(quint64 id, const Document& newDoc)
     Q_ASSERT(id);
 
     // Update the id -> url db
-    // TODO: Use something more efficient than a del + put
     DocumentUrlDB docUrlDb(m_dbis.idTreeDbi, m_dbis.idFilenameDbi, m_txn);
-    docUrlDb.del(id);
-    docUrlDb.put(id, newDoc.url());
+    docUrlDb.replace(id, newDoc.url());
 
     replaceDocument(newDoc, FileNameTerms);
 }

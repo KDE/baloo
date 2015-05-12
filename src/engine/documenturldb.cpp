@@ -157,7 +157,11 @@ QByteArray DocumentUrlDB::get(quint64 docId)
 void DocumentUrlDB::del(quint64 docId)
 {
     Q_ASSERT(docId > 0);
+    replace(docId, QByteArray());
+}
 
+void DocumentUrlDB::replace(quint64 docId, const QByteArray& url)
+{
     IdFilenameDB idFilenameDb(m_idFilenameDbi, m_txn);
     IdTreeDB idTreeDb(m_idTreeDbi, m_txn);
 
@@ -195,7 +199,12 @@ void DocumentUrlDB::del(quint64 docId)
         }
     }
 
-    Q_ASSERT(idTreeDb.get(docId).isEmpty());
+    if (url.isEmpty()) {
+        Q_ASSERT(idTreeDb.get(docId).isEmpty());
+        return;
+    }
+
+    put(docId, url);
 }
 
 void DocumentUrlDB::rename(quint64 docId, const QByteArray& newFileName)
