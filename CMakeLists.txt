@@ -42,9 +42,6 @@ set_package_properties(LMDB PROPERTIES
 # Compiler flags
 add_definitions(-DQT_NO_KEYWORDS)
 
-# Turn exceptions on
-kde_enable_exceptions()
-
 include_directories(
   ${LMDB_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}
