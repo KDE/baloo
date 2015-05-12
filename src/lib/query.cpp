@@ -52,7 +52,7 @@ public:
 
     QStringList m_types;
     QString m_searchString;
-    uint m_limit;
+    int m_limit;
     uint m_offset;
 
     int m_yearFilter;
