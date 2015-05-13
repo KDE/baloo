@@ -109,7 +109,7 @@ void App::processNextUrl()
     }
 
     const QString url = m_urls.takeFirst();
-    QString mimetype = m_mimeDb.mimeTypeForFile(url).name();
+    QString mimetype = m_mimeDb.mimeTypeForFile(url, QMimeDatabase::MatchContent).name();
 
     if (!ignoreConfig()) {
         bool shouldIndex = m_config.shouldBeIndexed(url) && m_config.shouldMimeTypeBeIndexed(mimetype);
