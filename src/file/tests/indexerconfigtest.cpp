@@ -49,8 +49,8 @@ int main(int argc, char** argv)
     bool shouldIndex = config.shouldBeIndexed(url);
 
     QMimeDatabase m_mimeDb;
-    QString mimetype = m_mimeDb.mimeTypeForFile(url, QMimeDatabase::MatchContent).name();
-    QString fastMimetype = m_mimeDb.mimeTypeForFile(url, QMimeDatabase::MatchExtension).name();
+    QString mimetype = m_mimeDb.mimeTypeForFile(url, QMimeDatabase::MatchExtension).name();
+    QString fastMimetype = m_mimeDb.mimeTypeForFile(url).name();
 
     bool shouldIndexMimetype = config.shouldMimeTypeBeIndexed(fastMimetype);
     std::cout << url.toUtf8().constData() << "\n"
