@@ -112,7 +112,7 @@ void App::process()
 
 void App::index(Transaction* tr, const QString& url, quint64 id)
 {
-    QString mimetype = m_mimeDb.mimeTypeForFile(url).name();
+    QString mimetype = m_mimeDb.mimeTypeForFile(url, QMimeDatabase::MatchContent).name();
 
     if (!ignoreConfig()) {
         bool shouldIndex = m_config.shouldBeIndexed(url) && m_config.shouldMimeTypeBeIndexed(mimetype);
