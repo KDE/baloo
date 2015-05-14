@@ -187,30 +187,21 @@ void FileWatch::connectToKDirNotify()
 #include <syslog.h>
 #include <kauth.h>
 
-//Try to raise the inotify watch limit by executing
-//a helper which modifies /proc/sys/fs/inotify/max_user_watches
+// Try to raise the inotify watch limit by executing
+// a helper which modifies /proc/sys/fs/inotify/max_user_watches
 bool raiseWatchLimit()
 {
-    // FIXME: vHanda: FIX ME!!
-    return false;
-    /*
-    KAuth::Action limitAction(QLatin1String("org.kde.baloo.filewatch.raiselimit"));
-    limitAction.setHelperID(QLatin1String("org.kde.baloo.filewatch"))
+    KAuth::Action limitAction(QStringLiteral("org.kde.baloo.filewatch.raiselimit"));
+    limitAction.setHelperId(QStringLiteral("org.kde.baloo.filewatch"));
 
-    KAuth::ActionReply reply = limitAction.execute();
-    if (reply.failed()) {
-        return false;
-    }
-    return true;
-    */
+    KAuth::ExecuteJob* job = limitAction.execute();
+    return job->exec();
 }
 
 // This slot is connected to a signal emitted in KInotify when
 // inotify_add_watch fails with ENOSPC.
 void FileWatch::slotInotifyWatchUserLimitReached(const QString& path)
 {
-    Q_ASSERT_X(0, "Baloo::FileWatch", "inotify limit is too low. Please increase it");
-
     if (raiseWatchLimit()) {
         qCDebug(BALOO) << "Successfully raised watch limit, re-adding " << path;
         if (m_dirWatch)
@@ -219,7 +210,7 @@ void FileWatch::slotInotifyWatchUserLimitReached(const QString& path)
     } else {
         //If we got here, we hit the limit and couldn't authenticate to raise it,
         // so put something in the syslog so someone notices.
-        syslog(LOG_USER | LOG_WARNING, "KDE Baloo Filewatch service reached the inotify folder watch limit. File changes may be ignored.");
+        syslog(LOG_USER | LOG_WARNING, "KDE Baloo File Indexer has reached the inotify folder watch limit. File changes may be ignored.");
         // we do it the brutal way for now hoping with new kernels and defaults this will never happen
         // Delete the KInotify and switch to KDirNotify dbus signals
         if (m_dirWatch) {
