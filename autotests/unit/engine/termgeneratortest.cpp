@@ -78,7 +78,6 @@ void TermGeneratorTest::testUnderscoreWord()
     QList<QByteArray> expectedWords;
     expectedWords << QByteArray("plant");
 
-    QEXPECT_FAIL("", "words starting with underscore are ignored", Abort);
     QCOMPARE(words, expectedWords);
 }
 

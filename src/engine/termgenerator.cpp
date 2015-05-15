@@ -37,10 +37,14 @@ void TermGenerator::indexText(const QString& text, int wdfInc)
     indexText(text, QByteArray(), wdfInc);
 }
 
-QStringList TermGenerator::termList(const QString& text)
+QStringList TermGenerator::termList(const QString& text_)
 {
+    QString text(text_);
+    text.replace('_', ' ');
+
     int start = 0;
     int end = 0;
+    int prevBreak = 0;
 
     QStringList list;
     QTextBoundaryFinder bf(QTextBoundaryFinder::Word, text);
@@ -70,7 +74,7 @@ QStringList TermGenerator::termList(const QString& text)
             }
 
             str = cleanString.normalized(QString::NormalizationForm_KC);
-            list << str.split(QLatin1Char('_'), QString::SkipEmptyParts);
+            list << str;
         }
     }
 

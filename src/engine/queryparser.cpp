@@ -43,9 +43,12 @@ namespace {
     }
 }
 
-EngineQuery QueryParser::parseQuery(const QString& text, const QString& prefix)
+EngineQuery QueryParser::parseQuery(const QString& text_, const QString& prefix)
 {
-    Q_ASSERT(!text.isEmpty());
+    Q_ASSERT(!text_.isEmpty());
+
+    QString text(text_);
+    text.replace('_', ' ');
 
     QVector<EngineQuery> queries;
     QVector<EngineQuery> phraseQueries;
@@ -123,20 +126,19 @@ EngineQuery QueryParser::parseQuery(const QString& text, const QString& prefix)
             }
 
             str = cleanString.normalized(QString::NormalizationForm_KC);
-            Q_FOREACH (const QString& t, str.split(QLatin1Char('_'), QString::SkipEmptyParts)) {
-                const QString term = prefix + t;
-                const QByteArray arr = term.toUtf8();
 
-                position++;
-                if (inDoubleQuotes || inSingleQuotes || inPhrase) {
-                    phraseQueries << EngineQuery(arr, position);
-                }
-                else {
-                    if (m_autoExpandSize && arr.size() >= m_autoExpandSize) {
-                        queries << EngineQuery(arr, EngineQuery::StartsWith, position);
-                    } else {
-                        queries << EngineQuery(arr, position);
-                    }
+            const QString term = prefix + str;
+            const QByteArray arr = term.toUtf8();
+
+            position++;
+            if (inDoubleQuotes || inSingleQuotes || inPhrase) {
+                phraseQueries << EngineQuery(arr, position);
+            }
+            else {
+                if (m_autoExpandSize && arr.size() >= m_autoExpandSize) {
+                    queries << EngineQuery(arr, EngineQuery::StartsWith, position);
+                } else {
+                    queries << EngineQuery(arr, position);
                 }
             }
         }
