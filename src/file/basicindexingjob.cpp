@@ -59,13 +59,13 @@ bool BasicIndexingJob::index()
     Document doc;
     doc.setId(statBufToId(statBuf));
     doc.setUrl(url);
-    doc.addBoolTerm(QByteArray("M") + m_mimetype.toUtf8());
 
     QString fileName = url.mid(url.lastIndexOf('/') + 1);
 
     TermGenerator tg(&doc);
     tg.indexFileNameText(fileName, 1000);
     tg.indexFileNameText(fileName, QByteArray("F"));
+    tg.indexText(m_mimetype, QByteArray("M"));
 
     // Time
     doc.setMTime(statBuf.st_mtime);
