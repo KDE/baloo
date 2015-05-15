@@ -168,6 +168,11 @@ void QueryParserTest::testUnderscoreSplitting()
     EngineQuery q(queries, EngineQuery::And);
 
     QCOMPARE(query, q);
+
+    query = parser.parseQuery("_Fire");
+    q = EngineQuery("fire", EngineQuery::StartsWith, 1);
+
+    QCOMPARE(query, q);
 }
 
 void QueryParserTest::testAutoExpand()
