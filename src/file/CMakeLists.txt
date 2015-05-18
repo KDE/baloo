@@ -27,18 +27,8 @@ set(file_static_lib_SRCS
     pendingfilequeue.cpp
     metadatamover.cpp
     pendingfile.cpp
+    kinotify.cpp
 )
-
-set(BUILD_KINOTIFY False)
-if(CMAKE_SYSTEM_NAME MATCHES "Linux")
-    set(BUILD_KINOTIFY True)
-    set(file_static_lib_SRCS
-        ${file_static_lib_SRCS}
-        kinotify.cpp
-    )
-    add_definitions(-DBUILD_KINOTIFY)
-endif()
-
 
 add_library(baloofilecommon STATIC ${file_static_lib_SRCS})
 target_link_libraries(baloofilecommon
