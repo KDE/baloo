@@ -26,15 +26,14 @@
 #include "pendingfile.h"
 #include "baloodebug.h"
 
-#ifdef BUILD_KINOTIFY
 #include "kinotify.h"
-#endif
 
-#include <QtCore/QDir>
-#include <QtCore/QThread>
-#include <QtDBus/QDBusConnection>
+#include <QDir>
+#include <QDateTime>
+#include <QDBusConnection>
 
-#include <KConfigGroup>
+#include <syslog.h>
+#include <kauth.h>
 
 using namespace Baloo;
 
@@ -42,9 +41,7 @@ FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
     : QObject(parent)
     , m_db(db)
     , m_config(config)
-#ifdef BUILD_KINOTIFY
     , m_dirWatch(0)
-#endif
 {
     Q_ASSERT(db);
     Q_ASSERT(config);
@@ -57,7 +54,6 @@ FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
     connect(m_pendingFileQueue, &PendingFileQueue::indexXAttr, this, &FileWatch::indexXAttr);
     connect(m_pendingFileQueue, &PendingFileQueue::removeFileIndex, m_metadataMover, &MetadataMover::removeFileMetadata);
 
-#ifdef BUILD_KINOTIFY
     // monitor the file system for changes (restricted by the inotify limit)
     m_dirWatch = new KInotify(m_config, this);
 
@@ -75,9 +71,6 @@ FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
     Q_FOREACH (const QString& folder, folders) {
         watchFolder(folder);
     }
-#else
-    connectToKDirNotify();
-#endif
 
     connect(m_config, &Baloo::FileIndexerConfig::configChanged, this, &FileWatch::updateIndexedFoldersWatches);
 }
@@ -92,7 +85,6 @@ FileWatch::~FileWatch()
 void FileWatch::watchFolder(const QString& path)
 {
     qCDebug(BALOO) << path;
-#ifdef BUILD_KINOTIFY
     if (m_dirWatch && !m_dirWatch->watchingPath(path)) {
         KInotify::WatchEvents flags(KInotify::EventMove | KInotify::EventDelete | KInotify::EventDeleteSelf
                                     | KInotify::EventCloseWrite | KInotify::EventCreate
@@ -100,7 +92,6 @@ void FileWatch::watchFolder(const QString& path)
 
         m_dirWatch->addWatch(path, flags, KInotify::WatchFlags());
     }
-#endif
 }
 
 void FileWatch::slotFileMoved(const QString& urlFrom, const QString& urlTo)
@@ -172,21 +163,6 @@ void FileWatch::slotAttributeChanged(const QString& path)
     m_pendingFileQueue->enqueue(file);
 }
 
-void FileWatch::connectToKDirNotify()
-{
-    // monitor KIO for changes
-    QDBusConnection::sessionBus().connect(QString(), QString(), QLatin1String("org.kde.KDirNotify"), QLatin1String("FileMoved"),
-                                          this, SIGNAL(slotFileMoved(QString,QString)));
-    QDBusConnection::sessionBus().connect(QString(), QString(), QLatin1String("org.kde.KDirNotify"), QLatin1String("FilesRemoved"),
-                                          this, SIGNAL(slotFilesDeleted(QStringList)));
-}
-
-
-#ifdef BUILD_KINOTIFY
-
-#include <syslog.h>
-#include <kauth.h>
-
 // Try to raise the inotify watch limit by executing
 // a helper which modifies /proc/sys/fs/inotify/max_user_watches
 bool raiseWatchLimit()
@@ -212,21 +188,18 @@ void FileWatch::slotInotifyWatchUserLimitReached(const QString& path)
         // so put something in the syslog so someone notices.
         syslog(LOG_USER | LOG_WARNING, "KDE Baloo File Indexer has reached the inotify folder watch limit. File changes may be ignored.");
         // we do it the brutal way for now hoping with new kernels and defaults this will never happen
-        // Delete the KInotify and switch to KDirNotify dbus signals
+        // Delete the KInotify
+        // FIXME: Maybe we should be aborting?
         if (m_dirWatch) {
             m_dirWatch->deleteLater();
             m_dirWatch = 0;
         }
-        connectToKDirNotify();
         Q_EMIT installedWatches();
     }
 }
-#endif
-
 
 void FileWatch::updateIndexedFoldersWatches()
 {
-#ifdef BUILD_KINOTIFY
     if (m_dirWatch) {
         QStringList folders = m_config->includeFolders();
         Q_FOREACH (const QString& folder, folders) {
@@ -234,6 +207,5 @@ void FileWatch::updateIndexedFoldersWatches()
             watchFolder(folder);
         }
     }
-#endif
 }
 

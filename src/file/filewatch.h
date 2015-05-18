@@ -53,10 +53,7 @@ private Q_SLOTS:
     void slotFileClosedAfterWrite(const QString&);
     void slotAttributeChanged(const QString& path);
     void slotFileModified(const QString& path);
-    void connectToKDirNotify();
-#ifdef BUILD_KINOTIFY
     void slotInotifyWatchUserLimitReached(const QString&);
-#endif
 
     /**
      * To be called whenever the list of indexed folders changes. This is done because
@@ -74,9 +71,7 @@ private:
     MetadataMover* m_metadataMover;
     FileIndexerConfig* m_config;
 
-#ifdef BUILD_KINOTIFY
     KInotify* m_dirWatch;
-#endif
 
     /// queue used to "compress" multiple file events like downloads
     PendingFileQueue* m_pendingFileQueue;

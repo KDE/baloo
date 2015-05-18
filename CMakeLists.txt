@@ -42,6 +42,11 @@ set_package_properties(LMDB PROPERTIES
 # Compiler flags
 add_definitions(-DQT_NO_KEYWORDS)
 
+set(BUILD_KINOTIFY False)
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+    set(BUILD_KINOTIFY True)
+endif()
+
 include_directories(
   ${LMDB_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}
@@ -57,8 +62,11 @@ include_directories(
 # Targets
 add_subdirectory(src)
 add_subdirectory(icons)
-add_subdirectory(tests)
-add_subdirectory(autotests)
+
+if (${BUILD_KINOTIFY})
+    add_subdirectory(tests)
+    add_subdirectory(autotests)
+endif()
 
 # Config files
 set(CMAKECONFIG_INSTALL_DIR "${CMAKECONFIG_INSTALL_PREFIX}/KF5Baloo")
