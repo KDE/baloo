@@ -21,14 +21,14 @@
 #ifndef BALOO_WRITETRANSACTION_H
 #define BALOO_WRITETRANSACTION_H
 
-#include "engine_export.h"
-#include "transaction.h"
 #include "positioninfo.h"
 #include "document.h"
+#include "documentoperations.h"
+#include "databasedbis.h"
 
 namespace Baloo {
 
-class WriteTransaction
+class BALOO_ENGINE_EXPORT WriteTransaction
 {
 public:
     WriteTransaction(DatabaseDbis dbis, MDB_txn* txn)
@@ -43,7 +43,7 @@ public:
      * Remove the document with id \p parentId and all its children.
      */
     void removeRecursively(quint64 parentId);
-    void replaceDocument(const Document& doc, Transaction::DocumentOperations operations);
+    void replaceDocument(const Document& doc, DocumentOperations operations);
     void commit();
 
     bool hasChanges() const {
