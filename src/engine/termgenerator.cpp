@@ -74,7 +74,9 @@ QStringList TermGenerator::termList(const QString& text_)
             }
 
             str = cleanString.normalized(QString::NormalizationForm_KC);
-            list << str;
+            if (!str.isEmpty()) {
+                list << str;
+            }
         }
     }
 
