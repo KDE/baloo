@@ -170,10 +170,10 @@ void App::index(Transaction* tr, const QString& url, quint64 id)
         if (!tr->hasDocument(doc.id())) {
             tr->addDocument(result.document());
         } else {
-            tr->replaceDocument(result.document(), Transaction::DocumentTerms | Transaction::DocumentData);
+            tr->replaceDocument(result.document(), DocumentTerms | DocumentData);
         }
     } else {
-        tr->replaceDocument(result.document(), Transaction::DocumentTerms | Transaction::DocumentData);
+        tr->replaceDocument(result.document(), DocumentTerms | DocumentData);
     }
     tr->removePhaseOne(doc.id());
 

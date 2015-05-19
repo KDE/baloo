@@ -165,7 +165,7 @@ void WriteTransaction::removeRecursively(quint64 parentId)
     removeDocument(parentId);
 }
 
-void WriteTransaction::replaceDocument(const Document& doc, Transaction::DocumentOperations operations)
+void WriteTransaction::replaceDocument(const Document& doc, DocumentOperations operations)
 {
     DocumentDB documentTermsDB(m_dbis.docTermsDbi, m_txn);
     DocumentDB documentXattrTermsDB(m_dbis.docXattrTermsDbi, m_txn);
@@ -177,7 +177,7 @@ void WriteTransaction::replaceDocument(const Document& doc, Transaction::Documen
 
     const quint64 id = doc.id();
 
-    if (operations & Transaction::DocumentTerms) {
+    if (operations & DocumentTerms) {
         Q_ASSERT(!doc.m_terms.isEmpty());
         QVector<QByteArray> prevTerms = documentTermsDB.get(id);
         QVector<QByteArray> docTerms = replaceTerms(id, prevTerms, doc.m_terms);
@@ -185,7 +185,7 @@ void WriteTransaction::replaceDocument(const Document& doc, Transaction::Documen
         documentTermsDB.put(id, docTerms);
     }
 
-    if (operations & Transaction::XAttrTerms) {
+    if (operations & XAttrTerms) {
         QVector<QByteArray> prevTerms = documentXattrTermsDB.get(id);
         QVector<QByteArray> docXattrTerms = replaceTerms(id, prevTerms, doc.m_xattrTerms);
 
@@ -195,7 +195,7 @@ void WriteTransaction::replaceDocument(const Document& doc, Transaction::Documen
             documentXattrTermsDB.del(id);
     }
 
-    if (operations & Transaction::FileNameTerms) {
+    if (operations & FileNameTerms) {
         QVector<QByteArray> prevTerms = documentFileNameTermsDB.get(id);
         QVector<QByteArray> docFileNameTerms = replaceTerms(id, prevTerms, doc.m_fileNameTerms);
 
@@ -205,13 +205,13 @@ void WriteTransaction::replaceDocument(const Document& doc, Transaction::Documen
             documentFileNameTermsDB.del(id);
     }
 
-    if (operations & Transaction::DocumentUrl) {
+    if (operations & DocumentUrl) {
         // FIXME: Replacing the documentUrl is actually quite complicated!
         Q_ASSERT(0);
         docUrlDB.put(id, doc.url());
     }
 
-    if (operations & Transaction::DocumentTime) {
+    if (operations & DocumentTime) {
         DocumentTimeDB::TimeInfo info;
         info.mTime = doc.m_mTime;
         info.cTime = doc.m_cTime;
@@ -220,7 +220,7 @@ void WriteTransaction::replaceDocument(const Document& doc, Transaction::Documen
         mtimeDB.put(doc.m_mTime, id);
     }
 
-    if (operations & Transaction::DocumentData) {
+    if (operations & DocumentData) {
         docDataDB.put(id, doc.m_data);
     }
 }

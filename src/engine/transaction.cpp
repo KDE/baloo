@@ -214,7 +214,7 @@ void Transaction::removeRecursively(quint64 id)
     m_writeTrans->removeRecursively(id);
 }
 
-void Transaction::replaceDocument(const Document& doc, Transaction::DocumentOperations operations)
+void Transaction::replaceDocument(const Document& doc, DocumentOperations operations)
 {
     Q_ASSERT(m_txn);
     Q_ASSERT(doc.id() > 0);

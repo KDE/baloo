@@ -24,7 +24,7 @@
 #include "databasedbis.h"
 #include "mtimedb.h"
 #include "postingdb.h"
-#include "engine_export.h"
+#include "documentoperations.h"
 
 #include <QString>
 #include <lmdb.h>
@@ -95,17 +95,6 @@ public:
     void removeDocument(quint64 id);
     void removeRecursively(quint64 parentId);
 
-    enum DocumentOperation {
-        DocumentTerms =  1,
-        FileNameTerms =  2,
-        XAttrTerms    =  4,
-        DocumentData  =  8,
-        DocumentUrl   = 16,
-        DocumentTime  = 32,
-        Everything    = DocumentTerms | FileNameTerms | XAttrTerms | DocumentData | DocumentUrl | DocumentTime
-    };
-    Q_DECLARE_FLAGS(DocumentOperations, DocumentOperation)
-
     void replaceDocument(const Document& doc, DocumentOperations operations);
     void setPhaseOne(quint64 id);
     void removePhaseOne(quint64 id);
@@ -122,7 +111,5 @@ private:
     friend class DatabaseTest;
 };
 }
-
-Q_DECLARE_OPERATORS_FOR_FLAGS(Baloo::Transaction::DocumentOperations);
 
 #endif // BALOO_TRANSACTION_H

@@ -124,14 +124,14 @@ void BasicIndexingQueue::index(Transaction* tr, const QString& file, const QStri
     else if (!xattrOnly) {
         BasicIndexingJob job(file, mimetype, m_config->onlyBasicIndexing());
         if (job.index()) {
-            tr->replaceDocument(job.document(), Transaction::DocumentTime);
+            tr->replaceDocument(job.document(), DocumentTime);
             tr->setPhaseOne(job.document().id());
         }
     }
     else {
         BasicIndexingJob job(file, mimetype, m_config->onlyBasicIndexing());
         if (job.index()) {
-            tr->replaceDocument(job.document(), Transaction::XAttrTerms);
+            tr->replaceDocument(job.document(), XAttrTerms);
         }
     }
 
