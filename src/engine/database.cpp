@@ -41,6 +41,7 @@
 
 #include <QFile>
 #include <QFileInfo>
+#include <QDir>
 
 using namespace Baloo;
 
@@ -58,6 +59,10 @@ Database::~Database()
 bool Database::open(OpenMode mode)
 {
     QFileInfo dirInfo(m_path);
+    if (!dirInfo.exists()) {
+        QDir().mkdir(m_path);
+        dirInfo.refresh();
+    }
     if (mode == CreateDatabase && !dirInfo.permission(QFile::WriteOwner)) {
         qCritical() << m_path << "does not have write permissions. Aborting";
         return false;
