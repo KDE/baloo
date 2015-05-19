@@ -19,14 +19,16 @@
 
 #include "cleaner.h"
 #include "database.h"
+#include "transaction.h"
 #include "fileindexerconfig.h"
+#include "idutils.h"
+#include "baloodebug.h"
 
 #include <QMimeDatabase>
 #include <QTimer>
 #include <QFile>
-#include <QUrl>
 #include <QCoreApplication>
-#include <QDebug>
+#include <QDir>
 
 using namespace Baloo;
 
@@ -39,54 +41,56 @@ Cleaner::Cleaner(Database* db, QObject* parent)
 
 void Cleaner::start()
 {
-    // FIXME: The cleaner needs to be fixed!!
-    /*
-    if (!query.exec(QLatin1String("select id, url from files"))) {
-        qCDebug(BALOO) << "Could not execute query:" << query.lastError().text();
-        QCoreApplication::instance()->quit();
+    const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QStringLiteral("/baloo");
+
+    if (!QFile::exists(path + "/index")) {
+        QCoreApplication::exit(0);
         return;
     }
+
+    Database db(path);
+    db.open(Baloo::Database::CreateDatabase);
 
     FileIndexerConfig config;
     QMimeDatabase mimeDb;
 
-    int numDocuments = 0;
-    while (query.next()) {
-        int id = query.value(0).toInt();
-        QString url = query.value(1).toString();
+    Transaction tr(db, Transaction::ReadWrite);
 
-        bool removeIt = false;
+    auto shouldDelete = [&tr, &config, &mimeDb](quint64 id) {
+        if (!id) {
+            return false;
+        }
+
+        QString url = tr.documentUrl(id);
+
         if (!QFile::exists(url)) {
-            removeIt = true;
+            qDebug() << "not exists: " << url;
+            return true;
         }
 
         if (!config.shouldBeIndexed(url)) {
-            removeIt = true;
+            qDebug() << "should not be indexed: " << url;
+            return true;
         }
 
-        // vHanda FIXME: Perhaps we want to get the proper mimetype from xapian?
+        // FIXME: This mimetype is not completely accurate!
         QString mimetype = mimeDb.mimeTypeForFile(url, QMimeDatabase::MatchExtension).name();
         if (!config.shouldMimeTypeBeIndexed(mimetype)) {
-            removeIt = true;
+            qDebug() << "mimetype should not be indexed: " << url << mimetype;
+            return true;
         }
 
-        if (removeIt) {
-            qCDebug(BALOO) << id << url;
-            q.prepare(QLatin1String("delete from files where id = ?"));
-            q.addBindValue(id);
-            q.exec();
-            m_commitQueue->remove(id);
+        return false;
+    };
 
-            ++numDocuments;
-        }
 
-        if (numDocuments && numDocuments % 1000 == 0) {
-            m_commitQueue->commit();
-        }
+    for (const QString& folder : config.includeFolders()) {
+        quint64 id = filePathToId(QFile::encodeName(folder));
+        qDebug() << "Checking " << folder << id;
+        tr.removeRecursively(id, shouldDelete);
     }
+    tr.commit();
 
-    m_commitQueue->commit();
     QCoreApplication::instance()->quit();
-    */
 }
 

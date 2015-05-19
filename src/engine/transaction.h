@@ -24,7 +24,7 @@
 #include "databasedbis.h"
 #include "mtimedb.h"
 #include "postingdb.h"
-#include "documentoperations.h"
+#include "writetransaction.h"
 
 #include <QString>
 #include <lmdb.h>
@@ -34,7 +34,6 @@ namespace Baloo {
 class Database;
 class Document;
 class PostingIterator;
-class WriteTransaction;
 class EngineQuery;
 class DatabaseTest;
 
@@ -94,6 +93,14 @@ public:
     void addDocument(const Document& doc);
     void removeDocument(quint64 id);
     void removeRecursively(quint64 parentId);
+
+    template <typename Functor>
+    void removeRecursively(quint64 id, Functor shouldDelete) {
+        Q_ASSERT(m_txn);
+        Q_ASSERT(m_writeTrans);
+
+        m_writeTrans->removeRecursively(id, shouldDelete);
+    }
 
     void replaceDocument(const Document& doc, DocumentOperations operations);
     void setPhaseOne(quint64 id);

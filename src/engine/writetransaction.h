@@ -25,6 +25,7 @@
 #include "document.h"
 #include "documentoperations.h"
 #include "databasedbis.h"
+#include "documenturldb.h"
 
 namespace Baloo {
 
@@ -43,6 +44,32 @@ public:
      * Remove the document with id \p parentId and all its children.
      */
     void removeRecursively(quint64 parentId);
+
+    /**
+     * Goes through every document in the database, and remove the ones for which \p shouldDelete
+     * returns false. It starts searching from \p parentId, which can be 0 to search
+     * through everything.
+     *
+     * \arg shouldDelete takes a quint64 as a parameter
+     *
+     * This function should typically be called when there are no other ReadTransaction in process
+     * as that would otherwise baloon the size of the database.
+     */
+    template <typename Functor>
+    void removeRecursively(quint64 parentId, Functor shouldDelete) {
+        DocumentUrlDB docUrlDB(m_dbis.idTreeDbi, m_dbis.idFilenameDbi, m_txn);
+
+        if (shouldDelete(parentId)) {
+            removeRecursively(parentId);
+            return;
+        }
+
+        const QVector<quint64> children = docUrlDB.getChildren(parentId);
+        for (quint64 id : children) {
+            removeRecursively(id, shouldDelete);
+        }
+    }
+
     void replaceDocument(const Document& doc, DocumentOperations operations);
     void commit();
 
