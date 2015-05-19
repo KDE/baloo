@@ -37,6 +37,7 @@ public:
 
     void put(quint64 docId, const QByteArray& url);
     QByteArray get(quint64 docId);
+    QVector<quint64> getChildren(quint64 docId);
 
     void del(quint64 docId);
     /**

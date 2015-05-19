@@ -38,6 +38,11 @@ public:
 
     void addDocument(const Document& doc);
     void removeDocument(quint64 id);
+
+    /**
+     * Remove the document with id \p parentId and all its children.
+     */
+    void removeRecursively(quint64 parentId);
     void replaceDocument(const Document& doc, Transaction::DocumentOperations operations);
     void commit();
 
