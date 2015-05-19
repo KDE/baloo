@@ -46,9 +46,7 @@ IndexerConfig::~IndexerConfig()
 
 bool IndexerConfig::fileIndexingEnabled() const
 {
-    KConfig config(QStringLiteral("baloofilerc"));
-    KConfigGroup group = config.group("Basic Settings");
-    return config.group("Basic Settings").readEntry("Indexing-Enabled", true);
+    return d->m_config.indexingEnabled();
 }
 
 
