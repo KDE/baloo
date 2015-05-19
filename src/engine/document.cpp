@@ -32,16 +32,19 @@ Document::Document()
 
 void Document::addTerm(const QByteArray& term, int wdfInc)
 {
+    Q_ASSERT(!term.isEmpty());
     m_terms[term].wdf += wdfInc;
 }
 
 void Document::addBoolTerm(const QByteArray& term)
 {
+    Q_ASSERT(!term.isEmpty());
     m_terms[term].wdf = 0;
 }
 
 void Document::addPositionTerm(const QByteArray& term, int position, int wdfInc)
 {
+    Q_ASSERT(!term.isEmpty());
     TermData& td = m_terms[term];
     td.wdf += wdfInc;
     td.positions += position;
@@ -49,6 +52,7 @@ void Document::addPositionTerm(const QByteArray& term, int position, int wdfInc)
 
 void Document::addXattrPositionTerm(const QByteArray& term, int position, int wdfInc)
 {
+    Q_ASSERT(!term.isEmpty());
     TermData& td = m_xattrTerms[term];
     td.wdf += wdfInc;
     td.positions += position;
@@ -56,16 +60,19 @@ void Document::addXattrPositionTerm(const QByteArray& term, int position, int wd
 
 void Document::addXattrTerm(const QByteArray& term, int wdfInc)
 {
+    Q_ASSERT(!term.isEmpty());
     m_xattrTerms[term].wdf += wdfInc;
 }
 
 void Document::addXattrBoolTerm(const QByteArray& term)
 {
+    Q_ASSERT(!term.isEmpty());
     m_xattrTerms[term].wdf = 0;
 }
 
 void Document::addFileNamePositionTerm(const QByteArray& term, int position, int wdfInc)
 {
+    Q_ASSERT(!term.isEmpty());
     TermData& td = m_fileNameTerms[term];
     td.wdf += wdfInc;
     td.positions += position;
@@ -73,6 +80,7 @@ void Document::addFileNamePositionTerm(const QByteArray& term, int position, int
 
 void Document::addFileNameTerm(const QByteArray& term, int wdfInc)
 {
+    Q_ASSERT(!term.isEmpty());
     m_fileNameTerms[term].wdf += wdfInc;
 }
 
@@ -83,11 +91,13 @@ quint64 Document::id() const
 
 void Document::setId(quint64 id)
 {
+    Q_ASSERT(id);
     m_id = id;
 }
 
 void Document::setUrl(const QByteArray& url)
 {
+    Q_ASSERT(!url.isEmpty());
     m_url = url;
 }
 
