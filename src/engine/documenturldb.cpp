@@ -154,6 +154,14 @@ QByteArray DocumentUrlDB::get(quint64 docId)
     return '/' + list.join('/');
 }
 
+QVector<quint64> DocumentUrlDB::getChildren(quint64 docId)
+{
+    Q_ASSERT(docId > 0);
+
+    IdTreeDB idTreeDb(m_idTreeDbi, m_txn);
+    return idTreeDb.get(docId);
+}
+
 void DocumentUrlDB::del(quint64 docId)
 {
     Q_ASSERT(docId > 0);

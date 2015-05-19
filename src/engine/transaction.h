@@ -93,6 +93,7 @@ public:
     //
     void addDocument(const Document& doc);
     void removeDocument(quint64 id);
+    void removeRecursively(quint64 parentId);
 
     enum DocumentOperation {
         DocumentTerms =  1,

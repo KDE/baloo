@@ -149,6 +149,22 @@ void WriteTransaction::removeTerms(quint64 id, const QVector<QByteArray>& terms)
     }
 }
 
+void WriteTransaction::removeRecursively(quint64 parentId)
+{
+    DocumentUrlDB docUrlDB(m_dbis.idTreeDbi, m_dbis.idFilenameDbi, m_txn);
+
+    const QVector<quint64> children = docUrlDB.getChildren(parentId);
+    if (children.isEmpty()) {
+        removeDocument(parentId);
+        return;
+    }
+
+    for (quint64 id : children) {
+        removeRecursively(id);
+    }
+    removeDocument(parentId);
+}
+
 void WriteTransaction::replaceDocument(const Document& doc, Transaction::DocumentOperations operations)
 {
     DocumentDB documentTermsDB(m_dbis.docTermsDbi, m_txn);
