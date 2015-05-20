@@ -40,6 +40,8 @@
 #include <KFileMetaData/TypeInfo>
 #include <KFileMetaData/Types>
 
+#include <algorithm>
+
 using namespace Baloo;
 
 SearchStore::SearchStore()
@@ -77,14 +79,33 @@ QStringList SearchStore::exec(const Term& term, int limit)
         return QStringList();
     }
 
-    QStringList results;
-    while (it->next() && limit) {
-        Q_ASSERT(it->docId() > 0);
-        const QString filePath = tr.documentUrl(it->docId());
-        Q_ASSERT(!filePath.isEmpty());
+    QVector<quint64> resultIds;
+    while (it->next()) {
+        quint64 id = it->docId();
+        resultIds << id;
 
+        Q_ASSERT(id > 0);
+        // FIXME: Remove this assert once we are sure the db state is valid through other tests!
+        Q_ASSERT(!tr.documentUrl(it->docId()).isEmpty());
+    }
+
+    auto compFunc = [&tr](const quint64 lhs, const quint64 rhs) {
+        return tr.documentMTime(lhs) > tr.documentMTime(rhs);
+    };
+    if (limit < 0) {
+        limit = resultIds.size();
+        std::sort(resultIds.begin(), resultIds.end(), compFunc);
+    } else {
+        std::partial_sort(resultIds.begin(), resultIds.begin() + limit, resultIds.end(), compFunc);
+    }
+
+    QStringList results;
+    for (int i = 0; i < limit; i++) {
+        const quint64 id = resultIds[i];
+        const QString filePath = tr.documentUrl(id);
+
+        Q_ASSERT(!filePath.isEmpty());
         results << filePath;
-        limit--;
     }
 
     return results;
