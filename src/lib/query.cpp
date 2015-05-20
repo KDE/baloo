@@ -209,7 +209,7 @@ ResultIterator Query::exec()
         term = term && Term(QStringLiteral("modified"), ba, Term::Equal);
     }
 
-    QStringList result = (*s_searchStore)->exec(term, d->m_limit);
+    QStringList result = (*s_searchStore)->exec(term, d->m_limit, d->m_sortingOption == SortAuto);
     return ResultIterator(result);
 }
 

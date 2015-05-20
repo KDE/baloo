@@ -67,7 +67,7 @@ SearchStore::~SearchStore()
     delete m_db;
 }
 
-QStringList SearchStore::exec(const Term& term, int limit)
+QStringList SearchStore::exec(const Term& term, int limit, bool sortResults)
 {
     if (!m_db) {
         return QStringList();
@@ -79,36 +79,53 @@ QStringList SearchStore::exec(const Term& term, int limit)
         return QStringList();
     }
 
-    QVector<quint64> resultIds;
-    while (it->next()) {
-        quint64 id = it->docId();
-        resultIds << id;
+    if (sortResults) {
+        QVector<quint64> resultIds;
+        while (it->next()) {
+            quint64 id = it->docId();
+            resultIds << id;
 
-        Q_ASSERT(id > 0);
-        // FIXME: Remove this assert once we are sure the db state is valid through other tests!
-        Q_ASSERT(!tr.documentUrl(it->docId()).isEmpty());
+            Q_ASSERT(id > 0);
+            // FIXME: Remove this assert once we are sure the db state is valid through other tests!
+            Q_ASSERT(!tr.documentUrl(it->docId()).isEmpty());
+        }
+
+        auto compFunc = [&tr](const quint64 lhs, const quint64 rhs) {
+            return tr.documentMTime(lhs) > tr.documentMTime(rhs);
+        };
+        if (limit < 0) {
+            limit = resultIds.size();
+            std::sort(resultIds.begin(), resultIds.end(), compFunc);
+        } else {
+            std::partial_sort(resultIds.begin(), resultIds.begin() + limit, resultIds.end(), compFunc);
+        }
+
+        QStringList results;
+        for (int i = 0; i < limit; i++) {
+            const quint64 id = resultIds[i];
+            const QString filePath = tr.documentUrl(id);
+
+            Q_ASSERT(!filePath.isEmpty());
+            results << filePath;
+        }
+
+        return results;
     }
+    else {
+        QStringList results;
+        while (it->next() && limit) {
+            quint64 id = it->docId();
+            Q_ASSERT(id > 0);
 
-    auto compFunc = [&tr](const quint64 lhs, const quint64 rhs) {
-        return tr.documentMTime(lhs) > tr.documentMTime(rhs);
-    };
-    if (limit < 0) {
-        limit = resultIds.size();
-        std::sort(resultIds.begin(), resultIds.end(), compFunc);
-    } else {
-        std::partial_sort(resultIds.begin(), resultIds.begin() + limit, resultIds.end(), compFunc);
+            results << tr.documentUrl(it->docId());
+            // FIXME: Remove this assert once we are sure the db state is valid through other tests!
+            Q_ASSERT(!tr.documentUrl(it->docId()).isEmpty());
+
+            limit--;
+        }
+
+        return results;
     }
-
-    QStringList results;
-    for (int i = 0; i < limit; i++) {
-        const quint64 id = resultIds[i];
-        const QString filePath = tr.documentUrl(id);
-
-        Q_ASSERT(!filePath.isEmpty());
-        results << filePath;
-    }
-
-    return results;
 }
 
 QByteArray SearchStore::fetchPrefix(const QByteArray& property) const

@@ -42,7 +42,7 @@ public:
     SearchStore();
     ~SearchStore();
 
-    QStringList exec(const Term& term, int limit);
+    QStringList exec(const Term& term, int limit, bool sortResults);
 
 private:
     QByteArray fetchPrefix(const QByteArray& property) const;
