@@ -122,7 +122,7 @@ public:
         /**
          * The results are returned in the order Baloo decides
          * should be ideal. This criteria is based on the mtime of the
-         * file and internal word frequency.
+         * file.
          *
          * This is the default sorting mechanism.
          */
