@@ -75,3 +75,14 @@ install(FILES
     DESTINATION ${KF5_INCLUDE_INSTALL_DIR}/Baloo/Baloo
     COMPONENT Devel
 )
+
+if (NOT WIN32)
+   configure_file (
+      ${CMAKE_CURRENT_SOURCE_DIR}/Baloo.pc.cmake
+      ${CMAKE_CURRENT_BINARY_DIR}/Baloo.pc
+      )
+   install (
+      FILES ${CMAKE_CURRENT_BINARY_DIR}/Baloo.pc
+      DESTINATION ${KDE_INSTALL_LIBDIR}/pkgconfig
+      )
+endif ()
