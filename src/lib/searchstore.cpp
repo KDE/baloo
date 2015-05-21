@@ -93,7 +93,7 @@ QStringList SearchStore::exec(const Term& term, int limit, bool sortResults)
         auto compFunc = [&tr](const quint64 lhs, const quint64 rhs) {
             return tr.documentMTime(lhs) > tr.documentMTime(rhs);
         };
-        if (limit < 0) {
+        if (limit < 0 || limit >= resultIds.size()) {
             limit = resultIds.size();
             std::sort(resultIds.begin(), resultIds.end(), compFunc);
         } else {
