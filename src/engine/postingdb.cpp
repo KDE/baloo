@@ -295,8 +295,7 @@ PostingIterator* PostingDB::compIter(const QByteArray& prefix, const QByteArray&
     Q_ASSERT(!comVal.isEmpty());
     int prefixLen = prefix.length();
     auto validate = [prefixLen, &comVal, com] (const QByteArray& arr) {
-        //FIXME: avoid copying
-        QByteArray term = arr.mid(prefixLen);
+        QByteArray term = QByteArray::fromRawData(arr.constData() + prefixLen, arr.length() - prefixLen);
         return ((com == LessEqual && term <= comVal) || (com == GreaterEqual && term >= comVal));
     };
     return iter(prefix, validate);
