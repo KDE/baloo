@@ -23,6 +23,7 @@
 #include "engine_export.h"
 #include <lmdb.h>
 #include <QByteArray>
+#include <QMap>
 
 namespace Baloo {
 
@@ -41,6 +42,7 @@ public:
     void del(quint64 docId);
     bool contains(quint64 docId);
 
+    QMap<quint64, QByteArray> toTestMap() const;
 private:
     MDB_txn* m_txn;
     MDB_dbi m_dbi;

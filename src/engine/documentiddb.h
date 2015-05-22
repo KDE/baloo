@@ -44,6 +44,7 @@ public:
     QVector<quint64> fetchItems(int size);
     uint size();
 
+    QVector<quint64> toTestVector() const;
 private:
     MDB_txn* m_txn;
     MDB_dbi m_dbi;

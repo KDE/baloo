@@ -25,6 +25,7 @@
 
 #include <QByteArray>
 #include <QVector>
+#include <QMap>
 #include <lmdb.h>
 
 namespace Baloo {
@@ -42,6 +43,8 @@ public:
         quint32 mTime;
         quint32 cTime;
 
+        explicit TimeInfo(quint32 mt = 0, quint32 ct = 0) : mTime(mt), cTime(ct) {}
+
         bool operator == (const TimeInfo& rhs) const {
             return mTime == rhs.mTime && cTime == rhs.cTime;
         }
@@ -52,6 +55,7 @@ public:
     void del(quint64 docId);
     bool contains(quint64 docId);
 
+    QMap<quint64, TimeInfo> toTestMap() const;
 private:
     MDB_txn* m_txn;
     MDB_dbi m_dbi;

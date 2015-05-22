@@ -300,3 +300,28 @@ PostingIterator* PostingDB::compIter(const QByteArray& prefix, const QByteArray&
     };
     return iter(prefix, validate);
 }
+
+QMap<QByteArray, PostingList> PostingDB::toTestMap() const
+{
+    MDB_cursor* cursor;
+    mdb_cursor_open(m_txn, m_dbi, &cursor);
+
+    MDB_val key = {0, 0};
+    MDB_val val;
+
+    QMap<QByteArray, PostingList> map;
+    while (1) {
+        int rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
+        if (rc == MDB_NOTFOUND) {
+            break;
+        }
+        Q_ASSERT_X(rc == 0, "PostingDB::toTestMap", mdb_strerror(rc));
+
+        const QByteArray ba = QByteArray::fromRawData(static_cast<char*>(key.mv_data), key.mv_size);
+        const PostingList plist = PostingCodec().decode(QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size));
+        map.insert(ba, plist);
+    }
+
+    mdb_cursor_close(cursor);
+    return map;
+}

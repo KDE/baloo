@@ -24,6 +24,7 @@
 #include "engine_export.h"
 #include <lmdb.h>
 #include <QVector>
+#include <QMap>
 
 namespace Baloo {
 
@@ -48,6 +49,7 @@ public:
      */
     PostingIterator* iter(quint64 docId);
 
+    QMap<quint64, QVector<quint64>> toTestMap() const;
 private:
     MDB_txn* m_txn;
     MDB_dbi m_dbi;

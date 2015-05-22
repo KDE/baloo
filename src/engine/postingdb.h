@@ -62,6 +62,7 @@ public:
 
     QVector<QByteArray> fetchTermsStartingWith(const QByteArray& term);
 
+    QMap<QByteArray, PostingList> toTestMap() const;
 private:
     template <typename Validator>
     PostingIterator* iter(const QByteArray& prefix, Validator validate);
