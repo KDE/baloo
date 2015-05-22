@@ -24,6 +24,7 @@
 #include "engine_export.h"
 
 #include <QByteArray>
+#include <QMap>
 #include <QVector>
 #include <lmdb.h>
 
@@ -47,6 +48,7 @@ public:
 
     PostingIterator* iter(const QByteArray& term);
 
+    QMap<QByteArray, QVector<PositionInfo>> toTestMap() const;
 private:
     MDB_txn* m_txn;
     MDB_dbi m_dbi;

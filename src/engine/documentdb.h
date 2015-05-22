@@ -24,6 +24,7 @@
 #include "engine_export.h"
 #include <lmdb.h>
 #include <QVector>
+#include <QMap>
 
 namespace Baloo {
 
@@ -43,6 +44,7 @@ public:
     void del(quint64 docId);
     uint size();
 
+    QMap<quint64, QVector<QByteArray>> toTestMap() const;
 private:
     MDB_txn* m_txn;
     MDB_dbi m_dbi;

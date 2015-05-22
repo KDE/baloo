@@ -121,3 +121,29 @@ bool DocumentDataDB::contains(quint64 docId)
 
     return true;
 }
+
+QMap<quint64, QByteArray> DocumentDataDB::toTestMap() const
+{
+    MDB_cursor* cursor;
+    mdb_cursor_open(m_txn, m_dbi, &cursor);
+
+    MDB_val key = {0, 0};
+    MDB_val val;
+
+    QMap<quint64, QByteArray> map;
+    while (1) {
+        int rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
+        if (rc == MDB_NOTFOUND) {
+            break;
+        }
+        Q_ASSERT_X(rc == 0, "DocumentDataDB::toTestMap", mdb_strerror(rc));
+
+        const quint64 id = *(static_cast<quint64*>(key.mv_data));
+        const QByteArray ba = QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size);
+        map.insert(id, ba);
+    }
+
+    mdb_cursor_close(cursor);
+    return map;
+
+}

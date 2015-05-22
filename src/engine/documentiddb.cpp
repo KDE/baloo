@@ -140,3 +140,26 @@ uint DocumentIdDB::size()
     return stat.ms_entries;
 }
 
+QVector<quint64> DocumentIdDB::toTestVector() const
+{
+    MDB_cursor* cursor;
+    mdb_cursor_open(m_txn, m_dbi, &cursor);
+
+    MDB_val key = {0, 0};
+    MDB_val val;
+
+    QVector<quint64> vec;
+    while (1) {
+        int rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
+        if (rc == MDB_NOTFOUND) {
+            break;
+        }
+        Q_ASSERT_X(rc == 0, "DocumentTimeDB::toTestMap", mdb_strerror(rc));
+
+        const quint64 id = *(static_cast<quint64*>(key.mv_data));
+        vec << id;
+    }
+
+    mdb_cursor_close(cursor);
+    return vec;
+}

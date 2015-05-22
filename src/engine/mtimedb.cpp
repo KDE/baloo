@@ -226,3 +226,28 @@ PostingIterator* MTimeDB::iterRange(quint32 beginTime, quint32 endTime)
     mdb_cursor_close(cursor);
     return new VectorPostingIterator(results);
 }
+
+QMap<quint32, quint64> MTimeDB::toTestMap() const
+{
+    MDB_cursor* cursor;
+    mdb_cursor_open(m_txn, m_dbi, &cursor);
+
+    MDB_val key = {0, 0};
+    MDB_val val;
+
+    QMap<quint32, quint64> map;
+    while (1) {
+        int rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
+        if (rc == MDB_NOTFOUND) {
+            break;
+        }
+        Q_ASSERT_X(rc == 0, "MTimeDB::toTestMap", mdb_strerror(rc));
+
+        const quint32 time = *(static_cast<quint32*>(key.mv_data));
+        const quint64 id = *(static_cast<quint64*>(val.mv_data));
+        map.insert(time, id);
+    }
+
+    mdb_cursor_close(cursor);
+    return map;
+}

@@ -24,6 +24,7 @@
 #include "engine_export.h"
 #include <lmdb.h>
 #include <QVector>
+#include <QMap>
 
 namespace Baloo {
 
@@ -55,6 +56,7 @@ public:
     PostingIterator* iter(quint32 mtime, Comparator com);
     PostingIterator* iterRange(quint32 beginTime, quint32 endTime);
 
+    QMap<quint32, quint64> toTestMap() const;
 private:
     MDB_txn* m_txn;
     MDB_dbi m_dbi;

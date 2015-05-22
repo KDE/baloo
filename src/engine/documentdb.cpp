@@ -140,3 +140,28 @@ uint DocumentDB::size()
 
     return stat.ms_entries;
 }
+
+QMap<quint64, QVector<QByteArray>> DocumentDB::toTestMap() const
+{
+    MDB_cursor* cursor;
+    mdb_cursor_open(m_txn, m_dbi, &cursor);
+
+    MDB_val key = {0, 0};
+    MDB_val val;
+
+    QMap<quint64, QVector<QByteArray>> map;
+    while (1) {
+        int rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
+        if (rc == MDB_NOTFOUND) {
+            break;
+        }
+        Q_ASSERT_X(rc == 0, "PostingDB::toTestMap", mdb_strerror(rc));
+
+        const quint64 id = *(static_cast<quint64*>(key.mv_data));
+        const QVector<QByteArray> vec = DocTermsCodec().decode(QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size));
+        map.insert(id, vec);
+    }
+
+    mdb_cursor_close(cursor);
+    return map;
+}
