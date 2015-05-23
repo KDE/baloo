@@ -17,6 +17,7 @@ include(KDECMakeSettings)
 include(KDEFrameworkCompilerSettings)
 include(ECMInstallIcons)
 include(ECMAddTests)
+include(ECMGeneratePkgConfigFile)
 
 set(KF5_VERSION "5.0.0")
 
