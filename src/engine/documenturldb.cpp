@@ -130,7 +130,7 @@ void DocumentUrlDB::add(quint64 id, quint64 parentId, const QByteArray& name)
     idFilenameDb.put(id, path);
 }
 
-QByteArray DocumentUrlDB::get(quint64 docId)
+QByteArray DocumentUrlDB::get(quint64 docId) const
 {
     Q_ASSERT(docId > 0);
 
@@ -154,7 +154,7 @@ QByteArray DocumentUrlDB::get(quint64 docId)
     return '/' + list.join('/');
 }
 
-QVector<quint64> DocumentUrlDB::getChildren(quint64 docId)
+QVector<quint64> DocumentUrlDB::getChildren(quint64 docId) const
 {
     IdTreeDB idTreeDb(m_idTreeDbi, m_txn);
     return idTreeDb.get(docId);
@@ -224,7 +224,7 @@ void DocumentUrlDB::rename(quint64 docId, const QByteArray& newFileName)
     idFilenameDb.put(docId, path);
 }
 
-quint64 DocumentUrlDB::getId(quint64 docId, const QByteArray& fileName)
+quint64 DocumentUrlDB::getId(quint64 docId, const QByteArray& fileName) const
 {
     Q_ASSERT(docId > 0);
     Q_ASSERT(!fileName.isEmpty());
@@ -243,3 +243,26 @@ quint64 DocumentUrlDB::getId(quint64 docId, const QByteArray& fileName)
     return 0;
 }
 
+QMap<quint64, QByteArray> DocumentUrlDB::toTestMap() const
+{
+    IdTreeDB idTreeDb(m_idTreeDbi, m_txn);
+
+    QMap<quint64, QVector<quint64>> idTreeMap = idTreeDb.toTestMap();
+    QSet<quint64> allIds;
+
+    for (auto it = idTreeMap.cbegin(); it != idTreeMap.cend(); it++) {
+        allIds.insert(it.key());
+        for (quint64 id : it.value()) {
+            allIds.insert(id);
+        }
+    }
+
+    QMap<quint64, QByteArray> map;
+    for (quint64 id : allIds) {
+        if (id) {
+            map.insert(id, get(id));
+        }
+    }
+
+    return map;
+}

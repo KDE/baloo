@@ -36,8 +36,8 @@ public:
     ~DocumentUrlDB();
 
     void put(quint64 docId, const QByteArray& url);
-    QByteArray get(quint64 docId);
-    QVector<quint64> getChildren(quint64 docId);
+    QByteArray get(quint64 docId) const;
+    QVector<quint64> getChildren(quint64 docId) const;
 
     void del(quint64 docId);
     /**
@@ -46,12 +46,14 @@ public:
     void replace(quint64 docId, const QByteArray& url);
     void rename(quint64 docId, const QByteArray& newFileName);
 
-    quint64 getId(quint64 docId, const QByteArray& fileName);
+    quint64 getId(quint64 docId, const QByteArray& fileName) const;
 
     PostingIterator* iter(quint64 docId) {
         IdTreeDB db(m_idTreeDbi, m_txn);
         return db.iter(docId);
     }
+
+    QMap<quint64, QByteArray> toTestMap() const;
 
 private:
     void add(quint64 id, quint64 parentId, const QByteArray& name);
