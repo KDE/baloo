@@ -56,8 +56,6 @@ void Migrator::migrate()
     }
     else if (dbVersion == 1 && QFile::exists(m_dbPath + "/index")) {
         Q_ASSERT(0);
-    } else {
-        Q_ASSERT(0);
     }
 
     m_config->setDatabaseVersion(s_dbVersion);
