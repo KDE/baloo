@@ -88,6 +88,7 @@ DBState DBState::fromTransaction(Baloo::Transaction* tr)
     state.contentIndexingDb = contentIndexingDB.toTestVector();
 
     // FIXME: What about DocumentUrlDB?
+    // state.docUrlDb = docUrlDB.toTestMap();
 
     return state;
 }
