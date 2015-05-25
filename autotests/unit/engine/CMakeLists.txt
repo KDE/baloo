@@ -11,7 +11,6 @@ baloo_engine_auto_tests(
     positiondbtest
     postingdbtest
     documentdbtest
-    databasetest
     documenturldbtest
     documentiddbtest
     documentdatadbtest

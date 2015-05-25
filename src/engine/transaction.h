@@ -35,7 +35,7 @@ class Database;
 class Document;
 class PostingIterator;
 class EngineQuery;
-class DatabaseTest;
+class DBState;
 
 class BALOO_ENGINE_EXPORT Transaction
 {
@@ -115,7 +115,7 @@ private:
     MDB_txn* m_txn;
     WriteTransaction* m_writeTrans;
 
-    friend class DatabaseTest;
+    friend class DBState; // for testing
 };
 }
 
