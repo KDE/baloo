@@ -128,7 +128,10 @@ int main(int argc, char* argv[])
         const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/");
 
         Database db(path);
-        db.open(Baloo::Database::OpenDatabase);
+        if (!db.open(Baloo::Database::OpenDatabase)) {
+            out << "Baloo Index could not be opened\n";
+            return 1;
+        }
 
         Transaction tr(db, Transaction::ReadOnly);
 
