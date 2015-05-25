@@ -1,5 +1,5 @@
 /*
-   This file is part of the KDE Baloo project.
+ * This file is part of the KDE Baloo project.
  * Copyright (C) 2015  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
@@ -18,10 +18,10 @@
  *
  */
 
-#include "database.h"
-#include "transaction.h"
-#include "document.h"
+#ifndef BALOO_DBSTATE_H
+#define BALOO_DBSTATE_H
 
+#include "transaction.h"
 #include "postingdb.h"
 #include "documentdb.h"
 #include "documenturldb.h"
@@ -30,14 +30,7 @@
 #include "positiondb.h"
 #include "documenttimedb.h"
 
-#include "idutils.h"
-
-#include <QTest>
-#include <QTemporaryDir>
-
-using namespace Baloo;
-
-class DBState {
+class Baloo::DBState {
 public:
     QMap<QByteArray, PostingList> postingDb;
     QMap<QByteArray, QVector<PositionInfo>> positionDb;
@@ -59,21 +52,14 @@ public:
                && docTimeDb == st.docTimeDb && mtimeDb == st.mtimeDb && docDataDb == st.docDataDb
                && docUrlDb == st.docUrlDb && contentIndexingDb == st.contentIndexingDb;
     }
+
+    static DBState fromTransaction(Transaction* tr);
 private:
 };
 
-class Baloo::DatabaseTest : public QObject
-{
-    Q_OBJECT
-private Q_SLOTS:
-    void test();
+using namespace Baloo;
 
-
-private:
-    DBState toState(Transaction* txn);
-};
-
-DBState DatabaseTest::toState(Transaction* tr)
+DBState DBState::fromTransaction(Baloo::Transaction* tr)
 {
     auto dbis = tr->m_dbis;
     MDB_txn* txn = tr->m_txn;
@@ -105,58 +91,4 @@ DBState DatabaseTest::toState(Transaction* tr)
     return state;
 }
 
-static void touchFile(const QByteArray& path) {
-    QFile file(QString::fromUtf8(path));
-    file.open(QIODevice::WriteOnly);
-    file.write("data");
-}
-
-void DatabaseTest::test()
-{
-    QTemporaryDir dir;
-
-    Database db(dir.path());
-    QVERIFY(db.open(Database::CreateDatabase));
-
-    Transaction tr(db, Transaction::ReadWrite);
-
-    const QByteArray url(dir.path().toUtf8() + "/file");
-    touchFile(url);
-    quint64 id = filePathToId(url);
-
-    QCOMPARE(tr.hasDocument(id), false);
-
-    Document doc;
-    doc.setId(id);
-    doc.setUrl(url);
-    doc.addTerm("a");
-    doc.addTerm("ab");
-    doc.addTerm("abc");
-    doc.addTerm("power");
-    doc.addFileNameTerm("link");
-    doc.addXattrTerm("system");
-    doc.setMTime(1);
-    doc.setCTime(2);
-
-    tr.addDocument(doc);
-    tr.commit();
-
-    Transaction tr2(db, Transaction::ReadOnly);
-
-    DBState state;
-    state.postingDb = {{"a", {id}}, {"ab", {id}}, {"abc", {id}}, {"power", {id}}, {"system", {id}}, {"link", {id}}};
-    state.positionDb = {};
-    state.docTermsDb = {{id, {"a", "ab", "abc", "power"} }};
-    state.docFileNameTermsDb = {{id, {"link"} }};
-    state.docXAttrTermsDb = {{id, {"system"} }};
-    state.docTimeDb = {{id, DocumentTimeDB::TimeInfo(1, 2)}};
-    state.mtimeDb = {{1, id}};
-
-    DBState actualState = toState(&tr2);
-    QCOMPARE(actualState, state);
-    // FIXME: Check url?
-}
-
-QTEST_MAIN(DatabaseTest)
-
-#include "databasetest.moc"
+#endif
