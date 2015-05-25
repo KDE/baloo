@@ -44,6 +44,8 @@ private Q_SLOTS:
     }
 
     void testAddDocument();
+    void testAddDocumentTwoDocuments();
+    void testAddAndRemoveOneDocument();
 
 private:
     QTemporaryDir* dir;
@@ -99,6 +101,86 @@ void WriteTransactionTest::testAddDocument()
     QCOMPARE(actualState, state);
 }
 
+
+static Document createDocument(const QByteArray& url, quint32 mtime, quint32 ctime, const QVector<QByteArray>& terms,
+                               const QVector<QByteArray>& fileNameTerms, const QVector<QByteArray>& xattrTerms)
+{
+    Document doc;
+    doc.setId(filePathToId(url));
+    doc.setUrl(url);
+
+    for (const QByteArray& term: terms) {
+        doc.addTerm(term);
+    }
+    for (const QByteArray& term: fileNameTerms) {
+        doc.addFileNameTerm(term);
+    }
+    for (const QByteArray& term: xattrTerms) {
+        doc.addXattrTerm(term);
+    }
+    doc.setMTime(mtime);
+    doc.setCTime(ctime);
+
+    return doc;
+}
+
+void WriteTransactionTest::testAddDocumentTwoDocuments()
+{
+    const QByteArray url1(dir->path().toUtf8() + "/file1");
+    const QByteArray url2(dir->path().toUtf8() + "/file2");
+    touchFile(url1);
+    touchFile(url2);
+
+    Document doc1 = createDocument(url1, 5, 1, {"a", "abc", "dab"}, {"file1"}, {});
+    Document doc2 = createDocument(url2, 6, 2, {"a", "abcd", "dab"}, {"file2"}, {});
+
+    {
+        Transaction tr(db, Transaction::ReadWrite);
+        tr.addDocument(doc1);
+        tr.addDocument(doc2);
+        tr.commit();
+    }
+
+    Transaction tr(db, Transaction::ReadOnly);
+
+    quint64 id1 = doc1.id();
+    quint64 id2 = doc2.id();
+
+    DBState state;
+    state.postingDb = {{"a", {id1, id2}}, {"abc", {id1}}, {"abcd", {id2}}, {"dab", {id1, id2}}, {"file1", {id1}}, {"file2", {id2}}};
+    state.positionDb = {};
+    state.docTermsDb = {{id1, {"a", "abc", "dab"}}, {id2, {"a", "abcd", "dab"}}};
+    state.docFileNameTermsDb = {{id1, {"file1"}}, {id2, {"file2"}}};
+    state.docXAttrTermsDb = {};
+    state.docTimeDb = {{id1, DocumentTimeDB::TimeInfo(5, 1)}, {id2, DocumentTimeDB::TimeInfo(6, 2)}};
+    state.mtimeDb = {{5, id1}, {6, id2}};
+
+    DBState actualState = DBState::fromTransaction(&tr);
+    QVERIFY(DBState::debugCompare(actualState, state));
+}
+
+void WriteTransactionTest::testAddAndRemoveOneDocument()
+{
+    const QByteArray url1(dir->path().toUtf8() + "/file1");
+    touchFile(url1);
+
+    Document doc1 = createDocument(url1, 5, 1, {"a", "abc", "dab"}, {"file1"}, {});
+
+    {
+        Transaction tr(db, Transaction::ReadWrite);
+        tr.addDocument(doc1);
+        tr.commit();
+    }
+    {
+        Transaction tr(db, Transaction::ReadWrite);
+        tr.removeDocument(doc1.id());
+        tr.commit();
+    }
+
+    Transaction tr(db, Transaction::ReadOnly);
+    DBState actualState = DBState::fromTransaction(&tr);
+    QVERIFY(DBState::debugCompare(actualState, DBState()));
+}
 
 
 QTEST_MAIN(WriteTransactionTest)

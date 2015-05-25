@@ -54,6 +54,7 @@ public:
     }
 
     static DBState fromTransaction(Transaction* tr);
+    static bool debugCompare(const DBState& st1, const DBState& st2);
 private:
 };
 
@@ -89,6 +90,35 @@ DBState DBState::fromTransaction(Baloo::Transaction* tr)
     // FIXME: What about DocumentUrlDB?
 
     return state;
+}
+
+bool DBState::debugCompare(const DBState& st1, const DBState& st2)
+{
+    if (st1.postingDb != st2.postingDb) {
+        qDebug() << "Posting DB different";
+        qDebug() << st1.postingDb;
+        qDebug() << st2.postingDb;
+        return false;
+    }
+
+    if (st1.positionDb != st2.positionDb) {
+        qDebug() << "Position DB different";
+        return false;
+    }
+
+    if (st1.docTermsDb != st2.docTermsDb) {
+        qDebug() << "DocTerms DB different";
+        qDebug() << st1.docTermsDb;
+        qDebug() << st2.docTermsDb;
+        return false;
+    }
+
+    if (st1.docFileNameTermsDb != st2.docFileNameTermsDb) {
+        qDebug() << "Doc FileName Terms DB different";
+        return false;
+    }
+
+    return st1 == st2;
 }
 
 #endif
