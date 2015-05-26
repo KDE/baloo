@@ -160,59 +160,6 @@ QVector<quint64> DocumentUrlDB::getChildren(quint64 docId) const
     return idTreeDb.get(docId);
 }
 
-void DocumentUrlDB::del(quint64 docId)
-{
-    Q_ASSERT(docId > 0);
-    replace(docId, QByteArray());
-}
-
-void DocumentUrlDB::replace(quint64 docId, const QByteArray& url)
-{
-    IdFilenameDB idFilenameDb(m_idFilenameDbi, m_txn);
-    IdTreeDB idTreeDb(m_idTreeDbi, m_txn);
-
-    // FIXME: Maybe this can be combined into one?
-    auto path = idFilenameDb.get(docId);
-    if (path.name.isEmpty()) {
-        return;
-    }
-    idFilenameDb.del(docId);
-
-    QVector<quint64> subDocs = idTreeDb.get(path.parentId);
-    subDocs.removeOne(docId);
-
-    if (!subDocs.isEmpty()) {
-        idTreeDb.put(path.parentId, subDocs);
-    } else {
-        idTreeDb.del(path.parentId);
-
-        //
-        // Delete every parent directory which only has 1 child
-        //
-        quint64 id = path.parentId;
-        while (id) {
-            auto path = idFilenameDb.get(id);
-            Q_ASSERT(!path.name.isEmpty());
-            QVector<quint64> subDocs = idTreeDb.get(path.parentId);
-            if (subDocs.size() == 1) {
-                idTreeDb.del(path.parentId);
-                idFilenameDb.del(id);
-            } else {
-                break;
-            }
-
-            id = path.parentId;
-        }
-    }
-
-    if (url.isEmpty()) {
-        Q_ASSERT(idTreeDb.get(docId).isEmpty());
-        return;
-    }
-
-    put(docId, url);
-}
-
 void DocumentUrlDB::rename(quint64 docId, const QByteArray& newFileName)
 {
     Q_ASSERT(docId > 0);

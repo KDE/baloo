@@ -79,30 +79,49 @@ private Q_SLOTS:
 
         QCOMPARE(db.get(id), filePath);
 
-        db.del(id);
+        db.del(id, [](quint64) { return true; });
         QCOMPARE(db.get(id), QByteArray());
     }
 
-    void testTwoFiles() {
+    void testTwoFilesAndAFolder() {
         QTemporaryDir dir;
 
-        QByteArray filePath1(dir.path().toUtf8() + "/file");
+        QByteArray dirPath = QFile::encodeName(dir.path());
+        QByteArray filePath1(dirPath + "/file");
+        QByteArray filePath2(dirPath + "/file2");
+
         touchFile(filePath1);
-        quint64 id1 = filePathToId(filePath1);
-        QByteArray filePath2(dir.path().toUtf8() + "/file2");
         touchFile(filePath2);
+        quint64 did = filePathToId(dirPath);
+        quint64 id1 = filePathToId(filePath1);
         quint64 id2 = filePathToId(filePath2);
 
         DocumentUrlDB db(IdTreeDB::create(m_txn), IdFilenameDB::create(m_txn), m_txn);
+        db.put(did, dirPath);
         db.put(id1, filePath1);
         db.put(id2, filePath2);
 
         QCOMPARE(db.get(id1), filePath1);
         QCOMPARE(db.get(id2), filePath2);
+        QCOMPARE(db.get(did), dirPath);
 
-        db.del(id1);
+        db.del(id1, [=](quint64 id) { return id != did; });
+
         QCOMPARE(db.get(id1), QByteArray());
         QCOMPARE(db.get(id2), filePath2);
+        QCOMPARE(db.get(did), dirPath);
+
+        db.del(id2, [=](quint64 id) { return id != did; });
+
+        QCOMPARE(db.get(id1), QByteArray());
+        QCOMPARE(db.get(id2), QByteArray());
+        QCOMPARE(db.get(did), dirPath);
+
+        db.del(did, [=](quint64 id) { return id != did; });
+
+        QCOMPARE(db.get(id1), QByteArray());
+        QCOMPARE(db.get(id2), QByteArray());
+        QCOMPARE(db.get(did), QByteArray());
     }
 
     void testDuplicateId() {
