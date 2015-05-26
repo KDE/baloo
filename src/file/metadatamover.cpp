@@ -77,7 +77,12 @@ void MetadataMover::removeMetadata(Transaction* tr, const QString& url)
         return;
     }
 
-    tr->removeDocument(id);
+    bool isDir = url.endsWith('/');
+    if (!isDir) {
+        tr->removeDocument(id);
+    } else {
+        tr->removeRecursively(id);
+    }
 }
 
 void MetadataMover::updateMetadata(Transaction* tr, const QString& from, const QString& to)
