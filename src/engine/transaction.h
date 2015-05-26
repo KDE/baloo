@@ -53,7 +53,12 @@ public:
     //
     bool hasDocument(quint64 id);
     QByteArray documentUrl(quint64 id);
-    quint64 documentId(quint64 parentId, const QByteArray& fileName);
+
+    /**
+     * This method is not cheap, and does not stat the filesystem in order to convert the path
+     * \p path into an id.
+     */
+    quint64 documentId(const QByteArray& path);
     QByteArray documentData(quint64 id);
 
     quint64 documentMTime(quint64 id);

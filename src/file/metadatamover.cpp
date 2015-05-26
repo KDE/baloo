@@ -67,22 +67,13 @@ void MetadataMover::removeFileMetadata(const QString& file)
     tr.commit();
 }
 
-
 void MetadataMover::removeMetadata(Transaction* tr, const QString& url)
 {
     Q_ASSERT(!url.isEmpty());
 
-    int i = url.lastIndexOf('/');
-    const QString dirPath = url.mid(0, i);
-    const QString filename = url.mid(i + 1);
-
-    quint64 parentId = filePathToId(QFile::encodeName(dirPath));
-    if (!parentId) {
-        return;
-    }
-    quint64 id = tr->documentId(parentId, QFile::encodeName(filename));
-
+    quint64 id = tr->documentId(QFile::encodeName(url));
     if (!id) {
+        qDebug() << "No document id for" << url;
         return;
     }
 

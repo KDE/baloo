@@ -89,14 +89,27 @@ QByteArray Transaction::documentUrl(quint64 id)
     return docUrlDb.get(id);
 }
 
-quint64 Transaction::documentId(quint64 parentId, const QByteArray& fileName)
+quint64 Transaction::documentId(const QByteArray& path)
 {
     Q_ASSERT(m_txn);
-    Q_ASSERT(parentId > 0);
-    Q_ASSERT(!fileName.isEmpty());
+    Q_ASSERT(!path.isEmpty());
 
     DocumentUrlDB docUrlDb(m_dbis.idTreeDbi, m_dbis.idFilenameDbi, m_txn);
-    return docUrlDb.getId(parentId, fileName);
+    QList<QByteArray> li = path.split('/');
+
+    quint64 parentId = 0;
+    for (const QByteArray& fileName : li) {
+        if (fileName.isEmpty()) {
+            continue;
+        }
+
+        parentId = docUrlDb.getId(parentId, fileName);
+        if (!parentId) {
+            return 0;
+        }
+    }
+
+    return parentId;
 }
 
 quint64 Transaction::documentMTime(quint64 id)
