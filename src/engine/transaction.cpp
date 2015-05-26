@@ -355,8 +355,12 @@ void Transaction::renameFilePath(quint64 id, const Document& newDoc)
     Q_ASSERT(id);
 
     // Update the id -> url db
+    DocumentTimeDB docTimeDb(m_dbis.docTermsDbi, m_txn);
     DocumentUrlDB docUrlDb(m_dbis.idTreeDbi, m_dbis.idFilenameDbi, m_txn);
-    docUrlDb.replace(id, newDoc.url());
+
+    docUrlDb.replace(id, newDoc.url(), [&docTimeDb](quint64 id) {
+        return !docTimeDb.contains(id);
+    });;
 
     replaceDocument(newDoc, FileNameTerms);
 }

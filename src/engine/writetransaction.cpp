@@ -125,7 +125,9 @@ void WriteTransaction::removeDocument(quint64 id)
     documentXattrTermsDB.del(id);
     documentFileNameTermsDB.del(id);
 
-    docUrlDB.del(id);
+    docUrlDB.del(id, [&docTimeDB](quint64 id) {
+        return !docTimeDB.contains(id);
+    });;
 
     contentIndexingDB.del(id);
 
