@@ -206,7 +206,9 @@ QMap<quint64, QByteArray> DocumentUrlDB::toTestMap() const
     QMap<quint64, QByteArray> map;
     for (quint64 id : allIds) {
         if (id) {
-            map.insert(id, get(id));
+            QByteArray path = get(id);
+            Q_ASSERT(!path.isEmpty());
+            map.insert(id, path);
         }
     }
 
