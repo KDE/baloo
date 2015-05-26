@@ -173,7 +173,6 @@ void DocumentUrlDB::rename(quint64 docId, const QByteArray& newFileName)
 
 quint64 DocumentUrlDB::getId(quint64 docId, const QByteArray& fileName) const
 {
-    Q_ASSERT(docId > 0);
     Q_ASSERT(!fileName.isEmpty());
 
     IdFilenameDB idFilenameDb(m_idFilenameDbi, m_txn);

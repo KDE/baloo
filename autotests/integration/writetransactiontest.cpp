@@ -47,6 +47,7 @@ private Q_SLOTS:
     void testAddDocumentTwoDocuments();
     void testAddAndRemoveOneDocument();
 
+    void testDocumentId();
 private:
     QTemporaryDir* dir;
     Database* db;
@@ -180,6 +181,23 @@ void WriteTransactionTest::testAddAndRemoveOneDocument()
     Transaction tr(db, Transaction::ReadOnly);
     DBState actualState = DBState::fromTransaction(&tr);
     QVERIFY(DBState::debugCompare(actualState, DBState()));
+}
+
+void WriteTransactionTest::testDocumentId()
+{
+    const QByteArray url1(dir->path().toUtf8() + "/file1");
+    touchFile(url1);
+
+    Document doc1 = createDocument(url1, 5, 1, {"a", "abc", "dab"}, {"file1"}, {});
+
+    {
+        Transaction tr(db, Transaction::ReadWrite);
+        tr.addDocument(doc1);
+        tr.commit();
+    }
+
+    Transaction tr(db, Transaction::ReadOnly);
+    QCOMPARE(tr.documentId(url1), doc1.id());
 }
 
 
