@@ -106,7 +106,6 @@ public:
     }
 
     void close() {
-        qCDebug(BALOO);
         delete m_notifier;
         m_notifier = 0;
 
@@ -143,7 +142,6 @@ public:
     }
 
     void removeWatch(int wd) {
-        qCDebug(BALOO) << wd << watchPathHash[wd].toByteArray();
         pathWatchHash.remove(watchPathHash.take(wd));
         inotify_rm_watch(inotify(), wd);
     }
@@ -190,14 +188,14 @@ public:
 
 private:
     void open() {
-        qCDebug(BALOO);
         m_inotifyFd = inotify_init();
         delete m_notifier;
         if (m_inotifyFd > 0) {
             fcntl(m_inotifyFd, F_SETFD, FD_CLOEXEC);
-            qCDebug(BALOO) << "Successfully opened connection to inotify:" << m_inotifyFd;
             m_notifier = new QSocketNotifier(m_inotifyFd, QSocketNotifier::Read);
             connect(m_notifier, SIGNAL(activated(int)), q, SLOT(slotEvent(int)));
+        } else {
+            Q_ASSERT_X(0, "kinotify", "Failed to initialize inotify");
         }
     }
 
@@ -264,7 +262,7 @@ void KInotify::resetUserLimit()
 
 bool KInotify::addWatch(const QString& path, WatchEvents mode, WatchFlags flags)
 {
-    qCDebug(BALOO) << path;
+//    qCDebug(BALOO) << path;
 
     d->mode = mode;
     d->flags = flags;
@@ -378,7 +376,7 @@ void KInotify::slotEvent(int socket)
             Q_EMIT created(QFile::decodeName(path), event->mask & IN_ISDIR);
         }
         if (event->mask & EventDeleteSelf) {
-            qCDebug(BALOO) << path << "EventDeleteSelf";
+//            qCDebug(BALOO) << path << "EventDeleteSelf";
             d->removeWatch(event->wd);
             Q_EMIT deleted(QFile::decodeName(path), true);
         }
@@ -411,7 +409,7 @@ void KInotify::slotEvent(int socket)
                     OptimizedByteArray optimOldPath(oldPath, d->pathCache);
                     QHash<OptimizedByteArray, int>::iterator it = d->pathWatchHash.find(optimOldPath);
                     if (it != d->pathWatchHash.end()) {
-                        qCDebug(BALOO) << oldPath << path;
+//                        qCDebug(BALOO) << oldPath << path;
                         const int wd = it.value();
                         OptimizedByteArray optimPath(path, d->pathCache);
                         d->watchPathHash[wd] = optimPath;
@@ -422,7 +420,7 @@ void KInotify::slotEvent(int socket)
 //                qCDebug(BALOO) << oldPath << "EventMoveTo" << path;
                 Q_EMIT moved(QFile::decodeName(oldPath), QFile::decodeName(path));
             } else {
-                qCDebug(BALOO) << "No cookie for move information of" << path << "simulating new file event";
+//                qCDebug(BALOO) << "No cookie for move information of" << path << "simulating new file event";
                 Q_EMIT created(QString::fromUtf8(path), event->mask & IN_ISDIR);
 
                 // also simulate a closed write since that is what triggers indexing of files in the file watcher
