@@ -71,8 +71,6 @@ FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
     Q_FOREACH (const QString& folder, folders) {
         watchFolder(folder);
     }
-
-    connect(m_config, &Baloo::FileIndexerConfig::configChanged, this, &FileWatch::updateIndexedFoldersWatches);
 }
 
 

@@ -40,7 +40,6 @@ IndexScheduler::IndexScheduler(Database* db, FileIndexerConfig* config, QObject*
     , m_db(db)
 {
     Q_ASSERT(m_config);
-    connect(m_config, &FileIndexerConfig::configChanged, this, &IndexScheduler::slotConfigChanged);
 
     m_basicIQ = new BasicIndexingQueue(m_db, m_config, this);
     m_fileIQ = new FileIndexingQueue(m_db, this);
@@ -165,9 +164,10 @@ void IndexScheduler::queueAllFoldersForUpdate(bool forceUpdate)
 }
 
 
-void IndexScheduler::slotConfigChanged()
+void IndexScheduler::updateConfig()
 {
     // We need to this - there is no way to avoid it
+    m_config->forceConfigUpdate();
     m_basicIQ->clear();
     m_fileIQ->clear();
 

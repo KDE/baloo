@@ -164,11 +164,6 @@ void SchedulerTest::testBatterySuspend()
     scheduler.m_eventMonitor->m_isOnBattery = false;
     Solid::PowerManagement::notifier()->disconnect(scheduler.m_eventMonitor);
 
-    // Seems to intefere with the rest of the world
-    // FIXME: Maybe we should remove this completely?
-    disconnect(scheduler.m_config, &FileIndexerConfig::configChanged,
-               &scheduler, &IndexScheduler::slotConfigChanged);
-
     scheduler.updateAll();
     QEventLoop loop;
     connect(&scheduler, &IndexScheduler::basicIndexingDone, &loop, &QEventLoop::quit);

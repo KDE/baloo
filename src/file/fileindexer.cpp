@@ -162,3 +162,8 @@ void FileIndexer::quit() const
 {
     QCoreApplication::instance()->quit();
 }
+
+void FileIndexer::updateConfig()
+{
+    m_indexScheduler->updateConfig();
+}
