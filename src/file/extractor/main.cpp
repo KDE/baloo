@@ -45,7 +45,6 @@ int main(int argc, char* argv[])
     parser.addHelpOption();
     parser.addVersionOption();
 
-    parser.addPositionalArgument(QLatin1String("urls"), i18n("The URL/id of the files to be indexed"));
     parser.addOption(QCommandLineOption(QLatin1String("debug"), i18n("Print the data being indexed")));
     parser.addOption(QCommandLineOption(QLatin1String("ignoreConfig"), i18n("Ignore the baloofilerc config and always index the file")));
 
@@ -55,16 +54,8 @@ int main(int argc, char* argv[])
 
     parser.process(app);
 
-    QStringList args = parser.positionalArguments();
-    if (args.isEmpty()) {
-        fprintf(stderr, "The url/id of the file is missing\n\n");
-        parser.showHelp(1);
-    }
-
     Baloo::App appObject(parser.value(QLatin1String("db")));
     appObject.setDebug(parser.isSet(QLatin1String("debug")));
     appObject.setIgnoreConfig(parser.isSet(QLatin1String("ignoreConfig")));
-    appObject.startProcessing(args);
-
     return app.exec();
 }

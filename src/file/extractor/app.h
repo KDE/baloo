@@ -26,6 +26,8 @@
 #include <QVector>
 #include <QStringList>
 #include <QMimeDatabase>
+#include <QTextStream>
+#include <QSocketNotifier>
 
 #include <KFileMetaData/ExtractorCollection>
 
@@ -45,16 +47,16 @@ public:
     void setDebug(bool status) { m_debugEnabled = status; }
     void setIgnoreConfig(bool status) { m_ignoreConfig = status; }
 
-    void startProcessing(const QStringList& args);
-
 private Q_SLOTS:
-    void process();
+    void slotNewInput();
 
 private:
     void index(Transaction* tr, const QString& filePath, quint64 id);
     bool ignoreConfig() const;
 
-    QStringList m_args;
+    QTextStream m_inputStream;
+    QTextStream m_outStream;
+    QSocketNotifier m_notifyNewData;
 
     bool m_debugEnabled;
     bool m_ignoreConfig;

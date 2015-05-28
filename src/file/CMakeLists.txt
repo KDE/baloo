@@ -9,7 +9,6 @@ set(file_static_lib_SRCS
     basicindexingqueue.cpp
     fileindexingqueue.cpp
     basicindexingjob.cpp
-    fileindexingjob.cpp
     eventmonitor.cpp
 
     # Common

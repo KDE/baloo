@@ -22,7 +22,6 @@
 
 
 #include "fileindexingqueue.h"
-#include "fileindexingjob.h"
 #include "database.h"
 #include "transaction.h"
 
@@ -35,22 +34,56 @@ FileIndexingQueue::FileIndexingQueue(Database* db, QObject* parent)
     : IndexingQueue(parent)
     , m_db(db)
     , m_testMode(false)
-    , m_indexJob(0)
+    , m_extractorProcess(0)
+    , m_extractorPath(QStandardPaths::findExecutable(QLatin1String("baloo_file_extractor")))
+    , m_timeCurrentFile(this)
 {
     m_maxSize = 1200;
-    m_batchSize = 40;
 
     m_fileQueue.reserve(m_maxSize);
+
+    // Time limit per file TODO: figure out appropriate limit
+    m_processTimeout = 1 * 60 * 1000;
+    m_timeCurrentFile.setSingleShot(true);
+
+    connect(&m_timeCurrentFile, &QTimer::timeout, this, &FileIndexingQueue::slotHandleProcessTimeout);
+
+    startExtractorProcess();
 }
+
+FileIndexingQueue::~FileIndexingQueue()
+{
+    stopExtractorProcess();
+}
+
+
+void FileIndexingQueue::startExtractorProcess()
+{
+    m_extractorProcess = new QProcess(this);
+
+    QStringList args;
+    if (m_testMode) {
+        args << QLatin1String("--db") << m_db->path();
+        args << QLatin1String("--ignoreConfig");
+    }
+    connect(m_extractorProcess, &QProcess::started, this, &FileIndexingQueue::slotExtractorStarted);
+    connect(m_extractorProcess, &QProcess::readyRead, this, &FileIndexingQueue::slotFileIndexed);
+
+    m_extractorProcess->start(m_extractorPath, args);
+}
+
+void FileIndexingQueue::stopExtractorProcess()
+{
+    m_extractorProcess->disconnect(this);
+    m_extractorProcess->deleteLater();
+    m_extractorProcess = 0;
+}
+
 
 void FileIndexingQueue::fillQueue()
 {
-    if (m_fileQueue.size() >= m_maxSize)
-        return;
-
-    // We do not want to refill the queue when a job is going on
-    // this will result in unnecessary duplicates
-    if (m_indexJob)
+    // we do not refil queue unless it is empty to avoid duplicates
+    if (m_fileQueue.size() >= m_maxSize || !m_fileQueue.isEmpty())
         return;
 
     QVector<quint64> newItems;
@@ -68,42 +101,37 @@ bool FileIndexingQueue::isEmpty()
 
 void FileIndexingQueue::processNextIteration()
 {
-    QVector<quint64> files;
-    files.reserve(m_batchSize);
+    Q_ASSERT(m_extractorProcess->state() == QProcess::Running);
 
-    for (int i=0; i<m_batchSize && m_fileQueue.size(); ++i) {
-        files << m_fileQueue.pop();
+    if (!m_fileQueue.isEmpty()) {
+        m_currentFile = m_fileQueue.pop();
+        m_timeCurrentFile.start(m_processTimeout);
+        m_processStream << m_currentFile << "\n";
+        m_processStream.flush();
     }
-
-    Q_ASSERT(m_indexJob == 0);
-    m_indexJob = new FileIndexingJob(files, this);
-    if (m_testMode) {
-        m_indexJob->setCustomDbPath(m_db->path());
-    }
-    connect(m_indexJob, &FileIndexingJob::indexingFailed, this, &FileIndexingQueue::slotIndexingFailed);
-    connect(m_indexJob, &FileIndexingJob::finished, this, &FileIndexingQueue::slotFinishedIndexingFile);
-
-    m_indexJob->start();
-}
-
-void FileIndexingQueue::slotFinishedIndexingFile(KJob* job)
-{
-    Q_ASSERT(job == m_indexJob);
-    m_indexJob = 0;
-
-    // The process would have modified the db
-    // m_db->xapianDatabase()->db()->reopen();
-    if (m_fileQueue.isEmpty()) {
+    else {
         fillQueue();
+        finishIteration();
     }
-    finishIteration();
 }
 
-void FileIndexingQueue::slotIndexingFailed(quint64 id)
+void FileIndexingQueue::slotHandleProcessTimeout()
 {
+    qDebug() << "Process took too long killing";
+    stopExtractorProcess();
+    indexingFailed();
+    startExtractorProcess();
+    // Failed file has already been removed from queue, go back to indexing from the next file
+    processNextIteration();
+}
+
+void FileIndexingQueue::indexingFailed()
+{
+    qDebug() << "Timeout with docid: " << m_currentFile;
     /*
      * FIXME: Handle indexing failed
      * Ideally, update the indexing level!
+     * NOTE: failed file id will be in m_currentFile
      */
 }
 
@@ -115,13 +143,27 @@ void FileIndexingQueue::clear()
 
 void FileIndexingQueue::doResume()
 {
-    if (m_indexJob)
-        m_indexJob->resume();
+    if (m_sentEvent) {
+        // Required to resume after suspend
+        processNextIteration();
+    }
 }
 
-void FileIndexingQueue::doSuspend()
+
+void FileIndexingQueue::slotExtractorStarted()
 {
-    if (m_indexJob)
-        m_indexJob->suspend();
+    m_extractorProcess->setReadChannel(QProcess::StandardOutput);
+    m_processStream.setDevice(m_extractorProcess);
+}
+
+void FileIndexingQueue::slotFileIndexed()
+{
+    m_timeCurrentFile.stop();
+
+    QString output = m_processStream.readLine();
+    // TODO: handle the output
+    if (!m_suspended) {
+        processNextIteration();
+    }
 }
 
