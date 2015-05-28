@@ -46,6 +46,7 @@ Q_SIGNALS:
     Q_SCRIPTABLE void indexingStarted();
     Q_SCRIPTABLE void indexingStopped();
     Q_SCRIPTABLE void fileIndexingDone();
+    void configChanged();
 
 public Q_SLOTS:
     /**
@@ -91,6 +92,8 @@ public Q_SLOTS:
      * Index only the extended attributes of the file
      */
     Q_SCRIPTABLE void indexXAttr(const QString& path);
+
+    Q_SCRIPTABLE void updateConfig();
 
 private Q_SLOTS:
     void slotBasicIndexingDone();

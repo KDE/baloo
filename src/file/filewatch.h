@@ -40,6 +40,14 @@ public:
     FileWatch(Database* db, FileIndexerConfig* config, QObject* parent = 0);
     ~FileWatch();
 
+public Q_SLOTS:
+    /**
+     * To be called whenever the list of indexed folders changes. This is done because
+     * the indexed folders are watched with the 'KInotify::EventCreate' event, and the
+     * non-indexed folders are not.
+     */
+    void updateIndexedFoldersWatches();
+
 Q_SIGNALS:
     void indexFile(const QString& string);
     void indexXAttr(const QString& path);
@@ -54,13 +62,6 @@ private Q_SLOTS:
     void slotAttributeChanged(const QString& path);
     void slotFileModified(const QString& path);
     void slotInotifyWatchUserLimitReached(const QString&);
-
-    /**
-     * To be called whenever the list of indexed folders changes. This is done because
-     * the indexed folders are watched with the 'KInotify::EventCreate' event, and the
-     * non-indexed folders are not.
-     */
-    void updateIndexedFoldersWatches();
 
 private:
     /** Watch a folder, provided it is not already watched*/

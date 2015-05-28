@@ -24,7 +24,6 @@
 #include <QStringList>
 #include <QDir>
 
-#include <KDirWatch>
 #include <QStandardPaths>
 #include <KConfigGroup>
 #include <QDebug>
@@ -62,11 +61,6 @@ FileIndexerConfig::FileIndexerConfig(QObject* parent)
     , m_indexHidden(false)
     , m_devices(new StorageDevices(this))
 {
-    KDirWatch* dirWatch = KDirWatch::self();
-    connect(dirWatch, &KDirWatch::dirty, this, &FileIndexerConfig::slotConfigDirty);
-    connect(dirWatch, &KDirWatch::created, this, &FileIndexerConfig::slotConfigDirty);
-    dirWatch->addFile(QStandardPaths::locate(QStandardPaths::ConfigLocation, m_config.name()));
-
     forceConfigUpdate();
 }
 
@@ -132,13 +126,6 @@ bool FileIndexerConfig::onlyBasicIndexing() const
 {
     return m_onlyBasicIndexing;
 }
-
-void FileIndexerConfig::slotConfigDirty()
-{
-    forceConfigUpdate();
-    Q_EMIT configChanged();
-}
-
 
 bool FileIndexerConfig::isInitialRun() const
 {

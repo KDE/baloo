@@ -88,6 +88,9 @@ public Q_SLOTS:
      */
     void indexXattr(const QString& path);
 
+    // Config
+    void updateConfig();
+
 Q_SIGNALS:
     // Indexing State
     void indexingStarted();
@@ -102,8 +105,6 @@ Q_SIGNALS:
 
     void statusStringChanged();
 private Q_SLOTS:
-    // Config
-    void slotConfigChanged();
 
     void slotStartedIndexing();
 

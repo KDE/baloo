@@ -144,9 +144,6 @@ public:
 
     bool indexingEnabled() const;
 
-Q_SIGNALS:
-    void configChanged();
-
 public Q_SLOTS:
     /**
      * Reread the config from disk and update the configuration cache.
@@ -162,9 +159,6 @@ public Q_SLOTS:
      * have been indexed.
      */
     void setInitialRun(bool isInitialRun);
-
-private Q_SLOTS:
-    void slotConfigDirty();
 
 private:
 
