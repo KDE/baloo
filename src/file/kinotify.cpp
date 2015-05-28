@@ -380,7 +380,7 @@ void KInotify::slotEvent(int socket)
         if (event->mask & EventDeleteSelf) {
             qCDebug(BALOO) << path << "EventDeleteSelf";
             d->removeWatch(event->wd);
-            Q_EMIT deleted(QFile::decodeName(path), event->mask & IN_ISDIR);
+            Q_EMIT deleted(QFile::decodeName(path), true);
         }
         if (event->mask & EventDelete) {
 //            qCDebug(BALOO) << path << "EventDelete";

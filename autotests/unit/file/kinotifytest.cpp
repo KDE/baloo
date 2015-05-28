@@ -113,7 +113,8 @@ void KInotifyTest::testDeleteFolder()
     QDir().rmdir(d1);
     waitForSignal(&kn, SIGNAL(deleted(QString,bool)));
     QCOMPARE(spy.count(), 1);
-    QCOMPARE(spy.takeFirst().at(0).toString(), d1);
+    QCOMPARE(spy.first().at(0).toString(), d1);
+    QCOMPARE(spy.first().at(1).toBool(), true);
     // make sure we do not watch the removed folder anymore
     QVERIFY(!kn.watchingPath(d1));
 }
