@@ -38,7 +38,7 @@
 #include <KFileMetaData/Extractor>
 #include <KFileMetaData/PropertyInfo>
 
-#include <iostream>
+#include <unistd.h> //for STDIN_FILENO
 
 using namespace Baloo;
 
@@ -48,66 +48,76 @@ App::App(const QString& path, QObject* parent)
     , m_ignoreConfig(false)
     , m_db(path)
     , m_termCount(0)
+    , m_inputStream(stdin)
+    , m_outStream(stdout)
+    , m_notifyNewData(STDIN_FILENO, QSocketNotifier::Read)
+
 {
     if (!m_db.open(Database::OpenDatabase)) {
         qCritical() << "Failed to open the database";
         exit(1);
     }
+    connect(&m_notifyNewData, &QSocketNotifier::activated, this, &App::slotNewInput);
 }
 
-void App::startProcessing(const QStringList& args)
-{
-    m_args = args;
-    QTimer::singleShot(0, this, SLOT(process()));
-}
-
-void App::process()
+void App::slotNewInput()
 {
     // FIXME: The transaction is open for way too long. We should just open it for when we're
     //        committing the data not during the extraction.
+    QString arg;
+    m_inputStream.skipWhiteSpace();
+    arg = m_inputStream.readLine();
+    Q_ASSERT(!arg.isEmpty());
     Transaction tr(m_db, Transaction::ReadWrite);
 
-    Q_FOREACH (const QString& arg, m_args) {
-        bool ok = false;
-        quint64 id = arg.toULongLong(&ok);
+    bool ok = false;
+    quint64 id = arg.toULongLong(&ok);
 
-        QString filePath;
-        if (ok && !QFile::exists(arg)) {
-            filePath = QFile::decodeName(tr.documentUrl(id));
-        } else {
-            filePath = arg;
-            id = filePathToId(QFile::encodeName(filePath));
-        }
-
-        if (!QFile::exists(filePath)) {
-            tr.removeDocument(id);
-            continue;
-        }
-
-        index(&tr, filePath, id);
+    QString filePath;
+    if (ok && !QFile::exists(arg)) {
+        filePath = QFile::decodeName(tr.documentUrl(id));
+    } else {
+        filePath = arg;
+        id = filePathToId(QFile::encodeName(filePath));
     }
 
+    if (!QFile::exists(filePath)) {
+        tr.removeDocument(id);
+        m_outStream << "error:File doesn't exist" << endl;
+        return;
+    }
+    index(&tr, filePath, id);
     tr.commit();
+    m_updatedFiles << filePath;
+    if (m_updatedFiles.length() > 40) {
+        /**
+         * FIXME: after the last file has been indexed we can have a few (<40) files
+         * remaining in m_updatedFiles which will not be emitted, this will be handled
+         * in the next version where we make batch commits as in that version extractor
+         * will handle special commands (commit, emit) through stdin.
+         */
 
-    QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/files"),
+        QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/files"),
                                                       QLatin1String("org.kde"),
                                                       QLatin1String("changed"));
 
-    QVariantList vl;
-    vl.reserve(1);
-    vl << QVariant(m_updatedFiles);
-    message.setArguments(vl);
+        QVariantList vl;
+        vl.reserve(1);
+        vl << QVariant(m_updatedFiles);
+        message.setArguments(vl);
 
-    QDBusConnection::sessionBus().send(message);
+        QDBusConnection::sessionBus().send(message);
+        m_updatedFiles.clear();
+    }
+
 
     m_termCount = 0;
-    m_updatedFiles.clear();
 
     if (m_debugEnabled) {
         printIOUsage();
     }
-
-    QCoreApplication::instance()->exit(0);
+    m_outStream << "i:" << id;
+    m_outStream.flush();
 }
 
 void App::index(Transaction* tr, const QString& url, quint64 id)
@@ -176,8 +186,6 @@ void App::index(Transaction* tr, const QString& url, quint64 id)
         tr->replaceDocument(result.document(), DocumentTerms | DocumentData);
     }
     tr->removePhaseOne(doc.id());
-
-    m_updatedFiles << url;
 }
 
 bool App::ignoreConfig() const

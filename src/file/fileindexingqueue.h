@@ -27,46 +27,57 @@
 #include "indexingqueue.h"
 
 #include <QStack>
-#include <KJob>
+#include <QProcess>
+#include <QTextStream>
+#include <QTimer>
+
 
 namespace Baloo
 {
 class Database;
 class Document;
-class FileIndexingJob;
 
 class FileIndexingQueue : public IndexingQueue
 {
     Q_OBJECT
 public:
     FileIndexingQueue(Database* db, QObject* parent = 0);
+    ~FileIndexingQueue() Q_DECL_OVERRIDE;
     bool isEmpty() Q_DECL_OVERRIDE;
     void fillQueue() Q_DECL_OVERRIDE;
 
     void clear();
 
     void setMaxSize(int size) { m_maxSize = size; }
-    void setBatchSize(int size) { m_batchSize = size; }
     void setTestMode(bool mode) { m_testMode = mode; }
+
+private Q_SLOTS:
+    void slotFileIndexed();
+    void slotExtractorStarted();
+    void slotHandleProcessTimeout();
+
 
 protected:
     void processNextIteration() Q_DECL_OVERRIDE;
-    void doSuspend() Q_DECL_OVERRIDE;
     void doResume() Q_DECL_OVERRIDE;
 
-private Q_SLOTS:
-    void slotFinishedIndexingFile(KJob* job);
-    void slotIndexingFailed(quint64 doc);
-
 private:
+    void startExtractorProcess();
+    void indexingFailed();
+    void stopExtractorProcess();
+
     QStack<quint64> m_fileQueue;
+    quint64 m_currentFile;
     Database* m_db;
 
     int m_maxSize;
-    int m_batchSize;
     bool m_testMode;
 
-    FileIndexingJob* m_indexJob;
+    QProcess* m_extractorProcess;
+    const QString m_extractorPath;
+    QTimer m_timeCurrentFile;
+    int m_processTimeout;
+    QTextStream m_processStream;
 };
 }
 

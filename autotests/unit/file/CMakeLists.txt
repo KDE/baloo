@@ -48,5 +48,4 @@ ecm_add_test(${fileWatch_SRC}
 #)
 
 
-add_subdirectory(fileindexingjob)
 #add_subdirectory(scheduler)
