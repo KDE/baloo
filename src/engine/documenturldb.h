@@ -119,7 +119,7 @@ void DocumentUrlDB::replace(quint64 docId, const QByteArray& url, Functor should
     }
 
     if (url.isEmpty()) {
-        Q_ASSERT(idTreeDb.get(docId).isEmpty());
+        Q_ASSERT_X(idTreeDb.get(docId).isEmpty(), "DocumentUrlDB::del", "This folder still has sub-files in its cache. It cannot be deleted");
         return;
     }
 
