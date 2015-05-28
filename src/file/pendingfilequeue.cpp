@@ -55,6 +55,21 @@ PendingFileQueue::~PendingFileQueue()
 
 void PendingFileQueue::enqueue(const PendingFile& file)
 {
+    // If we get an event to remove /home/A, remove all events for everything under /home/A/
+    if (file.shouldRemoveIndex() && file.path().endsWith('/')) {
+        const QString path = file.path();
+        QMutableVectorIterator<PendingFile> it(m_cache);
+        while (it.hasNext()) {
+            PendingFile pf = it.next();
+            if (pf.path().startsWith(file.path())) {
+                it.remove();
+
+                m_pendingFiles.remove(pf.path());
+                m_recentlyEmitted.remove(pf.path());
+            }
+        }
+    }
+
     int i = m_cache.indexOf(file);
     if (i == -1) {
         m_cache << file;
