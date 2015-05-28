@@ -23,7 +23,6 @@
 #include "postingiterator.h"
 
 #include <algorithm>
-#include <qplatformdefs.h>
 #include <QPair>
 #include <QDebug>
 
