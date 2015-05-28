@@ -76,4 +76,13 @@ install(FILES
     COMPONENT Devel
 )
 
-ecm_generate_pkgconfig_file(BASE_NAME KF5Baloo DEPS Qt5Core KF5FileMetaData INCLUDE_INSTALL_DIR ${KF5_INCLUDE_INSTALL_DIR}/Baloo FILENAME_VAR KF5Baloo.pc INSTALL)
+if (NOT WIN32)
+   configure_file (
+      ${CMAKE_CURRENT_SOURCE_DIR}/Baloo.pc.cmake
+      ${CMAKE_CURRENT_BINARY_DIR}/Baloo.pc
+      )
+   install (
+      FILES ${CMAKE_CURRENT_BINARY_DIR}/Baloo.pc
+      DESTINATION ${KDE_INSTALL_LIBDIR}/pkgconfig
+      )
+endif ()
