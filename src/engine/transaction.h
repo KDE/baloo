@@ -51,39 +51,39 @@ public:
     //
     // Getters
     //
-    bool hasDocument(quint64 id);
-    QByteArray documentUrl(quint64 id);
+    bool hasDocument(quint64 id) const;
+    QByteArray documentUrl(quint64 id) const;
 
     /**
      * This method is not cheap, and does not stat the filesystem in order to convert the path
      * \p path into an id.
      */
-    quint64 documentId(const QByteArray& path);
-    QByteArray documentData(quint64 id);
+    quint64 documentId(const QByteArray& path) const;
+    QByteArray documentData(quint64 id) const;
 
-    quint64 documentMTime(quint64 id);
-    quint64 documentCTime(quint64 id);
+    quint64 documentMTime(quint64 id) const;
+    quint64 documentCTime(quint64 id) const;
 
-    QVector<quint64> exec(const EngineQuery& query, int limit = -1);
+    QVector<quint64> exec(const EngineQuery& query, int limit = -1) const;
 
-    PostingIterator* postingIterator(const EngineQuery& query);
-    PostingIterator* postingCompIterator(const QByteArray& prefix, const QByteArray& value, PostingDB::Comparator com);
-    PostingIterator* mTimeIter(quint32 mtime, MTimeDB::Comparator com);
-    PostingIterator* mTimeRangeIter(quint32 beginTime, quint32 endTime);
-    PostingIterator* docUrlIter(quint64 id);
+    PostingIterator* postingIterator(const EngineQuery& query) const;
+    PostingIterator* postingCompIterator(const QByteArray& prefix, const QByteArray& value, PostingDB::Comparator com) const;
+    PostingIterator* mTimeIter(quint32 mtime, MTimeDB::Comparator com) const;
+    PostingIterator* mTimeRangeIter(quint32 beginTime, quint32 endTime) const;
+    PostingIterator* docUrlIter(quint64 id) const;
 
-    QVector<quint64> fetchPhaseOneIds(int size);
-    uint phaseOneSize();
-    uint size();
+    QVector<quint64> fetchPhaseOneIds(int size) const;
+    uint phaseOneSize() const;
+    uint size() const;
 
-    QVector<QByteArray> fetchTermsStartingWith(const QByteArray& term);
+    QVector<QByteArray> fetchTermsStartingWith(const QByteArray& term) const;
 
     //
     // Introspecing document data
     //
-    QVector<QByteArray> documentTerms(quint64 docId);
-    QVector<QByteArray> documentFileNameTerms(quint64 docId);
-    QVector<QByteArray> documentXattrTerms(quint64 docId);
+    QVector<QByteArray> documentTerms(quint64 docId) const;
+    QVector<QByteArray> documentFileNameTerms(quint64 docId) const;
+    QVector<QByteArray> documentXattrTerms(quint64 docId) const;
 
     //
     // Transaction handling
