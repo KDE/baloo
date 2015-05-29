@@ -72,7 +72,7 @@ Transaction::~Transaction()
     }
 }
 
-bool Transaction::hasDocument(quint64 id)
+bool Transaction::hasDocument(quint64 id) const
 {
     Q_ASSERT(id > 0);
 
@@ -80,7 +80,7 @@ bool Transaction::hasDocument(quint64 id)
     return idFilenameDb.contains(id);
 }
 
-QByteArray Transaction::documentUrl(quint64 id)
+QByteArray Transaction::documentUrl(quint64 id) const
 {
     Q_ASSERT(m_txn);
     Q_ASSERT(id > 0);
@@ -89,7 +89,7 @@ QByteArray Transaction::documentUrl(quint64 id)
     return docUrlDb.get(id);
 }
 
-quint64 Transaction::documentId(const QByteArray& path)
+quint64 Transaction::documentId(const QByteArray& path) const
 {
     Q_ASSERT(m_txn);
     Q_ASSERT(!path.isEmpty());
@@ -112,7 +112,7 @@ quint64 Transaction::documentId(const QByteArray& path)
     return parentId;
 }
 
-quint64 Transaction::documentMTime(quint64 id)
+quint64 Transaction::documentMTime(quint64 id) const
 {
     Q_ASSERT(m_txn);
 
@@ -120,7 +120,7 @@ quint64 Transaction::documentMTime(quint64 id)
     return docTimeDb.get(id).mTime;
 }
 
-quint64 Transaction::documentCTime(quint64 id)
+quint64 Transaction::documentCTime(quint64 id) const
 {
     Q_ASSERT(m_txn);
 
@@ -128,7 +128,7 @@ quint64 Transaction::documentCTime(quint64 id)
     return docTimeDb.get(id).cTime;
 }
 
-QByteArray Transaction::documentData(quint64 id)
+QByteArray Transaction::documentData(quint64 id) const
 {
     Q_ASSERT(m_txn);
     Q_ASSERT(id > 0);
@@ -144,7 +144,7 @@ bool Transaction::hasChanges() const
     return m_writeTrans->hasChanges();
 }
 
-QVector<quint64> Transaction::fetchPhaseOneIds(int size)
+QVector<quint64> Transaction::fetchPhaseOneIds(int size) const
 {
     Q_ASSERT(m_txn);
     Q_ASSERT(size > 0);
@@ -153,7 +153,7 @@ QVector<quint64> Transaction::fetchPhaseOneIds(int size)
     return contentIndexingDb.fetchItems(size);
 }
 
-QVector< QByteArray > Transaction::fetchTermsStartingWith(const QByteArray& term)
+QVector<QByteArray> Transaction::fetchTermsStartingWith(const QByteArray& term) const
 {
     Q_ASSERT(term.size() > 0);
 
@@ -161,7 +161,7 @@ QVector< QByteArray > Transaction::fetchTermsStartingWith(const QByteArray& term
     return postingDb.fetchTermsStartingWith(term);
 }
 
-uint Transaction::phaseOneSize()
+uint Transaction::phaseOneSize() const
 {
     Q_ASSERT(m_txn);
 
@@ -169,7 +169,7 @@ uint Transaction::phaseOneSize()
     return contentIndexingDb.size();
 }
 
-uint Transaction::size()
+uint Transaction::size() const
 {
     Q_ASSERT(m_txn);
 
@@ -267,7 +267,7 @@ void Transaction::abort()
 // Queries
 //
 
-PostingIterator* Transaction::postingIterator(const EngineQuery& query)
+PostingIterator* Transaction::postingIterator(const EngineQuery& query) const
 {
     PostingDB postingDb(m_dbis.postingDbi, m_txn);
     PositionDB positionDb(m_dbis.positionDBi, m_txn);
@@ -318,31 +318,31 @@ PostingIterator* Transaction::postingIterator(const EngineQuery& query)
     return 0;
 }
 
-PostingIterator* Transaction::postingCompIterator(const QByteArray& prefix, const QByteArray& value, PostingDB::Comparator com)
+PostingIterator* Transaction::postingCompIterator(const QByteArray& prefix, const QByteArray& value, PostingDB::Comparator com) const
 {
     PostingDB postingDb(m_dbis.postingDbi, m_txn);
     return postingDb.compIter(prefix, value, com);
 }
 
-PostingIterator* Transaction::mTimeIter(quint32 mtime, MTimeDB::Comparator com)
+PostingIterator* Transaction::mTimeIter(quint32 mtime, MTimeDB::Comparator com) const
 {
     MTimeDB mTimeDb(m_dbis.mtimeDbi, m_txn);
     return mTimeDb.iter(mtime, com);
 }
 
-PostingIterator* Transaction::mTimeRangeIter(quint32 beginTime, quint32 endTime)
+PostingIterator* Transaction::mTimeRangeIter(quint32 beginTime, quint32 endTime) const
 {
     MTimeDB mTimeDb(m_dbis.mtimeDbi, m_txn);
     return mTimeDb.iterRange(beginTime, endTime);
 }
 
-PostingIterator* Transaction::docUrlIter(quint64 id)
+PostingIterator* Transaction::docUrlIter(quint64 id) const
 {
     DocumentUrlDB docUrlDb(m_dbis.idTreeDbi, m_dbis.idFilenameDbi, m_txn);
     return docUrlDb.iter(id);
 }
 
-QVector<quint64> Transaction::exec(const EngineQuery& query, int limit)
+QVector<quint64> Transaction::exec(const EngineQuery& query, int limit) const
 {
     Q_ASSERT(m_txn);
 
@@ -382,7 +382,7 @@ void Transaction::renameFilePath(quint64 id, const Document& newDoc)
 // Introspection
 //
 
-QVector<QByteArray> Transaction::documentTerms(quint64 docId)
+QVector<QByteArray> Transaction::documentTerms(quint64 docId) const
 {
     Q_ASSERT(docId);
 
@@ -390,7 +390,7 @@ QVector<QByteArray> Transaction::documentTerms(quint64 docId)
     return documentTermsDB.get(docId);
 }
 
-QVector<QByteArray> Transaction::documentFileNameTerms(quint64 docId)
+QVector<QByteArray> Transaction::documentFileNameTerms(quint64 docId) const
 {
     Q_ASSERT(docId);
 
@@ -398,7 +398,7 @@ QVector<QByteArray> Transaction::documentFileNameTerms(quint64 docId)
     return documentFileNameTermsDB.get(docId);
 }
 
-QVector<QByteArray> Transaction::documentXattrTerms(quint64 docId)
+QVector<QByteArray> Transaction::documentXattrTerms(quint64 docId) const
 {
     Q_ASSERT(docId);
 
