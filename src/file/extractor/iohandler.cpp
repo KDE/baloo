@@ -61,7 +61,7 @@ bool IOHandler::atEnd()
 
 void IOHandler::indexedId(quint64 id)
 {
-    write(m_stdoutHandle, reinterpret_cast<void*>(&id), sizeof(qint64));
+    write(m_stdoutHandle, reinterpret_cast<void*>(&id), sizeof(quint64));
 }
 
 void IOHandler::batchIndexed()

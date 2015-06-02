@@ -54,9 +54,9 @@ void IOHandlerTest::testInput()
     ba.append(reinterpret_cast<char*>(&size), sizeof(quint32));
 
     for (quint64 i = 0; i < 10; ++i) {
-        qint64 a = std::pow(16, i);
+        quint64 a = std::pow(16, i);
         ids.append(a);
-        ba.append(reinterpret_cast<char*>(&a), sizeof(qint64));
+        ba.append(reinterpret_cast<char*>(&a), sizeof(quint64));
     }
 
     stdIn.write(ba.data(), ba.size());
