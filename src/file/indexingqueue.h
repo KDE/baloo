@@ -90,10 +90,6 @@ protected:
     virtual void processNextIteration() = 0;
     virtual void doSuspend();
     virtual void doResume();
-    bool m_sentEvent;
-    bool m_suspended;
-
-
 
 protected Q_SLOTS:
     /**
@@ -112,6 +108,8 @@ private Q_SLOTS:
 private:
     bool m_shouldEmitStartSignal;
     int m_delay;
+    bool m_sentEvent;
+    bool m_suspended;
 };
 
 }

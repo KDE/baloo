@@ -5,6 +5,7 @@ set(EXTRACTOR_SRCS
   main.cpp
   app.cpp
   result.cpp
+  iohandler.cpp
   ../priority.cpp
   ../basicindexingjob.cpp
   ../fileindexerconfig.cpp

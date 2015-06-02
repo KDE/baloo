@@ -1,6 +1,6 @@
 /*
  * This file is part of the KDE Baloo Project
- * Copyright (C) 2013  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2015  Pinak Ahuja <pinak.ahuja@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,54 +20,35 @@
  *
  */
 
-#ifndef EXTRACTOR_APP_H
-#define EXTRACTOR_APP_H
+#ifndef EXTRACTOR_IOHANDLER_H
+#define EXTRACTOR_IOHANDLER_H
 
-#include <QVector>
-#include <QStringList>
-#include <QMimeDatabase>
-#include <QTextStream>
+#include <QObject>
 #include <QSocketNotifier>
-
-#include <KFileMetaData/ExtractorCollection>
-
-#include "database.h"
-#include "../fileindexerconfig.h"
-#include "iohandler.h"
 
 namespace Baloo {
 
-class Transaction;
-
-class App : public QObject
+class IOHandler
 {
-    Q_OBJECT
 public:
-    explicit App(const QString& path, QObject* parent = 0);
-
-    void setDebug(bool status) { m_debugEnabled = status; }
-    void setIgnoreConfig(bool status) { m_ignoreConfig = status; }
-
-private Q_SLOTS:
-    void slotNewInput();
+    IOHandler(int stdin, int stdout);
+    quint64 nextId();
+    bool atEnd();
+    void indexedId(quint64 id);
+    
+    //always call this after a batch has been indexed
+    void batchIndexed();
+    void newBatch();
 
 private:
-    void index(Transaction* tr, const QString& filePath, quint64 id);
-    bool ignoreConfig() const;
+    //QSocketNotifier m_notifyNewData;
+    int m_stdinHandle;
+    int m_stdoutHandle;
 
-    bool m_debugEnabled;
-    bool m_ignoreConfig;
+    quint32 m_batchSize;
+    quint32 m_count;
 
-    QString m_path;
-    QMimeDatabase m_mimeDb;
-
-    KFileMetaData::ExtractorCollection m_extractorCollection;
-
-    FileIndexerConfig m_config;
-
-    QSocketNotifier m_notifyNewData;
-    IOHandler m_io;
 };
-
 }
-#endif
+
+ #endif //EXTRACTOR_IOHANDLER_H

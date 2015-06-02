@@ -53,13 +53,10 @@ public:
 
 private Q_SLOTS:
     void slotFileIndexed();
-    void slotExtractorStarted();
     void slotHandleProcessTimeout();
-
 
 protected:
     void processNextIteration() Q_DECL_OVERRIDE;
-    void doResume() Q_DECL_OVERRIDE;
 
 private:
     void startExtractorProcess();
@@ -71,13 +68,14 @@ private:
     Database* m_db;
 
     int m_maxSize;
+    int m_batchSize;
     bool m_testMode;
+    bool m_extractorIdle;
 
     QProcess* m_extractorProcess;
     const QString m_extractorPath;
     QTimer m_timeCurrentFile;
     int m_processTimeout;
-    QTextStream m_processStream;
 };
 }
 
