@@ -27,9 +27,12 @@
 #include <KConfig>
 #include <KConfigGroup>
 #include <KLocalizedString>
+#include <KFormat>
 #include <QStandardPaths>
 #include <QProcess>
 #include <QTextStream>
+#include <QFileInfo>
+#include <QLocale>
 
 #include <QDBusMessage>
 #include <QDBusConnection>
@@ -139,6 +142,15 @@ int main(int argc, char* argv[])
         uint total = tr.size();
 
         out << "Indexed " << total - phaseOne << " / " << total << " files\n";
+        QFileInfo indexInfo(path + QLatin1String("index"));
+        quint32 size = indexInfo.size();
+        KFormat format(QLocale::system());
+        if (size) {
+            out << "Current size of index is " << format.formatByteSize(size, 2) << endl;
+        } else {
+            out << "Index does not exist yet\n";
+        }
+
         /*
         if (failed) {
             out << "Failed to index " << failed << " files\n";
