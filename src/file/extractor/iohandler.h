@@ -46,8 +46,6 @@ private:
     int m_stdoutHandle;
 
     quint32 m_batchSize;
-    quint32 m_count;
-
 };
 }
 

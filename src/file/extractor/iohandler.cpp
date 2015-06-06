@@ -31,7 +31,6 @@ IOHandler::IOHandler(int stdIn, int stdOut)
     : m_stdinHandle(stdIn)
     , m_stdoutHandle(stdOut)
     , m_batchSize(0)
-    , m_count(0)
 {
 }
 
