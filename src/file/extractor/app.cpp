@@ -22,7 +22,6 @@
 
 #include "app.h"
 #include "basicindexingjob.h"
-#include "tests/file/util.h"
 #include "result.h"
 #include "idutils.h"
 #include "transaction.h"
@@ -45,8 +44,6 @@ using namespace Baloo;
 
 App::App(const QString& path, QObject* parent)
     : QObject(parent)
-    , m_debugEnabled(false)
-    , m_ignoreConfig(false)
     , m_path(path)
     , m_notifyNewData(STDIN_FILENO, QSocketNotifier::Read)
     , m_io(STDIN_FILENO, STDOUT_FILENO)
@@ -95,9 +92,6 @@ void App::slotNewInput()
 
     QDBusConnection::sessionBus().send(message);
 
-    if (m_debugEnabled) {
-        printIOUsage();
-    }
     std::cout << "indexed batch" << std::endl;
 }
 
@@ -105,13 +99,11 @@ void App::index(Transaction* tr, const QString& url, quint64 id)
 {
     QString mimetype = m_mimeDb.mimeTypeForFile(url, QMimeDatabase::MatchContent).name();
 
-    if (!ignoreConfig()) {
-        bool shouldIndex = m_config.shouldBeIndexed(url) && m_config.shouldMimeTypeBeIndexed(mimetype);
-        if (!shouldIndex) {
-            // FIXME: This should never be happening!
-            tr->removeDocument(id);
-            return;
-        }
+    bool shouldIndex = m_config.shouldBeIndexed(url) && m_config.shouldMimeTypeBeIndexed(mimetype);
+    if (!shouldIndex) {
+        // FIXME: This should never be happening!
+        tr->removeDocument(id);
+        return;
     }
 
     //
@@ -167,9 +159,4 @@ void App::index(Transaction* tr, const QString& url, quint64 id)
         tr->replaceDocument(result.document(), DocumentTerms | DocumentData);
     }
     tr->removePhaseOne(doc.id());
-}
-
-bool App::ignoreConfig() const
-{
-    return m_ignoreConfig;
 }

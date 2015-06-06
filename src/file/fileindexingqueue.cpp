@@ -33,7 +33,6 @@ using namespace Baloo;
 FileIndexingQueue::FileIndexingQueue(Database* db, QObject* parent)
     : IndexingQueue(parent)
     , m_db(db)
-    , m_testMode(false)
     , m_extractorIdle(true)
     , m_extractorProcess(0)
     , m_extractorPath(QStandardPaths::findExecutable(QLatin1String("baloo_file_extractor")))
@@ -62,15 +61,9 @@ FileIndexingQueue::~FileIndexingQueue()
 void FileIndexingQueue::startExtractorProcess()
 {
     m_extractorProcess = new QProcess(this);
-
-    QStringList args;
-    if (m_testMode) {
-        args << QLatin1String("--db") << m_db->path();
-        args << QLatin1String("--ignoreConfig");
-    }
     connect(m_extractorProcess, &QProcess::readyRead, this, &FileIndexingQueue::slotFileIndexed);
 
-    m_extractorProcess->start(m_extractorPath, args, QIODevice::Unbuffered | QIODevice::ReadWrite);
+    m_extractorProcess->start(m_extractorPath, QStringList(), QIODevice::Unbuffered | QIODevice::ReadWrite);
     m_extractorProcess->setReadChannel(QProcess::StandardOutput);
 }
 
