@@ -40,6 +40,8 @@
 
 #include "database.h"
 #include "transaction.h"
+#include "indexer.h"
+#include "idutils.h"
 //#include "filestatistics.h"
 
 using namespace Baloo;
@@ -107,6 +109,7 @@ int main(int argc, char* argv[])
     parser.addPositionalArgument(QLatin1String("suspend"), i18n("Suspend the file indexer"));
     parser.addPositionalArgument(QLatin1String("resume"), i18n("Resume the file indexer"));
     parser.addPositionalArgument(QLatin1String("check"), i18n("Check for any unindexed files and index them"));
+    parser.addPositionalArgument(QLatin1String("index"), i18n("Index the specified files"));
 
     parser.process(app);
     if (parser.positionalArguments().isEmpty()) {
@@ -243,6 +246,44 @@ int main(int argc, char* argv[])
         stats.compute();
         stats.print();
         */
+    }
+
+    if (command == QStringLiteral("index")) {
+        if (parser.positionalArguments().size() < 2) {
+            out << "Please enter a filename to index\n";
+            return 1;
+        }
+
+        const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/");
+
+        Database db(path);
+        if (!db.open(Baloo::Database::OpenDatabase)) {
+            out << "Baloo Index could not be opened\n";
+            return 1;
+        }
+
+        Transaction tr(db, Transaction::ReadWrite);
+
+        for (int i = 1; i < parser.positionalArguments().size(); ++i) {
+            const QString url = QFileInfo(parser.positionalArguments().at(i)).absoluteFilePath();
+            quint64 id = filePathToId(QFile::encodeName(url));
+            if (id == 0) {
+                out << "Could not stat file: " << url;
+                continue;
+            }
+            if (tr.inPhaseOne(id))  {
+                out << "Skipping: " << url << " Reason: Already scheduled for indexing\n";
+                continue;
+            }
+            if (!tr.documentData(id).isEmpty()) {
+                out << "Skipping: " << url << " Reason: Already indexed\n";
+            }
+            Indexer indexer(url, &tr);
+            out << "Indexing " << url << endl;
+            indexer.index();
+        }
+        tr.commit();
+        out << "File(s) indexed\n";
     }
     return 0;
 }

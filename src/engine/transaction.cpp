@@ -80,6 +80,13 @@ bool Transaction::hasDocument(quint64 id) const
     return idFilenameDb.contains(id);
 }
 
+bool Transaction::inPhaseOne(quint64 id) const
+{
+    Q_ASSERT(id > 0);
+    DocumentIdDB contentIndexingDb(m_dbis.contentIndexingDbi, m_txn);
+    return contentIndexingDb.contains(id);
+}
+
 QByteArray Transaction::documentUrl(quint64 id) const
 {
     Q_ASSERT(m_txn);
