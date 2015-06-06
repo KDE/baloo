@@ -27,8 +27,6 @@
 #include <QStandardPaths>
 
 #include <QCoreApplication>
-#include <QCommandLineParser>
-#include <QCommandLineOption>
 
 int main(int argc, char* argv[])
 {
@@ -39,12 +37,6 @@ int main(int argc, char* argv[])
     QCoreApplication app(argc, argv);
     QCoreApplication::setApplicationName(QLatin1String("Baloo File Extractor"));
     QCoreApplication::setApplicationVersion(PROJECT_VERSION);
-
-    QCommandLineParser parser;
-    parser.setApplicationDescription(i18n("The File Extractor extracts the file metadata and text"));
-    parser.addHelpOption();
-    parser.addVersionOption();
-    parser.process(app);
 
     const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo");
     Baloo::App appObject(path);
