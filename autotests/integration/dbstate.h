@@ -30,7 +30,9 @@
 #include "positiondb.h"
 #include "documenttimedb.h"
 
-class Baloo::DBState {
+namespace Baloo {
+
+class DBState {
 public:
     QMap<QByteArray, PostingList> postingDb;
     QMap<QByteArray, QVector<PositionInfo>> positionDb;
@@ -59,8 +61,6 @@ public:
     static bool debugCompare(const DBState& st1, const DBState& st2);
 private:
 };
-
-using namespace Baloo;
 
 DBState DBState::fromTransaction(Baloo::Transaction* tr)
 {
@@ -125,5 +125,6 @@ bool DBState::debugCompare(const DBState& st1, const DBState& st2)
 
     return st1 == st2;
 }
+} // namespace
 
 #endif
