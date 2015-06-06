@@ -49,7 +49,6 @@ public:
     void clear();
 
     void setMaxSize(int size) { m_maxSize = size; }
-    void setTestMode(bool mode) { m_testMode = mode; }
 
 private Q_SLOTS:
     void slotFileIndexed();
@@ -69,7 +68,6 @@ private:
 
     int m_maxSize;
     int m_batchSize;
-    bool m_testMode;
     bool m_extractorIdle;
 
     QProcess* m_extractorProcess;

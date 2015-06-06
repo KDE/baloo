@@ -45,18 +45,11 @@ class App : public QObject
 public:
     explicit App(const QString& path, QObject* parent = 0);
 
-    void setDebug(bool status) { m_debugEnabled = status; }
-    void setIgnoreConfig(bool status) { m_ignoreConfig = status; }
-
 private Q_SLOTS:
     void slotNewInput();
 
 private:
     void index(Transaction* tr, const QString& filePath, quint64 id);
-    bool ignoreConfig() const;
-
-    bool m_debugEnabled;
-    bool m_ignoreConfig;
 
     QString m_path;
     QMimeDatabase m_mimeDb;
