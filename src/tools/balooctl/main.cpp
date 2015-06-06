@@ -121,18 +121,8 @@ int main(int argc, char* argv[])
 
     QString command = parser.positionalArguments().first();
     if (command == QLatin1String("status")) {
-        QDBusConnection bus = QDBusConnection::sessionBus();
-        bool running = bus.interface()->isServiceRegistered(QLatin1String("org.kde.baloo"));
-
-        if (running) {
-            out << "Baloo File Indexer is running\n";
-        }
-        else {
-            out << "Baloo File Indexer is NOT running\n";
-        }
 
         const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/");
-
         Database db(path);
         if (!db.open(Baloo::Database::OpenDatabase)) {
             out << "Baloo Index could not be opened\n";
@@ -141,30 +131,71 @@ int main(int argc, char* argv[])
 
         Transaction tr(db, Transaction::ReadOnly);
 
-        uint phaseOne = tr.phaseOneSize();
-        uint total = tr.size();
+        if (parser.positionalArguments().length() == 1) {
 
-        out << "Indexed " << total - phaseOne << " / " << total << " files\n";
-        QFileInfo indexInfo(path + QLatin1String("index"));
-        quint32 size = indexInfo.size();
-        KFormat format(QLocale::system());
-        if (size) {
-            out << "Current size of index is " << format.formatByteSize(size, 2) << endl;
-        } else {
-            out << "Index does not exist yet\n";
-        }
+            QDBusConnection bus = QDBusConnection::sessionBus();
+            bool running = bus.interface()->isServiceRegistered(QLatin1String("org.kde.baloo"));
 
-        /*
-        if (failed) {
-            out << "Failed to index " << failed << " files\n";
-            out << "File IDs: ";
-            Xapian::MSetIterator iter = mset.begin();
-            for (; iter != mset.end(); ++iter) {
-                out << *iter << " ";
+            if (running) {
+                out << "Baloo File Indexer is running\n";
             }
-            out << "\n";
+            else {
+                out << "Baloo File Indexer is NOT running\n";
+            }
+
+            uint phaseOne = tr.phaseOneSize();
+            uint total = tr.size();
+
+            out << "Indexed " << total - phaseOne << " / " << total << " files\n";
+
+            QFileInfo indexInfo(path + QLatin1String("index"));
+            quint32 size = indexInfo.size();
+            KFormat format(QLocale::system());
+            if (size) {
+                out << "Current size of index is " << format.formatByteSize(size, 2) << endl;
+            } else {
+                out << "Index does not exist yet\n";
+            }
+        } else {
+            for (int i = 1; i < parser.positionalArguments().length(); ++i) {
+                QString url = QFileInfo(parser.positionalArguments().at(i)).absoluteFilePath();
+                quint64 id = filePathToId(QFile::encodeName(url));
+
+                out << "File: " << url << endl;
+
+                out << "Basic indexing: ";
+                if (tr.hasDocument(id)) {
+                    out << "done\n";
+                } else {
+                    //TODO: check excluded folders and print the one that disabled this
+                    out << "disabled\n";
+                    return 0;
+                }
+
+                out << "Content indexing: ";
+                if (tr.inPhaseOne(id)) {
+                    out << "scheduled\n";
+                } else if (!tr.documentData(id).isEmpty()) {
+                    out << "done\n";
+                } else if (tr.hasFailed(id)) {
+                    out << "failed\n";
+                } else {
+                    out << "disabled\n";
+                }
+            }
         }
-        */
+
+            /*
+            if (failed) {
+                out << "Failed to index " << failed << " files\n";
+                out << "File IDs: ";
+                Xapian::MSetIterator iter = mset.begin();
+                for (; iter != mset.end(); ++iter) {
+                    out << *iter << " ";
+                }
+                out << "\n";
+            }
+            */
 
         return 0;
     }
