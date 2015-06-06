@@ -36,23 +36,23 @@ DocumentIdDB::~DocumentIdDB()
 {
 }
 
-MDB_dbi DocumentIdDB::create(MDB_txn* txn)
+MDB_dbi DocumentIdDB::create(const char* name, MDB_txn* txn)
 {
     MDB_dbi dbi;
-    int rc = mdb_dbi_open(txn, "indexingleveldb", MDB_CREATE | MDB_INTEGERKEY, &dbi);
-    Q_ASSERT_X(rc == 0, "IndexingLevelDB::create", mdb_strerror(rc));
+    int rc = mdb_dbi_open(txn, name, MDB_CREATE | MDB_INTEGERKEY, &dbi);
+    Q_ASSERT_X(rc == 0, "DocumentIdDB::create", mdb_strerror(rc));
 
     return dbi;
 }
 
-MDB_dbi DocumentIdDB::open(MDB_txn* txn)
+MDB_dbi DocumentIdDB::open(const char* name, MDB_txn* txn)
 {
     MDB_dbi dbi;
-    int rc = mdb_dbi_open(txn, "indexingleveldb", MDB_INTEGERKEY, &dbi);
+    int rc = mdb_dbi_open(txn, name, MDB_INTEGERKEY, &dbi);
     if (rc == MDB_NOTFOUND) {
         return 0;
     }
-    Q_ASSERT_X(rc == 0, "IndexingLevelDB::create", mdb_strerror(rc));
+    Q_ASSERT_X(rc == 0, "DocumentIdDB::create", mdb_strerror(rc));
 
     return dbi;
 }
@@ -70,7 +70,7 @@ void DocumentIdDB::put(quint64 docId)
     val.mv_data = 0;
 
     int rc = mdb_put(m_txn, m_dbi, &key, &val, 0);
-    Q_ASSERT_X(rc == 0, "IndexingLevelDB::put", mdb_strerror(rc));
+    Q_ASSERT_X(rc == 0, "DocumentIdDB::put", mdb_strerror(rc));
 }
 
 bool DocumentIdDB::contains(quint64 docId)
@@ -86,7 +86,7 @@ bool DocumentIdDB::contains(quint64 docId)
     if (rc == MDB_NOTFOUND) {
         return false;
     }
-    Q_ASSERT_X(rc == 0, "IndexingLevelDB::contains", mdb_strerror(rc));
+    Q_ASSERT_X(rc == 0, "DocumentIdDB::contains", mdb_strerror(rc));
 
     return true;
 }
@@ -103,7 +103,7 @@ void DocumentIdDB::del(quint64 docId)
     if (rc == MDB_NOTFOUND) {
         return;
     }
-    Q_ASSERT_X(rc == 0, "IndexingLevelDB::del", mdb_strerror(rc));
+    Q_ASSERT_X(rc == 0, "DocumentIdDB::del", mdb_strerror(rc));
 }
 
 QVector<quint64> DocumentIdDB::fetchItems(int size)
@@ -121,7 +121,7 @@ QVector<quint64> DocumentIdDB::fetchItems(int size)
         if (rc == MDB_NOTFOUND) {
             break;
         }
-        Q_ASSERT_X(rc == 0, "IndexingLevelDB::fetchItems", mdb_strerror(rc));
+        Q_ASSERT_X(rc == 0, "DocumentIdDB::fetchItems", mdb_strerror(rc));
 
         quint64 id = *(static_cast<quint64*>(key.mv_data));
         vec << id;

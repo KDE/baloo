@@ -87,6 +87,13 @@ bool Transaction::inPhaseOne(quint64 id) const
     return contentIndexingDb.contains(id);
 }
 
+bool Transaction::hasFailed(quint64 id) const
+{
+    Q_ASSERT(id > 0);
+    DocumentIdDB failedIdDb(m_dbis.failedIdDbi, m_txn);
+    return failedIdDb.contains(id);
+}
+
 QByteArray Transaction::documentUrl(quint64 id) const
 {
     Q_ASSERT(m_txn);
@@ -205,6 +212,16 @@ void Transaction::removePhaseOne(quint64 id)
 
     DocumentIdDB contentIndexingDb(m_dbis.contentIndexingDbi, m_txn);
     contentIndexingDb.del(id);
+}
+
+void Transaction::addFailed(quint64 id)
+{
+    Q_ASSERT(m_txn);
+    Q_ASSERT(id > 0);
+    Q_ASSERT(m_writeTrans);
+
+    DocumentIdDB failedIdDb(m_dbis.failedIdDbi, m_txn);
+    failedIdDb.put(id);
 }
 
 void Transaction::addDocument(const Document& doc)

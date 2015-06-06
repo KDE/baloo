@@ -42,6 +42,7 @@ public:
     MDB_dbi contentIndexingDbi;
 
     MDB_dbi mtimeDbi;
+    MDB_dbi failedIdDbi;
 
     DatabaseDbis()
         : postingDbi(0)
@@ -55,11 +56,13 @@ public:
         , docDataDbi(0)
         , contentIndexingDbi(0)
         , mtimeDbi(0)
+        , failedIdDbi(0)
     {}
 
     bool isValid() {
         return postingDbi && positionDBi && docTermsDbi && docFilenameTermsDbi && docXattrTermsDbi &&
-               idTreeDbi && idFilenameDbi && docTimeDbi && docDataDbi && contentIndexingDbi && mtimeDbi;
+               idTreeDbi && idFilenameDbi && docTimeDbi && docDataDbi && contentIndexingDbi && mtimeDbi
+               && failedIdDbi;
     }
 };
 

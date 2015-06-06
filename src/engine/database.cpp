@@ -69,7 +69,7 @@ bool Database::open(OpenMode mode)
     }
 
     mdb_env_create(&m_env);
-    mdb_env_set_maxdbs(m_env, 11);
+    mdb_env_set_maxdbs(m_env, 12);
     mdb_env_set_mapsize(m_env, static_cast<size_t>(1024) * 1024 * 1024 * 5); // 5 gb
 
     // The directory needs to be created before opening the environment
@@ -97,7 +97,10 @@ bool Database::open(OpenMode mode)
 
         m_dbis.docTimeDbi = DocumentTimeDB::open(txn);
         m_dbis.docDataDbi = DocumentDataDB::open(txn);
-        m_dbis.contentIndexingDbi = DocumentIdDB::open(txn);
+
+        m_dbis.contentIndexingDbi = DocumentIdDB::open("indexingleveldb", txn);
+        m_dbis.failedIdDbi = DocumentIdDB::open("failediddb", txn);
+
 
         m_dbis.mtimeDbi = MTimeDB::open(txn);
 
@@ -123,7 +126,10 @@ bool Database::open(OpenMode mode)
 
         m_dbis.docTimeDbi = DocumentTimeDB::create(txn);
         m_dbis.docDataDbi = DocumentDataDB::create(txn);
-        m_dbis.contentIndexingDbi = DocumentIdDB::create(txn);
+
+        m_dbis.contentIndexingDbi = DocumentIdDB::create("indexingleveldb", txn);
+        m_dbis.failedIdDbi = DocumentIdDB::create("failediddb", txn);
+
 
         m_dbis.mtimeDbi = MTimeDB::create(txn);
 

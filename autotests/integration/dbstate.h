@@ -45,12 +45,14 @@ public:
     QMap<quint64, QByteArray> docDataDb;
     QMap<quint64, QByteArray> docUrlDb;
     QVector<quint64> contentIndexingDb;
+    QVector<quint64> failedIdDb;
 
     bool operator== (const DBState& st) const {
         return postingDb == st.postingDb && positionDb == st.positionDb && docTermsDb == st.docTermsDb
                && docFileNameTermsDb == st.docFileNameTermsDb && docXAttrTermsDb == st.docXAttrTermsDb
                && docTimeDb == st.docTimeDb && mtimeDb == st.mtimeDb && docDataDb == st.docDataDb
-               && docUrlDb == st.docUrlDb && contentIndexingDb == st.contentIndexingDb;
+               && docUrlDb == st.docUrlDb && contentIndexingDb == st.contentIndexingDb
+               && failedIdDb == st.failedIdDb;
     }
 
     static DBState fromTransaction(Transaction* tr);
@@ -73,6 +75,7 @@ DBState DBState::fromTransaction(Baloo::Transaction* tr)
     DocumentTimeDB docTimeDB(dbis.docTimeDbi, txn);
     DocumentDataDB docDataDB(dbis.docDataDbi, txn);
     DocumentIdDB contentIndexingDB(dbis.contentIndexingDbi, txn);
+    DocumentIdDB failedIdDb(dbis.failedIdDbi, txn);
     MTimeDB mtimeDB(dbis.mtimeDbi, txn);
     DocumentUrlDB docUrlDB(dbis.idTreeDbi, dbis.idFilenameDbi, txn);
 
@@ -86,6 +89,7 @@ DBState DBState::fromTransaction(Baloo::Transaction* tr)
     state.docDataDb = docDataDB.toTestMap();
     state.mtimeDb = mtimeDB.toTestMap();
     state.contentIndexingDb = contentIndexingDB.toTestVector();
+    state.failedIdDb = failedIdDb.toTestVector();
 
     // FIXME: What about DocumentUrlDB?
     // state.docUrlDb = docUrlDB.toTestMap();
