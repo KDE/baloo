@@ -52,6 +52,7 @@ public:
     // Getters
     //
     bool hasDocument(quint64 id) const;
+    bool inPhaseOne(quint64 id) const;
     QByteArray documentUrl(quint64 id) const;
 
     /**
