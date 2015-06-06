@@ -101,7 +101,6 @@ bool Database::open(OpenMode mode)
         m_dbis.contentIndexingDbi = DocumentIdDB::open("indexingleveldb", txn);
         m_dbis.failedIdDbi = DocumentIdDB::open("failediddb", txn);
 
-
         m_dbis.mtimeDbi = MTimeDB::open(txn);
 
         if (!m_dbis.isValid()) {
@@ -129,7 +128,6 @@ bool Database::open(OpenMode mode)
 
         m_dbis.contentIndexingDbi = DocumentIdDB::create("indexingleveldb", txn);
         m_dbis.failedIdDbi = DocumentIdDB::create("failediddb", txn);
-
 
         m_dbis.mtimeDbi = MTimeDB::create(txn);
 
