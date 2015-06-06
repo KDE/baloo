@@ -34,8 +34,8 @@ public:
     DocumentIdDB(MDB_dbi dbi, MDB_txn* txn);
     ~DocumentIdDB();
 
-    static MDB_dbi create(MDB_txn* txn);
-    static MDB_dbi open(MDB_txn* txn);
+    static MDB_dbi create(const char* name, MDB_txn* txn);
+    static MDB_dbi open(const char* name, MDB_txn* txn);
 
     void put(quint64 docId);
     bool contains(quint64 docId);

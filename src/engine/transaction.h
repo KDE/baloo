@@ -53,6 +53,7 @@ public:
     //
     bool hasDocument(quint64 id) const;
     bool inPhaseOne(quint64 id) const;
+    bool hasFailed(quint64 id) const;
     QByteArray documentUrl(quint64 id) const;
 
     /**
@@ -99,6 +100,7 @@ public:
     void addDocument(const Document& doc);
     void removeDocument(quint64 id);
     void removeRecursively(quint64 parentId);
+    void addFailed(quint64 id);
 
     template <typename Functor>
     void removeRecursively(quint64 id, Functor shouldDelete) {
