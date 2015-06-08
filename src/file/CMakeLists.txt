@@ -13,6 +13,8 @@ set(file_static_lib_SRCS
 
     firstrunindexer.cpp
     newfileindexer.cpp
+    xattrindexer.cpp
+    modifiedfileindexer.cpp
 
     # Common
     priority.cpp
