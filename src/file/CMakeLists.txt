@@ -11,6 +11,8 @@ set(file_static_lib_SRCS
     basicindexingjob.cpp
     eventmonitor.cpp
 
+    newfileindexer.cpp
+
     # Common
     priority.cpp
     regexpcache.cpp
