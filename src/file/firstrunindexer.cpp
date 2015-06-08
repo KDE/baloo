@@ -31,6 +31,9 @@ FirstRunIndexer::FirstRunIndexer(Database* db, FileIndexerConfig* config, const 
     , m_config(config)
     , m_folders(folders)
 {
+    Q_ASSERT(m_db);
+    Q_ASSERT(m_config);
+    Q_ASSERT(!m_folders.isEmpty());
 }
 
 void FirstRunIndexer::run()
