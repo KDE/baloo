@@ -11,6 +11,7 @@ set(file_static_lib_SRCS
     basicindexingjob.cpp
     eventmonitor.cpp
 
+    firstrunindexer.cpp
     newfileindexer.cpp
 
     # Common
