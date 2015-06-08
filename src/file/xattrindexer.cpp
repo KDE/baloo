@@ -1,0 +1,70 @@
+/*
+ * Copyright (C) 2015  Vishesh Handa <vhanda@kde.org>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ */
+
+#include "xattrindexer.h"
+#include "basicindexingjob.h"
+#include "fileindexerconfig.h"
+
+#include "database.h"
+#include "transaction.h"
+
+#include <QMimeDatabase>
+
+using namespace Baloo;
+
+XAttrIndexer::XAttrIndexer(Database* db, FileIndexerConfig* config, const QStringList& files)
+    : m_db(db)
+    , m_config(config)
+    , m_files(files)
+{
+}
+
+void XAttrIndexer::run()
+{
+    QMimeDatabase mimeDb;
+
+    Transaction tr(m_db, Transaction::ReadWrite);
+
+    for (const QString& filePath : m_files) {
+        Q_ASSERT(!filePath.endsWith('/'));
+
+        QString fileName = filePath.mid(filePath.lastIndexOf('/'));
+        if (!m_config->shouldFileBeIndexed(fileName)) {
+            continue;
+        }
+
+        QString mimetype = mimeDb.mimeTypeForFile(filePath, QMimeDatabase::MatchExtension).name();
+        if (!m_config->shouldMimeTypeBeIndexed(mimetype)) {
+            continue;
+        }
+
+        // FIXME: The BasicIndexingJob extracts too much info. We only need the xattr
+        BasicIndexingJob job(filePath, mimetype, m_config->onlyBasicIndexing());
+        if (!job.index()) {
+            continue;
+        }
+
+        Q_ASSERT(tr.hasDocument(job.document().id()));
+        // FIXME: Do we also need to update the ctime of the file?
+        tr.replaceDocument(job.document(), XAttrTerms);
+    }
+
+    tr.commit();
+    Q_EMIT done();
+}
