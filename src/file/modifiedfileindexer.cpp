@@ -37,6 +37,9 @@ ModifiedFileIndexer::ModifiedFileIndexer(Database* db, FileIndexerConfig* config
     , m_config(config)
     , m_files(files)
 {
+    Q_ASSERT(m_db);
+    Q_ASSERT(m_config);
+    Q_ASSERT(!m_files.isEmpty());
 }
 
 void ModifiedFileIndexer::run()

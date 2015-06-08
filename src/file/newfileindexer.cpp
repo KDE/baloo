@@ -33,6 +33,9 @@ NewFileIndexer::NewFileIndexer(Database* db, FileIndexerConfig* config, const QS
     , m_config(config)
     , m_files(newFiles)
 {
+    Q_ASSERT(m_db);
+    Q_ASSERT(m_config);
+    Q_ASSERT(!m_files.isEmpty());
 }
 
 void NewFileIndexer::run()

@@ -33,6 +33,9 @@ XAttrIndexer::XAttrIndexer(Database* db, FileIndexerConfig* config, const QStrin
     , m_config(config)
     , m_files(files)
 {
+    Q_ASSERT(m_db);
+    Q_ASSERT(m_config);
+    Q_ASSERT(!m_files.isEmpty());
 }
 
 void XAttrIndexer::run()
