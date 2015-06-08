@@ -16,6 +16,10 @@ set(file_static_lib_SRCS
     xattrindexer.cpp
     modifiedfileindexer.cpp
 
+    filecontentindexer.cpp
+    filecontentindexerprovider.cpp
+    extractorprocess.cpp
+
     # Common
     priority.cpp
     regexpcache.cpp
