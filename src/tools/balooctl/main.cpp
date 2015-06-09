@@ -42,6 +42,7 @@
 #include "transaction.h"
 #include "indexer.h"
 #include "idutils.h"
+#include "fileindexerconfig.h"
 //#include "filestatistics.h"
 
 using namespace Baloo;
@@ -157,6 +158,8 @@ int main(int argc, char* argv[])
                 out << "Index does not exist yet\n";
             }
         } else {
+            FileIndexerConfig m_config;
+
             for (int i = 1; i < parser.positionalArguments().length(); ++i) {
                 QString url = QFileInfo(parser.positionalArguments().at(i)).absoluteFilePath();
                 quint64 id = filePathToId(QFile::encodeName(url));
@@ -166,9 +169,11 @@ int main(int argc, char* argv[])
                 out << "Basic indexing: ";
                 if (tr.hasDocument(id)) {
                     out << "done\n";
+                } else if (m_config.shouldBeIndexed(url)) {
+                    out << "scheduled\n";
+                    return 0;
                 } else {
-                    //TODO: check excluded folders and print the one that disabled this
-                    out << "disabled\n";
+                    out << "disbabled\n";
                     return 0;
                 }
 
