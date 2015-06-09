@@ -112,6 +112,7 @@ void WriteTransaction::removeDocument(quint64 id)
     DocumentTimeDB docTimeDB(m_dbis.docTimeDbi, m_txn);
     DocumentDataDB docDataDB(m_dbis.docDataDbi, m_txn);
     DocumentIdDB contentIndexingDB(m_dbis.contentIndexingDbi, m_txn);
+    DocumentIdDB failedIndexingDB(m_dbis.failedIdDbi, m_txn);
     MTimeDB mtimeDB(m_dbis.mtimeDbi, m_txn);
     DocumentUrlDB docUrlDB(m_dbis.idTreeDbi, m_dbis.idFilenameDbi, m_txn);
 
@@ -130,6 +131,7 @@ void WriteTransaction::removeDocument(quint64 id)
     });;
 
     contentIndexingDB.del(id);
+    failedIndexingDB.del(id);
 
     DocumentTimeDB::TimeInfo info = docTimeDB.get(id);
     if (info.mTime) {
