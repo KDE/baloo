@@ -85,21 +85,25 @@ void FileWatchTest::testFileCreation()
     //QVERIFY(spy.isValid());
     //QVERIFY(spy.wait());
 
-    QSignalSpy spyIndex(&fileWatch, SIGNAL(indexFile(QString)));
+    QSignalSpy spyIndexNew(&fileWatch, SIGNAL(indexNewFile(QString)));
+    QSignalSpy spyIndexModified(&fileWatch, SIGNAL(indexModifiedFile(QString)));
     QSignalSpy spyIndexXattr(&fileWatch, SIGNAL(indexXAttr(QString)));
 
-    QVERIFY(spyIndex.isValid());
+    QVERIFY(spyIndexNew.isValid());
+    QVERIFY(spyIndexModified.isValid());
     QVERIFY(spyIndexXattr.isValid());
 
     // Create a file and see if it is indexed
     QString fileUrl(includeDir.path() + "/t1");
     QVERIFY(createFile(fileUrl));
 
-    QVERIFY(spyIndex.wait());
-    QCOMPARE(spyIndex.count(), 1);
+    QVERIFY(spyIndexNew.wait());
+    QCOMPARE(spyIndexNew.count(), 1);
+    QCOMPARE(spyIndexModified.count(), 0);
     QCOMPARE(spyIndexXattr.count(), 0);
 
-    spyIndex.clear();
+    spyIndexNew.clear();
+    spyIndexModified.clear();
     spyIndexXattr.clear();
 
     //
@@ -107,11 +111,13 @@ void FileWatchTest::testFileCreation()
     //
     modifyFile(fileUrl);
 
-    QVERIFY(spyIndex.wait());
-    QCOMPARE(spyIndex.count(), 1);
+    QVERIFY(spyIndexModified.wait());
+    QCOMPARE(spyIndexNew.count(), 0);
+    QCOMPARE(spyIndexModified.count(), 1);
     QCOMPARE(spyIndexXattr.count(), 0);
 
-    spyIndex.clear();
+    spyIndexNew.clear();
+    spyIndexModified.clear();
     spyIndexXattr.clear();
 
     //
@@ -126,11 +132,13 @@ void FileWatchTest::testFileCreation()
     const QString userComment(QLatin1String("UserComment"));
     QVERIFY(baloo_setxattr(fileUrl, QLatin1String("user.xdg.comment"), userComment) != -1);
 
-    QVERIFY(spyIndex.wait());
-    QCOMPARE(spyIndex.count(), 0);
+    QVERIFY(spyIndexXattr.wait());
+    QCOMPARE(spyIndexNew.count(), 0);
+    QCOMPARE(spyIndexModified.count(), 0);
     QCOMPARE(spyIndexXattr.count(), 1);
 
-    spyIndex.clear();
+    spyIndexNew.clear();
+    spyIndexModified.clear();
     spyIndexXattr.clear();
 }
 

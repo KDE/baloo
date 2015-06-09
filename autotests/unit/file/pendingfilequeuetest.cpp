@@ -51,7 +51,7 @@ void PendingFileQueueTest::testTimeout()
     PendingFileQueue queue;
     queue.setMinimumTimeout(2);
 
-    QSignalSpy spy(&queue, SIGNAL(indexFile(QString)));
+    QSignalSpy spy(&queue, SIGNAL(indexModifiedFile(QString)));
     QVERIFY(spy.isValid());
 
     PendingFile file(myUrl);
@@ -83,7 +83,7 @@ void PendingFileQueueTest::testRequeue()
     queue.setMinimumTimeout(2);
     queue.setMaximumTimeout(5);
 
-    QSignalSpy spy(&queue, SIGNAL(indexFile(QString)));
+    QSignalSpy spy(&queue, SIGNAL(indexModifiedFile(QString)));
     QVERIFY(spy.isValid());
 
     PendingFile file(myUrl);
