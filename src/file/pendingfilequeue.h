@@ -45,7 +45,8 @@ public:
     ~PendingFileQueue();
 
 Q_SIGNALS:
-    void indexFile(const QString& fileUrl);
+    void indexNewFile(const QString& fileUrl);
+    void indexModifiedFile(const QString& fileUrl);
     void indexXAttr(const QString& fileUrl);
     void removeFileIndex(const QString& fileUrl);
 

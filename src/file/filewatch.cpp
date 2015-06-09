@@ -47,10 +47,11 @@ FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
     Q_ASSERT(config);
 
     m_metadataMover = new MetadataMover(m_db, this);
-    connect(m_metadataMover, &MetadataMover::movedWithoutData, this, &FileWatch::indexFile);
+    connect(m_metadataMover, &MetadataMover::movedWithoutData, this, &FileWatch::indexNewFile);
 
     m_pendingFileQueue = new PendingFileQueue(this);
-    connect(m_pendingFileQueue, &PendingFileQueue::indexFile, this, &FileWatch::indexFile);
+    connect(m_pendingFileQueue, &PendingFileQueue::indexNewFile, this, &FileWatch::indexNewFile);
+    connect(m_pendingFileQueue, &PendingFileQueue::indexModifiedFile, this, &FileWatch::indexModifiedFile);
     connect(m_pendingFileQueue, &PendingFileQueue::indexXAttr, this, &FileWatch::indexXAttr);
     connect(m_pendingFileQueue, &PendingFileQueue::removeFileIndex, m_metadataMover, &MetadataMover::removeFileMetadata);
 
