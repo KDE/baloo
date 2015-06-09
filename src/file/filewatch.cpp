@@ -117,14 +117,11 @@ void FileWatch::slotFileDeleted(const QString& urlString, bool isDir)
 
 void FileWatch::slotFileCreated(const QString& path, bool isDir)
 {
-    // we only need the file creation event for folders
-    // file creation is always followed by a CloseAfterWrite event
-    if (isDir) {
-        PendingFile file(path);
-        file.setCreated();
+    Q_UNUSED(isDir);
+    PendingFile file(path);
+    file.setCreated();
 
-        m_pendingFileQueue->enqueue(file);
-    }
+    m_pendingFileQueue->enqueue(file);
 }
 
 void FileWatch::slotFileModified(const QString& path)
