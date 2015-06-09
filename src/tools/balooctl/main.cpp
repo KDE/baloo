@@ -43,7 +43,6 @@
 #include "indexer.h"
 #include "idutils.h"
 #include "fileindexerconfig.h"
-//#include "filestatistics.h"
 
 using namespace Baloo;
 
@@ -271,17 +270,6 @@ int main(int argc, char* argv[])
         updateAllFolders();
         out << "Started search for unindexed files\n";
         return 0;
-    }
-
-    if (command == QStringLiteral("fileStatistics")) {
-        const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/");
-
-        /*
-        XapianDatabase database(path);
-        FileStatistics stats(database);
-        stats.compute();
-        stats.print();
-        */
     }
 
     if (command == QStringLiteral("index")) {

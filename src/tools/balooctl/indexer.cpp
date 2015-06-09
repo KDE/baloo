@@ -28,8 +28,6 @@
 #include <KFileMetaData/Extractor>
 #include <KFileMetaData/PropertyInfo>
 
-#include <QStandardPaths>
-
 using namespace Baloo;
 
 Indexer::Indexer(const QString& url, Transaction* tr)
