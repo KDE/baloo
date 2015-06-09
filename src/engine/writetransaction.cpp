@@ -116,8 +116,6 @@ void WriteTransaction::removeDocument(quint64 id)
     MTimeDB mtimeDB(m_dbis.mtimeDbi, m_txn);
     DocumentUrlDB docUrlDB(m_dbis.idTreeDbi, m_dbis.idFilenameDbi, m_txn);
 
-    Q_ASSERT((documentTermsDB.size() + documentXattrTermsDB.size() + documentFileNameTermsDB.size()) > 0);
-
     removeTerms(id, documentTermsDB.get(id));
     removeTerms(id, documentXattrTermsDB.get(id));
     removeTerms(id, documentFileNameTermsDB.get(id));

@@ -47,6 +47,7 @@ private Q_SLOTS:
     void testAddDocumentTwoDocuments();
     void testAddAndRemoveOneDocument();
 
+    void testRemoveRecursively();
     void testDocumentId();
 private:
     QTemporaryDir* dir;
@@ -175,6 +176,39 @@ void WriteTransactionTest::testAddAndRemoveOneDocument()
     {
         Transaction tr(db, Transaction::ReadWrite);
         tr.removeDocument(doc1.id());
+        tr.commit();
+    }
+
+    Transaction tr(db, Transaction::ReadOnly);
+    DBState actualState = DBState::fromTransaction(&tr);
+    QVERIFY(DBState::debugCompare(actualState, DBState()));
+}
+
+void WriteTransactionTest::testRemoveRecursively()
+{
+    QByteArray path = dir->path().toUtf8();
+
+    const QByteArray url1(path + "/file1");
+    touchFile(url1);
+    const QByteArray dirPath(path + "/dir");
+    QDir().mkpath(QString::fromUtf8(dirPath));
+    const QByteArray url2(dirPath + "/file1");
+    touchFile(url2);
+
+    Document doc1 = createDocument(url1, 5, 1, {"a", "abc", "dab"}, {"file1"}, {});
+    Document doc2 = createDocument(url2, 5, 1, {"a", "abc", "dab"}, {"file1"}, {});
+    Document doc3 = createDocument(dirPath, 5, 1, {"a"}, {"dir"}, {});
+
+    {
+        Transaction tr(db, Transaction::ReadWrite);
+        tr.addDocument(doc1);
+        tr.addDocument(doc2);
+        tr.addDocument(doc3);
+        tr.commit();
+    }
+    {
+        Transaction tr(db, Transaction::ReadWrite);
+        tr.removeRecursively(filePathToId(dir->path().toUtf8()));
         tr.commit();
     }
 
