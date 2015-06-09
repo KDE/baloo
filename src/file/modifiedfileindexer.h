@@ -22,6 +22,7 @@
 
 #include <QRunnable>
 #include <QObject>
+#include <QStringList>
 
 namespace Baloo {
 
