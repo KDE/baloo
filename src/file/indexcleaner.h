@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014  Vishesh Handa <vhanda@kde.org>
+ * Copyright (C) 2015  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,27 +17,31 @@
  *
  */
 
-#ifndef BALOO_CLEANER_H
-#define BALOO_CLEANER_H
+#ifndef BALOO_INDEXCLEANER_H
+#define BALOO_INDEXCLEANER_H
 
+#include <QRunnable>
 #include <QObject>
 
 namespace Baloo {
 
 class Database;
+class FileIndexerConfig;
 
-class Cleaner : public QObject
+class IndexCleaner : public QObject, public QRunnable
 {
     Q_OBJECT
 public:
-    Cleaner(Database* db, QObject* parent = 0);
+    IndexCleaner(Database* db, FileIndexerConfig* config);
+    void run() Q_DECL_OVERRIDE;
 
-private Q_SLOTS:
-    void start();
+Q_SIGNALS:
+    void done();
 
 private:
     Database* m_db;
+    FileIndexerConfig* m_config;
 };
 }
 
-#endif // BALOO_CLEANER_H
+#endif // BALOO_INDEXCLEANER_H

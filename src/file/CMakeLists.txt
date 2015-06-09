@@ -20,6 +20,8 @@ set(file_static_lib_SRCS
     filecontentindexerprovider.cpp
     extractorprocess.cpp
 
+    indexcleaner.cpp
+
     # Common
     priority.cpp
     regexpcache.cpp
@@ -69,4 +71,3 @@ install(FILES org.kde.baloo.file.indexer.xml DESTINATION ${DBUS_INTERFACES_INSTA
 
 add_subdirectory(extractor)
 add_subdirectory(inotify)
-add_subdirectory(cleaner)

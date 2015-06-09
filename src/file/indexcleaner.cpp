@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014  Vishesh Handa <vhanda@kde.org>
+ * Copyright (C) 2015  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,46 +17,34 @@
  *
  */
 
-#include "cleaner.h"
+#include "indexcleaner.h"
+#include "fileindexerconfig.h"
+
 #include "database.h"
 #include "transaction.h"
-#include "fileindexerconfig.h"
 #include "idutils.h"
-#include "baloodebug.h"
 
-#include <QMimeDatabase>
-#include <QTimer>
+#include <QDebug>
 #include <QFile>
-#include <QCoreApplication>
-#include <QDir>
+#include <QMimeDatabase>
 
 using namespace Baloo;
 
-Cleaner::Cleaner(Database* db, QObject* parent)
-    : QObject(parent)
-    , m_db(db)
+IndexCleaner::IndexCleaner(Database* db, FileIndexerConfig* config)
+    : m_db(db)
+    , m_config(config)
 {
-    QTimer::singleShot(0, this, SLOT(start()));
+    Q_ASSERT(db);
+    Q_ASSERT(config);
 }
 
-void Cleaner::start()
+void IndexCleaner::run()
 {
-    const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QStringLiteral("/baloo");
-
-    if (!QFile::exists(path + "/index")) {
-        QCoreApplication::exit(0);
-        return;
-    }
-
-    Database db(path);
-    db.open(Baloo::Database::CreateDatabase);
-
-    FileIndexerConfig config;
     QMimeDatabase mimeDb;
 
-    Transaction tr(db, Transaction::ReadWrite);
+    Transaction tr(m_db, Transaction::ReadWrite);
 
-    auto shouldDelete = [&tr, &config, &mimeDb](quint64 id) {
+    auto shouldDelete = [&](quint64 id) {
         if (!id) {
             return false;
         }
@@ -68,14 +56,14 @@ void Cleaner::start()
             return true;
         }
 
-        if (!config.shouldBeIndexed(url)) {
+        if (!m_config->shouldBeIndexed(url)) {
             qDebug() << "should not be indexed: " << url;
             return true;
         }
 
         // FIXME: This mimetype is not completely accurate!
         QString mimetype = mimeDb.mimeTypeForFile(url, QMimeDatabase::MatchExtension).name();
-        if (!config.shouldMimeTypeBeIndexed(mimetype)) {
+        if (!m_config->shouldMimeTypeBeIndexed(mimetype)) {
             qDebug() << "mimetype should not be indexed: " << url << mimetype;
             return true;
         }
@@ -83,14 +71,11 @@ void Cleaner::start()
         return false;
     };
 
-
-    for (const QString& folder : config.includeFolders()) {
+    for (const QString& folder : m_config->includeFolders()) {
         quint64 id = filePathToId(QFile::encodeName(folder));
-        qDebug() << "Checking " << folder << id;
         tr.removeRecursively(id, shouldDelete);
     }
     tr.commit();
 
-    QCoreApplication::instance()->quit();
+    Q_EMIT done();
 }
-
