@@ -92,7 +92,8 @@ int main(int argc, char** argv)
     Baloo::FileWatch filewatcher(&db, &indexerConfig, &app);
     Baloo::FileIndexer fileIndexer(&db, &indexerConfig, &app);
 
-    QObject::connect(&filewatcher, &Baloo::FileWatch::indexFile, &fileIndexer, &Baloo::FileIndexer::indexFile);
+    QObject::connect(&filewatcher, &Baloo::FileWatch::indexNewFile, &fileIndexer, &Baloo::FileIndexer::indexFile);
+    QObject::connect(&filewatcher, &Baloo::FileWatch::indexModifiedFile, &fileIndexer, &Baloo::FileIndexer::indexFile);
     QObject::connect(&filewatcher, &Baloo::FileWatch::indexXAttr, &fileIndexer, &Baloo::FileIndexer::indexXAttr);
     QObject::connect(&filewatcher, &Baloo::FileWatch::installedWatches, &fileIndexer, &Baloo::FileIndexer::update);
     QObject::connect(&fileIndexer, &Baloo::FileIndexer::configChanged, &filewatcher, &Baloo::FileWatch::updateIndexedFoldersWatches);

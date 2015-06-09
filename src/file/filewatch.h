@@ -49,7 +49,8 @@ public Q_SLOTS:
     void updateIndexedFoldersWatches();
 
 Q_SIGNALS:
-    void indexFile(const QString& string);
+    void indexNewFile(const QString& string);
+    void indexModifiedFile(const QString& string);
     void indexXAttr(const QString& path);
 
     void installedWatches();

@@ -46,6 +46,11 @@ void PendingFile::setPath(const QString& path)
     }
 }
 
+bool PendingFile::isNewFile() const
+{
+    return m_created;
+}
+
 bool PendingFile::shouldIndexContents() const
 {
     if (m_created || m_closedOnWrite || m_modified) {

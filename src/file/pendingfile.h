@@ -43,6 +43,7 @@ public:
     void setCreated() { m_created = true; }
     void setDeleted() { m_deleted = true; }
 
+    bool isNewFile() const;
     bool shouldIndexContents() const;
     bool shouldIndexXAttrOnly() const;
     bool shouldRemoveIndex() const;

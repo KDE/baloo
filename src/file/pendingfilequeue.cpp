@@ -109,7 +109,11 @@ void PendingFileQueue::processCache()
                 m_pendingFiles[file.path()] = time;
             }
             else {
-                Q_EMIT indexFile(file.path());
+                if (file.isNewFile()) {
+                    Q_EMIT indexNewFile(file.path());
+                } else {
+                    Q_EMIT indexModifiedFile(file.path());
+                }
                 m_recentlyEmitted.insert(file.path(), currentTime);
             }
         } else {
@@ -165,7 +169,7 @@ void PendingFileQueue::processPendingFiles()
 
         int secondsLeft = currentTime.secsTo(it.value());
         if (secondsLeft <= 0) {
-            Q_EMIT indexFile(it.key());
+            Q_EMIT indexModifiedFile(it.key());
             m_recentlyEmitted.insert(it.key(), currentTime);
 
             it.remove();
