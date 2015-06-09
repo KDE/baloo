@@ -335,8 +335,8 @@ int main(int argc, char* argv[])
             out << ":";
             out.setFieldWidth(15);
             out << format.formatByteSize(size, 2);
-            out.setFieldWidth(15);
-            out << (100.0 * size / totalSize);
+            out.setFieldWidth(10);
+            out << QString::number((100.0 * size / totalSize), 'f', 3);
             out.setFieldWidth(0);
             out << " %\n";
         };
