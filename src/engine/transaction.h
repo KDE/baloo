@@ -35,6 +35,7 @@ class Database;
 class Document;
 class PostingIterator;
 class EngineQuery;
+class DatabaseSize;
 class DBState;
 
 class BALOO_ENGINE_EXPORT Transaction
@@ -86,6 +87,8 @@ public:
     QVector<QByteArray> documentTerms(quint64 docId) const;
     QVector<QByteArray> documentFileNameTerms(quint64 docId) const;
     QVector<QByteArray> documentXattrTerms(quint64 docId) const;
+
+    DatabaseSize dbSize();
 
     //
     // Transaction handling

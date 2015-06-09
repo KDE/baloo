@@ -40,6 +40,8 @@
 
 #include "database.h"
 #include "transaction.h"
+#include "databasesize.h"
+
 #include "indexer.h"
 #include "idutils.h"
 #include "fileindexerconfig.h"
@@ -309,5 +311,40 @@ int main(int argc, char* argv[])
         tr.commit();
         out << "File(s) indexed\n";
     }
+
+    if (command == QStringLiteral("indexSize")) {
+        const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/");
+        Database db(path);
+
+        if (!db.open(Baloo::Database::OpenDatabase)) {
+            out << "Baloo Index could not be opened\n";
+            return 1;
+        }
+
+        DatabaseSize size;
+        {
+            Transaction tr(db, Transaction::ReadOnly);
+            size = tr.dbSize();
+        }
+
+        KFormat format(QLocale::system());
+        out << "Size: " << format.formatByteSize(size.size, 2) << "\n\n";
+        out << "PostingDB: " << format.formatByteSize(size.postingDb, 2) << " - " << (100.0 * size.postingDb/size.size) << " %\n";
+        out << "PositionDB: " << format.formatByteSize(size.positionDb, 2) << " - " << (100.0 * size.positionDb/size.size) << " %\n";
+        out << "DocTerms: " << format.formatByteSize(size.docTerms, 2) << " - " << (100.0 * size.docTerms/size.size) << " %\n";
+        out << "DocFileNameTerms: " << format.formatByteSize(size.docFilenameTerms, 2) << " - " << (100.0 * size.docFilenameTerms/size.size) << " %\n";
+        out << "DocXattrTerms: " << format.formatByteSize(size.docXattrTerms, 2) << " - " << (100.0 * size.docXattrTerms/size.size) << " %\n";
+        out << "IdTree: " << format.formatByteSize(size.idTree, 2) << " - " << (100.0 * size.idTree/size.size) << " %\n";
+        out << "IdFileName: " << format.formatByteSize(size.idFilename, 2) << " - " << (100.0 * size.idFilename/size.size) << " %\n";
+        out << "DocTime: " << format.formatByteSize(size.docTime, 2) << " - " << (100.0 * size.docTime/size.size) << " %\n";
+        out << "DocData: " << format.formatByteSize(size.docData, 2) << " - " << (100.0 * size.docData/size.size) << " %\n";
+        out << "ContentIndexingDB: " << format.formatByteSize(size.contentIndexingIds, 2) << " - " << (100.0 * size.contentIndexingIds/size.size) << " %\n";
+        out << "FailedIndexingBD: " << format.formatByteSize(size.failedIds, 2) << " - " << (100.0 * size.failedIds/size.size) << " %\n";
+        out << "MTimeDB: " << format.formatByteSize(size.mtimeDb, 2) << " - " << (100.0 * size.mtimeDb/size.size) << " %\n";
+
+
+        return 0;
+    }
+
     return 0;
 }

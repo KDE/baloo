@@ -38,6 +38,7 @@
 #include "writetransaction.h"
 #include "idutils.h"
 #include "database.h"
+#include "databasesize.h"
 
 #include <QFile>
 #include <QFileInfo>
@@ -428,4 +429,42 @@ QVector<QByteArray> Transaction::documentXattrTerms(quint64 docId) const
 
     DocumentDB documentXattrTermsDB(m_dbis.docXattrTermsDbi, m_txn);
     return documentXattrTermsDB.get(docId);
+}
+
+//
+// File Size
+//
+static uint dbiSize(MDB_txn* txn, MDB_dbi dbi)
+{
+    MDB_stat stat;
+    mdb_stat(txn, dbi, &stat);
+
+    return (stat.ms_branch_pages + stat.ms_leaf_pages + stat.ms_overflow_pages) * stat.ms_psize;
+}
+
+DatabaseSize Transaction::dbSize()
+{
+    DatabaseSize dbSize;
+    dbSize.postingDb = dbiSize(m_txn, m_dbis.postingDbi);
+    dbSize.positionDb = dbiSize(m_txn, m_dbis.positionDBi);
+    dbSize.docTerms = dbiSize(m_txn, m_dbis.docTermsDbi);
+    dbSize.docFilenameTerms = dbiSize(m_txn, m_dbis.docFilenameTermsDbi);
+    dbSize.docXattrTerms = dbiSize(m_txn, m_dbis.docXattrTermsDbi);
+
+    dbSize.idTree = dbiSize(m_txn, m_dbis.idTreeDbi);
+    dbSize.idFilename = dbiSize(m_txn, m_dbis.idFilenameDbi);
+
+    dbSize.docTime = dbiSize(m_txn, m_dbis.docTimeDbi);
+    dbSize.docData = dbiSize(m_txn, m_dbis.docDataDbi);
+
+    dbSize.contentIndexingIds = dbiSize(m_txn, m_dbis.contentIndexingDbi);
+    dbSize.failedIds = dbiSize(m_txn, m_dbis.failedIdDbi);
+
+    dbSize.mtimeDb = dbiSize(m_txn, m_dbis.mtimeDbi);
+
+    dbSize.size = dbSize.positionDb + dbSize.positionDb + dbSize.docTerms + dbSize.docFilenameTerms
+                  + dbSize.docXattrTerms + dbSize.idTree + dbSize.idFilename + dbSize.docTime
+                  + dbSize.docData + dbSize.contentIndexingIds + dbSize.failedIds + dbSize.mtimeDb;
+
+    return dbSize;
 }
