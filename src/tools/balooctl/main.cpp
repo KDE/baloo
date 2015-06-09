@@ -328,20 +328,32 @@ int main(int argc, char* argv[])
         }
 
         KFormat format(QLocale::system());
-        out << "Size: " << format.formatByteSize(size.size, 2) << "\n\n";
-        out << "PostingDB: " << format.formatByteSize(size.postingDb, 2) << " - " << (100.0 * size.postingDb/size.size) << " %\n";
-        out << "PositionDB: " << format.formatByteSize(size.positionDb, 2) << " - " << (100.0 * size.positionDb/size.size) << " %\n";
-        out << "DocTerms: " << format.formatByteSize(size.docTerms, 2) << " - " << (100.0 * size.docTerms/size.size) << " %\n";
-        out << "DocFileNameTerms: " << format.formatByteSize(size.docFilenameTerms, 2) << " - " << (100.0 * size.docFilenameTerms/size.size) << " %\n";
-        out << "DocXattrTerms: " << format.formatByteSize(size.docXattrTerms, 2) << " - " << (100.0 * size.docXattrTerms/size.size) << " %\n";
-        out << "IdTree: " << format.formatByteSize(size.idTree, 2) << " - " << (100.0 * size.idTree/size.size) << " %\n";
-        out << "IdFileName: " << format.formatByteSize(size.idFilename, 2) << " - " << (100.0 * size.idFilename/size.size) << " %\n";
-        out << "DocTime: " << format.formatByteSize(size.docTime, 2) << " - " << (100.0 * size.docTime/size.size) << " %\n";
-        out << "DocData: " << format.formatByteSize(size.docData, 2) << " - " << (100.0 * size.docData/size.size) << " %\n";
-        out << "ContentIndexingDB: " << format.formatByteSize(size.contentIndexingIds, 2) << " - " << (100.0 * size.contentIndexingIds/size.size) << " %\n";
-        out << "FailedIndexingBD: " << format.formatByteSize(size.failedIds, 2) << " - " << (100.0 * size.failedIds/size.size) << " %\n";
-        out << "MTimeDB: " << format.formatByteSize(size.mtimeDb, 2) << " - " << (100.0 * size.mtimeDb/size.size) << " %\n";
+        auto prFunc = [&](const QString& name, uint size, uint totalSize) {
+            out.setFieldWidth(20);
+            out << name;
+            out.setFieldWidth(0);
+            out << ":";
+            out.setFieldWidth(15);
+            out << format.formatByteSize(size, 2);
+            out.setFieldWidth(15);
+            out << (100.0 * size / totalSize);
+            out.setFieldWidth(0);
+            out << " %\n";
+        };
 
+        out << "Size: " << format.formatByteSize(size.size, 2) << "\n\n";
+        prFunc("PostingDB", size.postingDb, size.size);
+        prFunc("PosistionDB", size.positionDb, size.size);
+        prFunc("DocTerms", size.docTerms, size.size);
+        prFunc("DocFilenameTerms", size.docFilenameTerms, size.size);
+        prFunc("DocXattrTerms", size.docXattrTerms, size.size);
+        prFunc("IdTree", size.idTree, size.size);
+        prFunc("IdFileName", size.idFilename, size.size);
+        prFunc("DocTime", size.docTime, size.size);
+        prFunc("DocData", size.docData, size.size);
+        prFunc("ContentIndexingDB", size.contentIndexingIds, size.size);
+        prFunc("FailedIdsDB", size.failedIds, size.size);
+        prFunc("MTimeDB", size.mtimeDb, size.size);
 
         return 0;
     }
