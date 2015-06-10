@@ -28,12 +28,11 @@
 #include <QFileInfo>
 #include <iostream>
 
-#include "filewatch.h"
-#include "fileindexer.h"
 #include "database.h"
 #include "fileindexerconfig.h"
 #include "priority.h"
 #include "migrator.h"
+#include "mainhub.h"
 
 #include <QDBusConnection>
 #include <QApplication>
@@ -89,14 +88,6 @@ int main(int argc, char** argv)
     Baloo::Database db(path);
     db.open(Baloo::Database::CreateDatabase);
 
-    Baloo::FileWatch filewatcher(&db, &indexerConfig, &app);
-    Baloo::FileIndexer fileIndexer(&db, &indexerConfig, &app);
-
-    QObject::connect(&filewatcher, &Baloo::FileWatch::indexNewFile, &fileIndexer, &Baloo::FileIndexer::indexFile);
-    QObject::connect(&filewatcher, &Baloo::FileWatch::indexModifiedFile, &fileIndexer, &Baloo::FileIndexer::indexFile);
-    QObject::connect(&filewatcher, &Baloo::FileWatch::indexXAttr, &fileIndexer, &Baloo::FileIndexer::indexXAttr);
-    QObject::connect(&filewatcher, &Baloo::FileWatch::installedWatches, &fileIndexer, &Baloo::FileIndexer::update);
-    QObject::connect(&fileIndexer, &Baloo::FileIndexer::configChanged, &filewatcher, &Baloo::FileWatch::updateIndexedFoldersWatches);
-
+    Baloo::MainHub hub(&db, &indexerConfig);
     return app.exec();
 }
