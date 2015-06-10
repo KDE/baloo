@@ -38,10 +38,8 @@ QByteArray DocTermsCodec::encode(const QVector<QByteArray>& terms)
         const QByteArray prevTerm = terms[i-1];
 
         if (term.startsWith(prevTerm)) {
-            char ch = 1;
-            full.append(ch);
             full.append(term.mid(prevTerm.size()));
-            full.append('\0');
+            full.append(static_cast<char>(1));
         } else {
             full.append(term);
             full.append('\0');
@@ -57,14 +55,14 @@ QVector<QByteArray> DocTermsCodec::decode(const QByteArray& full)
 
     QVector<QByteArray> list;
 
-    bool isHalfWord = false;
-
     int prevWordBoundary = 0;
     for (int i = 0; i < full.size(); i++) {
-
         if (full[i] == 1) {
-            isHalfWord = true;
-            prevWordBoundary++;
+            QByteArray arr = QByteArray::fromRawData(full.constData() + prevWordBoundary,
+                                                     i - prevWordBoundary);
+
+            list << list.last() + arr;
+            prevWordBoundary = i + 1;
             continue;
         }
 
@@ -72,13 +70,9 @@ QVector<QByteArray> DocTermsCodec::decode(const QByteArray& full)
             QByteArray arr = QByteArray::fromRawData(full.constData() + prevWordBoundary,
                                                      i - prevWordBoundary);
 
-            if (isHalfWord) {
-                list << list.last() + arr;
-            } else {
-                list << arr;
-            }
+            list << arr;
             prevWordBoundary = i + 1;
-            isHalfWord = false;
+            continue;
         }
     }
 
