@@ -158,11 +158,6 @@ void FileIndexer::indexFolder(const QString& path, bool forced)
     }
 }
 
-void FileIndexer::quit() const
-{
-    QCoreApplication::instance()->quit();
-}
-
 void FileIndexer::updateConfig()
 {
     m_indexScheduler->updateConfig();

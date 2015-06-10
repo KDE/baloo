@@ -23,7 +23,6 @@
     <method name="statusMessage">
       <arg type="s" direction="out" />
     </method>
-    <method name="updateConfig" />
     <signal name="statusChanged" />
     <signal name="indexingStarted" />
     <signal name="indexingStopped" />
