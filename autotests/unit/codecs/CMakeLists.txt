@@ -8,5 +8,6 @@ MACRO(BALOO_CODECS_AUTO_TESTS)
 ENDMACRO()
 
 baloo_codecs_auto_tests(
+    doctermscodectest
     postingcodectest
 )
