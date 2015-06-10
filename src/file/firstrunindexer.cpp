@@ -18,12 +18,14 @@
  */
 
 #include "firstrunindexer.h"
-#include "unindexedfileiterator.h"
 #include "basicindexingjob.h"
 #include "fileindexerconfig.h"
+#include "filtereddiriterator.h"
 
 #include "database.h"
 #include "transaction.h"
+
+#include <QMimeDatabase>
 
 using namespace Baloo;
 
@@ -45,14 +47,19 @@ void FirstRunIndexer::run()
         Q_ASSERT_X(tr.size() == 0, "FirstRunIndexer", "The database is not empty on first run");
     }
 
+    QMimeDatabase mimeDb;
+
     for (const QString& folder : m_folders) {
         Transaction tr(m_db, Transaction::ReadWrite);
 
-        // FIXME: This checks the mtime of the file as well, and that is not required
-        //        during this first run!
-        UnIndexedFileIterator it(m_config, &tr, folder);
+        FilteredDirIterator it(m_config, folder);
         while (!it.next().isEmpty()) {
-            BasicIndexingJob job(it.filePath(), it.mimetype(), false);
+            QString mimetype = mimeDb.mimeTypeForFile(it.filePath(), QMimeDatabase::MatchExtension).name();
+            if (!m_config->shouldMimeTypeBeIndexed(mimetype)) {
+                continue;
+            }
+
+            BasicIndexingJob job(it.filePath(), mimetype, false);
             if (!job.index()) {
                 continue;
             }
