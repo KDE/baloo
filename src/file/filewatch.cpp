@@ -66,12 +66,6 @@ FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
     connect(m_dirWatch, &KInotify::attributeChanged, this, &FileWatch::slotAttributeChanged);
     connect(m_dirWatch, &KInotify::watchUserLimitReached, this, &FileWatch::slotInotifyWatchUserLimitReached);
     connect(m_dirWatch, &KInotify::installedWatches, this, &FileWatch::installedWatches);
-
-    // Watch all indexed folders
-    QStringList folders = m_config->includeFolders();
-    Q_FOREACH (const QString& folder, folders) {
-        watchFolder(folder);
-    }
 }
 
 
@@ -79,6 +73,14 @@ FileWatch::~FileWatch()
 {
 }
 
+void FileWatch::watchIndexedFolders()
+{
+    // Watch all indexed folders
+    QStringList folders = m_config->includeFolders();
+    Q_FOREACH (const QString& folder, folders) {
+        watchFolder(folder);
+    }
+}
 
 // FIXME: listen to Create for folders!
 void FileWatch::watchFolder(const QString& path)

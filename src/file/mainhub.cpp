@@ -22,6 +22,7 @@
 
 #include <QDBusConnection>
 #include <QCoreApplication>
+#include <QTimer>
 
 using namespace Baloo;
 
@@ -41,6 +42,8 @@ MainHub::MainHub(Database* db, FileIndexerConfig* config)
 
     QDBusConnection bus = QDBusConnection::sessionBus();
     bus.registerObject(QStringLiteral("/"), this, QDBusConnection::ExportAllSlots);
+
+    QTimer::singleShot(0, &m_fileWatcher, SLOT(watchIndexedFolders()));
 }
 
 void MainHub::quit() const

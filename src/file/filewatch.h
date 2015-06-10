@@ -48,6 +48,8 @@ public Q_SLOTS:
      */
     void updateIndexedFoldersWatches();
 
+    void watchIndexedFolders();
+
 Q_SIGNALS:
     void indexNewFile(const QString& string);
     void indexModifiedFile(const QString& string);
