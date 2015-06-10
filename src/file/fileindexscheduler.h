@@ -17,36 +17,53 @@
  *
  */
 
-#ifndef BALOO_MAINHUB_H
-#define BALOO_MAINHUB_H
+#ifndef BALOO_FILEINDEXSCHEDULER_H
+#define BALOO_FILEINDEXSCHEDULER_H
 
 #include <QObject>
-
-#include "filewatch.h"
-#include "fileindexscheduler.h"
+#include <QStringList>
+#include <QThreadPool>
+#include <QTimer>
 
 namespace Baloo {
 
 class Database;
 class FileIndexerConfig;
 
-class MainHub : public QObject
+class FileIndexScheduler : public QObject
 {
     Q_OBJECT
 public:
-    MainHub(Database* db, FileIndexerConfig* config);
+    FileIndexScheduler(Database* db, FileIndexerConfig* config, QObject* parent = 0);
 
 public Q_SLOTS:
-    void quit() const;
-    void updateConfig();
+    void indexNewFile(const QString& file) {
+        m_newFiles << file;
+        QTimer::singleShot(0, this, SLOT(scheduleIndexing()));
+    }
 
+    void indexModifiedFile(const QString& file) {
+        m_modifiedFiles << file;
+        QTimer::singleShot(0, this, SLOT(scheduleIndexing()));
+    }
+
+    void indexXAttrFile(const QString& file) {
+        m_xattrFiles << file;
+        QTimer::singleShot(0, this, SLOT(scheduleIndexing()));
+    }
+
+    void scheduleIndexing();
 private:
     Database* m_db;
     FileIndexerConfig* m_config;
 
-    FileWatch m_fileWatcher;
-    FileIndexScheduler m_fileIndexScheduler;
+    QStringList m_newFiles;
+    QStringList m_modifiedFiles;
+    QStringList m_xattrFiles;
+
+    QThreadPool m_threadPool;
 };
+
 }
 
-#endif // BALOO_MAINHUB_H
+#endif // BALOO_FILEINDEXSCHEDULER_H

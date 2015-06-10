@@ -12,6 +12,8 @@ set(file_static_lib_SRCS
     basicindexingjob.cpp
     eventmonitor.cpp
 
+    fileindexscheduler.cpp
+
     firstrunindexer.cpp
     newfileindexer.cpp
     xattrindexer.cpp

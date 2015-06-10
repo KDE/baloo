@@ -30,15 +30,16 @@ MainHub::MainHub(Database* db, FileIndexerConfig* config)
     : m_db(db)
     , m_config(config)
     , m_fileWatcher(db, config, this)
-    , m_fileIndexer(db, config, this)
+    , m_fileIndexScheduler(db, config, this)
 {
     Q_ASSERT(db);
     Q_ASSERT(config);
 
-    connect(&m_fileWatcher, &FileWatch::indexNewFile, &m_fileIndexer, &FileIndexer::indexFile);
-    connect(&m_fileWatcher, &FileWatch::indexModifiedFile, &m_fileIndexer, &FileIndexer::indexFile);
-    connect(&m_fileWatcher, &FileWatch::indexXAttr, &m_fileIndexer, &FileIndexer::indexXAttr);
-    connect(&m_fileWatcher, &FileWatch::installedWatches, &m_fileIndexer, &FileIndexer::update);
+    connect(&m_fileWatcher, &FileWatch::indexNewFile, &m_fileIndexScheduler, &FileIndexScheduler::indexNewFile);
+    connect(&m_fileWatcher, &FileWatch::indexModifiedFile, &m_fileIndexScheduler, &FileIndexScheduler::indexModifiedFile);
+    connect(&m_fileWatcher, &FileWatch::indexXAttr, &m_fileIndexScheduler, &FileIndexScheduler::indexXAttrFile);
+
+    connect(&m_fileWatcher, &FileWatch::installedWatches, &m_fileIndexScheduler, &FileIndexScheduler::scheduleIndexing);
 
     QDBusConnection bus = QDBusConnection::sessionBus();
     bus.registerObject(QStringLiteral("/"), this, QDBusConnection::ExportAllSlots);
@@ -54,6 +55,7 @@ void MainHub::quit() const
 void MainHub::updateConfig()
 {
     m_config->forceConfigUpdate();
-    m_fileIndexer.updateConfig();
+    // FIXME!!
+    //m_fileIndexer.updateConfig();
     m_fileWatcher.updateIndexedFoldersWatches();
 }
