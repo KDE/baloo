@@ -167,7 +167,6 @@ void IndexScheduler::queueAllFoldersForUpdate(bool forceUpdate)
 void IndexScheduler::updateConfig()
 {
     // We need to this - there is no way to avoid it
-    m_config->forceConfigUpdate();
     m_basicIQ->clear();
     m_fileIQ->clear();
 

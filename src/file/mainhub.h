@@ -32,8 +32,13 @@ class FileIndexerConfig;
 
 class MainHub : public QObject
 {
+    Q_OBJECT
 public:
     MainHub(Database* db, FileIndexerConfig* config);
+
+public Q_SLOTS:
+    void quit() const;
+    void updateConfig();
 
 private:
     Database* m_db;

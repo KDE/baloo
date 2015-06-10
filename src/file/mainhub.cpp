@@ -18,6 +18,10 @@
  */
 
 #include "mainhub.h"
+#include "fileindexerconfig.h"
+
+#include <QDBusConnection>
+#include <QCoreApplication>
 
 using namespace Baloo;
 
@@ -34,5 +38,19 @@ MainHub::MainHub(Database* db, FileIndexerConfig* config)
     connect(&m_fileWatcher, &FileWatch::indexModifiedFile, &m_fileIndexer, &FileIndexer::indexFile);
     connect(&m_fileWatcher, &FileWatch::indexXAttr, &m_fileIndexer, &FileIndexer::indexXAttr);
     connect(&m_fileWatcher, &FileWatch::installedWatches, &m_fileIndexer, &FileIndexer::update);
-    connect(&m_fileIndexer, &FileIndexer::configChanged, &m_fileWatcher, &FileWatch::updateIndexedFoldersWatches);
+
+    QDBusConnection bus = QDBusConnection::sessionBus();
+    bus.registerObject(QStringLiteral("/"), this, QDBusConnection::ExportAllSlots);
+}
+
+void MainHub::quit() const
+{
+    QCoreApplication::instance()->quit();
+}
+
+void MainHub::updateConfig()
+{
+    m_config->forceConfigUpdate();
+    m_fileIndexer.updateConfig();
+    m_fileWatcher.updateIndexedFoldersWatches();
 }

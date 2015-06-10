@@ -46,7 +46,6 @@ Q_SIGNALS:
     Q_SCRIPTABLE void indexingStarted();
     Q_SCRIPTABLE void indexingStopped();
     Q_SCRIPTABLE void fileIndexingDone();
-    void configChanged();
 
 public Q_SLOTS:
     /**
@@ -54,12 +53,6 @@ public Q_SLOTS:
      * accordingly
      */
     void update();
-
-    /**
-     * Quits the application. This may not be the best place to keep such
-     * a slot, but it's simpler than creating a new interface for now
-     */
-    Q_SCRIPTABLE void quit() const;
 
     /**
      * @brief Translated status message of the current Indexer behaviour.
