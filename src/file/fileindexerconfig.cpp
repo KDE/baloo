@@ -180,7 +180,9 @@ bool FileIndexerConfig::shouldFolderBeIndexed(const QString& path) const
 
 bool FileIndexerConfig::shouldFileBeIndexed(const QString& fileName) const
 {
-    // check the filters
+    if (!indexHiddenFilesAndFolders() && fileName.startsWith('.')) {
+        return false;
+    }
     return !m_excludeFilterRegExpCache.exactMatch(fileName);
 }
 
