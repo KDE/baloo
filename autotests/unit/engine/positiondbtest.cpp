@@ -23,6 +23,8 @@
 #include "postingiterator.h"
 #include "singledbtest.h"
 
+#include <QRegularExpression>
+
 using namespace Baloo;
 
 class PositionDBTest : public SingleDBTest
@@ -79,6 +81,86 @@ private Q_SLOTS:
         QCOMPARE(it->next(), static_cast<quint64>(0));
         QCOMPARE(it->docId(), static_cast<quint64>(0));
         QVERIFY(it->positions().isEmpty());
+    }
+
+    void testPrefixIter() {
+        PositionDB db(PositionDB::create(m_txn), m_txn);
+
+        db.put("abc", {PositionInfo(1), PositionInfo(4), PositionInfo(5), PositionInfo(9), PositionInfo(11)});
+        db.put("fir", {PositionInfo(1), PositionInfo(3), PositionInfo(5)});
+        db.put("fire", {PositionInfo(1), PositionInfo(8), PositionInfo(9)});
+        db.put("fore", {PositionInfo(2), PositionInfo(3), PositionInfo(5)});
+
+        PostingIterator* it = db.prefixIter("fi");
+        QVERIFY(it);
+
+        QVector<quint64> result = {1, 3, 5, 8, 9};
+        for (quint64 val : result) {
+            QCOMPARE(it->next(), static_cast<quint64>(val));
+            QCOMPARE(it->docId(), static_cast<quint64>(val));
+            QVERIFY(it->positions().isEmpty());
+        }
+    }
+
+    void testRegExpIter() {
+        PositionDB db(PositionDB::create(m_txn), m_txn);
+
+        db.put("abc", {PositionInfo(1), PositionInfo(4), PositionInfo(5), PositionInfo(9), PositionInfo(11)});
+        db.put("fir", {PositionInfo(1), PositionInfo(3), PositionInfo(5), PositionInfo(7)});
+        db.put("fire", {PositionInfo(1), PositionInfo(8)});
+        db.put("fore", {PositionInfo(2), PositionInfo(3), PositionInfo(5)});
+        db.put("zib", {PositionInfo(4), PositionInfo(5), PositionInfo(6)});
+
+        PostingIterator* it = db.regexpIter(QRegularExpression(".re"), QByteArray("f"));
+        QVERIFY(it);
+
+        QVector<quint64> result = {1, 2, 3, 5, 8};
+        for (quint64 val : result) {
+            QCOMPARE(it->next(), static_cast<quint64>(val));
+            QCOMPARE(it->docId(), static_cast<quint64>(val));
+        }
+
+        // Non existing
+        it = db.regexpIter(QRegularExpression("dub"), QByteArray("f"));
+        QVERIFY(it == 0);
+    }
+
+    void testCompIter() {
+        PositionDB db(PositionDB::create(m_txn), m_txn);
+
+        db.put("abc", {PositionInfo(1), PositionInfo(4), PositionInfo(5), PositionInfo(9), PositionInfo(11)});
+        db.put("R1", {PositionInfo(1), PositionInfo(3), PositionInfo(5), PositionInfo(7)});
+        db.put("R2", {PositionInfo(1), PositionInfo(8)});
+
+        PostingIterator* it = db.compIter("R", "2", PositionDB::GreaterEqual);
+        QVERIFY(it);
+
+        QVector<quint64> result = {1, 2, 3, 5, 8};
+        for (quint64 val : result) {
+            QCOMPARE(it->next(), static_cast<quint64>(val));
+            QCOMPARE(it->docId(), static_cast<quint64>(val));
+        }
+
+        it = db.compIter("R", "2", PositionDB::LessEqual);
+        QVERIFY(it);
+        result = {1, 3, 5, 7, 8};
+        for (quint64 val : result) {
+            QCOMPARE(it->next(), static_cast<quint64>(val));
+            QCOMPARE(it->docId(), static_cast<quint64>(val));
+        }
+    }
+
+    void testFetchTermsStartingWith() {
+        PositionDB db(PositionDB::create(m_txn), m_txn);
+
+        db.put("abc", {PositionInfo(1), PositionInfo(4), PositionInfo(5), PositionInfo(9), PositionInfo(11)});
+        db.put("fir", {PositionInfo(1), PositionInfo(3), PositionInfo(5), PositionInfo(7)});
+        db.put("fire", {PositionInfo(1), PositionInfo(8)});
+        db.put("fore", {PositionInfo(2), PositionInfo(3), PositionInfo(5)});
+        db.put("zib", {PositionInfo(4), PositionInfo(5), PositionInfo(6)});
+
+        QVector<QByteArray> list = {"fir", "fire", "fore"};
+        QCOMPARE(db.fetchTermsStartingWith("f"), list);
     }
 };
 

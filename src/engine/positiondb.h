@@ -46,10 +46,24 @@ public:
     QVector<PositionInfo> get(const QByteArray& term);
     void del(const QByteArray& term);
 
+    QVector<QByteArray> fetchTermsStartingWith(const QByteArray& term);
+
+
     PostingIterator* iter(const QByteArray& term);
+    PostingIterator* prefixIter(const QByteArray& term);
+    PostingIterator* regexpIter(const QRegularExpression& regexp, const QByteArray& prefix);
+
+    enum Comparator {
+        LessEqual,
+        GreaterEqual
+    };
+    PostingIterator* compIter(const QByteArray& prefix, const QByteArray& val, Comparator com);
 
     QMap<QByteArray, QVector<PositionInfo>> toTestMap() const;
 private:
+    template <typename Validator>
+    PostingIterator* iter(const QByteArray& prefix, Validator validate);
+
     MDB_txn* m_txn;
     MDB_dbi m_dbi;
 };
