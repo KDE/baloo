@@ -114,22 +114,25 @@ void BasicIndexingQueue::index(Transaction* tr, const QString& file, const QStri
     bool xattrOnly = (flags & Baloo::ExtendedAttributesOnly);
     bool newDoc = !tr->hasDocument(filePathToId(QFile::encodeName(file)));
 
+    BasicIndexingJob::IndexingLevel level =
+            m_config->onlyBasicIndexing() ? BasicIndexingJob::NoLevel : BasicIndexingJob::MarkForContentIndexing;
+
     if (newDoc) {
-        BasicIndexingJob job(file, mimetype, m_config->onlyBasicIndexing());
+        BasicIndexingJob job(file, mimetype, level);
         job.index();
 
         tr->addDocument(job.document());
     }
 
     else if (!xattrOnly) {
-        BasicIndexingJob job(file, mimetype, m_config->onlyBasicIndexing());
+        BasicIndexingJob job(file, mimetype, level);
         if (job.index()) {
             tr->replaceDocument(job.document(), DocumentTime);
             tr->setPhaseOne(job.document().id());
         }
     }
     else {
-        BasicIndexingJob job(file, mimetype, m_config->onlyBasicIndexing());
+        BasicIndexingJob job(file, mimetype, level);
         if (job.index()) {
             tr->replaceDocument(job.document(), XAttrTerms);
         }

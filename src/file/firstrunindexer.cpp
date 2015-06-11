@@ -45,7 +45,7 @@ void FirstRunIndexer::run()
         //        during this first run!
         UnIndexedFileIterator it(m_config, &tr, folder);
         while (!it.next().isEmpty()) {
-            BasicIndexingJob job(it.filePath(), it.mimetype(), false);
+            BasicIndexingJob job(it.filePath(), it.mimetype());
             if (!job.index()) {
                 continue;
             }

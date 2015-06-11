@@ -31,8 +31,13 @@ namespace Baloo {
 class BasicIndexingJob
 {
 public:
+    enum IndexingLevel {
+        NoLevel,
+        MarkForContentIndexing
+    };
+
     BasicIndexingJob(const QString& filePath, const QString& mimetype,
-                     bool onlyBasicIndexing);
+                     IndexingLevel level = MarkForContentIndexing);
     ~BasicIndexingJob();
 
     bool index();
@@ -52,7 +57,7 @@ private:
 
     QString m_filePath;
     QString m_mimetype;
-    bool m_onlyBasicIndexing;
+    IndexingLevel m_indexingLevel;
 
     Document m_doc;
 

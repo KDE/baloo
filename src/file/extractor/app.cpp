@@ -132,7 +132,7 @@ void App::index(Transaction* tr, const QString& url, quint64 id)
     // We always run the basic indexing again. This is mostly so that the proper
     // mimetype is set and we get proper type information.
     // The mimetype fetched in the BasicIQ is fast but not accurate
-    BasicIndexingJob basicIndexer(url, mimetype, true /*Indexing Level 2*/);
+    BasicIndexingJob basicIndexer(url, mimetype, BasicIndexingJob::NoLevel);
     basicIndexer.index();
 
     Baloo::Document doc = basicIndexer.document();
