@@ -113,6 +113,6 @@ void BasicIndexingJobTest::testBasicIndexing()
     */
 }
 
-QTEST_MAIN(BasicIndexingJobTest)
+QTEST_GUILESS_MAIN(BasicIndexingJobTest)
 
 #include "basicindexingjobtest.moc"

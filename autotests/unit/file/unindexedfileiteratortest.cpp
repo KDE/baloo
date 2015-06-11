@@ -43,6 +43,6 @@ void UnIndexedFileIterator::test()
 }
 
 
-QTEST_MAIN(UnIndexedFileIterator)
+QTEST_GUILESS_MAIN(UnIndexedFileIterator)
 
 #include "unindexedfileiteratortest.moc"
