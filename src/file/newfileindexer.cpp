@@ -57,7 +57,7 @@ void NewFileIndexer::run()
             continue;
         }
 
-        BasicIndexingJob job(filePath, mimetype, false);
+        BasicIndexingJob job(filePath, mimetype);
         if (!job.index()) {
             continue;
         }

@@ -82,7 +82,7 @@ void MetadataMoverTest::cleanupTestCase()
 
 quint64 MetadataMoverTest::insertUrl(const QString& url)
 {
-    BasicIndexingJob job(url, QStringLiteral("text/plain"), false);
+    BasicIndexingJob job(url, QStringLiteral("text/plain"));
     job.index();
 
     Transaction tr(m_db, Transaction::ReadWrite);
