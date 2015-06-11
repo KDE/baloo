@@ -209,6 +209,6 @@ void MetadataMoverTest::testMoveFolder()
     }
 }
 
-QTEST_MAIN(MetadataMoverTest)
+QTEST_GUILESS_MAIN(MetadataMoverTest)
 
 #include "metadatamovertest.moc"

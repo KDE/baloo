@@ -201,6 +201,6 @@ QString FileMonitorTest::getRandomString(int length) const
 }
 
 
-QTEST_MAIN(FileMonitorTest)
+QTEST_GUILESS_MAIN(FileMonitorTest)
 
 #include "filemonitortest.moc"
