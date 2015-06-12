@@ -85,6 +85,10 @@ int main(int argc, char** argv)
         indexerConfig.setInitialRun(true);
     }
 
+    // HACK: Untill we start using lmdb with robust mutex support. We're just going to remove
+    //       the lock manually in the baloo_file process.
+    QFile::remove(path + "/index-lock");
+
     Baloo::Database db(path);
     db.open(Baloo::Database::CreateDatabase);
 
