@@ -63,7 +63,14 @@ void XAttrIndexer::run()
             continue;
         }
 
-        Q_ASSERT(tr.hasDocument(job.document().id()));
+        // FIXME: This slightly defeats the point of having separate indexers
+        //        But we can get xattr changes of a file, even when it doesn't exist
+        //        cause we missed its creation somehow
+        if (!tr.hasDocument(job.document().id())) {
+            tr.addDocument(job.document());
+            continue;
+        }
+
         // FIXME: Do we also need to update the ctime of the file?
         tr.replaceDocument(job.document(), XAttrTerms);
     }
