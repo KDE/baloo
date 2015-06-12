@@ -73,6 +73,7 @@ void MetadataMover::removeMetadata(Transaction* tr, const QString& url)
 
     quint64 id = tr->documentId(QFile::encodeName(url));
     if (!id) {
+        Q_EMIT fileRemoved(url);
         qDebug() << "No document id for" << url;
         return;
     }
@@ -83,6 +84,8 @@ void MetadataMover::removeMetadata(Transaction* tr, const QString& url)
     } else {
         tr->removeRecursively(id);
     }
+
+    Q_EMIT fileRemoved(url);
 }
 
 void MetadataMover::updateMetadata(Transaction* tr, const QString& from, const QString& to)

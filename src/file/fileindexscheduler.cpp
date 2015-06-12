@@ -91,3 +91,28 @@ void FileIndexScheduler::scheduleIndexing()
 
     qDebug() << "IDLE";
 }
+
+static void removeStartsWith(QStringList& list, const QString& dir)
+{
+    QMutableListIterator<QString> it(list);
+    while (it.hasNext()) {
+        QString file = it.next();
+        if (file.startsWith(dir)) {
+            it.remove();
+        }
+    }
+}
+
+void FileIndexScheduler::handleFileRemoved(const QString& file)
+{
+    if (!file.endsWith('/')) {
+        m_newFiles.removeOne(file);
+        m_modifiedFiles.removeOne(file);
+        m_xattrFiles.removeOne(file);
+    }
+    else {
+        removeStartsWith(m_newFiles, file);
+        removeStartsWith(m_modifiedFiles, file);
+        removeStartsWith(m_xattrFiles, file);
+    }
+}

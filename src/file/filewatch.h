@@ -55,6 +55,12 @@ Q_SIGNALS:
     void indexModifiedFile(const QString& string);
     void indexXAttr(const QString& path);
 
+    /**
+     * This signal is emitted when a file has been removed, and everyone else
+     * should update their caches
+     */
+    void fileRemoved(const QString& path);
+
     void installedWatches();
 
 private Q_SLOTS:

@@ -48,6 +48,7 @@ FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
 
     m_metadataMover = new MetadataMover(m_db, this);
     connect(m_metadataMover, &MetadataMover::movedWithoutData, this, &FileWatch::indexNewFile);
+    connect(m_metadataMover, &MetadataMover::fileRemoved, this, &FileWatch::fileRemoved);
 
     m_pendingFileQueue = new PendingFileQueue(this);
     connect(m_pendingFileQueue, &PendingFileQueue::indexNewFile, this, &FileWatch::indexNewFile);
