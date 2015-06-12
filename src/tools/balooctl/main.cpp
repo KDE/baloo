@@ -45,6 +45,7 @@
 #include "indexer.h"
 #include "idutils.h"
 #include "fileindexerconfig.h"
+#include "monitor.h"
 
 using namespace Baloo;
 
@@ -356,6 +357,11 @@ int main(int argc, char* argv[])
         prFunc("MTimeDB", size.mtimeDb, size.size);
 
         return 0;
+    }
+
+    if (command == QStringLiteral("monitor")) {
+        Monitor mon;
+        app.exec();
     }
 
     return 0;
