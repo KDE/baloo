@@ -73,14 +73,22 @@ void App::slotNewInput()
             tr.removeDocument(id);
             continue;
         }
-
+        QDBusMessage startedMessage = QDBusMessage::createSignal(QLatin1String("/contentindexer"),
+                                                        QLatin1String("org.kde.baloo"),
+                                                        QLatin1String("startedWithFile"));
+        startedMessage.setArguments(QVariantList() << filePath);
+        QDBusConnection::sessionBus().send(startedMessage);
         index(&tr, filePath, id);
         updatedFiles << filePath;
         //m_io.indexedId(id);
     }
     tr.commit();
     m_io.batchIndexed();
-
+    /*
+     * TODO we're already sending out each file as we start we can simply send out a done
+     * signal isntead of sending out the list of files, that will need changes in whatever
+     * uses this signal, Dolphin I think?
+     */
     QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/files"),
                                                     QLatin1String("org.kde"),
                                                     QLatin1String("changed"));
