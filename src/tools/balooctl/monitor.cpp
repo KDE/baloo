@@ -22,9 +22,7 @@
 
 #include "monitor.h"
 
-#include <QDBusInterface>
 #include <QDBusConnection>
-#include <QProcess>
 
 using namespace Baloo;
 Monitor::Monitor(QObject *parent)
