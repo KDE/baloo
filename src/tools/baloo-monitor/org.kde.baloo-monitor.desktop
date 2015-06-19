@@ -1,0 +1,11 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Name=Baloo Monitor
+
+Comment=Monitor activity of Baloo
+
+Exec=baloo-monitor %U
+Terminal=false
+Type=Application
+Categories=Qt;KDE;Utility;
+Icon=baloo
