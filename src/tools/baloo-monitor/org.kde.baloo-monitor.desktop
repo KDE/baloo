@@ -1,8 +1,26 @@
 #!/usr/bin/env xdg-open
 [Desktop Entry]
 Name=Baloo Monitor
+Name[gl]=Supervisor de Baloo
+Name[nl]=Baloo-monitor
+Name[pl]=Monitor Baloo
+Name[pt]=Monitor do Baloo
+Name[pt_BR]=Monitor do Baloo
+Name[sk]=Baloo Monitor
+Name[sv]=Baloo-övervakare
+Name[uk]=Монітор Baloo
+Name[x-test]=xxBaloo Monitorxx
 
 Comment=Monitor activity of Baloo
+Comment[gl]=Supervise a actividade de Baloo.
+Comment[nl]=Activiteit van Baloo monitoren
+Comment[pl]=Monitorowanie aktywności Baloo
+Comment[pt]=Vigiar a actividade do Baloo
+Comment[pt_BR]=Monitor de atividades do Baloo
+Comment[sk]=Monitorovať aktivitu Baloo
+Comment[sv]=Övervaka Baloo-aktivitet
+Comment[uk]=Спостереження за діями Baloo
+Comment[x-test]=xxMonitor activity of Balooxx
 
 Exec=baloo-monitor %U
 Terminal=false
