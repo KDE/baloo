@@ -20,6 +20,7 @@ set(file_static_lib_SRCS
     filecontentindexer.cpp
     filecontentindexerprovider.cpp
     extractorprocess.cpp
+    timeestimator.cpp
 
     indexcleaner.cpp
 
