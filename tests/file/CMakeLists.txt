@@ -42,3 +42,13 @@ target_link_libraries(storagedevicestest Qt5::Core KF5::Solid baloofilecommon)
 
 add_executable(filtereddiriteratorbenchmark filtereddiriteratorbenchmark.cpp)
 target_link_libraries(filtereddiriteratorbenchmark Qt5::Core baloofilecommon)
+
+
+#
+# Remaining Time
+#
+add_executable(remainingtimetest-manual remainingtimetest.cpp)
+target_link_libraries(remainingtimetest-manual
+  Qt5::Core
+  baloofilecommon
+)

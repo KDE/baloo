@@ -22,31 +22,45 @@
 #include "extractorprocess.h"
 
 #include <QEventLoop>
+#include <QElapsedTimer>
 
 using namespace Baloo;
 
 FileContentIndexer::FileContentIndexer(FileContentIndexerProvider* provider)
     : m_provider(provider)
     , m_stop(0)
+    , m_processingTime(0)
+    , m_batchesProcessed(0)
 {
-    m_process = new ExtractorProcess();
-
     Q_ASSERT(provider);
 }
 
 void FileContentIndexer::run()
 {
+    ExtractorProcess process;
     while (m_provider->size() && !m_stop.load()) {
         //
         // WARNING: This will go mad, if the Extractor does not commit after 40 files
         // cause then we will keep fetching the same 40 again and again.
         //
         QVector<quint64> idList = m_provider->fetch(40);
-
         QEventLoop loop;
-        connect(m_process, &ExtractorProcess::done, &loop, &QEventLoop::quit);
+        connect(&process, &ExtractorProcess::done, &loop, &QEventLoop::quit);
 
-        m_process->index(idList);
+        QElapsedTimer timer;
+        timer.start();
+        process.index(idList);
         loop.exec();
+        m_processingTime += timer.elapsed();
+        ++m_batchesProcessed;
     }
+    Q_EMIT done();
+}
+
+quint64 FileContentIndexer::averageTimePerBatch() const
+{
+    if (m_batchesProcessed == 0) {
+        return 0;
+    }
+    return m_processingTime / m_batchesProcessed;
 }
