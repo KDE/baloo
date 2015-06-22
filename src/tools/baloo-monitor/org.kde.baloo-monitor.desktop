@@ -2,6 +2,8 @@
 [Desktop Entry]
 Name=Baloo Monitor
 Name[ca]=Controlador del Baloo
+Name[en_GB]=Baloo Monitor
+Name[es]=Monitor de Baloo
 Name[fi]=Baloo-valvonta
 Name[gl]=Supervisor de Baloo
 Name[nl]=Baloo-monitor
@@ -15,6 +17,8 @@ Name[x-test]=xxBaloo Monitorxx
 
 Comment=Monitor activity of Baloo
 Comment[ca]=Controla l'activitat del Baloo
+Comment[en_GB]=Monitor activity of Baloo
+Comment[es]=Monitor de la actividad de Baloo
 Comment[fi]=Valvo Baloon toimintaa
 Comment[gl]=Supervise a actividade de Baloo.
 Comment[nl]=Activiteit van Baloo monitoren
