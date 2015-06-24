@@ -12,6 +12,7 @@ Name[pt]=Monitor do Baloo
 Name[pt_BR]=Monitor do Baloo
 Name[sk]=Baloo Monitor
 Name[sv]=Baloo-övervakare
+Name[tr]=Baloo İzleyici
 Name[uk]=Монітор Baloo
 Name[x-test]=xxBaloo Monitorxx
 
@@ -27,6 +28,7 @@ Comment[pt]=Vigiar a actividade do Baloo
 Comment[pt_BR]=Monitor de atividades do Baloo
 Comment[sk]=Monitorovať aktivitu Baloo
 Comment[sv]=Övervaka Baloo-aktivitet
+Comment[tr]=Bloo etkinliğini izle
 Comment[uk]=Спостереження за діями Baloo
 Comment[x-test]=xxMonitor activity of Balooxx
 
