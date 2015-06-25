@@ -33,18 +33,15 @@ class Monitor : public QObject
     Q_OBJECT
     Q_PROPERTY(QString url READ url NOTIFY newFileIndexed)
     Q_PROPERTY(QString suspendState READ suspendState NOTIFY suspendStateChanged)
-    Q_PROPERTY(bool balooRunning READ balooState NOTIFY balooStateChanged)
-    Q_PROPERTY(uint totalFiles READ totalFiles NOTIFY totalFilesChanged)
-    Q_PROPERTY(uint filesIndexed READ filesIndexed NOTIFY newFileIndexed)
+    Q_PROPERTY(bool balooRunning MEMBER m_balooRunning NOTIFY balooStateChanged)
+    Q_PROPERTY(uint totalFiles MEMBER m_totalFiles NOTIFY totalFilesChanged)
+    Q_PROPERTY(uint filesIndexed MEMBER m_filesIndexed NOTIFY newFileIndexed)
 public:
     Monitor(QObject* parent = 0);
 
     // Property readers
     QString url() const { return m_url; }
     QString suspendState() const;
-    bool balooState() const { return m_balooRunning; }
-    uint totalFiles() const { return m_totalFiles; }
-    uint filesIndexed() const { return m_filesIndexed; }
 
     // Invokable methods
     Q_INVOKABLE void toggleSuspendState();
