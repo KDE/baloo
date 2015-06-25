@@ -2,6 +2,7 @@
 [Desktop Entry]
 Name=Baloo Monitor
 Name[ca]=Controlador del Baloo
+Name[de]=Baloo-Überwachungsmonitor
 Name[en_GB]=Baloo Monitor
 Name[es]=Monitor de Baloo
 Name[fi]=Baloo-valvonta
@@ -18,6 +19,7 @@ Name[x-test]=xxBaloo Monitorxx
 
 Comment=Monitor activity of Baloo
 Comment[ca]=Controla l'activitat del Baloo
+Comment[de]=Überwacht die Aktivität von Baloo
 Comment[en_GB]=Monitor activity of Baloo
 Comment[es]=Monitor de la actividad de Baloo
 Comment[fi]=Valvo Baloon toimintaa
