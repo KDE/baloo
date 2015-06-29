@@ -52,6 +52,6 @@ void RegularExpCacheBenchmark::test()
     }
 }
 
-QTEST_MAIN(RegularExpCacheBenchmark)
+QTEST_GUILESS_MAIN(RegularExpCacheBenchmark)
 
 #include "regularexpcachebenchmark.moc"

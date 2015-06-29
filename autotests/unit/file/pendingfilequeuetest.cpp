@@ -111,6 +111,6 @@ void PendingFileQueueTest::testRequeue()
     QCOMPARE(spy.takeFirst().first().toString(), myUrl);
 }
 
-QTEST_MAIN(PendingFileQueueTest)
+QTEST_GUILESS_MAIN(PendingFileQueueTest)
 
 #include "pendingfilequeuetest.moc"

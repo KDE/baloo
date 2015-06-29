@@ -1,0 +1,51 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Name=Baloo Monitor
+Name[ca]=Controlador del Baloo
+Name[de]=Baloo-Überwachungsmonitor
+Name[en_GB]=Baloo Monitor
+Name[es]=Monitor de Baloo
+Name[fi]=Baloo-valvonta
+Name[gl]=Supervisor de Baloo
+Name[ko]=Baloo 모니터
+Name[nl]=Baloo-monitor
+Name[pl]=Monitor Baloo
+Name[pt]=Monitor do Baloo
+Name[pt_BR]=Monitor do Baloo
+Name[sk]=Baloo Monitor
+Name[sr]=Надзорник Балуа
+Name[sr@ijekavian]=Надзорник Балуа
+Name[sr@ijekavianlatin]=Nadzornik Balooa
+Name[sr@latin]=Nadzornik Balooa
+Name[sv]=Baloo-övervakare
+Name[tr]=Baloo İzleyici
+Name[uk]=Монітор Baloo
+Name[x-test]=xxBaloo Monitorxx
+
+Comment=Monitor activity of Baloo
+Comment[ca]=Controla l'activitat del Baloo
+Comment[de]=Überwacht die Aktivität von Baloo
+Comment[en_GB]=Monitor activity of Baloo
+Comment[es]=Monitor de la actividad de Baloo
+Comment[fi]=Valvo Baloon toimintaa
+Comment[gl]=Supervise a actividade de Baloo.
+Comment[ko]=Baloo 활동 감시
+Comment[nl]=Activiteit van Baloo monitoren
+Comment[pl]=Monitorowanie aktywności Baloo
+Comment[pt]=Vigiar a actividade do Baloo
+Comment[pt_BR]=Monitor de atividades do Baloo
+Comment[sk]=Monitorovať aktivitu Baloo
+Comment[sr]=Надгледајте активност Балуа
+Comment[sr@ijekavian]=Надгледајте активност Балуа
+Comment[sr@ijekavianlatin]=Nadgledajte aktivnost Balooa
+Comment[sr@latin]=Nadgledajte aktivnost Balooa
+Comment[sv]=Övervaka Baloo-aktivitet
+Comment[tr]=Bloo etkinliğini izle
+Comment[uk]=Спостереження за діями Baloo
+Comment[x-test]=xxMonitor activity of Balooxx
+
+Exec=baloo-monitor %U
+Terminal=false
+Type=Application
+Categories=Qt;KDE;Utility;
+Icon=baloo

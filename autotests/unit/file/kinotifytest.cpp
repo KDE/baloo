@@ -408,6 +408,6 @@ void KInotifyTest::testFileClosedAfterWrite()
 }
 
 
-QTEST_MAIN(KInotifyTest)
+QTEST_GUILESS_MAIN(KInotifyTest)
 
 #include "kinotifytest.moc"

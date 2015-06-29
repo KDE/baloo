@@ -58,7 +58,7 @@ int main(int argc, char** argv)
             QString path = it.next();
             QString mimetype = mimeDb.mimeTypeForFile(path, QMimeDatabase::MatchExtension).name();
 
-            BasicIndexingJob job(path, mimetype, false);
+            BasicIndexingJob job(path, mimetype);
             job.index();
 
             tr.addDocument(job.document());

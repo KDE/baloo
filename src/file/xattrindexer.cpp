@@ -58,7 +58,9 @@ void XAttrIndexer::run()
         }
 
         // FIXME: The BasicIndexingJob extracts too much info. We only need the xattr
-        BasicIndexingJob job(filePath, mimetype, m_config->onlyBasicIndexing());
+        BasicIndexingJob::IndexingLevel level =
+            m_config->onlyBasicIndexing() ? BasicIndexingJob::NoLevel : BasicIndexingJob::MarkForContentIndexing;
+        BasicIndexingJob job(filePath, mimetype, level);
         if (!job.index()) {
             continue;
         }
