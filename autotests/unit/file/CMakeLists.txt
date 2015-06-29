@@ -31,21 +31,3 @@ ecm_add_test(${fileWatch_SRC}
     LINK_LIBRARIES Qt5::Test Qt5::DBus KF5::Baloo baloofilecommon
 )
 
-#
-# Basic Indexing Queue Test
-#
-
-#set(basicIndexingQueue_SRC
-#    basicindexingqueuetest.cpp
-#    ../../lib/autotests/xattrdetector.cpp
-#)
-#
-#ecm_add_test(${basicIndexingQueue_SRC}
-#    TEST_NAME basicindexingqueuetest
-#    LINK_LIBRARIES Qt5::Test KF5::FileMetaData KF5::ConfigCore
-#                   KF5::CoreAddons ${XAPIAN_LIBRARIES} KF5::BalooXapian
-#                   baloofilecommon
-#)
-
-
-#add_subdirectory(scheduler)
