@@ -38,9 +38,10 @@ public:
 
 public Q_SLOTS:
     void indexNewFile(const QString& file) {
-        Q_ASSERT(!m_newFiles.contains(file));
-        m_newFiles << file;
-        QTimer::singleShot(0, this, SLOT(scheduleIndexing()));
+        if (!m_newFiles.contains(file)) {
+            m_newFiles << file;
+            QTimer::singleShot(0, this, SLOT(scheduleIndexing()));
+        }
     }
 
     void indexModifiedFile(const QString& file) {
