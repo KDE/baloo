@@ -21,6 +21,7 @@
 #include "extractorprocess.h"
 
 #include <QStandardPaths>
+#include <QDebug>
 
 using namespace Baloo;
 
@@ -28,11 +29,12 @@ ExtractorProcess::ExtractorProcess(QObject* parent)
     : QObject(parent)
     , m_extractorPath(QStandardPaths::findExecutable(QLatin1String("baloo_file_extractor")))
     , m_extractorProcess(0)
+    , m_extractorIdle(true)
 {
     m_extractorProcess = new QProcess(this);
     connect(m_extractorProcess, &QProcess::readyRead, this, &ExtractorProcess::slotFileIndexed);
-
     m_extractorProcess->start(m_extractorPath, QStringList(), QIODevice::Unbuffered | QIODevice::ReadWrite);
+    m_extractorProcess->waitForStarted();
     m_extractorProcess->setReadChannel(QProcess::StandardOutput);
 }
 
@@ -55,15 +57,16 @@ void ExtractorProcess::index(const QVector<quint64>& fileIds)
     for (quint64 id : fileIds) {
         batchData.append(reinterpret_cast<char*>(&id), sizeof(quint64));
     }
-    m_extractorProcess->write(batchData.data(), batchData.size());
 
     m_extractorIdle = false;
+    m_extractorProcess->write(batchData.data(), batchData.size());
 }
 
 void ExtractorProcess::slotFileIndexed()
 {
     QByteArray output = m_extractorProcess->readAll();
     Q_UNUSED(output);
-
     m_extractorIdle = true;
+
+    Q_EMIT done();
 }

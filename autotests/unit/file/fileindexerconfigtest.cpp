@@ -299,6 +299,6 @@ void FileIndexerConfigTest::testExcludeFilterOnFolders()
     QVERIFY(cfg->shouldFolderBeIndexed(dirPrefix + includedSubSubDir + fileName));
 }
 
-QTEST_MAIN(FileIndexerConfigTest)
+QTEST_GUILESS_MAIN(FileIndexerConfigTest)
 
 #include "fileindexerconfigtest.moc"

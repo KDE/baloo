@@ -111,7 +111,7 @@ void MetadataMover::updateMetadata(Transaction* tr, const QString& from, const Q
         return;
     }
 
-    BasicIndexingJob job(toPath, QString(), true);
+    BasicIndexingJob job(toPath, QString(), BasicIndexingJob::NoLevel);
     job.index();
     tr->renameFilePath(id, job.document());
 

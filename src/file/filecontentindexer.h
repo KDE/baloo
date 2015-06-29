@@ -27,7 +27,6 @@
 namespace Baloo {
 
 class FileContentIndexerProvider;
-class ExtractorProcess;
 
 class FileContentIndexer : public QObject, public QRunnable
 {
@@ -41,11 +40,19 @@ public:
         m_stop.store(true);
     }
 
+    quint64 averageTimePerBatch() const;
+Q_SIGNALS:
+    void done();
+
 private:
     FileContentIndexerProvider* m_provider;
-    ExtractorProcess* m_process;
 
     QAtomicInt m_stop;
+
+    quint64 m_processingTime;
+    quint32 m_batchesProcessed;
+
+    QString m_path;
 };
 
 }

@@ -165,6 +165,6 @@ void FilteredDirIteratorTest::testNoConfig()
     QCOMPARE(list, expected);
 }
 
-QTEST_MAIN(FilteredDirIteratorTest)
+QTEST_GUILESS_MAIN(FilteredDirIteratorTest)
 
 #include "filtereddiriteratortest.moc"

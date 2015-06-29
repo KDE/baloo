@@ -59,7 +59,7 @@ void FirstRunIndexer::run()
                 continue;
             }
 
-            BasicIndexingJob job(it.filePath(), mimetype, false);
+            BasicIndexingJob job(it.filePath(), mimetype);
             if (!job.index()) {
                 continue;
             }

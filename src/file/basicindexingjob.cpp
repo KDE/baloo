@@ -35,10 +35,10 @@
 using namespace Baloo;
 
 BasicIndexingJob::BasicIndexingJob(const QString& filePath, const QString& mimetype,
-                                   bool onlyBasicIndexing)
+                                   IndexingLevel level)
     : m_filePath(filePath)
     , m_mimetype(mimetype)
-    , m_onlyBasicIndexing(onlyBasicIndexing)
+    , m_indexingLevel(level)
 {
 }
 
@@ -82,7 +82,7 @@ bool BasicIndexingJob::index()
         doc.addBoolTerm(type);
         // For folders we do not need to go through file indexing, so we do not set contentIndexing
     }
-    else if (!m_onlyBasicIndexing) {
+    else if (m_indexingLevel == MarkForContentIndexing) {
         doc.setContentIndexing(true);
     }
 
