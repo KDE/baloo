@@ -205,12 +205,6 @@ void WriteTransaction::replaceDocument(const Document& doc, DocumentOperations o
             documentFileNameTermsDB.del(id);
     }
 
-    if (operations & DocumentUrl) {
-        // FIXME: Replacing the documentUrl is actually quite complicated!
-        Q_ASSERT(0);
-        docUrlDB.put(id, doc.url());
-    }
-
     if (operations & DocumentTime) {
         DocumentTimeDB::TimeInfo info;
         info.mTime = doc.m_mTime;
