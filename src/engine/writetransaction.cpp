@@ -53,6 +53,10 @@ void WriteTransaction::addDocument(const Document& doc)
     Q_ASSERT(!docDataDB.contains(id));
     Q_ASSERT(!contentIndexingDB.contains(id));
 
+    if (!docUrlDB.put(id, doc.url())) {
+        return;
+    }
+
     QVector<QByteArray> docTerms = addTerms(id, doc.m_terms);
     documentTermsDB.put(id, docTerms);
 
@@ -64,7 +68,6 @@ void WriteTransaction::addDocument(const Document& doc)
     if (!docFileNameTerms.isEmpty())
         documentFileNameTermsDB.put(id, docFileNameTerms);
 
-    docUrlDB.put(id, doc.url());
 
     if (doc.contentIndexing()) {
         contentIndexingDB.put(doc.id());
