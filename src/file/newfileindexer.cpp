@@ -62,6 +62,11 @@ void NewFileIndexer::run()
             continue;
         }
 
+        // The same file can be sent twice though it shouldn't be.
+        // Lets just silently ignore it instead of crashing
+        if (tr.hasDocument(job.document().id())) {
+            continue;
+        }
         tr.addDocument(job.document());
     }
 
