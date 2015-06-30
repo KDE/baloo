@@ -88,7 +88,7 @@ ApplicationWindow {
         Button {
             Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
             id: startBaloo
-            text: QsTr("Start Baloo")
+            text: qsTr("Start Baloo")
             onClicked: monitor.startBaloo()
         }
     }
