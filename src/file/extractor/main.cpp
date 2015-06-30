@@ -26,6 +26,7 @@
 #include <KLocalizedString>
 #include <QStandardPaths>
 #include <QByteArray>
+#include <QDBusConnection>
 
 #include <QCoreApplication>
 
@@ -38,6 +39,8 @@ int main(int argc, char* argv[])
     QCoreApplication app(argc, argv);
     QCoreApplication::setApplicationName(QLatin1String("Baloo File Extractor"));
     QCoreApplication::setApplicationVersion(PROJECT_VERSION);
+
+    QDBusConnection::sessionBus().registerService(QStringLiteral("org.kde.baloo.extractor"));
 
     QString path = qgetenv("BALOO_DB_PATH");
     if (path.isEmpty()) {
