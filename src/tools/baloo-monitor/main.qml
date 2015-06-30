@@ -73,10 +73,23 @@ ApplicationWindow {
         }
     }
 
-    Label {
+    ColumnLayout {
         visible: !monitor.balooRunning
+        anchors.centerIn: parent
+        anchors.margins: 20
 
-        anchors.fill: parent
-        text: qsTr("Baloo is not running!")
+        spacing: 20
+
+        Label {
+            Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
+            text: qsTr("Baloo is not running")
+        }
+
+        Button {
+            Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
+            id: startBaloo
+            text: QsTr("Start Baloo")
+            onClicked: monitor.startBaloo()
+        }
     }
 }

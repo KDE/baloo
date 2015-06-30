@@ -5,7 +5,10 @@ set(MONITOR_SOURCES
 
 qt5_add_resources(RESOURCES qml.qrc)
 
-add_executable(baloo-monitor ${MONITOR_SOURCES} ${RESOURCES})
+set(baloo_interface_xml ${CMAKE_SOURCE_DIR}/src/file/org.kde.baloo.file.indexer.xml)
+qt5_add_dbus_interface(BALOO_INTERFACE ${baloo_interface_xml} baloo_interface)
+
+add_executable(baloo-monitor ${MONITOR_SOURCES} ${RESOURCES} ${BALOO_INTERFACE})
 
 target_link_libraries(baloo-monitor PUBLIC
   Qt5::Core
