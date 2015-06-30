@@ -42,24 +42,40 @@ Monitor::Monitor(QObject *parent)
     , m_filesIndexed(0)
 {
     QString balooService = QStringLiteral("org.kde.baloo");
-    m_bus.connect("", "/contentindexer", balooService, "startedWithFile", this, SLOT(newFile(QString)));
-    if (m_bus.interface()->isServiceRegistered(QLatin1String("org.kde.baloo"))) {
+    QString extractorService = QStringLiteral("org.kde.baloo.extractor");
+
+    m_balooInterface = new org::kde::baloo(balooService,
+                                            QStringLiteral("/indexer"),
+                                            m_bus, this);
+
+    m_extractorInterface = new org::kde::balooExtractor(extractorService,
+                                                        QStringLiteral("/extractor"),
+                                                        m_bus, this);
+
+    connect(m_extractorInterface, &org::kde::balooExtractor::currentUrlChanged, this, &Monitor::newFile);
+    if (m_bus.interface()->isServiceRegistered(balooService)) {
         // baloo is already running
         balooStarted(balooService);
+
+        if (m_bus.interface()->isServiceRegistered(extractorService)) {
+            balooStarted(extractorService);
+        }
+
     } else {
         m_balooRunning = false;
         QDBusServiceWatcher *balooWatcher = new QDBusServiceWatcher(balooService,
                                                                     m_bus, QDBusServiceWatcher::WatchForRegistration);
+        balooWatcher->addWatchedService(extractorService);
         connect(balooWatcher, &QDBusServiceWatcher::serviceRegistered, this, &Monitor::balooStarted);
     }
 }
 
-void Monitor::newFile(QString url)
+void Monitor::newFile()
 {
     if (m_totalFiles == 0) {
         fetchTotalFiles();
     }
-    m_url = url;
+    m_url = m_extractorInterface->currentUrl();
     if (++m_filesIndexed == m_totalFiles) {
         m_url = QStringLiteral("Done");
     }
@@ -87,23 +103,18 @@ void Monitor::toggleSuspendState()
 
 void Monitor::balooStarted(const QString& service)
 {
-    /*
-     * TODO: send a dbus signal to baloo to let it know montitor is running,
-     * use that signal in baloo to enable exporting urls being indexed
-     */
-    if (service != QStringLiteral("org.kde.baloo")) {
-        return;
+    if (service == QStringLiteral("org.kde.baloo")) {
+        m_balooRunning = true;
+
+        m_suspended = m_balooInterface->isSuspended();
+        fetchTotalFiles();
+        Q_EMIT balooStateChanged();
+        Q_EMIT suspendStateChanged();
+    } else if(service == QStringLiteral("org.kde.baloo.extractor")) {
+        m_url = m_extractorInterface->currentUrl();
+        m_extractorInterface->registerMonitor();
+        Q_EMIT newFileIndexed();
     }
-    m_balooRunning = true;
-
-    m_balooInterface = new org::kde::baloo(QStringLiteral("org.kde.baloo"),
-                                            QStringLiteral("/indexer"),
-                                            m_bus, this);
-
-    m_suspended = m_balooInterface->isSuspended();
-    fetchTotalFiles();
-    Q_EMIT balooStateChanged();
-    Q_EMIT suspendStateChanged();
 }
 
 void Monitor::fetchTotalFiles()
