@@ -64,7 +64,9 @@ Monitor::Monitor(QObject *parent)
     } else {
         m_balooRunning = false;
         QDBusServiceWatcher *balooWatcher = new QDBusServiceWatcher(balooService,
-                                                                    m_bus, QDBusServiceWatcher::WatchForRegistration);
+                                                                    m_bus,
+                                                                    QDBusServiceWatcher::WatchForRegistration,
+                                                                    this);
         balooWatcher->addWatchedService(extractorService);
         connect(balooWatcher, &QDBusServiceWatcher::serviceRegistered, this, &Monitor::balooStarted);
     }
