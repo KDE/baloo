@@ -41,6 +41,7 @@ public Q_SLOTS:
     void updateConfig();
     void suspend();
     void resume();
+    uint getRemainingTime();
 
 private:
     Database* m_db;

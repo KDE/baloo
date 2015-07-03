@@ -27,6 +27,7 @@
 #include "filecontentindexerprovider.h"
 
 #include "fileindexerconfig.h"
+#include "timeestimator.h"
 
 #include <QTimer>
 #include <QDebug>
@@ -167,6 +168,17 @@ void FileIndexScheduler::setSuspend(bool suspend)
         m_suspended = false;
         scheduleIndexing();
     }
+}
+
+uint FileIndexScheduler::getRemainingTime()
+{
+    if (!m_contentIndexerRunning) {
+        return 0;
+    }
+    TimeEstimator estimator;
+    estimator.setFilesLeft(m_provider.size());
+    estimator.setAverageTimePerBatch(m_contentIndexer->averageTimePerBatch());
+    return estimator.calculateTimeLeft();
 }
 
 
