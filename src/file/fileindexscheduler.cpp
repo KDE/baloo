@@ -24,6 +24,7 @@
 #include "modifiedfileindexer.h"
 #include "xattrindexer.h"
 #include "filecontentindexer.h"
+#include "filecontentindexerprovider.h"
 
 #include "fileindexerconfig.h"
 
@@ -36,11 +37,19 @@ FileIndexScheduler::FileIndexScheduler(Database* db, FileIndexerConfig* config, 
     : QObject(parent)
     , m_db(db)
     , m_config(config)
+    , m_provider(db)
+    , m_contentIndexer(0)
+    , m_contentIndexerRunning(false)
 {
     Q_ASSERT(db);
     Q_ASSERT(config);
 
     m_threadPool.setMaxThreadCount(1);
+
+    m_eventMonitor = new EventMonitor(this);
+    m_eventMonitor->enable();
+    connect(m_eventMonitor, &EventMonitor::powerManagementStatusChanged,
+            this, &FileIndexScheduler::powerManagementStatusChanged);
 }
 
 void FileIndexScheduler::scheduleIndexing()
@@ -49,6 +58,8 @@ void FileIndexScheduler::scheduleIndexing()
         return;
     }
     qDebug() << "SCHEDULE";
+
+    m_contentIndexerRunning = false;
 
     if (m_config->isInitialRun()) {
         qDebug() << m_config->includeFolders();
@@ -89,6 +100,18 @@ void FileIndexScheduler::scheduleIndexing()
         return;
     }
 
+    if (m_provider.size() && !m_eventMonitor->isOnBattery()) {
+        qDebug() << "Content: " << m_provider.size();
+        m_contentIndexerRunning = true;
+        if (m_contentIndexer == 0) {
+            m_contentIndexer = new FileContentIndexer(&m_provider);
+        }
+        connect(m_contentIndexer, &FileContentIndexer::done, this, &FileIndexScheduler::scheduleIndexing);
+
+        m_threadPool.start(m_contentIndexer);
+        return;
+    }
+
     qDebug() << "IDLE";
 }
 
@@ -116,3 +139,16 @@ void FileIndexScheduler::handleFileRemoved(const QString& file)
         removeStartsWith(m_xattrFiles, file);
     }
 }
+
+void FileIndexScheduler::powerManagementStatusChanged(bool isOnBattery)
+{
+    qDebug() << "Power state changed";
+    if (isOnBattery && m_contentIndexerRunning) {
+        qDebug() << "On battery stopping content indexer";
+        m_contentIndexer->quit();
+        m_contentIndexer = 0;
+    } else if (!isOnBattery) {
+        QTimer::singleShot(0, this, SLOT(scheduleIndexing()));
+    }
+}
+

@@ -25,10 +25,14 @@
 #include <QThreadPool>
 #include <QTimer>
 
+#include "filecontentindexerprovider.h"
+#include "eventmonitor.h"
+
 namespace Baloo {
 
 class Database;
 class FileIndexerConfig;
+class FileContentIndexer;
 
 class FileIndexScheduler : public QObject
 {
@@ -61,6 +65,10 @@ public Q_SLOTS:
     void handleFileRemoved(const QString& file);
 
     void scheduleIndexing();
+
+private Q_SLOTS:
+    void powerManagementStatusChanged(bool isOnBattery);
+
 private:
     Database* m_db;
     FileIndexerConfig* m_config;
@@ -70,6 +78,12 @@ private:
     QStringList m_xattrFiles;
 
     QThreadPool m_threadPool;
+
+    FileContentIndexerProvider m_provider;
+    FileContentIndexer* m_contentIndexer;
+
+    EventMonitor* m_eventMonitor;
+    bool m_contentIndexerRunning;
 };
 
 }
