@@ -60,3 +60,13 @@ void MainHub::updateConfig()
     //m_fileIndexer.updateConfig();
     m_fileWatcher.updateIndexedFoldersWatches();
 }
+
+void MainHub::resume()
+{
+    m_fileIndexScheduler.setSuspend(false);
+}
+
+void MainHub::suspend()
+{
+    m_fileIndexScheduler.setSuspend(true);
+}
