@@ -70,3 +70,8 @@ void MainHub::suspend()
 {
     m_fileIndexScheduler.setSuspend(true);
 }
+
+uint MainHub::getRemainingTime()
+{
+    return m_fileIndexScheduler.getRemainingTime();
+}

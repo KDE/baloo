@@ -67,6 +67,7 @@ public Q_SLOTS:
     void scheduleIndexing();
 
     void setSuspend(bool suspend);
+    uint getRemainingTime();
 
 private Q_SLOTS:
     void powerManagementStatusChanged(bool isOnBattery);
