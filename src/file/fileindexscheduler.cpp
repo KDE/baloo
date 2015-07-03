@@ -40,6 +40,7 @@ FileIndexScheduler::FileIndexScheduler(Database* db, FileIndexerConfig* config, 
     , m_provider(db)
     , m_contentIndexer(0)
     , m_contentIndexerRunning(false)
+    , m_suspended(false)
 {
     Q_ASSERT(db);
     Q_ASSERT(config);
@@ -54,7 +55,7 @@ FileIndexScheduler::FileIndexScheduler(Database* db, FileIndexerConfig* config, 
 
 void FileIndexScheduler::scheduleIndexing()
 {
-    if (m_threadPool.activeThreadCount()) {
+    if (m_threadPool.activeThreadCount() || m_suspended) {
         return;
     }
     qDebug() << "SCHEDULE";
@@ -151,4 +152,21 @@ void FileIndexScheduler::powerManagementStatusChanged(bool isOnBattery)
         QTimer::singleShot(0, this, SLOT(scheduleIndexing()));
     }
 }
+
+void FileIndexScheduler::setSuspend(bool suspend)
+{
+    if (suspend) {
+        qDebug() << "Suspending";
+        m_suspended = true;
+        if (m_contentIndexerRunning) {
+            m_contentIndexer->quit();
+            m_contentIndexer = 0;
+        }
+    } else {
+        qDebug() << "Resuming";
+        m_suspended = false;
+        scheduleIndexing();
+    }
+}
+
 

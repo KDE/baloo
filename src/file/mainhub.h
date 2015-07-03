@@ -39,6 +39,8 @@ public:
 public Q_SLOTS:
     void quit() const;
     void updateConfig();
+    void suspend();
+    void resume();
 
 private:
     Database* m_db;

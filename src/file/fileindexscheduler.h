@@ -66,6 +66,8 @@ public Q_SLOTS:
 
     void scheduleIndexing();
 
+    void setSuspend(bool suspend);
+
 private Q_SLOTS:
     void powerManagementStatusChanged(bool isOnBattery);
 
@@ -84,6 +86,8 @@ private:
 
     EventMonitor* m_eventMonitor;
     bool m_contentIndexerRunning;
+
+    bool m_suspended;
 };
 
 }
