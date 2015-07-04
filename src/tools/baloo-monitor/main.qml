@@ -51,6 +51,7 @@ ApplicationWindow {
         }
 
         RowLayout {
+            id: progressLayout
             anchors.top: url.bottom
             anchors.left: parent.left
             anchors.right: parent.right
@@ -70,6 +71,14 @@ ApplicationWindow {
                 text: monitor.suspendState
                 onClicked: monitor.toggleSuspendState()
             }
+        }
+
+        Label {
+            id: remainingTime
+            anchors.top: progressLayout.bottom
+            anchors.left: parent.left
+            anchors.margins: 20
+            text: "Remaining Time: " + monitor.remainingTime
         }
     }
 

@@ -40,6 +40,7 @@ Monitor::Monitor(QObject *parent)
     , m_url(QStringLiteral("Idle"))
     , m_balooInterface(0)
     , m_filesIndexed(0)
+    , m_remainingTime(QStringLiteral("Estimating"))
 {
     QString balooService = QStringLiteral("org.kde.baloo");
     QString extractorService = QStringLiteral("org.kde.baloo.extractor");
@@ -54,7 +55,7 @@ Monitor::Monitor(QObject *parent)
 
     connect(m_extractorInterface, &org::kde::baloo::extractorInterface::currentUrlChanged,
             this, &Monitor::newFile);
-
+    qDebug() << "start service watcher";
     QDBusServiceWatcher *balooWatcher = new QDBusServiceWatcher(extractorService,
                                                                 m_bus,
                                                                 QDBusServiceWatcher::WatchForRegistration,
@@ -63,7 +64,6 @@ Monitor::Monitor(QObject *parent)
     if (m_balooInterface->isValid()) {
         // baloo is already running
         balooStarted(balooService);
-
         if (m_extractorInterface->isValid()) {
             balooStarted(extractorService);
         }
@@ -85,6 +85,10 @@ void Monitor::newFile(const QString& url)
         m_url = QStringLiteral("Done");
     }
     Q_EMIT newFileIndexed();
+
+    if (m_filesIndexed % 200 == 0) {
+        updateRemainingTime();
+    }
 }
 
 QString Monitor::suspendState() const
@@ -112,11 +116,13 @@ void Monitor::balooStarted(const QString& service)
         m_balooRunning = true;
 
         m_suspended = m_balooInterface->isSuspended();
+        qDebug() << "fetched suspend state";
         fetchTotalFiles();
         Q_EMIT balooStateChanged();
         Q_EMIT suspendStateChanged();
     } else if(service == QStringLiteral("org.kde.baloo.extractor")) {
         m_url = m_extractorInterface->currentUrl();
+        qDebug() << "fetched currentUrl";
         m_extractorInterface->registerMonitor();
         Q_EMIT newFileIndexed();
     }
@@ -137,5 +143,19 @@ void Monitor::startBaloo()
 {
     const QString exe = QStandardPaths::findExecutable(QLatin1String("baloo_file"));
     QProcess::startDetached(exe);
+}
+
+void Monitor::updateRemainingTime()
+{
+    uint msecTime = m_balooInterface->getRemainingTime();
+    uint secTime = msecTime / 1000;
+    QString minOrSec = QStringLiteral(" minutes");
+    int time = secTime / 60;
+    if (secTime < 60) {
+        minOrSec = QStringLiteral(" seconds");
+        time = secTime;
+    }
+    m_remainingTime = QString::number(time) + minOrSec;
+    Q_EMIT remainingTimeChanged();
 }
 
