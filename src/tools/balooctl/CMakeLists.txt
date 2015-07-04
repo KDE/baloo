@@ -18,6 +18,7 @@ target_link_libraries(balooctl
     KF5::Baloo
     KF5::BalooEngine
     baloofilecommon
+    BalooDBusInterfaces
 )
 
 install(TARGETS balooctl DESTINATION ${BIN_INSTALL_DIR})
