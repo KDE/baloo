@@ -55,21 +55,22 @@ Monitor::Monitor(QObject *parent)
     connect(m_extractorInterface, &org::kde::baloo::extractorInterface::currentUrlChanged,
             this, &Monitor::newFile);
 
-    if (m_bus.interface()->isServiceRegistered(balooService)) {
+    QDBusServiceWatcher *balooWatcher = new QDBusServiceWatcher(extractorService,
+                                                                m_bus,
+                                                                QDBusServiceWatcher::WatchForRegistration,
+                                                                this);
+
+    if (m_balooInterface->isValid()) {
         // baloo is already running
         balooStarted(balooService);
 
-        if (m_bus.interface()->isServiceRegistered(extractorService)) {
+        if (m_extractorInterface->isValid()) {
             balooStarted(extractorService);
         }
 
     } else {
         m_balooRunning = false;
-        QDBusServiceWatcher *balooWatcher = new QDBusServiceWatcher(balooService,
-                                                                    m_bus,
-                                                                    QDBusServiceWatcher::WatchForRegistration,
-                                                                    this);
-        balooWatcher->addWatchedService(extractorService);
+        balooWatcher->addWatchedService(balooService);
         connect(balooWatcher, &QDBusServiceWatcher::serviceRegistered, this, &Monitor::balooStarted);
     }
 }
