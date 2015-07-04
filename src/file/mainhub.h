@@ -33,6 +33,7 @@ class FileIndexerConfig;
 class MainHub : public QObject
 {
     Q_OBJECT
+    Q_CLASSINFO("D-Bus Interface", "org.kde.baloo")
 public:
     MainHub(Database* db, FileIndexerConfig* config);
 
@@ -42,6 +43,7 @@ public Q_SLOTS:
     void suspend();
     void resume();
     uint getRemainingTime();
+    bool isSuspended() const;
 
 private:
     Database* m_db;
@@ -49,6 +51,8 @@ private:
 
     FileWatch m_fileWatcher;
     FileIndexScheduler m_fileIndexScheduler;
+
+    bool m_isSuspended;
 };
 }
 
