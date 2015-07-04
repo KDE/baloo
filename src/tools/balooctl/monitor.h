@@ -44,7 +44,7 @@ public:
     Monitor(QObject* parent = 0);
 
 private Q_SLOTS:
-    void newFile();
+    void newFile(const QString& url);
 
 private:
     QTextStream m_out;

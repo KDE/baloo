@@ -66,7 +66,7 @@ Q_SIGNALS:
     void totalFilesChanged();
 
 private Q_SLOTS:
-    void newFile();
+    void newFile(const QString& url);
     void balooStarted(const QString& service);
 
 private:

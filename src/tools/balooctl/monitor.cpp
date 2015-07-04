@@ -43,7 +43,7 @@ Monitor::Monitor(QObject *parent)
     m_out << "Press ctrl+c to exit monitor" << endl;
 }
 
-void Monitor::newFile()
+void Monitor::newFile(const QString& url)
 {
-    m_out << "Indexing: " << m_interface->currentUrl() << endl;
+    m_out << "Indexing: " << url << endl;
 }

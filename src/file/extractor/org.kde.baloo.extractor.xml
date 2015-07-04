@@ -3,6 +3,7 @@
   <interface name="org.kde.baloo.extractor">
     <property name="currentUrl" type="s" access="read"/>
     <signal name="currentUrlChanged">
+      <arg name="url" type="s" direction="out"/>
     </signal>
     <method name="registerMonitor">
     </method>
