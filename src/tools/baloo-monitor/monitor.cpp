@@ -30,6 +30,8 @@
 #include <QDBusConnectionInterface>
 #include <QDebug>
 #include <QStandardPaths>
+#include <QDBusServiceWatcher>
+#include <QProcess>
 
 using namespace BalooMonitor;
 Monitor::Monitor(QObject *parent)
@@ -39,18 +41,40 @@ Monitor::Monitor(QObject *parent)
     , m_balooInterface(0)
     , m_filesIndexed(0)
 {
-    m_bus.connect("", "/contentindexer", "org.kde.baloo", "startedWithFile", this, SLOT(newFile(QString)));
-    //TODO: export signal from baloo to let the monitor know it has started and connect it to balooStarted()
+    QString balooService = QStringLiteral("org.kde.baloo");
+    QString extractorService = QStringLiteral("org.kde.baloo.extractor");
 
-    if (m_bus.interface()->isServiceRegistered(QLatin1String("org.kde.baloo"))) {
+    m_balooInterface = new org::kde::balooInterface(balooService,
+                                            QStringLiteral("/indexer"),
+                                            m_bus, this);
+
+    m_extractorInterface = new org::kde::baloo::extractorInterface(extractorService,
+                                                        QStringLiteral("/extractor"),
+                                                        m_bus, this);
+
+    connect(m_extractorInterface, &org::kde::baloo::extractorInterface::currentUrlChanged,
+            this, &Monitor::newFile);
+
+    if (m_bus.interface()->isServiceRegistered(balooService)) {
         // baloo is already running
-        balooStarted();
+        balooStarted(balooService);
+
+        if (m_bus.interface()->isServiceRegistered(extractorService)) {
+            balooStarted(extractorService);
+        }
+
     } else {
         m_balooRunning = false;
+        QDBusServiceWatcher *balooWatcher = new QDBusServiceWatcher(balooService,
+                                                                    m_bus,
+                                                                    QDBusServiceWatcher::WatchForRegistration,
+                                                                    this);
+        balooWatcher->addWatchedService(extractorService);
+        connect(balooWatcher, &QDBusServiceWatcher::serviceRegistered, this, &Monitor::balooStarted);
     }
 }
 
-void Monitor::newFile(QString url)
+void Monitor::newFile(const QString& url)
 {
     if (m_totalFiles == 0) {
         fetchTotalFiles();
@@ -71,40 +95,30 @@ void Monitor::toggleSuspendState()
 {
     Q_ASSERT(m_balooInterface != 0);
 
-    QString method;
     if (m_suspended) {
-        method = QStringLiteral("resume");
+        m_balooInterface->resume();
         m_suspended = false;
     } else {
-        method = QStringLiteral("suspend");
+        m_balooInterface->suspend();
         m_suspended = true;
     }
-
-    m_balooInterface->call(method);
     Q_EMIT suspendStateChanged();
 }
 
-void Monitor::balooStarted()
+void Monitor::balooStarted(const QString& service)
 {
-    /*
-     * TODO: send a dbus signal to baloo to let it know montitor is running,
-     * use that signal in baloo to enable exporting urls being indexed
-     */
+    if (service == QStringLiteral("org.kde.baloo")) {
+        m_balooRunning = true;
 
-    m_balooRunning = true;
-
-    //TODO: use interface generated from XML file
-    m_balooInterface = new QDBusInterface(QStringLiteral("org.kde.baloo"),
-                                            QStringLiteral("/indexer"),
-                                            QStringLiteral("org.kde.baloo"),
-                                            m_bus,
-                                            this);
-
-    QDBusReply<bool> suspended = m_balooInterface->call("isSuspended");
-    m_suspended = suspended.value();
-    fetchTotalFiles();
-    Q_EMIT balooStateChanged();
-    Q_EMIT suspendStateChanged();
+        m_suspended = m_balooInterface->isSuspended();
+        fetchTotalFiles();
+        Q_EMIT balooStateChanged();
+        Q_EMIT suspendStateChanged();
+    } else if(service == QStringLiteral("org.kde.baloo.extractor")) {
+        m_url = m_extractorInterface->currentUrl();
+        m_extractorInterface->registerMonitor();
+        Q_EMIT newFileIndexed();
+    }
 }
 
 void Monitor::fetchTotalFiles()
@@ -118,4 +132,9 @@ void Monitor::fetchTotalFiles()
     Q_EMIT totalFilesChanged();
 }
 
+void Monitor::startBaloo()
+{
+    const QString exe = QStandardPaths::findExecutable(QLatin1String("baloo_file"));
+    QProcess::startDetached(exe);
+}
 
