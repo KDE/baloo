@@ -20,12 +20,19 @@
  *
  */
 
+/**
+ * WARNING: make sure baloo_file is not running before running this test
+ * otherwise we'll have two baloo_file_extractor processes running and that will
+ * cause problems when registering the monitor.
+ */
+
 #include "database.h"
 #include "firstrunindexer.h"
 #include "filecontentindexerprovider.h"
 #include "filecontentindexer.h"
 #include "fileindexerconfig.h"
 #include "timeestimator.h"
+#include "extractor_interface.h"
 
 #include <QCoreApplication>
 #include <QThreadPool>
@@ -34,8 +41,17 @@
 #include <QDBusConnection>
 #include <QTextStream>
 #include <QString>
+#include <QDBusServiceWatcher>
 
 #include <iostream>
+
+namespace org {
+    namespace kde {
+        namespace baloo {
+            typedef OrgKdeBalooExtractorInterface extractorInterface;
+        }
+    }
+}
 
 class Scheduler : public QObject
 {
@@ -47,16 +63,18 @@ public:
 
 private Q_SLOTS:
     void startContentIndexer();
-    void printTime(QString url);
+    void printTime();
     void finished();
+    void registerMonitor(const QString& service);
 
 private:
     QTemporaryDir m_dir;
 
     Baloo::Database m_db;
     Baloo::FileContentIndexerProvider m_provider;
-    Baloo::FileIndexerConfig m_config;
+    Baloo::FileIndexerConfig* m_config;
     Baloo::FileContentIndexer* m_contentRunnable;
+    org::kde::baloo::extractorInterface* m_extractorInterface;
 
     QThreadPool m_pool;
 
@@ -77,16 +95,39 @@ Scheduler::Scheduler(QObject* parent)
 {
     m_db.open(Baloo::Database::CreateDatabase);
     m_pool.setMaxThreadCount(1);
-    QDBusConnection bus = QDBusConnection::sessionBus();
-    bus.connect("", "/contentindexer", "org.kde.baloo", "startedWithFile", this, SLOT(printTime(QString)));
+
+    QString extractorService = QStringLiteral("org.kde.baloo.extractor");
+    m_extractorInterface = new org::kde::baloo::extractorInterface(extractorService,
+                                                            QStringLiteral("/extractor"),
+                                                            QDBusConnection::sessionBus(),
+                                                            this);
+
+    connect(m_extractorInterface, &org::kde::baloo::extractorInterface::currentUrlChanged,
+            this, &Scheduler::printTime);
+
+    QDBusServiceWatcher* extractorWatcher = new QDBusServiceWatcher(extractorService,
+                                                            QDBusConnection::sessionBus(),
+                                                            QDBusServiceWatcher::WatchForRegistration,
+                                                            this);
+
+    connect(extractorWatcher, &QDBusServiceWatcher::serviceRegistered, this, &Scheduler::registerMonitor);
 
     // Set test path
     qputenv("BALOO_DB_PATH", m_dir.path().toUtf8());
+
+    QStandardPaths::setTestModeEnabled(true);
+    QString testConfigPath = QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) +
+                                                                            QStringLiteral("baloofilerc");
+    // Remove config from previous runs
+    QFile::remove(testConfigPath);
+
+    m_config = new Baloo::FileIndexerConfig(this);
+    m_config->setInitialRun(true);
 }
 
 void Scheduler::startIndexing()
 {
-    auto firstRunnable = new Baloo::FirstRunIndexer(&m_db, &m_config, m_config.includeFolders());
+    auto firstRunnable = new Baloo::FirstRunIndexer(&m_db, m_config, m_config->includeFolders());
     connect(firstRunnable, &Baloo::FirstRunIndexer::done, this, &Scheduler::startContentIndexer);
     m_pool.start(firstRunnable);
 }
@@ -98,7 +139,7 @@ void Scheduler::startContentIndexer()
     m_pool.start(m_contentRunnable);
 }
 
-void Scheduler::printTime(QString url)
+void Scheduler::printTime()
 {
     Q_ASSERT(m_contentRunnable != 0);
 
@@ -116,6 +157,12 @@ void Scheduler::finished()
 {
     m_out << "done!" << endl;
     QCoreApplication::exit();
+}
+
+void Scheduler::registerMonitor(const QString& service)
+{
+    Q_UNUSED(service);
+    m_extractorInterface->registerMonitor();
 }
 
 int main (int argc, char** argv)
