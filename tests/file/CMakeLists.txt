@@ -51,4 +51,5 @@ add_executable(remainingtimetest-manual remainingtimetest.cpp)
 target_link_libraries(remainingtimetest-manual
   Qt5::Core
   baloofilecommon
+  BalooDBusInterfaces
 )
