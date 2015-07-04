@@ -27,6 +27,18 @@
 #include <QString>
 #include <QDBusInterface>
 
+#include "baloo_interface.h"
+#include "extractor_interface.h"
+
+namespace org {
+    namespace kde {
+        typedef OrgKdeBalooInterface balooInterface;
+        namespace baloo {
+            typedef OrgKdeBalooExtractorInterface extractorInterface;
+        }
+    }
+}
+
 namespace BalooMonitor {
 class Monitor : public QObject
 {
@@ -45,6 +57,7 @@ public:
 
     // Invokable methods
     Q_INVOKABLE void toggleSuspendState();
+    Q_INVOKABLE void startBaloo();
 
 Q_SIGNALS:
     void newFileIndexed();
@@ -53,8 +66,8 @@ Q_SIGNALS:
     void totalFilesChanged();
 
 private Q_SLOTS:
-    void newFile(QString url);
-    void balooStarted();
+    void newFile(const QString& url);
+    void balooStarted(const QString& service);
 
 private:
     void fetchTotalFiles();
@@ -66,11 +79,11 @@ private:
     bool m_balooRunning;
     bool m_suspended;
 
-    QDBusInterface* m_balooInterface;
+    org::kde::balooInterface* m_balooInterface;
+    org::kde::baloo::extractorInterface* m_extractorInterface;
 
     uint m_totalFiles;
     uint m_filesIndexed;
-
 };
 }
 #endif //BALOOMONITOR_MONITOR_H
