@@ -31,6 +31,7 @@ MainHub::MainHub(Database* db, FileIndexerConfig* config)
     , m_config(config)
     , m_fileWatcher(db, config, this)
     , m_fileIndexScheduler(db, config, this)
+    , m_isSuspended(false)
 {
     Q_ASSERT(db);
     Q_ASSERT(config);
@@ -43,7 +44,7 @@ MainHub::MainHub(Database* db, FileIndexerConfig* config)
     connect(&m_fileWatcher, &FileWatch::installedWatches, &m_fileIndexScheduler, &FileIndexScheduler::scheduleIndexing);
 
     QDBusConnection bus = QDBusConnection::sessionBus();
-    bus.registerObject(QStringLiteral("/"), this, QDBusConnection::ExportAllSlots);
+    bus.registerObject(QStringLiteral("/indexer"), this, QDBusConnection::ExportAllSlots);
 
     QTimer::singleShot(0, &m_fileWatcher, SLOT(watchIndexedFolders()));
 }
@@ -64,14 +65,22 @@ void MainHub::updateConfig()
 void MainHub::resume()
 {
     m_fileIndexScheduler.setSuspend(false);
+    m_isSuspended = false;
 }
 
 void MainHub::suspend()
 {
     m_fileIndexScheduler.setSuspend(true);
+    m_isSuspended = true;
 }
 
 uint MainHub::getRemainingTime()
 {
     return m_fileIndexScheduler.getRemainingTime();
 }
+
+bool MainHub::isSuspended() const
+{
+    return m_isSuspended;
+}
+
