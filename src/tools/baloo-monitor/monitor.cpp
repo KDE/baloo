@@ -44,15 +44,17 @@ Monitor::Monitor(QObject *parent)
     QString balooService = QStringLiteral("org.kde.baloo");
     QString extractorService = QStringLiteral("org.kde.baloo.extractor");
 
-    m_balooInterface = new org::kde::baloo(balooService,
+    m_balooInterface = new org::kde::balooInterface(balooService,
                                             QStringLiteral("/indexer"),
                                             m_bus, this);
 
-    m_extractorInterface = new org::kde::balooExtractor(extractorService,
+    m_extractorInterface = new org::kde::baloo::extractorInterface(extractorService,
                                                         QStringLiteral("/extractor"),
                                                         m_bus, this);
 
-    connect(m_extractorInterface, &org::kde::balooExtractor::currentUrlChanged, this, &Monitor::newFile);
+    connect(m_extractorInterface, &org::kde::baloo::extractorInterface::currentUrlChanged,
+            this, &Monitor::newFile);
+
     if (m_bus.interface()->isServiceRegistered(balooService)) {
         // baloo is already running
         balooStarted(balooService);

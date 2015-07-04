@@ -30,6 +30,15 @@
 #include "baloo_interface.h"
 #include "extractor_interface.h"
 
+namespace org {
+    namespace kde {
+        typedef OrgKdeBalooInterface balooInterface;
+        namespace baloo {
+            typedef OrgKdeBalooExtractorInterface extractorInterface;
+        }
+    }
+}
+
 namespace BalooMonitor {
 class Monitor : public QObject
 {
@@ -70,8 +79,8 @@ private:
     bool m_balooRunning;
     bool m_suspended;
 
-    org::kde::baloo* m_balooInterface;
-    org::kde::balooExtractor* m_extractorInterface;
+    org::kde::balooInterface* m_balooInterface;
+    org::kde::baloo::extractorInterface* m_extractorInterface;
 
     uint m_totalFiles;
     uint m_filesIndexed;
