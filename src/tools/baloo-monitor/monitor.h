@@ -48,12 +48,14 @@ class Monitor : public QObject
     Q_PROPERTY(bool balooRunning MEMBER m_balooRunning NOTIFY balooStateChanged)
     Q_PROPERTY(uint totalFiles MEMBER m_totalFiles NOTIFY totalFilesChanged)
     Q_PROPERTY(uint filesIndexed MEMBER m_filesIndexed NOTIFY newFileIndexed)
+    Q_PROPERTY(QString remainingTime READ remainingTime NOTIFY remainingTimeChanged)
 public:
     Monitor(QObject* parent = 0);
 
     // Property readers
     QString url() const { return m_url; }
     QString suspendState() const;
+    QString remainingTime() const { return m_remainingTime; }
 
     // Invokable methods
     Q_INVOKABLE void toggleSuspendState();
@@ -64,6 +66,7 @@ Q_SIGNALS:
     void suspendStateChanged();
     void balooStateChanged();
     void totalFilesChanged();
+    void remainingTimeChanged();
 
 private Q_SLOTS:
     void newFile(const QString& url);
@@ -71,6 +74,7 @@ private Q_SLOTS:
 
 private:
     void fetchTotalFiles();
+    void updateRemainingTime();
 
     QDBusConnection m_bus;
 
@@ -84,6 +88,7 @@ private:
 
     uint m_totalFiles;
     uint m_filesIndexed;
+    QString m_remainingTime;
 };
 }
 #endif //BALOOMONITOR_MONITOR_H
