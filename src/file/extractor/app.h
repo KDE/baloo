@@ -52,7 +52,7 @@ public:
     QString currentUrl() const { return m_currentUrl; }
 
 Q_SIGNALS:
-    Q_SCRIPTABLE void currentUrlChanged();
+    Q_SCRIPTABLE void currentUrlChanged(QString url);
 
 private Q_SLOTS:
     void slotNewInput();

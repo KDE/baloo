@@ -74,12 +74,12 @@ Monitor::Monitor(QObject *parent)
     }
 }
 
-void Monitor::newFile()
+void Monitor::newFile(const QString& url)
 {
     if (m_totalFiles == 0) {
         fetchTotalFiles();
     }
-    m_url = m_extractorInterface->currentUrl();
+    m_url = url;
     if (++m_filesIndexed == m_totalFiles) {
         m_url = QStringLiteral("Done");
     }
