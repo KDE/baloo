@@ -159,12 +159,14 @@ void FileIndexScheduler::setSuspend(bool suspend)
     if (suspend) {
         qDebug() << "Suspending";
         m_suspended = true;
+        m_eventMonitor->disable();
         if (m_contentIndexerRunning) {
             m_contentIndexer->quit();
             m_contentIndexer = 0;
         }
     } else {
         qDebug() << "Resuming";
+        m_eventMonitor->enable();
         m_suspended = false;
         scheduleIndexing();
     }
