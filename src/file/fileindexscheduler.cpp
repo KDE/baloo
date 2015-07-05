@@ -179,7 +179,7 @@ uint FileIndexScheduler::getRemainingTime()
     }
     TimeEstimator estimator;
     estimator.setFilesLeft(m_provider.size());
-    estimator.setAverageTimePerBatch(m_contentIndexer->averageTimePerBatch());
+    estimator.setBatchTimings(m_contentIndexer->batchTimings());
     return estimator.calculateTimeLeft();
 }
 

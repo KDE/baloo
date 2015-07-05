@@ -29,8 +29,8 @@ using namespace Baloo;
 FileContentIndexer::FileContentIndexer(FileContentIndexerProvider* provider)
     : m_provider(provider)
     , m_stop(0)
-    , m_processingTime(0)
-    , m_batchesProcessed(0)
+    , m_batchTimeBuffer(5)
+    , m_bufferIndex(0)
 {
     Q_ASSERT(provider);
 }
@@ -51,16 +51,17 @@ void FileContentIndexer::run()
         timer.start();
         process.index(idList);
         loop.exec();
-        m_processingTime += timer.elapsed();
-        ++m_batchesProcessed;
+        m_batchTimeBuffer[m_bufferIndex % 5] = timer.elapsed();
+        ++m_bufferIndex;
     }
     Q_EMIT done();
 }
 
-quint64 FileContentIndexer::averageTimePerBatch() const
+QVector<uint> FileContentIndexer::batchTimings()
 {
-    if (m_batchesProcessed == 0) {
-        return 0;
+    if (m_bufferIndex < 5) {
+        return QVector<uint>();
     }
-    return m_processingTime / m_batchesProcessed;
+
+    return m_batchTimeBuffer;
 }

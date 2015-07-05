@@ -23,6 +23,7 @@
 #include <QRunnable>
 #include <QObject>
 #include <QAtomicInt>
+#include <QVector>
 
 namespace Baloo {
 
@@ -40,7 +41,7 @@ public:
         m_stop.store(true);
     }
 
-    quint64 averageTimePerBatch() const;
+    QVector<uint> batchTimings();
 Q_SIGNALS:
     void done();
 
@@ -49,8 +50,8 @@ private:
 
     QAtomicInt m_stop;
 
-    quint64 m_processingTime;
-    quint32 m_batchesProcessed;
+    QVector<uint> m_batchTimeBuffer;
+    uint m_bufferIndex;
 
     QString m_path;
 };
