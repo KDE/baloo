@@ -145,7 +145,7 @@ void Scheduler::printTime()
 
     if (++m_count == 10 * m_batchSize) {
         Baloo::TimeEstimator estimator;
-        estimator.setAverageTimePerBatch(m_contentRunnable->averageTimePerBatch());
+        estimator.setBatchTimings(m_contentRunnable->batchTimings());
         estimator.setFilesLeft(m_provider.size());
         // print Remaining time after every 10 batches
         m_out <<  "Remaining Time: " << estimator.calculateTimeLeft() << endl;

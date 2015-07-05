@@ -24,13 +24,16 @@
 
 Baloo::TimeEstimator::TimeEstimator()
     : m_filesLeft(0)
-    , m_averageTimePerBatch(0)
 {
 }
 
 uint Baloo::TimeEstimator::calculateTimeLeft()
 {
     //TODO: We should probably make the batch size a global macro
-    int batchSize = 40;
-    return (m_filesLeft / batchSize) * m_averageTimePerBatch;
+    uint batchesLeft = m_filesLeft / 40;
+    uint result = 0;
+    for (int time : m_batchTimings) {
+        result += time;
+    }
+    return (result / m_batchTimings.size()) * batchesLeft;
 }

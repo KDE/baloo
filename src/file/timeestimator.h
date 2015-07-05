@@ -24,6 +24,7 @@
 #define BALOO_TIMEESTIMATOR_H
 
 #include <QtGlobal>
+#include <QVector>
 
 namespace Baloo {
 
@@ -36,14 +37,14 @@ class TimeEstimator
 public:
     TimeEstimator();
     void setFilesLeft(uint left) { m_filesLeft = left; }
-    void setAverageTimePerBatch(uint average) { m_averageTimePerBatch = average; }
+    void setBatchTimings(const QVector<uint>& batchTimings) { m_batchTimings = batchTimings; }
 
     // gives the estimated time left
     uint calculateTimeLeft();
 
 private:
     uint m_filesLeft;
-    uint m_averageTimePerBatch;
+    QVector<uint> m_batchTimings;
 };
 
 }
