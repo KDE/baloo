@@ -29,7 +29,7 @@ using namespace Baloo;
 FileContentIndexer::FileContentIndexer(FileContentIndexerProvider* provider)
     : m_provider(provider)
     , m_stop(0)
-    , m_batchTimeBuffer(5)
+    , m_batchTimeBuffer(6)
     , m_bufferIndex(0)
 {
     Q_ASSERT(provider);
@@ -62,6 +62,6 @@ QVector<uint> FileContentIndexer::batchTimings()
     if (m_bufferIndex < 5) {
         return QVector<uint>();
     }
-
+    m_batchTimeBuffer[6] = m_bufferIndex % 5;
     return m_batchTimeBuffer;
 }
