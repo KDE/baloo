@@ -30,10 +30,28 @@ Baloo::TimeEstimator::TimeEstimator()
 uint Baloo::TimeEstimator::calculateTimeLeft()
 {
     //TODO: We should probably make the batch size a global macro
-    uint batchesLeft = m_filesLeft / 40;
-    uint result = 0;
-    for (int time : m_batchTimings) {
-        result += time;
+    float totalTime = 0;
+    float totalWeight = 0;
+
+    uint currentIndex = m_batchTimings.takeLast();
+
+    uint weightI = 1;
+    for (int i = currentIndex; i < m_batchTimings.size(); ++i) {
+        float weight = sqrt(weightI);
+        totalTime += m_batchTimings.at(i) * weight;
+        totalWeight += weight;
+        ++weightI;
     }
-    return (result / m_batchTimings.size()) * batchesLeft;
+
+    for (uint i = 0; i < currentIndex; ++i) {
+        float weight = sqrt(weightI);
+        totalTime += m_batchTimings.at(i) * weight;
+        totalWeight += weight;
+        ++weightI;
+    }
+
+    float weightedAverage = totalTime / totalWeight;
+    float batchesLeft = (float)m_filesLeft / (float)40;
+
+    return weightedAverage * batchesLeft;
 }
