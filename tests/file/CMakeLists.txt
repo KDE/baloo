@@ -17,9 +17,16 @@ target_link_libraries(filtereddiriteratorbenchmark Qt5::Core baloofilecommon)
 #
 # Remaining Time
 #
-add_executable(remainingtimetest-manual remainingtimetest.cpp)
+set_source_files_properties(${CMAKE_BINARY_DIR}/src/dbus/extractor_interface.cpp PROPERTIES GENERATED 1)
+
+add_executable(remainingtimetest-manual
+  remainingtimetest.cpp
+  ${CMAKE_BINARY_DIR}/src/dbus/extractor_interface.cpp
+)
+
+add_dependencies(remainingtimetest-manual BalooDBusInterfaces)
+
 target_link_libraries(remainingtimetest-manual
   Qt5::Core
   baloofilecommon
-  BalooDBusInterfaces
 )

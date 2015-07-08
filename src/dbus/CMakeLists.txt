@@ -8,13 +8,6 @@ set_source_files_properties(${baloo_interface_xml} ${extractor_interface_xml}
 qt5_add_dbus_interface(EXTRACTOR_INTERFACE ${extractor_interface_xml} extractor_interface)
 qt5_add_dbus_interface(BALOO_INTERFACE ${baloo_interface_xml} baloo_interface)
 
-
-add_library(BalooDBusInterfaces STATIC
-  ${BALOO_INTERFACE}
-  ${EXTRACTOR_INTERFACE}
-)
-
-target_link_libraries(BalooDBusInterfaces
-  Qt5::Core
-  Qt5::DBus
+add_custom_target(BalooDBusInterfaces
+  DEPENDS ${BALOO_INTERFACE} ${EXTRACTOR_INTERFACE}
 )
