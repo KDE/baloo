@@ -44,6 +44,7 @@ public Q_SLOTS:
     void resume();
     uint getRemainingTime();
     bool isSuspended() const;
+    IndexerState state() const;
 
 private:
     Database* m_db;
