@@ -27,6 +27,7 @@
 
 #include "filecontentindexerprovider.h"
 #include "eventmonitor.h"
+#include "indexerstate.h"
 
 namespace Baloo {
 
@@ -69,6 +70,8 @@ public Q_SLOTS:
     void setSuspend(bool suspend);
     uint getRemainingTime();
 
+    IndexerState state() const { return m_indexerState; }
+
 private Q_SLOTS:
     void powerManagementStatusChanged(bool isOnBattery);
 
@@ -88,7 +91,7 @@ private:
     EventMonitor* m_eventMonitor;
     bool m_contentIndexerRunning;
 
-    bool m_suspended;
+    IndexerState m_indexerState;
 };
 
 }

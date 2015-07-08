@@ -15,5 +15,9 @@
     <method name="isSuspended">
       <arg type="b" direction="out"/>
     </method>
+    <method name="state">
+      <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="Baloo::IndexerState"/>
+      <arg type="(i)" direction="out">
+    </method>
   </interface>
 </node>

@@ -23,6 +23,7 @@
 #include <QDBusConnection>
 #include <QCoreApplication>
 #include <QTimer>
+#include <QDBusMetaType>
 
 using namespace Baloo;
 
@@ -35,6 +36,8 @@ MainHub::MainHub(Database* db, FileIndexerConfig* config)
 {
     Q_ASSERT(db);
     Q_ASSERT(config);
+
+    qDBusRegisterMetaType<IndexerState>();
 
     connect(&m_fileWatcher, &FileWatch::indexNewFile, &m_fileIndexScheduler, &FileIndexScheduler::indexNewFile);
     connect(&m_fileWatcher, &FileWatch::indexModifiedFile, &m_fileIndexScheduler, &FileIndexScheduler::indexModifiedFile);
@@ -84,3 +87,7 @@ bool MainHub::isSuspended() const
     return m_isSuspended;
 }
 
+IndexerState MainHub::state() const
+{
+    return m_fileIndexScheduler.state();
+}

@@ -40,8 +40,7 @@ FileIndexScheduler::FileIndexScheduler(Database* db, FileIndexerConfig* config, 
     , m_config(config)
     , m_provider(db)
     , m_contentIndexer(0)
-    , m_contentIndexerRunning(false)
-    , m_suspended(false)
+    , m_indexerState(Idle)
 {
     Q_ASSERT(db);
     Q_ASSERT(config);
@@ -56,7 +55,7 @@ FileIndexScheduler::FileIndexScheduler(Database* db, FileIndexerConfig* config, 
 
 void FileIndexScheduler::scheduleIndexing()
 {
-    if (m_threadPool.activeThreadCount() || m_suspended) {
+    if (m_threadPool.activeThreadCount() || m_indexerState == Suspended) {
         return;
     }
     qDebug() << "SCHEDULE";
@@ -69,6 +68,7 @@ void FileIndexScheduler::scheduleIndexing()
         connect(runnable, &FirstRunIndexer::done, this, &FileIndexScheduler::scheduleIndexing);
 
         m_threadPool.start(runnable);
+        m_indexerState = FirstRun;
         return;
     }
 
@@ -79,6 +79,7 @@ void FileIndexScheduler::scheduleIndexing()
 
         m_threadPool.start(runnable);
         m_newFiles.clear();
+        m_indexerState = NewFiles;
         return;
     }
 
@@ -89,6 +90,7 @@ void FileIndexScheduler::scheduleIndexing()
 
         m_threadPool.start(runnable);
         m_modifiedFiles.clear();
+        m_indexerState = ModifiedFiles;
         return;
     }
 
@@ -99,6 +101,7 @@ void FileIndexScheduler::scheduleIndexing()
 
         m_threadPool.start(runnable);
         m_xattrFiles.clear();
+        m_indexerState = XAttrFiles;
         return;
     }
 
@@ -111,9 +114,10 @@ void FileIndexScheduler::scheduleIndexing()
         connect(m_contentIndexer, &FileContentIndexer::done, this, &FileIndexScheduler::scheduleIndexing);
 
         m_threadPool.start(m_contentIndexer);
+        m_indexerState = ContentIndexing;
         return;
     }
-
+    m_indexerState = Idle;
     qDebug() << "IDLE";
 }
 
@@ -145,10 +149,12 @@ void FileIndexScheduler::handleFileRemoved(const QString& file)
 void FileIndexScheduler::powerManagementStatusChanged(bool isOnBattery)
 {
     qDebug() << "Power state changed";
-    if (isOnBattery && m_contentIndexerRunning) {
+    if (isOnBattery && m_indexerState == ContentIndexing) {
         qDebug() << "On battery stopping content indexer";
         m_contentIndexer->quit();
         m_contentIndexer = 0;
+        //TODO: Maybe we can add a special state for suspended due to being on battery.
+        m_indexerState = Idle;
     } else if (!isOnBattery) {
         QTimer::singleShot(0, this, SLOT(scheduleIndexing()));
     }
@@ -158,23 +164,23 @@ void FileIndexScheduler::setSuspend(bool suspend)
 {
     if (suspend) {
         qDebug() << "Suspending";
-        m_suspended = true;
         m_eventMonitor->disable();
-        if (m_contentIndexerRunning) {
+        if (m_indexerState == ContentIndexing) {
             m_contentIndexer->quit();
             m_contentIndexer = 0;
         }
+        m_indexerState = Suspended;
     } else {
         qDebug() << "Resuming";
         m_eventMonitor->enable();
-        m_suspended = false;
+        m_indexerState = Idle;
         scheduleIndexing();
     }
 }
 
 uint FileIndexScheduler::getRemainingTime()
 {
-    if (!m_contentIndexerRunning) {
+    if (m_indexerState != ContentIndexing) {
         return 0;
     }
     TimeEstimator estimator;
@@ -182,5 +188,3 @@ uint FileIndexScheduler::getRemainingTime()
     estimator.setBatchTimings(m_contentIndexer->batchTimings());
     return estimator.calculateTimeLeft();
 }
-
-
