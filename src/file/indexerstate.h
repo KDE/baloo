@@ -24,6 +24,7 @@
 
 #include <QMetaType>
 #include <QDBusArgument>
+#include <QString>
 
 namespace Baloo {
 enum IndexerState {
@@ -35,6 +36,35 @@ enum IndexerState {
         XAttrFiles,
         ContentIndexing
 };
+
+inline QString stateString(IndexerState state)
+{
+    QString status = QStringLiteral("Unknown");
+    switch (state) {
+    case Idle:
+        status = QStringLiteral("Idle");
+        break;
+    case Suspended:
+        status =  QStringLiteral("Suspended");
+        break;
+    case FirstRun:
+        status =  QStringLiteral("Initial Indexing");
+        break;
+    case NewFiles:
+        status = QStringLiteral("Indexing new files");
+        break;
+    case ModifiedFiles:
+        status = QStringLiteral("Indexing modified files");
+        break;
+    case XAttrFiles:
+        status = QStringLiteral("Indexing Extended Attributes");
+        break;
+    case ContentIndexing:
+        status = QStringLiteral("Indexing file content");
+    }
+    return status;
+}
+
 }
 
 Q_DECLARE_METATYPE(Baloo::IndexerState)

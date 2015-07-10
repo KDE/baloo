@@ -86,6 +86,9 @@ int main(int argc, char* argv[])
     QTextStream err(stderr);
     QTextStream out(stdout);
 
+    qRegisterMetaType<IndexerState>("IndexerState");
+    qDBusRegisterMetaType<IndexerState>();
+
     QString command = parser.positionalArguments().first();
 
     OrgKdeBalooInterface balooInterface(QStringLiteral("org.kde.baloo"),
@@ -109,6 +112,8 @@ int main(int argc, char* argv[])
 
             if (running) {
                 out << "Baloo File Indexer is running\n";
+                qDebug() << balooInterface.state();
+                out << "Indexer state: " << stateString(balooInterface.state()) << endl;
             }
             else {
                 out << "Baloo File Indexer is NOT running\n";
