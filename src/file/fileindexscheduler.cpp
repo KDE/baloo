@@ -60,8 +60,6 @@ void FileIndexScheduler::scheduleIndexing()
     }
     qDebug() << "SCHEDULE";
 
-    m_contentIndexerRunning = false;
-
     if (m_config->isInitialRun()) {
         qDebug() << m_config->includeFolders();
         auto runnable = new FirstRunIndexer(m_db, m_config, m_config->includeFolders());
@@ -107,7 +105,6 @@ void FileIndexScheduler::scheduleIndexing()
 
     if (m_provider.size() && !m_eventMonitor->isOnBattery()) {
         qDebug() << "Content: " << m_provider.size();
-        m_contentIndexerRunning = true;
         if (m_contentIndexer == 0) {
             m_contentIndexer = new FileContentIndexer(&m_provider);
         }

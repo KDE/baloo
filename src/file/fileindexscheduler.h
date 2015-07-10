@@ -89,7 +89,6 @@ private:
     FileContentIndexer* m_contentIndexer;
 
     EventMonitor* m_eventMonitor;
-    bool m_contentIndexerRunning;
 
     IndexerState m_indexerState;
 };
