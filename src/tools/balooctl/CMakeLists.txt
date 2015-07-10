@@ -5,12 +5,16 @@ set(SRCS
     indexer.cpp
     ${CMAKE_SOURCE_DIR}/src/file/extractor/result.cpp
     monitor.cpp
-    ${CMAKE_BINARY_DIR}/src/dbus/extractor_interface.cpp
 )
 
-set_source_files_properties(${CMAKE_BINARY_DIR}/src/dbus/extractor_interface.cpp PROPERTIES GENERATED 1)
+set(DBUS_INTERFACES
+  ${CMAKE_BINARY_DIR}/src/dbus/extractor_interface.cpp
+  ${CMAKE_BINARY_DIR}/src/dbus/baloo_interface.cpp
+)
 
-add_executable(balooctl ${SRCS})
+set_source_files_properties(${DBUS_INTERFACES} PROPERTIES GENERATED 1)
+
+add_executable(balooctl ${SRCS} ${DBUS_INTERFACES})
 add_dependencies(balooctl BalooDBusInterfaces)
 target_compile_definitions(balooctl PRIVATE -DPROJECT_VERSION="${PROJECT_VERSION}")
 
