@@ -37,6 +37,7 @@ MainHub::MainHub(Database* db, FileIndexerConfig* config)
     Q_ASSERT(db);
     Q_ASSERT(config);
 
+    qRegisterMetaType<IndexerState>("IndexerState");
     qDBusRegisterMetaType<IndexerState>();
 
     connect(&m_fileWatcher, &FileWatch::indexNewFile, &m_fileIndexScheduler, &FileIndexScheduler::indexNewFile);
