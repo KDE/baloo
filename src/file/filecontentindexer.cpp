@@ -29,7 +29,7 @@ using namespace Baloo;
 FileContentIndexer::FileContentIndexer(FileContentIndexerProvider* provider)
     : m_provider(provider)
     , m_stop(0)
-    , m_batchTimeBuffer(6)
+    , m_batchTimeBuffer(6, 0)
     , m_bufferIndex(0)
 {
     Q_ASSERT(provider);
@@ -51,7 +51,8 @@ void FileContentIndexer::run()
         timer.start();
         process.index(idList);
         loop.exec();
-        m_batchTimeBuffer[m_bufferIndex % 5] = timer.elapsed();
+        // add the current batch time in place of the oldest batch time
+        m_batchTimeBuffer[m_bufferIndex % m_batchTimeBuffer.size() - 1] = timer.elapsed();
         ++m_bufferIndex;
     }
     Q_EMIT done();
@@ -59,9 +60,11 @@ void FileContentIndexer::run()
 
 QVector<uint> FileContentIndexer::batchTimings()
 {
-    if (m_bufferIndex < 5) {
-        return QVector<uint>();
+    if (m_bufferIndex < m_batchTimeBuffer.size() - 1) {
+        return QVector<uint>(6, 0);
     }
-    m_batchTimeBuffer[6] = m_bufferIndex % 5;
+    // Insert the index of the oldest batch timming as the last entry to let the estimator
+    // know which the recentness of each batch.
+    m_batchTimeBuffer[m_batchTimeBuffer.size() - 1] = m_bufferIndex % m_batchTimeBuffer.size() - 1;
     return m_batchTimeBuffer;
 }
