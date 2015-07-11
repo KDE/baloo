@@ -41,6 +41,9 @@ class FileIndexScheduler : public QObject
 public:
     FileIndexScheduler(Database* db, FileIndexerConfig* config, QObject* parent = 0);
 
+Q_SIGNALS:
+    void stateChanged(IndexerState state);
+
 public Q_SLOTS:
     void indexNewFile(const QString& file) {
         if (!m_newFiles.contains(file)) {

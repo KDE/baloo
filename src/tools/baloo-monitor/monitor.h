@@ -44,11 +44,12 @@ class Monitor : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString url READ url NOTIFY newFileIndexed)
-    Q_PROPERTY(QString suspendState READ suspendState NOTIFY suspendStateChanged)
+    Q_PROPERTY(QString suspendState READ suspendState NOTIFY indexerStateChanged)
     Q_PROPERTY(bool balooRunning MEMBER m_balooRunning NOTIFY balooStateChanged)
     Q_PROPERTY(uint totalFiles MEMBER m_totalFiles NOTIFY totalFilesChanged)
     Q_PROPERTY(uint filesIndexed MEMBER m_filesIndexed NOTIFY newFileIndexed)
     Q_PROPERTY(QString remainingTime READ remainingTime NOTIFY remainingTimeChanged)
+    Q_PROPERTY(QString state READ state NOTIFY indexerStateChanged)
 public:
     Monitor(QObject* parent = 0);
 
@@ -56,6 +57,7 @@ public:
     QString url() const { return m_url; }
     QString suspendState() const;
     QString remainingTime() const { return m_remainingTime; }
+    QString state() const { return Baloo::stateString(m_indexerState); }
 
     // Invokable methods
     Q_INVOKABLE void toggleSuspendState();
@@ -63,14 +65,15 @@ public:
 
 Q_SIGNALS:
     void newFileIndexed();
-    void suspendStateChanged();
     void balooStateChanged();
     void totalFilesChanged();
     void remainingTimeChanged();
+    void indexerStateChanged();
 
 private Q_SLOTS:
     void newFile(const QString& url);
     void balooStarted(const QString& service);
+    void slotIndexerStateChanged(Baloo::IndexerState state);
 
 private:
     void fetchTotalFiles();
@@ -79,9 +82,8 @@ private:
     QDBusConnection m_bus;
 
     QString m_url;
-
     bool m_balooRunning;
-    bool m_suspended;
+    Baloo::IndexerState m_indexerState;
 
     org::kde::balooInterface* m_balooInterface;
     org::kde::baloo::extractorInterface* m_extractorInterface;

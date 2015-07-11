@@ -39,7 +39,16 @@ ApplicationWindow {
         visible: monitor.balooRunning
 
         Label {
+            id: indexerState
             anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.margins: 20
+            text: "Indexer State: " + monitor.state
+        }
+
+        Label {
+            anchors.top: indexerState.bottom
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.margins: 20
