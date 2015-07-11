@@ -46,6 +46,9 @@ public Q_SLOTS:
     bool isSuspended() const;
     IndexerState state() const;
 
+Q_SIGNALS:
+    Q_SCRIPTABLE void stateChanged(IndexerState state);
+
 private:
     Database* m_db;
     FileIndexerConfig* m_config;

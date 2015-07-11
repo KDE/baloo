@@ -46,9 +46,11 @@ MainHub::MainHub(Database* db, FileIndexerConfig* config)
     connect(&m_fileWatcher, &FileWatch::fileRemoved, &m_fileIndexScheduler, &FileIndexScheduler::handleFileRemoved);
 
     connect(&m_fileWatcher, &FileWatch::installedWatches, &m_fileIndexScheduler, &FileIndexScheduler::scheduleIndexing);
+    connect(&m_fileIndexScheduler, &FileIndexScheduler::stateChanged, this, &MainHub::stateChanged);
 
     QDBusConnection bus = QDBusConnection::sessionBus();
-    bus.registerObject(QStringLiteral("/indexer"), this, QDBusConnection::ExportAllSlots);
+    bus.registerObject(QStringLiteral("/indexer"), this, QDBusConnection::ExportAllSlots |
+                        QDBusConnection::ExportScriptableSignals);
 
     QTimer::singleShot(0, &m_fileWatcher, SLOT(watchIndexedFolders()));
 }

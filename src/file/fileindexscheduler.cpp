@@ -67,6 +67,7 @@ void FileIndexScheduler::scheduleIndexing()
 
         m_threadPool.start(runnable);
         m_indexerState = FirstRun;
+        Q_EMIT stateChanged(m_indexerState);
         return;
     }
 
@@ -78,6 +79,7 @@ void FileIndexScheduler::scheduleIndexing()
         m_threadPool.start(runnable);
         m_newFiles.clear();
         m_indexerState = NewFiles;
+        Q_EMIT stateChanged(m_indexerState);
         return;
     }
 
@@ -89,6 +91,7 @@ void FileIndexScheduler::scheduleIndexing()
         m_threadPool.start(runnable);
         m_modifiedFiles.clear();
         m_indexerState = ModifiedFiles;
+        Q_EMIT stateChanged(m_indexerState);
         return;
     }
 
@@ -100,6 +103,7 @@ void FileIndexScheduler::scheduleIndexing()
         m_threadPool.start(runnable);
         m_xattrFiles.clear();
         m_indexerState = XAttrFiles;
+        Q_EMIT stateChanged(m_indexerState);
         return;
     }
 
@@ -112,9 +116,11 @@ void FileIndexScheduler::scheduleIndexing()
 
         m_threadPool.start(m_contentIndexer);
         m_indexerState = ContentIndexing;
+        Q_EMIT stateChanged(m_indexerState);
         return;
     }
     m_indexerState = Idle;
+    Q_EMIT stateChanged(m_indexerState);
     qDebug() << "IDLE";
 }
 
@@ -152,6 +158,7 @@ void FileIndexScheduler::powerManagementStatusChanged(bool isOnBattery)
         m_contentIndexer = 0;
         //TODO: Maybe we can add a special state for suspended due to being on battery.
         m_indexerState = Idle;
+        stateChanged(m_indexerState);
     } else if (!isOnBattery) {
         QTimer::singleShot(0, this, SLOT(scheduleIndexing()));
     }
@@ -167,10 +174,12 @@ void FileIndexScheduler::setSuspend(bool suspend)
             m_contentIndexer = 0;
         }
         m_indexerState = Suspended;
+        Q_EMIT stateChanged(m_indexerState);
     } else {
         qDebug() << "Resuming";
         m_eventMonitor->enable();
         m_indexerState = Idle;
+        // No need to emit here we'll be emitting in scheduling
         scheduleIndexing();
     }
 }

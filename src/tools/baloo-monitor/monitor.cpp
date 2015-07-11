@@ -42,6 +42,9 @@ Monitor::Monitor(QObject *parent)
     , m_filesIndexed(0)
     , m_remainingTime(QStringLiteral("Estimating"))
 {
+    qRegisterMetaType<Baloo::IndexerState>("Baloo::IndexerState");
+    qDBusRegisterMetaType<Baloo::IndexerState>();
+
     QString balooService = QStringLiteral("org.kde.baloo");
     QString extractorService = QStringLiteral("org.kde.baloo.extractor");
 
@@ -55,6 +58,8 @@ Monitor::Monitor(QObject *parent)
 
     connect(m_extractorInterface, &org::kde::baloo::extractorInterface::currentUrlChanged,
             this, &Monitor::newFile);
+
+    connect(m_balooInterface, &org::kde::balooInterface::stateChanged, this, &Monitor::slotIndexerStateChanged);
     qDebug() << "start service watcher";
     QDBusServiceWatcher *balooWatcher = new QDBusServiceWatcher(extractorService,
                                                                 m_bus,
@@ -93,21 +98,18 @@ void Monitor::newFile(const QString& url)
 
 QString Monitor::suspendState() const
 {
-    return m_suspended ?  QStringLiteral("Resume") : QStringLiteral("Suspend");
+    return m_indexerState == Baloo::Suspended ?  QStringLiteral("Resume") : QStringLiteral("Suspend");
 }
 
 void Monitor::toggleSuspendState()
 {
     Q_ASSERT(m_balooInterface != 0);
 
-    if (m_suspended) {
+    if (m_indexerState == Baloo::Suspended) {
         m_balooInterface->resume();
-        m_suspended = false;
     } else {
         m_balooInterface->suspend();
-        m_suspended = true;
     }
-    Q_EMIT suspendStateChanged();
 }
 
 void Monitor::balooStarted(const QString& service)
@@ -115,12 +117,18 @@ void Monitor::balooStarted(const QString& service)
     if (service == QStringLiteral("org.kde.baloo")) {
         m_balooRunning = true;
 
-        m_suspended = m_balooInterface->isSuspended();
+        slotIndexerStateChanged(m_balooInterface->state());
         qDebug() << "fetched suspend state";
         fetchTotalFiles();
         Q_EMIT balooStateChanged();
-        Q_EMIT suspendStateChanged();
     } else if(service == QStringLiteral("org.kde.baloo.extractor")) {
+
+        /*
+         * FIXME: This is pretty useless and slowing up startup by blocking.
+         * The interface gives us url only when baloo_extractor is in the event loop
+         * hence we only get it at the end of a batch and url is always of the last
+         * file in the batch.
+         */
         m_url = m_extractorInterface->currentUrl();
         qDebug() << "fetched currentUrl";
         m_extractorInterface->registerMonitor();
@@ -157,5 +165,14 @@ void Monitor::updateRemainingTime()
     }
     m_remainingTime = QString::number(time) + minOrSec;
     Q_EMIT remainingTimeChanged();
+}
+
+void Monitor::slotIndexerStateChanged(Baloo::IndexerState state)
+{
+    if (m_indexerState != state) {
+        m_indexerState = state;
+        Q_EMIT indexerStateChanged();
+        fetchTotalFiles();
+    }
 }
 
