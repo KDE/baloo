@@ -155,15 +155,30 @@ void Monitor::startBaloo()
 
 void Monitor::updateRemainingTime()
 {
-    uint msecTime = m_balooInterface->getRemainingTime();
-    uint secTime = msecTime / 1000;
-    QString minOrSec = QStringLiteral(" minutes");
-    int time = secTime / 60;
-    if (secTime < 60) {
-        minOrSec = QStringLiteral(" seconds");
-        time = secTime;
+    uint seconds = m_balooInterface->getRemainingTime() / 1000;
+
+    QStringList hms;
+    hms << QStringLiteral(" hours ") << QStringLiteral(" minutes ")  << QStringLiteral(" seconds ");
+
+    QStringList hms1;
+    hms << QStringLiteral(" hour ") << QStringLiteral(" minute ")  << QStringLiteral(" second ");
+
+    // time = {h, m, s}
+    uint time[] = {0, 0, 0};
+    time[0] = seconds / (60 * 60);
+    time[1] = (seconds / 60) % 60;
+    time[2] = seconds % 60;
+
+    QString strTime;
+    for (int i = 0; i < 3; ++i) {
+        if (time[i] == 1) {
+            strTime += QString::number(time[i]) + hms1.at(i);
+        } else if (time[i] != 0) {
+            strTime += QString::number(time[i]) + hms.at(i);
+        }
     }
-    m_remainingTime = QString::number(time) + minOrSec;
+
+    m_remainingTime = strTime;
     Q_EMIT remainingTimeChanged();
 }
 
