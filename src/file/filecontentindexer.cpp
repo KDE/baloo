@@ -52,7 +52,7 @@ void FileContentIndexer::run()
         process.index(idList);
         loop.exec();
         // add the current batch time in place of the oldest batch time
-        m_batchTimeBuffer[m_bufferIndex % m_batchTimeBuffer.size() - 1] = timer.elapsed();
+        m_batchTimeBuffer[m_bufferIndex % (m_batchTimeBuffer.size() - 1)] = timer.elapsed();
         ++m_bufferIndex;
     }
     Q_EMIT done();
@@ -65,6 +65,6 @@ QVector<uint> FileContentIndexer::batchTimings()
     }
     // Insert the index of the oldest batch timming as the last entry to let the estimator
     // know which the recentness of each batch.
-    m_batchTimeBuffer[m_batchTimeBuffer.size() - 1] = m_bufferIndex % m_batchTimeBuffer.size() - 1;
+    m_batchTimeBuffer[m_batchTimeBuffer.size() - 1] = m_bufferIndex % (m_batchTimeBuffer.size() - 1);
     return m_batchTimeBuffer;
 }
