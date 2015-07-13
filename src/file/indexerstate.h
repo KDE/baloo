@@ -22,8 +22,6 @@
 #ifndef BALOO_INDEXER_STATE_H
 #define BALOO_INDEXER_STATE_H
 
-#include <QMetaType>
-#include <QDBusArgument>
 #include <QString>
 
 namespace Baloo {
@@ -65,29 +63,10 @@ inline QString stateString(IndexerState state)
     return status;
 }
 
-}
-
-Q_DECLARE_METATYPE(Baloo::IndexerState)
-
-inline QDBusArgument& operator<<(QDBusArgument& argument, const Baloo::IndexerState& source)
+inline QString stateString(int state)
 {
-    argument.beginStructure();
-    argument << static_cast<int>(source);
-    argument.endStructure();
-    return argument;
+    return stateString(static_cast<IndexerState>(state));
 }
 
-inline const QDBusArgument& operator>>(const QDBusArgument& argument, Baloo::IndexerState& destination)
-{
-    int s;
-
-    argument.beginStructure();
-    argument >> s;
-    argument.endStructure();
-
-    destination = static_cast<Baloo::IndexerState>(s);
-
-    return argument;
 }
-
 #endif //BALOO_INDEXER_STATE_H

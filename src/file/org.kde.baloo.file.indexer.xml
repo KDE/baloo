@@ -2,8 +2,7 @@
 <node>
   <interface name="org.kde.baloo">
     <signal name="stateChanged">
-      <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="Baloo::IndexerState"/>
-      <arg name="state" type="(i)" direction="out"/>
+      <arg name="state" type="i" direction="out"/>
     </signal>
     <method name="quit">
     </method>
@@ -20,8 +19,7 @@
       <arg type="b" direction="out"/>
     </method>
     <method name="state">
-      <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="Baloo::IndexerState"/>
-      <arg type="(i)" direction="out">
+      <arg type="i" direction="out"/>
     </method>
   </interface>
 </node>
