@@ -4,7 +4,6 @@ set(extractor_interface_xml ${CMAKE_SOURCE_DIR}/src/file/extractor/org.kde.baloo
 set_source_files_properties(${baloo_interface_xml}
   PROPERTIES
     NO_NAMESPACE true
-    INCLUDE indexerstate.h
 )
 
 set_source_files_properties(${extractor_interface_xml}

@@ -27,6 +27,7 @@
 #include <QString>
 #include <QDBusInterface>
 
+#include "indexerstate.h"
 #include "baloo_interface.h"
 #include "extractor_interface.h"
 
@@ -73,7 +74,7 @@ Q_SIGNALS:
 private Q_SLOTS:
     void newFile(const QString& url);
     void balooStarted(const QString& service);
-    void slotIndexerStateChanged(Baloo::IndexerState state);
+    void slotIndexerStateChanged(int state);
 
 private:
     void fetchTotalFiles();

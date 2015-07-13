@@ -23,7 +23,6 @@
 #include <QDBusConnection>
 #include <QCoreApplication>
 #include <QTimer>
-#include <QDBusMetaType>
 
 using namespace Baloo;
 
@@ -37,16 +36,13 @@ MainHub::MainHub(Database* db, FileIndexerConfig* config)
     Q_ASSERT(db);
     Q_ASSERT(config);
 
-    qRegisterMetaType<IndexerState>("IndexerState");
-    qDBusRegisterMetaType<IndexerState>();
-
     connect(&m_fileWatcher, &FileWatch::indexNewFile, &m_fileIndexScheduler, &FileIndexScheduler::indexNewFile);
     connect(&m_fileWatcher, &FileWatch::indexModifiedFile, &m_fileIndexScheduler, &FileIndexScheduler::indexModifiedFile);
     connect(&m_fileWatcher, &FileWatch::indexXAttr, &m_fileIndexScheduler, &FileIndexScheduler::indexXAttrFile);
     connect(&m_fileWatcher, &FileWatch::fileRemoved, &m_fileIndexScheduler, &FileIndexScheduler::handleFileRemoved);
 
     connect(&m_fileWatcher, &FileWatch::installedWatches, &m_fileIndexScheduler, &FileIndexScheduler::scheduleIndexing);
-    connect(&m_fileIndexScheduler, &FileIndexScheduler::stateChanged, this, &MainHub::stateChanged);
+    connect(&m_fileIndexScheduler, &FileIndexScheduler::stateChanged, this, &MainHub::slotStateChanged);
 
     QDBusConnection bus = QDBusConnection::sessionBus();
     bus.registerObject(QStringLiteral("/indexer"), this, QDBusConnection::ExportAllSlots |
@@ -90,7 +86,13 @@ bool MainHub::isSuspended() const
     return m_isSuspended;
 }
 
-IndexerState MainHub::state() const
+int MainHub::state() const
 {
-    return m_fileIndexScheduler.state();
+    return static_cast<int>(m_fileIndexScheduler.state());
 }
+
+void MainHub::slotStateChanged(IndexerState state)
+{
+    Q_EMIT stateChanged(static_cast<int>(state));
+}
+

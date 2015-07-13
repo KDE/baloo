@@ -42,9 +42,6 @@ Monitor::Monitor(QObject *parent)
     , m_filesIndexed(0)
     , m_remainingTime(QStringLiteral("Estimating"))
 {
-    qRegisterMetaType<Baloo::IndexerState>("Baloo::IndexerState");
-    qDBusRegisterMetaType<Baloo::IndexerState>();
-
     QString balooService = QStringLiteral("org.kde.baloo");
     QString extractorService = QStringLiteral("org.kde.baloo.extractor");
 
@@ -182,10 +179,11 @@ void Monitor::updateRemainingTime()
     Q_EMIT remainingTimeChanged();
 }
 
-void Monitor::slotIndexerStateChanged(Baloo::IndexerState state)
+void Monitor::slotIndexerStateChanged(int state)
 {
-    if (m_indexerState != state) {
-        m_indexerState = state;
+    Baloo::IndexerState newState = static_cast<Baloo::IndexerState>(state);
+    if (m_indexerState != newState) {
+        m_indexerState = newState;
         Q_EMIT indexerStateChanged();
         fetchTotalFiles();
     }

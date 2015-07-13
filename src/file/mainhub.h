@@ -44,10 +44,14 @@ public Q_SLOTS:
     void resume();
     uint getRemainingTime();
     bool isSuspended() const;
-    IndexerState state() const;
+    int state() const;
 
 Q_SIGNALS:
-    Q_SCRIPTABLE void stateChanged(IndexerState state);
+    Q_SCRIPTABLE void stateChanged(int state);
+
+private Q_SLOTS:
+    void slotStateChanged(IndexerState state);
+
 
 private:
     Database* m_db;
