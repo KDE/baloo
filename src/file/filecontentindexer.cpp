@@ -23,12 +23,14 @@
 
 #include <QEventLoop>
 #include <QElapsedTimer>
+#include <QTimer>
 
 using namespace Baloo;
 
 FileContentIndexer::FileContentIndexer(FileContentIndexerProvider* provider)
     : m_provider(provider)
     , m_stop(0)
+    , m_delay(0)
     , m_batchTimeBuffer(6, 0)
     , m_bufferIndex(0)
 {
@@ -43,12 +45,22 @@ void FileContentIndexer::run()
         // WARNING: This will go mad, if the Extractor does not commit after 40 files
         // cause then we will keep fetching the same 40 again and again.
         //
+        QElapsedTimer timer;
+        timer.start();
+
+        if (m_delay.load()) {
+            QTimer delayTimer;
+            QEventLoop loop;
+
+            connect(&delayTimer, &QTimer::timeout, &loop, &QEventLoop::quit);
+            delayTimer.start(m_delay.load());
+            loop.exec();
+        }
+
         QVector<quint64> idList = m_provider->fetch(40);
         QEventLoop loop;
         connect(&process, &ExtractorProcess::done, &loop, &QEventLoop::quit);
 
-        QElapsedTimer timer;
-        timer.start();
         process.index(idList);
         loop.exec();
         // add the current batch time in place of the oldest batch time

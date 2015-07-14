@@ -41,6 +41,10 @@ public:
         m_stop.store(true);
     }
 
+    void delay(int delay) {
+        m_delay.store(delay);
+    }
+
     QVector<uint> batchTimings();
 Q_SIGNALS:
     void done();
@@ -49,6 +53,7 @@ private:
     FileContentIndexerProvider* m_provider;
 
     QAtomicInt m_stop;
+    QAtomicInt m_delay;
 
     QVector<uint> m_batchTimeBuffer;
     uint m_bufferIndex;
