@@ -51,6 +51,9 @@ FileIndexScheduler::FileIndexScheduler(Database* db, FileIndexerConfig* config, 
     m_eventMonitor->enable();
     connect(m_eventMonitor, &EventMonitor::powerManagementStatusChanged,
             this, &FileIndexScheduler::powerManagementStatusChanged);
+
+    connect(m_eventMonitor, &EventMonitor::idleStatusChanged, this,
+            &FileIndexScheduler::idleStatusChanged);
 }
 
 void FileIndexScheduler::scheduleIndexing()
@@ -113,6 +116,10 @@ void FileIndexScheduler::scheduleIndexing()
             m_contentIndexer = new FileContentIndexer(&m_provider);
         }
         connect(m_contentIndexer, &FileContentIndexer::done, this, &FileIndexScheduler::scheduleIndexing);
+
+        if(!m_eventMonitor->isIdle()) {
+            m_contentIndexer->delay(500);
+        }
 
         m_threadPool.start(m_contentIndexer);
         m_indexerState = ContentIndexing;
@@ -193,4 +200,13 @@ uint FileIndexScheduler::getRemainingTime()
     estimator.setFilesLeft(m_provider.size());
     estimator.setBatchTimings(m_contentIndexer->batchTimings());
     return estimator.calculateTimeLeft();
+}
+
+void FileIndexScheduler::idleStatusChanged(bool isIdle)
+{
+    if (isIdle) {
+        m_contentIndexer->delay(0);
+    } else {
+        m_contentIndexer->delay(500);
+    }
 }

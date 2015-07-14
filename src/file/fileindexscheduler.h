@@ -77,6 +77,7 @@ public Q_SLOTS:
 
 private Q_SLOTS:
     void powerManagementStatusChanged(bool isOnBattery);
+    void idleStatusChanged(bool isIdle);
 
 private:
     Database* m_db;
