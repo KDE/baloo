@@ -204,6 +204,10 @@ uint FileIndexScheduler::getRemainingTime()
 
 void FileIndexScheduler::idleStatusChanged(bool isIdle)
 {
+    if (m_indexerState != ContentIndexing) {
+        return;
+    }
+
     if (isIdle) {
         m_contentIndexer->delay(0);
     } else {
