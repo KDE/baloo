@@ -42,7 +42,7 @@ ApplicationWindow {
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.margins: 20
-            text: "Indexer State: " + monitor.state
+            text: "<b>Indexer State:</b> " + monitor.state
         }
 
         Label {
@@ -54,7 +54,7 @@ ApplicationWindow {
             elide: Text.ElideMiddle
 
             id: url
-            text: "Indexing: " + monitor.url
+            text: "<b>Indexing:</b> " + monitor.url
         }
 
         RowLayout {
