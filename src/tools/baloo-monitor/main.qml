@@ -31,11 +31,9 @@ ApplicationWindow {
     width: 640
     height: 480
     visible: true
-    SystemPalette { id: myPalette; colorGroup: SystemPalette.Active }
 
-    Rectangle {
+    Item {
         anchors.fill: parent
-        color: myPalette.window
         visible: monitor.balooRunning
 
         Label {
