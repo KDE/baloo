@@ -158,7 +158,7 @@ void Monitor::updateRemainingTime()
     hms << QStringLiteral(" hours ") << QStringLiteral(" minutes ")  << QStringLiteral(" seconds ");
 
     QStringList hms1;
-    hms << QStringLiteral(" hour ") << QStringLiteral(" minute ")  << QStringLiteral(" second ");
+    hms1 << QStringLiteral(" hour ") << QStringLiteral(" minute ")  << QStringLiteral(" second ");
 
     // time = {h, m, s}
     uint time[] = {0, 0, 0};
