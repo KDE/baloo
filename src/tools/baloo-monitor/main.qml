@@ -36,13 +36,13 @@ ApplicationWindow {
         anchors.fill: parent
         visible: monitor.balooRunning
 
-        Label {
+        StateView {
             id: indexerState
+            index: monitor.stateInt
             anchors.top: parent.top
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.margins: 20
-            text: "Indexer State: " + monitor.state
         }
 
         Label {
@@ -50,6 +50,7 @@ ApplicationWindow {
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.margins: 20
+            anchors.topMargin: 40
 
             elide: Text.ElideMiddle
 

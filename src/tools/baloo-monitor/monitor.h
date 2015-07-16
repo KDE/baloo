@@ -51,6 +51,7 @@ class Monitor : public QObject
     Q_PROPERTY(uint filesIndexed MEMBER m_filesIndexed NOTIFY newFileIndexed)
     Q_PROPERTY(QString remainingTime READ remainingTime NOTIFY remainingTimeChanged)
     Q_PROPERTY(QString state READ state NOTIFY indexerStateChanged)
+    Q_PROPERTY(int stateInt READ stateInt NOTIFY indexerStateChanged)
 public:
     Monitor(QObject* parent = 0);
 
@@ -59,6 +60,7 @@ public:
     QString suspendState() const;
     QString remainingTime() const { return m_remainingTime; }
     QString state() const { return Baloo::stateString(m_indexerState); }
+    int stateInt() const { return static_cast<int>(m_indexerState); }
 
     // Invokable methods
     Q_INVOKABLE void toggleSuspendState();
