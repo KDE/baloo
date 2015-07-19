@@ -112,9 +112,8 @@ void FileIndexScheduler::scheduleIndexing()
 
     if (m_provider.size() && !m_eventMonitor->isOnBattery()) {
         qDebug() << "Content: " << m_provider.size();
-        if (m_contentIndexer == 0) {
-            m_contentIndexer = new FileContentIndexer(&m_provider);
-        }
+
+        m_contentIndexer = new FileContentIndexer(&m_provider);
         connect(m_contentIndexer, &FileContentIndexer::done, this, &FileIndexScheduler::scheduleIndexing);
 
         if(!m_eventMonitor->isIdle()) {
@@ -162,7 +161,6 @@ void FileIndexScheduler::powerManagementStatusChanged(bool isOnBattery)
     if (isOnBattery && m_indexerState == ContentIndexing) {
         qDebug() << "On battery stopping content indexer";
         m_contentIndexer->quit();
-        m_contentIndexer = 0;
         //TODO: Maybe we can add a special state for suspended due to being on battery.
         m_indexerState = Idle;
         stateChanged(m_indexerState);
@@ -178,7 +176,6 @@ void FileIndexScheduler::setSuspend(bool suspend)
         m_eventMonitor->disable();
         if (m_indexerState == ContentIndexing) {
             m_contentIndexer->quit();
-            m_contentIndexer = 0;
         }
         m_indexerState = Suspended;
         Q_EMIT stateChanged(m_indexerState);
