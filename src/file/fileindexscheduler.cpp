@@ -165,7 +165,7 @@ void FileIndexScheduler::powerManagementStatusChanged(bool isOnBattery)
         m_indexerState = Idle;
         stateChanged(m_indexerState);
     } else if (!isOnBattery) {
-        QTimer::singleShot(0, this, SLOT(scheduleIndexing()));
+        scheduleIndexing();
     }
 }
 
