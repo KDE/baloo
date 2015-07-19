@@ -37,6 +37,11 @@ FileContentIndexer::FileContentIndexer(FileContentIndexerProvider* provider)
     Q_ASSERT(provider);
 }
 
+FileContentIndexer::~FileContentIndexer()
+{
+    Q_EMIT done();
+}
+
 void FileContentIndexer::run()
 {
     ExtractorProcess process;
@@ -67,7 +72,6 @@ void FileContentIndexer::run()
         m_batchTimeBuffer[m_bufferIndex % (m_batchTimeBuffer.size() - 1)] = timer.elapsed();
         ++m_bufferIndex;
     }
-    Q_EMIT done();
 }
 
 QVector<uint> FileContentIndexer::batchTimings()

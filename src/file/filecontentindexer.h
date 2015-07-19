@@ -34,6 +34,7 @@ class FileContentIndexer : public QObject, public QRunnable
     Q_OBJECT
 public:
     FileContentIndexer(FileContentIndexerProvider* provider);
+    ~FileContentIndexer();
 
     void run() Q_DECL_OVERRIDE;
 
