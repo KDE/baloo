@@ -40,67 +40,73 @@ Monitor::Monitor(QObject *parent)
     , m_url(QStringLiteral("Idle"))
     , m_balooInterface(0)
     , m_filesIndexed(0)
+    , m_remainingTime(QStringLiteral("Estimating"))
 {
     QString balooService = QStringLiteral("org.kde.baloo");
     QString extractorService = QStringLiteral("org.kde.baloo.extractor");
 
-    m_balooInterface = new org::kde::baloo(balooService,
+    m_balooInterface = new org::kde::balooInterface(balooService,
                                             QStringLiteral("/indexer"),
                                             m_bus, this);
 
-    m_extractorInterface = new org::kde::balooExtractor(extractorService,
+    m_extractorInterface = new org::kde::baloo::extractorInterface(extractorService,
                                                         QStringLiteral("/extractor"),
                                                         m_bus, this);
 
-    connect(m_extractorInterface, &org::kde::balooExtractor::currentUrlChanged, this, &Monitor::newFile);
-    if (m_bus.interface()->isServiceRegistered(balooService)) {
+    connect(m_extractorInterface, &org::kde::baloo::extractorInterface::currentUrlChanged,
+            this, &Monitor::newFile);
+
+    connect(m_balooInterface, &org::kde::balooInterface::stateChanged, this, &Monitor::slotIndexerStateChanged);
+    qDebug() << "start service watcher";
+    QDBusServiceWatcher *balooWatcher = new QDBusServiceWatcher(extractorService,
+                                                                m_bus,
+                                                                QDBusServiceWatcher::WatchForRegistration,
+                                                                this);
+
+    if (m_balooInterface->isValid()) {
         // baloo is already running
         balooStarted(balooService);
-
-        if (m_bus.interface()->isServiceRegistered(extractorService)) {
+        if (m_extractorInterface->isValid()) {
             balooStarted(extractorService);
         }
 
     } else {
         m_balooRunning = false;
-        QDBusServiceWatcher *balooWatcher = new QDBusServiceWatcher(balooService,
-                                                                    m_bus,
-                                                                    QDBusServiceWatcher::WatchForRegistration,
-                                                                    this);
-        balooWatcher->addWatchedService(extractorService);
+        balooWatcher->addWatchedService(balooService);
         connect(balooWatcher, &QDBusServiceWatcher::serviceRegistered, this, &Monitor::balooStarted);
     }
 }
 
-void Monitor::newFile()
+void Monitor::newFile(const QString& url)
 {
     if (m_totalFiles == 0) {
         fetchTotalFiles();
     }
-    m_url = m_extractorInterface->currentUrl();
+    m_url = url;
     if (++m_filesIndexed == m_totalFiles) {
         m_url = QStringLiteral("Done");
     }
     Q_EMIT newFileIndexed();
+
+    if (m_filesIndexed % 200 == 0) {
+        updateRemainingTime();
+    }
 }
 
 QString Monitor::suspendState() const
 {
-    return m_suspended ?  QStringLiteral("Resume") : QStringLiteral("Suspend");
+    return m_indexerState == Baloo::Suspended ?  QStringLiteral("Resume") : QStringLiteral("Suspend");
 }
 
 void Monitor::toggleSuspendState()
 {
     Q_ASSERT(m_balooInterface != 0);
 
-    if (m_suspended) {
+    if (m_indexerState == Baloo::Suspended) {
         m_balooInterface->resume();
-        m_suspended = false;
     } else {
         m_balooInterface->suspend();
-        m_suspended = true;
     }
-    Q_EMIT suspendStateChanged();
 }
 
 void Monitor::balooStarted(const QString& service)
@@ -108,12 +114,20 @@ void Monitor::balooStarted(const QString& service)
     if (service == QStringLiteral("org.kde.baloo")) {
         m_balooRunning = true;
 
-        m_suspended = m_balooInterface->isSuspended();
+        slotIndexerStateChanged(m_balooInterface->state());
+        qDebug() << "fetched suspend state";
         fetchTotalFiles();
         Q_EMIT balooStateChanged();
-        Q_EMIT suspendStateChanged();
     } else if(service == QStringLiteral("org.kde.baloo.extractor")) {
+
+        /*
+         * FIXME: This is pretty useless and slowing up startup by blocking.
+         * The interface gives us url only when baloo_extractor is in the event loop
+         * hence we only get it at the end of a batch and url is always of the last
+         * file in the batch.
+         */
         m_url = m_extractorInterface->currentUrl();
+        qDebug() << "fetched currentUrl";
         m_extractorInterface->registerMonitor();
         Q_EMIT newFileIndexed();
     }
@@ -134,5 +148,44 @@ void Monitor::startBaloo()
 {
     const QString exe = QStandardPaths::findExecutable(QLatin1String("baloo_file"));
     QProcess::startDetached(exe);
+}
+
+void Monitor::updateRemainingTime()
+{
+    uint seconds = m_balooInterface->getRemainingTime() / 1000;
+
+    QStringList hms;
+    hms << QStringLiteral(" hours ") << QStringLiteral(" minutes ")  << QStringLiteral(" seconds ");
+
+    QStringList hms1;
+    hms1 << QStringLiteral(" hour ") << QStringLiteral(" minute ")  << QStringLiteral(" second ");
+
+    // time = {h, m, s}
+    uint time[] = {0, 0, 0};
+    time[0] = seconds / (60 * 60);
+    time[1] = (seconds / 60) % 60;
+    time[2] = seconds % 60;
+
+    QString strTime;
+    for (int i = 0; i < 3; ++i) {
+        if (time[i] == 1) {
+            strTime += QString::number(time[i]) + hms1.at(i);
+        } else if (time[i] != 0) {
+            strTime += QString::number(time[i]) + hms.at(i);
+        }
+    }
+
+    m_remainingTime = strTime;
+    Q_EMIT remainingTimeChanged();
+}
+
+void Monitor::slotIndexerStateChanged(int state)
+{
+    Baloo::IndexerState newState = static_cast<Baloo::IndexerState>(state);
+    if (m_indexerState != newState) {
+        m_indexerState = newState;
+        Q_EMIT indexerStateChanged();
+        fetchTotalFiles();
+    }
 }
 

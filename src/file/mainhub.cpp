@@ -30,18 +30,23 @@ MainHub::MainHub(Database* db, FileIndexerConfig* config)
     : m_db(db)
     , m_config(config)
     , m_fileWatcher(db, config, this)
-    , m_fileIndexer(db, config, this)
+    , m_fileIndexScheduler(db, config, this)
+    , m_isSuspended(false)
 {
     Q_ASSERT(db);
     Q_ASSERT(config);
 
-    connect(&m_fileWatcher, &FileWatch::indexNewFile, &m_fileIndexer, &FileIndexer::indexFile);
-    connect(&m_fileWatcher, &FileWatch::indexModifiedFile, &m_fileIndexer, &FileIndexer::indexFile);
-    connect(&m_fileWatcher, &FileWatch::indexXAttr, &m_fileIndexer, &FileIndexer::indexXAttr);
-    connect(&m_fileWatcher, &FileWatch::installedWatches, &m_fileIndexer, &FileIndexer::update);
+    connect(&m_fileWatcher, &FileWatch::indexNewFile, &m_fileIndexScheduler, &FileIndexScheduler::indexNewFile);
+    connect(&m_fileWatcher, &FileWatch::indexModifiedFile, &m_fileIndexScheduler, &FileIndexScheduler::indexModifiedFile);
+    connect(&m_fileWatcher, &FileWatch::indexXAttr, &m_fileIndexScheduler, &FileIndexScheduler::indexXAttrFile);
+    connect(&m_fileWatcher, &FileWatch::fileRemoved, &m_fileIndexScheduler, &FileIndexScheduler::handleFileRemoved);
+
+    connect(&m_fileWatcher, &FileWatch::installedWatches, &m_fileIndexScheduler, &FileIndexScheduler::scheduleIndexing);
+    connect(&m_fileIndexScheduler, &FileIndexScheduler::stateChanged, this, &MainHub::slotStateChanged);
 
     QDBusConnection bus = QDBusConnection::sessionBus();
-    bus.registerObject(QStringLiteral("/"), this, QDBusConnection::ExportAllSlots);
+    bus.registerObject(QStringLiteral("/indexer"), this, QDBusConnection::ExportAllSlots |
+                        QDBusConnection::ExportScriptableSignals);
 
     QTimer::singleShot(0, &m_fileWatcher, SLOT(watchIndexedFolders()));
 }
@@ -54,6 +59,40 @@ void MainHub::quit() const
 void MainHub::updateConfig()
 {
     m_config->forceConfigUpdate();
-    m_fileIndexer.updateConfig();
+    // FIXME!!
+    //m_fileIndexer.updateConfig();
     m_fileWatcher.updateIndexedFoldersWatches();
 }
+
+void MainHub::resume()
+{
+    m_fileIndexScheduler.setSuspend(false);
+    m_isSuspended = false;
+}
+
+void MainHub::suspend()
+{
+    m_fileIndexScheduler.setSuspend(true);
+    m_isSuspended = true;
+}
+
+uint MainHub::getRemainingTime()
+{
+    return m_fileIndexScheduler.getRemainingTime();
+}
+
+bool MainHub::isSuspended() const
+{
+    return m_isSuspended;
+}
+
+int MainHub::state() const
+{
+    return static_cast<int>(m_fileIndexScheduler.state());
+}
+
+void MainHub::slotStateChanged(IndexerState state)
+{
+    Q_EMIT stateChanged(static_cast<int>(state));
+}
+

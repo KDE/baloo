@@ -47,7 +47,7 @@ void NewFileIndexer::run()
     for (const QString& filePath : m_files) {
         Q_ASSERT(!filePath.endsWith('/'));
 
-        QString fileName = filePath.mid(filePath.lastIndexOf('/'));
+        QString fileName = filePath.mid(filePath.lastIndexOf('/') + 1);
         if (!m_config->shouldFileBeIndexed(fileName)) {
             continue;
         }
@@ -62,6 +62,11 @@ void NewFileIndexer::run()
             continue;
         }
 
+        // The same file can be sent twice though it shouldn't be.
+        // Lets just silently ignore it instead of crashing
+        if (tr.hasDocument(job.document().id())) {
+            continue;
+        }
         tr.addDocument(job.document());
     }
 

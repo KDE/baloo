@@ -57,6 +57,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/engine
   ${CMAKE_BINARY_DIR}/src/file
   ${CMAKE_SOURCE_DIR}/src/file
+  ${CMAKE_BINARY_DIR}/src/dbus
 )
 
 # Targets

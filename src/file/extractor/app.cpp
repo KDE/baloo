@@ -83,7 +83,7 @@ void App::slotNewInput()
         }
 
         if (m_monitors.length() != 0) {
-            Q_EMIT currentUrlChanged();
+            Q_EMIT currentUrlChanged(m_currentUrl);
         }
 
         index(&tr, m_currentUrl, id);

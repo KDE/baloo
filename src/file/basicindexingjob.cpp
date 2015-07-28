@@ -52,7 +52,6 @@ bool BasicIndexingJob::index()
 
     QT_STATBUF statBuf;
     if (QT_LSTAT(url.data(), &statBuf) != 0) {
-        qCDebug(BALOO) << "Could not stat" << m_filePath;
         return false;
     }
 

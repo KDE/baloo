@@ -46,6 +46,8 @@
 #include "idutils.h"
 #include "fileindexerconfig.h"
 #include "monitor.h"
+#include "baloo_interface.h"
+#include "indexerstate.h"
 
 using namespace Baloo;
 
@@ -53,43 +55,6 @@ void start()
 {
     const QString exe = QStandardPaths::findExecutable(QLatin1String("baloo_file"));
     QProcess::startDetached(exe);
-}
-
-void stop()
-{
-    QDBusMessage message = QDBusMessage::createMethodCall(QLatin1String("org.kde.baloo"),
-                                                          QLatin1String("/indexer"),
-                                                          QLatin1String("org.kde.baloo"),
-                                                          QLatin1String("quit"));
-    QDBusConnection::sessionBus().call(message);
-}
-
-void suspend()
-{
-    QDBusMessage message = QDBusMessage::createMethodCall(QLatin1String("org.kde.baloo"),
-                                                          QLatin1String("/indexer"),
-                                                          QLatin1String("org.kde.baloo"),
-                                                          QLatin1String("suspend"));
-    QDBusConnection::sessionBus().call(message);
-}
-
-void resume()
-{
-    QDBusMessage message = QDBusMessage::createMethodCall(QLatin1String("org.kde.baloo"),
-                                                          QLatin1String("/indexer"),
-                                                          QLatin1String("org.kde.baloo"),
-                                                          QLatin1String("resume"));
-    QDBusConnection::sessionBus().call(message);
-}
-
-void updateAllFolders()
-{
-    QDBusMessage message = QDBusMessage::createMethodCall(QLatin1String("org.kde.baloo"),
-                                                          QLatin1String("/indexer"),
-                                                          QLatin1String("org.kde.baloo"),
-                                                          QLatin1String("updateAllFolders"));
-    message.setArguments(QList<QVariant>() << false /*forced*/);
-    QDBusConnection::sessionBus().call(message);
 }
 
 int main(int argc, char* argv[])
@@ -123,6 +88,11 @@ int main(int argc, char* argv[])
     QTextStream out(stdout);
 
     QString command = parser.positionalArguments().first();
+
+    OrgKdeBalooInterface balooInterface(QStringLiteral("org.kde.baloo"),
+                                        QStringLiteral("/indexer"),
+                                        QDBusConnection::sessionBus());
+
     if (command == QLatin1String("status")) {
 
         const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/");
@@ -136,11 +106,11 @@ int main(int argc, char* argv[])
 
         if (parser.positionalArguments().length() == 1) {
 
-            QDBusConnection bus = QDBusConnection::sessionBus();
-            bool running = bus.interface()->isServiceRegistered(QLatin1String("org.kde.baloo"));
+            bool running = balooInterface.isValid();
 
             if (running) {
                 out << "Baloo File Indexer is running\n";
+                out << "Indexer state: " << stateString(balooInterface.state()) << endl;
             }
             else {
                 out << "Baloo File Indexer is NOT running\n";
@@ -229,7 +199,7 @@ int main(int argc, char* argv[])
         else {
             out << "Disabling the File Indexer\n";
 
-            stop();
+            balooInterface.quit();
             const QString exe = QStandardPaths::findExecutable(QLatin1String("baloo_file_cleaner"));
             QProcess::startDetached(exe);
         }
@@ -252,25 +222,26 @@ int main(int argc, char* argv[])
         }
 
         if (shouldStop)
-            stop();
+            balooInterface.quit();
         if (shouldStart)
             start();
     }
 
     if (command == QStringLiteral("suspend")) {
-        suspend();
+        balooInterface.suspend();
         out << "File Indexer suspended\n";
         return 0;
     }
 
     if (command == QStringLiteral("resume")) {
-        resume();
+        balooInterface.resume();
         out << "File Indexer resumed\n";
         return 0;
     }
 
     if (command == QStringLiteral("check")) {
-        updateAllFolders();
+        //TODO: implement in new arch
+        //balooInterface.updateAllFolders();
         out << "Started search for unindexed files\n";
         return 0;
     }

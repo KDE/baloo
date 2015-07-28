@@ -29,12 +29,21 @@ QByteArray DocTermsCodec::encode(const QVector<QByteArray>& terms)
 {
     Q_ASSERT(!terms.isEmpty());
 
-    // We need to put this in one huge byte-array
-    // FIXME: Ideally, the data should be provided in such a manner. Not in this vector
     QByteArray full;
-    for (const QByteArray& ba : terms) {
-        full.append(ba);
-        full.append('\0');
+    full.append(terms.first());
+    full.append('\0');
+
+    for (int i = 1; i < terms.size(); i++) {
+        const QByteArray term = terms[i];
+        const QByteArray prevTerm = terms[i-1];
+
+        if (term.startsWith(prevTerm)) {
+            full.append(term.mid(prevTerm.size()));
+            full.append(static_cast<char>(1));
+        } else {
+            full.append(term);
+            full.append('\0');
+        }
     }
 
     return full;
@@ -48,13 +57,22 @@ QVector<QByteArray> DocTermsCodec::decode(const QByteArray& full)
 
     int prevWordBoundary = 0;
     for (int i = 0; i < full.size(); i++) {
+        if (full[i] == 1) {
+            QByteArray arr = QByteArray::fromRawData(full.constData() + prevWordBoundary,
+                                                     i - prevWordBoundary);
+
+            list << list.last() + arr;
+            prevWordBoundary = i + 1;
+            continue;
+        }
+
         if (full[i] == '\0') {
             QByteArray arr = QByteArray::fromRawData(full.constData() + prevWordBoundary,
                                                      i - prevWordBoundary);
 
             list << arr;
             prevWordBoundary = i + 1;
-            i++;
+            continue;
         }
     }
 

@@ -44,7 +44,7 @@ class Transaction;
 class App : public QObject
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "org.kde.balooExtractor")
+    Q_CLASSINFO("D-Bus Interface", "org.kde.baloo.extractor")
     Q_PROPERTY(QString currentUrl READ currentUrl NOTIFY currentUrlChanged)
 
 public:
@@ -52,7 +52,7 @@ public:
     QString currentUrl() const { return m_currentUrl; }
 
 Q_SIGNALS:
-    Q_SCRIPTABLE void currentUrlChanged();
+    Q_SCRIPTABLE void currentUrlChanged(QString url);
 
 private Q_SLOTS:
     void slotNewInput();

@@ -1,6 +1,6 @@
 /*
- * <one line to give the library's name and an idea of what it does.>
- * Copyright (C) 2014  Vishesh Handa <me@vhanda.in>
+   This file is part of the KDE Baloo project.
+ * Copyright (C) 2015  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,33 +18,30 @@
  *
  */
 
-#ifndef SCHEDULERTEST_H
-#define SCHEDULERTEST_H
+#include "doctermscodec.h"
 
 #include <QObject>
+#include <QTemporaryDir>
+#include <QTest>
 
-class Database;
+using namespace Baloo;
 
-namespace Baloo {
-
-class SchedulerTest : public QObject
+class DocTermsCodecTest : public QObject
 {
     Q_OBJECT
-private:
-    struct IndexingData {
-        int phaseOne;
-        int phaseTwo;
-        int failed;
-    };
-
-    IndexingData fetchIndexingData(Database& db);
-
 private Q_SLOTS:
-    void test();
-    void testBatterySuspend();
-    void testIdle();
+    void test() {
+        DocTermsCodec codec;
+
+        QVector<QByteArray> vec = {"ab", "abc", "dar", "darwin"};
+        QByteArray arr = codec.encode(vec);
+        QVERIFY(!arr.isEmpty());
+
+        QVector<QByteArray> vec2 = codec.decode(arr);
+        QCOMPARE(vec2, vec);
+    }
 };
 
-}
+QTEST_MAIN(DocTermsCodecTest)
 
-#endif // SCHEDULERTEST_H
+#include "doctermscodectest.moc"

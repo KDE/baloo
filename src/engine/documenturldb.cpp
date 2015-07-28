@@ -39,7 +39,7 @@ DocumentUrlDB::~DocumentUrlDB()
 {
 }
 
-void DocumentUrlDB::put(quint64 docId, const QByteArray& url)
+bool DocumentUrlDB::put(quint64 docId, const QByteArray& url)
 {
     Q_ASSERT(docId > 0);
     Q_ASSERT(!url.isEmpty());
@@ -55,6 +55,9 @@ void DocumentUrlDB::put(quint64 docId, const QByteArray& url)
     //
     {
         quint64 id = filePathToId(arr);
+        if (!id) {
+            return false;
+        }
         Q_ASSERT(id == docId);
 
         int pos = arr.lastIndexOf('/');
@@ -65,7 +68,7 @@ void DocumentUrlDB::put(quint64 docId, const QByteArray& url)
 
         add(id, parentId, name);
         if (idFilenameDb.contains(parentId))
-            return;
+            return true;
     }
 
     //
@@ -94,6 +97,8 @@ void DocumentUrlDB::put(quint64 docId, const QByteArray& url)
 
         add(id, parentId, name);
     }
+
+    return true;
 }
 
 void DocumentUrlDB::add(quint64 id, quint64 parentId, const QByteArray& name)
