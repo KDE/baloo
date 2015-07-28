@@ -27,7 +27,16 @@ namespace Baloo {
 
 class DatabaseSize {
 public:
-    uint size;
+    /**
+     * This is the size which is computed with all the pages used from all the
+     * individual database pages
+     */
+    uint expectedSize;
+
+    /**
+     * This is the size based on the MDB_env and the total number of pages used
+     */
+    uint actualSize;
 
     uint postingDb;
     uint positionDb;

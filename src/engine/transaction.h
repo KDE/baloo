@@ -124,6 +124,7 @@ private:
 
     const DatabaseDbis& m_dbis;
     MDB_txn* m_txn;
+    MDB_env* m_env;
     WriteTransaction* m_writeTrans;
 
     friend class DBState; // for testing

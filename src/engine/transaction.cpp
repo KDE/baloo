@@ -47,6 +47,7 @@ using namespace Baloo;
 
 Transaction::Transaction(const Database& db, Transaction::TransactionType type)
     : m_dbis(db.m_dbis)
+    , m_env(db.m_env)
     , m_writeTrans(0)
 {
     uint flags = type == ReadOnly ? MDB_RDONLY : 0;
@@ -462,9 +463,13 @@ DatabaseSize Transaction::dbSize()
 
     dbSize.mtimeDb = dbiSize(m_txn, m_dbis.mtimeDbi);
 
-    dbSize.size = dbSize.positionDb + dbSize.positionDb + dbSize.docTerms + dbSize.docFilenameTerms
+    dbSize.expectedSize = dbSize.positionDb + dbSize.positionDb + dbSize.docTerms + dbSize.docFilenameTerms
                   + dbSize.docXattrTerms + dbSize.idTree + dbSize.idFilename + dbSize.docTime
                   + dbSize.docData + dbSize.contentIndexingIds + dbSize.failedIds + dbSize.mtimeDb;
+
+    MDB_envinfo info;
+    mdb_env_info(m_env, &info);
+    dbSize.actualSize = info.me_last_pgno * 4096;
 
     return dbSize;
 }
