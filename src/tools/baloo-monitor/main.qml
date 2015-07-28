@@ -85,7 +85,7 @@ ApplicationWindow {
             anchors.top: progressLayout.bottom
             anchors.left: parent.left
             anchors.margins: 20
-            text: "<b>Remaining Time:<b> " + monitor.remainingTime
+            text: "<b>Remaining Time:</b> " + monitor.remainingTime
         }
     }
 
