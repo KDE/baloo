@@ -51,7 +51,7 @@ void ModifiedFileIndexer::run()
     for (const QString& filePath : m_files) {
         Q_ASSERT(!filePath.endsWith('/'));
 
-        QString fileName = filePath.mid(filePath.lastIndexOf('/'));
+        QString fileName = filePath.mid(filePath.lastIndexOf('/') + 1);
         if (!m_config->shouldFileBeIndexed(fileName)) {
             continue;
         }
@@ -89,8 +89,15 @@ void ModifiedFileIndexer::run()
             continue;
         }
 
-        tr.replaceDocument(job.document(), DocumentTime);
-        tr.setPhaseOne(job.document().id());
+        // we can get modified events for files which do not exist
+        // cause Baloo was not running and missed those events
+        if (tr.hasDocument(job.document().id())) {
+            tr.replaceDocument(job.document(), DocumentTime);
+            tr.setPhaseOne(job.document().id());
+        }
+        else {
+            tr.addDocument(job.document());
+        }
     }
 
     tr.commit();

@@ -3,15 +3,17 @@ set(MONITOR_SOURCES
   monitor.cpp
 )
 
+set(DBUS_INTERFACES
+  ${CMAKE_BINARY_DIR}/src/dbus/extractor_interface.cpp
+  ${CMAKE_BINARY_DIR}/src/dbus/baloo_interface.cpp
+)
+
+SET_SOURCE_FILES_PROPERTIES(${DBUS_INTERFACES} PROPERTIES GENERATED 1)
+
 qt5_add_resources(RESOURCES qml.qrc)
 
-set(baloo_interface_xml ${CMAKE_SOURCE_DIR}/src/file/org.kde.baloo.file.indexer.xml)
-qt5_add_dbus_interface(BALOO_INTERFACE ${baloo_interface_xml} baloo_interface)
-
-set(extractor_interface_xml ${CMAKE_SOURCE_DIR}/src/file/extractor/org.kde.balooExtractor.xml)
-qt5_add_dbus_interface(EXTRACTOR_INTERFACE ${extractor_interface_xml} extractor_interface)
-
-add_executable(baloo-monitor ${MONITOR_SOURCES} ${RESOURCES} ${BALOO_INTERFACE} ${EXTRACTOR_INTERFACE})
+add_executable(baloo-monitor ${MONITOR_SOURCES} ${RESOURCES} ${DBUS_INTERFACES})
+add_dependencies(baloo-monitor BalooDBusInterfaces)
 
 target_link_libraries(baloo-monitor PUBLIC
   Qt5::Core

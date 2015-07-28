@@ -18,11 +18,14 @@
  */
 
 #include "firstrunindexer.h"
-#include "unindexedfileiterator.h"
 #include "basicindexingjob.h"
+#include "fileindexerconfig.h"
+#include "filtereddiriterator.h"
 
 #include "database.h"
 #include "transaction.h"
+
+#include <QMimeDatabase>
 
 using namespace Baloo;
 
@@ -38,18 +41,37 @@ FirstRunIndexer::FirstRunIndexer(Database* db, FileIndexerConfig* config, const 
 
 void FirstRunIndexer::run()
 {
+    Q_ASSERT(m_config->isInitialRun());
+    {
+        Transaction tr(m_db, Transaction::ReadOnly);
+        Q_ASSERT_X(tr.size() == 0, "FirstRunIndexer", "The database is not empty on first run");
+    }
+
+    QMimeDatabase mimeDb;
+
     for (const QString& folder : m_folders) {
         Transaction tr(m_db, Transaction::ReadWrite);
 
-        // FIXME: This checks the mtime of the file as well, and that is not required
-        //        during this first run!
-        UnIndexedFileIterator it(m_config, &tr, folder);
+        FilteredDirIterator it(m_config, folder);
         while (!it.next().isEmpty()) {
-            BasicIndexingJob job(it.filePath(), it.mimetype());
+            QString mimetype = mimeDb.mimeTypeForFile(it.filePath(), QMimeDatabase::MatchExtension).name();
+            if (!m_config->shouldMimeTypeBeIndexed(mimetype)) {
+                continue;
+            }
+
+            BasicIndexingJob job(it.filePath(), mimetype);
             if (!job.index()) {
                 continue;
             }
 
+            // Even though this is the first run, because 2 hard links will resolve to the same id,
+            // we land up crashing (due to the asserts in addDocument).
+            // Hence we are checking before.
+            // FIXME: Silently ignore hard links!
+            //
+            if (tr.hasDocument(job.document().id())) {
+                continue;
+            }
             tr.addDocument(job.document());
         }
 
@@ -57,6 +79,8 @@ void FirstRunIndexer::run()
         //        based on how much memory we consume
         tr.commit();
     }
+
+    m_config->setInitialRun(false);
 
     Q_EMIT done();
 }

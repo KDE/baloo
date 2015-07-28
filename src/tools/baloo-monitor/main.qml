@@ -31,15 +31,22 @@ ApplicationWindow {
     width: 640
     height: 480
     visible: true
-    SystemPalette { id: myPalette; colorGroup: SystemPalette.Active }
 
-    Rectangle {
+    Item {
         anchors.fill: parent
-        color: myPalette.window
         visible: monitor.balooRunning
 
         Label {
+            id: indexerState
             anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.margins: 20
+            text: "<b>Indexer State:</b> " + monitor.state
+        }
+
+        Label {
+            anchors.top: indexerState.bottom
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.margins: 20
@@ -47,10 +54,11 @@ ApplicationWindow {
             elide: Text.ElideMiddle
 
             id: url
-            text: "Indexing: " + monitor.url
+            text: "<b>Indexing:</b> " + monitor.url
         }
 
         RowLayout {
+            id: progressLayout
             anchors.top: url.bottom
             anchors.left: parent.left
             anchors.right: parent.right
@@ -70,6 +78,14 @@ ApplicationWindow {
                 text: monitor.suspendState
                 onClicked: monitor.toggleSuspendState()
             }
+        }
+
+        Label {
+            id: remainingTime
+            anchors.top: progressLayout.bottom
+            anchors.left: parent.left
+            anchors.margins: 20
+            text: "<b>Remaining Time:</b> " + monitor.remainingTime
         }
     }
 

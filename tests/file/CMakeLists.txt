@@ -1,35 +1,5 @@
-add_executable(indexerconfigtest
-               indexerconfigtest.cpp)
-
-target_link_libraries(indexerconfigtest
-  Qt5::Core
-  KF5::CoreAddons
-  KF5::ConfigCore
-  baloofilecommon
-)
-
-add_executable(basicindexingqueuetest-manual
-                    basicindexingqueuetest.cpp
-)
-
-target_link_libraries(basicindexingqueuetest-manual
-  Qt5::Core
-  baloofilecommon
-)
-
-#add_executable(fileindexingqueuetest-manual
-#                    fileindexingqueuetest.cpp
-#                    fileextractor.cpp
-#)
-#
-#target_link_libraries(fileindexingqueuetest-manual
-#  Qt5::Core
-#  KF5::FileMetaData
-#  KF5::KIOCore
-#  KF5::ConfigCore
-#  KF5::Baloo
-#  baloofilecommon
-#)
+add_executable(indexerconfigtest indexerconfigtest.cpp)
+target_link_libraries(indexerconfigtest baloofilecommon)
 
 add_executable(inotifytest inotify.cpp)
 target_link_libraries(inotifytest Qt5::Core baloofilecommon)
@@ -47,7 +17,15 @@ target_link_libraries(filtereddiriteratorbenchmark Qt5::Core baloofilecommon)
 #
 # Remaining Time
 #
-add_executable(remainingtimetest-manual remainingtimetest.cpp)
+set_source_files_properties(${CMAKE_BINARY_DIR}/src/dbus/extractor_interface.cpp PROPERTIES GENERATED 1)
+
+add_executable(remainingtimetest-manual
+  remainingtimetest.cpp
+  ${CMAKE_BINARY_DIR}/src/dbus/extractor_interface.cpp
+)
+
+add_dependencies(remainingtimetest-manual BalooDBusInterfaces)
+
 target_link_libraries(remainingtimetest-manual
   Qt5::Core
   baloofilecommon

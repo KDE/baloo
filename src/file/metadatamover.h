@@ -50,6 +50,8 @@ Q_SIGNALS:
      */
     void movedWithoutData(const QString& path);
 
+    void fileRemoved(const QString& path);
+
 private:
     /**
      * Remove the metadata for file \p url

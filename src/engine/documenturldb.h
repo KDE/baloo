@@ -35,7 +35,12 @@ public:
     explicit DocumentUrlDB(MDB_dbi idTreeDb, MDB_dbi idFileNameDb, MDB_txn* txn);
     ~DocumentUrlDB();
 
-    void put(quint64 docId, const QByteArray& url);
+    /**
+     * Returns true if added
+     * Returns false is the file no longer exists and could not be added
+     */
+    bool put(quint64 docId, const QByteArray& url);
+
     QByteArray get(quint64 docId) const;
     QVector<quint64> getChildren(quint64 docId) const;
 

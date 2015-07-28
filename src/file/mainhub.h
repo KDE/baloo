@@ -23,7 +23,7 @@
 #include <QObject>
 
 #include "filewatch.h"
-#include "fileindexer.h"
+#include "fileindexscheduler.h"
 
 namespace Baloo {
 
@@ -33,19 +33,34 @@ class FileIndexerConfig;
 class MainHub : public QObject
 {
     Q_OBJECT
+    Q_CLASSINFO("D-Bus Interface", "org.kde.baloo")
 public:
     MainHub(Database* db, FileIndexerConfig* config);
 
 public Q_SLOTS:
     void quit() const;
     void updateConfig();
+    void suspend();
+    void resume();
+    uint getRemainingTime();
+    bool isSuspended() const;
+    int state() const;
+
+Q_SIGNALS:
+    Q_SCRIPTABLE void stateChanged(int state);
+
+private Q_SLOTS:
+    void slotStateChanged(IndexerState state);
+
 
 private:
     Database* m_db;
     FileIndexerConfig* m_config;
 
     FileWatch m_fileWatcher;
-    FileIndexer m_fileIndexer;
+    FileIndexScheduler m_fileIndexScheduler;
+
+    bool m_isSuspended;
 };
 }
 

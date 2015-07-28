@@ -23,6 +23,7 @@
 #include <QRunnable>
 #include <QObject>
 #include <QAtomicInt>
+#include <QVector>
 
 namespace Baloo {
 
@@ -33,6 +34,7 @@ class FileContentIndexer : public QObject, public QRunnable
     Q_OBJECT
 public:
     FileContentIndexer(FileContentIndexerProvider* provider);
+    ~FileContentIndexer();
 
     void run() Q_DECL_OVERRIDE;
 
@@ -40,7 +42,11 @@ public:
         m_stop.store(true);
     }
 
-    quint64 averageTimePerBatch() const;
+    void delay(int delay) {
+        m_delay.store(delay);
+    }
+
+    QVector<uint> batchTimings();
 Q_SIGNALS:
     void done();
 
@@ -48,9 +54,10 @@ private:
     FileContentIndexerProvider* m_provider;
 
     QAtomicInt m_stop;
+    QAtomicInt m_delay;
 
-    quint64 m_processingTime;
-    quint32 m_batchesProcessed;
+    QVector<uint> m_batchTimeBuffer;
+    uint m_bufferIndex;
 
     QString m_path;
 };

@@ -26,6 +26,16 @@
 #include <QObject>
 #include <QTextStream>
 
+#include "extractor_interface.h"
+
+namespace org {
+    namespace kde {
+        namespace baloo {
+            typedef OrgKdeBalooExtractorInterface extractorInterface;
+        }
+    }
+}
+
 namespace Baloo {
 class Monitor : public QObject
 {
@@ -34,10 +44,12 @@ public:
     Monitor(QObject* parent = 0);
 
 private Q_SLOTS:
-    void newFile(QString url);
+    void newFile(const QString& url);
 
 private:
     QTextStream m_out;
+    org::kde::baloo::extractorInterface* m_interface;
+
 };
 }
 #endif // MONITOR_H
