@@ -266,7 +266,7 @@ int main(int argc, char* argv[])
             const QString url = QFileInfo(parser.positionalArguments().at(i)).absoluteFilePath();
             quint64 id = filePathToId(QFile::encodeName(url));
             if (id == 0) {
-                out << "Could not stat file: " << url;
+                out << "Could not stat file: " << url << endl;
                 continue;
             }
             if (tr.inPhaseOne(id))  {
@@ -275,6 +275,7 @@ int main(int argc, char* argv[])
             }
             if (!tr.documentData(id).isEmpty()) {
                 out << "Skipping: " << url << " Reason: Already indexed\n";
+                continue;
             }
             Indexer indexer(url, &tr);
             out << "Indexing " << url << endl;
