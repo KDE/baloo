@@ -215,7 +215,11 @@ void WriteTransaction::replaceDocument(const Document& doc, DocumentOperations o
     }
 
     if (operations & DocumentData) {
-        docDataDB.put(id, doc.m_data);
+        if (!doc.m_data.isEmpty()) {
+            docDataDB.put(id, doc.m_data);
+        } else {
+            docDataDB.del(id);
+        }
     }
 }
 
