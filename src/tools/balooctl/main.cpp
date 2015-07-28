@@ -313,19 +313,21 @@ int main(int argc, char* argv[])
             out << " %\n";
         };
 
-        out << "Size: " << format.formatByteSize(size.size, 2) << "\n\n";
-        prFunc("PostingDB", size.postingDb, size.size);
-        prFunc("PosistionDB", size.positionDb, size.size);
-        prFunc("DocTerms", size.docTerms, size.size);
-        prFunc("DocFilenameTerms", size.docFilenameTerms, size.size);
-        prFunc("DocXattrTerms", size.docXattrTerms, size.size);
-        prFunc("IdTree", size.idTree, size.size);
-        prFunc("IdFileName", size.idFilename, size.size);
-        prFunc("DocTime", size.docTime, size.size);
-        prFunc("DocData", size.docData, size.size);
-        prFunc("ContentIndexingDB", size.contentIndexingIds, size.size);
-        prFunc("FailedIdsDB", size.failedIds, size.size);
-        prFunc("MTimeDB", size.mtimeDb, size.size);
+        uint ts = size.expectedSize;
+        out << "Actual Size: " << format.formatByteSize(size.actualSize, 2) << "\n";
+        out << "Expected Size: " << format.formatByteSize(size.expectedSize, 2) << "\n\n";
+        prFunc("PostingDB", size.postingDb, ts);
+        prFunc("PosistionDB", size.positionDb, ts);
+        prFunc("DocTerms", size.docTerms, ts);
+        prFunc("DocFilenameTerms", size.docFilenameTerms, ts);
+        prFunc("DocXattrTerms", size.docXattrTerms, ts);
+        prFunc("IdTree", size.idTree, ts);
+        prFunc("IdFileName", size.idFilename, ts);
+        prFunc("DocTime", size.docTime, ts);
+        prFunc("DocData", size.docData, ts);
+        prFunc("ContentIndexingDB", size.contentIndexingIds, ts);
+        prFunc("FailedIdsDB", size.failedIds, ts);
+        prFunc("MTimeDB", size.mtimeDb, ts);
 
         return 0;
     }
