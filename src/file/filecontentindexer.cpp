@@ -63,6 +63,9 @@ void FileContentIndexer::run()
         }
 
         QVector<quint64> idList = m_provider->fetch(40);
+        if (idList.isEmpty() || m_stop.load()) {
+            break;
+        }
         QEventLoop loop;
         connect(&process, &ExtractorProcess::done, &loop, &QEventLoop::quit);
 
