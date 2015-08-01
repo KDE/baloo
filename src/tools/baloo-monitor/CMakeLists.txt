@@ -23,4 +23,3 @@ target_link_libraries(baloo-monitor PUBLIC
 )
 
 install(TARGETS baloo-monitor ${INSTALL_TARGETS_DEFAULT_ARGS})
-install (FILES org.kde.baloo-monitor.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
