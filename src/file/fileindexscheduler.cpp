@@ -61,10 +61,8 @@ void FileIndexScheduler::scheduleIndexing()
     if (m_threadPool.activeThreadCount() || m_indexerState == Suspended) {
         return;
     }
-    qDebug() << "SCHEDULE";
 
     if (m_config->isInitialRun()) {
-        qDebug() << m_config->includeFolders();
         auto runnable = new FirstRunIndexer(m_db, m_config, m_config->includeFolders());
         connect(runnable, &FirstRunIndexer::done, this, &FileIndexScheduler::scheduleIndexing);
 
@@ -75,7 +73,6 @@ void FileIndexScheduler::scheduleIndexing()
     }
 
     if (!m_newFiles.isEmpty()) {
-        qDebug() << "NEW" << m_newFiles;
         auto runnable = new NewFileIndexer(m_db, m_config, m_newFiles);
         connect(runnable, &NewFileIndexer::done, this, &FileIndexScheduler::scheduleIndexing);
 
@@ -87,7 +84,6 @@ void FileIndexScheduler::scheduleIndexing()
     }
 
     if (!m_modifiedFiles.isEmpty()) {
-        qDebug() << "MOD" << m_modifiedFiles;
         auto runnable = new ModifiedFileIndexer(m_db, m_config, m_modifiedFiles);
         connect(runnable, &ModifiedFileIndexer::done, this, &FileIndexScheduler::scheduleIndexing);
 
@@ -99,7 +95,6 @@ void FileIndexScheduler::scheduleIndexing()
     }
 
     if (!m_xattrFiles.isEmpty()) {
-        qDebug() << "XATTR" << m_xattrFiles;
         auto runnable = new XAttrIndexer(m_db, m_config, m_xattrFiles);
         connect(runnable, &XAttrIndexer::done, this, &FileIndexScheduler::scheduleIndexing);
 
@@ -111,8 +106,6 @@ void FileIndexScheduler::scheduleIndexing()
     }
 
     if (m_provider.size() && !m_eventMonitor->isOnBattery()) {
-        qDebug() << "Content: " << m_provider.size();
-
         m_contentIndexer = new FileContentIndexer(&m_provider);
         connect(m_contentIndexer, &FileContentIndexer::done, this, &FileIndexScheduler::scheduleIndexing);
 
@@ -127,7 +120,6 @@ void FileIndexScheduler::scheduleIndexing()
     }
     m_indexerState = Idle;
     Q_EMIT stateChanged(m_indexerState);
-    qDebug() << "IDLE";
 }
 
 static void removeStartsWith(QStringList& list, const QString& dir)
