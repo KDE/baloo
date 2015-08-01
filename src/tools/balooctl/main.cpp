@@ -200,8 +200,9 @@ int main(int argc, char* argv[])
             out << "Disabling the File Indexer\n";
 
             balooInterface.quit();
-            const QString exe = QStandardPaths::findExecutable(QLatin1String("baloo_file_cleaner"));
-            QProcess::startDetached(exe);
+
+            const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QStringLiteral("/baloo/index");
+            QFile(path).remove();
         }
 
         return 0;
