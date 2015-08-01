@@ -23,6 +23,7 @@
 #include "app.h"
 #include "../priority.h"
 
+#include <KAboutData>
 #include <KLocalizedString>
 #include <QStandardPaths>
 #include <QByteArray>
@@ -36,9 +37,12 @@ int main(int argc, char* argv[])
     setIdleSchedulingPriority();
     lowerPriority();
 
+    KAboutData aboutData(QStringLiteral("baloo"), i18n("Baloo File Extractor"), PROJECT_VERSION);
+    aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QStringLiteral("vhanda@kde.org"), QStringLiteral("http://vhanda.in"));
+
+    KAboutData::setApplicationData(aboutData);
+
     QCoreApplication app(argc, argv);
-    QCoreApplication::setApplicationName(QLatin1String("Baloo File Extractor"));
-    QCoreApplication::setApplicationVersion(PROJECT_VERSION);
 
     QDBusConnection::sessionBus().registerService(QStringLiteral("org.kde.baloo.extractor"));
 
