@@ -81,9 +81,11 @@ void FileWatchTest::testFileCreation()
     fileWatch.m_pendingFileQueue->setMinimumTimeout(0);
     fileWatch.m_pendingFileQueue->setTrackingTime(0);
 
-    //QSignalSpy spy(&fileWatch, SIGNAL(installedWatches()));
-    //QVERIFY(spy.isValid());
-    //QVERIFY(spy.wait());
+    QSignalSpy spy(&fileWatch, SIGNAL(installedWatches()));
+    QVERIFY(spy.isValid());
+
+    fileWatch.watchIndexedFolders();
+    QVERIFY(spy.count() || spy.wait());
 
     QSignalSpy spyIndexNew(&fileWatch, SIGNAL(indexNewFile(QString)));
     QSignalSpy spyIndexModified(&fileWatch, SIGNAL(indexModifiedFile(QString)));
