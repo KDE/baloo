@@ -1,36 +1,39 @@
 cmake_minimum_required(VERSION 2.8.12)
 
 project(Baloo)
-set(PROJECT_VERSION "5.9.90")
 
-# ECM setup
-find_package(ECM 1.2.0 REQUIRED NO_MODULE)
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${ECM_MODULE_PATH})
+include(FeatureSummary)
+find_package(ECM 5.13.0 REQUIRED NO_MODULE)
+set_package_properties(ECM PROPERTIES TYPE REQUIRED DESCRIPTION "Extra CMake Modules." URL "https://projects.kde.org/projects/kdesupport/extra-cmake-modules")
+feature_summary(WHAT REQUIRED_PACKAGES_NOT_FOUND FATAL_ON_MISSING_REQUIRED_PACKAGES)
+
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
 
 include(GenerateExportHeader)
 include(ECMGenerateHeaders)
 include(ECMPackageConfigHelpers)
 include(ECMSetupVersion)
-include(FeatureSummary)
 include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(KDEFrameworkCompilerSettings)
 include(ECMInstallIcons)
 include(ECMAddTests)
 
-set(KF5_VERSION "5.0.0")
+set(KF5_VERSION "5.13.0") # handled by release scripts
+set(KF5_DEP_VERSION "5.13.0") # handled by release scripts
 
-ecm_setup_version(${PROJECT_VERSION} VARIABLE_PREFIX BALOO
+ecm_setup_version(${KF5_VERSION} VARIABLE_PREFIX BALOO
                         VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/baloo_version.h"
                         PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF5BalooConfigVersion.cmake"
-                        SOVERSION 2
+                        SOVERSION 5
 )
 
 # Build dependencies
-find_package(Qt5 REQUIRED NO_MODULE COMPONENTS Widgets Quick DBus Test)
+set(REQUIRED_QT_VERSION 5.3.0)
+find_package(Qt5 ${REQUIRED_QT_VERSION} REQUIRED NO_MODULE COMPONENTS Widgets Quick DBus Test)
 
-find_package(KF5 ${KF5_VERSION} REQUIRED COMPONENTS I18n Config IdleTime Auth Crash Solid KIO KDELibs4Support DBusAddons)
-find_package(KF5 ${PROJECT_VERSION} REQUIRED COMPONENTS FileMetaData)
+find_package(KF5 ${KF5_DEP_VERSION} REQUIRED COMPONENTS I18n Config IdleTime Auth Crash Solid KIO KDELibs4Support DBusAddons)
+find_package(KF5 ${KF5_VERSION} REQUIRED COMPONENTS FileMetaData)
 
 find_package(LMDB)
 set_package_properties(LMDB PROPERTIES
