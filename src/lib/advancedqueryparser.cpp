@@ -32,7 +32,7 @@ AdvancedQueryParser::AdvancedQueryParser()
 
 static bool isOperator(const QChar& c)
 {
-    switch (c.toAscii()) {
+    switch (c.toLatin1()) {
     case ':':
     case '=':
     case '>':
@@ -178,7 +178,7 @@ Term AdvancedQueryParser::parse(const QString& text)
         // Handle the different comparators (and braces)
         Term::Comparator comparator = Term::Auto;
 
-        switch (token.at(0).toAscii()) {
+        switch (token.at(0).toLatin1()) {
             case ':':
                 comparator = Term::Contains;
                 break;

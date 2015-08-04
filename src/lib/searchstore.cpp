@@ -215,9 +215,9 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
             QDate endDate(startDate);
 
             if (month == 1)
-                endDate.setYMD(endDate.year(), 12, endDate.day());
+                endDate.setDate(endDate.year(), 12, endDate.day());
             else if (day == 1)
-                endDate.setYMD(endDate.year(), endDate.month(), endDate.daysInMonth());
+                endDate.setDate(endDate.year(), endDate.month(), endDate.daysInMonth());
 
             return tr->mTimeRangeIter(QDateTime(startDate).toTime_t(), QDateTime(endDate, QTime(23, 59, 59)).toTime_t());
         }
