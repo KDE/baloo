@@ -6,4 +6,4 @@ platforms:
     - name: Linux
 portingAid: false
 deprecated: false
-release: false
+release: true
