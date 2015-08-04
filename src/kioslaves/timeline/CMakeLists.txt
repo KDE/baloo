@@ -10,7 +10,6 @@ add_library(timeline MODULE ${kio_timeline_SRCS})
 target_link_libraries(timeline
   KF5::KIOWidgets
   KF5::I18n
-  KF5::KDELibs4Support
   KF5::Baloo
 )
 

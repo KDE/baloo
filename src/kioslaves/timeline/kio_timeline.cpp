@@ -32,8 +32,6 @@
 #include <KFormat>
 
 #include <KLocalizedString>
-#include <KCalendarSystem>
-#include <KLocale>
 
 using namespace Baloo;
 
@@ -56,14 +54,12 @@ KIO::UDSEntry createFolderUDSEntry(const QString& name, const QString& displayNa
 
 KIO::UDSEntry createMonthUDSEntry(int month, int year)
 {
-    QString dateString
-        = KLocale::global()->calendar()->formatDate(QDate(year, month, 1),
+    QString dateString = QDate(year, month, 1).toString(
                 i18nc("Month and year used in a tree above the actual days. "
-                      "Have a look at http://api.kde.org/4.x-api/kdelibs-"
-                      "apidocs/kdecore/html/classKCalendarSystem.html#a560204439a4b670ad36c16c404f292b4 "
+                      "Have a look at http://doc.qt.io/qt-5/qdate.html#toString "
                       "to see which variables you can use and ask kde-i18n-doc@kde.org if you have "
                       "problems understanding how to translate this",
-                      "%B %Y"));
+                      "%MMMM %yy"));
     return createFolderUDSEntry(QDate(year, month, 1).toString(QLatin1String("yyyy-MM")),
                                 dateString,
                                 QDate(year, month, 1));
@@ -216,7 +212,7 @@ void TimelineProtocol::stat(const QUrl& url)
 
 void TimelineProtocol::listDays(int month, int year)
 {
-    const int days = KLocale::global()->calendar()->daysInMonth(year, month);
+    const int days = QDate(year, month, 1).daysInMonth();
     for (int day = 1; day <= days; ++day) {
         QDate date(year, month, day);
 
