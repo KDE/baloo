@@ -1,0 +1,82 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# A S Alam <aalam@users.sf.net>, 2014.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-07-28 12:27+0000\n"
+"PO-Revision-Date: 2014-12-23 17:50-0600\n"
+"Last-Translator: A S Alam <aalam@users.sf.net>\n"
+"Language-Team: Punjabi/Panjabi <punjabi-users@lists.sf.net>\n"
+"Language: pa\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 1.5\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "A S Alam"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "aalam@users.sf.net"
+
+#: main.cpp:62
+msgid "balooctl"
+msgstr "balooctl"
+
+#: main.cpp:63
+msgid "Vishesh Handa"
+msgstr ""
+
+#: main.cpp:63
+msgid "Maintainer"
+msgstr "ਪ੍ਰਬੰਧਕ"
+
+#: main.cpp:69
+msgid "The command to execute"
+msgstr ""
+
+#: main.cpp:71
+msgid "Print the status of the indexer"
+msgstr ""
+
+#: main.cpp:72
+msgid "Enable the file indexer"
+msgstr ""
+
+#: main.cpp:73
+msgid "Disable the file indexer"
+msgstr ""
+
+#: main.cpp:74
+msgid "Start the file indexer"
+msgstr ""
+
+#: main.cpp:75
+msgid "Stop the file indexer"
+msgstr ""
+
+#: main.cpp:76
+msgid "Restart the file indexer"
+msgstr ""
+
+#: main.cpp:77
+msgid "Suspend the file indexer"
+msgstr ""
+
+#: main.cpp:78
+msgid "Resume the file indexer"
+msgstr ""
+
+#: main.cpp:79
+msgid "Check for any unindexed files and index them"
+msgstr ""
+
+#: main.cpp:80
+msgid "Index the specified files"
+msgstr ""

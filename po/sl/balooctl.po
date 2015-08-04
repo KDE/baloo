@@ -1,0 +1,83 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Andrej Mernik <andrejm@ubuntu.si>, 2014, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-07-28 12:27+0000\n"
+"PO-Revision-Date: 2015-06-07 11:26+0200\n"
+"Last-Translator: Andrej Mernik <andrejm@ubuntu.si>\n"
+"Language-Team: Slovenian <lugos-slo@lugos.si>\n"
+"Language: sl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
+"%100==4 ? 3 : 0);\n"
+"X-Generator: Lokalize 1.5\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Andrej Mernik"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "andrejm@ubuntu.si"
+
+#: main.cpp:62
+msgid "balooctl"
+msgstr "balooctl"
+
+#: main.cpp:63
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:63
+msgid "Maintainer"
+msgstr "Vzdrževalec"
+
+#: main.cpp:69
+msgid "The command to execute"
+msgstr "Ukaz, ki se naj izvede"
+
+#: main.cpp:71
+msgid "Print the status of the indexer"
+msgstr "Izpiši stanje izgrajevalnika kazala"
+
+#: main.cpp:72
+msgid "Enable the file indexer"
+msgstr "Omogoči izgrajevalnik kazala datotek"
+
+#: main.cpp:73
+msgid "Disable the file indexer"
+msgstr "Onemogoči izgrajevalnik kazala datotek"
+
+#: main.cpp:74
+msgid "Start the file indexer"
+msgstr "Zaženi izgrajevalnik kazala datotek"
+
+#: main.cpp:75
+msgid "Stop the file indexer"
+msgstr "Zaustavi izgrajevalnik kazala datotek"
+
+#: main.cpp:76
+msgid "Restart the file indexer"
+msgstr "Znova zaženi izgrajevalnik kazala datotek"
+
+#: main.cpp:77
+msgid "Suspend the file indexer"
+msgstr "Prestavi izgrajevalnik kazala datotek v pripravljenost"
+
+#: main.cpp:78
+msgid "Resume the file indexer"
+msgstr "Nadaljuj izgrajevalnik kazala datotek"
+
+#: main.cpp:79
+msgid "Check for any unindexed files and index them"
+msgstr "Preveri za datotekami, ki še niso v kazalu in jih vanj dodaj"
+
+#: main.cpp:80
+msgid "Index the specified files"
+msgstr "Dodaj navedene datoteke v kazalo"

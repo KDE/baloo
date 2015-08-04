@@ -1,0 +1,38 @@
+# Translation of kio_timeline to Norwegian Bokmål
+#
+# Bjørn Steensrud <bjornst@skogkatt.homelinux.org>, 2014.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-05-12 12:35+0000\n"
+"PO-Revision-Date: 2011-08-06 13:55+0200\n"
+"Last-Translator: Bjørn Steensrud <bjornst@skogkatt.homelinux.org>\n"
+"Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
+"Language: nb\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 1.5\n"
+"X-Environment: kde\n"
+"X-Accelerator-Marker: &\n"
+"X-Text-Markup: kde4\n"
+
+#: kio_timeline.cpp:66
+msgctxt ""
+"Month and year used in a tree above the actual days. Have a look at http://"
+"api.kde.org/4.x-api/kdelibs-apidocs/kdecore/html/classKCalendarSystem."
+"html#a560204439a4b670ad36c16c404f292b4 to see which variables you can use "
+"and ask kde-i18n-doc@kde.org if you have problems understanding how to "
+"translate this"
+msgid "%B %Y"
+msgstr "%B %Y"
+
+#: kio_timeline.cpp:124
+msgid "Today"
+msgstr "I dag"
+
+#: kio_timeline.cpp:125 kio_timeline.cpp:194
+msgid "Calendar"
+msgstr "Kalender"

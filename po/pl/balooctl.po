@@ -1,0 +1,83 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Łukasz Wojniłowicz <lukasz.wojnilowicz@gmail.com>, 2014, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-07-28 12:27+0000\n"
+"PO-Revision-Date: 2015-06-13 06:46+0100\n"
+"Last-Translator: Łukasz Wojniłowicz <lukasz.wojnilowicz@gmail.com>\n"
+"Language-Team: Polish <kde-i18n-doc@kde.org>\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 2.0\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Łukasz Wojniłowicz"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "lukasz.wojnilowicz@gmail.com"
+
+#: main.cpp:62
+msgid "balooctl"
+msgstr "balooctl"
+
+#: main.cpp:63
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:63
+msgid "Maintainer"
+msgstr "Opiekun"
+
+#: main.cpp:69
+msgid "The command to execute"
+msgstr "Polecenie do wykonania"
+
+#: main.cpp:71
+msgid "Print the status of the indexer"
+msgstr "Wyświetl stan programu indeksującego"
+
+#: main.cpp:72
+msgid "Enable the file indexer"
+msgstr "Włącz program indeksujący"
+
+#: main.cpp:73
+msgid "Disable the file indexer"
+msgstr "Wyłącz program indeksujący"
+
+#: main.cpp:74
+msgid "Start the file indexer"
+msgstr "Uruchom program indeksujący"
+
+#: main.cpp:75
+msgid "Stop the file indexer"
+msgstr "Zatrzymaj program indeksujący"
+
+#: main.cpp:76
+msgid "Restart the file indexer"
+msgstr "Uruchom ponownie program indeksujący"
+
+#: main.cpp:77
+msgid "Suspend the file indexer"
+msgstr "Wstrzymaj program indeksujący"
+
+#: main.cpp:78
+msgid "Resume the file indexer"
+msgstr "Wznów program indeksujący"
+
+#: main.cpp:79
+msgid "Check for any unindexed files and index them"
+msgstr "Znajdź pliki poza indeksem i dodaj je do indeksu"
+
+#: main.cpp:80
+msgid "Index the specified files"
+msgstr "Indeksuj podane pliki"
