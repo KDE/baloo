@@ -27,7 +27,6 @@
 #include <QDebug>
 #include <QUrlQuery>
 
-#include <KCalendarSystem>
 #include <KLocalizedString>
 
 namespace
@@ -56,8 +55,7 @@ QDate applyRelativeDateModificators(const QDate& date, const QMap<QString, QStri
     if (modificators.contains(weekKey)) {
         int relWeeks = modificators[weekKey].toInt(&ok);
         if (ok) {
-            const KCalendarSystem* calSystem = KLocale::global()->calendar();
-            newDate = newDate.addDays(relWeeks * calSystem->daysInWeek(date));
+            newDate = newDate.addDays(relWeeks * 7); // we assume weeks have 7 days everywhere. QDate seems to make that assumption too, should be OK.
         }
     }
     if (modificators.contains(dayKey)) {
