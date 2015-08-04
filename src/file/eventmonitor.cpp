@@ -1,6 +1,6 @@
 /* This file is part of the KDE Project
    Copyright (c) 2008 Sebastian Trueg <trueg@kde.org>
-   Copyright (c) 2010-14 Vishesh Handa <me@vhanda.in>
+   Copyright (c) 2010-15 Vishesh Handa <vhanda@kde.org>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -22,8 +22,11 @@
 #include <QDebug>
 #include <KIdleTime>
 
-#include <QtDBus/QDBusInterface>
-#include <Solid/PowerManagement>
+#include <QDBusInterface>
+#include <QDBusConnection>
+#include <QDBusMessage>
+#include <QDBusPendingCallWatcher>
+#include <QDBusPendingReply>
 
 // TODO: Make idle timeout configurable?
 static int s_idleTimeout = 1000 * 60 * 2; // 2 min
@@ -34,17 +37,37 @@ EventMonitor::EventMonitor(QObject* parent)
     : QObject(parent)
 {
     // monitor the powermanagement to not drain the battery
-    connect(Solid::PowerManagement::notifier(), SIGNAL(appShouldConserveResourcesChanged(bool)),
-            this, SLOT(slotPowerManagementStatusChanged(bool)));
+    QDBusConnection::sessionBus().connect(QStringLiteral("org.freedesktop.PowerManagement"),
+                                          QStringLiteral("/org/freedesktop/PowerManagement"),
+                                          QStringLiteral("org.freedesktop.PowerManagement"),
+                                          QStringLiteral("PowerSaveStatusChanged"),
+                                          this, SLOT(slotPowerManagementStatusChanged(bool)));
 
     // setup idle time
     KIdleTime* idleTime = KIdleTime::instance();
     connect(idleTime, SIGNAL(timeoutReached(int)), this, SLOT(slotIdleTimeoutReached()));
     connect(idleTime, SIGNAL(resumingFromIdle()), this, SLOT(slotResumeFromIdle()));
 
-    m_isOnBattery = Solid::PowerManagement::appShouldConserveResources();
+    m_isOnBattery = true;
     m_isIdle = false;
     m_enabled = false;
+
+    QDBusMessage msg = QDBusMessage::createMethodCall(QStringLiteral("org.freedesktop.PowerManagement"),
+                                                      QStringLiteral("/org/freedesktop/PowerManagement"),
+                                                      QStringLiteral("org.freedesktop.PowerManagement"),
+                                                      QStringLiteral("GetPowerSaveStatus"));
+
+    QDBusPendingCall call = QDBusConnection::sessionBus().asyncCall(msg);
+    QDBusPendingCallWatcher* watcher = new QDBusPendingCallWatcher(call, this);
+    connect(watcher, &QDBusPendingCallWatcher::finished, [&](QDBusPendingCallWatcher* watch) {
+        QDBusPendingReply<bool> reply = *watch;
+        if (!reply.isError()) {
+            bool onBattery = reply.argumentAt<0>();
+            slotPowerManagementStatusChanged(onBattery);
+        }
+        watch->deleteLater();
+    });
+
 }
 
 

@@ -1,6 +1,6 @@
 /* This file is part of the KDE Project
    Copyright (c) 2008 Sebastian Trueg <trueg@kde.org>
-   Copyright (c) 2012 Vishesh Handa <me@vhanda.in>
+   Copyright (c) 2012-2015 Vishesh Handa <vhanda@kde.org>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -28,7 +28,6 @@
 
 namespace Baloo
 {
-class SchedulerTest;
 
 class EventMonitor : public QObject
 {
@@ -71,8 +70,6 @@ private:
     bool m_enabled;
     bool m_isIdle;
     bool m_isOnBattery;
-
-    friend class SchedulerTest;
 };
 }
 
