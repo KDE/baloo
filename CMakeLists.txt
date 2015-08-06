@@ -73,6 +73,10 @@ if (${BUILD_KINOTIFY})
     add_subdirectory(autotests)
 endif()
 
+if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/po")
+   ki18n_install(po)
+endif()
+
 # Config files
 set(CMAKECONFIG_INSTALL_DIR "${CMAKECONFIG_INSTALL_PREFIX}/KF5Baloo")
 
