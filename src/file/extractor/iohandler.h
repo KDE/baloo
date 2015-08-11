@@ -24,7 +24,6 @@
 #define EXTRACTOR_IOHANDLER_H
 
 #include <QObject>
-#include <QSocketNotifier>
 
 namespace Baloo {
 
@@ -41,7 +40,6 @@ public:
     void newBatch();
 
 private:
-    //QSocketNotifier m_notifyNewData;
     int m_stdinHandle;
     int m_stdoutHandle;
 
