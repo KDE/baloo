@@ -57,7 +57,7 @@ using namespace Baloo;
 
 FileIndexerConfig::FileIndexerConfig(QObject* parent)
     : QObject(parent)
-    , m_config(QLatin1String("baloofilerc"), KConfig::SimpleConfig)
+    , m_config(QLatin1String("baloofilerc"))
     , m_indexHidden(false)
     , m_devices(new StorageDevices(this))
 {
