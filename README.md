@@ -1,7 +1,6 @@
 # Baloo
 
-[![Build Status](https://build.kde.org/buildStatus/icon?job=baloo master kf5-qt5)](https://build.kde.org/job/baloo master kf5-qt5)
-[![Coverity Scan Build Status](https://scan.coverity.com/projects/3259/badge.svg)](https://scan.coverity.com/projects/3259)
+## Introduction
 
 Baloo provides file search and indexing.
 
@@ -30,3 +29,9 @@ This process utilizes inotify in order to track file changes. It performs the in
 - Phase 2 - Index the file contents. This is performed in a separate process,
 as the metadata extraction plugins, provided by KFileMetaData, can potentially
 crash.
+
+## Developer information
+
+[![Build Status](https://build.kde.org/buildStatus/icon?job=baloo master kf5-qt5)](https://build.kde.org/job/baloo master kf5-qt5)
+[![Coverity Scan Build Status](https://scan.coverity.com/projects/3259/badge.svg)](https://scan.coverity.com/projects/3259)
+
