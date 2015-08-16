@@ -43,6 +43,7 @@ public:
 
 Q_SIGNALS:
     void stateChanged(IndexerState state);
+    void indexingFile(QString filePath);
 
 public Q_SLOTS:
     void indexNewFile(const QString& file) {

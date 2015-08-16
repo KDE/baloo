@@ -37,10 +37,11 @@ public:
     void index(const QVector<quint64>& fileIds);
 
 Q_SIGNALS:
+    void indexingFile(QString filePath);
     void done();
 
 private Q_SLOTS:
-    void slotFileIndexed();
+    void slotIndexingFile();
 
 private:
     const QString m_extractorPath;
@@ -48,6 +49,9 @@ private:
     QProcess* m_extractorProcess;
     QTimer m_timeCurrentFile;
     int m_processTimeout;
+
+    quint32 m_batchSize;
+    quint32 m_indexedFiles;
 
     bool m_extractorIdle;
 };

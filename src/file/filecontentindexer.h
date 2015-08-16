@@ -48,6 +48,7 @@ public:
 
     QVector<uint> batchTimings();
 Q_SIGNALS:
+    void indexingFile(QString filePath);
     void done();
 
 private:

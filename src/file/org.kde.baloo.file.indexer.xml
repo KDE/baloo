@@ -1,8 +1,12 @@
 <!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN" "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
 <node>
   <interface name="org.kde.baloo">
+    <property name="currentFile" type="s" access="read"/>
     <signal name="stateChanged">
       <arg name="state" type="i" direction="out"/>
+    </signal>
+    <signal name="indexingFile">
+      <arg name="filePath" type="s" direction="out"/>
     </signal>
     <method name="quit">
     </method>
@@ -20,6 +24,10 @@
     </method>
     <method name="state">
       <arg type="i" direction="out"/>
+    </method>
+    <method name="registerMonitor">
+    </method>
+    <method name="unregisterMonitor">
     </method>
   </interface>
 </node>

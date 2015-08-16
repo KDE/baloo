@@ -31,6 +31,7 @@ IOHandler::IOHandler(int stdIn, int stdOut)
     : m_stdinHandle(stdIn)
     , m_stdoutHandle(stdOut)
     , m_batchSize(0)
+    , m_stdout(stdout)
 {
 }
 
@@ -66,4 +67,9 @@ void IOHandler::indexedId(quint64 id)
 void IOHandler::batchIndexed()
 {
     m_batchSize = 0;
+}
+
+void IOHandler::indexingUrl(QString url)
+{
+    m_stdout << url << endl;
 }

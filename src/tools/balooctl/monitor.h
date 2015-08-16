@@ -26,13 +26,11 @@
 #include <QObject>
 #include <QTextStream>
 
-#include "extractor_interface.h"
+#include "baloo_interface.h"
 
 namespace org {
     namespace kde {
-        namespace baloo {
-            typedef OrgKdeBalooExtractorInterface extractorInterface;
-        }
+        typedef OrgKdeBalooInterface balooInterface;
     }
 }
 
@@ -48,7 +46,7 @@ private Q_SLOTS:
 
 private:
     QTextStream m_out;
-    org::kde::baloo::extractorInterface* m_interface;
+    org::kde::balooInterface* m_interface;
 
 };
 }

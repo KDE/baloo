@@ -4,7 +4,6 @@ set(MONITOR_SOURCES
 )
 
 set(DBUS_INTERFACES
-  ${CMAKE_BINARY_DIR}/src/dbus/extractor_interface.cpp
   ${CMAKE_BINARY_DIR}/src/dbus/baloo_interface.cpp
 )
 

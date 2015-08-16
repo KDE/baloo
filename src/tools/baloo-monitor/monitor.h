@@ -29,14 +29,10 @@
 
 #include "indexerstate.h"
 #include "baloo_interface.h"
-#include "extractor_interface.h"
 
 namespace org {
     namespace kde {
         typedef OrgKdeBalooInterface balooInterface;
-        namespace baloo {
-            typedef OrgKdeBalooExtractorInterface extractorInterface;
-        }
     }
 }
 
@@ -87,7 +83,6 @@ private:
     Baloo::IndexerState m_indexerState;
 
     org::kde::balooInterface* m_balooInterface;
-    org::kde::baloo::extractorInterface* m_extractorInterface;
 
     uint m_totalFiles;
     uint m_filesIndexed;

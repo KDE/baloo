@@ -42,37 +42,24 @@ Monitor::Monitor(QObject *parent)
     , m_filesIndexed(0)
     , m_remainingTime(QStringLiteral("Estimating"))
 {
-    QString balooService = QStringLiteral("org.kde.baloo");
-    QString extractorService = QStringLiteral("org.kde.baloo.extractor");
-
-    m_balooInterface = new org::kde::balooInterface(balooService,
+    m_balooInterface = new org::kde::balooInterface(QStringLiteral("org.kde.baloo"),
                                             QStringLiteral("/indexer"),
                                             m_bus, this);
 
-    m_extractorInterface = new org::kde::baloo::extractorInterface(extractorService,
-                                                        QStringLiteral("/extractor"),
-                                                        m_bus, this);
-
-    connect(m_extractorInterface, &org::kde::baloo::extractorInterface::currentUrlChanged,
+    connect(m_balooInterface, &org::kde::balooInterface::indexingFile,
             this, &Monitor::newFile);
-
     connect(m_balooInterface, &org::kde::balooInterface::stateChanged, this, &Monitor::slotIndexerStateChanged);
-    qDebug() << "start service watcher";
-    QDBusServiceWatcher *balooWatcher = new QDBusServiceWatcher(extractorService,
-                                                                m_bus,
-                                                                QDBusServiceWatcher::WatchForRegistration,
-                                                                this);
 
     if (m_balooInterface->isValid()) {
         // baloo is already running
-        balooStarted(balooService);
-        if (m_extractorInterface->isValid()) {
-            balooStarted(extractorService);
-        }
+        balooStarted(m_balooInterface->service());
 
     } else {
         m_balooRunning = false;
-        balooWatcher->addWatchedService(balooService);
+        QDBusServiceWatcher* balooWatcher = new QDBusServiceWatcher(m_balooInterface->service(),
+                                                                m_bus,
+                                                                QDBusServiceWatcher::WatchForRegistration,
+                                                                this);
         connect(balooWatcher, &QDBusServiceWatcher::serviceRegistered, this, &Monitor::balooStarted);
     }
 }
@@ -111,26 +98,18 @@ void Monitor::toggleSuspendState()
 
 void Monitor::balooStarted(const QString& service)
 {
-    if (service == QStringLiteral("org.kde.baloo")) {
-        m_balooRunning = true;
+    Q_ASSERT(service == QStringLiteral("org.kde.baloo"));
 
-        slotIndexerStateChanged(m_balooInterface->state());
-        qDebug() << "fetched suspend state";
-        fetchTotalFiles();
-        Q_EMIT balooStateChanged();
-    } else if(service == QStringLiteral("org.kde.baloo.extractor")) {
+    m_balooRunning = true;
+    m_balooInterface->registerMonitor();
 
-        /*
-         * FIXME: This is pretty useless and slowing up startup by blocking.
-         * The interface gives us url only when baloo_extractor is in the event loop
-         * hence we only get it at the end of a batch and url is always of the last
-         * file in the batch.
-         */
-        m_url = m_extractorInterface->currentUrl();
-        qDebug() << "fetched currentUrl";
-        m_extractorInterface->registerMonitor();
-        Q_EMIT newFileIndexed();
+    slotIndexerStateChanged(m_balooInterface->state());
+    qDebug() << "fetched suspend state";
+    fetchTotalFiles();
+    if (m_indexerState == Baloo::ContentIndexing) {
+        m_url = m_balooInterface->currentFile();
     }
+    Q_EMIT balooStateChanged();
 }
 
 void Monitor::fetchTotalFiles()
@@ -182,6 +161,7 @@ void Monitor::updateRemainingTime()
 void Monitor::slotIndexerStateChanged(int state)
 {
     Baloo::IndexerState newState = static_cast<Baloo::IndexerState>(state);
+
     if (m_indexerState != newState) {
         m_indexerState = newState;
         Q_EMIT indexerStateChanged();

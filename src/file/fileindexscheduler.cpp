@@ -107,6 +107,7 @@ void FileIndexScheduler::scheduleIndexing()
 
     if (m_provider.size() && !m_eventMonitor->isOnBattery()) {
         m_contentIndexer = new FileContentIndexer(&m_provider);
+        connect(m_contentIndexer, &FileContentIndexer::indexingFile, this, &FileIndexScheduler::indexingFile);
         connect(m_contentIndexer, &FileContentIndexer::done, this, &FileIndexScheduler::scheduleIndexing);
 
         if(!m_eventMonitor->isIdle()) {
