@@ -47,16 +47,8 @@ App::App(const QString& path, QObject* parent)
     , m_path(path)
     , m_notifyNewData(STDIN_FILENO, QSocketNotifier::Read)
     , m_io(STDIN_FILENO, STDOUT_FILENO)
-    , m_monitorsWatcher(this)
 
 {
-    QDBusConnection::sessionBus().registerObject(QStringLiteral("/extractor"), this,
-                                                 QDBusConnection::ExportScriptableContents);
-
-    m_monitorsWatcher.setConnection(QDBusConnection::sessionBus());
-    m_monitorsWatcher.setWatchMode(QDBusServiceWatcher::WatchForUnregistration);
-    connect(&m_monitorsWatcher, &QDBusServiceWatcher::serviceUnregistered, this, &App::unregisterMonitor);
-
     connect(&m_notifyNewData, &QSocketNotifier::activated, this, &App::slotNewInput);
 }
 
@@ -76,19 +68,19 @@ void App::slotNewInput()
 
         quint64 id = m_io.nextId();
 
-        m_currentUrl = QFile::decodeName(tr.documentUrl(id));
-        if (!QFile::exists(m_currentUrl)) {
+        QString url = QFile::decodeName(tr.documentUrl(id));
+        if (!QFile::exists(url)) {
             tr.removeDocument(id);
             continue;
         }
 
         if (m_monitors.length() != 0) {
-            Q_EMIT currentUrlChanged(m_currentUrl);
+            Q_EMIT currentUrlChanged(url);
         }
 
-        index(&tr, m_currentUrl, id);
-        updatedFiles << m_currentUrl;
-        //m_io.indexedId(id);
+        m_io.indexingUrl(url);
+        index(&tr, url, id);
+        updatedFiles << url;
     }
     tr.commit();
     m_io.batchIndexed();
@@ -107,8 +99,6 @@ void App::slotNewInput()
     message.setArguments(vl);
 
     QDBusConnection::sessionBus().send(message);
-
-    std::cout << "indexed batch" << std::endl;
 }
 
 void App::index(Transaction* tr, const QString& url, quint64 id)
@@ -175,20 +165,4 @@ void App::index(Transaction* tr, const QString& url, quint64 id)
         tr->replaceDocument(result.document(), DocumentTerms | DocumentData);
     }
     tr->removePhaseOne(doc.id());
-}
-
-void App::registerMonitor(const QDBusMessage& message)
-{
-    if (!m_monitors.contains(message.service())) {
-        m_monitors << message.service();
-        m_monitorsWatcher.addWatchedService(message.service());
-    }
-}
-
-void App::unregisterMonitor(const QString& service)
-{
-    Q_ASSERT(m_monitors.contains(service));
-
-    m_monitors.removeAll(service);
-    m_monitorsWatcher.removeWatchedService(service);
 }

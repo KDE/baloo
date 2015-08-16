@@ -29,7 +29,6 @@
 #include <QTextStream>
 #include <QSocketNotifier>
 #include <QDBusMessage>
-#include <QDBusServiceWatcher>
 
 #include <KFileMetaData/ExtractorCollection>
 
@@ -44,22 +43,15 @@ class Transaction;
 class App : public QObject
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "org.kde.baloo.extractor")
-    Q_PROPERTY(QString currentUrl READ currentUrl NOTIFY currentUrlChanged)
 
 public:
     explicit App(const QString& path, QObject* parent = 0);
-    QString currentUrl() const { return m_currentUrl; }
 
 Q_SIGNALS:
     Q_SCRIPTABLE void currentUrlChanged(QString url);
 
 private Q_SLOTS:
     void slotNewInput();
-    void unregisterMonitor(const QString& service);
-
-public Q_SLOTS:
-    Q_SCRIPTABLE void registerMonitor(const QDBusMessage& message);
 
 private:
     void index(Transaction* tr, const QString& filePath, quint64 id);
@@ -74,9 +66,7 @@ private:
     QSocketNotifier m_notifyNewData;
     IOHandler m_io;
 
-    QString m_currentUrl;
     QStringList m_monitors;
-    QDBusServiceWatcher m_monitorsWatcher;
 };
 
 }

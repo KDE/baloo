@@ -29,17 +29,17 @@ Monitor::Monitor(QObject *parent)
     : QObject(parent)
     , m_out(stdout)
 {
-    QString extractorService = QStringLiteral("org.kde.baloo.extractor");
-
-    m_interface = new org::kde::baloo::extractorInterface(extractorService, QStringLiteral("/extractor"),
-                                                            QDBusConnection::sessionBus(), this);
+    m_interface = new org::kde::balooInterface(QStringLiteral("org.kde.baloo"),
+                                                QStringLiteral("/indexer"),
+                                                QDBusConnection::sessionBus(),
+                                                this);
 
     if (!m_interface->isValid()) {
-        m_out << "Extractor is not running" << endl;
+        m_out << "Baloo is not running" << endl;
         QCoreApplication::exit();
     }
     m_interface->registerMonitor();
-    connect(m_interface, &org::kde::baloo::extractorInterface::currentUrlChanged, this, &Monitor::newFile);
+    connect(m_interface, &org::kde::balooInterface::indexingFile, this, &Monitor::newFile);
     m_out << "Press ctrl+c to exit monitor" << endl;
 }
 

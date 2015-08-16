@@ -32,6 +32,7 @@ MainHub::MainHub(Database* db, FileIndexerConfig* config)
     , m_fileWatcher(db, config, this)
     , m_fileIndexScheduler(db, config, this)
     , m_isSuspended(false)
+    , m_monitorWatcher(this)
 {
     Q_ASSERT(db);
     Q_ASSERT(config);
@@ -42,11 +43,18 @@ MainHub::MainHub(Database* db, FileIndexerConfig* config)
     connect(&m_fileWatcher, &FileWatch::fileRemoved, &m_fileIndexScheduler, &FileIndexScheduler::handleFileRemoved);
 
     connect(&m_fileWatcher, &FileWatch::installedWatches, &m_fileIndexScheduler, &FileIndexScheduler::scheduleIndexing);
+
     connect(&m_fileIndexScheduler, &FileIndexScheduler::stateChanged, this, &MainHub::slotStateChanged);
+    connect(&m_fileIndexScheduler, &FileIndexScheduler::indexingFile, this, &MainHub::slotIndexingFile);
+
+    connect(&m_monitorWatcher, &QDBusServiceWatcher::serviceUnregistered, this, &MainHub::monitorClosed);
 
     QDBusConnection bus = QDBusConnection::sessionBus();
     bus.registerObject(QStringLiteral("/indexer"), this, QDBusConnection::ExportAllSlots |
                         QDBusConnection::ExportScriptableSignals);
+
+    m_monitorWatcher.setConnection(bus);
+    m_monitorWatcher.setWatchMode(QDBusServiceWatcher::WatchForUnregistration);
 
     QTimer::singleShot(0, &m_fileWatcher, SLOT(watchIndexedFolders()));
 }
@@ -96,3 +104,30 @@ void MainHub::slotStateChanged(IndexerState state)
     Q_EMIT stateChanged(static_cast<int>(state));
 }
 
+void MainHub::slotIndexingFile(QString filePath)
+{
+    m_currentFile = filePath;
+    if (!m_registeredMonitors.empty()) {
+        Q_EMIT indexingFile(filePath);
+    }
+}
+
+void MainHub::registerMonitor(const QDBusMessage& message)
+{
+    if (!m_registeredMonitors.contains(message.service())) {
+        m_registeredMonitors << message.service();
+        m_monitorWatcher.addWatchedService(message.service());
+    }
+}
+
+void MainHub::unregisterMonitor(const QDBusMessage& message)
+{
+    m_registeredMonitors.removeAll(message.service());
+    m_monitorWatcher.removeWatchedService(message.service());
+}
+
+void MainHub::monitorClosed(QString service)
+{
+    m_registeredMonitors.removeAll(service);
+    m_monitorWatcher.removeWatchedService(service);
+}

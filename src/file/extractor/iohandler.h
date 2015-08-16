@@ -24,6 +24,7 @@
 #define EXTRACTOR_IOHANDLER_H
 
 #include <QObject>
+#include <QTextStream>
 
 namespace Baloo {
 
@@ -38,12 +39,15 @@ public:
     //always call this after a batch has been indexed
     void batchIndexed();
     void newBatch();
+    void indexingUrl(QString url);
 
 private:
     int m_stdinHandle;
     int m_stdoutHandle;
 
     quint32 m_batchSize;
+
+    QTextStream m_stdout;
 };
 }
 

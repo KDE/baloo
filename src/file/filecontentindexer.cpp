@@ -45,6 +45,8 @@ FileContentIndexer::~FileContentIndexer()
 void FileContentIndexer::run()
 {
     ExtractorProcess process;
+    connect(&process, &ExtractorProcess::indexingFile, this, &FileContentIndexer::indexingFile);
+
     while (m_provider->size() && !m_stop.load()) {
         //
         // WARNING: This will go mad, if the Extractor does not commit after 40 files

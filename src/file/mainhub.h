@@ -21,6 +21,9 @@
 #define BALOO_MAINHUB_H
 
 #include <QObject>
+#include <QStringList>
+#include <QDBusMessage>
+#include <QDBusServiceWatcher>
 
 #include "filewatch.h"
 #include "fileindexscheduler.h"
@@ -34,8 +37,10 @@ class MainHub : public QObject
 {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "org.kde.baloo")
+    Q_PROPERTY(QString currentFile READ currentFile NOTIFY indexingFile);
 public:
     MainHub(Database* db, FileIndexerConfig* config);
+    QString currentFile() const { return m_currentFile; }
 
 public Q_SLOTS:
     void quit() const;
@@ -46,11 +51,17 @@ public Q_SLOTS:
     bool isSuspended() const;
     int state() const;
 
+    void registerMonitor(const QDBusMessage& message);
+    void unregisterMonitor(const QDBusMessage& message);
+
 Q_SIGNALS:
     Q_SCRIPTABLE void stateChanged(int state);
+    Q_SCRIPTABLE void indexingFile(QString filePath);
 
 private Q_SLOTS:
     void slotStateChanged(IndexerState state);
+    void slotIndexingFile(QString filePath);
+    void monitorClosed(QString service);
 
 
 private:
@@ -61,6 +72,9 @@ private:
     FileIndexScheduler m_fileIndexScheduler;
 
     bool m_isSuspended;
+    QString m_currentFile;
+    QDBusServiceWatcher m_monitorWatcher;
+    QStringList m_registeredMonitors;
 };
 }
 

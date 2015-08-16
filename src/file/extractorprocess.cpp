@@ -29,10 +29,12 @@ ExtractorProcess::ExtractorProcess(QObject* parent)
     : QObject(parent)
     , m_extractorPath(QStandardPaths::findExecutable(QLatin1String("baloo_file_extractor")))
     , m_extractorProcess(0)
+    , m_batchSize(0)
+    , m_indexedFiles(0)
     , m_extractorIdle(true)
 {
     m_extractorProcess = new QProcess(this);
-    connect(m_extractorProcess, &QProcess::readyRead, this, &ExtractorProcess::slotFileIndexed);
+    connect(m_extractorProcess, &QProcess::readyRead, this, &ExtractorProcess::slotIndexingFile);
     m_extractorProcess->start(m_extractorPath, QStringList(), QIODevice::Unbuffered | QIODevice::ReadWrite);
     m_extractorProcess->waitForStarted();
     m_extractorProcess->setReadChannel(QProcess::StandardOutput);
@@ -53,21 +55,27 @@ void ExtractorProcess::index(const QVector<quint64>& fileIds)
 
     QByteArray batchData;
 
-    quint32 size = fileIds.size();
-    batchData.append(reinterpret_cast<char*>(&size), sizeof(quint32));
+    m_batchSize = fileIds.size();
+    batchData.append(reinterpret_cast<char*>(&m_batchSize), sizeof(quint32));
     for (quint64 id : fileIds) {
         batchData.append(reinterpret_cast<char*>(&id), sizeof(quint64));
     }
 
     m_extractorIdle = false;
+    m_indexedFiles = 0;
     m_extractorProcess->write(batchData.data(), batchData.size());
 }
 
-void ExtractorProcess::slotFileIndexed()
+void ExtractorProcess::slotIndexingFile()
 {
-    QByteArray output = m_extractorProcess->readAll();
-    Q_UNUSED(output);
-    m_extractorIdle = true;
+    while (m_extractorProcess->canReadLine()) {
+        QString filePath = m_extractorProcess->readLine();
+        Q_EMIT indexingFile(filePath);
+        ++m_indexedFiles;
+    }
 
-    Q_EMIT done();
+    if (m_indexedFiles == m_batchSize) {
+        Q_EMIT done();
+        m_extractorIdle = true;
+    }
 }
