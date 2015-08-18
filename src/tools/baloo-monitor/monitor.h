@@ -40,13 +40,15 @@ namespace BalooMonitor {
 class Monitor : public QObject
 {
     Q_OBJECT
+
     Q_PROPERTY(QString url READ url NOTIFY newFileIndexed)
     Q_PROPERTY(QString suspendState READ suspendState NOTIFY indexerStateChanged)
     Q_PROPERTY(bool balooRunning MEMBER m_balooRunning NOTIFY balooStateChanged)
     Q_PROPERTY(uint totalFiles MEMBER m_totalFiles NOTIFY totalFilesChanged)
     Q_PROPERTY(uint filesIndexed MEMBER m_filesIndexed NOTIFY newFileIndexed)
     Q_PROPERTY(QString remainingTime READ remainingTime NOTIFY remainingTimeChanged)
-    Q_PROPERTY(QString state READ state NOTIFY indexerStateChanged)
+    Q_PROPERTY(QString stateString READ stateString NOTIFY indexerStateChanged)
+    Q_PROPERTY(int state READ state NOTIFY indexerStateChanged)
 public:
     Monitor(QObject* parent = 0);
 
@@ -54,7 +56,8 @@ public:
     QString url() const { return m_url; }
     QString suspendState() const;
     QString remainingTime() const { return m_remainingTime; }
-    QString state() const { return Baloo::stateString(m_indexerState); }
+    QString stateString() const { return Baloo::stateString(m_indexerState); }
+    int state() const { return static_cast<int>(m_indexerState); }
 
     // Invokable methods
     Q_INVOKABLE void toggleSuspendState();
