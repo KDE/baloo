@@ -43,16 +43,16 @@ public:
     QString currentFile() const { return m_currentFile; }
 
 public Q_SLOTS:
-    void quit() const;
-    void updateConfig();
-    void suspend();
-    void resume();
-    uint getRemainingTime();
-    bool isSuspended() const;
-    int state() const;
+    Q_SCRIPTABLE void quit() const;
+    Q_SCRIPTABLE void updateConfig();
+    Q_SCRIPTABLE void suspend();
+    Q_SCRIPTABLE void resume();
+    Q_SCRIPTABLE uint getRemainingTime();
+    Q_SCRIPTABLE bool isSuspended() const;
+    Q_SCRIPTABLE int state() const;
 
-    void registerMonitor(const QDBusMessage& message);
-    void unregisterMonitor(const QDBusMessage& message);
+    Q_SCRIPTABLE void registerMonitor(const QDBusMessage& message);
+    Q_SCRIPTABLE void unregisterMonitor(const QDBusMessage& message);
 
 Q_SIGNALS:
     Q_SCRIPTABLE void stateChanged(int state);
