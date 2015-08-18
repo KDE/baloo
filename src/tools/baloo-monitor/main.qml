@@ -25,6 +25,8 @@ import QtQuick.Controls 1.3
 import QtQuick.Window 2.2
 import QtQuick.Layouts 1.1
 
+import "constants.js" as Constants
+
 ApplicationWindow {
     id: mainWindow
     title: qsTr("Baloo Monitor")
@@ -42,7 +44,7 @@ ApplicationWindow {
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.margins: 20
-            text: "<b>Indexer State:</b> " + monitor.state
+            text: "<b>Indexer State:</b> " + monitor.stateString
         }
 
         Label {
@@ -54,7 +56,16 @@ ApplicationWindow {
             elide: Text.ElideMiddle
 
             id: url
-            text: "<b>Indexing:</b> " + monitor.url
+            text: {
+                if (monitor.state == Constants.State.ContentIndexing) {
+                    return "<b>Indexing:</b> " + monitor.url
+                } else if (monitor.state == Constants.State.Idle && monitor.filesIndexed == monitor.totalFiles) {
+                    return "<b>Done</b>"
+                } else {
+                    return ""
+                }
+
+            }
         }
 
         RowLayout {
@@ -81,6 +92,7 @@ ApplicationWindow {
         }
 
         Label {
+            visible: monitor.state == Constants.State.ContentIndexing
             id: remainingTime
             anchors.top: progressLayout.bottom
             anchors.left: parent.left
