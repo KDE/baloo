@@ -72,7 +72,6 @@ void ExtractorProcess::slotIndexingFile()
         QString filePath = m_extractorProcess->readLine();
         if (m_indexedFiles < m_batchSize) {
             Q_EMIT indexingFile(filePath);
-            qDebug() << filePath << m_indexedFiles;
         }
         ++m_indexedFiles;
     }
