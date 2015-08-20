@@ -45,7 +45,7 @@ class App : public QObject
     Q_OBJECT
 
 public:
-    explicit App(const QString& path, QObject* parent = 0);
+    explicit App(QObject* parent = 0);
 
 Q_SIGNALS:
     Q_SCRIPTABLE void currentUrlChanged(QString url);
@@ -56,7 +56,6 @@ private Q_SLOTS:
 private:
     void index(Transaction* tr, const QString& filePath, quint64 id);
 
-    QString m_path;
     QMimeDatabase m_mimeDb;
 
     KFileMetaData::ExtractorCollection m_extractorCollection;

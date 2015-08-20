@@ -28,6 +28,7 @@
 #include <QFileInfo>
 #include <iostream>
 
+#include "global.h"
 #include "database.h"
 #include "fileindexerconfig.h"
 #include "priority.h"
@@ -74,7 +75,7 @@ int main(int argc, char** argv)
     // Crash Handling
     KCrash::setFlags(KCrash::AutoRestart);
 
-    const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QStringLiteral("/baloo");
+    const QString path = Baloo::fileIndexDbPath();
 
     Baloo::Migrator migrator(path, &indexerConfig);
     if (migrator.migrationRequired()) {
@@ -89,9 +90,9 @@ int main(int argc, char** argv)
     //       the lock manually in the baloo_file process.
     QFile::remove(path + "/index-lock");
 
-    Baloo::Database db(path);
-    db.open(Baloo::Database::CreateDatabase);
+    Baloo::Database *db = Baloo::globalDatabaseInstance();
+    db->open(Baloo::Database::CreateDatabase);
 
-    Baloo::MainHub hub(&db, &indexerConfig);
+    Baloo::MainHub hub(db, &indexerConfig);
     return app.exec();
 }

@@ -43,11 +43,6 @@ int main(int argc, char* argv[])
 
     QCoreApplication app(argc, argv);
 
-    QString path = qgetenv("BALOO_DB_PATH");
-    if (path.isEmpty()) {
-        path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo");
-    }
-
-    Baloo::App appObject(path);
+    Baloo::App appObject;
     return app.exec();
 }

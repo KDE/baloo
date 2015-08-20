@@ -26,6 +26,7 @@
 #include "idutils.h"
 #include "transaction.h"
 #include "baloodebug.h"
+#include "global.h"
 
 #include <QCoreApplication>
 
@@ -42,9 +43,8 @@
 
 using namespace Baloo;
 
-App::App(const QString& path, QObject* parent)
+App::App(QObject* parent)
     : QObject(parent)
-    , m_path(path)
     , m_notifyNewData(STDIN_FILENO, QSocketNotifier::Read)
     , m_io(STDIN_FILENO, STDOUT_FILENO)
 
@@ -54,8 +54,8 @@ App::App(const QString& path, QObject* parent)
 
 void App::slotNewInput()
 {
-    Database db(m_path);
-    if (!db.open(Database::OpenDatabase)) {
+    Database *db = globalDatabaseInstance();
+    if (!db->open(Database::OpenDatabase)) {
         qCritical() << "Failed to open the database";
         exit(1);
     }

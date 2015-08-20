@@ -1,6 +1,6 @@
 /*
  * This file is part of the KDE Baloo Project
- * Copyright (C) 2013  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2015  Ashish Bansal <bansal.ashish096@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,14 +20,25 @@
  *
  */
 
-#include "db.h"
+#include "global.h"
 
-#include <QDebug>
 #include <QStandardPaths>
+using namespace Baloo;
 
-static const QString xdgDataDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
+Q_GLOBAL_STATIC_WITH_ARGS(Database, s_db, (fileIndexDbPath()));
 
-QString fileIndexDbPath()
+QString Baloo::fileIndexDbPath()
 {
-    return xdgDataDir + QLatin1String("/baloo");
+    QString envBalooPath = qgetenv("BALOO_DB_PATH");
+    if (!envBalooPath.isEmpty()) {
+        return envBalooPath;
+    }
+
+    static QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo");
+    return path;
+}
+
+Database* Baloo::globalDatabaseInstance()
+{
+    return s_db;
 }

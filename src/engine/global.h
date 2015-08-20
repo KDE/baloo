@@ -1,6 +1,6 @@
 /*
  * This file is part of the KDE Baloo Project
- * Copyright (C) 2013  Vishesh Handa <me@vhanda.in>
+ * Copyright (C) 2015  Ashish Bansal <bansal.ashish096@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,11 +20,29 @@
  *
  */
 
-#ifndef DBFUNCTIONS_H
-#define DBFUNCTIONS_H
+#ifndef GLOBAL_H
+#define GLOBAL_H
+
+#include "database.h"
 
 #include <QString>
 
-QString fileIndexDbPath();
+namespace Baloo BALOO_ENGINE_EXPORT {
 
-#endif // DBFUNCTIONS_H
+    /*
+     * If BALOO_DB_PATH environment variable is set, then it returns value of that variable.
+     * Otherwise returns the default database path.
+     */
+    QString fileIndexDbPath();
+
+    /*
+     * lmdb doesn't support opening database twice at the same time in the single process
+     * because if we open database twice at the same time and closes one of them, then it
+     * would invalidate the handles of both the instances and may lead to crash or some
+     * other undesirable behaviour. So, keeping one global database would solve this problem
+     * and improve the performace too.
+     */
+    Database* globalDatabaseInstance();
+}
+
+#endif // GLOBAL_H

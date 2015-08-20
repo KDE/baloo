@@ -18,12 +18,12 @@
  *
  */
 
-#include "src/lib/db.h"
 #include "file.h"
 #include "document.h"
 #include "database.h"
 #include "transaction.h"
 #include "idutils.h"
+#include "global.h"
 
 #include <QDebug>
 #include <QTest>
@@ -40,6 +40,9 @@ using namespace Baloo;
 class FileFetchJobTest : public QObject
 {
     Q_OBJECT
+
+    QTemporaryDir dir;
+
 private Q_SLOTS:
     void test();
 };
@@ -47,6 +50,8 @@ private Q_SLOTS:
 void FileFetchJobTest::test()
 {
     using namespace KFileMetaData;
+
+    setenv("BALOO_DB_PATH", dir.path().toStdString().c_str(), 1);
 
     PropertyMap map;
     map.insert(Property::Album, QLatin1String("value1"));

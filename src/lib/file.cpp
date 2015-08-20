@@ -21,7 +21,7 @@
  */
 
 #include "file.h"
-#include "db.h"
+#include "global.h"
 #include "database.h"
 #include "transaction.h"
 #include "idutils.h"
@@ -95,8 +95,8 @@ bool File::load()
         return false;
     }
 
-    Database db(fileIndexDbPath());
-    db.open(Database::OpenDatabase);
+    Database *db = globalDatabaseInstance();
+    db->open(Database::OpenDatabase);
 
     quint64 id = filePathToId(QFile::encodeName(d->url));
     if (!id) {

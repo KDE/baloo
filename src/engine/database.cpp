@@ -58,6 +58,10 @@ Database::~Database()
 
 bool Database::open(OpenMode mode)
 {
+    if (isOpen()) {
+        return true;
+    }
+
     QFileInfo dirInfo(m_path);
     if (!dirInfo.exists()) {
         QDir().mkdir(m_path);
@@ -105,6 +109,7 @@ bool Database::open(OpenMode mode)
 
         if (!m_dbis.isValid()) {
             mdb_txn_abort(txn);
+            m_env = 0;
             return false;
         }
         rc = mdb_txn_commit(txn);
@@ -134,6 +139,7 @@ bool Database::open(OpenMode mode)
         Q_ASSERT(m_dbis.isValid());
         if (!m_dbis.isValid()) {
             mdb_txn_abort(txn);
+            m_env = 0;
             return false;
         }
         rc = mdb_txn_commit(txn);

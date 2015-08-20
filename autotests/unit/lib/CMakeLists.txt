@@ -21,8 +21,8 @@ ecm_add_test(advancedqueryparsertest.cpp ../../../src/lib/advancedqueryparser.cp
 #
 # Fetch Job
 #
-set(filefetchjobtest_SRC filefetchjobtest.cpp db.cpp ../../../src/lib/file.cpp)
+set(filefetchjobtest_SRC filefetchjobtest.cpp)
 ecm_add_test(${filefetchjobtest_SRC}
     TEST_NAME "filefetchjobtest"
-    LINK_LIBRARIES Qt5::Test KF5::BalooEngine KF5::FileMetaData
+    LINK_LIBRARIES Qt5::Test KF5::Baloo KF5::BalooEngine KF5::FileMetaData
 )
