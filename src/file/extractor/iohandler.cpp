@@ -67,6 +67,7 @@ void IOHandler::indexedId(quint64 id)
 void IOHandler::batchIndexed()
 {
     m_batchSize = 0;
+    m_stdout << "batch commited" << endl;
 }
 
 void IOHandler::indexingUrl(QString url)
