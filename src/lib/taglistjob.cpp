@@ -19,7 +19,7 @@
  */
 
 #include "taglistjob.h"
-#include "db.h"
+#include "global.h"
 #include "database.h"
 #include "transaction.h"
 
@@ -45,8 +45,11 @@ TagListJob::~TagListJob()
 
 void TagListJob::start()
 {
-    Database db(fileIndexDbPath());
-    db.open(Database::OpenDatabase);
+    Database *db = globalDatabaseInstance();
+    if (!db->open(Database::OpenDatabase)) {
+        qCritical() << "Failed to open the database";
+        return;
+    }
 
     QVector<QByteArray> tagList;
     {

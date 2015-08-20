@@ -8,7 +8,6 @@ set(BALOO_LIB_SRCS
     file.cpp
     filemonitor.cpp
     taglistjob.cpp
-    db.cpp
 
     indexerconfig.cpp
     ../file/fileindexerconfig.cpp

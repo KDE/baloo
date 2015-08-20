@@ -34,6 +34,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
+#include "global.h"
 #include "idutils.h"
 #include "database.h"
 #include "transaction.h"
@@ -91,10 +92,8 @@ int main(int argc, char* argv[])
     QTextStream stream(stdout);
     QString text;
 
-    const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QStringLiteral("/baloo");
-
-    Baloo::Database db(path);
-    db.open(Baloo::Database::OpenDatabase);
+    Baloo::Database *db = Baloo::globalDatabaseInstance();
+    db->open(Baloo::Database::OpenDatabase);
 
     Baloo::Transaction tr(db, Baloo::Transaction::ReadOnly);
 

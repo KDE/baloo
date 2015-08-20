@@ -181,9 +181,6 @@ void Query::setIncludeFolder(const QString& folder)
     d->m_includeFolder = folder;
 }
 
-
-Q_GLOBAL_STATIC_WITH_ARGS(QSharedPointer<SearchStore>, s_searchStore, (new SearchStore));
-
 ResultIterator Query::exec()
 {
     Term term(d->m_term);
@@ -209,7 +206,8 @@ ResultIterator Query::exec()
         term = term && Term(QStringLiteral("modified"), ba, Term::Equal);
     }
 
-    QStringList result = (*s_searchStore)->exec(term, d->m_limit, d->m_sortingOption == SortAuto);
+    SearchStore searchStore;
+    QStringList result = searchStore.exec(term, d->m_limit, d->m_sortingOption == SortAuto);
     return ResultIterator(result);
 }
 

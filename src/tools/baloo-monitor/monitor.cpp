@@ -24,6 +24,7 @@
 
 #include "database.h"
 #include "transaction.h"
+#include "global.h"
 
 #include <QDBusConnection>
 #include <QDBusMessage>
@@ -114,10 +115,9 @@ void Monitor::balooStarted(const QString& service)
 
 void Monitor::fetchTotalFiles()
 {
-    QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QStringLiteral("/baloo");
-    Baloo::Database db(path);
-    db.open(Baloo::Database::OpenDatabase);
-    Baloo::Transaction tr(&db, Baloo::Transaction::ReadOnly);
+    Baloo::Database *db = Baloo::globalDatabaseInstance();
+    db->open(Baloo::Database::OpenDatabase);
+    Baloo::Transaction tr(db, Baloo::Transaction::ReadOnly);
     m_totalFiles = tr.size();
     m_filesIndexed = tr.size() - tr.phaseOneSize();
     Q_EMIT totalFilesChanged();

@@ -38,6 +38,7 @@
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
 
+#include "global.h"
 #include "database.h"
 #include "transaction.h"
 #include "databasesize.h"
@@ -94,10 +95,8 @@ int main(int argc, char* argv[])
                                         QDBusConnection::sessionBus());
 
     if (command == QLatin1String("status")) {
-
-        const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/");
-        Database db(path);
-        if (!db.open(Baloo::Database::OpenDatabase)) {
+        Database *db = globalDatabaseInstance();
+        if (!db->open(Database::OpenDatabase)) {
             out << "Baloo Index could not be opened\n";
             return 1;
         }
@@ -121,7 +120,9 @@ int main(int argc, char* argv[])
 
             out << "Indexed " << total - phaseOne << " / " << total << " files\n";
 
-            QFileInfo indexInfo(path + QLatin1String("index"));
+            const QString path = fileIndexDbPath();
+
+            QFileInfo indexInfo(path + QLatin1String("/index"));
             quint32 size = indexInfo.size();
             KFormat format(QLocale::system());
             if (size) {
@@ -253,10 +254,8 @@ int main(int argc, char* argv[])
             return 1;
         }
 
-        const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/");
-
-        Database db(path);
-        if (!db.open(Baloo::Database::OpenDatabase)) {
+        Database *db = globalDatabaseInstance();
+        if (!db->open(Database::OpenDatabase)) {
             out << "Baloo Index could not be opened\n";
             return 1;
         }
@@ -287,10 +286,8 @@ int main(int argc, char* argv[])
     }
 
     if (command == QStringLiteral("indexSize")) {
-        const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/");
-        Database db(path);
-
-        if (!db.open(Baloo::Database::OpenDatabase)) {
+        Database *db = globalDatabaseInstance();
+        if (!db->open(Database::OpenDatabase)) {
             out << "Baloo Index could not be opened\n";
             return 1;
         }

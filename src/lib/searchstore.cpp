@@ -22,13 +22,13 @@
 
 #include "searchstore.h"
 #include "term.h"
+#include "global.h"
 
 #include "database.h"
 #include "transaction.h"
 #include "enginequery.h"
 #include "queryparser.h"
 #include "termgenerator.h"
-
 #include "andpostingiterator.h"
 #include "orpostingiterator.h"
 #include "idutils.h"
@@ -47,10 +47,8 @@ using namespace Baloo;
 SearchStore::SearchStore()
     : m_db(0)
 {
-    const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/baloo/");
-    m_db = new Database(path);
+    m_db = globalDatabaseInstance();
     if (!m_db->open(Database::OpenDatabase)) {
-        delete m_db;
         m_db = 0;
     }
 
@@ -64,7 +62,6 @@ SearchStore::SearchStore()
 
 SearchStore::~SearchStore()
 {
-    delete m_db;
 }
 
 QStringList SearchStore::exec(const Term& term, int limit, bool sortResults)

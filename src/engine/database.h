@@ -42,6 +42,8 @@ public:
     };
     bool open(OpenMode mode);
 
+    bool isOpen() const { return m_env != 0; }
+
 private:
     QString m_path;
 
