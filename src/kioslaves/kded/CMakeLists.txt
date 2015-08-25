@@ -2,13 +2,13 @@ set (KDED_BALOOSEARCH_SRCS
      baloosearchmodule.cpp
 )
 
-add_library(kded_baloosearch_kio MODULE ${KDED_BALOOSEARCH_SRCS})
+add_library(baloosearchmodule MODULE ${KDED_BALOOSEARCH_SRCS})
+kcoreaddons_desktop_to_json(baloosearchmodule baloosearchmodule.desktop)
 
-target_link_libraries(kded_baloosearch_kio
+target_link_libraries(baloosearchmodule
     KF5::CoreAddons
     KF5::DBusAddons
     KF5::KIOCore
 )
 
-install(TARGETS kded_baloosearch_kio DESTINATION ${PLUGIN_INSTALL_DIR})
-install(FILES baloosearchfolderupdater.desktop DESTINATION ${SERVICES_INSTALL_DIR}/kded)
+install(TARGETS baloosearchmodule DESTINATION ${PLUGIN_INSTALL_DIR}/kf5/kded)
