@@ -24,6 +24,10 @@
 #include <QObject>
 #include <QAtomicInt>
 #include <QVector>
+#include <QStringList>
+
+#include <QDBusServiceWatcher>
+#include <QDBusMessage>
 
 namespace Baloo {
 
@@ -32,9 +36,13 @@ class FileContentIndexerProvider;
 class FileContentIndexer : public QObject, public QRunnable
 {
     Q_OBJECT
+    Q_CLASSINFO("D-Bus Interface", "org.kde.baloo.fileindexer")
+
+    Q_PROPERTY(QString currentFile READ currentFile NOTIFY indexingFile)
 public:
-    FileContentIndexer(FileContentIndexerProvider* provider);
-    ~FileContentIndexer();
+    FileContentIndexer(FileContentIndexerProvider* provider, QObject* parent = 0);
+
+    QString currentFile() { return m_currentFile; }
 
     void run() Q_DECL_OVERRIDE;
 
@@ -46,12 +54,22 @@ public:
         m_delay.store(delay);
     }
 
-    QVector<uint> batchTimings();
+public Q_SLOTS:
+    Q_SCRIPTABLE void registerMonitor(const QDBusMessage& message);
+    Q_SCRIPTABLE void unregisterMonitor(const QDBusMessage& message);
+    Q_SCRIPTABLE uint getRemainingTime();
+
 Q_SIGNALS:
-    void indexingFile(QString filePath);
+    Q_SCRIPTABLE void indexingFile(QString filePath);
     void done();
 
+private Q_SLOTS:
+    void monitorClosed(QString service);
+    void slotIndexingFile(QString filePath);
+
 private:
+    QVector<uint> batchTimings();
+
     FileContentIndexerProvider* m_provider;
 
     QAtomicInt m_stop;
@@ -60,7 +78,11 @@ private:
     QVector<uint> m_batchTimeBuffer;
     uint m_bufferIndex;
 
-    QString m_path;
+    QString m_currentFile;
+
+    QStringList m_registeredMonitors;
+    QDBusServiceWatcher m_monitorWatcher;
+    bool m_indexing;
 };
 
 }

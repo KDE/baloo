@@ -38,12 +38,15 @@ class FileContentIndexer;
 class FileIndexScheduler : public QObject
 {
     Q_OBJECT
+    Q_CLASSINFO("D-Bus Interface", "org.kde.baloo.scheduler")
+
+    Q_PROPERTY(int state READ state NOTIFY stateChanged)
 public:
     FileIndexScheduler(Database* db, FileIndexerConfig* config, QObject* parent = 0);
+    int state() const { return m_indexerState; }
 
 Q_SIGNALS:
-    void stateChanged(IndexerState state);
-    void indexingFile(QString filePath);
+    Q_SCRIPTABLE void stateChanged(int state);
 
 public Q_SLOTS:
     void indexNewFile(const QString& file) {
@@ -71,16 +74,16 @@ public Q_SLOTS:
 
     void scheduleIndexing();
 
-    void setSuspend(bool suspend);
-    uint getRemainingTime();
-
-    IndexerState state() const { return m_indexerState; }
+    Q_SCRIPTABLE void suspend() { setSuspend(true); }
+    Q_SCRIPTABLE void resume() { setSuspend(false); }
 
 private Q_SLOTS:
     void powerManagementStatusChanged(bool isOnBattery);
     void idleStatusChanged(bool isIdle);
 
 private:
+    void setSuspend(bool suspend);
+
     Database* m_db;
     FileIndexerConfig* m_config;
 

@@ -26,13 +26,7 @@
 #include <QObject>
 #include <QTextStream>
 
-#include "baloo_interface.h"
-
-namespace org {
-    namespace kde {
-        typedef OrgKdeBalooInterface balooInterface;
-    }
-}
+#include "fileindexerinterface.h"
 
 namespace Baloo {
 class Monitor : public QObject
@@ -46,7 +40,7 @@ private Q_SLOTS:
 
 private:
     QTextStream m_out;
-    org::kde::balooInterface* m_interface;
+    org::kde::baloo::fileindexer* m_interface;
 
 };
 }

@@ -4,7 +4,8 @@ set(MONITOR_SOURCES
 )
 
 set(DBUS_INTERFACES
-  ${CMAKE_BINARY_DIR}/src/dbus/baloo_interface.cpp
+  ${CMAKE_BINARY_DIR}/src/dbus/schedulerinterface.cpp
+  ${CMAKE_BINARY_DIR}/src/dbus/fileindexerinterface.cpp
 )
 
 SET_SOURCE_FILES_PROPERTIES(${DBUS_INTERFACES} PROPERTIES GENERATED 1)

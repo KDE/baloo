@@ -8,7 +8,9 @@ set(SRCS
 )
 
 set(DBUS_INTERFACES
-  ${CMAKE_BINARY_DIR}/src/dbus/baloo_interface.cpp
+  ${CMAKE_BINARY_DIR}/src/dbus/maininterface.cpp
+  ${CMAKE_BINARY_DIR}/src/dbus/schedulerinterface.cpp
+  ${CMAKE_BINARY_DIR}/src/dbus/fileindexerinterface.cpp
 )
 
 set_source_files_properties(${DBUS_INTERFACES} PROPERTIES GENERATED 1)

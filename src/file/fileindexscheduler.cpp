@@ -27,10 +27,10 @@
 #include "filecontentindexerprovider.h"
 
 #include "fileindexerconfig.h"
-#include "timeestimator.h"
 
 #include <QTimer>
 #include <QDebug>
+#include <QDBusConnection>
 
 using namespace Baloo;
 
@@ -54,6 +54,14 @@ FileIndexScheduler::FileIndexScheduler(Database* db, FileIndexerConfig* config, 
 
     connect(m_eventMonitor, &EventMonitor::idleStatusChanged, this,
             &FileIndexScheduler::idleStatusChanged);
+
+    m_contentIndexer = new FileContentIndexer(&m_provider, this);
+    m_contentIndexer->setAutoDelete(false);
+    connect(m_contentIndexer, &FileContentIndexer::done, this,
+            &FileIndexScheduler::scheduleIndexing);
+
+    QDBusConnection::sessionBus().registerObject(QStringLiteral("/scheduler"),
+                                                 this, QDBusConnection::ExportScriptableContents);
 }
 
 void FileIndexScheduler::scheduleIndexing()
@@ -106,10 +114,7 @@ void FileIndexScheduler::scheduleIndexing()
     }
 
     if (m_provider.size() && !m_eventMonitor->isOnBattery()) {
-        m_contentIndexer = new FileContentIndexer(&m_provider);
-        connect(m_contentIndexer, &FileContentIndexer::indexingFile, this, &FileIndexScheduler::indexingFile);
-        connect(m_contentIndexer, &FileContentIndexer::done, this, &FileIndexScheduler::scheduleIndexing);
-
+        qDebug() << "CONTENT INDEXING" << m_provider.size();
         if(!m_eventMonitor->isIdle()) {
             m_contentIndexer->delay(500);
         }
@@ -179,17 +184,6 @@ void FileIndexScheduler::setSuspend(bool suspend)
         // No need to emit here we'll be emitting in scheduling
         scheduleIndexing();
     }
-}
-
-uint FileIndexScheduler::getRemainingTime()
-{
-    if (m_indexerState != ContentIndexing) {
-        return 0;
-    }
-    TimeEstimator estimator;
-    estimator.setFilesLeft(m_provider.size());
-    estimator.setBatchTimings(m_contentIndexer->batchTimings());
-    return estimator.calculateTimeLeft();
 }
 
 void FileIndexScheduler::idleStatusChanged(bool isIdle)
