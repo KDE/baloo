@@ -47,7 +47,8 @@
 #include "idutils.h"
 #include "fileindexerconfig.h"
 #include "monitor.h"
-#include "baloo_interface.h"
+#include "schedulerinterface.h"
+#include "maininterface.h"
 #include "indexerstate.h"
 
 using namespace Baloo;
@@ -90,8 +91,12 @@ int main(int argc, char* argv[])
 
     QString command = parser.positionalArguments().first();
 
-    OrgKdeBalooInterface balooInterface(QStringLiteral("org.kde.baloo"),
-                                        QStringLiteral("/indexer"),
+    org::kde::baloo::main mainInterface(QStringLiteral("org.kde.baloo"),
+                                                QStringLiteral("/"),
+                                                QDBusConnection::sessionBus());
+
+    org::kde::baloo::scheduler schedulerinterface(QStringLiteral("org.kde.baloo"),
+                                        QStringLiteral("/scheduler"),
                                         QDBusConnection::sessionBus());
 
     if (command == QLatin1String("status")) {
@@ -105,11 +110,11 @@ int main(int argc, char* argv[])
 
         if (parser.positionalArguments().length() == 1) {
 
-            bool running = balooInterface.isValid();
+            bool running = mainInterface.isValid();
 
             if (running) {
                 out << "Baloo File Indexer is running\n";
-                out << "Indexer state: " << stateString(balooInterface.state()) << endl;
+                out << "Indexer state: " << stateString(schedulerinterface.state()) << endl;
             }
             else {
                 out << "Baloo File Indexer is NOT running\n";
@@ -200,7 +205,7 @@ int main(int argc, char* argv[])
         else {
             out << "Disabling the File Indexer\n";
 
-            balooInterface.quit();
+            mainInterface.quit();
 
             const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QStringLiteral("/baloo/index");
             QFile(path).remove();
@@ -224,19 +229,19 @@ int main(int argc, char* argv[])
         }
 
         if (shouldStop)
-            balooInterface.quit();
+            mainInterface.quit();
         if (shouldStart)
             start();
     }
 
     if (command == QStringLiteral("suspend")) {
-        balooInterface.suspend();
+        schedulerinterface.suspend();
         out << "File Indexer suspended\n";
         return 0;
     }
 
     if (command == QStringLiteral("resume")) {
-        balooInterface.resume();
+        schedulerinterface.resume();
         out << "File Indexer resumed\n";
         return 0;
     }

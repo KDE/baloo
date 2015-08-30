@@ -39,25 +39,32 @@ Monitor::Monitor(QObject *parent)
     : QObject(parent)
     , m_bus(QDBusConnection::sessionBus())
     , m_url(QStringLiteral("Idle"))
-    , m_balooInterface(0)
+    , m_scheduler(0)
+    , m_fileindexer(0)
     , m_filesIndexed(0)
     , m_remainingTime(QStringLiteral("Estimating"))
 {
-    m_balooInterface = new org::kde::balooInterface(QStringLiteral("org.kde.baloo"),
-                                            QStringLiteral("/indexer"),
-                                            m_bus, this);
+    m_scheduler = new org::kde::baloo::scheduler(QStringLiteral("org.kde.baloo"),
+                                          QStringLiteral("/scheduler"),
+                                          m_bus, this);
 
-    connect(m_balooInterface, &org::kde::balooInterface::indexingFile,
+    m_fileindexer = new org::kde::baloo::fileindexer(QStringLiteral("org.kde.baloo"),
+                                                    QStringLiteral("/fileindexer"),
+                                                    m_bus, this);
+
+    connect(m_fileindexer, &org::kde::baloo::fileindexer::indexingFile,
             this, &Monitor::newFile);
-    connect(m_balooInterface, &org::kde::balooInterface::stateChanged, this, &Monitor::slotIndexerStateChanged);
 
-    if (m_balooInterface->isValid()) {
+    connect(m_scheduler, &org::kde::baloo::scheduler::stateChanged,
+            this, &Monitor::slotIndexerStateChanged);
+
+    if (m_scheduler->isValid()) {
         // baloo is already running
-        balooStarted(m_balooInterface->service());
+        balooStarted(m_scheduler->service());
 
     } else {
         m_balooRunning = false;
-        QDBusServiceWatcher* balooWatcher = new QDBusServiceWatcher(m_balooInterface->service(),
+        QDBusServiceWatcher* balooWatcher = new QDBusServiceWatcher(m_scheduler->service(),
                                                                 m_bus,
                                                                 QDBusServiceWatcher::WatchForRegistration,
                                                                 this);
@@ -88,12 +95,12 @@ QString Monitor::suspendState() const
 
 void Monitor::toggleSuspendState()
 {
-    Q_ASSERT(m_balooInterface != 0);
+    Q_ASSERT(m_scheduler != 0);
 
     if (m_indexerState == Baloo::Suspended) {
-        m_balooInterface->resume();
+        m_scheduler->resume();
     } else {
-        m_balooInterface->suspend();
+        m_scheduler->suspend();
     }
 }
 
@@ -102,13 +109,13 @@ void Monitor::balooStarted(const QString& service)
     Q_ASSERT(service == QStringLiteral("org.kde.baloo"));
 
     m_balooRunning = true;
-    m_balooInterface->registerMonitor();
+    m_fileindexer->registerMonitor();
 
-    slotIndexerStateChanged(m_balooInterface->state());
+    slotIndexerStateChanged(m_scheduler->state());
     qDebug() << "fetched suspend state";
     fetchTotalFiles();
     if (m_indexerState == Baloo::ContentIndexing) {
-        m_url = m_balooInterface->currentFile();
+        m_url = m_fileindexer->currentFile();
     }
     Q_EMIT balooStateChanged();
 }
@@ -131,7 +138,7 @@ void Monitor::startBaloo()
 
 void Monitor::updateRemainingTime()
 {
-    uint seconds = m_balooInterface->getRemainingTime() / 1000;
+    uint seconds = m_fileindexer->getRemainingTime() / 1000;
 
     QStringList hms;
     hms << QStringLiteral(" hours ") << QStringLiteral(" minutes ")  << QStringLiteral(" seconds ");

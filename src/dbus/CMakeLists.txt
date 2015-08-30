@@ -1,24 +1,52 @@
-set(header_file ${CMAKE_SOURCE_DIR}/src/file/mainhub.h)
-set(baloo_interface_xml org.kde.baloo.file.indexer.xml)
-
-set_source_files_properties(${baloo_interface_xml}
-  PROPERTIES
-    NO_NAMESPACE true
-)
+#
+# MainHub
+#
+set(mainhub_xml org.kde.baloo.main.xml)
 
 qt5_generate_dbus_interface(
-    ${header_file}
-    ${baloo_interface_xml}
+    ${CMAKE_SOURCE_DIR}/src/file/mainhub.h
+    ${mainhub_xml}
     OPTIONS -a
 )
 
-qt5_add_dbus_interface(BALOO_INTERFACE
-    ${CMAKE_CURRENT_BINARY_DIR}/${baloo_interface_xml}
-    baloo_interface
+#
+# FileIndexScheduler
+#
+set(scheduler_xml org.kde.baloo.scheduler.xml)
+
+qt5_generate_dbus_interface(
+    ${CMAKE_SOURCE_DIR}/src/file/fileindexscheduler.h
+    ${scheduler_xml}
+    OPTIONS -a
 )
 
-add_custom_target(BalooDBusInterfaces
-  DEPENDS ${BALOO_INTERFACE}
+#
+# FileContentIndexer
+#
+set(contentindexer_xml org.kde.baloo.fileindexer.xml)
+
+qt5_generate_dbus_interface(
+    ${CMAKE_SOURCE_DIR}/src/file/filecontentindexer.h
+    ${contentindexer_xml}
+    OPTIONS -a
 )
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${baloo_interface_xml} DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
+set(
+    dbus_interface_xmls
+    ${CMAKE_CURRENT_BINARY_DIR}/${mainhub_xml}
+    ${CMAKE_CURRENT_BINARY_DIR}/${scheduler_xml}
+    ${CMAKE_CURRENT_BINARY_DIR}/${contentindexer_xml}
+)
+
+qt5_add_dbus_interfaces(
+    dbus_interfaces
+    ${dbus_interface_xmls}
+)
+
+add_custom_target(
+    BalooDBusInterfaces
+    ALL
+    DEPENDS ${dbus_interfaces}
+)
+
+install(FILES ${dbus_interface_xmls} DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})

@@ -63,6 +63,7 @@ inline QString stateString(IndexerState state)
     return status;
 }
 
+//TODO: check for implicit conversion
 inline QString stateString(int state)
 {
     return stateString(static_cast<IndexerState>(state));

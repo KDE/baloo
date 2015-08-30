@@ -28,13 +28,8 @@
 #include <QDBusInterface>
 
 #include "indexerstate.h"
-#include "baloo_interface.h"
-
-namespace org {
-    namespace kde {
-        typedef OrgKdeBalooInterface balooInterface;
-    }
-}
+#include "schedulerinterface.h"
+#include "fileindexerinterface.h"
 
 namespace BalooMonitor {
 class Monitor : public QObject
@@ -85,7 +80,8 @@ private:
     bool m_balooRunning;
     Baloo::IndexerState m_indexerState;
 
-    org::kde::balooInterface* m_balooInterface;
+    org::kde::baloo::scheduler* m_scheduler;
+    org::kde::baloo::fileindexer* m_fileindexer;
 
     uint m_totalFiles;
     uint m_filesIndexed;

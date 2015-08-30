@@ -20,33 +20,43 @@
 #include "filecontentindexer.h"
 #include "filecontentindexerprovider.h"
 #include "extractorprocess.h"
+#include "timeestimator.h"
 
 #include <QEventLoop>
 #include <QElapsedTimer>
 #include <QTimer>
+#include <QDBusConnection>
 
 using namespace Baloo;
 
-FileContentIndexer::FileContentIndexer(FileContentIndexerProvider* provider)
-    : m_provider(provider)
+FileContentIndexer::FileContentIndexer(FileContentIndexerProvider* provider, QObject* parent)
+    : QObject(parent)
+    , m_provider(provider)
     , m_stop(0)
     , m_delay(0)
     , m_batchTimeBuffer(6, 0)
     , m_bufferIndex(0)
+    , m_indexing(0)
 {
     Q_ASSERT(provider);
-}
 
-FileContentIndexer::~FileContentIndexer()
-{
-    Q_EMIT done();
+    QDBusConnection bus = QDBusConnection::sessionBus();
+    m_monitorWatcher.setConnection(bus);
+    m_monitorWatcher.setWatchMode(QDBusServiceWatcher::WatchForUnregistration);
+    connect(&m_monitorWatcher, &QDBusServiceWatcher::serviceUnregistered, this,
+            &FileContentIndexer::monitorClosed);
+
+    bus.registerObject(QStringLiteral("/fileindexer"),
+                        this, QDBusConnection::ExportScriptableContents);
 }
 
 void FileContentIndexer::run()
 {
     ExtractorProcess process;
-    connect(&process, &ExtractorProcess::indexingFile, this, &FileContentIndexer::indexingFile);
+    connect(&process, &ExtractorProcess::indexingFile, this, &FileContentIndexer::slotIndexingFile);
 
+    m_stop.store(false);
+    m_indexing = true;
     while (m_provider->size() && !m_stop.load()) {
         //
         // WARNING: This will go mad, if the Extractor does not commit after 40 files
@@ -77,6 +87,8 @@ void FileContentIndexer::run()
         m_batchTimeBuffer[m_bufferIndex % (m_batchTimeBuffer.size() - 1)] = timer.elapsed();
         ++m_bufferIndex;
     }
+    m_indexing = false;
+    Q_EMIT done();
 }
 
 QVector<uint> FileContentIndexer::batchTimings()
@@ -88,4 +100,43 @@ QVector<uint> FileContentIndexer::batchTimings()
     // know which the recentness of each batch.
     m_batchTimeBuffer[m_batchTimeBuffer.size() - 1] = m_bufferIndex % (m_batchTimeBuffer.size() - 1);
     return m_batchTimeBuffer;
+}
+
+void FileContentIndexer::slotIndexingFile(QString filePath)
+{
+    m_currentFile = filePath;
+    if (!m_registeredMonitors.isEmpty()) {
+        Q_EMIT indexingFile(filePath);
+    }
+}
+
+void FileContentIndexer::registerMonitor(const QDBusMessage& message)
+{
+    if (!m_registeredMonitors.contains(message.service())) {
+        m_registeredMonitors << message.service();
+        m_monitorWatcher.addWatchedService(message.service());
+    }
+}
+
+void FileContentIndexer::unregisterMonitor(const QDBusMessage& message)
+{
+    m_registeredMonitors.removeAll(message.service());
+    m_monitorWatcher.removeWatchedService(message.service());
+}
+
+void FileContentIndexer::monitorClosed(QString service)
+{
+    m_registeredMonitors.removeAll(service);
+    m_monitorWatcher.removeWatchedService(service);
+}
+
+uint FileContentIndexer::getRemainingTime()
+{
+    if (!m_indexing) {
+        return 0;
+    }
+    TimeEstimator estimator;
+    estimator.setFilesLeft(m_provider->size());
+    estimator.setBatchTimings(batchTimings());
+    return estimator.calculateTimeLeft();
 }
