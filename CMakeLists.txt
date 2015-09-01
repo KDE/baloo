@@ -32,8 +32,7 @@ ecm_setup_version(${KF5_VERSION} VARIABLE_PREFIX BALOO
 set(REQUIRED_QT_VERSION 5.3.0)
 find_package(Qt5 ${REQUIRED_QT_VERSION} REQUIRED NO_MODULE COMPONENTS Widgets Quick DBus Test)
 
-find_package(KF5 ${KF5_DEP_VERSION} REQUIRED COMPONENTS I18n Config IdleTime Auth Crash Solid KIO DBusAddons)
-find_package(KF5 ${KF5_VERSION} REQUIRED COMPONENTS FileMetaData)
+find_package(KF5 ${KF5_DEP_VERSION} REQUIRED COMPONENTS I18n Config IdleTime Auth Crash Solid KIO DBusAddons FileMetaData)
 
 find_package(LMDB)
 set_package_properties(LMDB PROPERTIES
