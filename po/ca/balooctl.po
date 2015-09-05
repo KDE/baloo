@@ -1,0 +1,86 @@
+# Translation of balooctl.po to Catalan
+# Copyright (C) 2014-2015 This_file_is_part_of_KDE
+# This file is distributed under the license LGPL version 2.1 or
+# version 3 or later versions approved by the membership of KDE e.V.
+#
+# Antoni Bella Pérez <antonibella5@yahoo.com>, 2014, 2015.
+# Josep Ma. Ferrer <txemaq@gmail.com>, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: balooctl\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-08-31 08:58+0000\n"
+"PO-Revision-Date: 2015-06-06 16:08+0100\n"
+"Last-Translator: Antoni Bella Pérez <antonibella5@yahoo.com>\n"
+"Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
+"Language: ca\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Accelerator-Marker: &\n"
+"X-Generator: Lokalize 2.0\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Antoni Bella"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "antonibella5@yahoo.com"
+
+#: main.cpp:64
+msgid "balooctl"
+msgstr "balooctl"
+
+#: main.cpp:65
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:65
+msgid "Maintainer"
+msgstr "Mantenidor"
+
+#: main.cpp:71
+msgid "The command to execute"
+msgstr "L'ordre a executar"
+
+#: main.cpp:73
+msgid "Print the status of the indexer"
+msgstr "Imprimeix l'estat de l'indexador"
+
+#: main.cpp:74
+msgid "Enable the file indexer"
+msgstr "Habilita l'indexador de fitxers"
+
+#: main.cpp:75
+msgid "Disable the file indexer"
+msgstr "Deshabilita l'indexador de fitxers"
+
+#: main.cpp:76
+msgid "Start the file indexer"
+msgstr "Inicia l'indexador de fitxers"
+
+#: main.cpp:77
+msgid "Stop the file indexer"
+msgstr "Atura l'indexador de fitxers"
+
+#: main.cpp:78
+msgid "Restart the file indexer"
+msgstr "Torna a iniciar l'indexador de fitxers"
+
+#: main.cpp:79
+msgid "Suspend the file indexer"
+msgstr "Suspèn l'indexador de fitxers"
+
+#: main.cpp:80
+msgid "Resume the file indexer"
+msgstr "Reactiva l'indexador de fitxers"
+
+#: main.cpp:81
+msgid "Check for any unindexed files and index them"
+msgstr "Comprova si hi ha qualsevol fitxer sense indexar i indexa'l"
+
+#: main.cpp:82
+msgid "Index the specified files"
+msgstr "Indexa els fitxers especificats"

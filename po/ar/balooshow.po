@@ -1,0 +1,48 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Abdalrahim G. Fakhouri <abdilra7eem@yahoo.com>, 2014.
+# Safa Alfulaij <safa1996alfulaij@gmail.com>, ٢٠١٥.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-08-21 08:09+0000\n"
+"PO-Revision-Date: ٢٠١٥-٠٤-٠٣ ١٤:٢٢+0300\n"
+"Last-Translator: Safa Alfulaij <safa1996alfulaij@gmail.com>\n"
+"Language-Team: Arabic <doc@arabeyes.org>\n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+"X-Generator: Lokalize 2.0\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "عبدالرحيم الفاخوري"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "abdilra7eem@yahoo.com"
+
+#: main.cpp:56
+msgid "Baloo Show"
+msgstr "عرض بالو"
+
+#: main.cpp:58
+msgid "The Baloo data Viewer - A debugging tool"
+msgstr "عارض بيانات بالو - أداة تنقيح"
+
+#: main.cpp:60
+msgid "(c) 2012, Vishesh Handa"
+msgstr ""
+
+#: main.cpp:61
+msgid "Vishesh Handa"
+msgstr ""
+
+#: main.cpp:61
+msgid "Maintainer"
+msgstr "المصين"

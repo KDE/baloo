@@ -1,0 +1,84 @@
+# Translation of balooctl to Norwegian Nynorsk
+#
+# Karl Ove Hufthammer <karl@huftis.org>, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-08-21 08:09+0000\n"
+"PO-Revision-Date: 2015-07-13 21:21+0100\n"
+"Last-Translator: Karl Ove Hufthammer <karl@huftis.org>\n"
+"Language-Team: Norwegian Nynorsk <i18n-nn@lister.ping.uio.no>\n"
+"Language: nn\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 2.0\n"
+"X-Environment: kde\n"
+"X-Accelerator-Marker: &\n"
+"X-Text-Markup: kde4\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Karl Ove Hufthammer"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "karl@huftis.org"
+
+#: main.cpp:63
+msgid "balooctl"
+msgstr "balooctl"
+
+#: main.cpp:64
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:64
+msgid "Maintainer"
+msgstr "Vedlikehaldar"
+
+#: main.cpp:70
+msgid "The command to execute"
+msgstr "Kommando som skal køyrast"
+
+#: main.cpp:72
+msgid "Print the status of the indexer"
+msgstr "Vis status for indekseraren"
+
+#: main.cpp:73
+msgid "Enable the file indexer"
+msgstr "Slå på filindeksering"
+
+#: main.cpp:74
+msgid "Disable the file indexer"
+msgstr "Slå av filindeksering"
+
+#: main.cpp:75
+msgid "Start the file indexer"
+msgstr "Start filindeksering"
+
+#: main.cpp:76
+msgid "Stop the file indexer"
+msgstr "Stopp filindeksering"
+
+#: main.cpp:77
+msgid "Restart the file indexer"
+msgstr "Start filindeksering på nytt"
+
+#: main.cpp:78
+msgid "Suspend the file indexer"
+msgstr "Pausa filindeksering"
+
+#: main.cpp:79
+msgid "Resume the file indexer"
+msgstr "Hald fram filindeksering"
+
+#: main.cpp:80
+msgid "Check for any unindexed files and index them"
+msgstr "Sjå etter filer som ikkje er indekserte, og indekser dei"
+
+#: main.cpp:81
+msgid "Index the specified files"
+msgstr "Indekser dei valde filene"

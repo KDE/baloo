@@ -1,0 +1,83 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Xuetian Weng <xweng@cs.stonybrook.edu>, 2014.
+# Weng Xuetian <wengxt@gmail.com>, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-08-31 08:58+0000\n"
+"PO-Revision-Date: 2015-06-10 09:09UTC-0800\n"
+"Last-Translator: Weng Xuetian <wengxt@gmail.cm>\n"
+"Language-Team: Chinese <kde-china@kde.org>\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Lokalize 2.0\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "KDE 中国"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "kde-china@kde.org"
+
+#: main.cpp:64
+msgid "balooctl"
+msgstr "balooctl"
+
+#: main.cpp:65
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:65
+msgid "Maintainer"
+msgstr "维护者"
+
+#: main.cpp:71
+msgid "The command to execute"
+msgstr "要执行的命令"
+
+#: main.cpp:73
+msgid "Print the status of the indexer"
+msgstr "显示索引器状态"
+
+#: main.cpp:74
+msgid "Enable the file indexer"
+msgstr "启用文件索引器"
+
+#: main.cpp:75
+msgid "Disable the file indexer"
+msgstr "禁用文件索引器"
+
+#: main.cpp:76
+msgid "Start the file indexer"
+msgstr "启动文件索引器"
+
+#: main.cpp:77
+msgid "Stop the file indexer"
+msgstr "停止文件索引器"
+
+#: main.cpp:78
+msgid "Restart the file indexer"
+msgstr "重启文件索引器"
+
+#: main.cpp:79
+msgid "Suspend the file indexer"
+msgstr "暂停文件索引器"
+
+#: main.cpp:80
+msgid "Resume the file indexer"
+msgstr "回复文件索引器"
+
+#: main.cpp:81
+msgid "Check for any unindexed files and index them"
+msgstr "检查未索引的文件并索引它们"
+
+#: main.cpp:82
+msgid "Index the specified files"
+msgstr "索引指定文件"

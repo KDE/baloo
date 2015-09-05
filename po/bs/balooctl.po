@@ -1,0 +1,85 @@
+# Bosnian translation for bosnianuniversetranslation
+# Copyright (c) 2015 Rosetta Contributors and Canonical Ltd 2015
+# This file is distributed under the same license as the bosnianuniversetranslation package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2015.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: bosnianuniversetranslation\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-08-31 08:58+0000\n"
+"PO-Revision-Date: 2015-01-04 13:01+0000\n"
+"Last-Translator: Samir Ribić <Unknown>\n"
+"Language-Team: Bosnian <bs@li.org>\n"
+"Language: bs\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Launchpad (build 17341)\n"
+"X-Launchpad-Export-Date: 2015-02-15 06:27+0000\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Samir Ribić"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "Samir.ribic@etf.unsa.ba"
+
+#: main.cpp:64
+msgid "balooctl"
+msgstr "balooctl"
+
+#: main.cpp:65
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:65
+msgid "Maintainer"
+msgstr "Održavatelj"
+
+#: main.cpp:71
+msgid "The command to execute"
+msgstr "Komanda za izvršavanje"
+
+#: main.cpp:73
+msgid "Print the status of the indexer"
+msgstr "Odštampaj status indeksera"
+
+#: main.cpp:74
+msgid "Enable the file indexer"
+msgstr "Uključi indeksiranje datoteka"
+
+#: main.cpp:75
+msgid "Disable the file indexer"
+msgstr "Isključi indeksiranje datoteka"
+
+#: main.cpp:76
+msgid "Start the file indexer"
+msgstr "Pokreni indeksiranje datoteka"
+
+#: main.cpp:77
+msgid "Stop the file indexer"
+msgstr "Zaustavi indeksiranje datoteka"
+
+#: main.cpp:78
+msgid "Restart the file indexer"
+msgstr "Restartuj indeksiranje datoteka"
+
+#: main.cpp:79
+msgid "Suspend the file indexer"
+msgstr "Suspenduj indeksiranje datoteka"
+
+#: main.cpp:80
+msgid "Resume the file indexer"
+msgstr "Nastavi indeksiranje datoteka"
+
+#: main.cpp:81
+msgid "Check for any unindexed files and index them"
+msgstr ""
+
+#: main.cpp:82
+msgid "Index the specified files"
+msgstr ""

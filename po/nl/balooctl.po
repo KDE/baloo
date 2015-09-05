@@ -1,0 +1,82 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Freek de Kruijf <freekdekruijf@kde.nl>, 2014, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-08-31 08:58+0000\n"
+"PO-Revision-Date: 2015-06-06 21:24+0200\n"
+"Last-Translator: Freek de Kruijf <freekdekruijf@kde.nl>\n"
+"Language-Team: Dutch <kde-i18n-nl@kde.org>\n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 1.5\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Freek de Kruijf"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "freekdekruijf@kde.nl"
+
+#: main.cpp:64
+msgid "balooctl"
+msgstr "balooctl"
+
+#: main.cpp:65
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:65
+msgid "Maintainer"
+msgstr "Onderhouder"
+
+#: main.cpp:71
+msgid "The command to execute"
+msgstr "Het uit te voeren commando"
+
+#: main.cpp:73
+msgid "Print the status of the indexer"
+msgstr "De status van het programma voor indexering afdrukken"
+
+#: main.cpp:74
+msgid "Enable the file indexer"
+msgstr "De bestandenindexering inschakelen"
+
+#: main.cpp:75
+msgid "Disable the file indexer"
+msgstr "De bestandenindexering uitschakelen"
+
+#: main.cpp:76
+msgid "Start the file indexer"
+msgstr "De bestandenindexering starten"
+
+#: main.cpp:77
+msgid "Stop the file indexer"
+msgstr "De bestandenindexering stoppen"
+
+#: main.cpp:78
+msgid "Restart the file indexer"
+msgstr "De bestandenindexering opnieuw starten"
+
+#: main.cpp:79
+msgid "Suspend the file indexer"
+msgstr "De bestandenindexering onderbreken"
+
+#: main.cpp:80
+msgid "Resume the file indexer"
+msgstr "De bestandenindexering hervatten"
+
+#: main.cpp:81
+msgid "Check for any unindexed files and index them"
+msgstr "Controleer op mogelijk niet geïndexeerde bestanden en indexeer ze"
+
+#: main.cpp:82
+msgid "Index the specified files"
+msgstr "De gespecificeerde bestanden indexeren"

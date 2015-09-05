@@ -1,0 +1,82 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Martin Schlander <mschlander@opensuse.org>, 2014, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-08-31 08:58+0000\n"
+"PO-Revision-Date: 2015-08-26 19:56+0200\n"
+"Last-Translator: Martin Schlander <mschlander@opensuse.org>\n"
+"Language-Team: Danish <kde-i18n-doc@kde.org>\n"
+"Language: da\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 1.5\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Martin Schlander"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "mschlander@opensuse.org"
+
+#: main.cpp:64
+msgid "balooctl"
+msgstr "balooctl"
+
+#: main.cpp:65
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:65
+msgid "Maintainer"
+msgstr "Vedligeholder"
+
+#: main.cpp:71
+msgid "The command to execute"
+msgstr "Kommando der skal køres"
+
+#: main.cpp:73
+msgid "Print the status of the indexer"
+msgstr "Skriv status for indekseringen"
+
+#: main.cpp:74
+msgid "Enable the file indexer"
+msgstr "Aktivér filindeksering"
+
+#: main.cpp:75
+msgid "Disable the file indexer"
+msgstr "Deaktivér filindeksering"
+
+#: main.cpp:76
+msgid "Start the file indexer"
+msgstr "Start filindekseringen"
+
+#: main.cpp:77
+msgid "Stop the file indexer"
+msgstr "Stop filindekseringen"
+
+#: main.cpp:78
+msgid "Restart the file indexer"
+msgstr "Genstart filindekseringen"
+
+#: main.cpp:79
+msgid "Suspend the file indexer"
+msgstr "Suspendér filindekseringen"
+
+#: main.cpp:80
+msgid "Resume the file indexer"
+msgstr "Genoptag filindeksering"
+
+#: main.cpp:81
+msgid "Check for any unindexed files and index them"
+msgstr "Tjek for ikke-indekserede filer og indeksér dem"
+
+#: main.cpp:82
+msgid "Index the specified files"
+msgstr "Indeksér de angivne filer"

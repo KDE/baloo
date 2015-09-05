@@ -1,0 +1,82 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Kristóf Kiszel <ulysses@kubuntu.org>, 2014, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-08-31 08:58+0000\n"
+"PO-Revision-Date: 2015-09-04 15:09+0200\n"
+"Last-Translator: Kristóf Kiszel <ulysses@kubuntu.org>\n"
+"Language-Team: Hungarian <kde-l10n-hu@kde.org>\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 1.5\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Kiszel Kristóf"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "ulysses@kubuntu.org"
+
+#: main.cpp:64
+msgid "balooctl"
+msgstr "balooctl"
+
+#: main.cpp:65
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:65
+msgid "Maintainer"
+msgstr "Karbantartó"
+
+#: main.cpp:71
+msgid "The command to execute"
+msgstr "A végrehajtandó parancs"
+
+#: main.cpp:73
+msgid "Print the status of the indexer"
+msgstr "Az indexelő állapotának nyomtatása"
+
+#: main.cpp:74
+msgid "Enable the file indexer"
+msgstr "A fájlindexelő bekapcsolása"
+
+#: main.cpp:75
+msgid "Disable the file indexer"
+msgstr "A fájlindexelő kikapcsolása"
+
+#: main.cpp:76
+msgid "Start the file indexer"
+msgstr "A fájlindexelő indítása"
+
+#: main.cpp:77
+msgid "Stop the file indexer"
+msgstr "A fájlindexelő leállítása"
+
+#: main.cpp:78
+msgid "Restart the file indexer"
+msgstr "A fájlindexelő újraindítása"
+
+#: main.cpp:79
+msgid "Suspend the file indexer"
+msgstr "A fájlindexelő felfüggesztése"
+
+#: main.cpp:80
+msgid "Resume the file indexer"
+msgstr "A fájlindexelő felkeltése"
+
+#: main.cpp:81
+msgid "Check for any unindexed files and index them"
+msgstr "Nem indexelt fájlok keresése és indexelése"
+
+#: main.cpp:82
+msgid "Index the specified files"
+msgstr "A megadott fájlok indexelése"
