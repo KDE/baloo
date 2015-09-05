@@ -39,47 +39,47 @@ public:
      * List all files and folders tagged with the corresponding tag, along with
      * additional tags that can be used to filter the results
      */
-    void listDir(const QUrl& url);
+    void listDir(const QUrl& url) Q_DECL_OVERRIDE;
 
     /**
      * Will be forwarded for files.
      */
-    void get(const QUrl& url);
+    void get(const QUrl& url) Q_DECL_OVERRIDE;
 
     /**
      * Not supported.
      */
-    void put(const QUrl& url, int permissions, KIO::JobFlags flags);
+    void put(const QUrl& url, int permissions, KIO::JobFlags flags) Q_DECL_OVERRIDE;
 
     /**
      * Files and folders can be copied to the virtual folders resulting
      * is assignment of the corresponding tag.
      */
-    void copy(const QUrl& src, const QUrl& dest, int permissions, KIO::JobFlags flags);
+    void copy(const QUrl& src, const QUrl& dest, int permissions, KIO::JobFlags flags) Q_DECL_OVERRIDE;
 
     /**
      * File renaming will be forwarded.
      * Folder renaming results in renaming of the tag.
      */
-    void rename(const QUrl& src, const QUrl& dest, KIO::JobFlags flags);
+    void rename(const QUrl& src, const QUrl& dest, KIO::JobFlags flags) Q_DECL_OVERRIDE;
 
     /**
      * File deletion means remocing the tag
      * Folder deletion will result in deletion of the tag.
      */
-    void del(const QUrl& url, bool isfile);
+    void del(const QUrl& url, bool isfile) Q_DECL_OVERRIDE;
 
     /**
      * Files will be forwarded.
      * Tags will be created as virtual folders.
      */
-    void mimetype(const QUrl& url);
+    void mimetype(const QUrl& url) Q_DECL_OVERRIDE;
 
     /**
      * Files will be forwarded.
      * Tags will be created as virtual folders.
      */
-    void stat(const QUrl& url);
+    void stat(const QUrl& url) Q_DECL_OVERRIDE;
 protected:
     bool rewriteUrl(const QUrl& url, QUrl& newURL) Q_DECL_OVERRIDE;
 
