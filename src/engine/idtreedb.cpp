@@ -58,6 +58,7 @@ MDB_dbi IdTreeDB::open(MDB_txn* txn)
 void IdTreeDB::put(quint64 docId, const QVector<quint64> subDocIds)
 {
     Q_ASSERT(!subDocIds.isEmpty());
+    Q_ASSERT(!subDocIds.contains(0));
 
     MDB_val key;
     key.mv_size = sizeof(quint64);

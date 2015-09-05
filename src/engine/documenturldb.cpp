@@ -77,6 +77,7 @@ bool DocumentUrlDB::put(quint64 docId, const QByteArray& url)
     QVector<IdNamePath> list;
     while (!arr.isEmpty()) {
         quint64 id = filePathToId(arr);
+        Q_ASSERT(id);
 
         int pos = arr.lastIndexOf('/');
         QByteArray name = arr.mid(pos + 1);
