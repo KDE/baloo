@@ -207,7 +207,7 @@ ResultIterator Query::exec()
     }
 
     SearchStore searchStore;
-    QStringList result = searchStore.exec(term, d->m_limit, d->m_sortingOption == SortAuto);
+    QStringList result = searchStore.exec(term, d->m_offset, d->m_limit, d->m_sortingOption == SortAuto);
     return ResultIterator(result);
 }
 
