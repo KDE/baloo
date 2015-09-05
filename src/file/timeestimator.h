@@ -23,30 +23,31 @@
 #ifndef BALOO_TIMEESTIMATOR_H
 #define BALOO_TIMEESTIMATOR_H
 
-#include <QtGlobal>
-#include <QVector>
+#define BUFFER_SIZE 5
+
+#include <QObject>
 
 namespace Baloo {
-
 /*
 * This class handles the time estimation logic for filecontentindexer.
 * Time estimations use a weighted moving average of the time taken by
 * 5 most recent batches. The more recent the batch is, higher the weight
 * it will be assigned.
 */
-class TimeEstimator
+class TimeEstimator : public QObject
 {
 public:
-    TimeEstimator();
-    void setFilesLeft(uint left) { m_filesLeft = left; }
-    void setBatchTimings(const QVector<uint>& batchTimings) { m_batchTimings = batchTimings; }
+    TimeEstimator(QObject* parent = 0);
+    uint calculateTimeLeft(int filesLeft);
 
-    // gives the estimated time left
-    uint calculateTimeLeft();
+public Q_SLOTS:
+    void handleNewBatchTime(uint time);
 
 private:
-    uint m_filesLeft;
-    QVector<uint> m_batchTimings;
+    uint m_batchTimeBuffer[BUFFER_SIZE];
+    int m_bufferIndex;
+
+    bool m_estimateReady;
 };
 
 }

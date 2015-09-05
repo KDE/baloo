@@ -138,7 +138,7 @@ void Monitor::startBaloo()
 
 void Monitor::updateRemainingTime()
 {
-    uint seconds = m_fileindexer->getRemainingTime() / 1000;
+    uint seconds = m_scheduler->getRemainingTime() / 1000;
 
     QStringList hms;
     hms << QStringLiteral(" hours ") << QStringLiteral(" minutes ")  << QStringLiteral(" seconds ");

@@ -21,37 +21,51 @@
  */
 
 #include "timeestimator.h"
+#include "filecontentindexerprovider.h"
 
-Baloo::TimeEstimator::TimeEstimator()
-    : m_filesLeft(0)
+using namespace Baloo;
+
+TimeEstimator::TimeEstimator(QObject* parent)
+    : QObject(parent)
+    , m_bufferIndex(0)
+    , m_estimateReady(false)
 {
 }
 
-uint Baloo::TimeEstimator::calculateTimeLeft()
+uint TimeEstimator::calculateTimeLeft(int filesLeft)
 {
+    if (!m_estimateReady) {
+        return 0;
+    }
+
     //TODO: We should probably make the batch size a global macro
     float totalTime = 0;
     float totalWeight = 0;
 
-    uint currentIndex = m_batchTimings.takeLast();
-
-    uint weightI = 1;
-    for (int i = currentIndex; i < m_batchTimings.size(); ++i) {
-        float weight = sqrt(weightI);
-        totalTime += m_batchTimings.at(i) * weight;
+    int bufferIndex = m_bufferIndex;
+    for (int i = 0; i < BUFFER_SIZE; ++i) {
+        float weight = sqrt(i + 1);
         totalWeight += weight;
-        ++weightI;
-    }
 
-    for (uint i = 0; i < currentIndex; ++i) {
-        float weight = sqrt(weightI);
-        totalTime += m_batchTimings.at(i) * weight;
-        totalWeight += weight;
-        ++weightI;
+        totalTime += m_batchTimeBuffer[bufferIndex] * weight;
+        bufferIndex = (bufferIndex + 1) % BUFFER_SIZE;
     }
 
     float weightedAverage = totalTime / totalWeight;
-    float batchesLeft = (float)m_filesLeft / (float)40;
+    float batchesLeft = (float)filesLeft / (float)40;
 
     return weightedAverage * batchesLeft;
+}
+
+void TimeEstimator::handleNewBatchTime(uint time)
+{
+    // add the current batch time in place of the oldest batch time
+    m_batchTimeBuffer[m_bufferIndex] = time;
+
+    if (!m_estimateReady && m_bufferIndex == BUFFER_SIZE - 1) {
+        // Buffer has been filled once. We are ready to estimate
+        m_estimateReady = true;
+    }
+
+    m_bufferIndex = (m_bufferIndex + 1) % BUFFER_SIZE;
 }

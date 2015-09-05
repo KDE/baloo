@@ -28,6 +28,7 @@
 #include "filecontentindexerprovider.h"
 #include "eventmonitor.h"
 #include "indexerstate.h"
+#include "timeestimator.h"
 
 namespace Baloo {
 
@@ -76,6 +77,7 @@ public Q_SLOTS:
 
     Q_SCRIPTABLE void suspend() { setSuspend(true); }
     Q_SCRIPTABLE void resume() { setSuspend(false); }
+    Q_SCRIPTABLE uint getRemainingTime();
 
 private Q_SLOTS:
     void powerManagementStatusChanged(bool isOnBattery);
@@ -99,6 +101,7 @@ private:
     EventMonitor* m_eventMonitor;
 
     IndexerState m_indexerState;
+    TimeEstimator m_timeEstimator;
 };
 
 }
