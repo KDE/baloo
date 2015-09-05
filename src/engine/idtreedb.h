@@ -34,7 +34,6 @@ class BALOO_ENGINE_EXPORT IdTreeDB
 {
 public:
     IdTreeDB(MDB_dbi dbi, MDB_txn* txn);
-    ~IdTreeDB();
 
     static MDB_dbi create(MDB_txn* txn);
     static MDB_dbi open(MDB_txn* txn);
