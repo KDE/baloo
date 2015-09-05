@@ -23,7 +23,6 @@
 #include <QRunnable>
 #include <QObject>
 #include <QAtomicInt>
-#include <QVector>
 #include <QStringList>
 
 #include <QDBusServiceWatcher>
@@ -57,32 +56,26 @@ public:
 public Q_SLOTS:
     Q_SCRIPTABLE void registerMonitor(const QDBusMessage& message);
     Q_SCRIPTABLE void unregisterMonitor(const QDBusMessage& message);
-    Q_SCRIPTABLE uint getRemainingTime();
 
 Q_SIGNALS:
     Q_SCRIPTABLE void indexingFile(QString filePath);
     void done();
+    void newBatchTime(uint time);
 
 private Q_SLOTS:
     void monitorClosed(QString service);
     void slotIndexingFile(QString filePath);
 
 private:
-    QVector<uint> batchTimings();
-
     FileContentIndexerProvider* m_provider;
 
     QAtomicInt m_stop;
     QAtomicInt m_delay;
 
-    QVector<uint> m_batchTimeBuffer;
-    uint m_bufferIndex;
-
     QString m_currentFile;
 
     QStringList m_registeredMonitors;
     QDBusServiceWatcher m_monitorWatcher;
-    bool m_indexing;
 };
 
 }

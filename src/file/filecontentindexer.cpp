@@ -20,7 +20,6 @@
 #include "filecontentindexer.h"
 #include "filecontentindexerprovider.h"
 #include "extractorprocess.h"
-#include "timeestimator.h"
 
 #include <QEventLoop>
 #include <QElapsedTimer>
@@ -34,9 +33,6 @@ FileContentIndexer::FileContentIndexer(FileContentIndexerProvider* provider, QOb
     , m_provider(provider)
     , m_stop(0)
     , m_delay(0)
-    , m_batchTimeBuffer(6, 0)
-    , m_bufferIndex(0)
-    , m_indexing(0)
 {
     Q_ASSERT(provider);
 
@@ -56,7 +52,6 @@ void FileContentIndexer::run()
     connect(&process, &ExtractorProcess::indexingFile, this, &FileContentIndexer::slotIndexingFile);
 
     m_stop.store(false);
-    m_indexing = true;
     while (m_provider->size() && !m_stop.load()) {
         //
         // WARNING: This will go mad, if the Extractor does not commit after 40 files
@@ -83,23 +78,9 @@ void FileContentIndexer::run()
 
         process.index(idList);
         loop.exec();
-        // add the current batch time in place of the oldest batch time
-        m_batchTimeBuffer[m_bufferIndex % (m_batchTimeBuffer.size() - 1)] = timer.elapsed();
-        ++m_bufferIndex;
+        Q_EMIT newBatchTime(timer.elapsed());
     }
-    m_indexing = false;
     Q_EMIT done();
-}
-
-QVector<uint> FileContentIndexer::batchTimings()
-{
-    if (m_bufferIndex < m_batchTimeBuffer.size() - 1) {
-        return QVector<uint>(6, 0);
-    }
-    // Insert the index of the oldest batch timming as the last entry to let the estimator
-    // know which the recentness of each batch.
-    m_batchTimeBuffer[m_batchTimeBuffer.size() - 1] = m_bufferIndex % (m_batchTimeBuffer.size() - 1);
-    return m_batchTimeBuffer;
 }
 
 void FileContentIndexer::slotIndexingFile(QString filePath)
@@ -128,15 +109,4 @@ void FileContentIndexer::monitorClosed(QString service)
 {
     m_registeredMonitors.removeAll(service);
     m_monitorWatcher.removeWatchedService(service);
-}
-
-uint FileContentIndexer::getRemainingTime()
-{
-    if (!m_indexing) {
-        return 0;
-    }
-    TimeEstimator estimator;
-    estimator.setFilesLeft(m_provider->size());
-    estimator.setBatchTimings(batchTimings());
-    return estimator.calculateTimeLeft();
 }
