@@ -44,7 +44,6 @@ QStringList TermGenerator::termList(const QString& text_)
 
     int start = 0;
     int end = 0;
-    int prevBreak = 0;
 
     QStringList list;
     QTextBoundaryFinder bf(QTextBoundaryFinder::Word, text);
