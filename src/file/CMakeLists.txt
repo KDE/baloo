@@ -68,4 +68,3 @@ install(TARGETS baloo_file ${INSTALL_TARGETS_DEFAULT_ARGS})
 install(FILES baloo_file.desktop DESTINATION ${AUTOSTART_INSTALL_DIR})
 
 add_subdirectory(extractor)
-add_subdirectory(inotify)

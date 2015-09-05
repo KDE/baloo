@@ -33,7 +33,6 @@
 #include <QDBusConnection>
 
 #include <syslog.h>
-#include <kauth.h>
 
 using namespace Baloo;
 
@@ -163,39 +162,21 @@ void FileWatch::slotAttributeChanged(const QString& path)
     m_pendingFileQueue->enqueue(file);
 }
 
-// Try to raise the inotify watch limit by executing
-// a helper which modifies /proc/sys/fs/inotify/max_user_watches
-bool raiseWatchLimit()
-{
-    KAuth::Action limitAction(QStringLiteral("org.kde.baloo.filewatch.raiselimit"));
-    limitAction.setHelperId(QStringLiteral("org.kde.baloo.filewatch"));
-
-    KAuth::ExecuteJob* job = limitAction.execute();
-    return job->exec();
-}
-
 // This slot is connected to a signal emitted in KInotify when
 // inotify_add_watch fails with ENOSPC.
-void FileWatch::slotInotifyWatchUserLimitReached(const QString& path)
+void FileWatch::slotInotifyWatchUserLimitReached(const QString&)
 {
-    if (raiseWatchLimit()) {
-        qCDebug(BALOO) << "Successfully raised watch limit, re-adding " << path;
-        if (m_dirWatch)
-            m_dirWatch->resetUserLimit();
-        watchFolder(path);
-    } else {
-        //If we got here, we hit the limit and couldn't authenticate to raise it,
-        // so put something in the syslog so someone notices.
-        syslog(LOG_USER | LOG_WARNING, "KDE Baloo File Indexer has reached the inotify folder watch limit. File changes may be ignored.");
-        // we do it the brutal way for now hoping with new kernels and defaults this will never happen
-        // Delete the KInotify
-        // FIXME: Maybe we should be aborting?
-        if (m_dirWatch) {
-            m_dirWatch->deleteLater();
-            m_dirWatch = 0;
-        }
-        Q_EMIT installedWatches();
+    //If we got here, we hit the limit and couldn't authenticate to raise it,
+    // so put something in the syslog so someone notices.
+    syslog(LOG_USER | LOG_WARNING, "KDE Baloo File Indexer has reached the inotify folder watch limit. File changes will be ignored.");
+    // we do it the brutal way for now hoping with new kernels and defaults this will never happen
+    // Delete the KInotify
+    // FIXME: Maybe we should be aborting?
+    if (m_dirWatch) {
+        m_dirWatch->deleteLater();
+        m_dirWatch = 0;
     }
+    Q_EMIT installedWatches();
 }
 
 void FileWatch::updateIndexedFoldersWatches()
