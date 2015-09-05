@@ -80,6 +80,7 @@ int main(int argc, char* argv[])
     parser.addPositionalArgument(QLatin1String("resume"), i18n("Resume the file indexer"));
     parser.addPositionalArgument(QLatin1String("check"), i18n("Check for any unindexed files and index them"));
     parser.addPositionalArgument(QLatin1String("index"), i18n("Index the specified files"));
+    parser.addPositionalArgument(QLatin1String("clear"), i18n("Forget the specified files"));
 
     parser.process(app);
     if (parser.positionalArguments().isEmpty()) {
@@ -288,6 +289,39 @@ int main(int argc, char* argv[])
         }
         tr.commit();
         out << "File(s) indexed\n";
+    }
+
+    if (command == QStringLiteral("clear")) {
+        if (parser.positionalArguments().size() < 2) {
+            out << "Please enter a filename to index\n";
+            return 1;
+        }
+
+        Database *db = globalDatabaseInstance();
+        if (!db->open(Database::OpenDatabase)) {
+            out << "Baloo Index could not be opened\n";
+            return 1;
+        }
+
+        Transaction tr(db, Transaction::ReadWrite);
+
+        for (int i = 1; i < parser.positionalArguments().size(); ++i) {
+            const QString url = QFileInfo(parser.positionalArguments().at(i)).absoluteFilePath();
+            quint64 id = filePathToId(QFile::encodeName(url));
+            if (id == 0) {
+                out << "Could not stat file: " << url << endl;
+                continue;
+            }
+            if (tr.documentData(id).isEmpty()) {
+                out << "Skipping: " << url << " Reason: Not yet indexed\n";
+                continue;
+            }
+            Indexer indexer(url, &tr);
+            out << "Clearing " << url << endl;
+            tr.removeDocument(id);
+        }
+        tr.commit();
+        out << "File(s) cleared\n";
     }
 
     if (command == QStringLiteral("indexSize")) {
