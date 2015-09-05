@@ -39,9 +39,8 @@ int main(int argc, char* argv[])
     KAboutData aboutData(QStringLiteral("baloo"), i18n("Baloo File Extractor"), PROJECT_VERSION);
     aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QStringLiteral("vhanda@kde.org"), QStringLiteral("http://vhanda.in"));
 
-    KAboutData::setApplicationData(aboutData);
-
     QCoreApplication app(argc, argv);
+    KAboutData::setApplicationData(aboutData);
 
     Baloo::App appObject;
     return app.exec();
