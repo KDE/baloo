@@ -38,19 +38,19 @@ public:
     /**
      *
      */
-    void listDir(const QUrl& url);
+    void listDir(const QUrl& url) Q_DECL_OVERRIDE;
 
     /**
      * Files will be forwarded.
      * Folders will be created as virtual folders.
      */
-    void mimetype(const QUrl& url);
+    void mimetype(const QUrl& url) Q_DECL_OVERRIDE;
 
     /**
      * Files will be forwarded.
      * Folders will be created as virtual folders.
      */
-    void stat(const QUrl& url);
+    void stat(const QUrl& url) Q_DECL_OVERRIDE;
 
 private:
 };
