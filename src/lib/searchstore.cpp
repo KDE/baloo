@@ -64,7 +64,7 @@ SearchStore::~SearchStore()
 {
 }
 
-QStringList SearchStore::exec(const Term& term, int limit, bool sortResults)
+QStringList SearchStore::exec(const Term& term, int offset, int limit, bool sortResults)
 {
     if (!m_db) {
         return QStringList();
@@ -99,7 +99,7 @@ QStringList SearchStore::exec(const Term& term, int limit, bool sortResults)
         }
 
         QStringList results;
-        for (int i = 0; i < limit; i++) {
+        for (int i = offset; i < limit; i++) {
             const quint64 id = resultIds[i];
             const QString filePath = tr.documentUrl(id);
 
@@ -111,8 +111,10 @@ QStringList SearchStore::exec(const Term& term, int limit, bool sortResults)
         return results;
     }
     else {
+        limit -= offset;
+
         QStringList results;
-        while (it->next() && limit) {
+        while (it->next() && limit > 0) {
             quint64 id = it->docId();
             Q_ASSERT(id > 0);
 
