@@ -61,11 +61,11 @@ void start()
 
 int main(int argc, char* argv[])
 {
-    KAboutData aboutData(QLatin1String("balooctl"), i18n("balooctl"), PROJECT_VERSION);
-    aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QLatin1String("me@vhanda.in"));
+    KAboutData aboutData(QLatin1String("baloo"), i18n("balooctl"), PROJECT_VERSION);
+    aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QLatin1String("vhanda@kde.org"));
 
-    KAboutData::setApplicationData(aboutData);
     QCoreApplication app(argc, argv);
+    KAboutData::setApplicationData(aboutData);
 
     QCommandLineParser parser;
     parser.addPositionalArgument(QLatin1String("command"), i18n("The command to execute"));
@@ -81,6 +81,8 @@ int main(int argc, char* argv[])
     parser.addPositionalArgument(QLatin1String("check"), i18n("Check for any unindexed files and index them"));
     parser.addPositionalArgument(QLatin1String("index"), i18n("Index the specified files"));
     parser.addPositionalArgument(QLatin1String("clear"), i18n("Forget the specified files"));
+    parser.addVersionOption();
+    parser.addHelpOption();
 
     parser.process(app);
     if (parser.positionalArguments().isEmpty()) {
