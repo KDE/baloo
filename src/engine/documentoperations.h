@@ -37,6 +37,6 @@ Q_DECLARE_FLAGS(DocumentOperations, DocumentOperation)
 
 }
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(Baloo::DocumentOperations);
+Q_DECLARE_OPERATORS_FOR_FLAGS(Baloo::DocumentOperations)
 
 #endif

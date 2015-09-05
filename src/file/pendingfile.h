@@ -72,7 +72,7 @@ private:
 
 }
 
-Q_DECLARE_METATYPE(Baloo::PendingFile);
+Q_DECLARE_METATYPE(Baloo::PendingFile)
 Q_DECLARE_TYPEINFO(Baloo::PendingFile, Q_MOVABLE_TYPE);
 
 #endif // BALOO_PENDINGFILE_H
