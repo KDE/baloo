@@ -144,6 +144,6 @@ void FileWatchTest::testFileCreation()
     spyIndexXattr.clear();
 }
 
-QTEST_MAIN(FileWatchTest);
+QTEST_MAIN(FileWatchTest)
 
 #include "filewatchtest.moc"

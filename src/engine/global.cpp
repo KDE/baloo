@@ -25,7 +25,7 @@
 #include <QStandardPaths>
 using namespace Baloo;
 
-Q_GLOBAL_STATIC_WITH_ARGS(Database, s_db, (fileIndexDbPath()));
+Q_GLOBAL_STATIC_WITH_ARGS(Database, s_db, (fileIndexDbPath()))
 
 QString Baloo::fileIndexDbPath()
 {

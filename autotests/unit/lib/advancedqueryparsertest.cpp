@@ -190,6 +190,6 @@ void AdvancedQueryParserTest::testOperators()
     QCOMPARE(term, expectedTerm);
 }
 
-QTEST_MAIN(AdvancedQueryParserTest);
+QTEST_MAIN(AdvancedQueryParserTest)
 
 #include "advancedqueryparsertest.moc"
