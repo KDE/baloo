@@ -34,10 +34,6 @@ IdTreeDB::IdTreeDB(MDB_dbi dbi, MDB_txn* txn)
     Q_ASSERT(dbi != 0);
 }
 
-IdTreeDB::~IdTreeDB()
-{
-}
-
 MDB_dbi IdTreeDB::create(MDB_txn* txn)
 {
     MDB_dbi dbi;
