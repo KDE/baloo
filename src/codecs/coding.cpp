@@ -150,6 +150,7 @@ char* getDifferentialVarInt32(char* p, char* limit, QVector<quint32>* values)
 {
     quint32 size;
     p = getVarint32Ptr(p, limit, &size);
+    values->reserve(size);
 
     quint32 v = 0;
     while (p < limit && size) {
