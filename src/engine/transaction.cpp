@@ -128,7 +128,7 @@ quint64 Transaction::documentId(const QByteArray& path) const
     return parentId;
 }
 
-quint64 Transaction::documentMTime(quint64 id) const
+quint32 Transaction::documentMTime(quint64 id) const
 {
     Q_ASSERT(m_txn);
 
@@ -136,7 +136,7 @@ quint64 Transaction::documentMTime(quint64 id) const
     return docTimeDb.get(id).mTime;
 }
 
-quint64 Transaction::documentCTime(quint64 id) const
+quint32 Transaction::documentCTime(quint64 id) const
 {
     Q_ASSERT(m_txn);
 
