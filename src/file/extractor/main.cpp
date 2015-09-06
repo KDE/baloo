@@ -28,7 +28,8 @@
 #include <QStandardPaths>
 #include <QByteArray>
 
-#include <QCoreApplication>
+#include <QApplication>
+#include <QSessionManager>
 
 int main(int argc, char* argv[])
 {
@@ -39,8 +40,18 @@ int main(int argc, char* argv[])
     KAboutData aboutData(QStringLiteral("baloo"), i18n("Baloo File Extractor"), PROJECT_VERSION);
     aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QStringLiteral("vhanda@kde.org"), QStringLiteral("http://vhanda.in"));
 
-    QCoreApplication app(argc, argv);
+    QApplication::setDesktopSettingsAware(false);
+    QApplication app(argc, argv);
+
     KAboutData::setApplicationData(aboutData);
+
+    app.setQuitOnLastWindowClosed(false);
+
+    auto disableSessionManagement = [](QSessionManager &sm) {
+        sm.setRestartHint(QSessionManager::RestartNever);
+    };
+    QObject::connect(&app, &QGuiApplication::commitDataRequest, disableSessionManagement);
+    QObject::connect(&app, &QGuiApplication::saveStateRequest, disableSessionManagement);
 
     Baloo::App appObject;
     return app.exec();

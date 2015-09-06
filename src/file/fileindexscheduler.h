@@ -26,7 +26,7 @@
 #include <QTimer>
 
 #include "filecontentindexerprovider.h"
-#include "eventmonitor.h"
+#include "powerstatemonitor.h"
 #include "indexerstate.h"
 #include "timeestimator.h"
 
@@ -81,7 +81,6 @@ public Q_SLOTS:
 
 private Q_SLOTS:
     void powerManagementStatusChanged(bool isOnBattery);
-    void idleStatusChanged(bool isIdle);
 
 private:
     void setSuspend(bool suspend);
@@ -98,7 +97,7 @@ private:
     FileContentIndexerProvider m_provider;
     FileContentIndexer* m_contentIndexer;
 
-    EventMonitor* m_eventMonitor;
+    PowerStateMonitor m_powerMonitor;
 
     IndexerState m_indexerState;
     TimeEstimator m_timeEstimator;

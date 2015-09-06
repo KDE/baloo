@@ -6,6 +6,7 @@ set(EXTRACTOR_SRCS
   app.cpp
   result.cpp
   iohandler.cpp
+  idlestatemonitor.cpp
   ../priority.cpp
   ../basicindexingjob.cpp
   ../fileindexerconfig.cpp
@@ -20,12 +21,14 @@ target_compile_definitions(baloo_file_extractor PRIVATE -DPROJECT_VERSION="${PRO
 
 target_link_libraries(baloo_file_extractor
   Qt5::DBus
+  Qt5::Widgets
   KF5::FileMetaData
   KF5::I18n
   KF5::ConfigCore
   KF5::Solid
   KF5::BalooEngine
   KF5::Crash
+  KF5::IdleTime
 )
 
 install(TARGETS baloo_file_extractor DESTINATION ${BIN_INSTALL_DIR})

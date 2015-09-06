@@ -35,6 +35,7 @@
 #include "database.h"
 #include "../fileindexerconfig.h"
 #include "iohandler.h"
+#include "idlestatemonitor.h"
 
 namespace Baloo {
 
@@ -61,6 +62,8 @@ private:
 
     QSocketNotifier m_notifyNewData;
     IOHandler m_io;
+
+    IdleStateMonitor m_idleMonitor;
 };
 
 }
