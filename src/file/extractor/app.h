@@ -47,9 +47,6 @@ class App : public QObject
 public:
     explicit App(QObject* parent = 0);
 
-Q_SIGNALS:
-    Q_SCRIPTABLE void currentUrlChanged(QString url);
-
 private Q_SLOTS:
     void slotNewInput();
 
@@ -64,8 +61,6 @@ private:
 
     QSocketNotifier m_notifyNewData;
     IOHandler m_io;
-
-    QStringList m_monitors;
 };
 
 }
