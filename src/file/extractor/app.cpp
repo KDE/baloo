@@ -74,10 +74,6 @@ void App::slotNewInput()
             continue;
         }
 
-        if (m_monitors.length() != 0) {
-            Q_EMIT currentUrlChanged(url);
-        }
-
         m_io.indexingUrl(url);
         index(&tr, url, id);
         updatedFiles << url;
