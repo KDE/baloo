@@ -64,8 +64,8 @@ public:
     quint64 documentId(const QByteArray& path) const;
     QByteArray documentData(quint64 id) const;
 
-    quint64 documentMTime(quint64 id) const;
-    quint64 documentCTime(quint64 id) const;
+    quint32 documentMTime(quint64 id) const;
+    quint32 documentCTime(quint64 id) const;
 
     QVector<quint64> exec(const EngineQuery& query, int limit = -1) const;
 
