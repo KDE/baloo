@@ -31,6 +31,7 @@ set(file_static_lib_SRCS
     unindexedfileiterator.cpp
     migrator.cpp
     baloodebug.cpp
+    fileinfo.cpp
 
      # File Watcher
     filewatch.cpp
