@@ -49,10 +49,6 @@ public:
         m_stop.store(true);
     }
 
-    void delay(int delay) {
-        m_delay.store(delay);
-    }
-
 public Q_SLOTS:
     Q_SCRIPTABLE void registerMonitor(const QDBusMessage& message);
     Q_SCRIPTABLE void unregisterMonitor(const QDBusMessage& message);
@@ -70,7 +66,6 @@ private:
     FileContentIndexerProvider* m_provider;
 
     QAtomicInt m_stop;
-    QAtomicInt m_delay;
 
     QString m_currentFile;
 

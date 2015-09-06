@@ -54,6 +54,12 @@ App::App(QObject* parent)
 
 void App::slotNewInput()
 {
+    if (!m_idleMonitor.isIdle()) {
+        //TODO: instead of blocking the event loop use asynchronous design
+        //500 msec
+        usleep(500 * 1000);
+    }
+
     Database *db = globalDatabaseInstance();
     if (!db->open(Database::OpenDatabase)) {
         qCritical() << "Failed to open the database";

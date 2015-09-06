@@ -48,13 +48,8 @@ FileIndexScheduler::FileIndexScheduler(Database* db, FileIndexerConfig* config, 
 
     m_threadPool.setMaxThreadCount(1);
 
-    m_eventMonitor = new EventMonitor(this);
-    m_eventMonitor->enable();
-    connect(m_eventMonitor, &EventMonitor::powerManagementStatusChanged,
+    connect(&m_powerMonitor, &PowerStateMonitor::powerManagementStatusChanged,
             this, &FileIndexScheduler::powerManagementStatusChanged);
-
-    connect(m_eventMonitor, &EventMonitor::idleStatusChanged, this,
-            &FileIndexScheduler::idleStatusChanged);
 
     m_contentIndexer = new FileContentIndexer(&m_provider, this);
     m_contentIndexer->setAutoDelete(false);
@@ -116,11 +111,8 @@ void FileIndexScheduler::scheduleIndexing()
         return;
     }
 
-    if (m_provider.size() && !m_eventMonitor->isOnBattery()) {
+    if (m_provider.size() && !m_powerMonitor.isOnBattery()) {
         qDebug() << "CONTENT INDEXING" << m_provider.size();
-        if(!m_eventMonitor->isIdle()) {
-            m_contentIndexer->delay(500);
-        }
 
         m_threadPool.start(m_contentIndexer);
         m_indexerState = ContentIndexing;
@@ -174,7 +166,6 @@ void FileIndexScheduler::setSuspend(bool suspend)
 {
     if (suspend) {
         qDebug() << "Suspending";
-        m_eventMonitor->disable();
         if (m_indexerState == ContentIndexing) {
             m_contentIndexer->quit();
         }
@@ -182,23 +173,9 @@ void FileIndexScheduler::setSuspend(bool suspend)
         Q_EMIT stateChanged(m_indexerState);
     } else {
         qDebug() << "Resuming";
-        m_eventMonitor->enable();
         m_indexerState = Idle;
         // No need to emit here we'll be emitting in scheduling
         scheduleIndexing();
-    }
-}
-
-void FileIndexScheduler::idleStatusChanged(bool isIdle)
-{
-    if (m_indexerState != ContentIndexing) {
-        return;
-    }
-
-    if (isIdle) {
-        m_contentIndexer->delay(0);
-    } else {
-        m_contentIndexer->delay(500);
     }
 }
 

@@ -32,7 +32,6 @@ FileContentIndexer::FileContentIndexer(FileContentIndexerProvider* provider, QOb
     : QObject(parent)
     , m_provider(provider)
     , m_stop(0)
-    , m_delay(0)
 {
     Q_ASSERT(provider);
 
@@ -59,15 +58,6 @@ void FileContentIndexer::run()
         //
         QElapsedTimer timer;
         timer.start();
-
-        if (m_delay.load()) {
-            QTimer delayTimer;
-            QEventLoop loop;
-
-            connect(&delayTimer, &QTimer::timeout, &loop, &QEventLoop::quit);
-            delayTimer.start(m_delay.load());
-            loop.exec();
-        }
 
         QVector<quint64> idList = m_provider->fetch(40);
         if (idList.isEmpty() || m_stop.load()) {

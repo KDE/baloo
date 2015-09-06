@@ -5,7 +5,7 @@ set(file_static_lib_SRCS
     mainhub.cpp
     fileindexerconfig.cpp
     basicindexingjob.cpp
-    eventmonitor.cpp
+    powerstatemonitor.cpp
 
     fileindexscheduler.cpp
 
@@ -42,8 +42,6 @@ set(file_static_lib_SRCS
 add_library(baloofilecommon STATIC ${file_static_lib_SRCS})
 target_link_libraries(baloofilecommon
     Qt5::DBus
-    Qt5::Widgets
-    KF5::IdleTime
     KF5::I18n
     KF5::Solid
     KF5::Auth
