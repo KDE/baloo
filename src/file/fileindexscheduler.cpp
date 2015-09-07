@@ -112,8 +112,6 @@ void FileIndexScheduler::scheduleIndexing()
     }
 
     if (m_provider.size() && !m_powerMonitor.isOnBattery()) {
-        qDebug() << "CONTENT INDEXING" << m_provider.size();
-
         m_threadPool.start(m_contentIndexer);
         m_indexerState = ContentIndexing;
         Q_EMIT stateChanged(m_indexerState);
