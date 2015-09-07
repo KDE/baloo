@@ -47,60 +47,80 @@ App::App(QObject* parent)
     : QObject(parent)
     , m_notifyNewData(STDIN_FILENO, QSocketNotifier::Read)
     , m_io(STDIN_FILENO, STDOUT_FILENO)
-
+    , m_tr(0)
 {
     connect(&m_notifyNewData, &QSocketNotifier::activated, this, &App::slotNewInput);
 }
 
 void App::slotNewInput()
 {
-    if (!m_idleMonitor.isIdle()) {
-        //TODO: instead of blocking the event loop use asynchronous design
-        //500 msec
-        usleep(500 * 1000);
-    }
-
     Database *db = globalDatabaseInstance();
     if (!db->open(Database::OpenDatabase)) {
         qCritical() << "Failed to open the database";
         exit(1);
     }
-    Transaction tr(db, Transaction::ReadWrite);
-    QStringList updatedFiles;
+
+    Q_ASSERT(m_tr == 0);
+
+    m_tr = new Transaction(db, Transaction::ReadWrite);
     // FIXME: The transaction is open for way too long. We should just open it for when we're
     //        committing the data not during the extraction.
     m_io.newBatch();
-    while (!m_io.atEnd()) {
+    QTimer::singleShot(0, this, &App::processNextFile);
+
+    /**
+     * A Single Batch seems to be triggering the SocketNotifier more than once
+     * so we disable it till the batch is done.
+     */
+    m_notifyNewData.setEnabled(false);
+}
+
+void App::processNextFile()
+{
+    if (!m_io.atEnd()) {
+        int delay = m_idleMonitor.isIdle() ? 0 : 10;
 
         quint64 id = m_io.nextId();
 
-        QString url = QFile::decodeName(tr.documentUrl(id));
+        QString url = QFile::decodeName(m_tr->documentUrl(id));
         if (!QFile::exists(url)) {
-            tr.removeDocument(id);
-            continue;
+            m_tr->removeDocument(id);
+            QTimer::singleShot(0, this, &App::processNextFile);
+            return;
         }
 
         m_io.indexingUrl(url);
-        index(&tr, url, id);
-        updatedFiles << url;
+        index(m_tr, url, id);
+        m_updatedFiles << url;
+
+        QTimer::singleShot(delay, this, &App::processNextFile);
+
+    } else {
+        m_tr->commit();
+        delete m_tr;
+        m_tr = 0;
+
+        /*
+        * TODO we're already sending out each file as we start we can simply send out a done
+        * signal isntead of sending out the list of files, that will need changes in whatever
+        * uses this signal, Dolphin I think?
+        */
+        QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/files"),
+                                                        QLatin1String("org.kde"),
+                                                        QLatin1String("changed"));
+
+        QVariantList vl;
+        vl.reserve(1);
+        vl << QVariant(m_updatedFiles);
+        m_updatedFiles.clear();
+        message.setArguments(vl);
+
+        QDBusConnection::sessionBus().send(message);
+
+        // Enable the SocketNotifier for the next batch
+        m_notifyNewData.setEnabled(true);
+        m_io.batchIndexed();
     }
-    tr.commit();
-    m_io.batchIndexed();
-    /*
-     * TODO we're already sending out each file as we start we can simply send out a done
-     * signal isntead of sending out the list of files, that will need changes in whatever
-     * uses this signal, Dolphin I think?
-     */
-    QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/files"),
-                                                    QLatin1String("org.kde"),
-                                                    QLatin1String("changed"));
-
-    QVariantList vl;
-    vl.reserve(1);
-    vl << QVariant(updatedFiles);
-    message.setArguments(vl);
-
-    QDBusConnection::sessionBus().send(message);
 }
 
 void App::index(Transaction* tr, const QString& url, quint64 id)

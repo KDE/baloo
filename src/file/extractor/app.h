@@ -50,6 +50,7 @@ public:
 
 private Q_SLOTS:
     void slotNewInput();
+    void processNextFile();
 
 private:
     void index(Transaction* tr, const QString& filePath, quint64 id);
@@ -64,6 +65,9 @@ private:
     IOHandler m_io;
 
     IdleStateMonitor m_idleMonitor;
+
+    QStringList m_updatedFiles;
+    Transaction* m_tr;
 };
 
 }
