@@ -59,7 +59,7 @@ KIO::UDSEntry createMonthUDSEntry(int month, int year)
                       "Have a look at http://doc.qt.io/qt-5/qdate.html#toString "
                       "to see which variables you can use and ask kde-i18n-doc@kde.org if you have "
                       "problems understanding how to translate this",
-                      "%MMMM %yy"));
+                      "MMMM yyyy"));
     return createFolderUDSEntry(QDate(year, month, 1).toString(QLatin1String("yyyy-MM")),
                                 dateString,
                                 QDate(year, month, 1));
