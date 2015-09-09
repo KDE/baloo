@@ -50,3 +50,5 @@ add_custom_target(
 )
 
 install(FILES ${dbus_interface_xmls} DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
+
+add_subdirectory(fake)
