@@ -44,6 +44,7 @@ MainHub::MainHub(Database* db, FileIndexerConfig* config)
     connect(&m_fileWatcher, &FileWatch::installedWatches, &m_fileIndexScheduler, &FileIndexScheduler::scheduleIndexing);
 
     MainAdaptor* main = new MainAdaptor(this);
+    Q_UNUSED(main)
 
     QDBusConnection bus = QDBusConnection::sessionBus();
     bus.registerObject(QStringLiteral("/"), this, QDBusConnection::ExportAllSlots |
