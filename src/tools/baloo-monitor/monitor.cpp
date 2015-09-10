@@ -83,7 +83,7 @@ void Monitor::newFile(const QString& url)
     }
     Q_EMIT newFileIndexed();
 
-    if (m_filesIndexed % 200 == 0) {
+    if (m_filesIndexed % (40 * 5) == 0) {
         updateRemainingTime();
     }
 }
@@ -116,6 +116,7 @@ void Monitor::balooStarted(const QString& service)
     fetchTotalFiles();
     if (m_indexerState == Baloo::ContentIndexing) {
         m_url = m_fileindexer->currentFile();
+        updateRemainingTime();
     }
     Q_EMIT balooStateChanged();
 }
