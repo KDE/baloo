@@ -3,6 +3,7 @@ add_definitions(-DTRANSLATION_DOMAIN=\"baloo_file\")
 set(file_static_lib_SRCS
     # File Indexer
     mainhub.cpp
+    mainadaptor.cpp
     fileindexerconfig.cpp
     basicindexingjob.cpp
     eventmonitor.cpp
