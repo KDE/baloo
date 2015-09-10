@@ -9,7 +9,6 @@
  */
 
 #include "mainadaptor.h"
-#include <QtCore/QMetaObject>
 #include <QtCore/QByteArray>
 #include <QtCore/QList>
 #include <QtCore/QMap>
@@ -21,8 +20,9 @@
  * Implementation of adaptor class MainAdaptor
  */
 
-MainAdaptor::MainAdaptor(QObject *parent)
+MainAdaptor::MainAdaptor(Baloo::MainHub *parent)
     : QDBusAbstractAdaptor(parent)
+    , mainHub(parent)
 {
     // constructor
     setAutoRelaySignals(true);
@@ -35,13 +35,11 @@ MainAdaptor::~MainAdaptor()
 
 void MainAdaptor::quit()
 {
-    // handle method call org.kde.baloo.main.quit
-    QMetaObject::invokeMethod(parent(), "quit");
+    mainHub->quit();
 }
 
 void MainAdaptor::updateConfig()
 {
-    // handle method call org.kde.baloo.main.updateConfig
-    QMetaObject::invokeMethod(parent(), "updateConfig");
+    mainHub->updateConfig();
 }
 
