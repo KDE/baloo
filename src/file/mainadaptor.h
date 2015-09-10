@@ -13,7 +13,10 @@
 #define MAINADAPTOR_H
 
 #include <QtCore/QObject>
-#include <QtDBus/QtDBus>
+#include <QDBusAbstractAdaptor>
+
+#include "mainhub.h"
+
 QT_BEGIN_NAMESPACE
 class QByteArray;
 template<class T> class QList;
@@ -39,7 +42,7 @@ class MainAdaptor: public QDBusAbstractAdaptor
 "  </interface>\n"
         "")
 public:
-    MainAdaptor(QObject *parent);
+    MainAdaptor(Baloo::MainHub *parent);
     virtual ~MainAdaptor();
 
 public: // PROPERTIES
@@ -47,6 +50,8 @@ public Q_SLOTS: // METHODS
     void quit();
     void updateConfig();
 Q_SIGNALS: // SIGNALS
+private:
+    Baloo::MainHub* mainHub;
 };
 
 #endif
