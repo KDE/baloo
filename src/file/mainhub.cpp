@@ -19,6 +19,7 @@
 
 #include "mainhub.h"
 #include "fileindexerconfig.h"
+#include "mainadaptor.h"
 
 #include <QDBusConnection>
 #include <QCoreApplication>
@@ -42,9 +43,11 @@ MainHub::MainHub(Database* db, FileIndexerConfig* config)
 
     connect(&m_fileWatcher, &FileWatch::installedWatches, &m_fileIndexScheduler, &FileIndexScheduler::scheduleIndexing);
 
+    MainAdaptor* main = new MainAdaptor(this);
+
     QDBusConnection bus = QDBusConnection::sessionBus();
     bus.registerObject(QStringLiteral("/"), this, QDBusConnection::ExportAllSlots |
-                        QDBusConnection::ExportScriptableSignals);
+                        QDBusConnection::ExportScriptableSignals | QDBusConnection::ExportAdaptors);
 
     QTimer::singleShot(0, &m_fileWatcher, SLOT(watchIndexedFolders()));
 }
