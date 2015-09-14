@@ -58,8 +58,9 @@ void FirstRunIndexer::run()
             if (!m_config->shouldMimeTypeBeIndexed(mimetype)) {
                 continue;
             }
-
-            BasicIndexingJob job(it.filePath(), mimetype);
+            BasicIndexingJob::IndexingLevel level =
+                m_config->onlyBasicIndexing() ? BasicIndexingJob::NoLevel : BasicIndexingJob::MarkForContentIndexing;
+            BasicIndexingJob job(it.filePath(), mimetype, level);
             if (!job.index()) {
                 continue;
             }
