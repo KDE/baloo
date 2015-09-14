@@ -57,7 +57,9 @@ void NewFileIndexer::run()
             continue;
         }
 
-        BasicIndexingJob job(filePath, mimetype);
+        BasicIndexingJob::IndexingLevel level =
+            m_config->onlyBasicIndexing() ? BasicIndexingJob::NoLevel : BasicIndexingJob::MarkForContentIndexing;
+        BasicIndexingJob job(filePath, mimetype, level);
         if (!job.index()) {
             continue;
         }
