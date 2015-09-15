@@ -66,7 +66,7 @@ SearchStore::~SearchStore()
 
 QStringList SearchStore::exec(const Term& term, int offset, int limit, bool sortResults)
 {
-    if (!m_db) {
+    if (!m_db || !m_db->isOpen()) {
         return QStringList();
     }
 

@@ -72,14 +72,24 @@ bool Database::open(OpenMode mode)
         return false;
     }
 
-    mdb_env_create(&m_env);
+    int rc = mdb_env_create(&m_env);
+    if (rc) {
+        m_env = 0;
+        return false;
+    }
+
     mdb_env_set_maxdbs(m_env, 12);
     mdb_env_set_mapsize(m_env, static_cast<size_t>(1024) * 1024 * 1024 * 5); // 5 gb
 
     // The directory needs to be created before opening the environment
     QByteArray arr = QFile::encodeName(m_path) + "/index";
-    mdb_env_open(m_env, arr.constData(), MDB_NOSUBDIR | MDB_NOMEMINIT, 0664);
-    int rc = mdb_reader_check(m_env, 0);
+    rc = mdb_env_open(m_env, arr.constData(), MDB_NOSUBDIR | MDB_NOMEMINIT, 0664);
+    if (rc) {
+        m_env = 0;
+        return false;
+    }
+
+    rc = mdb_reader_check(m_env, 0);
     Q_ASSERT_X(rc == 0, "Database::open reader_check", mdb_strerror(rc));
 
     //
