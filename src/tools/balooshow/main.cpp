@@ -104,9 +104,14 @@ int main(int argc, char* argv[])
             url = QFile::decodeName(tr.documentUrl(fid));
 
             // Debugging aid
-            if (fid != Baloo::filePathToId(QFile::encodeName(url))) {
+            quint64 actualFid = Baloo::filePathToId(QFile::encodeName(url));
+            if (fid != actualFid) {
                 stream << "The fileID is not equal to the actual Baloo fileID\n";
                 stream << "This is a bug\n";
+
+                stream << "GivenID: " << fid << " ActualID: " << actualFid << "\n";
+                stream << "GivenINode: " << Baloo::idToInode(fid) << " ActualINode: " << Baloo::idToInode(actualFid) << "\n";
+                stream << "GivenDeviceID: " << Baloo::idToDeviceId(fid) << " ActualDeviceID: " << Baloo::idToDeviceId(actualFid) << "\n";
             }
         } else {
             fid = Baloo::filePathToId(QFile::encodeName(url));
