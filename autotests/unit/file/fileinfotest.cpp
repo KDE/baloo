@@ -23,6 +23,7 @@
 
 #include <QFileInfo>
 #include <QTemporaryFile>
+#include <QTemporaryDir>
 #include <QTest>
 
 using namespace Baloo;
