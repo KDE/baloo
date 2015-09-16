@@ -30,7 +30,7 @@ ecm_setup_version(${KF5_VERSION} VARIABLE_PREFIX BALOO
 
 # Build dependencies
 set(REQUIRED_QT_VERSION 5.3.0)
-find_package(Qt5 ${REQUIRED_QT_VERSION} REQUIRED NO_MODULE COMPONENTS Core DBus Widgets Qml Quick DBus Test)
+find_package(Qt5 ${REQUIRED_QT_VERSION} REQUIRED NO_MODULE COMPONENTS Core DBus Widgets Qml Quick Test)
 
 find_package(KF5 ${KF5_DEP_VERSION} REQUIRED COMPONENTS CoreAddons Config DBusAddons I18n IdleTime Solid FileMetaData Crash KIO)
 
