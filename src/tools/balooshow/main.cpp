@@ -102,6 +102,12 @@ int main(int argc, char* argv[])
         if (url.startsWith(QLatin1String("file:"))) {
             fid = url.mid(5).toULongLong();
             url = QFile::decodeName(tr.documentUrl(fid));
+
+            // Debugging aid
+            if (fid != Baloo::filePathToId(QFile::encodeName(url))) {
+                stream << "The fileID is not equal to the actual Baloo fileID\n";
+                stream << "This is a bug\n";
+            }
         } else {
             fid = Baloo::filePathToId(QFile::encodeName(url));
         }
