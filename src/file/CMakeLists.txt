@@ -45,7 +45,6 @@ target_link_libraries(baloofilecommon
     Qt5::DBus
     KF5::I18n
     KF5::Solid
-    KF5::Auth
     KF5::FileMetaData
     KF5::Crash
     KF5::ConfigCore

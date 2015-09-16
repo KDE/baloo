@@ -2,9 +2,9 @@
 
 set(BALOO_DBUS_INTERFACES_DIR "${PACKAGE_PREFIX_DIR}/@DBUS_INTERFACES_INSTALL_DIR@")
 
-find_dependency(Qt5Core)
-find_dependency(KF5CoreAddons "@KF5_VERSION@")
-find_dependency(KF5FileMetaData "@BALOO_VERSION@")
+find_dependency(Qt5Core "@REQUIRED_QT_VERSION@")
+find_dependency(KF5CoreAddons "@KF5_DEP_VERSION@")
+find_dependency(KF5FileMetaData "@KF5_DEP_VERSION@")
 #find_dependency(LMDB)
 
 include(FeatureSummary)
