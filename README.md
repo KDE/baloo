@@ -9,8 +9,8 @@ of your files.
 
 Baloo is part of the KDE umberella and relies on the KDE infrastructure.
 
-**Mailing List:** kde-devel@kde.org ([info page](https://mail.kde.org/mailman/listinfo/kde-devel))
-**Bug Tracker:** http://bugs.kde.org
+**Mailing List:** kde-devel@kde.org ([info page](https://mail.kde.org/mailman/listinfo/kde-devel))  
+**Bug Tracker:** http://bugs.kde.org  
 **IRC Channel:** #kde-baloo on Freenode
 
 All code contributions to Baloo should go through KDE's [reviewboard](http://reviewboard.kde.org).
