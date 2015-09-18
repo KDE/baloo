@@ -2,36 +2,32 @@
 
 ## Introduction
 
-Baloo provides file search and indexing.
+Baloo provides file searching and indexing. It does so by maintaining an index of the contents
+of your files.
 
-## File Searching
+## Contributing
 
-Baloo allows you to search for local files based on a query language. This language
-mostly consists of (key: value) pairs which can be ANDed or ORed together to create
-complex queries.
+Baloo is part of the KDE umberella and relies on the KDE infrastructure.
 
-The Query interface provides a convenient API for clients to write queries which
-form a tree like syntax of terms which can be ANDed and ORed together. Each term
-comprises of a property name, a value and a comparison operator.
+**Mailing List:** kde-devel@kde.org ([info page](https://mail.kde.org/mailman/listinfo/kde-devel))
+**Bug Tracker:** http://bugs.kde.org
+**IRC Channel:** #kde-baloo on Freenode
 
-The property names which are used in the terms can either be strings or properties
-from KFileMetaData::Properties.
+All code contributions to Baloo should go through KDE's [reviewboard](http://reviewboard.kde.org).
+Bugs should ony be filled on the [bug tracker](https://bugs.kde.org/enter_bug.cgi?product=Baloo&format=guided)
 
-## Baloo File Indexing
+## Documentation
 
-Baloo ships with a daemon `baloo_file` which is responsible for maintaining an
-index of the users files. It uses the KFileMetaData framework in order to extract
-metadata and text from the files.
+### Users
+* [Searching](docs/user/searching.md)
+* [FAQ](docs/faq.md)
 
-This process utilizes inotify in order to track file changes. It performs the indexing in 2 phases.
-
-- Phase 1 - Index the filename, fast mimetype and mtime of the file
-- Phase 2 - Index the file contents. This is performed in a separate process,
-as the metadata extraction plugins, provided by KFileMetaData, can potentially
-crash.
-
-## Developer information
-
+### Developers
 [![Build Status](https://build.kde.org/buildStatus/icon?job=baloo master kf5-qt5)](https://build.kde.org/job/baloo master kf5-qt5)
 [![Coverity Scan Build Status](https://scan.coverity.com/projects/3259/badge.svg)](https://scan.coverity.com/projects/3259)
 
+* [Build Instructions](docs/development/build-instructions.md)
+* [Coding Style](docs/development/coding-style.md)
+
+### Distributions
+* [General Notes](docs/distributing.md)
