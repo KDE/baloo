@@ -50,6 +50,9 @@ public:
     bool firstRun() const;
     void setFirstRun(bool firstRun) const;
 
+    bool indexHidden() const;
+    void setIndexHidden(bool value) const;
+
 private:
     class Private;
     Private* d;

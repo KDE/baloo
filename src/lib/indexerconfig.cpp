@@ -118,3 +118,15 @@ void IndexerConfig::setFirstRun(bool firstRun) const
         config.group("General").writeEntry("first run", firstRun);
     }
 }
+
+bool IndexerConfig::indexHidden() const
+{
+    KConfig config(QStringLiteral("baloofilerc"));
+    return config.group("General").readEntry("index hidden folders", false);
+}
+
+void IndexerConfig::setIndexHidden(bool value) const
+{
+    KConfig config(QStringLiteral("baloofilerc"));
+    config.group("General").writeEntry("index hidden folders", value);
+}

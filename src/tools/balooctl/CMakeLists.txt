@@ -3,6 +3,8 @@ add_definitions(-DTRANSLATION_DOMAIN=\"balooctl\")
 set(SRCS
     main.cpp
     indexer.cpp
+    command.cpp
+    configcommand.cpp
     ${CMAKE_SOURCE_DIR}/src/file/extractor/result.cpp
     monitor.cpp
 )

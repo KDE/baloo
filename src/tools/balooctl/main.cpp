@@ -50,6 +50,7 @@
 #include "schedulerinterface.h"
 #include "maininterface.h"
 #include "indexerstate.h"
+#include "configcommand.h"
 
 using namespace Baloo;
 
@@ -81,6 +82,7 @@ int main(int argc, char* argv[])
     parser.addPositionalArgument(QLatin1String("check"), i18n("Check for any unindexed files and index them"));
     parser.addPositionalArgument(QLatin1String("index"), i18n("Index the specified files"));
     parser.addPositionalArgument(QLatin1String("clear"), i18n("Forget the specified files"));
+    parser.addPositionalArgument(QLatin1String("config"), i18n("Modify the Baloo configuration"));
     parser.addVersionOption();
     parser.addHelpOption();
 
@@ -101,6 +103,11 @@ int main(int argc, char* argv[])
     org::kde::baloo::scheduler schedulerinterface(QStringLiteral("org.kde.baloo"),
                                         QStringLiteral("/scheduler"),
                                         QDBusConnection::sessionBus());
+
+    if (command == QStringLiteral("config")) {
+        ConfigCommand command;
+        return command.exec(parser);
+    }
 
     if (command == QLatin1String("status")) {
         Database *db = globalDatabaseInstance();
