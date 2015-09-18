@@ -30,38 +30,37 @@
 #include <KAboutData>
 #include <KLocalizedString>
 
-#include <iostream>
 #include "query.h"
 #include "searchstore.h"
 
 int main(int argc, char* argv[])
 {
-    KAboutData aboutData(QLatin1String("baloosearch"),
+    KAboutData aboutData(QStringLiteral("Baloo"),
                          i18n("Baloo Search"),
                          PROJECT_VERSION,
-                         i18n("Baloo Search - A debugging tool"),
-                         KAboutLicense::GPL,
-                         i18n("(c) 2013-15, Vishesh Handa"));
+                         i18n("A tool to search through the files indexed by Baloo"),
+                         KAboutLicense::GPL);
     aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QLatin1String("vhanda@kde.org"));
 
-    KAboutData::setApplicationData(aboutData);
     QCoreApplication app(argc, argv);
+    KAboutData::setApplicationData(aboutData);
 
     QCommandLineParser parser;
-    parser.addOption(QCommandLineOption(QStringList() << QLatin1String("l") << QLatin1String("limit"),
-                                        QLatin1String("The maximum number of results"),
-                                        QLatin1String("limit")));
-    parser.addOption(QCommandLineOption(QStringList() << QLatin1String("o") << QLatin1String("offset"),
-                                        QLatin1String("Offset from which to start the search"),
-                                        QLatin1String("offset")));
-    parser.addOption(QCommandLineOption(QStringList() << QLatin1String("t") << QLatin1String("type"),
-                                        QLatin1String("Type of data to be searched"),
-                                        QLatin1String("typeStr")));
+    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("l") << QStringLiteral("limit"),
+                                        i18n("The maximum number of results"),
+                                        i18n("limit")));
+    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("o") << QStringLiteral("offset"),
+                                        i18n("Offset from which to start the search"),
+                                        i18n("offset")));
+    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("t") << QStringLiteral("type"),
+                                        i18n("Type of data to be searched"),
+                                        i18n("typeStr")));
     parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("d") << QStringLiteral("directory"),
-                                        QStringLiteral("Limit search to specified directory"),
-                                        QStringLiteral("directory")));
-    parser.addPositionalArgument(QLatin1String("query"), QLatin1String("List of words to query for"));
+                                        i18n("Limit search to specified directory"),
+                                        i18n("directory")));
+    parser.addPositionalArgument(i18n("query"), i18n("List of words to query for"));
     parser.addHelpOption();
+    parser.addVersionOption();
     parser.process(app);
 
     int queryLimit = -1;
