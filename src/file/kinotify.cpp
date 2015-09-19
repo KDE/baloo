@@ -422,11 +422,6 @@ void KInotify::slotEvent(int socket)
             } else {
 //                qCDebug(BALOO) << "No cookie for move information of" << path << "simulating new file event";
                 Q_EMIT created(QString::fromUtf8(path), event->mask & IN_ISDIR);
-
-                // also simulate a closed write since that is what triggers indexing of files in the file watcher
-                if (!(event->mask & IN_ISDIR)) {
-                    Q_EMIT closedWrite(QString::fromUtf8(path));
-                }
             }
         }
         if (event->mask & EventOpen) {
