@@ -28,28 +28,25 @@ using namespace Baloo;
 ExtractorProcess::ExtractorProcess(QObject* parent)
     : QObject(parent)
     , m_extractorPath(QStandardPaths::findExecutable(QLatin1String("baloo_file_extractor")))
-    , m_extractorProcess(0)
+    , m_extractorProcess(this)
     , m_batchSize(0)
     , m_indexedFiles(0)
     , m_extractorIdle(true)
 {
-    m_extractorProcess = new QProcess(this);
-    connect(m_extractorProcess, &QProcess::readyRead, this, &ExtractorProcess::slotIndexingFile);
-    m_extractorProcess->start(m_extractorPath, QStringList(), QIODevice::Unbuffered | QIODevice::ReadWrite);
-    m_extractorProcess->waitForStarted();
-    m_extractorProcess->setReadChannel(QProcess::StandardOutput);
+    connect(&m_extractorProcess, &QProcess::readyRead, this, &ExtractorProcess::slotIndexingFile);
+    m_extractorProcess.start(m_extractorPath, QStringList(), QIODevice::Unbuffered | QIODevice::ReadWrite);
+    m_extractorProcess.waitForStarted();
+    m_extractorProcess.setReadChannel(QProcess::StandardOutput);
 }
 
 ExtractorProcess::~ExtractorProcess()
 {
-    m_extractorProcess->disconnect(this);
-    m_extractorProcess->deleteLater();
-    m_extractorProcess = 0;
+    m_extractorProcess.close();
 }
 
 void ExtractorProcess::index(const QVector<quint64>& fileIds)
 {
-    Q_ASSERT(m_extractorProcess->state() == QProcess::Running);
+    Q_ASSERT(m_extractorProcess.state() == QProcess::Running);
     Q_ASSERT(m_extractorIdle);
     Q_ASSERT(!fileIds.isEmpty());
 
@@ -63,13 +60,13 @@ void ExtractorProcess::index(const QVector<quint64>& fileIds)
 
     m_extractorIdle = false;
     m_indexedFiles = 0;
-    m_extractorProcess->write(batchData.data(), batchData.size());
+    m_extractorProcess.write(batchData.data(), batchData.size());
 }
 
 void ExtractorProcess::slotIndexingFile()
 {
-    while (m_extractorProcess->canReadLine()) {
-        QString filePath = m_extractorProcess->readLine();
+    while (m_extractorProcess.canReadLine()) {
+        QString filePath = m_extractorProcess.readLine();
         if (m_indexedFiles < m_batchSize) {
             Q_EMIT indexingFile(filePath);
         }

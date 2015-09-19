@@ -46,7 +46,7 @@ private Q_SLOTS:
 private:
     const QString m_extractorPath;
 
-    QProcess* m_extractorProcess;
+    QProcess m_extractorProcess;
     QTimer m_timeCurrentFile;
     int m_processTimeout;
 
