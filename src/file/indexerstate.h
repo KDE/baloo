@@ -23,6 +23,7 @@
 #define BALOO_INDEXER_STATE_H
 
 #include <QString>
+#include <KLocalizedString>
 
 namespace Baloo {
 enum IndexerState {
@@ -37,28 +38,28 @@ enum IndexerState {
 
 inline QString stateString(IndexerState state)
 {
-    QString status = QStringLiteral("Unknown");
+    QString status = i18n("Unknown");
     switch (state) {
     case Idle:
-        status = QStringLiteral("Idle");
+        status = i18n("Idle");
         break;
     case Suspended:
-        status =  QStringLiteral("Suspended");
+        status =  i18n("Suspended");
         break;
     case FirstRun:
-        status =  QStringLiteral("Initial Indexing");
+        status =  i18n("Initial Indexing");
         break;
     case NewFiles:
-        status = QStringLiteral("Indexing new files");
+        status = i18n("Indexing new files");
         break;
     case ModifiedFiles:
-        status = QStringLiteral("Indexing modified files");
+        status = i18n("Indexing modified files");
         break;
     case XAttrFiles:
-        status = QStringLiteral("Indexing Extended Attributes");
+        status = i18n("Indexing Extended Attributes");
         break;
     case ContentIndexing:
-        status = QStringLiteral("Indexing file content");
+        status = i18n("Indexing file content");
     }
     return status;
 }
