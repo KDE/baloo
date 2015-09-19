@@ -66,7 +66,7 @@ void ExtractorProcess::index(const QVector<quint64>& fileIds)
 void ExtractorProcess::slotIndexingFile()
 {
     while (m_extractorProcess.canReadLine()) {
-        QString filePath = m_extractorProcess.readLine();
+        QString filePath = m_extractorProcess.readLine().trimmed();
         if (m_indexedFiles < m_batchSize) {
             Q_EMIT indexingFile(filePath);
         }
