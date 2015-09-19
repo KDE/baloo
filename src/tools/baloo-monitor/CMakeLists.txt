@@ -20,6 +20,7 @@ target_link_libraries(baloo-monitor PUBLIC
   Qt5::Quick
   Qt5::DBus
   KF5::BalooEngine
+  KF5::I18n
 )
 
 install(TARGETS baloo-monitor ${INSTALL_TARGETS_DEFAULT_ARGS})

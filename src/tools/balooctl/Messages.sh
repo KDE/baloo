@@ -1,2 +1,2 @@
 #! /usr/bin/env bash
-$XGETTEXT *.cpp -o $podir/balooctl.pot
+$XGETTEXT *.cpp ../../file/indexerstate.h -o $podir/balooctl.pot

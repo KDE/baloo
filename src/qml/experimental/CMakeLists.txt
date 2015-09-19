@@ -1,3 +1,5 @@
+add_definitions(-DTRANSLATION_DOMAIN=\"baloomonitorplugin\")
+
 set(DBUS_INTERFACES
   ${CMAKE_BINARY_DIR}/src/dbus/schedulerinterface.cpp
   ${CMAKE_BINARY_DIR}/src/dbus/fileindexerinterface.cpp
@@ -19,6 +21,7 @@ target_link_libraries(baloomonitorplugin
     Qt5::Core
     Qt5::Qml
     Qt5::DBus
+    KF5::I18n
     PRIVATE
     KF5::Baloo
     KF5::BalooEngine
