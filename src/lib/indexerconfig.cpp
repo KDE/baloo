@@ -27,6 +27,9 @@
 #include <KConfigGroup>
 #include <Kdelibs4Migration>
 
+#include <QDBusConnection>
+#include "maininterface.h"
+
 using namespace Baloo;
 
 class IndexerConfig::Private {
@@ -129,4 +132,12 @@ void IndexerConfig::setIndexHidden(bool value) const
 {
     KConfig config(QStringLiteral("baloofilerc"));
     config.group("General").writeEntry("index hidden folders", value);
+}
+
+void IndexerConfig::refresh() const
+{
+    org::kde::baloo::main mainInterface(QStringLiteral("org.kde.baloo"),
+                                                QStringLiteral("/"),
+                                                QDBusConnection::sessionBus());
+    mainInterface.updateConfig();
 }
