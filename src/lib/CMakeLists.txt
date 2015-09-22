@@ -1,3 +1,9 @@
+set(DBUS_INTERFACES
+  ${CMAKE_BINARY_DIR}/src/dbus/maininterface.cpp
+)
+
+SET_SOURCE_FILES_PROPERTIES(${DBUS_INTERFACES} PROPERTIES GENERATED 1)
+
 set(BALOO_LIB_SRCS
     term.cpp
     query.cpp
@@ -17,6 +23,8 @@ set(BALOO_LIB_SRCS
     ../file/baloodebug.cpp
 
     searchstore.cpp
+
+    ${DBUS_INTERFACES}
 )
 
 add_library(KF5Baloo ${BALOO_LIB_SRCS})

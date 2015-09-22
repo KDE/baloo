@@ -53,6 +53,8 @@ public:
     bool indexHidden() const;
     void setIndexHidden(bool value) const;
 
+    void refresh() const;
+
 private:
     class Private;
     Private* d;
