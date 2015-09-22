@@ -98,6 +98,10 @@ bool File::load()
     Database *db = globalDatabaseInstance();
     db->open(Database::OpenDatabase);
 
+    if (!db->isOpen()) {
+        return false;
+    }
+
     quint64 id = filePathToId(QFile::encodeName(d->url));
     if (!id) {
         return false;
