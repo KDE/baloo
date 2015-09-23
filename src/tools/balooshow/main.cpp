@@ -94,7 +94,8 @@ int main(int argc, char* argv[])
 
     Baloo::Database *db = Baloo::globalDatabaseInstance();
     if (!db->open(Baloo::Database::OpenDatabase)) {
-        stream << i18n("The Baloo index could not be opened. Please run \"balooctl status\" to see if Baloo is enabled and working.\n");
+        stream << i18n("The Baloo index could not be opened. Please run \"balooctl status\" to see if Baloo is enabled and working.")
+               << endl;
         return 1;
     }
 
@@ -109,8 +110,8 @@ int main(int argc, char* argv[])
             // Debugging aid
             quint64 actualFid = Baloo::filePathToId(QFile::encodeName(url));
             if (fid != actualFid) {
-                stream << "The fileID is not equal to the actual Baloo fileID\n";
-                stream << "This is a bug\n";
+                stream << i18n("The fileID is not equal to the actual Baloo fileID") << endl;
+                stream << i18n("This is a bug") << endl;
 
                 stream << "GivenID: " << fid << " ActualID: " << actualFid << "\n";
                 stream << "GivenINode: " << Baloo::idToInode(fid) << " ActualINode: " << Baloo::idToInode(actualFid) << "\n";
@@ -132,7 +133,7 @@ int main(int argc, char* argv[])
             stream << text << endl;
         }
         else {
-            stream << "No index information found" << endl;
+            stream << i18n("No index information found") << endl;
             continue;
         }
 
