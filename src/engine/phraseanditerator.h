@@ -37,7 +37,7 @@ public:
     quint64 docId() const;
 
 private:
-    const QVector<PostingIterator*> m_iterators;
+    QVector<PostingIterator*> m_iterators;
     quint64 m_docId;
 
     bool checkIfPositionsMatch();
