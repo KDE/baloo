@@ -31,12 +31,12 @@
 #include "schedulerinterface.h"
 #include "fileindexerinterface.h"
 
-namespace BalooMonitor {
+namespace Baloo {
 class Monitor : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString url READ url NOTIFY newFileIndexed)
+    Q_PROPERTY(QString filePath READ filePath NOTIFY newFileIndexed)
     Q_PROPERTY(QString suspendState READ suspendState NOTIFY indexerStateChanged)
     Q_PROPERTY(bool balooRunning MEMBER m_balooRunning NOTIFY balooStateChanged)
     Q_PROPERTY(uint totalFiles MEMBER m_totalFiles NOTIFY totalFilesChanged)
@@ -48,7 +48,7 @@ public:
     Monitor(QObject* parent = 0);
 
     // Property readers
-    QString url() const { return m_url; }
+    QString filePath() const { return m_filePath; }
     QString suspendState() const;
     QString remainingTime() const { return m_remainingTime; }
     QString stateString() const { return Baloo::stateString(m_indexerState); }
@@ -66,7 +66,7 @@ Q_SIGNALS:
     void indexerStateChanged();
 
 private Q_SLOTS:
-    void newFile(const QString& url);
+    void newFile(const QString& filePath);
     void balooStarted(const QString& service);
     void slotIndexerStateChanged(int state);
 
@@ -76,7 +76,7 @@ private:
 
     QDBusConnection m_bus;
 
-    QString m_url;
+    QString m_filePath;
     bool m_balooRunning;
     Baloo::IndexerState m_indexerState;
 

@@ -9,7 +9,7 @@ SET_SOURCE_FILES_PROPERTIES(${DBUS_INTERFACES} PROPERTIES GENERATED 1)
 
 set(baloomonitorplugin_SRCS
     baloomonitorplugin.cpp
-    ${CMAKE_SOURCE_DIR}/src/tools/baloo-monitor/monitor.cpp
+    monitor.cpp
     ${DBUS_INTERFACES}
 )
 
