@@ -124,27 +124,9 @@ QVector< QByteArray > PostingDB::fetchTermsStartingWith(const QByteArray& term)
     MDB_cursor* cursor;
     mdb_cursor_open(m_txn, m_dbi, &cursor);
 
-    int rc = mdb_cursor_get(cursor, &key, 0, MDB_SET_RANGE);
-    if (rc == MDB_NOTFOUND) {
-        mdb_cursor_close(cursor);
-        return QVector<QByteArray>();
-    }
-    Q_ASSERT_X(rc == 0, "PostingDB::fetchTermsStartingWith", mdb_strerror(rc));
-
-    const QByteArray arr = QByteArray::fromRawData(static_cast<char*>(key.mv_data), key.mv_size);
-    if (!arr.startsWith(term)) {
-        mdb_cursor_close(cursor);
-        return QVector<QByteArray>();
-    }
-
     QVector<QByteArray> terms;
-    terms << arr;
-
-    while (1) {
-        rc = mdb_cursor_get(cursor, &key, 0, MDB_NEXT);
-        if (rc == MDB_NOTFOUND) {
-            break;
-        }
+    int rc = mdb_cursor_get(cursor, &key, 0, MDB_SET_RANGE);
+    while (rc != MDB_NOTFOUND) {
         Q_ASSERT_X(rc == 0, "PostingDB::fetchTermsStartingWith", mdb_strerror(rc));
 
         const QByteArray arr = QByteArray::fromRawData(static_cast<char*>(key.mv_data), key.mv_size);
@@ -152,7 +134,9 @@ QVector< QByteArray > PostingDB::fetchTermsStartingWith(const QByteArray& term)
             break;
         }
         terms << arr;
+        rc = mdb_cursor_get(cursor, &key, 0, MDB_NEXT);
     }
+    Q_ASSERT_X(rc == 0, "PostingDB::fetchTermsStartingWith", mdb_strerror(rc));
 
     mdb_cursor_close(cursor);
     return terms;
@@ -230,26 +214,7 @@ PostingIterator* PostingDB::iter(const QByteArray& prefix, Validator validate)
 
     MDB_val val;
     int rc = mdb_cursor_get(cursor, &key, &val, MDB_SET_RANGE);
-    if (rc == MDB_NOTFOUND) {
-        mdb_cursor_close(cursor);
-        return 0;
-    }
-    Q_ASSERT_X(rc == 0, "PostingDB::regexpIter", mdb_strerror(rc));
-
-    const QByteArray arr = QByteArray::fromRawData(static_cast<char*>(key.mv_data), key.mv_size);
-    if (!arr.startsWith(prefix)) {
-        mdb_cursor_close(cursor);
-        return 0;
-    }
-    if (validate(arr)) {
-        termIterators << new DBPostingIterator(val.mv_data, val.mv_size);
-    }
-
-    while (1) {
-        rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
-        if (rc == MDB_NOTFOUND) {
-            break;
-        }
+    while (rc != MDB_NOTFOUND) {
         Q_ASSERT_X(rc == 0, "PostingDB::regexpIter", mdb_strerror(rc));
 
         const QByteArray arr = QByteArray::fromRawData(static_cast<char*>(key.mv_data), key.mv_size);
@@ -259,14 +224,14 @@ PostingIterator* PostingDB::iter(const QByteArray& prefix, Validator validate)
         if (validate(arr)) {
             termIterators << new DBPostingIterator(val.mv_data, val.mv_size);
         }
+        rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
     }
-
-    if (termIterators.isEmpty()) {
-        mdb_cursor_close(cursor);
-        return 0;
-    }
+    Q_ASSERT_X(rc == 0, "PostingDB::regexpIter", mdb_strerror(rc));
 
     mdb_cursor_close(cursor);
+    if (termIterators.isEmpty()) {
+        return 0;
+    }
     return new OrPostingIterator(termIterators);
 }
 
