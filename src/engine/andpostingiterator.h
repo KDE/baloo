@@ -36,7 +36,7 @@ public:
     quint64 docId() const Q_DECL_OVERRIDE;
 
 private:
-    const QVector<PostingIterator*> m_iterators;
+    QVector<PostingIterator*> m_iterators;
     quint64 m_docId;
 };
 

@@ -26,8 +26,10 @@ AndPostingIterator::AndPostingIterator(const QVector<PostingIterator*>& iterator
     : m_iterators(iterators)
     , m_docId(0)
 {
-    for (auto iter : iterators)
-        Q_ASSERT(iter);
+    if (m_iterators.contains(0)) {
+        qDeleteAll(m_iterators);
+        m_iterators.clear();
+    }
 }
 
 AndPostingIterator::~AndPostingIterator()
