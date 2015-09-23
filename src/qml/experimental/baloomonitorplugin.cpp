@@ -18,7 +18,7 @@
  */
 
 #include "baloomonitorplugin.h"
-#include "../tools/baloo-monitor/monitor.h"
+#include "monitor.h"
 
 #include <QtQml>
 
@@ -26,6 +26,6 @@ void BalooMonitorPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("org.kde.baloo.experimental"));
 
-    qmlRegisterType<BalooMonitor::Monitor>(uri, 0, 1, "Monitor");
+    qmlRegisterType<Baloo::Monitor>(uri, 0, 1, "Monitor");
 }
 
