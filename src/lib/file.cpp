@@ -96,9 +96,7 @@ bool File::load()
     }
 
     Database *db = globalDatabaseInstance();
-    db->open(Database::OpenDatabase);
-
-    if (!db->isOpen()) {
+    if (!db->open(Database::OpenDatabase)) {
         return false;
     }
 
