@@ -44,6 +44,7 @@
 #include "databasesize.h"
 
 #include "indexer.h"
+#include "indexerconfig.h"
 #include "idutils.h"
 #include "fileindexerconfig.h"
 #include "monitor.h"
@@ -111,6 +112,13 @@ int main(int argc, char* argv[])
     }
 
     if (command == QLatin1String("status")) {
+
+        IndexerConfig cfg;
+        if (!cfg.fileIndexingEnabled()) {
+            out << i18n("Baloo is currently disabled. To enable, please run \"balooctl enable\"") << endl;
+            return 1;
+        }
+
         Database *db = globalDatabaseInstance();
         if (!db->open(Database::OpenDatabase)) {
             out << "Baloo Index could not be opened\n";
@@ -203,21 +211,18 @@ int main(int argc, char* argv[])
             isEnabled = false;
         }
 
-        KConfig config(QLatin1String("baloofilerc"));
-        KConfigGroup basicSettings = config.group("Basic Settings");
-        basicSettings.writeEntry("Indexing-Enabled", isEnabled);
+        IndexerConfig cfg;
+        cfg.setFileIndexingEnabled(isEnabled);
 
         if (isEnabled) {
             out << "Enabling the File Indexer\n";
-            config.group("General").writeEntry("first run", true);
 
+            cfg.setFirstRun(true);
             start();
-        }
-        else {
+        } else {
             out << "Disabling the File Indexer\n";
 
             mainInterface.quit();
-
             const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QStringLiteral("/baloo/index");
             QFile(path).remove();
         }
