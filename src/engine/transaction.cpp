@@ -467,3 +467,140 @@ DatabaseSize Transaction::dbSize()
 
     return dbSize;
 }
+
+//
+// Debugging
+//
+void Transaction::checkFsTree()
+{
+    DocumentDB documentTermsDB(m_dbis.docTermsDbi, m_txn);
+    DocumentDB documentXattrTermsDB(m_dbis.docXattrTermsDbi, m_txn);
+    DocumentDB documentFileNameTermsDB(m_dbis.docFilenameTermsDbi, m_txn);
+    DocumentUrlDB docUrlDb(m_dbis.idTreeDbi, m_dbis.idFilenameDbi, m_txn);
+    PostingDB postingDb(m_dbis.postingDbi, m_txn);
+
+    auto map = postingDb.toTestMap();
+
+    QList<PostingList> allLists = map.values();
+    QSet<quint64> allIds;
+    for (auto list : allLists) {
+        for (quint64 id : list) {
+            allIds << id;
+        }
+    }
+
+    QTextStream out(stdout);
+    out << "Total Document IDs: " << allIds.size() << endl;
+
+    int count = 0;
+    for (quint64 id: allIds) {
+        QByteArray url = docUrlDb.get(id);
+        if (url.isEmpty()) {
+            auto terms = documentTermsDB.get(id);
+            auto fileNameTerms = documentFileNameTermsDB.get(id);
+            auto xAttrTerms = documentXattrTermsDB.get(id);
+
+            // Lets reverse enginer the terms
+            QList<QByteArray> newTerms;
+            QMapIterator<QByteArray, PostingList> it(map);
+            while (it.hasNext()) {
+                it.next();
+                if (it.value().contains(id)) {
+                    newTerms << it.key();
+                }
+            }
+
+            out << "Missing filePath for " << id << endl;
+            out << "\tPostingDB Terms: ";
+            for (const QByteArray& term : newTerms) {
+                out << term << " ";
+            }
+            out << endl;
+
+            out << "\tDocumentTermsDB: ";
+            for (const QByteArray& term : terms) {
+                out << term << " ";
+            }
+            out << endl;
+
+            out << "\tFileNameTermsDB: ";
+            for (const QByteArray& term : terms) {
+                out << term << " ";
+            }
+            out << endl;
+
+            out << "\tXAttrTermsDB: ";
+            for (const QByteArray& term : terms) {
+                out << term << " ";
+            }
+            out << endl;
+
+            count++;
+        }
+    }
+
+    out << "Invalid Entries: " << count << " (" << count * 100.0 / allIds.size() << "%)" << endl;
+}
+
+void Transaction::checkTermsDbinPostingDb()
+{
+    DocumentDB documentTermsDB(m_dbis.docTermsDbi, m_txn);
+    DocumentDB documentXattrTermsDB(m_dbis.docXattrTermsDbi, m_txn);
+    DocumentDB documentFileNameTermsDB(m_dbis.docFilenameTermsDbi, m_txn);
+    PostingDB postingDb(m_dbis.postingDbi, m_txn);
+
+    // Iterate over each document, and fetch all terms
+    // check if each term maps to its own id in the posting db
+
+    auto map = postingDb.toTestMap();
+
+    QList<PostingList> allLists = map.values();
+    QSet<quint64> allIds;
+    for (auto list : allLists) {
+        for (quint64 id : list) {
+            allIds << id;
+        }
+    }
+
+    QTextStream out(stdout);
+    out << "PostingDB check .." << endl;
+    for (quint64 id : allIds) {
+        QVector<QByteArray> terms = documentTermsDB.get(id);
+        terms += documentXattrTermsDB.get(id);
+        terms += documentFileNameTermsDB.get(id);
+
+        for (const QByteArray& term : terms) {
+            PostingList plist = postingDb.get(term);
+            if (!plist.contains(id)) {
+                out << id << " is missing term " << term << endl;
+            }
+        }
+    }
+}
+
+void Transaction::checkPostingDbinTermsDb()
+{
+    DocumentDB documentTermsDB(m_dbis.docTermsDbi, m_txn);
+    DocumentDB documentXattrTermsDB(m_dbis.docXattrTermsDbi, m_txn);
+    DocumentDB documentFileNameTermsDB(m_dbis.docFilenameTermsDbi, m_txn);
+    PostingDB postingDb(m_dbis.postingDbi, m_txn);
+
+    QMap<QByteArray, PostingList> map = postingDb.toTestMap();
+    QMapIterator<QByteArray, PostingList> it(map);
+
+    QTextStream out(stdout);
+    out << "DocumentTermsDB check .." << endl;
+    while (it.hasNext()) {
+        it.next();
+
+        const QByteArray term = it.key();
+        const PostingList list = it.value();
+        for (quint64 id : list) {
+            QVector<QByteArray> allTerms = documentTermsDB.get(id) + documentFileNameTermsDB.get(id) + documentXattrTermsDB.get(id);
+            if (!allTerms.contains(term)) {
+                out << id << " is missing " << QString::fromUtf8(term) << " from document terms db" << endl;
+            }
+        }
+    }
+}
+

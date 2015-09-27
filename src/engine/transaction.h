@@ -119,6 +119,11 @@ public:
 
     void renameFilePath(quint64 id, const Document& newDoc);
 
+    // Debugging
+    void checkFsTree();
+    void checkTermsDbinPostingDb();
+    void checkPostingDbinTermsDb();
+
 private:
     Transaction(const Transaction& rhs) = delete;
 
