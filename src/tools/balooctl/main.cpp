@@ -389,5 +389,20 @@ int main(int argc, char* argv[])
         app.exec();
     }
 
+    if (command == QStringLiteral("checkDb")) {
+        Database *db = globalDatabaseInstance();
+        if (!db->open(Database::OpenDatabase)) {
+            out << "Baloo Index could not be opened\n";
+            return 1;
+        }
+
+        Transaction tr(db, Transaction::ReadOnly);
+        tr.checkPostingDbinTermsDb();
+        tr.checkTermsDbinPostingDb();
+        out << "Checking file paths .. " << endl;
+        tr.checkFsTree();
+        return 0;
+    }
+
     return 0;
 }
