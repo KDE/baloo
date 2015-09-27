@@ -129,7 +129,7 @@ void WriteTransaction::removeDocument(quint64 id)
 
     docUrlDB.del(id, [&docTimeDB](quint64 id) {
         return !docTimeDB.contains(id);
-    });;
+    });
 
     contentIndexingDB.del(id);
     failedIndexingDB.del(id);
@@ -173,7 +173,6 @@ void WriteTransaction::replaceDocument(const Document& doc, DocumentOperations o
     DocumentTimeDB docTimeDB(m_dbis.docTimeDbi, m_txn);
     DocumentDataDB docDataDB(m_dbis.docDataDbi, m_txn);
     MTimeDB mtimeDB(m_dbis.mtimeDbi, m_txn);
-    DocumentUrlDB docUrlDB(m_dbis.idTreeDbi, m_dbis.idFilenameDbi, m_txn);
 
     const quint64 id = doc.id();
 
