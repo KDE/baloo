@@ -68,16 +68,20 @@ void FileContentIndexer::run()
 
         process.index(idList);
         loop.exec();
-        Q_EMIT newBatchTime(timer.elapsed());
+
+        QMetaObject::invokeMethod(this, "newBatchTime", Qt::QueuedConnection, Q_ARG(uint, timer.elapsed()));
     }
-    Q_EMIT done();
+    QMetaObject::invokeMethod(this, "done", Qt::QueuedConnection);
 }
 
 void FileContentIndexer::slotIndexingFile(QString filePath)
 {
     m_currentFile = filePath;
     if (!m_registeredMonitors.isEmpty()) {
+        // We cannot just use Q_EMIT as we are not in the thread the object was created in
+        // QDbus requires us to be in object creation thread (thread affinity)
         Q_EMIT indexingFile(filePath);
+        QMetaObject::invokeMethod(this, "indexingFile", Qt::QueuedConnection, Q_ARG(QString, filePath));
     }
 }
 
