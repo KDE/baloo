@@ -34,11 +34,11 @@
 #include <QDBusServiceWatcher>
 #include <QProcess>
 
-using namespace BalooMonitor;
+using namespace Baloo;
 Monitor::Monitor(QObject *parent)
     : QObject(parent)
     , m_bus(QDBusConnection::sessionBus())
-    , m_url(QStringLiteral("Idle"))
+    , m_filePath(QStringLiteral("Idle"))
     , m_scheduler(0)
     , m_fileindexer(0)
     , m_filesIndexed(0)
@@ -72,14 +72,14 @@ Monitor::Monitor(QObject *parent)
     }
 }
 
-void Monitor::newFile(const QString& url)
+void Monitor::newFile(const QString& filePath)
 {
     if (m_totalFiles == 0) {
         fetchTotalFiles();
     }
-    m_url = url;
+    m_filePath = filePath;
     if (++m_filesIndexed == m_totalFiles) {
-        m_url = QStringLiteral("Done");
+        m_filePath = QStringLiteral("Done");
     }
     Q_EMIT newFileIndexed();
 
@@ -115,7 +115,7 @@ void Monitor::balooStarted(const QString& service)
     qDebug() << "fetched suspend state";
     fetchTotalFiles();
     if (m_indexerState == Baloo::ContentIndexing) {
-        m_url = m_fileindexer->currentFile();
+        m_filePath = m_fileindexer->currentFile();
         updateRemainingTime();
     }
     Q_EMIT balooStateChanged();
@@ -124,11 +124,12 @@ void Monitor::balooStarted(const QString& service)
 void Monitor::fetchTotalFiles()
 {
     Baloo::Database *db = Baloo::globalDatabaseInstance();
-    db->open(Baloo::Database::OpenDatabase);
-    Baloo::Transaction tr(db, Baloo::Transaction::ReadOnly);
-    m_totalFiles = tr.size();
-    m_filesIndexed = tr.size() - tr.phaseOneSize();
-    Q_EMIT totalFilesChanged();
+    if (db->open(Baloo::Database::OpenDatabase)) {
+        Baloo::Transaction tr(db, Baloo::Transaction::ReadOnly);
+        m_totalFiles = tr.size();
+        m_filesIndexed = tr.size() - tr.phaseOneSize();
+        Q_EMIT totalFilesChanged();
+    }
 }
 
 void Monitor::startBaloo()

@@ -47,7 +47,9 @@ void TagListJob::start()
 {
     Database *db = globalDatabaseInstance();
     if (!db->open(Database::OpenDatabase)) {
-        qCritical() << "Failed to open the database";
+        setError(UserDefinedError);
+        setErrorText(QStringLiteral("Failed to open the database"));
+        emitResult();
         return;
     }
 

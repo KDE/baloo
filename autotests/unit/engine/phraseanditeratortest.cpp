@@ -31,6 +31,7 @@ class PhraseAndIteratorTest : public QObject
     Q_OBJECT
 private Q_SLOTS:
     void test();
+    void testNullIterators();
 };
 
 void PhraseAndIteratorTest::test()
@@ -80,6 +81,33 @@ void PhraseAndIteratorTest::test()
     QCOMPARE(it.docId(), static_cast<quint64>(0));
 }
 
+void PhraseAndIteratorTest::testNullIterators()
+{
+    // Term 1
+    PositionInfo pi1;
+    pi1.docId = 2;
+    pi1.positions = {5, 9};
+
+    QVector<PositionInfo> vec1;
+    vec1 << pi1;
+
+    // Term 2
+    PositionInfo pi2;
+    pi2.docId = 2;
+    pi2.positions = {6, 7};
+
+    QVector<PositionInfo> vec2;
+    vec2 << pi2;
+
+    VectorPositionInfoIterator* it1 = new VectorPositionInfoIterator(vec1);
+    VectorPositionInfoIterator* it2 = new VectorPositionInfoIterator(vec2);
+
+    QVector<PostingIterator*> vec = {it1, 0, it2};
+    PhraseAndIterator it(vec);
+    QCOMPARE(it.docId(), static_cast<quint64>(0));
+    QCOMPARE(it.next(), static_cast<quint64>(0));
+    QCOMPARE(it.docId(), static_cast<quint64>(0));
+}
 
 QTEST_MAIN(PhraseAndIteratorTest)
 
