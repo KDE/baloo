@@ -30,6 +30,7 @@ class AndPostingIteratorTest : public QObject
     Q_OBJECT
 private Q_SLOTS:
     void test();
+    void testNullIterators();
 };
 
 void AndPostingIteratorTest::test()
@@ -51,6 +52,22 @@ void AndPostingIteratorTest::test()
         QCOMPARE(it.next(), static_cast<quint64>(val));
         QCOMPARE(it.docId(), static_cast<quint64>(val));
     }
+    QCOMPARE(it.next(), static_cast<quint64>(0));
+    QCOMPARE(it.docId(), static_cast<quint64>(0));
+}
+
+void AndPostingIteratorTest::testNullIterators()
+{
+    QVector<quint64> l1 = {1, 3, 5, 7};
+    QVector<quint64> l2 = {3, 4, 5, 7, 9, 11};
+
+    VectorPostingIterator* it1 = new VectorPostingIterator(l1);
+    VectorPostingIterator* it2 = new VectorPostingIterator(l2);
+
+    QVector<PostingIterator*> vec = {it1, 0, it2};
+
+    AndPostingIterator it(vec);
+    QCOMPARE(it.docId(), static_cast<quint64>(0));
     QCOMPARE(it.next(), static_cast<quint64>(0));
     QCOMPARE(it.docId(), static_cast<quint64>(0));
 }
