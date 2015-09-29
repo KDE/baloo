@@ -28,6 +28,13 @@
 
 using namespace Baloo;
 
+/*
+ * TODO: remove code duplication, we are performing similar operations
+ * for excludeFolders, includeFolders and excludeFilters just using different
+ * setters/getters. Figure out a way to unify the code while still keeping it
+ * readable.
+ */
+
 QString ConfigCommand::command()
 {
     return QStringLiteral("config");
@@ -78,6 +85,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
             printCommand(QStringLiteral("hidden"), i18n("Controls if Baloo indexes hidden files and folders"));
             printCommand(QStringLiteral("includeFolders"), i18n("The list of folders which Baloo indexes"));
             printCommand(QStringLiteral("excludeFolders"), i18n("The list of folders which Baloo will never index"));
+            printCommand(QStringLiteral("excludeFilters"), i18n("The list of filters which are used to exclude files"));
             return 0;
         }
 
@@ -93,19 +101,24 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
             return 0;
         }
 
-        if (value.compare("includeFolders", Qt::CaseInsensitive) == 0) {
-            const QStringList folders = config.includeFolders();
-            for (const QString& folder: folders) {
-                out << folder << endl;
+        auto printList = [&out](const QStringList& list) {
+            for (const QString& item: list) {
+                out << item << endl;
             }
+        };
+
+        if (value.compare("includeFolders", Qt::CaseInsensitive) == 0) {
+            printList(config.includeFolders());
             return 0;
         }
 
         if (value.compare("excludeFolders", Qt::CaseInsensitive) == 0) {
-            const QStringList folders = config.excludeFolders();
-            for (const QString& folder: folders) {
-                out << folder << endl;
-            }
+            printList(config.excludeFolders());
+            return 0;
+        }
+
+        if (value.compare(QStringLiteral("excludeFilters"), Qt::CaseInsensitive) == 0) {
+            printList(config.excludeFilters());
             return 0;
         }
 
@@ -119,6 +132,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
 
             printCommand(QStringLiteral("includeFolders"), i18n("The list of folders which Baloo indexes"));
             printCommand(QStringLiteral("excludeFolders"), i18n("The list of folders which Baloo will never index"));
+            printCommand(QStringLiteral("excludeFilters"), i18n("The list of filters which are used to exclude files"));
             return 0;
         }
 
@@ -184,6 +198,23 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
             return 0;
         }
 
+        if (value.compare(QStringLiteral("excludeFilters"), Qt::CaseInsensitive) == 0) {
+            if (args.isEmpty()) {
+                out << i18n("A filter must be provided") << endl;
+                return 1;
+            }
+
+            QStringList filters = config.excludeFilters();
+            if (!filters.contains(args.first())) {
+                out << args.first() << " " << i18n("is not in list of exclude filters") << endl;
+                return 1;
+            }
+
+            filters.removeAll(args.first());
+            config.setExcludeFilters(filters);
+            return 0;
+        }
+
         out << i18n("Config parameter could not be found") << endl;
         return 1;
     }
@@ -194,6 +225,8 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
 
             printCommand(QStringLiteral("includeFolders"), i18n("The list of folders which Baloo indexes"));
             printCommand(QStringLiteral("excludeFolders"), i18n("The list of folders which Baloo will never index"));
+            printCommand(QStringLiteral("excludeFilters"), i18n("The list of filters which are used to exclude files"));
+
             return 0;
         }
 
@@ -279,6 +312,24 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
 
             folders.append(path);
             config.setExcludeFolders(folders);
+
+            return 0;
+        }
+
+        if (value.compare(QStringLiteral("excludeFilters"), Qt::CaseInsensitive) == 0) {
+            if (args.empty()) {
+                out << i18n("A filter must be provided") << endl;
+                return 1;
+            }
+
+            QStringList filters = config.excludeFilters();
+            if (filters.contains(args.first())) {
+                out << i18n("Exclude filter is already in the list") << endl;
+                return 1;
+            }
+
+            filters.append(args.first());
+            config.setExcludeFilters(filters);
 
             return 0;
         }

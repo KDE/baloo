@@ -82,6 +82,11 @@ QStringList IndexerConfig::includeFolders() const
     return d->m_config.includeFolders();
 }
 
+QStringList IndexerConfig::excludeFilters() const
+{
+    return d->m_config.excludeFilters();
+}
+
 void IndexerConfig::setExcludeFolders(const QStringList& excludeFolders)
 {
     KConfig config(QStringLiteral("baloofilerc"));
@@ -103,6 +108,18 @@ void IndexerConfig::setIncludeFolders(const QStringList& includeFolders)
         Kdelibs4Migration kde4;
         KConfig config(kde4.locateLocal("config", QStringLiteral("baloofilerc")));
         config.group("General").writePathEntry("folders", includeFolders);
+    }
+}
+
+void IndexerConfig::setExcludeFilters(const QStringList& excludeFilters)
+{
+    KConfig config(QStringLiteral("baloofilerc"));
+    config.group("General").writeEntry("exclude filters", excludeFilters);
+
+    {
+        Kdelibs4Migration kde4;
+        KConfig config(kde4.locateLocal("config", QStringLiteral("baloofilerc")));
+        config.group("General").writeEntry("exclude filters", excludeFilters);
     }
 }
 

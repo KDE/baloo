@@ -39,9 +39,11 @@ public:
 
     QStringList includeFolders() const;
     QStringList excludeFolders() const;
+    QStringList excludeFilters() const;
 
     void setIncludeFolders(const QStringList& includeFolders);
     void setExcludeFolders(const QStringList& excludeFolders);
+    void setExcludeFilters(const QStringList& excludeFilters);
 
     /**
      * The first run indicates if the File Indexer has ever been run before
