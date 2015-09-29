@@ -95,7 +95,7 @@ QVector<PositionInfo> PositionDB::get(const QByteArray& term)
     }
     Q_ASSERT_X(rc == 0, "PositionDB::get", mdb_strerror(rc));
 
-    QByteArray data = QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size);
+    QByteArray data(static_cast<char*>(val.mv_data), val.mv_size);
 
     PositionCodec codec;
     return codec.decode(data);
@@ -126,7 +126,7 @@ public:
         : m_pos(-1)
     {
         PositionCodec codec;
-        m_vec = codec.decode(QByteArray::fromRawData(static_cast<char*>(data), size));
+        m_vec = codec.decode(QByteArray(static_cast<char*>(data), size));
     }
 
     quint64 next() Q_DECL_OVERRIDE {
@@ -191,8 +191,8 @@ QMap<QByteArray, QVector<PositionInfo>> PositionDB::toTestMap() const
         }
         Q_ASSERT_X(rc == 0, "PostingDB::toTestMap", mdb_strerror(rc));
 
-        const QByteArray ba = QByteArray::fromRawData(static_cast<char*>(key.mv_data), key.mv_size);
-        const QVector<PositionInfo> vinfo = PositionCodec().decode(QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size));
+        const QByteArray ba(static_cast<char*>(key.mv_data), key.mv_size);
+        const QVector<PositionInfo> vinfo = PositionCodec().decode(QByteArray(static_cast<char*>(val.mv_data), val.mv_size));
         map.insert(ba, vinfo);
     }
 

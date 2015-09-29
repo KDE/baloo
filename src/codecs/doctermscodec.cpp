@@ -58,8 +58,7 @@ QVector<QByteArray> DocTermsCodec::decode(const QByteArray& full)
     int prevWordBoundary = 0;
     for (int i = 0; i < full.size(); i++) {
         if (full[i] == 1) {
-            QByteArray arr = QByteArray::fromRawData(full.constData() + prevWordBoundary,
-                                                     i - prevWordBoundary);
+            QByteArray arr(full.constData() + prevWordBoundary, i - prevWordBoundary);
 
             list << list.last() + arr;
             prevWordBoundary = i + 1;
@@ -67,8 +66,7 @@ QVector<QByteArray> DocTermsCodec::decode(const QByteArray& full)
         }
 
         if (full[i] == '\0') {
-            QByteArray arr = QByteArray::fromRawData(full.constData() + prevWordBoundary,
-                                                     i - prevWordBoundary);
+            QByteArray arr(full.constData() + prevWordBoundary, i - prevWordBoundary);
 
             list << arr;
             prevWordBoundary = i + 1;
