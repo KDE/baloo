@@ -596,10 +596,16 @@ void Transaction::checkPostingDbinTermsDb()
         const QByteArray term = it.key();
         const PostingList list = it.value();
         for (quint64 id : list) {
-            QVector<QByteArray> allTerms = documentTermsDB.get(id) + documentFileNameTermsDB.get(id) + documentXattrTermsDB.get(id);
-            if (!allTerms.contains(term)) {
-                out << id << " is missing " << QString::fromUtf8(term) << " from document terms db" << endl;
+            if (documentTermsDB.get(id).contains(term)) {
+                continue;
             }
+            if (documentFileNameTermsDB.get(id).contains(term)) {
+                continue;
+            }
+            if (documentXattrTermsDB.get(id).contains(term)) {
+                continue;
+            }
+            out << id << " is missing " << QString::fromUtf8(term) << " from document terms db" << endl;
         }
     }
 }
