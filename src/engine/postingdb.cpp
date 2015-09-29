@@ -94,7 +94,7 @@ PostingList PostingDB::get(const QByteArray& term)
     }
     Q_ASSERT_X(rc == 0, "PostingDB::get", mdb_strerror(rc));
 
-    QByteArray arr = QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size);
+    QByteArray arr(static_cast<char*>(val.mv_data), val.mv_size);
 
     PostingCodec codec;
     return codec.decode(arr);
@@ -129,7 +129,7 @@ QVector< QByteArray > PostingDB::fetchTermsStartingWith(const QByteArray& term)
     while (rc != MDB_NOTFOUND) {
         Q_ASSERT_X(rc == 0, "PostingDB::fetchTermsStartingWith", mdb_strerror(rc));
 
-        const QByteArray arr = QByteArray::fromRawData(static_cast<char*>(key.mv_data), key.mv_size);
+        const QByteArray arr(static_cast<char*>(key.mv_data), key.mv_size);
         if (!arr.startsWith(term)) {
             break;
         }
@@ -173,7 +173,7 @@ PostingIterator* PostingDB::iter(const QByteArray& term)
 // Posting Iterator
 //
 DBPostingIterator::DBPostingIterator(void* data, uint size)
-    : m_vec(PostingCodec().decode(QByteArray::fromRawData(static_cast<char*>(data), size)))
+    : m_vec(PostingCodec().decode(QByteArray(static_cast<char*>(data), size)))
     , m_pos(-1)
 {
 }
@@ -217,7 +217,7 @@ PostingIterator* PostingDB::iter(const QByteArray& prefix, Validator validate)
     while (rc != MDB_NOTFOUND) {
         Q_ASSERT_X(rc == 0, "PostingDB::regexpIter", mdb_strerror(rc));
 
-        const QByteArray arr = QByteArray::fromRawData(static_cast<char*>(key.mv_data), key.mv_size);
+        const QByteArray arr(static_cast<char*>(key.mv_data), key.mv_size);
         if (!arr.startsWith(prefix)) {
             break;
         }
@@ -260,7 +260,7 @@ PostingIterator* PostingDB::compIter(const QByteArray& prefix, const QByteArray&
     Q_ASSERT(!comVal.isEmpty());
     int prefixLen = prefix.length();
     auto validate = [prefixLen, &comVal, com] (const QByteArray& arr) {
-        QByteArray term = QByteArray::fromRawData(arr.constData() + prefixLen, arr.length() - prefixLen);
+        QByteArray term(arr.constData() + prefixLen, arr.length() - prefixLen);
         return ((com == LessEqual && term <= comVal) || (com == GreaterEqual && term >= comVal));
     };
     return iter(prefix, validate);
@@ -282,8 +282,8 @@ QMap<QByteArray, PostingList> PostingDB::toTestMap() const
         }
         Q_ASSERT_X(rc == 0, "PostingDB::toTestMap", mdb_strerror(rc));
 
-        const QByteArray ba = QByteArray::fromRawData(static_cast<char*>(key.mv_data), key.mv_size);
-        const PostingList plist = PostingCodec().decode(QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size));
+        const QByteArray ba(static_cast<char*>(key.mv_data), key.mv_size);
+        const PostingList plist = PostingCodec().decode(QByteArray(static_cast<char*>(val.mv_data), val.mv_size));
         map.insert(ba, plist);
     }
 

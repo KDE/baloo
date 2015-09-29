@@ -94,7 +94,7 @@ IdFilenameDB::FilePath IdFilenameDB::get(quint64 docId)
     Q_ASSERT_X(rc == 0, "IdfilenameDB::get", mdb_strerror(rc));
 
     path.parentId = static_cast<quint64*>(val.mv_data)[0];
-    path.name = QByteArray::fromRawData(static_cast<char*>(val.mv_data) + 8, val.mv_size - 8);
+    path.name = QByteArray(static_cast<char*>(val.mv_data) + 8, val.mv_size - 8);
 
     return path;
 }
@@ -148,7 +148,7 @@ QMap<quint64, IdFilenameDB::FilePath> IdFilenameDB::toTestMap() const
 
         FilePath path;
         path.parentId = static_cast<quint64*>(val.mv_data)[0];
-        path.name = QByteArray::fromRawData(static_cast<char*>(val.mv_data) + 8, val.mv_size - 8);
+        path.name = QByteArray(static_cast<char*>(val.mv_data) + 8, val.mv_size - 8);
 
         map.insert(id, path);
     }

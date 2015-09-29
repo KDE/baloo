@@ -93,7 +93,7 @@ QVector<QByteArray> DocumentDB::get(quint64 docId)
     }
     Q_ASSERT_X(rc == 0, "DocumentDB::get", mdb_strerror(rc));
 
-    QByteArray arr = QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size);
+    QByteArray arr(static_cast<char*>(val.mv_data), val.mv_size);
 
     DocTermsCodec codec;
     return codec.decode(arr);
@@ -158,7 +158,7 @@ QMap<quint64, QVector<QByteArray>> DocumentDB::toTestMap() const
         Q_ASSERT_X(rc == 0, "PostingDB::toTestMap", mdb_strerror(rc));
 
         const quint64 id = *(static_cast<quint64*>(key.mv_data));
-        const QVector<QByteArray> vec = DocTermsCodec().decode(QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size));
+        const QVector<QByteArray> vec = DocTermsCodec().decode(QByteArray(static_cast<char*>(val.mv_data), val.mv_size));
         map.insert(id, vec);
     }
 

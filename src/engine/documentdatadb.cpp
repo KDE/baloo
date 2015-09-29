@@ -86,7 +86,7 @@ QByteArray DocumentDataDB::get(quint64 docId)
     }
     Q_ASSERT_X(rc == 0, "DocumentDataDB::get", mdb_strerror(rc));
 
-    return QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size);
+    return QByteArray(static_cast<char*>(val.mv_data), val.mv_size);
 }
 
 void DocumentDataDB::del(quint64 docId)
@@ -139,7 +139,7 @@ QMap<quint64, QByteArray> DocumentDataDB::toTestMap() const
         Q_ASSERT_X(rc == 0, "DocumentDataDB::toTestMap", mdb_strerror(rc));
 
         const quint64 id = *(static_cast<quint64*>(key.mv_data));
-        const QByteArray ba = QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size);
+        const QByteArray ba(static_cast<char*>(val.mv_data), val.mv_size);
         map.insert(id, ba);
     }
 
