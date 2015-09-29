@@ -28,6 +28,7 @@ set(BALOO_LIB_SRCS
 )
 
 add_library(KF5Baloo ${BALOO_LIB_SRCS})
+add_dependencies(KF5Baloo BalooDBusInterfaces)
 
 add_library(KF5::Baloo ALIAS KF5Baloo)
 
