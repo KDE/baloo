@@ -71,7 +71,6 @@ int main(int argc, char* argv[])
 
     QCommandLineParser parser;
     parser.addPositionalArgument(QLatin1String("command"), i18n("The command to execute"));
-    parser.addHelpOption();
 
     parser.addPositionalArgument(QLatin1String("status"), i18n("Print the status of the indexer"));
     parser.addPositionalArgument(QLatin1String("enable"), i18n("Enable the file indexer"));
