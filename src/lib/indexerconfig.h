@@ -55,6 +55,9 @@ public:
     bool indexHidden() const;
     void setIndexHidden(bool value) const;
 
+    bool onlyBasicIndexing() const;
+    void setOnlyBasicIndexing(bool value);
+
     void refresh() const;
 
 private:
