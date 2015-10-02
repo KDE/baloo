@@ -169,7 +169,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
             auto path = fileInfo.absoluteFilePath();
             QStringList folders = config.includeFolders();
             if (!folders.contains(path)) {
-                out << path << " is not in the list of include folders" << endl;
+                out << i18n("%1 is not in the list of include folders", path) << endl;
                 return 1;
             }
 
@@ -199,7 +199,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
             auto path = fileInfo.absoluteFilePath();
             QStringList folders = config.excludeFolders();
             if (!folders.contains(path)) {
-                out << path << " is not in the list of exclude folders" << endl;
+                out << i18n("%1 is not in the list of exclude folders", path) << endl;
                 return 1;
             }
 
@@ -217,7 +217,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
 
             QStringList filters = config.excludeFilters();
             if (!filters.contains(args.first())) {
-                out << args.first() << " " << i18n("is not in list of exclude filters") << endl;
+                out << i18n("%1 is not in list of exclude filters", args.first()) << endl;
                 return 1;
             }
 
@@ -263,19 +263,19 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
             auto path = fileInfo.absoluteFilePath();
             QStringList folders = config.includeFolders();
             if (folders.contains(path)) {
-                out << path << " is already in the list of include folders" << endl;
+                out << i18n("%1 is already in the list of include folders", path) << endl;
                 return 1;
             }
 
             for (const QString& folder : folders) {
                 if (path.startsWith(folder)) {
-                    out << "Parent folder " << folder << " is already in the list of include folders" << endl;
+                    out << i18n("Parent folder %1 is already in the list of include folders", folder) << endl;
                     return 1;
                 }
             }
 
             if (config.excludeFolders().contains(path)) {
-                out << path << " is in the list of exclude folders" << endl;
+                out << i18n("%1 is in the list of exclude folders", path) << endl;
                 out << "Aborting" << endl;
             }
 
@@ -305,19 +305,19 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
             auto path = fileInfo.absoluteFilePath();
             QStringList folders = config.excludeFolders();
             if (folders.contains(path)) {
-                out << path << " is already in the list of exclude folders" << endl;
+                out << i18n("%1 is already in the list of exclude folders", path) << endl;
                 return 1;
             }
 
             for (const QString& folder : folders) {
                 if (path.startsWith(folder)) {
-                    out << "Parent folder " << folder << " is already in the list of exclude folders" << endl;
+                    out << i18n("Parent folder %1 is already in the list of exclude folders", folder) << endl;
                     return 1;
                 }
             }
 
             if (config.includeFolders().contains(path)) {
-                out << path << " is in the list of exclude folders" << endl;
+                out << i18n("%1 is in the list of exclude folders", path) << endl;
                 out << "Aborting" << endl;
             }
 
@@ -362,7 +362,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
 
         if (configParam == QStringLiteral("hidden"))  {
             if (args.isEmpty()) {
-                out << i18n("Must provide a value") << endl;
+                out << i18n("A value must be provided") << endl;
                 return 1;
             }
 
@@ -389,7 +389,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
 
         if (configParam.compare(QStringLiteral("contentIndexing"), Qt::CaseInsensitive) == 0)  {
             if (args.isEmpty()) {
-                out << i18n("Must provide a value") << endl;
+                out << i18n("A value must be provided") << endl;
                 return 1;
             }
 
