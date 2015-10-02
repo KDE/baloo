@@ -94,7 +94,10 @@ bool UnIndexedFileIterator::shouldIndex(const QString& filePath, const QString& 
         return false;
     }
 
-    if (mTime != fileInfo.lastModified().toTime_t()) {
+    quint32 cTime = m_transaction->documentCTime(fileId);
+    if (mTime != fileInfo.lastModified().toTime_t()
+        || cTime != fileInfo.created().toTime_t())
+    {
         return true;
     }
     return false;
