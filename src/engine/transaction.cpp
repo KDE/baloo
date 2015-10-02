@@ -132,7 +132,7 @@ quint32 Transaction::documentMTime(quint64 id) const
 {
     Q_ASSERT(m_txn);
 
-    DocumentTimeDB docTimeDb(m_dbis.docTermsDbi, m_txn);
+    DocumentTimeDB docTimeDb(m_dbis.docTimeDbi, m_txn);
     return docTimeDb.get(id).mTime;
 }
 
@@ -140,7 +140,7 @@ quint32 Transaction::documentCTime(quint64 id) const
 {
     Q_ASSERT(m_txn);
 
-    DocumentTimeDB docTimeDb(m_dbis.docTermsDbi, m_txn);
+    DocumentTimeDB docTimeDb(m_dbis.docTimeDbi, m_txn);
     return docTimeDb.get(id).cTime;
 }
 
