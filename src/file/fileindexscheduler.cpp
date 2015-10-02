@@ -25,6 +25,7 @@
 #include "xattrindexer.h"
 #include "filecontentindexer.h"
 #include "filecontentindexerprovider.h"
+#include "unindexedfileindexer.h"
 
 #include "fileindexerconfig.h"
 
@@ -42,6 +43,7 @@ FileIndexScheduler::FileIndexScheduler(Database* db, FileIndexerConfig* config, 
     , m_contentIndexer(0)
     , m_indexerState(Idle)
     , m_timeEstimator(this)
+    , m_checkUnindexedFiles(false)
 {
     Q_ASSERT(db);
     Q_ASSERT(config);
@@ -117,6 +119,17 @@ void FileIndexScheduler::scheduleIndexing()
         Q_EMIT stateChanged(m_indexerState);
         return;
     }
+
+    if (m_checkUnindexedFiles) {
+        auto runnable = new UnindexedFileIndexer(m_db, m_config);
+        connect(runnable, &UnindexedFileIndexer::done, this, &FileIndexScheduler::scheduleIndexing);
+
+        m_threadPool.start(runnable);
+        m_checkUnindexedFiles = false;
+        m_indexerState = UnindexedFileCheck;
+        Q_EMIT stateChanged(m_indexerState);
+        return;
+    }
     m_indexerState = Idle;
     Q_EMIT stateChanged(m_indexerState);
 }
@@ -183,4 +196,10 @@ uint FileIndexScheduler::getRemainingTime()
         return 0;
     }
     return m_timeEstimator.calculateTimeLeft(m_provider.size());
+}
+
+void FileIndexScheduler::checkUnindexedFiles()
+{
+    m_checkUnindexedFiles = true;
+    scheduleIndexing();
 }

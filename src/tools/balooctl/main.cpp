@@ -262,8 +262,7 @@ int main(int argc, char* argv[])
     }
 
     if (command == QStringLiteral("check")) {
-        //TODO: implement in new arch
-        //balooInterface.updateAllFolders();
+        schedulerinterface.checkUnindexedFiles();
         out << "Started search for unindexed files\n";
         return 0;
     }

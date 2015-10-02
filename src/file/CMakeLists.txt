@@ -14,6 +14,7 @@ set(file_static_lib_SRCS
     newfileindexer.cpp
     xattrindexer.cpp
     modifiedfileindexer.cpp
+    unindexedfileindexer.cpp
 
     filecontentindexer.cpp
     filecontentindexerprovider.cpp

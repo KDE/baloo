@@ -78,6 +78,7 @@ public Q_SLOTS:
     Q_SCRIPTABLE void suspend() { setSuspend(true); }
     Q_SCRIPTABLE void resume() { setSuspend(false); }
     Q_SCRIPTABLE uint getRemainingTime();
+    Q_SCRIPTABLE void checkUnindexedFiles();
 
 private Q_SLOTS:
     void powerManagementStatusChanged(bool isOnBattery);
@@ -101,6 +102,8 @@ private:
 
     IndexerState m_indexerState;
     TimeEstimator m_timeEstimator;
+
+    bool m_checkUnindexedFiles;
 };
 
 }

@@ -33,7 +33,8 @@ enum IndexerState {
         NewFiles,
         ModifiedFiles,
         XAttrFiles,
-        ContentIndexing
+        ContentIndexing,
+        UnindexedFileCheck
 };
 
 inline QString stateString(IndexerState state)
@@ -60,6 +61,9 @@ inline QString stateString(IndexerState state)
         break;
     case ContentIndexing:
         status = i18n("Indexing file content");
+        break;
+    case UnindexedFileCheck:
+        status = i18n("Checking for unindexed files");
     }
     return status;
 }
