@@ -151,6 +151,18 @@ void IndexerConfig::setIndexHidden(bool value) const
     config.group("General").writeEntry("index hidden folders", value);
 }
 
+bool IndexerConfig::onlyBasicIndexing() const
+{
+    KConfig config(QStringLiteral("baloofilerc"));
+    return config.group("General").readEntry("only basic indexing", false);
+}
+
+void IndexerConfig::setOnlyBasicIndexing(bool value)
+{
+    KConfig config(QStringLiteral("baloofilerc"));
+    config.group("General").writeEntry("only basic indexing", value);
+}
+
 void IndexerConfig::refresh() const
 {
     org::kde::baloo::main mainInterface(QStringLiteral("org.kde.baloo"),

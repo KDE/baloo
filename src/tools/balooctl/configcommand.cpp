@@ -83,6 +83,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
             out << i18n("The following configuration options may be listed:") << endl << endl;
 
             printCommand(QStringLiteral("hidden"), i18n("Controls if Baloo indexes hidden files and folders"));
+            printCommand(QStringLiteral("contentIndexing"), i18n("Controls if baloo indexes file content."));
             printCommand(QStringLiteral("includeFolders"), i18n("The list of folders which Baloo indexes"));
             printCommand(QStringLiteral("excludeFolders"), i18n("The list of folders which Baloo will never index"));
             printCommand(QStringLiteral("excludeFilters"), i18n("The list of filters which are used to exclude files"));
@@ -96,6 +97,16 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
                 out << "yes" << endl;
             } else {
                 out << "no" << endl;
+            }
+
+            return 0;
+        }
+
+        if (value.compare(QStringLiteral("contentIndexing"), Qt::CaseInsensitive) == 0) {
+            if (config.onlyBasicIndexing()) {
+                out << "no" << endl;
+            } else {
+                out << "yes" << endl;
             }
 
             return 0;
@@ -369,6 +380,33 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
                     || value.compare("no", Qt::CaseInsensitive) == 0
                     || value.compare("0") == 0) {
                 config.setIndexHidden(false);
+                return 0;
+            }
+
+            out << i18n("Invalid value") << endl;
+            return 1;
+        }
+
+        if (configParam.compare(QStringLiteral("contentIndexing"), Qt::CaseInsensitive) == 0)  {
+            if (args.isEmpty()) {
+                out << i18n("Must provide a value") << endl;
+                return 1;
+            }
+
+            QString value = args.takeFirst();
+            if (value.compare("true", Qt::CaseInsensitive) == 0
+                    || value.compare("y", Qt::CaseInsensitive) == 0
+                    || value.compare("yes", Qt::CaseInsensitive) == 0
+                    || value.compare("1") == 0) {
+                config.setOnlyBasicIndexing(false);
+                return 0;
+            }
+
+            if (value.compare("false", Qt::CaseInsensitive) == 0
+                    || value.compare("n", Qt::CaseInsensitive) == 0
+                    || value.compare("no", Qt::CaseInsensitive) == 0
+                    || value.compare("0") == 0) {
+                config.setOnlyBasicIndexing(true);
                 return 0;
             }
 
