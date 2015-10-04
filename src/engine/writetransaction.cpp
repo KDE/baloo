@@ -205,6 +205,9 @@ void WriteTransaction::replaceDocument(const Document& doc, DocumentOperations o
     }
 
     if (operations & DocumentTime) {
+        Q_ASSERT(doc.m_mTime);
+        Q_ASSERT(doc.m_cTime);
+
         DocumentTimeDB::TimeInfo info;
         info.mTime = doc.m_mTime;
         info.cTime = doc.m_cTime;
