@@ -268,7 +268,9 @@ void WriteTransaction::commit()
         const QVector<Operation> operations = iter.value();
 
         PostingList list = postingDB.get(term);
-        QVector<PositionInfo> positionList = positionDB.get(term); // FIXME: We do not need to fetch this for all the terms
+
+        bool fetchedPositionList = false;
+        QVector<PositionInfo> positionList;
 
         for (const Operation& op : operations) {
             quint64 id = op.data.docId;
@@ -277,11 +279,19 @@ void WriteTransaction::commit()
                 insert(list, id);
 
                 if (!op.data.positions.isEmpty()) {
+                    if (!fetchedPositionList) {
+                        positionList = positionDB.get(term);
+                        fetchedPositionList = true;
+                    }
                     insert(positionList, op.data);
                 }
             }
             else {
                 list.removeOne(id);
+                if (!fetchedPositionList) {
+                    positionList = positionDB.get(term);
+                    fetchedPositionList = true;
+                }
                 positionList.removeOne(PositionInfo(id));
             }
         }
@@ -292,10 +302,12 @@ void WriteTransaction::commit()
             postingDB.del(term);
         }
 
-        if (!positionList.isEmpty()) {
-            positionDB.put(term, positionList);
-        } else {
-            positionDB.del(term);
+        if (fetchedPositionList) {
+            if (!positionList.isEmpty()) {
+                positionDB.put(term, positionList);
+            } else {
+                positionDB.del(term);
+            }
         }
     }
 
