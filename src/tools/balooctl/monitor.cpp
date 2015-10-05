@@ -39,7 +39,7 @@ Monitor::Monitor(QObject *parent)
         QCoreApplication::exit();
     }
     m_interface->registerMonitor();
-    connect(m_interface, &org::kde::baloo::fileindexer::indexingFile, this, &Monitor::newFile);
+    connect(m_interface, &org::kde::baloo::fileindexer::startedIndexingFile, this, &Monitor::newFile);
     m_out << "Press ctrl+c to exit monitor" << endl;
 }
 

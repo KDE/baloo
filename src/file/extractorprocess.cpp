@@ -29,8 +29,6 @@ ExtractorProcess::ExtractorProcess(QObject* parent)
     : QObject(parent)
     , m_extractorPath(QStandardPaths::findExecutable(QLatin1String("baloo_file_extractor")))
     , m_extractorProcess(this)
-    , m_batchSize(0)
-    , m_indexedFiles(0)
     , m_extractorIdle(true)
 {
     connect(&m_extractorProcess, &QProcess::readyRead, this, &ExtractorProcess::slotIndexingFile);
@@ -52,29 +50,43 @@ void ExtractorProcess::index(const QVector<quint64>& fileIds)
 
     QByteArray batchData;
 
-    m_batchSize = fileIds.size();
-    batchData.append(reinterpret_cast<char*>(&m_batchSize), sizeof(quint32));
+    quint32 batchSize = fileIds.size();
+    batchData.append(reinterpret_cast<char*>(&batchSize), sizeof(quint32));
     for (quint64 id : fileIds) {
         batchData.append(reinterpret_cast<char*>(&id), sizeof(quint64));
     }
 
     m_extractorIdle = false;
-    m_indexedFiles = 0;
     m_extractorProcess.write(batchData.data(), batchData.size());
 }
 
 void ExtractorProcess::slotIndexingFile()
 {
     while (m_extractorProcess.canReadLine()) {
-        QString filePath = m_extractorProcess.readLine().trimmed();
-        if (m_indexedFiles < m_batchSize) {
-            Q_EMIT indexingFile(filePath);
+        QString line = m_extractorProcess.readLine().trimmed();
+        if (line.isEmpty()) {
+            continue;
         }
-        ++m_indexedFiles;
-    }
 
-    if (m_indexedFiles == m_batchSize + 1) {
-        Q_EMIT done();
-        m_extractorIdle = true;
+        char command = line[0].toLatin1();
+        QString arg = line.mid(2);
+
+        switch (command) {
+        case 'S':
+            Q_EMIT startedIndexingFile(arg);
+            break;
+
+        case 'F':
+            Q_EMIT finishedIndexingFile(arg);
+            break;
+
+        case 'B':
+            Q_EMIT done();
+            m_extractorIdle = true;
+            break;
+
+        default:
+            qCritical() << "Got unknown result from extractor" << command << arg;
+        }
     }
 }

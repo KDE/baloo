@@ -52,7 +52,7 @@ Monitor::Monitor(QObject *parent)
                                                     QStringLiteral("/fileindexer"),
                                                     m_bus, this);
 
-    connect(m_fileindexer, &org::kde::baloo::fileindexer::indexingFile,
+    connect(m_fileindexer, &org::kde::baloo::fileindexer::startedIndexingFile,
             this, &Monitor::newFile);
 
     connect(m_scheduler, &org::kde::baloo::scheduler::stateChanged,

@@ -37,7 +37,7 @@ class FileContentIndexer : public QObject, public QRunnable
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "org.kde.baloo.fileindexer")
 
-    Q_PROPERTY(QString currentFile READ currentFile NOTIFY indexingFile)
+    Q_PROPERTY(QString currentFile READ currentFile NOTIFY startedIndexingFile)
 public:
     FileContentIndexer(FileContentIndexerProvider* provider, QObject* parent = 0);
 
@@ -54,13 +54,16 @@ public Q_SLOTS:
     Q_SCRIPTABLE void unregisterMonitor(const QDBusMessage& message);
 
 Q_SIGNALS:
-    Q_SCRIPTABLE void indexingFile(QString filePath);
+    Q_SCRIPTABLE void startedIndexingFile(const QString& filePath);
+    Q_SCRIPTABLE void finishedIndexingFile(const QString& filePath);
+
     void done();
     void newBatchTime(uint time);
 
 private Q_SLOTS:
-    void monitorClosed(QString service);
-    void slotIndexingFile(QString filePath);
+    void monitorClosed(const QString& service);
+    void slotStartedIndexingFile(const QString& filePath);
+    void slotFinishedIndexingFile(const QString& filePath);
 
 private:
     FileContentIndexerProvider* m_provider;
