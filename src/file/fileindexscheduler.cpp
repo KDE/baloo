@@ -64,6 +64,11 @@ FileIndexScheduler::FileIndexScheduler(Database* db, FileIndexerConfig* config, 
                                                  this, QDBusConnection::ExportScriptableContents);
 }
 
+FileIndexScheduler::~FileIndexScheduler()
+{
+    m_threadPool.waitForDone(0); // wait 0 msecs
+}
+
 void FileIndexScheduler::scheduleIndexing()
 {
     if (m_threadPool.activeThreadCount() || m_indexerState == Suspended) {
