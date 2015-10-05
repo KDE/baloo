@@ -50,12 +50,14 @@ public:
     int exec(const QCommandLineParser& parser);
 
 private Q_SLOTS:
-    void newFile(const QString& url);
+    void startedIndexingFile(const QString& filePath);
+    void finishedIndexingFile(const QString& filePath);
 
 private:
     QTextStream m_out;
     org::kde::baloo::fileindexer* m_interface;
 
+    QString m_currentFile;
 };
 }
 #endif // MONITOR_H

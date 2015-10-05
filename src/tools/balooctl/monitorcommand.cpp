@@ -41,17 +41,27 @@ MonitorCommand::MonitorCommand(QObject *parent)
         QCoreApplication::exit();
     }
     m_interface->registerMonitor();
-    connect(m_interface, &org::kde::baloo::fileindexer::startedIndexingFile, this, &MonitorCommand::newFile);
+    connect(m_interface, &org::kde::baloo::fileindexer::startedIndexingFile, this, &MonitorCommand::startedIndexingFile);
+    connect(m_interface, &org::kde::baloo::fileindexer::finishedIndexingFile, this, &MonitorCommand::finishedIndexingFile);
     m_out << "Press ctrl+c to exit monitor" << endl;
-}
-
-void MonitorCommand::newFile(const QString& url)
-{
-    m_out << "Indexing: " << url << endl;
 }
 
 int MonitorCommand::exec(const QCommandLineParser& parser)
 {
     Q_UNUSED(parser);
     return QCoreApplication::instance()->exec();
+}
+
+void MonitorCommand::startedIndexingFile(const QString& filePath)
+{
+    m_currentFile = filePath;
+    m_out << "Indexing: " << filePath;
+}
+
+void MonitorCommand::finishedIndexingFile(const QString& filePath)
+{
+    Q_UNUSED(filePath);
+
+    m_currentFile.clear();
+    m_out << endl;
 }
