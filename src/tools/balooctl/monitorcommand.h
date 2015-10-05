@@ -1,6 +1,7 @@
 /*
  * This file is part of the KDE Baloo Project
  * Copyright (C) 2015  Pinak Ahuja <pinak.ahuja@gmail.com>
+ * Copyright (C) 2015  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -25,15 +26,28 @@
 
 #include <QObject>
 #include <QTextStream>
+#include <KLocalizedString>
 
+#include "command.h"
 #include "fileindexerinterface.h"
 
 namespace Baloo {
-class Monitor : public QObject
+
+class MonitorCommand : public QObject, public Command
 {
     Q_OBJECT
 public:
-    Monitor(QObject* parent = 0);
+    MonitorCommand(QObject* parent = 0);
+
+    QString command() Q_DECL_OVERRIDE {
+        return QStringLiteral("monitor");
+    }
+
+    QString description() Q_DECL_OVERRIDE {
+        return i18n("CLI interface for monitoring Baloo");
+    }
+
+    int exec(const QCommandLineParser& parser);
 
 private Q_SLOTS:
     void newFile(const QString& url);

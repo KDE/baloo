@@ -47,7 +47,7 @@
 #include "indexerconfig.h"
 #include "idutils.h"
 #include "fileindexerconfig.h"
-#include "monitor.h"
+#include "monitorcommand.h"
 #include "schedulerinterface.h"
 #include "maininterface.h"
 #include "indexerstate.h"
@@ -384,8 +384,8 @@ int main(int argc, char* argv[])
     }
 
     if (command == QStringLiteral("monitor")) {
-        Monitor mon;
-        app.exec();
+        MonitorCommand mon;
+        return mon.exec(parser);
     }
 
     if (command == QStringLiteral("checkDb")) {

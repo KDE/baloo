@@ -5,8 +5,8 @@ set(SRCS
     indexer.cpp
     command.cpp
     configcommand.cpp
+    monitorcommand.cpp
     ${CMAKE_SOURCE_DIR}/src/file/extractor/result.cpp
-    monitor.cpp
 )
 
 set(DBUS_INTERFACES
