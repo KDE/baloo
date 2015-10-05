@@ -1,6 +1,7 @@
 /*
  * This file is part of the KDE Baloo Project
  * Copyright (C) 2015  Pinak Ahuja <pinak.ahuja@gmail.com>
+ * Copyright (C) 2015  Vishesh Handa <vhanda@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,12 +21,13 @@
  *
  */
 
-#include "monitor.h"
+#include "monitorcommand.h"
 
 #include <QDBusConnection>
 
 using namespace Baloo;
-Monitor::Monitor(QObject *parent)
+
+MonitorCommand::MonitorCommand(QObject *parent)
     : QObject(parent)
     , m_out(stdout)
 {
@@ -39,11 +41,17 @@ Monitor::Monitor(QObject *parent)
         QCoreApplication::exit();
     }
     m_interface->registerMonitor();
-    connect(m_interface, &org::kde::baloo::fileindexer::startedIndexingFile, this, &Monitor::newFile);
+    connect(m_interface, &org::kde::baloo::fileindexer::startedIndexingFile, this, &MonitorCommand::newFile);
     m_out << "Press ctrl+c to exit monitor" << endl;
 }
 
-void Monitor::newFile(const QString& url)
+void MonitorCommand::newFile(const QString& url)
 {
     m_out << "Indexing: " << url << endl;
+}
+
+int MonitorCommand::exec(const QCommandLineParser& parser)
+{
+    Q_UNUSED(parser);
+    return QCoreApplication::instance()->exec();
 }
