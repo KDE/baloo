@@ -44,6 +44,7 @@ class FileIndexScheduler : public QObject
     Q_PROPERTY(int state READ state NOTIFY stateChanged)
 public:
     FileIndexScheduler(Database* db, FileIndexerConfig* config, QObject* parent = 0);
+    ~FileIndexScheduler() Q_DECL_OVERRIDE;
     int state() const { return m_indexerState; }
 
 Q_SIGNALS:
