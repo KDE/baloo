@@ -59,11 +59,6 @@ bool IOHandler::atEnd()
     return false;
 }
 
-void IOHandler::indexedId(quint64 id)
-{
-    write(m_stdoutHandle, reinterpret_cast<void*>(&id), sizeof(quint64));
-}
-
 void IOHandler::batchIndexed()
 {
     m_batchSize = 0;

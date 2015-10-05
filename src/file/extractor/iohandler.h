@@ -34,8 +34,7 @@ public:
     IOHandler(int stdin, int stdout);
     quint64 nextId();
     bool atEnd();
-    void indexedId(quint64 id);
-    
+
     //always call this after a batch has been indexed
     void batchIndexed();
     void newBatch();
