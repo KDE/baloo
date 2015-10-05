@@ -1,0 +1,237 @@
+# Translation of balooctl.po to Brazilian Portuguese
+# Copyright (C) 2014-2015 This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# André Marcelo Alvarenga <alvarenga@kde.org>, 2014, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: balooctl\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-10-03 08:40+0000\n"
+"PO-Revision-Date: 2015-10-03 09:08-0300\n"
+"Last-Translator: André Marcelo Alvarenga <alvarenga@kde.org>\n"
+"Language-Team: Brazilian Portuguese <kde-i18n-pt_br@kde.org>\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Lokalize 1.5\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "André Marcelo Alvarenga"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "alvarenga@kde.org"
+
+#: ../../file/indexerstate.h:42
+msgid "Unknown"
+msgstr "Desconhecido"
+
+#: ../../file/indexerstate.h:45
+msgid "Idle"
+msgstr "Ocioso"
+
+#: ../../file/indexerstate.h:48
+msgid "Suspended"
+msgstr "Suspenso"
+
+#: ../../file/indexerstate.h:51
+msgid "Initial Indexing"
+msgstr "Indexação inicial"
+
+#: ../../file/indexerstate.h:54
+msgid "Indexing new files"
+msgstr "Indexando os novos arquivos"
+
+#: ../../file/indexerstate.h:57
+msgid "Indexing modified files"
+msgstr "Indexando os arquivos modificados"
+
+#: ../../file/indexerstate.h:60
+msgid "Indexing Extended Attributes"
+msgstr "Indexando os atributos estendidos"
+
+#: ../../file/indexerstate.h:63
+msgid "Indexing file content"
+msgstr "Indexando o conteúdo do arquivo"
+
+#: ../../file/indexerstate.h:66
+msgid "Checking for unindexed files"
+msgstr "Procurando arquivos não indexados"
+
+#: configcommand.cpp:45
+msgid "Manipulate the Baloo configuration"
+msgstr "Manipular a configuração do Baloo"
+
+#: configcommand.cpp:68
+msgid "The config command can be used to manipulate the Baloo Configuration"
+msgstr ""
+"O comando de configuração pode ser usado para manipular a configuração do "
+"Baloo"
+
+#: configcommand.cpp:69
+msgid "Usage: balooctl config <command>"
+msgstr "Uso: balooctl config <comando>"
+
+#: configcommand.cpp:70
+msgid "Possible Commands:"
+msgstr "Comandos possíveis:"
+
+#: configcommand.cpp:73
+msgid "Add a value to config parameter"
+msgstr "Adicionar um valor ao parâmetro de configuração"
+
+#: configcommand.cpp:74
+msgid "Remove a value from a config parameter"
+msgstr "Remover um valor do parâmetro de configuração"
+
+#: configcommand.cpp:75
+msgid "Show the value of a config parameter"
+msgstr "Mostrar o valor do parâmetro de configuração"
+
+#: configcommand.cpp:76
+msgid "Set the value of a config parameter"
+msgstr "Definir o valor do parâmetro de configuração"
+
+#: configcommand.cpp:77
+msgid "Display this help menu"
+msgstr "Mostrar este menu de ajuda"
+
+#: configcommand.cpp:83
+msgid "The following configuration options may be listed:"
+msgstr "As seguintes opções de configuração podem ser listadas:"
+
+#: configcommand.cpp:85 configcommand.cpp:356
+msgid "Controls if Baloo indexes hidden files and folders"
+msgstr "Controla se o Baloo indexa os arquivos e pastas ocultos"
+
+#: configcommand.cpp:86
+msgid "Controls if baloo indexes file content."
+msgstr "Controla se o Baloo indexa o conteúdo dos arquivos."
+
+#: configcommand.cpp:87 configcommand.cpp:144 configcommand.cpp:237
+msgid "The list of folders which Baloo indexes"
+msgstr "A lista de pastas indexadas pelo Baloo"
+
+#: configcommand.cpp:88 configcommand.cpp:145 configcommand.cpp:238
+msgid "The list of folders which Baloo will never index"
+msgstr "A lista de pastas que o Baloo nunca indexará"
+
+#: configcommand.cpp:89 configcommand.cpp:146 configcommand.cpp:239
+msgid "The list of filters which are used to exclude files"
+msgstr "A lista de filtros usados para excluir arquivos"
+
+#: configcommand.cpp:136 configcommand.cpp:229 configcommand.cpp:348
+#: configcommand.cpp:417
+msgid "Config parameter could not be found"
+msgstr "O parâmetro de configuração não pôde ser encontrado"
+
+#: configcommand.cpp:142 configcommand.cpp:235 configcommand.cpp:354
+msgid "The following configuration options may be modified:"
+msgstr "As seguintes opções de configuração podem ser modificadas:"
+
+#: configcommand.cpp:154 configcommand.cpp:184 configcommand.cpp:248
+#: configcommand.cpp:290
+msgid "A folder must be provided"
+msgstr "Uma pasta deve ser indicada"
+
+#: configcommand.cpp:160 configcommand.cpp:190 configcommand.cpp:254
+#: configcommand.cpp:296
+msgid "Path does not exist"
+msgstr "O caminho não existe"
+
+#: configcommand.cpp:165 configcommand.cpp:195 configcommand.cpp:259
+#: configcommand.cpp:301
+msgid "Path is not a directory"
+msgstr "O local não é uma pasta"
+
+#: configcommand.cpp:214 configcommand.cpp:332
+msgid "A filter must be provided"
+msgstr "Um filtro deve ser indicado"
+
+#: configcommand.cpp:220
+msgid "is not in list of exclude filters"
+msgstr "não está na lista de filtros de exclusão"
+
+#: configcommand.cpp:338
+msgid "Exclude filter is already in the list"
+msgstr "O filtro de exclusão já está na lista"
+
+#: configcommand.cpp:365 configcommand.cpp:392
+msgid "Must provide a value"
+msgstr "Um valor deve ser indicado"
+
+#: configcommand.cpp:386 configcommand.cpp:413
+msgid "Invalid value"
+msgstr "Valor inválido"
+
+#: main.cpp:66
+msgid "balooctl"
+msgstr "balooctl"
+
+#: main.cpp:67
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:67
+msgid "Maintainer"
+msgstr "Mantenedor"
+
+#: main.cpp:73
+msgid "The command to execute"
+msgstr "Comando a executar"
+
+#: main.cpp:75
+msgid "Print the status of the indexer"
+msgstr "Imprime o status do sistema de indexação"
+
+#: main.cpp:76
+msgid "Enable the file indexer"
+msgstr "Ativar a indexação de arquivos"
+
+#: main.cpp:77
+msgid "Disable the file indexer"
+msgstr "Desativar a indexação de arquivos"
+
+#: main.cpp:78
+msgid "Start the file indexer"
+msgstr "Iniciar a indexação de arquivos"
+
+#: main.cpp:79
+msgid "Stop the file indexer"
+msgstr "Parar a indexação de arquivos"
+
+#: main.cpp:80
+msgid "Restart the file indexer"
+msgstr "Reiniciar a indexação de arquivos"
+
+#: main.cpp:81
+msgid "Suspend the file indexer"
+msgstr "Suspender a indexação de arquivos"
+
+#: main.cpp:82
+msgid "Resume the file indexer"
+msgstr "Continuar a indexação de arquivos"
+
+#: main.cpp:83
+msgid "Check for any unindexed files and index them"
+msgstr "Procurar e indexar arquivos não indexados"
+
+#: main.cpp:84
+msgid "Index the specified files"
+msgstr "Indexar os arquivos indicados"
+
+#: main.cpp:85
+msgid "Forget the specified files"
+msgstr "Não indexar os arquivos indicados"
+
+#: main.cpp:86
+msgid "Modify the Baloo configuration"
+msgstr "Modificar a configuração do Baloo"
+
+#: main.cpp:117
+msgid "Baloo is currently disabled. To enable, please run \"balooctl enable\""
+msgstr "O Baloo está desativado. Para ativá-lo, execute \"balooctl enable\""

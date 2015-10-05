@@ -1,0 +1,236 @@
+# Translation of balooctl to Norwegian Nynorsk
+#
+# Karl Ove Hufthammer <karl@huftis.org>, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-10-03 08:40+0000\n"
+"PO-Revision-Date: 2015-09-12 19:01+0100\n"
+"Last-Translator: Karl Ove Hufthammer <karl@huftis.org>\n"
+"Language-Team: Norwegian Nynorsk <i18n-nn@lister.ping.uio.no>\n"
+"Language: nn\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 2.0\n"
+"X-Environment: kde\n"
+"X-Accelerator-Marker: &\n"
+"X-Text-Markup: kde4\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Karl Ove Hufthammer"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "karl@huftis.org"
+
+#: ../../file/indexerstate.h:42
+msgid "Unknown"
+msgstr ""
+
+#: ../../file/indexerstate.h:45
+msgid "Idle"
+msgstr ""
+
+#: ../../file/indexerstate.h:48
+msgid "Suspended"
+msgstr ""
+
+#: ../../file/indexerstate.h:51
+msgid "Initial Indexing"
+msgstr ""
+
+#: ../../file/indexerstate.h:54
+msgid "Indexing new files"
+msgstr ""
+
+#: ../../file/indexerstate.h:57
+msgid "Indexing modified files"
+msgstr ""
+
+#: ../../file/indexerstate.h:60
+msgid "Indexing Extended Attributes"
+msgstr ""
+
+#: ../../file/indexerstate.h:63
+msgid "Indexing file content"
+msgstr ""
+
+#: ../../file/indexerstate.h:66
+msgid "Checking for unindexed files"
+msgstr ""
+
+#: configcommand.cpp:45
+msgid "Manipulate the Baloo configuration"
+msgstr ""
+
+#: configcommand.cpp:68
+msgid "The config command can be used to manipulate the Baloo Configuration"
+msgstr ""
+
+#: configcommand.cpp:69
+msgid "Usage: balooctl config <command>"
+msgstr ""
+
+#: configcommand.cpp:70
+msgid "Possible Commands:"
+msgstr ""
+
+#: configcommand.cpp:73
+msgid "Add a value to config parameter"
+msgstr ""
+
+#: configcommand.cpp:74
+msgid "Remove a value from a config parameter"
+msgstr ""
+
+#: configcommand.cpp:75
+msgid "Show the value of a config parameter"
+msgstr ""
+
+#: configcommand.cpp:76
+msgid "Set the value of a config parameter"
+msgstr ""
+
+#: configcommand.cpp:77
+msgid "Display this help menu"
+msgstr ""
+
+#: configcommand.cpp:83
+msgid "The following configuration options may be listed:"
+msgstr ""
+
+#: configcommand.cpp:85 configcommand.cpp:356
+msgid "Controls if Baloo indexes hidden files and folders"
+msgstr ""
+
+#: configcommand.cpp:86
+msgid "Controls if baloo indexes file content."
+msgstr ""
+
+#: configcommand.cpp:87 configcommand.cpp:144 configcommand.cpp:237
+msgid "The list of folders which Baloo indexes"
+msgstr ""
+
+#: configcommand.cpp:88 configcommand.cpp:145 configcommand.cpp:238
+msgid "The list of folders which Baloo will never index"
+msgstr ""
+
+#: configcommand.cpp:89 configcommand.cpp:146 configcommand.cpp:239
+msgid "The list of filters which are used to exclude files"
+msgstr ""
+
+#: configcommand.cpp:136 configcommand.cpp:229 configcommand.cpp:348
+#: configcommand.cpp:417
+msgid "Config parameter could not be found"
+msgstr ""
+
+#: configcommand.cpp:142 configcommand.cpp:235 configcommand.cpp:354
+msgid "The following configuration options may be modified:"
+msgstr ""
+
+#: configcommand.cpp:154 configcommand.cpp:184 configcommand.cpp:248
+#: configcommand.cpp:290
+msgid "A folder must be provided"
+msgstr ""
+
+#: configcommand.cpp:160 configcommand.cpp:190 configcommand.cpp:254
+#: configcommand.cpp:296
+msgid "Path does not exist"
+msgstr ""
+
+#: configcommand.cpp:165 configcommand.cpp:195 configcommand.cpp:259
+#: configcommand.cpp:301
+msgid "Path is not a directory"
+msgstr ""
+
+#: configcommand.cpp:214 configcommand.cpp:332
+msgid "A filter must be provided"
+msgstr ""
+
+#: configcommand.cpp:220
+msgid "is not in list of exclude filters"
+msgstr ""
+
+#: configcommand.cpp:338
+msgid "Exclude filter is already in the list"
+msgstr ""
+
+#: configcommand.cpp:365 configcommand.cpp:392
+msgid "Must provide a value"
+msgstr ""
+
+#: configcommand.cpp:386 configcommand.cpp:413
+msgid "Invalid value"
+msgstr ""
+
+#: main.cpp:66
+msgid "balooctl"
+msgstr "balooctl"
+
+#: main.cpp:67
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:67
+msgid "Maintainer"
+msgstr "Vedlikehaldar"
+
+#: main.cpp:73
+msgid "The command to execute"
+msgstr "Kommando som skal køyrast"
+
+#: main.cpp:75
+msgid "Print the status of the indexer"
+msgstr "Vis status for indekseraren"
+
+#: main.cpp:76
+msgid "Enable the file indexer"
+msgstr "Slå på filindeksering"
+
+#: main.cpp:77
+msgid "Disable the file indexer"
+msgstr "Slå av filindeksering"
+
+#: main.cpp:78
+msgid "Start the file indexer"
+msgstr "Start filindeksering"
+
+#: main.cpp:79
+msgid "Stop the file indexer"
+msgstr "Stopp filindeksering"
+
+#: main.cpp:80
+msgid "Restart the file indexer"
+msgstr "Start filindeksering på nytt"
+
+#: main.cpp:81
+msgid "Suspend the file indexer"
+msgstr "Pausa filindeksering"
+
+#: main.cpp:82
+msgid "Resume the file indexer"
+msgstr "Hald fram filindeksering"
+
+#: main.cpp:83
+msgid "Check for any unindexed files and index them"
+msgstr "Sjå etter filer som ikkje er indekserte, og indekser dei"
+
+#: main.cpp:84
+msgid "Index the specified files"
+msgstr "Indekser dei valde filene"
+
+#: main.cpp:85
+msgid "Forget the specified files"
+msgstr "Gløym dei valde filene"
+
+#: main.cpp:86
+msgid "Modify the Baloo configuration"
+msgstr ""
+
+#: main.cpp:117
+msgid "Baloo is currently disabled. To enable, please run \"balooctl enable\""
+msgstr ""

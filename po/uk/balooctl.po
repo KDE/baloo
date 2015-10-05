@@ -1,0 +1,242 @@
+# Translation of balooctl.po to Ukrainian
+# Copyright (C) 2014-2015 This_file_is_part_of_KDE
+# This file is distributed under the license LGPL version 2.1 or
+# version 3 or later versions approved by the membership of KDE e.V.
+#
+# Yuri Chornoivan <yurchor@ukr.net>, 2014, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: balooctl\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-10-03 08:40+0000\n"
+"PO-Revision-Date: 2015-10-03 15:38+0300\n"
+"Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
+"Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n"
+"%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Lokalize 1.5\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Юрій Чорноіван"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "yurchor@ukr.net"
+
+#: ../../file/indexerstate.h:42
+msgid "Unknown"
+msgstr "Невідомо"
+
+#: ../../file/indexerstate.h:45
+msgid "Idle"
+msgstr "Бездіяльність"
+
+#: ../../file/indexerstate.h:48
+msgid "Suspended"
+msgstr "Приспано"
+
+#: ../../file/indexerstate.h:51
+msgid "Initial Indexing"
+msgstr "Початкове індексування"
+
+#: ../../file/indexerstate.h:54
+msgid "Indexing new files"
+msgstr "Індексування нових файлів"
+
+#: ../../file/indexerstate.h:57
+msgid "Indexing modified files"
+msgstr "Індексування змінених файлів"
+
+#: ../../file/indexerstate.h:60
+msgid "Indexing Extended Attributes"
+msgstr "Індексування розширених атрибутів"
+
+#: ../../file/indexerstate.h:63
+msgid "Indexing file content"
+msgstr "Індексування вмісту файла"
+
+#: ../../file/indexerstate.h:66
+#| msgid "Check for any unindexed files and index them"
+msgid "Checking for unindexed files"
+msgstr "Пошук неіндексованих файлів"
+
+#: configcommand.cpp:45
+msgid "Manipulate the Baloo configuration"
+msgstr "Керувати налаштуваннями Baloo"
+
+#: configcommand.cpp:68
+msgid "The config command can be used to manipulate the Baloo Configuration"
+msgstr "Командою config можна скористатися для керування налаштуваннями Baloo"
+
+#: configcommand.cpp:69
+msgid "Usage: balooctl config <command>"
+msgstr "Користування: balooctl config <команда>"
+
+#: configcommand.cpp:70
+msgid "Possible Commands:"
+msgstr "Передбачені команди:"
+
+#: configcommand.cpp:73
+msgid "Add a value to config parameter"
+msgstr "Додати значення до параметра налаштувань"
+
+#: configcommand.cpp:74
+msgid "Remove a value from a config parameter"
+msgstr "Вилучити значення з параметра налаштувань"
+
+#: configcommand.cpp:75
+msgid "Show the value of a config parameter"
+msgstr "Показати значення параметра налаштувань"
+
+#: configcommand.cpp:76
+msgid "Set the value of a config parameter"
+msgstr "Задати значення параметра налаштувань"
+
+#: configcommand.cpp:77
+msgid "Display this help menu"
+msgstr "Показати це довідкове меню"
+
+#: configcommand.cpp:83
+msgid "The following configuration options may be listed:"
+msgstr "Може бути показано список таких параметрів налаштування:"
+
+#: configcommand.cpp:85 configcommand.cpp:356
+msgid "Controls if Baloo indexes hidden files and folders"
+msgstr "Керує тим, чи буде Baloo індексувати приховані файли і теки"
+
+#: configcommand.cpp:86
+#| msgid "Controls if Baloo indexes hidden files and folders"
+msgid "Controls if baloo indexes file content."
+msgstr "Керує тим, чи буде Baloo індексувати вміст файлів."
+
+#: configcommand.cpp:87 configcommand.cpp:144 configcommand.cpp:237
+msgid "The list of folders which Baloo indexes"
+msgstr "Список тек, які індексує Baloo"
+
+#: configcommand.cpp:88 configcommand.cpp:145 configcommand.cpp:238
+msgid "The list of folders which Baloo will never index"
+msgstr "Список тек, які Baloo ніколи не індексує"
+
+#: configcommand.cpp:89 configcommand.cpp:146 configcommand.cpp:239
+msgid "The list of filters which are used to exclude files"
+msgstr ""
+"Список фільтрів, які використовуються для виключення файлів з індексування"
+
+#: configcommand.cpp:136 configcommand.cpp:229 configcommand.cpp:348
+#: configcommand.cpp:417
+msgid "Config parameter could not be found"
+msgstr "Не вдалося знайти параметр налаштувань"
+
+#: configcommand.cpp:142 configcommand.cpp:235 configcommand.cpp:354
+msgid "The following configuration options may be modified:"
+msgstr "Можна змінювати такі параметри налаштувань:"
+
+#: configcommand.cpp:154 configcommand.cpp:184 configcommand.cpp:248
+#: configcommand.cpp:290
+msgid "A folder must be provided"
+msgstr "Слід вказати теку"
+
+#: configcommand.cpp:160 configcommand.cpp:190 configcommand.cpp:254
+#: configcommand.cpp:296
+msgid "Path does not exist"
+msgstr "Шляху не існує"
+
+#: configcommand.cpp:165 configcommand.cpp:195 configcommand.cpp:259
+#: configcommand.cpp:301
+msgid "Path is not a directory"
+msgstr "Вказана адреса не є адресою каталогу"
+
+#: configcommand.cpp:214 configcommand.cpp:332
+msgid "A filter must be provided"
+msgstr "Слід вказати фільтр"
+
+#: configcommand.cpp:220
+msgid "is not in list of exclude filters"
+msgstr "немає у списку фільтрів виключення"
+
+#: configcommand.cpp:338
+msgid "Exclude filter is already in the list"
+msgstr "Фільтр виключення вже є у списку"
+
+#: configcommand.cpp:365 configcommand.cpp:392
+msgid "Must provide a value"
+msgstr "Слід вказати значення"
+
+#: configcommand.cpp:386 configcommand.cpp:413
+msgid "Invalid value"
+msgstr "Некоректне значення"
+
+#: main.cpp:66
+msgid "balooctl"
+msgstr "balooctl"
+
+#: main.cpp:67
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:67
+msgid "Maintainer"
+msgstr "Супровідник"
+
+#: main.cpp:73
+msgid "The command to execute"
+msgstr "Команда, яку слід виконати"
+
+#: main.cpp:75
+msgid "Print the status of the indexer"
+msgstr "Вивести дані щодо стану засобу індексування"
+
+#: main.cpp:76
+msgid "Enable the file indexer"
+msgstr "Увімкнути засіб індексування файлів"
+
+#: main.cpp:77
+msgid "Disable the file indexer"
+msgstr "Вимкнути засіб індексування файлів"
+
+#: main.cpp:78
+msgid "Start the file indexer"
+msgstr "Запустити засіб індексування файлів"
+
+#: main.cpp:79
+msgid "Stop the file indexer"
+msgstr "Зупинити роботу засобу індексування файлів"
+
+#: main.cpp:80
+msgid "Restart the file indexer"
+msgstr "Перезапустити засіб індексування файлів"
+
+#: main.cpp:81
+msgid "Suspend the file indexer"
+msgstr "Призупинити роботу засобу індексування файлів"
+
+#: main.cpp:82
+msgid "Resume the file indexer"
+msgstr "Поновити роботу засобу індексування файлів"
+
+#: main.cpp:83
+msgid "Check for any unindexed files and index them"
+msgstr "Знайти усі неіндексовані файли і індексувати їх"
+
+#: main.cpp:84
+msgid "Index the specified files"
+msgstr "Індексувати вказані файли"
+
+#: main.cpp:85
+msgid "Forget the specified files"
+msgstr "Забути про вказані файли"
+
+#: main.cpp:86
+msgid "Modify the Baloo configuration"
+msgstr "Змінити налаштування Baloo"
+
+#: main.cpp:117
+msgid "Baloo is currently disabled. To enable, please run \"balooctl enable\""
+msgstr ""
+"Baloo вимкнено. Щоб увімкнути систему, будь ласка, віддайте команду "
+"«balooctl enable»."

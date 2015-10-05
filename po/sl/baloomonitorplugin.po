@@ -1,0 +1,55 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Andrej Mernik <andrejm@ubuntu.si>, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-10-03 08:40+0000\n"
+"PO-Revision-Date: 2015-09-20 10:46+0200\n"
+"Last-Translator: Andrej Mernik <andrejm@ubuntu.si>\n"
+"Language-Team: Slovenian <lugos-slo@lugos.si>\n"
+"Language: sl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
+"%100==4 ? 3 : 0);\n"
+"X-Generator: Lokalize 1.5\n"
+
+#: ../../file/indexerstate.h:42
+msgid "Unknown"
+msgstr "Neznano"
+
+#: ../../file/indexerstate.h:45
+msgid "Idle"
+msgstr "Nedejaven"
+
+#: ../../file/indexerstate.h:48
+msgid "Suspended"
+msgstr "V pripravljenosti"
+
+#: ../../file/indexerstate.h:51
+msgid "Initial Indexing"
+msgstr "Začetna izgradnja kazala"
+
+#: ../../file/indexerstate.h:54
+msgid "Indexing new files"
+msgstr "Izgrajevanje kazala novih datotek"
+
+#: ../../file/indexerstate.h:57
+msgid "Indexing modified files"
+msgstr "Izgrajevanje kazala spremenjenih datotek"
+
+#: ../../file/indexerstate.h:60
+msgid "Indexing Extended Attributes"
+msgstr "Izgrajevanje kazala razširjenih atributov"
+
+#: ../../file/indexerstate.h:63
+msgid "Indexing file content"
+msgstr "Izgrajevanje kazala vsebine datotek"
+
+#: ../../file/indexerstate.h:66
+msgid "Checking for unindexed files"
+msgstr ""
