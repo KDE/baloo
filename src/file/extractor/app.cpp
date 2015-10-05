@@ -89,8 +89,9 @@ void App::processNextFile()
             return;
         }
 
-        m_io.indexingUrl(url);
+        m_io.writeStartedIndexingUrl(url);
         index(m_tr, url, id);
+        m_io.writeFinishedIndexingUrl(url);
         m_updatedFiles << url;
 
         QTimer::singleShot(delay, this, &App::processNextFile);
@@ -119,7 +120,7 @@ void App::processNextFile()
 
         // Enable the SocketNotifier for the next batch
         m_notifyNewData.setEnabled(true);
-        m_io.batchIndexed();
+        m_io.writeBatchIndexed();
     }
 }
 
