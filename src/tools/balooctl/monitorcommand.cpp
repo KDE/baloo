@@ -24,6 +24,7 @@
 #include "monitorcommand.h"
 
 #include <QDBusConnection>
+#include <QDBusServiceWatcher>
 
 using namespace Baloo;
 
@@ -44,6 +45,13 @@ MonitorCommand::MonitorCommand(QObject *parent)
     connect(m_interface, &org::kde::baloo::fileindexer::startedIndexingFile, this, &MonitorCommand::startedIndexingFile);
     connect(m_interface, &org::kde::baloo::fileindexer::finishedIndexingFile, this, &MonitorCommand::finishedIndexingFile);
     m_out << "Press ctrl+c to exit monitor" << endl;
+
+    auto balooWatcher = new QDBusServiceWatcher(QStringLiteral("org.kde.baloo"), QDBusConnection::sessionBus());
+    balooWatcher->setWatchMode(QDBusServiceWatcher::WatchForUnregistration);
+    connect(balooWatcher, &QDBusServiceWatcher::serviceUnregistered, this, [&]() {
+        m_out << "Baloo died" << endl;
+        QCoreApplication::instance()->quit();
+    });
 }
 
 int MonitorCommand::exec(const QCommandLineParser& parser)
