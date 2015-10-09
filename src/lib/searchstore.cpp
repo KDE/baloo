@@ -84,9 +84,6 @@ QStringList SearchStore::exec(const Term& term, uint offset, int limit, bool sor
             resultIds << id;
 
             Q_ASSERT(id > 0);
-            // FIXME: Remove this assert once we are sure the db state is valid through other tests!
-            // This is not fixed, but is causes problems so I'm commenting it out. BAD!
-            // Q_ASSERT(!tr.documentUrl(it->docId()).isEmpty());
         }
 
         // No enough result within range, no need to sort.
@@ -109,8 +106,6 @@ QStringList SearchStore::exec(const Term& term, uint offset, int limit, bool sor
             const quint64 id = resultIds[i];
             const QString filePath = tr.documentUrl(id);
 
-            // This is not fixed, but is causes problems so I'm commenting it out. BAD!
-            // Q_ASSERT(!filePath.isEmpty());
             results << filePath;
         }
 
@@ -127,8 +122,7 @@ QStringList SearchStore::exec(const Term& term, uint offset, int limit, bool sor
 
             if (i >= offset) {
                 results << tr.documentUrl(it->docId());
-                // FIXME: Remove this assert once we are sure the db state is valid through other tests!
-                Q_ASSERT(!tr.documentUrl(it->docId()).isEmpty());
+                Q_ASSERT(!results.last().isEmpty());
             }
 
             i++;
