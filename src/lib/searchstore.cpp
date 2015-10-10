@@ -64,7 +64,8 @@ SearchStore::~SearchStore()
 {
 }
 
-QStringList SearchStore::exec(const Term& term, int offset, int limit, bool sortResults)
+// Return the result with-in [offset, offset + limit)
+QStringList SearchStore::exec(const Term& term, uint offset, int limit, bool sortResults)
 {
     if (!m_db || !m_db->isOpen()) {
         return QStringList();
@@ -88,18 +89,23 @@ QStringList SearchStore::exec(const Term& term, int offset, int limit, bool sort
             // Q_ASSERT(!tr.documentUrl(it->docId()).isEmpty());
         }
 
+        // No enough result within range, no need to sort.
+        if (offset >= static_cast<uint>(resultIds.size())) {
+            return QStringList();
+        }
+
         auto compFunc = [&tr](const quint64 lhs, const quint64 rhs) {
             return tr.documentMTime(lhs) > tr.documentMTime(rhs);
         };
-        if (limit < 0 || limit >= resultIds.size()) {
+
+        std::sort(resultIds.begin(), resultIds.end(), compFunc);
+        if (limit < 0) {
             limit = resultIds.size();
-            std::sort(resultIds.begin(), resultIds.end(), compFunc);
-        } else {
-            std::partial_sort(resultIds.begin(), resultIds.begin() + limit, resultIds.end(), compFunc);
         }
 
         QStringList results;
-        for (int i = offset; i < limit; i++) {
+        const uint end = qMin(static_cast<uint>(resultIds.size()), offset + static_cast<uint>(limit));
+        for (uint i = offset; i < end; i++) {
             const quint64 id = resultIds[i];
             const QString filePath = tr.documentUrl(id);
 
@@ -111,18 +117,21 @@ QStringList SearchStore::exec(const Term& term, int offset, int limit, bool sort
         return results;
     }
     else {
-        limit -= offset;
-
+        uint i = 0;
         QStringList results;
-        while (it->next() && limit > 0) {
+        const uint end = offset + static_cast<uint>(limit);
+
+        while (it->next() && (limit < 0 || i < end)) {
             quint64 id = it->docId();
             Q_ASSERT(id > 0);
 
-            results << tr.documentUrl(it->docId());
-            // FIXME: Remove this assert once we are sure the db state is valid through other tests!
-            Q_ASSERT(!tr.documentUrl(it->docId()).isEmpty());
+            if (i >= offset) {
+                results << tr.documentUrl(it->docId());
+                // FIXME: Remove this assert once we are sure the db state is valid through other tests!
+                Q_ASSERT(!tr.documentUrl(it->docId()).isEmpty());
+            }
 
-            limit--;
+            i++;
         }
 
         return results;

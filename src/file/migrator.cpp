@@ -38,7 +38,7 @@ Migrator::Migrator(const QString& dbPath, FileIndexerConfig* config)
  * Changing this version number indicates that the old index should be deleted
  * and the indexing should be started from scratch.
  */
-static int s_dbVersion = 1;
+static int s_dbVersion = 2;
 
 bool Migrator::migrationRequired()
 {
@@ -54,8 +54,9 @@ void Migrator::migrate()
         QDir dir(m_dbPath + "/file");
         dir.removeRecursively();
     }
-    else if (dbVersion == 1 && QFile::exists(m_dbPath + "/index")) {
-        Q_ASSERT(0);
+    else if (QFile::exists(m_dbPath + "/index")) {
+        QFile::remove(m_dbPath + "/index");
+        QFile::remove(m_dbPath + "/index-lock");
     }
 
     m_config->setDatabaseVersion(s_dbVersion);
