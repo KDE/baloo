@@ -28,6 +28,15 @@
 
 namespace Baloo {
 
+inline quint64 devIdAndInodeToId(quint32 devId, quint32 inode)
+{
+    quint32 arr[2];
+    arr[0] = devId;
+    arr[1] = inode;
+
+    return *(reinterpret_cast<quint64*>(arr));
+}
+
 /**
  * Convert the QT_STATBUF into a 64 bit unique identifier for the file.
  * This identifier is combination of the device id and inode number.
@@ -36,11 +45,8 @@ inline quint64 statBufToId(const QT_STATBUF& stBuf)
 {
     // We're loosing 32 bits of info, so this could potentially break
     // on file systems with really large inode and device ids
-    quint32 arr[2];
-    arr[0] = static_cast<quint32>(stBuf.st_dev);
-    arr[1] = static_cast<quint32>(stBuf.st_ino);
-
-    return *(reinterpret_cast<quint64*>(arr));
+    return devIdAndInodeToId(static_cast<quint32>(stBuf.st_dev),
+                             static_cast<quint32>(stBuf.st_ino));
 }
 
 inline quint64 filePathToId(const QByteArray& filePath)
