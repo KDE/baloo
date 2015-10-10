@@ -67,6 +67,10 @@ int main(int argc, char* argv[])
     parser.addPositionalArgument(QLatin1String("files"), QLatin1String("The file urls"));
     parser.addOption(QCommandLineOption(QStringList() << QLatin1String("x"),
                                         QLatin1String("Print internal info")));
+    parser.addOption(QCommandLineOption(QStringList() << QLatin1String("i"),
+                                        QLatin1String("Inode number of the fiel to show")));
+    parser.addOption(QCommandLineOption(QStringList() << QLatin1String("d"),
+                                        QLatin1String("Device id for the files"), QLatin1String("deviceId"), QString()));
     parser.addHelpOption();
     parser.process(app);
 
@@ -85,7 +89,11 @@ int main(int argc, char* argv[])
         if (QFile::exists(url)) {
             urls.append(url);
         } else {
-            urls.append(QLatin1String("file:") + arg);
+            if (parser.isSet("i")) {
+                urls.append(QLatin1String("inode:") + arg);
+            } else {
+                urls.append(QLatin1String("file:") + arg);
+            }
         }
     }
 
@@ -117,6 +125,12 @@ int main(int argc, char* argv[])
                 stream << "GivenINode: " << Baloo::idToInode(fid) << " ActualINode: " << Baloo::idToInode(actualFid) << "\n";
                 stream << "GivenDeviceID: " << Baloo::idToDeviceId(fid) << " ActualDeviceID: " << Baloo::idToDeviceId(actualFid) << "\n";
             }
+        } else if (url.startsWith(QStringLiteral("inode:"))) {
+            quint32 inode = url.mid(6).toULong();
+            quint32 devId = parser.value("d").toULong();
+
+            fid = Baloo::devIdAndInodeToId(devId, inode);
+            url = QFile::decodeName(tr.documentUrl(fid));
         } else {
             fid = Baloo::filePathToId(QFile::encodeName(url));
         }
