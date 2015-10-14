@@ -95,7 +95,7 @@ QVector<PositionInfo> PositionDB::get(const QByteArray& term)
     }
     Q_ASSERT_X(rc == 0, "PositionDB::get", mdb_strerror(rc));
 
-    QByteArray data(static_cast<char*>(val.mv_data), val.mv_size);
+    QByteArray data = QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size);
 
     PositionCodec codec;
     return codec.decode(data);

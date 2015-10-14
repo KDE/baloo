@@ -94,7 +94,7 @@ PostingList PostingDB::get(const QByteArray& term)
     }
     Q_ASSERT_X(rc == 0, "PostingDB::get", mdb_strerror(rc));
 
-    QByteArray arr(static_cast<char*>(val.mv_data), val.mv_size);
+    QByteArray arr = QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size);
 
     PostingCodec codec;
     return codec.decode(arr);
