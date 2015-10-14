@@ -403,5 +403,6 @@ int main(int argc, char* argv[])
         return 0;
     }
 
+    parser.showHelp(1);
     return 0;
 }
