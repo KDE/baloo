@@ -52,6 +52,7 @@
 #include "maininterface.h"
 #include "indexerstate.h"
 #include "configcommand.h"
+#include "statuscommand.h"
 
 using namespace Baloo;
 
@@ -111,94 +112,8 @@ int main(int argc, char* argv[])
     }
 
     if (command == QLatin1String("status")) {
-
-        IndexerConfig cfg;
-        if (!cfg.fileIndexingEnabled()) {
-            out << i18n("Baloo is currently disabled. To enable, please run \"balooctl enable\"") << endl;
-            return 1;
-        }
-
-        Database *db = globalDatabaseInstance();
-        if (!db->open(Database::OpenDatabase)) {
-            out << "Baloo Index could not be opened\n";
-            return 1;
-        }
-
-        Transaction tr(db, Transaction::ReadOnly);
-
-        if (parser.positionalArguments().length() == 1) {
-
-            bool running = mainInterface.isValid();
-
-            if (running) {
-                out << "Baloo File Indexer is running\n";
-                out << "Indexer state: " << stateString(schedulerinterface.state()) << endl;
-            }
-            else {
-                out << "Baloo File Indexer is NOT running\n";
-            }
-
-            uint phaseOne = tr.phaseOneSize();
-            uint total = tr.size();
-
-            out << "Indexed " << total - phaseOne << " / " << total << " files\n";
-
-            const QString path = fileIndexDbPath();
-
-            QFileInfo indexInfo(path + QLatin1String("/index"));
-            quint32 size = indexInfo.size();
-            KFormat format(QLocale::system());
-            if (size) {
-                out << "Current size of index is " << format.formatByteSize(size, 2) << endl;
-            } else {
-                out << "Index does not exist yet\n";
-            }
-        } else {
-            FileIndexerConfig m_config;
-
-            for (int i = 1; i < parser.positionalArguments().length(); ++i) {
-                QString url = QFileInfo(parser.positionalArguments().at(i)).absoluteFilePath();
-                quint64 id = filePathToId(QFile::encodeName(url));
-
-                out << "File: " << url << endl;
-
-                out << "Basic indexing: ";
-                if (tr.hasDocument(id)) {
-                    out << "done\n";
-                } else if (m_config.shouldBeIndexed(url)) {
-                    out << "scheduled\n";
-                    return 0;
-                } else {
-                    out << "disbabled\n";
-                    return 0;
-                }
-
-                out << "Content indexing: ";
-                if (tr.inPhaseOne(id)) {
-                    out << "scheduled\n";
-                } else if (!tr.documentData(id).isEmpty()) {
-                    out << "done\n";
-                } else if (tr.hasFailed(id)) {
-                    out << "failed\n";
-                } else {
-                    out << "disabled\n";
-                }
-            }
-        }
-
-            /*
-            if (failed) {
-                out << "Failed to index " << failed << " files\n";
-                out << "File IDs: ";
-                Xapian::MSetIterator iter = mset.begin();
-                for (; iter != mset.end(); ++iter) {
-                    out << *iter << " ";
-                }
-                out << "\n";
-            }
-            */
-
-        return 0;
+        StatusCommand command;
+        return command.exec(parser);
     }
 
     if (command == QLatin1String("enable") || command == QLatin1String("disable")) {
