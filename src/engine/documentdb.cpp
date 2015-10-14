@@ -93,7 +93,7 @@ QVector<QByteArray> DocumentDB::get(quint64 docId)
     }
     Q_ASSERT_X(rc == 0, "DocumentDB::get", mdb_strerror(rc));
 
-    QByteArray arr(static_cast<char*>(val.mv_data), val.mv_size);
+    QByteArray arr = QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size);
 
     DocTermsCodec codec;
     return codec.decode(arr);
