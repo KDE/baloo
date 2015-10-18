@@ -116,6 +116,10 @@ QStringList FileIndexerConfig::excludeFilters() const
     return QStringList::fromSet(filters);
 }
 
+QStringList FileIndexerConfig::excludeMimetypes() const
+{
+    return QStringList::fromSet(m_excludeMimetypes);
+}
 
 bool FileIndexerConfig::indexHiddenFilesAndFolders() const
 {
