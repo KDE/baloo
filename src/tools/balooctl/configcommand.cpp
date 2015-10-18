@@ -87,6 +87,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
             printCommand(QStringLiteral("includeFolders"), i18n("The list of folders which Baloo indexes"));
             printCommand(QStringLiteral("excludeFolders"), i18n("The list of folders which Baloo will never index"));
             printCommand(QStringLiteral("excludeFilters"), i18n("The list of filters which are used to exclude files"));
+            printCommand(QStringLiteral("excludeMimetypes"), i18n("The list of mimetypes which are used to exclude files"));
             return 0;
         }
 
@@ -133,6 +134,11 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
             return 0;
         }
 
+        if (value.compare(QStringLiteral("excludeMimetypes"), Qt::CaseInsensitive) == 0) {
+            printList(config.excludeMimetypes());
+            return 0;
+        }
+
         out << i18n("Config parameter could not be found") << endl;
         return 1;
     }
@@ -144,6 +150,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
             printCommand(QStringLiteral("includeFolders"), i18n("The list of folders which Baloo indexes"));
             printCommand(QStringLiteral("excludeFolders"), i18n("The list of folders which Baloo will never index"));
             printCommand(QStringLiteral("excludeFilters"), i18n("The list of filters which are used to exclude files"));
+            printCommand(QStringLiteral("excludeMimetypes"), i18n("The list of mimetypes which are used to exclude files"));
             return 0;
         }
 
@@ -226,6 +233,23 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
             return 0;
         }
 
+        if (value.compare(QStringLiteral("excludeMimetypes"), Qt::CaseInsensitive) == 0) {
+            if (args.isEmpty()) {
+                out << i18n("A mimetype must be provided") << endl;
+                return 1;
+            }
+
+            QStringList mimetypes = config.excludeMimetypes();
+            if (!mimetypes.contains(args.first())) {
+                out << i18n("%1 is not in list of exclude mimetypes", args.first()) << endl;
+                return 1;
+            }
+
+            mimetypes.removeAll(args.first());
+            config.setExcludeMimetypes(mimetypes);
+            return 0;
+        }
+
         out << i18n("Config parameter could not be found") << endl;
         return 1;
     }
@@ -237,7 +261,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
             printCommand(QStringLiteral("includeFolders"), i18n("The list of folders which Baloo indexes"));
             printCommand(QStringLiteral("excludeFolders"), i18n("The list of folders which Baloo will never index"));
             printCommand(QStringLiteral("excludeFilters"), i18n("The list of filters which are used to exclude files"));
-
+            printCommand(QStringLiteral("excludeMimetypes"), i18n("The list of mimetypes which are used to exclude files"));
             return 0;
         }
 
@@ -341,6 +365,24 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
 
             filters.append(args.first());
             config.setExcludeFilters(filters);
+
+            return 0;
+        }
+
+        if (value.compare(QStringLiteral("excludeMimetypes"), Qt::CaseInsensitive) == 0) {
+            if (args.empty()) {
+                out << i18n("A mimetype must be provided") << endl;
+                return 1;
+            }
+
+            QStringList mimetypes = config.excludeMimetypes();
+            if (mimetypes.contains(args.first())) {
+                out << i18n("Exclude mimetype is already in the list") << endl;
+                return 1;
+            }
+
+            mimetypes.append(args.first());
+            config.setExcludeMimetypes(mimetypes);
 
             return 0;
         }

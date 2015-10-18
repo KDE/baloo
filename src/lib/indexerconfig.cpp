@@ -87,6 +87,11 @@ QStringList IndexerConfig::excludeFilters() const
     return d->m_config.excludeFilters();
 }
 
+QStringList IndexerConfig::excludeMimetypes() const
+{
+    return d->m_config.excludeMimetypes();
+}
+
 void IndexerConfig::setExcludeFolders(const QStringList& excludeFolders)
 {
     KConfig config(QStringLiteral("baloofilerc"));
@@ -120,6 +125,18 @@ void IndexerConfig::setExcludeFilters(const QStringList& excludeFilters)
         Kdelibs4Migration kde4;
         KConfig config(kde4.locateLocal("config", QStringLiteral("baloofilerc")));
         config.group("General").writeEntry("exclude filters", excludeFilters);
+    }
+}
+
+void IndexerConfig::setExcludeMimetypes(const QStringList& excludeMimetypes)
+{
+    KConfig config(QStringLiteral("baloofilerc"));
+    config.group("General").writeEntry("exclude mimetypes", excludeMimetypes);
+
+    {
+        Kdelibs4Migration kde4;
+        KConfig config(kde4.locateLocal("config", QStringLiteral("baloofilerc")));
+        config.group("General").writeEntry("exclude mimetypes", excludeMimetypes);
     }
 }
 

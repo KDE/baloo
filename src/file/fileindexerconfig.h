@@ -61,6 +61,8 @@ public:
 
     QStringList excludeFilters() const;
 
+    QStringList excludeMimetypes() const;
+
     bool indexHiddenFilesAndFolders() const;
 
     bool onlyBasicIndexing() const;
