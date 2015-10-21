@@ -92,7 +92,7 @@ QStringList SearchStore::exec(const Term& term, uint offset, int limit, bool sor
         }
 
         auto compFunc = [&tr](const quint64 lhs, const quint64 rhs) {
-            return tr.documentMTime(lhs) > tr.documentMTime(rhs);
+            return tr.documentTimeInfo(lhs).mTime > tr.documentTimeInfo(rhs).mTime;
         };
 
         std::sort(resultIds.begin(), resultIds.end(), compFunc);

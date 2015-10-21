@@ -24,7 +24,6 @@
 #include "documenturldb.h"
 #include "documentiddb.h"
 #include "positiondb.h"
-#include "documenttimedb.h"
 #include "documentdatadb.h"
 #include "mtimedb.h"
 
@@ -128,20 +127,12 @@ quint64 Transaction::documentId(const QByteArray& path) const
     return parentId;
 }
 
-quint32 Transaction::documentMTime(quint64 id) const
+DocumentTimeDB::TimeInfo Transaction::documentTimeInfo(quint64 id) const
 {
     Q_ASSERT(m_txn);
 
     DocumentTimeDB docTimeDb(m_dbis.docTimeDbi, m_txn);
-    return docTimeDb.get(id).mTime;
-}
-
-quint32 Transaction::documentCTime(quint64 id) const
-{
-    Q_ASSERT(m_txn);
-
-    DocumentTimeDB docTimeDb(m_dbis.docTimeDbi, m_txn);
-    return docTimeDb.get(id).cTime;
+    return docTimeDb.get(id);
 }
 
 QByteArray Transaction::documentData(quint64 id) const
