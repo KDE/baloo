@@ -42,7 +42,7 @@ private Q_SLOTS:
         delete dir;
     }
 
-    void testMTime();
+    void testTimeInfo();
 private:
     QTemporaryDir* dir;
     Database* db;
@@ -57,7 +57,7 @@ static quint64 touchFile(const QString& path) {
     return filePathToId(QFile::encodeName(path));
 }
 
-void TransactionTest::testMTime()
+void TransactionTest::testTimeInfo()
 {
     Transaction tr(db, Transaction::ReadWrite);
 
@@ -83,8 +83,8 @@ void TransactionTest::testMTime()
 
     Transaction tr2(db, Transaction::ReadOnly);
 
-    QCOMPARE(tr2.documentMTime(id), (quint32) 1);
-    QCOMPARE(tr2.documentCTime(id), (quint32) 2);
+    DocumentTimeDB::TimeInfo timeInfo(1, 2);
+    QCOMPARE(tr2.documentTimeInfo(id), timeInfo);
 }
 
 
