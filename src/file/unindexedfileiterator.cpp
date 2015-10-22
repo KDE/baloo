@@ -32,6 +32,8 @@ UnIndexedFileIterator::UnIndexedFileIterator(FileIndexerConfig* config, Transact
     : m_config(config)
     , m_transaction(transaction)
     , m_iter(config, folder, FilteredDirIterator::FilesAndDirs)
+    , m_mTimeChanged(false)
+    , m_cTimeChanged(false)
 {
 }
 
@@ -49,10 +51,23 @@ QString UnIndexedFileIterator::mimetype() const
     return m_mimetype;
 }
 
+bool UnIndexedFileIterator::mTimeChanged() const
+{
+    return m_mTimeChanged;
+}
+
+bool UnIndexedFileIterator::cTimeChanged() const
+{
+    return m_cTimeChanged;
+}
+
 QString UnIndexedFileIterator::next()
 {
     while (1) {
         const QString filePath = m_iter.next();
+        m_mTimeChanged = false;
+        m_cTimeChanged = false;
+
         if (filePath.isEmpty()) {
             m_mimetype.clear();
             return QString();
@@ -94,10 +109,17 @@ bool UnIndexedFileIterator::shouldIndex(const QString& filePath, const QString& 
         return false;
     }
 
-    if (timeInfo.mTime != fileInfo.lastModified().toTime_t()
-        || timeInfo.cTime != fileInfo.created().toTime_t())
-    {
+    if (timeInfo.mTime != fileInfo.lastModified().toTime_t()) {
+        m_mTimeChanged = true;
+    }
+
+    if (timeInfo.cTime != fileInfo.created().toTime_t()) {
+        m_cTimeChanged = true;
+    }
+
+    if (m_mTimeChanged || m_cTimeChanged) {
         return true;
     }
+
     return false;
 }

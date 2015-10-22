@@ -46,6 +46,8 @@ public:
     QString next();
     QString filePath() const;
     QString mimetype() const;
+    bool mTimeChanged() const;
+    bool cTimeChanged() const;
 
 private:
     bool shouldIndex(const QString& filePath, const QString& mimetype);
@@ -56,6 +58,9 @@ private:
 
     QMimeDatabase m_mimeDb;
     QString m_mimetype;
+
+    bool m_mTimeChanged;
+    bool m_cTimeChanged;
 };
 
 }
