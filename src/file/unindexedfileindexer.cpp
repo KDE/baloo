@@ -56,8 +56,18 @@ void UnindexedFileIndexer::run()
 
             // We handle modified files by simply updating the mTime and filename in the Db and marking them for ContentIndexing
             if (tr.hasDocument(job.document().id())) {
-                tr.replaceDocument(job.document(), DocumentTime | FileNameTerms | XAttrTerms);
-                tr.setPhaseOne(job.document().id());
+
+                DocumentOperations ops = DocumentTime;
+                if (it.cTimeChanged()) {
+                    ops |= FileNameTerms;
+                    ops |= XAttrTerms;
+                }
+                tr.replaceDocument(job.document(), ops);
+
+                if (it.mTimeChanged()) {
+                    tr.setPhaseOne(job.document().id());
+                }
+
             } else { // New file
                 tr.addDocument(job.document());
             }
