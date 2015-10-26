@@ -49,6 +49,6 @@ add_custom_target(
     DEPENDS ${dbus_interfaces}
 )
 
-install(FILES ${dbus_interface_xmls} DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
+install(FILES ${dbus_interface_xmls} DESTINATION ${KDE_INSTALL_DBUSINTERFACEDIR})
 
 add_subdirectory(fake)
