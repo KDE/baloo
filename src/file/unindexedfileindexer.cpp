@@ -55,17 +55,20 @@ void UnindexedFileIndexer::run()
             job.index();
 
             // We handle modified files by simply updating the mTime and filename in the Db and marking them for ContentIndexing
-            if (tr.hasDocument(job.document().id())) {
+            const quint64 id = job.document().id();
+            if (tr.hasDocument(id)) {
 
                 DocumentOperations ops = DocumentTime;
                 if (it.cTimeChanged()) {
-                    ops |= FileNameTerms;
                     ops |= XAttrTerms;
+                    if (tr.documentUrl(id) != it.filePath()) {
+                        ops |= (FileNameTerms | DocumentUrl);
+                    }
                 }
                 tr.replaceDocument(job.document(), ops);
 
                 if (it.mTimeChanged()) {
-                    tr.setPhaseOne(job.document().id());
+                    tr.setPhaseOne(id);
                 }
 
             } else { // New file
