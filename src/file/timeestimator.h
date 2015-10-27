@@ -37,7 +37,7 @@ namespace Baloo {
 class TimeEstimator : public QObject
 {
 public:
-    TimeEstimator(QObject* parent = 0);
+    explicit TimeEstimator(QObject* parent = 0);
     uint calculateTimeLeft(int filesLeft);
 
 public Q_SLOTS:

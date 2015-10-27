@@ -31,7 +31,7 @@ class Document;
 class BALOO_ENGINE_EXPORT TermGenerator
 {
 public:
-    TermGenerator(Document* doc);
+    explicit TermGenerator(Document* doc);
 
     void setDocument(Document* doc) {
         m_doc = doc;

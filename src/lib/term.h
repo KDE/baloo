@@ -54,7 +54,7 @@ public:
     /**
      * The Item must contain the property \p property
      */
-    Term(const QString& property);
+    explicit Term(const QString& property);
 
     /**
      * The Item must contain the property \p property with

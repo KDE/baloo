@@ -45,7 +45,7 @@ class Monitor : public QObject
     Q_PROPERTY(QString stateString READ stateString NOTIFY indexerStateChanged)
     Q_PROPERTY(int state READ state NOTIFY indexerStateChanged)
 public:
-    Monitor(QObject* parent = 0);
+    explicit Monitor(QObject* parent = 0);
 
     // Property readers
     QString filePath() const { return m_filePath; }

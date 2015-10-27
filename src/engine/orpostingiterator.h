@@ -29,7 +29,7 @@ namespace Baloo {
 class BALOO_ENGINE_EXPORT OrPostingIterator : public PostingIterator
 {
 public:
-    OrPostingIterator(const QVector<PostingIterator*>& iterators);
+    explicit OrPostingIterator(const QVector<PostingIterator*>& iterators);
     ~OrPostingIterator();
 
     quint64 next() Q_DECL_OVERRIDE;

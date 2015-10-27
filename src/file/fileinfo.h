@@ -29,7 +29,7 @@ namespace Baloo {
 class FileInfo
 {
 public:
-    FileInfo(const QByteArray& filePath);
+    explicit FileInfo(const QByteArray& filePath);
 
     QByteArray filePath() const { return m_filePath; }
     QByteArray fileName() const { return m_filePath.mid(m_filePath.lastIndexOf('/') + 1); }

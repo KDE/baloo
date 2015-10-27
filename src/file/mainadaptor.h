@@ -42,7 +42,7 @@ class MainAdaptor: public QDBusAbstractAdaptor
 "  </interface>\n"
         "")
 public:
-    MainAdaptor(Baloo::MainHub *parent);
+    explicit MainAdaptor(Baloo::MainHub *parent);
     virtual ~MainAdaptor();
 
 public: // PROPERTIES

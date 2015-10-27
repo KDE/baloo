@@ -58,7 +58,7 @@ class Scheduler : public QObject
     Q_OBJECT
 
 public:
-    Scheduler(QObject* parent = 0);
+    explicit Scheduler(QObject* parent = 0);
     void startIndexing();
 
 private Q_SLOTS:
