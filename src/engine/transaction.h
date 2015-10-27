@@ -117,8 +117,6 @@ public:
     void setPhaseOne(quint64 id);
     void removePhaseOne(quint64 id);
 
-    void renameFilePath(quint64 id, const Document& newDoc);
-
     // Debugging
     void checkFsTree();
     void checkTermsDbinPostingDb();

@@ -31,7 +31,8 @@ enum DocumentOperation {
     XAttrTerms    =  4,
     DocumentData  =  8,
     DocumentTime  = 16,
-    Everything    = DocumentTerms | FileNameTerms | XAttrTerms | DocumentData | DocumentTime
+    DocumentUrl   = 32,
+    Everything    = DocumentTerms | FileNameTerms | XAttrTerms | DocumentData | DocumentTime | DocumentUrl
 };
 Q_DECLARE_FLAGS(DocumentOperations, DocumentOperation)
 

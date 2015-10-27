@@ -113,7 +113,7 @@ void MetadataMover::updateMetadata(Transaction* tr, const QString& from, const Q
 
     BasicIndexingJob job(toPath, QString(), BasicIndexingJob::NoLevel);
     job.index();
-    tr->renameFilePath(id, job.document());
+    tr->replaceDocument(job.document(), DocumentUrl | FileNameTerms);
 
     // Possible scenarios
     // 1. file moves to the same device - id is preserved
