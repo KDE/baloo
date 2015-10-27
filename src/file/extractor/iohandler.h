@@ -33,7 +33,7 @@ class IOHandler
 public:
     IOHandler(int stdin, int stdout);
     quint64 nextId();
-    bool atEnd();
+    bool atEnd() const;
 
     void newBatch();
 

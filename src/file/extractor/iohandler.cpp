@@ -51,7 +51,7 @@ quint64 IOHandler::nextId()
     return id;
 }
 
-bool IOHandler::atEnd()
+bool IOHandler::atEnd() const
 {
     if (m_batchSize == 0) {
         return true;
