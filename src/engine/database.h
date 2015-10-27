@@ -31,7 +31,7 @@ class DatabaseTest;
 class BALOO_ENGINE_EXPORT Database
 {
 public:
-    Database(const QString& path);
+    explicit Database(const QString& path);
     ~Database();
 
     QString path() const;

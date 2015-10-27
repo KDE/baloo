@@ -29,7 +29,7 @@ class Database;
 class FileContentIndexerProvider
 {
 public:
-    FileContentIndexerProvider(Database* db);
+    explicit FileContentIndexerProvider(Database* db);
 
     uint size();
     QVector<quint64> fetch(uint size);

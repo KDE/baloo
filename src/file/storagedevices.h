@@ -39,14 +39,14 @@ class StorageDevices : public QObject
     Q_OBJECT
 
 public:
-    StorageDevices(QObject* parent = 0);
+    explicit StorageDevices(QObject* parent = 0);
     ~StorageDevices();
 
     class Entry
     {
     public:
         Entry();
-        Entry(const Solid::Device& device);
+        explicit Entry(const Solid::Device& device);
 
         Solid::Device device() const {
             return m_device;

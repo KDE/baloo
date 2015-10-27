@@ -45,7 +45,7 @@ public:
     /**
      * Create a new file indexr config.
      */
-    FileIndexerConfig(QObject* parent = 0);
+    explicit FileIndexerConfig(QObject* parent = 0);
     ~FileIndexerConfig();
 
     /**

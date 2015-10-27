@@ -30,7 +30,7 @@ class IdleStateMonitor : public QObject
     Q_OBJECT
 
 public:
-    IdleStateMonitor(QObject* parent = 0);
+    explicit IdleStateMonitor(QObject* parent = 0);
     ~IdleStateMonitor();
 
     bool isIdle()         const {

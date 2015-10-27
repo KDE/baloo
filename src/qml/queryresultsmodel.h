@@ -30,7 +30,7 @@ class Query : public QObject
     Q_PROPERTY(int limit READ limit WRITE setLimit NOTIFY limitChanged)
 
 public:
-    Query(QObject *parent = nullptr);
+    explicit Query(QObject *parent = nullptr);
     ~Query();
 
     void setSearchString(const QString &searchString);
@@ -55,7 +55,7 @@ class QueryResultsModel : public QAbstractListModel
     Q_PROPERTY(Query* query READ query WRITE setQuery NOTIFY queryChanged)
 
 public:
-    QueryResultsModel(QObject *parent = nullptr);
+    explicit QueryResultsModel(QObject *parent = nullptr);
     ~QueryResultsModel();
     int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
 
