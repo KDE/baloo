@@ -22,6 +22,7 @@ target_link_libraries(baloomonitorplugin
     Qt5::Qml
     Qt5::DBus
     KF5::I18n
+    KF5::CoreAddons
     PRIVATE
     KF5::Baloo
     KF5::BalooEngine

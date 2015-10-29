@@ -34,6 +34,8 @@
 #include <QDBusServiceWatcher>
 #include <QProcess>
 
+#include <KFormat>
+
 using namespace Baloo;
 Monitor::Monitor(QObject *parent)
     : QObject(parent)
@@ -140,30 +142,7 @@ void Monitor::startBaloo()
 
 void Monitor::updateRemainingTime()
 {
-    uint seconds = m_scheduler->getRemainingTime() / 1000;
-
-    QStringList hms;
-    hms << QStringLiteral(" hours ") << QStringLiteral(" minutes ")  << QStringLiteral(" seconds ");
-
-    QStringList hms1;
-    hms1 << QStringLiteral(" hour ") << QStringLiteral(" minute ")  << QStringLiteral(" second ");
-
-    // time = {h, m, s}
-    uint time[] = {0, 0, 0};
-    time[0] = seconds / (60 * 60);
-    time[1] = (seconds / 60) % 60;
-    time[2] = seconds % 60;
-
-    QString strTime;
-    for (int i = 0; i < 3; ++i) {
-        if (time[i] == 1) {
-            strTime += QString::number(time[i]) + hms1.at(i);
-        } else if (time[i] != 0) {
-            strTime += QString::number(time[i]) + hms.at(i);
-        }
-    }
-
-    m_remainingTime = strTime;
+    m_remainingTime = KFormat().formatSpelloutDuration(m_scheduler->getRemainingTime());
     Q_EMIT remainingTimeChanged();
 }
 
