@@ -23,6 +23,7 @@ set(BALOO_ENGINE_SRCS
     vectorpositioninfoiterator.cpp
     writetransaction.cpp
     global.cpp
+    fsutils.cpp
 )
 
 add_library(KF5BalooEngine ${BALOO_ENGINE_SRCS})
