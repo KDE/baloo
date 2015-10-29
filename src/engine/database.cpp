@@ -38,6 +38,7 @@
 
 #include "writetransaction.h"
 #include "idutils.h"
+#include "fsutils.h"
 
 #include <QFile>
 #include <QFileInfo>
@@ -67,9 +68,19 @@ bool Database::open(OpenMode mode)
         QDir().mkdir(m_path);
         dirInfo.refresh();
     }
-    if (mode == CreateDatabase && !dirInfo.permission(QFile::WriteOwner)) {
-        qCritical() << m_path << "does not have write permissions. Aborting";
-        return false;
+    if (mode == CreateDatabase) {
+        if (!dirInfo.permission(QFile::WriteOwner)) {
+            qCritical() << m_path << "does not have write permissions. Aborting";
+            return false;
+        }
+
+        const QString dbFilePath = m_path + "/index";
+        QFileInfo info(dbFilePath);
+        if (!info.exists()) {
+            if (FSUtils::getDirectoryFileSystem(m_path) == QStringLiteral("btrfs")) {
+                FSUtils::disableCoW(m_path);
+            }
+        }
     }
 
     int rc = mdb_env_create(&m_env);
