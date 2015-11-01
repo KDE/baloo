@@ -50,7 +50,7 @@ MainHub::MainHub(Database* db, FileIndexerConfig* config)
     bus.registerObject(QStringLiteral("/"), this, QDBusConnection::ExportAllSlots |
                         QDBusConnection::ExportScriptableSignals | QDBusConnection::ExportAdaptors);
 
-    QTimer::singleShot(0, &m_fileWatcher, SLOT(watchIndexedFolders()));
+    QTimer::singleShot(0, &m_fileWatcher, &FileWatch::watchIndexedFolders);
 }
 
 void MainHub::quit() const

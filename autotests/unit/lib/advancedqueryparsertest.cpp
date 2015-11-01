@@ -41,8 +41,8 @@ private Q_SLOTS:
 void AdvancedQueryParserTest::testSimpleProperty()
 {
     AdvancedQueryParser parser;
-    Term term = parser.parse("artist:Coldplay");
-    Term expectedTerm("artist", "Coldplay");
+    Term term = parser.parse(QStringLiteral("artist:Coldplay"));
+    Term expectedTerm(QStringLiteral("artist"), "Coldplay");
 
     QCOMPARE(term, expectedTerm);
 }
@@ -50,8 +50,8 @@ void AdvancedQueryParserTest::testSimpleProperty()
 void AdvancedQueryParserTest::testSimpleString()
 {
     AdvancedQueryParser parser;
-    Term term = parser.parse("Coldplay");
-    Term expectedTerm("", "Coldplay");
+    Term term = parser.parse(QStringLiteral("Coldplay"));
+    Term expectedTerm(QLatin1String(""), "Coldplay");
 
     QCOMPARE(term, expectedTerm);
 }
@@ -59,12 +59,12 @@ void AdvancedQueryParserTest::testSimpleString()
 void AdvancedQueryParserTest::testStringAndProperty()
 {
     AdvancedQueryParser parser;
-    Term term = parser.parse("stars artist:Coldplay fire");
+    Term term = parser.parse(QStringLiteral("stars artist:Coldplay fire"));
     Term expectedTerm(Term::And);
 
-    expectedTerm.addSubTerm(Term("", "stars"));
-    expectedTerm.addSubTerm(Term("artist", "Coldplay"));
-    expectedTerm.addSubTerm(Term("", "fire"));
+    expectedTerm.addSubTerm(Term(QLatin1String(""), "stars"));
+    expectedTerm.addSubTerm(Term(QStringLiteral("artist"), "Coldplay"));
+    expectedTerm.addSubTerm(Term(QLatin1String(""), "fire"));
 
     QCOMPARE(term, expectedTerm);
 }
@@ -73,58 +73,58 @@ void AdvancedQueryParserTest::testLogicalOps()
 {
     // AND
     AdvancedQueryParser parser;
-    Term term = parser.parse("artist:Coldplay AND type:song");
+    Term term = parser.parse(QStringLiteral("artist:Coldplay AND type:song"));
     Term expectedTerm(Term::And);
 
-    expectedTerm.addSubTerm(Term("artist", "Coldplay"));
-    expectedTerm.addSubTerm(Term("type", "song"));
+    expectedTerm.addSubTerm(Term(QStringLiteral("artist"), "Coldplay"));
+    expectedTerm.addSubTerm(Term(QStringLiteral("type"), "song"));
 
     QCOMPARE(term, expectedTerm);
 
     // OR
-    term = parser.parse("artist:Coldplay OR type:song");
+    term = parser.parse(QStringLiteral("artist:Coldplay OR type:song"));
     expectedTerm = Term(Term::Or);
 
-    expectedTerm.addSubTerm(Term("artist", "Coldplay"));
-    expectedTerm.addSubTerm(Term("type", "song"));
+    expectedTerm.addSubTerm(Term(QStringLiteral("artist"), "Coldplay"));
+    expectedTerm.addSubTerm(Term(QStringLiteral("type"), "song"));
 
     QCOMPARE(term, expectedTerm);
 
     // AND then OR
-    term = parser.parse("artist:Coldplay AND type:song OR stars");
+    term = parser.parse(QStringLiteral("artist:Coldplay AND type:song OR stars"));
     expectedTerm = Term(Term::Or);
 
-    expectedTerm.addSubTerm(Term("artist", "Coldplay") && Term("type", "song"));
-    expectedTerm.addSubTerm(Term("", "stars"));
+    expectedTerm.addSubTerm(Term(QStringLiteral("artist"), "Coldplay") && Term(QStringLiteral("type"), "song"));
+    expectedTerm.addSubTerm(Term(QLatin1String(""), "stars"));
 
     QCOMPARE(term, expectedTerm);
 
     // OR then AND
-    term = parser.parse("artist:Coldplay OR type:song AND stars");
+    term = parser.parse(QStringLiteral("artist:Coldplay OR type:song AND stars"));
     expectedTerm = Term(Term::And);
 
-    expectedTerm.addSubTerm(Term("artist", "Coldplay") || Term("type", "song"));
-    expectedTerm.addSubTerm(Term("", "stars"));
+    expectedTerm.addSubTerm(Term(QStringLiteral("artist"), "Coldplay") || Term(QStringLiteral("type"), "song"));
+    expectedTerm.addSubTerm(Term(QLatin1String(""), "stars"));
 
     QCOMPARE(term, expectedTerm);
 
     // Multiple ANDs
-    term = parser.parse("artist:Coldplay AND type:song AND stars");
+    term = parser.parse(QStringLiteral("artist:Coldplay AND type:song AND stars"));
     expectedTerm = Term(Term::And);
 
-    expectedTerm.addSubTerm(Term("artist", "Coldplay"));
-    expectedTerm.addSubTerm(Term("type", "song"));
-    expectedTerm.addSubTerm(Term("", "stars"));
+    expectedTerm.addSubTerm(Term(QStringLiteral("artist"), "Coldplay"));
+    expectedTerm.addSubTerm(Term(QStringLiteral("type"), "song"));
+    expectedTerm.addSubTerm(Term(QLatin1String(""), "stars"));
 
     QCOMPARE(term, expectedTerm);
 
     // Multiple ORs
-    term = parser.parse("artist:Coldplay OR type:song OR stars");
+    term = parser.parse(QStringLiteral("artist:Coldplay OR type:song OR stars"));
     expectedTerm = Term(Term::Or);
 
-    expectedTerm.addSubTerm(Term("artist", "Coldplay"));
-    expectedTerm.addSubTerm(Term("type", "song"));
-    expectedTerm.addSubTerm(Term("", "stars"));
+    expectedTerm.addSubTerm(Term(QStringLiteral("artist"), "Coldplay"));
+    expectedTerm.addSubTerm(Term(QStringLiteral("type"), "song"));
+    expectedTerm.addSubTerm(Term(QLatin1String(""), "stars"));
 
     QCOMPARE(term, expectedTerm);
 }
@@ -132,12 +132,12 @@ void AdvancedQueryParserTest::testLogicalOps()
 void AdvancedQueryParserTest::testNesting()
 {
     AdvancedQueryParser parser;
-    Term term = parser.parse("artist:Coldplay AND (type:song OR stars) fire");
+    Term term = parser.parse(QStringLiteral("artist:Coldplay AND (type:song OR stars) fire"));
     Term expectedTerm(Term::And);
 
-    expectedTerm.addSubTerm(Term("artist", "Coldplay"));
-    expectedTerm.addSubTerm(Term("type", "song") || Term("", "stars"));
-    expectedTerm.addSubTerm(Term("", "fire"));
+    expectedTerm.addSubTerm(Term(QStringLiteral("artist"), "Coldplay"));
+    expectedTerm.addSubTerm(Term(QStringLiteral("type"), "song") || Term(QLatin1String(""), "stars"));
+    expectedTerm.addSubTerm(Term(QLatin1String(""), "fire"));
 
     QCOMPARE(term, expectedTerm);
 }
@@ -149,12 +149,12 @@ void AdvancedQueryParserTest::testDateTime()
     Term term;
     Term expectedTerm;
 
-    term = parser.parse("modified:2014-12-02");
-    expectedTerm = Term("modified", QDate(2014, 12, 02));
+    term = parser.parse(QStringLiteral("modified:2014-12-02"));
+    expectedTerm = Term(QStringLiteral("modified"), QDate(2014, 12, 02));
     QCOMPARE(term, expectedTerm);
 
-    term = parser.parse("modified:\"2014-12-02T23:22:1\"");
-    expectedTerm = Term("modified", QDateTime(QDate(2014, 12, 02), QTime(23, 22, 1)));
+    term = parser.parse(QStringLiteral("modified:\"2014-12-02T23:22:1\""));
+    expectedTerm = Term(QStringLiteral("modified"), QDateTime(QDate(2014, 12, 02), QTime(23, 22, 1)));
     QEXPECT_FAIL("", "AQP cannot handle datetime", Abort);
     QCOMPARE(term, expectedTerm);
 }
@@ -165,28 +165,28 @@ void AdvancedQueryParserTest::testOperators()
     Term term;
     Term expectedTerm;
 
-    term = parser.parse("width:500");
-    expectedTerm = Term("width", 500, Term::Equal);
+    term = parser.parse(QStringLiteral("width:500"));
+    expectedTerm = Term(QStringLiteral("width"), 500, Term::Equal);
     QCOMPARE(term, expectedTerm);
 
-    term = parser.parse("width=500");
-    expectedTerm = Term("width", 500, Term::Equal);
+    term = parser.parse(QStringLiteral("width=500"));
+    expectedTerm = Term(QStringLiteral("width"), 500, Term::Equal);
     QCOMPARE(term, expectedTerm);
 
-    term = parser.parse("width<500");
-    expectedTerm = Term("width", 500, Term::Less);
+    term = parser.parse(QStringLiteral("width<500"));
+    expectedTerm = Term(QStringLiteral("width"), 500, Term::Less);
     QCOMPARE(term, expectedTerm);
 
-    term = parser.parse("width<=500");
-    expectedTerm = Term("width", 500, Term::LessEqual);
+    term = parser.parse(QStringLiteral("width<=500"));
+    expectedTerm = Term(QStringLiteral("width"), 500, Term::LessEqual);
     QCOMPARE(term, expectedTerm);
 
-    term = parser.parse("width>500");
-    expectedTerm = Term("width", 500, Term::Greater);
+    term = parser.parse(QStringLiteral("width>500"));
+    expectedTerm = Term(QStringLiteral("width"), 500, Term::Greater);
     QCOMPARE(term, expectedTerm);
 
-    term = parser.parse("width>=500");
-    expectedTerm = Term("width", 500, Term::GreaterEqual);
+    term = parser.parse(QStringLiteral("width>=500"));
+    expectedTerm = Term(QStringLiteral("width"), 500, Term::GreaterEqual);
     QCOMPARE(term, expectedTerm);
 }
 

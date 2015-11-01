@@ -93,7 +93,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
 
         IndexerConfig config;
         QString value = args.takeFirst();
-        if (value.compare("hidden", Qt::CaseInsensitive) == 0) {
+        if (value.compare(QLatin1String("hidden"), Qt::CaseInsensitive) == 0) {
             if (config.indexHidden()) {
                 out << "yes" << endl;
             } else {
@@ -119,12 +119,12 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
             }
         };
 
-        if (value.compare("includeFolders", Qt::CaseInsensitive) == 0) {
+        if (value.compare(QLatin1String("includeFolders"), Qt::CaseInsensitive) == 0) {
             printList(config.includeFolders());
             return 0;
         }
 
-        if (value.compare("excludeFolders", Qt::CaseInsensitive) == 0) {
+        if (value.compare(QLatin1String("excludeFolders"), Qt::CaseInsensitive) == 0) {
             printList(config.excludeFolders());
             return 0;
         }
@@ -156,7 +156,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
 
         IndexerConfig config;
         QString value = args.takeFirst();
-        if (value.compare("includeFolders", Qt::CaseInsensitive) == 0) {
+        if (value.compare(QLatin1String("includeFolders"), Qt::CaseInsensitive) == 0) {
             if (args.isEmpty()) {
                 out << i18n("A folder must be provided") << endl;
                 return 1;
@@ -186,7 +186,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
             return 0;
         }
 
-        if (value.compare("excludeFolders", Qt::CaseInsensitive) == 0) {
+        if (value.compare(QLatin1String("excludeFolders"), Qt::CaseInsensitive) == 0) {
             if (args.isEmpty()) {
                 out << i18n("A folder must be provided") << endl;
                 return 1;
@@ -267,7 +267,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
 
         IndexerConfig config;
         QString value = args.takeFirst();
-        if (value.compare("includeFolders", Qt::CaseInsensitive) == 0) {
+        if (value.compare(QLatin1String("includeFolders"), Qt::CaseInsensitive) == 0) {
             if (args.isEmpty()) {
                 out << i18n("A folder must be provided") << endl;
                 return 1;
@@ -309,7 +309,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
             return 0;
         }
 
-        if (value.compare("excludeFolders", Qt::CaseInsensitive) == 0) {
+        if (value.compare(QLatin1String("excludeFolders"), Qt::CaseInsensitive) == 0) {
             if (args.isEmpty()) {
                 out << i18n("A folder must be provided") << endl;
                 return 1;
@@ -409,18 +409,18 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
             }
 
             QString value = args.takeFirst();
-            if (value.compare("true", Qt::CaseInsensitive) == 0
-                    || value.compare("y", Qt::CaseInsensitive) == 0
-                    || value.compare("yes", Qt::CaseInsensitive) == 0
-                    || value.compare("1") == 0) {
+            if (value.compare(QLatin1String("true"), Qt::CaseInsensitive) == 0
+                    || value.compare(QLatin1String("y"), Qt::CaseInsensitive) == 0
+                    || value.compare(QLatin1String("yes"), Qt::CaseInsensitive) == 0
+                    || value.compare(QLatin1String("1")) == 0) {
                 config.setIndexHidden(true);
                 return 0;
             }
 
-            if (value.compare("false", Qt::CaseInsensitive) == 0
-                    || value.compare("n", Qt::CaseInsensitive) == 0
-                    || value.compare("no", Qt::CaseInsensitive) == 0
-                    || value.compare("0") == 0) {
+            if (value.compare(QLatin1String("false"), Qt::CaseInsensitive) == 0
+                    || value.compare(QLatin1String("n"), Qt::CaseInsensitive) == 0
+                    || value.compare(QLatin1String("no"), Qt::CaseInsensitive) == 0
+                    || value.compare(QLatin1String("0")) == 0) {
                 config.setIndexHidden(false);
                 return 0;
             }
@@ -436,18 +436,18 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
             }
 
             QString value = args.takeFirst();
-            if (value.compare("true", Qt::CaseInsensitive) == 0
-                    || value.compare("y", Qt::CaseInsensitive) == 0
-                    || value.compare("yes", Qt::CaseInsensitive) == 0
-                    || value.compare("1") == 0) {
+            if (value.compare(QLatin1String("true"), Qt::CaseInsensitive) == 0
+                    || value.compare(QLatin1String("y"), Qt::CaseInsensitive) == 0
+                    || value.compare(QLatin1String("yes"), Qt::CaseInsensitive) == 0
+                    || value.compare(QLatin1String("1")) == 0) {
                 config.setOnlyBasicIndexing(false);
                 return 0;
             }
 
-            if (value.compare("false", Qt::CaseInsensitive) == 0
-                    || value.compare("n", Qt::CaseInsensitive) == 0
-                    || value.compare("no", Qt::CaseInsensitive) == 0
-                    || value.compare("0") == 0) {
+            if (value.compare(QLatin1String("false"), Qt::CaseInsensitive) == 0
+                    || value.compare(QLatin1String("n"), Qt::CaseInsensitive) == 0
+                    || value.compare(QLatin1String("no"), Qt::CaseInsensitive) == 0
+                    || value.compare(QLatin1String("0")) == 0) {
                 config.setOnlyBasicIndexing(true);
                 return 0;
             }

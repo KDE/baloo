@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
                          PROJECT_VERSION,
                          i18n("A tool to search through the files indexed by Baloo"),
                          KAboutLicense::GPL);
-    aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QLatin1String("vhanda@kde.org"));
+    aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QStringLiteral("vhanda@kde.org"));
 
     QCoreApplication app(argc, argv);
     KAboutData::setApplicationData(aboutData);
@@ -72,16 +72,16 @@ int main(int argc, char* argv[])
         parser.showHelp(1);
     }
 
-    if (parser.isSet(QLatin1String("type")))
-        typeStr = parser.value(QLatin1String("type"));
-    if (parser.isSet(QLatin1String("limit")))
-        queryLimit = parser.value(QLatin1String("limit")).toInt();
-    if (parser.isSet(QLatin1String("offset")))
-        offset = parser.value(QLatin1String("offset")).toInt();
+    if (parser.isSet(QStringLiteral("type")))
+        typeStr = parser.value(QStringLiteral("type"));
+    if (parser.isSet(QStringLiteral("limit")))
+        queryLimit = parser.value(QStringLiteral("limit")).toInt();
+    if (parser.isSet(QStringLiteral("offset")))
+        offset = parser.value(QStringLiteral("offset")).toInt();
 
     QTextStream out(stdout);
 
-    QString queryStr = args.join(QLatin1String(" "));
+    QString queryStr = args.join(QStringLiteral(" "));
 
     Baloo::Query query;
     query.addType(typeStr);

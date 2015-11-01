@@ -193,7 +193,7 @@ private:
         if (m_inotifyFd > 0) {
             fcntl(m_inotifyFd, F_SETFD, FD_CLOEXEC);
             m_notifier = new QSocketNotifier(m_inotifyFd, QSocketNotifier::Read);
-            connect(m_notifier, SIGNAL(activated(int)), q, SLOT(slotEvent(int)));
+            connect(m_notifier, &QSocketNotifier::activated, q, &KInotify::slotEvent);
         } else {
             Q_ASSERT_X(0, "kinotify", "Failed to initialize inotify");
         }

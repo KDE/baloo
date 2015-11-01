@@ -41,10 +41,10 @@ StorageDevices::StorageDevices(QObject* parent)
 {
     initCacheEntries();
 
-    connect(Solid::DeviceNotifier::instance(), SIGNAL(deviceAdded(QString)),
-            this, SLOT(slotSolidDeviceAdded(QString)));
-    connect(Solid::DeviceNotifier::instance(), SIGNAL(deviceRemoved(QString)),
-            this, SLOT(slotSolidDeviceRemoved(QString)));
+    connect(Solid::DeviceNotifier::instance(), &Solid::DeviceNotifier::deviceAdded,
+            this, &StorageDevices::slotSolidDeviceAdded);
+    connect(Solid::DeviceNotifier::instance(), &Solid::DeviceNotifier::deviceRemoved,
+            this, &StorageDevices::slotSolidDeviceRemoved);
 }
 
 
@@ -56,7 +56,7 @@ StorageDevices::~StorageDevices()
 void StorageDevices::initCacheEntries()
 {
     QList<Solid::Device> devices
-        = Solid::Device::listFromQuery(QLatin1String("StorageVolume.usage=='FileSystem'"))
+        = Solid::Device::listFromQuery(QStringLiteral("StorageVolume.usage=='FileSystem'"))
           + Solid::Device::listFromType(Solid::DeviceInterface::NetworkShare);
     Q_FOREACH (const Solid::Device& dev, devices) {
         createCacheEntry(dev);
@@ -77,8 +77,8 @@ StorageDevices::Entry* StorageDevices::createCacheEntry(const Solid::Device& dev
     auto it = m_metadataCache.insert(dev.udi(), entry);
 
     const Solid::StorageAccess* storage = dev.as<Solid::StorageAccess>();
-    connect(storage, SIGNAL(accessibilityChanged(bool,QString)),
-            this, SLOT(slotAccessibilityChanged(bool,QString)));
+    connect(storage, &Solid::StorageAccess::accessibilityChanged,
+            this, &StorageDevices::slotAccessibilityChanged);
     //connect(storage, SIGNAL(teardownRequested(QString)),
     //        this, SLOT(slotTeardownRequested(QString)));
     return &it.value();

@@ -59,11 +59,11 @@ KIO::UDSEntry createUDSEntryForTag(const QString& tag)
     uds.insert(KIO::UDSEntry::UDS_NAME, tag);
     uds.insert(KIO::UDSEntry::UDS_DISPLAY_NAME, tag);
     uds.insert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
-    uds.insert(KIO::UDSEntry::UDS_MIME_TYPE, QString::fromLatin1("inode/directory"));
+    uds.insert(KIO::UDSEntry::UDS_MIME_TYPE, QStringLiteral("inode/directory"));
     uds.insert(KIO::UDSEntry::UDS_DISPLAY_TYPE, i18n("Tag"));
     uds.insert(KIO::UDSEntry::UDS_ACCESS, 0700);
     uds.insert(KIO::UDSEntry::UDS_USER, KUser().loginName());
-    uds.insert(KIO::UDSEntry::UDS_ICON_NAME, QLatin1String("tag"));
+    uds.insert(KIO::UDSEntry::UDS_ICON_NAME, QStringLiteral("tag"));
 
     return uds;
 }
@@ -155,12 +155,12 @@ void TagsProtocol::stat(const QUrl& url)
         uds.insert(KIO::UDSEntry::UDS_ACCESS, 0700);
         uds.insert(KIO::UDSEntry::UDS_USER, KUser().loginName());
         uds.insert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
-        uds.insert(KIO::UDSEntry::UDS_MIME_TYPE, QString::fromLatin1("inode/directory"));
+        uds.insert(KIO::UDSEntry::UDS_MIME_TYPE, QStringLiteral("inode/directory"));
 
-        uds.insert(KIO::UDSEntry::UDS_ICON_OVERLAY_NAMES, QLatin1String("tag"));
+        uds.insert(KIO::UDSEntry::UDS_ICON_OVERLAY_NAMES, QStringLiteral("tag"));
         uds.insert(KIO::UDSEntry::UDS_DISPLAY_TYPE, i18n("Tag"));
 
-        uds.insert(KIO::UDSEntry::UDS_NAME, QLatin1String("."));
+        uds.insert(KIO::UDSEntry::UDS_NAME, QStringLiteral("."));
         uds.insert(KIO::UDSEntry::UDS_DISPLAY_NAME, i18n("All Tags"));
 
         statEntry(uds);
@@ -349,7 +349,7 @@ void TagsProtocol::mimetype(const QUrl& url)
 
     case RootUrl:
     case TagUrl:
-        mimeType(QLatin1String("inode/directory"));
+        mimeType(QStringLiteral("inode/directory"));
         finished();
         return;
 

@@ -37,8 +37,8 @@ FileMonitor::FileMonitor(QObject* parent)
     , d(new Private)
 {
     QDBusConnection con = QDBusConnection::sessionBus();
-    con.connect(QString(), QLatin1String("/files"), QLatin1String("org.kde"),
-                QLatin1String("changed"), this, SLOT(slotFileMetaDataChanged(QStringList)));
+    con.connect(QString(), QStringLiteral("/files"), QStringLiteral("org.kde"),
+                QStringLiteral("changed"), this, SLOT(slotFileMetaDataChanged(QStringList)));
 }
 
 FileMonitor::~FileMonitor()

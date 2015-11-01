@@ -36,7 +36,7 @@ int main(int argc, char** argv)
     QCoreApplication app(argc, argv);
 
     QCommandLineParser parser;
-    parser.addPositionalArgument("folder", "Folder to test on", "folderName");
+    parser.addPositionalArgument(QStringLiteral("folder"), QStringLiteral("Folder to test on"), QStringLiteral("folderName"));
     parser.process(app);
 
     QScopedPointer<FileIndexerConfig> config;

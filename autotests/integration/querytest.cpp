@@ -99,10 +99,10 @@ void QueryTest::insertDocuments(Transaction* tr)
     m_id3 = touchFile(dir->path() + "/file3");
     m_id4 = touchFile(dir->path() + "/file4");
 
-    addDocument(tr, "The quick brown foxed jumped over the crazy dog", m_id1, dir->path() + "/file1");
-    addDocument(tr, "The night is dark and full of terror", m_id2, dir->path() + "/file2");
-    addDocument(tr, "Don't feel sorry for yourself. Only assholes do that", m_id3, dir->path() + "/file3");
-    addDocument(tr, "Only the dead stay 17 forever. crazy", m_id4, dir->path() + "/file4");
+    addDocument(tr, QStringLiteral("The quick brown foxed jumped over the crazy dog"), m_id1, dir->path() + "/file1");
+    addDocument(tr, QStringLiteral("The night is dark and full of terror"), m_id2, dir->path() + "/file2");
+    addDocument(tr, QStringLiteral("Don't feel sorry for yourself. Only assholes do that"), m_id3, dir->path() + "/file3");
+    addDocument(tr, QStringLiteral("Only the dead stay 17 forever. crazy"), m_id4, dir->path() + "/file4");
 }
 
 void QueryTest::testTermEqual()

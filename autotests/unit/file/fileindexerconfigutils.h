@@ -44,7 +44,7 @@ void writeIndexerConfig(const QStringList& includeFolders,
                         bool indexHidden = false)
 {
     QStandardPaths::setTestModeEnabled(true);
-    KConfig fileIndexerConfig(QLatin1String("baloofilerc"));
+    KConfig fileIndexerConfig(QStringLiteral("baloofilerc"));
     fileIndexerConfig.group("General").writePathEntry("folders", includeFolders);
     fileIndexerConfig.group("General").writePathEntry("exclude folders", excludeFolders);
     fileIndexerConfig.group("General").writeEntry("exclude filters", excludeFilters);
@@ -60,7 +60,7 @@ QTemporaryDir* createTmpFolders(const QStringList& folders)
     // TODO: Find a better solution
     if (QFileInfo(tmpDir->path()).isHidden()) {
         delete tmpDir;
-        tmpDir = new QTemporaryDir(QLatin1String("/tmp/"));
+        tmpDir = new QTemporaryDir(QStringLiteral("/tmp/"));
     }
     Q_FOREACH (const QString & f, folders) {
         QDir dir(tmpDir->path());
@@ -90,7 +90,7 @@ QTemporaryDir* createTmpFilesAndFolders(const QStringList& list)
     // TODO: Find a better solution
     if (QFileInfo(tmpDir->path()).isHidden()) {
         delete tmpDir;
-        tmpDir = new QTemporaryDir(QLatin1String("/tmp/"));
+        tmpDir = new QTemporaryDir(QStringLiteral("/tmp/"));
     }
     Q_FOREACH (const QString& f, list) {
         if (f.endsWith(QLatin1Char('/'))) {
@@ -136,20 +136,20 @@ QTemporaryDir* createTmpFilesAndFolders(const QStringList& list)
 // |- ignoredRootDir
 // |- excludedRootDir
 //
-const QString indexedRootDir = QString::fromLatin1("d1");
-const QString indexedSubDir = QString::fromLatin1("d1/sd1");
-const QString indexedSubSubDir = QString::fromLatin1("d1/sd1/ssd1");
-const QString excludedSubSubDir = QString::fromLatin1("d1/sd1/ssd2");
-const QString hiddenSubSubDir = QString::fromLatin1("d1/sd1/.ssd3");
-const QString ignoredSubFolderToIndexedHidden = QString::fromLatin1("d1/sd1/.ssd3/isfh1");
-const QString indexedSubFolderToIndexedHidden = QString::fromLatin1("d1/sd1/.ssd3/isfh2");
-const QString excludedSubDir = QString::fromLatin1("d1/sd2");
-const QString indexedSubDirToExcluded = QString::fromLatin1("d1/sd2/isde1");
-const QString indexedHiddenSubDirToExcluded = QString::fromLatin1("d1/sd2/.isde2");
-const QString hiddenSubDir = QString::fromLatin1("d1/.sd3");
-const QString indexedHiddenSubDir = QString::fromLatin1("d1/.sd4");
-const QString ignoredRootDir = QString::fromLatin1("d2");
-const QString excludedRootDir = QString::fromLatin1("d3");
+const QString indexedRootDir = QStringLiteral("d1");
+const QString indexedSubDir = QStringLiteral("d1/sd1");
+const QString indexedSubSubDir = QStringLiteral("d1/sd1/ssd1");
+const QString excludedSubSubDir = QStringLiteral("d1/sd1/ssd2");
+const QString hiddenSubSubDir = QStringLiteral("d1/sd1/.ssd3");
+const QString ignoredSubFolderToIndexedHidden = QStringLiteral("d1/sd1/.ssd3/isfh1");
+const QString indexedSubFolderToIndexedHidden = QStringLiteral("d1/sd1/.ssd3/isfh2");
+const QString excludedSubDir = QStringLiteral("d1/sd2");
+const QString indexedSubDirToExcluded = QStringLiteral("d1/sd2/isde1");
+const QString indexedHiddenSubDirToExcluded = QStringLiteral("d1/sd2/.isde2");
+const QString hiddenSubDir = QStringLiteral("d1/.sd3");
+const QString indexedHiddenSubDir = QStringLiteral("d1/.sd4");
+const QString ignoredRootDir = QStringLiteral("d2");
+const QString excludedRootDir = QStringLiteral("d3");
 }
 }
 

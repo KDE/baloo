@@ -177,7 +177,7 @@ void FileIndexerConfigTest::testShouldBeIndexed()
     QVERIFY(!cfg->shouldFolderBeIndexed(dirPrefix + excludedRootDir));
 
     // run through all the folders with a file name attached
-    const QString fileName = QString::fromLatin1("/somefile.txt");
+    const QString fileName = QStringLiteral("/somefile.txt");
     QVERIFY(cfg->shouldBeIndexed(dirPrefix + indexedRootDir + fileName));
     QVERIFY(cfg->shouldBeIndexed(dirPrefix + indexedSubDir + fileName));
     QVERIFY(cfg->shouldBeIndexed(dirPrefix + indexedSubSubDir + fileName));
@@ -243,8 +243,8 @@ void FileIndexerConfigTest::testShouldBeIndexed()
 
 void FileIndexerConfigTest::testExcludeFilterOnFolders()
 {
-    const QString excludeFilter1 = QLatin1String("build");
-    const QString excludeFilter2 = QLatin1String("foo?ar");
+    const QString excludeFilter1 = QStringLiteral("build");
+    const QString excludeFilter2 = QStringLiteral("foo?ar");
 
     const QString excludedSubDir1 = indexedRootDir + QLatin1String("/") + excludeFilter1;
     const QString excludedSubSubDir1 = excludedSubDir1 + QLatin1String("/sub1");
@@ -289,7 +289,7 @@ void FileIndexerConfigTest::testExcludeFilterOnFolders()
     QVERIFY(cfg->shouldFolderBeIndexed(dirPrefix + includedSubSubDir));
 
     // and some file checks
-    const QString fileName = QString::fromLatin1("/somefile.txt");
+    const QString fileName = QStringLiteral("/somefile.txt");
     QVERIFY(cfg->shouldBeIndexed(dirPrefix + indexedRootDir + fileName));
     QVERIFY(!cfg->shouldBeIndexed(dirPrefix + excludedSubDir1 + fileName));
     QVERIFY(!cfg->shouldBeIndexed(dirPrefix + excludedSubSubDir1 + fileName));

@@ -75,7 +75,7 @@ void XattrDetector::Private::init()
             }
             file.close();
 
-            int ret = baloo_setxattr(url, QLatin1String("test"), QLatin1String("0"));
+            int ret = baloo_setxattr(url, QStringLiteral("test"), QStringLiteral("0"));
             if (ret != -1) {
                 // Check the actual error?
                 m_unSupportedPaths << mountPath;
@@ -88,7 +88,7 @@ void XattrDetector::Private::init()
             break;
         }
     }
-    m_unSupportedPaths << QLatin1String("/tmp") << QLatin1String("/proc");
+    m_unSupportedPaths << QStringLiteral("/tmp") << QStringLiteral("/proc");
     qDebug() << "supportedPaths:" << m_supportedPaths;
     qDebug() << "UnsupportedPaths:" << m_unSupportedPaths;
     m_initialized = true;

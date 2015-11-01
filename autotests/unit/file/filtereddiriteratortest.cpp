@@ -42,14 +42,14 @@ void FilteredDirIteratorTest::testFiles()
 {
     // Given
     QStringList dirs;
-    dirs << QLatin1String("home/");
-    dirs << QLatin1String("home/1");
-    dirs << QLatin1String("home/2");
-    dirs << QLatin1String("home/kde/");
-    dirs << QLatin1String("home/kde/1");
-    dirs << QLatin1String("home/docs/");
-    dirs << QLatin1String("home/docs/.fire");
-    dirs << QLatin1String("home/docs/1");
+    dirs << QStringLiteral("home/");
+    dirs << QStringLiteral("home/1");
+    dirs << QStringLiteral("home/2");
+    dirs << QStringLiteral("home/kde/");
+    dirs << QStringLiteral("home/kde/1");
+    dirs << QStringLiteral("home/docs/");
+    dirs << QStringLiteral("home/docs/.fire");
+    dirs << QStringLiteral("home/docs/1");
 
     QScopedPointer<QTemporaryDir> dir(Test::createTmpFilesAndFolders(dirs));
 
@@ -71,7 +71,7 @@ void FilteredDirIteratorTest::testFiles()
 
         list << path;
     }
-    QSet<QString> expected = {"/home", "/home/docs", "/home/docs/1", "/home/1", "/home/2"};
+    QSet<QString> expected = {QStringLiteral("/home"), QStringLiteral("/home/docs"), QStringLiteral("/home/docs/1"), QStringLiteral("/home/1"), QStringLiteral("/home/2")};
     QCOMPARE(list, expected);
 }
 
@@ -79,14 +79,14 @@ void FilteredDirIteratorTest::testFolders()
 {
     // Given
     QStringList dirs;
-    dirs << QLatin1String("home/");
-    dirs << QLatin1String("home/1");
-    dirs << QLatin1String("home/2");
-    dirs << QLatin1String("home/kde/");
-    dirs << QLatin1String("home/kde/1");
-    dirs << QLatin1String("home/docs/");
-    dirs << QLatin1String("home/docs/1");
-    dirs << QLatin1String("home/fire/");
+    dirs << QStringLiteral("home/");
+    dirs << QStringLiteral("home/1");
+    dirs << QStringLiteral("home/2");
+    dirs << QStringLiteral("home/kde/");
+    dirs << QStringLiteral("home/kde/1");
+    dirs << QStringLiteral("home/docs/");
+    dirs << QStringLiteral("home/docs/1");
+    dirs << QStringLiteral("home/fire/");
 
     QScopedPointer<QTemporaryDir> dir(Test::createTmpFilesAndFolders(dirs));
 
@@ -108,7 +108,7 @@ void FilteredDirIteratorTest::testFolders()
 
         list << path;
     }
-    QSet<QString> expected = {"/home", "/home/docs", "/home/fire"};
+    QSet<QString> expected = {QStringLiteral("/home"), QStringLiteral("/home/docs"), QStringLiteral("/home/fire")};
     QCOMPARE(list, expected);
 }
 
@@ -116,8 +116,8 @@ void FilteredDirIteratorTest::testAddingExcludedFolder()
 {
     // Given
     QStringList dirs;
-    dirs << QLatin1String("home/");
-    dirs << QLatin1String("home/kde/");
+    dirs << QStringLiteral("home/");
+    dirs << QStringLiteral("home/kde/");
     QScopedPointer<QTemporaryDir> dir(Test::createTmpFilesAndFolders(dirs));
 
     QStringList includeFolders;
@@ -138,10 +138,10 @@ void FilteredDirIteratorTest::testNoConfig()
 {
     // Given
     QStringList dirs;
-    dirs << QLatin1String("home/");
-    dirs << QLatin1String("home/1");
-    dirs << QLatin1String("home/kde/");
-    dirs << QLatin1String("home/kde/2");
+    dirs << QStringLiteral("home/");
+    dirs << QStringLiteral("home/1");
+    dirs << QStringLiteral("home/kde/");
+    dirs << QStringLiteral("home/kde/2");
     QScopedPointer<QTemporaryDir> dir(Test::createTmpFilesAndFolders(dirs));
 
     QStringList includeFolders;
@@ -161,7 +161,7 @@ void FilteredDirIteratorTest::testNoConfig()
 
         list << path;
     }
-    QSet<QString> expected = {"/home", "/home/1", "/home/kde", "/home/kde/2"};
+    QSet<QString> expected = {QStringLiteral("/home"), QStringLiteral("/home/1"), QStringLiteral("/home/kde"), QStringLiteral("/home/kde/2")};
     QCOMPARE(list, expected);
 }
 

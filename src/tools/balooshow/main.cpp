@@ -44,7 +44,7 @@
 
 QString colorString(const QString& input, int color)
 {
-    QString colorStart = QString::fromLatin1("\033[0;%1m").arg(color);
+    QString colorStart = QStringLiteral("\033[0;%1m").arg(color);
     QLatin1String colorEnd("\033[0;0m");
 
     return colorStart + input + colorEnd;
@@ -52,25 +52,25 @@ QString colorString(const QString& input, int color)
 
 int main(int argc, char* argv[])
 {
-    KAboutData aboutData(QLatin1String("balooshow"),
+    KAboutData aboutData(QStringLiteral("balooshow"),
                          i18n("Baloo Show"),
                          PROJECT_VERSION,
                          i18n("The Baloo data Viewer - A debugging tool"),
                          KAboutLicense::GPL,
                          i18n("(c) 2012, Vishesh Handa"));
-    aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QLatin1String("me@vhanda.in"));
+    aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QStringLiteral("me@vhanda.in"));
 
     KAboutData::setApplicationData(aboutData);
     QCoreApplication app(argc, argv);
 
     QCommandLineParser parser;
-    parser.addPositionalArgument(QLatin1String("files"), QLatin1String("The file urls"));
-    parser.addOption(QCommandLineOption(QStringList() << QLatin1String("x"),
-                                        QLatin1String("Print internal info")));
-    parser.addOption(QCommandLineOption(QStringList() << QLatin1String("i"),
-                                        QLatin1String("Inode number of the fiel to show")));
-    parser.addOption(QCommandLineOption(QStringList() << QLatin1String("d"),
-                                        QLatin1String("Device id for the files"), QLatin1String("deviceId"), QString()));
+    parser.addPositionalArgument(QStringLiteral("files"), QStringLiteral("The file urls"));
+    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("x"),
+                                        QStringLiteral("Print internal info")));
+    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("i"),
+                                        QStringLiteral("Inode number of the fiel to show")));
+    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("d"),
+                                        QStringLiteral("Device id for the files"), QStringLiteral("deviceId"), QString()));
     parser.addHelpOption();
     parser.process(app);
 
@@ -89,7 +89,7 @@ int main(int argc, char* argv[])
         if (QFile::exists(url)) {
             urls.append(url);
         } else {
-            if (parser.isSet("i")) {
+            if (parser.isSet(QStringLiteral("i"))) {
                 urls.append(QLatin1String("inode:") + arg);
             } else {
                 urls.append(QLatin1String("file:") + arg);
@@ -112,7 +112,7 @@ int main(int argc, char* argv[])
     for (QString url : urls) {
         quint64 fid = 0;
         if (url.startsWith(QLatin1String("file:"))) {
-            fid = url.mid(5).toULongLong();
+            fid = url.midRef(5).toULongLong();
             url = QFile::decodeName(tr.documentUrl(fid));
 
             // Debugging aid
@@ -126,8 +126,8 @@ int main(int argc, char* argv[])
                 stream << "GivenDeviceID: " << Baloo::idToDeviceId(fid) << " ActualDeviceID: " << Baloo::idToDeviceId(actualFid) << "\n";
             }
         } else if (url.startsWith(QStringLiteral("inode:"))) {
-            quint32 inode = url.mid(6).toULong();
-            quint32 devId = parser.value("d").toULong();
+            quint32 inode = url.midRef(6).toULong();
+            quint32 devId = parser.value(QStringLiteral("d")).toULong();
 
             fid = Baloo::devIdAndInodeToId(devId, inode);
             url = QFile::decodeName(tr.documentUrl(fid));
@@ -162,7 +162,7 @@ int main(int argc, char* argv[])
                 for (const QVariant& var : it.value().toList()) {
                     list << var.toString();
                 }
-                str = list.join(", ");
+                str = list.join(QStringLiteral(", "));
             } else {
                 str = it.value().toString();
             }
@@ -202,7 +202,7 @@ int main(int argc, char* argv[])
                             posOfNonNumeric++;
                         }
 
-                        int propNum = word.mid(1, posOfNonNumeric-1).toInt();
+                        int propNum = word.midRef(1, posOfNonNumeric-1).toInt();
                         QString value = word.mid(posOfNonNumeric + 1);
 
                         propertyWords[propNum].append(value);
@@ -214,7 +214,7 @@ int main(int argc, char* argv[])
                 auto prop = static_cast<KFileMetaData::Property::Property>(it.key());
                 KFileMetaData::PropertyInfo pi(prop);
 
-                stream << pi.name() << ": " << it.value().join(" ") << endl;
+                stream << pi.name() << ": " << it.value().join(QStringLiteral(" ")) << endl;
             }
         }
     }
