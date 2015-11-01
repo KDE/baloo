@@ -27,7 +27,7 @@ using namespace Baloo;
 
 ExtractorProcess::ExtractorProcess(QObject* parent)
     : QObject(parent)
-    , m_extractorPath(QStandardPaths::findExecutable(QLatin1String("baloo_file_extractor")))
+    , m_extractorPath(QStandardPaths::findExecutable(QStringLiteral("baloo_file_extractor")))
     , m_extractorProcess(this)
     , m_extractorIdle(true)
 {

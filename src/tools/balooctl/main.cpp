@@ -58,33 +58,33 @@ using namespace Baloo;
 
 void start()
 {
-    const QString exe = QStandardPaths::findExecutable(QLatin1String("baloo_file"));
+    const QString exe = QStandardPaths::findExecutable(QStringLiteral("baloo_file"));
     QProcess::startDetached(exe);
 }
 
 int main(int argc, char* argv[])
 {
-    KAboutData aboutData(QLatin1String("baloo"), i18n("balooctl"), PROJECT_VERSION);
-    aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QLatin1String("vhanda@kde.org"));
+    KAboutData aboutData(QStringLiteral("baloo"), i18n("balooctl"), PROJECT_VERSION);
+    aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QStringLiteral("vhanda@kde.org"));
 
     QCoreApplication app(argc, argv);
     KAboutData::setApplicationData(aboutData);
 
     QCommandLineParser parser;
-    parser.addPositionalArgument(QLatin1String("command"), i18n("The command to execute"));
+    parser.addPositionalArgument(QStringLiteral("command"), i18n("The command to execute"));
 
-    parser.addPositionalArgument(QLatin1String("status"), i18n("Print the status of the indexer"));
-    parser.addPositionalArgument(QLatin1String("enable"), i18n("Enable the file indexer"));
-    parser.addPositionalArgument(QLatin1String("disable"), i18n("Disable the file indexer"));
-    parser.addPositionalArgument(QLatin1String("start"), i18n("Start the file indexer"));
-    parser.addPositionalArgument(QLatin1String("stop"), i18n("Stop the file indexer"));
-    parser.addPositionalArgument(QLatin1String("restart"), i18n("Restart the file indexer"));
-    parser.addPositionalArgument(QLatin1String("suspend"), i18n("Suspend the file indexer"));
-    parser.addPositionalArgument(QLatin1String("resume"), i18n("Resume the file indexer"));
-    parser.addPositionalArgument(QLatin1String("check"), i18n("Check for any unindexed files and index them"));
-    parser.addPositionalArgument(QLatin1String("index"), i18n("Index the specified files"));
-    parser.addPositionalArgument(QLatin1String("clear"), i18n("Forget the specified files"));
-    parser.addPositionalArgument(QLatin1String("config"), i18n("Modify the Baloo configuration"));
+    parser.addPositionalArgument(QStringLiteral("status"), i18n("Print the status of the indexer"));
+    parser.addPositionalArgument(QStringLiteral("enable"), i18n("Enable the file indexer"));
+    parser.addPositionalArgument(QStringLiteral("disable"), i18n("Disable the file indexer"));
+    parser.addPositionalArgument(QStringLiteral("start"), i18n("Start the file indexer"));
+    parser.addPositionalArgument(QStringLiteral("stop"), i18n("Stop the file indexer"));
+    parser.addPositionalArgument(QStringLiteral("restart"), i18n("Restart the file indexer"));
+    parser.addPositionalArgument(QStringLiteral("suspend"), i18n("Suspend the file indexer"));
+    parser.addPositionalArgument(QStringLiteral("resume"), i18n("Resume the file indexer"));
+    parser.addPositionalArgument(QStringLiteral("check"), i18n("Check for any unindexed files and index them"));
+    parser.addPositionalArgument(QStringLiteral("index"), i18n("Index the specified files"));
+    parser.addPositionalArgument(QStringLiteral("clear"), i18n("Forget the specified files"));
+    parser.addPositionalArgument(QStringLiteral("config"), i18n("Modify the Baloo configuration"));
     parser.addVersionOption();
     parser.addHelpOption();
 
@@ -282,18 +282,18 @@ int main(int argc, char* argv[])
         uint ts = size.expectedSize;
         out << "Actual Size: " << format.formatByteSize(size.actualSize, 2) << "\n";
         out << "Expected Size: " << format.formatByteSize(size.expectedSize, 2) << "\n\n";
-        prFunc("PostingDB", size.postingDb, ts);
-        prFunc("PosistionDB", size.positionDb, ts);
-        prFunc("DocTerms", size.docTerms, ts);
-        prFunc("DocFilenameTerms", size.docFilenameTerms, ts);
-        prFunc("DocXattrTerms", size.docXattrTerms, ts);
-        prFunc("IdTree", size.idTree, ts);
-        prFunc("IdFileName", size.idFilename, ts);
-        prFunc("DocTime", size.docTime, ts);
-        prFunc("DocData", size.docData, ts);
-        prFunc("ContentIndexingDB", size.contentIndexingIds, ts);
-        prFunc("FailedIdsDB", size.failedIds, ts);
-        prFunc("MTimeDB", size.mtimeDb, ts);
+        prFunc(QStringLiteral("PostingDB"), size.postingDb, ts);
+        prFunc(QStringLiteral("PosistionDB"), size.positionDb, ts);
+        prFunc(QStringLiteral("DocTerms"), size.docTerms, ts);
+        prFunc(QStringLiteral("DocFilenameTerms"), size.docFilenameTerms, ts);
+        prFunc(QStringLiteral("DocXattrTerms"), size.docXattrTerms, ts);
+        prFunc(QStringLiteral("IdTree"), size.idTree, ts);
+        prFunc(QStringLiteral("IdFileName"), size.idFilename, ts);
+        prFunc(QStringLiteral("DocTime"), size.docTime, ts);
+        prFunc(QStringLiteral("DocData"), size.docData, ts);
+        prFunc(QStringLiteral("ContentIndexingDB"), size.contentIndexingIds, ts);
+        prFunc(QStringLiteral("FailedIdsDB"), size.failedIds, ts);
+        prFunc(QStringLiteral("MTimeDB"), size.mtimeDb, ts);
 
         return 0;
     }

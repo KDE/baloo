@@ -46,7 +46,7 @@ PendingFileQueueTest::PendingFileQueueTest()
 
 void PendingFileQueueTest::testTimeout()
 {
-    QString myUrl("/tmp");
+    QString myUrl(QStringLiteral("/tmp"));
 
     PendingFileQueue queue;
     queue.setMinimumTimeout(2);
@@ -77,7 +77,7 @@ void PendingFileQueueTest::testTimeout()
 
 void PendingFileQueueTest::testRequeue()
 {
-    QString myUrl("/tmp");
+    QString myUrl(QStringLiteral("/tmp"));
 
     PendingFileQueue queue;
     queue.setMinimumTimeout(2);

@@ -43,7 +43,7 @@ class FileInfoTest : public QObject
 private Q_SLOTS:
     void init()
     {
-        file.setFileTemplate("baloo-fileinfo-test");
+        file.setFileTemplate(QStringLiteral("baloo-fileinfo-test"));
         file.open();
     }
 

@@ -216,32 +216,32 @@ QByteArray Query::toJSON()
     QVariantMap map;
 
     if (!d->m_types.isEmpty())
-        map[QLatin1String("type")] = d->m_types;
+        map[QStringLiteral("type")] = d->m_types;
 
     if (d->m_limit != defaultLimit)
-        map[QLatin1String("limit")] = d->m_limit;
+        map[QStringLiteral("limit")] = d->m_limit;
 
     if (d->m_offset)
-        map[QLatin1String("offset")] = d->m_offset;
+        map[QStringLiteral("offset")] = d->m_offset;
 
     if (!d->m_searchString.isEmpty())
-        map[QLatin1String("searchString")] = d->m_searchString;
+        map[QStringLiteral("searchString")] = d->m_searchString;
 
     if (d->m_term.isValid())
-        map[QLatin1String("term")] = QVariant(d->m_term.toVariantMap());
+        map[QStringLiteral("term")] = QVariant(d->m_term.toVariantMap());
 
     if (d->m_yearFilter >= 0)
-        map[QLatin1String("yearFilter")] = d->m_yearFilter;
+        map[QStringLiteral("yearFilter")] = d->m_yearFilter;
     if (d->m_monthFilter >= 0)
-        map[QLatin1String("monthFilter")] = d->m_monthFilter;
+        map[QStringLiteral("monthFilter")] = d->m_monthFilter;
     if (d->m_dayFilter >= 0)
-        map[QLatin1String("dayFilter")] = d->m_dayFilter;
+        map[QStringLiteral("dayFilter")] = d->m_dayFilter;
 
     if (d->m_sortingOption != SortAuto)
-        map[QLatin1String("sortingOption")] = static_cast<int>(d->m_sortingOption);
+        map[QStringLiteral("sortingOption")] = static_cast<int>(d->m_sortingOption);
 
     if (!d->m_includeFolder.isEmpty())
-        map[QLatin1String("includeFolder")] = d->m_includeFolder;
+        map[QStringLiteral("includeFolder")] = d->m_includeFolder;
 
     QJsonObject jo = QJsonObject::fromVariantMap(map);
     QJsonDocument jdoc;
@@ -256,32 +256,32 @@ Query Query::fromJSON(const QByteArray& arr)
     const QVariantMap map = jdoc.object().toVariantMap();
 
     Query query;
-    query.d->m_types = map[QLatin1String("type")].toStringList();
+    query.d->m_types = map[QStringLiteral("type")].toStringList();
 
-    if (map.contains(QLatin1String("limit")))
-        query.d->m_limit = map[QLatin1String("limit")].toUInt();
+    if (map.contains(QStringLiteral("limit")))
+        query.d->m_limit = map[QStringLiteral("limit")].toUInt();
     else
         query.d->m_limit = defaultLimit;
 
-    query.d->m_offset = map[QLatin1String("offset")].toUInt();
-    query.d->m_searchString = map[QLatin1String("searchString")].toString();
-    query.d->m_term = Term::fromVariantMap(map[QLatin1String("term")].toMap());
+    query.d->m_offset = map[QStringLiteral("offset")].toUInt();
+    query.d->m_searchString = map[QStringLiteral("searchString")].toString();
+    query.d->m_term = Term::fromVariantMap(map[QStringLiteral("term")].toMap());
 
-    if (map.contains(QLatin1String("yearFilter")))
-        query.d->m_yearFilter = map[QLatin1String("yearFilter")].toInt();
-    if (map.contains(QLatin1String("monthFilter")))
-        query.d->m_monthFilter = map[QLatin1String("monthFilter")].toInt();
-    if (map.contains(QLatin1String("dayFilter")))
-        query.d->m_dayFilter = map[QLatin1String("dayFilter")].toInt();
+    if (map.contains(QStringLiteral("yearFilter")))
+        query.d->m_yearFilter = map[QStringLiteral("yearFilter")].toInt();
+    if (map.contains(QStringLiteral("monthFilter")))
+        query.d->m_monthFilter = map[QStringLiteral("monthFilter")].toInt();
+    if (map.contains(QStringLiteral("dayFilter")))
+        query.d->m_dayFilter = map[QStringLiteral("dayFilter")].toInt();
 
-    if (map.contains(QLatin1String("sortingOption"))) {
-        int option = map.value("sortingOption").toInt();
+    if (map.contains(QStringLiteral("sortingOption"))) {
+        int option = map.value(QStringLiteral("sortingOption")).toInt();
         query.d->m_sortingOption = static_cast<SortingOption>(option);
     }
 
 
-    if (map.contains(QLatin1String("includeFolder"))) {
-        query.d->m_includeFolder = map.value("includeFolder").toString();
+    if (map.contains(QStringLiteral("includeFolder"))) {
+        query.d->m_includeFolder = map.value(QStringLiteral("includeFolder")).toString();
     }
 
     return query;
@@ -290,13 +290,13 @@ Query Query::fromJSON(const QByteArray& arr)
 QUrl Query::toSearchUrl(const QString& title)
 {
     QUrl url;
-    url.setScheme(QLatin1String("baloosearch"));
+    url.setScheme(QStringLiteral("baloosearch"));
 
     QUrlQuery urlQuery;
-    urlQuery.addQueryItem(QLatin1String("json"), QString::fromUtf8(toJSON()));
+    urlQuery.addQueryItem(QStringLiteral("json"), QString::fromUtf8(toJSON()));
 
     if (title.size())
-        urlQuery.addQueryItem(QLatin1String("title"), title);
+        urlQuery.addQueryItem(QStringLiteral("title"), title);
 
     url.setQuery(urlQuery);
     return url;
@@ -308,14 +308,14 @@ Query Query::fromSearchUrl(const QUrl& url)
         return Query();
 
     QUrlQuery urlQuery(url);
-    QString jsonString = urlQuery.queryItemValue(QLatin1String("json"), QUrl::FullyDecoded);
+    QString jsonString = urlQuery.queryItemValue(QStringLiteral("json"), QUrl::FullyDecoded);
     return Query::fromJSON(jsonString.toUtf8());
 }
 
 QString Query::titleFromQueryUrl(const QUrl& url)
 {
     QUrlQuery urlQuery(url);
-    return urlQuery.queryItemValue(QLatin1String("title"), QUrl::FullyDecoded);
+    return urlQuery.queryItemValue(QStringLiteral("title"), QUrl::FullyDecoded);
 }
 
 bool Query::operator==(const Query& rhs) const

@@ -33,8 +33,8 @@ int main(int argc, char** argv)
     QCoreApplication app(argc, argv);
 
     KInotify inotify(0 /*no config*/);
-    QObject::connect(&inotify, SIGNAL(installedWatches()),
-                     &app, SLOT(quit()));
+    QObject::connect(&inotify, &KInotify::installedWatches,
+                     &app, &QCoreApplication::quit);
 
     QObject::connect(&inotify, &KInotify::attributeChanged,
                      [](const QString& fileUrl) { qDebug() << "AttrbuteChanged:" << fileUrl; });

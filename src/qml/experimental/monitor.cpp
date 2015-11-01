@@ -136,7 +136,7 @@ void Monitor::fetchTotalFiles()
 
 void Monitor::startBaloo()
 {
-    const QString exe = QStandardPaths::findExecutable(QLatin1String("baloo_file"));
+    const QString exe = QStandardPaths::findExecutable(QStringLiteral("baloo_file"));
     QProcess::startDetached(exe);
 }
 

@@ -82,7 +82,7 @@ private Q_SLOTS:
         db.put("fore", {2, 3, 5});
         db.put("zib", {4, 5, 6});
 
-        PostingIterator* it = db.regexpIter(QRegularExpression(".re"), QByteArray("f"));
+        PostingIterator* it = db.regexpIter(QRegularExpression(QStringLiteral(".re")), QByteArray("f"));
         QVERIFY(it);
 
         QVector<quint64> result = {1, 2, 3, 5, 8};
@@ -92,7 +92,7 @@ private Q_SLOTS:
         }
 
         // Non existing
-        it = db.regexpIter(QRegularExpression("dub"), QByteArray("f"));
+        it = db.regexpIter(QRegularExpression(QStringLiteral("dub")), QByteArray("f"));
         QVERIFY(it == 0);
     }
 

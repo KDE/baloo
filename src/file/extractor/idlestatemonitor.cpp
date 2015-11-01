@@ -34,7 +34,7 @@ IdleStateMonitor::IdleStateMonitor(QObject* parent)
     KIdleTime* idleTime = KIdleTime::instance();
     idleTime->addIdleTimeout(s_idleTimeout);
     connect(idleTime, SIGNAL(timeoutReached(int)), this, SLOT(slotIdleTimeoutReached()));
-    connect(idleTime, SIGNAL(resumingFromIdle()), this, SLOT(slotResumeFromIdle()));
+    connect(idleTime, &KIdleTime::resumingFromIdle, this, &IdleStateMonitor::slotResumeFromIdle);
 }
 
 IdleStateMonitor::~IdleStateMonitor()

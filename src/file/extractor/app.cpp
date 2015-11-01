@@ -106,9 +106,9 @@ void App::processNextFile()
         * signal isntead of sending out the list of files, that will need changes in whatever
         * uses this signal, Dolphin I think?
         */
-        QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/files"),
-                                                        QLatin1String("org.kde"),
-                                                        QLatin1String("changed"));
+        QDBusMessage message = QDBusMessage::createSignal(QStringLiteral("/files"),
+                                                        QStringLiteral("org.kde"),
+                                                        QStringLiteral("changed"));
 
         QVariantList vl;
         vl.reserve(1);

@@ -68,9 +68,9 @@ void FileMonitorTest::test()
 
     QSignalSpy spy(m_sut, SIGNAL(fileMetaDataChanged(QString)));
 
-    QDBusMessage message = QDBusMessage::createSignal(QLatin1String("/files"),
-                           QLatin1String("org.kde"),
-                           QLatin1String("changed"));
+    QDBusMessage message = QDBusMessage::createSignal(QStringLiteral("/files"),
+                           QStringLiteral("org.kde"),
+                           QStringLiteral("changed"));
 
     QList<QString> list;
     list << file;
@@ -180,14 +180,14 @@ QString FileMonitorTest::getRandomValidWebUrl()
 
 QString FileMonitorTest::getRandomValidFilePath()
 {
-    QString file(QLatin1String("/tmp/"));
+    QString file(QStringLiteral("/tmp/"));
     file.append(getRandomString(8));
     return file;
 }
 
 QString FileMonitorTest::getRandomString(int length) const
 {
-    const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
+    const QString possibleCharacters(QStringLiteral("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"));
     // assuming you want random strings of 12 characters
 
     QString randomString;

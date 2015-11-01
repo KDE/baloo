@@ -248,9 +248,9 @@ QVariantMap Term::toVariantMap() const
         }
 
         if (d->m_op == And)
-            map[QLatin1String("$and")] = variantList;
+            map[QStringLiteral("$and")] = variantList;
         else
-            map[QLatin1String("$or")] = variantList;
+            map[QStringLiteral("$or")] = variantList;
 
         return map;
     }
@@ -262,23 +262,23 @@ QVariantMap Term::toVariantMap() const
         return map;
 
     case Contains:
-        op = QLatin1String("$ct");
+        op = QStringLiteral("$ct");
         break;
 
     case Greater:
-        op = QLatin1String("$gt");
+        op = QStringLiteral("$gt");
         break;
 
     case GreaterEqual:
-        op = QLatin1String("$gte");
+        op = QStringLiteral("$gte");
         break;
 
     case Less:
-        op = QLatin1String("$lt");
+        op = QStringLiteral("$lt");
         break;
 
     case LessEqual:
-        op = QLatin1String("$lte");
+        op = QStringLiteral("$lte");
         break;
 
     case Auto:
@@ -318,12 +318,12 @@ Term Term::fromVariantMap(const QVariantMap& map)
     Term term;
 
     QString andOrString;
-    if (map.contains(QLatin1String("$and"))) {
-        andOrString = QLatin1String("$and");
+    if (map.contains(QStringLiteral("$and"))) {
+        andOrString = QStringLiteral("$and");
         term.setOperation(And);
     }
-    else if (map.contains(QLatin1String("$or"))) {
-        andOrString = QLatin1String("$or");
+    else if (map.contains(QStringLiteral("$or"))) {
+        andOrString = QStringLiteral("$or");
         term.setOperation(Or);
     }
 
@@ -407,19 +407,19 @@ namespace {
     QString comparatorToString(Baloo::Term::Comparator c) {
         switch (c) {
         case Baloo::Term::Auto:
-            return "Auto";
+            return QStringLiteral("Auto");
         case Baloo::Term::Equal:
-            return "=";
+            return QStringLiteral("=");
         case Baloo::Term::Contains:
-            return ":";
+            return QStringLiteral(":");
         case Baloo::Term::Less:
-            return "<";
+            return QStringLiteral("<");
         case Baloo::Term::LessEqual:
-            return "<=";
+            return QStringLiteral("<=");
         case Baloo::Term::Greater:
-            return ">";
+            return QStringLiteral(">");
         case Baloo::Term::GreaterEqual:
-            return ">=";
+            return QStringLiteral(">=");
         }
 
         return QString();
@@ -428,11 +428,11 @@ namespace {
     QString operationToString(Baloo::Term::Operation op) {
         switch (op) {
         case Baloo::Term::None:
-            return "NONE";
+            return QStringLiteral("NONE");
         case Baloo::Term::And:
-            return "AND";
+            return QStringLiteral("AND");
         case Baloo::Term::Or:
-            return "OR";
+            return QStringLiteral("OR");
         }
 
         return QString();
@@ -442,7 +442,7 @@ namespace {
 QDebug operator <<(QDebug d, const Baloo::Term& t)
 {
     if (t.subTerms().isEmpty()) {
-        d << QString::fromLatin1("(%1 %2 %3 (%4))").arg(t.property(),
+        d << QStringLiteral("(%1 %2 %3 (%4))").arg(t.property(),
                                                         comparatorToString(t.comparator()),
                                                         t.value().toString(),
                                                         t.value().typeName()).toUtf8().constData();

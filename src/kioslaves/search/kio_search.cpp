@@ -42,13 +42,13 @@ KIO::UDSEntry statSearchFolder(const QUrl& url)
     uds.insert(KIO::UDSEntry::UDS_ACCESS, 0700);
     uds.insert(KIO::UDSEntry::UDS_USER, KUser().loginName());
     uds.insert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
-    uds.insert(KIO::UDSEntry::UDS_MIME_TYPE, QString::fromLatin1("inode/directory"));
-    uds.insert(KIO::UDSEntry::UDS_ICON_OVERLAY_NAMES, QLatin1String("baloo"));
+    uds.insert(KIO::UDSEntry::UDS_MIME_TYPE, QStringLiteral("inode/directory"));
+    uds.insert(KIO::UDSEntry::UDS_ICON_OVERLAY_NAMES, QStringLiteral("baloo"));
     uds.insert(KIO::UDSEntry::UDS_DISPLAY_TYPE, i18n("Search Folder"));
     uds.insert(KIO::UDSEntry::UDS_URL, url.url());
 
     QUrlQuery query(url);
-    QString title = query.queryItemValue(QLatin1String("title"), QUrl::FullyDecoded);
+    QString title = query.queryItemValue(QStringLiteral("title"), QUrl::FullyDecoded);
     if (!title.isEmpty()) {
         uds.insert(KIO::UDSEntry::UDS_NAME, title);
         uds.insert(KIO::UDSEntry::UDS_DISPLAY_NAME, title);
@@ -74,10 +74,10 @@ void SearchProtocol::listDir(const QUrl& url)
     Query q;
 
     QUrlQuery urlQuery(url);
-    if (urlQuery.hasQueryItem("json")) {
+    if (urlQuery.hasQueryItem(QStringLiteral("json"))) {
         QString jsonString = urlQuery.queryItemValue(QStringLiteral("json"), QUrl::FullyDecoded);
         q = Query::fromJSON(jsonString.toUtf8());
-    } else if (urlQuery.hasQueryItem("query")) {
+    } else if (urlQuery.hasQueryItem(QStringLiteral("query"))) {
         QString queryString = urlQuery.queryItemValue(QStringLiteral("query"), QUrl::FullyDecoded);
 
         q.setSearchString(queryString);
@@ -123,7 +123,7 @@ void SearchProtocol::listDir(const QUrl& url)
 
 void SearchProtocol::mimetype(const QUrl&)
 {
-    mimeType(QLatin1String("inode/directory"));
+    mimeType(QStringLiteral("inode/directory"));
     finished();
 }
 

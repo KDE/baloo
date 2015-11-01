@@ -131,7 +131,7 @@ void FileWatchTest::testFileCreation()
         return;
     }
 
-    const QString userComment(QLatin1String("UserComment"));
+    const QString userComment(QStringLiteral("UserComment"));
     QVERIFY(baloo_setxattr(fileUrl, QLatin1String("user.xdg.comment"), userComment) != -1);
 
     QVERIFY(spyIndexXattr.wait());

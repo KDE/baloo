@@ -44,7 +44,7 @@ KIO::UDSEntry createFolderUDSEntry(const QString& name, const QString& displayNa
     uds.insert(KIO::UDSEntry::UDS_NAME, name);
     uds.insert(KIO::UDSEntry::UDS_DISPLAY_NAME, displayName);
     uds.insert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
-    uds.insert(KIO::UDSEntry::UDS_MIME_TYPE, QString::fromLatin1("inode/directory"));
+    uds.insert(KIO::UDSEntry::UDS_MIME_TYPE, QStringLiteral("inode/directory"));
     uds.insert(KIO::UDSEntry::UDS_MODIFICATION_TIME, dt.toTime_t());
     uds.insert(KIO::UDSEntry::UDS_CREATION_TIME, dt.toTime_t());
     uds.insert(KIO::UDSEntry::UDS_ACCESS, 0700);
@@ -60,14 +60,14 @@ KIO::UDSEntry createMonthUDSEntry(int month, int year)
                       "to see which variables you can use and ask kde-i18n-doc@kde.org if you have "
                       "problems understanding how to translate this",
                       "MMMM yyyy"));
-    return createFolderUDSEntry(QDate(year, month, 1).toString(QLatin1String("yyyy-MM")),
+    return createFolderUDSEntry(QDate(year, month, 1).toString(QStringLiteral("yyyy-MM")),
                                 dateString,
                                 QDate(year, month, 1));
 }
 
 KIO::UDSEntry createDayUDSEntry(const QDate& date)
 {
-    KIO::UDSEntry uds = createFolderUDSEntry(date.toString(QLatin1String("yyyy-MM-dd")),
+    KIO::UDSEntry uds = createFolderUDSEntry(date.toString(QStringLiteral("yyyy-MM-dd")),
                         KFormat().formatRelativeDate(date, QLocale::LongFormat),
                         date);
 
@@ -117,8 +117,8 @@ void TimelineProtocol::listDir(const QUrl& url)
 {
     switch (parseTimelineUrl(url, &m_date, &m_filename)) {
     case RootFolder:
-        listEntry(createFolderUDSEntry(QLatin1String("today"), i18n("Today"), QDate::currentDate()));
-        listEntry(createFolderUDSEntry(QLatin1String("calendar"), i18n("Calendar"), QDate::currentDate()));
+        listEntry(createFolderUDSEntry(QStringLiteral("today"), i18n("Today"), QDate::currentDate()));
+        listEntry(createFolderUDSEntry(QStringLiteral("calendar"), i18n("Calendar"), QDate::currentDate()));
         finished();
         break;
 
@@ -162,7 +162,7 @@ void TimelineProtocol::mimetype(const QUrl& url)
     case CalendarFolder:
     case MonthFolder:
     case DayFolder:
-        mimetype(QUrl(QString::fromLatin1("inode/directory")));
+        mimetype(QUrl(QLatin1String("inode/directory")));
         break;
 
     case NoFolder:
@@ -177,17 +177,17 @@ void TimelineProtocol::stat(const QUrl& url)
     switch (parseTimelineUrl(url, &m_date, &m_filename)) {
     case RootFolder: {
         KIO::UDSEntry uds;
-        uds.insert(KIO::UDSEntry::UDS_NAME, QString::fromLatin1("/"));
-        uds.insert(KIO::UDSEntry::UDS_ICON_NAME, QString::fromLatin1("nepomuk"));
+        uds.insert(KIO::UDSEntry::UDS_NAME, QStringLiteral("/"));
+        uds.insert(KIO::UDSEntry::UDS_ICON_NAME, QStringLiteral("nepomuk"));
         uds.insert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
-        uds.insert(KIO::UDSEntry::UDS_MIME_TYPE, QString::fromLatin1("inode/directory"));
+        uds.insert(KIO::UDSEntry::UDS_MIME_TYPE, QStringLiteral("inode/directory"));
         statEntry(uds);
         finished();
         break;
     }
 
     case CalendarFolder:
-        statEntry(createFolderUDSEntry(QLatin1String("calendar"), i18n("Calendar"), QDate::currentDate()));
+        statEntry(createFolderUDSEntry(QStringLiteral("calendar"), i18n("Calendar"), QDate::currentDate()));
         finished();
         break;
 

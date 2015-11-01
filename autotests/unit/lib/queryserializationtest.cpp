@@ -45,8 +45,8 @@ void QuerySerializationTest::testBasic()
     Query query;
     query.setLimit(5);
     query.setOffset(1);
-    query.setSearchString(QLatin1String("Bookie"));
-    query.addType(QLatin1String("File/Audio"));
+    query.setSearchString(QStringLiteral("Bookie"));
+    query.addType(QStringLiteral("File/Audio"));
 
     QByteArray json = query.toJSON();
     Query q = Query::fromJSON(json);
@@ -64,7 +64,7 @@ void QuerySerializationTest::testBasic()
 void QuerySerializationTest::testTerm()
 {
     Query query;
-    query.setSearchString("prop:value");
+    query.setSearchString(QStringLiteral("prop:value"));
 
     QByteArray json = query.toJSON();
     Query q = Query::fromJSON(json);
@@ -75,7 +75,7 @@ void QuerySerializationTest::testTerm()
 void QuerySerializationTest::testAndTerm()
 {
     Query query;
-    query.setSearchString("prop1:1 AND prop2:2");
+    query.setSearchString(QStringLiteral("prop1:1 AND prop2:2"));
 
     QByteArray json = query.toJSON();
     Query q = Query::fromJSON(json);
@@ -86,7 +86,7 @@ void QuerySerializationTest::testAndTerm()
 void QuerySerializationTest::testDateTerm()
 {
     Query query;
-    query.setSearchString("prop:2015-05-01");
+    query.setSearchString(QStringLiteral("prop:2015-05-01"));
 
     QByteArray json = query.toJSON();
     Query q = Query::fromJSON(json);
@@ -97,7 +97,7 @@ void QuerySerializationTest::testDateTerm()
 void QuerySerializationTest::testDateTimeTerm()
 {
     Query query;
-    query.setSearchString("prop:2015-05-01T23:44:11");
+    query.setSearchString(QStringLiteral("prop:2015-05-01T23:44:11"));
 
     QByteArray json = query.toJSON();
     Query q = Query::fromJSON(json);
@@ -109,7 +109,7 @@ void QuerySerializationTest::testDateTimeTerm()
 void QuerySerializationTest::testCustomOptions()
 {
     Query query;
-    query.addType(QLatin1String("File"));
+    query.addType(QStringLiteral("File"));
     query.setIncludeFolder(QStringLiteral("/home/vishesh"));
 
     QByteArray json = query.toJSON();
