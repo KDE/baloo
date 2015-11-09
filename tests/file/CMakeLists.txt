@@ -20,7 +20,7 @@ ecm_mark_as_test(filtereddiriteratorbenchmark)
 #
 # Remaining Time //TODO: rewrite the test to use mainhub, instead of using the indexers directly
 #
-#[[set_source_files_properties(${CMAKE_BINARY_DIR}/src/dbus/extractor_interface.cpp PROPERTIES GENERATED 1)
+#set_source_files_properties(${CMAKE_BINARY_DIR}/src/dbus/extractor_interface.cpp PROPERTIES GENERATED 1)
 
  add_executable(remainingtimetest-manual
   remainingtimetest.cpp
@@ -35,4 +35,3 @@ target_link_libraries(remainingtimetest-manual
 )
 
 ecm_mark_as_test(remainingtimetest-manual)
-]]
