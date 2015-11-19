@@ -68,6 +68,17 @@ bool Database::open(OpenMode mode)
         QDir().mkdir(m_path);
         dirInfo.refresh();
     }
+
+    // maybe it's a good idea to check if the index actually exists if we're
+    // opening it in readonly mode
+    if (mode == OpenDatabase) {
+        const QDir dir(m_path);
+        QFileInfo indexInfo(dir, QStringLiteral("index"));
+        if (!indexInfo.exists()) {
+            return false;
+        }
+    }
+
     if (mode == CreateDatabase) {
         if (!dirInfo.permission(QFile::WriteOwner)) {
             qCritical() << m_path << "does not have write permissions. Aborting";
