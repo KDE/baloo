@@ -63,31 +63,24 @@ bool Database::open(OpenMode mode)
         return true;
     }
 
-    QFileInfo dirInfo(m_path);
-    if (!dirInfo.exists()) {
-        QDir().mkdir(m_path);
-        dirInfo.refresh();
+    QDir dir(m_path);
+    if (!dir.exists()) {
+        dir.mkpath(QStringLiteral("."));
+        dir.refresh();
     }
+    QFileInfo indexInfo(dir, QStringLiteral("index"));
 
-    // maybe it's a good idea to check if the index actually exists if we're
-    // opening it in readonly mode
-    if (mode == OpenDatabase) {
-        const QDir dir(m_path);
-        QFileInfo indexInfo(dir, QStringLiteral("index"));
-        if (!indexInfo.exists()) {
-            return false;
-        }
+    if (mode == OpenDatabase && !indexInfo.exists()) {
+        return false;
     }
 
     if (mode == CreateDatabase) {
-        if (!dirInfo.permission(QFile::WriteOwner)) {
+        if (!QFileInfo(dir.absolutePath()).permission(QFile::WriteOwner)) {
             qCritical() << m_path << "does not have write permissions. Aborting";
             return false;
         }
 
-        const QString dbFilePath = m_path + "/index";
-        QFileInfo info(dbFilePath);
-        if (!info.exists()) {
+        if (!indexInfo.exists()) {
             if (FSUtils::getDirectoryFileSystem(m_path) == QStringLiteral("btrfs")) {
                 FSUtils::disableCoW(m_path);
             }
@@ -104,7 +97,7 @@ bool Database::open(OpenMode mode)
     mdb_env_set_mapsize(m_env, static_cast<size_t>(1024) * 1024 * 1024 * 5); // 5 gb
 
     // The directory needs to be created before opening the environment
-    QByteArray arr = QFile::encodeName(m_path) + "/index";
+    QByteArray arr = QFile::encodeName(indexInfo.absoluteFilePath());
     rc = mdb_env_open(m_env, arr.constData(), MDB_NOSUBDIR | MDB_NOMEMINIT, 0664);
     if (rc) {
         m_env = 0;
@@ -113,6 +106,10 @@ bool Database::open(OpenMode mode)
 
     rc = mdb_reader_check(m_env, 0);
     Q_ASSERT_X(rc == 0, "Database::open reader_check", mdb_strerror(rc));
+    if (rc) {
+        mdb_env_close(m_env);
+        return false;
+    }
 
     //
     // Individual Databases
@@ -121,6 +118,13 @@ bool Database::open(OpenMode mode)
     if (mode == OpenDatabase) {
         int rc = mdb_txn_begin(m_env, NULL, MDB_RDONLY, &txn);
         Q_ASSERT_X(rc == 0, "Database::transaction ro begin", mdb_strerror(rc));
+        if (rc) {
+            mdb_txn_abort(txn);
+            mdb_env_close(m_env);
+            m_env = 0;
+            return false;
+        }
+
         m_dbis.postingDbi = PostingDB::open(txn);
         m_dbis.positionDBi = PositionDB::open(txn);
 
@@ -139,17 +143,31 @@ bool Database::open(OpenMode mode)
 
         m_dbis.mtimeDbi = MTimeDB::open(txn);
 
+        Q_ASSERT(m_dbis.isValid());
         if (!m_dbis.isValid()) {
             mdb_txn_abort(txn);
+            mdb_env_close(m_env);
             m_env = 0;
             return false;
         }
+
         rc = mdb_txn_commit(txn);
         Q_ASSERT_X(rc == 0, "Database::transaction ro commit", mdb_strerror(rc));
-    }
-    else {
+        if (rc) {
+            mdb_env_close(m_env);
+            m_env = 0;
+            return false;
+        }
+    } else {
         int rc = mdb_txn_begin(m_env, NULL, 0, &txn);
         Q_ASSERT_X(rc == 0, "Database::transaction begin", mdb_strerror(rc));
+        if (rc) {
+            mdb_txn_abort(txn);
+            mdb_env_close(m_env);
+            m_env = 0;
+            return false;
+        }
+
         m_dbis.postingDbi = PostingDB::create(txn);
         m_dbis.positionDBi = PositionDB::create(txn);
 
@@ -171,11 +189,18 @@ bool Database::open(OpenMode mode)
         Q_ASSERT(m_dbis.isValid());
         if (!m_dbis.isValid()) {
             mdb_txn_abort(txn);
+            mdb_env_close(m_env);
             m_env = 0;
             return false;
         }
+
         rc = mdb_txn_commit(txn);
         Q_ASSERT_X(rc == 0, "Database::transaction commit", mdb_strerror(rc));
+        if (rc) {
+            mdb_env_close(m_env);
+            m_env = 0;
+            return false;
+        }
     }
 
     return true;
