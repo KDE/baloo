@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2012-2013 Vishesh Handa <me@vhanda.in>
+   Copyright (c) 2012-2015 Vishesh Handa <me@vhanda.in>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -162,6 +162,8 @@ int main(int argc, char* argv[])
             mainInterface.quit();
         if (shouldStart)
             start();
+
+        return 0;
     }
 
     if (command == QStringLiteral("suspend")) {
@@ -217,6 +219,8 @@ int main(int argc, char* argv[])
         }
         tr.commit();
         out << "File(s) indexed\n";
+
+        return 0;
     }
 
     if (command == QStringLiteral("clear")) {
@@ -250,6 +254,8 @@ int main(int argc, char* argv[])
         }
         tr.commit();
         out << "File(s) cleared\n";
+
+        return 0;
     }
 
     if (command == QStringLiteral("indexSize")) {
