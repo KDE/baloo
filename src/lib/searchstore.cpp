@@ -210,16 +210,18 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
 
             Q_ASSERT(year);
 
-            month = month > 0 && month <= 12 ? month : 1;
-            day = day > 0 && day <= 31 ? day : 1;
+            // uses 0 to represent whole month or whole year
+            month = month >= 0 && month <= 12 ? month : 0;
+            day = day >= 0 && day <= 31 ? day : 0;
 
-            QDate startDate(year, month, day);
+            QDate startDate(year, month ? month : 1, day ? day : 1);
             QDate endDate(startDate);
 
-            if (month == 1)
-                endDate.setDate(endDate.year(), 12, endDate.day());
-            else if (day == 1)
+            if (month == 0) {
+                endDate.setDate(endDate.year(), 12, 31);
+            } else if (day == 0) {
                 endDate.setDate(endDate.year(), endDate.month(), endDate.daysInMonth());
+            }
 
             return tr->mTimeRangeIter(QDateTime(startDate).toTime_t(), QDateTime(endDate, QTime(23, 59, 59)).toTime_t());
         }
