@@ -1,0 +1,325 @@
+# Translation of balooctl.po to Catalan (Valencian)
+# Copyright (C) 2014-2015 This_file_is_part_of_KDE
+# This file is distributed under the license LGPL version 2.1 or
+# version 3 or later versions approved by the membership of KDE e.V.
+#
+# Antoni Bella Pérez <antonibella5@yahoo.com>, 2014, 2015.
+# Josep Ma. Ferrer <txemaq@gmail.com>, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: balooctl\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-10-19 08:03+0000\n"
+"PO-Revision-Date: 2015-10-19 22:27+0200\n"
+"Last-Translator: Josep Ma. Ferrer <txemaq@gmail.com>\n"
+"Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
+"Language: ca@valencia\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Accelerator-Marker: &\n"
+"X-Generator: Lokalize 1.5\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Antoni Bella"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "antonibella5@yahoo.com"
+
+#: ../../file/indexerstate.h:42
+msgid "Unknown"
+msgstr "Desconegut"
+
+#: ../../file/indexerstate.h:45
+msgid "Idle"
+msgstr "Inactiu"
+
+#: ../../file/indexerstate.h:48
+msgid "Suspended"
+msgstr "Suspès"
+
+#: ../../file/indexerstate.h:51
+msgid "Initial Indexing"
+msgstr "Indexació inicial"
+
+#: ../../file/indexerstate.h:54
+msgid "Indexing new files"
+msgstr "Indexació dels fitxers nous"
+
+#: ../../file/indexerstate.h:57
+msgid "Indexing modified files"
+msgstr "Indexació dels fitxers modificats"
+
+#: ../../file/indexerstate.h:60
+msgid "Indexing Extended Attributes"
+msgstr "Indexació dels atributs ampliats"
+
+#: ../../file/indexerstate.h:63
+msgid "Indexing file content"
+msgstr "Indexació del contingut dels fitxers"
+
+#: ../../file/indexerstate.h:66
+msgid "Checking for unindexed files"
+msgstr "S'està comprovant si hi ha fitxers sense indexar"
+
+#: configcommand.cpp:45
+msgid "Manipulate the Baloo configuration"
+msgstr "Manipula la configuració del Baloo"
+
+#: configcommand.cpp:68
+msgid "The config command can be used to manipulate the Baloo Configuration"
+msgstr ""
+"L'orde «config» es pot utilitzar per a manipular la configuració del Baloo"
+
+#: configcommand.cpp:69
+msgid "Usage: balooctl config <command>"
+msgstr "Ús: balooctl config <command>"
+
+#: configcommand.cpp:70
+msgid "Possible Commands:"
+msgstr "Ordes possibles:"
+
+#: configcommand.cpp:73
+msgid "Add a value to config parameter"
+msgstr "Afig un valor al paràmetre «config»"
+
+#: configcommand.cpp:74
+msgid "Remove a value from a config parameter"
+msgstr "Elimina un valor del paràmetre «config»"
+
+#: configcommand.cpp:75
+msgid "Show the value of a config parameter"
+msgstr "Mostra el valor d'un paràmetre «config»"
+
+#: configcommand.cpp:76
+msgid "Set the value of a config parameter"
+msgstr "Defineix el valor d'un paràmetre «config»"
+
+#: configcommand.cpp:77
+msgid "Display this help menu"
+msgstr "Mostra este menú d'ajuda"
+
+#: configcommand.cpp:83
+msgid "The following configuration options may be listed:"
+msgstr "Es poden llistar les opcions de configuració següents:"
+
+#: configcommand.cpp:85 configcommand.cpp:398
+msgid "Controls if Baloo indexes hidden files and folders"
+msgstr "Controla si el Baloo indexa fitxers i carpetes ocults"
+
+#: configcommand.cpp:86
+msgid "Controls if baloo indexes file content."
+msgstr "Controla si el Baloo indexa el contingut dels fitxers."
+
+#: configcommand.cpp:87 configcommand.cpp:150 configcommand.cpp:261
+msgid "The list of folders which Baloo indexes"
+msgstr "La llista de les carpetes indexades pel Baloo"
+
+#: configcommand.cpp:88 configcommand.cpp:151 configcommand.cpp:262
+msgid "The list of folders which Baloo will never index"
+msgstr "La llista de les carpetes indexades que el Baloo no indexarà mai"
+
+#: configcommand.cpp:89 configcommand.cpp:152 configcommand.cpp:263
+msgid "The list of filters which are used to exclude files"
+msgstr "La llista de filtres que s'usen per excloure fitxers"
+
+#: configcommand.cpp:90 configcommand.cpp:153 configcommand.cpp:264
+msgid "The list of mimetypes which are used to exclude files"
+msgstr "La llista de tipus MIME que s'usen per excloure fitxers"
+
+#: configcommand.cpp:142 configcommand.cpp:253 configcommand.cpp:390
+#: configcommand.cpp:459
+msgid "Config parameter could not be found"
+msgstr "No s'ha pogut trobar el paràmetre «config»"
+
+#: configcommand.cpp:148 configcommand.cpp:259 configcommand.cpp:396
+msgid "The following configuration options may be modified:"
+msgstr "Es poden modificar les opcions de configuració següents:"
+
+#: configcommand.cpp:161 configcommand.cpp:191 configcommand.cpp:272
+#: configcommand.cpp:314
+msgid "A folder must be provided"
+msgstr "Cal indicar una carpeta"
+
+#: configcommand.cpp:167 configcommand.cpp:197 configcommand.cpp:278
+#: configcommand.cpp:320
+msgid "Path does not exist"
+msgstr "El camí no existeix"
+
+#: configcommand.cpp:172 configcommand.cpp:202 configcommand.cpp:283
+#: configcommand.cpp:325
+msgid "Path is not a directory"
+msgstr "El camí no és cap directori"
+
+#: configcommand.cpp:179
+#, kde-format
+msgid "%1 is not in the list of include folders"
+msgstr "%1 no es troba a la llista de carpetes a incloure"
+
+#: configcommand.cpp:209
+#, kde-format
+msgid "%1 is not in the list of exclude folders"
+msgstr "%1 no es troba a la llista de carpetes a excloure"
+
+#: configcommand.cpp:221 configcommand.cpp:356
+msgid "A filter must be provided"
+msgstr "Cal indicar un filtre"
+
+#: configcommand.cpp:227
+#, kde-format
+msgid "%1 is not in list of exclude filters"
+msgstr "%1 no es troba a la llista de filtres d'exclusió"
+
+#: configcommand.cpp:238 configcommand.cpp:374
+msgid "A mimetype must be provided"
+msgstr "Cal indicar un tipus MIME"
+
+#: configcommand.cpp:244
+#, kde-format
+msgid "%1 is not in list of exclude mimetypes"
+msgstr "%1 no es troba a la llista de tipus MIME d'exclusió"
+
+#: configcommand.cpp:290
+#, kde-format
+msgid "%1 is already in the list of include folders"
+msgstr "%1 no es troba a la llista de carpetes a incloure"
+
+#: configcommand.cpp:296
+#, kde-format
+msgid "Parent folder %1 is already in the list of include folders"
+msgstr "La carpeta pare %1 ja es troba a la llista de carpetes a incloure"
+
+#: configcommand.cpp:302 configcommand.cpp:344
+#, kde-format
+msgid "%1 is in the list of exclude folders"
+msgstr "%1 no es troba a la llista de carpetes a excloure"
+
+#: configcommand.cpp:332
+#, kde-format
+msgid "%1 is already in the list of exclude folders"
+msgstr "%1 ja es troba a la llista de carpetes a excloure"
+
+#: configcommand.cpp:338
+#, kde-format
+msgid "Parent folder %1 is already in the list of exclude folders"
+msgstr "La carpeta pare %1 ja es troba a la llista de carpetes a excloure"
+
+#: configcommand.cpp:362
+msgid "Exclude filter is already in the list"
+msgstr "El filtre d'exclusió ja està a la llista"
+
+#: configcommand.cpp:380
+msgid "Exclude mimetype is already in the list"
+msgstr "El tipus MIME d'exclusió ja està a la llista"
+
+#: configcommand.cpp:407 configcommand.cpp:434
+msgid "A value must be provided"
+msgstr "Cal indicar un valor"
+
+#: configcommand.cpp:428 configcommand.cpp:455
+msgid "Invalid value"
+msgstr "Valor no vàlid"
+
+#: main.cpp:67
+msgid "balooctl"
+msgstr "balooctl"
+
+#: main.cpp:68
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:68
+msgid "Maintainer"
+msgstr "Mantenidor"
+
+#: main.cpp:74
+msgid "The command to execute"
+msgstr "L'orde a executar"
+
+#: main.cpp:76
+msgid "Print the status of the indexer"
+msgstr "Imprimeix l'estat de l'indexador"
+
+#: main.cpp:77
+msgid "Enable the file indexer"
+msgstr "Habilita l'indexador de fitxers"
+
+#: main.cpp:78
+msgid "Disable the file indexer"
+msgstr "Deshabilita l'indexador de fitxers"
+
+#: main.cpp:79
+msgid "Start the file indexer"
+msgstr "Inicia l'indexador de fitxers"
+
+#: main.cpp:80
+msgid "Stop the file indexer"
+msgstr "Atura l'indexador de fitxers"
+
+#: main.cpp:81
+msgid "Restart the file indexer"
+msgstr "Torna a iniciar l'indexador de fitxers"
+
+#: main.cpp:82
+msgid "Suspend the file indexer"
+msgstr "Suspèn l'indexador de fitxers"
+
+#: main.cpp:83
+msgid "Resume the file indexer"
+msgstr "Reactiva l'indexador de fitxers"
+
+#: main.cpp:84
+msgid "Check for any unindexed files and index them"
+msgstr "Comprova si hi ha qualsevol fitxer sense indexar i indexa'l"
+
+#: main.cpp:85
+msgid "Index the specified files"
+msgstr "Indexa els fitxers especificats"
+
+#: main.cpp:86
+msgid "Forget the specified files"
+msgstr "Oblida els fitxers especificats"
+
+#: main.cpp:87
+msgid "Modify the Baloo configuration"
+msgstr "Modifica la configuració del Baloo"
+
+#: statuscommand.cpp:45
+msgid "Print the status of the Indexer"
+msgstr "Imprimeix l'estat de l'indexador"
+
+#: statuscommand.cpp:54
+msgid "Baloo is currently disabled. To enable, please run \"balooctl enable\""
+msgstr ""
+"Actualment el Baloo està deshabilitat. Per habilitar-lo, executeu «balooctl "
+"enable»"
+
+#: statuscommand.cpp:60
+msgid "Baloo Index could not be opened"
+msgstr "No s'ha pogut obrir l'índex del Baloo"
+
+#: statuscommand.cpp:81
+msgid "Baloo File Indexer is running"
+msgstr "La indexació de fitxers del Baloo s'està executant"
+
+#: statuscommand.cpp:82
+#, kde-format
+msgid "Indexer state: %1"
+msgstr "Estat de l'indexador: %1"
+
+#: statuscommand.cpp:85
+msgid "Baloo File Indexer is not running"
+msgstr "La indexació de fitxers del Baloo no s'està executant"
+
+#: statuscommand.cpp:91
+#, kde-format
+msgid "Indexed %1 / %2 files"
+msgstr "S'han indexat %1 / %2 fitxers"
+
+#: statuscommand.cpp:110
+#, kde-format
+msgid "File: %1"
+msgstr "Fitxer: %1"

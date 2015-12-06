@@ -1,0 +1,83 @@
+# Translation of baloosearch.po to Brazilian Portuguese
+# Copyright (C) 2014-2015 This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# André Marcelo Alvarenga <alvarenga@kde.org>, 2014, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: baloosearch\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-09-19 08:51+0000\n"
+"PO-Revision-Date: 2015-09-19 18:20-0300\n"
+"Last-Translator: André Marcelo Alvarenga <alvarenga@kde.org>\n"
+"Language-Team: Brazilian Portuguese <kde-i18n-pt_br@kde.org>\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Lokalize 1.5\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "André Marcelo Alvarenga"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "alvarenga@kde.org"
+
+#: main.cpp:39
+msgid "Baloo Search"
+msgstr "Pesquisa do Baloo"
+
+#: main.cpp:41
+msgid "A tool to search through the files indexed by Baloo"
+msgstr "Uma ferramenta para pesquisar nos arquivos indexados pelo Baloo"
+
+#: main.cpp:43
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:43
+msgid "Maintainer"
+msgstr "Mantenedor"
+
+#: main.cpp:50
+msgid "The maximum number of results"
+msgstr "Número máximo de resultados"
+
+#: main.cpp:51
+msgid "limit"
+msgstr "limite"
+
+#: main.cpp:53
+msgid "Offset from which to start the search"
+msgstr "Posição de onde iniciar a pesquisa"
+
+#: main.cpp:54
+msgid "offset"
+msgstr "posição"
+
+#: main.cpp:56
+msgid "Type of data to be searched"
+msgstr "Tipo de dados a ser pesquisado"
+
+#: main.cpp:57
+msgid "typeStr"
+msgstr "stringTipo"
+
+#: main.cpp:59
+msgid "Limit search to specified directory"
+msgstr "Limitar a pesquisa à pasta indicada"
+
+#: main.cpp:60
+msgid "directory"
+msgstr "pasta"
+
+#: main.cpp:61
+msgid "query"
+msgstr "pesquisa"
+
+#: main.cpp:61
+msgid "List of words to query for"
+msgstr "Lista de palavras a pesquisar"
