@@ -4,7 +4,7 @@ Baloo provides a convenient tool called `baloosearch` which can be used to
 perform searches. Additionally Baloo is also integrated in popular
 applications such as KRunner and Dolphin.
 
-Example -
+Example:
 
     $ baloosearch coldplay
     /home/user/Music/Coldplay - Ghost Stories
@@ -22,7 +22,7 @@ For example 'type' can be used to filter for files based on their general type
 
 `type:Audio` or `type:Document`
 
-Currently the following types are supported -
+Currently the following types are supported:
 
 * Archive
 * Audio
@@ -70,7 +70,7 @@ grouped by file types.
 * PageCount
 * WordCount
 * LineCount
-* Langauge
+* Language
 * Copyright
 * Publisher
 * CreationDate
