@@ -10,6 +10,7 @@ X-KDE-Kded-phase=1
 
 Name=Search Folder Updater
 Name[ar]=محدّث مجلّدات البحث
+Name[ast]=Anovador de carpetes de gueta
 Name[ca]=Actualitzador de les carpetes de cerca
 Name[ca@valencia]=Actualitzador de les carpetes de cerca
 Name[cs]=Nástroj pro aktualizaci složek pro vyhledávání
@@ -47,6 +48,7 @@ Name[zh_CN]=搜索文件夹更新器
 Name[zh_TW]=搜尋資料夾更新器
 Comment=Allows automatic updates of Search Folders
 Comment[ar]=يسمح بالتّحديثات الآليّة لمجلّدات البحث
+Comment[ast]=Permite anovamientos automáticos de les carpetes de gueta
 Comment[ca]=Permet l'actualització automàtica de les carpetes de cerca
 Comment[ca@valencia]=Permet l'actualització automàtica de les carpetes de cerca
 Comment[cs]=Umožňuje automatickou aktualizaci prohledávaných složek
