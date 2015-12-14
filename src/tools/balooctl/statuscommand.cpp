@@ -122,12 +122,10 @@ int StatusCommand::exec(const QCommandLineParser& parser)
             out << "Content Indexing: ";
             if (tr.inPhaseOne(id)) {
                 out << "Scheduled\n";
-            } else if (!tr.documentData(id).isEmpty()) {
-                out << "Done\n";
             } else if (tr.hasFailed(id)) {
                 out << "Failed\n";
             } else {
-                out << "Disabled\n";
+                out << "Done\n";
             }
         }
     }
