@@ -101,8 +101,6 @@ int StatusCommand::exec(const QCommandLineParser& parser)
             out << "Index does not exist yet\n";
         }
     } else {
-        IndexerConfig config;
-
         for (const QString& arg : args) {
             QString filePath = QFileInfo(arg).absoluteFilePath();
             quint64 id = filePathToId(QFile::encodeName(filePath));
@@ -112,7 +110,7 @@ int StatusCommand::exec(const QCommandLineParser& parser)
             out << "Basic Indexing: ";
             if (tr.hasDocument(id)) {
                 out << "Done\n";
-            } else if (config.shouldBeIndexed(filePath)) {
+            } else if (cfg.shouldBeIndexed(filePath)) {
                 out << "Scheduled\n";
                 return 0;
             } else {
