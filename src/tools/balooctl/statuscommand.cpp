@@ -119,6 +119,10 @@ int StatusCommand::exec(const QCommandLineParser& parser)
                 return 0;
             }
 
+            if (QFileInfo(arg).isDir()) {
+                continue;
+            }
+
             out << "Content Indexing: ";
             if (tr.inPhaseOne(id)) {
                 out << "Scheduled\n";
