@@ -174,6 +174,9 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
         }
     }
 
+    if (term.value().isNull()) {
+        return 0;
+    }
     Q_ASSERT(term.value().isValid());
     Q_ASSERT(term.comparator() != Term::Auto);
     Q_ASSERT(term.comparator() == Term::Contains ? term.value().type() == QVariant::String : true);
