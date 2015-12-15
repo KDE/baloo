@@ -97,6 +97,41 @@ private Q_SLOTS:
             QCOMPARE(it->docId(), static_cast<quint64>(val));
         }
     }
+
+    void testSortedAndUnique()
+    {
+        MTimeDB db(MTimeDB::create(m_txn), m_txn);
+
+        db.put(5, 1);
+        db.put(6, 4);
+        db.put(6, 2);
+        db.put(6, 3);
+        db.put(7, 3);
+
+        QCOMPARE(db.get(6), QVector<quint64>() << 2 << 3 << 4);
+
+        PostingIterator* it = db.iterRange(5, 7);
+        QVERIFY(it);
+
+        {
+            QVector<quint64> result = {1, 2, 3, 4};
+            for (quint64 val : result) {
+                QCOMPARE(it->next(), static_cast<quint64>(val));
+                QCOMPARE(it->docId(), static_cast<quint64>(val));
+            }
+        }
+
+        {
+            it = db.iter(6, MTimeDB::GreaterEqual);
+            QVERIFY(it);
+
+            QVector<quint64> result = {2, 3, 4};
+            for (quint64 val : result) {
+                QCOMPARE(it->next(), static_cast<quint64>(val));
+                QCOMPARE(it->docId(), static_cast<quint64>(val));
+            }
+        }
+    }
 };
 
 QTEST_MAIN(MTimeDBTest)
