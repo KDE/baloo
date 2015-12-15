@@ -44,7 +44,7 @@ public:
     static MDB_dbi open(MDB_txn* txn);
 
     void put(quint32 mtime, quint64 docId);
-    QVector<quint64> get(quint64 mtime);
+    QVector<quint64> get(quint32 mtime);
 
     void del(quint32 mtime, quint64 docId);
 

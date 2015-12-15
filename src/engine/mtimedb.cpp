@@ -20,6 +20,7 @@
 
 #include "mtimedb.h"
 #include "vectorpostingiterator.h"
+#include <algorithm>
 
 using namespace Baloo;
 
@@ -73,7 +74,7 @@ void MTimeDB::put(quint32 mtime, quint64 docId)
     Q_ASSERT_X(rc == 0, "MTimeDB::put", mdb_strerror(rc));
 }
 
-QVector<quint64> MTimeDB::get(quint64 mtime)
+QVector<quint64> MTimeDB::get(quint32 mtime)
 {
     Q_ASSERT(mtime > 0);
 
@@ -87,7 +88,7 @@ QVector<quint64> MTimeDB::get(quint64 mtime)
     mdb_cursor_open(m_txn, m_dbi, &cursor);
 
     MDB_val val;
-    int rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
+    int rc = mdb_cursor_get(cursor, &key, &val, MDB_SET_RANGE);
     if (rc == MDB_NOTFOUND) {
         mdb_cursor_close(cursor);
         return values;
@@ -107,6 +108,8 @@ QVector<quint64> MTimeDB::get(quint64 mtime)
     }
 
     mdb_cursor_close(cursor);
+    std::sort(values.begin(), values.end());
+    values.erase(std::unique(values.begin(), values.end()), values.end());
     return values;
 }
 
@@ -183,6 +186,8 @@ PostingIterator* MTimeDB::iter(quint32 mtime, MTimeDB::Comparator com)
     }
 
     mdb_cursor_close(cursor);
+    std::sort(results.begin(), results.end());
+    results.erase(std::unique(results.begin(), results.end()), results.end());
     return new VectorPostingIterator(results);
 }
 
@@ -224,6 +229,8 @@ PostingIterator* MTimeDB::iterRange(quint32 beginTime, quint32 endTime)
     }
 
     mdb_cursor_close(cursor);
+    std::sort(results.begin(), results.end());
+    results.erase(std::unique(results.begin(), results.end()), results.end());
     return new VectorPostingIterator(results);
 }
 
