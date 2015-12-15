@@ -226,7 +226,9 @@ PostingIterator* PostingDB::iter(const QByteArray& prefix, Validator validate)
         }
         rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
     }
-    Q_ASSERT_X(rc == 0, "PostingDB::regexpIter", mdb_strerror(rc));
+    if (rc != MDB_NOTFOUND) {
+        Q_ASSERT_X(rc == 0, "PostingDB::regexpIter", mdb_strerror(rc));
+    }
 
     mdb_cursor_close(cursor);
     if (termIterators.isEmpty()) {
