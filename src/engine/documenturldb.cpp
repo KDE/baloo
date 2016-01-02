@@ -146,7 +146,7 @@ QByteArray DocumentUrlDB::get(quint64 docId) const
         return QByteArray();
     }
 
-    QList<QByteArray> list = {path.name};
+    QByteArrayList list = {path.name};
     quint64 id = path.parentId;
     while (id) {
         auto p = idFilenameDb.get(id);
