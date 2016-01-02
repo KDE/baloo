@@ -96,7 +96,14 @@ void DocumentUrlDB::replace(quint64 docId, const QByteArray& url, Functor should
     idFilenameDb.del(docId);
 
     QVector<quint64> subDocs = idTreeDb.get(path.parentId);
+#if QT_VERSION < QT_VERSION_CHECK(5, 4, 0)
+    const int docIdIndex = subDocs.indexOf(docId);
+    if (docIdIndex >= 0) {
+        subDocs.remove(docIdIndex);
+    }
+#else
     subDocs.removeOne(docId);
+#endif
 
     if (!subDocs.isEmpty()) {
         idTreeDb.put(path.parentId, subDocs);
