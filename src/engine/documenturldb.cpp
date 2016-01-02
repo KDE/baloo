@@ -146,17 +146,17 @@ QByteArray DocumentUrlDB::get(quint64 docId) const
         return QByteArray();
     }
 
-    QByteArrayList list = {path.name};
+    QByteArray ret = path.name;
     quint64 id = path.parentId;
     while (id) {
         auto p = idFilenameDb.get(id);
         Q_ASSERT(!p.name.isEmpty());
 
-        list.prepend(p.name);
+        ret = p.name + '/' + ret;
         id = p.parentId;
     }
 
-    return '/' + list.join('/');
+    return '/' + ret;
 }
 
 QVector<quint64> DocumentUrlDB::getChildren(quint64 docId) const
