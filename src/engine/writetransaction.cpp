@@ -262,6 +262,15 @@ static void insert(QVector<T>& vec, const T& id)
     }
 }
 
+template<typename T>
+static void removeOne(QVector<T>& vec, const T& id)
+{
+    const int idx = vec.indexOf(id);
+    if (idx >= 0) {
+        vec.remove(idx);
+    }
+}
+
 void WriteTransaction::commit()
 {
     PostingDB postingDB(m_dbis.postingDbi, m_txn);
@@ -294,12 +303,12 @@ void WriteTransaction::commit()
                 }
             }
             else {
-                list.removeOne(id);
+                removeOne(list, id);
                 if (!fetchedPositionList) {
                     positionList = positionDB.get(term);
                     fetchedPositionList = true;
                 }
-                positionList.removeOne(PositionInfo(id));
+                removeOne(positionList, PositionInfo(id));
             }
         }
 
