@@ -20,6 +20,8 @@
  *
  */
 
+#include <cmath>
+
 #include "timeestimator.h"
 #include "filecontentindexerprovider.h"
 

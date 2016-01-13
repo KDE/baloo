@@ -25,6 +25,7 @@
 #include <QDebug>
 
 #ifdef Q_OS_LINUX
+#include <errno.h>
 #include <unistd.h>
 #include <mntent.h>
 #include <sys/ioctl.h>
