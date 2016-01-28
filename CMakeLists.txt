@@ -15,7 +15,7 @@ include(ECMPackageConfigHelpers)
 include(ECMSetupVersion)
 include(KDEInstallDirs)
 include(KDECMakeSettings)
-include(KDEFrameworkCompilerSettings)
+include(KDEFrameworkCompilerSettings NO_POLICY_SCOPE)
 include(ECMInstallIcons)
 include(ECMAddTests)
 
