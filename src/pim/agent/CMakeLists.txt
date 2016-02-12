@@ -13,6 +13,7 @@ set(akonadi_baloo_indexer_SRCS
     contactindexer.cpp
     akonotesindexer.cpp
     calendarindexer.cpp
+    index.cpp
     ../../file/priority.cpp
 )
 

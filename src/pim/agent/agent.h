@@ -26,12 +26,11 @@
 #include <akonadi/agentbase.h>
 #include <akonadi/collection.h>
 
-#include <QTimer>
 #include <QDateTime>
 #include <QList>
 
 class KJob;
-class AbstractIndexer;
+class Index;
 
 namespace Akonadi
 {
@@ -45,8 +44,10 @@ public:
     BalooIndexingAgent(const QString& id);
     ~BalooIndexingAgent();
 
+    // DBus API
     void reindexCollection(const qlonglong id);
     qlonglong indexedItems(const qlonglong id);
+    QList<qint64> collectionQueue() const;
 
     virtual void itemAdded(const Akonadi::Item& item, const Akonadi::Collection& collection);
     virtual void itemChanged(const Akonadi::Item& item, const QSet<QByteArray>& partIdentifiers);
@@ -63,37 +64,34 @@ public:
     // Remove the entire db
     virtual void cleanup();
 
+Q_SIGNALS:
+    void currentCollectionChanged(qlonglong collection);
+
 private Q_SLOTS:
     void findUnindexedItems();
     void slotRootCollectionsFetched(KJob* job);
     void slotItemFetchFinished(KJob* job);
     void slotReindexCollectionFetched(KJob *job);
 
-    void processNext();
     void slotItemsReceived(const Akonadi::Item::List& items);
-    void slotCommitTimerElapsed();
     void onAbortRequested();
     void onOnlineChanged(bool online);
 
+    void currentIndexingCollectionChanged(qint64 newCol);
 private:
     qlonglong indexedItemsInDatabase(const std::string& term, const QString& dbPath) const;
     QDateTime loadLastItemMTime(const QDateTime& defaultDt = QDateTime()) const;
-    void createIndexers();
-    void addIndexer(AbstractIndexer *indexer);
-    AbstractIndexer* indexerForItem(const Akonadi::Item& item) const;
-    QList<AbstractIndexer*> indexersForCollection(const Akonadi::Collection& collection) const;
+
+    Index *m_index;
 
     Akonadi::Item::List m_items;
-    QTimer m_timer;
     QDateTime m_lastItemMTime;
     QList<KJob*> m_jobs;
     QSet<qint64> m_pendingCollections;
 
-    QList<AbstractIndexer*> m_listIndexer;
-    QHash<QString, AbstractIndexer* > m_indexers;
-
-    QTimer m_commitTimer;
-    bool m_inProgress;
+    int m_processedCount;
+    int m_lastQueueSize;
+    qint64 m_lastCollection;
 };
 
 #endif // AGENT_H

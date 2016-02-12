@@ -8,5 +8,12 @@
             <arg name="item" type="x" direction="in"/>
             <arg type="x" direction="out"/>
         </method>
+        <method name="collectionQueue">
+            <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="QList&lt;qint64&gt;"/>
+            <arg type="ax" direction="out"/>
+        </method>
+        <signal name="currentCollectionChanged">
+            <arg type="x" name="colId" direction="out"/>
+        </signal>
     </interface>
 </node>
