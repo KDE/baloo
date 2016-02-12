@@ -67,6 +67,7 @@ private Q_SLOTS:
     void findUnindexedItems();
     void slotRootCollectionsFetched(KJob* job);
     void slotItemFetchFinished(KJob* job);
+    void slotReindexCollectionFetched(KJob *job);
 
     void processNext();
     void slotItemsReceived(const Akonadi::Item::List& items);
@@ -86,6 +87,7 @@ private:
     QTimer m_timer;
     QDateTime m_lastItemMTime;
     QList<KJob*> m_jobs;
+    QSet<qint64> m_pendingCollections;
 
     QList<AbstractIndexer*> m_listIndexer;
     QHash<QString, AbstractIndexer* > m_indexers;

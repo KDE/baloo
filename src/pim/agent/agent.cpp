@@ -142,8 +142,58 @@ BalooIndexingAgent::~BalooIndexingAgent()
 
 void BalooIndexingAgent::reindexCollection(const qlonglong id)
 {
-    
+
+    if (m_pendingCollections.contains(id)) {
+        return;
+    }
+
+    m_pendingCollections.insert(id);
     kDebug() << "Reindexing collection " << id;
+
+    Akonadi::CollectionFetchJob *fetch = new Akonadi::CollectionFetchJob(Akonadi::Collection(id),
+                                                                         Akonadi::CollectionFetchJob::Base,
+                                                                         this);
+    fetch->setProperty("collectionId", id);
+    connect(fetch, SIGNAL(finished(KJob*)), this, SLOT(slotReindexCollectionFetched(KJob*)));
+}
+
+void BalooIndexingAgent::slotReindexCollectionFetched(KJob *job)
+{
+    if (job->error()) {
+        kWarning() << job->errorString();
+        m_pendingCollections.remove(job->property("collectionId").toLongLong());
+        return;
+    }
+
+    Akonadi::CollectionFetchJob *colFetch = qobject_cast<Akonadi::CollectionFetchJob*>(job);
+    if (colFetch->collections().count() != 1) {
+        m_pendingCollections.remove(job->property("collectionId").toLongLong());
+        return;
+    }
+
+    const Akonadi::Collection collection = colFetch->collections().at(0);
+    Q_FOREACH (AbstractIndexer *indexer, indexersForCollection(collection)) {
+        try {
+            indexer->remove(collection);
+        } catch (const Xapian::Error &e) {
+            kWarning() << "Xapian error in indexer" << indexer << ":" << e.get_msg().c_str();
+        }
+    }
+
+    Akonadi::ItemFetchJob *fetch = new Akonadi::ItemFetchJob(collection, this);
+    fetch->setProperty("collectionsCount", 1);
+    fetch->fetchScope().fetchFullPayload(true);
+    fetch->fetchScope().setCacheOnly(true);
+    fetch->fetchScope().setIgnoreRetrievalErrors(true);
+    fetch->fetchScope().setFetchRemoteIdentification(false);
+    fetch->fetchScope().setFetchModificationTime(true);
+    fetch->fetchScope().setAncestorRetrieval(Akonadi::ItemFetchScope::Parent);
+    fetch->setDeliveryOption(Akonadi::ItemFetchJob::EmitItemsIndividually);
+
+    connect(fetch, SIGNAL(itemsReceived(Akonadi::Item::List)),
+            this, SLOT(slotItemsReceived(Akonadi::Item::List)));
+    connect(fetch, SIGNAL(finished(KJob*)), this, SLOT(slotItemFetchFinished(KJob*)));
+    m_jobs << fetch;
 }
 
 qlonglong BalooIndexingAgent::indexedItemsInDatabase(const std::string& term, const QString& dbPath) const
@@ -476,6 +526,10 @@ void BalooIndexingAgent::slotItemFetchFinished(KJob* job)
         group.writeEntry("agentIndexingVersion", INDEXING_AGENT_VERSION);
         status(Idle, i18n("Ready"));
         m_inProgress = false;
+    }
+
+    if (job->property("collectionId").isValid()) {
+        m_pendingCollections.remove(job->property("collectionId").toLongLong());
     }
 }
 
