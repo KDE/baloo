@@ -47,7 +47,7 @@ public:
         return i18n("CLI interface for monitoring Baloo");
     }
 
-    int exec(const QCommandLineParser& parser);
+    int exec(const QCommandLineParser& parser) Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
     void startedIndexingFile(const QString& filePath);
