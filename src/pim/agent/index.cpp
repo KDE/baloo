@@ -408,6 +408,7 @@ void Index::processCollectionQueues(const CollectionQueue &queue)
             }
         }
     }
+    kDebug() << "\tRemoved:" << queue.unindexQueue.count();
 
     QMutexLocker locker(&m_queueLock);
     if (m_stop) {
@@ -431,6 +432,7 @@ void Index::processCollectionQueues(const CollectionQueue &queue)
             }
         }
     }
+    kDebug() << "\tFlag updates:" << queue.flagsQueue.count();
 
     locker.relock();
     if (m_stop) {
@@ -451,6 +453,7 @@ void Index::processCollectionQueues(const CollectionQueue &queue)
             }
         }
     }
+    kDebug() << "\tMoves:" << queue.movesQueue.count();
 
     locker.relock();
     if (m_stop) {
@@ -471,6 +474,7 @@ void Index::processCollectionQueues(const CollectionQueue &queue)
             }
         }
     }
+    kDebug() << "\tNew/updated:" << queue.indexQueue.count();
 
     locker.relock();
     if (lastDt  > m_lastIndexedItem) {
