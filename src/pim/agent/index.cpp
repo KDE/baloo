@@ -354,7 +354,7 @@ void Index::startProcessing()
 
     if (!m_startTimer->isActive()) {
         // start timer in the right thread
-        QMetaObject::invokeMethod(m_startTimer, "start", Qt::QueuedConnection);
+        QTimer::singleShot(1000, m_startTimer, SLOT(start()));
     }
 }
 
