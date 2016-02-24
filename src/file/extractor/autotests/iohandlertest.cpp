@@ -26,6 +26,7 @@
 #include <QVector>
 #include <QByteArray>
 #include <QDebug>
+#include <cmath>
 
 #include "../iohandler.h"
 
