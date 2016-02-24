@@ -150,7 +150,6 @@ QByteArray DocumentUrlDB::get(quint64 docId) const
     quint64 id = path.parentId;
     while (id) {
         auto p = idFilenameDb.get(id);
-	if (p.name.isEmpty()) continue;
         Q_ASSERT(!p.name.isEmpty());
 
         ret = p.name + '/' + ret;
