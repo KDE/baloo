@@ -38,7 +38,7 @@ Indexer::Indexer(const QString& url, Transaction* tr)
 
 void Indexer::index()
 {
-    const QString mimetype = m_mimeDB.mimeTypeForFile(m_url, QMimeDatabase::MatchContent).name();
+    const QString mimetype = m_mimeDB.mimeTypeForFile(m_url).name();
     BasicIndexingJob basicIJ(m_url, mimetype, BasicIndexingJob::NoLevel);
     basicIJ.index();
     Baloo::Document doc = basicIJ.document();
