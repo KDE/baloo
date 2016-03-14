@@ -135,18 +135,6 @@ void App::index(Transaction* tr, const QString& url, quint64 id)
         return;
     }
 
-    //
-    // HACK: We only want to index plain text files which end with a .txt
-    //
-    if (mimetype == QLatin1String("text/plain")) {
-        if (!url.endsWith(QLatin1String(".txt"))) {
-            qCDebug(BALOO) << "text/plain does not end with .txt. Ignoring";
-            tr->removePhaseOne(id);
-            return;
-        }
-    }
-
-    //
     // HACK: Also, we're ignoring ttext files which are greater tha 10 Mb as we
     // have trouble processing them
     //
