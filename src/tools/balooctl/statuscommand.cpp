@@ -115,7 +115,7 @@ int StatusCommand::exec(const QCommandLineParser& parser)
                 return 0;
             } else {
                 // FIXME: Add why it is not being indexed!
-                out << "Disbabled\n";
+                out << "Disabled\n";
                 return 0;
             }
 
