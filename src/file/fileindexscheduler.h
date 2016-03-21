@@ -80,6 +80,7 @@ public Q_SLOTS:
     Q_SCRIPTABLE void resume() { setSuspend(false); }
     Q_SCRIPTABLE uint getRemainingTime();
     Q_SCRIPTABLE void checkUnindexedFiles();
+    Q_SCRIPTABLE uint getBatchSize();
 
 private Q_SLOTS:
     void powerManagementStatusChanged(bool isOnBattery);

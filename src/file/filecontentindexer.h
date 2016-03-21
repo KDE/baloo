@@ -27,6 +27,7 @@
 
 #include <QDBusServiceWatcher>
 #include <QDBusMessage>
+#include "fileindexerconfig.h"
 
 namespace Baloo {
 
@@ -39,7 +40,7 @@ class FileContentIndexer : public QObject, public QRunnable
 
     Q_PROPERTY(QString currentFile READ currentFile NOTIFY startedIndexingFile)
 public:
-    FileContentIndexer(FileContentIndexerProvider* provider, QObject* parent = 0);
+    FileContentIndexer(FileIndexerConfig* config, FileContentIndexerProvider* provider, QObject* parent = 0);
 
     QString currentFile() { return m_currentFile; }
 
@@ -66,6 +67,8 @@ private Q_SLOTS:
     void slotFinishedIndexingFile(const QString& filePath);
 
 private:
+    FileIndexerConfig *m_config;
+    uint m_batchSize;
     FileContentIndexerProvider* m_provider;
 
     QAtomicInt m_stop;

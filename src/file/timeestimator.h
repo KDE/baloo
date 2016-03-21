@@ -25,6 +25,7 @@
 
 #define BUFFER_SIZE 5
 
+#include "fileindexerconfig.h"
 #include <QObject>
 
 namespace Baloo {
@@ -34,10 +35,11 @@ namespace Baloo {
 * 5 most recent batches. The more recent the batch is, higher the weight
 * it will be assigned.
 */
+
 class TimeEstimator : public QObject
 {
 public:
-    explicit TimeEstimator(QObject* parent = 0);
+    explicit TimeEstimator(FileIndexerConfig* config, QObject* parent = 0);
     uint calculateTimeLeft(int filesLeft);
 
 public Q_SLOTS:
@@ -45,9 +47,12 @@ public Q_SLOTS:
 
 private:
     uint m_batchTimeBuffer[BUFFER_SIZE];
-    int m_bufferIndex;
 
+    int m_bufferIndex;
     bool m_estimateReady;
+
+    FileIndexerConfig* m_config;
+    uint m_batchSize;
 };
 
 }

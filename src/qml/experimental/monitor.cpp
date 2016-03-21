@@ -85,7 +85,7 @@ void Monitor::newFile(const QString& filePath)
     }
     Q_EMIT newFileIndexed();
 
-    if (m_filesIndexed % (40 * 5) == 0) {
+    if (m_filesIndexed % (m_scheduler->getBatchSize() * 5) == 0) {
         updateRemainingTime();
     }
 }

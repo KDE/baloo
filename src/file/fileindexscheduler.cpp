@@ -42,7 +42,7 @@ FileIndexScheduler::FileIndexScheduler(Database* db, FileIndexerConfig* config, 
     , m_provider(db)
     , m_contentIndexer(0)
     , m_indexerState(Idle)
-    , m_timeEstimator(this)
+    , m_timeEstimator(config, this)
     , m_checkUnindexedFiles(false)
 {
     Q_ASSERT(db);
@@ -53,7 +53,7 @@ FileIndexScheduler::FileIndexScheduler(Database* db, FileIndexerConfig* config, 
     connect(&m_powerMonitor, &PowerStateMonitor::powerManagementStatusChanged,
             this, &FileIndexScheduler::powerManagementStatusChanged);
 
-    m_contentIndexer = new FileContentIndexer(&m_provider, this);
+    m_contentIndexer = new FileContentIndexer(m_config, &m_provider, this);
     m_contentIndexer->setAutoDelete(false);
     connect(m_contentIndexer, &FileContentIndexer::done, this,
             &FileIndexScheduler::scheduleIndexing);
@@ -207,4 +207,9 @@ void FileIndexScheduler::checkUnindexedFiles()
 {
     m_checkUnindexedFiles = true;
     scheduleIndexing();
+}
+
+uint FileIndexScheduler::getBatchSize()
+{
+    return m_config->maxUncomittedFiles();
 }
