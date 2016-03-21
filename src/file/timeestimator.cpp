@@ -27,11 +27,14 @@
 
 using namespace Baloo;
 
-TimeEstimator::TimeEstimator(QObject* parent)
+TimeEstimator::TimeEstimator(FileIndexerConfig *config, QObject* parent)
     : QObject(parent)
     , m_bufferIndex(0)
     , m_estimateReady(false)
+    , m_config(config)
+    , m_batchSize(m_config->maxUncomittedFiles())
 {
+
 }
 
 uint TimeEstimator::calculateTimeLeft(int filesLeft)
@@ -54,7 +57,7 @@ uint TimeEstimator::calculateTimeLeft(int filesLeft)
     }
 
     float weightedAverage = totalTime / totalWeight;
-    float batchesLeft = (float)filesLeft / (float)40;
+    float batchesLeft = (float)filesLeft / (float)m_batchSize;
 
     return weightedAverage * batchesLeft;
 }

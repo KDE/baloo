@@ -146,6 +146,11 @@ public:
 
     bool indexingEnabled() const;
 
+    /**
+      * Returns batch size
+      */
+    uint maxUncomittedFiles();
+
 public Q_SLOTS:
     /**
      * Reread the config from disk and update the configuration cache.
@@ -184,6 +189,8 @@ private:
     bool m_onlyBasicIndexing;
 
     StorageDevices* m_devices;
+
+    const uint m_maxUncomittedFiles;
 };
 
 }

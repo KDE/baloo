@@ -60,6 +60,7 @@ FileIndexerConfig::FileIndexerConfig(QObject* parent)
     , m_config(QStringLiteral("baloofilerc"))
     , m_indexHidden(false)
     , m_devices(new StorageDevices(this))
+    , m_maxUncomittedFiles(40)
 {
     forceConfigUpdate();
 }
@@ -350,5 +351,10 @@ void FileIndexerConfig::setDatabaseVersion(int version)
 bool FileIndexerConfig::indexingEnabled() const
 {
     return m_config.group("Basic Settings").readEntry("Indexing-Enabled", true);
+}
+
+uint FileIndexerConfig::maxUncomittedFiles()
+{
+    return m_maxUncomittedFiles;
 }
 

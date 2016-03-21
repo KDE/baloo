@@ -436,7 +436,7 @@ DatabaseSize Transaction::dbSize()
 
     MDB_envinfo info;
     mdb_env_info(m_env, &info);
-    dbSize.actualSize = info.me_last_pgno * 4096;
+    dbSize.actualSize = info.me_last_pgno * 4096; // TODO: separate page size
 
     return dbSize;
 }
