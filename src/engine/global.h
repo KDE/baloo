@@ -27,13 +27,13 @@
 
 #include <QString>
 
-namespace Baloo BALOO_ENGINE_EXPORT {
+namespace Baloo {
 
     /*
      * If BALOO_DB_PATH environment variable is set, then it returns value of that variable.
      * Otherwise returns the default database path.
      */
-    QString fileIndexDbPath();
+    BALOO_ENGINE_EXPORT QString fileIndexDbPath();
 
     /*
      * lmdb doesn't support opening database twice at the same time in the single process
@@ -42,7 +42,7 @@ namespace Baloo BALOO_ENGINE_EXPORT {
      * other undesirable behaviour. So, keeping one global database would solve this problem
      * and improve the performace too.
      */
-    Database* globalDatabaseInstance();
+    BALOO_ENGINE_EXPORT Database* globalDatabaseInstance();
 }
 
 #endif // GLOBAL_H
