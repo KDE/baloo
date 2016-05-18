@@ -33,7 +33,7 @@ set_target_properties(baloofiles PROPERTIES
     SOVERSION ${BALOO_VERSION_MAJOR}
 )
 
-install(TARGETS baloofiles ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS baloofiles EXPORT BalooLibraryTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES
     file.h
