@@ -1,4 +1,4 @@
-# Searching For Files
+# Searching For Files {#searching}
 
 Baloo provides a convenient tool called `baloosearch` which can be used to
 perform searches. Additionally Baloo is also integrated in popular
@@ -61,7 +61,7 @@ grouped by file types.
 * Composer
 * Lyricist
 
-    
+
 ### Documents
 * Author
 * Title

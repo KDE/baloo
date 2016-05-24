@@ -1,4 +1,4 @@
-# Distribution
+# Distribution {#distributing}
 
 Baloo is developed and tested exclusively for Linux. While it may run on other
 unix based systems. It is not recommended, and certainly not tested.
