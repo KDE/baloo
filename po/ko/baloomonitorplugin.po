@@ -1,0 +1,54 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+# Shinjo Park <peremen@gmail.com>, 2015.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-10-03 08:40+0000\n"
+"PO-Revision-Date: 2015-11-10 22:27+0100\n"
+"Last-Translator: Shinjo Park <peremen@gmail.com>\n"
+"Language-Team: Korean <kde@peremen.name>\n"
+"Language: ko\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Lokalize 2.0\n"
+
+#: ../../file/indexerstate.h:42
+msgid "Unknown"
+msgstr "알 수 없음"
+
+#: ../../file/indexerstate.h:45
+msgid "Idle"
+msgstr "준비"
+
+#: ../../file/indexerstate.h:48
+msgid "Suspended"
+msgstr "일시 정지됨"
+
+#: ../../file/indexerstate.h:51
+msgid "Initial Indexing"
+msgstr "초기 색인 중"
+
+#: ../../file/indexerstate.h:54
+msgid "Indexing new files"
+msgstr "새 파일 색인 중"
+
+#: ../../file/indexerstate.h:57
+msgid "Indexing modified files"
+msgstr "수정한 파일 색인 중"
+
+#: ../../file/indexerstate.h:60
+msgid "Indexing Extended Attributes"
+msgstr "존재하는 속성 색인 중"
+
+#: ../../file/indexerstate.h:63
+msgid "Indexing file content"
+msgstr "파일 내용 색인 중"
+
+#: ../../file/indexerstate.h:66
+msgid "Checking for unindexed files"
+msgstr "색인에 없는 파일 검사 중"
