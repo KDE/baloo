@@ -36,6 +36,7 @@ private Q_SLOTS:
     void testNesting();
     void testDateTime();
     void testOperators();
+    void testBinaryOperatorMissingFirstArg();
 };
 
 void AdvancedQueryParserTest::testSimpleProperty()
@@ -189,6 +190,16 @@ void AdvancedQueryParserTest::testOperators()
     expectedTerm = Term(QStringLiteral("width"), 500, Term::GreaterEqual);
     QCOMPARE(term, expectedTerm);
 }
+
+void AdvancedQueryParserTest::testBinaryOperatorMissingFirstArg()
+{
+    AdvancedQueryParser parser;
+    Term term = parser.parse(QStringLiteral("=:2"));
+    Term expectedTerm;
+    QCOMPARE(term, expectedTerm);
+
+}
+
 
 QTEST_MAIN(AdvancedQueryParserTest)
 
