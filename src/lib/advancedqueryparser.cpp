@@ -146,13 +146,17 @@ Term AdvancedQueryParser::parse(const QString& text)
 
     // Lex the input string
     QStringList tokens = lex(text);
-
     for (const QString &token : tokens) {
         // If a key and an operator have been parsed, now is time for a value
         if (valueExpected) {
             // When the parser encounters a literal, it puts it in the value of
             // termInConstruction so that "foo bar baz" is parsed as expected.
-            termInConstruction.setProperty(termInConstruction.value().toString());
+            auto property = termInConstruction.value().toString();
+            if (property.isEmpty()) {
+                qDebug() << "Binary operator without first argument encountered: " << text;
+                return Term();
+            }
+            termInConstruction.setProperty(property);
 
             QVariant value = tokenToVariant(token);
             if (value.type() != QVariant::String) {
