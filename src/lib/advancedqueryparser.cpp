@@ -153,7 +153,7 @@ Term AdvancedQueryParser::parse(const QString& text)
             // termInConstruction so that "foo bar baz" is parsed as expected.
             auto property = termInConstruction.value().toString();
             if (property.isEmpty()) {
-                qDebug() << "Binary operator without first argument encountered: " << text;
+                qDebug() << "Binary operator without first argument encountered:" << text;
                 return Term();
             }
             termInConstruction.setProperty(property);

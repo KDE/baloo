@@ -197,7 +197,6 @@ void AdvancedQueryParserTest::testBinaryOperatorMissingFirstArg()
     Term term = parser.parse(QStringLiteral("=:2"));
     Term expectedTerm;
     QCOMPARE(term, expectedTerm);
-
 }
 
 
