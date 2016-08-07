@@ -1,0 +1,62 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: balooshow\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-10-11 08:16+0000\n"
+"PO-Revision-Date: 2015-09-24 12:32+0100\n"
+"Last-Translator: José Nuno Coelho Pires <zepires@gmail.com>\n"
+"Language-Team: Portuguese <kde-i18n-pt@kde.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-POFile-SpellExtra: Handa Vishesh Baloo Show status balooctl\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "José Nuno Pires"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "zepires@gmail.com"
+
+#: main.cpp:56
+msgid "Baloo Show"
+msgstr "Baloo Show"
+
+#: main.cpp:58
+msgid "The Baloo data Viewer - A debugging tool"
+msgstr "O visualizador de dados do Baloo - Uma ferramenta de depuração"
+
+#: main.cpp:60
+msgid "(c) 2012, Vishesh Handa"
+msgstr "(c) 2012, Vishesh Handa"
+
+#: main.cpp:61
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:61
+msgid "Maintainer"
+msgstr "Manutenção"
+
+#: main.cpp:105
+msgid ""
+"The Baloo index could not be opened. Please run \"balooctl status\" to see "
+"if Baloo is enabled and working."
+msgstr ""
+"Não foi possível abrir o índice do Baloo. Execute por favor \"balooctl status"
+"\" para ver se o Baloo está activo e em execução."
+
+#: main.cpp:121
+msgid "The fileID is not equal to the actual Baloo fileID"
+msgstr "O ID do ficheiro não é igual ao ID do ficheiro actual no Baloo"
+
+#: main.cpp:122
+msgid "This is a bug"
+msgstr "Isto é um erro"
+
+#: main.cpp:150
+msgid "No index information found"
+msgstr "Não foi encontrada nenhuma informação do índice"
