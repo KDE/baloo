@@ -82,7 +82,23 @@ int main(int argc, char** argv)
     QFile::remove(path + "/index-lock");
 
     Baloo::Database *db = Baloo::globalDatabaseInstance();
-    db->open(Baloo::Database::CreateDatabase);
+
+    /**
+     * try to open, if that fails, try to unlink the index db and retry
+     */
+    if (!db->open(Baloo::Database::CreateDatabase)) {
+        // delete old stuff, set to initial run!
+        qWarning() << "Failed to create database, removing corrupted database.";
+        QFile::remove(path + "/index");
+        QFile::remove(path + "/index-lock");
+        indexerConfig.setInitialRun(true);
+
+        // try to create now after cleanup, if still no works => fail
+        if (!db->open(Baloo::Database::CreateDatabase)) {
+            qWarning() << "Failed to create database after deleting corrupted one.";
+            return 1;
+        }
+    }
 
     Baloo::MainHub hub(db, &indexerConfig);
     return app.exec();
