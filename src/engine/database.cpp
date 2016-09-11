@@ -119,6 +119,7 @@ bool Database::open(OpenMode mode)
     QByteArray arr = QFile::encodeName(indexInfo.absoluteFilePath());
     rc = mdb_env_open(m_env, arr.constData(), MDB_NOSUBDIR | MDB_NOMEMINIT, 0664);
     if (rc) {
+        mdb_env_close(m_env);
         m_env = nullptr;
         return false;
     }
