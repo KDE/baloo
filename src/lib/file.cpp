@@ -96,7 +96,7 @@ bool File::load()
     }
 
     Database *db = globalDatabaseInstance();
-    if (!db->open(Database::OpenDatabase)) {
+    if (!db->open(Database::ReadOnlyDatabase)) {
         return false;
     }
 

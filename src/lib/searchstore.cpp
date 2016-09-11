@@ -48,7 +48,7 @@ SearchStore::SearchStore()
     : m_db(0)
 {
     m_db = globalDatabaseInstance();
-    if (!m_db->open(Database::OpenDatabase)) {
+    if (!m_db->open(Database::ReadOnlyDatabase)) {
         m_db = 0;
     }
 

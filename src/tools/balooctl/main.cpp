@@ -191,7 +191,7 @@ int main(int argc, char* argv[])
         }
 
         Database *db = globalDatabaseInstance();
-        if (!db->open(Database::OpenDatabase)) {
+        if (!db->open(Database::ReadWriteDatabase)) {
             out << "Baloo Index could not be opened\n";
             return 1;
         }
@@ -230,7 +230,7 @@ int main(int argc, char* argv[])
         }
 
         Database *db = globalDatabaseInstance();
-        if (!db->open(Database::OpenDatabase)) {
+        if (!db->open(Database::ReadWriteDatabase)) {
             out << "Baloo Index could not be opened\n";
             return 1;
         }
@@ -260,7 +260,7 @@ int main(int argc, char* argv[])
 
     if (command == QStringLiteral("indexSize")) {
         Database *db = globalDatabaseInstance();
-        if (!db->open(Database::OpenDatabase)) {
+        if (!db->open(Database::ReadOnlyDatabase)) {
             out << "Baloo Index could not be opened\n";
             return 1;
         }
@@ -311,7 +311,7 @@ int main(int argc, char* argv[])
 
     if (command == QStringLiteral("checkDb")) {
         Database *db = globalDatabaseInstance();
-        if (!db->open(Database::OpenDatabase)) {
+        if (!db->open(Database::ReadOnlyDatabase)) {
             out << "Baloo Index could not be opened\n";
             return 1;
         }
