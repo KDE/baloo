@@ -28,6 +28,7 @@ class DocumentTimeDBTest : public SingleDBTest
     Q_OBJECT
 private Q_SLOTS:
     void test();
+    void testAllowZeroTime();
 };
 
 void DocumentTimeDBTest::test()
@@ -37,6 +38,22 @@ void DocumentTimeDBTest::test()
     DocumentTimeDB::TimeInfo info;
     info.mTime = 5;
     info.cTime = 6;
+
+    db.put(1, info);
+    QCOMPARE(db.get(1), info);
+
+    db.del(1);
+    QCOMPARE(db.get(1), DocumentTimeDB::TimeInfo());
+}
+
+void DocumentTimeDBTest::testAllowZeroTime()
+{
+    DocumentTimeDB db(DocumentTimeDB::create(m_txn), m_txn);
+
+    // we must be able to handle zero time, aka 1970...
+    DocumentTimeDB::TimeInfo info;
+    info.mTime = 0;
+    info.cTime = 0;
 
     db.put(1, info);
     QCOMPARE(db.get(1), info);
