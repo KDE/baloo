@@ -92,8 +92,8 @@ int StatusCommand::exec(const QCommandLineParser& parser)
 
         const QString path = fileIndexDbPath();
 
-        QFileInfo indexInfo(path + QLatin1String("/index"));
-        quint32 size = indexInfo.size();
+        const QFileInfo indexInfo(path + QLatin1String("/index"));
+        const auto size = indexInfo.size();
         KFormat format(QLocale::system());
         if (size) {
             out << "Current size of index is " << format.formatByteSize(size, 2) << endl;

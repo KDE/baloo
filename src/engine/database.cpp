@@ -93,8 +93,18 @@ bool Database::open(OpenMode mode)
         return false;
     }
 
+    /**
+     * maximal number of allowed named databases, must match number of databases we create below
+     * each additional one leads to overhead
+     */
     mdb_env_set_maxdbs(m_env, 12);
-    mdb_env_set_mapsize(m_env, static_cast<size_t>(1024) * 1024 * 1024 * 5); // 5 gb
+
+    /**
+     * size limit for database == size limit of mmap
+     * use 1 GB on 32-bit, use 256 GB on 64-bit
+     */
+    const size_t maximalSizeInBytes = size_t((sizeof(size_t) == 4) ? 1 : 256) * size_t(1024) * size_t(1024) * size_t(1024);
+    mdb_env_set_mapsize(m_env, maximalSizeInBytes);
 
     // The directory needs to be created before opening the environment
     QByteArray arr = QFile::encodeName(indexInfo.absoluteFilePath());
