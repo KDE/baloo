@@ -59,6 +59,7 @@ Database::~Database()
     // try only to close if we did open the DB successfully
     if (m_env) {
         mdb_env_close(m_env);
+        m_env = nullptr;
     }
 }
 
@@ -97,7 +98,7 @@ bool Database::open(OpenMode mode)
 
     int rc = mdb_env_create(&m_env);
     if (rc) {
-        m_env = 0;
+        m_env = nullptr;
         return false;
     }
 
@@ -118,7 +119,7 @@ bool Database::open(OpenMode mode)
     QByteArray arr = QFile::encodeName(indexInfo.absoluteFilePath());
     rc = mdb_env_open(m_env, arr.constData(), MDB_NOSUBDIR | MDB_NOMEMINIT, 0664);
     if (rc) {
-        m_env = 0;
+        m_env = nullptr;
         return false;
     }
 
@@ -126,6 +127,7 @@ bool Database::open(OpenMode mode)
     Q_ASSERT_X(rc == 0, "Database::open reader_check", mdb_strerror(rc));
     if (rc) {
         mdb_env_close(m_env);
+        m_env = nullptr;
         return false;
     }
 
@@ -139,7 +141,7 @@ bool Database::open(OpenMode mode)
         if (rc) {
             mdb_txn_abort(txn);
             mdb_env_close(m_env);
-            m_env = 0;
+            m_env = nullptr;
             return false;
         }
 
@@ -165,7 +167,7 @@ bool Database::open(OpenMode mode)
         if (!m_dbis.isValid()) {
             mdb_txn_abort(txn);
             mdb_env_close(m_env);
-            m_env = 0;
+            m_env = nullptr;
             return false;
         }
 
@@ -173,7 +175,7 @@ bool Database::open(OpenMode mode)
         Q_ASSERT_X(rc == 0, "Database::transaction ro commit", mdb_strerror(rc));
         if (rc) {
             mdb_env_close(m_env);
-            m_env = 0;
+            m_env = nullptr;
             return false;
         }
     } else {
@@ -182,7 +184,7 @@ bool Database::open(OpenMode mode)
         if (rc) {
             mdb_txn_abort(txn);
             mdb_env_close(m_env);
-            m_env = 0;
+            m_env = nullptr;
             return false;
         }
 
@@ -208,7 +210,7 @@ bool Database::open(OpenMode mode)
         if (!m_dbis.isValid()) {
             mdb_txn_abort(txn);
             mdb_env_close(m_env);
-            m_env = 0;
+            m_env = nullptr;
             return false;
         }
 
@@ -216,11 +218,12 @@ bool Database::open(OpenMode mode)
         Q_ASSERT_X(rc == 0, "Database::transaction commit", mdb_strerror(rc));
         if (rc) {
             mdb_env_close(m_env);
-            m_env = 0;
+            m_env = nullptr;
             return false;
         }
     }
 
+    Q_ASSERT(m_env);
     return true;
 }
 
