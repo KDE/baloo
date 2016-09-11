@@ -57,7 +57,7 @@ public:
      * Open database in given mode.
      * Nop after open was done (even if mode differs).
      * There is no close as this would invalidate the database for all threads using it.
-     * @parmm mode create or open only?
+     * @param mode create or open only?
      * @return success?
      */
     bool open(OpenMode mode);
