@@ -30,6 +30,7 @@
 #include "documenttimedb.h"
 #include "documentdatadb.h"
 #include "mtimedb.h"
+#include "idutils.h"
 
 using namespace Baloo;
 
@@ -243,31 +244,6 @@ QVector< QByteArray > WriteTransaction::replaceTerms(quint64 id, const QVector<Q
     return addTerms(id, terms);
 }
 
-template<typename T>
-static void insert(QVector<T>& vec, const T& id)
-{
-    if (vec.isEmpty()) {
-        vec.append(id);
-    } else {
-        auto it = std::upper_bound(vec.begin(), vec.end(), id);
-
-        // Merge the id if it does not
-        auto prev = it - 1;
-        if (*prev != id) {
-            vec.insert(it, id);
-        }
-    }
-}
-
-template<typename T>
-static void removeOne(QVector<T>& vec, const T& id)
-{
-    const int idx = vec.indexOf(id);
-    if (idx >= 0) {
-        vec.remove(idx);
-    }
-}
-
 void WriteTransaction::commit()
 {
     PostingDB postingDB(m_dbis.postingDbi, m_txn);
@@ -289,23 +265,23 @@ void WriteTransaction::commit()
             quint64 id = op.data.docId;
 
             if (op.type == AddId) {
-                insert(list, id);
+                sortedIdInsert(list, id);
 
                 if (!op.data.positions.isEmpty()) {
                     if (!fetchedPositionList) {
                         positionList = positionDB.get(term);
                         fetchedPositionList = true;
                     }
-                    insert(positionList, op.data);
+                    sortedIdInsert(positionList, op.data);
                 }
             }
             else {
-                removeOne(list, id);
+                sortedIdRemove(list, id);
                 if (!fetchedPositionList) {
                     positionList = positionDB.get(term);
                     fetchedPositionList = true;
                 }
-                removeOne(positionList, PositionInfo(id));
+                sortedIdRemove(positionList, PositionInfo(id));
             }
         }
 
