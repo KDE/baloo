@@ -402,7 +402,7 @@ QVector<QByteArray> Transaction::documentXattrTerms(quint64 docId) const
 //
 // File Size
 //
-static uint dbiSize(MDB_txn* txn, MDB_dbi dbi)
+static size_t dbiSize(MDB_txn* txn, MDB_dbi dbi)
 {
     MDB_stat stat;
     mdb_stat(txn, dbi, &stat);

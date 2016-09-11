@@ -31,30 +31,30 @@ public:
      * This is the size which is computed with all the pages used from all the
      * individual database pages
      */
-    uint expectedSize;
+    size_t expectedSize;
 
     /**
      * This is the size based on the MDB_env and the total number of pages used
      */
-    uint actualSize;
+    size_t actualSize;
 
-    uint postingDb;
-    uint positionDb;
+    size_t postingDb;
+    size_t positionDb;
 
-    uint docTerms;
-    uint docFilenameTerms;
-    uint docXattrTerms;
+    size_t docTerms;
+    size_t docFilenameTerms;
+    size_t docXattrTerms;
 
-    uint idTree;
-    uint idFilename;
+    size_t idTree;
+    size_t idFilename;
 
-    uint docTime;
-    uint docData;
+    size_t docTime;
+    size_t docData;
 
-    uint contentIndexingIds;
-    uint failedIds;
+    size_t contentIndexingIds;
+    size_t failedIds;
 
-    uint mtimeDb;
+    size_t mtimeDb;
 };
 
 }
