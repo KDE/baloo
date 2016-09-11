@@ -85,6 +85,33 @@ inline quint32 idToDeviceId(quint64 id)
     return arr[0];
 }
 
+
+template<typename T, typename V>
+inline void sortedIdInsert(T& vec, const V& id)
+{
+    /**
+     * search with normal <
+     */
+    const auto i(std::lower_bound(vec.begin(), vec.end(), id));
+
+    /**
+     * end reached or element found smaller?
+     * => insert new element!
+     */
+    if (i == vec.end() || (id != *i))
+        vec.insert(i, id);
+}
+
+template<typename T, typename V>
+inline void sortedIdRemove(T& vec, const V& id)
+{
+    const int idx = vec.indexOf(id);
+    if (idx >= 0) {
+        vec.remove(idx);
+    }
+}
+
+
 }
 
 #endif

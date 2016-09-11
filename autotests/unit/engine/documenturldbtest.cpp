@@ -147,6 +147,53 @@ private Q_SLOTS:
         QCOMPARE(db.getId(id, QByteArray("file")), id1);
         QCOMPARE(db.getId(id, QByteArray("file2")), id2);
     }
+
+    void testSortedIdInsert()
+    {
+        // test sorted insert used in Baloo::DocumentUrlDB::add, bug 367991
+        std::vector<quint64> test;
+        test.push_back(9);
+
+        // shall not crash
+        sortedIdInsert(test, quint64(1));
+
+        // stuff shall be ok inserted
+        QVERIFY(test.size() == 2);
+        QVERIFY(test[0] == 1);
+        QVERIFY(test[1] == 9);
+
+        // shall not crash
+        sortedIdInsert(test, quint64(1));
+
+        // no insert please
+        QVERIFY(test.size() == 2);
+
+        // shall not crash
+        sortedIdInsert(test, quint64(10));
+
+        // stuff shall be ok inserted
+        QVERIFY(test.size() == 3);
+        QVERIFY(test[0] == 1);
+        QVERIFY(test[1] == 9);
+        QVERIFY(test[2] == 10);
+
+        // shall not crash
+        sortedIdInsert(test, quint64(2));
+
+        // stuff shall be ok inserted
+        QVERIFY(test.size() == 4);
+        QVERIFY(test[0] == 1);
+        QVERIFY(test[1] == 2);
+        QVERIFY(test[2] == 9);
+        QVERIFY(test[3] == 10);
+
+        // shall not crash
+        sortedIdInsert(test, quint64(2));
+
+        // no insert please
+        QVERIFY(test.size() == 4);
+    }
+
 protected:
     MDB_env* m_env;
     MDB_txn* m_txn;
