@@ -139,7 +139,6 @@ bool Database::open(OpenMode mode)
         int rc = mdb_txn_begin(m_env, NULL, MDB_RDONLY, &txn);
         Q_ASSERT_X(rc == 0, "Database::transaction ro begin", mdb_strerror(rc));
         if (rc) {
-            mdb_txn_abort(txn);
             mdb_env_close(m_env);
             m_env = nullptr;
             return false;
@@ -182,7 +181,6 @@ bool Database::open(OpenMode mode)
         int rc = mdb_txn_begin(m_env, NULL, 0, &txn);
         Q_ASSERT_X(rc == 0, "Database::transaction begin", mdb_strerror(rc));
         if (rc) {
-            mdb_txn_abort(txn);
             mdb_env_close(m_env);
             m_env = nullptr;
             return false;
