@@ -1,6 +1,7 @@
 /*
    This file is part of the KDE Baloo project.
  * Copyright (C) 2015  Vishesh Handa <vhanda@kde.org>
+ * Copyright (C) 2016  Christoph Cullmann <cullmann@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,6 +22,8 @@
 #ifndef BALOO_DATABASE_H
 #define BALOO_DATABASE_H
 
+#include <QMutex>
+
 #include "document.h"
 #include "databasedbis.h"
 
@@ -31,21 +34,56 @@ class DatabaseTest;
 class BALOO_ENGINE_EXPORT Database
 {
 public:
+    /**
+     * Init database for given DB path, will not open it.
+     * @param path db path
+     */
     explicit Database(const QString& path);
+
+    /**
+     * Destruct db, might close it, if opened.
+     */
     ~Database();
 
-    QString path() const;
-
+    /**
+     * Database open mode
+     */
     enum OpenMode {
         CreateDatabase,
         OpenDatabase
     };
+
+    /**
+     * Open database in given mode.
+     * Nop after open was done (even if mode differs).
+     * There is no close as this would invalidate the database for all threads using it.
+     * @parmm mode create or open only?
+     * @return success?
+     */
     bool open(OpenMode mode);
 
-    bool isOpen() const { return m_env != 0; }
+    /**
+     * Is database open?
+     * @return database open?
+     */
+    bool isOpen() const;
+
+    /**
+     * Path to database.
+     * @return database path
+     */
+    QString path() const;
 
 private:
-    QString m_path;
+    /**
+     * serialize access, as open might be called from multiple threads
+     */
+    mutable QMutex m_mutex;
+
+    /**
+     * database path
+     */
+    const QString m_path;
 
     MDB_env* m_env;
     DatabaseDbis m_dbis;
@@ -55,6 +93,5 @@ private:
 
 };
 }
-
 
 #endif // BALOO_DATABASE_H
