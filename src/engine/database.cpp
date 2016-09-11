@@ -1,6 +1,7 @@
 /*
    This file is part of the KDE Baloo project.
  * Copyright (C) 2015  Vishesh Handa <vhanda@kde.org>
+ * Copyright (C) 2016  Christoph Cullmann <cullmann@kde.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -43,23 +44,30 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QDir>
+#include <QMutexLocker>
 
 using namespace Baloo;
 
 Database::Database(const QString& path)
     : m_path(path)
-    , m_env(0)
+    , m_env(nullptr)
 {
 }
 
 Database::~Database()
 {
-    mdb_env_close(m_env);
+    // try only to close if we did open the DB successfully
+    if (m_env) {
+        mdb_env_close(m_env);
+    }
 }
 
 bool Database::open(OpenMode mode)
 {
-    if (isOpen()) {
+    QMutexLocker locker(&m_mutex);
+
+    // nop if already open!
+    if (m_env) {
         return true;
     }
 
@@ -216,7 +224,14 @@ bool Database::open(OpenMode mode)
     return true;
 }
 
+bool Database::isOpen() const
+{
+    QMutexLocker locker(&m_mutex);
+    return m_env != 0;
+}
+
 QString Database::path() const
 {
+    QMutexLocker locker(&m_mutex);
     return m_path;
 }
