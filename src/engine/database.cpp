@@ -79,7 +79,7 @@ bool Database::open(OpenMode mode)
     }
     QFileInfo indexInfo(dir, QStringLiteral("index"));
 
-    if (mode == OpenDatabase && !indexInfo.exists()) {
+    if ((mode != CreateDatabase) && !indexInfo.exists()) {
         return false;
     }
 
@@ -117,7 +117,7 @@ bool Database::open(OpenMode mode)
 
     // The directory needs to be created before opening the environment
     QByteArray arr = QFile::encodeName(indexInfo.absoluteFilePath());
-    rc = mdb_env_open(m_env, arr.constData(), MDB_NOSUBDIR | MDB_NOMEMINIT, 0664);
+    rc = mdb_env_open(m_env, arr.constData(), MDB_NOSUBDIR | MDB_NOMEMINIT | ((mode == ReadOnlyDatabase) ? MDB_RDONLY : 0), 0664);
     if (rc) {
         mdb_env_close(m_env);
         m_env = nullptr;
@@ -136,7 +136,7 @@ bool Database::open(OpenMode mode)
     // Individual Databases
     //
     MDB_txn* txn;
-    if (mode == OpenDatabase) {
+    if (mode != CreateDatabase) {
         int rc = mdb_txn_begin(m_env, NULL, MDB_RDONLY, &txn);
         Q_ASSERT_X(rc == 0, "Database::transaction ro begin", mdb_strerror(rc));
         if (rc) {

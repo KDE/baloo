@@ -55,7 +55,7 @@ App::App(QObject* parent)
 void App::slotNewInput()
 {
     Database *db = globalDatabaseInstance();
-    if (!db->open(Database::OpenDatabase)) {
+    if (!db->open(Database::ReadWriteDatabase)) {
         qCritical() << "Failed to open the database";
         exit(1);
     }

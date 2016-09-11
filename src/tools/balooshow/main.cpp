@@ -101,7 +101,7 @@ int main(int argc, char* argv[])
     QString text;
 
     Baloo::Database *db = Baloo::globalDatabaseInstance();
-    if (!db->open(Baloo::Database::OpenDatabase)) {
+    if (!db->open(Baloo::Database::ReadOnlyDatabase)) {
         stream << i18n("The Baloo index could not be opened. Please run \"balooctl status\" to see if Baloo is enabled and working.")
                << endl;
         return 1;

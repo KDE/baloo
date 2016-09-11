@@ -49,8 +49,20 @@ public:
      * Database open mode
      */
     enum OpenMode {
+        /**
+         * Create + open read-write dabase.
+         */
         CreateDatabase,
-        OpenDatabase
+
+        /**
+         * Read-Write Database, only works if database exists.
+         */
+        ReadWriteDatabase,
+
+        /**
+         * Read-Only Database, only works if database exists.
+         */
+        ReadOnlyDatabase
     };
 
     /**
