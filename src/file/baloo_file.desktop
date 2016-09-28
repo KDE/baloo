@@ -2,7 +2,7 @@
 Type=Service
 Exec=baloo_file
 X-KDE-StartupNotify=false
-X-KDE-autostart-condition=baloofilerc:Basic Settings:Enabled:true
+X-KDE-autostart-condition=baloofilerc:Basic Settings:Indexing-Enabled:true
 X-KDE-autostart-phase=0
 X-GNOME-Autostart-enabled=true
 OnlyShowIn=KDE;GNOME;Unity;XFCE
