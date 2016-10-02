@@ -1,0 +1,114 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+# Lasse Liehu <lasse.liehu@gmail.com>, 2013, 2014, 2015.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-09-08 10:30+0000\n"
+"PO-Revision-Date: 2015-05-16 13:14+0200\n"
+"Last-Translator: Lasse Liehu <lasse.liehu@gmail.com>\n"
+"Language-Team: Finnish <lokalisointi@lists.coss.fi>\n"
+"Language: fi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 2.0\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Lasse Liehu"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "lasse.liehu@gmail.com"
+
+#: main.cpp:47
+msgid "Baloo File Indexing Daemon"
+msgstr "Baloo-tiedostojenindeksointipalvelu"
+
+#: main.cpp:48
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:48
+msgid "Maintainer"
+msgstr "Ylläpitäjä"
+
+#~ msgctxt "@info:status"
+#~ msgid "File indexer is suspended."
+#~ msgstr "Tiedostojen indeksointi on keskeytetty."
+
+#~ msgctxt "@info:status"
+#~ msgid "Scanning for recent changes in files for desktop search"
+#~ msgstr "Tutkitaan tiedostoja muutosten varalta työpöytähakua varten"
+
+#~ msgctxt "@info:status"
+#~ msgid "Indexing files for desktop search."
+#~ msgstr "Indeksoidaan tiedostoja työpöytähakua varten."
+
+#~ msgctxt "@info:status"
+#~ msgid "File indexer is idle."
+#~ msgstr "Tiedostojen indeksointi on jouten."
+
+#~ msgid "Baloo File"
+#~ msgstr "Baloo-tiedosto"
+
+#~ msgid "An application to handle file metadata"
+#~ msgstr "Sovellus tiedostojen metatietojen käsittelyyn"
+
+#~ msgctxt "@title"
+#~ msgid "New removable device detected"
+#~ msgstr "Havaittiin uusi irrotettava laite"
+
+#~ msgctxt "@action"
+#~ msgid "Index files"
+#~ msgstr "Indeksoi tiedostot"
+
+#~ msgctxt "@action"
+#~ msgid "Ignore device"
+#~ msgstr "Älä huomioi laitetta"
+
+#~ msgctxt "@action"
+#~ msgid "Configure"
+#~ msgstr "Asetukset"
+
+#~ msgctxt "@info"
+#~ msgid ""
+#~ "Do you want files on removable device <resource>%1</resource> to be "
+#~ "indexed for fast desktop searches?"
+#~ msgstr ""
+#~ "Haluatko, että irrotettavan laitteen <resource>%1</resource> tiedostot "
+#~ "indeksoidaan työpöytähakujen nopeuttamiseksi?"
+
+#~ msgid "Cleans up stale file index information"
+#~ msgstr "Siivoaa vanhentuneet tiedot tiedostoindeksistä"
+
+#~ msgid "(C) 2014, Vishesh Handa"
+#~ msgstr "© 2014 Vishesh Handa"
+
+#~ msgid "xattrdetectortest"
+#~ msgstr "xattrdetectortest"
+
+#~ msgid "(c) 2014, Vishesh Handa"
+#~ msgstr "© 2014 Vishesh Handa"
+
+#~ msgid "The file URL"
+#~ msgstr "Tiedosto-URL"
+
+#~ msgid "indexerconfigtest"
+#~ msgstr "indexerconfigtest"
+
+#~ msgid "Disk space is running low (%1 left). Suspending indexing of files."
+#~ msgstr ""
+#~ "Levytila on käymässä vähiin (%1 jäljellä). Keskeytetään tiedostojen "
+#~ "indeksointi."
+
+#~ msgid "Resuming indexing of files for fast searching."
+#~ msgstr "Jatketaan tiedostojen indeksointia hakujen nopeuttamiseksi."
+
+#~ msgctxt "@info:status"
+#~ msgid "Cleaning invalid file metadata"
+#~ msgstr "Puhdistetaan virheelliset tiedostojen metatiedot"

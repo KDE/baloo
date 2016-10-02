@@ -1,0 +1,207 @@
+# Burkhard Lück <lueck@hube-lueck.de>, 2013, 2014, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-09-08 10:30+0000\n"
+"PO-Revision-Date: 2015-05-15 16:37+0200\n"
+"Last-Translator: Burkhard Lück <lueck@hube-lueck.de>\n"
+"Language-Team: German <kde-i18n-de@kde.org>\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 1.5\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Burkhard Lück"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "lueck@hube-lueck.de"
+
+#: main.cpp:47
+msgid "Baloo File Indexing Daemon"
+msgstr "Baloo-Datei-Indizierungsdienst"
+
+#: main.cpp:48
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:48
+msgid "Maintainer"
+msgstr "Betreuer"
+
+#~ msgctxt "@info:status"
+#~ msgid "File indexer is suspended."
+#~ msgstr "Die Datei-Indizierung ist ausgesetzt."
+
+#~ msgctxt "@info:status"
+#~ msgid "Scanning for recent changes in files for desktop search"
+#~ msgstr ""
+#~ "Dateien für die Desktop-Suche werden nach neuen Änderungen durchsucht"
+
+#~ msgctxt "@info:status"
+#~ msgid "Indexing files for desktop search."
+#~ msgstr "Dateien werden für die Desktop-Suche indiziert."
+
+#~ msgctxt "@info:status"
+#~ msgid "File indexer is idle."
+#~ msgstr "Die Datei-Indizierung ist inaktiv."
+
+#~ msgid "Baloo File"
+#~ msgstr "Baloo-Datei"
+
+#~ msgid "An application to handle file metadata"
+#~ msgstr "Eine Anwendung zur Verarbeitung von Datei-Metadaten"
+
+#~ msgctxt "@title"
+#~ msgid "New removable device detected"
+#~ msgstr "Neuer Wechseldatenträger erkannt"
+
+#~ msgctxt "@action"
+#~ msgid "Index files"
+#~ msgstr "Dateien indizieren"
+
+#~ msgctxt "@action"
+#~ msgid "Ignore device"
+#~ msgstr "Gerät ignorieren"
+
+#~ msgctxt "@action"
+#~ msgid "Configure"
+#~ msgstr "Einrichten"
+
+#~ msgctxt "@info"
+#~ msgid ""
+#~ "Do you want files on removable device <resource>%1</resource> to be "
+#~ "indexed for fast desktop searches?"
+#~ msgstr ""
+#~ "Möchten Sie die Dateien auf dem Wechselmedium <resource>%1</resource> für "
+#~ "die Desktop-Suche indizieren?"
+
+#~ msgid "Cleans up stale file index information"
+#~ msgstr "Bereinigt die Indizierungsinformation veralteter Dateien"
+
+#~ msgid "(C) 2014, Vishesh Handa"
+#~ msgstr "(C) 2014, Vishesh Handa"
+
+#~ msgid "xattrdetectortest"
+#~ msgstr "xattrdetectortest"
+
+#~ msgid "(c) 2014, Vishesh Handa"
+#~ msgstr "(C) 2014, Vishesh Handa"
+
+#~ msgid "The file URL"
+#~ msgstr "Die Datei-URL"
+
+#~ msgid "indexerconfigtest"
+#~ msgstr "Einrichtungstest der Indizierung"
+
+#~ msgid "Disk space is running low (%1 left). Suspending indexing of files."
+#~ msgstr ""
+#~ "Der freie Festplattenspeicher ist knapp (%1 verbleiben). Der Indexdienst "
+#~ "wird angehalten."
+
+#~ msgid "Resuming indexing of files for fast searching."
+#~ msgstr "Die Datei-Indizierung zur schnellen Suche wird fortgesetzt."
+
+#~ msgctxt "@info:status"
+#~ msgid "Cleaning invalid file metadata"
+#~ msgstr "Ungültige Datei-Metadaten werden bereinigt"
+
+#~ msgid "Baloo File Extractor"
+#~ msgstr "Datei-Extraktion für Baloo"
+
+#~ msgid "The File Extractor extracts the file metadata and text"
+#~ msgstr "Dieses Programm extrahiert Metadaten und Text aus Dateien"
+
+#~ msgid "The URL of the files to be indexed"
+#~ msgstr "Die Adresse (URL) der zu indizierenden Dateien"
+
+#~ msgid "Print the data being indexed"
+#~ msgstr "Ausgabe der indizierten Daten"
+
+#~ msgid "Print the QVariantMap in Base64 encoding"
+#~ msgstr "Ausgabe der QVariantMap in Base64-Kodierung"
+
+#~ msgid "Desktop Search Details"
+#~ msgstr "Details zur Desktop-Suche"
+
+#~ msgid "Refresh"
+#~ msgstr "Aktualisieren"
+
+#~ msgid "Files"
+#~ msgstr "Dateien"
+
+#~ msgid "Emails"
+#~ msgstr "E-Mails"
+
+#~ msgid "Calculating"
+#~ msgstr "Berechnung wird durchgeführt"
+
+#~ msgctxt ""
+#~ "@title:window Referring to the folders which will be searched for files "
+#~ "to index for desktop search"
+#~ msgid "Advanced File Filtering"
+#~ msgstr "Erweitertes Dateifiltern"
+
+#~ msgctxt "@info:tooltip %1 is the path of the folder in a listview"
+#~ msgid ""
+#~ "<filename>%1</filename><nl/> (symbolic links are <emphasis>not</emphasis> "
+#~ "indexed for desktop search)"
+#~ msgstr ""
+#~ "<filename>%1</filename><nl/> (Symbolische Verknüpfungen werden  "
+#~ "<emphasis>nicht</emphasis> für die Desktop-Suche indiziert)"
+
+#~ msgctxt "@info:tooltip %1 is the path of the folder in a listview"
+#~ msgid "<filename>%1</filename><nl/>(will be indexed for desktop search)"
+#~ msgstr "<filename>%1</filename><nl/>(wird für die Desktop-Suche indiziert)"
+
+#~ msgctxt "@info:tooltip %1 is the path of the folder in a listview"
+#~ msgid ""
+#~ "<filename>%1</filename><nl/> (will <emphasis>not</emphasis> be indexed "
+#~ "for desktop search)"
+#~ msgstr ""
+#~ "<filename>%1</filename><nl/>(wird <emphasis>nicht</emphasis> für die "
+#~ "Desktop-Suche indiziert)"
+
+#~ msgctxt ""
+#~ "@title:window Referring to the folders which will be searched for files "
+#~ "to index for desktop search"
+#~ msgid "Customizing Index Folders"
+#~ msgstr "Benutzerdefinierte Index-Ordner"
+
+#~ msgid "Desktop Search Configuration Module"
+#~ msgstr "Einstellungsmodul für Desktop-Suche"
+
+#~ msgid "Copyright 2007-2010 Sebastian Trüg"
+#~ msgstr "© 2007–2010, Sebastian Trüg"
+
+#~ msgid "Sebastian Trüg"
+#~ msgstr "Sebastian Trüg"
+
+#~ msgctxt "@info:status"
+#~ msgid "File Metadata services are active"
+#~ msgstr "Die Dienste für Datei-Metadaten sind aktiv"
+
+#~ msgctxt "@info:status"
+#~ msgid "File Metadata services are disabled"
+#~ msgstr "Die Dienste für Datei-Metadaten sind nicht aktiv"
+
+#~ msgctxt "@info:status"
+#~ msgid "File indexing service not running."
+#~ msgstr "Der Datei-Indizierungsdienst läuft nicht."
+
+#~ msgctxt "@info:status %1 is an error message returned by a dbus interface."
+#~ msgid "Failed to contact File Indexer service (%1)"
+#~ msgstr "Fehler bei der Verbindung mit dem Datei-Indizierungsdienst (%1)"
+
+#~ msgctxt "Resumes the File indexing service."
+#~ msgid "Resume"
+#~ msgstr "Fortsetzen"
+
+#~ msgctxt "Suspends the File indexing service."
+#~ msgid "Suspend"
+#~ msgstr "Aussetzen"

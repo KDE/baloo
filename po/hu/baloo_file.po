@@ -1,0 +1,103 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Balázs Úr <urbalazs@gmail.com>, 2014.
+# Kristóf Kiszel <ulysses@kubuntu.org>, 2014, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-09-08 10:30+0000\n"
+"PO-Revision-Date: 2015-09-04 15:08+0200\n"
+"Last-Translator: Kristóf Kiszel <ulysses@kubuntu.org>\n"
+"Language-Team: Hungarian <kde-l10n-hu@kde.org>\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 1.5\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Kiszel Kristóf,Úr Balázs"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "ulysses@kubuntu.org,urbalazs@gmail.com"
+
+#: main.cpp:47
+msgid "Baloo File Indexing Daemon"
+msgstr "Baloo fájlindexelő démon"
+
+#: main.cpp:48
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:48
+msgid "Maintainer"
+msgstr "Karbantartó"
+
+#~ msgctxt "@info:status"
+#~ msgid "File indexer is suspended."
+#~ msgstr "A fájlindexelő fel van függesztve."
+
+#~ msgctxt "@info:status"
+#~ msgid "Scanning for recent changes in files for desktop search"
+#~ msgstr "Fájlok friss változásainak keresése az asztali kereséshez"
+
+#~ msgctxt "@info:status"
+#~ msgid "Indexing files for desktop search."
+#~ msgstr "Fájlok indexelése az asztali kereséshez."
+
+#~ msgctxt "@info:status"
+#~ msgid "File indexer is idle."
+#~ msgstr "A fájlindexelő inaktív."
+
+#~ msgid "Baloo File"
+#~ msgstr "Baloo fájl"
+
+#~ msgid "An application to handle file metadata"
+#~ msgstr "Egy alkalmazás fájlok metaadatainak kezeléséhez"
+
+#~ msgctxt "@title"
+#~ msgid "New removable device detected"
+#~ msgstr "Új cserélhető eszköz található"
+
+#~ msgctxt "@action"
+#~ msgid "Index files"
+#~ msgstr "Fájlok indexelése"
+
+#~ msgctxt "@action"
+#~ msgid "Ignore device"
+#~ msgstr "Eszköz kihagyása"
+
+#~ msgctxt "@action"
+#~ msgid "Configure"
+#~ msgstr "Beállítás"
+
+#~ msgctxt "@info"
+#~ msgid ""
+#~ "Do you want files on removable device <resource>%1</resource> to be "
+#~ "indexed for fast desktop searches?"
+#~ msgstr ""
+#~ "Szeretné a(z) <resource>%1</resource> cserélhető eszközön indexelni a "
+#~ "fájlokat a gyors asztali kereséshez?"
+
+#~ msgid "Cleans up stale file index information"
+#~ msgstr "Kitisztítja a nem használt fájl index információkat"
+
+#~ msgid "(C) 2014, Vishesh Handa"
+#~ msgstr "© Vishesh Handa, 2014."
+
+#~ msgid "xattrdetectortest"
+#~ msgstr "xattrdetectortest"
+
+#~ msgid "(c) 2014, Vishesh Handa"
+#~ msgstr "© Vishesh Handa, 2014."
+
+#~ msgid "The file URL"
+#~ msgstr "A fájl URL"
+
+#~ msgid "indexerconfigtest"
+#~ msgstr "indexerconfigtest"
