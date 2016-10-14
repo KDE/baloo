@@ -76,32 +76,50 @@ void putFixed64(QByteArray* dst, quint64 value)
     dst->append(buf, sizeof(buf));
 }
 
-char* encodeVarint32(char* dst, quint32 v) {
+static inline int encodeVarint32Internal(char* dst, quint32 v) {
     // Operate on characters as unsigneds
     unsigned char* ptr = reinterpret_cast<unsigned char*>(dst);
     static const int B = 128;
     if (v < (1<<7)) {
-        *(ptr++) = v;
-    } else if (v < (1<<14)) {
-        *(ptr++) = v | B;
-        *(ptr++) = v>>7;
-    } else if (v < (1<<21)) {
-        *(ptr++) = v | B;
-        *(ptr++) = (v>>7) | B;
-        *(ptr++) = v>>14;
-    } else if (v < (1<<28)) {
-        *(ptr++) = v | B;
-        *(ptr++) = (v>>7) | B;
-        *(ptr++) = (v>>14) | B;
-        *(ptr++) = v>>21;
-    } else {
-        *(ptr++) = v | B;
-        *(ptr++) = (v>>7) | B;
-        *(ptr++) = (v>>14) | B;
-        *(ptr++) = (v>>21) | B;
-        *(ptr++) = v>>28;
+        ptr[0] = v;
+        return 1;
     }
-    return reinterpret_cast<char*>(ptr);
+    if (v < (1<<14)) {
+        ptr[0] = v | B;
+        ptr[1] = v>>7;
+        return 2;
+    }
+    if (v < (1<<21)) {
+        ptr[0] = v | B;
+        ptr[1] = (v>>7) | B;
+        ptr[2] = v>>14;
+        return 3;
+    }
+    if (v < (1<<28)) {
+        ptr[0] = v | B;
+        ptr[1] = (v>>7) | B;
+        ptr[2] = (v>>14) | B;
+        ptr[3] = v>>21;
+        return 4;
+    }
+
+    ptr[0] = v | B;
+    ptr[1] = (v>>7) | B;
+    ptr[2] = (v>>14) | B;
+    ptr[3] = (v>>21) | B;
+    ptr[4] = v>>28;
+    return 5;
+}
+
+char* encodeVarint32(char* dst, quint32 value)
+{
+    const int offset = encodeVarint32Internal(dst, value);
+    return dst + offset;
+}
+
+static inline void putVarint32Internal(char* dst, quint32 v, int &pos)
+{
+    pos += encodeVarint32Internal(&dst[pos], v);
 }
 
 void putVarint32(QByteArray* dst, quint32 v)
@@ -132,18 +150,19 @@ void putVarint64(QByteArray* dst, quint64 v)
 
 void putDifferentialVarInt32(QByteArray* dst, const QVector<quint32>& values)
 {
-    putVarint32(dst, values.size());
-    if (values.isEmpty()) {
-        return;
-    }
+    QByteArray baTmp;
+    baTmp.resize((values.size() + 1) * 5);  // max size, correct size will be held in pos
+    int pos = 0;
+    putVarint32Internal(baTmp.data(), values.size(), pos);
 
-    quint32 v = values.first();
-    putVarint32(dst, v);
-    for (int i = 1; i < values.size(); i++) {
-        quint32 n = values[i];
-        putVarint32(dst, n - v);
+    quint32 v = 0;
+    const auto itEnd = values.cend();
+    for (auto it = values.cbegin(); it != itEnd; ++it) {
+        const quint32 n = *it;
+        putVarint32Internal(baTmp.data(), n - v, pos);
         v = n;
     }
+    dst->append(baTmp.constData(), pos);
 }
 
 char* getDifferentialVarInt32(char* p, char* limit, QVector<quint32>* values)
