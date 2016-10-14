@@ -43,10 +43,9 @@ using namespace Baloo;
 
 void IOHandlerTest::testInput()
 {
-    QTemporaryFile stdIn, stdOut;
+    QTemporaryFile stdIn;
     stdIn.open();
-    stdOut.open();
-    IOHandler io(stdIn.handle(), stdOut.handle());
+    IOHandler io(stdIn.handle());
 
     QVector<quint64> ids;
     quint32 size = 10;

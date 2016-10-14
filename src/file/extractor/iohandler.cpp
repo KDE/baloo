@@ -27,9 +27,8 @@
 
 using namespace Baloo;
 
-IOHandler::IOHandler(int stdIn, int stdOut)
+IOHandler::IOHandler(int stdIn)
     : m_stdinHandle(stdIn)
-    , m_stdoutHandle(stdOut)
     , m_batchSize(0)
     , m_stdout(stdout)
 {

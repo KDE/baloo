@@ -38,6 +38,7 @@ namespace Baloo {
 
 class TimeEstimator : public QObject
 {
+    Q_OBJECT
 public:
     explicit TimeEstimator(FileIndexerConfig* config, QObject* parent = 0);
     uint calculateTimeLeft(int filesLeft);
