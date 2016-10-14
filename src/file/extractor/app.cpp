@@ -46,7 +46,7 @@ using namespace Baloo;
 App::App(QObject* parent)
     : QObject(parent)
     , m_notifyNewData(STDIN_FILENO, QSocketNotifier::Read)
-    , m_io(STDIN_FILENO, STDOUT_FILENO)
+    , m_io(STDIN_FILENO)
     , m_tr(0)
 {
     connect(&m_notifyNewData, &QSocketNotifier::activated, this, &App::slotNewInput);

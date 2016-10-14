@@ -31,7 +31,7 @@ namespace Baloo {
 class IOHandler
 {
 public:
-    IOHandler(int stdin, int stdout);
+    IOHandler(int stdin);
     quint64 nextId();
     bool atEnd() const;
 
@@ -45,7 +45,6 @@ public:
 
 private:
     int m_stdinHandle;
-    int m_stdoutHandle;
 
     quint32 m_batchSize;
 
