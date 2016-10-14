@@ -454,9 +454,8 @@ void Transaction::checkFsTree()
 
     auto map = postingDb.toTestMap();
 
-    QList<PostingList> allLists = map.values();
     QSet<quint64> allIds;
-    for (auto list : allLists) {
+    Q_FOREACH (const auto& list, map) {
         for (quint64 id : list) {
             allIds << id;
         }
@@ -527,9 +526,8 @@ void Transaction::checkTermsDbinPostingDb()
 
     auto map = postingDb.toTestMap();
 
-    QList<PostingList> allLists = map.values();
     QSet<quint64> allIds;
-    for (auto list : allLists) {
+    Q_FOREACH (const auto& list, map) {
         for (quint64 id : list) {
             allIds << id;
         }
