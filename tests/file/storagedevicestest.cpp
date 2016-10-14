@@ -32,7 +32,7 @@ int main(int argc, char** argv)
     QCoreApplication app(argc, argv);
 
     StorageDevices sd;
-    for (auto device : sd.allMedia()) {
+    for (const auto& device : sd.allMedia()) {
         qDebug() << device.mountPath() << device.isUsable();
     }
 
