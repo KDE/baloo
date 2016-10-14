@@ -10,4 +10,5 @@ ENDMACRO()
 baloo_codecs_auto_tests(
     doctermscodectest
     postingcodectest
+    positioncodectest
 )

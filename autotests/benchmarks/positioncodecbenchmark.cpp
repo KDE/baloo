@@ -30,26 +30,68 @@ class PositionCodecBenchmark : public QObject
 {
     Q_OBJECT
 private Q_SLOTS:
-    void test();
+    void initTestCase();
+    // data 1 - a lot of positions, small amount of PositionInfo
+    void benchEncodeData1();
+    void benchDecodeData1();
+    // data 2 - few positions, large amount of PositionInfo
+    void benchEncodeData2();
+    void benchDecodeData2();
+private:
+    QVector<PositionInfo> m_benchmarkData1;
+    QVector<PositionInfo> m_benchmarkData2;
 };
 
-void PositionCodecBenchmark::test()
+void PositionCodecBenchmark::initTestCase()
 {
-    PositionCodec codec;
+    m_benchmarkData1.clear();
+    m_benchmarkData1.reserve(100);
+    for(int i = 0; i < 100; ++i)
+    {
+        PositionInfo info;
+        info.docId = (i + 1) * 4711;
+        info.positions.reserve(3000);
+        for (int j = 0; j < 3000; j++)
+            info.positions.append(((j + 1) * 42) / info.docId);
+        m_benchmarkData1.append(info);
+    }
 
-    QVector<PositionInfo> vec;
+    m_benchmarkData2.clear();
+    m_benchmarkData2.reserve(5000);
     for (int i = 0; i < 5000; i++) {
         PositionInfo info;
         info.docId = i;
         info.positions = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
-        vec << info;
+        m_benchmarkData2.append(info);
     }
 
-    QBENCHMARK {
-        QByteArray data = codec.encode(vec);
-        codec.decode(data);
-    }
+}
+
+void PositionCodecBenchmark::benchEncodeData1()
+{
+    PositionCodec pc;
+    QBENCHMARK { pc.encode(m_benchmarkData1); }
+}
+
+void PositionCodecBenchmark::benchDecodeData1()
+{
+    PositionCodec pc;
+    const QByteArray ba = pc.encode(m_benchmarkData1);
+    QBENCHMARK { pc.decode(ba); }
+}
+
+void PositionCodecBenchmark::benchEncodeData2()
+{
+    PositionCodec pc;
+    QBENCHMARK { pc.encode(m_benchmarkData2); }
+}
+
+void PositionCodecBenchmark::benchDecodeData2()
+{
+    PositionCodec pc;
+    const QByteArray ba = pc.encode(m_benchmarkData2);
+    QBENCHMARK { pc.decode(ba); }
 }
 
 QTEST_MAIN(PositionCodecBenchmark)
