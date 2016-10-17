@@ -55,8 +55,8 @@ int main(int argc, char** argv)
         QDirIterator it(QDir::homePath(), QDirIterator::Subdirectories);
         uint num = 0;
         while (it.hasNext()) {
-            QString path = it.next();
-            QString mimetype = mimeDb.mimeTypeForFile(path, QMimeDatabase::MatchExtension).name();
+            const QString& path = it.next();
+            const QString& mimetype = mimeDb.mimeTypeForFile(path, QMimeDatabase::MatchExtension).name();
 
             BasicIndexingJob job(path, mimetype);
             job.index();

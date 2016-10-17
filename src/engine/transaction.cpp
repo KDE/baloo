@@ -564,8 +564,8 @@ void Transaction::checkPostingDbinTermsDb()
     while (it.hasNext()) {
         it.next();
 
-        const QByteArray term = it.key();
-        const PostingList list = it.value();
+        const QByteArray& term = it.key();
+        const PostingList& list = it.value();
         for (quint64 id : list) {
             if (documentTermsDB.get(id).contains(term)) {
                 continue;

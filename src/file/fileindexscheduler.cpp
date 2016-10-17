@@ -143,7 +143,7 @@ static void removeStartsWith(QStringList& list, const QString& dir)
 {
     QMutableListIterator<QString> it(list);
     while (it.hasNext()) {
-        QString file = it.next();
+        const QString& file = it.next();
         if (file.startsWith(dir)) {
             it.remove();
         }
