@@ -1,0 +1,323 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Andrej Mernik <andrejm@ubuntu.si>, 2014, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-12-15 08:19+0000\n"
+"PO-Revision-Date: 2015-10-25 18:54+0100\n"
+"Last-Translator: Andrej Mernik <andrejm@ubuntu.si>\n"
+"Language-Team: Slovenian <lugos-slo@lugos.si>\n"
+"Language: sl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
+"%100==4 ? 3 : 0);\n"
+"X-Generator: Lokalize 1.5\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Andrej Mernik"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "andrejm@ubuntu.si"
+
+#: ../../file/indexerstate.h:42
+msgid "Unknown"
+msgstr "Neznano"
+
+#: ../../file/indexerstate.h:45
+msgid "Idle"
+msgstr "Nedejaven"
+
+#: ../../file/indexerstate.h:48
+msgid "Suspended"
+msgstr "V pripravljenosti"
+
+#: ../../file/indexerstate.h:51
+msgid "Initial Indexing"
+msgstr "Začetna izgradnja kazala"
+
+#: ../../file/indexerstate.h:54
+msgid "Indexing new files"
+msgstr "Izgrajevanje kazala novih datotek"
+
+#: ../../file/indexerstate.h:57
+msgid "Indexing modified files"
+msgstr "Izgrajevanje kazala spremenjenih datotek"
+
+#: ../../file/indexerstate.h:60
+msgid "Indexing Extended Attributes"
+msgstr "Izgrajevanje kazala razširjenih atributov"
+
+#: ../../file/indexerstate.h:63
+msgid "Indexing file content"
+msgstr "Izgrajevanje kazala vsebine datotek"
+
+#: ../../file/indexerstate.h:66
+msgid "Checking for unindexed files"
+msgstr "Preverjanje za datotekami, ki še niso v kazalu"
+
+#: configcommand.cpp:45
+msgid "Manipulate the Baloo configuration"
+msgstr "Spreminjajte nastavitve programa Baloo"
+
+#: configcommand.cpp:68
+msgid "The config command can be used to manipulate the Baloo Configuration"
+msgstr "S pomočjo ukaza config lahko spreminjate nastavitve programa Baloo"
+
+#: configcommand.cpp:69
+msgid "Usage: balooctl config <command>"
+msgstr "Uporaba: balooctl config <ukaz>"
+
+#: configcommand.cpp:70
+msgid "Possible Commands:"
+msgstr "Razpoložljivi ukazi:"
+
+#: configcommand.cpp:73
+msgid "Add a value to config parameter"
+msgstr "Dodaj vrednost nastavitvenemu parametru"
+
+#: configcommand.cpp:74
+msgid "Remove a value from a config parameter"
+msgstr "Odstrani vrednost nastavitvenega parametra"
+
+#: configcommand.cpp:75
+msgid "Show the value of a config parameter"
+msgstr "Pokaži vrednost nastavitvenega parametra"
+
+#: configcommand.cpp:76
+msgid "Set the value of a config parameter"
+msgstr "Nastavi vrednost nastavitvenega parametra"
+
+#: configcommand.cpp:77
+msgid "Display this help menu"
+msgstr "Pokaži ta meni s pomočjo"
+
+#: configcommand.cpp:83
+msgid "The following configuration options may be listed:"
+msgstr "Izpišete lahko naslednje nastavitvene možnosti:"
+
+#: configcommand.cpp:85 configcommand.cpp:398
+msgid "Controls if Baloo indexes hidden files and folders"
+msgstr "Nadzira, ali naj Baloo v kazalo vključi skrite datoteke in mape"
+
+#: configcommand.cpp:86
+msgid "Controls if baloo indexes file content."
+msgstr "Nadzira, ali naj Baloo v kazalo vključi vsebino."
+
+#: configcommand.cpp:87 configcommand.cpp:150 configcommand.cpp:261
+msgid "The list of folders which Baloo indexes"
+msgstr "Seznam map, ki jih bo Baloo vključil v kazalo"
+
+#: configcommand.cpp:88 configcommand.cpp:151 configcommand.cpp:262
+msgid "The list of folders which Baloo will never index"
+msgstr "Seznam map, ki jih Baloo ne bo vključil v kazalo"
+
+#: configcommand.cpp:89 configcommand.cpp:152 configcommand.cpp:263
+msgid "The list of filters which are used to exclude files"
+msgstr "Seznam filtrov, glede na katere bodo izločene datoteke"
+
+#: configcommand.cpp:90 configcommand.cpp:153 configcommand.cpp:264
+msgid "The list of mimetypes which are used to exclude files"
+msgstr "Seznam vrst mime, glede na katere bodo izločene datoteke"
+
+#: configcommand.cpp:142 configcommand.cpp:253 configcommand.cpp:390
+#: configcommand.cpp:459
+msgid "Config parameter could not be found"
+msgstr "Nastavitvenega parametra ni bilo mogoče najti"
+
+#: configcommand.cpp:148 configcommand.cpp:259 configcommand.cpp:396
+msgid "The following configuration options may be modified:"
+msgstr "Spremenite lahko naslednje nastavitvene možnosti:"
+
+#: configcommand.cpp:161 configcommand.cpp:191 configcommand.cpp:272
+#: configcommand.cpp:314
+msgid "A folder must be provided"
+msgstr "Podana mora biti mapa"
+
+#: configcommand.cpp:167 configcommand.cpp:197 configcommand.cpp:278
+#: configcommand.cpp:320
+msgid "Path does not exist"
+msgstr "Pot ne obstaja"
+
+#: configcommand.cpp:172 configcommand.cpp:202 configcommand.cpp:283
+#: configcommand.cpp:325
+msgid "Path is not a directory"
+msgstr "Pot ni mapa"
+
+#: configcommand.cpp:179
+#, kde-format
+msgid "%1 is not in the list of include folders"
+msgstr "%1 ni na seznamu vključenih map"
+
+#: configcommand.cpp:209
+#, kde-format
+msgid "%1 is not in the list of exclude folders"
+msgstr "%1 ni na seznamu izločenih map"
+
+#: configcommand.cpp:221 configcommand.cpp:356
+msgid "A filter must be provided"
+msgstr "Podan mora biti filter"
+
+#: configcommand.cpp:227
+#, kde-format
+msgid "%1 is not in list of exclude filters"
+msgstr "%1 ni na seznamu filtrov izločanja"
+
+#: configcommand.cpp:238 configcommand.cpp:374
+msgid "A mimetype must be provided"
+msgstr "Podana mora biti vrsta mime"
+
+#: configcommand.cpp:244
+#, kde-format
+msgid "%1 is not in list of exclude mimetypes"
+msgstr "%1 ni na seznamu izločenih vrst mime"
+
+#: configcommand.cpp:290
+#, kde-format
+msgid "%1 is already in the list of include folders"
+msgstr "%1 je že na seznamu vključenih map"
+
+#: configcommand.cpp:296
+#, kde-format
+msgid "Parent folder %1 is already in the list of include folders"
+msgstr "Nadrejena mapa %1 je že na seznamu vključenih map"
+
+#: configcommand.cpp:302 configcommand.cpp:344
+#, kde-format
+msgid "%1 is in the list of exclude folders"
+msgstr "%1 je na seznamu izločenih map"
+
+#: configcommand.cpp:332
+#, kde-format
+msgid "%1 is already in the list of exclude folders"
+msgstr "%1 je že na seznamu izločenih map"
+
+#: configcommand.cpp:338
+#, kde-format
+msgid "Parent folder %1 is already in the list of exclude folders"
+msgstr "Nadrejena mapa %1 je že na seznamu izločenih map"
+
+#: configcommand.cpp:362
+msgid "Exclude filter is already in the list"
+msgstr "Filter izločanja je že na seznamu"
+
+#: configcommand.cpp:380
+msgid "Exclude mimetype is already in the list"
+msgstr "Izločena vrsta mime je že na seznamu"
+
+#: configcommand.cpp:407 configcommand.cpp:434
+msgid "A value must be provided"
+msgstr "Podana mora biti vrednost"
+
+#: configcommand.cpp:428 configcommand.cpp:455
+msgid "Invalid value"
+msgstr "Neveljavna vrednost"
+
+#: main.cpp:67
+msgid "balooctl"
+msgstr "balooctl"
+
+#: main.cpp:68
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:68
+msgid "Maintainer"
+msgstr "Vzdrževalec"
+
+#: main.cpp:74
+msgid "The command to execute"
+msgstr "Ukaz, ki se naj izvede"
+
+#: main.cpp:76
+msgid "Print the status of the indexer"
+msgstr "Izpiši stanje izgrajevalnika kazala"
+
+#: main.cpp:77
+msgid "Enable the file indexer"
+msgstr "Omogoči izgrajevalnik kazala datotek"
+
+#: main.cpp:78
+msgid "Disable the file indexer"
+msgstr "Onemogoči izgrajevalnik kazala datotek"
+
+#: main.cpp:79
+msgid "Start the file indexer"
+msgstr "Zaženi izgrajevalnik kazala datotek"
+
+#: main.cpp:80
+msgid "Stop the file indexer"
+msgstr "Zaustavi izgrajevalnik kazala datotek"
+
+#: main.cpp:81
+msgid "Restart the file indexer"
+msgstr "Znova zaženi izgrajevalnik kazala datotek"
+
+#: main.cpp:82
+msgid "Suspend the file indexer"
+msgstr "Prestavi izgrajevalnik kazala datotek v pripravljenost"
+
+#: main.cpp:83
+msgid "Resume the file indexer"
+msgstr "Nadaljuj izgrajevalnik kazala datotek"
+
+#: main.cpp:84
+msgid "Check for any unindexed files and index them"
+msgstr "Preveri za datotekami, ki še niso v kazalu in jih vanj dodaj"
+
+#: main.cpp:85
+msgid "Index the specified files"
+msgstr "Dodaj navedene datoteke v kazalo"
+
+#: main.cpp:86
+msgid "Forget the specified files"
+msgstr "Pozabi na navedene datoteke"
+
+#: main.cpp:87
+msgid "Modify the Baloo configuration"
+msgstr "Spremenite nastavitve programa Baloo"
+
+#: statuscommand.cpp:45
+msgid "Print the status of the Indexer"
+msgstr "Izpiši stanje izgrajevalnika kazala"
+
+#: statuscommand.cpp:54
+msgid "Baloo is currently disabled. To enable, please run \"balooctl enable\""
+msgstr ""
+"Baloo je trenutno onemogočen. Da ga omogočite, zaženite »balooctl enable«"
+
+#: statuscommand.cpp:60
+msgid "Baloo Index could not be opened"
+msgstr "Kazala Baloo ni bilo mogoče odpreti"
+
+#: statuscommand.cpp:81
+msgid "Baloo File Indexer is running"
+msgstr "Izgrajevalnik kazala datotek Baloo teče"
+
+#: statuscommand.cpp:82
+#, kde-format
+msgid "Indexer state: %1"
+msgstr "Stanje izgrajevalnika kazala: %1"
+
+#: statuscommand.cpp:85
+msgid "Baloo File Indexer is not running"
+msgstr "Izgrajevalnik kazala datotek Baloo ne teče"
+
+#: statuscommand.cpp:91
+#, kde-format
+msgid "Indexed %1 / %2 files"
+msgstr "%1 od %2 datotek dodanih v kazalo"
+
+#: statuscommand.cpp:108
+#, kde-format
+msgid "File: %1"
+msgstr "Datoteka: %1"
+
+#~ msgid "Must provide a value"
+#~ msgstr "Podana mora biti vrednost"

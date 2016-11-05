@@ -1,0 +1,54 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Jeff Huang <s8321414@gmail.com>, 2016.
+msgid ""
+msgstr ""
+"Project-Id-Version: baloomonitorplugin\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-10-03 08:40+0000\n"
+"PO-Revision-Date: 2016-09-23 11:49+0800\n"
+"Last-Translator: Jeff Huang <s8321414@gmail.com>\n"
+"Language-Team: Chinese <kde-i18n-doc@kde.org>\n"
+"Language: Traditional Chinese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 2.0\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: ../../file/indexerstate.h:42
+msgid "Unknown"
+msgstr "未知"
+
+#: ../../file/indexerstate.h:45
+msgid "Idle"
+msgstr "閒置"
+
+#: ../../file/indexerstate.h:48
+msgid "Suspended"
+msgstr "暫停"
+
+#: ../../file/indexerstate.h:51
+msgid "Initial Indexing"
+msgstr "初始索引"
+
+#: ../../file/indexerstate.h:54
+msgid "Indexing new files"
+msgstr "建立新檔案索引"
+
+#: ../../file/indexerstate.h:57
+msgid "Indexing modified files"
+msgstr "建立修改過的檔案索引"
+
+#: ../../file/indexerstate.h:60
+msgid "Indexing Extended Attributes"
+msgstr "建立延伸屬性索引"
+
+#: ../../file/indexerstate.h:63
+msgid "Indexing file content"
+msgstr "建立檔案內容索引"
+
+#: ../../file/indexerstate.h:66
+msgid "Checking for unindexed files"
+msgstr "正在檢查未索引的檔案"

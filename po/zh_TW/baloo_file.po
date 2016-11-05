@@ -1,0 +1,102 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Franklin Weng <franklin at goodhorse dot idv dot tw>, 2014, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-09-08 10:30+0000\n"
+"PO-Revision-Date: 2015-05-20 14:27+0800\n"
+"Last-Translator: Franklin\n"
+"Language-Team: Chinese Traditional <kde-i18n-doc@kde.org>\n"
+"Language: zh_TW\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Lokalize 1.5\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Franklin Weng"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "franklin@nospam.goodhorse.idv.tw"
+
+#: main.cpp:47
+msgid "Baloo File Indexing Daemon"
+msgstr "Baloo 檔案索引伺服程式"
+
+#: main.cpp:48
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:48
+msgid "Maintainer"
+msgstr "維護者"
+
+#~ msgctxt "@info:status"
+#~ msgid "File indexer is suspended."
+#~ msgstr "檔案索引器已暫停。"
+
+#~ msgctxt "@info:status"
+#~ msgid "Scanning for recent changes in files for desktop search"
+#~ msgstr "正在掃描最近變更的檔案以提供桌面搜尋"
+
+#~ msgctxt "@info:status"
+#~ msgid "Indexing files for desktop search."
+#~ msgstr "正在建立檔案索引以提供桌面搜尋."
+
+#~ msgctxt "@info:status"
+#~ msgid "File indexer is idle."
+#~ msgstr "檔案索引器閒置中。"
+
+#~ msgid "Baloo File"
+#~ msgstr "Baloo 檔"
+
+#~ msgid "An application to handle file metadata"
+#~ msgstr "處理檔案中繼資料的應用程式"
+
+#~ msgctxt "@title"
+#~ msgid "New removable device detected"
+#~ msgstr "偵測到新的可移除裝置"
+
+#~ msgctxt "@action"
+#~ msgid "Index files"
+#~ msgstr "索引檔"
+
+#~ msgctxt "@action"
+#~ msgid "Ignore device"
+#~ msgstr "忽略此裝置"
+
+#~ msgctxt "@action"
+#~ msgid "Configure"
+#~ msgstr "設定"
+
+#~ msgctxt "@info"
+#~ msgid ""
+#~ "Do you want files on removable device <resource>%1</resource> to be "
+#~ "indexed for fast desktop searches?"
+#~ msgstr ""
+#~ "您要建立在可移除裝置 <resource>%1</resource> 上的檔案索引以便做快速桌面搜"
+#~ "尋嗎？"
+
+#~ msgid "Cleans up stale file index information"
+#~ msgstr "清除不正確的檔案索引資訊"
+
+#~ msgid "(C) 2014, Vishesh Handa"
+#~ msgstr "(C) 2014, Vishesh Handa"
+
+#~ msgid "xattrdetectortest"
+#~ msgstr "xattrdetectortest"
+
+#~ msgid "(c) 2014, Vishesh Handa"
+#~ msgstr "(c) 2014, Vishesh Handa"
+
+#~ msgid "The file URL"
+#~ msgstr "檔案網址"
+
+#~ msgid "indexerconfigtest"
+#~ msgstr "indexerconfigtest"

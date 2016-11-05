@@ -1,0 +1,116 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Andrej Mernik <andrejm@ubuntu.si>, 2013, 2014, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2015-09-08 10:30+0000\n"
+"PO-Revision-Date: 2015-06-05 10:08+0200\n"
+"Last-Translator: Andrej Mernik <andrejm@ubuntu.si>\n"
+"Language-Team: Slovenian <lugos-slo@lugos.si>\n"
+"Language: sl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
+"%100==4 ? 3 : 0);\n"
+"X-Generator: Lokalize 1.5\n"
+
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Andrej Mernik"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "andrejm@ubuntu.si"
+
+#: main.cpp:47
+msgid "Baloo File Indexing Daemon"
+msgstr "Ozadnji program za izgrajevanje kazal datotek Baloo"
+
+#: main.cpp:48
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:48
+msgid "Maintainer"
+msgstr "Vzdrževalec"
+
+#~ msgctxt "@info:status"
+#~ msgid "File indexer is suspended."
+#~ msgstr "Izgrajevalnik kazala datotek je v pripravljenosti."
+
+#~ msgctxt "@info:status"
+#~ msgid "Scanning for recent changes in files for desktop search"
+#~ msgstr ""
+#~ "Preiskovanje za nedavnimi spremembami v datotekah za namizno iskanje"
+
+#~ msgctxt "@info:status"
+#~ msgid "Indexing files for desktop search."
+#~ msgstr "Izgrajevanje kazala datotek za namizno iskanje."
+
+#~ msgctxt "@info:status"
+#~ msgid "File indexer is idle."
+#~ msgstr "Izgrajevalnik kazala datotek ni dejaven."
+
+#~ msgid "Baloo File"
+#~ msgstr "Datoteka Baloo"
+
+#~ msgid "An application to handle file metadata"
+#~ msgstr "Program za obravnavanje metapodatkov datotek"
+
+#~ msgctxt "@title"
+#~ msgid "New removable device detected"
+#~ msgstr "Zaznana je bila nova odstranljiva naprava"
+
+#~ msgctxt "@action"
+#~ msgid "Index files"
+#~ msgstr "Izgradi kazalo datotek"
+
+#~ msgctxt "@action"
+#~ msgid "Ignore device"
+#~ msgstr "Prezri napravo"
+
+#~ msgctxt "@action"
+#~ msgid "Configure"
+#~ msgstr "Nastavi"
+
+#~ msgctxt "@info"
+#~ msgid ""
+#~ "Do you want files on removable device <resource>%1</resource> to be "
+#~ "indexed for fast desktop searches?"
+#~ msgstr ""
+#~ "Ali želite izgraditi kazalo za datoteke na odstranljivi napravi <resource>"
+#~ "%1</resource> za hitra namizna iskanja?"
+
+#~ msgid "Cleans up stale file index information"
+#~ msgstr "Počisti podatke kazala zastarelih datotek"
+
+#~ msgid "(C) 2014, Vishesh Handa"
+#~ msgstr "(C) 2014, Vishesh Handa"
+
+#~ msgid "xattrdetectortest"
+#~ msgstr "xattrdetectortest"
+
+#~ msgid "(c) 2014, Vishesh Handa"
+#~ msgstr "(c) 2014, Vishesh Handa"
+
+#~ msgid "The file URL"
+#~ msgstr "URL datoteke"
+
+#~ msgid "indexerconfigtest"
+#~ msgstr "indexerconfigtest"
+
+#~ msgid "Disk space is running low (%1 left). Suspending indexing of files."
+#~ msgstr ""
+#~ "Prostora na disku je malo (še %1). Prestavljanje izgrajevanja kazala "
+#~ "datotek v pripravljenost."
+
+#~ msgid "Resuming indexing of files for fast searching."
+#~ msgstr "Nadaljevanje izgrajevanja kazala datotek za hitro iskanje."
+
+#~ msgctxt "@info:status"
+#~ msgid "Cleaning invalid file metadata"
+#~ msgstr "Čiščenje neveljavnih datotečnih metapodatkov"
