@@ -32,10 +32,11 @@ PositionCodec::PositionCodec()
 QByteArray PositionCodec::encode(const QVector<PositionInfo>& list)
 {
     QByteArray data;
+    QByteArray temporaryStorage;
 
     for (const PositionInfo& pos : list) {
         putFixed64(&data, pos.docId);
-        putDifferentialVarInt32(&data, pos.positions);
+        putDifferentialVarInt32(temporaryStorage, &data, pos.positions);
    }
 
     return data;
