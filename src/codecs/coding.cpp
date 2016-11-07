@@ -52,30 +52,6 @@
 
 namespace Baloo {
 
-void encodeFixed32(char* buf, quint32 value)
-{
-    memcpy(buf, &value, sizeof(value));
-}
-
-void encodeFixed64(char* buf, quint64 value)
-{
-    memcpy(buf, &value, sizeof(value));
-}
-
-void putFixed32(QByteArray* dst, quint32 value)
-{
-    char buf[sizeof(value)];
-    encodeFixed32(buf, value);
-    dst->append(buf, sizeof(buf));
-}
-
-void putFixed64(QByteArray* dst, quint64 value)
-{
-    char buf[sizeof(value)];
-    encodeFixed64(buf, value);
-    dst->append(buf, sizeof(buf));
-}
-
 static inline int encodeVarint32Internal(char* dst, quint32 v) {
     // Operate on characters as unsigneds
     unsigned char* ptr = reinterpret_cast<unsigned char*>(dst);
@@ -111,58 +87,25 @@ static inline int encodeVarint32Internal(char* dst, quint32 v) {
     return 5;
 }
 
-char* encodeVarint32(char* dst, quint32 value)
-{
-    const int offset = encodeVarint32Internal(dst, value);
-    return dst + offset;
-}
-
 static inline void putVarint32Internal(char* dst, quint32 v, int &pos)
 {
     pos += encodeVarint32Internal(&dst[pos], v);
 }
 
-void putVarint32(QByteArray* dst, quint32 v)
+void putDifferentialVarInt32(QByteArray &temporaryStorage, QByteArray* dst, const QVector<quint32>& values)
 {
-    char buf[5];
-    char* ptr = encodeVarint32(buf, v);
-    dst->append(buf, ptr - buf);
-}
-
-char* encodeVarint64(char* dst, quint64 v)
-{
-    static const int B = 128;
-    unsigned char* ptr = reinterpret_cast<unsigned char*>(dst);
-    while (v >= B) {
-        *(ptr++) = (v & (B-1)) | B;
-        v >>= 7;
-    }
-    *(ptr++) = static_cast<unsigned char>(v);
-    return reinterpret_cast<char*>(ptr);
-}
-
-void putVarint64(QByteArray* dst, quint64 v)
-{
-    char buf[10];
-    char* ptr = encodeVarint64(buf, v);
-    dst->append(buf, ptr - buf);
-}
-
-void putDifferentialVarInt32(QByteArray* dst, const QVector<quint32>& values)
-{
-    QByteArray baTmp;
-    baTmp.resize((values.size() + 1) * 5);  // max size, correct size will be held in pos
+    temporaryStorage.resize((values.size() + 1) * 5);  // max size, correct size will be held in pos
     int pos = 0;
-    putVarint32Internal(baTmp.data(), values.size(), pos);
+    putVarint32Internal(temporaryStorage.data(), values.size(), pos);
 
     quint32 v = 0;
     const auto itEnd = values.cend();
     for (auto it = values.cbegin(); it != itEnd; ++it) {
         const quint32 n = *it;
-        putVarint32Internal(baTmp.data(), n - v, pos);
+        putVarint32Internal(temporaryStorage.data(), n - v, pos);
         v = n;
     }
-    dst->append(baTmp.constData(), pos);
+    dst->append(temporaryStorage.constData(), pos);
 }
 
 char* getDifferentialVarInt32(char* p, char* limit, QVector<quint32>* values)
@@ -184,16 +127,6 @@ char* getDifferentialVarInt32(char* p, char* limit, QVector<quint32>* values)
     return p;
 }
 
-int varintLength(quint64 v)
-{
-    int len = 1;
-    while (v >= 128) {
-        v >>= 7;
-        len++;
-    }
-    return len;
-}
-
 char* getVarint32PtrFallback(char* p, char* limit, quint32* value)
 {
     quint32 result = 0;
@@ -210,69 +143,6 @@ char* getVarint32PtrFallback(char* p, char* limit, quint32* value)
         }
     }
     return NULL;
-}
-
-bool getVarint32(QByteArray* input, quint32* value)
-{
-    char* p = input->data();
-    char* limit = p + input->size();
-    char* q = getVarint32Ptr(p, limit, value);
-    if (q == NULL) {
-        return false;
-    } else {
-        *input = QByteArray::fromRawData(q, limit - q);
-        return true;
-    }
-}
-
-const char* getVarint64Ptr(const char* p, const char* limit, quint64* value)
-{
-    quint64 result = 0;
-    for (quint32 shift = 0; shift <= 63 && p < limit; shift += 7) {
-        quint64 byte = *(reinterpret_cast<const unsigned char*>(p));
-        p++;
-        if (byte & 128) {
-            // More bytes are present
-            result |= ((byte & 127) << shift);
-        } else {
-            result |= (byte << shift);
-            *value = result;
-            return reinterpret_cast<const char*>(p);
-        }
-    }
-    return NULL;
-}
-
-bool getVarint64(QByteArray* input, quint64* value)
-{
-    const char* p = input->data();
-    const char* limit = p + input->size();
-    const char* q = getVarint64Ptr(p, limit, value);
-    if (q == NULL) {
-        return false;
-    } else {
-        *input = QByteArray::fromRawData(q, limit - q);
-        return true;
-    }
-}
-
-bool getFixed32(QByteArray* input, quint32* value)
-{
-    char* p = const_cast<char*>(input->data());
-    *value = *reinterpret_cast<quint32*>(p);
-
-    *input = QByteArray::fromRawData(p + sizeof(quint32), input->size() - sizeof(quint32));
-    return true;
-
-}
-
-bool getFixed64(QByteArray* input, quint64* value)
-{
-    char* p = const_cast<char*>(input->data());
-    *value = *reinterpret_cast<quint64*>(p);
-
-    *input = QByteArray::fromRawData(p + sizeof(quint64), input->size() - sizeof(quint64));
-    return true;
 }
 
 }

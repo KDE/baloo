@@ -56,53 +56,26 @@
 
 namespace Baloo {
 
-// Standard Put... routines append to a string
-void putFixed32(QByteArray* dst, quint32 value);
-void putFixed64(QByteArray* dst, quint64 value);
-void putVarint32(QByteArray* dst, quint32 value);
-void putVarint64(QByteArray* dst, quint64 value);
+/*
+ * This is a stripped down version of various encode/decode functions for
+ * 32/64 bit fixed/variable data types. If you need other functions than the
+ * ones available here you can take a look in the git baloo history
+ */
 
-void putDifferentialVarInt32(QByteArray* dst, const QVector<quint32>& values);
-char* getDifferentialVarInt32(char* input, char* limit, QVector<quint32>* values);
-
-// Standard Get... routines parse a value from the beginning of a Slice
-// and advance the slice past the parsed value.
-bool getFixed32(QByteArray* input, quint32* value);
-bool getFixed64(QByteArray* input, quint64* value);
-bool getVarint32(QByteArray* input, quint32* value);
-bool getVarint64(QByteArray* input, quint64* value);
-
-// Pointer-based variants of GetVarint...  These either store a value
-// in *v and return a pointer just past the parsed value, or return
-// NULL on error.  These routines only look at bytes in the range
-// [p..limit-1]
-extern const char* getVarint32Ptr(const char* p, const char* limit, quint32* v);
-extern const char* getVarint64Ptr(const char* p, const char* limit, quint64* v);
-
-// Returns the length of the varint32 or varint64 encoding of "v"
-extern int varintLength(quint64 v);
-
-// Lower-level versions of Put... that write directly into a character buffer
-// REQUIRES: dst has enough space for the value being written
-extern void encodeFixed32(char* dst, quint32 value);
-extern void encodeFixed64(char* dst, quint64 value);
-
-// Lower-level versions of Put... that write directly into a character buffer
-// and return a pointer just past the last byte written.
-// REQUIRES: dst has enough space for the value being written
-extern char* encodeVarint32(char* dst, quint32 value);
-extern char* encodeVarint64(char* dst, quint64 value);
-
-// Lower-level versions of Get... that read directly from a character buffer
-// without any bounds checking.
-
-inline quint32 decodeFixed32(const char* ptr)
+inline void putFixed64(QByteArray* dst, quint64 value)
 {
-    // Load the raw bytes
-    quint32 result;
-    memcpy(&result, ptr, sizeof(result));  // gcc optimizes this to a plain load
-    return result;
+    dst->append(reinterpret_cast<const char*>(&value), sizeof(value));
 }
+
+/*
+ * temporaryStorage is used to avoid an internal allocation of a temporary
+ * buffer which is needed for serialization. Since this function is normally
+ * called inside a loop, the temporary buffer must not be reallocated on every
+ * call.
+ */
+void putDifferentialVarInt32(QByteArray &temporaryStorage, QByteArray* dst, const QVector<quint32>& values);
+char* getDifferentialVarInt32(char* input, char* limit, QVector<quint32>* values);
+extern const char* getVarint32Ptr(const char* p, const char* limit, quint32* v);
 
 inline quint64 decodeFixed64(const char* ptr)
 {
