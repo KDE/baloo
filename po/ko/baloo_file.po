@@ -1,0 +1,107 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+# Shinjo Park <kde@peremen.name>, 2014, 2015.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2016-11-19 20:11+0100\n"
+"PO-Revision-Date: 2015-06-27 13:50+0200\n"
+"Last-Translator: Shinjo Park <kde@peremen.name>\n"
+"Language-Team: Korean <kde@peremen.name>\n"
+"Language: ko\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Lokalize 1.5\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Shinjo Park"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "kde@peremen.name"
+
+#: main.cpp:47
+#, kde-format
+msgid "Baloo File Indexing Daemon"
+msgstr "Baloo 파일 인덱서 데몬"
+
+#: main.cpp:48
+#, kde-format
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:48
+#, kde-format
+msgid "Maintainer"
+msgstr "관리자"
+
+#~ msgctxt "@info:status"
+#~ msgid "File indexer is suspended."
+#~ msgstr "파일 색인기가 중단되었습니다."
+
+#~ msgctxt "@info:status"
+#~ msgid "Scanning for recent changes in files for desktop search"
+#~ msgstr "데스크톱 검색을 위하여 최근 변경 사항 검색 중"
+
+#~ msgctxt "@info:status"
+#~ msgid "Indexing files for desktop search."
+#~ msgstr "데스크톱 검색을 위하여 파일을 검색 중입니다."
+
+#~ msgctxt "@info:status"
+#~ msgid "File indexer is idle."
+#~ msgstr "파일 색인기가 유휴 상태입니다."
+
+#~ msgid "Baloo File"
+#~ msgstr "Baloo 파일"
+
+#~ msgid "An application to handle file metadata"
+#~ msgstr "파일 메타 데이터를 처리하는 프로그램"
+
+#~ msgctxt "@title"
+#~ msgid "New removable device detected"
+#~ msgstr "새 이동식 장치 연결됨"
+
+#~ msgctxt "@action"
+#~ msgid "Index files"
+#~ msgstr "파일 색인"
+
+#~ msgctxt "@action"
+#~ msgid "Ignore device"
+#~ msgstr "장치 무시"
+
+#~ msgctxt "@action"
+#~ msgid "Configure"
+#~ msgstr "설정"
+
+#~ msgctxt "@info"
+#~ msgid ""
+#~ "Do you want files on removable device <resource>%1</resource> to be "
+#~ "indexed for fast desktop searches?"
+#~ msgstr ""
+#~ "데스크톱 검색에 이동식 장치 <resource>%1</resource>에 있는 파일을 추가하시"
+#~ "겠습니까?"
+
+#~ msgid "Cleans up stale file index information"
+#~ msgstr "오래된 파일 색인 정보 청소"
+
+#~ msgid "(C) 2014, Vishesh Handa"
+#~ msgstr "(C) 2014, Vishesh Handa"
+
+#~ msgid "xattrdetectortest"
+#~ msgstr "xattrdetectortest"
+
+#~ msgid "(c) 2014, Vishesh Handa"
+#~ msgstr "(c) 2014, Vishesh Handa"
+
+#~ msgid "The file URL"
+#~ msgstr "파일 URL"
+
+#~ msgid "indexerconfigtest"
+#~ msgstr "indexerconfigtest"

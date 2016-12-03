@@ -1,0 +1,98 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: baloo_file\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2016-11-19 20:11+0100\n"
+"PO-Revision-Date: 2014-05-17 20:32+0200\n"
+"Last-Translator: Svetoslav Stefanov <svetlisashkov@yahoo.com>\n"
+"Language-Team: BULGARIAN <kde-i18n-doc@kde.org>\n"
+"Language: bg\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Светослав Стефанов"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "svetlisashkov@yahoo.com"
+
+#: main.cpp:47
+#, fuzzy, kde-format
+#| msgid "Baloo File Cleaner"
+msgid "Baloo File Indexing Daemon"
+msgstr "Чистач на файлове Baloo"
+
+#: main.cpp:48
+#, kde-format
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:48
+#, kde-format
+msgid "Maintainer"
+msgstr "Поддръжка"
+
+#~ msgctxt "@info:status"
+#~ msgid "File indexer is suspended."
+#~ msgstr "Индексирането на файлове е спряно."
+
+#~ msgctxt "@info:status"
+#~ msgid "Scanning for recent changes in files for desktop search"
+#~ msgstr "Сканиране за скорошни промени във файловете за търсене"
+
+#~ msgctxt "@info:status"
+#~ msgid "Indexing files for desktop search."
+#~ msgstr "Индексиране на файлове за търсене."
+
+#~ msgctxt "@info:status"
+#~ msgid "File indexer is idle."
+#~ msgstr "Индексирането на файлове е в покой."
+
+#~ msgid "Baloo File"
+#~ msgstr "Baloo File"
+
+#~ msgid "An application to handle file metadata"
+#~ msgstr "Приложение за работа с мета-данните на файловете"
+
+#~ msgctxt "@title"
+#~ msgid "New removable device detected"
+#~ msgstr "Засечено е ново преносимо устройство"
+
+#~ msgctxt "@action"
+#~ msgid "Index files"
+#~ msgstr "Индексиране на файловете"
+
+#~ msgctxt "@action"
+#~ msgid "Ignore device"
+#~ msgstr "Пренебрегване на устройството"
+
+#~ msgctxt "@action"
+#~ msgid "Configure"
+#~ msgstr "Настройване"
+
+#~ msgctxt "@info"
+#~ msgid ""
+#~ "Do you want files on removable device <resource>%1</resource> to be "
+#~ "indexed for fast desktop searches?"
+#~ msgstr ""
+#~ "Желаете ли файловете на преносимото устройство <resource>%1</resource> да "
+#~ "бъдат индексирани за бързо търсене?"
+
+#~ msgid "Cleans up stale file index information"
+#~ msgstr "Изчиства остаряла информация от индексирането на файлове"
+
+#~ msgid "(C) 2014, Vishesh Handa"
+#~ msgstr "(C) 2014, Vishesh Handa"

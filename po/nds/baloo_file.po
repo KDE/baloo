@@ -1,0 +1,108 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+# Sönke Dibbern <s_dibbern@web.de>, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2016-11-19 20:11+0100\n"
+"PO-Revision-Date: 2014-02-24 02:09+0100\n"
+"Last-Translator: Sönke Dibbern <s_dibbern@web.de>\n"
+"Language-Team: Low Saxon <kde-i18n-nds@kde.org>\n"
+"Language: nds\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 1.4\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Sönke Dibbern"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "s_dibbern@web.de"
+
+#: main.cpp:47
+#, fuzzy, kde-format
+#| msgid "Baloo File Cleaner"
+msgid "Baloo File Indexing Daemon"
+msgstr "Baloo-Reenmaker"
+
+#: main.cpp:48
+#, kde-format
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:48
+#, kde-format
+msgid "Maintainer"
+msgstr "Pleger"
+
+#~ msgctxt "@info:status"
+#~ msgid "File indexer is suspended."
+#~ msgstr "Dateiindizeren is utsett."
+
+#~ msgctxt "@info:status"
+#~ msgid "Scanning for recent changes in files for desktop search"
+#~ msgstr "Dateien warrt för de Schriefdischsöök op niege Ännern dörkeken"
+
+#~ msgctxt "@info:status"
+#~ msgid "Indexing files for desktop search."
+#~ msgstr "Dateien warrt för de Schriefdischsöök indizeert."
+
+#~ msgctxt "@info:status"
+#~ msgid "File indexer is idle."
+#~ msgstr "Dateiindizeren deit opstunns nix."
+
+#~ msgid "Baloo File"
+#~ msgstr "Baloo-Datei"
+
+#~ msgid "An application to handle file metadata"
+#~ msgstr "En Programm, dat Metadaten vun Dateien pleegt"
+
+#~ msgctxt "@title"
+#~ msgid "New removable device detected"
+#~ msgstr "Keen tuuschbor Reedschap funnen"
+
+#~ msgctxt "@action"
+#~ msgid "Index files"
+#~ msgstr "Dateien indizeren"
+
+#~ msgctxt "@action"
+#~ msgid "Ignore device"
+#~ msgstr "Reedschap övergahn"
+
+#~ msgctxt "@action"
+#~ msgid "Configure"
+#~ msgstr "Instellen"
+
+#~ msgctxt "@info"
+#~ msgid ""
+#~ "Do you want files on removable device <resource>%1</resource> to be "
+#~ "indexed for fast desktop searches?"
+#~ msgstr ""
+#~ "Wullt Du de Dateien op de tuuschbore Reedschap <resource>%1</resource> "
+#~ "för de Schriefdischsöök indizeren?"
+
+#~ msgid "Cleans up stale file index information"
+#~ msgstr "Rüümt överhaalt Dateiindex-Informatschonen op"
+
+#~ msgid "(C) 2014, Vishesh Handa"
+#~ msgstr "(C) 2014, Vishesh Handa"
+
+#~ msgid "xattrdetectortest"
+#~ msgstr "xattrdetectortest"
+
+#~ msgid "(c) 2014, Vishesh Handa"
+#~ msgstr "(c) 2014, Vishesh Handa"
+
+#~ msgid "The file URL"
+#~ msgstr "De Datei-URL"
+
+#~ msgid "indexerconfigtest"
+#~ msgstr "indexerconfigtest"

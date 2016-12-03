@@ -1,0 +1,109 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# G.Sora <g.sora@tiscali.it>, 2014.
+# Giovanni Sora <g.sora@tioscali.it>, 2014, 2016.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2016-11-19 20:11+0100\n"
+"PO-Revision-Date: 2016-02-01 11:42+0100\n"
+"Last-Translator: Giovanni Sora <g.sora@tiscali.it>\n"
+"Language-Team: Interlingua <kde-i18n-doc@kde.org>\n"
+"Language: ia\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 1.5\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Giovanni Sora"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "g.sora@tiscali.it"
+
+#: main.cpp:47
+#, kde-format
+msgid "Baloo File Indexing Daemon"
+msgstr "Daemon de indicisation de file  de Baloo"
+
+#: main.cpp:48
+#, kde-format
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:48
+#, kde-format
+msgid "Maintainer"
+msgstr "Mantenitor"
+
+#~ msgctxt "@info:status"
+#~ msgid "File indexer is suspended."
+#~ msgstr "Indicisator de file es suspendite."
+
+#~ msgctxt "@info:status"
+#~ msgid "Scanning for recent changes in files for desktop search"
+#~ msgstr ""
+#~ "Scrutante per modificationes recente de file pro recerca de scriptorio"
+
+#~ msgctxt "@info:status"
+#~ msgid "Indexing files for desktop search."
+#~ msgstr "Indicisante files pro recerca de scriptorio."
+
+#~ msgctxt "@info:status"
+#~ msgid "File indexer is idle."
+#~ msgstr "Indicisator de file es disoccupate."
+
+#~ msgid "Baloo File"
+#~ msgstr "File de Baloo"
+
+#~ msgid "An application to handle file metadata"
+#~ msgstr "Un application pro manear metadatos de file"
+
+#~ msgctxt "@title"
+#~ msgid "New removable device detected"
+#~ msgstr "Nove dispositivo removibile relevate"
+
+#~ msgctxt "@action"
+#~ msgid "Index files"
+#~ msgstr "Indicisa files"
+
+#~ msgctxt "@action"
+#~ msgid "Ignore device"
+#~ msgstr "Ignora dispositivo"
+
+#~ msgctxt "@action"
+#~ msgid "Configure"
+#~ msgstr "Configura"
+
+#~ msgctxt "@info"
+#~ msgid ""
+#~ "Do you want files on removable device <resource>%1</resource> to be "
+#~ "indexed for fast desktop searches?"
+#~ msgstr ""
+#~ "Tu vole que files ponite sur le dispositivo removibile <resource>%1</"
+#~ "resource> essera indicisate pro cercas rapide de scriptorio?"
+
+#~ msgid "Cleans up stale file index information"
+#~ msgstr "Netta information de indice vetule"
+
+#~ msgid "(C) 2014, Vishesh Handa"
+#~ msgstr "(c) 2014, Vishesh Handa"
+
+#~ msgid "Disk space is running low (%1 left). Suspending indexing of files."
+#~ msgstr ""
+#~ "Le spatio del disco es deveniente pauc (%1 lassate). Il suspende le "
+#~ "indicisation de file."
+
+#~ msgid "Resuming indexing of files for fast searching."
+#~ msgstr "Resumente indicisation de file pro recerca rapide."
+
+#~ msgctxt "@info:status"
+#~ msgid "Cleaning invalid file metadata"
+#~ msgstr "Nettante metadatos de file invalide"
