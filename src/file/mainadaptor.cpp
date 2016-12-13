@@ -9,12 +9,6 @@
  */
 
 #include "mainadaptor.h"
-#include <QtCore/QByteArray>
-#include <QtCore/QList>
-#include <QtCore/QMap>
-#include <QtCore/QString>
-#include <QtCore/QStringList>
-#include <QtCore/QVariant>
 
 /*
  * Implementation of adaptor class MainAdaptor
