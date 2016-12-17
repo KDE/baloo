@@ -54,6 +54,9 @@ set_package_properties(LMDB
         URL "http://symas.com/mdb"
         TYPE REQUIRED
 )
+if(${LMDB_FOUND})
+    include_directories(${LMDB_INCLUDE_DIRS})
+endif()
 
 # compiler flags and build system
 add_definitions(-DQT_NO_KEYWORDS)
