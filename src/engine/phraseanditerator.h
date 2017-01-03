@@ -33,8 +33,8 @@ public:
     explicit PhraseAndIterator(const QVector<PostingIterator*>& iterators);
     ~PhraseAndIterator();
 
-    quint64 next();
-    quint64 docId() const;
+    quint64 next() Q_DECL_OVERRIDE;
+    quint64 docId() const Q_DECL_OVERRIDE;
 
 private:
     QVector<PostingIterator*> m_iterators;
