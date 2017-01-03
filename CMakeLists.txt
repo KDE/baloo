@@ -5,7 +5,7 @@ set(KF5_VERSION "5.30.0") # handled by release scripts
 set(KF5_DEP_VERSION "5.29.0") # handled by release scripts
 
 # set up project
-project(Baloo)
+project(Baloo VERSION ${KF5_VERSION})
 
 # set up extra-cmake-modules before trying anything else
 include(FeatureSummary)
@@ -24,24 +24,25 @@ set(CMAKE_MODULE_PATH
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR}
 )
 
-# include optional and extra cmake stuff
-include(GenerateExportHeader)
-include(ECMGenerateHeaders)
-include(ECMPackageConfigHelpers)
 include(ECMSetupVersion)
-include(KDEInstallDirs)
-include(KDECMakeSettings)
-include(KDEFrameworkCompilerSettings NO_POLICY_SCOPE)
-include(ECMInstallIcons)
-include(ECMAddTests)
 
 # set up baloo versions
-ecm_setup_version(${KF5_VERSION}
+ecm_setup_version(PROJECT
     VARIABLE_PREFIX BALOO
     VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/baloo_version.h"
     PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF5BalooConfigVersion.cmake"
     SOVERSION 5
 )
+
+# include optional and extra cmake stuff
+include(GenerateExportHeader)
+include(ECMGenerateHeaders)
+include(ECMPackageConfigHelpers)
+include(KDEInstallDirs)
+include(KDECMakeSettings)
+include(KDEFrameworkCompilerSettings NO_POLICY_SCOPE)
+include(ECMInstallIcons)
+include(ECMAddTests)
 
 # set up build dependencies
 find_package(Qt5 ${REQUIRED_QT_VERSION} REQUIRED NO_MODULE COMPONENTS Core DBus Widgets Qml Quick Test)
