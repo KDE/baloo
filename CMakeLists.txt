@@ -37,7 +37,7 @@ ecm_setup_version(PROJECT
 # include optional and extra cmake stuff
 include(GenerateExportHeader)
 include(ECMGenerateHeaders)
-include(ECMPackageConfigHelpers)
+include(CMakePackageConfigHelpers)
 include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(KDEFrameworkCompilerSettings NO_POLICY_SCOPE)
@@ -103,7 +103,7 @@ endif()
 # config files
 set(CMAKECONFIG_INSTALL_DIR "${CMAKECONFIG_INSTALL_PREFIX}/KF5Baloo")
 
-ecm_configure_package_config_file(
+configure_package_config_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/KF5BalooConfig.cmake.in"
     "${CMAKE_CURRENT_BINARY_DIR}/KF5BalooConfig.cmake"
     PATH_VARS KDE_INSTALL_DBUSINTERFACEDIR
