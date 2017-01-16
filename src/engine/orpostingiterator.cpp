@@ -54,7 +54,7 @@ quint64 OrPostingIterator::next()
         // First or last element
         if (iter->docId() == 0 && iter->next() == 0) {
             delete iter;
-            *it = Q_NULLPTR;
+            *it = nullptr;
             continue;
         }
 
