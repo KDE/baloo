@@ -30,7 +30,7 @@ class PowerStateMonitor : public QObject
     Q_OBJECT
 
 public:
-    explicit PowerStateMonitor(QObject* parent = 0);
+    explicit PowerStateMonitor(QObject* parent = nullptr);
 
     bool isOnBattery()    const {
         return m_isOnBattery;

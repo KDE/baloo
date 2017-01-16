@@ -38,7 +38,7 @@ class MetadataMoverTest : public QObject
 {
     Q_OBJECT
 public:
-    MetadataMoverTest(QObject* parent = 0);
+    MetadataMoverTest(QObject* parent = nullptr);
 
 private Q_SLOTS:
 
@@ -59,8 +59,8 @@ private:
 
 MetadataMoverTest::MetadataMoverTest(QObject* parent)
     : QObject(parent)
-    , m_db(0)
-    , m_tempDir(0)
+    , m_db(nullptr)
+    , m_tempDir(nullptr)
 {
 }
 
@@ -74,10 +74,10 @@ void MetadataMoverTest::init()
 void MetadataMoverTest::cleanupTestCase()
 {
     delete m_db;
-    m_db = 0;
+    m_db = nullptr;
 
     delete m_tempDir;
-    m_tempDir = 0;
+    m_tempDir = nullptr;
 }
 
 quint64 MetadataMoverTest::insertUrl(const QString& url)

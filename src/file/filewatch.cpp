@@ -40,7 +40,7 @@ FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
     : QObject(parent)
     , m_db(db)
     , m_config(config)
-    , m_dirWatch(0)
+    , m_dirWatch(nullptr)
 {
     Q_ASSERT(db);
     Q_ASSERT(config);
@@ -174,7 +174,7 @@ void FileWatch::slotInotifyWatchUserLimitReached(const QString&)
     // FIXME: Maybe we should be aborting?
     if (m_dirWatch) {
         m_dirWatch->deleteLater();
-        m_dirWatch = 0;
+        m_dirWatch = nullptr;
     }
     Q_EMIT installedWatches();
 }

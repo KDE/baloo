@@ -67,10 +67,10 @@ class KInotify::Private
 public:
     Private(KInotify* parent)
         : userLimitReachedSignaled(false)
-        , config(0)
-        , m_dirIter(0)
+        , config(nullptr)
+        , m_dirIter(nullptr)
         , m_inotifyFd(-1)
-        , m_notifier(0)
+        , m_notifier(nullptr)
         , q(parent) {
     }
 
@@ -107,7 +107,7 @@ public:
 
     void close() {
         delete m_notifier;
-        m_notifier = 0;
+        m_notifier = nullptr;
 
         ::close(m_inotifyFd);
         m_inotifyFd = -1;
@@ -166,7 +166,7 @@ public:
                     m_dirIter = new Baloo::FilteredDirIterator(config, m_paths.takeFirst(), Baloo::FilteredDirIterator::DirsOnly);
                 } else {
                     delete m_dirIter;
-                    m_dirIter = 0;
+                    m_dirIter = nullptr;
                     break;
                 }
             } else {
@@ -290,7 +290,7 @@ bool KInotify::removeWatch(const QString& path)
     if (d->m_dirIter) {
         if (d->m_dirIter->filePath().startsWith(path)) {
             delete d->m_dirIter;
-            d->m_dirIter = 0;
+            d->m_dirIter = nullptr;
         }
     }
 

@@ -37,7 +37,7 @@ class MonitorCommand : public QObject, public Command
 {
     Q_OBJECT
 public:
-    explicit MonitorCommand(QObject* parent = 0);
+    explicit MonitorCommand(QObject* parent = nullptr);
 
     QString command() Q_DECL_OVERRIDE {
         return QStringLiteral("monitor");

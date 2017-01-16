@@ -38,7 +38,7 @@ class KInotify : public QObject
     Q_OBJECT
 
 public:
-    explicit KInotify(Baloo::FileIndexerConfig* config, QObject* parent = 0);
+    explicit KInotify(Baloo::FileIndexerConfig* config, QObject* parent = nullptr);
     ~KInotify() Q_DECL_OVERRIDE;
 
     /**

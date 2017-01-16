@@ -27,7 +27,7 @@ using namespace Baloo;
 
 FilteredDirIterator::FilteredDirIterator(FileIndexerConfig* config, const QString& folder, Filter filter)
     : m_config(config)
-    , m_currentIter(0)
+    , m_currentIter(nullptr)
     , m_filters(QDir::NoDotAndDotDot | QDir::Readable | QDir::NoSymLinks)
     , m_firstItem(false)
 {
@@ -63,7 +63,7 @@ QString FilteredDirIterator::next()
 
     while (!m_currentIter->hasNext()) {
         delete m_currentIter;
-        m_currentIter = 0;
+        m_currentIter = nullptr;
 
         if (!m_paths.isEmpty()) {
             const QString path = m_paths.pop();

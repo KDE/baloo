@@ -41,7 +41,7 @@ class PendingFileQueue : public QObject
     Q_OBJECT
 
 public:
-    explicit PendingFileQueue(QObject* parent = 0);
+    explicit PendingFileQueue(QObject* parent = nullptr);
     ~PendingFileQueue();
 
 Q_SIGNALS:

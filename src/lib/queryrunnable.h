@@ -33,7 +33,7 @@ class BALOO_CORE_EXPORT QueryRunnable : public QObject, public QRunnable
 {
     Q_OBJECT
 public:
-    QueryRunnable(const Query& query, QObject* parent = 0);
+    QueryRunnable(const Query& query, QObject* parent = nullptr);
     ~QueryRunnable() Q_DECL_OVERRIDE;
     void run() Q_DECL_OVERRIDE;
 

@@ -32,7 +32,7 @@ int main(int argc, char** argv)
 {
     QCoreApplication app(argc, argv);
 
-    KInotify inotify(0 /*no config*/);
+    KInotify inotify(nullptr /*no config*/);
     QObject::connect(&inotify, &KInotify::installedWatches,
                      &app, &QCoreApplication::quit);
 

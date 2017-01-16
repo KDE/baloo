@@ -30,7 +30,7 @@ class BALOO_CORE_EXPORT TagListJob : public KJob
 {
     Q_OBJECT
 public:
-    explicit TagListJob(QObject* parent = 0);
+    explicit TagListJob(QObject* parent = nullptr);
     ~TagListJob() Q_DECL_OVERRIDE;
 
     void start() Q_DECL_OVERRIDE;

@@ -31,7 +31,7 @@ PositionDB::PositionDB(MDB_dbi dbi, MDB_txn* txn)
     : m_txn(txn)
     , m_dbi(dbi)
 {
-    Q_ASSERT(txn != 0);
+    Q_ASSERT(txn != nullptr);
     Q_ASSERT(dbi != 0);
 }
 
@@ -109,7 +109,7 @@ void PositionDB::del(const QByteArray& term)
     key.mv_size = term.size();
     key.mv_data = static_cast<void*>(const_cast<char*>(term.constData()));
 
-    int rc = mdb_del(m_txn, m_dbi, &key, 0);
+    int rc = mdb_del(m_txn, m_dbi, &key, nullptr);
     if (rc == MDB_NOTFOUND) {
         return;
     }
@@ -168,7 +168,7 @@ PostingIterator* PositionDB::iter(const QByteArray& term)
     MDB_val val;
     int rc = mdb_get(m_txn, m_dbi, &key, &val);
     if (rc == MDB_NOTFOUND) {
-        return 0;
+        return nullptr;
     }
     Q_ASSERT_X(rc == 0, "PositionDB::iter", mdb_strerror(rc));
 
@@ -180,7 +180,7 @@ QMap<QByteArray, QVector<PositionInfo>> PositionDB::toTestMap() const
     MDB_cursor* cursor;
     mdb_cursor_open(m_txn, m_dbi, &cursor);
 
-    MDB_val key = {0, 0};
+    MDB_val key = {0, nullptr};
     MDB_val val;
 
     QMap<QByteArray, QVector<PositionInfo>> map;

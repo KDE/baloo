@@ -47,7 +47,7 @@ App::App(QObject* parent)
     : QObject(parent)
     , m_notifyNewData(STDIN_FILENO, QSocketNotifier::Read)
     , m_io(STDIN_FILENO)
-    , m_tr(0)
+    , m_tr(nullptr)
 {
     connect(&m_notifyNewData, &QSocketNotifier::activated, this, &App::slotNewInput);
 }
@@ -60,7 +60,7 @@ void App::slotNewInput()
         exit(1);
     }
 
-    Q_ASSERT(m_tr == 0);
+    Q_ASSERT(m_tr == nullptr);
 
     m_tr = new Transaction(db, Transaction::ReadWrite);
     // FIXME: The transaction is open for way too long. We should just open it for when we're
@@ -99,7 +99,7 @@ void App::processNextFile()
     } else {
         m_tr->commit();
         delete m_tr;
-        m_tr = 0;
+        m_tr = nullptr;
 
         /*
         * TODO we're already sending out each file as we start we can simply send out a done

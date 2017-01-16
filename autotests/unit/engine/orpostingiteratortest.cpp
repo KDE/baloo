@@ -66,7 +66,7 @@ void OrPostingIteratorTest::testNullIterators()
     VectorPostingIterator* it2 = new VectorPostingIterator(l2);
     VectorPostingIterator* it3 = new VectorPostingIterator(l3);
 
-    QVector<PostingIterator*> vec = {it1, 0, it2, 0, it3};
+    QVector<PostingIterator*> vec = {it1, nullptr, it2, nullptr, it3};
     OrPostingIterator it(vec);
     QCOMPARE(it.docId(), static_cast<quint64>(0));
 

@@ -72,7 +72,7 @@ StorageDevices::Entry* StorageDevices::createCacheEntry(const Solid::Device& dev
 {
     Entry entry(dev);
     if (dev.udi().isEmpty())
-        return 0;
+        return nullptr;
 
     auto it = m_metadataCache.insert(dev.udi(), entry);
 
@@ -120,7 +120,7 @@ void StorageDevices::slotAccessibilityChanged(bool accessible, const QString& ud
     // cache new mount path
     //
     Entry* entry = &m_metadataCache[udi];
-    Q_ASSERT(entry != 0);
+    Q_ASSERT(entry != nullptr);
     Q_EMIT deviceAccessibilityChanged(entry);
 }
 

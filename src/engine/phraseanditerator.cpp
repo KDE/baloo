@@ -28,7 +28,7 @@ PhraseAndIterator::PhraseAndIterator(const QVector<PostingIterator*>& iterators)
     : m_iterators(iterators)
     , m_docId(0)
 {
-    if (m_iterators.contains(0)) {
+    if (m_iterators.contains(nullptr)) {
         qDeleteAll(m_iterators);
         m_iterators.clear();
     }

@@ -44,7 +44,7 @@ using namespace Baloo;
 
 SearchModule::SearchModule(QObject* parent, const QList<QVariant>&)
     : KDEDModule(parent)
-    , m_dirNotify(0)
+    , m_dirNotify(nullptr)
 {
     QTimer::singleShot(0, this, SLOT(init()));
 }

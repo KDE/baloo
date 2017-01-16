@@ -40,7 +40,7 @@ FileIndexScheduler::FileIndexScheduler(Database* db, FileIndexerConfig* config, 
     , m_db(db)
     , m_config(config)
     , m_provider(db)
-    , m_contentIndexer(0)
+    , m_contentIndexer(nullptr)
     , m_indexerState(Idle)
     , m_timeEstimator(config, this)
     , m_checkUnindexedFiles(false)

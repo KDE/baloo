@@ -46,7 +46,7 @@ class App : public QObject
     Q_OBJECT
 
 public:
-    explicit App(QObject* parent = 0);
+    explicit App(QObject* parent = nullptr);
 
 private Q_SLOTS:
     void slotNewInput();

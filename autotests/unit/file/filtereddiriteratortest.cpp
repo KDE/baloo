@@ -152,7 +152,7 @@ void FilteredDirIteratorTest::testNoConfig()
 
     Test::writeIndexerConfig(includeFolders, excludeFolders);
 
-    FilteredDirIterator it(0, includeFolders.first());
+    FilteredDirIterator it(nullptr, includeFolders.first());
 
     QSet<QString> list;
     while (!it.next().isEmpty()) {

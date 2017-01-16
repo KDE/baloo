@@ -41,8 +41,8 @@ Monitor::Monitor(QObject *parent)
     : QObject(parent)
     , m_bus(QDBusConnection::sessionBus())
     , m_filePath(QStringLiteral("Idle"))
-    , m_scheduler(0)
-    , m_fileindexer(0)
+    , m_scheduler(nullptr)
+    , m_fileindexer(nullptr)
     , m_filesIndexed(0)
     , m_remainingTime(QStringLiteral("Estimating"))
 {
@@ -97,7 +97,7 @@ QString Monitor::suspendState() const
 
 void Monitor::toggleSuspendState()
 {
-    Q_ASSERT(m_scheduler != 0);
+    Q_ASSERT(m_scheduler != nullptr);
 
     if (m_indexerState == Baloo::Suspended) {
         m_scheduler->resume();

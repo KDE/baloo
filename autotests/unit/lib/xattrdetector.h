@@ -38,7 +38,7 @@ namespace Baloo {
 class XattrDetector : public QObject
 {
 public:
-    explicit XattrDetector(QObject* parent = 0);
+    explicit XattrDetector(QObject* parent = nullptr);
     ~XattrDetector() Q_DECL_OVERRIDE;
 
     /**

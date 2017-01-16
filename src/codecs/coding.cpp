@@ -142,7 +142,7 @@ char* getVarint32PtrFallback(char* p, char* limit, quint32* value)
             return reinterpret_cast<char*>(p);
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 }
