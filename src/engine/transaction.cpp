@@ -47,10 +47,10 @@ using namespace Baloo;
 Transaction::Transaction(const Database& db, Transaction::TransactionType type)
     : m_dbis(db.m_dbis)
     , m_env(db.m_env)
-    , m_writeTrans(0)
+    , m_writeTrans(nullptr)
 {
     uint flags = type == ReadOnly ? MDB_RDONLY : 0;
-    int rc = mdb_txn_begin(db.m_env, NULL, flags, &m_txn);
+    int rc = mdb_txn_begin(db.m_env, nullptr, flags, &m_txn);
     Q_ASSERT_X(rc == 0, "Transaction", mdb_strerror(rc));
 
     if (type == ReadWrite) {
@@ -261,12 +261,12 @@ void Transaction::commit()
 
     m_writeTrans->commit();
     delete m_writeTrans;
-    m_writeTrans = 0;
+    m_writeTrans = nullptr;
 
     int rc = mdb_txn_commit(m_txn);
     Q_ASSERT_X(rc == 0, "Transaction::commit", mdb_strerror(rc));
 
-    m_txn = 0;
+    m_txn = nullptr;
 }
 
 void Transaction::abort()
@@ -274,10 +274,10 @@ void Transaction::abort()
     Q_ASSERT(m_txn);
 
     mdb_txn_abort(m_txn);
-    m_txn = 0;
+    m_txn = nullptr;
 
     delete m_writeTrans;
-    m_writeTrans = 0;
+    m_writeTrans = nullptr;
 }
 
 //
@@ -300,7 +300,7 @@ PostingIterator* Transaction::postingIterator(const EngineQuery& query) const
     }
 
     if (query.subQueries().isEmpty()) {
-        return 0;
+        return nullptr;
     }
 
     QVector<PostingIterator*> vec;
@@ -326,7 +326,7 @@ PostingIterator* Transaction::postingIterator(const EngineQuery& query) const
     }
 
     Q_ASSERT(0);
-    return 0;
+    return nullptr;
 }
 
 PostingIterator* Transaction::postingCompIterator(const QByteArray& prefix, const QByteArray& value, PostingDB::Comparator com) const

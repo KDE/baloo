@@ -34,16 +34,16 @@
 Result::Result()
     : ExtractionResult(QString(), QString())
     , m_docId(0)
-    , m_termGen(0)
-    , m_termGenForText(0)
+    , m_termGen(nullptr)
+    , m_termGenForText(nullptr)
 {
 }
 
 Result::Result(const QString& url, const QString& mimetype, const Flags& flags)
     : KFileMetaData::ExtractionResult(url, mimetype, flags)
     , m_docId(0)
-    , m_termGen(0)
-    , m_termGenForText(0)
+    , m_termGen(nullptr)
+    , m_termGenForText(nullptr)
 {
 }
 

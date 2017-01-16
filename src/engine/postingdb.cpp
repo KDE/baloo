@@ -30,7 +30,7 @@ PostingDB::PostingDB(MDB_dbi dbi, MDB_txn* txn)
     : m_txn(txn)
     , m_dbi(dbi)
 {
-    Q_ASSERT(txn != 0);
+    Q_ASSERT(txn != nullptr);
     Q_ASSERT(dbi != 0);
 }
 
@@ -108,7 +108,7 @@ void PostingDB::del(const QByteArray& term)
     key.mv_size = term.size();
     key.mv_data = static_cast<void*>(const_cast<char*>(term.constData()));
 
-    int rc = mdb_del(m_txn, m_dbi, &key, 0);
+    int rc = mdb_del(m_txn, m_dbi, &key, nullptr);
     if (rc == MDB_NOTFOUND) {
         return;
     }
@@ -125,7 +125,7 @@ QVector< QByteArray > PostingDB::fetchTermsStartingWith(const QByteArray& term)
     mdb_cursor_open(m_txn, m_dbi, &cursor);
 
     QVector<QByteArray> terms;
-    int rc = mdb_cursor_get(cursor, &key, 0, MDB_SET_RANGE);
+    int rc = mdb_cursor_get(cursor, &key, nullptr, MDB_SET_RANGE);
     while (rc != MDB_NOTFOUND) {
         Q_ASSERT_X(rc == 0, "PostingDB::fetchTermsStartingWith", mdb_strerror(rc));
 
@@ -134,7 +134,7 @@ QVector< QByteArray > PostingDB::fetchTermsStartingWith(const QByteArray& term)
             break;
         }
         terms << arr;
-        rc = mdb_cursor_get(cursor, &key, 0, MDB_NEXT);
+        rc = mdb_cursor_get(cursor, &key, nullptr, MDB_NEXT);
     }
     Q_ASSERT_X(rc == 0, "PostingDB::fetchTermsStartingWith", mdb_strerror(rc));
 
@@ -162,7 +162,7 @@ PostingIterator* PostingDB::iter(const QByteArray& term)
     MDB_val val;
     int rc = mdb_get(m_txn, m_dbi, &key, &val);
     if (rc == MDB_NOTFOUND) {
-        return 0;
+        return nullptr;
     }
     Q_ASSERT_X(rc == 0, "PostingDB::iter", mdb_strerror(rc));
 
@@ -232,7 +232,7 @@ PostingIterator* PostingDB::iter(const QByteArray& prefix, Validator validate)
 
     mdb_cursor_close(cursor);
     if (termIterators.isEmpty()) {
-        return 0;
+        return nullptr;
     }
     return new OrPostingIterator(termIterators);
 }
@@ -273,7 +273,7 @@ QMap<QByteArray, PostingList> PostingDB::toTestMap() const
     MDB_cursor* cursor;
     mdb_cursor_open(m_txn, m_dbi, &cursor);
 
-    MDB_val key = {0, 0};
+    MDB_val key = {0, nullptr};
     MDB_val val;
 
     QMap<QByteArray, PostingList> map;

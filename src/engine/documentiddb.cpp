@@ -28,7 +28,7 @@ DocumentIdDB::DocumentIdDB(MDB_dbi dbi, MDB_txn* txn)
     : m_txn(txn)
     , m_dbi(dbi)
 {
-    Q_ASSERT(txn != 0);
+    Q_ASSERT(txn != nullptr);
     Q_ASSERT(dbi != 0);
 }
 
@@ -67,7 +67,7 @@ void DocumentIdDB::put(quint64 docId)
 
     MDB_val val;
     val.mv_size = 0;
-    val.mv_data = 0;
+    val.mv_data = nullptr;
 
     int rc = mdb_put(m_txn, m_dbi, &key, &val, 0);
     Q_ASSERT_X(rc == 0, "DocumentIdDB::put", mdb_strerror(rc));
@@ -99,7 +99,7 @@ void DocumentIdDB::del(quint64 docId)
     key.mv_size = sizeof(quint64);
     key.mv_data = static_cast<void*>(&docId);
 
-    int rc = mdb_del(m_txn, m_dbi, &key, 0);
+    int rc = mdb_del(m_txn, m_dbi, &key, nullptr);
     if (rc == MDB_NOTFOUND) {
         return;
     }
@@ -117,7 +117,7 @@ QVector<quint64> DocumentIdDB::fetchItems(int size)
 
     for (int i = 0; i < size; i++) {
         MDB_val key;
-        int rc = mdb_cursor_get(cursor, &key, 0, MDB_NEXT);
+        int rc = mdb_cursor_get(cursor, &key, nullptr, MDB_NEXT);
         if (rc == MDB_NOTFOUND) {
             break;
         }
@@ -145,7 +145,7 @@ QVector<quint64> DocumentIdDB::toTestVector() const
     MDB_cursor* cursor;
     mdb_cursor_open(m_txn, m_dbi, &cursor);
 
-    MDB_val key = {0, 0};
+    MDB_val key = {0, nullptr};
     MDB_val val;
 
     QVector<quint64> vec;

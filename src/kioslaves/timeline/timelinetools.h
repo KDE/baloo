@@ -59,7 +59,7 @@ enum TimelineFolderType {
  * Otherwise it is an invalid date. \p filename is optionally set to the name of the file
  * in the folder.
  */
-TimelineFolderType parseTimelineUrl(const QUrl& url, QDate* date, QString* filename = 0);
+TimelineFolderType parseTimelineUrl(const QUrl& url, QDate* date, QString* filename = nullptr);
 
 }
 

@@ -45,11 +45,11 @@
 using namespace Baloo;
 
 SearchStore::SearchStore()
-    : m_db(0)
+    : m_db(nullptr)
 {
     m_db = globalDatabaseInstance();
     if (!m_db->open(Database::ReadOnlyDatabase)) {
-        m_db = 0;
+        m_db = nullptr;
     }
 
     m_prefixes.insert(QByteArray("filename"), QByteArray("F"));
@@ -164,7 +164,7 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
         }
 
         if (vec.isEmpty()) {
-            return 0;
+            return nullptr;
         }
 
         if (term.operation() == Term::And) {
@@ -175,7 +175,7 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
     }
 
     if (term.value().isNull()) {
-        return 0;
+        return nullptr;
     }
     Q_ASSERT(term.value().isValid());
     Q_ASSERT(term.comparator() != Term::Auto);
@@ -197,7 +197,7 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
         quint64 id = filePathToId(folder);
         if (!id) {
             qDebug() << "Folder" << value.toString() << "does not exist";
-            return 0;
+            return nullptr;
         }
 
         return tr->docUrlIter(id);
@@ -241,7 +241,7 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
         int rating = value.toInt(&okay);
         if (!okay) {
             qDebug() << "Rating comparisons must be with an integer";
-            return 0;
+            return nullptr;
         }
 
         PostingDB::Comparator pcom;
@@ -261,7 +261,7 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
         }
         else {
             Q_ASSERT(0);
-            return 0;
+            return nullptr;
         }
 
         const QByteArray prefix = "R";
@@ -273,7 +273,7 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
     if (!property.isEmpty()) {
         prefix = fetchPrefix(property);
         if (prefix.isEmpty()) {
-            return 0;
+            return nullptr;
         }
     }
 
@@ -305,13 +305,13 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
         }
         else {
             Q_ASSERT(0);
-            return 0;
+            return nullptr;
         }
 
         return tr->postingCompIterator(prefix, QByteArray::number(intVal), pcom);
     }
 
-    return 0;
+    return nullptr;
 }
 
 EngineQuery SearchStore::constructContainsQuery(const QByteArray& prefix, const QString& value)
@@ -381,7 +381,7 @@ PostingIterator* SearchStore::constructMTimeQuery(Transaction* tr, const QDateTi
         timet--;
     } else {
         Q_ASSERT_X(0, "SearchStore::constructQuery", "mtime query must contain a valid comparator");
-        return 0;
+        return nullptr;
     }
 
     return tr->mTimeIter(timet, mtimeCom);

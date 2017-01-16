@@ -28,7 +28,7 @@ MTimeDB::MTimeDB(MDB_dbi dbi, MDB_txn* txn)
     : m_txn(txn)
     , m_dbi(dbi)
 {
-    Q_ASSERT(txn != 0);
+    Q_ASSERT(txn != nullptr);
     Q_ASSERT(dbi != 0);
 }
 
@@ -154,7 +154,7 @@ PostingIterator* MTimeDB::iter(quint32 mtime, MTimeDB::Comparator com)
     int rc = mdb_cursor_get(cursor, &key, &val, MDB_SET_RANGE);
     if (rc == MDB_NOTFOUND) {
         mdb_cursor_close(cursor);
-        return 0;
+        return nullptr;
     }
     Q_ASSERT_X(rc == 0, "MTimeDB::iter", mdb_strerror(rc));
 
@@ -207,7 +207,7 @@ PostingIterator* MTimeDB::iterRange(quint32 beginTime, quint32 endTime)
     int rc = mdb_cursor_get(cursor, &key, &val, MDB_SET_RANGE);
     if (rc == MDB_NOTFOUND) {
         mdb_cursor_close(cursor);
-        return 0;
+        return nullptr;
     }
     Q_ASSERT_X(rc == 0, "MTimeDB::iterRange", mdb_strerror(rc));
 
@@ -239,7 +239,7 @@ QMap<quint32, quint64> MTimeDB::toTestMap() const
     MDB_cursor* cursor;
     mdb_cursor_open(m_txn, m_dbi, &cursor);
 
-    MDB_val key = {0, 0};
+    MDB_val key = {0, nullptr};
     MDB_val val;
 
     QMap<quint32, quint64> map;

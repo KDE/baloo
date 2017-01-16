@@ -40,7 +40,7 @@ class TimeEstimator : public QObject
 {
     Q_OBJECT
 public:
-    explicit TimeEstimator(FileIndexerConfig* config, QObject* parent = 0);
+    explicit TimeEstimator(FileIndexerConfig* config, QObject* parent = nullptr);
     uint calculateTimeLeft(int filesLeft);
 
 public Q_SLOTS:

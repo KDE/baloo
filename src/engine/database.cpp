@@ -124,7 +124,7 @@ bool Database::open(OpenMode mode)
         return false;
     }
 
-    rc = mdb_reader_check(m_env, 0);
+    rc = mdb_reader_check(m_env, nullptr);
     Q_ASSERT_X(rc == 0, "Database::open reader_check", mdb_strerror(rc));
     if (rc) {
         mdb_env_close(m_env);
@@ -137,7 +137,7 @@ bool Database::open(OpenMode mode)
     //
     MDB_txn* txn;
     if (mode != CreateDatabase) {
-        int rc = mdb_txn_begin(m_env, NULL, MDB_RDONLY, &txn);
+        int rc = mdb_txn_begin(m_env, nullptr, MDB_RDONLY, &txn);
         Q_ASSERT_X(rc == 0, "Database::transaction ro begin", mdb_strerror(rc));
         if (rc) {
             mdb_env_close(m_env);
@@ -179,7 +179,7 @@ bool Database::open(OpenMode mode)
             return false;
         }
     } else {
-        int rc = mdb_txn_begin(m_env, NULL, 0, &txn);
+        int rc = mdb_txn_begin(m_env, nullptr, 0, &txn);
         Q_ASSERT_X(rc == 0, "Database::transaction begin", mdb_strerror(rc));
         if (rc) {
             mdb_env_close(m_env);
@@ -229,7 +229,7 @@ bool Database::open(OpenMode mode)
 bool Database::isOpen() const
 {
     QMutexLocker locker(&m_mutex);
-    return m_env != 0;
+    return m_env != nullptr;
 }
 
 QString Database::path() const

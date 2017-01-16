@@ -81,7 +81,7 @@ void KInotifyTest::testDeleteFile()
     touchFile(f1);
 
     // start the inotify watcher
-    KInotify kn(0 /*no config*/);
+    KInotify kn(nullptr /*no config*/);
     kn.addWatch(dir.path(), KInotify::EventAll);
 
     // listen to the desired signal
@@ -103,7 +103,7 @@ void KInotifyTest::testDeleteFolder()
     mkdir(d1);
 
     // start the inotify watcher
-    KInotify kn(0 /*no config*/);
+    KInotify kn(nullptr /*no config*/);
     kn.addWatch(dir.path(), KInotify::EventAll);
 
     // listen to the desired signal
@@ -125,7 +125,7 @@ void KInotifyTest::testCreateFolder()
     QTemporaryDir dir;
 
     // start the inotify watcher
-    KInotify kn(0 /*no config*/);
+    KInotify kn(nullptr /*no config*/);
     kn.addWatch(dir.path(), KInotify::EventAll);
 
     // listen to the desired signal
@@ -164,7 +164,7 @@ void KInotifyTest::testRenameFile()
     touchFile(f1);
 
     // start the inotify watcher
-    KInotify kn(0 /*no config*/);
+    KInotify kn(nullptr /*no config*/);
     kn.addWatch(dir.path(), KInotify::EventAll);
 
     // listen to the desired signal
@@ -204,7 +204,7 @@ void KInotifyTest::testMoveFile()
     touchFile(src);
 
     // start the inotify watcher
-    KInotify kn(0 /*no config*/);
+    KInotify kn(nullptr /*no config*/);
     kn.addWatch(dir1.path(), KInotify::EventAll);
     kn.addWatch(dir2.path(), KInotify::EventAll);
 
@@ -242,7 +242,7 @@ void KInotifyTest::testRenameFolder()
     mkdir(f1);
 
     // start the inotify watcher
-    KInotify kn(0 /*no config*/);
+    KInotify kn(nullptr /*no config*/);
     kn.addWatch(dir.path(), KInotify::EventAll);
 
     // listen to the desired signal
@@ -306,7 +306,7 @@ void KInotifyTest::testMoveFolder()
     mkdir(src);
 
     // start the inotify watcher
-    KInotify kn(0 /*no config*/);
+    KInotify kn(nullptr /*no config*/);
     kn.addWatch(dir1.path(), KInotify::EventAll);
     kn.addWatch(dir2.path(), KInotify::EventAll);
 
@@ -369,7 +369,7 @@ void KInotifyTest::testMoveRootFolder()
     mkdir(src);
 
     // start watching the new subfolder only
-    KInotify kn(0 /*no config*/);
+    KInotify kn(nullptr /*no config*/);
     kn.addWatch(src, KInotify::EventAll);
 
     // listen for the moved signal
@@ -396,7 +396,7 @@ void KInotifyTest::testFileClosedAfterWrite()
     QTemporaryDir dir;
     touchFile(dir.path() + QLatin1String("/file"));
 
-    KInotify kn(0 /*no config*/);
+    KInotify kn(nullptr /*no config*/);
     kn.addWatch(dir.path(), KInotify::EventAll);
 
     QSignalSpy spy(&kn, SIGNAL(closedWrite(QString)));

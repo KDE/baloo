@@ -39,7 +39,7 @@ class StorageDevices : public QObject
     Q_OBJECT
 
 public:
-    explicit StorageDevices(QObject* parent = 0);
+    explicit StorageDevices(QObject* parent = nullptr);
     ~StorageDevices();
 
     class Entry

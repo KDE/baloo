@@ -64,7 +64,7 @@ void AndPostingIteratorTest::testNullIterators()
     VectorPostingIterator* it1 = new VectorPostingIterator(l1);
     VectorPostingIterator* it2 = new VectorPostingIterator(l2);
 
-    QVector<PostingIterator*> vec = {it1, 0, it2};
+    QVector<PostingIterator*> vec = {it1, nullptr, it2};
 
     AndPostingIterator it(vec);
     QCOMPARE(it.docId(), static_cast<quint64>(0));

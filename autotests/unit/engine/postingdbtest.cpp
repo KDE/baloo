@@ -93,7 +93,7 @@ private Q_SLOTS:
 
         // Non existing
         it = db.regexpIter(QRegularExpression(QStringLiteral("dub")), QByteArray("f"));
-        QVERIFY(it == 0);
+        QVERIFY(it == nullptr);
     }
 
     void testCompIter() {

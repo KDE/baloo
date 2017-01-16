@@ -47,7 +47,7 @@ private Q_SLOTS:
         // The directory needs to be created before opening the environment
         QByteArray path = QFile::encodeName(m_tempDir->path());
         mdb_env_open(m_env, path.constData(), 0, 0664);
-        mdb_txn_begin(m_env, NULL, 0, &m_txn);
+        mdb_txn_begin(m_env, nullptr, 0, &m_txn);
     }
 
     void cleanup()

@@ -46,7 +46,7 @@ inline ssize_t baloo_getxattr(const QString& path, const QString& name, QString*
 
     // First get the size of the data we are going to get to reserve the right amount of space.
 #if defined(Q_OS_LINUX) || (defined(__GLIBC__) && !defined(__stub_getxattr))
-    const ssize_t size = getxattr(encodedPath, attributeName, NULL, 0);
+    const ssize_t size = getxattr(encodedPath, attributeName, nullptr, 0);
 #elif defined(Q_OS_MAC)
     const ssize_t size = getxattr(encodedPath, attributeName, NULL, 0, 0, 0);
 #elif defined(Q_OS_FREEBSD) || defined(Q_OS_NETBSD)
