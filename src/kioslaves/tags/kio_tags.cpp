@@ -75,8 +75,13 @@ void TagsProtocol::listDir(const QUrl& url)
 
     QString tag;
     QString fileUrl;
+    QStringList paths;
 
     ParseResult result = parseUrl(url, tag, fileUrl);
+
+    TagListJob* job = new TagListJob();
+    job->exec();
+
     switch (result) {
     case InvalidUrl:
         return;
@@ -84,11 +89,16 @@ void TagsProtocol::listDir(const QUrl& url)
     case RootUrl: {
         qDebug() << "Root Url";
 
-        TagListJob* job = new TagListJob();
-        job->exec();
-
-        Q_FOREACH (const QString& tag, job->tags()) {
-            listEntry(createUDSEntryForTag(tag));
+        for (QString resultTag : job->tags()) {
+            if (resultTag.contains(QLatin1Char('/'))) {
+                resultTag = resultTag.section(QLatin1Char('/'), 0, 0, QString::SectionSkipEmpty);
+            }
+            if (paths.contains(resultTag, Qt::CaseInsensitive)) {
+                continue;
+            } else {
+                paths.insert(0, resultTag);
+            }
+            listEntry(createUDSEntryForTag(resultTag));
         }
 
         finished();
@@ -96,6 +106,19 @@ void TagsProtocol::listDir(const QUrl& url)
     }
 
     case TagUrl: {
+        for (QString resultTag : job->tags()) {
+            if (resultTag.startsWith(tag, Qt::CaseInsensitive) && resultTag.contains(QLatin1Char('/'))) {
+                resultTag.remove(0, (tag.size() + 1));
+                resultTag = resultTag.section(QLatin1Char('/'), 0, 0, QString::SectionSkipEmpty);
+                if (paths.contains(resultTag, Qt::CaseInsensitive)) {
+                    continue;
+                } else {
+                    paths.insert(0, resultTag);
+                }
+                listEntry(createUDSEntryForTag(resultTag));
+            }
+        }
+
         Query q;
         q.setSortingOption(Query::SortNone);
         q.setSearchString(QStringLiteral("tag=\"%1\"").arg(tag));
@@ -383,23 +406,25 @@ QString TagsProtocol::encodeFileUrl(const QString& url)
 
 TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, QString& tag, QString& fileUrl, bool)
 {
+    // Isolate the path and sanitize it by removing any beginning and trailing slashes
     QString path = url.path();
-    if (path.isEmpty() || path == QLatin1String("/"))
+    while (path.startsWith(QLatin1Char('/')))
+        path.remove(0, 1);
+    while (path.endsWith(QLatin1Char('/')))
+        path.chop(1);
+
+    // If the resulting string is empty, the result is the root url
+    if (path.isEmpty())
         return RootUrl;
 
-    QStringList names = path.split(QLatin1Char('/'), QString::SkipEmptyParts);
-    if (names.size() == 0)  {
-        return RootUrl;
-    }
-
-    if (names.size() == 1) {
-        tag = names[0];
+    // If the path doesn't end with a trailing slash, the result is a tag
+    if (!url.path().endsWith(QLatin1Char('/'))) {
+        tag = path;
         fileUrl.clear();
 
         return TagUrl;
-    }
-    else {
-        tag = names[0];
+    } else {
+        tag = path;
         QString fileName = url.fileName();
         fileUrl = decodeFileUrl(fileName);
 

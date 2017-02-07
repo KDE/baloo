@@ -55,7 +55,7 @@ SearchStore::SearchStore()
     m_prefixes.insert(QByteArray("filename"), QByteArray("F"));
     m_prefixes.insert(QByteArray("mimetype"), QByteArray("M"));
     m_prefixes.insert(QByteArray("rating"), QByteArray("R"));
-    m_prefixes.insert(QByteArray("tag"), QByteArray("TA"));
+    m_prefixes.insert(QByteArray("tag"), QByteArray("TAG-"));
     m_prefixes.insert(QByteArray("tags"), QByteArray("TA"));
     m_prefixes.insert(QByteArray("usercomment"), QByteArray("C"));
 }
@@ -267,6 +267,19 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
         const QByteArray prefix = "R";
         const QByteArray val = QByteArray::number(rating);
         return tr->postingCompIterator(prefix, val, pcom);
+    } else if (property == "tag") {
+        if (term.comparator() == Term::Equal) {
+            const QByteArray prefix = "TAG-";
+            EngineQuery q = EngineQuery(prefix + value.toByteArray());
+            return tr->postingIterator(q);
+        } else if (term.comparator() == Term::Contains) {
+            const QByteArray prefix = "TA";
+            EngineQuery q = constructEqualsQuery(prefix, value.toString());
+            return tr->postingIterator(q);
+        } else {
+            Q_ASSERT(0);
+            return nullptr;
+        }
     }
 
     QByteArray prefix;

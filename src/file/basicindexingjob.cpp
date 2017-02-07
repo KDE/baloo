@@ -101,12 +101,11 @@ bool BasicIndexingJob::indexXAttr(const QString& url, Document& doc)
     TermGenerator tg(&doc);
     QStringList tags = userMetaData.tags();
     if (!tags.isEmpty()) {
-        Q_FOREACH (const QString& tag, tags) {
+        for (const QString& tag : tags) {
             tg.indexXattrText(tag, QByteArray("TA"));
             doc.addXattrBoolTerm(QByteArray("TAG-") + tag.toUtf8());
+            modified = true;
         }
-
-        modified = true;
     }
 
     int rating = userMetaData.rating();
