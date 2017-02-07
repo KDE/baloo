@@ -153,7 +153,7 @@ void BasicIndexingQueueTest::textExtendedAttributeIndexing()
     QVERIFY(baloo_setxattr(fileName, QLatin1String("user.baloo.rating"), rat) != -1);
 
     QStringList tags;
-    tags << QLatin1String("TagA") << QLatin1String("TagB");
+    tags << QLatin1String("TagA") << QLatin1String("TagB") << QLatin1String("Tag C") << QLatin1String("Tag/D");
 
     QString tagStr = tags.join(QLatin1String(","));
     QVERIFY(baloo_setxattr(fileName, QLatin1String("user.xdg.tags"), tagStr) != -1);
@@ -183,9 +183,19 @@ void BasicIndexingQueueTest::textExtendedAttributeIndexing()
     ++iter;
     QCOMPARE(*iter, std::string("TAG-TagB"));
     ++iter;
+    QCOMPARE(*iter, std::string("TAG-Tag C"));
+    ++iter;
+    QCOMPARE(*iter, std::string("TAG-Tag/D"));
+    ++iter;
     QCOMPARE(*iter, std::string("TAtaga"));
     ++iter;
     QCOMPARE(*iter, std::string("TAtagb"));
+    ++iter;
+    QCOMPARE(*iter, std::string("TAtag"));
+    ++iter;
+    QCOMPARE(*iter, std::string("TAc"));
+    ++iter;
+    QCOMPARE(*iter, std::string("TAd"));
     ++iter;
     QCOMPARE(iter, doc.termlist_end());
 
@@ -211,9 +221,19 @@ void BasicIndexingQueueTest::textExtendedAttributeIndexing()
         ++iter;
         QCOMPARE(*iter, std::string("TAG-TagB"));
         ++iter;
+        QCOMPARE(*iter, std::string("TAG-Tag C"));
+        ++iter;
+        QCOMPARE(*iter, std::string("TAG-Tag/D"));
+        ++iter;
         QCOMPARE(*iter, std::string("TAtaga"));
         ++iter;
         QCOMPARE(*iter, std::string("TAtagb"));
+        ++iter;
+        QCOMPARE(*iter, std::string("TAtag"));
+        ++iter;
+        QCOMPARE(*iter, std::string("TAc"));
+        ++iter;
+        QCOMPARE(*iter, std::string("TAd"));
         ++iter;
         QCOMPARE(iter, doc.termlist_end());
     }
@@ -256,7 +276,7 @@ void BasicIndexingQueueTest::textNormalAndThenExtendedAttributeIndexing()
     QVERIFY(baloo_setxattr(fileName, QLatin1String("user.baloo.rating"), rat) != -1);
 
     QStringList tags;
-    tags << QLatin1String("TagA") << QLatin1String("TagB");
+    tags << QLatin1String("TagA") << QLatin1String("TagB") << QLatin1String("Tag C") << QLatin1String("Tag/D");
 
     QString tagStr = tags.join(QLatin1String(","));
     QVERIFY(baloo_setxattr(fileName, QLatin1String("user.xdg.tags"), tagStr) != -1);
@@ -287,9 +307,19 @@ void BasicIndexingQueueTest::textNormalAndThenExtendedAttributeIndexing()
     ++iter;
     QCOMPARE(*iter, std::string("TAG-TagB"));
     ++iter;
+    QCOMPARE(*iter, std::string("TAG-Tag C"));
+    ++iter;
+    QCOMPARE(*iter, std::string("TAG-Tag/D"));
+    ++iter;
     QCOMPARE(*iter, std::string("TAtaga"));
     ++iter;
     QCOMPARE(*iter, std::string("TAtagb"));
+    ++iter;
+    QCOMPARE(*iter, std::string("TAtag"));
+    ++iter;
+    QCOMPARE(*iter, std::string("TAc"));
+    ++iter;
+    QCOMPARE(*iter, std::string("TAd"));
 
     db.xapianDatabase()->replaceDocument(id, doc);
     db.xapianDatabase()->commit();
@@ -313,9 +343,19 @@ void BasicIndexingQueueTest::textNormalAndThenExtendedAttributeIndexing()
         ++iter;
         QCOMPARE(*iter, std::string("TAG-TagB"));
         ++iter;
+        QCOMPARE(*iter, std::string("TAG-Tag C"));
+        ++iter;
+        QCOMPARE(*iter, std::string("TAG-Tag/D"));
+        ++iter;
         QCOMPARE(*iter, std::string("TAtaga"));
         ++iter;
         QCOMPARE(*iter, std::string("TAtagb"));
+        ++iter;
+        QCOMPARE(*iter, std::string("TAtag"));
+        ++iter;
+        QCOMPARE(*iter, std::string("TAc"));
+        ++iter;
+        QCOMPARE(*iter, std::string("TAd"));
         ++iter;
         QCOMPARE(iter, doc.termlist_end());
     }
