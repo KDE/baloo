@@ -127,13 +127,13 @@ const char* const s_sourceCodeMimeTypes[] = {
     "application/x-awk",
     "application/x-cgi",
     "application/x-csh",
+    "application/x-ipynb+json",
     "application/x-java",
     "application/x-javascript",
     "application/x-perl",
     "application/x-php",
     "application/x-python",
     "application/x-sh",
-    "application/x-tex",
 
     // end of list
     nullptr
