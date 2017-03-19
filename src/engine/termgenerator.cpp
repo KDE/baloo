@@ -57,11 +57,9 @@ QStringList TermGenerator::termList(const QString& text_)
 
             QString str = text.mid(start, end - start);
 
-            // Get the string ready for saving
-            str = str.toLower();
-
-            // Remove all accents
-            const QString denormalized = str.normalized(QString::NormalizationForm_KD);
+            // Remove all accents. It is important to call toLower after normalization,
+            // since some exotic unicode symbols can remain uppercase
+            const QString denormalized = str.normalized(QString::NormalizationForm_KD).toLower();
 
             QString cleanString;
             cleanString.reserve(denormalized.size());
