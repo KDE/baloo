@@ -38,6 +38,7 @@ private Q_SLOTS:
     void testUnderscore_splitting();
     void testAccetCharacters();
     void testUnicodeCompatibleComposition();
+    void testUnicodeLowering();
     void testEmails();
     void testWordPositions();
 
@@ -128,6 +129,20 @@ void TermGeneratorTest::testUnicodeCompatibleComposition()
 
     QByteArray output = words.first();
     QCOMPARE(str.toUtf8(), output);
+}
+
+void TermGeneratorTest::testUnicodeLowering()
+{
+    // This string is unicode mathematical italic "Hedge"
+    QString str = QString::fromUtf8("\xF0\x9D\x90\xBB\xF0\x9D\x91\x92\xF0\x9D\x91\x91\xF0\x9D\x91\x94\xF0\x9D\x91\x92");
+
+    Document doc;
+    TermGenerator termGen(&doc);
+    termGen.indexText(str);
+
+    QList<QByteArray> words = allWords(doc);
+
+    QCOMPARE(words, {QByteArray("hedge")});
 }
 
 void TermGeneratorTest::testEmails()

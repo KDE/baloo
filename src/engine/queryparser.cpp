@@ -112,11 +112,8 @@ EngineQuery QueryParser::parseQuery(const QString& text_, const QString& prefix)
 
             QString str = text.mid(start, end - start);
 
-            // Get the string ready for saving
-            str = str.toLower();
-
-            // Remove all accents
-            const QString denormalized = str.normalized(QString::NormalizationForm_KD);
+            // Remove all accents and lower it
+            const QString denormalized = str.normalized(QString::NormalizationForm_KD).toLower();
             QString cleanString;
             Q_FOREACH (const QChar& ch, denormalized) {
                 auto cat = ch.category();

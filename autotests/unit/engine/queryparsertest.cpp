@@ -40,6 +40,7 @@ private Q_SLOTS:
     void testAccentSearch();
     void testUnderscoreSplitting();
     void testAutoExpand();
+    void testUnicodeLowering();
 };
 
 void QueryParserTest::testSinglePrefixWord()
@@ -216,6 +217,17 @@ void QueryParserTest::testAutoExpand()
 
         QCOMPARE(query, q);
     }
+}
+
+void QueryParserTest::testUnicodeLowering()
+{
+    // This string is unicode mathematical italic "Hedge"
+    QString str = QString::fromUtf8("\xF0\x9D\x90\xBB\xF0\x9D\x91\x92\xF0\x9D\x91\x91\xF0\x9D\x91\x94\xF0\x9D\x91\x92");
+
+    QueryParser parser;
+    EngineQuery query = parser.parseQuery(str);
+    EngineQuery expected = EngineQuery("hedge", EngineQuery::StartsWith, 1);
+    QCOMPARE(query, expected);
 }
 
 QTEST_MAIN(QueryParserTest)
