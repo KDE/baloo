@@ -82,9 +82,12 @@ int main(int argc, char* argv[])
     parser.addPositionalArgument(QStringLiteral("suspend"), i18n("Suspend the file indexer"));
     parser.addPositionalArgument(QStringLiteral("resume"), i18n("Resume the file indexer"));
     parser.addPositionalArgument(QStringLiteral("check"), i18n("Check for any unindexed files and index them"));
+    parser.addPositionalArgument(QStringLiteral("checkDb"), i18n("Check database for consistency"));
     parser.addPositionalArgument(QStringLiteral("index"), i18n("Index the specified files"));
     parser.addPositionalArgument(QStringLiteral("clear"), i18n("Forget the specified files"));
     parser.addPositionalArgument(QStringLiteral("config"), i18n("Modify the Baloo configuration"));
+    parser.addPositionalArgument(QStringLiteral("monitor"), i18n("Monitor the file indexer"));
+    parser.addPositionalArgument(QStringLiteral("indexSize"), i18n("Display the disk space used by index"));
     parser.addVersionOption();
     parser.addHelpOption();
 
