@@ -35,6 +35,7 @@
 
 #include <QStandardPaths>
 #include <QFile>
+#include <QFileInfo>
 
 #include <KFileMetaData/PropertyInfo>
 #include <KFileMetaData/TypeInfo>
@@ -189,7 +190,7 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
         return tr->postingIterator(q);
     }
     else if (property == "includefolder") {
-        const QByteArray folder = QFile::encodeName(value.toString());
+        const QByteArray folder = QFile::encodeName(QFileInfo(value.toString()).canonicalPath());
 
         Q_ASSERT(!folder.isEmpty());
         Q_ASSERT(folder.startsWith('/'));
