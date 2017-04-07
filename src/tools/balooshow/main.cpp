@@ -68,7 +68,7 @@ int main(int argc, char* argv[])
     parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("x"),
                                         QStringLiteral("Print internal info")));
     parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("i"),
-                                        QStringLiteral("Inode number of the fiel to show")));
+                                        QStringLiteral("Inode number of the file to show")));
     parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("d"),
                                         QStringLiteral("Device id for the files"), QStringLiteral("deviceId"), QString()));
     parser.addHelpOption();
