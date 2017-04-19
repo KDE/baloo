@@ -35,6 +35,8 @@
 
 int main(int argc, char* argv[])
 {
+    QCoreApplication app(argc, argv);
+
     KAboutData aboutData(QStringLiteral("Baloo"),
                          i18n("Baloo Search"),
                          PROJECT_VERSION,
@@ -42,7 +44,6 @@ int main(int argc, char* argv[])
                          KAboutLicense::GPL);
     aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QStringLiteral("vhanda@kde.org"));
 
-    QCoreApplication app(argc, argv);
     KAboutData::setApplicationData(aboutData);
 
     QCommandLineParser parser;

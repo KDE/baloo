@@ -52,6 +52,8 @@ QString colorString(const QString& input, int color)
 
 int main(int argc, char* argv[])
 {
+    QCoreApplication app(argc, argv);
+
     KAboutData aboutData(QStringLiteral("balooshow"),
                          i18n("Baloo Show"),
                          PROJECT_VERSION,
@@ -61,7 +63,6 @@ int main(int argc, char* argv[])
     aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QStringLiteral("me@vhanda.in"));
 
     KAboutData::setApplicationData(aboutData);
-    QCoreApplication app(argc, argv);
 
     QCommandLineParser parser;
     parser.addPositionalArgument(QStringLiteral("files"), QStringLiteral("The file urls"));
