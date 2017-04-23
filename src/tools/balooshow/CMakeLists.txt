@@ -1,4 +1,4 @@
-add_definitions(-DTRANSLATION_DOMAIN=\"balooshow\")
+add_definitions(-DTRANSLATION_DOMAIN=\"balooshow5\")
 
 set(SRCS main.cpp)
 

@@ -1,4 +1,4 @@
-add_definitions(-DTRANSLATION_DOMAIN=\"kio_timeline\")
+add_definitions(-DTRANSLATION_DOMAIN=\"kio5_timeline\")
 
 set(kio_timeline_SRCS
   kio_timeline.cpp
