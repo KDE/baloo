@@ -1,5 +1,5 @@
-remove_definitions(-DTRANSLATION_DOMAIN=\"baloo_file\")
-add_definitions(-DTRANSLATION_DOMAIN=\"baloo_file_extractor\")
+remove_definitions(-DTRANSLATION_DOMAIN=\"baloo_file5\")
+add_definitions(-DTRANSLATION_DOMAIN=\"baloo_file_extractor5\")
 
 set(EXTRACTOR_SRCS
   main.cpp

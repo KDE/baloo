@@ -1,4 +1,4 @@
-add_definitions(-DTRANSLATION_DOMAIN=\"baloosearch\")
+add_definitions(-DTRANSLATION_DOMAIN=\"baloosearch5\")
 
 set(BALOO_SEARCH_SRCS main.cpp)
 

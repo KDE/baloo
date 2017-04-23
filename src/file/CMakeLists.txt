@@ -1,4 +1,4 @@
-add_definitions(-DTRANSLATION_DOMAIN=\"baloo_file\")
+add_definitions(-DTRANSLATION_DOMAIN=\"baloo_file5\")
 
 set(file_static_lib_SRCS
     # File Indexer

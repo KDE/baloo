@@ -1,4 +1,4 @@
-add_definitions(-DTRANSLATION_DOMAIN=\"balooctl\")
+add_definitions(-DTRANSLATION_DOMAIN=\"balooctl5\")
 
 set(SRCS
     main.cpp

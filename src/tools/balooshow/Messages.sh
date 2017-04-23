@@ -1,2 +1,2 @@
 #! /usr/bin/env bash
-$XGETTEXT *.cpp -o $podir/balooshow.pot
+$XGETTEXT *.cpp -o $podir/balooshow5.pot
