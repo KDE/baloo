@@ -84,6 +84,36 @@ install(FILES
     COMPONENT Devel
 )
 
+if(BUILD_QCH)
+    ecm_add_qch(
+        KF5Baloo_QCH
+        NAME Baloo
+        BASE_NAME KF5Baloo
+        VERSION ${KF5_VERSION}
+        ORG_DOMAIN org.kde
+        SOURCES # using only public headers, to cover only public API
+            ${KF5Baloo_HEADERS}
+            "${CMAKE_SOURCE_DIR}/docs/distributing.md"
+            "${CMAKE_SOURCE_DIR}/docs/faq.md"
+            "${CMAKE_SOURCE_DIR}/docs/updatedb.md"
+            "${CMAKE_SOURCE_DIR}/docs/development/build-instructions.md"
+            "${CMAKE_SOURCE_DIR}/docs/development/coding-style.md"
+            "${CMAKE_SOURCE_DIR}/docs/user/searching.md"
+        MD_MAINPAGE "${CMAKE_SOURCE_DIR}/README.md"
+        LINK_QCHS
+            Qt5Core_QCH
+            KF5CoreAddons_QCH
+            KF5FileMetaData_QCH
+        BLANK_MACROS
+            BALOO_CORE_EXPORT
+            BALOO_CORE_DEPRECATED
+            BALOO_CORE_DEPRECATED_EXPORT
+        TAGFILE_INSTALL_DESTINATION ${KDE_INSTALL_QTQCHDIR}
+        QCH_INSTALL_DESTINATION ${KDE_INSTALL_QTQCHDIR}
+        COMPONENT Devel
+    )
+endif()
+
 if (NOT WIN32)
    configure_file (
       ${CMAKE_CURRENT_SOURCE_DIR}/Baloo.pc.cmake
