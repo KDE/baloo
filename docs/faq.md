@@ -1,4 +1,4 @@
-Frequently Asked Questions {#baloo-faq}
+# Frequently Asked Questions {#baloo-faq}
 
 
 * How do I disable the this `baloo_file` process?
