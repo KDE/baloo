@@ -1,0 +1,97 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Marce Villarino <mvillarino@kde-espana.org>, 2014.
+# Adrián Chaves Fernández <adriyetichaves@gmail.com>, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2016-11-19 20:11+0100\n"
+"PO-Revision-Date: 2015-05-14 06:08+0200\n"
+"Last-Translator: Adrián Chaves Fernández <adriyetichaves@gmail.com>\n"
+"Language-Team: Galician <kde-i18n-doc@kde.org>\n"
+"Language: gl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 1.5\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Marce Villarino"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "mvillarino@kde-espana.org"
+
+#: main.cpp:47
+#, kde-format
+msgid "Baloo File Indexing Daemon"
+msgstr "Servizo para indexar ficheiros de Baloo"
+
+#: main.cpp:48
+#, kde-format
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:48
+#, kde-format
+msgid "Maintainer"
+msgstr "Mantenedor"
+
+#~ msgctxt "@info:status"
+#~ msgid "File indexer is suspended."
+#~ msgstr "O indexador de ficheiros está suspendido."
+
+#~ msgctxt "@info:status"
+#~ msgid "Scanning for recent changes in files for desktop search"
+#~ msgstr ""
+#~ "Estanse a buscar cambios recentes nos ficheiros para a busca no escritorio"
+
+#~ msgctxt "@info:status"
+#~ msgid "Indexing files for desktop search."
+#~ msgstr "Estanse a indexar ficheiros para a busca no escritorio."
+
+#~ msgctxt "@info:status"
+#~ msgid "File indexer is idle."
+#~ msgstr "O indexador de ficheiros está ocioso."
+
+#~ msgid "Baloo File"
+#~ msgstr "Baloo ficheiros"
+
+#~ msgid "An application to handle file metadata"
+#~ msgstr "Un programa para manexar metadatos de ficheiros"
+
+#~ msgctxt "@title"
+#~ msgid "New removable device detected"
+#~ msgstr "Detectouse un dispositivo extraíbel novo"
+
+#~ msgctxt "@action"
+#~ msgid "Index files"
+#~ msgstr "Indexar os ficheiros"
+
+#~ msgctxt "@action"
+#~ msgid "Ignore device"
+#~ msgstr "Ignorar o dispositivo"
+
+#~ msgctxt "@action"
+#~ msgid "Configure"
+#~ msgstr "Configurar"
+
+#~ msgctxt "@info"
+#~ msgid ""
+#~ "Do you want files on removable device <resource>%1</resource> to be "
+#~ "indexed for fast desktop searches?"
+#~ msgstr ""
+#~ "Desexa indexar os ficheiros no dispositivo extraíbel <resource>%1</"
+#~ "resource> para facer buscas rápidas?"
+
+#~ msgid "Cleans up stale file index information"
+#~ msgstr "Limpa información obsoleta do índice de ficheiros"
+
+#~ msgid "(C) 2014, Vishesh Handa"
+#~ msgstr "(C) 2014, Vishesh Handa"

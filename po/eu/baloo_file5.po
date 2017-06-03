@@ -1,0 +1,108 @@
+# Translation of baloo_file.po to Euskara/Basque (eu).
+# Copyright (C) 2014, Free Software Foundation, Inc.
+# This file is distributed under the same license as the kdelibs package.
+#
+# Iñigo Salvador Azurmendi <xalba@euskalnet.net>, 2014, 2017.
+msgid ""
+msgstr ""
+"Project-Id-Version: baloo_file\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2016-11-19 20:11+0100\n"
+"PO-Revision-Date: 2017-03-26 19:51+0200\n"
+"Last-Translator: Iñigo Salvador Azurmendi <xalba@euskalnet.net>\n"
+"Language-Team: Basque <kde-i18n-doc@kde.org>\n"
+"Language: eu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 1.5\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Iñigo Salvador Azurmendi"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "xalba@euskalnet.net"
+
+#: main.cpp:47
+#, kde-format
+msgid "Baloo File Indexing Daemon"
+msgstr "Baloo fitxategiak indexatzeko daimona"
+
+#: main.cpp:48
+#, kde-format
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:48
+#, kde-format
+msgid "Maintainer"
+msgstr "Mantentzailea"
+
+#~ msgctxt "@info:status"
+#~ msgid "File indexer is suspended."
+#~ msgstr "Fitxategi-indexatzailea egonean dago."
+
+#~ msgctxt "@info:status"
+#~ msgid "Scanning for recent changes in files for desktop search"
+#~ msgstr "Fitxategien azken aldaketak aztertzen mahaigaineko bilaketarako"
+
+#~ msgctxt "@info:status"
+#~ msgid "Indexing files for desktop search."
+#~ msgstr "Fitxategiak indexatzen mahaigaineko bilaketarako."
+
+#~ msgctxt "@info:status"
+#~ msgid "File indexer is idle."
+#~ msgstr "Fitxategi-indexatzailea nagi dago."
+
+#~ msgid "Baloo File"
+#~ msgstr "Baloo-fitxategia"
+
+#~ msgid "An application to handle file metadata"
+#~ msgstr "Fitxategien metadatuak maneiatzeko aplikazio bat"
+
+#~ msgctxt "@title"
+#~ msgid "New removable device detected"
+#~ msgstr "Gailu aldagarri berria detektatu da"
+
+#~ msgctxt "@action"
+#~ msgid "Index files"
+#~ msgstr "Indexatu fitxategiak"
+
+#~ msgctxt "@action"
+#~ msgid "Ignore device"
+#~ msgstr "Ezikusi gailua"
+
+#~ msgctxt "@action"
+#~ msgid "Configure"
+#~ msgstr "Konfiguratu"
+
+#~ msgctxt "@info"
+#~ msgid ""
+#~ "Do you want files on removable device <resource>%1</resource> to be "
+#~ "indexed for fast desktop searches?"
+#~ msgstr ""
+#~ "Nahi duzu <resource>%1</resource> gailu aldagarriko fitxategiak "
+#~ "indexatzea mahaigaineko bilaketa azkarrak egin ahal izateko?"
+
+#~ msgid "Cleans up stale file index information"
+#~ msgstr "Fintxategi-indizearen informazio zaharkitua garbitzen du"
+
+#~ msgid "(C) 2014, Vishesh Handa"
+#~ msgstr "(C) 2014, Vishesh Handa"
+
+#~ msgid "xattrdetectortest"
+#~ msgstr "xattrdetectortest"
+
+#~ msgid "(c) 2014, Vishesh Handa"
+#~ msgstr "(c) 2014, Vishesh Handa"
+
+#~ msgid "The file URL"
+#~ msgstr "Fitxategiaren URLa"
+
+#~ msgid "indexerconfigtest"
+#~ msgstr "indexatzaile-konfigurazioren proba"
