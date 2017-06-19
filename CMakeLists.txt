@@ -68,10 +68,10 @@ endif()
 add_definitions(-DQT_NO_KEYWORDS)
 remove_definitions(-DQT_NO_CAST_FROM_ASCII)
 
-set(BUILD_KINOTIFY False)
-if(CMAKE_SYSTEM_NAME MATCHES "Linux")
-    set(BUILD_KINOTIFY True)
-endif()
+find_package(Inotify)
+set_package_properties(Inotify PROPERTIES
+    PURPOSE "Filesystem alteration notifications using inotify")
+set(BUILD_KINOTIFY ${Inotify_FOUND})
 
 include_directories(
     ${CMAKE_BINARY_DIR}
