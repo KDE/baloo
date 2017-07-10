@@ -5,7 +5,9 @@ set(DBUS_INTERFACES
   ${CMAKE_BINARY_DIR}/src/dbus/fileindexerinterface.cpp
 )
 
-SET_SOURCE_FILES_PROPERTIES(${DBUS_INTERFACES} PROPERTIES GENERATED 1)
+# CMake <= 3.9 skipped automoc for generated files
+# CMake >= 3.10 requires SKIP_AUTOMOC to actually skip automoc
+SET_SOURCE_FILES_PROPERTIES(${DBUS_INTERFACES} PROPERTIES GENERATED 1 SKIP_AUTOMOC 1)
 
 set(baloomonitorplugin_SRCS
     baloomonitorplugin.cpp
