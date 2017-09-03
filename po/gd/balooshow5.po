@@ -1,0 +1,81 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+# GunChleoc <fios@foramnagaidhlig.net>, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2017-04-20 02:49+0200\n"
+"PO-Revision-Date: 2015-11-04 15:09+0000\n"
+"Last-Translator: Michael Bauer <fios@akerbeltz.org>\n"
+"Language-Team: Fòram na Gàidhlig\n"
+"Language: gd\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n==1 || n==11) ? 0 : (n==2 || n==12) ? 1 : "
+"(n > 2 && n < 20) ? 2 : 3;\n"
+"X-Generator: Poedit 1.8.4\n"
+"X-Project-Style: kde\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "GunChleoc"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "fios@foramnagaidhlig.net"
+
+#: main.cpp:58
+#, kde-format
+msgid "Baloo Show"
+msgstr "Sealladh Baloo"
+
+#: main.cpp:60
+#, kde-format
+msgid "The Baloo data Viewer - A debugging tool"
+msgstr "Sealladair dàta Baloo - inneal dì-bhugachaidh"
+
+#: main.cpp:62
+#, kde-format
+msgid "(c) 2012, Vishesh Handa"
+msgstr "(c) 2012, Vishesh Handa"
+
+#: main.cpp:63
+#, kde-format
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:63
+#, kde-format
+msgid "Maintainer"
+msgstr "Neach-glèidhidh"
+
+#: main.cpp:106
+#, kde-format
+msgid ""
+"The Baloo index could not be opened. Please run \"balooctl status\" to see "
+"if Baloo is enabled and working."
+msgstr ""
+"Cha b' urrainn dhuinn inneacs Baloo fhosgladh. Ruith \"balooctl status\" "
+"airson sealltainn a bheil Baloo an comas is ag obair."
+
+#: main.cpp:122
+#, kde-format
+msgid "The fileID is not equal to the actual Baloo fileID"
+msgstr ""
+"Cha eil aithnichear an fhaidhle co-ionnan ris an dearbh-aithnichear faidhle "
+"Baloo"
+
+#: main.cpp:123
+#, kde-format
+msgid "This is a bug"
+msgstr "'S e buga a th' ann"
+
+#: main.cpp:151
+#, kde-format
+msgid "No index information found"
+msgstr "Cha deach fiosrachadh an inneics a lorg"
