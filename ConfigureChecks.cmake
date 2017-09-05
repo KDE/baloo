@@ -17,7 +17,4 @@ if (NOT (HAVE_SYS_XATTR_H OR HAVE_SYS_EXTATTR_H))
     message(FATAL_ERROR "Baloo requires extended attributes support in the operating system, but no headers have been found.")
 endif ()
 
-# Check whether malloc_trim(3) is supported.
-check_include_file("malloc.h" HAVE_MALLOC_H)
-check_symbol_exists(malloc_trim "malloc.h" HAVE_MALLOC_TRIM)
 endif ()
