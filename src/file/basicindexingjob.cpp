@@ -215,6 +215,7 @@ QVector<KFileMetaData::Type::Type> BasicIndexingJob::typesForMimeType(const QStr
         {"application/wps-office.pptx", Type::Document},
         {"appliaction/wps-office.pptx", Type::Presentation},
         // Other
+        {"text/markdown", Type::Document},
         {"application/x-lyx", Type::Document}
     };
 
