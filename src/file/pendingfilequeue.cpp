@@ -61,10 +61,10 @@ void PendingFileQueue::enqueue(const PendingFile& file)
         while (it.hasNext()) {
             const PendingFile &pf = it.next();
             if (pf.path().startsWith(file.path())) {
-                it.remove();
-
                 m_pendingFiles.remove(pf.path());
                 m_recentlyEmitted.remove(pf.path());
+
+                it.remove();
             }
         }
     }
