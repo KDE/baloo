@@ -129,16 +129,16 @@ QVector<KFileMetaData::Type::Type> BasicIndexingJob::typesForMimeType(const QStr
     QVector<Type::Type> types;
 
     // Basic types
-    if (mimeType.contains(QLatin1String("audio")))
+    if (mimeType.startsWith(QLatin1String("audio/")))
         types << Type::Audio;
-    if (mimeType.contains(QLatin1String("video")))
+    if (mimeType.startsWith(QLatin1String("video/")))
         types << Type::Video;
-    if (mimeType.contains(QLatin1String("image")))
+    if (mimeType.startsWith(QLatin1String("image/")))
         types << Type::Image;
+    if (mimeType.startsWith(QLatin1String("text/")))
+        types << Type::Text;
     if (mimeType.contains(QLatin1String("document")))
         types << Type::Document;
-    if (mimeType.contains(QLatin1String("text")))
-        types << Type::Text;
 
     if (mimeType.contains(QLatin1String("powerpoint"))) {
         types << Type::Presentation;
