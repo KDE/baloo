@@ -23,7 +23,10 @@
 #ifndef BALOO_KIO_TAGS_H_
 #define BALOO_KIO_TAGS_H_
 
+#include <KFileMetaData/UserMetaData>
 #include <KIO/ForwardingSlaveBase>
+
+#include "query.h"
 
 namespace Baloo
 {
@@ -35,6 +38,13 @@ public:
     TagsProtocol(const QByteArray& pool_socket, const QByteArray& app_socket);
     ~TagsProtocol() Q_DECL_OVERRIDE;
 
+    enum UrlType {
+        InvalidUrl,
+        FileUrl,
+        TagUrl
+    };
+    Q_ENUM(UrlType)
+
     /**
      * List all files and folders tagged with the corresponding tag, along with
      * additional tags that can be used to filter the results
@@ -45,11 +55,6 @@ public:
      * Will be forwarded for files.
      */
     void get(const QUrl& url) Q_DECL_OVERRIDE;
-
-    /**
-     * Not supported.
-     */
-    void put(const QUrl& url, int permissions, KIO::JobFlags flags) Q_DECL_OVERRIDE;
 
     /**
      * Files and folders can be copied to the virtual folders resulting
@@ -76,6 +81,11 @@ public:
     void mimetype(const QUrl& url) Q_DECL_OVERRIDE;
 
     /**
+     * Virtual folders will be created.
+     */
+    void mkdir(const QUrl& url, int permissions) Q_DECL_OVERRIDE;
+
+    /**
      * Files will be forwarded.
      * Tags will be created as virtual folders.
      */
@@ -84,18 +94,23 @@ protected:
     bool rewriteUrl(const QUrl& url, QUrl& newURL) Q_DECL_OVERRIDE;
 
 private:
-    enum ParseResult {
-        RootUrl,
-        TagUrl,
-        FileUrl,
-        InvalidUrl
+    enum ParseFlags {
+        ChopLastSection,
+        LazyValidation
     };
-    ParseResult parseUrl(const QUrl& url, QString& tag, QString& fileUrl, bool ignoreErrors = false);
 
-    bool splitUrl(const QUrl& url, QList<QString>& tags, QString& filename);
+    struct ParseResult {
+        UrlType urlType = InvalidUrl;
+        QString decodedUrl;
+        QString tag;
+        QUrl fileUrl;
+        KFileMetaData::UserMetaData metaData = KFileMetaData::UserMetaData(QString());
+        Query query;
+        KIO::UDSEntryList pathUDSResults;
+    };
 
-    QString decodeFileUrl(const QString& urlString);
-    QString encodeFileUrl(const QString& url);
+    ParseResult parseUrl(const QUrl& url, const QList<ParseFlags> &flags = QList<ParseFlags>());
+    QStringList m_unassignedTags;
 };
 }
 
