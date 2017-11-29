@@ -317,7 +317,7 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
 
         uds.insert(KIO::UDSEntry::UDS_DISPLAY_TYPE, displayType);
 
-        if (tagSection == QLatin1Char('.')) {
+        if (tagSection == QStringLiteral(".")) {
             QString displayName = i18n("Tags");
             if (!tag.isEmpty()) {
                 displayName = tag.section(QLatin1Char('/'), -1);
