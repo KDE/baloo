@@ -1,0 +1,77 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# enolp <enolp@softastur.org>, 2016.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2017-04-20 02:49+0200\n"
+"PO-Revision-Date: 2016-12-20 21:44+0100\n"
+"Last-Translator: enolp <enolp@softastur.org>\n"
+"Language-Team: Asturian <alministradores@softastur.org>\n"
+"Language: ast\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 2.0\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Softastur"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "alministradores@softastur.org"
+
+#: main.cpp:58
+#, kde-format
+msgid "Baloo Show"
+msgstr "Baloo Show"
+
+#: main.cpp:60
+#, kde-format
+msgid "The Baloo data Viewer - A debugging tool"
+msgstr "Visor de datos de Baloo - Una ferramienta de depuración"
+
+#: main.cpp:62
+#, kde-format
+msgid "(c) 2012, Vishesh Handa"
+msgstr "(c) 2012, Vishesh Handa"
+
+#: main.cpp:63
+#, kde-format
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:63
+#, kde-format
+msgid "Maintainer"
+msgstr "Caltenedor"
+
+#: main.cpp:106
+#, kde-format
+msgid ""
+"The Baloo index could not be opened. Please run \"balooctl status\" to see "
+"if Baloo is enabled and working."
+msgstr ""
+"Nun pudo abrise l'índiz de Baloo. Executa «balooctl status» pa ver si Baloo "
+"ta habilitáu y n'execución, por favor."
+
+#: main.cpp:122
+#, kde-format
+msgid "The fileID is not equal to the actual Baloo fileID"
+msgstr "El fileID nun ye igual al actual de Baloo"
+
+#: main.cpp:123
+#, kde-format
+msgid "This is a bug"
+msgstr "Esto ye un fallu"
+
+#: main.cpp:151
+#, kde-format
+msgid "No index information found"
+msgstr "Nun s'alcontró información d'índices"

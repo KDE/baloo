@@ -1,0 +1,99 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Łukasz Wojniłowicz <lukasz.wojnilowicz@gmail.com>, 2014, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2017-04-20 02:49+0200\n"
+"PO-Revision-Date: 2015-09-26 09:11+0100\n"
+"Last-Translator: Łukasz Wojniłowicz <lukasz.wojnilowicz@gmail.com>\n"
+"Language-Team: Polish <kde-i18n-doc@kde.org>\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 2.0\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Łukasz Wojniłowicz"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "lukasz.wojnilowicz@gmail.com"
+
+#: main.cpp:41
+#, kde-format
+msgid "Baloo Search"
+msgstr "Wyszukiwarka Baloo"
+
+#: main.cpp:43
+#, kde-format
+msgid "A tool to search through the files indexed by Baloo"
+msgstr "Narzędzie do przeszukiwania plików zaindeksowanych przez Baloo"
+
+#: main.cpp:45
+#, kde-format
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:45
+#, kde-format
+msgid "Maintainer"
+msgstr "Opiekun"
+
+#: main.cpp:51
+#, kde-format
+msgid "The maximum number of results"
+msgstr "Maksymalna liczba wyników"
+
+#: main.cpp:52
+#, kde-format
+msgid "limit"
+msgstr "ograniczenie"
+
+#: main.cpp:54
+#, kde-format
+msgid "Offset from which to start the search"
+msgstr "Przesunięcie, od którego rozpocząć poszukiwanie"
+
+#: main.cpp:55
+#, kde-format
+msgid "offset"
+msgstr "przesunięcie"
+
+#: main.cpp:57
+#, kde-format
+msgid "Type of data to be searched"
+msgstr "Rodzaj danych do znalezienia"
+
+#: main.cpp:58
+#, kde-format
+msgid "typeStr"
+msgstr "rodzaj"
+
+#: main.cpp:60
+#, kde-format
+msgid "Limit search to specified directory"
+msgstr "ogranicz wyszukiwanie do danego katalogu"
+
+#: main.cpp:61
+#, kde-format
+msgid "directory"
+msgstr "katalog"
+
+#: main.cpp:62
+#, kde-format
+msgid "query"
+msgstr "zapytanie"
+
+#: main.cpp:62
+#, kde-format
+msgid "List of words to query for"
+msgstr "Wykaz słów do odpytania"

@@ -1,0 +1,397 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Dimitris Kardarakos <dimkard@gmail.com>, 2014, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2017-04-20 02:49+0200\n"
+"PO-Revision-Date: 2015-10-27 00:02+0200\n"
+"Last-Translator: Stelios <sstavra@gmail.com>\n"
+"Language-Team: Greek <kde-i18n-el@kde.org>\n"
+"Language: el\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 1.5\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Δημήτρης Καρδαράκος"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "dimkard@gmail.com"
+
+#: ../../file/indexerstate.h:42
+#, kde-format
+msgid "Unknown"
+msgstr "Άγνωστο"
+
+#: ../../file/indexerstate.h:45
+#, kde-format
+msgid "Idle"
+msgstr "Σε αδράνεια"
+
+#: ../../file/indexerstate.h:48
+#, kde-format
+msgid "Suspended"
+msgstr "Σε αναστολή"
+
+#: ../../file/indexerstate.h:51
+#, kde-format
+msgid "Initial Indexing"
+msgstr "Αρχική δεικτοδότηση"
+
+#: ../../file/indexerstate.h:54
+#, kde-format
+msgid "Indexing new files"
+msgstr "Δεικτοδότηση νέων αρχείων"
+
+#: ../../file/indexerstate.h:57
+#, kde-format
+msgid "Indexing modified files"
+msgstr "Δεικτοδότηση τροποποιημένων αρχείων"
+
+#: ../../file/indexerstate.h:60
+#, kde-format
+msgid "Indexing Extended Attributes"
+msgstr "Δεικτοδότηση πρόσθετων ιδιοτήτων"
+
+#: ../../file/indexerstate.h:63
+#, kde-format
+msgid "Indexing file content"
+msgstr "Δεικτοδότηση περιεχομένου"
+
+#: ../../file/indexerstate.h:66
+#, kde-format
+msgid "Checking for unindexed files"
+msgstr "Έλεγχος για μη δεικτοδοτημένα αρχεία"
+
+#: configcommand.cpp:45
+#, kde-format
+msgid "Manipulate the Baloo configuration"
+msgstr "Χειρισμός διαμόρφωσης του Baloo"
+
+#: configcommand.cpp:68
+#, kde-format
+msgid "The config command can be used to manipulate the Baloo Configuration"
+msgstr ""
+"Η εντολή config μπορεί να χρησιμοποιηθεί για το χειρισμό τηε διαμόρφωσης του "
+"Baloo"
+
+#: configcommand.cpp:69
+#, kde-format
+msgid "Usage: balooctl config <command>"
+msgstr "Χρήση: balooctl config <εντολή>"
+
+#: configcommand.cpp:70
+#, kde-format
+msgid "Possible Commands:"
+msgstr "Πιθανές εντολές:"
+
+#: configcommand.cpp:73
+#, kde-format
+msgid "Add a value to config parameter"
+msgstr "Προσθήκη τιμής σε παράμετρο της config"
+
+#: configcommand.cpp:74
+#, kde-format
+msgid "Remove a value from a config parameter"
+msgstr "Αφαίρεση τιμής από παράμετρο της config"
+
+#: configcommand.cpp:75
+#, kde-format
+msgid "Show the value of a config parameter"
+msgstr "Εμφάνιση της τιμής μιας παραμέτρου της config"
+
+#: configcommand.cpp:76
+#, kde-format
+msgid "Set the value of a config parameter"
+msgstr "Ρύθμιση της τιμής παραμέτρου της config"
+
+#: configcommand.cpp:77
+#, kde-format
+msgid "Display this help menu"
+msgstr "Εμφάνιση αυτού του βοηθητικού μενού"
+
+#: configcommand.cpp:83
+#, kde-format
+msgid "The following configuration options may be listed:"
+msgstr "Λίστα με τις ακόλουθες επιλογές διαμόρφωσης:"
+
+#: configcommand.cpp:85 configcommand.cpp:398
+#, kde-format
+msgid "Controls if Baloo indexes hidden files and folders"
+msgstr "Ελέγχει αν το Baloo δεικτοδοτεί κρυφά αρχεία και φακέλους"
+
+#: configcommand.cpp:86
+#, kde-format
+msgid "Controls if baloo indexes file content."
+msgstr "Ελέγχει αν το baloo δεικτοδοτεί περιεχόμενο αρχείων."
+
+#: configcommand.cpp:87 configcommand.cpp:150 configcommand.cpp:261
+#, kde-format
+msgid "The list of folders which Baloo indexes"
+msgstr "Η λίστα φακέλων τους οποίους δεικτοδοτεί το Baloo"
+
+#: configcommand.cpp:88 configcommand.cpp:151 configcommand.cpp:262
+#, kde-format
+msgid "The list of folders which Baloo will never index"
+msgstr "Η λίστα φακέλων τους οποίους το Baloo δεν θα δεικτοδοτήσει ποτέ"
+
+#: configcommand.cpp:89 configcommand.cpp:152 configcommand.cpp:263
+#, kde-format
+msgid "The list of filters which are used to exclude files"
+msgstr "Η λίστα φίλτρων η οποία χρησιμεύει στον αποκλεισμό αερχείων"
+
+#: configcommand.cpp:90 configcommand.cpp:153 configcommand.cpp:264
+#, kde-format
+msgid "The list of mimetypes which are used to exclude files"
+msgstr "Η λίστα τύπων mime η οποία χρησιμεύει στον αποκλεισμό αρχείων"
+
+#: configcommand.cpp:142 configcommand.cpp:253 configcommand.cpp:390
+#: configcommand.cpp:459
+#, kde-format
+msgid "Config parameter could not be found"
+msgstr "Η παράμετρος της confog δεν βρέθηκε"
+
+#: configcommand.cpp:148 configcommand.cpp:259 configcommand.cpp:396
+#, kde-format
+msgid "The following configuration options may be modified:"
+msgstr "Οι ακόλουθες επιλογές διαμόρφωσης είναι τροποποιήσιμες:"
+
+#: configcommand.cpp:161 configcommand.cpp:191 configcommand.cpp:272
+#: configcommand.cpp:314
+#, kde-format
+msgid "A folder must be provided"
+msgstr "Απαιτείται όνομα φακέλου"
+
+#: configcommand.cpp:167 configcommand.cpp:197 configcommand.cpp:278
+#: configcommand.cpp:320
+#, kde-format
+msgid "Path does not exist"
+msgstr "Η διαδρομή δεν υπάρχει"
+
+#: configcommand.cpp:172 configcommand.cpp:202 configcommand.cpp:283
+#: configcommand.cpp:325
+#, kde-format
+msgid "Path is not a directory"
+msgstr "Η διαδρομή δεν είναι κατάλογος"
+
+#: configcommand.cpp:179
+#, kde-format
+msgid "%1 is not in the list of include folders"
+msgstr "Το %1 δεν είναι στη λίστα των προς συμπερίληψη φακέλων"
+
+#: configcommand.cpp:209
+#, kde-format
+msgid "%1 is not in the list of exclude folders"
+msgstr "Το %1 δεν είναι στη λίστα των προς αποκλεισμό φακέλων"
+
+#: configcommand.cpp:221 configcommand.cpp:356
+#, kde-format
+msgid "A filter must be provided"
+msgstr "Απαιτείται η παροχή φίλτρου"
+
+#: configcommand.cpp:227
+#, kde-format
+msgid "%1 is not in list of exclude filters"
+msgstr "Το %1 δεν είναι στη λίστα των προς αποκλεισμό φίλτρων"
+
+#: configcommand.cpp:238 configcommand.cpp:374
+#, kde-format
+msgid "A mimetype must be provided"
+msgstr "Απαιτείται η παροχή τύπου mime"
+
+#: configcommand.cpp:244
+#, kde-format
+msgid "%1 is not in list of exclude mimetypes"
+msgstr "Το %1 δεν είναι στη λίστα των προς αποκλεισμό τύπων mime"
+
+#: configcommand.cpp:290
+#, kde-format
+msgid "%1 is already in the list of include folders"
+msgstr "Το %1 είναι ήδη στη λίστα των προς συμπερίληψη φακέλων"
+
+#: configcommand.cpp:296
+#, kde-format
+msgid "Parent folder %1 is already in the list of include folders"
+msgstr "Ο φάκελος γονέας %1 είναι ήδη στη λίστα των προς συμπερίληψη φακέλων"
+
+#: configcommand.cpp:302 configcommand.cpp:344
+#, kde-format
+msgid "%1 is in the list of exclude folders"
+msgstr "Το %1 είναι στη λίστα των προς αποκλεισμό φακέλων"
+
+#: configcommand.cpp:332
+#, kde-format
+msgid "%1 is already in the list of exclude folders"
+msgstr "Το %1 είναι ήδη στη λίστα των προς αποκλεισμό φακέλων"
+
+#: configcommand.cpp:338
+#, kde-format
+msgid "Parent folder %1 is already in the list of exclude folders"
+msgstr "Ο φάκελος γονέας %1 είναι ήδη στη λίστα των προς αποκλεισμό φακέλων"
+
+#: configcommand.cpp:362
+#, kde-format
+msgid "Exclude filter is already in the list"
+msgstr "Το προς αποκλεισμό φίλτρο είναι ήδη στη λίστα"
+
+#: configcommand.cpp:380
+#, kde-format
+msgid "Exclude mimetype is already in the list"
+msgstr "Ο προς αποκλεισμό τύπος mime είναι ήδη στη λίστα"
+
+#: configcommand.cpp:407 configcommand.cpp:434
+#, kde-format
+msgid "A value must be provided"
+msgstr "Απαιτείται να δοθεί τιμή"
+
+#: configcommand.cpp:428 configcommand.cpp:455
+#, kde-format
+msgid "Invalid value"
+msgstr "Μη έγκυρη τιμή"
+
+#: main.cpp:69
+#, kde-format
+msgid "balooctl"
+msgstr "balooctl"
+
+#: main.cpp:70
+#, kde-format
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:70
+#, kde-format
+msgid "Maintainer"
+msgstr "Συντηρητής"
+
+#: main.cpp:75
+#, kde-format
+msgid "The command to execute"
+msgstr "Εντολή προς εκτέλεση"
+
+#: main.cpp:77
+#, kde-format
+msgid "Print the status of the indexer"
+msgstr "Εκτύπωση της κατάστασης της εφαρμογής δεικτοδότησης"
+
+#: main.cpp:78
+#, kde-format
+msgid "Enable the file indexer"
+msgstr "Ενεργοποίηση της εφαρμογής δεικτοδότησης"
+
+#: main.cpp:79
+#, kde-format
+msgid "Disable the file indexer"
+msgstr "Απενεργοποίηση της εφαρμογής δεικτοδότησης"
+
+#: main.cpp:80
+#, kde-format
+msgid "Start the file indexer"
+msgstr "Εκκίνηση της εφαρμογής δεικτοδότησης"
+
+#: main.cpp:81
+#, kde-format
+msgid "Stop the file indexer"
+msgstr "Τερματισμός της εφαρμογής δεικτοδότησης"
+
+#: main.cpp:82
+#, kde-format
+msgid "Restart the file indexer"
+msgstr "Επανεκκίνηση της εφαρμογής δεικτοδότησης"
+
+#: main.cpp:83
+#, kde-format
+msgid "Suspend the file indexer"
+msgstr "Αναστολή της εφαρμογής δεικτοδότησης"
+
+#: main.cpp:84
+#, kde-format
+msgid "Resume the file indexer"
+msgstr "Συνέχιση της εφαρμογής δεικτοδότησης"
+
+#: main.cpp:85
+#, kde-format
+msgid "Check for any unindexed files and index them"
+msgstr "Έλεγχος για μη δεικτοδοτημένα αρχεία και δεικτοδότησή τους"
+
+#: main.cpp:86
+#, kde-format
+msgid "Check database for consistency"
+msgstr ""
+
+#: main.cpp:87
+#, kde-format
+msgid "Index the specified files"
+msgstr "Να δεικτοδοτηθούν τα συγκεκριμένα αρχεία"
+
+#: main.cpp:88
+#, kde-format
+msgid "Forget the specified files"
+msgstr "Να μη συμπεριληφθούν τα συγκεκριμένα αρχεία"
+
+#: main.cpp:89
+#, kde-format
+msgid "Modify the Baloo configuration"
+msgstr "Τροποποίηση της διαμόρφωσης του Baloo"
+
+#: main.cpp:90
+#, fuzzy, kde-format
+#| msgid "Stop the file indexer"
+msgid "Monitor the file indexer"
+msgstr "Τερματισμός της εφαρμογής δεικτοδότησης"
+
+#: main.cpp:91
+#, kde-format
+msgid "Display the disk space used by index"
+msgstr ""
+
+#: statuscommand.cpp:45
+#, kde-format
+msgid "Print the status of the Indexer"
+msgstr "Εκτύπωση της κατάστασης της εφαρμογής δεικτοδότησης"
+
+#: statuscommand.cpp:54
+#, kde-format
+msgid "Baloo is currently disabled. To enable, please run \"balooctl enable\""
+msgstr ""
+"Το Baloo είναι προς το παρόν ανενεργό. Για να ενεργοποιηθεί εκτελέστε "
+"\"balooctl enable\""
+
+#: statuscommand.cpp:60
+#, kde-format
+msgid "Baloo Index could not be opened"
+msgstr "Αδυναμία ανοίγματος του Δείκτη Baloo"
+
+#: statuscommand.cpp:81
+#, kde-format
+msgid "Baloo File Indexer is running"
+msgstr "Εκτελείται η εφαρμογή baloo για τη δεικτοδότηση αρχείων"
+
+#: statuscommand.cpp:82
+#, kde-format
+msgid "Indexer state: %1"
+msgstr "Κατάσταση εφαρμογής δεικτοδότησης: %1"
+
+#: statuscommand.cpp:85
+#, kde-format
+msgid "Baloo File Indexer is not running"
+msgstr "Το baloo για τη δεικτοδότηση αρχείων δεν εκτελείται"
+
+#: statuscommand.cpp:91
+#, kde-format
+msgid "Indexed %1 / %2 files"
+msgstr "Δεικτοδοτήθηκαν %1 / %2 αρχεία"
+
+#: statuscommand.cpp:108
+#, kde-format
+msgid "File: %1"
+msgstr "Αρχείο: %1"

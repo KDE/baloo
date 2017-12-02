@@ -1,0 +1,392 @@
+# translation of balooctl.po to Slovak
+# Roman Paholik <wizzardsk@gmail.com>, 2014, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: balooctl\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2017-04-20 02:49+0200\n"
+"PO-Revision-Date: 2015-10-19 18:26+0100\n"
+"Last-Translator: Roman Paholik <wizzardsk@gmail.com>\n"
+"Language-Team: Slovak <kde-sk@linux.sk>\n"
+"Language: sk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 2.0\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Roman Paholík"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "wizzardsk@gmail.com"
+
+#: ../../file/indexerstate.h:42
+#, kde-format
+msgid "Unknown"
+msgstr "Neznáme"
+
+#: ../../file/indexerstate.h:45
+#, kde-format
+msgid "Idle"
+msgstr "Nečinný"
+
+#: ../../file/indexerstate.h:48
+#, kde-format
+msgid "Suspended"
+msgstr "Pozastavené"
+
+#: ../../file/indexerstate.h:51
+#, kde-format
+msgid "Initial Indexing"
+msgstr "Počiatočné indexovanie"
+
+#: ../../file/indexerstate.h:54
+#, kde-format
+msgid "Indexing new files"
+msgstr "Indexujem nové súbory"
+
+#: ../../file/indexerstate.h:57
+#, kde-format
+msgid "Indexing modified files"
+msgstr "Indexujem zmenené súbory"
+
+#: ../../file/indexerstate.h:60
+#, kde-format
+msgid "Indexing Extended Attributes"
+msgstr "Indexujem rozšírené atribúty"
+
+#: ../../file/indexerstate.h:63
+#, kde-format
+msgid "Indexing file content"
+msgstr "Indexujem obsah súborov"
+
+#: ../../file/indexerstate.h:66
+#, kde-format
+msgid "Checking for unindexed files"
+msgstr "Kontrolujem neindexované súbory"
+
+#: configcommand.cpp:45
+#, kde-format
+msgid "Manipulate the Baloo configuration"
+msgstr "Manipulácia s nastavením Baloo"
+
+#: configcommand.cpp:68
+#, kde-format
+msgid "The config command can be used to manipulate the Baloo Configuration"
+msgstr "Príkaz config sa dá použiť na manipuláciu s nastavením Baloo"
+
+#: configcommand.cpp:69
+#, kde-format
+msgid "Usage: balooctl config <command>"
+msgstr "Použitie: balooctl config <príkazy>"
+
+#: configcommand.cpp:70
+#, kde-format
+msgid "Possible Commands:"
+msgstr "Možné príkazy:"
+
+#: configcommand.cpp:73
+#, kde-format
+msgid "Add a value to config parameter"
+msgstr "Pridať hodnotu do parametra nastavenia"
+
+#: configcommand.cpp:74
+#, kde-format
+msgid "Remove a value from a config parameter"
+msgstr "Odstrániť hodnotu z parametra config"
+
+#: configcommand.cpp:75
+#, kde-format
+msgid "Show the value of a config parameter"
+msgstr "Zobraziť hodnotu parametre config"
+
+#: configcommand.cpp:76
+#, kde-format
+msgid "Set the value of a config parameter"
+msgstr "Nastaviť hodnotu parametra config"
+
+#: configcommand.cpp:77
+#, kde-format
+msgid "Display this help menu"
+msgstr "Zobraziť túto ponuku pomocníka"
+
+#: configcommand.cpp:83
+#, kde-format
+msgid "The following configuration options may be listed:"
+msgstr "Nasledovné voľby nastavenia sa môžu zobraziť:"
+
+#: configcommand.cpp:85 configcommand.cpp:398
+#, kde-format
+msgid "Controls if Baloo indexes hidden files and folders"
+msgstr "Ovláda, či Baloo indexuje skryté súbory a adresáre"
+
+#: configcommand.cpp:86
+#, kde-format
+msgid "Controls if baloo indexes file content."
+msgstr "Ovláda, či Baloo indexuje obsah súborov."
+
+#: configcommand.cpp:87 configcommand.cpp:150 configcommand.cpp:261
+#, kde-format
+msgid "The list of folders which Baloo indexes"
+msgstr "Zoznam priečinkov, ktoré Baloo indexuje"
+
+#: configcommand.cpp:88 configcommand.cpp:151 configcommand.cpp:262
+#, kde-format
+msgid "The list of folders which Baloo will never index"
+msgstr "Súbor priečinkov, ktoré Baloo nebude nikdy indexovať"
+
+#: configcommand.cpp:89 configcommand.cpp:152 configcommand.cpp:263
+#, kde-format
+msgid "The list of filters which are used to exclude files"
+msgstr "Zoznam filtrov, ktoré sa používajú na vylúčenie súborov"
+
+#: configcommand.cpp:90 configcommand.cpp:153 configcommand.cpp:264
+#, kde-format
+msgid "The list of mimetypes which are used to exclude files"
+msgstr "Zoznam mime typov, ktoré sa používajú na vylúčenie súborov"
+
+#: configcommand.cpp:142 configcommand.cpp:253 configcommand.cpp:390
+#: configcommand.cpp:459
+#, kde-format
+msgid "Config parameter could not be found"
+msgstr "Parameter config sa nenašiel"
+
+#: configcommand.cpp:148 configcommand.cpp:259 configcommand.cpp:396
+#, kde-format
+msgid "The following configuration options may be modified:"
+msgstr "Nasledovné voľby nastavenia sa mohli zmeniť:"
+
+#: configcommand.cpp:161 configcommand.cpp:191 configcommand.cpp:272
+#: configcommand.cpp:314
+#, kde-format
+msgid "A folder must be provided"
+msgstr "Priečinok musí byť zadaný"
+
+#: configcommand.cpp:167 configcommand.cpp:197 configcommand.cpp:278
+#: configcommand.cpp:320
+#, kde-format
+msgid "Path does not exist"
+msgstr "Cesta neexistuje"
+
+#: configcommand.cpp:172 configcommand.cpp:202 configcommand.cpp:283
+#: configcommand.cpp:325
+#, kde-format
+msgid "Path is not a directory"
+msgstr "Cesta nie je adresár"
+
+#: configcommand.cpp:179
+#, kde-format
+msgid "%1 is not in the list of include folders"
+msgstr "%1 nie je v zozname zahrnutých priečinkov"
+
+#: configcommand.cpp:209
+#, kde-format
+msgid "%1 is not in the list of exclude folders"
+msgstr "%1 nie je v zozname vylúčených priečinkov"
+
+#: configcommand.cpp:221 configcommand.cpp:356
+#, kde-format
+msgid "A filter must be provided"
+msgstr "Filter musí byť zadaný"
+
+#: configcommand.cpp:227
+#, kde-format
+msgid "%1 is not in list of exclude filters"
+msgstr "%1 nie je v zozname vylúčených priečinkov"
+
+#: configcommand.cpp:238 configcommand.cpp:374
+#, kde-format
+msgid "A mimetype must be provided"
+msgstr "Mime typ musí byť zadaný"
+
+#: configcommand.cpp:244
+#, kde-format
+msgid "%1 is not in list of exclude mimetypes"
+msgstr "%1 nie je v zozname vylúčených mime typov"
+
+#: configcommand.cpp:290
+#, kde-format
+msgid "%1 is already in the list of include folders"
+msgstr "%1 je už v zozname zahrnutých priečinkov"
+
+#: configcommand.cpp:296
+#, kde-format
+msgid "Parent folder %1 is already in the list of include folders"
+msgstr "Nadradený priečinok %1 je už v zozname zahrnutých priečinkov"
+
+#: configcommand.cpp:302 configcommand.cpp:344
+#, kde-format
+msgid "%1 is in the list of exclude folders"
+msgstr "%1 je v zozname vylúčených priečinkov"
+
+#: configcommand.cpp:332
+#, kde-format
+msgid "%1 is already in the list of exclude folders"
+msgstr "%1 je už v zozname vylúčených priečinkov"
+
+#: configcommand.cpp:338
+#, kde-format
+msgid "Parent folder %1 is already in the list of exclude folders"
+msgstr "Nadradený priečinok %1 je už v zozname vylúčených priečinkov"
+
+#: configcommand.cpp:362
+#, kde-format
+msgid "Exclude filter is already in the list"
+msgstr "Vylúčiť filter, ktorý je už v zozname"
+
+#: configcommand.cpp:380
+#, kde-format
+msgid "Exclude mimetype is already in the list"
+msgstr "Vylúčiť mime typ, ktorý je už v zozname"
+
+#: configcommand.cpp:407 configcommand.cpp:434
+#, kde-format
+msgid "A value must be provided"
+msgstr "Hodnota musí byť zadaná"
+
+#: configcommand.cpp:428 configcommand.cpp:455
+#, kde-format
+msgid "Invalid value"
+msgstr "Neplatná hodnota"
+
+#: main.cpp:69
+#, kde-format
+msgid "balooctl"
+msgstr "balooctl"
+
+#: main.cpp:70
+#, kde-format
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:70
+#, kde-format
+msgid "Maintainer"
+msgstr "Správca"
+
+#: main.cpp:75
+#, kde-format
+msgid "The command to execute"
+msgstr "Príkaz na spustenie"
+
+#: main.cpp:77
+#, kde-format
+msgid "Print the status of the indexer"
+msgstr "Vytlačiť stav indexera"
+
+#: main.cpp:78
+#, kde-format
+msgid "Enable the file indexer"
+msgstr "Povoliť indexer súborov"
+
+#: main.cpp:79
+#, kde-format
+msgid "Disable the file indexer"
+msgstr "Zakázať indexer súborov"
+
+#: main.cpp:80
+#, kde-format
+msgid "Start the file indexer"
+msgstr "Spustiť indexer súborov"
+
+#: main.cpp:81
+#, kde-format
+msgid "Stop the file indexer"
+msgstr "Zastaviť indexer súborov"
+
+#: main.cpp:82
+#, kde-format
+msgid "Restart the file indexer"
+msgstr "Reštartovať indexer súborov"
+
+#: main.cpp:83
+#, kde-format
+msgid "Suspend the file indexer"
+msgstr "Pozastaviť indexer súborov"
+
+#: main.cpp:84
+#, kde-format
+msgid "Resume the file indexer"
+msgstr "Obnoviť indexer súborov"
+
+#: main.cpp:85
+#, kde-format
+msgid "Check for any unindexed files and index them"
+msgstr "Skontrolovať neindexované súbory a indexovať ich"
+
+#: main.cpp:86
+#, kde-format
+msgid "Check database for consistency"
+msgstr ""
+
+#: main.cpp:87
+#, kde-format
+msgid "Index the specified files"
+msgstr "Indexovať určené súbory"
+
+#: main.cpp:88
+#, kde-format
+msgid "Forget the specified files"
+msgstr "Zabudnúť určené súbory"
+
+#: main.cpp:89
+#, kde-format
+msgid "Modify the Baloo configuration"
+msgstr "Zmeniť nastavenie Baloo"
+
+#: main.cpp:90
+#, fuzzy, kde-format
+#| msgid "Stop the file indexer"
+msgid "Monitor the file indexer"
+msgstr "Zastaviť indexer súborov"
+
+#: main.cpp:91
+#, kde-format
+msgid "Display the disk space used by index"
+msgstr ""
+
+#: statuscommand.cpp:45
+#, kde-format
+msgid "Print the status of the Indexer"
+msgstr "Vytlačiť stav indexera"
+
+#: statuscommand.cpp:54
+#, kde-format
+msgid "Baloo is currently disabled. To enable, please run \"balooctl enable\""
+msgstr ""
+"Baloo je práve zakázané. Na povolenie prosím spustite \"balooctl enable\""
+
+#: statuscommand.cpp:60
+#, kde-format
+msgid "Baloo Index could not be opened"
+msgstr "Index Baloo nie je možné otvoriť"
+
+#: statuscommand.cpp:81
+#, kde-format
+msgid "Baloo File Indexer is running"
+msgstr "Indexer súborov Baloo beží"
+
+#: statuscommand.cpp:82
+#, kde-format
+msgid "Indexer state: %1"
+msgstr "Stav indexera: %1"
+
+#: statuscommand.cpp:85
+#, kde-format
+msgid "Baloo File Indexer is not running"
+msgstr "Indexer súborov Baloo nebeží"
+
+#: statuscommand.cpp:91
+#, kde-format
+msgid "Indexed %1 / %2 files"
+msgstr "Indexovaných %1 / %2 súborov"
+
+#: statuscommand.cpp:108
+#, kde-format
+msgid "File: %1"
+msgstr "Súbor: %1"
