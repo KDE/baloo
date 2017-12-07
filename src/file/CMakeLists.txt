@@ -32,7 +32,6 @@ set(file_static_lib_SRCS
     filtereddiriterator.cpp
     unindexedfileiterator.cpp
     migrator.cpp
-    baloodebug.cpp
     fileinfo.cpp
 
      # File Watcher
@@ -42,6 +41,8 @@ set(file_static_lib_SRCS
     pendingfile.cpp
     kinotify.cpp
 )
+
+ecm_qt_declare_logging_category(file_static_lib_SRCS HEADER baloodebug.h IDENTIFIER BALOO CATEGORY_NAME org.kde.baloo)
 
 add_library(baloofilecommon STATIC ${file_static_lib_SRCS})
 target_link_libraries(baloofilecommon
