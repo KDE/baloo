@@ -44,7 +44,6 @@ include(KDEFrameworkCompilerSettings NO_POLICY_SCOPE)
 include(ECMInstallIcons)
 include(ECMAddTests)
 include(ECMAddQch)
-include(ECMQtDeclareLoggingCategory)
 
 option(BUILD_QCH "Build API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)" OFF)
 add_feature_info(QCH ${BUILD_QCH} "API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)")
@@ -144,8 +143,6 @@ install(FILES
     DESTINATION ${KF5_INCLUDE_INSTALL_DIR}
     COMPONENT Devel
 )
-
-install(FILES baloo.categories DESTINATION ${KDE_INSTALL_CONFDIR})
 
 # and we're done
 feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
