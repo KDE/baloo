@@ -22,6 +22,7 @@ set(BALOO_LIB_SRCS
     ../file/storagedevices.cpp
     ../file/regexpcache.cpp
     ../file/fileexcludefilters.cpp
+    ../file/baloodebug.cpp
 
     searchstore.cpp
 
