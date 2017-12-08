@@ -22,12 +22,12 @@ set(BALOO_LIB_SRCS
     ../file/storagedevices.cpp
     ../file/regexpcache.cpp
     ../file/fileexcludefilters.cpp
-    ../file/baloodebug.cpp
 
     searchstore.cpp
 
     ${DBUS_INTERFACES}
 )
+ecm_qt_declare_logging_category(BALOO_LIB_SRCS HEADER baloodebug.h IDENTIFIER BALOO CATEGORY_NAME org.kde.baloo)
 
 add_library(KF5Baloo ${BALOO_LIB_SRCS})
 add_dependencies(KF5Baloo BalooDBusInterfaces)
