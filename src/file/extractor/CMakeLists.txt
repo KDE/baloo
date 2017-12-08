@@ -13,8 +13,9 @@ set(EXTRACTOR_SRCS
   ../storagedevices.cpp
   ../regexpcache.cpp
   ../fileexcludefilters.cpp
-  ../baloodebug.cpp
 )
+
+ecm_qt_declare_logging_category(EXTRACTOR_SRCS HEADER baloodebug.h IDENTIFIER BALOO CATEGORY_NAME org.kde.baloo)
 
 add_executable(baloo_file_extractor ${EXTRACTOR_SRCS})
 target_compile_definitions(baloo_file_extractor PRIVATE -DPROJECT_VERSION="${PROJECT_VERSION}")
