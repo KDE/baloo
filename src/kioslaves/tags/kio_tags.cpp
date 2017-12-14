@@ -184,9 +184,9 @@ void TagsProtocol::rename(const QUrl& src, const QUrl& dest, KIO::JobFlags flags
     if (srcResult.metaData.tags().contains(dstResult.tag)) {
         qCWarning(KIO_TAGS) << srcResult.fileUrl.toLocalFile() << "file already has tag" << dstResult.tag;
         infoMessage(i18n("File %1 already has tag %2", srcResult.fileUrl.toLocalFile(), dstResult.tag));
-    } else if (srcResult.urlType == FileUrl && src.isLocalFile()) {
+    } else if (srcResult.urlType == FileUrl) {
         rewriteTags(srcResult.metaData, srcResult.tag, dstResult.tag);
-    } else if (dstResult.urlType == TagUrl) {
+    } else if (srcResult.urlType == TagUrl) {
         ResultIterator it = srcResult.query.exec();
         while (it.next()) {
             KFileMetaData::UserMetaData md(it.filePath());
