@@ -317,23 +317,14 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
 
         uds.insert(KIO::UDSEntry::UDS_DISPLAY_TYPE, displayType);
 
-        if (tagSection == QStringLiteral(".")) {
-            QString displayName = i18n("Tags");
-            if (!tag.isEmpty()) {
-                displayName = tag.section(QLatin1Char('/'), -1);
-            }
-
-            uds.insert(KIO::UDSEntry::UDS_DISPLAY_NAME, displayName);
+        QString displayName = i18n("All Tags");
+        if (!tag.isEmpty() && ((tagSection == QStringLiteral(".")) || (tagSection == QStringLiteral("..")))) {
+            displayName = tag.section(QLatin1Char('/'), -1);
+        } else {
+            displayName = tagSection;
         }
 
-        if (tagSection == QStringLiteral("..")) {
-            QString displayName = i18n("Tags");
-            if (!tag.isEmpty()) {
-                displayName = tag.section(QLatin1Char('/'), -3);
-            }
-
-            uds.insert(KIO::UDSEntry::UDS_DISPLAY_NAME, displayName);
-        }
+        uds.insert(KIO::UDSEntry::UDS_DISPLAY_NAME, displayName);
 
         return uds;
     };
