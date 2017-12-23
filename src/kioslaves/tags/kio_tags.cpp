@@ -370,6 +370,7 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
             // Create a query to find files that may be in the operation's scope.
             QString query = result.tag;
             query.prepend("tag:");
+            query.replace(' ', " AND tag:");
             query.replace('/', " AND tag:");
             result.query.setSearchString(query);
 
