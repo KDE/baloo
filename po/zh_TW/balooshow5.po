@@ -1,0 +1,78 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Franklin Weng <franklin at goodhorse dot idv dot tw>, 2014.
+# Jeff Huang <s8321414@gmail.com>, 2016.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2017-04-20 02:49+0200\n"
+"PO-Revision-Date: 2016-06-28 17:06+0800\n"
+"Last-Translator: Jeff Huang <s8321414@gmail.com>\n"
+"Language-Team: Chinese <kde-i18n-doc@kde.org>\n"
+"Language: zh_TW\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Lokalize 2.0\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Franklin Weng, Jeff Huang"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "franklin@nospam.goodhorse.idv.tw, s8321414@gmail.com"
+
+#: main.cpp:58
+#, kde-format
+msgid "Baloo Show"
+msgstr "Baloo 顯示"
+
+#: main.cpp:60
+#, kde-format
+msgid "The Baloo data Viewer - A debugging tool"
+msgstr "Baloo 資料檢視器 - 除錯工具"
+
+#: main.cpp:62
+#, kde-format
+msgid "(c) 2012, Vishesh Handa"
+msgstr "(c) 2012, Vishesh Handa"
+
+#: main.cpp:63
+#, kde-format
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:63
+#, kde-format
+msgid "Maintainer"
+msgstr "維護者"
+
+#: main.cpp:106
+#, kde-format
+msgid ""
+"The Baloo index could not be opened. Please run \"balooctl status\" to see "
+"if Baloo is enabled and working."
+msgstr ""
+"Baloo 索引無法開啟。請執行「balooctl status」來檢視 Baloo 是否已啟用並正在運"
+"行中。"
+
+#: main.cpp:122
+#, kde-format
+msgid "The fileID is not equal to the actual Baloo fileID"
+msgstr "fileID 不等於實際上的 Baloo fileID"
+
+#: main.cpp:123
+#, kde-format
+msgid "This is a bug"
+msgstr "這是臭蟲"
+
+#: main.cpp:151
+#, kde-format
+msgid "No index information found"
+msgstr "找不到索引資訊"

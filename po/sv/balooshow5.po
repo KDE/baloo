@@ -1,0 +1,77 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Stefan Asserhäll <stefan.asserhall@bredband.net>, 2013, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2017-04-20 02:49+0200\n"
+"PO-Revision-Date: 2015-10-04 11:25+0100\n"
+"Last-Translator: Stefan Asserhäll <stefan.asserhall@bredband.net>\n"
+"Language-Team: Swedish <kde-i18n-doc@kde.org>\n"
+"Language: sv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 2.0\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Stefan Asserhäll"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "stefan.asserhall@bredband.net"
+
+#: main.cpp:58
+#, kde-format
+msgid "Baloo Show"
+msgstr "Baloo-visare"
+
+#: main.cpp:60
+#, kde-format
+msgid "The Baloo data Viewer - A debugging tool"
+msgstr "Baloo-datavisare - ett felsökningsverktyg"
+
+#: main.cpp:62
+#, kde-format
+msgid "(c) 2012, Vishesh Handa"
+msgstr "© 2012, Vishesh Handa"
+
+#: main.cpp:63
+#, kde-format
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:63
+#, kde-format
+msgid "Maintainer"
+msgstr "Underhåll"
+
+#: main.cpp:106
+#, kde-format
+msgid ""
+"The Baloo index could not be opened. Please run \"balooctl status\" to see "
+"if Baloo is enabled and working."
+msgstr ""
+"Baloo-indexet kunde inte öppnas. Kör \"balooctl status\" för att se om Baloo "
+"är aktiverat och fungerade."
+
+#: main.cpp:122
+#, kde-format
+msgid "The fileID is not equal to the actual Baloo fileID"
+msgstr "Fil-id är inte lika med verkligt fil-id i Baloo"
+
+#: main.cpp:123
+#, kde-format
+msgid "This is a bug"
+msgstr "Det är ett fel"
+
+#: main.cpp:151
+#, kde-format
+msgid "No index information found"
+msgstr "Ingen indexinformation hittades"
