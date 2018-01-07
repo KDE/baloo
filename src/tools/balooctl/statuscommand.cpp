@@ -112,11 +112,11 @@ int StatusCommand::exec(const QCommandLineParser& parser)
                 out << "Done\n";
             } else if (cfg.shouldBeIndexed(filePath)) {
                 out << "Scheduled\n";
-                return 0;
+                continue;
             } else {
                 // FIXME: Add why it is not being indexed!
                 out << "Disabled\n";
-                return 0;
+                continue;
             }
 
             if (QFileInfo(arg).isDir()) {
