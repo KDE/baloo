@@ -141,7 +141,7 @@ int main(int argc, char* argv[])
             out << "Disabling the File Indexer\n";
 
             mainInterface.quit();
-            const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QStringLiteral("/baloo/index");
+            const QString path = fileIndexDbPath() + QStringLiteral("/index");
             QFile(path).remove();
         }
 
