@@ -1,5 +1,5 @@
 [Desktop Entry]
-Type=Service
+Type=Application
 Exec=baloo_file
 X-KDE-StartupNotify=false
 X-KDE-autostart-condition=baloofilerc:Basic Settings:Indexing-Enabled:true
