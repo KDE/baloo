@@ -94,33 +94,26 @@ bool BasicIndexingJob::index()
 
 bool BasicIndexingJob::indexXAttr(const QString& url, Document& doc)
 {
-    bool modified = false;
-
     KFileMetaData::UserMetaData userMetaData(url);
-
     TermGenerator tg(&doc);
+
     QStringList tags = userMetaData.tags();
-    if (!tags.isEmpty()) {
-        for (const QString& tag : tags) {
-            tg.indexXattrText(tag, QByteArray("TA"));
-            doc.addXattrBoolTerm(QByteArray("TAG-") + tag.toUtf8());
-            modified = true;
-        }
+    for (const QString& tag : tags) {
+        tg.indexXattrText(tag, QByteArray("TA"));
+        doc.addXattrBoolTerm(QByteArray("TAG-") + tag.toUtf8());
     }
 
     int rating = userMetaData.rating();
     if (rating) {
         doc.addXattrBoolTerm(QByteArray("R") + QByteArray::number(rating));
-        modified = true;
     }
 
     QString comment = userMetaData.userComment();
     if (!comment.isEmpty()) {
         tg.indexXattrText(comment, QByteArray("C"));
-        modified = true;
     }
 
-    return modified;
+    return (!tags.isEmpty() || rating || !comment.isEmpty());
 }
 
 QVector<KFileMetaData::Type::Type> BasicIndexingJob::typesForMimeType(const QString& mimeType)
