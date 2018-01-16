@@ -66,6 +66,7 @@ void ModifiedFileIndexer::run()
             continue;
         }
 
+        quint32 cTime = tr.documentTimeInfo(fileId).cTime;
         quint32 mTime = tr.documentTimeInfo(fileId).mTime;
 
         // A folders mtime is updated when a new file is added / removed / renamed
@@ -77,7 +78,7 @@ void ModifiedFileIndexer::run()
 
         // FIXME: Using QFileInfo over here is quite expensive!
         QFileInfo fileInfo(filePath);
-        if (mTime == fileInfo.lastModified().toTime_t()) {
+        if ((cTime == fileInfo.created().toTime_t()) && (mTime == fileInfo.lastModified().toTime_t())) {
             continue;
         }
 
