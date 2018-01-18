@@ -81,6 +81,7 @@ int main(int argc, char* argv[])
         offset = parser.value(QStringLiteral("offset")).toInt();
 
     QTextStream out(stdout);
+    QTextStream err(stderr);
 
     QString queryStr = args.join(QStringLiteral(" "));
 
@@ -103,7 +104,7 @@ int main(int argc, char* argv[])
         const QString filePath = iter.filePath();
         out << filePath << endl;
     }
-    out << "Elapsed: " << timer.nsecsElapsed() / 1000000.0 << " msecs" << endl;
+    err << "Elapsed: " << timer.nsecsElapsed() / 1000000.0 << " msecs" << endl;
 
     return 0;
 }
