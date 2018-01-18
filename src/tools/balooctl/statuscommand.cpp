@@ -48,16 +48,17 @@ QString StatusCommand::description()
 int StatusCommand::exec(const QCommandLineParser& parser)
 {
     QTextStream out(stdout);
+    QTextStream err(stderr);
 
     IndexerConfig cfg;
     if (!cfg.fileIndexingEnabled()) {
-        out << i18n("Baloo is currently disabled. To enable, please run \"balooctl enable\"") << endl;
+        err << i18n("Baloo is currently disabled. To enable, please run %1", QStringLiteral("balooctl enable")) << endl;
         return 1;
     }
 
     Database *db = globalDatabaseInstance();
     if (!db->open(Database::ReadOnlyDatabase)) {
-        out << i18n("Baloo Index could not be opened") << endl;
+        err << i18n("Baloo Index could not be opened") << endl;
         return 1;
     }
 
@@ -96,9 +97,9 @@ int StatusCommand::exec(const QCommandLineParser& parser)
         const auto size = indexInfo.size();
         KFormat format(QLocale::system());
         if (size) {
-            out << "Current size of index is " << format.formatByteSize(size, 2) << endl;
+            out << i18n("Current size of index is %1", format.formatByteSize(size, 2)) << endl;
         } else {
-            out << "Index does not exist yet\n";
+            out << i18n("Index does not exist yet") << endl;
         }
     } else {
         for (const QString& arg : args) {
@@ -106,16 +107,14 @@ int StatusCommand::exec(const QCommandLineParser& parser)
             quint64 id = filePathToId(QFile::encodeName(filePath));
 
             out << i18n("File: %1", filePath) << endl;
-
-            out << "Basic Indexing: ";
             if (tr.hasDocument(id)) {
-                out << "Done\n";
+                out << i18n("Basic Indexing: Done") << endl;
             } else if (cfg.shouldBeIndexed(filePath)) {
-                out << "Scheduled\n";
+                out << i18n("Basic Indexing: Scheduled") << endl;
                 continue;
             } else {
                 // FIXME: Add why it is not being indexed!
-                out << "Disabled\n";
+                out << i18n("Basic Indexing: Disabled") << endl;
                 continue;
             }
 
@@ -123,13 +122,12 @@ int StatusCommand::exec(const QCommandLineParser& parser)
                 continue;
             }
 
-            out << "Content Indexing: ";
             if (tr.inPhaseOne(id)) {
-                out << "Scheduled\n";
+                out << i18n("Content Indexing: Scheduled") << endl;
             } else if (tr.hasFailed(id)) {
-                out << "Failed\n";
+                out << i18n("Content Indexing: Failed") << endl;
             } else {
-                out << "Done\n";
+                out << i18n("Content Indexing: Done") << endl;
             }
         }
     }
