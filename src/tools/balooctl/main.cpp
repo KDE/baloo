@@ -89,6 +89,16 @@ int main(int argc, char* argv[])
     parser.addPositionalArgument(QStringLiteral("config"), i18n("Modify the Baloo configuration"));
     parser.addPositionalArgument(QStringLiteral("monitor"), i18n("Monitor the file indexer"));
     parser.addPositionalArgument(QStringLiteral("indexSize"), i18n("Display the disk space used by index"));
+    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("f") << QStringLiteral("format"), 
+        i18n("Output format <%1|%2|%3>.\nOnly applies to \"%4\"", 
+             QStringLiteral("json"), 
+             QStringLiteral("simple"), 
+             QStringLiteral("multiline (default)"),
+             QStringLiteral("balooctl status <file>")
+            )
+        , i18n("format")
+        
+        , QStringLiteral("multiline")));
     parser.addVersionOption();
     parser.addHelpOption();
 
