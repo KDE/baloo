@@ -39,6 +39,7 @@
 #include "database.h"
 #include "transaction.h"
 
+#include <KLocalizedString>
 #include <KFileMetaData/PropertyInfo>
 
 
@@ -65,13 +66,13 @@ int main(int argc, char* argv[])
     KAboutData::setApplicationData(aboutData);
 
     QCommandLineParser parser;
-    parser.addPositionalArgument(QStringLiteral("files"), QStringLiteral("The file urls"));
+    parser.addPositionalArgument(QStringLiteral("files"), i18n("The file urls"));
     parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("x"),
-                                        QStringLiteral("Print internal info")));
+                                        i18n("Print internal info")));
     parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("i"),
-                                        QStringLiteral("Inode number of the file to show")));
+                                        i18n("Inode number of the file to show")));
     parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("d"),
-                                        QStringLiteral("Device id for the files"), QStringLiteral("deviceId"), QString()));
+                                        i18n("Device id for the files"), QStringLiteral("deviceId"), QString()));
     parser.addHelpOption();
     parser.process(app);
 
@@ -103,7 +104,7 @@ int main(int argc, char* argv[])
 
     Baloo::Database *db = Baloo::globalDatabaseInstance();
     if (!db->open(Baloo::Database::ReadOnlyDatabase)) {
-        stream << i18n("The Baloo index could not be opened. Please run \"balooctl status\" to see if Baloo is enabled and working.")
+        stream << i18n("The Baloo index could not be opened. Please run \"%1\" to see if Baloo is enabled and working.", QStringLiteral("balooctl status"))
                << endl;
         return 1;
     }
@@ -119,12 +120,12 @@ int main(int argc, char* argv[])
             // Debugging aid
             quint64 actualFid = Baloo::filePathToId(QFile::encodeName(url));
             if (fid != actualFid) {
-                stream << i18n("The fileID is not equal to the actual Baloo fileID") << endl;
-                stream << i18n("This is a bug") << endl;
+                stream << i18n("The fileID is not equal to the actual Baloo fileID") <<  "\n";
+                stream << i18n("This is a bug") <<  "\n";
 
                 stream << "GivenID: " << fid << " ActualID: " << actualFid << "\n";
                 stream << "GivenINode: " << Baloo::idToInode(fid) << " ActualINode: " << Baloo::idToInode(actualFid) << "\n";
-                stream << "GivenDeviceID: " << Baloo::idToDeviceId(fid) << " ActualDeviceID: " << Baloo::idToDeviceId(actualFid) << "\n";
+                stream << "GivenDeviceID: " << Baloo::idToDeviceId(fid) << " ActualDeviceID: " << Baloo::idToDeviceId(actualFid) << endl;
             }
         } else if (url.startsWith(QStringLiteral("inode:"))) {
             quint32 inode = url.midRef(6).toULong();
@@ -183,13 +184,13 @@ int main(int argc, char* argv[])
                     ba.append(arr);
                     ba.append(' ');
                 }
-                return ba;
+                return QString(ba);
             };
 
-            stream << "\nInternal Info\n";
-            stream << "Terms: " << join(terms) << "\n";
-            stream << "File Name Terms: " << join(fileNameTerms) << "\n";
-            stream << "XAttr Terms: " << join(xAttrTerms) << "\n\n";
+            stream << "\n" << i18n("Internal Info") <<  "\n";
+            stream << i18n("Terms: %1", join(terms)) <<  "\n";
+            stream << i18n("File Name Terms: %1", join(fileNameTerms)) <<  "\n";
+            stream << i18n("%1 Terms: %2", QStringLiteral("XAttr"), join(xAttrTerms)) << endl;
 
             QHash<int, QStringList> propertyWords;
 
