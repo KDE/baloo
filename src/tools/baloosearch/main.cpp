@@ -104,7 +104,7 @@ int main(int argc, char* argv[])
         const QString filePath = iter.filePath();
         out << filePath << endl;
     }
-    err << "Elapsed: " << timer.nsecsElapsed() / 1000000.0 << " msecs" << endl;
+    err << i18n("Elapsed: %1 msecs", timer.nsecsElapsed() / 1000000.0) << endl;
 
     return 0;
 }

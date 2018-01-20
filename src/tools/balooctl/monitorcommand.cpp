@@ -38,18 +38,18 @@ MonitorCommand::MonitorCommand(QObject *parent)
                                                 this);
 
     if (!m_interface->isValid()) {
-        m_out << "Baloo is not running" << endl;
+        m_out << i18n("Baloo is not running") << endl;
         QCoreApplication::exit();
     }
     m_interface->registerMonitor();
     connect(m_interface, &org::kde::baloo::fileindexer::startedIndexingFile, this, &MonitorCommand::startedIndexingFile);
     connect(m_interface, &org::kde::baloo::fileindexer::finishedIndexingFile, this, &MonitorCommand::finishedIndexingFile);
-    m_out << "Press ctrl+c to exit monitor" << endl;
+    m_out << i18n("Press ctrl+c to exit monitor") << endl;
 
     auto balooWatcher = new QDBusServiceWatcher(QStringLiteral("org.kde.baloo"), QDBusConnection::sessionBus());
     balooWatcher->setWatchMode(QDBusServiceWatcher::WatchForUnregistration);
     connect(balooWatcher, &QDBusServiceWatcher::serviceUnregistered, this, [&]() {
-        m_out << "Baloo died" << endl;
+        m_out << i18n("Baloo died") << endl;
         QCoreApplication::instance()->quit();
     });
 }
@@ -63,7 +63,7 @@ int MonitorCommand::exec(const QCommandLineParser& parser)
 void MonitorCommand::startedIndexingFile(const QString& filePath)
 {
     m_currentFile = filePath;
-    m_out << "Indexing: " << filePath;
+    m_out << i18nc("currently indexed file", "Indexing: %1", filePath);
 }
 
 void MonitorCommand::finishedIndexingFile(const QString& filePath)
