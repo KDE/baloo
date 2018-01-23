@@ -61,11 +61,9 @@ void TagsProtocol::listDir(const QUrl& url)
 
     switch(result.urlType) {
         case InvalidUrl:
+        case FileUrl:
             qCWarning(KIO_TAGS) << result.decodedUrl << "list() invalid url";
             error(KIO::ERR_CANNOT_ENTER_DIRECTORY, result.decodedUrl);
-            return;
-        case FileUrl:
-            ForwardingSlaveBase::listDir(result.fileUrl);
             return;
         case TagUrl:
             listEntries(result.pathUDSResults);
