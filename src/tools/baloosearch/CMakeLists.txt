@@ -3,6 +3,7 @@ add_definitions(-DTRANSLATION_DOMAIN=\"baloosearch5\")
 set(BALOO_SEARCH_SRCS main.cpp)
 
 add_executable(baloosearch ${BALOO_SEARCH_SRCS})
+ecm_mark_nongui_executable(baloosearch)
 target_compile_definitions(baloosearch PRIVATE -DPROJECT_VERSION="${PROJECT_VERSION}")
 
 target_link_libraries(baloosearch

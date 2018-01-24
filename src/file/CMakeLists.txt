@@ -61,6 +61,7 @@ set(file_SRCS
 )
 
 add_executable(baloo_file ${file_SRCS})
+ecm_mark_nongui_executable(baloo_file)
 target_compile_definitions(baloo_file PRIVATE -DPROJECT_VERSION="${PROJECT_VERSION}")
 
 target_link_libraries(baloo_file
