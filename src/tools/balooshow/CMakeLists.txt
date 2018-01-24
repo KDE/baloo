@@ -3,6 +3,7 @@ add_definitions(-DTRANSLATION_DOMAIN=\"balooshow5\")
 set(SRCS main.cpp)
 
 add_executable(balooshow ${SRCS})
+ecm_mark_nongui_executable(balooshow)
 target_compile_definitions(balooshow PRIVATE -DPROJECT_VERSION="${PROJECT_VERSION}")
 
 target_link_libraries(balooshow

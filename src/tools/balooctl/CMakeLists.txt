@@ -22,6 +22,7 @@ set(DBUS_INTERFACES
 SET_SOURCE_FILES_PROPERTIES(${DBUS_INTERFACES} PROPERTIES GENERATED 1 SKIP_AUTOMOC 1)
 
 add_executable(balooctl ${SRCS} ${DBUS_INTERFACES})
+ecm_mark_nongui_executable(balooctl)
 add_dependencies(balooctl BalooDBusInterfaces)
 target_compile_definitions(balooctl PRIVATE -DPROJECT_VERSION="${PROJECT_VERSION}")
 

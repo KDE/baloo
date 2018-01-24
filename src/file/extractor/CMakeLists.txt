@@ -18,6 +18,7 @@ set(EXTRACTOR_SRCS
 ecm_qt_declare_logging_category(EXTRACTOR_SRCS HEADER baloodebug.h IDENTIFIER BALOO CATEGORY_NAME org.kde.baloo)
 
 add_executable(baloo_file_extractor ${EXTRACTOR_SRCS})
+ecm_mark_nongui_executable(baloo_file_extractor)
 target_compile_definitions(baloo_file_extractor PRIVATE -DPROJECT_VERSION="${PROJECT_VERSION}")
 
 target_link_libraries(baloo_file_extractor
