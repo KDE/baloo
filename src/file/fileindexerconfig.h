@@ -83,6 +83,18 @@ public:
     bool initialUpdateDisabled() const;
 
     /**
+     * Check if \p folder can be searched taking only
+     * the includeFolders() into account.
+     *
+     * A path can be searched if itself or one of
+     * its descendants should be indexed.
+     *
+     * \return \p true if the \p folder should
+     * be searched.
+     */
+    bool canBeSearched(const QString& folder) const;
+
+    /**
      * Check if \p path should be indexed taking into account
      * the includeFolders(), the excludeFolders(), and the
      * excludeFilters().
