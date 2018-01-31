@@ -138,6 +138,26 @@ bool FileIndexerConfig::isInitialRun() const
 }
 
 
+bool FileIndexerConfig::canBeSearched(const QString& folder) const
+{
+    QFileInfo fi(folder);
+    QString path = fi.absolutePath();
+    if (!fi.isDir()) {
+        return false;
+    } else if (shouldFolderBeIndexed(path)) {
+        return true;
+    }
+    
+    // Look for included descendants
+    for (const QPair<QString, bool>& fld: m_folderCache) {
+        if (fld.second && fld.first.startsWith(path)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 bool FileIndexerConfig::shouldBeIndexed(const QString& path) const
 {
     QFileInfo fi(path);
