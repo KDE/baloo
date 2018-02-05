@@ -1,0 +1,119 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Feng Chao <chaofeng111@gmail.com>, 2014.
+# Weng Xuetian <wengxt@gmail.com>, 2016.
+msgid ""
+msgstr ""
+"Project-Id-Version: kdeorg\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2018-01-28 03:17+0100\n"
+"PO-Revision-Date: 2018-02-01 07:11-0500\n"
+"Last-Translator: guoyunhebrave <guoyunhebrave@gmail.com>\n"
+"Language-Team: Chinese Simplified\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: crowdin.com\n"
+"X-Crowdin-Project: kdeorg\n"
+"X-Crowdin-Language: zh-CN\n"
+"X-Crowdin-File: /kf5-trunk/messages/frameworks/balooshow5.pot\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "KDE 中国, Feng Chao"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "kde-china@kde.org, chaofeng111@gmail.com"
+
+#: main.cpp:59
+#, kde-format
+msgid "Baloo Show"
+msgstr "Baloo 展示"
+
+#: main.cpp:61
+#, kde-format
+msgid "The Baloo data Viewer - A debugging tool"
+msgstr "Baloo 数据查看器 - 调试工具"
+
+#: main.cpp:63
+#, kde-format
+msgid "(c) 2012, Vishesh Handa"
+msgstr "(c) 2012, Vishesh Handa"
+
+#: main.cpp:64
+#, kde-format
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:64
+#, kde-format
+msgid "Maintainer"
+msgstr "维护者"
+
+#: main.cpp:69
+#, kde-format
+msgid "The file urls"
+msgstr "文件 URL"
+
+#: main.cpp:71
+#, kde-format
+msgid "Print internal info"
+msgstr "打印内部信息"
+
+#: main.cpp:73
+#, kde-format
+msgid "Inode number of the file to show"
+msgstr "要显示的文件的 Inode 号"
+
+#: main.cpp:75
+#, kde-format
+msgid "Device id for the files"
+msgstr "文件的设备 id"
+
+#: main.cpp:107
+#, kde-format
+msgid ""
+"The Baloo index could not be opened. Please run \"%1\" to see if Baloo is "
+"enabled and working."
+msgstr "无法打开 Baloo 索引。请运行 \"%1\" 以查看 Baloo 是否已启用且工作正常。"
+
+#: main.cpp:123
+#, kde-format
+msgid "The fileID is not equal to the actual Baloo fileID"
+msgstr "fileID 不等于实际 Baloo 文件 fileID。"
+
+#: main.cpp:124
+#, kde-format
+msgid "This is a bug"
+msgstr "这是一个错误"
+
+#: main.cpp:152
+#, kde-format
+msgid "No index information found"
+msgstr "未找到索引信息"
+
+#: main.cpp:190
+#, kde-format
+msgid "Internal Info"
+msgstr "内部信息"
+
+#: main.cpp:191
+#, kde-format
+msgid "Terms: %1"
+msgstr "术语：%1"
+
+#: main.cpp:192
+#, kde-format
+msgid "File Name Terms: %1"
+msgstr "文件名术语：%1"
+
+#: main.cpp:193
+#, kde-format
+msgid "%1 Terms: %2"
+msgstr "%1 个术语：%2"

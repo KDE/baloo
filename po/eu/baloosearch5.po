@@ -1,0 +1,105 @@
+# Translation of baloosearch5.po to Euskara/Basque (eu).
+# Copyright (C) 2017, Free Software Foundation, Inc.
+# This file is distributed under the same license as the frameworks package.
+# KDE Euskaratzeko proiektuaren arduraduna <xalba@euskalnet.net>, 2017.
+#
+# Translators:
+# Ander Elortondo <ander@elortondo.net>, 2017
+msgid ""
+msgstr ""
+"Project-Id-Version: baloosearch5\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2018-01-28 03:17+0100\n"
+"PO-Revision-Date: 2017-07-25 10:55+0100\n"
+"Last-Translator: Ander Elortondo <ander.elor@gmail.com>\n"
+"Language-Team: Basque (https://www.transifex.com/librezale/teams/76827/eu/)\n"
+"Language: eu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Ander Elortondo"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "ander@elortondo.net"
+
+#: main.cpp:41
+#, kde-format
+msgid "Baloo Search"
+msgstr "Baloo bilatzailea"
+
+#: main.cpp:43
+#, kde-format
+msgid "A tool to search through the files indexed by Baloo"
+msgstr "Fitxategietan bilaketak egiteko tresna, Balook zerrendatua"
+
+#: main.cpp:45
+#, kde-format
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:45
+#, kde-format
+msgid "Maintainer"
+msgstr "Maintainer"
+
+#: main.cpp:51
+#, kde-format
+msgid "The maximum number of results"
+msgstr "Emaitzen kopuru maximoa"
+
+#: main.cpp:52
+#, kde-format
+msgid "limit"
+msgstr "Mugak"
+
+#: main.cpp:54
+#, kde-format
+msgid "Offset from which to start the search"
+msgstr "Bilaketa hasi beharreko desplazamendua"
+
+#: main.cpp:55
+#, kde-format
+msgid "offset"
+msgstr "desplazamendua"
+
+#: main.cpp:57
+#, kde-format
+msgid "Type of data to be searched"
+msgstr "Bilatu behar den datu mota"
+
+#: main.cpp:58
+#, kde-format
+msgid "typeStr"
+msgstr "datuMota"
+
+#: main.cpp:60
+#, kde-format
+msgid "Limit search to specified directory"
+msgstr "Mugatu bilaketa adierazitako karpetan"
+
+#: main.cpp:61
+#, kde-format
+msgid "directory"
+msgstr "Karpeta"
+
+#: main.cpp:62
+#, kde-format
+msgid "query"
+msgstr "Kontsulta"
+
+#: main.cpp:62
+#, kde-format
+msgid "List of words to query for"
+msgstr "Kontsultarako hitz zerrenda"
+
+#: main.cpp:107
+#, kde-format
+msgid "Elapsed: %1 msecs"
+msgstr ""

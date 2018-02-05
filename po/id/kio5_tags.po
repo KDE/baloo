@@ -1,0 +1,38 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+# Wantoyo <wantoyek@gmail.com>, 2018.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2018-01-23 03:20+0100\n"
+"PO-Revision-Date: 2018-01-27 21:00+0700\n"
+"Last-Translator: Wantoyo <wantoyek@gmail.com>\n"
+"Language-Team: Indonesian <kde-i18n-doc@kde.org>\n"
+"Language: id\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Lokalize 2.0\n"
+
+#: kio_tags.cpp:125 kio_tags.cpp:184
+#, kde-format
+msgid "File %1 already has tag %2"
+msgstr "File %1 sudah ter-tag %2"
+
+#: kio_tags.cpp:309
+#, kde-format
+msgid "Tag"
+msgstr "Tag"
+
+#: kio_tags.cpp:311
+#, kde-format
+msgid "Tag Fragment"
+msgstr "Fragmen Tag"
+
+#: kio_tags.cpp:313 kio_tags.cpp:318
+#, kde-format
+msgid "All Tags"
+msgstr "Semua Tag"
