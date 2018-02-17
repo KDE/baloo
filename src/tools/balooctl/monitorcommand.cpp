@@ -31,27 +31,49 @@ using namespace Baloo;
 MonitorCommand::MonitorCommand(QObject *parent)
     : QObject(parent)
     , m_out(stdout)
+    , m_err(stderr)
+    , m_dbusInterface(nullptr)
+
 {
-    m_interface = new org::kde::baloo::fileindexer(QStringLiteral("org.kde.baloo"),
-                                                QStringLiteral("/fileindexer"),
-                                                QDBusConnection::sessionBus(),
-                                                this);
+    QString waitMessage(i18nc("Application", "Waiting for %1 to start", "Baloo"));
+    QString runningMessage(i18nc("Application", "%1 is running", "Baloo"));
+    QString diedMessage(i18nc("Application", "%1 died", "Baloo"));
+    QString killMessage(i18n("Press ctrl+c to exit monitor"));
+    m_dbusInterface = new org::kde::baloo::fileindexer(QStringLiteral("org.kde.baloo"),
+        QStringLiteral("/fileindexer"),
+        QDBusConnection::sessionBus(),
+        this
+    );
 
-    if (!m_interface->isValid()) {
-        m_out << i18n("Baloo is not running") << endl;
-        QCoreApplication::exit();
+    m_err << killMessage << endl;
+    if (!m_dbusInterface->isValid()) {
+        m_err << waitMessage << endl;
     }
-    m_interface->registerMonitor();
-    connect(m_interface, &org::kde::baloo::fileindexer::startedIndexingFile, this, &MonitorCommand::startedIndexingFile);
-    connect(m_interface, &org::kde::baloo::fileindexer::finishedIndexingFile, this, &MonitorCommand::finishedIndexingFile);
-    m_out << i18n("Press ctrl+c to exit monitor") << endl;
-
+    while (!m_dbusInterface->isValid()) {
+        QThread::msleep(50);
+        m_dbusInterface->disconnect();
+        delete m_dbusInterface;
+        m_dbusInterface = new org::kde::baloo::fileindexer(QStringLiteral("org.kde.baloo"),
+            QStringLiteral("/fileindexer"),
+            QDBusConnection::sessionBus(),
+            this
+        );
+    };
+    
+    m_err << runningMessage << endl;
+    m_dbusInterface->registerMonitor();
+    connect(m_dbusInterface, &org::kde::baloo::fileindexer::startedIndexingFile,
+        this, &MonitorCommand::startedIndexingFile);
+    connect(m_dbusInterface, &org::kde::baloo::fileindexer::finishedIndexingFile,
+        this, &MonitorCommand::finishedIndexingFile);
+    
     auto balooWatcher = new QDBusServiceWatcher(QStringLiteral("org.kde.baloo"), QDBusConnection::sessionBus());
     balooWatcher->setWatchMode(QDBusServiceWatcher::WatchForUnregistration);
-    connect(balooWatcher, &QDBusServiceWatcher::serviceUnregistered, this, [&]() {
-        m_out << i18n("Baloo died") << endl;
-        QCoreApplication::instance()->quit();
-    });
+    connect(balooWatcher, &QDBusServiceWatcher::serviceUnregistered, [this, diedMessage]() {
+            m_out << diedMessage << endl;
+            //TODO: Wait again for dbus interface
+            QCoreApplication::exit(0);
+        });
 }
 
 int MonitorCommand::exec(const QCommandLineParser& parser)
@@ -71,5 +93,5 @@ void MonitorCommand::finishedIndexingFile(const QString& filePath)
     Q_UNUSED(filePath);
 
     m_currentFile.clear();
-    m_out << endl;
+    m_out << i18n(": Ok") << endl;
 }
