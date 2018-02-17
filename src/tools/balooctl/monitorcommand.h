@@ -24,12 +24,11 @@
 #ifndef MONITOR_H
 #define MONITOR_H
 
+#include "command.h"
+#include "fileindexerinterface.h"
 #include <QObject>
 #include <QTextStream>
 #include <KLocalizedString>
-
-#include "command.h"
-#include "fileindexerinterface.h"
 
 namespace Baloo {
 
@@ -55,8 +54,8 @@ private Q_SLOTS:
 
 private:
     QTextStream m_out;
-    org::kde::baloo::fileindexer* m_interface;
-
+    QTextStream m_err;
+    org::kde::baloo::fileindexer* m_dbusInterface;
     QString m_currentFile;
 };
 }
