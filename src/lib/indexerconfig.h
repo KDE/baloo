@@ -35,6 +35,17 @@ public:
     bool fileIndexingEnabled() const;
     void setFileIndexingEnabled(bool enabled) const;
 
+    /**
+    * Check if the file or folder \p path should be indexed.
+    * 
+    * If itself or its nearest explicitly included or excluded ancestor is 
+    * excluded it is not indexed. 
+    * Otherwise it is indexed according to the 
+    * includeFolders and excludeFilters config.
+    *
+    * \return \c true if the file or folder at \p path should
+    * be indexed according to the configuration.
+    */
     bool shouldBeIndexed(const QString& path) const;
 
     /**
@@ -48,7 +59,19 @@ public:
     * \return \c true if the \p folder can be searched.
     */
     bool canBeSearched(const QString& folder) const;
+    
+    /**
+     * Folders to search for files to index and analyze.
+     * \return list of paths.
+     */
     QStringList includeFolders() const;
+    
+    /**
+     * Folders that are excluded from indexing.
+     * (Descendant folders of an excluded folder can be added 
+     * and they will be indexed.)
+     * \return list of paths.
+     */
     QStringList excludeFolders() const;
     QStringList excludeFilters() const;
     QStringList excludeMimetypes() const;
@@ -59,8 +82,8 @@ public:
     void setExcludeMimetypes(const QStringList& excludeMimetypes);
 
     /**
-     * The first run indicates if the File Indexer has ever been run before
-     * and made a successful pass over all the files.
+     * \return \c true if the service is run for the first time 
+     * (or after manually setting "first run=true" in the config).
      */
     bool firstRun() const;
     void setFirstRun(bool firstRun) const;
