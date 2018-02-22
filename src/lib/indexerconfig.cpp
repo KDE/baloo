@@ -72,6 +72,12 @@ bool IndexerConfig::shouldBeIndexed(const QString& path) const
     return d->m_config.shouldBeIndexed(path);
 }
 
+
+bool IndexerConfig::canBeSearched(const QString& folder) const
+{
+    return d->m_config.canBeSearched(folder);
+}
+
 QStringList IndexerConfig::excludeFolders() const
 {
     return d->m_config.excludeFolders();

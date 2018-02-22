@@ -37,6 +37,17 @@ public:
 
     bool shouldBeIndexed(const QString& path) const;
 
+    /**
+    * Check if \p folder can be searched.
+    * \p folder can be searched if itself or one of its descendants is indexed.
+    * 
+    * Example:
+    * if ~/foo is not indexed and ~/foo/bar is indexed
+    * then ~/foo can be searched.
+    *
+    * \return \c true if the \p folder can be searched.
+    */
+    bool canBeSearched(const QString& folder) const;
     QStringList includeFolders() const;
     QStringList excludeFolders() const;
     QStringList excludeFilters() const;
