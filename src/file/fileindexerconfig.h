@@ -42,20 +42,21 @@ class FileIndexerConfig : public QObject
     Q_OBJECT
 
 public:
-    /**
-     * Create a new file indexr config.
-     */
+
     explicit FileIndexerConfig(QObject* parent = nullptr);
     ~FileIndexerConfig();
 
     /**
-     * The folders to search for files to analyze. Cached and cleaned up.
-     */
+    * Folders to search for files to index and analyze.
+    * \return list of paths.
+    */
     QStringList includeFolders() const;
 
     /**
-     * The folders that should be excluded. Cached and cleaned up.
-     * It is perfectly possible to include subfolders again.
+     * Folders that are excluded from indexing.
+     * (Descendant folders of an excluded folder can be added 
+     * and they will be indexed.)
+     * \return list of paths.
      */
     QStringList excludeFolders() const;
 
@@ -68,8 +69,8 @@ public:
     bool onlyBasicIndexing() const;
 
     /**
-     * true the first time the service is run (or after manually
-     * tampering with the config.
+     * \return \c true if the service is run for the first time 
+     * (or after manually setting "first run=true" in the config).
      */
     bool isInitialRun() const;
 
@@ -83,27 +84,27 @@ public:
     bool initialUpdateDisabled() const;
 
     /**
-     * Check if \p folder can be searched taking only
-     * the includeFolders() into account.
-     *
-     * A path can be searched if itself or one of
-     * its descendants should be indexed.
-     *
-     * \return \p true if the \p folder should
-     * be searched.
-     */
+    * Check if \p folder can be searched.
+    * \p folder can be searched if itself or one of its descendants is indexed.
+    * 
+    * Example:
+    * if ~/foo is not indexed and ~/foo/bar is indexed
+    * then ~/foo can be searched.
+    *
+    * \return \c true if the \p folder can be searched.
+    */
     bool canBeSearched(const QString& folder) const;
 
     /**
-     * Check if \p path should be indexed taking into account
-     * the includeFolders(), the excludeFolders(), and the
-     * excludeFilters().
+     * Check if file or folder \p path should be indexed taking into account
+     * the includeFolders(), the excludeFolders(), and the excludeFilters().
+     * Inclusion takes precedence.
      *
      * Be aware that this method does not check if parent dirs
-     * match any of the exclude filters. Only the name of the
+     * match any of the exclude filters. Only the path of the
      * dir itself it checked.
      *
-     * \return \p true if the file or folder at \p path should
+     * \return \c true if the file or folder at \p path should
      * be indexed according to the configuration.
      */
     bool shouldBeIndexed(const QString& path) const;
@@ -115,7 +116,7 @@ public:
      * match any of the exclude filters. Only the name of the
      * dir itself it checked.
      *
-     * \return \p true if the folder at \p path should
+     * \return \c true if the folder at \p path should
      * be indexed according to the configuration.
      */
     bool shouldFolderBeIndexed(const QString& path) const;
@@ -124,7 +125,7 @@ public:
      * Check \p fileName for all exclude filters. This does
      * not take file paths into account.
      *
-     * \return \p true if a file with name \p filename should
+     * \return \c true if a file with name \p filename should
      * be indexed according to the configuration.
      */
     bool shouldFileBeIndexed(const QString& fileName) const;
@@ -132,7 +133,7 @@ public:
     /**
      * Checks if \p mimeType should be indexed
      *
-     * \return \p true if the mimetype should be indexed according
+     * \return \c true if the mimetype should be indexed according
      * to the configuration
      */
     bool shouldMimeTypeBeIndexed(const QString& mimeType) const;
