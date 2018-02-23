@@ -83,7 +83,6 @@ int main(int argc, char* argv[])
     parser.addPositionalArgument(QStringLiteral("suspend"), i18n("Suspend the file indexer"));
     parser.addPositionalArgument(QStringLiteral("resume"), i18n("Resume the file indexer"));
     parser.addPositionalArgument(QStringLiteral("check"), i18n("Check for any unindexed files and index them"));
-    parser.addPositionalArgument(QStringLiteral("checkDb"), i18n("Check database for consistency"));
     parser.addPositionalArgument(QStringLiteral("index"), i18n("Index the specified files"));
     parser.addPositionalArgument(QStringLiteral("clear"), i18n("Forget the specified files"));
     parser.addPositionalArgument(QStringLiteral("config"), i18n("Modify the Baloo configuration"));
@@ -323,7 +322,9 @@ int main(int argc, char* argv[])
         return mon.exec(parser);
     }
 
-    if (command == QStringLiteral("checkDb")) {
+    /*
+     TODO: Make separate executable
+     if (command == QStringLiteral("checkDb")) {
         Database *db = globalDatabaseInstance();
         if (!db->open(Database::ReadOnlyDatabase)) {
             out << "Baloo Index could not be opened\n";
@@ -337,6 +338,7 @@ int main(int argc, char* argv[])
         tr.checkFsTree();
         return 0;
     }
+    */
 
     parser.showHelp(1);
     return 0;
