@@ -100,7 +100,15 @@ const char* const s_defaultFolderExcludeFilters[] = {
     //misc
     "core-dumps",
     "lost+found",
-
+   
+    // Javascript & co.
+    "node_modules",
+    "bower_components",
+    ".npm",
+    ".npm-cache",
+    ".yarn",
+    ".yarn-cache"
+      
     // end of list
     nullptr
 };
