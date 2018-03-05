@@ -508,6 +508,9 @@ void Transaction::checkFsTree()
             out << endl;
 
             count++;
+        } else if (!QFileInfo::exists(url)) {
+            out << "FilePath " << url << " for " << id << " does not exist"<< endl;
+            count++;
         }
     }
 
