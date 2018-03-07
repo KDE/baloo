@@ -51,12 +51,15 @@ public:
 private Q_SLOTS:
     void startedIndexingFile(const QString& filePath);
     void finishedIndexingFile(const QString& filePath);
+    void balooIsAvailable();
+    void balooIsNotAvailable();
 
 private:
     QTextStream m_out;
     QTextStream m_err;
     org::kde::baloo::fileindexer* m_dbusInterface;
     QString m_currentFile;
+    QDBusServiceWatcher* m_dbusServiceWatcher;
 };
 }
 #endif // MONITOR_H
