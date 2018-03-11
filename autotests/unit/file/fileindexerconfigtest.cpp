@@ -24,9 +24,9 @@
 
 #include <QTemporaryDir>
 
-#include <QtCore/QFile>
-#include <QtCore/QDir>
-#include <QtCore/QScopedPointer>
+#include <QFile>
+#include <QDir>
+#include <QScopedPointer>
 #include <QTest>
 
 using namespace Baloo::Test;

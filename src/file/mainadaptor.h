@@ -12,7 +12,7 @@
 #ifndef MAINADAPTOR_H
 #define MAINADAPTOR_H
 
-#include <QtCore/QObject>
+#include <QObject>
 #include <QDBusAbstractAdaptor>
 
 #include "mainhub.h"

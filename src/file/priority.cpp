@@ -25,7 +25,7 @@
 #define _GNU_SOURCE
 #endif
 
-#include <QtCore/QDebug>
+#include <QDebug>
 
 #include <sys/time.h>
 #include <sys/resource.h>

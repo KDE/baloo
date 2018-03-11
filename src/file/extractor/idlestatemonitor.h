@@ -20,7 +20,7 @@
 #ifndef BALOO_EXTRACTOR_IDLE_MONITOR_H_
 #define BALOO_EXTRACTOR_IDLE_MONITOR_H_
 
-#include <QtCore/QObject>
+#include <QObject>
 
 namespace Baloo
 {
