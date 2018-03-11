@@ -20,7 +20,7 @@
 #ifndef BALOO_FILEINDEXER_POWER_MONITOR_H_
 #define BALOO_FILEINDEXER_POWER_MONITOR_H_
 
-#include <QtCore/QObject>
+#include <QObject>
 
 namespace Baloo
 {

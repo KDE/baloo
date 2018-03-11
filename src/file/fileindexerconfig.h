@@ -20,9 +20,9 @@
 #ifndef BALOO_FILEINDEXER_SERVICE_CONFIG_H_
 #define BALOO_FILEINDEXER_SERVICE_CONFIG_H_
 
-#include <QtCore/QObject>
-#include <QtCore/QList>
-#include <QtCore/QSet>
+#include <QObject>
+#include <QList>
+#include <QSet>
 
 #include <kconfig.h>
 
