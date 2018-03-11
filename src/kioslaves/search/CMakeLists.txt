@@ -6,6 +6,7 @@ target_link_libraries(kio_baloosearch
   KF5::KIOCore
   KF5::I18n
   KF5::Baloo
+  Qt5::Network
 )
 
 set_target_properties(kio_baloosearch PROPERTIES OUTPUT_NAME "baloosearch")
