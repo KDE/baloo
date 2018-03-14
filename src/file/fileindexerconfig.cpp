@@ -58,8 +58,9 @@ using namespace Baloo;
 FileIndexerConfig::FileIndexerConfig(QObject* parent)
     : QObject(parent)
     , m_config(QStringLiteral("baloofilerc"))
+    , m_folderCacheDirty(true)
     , m_indexHidden(false)
-    , m_devices(new StorageDevices(this))
+    , m_devices(nullptr)
     , m_maxUncomittedFiles(40)
 {
     forceConfigUpdate();
@@ -73,6 +74,8 @@ FileIndexerConfig::~FileIndexerConfig()
 
 QStringList FileIndexerConfig::includeFolders() const
 {
+    const_cast<FileIndexerConfig*>(this)->buildFolderCache();
+
     QStringList fl;
     for (int i = 0; i < m_folderCache.count(); ++i) {
         if (m_folderCache[i].second)
@@ -84,6 +87,8 @@ QStringList FileIndexerConfig::includeFolders() const
 
 QStringList FileIndexerConfig::excludeFolders() const
 {
+    const_cast<FileIndexerConfig*>(this)->buildFolderCache();
+
     QStringList fl;
     for (int i = 0; i < m_folderCache.count(); ++i) {
         if (!m_folderCache[i].second)
@@ -147,6 +152,8 @@ bool FileIndexerConfig::canBeSearched(const QString& folder) const
     } else if (shouldFolderBeIndexed(path)) {
         return true;
     }
+
+    const_cast<FileIndexerConfig*>(this)->buildFolderCache();
     
     // Look for included descendants
     for (const QPair<QString, bool>& fld: m_folderCache) {
@@ -225,6 +232,8 @@ bool FileIndexerConfig::folderInFolderList(const QString& path)
 
 bool FileIndexerConfig::folderInFolderList(const QString& path, QString& folder) const
 {
+    const_cast<FileIndexerConfig*>(this)->buildFolderCache();
+
     const QString p = stripTrailingSlash(path);
 
     // we traverse the list backwards to catch all exclude folders
@@ -300,6 +309,14 @@ void cleanupList(QList<QPair<QString, bool> >& result)
 
 void FileIndexerConfig::buildFolderCache()
 {
+    if (!m_folderCacheDirty) {
+        return;
+    }
+
+    if (!m_devices) {
+        m_devices = new StorageDevices(this);
+    }
+
     KConfigGroup group = m_config.group("General");
     QStringList includeFoldersPlain = group.readPathEntry("folders", QStringList() << QDir::homePath());
     QStringList excludeFoldersPlain = group.readPathEntry("exclude folders", QStringList());
@@ -320,6 +337,8 @@ void FileIndexerConfig::buildFolderCache()
     insertSortFolders(excludeFoldersPlain, false, m_folderCache);
 
     cleanupList(m_folderCache);
+
+    m_folderCacheDirty = false;
 }
 
 
@@ -338,7 +357,7 @@ void FileIndexerConfig::forceConfigUpdate()
 {
     m_config.reparseConfiguration();
 
-    buildFolderCache();
+    m_folderCacheDirty = true;
     buildExcludeFilterRegExpCache();
     buildMimeTypeCache();
 
