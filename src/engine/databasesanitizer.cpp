@@ -26,14 +26,13 @@
 #include <KLocalizedString>
 #include <QFileInfo>
 
-using namespace Baloo;
-
-
+namespace Baloo
+{
+    
 class DatabaseSanitizerImpl {
 public:
-    DatabaseSanitizerImpl(const Database& db, Baloo::Transaction::TransactionType type, DatabaseSanitizer* q)
-    : q_ptr(q)
-    , m_transaction(new Transaction(db, type))
+    DatabaseSanitizerImpl(const Database& db, Transaction::TransactionType type)
+    : m_transaction(new Transaction(db, type))
     {
     }
 
@@ -77,7 +76,9 @@ public:
     {
         Q_ASSERT(m_transaction);
 
-        const auto docUrlDb = q_ptr->getDocuments(m_transaction);
+        const auto docUrlDb = DocumentUrlDB(m_transaction->m_dbis.idTreeDbi, 
+                                            m_transaction->m_dbis.idFilenameDbi, 
+                                            m_transaction->m_txn);
         const auto map = docUrlDb.toTestMap();
         const auto keys = map.keys();
         QVector<FileInfo> result;
@@ -128,12 +129,15 @@ public:
     }
     
 private:
-    DatabaseSanitizer* q_ptr;
     Transaction* m_transaction;
 };
+}
+
+using namespace Baloo;
+
 
 DatabaseSanitizer::DatabaseSanitizer(const Database& db, Baloo::Transaction::TransactionType type)
-    : m_pimpl(new DatabaseSanitizerImpl(db, type, this))
+    : m_pimpl(new DatabaseSanitizerImpl(db, type))
 {
 }
 
@@ -208,10 +212,3 @@ void DatabaseSanitizer::printDevices(const QVector<qint64>& deviceIds, const boo
     
     err << i18n("Found %1 matching items", usedDevices.count()) << endl;
 }
-
-DocumentUrlDB DatabaseSanitizer::getDocuments(Transaction* txn)
-{
-    return DocumentUrlDB(txn->m_dbis.idTreeDbi, txn->m_dbis.idFilenameDbi, txn->m_txn);
-}
-
-
