@@ -23,10 +23,10 @@
 #define BALOODATABASESANITIZER_H
 
 #include "transaction.h"
-class DatabaseSanitizerImpl;
 
 namespace Baloo 
 {
+class DatabaseSanitizerImpl;
 /**
 * \brief Provide methods to show database problems and
 * sanitize them.
@@ -62,12 +62,6 @@ public:
     */
     void printDevices(const QVector<qint64>& deviceIds, const bool missingOnly = false);
    
-    /**
-     * Internal use only. 
-     * TODO: Hide this
-     */
-     DocumentUrlDB getDocuments(Transaction* txn);
-    
 private:
     DatabaseSanitizer(const DatabaseSanitizer& rhs) = delete;
     DatabaseSanitizerImpl* m_pimpl;
