@@ -19,6 +19,7 @@ set(BALOO_ENGINE_SRCS
     queryparser.cpp
     termgenerator.cpp
     transaction.cpp
+    databasesanitizer.cpp
     vectorpostingiterator.cpp
     vectorpositioninfoiterator.cpp
     writetransaction.cpp
@@ -36,6 +37,7 @@ target_link_libraries(KF5BalooEngine
     ${LMDB_LIBRARIES}
     PRIVATE
     KF5BalooCodecs
+    KF5::I18n
 )
 
 set_target_properties(KF5BalooEngine PROPERTIES
