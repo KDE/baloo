@@ -140,7 +140,8 @@ QByteArray DocumentUrlDB::get(quint64 docId) const
     quint64 id = path.parentId;
     while (id) {
         auto p = idFilenameDb.get(id);
-        Q_ASSERT(!p.name.isEmpty());
+        //FIXME: this prevents sanitzing 
+        // reactivate Q_ASSERT(!p.name.isEmpty());
 
         ret = p.name + '/' + ret;
         id = p.parentId;
@@ -202,7 +203,8 @@ QMap<quint64, QByteArray> DocumentUrlDB::toTestMap() const
     for (quint64 id : allIds) {
         if (id) {
             QByteArray path = get(id);
-            Q_ASSERT(!path.isEmpty());
+            //FIXME: this prevents sanitizing  
+            // reactivate  Q_ASSERT(!path.isEmpty());
             map.insert(id, path);
         }
     }
