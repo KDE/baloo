@@ -176,7 +176,10 @@ int main(int argc, char* argv[])
             , "baloodb list '^/media/videos/series'"
         )
     );
-    parser.setApplicationDescription(createDescription());
+    const QString warnExperiment = QStringLiteral(
+        "===\nPlease note: This is an experimental tool. Command line switches or their meaning may change.\n==="); 
+    
+    parser.setApplicationDescription(warnExperiment + createDescription());
     parser.addVersionOption();
     parser.addHelpOption();
 
