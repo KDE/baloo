@@ -38,6 +38,7 @@ public:
 private:
     QVector<PostingIterator*> m_iterators;
     quint64 m_docId;
+    quint64 m_nextId;
 };
 }
 

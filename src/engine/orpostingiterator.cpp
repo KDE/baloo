@@ -25,7 +25,26 @@ using namespace Baloo;
 OrPostingIterator::OrPostingIterator(const QVector<PostingIterator*>& iterators)
     : m_iterators(iterators)
     , m_docId(0)
+    , m_nextId(0)
 {
+    for (auto it = m_iterators.begin(), end = m_iterators.end(); it != end;) {
+        /*
+         * Check for null iterators
+         * Preferably, these are not pushed to the list at all, but better be safe
+         */
+        if (!(*it)) {
+            it = m_iterators.erase(it);
+            continue;
+        }
+
+        auto docId = (*it)->next();
+        // find smallest docId
+        if (docId && (docId < m_nextId || m_nextId == 0)) {
+            m_nextId = docId;
+        }
+
+        it++;
+    }
 }
 
 OrPostingIterator::~OrPostingIterator()
@@ -40,34 +59,35 @@ quint64 OrPostingIterator::docId() const
 
 quint64 OrPostingIterator::next()
 {
-    m_docId = 0;
-    if (m_iterators.isEmpty()) {
+    m_docId = m_nextId;
+    m_nextId = 0;
+
+    if (!m_docId) {
         return 0;
     }
 
-    for (auto it = m_iterators.begin(), end = m_iterators.end(); it != end; it++) {
+    // advance all iterators which point to the lowest docId
+    for (auto it = m_iterators.begin(); it != m_iterators.end(); ) {
         PostingIterator* iter = *it;
-        if (!iter) {
-            continue;
+
+        auto docId = iter->docId();
+        if (docId <= m_docId) {
+            docId = iter->next();
+            // remove element if iterator has reached the end
+            if (docId == 0) {
+                delete iter;
+                *it = nullptr;
+                it = m_iterators.erase(it);
+                continue;
+            }
         }
 
-        // First or last element
-        if (iter->docId() == 0 && iter->next() == 0) {
-            delete iter;
-            *it = nullptr;
-            continue;
+        // check if the docId is the new lowest docId
+        if ((docId < m_nextId) || (m_nextId == 0)) {
+            m_nextId = docId;
         }
 
-        if (iter->docId() < m_docId || m_docId == 0) {
-            m_docId = iter->docId();
-        }
-    }
-
-    for (auto it = m_iterators.cbegin(), end = m_iterators.cend(); it != end; it++) {
-        PostingIterator* iter = *it;
-        if (iter && iter->docId() <= m_docId) {
-            iter->next();
-        }
+        it++;
     }
 
     return m_docId;
