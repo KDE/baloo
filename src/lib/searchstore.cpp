@@ -42,6 +42,7 @@
 #include <KFileMetaData/Types>
 
 #include <algorithm>
+#include <tuple>
 
 using namespace Baloo;
 
@@ -79,21 +80,23 @@ QStringList SearchStore::exec(const Term& term, uint offset, int limit, bool sor
     }
 
     if (sortResults) {
-        QVector<quint64> resultIds;
+        QVector<std::pair<quint64, quint32>> resultIds;
         while (it->next()) {
             quint64 id = it->docId();
-            resultIds << id;
+            quint32 mtime = tr.documentTimeInfo(id).mTime;
+            resultIds << std::pair<quint64, quint32>{id, mtime};
 
             Q_ASSERT(id > 0);
         }
 
-        // No enough result within range, no need to sort.
+        // Not enough results within range, no need to sort.
         if (offset >= static_cast<uint>(resultIds.size())) {
             return QStringList();
         }
 
-        auto compFunc = [&tr](const quint64 lhs, const quint64 rhs) {
-            return tr.documentTimeInfo(lhs).mTime > tr.documentTimeInfo(rhs).mTime;
+        auto compFunc = [](const std::pair<quint64, quint32>& lhs,
+                           const std::pair<quint64, quint32>& rhs) {
+            return lhs.second > rhs.second;
         };
 
         std::sort(resultIds.begin(), resultIds.end(), compFunc);
@@ -104,7 +107,7 @@ QStringList SearchStore::exec(const Term& term, uint offset, int limit, bool sor
         QStringList results;
         const uint end = qMin(static_cast<uint>(resultIds.size()), offset + static_cast<uint>(limit));
         for (uint i = offset; i < end; i++) {
-            const quint64 id = resultIds[i];
+            const quint64 id = resultIds[i].first;
             const QString filePath = tr.documentUrl(id);
 
             results << filePath;
