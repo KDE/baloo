@@ -116,20 +116,21 @@ QStringList SearchStore::exec(const Term& term, uint offset, int limit, bool sor
         return results;
     }
     else {
-        uint i = 0;
         QStringList results;
-        const uint end = offset + static_cast<uint>(limit);
+        uint ulimit = limit < 0 ? UINT_MAX : limit;
 
-        while (it->next() && (limit < 0 || i < end)) {
+        while (offset && it->next()) {
+            offset--;
+        }
+
+        while (ulimit && it->next()) {
             quint64 id = it->docId();
             Q_ASSERT(id > 0);
 
-            if (i >= offset) {
-                results << tr.documentUrl(it->docId());
-                Q_ASSERT(!results.last().isEmpty());
-            }
+            results << tr.documentUrl(it->docId());
+            Q_ASSERT(!results.last().isEmpty());
 
-            i++;
+            ulimit--;
         }
 
         return results;
