@@ -110,13 +110,13 @@ void putDifferentialVarInt32(QByteArray &temporaryStorage, QByteArray* dst, cons
 
 char* getDifferentialVarInt32(char* p, char* limit, QVector<quint32>* values)
 {
-    quint32 size;
+    quint32 size = 0;
     p = getVarint32Ptr(p, limit, &size);
     values->reserve(size);
 
     quint32 v = 0;
-    while (p < limit && size) {
-        quint32 n;
+    while (p && p < limit && size) {
+        quint32 n = 0;
         p = getVarint32Ptr(p, limit, &n);
 
         values->append(n + v);
