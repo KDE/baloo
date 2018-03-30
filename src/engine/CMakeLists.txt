@@ -19,13 +19,16 @@ set(BALOO_ENGINE_SRCS
     queryparser.cpp
     termgenerator.cpp
     transaction.cpp
-    databasesanitizer.cpp
     vectorpostingiterator.cpp
     vectorpositioninfoiterator.cpp
     writetransaction.cpp
     global.cpp
     fsutils.cpp
 )
+
+if(${BUILD_EXPERIMENTAL})
+  set(BALOO_ENGINE_SRCS ${BALOO_ENGINE_SRCS} experimental/databasesanitizer.cpp)
+endif()
 
 add_library(KF5BalooEngine ${BALOO_ENGINE_SRCS})
 add_library(KF5::BalooEngine ALIAS KF5BalooEngine)

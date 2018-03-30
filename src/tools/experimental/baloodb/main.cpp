@@ -20,7 +20,7 @@
  */
 
 #include "global.h"
-#include "databasesanitizer.h"
+#include "experimental/databasesanitizer.h"
 
 #include <KAboutData>
 #include <KLocalizedString>
@@ -59,14 +59,14 @@ const auto options = QList<QCommandLineOption>{
         "\nOnly applies to \"%1\" command", QStringLiteral("prune"))
     },
     QCommandLineOption{
-        QStringList{QStringLiteral("m"), QStringLiteral("missing-only")}, 
+        QStringList{QStringLiteral("m"), QStringLiteral("missing-only")},
         i18n("List only inaccessible entries.\nOnly applies to \"%1\"", QStringLiteral("list"))
     }
 };
 
 const auto commands = std::vector<Command>{
     Command{
-        QStringLiteral("list"), 
+        QStringLiteral("list"),
         i18n("List database contents. Use a regular expression as argument to filter output"),
         QStringList{
             QStringLiteral("pattern")
@@ -78,7 +78,7 @@ const auto commands = std::vector<Command>{
     },
     /*TODO:
     Command{
-        QStringLiteral("check"), 
+        QStringLiteral("check"),
         i18n("Check database contents. "
         "Beware this may take very long to execute"),
         QStringList{},
@@ -87,7 +87,7 @@ const auto commands = std::vector<Command>{
     */
     /*TODO:
     Command{
-        QStringLiteral("prune"), 
+        QStringLiteral("prune"),
         i18n("Remove stale database entries"),
         QStringList{
             QStringLiteral("pattern")
@@ -99,7 +99,7 @@ const auto commands = std::vector<Command>{
     },
     */
     Command{
-        QStringLiteral("devices"), 
+        QStringLiteral("devices"),
         i18n("List devices"),
         QStringList{},
         QStringList{QStringLiteral("missing-only")}
@@ -114,7 +114,7 @@ const QStringList allowedCommands()
     }
     return names;
 }
-const QStringList getOptions(const QString& name) 
+const QStringList getOptions(const QString& name)
 {
     for (const auto& c : commands) {
         if (c.name == name) {
@@ -123,7 +123,7 @@ const QStringList getOptions(const QString& name)
     }
     return QStringList();
 }
-QString createDescription() 
+QString createDescription()
 {
     QStringList allowedcommands;
     for (const auto& c: commands) {
@@ -131,7 +131,7 @@ QString createDescription()
         const QString optionStr = options.isEmpty()
             ? QString()
             : QStringLiteral(" [--%1]").arg(options.join(QLatin1Literal("] [--")));
-            
+
         QString argumentStr;
         if (!c.args.isEmpty() ) {
             argumentStr = QStringLiteral(" [%1]").arg(c.args.join(QStringLiteral("] [")));
@@ -141,11 +141,11 @@ QString createDescription()
             .arg(c.name)
             .arg(optionStr)
             .arg(argumentStr);
-            
+
         const QString str = QStringLiteral("%1 %2")
             .arg(commandStr, -48)
             .arg(c.description);
-            
+
         allowedcommands.append(str);
     }
     const QString allCommandsStr = allowedcommands.join(QStringLiteral("\n    "));
@@ -163,22 +163,22 @@ int main(int argc, char* argv[])
                          i18n("(c) 2018, Michael Heidelbach"));
     aboutData.addAuthor(i18n("Michael Heidelbach"), i18n("Maintainer"), QStringLiteral("ottwolt@gmail.com"));
     KAboutData::setApplicationData(aboutData);
-    
+
     QCommandLineParser parser;
     parser.addOptions(options);
-    parser.addPositionalArgument(QStringLiteral("command"), 
-        i18n("The command to execute"), 
+    parser.addPositionalArgument(QStringLiteral("command"),
+        i18n("The command to execute"),
         allowedCommands().join(QStringLiteral("|"))
     );
-    parser.addPositionalArgument(QStringLiteral("pattern"), 
+    parser.addPositionalArgument(QStringLiteral("pattern"),
         i18nc("Command", "A regular expression applied to the URL of database items"
             "\nExample: %1"
             , "baloodb list '^/media/videos/series'"
         )
     );
     const QString warnExperiment = QStringLiteral(
-        "===\nPlease note: This is an experimental tool. Command line switches or their meaning may change.\n==="); 
-    
+        "===\nPlease note: This is an experimental tool. Command line switches or their meaning may change.\n===");
+
     parser.setApplicationDescription(warnExperiment + createDescription());
     parser.addVersionOption();
     parser.addHelpOption();
@@ -188,19 +188,19 @@ int main(int argc, char* argv[])
         qDebug() << "No command";
         parser.showHelp(1);
     }
-    
+
     auto args = parser.positionalArguments();
     auto command = args.at(0);
     args.removeFirst();
-    
+
     if(!allowedCommands().contains(command)) {
         qDebug() << "Unknown command" << command;
         parser.showHelp(1);
     }
-    
+
     const auto optNames = parser.optionNames();
     const auto allowedOptions = getOptions(command);
-    
+
     QVector<qint64> deviceIds;
     for (const auto& dev : parser.values(QStringLiteral("device-id"))) {
         deviceIds.append(dev.toInt());
@@ -209,8 +209,8 @@ int main(int argc, char* argv[])
     const QString pattern = args.isEmpty()
         ? QString()
         : args.at(0);
-    const QSharedPointer<QRegularExpression> urlFilter(pattern.isEmpty() 
-        ? nullptr 
+    const QSharedPointer<QRegularExpression> urlFilter(pattern.isEmpty()
+        ? nullptr
         : new QRegularExpression{pattern});
 
     auto db = globalDatabaseInstance();
@@ -234,11 +234,11 @@ int main(int argc, char* argv[])
         DatabaseSanitizer san(db, Transaction::ReadOnly);
         err << i18n("Listing database contents...") << endl;
         san.printDevices(deviceIds);
-        
+
     } else if (command == QStringLiteral("clean")) {
         /* TODO: add prune command */
         parser.showHelp(1);
-        
+
     } else if (command == QStringLiteral("check")) {
         parser.showHelp(1);
        /* TODO: After check methods are improved
