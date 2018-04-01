@@ -30,29 +30,13 @@ AdvancedQueryParser::AdvancedQueryParser()
 {
 }
 
-static bool isOperator(const QChar& c)
-{
-    switch (c.toLatin1()) {
-    case ':':
-    case '=':
-    case '>':
-    case '<':
-    case '(':
-    case ')':
-        return true;
-
-    default:
-        return false;
-    }
-}
-
 static QStringList lex(const QString& text)
 {
-    QStringList tokens;
+    QStringList tokenList;
     QString token;
     bool inQuotes = false;
 
-    for (int i=0, end=text.size(); i!=end; ++i) {
+    for (int i = 0, end = text.size(); i != end; ++i) {
         QChar c = text.at(i);
 
         if (c == QLatin1Char('"')) {
@@ -61,38 +45,43 @@ static QStringList lex(const QString& text)
         } else if (inQuotes) {
             // Don't do any processing in strings
             token.append(c);
-        } else if (c.isSpace() || isOperator(c)) {
-            // Spaces and operators end tokens
-            if (token.size() > 0) {
-                tokens.append(token);
+        } else if (c.isSpace()) {
+            // Spaces end tokens
+            if (!token.isEmpty()) {
+                tokenList.append(token);
                 token.clear();
             }
-
-            // Operators are tokens themselves
-            if (isOperator(c)) {
-                if (tokens.size() > 1) {
-                    QString last = tokens.last();
-                    if (last.size() == 1 && isOperator(last[0])) {
-                        last.append(c);
-                        tokens[tokens.size() - 1] = last;
-                        continue;
-                    }
-                }
-                tokens.append(QString(c));
+        } else if (c == '(' || c == ')') {
+            // Parentheses end tokens, and are tokens by themselves
+            if (!token.isEmpty()) {
+                tokenList.append(token);
+                token.clear();
             }
-
-            continue;
+            tokenList.append(c);
+        } else if (c == '>' || c == '<' || c == ':' || c == '=') {
+            // Operators end tokens
+            if (!token.isEmpty()) {
+                tokenList.append(token);
+                token.clear();
+            }
+            // accept '=' after any of the above
+            if (text.at(i + 1) == '=') {
+                tokenList.append(text.mid(i, 2));
+                i++;
+            } else {
+                tokenList.append(c);
+            }
         } else {
             // Simply extend the current token
             token.append(c);
         }
     }
 
-    if (token.size() > 0) {
-        tokens.append(token);
+    if (!token.isEmpty()) {
+        tokenList.append(token);
     }
 
-    return tokens;
+    return tokenList;
 }
 
 static void addTermToStack(QStack<Term>& stack, const Term& termInConstruction, Term::Operation op)

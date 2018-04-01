@@ -286,7 +286,7 @@ void AdvancedQueryParserTest::testNestedParentheses_data()
                     Term{QString(), QStringLiteral("d"), Term::Contains}
                 }}
             }}
-        << QStringLiteral("Opening '((' parsed incorrectly")
+        << QString()
         ;
     // Test 2 for BUG: 392620
     QTest::newRow("a AND ((b OR c) OR d)")
