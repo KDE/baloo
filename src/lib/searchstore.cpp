@@ -165,11 +165,19 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
         vec.reserve(subTerms.size());
 
         for (const Term& t : subTerms) {
-            vec << constructQuery(tr, t);
+            auto iterator = constructQuery(tr, t);
+            // constructQuery returns a nullptr to signal an empty list
+            if (iterator) {
+                vec << iterator;
+            } else if (term.operation() == Term::And) {
+                return nullptr;
+            }
         }
 
         if (vec.isEmpty()) {
             return nullptr;
+        } else if (vec.size() == 1) {
+            return vec.takeFirst();
         }
 
         if (term.operation() == Term::And) {
