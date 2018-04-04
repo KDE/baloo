@@ -325,7 +325,18 @@ PostingIterator* Transaction::postingIterator(const EngineQuery& query) const
 
     const auto subQueries = query.subQueries();
     for (const EngineQuery& q : subQueries) {
-        vec << postingIterator(q);
+        auto iterator = postingIterator(q);
+        if (iterator) {
+            vec << iterator;
+        } else if (query.op() == EngineQuery::And) {
+            return nullptr;
+        }
+    }
+
+    if (vec.empty()) {
+        return nullptr;
+    } else if (vec.size() == 1) {
+        return vec.takeFirst();
     }
 
     if (query.op() == EngineQuery::And) {
