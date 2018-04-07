@@ -275,7 +275,32 @@ void AdvancedQueryParserTest::testNestedParentheses_data()
             }}
         << QString()
         ;
-
+    // Test 1 for BUG: 392620
+    QTest::newRow("a OR ((b AND c) AND d)")
+        << QStringLiteral("a OR ((b AND c) AND d)")
+        << Term{Term::Or, QList<Term>{
+                Term{QString(), QStringLiteral("a"), Term::Contains},
+                Term{Term::And, QList<Term>{
+                    Term{QString(), QStringLiteral("b"), Term::Contains},
+                    Term{QString(), QStringLiteral("c"), Term::Contains},
+                    Term{QString(), QStringLiteral("d"), Term::Contains}
+                }}
+            }}
+        << QStringLiteral("Opening '((' parsed incorrectly")
+        ;
+    // Test 2 for BUG: 392620
+    QTest::newRow("a AND ((b OR c) OR d)")
+        << QStringLiteral("a AND ((b OR c) OR d)")
+        << Term{Term::And, QList<Term>{
+                Term{QString(), QStringLiteral("a"), Term::Contains},
+                Term{Term::Or, QList<Term>{
+                    Term{QString(), QStringLiteral("b"), Term::Contains},
+                    Term{QString(), QStringLiteral("c"), Term::Contains},
+                    Term{QString(), QStringLiteral("d"), Term::Contains}
+                }}
+            }}
+        << QStringLiteral("Opening '((' parsed incorrectly")
+        ;
 }
 
 void AdvancedQueryParserTest::testOptimizedLogic()
