@@ -117,8 +117,18 @@ Term::Term(const Term& lhs, Term::Operation op, const Term& rhs)
     : d(new Private)
 {
     d->m_op = op;
-    d->m_subTerms << lhs;
-    d->m_subTerms << rhs;
+
+    if (lhs.operation() == op) {
+        d->m_subTerms << lhs.subTerms();
+    } else {
+        d->m_subTerms << lhs;
+    }
+
+    if (rhs.operation() == op) {
+        d->m_subTerms << rhs.subTerms();
+    } else {
+        d->m_subTerms << rhs;
+    }
 }
 
 Term::~Term()

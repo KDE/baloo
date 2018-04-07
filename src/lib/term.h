@@ -136,10 +136,7 @@ inline Term operator &&(const Term& lhs, const Term& rhs)
     else if (rhs.isEmpty())
         return lhs;
 
-    Term t(Term::And);
-    t.addSubTerm(lhs);
-    t.addSubTerm(rhs);
-    return t;
+    return {lhs, Term::And, rhs};
 }
 
 inline Term operator ||(const Term& lhs, const Term& rhs)
@@ -149,10 +146,7 @@ inline Term operator ||(const Term& lhs, const Term& rhs)
     else if (rhs.isEmpty())
         return lhs;
 
-    Term t(Term::Or);
-    t.addSubTerm(lhs);
-    t.addSubTerm(rhs);
-    return t;
+    return {lhs, Term::Or, rhs};
 }
 
 inline Term operator !(const Term& rhs)

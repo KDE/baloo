@@ -285,7 +285,6 @@ void AdvancedQueryParserTest::testOptimizedLogic()
     qDebug() << "  result term" << testTerm;
     qDebug() << "expected term" << expectedTerm;
 
-    QEXPECT_FAIL("", "no optimization", Continue);
     QCOMPARE(testTerm, expectedTerm);
 }
 
