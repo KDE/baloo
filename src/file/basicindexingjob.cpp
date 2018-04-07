@@ -51,7 +51,7 @@ bool BasicIndexingJob::index()
     const QByteArray url = QFile::encodeName(m_filePath);
 
     QT_STATBUF statBuf;
-    if (QT_LSTAT(url.data(), &statBuf) != 0) {
+    if (filePathToStat(url, statBuf) != 0) {
         return false;
     }
 
