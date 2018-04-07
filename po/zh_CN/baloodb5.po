@@ -1,0 +1,152 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: kdeorg\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2018-03-23 03:23+0100\n"
+"PO-Revision-Date: 2018-04-05 09:22-0400\n"
+"Last-Translator: guoyunhebrave <guoyunhebrave@gmail.com>\n"
+"Language-Team: Chinese Simplified\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: crowdin.com\n"
+"X-Crowdin-Project: kdeorg\n"
+"X-Crowdin-Language: zh-CN\n"
+"X-Crowdin-File: /kf5-trunk/messages/frameworks/baloodb5.pot\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "KDE 中国"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "kde-china@kde.org"
+
+#: main.cpp:48
+#, kde-format
+msgid ""
+"Filter by device id.\n"
+"0 (default) does not filter and everything is printed.\n"
+"Positive numbers are including filters printing only the mentioned device "
+"id.\n"
+"Negative numbers are excluding filters printing everything but the mentioned "
+"device id.\n"
+"May be given multiple times."
+msgstr ""
+"按设备 id 筛选。\n"
+"0 (默认值) 不过滤，打印所有内容。\n"
+"正数是包含型过滤器，仅打印指定设备 id 的项目。\n"
+"负数是排除型过滤器，打印除了指定设备 id 的所有项目。\n"
+"可以多次给出。"
+
+#: main.cpp:53
+#, kde-format
+msgid "integer"
+msgstr "整数"
+
+#: main.cpp:58
+#, kde-format
+msgid ""
+"Print results of a prune operation, but do not change anything.\n"
+"Only applies to \"%1\" command"
+msgstr ""
+"打印修剪操作的结果，但不修改任何内容。\n"
+"仅适用于 “%1” 命令"
+
+#: main.cpp:63
+#, kde-format
+msgid ""
+"List only inaccessible entries.\n"
+"Only applies to \"%1\""
+msgstr ""
+"仅列出无法访问的项目。\n"
+"只适用于 “%1”"
+
+#: main.cpp:70
+#, kde-format
+msgid ""
+"List database contents. Use a regular expression as argument to filter output"
+msgstr "列出数据库内容。使用正则表达式作为参数以过滤输出"
+
+#: main.cpp:103
+#, kde-format
+msgid "List devices"
+msgstr "列出设备"
+
+#: main.cpp:152
+#, kde-format
+msgid ""
+"\n"
+"\n"
+"Commands:\n"
+"    %1"
+msgstr ""
+"\n"
+"\n"
+"命令：\n"
+"    %1"
+
+#: main.cpp:159
+#, kde-format
+msgid "Baloo Database Sanitizer"
+msgstr "Baloo 数据库消毒剂"
+
+#: main.cpp:161
+#, kde-format
+msgid "The Baloo Database Lister & Sanitizer"
+msgstr "Baloo 的数据库列表器和消毒剂"
+
+#: main.cpp:163
+#, kde-format
+msgid "(c) 2018, Michael Heidelbach"
+msgstr "(c) 2018, Michael Heidelbach"
+
+#: main.cpp:164
+#, kde-format
+msgid "Michael Heidelbach"
+msgstr "Michael Heidelbach"
+
+#: main.cpp:164
+#, kde-format
+msgid "Maintainer"
+msgstr "维护者"
+
+#: main.cpp:170
+#, kde-format
+msgid "The command to execute"
+msgstr "要执行的命令"
+
+#: main.cpp:174
+#, kde-format
+msgctxt "Command"
+msgid ""
+"A regular expression applied to the URL of database items\n"
+"Example: %1"
+msgstr ""
+"应用到数据库项目 URL 的正则表达式\n"
+"例如：%1"
+
+#: main.cpp:223 main.cpp:231
+#, kde-format
+msgid "Baloo Index could not be opened"
+msgstr "Baloo 索引无法打开"
+
+#: main.cpp:227 main.cpp:235
+#, kde-format
+msgid "Listing database contents..."
+msgstr "正在列出数据库内容..."
+
+#: main.cpp:262
+#, kde-format
+msgid "Elapsed: %1 secs"
+msgstr "经过时间：%1 秒"

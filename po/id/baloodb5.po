@@ -1,0 +1,151 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+# Wantoyo <wantoyek@gmail.com>, 2018.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2018-03-23 03:23+0100\n"
+"PO-Revision-Date: 2018-04-03 06:25+0700\n"
+"Last-Translator: Wantoyo <wantoyek@gmail.com>\n"
+"Language-Team: Indonesian <kde-i18n-doc@kde.org>\n"
+"Language: id\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Lokalize 2.0\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Wantoyo"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "wantoyek@gmail.com"
+
+#: main.cpp:48
+#, kde-format
+msgid ""
+"Filter by device id.\n"
+"0 (default) does not filter and everything is printed.\n"
+"Positive numbers are including filters printing only the mentioned device "
+"id.\n"
+"Negative numbers are excluding filters printing everything but the mentioned "
+"device id.\n"
+"May be given multiple times."
+msgstr ""
+"Filter menurut id peranti.\n"
+"0 (baku) tidak memfilter dan semuanya dicetak.\n"
+"Angka positif termasuk filter yang hanya mencetak id peranti yang "
+"disebutkan.\n"
+"Angka negatif tidak termasuk filter yang mencetak semuanya kecuali id "
+"peranti yang disebutkan.\n"
+"Dapat diberikan beberapa kali."
+
+#: main.cpp:53
+#, kde-format
+msgid "integer"
+msgstr "integer"
+
+#: main.cpp:58
+#, kde-format
+msgid ""
+"Print results of a prune operation, but do not change anything.\n"
+"Only applies to \"%1\" command"
+msgstr ""
+"Cetak hasil operasi pemangkasan, tapi tidak mengubah apa pun.\n"
+"Hanya diterapkan untuk perintah ''%1''"
+
+#: main.cpp:63
+#, kde-format
+msgid ""
+"List only inaccessible entries.\n"
+"Only applies to \"%1\""
+msgstr ""
+"Daftar hanya entri yang tak dapat diakses.\n"
+"Hanya diterapkan untuk \"%1\""
+
+#: main.cpp:70
+#, kde-format
+msgid ""
+"List database contents. Use a regular expression as argument to filter output"
+msgstr ""
+"Daftar isi pangkalan data. Gunakan ekspresi reguler sebagai argumen untuk "
+"keluaran filter"
+
+#: main.cpp:103
+#, kde-format
+msgid "List devices"
+msgstr "Daftar peranti"
+
+#: main.cpp:152
+#, kde-format
+msgid ""
+"\n"
+"\n"
+"Commands:\n"
+"    %1"
+msgstr ""
+"\n"
+"\n"
+"Komentar:\n"
+"    %1"
+
+#: main.cpp:159
+#, kde-format
+msgid "Baloo Database Sanitizer"
+msgstr "Sanitizer Database Baloo"
+
+#: main.cpp:161
+#, kde-format
+msgid "The Baloo Database Lister & Sanitizer"
+msgstr "Pendaftar Database Baloo & Sanitizer"
+
+#: main.cpp:163
+#, kde-format
+msgid "(c) 2018, Michael Heidelbach"
+msgstr "(c) 2018, Michael Heidelbach"
+
+#: main.cpp:164
+#, kde-format
+msgid "Michael Heidelbach"
+msgstr "Michael Heidelbach"
+
+#: main.cpp:164
+#, kde-format
+msgid "Maintainer"
+msgstr "Pemelihara"
+
+#: main.cpp:170
+#, kde-format
+msgid "The command to execute"
+msgstr "Perintah untuk mengeksekusi"
+
+#: main.cpp:174
+#, kde-format
+msgctxt "Command"
+msgid ""
+"A regular expression applied to the URL of database items\n"
+"Example: %1"
+msgstr ""
+"Sebuah ekspresi reguler yang diterapkan ke URL item-item pangkalan data\n"
+"Contoh: %1"
+
+#: main.cpp:223 main.cpp:231
+#, kde-format
+msgid "Baloo Index could not be opened"
+msgstr "Baloo Indeks tidak dapat dibuka"
+
+#: main.cpp:227 main.cpp:235
+#, kde-format
+msgid "Listing database contents..."
+msgstr "Mendaftar isi pangkalan-data..."
+
+#: main.cpp:262
+#, kde-format
+msgid "Elapsed: %1 secs"
+msgstr "Waktu berlalu: %1 secs"

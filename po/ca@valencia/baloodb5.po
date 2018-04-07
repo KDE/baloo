@@ -1,0 +1,154 @@
+# Translation of baloodb5.po to Catalan (Valencian)
+# Copyright (C) 2018 This_file_is_part_of_KDE
+# This file is distributed under the license LGPL version 2.1 or
+# version 3 or later versions approved by the membership of KDE e.V.
+#
+# Josep Ma. Ferrer <txemaq@gmail.com>, 2018.
+msgid ""
+msgstr ""
+"Project-Id-Version: baloodb5\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2018-03-23 03:23+0100\n"
+"PO-Revision-Date: 2018-03-21 21:06+0100\n"
+"Last-Translator: Josep Ma. Ferrer <txemaq@gmail.com>\n"
+"Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
+"Language: ca@valencia\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Accelerator-Marker: &\n"
+"X-Generator: Lokalize 2.0\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Josep Ma. Ferrer"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "txemaq@gmail.com"
+
+#: main.cpp:48
+#, kde-format
+msgid ""
+"Filter by device id.\n"
+"0 (default) does not filter and everything is printed.\n"
+"Positive numbers are including filters printing only the mentioned device "
+"id.\n"
+"Negative numbers are excluding filters printing everything but the mentioned "
+"device id.\n"
+"May be given multiple times."
+msgstr ""
+"Filtre per ID de dispositiu.\n"
+"0 (per defecte) no filtra i s'imprimeix tot.\n"
+"Els números positius són incloent els filtres que imprimisquen només els "
+"dispositius indicats per les ID.\n"
+"Els números negatius són excloent els filtres que imprimisquen tot excepte "
+"els dispositius indicats per les ID.\n"
+"Es pot indicar diverses vegades."
+
+#: main.cpp:53
+#, kde-format
+msgid "integer"
+msgstr "enter"
+
+#: main.cpp:58
+#, kde-format
+msgid ""
+"Print results of a prune operation, but do not change anything.\n"
+"Only applies to \"%1\" command"
+msgstr ""
+"Imprimeix el resultat d'una operació d'eliminació, però no canvia res.\n"
+"Només aplica a l'ordre «%1»"
+
+#: main.cpp:63
+#, kde-format
+msgid ""
+"List only inaccessible entries.\n"
+"Only applies to \"%1\""
+msgstr ""
+"Només llista les entrades inaccessibles.\n"
+"Només aplica a «%1»"
+
+#: main.cpp:70
+#, kde-format
+msgid ""
+"List database contents. Use a regular expression as argument to filter output"
+msgstr ""
+"Llista el contingut de la base de dades. Usa una expressió regular com a "
+"argument per filtrar l'eixida"
+
+#: main.cpp:103
+#, kde-format
+msgid "List devices"
+msgstr "Llista els dispositius"
+
+#: main.cpp:152
+#, kde-format
+msgid ""
+"\n"
+"\n"
+"Commands:\n"
+"    %1"
+msgstr ""
+"\n"
+"\n"
+"Ordres:\n"
+"    %1"
+
+#: main.cpp:159
+#, kde-format
+msgid "Baloo Database Sanitizer"
+msgstr "Sanejador de la base de dades del Baloo"
+
+#: main.cpp:161
+#, kde-format
+msgid "The Baloo Database Lister & Sanitizer"
+msgstr "Llista i saneja la base de dades del Baloo"
+
+#: main.cpp:163
+#, kde-format
+msgid "(c) 2018, Michael Heidelbach"
+msgstr "(c) 2018, Michael Heidelbach"
+
+#: main.cpp:164
+#, kde-format
+msgid "Michael Heidelbach"
+msgstr "Michael Heidelbach"
+
+#: main.cpp:164
+#, kde-format
+msgid "Maintainer"
+msgstr "Mantenidor"
+
+#: main.cpp:170
+#, kde-format
+msgid "The command to execute"
+msgstr "L'ordre a executar"
+
+#: main.cpp:174
+#, kde-format
+msgctxt "Command"
+msgid ""
+"A regular expression applied to the URL of database items\n"
+"Example: %1"
+msgstr ""
+"Una expressió regular aplicada a l'URL dels elements de la base de dades\n"
+"Exemple: %1"
+
+#: main.cpp:223 main.cpp:231
+#, kde-format
+msgid "Baloo Index could not be opened"
+msgstr "No s'ha pogut obrir l'índex del Baloo"
+
+#: main.cpp:227 main.cpp:235
+#, kde-format
+msgid "Listing database contents..."
+msgstr "S'està llistant el contingut de la base de dades..."
+
+#: main.cpp:262
+#, kde-format
+msgid "Elapsed: %1 secs"
+msgstr "Transcorregut: %1 s"
