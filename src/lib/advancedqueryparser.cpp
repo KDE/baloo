@@ -94,15 +94,7 @@ static void addTermToStack(QStack<Term>& stack, const Term& termInConstruction, 
         return;
     }
 
-    if (tos.subTerms().count() == 0 || tos.operation() != op) {
-        // Top of stack is a "literal" term or a logical term of the wrong operation
-        Term tmp = stack.pop();
-
-        stack.push(Term(op));
-        stack.top().addSubTerm(tmp);
-    }
-
-    stack.top().addSubTerm(termInConstruction);
+    tos = Term(tos, op, termInConstruction);
 }
 
 static QVariant tokenToVariant(const QString& token)

@@ -257,22 +257,6 @@ void AdvancedQueryParserTest::testNestedParentheses_data()
             Term{QString(), QStringLiteral("c"), Term::Contains},
             Term{QString(), QStringLiteral("d"), Term::Contains},
         }}
-        << QStringLiteral("Fails to optimize for unknown reason, but output is semantically correct")
-        ;
-    // This test verifies that the above test is semantically correct
-    QTest::newRow("(a AND (b AND (c AND d))) semantic")
-        << QStringLiteral("(a AND (b AND (c AND d)))")
-        << Term{Term::And, QList<Term>{
-                Term{QString(), QStringLiteral("a"), Term::Contains},
-                Term{Term::And, QList<Term>{
-                    Term{QString(), QStringLiteral("b"), Term::Contains},
-                    Term{Term::And, QList<Term>{
-                        Term{QString(), QStringLiteral("c"), Term::Contains},
-                        Term{QString(), QStringLiteral("d"), Term::Contains}
-
-                    }}
-                }}
-            }}
         << QString()
         ;
     // Test 1 for BUG: 392620
