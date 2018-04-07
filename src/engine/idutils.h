@@ -47,30 +47,40 @@ inline quint64 devIdAndInodeToId(quint32 devId, quint32 inode)
  */
 inline quint64 statBufToId(const QT_STATBUF& stBuf)
 {
-    // We're loosing 32 bits of info, so this could potentially break
+    // We're losing 32 bits of info, so this could potentially break
     // on file systems with really large inode and device ids
     return devIdAndInodeToId(static_cast<quint32>(stBuf.st_dev),
                              static_cast<quint32>(stBuf.st_ino));
 }
 
+inline int filePathToStat(const QByteArray& filePath, QT_STATBUF& statBuf)
+{
+#ifndef Q_OS_WIN
+    return QT_LSTAT(filePath.constData(), &statBuf);
+#else
+    const int ret = QT_STAT(filePath.constData(), &statBuf)
+    if (ret == 0 && QFileInfo(filePath).isSymLink()) {
+        return QT_STAT(QFileInfo(filePath).symLinkTarget().toUtf8().constData(), &statBuf)
+    } else {
+        return ret;
+    }
+#endif
+}
+
+inline QT_STATBUF filePathToStat(const QByteArray& filePath)
+{
+    QT_STATBUF statBuf;
+    const int ret = filePathToStat(filePath, statBuf);
+    //TODO: if (ret != 0) qDebug() ?
+    Q_UNUSED(ret)
+    return statBuf;
+}
+
 inline quint64 filePathToId(const QByteArray& filePath)
 {
     QT_STATBUF statBuf;
-#ifndef Q_OS_WIN
-    if (QT_LSTAT(filePath.constData(), &statBuf) != 0) {
-        return 0;
-    }
-#else
-    if (QT_STAT(filePath.constData(), &statBuf) != 0) {
-        return 0;
-    }
-    if (QFileInfo(filePath).isSymLink()) {
-        if (QT_STAT(QFileInfo(filePath).symLinkTarget().toUtf8().constData(), &statBuf) != 0) {
-            return 0;
-        }
-    }
-#endif
-    return statBufToId(statBuf);
+    const int ret = filePathToStat(filePath, statBuf);
+    return ret ? 0 : statBufToId(statBuf);
 }
 
 inline quint32 idToInode(quint64 id)

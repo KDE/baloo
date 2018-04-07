@@ -19,6 +19,7 @@
  */
 
 #include "fileinfo.h"
+#include "idutils.h"
 
 using namespace Baloo;
 
@@ -27,9 +28,9 @@ FileInfo::FileInfo(const QByteArray& filePath)
     , m_exists(true)
 {
     Q_ASSERT(!filePath.endsWith('/'));
-    if (QT_LSTAT(filePath.data(), &m_statBuf) != 0) {
+    if (filePathToStat(filePath, m_statBuf) != 0) {
         m_exists = false;
-        memset(&m_statBuf, 0, sizeof(QT_STATBUF));
+        memset(&m_statBuf, 0, sizeof(m_statBuf));
     }
 }
 

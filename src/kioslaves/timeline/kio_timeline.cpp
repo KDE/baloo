@@ -23,6 +23,7 @@
 #include "timelinetools.h"
 #include "query.h"
 #include "resultiterator.h"
+#include "idutils.h"
 
 #include <QDebug>
 #include <QDate>
@@ -79,7 +80,8 @@ KIO::UDSEntry createFileUDSEntry(const QString& filePath)
     KIO::UDSEntry uds;
     // Code from kdelibs/kioslaves/file.cpp
     QT_STATBUF statBuf;
-    if( QT_LSTAT(QFile::encodeName(filePath).data(), &statBuf) == 0) {
+    const QByteArray url = QFile::encodeName(filePath);
+    if (filePathToStat(url, statBuf) == 0) {
         uds.insert(KIO::UDSEntry::UDS_MODIFICATION_TIME, statBuf.st_mtime);
         uds.insert(KIO::UDSEntry::UDS_ACCESS_TIME, statBuf.st_atime);
         uds.insert(KIO::UDSEntry::UDS_SIZE, statBuf.st_size);
