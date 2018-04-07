@@ -452,10 +452,10 @@ namespace {
 QDebug operator <<(QDebug d, const Baloo::Term& t)
 {
     if (t.subTerms().isEmpty()) {
-        d << QStringLiteral("(%1 %2 %3 (%4))").arg(t.property(),
-                                                        comparatorToString(t.comparator()),
-                                                        t.value().toString(),
-                                                        QString::fromLatin1(t.value().typeName())).toUtf8().constData();
+        d << QStringLiteral("(%1 %2 %3(%4))").arg(t.property(),
+                                                  comparatorToString(t.comparator()),
+                                                  QString::fromLatin1(t.value().typeName()),
+                                                  t.value().toString());
     }
     else {
         d << "[" << operationToString(t.operation()).toUtf8().constData();
