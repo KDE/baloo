@@ -96,7 +96,11 @@ QVector<QByteArray> DocumentDB::get(quint64 docId)
     QByteArray arr = QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size);
 
     DocTermsCodec codec;
-    return codec.decode(arr);
+    auto result = codec.decode(arr);
+    if (result.isEmpty()) {
+        qDebug() << "Document Terms DB contains corrupt data for " << docId;
+    }
+    return result;
 }
 
 void DocumentDB::del(quint64 docId)
