@@ -58,6 +58,11 @@ QVector<QByteArray> DocTermsCodec::decode(const QByteArray& full)
     int prevWordBoundary = 0;
     for (int i = 0; i < full.size(); i++) {
         if (full[i] == 1) {
+            if (list.isEmpty()) {
+                // corrupted entry - no way to recover
+                return list;
+            }
+
             QByteArray arr(full.constData() + prevWordBoundary, i - prevWordBoundary);
 
             list << list.last() + arr;
