@@ -128,7 +128,6 @@ Term AdvancedQueryParser::parse(const QString& text)
     QStack<Term::Operation> ops;
     Term termInConstruction;
     bool valueExpected = false;
-    Term::Operation nextOp = Term::And;
 
     stack.push(Term());
     ops.push(Term::And);
@@ -161,10 +160,18 @@ Term AdvancedQueryParser::parse(const QString& text)
 
         // Handle the logic operators
         if (token == QStringLiteral("AND")) {
-            nextOp = Term::And;
+            if (!termInConstruction.isEmpty()) {
+                addTermToStack(stack, termInConstruction, ops.top());
+                termInConstruction = Term();
+            }
+            ops.top() = Term::And;
             continue;
         } else if (token == QStringLiteral("OR")) {
-            nextOp = Term::Or;
+            if (!termInConstruction.isEmpty()) {
+                addTermToStack(stack, termInConstruction, ops.top());
+                termInConstruction = Term();
+            }
+            ops.top() = Term::Or;
             continue;
         }
 
@@ -197,12 +204,11 @@ Term AdvancedQueryParser::parse(const QString& text)
             case '(':
                 if (!termInConstruction.isEmpty()) {
                     addTermToStack(stack, termInConstruction, ops.top());
-                    ops.top() = nextOp;
+                    ops.top() = Term::And;
                 }
 
                 stack.push(Term());
                 ops.push(Term::And);
-                nextOp = Term::And;
                 termInConstruction = Term();
 
                 continue;
@@ -218,7 +224,7 @@ Term AdvancedQueryParser::parse(const QString& text)
                     // it to the term just above it.
                     ops.pop();
                     addTermToStack(stack, stack.pop(), ops.top());
-                    nextOp = Term::And;
+                    ops.top() = Term::And;
                     termInConstruction = Term();
                 }
 
@@ -236,8 +242,7 @@ Term AdvancedQueryParser::parse(const QString& text)
             // to the top-level subterm list.
             if (!termInConstruction.isEmpty()) {
                 addTermToStack(stack, termInConstruction, ops.top());
-                ops.top() = nextOp;
-                nextOp = Term::And;
+                ops.top() = Term::And;
             }
 
             termInConstruction = Term(QString(), token);

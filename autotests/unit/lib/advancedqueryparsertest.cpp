@@ -299,7 +299,7 @@ void AdvancedQueryParserTest::testNestedParentheses_data()
                     Term{QString(), QStringLiteral("d"), Term::Contains}
                 }}
             }}
-        << QStringLiteral("Opening '((' parsed incorrectly")
+        << QString();
         ;
 }
 
