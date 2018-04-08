@@ -60,7 +60,7 @@ inline int filePathToStat(const QByteArray& filePath, QT_STATBUF& statBuf)
 #else
     const int ret = QT_STAT(filePath.constData(), &statBuf);
     if (ret == 0 && QFileInfo(filePath).isSymLink()) {
-        return QT_STAT(QFileInfo(filePath).symLinkTarget().toUtf8().constData(), &statBuf)
+        return QT_STAT(QFileInfo(filePath).symLinkTarget().toUtf8().constData(), &statBuf);
     } else {
         return ret;
     }
