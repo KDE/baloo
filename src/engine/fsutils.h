@@ -25,6 +25,7 @@
 #define BALOO_ENGINE_FSUTILS_H
 
 #include <QString>
+#include <QStringList>
 
 namespace Baloo {
 namespace FSUtils {
@@ -44,6 +45,16 @@ QString getDirectoryFileSystem(const QString &directory);
  * supports NOCOW.
  */
 void disableCoW(const QString &path);
+
+struct DeviceInfo {
+    quint64 id = 0;
+    QString filesystem;
+    QString name;
+    QString mountpoint;
+    QStringList options;
+};
+
+const QVector<DeviceInfo> attachedDevices();
 
 }
 

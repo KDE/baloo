@@ -24,7 +24,7 @@
 
 #include "transaction.h"
 
-namespace Baloo 
+namespace Baloo
 {
 class DatabaseSanitizerImpl;
 /**
@@ -37,31 +37,31 @@ public:
     DatabaseSanitizer(const Database& db, Transaction::TransactionType type);
     DatabaseSanitizer(Database* db, Transaction::TransactionType type);
     ~DatabaseSanitizer();
-    
-    /** 
+
+    /**
     * Print database content to stdout
-    * 
+    *
     * \p deviceIDs filter by device ids. Negative numbers list everything but...
     * with empty \p deviceIDs(default) everything is printed.
-    * 
+    *
     * \p missingOnly Simulate purging operation. Only inaccessible items are printed.
-    * 
+    *
     * \p urlFilter Filter result urls. Default is null = Print everything.
     */
-    void printList(const QVector<qint64>& deviceIds, 
-        const bool missingOnly, 
+    void printList(const QVector<qint64>& deviceIds,
+        const bool missingOnly,
         const QSharedPointer<QRegularExpression>& urlFilter
     );
-    /** 
+    /**
     * Print info about known devices to stdout
-    * 
+    *
     * \p deviceIDs filter by device ids. Negative numbers list everything but...
     * with empty \p deviceIDs(default) everything is printed.
-    * 
+    *
     * \p missingOnly Only inaccessible items are printed.
     */
     void printDevices(const QVector<qint64>& deviceIds, const bool missingOnly = false);
-   
+
 private:
     DatabaseSanitizer(const DatabaseSanitizer& rhs) = delete;
     DatabaseSanitizerImpl* m_pimpl;
