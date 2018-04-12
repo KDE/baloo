@@ -233,7 +233,7 @@ int main(int argc, char* argv[])
         }
         DatabaseSanitizer san(db, Transaction::ReadOnly);
         err << i18n("Listing database contents...") << endl;
-        san.printDevices(deviceIds);
+        san.printDevices(deviceIds, missingOnly);
 
     } else if (command == QStringLiteral("clean")) {
         /* TODO: add prune command */

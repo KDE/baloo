@@ -21,14 +21,18 @@
 
 #include "databasesanitizer.h"
 #include "documenturldb.h"
-#include "baloodebug.h"
+#include "fsutils.h"
+#include "idutils.h"
+
+#include <sys/sysmacros.h>
 
 #include <KLocalizedString>
 #include <QFileInfo>
+#include <QDebug>
 
 namespace Baloo
 {
-    
+
 class DatabaseSanitizerImpl {
 public:
     DatabaseSanitizerImpl(const Database& db, Transaction::TransactionType type)
@@ -41,12 +45,12 @@ public:
     * \brief Basic info about database items
     */
     struct FileInfo {
-        quint32 deviceId = 0; 
+        quint32 deviceId = 0;
         quint32 inode = 0;
         QString url = QString();
         bool accessible = true;
     };
-    
+
     void printProgress(QTextStream& out, uint& cur, const uint max, const uint step) const
     {
         if (cur % step == 0) {
@@ -55,29 +59,29 @@ public:
         }
         cur++;
     }
-    
+
     /**
     * Create a list of \a FileInfo items.
-    * 
+    *
     * \p deviceIDs filter by device ids. If the vector is empty no filtering is done
     * and every item is collected.
     * Positive numbers are including filters collecting only the mentioned device ids.
     * Negative numbers are excluding filters collecting everything but the mentioned device ids.
-    * 
+    *
     * \p missingOnly Only inaccessible items are collected.
-    * 
+    *
     * \p urlFilter Filter result urls. Default is null = Collect everything.
     */
     QVector<FileInfo> createList(
-        const QVector<qint64>& deviceIds, 
-        const bool purging, 
+        const QVector<qint64>& deviceIds,
+        const bool purging,
         const QSharedPointer<QRegularExpression>& urlFilter
     ) const
     {
         Q_ASSERT(m_transaction);
 
-        const auto docUrlDb = DocumentUrlDB(m_transaction->m_dbis.idTreeDbi, 
-                                            m_transaction->m_dbis.idFilenameDbi, 
+        const auto docUrlDb = DocumentUrlDB(m_transaction->m_dbis.idTreeDbi,
+                                            m_transaction->m_dbis.idFilenameDbi,
                                             m_transaction->m_txn);
         const auto map = docUrlDb.toTestMap();
         const auto keys = map.keys();
@@ -94,11 +98,11 @@ public:
                 excludeIds.append(-deviceId);
             }
         }
-        
+
         QTextStream err(stderr);
         for (quint64 id: keys) {
             printProgress(err, i, max, 100);
-            
+
             const quint32* arr = reinterpret_cast<quint32*>(&id);
             const auto url = docUrlDb.get(id);
             FileInfo info;
@@ -117,17 +121,54 @@ public:
         }
         return result;
     }
-    
-    QMultiHash<quint32, FileInfo> createDeviceList(const QVector<qint64>& deviceIds)
+
+    struct DeviceInfo {
+        quint32 id = 0;
+        int items = 0;
+        FSUtils::DeviceInfo fsInfo = {};
+        bool mounted = false;
+    };
+
+    int fillInDeviceInfo(const quint32 id, DeviceInfo& deviceInfo) {
+        static QMap<quint32, DeviceInfo> deviceInfos = []() {
+            QMap<quint32, DeviceInfo> result;
+            const auto devices = FSUtils::attachedDevices();
+            for (const auto& dev : devices) {
+                const QByteArray filePath = QFile::encodeName(dev.mountpoint);
+                const auto fsinfo = filePathToStat(filePath);
+                const quint32 id = static_cast<quint32>(fsinfo.st_dev);
+                DeviceInfo devInfo;
+                devInfo.id = id;
+                devInfo.fsInfo = dev;
+                devInfo.mounted = true && (dev.filesystem != QLatin1String("tmpfs"));
+                qDebug() << "filesystem" << dev.filesystem;
+                result[id] = devInfo;
+            }
+            return result;
+        }();
+
+        deviceInfo.id = id;
+        if (deviceInfos.count(id) == 1) {
+            const DeviceInfo devInf = deviceInfos[deviceInfo.id];
+            deviceInfo.fsInfo = devInf.fsInfo ;
+            deviceInfo.mounted = devInf.mounted;
+            return 0;
+        }
+        return 1;
+    }
+
+    QMap<quint32, DeviceInfo> createDeviceList(const QVector<FileInfo>& infos)
     {
-        auto infos = createList(deviceIds, false, nullptr);
-        QMultiHash<quint32, FileInfo> usedDevices;
-        for (const auto& info: infos) {
-            usedDevices.insert(info.deviceId, info);
+        QMap<quint32, DeviceInfo> usedDevices;
+        for (const auto& info : infos) {
+            usedDevices[info.deviceId].items++;
+        }
+        for (auto it = usedDevices.begin(), end = usedDevices.end(); it != end; it++) {
+            fillInDeviceInfo(it.key(), it.value());
         }
         return usedDevices;
     }
-    
+
 private:
     Transaction* m_transaction;
 };
@@ -154,19 +195,19 @@ DatabaseSanitizer::~DatabaseSanitizer()
 
 /**
 * Create a list of \a FileInfo items and print it to stdout.
-* 
+*
 * \p deviceIDs filter by device ids. If the vector is empty no filtering is done
 * and everything is printed.
 * Positive numbers are including filters printing only the mentioned device ids.
 * Negative numbers are excluding filters printing everything but the mentioned device ids.
-* 
+*
 * \p missingOnly Simulate purging operation. Only inaccessible items are printed.
-* 
+*
 * \p urlFilter Filter result urls. Default is null = Print everything.
 */
  void DatabaseSanitizer::printList(
-    const QVector<qint64>& deviceIds, 
-    const bool missingOnly, 
+    const QVector<qint64>& deviceIds,
+    const bool missingOnly,
     const QSharedPointer<QRegularExpression>& urlFilter)
 {
     auto infos = m_pimpl->createList(deviceIds, missingOnly, urlFilter);
@@ -188,27 +229,44 @@ DatabaseSanitizer::~DatabaseSanitizer()
         << endl;
     }
     err << i18n("Found %1 matching items", infos.count()) << endl;
-    
+
 }
 
 void DatabaseSanitizer::printDevices(const QVector<qint64>& deviceIds, const bool missingOnly)
 {
-    Q_UNUSED(missingOnly)
-    /* 
-     * TODO: Implement missingOnly filter. Checking for file existence
-     * will not work. We need to read /etc/mtab or so.
-     */
-    auto usedDevices = m_pimpl->createDeviceList(deviceIds);
-    
+    auto infos = m_pimpl->createList(deviceIds, false, nullptr);
+    auto usedDevices = m_pimpl->createDeviceList(infos);
+
     const auto sep = QLatin1Char(' ');
     QTextStream out(stdout);
     QTextStream err(stderr);
-    
-    for (const auto& dev: usedDevices.uniqueKeys()) {
-        out << "Device:" << dev 
-        << sep  << usedDevices.values(dev).count() << sep << "items" 
-        << endl;
+    int matchCount = 0;
+    for (const auto& dev : usedDevices) {
+        if (missingOnly && dev.mounted) {
+            continue;
+        }
+        matchCount++;
+        // TODO coloring would be nice, but "...|grep '^!'" does not work with it.
+        // out << QStringLiteral("%1").arg(dev.mounted ? "+" : "\033[1;31m!")
+        // Can be done, see: https://code.qt.io/cgit/qt/qtbase.git/tree/src/corelib/global/qlogging.cpp#n263
+        out << QStringLiteral("%1").arg(dev.mounted ? "+" : "!")
+            << sep << QStringLiteral("device:%1").arg(dev.id)
+            << sep << QStringLiteral("[%1:%2]")
+                .arg(major(dev.id), 4, 16, QLatin1Char('0'))
+                .arg(minor(dev.id), 4, 16, QLatin1Char('0'))
+            << sep << QStringLiteral("indexed-items:%1").arg(dev.items);
+
+        if (dev.mounted) {
+            out
+                << sep << QStringLiteral("fstype:%1").arg(dev.fsInfo.filesystem)
+                << sep << QStringLiteral("fsname:%1").arg(dev.fsInfo.name)
+                << sep << QStringLiteral("mount:%1").arg(dev.fsInfo.mountpoint)
+            ;
+        }
+        // TODO: see above
+        // out << QStringLiteral("\033[0m") << endl;
+        out << endl;
     }
-    
-    err << i18n("Found %1 matching items", usedDevices.count()) << endl;
+
+    err << i18n("Found %1 matching in %2 devices", matchCount, usedDevices.size()) << endl;
 }

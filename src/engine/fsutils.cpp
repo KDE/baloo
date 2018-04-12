@@ -107,3 +107,31 @@ void FSUtils::disableCoW(const QString &path)
     close(fd);
 #endif
 }
+
+const QVector<FSUtils::DeviceInfo> FSUtils::attachedDevices()
+{
+    QVector<DeviceInfo> result;
+#ifndef Q_OS_LINUX
+    return result;
+#else
+    FILE *mtab = setmntent("/etc/mtab", "r");
+    if (!mtab) {
+        return result;
+    }
+    while (mntent *mnt = getmntent(mtab)) {
+        if (qstrcmp(mnt->mnt_type, MNTTYPE_IGNORE) == 0) {
+            continue;
+        }
+        DeviceInfo info;
+        info.mountpoint = QString::fromLocal8Bit(mnt->mnt_dir);
+        info.filesystem = QString::fromLocal8Bit(mnt->mnt_type);
+        info.name = QString::fromLocal8Bit(mnt->mnt_fsname);
+        info.options = QString::fromLocal8Bit(mnt->mnt_opts).split(QLatin1Char(','));
+        result.append(info);
+    }
+
+    endmntent(mtab);
+
+    return result;
+#endif
+}
