@@ -90,9 +90,7 @@ bool Database::open(OpenMode mode)
         }
 
         if (!indexInfo.exists()) {
-            if (FSUtils::getDirectoryFileSystem(m_path) == QStringLiteral("btrfs")) {
-                FSUtils::disableCoW(m_path);
-            }
+            FSUtils::disableCoW(m_path);
         }
     }
 
