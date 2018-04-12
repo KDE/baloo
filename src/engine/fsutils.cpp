@@ -92,14 +92,22 @@ void FSUtils::disableCoW(const QString &path)
     }
 
     if (ioctl(fd, FS_IOC_GETFLAGS, &flags) == -1) {
-        qWarning() << "ioctl error: failed to get file flags (" << errno << ")";
+        const int errno_ioctl = errno;
+        // ignore ENOTTY, filesystem does not support attrs (and likely neither supports COW)
+        if (errno_ioctl != ENOTTY) {
+            qWarning() << "ioctl error: failed to get file flags (" << errno_ioctl << ")";
+        }
         close(fd);
         return;
     }
     if (!(flags & FS_NOCOW_FL)) {
         flags |= FS_NOCOW_FL;
         if (ioctl(fd, FS_IOC_SETFLAGS, &flags) == -1) {
-            qWarning() << "ioctl error: failed to set file flags (" << errno << ")";
+            const int errno_ioctl = errno;
+            // ignore EOPNOTSUPP, returned on filesystems not supporting COW
+            if (errno_ioctl != EOPNOTSUPP) {
+                qWarning() << "ioctl error: failed to set file flags (" << errno_ioctl << ")";
+            }
             close(fd);
             return;
         }

@@ -38,14 +38,10 @@ QString getDirectoryFileSystem(const QString &directory);
 
 /**
  * Disables filesystem copy-on-write feature on given file or directory.
- * Only works on Linux and does nothing on other platforms.
- *
- * It was tested only with Btrfs but in theory can be called on any FS that
- * supports NOCOW.
+ * Only implemented on Linux and does nothing on other platforms.
  */
 void disableCoW(const QString &path);
 
 }
-
 }
 #endif
