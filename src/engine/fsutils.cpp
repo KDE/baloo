@@ -27,44 +27,11 @@
 #ifdef Q_OS_LINUX
 #include <errno.h>
 #include <unistd.h>
-#include <mntent.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
 #endif
 
 using namespace Baloo;
-
-QString FSUtils::getDirectoryFileSystem(const QString &directory)
-{
-#ifndef Q_OS_LINUX
-    return QString();
-#else
-    QString bestMatchPath;
-    QString bestMatchFS;
-
-    FILE *mtab = setmntent("/etc/mtab", "r");
-    if (!mtab) {
-        return QString();
-    }
-    while (mntent *mnt = getmntent(mtab)) {
-        if (qstrcmp(mnt->mnt_type, MNTTYPE_IGNORE) == 0) {
-            continue;
-        }
-
-        const QString dir = QString::fromLocal8Bit(mnt->mnt_dir);
-        if (!directory.startsWith(dir) || dir.length() < bestMatchPath.length()) {
-            continue;
-        }
-
-        bestMatchPath = dir;
-        bestMatchFS = QString::fromLocal8Bit(mnt->mnt_type);
-    }
-
-    endmntent(mtab);
-
-    return bestMatchFS;
-#endif
-}
 
 void FSUtils::disableCoW(const QString &path)
 {
