@@ -21,13 +21,13 @@
 
 #include "databasesanitizer.h"
 #include "documenturldb.h"
-#include "fsutils.h"
 #include "idutils.h"
 
 #include <sys/sysmacros.h>
 
 #include <KLocalizedString>
 #include <QFileInfo>
+#include <QStorageInfo>
 #include <QDebug>
 
 namespace Baloo
@@ -122,51 +122,22 @@ public:
         return result;
     }
 
-    struct DeviceInfo {
-        quint32 id = 0;
-        int items = 0;
-        FSUtils::DeviceInfo fsInfo = {};
-        bool mounted = false;
-    };
-
-    int fillInDeviceInfo(const quint32 id, DeviceInfo& deviceInfo) {
-        static QMap<quint32, DeviceInfo> deviceInfos = []() {
-            QMap<quint32, DeviceInfo> result;
-            const auto devices = FSUtils::attachedDevices();
-            for (const auto& dev : devices) {
-                const QByteArray filePath = QFile::encodeName(dev.mountpoint);
-                const auto fsinfo = filePathToStat(filePath);
+    QStorageInfo getStorageInfo(const quint32 id) {
+        static QMap<quint32, QStorageInfo> storageInfos = []() {
+            QMap<quint32, QStorageInfo> result;
+            const auto volumes = QStorageInfo::mountedVolumes();
+            for (const auto& vol : volumes) {
+                const QByteArray rootPath = QFile::encodeName(vol.rootPath());
+                const auto fsinfo = filePathToStat(rootPath);
                 const quint32 id = static_cast<quint32>(fsinfo.st_dev);
-                DeviceInfo devInfo;
-                devInfo.id = id;
-                devInfo.fsInfo = dev;
-                devInfo.mounted = true && (dev.filesystem != QLatin1String("tmpfs"));
-                qDebug() << "filesystem" << dev.filesystem;
-                result[id] = devInfo;
+                // qDebug() << vol;
+                result[id] = vol;
             }
             return result;
         }();
 
-        deviceInfo.id = id;
-        if (deviceInfos.count(id) == 1) {
-            const DeviceInfo devInf = deviceInfos[deviceInfo.id];
-            deviceInfo.fsInfo = devInf.fsInfo ;
-            deviceInfo.mounted = devInf.mounted;
-            return 0;
-        }
-        return 1;
-    }
-
-    QMap<quint32, DeviceInfo> createDeviceList(const QVector<FileInfo>& infos)
-    {
-        QMap<quint32, DeviceInfo> usedDevices;
-        for (const auto& info : infos) {
-            usedDevices[info.deviceId].items++;
-        }
-        for (auto it = usedDevices.begin(), end = usedDevices.end(); it != end; it++) {
-            fillInDeviceInfo(it.key(), it.value());
-        }
-        return usedDevices;
+        QStorageInfo info = storageInfos.value(id);
+        return info;
     }
 
 private:
@@ -235,32 +206,41 @@ DatabaseSanitizer::~DatabaseSanitizer()
 void DatabaseSanitizer::printDevices(const QVector<qint64>& deviceIds, const bool missingOnly)
 {
     auto infos = m_pimpl->createList(deviceIds, false, nullptr);
-    auto usedDevices = m_pimpl->createDeviceList(infos);
+
+    QMap<quint32, quint64> useCount;
+    for (const auto& info : infos) {
+        useCount[info.deviceId]++;
+    }
 
     const auto sep = QLatin1Char(' ');
     QTextStream out(stdout);
     QTextStream err(stderr);
     int matchCount = 0;
-    for (const auto& dev : usedDevices) {
-        if (missingOnly && dev.mounted) {
+
+    for (auto it = useCount.cbegin(); it != useCount.cend(); it++) {
+        auto id = it.key();
+        auto info = m_pimpl->getStorageInfo(id);
+        auto mounted = info.isValid();
+
+        if (missingOnly && mounted) {
             continue;
         }
         matchCount++;
         // TODO coloring would be nice, but "...|grep '^!'" does not work with it.
         // out << QStringLiteral("%1").arg(dev.mounted ? "+" : "\033[1;31m!")
         // Can be done, see: https://code.qt.io/cgit/qt/qtbase.git/tree/src/corelib/global/qlogging.cpp#n263
-        out << QStringLiteral("%1").arg(dev.mounted ? "+" : "!")
-            << sep << QStringLiteral("device:%1").arg(dev.id)
+        out << QStringLiteral("%1").arg(mounted ? "+" : "!")
+            << sep << QStringLiteral("device:%1").arg(id)
             << sep << QStringLiteral("[%1:%2]")
-                .arg(major(dev.id), 4, 16, QLatin1Char('0'))
-                .arg(minor(dev.id), 4, 16, QLatin1Char('0'))
-            << sep << QStringLiteral("indexed-items:%1").arg(dev.items);
+                .arg(major(id), 4, 16, QLatin1Char('0'))
+                .arg(minor(id), 4, 16, QLatin1Char('0'))
+            << sep << QStringLiteral("indexed-items:%1").arg(it.value());
 
-        if (dev.mounted) {
+        if (mounted) {
             out
-                << sep << QStringLiteral("fstype:%1").arg(dev.fsInfo.filesystem)
-                << sep << QStringLiteral("fsname:%1").arg(dev.fsInfo.name)
-                << sep << QStringLiteral("mount:%1").arg(dev.fsInfo.mountpoint)
+                << sep << QStringLiteral("fstype:%1").arg(info.fileSystemType().toPercentEncoding().constData())
+                << sep << QStringLiteral("device:%1").arg(info.device().constData())
+                << sep << QStringLiteral("path:%1").arg(info.rootPath())
             ;
         }
         // TODO: see above
@@ -268,5 +248,5 @@ void DatabaseSanitizer::printDevices(const QVector<qint64>& deviceIds, const boo
         out << endl;
     }
 
-    err << i18n("Found %1 matching in %2 devices", matchCount, usedDevices.size()) << endl;
+    err << i18n("Found %1 matching in %2 devices", matchCount, useCount.size()) << endl;
 }
