@@ -61,6 +61,14 @@ public:
     }
 
     /**
+     * Summary of createList() actions
+     */
+    struct Summary {
+        quint64 total = 0;  ///Count of all files
+        quint64 ignored = 0;      ///Count of filtered out files
+        quint64 accessible = 0;   ///Count of checked and accessible files
+    };
+    /**
     * Create a list of \a FileInfo items.
     *
     * \p deviceIDs filter by device ids. If the vector is empty no filtering is done
@@ -68,13 +76,13 @@ public:
     * Positive numbers are including filters collecting only the mentioned device ids.
     * Negative numbers are excluding filters collecting everything but the mentioned device ids.
     *
-    * \p missingOnly Only inaccessible items are collected.
+    * \p accessFilter Flags to filter items by accessibility.
     *
     * \p urlFilter Filter result urls. Default is null = Collect everything.
     */
-    QVector<FileInfo> createList(
+    QPair<QVector<FileInfo>, Summary> createList(
         const QVector<qint64>& deviceIds,
-        const bool purging,
+        const DatabaseSanitizer::ItemAccessFilters accessFilter,
         const QSharedPointer<QRegularExpression>& urlFilter
     ) const
     {
@@ -86,9 +94,9 @@ public:
         const auto map = docUrlDb.toTestMap();
         const auto keys = map.keys();
         QVector<FileInfo> result;
-        result.reserve(keys.count());
+        uint max = map.size();
         uint i = 0;
-        uint max = keys.count();
+        result.reserve(max);
         QVector<quint32> includeIds;
         QVector<quint32> excludeIds;
         for (qint64 deviceId : deviceIds) {
@@ -98,28 +106,42 @@ public:
                 excludeIds.append(-deviceId);
             }
         }
-
+        Summary summary;
+        summary.total = max;
+        summary.ignored = max;
         QTextStream err(stderr);
-        for (quint64 id: keys) {
-            printProgress(err, i, max, 100);
 
-            const quint32* arr = reinterpret_cast<quint32*>(&id);
-            const auto url = docUrlDb.get(id);
-            FileInfo info;
-            info.deviceId = arr[0];
-            info.inode = arr[1];
-            info.url = url;
-            info.accessible = !url.isEmpty() && QFileInfo::exists(url);
-            if ((!includeIds.isEmpty() && !includeIds.contains(info.deviceId))
-                || (!excludeIds.isEmpty() && excludeIds.contains(info.deviceId))
-                || (purging && info.accessible)
-                || (urlFilter && !urlFilter->match(info.url).hasMatch())
-            ) {
+        for (auto it = map.constBegin(), end = map.constEnd(); it != end; it++) {
+            printProgress(err, i, max, 100);
+            const quint64 id = it.key();
+            const quint32 deviceId = idToDeviceId(id);
+            if (!includeIds.isEmpty() && !includeIds.contains(deviceId)) {
+                continue;
+            } else if (excludeIds.contains(deviceId)) {
+                continue;
+            } else if (urlFilter && !urlFilter->match(it.value()).hasMatch()) {
                 continue;
             }
+
+            FileInfo info;
+            info.deviceId = deviceId;
+            info.inode = idToInode(id);
+            info.url = QFile::decodeName(it.value());
+            info.accessible = !info.url.isEmpty() && QFileInfo::exists(info.url);
+
+            if (info.accessible && (accessFilter & DatabaseSanitizer::IgnoreAvailable)) {
+                continue;
+            } else if (!info.accessible && (accessFilter & DatabaseSanitizer::IgnoreUnavailable)) {
+                continue;
+            }
+
             result.append(info);
+            summary.ignored--;
+            if (info.accessible) {
+                summary.accessible++;
+            }
         }
-        return result;
+        return {result, summary};
     }
 
     QStorageInfo getStorageInfo(const quint32 id) {
@@ -178,37 +200,42 @@ DatabaseSanitizer::~DatabaseSanitizer()
 */
  void DatabaseSanitizer::printList(
     const QVector<qint64>& deviceIds,
-    const bool missingOnly,
+    const ItemAccessFilters accessFilter,
     const QSharedPointer<QRegularExpression>& urlFilter)
 {
-    auto infos = m_pimpl->createList(deviceIds, missingOnly, urlFilter);
+    auto listResult = m_pimpl->createList(deviceIds, accessFilter, urlFilter);
     const auto sep = QLatin1Char(' ');
     QTextStream out(stdout);
     QTextStream err(stderr);
-    for (const auto& info: infos) {
-        if (!missingOnly) {
-            out << QStringLiteral("%1").arg(info.accessible ? "+" : "!") << sep;
-        } else if (!info.accessible) {
-            out << i18n("Missing:") << sep;
-        } else {
-            Q_ASSERT(false);
-            continue;
-        }
-        out << QStringLiteral("device: %1").arg(info.deviceId)
+    for (const auto& info: listResult.first) {
+        out << QStringLiteral("%1").arg(info.accessible ? "+" : "!")
+        << sep << QStringLiteral("device: %1").arg(info.deviceId)
         << sep << QStringLiteral("inode: %1").arg(info.inode)
         << sep << QStringLiteral("url: %1").arg(info.url)
         << endl;
     }
-    err << i18n("Found %1 matching items", infos.count()) << endl;
+
+    const auto& summary = listResult.second;
+    if (accessFilter & IgnoreAvailable) {
+        err << i18n("Total: %1, Inaccessible: %2",
+                    summary.total,
+                    summary.total - (summary.ignored + summary.accessible)) << endl;
+    } else {
+        err << i18n("Total: %1, Ignored: %2, Accessible: %3, Inaccessible: %4",
+                    summary.total,
+                    summary.ignored,
+                    summary.accessible,
+                    summary.total - (summary.ignored + summary.accessible)) << endl;
+    }
 
 }
 
-void DatabaseSanitizer::printDevices(const QVector<qint64>& deviceIds, const bool missingOnly)
+void DatabaseSanitizer::printDevices(const QVector<qint64>& deviceIds, const ItemAccessFilters accessFilter)
 {
-    auto infos = m_pimpl->createList(deviceIds, false, nullptr);
+    auto infos = m_pimpl->createList(deviceIds, accessFilter, nullptr);
 
     QMap<quint32, quint64> useCount;
-    for (const auto& info : infos) {
+    for (const auto& info : infos.first) {
         useCount[info.deviceId]++;
     }
 
@@ -216,13 +243,15 @@ void DatabaseSanitizer::printDevices(const QVector<qint64>& deviceIds, const boo
     QTextStream out(stdout);
     QTextStream err(stderr);
     int matchCount = 0;
-
     for (auto it = useCount.cbegin(); it != useCount.cend(); it++) {
         auto id = it.key();
         auto info = m_pimpl->getStorageInfo(id);
         auto mounted = info.isValid();
-
-        if (missingOnly && mounted) {
+        if (info.fileSystemType() == QLatin1String("tmpfs")) {
+            continue;
+        } else if (mounted && (accessFilter & IgnoreMounted)) {
+            continue;
+        } else if (!mounted && (accessFilter & IgnoreUnmounted)) {
             continue;
         }
         matchCount++;

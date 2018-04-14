@@ -61,6 +61,10 @@ const auto options = QList<QCommandLineOption>{
     QCommandLineOption{
         QStringList{QStringLiteral("m"), QStringLiteral("missing-only")},
         i18n("List only inaccessible entries.\nOnly applies to \"%1\"", QStringLiteral("list"))
+    },
+    QCommandLineOption{
+        QStringList{QStringLiteral("u"), QStringLiteral("mounted-only")},
+        i18n("Act only on item on mounted devices")
     }
 };
 
@@ -102,7 +106,7 @@ const auto commands = std::vector<Command>{
         QStringLiteral("devices"),
         i18n("List devices"),
         QStringList{},
-        QStringList{QStringLiteral("missing-only")}
+        QStringList{QStringLiteral("missing-only"), QStringLiteral("mounted-only")}
     }
 };
 
@@ -205,7 +209,15 @@ int main(int argc, char* argv[])
     for (const auto& dev : parser.values(QStringLiteral("device-id"))) {
         deviceIds.append(dev.toInt());
     }
-    const bool missingOnly = parser.isSet(QStringLiteral("missing-only"));
+    const DatabaseSanitizer::ItemAccessFilters accessFilter = (
+        parser.isSet(QStringLiteral("missing-only"))
+        ? DatabaseSanitizer::IgnoreAvailable
+        : DatabaseSanitizer::IgnoreNone
+    ) | (
+        parser.isSet(QStringLiteral("mounted-only"))
+        ? DatabaseSanitizer::IgnoreUnmounted
+        : DatabaseSanitizer::IgnoreNone
+    );
     const QString pattern = args.isEmpty()
         ? QString()
         : args.at(0);
@@ -225,7 +237,7 @@ int main(int argc, char* argv[])
         }
         DatabaseSanitizer san(db, Transaction::ReadOnly);
         err << i18n("Listing database contents...") << endl;
-        san.printList(deviceIds, missingOnly, urlFilter);
+        san.printList(deviceIds, accessFilter, urlFilter);
     } else if (command == QStringLiteral("devices")) {
         if (!db->open(Database::ReadOnlyDatabase)) {
             err << i18n("Baloo Index could not be opened") << endl;
@@ -233,7 +245,7 @@ int main(int argc, char* argv[])
         }
         DatabaseSanitizer san(db, Transaction::ReadOnly);
         err << i18n("Listing database contents...") << endl;
-        san.printDevices(deviceIds, missingOnly);
+        san.printDevices(deviceIds, accessFilter);
 
     } else if (command == QStringLiteral("clean")) {
         /* TODO: add prune command */
