@@ -39,16 +39,21 @@
 #include "database.h"
 #include "transaction.h"
 
+#include <unistd.h>
 #include <KLocalizedString>
 #include <KFileMetaData/PropertyInfo>
 
 
 QString colorString(const QString& input, int color)
 {
-    QString colorStart = QStringLiteral("\033[0;%1m").arg(color);
-    QLatin1String colorEnd("\033[0;0m");
+    if(isatty(fileno(stdout))) {
+        QString colorStart = QStringLiteral("\033[0;%1m").arg(color);
+        QLatin1String colorEnd("\033[0;0m");
 
-    return colorStart + input + colorEnd;
+        return colorStart + input + colorEnd;
+    } else {
+        return input;
+    }
 }
 
 int main(int argc, char* argv[])
