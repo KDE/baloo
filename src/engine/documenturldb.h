@@ -112,7 +112,8 @@ void DocumentUrlDB::replace(quint64 docId, const QByteArray& url, Functor should
         quint64 id = path.parentId;
         while (id) {
             auto path = idFilenameDb.get(id);
-            Q_ASSERT(!path.name.isEmpty());
+            // FIXME: Prevents database cleaning
+            // Q_ASSERT(!path.name.isEmpty());
 
             QVector<quint64> subDocs = idTreeDb.get(path.parentId);
             if (subDocs.size() == 1 && shouldDeleteFolder(id)) {

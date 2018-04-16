@@ -41,14 +41,17 @@ public:
     }
 
 public:
+
     /**
     * \brief Basic info about database items
     */
     struct FileInfo {
         quint32 deviceId = 0;
         quint32 inode = 0;
-        QString url = QString();
+        quint64 id = 0;
+        bool isSymLink = false;
         bool accessible = true;
+        QString url;
     };
 
     void printProgress(QTextStream& out, uint& cur, const uint max, const uint step) const
@@ -127,13 +130,17 @@ public:
             info.deviceId = deviceId;
             info.inode = idToInode(id);
             info.url = QFile::decodeName(it.value());
-            info.accessible = !info.url.isEmpty() && QFileInfo::exists(info.url);
+            info.id = id;
+            QFileInfo fileInfo(info.url);
+            info.accessible = !info.url.isEmpty() && fileInfo.exists();
 
             if (info.accessible && (accessFilter & DatabaseSanitizer::IgnoreAvailable)) {
                 continue;
             } else if (!info.accessible && (accessFilter & DatabaseSanitizer::IgnoreUnavailable)) {
                 continue;
             }
+
+            info.isSymLink = fileInfo.isSymLink();
 
             result.append(info);
             summary.ignored--;
@@ -162,8 +169,57 @@ public:
         return info;
     }
 
+
+    QMap<quint32, bool> deviceFilters(QVector<FileInfo>& infos, const DatabaseSanitizer::ItemAccessFilters accessFilter)
+    {
+        QMap<quint32, bool> result;
+        for (const auto& info : infos) {
+            result[info.deviceId] = false;
+        }
+
+        for (auto it = result.begin(), end = result.end(); it != end; it++) {
+            const auto storageInfo = getStorageInfo(it.key());
+            it.value() = isIgnored(storageInfo, accessFilter);
+        }
+        return result;
+    }
+
+    bool isIgnored(const QStorageInfo& storageInfo, const DatabaseSanitizer::ItemAccessFilters accessFilter)
+    {
+        const bool mounted = storageInfo.isValid();
+        if (mounted && (accessFilter & DatabaseSanitizer::IgnoreMounted)) {
+            return true;
+        } else if (!mounted && (accessFilter & DatabaseSanitizer::IgnoreUnmounted)) {
+            return true;
+        }
+
+        if (storageInfo.fileSystemType() == QLatin1String("tmpfs")) {
+            // Due to the volatility of device ids, an id known by baloo may
+            // appear as mounted, but is not what baloo expects.
+            // For example at indexing time 43 was the id of a smb share, but
+            // at runtime 43 is the id of /run/media/<uid> when other users are
+            // logged in. The latter have a type of 'tmpfs' and should be ignored.
+            return true;
+        }
+
+        return false;
+    }
+
+    void removeDocument(const quint64 id) {
+        m_transaction->removeDocument(id);
+    }
+
+    void commit() {
+        m_transaction->commit();
+    }
+
+    void abort() {
+        m_transaction->abort();
+    }
+
 private:
     Transaction* m_transaction;
+
 };
 }
 
@@ -278,4 +334,47 @@ void DatabaseSanitizer::printDevices(const QVector<qint64>& deviceIds, const Ite
     }
 
     err << i18n("Found %1 matching in %2 devices", matchCount, useCount.size()) << endl;
+}
+
+void DatabaseSanitizer::removeStaleEntries(const QVector<qint64>& deviceIds,
+    const DatabaseSanitizer::ItemAccessFilters accessFilter,
+    const bool dryRun,
+    const QSharedPointer<QRegularExpression>& urlFilter)
+{
+    auto listResult = m_pimpl->createList(deviceIds, IgnoreAvailable, urlFilter);
+
+    const auto ignoredDevices = m_pimpl->deviceFilters(listResult.first, accessFilter);
+
+    const auto sep = QLatin1Char(' ');
+    auto& summary = listResult.second;
+    QTextStream out(stdout);
+    QTextStream err(stderr);
+    for (const auto& info: listResult.first) {
+        if (ignoredDevices[info.deviceId] == true) {
+            summary.ignored++;
+        } else {
+            if (info.isSymLink) {
+                out << i18n("IgnoredSymbolicLink:");
+                summary.ignored++;
+            } else {
+                m_pimpl->removeDocument(info.id);
+                out << i18n("Removing:");
+            }
+            out << sep << QStringLiteral("device: %1").arg(info.deviceId)
+                << sep << QStringLiteral("inode: %1").arg(info.inode)
+                << sep << QStringLiteral("url: %1").arg(info.url)
+                << endl;
+        }
+    }
+    if (dryRun) {
+        m_pimpl->abort();
+    } else {
+        m_pimpl->commit();
+    }
+    Q_ASSERT(summary.accessible == 0);
+    err << i18nc("numbers", "Removed: %1, Total: %2, Ignored: %3",
+                 summary.total - summary.ignored,
+                 summary.total,
+                 summary.ignored)
+        << endl;
 }
