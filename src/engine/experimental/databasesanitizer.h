@@ -73,6 +73,12 @@ public:
     */
     void printDevices(const QVector<qint64>& deviceIds, const ItemAccessFilters accessFilter = IgnoreNone);
 
+    void removeStaleEntries(const QVector<qint64>& deviceIds,
+        const DatabaseSanitizer::ItemAccessFilters accessFilter = DatabaseSanitizer::IgnoreNone,
+        const bool dryRun = false,
+        const QSharedPointer<QRegularExpression>& urlFilter = nullptr
+    );
+
 private:
     DatabaseSanitizer(const DatabaseSanitizer& rhs) = delete;
     DatabaseSanitizerImpl* m_pimpl;
