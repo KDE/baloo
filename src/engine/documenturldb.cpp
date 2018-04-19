@@ -138,10 +138,18 @@ QByteArray DocumentUrlDB::get(quint64 docId) const
 
     QByteArray ret = path.name;
     quint64 id = path.parentId;
+    // arbitrary path depth limit - we have to deal with
+    // possibly corrupted DBs out in the wild
+    int depth_limit = 512;
+
     while (id) {
         auto p = idFilenameDb.get(id);
-        //FIXME: this prevents sanitzing 
-        // reactivate Q_ASSERT(!p.name.isEmpty());
+        if (p.name.isEmpty()) {
+            return QByteArray();
+        }
+        if (!depth_limit--) {
+            return QByteArray();
+        }
 
         ret = p.name + '/' + ret;
         id = p.parentId;
