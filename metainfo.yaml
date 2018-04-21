@@ -8,6 +8,10 @@ platforms:
 portingAid: false
 deprecated: false
 release: true
+libraries:
+ - qmake: Baloo
+   cmake: "KF5::Baloo"
+cmakename: KF5Baloo
 
 public_lib: true
 group: Frameworks

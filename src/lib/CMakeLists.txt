@@ -126,3 +126,13 @@ if (NOT WIN32)
       DESTINATION ${KDE_INSTALL_LIBDIR}/pkgconfig
       )
 endif ()
+
+include(ECMGeneratePriFile)
+ecm_generate_pri_file(
+    BASE_NAME Baloo
+    LIB_NAME KF5Baloo
+    DEPS "core KCoreAddons KFileMetaData"
+    FILENAME_VAR PRI_FILENAME
+    INCLUDE_INSTALL_DIR ${KF5_INCLUDE_INSTALL_DIR}/Baloo
+)
+install(FILES ${PRI_FILENAME} DESTINATION ${ECM_MKSPECS_INSTALL_DIR})
