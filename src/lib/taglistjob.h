@@ -26,6 +26,9 @@
 
 namespace Baloo {
 
+/**
+ * @class TagListJob taglisthjob.h <Baloo/TagListJob>
+ */
 class BALOO_CORE_EXPORT TagListJob : public KJob
 {
     Q_OBJECT

@@ -26,6 +26,9 @@
 
 namespace Baloo {
 
+/**
+ * @class IndexerConfig indexerconfig.h <Baloo/IndexerConfig>
+ */
 class BALOO_CORE_EXPORT IndexerConfig
 {
 public:

@@ -29,6 +29,9 @@
 
 namespace Baloo {
 
+/**
+ * @class QueryRunnable queryrunnable.h <Baloo/QueryRunnable>
+ */
 class BALOO_CORE_EXPORT QueryRunnable : public QObject, public QRunnable
 {
     Q_OBJECT

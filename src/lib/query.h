@@ -31,6 +31,8 @@
 namespace Baloo {
 
 /**
+ * @class Query query.h <Baloo/Query>
+ *
  * The Query class is the central class to query to search for files from the Index.
  *
  * This class has an inbuilt parser which recognizes words along with AND / OR and parenthesis
