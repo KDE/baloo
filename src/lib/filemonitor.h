@@ -28,6 +28,9 @@
 
 namespace Baloo {
 
+/**
+ * @class FileMonitor filemonitor.h <Baloo/FileMonitor>
+ */
 class BALOO_CORE_EXPORT FileMonitor : public QObject
 {
     Q_OBJECT

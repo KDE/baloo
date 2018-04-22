@@ -33,6 +33,9 @@ class SearchStore;
 class Result;
 class ResultIteratorPrivate;
 
+/**
+ * @class ResultIterator resultiterator.h <Baloo/ResultIterator>
+ */
 class BALOO_CORE_EXPORT ResultIterator
 {
 public:
