@@ -127,6 +127,13 @@ quint64 Transaction::documentId(const QByteArray& path) const
     return parentId;
 }
 
+QVector<quint64> Transaction::childrenDocumentId(quint64 parentId) const
+{
+    DocumentUrlDB docUrlDB(m_dbis.idTreeDbi, m_dbis.idFilenameDbi, m_txn);
+
+    return docUrlDB.getChildren(parentId);
+}
+
 DocumentTimeDB::TimeInfo Transaction::documentTimeInfo(quint64 id) const
 {
     Q_ASSERT(m_txn);

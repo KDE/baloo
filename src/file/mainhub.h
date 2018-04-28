@@ -25,6 +25,8 @@
 #include "filewatch.h"
 #include "fileindexscheduler.h"
 
+#include <QList>
+
 namespace Baloo {
 
 class Database;
@@ -40,6 +42,7 @@ public:
 public Q_SLOTS:
     Q_SCRIPTABLE void quit() const;
     Q_SCRIPTABLE void updateConfig();
+    Q_SCRIPTABLE void registerBalooWatcher(const QString &service);
 
 private:
     Database* m_db;
@@ -47,6 +50,7 @@ private:
 
     FileWatch m_fileWatcher;
     FileIndexScheduler m_fileIndexScheduler;
+
 };
 }
 

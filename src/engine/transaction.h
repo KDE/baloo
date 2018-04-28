@@ -63,6 +63,7 @@ public:
      * \p path into an id.
      */
     quint64 documentId(const QByteArray& path) const;
+    QVector<quint64> childrenDocumentId(quint64 parentId) const;
     QByteArray documentData(quint64 id) const;
 
     DocumentTimeDB::TimeInfo documentTimeInfo(quint64 id) const;

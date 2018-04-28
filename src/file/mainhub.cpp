@@ -24,6 +24,7 @@
 #include <QDBusConnection>
 #include <QCoreApplication>
 #include <QTimer>
+#include <QDebug>
 
 using namespace Baloo;
 
@@ -64,4 +65,9 @@ void MainHub::updateConfig()
     // FIXME!!
     //m_fileIndexer.updateConfig();
     m_fileWatcher.updateIndexedFoldersWatches();
+}
+
+void MainHub::registerBalooWatcher(const QString &service)
+{
+    m_fileWatcher.registerBalooWatcher(service);
 }

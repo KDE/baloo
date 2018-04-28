@@ -18,12 +18,15 @@
  *
  */
 
+#include "metadatamovertest.h"
 #include "metadatamover.h"
+#include "baloowatcherapplicationadaptor.h"
 
 #include "database.h"
 #include "transaction.h"
 #include "document.h"
 #include "basicindexingjob.h"
+#include "mainhub.h"
 
 #include <QSignalSpy>
 #include <QTemporaryDir>
@@ -31,6 +34,7 @@
 #include <QTimer>
 #include <QDir>
 #include <qtemporaryfile.h>
+#include <QDBusConnection>
 
 using namespace Baloo;
 
@@ -53,7 +57,10 @@ private Q_SLOTS:
 private:
     quint64 insertUrl(const QString& url);
 
+    FileIndexerConfig m_config;
+
     Database* m_db;
+
     QTemporaryDir* m_tempDir;
 };
 
@@ -93,6 +100,10 @@ quint64 MetadataMoverTest::insertUrl(const QString& url)
 
 void MetadataMoverTest::testRemoveFile()
 {
+    MetadataMoverTestDBusSpy dbusSignalSpy;
+    QSignalSpy renamedFilesSignalSpy(&dbusSignalSpy, &MetadataMoverTestDBusSpy::renamedFilesSignal);
+    QSignalSpy fileChangedSpy(&dbusSignalSpy, &MetadataMoverTestDBusSpy::fileMetaDataChanged);
+
     QTemporaryFile file;
     file.open();
     QString url = file.fileName();
@@ -103,9 +114,24 @@ void MetadataMoverTest::testRemoveFile()
         QVERIFY(tr.hasDocument(fid));
     }
 
+    renamedFilesSignalSpy.wait(100);
+    fileChangedSpy.wait(100);
+
+    QCOMPARE(renamedFilesSignalSpy.count(), 0);
+    QCOMPARE(fileChangedSpy.count(), 0);
+
     MetadataMover mover(m_db, this);
+
+    mover.registerBalooWatcher(QStringLiteral("org.kde.baloo.metadatamovertest/org/kde/BalooWatcherApplication"));
+
     file.remove();
     mover.removeFileMetadata(url);
+
+    renamedFilesSignalSpy.wait(100);
+    fileChangedSpy.wait(100);
+
+    QCOMPARE(renamedFilesSignalSpy.count(), 0);
+    QCOMPARE(fileChangedSpy.count(), 0);
 
     {
         Transaction tr(m_db, Transaction::ReadOnly);
@@ -128,6 +154,10 @@ static void mkdir(const QString& path)
 
 void MetadataMoverTest::testRenameFile()
 {
+    MetadataMoverTestDBusSpy dbusSignalSpy;
+    QSignalSpy renamedFilesSignalSpy(&dbusSignalSpy, &MetadataMoverTestDBusSpy::renamedFilesSignal);
+    QSignalSpy fileChangedSpy(&dbusSignalSpy, &MetadataMoverTestDBusSpy::fileMetaDataChanged);
+
     QTemporaryDir dir;
 
     QString url = dir.path() + "/file";
@@ -139,10 +169,25 @@ void MetadataMoverTest::testRenameFile()
         QVERIFY(tr.hasDocument(fid));
     }
 
+    renamedFilesSignalSpy.wait(100);
+    fileChangedSpy.wait(100);
+
+    QCOMPARE(renamedFilesSignalSpy.count(), 0);
+    QCOMPARE(fileChangedSpy.count(), 0);
+
     MetadataMover mover(m_db, this);
+
+    mover.registerBalooWatcher(QStringLiteral("org.kde.baloo.metadatamovertest/org/kde/BalooWatcherApplication"));
+
     QString url2 = dir.path() + "/file2";
     QFile::rename(url, url2);
     mover.moveFileMetadata(QFile::encodeName(url), QFile::encodeName(url2));
+
+    renamedFilesSignalSpy.wait(100);
+    fileChangedSpy.wait(100);
+
+    QCOMPARE(renamedFilesSignalSpy.count(), 1);
+    QCOMPARE(fileChangedSpy.count(), 0);
 
     {
         Transaction tr(m_db, Transaction::ReadOnly);
@@ -153,6 +198,10 @@ void MetadataMoverTest::testRenameFile()
 
 void MetadataMoverTest::testMoveFile()
 {
+    MetadataMoverTestDBusSpy dbusSignalSpy;
+    QSignalSpy renamedFilesSignalSpy(&dbusSignalSpy, &MetadataMoverTestDBusSpy::renamedFilesSignal);
+    QSignalSpy fileChangedSpy(&dbusSignalSpy, &MetadataMoverTestDBusSpy::fileMetaDataChanged);
+
     QTemporaryDir dir;
     QDir().mkpath(dir.path() + "/a/b/c");
 
@@ -165,10 +214,25 @@ void MetadataMoverTest::testMoveFile()
         QVERIFY(tr.hasDocument(fid));
     }
 
+    renamedFilesSignalSpy.wait(100);
+    fileChangedSpy.wait(100);
+
+    QCOMPARE(renamedFilesSignalSpy.count(), 0);
+    QCOMPARE(fileChangedSpy.count(), 0);
+
     MetadataMover mover(m_db, this);
+
+    mover.registerBalooWatcher(QStringLiteral("org.kde.baloo.metadatamovertest/org/kde/BalooWatcherApplication"));
+
     QString url2 = dir.path() + "/file2";
     QFile::rename(url, url2);
     mover.moveFileMetadata(QFile::encodeName(url), QFile::encodeName(url2));
+
+    renamedFilesSignalSpy.wait(100);
+    fileChangedSpy.wait(100);
+
+    QCOMPARE(renamedFilesSignalSpy.count(), 1);
+    QCOMPARE(fileChangedSpy.count(), 0);
 
     {
         Transaction tr(m_db, Transaction::ReadOnly);
@@ -179,6 +243,10 @@ void MetadataMoverTest::testMoveFile()
 
 void MetadataMoverTest::testMoveFolder()
 {
+    MetadataMoverTestDBusSpy dbusSignalSpy;
+    QSignalSpy renamedFilesSignalSpy(&dbusSignalSpy, &MetadataMoverTestDBusSpy::renamedFilesSignal);
+    QSignalSpy fileChangedSpy(&dbusSignalSpy, &MetadataMoverTestDBusSpy::fileMetaDataChanged);
+
     QTemporaryDir dir;
 
     QString folder = dir.path() + "/folder";
@@ -195,10 +263,25 @@ void MetadataMoverTest::testMoveFolder()
         QVERIFY(tr.hasDocument(fid));
     }
 
+    renamedFilesSignalSpy.wait(100);
+    fileChangedSpy.wait(100);
+
+    QCOMPARE(renamedFilesSignalSpy.count(), 0);
+    QCOMPARE(fileChangedSpy.count(), 0);
+
     QString newFolderUrl = dir.path() + "/dir";
     QFile::rename(folder, newFolderUrl);
     MetadataMover mover(m_db, this);
+
+    mover.registerBalooWatcher(QStringLiteral("org.kde.baloo.metadatamovertest/org/kde/BalooWatcherApplication"));
+
     mover.moveFileMetadata(QFile::encodeName(folder), QFile::encodeName(newFolderUrl));
+
+    renamedFilesSignalSpy.wait(100);
+    fileChangedSpy.wait(100);
+
+    QCOMPARE(renamedFilesSignalSpy.count(), 1);
+    QCOMPARE(fileChangedSpy.count(), 0);
 
     {
         Transaction tr(m_db, Transaction::ReadOnly);
@@ -207,6 +290,32 @@ void MetadataMoverTest::testMoveFolder()
         QCOMPARE(tr.documentUrl(did), QFile::encodeName(newFolderUrl));
         QCOMPARE(tr.documentUrl(fid), QFile::encodeName(newFolderUrl + "/file"));
     }
+}
+
+
+
+MetadataMoverTestDBusSpy::MetadataMoverTestDBusSpy(QObject *parent) : QObject(parent)
+{
+    QDBusConnection con = QDBusConnection::sessionBus();
+
+    con.connect(QString(), QStringLiteral("/files"), QStringLiteral("org.kde"),
+                QStringLiteral("changed"), this, SLOT(slotFileMetaDataChanged(QStringList)));
+
+
+    auto mDbusAdaptor = new BalooWatcherApplicationAdaptor(this);
+
+    QCOMPARE(con.registerService(QStringLiteral("org.kde.baloo.metadatamovertest")), true);
+    QCOMPARE(con.registerObject(QStringLiteral("/org/kde/BalooWatcherApplication"), mDbusAdaptor, QDBusConnection::ExportAllContents), true);
+}
+
+void MetadataMoverTestDBusSpy::slotFileMetaDataChanged(QStringList fileList)
+{
+    Q_EMIT fileMetaDataChanged(fileList);
+}
+
+void MetadataMoverTestDBusSpy::renamedFiles(const QString &from, const QString &to, const QStringList &listFiles)
+{
+    Q_EMIT renamedFilesSignal(from, to, listFiles);
 }
 
 QTEST_GUILESS_MAIN(MetadataMoverTest)
