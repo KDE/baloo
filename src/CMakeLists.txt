@@ -10,3 +10,4 @@ if (BUILD_KINOTIFY)
 endif()
 
 add_subdirectory(dbus)
+

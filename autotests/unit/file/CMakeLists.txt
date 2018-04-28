@@ -5,6 +5,16 @@ if(CMAKE_SYSTEM_NAME MATCHES "Linux")
   )
 endif()
 
+set (metadatamovertest_SOURCES
+    metadatamovertest.cpp
+)
+
+qt5_add_dbus_adaptor(metadatamovertest_SOURCES
+    ${CMAKE_SOURCE_DIR}/src/file/org.kde.BalooWatcherApplication.xml
+    metadatamovertest.h MetadataMoverTestDBusSpy)
+
+ecm_add_test(${metadatamovertest_SOURCES} TEST_NAME metadatamovertest LINK_LIBRARIES Qt5::Test baloofilecommon KF5::Baloo)
+
 MACRO(BALOO_FILE_AUTO_TESTS)
   FOREACH(_testname ${ARGN})
     ecm_add_test(${_testname}.cpp TEST_NAME ${_testname} LINK_LIBRARIES Qt5::Test baloofilecommon KF5::Baloo)
@@ -18,7 +28,6 @@ baloo_file_auto_tests(
     regularexpcachebenchmark
     filtereddiriteratortest
     unindexedfileiteratortest
-    metadatamovertest
     fileinfotest
 )
 

@@ -21,6 +21,22 @@
 #define BALOO_METADATA_MOVER_H_
 
 #include <QObject>
+#include <QDBusServiceWatcher>
+#include <QMap>
+
+class OrgKdeBalooWatcherApplicationInterface;
+
+namespace org
+{
+
+namespace kde
+{
+
+typedef ::OrgKdeBalooWatcherApplicationInterface BalooWatcherApplication;
+
+}
+
+}
 
 namespace Baloo
 {
@@ -36,9 +52,13 @@ public:
     MetadataMover(Database* db, QObject* parent = nullptr);
     ~MetadataMover();
 
+    bool hasWatcher() const;
+
 public Q_SLOTS:
     void moveFileMetadata(const QString& from, const QString& to);
     void removeFileMetadata(const QString& file);
+
+    void registerBalooWatcher(const QString &service);
 
 Q_SIGNALS:
     /**
@@ -52,6 +72,10 @@ Q_SIGNALS:
 
     void fileRemoved(const QString& path);
 
+private Q_SLOTS:
+
+    void watcherServiceUnregistered(const QString &serviceName);
+
 private:
     /**
      * Remove the metadata for file \p url
@@ -63,6 +87,12 @@ private:
      * of the resource describing \p from.
      */
     void updateMetadata(Transaction* tr, const QString& from, const QString& to);
+
+    void notifyWatchers(const QString &from, const QString &to, const QList<QString> &filesList);
+
+    QMap<QString, org::kde::BalooWatcherApplication*> m_watcherApplications;
+
+    QDBusServiceWatcher m_serviceWatcher;
 
     Database* m_db;
 };

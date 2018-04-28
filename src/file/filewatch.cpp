@@ -36,7 +36,7 @@
 
 using namespace Baloo;
 
-FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
+FileWatch::FileWatch(Database* db, FileIndexerConfig* config, Baloo::MainHub *dbusInterface, QObject* parent)
     : QObject(parent)
     , m_db(db)
     , m_config(config)
@@ -80,6 +80,15 @@ void FileWatch::watchIndexedFolders()
     Q_FOREACH (const QString& folder, folders) {
         watchFolder(folder);
     }
+}
+
+void FileWatch::registerBalooWatcher(const QString &service)
+{
+    if (!m_metadataMover) {
+        return;
+    }
+
+    m_metadataMover->registerBalooWatcher(service);
 }
 
 // FIXME: listen to Create for folders!

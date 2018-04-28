@@ -38,11 +38,14 @@ set(file_static_lib_SRCS
     filewatch.cpp
     pendingfilequeue.cpp
     metadatamover.cpp
+    org.kde.BalooWatcherApplication.xml
     pendingfile.cpp
     kinotify.cpp
 )
 
 ecm_qt_declare_logging_category(file_static_lib_SRCS HEADER baloodebug.h IDENTIFIER BALOO CATEGORY_NAME org.kde.baloo)
+
+qt5_add_dbus_interface(file_static_lib_SRCS org.kde.BalooWatcherApplication.xml baloowatcherapplication_interface)
 
 add_library(baloofilecommon STATIC ${file_static_lib_SRCS})
 target_link_libraries(baloofilecommon
@@ -72,3 +75,7 @@ install(TARGETS baloo_file ${INSTALL_TARGETS_DEFAULT_ARGS})
 install(FILES baloo_file.desktop DESTINATION ${AUTOSTART_INSTALL_DIR})
 
 add_subdirectory(extractor)
+
+install(FILES
+    org.kde.BalooWatcherApplication.xml
+    DESTINATION ${KDE_INSTALL_DBUSINTERFACEDIR})
