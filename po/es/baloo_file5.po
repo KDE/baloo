@@ -1,0 +1,90 @@
+# Spanish translations for baloo_file.po package.
+# Copyright (C) 2014 This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Automatically generated, 2014.
+# Eloy Cuadra <ecuadra@eloihr.net>, 2014, 2015, 2018.
+msgid ""
+msgstr ""
+"Project-Id-Version: baloo_file\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2018-04-28 03:38+0200\n"
+"PO-Revision-Date: 2018-05-03 21:09+0100\n"
+"Last-Translator: Eloy Cuadra <ecuadra@eloihr.net>\n"
+"Language-Team: Spanish <kde-l10n-es@kde.org>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 2.0\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Eloy Cuadra"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "ecuadra@eloihr.net"
+
+#: indexerstate.h:42
+#, kde-format
+msgid "Unknown"
+msgstr "Desconocido"
+
+#: indexerstate.h:45
+#, kde-format
+msgid "Idle"
+msgstr "Inactivo"
+
+#: indexerstate.h:48
+#, kde-format
+msgid "Suspended"
+msgstr "Suspendido"
+
+#: indexerstate.h:51
+#, kde-format
+msgid "Initial Indexing"
+msgstr "Indexación inicial"
+
+#: indexerstate.h:54
+#, kde-format
+msgid "Indexing new files"
+msgstr "Indexando archivos nuevos"
+
+#: indexerstate.h:57
+#, kde-format
+msgid "Indexing modified files"
+msgstr "Indexando archivos modificados"
+
+#: indexerstate.h:60
+#, kde-format
+msgid "Indexing Extended Attributes"
+msgstr "Indexando atributos extendidos"
+
+#: indexerstate.h:63
+#, kde-format
+msgid "Indexing file content"
+msgstr "Indexando contenido de archivos"
+
+#: indexerstate.h:66
+#, kde-format
+msgid "Checking for unindexed files"
+msgstr "Comprobando archivos no indexados"
+
+#: main.cpp:47
+#, kde-format
+msgid "Baloo File Indexing Daemon"
+msgstr "Demonio de indexación de archivos de Baloo"
+
+#: main.cpp:48
+#, kde-format
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:48
+#, kde-format
+msgid "Maintainer"
+msgstr "Encargado"
