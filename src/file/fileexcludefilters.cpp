@@ -64,17 +64,27 @@ const char* const s_defaultFileExcludeFilters[] = {
     "*.orig",
     ".histfile.*",
     ".xsession-errors*",
+    "*.map",
+    "*.so",
+    "*.a",
+    "*.db",
+    "*.qrc",
+    "*.ini",
+    "*.init",
 
-    // Compiled files
+    // Bytecode files
     "*.class", // Java
     "*.pyc",   // Python
+    "*.pyo",   // More Python
     "*.elc",   // Emacs Lisp
+    "*.qmlc",  // QML
+    "*.jsc",   // Javascript
 
     // end of list
     nullptr
 };
 
-const int s_defaultFileExcludeFiltersVersion = 2;
+const int s_defaultFileExcludeFiltersVersion = 3;
 
 const char* const s_defaultFolderExcludeFilters[] = {
     "po",
@@ -95,7 +105,13 @@ const char* const s_defaultFolderExcludeFilters[] = {
     ".obj",
     ".pch",
     ".uic",
+    ".npm",
+    ".yarn",
+    ".yarn-cache",
     "__pycache__",
+    "node_modules",
+    "node_packages",
+    "nbproject",
 
     //misc
     "core-dumps",
@@ -105,7 +121,7 @@ const char* const s_defaultFolderExcludeFilters[] = {
     nullptr
 };
 
-const int s_defaultFolderExcludeFiltersVersion = 1;
+const int s_defaultFolderExcludeFiltersVersion = 2;
 
 const char* const s_sourceCodeMimeTypes[] = {
     "text/css",
@@ -120,10 +136,19 @@ const char* const s_sourceCodeMimeTypes[] = {
     "text/x-ruby",
     "text/x-scheme",
     "text/x-pascal",
+    "text/x-fortran",
+    "text/x-erlang",
+    "text/x-cmake",
+    "text/x-lua",
     "text/x-yacc",
     "text/x-sed",
     "text/x-haskell",
+    "text/x-copying", // COPYING files
+    "text/x-readme", // README files
     "text/asp",
+    "text/jsx",
+    "text/csx",
+    "text/vnd.trolltech.linguist",
     "application/x-awk",
     "application/x-cgi",
     "application/x-csh",
@@ -134,11 +159,18 @@ const char* const s_sourceCodeMimeTypes[] = {
     "application/x-php",
     "application/x-python",
     "application/x-sh",
+    "application/xml",
+    "application/javascript",
+    "application/json",
+    "application/geo+json",
+    "application/json-patch+json",
+    "application/ld+json",
+    "application/x-ipynb+json", // Jupyter notebooks
 
     // end of list
     nullptr
 };
-const int s_sourceCodeMimeTypesVersion = 1;
+const int s_sourceCodeMimeTypesVersion = 2;
 }
 
 
