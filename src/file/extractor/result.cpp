@@ -85,6 +85,19 @@ void Result::add(KFileMetaData::Property::Property property, const QVariant& val
         const QByteArray term = prefix + value.toDateTime().toString(Qt::ISODate).toUtf8();
         m_doc.addBoolTerm(term);
     }
+    else if (value.type() == QVariant::StringList) {
+        bool shouldBeIndexed = KFileMetaData::PropertyInfo(property).shouldBeIndexed();
+        const auto valueList = value.toStringList();
+        for (const auto& val : valueList)
+        {
+            if (val.isEmpty())
+                continue;
+            m_termGen.indexText(val, prefix);
+            if (shouldBeIndexed)
+                m_termGen.indexText(val);
+
+        }
+    }
     else {
         const QString val = value.toString();
         if (val.isEmpty())
