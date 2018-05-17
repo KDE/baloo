@@ -61,7 +61,7 @@ void PendingFileQueueTest::testTimeout()
     // The signal should be emitted immediately
     QVERIFY(spy.wait());
     QCOMPARE(spy.count(), 1);
-    QCOMPARE(spy.takeFirst().first().toString(), myUrl);
+    QCOMPARE(spy.takeFirst().constFirst().toString(), myUrl);
 
     // Enqueue the url again. This time it should wait for should wait for the
     // minimumTimeout
@@ -72,7 +72,7 @@ void PendingFileQueueTest::testTimeout()
 
     QVERIFY(spy.wait(2000));
     QCOMPARE(spy.count(), 1);
-    QCOMPARE(spy.takeFirst().first().toString(), myUrl);
+    QCOMPARE(spy.takeFirst().constFirst().toString(), myUrl);
 }
 
 void PendingFileQueueTest::testRequeue()
@@ -93,7 +93,7 @@ void PendingFileQueueTest::testRequeue()
     // The signal should be emitted immediately
     QTest::qWait(20);
     QCOMPARE(spy.count(), 1);
-    QCOMPARE(spy.takeFirst().first().toString(), myUrl);
+    QCOMPARE(spy.takeFirst().constFirst().toString(), myUrl);
 
     // Send many events
     queue.enqueue(file);
@@ -108,7 +108,7 @@ void PendingFileQueueTest::testRequeue()
 
     QVERIFY(spy.wait(2500));
     QCOMPARE(spy.count(), 1);
-    QCOMPARE(spy.takeFirst().first().toString(), myUrl);
+    QCOMPARE(spy.takeFirst().constFirst().toString(), myUrl);
 }
 
 QTEST_GUILESS_MAIN(PendingFileQueueTest)

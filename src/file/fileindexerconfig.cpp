@@ -323,7 +323,8 @@ void FileIndexerConfig::buildFolderCache()
 
     // Add all removable media and network shares as ignored unless they have
     // been explicitly added in the include list
-    for (const auto& device: m_devices->allMedia()) {
+    const auto allMedia = m_devices->allMedia();
+    for (const auto& device: allMedia) {
         const QString mountPath = device.mountPath();
         if (!device.isUsable() && !mountPath.isEmpty()) {
             if (!includeFoldersPlain.contains(mountPath)) {

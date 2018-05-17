@@ -172,7 +172,7 @@ void FileIndexScheduler::powerManagementStatusChanged(bool isOnBattery)
         m_contentIndexer->quit();
         //TODO: Maybe we can add a special state for suspended due to being on battery.
         m_indexerState = Idle;
-        stateChanged(m_indexerState);
+        Q_EMIT stateChanged(m_indexerState);
     } else if (!isOnBattery) {
         scheduleIndexing();
     }

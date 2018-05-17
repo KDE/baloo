@@ -459,7 +459,8 @@ QDebug operator <<(QDebug d, const Baloo::Term& t)
     }
     else {
         d << "[" << operationToString(t.operation()).toUtf8().constData();
-        for (const Term& term : t.subTerms()) {
+        const auto subTerms = t.subTerms();
+        for (const Term& term : subTerms) {
             d << term;
         }
         d << "]";
