@@ -185,7 +185,7 @@ ResultIterator Query::exec()
 {
     Term term(d->m_term);
     if (!d->m_types.isEmpty()) {
-        for (const QString& type : d->m_types) {
+        for (const QString& type : qAsConst(d->m_types)) {
             term = term && Term(QStringLiteral("type"), type);
         }
     }

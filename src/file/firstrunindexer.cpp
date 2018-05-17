@@ -49,7 +49,7 @@ void FirstRunIndexer::run()
 
     QMimeDatabase mimeDb;
 
-    for (const QString& folder : m_folders) {
+    for (const QString& folder : qAsConst(m_folders)) {
         Transaction tr(m_db, Transaction::ReadWrite);
 
         FilteredDirIterator it(m_config, folder);
