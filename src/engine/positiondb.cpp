@@ -129,7 +129,7 @@ public:
         m_vec = codec.decode(QByteArray(static_cast<char*>(data), size));
     }
 
-    quint64 next() Q_DECL_OVERRIDE {
+    quint64 next() override {
         m_pos++;
         if (m_pos >= m_vec.size()) {
             return 0;
@@ -138,14 +138,14 @@ public:
         return m_vec[m_pos].docId;
     }
 
-    quint64 docId() const Q_DECL_OVERRIDE {
+    quint64 docId() const override {
         if (m_pos < 0 || m_pos >= m_vec.size()) {
             return 0;
         }
         return m_vec[m_pos].docId;
     }
 
-    QVector<uint> positions() Q_DECL_OVERRIDE {
+    QVector<uint> positions() override {
         if (m_pos < 0 || m_pos >= m_vec.size()) {
             return QVector<uint>();
         }

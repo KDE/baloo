@@ -34,24 +34,24 @@ class TimelineProtocol : public KIO::SlaveBase
 {
 public:
     TimelineProtocol(const QByteArray& poolSocket, const QByteArray& appSocket);
-    ~TimelineProtocol() Q_DECL_OVERRIDE;
+    ~TimelineProtocol() override;
 
     /**
      * List all files and folders tagged with the corresponding tag.
      */
-    void listDir(const QUrl& url) Q_DECL_OVERRIDE;
+    void listDir(const QUrl& url) override;
 
     /**
      * Files will be forwarded.
      * Folders will be created as virtual folders.
      */
-    void mimetype(const QUrl& url) Q_DECL_OVERRIDE;
+    void mimetype(const QUrl& url) override;
 
     /**
      * Files will be forwarded.
      * Folders will be created as virtual folders.
      */
-    void stat(const QUrl& url) Q_DECL_OVERRIDE;
+    void stat(const QUrl& url) override;
 
 private:
     void listDays(int month, int year);

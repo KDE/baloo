@@ -34,9 +34,9 @@ public:
     Result();
     Result(const QString& url, const QString& mimetype, const Flags& flags = ExtractEverything);
 
-    void add(KFileMetaData::Property::Property property, const QVariant& value) Q_DECL_OVERRIDE;
-    void append(const QString& text) Q_DECL_OVERRIDE;
-    void addType(KFileMetaData::Type::Type type) Q_DECL_OVERRIDE;
+    void add(KFileMetaData::Property::Property property, const QVariant& value) override;
+    void append(const QString& text) override;
+    void addType(KFileMetaData::Type::Type type) override;
 
     void setDocument(const Baloo::Document& doc);
 

@@ -28,10 +28,10 @@ namespace Baloo {
 class StatusCommand : public Command
 {
 public:
-    QString command() Q_DECL_OVERRIDE;
-    QString description() Q_DECL_OVERRIDE;
+    QString command() override;
+    QString description() override;
 
-    int exec(const QCommandLineParser& parser) Q_DECL_OVERRIDE;
+    int exec(const QCommandLineParser& parser) override;
 };
 }
 

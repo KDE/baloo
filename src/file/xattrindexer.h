@@ -35,7 +35,7 @@ class XAttrIndexer : public QObject, public QRunnable
 public:
     XAttrIndexer(Database* db, FileIndexerConfig* config, const QStringList& files);
 
-    void run() Q_DECL_OVERRIDE;
+    void run() override;
 
 Q_SIGNALS:
     void done();

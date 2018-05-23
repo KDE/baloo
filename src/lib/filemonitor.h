@@ -36,7 +36,7 @@ class BALOO_CORE_EXPORT FileMonitor : public QObject
     Q_OBJECT
 public:
     explicit FileMonitor(QObject* parent = nullptr);
-    ~FileMonitor() Q_DECL_OVERRIDE;
+    ~FileMonitor() override;
 
     void addFile(const QString& fileUrl);
     void addFile(const QUrl& url);

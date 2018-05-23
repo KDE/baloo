@@ -35,7 +35,7 @@ class FirstRunIndexer : public QObject, public QRunnable
 public:
     FirstRunIndexer(Database* db, FileIndexerConfig* config, const QStringList& folders);
 
-    void run() Q_DECL_OVERRIDE;
+    void run() override;
 
 Q_SIGNALS:
     void done();

@@ -36,7 +36,7 @@ class TagsProtocol : public KIO::ForwardingSlaveBase
     Q_OBJECT
 public:
     TagsProtocol(const QByteArray& pool_socket, const QByteArray& app_socket);
-    ~TagsProtocol() Q_DECL_OVERRIDE;
+    ~TagsProtocol() override;
 
     enum UrlType {
         InvalidUrl,
@@ -49,49 +49,49 @@ public:
      * List all files and folders tagged with the corresponding tag, along with
      * additional tags that can be used to filter the results
      */
-    void listDir(const QUrl& url) Q_DECL_OVERRIDE;
+    void listDir(const QUrl& url) override;
 
     /**
      * Will be forwarded for files.
      */
-    void get(const QUrl& url) Q_DECL_OVERRIDE;
+    void get(const QUrl& url) override;
 
     /**
      * Files and folders can be copied to the virtual folders resulting
      * is assignment of the corresponding tag.
      */
-    void copy(const QUrl& src, const QUrl& dest, int permissions, KIO::JobFlags flags) Q_DECL_OVERRIDE;
+    void copy(const QUrl& src, const QUrl& dest, int permissions, KIO::JobFlags flags) override;
 
     /**
      * File renaming will be forwarded.
      * Folder renaming results in renaming of the tag.
      */
-    void rename(const QUrl& src, const QUrl& dest, KIO::JobFlags flags) Q_DECL_OVERRIDE;
+    void rename(const QUrl& src, const QUrl& dest, KIO::JobFlags flags) override;
 
     /**
      * File deletion means remocing the tag
      * Folder deletion will result in deletion of the tag.
      */
-    void del(const QUrl& url, bool isfile) Q_DECL_OVERRIDE;
+    void del(const QUrl& url, bool isfile) override;
 
     /**
      * Files will be forwarded.
      * Tags will be created as virtual folders.
      */
-    void mimetype(const QUrl& url) Q_DECL_OVERRIDE;
+    void mimetype(const QUrl& url) override;
 
     /**
      * Virtual folders will be created.
      */
-    void mkdir(const QUrl& url, int permissions) Q_DECL_OVERRIDE;
+    void mkdir(const QUrl& url, int permissions) override;
 
     /**
      * Files will be forwarded.
      * Tags will be created as virtual folders.
      */
-    void stat(const QUrl& url) Q_DECL_OVERRIDE;
+    void stat(const QUrl& url) override;
 protected:
-    bool rewriteUrl(const QUrl& url, QUrl& newURL) Q_DECL_OVERRIDE;
+    bool rewriteUrl(const QUrl& url, QUrl& newURL) override;
 
 private:
     enum ParseFlags {
