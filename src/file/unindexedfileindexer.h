@@ -37,7 +37,7 @@ class UnindexedFileIndexer : public QObject, public QRunnable
 public:
     UnindexedFileIndexer(Database* db, FileIndexerConfig* config);
 
-    void run() Q_DECL_OVERRIDE;
+    void run() override;
 
 Q_SIGNALS:
     void done();

@@ -38,15 +38,15 @@ class MonitorCommand : public QObject, public Command
 public:
     explicit MonitorCommand(QObject* parent = nullptr);
 
-    QString command() Q_DECL_OVERRIDE {
+    QString command() override {
         return QStringLiteral("monitor");
     }
 
-    QString description() Q_DECL_OVERRIDE {
+    QString description() override {
         return i18n("CLI interface for monitoring Baloo");
     }
 
-    int exec(const QCommandLineParser& parser) Q_DECL_OVERRIDE;
+    int exec(const QCommandLineParser& parser) override;
 
 private Q_SLOTS:
     void startedIndexingFile(const QString& filePath);

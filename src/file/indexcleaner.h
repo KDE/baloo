@@ -33,7 +33,7 @@ class IndexCleaner : public QObject, public QRunnable
     Q_OBJECT
 public:
     IndexCleaner(Database* db, FileIndexerConfig* config);
-    void run() Q_DECL_OVERRIDE;
+    void run() override;
 
 Q_SIGNALS:
     void done();

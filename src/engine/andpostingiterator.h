@@ -30,10 +30,10 @@ class BALOO_ENGINE_EXPORT AndPostingIterator : public PostingIterator
 {
 public:
     explicit AndPostingIterator(const QVector<PostingIterator*>& iterators);
-    ~AndPostingIterator() Q_DECL_OVERRIDE;
+    ~AndPostingIterator() override;
 
-    quint64 next() Q_DECL_OVERRIDE;
-    quint64 docId() const Q_DECL_OVERRIDE;
+    quint64 next() override;
+    quint64 docId() const override;
 
 private:
     QVector<PostingIterator*> m_iterators;

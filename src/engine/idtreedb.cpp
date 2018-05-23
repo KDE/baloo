@@ -110,13 +110,13 @@ public:
     IdTreePostingIterator(const IdTreeDB& db, const QVector<quint64> list)
         : m_db(db), m_pos(-1), m_idList(list) {}
 
-    quint64 docId() const Q_DECL_OVERRIDE {
+    quint64 docId() const override {
         if (m_pos >= 0 && m_pos < m_resultList.size())
             return m_resultList[m_pos];
         return 0;
     }
 
-    quint64 next() Q_DECL_OVERRIDE {
+    quint64 next() override {
         if (m_resultList.isEmpty() && m_idList.isEmpty()) {
             return 0;
         }

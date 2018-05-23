@@ -31,9 +31,9 @@ class BALOO_ENGINE_EXPORT VectorPositionInfoIterator : public PostingIterator
 public:
     explicit VectorPositionInfoIterator(const QVector<PositionInfo>& vector);
 
-    quint64 docId() const Q_DECL_OVERRIDE;
-    quint64 next() Q_DECL_OVERRIDE;
-    QVector<uint> positions() Q_DECL_OVERRIDE;
+    quint64 docId() const override;
+    quint64 next() override;
+    QVector<uint> positions() override;
 
 private:
     QVector<PositionInfo> m_vector;

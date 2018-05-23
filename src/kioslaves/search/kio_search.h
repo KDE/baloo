@@ -33,24 +33,24 @@ class SearchProtocol : public KIO::SlaveBase
 
 public:
     SearchProtocol(const QByteArray& poolSocket, const QByteArray& appSocket);
-    ~SearchProtocol() Q_DECL_OVERRIDE;
+    ~SearchProtocol() override;
 
     /**
      *
      */
-    void listDir(const QUrl& url) Q_DECL_OVERRIDE;
+    void listDir(const QUrl& url) override;
 
     /**
      * Files will be forwarded.
      * Folders will be created as virtual folders.
      */
-    void mimetype(const QUrl& url) Q_DECL_OVERRIDE;
+    void mimetype(const QUrl& url) override;
 
     /**
      * Files will be forwarded.
      * Folders will be created as virtual folders.
      */
-    void stat(const QUrl& url) Q_DECL_OVERRIDE;
+    void stat(const QUrl& url) override;
 
 private:
 };

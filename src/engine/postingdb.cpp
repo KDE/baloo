@@ -145,8 +145,8 @@ QVector< QByteArray > PostingDB::fetchTermsStartingWith(const QByteArray& term)
 class DBPostingIterator : public PostingIterator {
 public:
     DBPostingIterator(void* data, uint size);
-    quint64 docId() const Q_DECL_OVERRIDE;
-    quint64 next() Q_DECL_OVERRIDE;
+    quint64 docId() const override;
+    quint64 next() override;
 
 private:
     const QVector<quint64> m_vec;

@@ -32,8 +32,8 @@ public:
     explicit OrPostingIterator(const QVector<PostingIterator*>& iterators);
     ~OrPostingIterator();
 
-    quint64 next() Q_DECL_OVERRIDE;
-    quint64 docId() const Q_DECL_OVERRIDE;
+    quint64 next() override;
+    quint64 docId() const override;
 
 private:
     QVector<PostingIterator*> m_iterators;
