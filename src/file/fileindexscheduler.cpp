@@ -29,6 +29,8 @@
 
 #include "fileindexerconfig.h"
 
+#include <memory>
+
 #include <QTimer>
 #include <QDebug>
 #include <QDBusConnection>
@@ -141,13 +143,11 @@ void FileIndexScheduler::scheduleIndexing()
 
 static void removeStartsWith(QStringList& list, const QString& dir)
 {
-    QMutableListIterator<QString> it(list);
-    while (it.hasNext()) {
-        const QString& file = it.next();
-        if (file.startsWith(dir)) {
-            it.remove();
-        }
-    }
+    const auto tail = std::remove_if(list.begin(), list.end(),
+        [&dir](const QString& file) {
+            return file.startsWith(dir);
+        });
+    list.erase(tail, list.end());
 }
 
 void FileIndexScheduler::handleFileRemoved(const QString& file)

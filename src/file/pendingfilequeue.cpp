@@ -22,6 +22,8 @@
 
 #include "pendingfilequeue.h"
 
+#include <memory>
+
 #include <QDebug>
 #include <QDateTime>
 
@@ -56,17 +58,19 @@ PendingFileQueue::~PendingFileQueue()
 void PendingFileQueue::enqueue(const PendingFile& file)
 {
     // If we get an event to remove /home/A, remove all events for everything under /home/A/
-    if (file.shouldRemoveIndex() && file.path().endsWith('/')) {
-        QMutableVectorIterator<PendingFile> it(m_cache);
-        while (it.hasNext()) {
-            const PendingFile &pf = it.next();
-            if (pf.path().startsWith(file.path())) {
-                m_pendingFiles.remove(pf.path());
-                m_recentlyEmitted.remove(pf.path());
 
-                it.remove();
-            }
+    if (file.shouldRemoveIndex() && file.path().endsWith('/')) {
+        const auto keepFile = [&file](const PendingFile& pending) {
+            return !pending.path().startsWith(file.path());
+        };
+        const auto end = m_cache.end();
+        // std::partition moves all matching entries to the first partition
+        const auto droppedFilesBegin = std::partition(m_cache.begin(), end, keepFile);
+        for (auto it = droppedFilesBegin; it != end; it++) {
+            m_pendingFiles.remove(it->path());
+            m_recentlyEmitted.remove(it->path());
         }
+        m_cache.erase(droppedFilesBegin, end);
     }
 
     int i = m_cache.indexOf(file);
