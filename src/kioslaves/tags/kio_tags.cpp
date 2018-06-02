@@ -429,6 +429,7 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
     q.setSortingOption(Query::SortNone);
     q.setSearchString(QStringLiteral("tag=\"%1\"").arg(result.tag));
     ResultIterator it = q.exec();
+    QList<QString> resultNames;
     while (it.next()) {
         const QUrl& match = QUrl::fromLocalFile(it.filePath());
 
@@ -447,10 +448,16 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
         }
 
         uds.insert(KIO::UDSEntry::UDS_NAME, match.fileName() + QStringLiteral("?") + it.filePath());
-        uds.insert(KIO::UDSEntry::UDS_DISPLAY_NAME, match.fileName());
         uds.insert(KIO::UDSEntry::UDS_TARGET_URL, match.toString());
         uds.insert(KIO::UDSEntry::UDS_ICON_OVERLAY_NAMES, QStringLiteral("tag"));
 
+        if (!resultNames.contains(match.fileName())) {
+            uds.insert(KIO::UDSEntry::UDS_DISPLAY_NAME, match.fileName());
+        } else {
+            uds.insert(KIO::UDSEntry::UDS_DISPLAY_NAME, match.fileName() + QStringLiteral(" (%1)").arg(resultNames.count(match.fileName())));
+        }
+
+        resultNames << match.fileName();
         result.pathUDSResults << uds;
     }
 
