@@ -1,0 +1,92 @@
+# Translation of baloo_file.po to Brazilian Portuguese
+# Copyright (C) 2014-2015 This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# André Marcelo Alvarenga <alvarenga@kde.org>, 2014, 2015.
+# Luiz Fernando Ranghetti <elchevive@opensuse.org>, 2018.
+msgid ""
+msgstr ""
+"Project-Id-Version: baloo_file\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2018-04-28 03:38+0200\n"
+"PO-Revision-Date: 2018-06-02 00:17-0300\n"
+"Last-Translator: Luiz Fernando Ranghetti <elchevive@opensuse.org>\n"
+"Language-Team: Portuguese <kde-i18n-pt_BR@kde.org>\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Lokalize 2.0\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "André Marcelo Alvarenga"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "alvarenga@kde.org"
+
+#: indexerstate.h:42
+#, kde-format
+msgid "Unknown"
+msgstr "Desconhecido"
+
+#: indexerstate.h:45
+#, kde-format
+msgid "Idle"
+msgstr "Ocioso"
+
+#: indexerstate.h:48
+#, kde-format
+msgid "Suspended"
+msgstr "Suspenso"
+
+#: indexerstate.h:51
+#, kde-format
+msgid "Initial Indexing"
+msgstr "Indexação inicial"
+
+#: indexerstate.h:54
+#, kde-format
+msgid "Indexing new files"
+msgstr "Indexando os novos arquivos"
+
+#: indexerstate.h:57
+#, kde-format
+msgid "Indexing modified files"
+msgstr "Indexando os arquivos modificados"
+
+#: indexerstate.h:60
+#, kde-format
+msgid "Indexing Extended Attributes"
+msgstr "Indexando os atributos estendidos"
+
+#: indexerstate.h:63
+#, kde-format
+#| msgctxt "@info:status"
+#| msgid "Indexing files for desktop search."
+msgid "Indexing file content"
+msgstr "Indexando o conteúdo do arquivo"
+
+#: indexerstate.h:66
+#, kde-format
+msgid "Checking for unindexed files"
+msgstr "Procurando arquivos não indexados"
+
+#: main.cpp:47
+#, kde-format
+msgid "Baloo File Indexing Daemon"
+msgstr "Serviço de indexação de arquivos do Baloo"
+
+#: main.cpp:48
+#, kde-format
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:48
+#, kde-format
+msgid "Maintainer"
+msgstr "Mantenedor"
