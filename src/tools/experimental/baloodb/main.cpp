@@ -63,8 +63,8 @@ const auto options = QList<QCommandLineOption>{
     },
     QCommandLineOption{
         QStringList{QStringLiteral("D"), QStringLiteral("dry-run")},
-        i18n("Print results of a prune operation, but do not change anything."
-        "\nOnly applies to \"%1\" command", QStringLiteral("prune"))
+        i18n("Print results of a cleaning operation, but do not change anything."
+        "\nOnly applies to \"%1\" command", QStringLiteral("clean"))
     }
 };
 
