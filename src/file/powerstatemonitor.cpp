@@ -54,11 +54,12 @@ PowerStateMonitor::PowerStateMonitor(QObject* parent)
         }
         watch->deleteLater();
     });
-
 }
 
 void PowerStateMonitor::slotPowerManagementStatusChanged(bool conserveResources)
 {
-    m_isOnBattery = conserveResources;
-    Q_EMIT powerManagementStatusChanged(conserveResources);
+    if (m_isOnBattery != conserveResources) {
+        m_isOnBattery = conserveResources;
+        Q_EMIT powerManagementStatusChanged(conserveResources);
+    }
 }
