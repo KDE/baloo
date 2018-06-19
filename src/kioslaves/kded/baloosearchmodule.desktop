@@ -3,7 +3,6 @@ Type=Service
 Icon=baloo
 X-KDE-ServiceTypes=KDEDModule
 X-KDE-Library=baloosearchmodule
-X-KDE-DBus-ModuleName=baloosearchmodule
 X-KDE-Kded-autoload=true
 X-KDE-Kded-load-on-demand=false
 X-KDE-Kded-phase=1
