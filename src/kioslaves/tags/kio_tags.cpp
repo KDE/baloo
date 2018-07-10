@@ -296,13 +296,13 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
 
     auto createUDSEntryForTag = [] (const QString& tagSection, const QString& tag) {
         KIO::UDSEntry uds;
-        uds.insert(KIO::UDSEntry::UDS_NAME, tagSection);
-        uds.insert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
-        uds.insert(KIO::UDSEntry::UDS_MIME_TYPE, QStringLiteral("inode/directory"));
-        uds.insert(KIO::UDSEntry::UDS_ACCESS, 0700);
-        uds.insert(KIO::UDSEntry::UDS_USER, KUser().loginName());
-        uds.insert(KIO::UDSEntry::UDS_ICON_NAME, QStringLiteral("tag"));
-        uds.insert(KIO::UDSEntry::UDS_EXTRA, tag);
+        uds.fastInsert(KIO::UDSEntry::UDS_NAME, tagSection);
+        uds.fastInsert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
+        uds.fastInsert(KIO::UDSEntry::UDS_MIME_TYPE, QStringLiteral("inode/directory"));
+        uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, 0700);
+        uds.fastInsert(KIO::UDSEntry::UDS_USER, KUser().loginName());
+        uds.fastInsert(KIO::UDSEntry::UDS_ICON_NAME, QStringLiteral("tag"));
+        uds.fastInsert(KIO::UDSEntry::UDS_EXTRA, tag);
 
         QString displayType;
         if (tagSection == tag) {
@@ -313,7 +313,7 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
             displayType = i18n("All Tags");
         }
 
-        uds.insert(KIO::UDSEntry::UDS_DISPLAY_TYPE, displayType);
+        uds.fastInsert(KIO::UDSEntry::UDS_DISPLAY_TYPE, displayType);
 
         QString displayName = i18n("All Tags");
         if (!tag.isEmpty() && ((tagSection == QStringLiteral(".")) || (tagSection == QStringLiteral("..")))) {
@@ -322,7 +322,7 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
             displayName = tagSection;
         }
 
-        uds.insert(KIO::UDSEntry::UDS_DISPLAY_NAME, displayName);
+        uds.fastInsert(KIO::UDSEntry::UDS_DISPLAY_NAME, displayName);
 
         return uds;
     };
@@ -447,14 +447,14 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
             continue;
         }
 
-        uds.insert(KIO::UDSEntry::UDS_NAME, match.fileName() + QStringLiteral("?fullpath=") + it.filePath());
-        uds.insert(KIO::UDSEntry::UDS_TARGET_URL, match.toString());
-        uds.insert(KIO::UDSEntry::UDS_ICON_OVERLAY_NAMES, QStringLiteral("tag"));
+        uds.fastInsert(KIO::UDSEntry::UDS_NAME, match.fileName() + QStringLiteral("?fullpath=") + it.filePath());
+        uds.fastInsert(KIO::UDSEntry::UDS_TARGET_URL, match.toString());
+        uds.fastInsert(KIO::UDSEntry::UDS_ICON_OVERLAY_NAMES, QStringLiteral("tag"));
 
         if (!resultNames.contains(match.fileName())) {
-            uds.insert(KIO::UDSEntry::UDS_DISPLAY_NAME, match.fileName());
+            uds.fastInsert(KIO::UDSEntry::UDS_DISPLAY_NAME, match.fileName());
         } else {
-            uds.insert(KIO::UDSEntry::UDS_DISPLAY_NAME, match.fileName() + QStringLiteral(" (%1)").arg(resultNames.count(match.fileName())));
+            uds.fastInsert(KIO::UDSEntry::UDS_DISPLAY_NAME, match.fileName() + QStringLiteral(" (%1)").arg(resultNames.count(match.fileName())));
         }
 
         resultNames << match.fileName();
