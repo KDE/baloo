@@ -42,14 +42,14 @@ KIO::UDSEntry createFolderUDSEntry(const QString& name, const QString& displayNa
 {
     KIO::UDSEntry uds;
     QDateTime dt(date, QTime(0, 0, 0));
-    uds.insert(KIO::UDSEntry::UDS_NAME, name);
-    uds.insert(KIO::UDSEntry::UDS_DISPLAY_NAME, displayName);
-    uds.insert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
-    uds.insert(KIO::UDSEntry::UDS_MIME_TYPE, QStringLiteral("inode/directory"));
-    uds.insert(KIO::UDSEntry::UDS_MODIFICATION_TIME, dt.toTime_t());
-    uds.insert(KIO::UDSEntry::UDS_CREATION_TIME, dt.toTime_t());
-    uds.insert(KIO::UDSEntry::UDS_ACCESS, 0700);
-    uds.insert(KIO::UDSEntry::UDS_USER, KUser().loginName());
+    uds.fastInsert(KIO::UDSEntry::UDS_NAME, name);
+    uds.fastInsert(KIO::UDSEntry::UDS_DISPLAY_NAME, displayName);
+    uds.fastInsert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
+    uds.fastInsert(KIO::UDSEntry::UDS_MIME_TYPE, QStringLiteral("inode/directory"));
+    uds.fastInsert(KIO::UDSEntry::UDS_MODIFICATION_TIME, dt.toTime_t());
+    uds.fastInsert(KIO::UDSEntry::UDS_CREATION_TIME, dt.toTime_t());
+    uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, 0700);
+    uds.fastInsert(KIO::UDSEntry::UDS_USER, KUser().loginName());
     return uds;
 }
 
@@ -82,20 +82,20 @@ KIO::UDSEntry createFileUDSEntry(const QString& filePath)
     QT_STATBUF statBuf;
     const QByteArray url = QFile::encodeName(filePath);
     if (filePathToStat(url, statBuf) == 0) {
-        uds.insert(KIO::UDSEntry::UDS_MODIFICATION_TIME, statBuf.st_mtime);
-        uds.insert(KIO::UDSEntry::UDS_ACCESS_TIME, statBuf.st_atime);
-        uds.insert(KIO::UDSEntry::UDS_SIZE, statBuf.st_size);
-        uds.insert(KIO::UDSEntry::UDS_USER, statBuf.st_uid);
-        uds.insert(KIO::UDSEntry::UDS_GROUP, statBuf.st_gid);
+        uds.fastInsert(KIO::UDSEntry::UDS_MODIFICATION_TIME, statBuf.st_mtime);
+        uds.fastInsert(KIO::UDSEntry::UDS_ACCESS_TIME, statBuf.st_atime);
+        uds.fastInsert(KIO::UDSEntry::UDS_SIZE, statBuf.st_size);
+        uds.fastInsert(KIO::UDSEntry::UDS_USER, statBuf.st_uid);
+        uds.fastInsert(KIO::UDSEntry::UDS_GROUP, statBuf.st_gid);
 
         mode_t type = statBuf.st_mode & S_IFMT;
         mode_t access = statBuf.st_mode & 07777;
 
-        uds.insert(KIO::UDSEntry::UDS_FILE_TYPE, type);
-        uds.insert(KIO::UDSEntry::UDS_ACCESS, access);
+        uds.fastInsert(KIO::UDSEntry::UDS_FILE_TYPE, type);
+        uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, access);
         QUrl fileUrl = QUrl::fromLocalFile(filePath);
-        uds.insert(KIO::UDSEntry::UDS_URL, fileUrl.url());
-        uds.insert(KIO::UDSEntry::UDS_NAME, fileUrl.fileName());
+        uds.fastInsert(KIO::UDSEntry::UDS_URL, fileUrl.url());
+        uds.fastInsert(KIO::UDSEntry::UDS_NAME, fileUrl.fileName());
     }
 
     return uds;
@@ -179,10 +179,10 @@ void TimelineProtocol::stat(const QUrl& url)
     switch (parseTimelineUrl(url, &m_date, &m_filename)) {
     case RootFolder: {
         KIO::UDSEntry uds;
-        uds.insert(KIO::UDSEntry::UDS_NAME, QStringLiteral("/"));
-        uds.insert(KIO::UDSEntry::UDS_ICON_NAME, QStringLiteral("nepomuk"));
-        uds.insert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
-        uds.insert(KIO::UDSEntry::UDS_MIME_TYPE, QStringLiteral("inode/directory"));
+        uds.fastInsert(KIO::UDSEntry::UDS_NAME, QStringLiteral("/"));
+        uds.fastInsert(KIO::UDSEntry::UDS_ICON_NAME, QStringLiteral("nepomuk"));
+        uds.fastInsert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
+        uds.fastInsert(KIO::UDSEntry::UDS_MIME_TYPE, QStringLiteral("inode/directory"));
         statEntry(uds);
         finished();
         break;
