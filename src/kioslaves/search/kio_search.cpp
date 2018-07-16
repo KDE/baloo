@@ -70,6 +70,32 @@ SearchProtocol::~SearchProtocol()
 {
 }
 
+static QString jsonQueryForType(const QString &type)
+{
+    const QString jsonQuery(QStringLiteral("{\"dayFilter\": 0,\
+                                             \"monthFilter\": 0, \
+                                             \"yearFilter\": 0, \
+                                             \"type\": [ \"%1\"]}"));
+    return jsonQuery.arg(type);
+}
+
+static QString jsonQueryFromUrl(const QUrl &url)
+{
+    const QString path = url.path();
+
+    if (path == QLatin1String("/documents")) {
+        return jsonQueryForType(QStringLiteral("Document"));
+    } else if (path.endsWith(QLatin1String("/images"))) {
+        return jsonQueryForType(QStringLiteral("Image"));
+    } else if (path.endsWith(QLatin1String("/audio"))) {
+        return jsonQueryForType(QStringLiteral("Audio"));
+    } else if (path.endsWith(QLatin1String("/videos"))) {
+        return jsonQueryForType(QStringLiteral("Video"));
+    }
+
+    return QString();
+}
+
 void SearchProtocol::listDir(const QUrl& url)
 {
     Query q;
@@ -82,6 +108,11 @@ void SearchProtocol::listDir(const QUrl& url)
         QString queryString = urlQuery.queryItemValue(QStringLiteral("query"), QUrl::FullyDecoded);
 
         q.setSearchString(queryString);
+    } else {
+        const QString jsonString = jsonQueryFromUrl(url);
+        if (!jsonString.isEmpty()) {
+            q = Query::fromJSON(jsonString.toUtf8());
+        }
     }
 
     q.setSortingOption(Query::SortNone);
