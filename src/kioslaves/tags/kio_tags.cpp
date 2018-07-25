@@ -340,25 +340,35 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
         qCDebug(KIO_TAGS) << result.decodedUrl << "url file path:" << result.fileUrl.toLocalFile();
     } else if (url.scheme() == QLatin1String("tags")) {
         bool validTag = flags.contains(LazyValidation);
-        QString filePath;
-
-        // Extract any local file path from the URL.
-        if (result.decodedUrl.contains(QStringLiteral("?fullpath="))) {
-            filePath = result.decodedUrl.section(QStringLiteral("?fullpath="), -1, QString::SectionSkipEmpty);
-            result.fileUrl = QUrl::fromLocalFile(filePath);
-            result.metaData = KFileMetaData::UserMetaData(filePath);
-            qCDebug(KIO_TAGS) << result.decodedUrl << "url file path:" << filePath;
-        }
 
         // Determine the tag from the URL.
-        result.tag = result.decodedUrl.section(QStringLiteral("?fullpath="), 0, 0);
+        result.tag = result.decodedUrl;
         result.tag.remove(url.scheme() + QLatin1Char(':'));
         result.tag = QDir::cleanPath(result.tag);
         while (result.tag.startsWith(QLatin1Char('/'))) {
             result.tag.remove(0, 1);
         }
 
-        if (!filePath.isEmpty() || flags.contains(ChopLastSection)) {
+        // Extract any local file path from the URL.
+        QString tag = result.tag.section(QDir::separator(), 0, -2);
+        QString fileName = result.tag.section(QDir::separator(), -1, -1);
+        Query q;
+        q.setSearchString(QStringLiteral("tag=\"%1\" AND filename=\"%2\"").arg(tag).arg(fileName));
+        ResultIterator it = q.exec();
+
+        int i = 0;
+        while (it.next()) {
+            result.fileUrl = QUrl::fromLocalFile(it.filePath());
+            result.metaData = KFileMetaData::UserMetaData(it.filePath());
+
+            if ((i > 0) && fileName.endsWith(QStringLiteral("(%1)").arg(i))) {
+                break;
+            }
+
+            i++;
+        }
+
+        if (!result.fileUrl.isEmpty() || flags.contains(ChopLastSection)) {
             result.tag = result.tag.section(QDir::separator(), 0, -2);
         }
 
@@ -426,7 +436,6 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
 
     // Query for any files associated with the tag.
     Query q;
-    q.setSortingOption(Query::SortNone);
     q.setSearchString(QStringLiteral("tag=\"%1\"").arg(result.tag));
     ResultIterator it = q.exec();
     QList<QString> resultNames;
@@ -447,13 +456,11 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
             continue;
         }
 
-        uds.fastInsert(KIO::UDSEntry::UDS_NAME, match.fileName() + QStringLiteral("?fullpath=") + it.filePath());
+        uds.fastInsert(KIO::UDSEntry::UDS_NAME, match.fileName());
         uds.fastInsert(KIO::UDSEntry::UDS_TARGET_URL, match.toString());
         uds.fastInsert(KIO::UDSEntry::UDS_ICON_OVERLAY_NAMES, QStringLiteral("tag"));
 
-        if (!resultNames.contains(match.fileName())) {
-            uds.fastInsert(KIO::UDSEntry::UDS_DISPLAY_NAME, match.fileName());
-        } else {
+        if (resultNames.contains(match.fileName())) {
             uds.fastInsert(KIO::UDSEntry::UDS_DISPLAY_NAME, match.fileName() + QStringLiteral(" (%1)").arg(resultNames.count(match.fileName())));
         }
 
