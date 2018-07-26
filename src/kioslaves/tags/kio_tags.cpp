@@ -457,7 +457,7 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
         }
 
         uds.fastInsert(KIO::UDSEntry::UDS_NAME, match.fileName());
-        uds.fastInsert(KIO::UDSEntry::UDS_URL, match.toString());
+        uds.fastInsert(KIO::UDSEntry::UDS_TARGET_URL, match.toString());
         uds.fastInsert(KIO::UDSEntry::UDS_ICON_OVERLAY_NAMES, QStringLiteral("tag"));
 
         if (resultNames.contains(match.fileName())) {
