@@ -35,6 +35,7 @@
 #include <QCoreApplication>
 #include <QDateTime>
 #include <QDir>
+#include <QRegularExpression>
 
 #include "file.h"
 #include "taglistjob.h"
@@ -352,18 +353,35 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
         // Extract any local file path from the URL.
         QString tag = result.tag.section(QDir::separator(), 0, -2);
         QString fileName = result.tag.section(QDir::separator(), -1, -1);
+        int pos = 0;
+
+        // Extract any trailing multiple filename suffix from the search string.
+        QRegularExpression regexp(QStringLiteral("\\s\\(\\d+\\)$"));
+        QRegularExpressionMatch regMatch = regexp.match(fileName);
+        if (regMatch.hasMatch()) {
+            QString match = regMatch.captured(0);
+            match.remove(0, 2);
+            match.chop(1);
+            pos = match.toInt();
+
+            fileName.remove(regexp);
+        }
+
         Query q;
         q.setSearchString(QStringLiteral("tag=\"%1\" AND filename=\"%2\"").arg(tag).arg(fileName));
         ResultIterator it = q.exec();
 
         int i = 0;
         while (it.next()) {
-            result.fileUrl = QUrl::fromLocalFile(it.filePath());
-            result.metaData = KFileMetaData::UserMetaData(it.filePath());
-
-            if ((i > 0) && fileName.endsWith(QStringLiteral("(%1)").arg(i))) {
+            if ((pos > 0) && (i != pos)) {
+                i++;
+                continue;
+            } else if (i > pos) {
                 break;
             }
+
+            result.fileUrl = QUrl::fromLocalFile(it.filePath());
+            result.metaData = KFileMetaData::UserMetaData(it.filePath());
 
             i++;
         }
@@ -456,13 +474,14 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
             continue;
         }
 
-        uds.fastInsert(KIO::UDSEntry::UDS_NAME, match.fileName());
         uds.fastInsert(KIO::UDSEntry::UDS_TARGET_URL, match.toString());
         uds.fastInsert(KIO::UDSEntry::UDS_ICON_OVERLAY_NAMES, QStringLiteral("tag"));
 
         if (resultNames.contains(match.fileName())) {
-            uds.fastInsert(KIO::UDSEntry::UDS_DISPLAY_NAME, match.fileName() + QStringLiteral(" (%1)").arg(resultNames.count(match.fileName())));
+            uds.replace(KIO::UDSEntry::UDS_NAME, match.fileName() + QStringLiteral(" (%1)").arg(resultNames.count(match.fileName())));
         }
+
+        qCDebug(KIO_TAGS) << result.decodedUrl << "adding file:" << uds.stringValue(KIO::UDSEntry::UDS_NAME);
 
         resultNames << match.fileName();
         result.pathUDSResults << uds;
