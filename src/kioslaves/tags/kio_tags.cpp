@@ -1,7 +1,7 @@
 /*
  * This file is part of the KDE Baloo Project
  * Copyright (C) 2012-2014  Vishesh Handa <me@vhanda.in>
- * Copyright (C) 2017  James D. Smith <smithjd15@gmail.com>
+ * Copyright (C) 2017-2018  James D. Smith <smithjd15@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -338,7 +338,6 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
         result.urlType = FileUrl;
         result.fileUrl = url;
         result.metaData = KFileMetaData::UserMetaData(url.toLocalFile());
-        qCDebug(KIO_TAGS) << result.decodedUrl << "url file path:" << result.fileUrl.toLocalFile();
     } else if (url.scheme() == QLatin1String("tags")) {
         bool validTag = flags.contains(LazyValidation);
 
@@ -355,7 +354,7 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
         QString fileName = result.tag.section(QDir::separator(), -1, -1);
         int pos = 0;
 
-        // Extract any trailing multiple filename suffix from the search string.
+        // Extract and remove any multiple filename suffix from the file name.
         QRegularExpression regexp(QStringLiteral("\\s\\(\\d+\\)$"));
         QRegularExpressionMatch regMatch = regexp.match(fileName);
         if (regMatch.hasMatch()) {
@@ -401,14 +400,6 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
             result.query.setSearchString(query);
 
             qCDebug(KIO_TAGS) << result.decodedUrl << "url query:" << query;
-
-            if (result.tag.contains(QLatin1Char('/'))) {
-                qCDebug(KIO_TAGS) << result.decodedUrl << "url is a tag fragment:" << result.tag;
-            } else {
-                qCDebug(KIO_TAGS) << result.decodedUrl << "url is a tag:" << result.tag;
-            }
-        } else {
-            qCDebug(KIO_TAGS) << result.decodedUrl << "url is the root tag url";
         }
 
         // Create the tag directory entries.
@@ -422,8 +413,6 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
                 if (!tagPaths.contains(tagSection, Qt::CaseInsensitive) && !tagSection.isEmpty()) {
                     result.pathUDSResults << createUDSEntryForTag(tagSection, tag);
                     tagPaths << tagSection;
-
-                    qCDebug(KIO_TAGS) << result.decodedUrl << "added path:" << tagSection;
                 }
             }
 
@@ -437,15 +426,13 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
         }
     }
 
-    qCDebug(KIO_TAGS) << result.decodedUrl << "url type:" << result.urlType;
-
     if (result.urlType == FileUrl) {
         return result;
     } else {
         result.pathUDSResults << createUDSEntryForTag(QStringLiteral("."), result.tag);
     }
 
-    // The root tag url has no file entries
+    // The root tag url has no file entries.
     if (result.tag.isEmpty()) {
         return result;
     } else {
@@ -460,16 +447,14 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
     while (it.next()) {
         const QUrl& match = QUrl::fromLocalFile(it.filePath());
 
-        // Somehow stat the file
+        // Somehow stat the file.
         KIO::UDSEntry uds;
         KIO::StatJob* job = KIO::stat(match, KIO::HideProgressInfo);
-        // we do not want to wait for the event loop to delete the job
+        // We do not want to wait for the event loop to delete the job.
         QScopedPointer<KIO::StatJob> sp(job);
         job->setAutoDelete(false);
         if (job->exec()) {
             uds = job->statResult();
-
-            qCDebug(KIO_TAGS) << result.decodedUrl << "adding file:" << match.fileName();
         } else {
             continue;
         }
@@ -481,7 +466,7 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
             uds.replace(KIO::UDSEntry::UDS_NAME, match.fileName() + QStringLiteral(" (%1)").arg(resultNames.count(match.fileName())));
         }
 
-        qCDebug(KIO_TAGS) << result.decodedUrl << "adding file:" << uds.stringValue(KIO::UDSEntry::UDS_NAME);
+        qCDebug(KIO_TAGS) << result.tag << "adding file:" << uds.stringValue(KIO::UDSEntry::UDS_NAME);
 
         resultNames << match.fileName();
         result.pathUDSResults << uds;
