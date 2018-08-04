@@ -372,17 +372,14 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
 
         int i = 0;
         while (it.next()) {
-            if ((pos > 0) && (i != pos)) {
-                i++;
-                continue;
-            } else if (i > pos) {
-                break;
-            }
-
             result.fileUrl = QUrl::fromLocalFile(it.filePath());
             result.metaData = KFileMetaData::UserMetaData(it.filePath());
 
-            i++;
+            if (i == pos) {
+                break;
+            } else {
+                i++;
+            }
         }
 
         if (!result.fileUrl.isEmpty() || flags.contains(ChopLastSection)) {
