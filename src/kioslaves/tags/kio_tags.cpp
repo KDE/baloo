@@ -355,13 +355,10 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
         int pos = 0;
 
         // Extract and remove any multiple filename suffix from the file name.
-        QRegularExpression regexp(QStringLiteral("\\s\\(\\d+\\)$"));
+        QRegularExpression regexp(QStringLiteral("\\s\\((\\d+)\\)$"));
         QRegularExpressionMatch regMatch = regexp.match(fileName);
         if (regMatch.hasMatch()) {
-            QString match = regMatch.captured(0);
-            match.remove(0, 2);
-            match.chop(1);
-            pos = match.toInt();
+            pos = regMatch.captured(1).toInt();
 
             fileName.remove(regexp);
         }
