@@ -109,10 +109,10 @@ void FileWatch::slotFileMoved(const QString& urlFrom, const QString& urlTo)
     if (m_config->shouldBeIndexed(urlTo)) {
         m_metadataMover->moveFileMetadata(urlFrom, urlTo);
     } else {
-        QFileInfo dest(urlTo);
-        QString url = urlTo;
+        QFileInfo src(urlFrom);
+        QString url = urlFrom;
 
-        if (dest.isDir()) {
+        if (src.isDir()) {
             Q_ASSERT(!url.endsWith('/'));
             url.append(QLatin1Char('/'));
         }
