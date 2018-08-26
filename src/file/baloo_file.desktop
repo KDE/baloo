@@ -9,7 +9,7 @@ OnlyShowIn=KDE;GNOME;Unity;XFCE
 NoDisplay=true
 
 Name=Baloo File Daemon
-Name[ar]=عفريت بالو للملفّات
+Name[ar]=عفريت بالو للملفات
 Name[ast]=Degorriu de ficheros Baloo
 Name[bs]=Baloo datotečni demon
 Name[ca]=Dimoni de fitxers Baloo
