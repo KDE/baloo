@@ -302,7 +302,7 @@ int main(int argc, char* argv[])
         out << "Actual Size: " << format.formatByteSize(size.actualSize, 2) << "\n";
         out << "Expected Size: " << format.formatByteSize(size.expectedSize, 2) << "\n\n";
         prFunc(QStringLiteral("PostingDB"), size.postingDb, ts);
-        prFunc(QStringLiteral("PosistionDB"), size.positionDb, ts);
+        prFunc(QStringLiteral("PositionDB"), size.positionDb, ts);
         prFunc(QStringLiteral("DocTerms"), size.docTerms, ts);
         prFunc(QStringLiteral("DocFilenameTerms"), size.docFilenameTerms, ts);
         prFunc(QStringLiteral("DocXattrTerms"), size.docXattrTerms, ts);
