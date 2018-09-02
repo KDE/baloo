@@ -1,0 +1,89 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Franklin Weng <franklin at goodhorse dot idv dot tw>, 2014, 2015.
+# pan93412 <pan93412@gmail.com>, 2018.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2018-08-16 09:04+0200\n"
+"PO-Revision-Date: 2018-04-29 13:20+0800\n"
+"Last-Translator: pan93412 <pan93412@gmail.com>\n"
+"Language-Team: Chinese <zh-l10n@linux.org.tw>\n"
+"Language: zh_TW\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Lokalize 2.0\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Franklin Weng"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "franklin@nospam.goodhorse.idv.tw"
+
+#: indexerstate.h:42
+#, kde-format
+msgid "Unknown"
+msgstr "未知的"
+
+#: indexerstate.h:45
+#, kde-format
+msgid "Idle"
+msgstr "閒置的"
+
+#: indexerstate.h:48
+#, kde-format
+msgid "Suspended"
+msgstr "暫停的"
+
+#: indexerstate.h:51
+#, kde-format
+msgid "Initial Indexing"
+msgstr "正在初始索引"
+
+#: indexerstate.h:54
+#, kde-format
+msgid "Indexing new files"
+msgstr "正在索引新檔案"
+
+#: indexerstate.h:57
+#, kde-format
+msgid "Indexing modified files"
+msgstr "正在索引修改過的檔案"
+
+#: indexerstate.h:60
+#, kde-format
+msgid "Indexing Extended Attributes"
+msgstr "正在索引延伸屬性"
+
+#: indexerstate.h:63
+#, kde-format
+msgid "Indexing file content"
+msgstr "正在索引檔案內容"
+
+#: indexerstate.h:66
+#, kde-format
+msgid "Checking for unindexed files"
+msgstr "正在檢查未索引檔案"
+
+#: main.cpp:47
+#, kde-format
+msgid "Baloo File Indexing Daemon"
+msgstr "Baloo 檔案索引伺服程式"
+
+#: main.cpp:48
+#, kde-format
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:48
+#, kde-format
+msgid "Maintainer"
+msgstr "維護者"
