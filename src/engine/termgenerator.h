@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef BALOO_TOKENIZER_H
-#define BALOO_TOKENIZER_H
+#ifndef BALOO_TERMGENERATOR_H
+#define BALOO_TERMGENERATOR_H
 
 #include <QString>
 #include "engine_export.h"
@@ -57,4 +57,4 @@ private:
 };
 }
 
-#endif // BALOO_TOKENIZER_H
+#endif // BALOO_TERMGENERATOR_H

@@ -40,7 +40,6 @@
 #include "transaction.h"
 
 #include <unistd.h>
-#include <KLocalizedString>
 #include <KFileMetaData/PropertyInfo>
 
 
