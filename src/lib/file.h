@@ -31,7 +31,7 @@ namespace Baloo {
 /**
  * @class File file.h <Baloo/File>
  *
- * @short Provides acess to all File Metadata
+ * @short Provides access to all File Metadata
  *
  * The File class acts as a temporary container for all the file metadata.
  */

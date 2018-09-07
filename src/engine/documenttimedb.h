@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef BALOO_DOCUMENTIMEDB_H
-#define BALOO_DOCUMENTIMEDB_H
+#ifndef BALOO_DOCUMENTTIMEDB_H
+#define BALOO_DOCUMENTTIMEDB_H
 
 #include "engine_export.h"
 
@@ -63,4 +63,4 @@ private:
 
 }
 
-#endif // BALOO_DOCUMENTVALUEDB_H
+#endif // BALOO_DOCUMENTTIMEDB_H

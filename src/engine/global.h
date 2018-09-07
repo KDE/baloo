@@ -40,7 +40,7 @@ namespace Baloo {
      * because if we open database twice at the same time and closes one of them, then it
      * would invalidate the handles of both the instances and may lead to crash or some
      * other undesirable behaviour. So, keeping one global database would solve this problem
-     * and improve the performace too.
+     * and improve the performance too.
      */
     BALOO_ENGINE_EXPORT Database* globalDatabaseInstance();
 }

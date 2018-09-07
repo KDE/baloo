@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef BALOO_PHRASEANDITER_H
-#define BALOO_PHRASEANDITER_H
+#ifndef BALOO_PHRASEANDITERATOR_H
+#define BALOO_PHRASEANDITERATOR_H
 
 #include "postingiterator.h"
 
@@ -44,4 +44,4 @@ private:
 };
 }
 
-#endif // BALOO_PHRASEANDITER_H
+#endif // BALOO_PHRASEANDITERATOR_H

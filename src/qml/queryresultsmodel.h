@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef BALOODATAMODEL_H
-#define BALOODATAMODEL_H
+#ifndef BALOO_QUERYRESULTSMODEL_H
+#define BALOO_QUERYRESULTSMODEL_H
 
 #include <QAbstractListModel>
 #include <QString>

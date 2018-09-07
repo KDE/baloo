@@ -53,7 +53,7 @@ public:
      * \arg shouldDelete takes a quint64 as a parameter
      *
      * This function should typically be called when there are no other ReadTransaction in process
-     * as that would otherwise baloon the size of the database.
+     * as that would otherwise balloon the size of the database.
      */
     template <typename Functor>
     void removeRecursively(quint64 parentId, Functor shouldDelete) {

@@ -20,8 +20,8 @@
    License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef REMOVABLEMEDIACACHE_H
-#define REMOVABLEMEDIACACHE_H
+#ifndef STORAGE_DEVICES_H
+#define STORAGE_DEVICES_H
 
 #include <QObject>
 
@@ -92,4 +92,4 @@ private:
 
 } // namespace Baloo
 
-#endif // REMOVABLEMEDIACACHE_H
+#endif // STORAGE_DEVICES_H

@@ -35,7 +35,7 @@ Currently the following types are supported:
 
 These expressions can be combined using `AND` or `OR` and additional parenthesis.
 
-The full list of properites which can be searched is listed below. They are
+The full list of properties which can be searched is listed below. They are
 grouped by file types.
 
 ### All Files

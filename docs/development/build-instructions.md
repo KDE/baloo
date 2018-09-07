@@ -20,9 +20,9 @@ FIXME: What about basic requirements such as gcc and cmake?
 $ git clone git://anongit.kde.org/baloo
 ```
 
-## Setting up the development enviornment
+## Setting up the development environment
 
-Baloo installs a number of executables and libraries. While these can be installed in `/usr/`, that requires root access and typically intefers with the distro packages. Instead we prefer installing Baloo locally, and updating the required environment variables. This isolates environment also protects us from mistakes.
+Baloo installs a number of executables and libraries. While these can be installed in `/usr/`, that requires root access and typically interfers with the distro packages. Instead we prefer installing Baloo locally, and updating the required environment variables. This isolates environment also protects us from mistakes.
 
 Python development typically also uses an isolated environment called a virtual environment. For now we can just use their tool.
 

@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef BALOO_INDEXINGLEVELDB_H
-#define BALOO_INDEXINGLEVELDB_H
+#ifndef BALOO_DOCUMENTIDDB_H
+#define BALOO_DOCUMENTIDDB_H
 
 #include "engine_export.h"
 #include <QByteArray>
@@ -52,4 +52,4 @@ private:
 
 }
 
-#endif // BALOO_INDEXINGLEVELDB_H
+#endif // BALOO_DOCUMENTIDDB_H
