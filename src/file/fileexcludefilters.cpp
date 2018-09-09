@@ -80,11 +80,20 @@ const char* const s_defaultFileExcludeFilters[] = {
     "*.qmlc",  // QML
     "*.jsc",   // Javascript
 
+    // files known in bioinformatics containing huge amount of unindexable data
+    "*.fastq",
+    "*.fq",
+    "*.gb",
+    "*.fasta",
+    "*.fna",
+    "*.gbff",
+    "*.faa",
+    "*.fna",
     // end of list
     nullptr
 };
 
-const int s_defaultFileExcludeFiltersVersion = 3;
+const int s_defaultFileExcludeFiltersVersion = 4;
 
 const char* const s_defaultFolderExcludeFilters[] = {
     "po",
