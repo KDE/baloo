@@ -45,9 +45,9 @@ void XAttrIndexer::run()
     Transaction tr(m_db, Transaction::ReadWrite);
 
     for (const QString& filePath : qAsConst(m_files)) {
-        Q_ASSERT(!filePath.endsWith('/'));
+        Q_ASSERT(!filePath.endsWith(QLatin1Char('/')));
 
-        QString fileName = filePath.mid(filePath.lastIndexOf('/') + 1);
+        QString fileName = filePath.mid(filePath.lastIndexOf(QLatin1Char('/')) + 1);
         if (!m_config->shouldFileBeIndexed(fileName)) {
             continue;
         }

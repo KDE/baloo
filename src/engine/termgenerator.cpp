@@ -40,7 +40,7 @@ void TermGenerator::indexText(const QString& text, int wdfInc)
 QStringList TermGenerator::termList(const QString& text_)
 {
     QString text(text_);
-    text.replace('_', ' ');
+    text.replace(QLatin1Char('_'), QLatin1Char(' '));
 
     int start = 0;
     int end = 0;

@@ -48,7 +48,7 @@ EngineQuery QueryParser::parseQuery(const QString& text_, const QString& prefix)
     Q_ASSERT(!text_.isEmpty());
 
     QString text(text_);
-    text.replace('_', ' ');
+    text.replace(QLatin1Char('_'), QLatin1Char(' '));
 
     QVector<EngineQuery> queries;
     QVector<EngineQuery> phraseQueries;

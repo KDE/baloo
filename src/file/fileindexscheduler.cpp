@@ -152,7 +152,7 @@ static void removeStartsWith(QStringList& list, const QString& dir)
 
 void FileIndexScheduler::handleFileRemoved(const QString& file)
 {
-    if (!file.endsWith('/')) {
+    if (!file.endsWith(QLatin1Char('/'))) {
         m_newFiles.removeOne(file);
         m_modifiedFiles.removeOne(file);
         m_xattrFiles.removeOne(file);

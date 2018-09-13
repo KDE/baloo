@@ -48,7 +48,7 @@ void AdvancedQueryParserTest::testSimpleProperty()
 {
     AdvancedQueryParser parser;
     Term term = parser.parse(QStringLiteral("artist:Coldplay"));
-    Term expectedTerm(QStringLiteral("artist"), "Coldplay");
+    Term expectedTerm(QStringLiteral("artist"), QStringLiteral("Coldplay"));
 
     QCOMPARE(term, expectedTerm);
 }
@@ -57,7 +57,7 @@ void AdvancedQueryParserTest::testSimpleString()
 {
     AdvancedQueryParser parser;
     Term term = parser.parse(QStringLiteral("Coldplay"));
-    Term expectedTerm(QLatin1String(""), "Coldplay");
+    Term expectedTerm(QLatin1String(""), QStringLiteral("Coldplay"));
 
     QCOMPARE(term, expectedTerm);
 }
@@ -68,9 +68,9 @@ void AdvancedQueryParserTest::testStringAndProperty()
     Term term = parser.parse(QStringLiteral("stars artist:Coldplay fire"));
     Term expectedTerm(Term::And);
 
-    expectedTerm.addSubTerm(Term(QLatin1String(""), "stars"));
-    expectedTerm.addSubTerm(Term(QStringLiteral("artist"), "Coldplay"));
-    expectedTerm.addSubTerm(Term(QLatin1String(""), "fire"));
+    expectedTerm.addSubTerm(Term(QLatin1String(""), QStringLiteral("stars")));
+    expectedTerm.addSubTerm(Term(QStringLiteral("artist"), QStringLiteral("Coldplay")));
+    expectedTerm.addSubTerm(Term(QLatin1String(""), QStringLiteral("fire")));
 
     QCOMPARE(term, expectedTerm);
 }
@@ -82,8 +82,8 @@ void AdvancedQueryParserTest::testLogicalOps()
     Term term = parser.parse(QStringLiteral("artist:Coldplay AND type:song"));
     Term expectedTerm(Term::And);
 
-    expectedTerm.addSubTerm(Term(QStringLiteral("artist"), "Coldplay"));
-    expectedTerm.addSubTerm(Term(QStringLiteral("type"), "song"));
+    expectedTerm.addSubTerm(Term(QStringLiteral("artist"), QStringLiteral("Coldplay")));
+    expectedTerm.addSubTerm(Term(QStringLiteral("type"), QStringLiteral("song")));
 
     QCOMPARE(term, expectedTerm);
 
@@ -91,8 +91,8 @@ void AdvancedQueryParserTest::testLogicalOps()
     term = parser.parse(QStringLiteral("artist:Coldplay OR type:song"));
     expectedTerm = Term(Term::Or);
 
-    expectedTerm.addSubTerm(Term(QStringLiteral("artist"), "Coldplay"));
-    expectedTerm.addSubTerm(Term(QStringLiteral("type"), "song"));
+    expectedTerm.addSubTerm(Term(QStringLiteral("artist"), QStringLiteral("Coldplay")));
+    expectedTerm.addSubTerm(Term(QStringLiteral("type"), QStringLiteral("song")));
 
     QCOMPARE(term, expectedTerm);
 
@@ -100,8 +100,8 @@ void AdvancedQueryParserTest::testLogicalOps()
     term = parser.parse(QStringLiteral("artist:Coldplay AND type:song OR stars"));
     expectedTerm = Term(Term::Or);
 
-    expectedTerm.addSubTerm(Term(QStringLiteral("artist"), "Coldplay") && Term(QStringLiteral("type"), "song"));
-    expectedTerm.addSubTerm(Term(QLatin1String(""), "stars"));
+    expectedTerm.addSubTerm(Term(QStringLiteral("artist"), QStringLiteral("Coldplay")) && Term(QStringLiteral("type"), QStringLiteral("song")));
+    expectedTerm.addSubTerm(Term(QLatin1String(""), QStringLiteral("stars")));
 
     QCOMPARE(term, expectedTerm);
 
@@ -109,8 +109,8 @@ void AdvancedQueryParserTest::testLogicalOps()
     term = parser.parse(QStringLiteral("artist:Coldplay OR type:song AND stars"));
     expectedTerm = Term(Term::And);
 
-    expectedTerm.addSubTerm(Term(QStringLiteral("artist"), "Coldplay") || Term(QStringLiteral("type"), "song"));
-    expectedTerm.addSubTerm(Term(QLatin1String(""), "stars"));
+    expectedTerm.addSubTerm(Term(QStringLiteral("artist"), QStringLiteral("Coldplay")) || Term(QStringLiteral("type"), QStringLiteral("song")));
+    expectedTerm.addSubTerm(Term(QLatin1String(""), QStringLiteral("stars")));
 
     QCOMPARE(term, expectedTerm);
 
@@ -118,9 +118,9 @@ void AdvancedQueryParserTest::testLogicalOps()
     term = parser.parse(QStringLiteral("artist:Coldplay AND type:song AND stars"));
     expectedTerm = Term(Term::And);
 
-    expectedTerm.addSubTerm(Term(QStringLiteral("artist"), "Coldplay"));
-    expectedTerm.addSubTerm(Term(QStringLiteral("type"), "song"));
-    expectedTerm.addSubTerm(Term(QLatin1String(""), "stars"));
+    expectedTerm.addSubTerm(Term(QStringLiteral("artist"), QStringLiteral("Coldplay")));
+    expectedTerm.addSubTerm(Term(QStringLiteral("type"), QStringLiteral("song")));
+    expectedTerm.addSubTerm(Term(QLatin1String(""), QStringLiteral("stars")));
 
     QCOMPARE(term, expectedTerm);
 
@@ -128,9 +128,9 @@ void AdvancedQueryParserTest::testLogicalOps()
     term = parser.parse(QStringLiteral("artist:Coldplay OR type:song OR stars"));
     expectedTerm = Term(Term::Or);
 
-    expectedTerm.addSubTerm(Term(QStringLiteral("artist"), "Coldplay"));
-    expectedTerm.addSubTerm(Term(QStringLiteral("type"), "song"));
-    expectedTerm.addSubTerm(Term(QLatin1String(""), "stars"));
+    expectedTerm.addSubTerm(Term(QStringLiteral("artist"), QStringLiteral("Coldplay")));
+    expectedTerm.addSubTerm(Term(QStringLiteral("type"), QStringLiteral("song")));
+    expectedTerm.addSubTerm(Term(QLatin1String(""), QStringLiteral("stars")));
 
     QCOMPARE(term, expectedTerm);
 }
@@ -141,9 +141,9 @@ void AdvancedQueryParserTest::testNesting()
     Term term = parser.parse(QStringLiteral("artist:Coldplay AND (type:song OR stars) fire"));
     Term expectedTerm(Term::And);
 
-    expectedTerm.addSubTerm(Term(QStringLiteral("artist"), "Coldplay"));
-    expectedTerm.addSubTerm(Term(QStringLiteral("type"), "song") || Term(QLatin1String(""), "stars"));
-    expectedTerm.addSubTerm(Term(QLatin1String(""), "fire"));
+    expectedTerm.addSubTerm(Term(QStringLiteral("artist"), QStringLiteral("Coldplay")));
+    expectedTerm.addSubTerm(Term(QStringLiteral("type"), QStringLiteral("song")) || Term(QLatin1String(""), QStringLiteral("stars")));
+    expectedTerm.addSubTerm(Term(QLatin1String(""), QStringLiteral("fire")));
 
     QCOMPARE(term, expectedTerm);
 }
