@@ -48,7 +48,7 @@ bool isDirHidden(QDir& dir)
 
 QString stripTrailingSlash(const QString& path)
 {
-    return path.endsWith('/') ? path.mid(0, path.length()-1) : path;
+    return path.endsWith(QLatin1Char('/')) ? path.mid(0, path.length()-1) : path;
 }
 
 }
@@ -212,7 +212,7 @@ bool FileIndexerConfig::shouldFolderBeIndexed(const QString& path) const
 
 bool FileIndexerConfig::shouldFileBeIndexed(const QString& fileName) const
 {
-    if (!indexHiddenFilesAndFolders() && fileName.startsWith('.')) {
+    if (!indexHiddenFilesAndFolders() && fileName.startsWith(QLatin1Char('.'))) {
         return false;
     }
     return !m_excludeFilterRegExpCache.exactMatch(fileName);

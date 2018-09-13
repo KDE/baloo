@@ -51,21 +51,21 @@ static QStringList lex(const QString& text)
                 tokenList.append(token);
                 token.clear();
             }
-        } else if (c == '(' || c == ')') {
+        } else if (c == QLatin1Char('(') || c == QLatin1Char(')')) {
             // Parentheses end tokens, and are tokens by themselves
             if (!token.isEmpty()) {
                 tokenList.append(token);
                 token.clear();
             }
             tokenList.append(c);
-        } else if (c == '>' || c == '<' || c == ':' || c == '=') {
+        } else if (c == QLatin1Char('>') || c == QLatin1Char('<') || c == QLatin1Char(':') || c == QLatin1Char('=')) {
             // Operators end tokens
             if (!token.isEmpty()) {
                 tokenList.append(token);
                 token.clear();
             }
             // accept '=' after any of the above
-            if (text.at(i + 1) == '=') {
+            if (text.at(i + 1) == QLatin1Char('=')) {
                 tokenList.append(text.mid(i, 2));
                 i++;
             } else {
@@ -180,7 +180,7 @@ Term AdvancedQueryParser::parse(const QString& text)
             case '<': {
                 if (token.size() == 1) {
                     comparator = Term::Less;
-                } else if (token[1] == '=') {
+                } else if (token[1] == QLatin1Char('=')) {
                     comparator = Term::LessEqual;
                 }
                 break;
@@ -188,7 +188,7 @@ Term AdvancedQueryParser::parse(const QString& text)
             case '>': {
                 if (token.size() == 1) {
                     comparator = Term::Greater;
-                } else if (token[1] == '=') {
+                } else if (token[1] == QLatin1Char('=')) {
                     comparator = Term::GreaterEqual;
                 }
                 break;

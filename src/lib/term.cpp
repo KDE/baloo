@@ -455,7 +455,7 @@ QDebug operator <<(QDebug d, const Baloo::Term& t)
         d << QStringLiteral("(%1 %2 %3 (%4))").arg(t.property(),
                                                         comparatorToString(t.comparator()),
                                                         t.value().toString(),
-                                                        t.value().typeName()).toUtf8().constData();
+                                                        QString::fromLatin1(t.value().typeName())).toUtf8().constData();
     }
     else {
         d << "[" << operationToString(t.operation()).toUtf8().constData();

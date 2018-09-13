@@ -29,7 +29,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(Database, s_db, (fileIndexDbPath()))
 
 QString Baloo::fileIndexDbPath()
 {
-    QString envBalooPath = qgetenv("BALOO_DB_PATH");
+    QString envBalooPath = QString::fromLocal8Bit(qgetenv("BALOO_DB_PATH"));
     if (!envBalooPath.isEmpty()) {
         return envBalooPath;
     }
