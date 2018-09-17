@@ -366,7 +366,7 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
         }
 
         Query q;
-        q.setSearchString(QStringLiteral("tag=\"%1\" AND filename=\"%2\"").arg(tag).arg(fileName));
+        q.setSearchString(QStringLiteral("tag=\"%1\" AND filename=\"%2\"").arg(tag, fileName));
         ResultIterator it = q.exec();
 
         int i = 0;
