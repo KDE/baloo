@@ -86,7 +86,7 @@ void TagsProtocol::stat(const QUrl& url)
             ForwardingSlaveBase::stat(result.fileUrl);
             return;
         case TagUrl:
-            for (const KIO::UDSEntry& entry : result.pathUDSResults) {
+            for (const KIO::UDSEntry& entry : qAsConst(result.pathUDSResults)) {
                 if (entry.stringValue(KIO::UDSEntry::UDS_EXTRA) == result.tag) {
                     statEntry(entry);
                 }
@@ -192,7 +192,8 @@ void TagsProtocol::rename(const QUrl& src, const QUrl& dest, KIO::JobFlags flags
             if (it.filePath() == srcResult.fileUrl.toLocalFile()) {
                 rewriteTags(md, srcResult.tag, dstResult.tag);
             } else if (srcResult.fileUrl.isEmpty()) {
-                for (const QString& tag : md.tags()) {
+                const auto tags = md.tags();
+                for (const QString& tag : tags) {
                     if (tag == srcResult.tag || (tag.startsWith(srcResult.tag + QLatin1Char('/')))) {
                         QString newTag = tag;
                         newTag.replace(srcResult.tag, dstResult.tag, Qt::CaseInsensitive);
@@ -232,7 +233,8 @@ void TagsProtocol::del(const QUrl& url, bool isfile)
                 if (it.filePath() == result.fileUrl.toLocalFile()) {
                     rewriteTags(md, result.tag);
                 } else if (result.fileUrl.isEmpty()) {
-                    for (const QString &tag : md.tags()) {
+                    const auto tags = md.tags();
+                    for (const QString &tag : tags) {
                         if ((tag == result.tag) || (tag.startsWith(QString(result.tag + QLatin1Char('/')), Qt::CaseInsensitive))) {
                             rewriteTags(md, tag);
                         }

@@ -165,7 +165,8 @@ int main(int argc, char* argv[])
             QString str;
             if (it.value().type() == QVariant::List) {
                 QStringList list;
-                for (const QVariant& var : it.value().toList()) {
+                const auto vars = it.value().toList();
+                for (const QVariant& var : vars) {
                     list << var.toString();
                 }
                 str = list.join(QStringLiteral(", "));

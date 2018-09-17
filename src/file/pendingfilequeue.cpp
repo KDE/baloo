@@ -87,7 +87,7 @@ void PendingFileQueue::processCache()
 {
     QTime currentTime = QTime::currentTime();
 
-    for (const PendingFile& file : m_cache) {
+    for (const PendingFile& file : qAsConst(m_cache)) {
         if (file.shouldRemoveIndex()) {
             Q_EMIT removeFileIndex(file.path());
 
