@@ -235,7 +235,7 @@ void TagsProtocol::del(const QUrl& url, bool isfile)
                 } else if (result.fileUrl.isEmpty()) {
                     const auto tags = md.tags();
                     for (const QString &tag : tags) {
-                        if ((tag == result.tag) || (tag.startsWith(QString(result.tag + QLatin1Char('/')), Qt::CaseInsensitive))) {
+                        if ((tag == result.tag) || (tag.startsWith(result.tag + QLatin1Char('/')), Qt::CaseInsensitive)) {
                             rewriteTags(md, tag);
                         }
                     }
