@@ -129,8 +129,12 @@ void SearchProtocol::listDir(const QUrl& url)
             uds.insert(KIO::UDSEntry::UDS_MODIFICATION_TIME, statBuf.st_mtime);
             uds.insert(KIO::UDSEntry::UDS_ACCESS_TIME, statBuf.st_atime);
             uds.insert(KIO::UDSEntry::UDS_SIZE, statBuf.st_size);
-            uds.insert(KIO::UDSEntry::UDS_USER, statBuf.st_uid);
-            uds.insert(KIO::UDSEntry::UDS_GROUP, statBuf.st_gid);
+#ifndef Q_OS_WIN
+            uds.insert(KIO::UDSEntry::UDS_USER, getUserName(KUserId(statBuf.st_uid)));
+            uds.insert(KIO::UDSEntry::UDS_GROUP, getGroupName(KGroupId(statBuf.st_gid)));
+#else
+#pragma message("TODO: st_uid and st_gid are always zero, use GetSecurityInfo to find the owner")
+#endif
 
             mode_t type = statBuf.st_mode & S_IFMT;
             mode_t access = statBuf.st_mode & 07777;
@@ -166,6 +170,41 @@ void SearchProtocol::stat(const QUrl& url)
     statEntry(statSearchFolder(url));
     finished();
 }
+
+QString SearchProtocol::getUserName(KUserId uid) const
+{
+    if (Q_UNLIKELY(!uid.isValid())) {
+        return QString();
+    }
+    if (!mUsercache.contains(uid)) {
+        KUser user(uid);
+        QString name = user.loginName();
+        if (name.isEmpty()) {
+            name = uid.toString();
+        }
+        mUsercache.insert(uid, name);
+        return name;
+    }
+    return mUsercache[uid];
+}
+
+QString SearchProtocol::getGroupName(KGroupId gid) const
+{
+    if (Q_UNLIKELY(!gid.isValid())) {
+        return QString();
+    }
+    if (!mGroupcache.contains(gid)) {
+        KUserGroup group(gid);
+        QString name = group.name();
+        if (name.isEmpty()) {
+            name = gid.toString();
+        }
+        mGroupcache.insert(gid, name);
+        return name;
+    }
+    return mGroupcache[gid];
+}
+
 
 extern "C"
 {
