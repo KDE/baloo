@@ -24,6 +24,7 @@
 #define BALOO_KIO_SEARCH_H_
 
 #include <kio/slavebase.h>
+#include <KUser>
 
 namespace Baloo
 {
@@ -53,6 +54,11 @@ public:
     void stat(const QUrl& url) override;
 
 private:
+    QString getUserName(KUserId uid) const;
+    QString getGroupName(KGroupId gid) const;
+
+    mutable QHash<KUserId, QString> mUsercache;
+    mutable QHash<KGroupId, QString> mGroupcache;
 };
 }
 
