@@ -40,19 +40,20 @@ namespace
 KIO::UDSEntry statSearchFolder(const QUrl& url)
 {
     KIO::UDSEntry uds;
-    uds.insert(KIO::UDSEntry::UDS_ACCESS, 0700);
-    uds.insert(KIO::UDSEntry::UDS_USER, KUser().loginName());
-    uds.insert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
-    uds.insert(KIO::UDSEntry::UDS_MIME_TYPE, QStringLiteral("inode/directory"));
-    uds.insert(KIO::UDSEntry::UDS_ICON_OVERLAY_NAMES, QStringLiteral("baloo"));
-    uds.insert(KIO::UDSEntry::UDS_DISPLAY_TYPE, i18n("Search Folder"));
-    uds.insert(KIO::UDSEntry::UDS_URL, url.url());
+    uds.reserve(9);
+    uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, 0700);
+    uds.fastInsert(KIO::UDSEntry::UDS_USER, KUser().loginName());
+    uds.fastInsert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
+    uds.fastInsert(KIO::UDSEntry::UDS_MIME_TYPE, QStringLiteral("inode/directory"));
+    uds.fastInsert(KIO::UDSEntry::UDS_ICON_OVERLAY_NAMES, QStringLiteral("baloo"));
+    uds.fastInsert(KIO::UDSEntry::UDS_DISPLAY_TYPE, i18n("Search Folder"));
+    uds.fastInsert(KIO::UDSEntry::UDS_URL, url.url());
 
     QUrlQuery query(url);
     QString title = query.queryItemValue(QStringLiteral("title"), QUrl::FullyDecoded);
     if (!title.isEmpty()) {
-        uds.insert(KIO::UDSEntry::UDS_NAME, title);
-        uds.insert(KIO::UDSEntry::UDS_DISPLAY_NAME, title);
+        uds.fastInsert(KIO::UDSEntry::UDS_NAME, title);
+        uds.fastInsert(KIO::UDSEntry::UDS_DISPLAY_NAME, title);
     }
 
     return uds;
@@ -120,18 +121,19 @@ void SearchProtocol::listDir(const QUrl& url)
 
     while (it.next()) {
         KIO::UDSEntry uds;
+        uds.reserve(10);
         const QString filePath(it.filePath());
 
         // Code from kdelibs/kioslaves/file.cpp
         QT_STATBUF statBuf;
         const QByteArray ba = QFile::encodeName(filePath);
         if (filePathToStat(ba, statBuf) == 0) {
-            uds.insert(KIO::UDSEntry::UDS_MODIFICATION_TIME, statBuf.st_mtime);
-            uds.insert(KIO::UDSEntry::UDS_ACCESS_TIME, statBuf.st_atime);
-            uds.insert(KIO::UDSEntry::UDS_SIZE, statBuf.st_size);
+            uds.fastInsert(KIO::UDSEntry::UDS_MODIFICATION_TIME, statBuf.st_mtime);
+            uds.fastInsert(KIO::UDSEntry::UDS_ACCESS_TIME, statBuf.st_atime);
+            uds.fastInsert(KIO::UDSEntry::UDS_SIZE, statBuf.st_size);
 #ifndef Q_OS_WIN
-            uds.insert(KIO::UDSEntry::UDS_USER, getUserName(KUserId(statBuf.st_uid)));
-            uds.insert(KIO::UDSEntry::UDS_GROUP, getGroupName(KGroupId(statBuf.st_gid)));
+            uds.fastInsert(KIO::UDSEntry::UDS_USER, getUserName(KUserId(statBuf.st_uid)));
+            uds.fastInsert(KIO::UDSEntry::UDS_GROUP, getGroupName(KGroupId(statBuf.st_gid)));
 #else
 #pragma message("TODO: st_uid and st_gid are always zero, use GetSecurityInfo to find the owner")
 #endif
@@ -139,17 +141,17 @@ void SearchProtocol::listDir(const QUrl& url)
             mode_t type = statBuf.st_mode & S_IFMT;
             mode_t access = statBuf.st_mode & 07777;
 
-            uds.insert(KIO::UDSEntry::UDS_FILE_TYPE, type);
-            uds.insert(KIO::UDSEntry::UDS_ACCESS, access);
+            uds.fastInsert(KIO::UDSEntry::UDS_FILE_TYPE, type);
+            uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, access);
         }
         else {
             continue;
         }
 
         QUrl url = QUrl::fromLocalFile(filePath);
-        uds.insert(KIO::UDSEntry::UDS_NAME, url.fileName());
-        uds.insert(KIO::UDSEntry::UDS_URL, url.url());
-        uds.insert(KIO::UDSEntry::UDS_LOCAL_PATH, filePath);
+        uds.fastInsert(KIO::UDSEntry::UDS_NAME, url.fileName());
+        uds.fastInsert(KIO::UDSEntry::UDS_URL, url.url());
+        uds.fastInsert(KIO::UDSEntry::UDS_LOCAL_PATH, filePath);
 
         listEntry(uds);
     }
