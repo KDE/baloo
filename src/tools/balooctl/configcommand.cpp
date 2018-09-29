@@ -21,6 +21,7 @@
 #include "configcommand.h"
 #include "indexerconfig.h"
 
+#include <QDir>
 #include <QTextStream>
 #include <QFileInfo>
 
@@ -162,18 +163,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
                 return 1;
             }
 
-            auto fileInfo = QFileInfo(args.takeFirst());
-            if (!fileInfo.exists()) {
-                out << i18n("Path does not exist") << endl;
-                return 1;
-            }
-
-            if (!fileInfo.isDir()) {
-                out << i18n("Path is not a directory") << endl;
-                return 1;
-            }
-
-            auto path = fileInfo.absoluteFilePath();
+            QString path = args.takeFirst().replace('$HOME', QDir::homePath());
             QStringList folders = config.includeFolders();
             if (!folders.contains(path)) {
                 out << i18n("%1 is not in the list of include folders", path) << endl;
@@ -192,18 +182,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
                 return 1;
             }
 
-            auto fileInfo = QFileInfo(args.takeFirst());
-            if (!fileInfo.exists()) {
-                out << i18n("Path does not exist") << endl;
-                return 1;
-            }
-
-            if (!fileInfo.isDir()) {
-                out << i18n("Path is not a directory") << endl;
-                return 1;
-            }
-
-            auto path = fileInfo.absoluteFilePath();
+            QString path = args.takeFirst().replace('$HOME', QDir::homePath());
             QStringList folders = config.excludeFolders();
             if (!folders.contains(path)) {
                 out << i18n("%1 is not in the list of exclude folders", path) << endl;
