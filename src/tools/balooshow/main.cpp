@@ -198,19 +198,44 @@ int main(int argc, char* argv[])
             stream << i18n("%1 Terms: %2", QStringLiteral("XAttr"), join(xAttrTerms)) << endl;
 
             QHash<int, QStringList> propertyWords;
+            KLocalizedString errorPrefix = ki18nc("Prefix string for internal errors", "Internal Error - %1");
 
             for (const QByteArray& arr : terms) {
+                auto arrAsPrintable = [arr]() {
+                    return QString::fromLatin1(arr.toPercentEncoding());
+                };
+
+                if (arr.length() < 1) {
+                    auto error = QString("malformed term (short): '%1'\n").arg(arrAsPrintable());
+                    stream << errorPrefix.subs(error).toString();
+                    continue;
+                }
                 QString word = QString::fromUtf8(arr);
 
                 if (word[0].isUpper()) {
                     if (word[0] == QLatin1Char('X')) {
-                        int posOfNonNumeric = 1;
-                        while (word[posOfNonNumeric] != '-') {
-                            posOfNonNumeric++;
+                        if (word.length() < 4) {
+                            // 'X<num>-<value>
+                            auto error = QString("malformed property term (short): '%1' in '%2'\n").arg(word).arg(arrAsPrintable());
+                            stream << errorPrefix.subs(error).toString();
+                            continue;
+                        }
+                        int posOfNonNumeric = word.indexOf('-', 2);
+                        if ((posOfNonNumeric < 0) || ((posOfNonNumeric + 1) == word.length())) {
+                            auto error = QString("malformed property term (no data): '%1' in '%2'\n").arg(word).arg(arrAsPrintable());
+                            stream << errorPrefix.subs(error).toString();
+                            continue;
                         }
 
-                        int propNum = word.midRef(1, posOfNonNumeric-1).toInt();
+                        bool ok;
+                        QStringRef prop = word.midRef(1, posOfNonNumeric-1);
+                        int propNum = prop.toInt(&ok);
                         QString value = word.mid(posOfNonNumeric + 1);
+                        if (!ok) {
+                            auto error = QString("malformed property term (bad index): '%1' in '%2'\n").arg(prop).arg(arrAsPrintable());
+                            stream << errorPrefix.subs(error).toString();
+                            continue;
+                        }
 
                         propertyWords[propNum].append(value);
                     }
