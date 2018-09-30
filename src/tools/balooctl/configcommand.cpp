@@ -270,13 +270,6 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
                 return 1;
             }
 
-            for (const QString& folder : folders) {
-                if (path.startsWith(folder)) {
-                    out << i18n("Parent folder %1 is already in the list of include folders", folder) << endl;
-                    return 1;
-                }
-            }
-
             if (config.excludeFolders().contains(path)) {
                 out << i18n("%1 is in the list of exclude folders", path) << endl;
                 out << "Aborting" << endl;
@@ -310,13 +303,6 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
             if (folders.contains(path)) {
                 out << i18n("%1 is already in the list of exclude folders", path) << endl;
                 return 1;
-            }
-
-            for (const QString& folder : folders) {
-                if (path.startsWith(folder)) {
-                    out << i18n("Parent folder %1 is already in the list of exclude folders", folder) << endl;
-                    return 1;
-                }
             }
 
             if (config.includeFolders().contains(path)) {
