@@ -163,7 +163,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
                 return 1;
             }
 
-            QString path = args.takeFirst().replace('$HOME', QDir::homePath());
+            QString path = args.takeFirst().replace(QStringLiteral("$HOME"), QDir::homePath());
             QStringList folders = config.includeFolders();
             if (!folders.contains(path)) {
                 out << i18n("%1 is not in the list of include folders", path) << endl;
@@ -182,7 +182,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
                 return 1;
             }
 
-            QString path = args.takeFirst().replace('$HOME', QDir::homePath());
+            QString path = args.takeFirst().replace(QStringLiteral("$HOME"), QDir::homePath());
             QStringList folders = config.excludeFolders();
             if (!folders.contains(path)) {
                 out << i18n("%1 is not in the list of exclude folders", path) << endl;
