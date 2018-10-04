@@ -22,6 +22,7 @@
  */
 
 #include "monitorcommand.h"
+#include "indexerstate.h"
 
 #include <QDBusConnection>
 #include <QDBusServiceWatcher>
@@ -32,7 +33,8 @@ MonitorCommand::MonitorCommand(QObject *parent)
     : QObject(parent)
     , m_out(stdout)
     , m_err(stderr)
-    , m_dbusInterface(nullptr)
+    , m_indexerDBusInterface(nullptr)
+    , m_schedulerDBusInterface(nullptr)
     , m_dbusServiceWatcher(nullptr)
 
 {
@@ -44,17 +46,25 @@ MonitorCommand::MonitorCommand(QObject *parent)
     connect(m_dbusServiceWatcher, &QDBusServiceWatcher::serviceUnregistered,
             this, &MonitorCommand::balooIsNotAvailable);
     
-    m_dbusInterface = new org::kde::baloo::fileindexer(QStringLiteral("org.kde.baloo"),
+    m_indexerDBusInterface = new org::kde::baloo::fileindexer(QStringLiteral("org.kde.baloo"),
         QStringLiteral("/fileindexer"),
         QDBusConnection::sessionBus(),
         this
     );
-    connect(m_dbusInterface, &org::kde::baloo::fileindexer::startedIndexingFile,
+    connect(m_indexerDBusInterface, &org::kde::baloo::fileindexer::startedIndexingFile,
         this, &MonitorCommand::startedIndexingFile);
-    connect(m_dbusInterface, &org::kde::baloo::fileindexer::finishedIndexingFile,
+    connect(m_indexerDBusInterface, &org::kde::baloo::fileindexer::finishedIndexingFile,
         this, &MonitorCommand::finishedIndexingFile);
 
-    if (m_dbusInterface->isValid()) {
+    m_schedulerDBusInterface = new org::kde::baloo::scheduler(QStringLiteral("org.kde.baloo"),
+        QStringLiteral("/scheduler"),
+        QDBusConnection::sessionBus(),
+        this
+    );
+    connect(m_schedulerDBusInterface, &org::kde::baloo::scheduler::stateChanged,
+        this, &MonitorCommand::stateChanged);
+
+    if (m_indexerDBusInterface->isValid() && m_schedulerDBusInterface->isValid()) {
         m_err << i18n("Press ctrl+c to stop monitoring") << endl;
         balooIsAvailable();
     } else {
@@ -66,14 +76,14 @@ MonitorCommand::MonitorCommand(QObject *parent)
 
 void MonitorCommand::balooIsNotAvailable()
 {
-    m_dbusInterface->unregisterMonitor();
+    m_indexerDBusInterface->unregisterMonitor();
     m_err << i18n("Waiting for file indexer to start") << endl;
     m_err << i18n("Press ctrl+c to stop monitoring") << endl;
 }
 
 void MonitorCommand::balooIsAvailable()
 {
-    m_dbusInterface->registerMonitor();
+    m_indexerDBusInterface->registerMonitor();
     m_err << i18n("File indexer is running") << endl;
 }
 
@@ -95,4 +105,9 @@ void MonitorCommand::finishedIndexingFile(const QString& filePath)
 
     m_currentFile.clear();
     m_out << i18n(": Ok") << endl;
+}
+
+void MonitorCommand::stateChanged(int state)
+{
+    m_out << stateString(state) << endl;
 }
