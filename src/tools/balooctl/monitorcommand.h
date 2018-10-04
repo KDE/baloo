@@ -26,6 +26,7 @@
 
 #include "command.h"
 #include "fileindexerinterface.h"
+#include "schedulerinterface.h"
 #include <QObject>
 #include <QTextStream>
 #include <KLocalizedString>
@@ -51,13 +52,15 @@ public:
 private Q_SLOTS:
     void startedIndexingFile(const QString& filePath);
     void finishedIndexingFile(const QString& filePath);
+    void stateChanged(int state);
     void balooIsAvailable();
     void balooIsNotAvailable();
 
 private:
     QTextStream m_out;
     QTextStream m_err;
-    org::kde::baloo::fileindexer* m_dbusInterface;
+    org::kde::baloo::fileindexer* m_indexerDBusInterface;
+    org::kde::baloo::scheduler* m_schedulerDBusInterface;
     QString m_currentFile;
     QDBusServiceWatcher* m_dbusServiceWatcher;
 };
