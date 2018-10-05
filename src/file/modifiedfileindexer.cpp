@@ -68,10 +68,13 @@ void ModifiedFileIndexer::run()
 
         DocumentTimeDB::TimeInfo timeInfo = tr.documentTimeInfo(fileId);
 
+        // FIXME: Using QFileInfo over here is quite expensive!
+        QFileInfo fileInfo(filePath);
+
         // A folders mtime is updated when a new file is added / removed / renamed
         // we don't really need to reindex a folder when that happens
         // In fact, we never need to reindex a folder
-        if (timeInfo.mTime && mimetype == QLatin1String("inode/directory")) {
+        if (timeInfo.mTime && fileInfo.isDir())
             continue;
         }
 
