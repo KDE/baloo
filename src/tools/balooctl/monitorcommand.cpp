@@ -67,6 +67,11 @@ MonitorCommand::MonitorCommand(QObject *parent)
     if (m_indexerDBusInterface->isValid() && m_schedulerDBusInterface->isValid()) {
         m_err << i18n("Press ctrl+c to stop monitoring") << endl;
         balooIsAvailable();
+        stateChanged(m_schedulerDBusInterface->state());
+        QString currentFile = m_indexerDBusInterface->currentFile();
+        if (!currentFile.isEmpty()) {
+            startedIndexingFile(currentFile);
+        }
     } else {
         balooIsNotAvailable();
     }
