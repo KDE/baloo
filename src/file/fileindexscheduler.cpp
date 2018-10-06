@@ -26,6 +26,7 @@
 #include "filecontentindexer.h"
 #include "filecontentindexerprovider.h"
 #include "unindexedfileindexer.h"
+#include "indexcleaner.h"
 
 #include "fileindexerconfig.h"
 
@@ -46,6 +47,7 @@ FileIndexScheduler::FileIndexScheduler(Database* db, FileIndexerConfig* config, 
     , m_indexerState(Idle)
     , m_timeEstimator(config, this)
     , m_checkUnindexedFiles(false)
+    , m_checkStaleIndexEntries(false)
 {
     Q_ASSERT(db);
     Q_ASSERT(config);
@@ -137,6 +139,17 @@ void FileIndexScheduler::scheduleIndexing()
         Q_EMIT stateChanged(m_indexerState);
         return;
     }
+
+    if (m_checkStaleIndexEntries) {
+        auto runnable = new IndexCleaner(m_db, m_config);
+        connect(runnable, &IndexCleaner::done, this, &FileIndexScheduler::scheduleIndexing);
+
+        m_threadPool.start(runnable);
+        m_checkStaleIndexEntries = false;
+        m_indexerState = StaleIndexEntriesClean;
+        Q_EMIT stateChanged(m_indexerState);
+        return;
+    }
     m_indexerState = Idle;
     Q_EMIT stateChanged(m_indexerState);
 }
@@ -203,11 +216,28 @@ uint FileIndexScheduler::getRemainingTime()
     return m_timeEstimator.calculateTimeLeft(m_provider.size());
 }
 
+void FileIndexScheduler::scheduleCheckUnindexedFiles()
+{
+    m_checkUnindexedFiles = true;
+}
+
 void FileIndexScheduler::checkUnindexedFiles()
 {
     m_checkUnindexedFiles = true;
     scheduleIndexing();
 }
+
+void FileIndexScheduler::scheduleCheckStaleIndexEntries()
+{
+    m_checkStaleIndexEntries = true;
+}
+
+void FileIndexScheduler::checkStaleIndexEntries()
+{
+    m_checkStaleIndexEntries = true;
+    scheduleIndexing();
+}
+
 
 uint FileIndexScheduler::getBatchSize()
 {

@@ -75,11 +75,14 @@ public Q_SLOTS:
     void handleFileRemoved(const QString& file);
 
     void scheduleIndexing();
+    void scheduleCheckUnindexedFiles();
+    void scheduleCheckStaleIndexEntries();
 
     Q_SCRIPTABLE void suspend() { setSuspend(true); }
     Q_SCRIPTABLE void resume() { setSuspend(false); }
     Q_SCRIPTABLE uint getRemainingTime();
     Q_SCRIPTABLE void checkUnindexedFiles();
+    Q_SCRIPTABLE void checkStaleIndexEntries();
     Q_SCRIPTABLE uint getBatchSize();
 
 private Q_SLOTS:
@@ -106,6 +109,7 @@ private:
     TimeEstimator m_timeEstimator;
 
     bool m_checkUnindexedFiles;
+    bool m_checkStaleIndexEntries;
 };
 
 }
