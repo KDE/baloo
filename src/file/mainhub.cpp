@@ -50,6 +50,10 @@ MainHub::MainHub(Database* db, FileIndexerConfig* config)
     bus.registerObject(QStringLiteral("/"), this, QDBusConnection::ExportAllSlots |
                         QDBusConnection::ExportScriptableSignals | QDBusConnection::ExportAdaptors);
 
+    if (!m_config->isInitialRun()) {
+        m_fileIndexScheduler.scheduleCheckUnindexedFiles();
+        m_fileIndexScheduler.scheduleCheckStaleIndexEntries();
+    }
     QTimer::singleShot(0, &m_fileWatcher, &FileWatch::watchIndexedFolders);
 }
 
