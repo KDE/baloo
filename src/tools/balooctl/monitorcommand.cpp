@@ -86,7 +86,7 @@ int MonitorCommand::exec(const QCommandLineParser& parser)
 void MonitorCommand::startedIndexingFile(const QString& filePath)
 {
     m_currentFile = filePath;
-    m_out << i18nc("currently indexed file", "Indexing: %1", filePath);
+    m_out << i18nc("currently indexed file", "Indexing: %1", filePath) << flush;
 }
 
 void MonitorCommand::finishedIndexingFile(const QString& filePath)
