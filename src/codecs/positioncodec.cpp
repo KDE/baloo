@@ -54,6 +54,9 @@ QVector<PositionInfo> PositionCodec::decode(const QByteArray& arr)
         info.docId = decodeFixed64(data);
         data += sizeof(quint64);
         data = getDifferentialVarInt32(data, end, &info.positions);
+        if (!data) {
+            return QVector<PositionInfo>();
+        }
 
         vec << info;
     }
