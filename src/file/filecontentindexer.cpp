@@ -51,7 +51,7 @@ void FileContentIndexer::run()
 {
     ExtractorProcess process;
     connect(&process, &ExtractorProcess::startedIndexingFile, this, &FileContentIndexer::slotStartedIndexingFile);
-    connect(&process, &ExtractorProcess::startedIndexingFile, this, &FileContentIndexer::slotFinishedIndexingFile);
+    connect(&process, &ExtractorProcess::finishedIndexingFile, this, &FileContentIndexer::slotFinishedIndexingFile);
 
     m_stop.store(false);
     while (m_provider->size() && !m_stop.load()) {
@@ -93,6 +93,7 @@ void FileContentIndexer::slotFinishedIndexingFile(const QString& filePath)
     if (!m_registeredMonitors.isEmpty()) {
         Q_EMIT finishedIndexingFile(filePath);
     }
+    m_currentFile = QString();
 }
 
 void FileContentIndexer::registerMonitor(const QDBusMessage& message)
