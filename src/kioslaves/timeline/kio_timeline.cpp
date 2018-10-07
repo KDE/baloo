@@ -41,6 +41,7 @@ namespace
 KIO::UDSEntry createFolderUDSEntry(const QString& name, const QString& displayName, const QDate& date)
 {
     KIO::UDSEntry uds;
+    uds.reserve(8);
     QDateTime dt(date, QTime(0, 0, 0));
     uds.fastInsert(KIO::UDSEntry::UDS_NAME, name);
     uds.fastInsert(KIO::UDSEntry::UDS_DISPLAY_NAME, displayName);
@@ -82,6 +83,7 @@ KIO::UDSEntry createFileUDSEntry(const QString& filePath)
     QT_STATBUF statBuf;
     const QByteArray url = QFile::encodeName(filePath);
     if (filePathToStat(url, statBuf) == 0) {
+        uds.reserve(9);
         uds.fastInsert(KIO::UDSEntry::UDS_MODIFICATION_TIME, statBuf.st_mtime);
         uds.fastInsert(KIO::UDSEntry::UDS_ACCESS_TIME, statBuf.st_atime);
         uds.fastInsert(KIO::UDSEntry::UDS_SIZE, statBuf.st_size);
@@ -179,6 +181,7 @@ void TimelineProtocol::stat(const QUrl& url)
     switch (parseTimelineUrl(url, &m_date, &m_filename)) {
     case RootFolder: {
         KIO::UDSEntry uds;
+        uds.reserve(4);
         uds.fastInsert(KIO::UDSEntry::UDS_NAME, QStringLiteral("/"));
         uds.fastInsert(KIO::UDSEntry::UDS_ICON_NAME, QStringLiteral("nepomuk"));
         uds.fastInsert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
