@@ -299,6 +299,7 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
 
     auto createUDSEntryForTag = [] (const QString& tagSection, const QString& tag) {
         KIO::UDSEntry uds;
+        uds.reserve(9);
         uds.fastInsert(KIO::UDSEntry::UDS_NAME, tagSection);
         uds.fastInsert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
         uds.fastInsert(KIO::UDSEntry::UDS_MIME_TYPE, QStringLiteral("inode/directory"));
