@@ -20,6 +20,7 @@
  */
 
 #include "timelinetools.h"
+#include "kio_timeline_debug.h"
 
 #include <QUrl>
 #include <QDate>
@@ -71,7 +72,7 @@ QDate applyRelativeDateModificators(const QDate& date, const QMap<QString, QStri
 
 Baloo::TimelineFolderType Baloo::parseTimelineUrl(const QUrl& url, QDate* date, QString* filename)
 {
-    qDebug() << url;
+    qCDebug(KIO_TIMELINE) << url;
 
     static QRegExp s_dateRegexp(QStringLiteral("\\d{4}-\\d{2}(?:-(\\d{2}))?"));
 
@@ -83,16 +84,16 @@ Baloo::TimelineFolderType Baloo::parseTimelineUrl(const QUrl& url, QDate* date, 
         path = path.mid(0, path.length()-1);
 
     if (path.isEmpty() || path == QLatin1String("/")) {
-        qDebug() << url << "is root folder";
+        qCDebug(KIO_TIMELINE) << url << "is root folder";
         return RootFolder;
     } else if (path.startsWith(QLatin1String("/today"))) {
         *date = QDate::currentDate();
         if (filename)
             *filename = path.mid(7);
-        qDebug() << url << "is today folder:" << *date;
+        qCDebug(KIO_TIMELINE) << url << "is today folder:" << *date;
         return DayFolder;
     } else if (path == QLatin1String("/calendar")) {
-        qDebug() << url << "is calendar folder";
+        qCDebug(KIO_TIMELINE) << url << "is calendar folder";
         return CalendarFolder;
     } else {
         QStringList sections = path.split(QStringLiteral("/"), QString::SkipEmptyParts);
@@ -104,19 +105,19 @@ Baloo::TimelineFolderType Baloo::parseTimelineUrl(const QUrl& url, QDate* date, 
             if (filename)
                 *filename = sections.last();
         } else {
-            qDebug() << url << "COULD NOT PARSE";
+            qCWarning(KIO_TIMELINE) << url << "COULD NOT PARSE";
             return NoFolder;
         }
 
         if (s_dateRegexp.cap(1).isEmpty()) {
             // no day -> month listing
-            qDebug() << "parsing " << dateString;
+            qCDebug(KIO_TIMELINE) << "parsing " << dateString;
             *date = QDate::fromString(dateString, QStringLiteral("yyyy-MM"));
-            qDebug() << url << "is month folder:" << date->month() << date->year();
+            qCDebug(KIO_TIMELINE) << url << "is month folder:" << date->month() << date->year();
             if (date->month() > 0 && date->year() > 0)
                 return MonthFolder;
         } else {
-            qDebug() << "parsing " << dateString;
+            qCDebug(KIO_TIMELINE) << "parsing " << dateString;
             typedef QPair<QString, QString> StringPair;
             QUrlQuery query(url);
             QList<StringPair> queryItems = query.queryItems();
@@ -127,7 +128,7 @@ Baloo::TimelineFolderType Baloo::parseTimelineUrl(const QUrl& url, QDate* date, 
 
             *date = applyRelativeDateModificators(QDate::fromString(dateString, QStringLiteral("yyyy-MM-dd")), map);
             // only in day folders we can have filenames
-            qDebug() << url << "is day folder:" << *date;
+            qCDebug(KIO_TIMELINE) << url << "is day folder:" << *date;
             if (date->isValid())
                 return DayFolder;
         }
