@@ -22,10 +22,10 @@
  */
 
 #include "kio_tags.h"
+#include "kio_tags_debug.h"
 
 #include <QUrl>
 #include <QDebug>
-#include <QLoggingCategory>
 
 #include <KLocalizedString>
 #include <KUser>
@@ -42,8 +42,6 @@
 
 #include "query.h"
 #include "term.h"
-
-Q_LOGGING_CATEGORY(KIO_TAGS, "kf5.kio.kio_tags")
 
 using namespace Baloo;
 
