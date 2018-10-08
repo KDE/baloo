@@ -1,0 +1,474 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+# Geoffray Levasseur <geoffray.levasseur-brandin@ac-toulouse.fr>, 2014.
+# Vincent Pinon <vpinon@kde.org>, 2016.
+# Simon Depiets <sdepiets@gmail.com>, 2017, 2018.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2018-09-30 03:43+0200\n"
+"PO-Revision-Date: 2018-03-15 15:21+0800\n"
+"Last-Translator: Simon Depiets <sdepiets@gmail.com>\n"
+"Language-Team: French <kde-francophone@kde.org>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Lokalize 2.0\n"
+"X-Environment: kde\n"
+"X-Accelerator-Marker: &\n"
+"X-Text-Markup: kde4\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Geoffray Levasseur, Simon Depiets"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "geoffray.levasseurbrandin@numericable.fr, sdepiets@gmail.com"
+
+#: ../../file/indexerstate.h:42
+#, kde-format
+msgid "Unknown"
+msgstr "Inconnu"
+
+#: ../../file/indexerstate.h:45
+#, kde-format
+msgid "Idle"
+msgstr "Inactif"
+
+#: ../../file/indexerstate.h:48
+#, kde-format
+msgid "Suspended"
+msgstr "En veille"
+
+#: ../../file/indexerstate.h:51
+#, kde-format
+msgid "Initial Indexing"
+msgstr "Indexation initiale"
+
+#: ../../file/indexerstate.h:54
+#, kde-format
+msgid "Indexing new files"
+msgstr "Indexation des nouveaux fichiers"
+
+#: ../../file/indexerstate.h:57
+#, kde-format
+msgid "Indexing modified files"
+msgstr "Indexation des fichiers modifiés"
+
+#: ../../file/indexerstate.h:60
+#, kde-format
+msgid "Indexing Extended Attributes"
+msgstr "Indexation des attributs étendus"
+
+#: ../../file/indexerstate.h:63
+#, kde-format
+msgid "Indexing file content"
+msgstr "Indexation du contenu des fichiers"
+
+#: ../../file/indexerstate.h:66
+#, kde-format
+msgid "Checking for unindexed files"
+msgstr "Vérification des fichiers non indexés"
+
+#: configcommand.cpp:46
+#, kde-format
+msgid "Manipulate the Baloo configuration"
+msgstr "Manipuler la configuration de Baloo"
+
+#: configcommand.cpp:69
+#, kde-format
+msgid "The config command can be used to manipulate the Baloo Configuration"
+msgstr ""
+"La commande config peut être utilisée pour manipuler la configuration de "
+"Baloo"
+
+#: configcommand.cpp:70
+#, kde-format
+msgid "Usage: balooctl config <command>"
+msgstr "Utilisation : balooctl config <commande>"
+
+#: configcommand.cpp:71
+#, kde-format
+msgid "Possible Commands:"
+msgstr "Commandes possibles :"
+
+#: configcommand.cpp:74
+#, kde-format
+msgid "Add a value to config parameter"
+msgstr "Ajouter une valeur au paramètre de configuration"
+
+#: configcommand.cpp:75
+#, kde-format
+msgid "Remove a value from a config parameter"
+msgstr "Supprimer une valeur du paramètre de configuration"
+
+#: configcommand.cpp:76
+#, kde-format
+msgid "Show the value of a config parameter"
+msgstr "Afficher la valeur d'un paramètre de configuration"
+
+#: configcommand.cpp:77
+#, kde-format
+msgid "Set the value of a config parameter"
+msgstr "Définir la valeur d'un paramètre de configuration"
+
+#: configcommand.cpp:78
+#, kde-format
+msgid "Display this help menu"
+msgstr "Afficher ce menu d'aide"
+
+#: configcommand.cpp:84
+#, kde-format
+msgid "The following configuration options may be listed:"
+msgstr "Les options de configuration suivantes peuvent être listées :"
+
+#: configcommand.cpp:86 configcommand.cpp:363
+#, kde-format
+msgid "Controls if Baloo indexes hidden files and folders"
+msgstr "Indique si Baloo doit indexer les fichiers et dossiers cachés"
+
+#: configcommand.cpp:87
+#, kde-format
+msgid "Controls if baloo indexes file content."
+msgstr "Indique si baloo doit indexer les contenus des fichiers."
+
+#: configcommand.cpp:88 configcommand.cpp:151 configcommand.cpp:240
+#, kde-format
+msgid "The list of folders which Baloo indexes"
+msgstr "La liste des dossiers indexés par Baloo"
+
+#: configcommand.cpp:89 configcommand.cpp:152 configcommand.cpp:241
+#, kde-format
+msgid "The list of folders which Baloo will never index"
+msgstr "La liste des dossiers que Baloo n'indexera jamais"
+
+#: configcommand.cpp:90 configcommand.cpp:153 configcommand.cpp:242
+#, kde-format
+msgid "The list of filters which are used to exclude files"
+msgstr "La liste des filtres utilisés pour exclure les fichiers"
+
+#: configcommand.cpp:91 configcommand.cpp:154 configcommand.cpp:243
+#, kde-format
+msgid "The list of mimetypes which are used to exclude files"
+msgstr "La liste des types MIME utilisés pour exclure les fichiers"
+
+#: configcommand.cpp:143 configcommand.cpp:232 configcommand.cpp:355
+#: configcommand.cpp:424
+#, kde-format
+msgid "Config parameter could not be found"
+msgstr "Impossible de trouver le paramètre de configuration"
+
+#: configcommand.cpp:149 configcommand.cpp:238 configcommand.cpp:361
+#, kde-format
+msgid "The following configuration options may be modified:"
+msgstr "Les options de configuration suivantes peuvent être modifiées :"
+
+#: configcommand.cpp:162 configcommand.cpp:181 configcommand.cpp:251
+#: configcommand.cpp:286
+#, kde-format
+msgid "A folder must be provided"
+msgstr "Vous devez fournir un dossier"
+
+#: configcommand.cpp:169
+#, kde-format
+msgid "%1 is not in the list of include folders"
+msgstr "%1 n'est pas dans la liste des dossiers inclus"
+
+#: configcommand.cpp:188
+#, kde-format
+msgid "%1 is not in the list of exclude folders"
+msgstr "%1 n'est pas dans la liste des dossiers exclus"
+
+#: configcommand.cpp:200 configcommand.cpp:321
+#, kde-format
+msgid "A filter must be provided"
+msgstr "Vous devez fournir un filtre"
+
+#: configcommand.cpp:206
+#, kde-format
+msgid "%1 is not in list of exclude filters"
+msgstr "%1 n'est pas dans la liste des filtres d'exclusion"
+
+#: configcommand.cpp:217 configcommand.cpp:339
+#, kde-format
+msgid "A mimetype must be provided"
+msgstr "Vous devez fournir un type MIME"
+
+#: configcommand.cpp:223
+#, kde-format
+msgid "%1 is not in list of exclude mimetypes"
+msgstr "%1 n'est pas dans la liste des types MIME exclus"
+
+#: configcommand.cpp:257 configcommand.cpp:292
+#, kde-format
+msgid "Path does not exist"
+msgstr "L'emplacement n'existe pas"
+
+#: configcommand.cpp:262 configcommand.cpp:297
+#, kde-format
+msgid "Path is not a directory"
+msgstr "L'emplacement n'est pas un dossier"
+
+#: configcommand.cpp:269
+#, kde-format
+msgid "%1 is already in the list of include folders"
+msgstr "%1 est déjà dans la liste des dossiers inclus"
+
+#: configcommand.cpp:274 configcommand.cpp:309
+#, kde-format
+msgid "%1 is in the list of exclude folders"
+msgstr "%1 est dans la liste des dossiers exclus"
+
+#: configcommand.cpp:304
+#, kde-format
+msgid "%1 is already in the list of exclude folders"
+msgstr "%1 est déjà dans la liste des dossiers exclus"
+
+#: configcommand.cpp:327
+#, kde-format
+msgid "Exclude filter is already in the list"
+msgstr "Le filtre d'exclusion est déjà dans la liste"
+
+#: configcommand.cpp:345
+#, kde-format
+msgid "Exclude mimetype is already in the list"
+msgstr "Le type MIME à exclure est déjà dans la liste"
+
+#: configcommand.cpp:372 configcommand.cpp:399
+#, kde-format
+msgid "A value must be provided"
+msgstr "Vous devez fournir une valeur"
+
+#: configcommand.cpp:393 configcommand.cpp:420
+#, kde-format
+msgid "Invalid value"
+msgstr "Valeur non valable"
+
+#: main.cpp:69
+#, kde-format
+msgid "balooctl"
+msgstr "balooctl"
+
+#: main.cpp:70
+#, kde-format
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:70
+#, kde-format
+msgid "Maintainer"
+msgstr "Mainteneur"
+
+#: main.cpp:75
+#, kde-format
+msgid "The command to execute"
+msgstr "La commande à exécuter"
+
+#: main.cpp:77
+#, kde-format
+msgid "Print the status of the indexer"
+msgstr "Afficher l'état de l'indexation"
+
+#: main.cpp:78
+#, kde-format
+msgid "Enable the file indexer"
+msgstr "Activer l'indexation de fichiers"
+
+#: main.cpp:79
+#, kde-format
+msgid "Disable the file indexer"
+msgstr "Désactiver l'indexation de fichiers"
+
+#: main.cpp:80
+#, kde-format
+msgid "Start the file indexer"
+msgstr "Démarrer l'indexation de fichiers"
+
+#: main.cpp:81
+#, kde-format
+msgid "Stop the file indexer"
+msgstr "Arrêter l'indexation de fichiers"
+
+#: main.cpp:82
+#, kde-format
+msgid "Restart the file indexer"
+msgstr "Redémarrer l'indexation de fichiers"
+
+#: main.cpp:83
+#, kde-format
+msgid "Suspend the file indexer"
+msgstr "Suspendre l'indexation de fichiers"
+
+#: main.cpp:84
+#, kde-format
+msgid "Resume the file indexer"
+msgstr "Reprendre l'indexation de fichiers"
+
+#: main.cpp:85
+#, kde-format
+msgid "Check for any unindexed files and index them"
+msgstr "Vérifier et indexer les fichiers non indexés"
+
+#: main.cpp:86
+#, kde-format
+msgid "Index the specified files"
+msgstr "Indexer les fichiers spécifiés"
+
+#: main.cpp:87
+#, kde-format
+msgid "Forget the specified files"
+msgstr "Oublier les fichiers spécifiés"
+
+#: main.cpp:88
+#, kde-format
+msgid "Modify the Baloo configuration"
+msgstr "Modifier la configuration de Baloo"
+
+#: main.cpp:89
+#, kde-format
+msgid "Monitor the file indexer"
+msgstr "Surveiller l'indexation de fichiers"
+
+#: main.cpp:90
+#, kde-format
+msgid "Display the disk space used by index"
+msgstr "Afficher l'espace disque utilisé par l'indice"
+
+#: main.cpp:92
+#, kde-format
+msgid ""
+"Output format <%1|%2|%3>.\n"
+"Only applies to \"%4\""
+msgstr ""
+"Format de sortie <%1|%2|%3>.\n"
+"Ne s'applique qu'à « %4 »"
+
+#: main.cpp:98
+#, kde-format
+msgid "format"
+msgstr "format"
+
+#: monitorcommand.cpp:58 monitorcommand.cpp:71
+#, kde-format
+msgid "Press ctrl+c to stop monitoring"
+msgstr "Appuyez sur « Ctrl+C » pour quitter le moniteur"
+
+#: monitorcommand.cpp:70
+#, kde-format
+msgid "Waiting for file indexer to start"
+msgstr "En attente du démarrage de l'indexeur de fichiers"
+
+#: monitorcommand.cpp:77
+#, kde-format
+msgid "File indexer is running"
+msgstr "L'indexeur de fichier est en cours d'exécution"
+
+#: monitorcommand.cpp:89
+#, kde-format
+msgctxt "currently indexed file"
+msgid "Indexing: %1"
+msgstr "Indexation en cours : %1"
+
+#: monitorcommand.cpp:97
+#, kde-format
+msgid ": Ok"
+msgstr ": Ok"
+
+#: statuscommand.cpp:45
+#, kde-format
+msgid "Print the status of the Indexer"
+msgstr "Afficher l'état de l'indexation"
+
+#: statuscommand.cpp:55 statuscommand.cpp:93 statuscommand.cpp:135
+#, kde-format
+msgid "Ignoring non-existent file %1"
+msgstr "Fichier non-existant « %1 » ignoré"
+
+#: statuscommand.cpp:60
+#, kde-format
+msgid "File: %1"
+msgstr "Fichier : %1"
+
+#: statuscommand.cpp:62
+#, kde-format
+msgid "Basic Indexing: Done"
+msgstr "Indexation simple : Terminée"
+
+#: statuscommand.cpp:64
+#, kde-format
+msgid "Basic Indexing: Scheduled"
+msgstr "Indexation simple : Programmée"
+
+#: statuscommand.cpp:68
+#, kde-format
+msgid "Basic Indexing: Disabled"
+msgstr "Indexation simple : Désactivée"
+
+#: statuscommand.cpp:77
+#, kde-format
+msgid "Content Indexing: Scheduled"
+msgstr "Indexation des contenus : Programmée"
+
+#: statuscommand.cpp:79
+#, kde-format
+msgid "Content Indexing: Failed"
+msgstr "Indexation des contenus : Échec"
+
+#: statuscommand.cpp:81
+#, kde-format
+msgid "Content Indexing: Done"
+msgstr "Indexation des contenus : Terminée"
+
+#: statuscommand.cpp:181
+#, kde-format
+msgid "Output format \"%1\" is invalid"
+msgstr "Le format de sortie « %1 » n'est pas valable"
+
+#: statuscommand.cpp:187
+#, kde-format
+msgid "Baloo is currently disabled. To enable, please run %1"
+msgstr ""
+"Baloo est actuellement désactivé. Pour l'activer, veuillez lancer la "
+"commande « %1 »."
+
+#: statuscommand.cpp:193
+#, kde-format
+msgid "Baloo Index could not be opened"
+msgstr "Impossible d'ouvrir l'indice Baloo"
+
+#: statuscommand.cpp:214
+#, kde-format
+msgid "Baloo File Indexer is running"
+msgstr "L'indexation de fichiers Baloo est active."
+
+#: statuscommand.cpp:215
+#, kde-format
+msgid "Indexer state: %1"
+msgstr "État de l'indexation : %1"
+
+#: statuscommand.cpp:218
+#, kde-format
+msgid "Baloo File Indexer is not running"
+msgstr "L'indexation de fichiers Baloo est inactive."
+
+#: statuscommand.cpp:224
+#, kde-format
+msgid "Indexed %1 / %2 files"
+msgstr "Indexation de %1 / %2 fichiers"
+
+#: statuscommand.cpp:232
+#, kde-format
+msgid "Current size of index is %1"
+msgstr "La taille actuelle de l'indice est de « %1 »"
+
+#: statuscommand.cpp:234
+#, kde-format
+msgid "Index does not exist yet"
+msgstr "L'indice n'existe pas encore"
