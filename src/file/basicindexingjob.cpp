@@ -23,7 +23,6 @@
 #include "basicindexingjob.h"
 #include "termgenerator.h"
 #include "idutils.h"
-#include "baloodebug.h"
 
 #include <QFileInfo>
 #include <QDateTime>

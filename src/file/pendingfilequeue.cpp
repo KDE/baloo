@@ -24,7 +24,6 @@
 
 #include <memory>
 
-#include <QDebug>
 #include <QDateTime>
 
 using namespace Baloo;

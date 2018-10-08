@@ -26,7 +26,6 @@
 
 #include <QStandardPaths>
 #include <KConfigGroup>
-#include <QDebug>
 
 
 namespace

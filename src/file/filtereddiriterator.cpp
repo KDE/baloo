@@ -21,7 +21,6 @@
 #include "fileindexerconfig.h"
 
 #include <QFileInfo>
-#include <QDebug>
 
 using namespace Baloo;
 

@@ -28,7 +28,6 @@
 #include "basicindexingjob.h"
 
 #include <QMimeDatabase>
-#include <QDebug>
 
 using namespace Baloo;
 

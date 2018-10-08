@@ -23,7 +23,7 @@
 #include "iohandler.h"
 #include <unistd.h>
 #include <iostream>
-#include <QDebug>
+#include <QtGlobal>
 
 using namespace Baloo;
 
