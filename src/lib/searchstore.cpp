@@ -106,6 +106,7 @@ QStringList SearchStore::exec(const Term& term, uint offset, int limit, bool sor
 
         QStringList results;
         const uint end = qMin(static_cast<uint>(resultIds.size()), offset + static_cast<uint>(limit));
+        results.reserve(end - offset);
         for (uint i = offset; i < end; i++) {
             const quint64 id = resultIds[i].first;
             const QString filePath = tr.documentUrl(id);
