@@ -24,7 +24,6 @@
 #include <QDBusConnection>
 #include <QCoreApplication>
 #include <QTimer>
-#include <QDebug>
 
 using namespace Baloo;
 
