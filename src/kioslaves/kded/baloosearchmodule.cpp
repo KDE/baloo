@@ -96,6 +96,7 @@ void SearchModule::slotFileMetaDataChanged(const QStringList& list)
     qDebug() << m_searchUrls;
     qDebug() << list;
     QList<QUrl> localFileUrls;
+    localFileUrls.reserve(list.size());
     for (const QString& path : list) {
         localFileUrls << QUrl::fromLocalFile(path);
     }

@@ -47,6 +47,7 @@ quint64 PhraseAndIterator::docId() const
 bool PhraseAndIterator::checkIfPositionsMatch()
 {
     QVector< QVector<uint> > positionList;
+    positionList.reserve(m_iterators.size());
     // All the iterators should have the same value
     for (int i = 0; i < m_iterators.size(); i++) {
         PostingIterator* iter = m_iterators[i];
