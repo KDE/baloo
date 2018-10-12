@@ -36,7 +36,7 @@ class NewFileIndexer : public QObject, public QRunnable
 {
     Q_OBJECT
 public:
-    NewFileIndexer(Database* db, FileIndexerConfig* config, const QStringList& newFiles);
+    NewFileIndexer(Database* db, const FileIndexerConfig* config, const QStringList& newFiles);
 
     void run() override;
 
@@ -45,7 +45,7 @@ Q_SIGNALS:
 
 private:
     Database* m_db;
-    FileIndexerConfig* m_config;
+    const FileIndexerConfig* m_config;
     QStringList m_files;
 };
 

@@ -31,7 +31,7 @@
 
 using namespace Baloo;
 
-UnindexedFileIndexer::UnindexedFileIndexer(Database* db, FileIndexerConfig* config)
+UnindexedFileIndexer::UnindexedFileIndexer(Database* db, const FileIndexerConfig* config)
     : m_db(db)
     , m_config(config)
 {

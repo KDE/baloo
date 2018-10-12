@@ -35,7 +35,7 @@ class UnindexedFileIndexer : public QObject, public QRunnable
 {
     Q_OBJECT
 public:
-    UnindexedFileIndexer(Database* db, FileIndexerConfig* config);
+    UnindexedFileIndexer(Database* db, const FileIndexerConfig* config);
 
     void run() override;
 
@@ -44,7 +44,7 @@ Q_SIGNALS:
 
 private:
     Database* m_db;
-    FileIndexerConfig* m_config;
+    const FileIndexerConfig* m_config;
 };
 }
 

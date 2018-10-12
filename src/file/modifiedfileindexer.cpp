@@ -32,7 +32,7 @@
 
 using namespace Baloo;
 
-ModifiedFileIndexer::ModifiedFileIndexer(Database* db, FileIndexerConfig* config, const QStringList& files)
+ModifiedFileIndexer::ModifiedFileIndexer(Database* db, const FileIndexerConfig* config, const QStringList& files)
     : m_db(db)
     , m_config(config)
     , m_files(files)

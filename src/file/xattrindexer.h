@@ -33,7 +33,7 @@ class XAttrIndexer : public QObject, public QRunnable
 {
     Q_OBJECT
 public:
-    XAttrIndexer(Database* db, FileIndexerConfig* config, const QStringList& files);
+    XAttrIndexer(Database* db, const FileIndexerConfig* config, const QStringList& files);
 
     void run() override;
 
@@ -42,7 +42,7 @@ Q_SIGNALS:
 
 private:
     Database* m_db;
-    FileIndexerConfig* m_config;
+    const FileIndexerConfig* m_config;
     QStringList m_files;
 };
 }

@@ -24,7 +24,7 @@
 
 using namespace Baloo;
 
-FilteredDirIterator::FilteredDirIterator(FileIndexerConfig* config, const QString& folder, Filter filter)
+FilteredDirIterator::FilteredDirIterator(const FileIndexerConfig* config, const QString& folder, Filter filter)
     : m_config(config)
     , m_currentIter(nullptr)
     , m_filters(QDir::NoDotAndDotDot | QDir::Readable | QDir::NoSymLinks)

@@ -162,7 +162,7 @@ public:
     /**
       * Returns batch size
       */
-    uint maxUncomittedFiles();
+    uint maxUncomittedFiles() const;
 
 public Q_SLOTS:
     /**
