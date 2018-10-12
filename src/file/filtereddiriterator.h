@@ -35,7 +35,7 @@ public:
         FilesAndDirs,
         DirsOnly
     };
-    FilteredDirIterator(FileIndexerConfig* config, const QString& folder, Filter filter = FilesAndDirs);
+    FilteredDirIterator(const FileIndexerConfig* config, const QString& folder, Filter filter = FilesAndDirs);
     ~FilteredDirIterator();
 
     QString next();
@@ -49,7 +49,7 @@ private:
      */
     bool shouldIndexFolder(const QString& filePath) const;
 
-    FileIndexerConfig* m_config;
+    const FileIndexerConfig* m_config;
 
     QDirIterator* m_currentIter;
     QStack<QString> m_paths;

@@ -28,7 +28,7 @@
 
 using namespace Baloo;
 
-UnIndexedFileIterator::UnIndexedFileIterator(FileIndexerConfig* config, Transaction* transaction, const QString& folder)
+UnIndexedFileIterator::UnIndexedFileIterator(const FileIndexerConfig* config, Transaction* transaction, const QString& folder)
     : m_config(config)
     , m_transaction(transaction)
     , m_iter(config, folder, FilteredDirIterator::FilesAndDirs)

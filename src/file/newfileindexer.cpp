@@ -28,7 +28,7 @@
 
 using namespace Baloo;
 
-NewFileIndexer::NewFileIndexer(Database* db, FileIndexerConfig* config, const QStringList& newFiles)
+NewFileIndexer::NewFileIndexer(Database* db, const FileIndexerConfig* config, const QStringList& newFiles)
     : m_db(db)
     , m_config(config)
     , m_files(newFiles)

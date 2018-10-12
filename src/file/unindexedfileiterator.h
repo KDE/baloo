@@ -40,7 +40,7 @@ class Transaction;
 class UnIndexedFileIterator
 {
 public:
-    UnIndexedFileIterator(FileIndexerConfig* config, Transaction* transaction, const QString& folder);
+    UnIndexedFileIterator(const FileIndexerConfig* config, Transaction* transaction, const QString& folder);
     ~UnIndexedFileIterator();
 
     QString next();
@@ -52,7 +52,7 @@ public:
 private:
     bool shouldIndex(const QString& filePath, const QString& mimetype);
 
-    FileIndexerConfig* m_config;
+    const FileIndexerConfig* m_config;
     Transaction* m_transaction;
     FilteredDirIterator m_iter;
 
