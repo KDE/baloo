@@ -176,6 +176,9 @@ const char* const s_sourceCodeMimeTypes[] = {
     "application/ld+json",
     "application/x-ipynb+json", // Jupyter notebooks
 
+    // Not really source code, but inherited from text/plain
+    "application/pgp-encrypted", // pgp encrypted, with or without ASCII Armor
+
     // end of list
     nullptr
 };
