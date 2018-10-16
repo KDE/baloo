@@ -173,6 +173,7 @@ void WriteTransaction::replaceDocument(const Document& doc, DocumentOperations o
     DocumentDB documentFileNameTermsDB(m_dbis.docFilenameTermsDbi, m_txn);
     DocumentTimeDB docTimeDB(m_dbis.docTimeDbi, m_txn);
     DocumentDataDB docDataDB(m_dbis.docDataDbi, m_txn);
+    DocumentIdDB contentIndexingDB(m_dbis.contentIndexingDbi, m_txn);
     MTimeDB mtimeDB(m_dbis.mtimeDbi, m_txn);
     DocumentUrlDB docUrlDB(m_dbis.idTreeDbi, m_dbis.idFilenameDbi, m_txn);
 
@@ -204,6 +205,10 @@ void WriteTransaction::replaceDocument(const Document& doc, DocumentOperations o
             documentFileNameTermsDB.put(id, docFileNameTerms);
         else
             documentFileNameTermsDB.del(id);
+    }
+
+    if (doc.contentIndexing()) {
+        contentIndexingDB.put(doc.id());
     }
 
     if (operations & DocumentTime) {
