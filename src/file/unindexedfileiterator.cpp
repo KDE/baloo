@@ -90,7 +90,7 @@ bool UnIndexedFileIterator::shouldIndex(const QString& filePath, const QString& 
     if (!shouldIndexType)
         return false;
 
-    QFileInfo fileInfo(filePath);
+    const QFileInfo fileInfo = m_iter.fileInfo();
     if (!fileInfo.exists())
         return false;
 

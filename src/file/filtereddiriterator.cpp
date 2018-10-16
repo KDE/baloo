@@ -106,6 +106,11 @@ QString FilteredDirIterator::filePath() const
     return m_filePath;
 }
 
+QFileInfo FilteredDirIterator::fileInfo() const
+{
+    return m_currentIter ?  m_currentIter->fileInfo() : QFileInfo();
+}
+
 bool FilteredDirIterator::shouldIndexFolder(const QString& path) const
 {
     if (!m_config) {

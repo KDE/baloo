@@ -21,6 +21,7 @@
 #define FILTEREDDIRITERATOR_H
 
 #include <QDirIterator>
+#include <QFileInfo>
 #include <QStack>
 
 namespace Baloo {
@@ -39,6 +40,7 @@ public:
 
     QString next();
     QString filePath() const;
+    QFileInfo fileInfo() const;
 
 private:
     /**
