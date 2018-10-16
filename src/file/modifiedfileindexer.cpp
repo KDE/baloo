@@ -93,7 +93,6 @@ void ModifiedFileIndexer::run()
         // cause Baloo was not running and missed those events
         if (tr.hasDocument(job.document().id())) {
             tr.replaceDocument(job.document(), DocumentTime);
-            tr.setPhaseOne(job.document().id());
         }
         else {
             tr.addDocument(job.document());
