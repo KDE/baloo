@@ -39,9 +39,17 @@ public:
     static MDB_dbi create(MDB_txn* txn);
     static MDB_dbi open(MDB_txn* txn);
 
-    struct TimeInfo {
-        quint32 mTime;
-        quint32 cTime;
+    struct TimeInfo
+    {
+        /** Tracking of file time stamps
+          *
+          * @sa QDateTime::toTime_t()
+          * @sa QFileInfo::lastModified()
+          * @sa QFileInfo::metadataChangeTime()
+          */
+        quint32 mTime; /**< file (data) modification time */
+        quint32 cTime; /**< metadata (e.g. XAttr) change time */
+        /* No birthtime yet */
 
         explicit TimeInfo(quint32 mt = 0, quint32 ct = 0) : mTime(mt), cTime(ct) {}
 

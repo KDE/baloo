@@ -65,7 +65,7 @@ bool BasicIndexingJob::index()
     tg.indexFileNameText(fileName, QByteArray("F"));
     tg.indexText(m_mimetype, QByteArray("M"));
 
-    // Time
+    // (Content) Modification time, Metadata (e.g. XAttr) change time
     doc.setMTime(statBuf.st_mtime);
     doc.setCTime(statBuf.st_ctime);
 
