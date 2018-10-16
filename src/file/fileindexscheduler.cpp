@@ -48,6 +48,7 @@ FileIndexScheduler::FileIndexScheduler(Database* db, FileIndexerConfig* config, 
     , m_timeEstimator(config, this)
     , m_checkUnindexedFiles(false)
     , m_checkStaleIndexEntries(false)
+    , m_isGoingIdle(false)
 {
     Q_ASSERT(db);
     Q_ASSERT(config);
@@ -60,7 +61,7 @@ FileIndexScheduler::FileIndexScheduler(Database* db, FileIndexerConfig* config, 
     m_contentIndexer = new FileContentIndexer(m_config, &m_provider, this);
     m_contentIndexer->setAutoDelete(false);
     connect(m_contentIndexer, &FileContentIndexer::done, this,
-            &FileIndexScheduler::scheduleIndexing);
+            &FileIndexScheduler::runnerFinished);
     connect(m_contentIndexer, &FileContentIndexer::newBatchTime, &m_timeEstimator,
             &TimeEstimator::handleNewBatchTime);
 
@@ -75,13 +76,14 @@ FileIndexScheduler::~FileIndexScheduler()
 
 void FileIndexScheduler::scheduleIndexing()
 {
-    if (m_threadPool.activeThreadCount() || m_indexerState == Suspended) {
+    if (!m_isGoingIdle && m_indexerState != Idle) {
         return;
     }
+    m_isGoingIdle = false;
 
     if (m_config->isInitialRun()) {
         auto runnable = new FirstRunIndexer(m_db, m_config, m_config->includeFolders());
-        connect(runnable, &FirstRunIndexer::done, this, &FileIndexScheduler::scheduleIndexing);
+        connect(runnable, &FirstRunIndexer::done, this, &FileIndexScheduler::runnerFinished);
 
         m_threadPool.start(runnable);
         m_indexerState = FirstRun;
@@ -91,7 +93,7 @@ void FileIndexScheduler::scheduleIndexing()
 
     if (!m_newFiles.isEmpty()) {
         auto runnable = new NewFileIndexer(m_db, m_config, m_newFiles);
-        connect(runnable, &NewFileIndexer::done, this, &FileIndexScheduler::scheduleIndexing);
+        connect(runnable, &NewFileIndexer::done, this, &FileIndexScheduler::runnerFinished);
 
         m_threadPool.start(runnable);
         m_newFiles.clear();
@@ -102,7 +104,7 @@ void FileIndexScheduler::scheduleIndexing()
 
     if (!m_modifiedFiles.isEmpty()) {
         auto runnable = new ModifiedFileIndexer(m_db, m_config, m_modifiedFiles);
-        connect(runnable, &ModifiedFileIndexer::done, this, &FileIndexScheduler::scheduleIndexing);
+        connect(runnable, &ModifiedFileIndexer::done, this, &FileIndexScheduler::runnerFinished);
 
         m_threadPool.start(runnable);
         m_modifiedFiles.clear();
@@ -113,7 +115,7 @@ void FileIndexScheduler::scheduleIndexing()
 
     if (!m_xattrFiles.isEmpty()) {
         auto runnable = new XAttrIndexer(m_db, m_config, m_xattrFiles);
-        connect(runnable, &XAttrIndexer::done, this, &FileIndexScheduler::scheduleIndexing);
+        connect(runnable, &XAttrIndexer::done, this, &FileIndexScheduler::runnerFinished);
 
         m_threadPool.start(runnable);
         m_xattrFiles.clear();
@@ -131,7 +133,7 @@ void FileIndexScheduler::scheduleIndexing()
 
     if (m_checkUnindexedFiles) {
         auto runnable = new UnindexedFileIndexer(m_db, m_config);
-        connect(runnable, &UnindexedFileIndexer::done, this, &FileIndexScheduler::scheduleIndexing);
+        connect(runnable, &UnindexedFileIndexer::done, this, &FileIndexScheduler::runnerFinished);
 
         m_threadPool.start(runnable);
         m_checkUnindexedFiles = false;
@@ -142,7 +144,7 @@ void FileIndexScheduler::scheduleIndexing()
 
     if (m_checkStaleIndexEntries) {
         auto runnable = new IndexCleaner(m_db, m_config);
-        connect(runnable, &IndexCleaner::done, this, &FileIndexScheduler::scheduleIndexing);
+        connect(runnable, &IndexCleaner::done, this, &FileIndexScheduler::runnerFinished);
 
         m_threadPool.start(runnable);
         m_checkStaleIndexEntries = false;
