@@ -40,3 +40,13 @@ uint FileContentIndexerProvider::size()
     Transaction tr(m_db, Transaction::ReadOnly);
     return tr.phaseOneSize();
 }
+
+void FileContentIndexerProvider::markFailed(quint64 id)
+{
+    Transaction tr(m_db, Transaction::ReadWrite);
+    if (!tr.hasFailed(id)) {
+        tr.addFailed(id);
+    }
+    tr.removePhaseOne(id);
+    tr.commit();
+}
