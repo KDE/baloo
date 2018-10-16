@@ -29,7 +29,6 @@ ExtractorProcess::ExtractorProcess(QObject* parent)
     : QObject(parent)
     , m_extractorPath(QStandardPaths::findExecutable(QStringLiteral("baloo_file_extractor")))
     , m_extractorProcess(this)
-    , m_extractorIdle(true)
 {
     connect(&m_extractorProcess, &QProcess::readyRead, this, &ExtractorProcess::slotIndexingFile);
     m_extractorProcess.start(m_extractorPath, QStringList(), QIODevice::Unbuffered | QIODevice::ReadWrite);
@@ -45,7 +44,6 @@ ExtractorProcess::~ExtractorProcess()
 void ExtractorProcess::index(const QVector<quint64>& fileIds)
 {
     Q_ASSERT(m_extractorProcess.state() == QProcess::Running);
-    Q_ASSERT(m_extractorIdle);
     Q_ASSERT(!fileIds.isEmpty());
 
     QByteArray batchData;
@@ -56,7 +54,6 @@ void ExtractorProcess::index(const QVector<quint64>& fileIds)
         batchData.append(reinterpret_cast<char*>(&id), sizeof(quint64));
     }
 
-    m_extractorIdle = false;
     m_extractorProcess.write(batchData.data(), batchData.size());
 }
 
@@ -82,7 +79,6 @@ void ExtractorProcess::slotIndexingFile()
 
         case 'B':
             Q_EMIT done();
-            m_extractorIdle = true;
             break;
 
         default:

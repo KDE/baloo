@@ -50,8 +50,6 @@ private:
     QProcess m_extractorProcess;
     QTimer m_timeCurrentFile;
     int m_processTimeout;
-
-    bool m_extractorIdle;
 };
 }
 
