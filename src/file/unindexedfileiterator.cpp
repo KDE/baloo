@@ -22,6 +22,7 @@
 #include "fileindexerconfig.h"
 #include "idutils.h"
 #include "transaction.h"
+#include "baloodebug.h"
 
 #include <QFileInfo>
 #include <QDateTime>
@@ -113,11 +114,19 @@ bool UnIndexedFileIterator::shouldIndex(const QString& filePath, const QString& 
         m_mTimeChanged = true;
     }
 
-    if (timeInfo.cTime != fileInfo.created().toTime_t()) {
+#if QT_VERSION >= QT_VERSION_CHECK(5,10,0)
+    auto fileMTime = fileInfo.metadataChangeTime().toTime_t();
+#else
+    auto fileMTime = fileInfo.created().toTime_t();
+#endif
+    if (timeInfo.cTime != fileMTime) {
         m_cTimeChanged = true;
     }
 
     if (m_mTimeChanged || m_cTimeChanged) {
+        qCDebug(BALOO) << "mtime/ctime changed:"
+            << timeInfo.mTime << fileInfo.lastModified().toTime_t()
+            << timeInfo.cTime << fileMTime;
         return true;
     }
 
