@@ -31,15 +31,29 @@ ExtractorProcess::ExtractorProcess(QObject* parent)
     , m_extractorProcess(this)
 {
     connect(&m_extractorProcess, &QProcess::readyRead, this, &ExtractorProcess::slotIndexingFile);
+    connect(&m_extractorProcess, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+            [=](int exitCode, QProcess::ExitStatus exitStatus)
+            {
+                if (exitStatus == QProcess::CrashExit) {
+                    Q_EMIT failed();
+                }
+            });
+
+    m_extractorProcess.setProgram(m_extractorPath);
     m_extractorProcess.setProcessChannelMode(QProcess::ForwardedErrorChannel);
-    m_extractorProcess.start(m_extractorPath, QStringList(), QIODevice::Unbuffered | QIODevice::ReadWrite);
-    m_extractorProcess.waitForStarted();
-    m_extractorProcess.setReadChannel(QProcess::StandardOutput);
+    m_extractorProcess.start();
 }
 
 ExtractorProcess::~ExtractorProcess()
 {
     m_extractorProcess.close();
+}
+
+void ExtractorProcess::start()
+{
+    m_extractorProcess.start(QIODevice::Unbuffered | QIODevice::ReadWrite);
+    m_extractorProcess.waitForStarted();
+    m_extractorProcess.setReadChannel(QProcess::StandardOutput);
 }
 
 void ExtractorProcess::index(const QVector<quint64>& fileIds)

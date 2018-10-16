@@ -35,11 +35,13 @@ public:
     ~ExtractorProcess();
 
     void index(const QVector<quint64>& fileIds);
+    void start();
 
 Q_SIGNALS:
     void startedIndexingFile(QString filePath);
     void finishedIndexingFile(QString filePath);
     void done();
+    void failed();
 
 private Q_SLOTS:
     void slotIndexingFile();
