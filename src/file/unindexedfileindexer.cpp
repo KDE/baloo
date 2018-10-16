@@ -47,10 +47,9 @@ void UnindexedFileIndexer::run()
         UnIndexedFileIterator it(m_config, &tr, includeFolder);
 
         while (!it.next().isEmpty()) {
-            QString mime = m_mimeDb.mimeTypeForFile(it.filePath(), QMimeDatabase::MatchExtension).name();
             BasicIndexingJob::IndexingLevel level = m_config->onlyBasicIndexing() ? BasicIndexingJob::NoLevel
                 : BasicIndexingJob::MarkForContentIndexing;
-            BasicIndexingJob job(it.filePath(), mime, level);
+            BasicIndexingJob job(it.filePath(), it.mimetype(), level);
             job.index();
 
             // We handle modified files by simply updating the mTime and filename in the Db and marking them for ContentIndexing
