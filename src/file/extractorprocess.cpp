@@ -31,6 +31,7 @@ ExtractorProcess::ExtractorProcess(QObject* parent)
     , m_extractorProcess(this)
 {
     connect(&m_extractorProcess, &QProcess::readyRead, this, &ExtractorProcess::slotIndexingFile);
+    m_extractorProcess.setProcessChannelMode(QProcess::ForwardedErrorChannel);
     m_extractorProcess.start(m_extractorPath, QStringList(), QIODevice::Unbuffered | QIODevice::ReadWrite);
     m_extractorProcess.waitForStarted();
     m_extractorProcess.setReadChannel(QProcess::StandardOutput);
