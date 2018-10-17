@@ -87,7 +87,7 @@ void App::slotNewInput()
 
     Database *db = globalDatabaseInstance();
     if (!db->open(Database::ReadWriteDatabase)) {
-        qCritical() << "Failed to open the database";
+        qCCritical(BALOO) << "Failed to open the database";
         exit(1);
     }
 
@@ -215,7 +215,7 @@ bool App::index(Transaction* tr, const QString& url, quint64 id)
 
     result.finish();
     if (doc.id() != id) {
-        qWarning() << url << "id seems to have changed. Perhaps baloo was not running, and this file was deleted + re-created";
+        qCWarning(BALOO) << url << "id seems to have changed. Perhaps baloo was not running, and this file was deleted + re-created";
         tr->removeDocument(id);
         if (!tr->hasDocument(doc.id())) {
             tr->addDocument(result.document());
