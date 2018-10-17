@@ -1,3 +1,3 @@
 org.kde.baloo Baloo File debug
-kf5.kio.kio_tags Baloo Tags (KIO) [WARNING]
-kf5.kio.kio_tags Baloo Timeline (KIO) [WARNING]
+kf5.kio.kio_tags Baloo Tags (KIO) DEFAULT_SEVERITY [WARNING]
+kf5.kio.kio_timeline Baloo Timeline (KIO) DEFAULT_SEVERITY [WARNING]
