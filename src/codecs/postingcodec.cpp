@@ -29,7 +29,7 @@ PostingCodec::PostingCodec()
 QByteArray PostingCodec::encode(const QVector<quint64>& list)
 {
     uint size = list.size() * sizeof(quint64);
-    char* ptr = reinterpret_cast<char*>(const_cast<quint64*>(list.constData()));
+    const char* ptr = reinterpret_cast<const char*>(list.constData());
 
     return QByteArray(ptr, size);
 }
@@ -39,6 +39,6 @@ QVector<quint64> PostingCodec::decode(const QByteArray& arr)
     QVector<quint64> vec;
     vec.resize(arr.size() / sizeof(quint64));
 
-    memcpy(vec.data(), arr.data(), arr.size());
+    memcpy(vec.data(), arr.constData(), arr.size());
     return vec;
 }
