@@ -25,7 +25,6 @@
 
 #include <KConfig>
 #include <KConfigGroup>
-#include <Kdelibs4Migration>
 
 #include <QDBusConnection>
 #include "maininterface.h"
@@ -58,13 +57,6 @@ void IndexerConfig::setFileIndexingEnabled(bool enabled) const
     KConfig config(QStringLiteral("baloofilerc"));
     KConfigGroup basicSettings = config.group("Basic Settings");
     basicSettings.writeEntry("Indexing-Enabled", enabled);
-
-    {
-        Kdelibs4Migration kde4;
-        KConfig config(kde4.locateLocal("config", QStringLiteral("baloofilerc")));
-        KConfigGroup basicSettings = config.group("Basic Settings");
-        basicSettings.writeEntry("Indexing-Enabled", enabled);
-    }
 }
 
 bool IndexerConfig::shouldBeIndexed(const QString& path) const
@@ -102,48 +94,24 @@ void IndexerConfig::setExcludeFolders(const QStringList& excludeFolders)
 {
     KConfig config(QStringLiteral("baloofilerc"));
     config.group("General").writePathEntry("exclude folders", excludeFolders);
-
-    {
-        Kdelibs4Migration kde4;
-        KConfig config(kde4.locateLocal("config", QStringLiteral("baloofilerc")));
-        config.group("General").writePathEntry("exclude folders", excludeFolders);
-    }
 }
 
 void IndexerConfig::setIncludeFolders(const QStringList& includeFolders)
 {
     KConfig config(QStringLiteral("baloofilerc"));
     config.group("General").writePathEntry("folders", includeFolders);
-
-    {
-        Kdelibs4Migration kde4;
-        KConfig config(kde4.locateLocal("config", QStringLiteral("baloofilerc")));
-        config.group("General").writePathEntry("folders", includeFolders);
-    }
 }
 
 void IndexerConfig::setExcludeFilters(const QStringList& excludeFilters)
 {
     KConfig config(QStringLiteral("baloofilerc"));
     config.group("General").writeEntry("exclude filters", excludeFilters);
-
-    {
-        Kdelibs4Migration kde4;
-        KConfig config(kde4.locateLocal("config", QStringLiteral("baloofilerc")));
-        config.group("General").writeEntry("exclude filters", excludeFilters);
-    }
 }
 
 void IndexerConfig::setExcludeMimetypes(const QStringList& excludeMimetypes)
 {
     KConfig config(QStringLiteral("baloofilerc"));
     config.group("General").writeEntry("exclude mimetypes", excludeMimetypes);
-
-    {
-        Kdelibs4Migration kde4;
-        KConfig config(kde4.locateLocal("config", QStringLiteral("baloofilerc")));
-        config.group("General").writeEntry("exclude mimetypes", excludeMimetypes);
-    }
 }
 
 bool IndexerConfig::firstRun() const
@@ -154,12 +122,6 @@ bool IndexerConfig::firstRun() const
 void IndexerConfig::setFirstRun(bool firstRun) const
 {
     d->m_config.setInitialRun(firstRun);
-
-    {
-        Kdelibs4Migration kde4;
-        KConfig config(kde4.locateLocal("config", QStringLiteral("baloofilerc")));
-        config.group("General").writeEntry("first run", firstRun);
-    }
 }
 
 bool IndexerConfig::indexHidden() const
