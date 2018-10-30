@@ -83,7 +83,7 @@ void App::processNextFile()
         quint64 id = m_io.nextId();
 
         QString url = QFile::decodeName(m_tr->documentUrl(id));
-        if (!QFile::exists(url)) {
+        if (url.isEmpty() || !QFile::exists(url)) {
             m_tr->removeDocument(id);
             QTimer::singleShot(0, this, &App::processNextFile);
             return;
