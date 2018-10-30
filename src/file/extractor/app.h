@@ -26,15 +26,16 @@
 #include <QVector>
 #include <QStringList>
 #include <QMimeDatabase>
+#include <QDataStream>
 #include <QTextStream>
 #include <QSocketNotifier>
 #include <QDBusMessage>
+#include <QFile>
 
 #include <KFileMetaData/ExtractorCollection>
 
 #include "database.h"
 #include "../fileindexerconfig.h"
-#include "iohandler.h"
 #include "idlestatemonitor.h"
 
 namespace Baloo {
@@ -62,10 +63,13 @@ private:
     FileIndexerConfig m_config;
 
     QSocketNotifier m_notifyNewData;
-    IOHandler m_io;
+    QFile m_input;
+    QDataStream m_inputStream;
+    QTextStream m_outputStream;
 
     IdleStateMonitor m_idleMonitor;
 
+    QVector<quint64> m_ids;
     QStringList m_updatedFiles;
     Transaction* m_tr;
 };
