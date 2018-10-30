@@ -46,14 +46,48 @@ using namespace Baloo;
 App::App(QObject* parent)
     : QObject(parent)
     , m_notifyNewData(STDIN_FILENO, QSocketNotifier::Read)
-    , m_io(STDIN_FILENO)
+    , m_input()
+    , m_inputStream(&m_input)
+    , m_outputStream(stdout)
     , m_tr(nullptr)
 {
+    m_input.open(STDIN_FILENO, QIODevice::ReadOnly | QIODevice::Unbuffered );
+    m_inputStream.setByteOrder(QDataStream::BigEndian);
+
     connect(&m_notifyNewData, &QSocketNotifier::activated, this, &App::slotNewInput);
 }
 
 void App::slotNewInput()
 {
+    quint32 nIds;
+    quint64 id;
+    char buf[8];
+
+    m_inputStream.startTransaction();
+    m_inputStream.readRawData(buf, 4);
+
+    if (m_inputStream.status() != QDataStream::Ok) {
+        QCoreApplication::quit();
+        return;
+    }
+
+    memcpy(&nIds, buf, 4);
+    for (quint32 i = 0; i < nIds; i++) {
+
+        m_inputStream.readRawData(buf, 8);
+        if (m_inputStream.status() != QDataStream::Ok) {
+            QCoreApplication::quit();
+            return;
+        }
+        memcpy(&id, buf, 8);
+        m_ids.append(id);
+    }
+
+    if (!m_inputStream.commitTransaction()) {
+        m_ids.clear();
+        return;
+    }
+
     Database *db = globalDatabaseInstance();
     if (!db->open(Database::ReadWriteDatabase)) {
         qCritical() << "Failed to open the database";
@@ -65,7 +99,7 @@ void App::slotNewInput()
     m_tr = new Transaction(db, Transaction::ReadWrite);
     // FIXME: The transaction is open for way too long. We should just open it for when we're
     //        committing the data not during the extraction.
-    m_io.newBatch();
+
     QTimer::singleShot(0, this, &App::processNextFile);
 
     /**
@@ -77,10 +111,10 @@ void App::slotNewInput()
 
 void App::processNextFile()
 {
-    if (!m_io.atEnd()) {
+    if (!m_ids.isEmpty()) {
         int delay = m_idleMonitor.isIdle() ? 0 : 10;
 
-        quint64 id = m_io.nextId();
+        quint64 id = m_ids.takeFirst();
 
         QString url = QFile::decodeName(m_tr->documentUrl(id));
         if (url.isEmpty() || !QFile::exists(url)) {
@@ -89,9 +123,9 @@ void App::processNextFile()
             return;
         }
 
-        m_io.writeStartedIndexingUrl(url);
+        m_outputStream << "S " << url << endl;
         index(m_tr, url, id);
-        m_io.writeFinishedIndexingUrl(url);
+        m_outputStream << "F " << url << endl;
         m_updatedFiles << url;
 
         QTimer::singleShot(delay, this, &App::processNextFile);
@@ -120,7 +154,7 @@ void App::processNextFile()
 
         // Enable the SocketNotifier for the next batch
         m_notifyNewData.setEnabled(true);
-        m_io.writeBatchIndexed();
+        m_outputStream << "B" << endl;
     }
 }
 

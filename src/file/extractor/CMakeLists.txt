@@ -5,7 +5,6 @@ set(EXTRACTOR_SRCS
   main.cpp
   app.cpp
   result.cpp
-  iohandler.cpp
   idlestatemonitor.cpp
   ../priority.cpp
   ../basicindexingjob.cpp
@@ -35,6 +34,3 @@ target_link_libraries(baloo_file_extractor
 
 install(TARGETS baloo_file_extractor DESTINATION ${BIN_INSTALL_DIR})
 
-if(BUILD_TESTING)
-  add_subdirectory(autotests)
-endif()
