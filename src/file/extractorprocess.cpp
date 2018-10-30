@@ -22,6 +22,7 @@
 
 #include <QStandardPaths>
 #include <QDebug>
+#include <QDataStream>
 
 using namespace Baloo;
 
@@ -61,15 +62,8 @@ void ExtractorProcess::index(const QVector<quint64>& fileIds)
     Q_ASSERT(m_extractorProcess.state() == QProcess::Running);
     Q_ASSERT(!fileIds.isEmpty());
 
-    QByteArray batchData;
-
-    quint32 batchSize = fileIds.size();
-    batchData.append(reinterpret_cast<char*>(&batchSize), sizeof(quint32));
-    for (quint64 id : fileIds) {
-        batchData.append(reinterpret_cast<char*>(&id), sizeof(quint64));
-    }
-
-    m_extractorProcess.write(batchData.data(), batchData.size());
+    QDataStream batch(&m_extractorProcess);
+    batch << fileIds;
 }
 
 void ExtractorProcess::slotIndexingFile()

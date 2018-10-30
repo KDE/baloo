@@ -59,28 +59,12 @@ App::App(QObject* parent)
 
 void App::slotNewInput()
 {
-    quint32 nIds;
-    quint64 id;
-    char buf[8];
-
     m_inputStream.startTransaction();
-    m_inputStream.readRawData(buf, 4);
+    m_inputStream >> m_ids;
 
     if (m_inputStream.status() != QDataStream::Ok) {
         QCoreApplication::quit();
         return;
-    }
-
-    memcpy(&nIds, buf, 4);
-    for (quint32 i = 0; i < nIds; i++) {
-
-        m_inputStream.readRawData(buf, 8);
-        if (m_inputStream.status() != QDataStream::Ok) {
-            QCoreApplication::quit();
-            return;
-        }
-        memcpy(&id, buf, 8);
-        m_ids.append(id);
     }
 
     if (!m_inputStream.commitTransaction()) {
