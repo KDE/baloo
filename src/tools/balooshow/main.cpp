@@ -232,7 +232,11 @@ int main(int argc, char* argv[])
                         int propNum = prop.toInt(&ok);
                         QString value = word.mid(posOfNonNumeric + 1);
                         if (!ok) {
+#if QT_VERSION >= QT_VERSION_CHECK(5,10,0)
                             auto error = QString("malformed property term (bad index): '%1' in '%2'\n").arg(prop).arg(arrAsPrintable());
+#else
+                            auto error = QString("malformed property term (bad index): '%1' in '%2'\n").arg(prop.toString()).arg(arrAsPrintable());
+#endif
                             stream << errorPrefix.subs(error).toString();
                             continue;
                         }
