@@ -516,13 +516,13 @@ void Transaction::checkFsTree()
             out << endl;
 
             out << "\tFileNameTermsDB: ";
-            for (const QByteArray& term : terms) {
+            for (const QByteArray& term : fileNameTerms) {
                 out << term << " ";
             }
             out << endl;
 
             out << "\tXAttrTermsDB: ";
-            for (const QByteArray& term : terms) {
+            for (const QByteArray& term : xAttrTerms) {
                 out << term << " ";
             }
             out << endl;
