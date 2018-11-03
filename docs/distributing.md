@@ -8,7 +8,7 @@ systems offer their own file searching solutions which better integrate with
 the native system than Baloo ever will.
 
 Baloo may run on 32-bit systems, but it has not been tested and may not work
-correctly. Please test and let up know.
+correctly. Please test and let us know by filing a bug at https://bugs.kde.org/enter_bug.cgi?product=frameworks-baloo.
 
 **Supported Kernels:** Linux
 **Support Architecture:** x64
