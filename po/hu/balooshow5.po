@@ -1,0 +1,125 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Balázs Úr <urbalazs@gmail.com>, 2014.
+# Kiszel Kristóf <kiszel.kristof@gmail.com>, 2017, 2018.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2018-10-31 03:52+0100\n"
+"PO-Revision-Date: 2018-09-25 19:25+0200\n"
+"Last-Translator: Kristof Kiszel <kiszel.kristof@gmail.com>\n"
+"Language-Team: Hungarian <kde-l10n-hu@kde.org>\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 2.0\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Kiszel Kristóf,Úr Balázs"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "ulysses@kubuntu.org,urbalazs@gmail.com"
+
+#: main.cpp:63
+#, kde-format
+msgid "Baloo Show"
+msgstr "Baloo megjelenítés"
+
+#: main.cpp:65
+#, kde-format
+msgid "The Baloo data Viewer - A debugging tool"
+msgstr "A Baloo adatmegjelenítő - Egy hibakereső eszköz"
+
+#: main.cpp:67
+#, kde-format
+msgid "(c) 2012, Vishesh Handa"
+msgstr "© Vishesh Handa, 2012."
+
+#: main.cpp:68
+#, kde-format
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:68
+#, kde-format
+msgid "Maintainer"
+msgstr "Karbantartó"
+
+#: main.cpp:73
+#, kde-format
+msgid "The file urls"
+msgstr "A fájl URL"
+
+#: main.cpp:75
+#, kde-format
+msgid "Print internal info"
+msgstr "Belső információk nyomtatása"
+
+#: main.cpp:77
+#, kde-format
+msgid "Inode number of the file to show"
+msgstr "A megjelenítendő fájl inode-száma"
+
+#: main.cpp:79
+#, kde-format
+msgid "Device id for the files"
+msgstr "A fájl eszközazonosítója"
+
+#: main.cpp:111
+#, kde-format
+msgid ""
+"The Baloo index could not be opened. Please run \"%1\" to see if Baloo is "
+"enabled and working."
+msgstr ""
+"A Baloo index nem nyitható meg. Futtassa a(z) „%1” parancsot hogy "
+"kiderüljön, engedélyezve van-e és fut-e a Baloo."
+
+#: main.cpp:127
+#, kde-format
+msgid "The fileID is not equal to the actual Baloo fileID"
+msgstr "A fileID nem egyezik a jelenlegi Baloo fileID-vel"
+
+#: main.cpp:128
+#, kde-format
+msgid "This is a bug"
+msgstr "Ez egy hiba"
+
+#: main.cpp:156
+#, kde-format
+msgid "No index information found"
+msgstr "Nem találhatók indexelési információk"
+
+#: main.cpp:195
+#, kde-format
+msgid "Internal Info"
+msgstr "Belső információ"
+
+#: main.cpp:196
+#, kde-format
+msgid "Terms: %1"
+msgstr "Kifejezések: %1"
+
+#: main.cpp:197
+#, kde-format
+msgid "File Name Terms: %1"
+msgstr "Fájlnév-kifejezések: %1"
+
+#: main.cpp:198
+#, kde-format
+msgid "%1 Terms: %2"
+msgstr "%1 kifejezések: %2"
+
+#: main.cpp:201
+#, fuzzy, kde-format
+#| msgid "Internal Info"
+msgctxt "Prefix string for internal errors"
+msgid "Internal Error - %1"
+msgstr "Belső információ"

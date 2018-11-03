@@ -1,0 +1,70 @@
+# Translation of baloomonitorplugin.po to Brazilian Portuguese
+# Copyright (C) 2015 This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# André Marcelo Alvarenga <alvarenga@kde.org>, 2015.
+# Luiz Fernando Ranghetti <elchevive@opensuse.org>, 2018.
+msgid ""
+msgstr ""
+"Project-Id-Version: baloomonitorplugin\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2018-10-09 03:54+0200\n"
+"PO-Revision-Date: 2018-10-21 17:16-0300\n"
+"Last-Translator: Luiz Fernando Ranghetti <elchevive@opensuse.org>\n"
+"Language-Team: Portuguese <kde-i18n-pt_BR@kde.org>\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Lokalize 2.0\n"
+
+#: ../../file/indexerstate.h:43
+#, kde-format
+msgid "Unknown"
+msgstr "Desconhecido"
+
+#: ../../file/indexerstate.h:46
+#, kde-format
+msgid "Idle"
+msgstr "Ocioso"
+
+#: ../../file/indexerstate.h:49
+#, kde-format
+msgid "Suspended"
+msgstr "Suspenso"
+
+#: ../../file/indexerstate.h:52
+#, kde-format
+msgid "Initial Indexing"
+msgstr "Indexação inicial"
+
+#: ../../file/indexerstate.h:55
+#, kde-format
+msgid "Indexing new files"
+msgstr "Indexando os novos arquivos"
+
+#: ../../file/indexerstate.h:58
+#, kde-format
+msgid "Indexing modified files"
+msgstr "Indexando os arquivos modificados"
+
+#: ../../file/indexerstate.h:61
+#, kde-format
+msgid "Indexing Extended Attributes"
+msgstr "Indexando os atributos estendidos"
+
+#: ../../file/indexerstate.h:64
+#, kde-format
+msgid "Indexing file content"
+msgstr "Indexando o conteúdo do arquivo"
+
+#: ../../file/indexerstate.h:67
+#, kde-format
+msgid "Checking for unindexed files"
+msgstr "Procurando arquivos não indexados"
+
+#: ../../file/indexerstate.h:70
+#, kde-format
+msgid "Checking for stale index entries"
+msgstr "Procurando entradas do índice obsoletas"
