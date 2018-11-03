@@ -96,10 +96,7 @@ if(BUILD_QCH)
         SOURCES # using only public headers, to cover only public API
             ${KF5Baloo_HEADERS}
             "${CMAKE_SOURCE_DIR}/docs/distributing.md"
-            "${CMAKE_SOURCE_DIR}/docs/faq.md"
-            "${CMAKE_SOURCE_DIR}/docs/updatedb.md"
             "${CMAKE_SOURCE_DIR}/docs/development/build-instructions.md"
-            "${CMAKE_SOURCE_DIR}/docs/development/coding-style.md"
             "${CMAKE_SOURCE_DIR}/docs/user/searching.md"
         MD_MAINPAGE "${CMAKE_SOURCE_DIR}/README.md"
         LINK_QCHS
