@@ -124,6 +124,19 @@ void FileIndexScheduler::scheduleIndexing()
         return;
     }
 
+    // This has to be above content indexing, because there can be files that
+    // should not be indexed in the DB (i.e. if config was changed)
+    if (m_checkStaleIndexEntries) {
+        auto runnable = new IndexCleaner(m_db, m_config);
+        connect(runnable, &IndexCleaner::done, this, &FileIndexScheduler::runnerFinished);
+
+        m_threadPool.start(runnable);
+        m_checkStaleIndexEntries = false;
+        m_indexerState = StaleIndexEntriesClean;
+        Q_EMIT stateChanged(m_indexerState);
+        return;
+    }
+
     if (m_provider.size() && !m_powerMonitor.isOnBattery()) {
         m_threadPool.start(m_contentIndexer);
         m_indexerState = ContentIndexing;
@@ -142,16 +155,6 @@ void FileIndexScheduler::scheduleIndexing()
         return;
     }
 
-    if (m_checkStaleIndexEntries) {
-        auto runnable = new IndexCleaner(m_db, m_config);
-        connect(runnable, &IndexCleaner::done, this, &FileIndexScheduler::runnerFinished);
-
-        m_threadPool.start(runnable);
-        m_checkStaleIndexEntries = false;
-        m_indexerState = StaleIndexEntriesClean;
-        Q_EMIT stateChanged(m_indexerState);
-        return;
-    }
     m_indexerState = Idle;
     Q_EMIT stateChanged(m_indexerState);
 }
@@ -163,6 +166,31 @@ static void removeStartsWith(QStringList& list, const QString& dir)
             return file.startsWith(dir);
         });
     list.erase(tail, list.end());
+}
+
+static void removeShouldNotIndex(QStringList& list, FileIndexerConfig* config)
+{
+    const auto tail = std::remove_if(list.begin(), list.end(),
+        [config](const QString& file) {
+            return !config->shouldBeIndexed(file);
+        });
+    list.erase(tail, list.end());
+}
+
+void FileIndexScheduler::updateConfig()
+{
+    // Interrupt content indexer, to avoid indexing files that should
+    // not be indexed (bug 373430)
+    if (m_indexerState == ContentIndexing) {
+        m_contentIndexer->quit();
+        m_indexerState = Idle;
+    }
+    removeShouldNotIndex(m_newFiles, m_config);
+    removeShouldNotIndex(m_modifiedFiles, m_config);
+    removeShouldNotIndex(m_xattrFiles, m_config);
+    m_checkStaleIndexEntries = true;
+    m_checkUnindexedFiles = true;
+    scheduleIndexing();
 }
 
 void FileIndexScheduler::handleFileRemoved(const QString& file)

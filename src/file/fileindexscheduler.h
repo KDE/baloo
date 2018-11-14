@@ -85,6 +85,7 @@ public Q_SLOTS:
 
     void handleFileRemoved(const QString& file);
 
+    void updateConfig();
     void scheduleIndexing();
     void scheduleCheckUnindexedFiles();
     void scheduleCheckStaleIndexEntries();

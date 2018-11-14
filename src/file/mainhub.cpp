@@ -65,9 +65,8 @@ void MainHub::quit() const
 void MainHub::updateConfig()
 {
     m_config->forceConfigUpdate();
-    // FIXME!!
-    //m_fileIndexer.updateConfig();
     m_fileWatcher.updateIndexedFoldersWatches();
+    m_fileIndexScheduler.updateConfig();
 }
 
 void MainHub::registerBalooWatcher(const QString &service)

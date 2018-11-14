@@ -77,6 +77,13 @@ void IndexCleaner::run()
         quint64 id = filePathToId(QFile::encodeName(folder));
         tr.removeRecursively(id, shouldDelete);
     }
+    const auto excludeFolders = m_config->excludeFolders();
+    for (const QString& folder : excludeFolders) {
+        quint64 id = filePathToId(QFile::encodeName(folder));
+        if (tr.hasDocument(id)) {
+            tr.removeRecursively(id);
+        }
+    }
     tr.commit();
 
     Q_EMIT done();
