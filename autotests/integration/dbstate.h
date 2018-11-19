@@ -120,6 +120,29 @@ bool DBState::debugCompare(const DBState& st1, const DBState& st2)
 
     if (st1.docFileNameTermsDb != st2.docFileNameTermsDb) {
         qDebug() << "Doc FileName Terms DB different";
+        qDebug() << st1.docFileNameTermsDb;
+        qDebug() << st2.docFileNameTermsDb;
+        return false;
+    }
+
+    if (st1.docXAttrTermsDb != st2.docXAttrTermsDb) {
+        qDebug() << "Doc XAttr Terms DB different";
+        qDebug() << st1.docXAttrTermsDb;
+        qDebug() << st2.docXAttrTermsDb;
+        return false;
+    }
+
+    if (st1.docTimeDb != st2.docTimeDb) {
+        qDebug() << "Doc Time DB different";
+        qDebug() << st1.docTimeDb;
+        qDebug() << st2.docTimeDb;
+        return false;
+    }
+
+    if (st1.mtimeDb != st2.mtimeDb) {
+        qDebug() << "MTime DB different";
+        qDebug() << st1.mtimeDb;
+        qDebug() << st2.mtimeDb;
         return false;
     }
 
