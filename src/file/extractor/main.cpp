@@ -24,6 +24,7 @@
 #include "../priority.h"
 
 #include <KAboutData>
+#include <KCrash>
 #include <KLocalizedString>
 #include <QStandardPaths>
 #include <QByteArray>
@@ -39,6 +40,8 @@ int main(int argc, char* argv[])
 
     KAboutData aboutData(QStringLiteral("baloo"), i18n("Baloo File Extractor"), QLatin1String(PROJECT_VERSION));
     aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QStringLiteral("vhanda@kde.org"), QStringLiteral("http://vhanda.in"));
+
+    KCrash::initialize();
 
     QApplication::setDesktopSettingsAware(false);
     QApplication app(argc, argv);
