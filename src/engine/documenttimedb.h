@@ -26,6 +26,7 @@
 #include <QByteArray>
 #include <QVector>
 #include <QMap>
+#include <QDebug>
 #include <lmdb.h>
 
 namespace Baloo {
@@ -68,6 +69,11 @@ private:
     MDB_txn* m_txn;
     MDB_dbi m_dbi;
 };
+
+inline QDebug operator<<(QDebug dbg, const DocumentTimeDB::TimeInfo &time) {
+    dbg << "(" << time.mTime << "," << time.cTime << ")";
+    return dbg;
+}
 
 }
 
