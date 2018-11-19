@@ -212,12 +212,15 @@ void WriteTransaction::replaceDocument(const Document& doc, DocumentOperations o
     }
 
     if (operations & DocumentTime) {
-        DocumentTimeDB::TimeInfo info;
+        DocumentTimeDB::TimeInfo info = docTimeDB.get(id);
+        if (info.mTime != doc.m_mTime) {
+            mtimeDB.del(info.mTime, id);
+            mtimeDB.put(doc.m_mTime, id);
+        }
+
         info.mTime = doc.m_mTime;
         info.cTime = doc.m_cTime;
-
         docTimeDB.put(id, info);
-        mtimeDB.put(doc.m_mTime, id);
     }
 
     if (operations & DocumentData) {
