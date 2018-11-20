@@ -148,9 +148,11 @@ void App::index(Transaction* tr, const QString& url, quint64 id)
     qCDebug(BALOO) << "Indexing" << id << url << mimetype;
 
     if (!m_config.shouldBeIndexed(url)) {
-        // FIXME: This should never be happening!
+        // This apparently happens when the config has changed after the document
+        // was added to the content indexing db
         qCWarning(BALOO) << "Found" << url << "in the ContentIndexingDB, although it should be skipped";
         tr->removeDocument(id);
+        return;
     }
 
     // The initial BasicIndexingJob run has been supplied with the file extension
