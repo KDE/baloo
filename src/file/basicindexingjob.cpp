@@ -146,10 +146,11 @@ QVector<KFileMetaData::Type::Type> BasicIndexingJob::typesForMimeType(const QStr
         // MS Office
         {"application/msword", Type::Document},
         {"application/x-scribus", Type::Document},
-        {"application/vnd.ms-powerpoint", Type::Document},
-        {"application/vnd.ms-powerpoint", Type::Presentation},
-        {"application/vnd.ms-excel", Type::Document},
-        {"application/vnd.ms-excel", Type::Spreadsheet},
+        // Old pre-XML MS Office formats - already covered by the "contains" above
+        //{"application/vnd.ms-powerpoint", Type::Document},
+        //{"application/vnd.ms-powerpoint", Type::Presentation},
+        //{"application/vnd.ms-excel", Type::Document},
+        //{"application/vnd.ms-excel", Type::Spreadsheet},
         // Office 2007
         {"application/vnd.openxmlformats-officedocument.wordprocessingml.document", Type::Document},
         {"application/vnd.openxmlformats-officedocument.presentationml.presentation", Type::Document},
