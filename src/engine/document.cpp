@@ -47,7 +47,7 @@ void Document::addPositionTerm(const QByteArray& term, int position, int wdfInc)
     Q_ASSERT(!term.isEmpty());
     TermData& td = m_terms[term];
     td.wdf += wdfInc;
-    td.positions += position;
+    td.positions.append(position);
 }
 
 void Document::addXattrPositionTerm(const QByteArray& term, int position, int wdfInc)
@@ -55,7 +55,7 @@ void Document::addXattrPositionTerm(const QByteArray& term, int position, int wd
     Q_ASSERT(!term.isEmpty());
     TermData& td = m_xattrTerms[term];
     td.wdf += wdfInc;
-    td.positions += position;
+    td.positions.append(position);
 }
 
 void Document::addXattrTerm(const QByteArray& term, int wdfInc)
@@ -75,7 +75,7 @@ void Document::addFileNamePositionTerm(const QByteArray& term, int position, int
     Q_ASSERT(!term.isEmpty());
     TermData& td = m_fileNameTerms[term];
     td.wdf += wdfInc;
-    td.positions += position;
+    td.positions.append(position);
 }
 
 void Document::addFileNameTerm(const QByteArray& term, int wdfInc)
