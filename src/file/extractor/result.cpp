@@ -70,19 +70,19 @@ void Result::add(KFileMetaData::Property::Property property, const QVariant& val
     QByteArray prefix = 'X' + QByteArray::number(propNum) + '-';
 
     if (value.type() == QVariant::Bool) {
-        m_doc.addBoolTerm(prefix);
+        m_doc.addTerm(prefix);
     }
     else if (value.type() == QVariant::Int) {
         const QByteArray term = prefix + value.toString().toUtf8();
-        m_doc.addBoolTerm(term);
+        m_doc.addTerm(term);
     }
     else if (value.type() == QVariant::Date) {
         const QByteArray term = prefix + value.toDate().toString(Qt::ISODate).toUtf8();
-        m_doc.addBoolTerm(term);
+        m_doc.addTerm(term);
     }
     else if (value.type() == QVariant::DateTime) {
         const QByteArray term = prefix + value.toDateTime().toString(Qt::ISODate).toUtf8();
-        m_doc.addBoolTerm(term);
+        m_doc.addTerm(term);
     }
     else if (value.type() == QVariant::StringList) {
         bool shouldBeIndexed = KFileMetaData::PropertyInfo(property).shouldBeIndexed();
@@ -118,7 +118,7 @@ void Result::addType(KFileMetaData::Type::Type type)
 {
     KFileMetaData::TypeInfo ti(type);
     const QString t = QLatin1Char('T') + ti.name().toLower();
-    m_doc.addBoolTerm(t.toUtf8());
+    m_doc.addTerm(t.toUtf8());
 }
 
 void Result::finish()

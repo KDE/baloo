@@ -30,58 +30,44 @@ Document::Document()
 {
 }
 
-void Document::addTerm(const QByteArray& term, int wdfInc)
+void Document::addTerm(const QByteArray& term)
 {
     Q_ASSERT(!term.isEmpty());
-    m_terms[term].wdf += wdfInc;
+    // This adds "term" without data if it does not exist, otherwise it is a noop
+    m_terms[term];
 }
 
-void Document::addBoolTerm(const QByteArray& term)
-{
-    Q_ASSERT(!term.isEmpty());
-    m_terms[term].wdf = 0;
-}
-
-void Document::addPositionTerm(const QByteArray& term, int position, int wdfInc)
+void Document::addPositionTerm(const QByteArray& term, int position)
 {
     Q_ASSERT(!term.isEmpty());
     TermData& td = m_terms[term];
-    td.wdf += wdfInc;
     td.positions.append(position);
 }
 
-void Document::addXattrPositionTerm(const QByteArray& term, int position, int wdfInc)
+void Document::addXattrPositionTerm(const QByteArray& term, int position)
 {
     Q_ASSERT(!term.isEmpty());
     TermData& td = m_xattrTerms[term];
-    td.wdf += wdfInc;
     td.positions.append(position);
 }
 
-void Document::addXattrTerm(const QByteArray& term, int wdfInc)
+void Document::addXattrTerm(const QByteArray& term)
 {
     Q_ASSERT(!term.isEmpty());
-    m_xattrTerms[term].wdf += wdfInc;
+    m_xattrTerms[term];
 }
 
-void Document::addXattrBoolTerm(const QByteArray& term)
-{
-    Q_ASSERT(!term.isEmpty());
-    m_xattrTerms[term].wdf = 0;
-}
-
-void Document::addFileNamePositionTerm(const QByteArray& term, int position, int wdfInc)
+void Document::addFileNamePositionTerm(const QByteArray& term, int position)
 {
     Q_ASSERT(!term.isEmpty());
     TermData& td = m_fileNameTerms[term];
-    td.wdf += wdfInc;
     td.positions.append(position);
 }
 
-void Document::addFileNameTerm(const QByteArray& term, int wdfInc)
+void Document::addFileNameTerm(const QByteArray& term)
 {
     Q_ASSERT(!term.isEmpty());
-    m_fileNameTerms[term].wdf += wdfInc;
+    m_fileNameTerms[term];
 }
 
 quint64 Document::id() const
