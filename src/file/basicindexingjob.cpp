@@ -61,7 +61,7 @@ bool BasicIndexingJob::index()
     QString fileName = url.mid(url.lastIndexOf('/') + 1);
 
     TermGenerator tg(&doc);
-    tg.indexFileNameText(fileName, 1000);
+    tg.indexFileNameText(fileName);
     tg.indexFileNameText(fileName, QByteArray("F"));
     tg.indexText(m_mimetype, QByteArray("M"));
 
@@ -73,12 +73,12 @@ bool BasicIndexingJob::index()
     QVector<KFileMetaData::Type::Type> tList = typesForMimeType(m_mimetype);
     for (KFileMetaData::Type::Type type : tList) {
         QByteArray num = QByteArray::number(static_cast<int>(type));
-        doc.addBoolTerm(QByteArray("T") + num);
+        doc.addTerm(QByteArray("T") + num);
     }
 
     if (S_ISDIR(statBuf.st_mode)) {
         static const QByteArray type = QByteArray("T") + QByteArray::number(static_cast<int>(KFileMetaData::Type::Folder));
-        doc.addBoolTerm(type);
+        doc.addTerm(type);
         // For folders we do not need to go through file indexing, so we do not set contentIndexing
     }
     else if (m_indexingLevel == MarkForContentIndexing) {
@@ -99,12 +99,12 @@ bool BasicIndexingJob::indexXAttr(const QString& url, Document& doc)
     QStringList tags = userMetaData.tags();
     for (const QString& tag : tags) {
         tg.indexXattrText(tag, QByteArray("TA"));
-        doc.addXattrBoolTerm(QByteArray("TAG-") + tag.toUtf8());
+        doc.addXattrTerm(QByteArray("TAG-") + tag.toUtf8());
     }
 
     int rating = userMetaData.rating();
     if (rating) {
-        doc.addXattrBoolTerm(QByteArray("R") + QByteArray::number(rating));
+        doc.addXattrTerm(QByteArray("R") + QByteArray::number(rating));
     }
 
     QString comment = userMetaData.userComment();

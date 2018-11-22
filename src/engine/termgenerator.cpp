@@ -32,9 +32,9 @@ TermGenerator::TermGenerator(Document* doc)
 {
 }
 
-void TermGenerator::indexText(const QString& text, int wdfInc)
+void TermGenerator::indexText(const QString& text)
 {
-    indexText(text, QByteArray(), wdfInc);
+    indexText(text, QByteArray());
 }
 
 QStringList TermGenerator::termList(const QString& text_)
@@ -80,7 +80,7 @@ QStringList TermGenerator::termList(const QString& text_)
     return list;
 }
 
-void TermGenerator::indexText(const QString& text, const QByteArray& prefix, int wdfInc)
+void TermGenerator::indexText(const QString& text, const QByteArray& prefix)
 {
     QStringList terms = termList(text);
     for (const QString& term : terms) {
@@ -89,12 +89,12 @@ void TermGenerator::indexText(const QString& text, const QByteArray& prefix, int
         QByteArray finalArr = prefix + arr;
         finalArr = finalArr.mid(0, maxTermSize);
 
-        m_doc->addPositionTerm(finalArr, m_position, wdfInc);
+        m_doc->addPositionTerm(finalArr, m_position);
         m_position++;
     }
 }
 
-void TermGenerator::indexFileNameText(const QString& text, const QByteArray& prefix, int wdfInc)
+void TermGenerator::indexFileNameText(const QString& text, const QByteArray& prefix)
 {
     QStringList terms = termList(text);
     for (const QString& term : terms) {
@@ -103,17 +103,17 @@ void TermGenerator::indexFileNameText(const QString& text, const QByteArray& pre
         QByteArray finalArr = prefix + arr;
         finalArr = finalArr.mid(0, maxTermSize);
 
-        m_doc->addFileNamePositionTerm(finalArr, m_position, wdfInc);
+        m_doc->addFileNamePositionTerm(finalArr, m_position);
         m_position++;
     }
 }
 
-void TermGenerator::indexFileNameText(const QString& text, int wdfInc)
+void TermGenerator::indexFileNameText(const QString& text)
 {
-    indexFileNameText(text, QByteArray(), wdfInc);
+    indexFileNameText(text, QByteArray());
 }
 
-void TermGenerator::indexXattrText(const QString& text, const QByteArray& prefix, int wdfInc)
+void TermGenerator::indexXattrText(const QString& text, const QByteArray& prefix)
 {
     QStringList terms = termList(text);
     for (const QString& term : terms) {
@@ -122,7 +122,7 @@ void TermGenerator::indexXattrText(const QString& text, const QByteArray& prefix
         QByteArray finalArr = prefix + arr;
         finalArr = finalArr.mid(0, maxTermSize);
 
-        m_doc->addXattrPositionTerm(finalArr, m_position, wdfInc);
+        m_doc->addXattrPositionTerm(finalArr, m_position);
         m_position++;
     }
 

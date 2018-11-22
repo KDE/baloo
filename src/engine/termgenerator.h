@@ -37,12 +37,12 @@ public:
         m_doc = doc;
     }
 
-    void indexText(const QString& text, int wdfInc = 1);
-    void indexText(const QString& text, const QByteArray& prefix, int wdfInc = 1);
+    void indexText(const QString& text);
+    void indexText(const QString& text, const QByteArray& prefix);
 
-    void indexXattrText(const QString& text, const QByteArray& prefix, int wdfInc = 1);
-    void indexFileNameText(const QString& text, int wdfInc = 1);
-    void indexFileNameText(const QString& text, const QByteArray& prefix, int wdfInc = 1);
+    void indexXattrText(const QString& text, const QByteArray& prefix);
+    void indexFileNameText(const QString& text);
+    void indexFileNameText(const QString& text, const QByteArray& prefix);
 
     void setPosition(int position);
     int position() const;

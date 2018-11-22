@@ -32,9 +32,9 @@ class WriteTransaction;
 class TermGeneratorTest;
 
 /**
- * A document represents a file to be indexed in the Baloo engine.
+ * A document represents an indexed file to be stored in the Baloo engine.
  *
- * It's a large collection of words along with their respective poistions and frequencies.
+ * It is a large collection of words along with their respective positions.
  * One typically never needs to have all of this in memory except when creating the
  * Document for indexing.
  *
@@ -45,16 +45,14 @@ class BALOO_ENGINE_EXPORT Document
 public:
     Document();
 
-    void addTerm(const QByteArray& term, int wdfInc = 1);
-    void addBoolTerm(const QByteArray& term);
-    void addPositionTerm(const QByteArray& term, int position = 0, int wdfInc = 1);
+    void addTerm(const QByteArray& term);
+    void addPositionTerm(const QByteArray& term, int position = 0);
 
-    void addXattrTerm(const QByteArray& term, int wdfInc = 1);
-    void addXattrBoolTerm(const QByteArray& term);
-    void addXattrPositionTerm(const QByteArray& term, int position = 0, int wdfInc = 1);
+    void addXattrTerm(const QByteArray& term);
+    void addXattrPositionTerm(const QByteArray& term, int position = 0);
 
-    void addFileNameTerm(const QByteArray& term, int wdfInc = 1);
-    void addFileNamePositionTerm(const QByteArray& term, int position = 0, int wdfInc = 1);
+    void addFileNameTerm(const QByteArray& term);
+    void addFileNamePositionTerm(const QByteArray& term, int position = 0);
 
     quint64 id() const;
     void setId(quint64 id);
@@ -78,10 +76,7 @@ private:
     quint64 m_id;
 
     struct TermData {
-        int wdf;
         QVector<uint> positions;
-
-        TermData() : wdf(0) {}
     };
     QMap<QByteArray, TermData> m_terms;
     QMap<QByteArray, TermData> m_xattrTerms;
