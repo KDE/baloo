@@ -35,6 +35,7 @@ private Q_SLOTS:
     void testSimpleQuery();
     void testPhraseSearch();
     void testPhraseSearchOnly();
+    void testUnderscorePhrase();
     void testPhraseSearch_sameLimiter();
     void testPhraseSearchEmail();
     void testAccentSearch();
@@ -106,6 +107,21 @@ void QueryParserTest::testPhraseSearchOnly()
     QCOMPARE(query, q);
 }
 
+void QueryParserTest::testUnderscorePhrase()
+{
+    QueryParser parser;
+
+    EngineQuery query = parser.parseQuery("foo_bar.png");
+
+    QVector<EngineQuery> queries;
+    queries << EngineQuery("foo", 1);
+    queries << EngineQuery("bar", 2);
+    queries << EngineQuery("png", 3);
+
+    EngineQuery q(queries, EngineQuery::Phrase);
+    QCOMPARE(query, q);
+}
+
 void QueryParserTest::testPhraseSearch_sameLimiter()
 {
     QueryParser parser;
@@ -163,10 +179,10 @@ void QueryParserTest::testUnderscoreSplitting()
     EngineQuery query = parser.parseQuery("The_Fire");
 
     QVector<EngineQuery> queries;
-    queries << EngineQuery("the", EngineQuery::StartsWith, 1);
-    queries << EngineQuery("fire", EngineQuery::StartsWith, 2);
+    queries << EngineQuery("the", 1);
+    queries << EngineQuery("fire", 2);
 
-    EngineQuery q(queries, EngineQuery::And);
+    EngineQuery q(queries, EngineQuery::Phrase);
 
     QCOMPARE(query, q);
 
