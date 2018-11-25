@@ -150,7 +150,7 @@ void QueryParserTest::testAccentSearch()
 {
     QueryParser parser;
 
-    EngineQuery query = parser.parseQuery(QString::fromLatin1("sóng"));
+    EngineQuery query = parser.parseQuery(QString::fromUtf8("s\xC3\xB3ng")); // sÃ³ng
     EngineQuery q("song", EngineQuery::StartsWith, 1);
 
     QCOMPARE(query, q);
