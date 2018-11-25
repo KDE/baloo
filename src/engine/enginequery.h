@@ -87,6 +87,8 @@ private:
 } // namespace Baloo
 
 inline QDebug operator << (QDebug d, const Baloo::EngineQuery& q) {
+    QDebugStateSaver state(d);
+    d.setAutoInsertSpaces(false);
     if (q.op() == Baloo::EngineQuery::And) {
         d << "[AND " << q.subQueries() << "]";
     } else if (q.op() == Baloo::EngineQuery::Or) {
@@ -95,7 +97,7 @@ inline QDebug operator << (QDebug d, const Baloo::EngineQuery& q) {
         d << "[PHRASE " << q.subQueries() << "]";
     } else {
         Q_ASSERT(q.subQueries().isEmpty());
-        d << "(" << q.term() << q.pos() << q.op() << ")";
+        d << "(" << q.term() << "," << q.pos() << "," << q.op() << ")";
     }
     return d;
 }
