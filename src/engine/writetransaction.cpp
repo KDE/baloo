@@ -185,27 +185,33 @@ void WriteTransaction::replaceDocument(const Document& doc, DocumentOperations o
         QVector<QByteArray> prevTerms = documentTermsDB.get(id);
         QVector<QByteArray> docTerms = replaceTerms(id, prevTerms, doc.m_terms);
 
-        documentTermsDB.put(id, docTerms);
+        if (docTerms != prevTerms) {
+            documentTermsDB.put(id, docTerms);
+        }
     }
 
     if (operations & XAttrTerms) {
         QVector<QByteArray> prevTerms = documentXattrTermsDB.get(id);
         QVector<QByteArray> docXattrTerms = replaceTerms(id, prevTerms, doc.m_xattrTerms);
 
-        if (!docXattrTerms.isEmpty())
-            documentXattrTermsDB.put(id, docXattrTerms);
-        else
-            documentXattrTermsDB.del(id);
+        if (docXattrTerms != prevTerms) {
+            if (!docXattrTerms.isEmpty())
+                documentXattrTermsDB.put(id, docXattrTerms);
+            else
+                documentXattrTermsDB.del(id);
+        }
     }
 
     if (operations & FileNameTerms) {
         QVector<QByteArray> prevTerms = documentFileNameTermsDB.get(id);
         QVector<QByteArray> docFileNameTerms = replaceTerms(id, prevTerms, doc.m_fileNameTerms);
 
-        if (!docFileNameTerms.isEmpty())
-            documentFileNameTermsDB.put(id, docFileNameTerms);
-        else
-            documentFileNameTermsDB.del(id);
+        if (docFileNameTerms != prevTerms) {
+            if (!docFileNameTerms.isEmpty())
+                documentFileNameTermsDB.put(id, docFileNameTerms);
+            else
+                documentFileNameTermsDB.del(id);
+        }
     }
 
     if (doc.contentIndexing()) {
