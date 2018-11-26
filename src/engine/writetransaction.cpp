@@ -90,6 +90,7 @@ QVector<QByteArray> WriteTransaction::addTerms(quint64 id, const QMap<QByteArray
 {
     QVector<QByteArray> termList;
     termList.reserve(terms.size());
+    m_pendingOperations.reserve(m_pendingOperations.size() + terms.size());
 
     QMapIterator<QByteArray, Document::TermData> it(terms);
     while (it.hasNext()) {
@@ -241,6 +242,7 @@ void WriteTransaction::replaceDocument(const Document& doc, DocumentOperations o
 QVector< QByteArray > WriteTransaction::replaceTerms(quint64 id, const QVector<QByteArray>& prevTerms,
                                                      const QMap<QByteArray, Document::TermData>& terms)
 {
+    m_pendingOperations.reserve(m_pendingOperations.size() + prevTerms.size());
     for (const QByteArray& term : prevTerms) {
         Operation op;
         op.type = RemoveId;
