@@ -21,7 +21,6 @@
 #ifndef BALOO_POSITIONINFO_H
 #define BALOO_POSITIONINFO_H
 
-#include <QByteArray>
 #include <QVector>
 #include <QDebug>
 
