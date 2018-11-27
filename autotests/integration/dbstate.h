@@ -108,6 +108,8 @@ bool DBState::debugCompare(const DBState& st1, const DBState& st2)
 
     if (st1.positionDb != st2.positionDb) {
         qDebug() << "Position DB different";
+        qDebug() << st1.positionDb;
+        qDebug() << st2.positionDb;
         return false;
     }
 
