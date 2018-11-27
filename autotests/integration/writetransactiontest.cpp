@@ -50,6 +50,7 @@ private Q_SLOTS:
 
     void testRemoveRecursively();
     void testDocumentId();
+    void testTermPositions();
 private:
     QTemporaryDir* dir;
     Database* db;
@@ -283,6 +284,116 @@ void WriteTransactionTest::testDocumentId()
     QCOMPARE(tr.documentId(url1), doc1.id());
 }
 
+void WriteTransactionTest::testTermPositions()
+{
+    const QByteArray url1(dir->path().toUtf8() + "/file1");
+    touchFile(url1);
+    const QByteArray url2(dir->path().toUtf8() + "/file2");
+    touchFile(url2);
+    const QByteArray url3(dir->path().toUtf8() + "/file3");
+    touchFile(url3);
+
+    Document doc1 = createDocument(url1, 5, 1, {"a", "abc", "dab"}, {"file1"}, {});
+    quint64 id1 = doc1.id();
+    Document doc2 = createDocument(url2, 5, 2, {"a", "abcd"}, {"file2"}, {});
+    quint64 id2 = doc2.id();
+    Document doc3 = createDocument(url3, 6, 3, {"dab"}, {"file3"}, {});
+    quint64 id3 = doc3.id();
+
+    {
+        Transaction tr(db, Transaction::ReadWrite);
+        tr.addDocument(doc1);
+        tr.addDocument(doc2);
+        tr.addDocument(doc3);
+        tr.commit();
+    }
+
+    DBState state;
+    state.postingDb = {{"a", {id1, id2}}, {"abc", {id1}}, {"abcd", {id2}}, {"dab", {id1, id3}}, {"file1", {id1}}, {"file2", {id2}}, {"file3", {id3}} };
+    state.positionDb = {};
+    state.docTermsDb = {{id1, {"a", "abc", "dab"}}, {id2, {"a", "abcd"}}, {id3, {"dab"}} };
+    state.docFileNameTermsDb = {{id1, {"file1"}}, {id2, {"file2"}}, {id3, {"file3"}} };
+    state.docXAttrTermsDb = {};
+    state.docTimeDb = {{id1, DocumentTimeDB::TimeInfo(5, 1)}, {id2, DocumentTimeDB::TimeInfo(5, 2)}, {id3, DocumentTimeDB::TimeInfo(6, 3)} };
+    state.mtimeDb = {{5, id1}, {5, id2}, {6, id3} };
+
+    {
+        Transaction tr(db, Transaction::ReadOnly);
+        DBState actualState = DBState::fromTransaction(&tr);
+        QVERIFY(DBState::debugCompare(actualState, state));
+    }
+
+    for (auto pos : {1, 3, 6}) {
+        doc1.addPositionTerm("a", pos);
+    }
+    for (auto pos : {2, 4, 5}) {
+        doc1.addPositionTerm("abc", pos);
+    }
+    for (auto pos : {12, 14, 15}) {
+        doc1.addPositionTerm("dab", pos);
+    }
+    for (auto pos : {11, 12}) {
+        doc3.addPositionTerm("dab", pos);
+    }
+    state.positionDb["a"] = {PositionInfo(id1, {1, 3, 6})};
+    state.positionDb["abc"] = {PositionInfo(id1, {2, 4, 5})};
+    if (id1 < id3) {
+        state.positionDb["dab"] = {PositionInfo(id1, {12, 14, 15}), PositionInfo(id3, {11, 12})};
+    } else {
+        state.positionDb["dab"] = {PositionInfo(id3, {11, 12}), PositionInfo(id1, {12, 14, 15})};
+    }
+
+    {
+        Transaction tr(db, Transaction::ReadWrite);
+        tr.replaceDocument(doc1, DocumentOperation::Everything);
+        tr.replaceDocument(doc3, DocumentOperation::Everything);
+        tr.commit();
+    }
+    {
+        Transaction tr(db, Transaction::ReadOnly);
+        DBState actualState = DBState::fromTransaction(&tr);
+        QVERIFY(DBState::debugCompare(actualState, state));
+    }
+
+    for (auto pos : {11, 12}) { // extend
+        doc1.addPositionTerm("abc", pos);
+    }
+    for (auto pos : {16, 17}) { // extend, make sure positions for doc3 are kept
+        doc1.addPositionTerm("dab", pos);
+    }
+    for (auto pos : {7, 8, 9}) { // add positions
+        doc2.addPositionTerm("a", pos);
+    }
+    for (auto pos : {7, 8, 9}) { // add new term with positions
+        doc2.addPositionTerm("abc", pos);
+    }
+    state.postingDb = {{"a", {id1, id2}}, {"abc", {id1, id2}}, {"abcd", {id2}}, {"dab", {id1, id3}}, {"file1", {id1}}, {"file2", {id2}}, {"file3", {id3}} };
+    state.docTermsDb = {{id1, {"a", "abc", "dab"}}, {id2, {"a", "abc", "abcd"}}, {id3, {"dab"}} };
+    if (id1 < id2) {
+        state.positionDb["a"] = {PositionInfo(id1, {1, 3, 6}), PositionInfo(id2, {7, 8, 9})};
+        state.positionDb["abc"] = {PositionInfo(id1, {2, 4, 5, 11, 12}), PositionInfo(id2, {7, 8, 9})};
+    } else {
+        state.positionDb["a"] = {PositionInfo(id2, {7, 8, 9}), PositionInfo(id1, {1, 3, 6})};
+        state.positionDb["abc"] = {PositionInfo(id2, {7, 8, 9}), PositionInfo(id1, {2, 4, 5, 11, 12})};
+    }
+    if (id1 < id3) {
+        state.positionDb["dab"] = {PositionInfo(id1, {12, 14, 15, 16, 17}), PositionInfo(id3, {11, 12})};
+    } else {
+        state.positionDb["dab"] = {PositionInfo(id3, {11, 12}), PositionInfo(id1, {12, 14, 15, 16, 17})};
+    }
+
+    {
+        Transaction tr(db, Transaction::ReadWrite);
+        tr.replaceDocument(doc1, DocumentOperation::Everything);
+        tr.replaceDocument(doc2, DocumentOperation::Everything);
+        tr.commit();
+    }
+    {
+        Transaction tr(db, Transaction::ReadOnly);
+        DBState actualState = DBState::fromTransaction(&tr);
+        QVERIFY(DBState::debugCompare(actualState, state));
+    }
+}
 
 QTEST_MAIN(WriteTransactionTest)
 
