@@ -47,6 +47,7 @@ private Q_SLOTS:
     void testAddDocumentTwoDocuments();
     void testAddAndRemoveOneDocument();
     void testAddAndReplaceOneDocument();
+    void testIdempotentDocumentChange();
 
     void testRemoveRecursively();
     void testDocumentId();
@@ -393,6 +394,54 @@ void WriteTransactionTest::testTermPositions()
         DBState actualState = DBState::fromTransaction(&tr);
         QVERIFY(DBState::debugCompare(actualState, state));
     }
+}
+
+void WriteTransactionTest::testIdempotentDocumentChange()
+{
+    const QByteArray url1(dir->path().toUtf8() + "/file1");
+    touchFile(url1);
+
+    Document doc1 = createDocument(url1, 5, 1, {"a", "abc", "dab"}, {"file1"}, {});
+    Document doc2 = createDocument(url1, 5, 1, {"a", "abcd", "dab"}, {"file1"}, {});
+    quint64 id = doc1.id();
+
+    {
+        Transaction tr(db, Transaction::ReadWrite);
+        tr.addDocument(doc1);
+        tr.commit();
+    }
+
+    DBState state;
+    state.postingDb = {{"a", {id}}, {"abc", {id}}, {"dab", {id}}, {"file1", {id}} };
+    state.positionDb = {};
+    state.docTermsDb = {{id, {"a", "abc", "dab"} }};
+    state.docFileNameTermsDb = {{id, {"file1"} }};
+    state.docXAttrTermsDb = {};
+    state.docTimeDb = {{id, DocumentTimeDB::TimeInfo(5, 1)}};
+    state.mtimeDb = {{5, id}};
+
+    {
+        Transaction tr(db, Transaction::ReadOnly);
+        DBState actualState = DBState::fromTransaction(&tr);
+        QVERIFY(DBState::debugCompare(actualState, state));
+    }
+
+    {
+        Transaction tr(db, Transaction::ReadWrite);
+        tr.replaceDocument(doc2, DocumentOperation::Everything);
+        tr.replaceDocument(doc2, DocumentOperation::Everything);
+        tr.commit();
+    }
+
+    state.postingDb = {{"a", {id}}, {"abcd", {id}}, {"dab", {id}}, {"file1", {id}} };
+    state.docTermsDb = {{id, {"a", "abcd", "dab"} }};
+
+    {
+        Transaction tr(db, Transaction::ReadOnly);
+        DBState actualState = DBState::fromTransaction(&tr);
+        QVERIFY(DBState::debugCompare(actualState, state));
+    }
+
 }
 
 QTEST_MAIN(WriteTransactionTest)
