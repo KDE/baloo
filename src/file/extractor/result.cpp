@@ -32,7 +32,6 @@
 // In order to use it in a vector
 Result::Result()
     : ExtractionResult(QString(), QString())
-    , m_docId(0)
     , m_termGen(nullptr)
     , m_termGenForText(nullptr)
 {
@@ -40,7 +39,6 @@ Result::Result()
 
 Result::Result(const QString& url, const QString& mimetype, const Flags& flags)
     : KFileMetaData::ExtractionResult(url, mimetype, flags)
-    , m_docId(0)
     , m_termGen(nullptr)
     , m_termGenForText(nullptr)
 {
@@ -140,11 +138,6 @@ void Result::setDocument(const Baloo::Document& doc)
     // clashes with the term positions
     m_termGenForText.setDocument(&m_doc);
     m_termGenForText.setPosition(10000);
-}
-
-quint64 Result::id() const
-{
-    return m_docId;
 }
 
 QVariantMap Result::map() const
