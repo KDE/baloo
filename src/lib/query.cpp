@@ -295,7 +295,7 @@ QUrl Query::toSearchUrl(const QString& title)
     QUrlQuery urlQuery;
     urlQuery.addQueryItem(QStringLiteral("json"), QString::fromUtf8(toJSON()));
 
-    if (title.size())
+    if (!title.isEmpty())
         urlQuery.addQueryItem(QStringLiteral("title"), title);
 
     url.setQuery(urlQuery);
