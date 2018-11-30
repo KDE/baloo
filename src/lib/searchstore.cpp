@@ -279,8 +279,7 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
         }
 
         const QByteArray prefix = "R";
-        const QByteArray val = QByteArray::number(rating);
-        return tr->postingCompIterator(prefix, val, pcom);
+        return tr->postingCompIterator(prefix, rating, pcom);
     } else if (property == "tag") {
         if (term.comparator() == Term::Equal) {
             const QByteArray prefix = "TAG-";
@@ -317,7 +316,7 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
 
     QVariant val = term.value();
     if (val.type() == QVariant::Int) {
-        int intVal = value.toInt();
+        qlonglong intVal = value.toLongLong();
 
         PostingDB::Comparator pcom;
         if (term.comparator() == Term::Greater || term.comparator() == Term::GreaterEqual) {
@@ -335,7 +334,7 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
             return nullptr;
         }
 
-        return tr->postingCompIterator(prefix, QByteArray::number(intVal), pcom);
+        return tr->postingCompIterator(prefix, intVal, pcom);
     }
 
     return nullptr;

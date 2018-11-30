@@ -349,7 +349,7 @@ PostingIterator* Transaction::postingIterator(const EngineQuery& query) const
     return nullptr;
 }
 
-PostingIterator* Transaction::postingCompIterator(const QByteArray& prefix, const QByteArray& value, PostingDB::Comparator com) const
+PostingIterator* Transaction::postingCompIterator(const QByteArray& prefix, qlonglong value, PostingDB::Comparator com) const
 {
     PostingDB postingDb(m_dbis.postingDbi, m_txn);
     return postingDb.compIter(prefix, value, com);

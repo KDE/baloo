@@ -104,7 +104,7 @@ private Q_SLOTS:
         db.put("R2", {1, 8});
         db.put("R3", {2, 3, 5});
 
-        PostingIterator* it = db.compIter("R", "2", PostingDB::GreaterEqual);
+        PostingIterator* it = db.compIter("R", 2, PostingDB::GreaterEqual);
         QVERIFY(it);
 
         QVector<quint64> result = {1, 2, 3, 5, 8};
@@ -113,7 +113,7 @@ private Q_SLOTS:
             QCOMPARE(it->docId(), static_cast<quint64>(val));
         }
 
-        it = db.compIter("R", "2", PostingDB::LessEqual);
+        it = db.compIter("R", 2, PostingDB::LessEqual);
         QVERIFY(it);
         result = {1, 3, 5, 7, 8};
         for (quint64 val : result) {

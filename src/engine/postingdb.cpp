@@ -257,13 +257,13 @@ PostingIterator* PostingDB::regexpIter(const QRegularExpression& regexp, const Q
     return iter(prefix, validate);
 }
 
-PostingIterator* PostingDB::compIter(const QByteArray& prefix, const QByteArray& comVal, PostingDB::Comparator com)
+PostingIterator* PostingDB::compIter(const QByteArray& prefix, qlonglong comVal, PostingDB::Comparator com)
 {
-    Q_ASSERT(!comVal.isEmpty());
     int prefixLen = prefix.length();
-    auto validate = [prefixLen, &comVal, com] (const QByteArray& arr) {
-        QByteArray term(arr.constData() + prefixLen, arr.length() - prefixLen);
-        return ((com == LessEqual && term <= comVal) || (com == GreaterEqual && term >= comVal));
+    auto validate = [prefixLen, comVal, com] (const QByteArray& arr) {
+        bool ok = false;
+        auto val = QByteArray::fromRawData(arr.constData() + prefixLen, arr.length() - prefixLen).toLongLong(&ok);
+        return ok && ((com == LessEqual && val <= comVal) || (com == GreaterEqual && val >= comVal));
     };
     return iter(prefix, validate);
 }
