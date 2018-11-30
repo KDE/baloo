@@ -58,7 +58,7 @@ public:
         LessEqual,
         GreaterEqual
     };
-    PostingIterator* compIter(const QByteArray& prefix, const QByteArray& val, Comparator com);
+    PostingIterator* compIter(const QByteArray& prefix, qlonglong val, Comparator com);
 
     QVector<QByteArray> fetchTermsStartingWith(const QByteArray& term);
 
