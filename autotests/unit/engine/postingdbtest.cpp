@@ -103,11 +103,15 @@ private Q_SLOTS:
         db.put("R1", {1, 3, 5, 7});
         db.put("R2", {1, 8});
         db.put("R3", {2, 3, 5});
+        db.put("R10", {10, 12});
+        // X20- is the internal encoding for KFileMetaData::Property::LineCount
+        db.put("X20-90", {1, 2});
+        db.put("X20-1000", {10, 11});
 
         PostingIterator* it = db.compIter("R", 2, PostingDB::GreaterEqual);
         QVERIFY(it);
 
-        QVector<quint64> result = {1, 2, 3, 5, 8};
+        QVector<quint64> result = {1, 2, 3, 5, 8, 10, 12};
         for (quint64 val : result) {
             QCOMPARE(it->next(), static_cast<quint64>(val));
             QCOMPARE(it->docId(), static_cast<quint64>(val));
@@ -116,6 +120,30 @@ private Q_SLOTS:
         it = db.compIter("R", 2, PostingDB::LessEqual);
         QVERIFY(it);
         result = {1, 3, 5, 7, 8};
+        for (quint64 val : result) {
+            QCOMPARE(it->next(), static_cast<quint64>(val));
+            QCOMPARE(it->docId(), static_cast<quint64>(val));
+        }
+
+        it = db.compIter("R", 10, PostingDB::GreaterEqual);
+        QVERIFY(it);
+        result = {10, 12};
+        for (quint64 val : result) {
+            QCOMPARE(it->next(), static_cast<quint64>(val));
+            QCOMPARE(it->docId(), static_cast<quint64>(val));
+        }
+
+        it = db.compIter("X20-", 80, PostingDB::GreaterEqual);
+        QVERIFY(it);
+        result = {1, 2, 10, 11};
+        for (quint64 val : result) {
+            QCOMPARE(it->next(), static_cast<quint64>(val));
+            QCOMPARE(it->docId(), static_cast<quint64>(val));
+        }
+
+        it = db.compIter("X20-", 100, PostingDB::GreaterEqual);
+        QVERIFY(it);
+        result = {10, 11};
         for (quint64 val : result) {
             QCOMPARE(it->next(), static_cast<quint64>(val));
             QCOMPARE(it->docId(), static_cast<quint64>(val));
