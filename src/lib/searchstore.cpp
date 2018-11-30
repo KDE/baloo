@@ -249,37 +249,6 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
         else {
             Q_ASSERT_X(0, "SearchStore::constructQuery", "modified property must contain date/datetime values");
         }
-    }
-    else if (property == "rating") {
-        bool okay = false;
-        int rating = value.toInt(&okay);
-        if (!okay) {
-            qDebug() << "Rating comparisons must be with an integer";
-            return nullptr;
-        }
-
-        PostingDB::Comparator pcom;
-        if (term.comparator() == Term::Greater || term.comparator() == Term::GreaterEqual) {
-            pcom = PostingDB::GreaterEqual;
-            if (term.comparator() == Term::Greater && rating)
-                rating++;
-        }
-        else if (term.comparator() == Term::Less || term.comparator() == Term::LessEqual) {
-            pcom = PostingDB::LessEqual;
-            if (term.comparator() == Term::Less)
-                rating--;
-        }
-        else if (term.comparator() == Term::Equal) {
-            EngineQuery q = constructEqualsQuery("R", value.toString());
-            return tr->postingIterator(q);
-        }
-        else {
-            Q_ASSERT(0);
-            return nullptr;
-        }
-
-        const QByteArray prefix = "R";
-        return tr->postingCompIterator(prefix, rating, pcom);
     } else if (property == "tag") {
         if (term.comparator() == Term::Equal) {
             const QByteArray prefix = "TAG-";
@@ -335,6 +304,8 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
         }
 
         return tr->postingCompIterator(prefix, intVal, pcom);
+    } else {
+        qDebug() << "Comparison must be with an integer";
     }
 
     return nullptr;
