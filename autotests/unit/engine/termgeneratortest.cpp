@@ -36,7 +36,7 @@ private Q_SLOTS:
     void testWordBoundaries();
     void testUnderscoreWord();
     void testUnderscore_splitting();
-    void testAccetCharacters();
+    void testAccentCharacters();
     void testUnicodeCompatibleComposition();
     void testUnicodeLowering();
     void testEmails();
@@ -98,9 +98,9 @@ void TermGeneratorTest::testUnderscore_splitting()
     QCOMPARE(words, expectedWords);
 }
 
-void TermGeneratorTest::testAccetCharacters()
+void TermGeneratorTest::testAccentCharacters()
 {
-    QString str = QString::fromLatin1("Como está Kûg");
+    QString str = QString::fromUtf8("Como est\xC3\xA1 K\xC3\xBBg"); // "Como estÃ¡ KÃ»g"
 
     Document doc;
     TermGenerator termGen(&doc);
@@ -116,7 +116,7 @@ void TermGeneratorTest::testAccetCharacters()
 
 void TermGeneratorTest::testUnicodeCompatibleComposition()
 {
-    // The 0xfb00 corresponds to U+FB00 which is a 'ff'
+    // The 0xfb00 corresponds to U+FB00 which is a 'ff' ligature
     QString str = QLatin1Literal("maffab");
     QString str2 = QLatin1Literal("ma") + QChar(0xfb00) + QStringLiteral("ab");
 
