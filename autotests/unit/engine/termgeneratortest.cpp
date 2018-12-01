@@ -41,6 +41,7 @@ private Q_SLOTS:
     void testUnicodeLowering();
     void testEmails();
     void testWordPositions();
+    void testNumbers();
 
     QList<QByteArray> allWords(const Document& doc)
     {
@@ -183,6 +184,26 @@ void TermGeneratorTest::testWordPositions()
 
     QVector<uint> posInfo3 = doc.m_terms.value("how").positions;
     QCOMPARE(posInfo3, QVector<uint>() << 3);
+}
+
+void TermGeneratorTest::testNumbers()
+{
+    QString str = QString::fromLatin1("1 5 10 -3 -12, 5.6, -13.4 -7e3");
+
+    Document doc;
+    TermGenerator termGen(doc);
+    termGen.indexText(str);
+
+    QList<QByteArray> words = allWords(doc);
+
+    QList<QByteArray> expectedWords;
+    // TODO: Signs are dropped by the TermGenerator
+    expectedWords = { "1", "10", "12", "13.4", "3", "5", "5.6", "7e3"};
+    QCOMPARE(words, expectedWords);
+
+    expectedWords = { "1", "10", "12", "-13.4", "-3", "5", "5.6", "-7e3"};
+    QEXPECT_FAIL("", "signs not handled correctly", Continue);
+    QCOMPARE(words, expectedWords);
 }
 
 QTEST_MAIN(TermGeneratorTest)
