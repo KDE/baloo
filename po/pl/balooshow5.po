@@ -1,0 +1,125 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Łukasz Wojniłowicz <lukasz.wojnilowicz@gmail.com>, 2014, 2015, 2018.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2018-10-31 03:52+0100\n"
+"PO-Revision-Date: 2018-02-24 07:26+0100\n"
+"Last-Translator: Łukasz Wojniłowicz <lukasz.wojnilowicz@gmail.com>\n"
+"Language-Team: Polish <kde-i18n-doc@kde.org>\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 2.0\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Łukasz Wojniłowicz"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "lukasz.wojnilowicz@gmail.com"
+
+#: main.cpp:63
+#, kde-format
+msgid "Baloo Show"
+msgstr "Pokaz Baloo"
+
+#: main.cpp:65
+#, kde-format
+msgid "The Baloo data Viewer - A debugging tool"
+msgstr "Przeglądarka danych Baloo - Narzędzie do debugowania"
+
+#: main.cpp:67
+#, kde-format
+msgid "(c) 2012, Vishesh Handa"
+msgstr "(c) 2012, Vishesh Handa"
+
+#: main.cpp:68
+#, kde-format
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:68
+#, kde-format
+msgid "Maintainer"
+msgstr "Opiekun"
+
+#: main.cpp:73
+#, kde-format
+msgid "The file urls"
+msgstr "Adres URL pliku"
+
+#: main.cpp:75
+#, kde-format
+msgid "Print internal info"
+msgstr "Wyświetl wewnętrzne informacje"
+
+#: main.cpp:77
+#, kde-format
+msgid "Inode number of the file to show"
+msgstr "Numer Inode pliku do wyświetlenia"
+
+#: main.cpp:79
+#, kde-format
+msgid "Device id for the files"
+msgstr "ID urządzenia dla plików"
+
+#: main.cpp:111
+#, kde-format
+msgid ""
+"The Baloo index could not be opened. Please run \"%1\" to see if Baloo is "
+"enabled and working."
+msgstr ""
+"Nie można otworzyć indeksu Baloo. Wykonaj %1, aby zobaczyć czy Baloo jest "
+"włączony i czy działa."
+
+#: main.cpp:127
+#, kde-format
+msgid "The fileID is not equal to the actual Baloo fileID"
+msgstr "Identyfikator pliki nie jest równy identyfikatorowi pliku w Baloo"
+
+#: main.cpp:128
+#, kde-format
+msgid "This is a bug"
+msgstr "Jest to błąd"
+
+#: main.cpp:156
+#, kde-format
+msgid "No index information found"
+msgstr "Nie znaleziono informacji o indeksie"
+
+#: main.cpp:195
+#, kde-format
+msgid "Internal Info"
+msgstr "Informacje wewnętrzne"
+
+#: main.cpp:196
+#, kde-format
+msgid "Terms: %1"
+msgstr "Wyrażenia: %1"
+
+#: main.cpp:197
+#, kde-format
+msgid "File Name Terms: %1"
+msgstr "Wyrażenia nazw plików: %1"
+
+#: main.cpp:198
+#, kde-format
+msgid "%1 Terms: %2"
+msgstr "Wyrażenia %1: %2"
+
+#: main.cpp:201
+#, fuzzy, kde-format
+#| msgid "Internal Info"
+msgctxt "Prefix string for internal errors"
+msgid "Internal Error - %1"
+msgstr "Informacje wewnętrzne"
