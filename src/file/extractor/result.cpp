@@ -124,7 +124,7 @@ void Result::finish()
     QJsonObject jo = QJsonObject::fromVariantMap(m_map);
     QJsonDocument jdoc;
     jdoc.setObject(jo);
-    m_doc.setData(jdoc.toJson());
+    m_doc.setData(jdoc.toJson(QJsonDocument::JsonFormat::Compact));
 }
 
 void Result::setDocument(const Baloo::Document& doc)
