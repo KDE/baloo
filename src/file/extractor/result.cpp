@@ -32,15 +32,15 @@
 // In order to use it in a vector
 Result::Result()
     : ExtractionResult(QString(), QString())
-    , m_termGen(nullptr)
-    , m_termGenForText(nullptr)
+    , m_termGen(m_doc)
+    , m_termGenForText(m_doc)
 {
 }
 
 Result::Result(const QString& url, const QString& mimetype, const Flags& flags)
     : KFileMetaData::ExtractionResult(url, mimetype, flags)
-    , m_termGen(nullptr)
-    , m_termGenForText(nullptr)
+    , m_termGen(m_doc)
+    , m_termGenForText(m_doc)
 {
 }
 
@@ -131,11 +131,11 @@ void Result::setDocument(const Baloo::Document& doc)
 {
     m_doc = doc;
     // All document metadata are indexed from position 1000
-    m_termGen.setDocument(&m_doc);
+    m_termGen.setDocument(m_doc);
     m_termGen.setPosition(1000);
 
     // All document plain text starts from 10000. This is done to avoid
     // clashes with the term positions
-    m_termGenForText.setDocument(&m_doc);
+    m_termGenForText.setDocument(m_doc);
     m_termGenForText.setPosition(10000);
 }

@@ -26,7 +26,7 @@
 
 using namespace Baloo;
 
-TermGenerator::TermGenerator(Document* doc)
+TermGenerator::TermGenerator(Document& doc)
     : m_doc(doc)
     , m_position(1)
 {
@@ -89,7 +89,7 @@ void TermGenerator::indexText(const QString& text, const QByteArray& prefix)
         QByteArray finalArr = prefix + arr;
         finalArr = finalArr.mid(0, maxTermSize);
 
-        m_doc->addPositionTerm(finalArr, m_position);
+        m_doc.addPositionTerm(finalArr, m_position);
         m_position++;
     }
 }
@@ -103,7 +103,7 @@ void TermGenerator::indexFileNameText(const QString& text, const QByteArray& pre
         QByteArray finalArr = prefix + arr;
         finalArr = finalArr.mid(0, maxTermSize);
 
-        m_doc->addFileNamePositionTerm(finalArr, m_position);
+        m_doc.addFileNamePositionTerm(finalArr, m_position);
         m_position++;
     }
 }
@@ -122,7 +122,7 @@ void TermGenerator::indexXattrText(const QString& text, const QByteArray& prefix
         QByteArray finalArr = prefix + arr;
         finalArr = finalArr.mid(0, maxTermSize);
 
-        m_doc->addXattrPositionTerm(finalArr, m_position);
+        m_doc.addXattrPositionTerm(finalArr, m_position);
         m_position++;
     }
 

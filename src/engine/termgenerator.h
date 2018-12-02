@@ -23,17 +23,16 @@
 
 #include <QString>
 #include "engine_export.h"
+#include "document.h"
 
 namespace Baloo {
-
-class Document;
 
 class BALOO_ENGINE_EXPORT TermGenerator
 {
 public:
-    explicit TermGenerator(Document* doc);
+    explicit TermGenerator(Document& doc);
 
-    void setDocument(Document* doc) {
+    void setDocument(Document& doc) {
         m_doc = doc;
     }
 
@@ -52,7 +51,7 @@ public:
     // Trim all terms to this size
     const static int maxTermSize = 25;
 private:
-    Document* m_doc;
+    Document& m_doc;
     int m_position;
 };
 }
