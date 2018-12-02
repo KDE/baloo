@@ -41,6 +41,31 @@ BasicIndexingJob::BasicIndexingJob(const QString& filePath, const QString& mimet
 {
 }
 
+namespace {
+
+void indexXAttr(const QString& url, Document& doc)
+{
+    KFileMetaData::UserMetaData userMetaData(url);
+    TermGenerator tg(doc);
+
+    QStringList tags = userMetaData.tags();
+    for (const QString& tag : tags) {
+        tg.indexXattrText(tag, QByteArray("TA"));
+        doc.addXattrTerm(QByteArray("TAG-") + tag.toUtf8());
+    }
+
+    int rating = userMetaData.rating();
+    if (rating) {
+        doc.addXattrTerm(QByteArray("R") + QByteArray::number(rating));
+    }
+
+    QString comment = userMetaData.userComment();
+    if (!comment.isEmpty()) {
+        tg.indexXattrText(comment, QByteArray("C"));
+    }
+}
+} // namespace
+
 BasicIndexingJob::~BasicIndexingJob()
 {
 }
@@ -91,29 +116,6 @@ bool BasicIndexingJob::index()
     return true;
 }
 
-bool BasicIndexingJob::indexXAttr(const QString& url, Document& doc)
-{
-    KFileMetaData::UserMetaData userMetaData(url);
-    TermGenerator tg(doc);
-
-    QStringList tags = userMetaData.tags();
-    for (const QString& tag : tags) {
-        tg.indexXattrText(tag, QByteArray("TA"));
-        doc.addXattrTerm(QByteArray("TAG-") + tag.toUtf8());
-    }
-
-    int rating = userMetaData.rating();
-    if (rating) {
-        doc.addXattrTerm(QByteArray("R") + QByteArray::number(rating));
-    }
-
-    QString comment = userMetaData.userComment();
-    if (!comment.isEmpty()) {
-        tg.indexXattrText(comment, QByteArray("C"));
-    }
-
-    return (!tags.isEmpty() || rating || !comment.isEmpty());
-}
 
 QVector<KFileMetaData::Type::Type> BasicIndexingJob::typesForMimeType(const QString& mimeType)
 {

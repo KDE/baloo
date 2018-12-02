@@ -44,14 +44,6 @@ public:
 
     Document document() { return m_doc; }
 
-    /**
-     * Adds the data for all the extended attributes of \p url
-     * in the document \p doc
-     *
-     * \return Returns true if the \p doc was modified
-     */
-    static bool indexXAttr(const QString& url, Document& doc);
-
 private:
     static QVector<KFileMetaData::Type::Type> typesForMimeType(const QString& mimeType);
 
