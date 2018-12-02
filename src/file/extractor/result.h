@@ -40,8 +40,6 @@ public:
 
     void setDocument(const Baloo::Document& doc);
 
-    QVariantMap map() const;
-
     Baloo::Document& document() {
         return m_doc;
     }

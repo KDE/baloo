@@ -139,8 +139,3 @@ void Result::setDocument(const Baloo::Document& doc)
     m_termGenForText.setDocument(&m_doc);
     m_termGenForText.setPosition(10000);
 }
-
-QVariantMap Result::map() const
-{
-    return m_map;
-}
