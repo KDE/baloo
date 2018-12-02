@@ -72,7 +72,7 @@ void Result::add(KFileMetaData::Property::Property property, const QVariant& val
     if (value.type() == QVariant::Bool) {
         m_doc.addTerm(prefix);
     }
-    else if (value.type() == QVariant::Int) {
+    else if (value.type() == QVariant::Int || value.type() == QVariant::UInt) {
         const QByteArray term = prefix + value.toString().toUtf8();
         m_doc.addTerm(term);
     }
