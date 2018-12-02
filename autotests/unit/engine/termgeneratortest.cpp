@@ -54,7 +54,7 @@ void TermGeneratorTest::testWordBoundaries()
     QString str = QString::fromLatin1("The quick (\"brown\") 'fox' can't jump 32.3 feet, right? No-Wrong;xx.txt");
 
     Document doc;
-    TermGenerator termGen(&doc);
+    TermGenerator termGen(doc);
     termGen.indexText(str);
 
     QList<QByteArray> words = allWords(doc);
@@ -72,7 +72,7 @@ void TermGeneratorTest::testUnderscoreWord()
     QString str = QString::fromLatin1("_plant");
 
     Document doc;
-    TermGenerator termGen(&doc);
+    TermGenerator termGen(doc);
     termGen.indexText(str);
 
     QList<QByteArray> words = allWords(doc);
@@ -88,7 +88,7 @@ void TermGeneratorTest::testUnderscore_splitting()
     QString str = QString::fromLatin1("Hello_Howdy");
 
     Document doc;
-    TermGenerator termGen(&doc);
+    TermGenerator termGen(doc);
     termGen.indexText(str);
 
     QList<QByteArray> words = allWords(doc);
@@ -104,7 +104,7 @@ void TermGeneratorTest::testAccentCharacters()
     QString str = QString::fromUtf8("Como est\xC3\xA1 K\xC3\xBBg"); // "Como está Kûg"
 
     Document doc;
-    TermGenerator termGen(&doc);
+    TermGenerator termGen(doc);
     termGen.indexText(str);
 
     QList<QByteArray> words = allWords(doc);
@@ -122,7 +122,7 @@ void TermGeneratorTest::testUnicodeCompatibleComposition()
     QString str2 = QLatin1Literal("ma") + QChar(0xfb00) + QStringLiteral("ab");
 
     Document doc;
-    TermGenerator termGen(&doc);
+    TermGenerator termGen(doc);
     termGen.indexText(str2);
 
     QList<QByteArray> words = allWords(doc);
@@ -138,7 +138,7 @@ void TermGeneratorTest::testUnicodeLowering()
     QString str = QString::fromUtf8("\xF0\x9D\x90\xBB\xF0\x9D\x91\x92\xF0\x9D\x91\x91\xF0\x9D\x91\x94\xF0\x9D\x91\x92");
 
     Document doc;
-    TermGenerator termGen(&doc);
+    TermGenerator termGen(doc);
     termGen.indexText(str);
 
     QList<QByteArray> words = allWords(doc);
@@ -151,7 +151,7 @@ void TermGeneratorTest::testEmails()
     QString str = QString::fromLatin1("me@vhanda.in");
 
     Document doc;
-    TermGenerator termGen(&doc);
+    TermGenerator termGen(doc);
     termGen.indexText(str);
 
     QList<QByteArray> words = allWords(doc);
@@ -165,7 +165,7 @@ void TermGeneratorTest::testEmails()
 void TermGeneratorTest::testWordPositions()
 {
     Document doc;
-    TermGenerator termGen(&doc);
+    TermGenerator termGen(doc);
 
     QString str = QString::fromLatin1("Hello hi how hi");
     termGen.indexText(str);

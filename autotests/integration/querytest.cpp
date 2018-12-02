@@ -67,7 +67,7 @@ private:
 
         QString fileName = url.mid(url.lastIndexOf('/') + 1);
 
-        TermGenerator tg(&doc);
+        TermGenerator tg(doc);
         tg.indexText(text);
         tg.indexFileNameText(fileName);
         doc.setId(id);

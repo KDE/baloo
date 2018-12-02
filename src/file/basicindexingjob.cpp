@@ -60,7 +60,7 @@ bool BasicIndexingJob::index()
 
     QString fileName = url.mid(url.lastIndexOf('/') + 1);
 
-    TermGenerator tg(&doc);
+    TermGenerator tg(doc);
     tg.indexFileNameText(fileName);
     tg.indexFileNameText(fileName, QByteArray("F"));
     tg.indexText(m_mimetype, QByteArray("M"));
@@ -94,7 +94,7 @@ bool BasicIndexingJob::index()
 bool BasicIndexingJob::indexXAttr(const QString& url, Document& doc)
 {
     KFileMetaData::UserMetaData userMetaData(url);
-    TermGenerator tg(&doc);
+    TermGenerator tg(doc);
 
     QStringList tags = userMetaData.tags();
     for (const QString& tag : tags) {
