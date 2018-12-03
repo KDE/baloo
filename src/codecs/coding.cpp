@@ -115,7 +115,7 @@ char* getDifferentialVarInt32(char* p, char* limit, QVector<quint32>* values)
     values->reserve(size);
 
     quint32 v = 0;
-    while (p && p < limit && size) {
+    while (p && size) {
         quint32 n = 0;
         p = getVarint32Ptr(p, limit, &n);
 
@@ -139,7 +139,7 @@ char* getVarint32PtrFallback(char* p, char* limit, quint32* value)
         } else {
             result |= (byte << shift);
             *value = result;
-            return reinterpret_cast<char*>(p);
+            return p;
         }
     }
     return nullptr;
