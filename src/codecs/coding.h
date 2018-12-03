@@ -89,13 +89,16 @@ inline quint64 decodeFixed64(const char* ptr)
 extern char* getVarint32PtrFallback(char* p, char* limit, quint32* value);
 inline char* getVarint32Ptr(char* p, char* limit, quint32* value)
 {
-    if (p < limit) {
-        quint32 result = *(reinterpret_cast<const unsigned char*>(p));
-        if ((result & 128) == 0) {
-            *value = result;
-            return p + 1;
-        }
+    if (p >= limit) {
+        return nullptr;
     }
+
+    quint32 result = *(reinterpret_cast<const unsigned char*>(p));
+    if ((result & 128) == 0) {
+        *value = result;
+        return p + 1;
+    }
+
     return getVarint32PtrFallback(p, limit, value);
 }
 
