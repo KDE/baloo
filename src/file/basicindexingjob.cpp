@@ -193,6 +193,7 @@ QVector<KFileMetaData::Type::Type> BasicIndexingJob::typesForMimeType(const QStr
         {"application/x-gtar", Type::Archive},
         {"application/zip", Type::Archive},
         {"image/svg+xml", Type::Image},
+        {"image/svg", Type::Image},
         // WPS office
         {"application/wps-office.doc", Type::Document},
         {"application/wps-office.xls", Type::Document},
