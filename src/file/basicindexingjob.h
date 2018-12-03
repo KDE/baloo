@@ -23,7 +23,6 @@
 #ifndef BASICINDEXINGJOB_H
 #define BASICINDEXINGJOB_H
 
-#include <KFileMetaData/Types>
 #include "document.h"
 
 namespace Baloo {
@@ -45,8 +44,6 @@ public:
     Document document() { return m_doc; }
 
 private:
-    static QVector<KFileMetaData::Type::Type> typesForMimeType(const QString& mimeType);
-
     QString m_filePath;
     QString m_mimetype;
     IndexingLevel m_indexingLevel;
