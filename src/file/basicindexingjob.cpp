@@ -28,6 +28,7 @@
 #include <QDateTime>
 #include <QStringList>
 
+#include <KFileMetaData/Types>
 #include <KFileMetaData/TypeInfo>
 #include <KFileMetaData/UserMetaData>
 
@@ -64,63 +65,12 @@ void indexXAttr(const QString& url, Document& doc)
         tg.indexXattrText(comment, QByteArray("C"));
     }
 }
-} // namespace
 
-BasicIndexingJob::~BasicIndexingJob()
-{
-}
-
-bool BasicIndexingJob::index()
-{
-    const QByteArray url = QFile::encodeName(m_filePath);
-
-    QT_STATBUF statBuf;
-    if (filePathToStat(url, statBuf) != 0) {
-        return false;
-    }
-
-    Document doc;
-    doc.setId(statBufToId(statBuf));
-    doc.setUrl(url);
-
-    QString fileName = url.mid(url.lastIndexOf('/') + 1);
-
-    TermGenerator tg(doc);
-    tg.indexFileNameText(fileName);
-    tg.indexFileNameText(fileName, QByteArray("F"));
-    tg.indexText(m_mimetype, QByteArray("M"));
-
-    // (Content) Modification time, Metadata (e.g. XAttr) change time
-    doc.setMTime(statBuf.st_mtime);
-    doc.setCTime(statBuf.st_ctime);
-
-    // Types
-    QVector<KFileMetaData::Type::Type> tList = typesForMimeType(m_mimetype);
-    for (KFileMetaData::Type::Type type : tList) {
-        QByteArray num = QByteArray::number(static_cast<int>(type));
-        doc.addTerm(QByteArray("T") + num);
-    }
-
-    if (S_ISDIR(statBuf.st_mode)) {
-        static const QByteArray type = QByteArray("T") + QByteArray::number(static_cast<int>(KFileMetaData::Type::Folder));
-        doc.addTerm(type);
-        // For folders we do not need to go through file indexing, so we do not set contentIndexing
-    }
-    else if (m_indexingLevel == MarkForContentIndexing) {
-        doc.setContentIndexing(true);
-    }
-
-    indexXAttr(m_filePath, doc);
-
-    m_doc = doc;
-    return true;
-}
-
-
-QVector<KFileMetaData::Type::Type> BasicIndexingJob::typesForMimeType(const QString& mimeType)
+QVector<KFileMetaData::Type::Type> typesForMimeType(const QString& mimeType)
 {
     using namespace KFileMetaData;
     QVector<Type::Type> types;
+    types.reserve(2);
 
     // Basic types
     if (mimeType.startsWith(QLatin1String("audio/")))
@@ -214,8 +164,62 @@ QVector<KFileMetaData::Type::Type> BasicIndexingJob::typesForMimeType(const QStr
         {"application/x-lyx", Type::Document}
     };
 
+    auto hashIt = typeMapper.find(mimeType);
+    while (hashIt != typeMapper.end() && hashIt.key() == mimeType) {
+        types.append(hashIt.value());
+        ++hashIt;
+    }
 
-    types << typeMapper.values(mimeType).toVector();
     return types;
 }
+} // namespace
 
+BasicIndexingJob::~BasicIndexingJob()
+{
+}
+
+bool BasicIndexingJob::index()
+{
+    const QByteArray url = QFile::encodeName(m_filePath);
+
+    QT_STATBUF statBuf;
+    if (filePathToStat(url, statBuf) != 0) {
+        return false;
+    }
+
+    Document doc;
+    doc.setId(statBufToId(statBuf));
+    doc.setUrl(url);
+
+    QString fileName = url.mid(url.lastIndexOf('/') + 1);
+
+    TermGenerator tg(doc);
+    tg.indexFileNameText(fileName);
+    tg.indexFileNameText(fileName, QByteArray("F"));
+    tg.indexText(m_mimetype, QByteArray("M"));
+
+    // (Content) Modification time, Metadata (e.g. XAttr) change time
+    doc.setMTime(statBuf.st_mtime);
+    doc.setCTime(statBuf.st_ctime);
+
+    // Types
+    QVector<KFileMetaData::Type::Type> tList = typesForMimeType(m_mimetype);
+    for (KFileMetaData::Type::Type type : tList) {
+        QByteArray num = QByteArray::number(static_cast<int>(type));
+        doc.addTerm(QByteArray("T") + num);
+    }
+
+    if (S_ISDIR(statBuf.st_mode)) {
+        static const QByteArray type = QByteArray("T") + QByteArray::number(static_cast<int>(KFileMetaData::Type::Folder));
+        doc.addTerm(type);
+        // For folders we do not need to go through file indexing, so we do not set contentIndexing
+    }
+    else if (m_indexingLevel == MarkForContentIndexing) {
+        doc.setContentIndexing(true);
+    }
+
+    indexXAttr(m_filePath, doc);
+
+    m_doc = doc;
+    return true;
+}
