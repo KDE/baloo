@@ -24,7 +24,7 @@ The recommended way of contributing patches is via KDE's [phabricator](https://p
 ### Developers
 [![build status](https://build.kde.org/job/Frameworks%20baloo%20kf5-qt5%20SUSEQt5.9/lastBuild/)](https://build.kde.org/buildStatus/icon?job=Frameworks%20baloo%20kf5-qt5%20SUSEQt5.9)
 * [Build Instructions](@ref build-instructions)
-* Baloo follows the [KDELibs coding style](https://techbase.kde.org/Policies/Kdelibs_Coding_Style).
+* Baloo follows the [KDELibs coding style](https://community.kde.org/Policies/Kdelibs_Coding_Style).
 
 ### Distributions
 Baloo is developed and tested exclusively for Linux. While it may run on other
