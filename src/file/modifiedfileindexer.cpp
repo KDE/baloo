@@ -74,12 +74,10 @@ void ModifiedFileIndexer::run()
         // A folders mtime is updated when a new file is added / removed / renamed
         // we don't really need to reindex a folder when that happens
         // In fact, we never need to reindex a folder
-        if (timeInfo.mTime && fileInfo.isDir())
+        if (timeInfo.mTime && fileInfo.isDir()) {
             continue;
         }
 
-        // FIXME: Using QFileInfo over here is quite expensive!
-        QFileInfo fileInfo(filePath);
         bool mTimeChanged = timeInfo.mTime != fileInfo.lastModified().toTime_t();
 #if QT_VERSION >= QT_VERSION_CHECK(5,10,0)
         bool cTimeChanged = timeInfo.cTime != fileInfo.metadataChangeTime().toTime_t();
