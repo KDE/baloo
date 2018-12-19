@@ -100,7 +100,7 @@ void FileWatch::watchFolder(const QString& path)
                                     | KInotify::EventCloseWrite | KInotify::EventCreate
                                     | KInotify::EventAttributeChange | KInotify::EventModify);
 
-        m_dirWatch->addWatch(path, flags, KInotify::WatchFlags());
+        m_dirWatch->addWatch(path, flags, KInotify::FlagOnlyDir);
     }
 }
 
