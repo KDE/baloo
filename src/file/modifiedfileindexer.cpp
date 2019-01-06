@@ -79,11 +79,7 @@ void ModifiedFileIndexer::run()
         }
 
         bool mTimeChanged = timeInfo.mTime != fileInfo.lastModified().toTime_t();
-#if QT_VERSION >= QT_VERSION_CHECK(5,10,0)
         bool cTimeChanged = timeInfo.cTime != fileInfo.metadataChangeTime().toTime_t();
-#else
-        bool cTimeChanged = timeInfo.cTime != fileInfo.created().toTime_t();
-#endif
 
         if (!mTimeChanged && !cTimeChanged) {
             continue;
