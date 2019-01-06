@@ -114,11 +114,7 @@ bool UnIndexedFileIterator::shouldIndex(const QString& filePath, const QString& 
         m_mTimeChanged = true;
     }
 
-#if QT_VERSION >= QT_VERSION_CHECK(5,10,0)
     auto fileMTime = fileInfo.metadataChangeTime().toTime_t();
-#else
-    auto fileMTime = fileInfo.created().toTime_t();
-#endif
     if (timeInfo.cTime != fileMTime) {
         m_cTimeChanged = true;
     }
