@@ -104,8 +104,6 @@ void SearchModule::slotFileMetaDataChanged(const QStringList& list)
     slotBalooFileDbChanged();
 }
 
-K_PLUGIN_FACTORY_WITH_JSON(Factory,
-                           "baloosearchmodule.json",
-                           registerPlugin<SearchModule>();)
+K_PLUGIN_CLASS_WITH_JSON(SearchModule, "baloosearchmodule.json")
 
 #include "baloosearchmodule.moc"
