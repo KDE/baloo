@@ -35,6 +35,9 @@ public:
     IndexerConfig();
     ~IndexerConfig();
 
+    IndexerConfig(const IndexerConfig &) = delete;
+    IndexerConfig &operator=(const IndexerConfig &) = delete;
+
     bool fileIndexingEnabled() const;
     void setFileIndexingEnabled(bool enabled) const;
 
