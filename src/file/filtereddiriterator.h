@@ -38,6 +38,9 @@ public:
     FilteredDirIterator(const FileIndexerConfig* config, const QString& folder, Filter filter = FilesAndDirs);
     ~FilteredDirIterator();
 
+    FilteredDirIterator(const FilteredDirIterator &) = delete;
+    FilteredDirIterator &operator=(const FilteredDirIterator &) = delete;
+
     QString next();
     QString filePath() const;
     QFileInfo fileInfo() const;
