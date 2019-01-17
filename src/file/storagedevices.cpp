@@ -70,13 +70,17 @@ QList<StorageDevices::Entry> StorageDevices::allMedia() const
 
 StorageDevices::Entry* StorageDevices::createCacheEntry(const Solid::Device& dev)
 {
-    Entry entry(dev);
     if (dev.udi().isEmpty())
         return nullptr;
 
+    const Solid::StorageAccess* storage = dev.as<Solid::StorageAccess>();
+    if (!storage) {
+        return nullptr;
+    }
+
+    Entry entry(dev);
     auto it = m_metadataCache.insert(dev.udi(), entry);
 
-    const Solid::StorageAccess* storage = dev.as<Solid::StorageAccess>();
     connect(storage, &Solid::StorageAccess::accessibilityChanged,
             this, &StorageDevices::slotAccessibilityChanged);
     //connect(storage, SIGNAL(teardownRequested(QString)),
