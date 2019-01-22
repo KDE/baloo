@@ -295,6 +295,11 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
     TagsProtocol::ParseResult result;
     result.decodedUrl = QUrl::fromPercentEncoding(url.toString().toUtf8());
 
+    if (result.decodedUrl.at(6) == QChar('/')) {
+        result.urlType = InvalidUrl;
+        return result;
+    }
+
     auto createUDSEntryForTag = [] (const QString& tagSection, const QString& tag) {
         KIO::UDSEntry uds;
         uds.reserve(9);
