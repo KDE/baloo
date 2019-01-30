@@ -39,8 +39,13 @@ class ResultIteratorPrivate;
 class BALOO_CORE_EXPORT ResultIterator
 {
 public:
-    ResultIterator(const ResultIterator& rhs);
+    ResultIterator(ResultIterator &&rhs);
     ~ResultIterator();
+
+    // TODO KF6 mark this as delete
+    /** Do not use this function, ResultIterator is not copiable, move it if needed */
+    BALOO_CORE_DEPRECATED ResultIterator(const ResultIterator& rhs);
+    ResultIterator &operator=(const ResultIterator& rhs) = delete;
 
     bool next();
     QString filePath() const;
