@@ -1,0 +1,71 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+# GunChleoc <fios@foramnagaidhlig.net>, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2018-10-09 03:54+0200\n"
+"PO-Revision-Date: 2015-11-04 15:17+0000\n"
+"Last-Translator: Michael Bauer <fios@akerbeltz.org>\n"
+"Language-Team: Fòram na Gàidhlig\n"
+"Language: gd\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n==1 || n==11) ? 0 : (n==2 || n==12) ? 1 : "
+"(n > 2 && n < 20) ? 2 : 3;\n"
+"X-Generator: Poedit 1.8.4\n"
+"X-Project-Style: kde\n"
+
+#: ../../file/indexerstate.h:43
+#, kde-format
+msgid "Unknown"
+msgstr "Chan eil fhios"
+
+#: ../../file/indexerstate.h:46
+#, kde-format
+msgid "Idle"
+msgstr "'Na thàmh"
+
+#: ../../file/indexerstate.h:49
+#, kde-format
+msgid "Suspended"
+msgstr "'Na dhàil"
+
+#: ../../file/indexerstate.h:52
+#, kde-format
+msgid "Initial Indexing"
+msgstr "Inneacsadh tòiseachaidh"
+
+#: ../../file/indexerstate.h:55
+#, kde-format
+msgid "Indexing new files"
+msgstr "Ag inneacsadh nam faidhlichean ùra"
+
+#: ../../file/indexerstate.h:58
+#, kde-format
+msgid "Indexing modified files"
+msgstr "Ag inneacsadh nam faidhlichean a chaidh atharrachadh"
+
+#: ../../file/indexerstate.h:61
+#, kde-format
+msgid "Indexing Extended Attributes"
+msgstr "Ag inneacsadh nam buadhan leudaichte"
+
+#: ../../file/indexerstate.h:64
+#, kde-format
+msgid "Indexing file content"
+msgstr "Ag inneacsadh susbaint nam faidhlichean"
+
+#: ../../file/indexerstate.h:67
+#, kde-format
+msgid "Checking for unindexed files"
+msgstr "A' toirt sùil airson faidhlichean gun inneacsadh"
+
+#: ../../file/indexerstate.h:70
+#, fuzzy, kde-format
+#| msgid "Checking for unindexed files"
+msgid "Checking for stale index entries"
+msgstr "A' toirt sùil airson faidhlichean gun inneacsadh"
