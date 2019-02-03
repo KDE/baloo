@@ -191,6 +191,14 @@ private:
     class Private;
     Private* const d;
 
+    /**
+     * Recursively iterates over all files/folders inside @param path
+     * (that are not excluded by the config);
+     * emits created() signal for each entry (excluding @param path)
+     * and installs watches for all subdirectories (including @param path)
+     */
+    void handleDirCreated(const QString& path);
+
     Q_PRIVATE_SLOT(d, bool _k_addWatches())
 };
 

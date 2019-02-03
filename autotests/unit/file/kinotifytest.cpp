@@ -44,6 +44,7 @@ private Q_SLOTS:
     void testMoveFile();
     void testRenameFolder();
     void testMoveFolder();
+    void testMoveFromUnwatchedFolder();
     void testMoveRootFolder();
     void testFileClosedAfterWrite();
 };
@@ -349,6 +350,42 @@ void KInotifyTest::testMoveFolder()
     QVERIFY(createdSpy.wait());
     QCOMPARE(createdSpy.count(), 1);
     QCOMPARE(createdSpy.takeFirst().at(0).toString(), f4);
+}
+
+void KInotifyTest::testMoveFromUnwatchedFolder()
+{
+    // create some test folders
+    QTemporaryDir dir;
+    const QString src(QStringLiteral("%1/randomJunk1").arg(dir.path()));
+    const QString dest(QStringLiteral("%1/randomJunk2").arg(dir.path()));
+    mkdir(src);
+    mkdir(dest);
+
+    // Start watching only for destination
+    KInotify kn(nullptr);
+    kn.addWatch(dest, KInotify::EventAll);
+    QSignalSpy spy(&kn, &KInotify::created);
+
+    // Create stuff inside src
+    mkdir(QStringLiteral("%1/sub").arg(src));
+    touchFile(QStringLiteral("%1/sub/file1").arg(src));
+    mkdir(QStringLiteral("%1/sub/sub1").arg(src));
+    touchFile(QStringLiteral("%1/sub/sub1/file2").arg(src));
+
+    // Now move
+    QFile::rename(QStringLiteral("%1/sub").arg(src),
+            QStringLiteral("%1/sub").arg(dest));
+
+    QVERIFY(spy.wait());
+    QCOMPARE(spy.count(), 4);
+
+    // Checking if watches are installed
+    QSignalSpy spy1(&kn, &KInotify::deleted);
+    QDir dstdir(QStringLiteral("%1/sub").arg(dest));
+    dstdir.removeRecursively();
+
+    QVERIFY(spy1.wait());
+    QCOMPARE(spy1.count(), 4);
 }
 
 

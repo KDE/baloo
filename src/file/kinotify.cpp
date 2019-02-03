@@ -309,6 +309,20 @@ bool KInotify::removeWatch(const QString& path)
     return true;
 }
 
+void KInotify::handleDirCreated(const QString& path)
+{
+    Baloo::FilteredDirIterator it(d->config, path);
+    // First entry is the directory itself (if not excluded)
+    if (!it.next().isEmpty()) {
+        d->addWatch(it.filePath());
+    }
+    while (!it.next().isEmpty()) {
+        Q_EMIT created(it.filePath(), it.fileInfo().isDir());
+        if (it.fileInfo().isDir()) {
+            d->addWatch(it.filePath());
+        }
+    }
+}
 
 void KInotify::slotEvent(int socket)
 {
@@ -369,11 +383,13 @@ void KInotify::slotEvent(int socket)
         }
         if (event->mask & EventCreate) {
 //            qCDebug(BALOO) << path << "EventCreate";
+            const QString fname = QFile::decodeName(path);
+            Q_EMIT created(fname, event->mask & IN_ISDIR);
             if (event->mask & IN_ISDIR) {
-                // FIXME: store the mode and flags somewhere
-                addWatch(QString::fromUtf8(path), d->mode, d->flags);
+                // Files/directories inside the new directory may be created before the watch
+                // is installed. Ensure created events for all children are issued at least once
+                handleDirCreated(fname);
             }
-            Q_EMIT created(QFile::decodeName(path), event->mask & IN_ISDIR);
         }
         if (event->mask & EventDeleteSelf) {
 //            qCDebug(BALOO) << path << "EventDeleteSelf";
@@ -421,7 +437,11 @@ void KInotify::slotEvent(int socket)
                 Q_EMIT moved(QFile::decodeName(oldPath), QFile::decodeName(path));
             } else {
 //                qCDebug(BALOO) << "No cookie for move information of" << path << "simulating new file event";
-                Q_EMIT created(QString::fromUtf8(path), event->mask & IN_ISDIR);
+                const QString fname = QFile::decodeName(path);
+                Q_EMIT created(fname, event->mask & IN_ISDIR);
+                if (event->mask & IN_ISDIR) {
+                    handleDirCreated(fname);
+                }
             }
         }
         if (event->mask & EventOpen) {
