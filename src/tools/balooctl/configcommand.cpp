@@ -36,6 +36,17 @@ using namespace Baloo;
  * readable.
  */
 
+namespace
+{
+QString normalizeTrailingSlashes(QString&& path)
+{
+    while (path.endsWith(QLatin1Char('/'))) {
+        path.chop(1);
+    }
+    return path;
+}
+}
+
 QString ConfigCommand::command()
 {
     return QStringLiteral("config");
@@ -164,6 +175,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
             }
 
             QString path = args.takeFirst().replace(QStringLiteral("$HOME"), QDir::homePath());
+            path = normalizeTrailingSlashes(std::move(path));
             QStringList folders = config.includeFolders();
             if (!folders.contains(path)) {
                 out << i18n("%1 is not in the list of include folders", path) << endl;
@@ -183,6 +195,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
             }
 
             QString path = args.takeFirst().replace(QStringLiteral("$HOME"), QDir::homePath());
+            path = normalizeTrailingSlashes(std::move(path));
             QStringList folders = config.excludeFolders();
             if (!folders.contains(path)) {
                 out << i18n("%1 is not in the list of exclude folders", path) << endl;
@@ -263,7 +276,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
                 return 1;
             }
 
-            auto path = fileInfo.absoluteFilePath();
+            auto path = normalizeTrailingSlashes(fileInfo.absoluteFilePath());
             QStringList folders = config.includeFolders();
             if (folders.contains(path)) {
                 out << i18n("%1 is already in the list of include folders", path) << endl;
@@ -298,7 +311,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
                 return 1;
             }
 
-            auto path = fileInfo.absoluteFilePath();
+            auto path = normalizeTrailingSlashes(fileInfo.absoluteFilePath());
             QStringList folders = config.excludeFolders();
             if (folders.contains(path)) {
                 out << i18n("%1 is already in the list of exclude folders", path) << endl;
