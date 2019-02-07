@@ -62,8 +62,9 @@ File::~File()
 
 const File& File::operator=(const File& f)
 {
-    delete d;
-    d = new Private(*f.d);
+    if (&f != this) {
+        *d = *f.d;
+    }
     return *this;
 }
 
@@ -85,6 +86,7 @@ QVariant File::property(KFileMetaData::Property::Property property) const
 bool File::load(const QString& url)
 {
     d->url = QFileInfo(url).canonicalFilePath();
+    d->propertyMap.clear();
     return load();
 }
 
