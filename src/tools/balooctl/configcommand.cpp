@@ -84,7 +84,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
             out << i18n("The following configuration options may be listed:") << endl << endl;
 
             printCommand(QStringLiteral("hidden"), i18n("Controls if Baloo indexes hidden files and folders"));
-            printCommand(QStringLiteral("contentIndexing"), i18n("Controls if baloo indexes file content."));
+            printCommand(QStringLiteral("contentIndexing"), i18n("Controls if Baloo indexes file content"));
             printCommand(QStringLiteral("includeFolders"), i18n("The list of folders which Baloo indexes"));
             printCommand(QStringLiteral("excludeFolders"), i18n("The list of folders which Baloo will never index"));
             printCommand(QStringLiteral("excludeFilters"), i18n("The list of filters which are used to exclude files"));
@@ -361,6 +361,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
             out << i18n("The following configuration options may be modified:") << endl << endl;
 
             printCommand(QStringLiteral("hidden"), i18n("Controls if Baloo indexes hidden files and folders"));
+            printCommand(QStringLiteral("contentIndexing"), i18n("Controls if Baloo indexes file content"));
             return 0;
         }
 
