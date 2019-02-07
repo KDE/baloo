@@ -67,15 +67,6 @@ inline int filePathToStat(const QByteArray& filePath, QT_STATBUF& statBuf)
 #endif
 }
 
-inline QT_STATBUF filePathToStat(const QByteArray& filePath)
-{
-    QT_STATBUF statBuf;
-    const int ret = filePathToStat(filePath, statBuf);
-    //TODO: if (ret != 0) qDebug() ?
-    Q_UNUSED(ret)
-    return statBuf;
-}
-
 inline quint64 filePathToId(const QByteArray& filePath)
 {
     QT_STATBUF statBuf;

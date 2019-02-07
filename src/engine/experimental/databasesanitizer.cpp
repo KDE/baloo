@@ -157,10 +157,10 @@ public:
             const auto volumes = QStorageInfo::mountedVolumes();
             for (const auto& vol : volumes) {
                 const QByteArray rootPath = QFile::encodeName(vol.rootPath());
-                const auto fsinfo = filePathToStat(rootPath);
-                const quint32 id = static_cast<quint32>(fsinfo.st_dev);
+                const auto id = filePathToId(rootPath);
+                const quint32 deviceId = idToDeviceId(id);
                 // qDebug() << vol;
-                result[id] = vol;
+                result[deviceId] = vol;
             }
             return result;
         }();
