@@ -46,9 +46,13 @@ bool isDirHidden(const QDir& dir)
 #endif
 }
 
-QString stripTrailingSlash(const QString& path)
+QString normalizeTrailingSlashes(QString&& path)
 {
-    return path.endsWith(QLatin1Char('/')) ? path.mid(0, path.length()-1) : path;
+    while (path.endsWith(QLatin1Char('/'))) {
+        path.chop(1);
+    }
+    path += QLatin1Char('/');
+    return path;
 }
 
 }
@@ -231,7 +235,7 @@ bool FileIndexerConfig::folderInFolderList(const QString& path, QString& folder)
 {
     const_cast<FileIndexerConfig*>(this)->buildFolderCache();
 
-    const QString p = stripTrailingSlash(path);
+    const QString p = normalizeTrailingSlashes(QString(path));
 
     // we traverse the list backwards to catch all exclude folders
     int i = m_folderCache.count();
@@ -260,8 +264,6 @@ bool alreadyExcluded(const QList<QPair<QString, bool> >& folders, const QString&
     bool included = false;
     for (int i = 0; i < folders.count(); ++i) {
         QString path = folders[i].first;
-        if (!path.endsWith(QLatin1Char('/')))
-            path.append(QLatin1Char('/'));
 
         if (f != folders[i].first && f.startsWith(path)) {
             included = folders[i].second;
@@ -275,9 +277,9 @@ bool alreadyExcluded(const QList<QPair<QString, bool> >& folders, const QString&
  */
 void insertSortFolders(const QStringList& folders, bool include, QList<QPair<QString, bool> >& result)
 {
-    Q_FOREACH (const QString& f, folders) {
+    Q_FOREACH (QString path, folders) {
         int pos = 0;
-        QString path = stripTrailingSlash(f);
+        path = normalizeTrailingSlashes(std::move(path));
         while (result.count() > pos &&
                 result[pos].first < path)
             ++pos;

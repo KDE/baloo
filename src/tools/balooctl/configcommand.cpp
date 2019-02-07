@@ -43,6 +43,7 @@ QString normalizeTrailingSlashes(QString&& path)
     while (path.endsWith(QLatin1Char('/'))) {
         path.chop(1);
     }
+    path += QLatin1Char('/');
     return path;
 }
 }
