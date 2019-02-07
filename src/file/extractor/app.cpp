@@ -144,7 +144,7 @@ void App::processNextFile()
 
 void App::index(Transaction* tr, const QString& url, quint64 id)
 {
-    QString mimetype = m_mimeDb.mimeTypeForFile(url).name();
+    QString mimetype = m_mimeDb.mimeTypeForFile(url, QMimeDatabase::MatchContent).name();
     qCDebug(BALOO) << "Indexing" << id << url << mimetype;
 
     if (!m_config.shouldBeIndexed(url)) {
