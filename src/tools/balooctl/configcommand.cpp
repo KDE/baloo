@@ -272,7 +272,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
 
             if (config.excludeFolders().contains(path)) {
                 out << i18n("%1 is in the list of exclude folders", path) << endl;
-                out << "Aborting" << endl;
+                return 1;
             }
 
             folders.append(path);
@@ -307,7 +307,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
 
             if (config.includeFolders().contains(path)) {
                 out << i18n("%1 is in the list of exclude folders", path) << endl;
-                out << "Aborting" << endl;
+                return 1;
             }
 
             folders.append(path);
