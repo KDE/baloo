@@ -31,17 +31,18 @@
 namespace
 {
 /// recursively check if a folder is hidden
-bool isDirHidden(QDir& dir)
+bool isDirHidden(const QDir& dir)
 {
 #ifdef __unix__
     return dir.absolutePath().contains(QLatin1String("/."));
 #else
-    if (QFileInfo(dir.path()).isHidden())
-        return true;
-    else if (dir.cdUp())
-        return isDirHidden(dir);
-    else
-        return false;
+    QDir d = dir;
+    do {
+        if (QFileInfo(d.path()).isHidden())
+            return true;
+    } while (d.cdUp());
+
+    return false;
 #endif
 }
 
@@ -190,9 +191,6 @@ bool FileIndexerConfig::shouldFolderBeIndexed(const QString& path) const
         QDir dir(path);
         if (!indexHiddenFilesAndFolders() && isDirHidden(dir))
             return false;
-
-        // reset dir, cause isDirHidden modifies the QDir
-        dir = path;
 
         // check the exclude filters for all components of the path
         // after folder
