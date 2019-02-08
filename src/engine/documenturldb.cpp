@@ -41,9 +41,9 @@ DocumentUrlDB::~DocumentUrlDB()
 
 bool DocumentUrlDB::put(quint64 docId, const QByteArray& url)
 {
-    Q_ASSERT(docId > 0);
-    Q_ASSERT(!url.isEmpty());
-    Q_ASSERT(!url.endsWith('/'));
+    if (!docId || url.isEmpty() || url.endsWith('/')) {
+        return false;
+    }
 
     IdFilenameDB idFilenameDb(m_idFilenameDbi, m_txn);
 
@@ -104,8 +104,9 @@ bool DocumentUrlDB::put(quint64 docId, const QByteArray& url)
 
 void DocumentUrlDB::add(quint64 id, quint64 parentId, const QByteArray& name)
 {
-    Q_ASSERT(id > 0);
-    Q_ASSERT(!name.isEmpty());
+    if (!id || name.isEmpty()) {
+        return;
+    }
 
     IdFilenameDB idFilenameDb(m_idFilenameDbi, m_txn);
     IdTreeDB idTreeDb(m_idTreeDbi, m_txn);
@@ -127,7 +128,9 @@ void DocumentUrlDB::add(quint64 id, quint64 parentId, const QByteArray& name)
 
 QByteArray DocumentUrlDB::get(quint64 docId) const
 {
-    Q_ASSERT(docId > 0);
+    if (!docId) {
+        return QByteArray();
+    }
 
     IdFilenameDB idFilenameDb(m_idFilenameDbi, m_txn);
 
@@ -166,7 +169,9 @@ QVector<quint64> DocumentUrlDB::getChildren(quint64 docId) const
 
 void DocumentUrlDB::rename(quint64 docId, const QByteArray& newFileName)
 {
-    Q_ASSERT(docId > 0);
+    if (!docId || newFileName.isEmpty()) {
+        return;
+    }
 
     IdFilenameDB idFilenameDb(m_idFilenameDbi, m_txn);
 
@@ -177,7 +182,9 @@ void DocumentUrlDB::rename(quint64 docId, const QByteArray& newFileName)
 
 quint64 DocumentUrlDB::getId(quint64 docId, const QByteArray& fileName) const
 {
-    Q_ASSERT(!fileName.isEmpty());
+    if (fileName.isEmpty()) {
+        return 0;
+    }
 
     IdFilenameDB idFilenameDb(m_idFilenameDbi, m_txn);
     IdTreeDB idTreeDb(m_idTreeDbi, m_txn);
