@@ -26,6 +26,13 @@ set(BALOO_ENGINE_SRCS
     fsutils.cpp
 )
 
+ecm_qt_declare_logging_category(
+    BALOO_ENGINE_SRCS
+    HEADER "enginedebug.h"
+    IDENTIFIER "Baloo::ENGINE"
+    DEFAULT_SEVERITY Warning
+    CATEGORY_NAME "org.kde.baloo.engine")
+
 if(${BUILD_EXPERIMENTAL})
   set(BALOO_ENGINE_SRCS ${BALOO_ENGINE_SRCS} experimental/databasesanitizer.cpp)
 endif()
@@ -48,6 +55,7 @@ set_target_properties(KF5BalooEngine PROPERTIES
     SOVERSION ${BALOO_SOVERSION}
     EXPORT_NAME BalooEngine
 )
+
 ##target_include_directories(KF5BalooEngine INTERFACE "$<INSTALL_INTERFACE:${KF5_INCLUDE_INSTALL_DIR}/Baloo>")
 
 generate_export_header(KF5BalooEngine BASE_NAME BALOO_ENGINE EXPORT_FILE_NAME engine_export.h)
