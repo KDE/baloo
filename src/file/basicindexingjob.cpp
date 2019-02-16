@@ -98,20 +98,21 @@ QVector<KFileMetaData::Type::Type> typesForMimeType(const QString& mimeType)
         // MS Office
         {"application/msword", Type::Document},
         {"application/x-scribus", Type::Document},
-        // The old pre-XML MS Office formats are already covered by the "contains" above:
+        // The old pre-XML MS Office formats are already covered by the excel/powerpoint "contains" above:
         // - application/vnd.ms-powerpoint
         // - application/vnd.ms-excel
+        // "openxmlformats-officedocument" and "opendocument" contain "document", i.e. already have Type::Document
+        // - application/vnd.openxmlformats-officedocument.wordprocessingml.document
+        // - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+        // - application/vnd.openxmlformats-officedocument.presentationml.presentation
+        // - application/vnd.oasis.opendocument.text
+        // - application/vnd.oasis.opendocument.spreadsheet
+        // - application/vnd.oasis.opendocument.presentation
         // Office 2007
-        {"application/vnd.openxmlformats-officedocument.wordprocessingml.document", Type::Document},
-        {"application/vnd.openxmlformats-officedocument.presentationml.presentation", Type::Document},
         {"application/vnd.openxmlformats-officedocument.presentationml.presentation", Type::Presentation},
-        {"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", Type::Document},
         {"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", Type::Spreadsheet},
         // Open Document Formats - http://en.wikipedia.org/wiki/OpenDocument_technical_specification
-        {"application/vnd.oasis.opendocument.text", Type::Document},
-        {"application/vnd.oasis.opendocument.presentation", Type::Document},
         {"application/vnd.oasis.opendocument.presentation", Type::Presentation},
-        {"application/vnd.oasis.opendocument.spreadsheet", Type::Document},
         {"application/vnd.oasis.opendocument.spreadsheet", Type::Spreadsheet},
         {"application/pdf", Type::Document},
         {"application/postscript", Type::Document},
@@ -144,8 +145,6 @@ QVector<KFileMetaData::Type::Type> typesForMimeType(const QString& mimeType)
         {"application/x-stuffitx", Type::Archive},
         {"application/x-gtar", Type::Archive},
         {"application/zip", Type::Archive},
-        {"image/svg+xml", Type::Image},
-        {"image/svg", Type::Image},
         // WPS office
         {"application/wps-office.doc", Type::Document},
         {"application/wps-office.xls", Type::Document},
