@@ -41,3 +41,11 @@ ecm_add_test(${fileWatch_SRC}
     LINK_LIBRARIES Qt5::Test Qt5::DBus KF5::Baloo baloofilecommon
 )
 
+#
+# Property Serialization
+#
+ecm_add_test(propertyserializationtest.cpp
+    TEST_NAME "propertyserializationtest"
+    LINK_LIBRARIES Qt5::Test KF5::FileMetaData baloofilecommon
+)
+
