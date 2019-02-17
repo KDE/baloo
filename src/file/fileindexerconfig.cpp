@@ -188,7 +188,7 @@ bool FileIndexerConfig::shouldFolderBeIndexed(const QString& path) const
     if (folderInFolderList(path, folder)) {
         // we always index the folders in the list
         // ignoring the name filters
-        if (folder == path)
+        if (folder == normalizeTrailingSlashes(QString(path)))
             return true;
 
         // check for hidden folders
