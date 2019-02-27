@@ -295,7 +295,7 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
     TagsProtocol::ParseResult result;
     result.decodedUrl = QUrl::fromPercentEncoding(url.toString().toUtf8());
 
-    if ((url.scheme() == QLatin1String("tags")) && result.decodedUrl.at(6) == QChar('/')) {
+    if ((url.scheme() == QLatin1String("tags")) && result.decodedUrl.length()>6 && result.decodedUrl.at(6) == QChar('/')) {
         result.urlType = InvalidUrl;
         return result;
     }
