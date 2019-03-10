@@ -95,7 +95,7 @@ public:
     // Transaction handling
     //
     void commit();
-    void abort();
+    void abortTransaction();
     bool hasChanges() const;
 
     //
@@ -127,9 +127,9 @@ private:
     Transaction(const Transaction& rhs) = delete;
 
     const DatabaseDbis& m_dbis;
-    MDB_txn* m_txn;
-    MDB_env* m_env;
-    WriteTransaction* m_writeTrans;
+    MDB_txn *m_txn = nullptr;
+    MDB_env *m_env = nullptr;
+    WriteTransaction *m_writeTrans = nullptr;
 
     friend class DatabaseSanitizerImpl;
     friend class DBState; // for testing

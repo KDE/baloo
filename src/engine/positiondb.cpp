@@ -18,12 +18,11 @@
  *
  */
 
+#include "enginedebug.h"
 #include "positiondb.h"
 #include "positioncodec.h"
 #include "positioninfo.h"
 #include "postingiterator.h"
-
-#include <QDebug>
 
 using namespace Baloo;
 
@@ -41,21 +40,24 @@ PositionDB::~PositionDB()
 
 MDB_dbi PositionDB::create(MDB_txn* txn)
 {
-    MDB_dbi dbi;
+    MDB_dbi dbi = 0;
     int rc = mdb_dbi_open(txn, "positiondb", MDB_CREATE, &dbi);
-    Q_ASSERT_X(rc == 0, "PositionDB::create", mdb_strerror(rc));
+    if (rc) {
+        qCWarning(ENGINE) << "PositionDB::create" << mdb_strerror(rc);
+        return 0;
+    }
 
     return dbi;
 }
 
 MDB_dbi PositionDB::open(MDB_txn* txn)
 {
-    MDB_dbi dbi;
+    MDB_dbi dbi = 0;
     int rc = mdb_dbi_open(txn, "positiondb", 0, &dbi);
-    if (rc == MDB_NOTFOUND) {
+    if (rc) {
+        qCWarning(ENGINE) << "PositionDB::open" << mdb_strerror(rc);
         return 0;
     }
-    Q_ASSERT_X(rc == 0, "PositionDB::open", mdb_strerror(rc));
 
     return dbi;
 }
@@ -77,7 +79,9 @@ void PositionDB::put(const QByteArray& term, const QVector<PositionInfo>& list)
     val.mv_data = static_cast<void*>(data.data());
 
     int rc = mdb_put(m_txn, m_dbi, &key, &val, 0);
-    Q_ASSERT_X(rc == 0, "PositionDB::put", mdb_strerror(rc));
+    if (rc) {
+        qCWarning(ENGINE) << "PositionDB::put" << mdb_strerror(rc);
+    }
 }
 
 QVector<PositionInfo> PositionDB::get(const QByteArray& term)
@@ -88,12 +92,14 @@ QVector<PositionInfo> PositionDB::get(const QByteArray& term)
     key.mv_size = term.size();
     key.mv_data = static_cast<void*>(const_cast<char*>(term.constData()));
 
-    MDB_val val;
+    MDB_val val{0, nullptr};
     int rc = mdb_get(m_txn, m_dbi, &key, &val);
-    if (rc == MDB_NOTFOUND) {
+    if (rc) {
+        if (rc != MDB_NOTFOUND) {
+            qCDebug(ENGINE) << "PositionDB::get" << term << mdb_strerror(rc);
+        }
         return QVector<PositionInfo>();
     }
-    Q_ASSERT_X(rc == 0, "PositionDB::get", mdb_strerror(rc));
 
     QByteArray data = QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size);
 
@@ -110,10 +116,9 @@ void PositionDB::del(const QByteArray& term)
     key.mv_data = static_cast<void*>(const_cast<char*>(term.constData()));
 
     int rc = mdb_del(m_txn, m_dbi, &key, nullptr);
-    if (rc == MDB_NOTFOUND) {
-        return;
+    if (rc != 0 && rc != MDB_NOTFOUND) {
+        qCDebug(ENGINE) << "PositionDB::del" << term << mdb_strerror(rc);
     }
-    Q_ASSERT_X(rc == 0, "PositionDB::del", mdb_strerror(rc));
 }
 
 //
@@ -165,12 +170,12 @@ PostingIterator* PositionDB::iter(const QByteArray& term)
     key.mv_size = term.size();
     key.mv_data = static_cast<void*>(const_cast<char*>(term.constData()));
 
-    MDB_val val;
+    MDB_val val{0, nullptr};
     int rc = mdb_get(m_txn, m_dbi, &key, &val);
-    if (rc == MDB_NOTFOUND) {
+    if (rc) {
+        qCDebug(ENGINE) << "PositionDB::iter" << term << mdb_strerror(rc);
         return nullptr;
     }
-    Q_ASSERT_X(rc == 0, "PositionDB::iter", mdb_strerror(rc));
 
     return new DBPositionIterator(static_cast<char*>(val.mv_data), val.mv_size);
 }
@@ -186,10 +191,10 @@ QMap<QByteArray, QVector<PositionInfo>> PositionDB::toTestMap() const
     QMap<QByteArray, QVector<PositionInfo>> map;
     while (1) {
         int rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
-        if (rc == MDB_NOTFOUND) {
+        if (rc) {
+            qCDebug(ENGINE) << "PostingDB::toTestMap" << mdb_strerror(rc);
             break;
         }
-        Q_ASSERT_X(rc == 0, "PostingDB::toTestMap", mdb_strerror(rc));
 
         const QByteArray ba(static_cast<char*>(key.mv_data), key.mv_size);
         const QVector<PositionInfo> vinfo = PositionCodec().decode(QByteArray(static_cast<char*>(val.mv_data), val.mv_size));

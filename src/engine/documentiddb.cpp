@@ -19,8 +19,7 @@
  */
 
 #include "documentiddb.h"
-
-#include <QDebug>
+#include "enginedebug.h"
 
 using namespace Baloo;
 
@@ -38,21 +37,24 @@ DocumentIdDB::~DocumentIdDB()
 
 MDB_dbi DocumentIdDB::create(const char* name, MDB_txn* txn)
 {
-    MDB_dbi dbi;
+    MDB_dbi dbi = 0;
     int rc = mdb_dbi_open(txn, name, MDB_CREATE | MDB_INTEGERKEY, &dbi);
-    Q_ASSERT_X(rc == 0, "DocumentIdDB::create", mdb_strerror(rc));
+    if (rc) {
+        qCWarning(ENGINE) << "DocumentIdDB::create" << name << mdb_strerror(rc);
+        return 0;
+    }
 
     return dbi;
 }
 
 MDB_dbi DocumentIdDB::open(const char* name, MDB_txn* txn)
 {
-    MDB_dbi dbi;
+    MDB_dbi dbi = 0;
     int rc = mdb_dbi_open(txn, name, MDB_INTEGERKEY, &dbi);
-    if (rc == MDB_NOTFOUND) {
+    if (rc) {
+        qCWarning(ENGINE) << "DocumentIdDB::open" << name << mdb_strerror(rc);
         return 0;
     }
-    Q_ASSERT_X(rc == 0, "DocumentIdDB::create", mdb_strerror(rc));
 
     return dbi;
 }
@@ -70,7 +72,9 @@ void DocumentIdDB::put(quint64 docId)
     val.mv_data = nullptr;
 
     int rc = mdb_put(m_txn, m_dbi, &key, &val, 0);
-    Q_ASSERT_X(rc == 0, "DocumentIdDB::put", mdb_strerror(rc));
+    if (rc) {
+        qCWarning(ENGINE) << "DocumentIdDB::put" << mdb_strerror(rc);
+    }
 }
 
 bool DocumentIdDB::contains(quint64 docId)
@@ -81,12 +85,14 @@ bool DocumentIdDB::contains(quint64 docId)
     key.mv_size = sizeof(quint64);
     key.mv_data = static_cast<void*>(&docId);
 
-    MDB_val val;
+    MDB_val val{0, nullptr};
     int rc = mdb_get(m_txn, m_dbi, &key, &val);
-    if (rc == MDB_NOTFOUND) {
+    if (rc) {
+        if (rc != MDB_NOTFOUND) {
+            qCDebug(ENGINE) << "DocumentIdDB::contains" << docId << mdb_strerror(rc);
+        }
         return false;
     }
-    Q_ASSERT_X(rc == 0, "DocumentIdDB::contains", mdb_strerror(rc));
 
     return true;
 }
@@ -100,10 +106,9 @@ void DocumentIdDB::del(quint64 docId)
     key.mv_data = static_cast<void*>(&docId);
 
     int rc = mdb_del(m_txn, m_dbi, &key, nullptr);
-    if (rc == MDB_NOTFOUND) {
-        return;
+    if (rc != 0 && rc != MDB_NOTFOUND) {
+        qCDebug(ENGINE) << "DocumentIdDB::del" << docId << mdb_strerror(rc);
     }
-    Q_ASSERT_X(rc == 0, "DocumentIdDB::del", mdb_strerror(rc));
 }
 
 QVector<quint64> DocumentIdDB::fetchItems(int size)
@@ -116,12 +121,12 @@ QVector<quint64> DocumentIdDB::fetchItems(int size)
     QVector<quint64> vec;
 
     for (int i = 0; i < size; i++) {
-        MDB_val key;
+        MDB_val key{0, nullptr};
         int rc = mdb_cursor_get(cursor, &key, nullptr, MDB_NEXT);
-        if (rc == MDB_NOTFOUND) {
+        if (rc) {
+            qCDebug(ENGINE) << "DocumentIdDB::fetchItems" << size << mdb_strerror(rc);
             break;
         }
-        Q_ASSERT_X(rc == 0, "DocumentIdDB::fetchItems", mdb_strerror(rc));
 
         quint64 id = *(static_cast<quint64*>(key.mv_data));
         vec << id;
@@ -135,7 +140,10 @@ uint DocumentIdDB::size()
 {
     MDB_stat stat;
     int rc = mdb_stat(m_txn, m_dbi, &stat);
-    Q_ASSERT_X(rc == 0, "DocumentIdDB::size", mdb_strerror(rc));
+    if (rc) {
+        qCDebug(ENGINE) << "DocumentIdDB::size" << mdb_strerror(rc);
+        return 0;
+    }
 
     return stat.ms_entries;
 }
@@ -145,16 +153,16 @@ QVector<quint64> DocumentIdDB::toTestVector() const
     MDB_cursor* cursor;
     mdb_cursor_open(m_txn, m_dbi, &cursor);
 
-    MDB_val key = {0, nullptr};
-    MDB_val val;
+    MDB_val key{0, nullptr};
+    MDB_val val{0, nullptr};
 
     QVector<quint64> vec;
     while (1) {
         int rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
-        if (rc == MDB_NOTFOUND) {
+        if (rc) {
+            qCDebug(ENGINE) << "DocumentTimeDB::toTestMap" << mdb_strerror(rc);
             break;
         }
-        Q_ASSERT_X(rc == 0, "DocumentTimeDB::toTestMap", mdb_strerror(rc));
 
         const quint64 id = *(static_cast<quint64*>(key.mv_data));
         vec << id;

@@ -24,7 +24,8 @@
 #include "transaction.h"
 #include "idutils.h"
 
-#include <QDebug>
+#include "baloodebug.h"
+
 #include <QFile>
 #include <QMimeDatabase>
 
@@ -52,19 +53,19 @@ void IndexCleaner::run()
         QString url = tr.documentUrl(id);
 
         if (!QFile::exists(url)) {
-            qDebug() << "not exists: " << url;
+            qCDebug(BALOO) << "not exists: " << url;
             return true;
         }
 
         if (!m_config->shouldBeIndexed(url)) {
-            qDebug() << "should not be indexed: " << url;
+            qCDebug(BALOO) << "should not be indexed: " << url;
             return true;
         }
 
         // FIXME: This mimetype is not completely accurate!
         QString mimetype = mimeDb.mimeTypeForFile(url, QMimeDatabase::MatchExtension).name();
         if (!m_config->shouldMimeTypeBeIndexed(mimetype)) {
-            qDebug() << "mimetype should not be indexed: " << url << mimetype;
+            qCDebug(BALOO) << "mimetype should not be indexed: " << url << mimetype;
             return true;
         }
 

@@ -20,8 +20,6 @@
 
 #include "phraseanditerator.h"
 
-#include <QDebug>
-
 using namespace Baloo;
 
 PhraseAndIterator::PhraseAndIterator(const QVector<PostingIterator*>& iterators)

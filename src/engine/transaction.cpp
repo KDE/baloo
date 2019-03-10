@@ -39,6 +39,8 @@
 #include "database.h"
 #include "databasesize.h"
 
+#include "enginedebug.h"
+
 #include <QFile>
 #include <QFileInfo>
 
@@ -51,7 +53,10 @@ Transaction::Transaction(const Database& db, Transaction::TransactionType type)
 {
     uint flags = type == ReadOnly ? MDB_RDONLY : 0;
     int rc = mdb_txn_begin(db.m_env, nullptr, flags, &m_txn);
-    Q_ASSERT_X(rc == 0, "Transaction", mdb_strerror(rc));
+    if (rc) {
+        qCDebug(ENGINE) << "Transaction" << mdb_strerror(rc);
+        return;
+    }
 
     if (type == ReadWrite) {
         m_writeTrans = new WriteTransaction(m_dbis, m_txn);
@@ -65,11 +70,12 @@ Transaction::Transaction(Database* db, Transaction::TransactionType type)
 
 Transaction::~Transaction()
 {
-    if (m_writeTrans)
-        qWarning() << "Closing an active WriteTransaction without calling abort/commit";
+    if (m_writeTrans) {
+        qWarning(ENGINE) << "Closing an active WriteTransaction without calling abort/commit";
+    }
 
     if (m_txn) {
-        abort();
+        abortTransaction();
     }
 }
 
@@ -154,7 +160,11 @@ QByteArray Transaction::documentData(quint64 id) const
 bool Transaction::hasChanges() const
 {
     Q_ASSERT(m_txn);
-    Q_ASSERT(m_writeTrans);
+    if (!m_writeTrans) {
+        qCWarning(ENGINE) << "m_writeTrans is null";
+        return false;
+    }
+
     return m_writeTrans->hasChanges();
 }
 
@@ -228,7 +238,10 @@ void Transaction::addDocument(const Document& doc)
 {
     Q_ASSERT(m_txn);
     Q_ASSERT(doc.id() > 0);
-    Q_ASSERT(m_writeTrans);
+    if (!m_writeTrans) {
+        qCWarning(ENGINE) << "m_writeTrans is null";
+        return;
+    }
 
     m_writeTrans->addDocument(doc);
 }
@@ -237,7 +250,10 @@ void Transaction::removeDocument(quint64 id)
 {
     Q_ASSERT(m_txn);
     Q_ASSERT(id > 0);
-    Q_ASSERT(m_writeTrans);
+    if (!m_writeTrans) {
+        qCWarning(ENGINE) << "m_writeTrans is null";
+        return;
+    }
 
     m_writeTrans->removeDocument(id);
 }
@@ -246,7 +262,10 @@ void Transaction::removeRecursively(quint64 id)
 {
     Q_ASSERT(m_txn);
     Q_ASSERT(id > 0);
-    Q_ASSERT(m_writeTrans);
+    if (!m_writeTrans) {
+        qCWarning(ENGINE) << "m_writeTrans is null";
+        return;
+    }
 
     m_writeTrans->removeRecursively(id);
 }
@@ -256,7 +275,14 @@ void Transaction::replaceDocument(const Document& doc, DocumentOperations operat
     Q_ASSERT(m_txn);
     Q_ASSERT(doc.id() > 0);
     Q_ASSERT(m_writeTrans);
-    Q_ASSERT_X(hasDocument(doc.id()), "Transaction::replaceDocument", "Document does not exist");
+    if (!hasDocument(doc.id())) {
+        qCDebug(ENGINE) << "Transaction::replaceDocument" << "Document does not exist";
+    }
+
+    if (!m_writeTrans) {
+        qCWarning(ENGINE) << "m_writeTrans is null";
+        return;
+    }
 
     m_writeTrans->replaceDocument(doc, operations);
 }
@@ -264,19 +290,24 @@ void Transaction::replaceDocument(const Document& doc, DocumentOperations operat
 void Transaction::commit()
 {
     Q_ASSERT(m_txn);
-    Q_ASSERT(m_writeTrans);
+    if (!m_writeTrans) {
+        qCWarning(ENGINE) << "m_writeTrans is null";
+        return;
+    }
 
     m_writeTrans->commit();
     delete m_writeTrans;
     m_writeTrans = nullptr;
 
     int rc = mdb_txn_commit(m_txn);
-    Q_ASSERT_X(rc == 0, "Transaction::commit", mdb_strerror(rc));
+    if (rc) {
+        qCWarning(ENGINE) << "Transaction::commit" << mdb_strerror(rc);
+    }
 
     m_txn = nullptr;
 }
 
-void Transaction::abort()
+void Transaction::abortTransaction()
 {
     Q_ASSERT(m_txn);
 
@@ -316,7 +347,10 @@ PostingIterator* Transaction::postingIterator(const EngineQuery& query) const
     if (query.op() == EngineQuery::Phrase) {
         const auto subQueries = query.subQueries();
         for (const EngineQuery& q : subQueries) {
-            Q_ASSERT_X(q.leaf(), "Transaction::toPostingIterator", "Phrase queries must contain leaf queries");
+            if (!q.leaf()) {
+                qCDebug(ENGINE) << "Transaction::toPostingIterator" << "Phrase queries must contain leaf queries";
+                continue;
+            }
             vec << positionDb.iter(q.term());
         }
 

@@ -135,9 +135,10 @@ void DocumentUrlDB::replace(quint64 docId, const QByteArray& url, Functor should
                 auto filePath = idFilenameDb.get(docId);
                 auto fileName = QFile::decodeName(filePath.name);
                 if (QFile::exists(fileName)) {
-                    Q_ASSERT_X(idTreeDb.get(docId).isEmpty(),
-                               "DocumentUrlDB::del",
-                               "This folder still has sub-files in its cache. It cannot be deleted");
+                    if (!idTreeDb.get(docId).isEmpty()) {
+                        qWarning() << "DocumentUrlDB::del"
+                                   << "This folder still has sub-files in its cache. It cannot be deleted";
+                    }
                 } else {
                     /*
                      * FIXME: this is not an ideal solution we need to figure out how such currptions are
