@@ -19,9 +19,9 @@
  */
 
 #include "idtreedb.h"
+#include "enginedebug.h"
 #include "postingiterator.h"
 
-#include <QDebug>
 #include <algorithm>
 
 using namespace Baloo;
@@ -36,21 +36,24 @@ IdTreeDB::IdTreeDB(MDB_dbi dbi, MDB_txn* txn)
 
 MDB_dbi IdTreeDB::create(MDB_txn* txn)
 {
-    MDB_dbi dbi;
+    MDB_dbi dbi = 0;
     int rc = mdb_dbi_open(txn, "idtree", MDB_CREATE | MDB_INTEGERKEY, &dbi);
-    Q_ASSERT_X(rc == 0, "IdTreeDB::create", mdb_strerror(rc));
+    if (rc) {
+        qCWarning(ENGINE) << "IdTreeDB::create" << mdb_strerror(rc);
+        return 0;
+    }
 
     return dbi;
 }
 
 MDB_dbi IdTreeDB::open(MDB_txn* txn)
 {
-    MDB_dbi dbi;
+    MDB_dbi dbi = 0;
     int rc = mdb_dbi_open(txn, "idtree", MDB_INTEGERKEY, &dbi);
-    if (rc == MDB_NOTFOUND) {
+    if (rc) {
+        qCWarning(ENGINE) << "IdTreeDB::open" << mdb_strerror(rc);
         return 0;
     }
-    Q_ASSERT_X(rc == 0, "IdTreeDB::open", mdb_strerror(rc));
 
     return dbi;
 }
@@ -69,7 +72,9 @@ void IdTreeDB::put(quint64 docId, const QVector<quint64> subDocIds)
     val.mv_data = static_cast<void*>(const_cast<quint64*>(subDocIds.constData()));
 
     int rc = mdb_put(m_txn, m_dbi, &key, &val, 0);
-    Q_ASSERT_X(rc == 0, "IdTreeDB::put", mdb_strerror(rc));
+    if (rc) {
+        qCWarning(ENGINE) << "IdTreeDB::put" << mdb_strerror(rc);
+    }
 }
 
 QVector<quint64> IdTreeDB::get(quint64 docId)
@@ -78,12 +83,14 @@ QVector<quint64> IdTreeDB::get(quint64 docId)
     key.mv_size = sizeof(quint64);
     key.mv_data = static_cast<void*>(&docId);
 
-    MDB_val val;
+    MDB_val val{0, nullptr};
     int rc = mdb_get(m_txn, m_dbi, &key, &val);
-    if (rc == MDB_NOTFOUND) {
+    if (rc) {
+        if (rc != MDB_NOTFOUND) {
+            qCDebug(ENGINE) << "IdTreeDB::get" << docId << mdb_strerror(rc);
+        }
         return QVector<quint64>();
     }
-    Q_ASSERT_X(rc == 0, "IdTreeeDB::get", mdb_strerror(rc));
 
     // FIXME: This still makes a copy of the data. Perhaps we can avoid that?
     QVector<quint64> list(val.mv_size / sizeof(quint64));
@@ -99,7 +106,9 @@ void IdTreeDB::del(quint64 docId)
     key.mv_data = static_cast<void*>(&docId);
 
     int rc = mdb_del(m_txn, m_dbi, &key, nullptr);
-    Q_ASSERT_X(rc == 0, "IdTreeDB::del", mdb_strerror(rc));
+    if (rc != 0 && rc != MDB_NOTFOUND) {
+        qCDebug(ENGINE) << "IdTreeDB::del" << mdb_strerror(rc);
+    }
 }
 
 //
@@ -169,10 +178,10 @@ QMap<quint64, QVector<quint64>> IdTreeDB::toTestMap() const
     QMap<quint64, QVector<quint64>> map;
     while (1) {
         int rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
-        if (rc == MDB_NOTFOUND) {
+        if (rc) {
+            qCDebug(ENGINE) << "PostingDB::toTestMap" << mdb_strerror(rc);
             break;
         }
-        Q_ASSERT_X(rc == 0, "PostingDB::toTestMap", mdb_strerror(rc));
 
         const quint64 id = *(static_cast<quint64*>(key.mv_data));
 

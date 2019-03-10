@@ -19,6 +19,7 @@
 
 #include "fileindexscheduler.h"
 
+#include "baloodebug.h"
 #include "firstrunindexer.h"
 #include "newfileindexer.h"
 #include "modifiedfileindexer.h"
@@ -33,7 +34,6 @@
 #include <memory>
 
 #include <QTimer>
-#include <QDebug>
 #include <QDBusConnection>
 
 using namespace Baloo;
@@ -181,9 +181,9 @@ void FileIndexScheduler::handleFileRemoved(const QString& file)
 
 void FileIndexScheduler::powerManagementStatusChanged(bool isOnBattery)
 {
-    qDebug() << "Power state changed";
+    qCDebug(BALOO) << "Power state changed";
     if (isOnBattery && m_indexerState == ContentIndexing) {
-        qDebug() << "On battery stopping content indexer";
+        qCDebug(BALOO) << "On battery, stopping content indexer";
         m_contentIndexer->quit();
         //TODO: Maybe we can add a special state for suspended due to being on battery.
         m_indexerState = Idle;
@@ -196,14 +196,14 @@ void FileIndexScheduler::powerManagementStatusChanged(bool isOnBattery)
 void FileIndexScheduler::setSuspend(bool suspend)
 {
     if (suspend) {
-        qDebug() << "Suspending";
+        qCDebug(BALOO) << "Suspending";
         if (m_indexerState == ContentIndexing) {
             m_contentIndexer->quit();
         }
         m_indexerState = Suspended;
         Q_EMIT stateChanged(m_indexerState);
     } else {
-        qDebug() << "Resuming";
+        qCDebug(BALOO) << "Resuming";
         m_indexerState = Idle;
         // No need to emit here we'll be emitting in scheduling
         scheduleIndexing();

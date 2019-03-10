@@ -20,8 +20,7 @@
 
 #include "documentdb.h"
 #include "doctermscodec.h"
-
-#include <QDebug>
+#include "enginedebug.h"
 
 using namespace Baloo;
 
@@ -39,21 +38,24 @@ DocumentDB::~DocumentDB()
 
 MDB_dbi DocumentDB::create(const char* name, MDB_txn* txn)
 {
-    MDB_dbi dbi;
-    int rc = mdb_dbi_open(txn, name, MDB_CREATE | MDB_INTEGERKEY, &dbi);
-    Q_ASSERT_X(rc == 0, "DocumentDB::create", mdb_strerror(rc));
+    MDB_dbi dbi = 0;
+    const int rc = mdb_dbi_open(txn, name, MDB_CREATE | MDB_INTEGERKEY, &dbi);
+    if (rc) {
+        qCWarning(ENGINE) << "DocumentDB::create" << name << mdb_strerror(rc);
+        return 0;
+    }
 
     return dbi;
 }
 
 MDB_dbi DocumentDB::open(const char* name, MDB_txn* txn)
 {
-    MDB_dbi dbi;
-    int rc = mdb_dbi_open(txn, name, MDB_INTEGERKEY, &dbi);
-    if (rc == MDB_NOTFOUND) {
+    MDB_dbi dbi = 0;
+    const int rc = mdb_dbi_open(txn, name, MDB_INTEGERKEY, &dbi);
+    if (rc) {
+        qCWarning(ENGINE) << "DocumentDB::open" << name << mdb_strerror(rc);
         return 0;
     }
-    Q_ASSERT_X(rc == 0, "DocumentDB::open", mdb_strerror(rc));
 
     return dbi;
 }
@@ -75,7 +77,9 @@ void DocumentDB::put(quint64 docId, const QVector<QByteArray>& list)
     val.mv_data = static_cast<void*>(arr.data());
 
     int rc = mdb_put(m_txn, m_dbi, &key, &val, 0);
-    Q_ASSERT_X(rc == 0, "DocumentDB::put", mdb_strerror(rc));
+    if (rc) {
+        qCWarning(ENGINE) << "DocumentDB::put" << mdb_strerror(rc);
+    }
 }
 
 QVector<QByteArray> DocumentDB::get(quint64 docId)
@@ -86,19 +90,19 @@ QVector<QByteArray> DocumentDB::get(quint64 docId)
     key.mv_size = sizeof(quint64);
     key.mv_data = static_cast<void*>(&docId);
 
-    MDB_val val;
+    MDB_val val{0, nullptr};
     int rc = mdb_get(m_txn, m_dbi, &key, &val);
-    if (rc == MDB_NOTFOUND) {
+    if (rc) {
+        qCDebug(ENGINE) << "DocumentDB::get" << docId << mdb_strerror(rc);
         return QVector<QByteArray>();
     }
-    Q_ASSERT_X(rc == 0, "DocumentDB::get", mdb_strerror(rc));
 
     QByteArray arr = QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size);
 
     DocTermsCodec codec;
     auto result = codec.decode(arr);
     if (result.isEmpty()) {
-        qDebug() << "Document Terms DB contains corrupt data for " << docId;
+        qCDebug(ENGINE) << "Document Terms DB contains corrupt data for " << docId;
     }
     return result;
 }
@@ -112,10 +116,9 @@ void DocumentDB::del(quint64 docId)
     key.mv_data = static_cast<void*>(&docId);
 
     int rc = mdb_del(m_txn, m_dbi, &key, nullptr);
-    if (rc == MDB_NOTFOUND) {
-        return;
+    if (rc != 0 && rc != MDB_NOTFOUND) {
+        qCDebug(ENGINE) << "DocumentDB::del" << docId << mdb_strerror(rc);
     }
-    Q_ASSERT_X(rc == 0, "DocumentDB::del", mdb_strerror(rc));
 }
 
 bool DocumentDB::contains(quint64 docId)
@@ -128,10 +131,12 @@ bool DocumentDB::contains(quint64 docId)
 
     MDB_val val;
     int rc = mdb_get(m_txn, m_dbi, &key, &val);
-    if (rc == MDB_NOTFOUND) {
+    if (rc) {
+        if (rc != MDB_NOTFOUND) {
+            qCDebug(ENGINE) << "DocumentDB::contains" << docId << mdb_strerror(rc);
+        }
         return false;
     }
-    Q_ASSERT_X(rc == 0, "DocumentDB::contains", mdb_strerror(rc));
 
     return true;
 }
@@ -140,7 +145,10 @@ uint DocumentDB::size()
 {
     MDB_stat stat;
     int rc = mdb_stat(m_txn, m_dbi, &stat);
-    Q_ASSERT_X(rc == 0, "DocumentDB::size", mdb_strerror(rc));
+    if (rc) {
+        qCDebug(ENGINE) << "DocumentDB::size" << mdb_strerror(rc);
+        return 0;
+    }
 
     return stat.ms_entries;
 }
@@ -156,10 +164,10 @@ QMap<quint64, QVector<QByteArray>> DocumentDB::toTestMap() const
     QMap<quint64, QVector<QByteArray>> map;
     while (1) {
         int rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
-        if (rc == MDB_NOTFOUND) {
+        if (rc) {
+            qCWarning(ENGINE) << "PostingDB::toTestMap" << mdb_strerror(rc);
             break;
         }
-        Q_ASSERT_X(rc == 0, "PostingDB::toTestMap", mdb_strerror(rc));
 
         const quint64 id = *(static_cast<quint64*>(key.mv_data));
         const QVector<QByteArray> vec = DocTermsCodec().decode(QByteArray(static_cast<char*>(val.mv_data), val.mv_size));

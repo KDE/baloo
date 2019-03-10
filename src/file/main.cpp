@@ -24,7 +24,6 @@
 #include <KCrash>
 #include <KLocalizedString>
 
-#include <QDebug>
 #include <QFileInfo>
 #include <iostream>
 

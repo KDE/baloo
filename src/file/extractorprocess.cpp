@@ -20,8 +20,9 @@
 
 #include "extractorprocess.h"
 
+#include "baloodebug.h"
+
 #include <QStandardPaths>
-#include <QDebug>
 #include <QDataStream>
 
 using namespace Baloo;
@@ -91,7 +92,7 @@ void ExtractorProcess::slotIndexingFile()
             break;
 
         default:
-            qCritical() << "Got unknown result from extractor" << command << arg;
+            qCritical(BALOO) << "Got unknown result from extractor" << command << arg;
         }
     }
 }

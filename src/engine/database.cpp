@@ -41,6 +41,8 @@
 #include "idutils.h"
 #include "fsutils.h"
 
+#include "enginedebug.h"
+
 #include <QFile>
 #include <QFileInfo>
 #include <QDir>
@@ -85,7 +87,7 @@ bool Database::open(OpenMode mode)
 
     if (mode == CreateDatabase) {
         if (!QFileInfo(dir.absolutePath()).permission(QFile::WriteOwner)) {
-            qCritical() << m_path << "does not have write permissions. Aborting";
+            qCCritical(ENGINE) << m_path << "does not have write permissions. Aborting";
             return false;
         }
 
@@ -123,8 +125,9 @@ bool Database::open(OpenMode mode)
     }
 
     rc = mdb_reader_check(m_env, nullptr);
-    Q_ASSERT_X(rc == 0, "Database::open reader_check", mdb_strerror(rc));
+
     if (rc) {
+        qCWarning(ENGINE) << "Database::open reader_check" << mdb_strerror(rc);
         mdb_env_close(m_env);
         m_env = nullptr;
         return false;
@@ -136,8 +139,8 @@ bool Database::open(OpenMode mode)
     MDB_txn* txn;
     if (mode != CreateDatabase) {
         int rc = mdb_txn_begin(m_env, nullptr, MDB_RDONLY, &txn);
-        Q_ASSERT_X(rc == 0, "Database::transaction ro begin", mdb_strerror(rc));
         if (rc) {
+            qCWarning(ENGINE) << "Database::transaction ro begin" << mdb_strerror(rc);
             mdb_env_close(m_env);
             m_env = nullptr;
             return false;
@@ -161,8 +164,8 @@ bool Database::open(OpenMode mode)
 
         m_dbis.mtimeDbi = MTimeDB::open(txn);
 
-        Q_ASSERT(m_dbis.isValid());
         if (!m_dbis.isValid()) {
+            qCWarning(ENGINE) << "dbis is invalid";
             mdb_txn_abort(txn);
             mdb_env_close(m_env);
             m_env = nullptr;
@@ -170,16 +173,16 @@ bool Database::open(OpenMode mode)
         }
 
         rc = mdb_txn_commit(txn);
-        Q_ASSERT_X(rc == 0, "Database::transaction ro commit", mdb_strerror(rc));
         if (rc) {
+            qCWarning(ENGINE) << "Database::transaction ro commit" << mdb_strerror(rc);
             mdb_env_close(m_env);
             m_env = nullptr;
             return false;
         }
     } else {
         int rc = mdb_txn_begin(m_env, nullptr, 0, &txn);
-        Q_ASSERT_X(rc == 0, "Database::transaction begin", mdb_strerror(rc));
         if (rc) {
+            qCWarning(ENGINE) << "Database::transaction begin" << mdb_strerror(rc);
             mdb_env_close(m_env);
             m_env = nullptr;
             return false;
@@ -203,8 +206,8 @@ bool Database::open(OpenMode mode)
 
         m_dbis.mtimeDbi = MTimeDB::create(txn);
 
-        Q_ASSERT(m_dbis.isValid());
-        if (!m_dbis.isValid()) {
+        if (!m_dbis.isValid())
+            qCWarning(ENGINE) << "dbis is invalid";{
             mdb_txn_abort(txn);
             mdb_env_close(m_env);
             m_env = nullptr;
@@ -212,8 +215,8 @@ bool Database::open(OpenMode mode)
         }
 
         rc = mdb_txn_commit(txn);
-        Q_ASSERT_X(rc == 0, "Database::transaction commit", mdb_strerror(rc));
         if (rc) {
+            qCWarning(ENGINE) << "Database::transaction commit" << mdb_strerror(rc);
             mdb_env_close(m_env);
             m_env = nullptr;
             return false;

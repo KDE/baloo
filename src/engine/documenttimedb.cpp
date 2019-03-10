@@ -19,6 +19,7 @@
  */
 
 #include "documenttimedb.h"
+#include "enginedebug.h"
 
 using namespace Baloo;
 
@@ -36,21 +37,24 @@ DocumentTimeDB::~DocumentTimeDB()
 
 MDB_dbi DocumentTimeDB::create(MDB_txn* txn)
 {
-    MDB_dbi dbi;
+    MDB_dbi dbi = 0;
     int rc = mdb_dbi_open(txn, "documenttimedb", MDB_CREATE | MDB_INTEGERKEY, &dbi);
-    Q_ASSERT_X(rc == 0, "DocumentTimeDB::create", mdb_strerror(rc));
+    if (rc) {
+        qCWarning(ENGINE) << "DocumentTimeDB::create" << mdb_strerror(rc);
+        return 0;
+    }
 
     return dbi;
 }
 
 MDB_dbi DocumentTimeDB::open(MDB_txn* txn)
 {
-    MDB_dbi dbi;
+    MDB_dbi dbi = 0;
     int rc = mdb_dbi_open(txn, "documenttimedb", MDB_INTEGERKEY, &dbi);
-    if (rc == MDB_NOTFOUND) {
+    if (rc) {
+        qCWarning(ENGINE) << "DocumentTimeDB::open" << mdb_strerror(rc);
         return 0;
     }
-    Q_ASSERT_X(rc == 0, "DocumentTimeDB::create", mdb_strerror(rc));
 
     return dbi;
 }
@@ -68,7 +72,9 @@ void DocumentTimeDB::put(quint64 docId, const TimeInfo& info)
     val.mv_data = static_cast<void*>(const_cast<TimeInfo*>(&info));
 
     int rc = mdb_put(m_txn, m_dbi, &key, &val, 0);
-    Q_ASSERT_X(rc == 0, "DocumentTimeDB::put", mdb_strerror(rc));
+    if (rc) {
+        qCWarning(ENGINE) << "DocumentTimeDB::put" << docId << mdb_strerror(rc);
+    }
 }
 
 DocumentTimeDB::TimeInfo DocumentTimeDB::get(quint64 docId)
@@ -79,12 +85,14 @@ DocumentTimeDB::TimeInfo DocumentTimeDB::get(quint64 docId)
     key.mv_size = sizeof(quint64);
     key.mv_data = &docId;
 
-    MDB_val val;
+    MDB_val val{0, nullptr};
     int rc = mdb_get(m_txn, m_dbi, &key, &val);
-    if (rc == MDB_NOTFOUND) {
+    if (rc) {
+        if (rc != MDB_NOTFOUND) {
+            qCDebug(ENGINE) << "DocumentTimeDB::get" << docId << mdb_strerror(rc);
+        }
         return TimeInfo();
     }
-    Q_ASSERT_X(rc == 0, "DocumentTimeDB::get", mdb_strerror(rc));
 
     return *(static_cast<TimeInfo*>(val.mv_data));
 }
@@ -98,10 +106,9 @@ void DocumentTimeDB::del(quint64 docId)
     key.mv_data = static_cast<void*>(&docId);
 
     int rc = mdb_del(m_txn, m_dbi, &key, nullptr);
-    if (rc == MDB_NOTFOUND) {
-        return;
+    if (rc != 0 && rc != MDB_NOTFOUND) {
+        qCDebug(ENGINE) << "DocumentTimeDB::del" << docId << mdb_strerror(rc);
     }
-    Q_ASSERT_X(rc == 0, "DocumentTimeDB::del", mdb_strerror(rc));
 }
 
 bool DocumentTimeDB::contains(quint64 docId)
@@ -114,10 +121,12 @@ bool DocumentTimeDB::contains(quint64 docId)
 
     MDB_val val;
     int rc = mdb_get(m_txn, m_dbi, &key, &val);
-    if (rc == MDB_NOTFOUND) {
+    if (rc) {
+        if (rc != MDB_NOTFOUND) {
+            qCDebug(ENGINE) << "DocumentTimeDB::contains" << docId << mdb_strerror(rc);
+        }
         return false;
     }
-    Q_ASSERT_X(rc == 0, "DocumentTimeDB::contains", mdb_strerror(rc));
 
     return true;
 }
@@ -133,10 +142,10 @@ QMap<quint64, DocumentTimeDB::TimeInfo> DocumentTimeDB::toTestMap() const
     QMap<quint64, TimeInfo> map;
     while (1) {
         int rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
-        if (rc == MDB_NOTFOUND) {
+        if (rc) {
+            qCDebug(ENGINE) << "DocumentTimeDB::toTestMap" << mdb_strerror(rc);
             break;
         }
-        Q_ASSERT_X(rc == 0, "DocumentTimeDB::toTestMap", mdb_strerror(rc));
 
         const quint64 id = *(static_cast<quint64*>(key.mv_data));
         const TimeInfo ti = *(static_cast<TimeInfo*>(val.mv_data));

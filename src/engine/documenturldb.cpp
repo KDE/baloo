@@ -24,7 +24,6 @@
 
 #include <algorithm>
 #include <QPair>
-#include <QDebug>
 
 using namespace Baloo;
 

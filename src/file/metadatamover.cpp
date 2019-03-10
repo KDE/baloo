@@ -191,7 +191,7 @@ void MetadataMover::watcherServiceUnregistered(const QString &serviceName)
         return;
     }
 
-    qDebug() << "MetadataMover::watcherServiceUnregistered" << itService.key();
+    qCDebug(BALOO) << "MetadataMover::watcherServiceUnregistered" << itService.key();
 
     delete itService.value();
     m_watcherApplications.erase(itService);

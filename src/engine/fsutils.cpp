@@ -21,8 +21,7 @@
  */
 
 #include "fsutils.h"
-
-#include <QDebug>
+#include "enginedebug.h"
 
 #ifdef Q_OS_LINUX
 #include <errno.h>
@@ -54,7 +53,7 @@ void FSUtils::disableCoW(const QString &path)
     ulong flags = 0;
     const int fd = open(qPrintable(path), O_RDONLY);
     if (fd == -1) {
-        qWarning() << "Failed to open" << path << "to modify flags (" << errno << ")";
+        qCWarning(ENGINE) << "Failed to open" << path << "to modify flags (" << errno << ")";
         return;
     }
 
@@ -62,7 +61,7 @@ void FSUtils::disableCoW(const QString &path)
         const int errno_ioctl = errno;
         // ignore ENOTTY, filesystem does not support attrs (and likely neither supports COW)
         if (errno_ioctl != ENOTTY) {
-            qWarning() << "ioctl error: failed to get file flags (" << errno_ioctl << ")";
+            qCWarning(ENGINE) << "ioctl error: failed to get file flags (" << errno_ioctl << ")";
         }
         close(fd);
         return;
@@ -73,7 +72,7 @@ void FSUtils::disableCoW(const QString &path)
             const int errno_ioctl = errno;
             // ignore EOPNOTSUPP, returned on filesystems not supporting COW
             if (errno_ioctl != EOPNOTSUPP) {
-                qWarning() << "ioctl error: failed to set file flags (" << errno_ioctl << ")";
+                qCWarning(ENGINE) << "ioctl error: failed to set file flags (" << errno_ioctl << ")";
             }
             close(fd);
             return;
