@@ -71,6 +71,7 @@ endif()
 
 # compiler flags and build system
 remove_definitions(-DQT_NO_CAST_FROM_ASCII)
+add_definitions(-DQT_NO_FOREACH)
 
 
 find_package(Inotify)

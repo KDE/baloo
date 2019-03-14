@@ -55,10 +55,10 @@ StorageDevices::~StorageDevices()
 
 void StorageDevices::initCacheEntries()
 {
-    QList<Solid::Device> devices
+    const QList<Solid::Device> devices
         = Solid::Device::listFromQuery(QStringLiteral("StorageVolume.usage=='FileSystem'"))
           + Solid::Device::listFromType(Solid::DeviceInterface::NetworkShare);
-    Q_FOREACH (const Solid::Device& dev, devices) {
+    for (const Solid::Device& dev : devices) {
         createCacheEntry(dev);
     }
 }

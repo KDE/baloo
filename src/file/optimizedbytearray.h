@@ -45,16 +45,16 @@ public:
     OptimizedByteArray() {}
 
     OptimizedByteArray(const QByteArray& array, QSet<QByteArray>& cache) {
-        QList<QByteArray> list = array.split('/');
+        const QList<QByteArray> list = array.split('/');
         QVector<QByteArray> vec;
         vec.reserve(list.size());
-        Q_FOREACH (const QByteArray& ba, list) {
+        for (const QByteArray& ba : list) {
             if (!ba.isEmpty())
                 vec << ba;
         }
 
         m_data.reserve(vec.size());
-        Q_FOREACH (const QByteArray& arr, vec) {
+        for (const QByteArray& arr : qAsConst(vec)) {
             QSet< QByteArray >::iterator it = cache.find(arr);
             if (it != cache.end())
                 m_data.append(*it);
@@ -65,13 +65,13 @@ public:
 
     QByteArray toByteArray() const {
         int size = 0;
-        Q_FOREACH (const QByteArray& arr, m_data)
+        for (const QByteArray& arr : qAsConst(m_data))
             size += arr.size() + 1;
 
         QByteArray array;
         array.reserve(size);
 
-        Q_FOREACH (const QByteArray& arr, m_data) {
+        for (const QByteArray& arr : qAsConst(m_data)) {
             array.append('/');
             array.append(arr);
         }

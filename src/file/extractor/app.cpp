@@ -185,9 +185,9 @@ void App::index(Transaction* tr, const QString& url, quint64 id)
     Result result(url, mimetype, KFileMetaData::ExtractionResult::ExtractEverything);
     result.setDocument(doc);
 
-    QList<KFileMetaData::Extractor*> exList = m_extractorCollection.fetchExtractors(mimetype);
+    const QList<KFileMetaData::Extractor*> exList = m_extractorCollection.fetchExtractors(mimetype);
 
-    Q_FOREACH (KFileMetaData::Extractor* ex, exList) {
+    for (KFileMetaData::Extractor* ex : exList) {
         ex->extract(&result);
     }
 

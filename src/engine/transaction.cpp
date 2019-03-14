@@ -506,10 +506,10 @@ void Transaction::checkFsTree()
     DocumentUrlDB docUrlDb(m_dbis.idTreeDbi, m_dbis.idFilenameDbi, m_txn);
     PostingDB postingDb(m_dbis.postingDbi, m_txn);
 
-    auto map = postingDb.toTestMap();
+    const auto map = postingDb.toTestMap();
 
     QSet<quint64> allIds;
-    Q_FOREACH (const auto& list, map) {
+    for (const auto& list : map) {
         for (quint64 id : list) {
             allIds << id;
         }
@@ -581,10 +581,10 @@ void Transaction::checkTermsDbinPostingDb()
     // Iterate over each document, and fetch all terms
     // check if each term maps to its own id in the posting db
 
-    auto map = postingDb.toTestMap();
+    const auto map = postingDb.toTestMap();
 
     QSet<quint64> allIds;
-    Q_FOREACH (const auto& list, map) {
+    for (const auto& list : map) {
         for (quint64 id : list) {
             allIds << id;
         }

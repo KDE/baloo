@@ -120,9 +120,9 @@ Baloo::TimelineFolderType Baloo::parseTimelineUrl(const QUrl& url, QDate* date, 
             qCDebug(KIO_TIMELINE) << "parsing " << dateString;
             typedef QPair<QString, QString> StringPair;
             QUrlQuery query(url);
-            QList<StringPair> queryItems = query.queryItems();
+            const QList<StringPair> queryItems = query.queryItems();
             QMap<QString, QString> map;
-            Q_FOREACH (const StringPair& pair, queryItems) {
+            for (const StringPair& pair : queryItems) {
                 map.insert(pair.first, pair.second);
             }
 

@@ -178,7 +178,7 @@ void MetadataMover::updateMetadata(Transaction* tr, const QString& from, const Q
 
 void MetadataMover::notifyWatchers(const QString &from, const QString &to, const QList<QString> &filesList)
 {
-    Q_FOREACH(org::kde::BalooWatcherApplication *watcherApplication, m_watcherApplications) {
+    for (org::kde::BalooWatcherApplication *watcherApplication : qAsConst(m_watcherApplications)) {
         qCDebug(BALOO) << "MetadataMover::notifyWatchers" << watcherApplication->service() << watcherApplication->objectName() << watcherApplication->path();
         watcherApplication->renamedFiles(from, to, filesList);
     }

@@ -48,11 +48,11 @@ XattrDetector::XattrDetector(QObject* parent)
 
 void XattrDetector::Private::init()
 {
-    QList<Solid::Device> devices
+    const QList<Solid::Device> devices
         = Solid::Device::listFromType(Solid::DeviceInterface::StorageAccess);
 
     QStringList mountPaths;
-    Q_FOREACH (const Solid::Device& dev, devices) {
+    for (const Solid::Device& dev : devices) {
         const Solid::StorageAccess* sa = dev.as<Solid::StorageAccess>();
         if (!sa->isAccessible())
             continue;
@@ -61,7 +61,7 @@ void XattrDetector::Private::init()
     }
     mountPaths << QDir::homePath();
 
-    Q_FOREACH (const QString& mountPath, mountPaths) {
+    for (const QString& mountPath : qAsConst(mountPaths)) {
         while (1) {
             QString randFile = QLatin1String("baloo-xattr-check-") + QUuid::createUuid().toString();
             const QString url = mountPath + QDir::separator() + randFile;
@@ -107,12 +107,12 @@ bool XattrDetector::isSupported(const QString& path)
     if (!d->m_initialized)
         d->init();
 
-    Q_FOREACH (const QString& p, d->m_supportedPaths) {
+    for (const QString& p : qAsConst(d->m_supportedPaths)) {
         if (path.startsWith(p))
             return true;
     }
 
-    Q_FOREACH (const QString& p, d->m_unSupportedPaths) {
+    for (const QString& p : qAsConst(d->m_unSupportedPaths)) {
         if (path.startsWith(p))
             return false;
     }

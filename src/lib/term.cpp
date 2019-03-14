@@ -253,7 +253,7 @@ QVariantMap Term::toVariantMap() const
     QVariantMap map;
     if (d->m_op != None) {
         QVariantList variantList;
-        Q_FOREACH (const Term& term, d->m_subTerms) {
+        for (const Term& term : qAsConst(d->m_subTerms)) {
             variantList << QVariant(term.toVariantMap());
         }
 
@@ -340,8 +340,8 @@ Term Term::fromVariantMap(const QVariantMap& map)
     if (!andOrString.isEmpty()) {
         QList<Term> subTerms;
 
-        QVariantList list = map[andOrString].toList();
-        Q_FOREACH (const QVariant& var, list)
+        const QVariantList list = map[andOrString].toList();
+        for (const QVariant& var : list)
             subTerms << Term::fromVariantMap(var.toMap());
 
         term.setSubTerms(subTerms);
@@ -399,7 +399,7 @@ bool Term::operator==(const Term& rhs) const
     if (d->m_subTerms.isEmpty())
         return true;
 
-    Q_FOREACH (const Term& t, d->m_subTerms) {
+    for (const Term& t : qAsConst(d->m_subTerms)) {
         if (!rhs.d->m_subTerms.contains(t))
             return false;
     }

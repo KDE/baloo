@@ -76,8 +76,8 @@ FileWatch::~FileWatch()
 void FileWatch::watchIndexedFolders()
 {
     // Watch all indexed folders
-    QStringList folders = m_config->includeFolders();
-    Q_FOREACH (const QString& folder, folders) {
+    const QStringList folders = m_config->includeFolders();
+    for (const QString& folder : folders) {
         watchFolder(folder);
     }
 }
@@ -206,8 +206,8 @@ void FileWatch::slotInotifyWatchUserLimitReached(const QString&)
 void FileWatch::updateIndexedFoldersWatches()
 {
     if (m_dirWatch) {
-        QStringList folders = m_config->includeFolders();
-        Q_FOREACH (const QString& folder, folders) {
+        const QStringList folders = m_config->includeFolders();
+        for (const QString& folder : folders) {
             m_dirWatch->removeWatch(folder);
             watchFolder(folder);
         }
