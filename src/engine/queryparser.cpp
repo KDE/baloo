@@ -34,7 +34,7 @@ QueryParser::QueryParser()
 
 namespace {
     bool containsSpace(const QString& string) {
-        Q_FOREACH (const QChar& ch, string) {
+        for (const QChar& ch : string) {
             if (ch.isSpace())
                 return true;
         }
@@ -115,7 +115,7 @@ EngineQuery QueryParser::parseQuery(const QString& text_, const QString& prefix)
             // Remove all accents and lower it
             const QString denormalized = str.normalized(QString::NormalizationForm_KD).toLower();
             QString cleanString;
-            Q_FOREACH (const QChar& ch, denormalized) {
+            for (const QChar& ch : denormalized) {
                 auto cat = ch.category();
                 if (cat != QChar::Mark_NonSpacing && cat != QChar::Mark_SpacingCombining && cat != QChar::Mark_Enclosing) {
                     cleanString.append(ch);

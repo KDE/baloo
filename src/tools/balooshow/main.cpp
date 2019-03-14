@@ -80,7 +80,7 @@ int main(int argc, char* argv[])
     parser.addHelpOption();
     parser.process(app);
 
-    QStringList args = parser.positionalArguments();
+    const QStringList args = parser.positionalArguments();
 
     if (args.isEmpty()) {
         parser.showHelp(1);
@@ -90,7 +90,7 @@ int main(int argc, char* argv[])
     // File Urls
     //
     QStringList urls;
-    Q_FOREACH (const QString& arg, args) {
+    for (const QString& arg : args) {
         const QString url = QFileInfo(arg).absoluteFilePath();
         if (QFile::exists(url)) {
             urls.append(url);

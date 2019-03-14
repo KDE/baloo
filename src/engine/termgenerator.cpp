@@ -63,7 +63,7 @@ QStringList TermGenerator::termList(const QString& text_)
 
             QString cleanString;
             cleanString.reserve(denormalized.size());
-            Q_FOREACH (const QChar& ch, denormalized) {
+            for (const QChar& ch : denormalized) {
                 auto cat = ch.category();
                 if (cat != QChar::Mark_NonSpacing && cat != QChar::Mark_SpacingCombining && cat != QChar::Mark_Enclosing) {
                     cleanString.append(ch);

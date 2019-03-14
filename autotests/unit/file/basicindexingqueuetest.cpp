@@ -110,7 +110,7 @@ void BasicIndexingQueueTest::testSimpleDirectoryStructure()
     // Plus, we don't care about the order. We just want the same files
     // to be indexed
     QCOMPARE(expectedUrls.size(), urls.size());
-    Q_FOREACH (const QString& url, expectedUrls) {
+    for (const QString& url : qAsConst(expectedUrls)) {
         QVERIFY(urls.count(url) == 1);
     }
 }

@@ -79,7 +79,7 @@ void FileMonitor::clear()
 
 void FileMonitor::slotFileMetaDataChanged(const QStringList& fileUrls)
 {
-    Q_FOREACH (const QString& url, fileUrls) {
+    for (const QString& url : fileUrls) {
         if (d->m_files.contains(url)) {
             Q_EMIT fileMetaDataChanged(url);
         }

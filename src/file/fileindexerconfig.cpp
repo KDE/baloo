@@ -199,7 +199,7 @@ bool FileIndexerConfig::shouldFolderBeIndexed(const QString& path) const
         // check the exclude filters for all components of the path
         // after folder
         const QStringList pathComponents = path.mid(folder.count()).split(QLatin1Char('/'), QString::SkipEmptyParts);
-        Q_FOREACH (const QString& c, pathComponents) {
+        for (const QString& c : pathComponents) {
             if (!shouldFileBeIndexed(c)) {
                 return false;
             }
@@ -277,7 +277,7 @@ bool alreadyExcluded(const QList<QPair<QString, bool> >& folders, const QString&
  */
 void insertSortFolders(const QStringList& folders, bool include, QList<QPair<QString, bool> >& result)
 {
-    Q_FOREACH (QString path, folders) {
+    for (QString path : folders) {
         int pos = 0;
         path = normalizeTrailingSlashes(std::move(path));
         while (result.count() > pos &&

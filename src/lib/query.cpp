@@ -85,7 +85,7 @@ void Query::addType(const QString& type)
 
 void Query::addTypes(const QStringList& typeList)
 {
-    Q_FOREACH (const QString& type, typeList) {
+    for (const QString& type : typeList) {
         addType(type);
     }
 }
@@ -332,7 +332,7 @@ bool Query::operator==(const Query& rhs) const
     if (rhs.d->m_types.size() != d->m_types.size())
         return false;
 
-    Q_FOREACH (const QString& type, rhs.d->m_types) {
+    for (const QString& type : qAsConst(rhs.d->m_types)) {
         if (!d->m_types.contains(type))
             return false;
     }
