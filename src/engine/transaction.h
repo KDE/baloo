@@ -95,7 +95,7 @@ public:
     // Transaction handling
     //
     void commit();
-    void abortTransaction();
+    void abort();
     bool hasChanges() const;
 
     //

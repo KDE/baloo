@@ -75,7 +75,7 @@ Transaction::~Transaction()
     }
 
     if (m_txn) {
-        abortTransaction();
+        abort();
     }
 }
 
@@ -307,7 +307,7 @@ void Transaction::commit()
     m_txn = nullptr;
 }
 
-void Transaction::abortTransaction()
+void Transaction::abort()
 {
     Q_ASSERT(m_txn);
 
