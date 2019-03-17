@@ -45,7 +45,7 @@ MonitorCommand::MonitorCommand(QObject *parent)
             this, &MonitorCommand::balooIsAvailable);
     connect(m_dbusServiceWatcher, &QDBusServiceWatcher::serviceUnregistered,
             this, &MonitorCommand::balooIsNotAvailable);
-    
+
     m_indexerDBusInterface = new org::kde::baloo::fileindexer(QStringLiteral("org.kde.baloo"),
         QStringLiteral("/fileindexer"),
         QDBusConnection::sessionBus(),
