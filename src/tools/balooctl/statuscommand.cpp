@@ -103,7 +103,7 @@ void printSimpleFormat(Transaction& tr, IndexerConfig&  cfg, const QStringList& 
         } else {
             out << QLatin1String("Indexing disabled");
         }
-          
+
       } else if (tr.hasDocument(id)) {
         if (tr.inPhaseOne(id)) {
             out << QLatin1String("Content indexing scheduled");
@@ -124,12 +124,12 @@ void printSimpleFormat(Transaction& tr, IndexerConfig&  cfg, const QStringList& 
 }
 
 void printJSON(Transaction& tr, IndexerConfig&  cfg, const QStringList& args) {
-    
+
   QJsonArray filesInfo;
   for (const QString& arg : args) {
       QString filePath = QFileInfo(arg).absoluteFilePath();
       quint64 id = filePathToId(QFile::encodeName(filePath));
-      
+
       if (id == 0) {
           QTextStream err(stderr);
           err << i18n("Ignoring non-existent file %1", filePath) << endl;
@@ -148,7 +148,7 @@ void printJSON(Transaction& tr, IndexerConfig&  cfg, const QStringList& args) {
       } else if (QFileInfo(arg).isDir()) {
           fileInfo["indexing"] = "basic";
           fileInfo["status"] =  "done";
-          
+
       } else {
           fileInfo["indexing"] = "content";
           if (tr.inPhaseOne(id)) {
@@ -159,10 +159,10 @@ void printJSON(Transaction& tr, IndexerConfig&  cfg, const QStringList& args) {
               fileInfo["status"] = "done";
           }
       }
-      
+
       filesInfo.append(fileInfo);
   }
-  
+
   QJsonDocument json;
   json.setArray(filesInfo);
   QTextStream out(stdout);
@@ -176,12 +176,12 @@ int StatusCommand::exec(const QCommandLineParser& parser)
 
     const QStringList allowedFormats({"simple", "json", "multiline"});
     const QString format = parser.value(QStringLiteral("format"));
-    
+
     if (!allowedFormats.contains(format)) {
         err << i18n("Output format \"%1\" is invalid", format) << endl;
         return 1;
     }
-    
+
     IndexerConfig cfg;
     if (!cfg.fileIndexingEnabled()) {
         err << i18n("Baloo is currently disabled. To enable, please run %1", QStringLiteral("balooctl enable")) << endl;
