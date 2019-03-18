@@ -24,6 +24,9 @@ qrc_*.cpp
 ui_*.h
 Makefile*
 *-build-*
+/build*/
+CMakeLists.txt.user*
+*.unc-backup*
 
 # QtCreator
 
@@ -31,3 +34,5 @@ Makefile*
 *.autosave
 *.qmlproject.user
 *.qmlproject.user.*
+
+
