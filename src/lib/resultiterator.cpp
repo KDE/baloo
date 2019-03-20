@@ -48,9 +48,9 @@ ResultIterator::ResultIterator(const QStringList& results)
 
 // TODO Remove for KF6
 ResultIterator::ResultIterator(const ResultIterator& rhs)
-    : d(rhs.d)
+    : d(new ResultIteratorPrivate)
 {
-    qWarning("ResultIterator copy constructor being used. This is crashy");
+    d->results = rhs.d->results;
 }
 
 
