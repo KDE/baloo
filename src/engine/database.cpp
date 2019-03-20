@@ -206,8 +206,8 @@ bool Database::open(OpenMode mode)
 
         m_dbis.mtimeDbi = MTimeDB::create(txn);
 
-        if (!m_dbis.isValid())
-            qCWarning(ENGINE) << "dbis is invalid";{
+        if (!m_dbis.isValid()) {
+            qCWarning(ENGINE) << "dbis is invalid";
             mdb_txn_abort(txn);
             mdb_env_close(m_env);
             m_env = nullptr;
