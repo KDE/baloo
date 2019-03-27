@@ -37,6 +37,7 @@
 
 #include <KFileMetaData/Extractor>
 #include <KFileMetaData/PropertyInfo>
+#include <KFileMetaData/MimeUtils>
 
 #include <unistd.h> //for STDIN_FILENO
 #include <iostream>
@@ -144,7 +145,7 @@ void App::processNextFile()
 
 void App::index(Transaction* tr, const QString& url, quint64 id)
 {
-    QString mimetype = m_mimeDb.mimeTypeForFile(url, QMimeDatabase::MatchContent).name();
+    QString mimetype = KFileMetaData::MimeUtils::strictMimeType(url, m_mimeDb).name();
     qCDebug(BALOO) << "Indexing" << id << url << mimetype;
 
     if (!m_config.shouldBeIndexed(url)) {
