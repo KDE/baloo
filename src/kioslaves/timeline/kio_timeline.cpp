@@ -183,6 +183,7 @@ void TimelineProtocol::mimetype(const QUrl& url)
     case MonthFolder:
     case DayFolder:
         mimetype(QUrl(QLatin1String("inode/directory")));
+        finished();
         break;
 
     case NoFolder:
@@ -220,8 +221,8 @@ void TimelineProtocol::stat(const QUrl& url)
     case DayFolder:
         if (m_filename.isEmpty()) {
             statEntry(createDayUDSEntry(m_date));
-            finished();
         }
+        finished();
         break;
 
     case NoFolder:
