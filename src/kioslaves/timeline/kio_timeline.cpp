@@ -131,6 +131,13 @@ TimelineProtocol::~TimelineProtocol()
 
 void TimelineProtocol::listDir(const QUrl& url)
 {
+    QUrl canonicalUrl = canonicalizeTimelineUrl(url);
+    if (url != canonicalUrl) {
+        redirection(canonicalUrl);
+        finished();
+        return;
+    }
+
     switch (parseTimelineUrl(url, &m_date, &m_filename)) {
     case RootFolder:
         listEntry(createFolderUDSEntry(QStringLiteral(".")));
@@ -177,6 +184,13 @@ void TimelineProtocol::listDir(const QUrl& url)
 
 void TimelineProtocol::mimetype(const QUrl& url)
 {
+    QUrl canonicalUrl = canonicalizeTimelineUrl(url);
+    if (url != canonicalUrl) {
+        redirection(canonicalUrl);
+        finished();
+        return;
+    }
+
     switch (parseTimelineUrl(url, &m_date, &m_filename)) {
     case RootFolder:
     case CalendarFolder:
@@ -195,6 +209,13 @@ void TimelineProtocol::mimetype(const QUrl& url)
 
 void TimelineProtocol::stat(const QUrl& url)
 {
+    QUrl canonicalUrl = canonicalizeTimelineUrl(url);
+    if (url != canonicalUrl) {
+        redirection(canonicalUrl);
+        finished();
+        return;
+    }
+
     switch (parseTimelineUrl(url, &m_date, &m_filename)) {
     case RootFolder: {
         KIO::UDSEntry uds;
