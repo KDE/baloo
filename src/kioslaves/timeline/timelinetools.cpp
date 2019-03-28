@@ -69,6 +69,24 @@ QDate applyRelativeDateModificators(const QDate& date, const QMap<QString, QStri
 }
 }
 
+QUrl Baloo::canonicalizeTimelineUrl(const QUrl& url) {
+    QUrl newUrl = url;
+    QString path = url.path();
+    if (path.contains(QStringLiteral("//"))) {
+        QStringList sections = path.split(QChar('/'), QString::SkipEmptyParts);
+        path = '/' + sections.join(QChar('/'));
+        newUrl.setPath(path);
+    }
+    if ((path.size() > 1) && path.endsWith(QChar('/'))) {
+        path.chop(1);
+        newUrl.setPath(path);
+    }
+    if (!path.startsWith(QChar('/'))) {
+        path = '/' + path;
+        newUrl.setPath(path);
+    }
+    return newUrl;
+}
 
 Baloo::TimelineFolderType Baloo::parseTimelineUrl(const QUrl& url, QDate* date, QString* filename)
 {
@@ -81,9 +99,9 @@ Baloo::TimelineFolderType Baloo::parseTimelineUrl(const QUrl& url, QDate* date, 
 
     QString path = url.path();
     if (path.endsWith(QLatin1Char('/')))
-        path = path.mid(0, path.length()-1);
+        path.chop(1);
 
-    if (path.isEmpty() || path == QLatin1String("/")) {
+    if (path.isEmpty()) {
         qCDebug(KIO_TIMELINE) << url << "is root folder";
         return RootFolder;
     } else if (path.startsWith(QLatin1String("/today"))) {

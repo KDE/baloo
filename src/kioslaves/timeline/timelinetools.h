@@ -61,6 +61,12 @@ enum TimelineFolderType {
  */
 TimelineFolderType parseTimelineUrl(const QUrl& url, QDate* date, QString* filename = nullptr);
 
+/**
+  * Remove any double slashes, remove any trailing slashes, and
+  * add an initial slash after the scheme.
+  */
+QUrl canonicalizeTimelineUrl(const QUrl& url);
+
 }
 
 #endif
