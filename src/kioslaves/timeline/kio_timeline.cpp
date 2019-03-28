@@ -38,7 +38,19 @@ using namespace Baloo;
 
 namespace
 {
-KIO::UDSEntry createFolderUDSEntry(const QString& name, const QString& displayName, const QDate& date)
+KIO::UDSEntry createFolderUDSEntry(const QString& name)
+{
+    KIO::UDSEntry uds;
+    uds.reserve(5);
+    uds.fastInsert(KIO::UDSEntry::UDS_NAME, name);
+    uds.fastInsert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
+    uds.fastInsert(KIO::UDSEntry::UDS_MIME_TYPE, QStringLiteral("inode/directory"));
+    uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, 0700);
+    uds.fastInsert(KIO::UDSEntry::UDS_USER, KUser().loginName());
+    return uds;
+}
+
+KIO::UDSEntry createDateFolderUDSEntry(const QString& name, const QString& displayName, const QDate& date)
 {
     KIO::UDSEntry uds;
     uds.reserve(8);
@@ -62,14 +74,14 @@ KIO::UDSEntry createMonthUDSEntry(int month, int year)
                       "to see which variables you can use and ask kde-i18n-doc@kde.org if you have "
                       "problems understanding how to translate this",
                       "MMMM yyyy"));
-    return createFolderUDSEntry(QDate(year, month, 1).toString(QStringLiteral("yyyy-MM")),
+    return createDateFolderUDSEntry(QDate(year, month, 1).toString(QStringLiteral("yyyy-MM")),
                                 dateString,
                                 QDate(year, month, 1));
 }
 
 KIO::UDSEntry createDayUDSEntry(const QDate& date)
 {
-    KIO::UDSEntry uds = createFolderUDSEntry(date.toString(QStringLiteral("yyyy-MM-dd")),
+    KIO::UDSEntry uds = createDateFolderUDSEntry(date.toString(QStringLiteral("yyyy-MM-dd")),
                         KFormat().formatRelativeDate(date, QLocale::LongFormat),
                         date);
 
@@ -121,23 +133,27 @@ void TimelineProtocol::listDir(const QUrl& url)
 {
     switch (parseTimelineUrl(url, &m_date, &m_filename)) {
     case RootFolder:
-        listEntry(createFolderUDSEntry(QStringLiteral("today"), i18n("Today"), QDate::currentDate()));
-        listEntry(createFolderUDSEntry(QStringLiteral("calendar"), i18n("Calendar"), QDate::currentDate()));
+        listEntry(createFolderUDSEntry(QStringLiteral(".")));
+        listEntry(createDateFolderUDSEntry(QStringLiteral("today"), i18n("Today"), QDate::currentDate()));
+        listEntry(createDateFolderUDSEntry(QStringLiteral("calendar"), i18n("Calendar"), QDate::currentDate()));
         finished();
         break;
 
     case CalendarFolder:
+        listEntry(createFolderUDSEntry(QStringLiteral(".")));
         listThisYearsMonths();
         // TODO: add entry for previous years
         finished();
         break;
 
     case MonthFolder:
+        listEntry(createFolderUDSEntry(QStringLiteral(".")));
         listDays(m_date.month(), m_date.year());
         finished();
         break;
 
     case DayFolder: {
+        listEntry(createFolderUDSEntry(QStringLiteral(".")));
         Query query;
         query.setDateFilter(m_date.year(), m_date.month(), m_date.day());
         query.setSortingOption(Query::SortNone);
@@ -192,7 +208,7 @@ void TimelineProtocol::stat(const QUrl& url)
     }
 
     case CalendarFolder:
-        statEntry(createFolderUDSEntry(QStringLiteral("calendar"), i18n("Calendar"), QDate::currentDate()));
+        statEntry(createDateFolderUDSEntry(QStringLiteral("calendar"), i18n("Calendar"), QDate::currentDate()));
         finished();
         break;
 
