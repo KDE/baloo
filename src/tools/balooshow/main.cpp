@@ -21,6 +21,7 @@
 #include <QCoreApplication>
 #include <QCommandLineParser>
 #include <QCommandLineOption>
+#include <QDateTime>
 #include <QUrl>
 #include <QFile>
 #include <QFileInfo>
@@ -117,6 +118,7 @@ int main(int argc, char* argv[])
 
     for (QString url : urls) {
         quint64 fid = 0;
+        QString internalUrl;
         if (url.startsWith(QLatin1String("file:"))) {
             fid = url.midRef(5).toULongLong();
             url = QFile::decodeName(tr.documentUrl(fid));
@@ -139,28 +141,44 @@ int main(int argc, char* argv[])
             url = QFile::decodeName(tr.documentUrl(fid));
         } else {
             fid = Baloo::filePathToId(QFile::encodeName(url));
+            internalUrl = QFile::decodeName(tr.documentUrl(fid));
         }
 
         bool hasFile = tr.hasDocument(fid);
         if (hasFile) {
-            text = colorString(QString::number(fid), 31);
-            text += QLatin1String(" ");
-            text += colorString(QString::number(Baloo::idToDeviceId(fid)), 28);
-            text += QLatin1String(" ");
-            text += colorString(QString::number(Baloo::idToInode(fid)), 28);
-            text += QLatin1String(" ");
-            text += colorString(url, 32);
-            stream << text << endl;
+            stream << colorString(QString::number(fid), 31);
+            stream << QLatin1String(" ");
+            stream << colorString(QString::number(Baloo::idToDeviceId(fid)), 28);
+            stream << QLatin1String(" ");
+            stream << colorString(QString::number(Baloo::idToInode(fid)), 28);
+            stream << QLatin1String(" ");
+            stream << colorString(url, 32);
+            if (!internalUrl.isEmpty() && internalUrl != url) {
+                // The document is know by a different name inside the DB,
+                // e.g. a hardlink, or untracked rename
+                stream << QLatin1String(" [") << internalUrl << QChar(']');
+            }
+            stream << endl;
         }
         else {
             stream << i18n("No index information found") << endl;
             continue;
         }
 
+        Baloo::DocumentTimeDB::TimeInfo time = tr.documentTimeInfo(fid);
+        stream << QLatin1String("\tMtime: ") << time.mTime << QChar(' ')
+               << QDateTime::fromSecsSinceEpoch(time.mTime).toString(Qt::ISODate)
+               << QLatin1String("\n\tCtime: ") << time.cTime << QChar(' ')
+               << QDateTime::fromSecsSinceEpoch(time.cTime).toString(Qt::ISODate)
+               << endl;
+
         const QJsonDocument jdoc = QJsonDocument::fromJson(tr.documentData(fid));
         const QVariantMap varMap = jdoc.object().toVariantMap();
         KFileMetaData::PropertyMap propMap = KFileMetaData::toPropertyMap(varMap);
         KFileMetaData::PropertyMap::const_iterator it = propMap.constBegin();
+        if (!propMap.isEmpty()) {
+            stream << "\tCached properties:" << endl;
+        }
         for (; it != propMap.constEnd(); ++it) {
             QString str;
             if (it.value().type() == QVariant::List) {
@@ -175,7 +193,7 @@ int main(int argc, char* argv[])
             }
 
             KFileMetaData::PropertyInfo pi(it.key());
-            stream << "\t" << pi.displayName() << ": " << str << endl;
+            stream << "\t\t" << pi.displayName() << ": " << str << endl;
         }
 
         if (parser.isSet(QStringLiteral("x"))) {
