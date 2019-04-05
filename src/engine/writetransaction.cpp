@@ -160,7 +160,9 @@ void WriteTransaction::removeRecursively(quint64 parentId)
 
     const QVector<quint64> children = docUrlDB.getChildren(parentId);
     for (quint64 id : children) {
-        removeRecursively(id);
+        if (id) {
+            removeRecursively(id);
+        }
     }
     removeDocument(parentId);
 }

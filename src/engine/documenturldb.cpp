@@ -49,6 +49,7 @@ bool DocumentUrlDB::put(quint64 docId, const QByteArray& url)
     typedef QPair<quint64, QByteArray> IdNamePath;
 
     QByteArray arr = url;
+    quint64 parentId;
     //
     // id and parent
     //
@@ -62,10 +63,18 @@ bool DocumentUrlDB::put(quint64 docId, const QByteArray& url)
         int pos = arr.lastIndexOf('/');
         QByteArray name = arr.mid(pos + 1);
 
-        arr.resize(pos);
-        quint64 parentId = filePathToId(arr);
+        if (pos == 0) {
+            add(id, 0, name);
+            return true;
+        } else {
+            arr.resize(pos);
+            parentId = filePathToId(arr);
+            if (!parentId) {
+                return false;
+            }
+            add(id, parentId, name);
+        }
 
-        add(id, parentId, name);
         if (idFilenameDb.contains(parentId))
             return true;
     }
@@ -74,16 +83,22 @@ bool DocumentUrlDB::put(quint64 docId, const QByteArray& url)
     // The rest of the path
     //
     QVector<IdNamePath> list;
-    while (!arr.isEmpty()) {
-        quint64 id = filePathToId(arr);
-        Q_ASSERT(id);
+    while (parentId) {
+        quint64 id = parentId;
 
         int pos = arr.lastIndexOf('/');
         QByteArray name = arr.mid(pos + 1);
 
         list.prepend(qMakePair(id, name));
+        if (pos == 0) {
+            break;
+        }
+
         arr.resize(pos);
+
+        parentId = filePathToId(arr);
     }
+
 
     for (int i = 0; i < list.size(); i++) {
         quint64 id = list[i].first;
