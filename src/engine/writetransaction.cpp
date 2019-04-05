@@ -137,10 +137,8 @@ void WriteTransaction::removeDocument(quint64 id)
     failedIndexingDB.del(id);
 
     DocumentTimeDB::TimeInfo info = docTimeDB.get(id);
-    if (info.mTime) {
-        docTimeDB.del(id);
-        mtimeDB.del(info.mTime, id);
-    }
+    docTimeDB.del(id);
+    mtimeDB.del(info.mTime, id);
 
     docDataDB.del(id);
 }
