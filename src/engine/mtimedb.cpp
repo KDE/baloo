@@ -63,8 +63,10 @@ MDB_dbi MTimeDB::open(MDB_txn* txn)
 
 void MTimeDB::put(quint32 mtime, quint64 docId)
 {
-    Q_ASSERT(mtime > 0);
-    Q_ASSERT(docId > 0);
+    if (!docId) {
+        qCWarning(ENGINE) << "MTimeDB::put - docId == 0";
+        return;
+    }
 
     MDB_val key;
     key.mv_size = sizeof(quint32);
@@ -82,8 +84,6 @@ void MTimeDB::put(quint32 mtime, quint64 docId)
 
 QVector<quint64> MTimeDB::get(quint32 mtime)
 {
-    Q_ASSERT(mtime > 0);
-
     MDB_val key;
     key.mv_size = sizeof(quint32);
     key.mv_data = static_cast<void*>(&mtime);
@@ -97,7 +97,7 @@ QVector<quint64> MTimeDB::get(quint32 mtime)
     int rc = mdb_cursor_get(cursor, &key, &val, MDB_SET_RANGE);
     if (rc) {
         if (rc != MDB_NOTFOUND) {
-            qCDebug(ENGINE) << "MTimeDB::get" << mtime << mdb_strerror(rc);
+            qCWarning(ENGINE) << "MTimeDB::get" << mtime << mdb_strerror(rc);
         }
         mdb_cursor_close(cursor);
         return values;
@@ -109,7 +109,7 @@ QVector<quint64> MTimeDB::get(quint32 mtime)
         rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT_DUP);
         if (rc) {
             if (rc != MDB_NOTFOUND) {
-                qCDebug(ENGINE) << "MTimeDB::get (loop)" << mtime << mdb_strerror(rc);
+                qCWarning(ENGINE) << "MTimeDB::get (loop)" << mtime << mdb_strerror(rc);
             }
             break;
         }
@@ -124,9 +124,6 @@ QVector<quint64> MTimeDB::get(quint32 mtime)
 
 void MTimeDB::del(quint32 mtime, quint64 docId)
 {
-    Q_ASSERT(mtime > 0);
-    Q_ASSERT(docId > 0);
-
     MDB_val key;
     key.mv_size = sizeof(quint32);
     key.mv_data = static_cast<void*>(&mtime);
@@ -137,7 +134,7 @@ void MTimeDB::del(quint32 mtime, quint64 docId)
 
     int rc = mdb_del(m_txn, m_dbi, &key, &val);
     if (rc != 0 && rc != MDB_NOTFOUND) {
-        qCDebug(ENGINE) << "MTimeDB::del" << mtime << docId << mdb_strerror(rc);
+        qCWarning(ENGINE) << "MTimeDB::del" << mtime << docId << mdb_strerror(rc);
     }
 }
 
@@ -159,9 +156,12 @@ PostingIterator* MTimeDB::iter(quint32 mtime, MTimeDB::Comparator com)
     mdb_cursor_open(m_txn, m_dbi, &cursor);
 
     MDB_val val{0, nullptr};
+    // Set cursor at first element greater or equal key
     int rc = mdb_cursor_get(cursor, &key, &val, MDB_SET_RANGE);
     if (rc) {
-        qCDebug(ENGINE) << "MTimeDB::iter" << mtime << mdb_strerror(rc);
+        if (rc != MDB_NOTFOUND) {
+            qCWarning(ENGINE) << "MTimeDB::iter" << mtime << mdb_strerror(rc);
+        }
         mdb_cursor_close(cursor);
         return nullptr;
     }
@@ -173,7 +173,9 @@ PostingIterator* MTimeDB::iter(quint32 mtime, MTimeDB::Comparator com)
         while (1) {
             rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
             if (rc) {
-                qCDebug(ENGINE) << "MTimeDB::iter (loop)" << mtime << mdb_strerror(rc);
+                if (rc != MDB_NOTFOUND) {
+                    qCWarning(ENGINE) << "MTimeDB::iter GreaterEqual (loop)" << mtime << mdb_strerror(rc);
+                }
                 break;
             }
 
@@ -184,7 +186,9 @@ PostingIterator* MTimeDB::iter(quint32 mtime, MTimeDB::Comparator com)
         while (1) {
             rc = mdb_cursor_get(cursor, &key, &val, MDB_PREV);
             if (rc) {
-                qCDebug(ENGINE) << "MTimeDB::iter (loop)" << mtime << mdb_strerror(rc);
+                if (rc != MDB_NOTFOUND) {
+                    qCWarning(ENGINE) << "MTimeDB::iter LessEqual (loop)" << mtime << mdb_strerror(rc);
+                }
                 break;
             }
 
@@ -201,8 +205,9 @@ PostingIterator* MTimeDB::iter(quint32 mtime, MTimeDB::Comparator com)
 
 PostingIterator* MTimeDB::iterRange(quint32 beginTime, quint32 endTime)
 {
-    Q_ASSERT(beginTime);
-    Q_ASSERT(endTime);
+    if (endTime < beginTime) {
+        return nullptr;
+    }
 
     MDB_val key;
     key.mv_size = sizeof(quint32);
@@ -214,7 +219,9 @@ PostingIterator* MTimeDB::iterRange(quint32 beginTime, quint32 endTime)
     MDB_val val{0, nullptr};
     int rc = mdb_cursor_get(cursor, &key, &val, MDB_SET_RANGE);
     if (rc) {
-        qCDebug(ENGINE) << "MTimeDB::iterRange" << beginTime << endTime << mdb_strerror(rc);
+        if (rc != MDB_NOTFOUND) {
+            qCWarning(ENGINE) << "MTimeDB::iterRange" << beginTime << endTime << mdb_strerror(rc);
+        }
         mdb_cursor_close(cursor);
         return nullptr;
     }
@@ -225,7 +232,9 @@ PostingIterator* MTimeDB::iterRange(quint32 beginTime, quint32 endTime)
     while (1) {
         rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
         if (rc) {
-            qCDebug(ENGINE) << "MTimeDB::iterRange" << beginTime << endTime << mdb_strerror(rc);
+            if (rc != MDB_NOTFOUND) {
+                qCWarning(ENGINE) << "MTimeDB::iterRange (loop)" << beginTime << endTime << mdb_strerror(rc);
+            }
             break;
         }
 
