@@ -119,12 +119,15 @@ QVector<quint64> DocumentIdDB::fetchItems(int size)
     mdb_cursor_open(m_txn, m_dbi, &cursor);
 
     QVector<quint64> vec;
+    vec.reserve(size);
 
     for (int i = 0; i < size; i++) {
         MDB_val key{0, nullptr};
         int rc = mdb_cursor_get(cursor, &key, nullptr, MDB_NEXT);
         if (rc) {
-            qCDebug(ENGINE) << "DocumentIdDB::fetchItems" << size << mdb_strerror(rc);
+            if (rc != MDB_NOTFOUND) {
+                qCWarning(ENGINE) << "DocumentIdDB::fetchItems" << size << mdb_strerror(rc);
+            }
             break;
         }
 
