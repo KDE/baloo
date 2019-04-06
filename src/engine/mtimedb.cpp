@@ -227,9 +227,14 @@ PostingIterator* MTimeDB::iterRange(quint32 beginTime, quint32 endTime)
     }
 
     QVector<quint64> results;
-    results << *static_cast<quint64*>(val.mv_data);
 
     while (1) {
+        quint32 time = *static_cast<quint32*>(key.mv_data);
+        if (time > endTime) {
+            break;
+        }
+        results << *static_cast<quint64*>(val.mv_data);
+
         rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
         if (rc) {
             if (rc != MDB_NOTFOUND) {
@@ -237,15 +242,13 @@ PostingIterator* MTimeDB::iterRange(quint32 beginTime, quint32 endTime)
             }
             break;
         }
-
-        quint32 time = *static_cast<quint32*>(key.mv_data);
-        if (time > endTime) {
-            break;
-        }
-        results << *static_cast<quint64*>(val.mv_data);
     }
 
     mdb_cursor_close(cursor);
+
+    if (results.isEmpty()) {
+        return nullptr;
+    }
     std::sort(results.begin(), results.end());
     results.erase(std::unique(results.begin(), results.end()), results.end());
     return new VectorPostingIterator(results);
