@@ -107,6 +107,10 @@ static QVariant tokenToVariant(const QString& token)
 
     QDate date = QDate::fromString(token, Qt::ISODate);
     if (date.isValid() && !date.isNull()) {
+        QDateTime dateTime = QDateTime::fromString(token, Qt::ISODate);
+        if (dateTime.isValid() && !dateTime.isNull()) {
+            return dateTime;
+        }
         return date;
     }
 
