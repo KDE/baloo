@@ -59,14 +59,17 @@ public:
     void removeRecursively(quint64 parentId, Functor shouldDelete) {
         DocumentUrlDB docUrlDB(m_dbis.idTreeDbi, m_dbis.idFilenameDbi, m_txn);
 
-        if (shouldDelete(parentId)) {
-            removeRecursively(parentId);
+        if (!shouldDelete(parentId)) {
             return;
         }
 
         const QVector<quint64> children = docUrlDB.getChildren(parentId);
         for (quint64 id : children) {
             removeRecursively(id, shouldDelete);
+        }
+        // refetch
+        if (docUrlDB.getChildren(parentId).isEmpty()) {
+            removeDocument(parentId);
         }
     }
 
