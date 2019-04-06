@@ -71,6 +71,15 @@ private Q_SLOTS:
         it = db.iter(7, MTimeDB::LessEqual);
         QVERIFY(it);
 
+        result = {1, 2, 3, 4};
+        for (quint64 val : result) {
+            QCOMPARE(it->next(), static_cast<quint64>(val));
+            QCOMPARE(it->docId(), static_cast<quint64>(val));
+        }
+
+        it = db.iter(6, MTimeDB::LessEqual);
+        QVERIFY(it);
+
         result = {1, 2, 3};
         for (quint64 val : result) {
             QCOMPARE(it->next(), static_cast<quint64>(val));

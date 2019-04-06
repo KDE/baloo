@@ -167,9 +167,9 @@ PostingIterator* MTimeDB::iter(quint32 mtime, MTimeDB::Comparator com)
     }
 
     QVector<quint64> results;
-    results << *static_cast<quint64*>(val.mv_data);
 
     if (com == GreaterEqual) {
+        results << *static_cast<quint64*>(val.mv_data);
         while (1) {
             rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
             if (rc) {
@@ -181,8 +181,23 @@ PostingIterator* MTimeDB::iter(quint32 mtime, MTimeDB::Comparator com)
 
             results << *static_cast<quint64*>(val.mv_data);
         }
-    }
-    else {
+    } else {
+        quint32 time = *static_cast<quint32*>(key.mv_data);
+        if (time == mtime) {
+            // set cursor to last element equal key
+            rc = mdb_cursor_get(cursor, &key, &val, MDB_LAST_DUP);
+        } else {
+            // set cursor to element less than key
+            rc = mdb_cursor_get(cursor, &key, &val, MDB_PREV);
+        }
+        if (rc) {
+            if (rc != MDB_NOTFOUND) {
+                qCWarning(ENGINE) << "MTimeDB::iter LessEqual" << mtime << mdb_strerror(rc);
+            } else {
+                return nullptr;
+            }
+        }
+        results << *static_cast<quint64*>(val.mv_data);
         while (1) {
             rc = mdb_cursor_get(cursor, &key, &val, MDB_PREV);
             if (rc) {
