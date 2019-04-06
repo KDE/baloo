@@ -156,6 +156,15 @@ void SearchProtocol::listDir(const QUrl& url)
         listEntry(uds);
     }
 
+    KIO::UDSEntry uds;
+    uds.reserve(5);
+    uds.fastInsert(KIO::UDSEntry::UDS_NAME, QStringLiteral("."));
+    uds.fastInsert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
+    uds.fastInsert(KIO::UDSEntry::UDS_MIME_TYPE, QStringLiteral("inode/directory"));
+    uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, 0700);
+    uds.fastInsert(KIO::UDSEntry::UDS_USER, KUser().loginName());
+    listEntry(uds);
+
     finished();
 }
 
