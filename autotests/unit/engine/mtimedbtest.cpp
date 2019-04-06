@@ -148,6 +148,33 @@ private Q_SLOTS:
             }
         }
     }
+
+    void testBeginOfEpoch() {
+        MTimeDB db(MTimeDB::create(m_txn), m_txn);
+
+        db.put(0, 1);
+        db.put(0, 2);
+        db.put(0, 3);
+        db.put(1, 4);
+
+        QCOMPARE(db.get(0), QVector<quint64>({1, 2, 3}));
+        db.del(99, 2);
+        QCOMPARE(db.get(0), QVector<quint64>({1, 2, 3}));
+        QCOMPARE(db.get(1), QVector<quint64>({4}));
+        db.del(0, 2);
+        QCOMPARE(db.get(0), QVector<quint64>({1, 3}));
+
+        PostingIterator* it = db.iter(0, MTimeDB::LessEqual);
+        QVector<quint64> result;
+        while (it->next()) {
+            result.append(it->docId());
+        }
+        QCOMPARE(result, QVector<quint64>({1, 3}));
+
+        it = db.iter(1, MTimeDB::GreaterEqual);
+        QVERIFY(it->next());
+        QCOMPARE(it->docId(), 4);
+    }
 };
 
 QTEST_MAIN(MTimeDBTest)
