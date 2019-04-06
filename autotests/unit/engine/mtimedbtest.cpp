@@ -96,6 +96,13 @@ private Q_SLOTS:
             QCOMPARE(it->next(), static_cast<quint64>(val));
             QCOMPARE(it->docId(), static_cast<quint64>(val));
         }
+
+        // Empty range
+        it = db.iterRange(4, 4);
+        QVERIFY(!it);
+
+        it = db.iterRange(10, 20);
+        QVERIFY(!it);
     }
 
     void testSortedAndUnique()
