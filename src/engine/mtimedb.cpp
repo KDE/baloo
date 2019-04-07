@@ -94,7 +94,7 @@ QVector<quint64> MTimeDB::get(quint32 mtime)
     mdb_cursor_open(m_txn, m_dbi, &cursor);
 
     MDB_val val{0, nullptr};
-    int rc = mdb_cursor_get(cursor, &key, &val, MDB_SET_RANGE);
+    int rc = mdb_cursor_get(cursor, &key, &val, MDB_SET);
     if (rc) {
         if (rc != MDB_NOTFOUND) {
             qCWarning(ENGINE) << "MTimeDB::get" << mtime << mdb_strerror(rc);

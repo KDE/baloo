@@ -47,6 +47,9 @@ private Q_SLOTS:
         QCOMPARE(db.get(5), QVector<quint64>() << 1 << 2 << 3);
         db.del(5, 2);
         QCOMPARE(db.get(5), QVector<quint64>() << 1 << 3);
+
+        QCOMPARE(db.get(4), QVector<quint64>());
+        QCOMPARE(db.get(6), QVector<quint64>());
     }
 
     void testIter() {
