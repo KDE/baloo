@@ -24,6 +24,7 @@
 #include "term.h"
 #include "advancedqueryparser.h"
 #include "searchstore.h"
+#include "baloodebug.h"
 
 #include <QString>
 #include <QStringList>
@@ -115,8 +116,7 @@ void Query::setSearchString(const QString& str)
 {
     d->m_searchString = str;
 
-    AdvancedQueryParser parser;
-    d->m_term = parser.parse(str);
+    d->m_term = Term();
 }
 
 uint Query::limit() const
@@ -183,6 +183,14 @@ void Query::setIncludeFolder(const QString& folder)
 
 ResultIterator Query::exec()
 {
+    if (!d->m_searchString.isEmpty()) {
+        if (d->m_term.isValid()) {
+            qCDebug(BALOO) << "Term already set";
+        }
+        AdvancedQueryParser parser;
+        d->m_term = parser.parse(d->m_searchString);
+    }
+
     Term term(d->m_term);
     if (!d->m_types.isEmpty()) {
         for (const QString& type : qAsConst(d->m_types)) {
@@ -284,6 +292,9 @@ Query Query::fromJSON(const QByteArray& arr)
         query.d->m_includeFolder = map.value(QStringLiteral("includeFolder")).toString();
     }
 
+    if (!query.d->m_searchString.isEmpty() && query.d->m_term.isValid()) {
+        qCWarning(BALOO) << "Only one of 'searchString' and 'term' should be set:" << arr;
+    }
     return query;
 }
 
