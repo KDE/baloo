@@ -158,6 +158,9 @@ PostingIterator* MTimeDB::iter(quint32 mtime, MTimeDB::Comparator com)
     MDB_val val{0, nullptr};
     // Set cursor at first element greater or equal key
     int rc = mdb_cursor_get(cursor, &key, &val, MDB_SET_RANGE);
+    if (com == LessEqual && rc == MDB_NOTFOUND) {
+        rc = mdb_cursor_get(cursor, &key, &val, MDB_LAST);
+    }
     if (rc) {
         if (rc != MDB_NOTFOUND) {
             qCWarning(ENGINE) << "MTimeDB::iter" << mtime << mdb_strerror(rc);
@@ -183,7 +186,7 @@ PostingIterator* MTimeDB::iter(quint32 mtime, MTimeDB::Comparator com)
         }
     } else {
         quint32 time = *static_cast<quint32*>(key.mv_data);
-        if (time == mtime) {
+        if (time <= mtime) {
             // set cursor to last element equal key
             rc = mdb_cursor_get(cursor, &key, &val, MDB_LAST_DUP);
         } else {
