@@ -59,6 +59,7 @@ private:
     QDir::Filters m_filters;
 
     QString m_filePath;
+    QFileInfo m_fileInfo;
     bool m_firstItem;
 };
 

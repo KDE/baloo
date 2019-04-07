@@ -52,11 +52,13 @@ QString FilteredDirIterator::next()
     if (m_firstItem) {
         m_firstItem = false;
         m_filePath = m_currentIter->path();
+        m_fileInfo = QFileInfo(m_filePath);
         return m_filePath;
     }
 
     m_filePath.clear();
     if (!m_currentIter) {
+        m_fileInfo = QFileInfo();
         return QString();
     }
 
@@ -68,14 +70,15 @@ QString FilteredDirIterator::next()
             const QString path = m_paths.pop();
             m_currentIter = new QDirIterator(path, m_filters);
         } else {
+            m_fileInfo = QFileInfo();
             return QString();
         }
     }
 
     m_filePath = m_currentIter->next();
-    const QFileInfo info = m_currentIter->fileInfo();
+    m_fileInfo = m_currentIter->fileInfo();
 
-    if (info.isDir()) {
+    if (m_fileInfo.isDir()) {
         if (shouldIndexFolder(m_filePath)) {
             m_paths.push(m_filePath);
             return m_filePath;
@@ -83,13 +86,13 @@ QString FilteredDirIterator::next()
             return next();
         }
     }
-    else if (info.isFile()) {
+    else if (m_fileInfo.isFile()) {
         bool shouldIndexHidden = false;
         if (m_config)
             shouldIndexHidden = m_config->indexHiddenFilesAndFolders();
 
-        bool shouldIndexFile = (!info.isHidden() || shouldIndexHidden)
-                               && (!m_config || m_config->shouldFileBeIndexed(info.fileName()));
+        bool shouldIndexFile = (!m_fileInfo.isHidden() || shouldIndexHidden)
+                               && (!m_config || m_config->shouldFileBeIndexed(m_fileInfo.fileName()));
         if (shouldIndexFile) {
             return m_filePath;
         } else {
@@ -108,7 +111,7 @@ QString FilteredDirIterator::filePath() const
 
 QFileInfo FilteredDirIterator::fileInfo() const
 {
-    return m_currentIter ?  m_currentIter->fileInfo() : QFileInfo();
+    return m_fileInfo;
 }
 
 bool FilteredDirIterator::shouldIndexFolder(const QString& path) const
