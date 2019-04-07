@@ -246,7 +246,7 @@ QByteArray Query::toJSON()
     QJsonObject jo = QJsonObject::fromVariantMap(map);
     QJsonDocument jdoc;
     jdoc.setObject(jo);
-    return jdoc.toJson();
+    return jdoc.toJson(QJsonDocument::JsonFormat::Compact);
 }
 
 // static
