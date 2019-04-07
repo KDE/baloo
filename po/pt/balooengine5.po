@@ -1,0 +1,45 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: balooengine5\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2018-08-16 09:04+0200\n"
+"PO-Revision-Date: 2018-04-20 11:27+0100\n"
+"Last-Translator: José Nuno Coelho Pires <zepires@gmail.com>\n"
+"Language-Team: Portuguese <kde-i18n-pt@kde.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-POFile-SpellExtra: LigaçãoSimbólicaIgnorada\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: experimental/databasesanitizer.cpp:276
+#, kde-format
+msgid "Total: %1, Inaccessible: %2"
+msgstr "Total: %1, Inacessíveis: %2"
+
+#: experimental/databasesanitizer.cpp:280
+#, kde-format
+msgid "Total: %1, Ignored: %2, Accessible: %3, Inaccessible: %4"
+msgstr "Total: %1, Ignoradas: %2, Acessíveis: %3, Inacessíveis: %4"
+
+#: experimental/databasesanitizer.cpp:336
+#, kde-format
+msgid "Found %1 matching in %2 devices"
+msgstr "Foram encontradas %1 ocorrências em %2 dispositivos"
+
+#: experimental/databasesanitizer.cpp:357
+#, kde-format
+msgid "IgnoredSymbolicLink:"
+msgstr "LigaçãoSimbólicaIgnorada:"
+
+#: experimental/databasesanitizer.cpp:361
+#, kde-format
+msgid "Removing:"
+msgstr "A remover:"
+
+#: experimental/databasesanitizer.cpp:375
+#, kde-format
+msgctxt "numbers"
+msgid "Removed: %1, Total: %2, Ignored: %3"
+msgstr "Removidas: %1, Total: %2, Ignoradas: %3"
