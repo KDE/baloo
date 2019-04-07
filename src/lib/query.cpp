@@ -230,11 +230,11 @@ QByteArray Query::toJSON()
     if (d->m_term.isValid())
         map[QStringLiteral("term")] = QVariant(d->m_term.toVariantMap());
 
-    if (d->m_yearFilter >= 0)
+    if (d->m_yearFilter > 0)
         map[QStringLiteral("yearFilter")] = d->m_yearFilter;
-    if (d->m_monthFilter >= 0)
+    if (d->m_monthFilter > 0)
         map[QStringLiteral("monthFilter")] = d->m_monthFilter;
-    if (d->m_dayFilter >= 0)
+    if (d->m_dayFilter > 0)
         map[QStringLiteral("dayFilter")] = d->m_dayFilter;
 
     if (d->m_sortingOption != SortAuto)
