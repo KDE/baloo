@@ -257,11 +257,6 @@ int main(int argc, char* argv[])
                 out << "Could not stat file: " << url << endl;
                 continue;
             }
-            if (tr.documentData(id).isEmpty()) {
-                out << "Skipping: " << url << " Reason: Not yet indexed\n";
-                continue;
-            }
-            Indexer indexer(url, &tr);
             out << "Clearing " << url << endl;
             tr.removeDocument(id);
         }
