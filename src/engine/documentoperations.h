@@ -26,12 +26,12 @@
 namespace Baloo {
 
 enum DocumentOperation {
-    DocumentTerms =  1,
-    FileNameTerms =  2,
-    XAttrTerms    =  4,
-    DocumentData  =  8,
-    DocumentTime  = 16,
-    DocumentUrl   = 32,
+    DocumentTerms =  0x1,
+    FileNameTerms =  0x2,
+    XAttrTerms    =  0x4,
+    DocumentData  =  0x8,
+    DocumentTime  = 0x10,
+    DocumentUrl   = 0x20,
     Everything    = DocumentTerms | FileNameTerms | XAttrTerms | DocumentData | DocumentTime | DocumentUrl
 };
 Q_DECLARE_FLAGS(DocumentOperations, DocumentOperation)
