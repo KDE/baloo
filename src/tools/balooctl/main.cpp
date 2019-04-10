@@ -294,8 +294,8 @@ int main(int argc, char* argv[])
         };
 
         uint ts = size.expectedSize;
-        out << "Actual Size: " << format.formatByteSize(size.actualSize, 2) << "\n";
-        out << "Expected Size: " << format.formatByteSize(size.expectedSize, 2) << "\n\n";
+        out << "File Size: " << format.formatByteSize(size.actualSize, 2) << "\n";
+        out << "Used:      " << format.formatByteSize(size.expectedSize, 2) << "\n\n";
         prFunc(QStringLiteral("PostingDB"), size.postingDb, ts);
         prFunc(QStringLiteral("PositionDB"), size.positionDb, ts);
         prFunc(QStringLiteral("DocTerms"), size.docTerms, ts);
