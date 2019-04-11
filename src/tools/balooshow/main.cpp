@@ -71,11 +71,11 @@ int main(int argc, char* argv[])
     KAboutData::setApplicationData(aboutData);
 
     QCommandLineParser parser;
-    parser.addPositionalArgument(QStringLiteral("files"), i18n("The file urls"));
+    parser.addPositionalArgument(QStringLiteral("files"), i18n("Urls, document ids or inodes of the files"), QStringLiteral("[file|id|inode...]"));
     parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("x"),
                                         i18n("Print internal info")));
     parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("i"),
-                                        i18n("Inode number of the file to show")));
+                                        i18n("Arguments are interpreted as inode numbers (requires -d)")));
     parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("d"),
                                         i18n("Device id for the files"), QStringLiteral("deviceId"), QString()));
     parser.addHelpOption();
@@ -84,6 +84,23 @@ int main(int argc, char* argv[])
     const QStringList args = parser.positionalArguments();
 
     if (args.isEmpty()) {
+        parser.showHelp(1);
+    }
+
+    QTextStream stream(stdout);
+
+    bool useInodes = parser.isSet(QStringLiteral("i"));
+    quint32 devId;
+    if (useInodes) {
+        bool ok;
+        devId = parser.value(QStringLiteral("d")).toULong(&ok, 10);
+        if (!ok) {
+            devId = parser.value(QStringLiteral("d")).toULong(&ok, 0);
+        }
+    }
+
+    if (useInodes && devId == 0) {
+        stream << i18n("Error: -i requires specifying a device (-d <deviceId>)") << endl;
         parser.showHelp(1);
     }
 
@@ -96,16 +113,13 @@ int main(int argc, char* argv[])
         if (QFile::exists(url)) {
             urls.append(url);
         } else {
-            if (parser.isSet(QStringLiteral("i"))) {
+            if (useInodes) {
                 urls.append(QLatin1String("inode:") + arg);
             } else {
                 urls.append(QLatin1String("file:") + arg);
             }
         }
     }
-
-    QTextStream stream(stdout);
-    QString text;
 
     Baloo::Database *db = Baloo::globalDatabaseInstance();
     if (!db->open(Baloo::Database::ReadOnlyDatabase)) {
@@ -140,7 +154,6 @@ int main(int argc, char* argv[])
             }
         } else if (url.startsWith(QStringLiteral("inode:"))) {
             quint32 inode = url.midRef(6).toULong();
-            quint32 devId = parser.value(QStringLiteral("d")).toULong();
 
             fid = Baloo::devIdAndInodeToId(devId, inode);
             url = QFile::decodeName(tr.documentUrl(fid));
