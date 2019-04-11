@@ -104,23 +104,6 @@ int main(int argc, char* argv[])
         parser.showHelp(1);
     }
 
-    //
-    // File Urls
-    //
-    QStringList urls;
-    for (const QString& arg : args) {
-        const QString url = QFileInfo(arg).absoluteFilePath();
-        if (QFile::exists(url)) {
-            urls.append(url);
-        } else {
-            if (useInodes) {
-                urls.append(QLatin1String("inode:") + arg);
-            } else {
-                urls.append(QLatin1String("file:") + arg);
-            }
-        }
-    }
-
     Baloo::Database *db = Baloo::globalDatabaseInstance();
     if (!db->open(Baloo::Database::ReadOnlyDatabase)) {
         stream << i18n("The Baloo index could not be opened. Please run \"%1\" to see if Baloo is enabled and working.", QStringLiteral("balooctl status"))
@@ -130,36 +113,53 @@ int main(int argc, char* argv[])
 
     Baloo::Transaction tr(db, Baloo::Transaction::ReadOnly);
 
-    for (QString url : urls) {
+    for (QString url : args) {
         quint64 fid = 0;
         QString internalUrl;
-        if (url.startsWith(QLatin1String("file:"))) {
-            fid = url.midRef(5).toULongLong();
-            url = QFile::decodeName(tr.documentUrl(fid));
+        if (!useInodes) {
+            if (QFile::exists(url)) {
+                quint64 fsFid = Baloo::filePathToId(QFile::encodeName(url));
+                fid = tr.documentId(QFile::encodeName(url));
+                internalUrl = QFile::decodeName(tr.documentUrl(fsFid));
 
-            // Debugging aid
-            if (url.isEmpty()) {
-                stream << i18n("No index information found") << endl;
+                if (fid != fsFid) {
+                    stream << i18n("The document IDs of the Baloo DB and the filesystem are different:") <<  "\n";
+                    auto dbInode = Baloo::idToInode(fid);
+                    auto fsInode = Baloo::idToInode(fsFid);
+                    auto dbDevId = Baloo::idToDeviceId(fid);
+                    auto fsDevId = Baloo::idToDeviceId(fsFid);
+
+                    stream << "Url: " << url << "\n";
+                    stream << "ID:       " << fid << " (DB) <-> " << fsFid << " (FS)\n";
+                    stream << "Inode:    " << dbInode << " (DB) " << (dbInode == fsInode ? "== " : "<-> ") << fsInode << " (FS)\n";
+                    stream << "DeviceID: " << dbDevId << " (DB) " << (dbDevId == fsDevId ? "== " : "<-> ") << fsDevId << " (FS)" << endl;
+                }
+            } else {
+                bool ok;
+                fid = url.toULongLong(&ok);
+                if (!ok) {
+                    stream << i18n("%1: Not a valid url or document id", url) << endl;
+                    continue;
+                }
+                if (!tr.hasDocument(fid)) {
+                    stream << i18n("%1: No index information found", url) << endl;
+                    continue;
+                }
+                url = QFile::decodeName(tr.documentUrl(fid));
+                internalUrl = url;
+            }
+
+        } else {
+            bool ok;
+            quint32 inode = url.toULong(&ok);
+            if (!ok) {
+                stream << i18n("%1: Failed to parse inode number", url) << endl;
                 continue;
             }
-            quint64 actualFid = Baloo::filePathToId(QFile::encodeName(url));
-            if (fid != actualFid) {
-                stream << i18n("The fileID is not equal to the actual Baloo fileID") <<  "\n";
-                stream << i18n("This is a bug") <<  "\n";
-
-                stream << "Url: " << url << "\n";
-                stream << "GivenID: " << fid << " ActualID: " << actualFid << "\n";
-                stream << "GivenINode: " << Baloo::idToInode(fid) << " ActualINode: " << Baloo::idToInode(actualFid) << "\n";
-                stream << "GivenDeviceID: " << Baloo::idToDeviceId(fid) << " ActualDeviceID: " << Baloo::idToDeviceId(actualFid) << endl;
-            }
-        } else if (url.startsWith(QStringLiteral("inode:"))) {
-            quint32 inode = url.midRef(6).toULong();
 
             fid = Baloo::devIdAndInodeToId(devId, inode);
             url = QFile::decodeName(tr.documentUrl(fid));
-        } else {
-            fid = Baloo::filePathToId(QFile::encodeName(url));
-            internalUrl = QFile::decodeName(tr.documentUrl(fid));
+            internalUrl = url;
         }
 
         bool hasFile = tr.hasDocument(fid);
@@ -179,7 +179,7 @@ int main(int argc, char* argv[])
             stream << endl;
         }
         else {
-            stream << i18n("No index information found") << endl;
+            stream << i18n("%1: No index information found", url) << endl;
             continue;
         }
 
