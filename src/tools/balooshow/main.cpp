@@ -122,7 +122,7 @@ int main(int argc, char* argv[])
                 fid = tr.documentId(QFile::encodeName(url));
                 internalUrl = QFile::decodeName(tr.documentUrl(fsFid));
 
-                if (fid != fsFid) {
+                if (fid && fid != fsFid) {
                     stream << i18n("The document IDs of the Baloo DB and the filesystem are different:") <<  "\n";
                     auto dbInode = Baloo::idToInode(fid);
                     auto fsInode = Baloo::idToInode(fsFid);
