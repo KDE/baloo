@@ -45,6 +45,79 @@ QString StatusCommand::description()
     return i18n("Print the status of the Indexer");
 }
 
+class FileIndexStatus
+{
+public:
+    enum class FileStatus : uint8_t {
+        NonExisting,
+        Directory,
+        RegularFile,
+        SymLink,
+        Other,
+    };
+    enum class IndexStateReason : uint8_t {
+        NoFileOrDirectory,
+        ExcludedByPath, // FIXME - be more specific, requires changes to shouldBeIndexed(path)
+        WaitingForIndexingBoth,
+        WaitingForBasicIndexing,
+        BasicIndexingDone,
+        WaitingForContentIndexing,
+        FailedToIndex,
+        Done,
+    };
+    QString m_filePath;
+    FileStatus m_fileStatus;
+    IndexStateReason m_indexState;
+    uint32_t m_dataSize;
+};
+
+FileIndexStatus collectFileStatus(Transaction& tr, IndexerConfig&  cfg, const QString& file)
+{
+    using FileStatus = FileIndexStatus::FileStatus;
+    using IndexStateReason = FileIndexStatus::IndexStateReason;
+
+    bool onlyBasicIndexing = cfg.onlyBasicIndexing();
+
+    QFileInfo fileInfo = QFileInfo(file);
+    QString filePath = fileInfo.absoluteFilePath();
+    quint64 id = filePathToId(QFile::encodeName(filePath));
+    if (id == 0) {
+        return FileIndexStatus{filePath, FileStatus::NonExisting, IndexStateReason::NoFileOrDirectory, 0};
+    }
+
+    FileStatus fileStatus = fileInfo.isSymLink() ? FileStatus::SymLink :
+                            fileInfo.isFile() ? FileStatus::RegularFile :
+                            fileInfo.isDir() ? FileStatus::Directory : FileStatus::Other;
+
+    if (fileStatus == FileStatus::Other || fileStatus == FileStatus::SymLink) {
+        return FileIndexStatus{filePath, fileStatus, IndexStateReason::NoFileOrDirectory, 0};
+    }
+
+    if (!cfg.shouldBeIndexed(filePath)) {
+        return FileIndexStatus{filePath, fileStatus, IndexStateReason::ExcludedByPath, 0};
+    }
+
+    if (onlyBasicIndexing || fileStatus == FileStatus::Directory) {
+        if (!tr.hasDocument(id)) {
+            return FileIndexStatus{filePath, fileStatus, IndexStateReason::WaitingForBasicIndexing, 0};
+        } else {
+            return FileIndexStatus{filePath, fileStatus, IndexStateReason::BasicIndexingDone, 0};
+        }
+    }
+
+    // File && shouldBeIndexed && contentIndexing
+    if (!tr.hasDocument(id)) {
+        return FileIndexStatus{filePath, fileStatus, IndexStateReason::WaitingForIndexingBoth, 0};
+    } else if (tr.inPhaseOne(id)) {
+        return FileIndexStatus{filePath, fileStatus, IndexStateReason::WaitingForContentIndexing, 0};
+    } else if (tr.hasFailed(id)) {
+        return FileIndexStatus{filePath, fileStatus, IndexStateReason::FailedToIndex, 0};
+    } else {
+        uint32_t size = tr.documentData(id).size();
+        return FileIndexStatus{filePath, fileStatus, IndexStateReason::Done, size};
+    }
+}
+
 void printMultiLine(Transaction& tr, IndexerConfig&  cfg, const QStringList& args) {
     QTextStream out(stdout);
     QTextStream err(stderr);
