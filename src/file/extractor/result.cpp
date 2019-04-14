@@ -121,6 +121,10 @@ void Result::addType(KFileMetaData::Type::Type type)
 
 void Result::finish()
 {
+    if (m_map.isEmpty()) {
+        m_doc.setData(QByteArray());
+        return;
+    }
     QJsonObject jo = QJsonObject::fromVariantMap(m_map);
     QJsonDocument jdoc;
     jdoc.setObject(jo);
