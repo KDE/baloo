@@ -134,6 +134,7 @@ int main(int argc, char* argv[])
                     stream << "Inode:    " << dbInode << " (DB) " << (dbInode == fsInode ? "== " : "<-> ") << fsInode << " (FS)\n";
                     stream << "DeviceID: " << dbDevId << " (DB) " << (dbDevId == fsDevId ? "== " : "<-> ") << fsDevId << " (FS)" << endl;
                 }
+                fid = fsFid;
             } else {
                 bool ok;
                 fid = url.toULongLong(&ok);
