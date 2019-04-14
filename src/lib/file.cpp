@@ -112,7 +112,8 @@ bool File::load()
         Transaction tr(db, Transaction::ReadOnly);
         arr = tr.documentData(id);
     }
-    if (arr.isEmpty()) {
+    // Ignore empty JSON documents, i.e. "" or "{}"
+    if (arr.isEmpty() || arr.size() <= 2) {
         return false;
     }
 
