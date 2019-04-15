@@ -157,43 +157,39 @@ void printMultiLine(Transaction& tr, IndexerConfig&  cfg, const QStringList& arg
 }
 
 void printSimpleFormat(Transaction& tr, IndexerConfig&  cfg, const QStringList& args) {
+    using FileStatus = FileIndexStatus::FileStatus;
+    using IndexStateReason = FileIndexStatus::IndexStateReason;
+
     QTextStream out(stdout);
     QTextStream err(stderr);
-    for (const QString& arg : args) {
-      QString filePath = QFileInfo(arg).absoluteFilePath();
-      quint64 id = filePathToId(QFile::encodeName(filePath));
-      if (id == 0) {
-        err << i18n("Ignoring non-existent file %1", filePath) << endl;
-        continue;
-      }
 
-      if (QFileInfo(arg).isDir()) {
-        if (tr.hasDocument(id)) {
-            out << QLatin1String("Basic indexing done");
-        } else if (cfg.shouldBeIndexed(filePath)) {
-            out << QLatin1String("Basic indexing scheduled");
+    const QMap<IndexStateReason, QString> simpleIndexStateValue = {
+        { IndexStateReason::NoFileOrDirectory,         QStringLiteral("No regular file or directory") },
+        { IndexStateReason::ExcludedByPath,            QStringLiteral("Indexing disabled") },
+        { IndexStateReason::WaitingForIndexingBoth,    QStringLiteral("Basic and Content indexing scheduled") },
+        { IndexStateReason::WaitingForBasicIndexing,   QStringLiteral("Basic indexing scheduled") },
+        { IndexStateReason::BasicIndexingDone,         QStringLiteral("Basic indexing done") },
+        { IndexStateReason::WaitingForContentIndexing, QStringLiteral("Content indexing scheduled") },
+        { IndexStateReason::FailedToIndex,             QStringLiteral("Content indexing failed") },
+        { IndexStateReason::Done,                      QStringLiteral("Content indexing done") },
+    };
 
-        } else {
-            out << QLatin1String("Indexing disabled");
+    for (const auto& fileName : args) {
+        const auto file = collectFileStatus(tr, cfg, fileName);
+
+        if (file.m_fileStatus == FileStatus::NonExisting) {
+            err << i18n("Ignoring non-existent file %1", file.m_filePath) << endl;
+            continue;
         }
 
-      } else if (tr.hasDocument(id)) {
-        if (tr.inPhaseOne(id)) {
-            out << QLatin1String("Content indexing scheduled");
-        } else if (tr.hasFailed(id)) {
-            out << QLatin1String("Content indexing failed");
-        } else {
-            out << QLatin1String("Content indexing done");
+        if (file.m_fileStatus == FileStatus::SymLink || file.m_fileStatus == FileStatus::Other) {
+            err << i18n("Ignoring symlink/special file %1", file.m_filePath) << endl;
+            continue;
         }
 
-      } else if (cfg.shouldBeIndexed(filePath)) {
-          out << QLatin1String("Basic indexing scheduled");
-      } else {
-          out << QLatin1String("Indexing disabled");
-      }
-
-      out << ":" << filePath << endl;
-  }
+        out << simpleIndexStateValue[file.m_indexState];
+        out << ": " << file.m_filePath << endl;
+    }
 }
 
 void printJSON(Transaction& tr, IndexerConfig&  cfg, const QStringList& args) {
