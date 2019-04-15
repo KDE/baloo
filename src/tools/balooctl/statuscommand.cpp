@@ -192,50 +192,62 @@ void printSimpleFormat(Transaction& tr, IndexerConfig&  cfg, const QStringList& 
     }
 }
 
-void printJSON(Transaction& tr, IndexerConfig&  cfg, const QStringList& args) {
+void printJSON(Transaction& tr, IndexerConfig&  cfg, const QStringList& args)
+{
 
-  QJsonArray filesInfo;
-  for (const QString& arg : args) {
-      QString filePath = QFileInfo(arg).absoluteFilePath();
-      quint64 id = filePathToId(QFile::encodeName(filePath));
+    using FileStatus = FileIndexStatus::FileStatus;
+    using IndexStateReason = FileIndexStatus::IndexStateReason;
 
-      if (id == 0) {
-          QTextStream err(stderr);
-          err << i18n("Ignoring non-existent file %1", filePath) << endl;
-          continue;
-      }
-      QJsonObject fileInfo;
-      fileInfo["file"] = filePath;
-      if (!tr.hasDocument(id)) {
-          fileInfo["indexing"] = "basic";
-          if (cfg.shouldBeIndexed(filePath)) {
-              fileInfo["status"] = "scheduled";
-          } else {
-              fileInfo["status"] = "disabled";
-          }
+    QJsonArray filesInfo;
+    QTextStream err(stderr);
 
-      } else if (QFileInfo(arg).isDir()) {
-          fileInfo["indexing"] = "basic";
-          fileInfo["status"] =  "done";
+    const QMap<IndexStateReason, QString> jsonIndexStateValue = {
+        { IndexStateReason::NoFileOrDirectory,         QStringLiteral("nofile") },
+        { IndexStateReason::ExcludedByPath,            QStringLiteral("disabled") },
+        { IndexStateReason::WaitingForIndexingBoth,    QStringLiteral("scheduled") },
+        { IndexStateReason::WaitingForBasicIndexing,   QStringLiteral("scheduled") },
+        { IndexStateReason::BasicIndexingDone,         QStringLiteral("done") },
+        { IndexStateReason::WaitingForContentIndexing, QStringLiteral("scheduled") },
+        { IndexStateReason::FailedToIndex,             QStringLiteral("failed") },
+        { IndexStateReason::Done,                      QStringLiteral("done") },
+    };
 
-      } else {
-          fileInfo["indexing"] = "content";
-          if (tr.inPhaseOne(id)) {
-              fileInfo["status"] = "scheduled";
-          } else if (tr.hasFailed(id)) {
-              fileInfo["status"] = "failed";
-          } else {
-              fileInfo["status"] = "done";
-          }
-      }
+    const QMap<IndexStateReason, QString> jsonIndexLevelValue = {
+        { IndexStateReason::NoFileOrDirectory,         QStringLiteral("nofile") },
+        { IndexStateReason::ExcludedByPath,            QStringLiteral("none") },
+        { IndexStateReason::WaitingForIndexingBoth,    QStringLiteral("content") },
+        { IndexStateReason::WaitingForBasicIndexing,   QStringLiteral("basic") },
+        { IndexStateReason::BasicIndexingDone,         QStringLiteral("basic") },
+        { IndexStateReason::WaitingForContentIndexing, QStringLiteral("content") },
+        { IndexStateReason::FailedToIndex,             QStringLiteral("content") },
+        { IndexStateReason::Done,                      QStringLiteral("content") },
+    };
 
-      filesInfo.append(fileInfo);
-  }
+    for (const auto& fileName : args) {
+        const auto file = collectFileStatus(tr, cfg, fileName);
 
-  QJsonDocument json;
-  json.setArray(filesInfo);
-  QTextStream out(stdout);
-  out << json.toJson(QJsonDocument::Indented);
+        if (file.m_fileStatus == FileStatus::NonExisting) {
+            err << i18n("Ignoring non-existent file %1", file.m_filePath) << endl;
+            continue;
+        }
+
+        if (file.m_fileStatus == FileStatus::SymLink || file.m_fileStatus == FileStatus::Other) {
+            err << i18n("Ignoring symlink/special file %1", file.m_filePath) << endl;
+            continue;
+        }
+
+        QJsonObject fileInfo;
+        fileInfo["file"] = file.m_filePath;
+        fileInfo["indexing"] = jsonIndexLevelValue[file.m_indexState];
+        fileInfo["status"] = jsonIndexStateValue[file.m_indexState];
+
+        filesInfo.append(fileInfo);
+    }
+
+    QJsonDocument json;
+    json.setArray(filesInfo);
+    QTextStream out(stdout);
+    out << json.toJson(QJsonDocument::Indented);
 }
 
 int StatusCommand::exec(const QCommandLineParser& parser)
