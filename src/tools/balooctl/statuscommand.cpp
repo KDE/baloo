@@ -119,41 +119,54 @@ FileIndexStatus collectFileStatus(Transaction& tr, IndexerConfig&  cfg, const QS
 }
 
 void printMultiLine(Transaction& tr, IndexerConfig&  cfg, const QStringList& args) {
+    using FileStatus = FileIndexStatus::FileStatus;
+    using IndexStateReason = FileIndexStatus::IndexStateReason;
+
     QTextStream out(stdout);
     QTextStream err(stderr);
-    for (const QString& arg : args) {
-      QString filePath = QFileInfo(arg).absoluteFilePath();
-      quint64 id = filePathToId(QFile::encodeName(filePath));
-      if (id == 0) {
-        err << i18n("Ignoring non-existent file %1", filePath) << endl;
-        continue;
-      }
 
+    const QMap<IndexStateReason, QString> basicIndexStateValue = {
+        { IndexStateReason::NoFileOrDirectory,         i18n("File ignored") },
+        { IndexStateReason::ExcludedByPath,            i18n("Basic Indexing: Disabled") },
+        { IndexStateReason::WaitingForIndexingBoth,    i18n("Basic Indexing: Scheduled") },
+        { IndexStateReason::WaitingForBasicIndexing,   i18n("Basic Indexing: Scheduled") },
+        { IndexStateReason::BasicIndexingDone,         i18n("Basic Indexing: Done") },
+        { IndexStateReason::WaitingForContentIndexing, i18n("Basic Indexing: Done") },
+        { IndexStateReason::FailedToIndex,             i18n("Basic Indexing: Done") },
+        { IndexStateReason::Done,                      i18n("Basic Indexing: Done") },
+    };
 
-      out << i18n("File: %1", filePath) << endl;
-      if (tr.hasDocument(id)) {
-          out << i18n("Basic Indexing: Done") << endl;
-      } else if (cfg.shouldBeIndexed(filePath)) {
-          out << i18n("Basic Indexing: Scheduled") << endl;
-          continue;
-      } else {
-          // FIXME: Add why it is not being indexed!
-          out << i18n("Basic Indexing: Disabled") << endl;
-          continue;
-      }
+    const QMap<IndexStateReason, QString> contentIndexStateValue = {
+        { IndexStateReason::NoFileOrDirectory,         QString() },
+        { IndexStateReason::ExcludedByPath,            QString() },
+        { IndexStateReason::WaitingForIndexingBoth,    i18n("Content Indexing: Scheduled") },
+        { IndexStateReason::WaitingForBasicIndexing,   QString() },
+        { IndexStateReason::BasicIndexingDone,         QString() },
+        { IndexStateReason::WaitingForContentIndexing, i18n("Content Indexing: Scheduled") },
+        { IndexStateReason::FailedToIndex,             i18n("Content Indexing: Failed") },
+        { IndexStateReason::Done,                      i18n("Content Indexing: Done") },
+    };
 
-      if (QFileInfo(arg).isDir()) {
-          continue;
-      }
+    for (const auto& fileName : args) {
+        const auto file = collectFileStatus(tr, cfg, fileName);
 
-      if (tr.inPhaseOne(id)) {
-          out << i18n("Content Indexing: Scheduled") << endl;
-      } else if (tr.hasFailed(id)) {
-          out << i18n("Content Indexing: Failed") << endl;
-      } else {
-          out << i18n("Content Indexing: Done") << endl;
-      }
-  }
+        if (file.m_fileStatus == FileStatus::NonExisting) {
+            err << i18n("Ignoring non-existent file %1", file.m_filePath) << endl;
+            continue;
+        }
+
+        if (file.m_fileStatus == FileStatus::SymLink || file.m_fileStatus == FileStatus::Other) {
+            err << i18n("Ignoring symlink/special file %1", file.m_filePath) << endl;
+            continue;
+        }
+
+        out << i18n("File: %1", file.m_filePath) << endl;
+        out << basicIndexStateValue[file.m_indexState] << endl;
+        const QString contentState = contentIndexStateValue[file.m_indexState];
+        if (!contentState.isEmpty()) {
+            out << contentState << endl;
+        }
+    }
 }
 
 void printSimpleFormat(Transaction& tr, IndexerConfig&  cfg, const QStringList& args) {
