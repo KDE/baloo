@@ -278,9 +278,10 @@ int main(int argc, char* argv[])
             Transaction tr(db, Transaction::ReadOnly);
             size = tr.dbSize();
         }
+        uint totalDataSize = size.expectedSize;
 
         KFormat format(QLocale::system());
-        auto prFunc = [&](const QString& name, uint size, uint totalSize) {
+        auto prFunc = [&](const QString& name, uint size) {
             out.setFieldWidth(20);
             out << name;
             out.setFieldWidth(0);
@@ -288,26 +289,25 @@ int main(int argc, char* argv[])
             out.setFieldWidth(15);
             out << format.formatByteSize(size, 2);
             out.setFieldWidth(10);
-            out << QString::number((100.0 * size / totalSize), 'f', 3);
+            out << QString::number((100.0 * size / totalDataSize), 'f', 3);
             out.setFieldWidth(0);
             out << " %\n";
         };
 
-        uint ts = size.expectedSize;
         out << "File Size: " << format.formatByteSize(size.actualSize, 2) << "\n";
-        out << "Used:      " << format.formatByteSize(size.expectedSize, 2) << "\n\n";
-        prFunc(QStringLiteral("PostingDB"), size.postingDb, ts);
-        prFunc(QStringLiteral("PositionDB"), size.positionDb, ts);
-        prFunc(QStringLiteral("DocTerms"), size.docTerms, ts);
-        prFunc(QStringLiteral("DocFilenameTerms"), size.docFilenameTerms, ts);
-        prFunc(QStringLiteral("DocXattrTerms"), size.docXattrTerms, ts);
-        prFunc(QStringLiteral("IdTree"), size.idTree, ts);
-        prFunc(QStringLiteral("IdFileName"), size.idFilename, ts);
-        prFunc(QStringLiteral("DocTime"), size.docTime, ts);
-        prFunc(QStringLiteral("DocData"), size.docData, ts);
-        prFunc(QStringLiteral("ContentIndexingDB"), size.contentIndexingIds, ts);
-        prFunc(QStringLiteral("FailedIdsDB"), size.failedIds, ts);
-        prFunc(QStringLiteral("MTimeDB"), size.mtimeDb, ts);
+        out << "Used:      " << format.formatByteSize(totalDataSize, 2) << "\n\n";
+        prFunc(QStringLiteral("PostingDB"), size.postingDb);
+        prFunc(QStringLiteral("PositionDB"), size.positionDb);
+        prFunc(QStringLiteral("DocTerms"), size.docTerms);
+        prFunc(QStringLiteral("DocFilenameTerms"), size.docFilenameTerms);
+        prFunc(QStringLiteral("DocXattrTerms"), size.docXattrTerms);
+        prFunc(QStringLiteral("IdTree"), size.idTree);
+        prFunc(QStringLiteral("IdFileName"), size.idFilename);
+        prFunc(QStringLiteral("DocTime"), size.docTime);
+        prFunc(QStringLiteral("DocData"), size.docData);
+        prFunc(QStringLiteral("ContentIndexingDB"), size.contentIndexingIds);
+        prFunc(QStringLiteral("FailedIdsDB"), size.failedIds);
+        prFunc(QStringLiteral("MTimeDB"), size.mtimeDb);
 
         return 0;
     }
