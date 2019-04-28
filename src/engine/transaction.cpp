@@ -337,15 +337,15 @@ PostingIterator* Transaction::postingIterator(const EngineQuery& query) const
         }
     }
 
-    if (query.subQueries().isEmpty()) {
+    const auto subQueries = query.subQueries();
+    if (subQueries.isEmpty()) {
         return nullptr;
     }
 
     QVector<PostingIterator*> vec;
-    vec.reserve(query.subQueries().size());
+    vec.reserve(subQueries.size());
 
     if (query.op() == EngineQuery::Phrase) {
-        const auto subQueries = query.subQueries();
         for (const EngineQuery& q : subQueries) {
             if (!q.leaf()) {
                 qCDebug(ENGINE) << "Transaction::toPostingIterator" << "Phrase queries must contain leaf queries";
@@ -357,7 +357,6 @@ PostingIterator* Transaction::postingIterator(const EngineQuery& query) const
         return new PhraseAndIterator(vec);
     }
 
-    const auto subQueries = query.subQueries();
     for (const EngineQuery& q : subQueries) {
         auto iterator = postingIterator(q);
         if (iterator) {
