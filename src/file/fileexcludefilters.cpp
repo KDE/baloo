@@ -154,6 +154,7 @@ const char* const s_sourceCodeMimeTypes[] = {
     "text/x-haskell",
     "text/x-copying", // COPYING files
     "text/x-readme", // README files
+    "text/x-qml",
     "text/asp",
     "text/jsx",
     "text/csx",
@@ -182,7 +183,7 @@ const char* const s_sourceCodeMimeTypes[] = {
     // end of list
     nullptr
 };
-const int s_sourceCodeMimeTypesVersion = 2;
+const int s_sourceCodeMimeTypesVersion = 3;
 }
 
 
