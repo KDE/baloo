@@ -101,6 +101,12 @@ bool Transaction::hasFailed(quint64 id) const
     return failedIdDb.contains(id);
 }
 
+QVector<quint64> Transaction::failedIds(quint64 limit) const
+{
+    DocumentIdDB failedIdDb(m_dbis.failedIdDbi, m_txn);
+    return failedIdDb.fetchItems(limit);
+}
+
 QByteArray Transaction::documentUrl(quint64 id) const
 {
     Q_ASSERT(m_txn);

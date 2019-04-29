@@ -56,6 +56,7 @@ public:
     bool hasDocument(quint64 id) const;
     bool inPhaseOne(quint64 id) const;
     bool hasFailed(quint64 id) const;
+    QVector<quint64> failedIds(quint64 limit) const;
     QByteArray documentUrl(quint64 id) const;
 
     /**
