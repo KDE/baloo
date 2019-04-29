@@ -88,6 +88,7 @@ int main(int argc, char* argv[])
     parser.addPositionalArgument(QStringLiteral("config"), i18n("Modify the Baloo configuration"));
     parser.addPositionalArgument(QStringLiteral("monitor"), i18n("Monitor the file indexer"));
     parser.addPositionalArgument(QStringLiteral("indexSize"), i18n("Display the disk space used by index"));
+    parser.addPositionalArgument(QStringLiteral("failed"), i18n("Display files which could not be indexed"));
 
     QString statusFormatDescription = i18nc("Format to use for status command, %1|%2|%3 are option values, %4 is a CLI command",
                                             "Output format <%1|%2|%3>.\nThe default format is \"%1\".\nOnly applies to \"%4\"",
@@ -263,6 +264,32 @@ int main(int argc, char* argv[])
         tr.commit();
         out << "File(s) cleared\n";
 
+        return 0;
+    }
+
+    if (command == QStringLiteral("failed")) {
+        Database *db = globalDatabaseInstance();
+        if (!db->open(Database::ReadOnlyDatabase)) {
+            out << "Baloo Index could not be opened\n";
+            return 1;
+        }
+
+        Transaction tr(db, Transaction::ReadOnly);
+
+        const quint64 limit = 128;
+        const QVector<quint64> failedIds = tr.failedIds(limit);
+        if (failedIds.isEmpty()) {
+            out << "All Files were indexed successfully\n";
+            return 0;
+        }
+
+        out << "The folling files could not be indexed:\n";
+        for (auto id : failedIds) {
+            out << tr.documentUrl(id) << '\n';
+        }
+        if (failedIds.size() == limit) {
+            out << "... list truncated\n";
+        }
         return 0;
     }
 
