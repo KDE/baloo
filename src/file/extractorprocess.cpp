@@ -60,7 +60,6 @@ void ExtractorProcess::start()
 
 void ExtractorProcess::index(const QVector<quint64>& fileIds)
 {
-    Q_ASSERT(m_extractorProcess.state() == QProcess::Running);
     Q_ASSERT(!fileIds.isEmpty());
 
     QDataStream batch(&m_extractorProcess);
