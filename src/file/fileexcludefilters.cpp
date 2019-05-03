@@ -44,6 +44,7 @@ const char* const s_defaultFileExcludeFilters[] = {
     "conftest",
     "confstat",
     "Makefile.am",
+    "*.gcode", // CNC machine/3D printer toolpath files
 
     // misc
     "*.csproj",
@@ -71,6 +72,14 @@ const char* const s_defaultFileExcludeFilters[] = {
     "*.qrc",
     "*.ini",
     "*.init",
+    "*.img",    // typical extension for raw disk images
+    "*.vdi",    // Virtualbox disk images
+    "*.vbox*",  // Virtualbox VM files
+    "vbox.log", // Virtualbox log files
+    "*.qcow2",  // QEMU QCOW2 disk images
+    "*.vmdk",   // VMware disk images
+    "*.vhd",    // Hyper-V disk images
+    "*.vhdx",   // Hyper-V disk images
 
     // Bytecode files
     "*.class", // Java
@@ -93,7 +102,7 @@ const char* const s_defaultFileExcludeFilters[] = {
     nullptr
 };
 
-const int s_defaultFileExcludeFiltersVersion = 4;
+const int s_defaultFileExcludeFiltersVersion = 5;
 
 const char* const s_defaultFolderExcludeFilters[] = {
     "po",
