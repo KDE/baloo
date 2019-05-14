@@ -80,6 +80,8 @@ const char* const s_defaultFileExcludeFilters[] = {
     "*.vmdk",   // VMware disk images
     "*.vhd",    // Hyper-V disk images
     "*.vhdx",   // Hyper-V disk images
+    "*.sql",     // SQL database dumps
+    "*.sql.gz",  // Compressed SQL database dumps
 
     // Bytecode files
     "*.class", // Java
