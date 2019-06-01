@@ -1,0 +1,92 @@
+# translation of baloo_file.po to Slovak
+# Roman Paholik <wizzardsk@gmail.com>, 2013, 2014, 2015.
+# Mthw <jari_45@hotmail.com>, 2018, 2019.
+msgid ""
+msgstr ""
+"Project-Id-Version: baloo_file\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2019-05-20 02:54+0200\n"
+"PO-Revision-Date: 2019-01-28 12:38+0100\n"
+"Last-Translator: Mthw <jari_45@hotmail.com>\n"
+"Language-Team: Slovak <kde-i18n-doc@kde.org>\n"
+"Language: sk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 18.12.1\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Roman Paholík"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "wizzardsk@gmail.com"
+
+#: indexerstate.h:43
+#, kde-format
+msgid "Unknown"
+msgstr "Neznáme"
+
+#: indexerstate.h:46
+#, kde-format
+msgid "Idle"
+msgstr "Nečinný"
+
+#: indexerstate.h:49
+#, kde-format
+msgid "Suspended"
+msgstr "Pozastavený"
+
+#: indexerstate.h:52
+#, kde-format
+msgid "Initial Indexing"
+msgstr "Prvotné indexovanie"
+
+#: indexerstate.h:55
+#, kde-format
+msgid "Indexing new files"
+msgstr "Indexujem nové súbory"
+
+#: indexerstate.h:58
+#, kde-format
+msgid "Indexing modified files"
+msgstr "Indexujem upravené súbory"
+
+#: indexerstate.h:61
+#, kde-format
+msgid "Indexing Extended Attributes"
+msgstr "Indexujem rozšírené atribúty"
+
+#: indexerstate.h:64
+#, kde-format
+msgid "Indexing file content"
+msgstr "Indexujem obsah súborov"
+
+#: indexerstate.h:67
+#, kde-format
+msgid "Checking for unindexed files"
+msgstr "Kontrolujem neindexované súbory"
+
+#: indexerstate.h:70
+#, kde-format
+msgid "Checking for stale index entries"
+msgstr "Kontrolujem neplatné záznamy indexu"
+
+#: main.cpp:46
+#, kde-format
+msgid "Baloo File Indexing Daemon"
+msgstr "Démon indexovania súborov Baloo"
+
+#: main.cpp:47
+#, kde-format
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:47
+#, kde-format
+msgid "Maintainer"
+msgstr "Správca"

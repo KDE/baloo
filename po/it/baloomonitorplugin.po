@@ -1,0 +1,68 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the baloo package.
+# Luigi Toscano <luigi.toscano@tiscali.it>, 2015, 2018.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: baloomonitorplugin\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2019-05-20 02:54+0200\n"
+"PO-Revision-Date: 2018-10-19 00:02+0100\n"
+"Last-Translator: Luigi Toscano <luigi.toscano@tiscali.it>\n"
+"Language-Team: Italian <kde-i18n-it@kde.org>\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 2.0\n"
+
+#: ../../file/indexerstate.h:43
+#, kde-format
+msgid "Unknown"
+msgstr "Sconosciuto"
+
+#: ../../file/indexerstate.h:46
+#, kde-format
+msgid "Idle"
+msgstr "Inattivo"
+
+#: ../../file/indexerstate.h:49
+#, kde-format
+msgid "Suspended"
+msgstr "Sospeso"
+
+#: ../../file/indexerstate.h:52
+#, kde-format
+msgid "Initial Indexing"
+msgstr "Indicizzazione iniziale"
+
+#: ../../file/indexerstate.h:55
+#, kde-format
+msgid "Indexing new files"
+msgstr "Indicizzazione dei file nuovi"
+
+#: ../../file/indexerstate.h:58
+#, kde-format
+msgid "Indexing modified files"
+msgstr "Indicizzazione dei file modificati"
+
+#: ../../file/indexerstate.h:61
+#, kde-format
+msgid "Indexing Extended Attributes"
+msgstr "Indicizzazione degli attributi estesi"
+
+#: ../../file/indexerstate.h:64
+#, kde-format
+msgid "Indexing file content"
+msgstr "Indicizzazione del contenuto dei file"
+
+#: ../../file/indexerstate.h:67
+#, kde-format
+msgid "Checking for unindexed files"
+msgstr "Ricerca di file non indicizzati"
+
+#: ../../file/indexerstate.h:70
+#, kde-format
+msgid "Checking for stale index entries"
+msgstr "Ricerca di voci obsolete dell'indice"

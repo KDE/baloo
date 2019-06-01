@@ -1,0 +1,138 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Andrej Mernik <andrejm@ubuntu.si>, 2014, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2019-05-20 02:54+0200\n"
+"PO-Revision-Date: 2015-10-25 18:58+0100\n"
+"Last-Translator: Andrej Mernik <andrejm@ubuntu.si>\n"
+"Language-Team: Slovenian <lugos-slo@lugos.si>\n"
+"Language: sl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
+"%100==4 ? 3 : 0);\n"
+"X-Generator: Lokalize 1.5\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Andrej Mernik"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "andrejm@ubuntu.si"
+
+#: main.cpp:64
+#, kde-format
+msgid "Baloo Show"
+msgstr "Pregledovalnik podatkov Baloo"
+
+#: main.cpp:66
+#, kde-format
+msgid "The Baloo data Viewer - A debugging tool"
+msgstr "Pregledovalnik podatkov Baloo - orodje za razhroščevanje"
+
+#: main.cpp:68
+#, kde-format
+msgid "(c) 2012, Vishesh Handa"
+msgstr "(c) 2012, Vishesh Handa"
+
+#: main.cpp:69
+#, kde-format
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:69
+#, kde-format
+msgid "Maintainer"
+msgstr "Vzdrževalec"
+
+#: main.cpp:74
+#, kde-format
+msgid "Urls, document ids or inodes of the files"
+msgstr ""
+
+#: main.cpp:76
+#, kde-format
+msgid "Print internal info"
+msgstr ""
+
+#: main.cpp:78
+#, kde-format
+msgid "Arguments are interpreted as inode numbers (requires -d)"
+msgstr ""
+
+#: main.cpp:80
+#, kde-format
+msgid "Device id for the files"
+msgstr ""
+
+#: main.cpp:103
+#, kde-format
+msgid "Error: -i requires specifying a device (-d <deviceId>)"
+msgstr ""
+
+#: main.cpp:109
+#, fuzzy, kde-format
+#| msgid ""
+#| "The Baloo index could not be opened. Please run \"balooctl status\" to "
+#| "see if Baloo is enabled and working."
+msgid ""
+"The Baloo index could not be opened. Please run \"%1\" to see if Baloo is "
+"enabled and working."
+msgstr ""
+"Kazala Baloo ni bilo mogoče odpreti. Zaženite »balooctl status«, da "
+"preverite, ali je Baloo omogočen in deluje."
+
+#: main.cpp:126
+#, kde-format
+msgid "The document IDs of the Baloo DB and the filesystem are different:"
+msgstr ""
+
+#: main.cpp:142
+#, kde-format
+msgid "%1: Not a valid url or document id"
+msgstr ""
+
+#: main.cpp:146 main.cpp:183
+#, fuzzy, kde-format
+#| msgid "No index information found"
+msgid "%1: No index information found"
+msgstr "V kazalu ni bilo najdenih podatkov"
+
+#: main.cpp:157
+#, kde-format
+msgid "%1: Failed to parse inode number"
+msgstr ""
+
+#: main.cpp:232
+#, kde-format
+msgid "Internal Info"
+msgstr ""
+
+#: main.cpp:233
+#, kde-format
+msgid "Terms: %1"
+msgstr ""
+
+#: main.cpp:234
+#, kde-format
+msgid "File Name Terms: %1"
+msgstr ""
+
+#: main.cpp:235
+#, kde-format
+msgid "%1 Terms: %2"
+msgstr ""
+
+#: main.cpp:238
+#, kde-format
+msgctxt "Prefix string for internal errors"
+msgid "Internal Error - %1"
+msgstr ""
