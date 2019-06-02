@@ -155,8 +155,10 @@ void FileIndexScheduler::scheduleIndexing()
         return;
     }
 
-    m_indexerState = Idle;
-    Q_EMIT stateChanged(m_indexerState);
+    if (m_indexerState != Idle) {
+        m_indexerState = Idle;
+        Q_EMIT stateChanged(m_indexerState);
+    }
 }
 
 static void removeStartsWith(QStringList& list, const QString& dir)
@@ -183,7 +185,6 @@ void FileIndexScheduler::updateConfig()
     // not be indexed (bug 373430)
     if (m_indexerState == ContentIndexing) {
         m_contentIndexer->quit();
-        m_indexerState = Idle;
     }
     removeShouldNotIndex(m_newFiles, m_config);
     removeShouldNotIndex(m_modifiedFiles, m_config);
@@ -214,8 +215,6 @@ void FileIndexScheduler::powerManagementStatusChanged(bool isOnBattery)
         qCDebug(BALOO) << "On battery, stopping content indexer";
         m_contentIndexer->quit();
         //TODO: Maybe we can add a special state for suspended due to being on battery.
-        m_indexerState = Idle;
-        Q_EMIT stateChanged(m_indexerState);
     } else if (!isOnBattery) {
         scheduleIndexing();
     }
