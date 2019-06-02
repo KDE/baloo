@@ -124,6 +124,15 @@ void FileIndexScheduler::scheduleIndexing()
         return;
     }
 
+    // No housekeeping, no content indexing
+    if (m_powerMonitor.isOnBattery()) {
+        if (m_indexerState != Idle) {
+            m_indexerState = Idle;
+            Q_EMIT stateChanged(m_indexerState);
+        }
+        return;
+    }
+
     // This has to be above content indexing, because there can be files that
     // should not be indexed in the DB (i.e. if config was changed)
     if (m_checkStaleIndexEntries) {
@@ -137,7 +146,7 @@ void FileIndexScheduler::scheduleIndexing()
         return;
     }
 
-    if (m_provider.size() && !m_powerMonitor.isOnBattery()) {
+    if (m_provider.size()) {
         m_threadPool.start(m_contentIndexer);
         m_indexerState = ContentIndexing;
         Q_EMIT stateChanged(m_indexerState);
@@ -210,7 +219,7 @@ void FileIndexScheduler::handleFileRemoved(const QString& file)
 
 void FileIndexScheduler::powerManagementStatusChanged(bool isOnBattery)
 {
-    qCDebug(BALOO) << "Power state changed";
+    qCDebug(BALOO) << "Power state changed - onBattery:" << isOnBattery;
     if (isOnBattery && m_indexerState == ContentIndexing) {
         qCDebug(BALOO) << "On battery, stopping content indexer";
         m_contentIndexer->quit();
