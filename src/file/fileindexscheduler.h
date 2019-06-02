@@ -54,7 +54,7 @@ public Q_SLOTS:
     void indexNewFile(const QString& file) {
         if (!m_newFiles.contains(file)) {
             m_newFiles << file;
-            if (m_indexerState == Idle || m_isGoingIdle) {
+            if (isIndexerIdle()) {
                 QTimer::singleShot(0, this, &FileIndexScheduler::scheduleIndexing);
             }
         }
@@ -63,7 +63,7 @@ public Q_SLOTS:
     void indexModifiedFile(const QString& file) {
         if (!m_modifiedFiles.contains(file)) {
             m_modifiedFiles << file;
-            if (m_indexerState == Idle || m_isGoingIdle) {
+            if (isIndexerIdle()) {
                 QTimer::singleShot(0, this, &FileIndexScheduler::scheduleIndexing);
             }
         }
@@ -72,7 +72,7 @@ public Q_SLOTS:
     void indexXAttrFile(const QString& file) {
         if (!m_xattrFiles.contains(file)) {
             m_xattrFiles << file;
-            if (m_indexerState == Idle || m_isGoingIdle) {
+            if (isIndexerIdle()) {
                 QTimer::singleShot(0, this, &FileIndexScheduler::scheduleIndexing);
             }
         }
@@ -102,6 +102,11 @@ private Q_SLOTS:
 
 private:
     void setSuspend(bool suspend);
+    bool isIndexerIdle() {
+        return m_isGoingIdle ||
+               (m_indexerState == Idle) ||
+               (m_indexerState == LowPowerIdle);
+    }
 
     Database* m_db;
     FileIndexerConfig* m_config;

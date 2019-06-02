@@ -35,7 +35,8 @@ enum IndexerState {
         XAttrFiles,
         ContentIndexing,
         UnindexedFileCheck,
-        StaleIndexEntriesClean
+        StaleIndexEntriesClean,
+        LowPowerIdle,
 };
 
 inline QString stateString(IndexerState state)
@@ -68,6 +69,10 @@ inline QString stateString(IndexerState state)
         break;
     case StaleIndexEntriesClean:
         status = i18n("Checking for stale index entries");
+        break;
+    case LowPowerIdle:
+        status = i18n("Idle (Powersave)");
+        break;
     }
     return status;
 }
