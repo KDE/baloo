@@ -75,7 +75,7 @@ MonitorCommand::MonitorCommand(QObject *parent)
     } else {
         balooIsNotAvailable();
     }
-    
+
     m_dbusServiceWatcher->setWatchMode(QDBusServiceWatcher::WatchForOwnerChange);
 }
 
