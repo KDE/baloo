@@ -314,8 +314,11 @@ int StatusCommand::exec(const QCommandLineParser& parser)
 
         uint phaseOne = tr.phaseOneSize();
         uint total = tr.size();
+        uint failed = tr.failedIds(100).size();
 
-        out << i18n("Indexed %1 / %2 files", total - phaseOne, total) << endl;
+        out << i18n("Total files indexed: %1", total) << endl;
+        out << i18n("Files waiting for content indexing: %1", phaseOne) << endl;
+        out << i18n("Files failed to index: %1", failed) << endl;
 
         const QString path = fileIndexDbPath();
 
