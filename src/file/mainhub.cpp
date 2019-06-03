@@ -51,8 +51,11 @@ MainHub::MainHub(Database* db, FileIndexerConfig* config)
                         QDBusConnection::ExportScriptableSignals | QDBusConnection::ExportAdaptors);
 
     if (!m_config->isInitialRun()) {
-        m_fileIndexScheduler.scheduleCheckUnindexedFiles();
-        m_fileIndexScheduler.scheduleCheckStaleIndexEntries();
+        // Delay these checks so we don't end up consuming excessive resources on login
+        QTimer::singleShot(5000, this, [this] {
+            m_fileIndexScheduler.checkUnindexedFiles();
+            m_fileIndexScheduler.checkStaleIndexEntries();
+        });
     }
     QTimer::singleShot(0, &m_fileWatcher, &FileWatch::watchIndexedFolders);
 }
