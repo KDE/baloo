@@ -42,6 +42,7 @@
 #include "fsutils.h"
 
 #include "enginedebug.h"
+#include "valgrind.h"
 
 #include <QFile>
 #include <QFileInfo>
@@ -111,8 +112,19 @@ bool Database::open(OpenMode mode)
     /**
      * size limit for database == size limit of mmap
      * use 1 GB on 32-bit, use 256 GB on 64-bit
+     * Valgrind by default (without recompiling) limits the mmap size:
+     * <= 3.9: 32 GByte, 3.9 to 3.12: 64 GByte, 3.13: 128 GByte
      */
-    const size_t maximalSizeInBytes = size_t((sizeof(size_t) == 4) ? 1 : 256) * size_t(1024) * size_t(1024) * size_t(1024);
+    size_t sizeInGByte = 256;
+    if (sizeof(void*) == 4) {
+        sizeInGByte = 1;
+        qCWarning(ENGINE) << "Running on 32 bit arch, limiting DB mmap to" << sizeInGByte << "GByte";
+    } else if (RUNNING_ON_VALGRIND) {
+        // valgrind lacks a runtime version check, assume valgrind >= 3.9, and allow for some other mmaps
+        sizeInGByte = 40;
+        qCWarning(ENGINE) << "Valgrind detected, limiting DB mmap to" << sizeInGByte << "GByte";
+    }
+    const size_t maximalSizeInBytes = sizeInGByte * size_t(1024) * size_t(1024) * size_t(1024);
     mdb_env_set_mapsize(m_env, maximalSizeInBytes);
 
     // The directory needs to be created before opening the environment
