@@ -96,9 +96,9 @@ bool UnIndexedFileIterator::shouldIndex(const QString& filePath, const QString& 
         return false;
 
     quint64 fileId = filePathToId(QFile::encodeName(filePath));
-    Q_ASSERT_X(fileId, "UnIndexedFileIterator::shouldIndex", "file id is 0");
     if (!fileId) {
-        return true;
+        // stat has failed, e.g. when file has been deleted after iteration
+        return false;
     }
 
     DocumentTimeDB::TimeInfo timeInfo = m_transaction->documentTimeInfo(fileId);
