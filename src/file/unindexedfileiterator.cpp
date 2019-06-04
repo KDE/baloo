@@ -93,21 +93,23 @@ bool UnIndexedFileIterator::shouldIndex(const QString& filePath)
     }
 
     DocumentTimeDB::TimeInfo timeInfo = m_transaction->documentTimeInfo(fileId);
+    if ((timeInfo.mTime == 0) && (timeInfo.cTime == 0) && !m_transaction->hasDocument(fileId)) {
+        m_mTimeChanged = true;
+        m_cTimeChanged = true;
+    } else {
+        if (timeInfo.mTime != fileInfo.lastModified().toSecsSinceEpoch()) {
+            m_mTimeChanged = true;
+        }
+        if (timeInfo.cTime != fileInfo.metadataChangeTime().toSecsSinceEpoch()) {
+            m_cTimeChanged = true;
+        }
+    }
 
     // A folders mtime is updated when a new file is added / removed / renamed
     // we don't really need to reindex a folder when that happens
     // In fact, we never need to reindex a folder
     if (timeInfo.mTime && fileInfo.isDir()) {
         return false;
-    }
-
-    if (timeInfo.mTime != fileInfo.lastModified().toTime_t()) {
-        m_mTimeChanged = true;
-    }
-
-    auto fileMTime = fileInfo.metadataChangeTime().toTime_t();
-    if (timeInfo.cTime != fileMTime) {
-        m_cTimeChanged = true;
     }
 
     if (m_mTimeChanged || m_cTimeChanged) {
@@ -124,9 +126,10 @@ bool UnIndexedFileIterator::shouldIndex(const QString& filePath)
             return false;
         }
 
-        qCDebug(BALOO) << "mtime/ctime changed:"
-            << timeInfo.mTime << fileInfo.lastModified().toTime_t()
-            << timeInfo.cTime << fileMTime;
+        qCDebug(BALOO) << filePath << "mtime/ctime changed:"
+            << timeInfo.mTime << "/" << timeInfo.cTime << "->"
+            << fileInfo.lastModified().toSecsSinceEpoch() << "/"
+            << fileInfo.metadataChangeTime().toSecsSinceEpoch();
         return true;
     }
 
