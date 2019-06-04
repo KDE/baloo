@@ -74,23 +74,14 @@ QString UnIndexedFileIterator::next()
             return QString();
         }
 
-        // This mimetype may not be completely accurate, but that's okay. This is
-        // just the initial phase of indexing. The second phase can try to find
-        // a more accurate mimetype.
-        m_mimetype = m_mimeDb.mimeTypeForFile(filePath, QMimeDatabase::MatchExtension).name();
-
-        if (shouldIndex(filePath, m_mimetype)) {
+        if (shouldIndex(filePath)) {
             return filePath;
         }
     }
 }
 
-bool UnIndexedFileIterator::shouldIndex(const QString& filePath, const QString& mimetype)
+bool UnIndexedFileIterator::shouldIndex(const QString& filePath)
 {
-    bool shouldIndexType = m_config->shouldMimeTypeBeIndexed(mimetype);
-    if (!shouldIndexType)
-        return false;
-
     const QFileInfo fileInfo = m_iter.fileInfo();
     if (!fileInfo.exists())
         return false;
@@ -120,6 +111,19 @@ bool UnIndexedFileIterator::shouldIndex(const QString& filePath, const QString& 
     }
 
     if (m_mTimeChanged || m_cTimeChanged) {
+        if (fileInfo.isDir()) {
+            m_mimetype = QStringLiteral("inode/directory");
+            return true;
+        }
+
+        // This mimetype may not be completely accurate, but that's okay. This is
+        // just the initial phase of indexing. The second phase can try to find
+        // a more accurate mimetype.
+        m_mimetype = m_mimeDb.mimeTypeForFile(filePath, QMimeDatabase::MatchExtension).name();
+        if (!m_config->shouldMimeTypeBeIndexed(m_mimetype)) {
+            return false;
+        }
+
         qCDebug(BALOO) << "mtime/ctime changed:"
             << timeInfo.mTime << fileInfo.lastModified().toTime_t()
             << timeInfo.cTime << fileMTime;
