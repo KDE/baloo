@@ -50,7 +50,7 @@ public:
     bool cTimeChanged() const;
 
 private:
-    bool shouldIndex(const QString& filePath, const QString& mimetype);
+    bool shouldIndex(const QString& filePath);
 
     const FileIndexerConfig* m_config;
     Transaction* m_transaction;
