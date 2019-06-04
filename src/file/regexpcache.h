@@ -23,6 +23,7 @@
 #define REGEXP_CACHE_H_
 
 #include <QList>
+#include <QSet>
 #include <QRegularExpression>
 
 class RegExpCache
@@ -37,6 +38,7 @@ public:
 
 private:
     QList<QRegularExpression> m_regexpCache;
+    QSet<QString> m_exactMatches;
 };
 
 #endif

@@ -36,6 +36,9 @@ RegExpCache::~RegExpCache()
 
 bool RegExpCache::exactMatch(const QString& s) const
 {
+    if (m_exactMatches.contains(s)) {
+        return true;
+    }
     for (const QRegularExpression& filter : qAsConst(m_regexpCache)) {
         if (filter.match(s).hasMatch()) {
             return true;
@@ -47,8 +50,13 @@ bool RegExpCache::exactMatch(const QString& s) const
 void RegExpCache::rebuildCacheFromFilterList(const QStringList& filters)
 {
     m_regexpCache.clear();
+    m_exactMatches.clear();
     for (const QString& filter : filters) {
         QString f = filter;
+        if (!f.contains(QLatin1Char('*')) && !f.contains(QLatin1Char('?'))) {
+            m_exactMatches += f;
+            continue;
+        }
         f.replace(QLatin1Char('.'), QStringLiteral("\\."));
         f.replace(QLatin1Char('?'), QLatin1Char('.'));
         f.replace(QStringLiteral("*"), QStringLiteral(".*"));
