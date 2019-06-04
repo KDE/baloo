@@ -40,15 +40,15 @@ UnindexedFileIndexer::UnindexedFileIndexer(Database* db, const FileIndexerConfig
 void UnindexedFileIndexer::run()
 {
     QMimeDatabase m_mimeDb;
-    QStringList includeFolders = m_config->includeFolders();
+    const QStringList includeFolders = m_config->includeFolders();
+    const BasicIndexingJob::IndexingLevel level = m_config->onlyBasicIndexing() ?
+        BasicIndexingJob::NoLevel : BasicIndexingJob::MarkForContentIndexing;
 
     for (const QString& includeFolder : includeFolders) {
         Transaction tr(m_db, Transaction::ReadWrite);
         UnIndexedFileIterator it(m_config, &tr, includeFolder);
 
         while (!it.next().isEmpty()) {
-            BasicIndexingJob::IndexingLevel level = m_config->onlyBasicIndexing() ? BasicIndexingJob::NoLevel
-                : BasicIndexingJob::MarkForContentIndexing;
             BasicIndexingJob job(it.filePath(), it.mimetype(), level);
             job.index();
 
