@@ -21,6 +21,7 @@
 */
 
 #include "regexpcache.h"
+#include "baloodebug.h"
 
 #include <QStringList>
 
@@ -51,10 +52,21 @@ void RegExpCache::rebuildCacheFromFilterList(const QStringList& filters)
 {
     m_regexpCache.clear();
     m_exactMatches.clear();
+
+    // RE matching "*.foo" style patterns
+    QRegularExpression suffixOnlyRe(QStringLiteral("^\\*\\.([^.\\*\\?]+)$"));
+    QStringList suffixes;
+
     for (const QString& filter : filters) {
         QString f = filter;
         if (!f.contains(QLatin1Char('*')) && !f.contains(QLatin1Char('?'))) {
             m_exactMatches += f;
+            continue;
+        }
+        auto m = suffixOnlyRe.match(f);
+        if (m.hasMatch()) {
+            qCDebug(BALOO) << "filter is suffix match:" << m;
+            suffixes += m.captured(1);
             continue;
         }
         f.replace(QLatin1Char('.'), QStringLiteral("\\."));
@@ -64,4 +76,11 @@ void RegExpCache::rebuildCacheFromFilterList(const QStringList& filters)
 
         m_regexpCache.append(QRegularExpression(f));
     }
+
+    // Combine all suffixes into one large RE: "^.*(foo|bar|baz)$"
+    auto suffixMatch = QLatin1String("^.*\\.(");
+    suffixMatch += suffixes.join(QChar('|'));
+    suffixMatch += QLatin1String(")$");
+    qCDebug(BALOO) << suffixMatch;
+    m_regexpCache.prepend(QRegularExpression(suffixMatch));
 }
