@@ -42,6 +42,13 @@
 #include "fsutils.h"
 
 #include "enginedebug.h"
+
+// MSVC does not understand the inline assembly in valgrind.h
+// Defining NVALGRIND stubs out all definitions, so we can use
+// the macros without ifdef'ing these in place
+#if defined _MSC_VER && !defined NVALGRIND
+#define NVALGRIND 1
+#endif
 #include "valgrind.h"
 
 #include <QFile>
