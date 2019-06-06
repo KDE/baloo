@@ -203,7 +203,7 @@ quint64 DocumentUrlDB::getId(quint64 docId, const QByteArray& fileName) const
     IdFilenameDB idFilenameDb(m_idFilenameDbi, m_txn);
     IdTreeDB idTreeDb(m_idTreeDbi, m_txn);
 
-    QVector<quint64> subFiles = idTreeDb.get(docId);
+    const QVector<quint64> subFiles = idTreeDb.get(docId);
     for (quint64 id : subFiles) {
         IdFilenameDB::FilePath path = idFilenameDb.get(id);
         if (path.name == fileName) {
