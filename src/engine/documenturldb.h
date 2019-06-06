@@ -128,7 +128,7 @@ void DocumentUrlDB::replace(quint64 docId, const QByteArray& url, Functor should
     }
 
     if (url.isEmpty()) {
-        auto subDocs = idTreeDb.get(docId);
+        const auto subDocs = idTreeDb.get(docId);
         if (!subDocs.isEmpty()) {
             // Check if subdocs actually exist or is it a curruption
             for (auto const& docId : subDocs) {

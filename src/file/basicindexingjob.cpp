@@ -49,7 +49,7 @@ void indexXAttr(const QString& url, Document& doc)
     KFileMetaData::UserMetaData userMetaData(url);
     TermGenerator tg(doc);
 
-    QStringList tags = userMetaData.tags();
+    const QStringList tags = userMetaData.tags();
     for (const QString& tag : tags) {
         tg.indexXattrText(tag, QByteArray("TA"));
         doc.addXattrTerm(QByteArray("TAG-") + tag.toUtf8());
@@ -202,7 +202,7 @@ bool BasicIndexingJob::index()
     doc.setCTime(statBuf.st_ctime);
 
     // Types
-    QVector<KFileMetaData::Type::Type> tList = typesForMimeType(m_mimetype);
+    const QVector<KFileMetaData::Type::Type> tList = typesForMimeType(m_mimetype);
     for (KFileMetaData::Type::Type type : tList) {
         QByteArray num = QByteArray::number(static_cast<int>(type));
         doc.addTerm(QByteArray("T") + num);
