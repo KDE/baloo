@@ -128,6 +128,7 @@ private:
     bool m_checkUnindexedFiles;
     bool m_checkStaleIndexEntries;
     bool m_isGoingIdle;
+    bool m_isSuspended;
 };
 
 }
