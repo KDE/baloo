@@ -75,6 +75,7 @@ FileIndexScheduler::FileIndexScheduler(Database* db, FileIndexerConfig* config, 
 
 FileIndexScheduler::~FileIndexScheduler()
 {
+    m_contentIndexer->quit();
     m_threadPool.waitForDone(0); // wait 0 msecs
 }
 
