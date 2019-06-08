@@ -105,19 +105,21 @@ bool UnIndexedFileIterator::shouldIndex(const QString& filePath)
         }
     }
 
-    // A folders mtime is updated when a new file is added / removed / renamed
-    // we don't really need to reindex a folder when that happens
-    // In fact, we never need to reindex a folder
-    if (timeInfo.mTime && fileInfo.isDir()) {
+    if (fileInfo.isDir()) {
+        // The folder ctime changes when the file is created, when the folder is
+        // renamed, or when the xattrs (tags, comments, ...) change
+        if (m_cTimeChanged) {
+            qCDebug(BALOO) << filePath << "ctime changed:"
+                << timeInfo.cTime << "->" << fileInfo.metadataChangeTime().toSecsSinceEpoch();
+            m_mimetype = QStringLiteral("inode/directory");
+            return true;
+        }
+        // The mtime changes when an object inside the folder is added/removed/renamed,
+        // there is no need to reindex the folder when that happens
         return false;
     }
 
     if (m_mTimeChanged || m_cTimeChanged) {
-        if (fileInfo.isDir()) {
-            m_mimetype = QStringLiteral("inode/directory");
-            return true;
-        }
-
         // This mimetype may not be completely accurate, but that's okay. This is
         // just the initial phase of indexing. The second phase can try to find
         // a more accurate mimetype.
