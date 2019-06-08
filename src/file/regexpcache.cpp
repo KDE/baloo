@@ -65,7 +65,7 @@ void RegExpCache::rebuildCacheFromFilterList(const QStringList& filters)
         }
         auto m = suffixOnlyRe.match(f);
         if (m.hasMatch()) {
-            qCDebug(BALOO) << "filter is suffix match:" << m;
+            // qCDebug(BALOO) << "filter is suffix match:" << m;
             suffixes += m.captured(1);
             continue;
         }
@@ -81,6 +81,6 @@ void RegExpCache::rebuildCacheFromFilterList(const QStringList& filters)
     QString suffixMatch = QStringLiteral("^.*\\.(")
         + suffixes.join(QChar('|'))
         + QStringLiteral(")$");
-    qCDebug(BALOO) << suffixMatch;
+    // qCDebug(BALOO) << suffixMatch;
     m_regexpCache.prepend(QRegularExpression(suffixMatch));
 }
