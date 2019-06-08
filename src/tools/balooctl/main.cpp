@@ -77,9 +77,7 @@ int main(int argc, char* argv[])
     parser.addPositionalArgument(QStringLiteral("status"), i18n("Print the status of the indexer"));
     parser.addPositionalArgument(QStringLiteral("enable"), i18n("Enable the file indexer"));
     parser.addPositionalArgument(QStringLiteral("disable"), i18n("Disable the file indexer"));
-    parser.addPositionalArgument(QStringLiteral("start"), i18n("Start the file indexer"));
-    parser.addPositionalArgument(QStringLiteral("stop"), i18n("Stop the file indexer"));
-    parser.addPositionalArgument(QStringLiteral("restart"), i18n("Restart the file indexer"));
+    parser.addPositionalArgument(QStringLiteral("purge"), i18n("Remove the index database"));
     parser.addPositionalArgument(QStringLiteral("suspend"), i18n("Suspend the file indexer"));
     parser.addPositionalArgument(QStringLiteral("resume"), i18n("Resume the file indexer"));
     parser.addPositionalArgument(QStringLiteral("check"), i18n("Check for any unindexed files and index them"));
@@ -143,39 +141,52 @@ int main(int argc, char* argv[])
         cfg.setFileIndexingEnabled(isEnabled);
 
         if (isEnabled) {
-            out << "Enabling the File Indexer\n";
-
-            cfg.setFirstRun(true);
-            start();
+            bool running = mainInterface.isValid();
+            if (running) {
+                out << "File Indexer already running\n";
+            } else {
+                out << "Enabling and starting the File Indexer\n";
+                start();
+            }
         } else {
-            out << "Disabling the File Indexer\n";
+            out << "Disabling and stopping the File Indexer\n";
 
             mainInterface.quit();
-            const QString path = fileIndexDbPath() + QStringLiteral("/index");
-            QFile(path).remove();
         }
 
         return 0;
     }
 
-    if (command == QLatin1String("start") || command == QLatin1String("stop") ||
-        command == QLatin1String("restart")) {
-        bool shouldStart = false;
-        bool shouldStop = false;
+    if (command == QLatin1String("purge")) {
+        bool running = mainInterface.isValid();
 
-        if (command == QLatin1String("start"))
-            shouldStart = true;
-        else if (command == QLatin1String("stop"))
-            shouldStop = true;
-        else if (command == QLatin1String("restart")) {
-            shouldStart = true;
-            shouldStop = true;
+        if (running) {
+            mainInterface.quit();
+            out << "Stopping the File Indexer ...";
+            for (int i = 5 * 60; i; --i) {
+                QCoreApplication::processEvents();
+                if (!mainInterface.isValid()) {
+                    break;
+                }
+                out << "." << flush;
+                QThread::msleep(200);
+            }
+            if (!mainInterface.isValid()) {
+                out << " - done\n";
+            } else {
+                out << " - failed to stop!\n";
+                return 1;
+            }
         }
 
-        if (shouldStop)
-            mainInterface.quit();
-        if (shouldStart)
+        const QString path = fileIndexDbPath() + QStringLiteral("/index");
+        QFile(path).remove();
+        out << "Deleted the index database\n";
+
+        if (running) {
             start();
+            out << "Restarting the File Indexer\n";
+        }
 
         return 0;
     }
