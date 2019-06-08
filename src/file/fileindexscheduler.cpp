@@ -49,6 +49,7 @@ FileIndexScheduler::FileIndexScheduler(Database* db, FileIndexerConfig* config, 
     , m_checkUnindexedFiles(false)
     , m_checkStaleIndexEntries(false)
     , m_isGoingIdle(false)
+    , m_isSuspended(false)
 {
     Q_ASSERT(db);
     Q_ASSERT(config);
@@ -85,6 +86,14 @@ void FileIndexScheduler::scheduleIndexing()
         return;
     }
     m_isGoingIdle = false;
+
+    if (m_isSuspended) {
+        if (m_indexerState != Suspended) {
+            m_indexerState = Suspended;
+            Q_EMIT stateChanged(m_indexerState);
+        }
+        return;
+    }
 
     if (m_config->isInitialRun()) {
         auto runnable = new FirstRunIndexer(m_db, m_config, m_config->includeFolders());
@@ -235,16 +244,14 @@ void FileIndexScheduler::powerManagementStatusChanged(bool isOnBattery)
 
 void FileIndexScheduler::setSuspend(bool suspend)
 {
+    m_isSuspended = suspend;
     if (suspend) {
         qCDebug(BALOO) << "Suspending";
         if (m_indexerState == ContentIndexing) {
             m_contentIndexer->quit();
         }
-        m_indexerState = Suspended;
-        Q_EMIT stateChanged(m_indexerState);
     } else {
         qCDebug(BALOO) << "Resuming";
-        m_indexerState = Idle;
         // No need to emit here we'll be emitting in scheduling
         scheduleIndexing();
     }
