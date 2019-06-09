@@ -26,6 +26,7 @@
 #include "documentoperations.h"
 #include "databasedbis.h"
 #include "documenturldb.h"
+#include <functional>
 
 namespace Baloo {
 
@@ -51,27 +52,12 @@ public:
      * through everything.
      *
      * \arg shouldDelete takes a quint64 as a parameter
+     * \ret true if the document (and all its children) has been removed
      *
      * This function should typically be called when there are no other ReadTransaction in process
      * as that would otherwise balloon the size of the database.
      */
-    template <typename Functor>
-    void removeRecursively(quint64 parentId, Functor shouldDelete) {
-        DocumentUrlDB docUrlDB(m_dbis.idTreeDbi, m_dbis.idFilenameDbi, m_txn);
-
-        if (!shouldDelete(parentId)) {
-            return;
-        }
-
-        const QVector<quint64> children = docUrlDB.getChildren(parentId);
-        for (quint64 id : children) {
-            removeRecursively(id, shouldDelete);
-        }
-        // refetch
-        if (docUrlDB.getChildren(parentId).isEmpty()) {
-            removeDocument(parentId);
-        }
-    }
+    bool removeRecursively(quint64 parentId, std::function<bool(quint64)> shouldDelete);
 
     void replaceDocument(const Document& doc, DocumentOperations operations);
     void commit();
