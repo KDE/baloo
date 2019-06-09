@@ -126,9 +126,11 @@ void DocumentUrlDB::replaceOrDelete(quint64 docId, const QByteArray& url, Functo
 
         } else if (parentId == path.parentId) {
             auto newname = url.mid(lastSlash + 1);
-            qDebug() << docId << url << "renaming" << path.name << "to" << newname;
-            path.name = newname;
-            idFilenameDb.put(docId, path);
+            if (newname != path.name) {
+                qDebug() << docId << url << "renaming" << path.name << "to" << newname;
+                path.name = newname;
+                idFilenameDb.put(docId, path);
+            }
             return;
         }
     }
