@@ -56,9 +56,14 @@ void FirstRunIndexer::run()
 
         FilteredDirIterator it(m_config, folder);
         while (!it.next().isEmpty()) {
-            QString mimetype = mimeDb.mimeTypeForFile(it.filePath(), QMimeDatabase::MatchExtension).name();
-            if (!m_config->shouldMimeTypeBeIndexed(mimetype)) {
-                continue;
+            QString mimetype;
+            if (it.fileInfo().isDir()) {
+                mimetype = QStringLiteral("inode/directory");
+            } else {
+                mimetype = mimeDb.mimeTypeForFile(it.filePath(), QMimeDatabase::MatchExtension).name();
+                if (!m_config->shouldMimeTypeBeIndexed(mimetype)) {
+                    continue;
+                }
             }
 
             BasicIndexingJob job(it.filePath(), mimetype, level);
