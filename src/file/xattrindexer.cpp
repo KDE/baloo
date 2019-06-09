@@ -73,8 +73,7 @@ void XAttrIndexer::run()
             continue;
         }
 
-        // FIXME: Do we also need to update the ctime of the file?
-        tr.replaceDocument(job.document(), XAttrTerms);
+        tr.replaceDocument(job.document(), XAttrTerms | DocumentTime | FileNameTerms | DocumentUrl);
     }
 
     tr.commit();
