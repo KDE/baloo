@@ -23,6 +23,7 @@
 
 #include "idtreedb.h"
 #include "idfilenamedb.h"
+#include "idutils.h"
 
 #include <QDebug>
 #include <QFile>
@@ -113,6 +114,25 @@ void DocumentUrlDB::replaceOrDelete(quint64 docId, const QByteArray& url, Functo
     if (path.name.isEmpty()) {
         return;
     }
+
+    // Check for trivial case - simple rename, i.e. parent stays the same
+    if (!url.isEmpty()) {
+        auto lastSlash = url.lastIndexOf('/');
+        auto parentPath = url.left(lastSlash + 1);
+        auto parentId = filePathToId(parentPath);
+        if (!parentId) {
+            qDebug() << "parent" << parentPath << "of" << url << "does not exist";
+            return;
+
+        } else if (parentId == path.parentId) {
+            auto newname = url.mid(lastSlash + 1);
+            qDebug() << docId << url << "renaming" << path.name << "to" << newname;
+            path.name = newname;
+            idFilenameDb.put(docId, path);
+            return;
+        }
+    }
+
     idFilenameDb.del(docId);
 
     QVector<quint64> subDocs = idTreeDb.get(path.parentId);
