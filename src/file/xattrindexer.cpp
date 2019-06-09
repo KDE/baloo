@@ -41,6 +41,8 @@ XAttrIndexer::XAttrIndexer(Database* db, const FileIndexerConfig* config, const 
 void XAttrIndexer::run()
 {
     QMimeDatabase mimeDb;
+    BasicIndexingJob::IndexingLevel level = m_config->onlyBasicIndexing() ? BasicIndexingJob::NoLevel
+        : BasicIndexingJob::MarkForContentIndexing;
 
     Transaction tr(m_db, Transaction::ReadWrite);
 
@@ -58,8 +60,6 @@ void XAttrIndexer::run()
         }
 
         // FIXME: The BasicIndexingJob extracts too much info. We only need the xattr
-        BasicIndexingJob::IndexingLevel level =
-            m_config->onlyBasicIndexing() ? BasicIndexingJob::NoLevel : BasicIndexingJob::MarkForContentIndexing;
         BasicIndexingJob job(filePath, mimetype, level);
         if (!job.index()) {
             continue;

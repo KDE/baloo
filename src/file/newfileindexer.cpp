@@ -41,6 +41,8 @@ NewFileIndexer::NewFileIndexer(Database* db, const FileIndexerConfig* config, co
 void NewFileIndexer::run()
 {
     QMimeDatabase mimeDb;
+    BasicIndexingJob::IndexingLevel level = m_config->onlyBasicIndexing() ? BasicIndexingJob::NoLevel
+        : BasicIndexingJob::MarkForContentIndexing;
 
     Transaction tr(m_db, Transaction::ReadWrite);
 
@@ -57,8 +59,6 @@ void NewFileIndexer::run()
             continue;
         }
 
-        BasicIndexingJob::IndexingLevel level =
-            m_config->onlyBasicIndexing() ? BasicIndexingJob::NoLevel : BasicIndexingJob::MarkForContentIndexing;
         BasicIndexingJob job(filePath, mimetype, level);
         if (!job.index()) {
             continue;
