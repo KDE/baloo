@@ -76,6 +76,13 @@ void PendingFileQueue::enqueue(const PendingFile& file)
         m_cache.erase(droppedFilesBegin, end);
     }
 
+    if (file.shouldRemoveIndex()) {
+        m_cache.removeOne(file);
+        m_pendingFiles.remove(file.path());
+        Q_EMIT removeFileIndex(file.path());
+        return;
+    }
+
     int i = m_cache.indexOf(file);
     if (i == -1) {
         m_cache << file;
@@ -89,13 +96,7 @@ void PendingFileQueue::enqueue(const PendingFile& file)
 void PendingFileQueue::processCache(const QTime& currentTime)
 {
     for (const PendingFile& file : qAsConst(m_cache)) {
-        if (file.shouldRemoveIndex()) {
-            Q_EMIT removeFileIndex(file.path());
-
-            m_recentlyEmitted.remove(file.path());
-            m_pendingFiles.remove(file.path());
-        }
-        else if (file.shouldIndexXAttrOnly()) {
+        if (file.shouldIndexXAttrOnly()) {
             Q_EMIT indexXAttr(file.path());
         }
         else if (file.shouldIndexContents()) {

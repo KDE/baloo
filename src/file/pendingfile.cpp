@@ -77,7 +77,6 @@ void PendingFile::merge(const PendingFile& file)
     m_attributesChanged |= file.m_attributesChanged;
     m_closedOnWrite |= file.m_closedOnWrite;
     m_created |= file.m_created;
-    m_deleted |= file.m_deleted;
     m_modified |= file.m_modified;
 }
 
