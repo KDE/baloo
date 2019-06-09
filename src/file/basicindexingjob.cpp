@@ -201,20 +201,21 @@ bool BasicIndexingJob::index()
     doc.setMTime(statBuf.st_mtime);
     doc.setCTime(statBuf.st_ctime);
 
-    // Types
-    const QVector<KFileMetaData::Type::Type> tList = typesForMimeType(m_mimetype);
-    for (KFileMetaData::Type::Type type : tList) {
-        QByteArray num = QByteArray::number(static_cast<int>(type));
-        doc.addTerm(QByteArray("T") + num);
-    }
-
     if (S_ISDIR(statBuf.st_mode)) {
         static const QByteArray type = QByteArray("T") + QByteArray::number(static_cast<int>(KFileMetaData::Type::Folder));
         doc.addTerm(type);
         // For folders we do not need to go through file indexing, so we do not set contentIndexing
-    }
-    else if (m_indexingLevel == MarkForContentIndexing) {
-        doc.setContentIndexing(true);
+
+    } else {
+        if (m_indexingLevel == MarkForContentIndexing) {
+            doc.setContentIndexing(true);
+        }
+        // Types
+        const QVector<KFileMetaData::Type::Type> tList = typesForMimeType(m_mimetype);
+        for (KFileMetaData::Type::Type type : tList) {
+            QByteArray num = QByteArray::number(static_cast<int>(type));
+            doc.addTerm(QByteArray("T") + num);
+        }
     }
 
     indexXAttr(m_filePath, doc);
