@@ -62,8 +62,6 @@ public:
     template <typename Functor>
     void replace(quint64 docId, const QByteArray& url, Functor shouldDeleteFolder);
 
-    void rename(quint64 docId, const QByteArray& newFileName);
-
     quint64 getId(quint64 docId, const QByteArray& fileName) const;
 
     PostingIterator* iter(quint64 docId) {
