@@ -25,6 +25,7 @@
 #include "transaction.h"
 
 #include <QMimeDatabase>
+#include <QFileInfo>
 
 using namespace Baloo;
 
@@ -49,14 +50,24 @@ void NewFileIndexer::run()
     for (const QString& filePath : qAsConst(m_files)) {
         Q_ASSERT(!filePath.endsWith(QLatin1Char('/')));
 
-        QString fileName = filePath.mid(filePath.lastIndexOf(QLatin1Char('/')) + 1);
-        if (!m_config->shouldFileBeIndexed(fileName)) {
-            continue;
-        }
+        QString mimetype;
+        QFileInfo fileInfo(filePath);
 
-        QString mimetype = mimeDb.mimeTypeForFile(filePath, QMimeDatabase::MatchExtension).name();
-        if (!m_config->shouldMimeTypeBeIndexed(mimetype)) {
-            continue;
+        if (fileInfo.isDir()) {
+            if (!m_config->shouldFolderBeIndexed(filePath)) {
+                continue;
+            }
+            mimetype = QStringLiteral("inode/directory");
+
+        } else {
+            QString fileName = filePath.mid(filePath.lastIndexOf(QLatin1Char('/')) + 1);
+            if (!m_config->shouldFileBeIndexed(fileName)) {
+                continue;
+            }
+            mimetype = mimeDb.mimeTypeForFile(filePath, QMimeDatabase::MatchExtension).name();
+            if (!m_config->shouldMimeTypeBeIndexed(mimetype)) {
+                continue;
+            }
         }
 
         BasicIndexingJob job(filePath, mimetype, level);
