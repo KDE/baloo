@@ -96,7 +96,11 @@ void ModifiedFileIndexer::run()
         // we can get modified events for files which do not exist
         // cause Baloo was not running and missed those events
         if (tr.hasDocument(job.document().id())) {
-            tr.replaceDocument(job.document(), DocumentTime);
+            if (cTimeChanged) {
+                tr.replaceDocument(job.document(), XAttrTerms | DocumentTime | FileNameTerms | DocumentUrl);
+            } else {
+                tr.replaceDocument(job.document(), DocumentTime);
+            }
         }
         else {
             tr.addDocument(job.document());
