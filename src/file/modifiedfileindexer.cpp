@@ -58,33 +58,39 @@ void ModifiedFileIndexer::run()
             continue;
         }
 
-        QString mimetype = mimeDb.mimeTypeForFile(filePath, QMimeDatabase::MatchExtension).name();
-        if (!m_config->shouldMimeTypeBeIndexed(mimetype)) {
-            continue;
-        }
-
         quint64 fileId = filePathToId(QFile::encodeName(filePath));
         if (!fileId) {
             continue;
         }
 
-        DocumentTimeDB::TimeInfo timeInfo = tr.documentTimeInfo(fileId);
-
         // FIXME: Using QFileInfo over here is quite expensive!
         QFileInfo fileInfo(filePath);
-
-        // A folders mtime is updated when a new file is added / removed / renamed
-        // we don't really need to reindex a folder when that happens
-        // In fact, we never need to reindex a folder
-        if (timeInfo.mTime && fileInfo.isDir()) {
+        if (fileInfo.isSymLink()) {
             continue;
         }
 
-        bool mTimeChanged = timeInfo.mTime != fileInfo.lastModified().toTime_t();
-        bool cTimeChanged = timeInfo.cTime != fileInfo.metadataChangeTime().toTime_t();
+        DocumentTimeDB::TimeInfo timeInfo = tr.documentTimeInfo(fileId);
+        bool mTimeChanged = timeInfo.mTime != fileInfo.lastModified().toSecsSinceEpoch();
+        bool cTimeChanged = timeInfo.cTime != fileInfo.metadataChangeTime().toSecsSinceEpoch();
 
         if (!mTimeChanged && !cTimeChanged) {
             continue;
+        }
+
+        QString mimetype;
+        if (fileInfo.isDir()) {
+            // The folder ctime changes when the folder is created, when the folder is
+            // renamed, or when the xattrs (tags, comments, ...) change
+            if (!cTimeChanged) {
+                continue;
+            }
+            mimetype = QStringLiteral("inode/directory");
+
+        } else {
+            mimetype = mimeDb.mimeTypeForFile(filePath, QMimeDatabase::MatchExtension).name();
+            if (!m_config->shouldMimeTypeBeIndexed(mimetype)) {
+                continue;
+            }
         }
 
         // FIXME: The BasicIndexingJob extracts too much info. We only need the time
