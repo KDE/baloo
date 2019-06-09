@@ -48,16 +48,23 @@ public:
     QVector<quint64> getChildren(quint64 docId) const;
 
     /**
-     * \arg shouldDeleteFolder This function is called on any empty folder, and is used to
-     * determine if that empty folder should be deleted.
+     * Deletes a document from the DB, and conditionally also removes its
+     * parent folders.
+     *
+     * \arg shouldDeleteFolder This function is called on any empty parent folder,
+     * it is used to determine if that folder should be deleted.
      */
     template <typename Functor>
     void del(quint64 docId, Functor shouldDeleteFolder) {
-        replace(docId, QByteArray(), shouldDeleteFolder);
+        if (!docId) {
+            qWarning() << "del called with invalid docId:" << docId;
+            return;
+        }
+        replaceOrDelete(docId, QByteArray(), shouldDeleteFolder);
     }
 
     /**
-     * If \p url is empty then the docId is deleted
+     * \p url new url of the file (complete path)
      */
     template <typename Functor>
     void replace(quint64 docId, const QByteArray& url, Functor shouldDeleteFolder);
@@ -74,6 +81,9 @@ public:
 private:
     void add(quint64 id, quint64 parentId, const QByteArray& name);
 
+    template <typename Functor>
+    void replaceOrDelete(quint64 docId, const QByteArray& url, Functor shouldDeleteFolder);
+
     MDB_txn* m_txn;
     MDB_dbi m_idFilenameDbi;
     MDB_dbi m_idTreeDbi;
@@ -85,7 +95,16 @@ private:
 template <typename Functor>
 void DocumentUrlDB::replace(quint64 docId, const QByteArray& url, Functor shouldDeleteFolder)
 {
-    Q_ASSERT(docId > 0);
+    if (!docId || url.endsWith('/') || !url.startsWith('/')) {
+        qWarning() << "replace called with invalid arguments, docId:" << docId << "url:" << url;
+        return;
+    }
+    replaceOrDelete(docId, url, shouldDeleteFolder);
+}
+
+template <typename Functor>
+void DocumentUrlDB::replaceOrDelete(quint64 docId, const QByteArray& url, Functor shouldDeleteFolder)
+{
     IdFilenameDB idFilenameDb(m_idFilenameDbi, m_txn);
     IdTreeDB idTreeDb(m_idTreeDbi, m_txn);
 
