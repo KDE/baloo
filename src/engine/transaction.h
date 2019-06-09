@@ -26,6 +26,7 @@
 #include "postingdb.h"
 #include "writetransaction.h"
 #include "documenttimedb.h"
+#include <functional>
 
 #include <QString>
 #include <lmdb.h>
@@ -107,12 +108,12 @@ public:
     void removeRecursively(quint64 parentId);
     void addFailed(quint64 id);
 
-    template <typename Functor>
-    void removeRecursively(quint64 id, Functor shouldDelete) {
+    bool removeRecursively(quint64 parentId, std::function<bool(quint64)> shouldDelete)
+    {
         Q_ASSERT(m_txn);
         Q_ASSERT(m_writeTrans);
 
-        m_writeTrans->removeRecursively(id, shouldDelete);
+        return m_writeTrans->removeRecursively(parentId, shouldDelete);
     }
 
     void replaceDocument(const Document& doc, DocumentOperations operations);
