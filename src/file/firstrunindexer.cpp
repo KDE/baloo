@@ -48,6 +48,8 @@ void FirstRunIndexer::run()
     }
 
     QMimeDatabase mimeDb;
+    BasicIndexingJob::IndexingLevel level = m_config->onlyBasicIndexing() ? BasicIndexingJob::NoLevel
+        : BasicIndexingJob::MarkForContentIndexing;
 
     for (const QString& folder : qAsConst(m_folders)) {
         Transaction tr(m_db, Transaction::ReadWrite);
@@ -58,8 +60,7 @@ void FirstRunIndexer::run()
             if (!m_config->shouldMimeTypeBeIndexed(mimetype)) {
                 continue;
             }
-            BasicIndexingJob::IndexingLevel level =
-                m_config->onlyBasicIndexing() ? BasicIndexingJob::NoLevel : BasicIndexingJob::MarkForContentIndexing;
+
             BasicIndexingJob job(it.filePath(), mimetype, level);
             if (!job.index()) {
                 continue;
