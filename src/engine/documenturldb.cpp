@@ -181,19 +181,6 @@ QVector<quint64> DocumentUrlDB::getChildren(quint64 docId) const
     return idTreeDb.get(docId);
 }
 
-void DocumentUrlDB::rename(quint64 docId, const QByteArray& newFileName)
-{
-    if (!docId || newFileName.isEmpty()) {
-        return;
-    }
-
-    IdFilenameDB idFilenameDb(m_idFilenameDbi, m_txn);
-
-    auto path = idFilenameDb.get(docId);
-    path.name = newFileName;
-    idFilenameDb.put(docId, path);
-}
-
 quint64 DocumentUrlDB::getId(quint64 docId, const QByteArray& fileName) const
 {
     if (fileName.isEmpty()) {
