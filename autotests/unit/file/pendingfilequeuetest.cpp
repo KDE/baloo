@@ -26,7 +26,7 @@
 #include <qsignalspy.h>
 #include <qtimer.h>
 
-using namespace Baloo;
+namespace Baloo {
 
 class PendingFileQueueTest : public QObject
 {
@@ -49,7 +49,8 @@ void PendingFileQueueTest::testTimeout()
     QString myUrl(QStringLiteral("/tmp"));
 
     PendingFileQueue queue;
-    queue.setMinimumTimeout(2);
+    queue.setMinimumTimeout(1);
+    queue.setTrackingTime(1);
 
     QSignalSpy spy(&queue, SIGNAL(indexModifiedFile(QString)));
     QVERIFY(spy.isValid());
@@ -59,20 +60,29 @@ void PendingFileQueueTest::testTimeout()
     queue.enqueue(file);
 
     // The signal should be emitted immediately
-    QVERIFY(spy.wait());
+    QVERIFY(spy.wait(50));
     QCOMPARE(spy.count(), 1);
     QCOMPARE(spy.takeFirst().constFirst().toString(), myUrl);
+    QCOMPARE(queue.m_recentlyEmitted.count(), 1);
 
     // Enqueue the url again. This time it should wait for should wait for the
     // minimumTimeout
     queue.enqueue(file);
 
-    QTest::qWait(1000);
+    QTest::qWait(100);
+    QCOMPARE(queue.m_pendingFiles.count(), 1);
+    QCOMPARE(queue.m_recentlyEmitted.count(), 1);
     QVERIFY(spy.isEmpty());
 
-    QVERIFY(spy.wait(2000));
+    QVERIFY(spy.wait(1500));
     QCOMPARE(spy.count(), 1);
     QCOMPARE(spy.takeFirst().constFirst().toString(), myUrl);
+    QCOMPARE(queue.m_pendingFiles.count(), 0);
+    QCOMPARE(queue.m_recentlyEmitted.count(), 1);
+
+    // Wait for Tracking Time
+    QTest::qWait(1500);
+    QCOMPARE(queue.m_recentlyEmitted.count(), 0);
 }
 
 void PendingFileQueueTest::testRequeue()
@@ -110,7 +120,8 @@ void PendingFileQueueTest::testRequeue()
     QCOMPARE(spy.count(), 1);
     QCOMPARE(spy.takeFirst().constFirst().toString(), myUrl);
 }
+} // namespace
 
-QTEST_GUILESS_MAIN(PendingFileQueueTest)
+QTEST_GUILESS_MAIN(Baloo::PendingFileQueueTest)
 
 #include "pendingfilequeuetest.moc"
