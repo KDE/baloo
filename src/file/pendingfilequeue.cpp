@@ -33,21 +33,25 @@ PendingFileQueue::PendingFileQueue(QObject* parent)
 {
     m_cacheTimer.setInterval(10);
     m_cacheTimer.setSingleShot(true);
-    connect(&m_cacheTimer, &QTimer::timeout, this, &PendingFileQueue::processCache);
+    connect(&m_cacheTimer, &QTimer::timeout, [this] {
+            PendingFileQueue::processCache(QTime::currentTime());
+    });
 
     m_trackingTime = 120 * 1000;
 
     m_clearRecentlyEmittedTimer.setInterval(m_trackingTime);
     m_clearRecentlyEmittedTimer.setSingleShot(true);
-    connect(&m_clearRecentlyEmittedTimer, &QTimer::timeout,
-            this, &PendingFileQueue::clearRecentlyEmitted);
+    connect(&m_clearRecentlyEmittedTimer, &QTimer::timeout, [this] {
+            PendingFileQueue::clearRecentlyEmitted(QTime::currentTime());
+    });
 
     m_minTimeout = 5 * 1000;
     m_maxTimeout = 60 * 1000;
     m_pendingFilesTimer.setInterval(m_minTimeout);
     m_pendingFilesTimer.setSingleShot(true);
-    connect(&m_pendingFilesTimer, &QTimer::timeout,
-            this, &PendingFileQueue::processPendingFiles);
+    connect(&m_pendingFilesTimer, &QTimer::timeout, [this] {
+            PendingFileQueue::processPendingFiles(QTime::currentTime());
+    });
 }
 
 PendingFileQueue::~PendingFileQueue()
@@ -82,10 +86,8 @@ void PendingFileQueue::enqueue(const PendingFile& file)
     m_cacheTimer.start();
 }
 
-void PendingFileQueue::processCache()
+void PendingFileQueue::processCache(const QTime& currentTime)
 {
-    QTime currentTime = QTime::currentTime();
-
     for (const PendingFile& file : qAsConst(m_cache)) {
         if (file.shouldRemoveIndex()) {
             Q_EMIT removeFileIndex(file.path());
@@ -136,9 +138,8 @@ void PendingFileQueue::processCache()
     }
 }
 
-void PendingFileQueue::clearRecentlyEmitted()
+void PendingFileQueue::clearRecentlyEmitted(const QTime& time)
 {
-    QTime time = QTime::currentTime();
     int nextUpdate = m_trackingTime;
 
     QMutableHashIterator<QString, QTime> it(m_recentlyEmitted);
@@ -160,9 +161,8 @@ void PendingFileQueue::clearRecentlyEmitted()
     }
 }
 
-void PendingFileQueue::processPendingFiles()
+void PendingFileQueue::processPendingFiles(const QTime& currentTime)
 {
-    QTime currentTime = QTime::currentTime();
     int nextUpdate = m_maxTimeout;
 
     QMutableHashIterator<QString, QTime> it(m_pendingFiles);

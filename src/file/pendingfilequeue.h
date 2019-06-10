@@ -69,9 +69,9 @@ public Q_SLOTS:
     void setMaximumTimeout(int seconds);
 
 private Q_SLOTS:
-    void processCache();
-    void processPendingFiles();
-    void clearRecentlyEmitted();
+    void processCache(const QTime& currentTime);
+    void processPendingFiles(const QTime& currentTime);
+    void clearRecentlyEmitted(const QTime& currentTime);
 
 private:
     QVector<PendingFile> m_cache;
