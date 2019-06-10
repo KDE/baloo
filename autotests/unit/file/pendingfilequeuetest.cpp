@@ -36,6 +36,7 @@ public:
     PendingFileQueueTest();
 
 private Q_SLOTS:
+    void testTimers();
     void testTimeout();
     void testRequeue();
 };
@@ -44,7 +45,20 @@ PendingFileQueueTest::PendingFileQueueTest()
 {
 }
 
-void PendingFileQueueTest::testTimeout()
+class TimerEventEater : public QObject
+{
+    Q_OBJECT
+
+public:
+    TimerEventEater(QObject* parent = nullptr) : QObject(parent) {}
+
+protected:
+    bool eventFilter(QObject *object, QEvent *event) override {
+        return true;
+    }
+};
+
+void PendingFileQueueTest::testTimers()
 {
     QString myUrl(QStringLiteral("/tmp"));
 
@@ -85,13 +99,75 @@ void PendingFileQueueTest::testTimeout()
     QCOMPARE(queue.m_recentlyEmitted.count(), 0);
 }
 
+void PendingFileQueueTest::testTimeout()
+{
+    QString file1Url(QStringLiteral("file1_url"));
+    QString file2Url(QStringLiteral("file2_url"));
+
+    QTime currentTime = QTime::currentTime();
+
+    PendingFileQueue queue;
+    queue.setMinimumTimeout(2);
+
+    auto eventEater = new TimerEventEater(this);
+    queue.m_cacheTimer.installEventFilter(eventEater);
+    queue.m_clearRecentlyEmittedTimer.installEventFilter(eventEater);
+    queue.m_pendingFilesTimer.installEventFilter(eventEater);
+
+    QSignalSpy spy(&queue, SIGNAL(indexModifiedFile(QString)));
+    QVERIFY(spy.isValid());
+
+    PendingFile file1(file1Url);
+    PendingFile file2(file2Url);
+    file1.setModified();
+    file2.setModified();
+
+    // Enqueue, and process the event queue
+    queue.enqueue(file1);
+    QTimer::singleShot(0, [&queue, currentTime] { queue.processCache(currentTime); });
+
+    // The signal should be emitted immediately
+    QVERIFY(spy.wait());
+    QCOMPARE(spy.count(), 1);
+    QCOMPARE(spy.takeFirst().constFirst().toString(), file1Url);
+
+    // Enqueue file1 again, and also file2. This time, only file2
+    // should be signaled immediately
+    queue.enqueue(file1);
+    queue.enqueue(file2);
+    QTimer::singleShot(0, [&queue, currentTime] { queue.processCache(currentTime); });
+
+    QVERIFY(spy.wait(50));
+    QCOMPARE(spy.count(), 1);
+    QCOMPARE(spy.takeFirst().constFirst().toString(), file2Url);
+
+    // Advance time 1.5 seconds, and let the pending queue be processed.
+    // Nothing should be signaled, as the timeout is 2 seconds
+    currentTime = currentTime.addMSecs(1500);
+    QTimer::singleShot(0, [&queue, currentTime] { queue.processPendingFiles(currentTime); });
+    QVERIFY(!spy.wait(50));
+
+    currentTime = currentTime.addMSecs(1000);
+    QTimer::singleShot(0, [&queue, currentTime] { queue.processPendingFiles(currentTime); });
+    QVERIFY(spy.wait(0));
+    QCOMPARE(spy.count(), 1);
+    QCOMPARE(spy.takeFirst().constFirst().toString(), file1Url);
+}
+
 void PendingFileQueueTest::testRequeue()
 {
     QString myUrl(QStringLiteral("/tmp"));
 
+    QTime currentTime = QTime::currentTime();
+
     PendingFileQueue queue;
     queue.setMinimumTimeout(2);
     queue.setMaximumTimeout(5);
+
+    auto eventEater = new TimerEventEater(this);
+    queue.m_cacheTimer.installEventFilter(eventEater);
+    queue.m_clearRecentlyEmittedTimer.installEventFilter(eventEater);
+    queue.m_pendingFilesTimer.installEventFilter(eventEater);
 
     QSignalSpy spy(&queue, SIGNAL(indexModifiedFile(QString)));
     QVERIFY(spy.isValid());
@@ -99,24 +175,35 @@ void PendingFileQueueTest::testRequeue()
     PendingFile file(myUrl);
     file.setModified();
     queue.enqueue(file);
+    QTimer::singleShot(0, [&queue, currentTime] { queue.processCache(currentTime); });
 
     // The signal should be emitted immediately
-    QTest::qWait(20);
+    QVERIFY(spy.wait());
     QCOMPARE(spy.count(), 1);
     QCOMPARE(spy.takeFirst().constFirst().toString(), myUrl);
 
-    // Send many events
-    queue.enqueue(file);
-    QTest::qWait(20);
-    queue.enqueue(file);
-    QTest::qWait(20);
-    queue.enqueue(file);
-    QTest::qWait(20);
+    // Send many events. The first one should enqueue it with the minimumTimeout, and each
+    // successive one should double the timeout up to maxTimeout
+    for (int i = 0; i < 3; i++) {
+        queue.enqueue(file);
+        currentTime = currentTime.addMSecs(20);
+        QTimer::singleShot(0, [&queue, currentTime] { queue.processCache(currentTime); });
+        spy.wait(0);
+    }
 
-    QTest::qWait(3500);
-    QVERIFY(spy.isEmpty());
+    // Signal should be emitted after 5 seconds (min(2 * 2 * 2, maxTimeout))
+    int elapsed10thSeconds = 0;
+    while (true) {
+        currentTime = currentTime.addMSecs(100);
+        QTimer::singleShot(0, [&queue, currentTime] { queue.processPendingFiles(currentTime); });
+        if (spy.wait(0)) {
+            break;
+        }
+        QVERIFY2(elapsed10thSeconds <= 50, "Signal emitted late");
+        elapsed10thSeconds++;
+    }
+    QVERIFY2(elapsed10thSeconds > 40, "Signal emitted early");
 
-    QVERIFY(spy.wait(2500));
     QCOMPARE(spy.count(), 1);
     QCOMPARE(spy.takeFirst().constFirst().toString(), myUrl);
 }
