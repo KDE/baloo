@@ -33,6 +33,8 @@
 
 namespace Baloo {
 
+class PendingFileQueueTest;
+
 /**
  *
  */
@@ -92,6 +94,8 @@ private:
     int m_minTimeout;
     int m_maxTimeout;
     int m_trackingTime;
+
+    friend class PendingFileQueueTest;
 };
 
 }
