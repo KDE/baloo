@@ -53,6 +53,10 @@ void NewFileIndexer::run()
         QString mimetype;
         QFileInfo fileInfo(filePath);
 
+        if (fileInfo.isSymLink()) {
+            continue;
+        }
+
         if (fileInfo.isDir()) {
             if (!m_config->shouldFolderBeIndexed(filePath)) {
                 continue;
