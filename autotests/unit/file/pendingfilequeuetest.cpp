@@ -39,6 +39,7 @@ private Q_SLOTS:
     void testTimers();
     void testTimeout();
     void testRequeue();
+    void testDeleteCreate();
 };
 
 PendingFileQueueTest::PendingFileQueueTest()
@@ -207,6 +208,44 @@ void PendingFileQueueTest::testRequeue()
     QCOMPARE(spy.count(), 1);
     QCOMPARE(spy.takeFirst().constFirst().toString(), myUrl);
 }
+
+void PendingFileQueueTest::testDeleteCreate()
+{
+    QString myUrl(QStringLiteral("/dir/testfile"));
+
+    QTime currentTime = QTime::currentTime();
+
+    PendingFileQueue queue;
+
+    auto eventEater = new TimerEventEater(this);
+    queue.m_cacheTimer.installEventFilter(eventEater);
+    queue.m_clearRecentlyEmittedTimer.installEventFilter(eventEater);
+    queue.m_pendingFilesTimer.installEventFilter(eventEater);
+
+    QSignalSpy spyModified(&queue, SIGNAL(indexModifiedFile(QString)));
+    QSignalSpy spyRemoved(&queue, SIGNAL(removeFileIndex(QString)));
+    QVERIFY(spyModified.isValid());
+    QVERIFY(spyRemoved.isValid());
+
+    PendingFile file1(myUrl);
+    PendingFile file2(myUrl);
+    file1.setDeleted();
+    file2.setModified();
+
+    queue.enqueue(file1);
+    queue.enqueue(file2);
+    QTimer::singleShot(0, [&queue, currentTime] { queue.processCache(currentTime); });
+
+    // The signals should be emitted immediately
+    QVERIFY(spyModified.wait());
+
+    QCOMPARE(spyRemoved.count(), 1);
+    QCOMPARE(spyRemoved.takeFirst().constFirst().toString(), myUrl);
+
+    QCOMPARE(spyModified.count(), 1);
+    QCOMPARE(spyModified.takeFirst().constFirst().toString(), myUrl);
+}
+
 } // namespace
 
 QTEST_GUILESS_MAIN(Baloo::PendingFileQueueTest)
