@@ -40,6 +40,8 @@ private Q_SLOTS:
     void testTimeout();
     void testRequeue();
     void testDeleteCreate();
+    void testCreateDelete();
+    void testCreateDelete2();
 };
 
 PendingFileQueueTest::PendingFileQueueTest()
@@ -244,6 +246,102 @@ void PendingFileQueueTest::testDeleteCreate()
 
     QCOMPARE(spyModified.count(), 1);
     QCOMPARE(spyModified.takeFirst().constFirst().toString(), myUrl);
+}
+
+void PendingFileQueueTest::testCreateDelete()
+{
+    QString myUrl(QStringLiteral("/dir/testfile"));
+
+    QTime currentTime = QTime::currentTime();
+
+    PendingFileQueue queue;
+
+    auto eventEater = new TimerEventEater(this);
+    queue.m_cacheTimer.installEventFilter(eventEater);
+    queue.m_clearRecentlyEmittedTimer.installEventFilter(eventEater);
+    queue.m_pendingFilesTimer.installEventFilter(eventEater);
+
+    QSignalSpy spyModified(&queue, SIGNAL(indexModifiedFile(QString)));
+    QSignalSpy spyRemoved(&queue, SIGNAL(removeFileIndex(QString)));
+    QVERIFY(spyModified.isValid());
+    QVERIFY(spyRemoved.isValid());
+
+    // Actually same file, just different events
+    PendingFile file_modified(myUrl);
+    PendingFile file_delete(myUrl);
+    file_modified.setModified();
+    file_delete.setDeleted();
+
+    QTimer::singleShot(0, [&] {
+        queue.enqueue(file_modified);
+        queue.enqueue(file_delete);
+    });
+    QTimer::singleShot(0, [&queue, currentTime] { queue.processCache(currentTime); });
+
+    // The Removed signal should be emitted immediately
+    QVERIFY(spyRemoved.wait());
+
+    // The Modified signal should be suppressed
+    QCOMPARE(spyModified.count(), 0);
+
+    QCOMPARE(spyRemoved.count(), 1);
+    QCOMPARE(spyRemoved.takeFirst().constFirst().toString(), myUrl);
+}
+
+void PendingFileQueueTest::testCreateDelete2()
+{
+    QString myUrl(QStringLiteral("/dir/testfile"));
+
+    QTime currentTime = QTime::currentTime();
+
+    PendingFileQueue queue;
+
+    auto eventEater = new TimerEventEater(this);
+    queue.m_cacheTimer.installEventFilter(eventEater);
+    queue.m_clearRecentlyEmittedTimer.installEventFilter(eventEater);
+    queue.m_pendingFilesTimer.installEventFilter(eventEater);
+
+    QSignalSpy spyModified(&queue, SIGNAL(indexModifiedFile(QString)));
+    QSignalSpy spyRemoved(&queue, SIGNAL(removeFileIndex(QString)));
+    QVERIFY(spyModified.isValid());
+    QVERIFY(spyRemoved.isValid());
+
+    PendingFile file_modified(myUrl);
+    PendingFile file_delete(myUrl);
+    file_modified.setModified();
+    file_delete.setDeleted();
+
+    // Prime the recent files list
+    queue.enqueue(file_modified);
+    QTimer::singleShot(0, [&queue, currentTime] { queue.processCache(currentTime); });
+    QVERIFY(spyModified.wait());
+    QCOMPARE(spyModified.count(), 1);
+    QCOMPARE(spyModified.takeFirst().constFirst().toString(), myUrl);
+    QCOMPARE(queue.m_recentlyEmitted.count(), 1);
+
+    // Modify the file again
+    QTimer::singleShot(0, [&] { queue.enqueue(file_modified); });
+    QTimer::singleShot(0, [&queue, currentTime] { queue.processCache(currentTime); });
+    // Process the timer, the file should be pending now
+    QTest::qWait(10);
+    QCOMPARE(queue.m_pendingFiles.count(), 1);
+
+    // Let 5 seconds pass (minimum pending timeout)
+    currentTime = currentTime.addMSecs(5000);
+    QTimer::singleShot(0, [&] { queue.enqueue(file_delete); });
+    // The "process" timer fires 10ms after the enqueue, plenty of time for the pending timer to fire
+    QTimer::singleShot(0, [&queue, currentTime] { queue.processPendingFiles(currentTime); });
+    currentTime = currentTime.addMSecs(10);
+    QTimer::singleShot(0, [&queue, currentTime] { queue.processCache(currentTime); });
+
+    // The Removed signal should be emitted immediately
+    QVERIFY(spyRemoved.wait());
+    QCOMPARE(spyRemoved.count(), 1);
+    QCOMPARE(spyRemoved.takeFirst().constFirst().toString(), myUrl);
+
+    // The Modified signal should be suppressed, the file no longer be pending
+    QCOMPARE(spyModified.count(), 0);
+    QCOMPARE(queue.m_pendingFiles.count(), 0);
 }
 
 } // namespace
