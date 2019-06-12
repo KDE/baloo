@@ -35,16 +35,16 @@ PendingFileQueue::PendingFileQueue(QObject* parent)
     m_cacheTimer.setSingleShot(true);
     connect(&m_cacheTimer, &QTimer::timeout, this, &PendingFileQueue::processCache);
 
-    m_trackingTime = 120;
+    m_trackingTime = 120 * 1000;
 
-    m_clearRecentlyEmittedTimer.setInterval(m_trackingTime * 1000);
+    m_clearRecentlyEmittedTimer.setInterval(m_trackingTime);
     m_clearRecentlyEmittedTimer.setSingleShot(true);
     connect(&m_clearRecentlyEmittedTimer, &QTimer::timeout,
             this, &PendingFileQueue::clearRecentlyEmitted);
 
-    m_minTimeout = 5;
-    m_maxTimeout = 60;
-    m_pendingFilesTimer.setInterval(m_minTimeout * 1000);
+    m_minTimeout = 5 * 1000;
+    m_maxTimeout = 60 * 1000;
+    m_pendingFilesTimer.setInterval(m_minTimeout);
     m_pendingFilesTimer.setSingleShot(true);
     connect(&m_pendingFilesTimer, &QTimer::timeout,
             this, &PendingFileQueue::processPendingFiles);
@@ -100,14 +100,14 @@ void PendingFileQueue::processCache()
             if (m_pendingFiles.contains(file.path())) {
                 QTime time = m_pendingFiles[file.path()];
 
-                int secondsLeft = currentTime.secsTo(time);
-                secondsLeft = qBound(m_minTimeout, secondsLeft * 2, m_maxTimeout);
+                int msecondsLeft = currentTime.msecsTo(time);
+                msecondsLeft = qBound(m_minTimeout, msecondsLeft * 2, m_maxTimeout);
 
-                time = currentTime.addSecs(secondsLeft);
+                time = currentTime.addMSecs(msecondsLeft);
                 m_pendingFiles[file.path()] = time;
             }
             else if (m_recentlyEmitted.contains(file.path())) {
-                QTime time = currentTime.addSecs(m_minTimeout);
+                QTime time = currentTime.addMSecs(m_minTimeout);
                 m_pendingFiles[file.path()] = time;
             }
             else {
@@ -126,12 +126,12 @@ void PendingFileQueue::processCache()
     m_cache.clear();
 
     if (!m_pendingFiles.isEmpty() && !m_pendingFilesTimer.isActive()) {
-        m_pendingFilesTimer.setInterval(m_minTimeout * 1000);
+        m_pendingFilesTimer.setInterval(m_minTimeout);
         m_pendingFilesTimer.start();
     }
 
     if (!m_recentlyEmitted.isEmpty() && !m_clearRecentlyEmittedTimer.isActive()) {
-        m_clearRecentlyEmittedTimer.setInterval(m_trackingTime * 1000);
+        m_clearRecentlyEmittedTimer.setInterval(m_trackingTime);
         m_clearRecentlyEmittedTimer.start();
     }
 }
@@ -145,17 +145,17 @@ void PendingFileQueue::clearRecentlyEmitted()
     while (it.hasNext()) {
         it.next();
 
-        int secondsSinceEmitted = it.value().secsTo(time);
-        if (secondsSinceEmitted >= m_trackingTime) {
+        int msecondsSinceEmitted = it.value().msecsTo(time);
+        if (msecondsSinceEmitted >= m_trackingTime) {
             it.remove();
         } else {
-            int timeLeft = m_trackingTime - secondsSinceEmitted;
+            int timeLeft = m_trackingTime - msecondsSinceEmitted;
             nextUpdate = qMin(nextUpdate, timeLeft);
         }
     }
 
     if (!m_recentlyEmitted.isEmpty()) {
-        m_clearRecentlyEmittedTimer.setInterval(nextUpdate * 1000);
+        m_clearRecentlyEmittedTimer.setInterval(nextUpdate);
         m_clearRecentlyEmittedTimer.start();
     }
 }
@@ -169,40 +169,40 @@ void PendingFileQueue::processPendingFiles()
     while (it.hasNext()) {
         it.next();
 
-        int secondsLeft = currentTime.secsTo(it.value());
-        if (secondsLeft <= 0) {
+        int mSecondsLeft = currentTime.msecsTo(it.value());
+        if (mSecondsLeft <= 0) {
             Q_EMIT indexModifiedFile(it.key());
             m_recentlyEmitted.insert(it.key(), currentTime);
 
             it.remove();
         }
         else {
-            nextUpdate = qMin(secondsLeft, nextUpdate);
+            nextUpdate = qMin(mSecondsLeft, nextUpdate);
         }
     }
 
     if (!m_pendingFiles.isEmpty()) {
-        m_pendingFilesTimer.setInterval(nextUpdate * 1000);
+        m_pendingFilesTimer.setInterval(nextUpdate);
         m_pendingFilesTimer.start();
     }
 
     if (!m_recentlyEmitted.isEmpty() && !m_clearRecentlyEmittedTimer.isActive()) {
-        m_clearRecentlyEmittedTimer.setInterval(m_trackingTime * 1000);
+        m_clearRecentlyEmittedTimer.setInterval(m_trackingTime);
         m_clearRecentlyEmittedTimer.start();
     }
 }
 
 void PendingFileQueue::setTrackingTime(int seconds)
 {
-    m_trackingTime = seconds;
+    m_trackingTime = seconds * 1000;
 }
 
 void PendingFileQueue::setMinimumTimeout(int seconds)
 {
-    m_minTimeout = seconds;
+    m_minTimeout = seconds * 1000;
 }
 
 void PendingFileQueue::setMaximumTimeout(int seconds)
 {
-    m_maxTimeout = seconds;
+    m_maxTimeout = seconds * 1000;
 }
