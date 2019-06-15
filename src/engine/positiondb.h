@@ -31,7 +31,7 @@
 namespace Baloo {
 
 class PositionInfo;
-class PostingIterator;
+class VectorPositionInfoIterator;
 
 class BALOO_ENGINE_EXPORT PositionDB
 {
@@ -46,7 +46,7 @@ public:
     QVector<PositionInfo> get(const QByteArray& term);
     void del(const QByteArray& term);
 
-    PostingIterator* iter(const QByteArray& term);
+    VectorPositionInfoIterator* iter(const QByteArray& term);
 
     QMap<QByteArray, QVector<PositionInfo>> toTestMap() const;
 private:

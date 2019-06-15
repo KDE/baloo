@@ -19,10 +19,11 @@
  */
 
 #include "phraseanditerator.h"
+#include "positioninfo.h"
 
 using namespace Baloo;
 
-PhraseAndIterator::PhraseAndIterator(const QVector<PostingIterator*>& iterators)
+PhraseAndIterator::PhraseAndIterator(const QVector<VectorPositionInfoIterator*>& iterators)
     : m_iterators(iterators)
     , m_docId(0)
 {
@@ -48,7 +49,7 @@ bool PhraseAndIterator::checkIfPositionsMatch()
     positionList.reserve(m_iterators.size());
     // All the iterators should have the same value
     for (int i = 0; i < m_iterators.size(); i++) {
-        PostingIterator* iter = m_iterators[i];
+        auto* iter = m_iterators[i];
         Q_ASSERT(iter->docId() == m_docId);
 
         QVector<uint> pi = iter->positions();

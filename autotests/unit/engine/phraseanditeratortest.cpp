@@ -67,7 +67,7 @@ void PhraseAndIteratorTest::test()
     VectorPositionInfoIterator* it1 = new VectorPositionInfoIterator(vec1);
     VectorPositionInfoIterator* it2 = new VectorPositionInfoIterator(vec2);
 
-    QVector<PostingIterator*> vec = {it1, it2};
+    QVector<VectorPositionInfoIterator*> vec = {it1, it2};
     PhraseAndIterator it(vec);
     QCOMPARE(it.docId(), static_cast<quint64>(0));
 
@@ -102,7 +102,7 @@ void PhraseAndIteratorTest::testNullIterators()
     VectorPositionInfoIterator* it1 = new VectorPositionInfoIterator(vec1);
     VectorPositionInfoIterator* it2 = new VectorPositionInfoIterator(vec2);
 
-    QVector<PostingIterator*> vec = {it1, nullptr, it2};
+    QVector<VectorPositionInfoIterator*> vec = {it1, nullptr, it2};
     PhraseAndIterator it(vec);
     QCOMPARE(it.docId(), static_cast<quint64>(0));
     QCOMPARE(it.next(), static_cast<quint64>(0));

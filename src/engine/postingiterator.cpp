@@ -33,8 +33,3 @@ quint64 PostingIterator::skipTo(quint64 id)
     }
     return docId();
 }
-
-QVector<uint> PostingIterator::positions()
-{
-    return QVector<uint>();
-}

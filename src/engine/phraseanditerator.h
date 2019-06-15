@@ -22,6 +22,7 @@
 #define BALOO_PHRASEANDITERATOR_H
 
 #include "postingiterator.h"
+#include "vectorpositioninfoiterator.h"
 
 #include <QVector>
 
@@ -30,14 +31,14 @@ namespace Baloo {
 class BALOO_ENGINE_EXPORT PhraseAndIterator : public PostingIterator
 {
 public:
-    explicit PhraseAndIterator(const QVector<PostingIterator*>& iterators);
+    explicit PhraseAndIterator(const QVector<VectorPositionInfoIterator*>& iterators);
     ~PhraseAndIterator();
 
     quint64 next() override;
     quint64 docId() const override;
 
 private:
-    QVector<PostingIterator*> m_iterators;
+    QVector<VectorPositionInfoIterator*> m_iterators;
     quint64 m_docId;
 
     bool checkIfPositionsMatch();

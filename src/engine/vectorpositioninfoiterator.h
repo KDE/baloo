@@ -33,7 +33,7 @@ public:
 
     quint64 docId() const override;
     quint64 next() override;
-    QVector<uint> positions() override;
+    QVector<uint> positions();
 
 private:
     QVector<PositionInfo> m_vector;
