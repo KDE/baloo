@@ -64,7 +64,7 @@ private Q_SLOTS:
 
         db.put(word, list);
 
-        PostingIterator* it = db.iter(word);
+        QScopedPointer<PostingIterator> it{db.iter(word)};
         QCOMPARE(it->docId(), static_cast<quint64>(0));
         QVERIFY(it->positions().isEmpty());
 
