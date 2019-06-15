@@ -23,6 +23,7 @@
 #include "positioncodec.h"
 #include "positioninfo.h"
 #include "postingiterator.h"
+#include "vectorpositioninfoiterator.h"
 
 using namespace Baloo;
 
@@ -125,44 +126,7 @@ void PositionDB::del(const QByteArray& term)
 // Query
 //
 
-class DBPositionIterator : public PostingIterator {
-public:
-    DBPositionIterator(char* data, uint size)
-        : m_pos(-1)
-    {
-        PositionCodec codec;
-        m_vec = codec.decode(QByteArray(static_cast<char*>(data), size));
-    }
-
-    quint64 next() override {
-        m_pos++;
-        if (m_pos >= m_vec.size()) {
-            return 0;
-        }
-
-        return m_vec[m_pos].docId;
-    }
-
-    quint64 docId() const override {
-        if (m_pos < 0 || m_pos >= m_vec.size()) {
-            return 0;
-        }
-        return m_vec[m_pos].docId;
-    }
-
-    QVector<uint> positions() override {
-        if (m_pos < 0 || m_pos >= m_vec.size()) {
-            return QVector<uint>();
-        }
-        return m_vec[m_pos].positions;
-    }
-
-private:
-    QVector<PositionInfo> m_vec;
-    int m_pos;
-};
-
-PostingIterator* PositionDB::iter(const QByteArray& term)
+VectorPositionInfoIterator* PositionDB::iter(const QByteArray& term)
 {
     Q_ASSERT(!term.isEmpty());
 
@@ -177,7 +141,9 @@ PostingIterator* PositionDB::iter(const QByteArray& term)
         return nullptr;
     }
 
-    return new DBPositionIterator(static_cast<char*>(val.mv_data), val.mv_size);
+    PositionCodec codec;
+    QByteArray ba(static_cast<char*>(val.mv_data), val.mv_size);
+    return new VectorPositionInfoIterator(codec.decode(ba));
 }
 
 QMap<QByteArray, QVector<PositionInfo>> PositionDB::toTestMap() const

@@ -31,13 +31,13 @@ VectorPositionInfoIterator::VectorPositionInfoIterator(const QVector<PositionInf
 
 quint64 VectorPositionInfoIterator::next()
 {
-    if (m_pos >= m_vector.size() - 1) {
+    m_pos++;
+    if (m_pos >= m_vector.size()) {
         m_pos = m_vector.size();
         m_vector.clear();
         return 0;
     }
 
-    m_pos++;
     return m_vector[m_pos].docId;
 }
 
