@@ -57,21 +57,20 @@ private:
     Database* db;
 };
 
-static quint64 touchFile(const QString& path) {
+static void touchFile(const QString& path) {
     QFile file(path);
     file.open(QIODevice::WriteOnly);
     file.write("data");
     file.close();
-
-    return filePathToId(QFile::encodeName(path));
 }
 
 void WriteTransactionTest::testAddDocument()
 {
     Transaction tr(db, Transaction::ReadWrite);
 
-    const QByteArray url(dir->path().toUtf8() + "/file");
-    touchFile(url);
+    const QString filePath(dir->path() + "/file");
+    touchFile(filePath);
+    QByteArray url = QFile::encodeName(filePath);
     quint64 id = filePathToId(url);
 
     QCOMPARE(tr.hasDocument(id), false);
@@ -107,10 +106,12 @@ void WriteTransactionTest::testAddDocument()
 }
 
 
-static Document createDocument(const QByteArray& url, quint32 mtime, quint32 ctime, const QVector<QByteArray>& terms,
+static Document createDocument(const QString& filePath, quint32 mtime, quint32 ctime, const QVector<QByteArray>& terms,
                                const QVector<QByteArray>& fileNameTerms, const QVector<QByteArray>& xattrTerms)
 {
     Document doc;
+
+    const QByteArray url = QFile::encodeName(filePath);
     doc.setId(filePathToId(url));
     doc.setUrl(url);
 
@@ -131,8 +132,8 @@ static Document createDocument(const QByteArray& url, quint32 mtime, quint32 cti
 
 void WriteTransactionTest::testAddDocumentTwoDocuments()
 {
-    const QByteArray url1(dir->path().toUtf8() + "/file1");
-    const QByteArray url2(dir->path().toUtf8() + "/file2");
+    const QString url1(dir->path() + "/file1");
+    const QString url2(dir->path() + "/file2");
     touchFile(url1);
     touchFile(url2);
 
@@ -166,7 +167,7 @@ void WriteTransactionTest::testAddDocumentTwoDocuments()
 
 void WriteTransactionTest::testAddAndRemoveOneDocument()
 {
-    const QByteArray url1(dir->path().toUtf8() + "/file1");
+    const QString url1(dir->path() + "/file1");
     touchFile(url1);
 
     Document doc1 = createDocument(url1, 5, 1, {"a", "abc", "dab"}, {"file1"}, {});
@@ -189,7 +190,7 @@ void WriteTransactionTest::testAddAndRemoveOneDocument()
 
 void WriteTransactionTest::testAddAndReplaceOneDocument()
 {
-    const QByteArray url1(dir->path().toUtf8() + "/file1");
+    const QString url1(dir->path() + "/file1");
     touchFile(url1);
 
     Document doc1 = createDocument(url1, 5, 1, {"a", "abc", "dab"}, {"file1"}, {});
@@ -237,13 +238,13 @@ void WriteTransactionTest::testAddAndReplaceOneDocument()
 
 void WriteTransactionTest::testRemoveRecursively()
 {
-    QByteArray path = dir->path().toUtf8();
+    const QString path = dir->path();
+    const QString url1(path + "/file1");
+    const QString dirPath(path + "/dir");
+    const QString url2(dirPath + "/file1");
 
-    const QByteArray url1(path + "/file1");
     touchFile(url1);
-    const QByteArray dirPath(path + "/dir");
-    QDir().mkpath(QString::fromUtf8(dirPath));
-    const QByteArray url2(dirPath + "/file1");
+    QDir().mkpath(dirPath);
     touchFile(url2);
 
     Document doc1 = createDocument(url1, 5, 1, {"a", "abc", "dab"}, {"file1"}, {});
@@ -270,7 +271,7 @@ void WriteTransactionTest::testRemoveRecursively()
 
 void WriteTransactionTest::testDocumentId()
 {
-    const QByteArray url1(dir->path().toUtf8() + "/file1");
+    const QString url1(dir->path() + "/file1");
     touchFile(url1);
 
     Document doc1 = createDocument(url1, 5, 1, {"a", "abc", "dab"}, {"file1"}, {});
@@ -282,16 +283,16 @@ void WriteTransactionTest::testDocumentId()
     }
 
     Transaction tr(db, Transaction::ReadOnly);
-    QCOMPARE(tr.documentId(url1), doc1.id());
+    QCOMPARE(tr.documentId(QFile::encodeName(url1)), doc1.id());
 }
 
 void WriteTransactionTest::testTermPositions()
 {
-    const QByteArray url1(dir->path().toUtf8() + "/file1");
+    const QString url1(dir->path() + "/file1");
+    const QString url2(dir->path() + "/file2");
+    const QString url3(dir->path() + "/file3");
     touchFile(url1);
-    const QByteArray url2(dir->path().toUtf8() + "/file2");
     touchFile(url2);
-    const QByteArray url3(dir->path().toUtf8() + "/file3");
     touchFile(url3);
 
     Document doc1 = createDocument(url1, 5, 1, {"a", "abc", "dab"}, {"file1"}, {});
@@ -398,7 +399,7 @@ void WriteTransactionTest::testTermPositions()
 
 void WriteTransactionTest::testIdempotentDocumentChange()
 {
-    const QByteArray url1(dir->path().toUtf8() + "/file1");
+    const QString url1(dir->path() + "/file1");
     touchFile(url1);
 
     Document doc1 = createDocument(url1, 5, 1, {"a", "abc", "dab"}, {"file1"}, {});
