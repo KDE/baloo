@@ -22,7 +22,7 @@
 #include "document.h"
 
 #include <QTextBoundaryFinder>
-#include <QStringList>
+#include <QByteArray>
 
 using namespace Baloo;
 
@@ -37,7 +37,7 @@ void TermGenerator::indexText(const QString& text)
     indexText(text, QByteArray());
 }
 
-QStringList TermGenerator::termList(const QString& text_)
+QByteArrayList TermGenerator::termList(const QString& text_)
 {
     QString text(text_);
     text.replace(QLatin1Char('_'), QLatin1Char(' '));
@@ -45,7 +45,7 @@ QStringList TermGenerator::termList(const QString& text_)
     int start = 0;
     int end = 0;
 
-    QStringList list;
+    QByteArrayList list;
     QTextBoundaryFinder bf(QTextBoundaryFinder::Word, text);
     for (; bf.position() != -1; bf.toNextBoundary()) {
         if (bf.boundaryReasons() & QTextBoundaryFinder::StartOfItem) {
@@ -72,7 +72,7 @@ QStringList TermGenerator::termList(const QString& text_)
 
             str = cleanString.normalized(QString::NormalizationForm_KC);
             if (!str.isEmpty()) {
-                list << str;
+                list << str.toUtf8();
             }
         }
     }
@@ -82,11 +82,9 @@ QStringList TermGenerator::termList(const QString& text_)
 
 void TermGenerator::indexText(const QString& text, const QByteArray& prefix)
 {
-    QStringList terms = termList(text);
-    for (const QString& term : terms) {
-        QByteArray arr = term.toUtf8();
-
-        QByteArray finalArr = prefix + arr;
+    const QByteArrayList terms = termList(text);
+    for (const QByteArray& term : terms) {
+        QByteArray finalArr = prefix + term;
         finalArr = finalArr.mid(0, maxTermSize);
 
         m_doc.addPositionTerm(finalArr, m_position);
@@ -96,11 +94,9 @@ void TermGenerator::indexText(const QString& text, const QByteArray& prefix)
 
 void TermGenerator::indexFileNameText(const QString& text, const QByteArray& prefix)
 {
-    QStringList terms = termList(text);
-    for (const QString& term : terms) {
-        QByteArray arr = term.toUtf8();
-
-        QByteArray finalArr = prefix + arr;
+    const QByteArrayList terms = termList(text);
+    for (const QByteArray& term : terms) {
+        QByteArray finalArr = prefix + term;
         finalArr = finalArr.mid(0, maxTermSize);
 
         m_doc.addFileNamePositionTerm(finalArr, m_position);
@@ -115,17 +111,14 @@ void TermGenerator::indexFileNameText(const QString& text)
 
 void TermGenerator::indexXattrText(const QString& text, const QByteArray& prefix)
 {
-    QStringList terms = termList(text);
-    for (const QString& term : terms) {
-        QByteArray arr = term.toUtf8();
-
-        QByteArray finalArr = prefix + arr;
+    const QByteArrayList terms = termList(text);
+    for (const QByteArray& term : terms) {
+        QByteArray finalArr = prefix + term;
         finalArr = finalArr.mid(0, maxTermSize);
 
         m_doc.addXattrPositionTerm(finalArr, m_position);
         m_position++;
     }
-
 }
 
 int TermGenerator::position() const
