@@ -95,6 +95,7 @@ void TermGenerator::indexText(const QString& text, const QByteArray& prefix)
         m_doc.addPositionTerm(finalArr, m_position);
         m_position++;
     }
+    m_position++;
 }
 
 void TermGenerator::indexFileNameText(const QString& text, const QByteArray& prefix)
@@ -111,6 +112,7 @@ void TermGenerator::indexFileNameText(const QString& text, const QByteArray& pre
         m_doc.addFileNamePositionTerm(finalArr, m_position);
         m_position++;
     }
+    m_position++;
 }
 
 void TermGenerator::indexFileNameText(const QString& text)
@@ -132,6 +134,7 @@ void TermGenerator::indexXattrText(const QString& text, const QByteArray& prefix
         m_doc.addXattrPositionTerm(finalArr, m_position);
         m_position++;
     }
+    m_position++;
 }
 
 int TermGenerator::position() const
