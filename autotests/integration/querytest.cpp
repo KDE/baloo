@@ -50,6 +50,9 @@ private Q_SLOTS:
         m_id2 = touchFile(dir->path() + "/file2");
         m_id3 = touchFile(dir->path() + "/file3");
         m_id4 = touchFile(dir->path() + "/file4");
+
+        m_id5 = touchFile(dir->path() + "/tagFile1");
+        m_id6 = touchFile(dir->path() + "/tagFile2");
     }
 
     void init() {
@@ -70,6 +73,11 @@ private Q_SLOTS:
     void testTermAnd();
     void testTermOr();
     void testTermPhrase();
+
+    void testTagTermAnd_data();
+    void testTagTermAnd();
+    void testTagTermPhrase_data();
+    void testTagTermPhrase();
 
 private:
     QScopedPointer<QTemporaryDir> dir;
@@ -94,10 +102,33 @@ private:
         tr->addDocument(doc);
     }
 
+    void insertTagDocuments();
+    void addTagDocument(Transaction* tr,const QStringList& tags, quint64 id, const QString& url)
+    {
+        Document doc;
+        doc.setUrl(QFile::encodeName(url));
+
+        QString fileName = url.mid(url.lastIndexOf('/') + 1);
+
+        TermGenerator tg(doc);
+        tg.indexText("text/plain", QByteArray("M"));
+        for (const QString& tag : tags) {
+            tg.indexXattrText(tag, QByteArray("TA"));
+        }
+        tg.indexFileNameText(fileName);
+        doc.setId(id);
+        doc.setMTime(3);
+        doc.setCTime(4);
+
+        tr->addDocument(doc);
+    }
+
     quint64 m_id1;
     quint64 m_id2;
     quint64 m_id3;
     quint64 m_id4;
+    quint64 m_id5;
+    quint64 m_id6;
 };
 
 
@@ -108,6 +139,14 @@ void QueryTest::insertDocuments()
     addDocument(&tr, QStringLiteral("The night is dark and full of terror"), m_id2, dir->path() + "/file2");
     addDocument(&tr, QStringLiteral("Don't feel sorry for yourself. Only assholes do that"), m_id3, dir->path() + "/file3");
     addDocument(&tr, QStringLiteral("Only the dead stay 17 forever. crazy"), m_id4, dir->path() + "/file4");
+    tr.commit();
+}
+
+void QueryTest::insertTagDocuments()
+{
+    Transaction tr(db, Transaction::ReadWrite);
+    addTagDocument(&tr, {"One", "Two", "Three", "Four", "F1"}, m_id5, dir->path() + "/tagFile1");
+    addTagDocument(&tr, {"One", "Two-Three", "Four", "F2"}, m_id6, dir->path() + "/tagFile2");
     tr.commit();
 }
 
@@ -168,6 +207,72 @@ void QueryTest::testTermPhrase()
     QCOMPARE(tr.exec(q), result);
 }
 
+void QueryTest::testTagTermAnd_data()
+{
+    QTest::addColumn<QByteArrayList>("terms");
+    QTest::addColumn<QVector<quint64>>("matchIds");
+
+    QTest::addRow("Simple match") << QByteArrayList({"one", "four"})
+        << QVector<quint64> { m_id5, m_id6 };
+    QTest::addRow("Only one") << QByteArrayList({"one", "f1"})
+        << QVector<quint64> { m_id5 };
+    QTest::addRow("Also from phrase") << QByteArrayList({"two", "three"})
+        << QVector<quint64> { m_id5, m_id6 };
+}
+
+void QueryTest::testTagTermAnd()
+{
+    insertTagDocuments();
+    QFETCH(QByteArrayList, terms);
+    QFETCH(QVector<quint64>, matchIds);
+
+    QByteArray prefix{"TA"};
+    QVector<EngineQuery> queries;
+    for (const QByteArray& term : terms) {
+        queries << EngineQuery(prefix + term);
+    }
+
+    EngineQuery q(queries, EngineQuery::And);
+
+    Transaction tr(db, Transaction::ReadOnly);
+    qDebug() << matchIds << tr.exec(q);
+    QCOMPARE(tr.exec(q), matchIds);
+}
+
+void QueryTest::testTagTermPhrase_data()
+{
+    QTest::addColumn<QByteArrayList>("terms");
+    QTest::addColumn<QVector<quint64>>("matchIds");
+
+    QTest::addRow("Simple match") << QByteArrayList({"one"})
+        << QVector<quint64> { m_id5, m_id6 };
+    QTest::addRow("Apart") << QByteArrayList({"two", "four"})
+        << QVector<quint64> { };
+    QTest::addRow("Adjacent") << QByteArrayList({"three", "four"})
+        << QVector<quint64> { };
+    QTest::addRow("Only phrase") << QByteArrayList({"two", "three"})
+        << QVector<quint64> { m_id6 };
+}
+
+void QueryTest::testTagTermPhrase()
+{
+    insertTagDocuments();
+    QFETCH(QByteArrayList, terms);
+    QFETCH(QVector<quint64>, matchIds);
+
+    QByteArray prefix{"TA"};
+    QVector<EngineQuery> queries;
+    for (const QByteArray& term : terms) {
+        queries << EngineQuery(prefix + term);
+    }
+
+    EngineQuery q(queries, EngineQuery::Phrase);
+
+    Transaction tr(db, Transaction::ReadOnly);
+    auto res = tr.exec(q);
+    qDebug() << matchIds << res;
+    QCOMPARE(res, matchIds);
+}
 
 QTEST_MAIN(QueryTest)
 
