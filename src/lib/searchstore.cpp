@@ -328,7 +328,13 @@ EngineQuery SearchStore::constructEqualsQuery(const QByteArray& prefix, const QS
     int position = 1;
     for (const QByteArray& term : terms) {
         QByteArray arr = prefix + term;
-        queries << EngineQuery(arr, position++);
+        // FIXME - compatibility hack, to find truncated terms with old
+        // DBs, remove on next DB bump
+        if (arr.size() > 25) {
+            queries << EngineQuery(arr.left(25), EngineQuery::StartsWith, position++);
+        } else {
+            queries << EngineQuery(arr, position++);
+        }
     }
 
     if (queries.isEmpty()) {

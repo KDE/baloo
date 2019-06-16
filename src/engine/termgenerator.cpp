@@ -72,7 +72,8 @@ QByteArrayList TermGenerator::termList(const QString& text_)
 
             str = cleanString.normalized(QString::NormalizationForm_KC);
             if (!str.isEmpty()) {
-                list << str.toUtf8();
+                // Truncate the string to avoid arbitrarily long terms
+                list << str.leftRef(maxTermSize).toUtf8();
             }
         }
     }
@@ -85,7 +86,6 @@ void TermGenerator::indexText(const QString& text, const QByteArray& prefix)
     const QByteArrayList terms = termList(text);
     for (const QByteArray& term : terms) {
         QByteArray finalArr = prefix + term;
-        finalArr = finalArr.mid(0, maxTermSize);
 
         m_doc.addPositionTerm(finalArr, m_position);
         m_position++;
@@ -97,7 +97,6 @@ void TermGenerator::indexFileNameText(const QString& text, const QByteArray& pre
     const QByteArrayList terms = termList(text);
     for (const QByteArray& term : terms) {
         QByteArray finalArr = prefix + term;
-        finalArr = finalArr.mid(0, maxTermSize);
 
         m_doc.addFileNamePositionTerm(finalArr, m_position);
         m_position++;
@@ -114,7 +113,6 @@ void TermGenerator::indexXattrText(const QString& text, const QByteArray& prefix
     const QByteArrayList terms = termList(text);
     for (const QByteArray& term : terms) {
         QByteArray finalArr = prefix + term;
-        finalArr = finalArr.mid(0, maxTermSize);
 
         m_doc.addXattrPositionTerm(finalArr, m_position);
         m_position++;
