@@ -84,6 +84,11 @@ QByteArrayList TermGenerator::termList(const QString& text_)
 void TermGenerator::indexText(const QString& text, const QByteArray& prefix)
 {
     const QByteArrayList terms = termList(text);
+    if (terms.size() == 1) {
+        QByteArray finalArr = prefix + terms[0];
+        m_doc.addTerm(finalArr);
+        return;
+    }
     for (const QByteArray& term : terms) {
         QByteArray finalArr = prefix + term;
 
@@ -95,6 +100,11 @@ void TermGenerator::indexText(const QString& text, const QByteArray& prefix)
 void TermGenerator::indexFileNameText(const QString& text, const QByteArray& prefix)
 {
     const QByteArrayList terms = termList(text);
+    if (terms.size() == 1) {
+        QByteArray finalArr = prefix + terms[0];
+        m_doc.addFileNameTerm(finalArr);
+        return;
+    }
     for (const QByteArray& term : terms) {
         QByteArray finalArr = prefix + term;
 
@@ -111,6 +121,11 @@ void TermGenerator::indexFileNameText(const QString& text)
 void TermGenerator::indexXattrText(const QString& text, const QByteArray& prefix)
 {
     const QByteArrayList terms = termList(text);
+    if (terms.size() == 1) {
+        QByteArray finalArr = prefix + terms[0];
+        m_doc.addXattrTerm(finalArr);
+        return;
+    }
     for (const QByteArray& term : terms) {
         QByteArray finalArr = prefix + term;
 

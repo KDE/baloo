@@ -349,6 +349,10 @@ PostingIterator* Transaction::postingIterator(const EngineQuery& query) const
     }
 
     if (query.op() == EngineQuery::Phrase) {
+        if (subQueries.size() == 1) {
+            qCDebug(ENGINE) << "Degenerated Phrase with 1 Term:" <<  query;
+            return postingIterator(subQueries[0]);
+        }
         QVector<VectorPositionInfoIterator*> vec;
         vec.reserve(subQueries.size());
         for (const EngineQuery& q : subQueries) {
