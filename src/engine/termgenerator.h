@@ -21,6 +21,7 @@
 #ifndef BALOO_TERMGENERATOR_H
 #define BALOO_TERMGENERATOR_H
 
+#include <QByteArray>
 #include <QString>
 #include "engine_export.h"
 #include "document.h"
@@ -46,7 +47,7 @@ public:
     void setPosition(int position);
     int position() const;
 
-    static QStringList termList(const QString& text);
+    static QByteArrayList termList(const QString& text);
 
     // Trim all terms to this size
     const static int maxTermSize = 25;

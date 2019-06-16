@@ -322,12 +322,12 @@ EngineQuery SearchStore::constructEqualsQuery(const QByteArray& prefix, const QS
     // We use the TermGenerator to normalize the words in the value and to
     // split it into other words. If we split the words, we then add them as a
     // phrase query.
-    QStringList terms = TermGenerator::termList(value);
+    const QByteArrayList terms = TermGenerator::termList(value);
 
     QVector<EngineQuery> queries;
     int position = 1;
-    for (const QString& term : terms) {
-        QByteArray arr = prefix + term.toUtf8();
+    for (const QByteArray& term : terms) {
+        QByteArray arr = prefix + term;
         queries << EngineQuery(arr, position++);
     }
 
