@@ -34,19 +34,35 @@ class QueryTest : public QObject
 {
     Q_OBJECT
 private Q_SLOTS:
+    void initTestCase() {
+        dir.reset(new QTemporaryDir());
+
+        auto touchFile = [](const QString& path) {
+            QFile file(path);
+            file.open(QIODevice::WriteOnly);
+            file.write("data");
+            file.close();
+
+            return filePathToId(QFile::encodeName(path));
+        };
+
+        m_id1 = touchFile(dir->path() + "/file1");
+        m_id2 = touchFile(dir->path() + "/file2");
+        m_id3 = touchFile(dir->path() + "/file3");
+        m_id4 = touchFile(dir->path() + "/file4");
+    }
+
     void init() {
-        dir = new QTemporaryDir();
-        db = new Database(dir->path());
+        dbDir = new QTemporaryDir();
+        db = new Database(dbDir->path());
         db->open(Database::CreateDatabase);
 
-        Transaction tr(db, Transaction::ReadWrite);
-        insertDocuments(&tr);
-        tr.commit();
+        insertDocuments();
     }
 
     void cleanup() {
         delete db;
-        delete dir;
+        delete dbDir;
     }
 
     void testTermEqual();
@@ -56,10 +72,11 @@ private Q_SLOTS:
     void testTermPhrase();
 
 private:
-    QTemporaryDir* dir;
+    QScopedPointer<QTemporaryDir> dir;
+    QTemporaryDir* dbDir;
     Database* db;
 
-    void insertDocuments(Transaction* tr);
+    void insertDocuments();
     void addDocument(Transaction* tr,const QString& text, quint64 id, const QString& url)
     {
         Document doc;
@@ -83,26 +100,15 @@ private:
     quint64 m_id4;
 };
 
-static quint64 touchFile(const QString& path) {
-    QFile file(path);
-    file.open(QIODevice::WriteOnly);
-    file.write("data");
-    file.close();
 
-    return filePathToId(QFile::encodeName(path));
-}
-
-void QueryTest::insertDocuments(Transaction* tr)
+void QueryTest::insertDocuments()
 {
-    m_id1 = touchFile(dir->path() + "/file1");
-    m_id2 = touchFile(dir->path() + "/file2");
-    m_id3 = touchFile(dir->path() + "/file3");
-    m_id4 = touchFile(dir->path() + "/file4");
-
-    addDocument(tr, QStringLiteral("The quick brown foxed jumped over the crazy dog"), m_id1, dir->path() + "/file1");
-    addDocument(tr, QStringLiteral("The night is dark and full of terror"), m_id2, dir->path() + "/file2");
-    addDocument(tr, QStringLiteral("Don't feel sorry for yourself. Only assholes do that"), m_id3, dir->path() + "/file3");
-    addDocument(tr, QStringLiteral("Only the dead stay 17 forever. crazy"), m_id4, dir->path() + "/file4");
+    Transaction tr(db, Transaction::ReadWrite);
+    addDocument(&tr, QStringLiteral("The quick brown foxed jumped over the crazy dog"), m_id1, dir->path() + "/file1");
+    addDocument(&tr, QStringLiteral("The night is dark and full of terror"), m_id2, dir->path() + "/file2");
+    addDocument(&tr, QStringLiteral("Don't feel sorry for yourself. Only assholes do that"), m_id3, dir->path() + "/file3");
+    addDocument(&tr, QStringLiteral("Only the dead stay 17 forever. crazy"), m_id4, dir->path() + "/file4");
+    tr.commit();
 }
 
 void QueryTest::testTermEqual()
