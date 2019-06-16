@@ -34,11 +34,13 @@ namespace Baloo {
 
 inline quint64 devIdAndInodeToId(quint32 devId, quint32 inode)
 {
+    quint64 res;
     quint32 arr[2];
     arr[0] = devId;
     arr[1] = inode;
 
-    return *(reinterpret_cast<quint64*>(arr));
+    memcpy(&res, arr, sizeof(arr));
+    return res;
 }
 
 /**
