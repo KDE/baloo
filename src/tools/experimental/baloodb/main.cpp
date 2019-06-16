@@ -51,7 +51,7 @@ const auto options = QList<QCommandLineOption>{
         "\nNegative numbers are excluding filters printing everything but the mentioned device id."
         "\nMay be given multiple times."),
         i18n("integer"),
-        0
+        nullptr
     },
     QCommandLineOption{
         QStringList{QStringLiteral("m"), QStringLiteral("missing-only")},
