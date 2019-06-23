@@ -114,7 +114,7 @@ void Monitor::balooStarted(const QString& service)
     m_fileindexer->registerMonitor();
 
     slotIndexerStateChanged(m_scheduler->state());
-    qDebug() << "fetched suspend state";
+    // qDebug() << "fetched suspend state";
     fetchTotalFiles();
     if (m_indexerState == Baloo::ContentIndexing) {
         m_filePath = m_fileindexer->currentFile();
