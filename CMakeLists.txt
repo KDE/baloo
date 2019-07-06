@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.5)
 set(REQUIRED_QT_VERSION 5.11.0)
 set(KF5_VERSION "5.60.0") # handled by release scripts
-set(KF5_DEP_VERSION "5.59.0") # handled by release scripts
+set(KF5_DEP_VERSION "5.60.0") # handled by release scripts
 
 # set up project
 project(Baloo VERSION ${KF5_VERSION})
