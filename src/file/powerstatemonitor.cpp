@@ -29,7 +29,7 @@ using namespace Baloo;
 
 PowerStateMonitor::PowerStateMonitor(QObject* parent)
     : QObject(parent)
-    , m_isOnBattery(false)
+    , m_isOnBattery(true)
 {
     // monitor the powermanagement to not drain the battery
     QDBusConnection::sessionBus().connect(QStringLiteral("org.freedesktop.PowerManagement"),
@@ -51,6 +51,8 @@ PowerStateMonitor::PowerStateMonitor(QObject* parent)
         if (!reply.isError()) {
             bool onBattery = reply.argumentAt<0>();
             slotPowerManagementStatusChanged(onBattery);
+        } else {
+            slotPowerManagementStatusChanged(false);
         }
         watch->deleteLater();
     });
