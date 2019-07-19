@@ -75,12 +75,14 @@ void IndexCleaner::run()
     const auto includeFolders = m_config->includeFolders();
     for (const QString& folder : includeFolders) {
         quint64 id = filePathToId(QFile::encodeName(folder));
-        tr.removeRecursively(id, shouldDelete);
+        if (id > 0) {
+            tr.removeRecursively(id, shouldDelete);
+        }
     }
     const auto excludeFolders = m_config->excludeFolders();
     for (const QString& folder : excludeFolders) {
         quint64 id = filePathToId(QFile::encodeName(folder));
-        if (tr.hasDocument(id)) {
+        if (id > 0 && tr.hasDocument(id)) {
             tr.removeRecursively(id, shouldDelete);
         }
     }
