@@ -21,4 +21,4 @@ target_link_libraries(tags
 )
 
 install(TARGETS tags DESTINATION ${PLUGIN_INSTALL_DIR}/kf5/kio)
-install( FILES tags.protocol DESTINATION ${SERVICES_INSTALL_DIR})
+install(FILES tags.protocol DESTINATION ${SERVICES_INSTALL_DIR})
