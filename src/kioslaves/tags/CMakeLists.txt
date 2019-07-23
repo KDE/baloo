@@ -14,7 +14,7 @@ ecm_qt_declare_logging_category(tags_LIB_SRCS
 add_library(tags MODULE ${tags_LIB_SRCS})
 
 target_link_libraries(tags
-  KF5::KIOWidgets
+  KF5::KIOCore
   KF5::FileMetaData
   KF5::I18n
   KF5::Baloo
