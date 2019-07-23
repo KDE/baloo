@@ -36,3 +36,4 @@ CMakeLists.txt.user*
 *.qmlproject.user.*
 
 
+*.kdev4
