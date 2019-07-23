@@ -15,7 +15,7 @@ ecm_qt_declare_logging_category(kio_timeline_SRCS
 add_library(timeline MODULE ${kio_timeline_SRCS})
 
 target_link_libraries(timeline
-  KF5::KIOWidgets
+  KF5::KIOCore
   KF5::I18n
   KF5::Baloo
 )
