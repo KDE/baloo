@@ -42,7 +42,7 @@ private Q_SLOTS:
     void testFileModifications();
 };
 
-Q_DECLARE_METATYPE(Xapian::Document);
+Q_DECLARE_METATYPE(Xapian::Document)
 
 void BasicIndexingQueueTest::testSimpleDirectoryStructure()
 {
