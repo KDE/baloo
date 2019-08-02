@@ -21,7 +21,7 @@ feature_summary(WHAT REQUIRED_PACKAGES_NOT_FOUND FATAL_ON_MISSING_REQUIRED_PACKA
 
 # we found extra-cmake-modules, so use it now
 set(CMAKE_MODULE_PATH
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR}
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${ECM_MODULE_PATH}
 )
 
 include(ECMSetupVersion)
