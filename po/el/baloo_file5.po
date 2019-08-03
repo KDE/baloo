@@ -1,0 +1,104 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Antonis Geralis <gaantonio@civil.auth.gr>, 2014.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2019-06-04 02:58+0200\n"
+"PO-Revision-Date: 2015-09-24 23:15+0200\n"
+"Last-Translator: Stelios <sstavra@gmail.com>\n"
+"Language-Team: Greek <kde-i18n-el@kde.org>\n"
+"Language: el\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 1.5\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Stelios"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "sstavra@gmail.com"
+
+#: indexerstate.h:44
+#, kde-format
+msgid "Unknown"
+msgstr ""
+
+#: indexerstate.h:47
+#, kde-format
+msgid "Idle"
+msgstr ""
+
+#: indexerstate.h:50
+#, kde-format
+msgid "Suspended"
+msgstr ""
+
+#: indexerstate.h:53
+#, kde-format
+msgid "Initial Indexing"
+msgstr ""
+
+#: indexerstate.h:56
+#, fuzzy, kde-format
+#| msgctxt "@action"
+#| msgid "Index files"
+msgid "Indexing new files"
+msgstr "Δεικτοδότηση αρχείων"
+
+#: indexerstate.h:59
+#, fuzzy, kde-format
+#| msgctxt "@action"
+#| msgid "Index files"
+msgid "Indexing modified files"
+msgstr "Δεικτοδότηση αρχείων"
+
+#: indexerstate.h:62
+#, kde-format
+msgid "Indexing Extended Attributes"
+msgstr ""
+
+#: indexerstate.h:65
+#, fuzzy, kde-format
+#| msgctxt "@action"
+#| msgid "Index files"
+msgid "Indexing file content"
+msgstr "Δεικτοδότηση αρχείων"
+
+#: indexerstate.h:68
+#, kde-format
+msgid "Checking for unindexed files"
+msgstr ""
+
+#: indexerstate.h:71
+#, kde-format
+msgid "Checking for stale index entries"
+msgstr ""
+
+#: indexerstate.h:74
+#, kde-format
+msgid "Idle (Powersave)"
+msgstr ""
+
+#: main.cpp:46
+#, kde-format
+msgid "Baloo File Indexing Daemon"
+msgstr "Δαίμων δεικτοδότησης αρχείων Baloo"
+
+#: main.cpp:47
+#, kde-format
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:47
+#, kde-format
+msgid "Maintainer"
+msgstr "Συντηρητής"
