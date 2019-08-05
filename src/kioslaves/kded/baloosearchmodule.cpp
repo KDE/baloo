@@ -25,7 +25,6 @@
 #include <QDBusConnection>
 #include <QUrl>
 #include <QTimer>
-#include <QDebug>
 
 #include <kdirnotify.h>
 #include <kpluginfactory.h>
@@ -85,7 +84,6 @@ void SearchModule::unregisterSearchUrl(const QString& urlString)
 
 void SearchModule::slotBalooFileDbChanged()
 {
-    qDebug() << m_searchUrls;
     for (const QUrl& dirUrl : qAsConst(m_searchUrls)) {
         org::kde::KDirNotify::emitFilesAdded(dirUrl);
     }
@@ -93,8 +91,6 @@ void SearchModule::slotBalooFileDbChanged()
 
 void SearchModule::slotFileMetaDataChanged(const QStringList& list)
 {
-    qDebug() << m_searchUrls;
-    qDebug() << list;
     QList<QUrl> localFileUrls;
     localFileUrls.reserve(list.size());
     for (const QString& path : list) {
