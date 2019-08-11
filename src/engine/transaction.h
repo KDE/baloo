@@ -28,7 +28,6 @@
 #include "documenttimedb.h"
 #include <functional>
 
-#include <QString>
 #include <lmdb.h>
 
 namespace Baloo {

@@ -26,7 +26,6 @@
 #include <QDateTime>
 #include <QTemporaryDir>
 #include <QFile>
-#include <KFileMetaData/TypeInfo>
 
 namespace Baloo {
 

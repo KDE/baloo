@@ -27,9 +27,8 @@
 #include "idutils.h"
 
 #include <QJsonDocument>
-#include <QJsonObject>
 #include <QFileInfo>
-#include <QDebug>
+#include <QJsonObject>
 
 using namespace Baloo;
 

@@ -26,9 +26,7 @@
 
 #include <QSocketNotifier>
 #include <QHash>
-#include <QDirIterator>
 #include <QFile>
-#include <QLinkedList>
 #include <QTimer>
 #include <QPair>
 

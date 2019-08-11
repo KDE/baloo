@@ -22,7 +22,6 @@
 #include "positioninfo.h"
 
 #include <QTest>
-#include <QTemporaryDir>
 
 using namespace Baloo;
 

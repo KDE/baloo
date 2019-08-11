@@ -31,7 +31,6 @@
 #include <QSignalSpy>
 #include <QTemporaryDir>
 #include <QTest>
-#include <QTimer>
 #include <QDir>
 #include <qtemporaryfile.h>
 #include <QDBusConnection>

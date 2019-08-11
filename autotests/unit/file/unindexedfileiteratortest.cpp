@@ -23,7 +23,6 @@
 #include "filtereddiriterator.h"
 #include "fileindexerconfig.h"
 
-#include <QTemporaryDir>
 #include <QTest>
 
 class UnIndexedFileIterator : public QObject

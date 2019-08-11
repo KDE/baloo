@@ -19,13 +19,11 @@
 */
 
 #include <QCoreApplication>
-#include <QCommandLineOption>
 #include <QCommandLineParser>
 #include <QFile>
 
 #include <KAboutData>
 #include <KConfig>
-#include <KConfigGroup>
 #include <KLocalizedString>
 #include <KFormat>
 #include <QStandardPaths>
@@ -34,7 +32,6 @@
 #include <QFileInfo>
 #include <QLocale>
 
-#include <QDBusMessage>
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
 

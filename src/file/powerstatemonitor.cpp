@@ -19,7 +19,6 @@
 
 #include "powerstatemonitor.h"
 
-#include <QDBusInterface>
 #include <QDBusConnection>
 #include <QDBusMessage>
 #include <QDBusPendingCallWatcher>

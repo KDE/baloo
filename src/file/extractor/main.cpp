@@ -27,7 +27,6 @@
 #include <KCrash>
 #include <KLocalizedString>
 #include <QStandardPaths>
-#include <QByteArray>
 
 #include <QApplication>
 #include <QSessionManager>

@@ -27,7 +27,6 @@
 #include "global.h"
 
 #include <QDBusConnection>
-#include <QDBusMessage>
 #include <QDBusConnectionInterface>
 #include <QDebug>
 #include <QStandardPaths>

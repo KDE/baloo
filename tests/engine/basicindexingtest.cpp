@@ -23,7 +23,6 @@
 #include <QDebug>
 #include <QCoreApplication>
 #include <QTemporaryDir>
-#include <QFile>
 #include <QDirIterator>
 #include <QDir>
 #include <QTime>

@@ -25,7 +25,6 @@
 #include "filewatch.h"
 #include "fileindexscheduler.h"
 
-#include <QList>
 
 namespace Baloo {
 

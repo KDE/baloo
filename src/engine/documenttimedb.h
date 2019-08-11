@@ -23,8 +23,6 @@
 
 #include "engine_export.h"
 
-#include <QByteArray>
-#include <QVector>
 #include <QMap>
 #include <QDebug>
 #include <lmdb.h>

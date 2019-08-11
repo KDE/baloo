@@ -28,9 +28,9 @@
 
 #include "kinotify.h"
 
-#include <QDir>
 #include <QDateTime>
-#include <QDBusConnection>
+#include <QFileInfo>
+#include <QDir>
 
 #include <syslog.h>
 

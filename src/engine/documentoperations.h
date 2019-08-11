@@ -21,7 +21,6 @@
 #ifndef BALOO_ENGINE_DOCUMENT_OPERATIONS_H
 #define BALOO_ENGINE_DOCUMENT_OPERATIONS_H
 
-#include <QFlag>
 
 namespace Baloo {
 

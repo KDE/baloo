@@ -24,9 +24,8 @@
 #include "termgenerator.h"
 #include "idutils.h"
 
-#include <QFileInfo>
-#include <QDateTime>
 #include <QStringList>
+#include <QFile>
 
 #include <KFileMetaData/Types>
 #include <KFileMetaData/TypeInfo>

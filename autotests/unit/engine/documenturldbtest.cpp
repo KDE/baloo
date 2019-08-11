@@ -22,7 +22,6 @@
 #include "singledbtest.h"
 #include "idutils.h"
 
-#include <QDebug>
 
 using namespace Baloo;
 

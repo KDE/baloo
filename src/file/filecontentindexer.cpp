@@ -23,7 +23,6 @@
 
 #include <QEventLoop>
 #include <QElapsedTimer>
-#include <QTimer>
 #include <QDBusConnection>
 
 using namespace Baloo;
