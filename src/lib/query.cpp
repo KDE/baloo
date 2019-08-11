@@ -29,7 +29,6 @@
 #include <QString>
 #include <QStringList>
 #include <QSharedPointer>
-#include <QList>
 #include <QUrlQuery>
 
 #include <QJsonDocument>

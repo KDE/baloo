@@ -25,10 +25,8 @@
 #include <QUrl>
 #include <QDate>
 #include <QRegExp>
-#include <QDebug>
 #include <QUrlQuery>
 
-#include <KLocalizedString>
 
 namespace
 {

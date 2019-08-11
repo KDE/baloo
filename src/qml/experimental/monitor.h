@@ -25,7 +25,6 @@
 
 #include <QObject>
 #include <QString>
-#include <QDBusInterface>
 
 #include "indexerstate.h"
 #include "schedulerinterface.h"

@@ -22,7 +22,6 @@
 #include "enginequery.h"
 
 #include <QTextBoundaryFinder>
-#include <QStringList>
 #include <QVector>
 
 using namespace Baloo;

@@ -24,7 +24,6 @@
 #include <KCrash>
 #include <KLocalizedString>
 
-#include <QFileInfo>
 #include <iostream>
 
 #include "global.h"
@@ -36,6 +35,7 @@
 
 #include <QDBusConnection>
 #include <QCoreApplication>
+#include <QFile>
 
 int main(int argc, char** argv)
 {

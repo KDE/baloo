@@ -25,15 +25,12 @@
 #include "kio_tags_debug.h"
 
 #include <QUrl>
-#include <QDebug>
 
 #include <KLocalizedString>
 #include <KUser>
-#include <KFileMetaData/UserMetaData>
 #include <KIO/Job>
 
 #include <QCoreApplication>
-#include <QDateTime>
 #include <QDir>
 #include <QRegularExpression>
 

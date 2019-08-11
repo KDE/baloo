@@ -23,7 +23,6 @@
 #include "resultiterator.h"
 #include "searchstore.h"
 
-#include <QVector>
 
 using namespace Baloo;
 

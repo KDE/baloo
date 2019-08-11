@@ -25,7 +25,6 @@
 #include "idutils.h"
 #include "global.h"
 
-#include <QDebug>
 #include <QTest>
 #include <QTemporaryFile>
 #include <QTemporaryDir>
@@ -33,7 +32,6 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-#include <KFileMetaData/Properties>
 
 using namespace Baloo;
 

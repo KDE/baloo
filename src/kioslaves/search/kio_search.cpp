@@ -26,7 +26,6 @@
 #include <QUrl>
 #include <QUrlQuery>
 #include <KUser>
-#include <QDebug>
 #include <QCoreApplication>
 #include <KLocalizedString>
 

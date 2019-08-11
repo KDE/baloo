@@ -29,7 +29,6 @@
 
 #include <QFile>
 #include <QDBusConnection>
-#include <QDBusMessage>
 
 using namespace Baloo;
 

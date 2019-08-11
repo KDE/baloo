@@ -22,7 +22,6 @@
 #include "enginequery.h"
 
 #include <QTest>
-#include <QTemporaryDir>
 
 using namespace Baloo;
 

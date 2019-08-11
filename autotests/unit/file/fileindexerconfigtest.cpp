@@ -24,10 +24,8 @@
 #include "fileindexerconfig.h"
 #include "fileindexerconfigutils.h"
 
-#include <QTemporaryDir>
 
 #include <QFile>
-#include <QDir>
 #include <QScopedPointer>
 #include <QTest>
 

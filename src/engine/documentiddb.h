@@ -22,7 +22,6 @@
 #define BALOO_DOCUMENTIDDB_H
 
 #include "engine_export.h"
-#include <QByteArray>
 #include <QVector>
 #include <lmdb.h>
 

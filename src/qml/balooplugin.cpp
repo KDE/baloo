@@ -21,8 +21,6 @@
 
 #include <QQmlExtensionPlugin>
 #include <QQmlEngine>
-#include <QQmlContext>
-#include <QtQml>
 
 #include "queryresultsmodel.h"
 

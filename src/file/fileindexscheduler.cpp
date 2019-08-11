@@ -33,7 +33,6 @@
 
 #include <memory>
 
-#include <QTimer>
 #include <QDBusConnection>
 
 using namespace Baloo;

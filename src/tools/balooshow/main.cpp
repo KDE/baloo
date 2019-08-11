@@ -22,12 +22,9 @@
 #include <QCommandLineParser>
 #include <QCommandLineOption>
 #include <QDateTime>
-#include <QUrl>
 #include <QFile>
-#include <QFileInfo>
 #include <QTextStream>
 #include <QStandardPaths>
-#include <QDebug>
 
 #include <KAboutData>
 #include <KLocalizedString>
@@ -42,7 +39,6 @@
 
 #include <unistd.h>
 #include <KFileMetaData/PropertyInfo>
-
 
 QString colorString(const QString& input, int color)
 {

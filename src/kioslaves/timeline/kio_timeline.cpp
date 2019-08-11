@@ -25,7 +25,6 @@
 #include "resultiterator.h"
 #include "idutils.h"
 
-#include <QDebug>
 #include <QDate>
 #include <QCoreApplication>
 

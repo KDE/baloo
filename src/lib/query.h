@@ -26,7 +26,7 @@
 #include "core_export.h"
 #include "resultiterator.h"
 
-#include <QVariant>
+#include <QUrl>
 
 namespace Baloo {
 

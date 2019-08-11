@@ -27,8 +27,6 @@
 #include <QTextStream>
 #include <QFile>
 #include <QSignalSpy>
-#include <QEventLoop>
-#include <QTimer>
 #include <QDir>
 #include <QTest>
 

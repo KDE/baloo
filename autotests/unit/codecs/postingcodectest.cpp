@@ -21,7 +21,6 @@
 #include "postingcodec.h"
 
 #include <QObject>
-#include <QTemporaryDir>
 #include <QTest>
 
 using namespace Baloo;
