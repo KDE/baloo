@@ -205,8 +205,12 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
     else if (property == "includefolder") {
         const QByteArray folder = QFile::encodeName(QFileInfo(value.toString()).canonicalFilePath());
 
-        Q_ASSERT(!folder.isEmpty());
-        Q_ASSERT(folder.startsWith('/'));
+        if (folder.isEmpty()) {
+            return nullptr;
+        }
+        if (!folder.startsWith('/')) {
+            return nullptr;
+        }
 
         quint64 id = filePathToId(folder);
         if (!id) {
