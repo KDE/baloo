@@ -149,6 +149,11 @@ QStringList SearchStore::exec(const Term& term, uint offset, int limit, bool sor
             const quint64 id = resultIds[i].first;
             const QString filePath = tr.documentUrl(id);
 
+            if (filePath.isEmpty()) {
+                qCDebug(BALOO) << "Found result with empty path for inode " << id;
+                continue;
+            }
+
             results << filePath;
         }
 
@@ -166,7 +171,13 @@ QStringList SearchStore::exec(const Term& term, uint offset, int limit, bool sor
             quint64 id = it->docId();
             Q_ASSERT(id > 0);
 
-            results << tr.documentUrl(it->docId());
+            const QString filePath = tr.documentUrl(id);
+            if (filePath.isEmpty()) {
+                qCDebug(BALOO) << "Found result with empty path for inode " << id;
+                continue;
+            }
+
+            results << filePath;
             Q_ASSERT(!results.last().isEmpty());
 
             ulimit--;
