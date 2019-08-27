@@ -13,7 +13,7 @@ correctly. Please test and let us know by filing a bug at https://bugs.kde.org/e
 **Supported Kernels:** Linux
 **Support Architecture:** x64
 
-### File Indexing Plugins
+## File Indexing Plugins
 
 Baloo relies on KFileMetaData to extract content from the files. KFileMetadata
 ships with a number of plugins which can be enabled or disabled. We recommend
