@@ -33,9 +33,9 @@ namespace
 {
     inline bool isSearchUrl(const QUrl& url)
     {
-        return url.scheme() == QStringLiteral("baloosearch") ||
-               url.scheme() == QStringLiteral("timeline") ||
-               url.scheme() == QStringLiteral("tags");
+        return url.scheme() == QLatin1String("baloosearch") ||
+               url.scheme() == QLatin1String("timeline") ||
+               url.scheme() == QLatin1String("tags");
     }
 }
 

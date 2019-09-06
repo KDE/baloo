@@ -320,7 +320,7 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
         uds.fastInsert(KIO::UDSEntry::UDS_DISPLAY_TYPE, displayType);
 
         QString displayName = i18n("All Tags");
-        if (!tag.isEmpty() && ((tagSection == QStringLiteral(".")) || (tagSection == QStringLiteral("..")))) {
+        if (!tag.isEmpty() && ((tagSection == QLatin1Char('.')) || (tagSection == QLatin1String("..")))) {
             displayName = tag.section(QLatin1Char('/'), -1);
         } else {
             displayName = tagSection;

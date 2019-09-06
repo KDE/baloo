@@ -155,7 +155,7 @@ void BasicIndexingQueueTest::textExtendedAttributeIndexing()
     QStringList tags;
     tags << QLatin1String("TagA") << QLatin1String("TagB") << QLatin1String("Tag C") << QLatin1String("Tag/D");
 
-    QString tagStr = tags.join(QLatin1String(","));
+    QString tagStr = tags.join(QLatin1Char(','));
     QVERIFY(baloo_setxattr(fileName, QLatin1String("user.xdg.tags"), tagStr) != -1);
 
     const QString userComment(QLatin1String("UserComment"));
@@ -278,7 +278,7 @@ void BasicIndexingQueueTest::textNormalAndThenExtendedAttributeIndexing()
     QStringList tags;
     tags << QLatin1String("TagA") << QLatin1String("TagB") << QLatin1String("Tag C") << QLatin1String("Tag/D");
 
-    QString tagStr = tags.join(QLatin1String(","));
+    QString tagStr = tags.join(QLatin1Char(','));
     QVERIFY(baloo_setxattr(fileName, QLatin1String("user.xdg.tags"), tagStr) != -1);
 
     const QString userComment(QLatin1String("UserComment"));

@@ -155,14 +155,14 @@ Term AdvancedQueryParser::parse(const QString& text)
         }
 
         // Handle the logic operators
-        if (token == QStringLiteral("AND")) {
+        if (token == QLatin1String("AND")) {
             if (!termInConstruction.isEmpty()) {
                 addTermToStack(stack, termInConstruction, ops.top());
                 termInConstruction = Term();
             }
             ops.top() = Term::And;
             continue;
-        } else if (token == QStringLiteral("OR")) {
+        } else if (token == QLatin1String("OR")) {
             if (!termInConstruction.isEmpty()) {
                 addTermToStack(stack, termInConstruction, ops.top());
                 termInConstruction = Term();

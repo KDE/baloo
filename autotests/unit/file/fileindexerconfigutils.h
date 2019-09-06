@@ -70,7 +70,7 @@ QTemporaryDir* createTmpFolders(const QStringList& folders)
                 dir.mkdir(sf);
             }
 #ifdef Q_OS_WIN
-            if(sf.startsWith(QLatin1String("."))) {
+            if(sf.startsWith(QLatin1Char('.'))) {
                 if(!SetFileAttributesW(reinterpret_cast<const WCHAR*>((dir.path() + "/" + sf).utf16()), FILE_ATTRIBUTE_HIDDEN)) {
                     qWarning("failed to set 'hidden' attribute!");
                 }
@@ -102,7 +102,7 @@ QTemporaryDir* createTmpFilesAndFolders(const QStringList& list)
                     dir.mkdir(sf);
                 }
 #ifdef Q_OS_WIN
-                if(sf.startsWith(QLatin1String("."))) {
+                if(sf.startsWith(QLatin1Char('.'))) {
                     if(!SetFileAttributesW(reinterpret_cast<const WCHAR*>((dir.path() + "/" + sf).utf16()), FILE_ATTRIBUTE_HIDDEN)) {
                         qWarning("failed to set 'hidden' attribute!");
                     }

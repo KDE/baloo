@@ -167,7 +167,7 @@ void App::index(Transaction* tr, const QString& url, quint64 id)
     // HACK: Also, we're ignoring ttext files which are greater tha 10 Mb as we
     // have trouble processing them
     //
-    if (mimetype.startsWith(QStringLiteral("text/"))) {
+    if (mimetype.startsWith(QLatin1String("text/"))) {
         QFileInfo fileInfo(url);
         if (fileInfo.size() >= 10 * 1024 * 1024) {
             tr->removePhaseOne(id);

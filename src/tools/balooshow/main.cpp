@@ -202,7 +202,7 @@ int main(int argc, char* argv[])
                 for (const QVariant& var : vars) {
                     list << var.toString();
                 }
-                str = list.join(QStringLiteral(", "));
+                str = list.join(QLatin1String(", "));
             } else {
                 str = it.value().toString();
             }
@@ -279,7 +279,7 @@ int main(int argc, char* argv[])
                 auto prop = static_cast<KFileMetaData::Property::Property>(it.key());
                 KFileMetaData::PropertyInfo pi(prop);
 
-                stream << pi.name() << ": " << it.value().join(QStringLiteral(" ")) << endl;
+                stream << pi.name() << ": " << it.value().join(QLatin1Char(' ')) << endl;
             }
         }
     }

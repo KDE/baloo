@@ -115,7 +115,7 @@ int main(int argc, char* argv[])
                                         QStringLiteral("/scheduler"),
                                         QDBusConnection::sessionBus());
 
-    if (command == QStringLiteral("config")) {
+    if (command == QLatin1String("config")) {
         ConfigCommand command;
         return command.exec(parser);
     }
@@ -188,25 +188,25 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    if (command == QStringLiteral("suspend")) {
+    if (command == QLatin1String("suspend")) {
         schedulerinterface.suspend();
         out << "File Indexer suspended\n";
         return 0;
     }
 
-    if (command == QStringLiteral("resume")) {
+    if (command == QLatin1String("resume")) {
         schedulerinterface.resume();
         out << "File Indexer resumed\n";
         return 0;
     }
 
-    if (command == QStringLiteral("check")) {
+    if (command == QLatin1String("check")) {
         schedulerinterface.checkUnindexedFiles();
         out << "Started search for unindexed files\n";
         return 0;
     }
 
-    if (command == QStringLiteral("index")) {
+    if (command == QLatin1String("index")) {
         if (parser.positionalArguments().size() < 2) {
             out << "Please enter a filename to index\n";
             return 1;
@@ -245,7 +245,7 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    if (command == QStringLiteral("clear")) {
+    if (command == QLatin1String("clear")) {
         if (parser.positionalArguments().size() < 2) {
             out << "Please enter a filename to index\n";
             return 1;
@@ -275,7 +275,7 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    if (command == QStringLiteral("failed")) {
+    if (command == QLatin1String("failed")) {
         Database *db = globalDatabaseInstance();
         if (!db->open(Database::ReadOnlyDatabase)) {
             out << "Baloo Index could not be opened\n";
@@ -301,7 +301,7 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    if (command == QStringLiteral("indexSize")) {
+    if (command == QLatin1String("indexSize")) {
         Database *db = globalDatabaseInstance();
         if (!db->open(Database::ReadOnlyDatabase)) {
             out << "Baloo Index could not be opened\n";
@@ -347,14 +347,14 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    if (command == QStringLiteral("monitor")) {
+    if (command == QLatin1String("monitor")) {
         MonitorCommand mon;
         return mon.exec(parser);
     }
 
     /*
      TODO: Make separate executable
-     if (command == QStringLiteral("checkDb")) {
+     if (command == QLatin1String("checkDb")) {
         Database *db = globalDatabaseInstance();
         if (!db->open(Database::ReadOnlyDatabase)) {
             out << "Baloo Index could not be opened\n";

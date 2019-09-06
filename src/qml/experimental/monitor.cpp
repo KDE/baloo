@@ -107,7 +107,7 @@ void Monitor::toggleSuspendState()
 
 void Monitor::balooStarted(const QString& service)
 {
-    Q_ASSERT(service == QStringLiteral("org.kde.baloo"));
+    Q_ASSERT(service == QLatin1String("org.kde.baloo"));
 
     m_balooRunning = true;
     m_fileindexer->registerMonitor();
