@@ -133,7 +133,7 @@ QString createDescription()
         auto options = getOptions(c.name);
         const QString optionStr = options.isEmpty()
             ? QString()
-            : QStringLiteral(" [--%1]").arg(options.join(QLatin1Literal("] [--")));
+            : QStringLiteral(" [--%1]").arg(options.join(QLatin1String("] [--")));
 
         QString argumentStr;
         if (!c.args.isEmpty() ) {
@@ -151,7 +151,7 @@ QString createDescription()
 
         allowedcommands.append(str);
     }
-    const QString allCommandsStr = allowedcommands.join(QStringLiteral("\n    "));
+    const QString allCommandsStr = allowedcommands.join(QLatin1String("\n    "));
     return i18n("\n\nCommands:\n    %1", allCommandsStr);
 }
 
@@ -171,7 +171,7 @@ int main(int argc, char* argv[])
     parser.addOptions(options);
     parser.addPositionalArgument(QStringLiteral("command"),
         i18n("The command to execute"),
-        allowedCommands().join(QStringLiteral("|"))
+        allowedCommands().join(QLatin1Char('|'))
     );
     parser.addPositionalArgument(QStringLiteral("pattern"),
         i18nc("Command", "A regular expression applied to the URL of database items"
@@ -229,7 +229,7 @@ int main(int argc, char* argv[])
     QElapsedTimer timer;
     timer.start();
 
-    if (command == QStringLiteral("list")) {
+    if (command == QLatin1String("list")) {
         if (!db->open(Database::ReadOnlyDatabase)) {
             err << i18n("Baloo Index could not be opened") << endl;
             return 1;
@@ -237,7 +237,7 @@ int main(int argc, char* argv[])
         DatabaseSanitizer san(db, Transaction::ReadOnly);
         err << i18n("Listing database contents...") << endl;
         san.printList(deviceIds, accessFilter, urlFilter);
-    } else if (command == QStringLiteral("devices")) {
+    } else if (command == QLatin1String("devices")) {
         if (!db->open(Database::ReadOnlyDatabase)) {
             err << i18n("Baloo Index could not be opened") << endl;
             return 1;
@@ -246,7 +246,7 @@ int main(int argc, char* argv[])
         err << i18n("Listing database contents...") << endl;
         san.printDevices(deviceIds, accessFilter);
 
-    } else if (command == QStringLiteral("clean")) {
+    } else if (command == QLatin1String("clean")) {
         auto dbMode = Database::ReadWriteDatabase;
         if (!db->open(dbMode)) {
             err << i18n("Baloo Index could not be opened") << endl;
@@ -256,7 +256,7 @@ int main(int argc, char* argv[])
         err << i18n("Removing stale database contents...") << endl;
         san.removeStaleEntries(deviceIds, accessFilter, parser.isSet(QStringLiteral("dry-run")), urlFilter);
 
-    } else if (command == QStringLiteral("check")) {
+    } else if (command == QLatin1String("check")) {
         parser.showHelp(1);
        /* TODO: After check methods are improved
             Database *db = globalDatabaseInstance();

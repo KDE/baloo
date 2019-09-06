@@ -76,7 +76,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
     };
 
     const QString command = args.isEmpty() ? QStringLiteral("help") : args.takeFirst();
-    if (command == QStringLiteral("help")) {
+    if (command == QLatin1String("help")) {
         // Show help
         out << i18n("The config command can be used to manipulate the Baloo Configuration") << endl;
         out << i18n("Usage: balooctl config <command>") << endl << endl;
@@ -91,7 +91,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
         return 0;
     }
 
-    if (command == QStringLiteral("list") || command == QStringLiteral("ls") || command == QStringLiteral("show")) {
+    if (command == QLatin1String("list") || command == QLatin1String("ls") || command == QLatin1String("show")) {
         if (args.isEmpty()) {
             out << i18n("The following configuration options may be listed:") << endl << endl;
 
@@ -156,7 +156,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
         return 1;
     }
 
-    if (command == QStringLiteral("rm") || command == QStringLiteral("remove")) {
+    if (command == QLatin1String("rm") || command == QLatin1String("remove")) {
         if (args.isEmpty()) {
             out << i18n("The following configuration options may be modified:") << endl << endl;
 
@@ -247,7 +247,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
         return 1;
     }
 
-    if (command == QStringLiteral("add")) {
+    if (command == QLatin1String("add")) {
         if (args.isEmpty()) {
             out << i18n("The following configuration options may be modified:") << endl << endl;
 
@@ -370,7 +370,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
         return 1;
     }
 
-    if (command == QStringLiteral("set")) {
+    if (command == QLatin1String("set")) {
         if (args.isEmpty()) {
             out << i18n("The following configuration options may be modified:") << endl << endl;
 
@@ -382,7 +382,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
         IndexerConfig config;
         QString configParam = args.takeFirst();
 
-        if (configParam == QStringLiteral("hidden"))  {
+        if (configParam == QLatin1String("hidden"))  {
             if (args.isEmpty()) {
                 out << i18n("A value must be provided") << endl;
                 return 1;

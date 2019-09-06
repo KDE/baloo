@@ -70,7 +70,7 @@ QDate applyRelativeDateModificators(const QDate& date, const QMap<QString, QStri
 QUrl Baloo::canonicalizeTimelineUrl(const QUrl& url) {
     QUrl newUrl = url;
     QString path = url.path();
-    if (path.contains(QStringLiteral("//"))) {
+    if (path.contains(QLatin1String("//"))) {
         QStringList sections = path.split(QChar('/'), QString::SkipEmptyParts);
         path = '/' + sections.join(QChar('/'));
         newUrl.setPath(path);

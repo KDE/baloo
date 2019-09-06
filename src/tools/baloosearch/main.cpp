@@ -83,7 +83,7 @@ int main(int argc, char* argv[])
     QTextStream out(stdout);
     QTextStream err(stderr);
 
-    QString queryStr = args.join(QStringLiteral(" "));
+    QString queryStr = args.join(QLatin1Char(' '));
 
     Baloo::Query query;
     query.addType(typeStr);

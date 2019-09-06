@@ -117,8 +117,8 @@ void TermGeneratorTest::testAccentCharacters()
 void TermGeneratorTest::testUnicodeCompatibleComposition()
 {
     // The 0xfb00 corresponds to U+FB00 which is a 'ff' ligature
-    QString str = QLatin1Literal("maffab");
-    QString str2 = QLatin1Literal("ma") + QChar(0xfb00) + QStringLiteral("ab");
+    QString str = QLatin1String("maffab");
+    QString str2 = QLatin1String("ma") + QChar(0xfb00) + QStringLiteral("ab");
 
     Document doc;
     TermGenerator termGen(doc);

@@ -46,7 +46,7 @@ QByteArray stripTrailingSlash(const QByteArray& path)
 {
     QByteArray p(path);
     if (p.endsWith('/'))
-        p.truncate(p.length() - 1);
+        p.chop(1);
     return p;
 }
 
