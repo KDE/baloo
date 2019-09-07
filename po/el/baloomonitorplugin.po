@@ -1,0 +1,75 @@
+# # translation of baloomonitorplugin.po to el
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Stelios <sstavra@gmail.com>, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: baloomonitorplugin\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2019-06-04 02:58+0200\n"
+"PO-Revision-Date: 2015-10-27 00:02+0200\n"
+"Last-Translator: Stelios <sstavra@gmail.com>\n"
+"Language-Team: Greek <kde-i18n-el@kde.org>\n"
+"Language: el\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 1.5\n"
+
+#: ../../file/indexerstate.h:44
+#, kde-format
+msgid "Unknown"
+msgstr "Άγνωστο"
+
+#: ../../file/indexerstate.h:47
+#, kde-format
+msgid "Idle"
+msgstr "Σε αδράνεια"
+
+#: ../../file/indexerstate.h:50
+#, kde-format
+msgid "Suspended"
+msgstr "Σε αναστολή"
+
+#: ../../file/indexerstate.h:53
+#, kde-format
+msgid "Initial Indexing"
+msgstr "Αρχική δεικτοδότηση"
+
+#: ../../file/indexerstate.h:56
+#, kde-format
+msgid "Indexing new files"
+msgstr "Δεικτοδότηση νέων αρχείων"
+
+#: ../../file/indexerstate.h:59
+#, kde-format
+msgid "Indexing modified files"
+msgstr "Δεικτοδότηση τροποποιημένων αρχείων"
+
+#: ../../file/indexerstate.h:62
+#, kde-format
+msgid "Indexing Extended Attributes"
+msgstr "Δεικτοδότηση πρόσθετων ιδιοτήτων"
+
+#: ../../file/indexerstate.h:65
+#, kde-format
+msgid "Indexing file content"
+msgstr "Δεικτοδότηση περιεχομένου"
+
+#: ../../file/indexerstate.h:68
+#, kde-format
+msgid "Checking for unindexed files"
+msgstr "Έλεγχος για μη δεικτοδοτημένα αρχεία"
+
+#: ../../file/indexerstate.h:71
+#, fuzzy, kde-format
+#| msgid "Checking for unindexed files"
+msgid "Checking for stale index entries"
+msgstr "Έλεγχος για μη δεικτοδοτημένα αρχεία"
+
+#: ../../file/indexerstate.h:74
+#, kde-format
+msgid "Idle (Powersave)"
+msgstr ""
