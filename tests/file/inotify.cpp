@@ -22,7 +22,7 @@
 
 #include <QCoreApplication>
 #include <QDir>
-#include <QTime>
+#include <QElapsedTimer>
 #include <iostream>
 
 #include "kinotify.h"
@@ -47,7 +47,7 @@ int main(int argc, char** argv)
     QObject::connect(&inotify, &KInotify::closedWrite,
                      [](const QString& fileUrl) { qDebug() << "ClosedWrite:" << fileUrl; });
 
-    QTime timer;
+    QElapsedTimer timer;
     timer.start();
 
     KInotify::WatchEvents flags(KInotify::EventMove | KInotify::EventDelete | KInotify::EventDeleteSelf

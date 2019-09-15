@@ -22,7 +22,7 @@
 
 #include <QCoreApplication>
 #include <QCommandLineParser>
-#include <QTime>
+#include <QElapsedTimer>
 #include <iostream>
 
 #include "filtereddiriterator.h"
@@ -49,7 +49,7 @@ int main(int argc, char** argv)
         config.reset(new FileIndexerConfig);
         includeFolders = config->includeFolders();
     }
-    QTime timer;
+    QElapsedTimer timer;
     timer.start();
 
     int num = 0;

@@ -42,7 +42,7 @@ public:
     {
         /** Tracking of file time stamps
           *
-          * @sa QDateTime::toTime_t()
+          * @sa QDateTime::toSecsSinceEpoch()
           * @sa QFileInfo::lastModified()
           * @sa QFileInfo::metadataChangeTime()
           */

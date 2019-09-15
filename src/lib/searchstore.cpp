@@ -244,7 +244,7 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
                 endDate.setDate(endDate.year(), endDate.month(), endDate.daysInMonth());
             }
 
-            return tr->mTimeRangeIter(QDateTime(startDate).toTime_t(), QDateTime(endDate, QTime(23, 59, 59)).toTime_t());
+            return tr->mTimeRangeIter(QDateTime(startDate).toSecsSinceEpoch(), QDateTime(endDate, QTime(23, 59, 59)).toSecsSinceEpoch());
         }
         else if (value.type() == QVariant::Date || value.type() == QVariant::DateTime) {
             const QDateTime dt = value.toDateTime();
@@ -367,12 +367,12 @@ EngineQuery SearchStore::constructTypeQuery(const QString& value)
 PostingIterator* SearchStore::constructMTimeQuery(Transaction* tr, const QDateTime& dt, Term::Comparator com)
 {
     Q_ASSERT(dt.isValid());
-    quint32 timet = dt.toTime_t();
+    quint32 timet = dt.toSecsSinceEpoch();
 
     MTimeDB::Comparator mtimeCom;
     if (com == Term::Equal) {
         mtimeCom = MTimeDB::Equal;
-        quint32 end = QDateTime(dt.date().addDays(1)).toTime_t() - 1;
+        quint32 end = QDateTime(dt.date().addDays(1)).toSecsSinceEpoch() - 1;
 
         return tr->mTimeRangeIter(timet, end);
     }

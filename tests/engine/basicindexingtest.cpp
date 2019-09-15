@@ -25,7 +25,7 @@
 #include <QTemporaryDir>
 #include <QDirIterator>
 #include <QDir>
-#include <QTime>
+#include <QElapsedTimer>
 #include <QMimeDatabase>
 
 #include "database.h"
@@ -48,7 +48,7 @@ int main(int argc, char** argv)
 
     QMimeDatabase mimeDb;
     {
-        QTime timer;
+        QElapsedTimer timer;
         timer.start();
 
         QDirIterator it(QDir::homePath(), QDirIterator::Subdirectories);
