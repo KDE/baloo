@@ -84,7 +84,7 @@ void BasicIndexingJobTest::testBasicIndexing()
 
     const QString time_t = QString::fromStdString(docForNormal.doc().get_value(0));
     const QString julanDay = QString::fromStdString(docForNormal.doc().get_value(1));
-    QCOMPARE(time_t, QString::number(mod.toTime_t()));
+    QCOMPARE(time_t, QString::number(mod.toSecsSinceEpoch()));
     QCOMPARE(julanDay, QString::number(mod.date().toJulianDay()));
 
     // types

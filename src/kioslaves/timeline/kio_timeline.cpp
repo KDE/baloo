@@ -58,8 +58,8 @@ KIO::UDSEntry createDateFolderUDSEntry(const QString& name, const QString& displ
     uds.fastInsert(KIO::UDSEntry::UDS_DISPLAY_NAME, displayName);
     uds.fastInsert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
     uds.fastInsert(KIO::UDSEntry::UDS_MIME_TYPE, QStringLiteral("inode/directory"));
-    uds.fastInsert(KIO::UDSEntry::UDS_MODIFICATION_TIME, dt.toTime_t());
-    uds.fastInsert(KIO::UDSEntry::UDS_CREATION_TIME, dt.toTime_t());
+    uds.fastInsert(KIO::UDSEntry::UDS_MODIFICATION_TIME, dt.toSecsSinceEpoch());
+    uds.fastInsert(KIO::UDSEntry::UDS_CREATION_TIME, dt.toSecsSinceEpoch());
     uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, 0700);
     uds.fastInsert(KIO::UDSEntry::UDS_USER, KUser().loginName());
     return uds;

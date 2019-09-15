@@ -27,7 +27,7 @@
 
 #include <QCoreApplication>
 #include <QTemporaryDir>
-#include <QTime>
+#include <QElapsedTimer>
 
 using namespace Baloo;
 
@@ -45,7 +45,7 @@ int main(int argc, char** argv)
 
     FileIndexerConfig config;
 
-    QTime timer;
+    QElapsedTimer timer;
     timer.start();
 
     UnIndexedFileIterator it(&config, &tr, QDir::homePath());

@@ -51,7 +51,7 @@ private Q_SLOTS:
     {
         FileInfo info(file.fileName().toUtf8());
         QFileInfo qinfo(file.fileName());
-        QCOMPARE(info.mtime(), qinfo.lastModified().toTime_t());
+        QCOMPARE(info.mtime(), qinfo.lastModified().toSecsSinceEpoch());
     }
 
     void test_mtime_invalid()
@@ -64,7 +64,7 @@ private Q_SLOTS:
     {
         FileInfo info(file.fileName().toUtf8());
         QFileInfo qinfo(file.fileName());
-        QCOMPARE(info.ctime(), qinfo.created().toTime_t());
+        QCOMPARE(info.ctime(), qinfo.metadataChangeTime().toSecsSinceEpoch());
     }
 
     void test_exists_true()
