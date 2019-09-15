@@ -26,7 +26,7 @@
 #include <QFile>
 #include <QDirIterator>
 #include <QDir>
-#include <QTime>
+#include <QElapsedTimer>
 
 #include "documenturldb.h"
 #include "idutils.h"
@@ -54,7 +54,7 @@ int main(int argc, char** argv)
 
     {
         DocumentUrlDB db(IdTreeDB::create(txn), IdFilenameDB::create(txn), txn);
-        QTime timer;
+        QElapsedTimer timer;
         timer.start();
 
         QDirIterator it(QDir::homePath(), QDirIterator::Subdirectories);
