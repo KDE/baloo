@@ -24,6 +24,7 @@
 #define STORAGE_DEVICES_H
 
 #include <QObject>
+#include <QHash>
 
 #include <Solid/Device>
 
