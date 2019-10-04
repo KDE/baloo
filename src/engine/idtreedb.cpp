@@ -58,7 +58,7 @@ MDB_dbi IdTreeDB::open(MDB_txn* txn)
     return dbi;
 }
 
-void IdTreeDB::put(quint64 docId, const QVector<quint64> subDocIds)
+void IdTreeDB::put(quint64 docId, const QVector<quint64> &subDocIds)
 {
     Q_ASSERT(!subDocIds.isEmpty());
     Q_ASSERT(!subDocIds.contains(0));
