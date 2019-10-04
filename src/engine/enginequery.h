@@ -43,7 +43,7 @@ public:
     EngineQuery();
     EngineQuery(const QByteArray& term, int pos = 0);
     EngineQuery(const QByteArray& term, Operation op, int pos = 0);
-    EngineQuery(const QVector<EngineQuery> subQueries, Operation op);
+    EngineQuery(const QVector<EngineQuery> &subQueries, Operation op);
 
     QByteArray term() const {
         return m_term;

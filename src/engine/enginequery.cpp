@@ -42,7 +42,7 @@ EngineQuery::EngineQuery(const QByteArray& term, EngineQuery::Operation op, int 
 {
 }
 
-EngineQuery::EngineQuery(const QVector<EngineQuery> subQueries, Operation op)
+EngineQuery::EngineQuery(const QVector<EngineQuery> &subQueries, Operation op)
     : m_pos(0)
     , m_op(op)
     , m_subQueries(subQueries)
