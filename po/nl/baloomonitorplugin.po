@@ -1,0 +1,73 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Freek de Kruijf <freekdekruijf@kde.nl>, 2015, 2018, 2019.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2019-06-04 02:58+0200\n"
+"PO-Revision-Date: 2019-06-04 10:30+0200\n"
+"Last-Translator: Freek de Kruijf <freekdekruijf@kde.nl>\n"
+"Language-Team: Dutch <kde-i18n-nl@kde.org>\n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 19.04.1\n"
+
+#: ../../file/indexerstate.h:44
+#, kde-format
+msgid "Unknown"
+msgstr "Onbekend"
+
+#: ../../file/indexerstate.h:47
+#, kde-format
+msgid "Idle"
+msgstr "Inactief"
+
+#: ../../file/indexerstate.h:50
+#, kde-format
+msgid "Suspended"
+msgstr "Onderbroken"
+
+#: ../../file/indexerstate.h:53
+#, kde-format
+msgid "Initial Indexing"
+msgstr "Initiële indexering"
+
+#: ../../file/indexerstate.h:56
+#, kde-format
+msgid "Indexing new files"
+msgstr "Nieuwe bestanden indexeren"
+
+#: ../../file/indexerstate.h:59
+#, kde-format
+msgid "Indexing modified files"
+msgstr "Gewijzigde bestanden indexeren"
+
+#: ../../file/indexerstate.h:62
+#, kde-format
+msgid "Indexing Extended Attributes"
+msgstr "Uitgebreide attributen indexeren"
+
+#: ../../file/indexerstate.h:65
+#, kde-format
+msgid "Indexing file content"
+msgstr "Bestandsinhoud indexeren"
+
+#: ../../file/indexerstate.h:68
+#, kde-format
+msgid "Checking for unindexed files"
+msgstr "Controleren op niet geïndexeerde bestanden"
+
+#: ../../file/indexerstate.h:71
+#, kde-format
+msgid "Checking for stale index entries"
+msgstr "Controleren op verouderde indexitems"
+
+#: ../../file/indexerstate.h:74
+#, kde-format
+msgid "Idle (Powersave)"
+msgstr "Inactief (Powersave)"

@@ -1,0 +1,76 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Weng Xuetian <wengxt@gmail.com>, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: kdeorg\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2019-06-04 02:58+0200\n"
+"PO-Revision-Date: 2019-09-05 09:24\n"
+"Last-Translator: Guo Yunhe (guoyunhe)\n"
+"Language-Team: Chinese Simplified\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: crowdin.com\n"
+"X-Crowdin-Project: kdeorg\n"
+"X-Crowdin-Language: zh-CN\n"
+"X-Crowdin-File: /kf5-trunk/messages/frameworks/baloomonitorplugin.pot\n"
+
+#: ../../file/indexerstate.h:44
+#, kde-format
+msgid "Unknown"
+msgstr "未知"
+
+#: ../../file/indexerstate.h:47
+#, kde-format
+msgid "Idle"
+msgstr "空闲"
+
+#: ../../file/indexerstate.h:50
+#, kde-format
+msgid "Suspended"
+msgstr "挂起"
+
+#: ../../file/indexerstate.h:53
+#, kde-format
+msgid "Initial Indexing"
+msgstr "初始索引"
+
+#: ../../file/indexerstate.h:56
+#, kde-format
+msgid "Indexing new files"
+msgstr "正在索引新文件"
+
+#: ../../file/indexerstate.h:59
+#, kde-format
+msgid "Indexing modified files"
+msgstr "正在索引修改的文件"
+
+#: ../../file/indexerstate.h:62
+#, kde-format
+msgid "Indexing Extended Attributes"
+msgstr "正在索引扩展属性"
+
+#: ../../file/indexerstate.h:65
+#, kde-format
+msgid "Indexing file content"
+msgstr "正在索引文件内容"
+
+#: ../../file/indexerstate.h:68
+#, kde-format
+msgid "Checking for unindexed files"
+msgstr "正在检查未索引文件"
+
+#: ../../file/indexerstate.h:71
+#, kde-format
+msgid "Checking for stale index entries"
+msgstr "正在检查陈旧索引项"
+
+#: ../../file/indexerstate.h:74
+#, kde-format
+msgid "Idle (Powersave)"
+msgstr "空闲 (节能)"
