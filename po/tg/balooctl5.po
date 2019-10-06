@@ -1,0 +1,501 @@
+# Copyright (C) YEAR This file is copyright:
+# This file is distributed under the same license as the baloo package.
+#
+# Victor Ibragimov <victor.ibragimov@gmail.com>, 2019.
+msgid ""
+msgstr ""
+"Project-Id-Version: baloo\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2019-08-12 02:44+0200\n"
+"PO-Revision-Date: 2019-08-18 22:14+0500\n"
+"Last-Translator: Victor Ibragimov <victor.ibragimov@gmail.com>\n"
+"Language-Team: English <kde-i18n-doc@kde.org>\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 19.04.3\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Victor Ibragimov"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "victor.ibragimov@gmail.com"
+
+#: ../../file/indexerstate.h:44
+#, kde-format
+msgid "Unknown"
+msgstr "Номаълум"
+
+#: ../../file/indexerstate.h:47
+#, kde-format
+msgid "Idle"
+msgstr "Ғайрифаъол"
+
+#: ../../file/indexerstate.h:50
+#, kde-format
+msgid "Suspended"
+msgstr "Таваққуфшуда"
+
+#: ../../file/indexerstate.h:53
+#, kde-format
+msgid "Initial Indexing"
+msgstr "Намоябандии ибтидоӣ"
+
+#: ../../file/indexerstate.h:56
+#, kde-format
+msgid "Indexing new files"
+msgstr "Намоябандии файлҳои нав"
+
+#: ../../file/indexerstate.h:59
+#, kde-format
+msgid "Indexing modified files"
+msgstr "Намоябандии файлҳои тағйиршуда"
+
+#: ../../file/indexerstate.h:62
+#, kde-format
+msgid "Indexing Extended Attributes"
+msgstr "Намоябандии сифатҳои васеъшуда"
+
+#: ../../file/indexerstate.h:65
+#, kde-format
+msgid "Indexing file content"
+msgstr "Намоябандии муҳтавои файл"
+
+#: ../../file/indexerstate.h:68
+#, kde-format
+msgid "Checking for unindexed files"
+msgstr "Санҷиши файлҳои намоябандинашуда"
+
+#: ../../file/indexerstate.h:71
+#, kde-format
+msgid "Checking for stale index entries"
+msgstr "Санҷиши вурудҳои намоябандишудаи куҳна"
+
+#: ../../file/indexerstate.h:74
+#, kde-format
+msgid "Idle (Powersave)"
+msgstr "Ғайрифаъол (Сарфаи барқ)"
+
+#: configcommand.cpp:58
+#, kde-format
+msgid "Manipulate the Baloo configuration"
+msgstr "Идоракунии танзимоти Baloo"
+
+#: configcommand.cpp:81
+#, kde-format
+msgid "The config command can be used to manipulate the Baloo Configuration"
+msgstr ""
+"Фармони config метавонад барои идоракунии танзимоти Baloo истифода бурда "
+"шавад"
+
+#: configcommand.cpp:82
+#, kde-format
+msgid "Usage: balooctl config <command>"
+msgstr "Истифодабарӣ: balooctl config <фармон>"
+
+#: configcommand.cpp:83
+#, kde-format
+msgid "Possible Commands:"
+msgstr "Фармонҳои имконпазир:"
+
+#: configcommand.cpp:86
+#, kde-format
+msgid "Add a value to config parameter"
+msgstr "Илова кардани қимат ба таърифи config"
+
+#: configcommand.cpp:87
+#, kde-format
+msgid "Remove a value from a config parameter"
+msgstr "Тоза кардани қимат аз таърифи config"
+
+#: configcommand.cpp:88
+#, kde-format
+msgid "Show the value of a config parameter"
+msgstr "Нишон додани қимати таърифи config"
+
+#: configcommand.cpp:89
+#, kde-format
+msgid "Set the value of a config parameter"
+msgstr "Танзим кардани қимати таърифи config"
+
+#: configcommand.cpp:90
+#, kde-format
+msgid "Display this help menu"
+msgstr "Намоиш додани ин феҳристи кумак"
+
+#: configcommand.cpp:96
+#, kde-format
+msgid "The following configuration options may be listed:"
+msgstr "Рӯйхати имконоти танзими зерин нишон дода мешавад:"
+
+#: configcommand.cpp:98 configcommand.cpp:377
+#, kde-format
+msgid "Controls if Baloo indexes hidden files and folders"
+msgstr ""
+"Идора мекунад, агар Baloo ҷузвадонҳо ва файлҳои ноаёнро намоябандӣ кунад"
+
+#: configcommand.cpp:99 configcommand.cpp:378
+#, kde-format
+msgid "Controls if Baloo indexes file content"
+msgstr "Идора мекунад, агар Baloo муҳтавои файлро намоябандӣ кунад"
+
+#: configcommand.cpp:100 configcommand.cpp:163 configcommand.cpp:254
+#, kde-format
+msgid "The list of folders which Baloo indexes"
+msgstr "Рӯйхати ҷузвдонҳое, ки Baloo намоябандӣ мекунад"
+
+#: configcommand.cpp:101 configcommand.cpp:164 configcommand.cpp:255
+#, kde-format
+msgid "The list of folders which Baloo will never index"
+msgstr "Рӯйхати ҷузвдонҳое, ки Baloo ҳеҷ гоҳ намоябандӣ мекунад"
+
+#: configcommand.cpp:102 configcommand.cpp:165 configcommand.cpp:256
+#, kde-format
+msgid "The list of filters which are used to exclude files"
+msgstr "Рӯйхати полоишҳое, ки барои иҷрокунии файлҳо истифода мешаванд"
+
+#: configcommand.cpp:103 configcommand.cpp:166 configcommand.cpp:257
+#, kde-format
+msgid "The list of mimetypes which are used to exclude files"
+msgstr "Рӯйхати навъи қиёфаҳое, ки барои иҷрокунии файлҳо истифода мешаванд"
+
+#: configcommand.cpp:155 configcommand.cpp:246 configcommand.cpp:369
+#: configcommand.cpp:439
+#, kde-format
+msgid "Config parameter could not be found"
+msgstr "Таърифи config ёфт нашуд"
+
+#: configcommand.cpp:161 configcommand.cpp:252 configcommand.cpp:375
+#, kde-format
+msgid "The following configuration options may be modified:"
+msgstr "Имконоти танзимоти зерин метавонанд тағйир дода шаванд:"
+
+#: configcommand.cpp:174 configcommand.cpp:194 configcommand.cpp:265
+#: configcommand.cpp:300
+#, kde-format
+msgid "A folder must be provided"
+msgstr "Ҷузвдоне бояд қайд карда шавад"
+
+#: configcommand.cpp:182
+#, kde-format
+msgid "%1 is not in the list of include folders"
+msgstr "%1 берун аз рӯйхати ҷузвдонҳои иловашуда мебошад"
+
+#: configcommand.cpp:202
+#, kde-format
+msgid "%1 is not in the list of exclude folders"
+msgstr "%1 берун аз рӯйхати ҷузвдонҳои истисношуда мебошад"
+
+#: configcommand.cpp:214 configcommand.cpp:335
+#, kde-format
+msgid "A filter must be provided"
+msgstr "Полоише бояд қайд карда шавад"
+
+#: configcommand.cpp:220
+#, kde-format
+msgid "%1 is not in list of exclude filters"
+msgstr "%1 берун аз рӯйхати полоишҳои истисношуда мебошад"
+
+#: configcommand.cpp:231 configcommand.cpp:353
+#, kde-format
+msgid "A mimetype must be provided"
+msgstr "Навъи қиёфае бояд қайд карда шавад"
+
+#: configcommand.cpp:237
+#, kde-format
+msgid "%1 is not in list of exclude mimetypes"
+msgstr "%1 берун аз рӯйхати навъи қиёфаҳои истисношуда мебошад"
+
+#: configcommand.cpp:271 configcommand.cpp:306
+#, kde-format
+msgid "Path does not exist"
+msgstr "Масир вуҷуд надорад"
+
+#: configcommand.cpp:276 configcommand.cpp:311
+#, kde-format
+msgid "Path is not a directory"
+msgstr "Масир ба ҷузвадоне роҳ намедиҳад"
+
+#: configcommand.cpp:283
+#, kde-format
+msgid "%1 is already in the list of include folders"
+msgstr "%1 аллакай дар рӯйхати ҷузвдонҳои иловашуда мебошад"
+
+#: configcommand.cpp:288 configcommand.cpp:323
+#, kde-format
+msgid "%1 is in the list of exclude folders"
+msgstr "%1 дар рӯйхати ҷузвдонҳои истисношуда мебошад"
+
+#: configcommand.cpp:318
+#, kde-format
+msgid "%1 is already in the list of exclude folders"
+msgstr "%1 аллакай дар рӯйхати ҷузвдонҳои истисношуда мебошад"
+
+#: configcommand.cpp:341
+#, kde-format
+msgid "Exclude filter is already in the list"
+msgstr "Полоиши истисношуда аллакай дар рӯйхат мебошад"
+
+#: configcommand.cpp:359
+#, kde-format
+msgid "Exclude mimetype is already in the list"
+msgstr "Навъи қиёфаи истисношуда аллакай дар рӯйхат мебошад"
+
+#: configcommand.cpp:387 configcommand.cpp:414
+#, kde-format
+msgid "A value must be provided"
+msgstr "Қимате бояд қайд карда шавад"
+
+#: configcommand.cpp:408 configcommand.cpp:435
+#, kde-format
+msgid "Invalid value"
+msgstr "Қимати нодуруст"
+
+#: main.cpp:66
+#, kde-format
+msgid "balooctl"
+msgstr "balooctl"
+
+#: main.cpp:67
+#, kde-format
+msgid "Vishesh Handa"
+msgstr "Вишеш Ханда (Vishesh Handa)"
+
+#: main.cpp:67
+#, kde-format
+msgid "Maintainer"
+msgstr "Барномасоз"
+
+#: main.cpp:72
+#, kde-format
+msgid "The command to execute"
+msgstr "Фармон барои иҷро"
+
+#: main.cpp:74
+#, kde-format
+msgid "Print the status of the indexer"
+msgstr "Чоп кардани вазъияти намоябандикунанда"
+
+#: main.cpp:75
+#, kde-format
+msgid "Enable the file indexer"
+msgstr "Фаъол кардани намоябандикунандаи файлҳо"
+
+#: main.cpp:76
+#, kde-format
+msgid "Disable the file indexer"
+msgstr "Ғайрифаъол кардани намоябандикунандаи файлҳо"
+
+#: main.cpp:77
+#, kde-format
+msgid "Remove the index database"
+msgstr "Тоза кардани пойгоҳи иттилоотии намоябандӣ"
+
+#: main.cpp:78
+#, kde-format
+msgid "Suspend the file indexer"
+msgstr "Таваққуф кардани намоябандикунандаи файлҳо"
+
+#: main.cpp:79
+#, kde-format
+msgid "Resume the file indexer"
+msgstr "Дубора оғоз кардани намоябандикунандаи файлҳо"
+
+#: main.cpp:80
+#, kde-format
+msgid "Check for any unindexed files and index them"
+msgstr "Санҷиши файлҳои намоябандинашуда ва намоябандӣ кардани онҳо"
+
+#: main.cpp:81
+#, kde-format
+msgid "Index the specified files"
+msgstr "Намоябандӣ кардани файлҳои муайяншуда"
+
+#: main.cpp:82
+#, kde-format
+msgid "Forget the specified files"
+msgstr "Фаромӯш кардани файлҳои муайяншуда"
+
+#: main.cpp:83
+#, kde-format
+msgid "Modify the Baloo configuration"
+msgstr "Тағйир додани танзимоти Baloo"
+
+#: main.cpp:84
+#, kde-format
+msgid "Monitor the file indexer"
+msgstr "Назорати намоябандикунандаи файлҳо"
+
+#: main.cpp:85
+#, kde-format
+msgid "Display the disk space used by index"
+msgstr "Намоиш додани фазои диске, ки барои намоябандӣ истифода мешавад"
+
+#: main.cpp:86
+#, kde-format
+msgid "Display files which could not be indexed"
+msgstr "Намоиш додани файлҳое, ки намоябандӣ карда намешаванд"
+
+#: main.cpp:89
+#, kde-format
+msgctxt ""
+"Format to use for status command, %1|%2|%3 are option values, %4 is a CLI "
+"command"
+msgid ""
+"Output format <%1|%2|%3>.\n"
+"The default format is \"%1\".\n"
+"Only applies to \"%4\""
+msgstr ""
+"Қолиби барориш <%1|%2|%3>.\n"
+"Қолиби стандартӣ \"%1\".\n"
+"Танҳо ба \"%4\" татбиқ мешавад"
+
+#: main.cpp:95
+#, kde-format
+msgid "format"
+msgstr "қолиб"
+
+#: monitorcommand.cpp:68 monitorcommand.cpp:86
+#, kde-format
+msgid "Press ctrl+c to stop monitoring"
+msgstr "Барои истодани назорат тугмаҳои ctrl+c-ро пахш кунед"
+
+#: monitorcommand.cpp:85
+#, kde-format
+msgid "Waiting for file indexer to start"
+msgstr "Интизори оғози намоябандикунандаи файлҳо"
+
+#: monitorcommand.cpp:92
+#, kde-format
+msgid "File indexer is running"
+msgstr "Намоябандикунандаи файлҳо дар ҳоли иҷро аст"
+
+#: monitorcommand.cpp:104
+#, kde-format
+msgctxt "currently indexed file"
+msgid "Indexing: %1"
+msgstr "Дар ҳоли намоябандӣ: %1"
+
+#: monitorcommand.cpp:112
+#, kde-format
+msgid ": Ok"
+msgstr ": Хуб"
+
+#: statuscommand.cpp:45
+#, kde-format
+msgid "Print the status of the Indexer"
+msgstr "Чоп кардани вазъияти намоябандикунанда"
+
+#: statuscommand.cpp:129
+#, kde-format
+msgid "File ignored"
+msgstr "Файл рад карда шуд"
+
+#: statuscommand.cpp:130
+#, kde-format
+msgid "Basic Indexing: Disabled"
+msgstr "Намоябандии аслӣ: Ғайрифаъол аст"
+
+#: statuscommand.cpp:131 statuscommand.cpp:132
+#, kde-format
+msgid "Basic Indexing: Scheduled"
+msgstr "Намоябандии аслӣ: Ба нақша гирифта шуд"
+
+#: statuscommand.cpp:133 statuscommand.cpp:134 statuscommand.cpp:135
+#: statuscommand.cpp:136
+#, kde-format
+msgid "Basic Indexing: Done"
+msgstr "Намоябандии аслӣ: Иҷро шуд"
+
+#: statuscommand.cpp:142 statuscommand.cpp:145
+#, kde-format
+msgid "Content Indexing: Scheduled"
+msgstr "Намоябандии муҳтаво: Ба нақша гирифта шуд"
+
+#: statuscommand.cpp:146
+#, kde-format
+msgid "Content Indexing: Failed"
+msgstr "Намоябандии муҳтаво: Қатъ шуд"
+
+#: statuscommand.cpp:147
+#, kde-format
+msgid "Content Indexing: Done"
+msgstr "Намоябандии муҳтаво: Иҷро шуд"
+
+#: statuscommand.cpp:154 statuscommand.cpp:194 statuscommand.cpp:243
+#, kde-format
+msgid "Ignoring non-existent file %1"
+msgstr "Рад кардани файли мавҷуднабудаи %1"
+
+#: statuscommand.cpp:159 statuscommand.cpp:199 statuscommand.cpp:248
+#, kde-format
+msgid "Ignoring symlink/special file %1"
+msgstr "Рад кардани файли махсус/пайванди рамзии %1"
+
+#: statuscommand.cpp:163
+#, kde-format
+msgid "File: %1"
+msgstr "Файл: %1"
+
+#: statuscommand.cpp:275
+#, kde-format
+msgid "Output format \"%1\" is invalid"
+msgstr "Қолиби барориши \"%1\" нодуруст аст"
+
+#: statuscommand.cpp:281
+#, kde-format
+msgid "Baloo is currently disabled. To enable, please run %1"
+msgstr ""
+"Айни ҳол Baloo ғайрифаъол аст. Барои фаъол кардани он, лутфан %1-ро иҷро "
+"намоед"
+
+#: statuscommand.cpp:287
+#, kde-format
+msgid "Baloo Index could not be opened"
+msgstr "Намоябандии Baloo кушода намешавад"
+
+#: statuscommand.cpp:308
+#, kde-format
+msgid "Baloo File Indexer is running"
+msgstr "Намоябандндаи файлҳои Baloo дар ҳоли иҷро аст"
+
+#: statuscommand.cpp:309
+#, kde-format
+msgid "Indexer state: %1"
+msgstr "Вазъияти намоябандикунанда: %1"
+
+#: statuscommand.cpp:312
+#, kde-format
+msgid "Baloo File Indexer is not running"
+msgstr "Намоябандндаи файлҳои Baloo дар ҳоли иҷро нест"
+
+#: statuscommand.cpp:319
+#, kde-format
+msgid "Total files indexed: %1"
+msgstr "Ҳамагӣ файлҳои намоябандишуда: %1"
+
+#: statuscommand.cpp:320
+#, kde-format
+msgid "Files waiting for content indexing: %1"
+msgstr "Файлҳо дар интизори намоябандии муҳтаво: %1"
+
+#: statuscommand.cpp:321
+#, kde-format
+msgid "Files failed to index: %1"
+msgstr "Намоябандии файлҳо қатъ шуд: %1"
+
+#: statuscommand.cpp:329
+#, kde-format
+msgid "Current size of index is %1"
+msgstr "Андозаи ҷории намоябандӣ %1"
+
+#: statuscommand.cpp:331
+#, kde-format
+msgid "Index does not exist yet"
+msgstr "Намоябандӣ ҳоло вуҷуд надорад"
