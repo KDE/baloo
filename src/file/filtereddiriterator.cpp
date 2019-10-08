@@ -62,45 +62,44 @@ QString FilteredDirIterator::next()
         return QString();
     }
 
-    while (!m_currentIter->hasNext()) {
-        delete m_currentIter;
-        m_currentIter = nullptr;
+    bool shouldIndexHidden = false;
+    if (m_config)
+        shouldIndexHidden = m_config->indexHiddenFilesAndFolders();
 
-        if (!m_paths.isEmpty()) {
+    while (true) {
+        // Last entry in the current directory found, try the next
+        // directory from the stack
+        // Loop until the directory is non-empty, or the stack is empty
+        while (!m_currentIter->hasNext()) {
+            delete m_currentIter;
+            m_currentIter = nullptr;
+
+            if (m_paths.isEmpty()) {
+                m_fileInfo = QFileInfo();
+                return QString();
+            }
+
             const QString path = m_paths.pop();
             m_currentIter = new QDirIterator(path, m_filters);
-        } else {
-            m_fileInfo = QFileInfo();
-            return QString();
         }
-    }
 
-    m_filePath = m_currentIter->next();
-    m_fileInfo = m_currentIter->fileInfo();
+        m_filePath = m_currentIter->next();
+        m_fileInfo = m_currentIter->fileInfo();
 
-    if (m_fileInfo.isDir()) {
-        if (shouldIndexFolder(m_filePath)) {
-            m_paths.push(m_filePath);
-            return m_filePath;
-        } else {
-            return next();
+        if (m_fileInfo.isDir()) {
+            if (shouldIndexFolder(m_filePath)) {
+                // Push the current item to the directory stack
+                m_paths.push(m_filePath);
+                return m_filePath;
+            }
         }
-    }
-    else if (m_fileInfo.isFile()) {
-        bool shouldIndexHidden = false;
-        if (m_config)
-            shouldIndexHidden = m_config->indexHiddenFilesAndFolders();
-
-        bool shouldIndexFile = (!m_fileInfo.isHidden() || shouldIndexHidden)
-                               && (!m_config || m_config->shouldFileBeIndexed(m_fileInfo.fileName()));
-        if (shouldIndexFile) {
-            return m_filePath;
-        } else {
-            return next();
+        else if (m_fileInfo.isFile()) {
+            bool shouldIndexFile = (shouldIndexHidden || !m_fileInfo.isHidden())
+                                   && (!m_config || m_config->shouldFileBeIndexed(m_fileInfo.fileName()));
+            if (shouldIndexFile) {
+                return m_filePath;
+            }
         }
-    }
-    else {
-        return next();
     }
 }
 
