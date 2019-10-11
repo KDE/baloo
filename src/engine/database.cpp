@@ -134,9 +134,13 @@ bool Database::open(OpenMode mode)
     const size_t maximalSizeInBytes = sizeInGByte * size_t(1024) * size_t(1024) * size_t(1024);
     mdb_env_set_mapsize(m_env, maximalSizeInBytes);
 
+    // Set MDB envoironment flags
+    auto mdbEnvFlags = MDB_NOSUBDIR | MDB_NOMEMINIT;
+    if (mode == ReadOnlyDatabase) mdbEnvFlags |= MDB_RDONLY;
+
     // The directory needs to be created before opening the environment
     QByteArray arr = QFile::encodeName(indexInfo.absoluteFilePath());
-    rc = mdb_env_open(m_env, arr.constData(), MDB_NOSUBDIR | MDB_NOMEMINIT | ((mode == ReadOnlyDatabase) ? MDB_RDONLY : 0), 0664);
+    rc = mdb_env_open(m_env, arr.constData(), mdbEnvFlags, 0664);
     if (rc) {
         mdb_env_close(m_env);
         m_env = nullptr;
