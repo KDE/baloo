@@ -21,6 +21,7 @@
  */
 
 #include "result.h"
+#include "propertydata.h"
 
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -46,25 +47,16 @@ Result::Result(const QString& url, const QString& mimetype, const Flags& flags)
 
 void Result::add(KFileMetaData::Property::Property property, const QVariant& value)
 {
-    int propNum = static_cast<int>(property);
-    if (!value.isNull()) {
-        QString p = QString::number(propNum);
-        if (!m_map.contains(p)) {
-            m_map.insert(p, value);
-        } else {
-            QVariant prev = m_map.value(p);
-            QVariantList list;
-            if (prev.type() == QVariant::List) {
-                list = prev.toList();
-            } else {
-                list << prev;
-            }
-
-            list << value;
-            m_map.insert(p, QVariant(list));
+    if (value.type() == QVariant::StringList) {
+        const auto valueList = value.toStringList();
+        for (const auto& val : valueList) {
+            m_map.insertMulti(property, val);
         }
+    } else {
+        m_map.insertMulti(property, value);
     }
 
+    int propNum = static_cast<int>(property);
     QByteArray prefix = 'X' + QByteArray::number(propNum) + '-';
 
     if (value.type() == QVariant::Bool) {
@@ -92,7 +84,6 @@ void Result::add(KFileMetaData::Property::Property property, const QVariant& val
             m_termGen.indexText(val, prefix);
             if (shouldBeIndexed)
                 m_termGen.indexText(val);
-
         }
     }
     else {
@@ -125,7 +116,7 @@ void Result::finish()
         m_doc.setData(QByteArray());
         return;
     }
-    QJsonObject jo = QJsonObject::fromVariantMap(m_map);
+    QJsonObject jo = Baloo::propertyMapToJson(m_map);
     QJsonDocument jdoc;
     jdoc.setObject(jo);
     m_doc.setData(jdoc.toJson(QJsonDocument::JsonFormat::Compact));
