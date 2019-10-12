@@ -86,7 +86,7 @@ private:
     /**
      * Contains all indexed property data from the extractors.
      */
-    QVariantMap m_map;
+    KFileMetaData::PropertyMap m_map;
 };
 
 #endif // EXTRACTIONRESULT_H

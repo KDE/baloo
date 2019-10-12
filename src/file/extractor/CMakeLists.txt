@@ -12,6 +12,7 @@ set(EXTRACTOR_SRCS
   ../storagedevices.cpp
   ../regexpcache.cpp
   ../fileexcludefilters.cpp
+  ../propertydata.cpp
 )
 
 ecm_qt_declare_logging_category(EXTRACTOR_SRCS HEADER baloodebug.h IDENTIFIER BALOO CATEGORY_NAME org.kde.baloo)

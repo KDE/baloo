@@ -25,6 +25,7 @@
 #include "database.h"
 #include "transaction.h"
 #include "idutils.h"
+#include "propertydata.h"
 
 #include <QJsonDocument>
 #include <QFileInfo>
@@ -117,8 +118,7 @@ bool File::load()
     }
 
     const QJsonDocument jdoc = QJsonDocument::fromJson(arr);
-    const QVariantMap varMap = jdoc.object().toVariantMap();
-    d->propertyMap = KFileMetaData::toPropertyMap(varMap);
+    d->propertyMap = Baloo::jsonToPropertyMap(jdoc.object());
 
     return true;
 }
