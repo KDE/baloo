@@ -116,7 +116,7 @@ void IdTreeDB::del(quint64 docId)
 //
 class IdTreePostingIterator : public PostingIterator {
 public:
-    IdTreePostingIterator(const IdTreeDB& db, const QVector<quint64> list)
+    IdTreePostingIterator(const IdTreeDB& db, const QVector<quint64> &list)
         : m_db(db), m_pos(-1), m_idList(list) {}
 
     quint64 docId() const override {
