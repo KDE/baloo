@@ -181,7 +181,7 @@ void SearchProtocol::stat(const QUrl& url)
     finished();
 }
 
-QString SearchProtocol::getUserName(KUserId uid) const
+QString SearchProtocol::getUserName(const KUserId &uid) const
 {
     if (Q_UNLIKELY(!uid.isValid())) {
         return QString();
@@ -198,7 +198,7 @@ QString SearchProtocol::getUserName(KUserId uid) const
     return mUsercache[uid];
 }
 
-QString SearchProtocol::getGroupName(KGroupId gid) const
+QString SearchProtocol::getGroupName(const KGroupId &gid) const
 {
     if (Q_UNLIKELY(!gid.isValid())) {
         return QString();

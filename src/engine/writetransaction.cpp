@@ -167,7 +167,7 @@ void WriteTransaction::removeRecursively(quint64 parentId)
     removeDocument(parentId);
 }
 
-bool WriteTransaction::removeRecursively(quint64 parentId, std::function<bool(quint64)> shouldDelete)
+bool WriteTransaction::removeRecursively(quint64 parentId, const std::function<bool(quint64)> &shouldDelete)
 {
     DocumentUrlDB docUrlDB(m_dbis.idTreeDbi, m_dbis.idFilenameDbi, m_txn);
 

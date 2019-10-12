@@ -54,8 +54,8 @@ public:
     void stat(const QUrl& url) override;
 
 private:
-    QString getUserName(KUserId uid) const;
-    QString getGroupName(KGroupId gid) const;
+    QString getUserName(const KUserId &uid) const;
+    QString getGroupName(const KGroupId &gid) const;
 
     mutable QHash<KUserId, QString> mUsercache;
     mutable QHash<KGroupId, QString> mGroupcache;
