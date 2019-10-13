@@ -42,9 +42,15 @@ public:
     ResultIterator(ResultIterator &&rhs);
     ~ResultIterator();
 
-    // TODO KF6 mark this as delete
-    /** Do not use this function, ResultIterator is not copiable, move it if needed */
-    BALOO_CORE_DEPRECATED ResultIterator(const ResultIterator& rhs);
+#if BALOO_CORE_BUILD_DEPRECATED_SINCE(5, 55)
+    /**
+     * @deprecated Since 5.55. Do not use this function, ResultIterator is not copyable, move it if needed
+     */
+    BALOO_CORE_DEPRECATED_VERSION(5, 55, "Do not use. ResultIterator is not copyable, move it if needed.")
+    ResultIterator(const ResultIterator& rhs);
+#else
+    ResultIterator(const ResultIterator& rhs) = delete;
+#endif
     ResultIterator &operator=(const ResultIterator& rhs) = delete;
 
     bool next();
