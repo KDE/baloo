@@ -104,6 +104,8 @@ if(BUILD_QCH)
             Qt5Core_QCH
             KF5CoreAddons_QCH
             KF5FileMetaData_QCH
+        INCLUDE_DIRS
+            ${CMAKE_CURRENT_BINARY_DIR}
         BLANK_MACROS
             BALOO_CORE_EXPORT
             BALOO_CORE_DEPRECATED
