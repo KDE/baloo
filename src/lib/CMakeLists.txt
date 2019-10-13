@@ -55,7 +55,15 @@ set_target_properties(KF5Baloo PROPERTIES
 )
 target_include_directories(KF5Baloo INTERFACE "$<INSTALL_INTERFACE:${KF5_INCLUDE_INSTALL_DIR}/Baloo>")
 
-generate_export_header(KF5Baloo BASE_NAME BALOO_CORE EXPORT_FILE_NAME core_export.h)
+ecm_generate_export_header(KF5Baloo
+    EXPORT_FILE_NAME core_export.h
+    BASE_NAME BALOO_CORE
+    # GROUP_BASE_NAME KF <- enable once all of KF modules use ecm_generate_export_header
+    VERSION ${KF5_VERSION}
+    DEPRECATED_BASE_VERSION 0
+    DEPRECATION_VERSIONS 5.55
+    EXCLUDE_DEPRECATED_BEFORE_AND_AT ${EXCLUDE_DEPRECATED_BEFORE_AND_AT}
+)
 
 ecm_generate_headers(KF5Baloo_CamelCase_HEADERS
     HEADER_NAMES
