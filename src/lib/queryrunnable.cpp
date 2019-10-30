@@ -31,7 +31,11 @@ public:
     QAtomicInt m_stop;
 
     bool stopRequested() const {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
         return m_stop.load();
+#else
+        return m_stop.loadRelaxed();
+#endif
     }
 
 };
@@ -51,7 +55,11 @@ QueryRunnable::~QueryRunnable()
 
 void QueryRunnable::stop()
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     d->m_stop.store(true);
+#else
+    d->m_stop.storeRelaxed(true);
+#endif
 }
 
 void QueryRunnable::run()
