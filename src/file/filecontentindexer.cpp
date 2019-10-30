@@ -51,11 +51,17 @@ void FileContentIndexer::run()
     ExtractorProcess process;
     connect(&process, &ExtractorProcess::startedIndexingFile, this, &FileContentIndexer::slotStartedIndexingFile);
     connect(&process, &ExtractorProcess::finishedIndexingFile, this, &FileContentIndexer::slotFinishedIndexingFile);
-
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     m_stop.store(false);
+#else
+    m_stop.storeRelaxed(false);
+#endif
     auto batchSize = m_batchSize;
-
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     while (m_provider->size() && !m_stop.load()) {
+#else
+    while (m_provider->size() && !m_stop.loadRelaxed()) {
+#endif
         //
         // WARNING: This will go mad, if the Extractor does not commit after N=m_batchSize files
         // cause then we will keep fetching the same N files again and again.
@@ -64,7 +70,11 @@ void FileContentIndexer::run()
         timer.start();
 
         QVector<quint64> idList = m_provider->fetch(batchSize);
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
         if (idList.isEmpty() || m_stop.load()) {
+#else
+        if (idList.isEmpty() || m_stop.loadRelaxed()) {
+#endif
             break;
         }
         QEventLoop loop;
@@ -79,8 +89,11 @@ void FileContentIndexer::run()
         // QDbus requires us to be in object creation thread (thread affinity)
         // This signal is not even exported, and yet QDbus complains. QDbus bug?
         QMetaObject::invokeMethod(this, "newBatchTime", Qt::QueuedConnection, Q_ARG(uint, timer.elapsed()));
-
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
         if (hadErrors && !m_stop.load()) {
+#else
+        if (hadErrors && !m_stop.loadRelaxed()) {
+#endif
             if (idList.size() == 1) {
                 auto failedId = idList.first();
                 m_provider->markFailed(failedId);

@@ -47,7 +47,11 @@ public:
     void run() override;
 
     void quit() {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
         m_stop.store(true);
+#else
+        m_stop.storeRelaxed(true);
+#endif
     }
 
 public Q_SLOTS:
