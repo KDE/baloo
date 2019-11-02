@@ -1,0 +1,74 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# giovanni <g.sora@tiscali.it>, 2016.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2019-06-04 02:58+0200\n"
+"PO-Revision-Date: 2016-01-12 23:03+0100\n"
+"Last-Translator: giovanni <g.sora@tiscali.it>\n"
+"Language-Team: Interlingua <kde-i18n-it@kde.org>\n"
+"Language: ia\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 2.0\n"
+
+#: ../../file/indexerstate.h:44
+#, kde-format
+msgid "Unknown"
+msgstr "Incognite"
+
+#: ../../file/indexerstate.h:47
+#, kde-format
+msgid "Idle"
+msgstr "Inactive"
+
+#: ../../file/indexerstate.h:50
+#, kde-format
+msgid "Suspended"
+msgstr "Suspendite"
+
+#: ../../file/indexerstate.h:53
+#, kde-format
+msgid "Initial Indexing"
+msgstr "Indicisante initial"
+
+#: ../../file/indexerstate.h:56
+#, kde-format
+msgid "Indexing new files"
+msgstr "Indicisante nove files"
+
+#: ../../file/indexerstate.h:59
+#, kde-format
+msgid "Indexing modified files"
+msgstr "Indicisante files modificate"
+
+#: ../../file/indexerstate.h:62
+#, kde-format
+msgid "Indexing Extended Attributes"
+msgstr "Indicisante attributos extendite"
+
+#: ../../file/indexerstate.h:65
+#, kde-format
+msgid "Indexing file content"
+msgstr "Indicisante contento de file"
+
+#: ../../file/indexerstate.h:68
+#, kde-format
+msgid "Checking for unindexed files"
+msgstr "Verificante files non indicisate"
+
+#: ../../file/indexerstate.h:71
+#, fuzzy, kde-format
+#| msgid "Checking for unindexed files"
+msgid "Checking for stale index entries"
+msgstr "Verificante files non indicisate"
+
+#: ../../file/indexerstate.h:74
+#, kde-format
+msgid "Idle (Powersave)"
+msgstr ""

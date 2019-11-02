@@ -1,0 +1,97 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+# Wantoyo <wantoyek@gmail.com>, 2018, 2019.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2019-06-04 02:58+0200\n"
+"PO-Revision-Date: 2019-06-06 06:34+0700\n"
+"Last-Translator: Wantoyo <wantoyek@gmail.com>\n"
+"Language-Team: Indonesian <kde-i18n-doc@kde.org>\n"
+"Language: id\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Wantoyo"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "wantoyek@gmail.com"
+
+#: indexerstate.h:44
+#, kde-format
+msgid "Unknown"
+msgstr "Tak diketahui"
+
+#: indexerstate.h:47
+#, kde-format
+msgid "Idle"
+msgstr "Idle"
+
+#: indexerstate.h:50
+#, kde-format
+msgid "Suspended"
+msgstr "Disuspensi"
+
+#: indexerstate.h:53
+#, kde-format
+msgid "Initial Indexing"
+msgstr "Pengindeksan Inisial"
+
+#: indexerstate.h:56
+#, kde-format
+msgid "Indexing new files"
+msgstr "Pengindeksan file baru"
+
+#: indexerstate.h:59
+#, kde-format
+msgid "Indexing modified files"
+msgstr "Pengindeksan file termodifikasi"
+
+#: indexerstate.h:62
+#, kde-format
+msgid "Indexing Extended Attributes"
+msgstr "Pengindeksan Atribut Diperluas"
+
+#: indexerstate.h:65
+#, kde-format
+msgid "Indexing file content"
+msgstr "Pengindeksan konten file "
+
+#: indexerstate.h:68
+#, kde-format
+msgid "Checking for unindexed files"
+msgstr "Pemeriksaan atas file tak terindeks"
+
+#: indexerstate.h:71
+#, kde-format
+msgid "Checking for stale index entries"
+msgstr "Pemeriksaan atas entri-entri indeks yang basi"
+
+#: indexerstate.h:74
+#, kde-format
+msgid "Idle (Powersave)"
+msgstr "Idle (Hemat Daya)"
+
+#: main.cpp:46
+#, kde-format
+msgid "Baloo File Indexing Daemon"
+msgstr "Baloo Daemon Pengindeksan File"
+
+#: main.cpp:47
+#, kde-format
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:47
+#, kde-format
+msgid "Maintainer"
+msgstr "Pemelihara"
