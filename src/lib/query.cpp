@@ -312,14 +312,48 @@ QUrl Query::toSearchUrl(const QString& title)
     return url;
 }
 
+static QString jsonQueryFromUrl(const QUrl &url)
+{
+    const QString path = url.path();
+
+    if (path == QLatin1String("/documents")) {
+        return QStringLiteral("{\"type\":[\"Document\"]}");
+    } else if (path.endsWith(QLatin1String("/images"))) {
+        return QStringLiteral("{\"type\":[\"Image\"]}");
+    } else if (path.endsWith(QLatin1String("/audio"))) {
+        return QStringLiteral("{\"type\":[\"Audio\"]}");
+    } else if (path.endsWith(QLatin1String("/videos"))) {
+        return QStringLiteral("{\"type\":[\"Video\"]}");
+    }
+
+    return QString();
+}
+
 Query Query::fromSearchUrl(const QUrl& url)
 {
     if (url.scheme() != QLatin1String("baloosearch"))
         return Query();
 
     QUrlQuery urlQuery(url);
-    QString jsonString = urlQuery.queryItemValue(QStringLiteral("json"), QUrl::FullyDecoded);
-    return Query::fromJSON(jsonString.toUtf8());
+
+    if (urlQuery.hasQueryItem(QStringLiteral("json"))) {
+        QString jsonString = urlQuery.queryItemValue(QStringLiteral("json"), QUrl::FullyDecoded);
+        return Query::fromJSON(jsonString.toUtf8());
+    }
+
+    if (urlQuery.hasQueryItem(QStringLiteral("query"))) {
+        QString queryString = urlQuery.queryItemValue(QStringLiteral("query"), QUrl::FullyDecoded);
+        Query q;
+        q.setSearchString(queryString);
+        return q;
+    }
+
+    const QString jsonString = jsonQueryFromUrl(url);
+    if (!jsonString.isEmpty()) {
+        return Query::fromJSON(jsonString.toUtf8());
+    }
+
+    return Query();
 }
 
 QString Query::titleFromQueryUrl(const QUrl& url)
