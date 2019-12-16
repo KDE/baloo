@@ -20,7 +20,7 @@
 */
 
 #include <QCryptographicHash>
-#include <QtTest>
+#include <QTest>
 #include "positioncodec.h"
 #include "positioninfo.h"
 
