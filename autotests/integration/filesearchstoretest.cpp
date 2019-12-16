@@ -27,7 +27,7 @@
 #include "query.h"
 #include "term.h"
 
-#include <QtTest>
+#include <QTest>
 
 #include <xapian.h>
 #include <kfilemetadata/properties.h>
