@@ -25,6 +25,7 @@
 
 #include <QDBusConnection>
 #include <QDBusMessage>
+#include <QRandomGenerator>
 
 using namespace Baloo;
 
@@ -191,9 +192,10 @@ QString FileMonitorTest::getRandomString(int length) const
     // assuming you want random strings of 12 characters
 
     QString randomString;
+    auto *generator = QRandomGenerator::global();
     for(int i=0; i<length; ++i)
     {
-        int index = qrand() % possibleCharacters.length();
+        int index = generator->bounded(possibleCharacters.length());
         QChar nextChar = possibleCharacters.at(index);
         randomString.append(nextChar);
     }
