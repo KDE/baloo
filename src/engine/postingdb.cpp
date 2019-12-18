@@ -127,10 +127,14 @@ QVector< QByteArray > PostingDB::fetchTermsStartingWith(const QByteArray& term)
     key.mv_data = static_cast<void*>(const_cast<char*>(term.constData()));
 
     MDB_cursor* cursor;
-    mdb_cursor_open(m_txn, m_dbi, &cursor);
-
+    int rc = mdb_cursor_open(m_txn, m_dbi, &cursor);
+    if (rc) {
+        qCWarning(ENGINE) << "PostingDB::fetchTermsStartingWith" << mdb_strerror(rc);
+        return {};
+    }
+    
     QVector<QByteArray> terms;
-    int rc = mdb_cursor_get(cursor, &key, nullptr, MDB_SET_RANGE);
+    rc = mdb_cursor_get(cursor, &key, nullptr, MDB_SET_RANGE);
     while (rc == 0) {
         const QByteArray arr(static_cast<char*>(key.mv_data), key.mv_size);
         if (!arr.startsWith(term)) {
@@ -213,12 +217,17 @@ PostingIterator* PostingDB::iter(const QByteArray& prefix, Validator validate)
     key.mv_data = static_cast<void*>(const_cast<char*>(prefix.constData()));
 
     MDB_cursor* cursor;
-    mdb_cursor_open(m_txn, m_dbi, &cursor);
+    int rc = mdb_cursor_open(m_txn, m_dbi, &cursor);
+
+    if (rc) {
+        qCWarning(ENGINE) << "PostingDB::regexpIter" << mdb_strerror(rc);
+        return nullptr;
+    }
 
     QVector<PostingIterator*> termIterators;
 
     MDB_val val;
-    int rc = mdb_cursor_get(cursor, &key, &val, MDB_SET_RANGE);
+    rc = mdb_cursor_get(cursor, &key, &val, MDB_SET_RANGE);
     while (rc == 0) {
         const QByteArray arr(static_cast<char*>(key.mv_data), key.mv_size);
         if (!arr.startsWith(prefix)) {
