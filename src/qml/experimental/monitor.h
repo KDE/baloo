@@ -76,14 +76,14 @@ private:
     QDBusConnection m_bus;
 
     QString m_filePath;
-    bool m_balooRunning;
-    Baloo::IndexerState m_indexerState;
+    bool m_balooRunning = false;
+    Baloo::IndexerState m_indexerState = Baloo::Idle;
 
     org::kde::baloo::scheduler* m_scheduler;
     org::kde::baloo::fileindexer* m_fileindexer;
 
-    uint m_totalFiles;
-    uint m_filesIndexed;
+    uint m_totalFiles = 0;
+    uint m_filesIndexed = 0;
     QString m_remainingTime;
 };
 }

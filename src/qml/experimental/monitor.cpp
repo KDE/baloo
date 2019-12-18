@@ -42,7 +42,6 @@ Monitor::Monitor(QObject *parent)
     , m_filePath(QStringLiteral("Idle"))
     , m_scheduler(nullptr)
     , m_fileindexer(nullptr)
-    , m_filesIndexed(0)
     , m_remainingTime(QStringLiteral("Estimating"))
 {
     m_scheduler = new org::kde::baloo::scheduler(QStringLiteral("org.kde.baloo"),
