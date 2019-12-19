@@ -51,13 +51,13 @@ void FileContentIndexer::run()
     ExtractorProcess process;
     connect(&process, &ExtractorProcess::startedIndexingFile, this, &FileContentIndexer::slotStartedIndexingFile);
     connect(&process, &ExtractorProcess::finishedIndexingFile, this, &FileContentIndexer::slotFinishedIndexingFile);
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     m_stop.store(false);
 #else
     m_stop.storeRelaxed(false);
 #endif
     auto batchSize = m_batchSize;
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     while (m_provider->size() && !m_stop.load()) {
 #else
     while (m_provider->size() && !m_stop.loadRelaxed()) {
@@ -70,7 +70,7 @@ void FileContentIndexer::run()
         timer.start();
 
         QVector<quint64> idList = m_provider->fetch(batchSize);
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
         if (idList.isEmpty() || m_stop.load()) {
 #else
         if (idList.isEmpty() || m_stop.loadRelaxed()) {
@@ -89,7 +89,7 @@ void FileContentIndexer::run()
         // QDbus requires us to be in object creation thread (thread affinity)
         // This signal is not even exported, and yet QDbus complains. QDbus bug?
         QMetaObject::invokeMethod(this, "newBatchTime", Qt::QueuedConnection, Q_ARG(uint, timer.elapsed()));
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
         if (hadErrors && !m_stop.load()) {
 #else
         if (hadErrors && !m_stop.loadRelaxed()) {
