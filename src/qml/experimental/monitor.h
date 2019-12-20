@@ -77,7 +77,7 @@ private:
 
     QString m_filePath;
     bool m_balooRunning = false;
-    Baloo::IndexerState m_indexerState = Baloo::Idle;
+    Baloo::IndexerState m_indexerState = Baloo::Unavailable;
 
     org::kde::baloo::scheduler* m_scheduler;
     org::kde::baloo::fileindexer* m_fileindexer;

@@ -58,17 +58,21 @@ Monitor::Monitor(QObject *parent)
     connect(m_scheduler, &org::kde::baloo::scheduler::stateChanged,
             this, &Monitor::slotIndexerStateChanged);
 
+    QDBusServiceWatcher* balooWatcher = new QDBusServiceWatcher(m_scheduler->service(),
+                                                            m_bus,
+                                                            QDBusServiceWatcher::WatchForRegistration,
+                                                            this);
+    connect(balooWatcher, &QDBusServiceWatcher::serviceRegistered, this, &Monitor::balooStarted);
+    connect(balooWatcher, &QDBusServiceWatcher::serviceUnregistered, this, [this]() {
+        m_balooRunning = false;
+        m_indexerState = Baloo::Unavailable;
+        emit balooStateChanged();
+        emit indexerStateChanged();
+    });
+
     if (m_scheduler->isValid()) {
         // baloo is already running
         balooStarted(m_scheduler->service());
-
-    } else {
-        m_balooRunning = false;
-        QDBusServiceWatcher* balooWatcher = new QDBusServiceWatcher(m_scheduler->service(),
-                                                                m_bus,
-                                                                QDBusServiceWatcher::WatchForRegistration,
-                                                                this);
-        connect(balooWatcher, &QDBusServiceWatcher::serviceRegistered, this, &Monitor::balooStarted);
     }
 }
 
