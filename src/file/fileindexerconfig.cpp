@@ -107,28 +107,33 @@ QStringList FileIndexerConfig::excludeFilters() const
     KConfigGroup cfg = m_config.group("General");
 
     // read configured exclude filters
-    QSet<QString> filters = cfg.readEntry("exclude filters", defaultExcludeFilterList()).toSet();
+    QStringList filters = cfg.readEntry("exclude filters", defaultExcludeFilterList());
 
     // make sure we always keep the latest default exclude filters
     // TODO: there is one problem here. What if the user removed some of the default filters?
     if (cfg.readEntry("exclude filters version", 0) < defaultExcludeFilterListVersion()) {
-        filters += defaultExcludeFilterList().toSet();
+        filters += defaultExcludeFilterList();
+        // in case the cfg entry was empty and filters == defaultExcludeFilterList()
+        filters.removeDuplicates();
 
         // write the config directly since the KCM does not have support for the version yet
         // TODO: make this class public and use it in the KCM
         KConfig config(m_config.name());
         KConfigGroup cfg = config.group("General");
-        cfg.writeEntry("exclude filters", QStringList::fromSet(filters));
+        cfg.writeEntry("exclude filters", filters);
         cfg.writeEntry("exclude filters version", defaultExcludeFilterListVersion());
     }
 
-    // remove duplicates
-    return QStringList::fromSet(filters);
+    return filters;
 }
 
 QStringList FileIndexerConfig::excludeMimetypes() const
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     return QStringList::fromSet(m_excludeMimetypes);
+#else
+    return QList<QString>(m_excludeMimetypes.begin(), m_excludeMimetypes.end());
+#endif
 }
 
 bool FileIndexerConfig::indexHiddenFilesAndFolders() const
@@ -350,7 +355,12 @@ void FileIndexerConfig::buildExcludeFilterRegExpCache()
 
 void FileIndexerConfig::buildMimeTypeCache()
 {
-    m_excludeMimetypes = m_config.group("General").readPathEntry("exclude mimetypes", defaultExcludeMimetypes()).toSet();
+    const QStringList excludedTypes = m_config.group("General").readPathEntry("exclude mimetypes", defaultExcludeMimetypes());
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+    m_excludeMimetypes = excludedTypes.toSet();
+#else
+    m_excludeMimetypes = QSet<QString>(excludedTypes.begin(), excludedTypes.end());
+#endif
 }
 
 void FileIndexerConfig::forceConfigUpdate()

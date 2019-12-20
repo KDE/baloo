@@ -64,12 +64,20 @@ void FileMonitor::addFile(const QUrl& url)
 
 void FileMonitor::setFiles(const QStringList& fileList)
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     d->m_files = fileList.toSet();
+#else
+    d->m_files = QSet<QString>(fileList.begin(), fileList.end());
+#endif
 }
 
 QStringList FileMonitor::files() const
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     return QStringList(d->m_files.toList());
+#else
+    return QList<QString>(d->m_files.begin(), d->m_files.end());
+#endif
 }
 
 void FileMonitor::clear()
