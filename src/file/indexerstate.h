@@ -37,6 +37,7 @@ enum IndexerState {
         UnindexedFileCheck,
         StaleIndexEntriesClean,
         LowPowerIdle,
+        Unavailable,
 };
 
 inline QString stateString(IndexerState state)
@@ -72,6 +73,9 @@ inline QString stateString(IndexerState state)
         break;
     case LowPowerIdle:
         status = i18n("Idle (Powersave)");
+        break;
+    case Unavailable:
+        status = i18n("Not Running");
         break;
     }
     return status;
