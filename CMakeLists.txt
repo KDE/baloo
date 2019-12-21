@@ -40,7 +40,6 @@ include(CMakePackageConfigHelpers)
 include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(KDEFrameworkCompilerSettings NO_POLICY_SCOPE)
-include(ECMInstallIcons)
 include(ECMAddTests)
 include(ECMAddQch)
 include(ECMQtDeclareLoggingCategory)
@@ -102,7 +101,6 @@ include_directories(
 
 # targets
 add_subdirectory(src)
-add_subdirectory(icons)
 
 if (BUILD_TESTING AND BUILD_KINOTIFY)
    add_subdirectory(tests)
