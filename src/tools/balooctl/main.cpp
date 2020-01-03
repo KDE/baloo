@@ -23,7 +23,6 @@
 #include <QFile>
 
 #include <KAboutData>
-#include <KConfig>
 #include <KLocalizedString>
 #include <KFormat>
 #include <QStandardPaths>

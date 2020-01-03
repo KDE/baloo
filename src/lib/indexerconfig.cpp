@@ -1,6 +1,7 @@
 /*
  * This file is part of the KDE Baloo Project
  * Copyright (C) 2014  Vishesh Handa <vhanda@kde.org>
+ * Copyright (C) 2020  Benjamin Port <benjamin.port@enioka.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -23,17 +24,16 @@
 #include "../file/fileexcludefilters.h"
 #include "../file/regexpcache.h"
 
-#include <KConfig>
-#include <KConfigGroup>
-
 #include <QDBusConnection>
 #include "maininterface.h"
+#include "baloosettings.h"
 
 using namespace Baloo;
 
 class IndexerConfig::Private {
 public:
     FileIndexerConfig m_config;
+    BalooSettings m_settings;
 };
 
 IndexerConfig::IndexerConfig()
@@ -48,15 +48,13 @@ IndexerConfig::~IndexerConfig()
 
 bool IndexerConfig::fileIndexingEnabled() const
 {
-    return d->m_config.indexingEnabled();
+    return d->m_settings.indexingEnabled();
 }
 
 
 void IndexerConfig::setFileIndexingEnabled(bool enabled) const
 {
-    KConfig config(QStringLiteral("baloofilerc"));
-    KConfigGroup basicSettings = config.group("Basic Settings");
-    basicSettings.writeEntry("Indexing-Enabled", enabled);
+    d->m_settings.setIndexingEnabled(enabled);
 }
 
 bool IndexerConfig::shouldBeIndexed(const QString& path) const
@@ -92,26 +90,22 @@ QStringList IndexerConfig::excludeMimetypes() const
 
 void IndexerConfig::setExcludeFolders(const QStringList& excludeFolders)
 {
-    KConfig config(QStringLiteral("baloofilerc"));
-    config.group("General").writePathEntry("exclude folders", excludeFolders);
+    d->m_settings.setExcludedFolders(excludeFolders);
 }
 
 void IndexerConfig::setIncludeFolders(const QStringList& includeFolders)
 {
-    KConfig config(QStringLiteral("baloofilerc"));
-    config.group("General").writePathEntry("folders", includeFolders);
+    d->m_settings.setFolders(includeFolders);
 }
 
 void IndexerConfig::setExcludeFilters(const QStringList& excludeFilters)
 {
-    KConfig config(QStringLiteral("baloofilerc"));
-    config.group("General").writeEntry("exclude filters", excludeFilters);
+    d->m_settings.setExcludedFilters(excludeFilters);
 }
 
 void IndexerConfig::setExcludeMimetypes(const QStringList& excludeMimetypes)
 {
-    KConfig config(QStringLiteral("baloofilerc"));
-    config.group("General").writeEntry("exclude mimetypes", excludeMimetypes);
+    d->m_settings.setExcludedMimetypes(excludeMimetypes);
 }
 
 bool IndexerConfig::firstRun() const
@@ -126,26 +120,22 @@ void IndexerConfig::setFirstRun(bool firstRun) const
 
 bool IndexerConfig::indexHidden() const
 {
-    KConfig config(QStringLiteral("baloofilerc"));
-    return config.group("General").readEntry("index hidden folders", false);
+    return d->m_settings.indexHiddenFolders();
 }
 
 void IndexerConfig::setIndexHidden(bool value) const
 {
-    KConfig config(QStringLiteral("baloofilerc"));
-    config.group("General").writeEntry("index hidden folders", value);
+    d->m_settings.setIndexHiddenFolders(value);
 }
 
 bool IndexerConfig::onlyBasicIndexing() const
 {
-    KConfig config(QStringLiteral("baloofilerc"));
-    return config.group("General").readEntry("only basic indexing", false);
+    return d->m_settings.onlyBasicIndexing();
 }
 
 void IndexerConfig::setOnlyBasicIndexing(bool value)
 {
-    KConfig config(QStringLiteral("baloofilerc"));
-    config.group("General").writeEntry("only basic indexing", value);
+    d->m_settings.setOnlyBasicIndexing(value);
 }
 
 void IndexerConfig::refresh() const
