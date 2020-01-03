@@ -1,6 +1,7 @@
 /*
    Copyright (c) 2008-2009 Sebastian Trueg <trueg@kde.org>
    Copyright (c) 2012-2014 Vishesh Handa <me@vhanda.in>
+   Copyright (c) 2020 Benjamin Port <benjamin.port@enioka.com>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -24,9 +25,9 @@
 #include <QList>
 #include <QSet>
 
-#include <kconfig.h>
-
 #include "regexpcache.h"
+
+class BalooSettings;
 
 namespace Baloo
 {
@@ -186,7 +187,7 @@ private:
     void buildExcludeFilterRegExpCache();
     void buildMimeTypeCache();
 
-    KConfig m_config;
+    BalooSettings *m_settings;
 
     /// Caching cleaned up list (no duplicates, no useless entries, etc.)
     QList<QPair<QString, bool> > m_folderCache;

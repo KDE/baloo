@@ -30,6 +30,7 @@ set(BALOO_LIB_SRCS
 )
 ecm_qt_declare_logging_category(BALOO_LIB_SRCS HEADER baloodebug.h IDENTIFIER BALOO CATEGORY_NAME org.kde.baloo)
 
+kconfig_add_kcfg_files(BALOO_LIB_SRCS baloosettings.kcfgc GENERATE_MOC)
 add_library(KF5Baloo ${BALOO_LIB_SRCS})
 add_dependencies(KF5Baloo BalooDBusInterfaces)
 
@@ -84,6 +85,7 @@ install(TARGETS KF5Baloo EXPORT KF5BalooTargets ${KF5_INSTALL_TARGETS_DEFAULT_AR
 
 install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/core_export.h
+    ${CMAKE_CURRENT_BINARY_DIR}/baloosettings.h
     ${KF5Baloo_HEADERS}
     DESTINATION ${KF5_INCLUDE_INSTALL_DIR}/Baloo/baloo
     COMPONENT Devel

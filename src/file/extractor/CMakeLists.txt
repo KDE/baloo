@@ -16,6 +16,7 @@ set(EXTRACTOR_SRCS
 )
 
 ecm_qt_declare_logging_category(EXTRACTOR_SRCS HEADER baloodebug.h IDENTIFIER BALOO CATEGORY_NAME org.kde.baloo)
+kconfig_add_kcfg_files(EXTRACTOR_SRCS ../baloosettings.kcfgc GENERATE_MOC)
 
 add_executable(baloo_file_extractor ${EXTRACTOR_SRCS})
 ecm_mark_nongui_executable(baloo_file_extractor)

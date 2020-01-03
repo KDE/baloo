@@ -1,6 +1,7 @@
 /* This file is part of the KDE Project
    Copyright (c) 2008-2010 Sebastian Trueg <trueg@kde.org>
    Copyright (c) 2013-2014 Vishesh Handa <me@vhanda.in>
+   Copyright (c) 2020 Benjamin Port <benjamin.port@enioka.com>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -26,7 +27,7 @@
 
 #include <QStandardPaths>
 #include <KConfigGroup>
-
+#include "baloosettings.h"
 
 namespace
 {
@@ -61,7 +62,7 @@ using namespace Baloo;
 
 FileIndexerConfig::FileIndexerConfig(QObject* parent)
     : QObject(parent)
-    , m_config(QStringLiteral("baloofilerc"))
+    , m_settings(new BalooSettings(this))
     , m_folderCacheDirty(true)
     , m_indexHidden(false)
     , m_devices(nullptr)
@@ -104,24 +105,19 @@ QStringList FileIndexerConfig::excludeFolders() const
 
 QStringList FileIndexerConfig::excludeFilters() const
 {
-    KConfigGroup cfg = m_config.group("General");
-
     // read configured exclude filters
-    QStringList filters = cfg.readEntry("exclude filters", defaultExcludeFilterList());
+    QStringList filters = m_settings->excludedFilters();
 
     // make sure we always keep the latest default exclude filters
     // TODO: there is one problem here. What if the user removed some of the default filters?
-    if (cfg.readEntry("exclude filters version", 0) < defaultExcludeFilterListVersion()) {
+    if (m_settings->excludedFiltersVersion() < defaultExcludeFilterListVersion()) {
         filters += defaultExcludeFilterList();
         // in case the cfg entry was empty and filters == defaultExcludeFilterList()
         filters.removeDuplicates();
 
         // write the config directly since the KCM does not have support for the version yet
-        // TODO: make this class public and use it in the KCM
-        KConfig config(m_config.name());
-        KConfigGroup cfg = config.group("General");
-        cfg.writeEntry("exclude filters", filters);
-        cfg.writeEntry("exclude filters version", defaultExcludeFilterListVersion());
+        m_settings->setExcludedFilters(filters);
+        m_settings->setExcludedFiltersVersion(defaultExcludeFilterListVersion());
     }
 
     return filters;
@@ -148,7 +144,8 @@ bool FileIndexerConfig::onlyBasicIndexing() const
 
 bool FileIndexerConfig::isInitialRun() const
 {
-    return m_config.group("General").readEntry("first run", true);
+    KConfig config(QStringLiteral("baloofilerc"));
+    return config.group("General").readEntry("first run", true);
 }
 
 
@@ -321,10 +318,8 @@ void FileIndexerConfig::buildFolderCache()
         m_devices = new StorageDevices(this);
     }
 
-    KConfigGroup group = m_config.group("General");
-    QStringList includeFoldersPlain = group.readPathEntry("folders", QStringList() << QDir::homePath());
-    QStringList excludeFoldersPlain = group.readPathEntry("exclude folders", QStringList());
-
+    QStringList includeFoldersPlain = m_settings->folders();
+    QStringList excludeFoldersPlain = m_settings->excludedFolders();
     // Add all removable media and network shares as ignored unless they have
     // been explicitly added in the include list
     const auto allMedia = m_devices->allMedia();
@@ -355,7 +350,7 @@ void FileIndexerConfig::buildExcludeFilterRegExpCache()
 
 void FileIndexerConfig::buildMimeTypeCache()
 {
-    const QStringList excludedTypes = m_config.group("General").readPathEntry("exclude mimetypes", defaultExcludeMimetypes());
+    const QStringList excludedTypes = m_settings->excludedMimetypes();
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     m_excludeMimetypes = excludedTypes.toSet();
 #else
@@ -365,45 +360,46 @@ void FileIndexerConfig::buildMimeTypeCache()
 
 void FileIndexerConfig::forceConfigUpdate()
 {
-    m_config.reparseConfiguration();
+    m_settings->load();
 
     m_folderCacheDirty = true;
     buildExcludeFilterRegExpCache();
     buildMimeTypeCache();
 
-    m_indexHidden = m_config.group("General").readEntry("index hidden folders", false);
-    m_onlyBasicIndexing = m_config.group("General").readEntry("only basic indexing", false);
+    m_indexHidden = m_settings->indexHiddenFolders();
+    m_onlyBasicIndexing = m_settings->onlyBasicIndexing();
 }
 
 void FileIndexerConfig::setInitialRun(bool isInitialRun)
 {
-    m_config.group("General").writeEntry("first run", isInitialRun);
-    m_config.sync();
+    // Don't use kcfg, it will break KCM default state
+    KConfig config(QStringLiteral("baloofilerc"));
+    config.group("General").writeEntry("first run", isInitialRun);
+    config.sync();
 }
 
 bool FileIndexerConfig::initialUpdateDisabled() const
 {
-    return m_config.group("General").readEntry("disable initial update", true);
+    return m_settings->disableInitialUpdate();
 }
 
 int FileIndexerConfig::databaseVersion() const
 {
-    return m_config.group("General").readEntry("dbVersion", 0);
+    return m_settings->dbVersion();
 }
 
 void FileIndexerConfig::setDatabaseVersion(int version)
 {
-    m_config.group("General").writeEntry("dbVersion", version);
-    m_config.sync();
+    m_settings->setDbVersion(version);
+    m_settings->save();
 }
 
 bool FileIndexerConfig::indexingEnabled() const
 {
-    return m_config.group("Basic Settings").readEntry("Indexing-Enabled", true);
+    return m_settings->indexingEnabled();
 }
 
 uint FileIndexerConfig::maxUncomittedFiles() const
 {
     return m_maxUncomittedFiles;
 }
-
