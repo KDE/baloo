@@ -24,7 +24,7 @@
 
 #include <QUrl>
 #include <QDate>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QUrlQuery>
 
 
@@ -90,7 +90,8 @@ Baloo::TimelineFolderType Baloo::parseTimelineUrl(const QUrl& url, QDate* date, 
 {
     qCDebug(KIO_TIMELINE) << url;
 
-    static QRegExp s_dateRegexp(QStringLiteral("\\d{4}-\\d{2}(?:-(\\d{2}))?"));
+    static const QRegularExpression s_dateRegexp(
+                    QRegularExpression::anchoredPattern(QStringLiteral("\\d{4}-\\d{2}(?:-(\\d{2}))?")));
 
     // reset
     *date = QDate();
@@ -114,18 +115,21 @@ Baloo::TimelineFolderType Baloo::parseTimelineUrl(const QUrl& url, QDate* date, 
     } else {
         QStringList sections = path.split(QStringLiteral("/"), QString::SkipEmptyParts);
         QString dateString;
-        if (s_dateRegexp.exactMatch(sections.last())) {
+        QRegularExpressionMatch match = s_dateRegexp.match(sections.last());
+        if (match.hasMatch()) {
             dateString = sections.last();
-        } else if (sections.count() > 1 && s_dateRegexp.exactMatch(sections[sections.count() - 2])) {
+        } else if (sections.count() > 1
+                   && (match = s_dateRegexp.match(sections[sections.count() - 2])).hasMatch()) {
             dateString = sections[sections.count() - 2];
-            if (filename)
+            if (filename) {
                 *filename = sections.last();
+            }
         } else {
             qCWarning(KIO_TIMELINE) << url << "COULD NOT PARSE";
             return NoFolder;
         }
 
-        if (s_dateRegexp.cap(1).isEmpty()) {
+        if (match.captured(1).isEmpty()) {
             // no day -> month listing
             qCDebug(KIO_TIMELINE) << "parsing " << dateString;
             *date = QDate::fromString(dateString, QStringLiteral("yyyy-MM"));
