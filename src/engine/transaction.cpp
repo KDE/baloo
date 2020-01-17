@@ -44,6 +44,8 @@
 #include <QFile>
 #include <QFileInfo>
 
+#include <iostream>
+
 using namespace Baloo;
 
 Transaction::Transaction(const Database& db, Transaction::TransactionType type)
@@ -525,8 +527,7 @@ void Transaction::checkFsTree()
         }
     }
 
-    QTextStream out(stdout);
-    out << "Total Document IDs: " << allIds.size() << endl;
+    std::cout << "Total Document IDs: " << allIds.size() << std::endl;
 
     int count = 0;
     for (quint64 id: qAsConst(allIds)) {
@@ -546,39 +547,39 @@ void Transaction::checkFsTree()
                 }
             }
 
-            out << "Missing filePath for " << id << endl;
-            out << "\tPostingDB Terms: ";
+            std::cout << "Missing filePath for " << id << std::endl;
+            std::cout << "\tPostingDB Terms: ";
             for (const QByteArray& term : qAsConst(newTerms)) {
-                out << term << " ";
+                std::cout << qPrintable(term) << " ";
             }
-            out << endl;
+            std::cout << std::endl;
 
-            out << "\tDocumentTermsDB: ";
+            std::cout << "\tDocumentTermsDB: ";
             for (const QByteArray& term : terms) {
-                out << term << " ";
+                std::cout << qPrintable(term) << " ";
             }
-            out << endl;
+            std::cout << std::endl;
 
-            out << "\tFileNameTermsDB: ";
+            std::cout << "\tFileNameTermsDB: ";
             for (const QByteArray& term : fileNameTerms) {
-                out << term << " ";
+                std::cout << qPrintable(term) << " ";
             }
-            out << endl;
+            std::cout << std::endl;
 
-            out << "\tXAttrTermsDB: ";
+            std::cout << "\tXAttrTermsDB: ";
             for (const QByteArray& term : xAttrTerms) {
-                out << term << " ";
+                std::cout << qPrintable(term) << " ";
             }
-            out << endl;
+            std::cout << std::endl;
 
             count++;
         } else if (!QFileInfo::exists(QString::fromUtf8(url))) {
-            out << "FilePath " << url << " for " << id << " does not exist"<< endl;
+            std::cout << "FilePath " << qPrintable(url) << " for " << id << " does not exist"<< std::endl;
             count++;
         }
     }
 
-    out << "Invalid Entries: " << count << " (" << count * 100.0 / allIds.size() << "%)" << endl;
+    std::cout << "Invalid Entries: " << count << " (" << count * 100.0 / allIds.size() << "%)" << std::endl;
 }
 
 void Transaction::checkTermsDbinPostingDb()
@@ -600,8 +601,7 @@ void Transaction::checkTermsDbinPostingDb()
         }
     }
 
-    QTextStream out(stdout);
-    out << "PostingDB check .." << endl;
+    std::cout << "PostingDB check .." << std::endl;
     for (quint64 id : qAsConst(allIds)) {
         QVector<QByteArray> terms = documentTermsDB.get(id);
         terms += documentXattrTermsDB.get(id);
@@ -610,7 +610,7 @@ void Transaction::checkTermsDbinPostingDb()
         for (const QByteArray& term : qAsConst(terms)) {
             PostingList plist = postingDb.get(term);
             if (!plist.contains(id)) {
-                out << id << " is missing term " << term << endl;
+                std::cout << id << " is missing term " << qPrintable(term) << std::endl;
             }
         }
     }
@@ -626,8 +626,7 @@ void Transaction::checkPostingDbinTermsDb()
     QMap<QByteArray, PostingList> map = postingDb.toTestMap();
     QMapIterator<QByteArray, PostingList> it(map);
 
-    QTextStream out(stdout);
-    out << "DocumentTermsDB check .." << endl;
+    std::cout << "DocumentTermsDB check .." << std::endl;
     while (it.hasNext()) {
         it.next();
 
@@ -643,7 +642,7 @@ void Transaction::checkPostingDbinTermsDb()
             if (documentXattrTermsDB.get(id).contains(term)) {
                 continue;
             }
-            out << id << " is missing " << QString::fromUtf8(term) << " from document terms db" << endl;
+            std::cout << id << " is missing " << qPrintable(QString::fromUtf8(term)) << " from document terms db" << std::endl;
         }
     }
 }

@@ -102,7 +102,6 @@ int main(int argc, char* argv[])
         parser.showHelp(1);
     }
 
-    QTextStream err(stderr);
     QTextStream out(stdout);
 
     QString command = parser.positionalArguments().first();
@@ -165,7 +164,12 @@ int main(int argc, char* argv[])
                 if (!mainInterface.isValid()) {
                     break;
                 }
-                out << "." << flush;
+                out << "." <<
+#if (QT_VERSION < QT_VERSION_CHECK(5, 15, 0))
+                       flush;
+#else
+                       Qt::flush;
+#endif
                 QThread::msleep(200);
             }
             if (!mainInterface.isValid()) {
@@ -224,7 +228,7 @@ int main(int argc, char* argv[])
             const QString url = QFileInfo(parser.positionalArguments().at(i)).absoluteFilePath();
             quint64 id = filePathToId(QFile::encodeName(url));
             if (id == 0) {
-                out << "Could not stat file: " << url << endl;
+                out << "Could not stat file: " << url<< '\n';
                 continue;
             }
             if (tr.inPhaseOne(id))  {
@@ -236,7 +240,7 @@ int main(int argc, char* argv[])
                 continue;
             }
             Indexer indexer(url, &tr);
-            out << "Indexing " << url << endl;
+            out << "Indexing " << url<< '\n';
             indexer.index();
         }
         tr.commit();
@@ -263,10 +267,10 @@ int main(int argc, char* argv[])
             const QString url = QFileInfo(parser.positionalArguments().at(i)).absoluteFilePath();
             quint64 id = filePathToId(QFile::encodeName(url));
             if (id == 0) {
-                out << "Could not stat file: " << url << endl;
+                out << "Could not stat file: " << url<< '\n';
                 continue;
             }
-            out << "Clearing " << url << endl;
+            out << "Clearing " << url<< '\n';
             tr.removeDocument(id);
         }
         tr.commit();
@@ -364,7 +368,7 @@ int main(int argc, char* argv[])
         Transaction tr(db, Transaction::ReadOnly);
         tr.checkPostingDbinTermsDb();
         tr.checkTermsDbinPostingDb();
-        out << "Checking file paths .. " << endl;
+        out << "Checking file paths .. "<< '\n';
         tr.checkFsTree();
         return 0;
     }

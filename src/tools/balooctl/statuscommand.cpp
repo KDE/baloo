@@ -151,20 +151,20 @@ void printMultiLine(Transaction& tr, IndexerConfig&  cfg, const QStringList& arg
         const auto file = collectFileStatus(tr, cfg, fileName);
 
         if (file.m_fileStatus == FileStatus::NonExisting) {
-            err << i18n("Ignoring non-existent file %1", file.m_filePath) << endl;
+            err << i18n("Ignoring non-existent file %1", file.m_filePath) << '\n';
             continue;
         }
 
         if (file.m_fileStatus == FileStatus::SymLink || file.m_fileStatus == FileStatus::Other) {
-            err << i18n("Ignoring symlink/special file %1", file.m_filePath) << endl;
+            err << i18n("Ignoring symlink/special file %1", file.m_filePath) << '\n';
             continue;
         }
 
-        out << i18n("File: %1", file.m_filePath) << endl;
-        out << basicIndexStateValue[file.m_indexState] << endl;
+        out << i18n("File: %1", file.m_filePath) << '\n';
+        out << basicIndexStateValue[file.m_indexState] << '\n';
         const QString contentState = contentIndexStateValue[file.m_indexState];
         if (!contentState.isEmpty()) {
-            out << contentState << endl;
+            out << contentState << '\n';
         }
     }
 }
@@ -191,17 +191,17 @@ void printSimpleFormat(Transaction& tr, IndexerConfig&  cfg, const QStringList& 
         const auto file = collectFileStatus(tr, cfg, fileName);
 
         if (file.m_fileStatus == FileStatus::NonExisting) {
-            err << i18n("Ignoring non-existent file %1", file.m_filePath) << endl;
+            err << i18n("Ignoring non-existent file %1", file.m_filePath) << '\n';
             continue;
         }
 
         if (file.m_fileStatus == FileStatus::SymLink || file.m_fileStatus == FileStatus::Other) {
-            err << i18n("Ignoring symlink/special file %1", file.m_filePath) << endl;
+            err << i18n("Ignoring symlink/special file %1", file.m_filePath) << '\n';
             continue;
         }
 
         out << simpleIndexStateValue[file.m_indexState];
-        out << ": " << file.m_filePath << endl;
+        out << ": " << file.m_filePath << '\n';
     }
 }
 
@@ -240,12 +240,12 @@ void printJSON(Transaction& tr, IndexerConfig&  cfg, const QStringList& args)
         const auto file = collectFileStatus(tr, cfg, fileName);
 
         if (file.m_fileStatus == FileStatus::NonExisting) {
-            err << i18n("Ignoring non-existent file %1", file.m_filePath) << endl;
+            err << i18n("Ignoring non-existent file %1", file.m_filePath) << '\n';
             continue;
         }
 
         if (file.m_fileStatus == FileStatus::SymLink || file.m_fileStatus == FileStatus::Other) {
-            err << i18n("Ignoring symlink/special file %1", file.m_filePath) << endl;
+            err << i18n("Ignoring symlink/special file %1", file.m_filePath) << '\n';
             continue;
         }
 
@@ -272,19 +272,19 @@ int StatusCommand::exec(const QCommandLineParser& parser)
     const QString format = parser.value(QStringLiteral("format"));
 
     if (!allowedFormats.contains(format)) {
-        err << i18n("Output format \"%1\" is invalid", format) << endl;
+        err << i18n("Output format \"%1\" is invalid", format) << '\n';
         return 1;
     }
 
     IndexerConfig cfg;
     if (!cfg.fileIndexingEnabled()) {
-        err << i18n("Baloo is currently disabled. To enable, please run %1", QStringLiteral("balooctl enable")) << endl;
+        err << i18n("Baloo is currently disabled. To enable, please run %1", QStringLiteral("balooctl enable")) << '\n';
         return 1;
     }
 
     Database *db = globalDatabaseInstance();
     if (!db->open(Database::ReadOnlyDatabase)) {
-        err << i18n("Baloo Index could not be opened") << endl;
+        err << i18n("Baloo Index could not be opened\n");
         return 1;
     }
 
@@ -305,20 +305,20 @@ int StatusCommand::exec(const QCommandLineParser& parser)
         bool running = mainInterface.isValid();
 
         if (running) {
-            out << i18n("Baloo File Indexer is running") << endl;
-            out << i18n("Indexer state: %1", stateString(schedulerinterface.state())) << endl;
+            out << i18n("Baloo File Indexer is running\n");
+            out << i18n("Indexer state: %1", stateString(schedulerinterface.state())) << '\n';
         }
         else {
-            out << i18n("Baloo File Indexer is not running") << endl;
+            out << i18n("Baloo File Indexer is not running\n");
         }
 
         uint phaseOne = tr.phaseOneSize();
         uint total = tr.size();
         uint failed = tr.failedIds(100).size();
 
-        out << i18n("Total files indexed: %1", total) << endl;
-        out << i18n("Files waiting for content indexing: %1", phaseOne) << endl;
-        out << i18n("Files failed to index: %1", failed) << endl;
+        out << i18n("Total files indexed: %1", total) << '\n';
+        out << i18n("Files waiting for content indexing: %1", phaseOne) << '\n';
+        out << i18n("Files failed to index: %1", failed) << '\n';
 
         const QString path = fileIndexDbPath();
 
@@ -326,9 +326,9 @@ int StatusCommand::exec(const QCommandLineParser& parser)
         const auto size = indexInfo.size();
         KFormat format(QLocale::system());
         if (size) {
-            out << i18n("Current size of index is %1", format.formatByteSize(size, 2)) << endl;
+            out << i18n("Current size of index is %1", format.formatByteSize(size, 2)) << '\n';
         } else {
-            out << i18n("Index does not exist yet") << endl;
+            out << i18n("Index does not exist yet\n");
         }
     } else if (format == allowedFormats[0]){
         printSimpleFormat(tr, cfg, args);
