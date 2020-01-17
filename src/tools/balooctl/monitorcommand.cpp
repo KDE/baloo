@@ -65,7 +65,8 @@ MonitorCommand::MonitorCommand(QObject *parent)
         this, &MonitorCommand::stateChanged);
 
     if (m_indexerDBusInterface->isValid() && m_schedulerDBusInterface->isValid()) {
-        m_err << i18n("Press ctrl+c to stop monitoring") << endl;
+        m_err << i18n("Press ctrl+c to stop monitoring\n");
+        m_err.flush();
         balooIsAvailable();
         stateChanged(m_schedulerDBusInterface->state());
         QString currentFile = m_indexerDBusInterface->currentFile();
@@ -82,14 +83,16 @@ MonitorCommand::MonitorCommand(QObject *parent)
 void MonitorCommand::balooIsNotAvailable()
 {
     m_indexerDBusInterface->unregisterMonitor();
-    m_err << i18n("Waiting for file indexer to start") << endl;
-    m_err << i18n("Press ctrl+c to stop monitoring") << endl;
+    m_err << i18n("Waiting for file indexer to start_n");
+    m_err << i18n("Press ctrl+c to stop monitoring\n");
+    m_err.flush();
 }
 
 void MonitorCommand::balooIsAvailable()
 {
     m_indexerDBusInterface->registerMonitor();
-    m_err << i18n("File indexer is running") << endl;
+    m_err << i18n("File indexer is running\n");
+    m_err.flush();
 }
 
 int MonitorCommand::exec(const QCommandLineParser& parser)
@@ -101,7 +104,12 @@ int MonitorCommand::exec(const QCommandLineParser& parser)
 void MonitorCommand::startedIndexingFile(const QString& filePath)
 {
     m_currentFile = filePath;
-    m_out << i18nc("currently indexed file", "Indexing: %1", filePath) << flush;
+    m_out << i18nc("currently indexed file", "Indexing: %1", filePath)
+#if (QT_VERSION < QT_VERSION_CHECK(5, 15, 0))
+          << flush;
+#else
+          << Qt::flush;
+#endif
 }
 
 void MonitorCommand::finishedIndexingFile(const QString& filePath)
@@ -109,10 +117,12 @@ void MonitorCommand::finishedIndexingFile(const QString& filePath)
     Q_UNUSED(filePath);
 
     m_currentFile.clear();
-    m_out << i18n(": Ok") << endl;
+    m_out << i18n(": Ok\n");
+    m_out.flush();
 }
 
 void MonitorCommand::stateChanged(int state)
 {
-    m_out << stateString(state) << endl;
+    m_out << stateString(state) << '\n';
+    m_out.flush();
 }

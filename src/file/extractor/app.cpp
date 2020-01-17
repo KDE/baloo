@@ -108,11 +108,11 @@ void App::processNextFile()
             return;
         }
 
-        m_outputStream << "S " << url << endl;
+        m_outputStream << "S " << url << '\n';
         index(m_tr, url, id);
-        m_outputStream << "F " << url << endl;
+        m_outputStream << "F " << url << '\n';
         m_updatedFiles << url;
-
+        m_outputStream.flush();
         QTimer::singleShot(delay, this, &App::processNextFile);
 
     } else {
@@ -139,7 +139,8 @@ void App::processNextFile()
 
         // Enable the SocketNotifier for the next batch
         m_notifyNewData.setEnabled(true);
-        m_outputStream << "B" << endl;
+        m_outputStream << "B\n";
+        m_outputStream.flush();
     }
 }
 

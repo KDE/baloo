@@ -33,6 +33,8 @@
 #include "query.h"
 #include "searchstore.h"
 
+#include <iostream>
+
 int main(int argc, char* argv[])
 {
     QCoreApplication app(argc, argv);
@@ -80,9 +82,6 @@ int main(int argc, char* argv[])
     if (parser.isSet(QStringLiteral("offset")))
         offset = parser.value(QStringLiteral("offset")).toInt();
 
-    QTextStream out(stdout);
-    QTextStream err(stderr);
-
     QString queryStr = args.join(QLatin1Char(' '));
 
     Baloo::Query query;
@@ -102,9 +101,9 @@ int main(int argc, char* argv[])
     Baloo::ResultIterator iter = query.exec();
     while (iter.next()) {
         const QString filePath = iter.filePath();
-        out << filePath << endl;
+        std::cout << qPrintable(filePath) << std::endl;
     }
-    err << i18n("Elapsed: %1 msecs", timer.nsecsElapsed() / 1000000.0) << endl;
+    std::cerr << qPrintable(i18n("Elapsed: %1 msecs", timer.nsecsElapsed() / 1000000.0)) << std::endl;
 
     return 0;
 }

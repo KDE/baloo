@@ -72,15 +72,15 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
         out << command;
         out.setFieldWidth(0);
         out.setFieldAlignment(QTextStream::AlignLeft);
-        out << description << endl;
+        out << description << '\n';
     };
 
     const QString command = args.isEmpty() ? QStringLiteral("help") : args.takeFirst();
     if (command == QLatin1String("help")) {
         // Show help
-        out << i18n("The config command can be used to manipulate the Baloo Configuration") << endl;
-        out << i18n("Usage: balooctl config <command>") << endl << endl;
-        out << i18n("Possible Commands:") << endl;
+        out << i18n("The config command can be used to manipulate the Baloo Configuration\n");
+        out << i18n("Usage: balooctl config <command>\n\n");
+        out << i18n("Possible Commands:\n");
 
 
         printCommand(QStringLiteral("add"), i18n("Add a value to config parameter"));
@@ -93,7 +93,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
 
     if (command == QLatin1String("list") || command == QLatin1String("ls") || command == QLatin1String("show")) {
         if (args.isEmpty()) {
-            out << i18n("The following configuration options may be listed:") << endl << endl;
+            out << i18n("The following configuration options may be listed:\n\n");
 
             printCommand(QStringLiteral("hidden"), i18n("Controls if Baloo indexes hidden files and folders"));
             printCommand(QStringLiteral("contentIndexing"), i18n("Controls if Baloo indexes file content"));
@@ -108,9 +108,9 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
         QString value = args.takeFirst();
         if (value.compare(QLatin1String("hidden"), Qt::CaseInsensitive) == 0) {
             if (config.indexHidden()) {
-                out << "yes" << endl;
+                out << "yes\n";
             } else {
-                out << "no" << endl;
+                out << "no\n";
             }
 
             return 0;
@@ -118,9 +118,9 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
 
         if (value.compare(QStringLiteral("contentIndexing"), Qt::CaseInsensitive) == 0) {
             if (config.onlyBasicIndexing()) {
-                out << "no" << endl;
+                out << "no\n";
             } else {
-                out << "yes" << endl;
+                out << "yes\n";
             }
 
             return 0;
@@ -128,7 +128,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
 
         auto printList = [&out](const QStringList& list) {
             for (const QString& item: list) {
-                out << item << endl;
+                out << item << '\n';
             }
         };
 
@@ -152,13 +152,13 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
             return 0;
         }
 
-        out << i18n("Config parameter could not be found") << endl;
+        out << i18n("Config parameter could not be found\n");
         return 1;
     }
 
     if (command == QLatin1String("rm") || command == QLatin1String("remove")) {
         if (args.isEmpty()) {
-            out << i18n("The following configuration options may be modified:") << endl << endl;
+            out << i18n("The following configuration options may be modified:\n\n");
 
             printCommand(QStringLiteral("includeFolders"), i18n("The list of folders which Baloo indexes"));
             printCommand(QStringLiteral("excludeFolders"), i18n("The list of folders which Baloo will never index"));
@@ -171,7 +171,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
         QString value = args.takeFirst();
         if (value.compare(QLatin1String("includeFolders"), Qt::CaseInsensitive) == 0) {
             if (args.isEmpty()) {
-                out << i18n("A folder must be provided") << endl;
+                out << i18n("A folder must be provided\n");
                 return 1;
             }
 
@@ -179,7 +179,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
             path = normalizeTrailingSlashes(std::move(path));
             QStringList folders = config.includeFolders();
             if (!folders.contains(path)) {
-                out << i18n("%1 is not in the list of include folders", path) << endl;
+                out << i18n("%1 is not in the list of include folders", path) << '\n';
                 return 1;
             }
 
@@ -191,7 +191,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
 
         if (value.compare(QLatin1String("excludeFolders"), Qt::CaseInsensitive) == 0) {
             if (args.isEmpty()) {
-                out << i18n("A folder must be provided") << endl;
+                out << i18n("A folder must be provided\n");
                 return 1;
             }
 
@@ -199,7 +199,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
             path = normalizeTrailingSlashes(std::move(path));
             QStringList folders = config.excludeFolders();
             if (!folders.contains(path)) {
-                out << i18n("%1 is not in the list of exclude folders", path) << endl;
+                out << i18n("%1 is not in the list of exclude folders", path) << '\n';
                 return 1;
             }
 
@@ -211,13 +211,13 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
 
         if (value.compare(QStringLiteral("excludeFilters"), Qt::CaseInsensitive) == 0) {
             if (args.isEmpty()) {
-                out << i18n("A filter must be provided") << endl;
+                out << i18n("A filter must be provided\n");
                 return 1;
             }
 
             QStringList filters = config.excludeFilters();
             if (!filters.contains(args.first())) {
-                out << i18n("%1 is not in list of exclude filters", args.first()) << endl;
+                out << i18n("%1 is not in list of exclude filters", args.first()) << '\n';
                 return 1;
             }
 
@@ -228,13 +228,13 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
 
         if (value.compare(QStringLiteral("excludeMimetypes"), Qt::CaseInsensitive) == 0) {
             if (args.isEmpty()) {
-                out << i18n("A mimetype must be provided") << endl;
+                out << i18n("A mimetype must be provided\n");
                 return 1;
             }
 
             QStringList mimetypes = config.excludeMimetypes();
             if (!mimetypes.contains(args.first())) {
-                out << i18n("%1 is not in list of exclude mimetypes", args.first()) << endl;
+                out << i18n("%1 is not in list of exclude mimetypes", args.first()) << '\n';
                 return 1;
             }
 
@@ -243,13 +243,13 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
             return 0;
         }
 
-        out << i18n("Config parameter could not be found") << endl;
+        out << i18n("Config parameter could not be found\n");
         return 1;
     }
 
     if (command == QLatin1String("add")) {
         if (args.isEmpty()) {
-            out << i18n("The following configuration options may be modified:") << endl << endl;
+            out << i18n("The following configuration options may be modified:\n\n");
 
             printCommand(QStringLiteral("includeFolders"), i18n("The list of folders which Baloo indexes"));
             printCommand(QStringLiteral("excludeFolders"), i18n("The list of folders which Baloo will never index"));
@@ -262,30 +262,30 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
         QString value = args.takeFirst();
         if (value.compare(QLatin1String("includeFolders"), Qt::CaseInsensitive) == 0) {
             if (args.isEmpty()) {
-                out << i18n("A folder must be provided") << endl;
+                out << i18n("A folder must be provided\n");
                 return 1;
             }
 
             auto fileInfo = QFileInfo(args.takeFirst());
             if (!fileInfo.exists()) {
-                out << i18n("Path does not exist") << endl;
+                out << i18n("Path does not exist\n");
                 return 1;
             }
 
             if (!fileInfo.isDir()) {
-                out << i18n("Path is not a directory") << endl;
+                out << i18n("Path is not a directory\n");
                 return 1;
             }
 
             auto path = normalizeTrailingSlashes(fileInfo.absoluteFilePath());
             QStringList folders = config.includeFolders();
             if (folders.contains(path)) {
-                out << i18n("%1 is already in the list of include folders", path) << endl;
+                out << i18n("%1 is already in the list of include folders", path) << '\n';
                 return 1;
             }
 
             if (config.excludeFolders().contains(path)) {
-                out << i18n("%1 is in the list of exclude folders", path) << endl;
+                out << i18n("%1 is in the list of exclude folders", path) << '\n';
                 return 1;
             }
 
@@ -297,30 +297,30 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
 
         if (value.compare(QLatin1String("excludeFolders"), Qt::CaseInsensitive) == 0) {
             if (args.isEmpty()) {
-                out << i18n("A folder must be provided") << endl;
+                out << i18n("A folder must be provided\n");
                 return 1;
             }
 
             auto fileInfo = QFileInfo(args.takeFirst());
             if (!fileInfo.exists()) {
-                out << i18n("Path does not exist") << endl;
+                out << i18n("Path does not exist\n");
                 return 1;
             }
 
             if (!fileInfo.isDir()) {
-                out << i18n("Path is not a directory") << endl;
+                out << i18n("Path is not a directory\n");
                 return 1;
             }
 
             auto path = normalizeTrailingSlashes(fileInfo.absoluteFilePath());
             QStringList folders = config.excludeFolders();
             if (folders.contains(path)) {
-                out << i18n("%1 is already in the list of exclude folders", path) << endl;
+                out << i18n("%1 is already in the list of exclude folders", path) << '\n';
                 return 1;
             }
 
             if (config.includeFolders().contains(path)) {
-                out << i18n("%1 is in the list of exclude folders", path) << endl;
+                out << i18n("%1 is in the list of exclude folders", path) << '\n';
                 return 1;
             }
 
@@ -332,13 +332,13 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
 
         if (value.compare(QStringLiteral("excludeFilters"), Qt::CaseInsensitive) == 0) {
             if (args.empty()) {
-                out << i18n("A filter must be provided") << endl;
+                out << i18n("A filter must be provided\n");
                 return 1;
             }
 
             QStringList filters = config.excludeFilters();
             if (filters.contains(args.first())) {
-                out << i18n("Exclude filter is already in the list") << endl;
+                out << i18n("Exclude filter is already in the list\n");
                 return 1;
             }
 
@@ -350,13 +350,13 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
 
         if (value.compare(QStringLiteral("excludeMimetypes"), Qt::CaseInsensitive) == 0) {
             if (args.empty()) {
-                out << i18n("A mimetype must be provided") << endl;
+                out << i18n("A mimetype must be provided\n");
                 return 1;
             }
 
             QStringList mimetypes = config.excludeMimetypes();
             if (mimetypes.contains(args.first())) {
-                out << i18n("Exclude mimetype is already in the list") << endl;
+                out << i18n("Exclude mimetype is already in the list\n");
                 return 1;
             }
 
@@ -366,13 +366,13 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
             return 0;
         }
 
-        out << i18n("Config parameter could not be found") << endl;
+        out << i18n("Config parameter could not be found\n");
         return 1;
     }
 
     if (command == QLatin1String("set")) {
         if (args.isEmpty()) {
-            out << i18n("The following configuration options may be modified:") << endl << endl;
+            out << i18n("The following configuration options may be modified:\n\n");
 
             printCommand(QStringLiteral("hidden"), i18n("Controls if Baloo indexes hidden files and folders"));
             printCommand(QStringLiteral("contentIndexing"), i18n("Controls if Baloo indexes file content"));
@@ -384,7 +384,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
 
         if (configParam == QLatin1String("hidden"))  {
             if (args.isEmpty()) {
-                out << i18n("A value must be provided") << endl;
+                out << i18n("A value must be provided\n");
                 return 1;
             }
 
@@ -405,13 +405,13 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
                 return 0;
             }
 
-            out << i18n("Invalid value") << endl;
+            out << i18n("Invalid value\n");
             return 1;
         }
 
         if (configParam.compare(QStringLiteral("contentIndexing"), Qt::CaseInsensitive) == 0)  {
             if (args.isEmpty()) {
-                out << i18n("A value must be provided") << endl;
+                out << i18n("A value must be provided\n");
                 return 1;
             }
 
@@ -432,11 +432,11 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
                 return 0;
             }
 
-            out << i18n("Invalid value") << endl;
+            out << i18n("Invalid value\n");
             return 1;
         }
 
-        out << i18n("Config parameter could not be found") << endl;
+        out << i18n("Config parameter could not be found\n");
         return 1;
     }
 
