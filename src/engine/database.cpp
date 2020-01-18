@@ -134,7 +134,7 @@ bool Database::open(OpenMode mode)
     const size_t maximalSizeInBytes = sizeInGByte * size_t(1024) * size_t(1024) * size_t(1024);
     mdb_env_set_mapsize(m_env, maximalSizeInBytes);
 
-    // Set MDB envoironment flags
+    // Set MDB environment flags
     auto mdbEnvFlags = MDB_NOSUBDIR | MDB_NOMEMINIT;
     if (mode == ReadOnlyDatabase) mdbEnvFlags |= MDB_RDONLY;
 

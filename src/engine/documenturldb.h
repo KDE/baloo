@@ -169,7 +169,7 @@ void DocumentUrlDB::replaceOrDelete(quint64 docId, const QByteArray& url, Functo
     if (url.isEmpty()) {
         const auto subDocs = idTreeDb.get(docId);
         if (!subDocs.isEmpty()) {
-            // Check if subdocs actually exist or is it a curruption
+            // Check if subdocs actually exist or is it a corruption
             for (auto const& docId : subDocs) {
                 auto filePath = idFilenameDb.get(docId);
                 auto fileName = QFile::decodeName(filePath.name);
@@ -180,7 +180,7 @@ void DocumentUrlDB::replaceOrDelete(quint64 docId, const QByteArray& url, Functo
                     }
                 } else {
                     /*
-                     * FIXME: this is not an ideal solution we need to figure out how such currptions are
+                     * FIXME: this is not an ideal solution we need to figure out how such corruptions are
                      * creeping in or at least if we detect some figure out a proper cleaning mechanism
                      */
                     qWarning() << "Database has corrupted entries baloo may misbehave, please recreate the DB by running $ balooctl disable && balooctl enable";

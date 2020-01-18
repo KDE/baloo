@@ -147,7 +147,7 @@ public:
     /**
      * Check if \p path is in the list of folders to be indexed taking
      * include and exclude folders into account.
-     * \p folder is set to the folder which was the reason for the descision.
+     * \p folder is set to the folder which was the reason for the decision.
      */
     bool folderInFolderList(const QString& path, QString& folder) const;
 

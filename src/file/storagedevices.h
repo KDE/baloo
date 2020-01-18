@@ -58,7 +58,7 @@ public:
 
         /**
          * Returns true if Baloo should be indexing this
-         * Currently we only index permanentaly mounted media
+         * Currently we only index permanently mounted media
          */
         bool isUsable() const;
 
