@@ -83,8 +83,8 @@ MonitorCommand::MonitorCommand(QObject *parent)
 void MonitorCommand::balooIsNotAvailable()
 {
     m_indexerDBusInterface->unregisterMonitor();
-    m_err << i18n("Waiting for file indexer to start_n");
-    m_err << i18n("Press ctrl+c to stop monitoring\n");
+    m_err << i18n("Waiting for file indexer to start\n");
+    m_err << i18n("Press Ctrl+C to stop monitoring\n");
     m_err.flush();
 }
 
