@@ -30,7 +30,7 @@
  * This class holds a QByteArray which corresponds to a file url in a
  * more memory efficient manner.
  *
- * It does so by spliting the url along the directory separator '/', and
+ * It does so by splitting the url along the directory separator '/', and
  * saving each path separately in a QVector. This is more memory efficient
  * than storing it together cause it uses a QSet<QByteArray> cache to lookup
  * each part of the vector. This way, multiple OptimizedByteArrays share common

@@ -295,7 +295,7 @@ int main(int argc, char* argv[])
             return 0;
         }
 
-        out << "The folling files could not be indexed:\n";
+        out << "The following files could not be indexed:\n";
         for (auto id : failedIds) {
             out << tr.documentUrl(id) << '\n';
         }

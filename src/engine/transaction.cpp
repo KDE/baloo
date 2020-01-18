@@ -537,7 +537,7 @@ void Transaction::checkFsTree()
             auto fileNameTerms = documentFileNameTermsDB.get(id);
             auto xAttrTerms = documentXattrTermsDB.get(id);
 
-            // Lets reverse enginer the terms
+            // Lets reverse engineer the terms
             QList<QByteArray> newTerms;
             QMapIterator<QByteArray, PostingList> it(map);
             while (it.hasNext()) {
