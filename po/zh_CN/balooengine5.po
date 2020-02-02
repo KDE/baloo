@@ -1,0 +1,52 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: kdeorg\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2019-05-20 02:54+0200\n"
+"PO-Revision-Date: 2020-01-20 21:49\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Chinese Simplified\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: kdeorg\n"
+"X-Crowdin-Language: zh-CN\n"
+"X-Crowdin-File: /kf5-trunk/messages/frameworks/balooengine5.pot\n"
+
+#: experimental/databasesanitizer.cpp:276
+#, kde-format
+msgid "Total: %1, Inaccessible: %2"
+msgstr "总计：%1，无法访问：%2"
+
+#: experimental/databasesanitizer.cpp:280
+#, kde-format
+msgid "Total: %1, Ignored: %2, Accessible: %3, Inaccessible: %4"
+msgstr "总计：%1，被忽略：%2，可访问：%3，无法访问：%4"
+
+#: experimental/databasesanitizer.cpp:336
+#, kde-format
+msgid "Found %1 matching in %2 devices"
+msgstr "在 %2 个设备中找到 %1 个匹配"
+
+#: experimental/databasesanitizer.cpp:357
+#, kde-format
+msgid "IgnoredSymbolicLink:"
+msgstr "忽略的符号链接："
+
+#: experimental/databasesanitizer.cpp:361
+#, kde-format
+msgid "Removing:"
+msgstr "正在删除:"
+
+#: experimental/databasesanitizer.cpp:375
+#, kde-format
+msgctxt "numbers"
+msgid "Removed: %1, Total: %2, Ignored: %3"
+msgstr "已移除：%1，总共：%2，已忽略：%3"
