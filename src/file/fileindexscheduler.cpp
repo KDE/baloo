@@ -248,6 +248,8 @@ void FileIndexScheduler::setSuspend(bool suspend)
         qCDebug(BALOO) << "Suspending";
         if (m_indexerState == ContentIndexing) {
             m_contentIndexer->quit();
+        } else {
+            scheduleIndexing();
         }
     } else {
         qCDebug(BALOO) << "Resuming";

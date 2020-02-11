@@ -104,6 +104,7 @@ private:
     void setSuspend(bool suspend);
     bool isIndexerIdle() {
         return m_isGoingIdle ||
+               (m_indexerState == Suspended) ||
                (m_indexerState == Idle) ||
                (m_indexerState == LowPowerIdle);
     }
