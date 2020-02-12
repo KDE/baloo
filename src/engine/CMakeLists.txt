@@ -31,7 +31,10 @@ ecm_qt_declare_logging_category(
     HEADER "enginedebug.h"
     IDENTIFIER "Baloo::ENGINE"
     DEFAULT_SEVERITY Warning
-    CATEGORY_NAME "org.kde.baloo.engine")
+    CATEGORY_NAME "org.kde.baloo.engine"
+    DESCRIPTION "Baloo Engine"
+    EXPORT BALOO
+)
 
 if(${BUILD_EXPERIMENTAL})
   set(BALOO_ENGINE_SRCS ${BALOO_ENGINE_SRCS} experimental/databasesanitizer.cpp)

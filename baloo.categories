@@ -1,4 +1,0 @@
-org.kde.baloo Baloo File debug IDENTIFIER [BALOO]
-kf5.kio.kio_tags Baloo Tags (KIO) DEFAULT_SEVERITY [WARNING] IDENTIFIER [BALOO]
-kf5.kio.kio_timeline Baloo Timeline (KIO) DEFAULT_SEVERITY [WARNING] IDENTIFIER [Baloo::KIO_TIMELINE]
-org.kde.baloo.engine Baloo Engine DEFAULT_SEVERITY [WARNING] IDENTIFIER [Baloo::ENGINE]

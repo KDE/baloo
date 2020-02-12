@@ -5,10 +5,12 @@ set(tags_LIB_SRCS
 )
 
 ecm_qt_declare_logging_category(tags_LIB_SRCS
-                                HEADER kio_tags_debug.h
-                                IDENTIFIER Baloo::KIO_TAGS
-                                DEFAULT_SEVERITY Warning
-                                CATEGORY_NAME kf5.kio.kio_tags
+    HEADER kio_tags_debug.h
+    IDENTIFIER Baloo::KIO_TAGS
+    DEFAULT_SEVERITY Warning
+    CATEGORY_NAME kf5.kio.kio_tags
+    DESCRIPTION "Baloo Tags (KIO)"
+    EXPORT BALOO
 )
 
 add_library(tags MODULE ${tags_LIB_SRCS})
