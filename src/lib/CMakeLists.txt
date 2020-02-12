@@ -28,7 +28,13 @@ set(BALOO_LIB_SRCS
 
     ${DBUS_INTERFACES}
 )
-ecm_qt_declare_logging_category(BALOO_LIB_SRCS HEADER baloodebug.h IDENTIFIER BALOO CATEGORY_NAME org.kde.baloo)
+ecm_qt_declare_logging_category(BALOO_LIB_SRCS
+    HEADER baloodebug.h
+    IDENTIFIER BALOO
+    CATEGORY_NAME org.kde.baloo
+    DESCRIPTION "Baloo File debug"
+    EXPORT BALOO
+)
 
 kconfig_add_kcfg_files(BALOO_LIB_SRCS baloosettings.kcfgc GENERATE_MOC)
 add_library(KF5Baloo ${BALOO_LIB_SRCS})

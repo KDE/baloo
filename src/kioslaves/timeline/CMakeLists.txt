@@ -6,10 +6,12 @@ set(kio_timeline_SRCS
 )
 
 ecm_qt_declare_logging_category(kio_timeline_SRCS
-                                HEADER kio_timeline_debug.h
-                                IDENTIFIER Baloo::KIO_TIMELINE
-                                DEFAULT_SEVERITY Warning
-                                CATEGORY_NAME kf5.kio.kio_timeline
+    HEADER kio_timeline_debug.h
+    IDENTIFIER Baloo::KIO_TIMELINE
+    DEFAULT_SEVERITY Warning
+    CATEGORY_NAME kf5.kio.kio_timeline
+    DESCRIPTION "Baloo Timeline (KIO)"
+    EXPORT BALOO
 )
 
 add_library(timeline MODULE ${kio_timeline_SRCS})

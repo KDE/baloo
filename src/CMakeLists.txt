@@ -11,3 +11,8 @@ endif()
 
 add_subdirectory(dbus)
 
+ecm_qt_install_logging_categories(
+    EXPORT BALOO
+    FILE baloo.categories
+    DESTINATION ${KDE_INSTALL_LOGGINGCATEGORIESDIR}
+)
