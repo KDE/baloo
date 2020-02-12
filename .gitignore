@@ -37,3 +37,4 @@ CMakeLists.txt.user*
 
 
 *.kdev4
+.cmake/
