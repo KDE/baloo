@@ -22,13 +22,10 @@
 #ifndef BALOO_INDEXER_STATE_H
 #define BALOO_INDEXER_STATE_H
 
-#include <QObject>
 #include <QString>
 #include <KLocalizedString>
 
 namespace Baloo {
-Q_NAMESPACE
-
 enum IndexerState {
         Idle,
         Suspended,
@@ -42,7 +39,6 @@ enum IndexerState {
         LowPowerIdle,
         Unavailable,
 };
-Q_ENUM_NS(IndexerState)
 
 inline QString stateString(IndexerState state)
 {

@@ -15,8 +15,6 @@ set(baloomonitorplugin_SRCS
     ${DBUS_INTERFACES}
 )
 
-qt5_wrap_cpp(baloomonitorplugin_SRCS ../../file/indexerstate.h)
-
 add_library(baloomonitorplugin SHARED ${baloomonitorplugin_SRCS})
 add_dependencies(baloomonitorplugin BalooDBusInterfaces)
 
