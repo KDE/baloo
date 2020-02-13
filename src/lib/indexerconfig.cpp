@@ -43,6 +43,7 @@ IndexerConfig::IndexerConfig()
 
 IndexerConfig::~IndexerConfig()
 {
+    d->m_settings.save();
     delete d;
 }
 
