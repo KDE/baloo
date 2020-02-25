@@ -69,7 +69,7 @@ KIO::UDSEntry createMonthUDSEntry(int month, int year)
 {
     QString dateString = QDate(year, month, 1).toString(
                 i18nc("Month and year used in a tree above the actual days. "
-                      "Have a look at http://doc.qt.io/qt-5/qdate.html#toString "
+                      "Have a look at https://doc.qt.io/qt-5/qdate.html#toString "
                       "to see which variables you can use and ask kde-i18n-doc@kde.org if you have "
                       "problems understanding how to translate this",
                       "MMMM yyyy"));

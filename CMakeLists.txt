@@ -63,7 +63,7 @@ find_package(LMDB)
 set_package_properties(LMDB
     PROPERTIES
         DESCRIPTION "Lightning Memory-Mapped Database (LMDB)"
-        URL "http://symas.com/mdb"
+        URL "https://symas.com/lmdb"
         TYPE REQUIRED
 )
 if(${LMDB_FOUND})
