@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
     QApplication app(argc, argv);
 
     KAboutData aboutData(QStringLiteral("baloo"), i18n("Baloo File Extractor"), QLatin1String(PROJECT_VERSION));
-    aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QStringLiteral("vhanda@kde.org"), QStringLiteral("http://vhanda.in"));
+    aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QStringLiteral("vhanda@kde.org"), QStringLiteral("https://vhanda.in"));
 
     KCrash::initialize();
 

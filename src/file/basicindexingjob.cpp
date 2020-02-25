@@ -110,7 +110,7 @@ QVector<KFileMetaData::Type::Type> typesForMimeType(const QString& mimeType)
         // Office 2007
         {"application/vnd.openxmlformats-officedocument.presentationml.presentation", Type::Presentation},
         {"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", Type::Spreadsheet},
-        // Open Document Formats - http://en.wikipedia.org/wiki/OpenDocument_technical_specification
+        // Open Document Formats - https://en.wikipedia.org/wiki/OpenDocument_technical_specification
         {"application/vnd.oasis.opendocument.presentation", Type::Presentation},
         {"application/vnd.oasis.opendocument.spreadsheet", Type::Spreadsheet},
         {"application/pdf", Type::Document},
@@ -120,7 +120,7 @@ QVector<KFileMetaData::Type::Type> typesForMimeType(const QString& mimeType)
         // EBooks
         {"application/epub+zip", Type::Document},
         {"application/x-mobipocket-ebook", Type::Document},
-        // Archives - http://en.wikipedia.org/wiki/List_of_archive_formats
+        // Archives - https://en.wikipedia.org/wiki/List_of_archive_formats
         {"application/x-tar", Type::Archive},
         {"application/x-bzip2", Type::Archive},
         {"application/x-gzip", Type::Archive},
