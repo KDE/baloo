@@ -96,14 +96,14 @@ int main(int argc, char* argv[])
     }
 
     if (useInodes && devId == 0) {
-        stream << i18n("Error: -i requires specifying a device (-d <deviceId>)")<< '\n';
+        stream << i18n("Error: -i requires specifying a device (-d <deviceId>)") << '\n';
         parser.showHelp(1);
     }
 
     Baloo::Database *db = Baloo::globalDatabaseInstance();
     if (!db->open(Baloo::Database::ReadOnlyDatabase)) {
-        stream << i18n("The Baloo index could not be opened. Please run \"%1\" to see if Baloo is enabled and working.", QStringLiteral("balooctl status"))
-              << '\n';
+        stream << i18n("The Baloo index could not be opened. Please run \"%1\" to see if Baloo is enabled and working.",
+	    QStringLiteral("balooctl status")) << '\n';
         return 1;
     }
 
@@ -119,7 +119,7 @@ int main(int argc, char* argv[])
                 internalUrl = QFile::decodeName(tr.documentUrl(fsFid));
 
                 if (fid && fid != fsFid) {
-                    stream << i18n("The document IDs of the Baloo DB and the filesystem are different:") <<  "\n";
+                    stream << i18n("The document IDs of the Baloo DB and the filesystem are different:") << '\n';
                     auto dbInode = Baloo::idToInode(fid);
                     auto fsInode = Baloo::idToInode(fsFid);
                     auto dbDevId = Baloo::idToDeviceId(fid);
@@ -128,18 +128,18 @@ int main(int argc, char* argv[])
                     stream << "Url: " << url << "\n";
                     stream << "ID:       " << fid << " (DB) <-> " << fsFid << " (FS)\n";
                     stream << "Inode:    " << dbInode << " (DB) " << (dbInode == fsInode ? "== " : "<-> ") << fsInode << " (FS)\n";
-                    stream << "DeviceID: " << dbDevId << " (DB) " << (dbDevId == fsDevId ? "== " : "<-> ") << fsDevId << " (FS)"<< '\n';
+                    stream << "DeviceID: " << dbDevId << " (DB) " << (dbDevId == fsDevId ? "== " : "<-> ") << fsDevId << " (FS)\n";
                 }
                 fid = fsFid;
             } else {
                 bool ok;
                 fid = url.toULongLong(&ok);
                 if (!ok) {
-                    stream << i18n("%1: Not a valid url or document id", url)<< '\n';
+                    stream << i18n("%1: Not a valid url or document id", url) << '\n';
                     continue;
                 }
                 if (!tr.hasDocument(fid)) {
-                    stream << i18n("%1: No index information found", url)<< '\n';
+                    stream << i18n("%1: No index information found", url) << '\n';
                     continue;
                 }
                 url = QFile::decodeName(tr.documentUrl(fid));
@@ -150,7 +150,7 @@ int main(int argc, char* argv[])
             bool ok;
             quint32 inode = url.toULong(&ok);
             if (!ok) {
-                stream << i18n("%1: Failed to parse inode number", url)<< '\n';
+                stream << i18n("%1: Failed to parse inode number", url) << '\n';
                 continue;
             }
 
@@ -173,10 +173,10 @@ int main(int argc, char* argv[])
                 // e.g. a hardlink, or untracked rename
                 stream << QLatin1String(" [") << internalUrl << QChar(']');
             }
-            stream<< '\n';
+            stream << '\n';
         }
         else {
-            stream << i18n("%1: No index information found", url)<< '\n';
+            stream << i18n("%1: No index information found", url) << '\n';
             continue;
         }
 
@@ -192,7 +192,7 @@ int main(int argc, char* argv[])
         KFileMetaData::PropertyMap propMap = KFileMetaData::toPropertyMap(varMap);
         KFileMetaData::PropertyMap::const_iterator it = propMap.constBegin();
         if (!propMap.isEmpty()) {
-            stream << "\tCached properties:"<< '\n';
+            stream << "\tCached properties:" << '\n';
         }
         for (; it != propMap.constEnd(); ++it) {
             QString str;
@@ -208,7 +208,7 @@ int main(int argc, char* argv[])
             }
 
             KFileMetaData::PropertyInfo pi(it.key());
-            stream << "\t\t" << pi.displayName() << ": " << str<< '\n';
+            stream << "\t\t" << pi.displayName() << ": " << str << '\n';
         }
 
         if (parser.isSet(QStringLiteral("x"))) {
@@ -225,10 +225,10 @@ int main(int argc, char* argv[])
                 return QString(ba);
             };
 
-            stream << "\n" << i18n("Internal Info") <<  "\n";
-            stream << i18n("Terms: %1", join(terms)) <<  "\n";
-            stream << i18n("File Name Terms: %1", join(fileNameTerms)) <<  "\n";
-            stream << i18n("%1 Terms: %2", QStringLiteral("XAttr"), join(xAttrTerms))<< '\n';
+            stream << "\n" << i18n("Internal Info") << "\n";
+            stream << i18n("Terms: %1", join(terms)) << "\n";
+            stream << i18n("File Name Terms: %1", join(fileNameTerms)) << "\n";
+            stream << i18n("%1 Terms: %2", QStringLiteral("XAttr"), join(xAttrTerms)) << '\n';
 
             QHash<int, QStringList> propertyWords;
             KLocalizedString errorPrefix = ki18nc("Prefix string for internal errors", "Internal Error - %1");
@@ -279,7 +279,7 @@ int main(int argc, char* argv[])
                 auto prop = static_cast<KFileMetaData::Property::Property>(it.key());
                 KFileMetaData::PropertyInfo pi(prop);
 
-                stream << pi.name() << ": " << it.value().join(QLatin1Char(' '))<< '\n';
+                stream << pi.name() << ": " << it.value().join(QLatin1Char(' ')) << '\n';
             }
         }
     }
