@@ -227,7 +227,7 @@ int main(int argc, char* argv[])
             const QString url = QFileInfo(parser.positionalArguments().at(i)).absoluteFilePath();
             quint64 id = filePathToId(QFile::encodeName(url));
             if (id == 0) {
-                out << "Could not stat file: " << url<< '\n';
+                out << "Could not stat file: " << url << '\n';
                 continue;
             }
             if (tr.inPhaseOne(id))  {
@@ -239,7 +239,7 @@ int main(int argc, char* argv[])
                 continue;
             }
             Indexer indexer(url, &tr);
-            out << "Indexing " << url<< '\n';
+            out << "Indexing " << url << '\n';
             indexer.index();
         }
         tr.commit();
@@ -266,10 +266,10 @@ int main(int argc, char* argv[])
             const QString url = QFileInfo(parser.positionalArguments().at(i)).absoluteFilePath();
             quint64 id = filePathToId(QFile::encodeName(url));
             if (id == 0) {
-                out << "Could not stat file: " << url<< '\n';
+                out << "Could not stat file: " << url << '\n';
                 continue;
             }
-            out << "Clearing " << url<< '\n';
+            out << "Clearing " << url << '\n';
             tr.removeDocument(id);
         }
         tr.commit();
