@@ -57,18 +57,11 @@ void FileContentIndexer::run()
     m_stop.storeRelaxed(false);
 #endif
     auto batchSize = m_batchSize;
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    while (m_provider->size() && !m_stop.load()) {
-#else
-    while (m_provider->size() && !m_stop.loadRelaxed()) {
-#endif
+    while (true) {
         //
         // WARNING: This will go mad, if the Extractor does not commit after N=m_batchSize files
         // cause then we will keep fetching the same N files again and again.
         //
-        QElapsedTimer timer;
-        timer.start();
-
         QVector<quint64> idList = m_provider->fetch(batchSize);
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
         if (idList.isEmpty() || m_stop.load()) {
@@ -82,6 +75,9 @@ void FileContentIndexer::run()
 
         bool hadErrors = false;
         connect(&process, &ExtractorProcess::failed, &loop, [&hadErrors, &loop]() { hadErrors = true; loop.quit(); });
+
+        QElapsedTimer timer;
+        timer.start();
 
         process.index(idList);
         loop.exec();
