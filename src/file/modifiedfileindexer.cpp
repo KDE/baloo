@@ -69,9 +69,16 @@ void ModifiedFileIndexer::run()
             continue;
         }
 
-        DocumentTimeDB::TimeInfo timeInfo = tr.documentTimeInfo(fileId);
-        bool mTimeChanged = timeInfo.mTime != fileInfo.lastModified().toSecsSinceEpoch();
-        bool cTimeChanged = timeInfo.cTime != fileInfo.metadataChangeTime().toSecsSinceEpoch();
+        bool mTimeChanged;
+        bool cTimeChanged;
+        const bool isKnownFile = tr.hasDocument(fileId);
+        if (isKnownFile) {
+            DocumentTimeDB::TimeInfo timeInfo = tr.documentTimeInfo(fileId);
+            mTimeChanged = timeInfo.mTime != fileInfo.lastModified().toSecsSinceEpoch();
+            cTimeChanged = timeInfo.cTime != fileInfo.metadataChangeTime().toSecsSinceEpoch();
+        } else {
+            mTimeChanged = cTimeChanged = true;
+        }
 
         if (!mTimeChanged && !cTimeChanged) {
             continue;
@@ -114,12 +121,9 @@ void ModifiedFileIndexer::run()
 
         // we can get modified events for files which do not exist
         // cause Baloo was not running and missed those events
-        if (tr.hasDocument(job.document().id())) {
-            if (cTimeChanged) {
-                tr.replaceDocument(job.document(), XAttrTerms | DocumentTime | FileNameTerms | DocumentUrl);
-            }
-        }
-        else {
+        if (isKnownFile && (job.document().id() == fileId)) {
+            tr.replaceDocument(job.document(), XAttrTerms | DocumentTime | FileNameTerms | DocumentUrl);
+        } else {
             tr.addDocument(job.document());
         }
     }
