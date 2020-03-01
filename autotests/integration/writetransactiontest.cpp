@@ -325,6 +325,8 @@ void WriteTransactionTest::testTermPositions()
         QVERIFY(DBState::debugCompare(actualState, state));
     }
 
+    Document doc1_clone = doc1;
+
     for (auto pos : {1, 3, 6}) {
         doc1.addPositionTerm("a", pos);
     }
@@ -388,6 +390,31 @@ void WriteTransactionTest::testTermPositions()
         Transaction tr(db, Transaction::ReadWrite);
         tr.replaceDocument(doc1, DocumentOperation::Everything);
         tr.replaceDocument(doc2, DocumentOperation::Everything);
+        tr.commit();
+    }
+    {
+        Transaction tr(db, Transaction::ReadOnly);
+        DBState actualState = DBState::fromTransaction(&tr);
+        QVERIFY(DBState::debugCompare(actualState, state));
+    }
+
+    // Reset some positions of doc1
+    for (auto pos : {2, 4, 5, 11, 12}) { // keep "abc"
+        doc1_clone.addPositionTerm("abc", pos);
+    }
+    for (auto pos : {12, 14, 17}) { // remove 15, 16 from dab
+        doc1_clone.addPositionTerm("dab", pos);
+    }
+    state.positionDb["a"] = {PositionInfo(id2, {7, 8, 9})}; // doc1 removed
+    if (id1 < id3) {
+        state.positionDb["dab"] = {PositionInfo(id1, {12, 14, 17}), PositionInfo(id3, {11, 12})};
+    } else {
+        state.positionDb["dab"] = {PositionInfo(id3, {11, 12}), PositionInfo(id1, {12, 14, 17})};
+    }
+
+    {
+        Transaction tr(db, Transaction::ReadWrite);
+        tr.replaceDocument(doc1_clone, DocumentOperation::Everything);
         tr.commit();
     }
     {
