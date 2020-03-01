@@ -93,7 +93,20 @@ void ModifiedFileIndexer::run()
             }
         }
 
-        // FIXME: The BasicIndexingJob extracts too much info. We only need the time
+        // Only mTime changed
+        if (!cTimeChanged) {
+            Document doc;
+            doc.setId(fileId);
+            doc.setMTime(fileInfo.lastModified().toSecsSinceEpoch());
+            doc.setCTime(fileInfo.metadataChangeTime().toSecsSinceEpoch());
+            if (level == BasicIndexingJob::MarkForContentIndexing) {
+                doc.setContentIndexing(true);
+            }
+
+            tr.replaceDocument(doc, DocumentTime);
+            continue;
+        }
+
         BasicIndexingJob job(filePath, mimetype, level);
         if (!job.index()) {
             continue;
@@ -104,8 +117,6 @@ void ModifiedFileIndexer::run()
         if (tr.hasDocument(job.document().id())) {
             if (cTimeChanged) {
                 tr.replaceDocument(job.document(), XAttrTerms | DocumentTime | FileNameTerms | DocumentUrl);
-            } else {
-                tr.replaceDocument(job.document(), DocumentTime);
             }
         }
         else {
