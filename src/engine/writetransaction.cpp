@@ -269,7 +269,7 @@ void WriteTransaction::replaceDocument(const Document& doc, DocumentOperations o
 QVector< QByteArray > WriteTransaction::replaceTerms(quint64 id, const QVector<QByteArray>& prevTerms,
                                                      const QMap<QByteArray, Document::TermData>& terms)
 {
-    m_pendingOperations.reserve(m_pendingOperations.size() + prevTerms.size());
+    m_pendingOperations.reserve(m_pendingOperations.size() + prevTerms.size() + terms.size());
     for (const QByteArray& term : prevTerms) {
         Operation op;
         op.type = RemoveId;
