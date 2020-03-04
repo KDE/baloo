@@ -325,7 +325,7 @@ void WriteTransactionTest::testTermPositions()
         QVERIFY(DBState::debugCompare(actualState, state));
     }
 
-    Document doc1_clone = doc1;
+    Document doc1_clone = doc1; // save state for later reset
 
     for (auto pos : {1, 3, 6}) {
         doc1.addPositionTerm("a", pos);
@@ -371,6 +371,10 @@ void WriteTransactionTest::testTermPositions()
     for (auto pos : {7, 8, 9}) { // add new term with positions
         doc2.addPositionTerm("abc", pos);
     }
+
+    Document doc2_clone = doc2; // save state for later reset
+    doc2.addPositionTerm("abcd", 500); // add position for existing term
+
     state.postingDb = {{"a", {id1, id2}}, {"abc", {id1, id2}}, {"abcd", {id2}}, {"dab", {id1, id3}}, {"file1", {id1}}, {"file2", {id2}}, {"file3", {id3}} };
     state.docTermsDb = {{id1, {"a", "abc", "dab"}}, {id2, {"a", "abc", "abcd"}}, {id3, {"dab"}} };
     if (id1 < id2) {
@@ -385,6 +389,7 @@ void WriteTransactionTest::testTermPositions()
     } else {
         state.positionDb["dab"] = {PositionInfo(id3, {11, 12}), PositionInfo(id1, {12, 14, 15, 16, 17})};
     }
+    state.positionDb["abcd"] = {PositionInfo(id2, {500})};
 
     {
         Transaction tr(db, Transaction::ReadWrite);
@@ -406,6 +411,7 @@ void WriteTransactionTest::testTermPositions()
         doc1_clone.addPositionTerm("dab", pos);
     }
     state.positionDb["a"] = {PositionInfo(id2, {7, 8, 9})}; // doc1 removed
+    state.positionDb.remove("abcd"); // positions for abcd removed
     if (id1 < id3) {
         state.positionDb["dab"] = {PositionInfo(id1, {12, 14, 17}), PositionInfo(id3, {11, 12})};
     } else {
@@ -415,6 +421,7 @@ void WriteTransactionTest::testTermPositions()
     {
         Transaction tr(db, Transaction::ReadWrite);
         tr.replaceDocument(doc1_clone, DocumentOperation::Everything);
+        tr.replaceDocument(doc2_clone, DocumentOperation::Everything);
         tr.commit();
     }
     {
