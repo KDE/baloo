@@ -292,6 +292,9 @@ QMap<QByteArray, PostingList> PostingDB::toTestMap() const
     QMap<QByteArray, PostingList> map;
     while (1) {
         int rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
+        if (rc == MDB_NOTFOUND) {
+            break;
+        }
         if (rc) {
             qCDebug(ENGINE) << "PostingDB::toTestMap" << mdb_strerror(rc);
             break;

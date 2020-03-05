@@ -164,8 +164,11 @@ QMap<quint64, QVector<QByteArray>> DocumentDB::toTestMap() const
     QMap<quint64, QVector<QByteArray>> map;
     while (1) {
         int rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
+        if (rc == MDB_NOTFOUND) {
+            break;
+        }
         if (rc) {
-            qCWarning(ENGINE) << "PostingDB::toTestMap" << mdb_strerror(rc);
+            qCWarning(ENGINE) << "DocumentDB::toTestMap" << mdb_strerror(rc);
             break;
         }
 

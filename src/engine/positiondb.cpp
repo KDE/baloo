@@ -157,13 +157,17 @@ QMap<QByteArray, QVector<PositionInfo>> PositionDB::toTestMap() const
     QMap<QByteArray, QVector<PositionInfo>> map;
     while (1) {
         int rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
+        if (rc == MDB_NOTFOUND) {
+            break;
+        }
         if (rc) {
-            qCDebug(ENGINE) << "PostingDB::toTestMap" << mdb_strerror(rc);
+            qCDebug(ENGINE) << "PositionDB::toTestMap" << mdb_strerror(rc);
             break;
         }
 
         const QByteArray ba(static_cast<char*>(key.mv_data), key.mv_size);
-        const QVector<PositionInfo> vinfo = PositionCodec().decode(QByteArray(static_cast<char*>(val.mv_data), val.mv_size));
+        const QByteArray data(static_cast<char*>(val.mv_data), val.mv_size);
+        const QVector<PositionInfo> vinfo = PositionCodec().decode(data);
         map.insert(ba, vinfo);
     }
 
