@@ -47,7 +47,9 @@ public:
 };
 
 inline QDebug operator<<(QDebug dbg, const PositionInfo &pos) {
-    dbg << "(" << pos.docId << "-->" << pos.positions << ")";
+    QDebugStateSaver saver(dbg);
+    dbg.nospace() << Qt::hex << "(" << pos.docId << ": "
+                  << Qt::dec << pos.positions << ")";
     return dbg;
 }
 
