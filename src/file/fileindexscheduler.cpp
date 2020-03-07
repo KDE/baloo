@@ -37,18 +37,20 @@
 
 using namespace Baloo;
 
-FileIndexScheduler::FileIndexScheduler(Database* db, FileIndexerConfig* config, QObject* parent)
+FileIndexScheduler::FileIndexScheduler(Database* db, FileIndexerConfig* config, bool firstRun, QObject* parent)
     : QObject(parent)
     , m_db(db)
     , m_config(config)
     , m_provider(db)
     , m_contentIndexer(nullptr)
-    , m_indexerState(Idle)
+    , m_indexerState(Startup)
     , m_timeEstimator(config, this)
     , m_checkUnindexedFiles(false)
     , m_checkStaleIndexEntries(false)
     , m_isGoingIdle(false)
     , m_isSuspended(false)
+    , m_isFirstRun(firstRun)
+    , m_inStartup(true)
 {
     Q_ASSERT(db);
     Q_ASSERT(config);
@@ -79,6 +81,11 @@ FileIndexScheduler::~FileIndexScheduler()
     m_threadPool.waitForDone(0); // wait 0 msecs
 }
 
+void FileIndexScheduler::startupFinished() {
+    m_inStartup = false;
+    QTimer::singleShot(0, this, &FileIndexScheduler::scheduleIndexing);
+}
+
 void FileIndexScheduler::scheduleIndexing()
 {
     if (!isIndexerIdle()) {
@@ -94,7 +101,12 @@ void FileIndexScheduler::scheduleIndexing()
         return;
     }
 
-    if (m_config->isInitialRun()) {
+    if (m_isFirstRun) {
+        if (m_inStartup) {
+            return;
+        }
+
+        m_isFirstRun = false;
         auto runnable = new FirstRunIndexer(m_db, m_config, m_config->includeFolders());
         connect(runnable, &FirstRunIndexer::done, this, &FileIndexScheduler::runnerFinished);
 
@@ -141,6 +153,14 @@ void FileIndexScheduler::scheduleIndexing()
     if (m_powerMonitor.isOnBattery()) {
         if (m_indexerState != LowPowerIdle) {
             m_indexerState = LowPowerIdle;
+            Q_EMIT stateChanged(m_indexerState);
+        }
+        return;
+    }
+
+    if (m_inStartup) {
+        if (m_indexerState != Startup) {
+            m_indexerState = Startup;
             Q_EMIT stateChanged(m_indexerState);
         }
         return;

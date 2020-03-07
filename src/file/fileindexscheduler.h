@@ -43,7 +43,7 @@ class FileIndexScheduler : public QObject
 
     Q_PROPERTY(int state READ state NOTIFY stateChanged)
 public:
-    FileIndexScheduler(Database* db, FileIndexerConfig* config, QObject* parent = nullptr);
+    FileIndexScheduler(Database* db, FileIndexerConfig* config, bool firstRun, QObject* parent = nullptr);
     ~FileIndexScheduler() override;
     int state() const { return m_indexerState; }
 
@@ -89,6 +89,7 @@ public Q_SLOTS:
     void scheduleIndexing();
     void scheduleCheckUnindexedFiles();
     void scheduleCheckStaleIndexEntries();
+    void startupFinished();
 
     Q_SCRIPTABLE void suspend() { setSuspend(true); }
     Q_SCRIPTABLE void resume() { setSuspend(false); }
@@ -105,6 +106,7 @@ private:
     bool isIndexerIdle() {
         return m_isGoingIdle ||
                (m_indexerState == Suspended) ||
+               (m_indexerState == Startup) ||
                (m_indexerState == Idle) ||
                (m_indexerState == LowPowerIdle);
     }
@@ -130,6 +132,8 @@ private:
     bool m_checkStaleIndexEntries;
     bool m_isGoingIdle;
     bool m_isSuspended;
+    bool m_isFirstRun;
+    bool m_inStartup;
 };
 
 }

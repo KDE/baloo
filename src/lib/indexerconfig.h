@@ -87,12 +87,21 @@ public:
     void setExcludeFilters(const QStringList& excludeFilters);
     void setExcludeMimetypes(const QStringList& excludeMimetypes);
 
+#if BALOO_CORE_BUILD_DEPRECATED_SINCE(5, 69)
     /**
-     * \return \c true if the service is run for the first time 
-     * (or after manually setting "first run=true" in the config).
+     * @deprecated Since 5.69. Do not use this function, firstRun is no longer
+     * exposed in the config, as it is an internal baloo state.
+     * \return \c false
      */
+    BALOO_CORE_DEPRECATED_VERSION(5, 69, "Do not use. firstRun is a baloo internal state")
     bool firstRun() const;
+    /**
+     * @deprecated Since 5.69. Do not use this function. Since 5.69, calling
+     * it no longer has any effect.
+     */
+    BALOO_CORE_DEPRECATED_VERSION(5, 69, "Do not use. firstRun is a baloo internal state")
     void setFirstRun(bool firstRun) const;
+#endif
 
     bool indexHidden() const;
     void setIndexHidden(bool value) const;

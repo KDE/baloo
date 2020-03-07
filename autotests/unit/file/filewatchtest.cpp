@@ -43,7 +43,7 @@ private Q_SLOTS:
         m_tempDir = new QTemporaryDir();
         m_db = new Database(m_tempDir->path());
         m_db->open(Database::CreateDatabase);
-        m_dbusInterface = new MainHub(m_db, &m_config);
+        m_dbusInterface = new MainHub(m_db, &m_config, false);
     }
 
     void testFileCreation();

@@ -72,9 +72,7 @@ int main(int argc, char** argv)
         migrator.migrate();
     }
 
-    if (!QFile::exists(path + "/index")) {
-        indexerConfig.setInitialRun(true);
-    }
+    bool firstRun = !QFile::exists(path + "/index");
 
     // HACK: Until we start using lmdb with robust mutex support. We're just going to remove
     //       the lock manually in the baloo_file process.
@@ -90,7 +88,7 @@ int main(int argc, char** argv)
         qWarning() << "Failed to create database, removing corrupted database.";
         QFile::remove(path + "/index");
         QFile::remove(path + "/index-lock");
-        indexerConfig.setInitialRun(true);
+        firstRun = true;
 
         // try to create now after cleanup, if still no works => fail
         if (!db->open(Baloo::Database::CreateDatabase)) {
@@ -99,6 +97,6 @@ int main(int argc, char** argv)
         }
     }
 
-    Baloo::MainHub hub(db, &indexerConfig);
+    Baloo::MainHub hub(db, &indexerConfig, firstRun);
     return app.exec();
 }
