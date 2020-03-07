@@ -76,15 +76,6 @@ public:
     bool isInitialRun() const;
 
     /**
-     * A "hidden" config option which allows to disable the initial
-     * update of all indexed folders.
-     *
-     * This should be used in combination with isInitialRun() to make
-     * sure all folders are at least indexed once.
-     */
-    bool initialUpdateDisabled() const;
-
-    /**
     * Check if \p folder can be searched.
     * \p folder can be searched if itself or one of its descendants is indexed.
     * 

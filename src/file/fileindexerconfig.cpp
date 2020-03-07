@@ -378,11 +378,6 @@ void FileIndexerConfig::setInitialRun(bool isInitialRun)
     config.sync();
 }
 
-bool FileIndexerConfig::initialUpdateDisabled() const
-{
-    return m_settings->disableInitialUpdate();
-}
-
 int FileIndexerConfig::databaseVersion() const
 {
     return m_settings->dbVersion();
