@@ -109,15 +109,16 @@ void IndexerConfig::setExcludeMimetypes(const QStringList& excludeMimetypes)
     d->m_settings.setExcludedMimetypes(excludeMimetypes);
 }
 
+#if BALOO_CORE_BUILD_DEPRECATED_SINCE(5, 69)
 bool IndexerConfig::firstRun() const
 {
-    return d->m_config.isInitialRun();
+    return false;
 }
 
-void IndexerConfig::setFirstRun(bool firstRun) const
+void IndexerConfig::setFirstRun(bool) const
 {
-    d->m_config.setInitialRun(firstRun);
 }
+#endif
 
 bool IndexerConfig::indexHidden() const
 {

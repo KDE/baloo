@@ -26,7 +26,6 @@
 #include <QDir>
 
 #include <QStandardPaths>
-#include <KConfigGroup>
 #include "baloosettings.h"
 
 namespace
@@ -141,13 +140,6 @@ bool FileIndexerConfig::onlyBasicIndexing() const
 {
     return m_onlyBasicIndexing;
 }
-
-bool FileIndexerConfig::isInitialRun() const
-{
-    KConfig config(QStringLiteral("baloofilerc"));
-    return config.group("General").readEntry("first run", true);
-}
-
 
 bool FileIndexerConfig::canBeSearched(const QString& folder) const
 {
@@ -368,14 +360,6 @@ void FileIndexerConfig::forceConfigUpdate()
 
     m_indexHidden = m_settings->indexHiddenFolders();
     m_onlyBasicIndexing = m_settings->onlyBasicIndexing();
-}
-
-void FileIndexerConfig::setInitialRun(bool isInitialRun)
-{
-    // Don't use kcfg, it will break KCM default state
-    KConfig config(QStringLiteral("baloofilerc"));
-    config.group("General").writeEntry("first run", isInitialRun);
-    config.sync();
 }
 
 int FileIndexerConfig::databaseVersion() const

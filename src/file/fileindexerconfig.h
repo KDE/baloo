@@ -70,12 +70,6 @@ public:
     bool onlyBasicIndexing() const;
 
     /**
-     * \return \c true if the service is run for the first time 
-     * (or after manually setting "first run=true" in the config).
-     */
-    bool isInitialRun() const;
-
-    /**
     * Check if \p folder can be searched.
     * \p folder can be searched if itself or one of its descendants is indexed.
     * 
@@ -165,12 +159,6 @@ public Q_SLOTS:
      * \return \c true if the config has actually changed
      */
     void forceConfigUpdate();
-
-    /**
-     * Should be called once the initial indexing is done, ie. all folders
-     * have been indexed.
-     */
-    void setInitialRun(bool isInitialRun);
 
 private:
 

@@ -38,6 +38,7 @@ enum IndexerState {
         StaleIndexEntriesClean,
         LowPowerIdle,
         Unavailable,
+        Startup,
 };
 
 inline QString stateString(IndexerState state)
@@ -76,6 +77,9 @@ inline QString stateString(IndexerState state)
         break;
     case Unavailable:
         status = i18n("Not Running");
+        break;
+    case Startup:
+        status = i18n("Starting");
         break;
     }
     return status;

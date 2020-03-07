@@ -60,5 +60,4 @@ void Migrator::migrate()
     }
 
     m_config->setDatabaseVersion(s_dbVersion);
-    m_config->setInitialRun(true);
 }

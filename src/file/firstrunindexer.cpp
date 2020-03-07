@@ -41,12 +41,6 @@ FirstRunIndexer::FirstRunIndexer(Database* db, FileIndexerConfig* config, const 
 
 void FirstRunIndexer::run()
 {
-    Q_ASSERT(m_config->isInitialRun());
-    {
-        Transaction tr(m_db, Transaction::ReadOnly);
-        Q_ASSERT_X(tr.size() == 0, "FirstRunIndexer", "The database is not empty on first run");
-    }
-
     QMimeDatabase mimeDb;
     BasicIndexingJob::IndexingLevel level = m_config->onlyBasicIndexing() ? BasicIndexingJob::NoLevel
         : BasicIndexingJob::MarkForContentIndexing;
@@ -86,8 +80,6 @@ void FirstRunIndexer::run()
         //        based on how much memory we consume
         tr.commit();
     }
-
-    m_config->setInitialRun(false);
 
     Q_EMIT done();
 }
