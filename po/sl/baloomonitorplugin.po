@@ -1,0 +1,80 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Andrej Mernik <andrejm@ubuntu.si>, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2019-12-21 02:58+0100\n"
+"PO-Revision-Date: 2015-10-25 18:56+0100\n"
+"Last-Translator: Andrej Mernik <andrejm@ubuntu.si>\n"
+"Language-Team: Slovenian <lugos-slo@lugos.si>\n"
+"Language: sl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
+"%100==4 ? 3 : 0);\n"
+"X-Generator: Lokalize 1.5\n"
+
+#: ../../file/indexerstate.h:45
+#, kde-format
+msgid "Unknown"
+msgstr "Neznano"
+
+#: ../../file/indexerstate.h:48
+#, kde-format
+msgid "Idle"
+msgstr "Nedejaven"
+
+#: ../../file/indexerstate.h:51
+#, kde-format
+msgid "Suspended"
+msgstr "V pripravljenosti"
+
+#: ../../file/indexerstate.h:54
+#, kde-format
+msgid "Initial Indexing"
+msgstr "Začetna izgradnja kazala"
+
+#: ../../file/indexerstate.h:57
+#, kde-format
+msgid "Indexing new files"
+msgstr "Izgrajevanje kazala novih datotek"
+
+#: ../../file/indexerstate.h:60
+#, kde-format
+msgid "Indexing modified files"
+msgstr "Izgrajevanje kazala spremenjenih datotek"
+
+#: ../../file/indexerstate.h:63
+#, kde-format
+msgid "Indexing Extended Attributes"
+msgstr "Izgrajevanje kazala razširjenih atributov"
+
+#: ../../file/indexerstate.h:66
+#, kde-format
+msgid "Indexing file content"
+msgstr "Izgrajevanje kazala vsebine datotek"
+
+#: ../../file/indexerstate.h:69
+#, kde-format
+msgid "Checking for unindexed files"
+msgstr "Preverjanje za datotekami, ki še niso v kazalu"
+
+#: ../../file/indexerstate.h:72
+#, fuzzy, kde-format
+#| msgid "Checking for unindexed files"
+msgid "Checking for stale index entries"
+msgstr "Preverjanje za datotekami, ki še niso v kazalu"
+
+#: ../../file/indexerstate.h:75
+#, kde-format
+msgid "Idle (Powersave)"
+msgstr ""
+
+#: ../../file/indexerstate.h:78
+#, kde-format
+msgid "Not Running"
+msgstr ""
