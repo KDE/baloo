@@ -32,25 +32,25 @@ class FileIndexerConfigTest : public QObject
 {
     Q_OBJECT
 private Q_SLOTS:
-    
+
     void initTestCase();
     void cleanupTestCase();
 
     void testShouldFolderBeIndexed();
     void testShouldFolderBeIndexed_data();
-    
+
     void testShouldFolderBeIndexedHidden();
     void testShouldFolderBeIndexedHidden_data();
-    
+
     void testShouldBeIndexed();
     void testShouldBeIndexed_data();
-    
+
     void testShouldBeIndexedHidden();
     void testShouldBeIndexedHidden_data();
-    
+
     void testShouldExcludeFilterOnFolders();
     void testShouldExcludeFilterOnFolders_data();
-    
+
 private:
     QTemporaryDir* m_mainDir;
     QString m_dirPrefix;
