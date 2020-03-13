@@ -39,12 +39,12 @@ using namespace Baloo;
 StorageDevices::StorageDevices(QObject* parent)
     : QObject(parent)
 {
-    initCacheEntries();
-
     connect(Solid::DeviceNotifier::instance(), &Solid::DeviceNotifier::deviceAdded,
             this, &StorageDevices::slotSolidDeviceAdded);
     connect(Solid::DeviceNotifier::instance(), &Solid::DeviceNotifier::deviceRemoved,
             this, &StorageDevices::slotSolidDeviceRemoved);
+
+    initCacheEntries();
 }
 
 
