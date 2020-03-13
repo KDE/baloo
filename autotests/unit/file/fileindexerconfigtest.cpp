@@ -32,7 +32,7 @@
 
 using namespace Baloo::Test;
 
-namespace 
+namespace
 {
 const QString excludeFilter1 = QStringLiteral("build");
 const QString excludeFilter2 = QStringLiteral("foo?ar");
@@ -65,7 +65,7 @@ void FileIndexerConfigTest::initTestCase()
         hiddenSubDir,
         indexedHiddenSubDir,
         ignoredRootDir,
-        
+
         excludedFilterSubDir1,
         excludedFilterSubSubDir1,
         excludedFilterSubDir2,
@@ -91,7 +91,7 @@ void FileIndexerConfigTest::testShouldFolderBeIndexed_data()
         indexedSubDirToExcluded,
         indexedHiddenSubDir
     };
-    
+
     const auto excluded = QStringList{
         excludedSubSubDir,
         hiddenSubSubDir,
@@ -101,15 +101,15 @@ void FileIndexerConfigTest::testShouldFolderBeIndexed_data()
         ignoredRootDir,
         excludedRootDir
     };
- 
+
     QTest::addColumn<QString>("path");
     QTest::addColumn<bool>("shouldBeIndexed");
-    
+
     for (const auto& key : indexed) {
         QVERIFY2(QFileInfo(m_dirPrefix + key).isDir(), qPrintable(QStringLiteral("Not a folder: %1").arg(m_dirPrefix + key)));
         QTest::addRow("%s", qPrintable(key)) << m_dirPrefix + key << true;
     }
-    
+
     for (const auto& key : excluded) {
        QVERIFY2(QFileInfo(m_dirPrefix + key).isDir(), qPrintable(QStringLiteral("Not a folder: %1").arg(m_dirPrefix + key)));
         QTest::addRow("%s", qPrintable(key)) << m_dirPrefix + key << false;
@@ -136,7 +136,7 @@ void FileIndexerConfigTest::testShouldFolderBeIndexed()
     QScopedPointer<Baloo::FileIndexerConfig> cfg(new Baloo::FileIndexerConfig());
     QFETCH(QString, path);
     QFETCH(bool, shouldBeIndexed);
-    
+
     QCOMPARE(cfg->shouldFolderBeIndexed(path), shouldBeIndexed);
 }
 
@@ -160,15 +160,15 @@ void FileIndexerConfigTest::testShouldFolderBeIndexedHidden_data()
         ignoredRootDir,
         excludedRootDir
     };
-    
+
     QTest::addColumn<QString>("path");
     QTest::addColumn<bool>("shouldBeIndexed");
-    
+
     for (const auto& key : indexed) {
         QVERIFY2(QFileInfo(m_dirPrefix + key).isDir(), qPrintable(QStringLiteral("Not a folder: %1").arg(m_dirPrefix + key)));
         QTest::addRow("%s", qPrintable(key)) << m_dirPrefix + key << true;
     }
-    
+
     for (const auto& key : excluded) {
         QVERIFY2(QFileInfo(m_dirPrefix + key).isDir(), qPrintable(QStringLiteral("Not a folder: %1").arg(m_dirPrefix + key)));
         QTest::addRow("%s", qPrintable(key)) << m_dirPrefix + key << false;
@@ -182,7 +182,7 @@ void FileIndexerConfigTest::testShouldFolderBeIndexedHidden()
             m_dirPrefix + indexedSubFolderToIndexedHidden,
             m_dirPrefix + indexedHiddenSubDir,
             m_dirPrefix + indexedSubDirToExcluded
-        },          
+        },
         QStringList{
             m_dirPrefix + excludedRootDir,
             m_dirPrefix + excludedSubDir,
@@ -190,14 +190,14 @@ void FileIndexerConfigTest::testShouldFolderBeIndexedHidden()
         },
         QStringList(),
         true);
-    
+
     // create our test config object
     QScopedPointer<Baloo::FileIndexerConfig> cfg(new Baloo::FileIndexerConfig());
     cfg->forceConfigUpdate();
 
     QFETCH(QString, path);
     QFETCH(bool, shouldBeIndexed);
-    
+
     QCOMPARE(cfg->shouldFolderBeIndexed(path), shouldBeIndexed);
 }
 
@@ -238,24 +238,24 @@ void FileIndexerConfigTest::testShouldBeIndexed_data()
         ignoredRootDir + fileName,
         excludedRootDir + fileName,
     };
-    
+
     QTest::addColumn<QString>("path");
     QTest::addColumn<bool>("shouldBeIndexed");
-    
+
     for (const auto& key : indexed) {
         QVERIFY2(QFileInfo(m_dirPrefix + key).isDir(), qPrintable(QStringLiteral("Not a folder: %1").arg(m_dirPrefix + key)));
         QTest::addRow("%s", qPrintable(key)) << m_dirPrefix + key << true;
     }
-    
+
     for (const auto& key : indexedFilenames) {
         QTest::addRow("%s", qPrintable(key)) << m_dirPrefix + key << true;
     }
-    
+
     for (const auto& key : excluded) {
         QVERIFY2(QFileInfo(m_dirPrefix + key).isDir(), qPrintable(QStringLiteral("Not a folder: %1").arg(m_dirPrefix + key)));
         QTest::addRow("%s", qPrintable(key)) << m_dirPrefix + key << false;
     }
-    
+
     for (const auto& key : excludedFilenames) {
         QTest::addRow("%s", qPrintable(key)) << m_dirPrefix + key << false;
     }
@@ -325,19 +325,19 @@ void FileIndexerConfigTest::testShouldBeIndexedHidden_data()
         ignoredRootDir + fileName,
         excludedRootDir + fileName
     };
-    
+
     QTest::addColumn<QString>("path");
     QTest::addColumn<bool>("shouldBeIndexed");
-    
+
     for (const auto& key : indexed) {
         QVERIFY2(QFileInfo(m_dirPrefix + key).isDir(), qPrintable(QStringLiteral("Not a folder: %1").arg(m_dirPrefix + key)));
         QTest::addRow("%s", qPrintable(key)) << m_dirPrefix + key << true;
     }
-    
+
     for (const auto& key : indexedFilenames) {
         QTest::addRow("%s", qPrintable(key)) << m_dirPrefix + key << true;
     }
-    
+
     for (const auto& key : excluded) {
         QVERIFY2(QFileInfo(m_dirPrefix + key).isDir(), qPrintable(QStringLiteral("Not a folder: %1").arg(m_dirPrefix + key)));
         QTest::addRow("%s", qPrintable(key)) << m_dirPrefix + key << false;
@@ -363,14 +363,14 @@ void FileIndexerConfigTest::testShouldBeIndexedHidden()
         },
         QStringList(),
         true);
-    
+
     // create our test config object
     QScopedPointer<Baloo::FileIndexerConfig> cfg(new Baloo::FileIndexerConfig());
     cfg->forceConfigUpdate();
 
     QFETCH(QString, path);
     QFETCH(bool, shouldBeIndexed);
-    
+
     QCOMPARE(cfg->shouldBeIndexed(path), shouldBeIndexed);
 }
 
@@ -399,27 +399,27 @@ void FileIndexerConfigTest::testShouldExcludeFilterOnFolders_data()
         excludedFilterSubDir2 + fileName,
         excludedFilterSubSubDir2 + fileName
     };
-    
+
     QTest::addColumn<QString>("path");
     QTest::addColumn<bool>("shouldBeIndexed");
-    
+
     for (const auto& key : indexed) {
         QVERIFY2(QFileInfo(m_dirPrefix + key).isDir(), qPrintable(QStringLiteral("Not a folder: %1").arg(m_dirPrefix + key)));
         QTest::addRow("%s", qPrintable(key)) << m_dirPrefix + key << true;
     }
-    
+
     for (const auto& key : indexedFilenames) {
         QTest::addRow("%s", qPrintable(key)) << m_dirPrefix + key << true;
     }
-    
+
     for (const auto& key : excluded) {
         QVERIFY2(QFileInfo(m_dirPrefix + key).isDir(), qPrintable(QStringLiteral("Not a folder: %1").arg(m_dirPrefix + key)));
         QTest::addRow("%s", qPrintable(key)) << m_dirPrefix + key << false;
-    }    
+    }
 
     for (const auto& key : excludedFilenames) {
         QTest::addRow("%s", qPrintable(key)) << m_dirPrefix + key << false;
-    }    
+    }
 }
 
 void FileIndexerConfigTest::testShouldExcludeFilterOnFolders()
@@ -438,7 +438,7 @@ void FileIndexerConfigTest::testShouldExcludeFilterOnFolders()
     // create our test config object
     QFETCH(QString, path);
     QFETCH(bool, shouldBeIndexed);
-    
+
     QScopedPointer<Baloo::FileIndexerConfig> cfg(new Baloo::FileIndexerConfig());
     cfg->forceConfigUpdate(); //Maybe this was left out on purpose
 

@@ -160,7 +160,7 @@ bool FileIndexerConfig::canBeSearched(const QString& folder) const
     }
 
     const_cast<FileIndexerConfig*>(this)->buildFolderCache();
-    
+
     // Look for included descendants
     for (const QPair<QString, bool>& fld: qAsConst(m_folderCache)) {
         if (fld.second && fld.first.startsWith(path)) {
