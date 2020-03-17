@@ -48,8 +48,13 @@ public:
 
 inline QDebug operator<<(QDebug dbg, const PositionInfo &pos) {
     QDebugStateSaver saver(dbg);
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
     dbg.nospace() << Qt::hex << "(" << pos.docId << ": "
                   << Qt::dec << pos.positions << ")";
+#else
+    dbg.nospace() << hex << "(" << pos.docId << ": "
+                  << dec << pos.positions << ")";
+#endif
     return dbg;
 }
 
