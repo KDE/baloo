@@ -24,6 +24,7 @@
 #include <QObject>
 #include <QList>
 #include <QSet>
+#include <QDebug>
 
 #include "regexpcache.h"
 
@@ -55,7 +56,7 @@ public:
 
     /**
      * Folders that are excluded from indexing.
-     * (Descendant folders of an excluded folder can be added 
+     * (Descendant folders of an excluded folder can be added
      * and they will be indexed.)
      * \return list of paths.
      */
@@ -72,7 +73,7 @@ public:
     /**
     * Check if \p folder can be searched.
     * \p folder can be searched if itself or one of its descendants is indexed.
-    * 
+    *
     * Example:
     * if ~/foo is not indexed and ~/foo/bar is indexed
     * then ~/foo can be searched.
@@ -168,8 +169,28 @@ private:
 
     BalooSettings *m_settings;
 
-    /// Caching cleaned up list (no duplicates, no useless entries, etc.)
-    QList<QPair<QString, bool> > m_folderCache;
+    struct FolderConfig
+    {
+        QString path;
+        bool isIncluded;
+
+        /// Sort by path length, and on ties lexicographically.
+        /// Longest path first
+        bool operator<(const FolderConfig& other) const;
+    };
+
+    class FolderCache : public std::vector<FolderConfig>
+    {
+    public:
+        void cleanup();
+
+        bool addFolderConfig(const FolderConfig&);
+        bool updateFolderConfig(const FolderConfig&);
+    };
+    friend QDebug operator<<(QDebug dbg, const FolderConfig& config);
+
+    /// Caching cleaned up list (no duplicates, no non-default entries, etc.)
+    FolderCache m_folderCache;
     /// Whether the folder cache needs to be rebuilt the next time it is used
     bool m_folderCacheDirty;
 
@@ -187,6 +208,8 @@ private:
 
     const uint m_maxUncomittedFiles;
 };
+
+QDebug operator<<(QDebug dbg, const FileIndexerConfig::FolderCache::value_type&);
 
 }
 

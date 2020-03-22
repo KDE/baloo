@@ -21,6 +21,7 @@
 #include "fileindexerconfig.h"
 #include "fileexcludefilters.h"
 #include "storagedevices.h"
+#include "baloodebug.h"
 
 #include <QStringList>
 #include <QDir>
@@ -57,7 +58,8 @@ QString normalizeTrailingSlashes(QString&& path)
 
 }
 
-using namespace Baloo;
+namespace Baloo
+{
 
 FileIndexerConfig::FileIndexerConfig(QObject* parent)
     : QObject(parent)
@@ -75,32 +77,37 @@ FileIndexerConfig::~FileIndexerConfig()
 {
 }
 
+QDebug operator<<(QDebug dbg, const FileIndexerConfig::FolderConfig& entry)
+{
+    QDebugStateSaver saver(dbg);
+    dbg.nospace() << entry.path << ": "
+                  << (entry.isIncluded ? "included" : "excluded");
+    return dbg;
+}
 
 QStringList FileIndexerConfig::includeFolders() const
 {
     const_cast<FileIndexerConfig*>(this)->buildFolderCache();
 
     QStringList fl;
-    for (int i = 0; i < m_folderCache.count(); ++i) {
-        if (m_folderCache[i].second)
-            fl << m_folderCache[i].first;
+    for (const auto& entry : m_folderCache) {
+        if (entry.isIncluded)
+            fl << entry.path;
     }
     return fl;
 }
-
 
 QStringList FileIndexerConfig::excludeFolders() const
 {
     const_cast<FileIndexerConfig*>(this)->buildFolderCache();
 
     QStringList fl;
-    for (int i = 0; i < m_folderCache.count(); ++i) {
-        if (!m_folderCache[i].second)
-            fl << m_folderCache[i].first;
+    for (const auto& entry : m_folderCache) {
+        if (!entry.isIncluded)
+            fl << entry.path;
     }
     return fl;
 }
-
 
 QStringList FileIndexerConfig::excludeFilters() const
 {
@@ -154,8 +161,8 @@ bool FileIndexerConfig::canBeSearched(const QString& folder) const
     const_cast<FileIndexerConfig*>(this)->buildFolderCache();
 
     // Look for included descendants
-    for (const QPair<QString, bool>& fld: qAsConst(m_folderCache)) {
-        if (fld.second && fld.first.startsWith(path)) {
+    for (const auto& entry : m_folderCache) {
+        if (entry.isIncluded && entry.path.startsWith(path)) {
             return true;
         }
     }
@@ -231,14 +238,11 @@ bool FileIndexerConfig::folderInFolderList(const QString& path, QString& folder)
 
     const QString p = normalizeTrailingSlashes(QString(path));
 
-    // we traverse the list backwards to catch all exclude folders
-    int i = m_folderCache.count();
-    while (--i >= 0) {
-        const QString& f = m_folderCache[i].first;
-        const bool include = m_folderCache[i].second;
+    for (const auto& entry : m_folderCache) {
+        const QString& f = entry.path;
         if (p.startsWith(f)) {
             folder = f;
-            return include;
+            return entry.isIncluded;
         }
     }
     // path is not in the list, thus it should not be included
@@ -247,57 +251,71 @@ bool FileIndexerConfig::folderInFolderList(const QString& path, QString& folder)
 }
 
 
-namespace
+void FileIndexerConfig::FolderCache::cleanup()
 {
-/**
- * Returns true if the specified folder f would already be excluded using the list
- * folders.
- */
-bool alreadyExcluded(const QList<QPair<QString, bool> >& folders, const QString& f)
-{
-    bool included = false;
-    for (int i = 0; i < folders.count(); ++i) {
-        QString path = folders[i].first;
+    // TODO There are two cases where "redundant" includes
+    // should be kept:
+    // 1. when the "tail" matches a path exclude filter
+    //    (m_excludeFilterRegexpCache)
+    // 2. when the explicitly adds a hidden directory, and
+    //    we want to index hidden dirs (m_indexHidden)
+    bool keepAllIncluded = true;
 
-        if (f != folders[i].first && f.startsWith(path)) {
-            included = folders[i].second;
+    auto entry = begin();
+    while (entry != end()) {
+        if ((*entry).isIncluded && keepAllIncluded) {
+            ++entry;
+            continue;
+        }
+
+        const QString entryPath = (*entry).path;
+        auto start = entry; ++start;
+        auto parent = std::find_if(start, end(),
+            [&entryPath](const FolderConfig& _parent) {
+                return entryPath.startsWith(_parent.path);
+            });
+
+        if (parent != end()) {
+            if ((*entry).isIncluded == (*parent).isIncluded) {
+                // remove identical config
+                entry = erase(entry);
+            } else {
+                ++entry;
+            }
+        } else {
+            if (!(*entry).isIncluded) {
+                // remove excluded a topmost level (default)
+                entry = erase(entry);
+            } else {
+                ++entry;
+            }
         }
     }
-    return !included;
 }
 
-/**
- * Simple insertion sort
- */
-void insertSortFolders(const QStringList& folders, bool include, QList<QPair<QString, bool> >& result)
+bool FileIndexerConfig::FolderConfig::operator<(const FolderConfig& other) const
 {
-    for (QString path : folders) {
-        int pos = 0;
-        path = normalizeTrailingSlashes(std::move(path));
-        while (result.count() > pos &&
-                result[pos].first < path)
-            ++pos;
-        result.insert(pos, qMakePair(path, include));
-    }
+    return path.size() > other.path.size() ||
+        (path.size() == other.path.size() && path < other.path);
 }
 
-/**
- * Remove useless exclude entries which would confuse the folderInFolderList algo.
- * This makes sure all top-level items are include folders.
- * This runs in O(n^2) and could be optimized but what for.
- */
-void cleanupList(QList<QPair<QString, bool> >& result)
+bool FileIndexerConfig::FolderCache::addFolderConfig(const FolderConfig& config)
 {
-    int i = 0;
-    while (i < result.count()) {
-        if (result[i].first.isEmpty() ||
-                (!result[i].second &&
-                 alreadyExcluded(result, result[i].first)))
-            result.removeAt(i);
-        else
-            ++i;
+    if (config.path.isEmpty()) {
+        qCDebug(BALOO) << "Trying to add folder config entry with empty path";
+        return false;
     }
-}
+    auto newConfig{config};
+    newConfig.path = normalizeTrailingSlashes(std::move(newConfig.path));
+
+    auto it = std::lower_bound(cbegin(), cend(), newConfig);
+    if (it != cend() && (*it).path == newConfig.path) {
+        qCDebug(BALOO) << "Folder config entry for" << newConfig.path << "already exists";
+        return false;
+    }
+
+    it = insert(it, newConfig);
+    return true;
 }
 
 void FileIndexerConfig::buildFolderCache()
@@ -310,25 +328,37 @@ void FileIndexerConfig::buildFolderCache()
         m_devices = new StorageDevices(this);
     }
 
-    QStringList includeFoldersPlain = m_settings->folders();
-    QStringList excludeFoldersPlain = m_settings->excludedFolders();
+    FolderCache cache;
+
+    const QStringList includeFolders = m_settings->folders();
+    for (const auto& folder : includeFolders) {
+        if (!cache.addFolderConfig({folder, true})) {
+            qCWarning(BALOO) << "Failed to add include folder config entry for" << folder;
+        }
+    }
+
+    const QStringList excludeFolders = m_settings->excludedFolders();
+    for (const auto& folder : excludeFolders) {
+        if (!cache.addFolderConfig({folder, false})) {
+            qCWarning(BALOO) << "Failed to add exclude folder config entry for" << folder;
+        }
+    }
+
     // Add all removable media and network shares as ignored unless they have
     // been explicitly added in the include list
     const auto allMedia = m_devices->allMedia();
     for (const auto& device: allMedia) {
         const QString mountPath = device.mountPath();
         if (!device.isUsable() && !mountPath.isEmpty()) {
-            if (!includeFoldersPlain.contains(mountPath)) {
-                excludeFoldersPlain << mountPath;
+            if (!includeFolders.contains(mountPath)) {
+                cache.addFolderConfig({mountPath, false});
             }
         }
     }
 
-    m_folderCache.clear();
-    insertSortFolders(includeFoldersPlain, true, m_folderCache);
-    insertSortFolders(excludeFoldersPlain, false, m_folderCache);
-
-    cleanupList(m_folderCache);
+    cache.cleanup();
+    qCDebug(BALOO) << "Folder cache:" << cache;
+    m_folderCache = cache;
 
     m_folderCacheDirty = false;
 }
@@ -382,3 +412,5 @@ uint FileIndexerConfig::maxUncomittedFiles() const
 {
     return m_maxUncomittedFiles;
 }
+
+} // namespace Baloo
