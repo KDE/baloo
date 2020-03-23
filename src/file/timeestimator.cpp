@@ -27,12 +27,10 @@
 
 using namespace Baloo;
 
-TimeEstimator::TimeEstimator(FileIndexerConfig *config, QObject* parent)
+TimeEstimator::TimeEstimator(QObject* parent)
     : QObject(parent)
     , m_bufferIndex(0)
     , m_estimateReady(false)
-    , m_config(config)
-    , m_batchSize(m_config->maxUncomittedFiles())
 {
 
 }
@@ -43,7 +41,6 @@ uint TimeEstimator::calculateTimeLeft(int filesLeft)
         return 0;
     }
 
-    //TODO: We should probably make the batch size a global macro
     float totalTime = 0;
     float totalWeight = 0;
 
@@ -57,20 +54,19 @@ uint TimeEstimator::calculateTimeLeft(int filesLeft)
     }
 
     float weightedAverage = totalTime / totalWeight;
-    float batchesLeft = (float)filesLeft / (float)m_batchSize;
 
-    return weightedAverage * batchesLeft;
+    return weightedAverage * filesLeft;
 }
 
-void TimeEstimator::handleNewBatchTime(uint time)
+void TimeEstimator::handleNewBatchTime(uint time, uint batchSize)
 {
     // add the current batch time in place of the oldest batch time
-    m_batchTimeBuffer[m_bufferIndex] = time;
+    m_batchTimeBuffer[m_bufferIndex] = (float)time / batchSize;
 
-    if (!m_estimateReady && m_bufferIndex == BUFFER_SIZE - 1) {
+    m_bufferIndex = (m_bufferIndex + 1) % BUFFER_SIZE;
+
+    if (!m_estimateReady && m_bufferIndex == 0) {
         // Buffer has been filled once. We are ready to estimate
         m_estimateReady = true;
     }
-
-    m_bufferIndex = (m_bufferIndex + 1) % BUFFER_SIZE;
 }

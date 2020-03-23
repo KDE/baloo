@@ -40,20 +40,17 @@ class TimeEstimator : public QObject
 {
     Q_OBJECT
 public:
-    explicit TimeEstimator(FileIndexerConfig* config, QObject* parent = nullptr);
+    explicit TimeEstimator(QObject* parent = nullptr);
     uint calculateTimeLeft(int filesLeft);
 
 public Q_SLOTS:
-    void handleNewBatchTime(uint time);
+    void handleNewBatchTime(uint time, uint batchSize);
 
 private:
-    uint m_batchTimeBuffer[BUFFER_SIZE];
+    float m_batchTimeBuffer[BUFFER_SIZE];
 
     int m_bufferIndex;
     bool m_estimateReady;
-
-    FileIndexerConfig* m_config;
-    uint m_batchSize;
 };
 
 }
