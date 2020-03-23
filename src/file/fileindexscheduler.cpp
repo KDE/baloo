@@ -256,7 +256,7 @@ void FileIndexScheduler::powerManagementStatusChanged(bool isOnBattery)
     if (isOnBattery && m_indexerState == ContentIndexing) {
         qCDebug(BALOO) << "On battery, stopping content indexer";
         m_contentIndexer->quit();
-    } else if (!isOnBattery) {
+    } else {
         scheduleIndexing();
     }
 }
