@@ -63,7 +63,7 @@ Q_SIGNALS:
     Q_SCRIPTABLE void finishedIndexingFile(const QString& filePath);
 
     void done();
-    void newBatchTime(uint time);
+    void newBatchTime(uint time, uint batchSize);
 
 private Q_SLOTS:
     void monitorClosed(const QString& service);

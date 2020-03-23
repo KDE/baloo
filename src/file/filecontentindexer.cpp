@@ -81,26 +81,29 @@ void FileContentIndexer::run()
 
         process.index(idList);
         loop.exec();
+        batchSize = idList.size();
 
-        // QDbus requires us to be in object creation thread (thread affinity)
-        // This signal is not even exported, and yet QDbus complains. QDbus bug?
-        QMetaObject::invokeMethod(this, "newBatchTime", Qt::QueuedConnection, Q_ARG(uint, timer.elapsed()));
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
         if (hadErrors && !m_stop.load()) {
 #else
         if (hadErrors && !m_stop.loadRelaxed()) {
 #endif
-            if (idList.size() == 1) {
+            if (batchSize == 1) {
                 auto failedId = idList.first();
                 m_provider->markFailed(failedId);
                 batchSize = m_batchSize;
             } else {
-                batchSize = idList.size() / 2;
+                batchSize /= 2;
             }
             process.start();
+        } else {
+            auto elapsed = timer.elapsed();
+            QMetaObject::invokeMethod(this,
+                [this, elapsed, batchSize] { newBatchTime(elapsed, batchSize); },
+                Qt::QueuedConnection);
         }
     }
-    QMetaObject::invokeMethod(this, "done", Qt::QueuedConnection);
+    QMetaObject::invokeMethod(this, &FileContentIndexer::done, Qt::QueuedConnection);
 }
 
 void FileContentIndexer::slotStartedIndexingFile(const QString& filePath)
