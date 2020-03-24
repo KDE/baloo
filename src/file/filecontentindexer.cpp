@@ -27,11 +27,14 @@
 
 using namespace Baloo;
 
-FileContentIndexer::FileContentIndexer(FileIndexerConfig* config, FileContentIndexerProvider* provider, QObject* parent)
+FileContentIndexer::FileContentIndexer(FileIndexerConfig* config,
+        FileContentIndexerProvider* provider,
+        uint& finishedCount, QObject* parent)
     : QObject(parent)
     , m_config(config)
     , m_batchSize(config->maxUncomittedFiles())
     , m_provider(provider)
+    , m_finishedCount(finishedCount)
     , m_stop(0)
 {
     Q_ASSERT(provider);
@@ -76,6 +79,9 @@ void FileContentIndexer::run()
         bool hadErrors = false;
         connect(&process, &ExtractorProcess::failed, &loop, [&hadErrors, &loop]() { hadErrors = true; loop.quit(); });
 
+        uint batchStartCount = m_finishedCount;
+        connect(&process, &ExtractorProcess::finishedIndexingFile, &loop, [this]() { m_finishedCount++; });
+
         QElapsedTimer timer;
         timer.start();
 
@@ -95,6 +101,8 @@ void FileContentIndexer::run()
             } else {
                 batchSize /= 2;
             }
+            // reset to old value - nothing comitted
+            m_finishedCount = batchStartCount;
             process.start();
         } else {
             auto elapsed = timer.elapsed();

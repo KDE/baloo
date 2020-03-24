@@ -40,7 +40,7 @@ class FileContentIndexer : public QObject, public QRunnable
 
     Q_PROPERTY(QString currentFile READ currentFile NOTIFY startedIndexingFile)
 public:
-    FileContentIndexer(FileIndexerConfig* config, FileContentIndexerProvider* provider, QObject* parent = nullptr);
+    FileContentIndexer(FileIndexerConfig* config, FileContentIndexerProvider* provider, uint& finishedCount, QObject* parent = nullptr);
 
     QString currentFile() { return m_currentFile; }
 
@@ -74,6 +74,7 @@ private:
     FileIndexerConfig *m_config;
     uint m_batchSize;
     FileContentIndexerProvider* m_provider;
+    uint& m_finishedCount;
 
     QAtomicInt m_stop;
 
