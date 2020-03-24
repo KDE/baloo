@@ -127,6 +127,8 @@ private:
 
     IndexerState m_indexerState;
     TimeEstimator m_timeEstimator;
+    uint m_indexPendingFiles = 0;
+    uint m_indexFinishedFiles = 0;
 
     bool m_checkUnindexedFiles;
     bool m_checkStaleIndexEntries;

@@ -64,7 +64,7 @@ FileIndexScheduler::FileIndexScheduler(Database* db, FileIndexerConfig* config, 
         m_indexerState = LowPowerIdle;
     }
 
-    m_contentIndexer = new FileContentIndexer(m_config, &m_provider, this);
+    m_contentIndexer = new FileContentIndexer(m_config, &m_provider, m_indexFinishedFiles, this);
     m_contentIndexer->setAutoDelete(false);
     connect(m_contentIndexer, &FileContentIndexer::done, this,
             &FileIndexScheduler::runnerFinished);
@@ -179,7 +179,9 @@ void FileIndexScheduler::scheduleIndexing()
         return;
     }
 
-    if (m_provider.size()) {
+    m_indexPendingFiles = m_provider.size();
+    m_indexFinishedFiles = 0;
+    if (m_indexPendingFiles) {
         m_threadPool.start(m_contentIndexer);
         m_indexerState = ContentIndexing;
         Q_EMIT stateChanged(m_indexerState);
@@ -283,7 +285,8 @@ uint FileIndexScheduler::getRemainingTime()
     if (m_indexerState != ContentIndexing) {
         return 0;
     }
-    return m_timeEstimator.calculateTimeLeft(m_provider.size());
+    uint remainingFiles = m_indexPendingFiles - m_indexFinishedFiles;
+    return m_timeEstimator.calculateTimeLeft(remainingFiles);
 }
 
 void FileIndexScheduler::scheduleCheckUnindexedFiles()
