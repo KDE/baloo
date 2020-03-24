@@ -82,13 +82,12 @@ void Monitor::newFile(const QString& filePath)
         fetchTotalFiles();
     }
     m_filePath = filePath;
-    if (++m_filesIndexed == m_totalFiles) {
-        m_filePath = QStringLiteral("Done");
-    }
+    ++m_filesIndexed;
     Q_EMIT newFileIndexed();
 
-    if (m_filesIndexed % 100 == 0) {
+    if (m_remainingTimeTimer.elapsed() > 1000) {
         updateRemainingTime();
+        m_remainingTimeTimer.restart();
     }
 }
 
@@ -99,8 +98,6 @@ QString Monitor::suspendState() const
 
 void Monitor::toggleSuspendState()
 {
-    Q_ASSERT(m_scheduler != nullptr);
-
     if (m_indexerState == Baloo::Suspended) {
         m_scheduler->resume();
     } else {
@@ -116,12 +113,6 @@ void Monitor::balooStarted(const QString& service)
     m_fileindexer->registerMonitor();
 
     slotIndexerStateChanged(m_scheduler->state());
-    // qDebug() << "fetched suspend state";
-    fetchTotalFiles();
-    if (m_indexerState == Baloo::ContentIndexing) {
-        m_filePath = m_fileindexer->currentFile();
-        updateRemainingTime();
-    }
     Q_EMIT balooStateChanged();
 }
 
@@ -133,6 +124,7 @@ void Monitor::fetchTotalFiles()
         m_totalFiles = tr.size();
         m_filesIndexed = tr.size() - tr.phaseOneSize();
         Q_EMIT totalFilesChanged();
+        Q_EMIT newFileIndexed();
     }
 }
 
@@ -156,6 +148,11 @@ void Monitor::slotIndexerStateChanged(int state)
         m_indexerState = newState;
         Q_EMIT indexerStateChanged();
         fetchTotalFiles();
+        if (m_indexerState == Baloo::ContentIndexing) {
+            m_remainingTimeTimer.start();
+        } else {
+            m_filePath = QString();
+        }
     }
 }
 
