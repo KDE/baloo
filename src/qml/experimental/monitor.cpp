@@ -60,7 +60,7 @@ Monitor::Monitor(QObject *parent)
 
     QDBusServiceWatcher* balooWatcher = new QDBusServiceWatcher(m_scheduler->service(),
                                                             m_bus,
-                                                            QDBusServiceWatcher::WatchForRegistration,
+                                                            QDBusServiceWatcher::WatchForOwnerChange,
                                                             this);
     connect(balooWatcher, &QDBusServiceWatcher::serviceRegistered, this, &Monitor::balooStarted);
     connect(balooWatcher, &QDBusServiceWatcher::serviceUnregistered, this, [this]() {
@@ -72,7 +72,7 @@ Monitor::Monitor(QObject *parent)
 
     if (m_scheduler->isValid()) {
         // baloo is already running
-        balooStarted(m_scheduler->service());
+        balooStarted();
     }
 }
 
@@ -105,10 +105,8 @@ void Monitor::toggleSuspendState()
     }
 }
 
-void Monitor::balooStarted(const QString& service)
+void Monitor::balooStarted()
 {
-    Q_ASSERT(service == QLatin1String("org.kde.baloo"));
-
     m_balooRunning = true;
     m_fileindexer->registerMonitor();
 
