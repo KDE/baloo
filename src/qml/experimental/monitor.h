@@ -66,7 +66,7 @@ Q_SIGNALS:
 
 private Q_SLOTS:
     void newFile(const QString& filePath);
-    void balooStarted(const QString& service);
+    void balooStarted();
     void slotIndexerStateChanged(int state);
 
 private:
