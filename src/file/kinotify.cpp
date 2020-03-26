@@ -362,26 +362,30 @@ void KInotify::slotEvent(int socket)
         Q_ASSERT(!path.isEmpty() || event->mask & EventIgnored);
         Q_ASSERT(path != "/" || event->mask & EventIgnored  || event->mask & EventUnmount);
 
+        // All events which need a decoded path, i.e. everything
+        // but EventMoveFrom | EventQueueOverflow | EventIgnored
+        uint32_t fileEvents = EventAll & ~(EventMoveFrom | EventQueueOverflow | EventIgnored);
+        const QString fname = (event->mask & fileEvents) ? QFile::decodeName(path) : QString();
+
         // now signal the event
         if (event->mask & EventAccess) {
 //            qCDebug(BALOO) << path << "EventAccess";
-            Q_EMIT accessed(QFile::decodeName(path));
+            Q_EMIT accessed(fname);
         }
         if (event->mask & EventAttributeChange) {
 //            qCDebug(BALOO) << path << "EventAttributeChange";
-            Q_EMIT attributeChanged(QFile::decodeName(path));
+            Q_EMIT attributeChanged(fname);
         }
         if (event->mask & EventCloseWrite) {
 //            qCDebug(BALOO) << path << "EventCloseWrite";
-            Q_EMIT closedWrite(QFile::decodeName(path));
+            Q_EMIT closedWrite(fname);
         }
         if (event->mask & EventCloseRead) {
 //            qCDebug(BALOO) << path << "EventCloseRead";
-            Q_EMIT closedRead(QFile::decodeName(path));
+            Q_EMIT closedRead(fname);
         }
         if (event->mask & EventCreate) {
 //            qCDebug(BALOO) << path << "EventCreate";
-            const QString fname = QFile::decodeName(path);
             Q_EMIT created(fname, event->mask & IN_ISDIR);
             if (event->mask & IN_ISDIR) {
                 // Files/directories inside the new directory may be created before the watch
@@ -392,17 +396,17 @@ void KInotify::slotEvent(int socket)
         if (event->mask & EventDeleteSelf) {
 //            qCDebug(BALOO) << path << "EventDeleteSelf";
             d->removeWatch(event->wd);
-            Q_EMIT deleted(QFile::decodeName(path), true);
+            Q_EMIT deleted(fname, true);
         }
         if (event->mask & EventDelete) {
 //            qCDebug(BALOO) << path << "EventDelete";
             // we watch all folders recursively. Thus, folder removing is reported in DeleteSelf.
             if (!(event->mask & IN_ISDIR))
-                Q_EMIT deleted(QFile::decodeName(path), false);
+                Q_EMIT deleted(fname, false);
         }
         if (event->mask & EventModify) {
 //            qCDebug(BALOO) << path << "EventModify";
-            Q_EMIT modified(QFile::decodeName(path));
+            Q_EMIT modified(fname);
         }
         if (event->mask & EventMoveSelf) {
 //            qCDebug(BALOO) << path << "EventMoveSelf";
@@ -432,10 +436,9 @@ void KInotify::slotEvent(int socket)
                     }
                 }
 //                qCDebug(BALOO) << oldPath << "EventMoveTo" << path;
-                Q_EMIT moved(QFile::decodeName(oldPath), QFile::decodeName(path));
+                Q_EMIT moved(QFile::decodeName(oldPath), fname);
             } else {
 //                qCDebug(BALOO) << "No cookie for move information of" << path << "simulating new file event";
-                const QString fname = QFile::decodeName(path);
                 Q_EMIT created(fname, event->mask & IN_ISDIR);
                 if (event->mask & IN_ISDIR) {
                     handleDirCreated(fname);
@@ -444,7 +447,7 @@ void KInotify::slotEvent(int socket)
         }
         if (event->mask & EventOpen) {
 //            qCDebug(BALOO) << path << "EventOpen";
-            Q_EMIT opened(QFile::decodeName(path));
+            Q_EMIT opened(fname);
         }
         if (event->mask & EventUnmount) {
 //            qCDebug(BALOO) << path << "EventUnmount. removing from path hash";
@@ -454,7 +457,7 @@ void KInotify::slotEvent(int socket)
             // This is present because a unmount event is sent by inotify after unmounting, by
             // which time the watches have already been removed.
             if (path != "/") {
-                Q_EMIT unmounted(QFile::decodeName(path));
+                Q_EMIT unmounted(fname);
             }
         }
         if (event->mask & EventQueueOverflow) {
