@@ -52,6 +52,10 @@ void UnindexedFileIndexer::run()
             BasicIndexingJob job(it.filePath(), it.mimetype(), level);
             job.index();
 
+            if (it.mTimeChanged() && level == BasicIndexingJob::MarkForContentIndexing) {
+                job.document().setContentIndexing(true);
+            }
+
             // We handle modified files by simply updating the mTime and filename in the Db and marking them for ContentIndexing
             const quint64 id = job.document().id();
             if (tr.hasDocument(id)) {
@@ -64,10 +68,6 @@ void UnindexedFileIndexer::run()
                     }
                 }
                 tr.replaceDocument(job.document(), ops);
-
-                if (it.mTimeChanged()) {
-                    tr.setPhaseOne(id);
-                }
 
             } else { // New file
                 tr.addDocument(job.document());
