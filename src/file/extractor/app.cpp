@@ -179,6 +179,8 @@ bool App::index(Transaction* tr, const QString& url, quint64 id)
     QString mimetype = KFileMetaData::MimeUtils::strictMimeType(url, m_mimeDb).name();
     if (!m_config.shouldMimeTypeBeIndexed(mimetype)) {
         qCDebug(BALOO) << "Skipping" << url << "- mimetype:" << mimetype;
+        // FIXME: in case the extension based and content based mimetype differ
+        // we should update it.
         tr->removePhaseOne(id);
         return false;
     }

@@ -124,9 +124,6 @@ bool UnIndexedFileIterator::shouldIndex(const QString& filePath)
         // just the initial phase of indexing. The second phase can try to find
         // a more accurate mimetype.
         m_mimetype = m_mimeDb.mimeTypeForFile(filePath, QMimeDatabase::MatchExtension).name();
-        if (!m_config->shouldMimeTypeBeIndexed(m_mimetype)) {
-            return false;
-        }
 
         qCDebug(BALOO) << filePath << "mtime/ctime changed:"
             << timeInfo.mTime << "/" << timeInfo.cTime << "->"

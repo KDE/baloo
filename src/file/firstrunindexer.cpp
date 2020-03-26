@@ -55,9 +55,6 @@ void FirstRunIndexer::run()
                 mimetype = QStringLiteral("inode/directory");
             } else {
                 mimetype = mimeDb.mimeTypeForFile(it.filePath(), QMimeDatabase::MatchExtension).name();
-                if (!m_config->shouldMimeTypeBeIndexed(mimetype)) {
-                    continue;
-                }
             }
 
             BasicIndexingJob job(it.filePath(), mimetype, level);

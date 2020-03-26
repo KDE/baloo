@@ -95,9 +95,6 @@ void ModifiedFileIndexer::run()
 
         } else {
             mimetype = mimeDb.mimeTypeForFile(filePath, QMimeDatabase::MatchExtension).name();
-            if (!m_config->shouldMimeTypeBeIndexed(mimetype)) {
-                continue;
-            }
         }
 
         // Only mTime changed
