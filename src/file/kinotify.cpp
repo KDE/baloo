@@ -472,11 +472,6 @@ void KInotify::slotEvent(int socket)
                 Q_EMIT unmounted(fname);
             }
         }
-        if (event->mask & EventQueueOverflow) {
-            // This should not happen since we grab all events as soon as they arrive
-            qCDebug(BALOO) << path << "EventQueueOverflow";
-//            Q_EMIT queueOverflow();
-        }
         if (event->mask & EventIgnored) {
 //             qCDebug(BALOO) << path << "EventIgnored";
         }
