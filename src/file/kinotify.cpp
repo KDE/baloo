@@ -28,6 +28,7 @@
 #include <QHash>
 #include <QFile>
 #include <QTimer>
+#include <QDeadlineTimer>
 #include <QPair>
 
 #include <sys/inotify.h>
@@ -77,7 +78,13 @@ public:
         delete m_dirIter;
     }
 
-    QHash<int, QPair<QByteArray, WatchFlags> > cookies;
+    struct MovedFileCookie {
+        QDeadlineTimer deadline;
+        QByteArray path;
+        WatchFlags flags;
+    };
+
+    QHash<int, MovedFileCookie> cookies;
     QTimer cookieExpireTimer;
     // This variable is set to true if the watch limit is reached, and reset when it is raised
     bool userLimitReachedSignaled;
@@ -335,6 +342,9 @@ void KInotify::slotEvent(int socket)
     const int len = read(socket, buffer, avail);
     Q_ASSERT(len == avail);
 
+    // deadline for MoveFrom events without matching MoveTo event
+    QDeadlineTimer deadline(QDeadlineTimer::Forever);
+
     int i = 0;
     while (i < len) {
         const struct inotify_event* event = (struct inotify_event*)&buffer[i];
@@ -414,13 +424,15 @@ void KInotify::slotEvent(int socket)
         }
         if (event->mask & EventMoveFrom) {
 //            qCDebug(BALOO) << path << "EventMoveFrom";
-            d->cookies[event->cookie] = qMakePair(path, WatchFlags(event->mask));
-            d->cookieExpireTimer.start();
+            if (deadline.isForever()) {
+                deadline = QDeadlineTimer(1000); // 1 second
+            }
+            d->cookies[event->cookie] = Private::MovedFileCookie{ deadline, path, WatchFlags(event->mask) };
         }
         if (event->mask & EventMoveTo) {
             // check if we have a cookie for this one
             if (d->cookies.contains(event->cookie)) {
-                const QByteArray oldPath = d->cookies.take(event->cookie).first;
+                const QByteArray oldPath = d->cookies.take(event->cookie).path;
 
                 // update the path cache
                 if (event->mask & IN_ISDIR) {
@@ -472,6 +484,14 @@ void KInotify::slotEvent(int socket)
         i += sizeof(struct inotify_event) + event->len;
     }
 
+    if (d->cookies.empty()) {
+        d->cookieExpireTimer.stop();
+    } else {
+        if (!d->cookieExpireTimer.isActive()) {
+            d->cookieExpireTimer.start();
+        }
+    }
+
     if (len < 0) {
         qCDebug(BALOO) << "Failed to read event.";
     }
@@ -481,14 +501,23 @@ void KInotify::slotEvent(int socket)
 
 void KInotify::slotClearCookies()
 {
-    QHashIterator<int, QPair<QByteArray, WatchFlags> > it(d->cookies);
-    while (it.hasNext()) {
-        it.next();
-        removeWatch(QString::fromUtf8(it.value().first));
-        Q_EMIT deleted(QFile::decodeName(it.value().first), it.value().second & IN_ISDIR);
+    auto now = QDeadlineTimer::current();
+
+    auto it = d->cookies.begin();
+    while (it != d->cookies.end()) {
+        if (now > (*it).deadline) {
+            const QString fname = QFile::decodeName((*it).path);
+            removeWatch(fname);
+            Q_EMIT deleted(fname, (*it).flags & IN_ISDIR);
+            it = d->cookies.erase(it);
+        } else {
+            ++it;
+        }
     }
 
-    d->cookies.clear();
+    if (!d->cookies.empty()) {
+        d->cookieExpireTimer.start();
+    }
 }
 
 #include "moc_kinotify.cpp"
