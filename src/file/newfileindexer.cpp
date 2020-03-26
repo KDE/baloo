@@ -69,9 +69,6 @@ void NewFileIndexer::run()
                 continue;
             }
             mimetype = mimeDb.mimeTypeForFile(filePath, QMimeDatabase::MatchExtension).name();
-            if (!m_config->shouldMimeTypeBeIndexed(mimetype)) {
-                continue;
-            }
         }
 
         BasicIndexingJob job(filePath, mimetype, level);
