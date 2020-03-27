@@ -28,7 +28,6 @@
 #include <QFile>
 
 #include <KFileMetaData/Types>
-#include <KFileMetaData/TypeInfo>
 #include <KFileMetaData/UserMetaData>
 
 using namespace Baloo;
