@@ -19,7 +19,6 @@
 */
 
 #include "kinotify.h"
-#include "optimizedbytearray.h"
 #include "fileindexerconfig.h"
 #include "filtereddiriterator.h"
 #include "baloodebug.h"
@@ -90,10 +89,8 @@ public:
     bool userLimitReachedSignaled;
 
     // url <-> wd mappings
-    // Read the documentation fo OptimizedByteArray to understand why have a cache
-    QHash<int, OptimizedByteArray> watchPathHash;
-    QHash<OptimizedByteArray, int> pathWatchHash;
-    QSet<QByteArray> pathCache;
+    QHash<int, QByteArray> watchPathHash;
+    QHash<QByteArray, int> pathWatchHash;
 
     Baloo::FileIndexerConfig* config;
     QStringList m_paths;
@@ -125,13 +122,12 @@ public:
         // we always need the unmount event to maintain our path hash
         const int mask = newMode | newFlags | EventUnmount | FlagExclUnlink;
 
-        const QByteArray encpath = QFile::encodeName(path);
+        const QByteArray encpath = stripTrailingSlash(QFile::encodeName(path));
         int wd = inotify_add_watch(inotify(), encpath.data(), mask);
         if (wd > 0) {
 //             qCDebug(BALOO) << "Successfully added watch for" << path << watchPathHash.count();
-            OptimizedByteArray normalized(stripTrailingSlash(encpath), pathCache);
-            watchPathHash.insert(wd, normalized);
-            pathWatchHash.insert(normalized, wd);
+            watchPathHash.insert(wd, encpath);
+            pathWatchHash.insert(encpath, wd);
             return true;
         } else {
             qCDebug(BALOO) << "Failed to create watch for" << path << strerror(errno);
@@ -257,7 +253,7 @@ bool KInotify::available() const
 bool KInotify::watchingPath(const QString& path) const
 {
     const QByteArray p(stripTrailingSlash(QFile::encodeName(path)));
-    return d->pathWatchHash.contains(OptimizedByteArray(p, d->pathCache));
+    return d->pathWatchHash.contains(p);
 }
 
 void KInotify::resetUserLimit()
@@ -301,9 +297,9 @@ bool KInotify::removeWatch(const QString& path)
 
     // Remove all the watches
     QByteArray encodedPath(QFile::encodeName(path));
-    QHash<int, OptimizedByteArray>::iterator it = d->watchPathHash.begin();
+    auto it = d->watchPathHash.begin();
     while (it != d->watchPathHash.end()) {
-        if (it.value().toByteArray().startsWith(encodedPath)) {
+        if (it.value().startsWith(encodedPath)) {
             inotify_rm_watch(d->inotify(), it.key());
             d->pathWatchHash.remove(it.value());
             it = d->watchPathHash.erase(it);
@@ -361,11 +357,11 @@ void KInotify::slotEvent(int socket)
         // the event name only contains an interesting value if we get an event for a file/folder inside
         // a watched folder. Otherwise we should ignore it
         if (event->mask & (EventDeleteSelf | EventMoveSelf)) {
-            path = d->watchPathHash.value(event->wd).toByteArray();
+            path = d->watchPathHash.value(event->wd);
         } else {
             // we cannot use event->len here since it contains the size of the buffer and not the length of the string
             const QByteArray eventName = QByteArray::fromRawData(event->name, qstrnlen(event->name, event->len));
-            const QByteArray hashedPath = d->watchPathHash.value(event->wd).toByteArray();
+            const QByteArray hashedPath = d->watchPathHash.value(event->wd);
             path = concatPath(hashedPath, eventName);
         }
 
@@ -436,15 +432,13 @@ void KInotify::slotEvent(int socket)
 
                 // update the path cache
                 if (event->mask & IN_ISDIR) {
-                    OptimizedByteArray optimOldPath(oldPath, d->pathCache);
-                    QHash<OptimizedByteArray, int>::iterator it = d->pathWatchHash.find(optimOldPath);
+                    auto it = d->pathWatchHash.find(oldPath);
                     if (it != d->pathWatchHash.end()) {
 //                        qCDebug(BALOO) << oldPath << path;
                         const int wd = it.value();
-                        OptimizedByteArray optimPath(path, d->pathCache);
-                        d->watchPathHash[wd] = optimPath;
+                        d->watchPathHash[wd] = path;
                         d->pathWatchHash.erase(it);
-                        d->pathWatchHash.insert(optimPath, wd);
+                        d->pathWatchHash.insert(path, wd);
                     }
                 }
 //                qCDebug(BALOO) << oldPath << "EventMoveTo" << path;
