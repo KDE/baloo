@@ -156,6 +156,14 @@ inline Term operator !(const Term& rhs)
     return t;
 }
 
+/**
+ * Helper for QTest
+ * \sa QTest::toString
+ *
+ * @since: 5.70
+ */
+char *toString(const Term& term);
+
 }
 
 QDebug operator <<(QDebug d, const Baloo::Term& t);
