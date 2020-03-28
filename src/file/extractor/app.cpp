@@ -146,9 +146,6 @@ void App::processNextFile()
 
 void App::index(Transaction* tr, const QString& url, quint64 id)
 {
-    QString mimetype = KFileMetaData::MimeUtils::strictMimeType(url, m_mimeDb).name();
-    qCDebug(BALOO) << "Indexing" << id << url << mimetype;
-
     if (!m_config.shouldBeIndexed(url)) {
         // This apparently happens when the config has changed after the document
         // was added to the content indexing db
@@ -159,6 +156,7 @@ void App::index(Transaction* tr, const QString& url, quint64 id)
 
     // The initial BasicIndexingJob run has been supplied with the file extension
     // mimetype only, skip based on the "real" mimetype
+    QString mimetype = KFileMetaData::MimeUtils::strictMimeType(url, m_mimeDb).name();
     if (!m_config.shouldMimeTypeBeIndexed(mimetype)) {
         qCDebug(BALOO) << "Skipping" << url << "- mimetype:" << mimetype;
         tr->removePhaseOne(id);
@@ -171,10 +169,12 @@ void App::index(Transaction* tr, const QString& url, quint64 id)
     if (mimetype.startsWith(QLatin1String("text/"))) {
         QFileInfo fileInfo(url);
         if (fileInfo.size() >= 10 * 1024 * 1024) {
+            qCDebug(BALOO) << "Skipping large " << url << "- mimetype:" << mimetype;
             tr->removePhaseOne(id);
             return;
         }
     }
+    qCDebug(BALOO) << "Indexing" << id << url << mimetype;
 
     // We always run the basic indexing again. This is mostly so that the proper
     // mimetype is set and we get proper type information.
