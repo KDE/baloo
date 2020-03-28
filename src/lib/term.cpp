@@ -25,7 +25,7 @@
 #include <QVariant>
 #include <QDateTime>
 
-using namespace Baloo;
+namespace Baloo {
 
 class Baloo::Term::Private {
 public:
@@ -413,6 +413,16 @@ Term& Term::operator=(const Term& rhs)
     return *this;
 }
 
+char *toString(const Term& term)
+{
+    QString buffer;
+    QDebug stream(&buffer);
+    stream << term;
+    return qstrdup(buffer.toUtf8().constData());
+}
+
+} // namespace Baloo
+
 namespace {
     QString comparatorToString(Baloo::Term::Comparator c) {
         switch (c) {
@@ -451,6 +461,8 @@ namespace {
 
 QDebug operator <<(QDebug d, const Baloo::Term& t)
 {
+    QDebugStateSaver saver(d);
+    d.noquote();
     if (t.subTerms().isEmpty()) {
         d << QStringLiteral("(%1 %2 %3(%4))").arg(t.property(),
                                                   comparatorToString(t.comparator()),
@@ -458,13 +470,12 @@ QDebug operator <<(QDebug d, const Baloo::Term& t)
                                                   t.value().toString());
     }
     else {
-        d << "[" << operationToString(t.operation()).toUtf8().constData();
+        d << "[" << operationToString(t.operation());
         const auto subTerms = t.subTerms();
-        for (const Term& term : subTerms) {
+        for (const Baloo::Term& term : subTerms) {
             d << term;
         }
         d << "]";
-
     }
     return d;
 }
