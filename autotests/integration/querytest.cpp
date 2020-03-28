@@ -30,6 +30,26 @@
 
 using namespace Baloo;
 
+class SortedIdVector : public QVector<quint64> {
+    public:
+        SortedIdVector(const QVector<quint64>& list)
+        : QVector<quint64>(list) {
+            std::sort(begin(), end());
+        }
+        SortedIdVector(std::initializer_list<quint64> args)
+        : SortedIdVector(QVector<quint64>(args)) {}
+};
+
+char *toString(const QVector<quint64> &idlist)
+{
+    QByteArray text("IDs[");
+    text += QByteArray::number(idlist.size()) + "]:";
+    for (auto id : idlist) {
+        text += " " + QByteArray::number(id, 16);
+    }
+    return qstrdup(text.data());
+}
+
 class QueryTest : public QObject
 {
     Q_OBJECT
@@ -46,10 +66,11 @@ private Q_SLOTS:
             return filePathToId(QFile::encodeName(path));
         };
 
-        m_id1 = touchFile(dir->path() + "/file1");
+        m_id1 = touchFile(dir->path() + "/file1.txt");
         m_id2 = touchFile(dir->path() + "/file2");
         m_id3 = touchFile(dir->path() + "/file3");
         m_id4 = touchFile(dir->path() + "/file4");
+        m_id7 = touchFile(dir->path() + "/file7_lazy");
 
         m_id5 = touchFile(dir->path() + "/tagFile1");
         m_id6 = touchFile(dir->path() + "/tagFile2");
@@ -72,6 +93,7 @@ private Q_SLOTS:
     void testTermStartsWith();
     void testTermAnd();
     void testTermOr();
+    void testTermPhrase_data();
     void testTermPhrase();
 
     void testTagTermAnd_data();
@@ -129,13 +151,15 @@ private:
     quint64 m_id4;
     quint64 m_id5;
     quint64 m_id6;
+    quint64 m_id7;
 };
 
 
 void QueryTest::insertDocuments()
 {
     Transaction tr(db, Transaction::ReadWrite);
-    addDocument(&tr, QStringLiteral("The quick brown foxed jumped over the crazy dog"), m_id1, dir->path() + "/file1");
+    addDocument(&tr, QStringLiteral("The quick brown fox jumped over the crazy dog"), m_id1, dir->path() + "/file1.txt");
+    addDocument(&tr, QStringLiteral("The quick brown fox jumped over the lazy dog"), m_id7, dir->path() + "/file7_lazy");
     addDocument(&tr, QStringLiteral("The night is dark and full of terror"), m_id2, dir->path() + "/file2");
     addDocument(&tr, QStringLiteral("Don't feel sorry for yourself. Only assholes do that"), m_id3, dir->path() + "/file3");
     addDocument(&tr, QStringLiteral("Only the dead stay 17 forever. crazy"), m_id4, dir->path() + "/file4");
@@ -154,7 +178,7 @@ void QueryTest::testTermEqual()
 {
     EngineQuery q("the");
 
-    QVector<quint64> result = {m_id1, m_id2, m_id4};
+    QVector<quint64> result = SortedIdVector{m_id1, m_id2, m_id4, m_id7};
     Transaction tr(db, Transaction::ReadOnly);
     QCOMPARE(tr.exec(q), result);
 }
@@ -163,7 +187,7 @@ void QueryTest::testTermStartsWith()
 {
     EngineQuery q("for", EngineQuery::StartsWith);
 
-    QVector<quint64> result = {m_id3, m_id4};
+    QVector<quint64> result = SortedIdVector{m_id3, m_id4};
     Transaction tr(db, Transaction::ReadOnly);
     QCOMPARE(tr.exec(q), result);
 }
@@ -189,22 +213,47 @@ void QueryTest::testTermOr()
 
     EngineQuery q(queries, EngineQuery::Or);
 
-    QVector<quint64> result = {m_id1, m_id2};
+    QVector<quint64> result = SortedIdVector{m_id1, m_id2, m_id7};
     Transaction tr(db, Transaction::ReadOnly);
     QCOMPARE(tr.exec(q), result);
 }
 
+void QueryTest::testTermPhrase_data()
+{
+    QTest::addColumn<QByteArrayList>("phrase");
+    QTest::addColumn<QVector<quint64>>("matchIds");
+    QTest::addColumn<QString>("failReason");
+
+    auto addRow = [](const char* name, const QByteArrayList& phrase,
+                     const QVector<quint64> matchIds, const QString& failureReason)
+        { QTest::addRow("%s", name) << phrase << matchIds << failureReason; };
+
+    addRow("Crazy dog", {"crazy", "dog"}, SortedIdVector{ m_id1 }, "");
+    addRow("Lazy dog",  {"lazy", "dog"},  SortedIdVector{ m_id7 }, "");
+    addRow("Brown fox", {"brown", "fox"}, SortedIdVector{ m_id1, m_id7 }, "");
+    addRow("Crazy dog file 1",  {"file1"},         SortedIdVector{ m_id1 }, "");
+    addRow("Crazy dog file 2",  {"file1", "txt"},  SortedIdVector{ m_id1 }, "");
+    addRow("Lazy dog file 1",   {"file7"},         SortedIdVector{ m_id7 }, "");
+    addRow("Lazy dog file 2",   {"file7", "lazy"}, SortedIdVector{ m_id7 }, "Content shadows filename");
+}
+
 void QueryTest::testTermPhrase()
 {
-    QVector<EngineQuery> queries;
-    queries << EngineQuery("the");
-    queries << EngineQuery("crazy");
+    QFETCH(QByteArrayList, phrase);
+    QFETCH(QVector<quint64>, matchIds);
+    QFETCH(QString, failReason);
 
+    QVector<EngineQuery> queries;
+    for (const QByteArray& term : phrase) {
+        queries << EngineQuery(term);
+    }
     EngineQuery q(queries, EngineQuery::Phrase);
 
-    QVector<quint64> result = {m_id1};
     Transaction tr(db, Transaction::ReadOnly);
-    QCOMPARE(tr.exec(q), result);
+    if (!failReason.isEmpty()) {
+        QEXPECT_FAIL("", qPrintable(failReason), Continue);
+    }
+    QCOMPARE(tr.exec(q), matchIds);
 }
 
 void QueryTest::testTagTermAnd_data()
@@ -235,7 +284,6 @@ void QueryTest::testTagTermAnd()
     EngineQuery q(queries, EngineQuery::And);
 
     Transaction tr(db, Transaction::ReadOnly);
-    qDebug() << matchIds << tr.exec(q);
     QCOMPARE(tr.exec(q), matchIds);
 }
 
@@ -270,7 +318,6 @@ void QueryTest::testTagTermPhrase()
 
     Transaction tr(db, Transaction::ReadOnly);
     auto res = tr.exec(q);
-    qDebug() << matchIds << res;
     QCOMPARE(res, matchIds);
 }
 
