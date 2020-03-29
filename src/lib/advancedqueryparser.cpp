@@ -97,26 +97,6 @@ static void addTermToStack(QStack<Term>& stack, const Term& termInConstruction, 
     tos = Term(tos, op, termInConstruction);
 }
 
-static QVariant tokenToVariant(const QString& token)
-{
-    bool okay = false;
-    int intValue = token.toInt(&okay);
-    if (okay) {
-        return QVariant(intValue);
-    }
-
-    QDate date = QDate::fromString(token, Qt::ISODate);
-    if (date.isValid() && !date.isNull()) {
-        QDateTime dateTime = QDateTime::fromString(token, Qt::ISODate);
-        if (dateTime.isValid() && !dateTime.isNull()) {
-            return dateTime;
-        }
-        return date;
-    }
-
-    return token;
-}
-
 Term AdvancedQueryParser::parse(const QString& text)
 {
     // The parser does not do any look-ahead but has to store some state
@@ -142,14 +122,7 @@ Term AdvancedQueryParser::parse(const QString& text)
             }
             termInConstruction.setProperty(property);
 
-            QVariant value = tokenToVariant(token);
-            if (value.type() != QVariant::String) {
-                if (termInConstruction.comparator() == Term::Contains) {
-                    termInConstruction.setComparator(Term::Equal);
-                }
-            }
-
-            termInConstruction.setValue(value);
+            termInConstruction.setValue(token);
             valueExpected = false;
             continue;
         }

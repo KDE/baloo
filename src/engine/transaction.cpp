@@ -401,6 +401,12 @@ PostingIterator* Transaction::postingCompIterator(const QByteArray& prefix, qlon
     return postingDb.compIter(prefix, value, com);
 }
 
+PostingIterator* Transaction::postingCompIterator(const QByteArray& prefix, const QByteArray& value, PostingDB::Comparator com) const
+{
+    PostingDB postingDb(m_dbis.postingDbi, m_txn);
+    return postingDb.compIter(prefix, value, com);
+}
+
 PostingIterator* Transaction::mTimeRangeIter(quint32 beginTime, quint32 endTime) const
 {
     MTimeDB mTimeDb(m_dbis.mtimeDbi, m_txn);

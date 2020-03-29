@@ -73,6 +73,7 @@ public:
 
     PostingIterator* postingIterator(const EngineQuery& query) const;
     PostingIterator* postingCompIterator(const QByteArray& prefix, qlonglong value, PostingDB::Comparator com) const;
+    PostingIterator* postingCompIterator(const QByteArray& prefix, const QByteArray& value, PostingDB::Comparator com) const;
     PostingIterator* mTimeRangeIter(quint32 beginTime, quint32 endTime) const;
     PostingIterator* docUrlIter(quint64 id) const;
 
