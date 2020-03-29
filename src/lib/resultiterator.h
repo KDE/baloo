@@ -29,7 +29,6 @@
 
 namespace Baloo {
 
-class SearchStore;
 class Result;
 class ResultIteratorPrivate;
 
