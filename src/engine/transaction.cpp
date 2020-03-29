@@ -401,6 +401,12 @@ PostingIterator* Transaction::postingCompIterator(const QByteArray& prefix, qlon
     return postingDb.compIter(prefix, value, com);
 }
 
+PostingIterator* Transaction::postingCompIterator(const QByteArray& prefix, double value, PostingDB::Comparator com) const
+{
+    PostingDB postingDb(m_dbis.postingDbi, m_txn);
+    return postingDb.compIter(prefix, value, com);
+}
+
 PostingIterator* Transaction::postingCompIterator(const QByteArray& prefix, const QByteArray& value, PostingDB::Comparator com) const
 {
     PostingDB postingDb(m_dbis.postingDbi, m_txn);

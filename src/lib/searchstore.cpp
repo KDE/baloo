@@ -352,6 +352,10 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
 
         return tr->postingCompIterator(prefix, intVal, pcom);
 
+    } else if (valueType == QVariant::Double) {
+        double dVal = value.toDouble();
+        return tr->postingCompIterator(prefix, dVal, pcom);
+
     } else if (valueType == QVariant::DateTime) {
         QDateTime dt = value.toDateTime();
         const QByteArray ba = dt.toString(Qt::ISODate).toUtf8();

@@ -58,7 +58,15 @@ public:
         LessEqual,
         GreaterEqual
     };
+    // For integral types only:
+    template<typename T>
+    typename std::enable_if<std::is_integral<T>::value, PostingIterator*>::type
+    compIter(const QByteArray& prefix, T val, Comparator com) {
+        qlonglong l = val;
+        return compIter(prefix, l, com);
+    }
     PostingIterator* compIter(const QByteArray& prefix, qlonglong val, Comparator com);
+    PostingIterator* compIter(const QByteArray& prefix, double val, Comparator com);
     PostingIterator* compIter(const QByteArray& prefix, const QByteArray& val, Comparator com);
 
     QVector<QByteArray> fetchTermsStartingWith(const QByteArray& term);
