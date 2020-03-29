@@ -62,7 +62,7 @@ private Q_SLOTS:
         db.put(8, 5);
         db.put(9, 6);
 
-        PostingIterator* it = db.iter(6, MTimeDB::GreaterEqual);
+        PostingIterator* it = db.iterRange(6, std::numeric_limits<quint32>::max());
         QVERIFY(it);
 
         QVector<quint64> result = {2, 3, 4, 5, 6};
@@ -71,7 +71,7 @@ private Q_SLOTS:
             QCOMPARE(it->docId(), static_cast<quint64>(val));
         }
 
-        it = db.iter(10, MTimeDB::LessEqual);
+        it = db.iterRange(0, 10);
         QVERIFY(it);
 
         result = {1, 2, 3, 4, 5, 6};
@@ -80,7 +80,7 @@ private Q_SLOTS:
             QCOMPARE(it->docId(), static_cast<quint64>(val));
         }
 
-        it = db.iter(7, MTimeDB::LessEqual);
+        it = db.iterRange(0, 7);
         QVERIFY(it);
 
         result = {1, 2, 3, 4};
@@ -89,7 +89,7 @@ private Q_SLOTS:
             QCOMPARE(it->docId(), static_cast<quint64>(val));
         }
 
-        it = db.iter(6, MTimeDB::LessEqual);
+        it = db.iterRange(0, 6);
         QVERIFY(it);
 
         result = {1, 2, 3};
@@ -150,7 +150,7 @@ private Q_SLOTS:
         }
 
         {
-            it = db.iter(6, MTimeDB::GreaterEqual);
+            it = db.iterRange(6, std::numeric_limits<quint32>::max());
             QVERIFY(it);
 
             QVector<quint64> result = {2, 3, 4};
@@ -176,14 +176,14 @@ private Q_SLOTS:
         db.del(0, 2);
         QCOMPARE(db.get(0), QVector<quint64>({1, 3}));
 
-        PostingIterator* it = db.iter(0, MTimeDB::LessEqual);
+        PostingIterator* it = db.iterRange(0, 0);
         QVector<quint64> result;
         while (it->next()) {
             result.append(it->docId());
         }
         QCOMPARE(result, QVector<quint64>({1, 3}));
 
-        it = db.iter(1, MTimeDB::GreaterEqual);
+        it = db.iterRange(1, std::numeric_limits<quint32>::max());
         QVERIFY(it->next());
         QCOMPARE(it->docId(), 4);
     }

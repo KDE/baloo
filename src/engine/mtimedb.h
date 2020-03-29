@@ -48,12 +48,6 @@ public:
 
     void del(quint32 mtime, quint64 docId);
 
-    enum Comparator {
-        Equal,
-        LessEqual,
-        GreaterEqual
-    };
-    PostingIterator* iter(quint32 mtime, Comparator com);
     /**
       * Get documents with an mtime between \p beginTime and
       * \p endTime (inclusive)
