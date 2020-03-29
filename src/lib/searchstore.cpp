@@ -46,6 +46,34 @@
 
 using namespace Baloo;
 
+namespace {
+QPair<quint32, quint32> calculateTimeRange(const QDateTime& dt, Term::Comparator com)
+{
+    Q_ASSERT(dt.isValid());
+    quint32 timet = dt.toSecsSinceEpoch();
+
+    if (com == Term::LessEqual) {
+        return {0, timet};
+    }
+    if (com == Term::Less) {
+        return {0, timet - 1};
+    }
+    if (com == Term::GreaterEqual) {
+        return {timet, std::numeric_limits<quint32>::max()};
+    }
+    if (com == Term::Greater) {
+        return {timet + 1, std::numeric_limits<quint32>::max()};
+    }
+    if (com == Term::Equal) {
+        timet = QDateTime(dt.date()).toSecsSinceEpoch();
+        return {timet, timet + 24 * 60 * 60 - 1};
+    }
+
+    Q_ASSERT_X(0, __FUNC__, "mtime query must contain a valid comparator");
+    return {0, 0};
+}
+}
+
 SearchStore::SearchStore()
     : m_db(nullptr)
 {
@@ -153,7 +181,6 @@ QByteArray SearchStore::fetchPrefix(const QByteArray& property) const
         int propPrefix = static_cast<int>(pi.property());
         return 'X' + QByteArray::number(propPrefix) + '-';
     }
-
 }
 
 PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
@@ -248,10 +275,15 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
         }
         else if (value.type() == QVariant::Date || value.type() == QVariant::DateTime) {
             const QDateTime dt = value.toDateTime();
-            return constructMTimeQuery(tr, dt, term.comparator());
+            QPair<quint32, quint32> timerange = calculateTimeRange(dt, term.comparator());
+            if ((timerange.first == 0) && (timerange.second == 0)) {
+                return nullptr;
+            }
+            return tr->mTimeRangeIter(timerange.first, timerange.second);
         }
         else {
             Q_ASSERT_X(0, "SearchStore::constructQuery", "modified property must contain date/datetime values");
+            return nullptr;
         }
     } else if (property == "tag") {
         if (term.comparator() == Term::Equal) {
@@ -364,32 +396,3 @@ EngineQuery SearchStore::constructTypeQuery(const QString& value)
     return EngineQuery('T' + QByteArray::number(num));
 }
 
-PostingIterator* SearchStore::constructMTimeQuery(Transaction* tr, const QDateTime& dt, Term::Comparator com)
-{
-    Q_ASSERT(dt.isValid());
-    quint32 timet = dt.toSecsSinceEpoch();
-
-    MTimeDB::Comparator mtimeCom;
-    if (com == Term::Equal) {
-        mtimeCom = MTimeDB::Equal;
-        quint32 end = QDateTime(dt.date().addDays(1)).toSecsSinceEpoch() - 1;
-
-        return tr->mTimeRangeIter(timet, end);
-    }
-    else if (com == Term::GreaterEqual) {
-        mtimeCom = MTimeDB::GreaterEqual;
-    } else if (com == Term::Greater) {
-        timet++;
-        mtimeCom = MTimeDB::GreaterEqual;
-    } else if (com == Term::LessEqual) {
-        mtimeCom = MTimeDB::LessEqual;
-    } else if (com == Term::Less) {
-        mtimeCom = MTimeDB::LessEqual;
-        timet--;
-    } else {
-        Q_ASSERT_X(0, "SearchStore::constructQuery", "mtime query must contain a valid comparator");
-        return nullptr;
-    }
-
-    return tr->mTimeIter(timet, mtimeCom);
-}

@@ -57,7 +57,6 @@ private:
     EngineQuery constructTypeQuery(const QString& type);
 
     PostingIterator* constructRatingQuery(Transaction* tr, int rating);
-    PostingIterator* constructMTimeQuery(Transaction* tr, const QDateTime& dt, Term::Comparator com);
 };
 
 }
