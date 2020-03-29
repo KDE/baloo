@@ -23,7 +23,9 @@
 #include <QTest>
 
 Q_DECLARE_METATYPE(Baloo::Term)
-using namespace Baloo;
+
+using Term = Baloo::Term;
+using AdvancedQueryParser = Baloo::AdvancedQueryParser;
 
 class AdvancedQueryParserTest : public QObject
 {
@@ -42,6 +44,8 @@ private Q_SLOTS:
     void testNestedParentheses_data();
     void testOptimizedLogic();
     void testOptimizedLogic_data();
+    void testPhrases();
+    void testPhrases_data();
 };
 
 void AdvancedQueryParserTest::testSimpleProperty()
@@ -332,7 +336,33 @@ void AdvancedQueryParserTest::testOptimizedLogic_data()
             }}
         }}
     ;
+}
 
+void AdvancedQueryParserTest::testPhrases()
+{
+    QFETCH(QString, input);
+    QFETCH(Term, expectedTerm);
+
+    AdvancedQueryParser parser;
+    Term term = parser.parse(input);
+    QCOMPARE(term, expectedTerm);
+}
+
+void AdvancedQueryParserTest::testPhrases_data()
+{
+    QTest::addColumn<QString>("input");
+    QTest::addColumn<Term>("expectedTerm");
+
+    auto addRow = [](const QString& input, const Term& term)
+	{ QTest::addRow("%s", qPrintable(input)) << input << term; };
+
+    addRow("artist:ColdPlay", {"artist", "ColdPlay", Term::Contains});
+    addRow("artist:\"ColdPlay\"", {"artist", "ColdPlay", Term::Contains});
+    addRow("artist:\"Foo Fighters\"", {"artist", "Foo Fighters", Term::Contains});
+    addRow("artist:\"Foo Fighters\" OR artist:ColdPlay ", {Term::Or, {
+	{"artist", "Foo Fighters", Term::Contains},
+	{"artist", "ColdPlay", Term::Contains},
+    }});
 }
 
 QTEST_MAIN(AdvancedQueryParserTest)
