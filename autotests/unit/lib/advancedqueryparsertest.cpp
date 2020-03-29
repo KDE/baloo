@@ -160,12 +160,11 @@ void AdvancedQueryParserTest::testDateTime()
     Term expectedTerm;
 
     term = parser.parse(QStringLiteral("modified:2014-12-02"));
-    expectedTerm = Term(QStringLiteral("modified"), QDate(2014, 12, 02));
+    expectedTerm = Term(QStringLiteral("modified"), "2014-12-02");
     QCOMPARE(term, expectedTerm);
 
     term = parser.parse(QStringLiteral("modified:\"2014-12-02T23:22:1\""));
-    expectedTerm = Term(QStringLiteral("modified"), QDateTime(QDate(2014, 12, 02), QTime(23, 22, 1)));
-    QEXPECT_FAIL("", "AQP cannot handle datetime", Abort);
+    expectedTerm = Term(QStringLiteral("modified"), "2014-12-02T23:22:1");
     QCOMPARE(term, expectedTerm);
 }
 
@@ -176,27 +175,27 @@ void AdvancedQueryParserTest::testOperators()
     Term expectedTerm;
 
     term = parser.parse(QStringLiteral("width:500"));
-    expectedTerm = Term(QStringLiteral("width"), 500, Term::Equal);
+    expectedTerm = Term(QStringLiteral("width"), "500", Term::Contains);
     QCOMPARE(term, expectedTerm);
 
     term = parser.parse(QStringLiteral("width=500"));
-    expectedTerm = Term(QStringLiteral("width"), 500, Term::Equal);
+    expectedTerm = Term(QStringLiteral("width"), "500", Term::Equal);
     QCOMPARE(term, expectedTerm);
 
     term = parser.parse(QStringLiteral("width<500"));
-    expectedTerm = Term(QStringLiteral("width"), 500, Term::Less);
+    expectedTerm = Term(QStringLiteral("width"), "500", Term::Less);
     QCOMPARE(term, expectedTerm);
 
     term = parser.parse(QStringLiteral("width<=500"));
-    expectedTerm = Term(QStringLiteral("width"), 500, Term::LessEqual);
+    expectedTerm = Term(QStringLiteral("width"), "500", Term::LessEqual);
     QCOMPARE(term, expectedTerm);
 
     term = parser.parse(QStringLiteral("width>500"));
-    expectedTerm = Term(QStringLiteral("width"), 500, Term::Greater);
+    expectedTerm = Term(QStringLiteral("width"), "500", Term::Greater);
     QCOMPARE(term, expectedTerm);
 
     term = parser.parse(QStringLiteral("width>=500"));
-    expectedTerm = Term(QStringLiteral("width"), 500, Term::GreaterEqual);
+    expectedTerm = Term(QStringLiteral("width"), "500", Term::GreaterEqual);
     QCOMPARE(term, expectedTerm);
 }
 

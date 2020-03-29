@@ -24,6 +24,7 @@
 #include "searchstore.h"
 #include "term.h"
 #include "global.h"
+#include "baloodebug.h"
 
 #include "database.h"
 #include "transaction.h"
@@ -34,7 +35,6 @@
 #include "orpostingiterator.h"
 #include "idutils.h"
 
-#include <QStandardPaths>
 #include <QFile>
 #include <QFileInfo>
 
@@ -45,7 +45,7 @@
 #include <algorithm>
 #include <tuple>
 
-using namespace Baloo;
+namespace Baloo {
 
 namespace {
 QPair<quint32, quint32> calculateTimeRange(const QDateTime& dt, Term::Comparator com)
@@ -73,6 +73,36 @@ QPair<quint32, quint32> calculateTimeRange(const QDateTime& dt, Term::Comparator
     Q_ASSERT_X(0, __func__, "mtime query must contain a valid comparator");
     return {0, 0};
 }
+
+struct InternalProperty {
+    const char* propertyName;
+    const char* prefix;
+    QVariant::Type valueType;
+};
+constexpr std::array<InternalProperty, 6> internalProperties {{
+    { "filename",    "F",    QVariant::String },
+    { "mimetype",    "M",    QVariant::String },
+    { "rating",      "R",    QVariant::Int    },
+    { "tag",         "TAG-", QVariant::String },
+    { "tags",        "TA",   QVariant::String },
+    { "usercomment", "C",    QVariant::String }
+}};
+
+std::pair<QByteArray, QVariant::Type> propertyInfo(const QByteArray& property)
+{
+    auto it = std::find_if(std::begin(internalProperties), std::end(internalProperties),
+        [&property] (const InternalProperty& entry) { return property == entry.propertyName; });
+    if (it != std::end(internalProperties)) {
+        return { (*it).prefix, (*it).valueType };
+    } else {
+        KFileMetaData::PropertyInfo pi = KFileMetaData::PropertyInfo::fromName(property);
+        if (pi.property() == KFileMetaData::Property::Empty) {
+            return { QByteArray(), QVariant::Invalid };
+        }
+        int propPrefix = static_cast<int>(pi.property());
+        return { 'X' + QByteArray::number(propPrefix) + '-', pi.valueType() };
+    }
+}
 }
 
 SearchStore::SearchStore()
@@ -82,13 +112,6 @@ SearchStore::SearchStore()
     if (!m_db->open(Database::ReadOnlyDatabase)) {
         m_db = nullptr;
     }
-
-    m_prefixes.insert(QByteArray("filename"), QByteArray("F"));
-    m_prefixes.insert(QByteArray("mimetype"), QByteArray("M"));
-    m_prefixes.insert(QByteArray("rating"), QByteArray("R"));
-    m_prefixes.insert(QByteArray("tag"), QByteArray("TAG-"));
-    m_prefixes.insert(QByteArray("tags"), QByteArray("TA"));
-    m_prefixes.insert(QByteArray("usercomment"), QByteArray("C"));
 }
 
 SearchStore::~SearchStore()
@@ -167,23 +190,6 @@ QStringList SearchStore::exec(const Term& term, uint offset, int limit, bool sor
     }
 }
 
-QByteArray SearchStore::fetchPrefix(const QByteArray& property) const
-{
-    auto it = m_prefixes.constFind(property.toLower());
-    if (it != m_prefixes.constEnd()) {
-        return it.value();
-    }
-    else {
-        KFileMetaData::PropertyInfo pi = KFileMetaData::PropertyInfo::fromName(property);
-        if (pi.property() == KFileMetaData::Property::Empty) {
-            qDebug() << "Property" << property << "not found";
-            return QByteArray();
-        }
-        int propPrefix = static_cast<int>(pi.property());
-        return 'X' + QByteArray::number(propPrefix) + '-';
-    }
-}
-
 PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
 {
     Q_ASSERT(tr);
@@ -251,6 +257,7 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
     }
     else if (property == "modified" || property == "mtime") {
         if (value.type() == QVariant::ByteArray) {
+            // Used by Baloo::Query
             QByteArray ba = value.toByteArray();
             Q_ASSERT(ba.size() >= 4);
 
@@ -275,7 +282,7 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
 
             return tr->mTimeRangeIter(QDateTime(startDate).toSecsSinceEpoch(), QDateTime(endDate, QTime(23, 59, 59)).toSecsSinceEpoch());
         }
-        else if (value.type() == QVariant::Date || value.type() == QVariant::DateTime) {
+        else if (value.type() == QVariant::String) {
             const QDateTime dt = value.toDateTime();
             QPair<quint32, quint32> timerange = calculateTimeRange(dt, term.comparator());
             if ((timerange.first == 0) && (timerange.second == 0)) {
@@ -303,14 +310,18 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
     }
 
     QByteArray prefix;
+    QVariant::Type valueType = QVariant::String;
     if (!property.isEmpty()) {
-        prefix = fetchPrefix(property);
+        std::tie(prefix, valueType) = propertyInfo(property);
         if (prefix.isEmpty()) {
             return nullptr;
         }
     }
 
     auto com = term.comparator();
+    if (com == Term::Contains && valueType == QVariant::Int) {
+        com = Term::Equal;
+    }
     if (com == Term::Contains) {
         EngineQuery q = constructContainsQuery(prefix, value.toString());
         return tr->postingIterator(q);
@@ -321,27 +332,31 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
         return tr->postingIterator(q);
     }
 
-    QVariant val = term.value();
-    if (val.type() == QVariant::Int) {
+    PostingDB::Comparator pcom;
+    if (com == Term::Greater || com == Term::GreaterEqual) {
+        pcom = PostingDB::GreaterEqual;
+    } else if (com == Term::Less || com == Term::LessEqual) {
+        pcom = PostingDB::LessEqual;
+    }
+
+    // FIXME -- has to be kept in sync with the code from
+    // Baloo::Result::add
+    if (valueType == QVariant::Int) {
         qlonglong intVal = value.toLongLong();
 
-        PostingDB::Comparator pcom;
-        if (term.comparator() == Term::Greater || term.comparator() == Term::GreaterEqual) {
-            pcom = PostingDB::GreaterEqual;
-            if (term.comparator() == Term::Greater && intVal)
-                intVal++;
-        }
-        else if (term.comparator() == Term::Less || term.comparator() == Term::LessEqual) {
-            pcom = PostingDB::LessEqual;
-            if (term.comparator() == Term::Less)
-                intVal--;
-        }
-        else {
-            Q_ASSERT(0);
-            return nullptr;
+        if (term.comparator() == Term::Greater) {
+            intVal++;
+        } else if (term.comparator() == Term::Less) {
+            intVal--;
         }
 
         return tr->postingCompIterator(prefix, intVal, pcom);
+
+    } else if (valueType == QVariant::DateTime) {
+        QDateTime dt = value.toDateTime();
+        const QByteArray ba = dt.toString(Qt::ISODate).toUtf8();
+        return tr->postingCompIterator(prefix, ba, pcom);
+
     } else {
         qCDebug(BALOO) << "Comparison must be with an integer";
     }
@@ -396,4 +411,4 @@ EngineQuery SearchStore::constructTypeQuery(const QString& value)
 
     return EngineQuery('T' + QByteArray::number(num));
 }
-
+} // namespace Baloo

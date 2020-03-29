@@ -25,7 +25,6 @@
 
 #include <QString>
 #include <QDateTime>
-#include <QHash>
 #include "term.h"
 
 namespace Baloo {
@@ -45,10 +44,7 @@ public:
     QStringList exec(const Term& term, uint offset, int limit, bool sortResults);
 
 private:
-    QByteArray fetchPrefix(const QByteArray& property) const;
-
     Database* m_db;
-    QHash<QByteArray, QByteArray> m_prefixes;
 
     PostingIterator* constructQuery(Transaction* tr, const Term& term);
 

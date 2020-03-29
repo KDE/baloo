@@ -281,6 +281,17 @@ PostingIterator* PostingDB::compIter(const QByteArray& prefix, qlonglong comVal,
     return iter(prefix, validate);
 }
 
+PostingIterator* PostingDB::compIter(const QByteArray& prefix, const QByteArray& comVal, PostingDB::Comparator com)
+{
+    int prefixLen = prefix.length();
+    auto validate = [prefixLen, comVal, com] (const QByteArray& arr) {
+        auto val = QByteArray::fromRawData(arr.constData() + prefixLen, arr.length() - prefixLen);
+        return ((com == LessEqual && val <= comVal) ||
+                (com == GreaterEqual && val >= comVal));
+    };
+    return iter(prefix, validate);
+}
+
 QMap<QByteArray, PostingList> PostingDB::toTestMap() const
 {
     MDB_cursor* cursor;
