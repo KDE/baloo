@@ -69,7 +69,7 @@ QPair<quint32, quint32> calculateTimeRange(const QDateTime& dt, Term::Comparator
         return {timet, timet + 24 * 60 * 60 - 1};
     }
 
-    Q_ASSERT_X(0, __FUNC__, "mtime query must contain a valid comparator");
+    Q_ASSERT_X(0, __func__, "mtime query must contain a valid comparator");
     return {0, 0};
 }
 }
