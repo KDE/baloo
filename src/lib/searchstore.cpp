@@ -230,7 +230,8 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
         return tr->postingIterator(q);
     }
     else if (property == "includefolder") {
-        const QByteArray folder = QFile::encodeName(QFileInfo(value.toString()).canonicalFilePath());
+        const QFileInfo fi(value.toString());
+        const QByteArray folder = QFile::encodeName(fi.canonicalFilePath());
 
         if (folder.isEmpty()) {
             return nullptr;
