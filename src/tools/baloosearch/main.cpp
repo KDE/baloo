@@ -92,7 +92,12 @@ int main(int argc, char* argv[])
 
     if (parser.isSet(QStringLiteral("directory"))) {
         QString folderName = parser.value(QStringLiteral("directory"));
-        query.setIncludeFolder(QFileInfo(folderName).canonicalFilePath());
+        const QFileInfo fi(folderName);
+        if (!fi.isDir()) {
+            std::cerr << qPrintable(i18n("%1 is not a valid directory", folderName)) << std::endl;
+            return 1;
+        }
+        query.setIncludeFolder(fi.canonicalFilePath());
     }
 
     QElapsedTimer timer;
