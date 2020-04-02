@@ -37,32 +37,32 @@ private Q_SLOTS:
 void PhraseAndIteratorTest::test()
 {
     // Term 1
-    PositionInfo pi1;
-    pi1.docId = 2;
-    pi1.positions = {5, 9};
+    PositionInfo pi2_1; // pi<doc_id>_<term>
+    pi2_1.docId = 2;
+    pi2_1.positions = {5, 9};
 
-    PositionInfo pi2;
-    pi2.docId = 4;
-    pi2.positions = {4, 2};
+    PositionInfo pi4_1;
+    pi4_1.docId = 4;
+    pi4_1.positions = {4, 2};
 
     QVector<PositionInfo> vec1;
-    vec1 << pi1 << pi2;
+    vec1 << pi2_1 << pi4_1;
 
     // Term 2
-    PositionInfo pi3;
-    pi3.docId = 2;
-    pi3.positions = {6, 7};
+    PositionInfo pi2_2;
+    pi2_2.docId = 2;
+    pi2_2.positions = {6, 7};
 
-    PositionInfo pi4;
-    pi4.docId = 4;
-    pi4.positions = {6, 2};
+    PositionInfo pi4_2;
+    pi4_2.docId = 4;
+    pi4_2.positions = {6, 2};
 
-    PositionInfo pi5;
-    pi5.docId = 7;
-    pi5.positions = {1, 4, 2};
+    PositionInfo pi7_2;
+    pi7_2.docId = 7;
+    pi7_2.positions = {1, 4, 2};
 
     QVector<PositionInfo> vec2;
-    vec2 << pi3 << pi4 << pi5;
+    vec2 << pi2_2 << pi4_2 << pi7_2;
 
     VectorPositionInfoIterator* it1 = new VectorPositionInfoIterator(vec1);
     VectorPositionInfoIterator* it2 = new VectorPositionInfoIterator(vec2);
@@ -84,20 +84,20 @@ void PhraseAndIteratorTest::test()
 void PhraseAndIteratorTest::testNullIterators()
 {
     // Term 1
-    PositionInfo pi1;
-    pi1.docId = 2;
-    pi1.positions = {5, 9};
+    PositionInfo pi2_1;
+    pi2_1.docId = 2;
+    pi2_1.positions = {5, 9};
 
     QVector<PositionInfo> vec1;
-    vec1 << pi1;
+    vec1 << pi2_1;
 
     // Term 2
-    PositionInfo pi2;
-    pi2.docId = 2;
-    pi2.positions = {6, 7};
+    PositionInfo pi2_2;
+    pi2_2.docId = 2;
+    pi2_2.positions = {6, 7};
 
     QVector<PositionInfo> vec2;
-    vec2 << pi2;
+    vec2 << pi2_2;
 
     VectorPositionInfoIterator* it1 = new VectorPositionInfoIterator(vec1);
     VectorPositionInfoIterator* it2 = new VectorPositionInfoIterator(vec2);
