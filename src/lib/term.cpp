@@ -462,18 +462,23 @@ namespace {
 QDebug operator <<(QDebug d, const Baloo::Term& t)
 {
     QDebugStateSaver saver(d);
-    d.noquote();
+    d.noquote().nospace();
     if (t.subTerms().isEmpty()) {
-        d << QStringLiteral("(%1 %2 %3(%4))").arg(t.property(),
-                                                  comparatorToString(t.comparator()),
-                                                  QString::fromLatin1(t.value().typeName()),
-                                                  t.value().toString());
+        if (!t.property().isEmpty()) {
+            d << t.property() << comparatorToString(t.comparator());
+        }
+        if (t.value().type() == QVariant::String) {
+            d << QLatin1Char('"') << t.value().toString() << QLatin1Char('"');
+        } else {
+            d << t.value().typeName() << QLatin1Char('(')
+              << t.value().toString() << QLatin1Char(')');
+        }
     }
     else {
         d << "[" << operationToString(t.operation());
         const auto subTerms = t.subTerms();
         for (const Baloo::Term& term : subTerms) {
-            d << term;
+            d << QLatin1Char(' ') << term;
         }
         d << "]";
     }
