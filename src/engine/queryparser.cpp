@@ -61,10 +61,10 @@ EngineQuery QueryParser::parseQuery(const QString& text_, const QString& prefix)
 
     QTextBoundaryFinder bf(QTextBoundaryFinder::Word, text);
     for (; bf.position() != -1; bf.toNextBoundary()) {
-        if (bf.boundaryReasons() & QTextBoundaryFinder::StartOfItem) {
+        int pos = bf.position();
+        if (!(bf.boundaryReasons() & QTextBoundaryFinder::EndOfItem)) {
             //
             // Check the previous delimiter
-            int pos = bf.position();
             if (pos != end) {
                 QString delim = text_.mid(end, pos-end);
                 if (delim.contains(QLatin1Char('"'))) {
@@ -88,7 +88,7 @@ EngineQuery QueryParser::parseQuery(const QString& text_, const QString& prefix)
                     }
                 }
                 else if (!containsSpace(delim)) {
-                    if (!inPhrase && !queries.isEmpty()) {
+                    if (phraseQueries.isEmpty() && !queries.isEmpty()) {
                         EngineQuery q = queries.takeLast();
                         q.setOp(EngineQuery::Equal);
                         phraseQueries << q;
@@ -100,9 +100,12 @@ EngineQuery QueryParser::parseQuery(const QString& text_, const QString& prefix)
                     phraseQueries.clear();
                     inPhrase = false;
                 }
+                end = pos;
             }
+        }
 
-            start = bf.position();
+        if (bf.boundaryReasons() & QTextBoundaryFinder::StartOfItem) {
+            start = pos;
             continue;
         }
         else if (bf.boundaryReasons() & QTextBoundaryFinder::EndOfItem) {
@@ -140,11 +143,8 @@ EngineQuery QueryParser::parseQuery(const QString& text_, const QString& prefix)
 
     if (inPhrase) {
         queries << EngineQuery(phraseQueries, EngineQuery::Phrase);
-        phraseQueries.clear();
-        inPhrase = false;
-    }
 
-    if (!phraseQueries.isEmpty()) {
+    } else if (!phraseQueries.isEmpty()) {
         for (EngineQuery& q : phraseQueries) {
             if (m_autoExpandSize && q.term().size() >= m_autoExpandSize) {
                 q.setOp(EngineQuery::StartsWith);
@@ -153,7 +153,6 @@ EngineQuery QueryParser::parseQuery(const QString& text_, const QString& prefix)
             }
         }
         queries << phraseQueries;
-        phraseQueries.clear();
     }
 
     if (queries.size() == 1) {

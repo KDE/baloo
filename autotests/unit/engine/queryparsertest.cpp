@@ -278,12 +278,12 @@ void QueryParserTest::testMixedDelimiters_data()
     addRow("No phrase", { {{"no"}, {"phrase"}}, EngineQuery::And}, "");
     addRow("Underscore_phrase", { {{"underscore"}, {"phrase"}}, EngineQuery::Phrase}, "");
     addRow("underscore_dot.phrase", { {{"underscore"}, {"dot"}, {"phrase"}}, EngineQuery::Phrase}, "");
-    addRow("\'Quoted phrase\'", { {{"quoted"}, {"phrase"}}, EngineQuery::Phrase}, "End quote as last char");
+    addRow("\'Quoted phrase\'", { {{"quoted"}, {"phrase"}}, EngineQuery::Phrase}, "");
     addRow("\'Quoted phrase\' anded tail", {{
 	    {{{"quoted"}, {"phrase"}}, EngineQuery::Phrase},
 	    {"anded"}, {"tail"},
         }, EngineQuery::And}, "");
-    addRow("\'Long quoted phrase\'", { {{"long"}, {"quoted"}, {"phrase"}}, EngineQuery::Phrase}, "End quote as last char");
+    addRow("\'Long quoted phrase\'", { {{"long"}, {"quoted"}, {"phrase"}}, EngineQuery::Phrase}, "");
     addRow("Anded dot.phrase", { {
             {"anded"},
             {{{"dot"}, {"phrase"}}, EngineQuery::Phrase},
@@ -298,21 +298,21 @@ void QueryParserTest::testMixedDelimiters_data()
         }, EngineQuery::And}, "");
     addRow("\'One quoted with.dot\'", {{
             {"one"}, {"quoted"}, {"with"}, {"dot"}
-        }, EngineQuery::Phrase}, "End quote as last char");
+        }, EngineQuery::Phrase}, "");
     addRow("\'Quoted_underscore and.dot\'", {{
             {"quoted"}, {"underscore"}, {"and"}, {"dot"}
-        }, EngineQuery::Phrase}, "End quote as last char");
+        }, EngineQuery::Phrase}, "");
     addRow("Underscore_andTrailingDot_.", {{
             {"underscore"}, {"andtrailingdot"}
         }, EngineQuery::Phrase}, "");
     addRow("\'TrailingUnderscore_ andDot.\'", {{
             {"trailingunderscore"}, {"anddot"}
-        }, EngineQuery::Phrase}, "End quote as last char");
+        }, EngineQuery::Phrase}, "");
     addRow("NoPhrase Under_score \'Quoted Phrase\'", {{
             {"nophrase"},
             {{{"under"}, {"score"}}, EngineQuery::Phrase},
             {{{"quoted"}, {"phrase"}}, EngineQuery::Phrase},
-        }, EngineQuery::And}, "End quote as last char");
+        }, EngineQuery::And}, "");
     addRow("NoPhrase \'Quoted Phrase\' Under_score", {{
             {"nophrase"},
             {{{"quoted"}, {"phrase"}}, EngineQuery::Phrase},
