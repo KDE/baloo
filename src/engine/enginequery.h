@@ -41,16 +41,11 @@ public:
     };
 
     EngineQuery();
-    EngineQuery(const QByteArray& term, int pos = 0);
-    EngineQuery(const QByteArray& term, Operation op, int pos = 0);
-    EngineQuery(const QVector<EngineQuery> &subQueries, Operation op);
+    EngineQuery(const QByteArray& term, Operation op = Equal);
+    EngineQuery(const QVector<EngineQuery> &subQueries, Operation op = And);
 
     QByteArray term() const {
         return m_term;
-    }
-
-    int pos() const {
-        return m_pos;
     }
 
     Operation op() const {
@@ -74,11 +69,10 @@ public:
     }
 
     bool operator ==(const EngineQuery& q) const {
-        return m_term == q.m_term && m_pos == q.m_pos && m_op == q.m_op && m_subQueries == q.m_subQueries;
+        return m_term == q.m_term && m_op == q.m_op && m_subQueries == q.m_subQueries;
     }
 private:
     QByteArray m_term;
-    int m_pos;
     Operation m_op;
 
     QVector<EngineQuery> m_subQueries;
@@ -86,9 +80,12 @@ private:
 
 } // namespace Baloo
 
-inline QDebug operator << (QDebug d, const Baloo::EngineQuery& q) {
+inline QDebug operator<<(QDebug d, const Baloo::EngineQuery& q)
+{
     QDebugStateSaver state(d);
     d.setAutoInsertSpaces(false);
+
+    using Operation = Baloo::EngineQuery::Operation;
     if (q.op() == Baloo::EngineQuery::And) {
         d << "[AND " << q.subQueries() << "]";
     } else if (q.op() == Baloo::EngineQuery::Or) {
@@ -97,7 +94,7 @@ inline QDebug operator << (QDebug d, const Baloo::EngineQuery& q) {
         d << "[PHRASE " << q.subQueries() << "]";
     } else {
         Q_ASSERT(q.subQueries().isEmpty());
-        d << "(" << q.term() << "," << q.pos() << "," << q.op() << ")";
+        return d << q.term() << (q.op() == Operation::StartsWith ? ".." : "");
     }
     return d;
 }

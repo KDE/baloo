@@ -362,15 +362,14 @@ EngineQuery SearchStore::constructEqualsQuery(const QByteArray& prefix, const QS
     const QByteArrayList terms = TermGenerator::termList(value);
 
     QVector<EngineQuery> queries;
-    int position = 1;
     for (const QByteArray& term : terms) {
         QByteArray arr = prefix + term;
         // FIXME - compatibility hack, to find truncated terms with old
         // DBs, remove on next DB bump
         if (arr.size() > 25) {
-            queries << EngineQuery(arr.left(25), EngineQuery::StartsWith, position++);
+            queries << EngineQuery(arr.left(25), EngineQuery::StartsWith);
         } else {
-            queries << EngineQuery(arr, position++);
+            queries << EngineQuery(arr);
         }
     }
 
