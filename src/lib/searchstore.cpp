@@ -242,7 +242,7 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
 
         quint64 id = filePathToId(folder);
         if (!id) {
-            qDebug() << "Folder" << value.toString() << "does not exist";
+            qCDebug(BALOO) << "Folder" << value.toString() << "does not exist";
             return nullptr;
         }
 
@@ -342,7 +342,7 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
 
         return tr->postingCompIterator(prefix, intVal, pcom);
     } else {
-        qDebug() << "Comparison must be with an integer";
+        qCDebug(BALOO) << "Comparison must be with an integer";
     }
 
     return nullptr;
@@ -388,7 +388,7 @@ EngineQuery SearchStore::constructTypeQuery(const QString& value)
 
     KFileMetaData::TypeInfo ti = KFileMetaData::TypeInfo::fromName(value);
     if (ti == KFileMetaData::Type::Empty) {
-        qDebug() << "Type" << value << "does not exist";
+        qCDebug(BALOO) << "Type" << value << "does not exist";
         return EngineQuery();
     }
     int num = static_cast<int>(ti.type());
