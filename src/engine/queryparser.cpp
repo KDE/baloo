@@ -54,7 +54,6 @@ EngineQuery QueryParser::parseQuery(const QString& text_, const QString& prefix)
 
     int start = 0;
     int end = 0;
-    int position = 0;
 
     bool inDoubleQuotes = false;
     bool inSingleQuotes = false;
@@ -126,15 +125,14 @@ EngineQuery QueryParser::parseQuery(const QString& text_, const QString& prefix)
             const QString term = prefix + str;
             const QByteArray arr = term.toUtf8();
 
-            position++;
             if (inDoubleQuotes || inSingleQuotes || inPhrase) {
-                phraseQueries << EngineQuery(arr, position);
+                phraseQueries << EngineQuery(arr, EngineQuery::Equal);
             }
             else {
                 if (m_autoExpandSize && arr.size() >= m_autoExpandSize) {
-                    queries << EngineQuery(arr, EngineQuery::StartsWith, position);
+                    queries << EngineQuery(arr, EngineQuery::StartsWith);
                 } else {
-                    queries << EngineQuery(arr, position);
+                    queries << EngineQuery(arr, EngineQuery::Equal);
                 }
             }
         }

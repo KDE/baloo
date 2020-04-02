@@ -23,6 +23,8 @@
 
 #include <QTest>
 
+Q_DECLARE_METATYPE(Baloo::EngineQuery)
+
 using namespace Baloo;
 
 class QueryParserTest : public QObject
@@ -41,6 +43,8 @@ private Q_SLOTS:
     void testUnderscoreSplitting();
     void testAutoExpand();
     void testUnicodeLowering();
+    void testMixedDelimiters();
+    void testMixedDelimiters_data();
 };
 
 void QueryParserTest::testSinglePrefixWord()
@@ -49,7 +53,7 @@ void QueryParserTest::testSinglePrefixWord()
     parser.setAutoExapandSize(1);
 
     EngineQuery query = parser.parseQuery("The", "F");
-    EngineQuery q("Fthe", EngineQuery::StartsWith, 1);
+    EngineQuery q("Fthe", EngineQuery::StartsWith);
     QCOMPARE(query, q);
 }
 
@@ -61,12 +65,12 @@ void QueryParserTest::testSimpleQuery()
     EngineQuery query = parser.parseQuery("The song of Ice and Fire");
 
     QVector<EngineQuery> queries;
-    queries << EngineQuery("the", EngineQuery::StartsWith, 1);
-    queries << EngineQuery("song", EngineQuery::StartsWith, 2);
-    queries << EngineQuery("of", EngineQuery::StartsWith, 3);
-    queries << EngineQuery("ice", EngineQuery::StartsWith, 4);
-    queries << EngineQuery("and", EngineQuery::StartsWith, 5);
-    queries << EngineQuery("fire", EngineQuery::StartsWith, 6);
+    queries << EngineQuery("the", EngineQuery::StartsWith);
+    queries << EngineQuery("song", EngineQuery::StartsWith);
+    queries << EngineQuery("of", EngineQuery::StartsWith);
+    queries << EngineQuery("ice", EngineQuery::StartsWith);
+    queries << EngineQuery("and", EngineQuery::StartsWith);
+    queries << EngineQuery("fire", EngineQuery::StartsWith);
 
     EngineQuery q(queries, EngineQuery::And);
     QCOMPARE(query, q);
@@ -79,14 +83,14 @@ void QueryParserTest::testPhraseSearch()
     EngineQuery query = parser.parseQuery("The \"song of Ice\" Fire");
 
     QVector<EngineQuery> phraseQueries;
-    phraseQueries << EngineQuery("song", 2);
-    phraseQueries << EngineQuery("of", 3);
-    phraseQueries << EngineQuery("ice", 4);
+    phraseQueries << EngineQuery("song");
+    phraseQueries << EngineQuery("of");
+    phraseQueries << EngineQuery("ice");
 
     QVector<EngineQuery> queries;
-    queries << EngineQuery("the", EngineQuery::StartsWith, 1);
+    queries << EngineQuery("the", EngineQuery::StartsWith);
     queries << EngineQuery(phraseQueries, EngineQuery::Phrase);
-    queries << EngineQuery("fire", EngineQuery::StartsWith, 5);
+    queries << EngineQuery("fire", EngineQuery::StartsWith);
 
     EngineQuery q(queries, EngineQuery::And);
     QCOMPARE(query, q);
@@ -99,8 +103,8 @@ void QueryParserTest::testPhraseSearchOnly()
     EngineQuery query = parser.parseQuery("/opt/pro");
 
     QVector<EngineQuery> queries;
-    queries << EngineQuery("opt", 1);
-    queries << EngineQuery("pro", 2);
+    queries << EngineQuery("opt");
+    queries << EngineQuery("pro");
 
     EngineQuery q(queries, EngineQuery::Phrase);
     QCOMPARE(query, q);
@@ -113,9 +117,9 @@ void QueryParserTest::testUnderscorePhrase()
     EngineQuery query = parser.parseQuery("foo_bar.png");
 
     QVector<EngineQuery> queries;
-    queries << EngineQuery("foo", 1);
-    queries << EngineQuery("bar", 2);
-    queries << EngineQuery("png", 3);
+    queries << EngineQuery("foo");
+    queries << EngineQuery("bar");
+    queries << EngineQuery("png");
 
     EngineQuery q(queries, EngineQuery::Phrase);
     QCOMPARE(query, q);
@@ -129,12 +133,12 @@ void QueryParserTest::testPhraseSearch_sameLimiter()
     EngineQuery query = parser.parseQuery("The \"song of Ice' and Fire");
 
     QVector<EngineQuery> queries;
-    queries << EngineQuery("the", EngineQuery::StartsWith, 1);
-    queries << EngineQuery("song", EngineQuery::StartsWith, 2);
-    queries << EngineQuery("of", EngineQuery::StartsWith, 3);
-    queries << EngineQuery("ice", EngineQuery::StartsWith, 4);
-    queries << EngineQuery("and", EngineQuery::StartsWith, 5);
-    queries << EngineQuery("fire", EngineQuery::StartsWith, 6);
+    queries << EngineQuery("the", EngineQuery::StartsWith);
+    queries << EngineQuery("song", EngineQuery::StartsWith);
+    queries << EngineQuery("of", EngineQuery::StartsWith);
+    queries << EngineQuery("ice", EngineQuery::StartsWith);
+    queries << EngineQuery("and", EngineQuery::StartsWith);
+    queries << EngineQuery("fire", EngineQuery::StartsWith);
 
     EngineQuery q(queries, EngineQuery::And);
 
@@ -148,14 +152,14 @@ void QueryParserTest::testPhraseSearchEmail()
     EngineQuery query = parser.parseQuery("The song@ice.com Fire");
 
     QVector<EngineQuery> phraseQueries;
-    phraseQueries << EngineQuery("song", 2);
-    phraseQueries << EngineQuery("ice", 3);
-    phraseQueries << EngineQuery("com", 4);
+    phraseQueries << EngineQuery("song");
+    phraseQueries << EngineQuery("ice");
+    phraseQueries << EngineQuery("com");
 
     QVector<EngineQuery> queries;
-    queries << EngineQuery("the", EngineQuery::StartsWith, 1);
+    queries << EngineQuery("the", EngineQuery::StartsWith);
     queries << EngineQuery(phraseQueries, EngineQuery::Phrase);
-    queries << EngineQuery("fire", EngineQuery::StartsWith, 5);
+    queries << EngineQuery("fire", EngineQuery::StartsWith);
 
     EngineQuery q(queries, EngineQuery::And);
     QCOMPARE(query, q);
@@ -166,7 +170,7 @@ void QueryParserTest::testAccentSearch()
     QueryParser parser;
 
     EngineQuery query = parser.parseQuery(QString::fromUtf8("s\xC3\xB3ng")); // sóng
-    EngineQuery q("song", EngineQuery::StartsWith, 1);
+    EngineQuery q("song", EngineQuery::StartsWith);
 
     QCOMPARE(query, q);
 }
@@ -178,15 +182,15 @@ void QueryParserTest::testUnderscoreSplitting()
     EngineQuery query = parser.parseQuery("The_Fire");
 
     QVector<EngineQuery> queries;
-    queries << EngineQuery("the", 1);
-    queries << EngineQuery("fire", 2);
+    queries << EngineQuery("the");
+    queries << EngineQuery("fire");
 
     EngineQuery q(queries, EngineQuery::Phrase);
 
     QCOMPARE(query, q);
 
     query = parser.parseQuery("_Fire");
-    q = EngineQuery("fire", EngineQuery::StartsWith, 1);
+    q = EngineQuery("fire", EngineQuery::StartsWith);
 
     QCOMPARE(query, q);
 }
@@ -200,8 +204,8 @@ void QueryParserTest::testAutoExpand()
         EngineQuery query = parser.parseQuery("the fire");
 
         QVector<EngineQuery> queries;
-        queries << EngineQuery("the", EngineQuery::Equal, 1);
-        queries << EngineQuery("fire", EngineQuery::Equal, 2);
+        queries << EngineQuery("the", EngineQuery::Equal);
+        queries << EngineQuery("fire", EngineQuery::Equal);
 
         EngineQuery q(queries, EngineQuery::And);
 
@@ -212,8 +216,8 @@ void QueryParserTest::testAutoExpand()
         EngineQuery query = parser.parseQuery("'the fire");
 
         QVector<EngineQuery> queries;
-        queries << EngineQuery("the", EngineQuery::Equal, 1);
-        queries << EngineQuery("fire", EngineQuery::Equal, 2);
+        queries << EngineQuery("the", EngineQuery::Equal);
+        queries << EngineQuery("fire", EngineQuery::Equal);
 
         EngineQuery q(queries, EngineQuery::And);
 
@@ -225,8 +229,8 @@ void QueryParserTest::testAutoExpand()
         EngineQuery query = parser.parseQuery("the fire");
 
         QVector<EngineQuery> queries;
-        queries << EngineQuery("the", EngineQuery::Equal, 1);
-        queries << EngineQuery("fire", EngineQuery::StartsWith, 2);
+        queries << EngineQuery("the", EngineQuery::Equal);
+        queries << EngineQuery("fire", EngineQuery::StartsWith);
 
         EngineQuery q(queries, EngineQuery::And);
 
@@ -241,8 +245,82 @@ void QueryParserTest::testUnicodeLowering()
 
     QueryParser parser;
     EngineQuery query = parser.parseQuery(str);
-    EngineQuery expected = EngineQuery("hedge", EngineQuery::StartsWith, 1);
+    EngineQuery expected = EngineQuery("hedge", EngineQuery::StartsWith);
     QCOMPARE(query, expected);
+}
+
+void QueryParserTest::testMixedDelimiters()
+{
+    QFETCH(QString, input);
+    QFETCH(EngineQuery, expectedQuery);
+    QFETCH(QString, failureReason);
+
+    QueryParser parser;
+    parser.setAutoExapandSize(0);
+    EngineQuery query = parser.parseQuery(input);
+    if (!failureReason.isEmpty()) {
+        QEXPECT_FAIL("", qPrintable(failureReason), Continue);
+    }
+    QCOMPARE(query, expectedQuery);
+}
+
+void QueryParserTest::testMixedDelimiters_data()
+{
+    QTest::addColumn<QString>("input");
+    QTest::addColumn<EngineQuery>("expectedQuery");
+    QTest::addColumn<QString>("failureReason");
+
+    auto addRow = [](const QString& input, const EngineQuery& query,
+                     const QString& failureReason)
+        { QTest::addRow("%s", qPrintable(input)) << input << query << failureReason; };
+
+    addRow("Term", {"term"}, "");
+    addRow("No phrase", { {{"no"}, {"phrase"}}, EngineQuery::And}, "");
+    addRow("Underscore_phrase", { {{"underscore"}, {"phrase"}}, EngineQuery::Phrase}, "");
+    addRow("underscore_dot.phrase", { {{"underscore"}, {"dot"}, {"phrase"}}, EngineQuery::Phrase}, "");
+    addRow("\'Quoted phrase\'", { {{"quoted"}, {"phrase"}}, EngineQuery::Phrase}, "End quote as last char");
+    addRow("\'Quoted phrase\' anded tail", {{
+	    {{{"quoted"}, {"phrase"}}, EngineQuery::Phrase},
+	    {"anded"}, {"tail"},
+        }, EngineQuery::And}, "");
+    addRow("\'Long quoted phrase\'", { {{"long"}, {"quoted"}, {"phrase"}}, EngineQuery::Phrase}, "End quote as last char");
+    addRow("Anded dot.phrase", { {
+            {"anded"},
+            {{{"dot"}, {"phrase"}}, EngineQuery::Phrase},
+        }, EngineQuery::And}, "");
+    addRow("Under_score dot.phrase", {{
+            {{{"under"}, {"score"}}, EngineQuery::Phrase},
+            {{{"dot"}, {"phrase"}}, EngineQuery::Phrase},
+        }, EngineQuery::And}, "");
+    addRow("\'One quoted\' Other.withDot", {{
+            {{{"one"}, {"quoted"}}, EngineQuery::Phrase},
+            {{{"other"}, {"withdot"}}, EngineQuery::Phrase},
+        }, EngineQuery::And}, "");
+    addRow("\'One quoted with.dot\'", {{
+            {"one"}, {"quoted"}, {"with"}, {"dot"}
+        }, EngineQuery::Phrase}, "End quote as last char");
+    addRow("\'Quoted_underscore and.dot\'", {{
+            {"quoted"}, {"underscore"}, {"and"}, {"dot"}
+        }, EngineQuery::Phrase}, "End quote as last char");
+    addRow("Underscore_andTrailingDot_.", {{
+            {"underscore"}, {"andtrailingdot"}
+        }, EngineQuery::Phrase}, "");
+    addRow("\'TrailingUnderscore_ andDot.\'", {{
+            {"trailingunderscore"}, {"anddot"}
+        }, EngineQuery::Phrase}, "End quote as last char");
+    addRow("NoPhrase Under_score \'Quoted Phrase\'", {{
+            {"nophrase"},
+            {{{"under"}, {"score"}}, EngineQuery::Phrase},
+            {{{"quoted"}, {"phrase"}}, EngineQuery::Phrase},
+        }, EngineQuery::And}, "End quote as last char");
+    addRow("NoPhrase \'Quoted Phrase\' Under_score", {{
+            {"nophrase"},
+            {{{"quoted"}, {"phrase"}}, EngineQuery::Phrase},
+            {{{"under"}, {"score"}}, EngineQuery::Phrase},
+        }, EngineQuery::And}, "");
+    addRow("\'DegeneratedQuotedPhrase\' Anded text", {
+            {{"degeneratedquotedphrase"}, {"anded"}, {"text"}}, EngineQuery::And
+        }, "Single term in quotes is no phrase");
 }
 
 QTEST_MAIN(QueryParserTest)
