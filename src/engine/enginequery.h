@@ -78,25 +78,43 @@ private:
     QVector<EngineQuery> m_subQueries;
 };
 
-} // namespace Baloo
-
 inline QDebug operator<<(QDebug d, const Baloo::EngineQuery& q)
 {
     QDebugStateSaver state(d);
     d.setAutoInsertSpaces(false);
 
     using Operation = Baloo::EngineQuery::Operation;
-    if (q.op() == Baloo::EngineQuery::And) {
-        d << "[AND " << q.subQueries() << "]";
-    } else if (q.op() == Baloo::EngineQuery::Or) {
-        d << "[OR " << q.subQueries() << "]";
-    } else if (q.op() == Baloo::EngineQuery::Phrase) {
-        d << "[PHRASE " << q.subQueries() << "]";
-    } else {
+    if ((q.op() == Operation::Equal) || q.op() == Operation::StartsWith) {
         Q_ASSERT(q.subQueries().isEmpty());
         return d << q.term() << (q.op() == Operation::StartsWith ? ".." : "");
     }
-    return d;
+
+    if (q.op() == Operation::And) {
+        d << "[AND";
+    } else if (q.op() == Operation::Or) {
+        d << "[OR";
+    } else if (q.op() == Operation::Phrase) {
+        d << "[PHRASE";
+    }
+    for (auto &sq : q.subQueries()) {
+        d << " " << sq;
+    }
+    return d << "]";
 }
 
+/**
+ * Helper for QTest
+ * \sa QTest::toString
+ *
+ * @since: 5.70
+ */
+inline char *toString(const EngineQuery& query)
+{
+    QString buffer;
+    QDebug stream(&buffer);
+    stream << query;
+    return qstrdup(buffer.toUtf8().constData());
+}
+
+} // namespace Baloo
 #endif
