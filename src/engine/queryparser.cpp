@@ -31,17 +31,6 @@ QueryParser::QueryParser()
 {
 }
 
-namespace {
-    bool containsSpace(const QString& string) {
-        for (const QChar& ch : string) {
-            if (ch.isSpace())
-                return true;
-        }
-
-        return false;
-    }
-}
-
 EngineQuery QueryParser::parseQuery(const QString& text_, const QString& prefix)
 {
     Q_ASSERT(!text_.isEmpty());
@@ -87,7 +76,9 @@ EngineQuery QueryParser::parseQuery(const QString& text_, const QString& prefix)
                         inSingleQuotes = true;
                     }
                 }
-                else if (!containsSpace(delim)) {
+                else if (std::none_of(delim.constBegin(), delim.constEnd(),
+                    [](const QChar& ch) { return ch.isSpace();
+                })) {
                     if (phraseQueries.isEmpty() && !queries.isEmpty()) {
                         EngineQuery q = queries.takeLast();
                         q.setOp(EngineQuery::Equal);
