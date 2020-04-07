@@ -43,6 +43,7 @@
 #include <KFileMetaData/Types>
 
 #include <algorithm>
+#include <array>
 #include <tuple>
 
 namespace Baloo {
