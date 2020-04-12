@@ -68,7 +68,7 @@ FileIndexScheduler::FileIndexScheduler(Database* db, FileIndexerConfig* config, 
     m_contentIndexer->setAutoDelete(false);
     connect(m_contentIndexer, &FileContentIndexer::done, this,
             &FileIndexScheduler::runnerFinished);
-    connect(m_contentIndexer, &FileContentIndexer::newBatchTime, &m_timeEstimator,
+    connect(m_contentIndexer, &FileContentIndexer::committedBatch, &m_timeEstimator,
             &TimeEstimator::handleNewBatchTime);
 
     QDBusConnection::sessionBus().registerObject(QStringLiteral("/scheduler"),
