@@ -107,7 +107,7 @@ void FileContentIndexer::run()
         } else {
             auto elapsed = timer.elapsed();
             QMetaObject::invokeMethod(this,
-                [this, elapsed, batchSize] { newBatchTime(elapsed, batchSize); },
+                [this, elapsed, batchSize] { committedBatch(elapsed, batchSize); },
                 Qt::QueuedConnection);
         }
     }

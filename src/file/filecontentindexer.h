@@ -61,9 +61,9 @@ public Q_SLOTS:
 Q_SIGNALS:
     Q_SCRIPTABLE void startedIndexingFile(const QString& filePath);
     Q_SCRIPTABLE void finishedIndexingFile(const QString& filePath);
+    Q_SCRIPTABLE void committedBatch(uint time, uint batchSize);
 
     void done();
-    void newBatchTime(uint time, uint batchSize);
 
 private Q_SLOTS:
     void monitorClosed(const QString& service);
