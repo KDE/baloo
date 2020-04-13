@@ -86,6 +86,36 @@ bool PhraseAndIterator::checkIfPositionsMatch()
     return !vec.isEmpty();
 }
 
+quint64 PhraseAndIterator::skipTo(quint64 id)
+{
+    if (m_iterators.isEmpty()) {
+        m_docId = 0;
+        return 0;
+    }
+
+    while (true) {
+        quint64 lower_bound = id;
+        for (PostingIterator* iter : qAsConst(m_iterators)) {
+            lower_bound = iter->skipTo(lower_bound);
+
+            if (lower_bound == 0) {
+                m_docId = 0;
+                return 0;
+            }
+        }
+
+        if (lower_bound == id) {
+            if (checkIfPositionsMatch()) {
+                m_docId = lower_bound;
+                return lower_bound;
+            } else {
+                lower_bound = m_iterators[0]->next();
+            }
+        }
+        id = lower_bound;
+    }
+}
+
 quint64 PhraseAndIterator::next()
 {
     if (m_iterators.isEmpty()) {
@@ -93,30 +123,9 @@ quint64 PhraseAndIterator::next()
         return 0;
     }
 
-    if (m_iterators[0]->next() == 0) {
-        m_docId = 0;
-        return 0;
-    }
+    m_docId = m_iterators[0]->next();
+    m_docId = skipTo(m_docId);
 
-    m_docId = m_iterators[0]->docId();
-
-    for (int i = 1; i < m_iterators.size(); i++) {
-        PostingIterator* iter = m_iterators[i];
-        if (iter->docId() == 0 && iter->next() == 0) {
-            m_docId = 0;
-            return 0;
-        }
-
-        iter->skipTo(m_docId);
-
-        if (m_docId != iter->docId()) {
-            return next();
-        }
-    }
-
-    if (checkIfPositionsMatch())
-        return m_docId;
-    else
-        return next();
+    return m_docId;
 }
 

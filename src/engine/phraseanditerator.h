@@ -36,6 +36,7 @@ public:
 
     quint64 next() override;
     quint64 docId() const override;
+    quint64 skipTo(quint64 docId) override;
 
 private:
     QVector<VectorPositionInfoIterator*> m_iterators;
