@@ -28,8 +28,12 @@ PostingIterator::~PostingIterator()
 
 quint64 PostingIterator::skipTo(quint64 id)
 {
-    while (docId() && docId() < id) {
-        next();
+    quint64 currentId = docId();
+    while (currentId < id) {
+        currentId = next();
+        if (!currentId) {
+            break;
+        }
     }
-    return docId();
+    return currentId;
 }
