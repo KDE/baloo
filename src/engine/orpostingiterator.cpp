@@ -57,38 +57,66 @@ quint64 OrPostingIterator::docId() const
     return m_docId;
 }
 
-quint64 OrPostingIterator::next()
+quint64 OrPostingIterator::skipTo(quint64 id)
 {
-    m_docId = m_nextId;
-    m_nextId = 0;
-
-    if (!m_docId) {
+    if (m_docId == id) {
+        return m_docId;
+    }
+    if (m_nextId == 0) {
+        m_docId = m_nextId;
         return 0;
     }
 
-    // advance all iterators which point to the lowest docId
-    for (auto it = m_iterators.begin(); it != m_iterators.end(); ) {
-        PostingIterator* iter = *it;
-
-        auto docId = iter->docId();
-        if (docId <= m_docId) {
-            docId = iter->next();
-            // remove element if iterator has reached the end
-            if (docId == 0) {
-                delete iter;
-                *it = nullptr;
-                it = m_iterators.erase(it);
-                continue;
+    if (id > m_nextId) {
+        // Fast forward - move all iterators to the lowest position
+        // greater or equal to id
+        m_nextId = 0;
+        for (PostingIterator* iter : qAsConst(m_iterators)) {
+            auto docId = iter->skipTo(id);
+            if (docId > 0) {
+                if (docId < m_nextId || !m_nextId) {
+                    m_nextId = docId;
+                }
             }
         }
-
-        // check if the docId is the new lowest docId
-        if ((docId < m_nextId) || (m_nextId == 0)) {
-            m_nextId = docId;
+        if (m_nextId == 0) {
+            m_docId = m_nextId;
+            return 0;
         }
-
-        it++;
     }
 
+    m_docId = m_nextId;
+    m_nextId = 0;
+
+    // advance all iterators which point to the lowest docId
+    for (PostingIterator*& iter : m_iterators) {
+
+        auto docId = iter->docId();
+        if (docId == m_docId) {
+            docId = iter->next();
+        }
+
+        if (docId == 0) {
+            // remove element if iterator has reached the end
+            delete iter;
+            iter = nullptr;
+        } else {
+
+            // check if the docId is the new lowest docId
+            if (docId < m_nextId || !m_nextId) {
+                m_nextId = docId;
+            }
+        }
+    }
+    auto tail = std::remove_if(m_iterators.begin(), m_iterators.end(),
+        [](const PostingIterator* it) { return it == nullptr; });
+    m_iterators.erase(tail, m_iterators.end());
+
+    return m_docId;
+}
+
+quint64 OrPostingIterator::next()
+{
+    m_docId = skipTo(m_nextId);
     return m_docId;
 }
