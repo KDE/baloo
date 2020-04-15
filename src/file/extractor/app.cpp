@@ -36,7 +36,6 @@
 #include <QDBusConnection>
 
 #include <KFileMetaData/Extractor>
-#include <KFileMetaData/PropertyInfo>
 #include <KFileMetaData/MimeUtils>
 
 #include <unistd.h> //for STDIN_FILENO
