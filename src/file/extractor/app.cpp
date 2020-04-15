@@ -93,6 +93,9 @@ void App::slotNewInput()
 
     Q_ASSERT(m_tr == nullptr);
 
+    if (!m_isBusy) {
+        m_idleTime->catchNextResumeEvent();
+    }
     m_tr = new Transaction(db, Transaction::ReadWrite);
     // FIXME: The transaction is open for way too long. We should just open it for when we're
     //        committing the data not during the extraction.
