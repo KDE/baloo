@@ -55,7 +55,7 @@ private Q_SLOTS:
     void processNextFile();
 
 private:
-    void index(Transaction* tr, const QString& filePath, quint64 id);
+    bool index(Transaction* tr, const QString& filePath, quint64 id);
 
     QMimeDatabase m_mimeDb;
 

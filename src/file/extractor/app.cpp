@@ -55,7 +55,7 @@ App::App(QObject* parent)
     m_input.open(STDIN_FILENO, QIODevice::ReadOnly | QIODevice::Unbuffered );
     m_inputStream.setByteOrder(QDataStream::BigEndian);
 
-    static int s_idleTimeout = 1000 * 60 * 2; // 2 min
+    static int s_idleTimeout = 1000 * 60 * 1; // 1 min
     m_idleTime = KIdleTime::instance();
     m_idleTime->addIdleTimeout(s_idleTimeout);
     connect(m_idleTime, &KIdleTime::resumingFromIdle, this, [this]() {
@@ -96,11 +96,13 @@ void App::slotNewInput()
     if (!m_isBusy) {
         m_idleTime->catchNextResumeEvent();
     }
-    m_tr = new Transaction(db, Transaction::ReadWrite);
-    // FIXME: The transaction is open for way too long. We should just open it for when we're
-    //        committing the data not during the extraction.
 
-    QTimer::singleShot(0, this, &App::processNextFile);
+    QTimer::singleShot((m_isBusy ? 500 : 0), this, [this, db] () {
+        // FIXME: The transaction is open for way too long. We should just open it for when we're
+        //        committing the data not during the extraction.
+        m_tr = new Transaction(db, Transaction::ReadWrite);
+        processNextFile();
+    });
 
     /**
      * A Single Batch seems to be triggering the SocketNotifier more than once
@@ -112,8 +114,6 @@ void App::slotNewInput()
 void App::processNextFile()
 {
     if (!m_ids.isEmpty()) {
-        int delay = m_isBusy ? 10 : 0;
-
         quint64 id = m_ids.takeFirst();
 
         QString url = QFile::decodeName(m_tr->documentUrl(id));
@@ -124,10 +124,14 @@ void App::processNextFile()
         }
 
         m_outputStream << "S " << url << '\n';
-        index(m_tr, url, id);
+        bool indexed = index(m_tr, url, id);
         m_outputStream << "F " << url << '\n';
-        m_updatedFiles << url;
         m_outputStream.flush();
+
+        if (indexed) {
+            m_updatedFiles << url;
+        }
+        int delay = (m_isBusy && indexed) ? 10 : 0;
         QTimer::singleShot(delay, this, &App::processNextFile);
 
     } else {
@@ -159,14 +163,14 @@ void App::processNextFile()
     }
 }
 
-void App::index(Transaction* tr, const QString& url, quint64 id)
+bool App::index(Transaction* tr, const QString& url, quint64 id)
 {
     if (!m_config.shouldBeIndexed(url)) {
         // This apparently happens when the config has changed after the document
         // was added to the content indexing db
         qCWarning(BALOO) << "Found" << url << "in the ContentIndexingDB, although it should be skipped";
         tr->removeDocument(id);
-        return;
+        return false;
     }
 
     // The initial BasicIndexingJob run has been supplied with the file extension
@@ -175,7 +179,7 @@ void App::index(Transaction* tr, const QString& url, quint64 id)
     if (!m_config.shouldMimeTypeBeIndexed(mimetype)) {
         qCDebug(BALOO) << "Skipping" << url << "- mimetype:" << mimetype;
         tr->removePhaseOne(id);
-        return;
+        return false;
     }
 
     // HACK: Also, we're ignoring ttext files which are greater tha 10 Mb as we
@@ -186,7 +190,7 @@ void App::index(Transaction* tr, const QString& url, quint64 id)
         if (fileInfo.size() >= 10 * 1024 * 1024) {
             qCDebug(BALOO) << "Skipping large " << url << "- mimetype:" << mimetype;
             tr->removePhaseOne(id);
-            return;
+            return false;
         }
     }
     qCDebug(BALOO) << "Indexing" << id << url << mimetype;
@@ -221,4 +225,5 @@ void App::index(Transaction* tr, const QString& url, quint64 id)
         tr->replaceDocument(result.document(), DocumentTerms | DocumentData);
     }
     tr->removePhaseOne(doc.id());
+    return true;
 }
