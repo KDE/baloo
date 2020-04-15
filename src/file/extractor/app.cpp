@@ -37,6 +37,7 @@
 
 #include <KFileMetaData/Extractor>
 #include <KFileMetaData/MimeUtils>
+#include <KIdleTime>
 
 #include <unistd.h> //for STDIN_FILENO
 #include <iostream>
@@ -53,6 +54,18 @@ App::App(QObject* parent)
 {
     m_input.open(STDIN_FILENO, QIODevice::ReadOnly | QIODevice::Unbuffered );
     m_inputStream.setByteOrder(QDataStream::BigEndian);
+
+    static int s_idleTimeout = 1000 * 60 * 2; // 2 min
+    m_idleTime = KIdleTime::instance();
+    m_idleTime->addIdleTimeout(s_idleTimeout);
+    connect(m_idleTime, &KIdleTime::resumingFromIdle, this, [this]() {
+        qCInfo(BALOO) << "Busy, paced indexing";
+        m_isBusy = true;
+    });
+    connect(m_idleTime, QOverload<int>::of(&KIdleTime::timeoutReached), this, [this](int /*identifier*/) {
+        qCInfo(BALOO) << "Not busy, fast indexing";
+        m_isBusy = false;
+    });
 
     connect(&m_notifyNewData, &QSocketNotifier::activated, this, &App::slotNewInput);
 }
@@ -96,7 +109,7 @@ void App::slotNewInput()
 void App::processNextFile()
 {
     if (!m_ids.isEmpty()) {
-        int delay = m_idleMonitor.isIdle() ? 0 : 10;
+        int delay = m_isBusy ? 10 : 0;
 
         quint64 id = m_ids.takeFirst();
 

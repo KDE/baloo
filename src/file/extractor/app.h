@@ -36,7 +36,8 @@
 
 #include "database.h"
 #include "../fileindexerconfig.h"
-#include "idlestatemonitor.h"
+
+class KIdleTime;
 
 namespace Baloo {
 
@@ -67,7 +68,8 @@ private:
     QDataStream m_inputStream;
     QTextStream m_outputStream;
 
-    IdleStateMonitor m_idleMonitor;
+    KIdleTime* m_idleTime = nullptr;
+    bool m_isBusy = true;
 
     QVector<quint64> m_ids;
     QStringList m_updatedFiles;

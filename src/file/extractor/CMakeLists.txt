@@ -5,7 +5,6 @@ set(EXTRACTOR_SRCS
   main.cpp
   app.cpp
   result.cpp
-  idlestatemonitor.cpp
   ../priority.cpp
   ../basicindexingjob.cpp
   ../fileindexerconfig.cpp
