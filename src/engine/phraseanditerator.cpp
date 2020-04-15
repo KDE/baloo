@@ -45,45 +45,47 @@ quint64 PhraseAndIterator::docId() const
 
 bool PhraseAndIterator::checkIfPositionsMatch()
 {
-    QVector< QVector<uint> > positionList;
-    positionList.reserve(m_iterators.size());
-    // All the iterators should have the same value
-    for (int i = 0; i < m_iterators.size(); i++) {
-        auto* iter = m_iterators[i];
-        Q_ASSERT(iter->docId() == m_docId);
+    using Offset = decltype(m_iterators[0]->positions().size());
+    using Position = std::remove_reference<decltype(m_iterators[0]->positions()[0])>::type;
 
-        QVector<uint> pi = iter->positions();
-        for (int j = 0; j < pi.size(); j++) {
-            pi[j] -= i;
-        }
+    std::vector<Offset> offsets;
+    offsets.resize(m_iterators.size());
 
-        positionList << pi;
-    }
+    const auto firstPositions = m_iterators[0]->positions();
+    Position lower_bound = 0;
 
-    // Intersect all these positions
-    QVector<uint> vec = positionList[0];
-    for (int l = 1; l < positionList.size(); l++) {
-        QVector<uint> newVec = positionList[l];
+    while (offsets[0] < firstPositions.size()) {
 
-        int i = 0;
-        int j = 0;
-        QVector<uint> finalVec;
-        while (i < vec.size() && j < newVec.size()) {
-            if (vec[i] == newVec[j]) {
-                finalVec << vec[i];
-                i++;
-                j++;
-            } else if (vec[i] < newVec[j]) {
-                i++;
-            } else {
-                j++;
+        for (int i = 0; i < m_iterators.size(); i++) {
+            const auto positions = m_iterators[i]->positions();
+            Offset off = offsets[i];
+
+            for (; off < positions.size(); ++off) {
+                Position pos = positions[off];
+                // Adjust the position. We have a match iff
+                // term0 is at pos N, term1 at N+1, term2 at N+2 ...
+                if (pos >= (lower_bound + i)) {
+                    lower_bound = pos - i;
+                    break;
+                }
             }
+            if (off >= positions.size()) {
+                return false;
+            }
+            offsets[i] = off;
         }
 
-        vec = finalVec;
+        if (lower_bound == firstPositions[offsets[0]]) {
+            // lower_bound has not changed, i.e. all offsets are aligned
+            for (int i = 0; i < m_iterators.size(); i++) {
+                auto positions = m_iterators[i]->positions();
+            }
+            return true;
+        } else {
+            offsets[0]++;
+        }
     }
-
-    return !vec.isEmpty();
+    return false;
 }
 
 quint64 PhraseAndIterator::skipTo(quint64 id)
