@@ -384,6 +384,7 @@ EngineQuery SearchStore::constructEqualsQuery(const QByteArray& prefix, const QS
     const QByteArrayList terms = TermGenerator::termList(value);
 
     QVector<EngineQuery> queries;
+    queries.reserve(terms.size());
     for (const QByteArray& term : terms) {
         QByteArray arr = prefix + term;
         // FIXME - compatibility hack, to find truncated terms with old
