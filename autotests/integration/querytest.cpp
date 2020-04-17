@@ -71,6 +71,7 @@ private Q_SLOTS:
         m_id3 = touchFile(dir->path() + "/file3");
         m_id4 = touchFile(dir->path() + "/file4");
         m_id7 = touchFile(dir->path() + "/file7_lazy");
+        m_id8 = touchFile(dir->path() + "/file8_dog");
 
         m_id5 = touchFile(dir->path() + "/tagFile1");
         m_id6 = touchFile(dir->path() + "/tagFile2");
@@ -117,11 +118,24 @@ private:
         TermGenerator tg(doc);
         tg.indexText(text);
         tg.indexFileNameText(fileName);
+        tg.indexFileNameText(fileName, QByteArrayLiteral("F"));
         doc.setId(id);
         doc.setMTime(1);
         doc.setCTime(2);
 
         tr->addDocument(doc);
+    }
+
+    void renameDocument(Transaction* tr, quint64 id, const QString& newName)
+    {
+        Document doc;
+
+        TermGenerator tg(doc);
+        tg.indexFileNameText(newName);
+        tg.indexFileNameText(newName, QByteArrayLiteral("F"));
+        doc.setId(id);
+
+        tr->replaceDocument(doc, FileNameTerms);
     }
 
     void insertTagDocuments();
@@ -152,6 +166,7 @@ private:
     quint64 m_id5;
     quint64 m_id6;
     quint64 m_id7;
+    quint64 m_id8;
 };
 
 
@@ -160,9 +175,12 @@ void QueryTest::insertDocuments()
     Transaction tr(db, Transaction::ReadWrite);
     addDocument(&tr, QStringLiteral("The quick brown fox jumped over the crazy dog"), m_id1, dir->path() + "/file1.txt");
     addDocument(&tr, QStringLiteral("The quick brown fox jumped over the lazy dog"), m_id7, dir->path() + "/file7_lazy");
+    addDocument(&tr, QStringLiteral("A quick brown fox ran around a easy dog"), m_id8, dir->path() + "/file8_dog");
     addDocument(&tr, QStringLiteral("The night is dark and full of terror"), m_id2, dir->path() + "/file2");
     addDocument(&tr, QStringLiteral("Don't feel sorry for yourself. Only assholes do that"), m_id3, dir->path() + "/file3");
     addDocument(&tr, QStringLiteral("Only the dead stay 17 forever. crazy"), m_id4, dir->path() + "/file4");
+
+    renameDocument(&tr, m_id8, QStringLiteral("file8_easy"));
     tr.commit();
 }
 
@@ -230,11 +248,12 @@ void QueryTest::testTermPhrase_data()
 
     addRow("Crazy dog", {"crazy", "dog"}, SortedIdVector{ m_id1 }, "");
     addRow("Lazy dog",  {"lazy", "dog"},  SortedIdVector{ m_id7 }, "");
-    addRow("Brown fox", {"brown", "fox"}, SortedIdVector{ m_id1, m_id7 }, "");
+    addRow("Brown fox", {"brown", "fox"}, SortedIdVector{ m_id1, m_id7, m_id8 }, "");
     addRow("Crazy dog file 1",  {"file1"},         SortedIdVector{ m_id1 }, "");
     addRow("Crazy dog file 2",  {"file1", "txt"},  SortedIdVector{ m_id1 }, "");
     addRow("Lazy dog file 1",   {"file7"},         SortedIdVector{ m_id7 }, "");
     addRow("Lazy dog file 2",   {"file7", "lazy"}, SortedIdVector{ m_id7 }, "Content shadows filename");
+    addRow("Lazy dog file 3",   {"dog"},           SortedIdVector{ m_id1, m_id7, m_id8 }, "Filename shadows content");
 }
 
 void QueryTest::testTermPhrase()
