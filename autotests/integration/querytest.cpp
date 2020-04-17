@@ -239,27 +239,31 @@ void QueryTest::testTermOr()
 void QueryTest::testTermPhrase_data()
 {
     QTest::addColumn<QByteArrayList>("phrase");
-    QTest::addColumn<QVector<quint64>>("matchIds");
+    QTest::addColumn<QVector<quint64>>("contentMatches");
+    QTest::addColumn<QVector<quint64>>("filenameMatches");
     QTest::addColumn<QString>("failReason");
 
     auto addRow = [](const char* name, const QByteArrayList& phrase,
-                     const QVector<quint64> matchIds, const QString& failureReason)
-        { QTest::addRow("%s", name) << phrase << matchIds << failureReason; };
+                     const QVector<quint64> contentMatches,
+                     const QVector<quint64> filenameMatches,
+                     const QString& failureReason)
+        { QTest::addRow("%s", name) << phrase << contentMatches << filenameMatches << failureReason; };
 
-    addRow("Crazy dog", {"crazy", "dog"}, SortedIdVector{ m_id1 }, "");
-    addRow("Lazy dog",  {"lazy", "dog"},  SortedIdVector{ m_id7 }, "");
-    addRow("Brown fox", {"brown", "fox"}, SortedIdVector{ m_id1, m_id7, m_id8 }, "");
-    addRow("Crazy dog file 1",  {"file1"},         SortedIdVector{ m_id1 }, "");
-    addRow("Crazy dog file 2",  {"file1", "txt"},  SortedIdVector{ m_id1 }, "");
-    addRow("Lazy dog file 1",   {"file7"},         SortedIdVector{ m_id7 }, "");
-    addRow("Lazy dog file 2",   {"file7", "lazy"}, SortedIdVector{ m_id7 }, "Content shadows filename");
-    addRow("Lazy dog file 3",   {"dog"},           SortedIdVector{ m_id1, m_id7, m_id8 }, "Filename shadows content");
+    addRow("Crazy dog",        {"crazy", "dog"},  SortedIdVector{ m_id1 }, {}, "");
+    addRow("Lazy dog",         {"lazy", "dog"},   SortedIdVector{ m_id7 }, {}, "");
+    addRow("Brown fox",        {"brown", "fox"},  SortedIdVector{ m_id1, m_id7, m_id8 }, {}, "");
+    addRow("Crazy dog file 1", {"file1"},         SortedIdVector{ m_id1 }, SortedIdVector{ m_id1 }, "");
+    addRow("Crazy dog file 2", {"file1", "txt"},  SortedIdVector{ m_id1 }, SortedIdVector{ m_id1 }, "");
+    addRow("Lazy dog file 1",  {"file7"},         SortedIdVector{ m_id7 }, SortedIdVector{ m_id7 }, "");
+    addRow("Lazy dog file 2",  {"file7", "lazy"}, SortedIdVector{ m_id7 }, SortedIdVector{ m_id7 }, "Content shadows filename");
+    addRow("Lazy dog file 3",  {"dog"},           SortedIdVector{ m_id1, m_id7, m_id8 }, SortedIdVector{ m_id8 }, "Filename shadows content");
 }
 
 void QueryTest::testTermPhrase()
 {
     QFETCH(QByteArrayList, phrase);
-    QFETCH(QVector<quint64>, matchIds);
+    QFETCH(QVector<quint64>, contentMatches);
+    QFETCH(QVector<quint64>, filenameMatches);
     QFETCH(QString, failReason);
 
     QVector<EngineQuery> queries;
@@ -272,7 +276,7 @@ void QueryTest::testTermPhrase()
     if (!failReason.isEmpty()) {
         QEXPECT_FAIL("", qPrintable(failReason), Continue);
     }
-    QCOMPARE(tr.exec(q), matchIds);
+    QCOMPARE(tr.exec(q), contentMatches);
 }
 
 void QueryTest::testTagTermAnd_data()
