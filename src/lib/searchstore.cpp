@@ -309,6 +309,10 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
             Q_ASSERT(0);
             return nullptr;
         }
+    } else if (property == "") {
+        Term cterm(QStringLiteral("content"), term.value(), term.comparator());
+        Term fterm(QStringLiteral("filename"), term.value(), term.comparator());
+        return constructQuery(tr, Term{cterm, Term::Operation::Or, fterm});
     }
 
     QByteArray prefix;

@@ -98,8 +98,9 @@ void TermGenerator::indexText(const QString& text, const QByteArray& prefix)
     m_position++;
 }
 
-void TermGenerator::indexFileNameText(const QString& text, const QByteArray& prefix)
+void TermGenerator::indexFileNameText(const QString& text)
 {
+    const QByteArray prefix = QByteArrayLiteral("F");
     const QByteArrayList terms = termList(text);
     if (terms.size() == 1) {
         QByteArray finalArr = prefix + terms[0];
@@ -113,11 +114,6 @@ void TermGenerator::indexFileNameText(const QString& text, const QByteArray& pre
         m_position++;
     }
     m_position++;
-}
-
-void TermGenerator::indexFileNameText(const QString& text)
-{
-    indexFileNameText(text, QByteArray());
 }
 
 void TermGenerator::indexXattrText(const QString& text, const QByteArray& prefix)

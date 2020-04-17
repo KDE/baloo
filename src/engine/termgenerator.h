@@ -42,7 +42,6 @@ public:
 
     void indexXattrText(const QString& text, const QByteArray& prefix);
     void indexFileNameText(const QString& text);
-    void indexFileNameText(const QString& text, const QByteArray& prefix);
 
     void setPosition(int position);
     int position() const;

@@ -192,7 +192,6 @@ bool BasicIndexingJob::index()
 
     TermGenerator tg(doc);
     tg.indexFileNameText(fileName);
-    tg.indexFileNameText(fileName, QByteArray("F"));
     tg.indexText(m_mimetype, QByteArray("M"));
 
     // (Content) Modification time, Metadata (e.g. XAttr) change time
