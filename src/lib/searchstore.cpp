@@ -80,7 +80,8 @@ struct InternalProperty {
     const char* prefix;
     QVariant::Type valueType;
 };
-constexpr std::array<InternalProperty, 6> internalProperties {{
+constexpr std::array<InternalProperty, 7> internalProperties {{
+    { "content",     "",     QVariant::String },
     { "filename",    "F",    QVariant::String },
     { "mimetype",    "M",    QVariant::String },
     { "rating",      "R",    QVariant::Int    },
@@ -314,7 +315,7 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
     QVariant::Type valueType = QVariant::String;
     if (!property.isEmpty()) {
         std::tie(prefix, valueType) = propertyInfo(property);
-        if (prefix.isEmpty()) {
+        if (valueType == QVariant::Invalid) {
             return nullptr;
         }
     }
