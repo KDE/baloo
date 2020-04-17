@@ -359,7 +359,7 @@ PostingIterator* Transaction::postingIterator(const EngineQuery& query) const
         vec.reserve(subQueries.size());
         for (const EngineQuery& q : subQueries) {
             if (!q.leaf()) {
-                qCDebug(ENGINE) << "Transaction::toPostingIterator" << "Phrase queries must contain leaf queries";
+                qCDebug(ENGINE) << "Transaction::toPostingIterator" << "Phrase subqueries must be leafs";
                 continue;
             }
             vec << positionDb.iter(q.term());
