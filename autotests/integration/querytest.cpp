@@ -118,7 +118,6 @@ private:
         TermGenerator tg(doc);
         tg.indexText(text);
         tg.indexFileNameText(fileName);
-        tg.indexFileNameText(fileName, QByteArrayLiteral("F"));
         doc.setId(id);
         doc.setMTime(1);
         doc.setCTime(2);
@@ -132,7 +131,6 @@ private:
 
         TermGenerator tg(doc);
         tg.indexFileNameText(newName);
-        tg.indexFileNameText(newName, QByteArrayLiteral("F"));
         doc.setId(id);
 
         tr->replaceDocument(doc, FileNameTerms);
@@ -249,14 +247,19 @@ void QueryTest::testTermPhrase_data()
                      const QString& failureReason)
         { QTest::addRow("%s", name) << phrase << contentMatches << filenameMatches << failureReason; };
 
+    // Content matches
     addRow("Crazy dog",        {"crazy", "dog"},  SortedIdVector{ m_id1 }, {}, "");
     addRow("Lazy dog",         {"lazy", "dog"},   SortedIdVector{ m_id7 }, {}, "");
     addRow("Brown fox",        {"brown", "fox"},  SortedIdVector{ m_id1, m_id7, m_id8 }, {}, "");
-    addRow("Crazy dog file 1", {"file1"},         SortedIdVector{ m_id1 }, SortedIdVector{ m_id1 }, "");
-    addRow("Crazy dog file 2", {"file1", "txt"},  SortedIdVector{ m_id1 }, SortedIdVector{ m_id1 }, "");
-    addRow("Lazy dog file 1",  {"file7"},         SortedIdVector{ m_id7 }, SortedIdVector{ m_id7 }, "");
-    addRow("Lazy dog file 2",  {"file7", "lazy"}, SortedIdVector{ m_id7 }, SortedIdVector{ m_id7 }, "Content shadows filename");
-    addRow("Lazy dog file 3",  {"dog"},           SortedIdVector{ m_id1, m_id7, m_id8 }, SortedIdVector{ m_id8 }, "Filename shadows content");
+    addRow("Dog",              {"dog"},           SortedIdVector{ m_id1, m_id7, m_id8 }, {}, "");
+    // Filename matches
+    addRow("Crazy dog file 1", {"file1"},         {}, SortedIdVector{ m_id1 }, "");
+    addRow("Crazy dog file 2", {"file1", "txt"},  {}, SortedIdVector{ m_id1 }, "");
+    addRow("Lazy dog file 1",  {"file7"},         {}, SortedIdVector{ m_id7 }, "");
+    addRow("Lazy dog file 2",  {"file7", "lazy"}, {}, SortedIdVector{ m_id7 }, "");
+    // Matches content and filename
+    addRow("Lazy both",        {"lazy"},          { m_id7 }, { m_id7 }, "");
+    addRow("Easy both",        {"easy"},          { m_id8 }, { m_id8 }, "");
 }
 
 void QueryTest::testTermPhrase()
@@ -277,6 +280,15 @@ void QueryTest::testTermPhrase()
         QEXPECT_FAIL("", qPrintable(failReason), Continue);
     }
     QCOMPARE(tr.exec(q), contentMatches);
+
+    queries.clear();
+    const QByteArray fPrefix = QByteArrayLiteral("F");
+    for (QByteArray term : phrase) {
+        term = fPrefix + term;
+        queries << EngineQuery(term);
+    }
+    EngineQuery qf(queries, EngineQuery::Phrase);
+    QCOMPARE(tr.exec(qf), filenameMatches);
 }
 
 void QueryTest::testTagTermAnd_data()
