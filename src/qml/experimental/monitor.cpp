@@ -85,9 +85,10 @@ void Monitor::newFile(const QString& filePath)
     ++m_filesIndexed;
     Q_EMIT newFileIndexed();
 
-    if (m_remainingTimeTimer.elapsed() > 1000) {
+    auto now = QDeadlineTimer::current();
+    if (now > m_remainingTimeTimer) {
         updateRemainingTime();
-        m_remainingTimeTimer.restart();
+        m_remainingTimeTimer = now + 1000;
     }
 }
 
@@ -134,8 +135,12 @@ void Monitor::startBaloo()
 
 void Monitor::updateRemainingTime()
 {
-    m_remainingTime = KFormat().formatSpelloutDuration(m_scheduler->getRemainingTime());
-    Q_EMIT remainingTimeChanged();
+    auto remainingTime = m_scheduler->getRemainingTime();
+    if ((remainingTime != m_remainingTimeSeconds) && (remainingTime > 0)) {
+        m_remainingTime = KFormat().formatSpelloutDuration(remainingTime);
+        m_remainingTimeSeconds = remainingTime;
+        Q_EMIT remainingTimeChanged();
+    }
 }
 
 void Monitor::slotIndexerStateChanged(int state)
@@ -145,9 +150,7 @@ void Monitor::slotIndexerStateChanged(int state)
     if (m_indexerState != newState) {
         m_indexerState = newState;
         fetchTotalFiles();
-        if (m_indexerState == Baloo::ContentIndexing) {
-            m_remainingTimeTimer.start();
-        } else {
+        if (m_indexerState != Baloo::ContentIndexing) {
             m_filePath = QString();
         }
         Q_EMIT indexerStateChanged();

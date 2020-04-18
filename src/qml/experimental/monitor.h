@@ -23,6 +23,7 @@
 #ifndef BALOOMONITOR_MONITOR_H
 #define BALOOMONITOR_MONITOR_H
 
+#include <QDeadlineTimer>
 #include <QObject>
 #include <QString>
 
@@ -78,7 +79,7 @@ private:
     QString m_filePath;
     bool m_balooRunning = false;
     Baloo::IndexerState m_indexerState = Baloo::Unavailable;
-    QElapsedTimer m_remainingTimeTimer;
+    QDeadlineTimer m_remainingTimeTimer = QDeadlineTimer(0);
 
     org::kde::baloo::scheduler* m_scheduler;
     org::kde::baloo::fileindexer* m_fileindexer;
@@ -86,6 +87,7 @@ private:
     uint m_totalFiles = 0;
     uint m_filesIndexed = 0;
     QString m_remainingTime;
+    uint m_remainingTimeSeconds = 0;
 };
 }
 #endif //BALOOMONITOR_MONITOR_H
