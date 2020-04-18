@@ -112,17 +112,21 @@ char* getDifferentialVarInt32(char* p, char* limit, QVector<quint32>* values)
 {
     quint32 size = 0;
     p = getVarint32Ptr(p, limit, &size);
-    values->reserve(size);
+    values->resize(size);
+
+    auto it = values->begin();
+    auto end = values->end();
 
     quint32 v = 0;
-    while (p && size) {
+    while (p && it != end) {
         quint32 n = 0;
         p = getVarint32Ptr(p, limit, &n);
 
-        values->append(n + v);
+        *it = (n + v);
         v += n;
-        size--;
+        ++it;
     }
+    values->erase(it, end);
 
     return p;
 }
