@@ -124,6 +124,7 @@ void App::processNextFile()
         }
 
         m_outputStream << "S " << url << '\n';
+        m_outputStream.flush();
         bool indexed = index(m_tr, url, id);
         m_outputStream << "F " << url << '\n';
         m_outputStream.flush();
