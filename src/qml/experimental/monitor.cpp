@@ -78,10 +78,10 @@ Monitor::Monitor(QObject *parent)
 
 void Monitor::newFile(const QString& filePath)
 {
+    m_filePath = filePath;
     if (m_totalFiles == 0) {
         fetchTotalFiles();
     }
-    m_filePath = filePath;
     ++m_filesIndexed;
     Q_EMIT newFileIndexed();
 
@@ -144,13 +144,13 @@ void Monitor::slotIndexerStateChanged(int state)
 
     if (m_indexerState != newState) {
         m_indexerState = newState;
-        Q_EMIT indexerStateChanged();
         fetchTotalFiles();
         if (m_indexerState == Baloo::ContentIndexing) {
             m_remainingTimeTimer.start();
         } else {
             m_filePath = QString();
         }
+        Q_EMIT indexerStateChanged();
     }
 }
 
