@@ -124,11 +124,10 @@ void FileContentIndexer::slotStartedIndexingFile(const QString& filePath)
 
 void FileContentIndexer::slotFinishedIndexingFile(const QString& filePath)
 {
-    Q_UNUSED(filePath);
+    m_currentFile = QString();
     if (!m_registeredMonitors.isEmpty()) {
         Q_EMIT finishedIndexingFile(filePath);
     }
-    m_currentFile = QString();
 }
 
 void FileContentIndexer::registerMonitor(const QDBusMessage& message)
