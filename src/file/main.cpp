@@ -20,9 +20,7 @@
  *
  */
 
-#include <KAboutData>
 #include <KCrash>
-#include <KLocalizedString>
 
 #include <iostream>
 
@@ -43,19 +41,13 @@ int main(int argc, char** argv)
     lowerSchedulingPriority();
     lowerPriority();
 
-    KAboutData aboutData(QStringLiteral("baloo"), i18n("Baloo File Indexing Daemon"), PROJECT_VERSION);
-    aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QStringLiteral("vhanda@kde.org"), QStringLiteral("https://vhanda.in"));
-
     QCoreApplication app(argc, argv);
-
-    KAboutData::setApplicationData(aboutData);
 
     Baloo::FileIndexerConfig indexerConfig;
     if (!indexerConfig.indexingEnabled()) {
         std::cout << "Baloo File Indexing has been disabled" << std::endl;
         return 0;
     }
-
 
     if (!QDBusConnection::sessionBus().registerService(QStringLiteral("org.kde.baloo"))) {
         qWarning() << "Failed to register via dbus. Another instance is running";
