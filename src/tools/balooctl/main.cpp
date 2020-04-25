@@ -247,10 +247,17 @@ int main(int argc, char* argv[])
             const QString url = QFileInfo(parser.positionalArguments().at(i)).absoluteFilePath();
             quint64 id = filePathToId(QFile::encodeName(url));
             if (id == 0) {
-                out << "Could not stat file: " << url << '\n';
-                continue;
+                id = tr.documentId(QFile::encodeName(url));
+                if (id == 0) {
+                    out << "File not found on filesystem or in DB: " << url << '\n';
+                    continue;
+                } else {
+                    out << "File has been deleted, clearing from DB: " << url << '\n';
+                }
+            } else {
+                out << "Clearing " << url << '\n';
             }
-            out << "Clearing " << url << '\n';
+
             tr.removeDocument(id);
         }
         tr.commit();
