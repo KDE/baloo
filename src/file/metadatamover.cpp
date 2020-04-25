@@ -22,13 +22,9 @@
 #include "transaction.h"
 #include "basicindexingjob.h"
 #include "idutils.h"
-#include "mainhub.h"
 #include "baloodebug.h"
 
-#include "baloowatcherapplication_interface.h"
-
 #include <QFile>
-#include <QDBusConnection>
 
 using namespace Baloo;
 
@@ -36,11 +32,6 @@ MetadataMover::MetadataMover(Database* db, QObject* parent)
     : QObject(parent)
     , m_db(db)
 {
-    m_serviceWatcher.setConnection(QDBusConnection::sessionBus());
-    m_serviceWatcher.setWatchMode(QDBusServiceWatcher::WatchForUnregistration);
-
-    connect(&m_serviceWatcher, &QDBusServiceWatcher::serviceUnregistered,
-            this, &MetadataMover::watcherServiceUnregistered);
 }
 
 
@@ -48,22 +39,6 @@ MetadataMover::~MetadataMover()
 {
 }
 
-bool MetadataMover::hasWatcher() const
-{
-    return !m_watcherApplications.isEmpty();
-}
-
-
-static void buildRecursiveList(quint64 parentId, QList<QString> &fileList, Transaction &tr)
-{
-    fileList.push_back(QFile::decodeName(tr.documentUrl(parentId)));
-
-    const auto childrenIds = tr.childrenDocumentId(parentId);
-
-    for (const auto oneChildren : childrenIds) {
-        buildRecursiveList(oneChildren, fileList, tr);
-    }
-}
 
 void MetadataMover::moveFileMetadata(const QString& from, const QString& to)
 {
@@ -73,14 +48,6 @@ void MetadataMover::moveFileMetadata(const QString& from, const QString& to)
 
     Transaction tr(m_db, Transaction::ReadWrite);
 
-    quint64 id = tr.documentId(QFile::encodeName(from));
-    QList<QString> filesList;
-    qCDebug(BALOO) << "MetadataMover::moveFileMetadata" << (hasWatcher() ? "has watcher" : "has no watcher");
-    qCDebug(BALOO) << "MetadataMover::moveFileMetadata" << "id" << id;
-    if (id && hasWatcher()) {
-        buildRecursiveList(id, filesList, tr);
-    }
-
     // We do NOT get deleted messages for overwritten files! Thus, we
     // have to remove all metadata for overwritten files first.
     removeMetadata(&tr, to);
@@ -89,11 +56,6 @@ void MetadataMover::moveFileMetadata(const QString& from, const QString& to)
     updateMetadata(&tr, from, to);
 
     tr.commit();
-
-    if (hasWatcher()) {
-        qCDebug(BALOO) << "MetadataMover::moveFileMetadata" << "notifyWatchers" << filesList;
-        notifyWatchers(from, to, filesList);
-    }
 }
 
 void MetadataMover::removeFileMetadata(const QString& file)
@@ -103,23 +65,6 @@ void MetadataMover::removeFileMetadata(const QString& file)
     Transaction tr(m_db, Transaction::ReadWrite);
     removeMetadata(&tr, file);
     tr.commit();
-}
-
-void MetadataMover::registerBalooWatcher(const QString &service)
-{
-    int firstSlash = service.indexOf('/');
-    if (firstSlash == -1) {
-        return;
-    }
-
-    QString dbusServiceName = service.left(firstSlash);
-    QString dbusPath = service.mid(firstSlash);
-
-    m_serviceWatcher.addWatchedService(dbusServiceName);
-
-    m_watcherApplications.insert(dbusServiceName, new org::kde::BalooWatcherApplication(dbusServiceName, dbusPath, QDBusConnection::sessionBus(), this));
-
-    qCDebug(BALOO) << "MetadataMover::registerBalooWatcher" << service << dbusServiceName << dbusPath;
 }
 
 void MetadataMover::removeMetadata(Transaction* tr, const QString& url)
@@ -173,25 +118,4 @@ void MetadataMover::updateMetadata(Transaction* tr, const QString& from, const Q
     // Possible scenarios
     // 1. file moves to the same device - id is preserved
     // 2. file moves to a different device - id is not preserved
-}
-
-void MetadataMover::notifyWatchers(const QString &from, const QString &to, const QList<QString> &filesList)
-{
-    for (org::kde::BalooWatcherApplication *watcherApplication : qAsConst(m_watcherApplications)) {
-        qCDebug(BALOO) << "MetadataMover::notifyWatchers" << watcherApplication->service() << watcherApplication->objectName() << watcherApplication->path();
-        watcherApplication->renamedFiles(from, to, filesList);
-    }
-}
-
-void MetadataMover::watcherServiceUnregistered(const QString &serviceName)
-{
-    auto itService = m_watcherApplications.find(serviceName);
-    if (itService == m_watcherApplications.end()) {
-        return;
-    }
-
-    qCDebug(BALOO) << "MetadataMover::watcherServiceUnregistered" << itService.key();
-
-    delete itService.value();
-    m_watcherApplications.erase(itService);
 }

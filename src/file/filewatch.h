@@ -31,14 +31,13 @@ class MetadataMover;
 class FileIndexerConfig;
 class PendingFileQueue;
 class FileWatchTest;
-class MainHub;
 
 class FileWatch : public QObject
 {
     Q_OBJECT
 
 public:
-    FileWatch(Database* db, FileIndexerConfig* config, Baloo::MainHub *dbusInterface, QObject* parent = nullptr);
+    FileWatch(Database* db, FileIndexerConfig* config, QObject* parent = nullptr);
     ~FileWatch();
 
 public Q_SLOTS:
@@ -50,8 +49,6 @@ public Q_SLOTS:
     void updateIndexedFoldersWatches();
 
     void watchIndexedFolders();
-
-    void registerBalooWatcher(const QString &service);
 
 Q_SIGNALS:
     void indexNewFile(const QString& string);

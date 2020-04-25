@@ -23,7 +23,6 @@
 #include "database.h"
 #include "fileindexerconfig.h"
 #include "pendingfilequeue.h"
-#include "mainhub.h"
 #include "../lib/xattrdetector.h"
 #include "../lib/baloo_xattr_p.h"
 
@@ -38,37 +37,7 @@ class FileWatchTest : public QObject
     Q_OBJECT
 private Q_SLOTS:
 
-    void init()
-    {
-        m_tempDir = new QTemporaryDir();
-        m_db = new Database(m_tempDir->path());
-        m_db->open(Database::CreateDatabase);
-        m_dbusInterface = new MainHub(m_db, &m_config, false);
-    }
-
     void testFileCreation();
-
-    void cleanupTestCase()
-    {
-        delete m_dbusInterface;
-        m_dbusInterface = nullptr;
-
-        delete m_db;
-        m_db = nullptr;
-
-        delete m_tempDir;
-        m_tempDir = nullptr;
-    }
-
-private:
-
-    FileIndexerConfig m_config;
-
-    Database* m_db;
-
-    QTemporaryDir* m_tempDir;
-
-    Baloo::MainHub *m_dbusInterface;
 };
 
 }
@@ -108,7 +77,7 @@ void FileWatchTest::testFileCreation()
 
     FileIndexerConfig config;
 
-    FileWatch fileWatch(&db, &config, m_dbusInterface);
+    FileWatch fileWatch(&db, &config);
     fileWatch.m_pendingFileQueue->setMaximumTimeout(0);
     fileWatch.m_pendingFileQueue->setMinimumTimeout(0);
     fileWatch.m_pendingFileQueue->setTrackingTime(0);
