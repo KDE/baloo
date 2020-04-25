@@ -86,6 +86,9 @@ private:
     /// queue used to "compress" multiple file events like downloads
     PendingFileQueue* m_pendingFileQueue;
 
+    QStringList m_includedFolders;
+    QStringList m_excludedFolders;
+
     friend class FileWatchTest;
 };
 }

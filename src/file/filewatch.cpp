@@ -85,7 +85,6 @@ void FileWatch::watchIndexedFolders()
 // FIXME: listen to Create for folders!
 void FileWatch::watchFolder(const QString& path)
 {
-    qCDebug(BALOO) << path;
     if (m_dirWatch && !m_dirWatch->watchingPath(path)) {
         KInotify::WatchEvents flags(KInotify::EventMove | KInotify::EventDelete | KInotify::EventDeleteSelf
                                     | KInotify::EventCloseWrite | KInotify::EventCreate
@@ -197,11 +196,36 @@ void FileWatch::slotInotifyWatchUserLimitReached(const QString&)
 void FileWatch::updateIndexedFoldersWatches()
 {
     if (m_dirWatch) {
-        const QStringList folders = m_config->includeFolders();
-        for (const QString& folder : folders) {
-            m_dirWatch->removeWatch(folder);
-            watchFolder(folder);
+        const QStringList excludedFolders = m_config->excludeFolders();
+        const QStringList includedFolders = m_config->includeFolders();
+
+        for (const QString& folder : excludedFolders) {
+            // Remove watch for new excluded folders
+            if (!m_excludedFolders.contains(folder)) {
+                m_dirWatch->removeWatch(folder);
+            }
         }
+        for (const QString& folder : m_excludedFolders) {
+            // Add no longer excluded folders
+            if (!excludedFolders.contains(folder)) {
+                watchFolder(folder);
+            }
+        }
+
+        for (const QString& folder : m_includedFolders) {
+            // Remove no longer included folders
+            if (!includedFolders.contains(folder)) {
+                m_dirWatch->removeWatch(folder);
+            }
+        }
+        for (const QString& folder : includedFolders) {
+            if (!m_includedFolders.contains(folder)) {
+                watchFolder(folder);
+            }
+        }
+
+        m_excludedFolders = excludedFolders;
+        m_includedFolders = includedFolders;
     }
 }
 
