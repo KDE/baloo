@@ -23,12 +23,11 @@
 #include "database.h"
 #include "fileindexerconfig.h"
 #include "pendingfilequeue.h"
-#include "../lib/xattrdetector.h"
-#include "../lib/baloo_xattr_p.h"
 
 #include <QTest>
 #include <QSignalSpy>
 #include <QTemporaryDir>
+#include <KFileMetaData/UserMetaData>
 
 namespace Baloo {
 
@@ -126,14 +125,14 @@ void FileWatchTest::testFileCreation()
     //
     // Set an Xattr
     //
-    XattrDetector detector;
-    if (!detector.isSupported(dbDir.path())) {
-        qWarning() << "Xattr not supported on this filesystem";
+    KFileMetaData::UserMetaData umd(fileUrl);
+    if (!umd.isSupported()) {
+        qWarning() << "Xattr not supported on this filesystem:" << fileUrl;
         return;
     }
 
     const QString userComment(QStringLiteral("UserComment"));
-    QVERIFY(baloo_setxattr(fileUrl, QLatin1String("user.xdg.comment"), userComment) != -1);
+    QVERIFY(umd.setUserComment(userComment) == KFileMetaData::UserMetaData::NoError);
 
     QVERIFY(spyIndexXattr.wait());
     QCOMPARE(spyIndexNew.count(), 0);
