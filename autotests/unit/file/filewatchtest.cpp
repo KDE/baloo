@@ -220,12 +220,10 @@ void FileWatchTest::testConfigChange()
     QVERIFY(createFile(d21 + "/tx2b"));
     QVERIFY(createFile(d22 + "/tx3b"));
 
-    QEXPECT_FAIL("", "Removal of excluded folders not deteced", Continue);
     QVERIFY(spyIndexNew.wait(500));
     for (const QList<QVariant>& event : qAsConst(spyIndexNew)) {
 	result.append(event.at(0).toString());
     }
-    QEXPECT_FAIL("", "Removal of excluded folders not deteced", Continue);
     QCOMPARE(result, {d21 + "/tx2b"});
 }
 

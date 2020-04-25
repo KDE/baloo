@@ -90,7 +90,7 @@ void KInotifyTest::testDeleteFolder()
 {
     // create some test files
     QTemporaryDir dir;
-    const QString d1(QStringLiteral("%1/randomJunk4").arg(dir.path()));
+    const QString d1(QStringLiteral("%1/randomJunk4/").arg(dir.path()));
     mkdir(d1);
 
     // start the inotify watcher
@@ -123,7 +123,7 @@ void KInotifyTest::testCreateFolder()
     QSignalSpy createdSpy(&kn, SIGNAL(created(QString,bool)));
 
     // create the subdir
-    const QString d1(QStringLiteral("%1/randomJunk1").arg(dir.path()));
+    const QString d1(QStringLiteral("%1/randomJunk1/").arg(dir.path()));
     mkdir(d1);
     QVERIFY(createdSpy.wait());
     QCOMPARE(createdSpy.count(), 1);
@@ -131,7 +131,7 @@ void KInotifyTest::testCreateFolder()
     QVERIFY(kn.watchingPath(d1));
 
     // lets go one level deeper
-    const QString d2 = QStringLiteral("%1/subdir1").arg(d1);
+    const QString d2 = QStringLiteral("%1subdir1/").arg(d1);
     mkdir(d2);
     QVERIFY(createdSpy.wait());
     QCOMPARE(createdSpy.count(), 1);
@@ -139,7 +139,7 @@ void KInotifyTest::testCreateFolder()
     QVERIFY(kn.watchingPath(d2));
 
     // although we are in the folder test lets try creating a file
-    const QString f1 = QStringLiteral("%1/somefile1").arg(d2);
+    const QString f1 = QStringLiteral("%1somefile1").arg(d2);
     touchFile(f1);
     QVERIFY(createdSpy.wait());
     QCOMPARE(createdSpy.count(), 1);
@@ -229,8 +229,8 @@ void KInotifyTest::testRenameFolder()
 {
     // create some test files
     QTemporaryDir dir;
-    const QString f1(QStringLiteral("%1/randomJunk1").arg(dir.path()));
-    mkdir(f1);
+    const QString d1(QStringLiteral("%1/randomJunk1/").arg(dir.path()));
+    mkdir(d1);
 
     // start the inotify watcher
     KInotify kn(nullptr /*no config*/);
@@ -239,42 +239,42 @@ void KInotifyTest::testRenameFolder()
     // listen to the desired signal
     QSignalSpy spy(&kn, SIGNAL(moved(QString,QString)));
 
-    // actually move the file
-    const QString f2(QStringLiteral("%1/randomJunk2").arg(dir.path()));
-    QFile::rename(f1, f2);
+    // actually rename the folder
+    const QString d2(QStringLiteral("%1/randomJunk2/").arg(dir.path()));
+    QFile::rename(d1, d2);
 
     // check the desired signal
     QVERIFY(spy.wait());
     QCOMPARE(spy.count(), 1);
     QList<QVariant> args = spy.takeFirst();
-    QCOMPARE(args.at(0).toString(), f1);
-    QCOMPARE(args.at(1).toString(), f2);
+    QCOMPARE(args.at(0).toString(), d1);
+    QCOMPARE(args.at(1).toString(), d2);
 
     // check the path cache
-    QVERIFY(!kn.watchingPath(f1));
-    QVERIFY(kn.watchingPath(f2));
+    QVERIFY(!kn.watchingPath(d1));
+    QVERIFY(kn.watchingPath(d2));
 
     // test a subsequent rename
-    const QString f3(QStringLiteral("%1/randomJunk3").arg(dir.path()));
-    QFile::rename(f2, f3);
+    const QString d3(QStringLiteral("%1/randomJunk3/").arg(dir.path()));
+    QFile::rename(d2, d3);
 
     // check the desired signal
     QVERIFY(spy.wait());
     QCOMPARE(spy.count(), 1);
     args = spy.takeFirst();
-    QCOMPARE(args.at(0).toString(), f2);
-    QCOMPARE(args.at(1).toString(), f3);
+    QCOMPARE(args.at(0).toString(), d2);
+    QCOMPARE(args.at(1).toString(), d3);
 
     // check the path cache
-    QVERIFY(!kn.watchingPath(f1));
-    QVERIFY(!kn.watchingPath(f2));
-    QVERIFY(kn.watchingPath(f3));
+    QVERIFY(!kn.watchingPath(d1));
+    QVERIFY(!kn.watchingPath(d2));
+    QVERIFY(kn.watchingPath(d3));
 
 
     // KInotify claims it has updated its data structures, lets see if that is true
     // by creating a file in the new folder
     // listen to the desired signal
-    const QString f4(QStringLiteral("%1/somefile").arg(f3));
+    const QString f4(QStringLiteral("%1somefile").arg(d3));
 
     QSignalSpy createdSpy(&kn, SIGNAL(created(QString,bool)));
 
@@ -292,8 +292,8 @@ void KInotifyTest::testMoveFolder()
     // create some test files
     QTemporaryDir dir1;
     QTemporaryDir dir2;
-    const QString src(QStringLiteral("%1/randomJunk1").arg(dir1.path()));
-    const QString dest(QStringLiteral("%1/randomJunk2").arg(dir2.path()));
+    const QString src(QStringLiteral("%1/randomJunk1/").arg(dir1.path()));
+    const QString dest(QStringLiteral("%1/randomJunk2/").arg(dir2.path()));
     mkdir(src);
 
     // start the inotify watcher
@@ -319,7 +319,7 @@ void KInotifyTest::testMoveFolder()
     QVERIFY(kn.watchingPath(dest));
 
     // test a subsequent move
-    const QString dest2(QStringLiteral("%1/randomJunk3").arg(dir1.path()));
+    const QString dest2(QStringLiteral("%1/randomJunk3/").arg(dir1.path()));
     QFile::rename(dest, dest2);
 
     // check the desired signal
@@ -338,7 +338,7 @@ void KInotifyTest::testMoveFolder()
     // KInotify claims it has updated its data structures, lets see if that is true
     // by creating a file in the new folder
     // listen to the desired signal
-    const QString f4(QStringLiteral("%1/somefile").arg(dest2));
+    const QString f4(QStringLiteral("%1somefile").arg(dest2));
 
     QSignalSpy createdSpy(&kn, SIGNAL(created(QString,bool)));
 
