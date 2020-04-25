@@ -26,10 +26,10 @@ baloo_file_auto_tests(
 #
 # File Watch
 #
-set(fileWatch_SRC filewatchtest.cpp ../lib/xattrdetector.cpp)
+set(fileWatch_SRC filewatchtest.cpp)
 ecm_add_test(${fileWatch_SRC}
     TEST_NAME "filewatchtest"
-    LINK_LIBRARIES Qt5::Test Qt5::DBus KF5::Baloo baloofilecommon
+    LINK_LIBRARIES Qt5::Test Qt5::DBus KF5::Baloo KF5::FileMetaData baloofilecommon
 )
 
 #
