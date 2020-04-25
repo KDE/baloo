@@ -42,12 +42,11 @@
 
 namespace
 {
-QByteArray stripTrailingSlash(const QByteArray& path)
+QByteArray normalizeTrailingSlash(QByteArray&& path)
 {
-    QByteArray p(path);
-    if (p.endsWith('/'))
-        p.chop(1);
-    return p;
+    if (!path.endsWith('/'))
+        path.append('/');
+    return path;
 }
 
 QByteArray concatPath(const QByteArray& p1, const QByteArray& p2)
@@ -122,7 +121,7 @@ public:
         // we always need the unmount event to maintain our path hash
         const int mask = newMode | newFlags | EventUnmount | FlagExclUnlink;
 
-        const QByteArray encpath = stripTrailingSlash(QFile::encodeName(path));
+        const QByteArray encpath = normalizeTrailingSlash(QFile::encodeName(path));
         int wd = inotify_add_watch(inotify(), encpath.data(), mask);
         if (wd > 0) {
 //             qCDebug(BALOO) << "Successfully added watch for" << path << watchPathHash.count();
@@ -252,7 +251,7 @@ bool KInotify::available() const
 
 bool KInotify::watchingPath(const QString& path) const
 {
-    const QByteArray p(stripTrailingSlash(QFile::encodeName(path)));
+    const QByteArray p = normalizeTrailingSlash(QFile::encodeName(path));
     return d->pathWatchHash.contains(p);
 }
 
@@ -363,6 +362,9 @@ void KInotify::slotEvent(int socket)
             const QByteArray eventName = QByteArray::fromRawData(event->name, qstrnlen(event->name, event->len));
             const QByteArray hashedPath = d->watchPathHash.value(event->wd);
             path = concatPath(hashedPath, eventName);
+            if (event->mask & IN_ISDIR) {
+                path = normalizeTrailingSlash(std::move(path));
+            }
         }
 
         Q_ASSERT(!path.isEmpty() || event->mask & EventIgnored);
