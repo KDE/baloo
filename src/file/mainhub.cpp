@@ -77,7 +77,6 @@ void MainHub::updateConfig()
     m_fileIndexScheduler.updateConfig();
 }
 
-void MainHub::registerBalooWatcher(const QString &service)
+void MainHub::registerBalooWatcher(const QString &)
 {
-    m_fileWatcher.registerBalooWatcher(service);
 }
