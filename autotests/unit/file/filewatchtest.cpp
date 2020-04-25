@@ -37,6 +37,7 @@ class FileWatchTest : public QObject
 private Q_SLOTS:
 
     void testFileCreation();
+    void testConfigChange();
 };
 
 }
@@ -142,6 +143,90 @@ void FileWatchTest::testFileCreation()
     spyIndexNew.clear();
     spyIndexModified.clear();
     spyIndexXattr.clear();
+}
+
+void FileWatchTest::testConfigChange()
+{
+    QTemporaryDir tmpDir;
+
+    Database db(tmpDir.path());
+    db.open(Baloo::Database::CreateDatabase);
+
+    QString d1 = tmpDir.path() + QStringLiteral("/d1");
+    QString d2 = tmpDir.path() + QStringLiteral("/d2");
+    QString d11 = tmpDir.path() + QStringLiteral("/d1/d11");
+    QString d21 = tmpDir.path() + QStringLiteral("/d2/d21");
+    QString d22 = tmpDir.path() + QStringLiteral("/d2/d22");
+
+    QDir().mkpath(d11);
+    QDir().mkpath(d21);
+    QDir().mkpath(d22);
+
+    // parameters: includeFolders list, excludeFolders list
+    Test::writeIndexerConfig({d1, d2}, {d11, d21});
+    FileIndexerConfig config;
+
+    FileWatch fileWatch(&db, &config);
+    fileWatch.m_pendingFileQueue->setMaximumTimeout(0);
+    fileWatch.m_pendingFileQueue->setMinimumTimeout(0);
+    fileWatch.m_pendingFileQueue->setTrackingTime(0);
+
+    QSignalSpy spy(&fileWatch, SIGNAL(installedWatches()));
+    QVERIFY(spy.isValid());
+
+    fileWatch.updateIndexedFoldersWatches();
+    QVERIFY(spy.count() || spy.wait());
+
+    QSignalSpy spyIndexNew(&fileWatch, SIGNAL(indexNewFile(QString)));
+    QVERIFY(spyIndexNew.isValid());
+    QVERIFY(createFile(d1 + "/t1"));
+    QVERIFY(createFile(d2 + "/t2"));
+
+    QVERIFY(spyIndexNew.wait());
+    QCOMPARE(spyIndexNew.count(), 2);
+    spyIndexNew.clear();
+
+    // dir d22 is not yet excluded, so one event is expected
+    QVERIFY(createFile(d11 + "/tx1"));
+    QVERIFY(createFile(d21 + "/tx2"));
+    QVERIFY(createFile(d22 + "/tx3"));
+
+    QVERIFY(spyIndexNew.wait());
+    QCOMPARE(spyIndexNew.count(), 1);
+    QList<QVariant> event = spyIndexNew.at(0);
+    QCOMPARE(event.at(0).toString(), d22 + "/tx3");
+    spyIndexNew.clear();
+
+    Test::writeIndexerConfig({d2}, {d22});
+    config.forceConfigUpdate();
+    fileWatch.updateIndexedFoldersWatches();
+
+    // dir d1 is no longer included
+    QVERIFY(createFile(d1 + "/tx1a"));
+    QVERIFY(createFile(d2 + "/tx2a"));
+    QVERIFY(spyIndexNew.wait());
+    QList<QString> result;
+    for (const QList<QVariant>& event : qAsConst(spyIndexNew)) {
+	result.append(event.at(0).toString());
+    }
+    QEXPECT_FAIL("", "Removal of included folders not deteced", Continue);
+    QCOMPARE(result, {d2 + "/tx2a"});
+    spyIndexNew.clear();
+    result.clear();
+
+    // d11 is implicitly excluded, as d1 is no longer included
+    // d22 is explicitly excluded now, d21 is included
+    QVERIFY(createFile(d11 + "/tx1b"));
+    QVERIFY(createFile(d21 + "/tx2b"));
+    QVERIFY(createFile(d22 + "/tx3b"));
+
+    QEXPECT_FAIL("", "Removal of excluded folders not deteced", Continue);
+    QVERIFY(spyIndexNew.wait(500));
+    for (const QList<QVariant>& event : qAsConst(spyIndexNew)) {
+	result.append(event.at(0).toString());
+    }
+    QEXPECT_FAIL("", "Removal of excluded folders not deteced", Continue);
+    QCOMPARE(result, {d21 + "/tx2b"});
 }
 
 QTEST_MAIN(FileWatchTest)
