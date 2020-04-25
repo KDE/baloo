@@ -209,7 +209,6 @@ void FileWatchTest::testConfigChange()
     for (const QList<QVariant>& event : qAsConst(spyIndexNew)) {
 	result.append(event.at(0).toString());
     }
-    QEXPECT_FAIL("", "Removal of included folders not deteced", Continue);
     QCOMPARE(result, {d2 + "/tx2a"});
     spyIndexNew.clear();
     result.clear();
