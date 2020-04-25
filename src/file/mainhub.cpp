@@ -62,7 +62,7 @@ MainHub::MainHub(Database* db, FileIndexerConfig* config, bool firstRun)
             m_fileIndexScheduler.startupFinished();
         });
     }
-    QTimer::singleShot(0, &m_fileWatcher, &FileWatch::watchIndexedFolders);
+    QTimer::singleShot(0, &m_fileWatcher, &FileWatch::updateIndexedFoldersWatches);
 }
 
 void MainHub::quit() const

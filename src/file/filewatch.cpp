@@ -73,15 +73,6 @@ FileWatch::~FileWatch()
 {
 }
 
-void FileWatch::watchIndexedFolders()
-{
-    // Watch all indexed folders
-    const QStringList folders = m_config->includeFolders();
-    for (const QString& folder : folders) {
-        watchFolder(folder);
-    }
-}
-
 // FIXME: listen to Create for folders!
 void FileWatch::watchFolder(const QString& path)
 {

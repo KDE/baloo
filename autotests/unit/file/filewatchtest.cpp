@@ -85,7 +85,7 @@ void FileWatchTest::testFileCreation()
     QSignalSpy spy(&fileWatch, SIGNAL(installedWatches()));
     QVERIFY(spy.isValid());
 
-    fileWatch.watchIndexedFolders();
+    fileWatch.updateIndexedFoldersWatches();
     QVERIFY(spy.count() || spy.wait());
 
     QSignalSpy spyIndexNew(&fileWatch, SIGNAL(indexNewFile(QString)));

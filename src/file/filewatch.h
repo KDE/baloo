@@ -42,13 +42,10 @@ public:
 
 public Q_SLOTS:
     /**
-     * To be called whenever the list of indexed folders changes. This is done because
-     * the indexed folders are watched with the 'KInotify::EventCreate' event, and the
-     * non-indexed folders are not.
+     * To be called whenever the list of indexed/excluded folders in the config
+     * changes.
      */
     void updateIndexedFoldersWatches();
-
-    void watchIndexedFolders();
 
 Q_SIGNALS:
     void indexNewFile(const QString& string);
