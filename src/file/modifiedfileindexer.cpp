@@ -119,8 +119,8 @@ void ModifiedFileIndexer::run()
             continue;
         }
 
-        // we can get modified events for files which do not exist
-        // cause Baloo was not running and missed those events
+        // We can get modified events for files which do not yet exist in the database
+        // because Baloo was not running and missed the creation events
         if (isKnownFile && (job.document().id() == fileId)) {
             tr.replaceDocument(job.document(), XAttrTerms | DocumentTime | FileNameTerms | DocumentUrl);
         } else {
