@@ -30,6 +30,14 @@ namespace {
 void indexXAttr(const QString& url, Document& doc)
 {
     KFileMetaData::UserMetaData userMetaData(url);
+
+    using Attribute = KFileMetaData::UserMetaData::Attribute;
+    auto attributes = userMetaData.queryAttributes(Attribute::Tags |
+        Attribute::Rating | Attribute::Comment);
+    if (attributes == Attribute::None) {
+	return;
+    }
+
     TermGenerator tg(doc);
 
     const QStringList tags = userMetaData.tags();
