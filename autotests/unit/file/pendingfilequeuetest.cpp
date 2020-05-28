@@ -57,6 +57,8 @@ public:
 
 protected:
     bool eventFilter(QObject *object, QEvent *event) override {
+        Q_UNUSED(object);
+        Q_UNUSED(event);
         return true;
     }
 };

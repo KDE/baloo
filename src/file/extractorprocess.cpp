@@ -36,6 +36,7 @@ ExtractorProcess::ExtractorProcess(QObject* parent)
     connect(&m_extractorProcess, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
             [=](int exitCode, QProcess::ExitStatus exitStatus)
             {
+                Q_UNUSED(exitCode);
                 if (exitStatus == QProcess::CrashExit) {
                     Q_EMIT failed();
                 }
