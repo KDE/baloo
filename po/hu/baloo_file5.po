@@ -1,0 +1,95 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Balázs Úr <urbalazs@gmail.com>, 2014.
+# Kristóf Kiszel <ulysses@kubuntu.org>, 2014, 2015, 2019.
+# Kristof Kiszel <kiszel.kristof@gmail.com>, 2018.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2020-04-20 03:00+0200\n"
+"PO-Revision-Date: 2019-11-12 19:29+0100\n"
+"Last-Translator: Kristóf Kiszel <ulysses@kubuntu.org>\n"
+"Language-Team: Hungarian <kde-l10n-hu@kde.org>\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 20.03.70\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Kiszel Kristóf,Úr Balázs"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "ulysses@kubuntu.org,urbalazs@gmail.com"
+
+#: indexerstate.h:46
+#, kde-format
+msgid "Unknown"
+msgstr "Ismeretlen"
+
+#: indexerstate.h:49
+#, kde-format
+msgid "Idle"
+msgstr "Inaktív"
+
+#: indexerstate.h:52
+#, kde-format
+msgid "Suspended"
+msgstr "Felfüggesztve"
+
+#: indexerstate.h:55
+#, kde-format
+msgid "Initial Indexing"
+msgstr "Kezdeti indexelés"
+
+#: indexerstate.h:58
+#, kde-format
+msgid "Indexing new files"
+msgstr "Új fájlok indexelése"
+
+#: indexerstate.h:61
+#, kde-format
+msgid "Indexing modified files"
+msgstr "Módosított fájlok indexelése"
+
+#: indexerstate.h:64
+#, kde-format
+msgid "Indexing Extended Attributes"
+msgstr "Kiterjesztett attribútumok indexelése"
+
+#: indexerstate.h:67
+#, kde-format
+msgid "Indexing file content"
+msgstr "Fájltartalom indexelése"
+
+#: indexerstate.h:70
+#, kde-format
+msgid "Checking for unindexed files"
+msgstr "Nem indexelt fájlok keresése"
+
+#: indexerstate.h:73
+#, kde-format
+msgid "Checking for stale index entries"
+msgstr "Elavult indexbejegyzések keresése"
+
+#: indexerstate.h:76
+#, kde-format
+msgid "Idle (Powersave)"
+msgstr "Inaktív (energiatakarékos)"
+
+#: indexerstate.h:79
+#, kde-format
+msgid "Not Running"
+msgstr ""
+
+#: indexerstate.h:82
+#, kde-format
+msgid "Starting"
+msgstr ""
