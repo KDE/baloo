@@ -45,7 +45,11 @@ set(file_static_lib_SRCS
     propertydata.cpp
 )
 
-ecm_qt_declare_logging_category(file_static_lib_SRCS HEADER baloodebug.h IDENTIFIER BALOO CATEGORY_NAME org.kde.baloo)
+ecm_qt_declare_logging_category(file_static_lib_SRCS
+    HEADER baloodebug.h
+    IDENTIFIER BALOO
+    CATEGORY_NAME kf.baloo
+)
 
 # KF6 TODO - remove BalooWatcherApplication
 qt5_add_dbus_interface(file_static_lib_SRCS org.kde.BalooWatcherApplication.xml baloowatcherapplication_interface)

@@ -14,7 +14,11 @@ set(EXTRACTOR_SRCS
   ../propertydata.cpp
 )
 
-ecm_qt_declare_logging_category(EXTRACTOR_SRCS HEADER baloodebug.h IDENTIFIER BALOO CATEGORY_NAME org.kde.baloo)
+ecm_qt_declare_logging_category(EXTRACTOR_SRCS
+    HEADER baloodebug.h
+    IDENTIFIER BALOO
+    CATEGORY_NAME kf.baloo
+)
 kconfig_add_kcfg_files(EXTRACTOR_SRCS ../baloosettings.kcfgc GENERATE_MOC)
 
 add_executable(baloo_file_extractor ${EXTRACTOR_SRCS})

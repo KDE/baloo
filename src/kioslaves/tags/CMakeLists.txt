@@ -8,7 +8,8 @@ ecm_qt_declare_logging_category(tags_LIB_SRCS
     HEADER kio_tags_debug.h
     IDENTIFIER Baloo::KIO_TAGS
     DEFAULT_SEVERITY Warning
-    CATEGORY_NAME kf5.kio.kio_tags
+    CATEGORY_NAME kf.kio.slaves.tags
+    OLD_CATEGORY_NAMES kf5.kio.kio_tags
     DESCRIPTION "Baloo Tags (KIO)"
     EXPORT BALOO
 )
