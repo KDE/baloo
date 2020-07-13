@@ -31,7 +31,8 @@ ecm_qt_declare_logging_category(
     HEADER "enginedebug.h"
     IDENTIFIER "Baloo::ENGINE"
     DEFAULT_SEVERITY Warning
-    CATEGORY_NAME "org.kde.baloo.engine"
+    CATEGORY_NAME kf.baloo.engine
+    OLD_CATEGORY_NAMES org.kde.baloo.engine
     DESCRIPTION "Baloo Engine"
     EXPORT BALOO
 )

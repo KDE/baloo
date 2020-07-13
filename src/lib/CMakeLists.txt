@@ -31,7 +31,8 @@ set(BALOO_LIB_SRCS
 ecm_qt_declare_logging_category(BALOO_LIB_SRCS
     HEADER baloodebug.h
     IDENTIFIER BALOO
-    CATEGORY_NAME org.kde.baloo
+    CATEGORY_NAME kf.baloo
+    OLD_CATEGORY_NAMES org.kde.baloo
     DESCRIPTION "Baloo File debug"
     EXPORT BALOO
 )
