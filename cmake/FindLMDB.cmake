@@ -4,12 +4,12 @@
 #  LMDB_LIBRARIES - Libraries needed to use LMDB
 
 # FindCWD based on FindGMP by:
-# Copyright (c) 2006, Laurent Montel, <montel@kde.org>
+# SPDX-FileCopyrightText: 2006 Laurent Montel <montel@kde.org>
 #
 # Redistribution and use is allowed according to the terms of the BSD license.
 
 # Adapted from FindCWD by:
-# Copyright 2013 Conrad Steenberg <conrad.steenberg@gmail.com>
+# SPDX-FileCopyrightText: 2013 Conrad Steenberg <conrad.steenberg@gmail.com>
 # Aug 31, 2013
 
 if (LMDB_INCLUDE_DIRS AND LMDB_LIBRARIES)
