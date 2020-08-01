@@ -1,0 +1,95 @@
+# Spanish translations for baloo_file.po package.
+# Copyright (C) 2014 This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Automatically generated, 2014.
+# Eloy Cuadra <ecuadra@eloihr.net>, 2014, 2015, 2018, 2019, 2020.
+msgid ""
+msgstr ""
+"Project-Id-Version: baloo_file\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2020-04-20 03:00+0200\n"
+"PO-Revision-Date: 2020-03-16 20:08+0100\n"
+"Last-Translator: Eloy Cuadra <ecuadra@eloihr.net>\n"
+"Language-Team: Spanish <kde-l10n-es@kde.org>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 19.12.3\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Eloy Cuadra"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "ecuadra@eloihr.net"
+
+#: indexerstate.h:46
+#, kde-format
+msgid "Unknown"
+msgstr "Desconocido"
+
+#: indexerstate.h:49
+#, kde-format
+msgid "Idle"
+msgstr "Inactivo"
+
+#: indexerstate.h:52
+#, kde-format
+msgid "Suspended"
+msgstr "Suspendido"
+
+#: indexerstate.h:55
+#, kde-format
+msgid "Initial Indexing"
+msgstr "Indexación inicial"
+
+#: indexerstate.h:58
+#, kde-format
+msgid "Indexing new files"
+msgstr "Indexando archivos nuevos"
+
+#: indexerstate.h:61
+#, kde-format
+msgid "Indexing modified files"
+msgstr "Indexando archivos modificados"
+
+#: indexerstate.h:64
+#, kde-format
+msgid "Indexing Extended Attributes"
+msgstr "Indexando atributos extendidos"
+
+#: indexerstate.h:67
+#, kde-format
+msgid "Indexing file content"
+msgstr "Indexando contenido de archivos"
+
+#: indexerstate.h:70
+#, kde-format
+msgid "Checking for unindexed files"
+msgstr "Comprobando archivos no indexados"
+
+#: indexerstate.h:73
+#, kde-format
+msgid "Checking for stale index entries"
+msgstr "Comprobando entradas de índice obsoletas"
+
+#: indexerstate.h:76
+#, kde-format
+msgid "Idle (Powersave)"
+msgstr "Inactivo (ahorro de energía)"
+
+#: indexerstate.h:79
+#, kde-format
+msgid "Not Running"
+msgstr "No ejecutándose"
+
+#: indexerstate.h:82
+#, kde-format
+msgid "Starting"
+msgstr "Iniciando"

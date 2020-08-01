@@ -1,0 +1,102 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+# Joëlle Cornavin <jcorn@free.fr>, 2013.
+# xavier <xavier.besnard@neuf.fr>, 2013.
+# Vincent PINON <vpinon@kde.org>, 2013, 2016.
+# Geoffray Levasseur <geoffray.levasseurbrandin@numericable.fr>, 2014.
+# Simon Depiets <sdepiets@gmail.com>, 2017, 2018, 2019, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2020-04-20 03:00+0200\n"
+"PO-Revision-Date: 2020-03-22 18:27+0800\n"
+"Last-Translator: Simon Depiets <sdepiets@gmail.com>\n"
+"Language-Team: French <kde-francophone@kde.org>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Lokalize 20.07.70\n"
+"X-Environment: kde\n"
+"X-Accelerator-Marker: &\n"
+"X-Text-Markup: kde4\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Geoffray Levasseur, Joëlle Cornavin, Vincent Pinon, Simon Depiets"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr ""
+"geoffray.levasseurbrandin@numericable.fr,jcorn@free.fr, vpinon@kde.org, "
+"sdepiets@gmail.com"
+
+#: indexerstate.h:46
+#, kde-format
+msgid "Unknown"
+msgstr "Inconnu"
+
+#: indexerstate.h:49
+#, kde-format
+msgid "Idle"
+msgstr "Inactif"
+
+#: indexerstate.h:52
+#, kde-format
+msgid "Suspended"
+msgstr "En pause"
+
+#: indexerstate.h:55
+#, kde-format
+msgid "Initial Indexing"
+msgstr "Indexation initiale"
+
+#: indexerstate.h:58
+#, kde-format
+msgid "Indexing new files"
+msgstr "Indexation des nouveaux fichiers"
+
+#: indexerstate.h:61
+#, kde-format
+msgid "Indexing modified files"
+msgstr "Indexation des fichiers modifiés"
+
+#: indexerstate.h:64
+#, kde-format
+msgid "Indexing Extended Attributes"
+msgstr "Indexation des attributs étendus"
+
+#: indexerstate.h:67
+#, kde-format
+msgid "Indexing file content"
+msgstr "Indexation du contenu des fichiers"
+
+#: indexerstate.h:70
+#, kde-format
+msgid "Checking for unindexed files"
+msgstr "Vérification des fichiers non indexés"
+
+#: indexerstate.h:73
+#, kde-format
+msgid "Checking for stale index entries"
+msgstr "Vérification des entrées périmées de l'indice"
+
+#: indexerstate.h:76
+#, kde-format
+msgid "Idle (Powersave)"
+msgstr "Inactif (Powersave)"
+
+#: indexerstate.h:79
+#, kde-format
+msgid "Not Running"
+msgstr "Pas en cours d'exécution"
+
+#: indexerstate.h:82
+#, kde-format
+msgid "Starting"
+msgstr "En cours de démarrage"

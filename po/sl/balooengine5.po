@@ -1,0 +1,51 @@
+# Slovenian translation of balooengine5
+# Copyright (C) YEAR This file is copyright:
+# This file is distributed under the same license as the baloo package.
+#
+# Matjaž Jeran <matjaz.jeran@amis.net>, 2019.
+msgid ""
+msgstr ""
+"Project-Id-Version: baloo\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2019-05-20 02:54+0200\n"
+"PO-Revision-Date: 2020-01-23 15:57+0100\n"
+"Last-Translator: Matjaž Jeran <matjaz.jeran@amis.net>\n"
+"Language-Team: Slovenian <lugos-slo@lugos.si>\n"
+"Language: sl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
+"%100==4 ? 3 : 0);\n"
+"X-Generator: Poedit 2.2.4\n"
+
+#: experimental/databasesanitizer.cpp:276
+#, kde-format
+msgid "Total: %1, Inaccessible: %2"
+msgstr "Skupaj: %1, Nedostopni: %2"
+
+#: experimental/databasesanitizer.cpp:280
+#, kde-format
+msgid "Total: %1, Ignored: %2, Accessible: %3, Inaccessible: %4"
+msgstr "Skupaj: %1, Prezrti: %2, Dostopni: %3, Nedostopni: %4"
+
+#: experimental/databasesanitizer.cpp:336
+#, kde-format
+msgid "Found %1 matching in %2 devices"
+msgstr "Najdeno %1 ujemanj v %2 napravah"
+
+#: experimental/databasesanitizer.cpp:357
+#, kde-format
+msgid "IgnoredSymbolicLink:"
+msgstr "IgnoredSymbolicLink:"
+
+#: experimental/databasesanitizer.cpp:361
+#, kde-format
+msgid "Removing:"
+msgstr "Odstranjujem:"
+
+#: experimental/databasesanitizer.cpp:375
+#, kde-format
+msgctxt "numbers"
+msgid "Removed: %1, Total: %2, Ignored: %3"
+msgstr "Odstranjeno: %1, Skupaj: %2, Prezrto: %3"

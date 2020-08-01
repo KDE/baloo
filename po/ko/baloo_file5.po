@@ -1,0 +1,93 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+# Shinjo Park <kde@peremen.name>, 2014, 2015, 2018, 2019, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2020-04-20 03:00+0200\n"
+"PO-Revision-Date: 2020-03-26 16:20+0100\n"
+"Last-Translator: Shinjo Park <kde@peremen.name>\n"
+"Language-Team: Korean <kde-kr@kde.org>\n"
+"Language: ko\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Lokalize 19.04.3\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "박신조"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "kde@peremen.name"
+
+#: indexerstate.h:46
+#, kde-format
+msgid "Unknown"
+msgstr "알 수 없음"
+
+#: indexerstate.h:49
+#, kde-format
+msgid "Idle"
+msgstr "대기"
+
+#: indexerstate.h:52
+#, kde-format
+msgid "Suspended"
+msgstr "일시 정지됨"
+
+#: indexerstate.h:55
+#, kde-format
+msgid "Initial Indexing"
+msgstr "초기 색인 중"
+
+#: indexerstate.h:58
+#, kde-format
+msgid "Indexing new files"
+msgstr "새로운 파일 색인 중"
+
+#: indexerstate.h:61
+#, kde-format
+msgid "Indexing modified files"
+msgstr "수정된 파일 색인 중"
+
+#: indexerstate.h:64
+#, kde-format
+msgid "Indexing Extended Attributes"
+msgstr "확장 속성 색인 중"
+
+#: indexerstate.h:67
+#, kde-format
+msgid "Indexing file content"
+msgstr "파일 내용 색인 중"
+
+#: indexerstate.h:70
+#, kde-format
+msgid "Checking for unindexed files"
+msgstr "색인에 없는 파일 검색 중"
+
+#: indexerstate.h:73
+#, kde-format
+msgid "Checking for stale index entries"
+msgstr "오래된 색인 항목 검색 중"
+
+#: indexerstate.h:76
+#, kde-format
+msgid "Idle (Powersave)"
+msgstr "대기 중(절전)"
+
+#: indexerstate.h:79
+#, kde-format
+msgid "Not Running"
+msgstr "실행 중이 아님"
+
+#: indexerstate.h:82
+#, kde-format
+msgid "Starting"
+msgstr "시작 중"
