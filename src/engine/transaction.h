@@ -84,7 +84,6 @@ public:
     //
     void commit();
     void abort();
-    bool hasChanges() const;
 
     //
     // Write Methods
