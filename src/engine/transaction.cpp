@@ -145,17 +145,6 @@ QByteArray Transaction::documentData(quint64 id) const
     return docDataDb.get(id);
 }
 
-bool Transaction::hasChanges() const
-{
-    Q_ASSERT(m_txn);
-    if (!m_writeTrans) {
-        qCWarning(ENGINE) << "m_writeTrans is null";
-        return false;
-    }
-
-    return m_writeTrans->hasChanges();
-}
-
 QVector<quint64> Transaction::fetchPhaseOneIds(int size) const
 {
     Q_ASSERT(m_txn);

@@ -49,9 +49,6 @@ public:
     void replaceDocument(const Document& doc, DocumentOperations operations);
     void commit();
 
-    bool hasChanges() const {
-        return !m_pendingOperations.isEmpty();
-    }
     enum OperationType {
         AddId,
         RemoveId
