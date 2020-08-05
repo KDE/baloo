@@ -71,6 +71,7 @@ const char* const s_defaultFileExcludeFilters[] = {
     "*.vhdx",   // Hyper-V disk images
     "*.sql",     // SQL database dumps
     "*.sql.gz",  // Compressed SQL database dumps
+    "*.ytdl",    // youtube-dl temp files
 
     // Bytecode files
     "*.class", // Java
@@ -93,7 +94,7 @@ const char* const s_defaultFileExcludeFilters[] = {
     nullptr
 };
 
-const int s_defaultFileExcludeFiltersVersion = 5;
+const int s_defaultFileExcludeFiltersVersion = 6;
 
 const char* const s_defaultFolderExcludeFilters[] = {
     "po",
