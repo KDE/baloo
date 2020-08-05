@@ -20,7 +20,7 @@ public:
 
     uint size();
     QVector<quint64> fetch(uint size);
-    void markFailed(quint64 id);
+    bool markFailed(quint64 id);
 
 private:
     Database* m_db;

@@ -82,7 +82,7 @@ public:
     //
     // Transaction handling
     //
-    void commit();
+    bool commit();
     void abort();
 
     //

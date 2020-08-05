@@ -4,6 +4,7 @@
     SPDX-License-Identifier: LGPL-2.1-or-later
 */
 
+#include "baloodebug.h"
 #include "filecontentindexer.h"
 #include "filecontentindexerprovider.h"
 #include "extractorprocess.h"
@@ -83,7 +84,11 @@ void FileContentIndexer::run()
 #endif
             if (batchSize == 1) {
                 auto failedId = idList.first();
-                m_provider->markFailed(failedId);
+                auto ok = m_provider->markFailed(failedId);
+                if (!ok) {
+                    qCCritical(BALOO) << "Not able to commit to DB, DB likely is in a bad state. Exiting";
+                    exit(1);
+                }
                 batchSize = m_batchSize;
             } else {
                 batchSize /= 2;

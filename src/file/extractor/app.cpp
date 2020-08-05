@@ -121,7 +121,10 @@ void App::processNextFile()
         QTimer::singleShot(delay, this, &App::processNextFile);
 
     } else {
-        m_tr->commit();
+        bool ok = m_tr->commit();
+        if (!ok) {
+            exit(2);
+        }
         delete m_tr;
         m_tr = nullptr;
 

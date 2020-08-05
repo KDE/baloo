@@ -264,12 +264,12 @@ void Transaction::replaceDocument(const Document& doc, DocumentOperations operat
     m_writeTrans->replaceDocument(doc, operations);
 }
 
-void Transaction::commit()
+bool Transaction::commit()
 {
     Q_ASSERT(m_txn);
     if (!m_writeTrans) {
         qCWarning(ENGINE) << "m_writeTrans is null";
-        return;
+        return false;
     }
 
     m_writeTrans->commit();
@@ -277,11 +277,14 @@ void Transaction::commit()
     m_writeTrans = nullptr;
 
     int rc = mdb_txn_commit(m_txn);
+    m_txn = nullptr;
+
     if (rc) {
         qCWarning(ENGINE) << "Transaction::commit" << mdb_strerror(rc);
+        return false;
     }
 
-    m_txn = nullptr;
+    return true;
 }
 
 void Transaction::abort()
