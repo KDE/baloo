@@ -41,7 +41,7 @@ using namespace Baloo;
 void start()
 {
     const QString exe = QStandardPaths::findExecutable(QStringLiteral("baloo_file"));
-    QProcess::startDetached(exe);
+    QProcess::startDetached(exe, QStringList());
 }
 
 int main(int argc, char* argv[])
