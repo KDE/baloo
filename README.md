@@ -14,7 +14,7 @@ Baloo is part of the KDE umberella and relies on the KDE infrastructure.
 **Bug Tracker:** http://bugs.kde.org  ([new bug](https://bugs.kde.org/enter_bug.cgi?product=frameworks-baloo))
 **IRC Channel:** #kde-baloo on Freenode
 
-The recommended way of contributing patches is via KDE's [phabricator](https://phabricator.kde.org).
+The recommended way of contributing patches is via KDE's [GitLab](https://invent.kde.org/frameworks/baloo) instance.
 
 ## Documentation
 
@@ -22,9 +22,9 @@ The recommended way of contributing patches is via KDE's [phabricator](https://p
 * [Searching](@ref searching)
 
 ### Developers
-[![build status](https://build.kde.org/job/Frameworks%20baloo%20kf5-qt5%20SUSEQt5.9/lastBuild/)](https://build.kde.org/buildStatus/icon?job=Frameworks%20baloo%20kf5-qt5%20SUSEQt5.9)
+[![Build Status](https://build.kde.org/job/Frameworks/job/baloo/job/kf5-qt5%20SUSEQt5.15/badge/icon)](https://build.kde.org/job/Frameworks/job/baloo/job/kf5-qt5%20SUSEQt5.15/)
 * [Build Instructions](@ref build-instructions)
-* Baloo follows the [KDELibs coding style](https://community.kde.org/Policies/Kdelibs_Coding_Style).
+* Baloo follows the [KDE Frameworks coding style](https://community.kde.org/Policies/Frameworks_Coding_Style).
 
 ### Distributions
 Baloo is developed and tested exclusively for Linux. While it may run on other
@@ -38,7 +38,8 @@ Baloo may run on 32-bit systems, but it has not been tested and may not work
 correctly. Please test and let us know by [filing a bug](https://bugs.kde.org/enter_bug.cgi?product=frameworks-baloo).
 
 **Supported Kernels:** Linux
-**Support Architecture:** x64
+**Supported Architectures:** x86_64, aarch64
+**Supported Filesystems:** ext3/4, Btrfs, XFS
 
 ###### File Indexing Plugins
 
