@@ -51,7 +51,7 @@ FileIndexScheduler::FileIndexScheduler(Database* db, FileIndexerConfig* config, 
         m_indexerState = LowPowerIdle;
     }
 
-    m_contentIndexer = new FileContentIndexer(m_config, &m_provider, m_indexFinishedFiles, this);
+    m_contentIndexer = new FileContentIndexer(m_config->maxUncomittedFiles(), &m_provider, m_indexFinishedFiles, this);
     m_contentIndexer->setAutoDelete(false);
     connect(m_contentIndexer, &FileContentIndexer::done, this,
             &FileIndexScheduler::runnerFinished);

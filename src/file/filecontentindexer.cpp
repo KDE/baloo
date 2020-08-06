@@ -15,12 +15,11 @@
 
 using namespace Baloo;
 
-FileContentIndexer::FileContentIndexer(FileIndexerConfig* config,
+FileContentIndexer::FileContentIndexer(uint batchSize,
         FileContentIndexerProvider* provider,
         uint& finishedCount, QObject* parent)
     : QObject(parent)
-    , m_config(config)
-    , m_batchSize(config->maxUncomittedFiles())
+    , m_batchSize(batchSize)
     , m_provider(provider)
     , m_finishedCount(finishedCount)
     , m_stop(0)
