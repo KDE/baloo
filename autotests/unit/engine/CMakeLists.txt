@@ -25,6 +25,7 @@ baloo_engine_auto_tests(
     # Query
     andpostingiteratortest
     orpostingiteratortest
+    postingiteratortest
     phraseanditeratortest
     transactiontest
 )
