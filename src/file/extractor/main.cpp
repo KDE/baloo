@@ -11,7 +11,7 @@
 
 #include <KCrash>
 
-#include <QApplication>
+#include <QGuiApplication>
 #include <QSessionManager>
 
 int main(int argc, char* argv[])
@@ -20,8 +20,8 @@ int main(int argc, char* argv[])
     setIdleSchedulingPriority();
     lowerPriority();
 
-    QApplication::setDesktopSettingsAware(false);
-    QApplication app(argc, argv);
+    QGuiApplication::setDesktopSettingsAware(false);
+    QGuiApplication app(argc, argv);
 
     KCrash::initialize();
 
