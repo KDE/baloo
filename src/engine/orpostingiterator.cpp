@@ -46,7 +46,7 @@ quint64 OrPostingIterator::docId() const
 
 quint64 OrPostingIterator::skipTo(quint64 id)
 {
-    if (m_docId == id) {
+    if (m_docId >= id) {
         return m_docId;
     }
     if (m_nextId == 0) {
@@ -104,6 +104,10 @@ quint64 OrPostingIterator::skipTo(quint64 id)
 
 quint64 OrPostingIterator::next()
 {
-    m_docId = skipTo(m_nextId);
+    if (m_nextId) {
+        m_docId = skipTo(m_nextId);
+    } else {
+        m_docId = 0;
+    }
     return m_docId;
 }
