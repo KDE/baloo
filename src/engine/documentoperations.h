@@ -21,9 +21,8 @@ enum DocumentOperation {
     Everything    = DocumentTerms | FileNameTerms | XAttrTerms | DocumentData | DocumentTime | DocumentUrl
 };
 Q_DECLARE_FLAGS(DocumentOperations, DocumentOperation)
+Q_DECLARE_OPERATORS_FOR_FLAGS(DocumentOperations)
 
 }
-
-Q_DECLARE_OPERATORS_FOR_FLAGS(Baloo::DocumentOperations)
 
 #endif
