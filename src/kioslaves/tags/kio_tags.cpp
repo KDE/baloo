@@ -2,6 +2,7 @@
     This file is part of the KDE Baloo Project
     SPDX-FileCopyrightText: 2012-2014 Vishesh Handa <me@vhanda.in>
     SPDX-FileCopyrightText: 2017-2018 James D. Smith <smithjd15@gmail.com>
+    SPDX-FileCopyrightText: 2020 Stefan Brüns <bruns@kde.org>
 
     SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
 */
@@ -21,6 +22,7 @@
 
 #include "file.h"
 #include "taglistjob.h"
+#include "../common/udstools.h"
 
 #include "query.h"
 #include "term.h"
@@ -426,31 +428,23 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
     q.setSearchString(QStringLiteral("tag=\"%1\"").arg(result.tag));
     ResultIterator it = q.exec();
     QList<QString> resultNames;
+    UdsFactory udsf;
+
     while (it.next()) {
-        const QUrl& match = QUrl::fromLocalFile(it.filePath());
+        KIO::UDSEntry uds = udsf.createUdsEntry(it.filePath());
+        if (uds.count() == 0) {
+	    continue;
+	}
 
-        // Somehow stat the file.
-        KIO::UDSEntry uds;
-        KIO::StatJob* job = KIO::stat(match, KIO::HideProgressInfo);
-        // We do not want to wait for the event loop to delete the job.
-        QScopedPointer<KIO::StatJob> sp(job);
-        job->setAutoDelete(false);
-        if (job->exec()) {
-            uds = job->statResult();
-        } else {
-            continue;
-        }
-
-        uds.fastInsert(KIO::UDSEntry::UDS_TARGET_URL, match.toString());
-        uds.fastInsert(KIO::UDSEntry::UDS_ICON_OVERLAY_NAMES, QStringLiteral("tag"));
-
-        if (resultNames.contains(match.fileName())) {
-            uds.replace(KIO::UDSEntry::UDS_NAME, match.fileName() + QStringLiteral(" (%1)").arg(resultNames.count(match.fileName())));
+	const QUrl url(uds.stringValue(KIO::UDSEntry::UDS_URL));
+	auto dupCount = resultNames.count(url.fileName());
+        if (dupCount > 0) {
+            uds.replace(KIO::UDSEntry::UDS_NAME, url.fileName() + QStringLiteral(" (%1)").arg(dupCount));
         }
 
         qCDebug(KIO_TAGS) << result.tag << "adding file:" << uds.stringValue(KIO::UDSEntry::UDS_NAME);
 
-        resultNames << match.fileName();
+        resultNames << url.fileName();
         result.pathUDSResults << uds;
     }
 
