@@ -1,6 +1,7 @@
 /*
     SPDX-FileCopyrightText: 2009-2010 Sebastian Trueg <trueg@kde.org>
     SPDX-FileCopyrightText: 2013 Vishesh Handa <me@vhanda.in>
+    SPDX-FileCopyrightText: 2018-2020 Stefan Brüns <bruns@kde.org>
 
     SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 */
@@ -9,7 +10,7 @@
 #include "timelinetools.h"
 #include "query.h"
 #include "resultiterator.h"
-#include "idutils.h"
+#include "../common/udstools.h"
 
 #include <QDate>
 #include <QCoreApplication>
@@ -73,33 +74,6 @@ KIO::UDSEntry createDayUDSEntry(const QDate& date)
     return uds;
 }
 
-KIO::UDSEntry createFileUDSEntry(const QString& filePath)
-{
-    KIO::UDSEntry uds;
-    // Code from kdelibs/kioslaves/file.cpp
-    QT_STATBUF statBuf;
-    const QByteArray url = QFile::encodeName(filePath);
-    if (filePathToStat(url, statBuf) == 0) {
-        uds.reserve(9);
-        uds.fastInsert(KIO::UDSEntry::UDS_MODIFICATION_TIME, statBuf.st_mtime);
-        uds.fastInsert(KIO::UDSEntry::UDS_ACCESS_TIME, statBuf.st_atime);
-        uds.fastInsert(KIO::UDSEntry::UDS_SIZE, statBuf.st_size);
-        uds.fastInsert(KIO::UDSEntry::UDS_USER, statBuf.st_uid);
-        uds.fastInsert(KIO::UDSEntry::UDS_GROUP, statBuf.st_gid);
-
-        mode_t type = statBuf.st_mode & S_IFMT;
-        mode_t access = statBuf.st_mode & 07777;
-
-        uds.fastInsert(KIO::UDSEntry::UDS_FILE_TYPE, type);
-        uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, access);
-        QUrl fileUrl = QUrl::fromLocalFile(filePath);
-        uds.fastInsert(KIO::UDSEntry::UDS_URL, fileUrl.url());
-        uds.fastInsert(KIO::UDSEntry::UDS_NAME, fileUrl.fileName());
-    }
-
-    return uds;
-}
-
 }
 
 
@@ -150,9 +124,11 @@ void TimelineProtocol::listDir(const QUrl& url)
         query.setDateFilter(m_date.year(), m_date.month(), m_date.day());
         query.setSortingOption(Query::SortNone);
 
+        UdsFactory udsf;
+
         ResultIterator it = query.exec();
         while (it.next()) {
-            KIO::UDSEntry uds = createFileUDSEntry(it.filePath());
+            KIO::UDSEntry uds = udsf.createUdsEntry(it.filePath());
             if (uds.count())
                 listEntry(uds);
         }
