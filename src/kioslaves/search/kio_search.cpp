@@ -6,6 +6,7 @@
 */
 
 #include "kio_search.h"
+#include "../common/usergroupcache.h"
 
 #include "query.h"
 #include "resultiterator.h"
@@ -65,6 +66,8 @@ void SearchProtocol::listDir(const QUrl& url)
     q.setSortingOption(Query::SortNone);
     ResultIterator it = q.exec();
 
+    UserGroupCache ugCache;
+
     while (it.next()) {
         KIO::UDSEntry uds;
         uds.reserve(10);
@@ -78,8 +81,8 @@ void SearchProtocol::listDir(const QUrl& url)
             uds.fastInsert(KIO::UDSEntry::UDS_ACCESS_TIME, statBuf.st_atime);
             uds.fastInsert(KIO::UDSEntry::UDS_SIZE, statBuf.st_size);
 #ifndef Q_OS_WIN
-            uds.fastInsert(KIO::UDSEntry::UDS_USER, getUserName(KUserId(statBuf.st_uid)));
-            uds.fastInsert(KIO::UDSEntry::UDS_GROUP, getGroupName(KGroupId(statBuf.st_gid)));
+            uds.fastInsert(KIO::UDSEntry::UDS_USER, ugCache.getUserName(KUserId(statBuf.st_uid)));
+            uds.fastInsert(KIO::UDSEntry::UDS_GROUP, ugCache.getGroupName(KGroupId(statBuf.st_gid)));
 #else
 #pragma message("TODO: st_uid and st_gid are always zero, use GetSecurityInfo to find the owner")
 #endif
@@ -127,41 +130,6 @@ void SearchProtocol::stat(const QUrl& url)
     statEntry(statSearchFolder(url));
     finished();
 }
-
-QString SearchProtocol::getUserName(const KUserId &uid) const
-{
-    if (Q_UNLIKELY(!uid.isValid())) {
-        return QString();
-    }
-    if (!mUsercache.contains(uid)) {
-        KUser user(uid);
-        QString name = user.loginName();
-        if (name.isEmpty()) {
-            name = uid.toString();
-        }
-        mUsercache.insert(uid, name);
-        return name;
-    }
-    return mUsercache[uid];
-}
-
-QString SearchProtocol::getGroupName(const KGroupId &gid) const
-{
-    if (Q_UNLIKELY(!gid.isValid())) {
-        return QString();
-    }
-    if (!mGroupcache.contains(gid)) {
-        KUserGroup group(gid);
-        QString name = group.name();
-        if (name.isEmpty()) {
-            name = gid.toString();
-        }
-        mGroupcache.insert(gid, name);
-        return name;
-    }
-    return mGroupcache[gid];
-}
-
 
 extern "C"
 {
