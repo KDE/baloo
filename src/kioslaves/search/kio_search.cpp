@@ -1,16 +1,16 @@
 /*
     SPDX-FileCopyrightText: 2008-2010 Sebastian Trueg <trueg at kde.org>
     SPDX-FileCopyrightText: 2012-2014 Vishesh Handa <me@vhanda.in>
+    SPDX-FileCopyrightText: 2020 Stefan Brüns <bruns@kde.org>
 
     SPDX-License-Identifier: GPL-2.0-or-later
 */
 
 #include "kio_search.h"
-#include "../common/usergroupcache.h"
+#include "../common/udstools.h"
 
 #include "query.h"
 #include "resultiterator.h"
-#include "idutils.h"
 
 #include <QUrl>
 #include <QUrlQuery>
@@ -66,43 +66,13 @@ void SearchProtocol::listDir(const QUrl& url)
     q.setSortingOption(Query::SortNone);
     ResultIterator it = q.exec();
 
-    UserGroupCache ugCache;
+    UdsFactory udsf;
 
     while (it.next()) {
-        KIO::UDSEntry uds;
-        uds.reserve(10);
-        const QString filePath(it.filePath());
-
-        // Code from kdelibs/kioslaves/file.cpp
-        QT_STATBUF statBuf;
-        const QByteArray ba = QFile::encodeName(filePath);
-        if (filePathToStat(ba, statBuf) == 0) {
-            uds.fastInsert(KIO::UDSEntry::UDS_MODIFICATION_TIME, statBuf.st_mtime);
-            uds.fastInsert(KIO::UDSEntry::UDS_ACCESS_TIME, statBuf.st_atime);
-            uds.fastInsert(KIO::UDSEntry::UDS_SIZE, statBuf.st_size);
-#ifndef Q_OS_WIN
-            uds.fastInsert(KIO::UDSEntry::UDS_USER, ugCache.getUserName(KUserId(statBuf.st_uid)));
-            uds.fastInsert(KIO::UDSEntry::UDS_GROUP, ugCache.getGroupName(KGroupId(statBuf.st_gid)));
-#else
-#pragma message("TODO: st_uid and st_gid are always zero, use GetSecurityInfo to find the owner")
-#endif
-
-            mode_t type = statBuf.st_mode & S_IFMT;
-            mode_t access = statBuf.st_mode & 07777;
-
-            uds.fastInsert(KIO::UDSEntry::UDS_FILE_TYPE, type);
-            uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, access);
+        KIO::UDSEntry uds = udsf.createUdsEntry(it.filePath());
+        if (uds.count()) {
+	    listEntry(uds);
         }
-        else {
-            continue;
-        }
-
-        QUrl url = QUrl::fromLocalFile(filePath);
-        uds.fastInsert(KIO::UDSEntry::UDS_NAME, url.fileName());
-        uds.fastInsert(KIO::UDSEntry::UDS_URL, url.url());
-        uds.fastInsert(KIO::UDSEntry::UDS_LOCAL_PATH, filePath);
-
-        listEntry(uds);
     }
 
     KIO::UDSEntry uds;
