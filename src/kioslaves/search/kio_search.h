@@ -9,7 +9,6 @@
 #define BALOO_KIO_SEARCH_H_
 
 #include <kio/slavebase.h>
-#include <KUser>
 
 namespace Baloo
 {
@@ -37,13 +36,6 @@ public:
      * Folders will be created as virtual folders.
      */
     void stat(const QUrl& url) override;
-
-private:
-    QString getUserName(const KUserId &uid) const;
-    QString getGroupName(const KGroupId &gid) const;
-
-    mutable QHash<KUserId, QString> mUsercache;
-    mutable QHash<KGroupId, QString> mGroupcache;
 };
 }
 
