@@ -3,7 +3,7 @@
     SPDX-FileCopyrightText: 2008 Sebastian Trueg <trueg@kde.org>
     SPDX-FileCopyrightText: 2012-2015 Vishesh Handa <vhanda@kde.org>
 
-    SPDX-License-Identifier: LGPL-2.0-only
+    SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
 #ifndef BALOO_FILEINDEXER_POWER_STATE_MONITOR_H_
