@@ -2,7 +2,7 @@
     This file is part of the KDE Project
     SPDX-FileCopyrightText: 2007-2011 Sebastian Trueg <trueg@kde.org>
 
-    SPDX-License-Identifier: LGPL-2.0-only
+    SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
 #ifndef BALOO_FILE_WATCH_H_
