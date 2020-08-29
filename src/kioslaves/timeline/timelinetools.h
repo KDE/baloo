@@ -2,7 +2,7 @@
     This file is part of the Nepomuk KDE project.
     SPDX-FileCopyrightText: 2010 Sebastian Trueg <trueg@kde.org>
 
-    SPDX-License-Identifier: LGPL-2.0-only
+    SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
 #ifndef BALOO_TIMELINE_TOOLS_H_
