@@ -3,7 +3,7 @@
     SPDX-FileCopyrightText: 2009-2011 Sebastian Trueg <trueg@kde.org>
     SPDX-FileCopyrightText: 2013-2014 Vishesh Handa <vhanda@kde.org>
 
-    SPDX-License-Identifier: LGPL-2.0-only
+    SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
 #ifndef BALOO_METADATA_MOVER_H_
