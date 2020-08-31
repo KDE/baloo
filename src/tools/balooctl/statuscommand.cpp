@@ -260,7 +260,10 @@ int StatusCommand::exec(const QCommandLineParser& parser)
     const QString format = parser.value(QStringLiteral("format"));
 
     if (!allowedFormats.contains(format)) {
-        err << i18n("Output format \"%1\" is invalid", format) << '\n';
+        err << i18n("Output format \"%1\" is invalid, use one of:\n", format);
+        for (const auto& format : allowedFormats) {
+            err << i18nc("bullet list item with output format", "- %1\n", format);
+        }
         return 1;
     }
 
