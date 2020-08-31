@@ -24,7 +24,8 @@ MonitorCommand::MonitorCommand(QObject *parent)
 
 {
     m_dbusServiceWatcher = new QDBusServiceWatcher(
-        QStringLiteral("org.kde.baloo"), QDBusConnection::sessionBus()
+        QStringLiteral("org.kde.baloo"), QDBusConnection::sessionBus(),
+        QDBusServiceWatcher::WatchForOwnerChange, this
     );
     connect(m_dbusServiceWatcher, &QDBusServiceWatcher::serviceRegistered,
             this, &MonitorCommand::balooIsAvailable);
@@ -61,8 +62,6 @@ MonitorCommand::MonitorCommand(QObject *parent)
     } else {
         balooIsNotAvailable();
     }
-
-    m_dbusServiceWatcher->setWatchMode(QDBusServiceWatcher::WatchForOwnerChange);
 }
 
 void MonitorCommand::balooIsNotAvailable()
