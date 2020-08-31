@@ -265,7 +265,7 @@ int StatusCommand::exec(const QCommandLineParser& parser)
 
     IndexerConfig cfg;
     if (!cfg.fileIndexingEnabled()) {
-        err << i18n("Baloo is currently disabled. To enable, please run %1", QStringLiteral("balooctl enable")) << '\n';
+        err << i18n("Baloo is currently disabled. To enable, please run %1\n", QStringLiteral("balooctl enable"));
         return 1;
     }
 

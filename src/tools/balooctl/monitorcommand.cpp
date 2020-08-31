@@ -88,13 +88,12 @@ int MonitorCommand::exec(const QCommandLineParser& parser)
 
 void MonitorCommand::startedIndexingFile(const QString& filePath)
 {
+    if (!m_currentFile.isEmpty()) {
+	m_out << '\n';
+    }
     m_currentFile = filePath;
-    m_out << i18nc("currently indexed file", "Indexing: %1", filePath)
-#if (QT_VERSION < QT_VERSION_CHECK(5, 15, 0))
-          << flush;
-#else
-          << Qt::flush;
-#endif
+    m_out << i18nc("currently indexed file", "Indexing: %1", filePath);
+    m_out.flush();
 }
 
 void MonitorCommand::finishedIndexingFile(const QString& filePath)
