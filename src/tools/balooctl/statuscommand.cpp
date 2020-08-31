@@ -13,6 +13,7 @@
 #include "transaction.h"
 #include "idutils.h"
 
+#include "fileindexerinterface.h"
 #include "schedulerinterface.h"
 #include "maininterface.h"
 #include "indexerstate.h"
@@ -292,8 +293,19 @@ int StatusCommand::exec(const QCommandLineParser& parser)
         bool running = mainInterface.isValid();
 
         if (running) {
+            org::kde::baloo::fileindexer indexerInterface(QStringLiteral("org.kde.baloo"),
+            QStringLiteral("/fileindexer"),
+            QDBusConnection::sessionBus());
+
+            const QString currentFile = indexerInterface.currentFile();
+
             out << i18n("Baloo File Indexer is running\n");
-            out << i18n("Indexer state: %1", stateString(schedulerinterface.state())) << '\n';
+            if (!currentFile.isEmpty()) {
+                out << i18n("Indexer state: %1", stateString(IndexerState::ContentIndexing)) << '\n';
+                out << i18nc("currently indexed file", "Indexing: %1", currentFile) << '\n';
+            } else {
+                out << i18n("Indexer state: %1", stateString(schedulerinterface.state())) << '\n';
+            }
         }
         else {
             out << i18n("Baloo File Indexer is not running\n");
