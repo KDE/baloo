@@ -3,7 +3,7 @@
     SPDX-FileCopyrightText: 2007-2011 Sebastian Trueg <trueg@kde.org>
     SPDX-FileCopyrightText: 2012-2014 Vishesh Handa <me@vhanda.in>
 
-    SPDX-License-Identifier: LGPL-2.0-only
+    SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
 #include "filewatch.h"
