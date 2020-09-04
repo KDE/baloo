@@ -52,7 +52,7 @@ public:
         FailedToIndex,
         Done,
     };
-    QString m_filePath;
+    const QString m_filePath;
     FileStatus m_fileStatus;
     IndexStateReason m_indexState;
     uint32_t m_dataSize;
@@ -65,8 +65,8 @@ FileIndexStatus collectFileStatus(Transaction& tr, IndexerConfig&  cfg, const QS
 
     bool onlyBasicIndexing = cfg.onlyBasicIndexing();
 
-    QFileInfo fileInfo = QFileInfo(file);
-    QString filePath = fileInfo.absoluteFilePath();
+    const QFileInfo fileInfo = QFileInfo(file);
+    const QString filePath = fileInfo.absoluteFilePath();
     quint64 id = filePathToId(QFile::encodeName(filePath));
     if (id == 0) {
         return FileIndexStatus{filePath, FileStatus::NonExisting, IndexStateReason::NoFileOrDirectory, 0};

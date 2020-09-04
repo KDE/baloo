@@ -55,7 +55,7 @@ MonitorCommand::MonitorCommand(QObject *parent)
         m_err.flush();
         balooIsAvailable();
         stateChanged(m_schedulerDBusInterface->state());
-        QString currentFile = m_indexerDBusInterface->currentFile();
+        const QString currentFile = m_indexerDBusInterface->currentFile();
         if (!currentFile.isEmpty()) {
             startedIndexingFile(currentFile);
         }
