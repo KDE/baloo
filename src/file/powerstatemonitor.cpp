@@ -3,7 +3,7 @@
     SPDX-FileCopyrightText: 2008 Sebastian Trueg <trueg@kde.org>
     SPDX-FileCopyrightText: 2010-15 Vishesh Handa <vhanda@kde.org>
 
-    SPDX-License-Identifier: LGPL-2.0-only
+    SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
 #include "powerstatemonitor.h"
