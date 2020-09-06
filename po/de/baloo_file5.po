@@ -1,0 +1,80 @@
+# Burkhard Lück <lueck@hube-lueck.de>, 2013, 2014, 2015, 2018, 2019, 2020.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2020-08-07 02:06+0200\n"
+"PO-Revision-Date: 2020-01-08 07:30+0100\n"
+"Last-Translator: Burkhard Lück <lueck@hube-lueck.de>\n"
+"Language-Team: German <kde-i18n-de@kde.org>\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 18.12.3\n"
+
+#: indexerstate.h:32
+#, kde-format
+msgid "Unknown"
+msgstr "Unbekannt"
+
+#: indexerstate.h:35
+#, kde-format
+msgid "Idle"
+msgstr "Inaktiv"
+
+#: indexerstate.h:38
+#, kde-format
+msgid "Suspended"
+msgstr "Angehalten"
+
+#: indexerstate.h:41
+#, kde-format
+msgid "Initial Indexing"
+msgstr "Erstindizierung"
+
+#: indexerstate.h:44
+#, kde-format
+msgid "Indexing new files"
+msgstr "Neue Dateien werden indiziert"
+
+#: indexerstate.h:47
+#, kde-format
+msgid "Indexing modified files"
+msgstr "Geänderte Dateien werden indiziert"
+
+#: indexerstate.h:50
+#, kde-format
+msgid "Indexing Extended Attributes"
+msgstr "Erweiterte Attribute werden indiziert"
+
+#: indexerstate.h:53
+#, kde-format
+msgid "Indexing file content"
+msgstr "Dateiinhalt wird indiziert"
+
+#: indexerstate.h:56
+#, kde-format
+msgid "Checking for unindexed files"
+msgstr "Überprüfung auf nicht indizierten Dateien"
+
+#: indexerstate.h:59
+#, kde-format
+msgid "Checking for stale index entries"
+msgstr "Überprüfung auf veraltete Indexeinträge"
+
+#: indexerstate.h:62
+#, kde-format
+msgid "Idle (Powersave)"
+msgstr "Inaktiv (Energiesparfunktion)"
+
+#: indexerstate.h:65
+#, kde-format
+msgid "Not Running"
+msgstr "Nicht gestartet"
+
+#: indexerstate.h:68
+#, kde-format
+msgid "Starting"
+msgstr ""
