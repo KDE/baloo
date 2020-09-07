@@ -4,7 +4,7 @@
     SPDX-FileCopyrightText: 2013-2014 Vishesh Handa <me@vhanda.in>
     SPDX-FileCopyrightText: 2020 Benjamin Port <benjamin.port@enioka.com>
 
-    SPDX-License-Identifier: LGPL-2.0-only
+    SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
 #include "fileindexerconfig.h"
