@@ -3,7 +3,7 @@
     SPDX-FileCopyrightText: 2012-2014 Vishesh Handa <me@vhanda.in>
     SPDX-FileCopyrightText: 2020 Benjamin Port <benjamin.port@enioka.com>
 
-    SPDX-License-Identifier: LGPL-2.0-only
+    SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
 #ifndef BALOO_FILEINDEXER_CONFIG_H_
