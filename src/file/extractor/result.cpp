@@ -90,9 +90,8 @@ void Result::append(const QString& text)
 
 void Result::addType(KFileMetaData::Type::Type type)
 {
-    KFileMetaData::TypeInfo ti(type);
-    const QString t = QLatin1Char('T') + ti.name().toLower();
-    m_doc.addTerm(t.toUtf8());
+    QByteArray num = QByteArray::number(static_cast<int>(type));
+    m_doc.addTerm(QByteArray("T") + num);
 }
 
 void Result::finish()
