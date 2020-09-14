@@ -92,7 +92,7 @@ void FileContentIndexer::run()
             } else {
                 batchSize /= 2;
             }
-            // reset to old value - nothing comitted
+            // reset to old value - nothing committed
             m_finishedCount = batchStartCount;
             process.start();
         } else {
