@@ -52,7 +52,7 @@ static QStringList lex(const QString& text)
                 token.clear();
             }
             // accept '=' after any of the above
-            if (text.at(i + 1) == QLatin1Char('=')) {
+            if (((i + 1) < end) && (text.at(i + 1) == QLatin1Char('='))) {
                 tokenList.append(text.mid(i, 2));
                 i++;
             } else {
