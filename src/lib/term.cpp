@@ -96,6 +96,14 @@ Term::Term(const Term& lhs, Term::Operation op, const Term& rhs)
     : d(new Private)
 {
     d->m_op = op;
+    if (lhs.isEmpty()) {
+	*d = *(rhs.d);
+	return;
+    }
+    if (rhs.isEmpty()) {
+	*d = *(lhs.d);
+	return;
+    }
 
     if (lhs.operation() == op) {
         d->m_subTerms << lhs.subTerms();
