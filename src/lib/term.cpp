@@ -14,22 +14,16 @@ namespace Baloo {
 
 class Baloo::Term::Private {
 public:
-    Operation m_op;
-    Comparator m_comp;
+    Operation m_op = None;
+    Comparator m_comp = Auto;
 
     QString m_property;
     QVariant m_value;
 
-    bool m_isNegated;
+    bool m_isNegated = false;
 
     QList<Term> m_subTerms;
     QVariantHash m_userData;
-
-    Private() {
-        m_op = None;
-        m_comp = Auto;
-        m_isNegated = false;
-    }
 };
 
 Term::Term()
