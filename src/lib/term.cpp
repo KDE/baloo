@@ -450,8 +450,9 @@ QDebug operator <<(QDebug d, const Baloo::Term& t)
     d.noquote().nospace();
     if (t.subTerms().isEmpty()) {
         if (!t.property().isEmpty()) {
-            d << t.property() << comparatorToString(t.comparator());
+            d << t.property();
         }
+	d << comparatorToString(t.comparator());
         if (t.value().type() == QVariant::String) {
             d << QLatin1Char('"') << t.value().toString() << QLatin1Char('"');
         } else {
