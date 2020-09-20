@@ -33,6 +33,8 @@ private Q_SLOTS:
     void testOptimizedLogic_data();
     void testPhrases();
     void testPhrases_data();
+    void testIncompleteTokens();
+    void testIncompleteTokens_data();
 };
 
 void AdvancedQueryParserTest::testSimpleProperty()
@@ -349,6 +351,33 @@ void AdvancedQueryParserTest::testPhrases_data()
 	{"artist", "Foo Fighters", Term::Contains},
 	{"artist", "ColdPlay", Term::Contains},
     }});
+}
+
+void AdvancedQueryParserTest::testIncompleteTokens()
+{
+    QFETCH(QString, input);
+    QFETCH(Term, expectedTerm);
+
+    AdvancedQueryParser parser;
+    Term term = parser.parse(input);
+    QCOMPARE(term, expectedTerm);
+}
+
+void AdvancedQueryParserTest::testIncompleteTokens_data()
+{
+    QTest::addColumn<QString>("input");
+    QTest::addColumn<Term>("expectedTerm");
+
+    auto addRow = [](const QString& name, const QString& input, const Term& term)
+	{ QTest::addRow("%s", qPrintable(name)) << input << term; };
+
+    addRow("ends with quote", "foo \"", {QString(), "foo", Term::Auto});
+    // Hits ASSERT: "uint(i) < uint(size())"
+    // addRow("ends with comparator", "foo>", {"foo", QString(), Term::Contains});
+    // Creates empty Term
+    // addRow("ends with opening parens", "foo (", {QString(), "foo", Term::Auto});
+    // Creates empty Term
+    // addRow("ends with closing parens", "foo (", {QString(), "foo", Term::Auto});
 }
 
 QTEST_MAIN(AdvancedQueryParserTest)
