@@ -75,12 +75,6 @@ static void addTermToStack(QStack<Term>& stack, const Term& termInConstruction, 
 {
     Term &tos = stack.top();
 
-    if (tos.isEmpty()) {
-        // Empty top of stack, just assign termInConstruction to it
-        tos = termInConstruction;
-        return;
-    }
-
     tos = Term(tos, op, termInConstruction);
 }
 
@@ -213,6 +207,14 @@ Term AdvancedQueryParser::parse(const QString& text)
 
     if (termInConstruction.value().isValid()) {
         addTermToStack(stack, termInConstruction, ops.top());
+    }
+
+    // Process unclosed parentheses
+    ops.pop();
+    while (stack.size() > 1) {
+	// stack.pop() is the term that has to be closed. Append
+	// it to the term just above it.
+	addTermToStack(stack, stack.pop(), ops.top());
     }
 
     return stack.top();
