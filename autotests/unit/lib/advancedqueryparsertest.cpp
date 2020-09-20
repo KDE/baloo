@@ -372,8 +372,7 @@ void AdvancedQueryParserTest::testIncompleteTokens_data()
 	{ QTest::addRow("%s", qPrintable(name)) << input << term; };
 
     addRow("ends with quote", "foo \"", {QString(), "foo", Term::Auto});
-    // Hits ASSERT: "uint(i) < uint(size())"
-    // addRow("ends with comparator", "foo>", {"foo", QString(), Term::Contains});
+    addRow("ends with comparator", "foo>", {"foo", QString(), Term::Contains});
     // Creates empty Term
     // addRow("ends with opening parens", "foo (", {QString(), "foo", Term::Auto});
     // Creates empty Term

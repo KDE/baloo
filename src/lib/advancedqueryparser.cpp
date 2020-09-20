@@ -205,6 +205,12 @@ Term AdvancedQueryParser::parse(const QString& text)
         }
     }
 
+    if (valueExpected) {
+        termInConstruction.setProperty(termInConstruction.value().toString());
+        termInConstruction.setValue(QString());
+        termInConstruction.setComparator(Term::Contains);
+    }
+
     if (termInConstruction.value().isValid()) {
         addTermToStack(stack, termInConstruction, ops.top());
     }
