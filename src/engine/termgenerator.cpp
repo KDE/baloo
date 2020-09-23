@@ -11,6 +11,49 @@
 
 using namespace Baloo;
 
+namespace {
+
+QString normalizeTerm(const QString &str)
+{
+    // Remove all accents. It is important to call toLower after normalization,
+    // since some exotic unicode symbols can remain uppercase
+    const QString denormalized = str.normalized(QString::NormalizationForm_KD).toLower();
+
+    // Remove any leading and trailing space or punctuation
+    auto isPunctOrSpace = [] (QChar c) {
+        return c.isPunct() || c.isSpace();
+    };
+
+    auto begin = denormalized.begin();
+    auto end = denormalized.end();
+    while (begin < end && isPunctOrSpace(*std::prev(end))) {
+        --end;
+    }
+    while (begin < end && isPunctOrSpace(*begin)) {
+        ++begin;
+    }
+
+    QString cleanString;
+    cleanString.reserve(std::distance(begin, end));
+    for (; begin != end; ++begin) {
+        if (!begin->isMark()) {
+            cleanString.append(*begin);
+        }
+    }
+
+    return cleanString.normalized(QString::NormalizationForm_KC);
+}
+
+void appendTerm(QByteArrayList &list, const QString &term)
+{
+    if (!term.isEmpty()) {
+        // Truncate the string to avoid arbitrarily long terms
+        list << term.leftRef(TermGenerator::maxTermSize).toUtf8();
+    }
+}
+
+}
+
 TermGenerator::TermGenerator(Document& doc)
     : m_doc(doc)
     , m_position(1)
@@ -28,41 +71,25 @@ QByteArrayList TermGenerator::termList(const QString& text_)
     text.replace(QLatin1Char('_'), QLatin1Char(' '));
 
     int start = 0;
-    int end = 0;
 
     QByteArrayList list;
     QTextBoundaryFinder bf(QTextBoundaryFinder::Word, text);
     for (; bf.position() != -1; bf.toNextBoundary()) {
-        if (bf.boundaryReasons() & QTextBoundaryFinder::StartOfItem) {
-            start = bf.position();
-            continue;
-        }
-        else if (bf.boundaryReasons() & QTextBoundaryFinder::EndOfItem) {
-            end = bf.position();
-
-            QString str = text.mid(start, end - start);
-
-            // Remove all accents. It is important to call toLower after normalization,
-            // since some exotic unicode symbols can remain uppercase
-            const QString denormalized = str.normalized(QString::NormalizationForm_KD).toLower();
-
-            QString cleanString;
-            cleanString.reserve(denormalized.size());
-            for (const QChar& ch : denormalized) {
-                auto cat = ch.category();
-                if (cat != QChar::Mark_NonSpacing && cat != QChar::Mark_SpacingCombining && cat != QChar::Mark_Enclosing) {
-                    cleanString.append(ch);
-                }
-            }
-
-            str = cleanString.normalized(QString::NormalizationForm_KC);
-            if (!str.isEmpty()) {
-                // Truncate the string to avoid arbitrarily long terms
-                list << str.leftRef(maxTermSize).toUtf8();
-            }
+        // We cannot use only text between StartOfItem and EndOfItem pairs.
+        // Most of CJK characters are neither StartOfItem or EndOfItem. And it is possible to have
+        // valid characters between an EndOfItem and next StartOfItem. So we just use StartOfItem
+        // and EndOfItem as a term boundary hint here.
+        if (bf.boundaryReasons() & (QTextBoundaryFinder::StartOfItem | QTextBoundaryFinder::EndOfItem)) {
+            int end = bf.position();
+            const QString term = normalizeTerm(text.mid(start, end - start));
+            appendTerm(list, term);
+            start = end;
         }
     }
-
+    if (start < text.size()) {
+        const QString term = normalizeTerm(text.mid(start));
+        appendTerm(list, term);
+    }
     return list;
 }
 
