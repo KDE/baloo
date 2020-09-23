@@ -20,6 +20,8 @@ class Baloo::TermGeneratorTest : public QObject
 
 private Q_SLOTS:
     void testWordBoundaries();
+    void testWordBoundariesCJK();
+    void testWordBoundariesCJKMixed();
     void testUnderscoreWord();
     void testUnderscore_splitting();
     void testAccentCharacters();
@@ -27,6 +29,7 @@ private Q_SLOTS:
     void testUnicodeLowering();
     void testEmails();
     void testWordPositions();
+    void testWordPositionsCJK();
     void testNumbers();
 
     QList<QByteArray> allWords(const Document& doc)
@@ -49,6 +52,37 @@ void TermGeneratorTest::testWordBoundaries()
     expectedWords << QByteArray("32.3") << QByteArray("brown") << QByteArray("can't") << QByteArray("feet") << QByteArray("fox") << QByteArray("jump")
                   << QByteArray("no") << QByteArray("quick") << QByteArray("right") << QByteArray("the") << QByteArray("txt") << QByteArray("wrong")
                   << QByteArray("xx");
+
+    QCOMPARE(words, expectedWords);
+}
+
+void TermGeneratorTest::testWordBoundariesCJK()
+{
+    QString str = QString::fromUtf8("你");
+
+    Document doc;
+    TermGenerator termGen(doc);
+    termGen.indexText(str);
+
+    QList<QByteArray> words = allWords(doc);
+    QList<QByteArray> expectedWords;
+    expectedWords << QByteArray("你");
+
+    QCOMPARE(words, expectedWords);
+}
+
+void TermGeneratorTest::testWordBoundariesCJKMixed()
+{
+    // This is a English and CJK mixed string.
+    QString str = QString::fromUtf8("hello world!你好世界貴方元気켐ㅇㄹ？☺");
+
+    Document doc;
+    TermGenerator termGen(doc);
+    termGen.indexText(str);
+
+    QList<QByteArray> words = allWords(doc);
+    QList<QByteArray> expectedWords;
+    expectedWords << QByteArray("hello") << QByteArray("world") << QByteArray("☺") << QByteArray("你好世界貴方元気") << QByteArray("켐ᄋᄅ");
 
     QCOMPARE(words, expectedWords);
 }
@@ -170,6 +204,26 @@ void TermGeneratorTest::testWordPositions()
 
     QVector<uint> posInfo3 = doc.m_terms.value("how").positions;
     QCOMPARE(posInfo3, QVector<uint>() << 3);
+}
+
+void TermGeneratorTest::testWordPositionsCJK()
+{
+    Document doc;
+    TermGenerator termGen(doc);
+
+    // This is a Chinese sentence: Hello! I know about you.
+    QString str = QString::fromUtf8("你好你好！我认识你。");
+    termGen.indexText(str);
+
+    QList<QByteArray> words = allWords(doc);
+    QList<QByteArray> expectedWords;
+    // Full width question mark is normalized, and the fullwidth period is trimmed.
+    expectedWords << QByteArray("你好你好!我认识你");
+    QCOMPARE(words, expectedWords);
+
+    QVector<uint> posInfo = doc.m_terms.value("你好你好!我认识你").positions;
+    // There is only one term, so there is no position information.
+    QVERIFY(posInfo.isEmpty());
 }
 
 void TermGeneratorTest::testNumbers()
