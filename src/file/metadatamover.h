@@ -22,7 +22,7 @@ class MetadataMover : public QObject
     Q_OBJECT
 
 public:
-    MetadataMover(Database* db, QObject* parent = nullptr);
+    explicit MetadataMover(Database* db, QObject* parent = nullptr);
     ~MetadataMover();
 
 public Q_SLOTS:

@@ -55,7 +55,7 @@ public:
     /**
      * This term is a combination of other terms
      */
-    Term(Operation op);
+    explicit Term(Operation op);
     Term(Operation op, const Term& t);
     Term(Operation op, const QList<Term>& t);
     Term(const Term& lhs, Operation op, const Term& rhs);

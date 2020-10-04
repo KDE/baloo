@@ -41,7 +41,7 @@ public:
     QString filePath() const;
 
 private:
-    ResultIterator(const QStringList& results);
+    explicit ResultIterator(const QStringList& results);
     ResultIteratorPrivate* d;
 
     friend class Query;

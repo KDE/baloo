@@ -25,26 +25,18 @@ const int defaultLimit = -1;
 
 class Baloo::Query::Private {
 public:
-    Private() {
-        m_limit = defaultLimit;
-        m_offset = 0;
-        m_yearFilter = 0;
-        m_monthFilter = 0;
-        m_dayFilter = 0;
-        m_sortingOption = SortAuto;
-    }
     Term m_term;
 
     QStringList m_types;
     QString m_searchString;
-    int m_limit;
-    uint m_offset;
+    int m_limit = defaultLimit;
+    uint m_offset = 0;
 
-    int m_yearFilter;
-    int m_monthFilter;
-    int m_dayFilter;
+    int m_yearFilter = 0;
+    int m_monthFilter = 0;
+    int m_dayFilter = 0;
 
-    SortingOption m_sortingOption;
+    SortingOption m_sortingOption = SortAuto;
     QString m_includeFolder;
 };
 

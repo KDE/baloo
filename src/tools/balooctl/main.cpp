@@ -105,8 +105,8 @@ int main(int argc, char* argv[])
     }
 
     if (command == QLatin1String("status")) {
-        StatusCommand command;
-        return command.exec(parser);
+        StatusCommand commandStatus;
+        return commandStatus.exec(parser);
     }
 
     if (command == QLatin1String("enable") || command == QLatin1String("disable")) {
