@@ -27,7 +27,7 @@ Migrator::Migrator(const QString& dbPath, FileIndexerConfig* config)
  */
 static int s_dbVersion = 2;
 
-bool Migrator::migrationRequired()
+bool Migrator::migrationRequired() const
 {
     return m_config->databaseVersion() != s_dbVersion;
 }

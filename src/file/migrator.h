@@ -18,7 +18,7 @@ class Migrator
 public:
     Migrator(const QString& dbPath, FileIndexerConfig* config);
 
-    bool migrationRequired();
+    bool migrationRequired() const;
     void migrate();
 
 private:
