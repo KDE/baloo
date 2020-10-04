@@ -50,7 +50,11 @@ QTemporaryDir* createTmpFolders(const QStringList& folders)
     }
     for (const QString & f : folders) {
         QDir dir(tmpDir->path());
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
         const auto lst = f.split(QLatin1Char('/'), QString::SkipEmptyParts);
+#else
+        const auto lst = f.split(QLatin1Char('/'), Qt::SkipEmptyParts);
+#endif
         for (const QString & sf : lst) {
             if (!dir.exists(sf)) {
                 dir.mkdir(sf);
@@ -82,7 +86,11 @@ QTemporaryDir* createTmpFilesAndFolders(const QStringList& list)
     for (const QString& f : list) {
         if (f.endsWith(QLatin1Char('/'))) {
             QDir dir(tmpDir->path());
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
             const auto lst = f.split(QLatin1Char('/'), QString::SkipEmptyParts);
+#else
+            const auto lst = f.split(QLatin1Char('/'), Qt::SkipEmptyParts);
+#endif
             for (const QString & sf : lst) {
                 if (!dir.exists(sf)) {
                     dir.mkdir(sf);

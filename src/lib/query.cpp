@@ -57,7 +57,11 @@ Query::~Query()
 
 void Query::addType(const QString& type)
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     d->m_types << type.split(QLatin1Char('/'), QString::SkipEmptyParts);
+#else
+    d->m_types << type.split(QLatin1Char('/'), Qt::SkipEmptyParts);
+#endif
 }
 
 void Query::addTypes(const QStringList& typeList)

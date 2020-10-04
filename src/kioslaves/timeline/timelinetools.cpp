@@ -57,7 +57,11 @@ QUrl Baloo::canonicalizeTimelineUrl(const QUrl& url) {
     QUrl newUrl = url;
     QString path = url.path();
     if (path.contains(QLatin1String("//"))) {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
         QStringList sections = path.split(QChar('/'), QString::SkipEmptyParts);
+#else
+        QStringList sections = path.split(QChar('/'), Qt::SkipEmptyParts);
+#endif
         path = '/' + sections.join(QChar('/'));
         newUrl.setPath(path);
     }
@@ -99,7 +103,11 @@ Baloo::TimelineFolderType Baloo::parseTimelineUrl(const QUrl& url, QDate* date, 
         qCDebug(KIO_TIMELINE) << url << "is calendar folder";
         return CalendarFolder;
     } else {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
         QStringList sections = path.split(QStringLiteral("/"), QString::SkipEmptyParts);
+#else
+        QStringList sections = path.split(QStringLiteral("/"), Qt::SkipEmptyParts);
+#endif
         QString dateString;
         QRegularExpressionMatch match = s_dateRegexp.match(sections.last());
         if (match.hasMatch()) {
