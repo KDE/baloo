@@ -47,7 +47,7 @@ App::App(QObject* parent)
         qCInfo(BALOO) << "Busy, paced indexing";
         m_isBusy = true;
     });
-    connect(m_idleTime, QOverload<int>::of(&KIdleTime::timeoutReached), this, [this](int /*identifier*/) {
+    connect(m_idleTime, QOverload<int, int>::of(&KIdleTime::timeoutReached), this, [this]() {
         qCInfo(BALOO) << "Not busy, fast indexing";
         m_isBusy = false;
     });
