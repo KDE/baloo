@@ -173,7 +173,6 @@ private:
         void cleanup();
 
         bool addFolderConfig(const FolderConfig&);
-        bool updateFolderConfig(const FolderConfig&);
     };
     friend QDebug operator<<(QDebug dbg, const FolderConfig& config);
 
