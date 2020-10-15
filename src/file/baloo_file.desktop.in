@@ -5,6 +5,7 @@ X-KDE-StartupNotify=false
 X-KDE-autostart-condition=baloofilerc:Basic Settings:Indexing-Enabled:true
 X-KDE-autostart-phase=0
 X-GNOME-Autostart-enabled=true
+X-systemd-skip=true
 OnlyShowIn=KDE;GNOME;Unity;XFCE
 NoDisplay=true
 

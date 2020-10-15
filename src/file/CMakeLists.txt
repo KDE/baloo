@@ -89,6 +89,11 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/baloo_file DESTINATION ${KDE_INSTALL_F
 
 ecm_install_configured_files(INPUT baloo_file.desktop.in DESTINATION ${KDE_INSTALL_AUTOSTARTDIR})
 
+ecm_install_configured_files(
+   INPUT kde-baloo.service.in
+   DESTINATION ${KDE_INSTALL_SYSTEMDUSERUNITDIR}
+)
+
 add_subdirectory(extractor)
 
 install(FILES
