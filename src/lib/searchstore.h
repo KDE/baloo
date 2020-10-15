@@ -36,8 +36,6 @@ private:
     EngineQuery constructContainsQuery(const QByteArray& prefix, const QString& value);
     EngineQuery constructEqualsQuery(const QByteArray& prefix, const QString& value);
     EngineQuery constructTypeQuery(const QString& type);
-
-    PostingIterator* constructRatingQuery(Transaction* tr, int rating);
 };
 
 }
