@@ -12,7 +12,6 @@
 #include <Solid/DeviceNotifier>
 #include <Solid/DeviceInterface>
 #include <Solid/Block>
-#include <Solid/Device>
 #include <Solid/StorageDrive>
 #include <Solid/StorageVolume>
 #include <Solid/StorageAccess>

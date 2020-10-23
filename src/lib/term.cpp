@@ -7,7 +7,6 @@
 
 #include "term.h"
 
-#include <QVariant>
 #include <QDateTime>
 
 namespace Baloo {

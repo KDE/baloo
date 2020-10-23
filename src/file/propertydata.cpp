@@ -7,7 +7,6 @@
 
 #include "propertydata.h"
 #include <QJsonArray>
-#include <QJsonObject>
 #include <QJsonValue>
 
 namespace Baloo

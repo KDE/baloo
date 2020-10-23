@@ -11,7 +11,6 @@
 #include <QUrl>
 #include <QTimer>
 
-#include <kdirnotify.h>
 #include <kpluginfactory.h>
 
 namespace

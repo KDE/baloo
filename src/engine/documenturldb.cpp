@@ -6,7 +6,6 @@
 */
 
 #include "documenturldb.h"
-#include "idutils.h"
 #include "postingiterator.h"
 
 #include <algorithm>

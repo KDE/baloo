@@ -7,7 +7,6 @@
 #include "filtereddiriterator.h"
 #include "fileindexerconfig.h"
 
-#include <QFileInfo>
 
 using namespace Baloo;
 

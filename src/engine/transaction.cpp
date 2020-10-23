@@ -6,13 +6,11 @@
 */
 
 #include "transaction.h"
-#include "postingdb.h"
 #include "documentdb.h"
 #include "documenturldb.h"
 #include "documentiddb.h"
 #include "positiondb.h"
 #include "documentdatadb.h"
-#include "mtimedb.h"
 
 #include "document.h"
 #include "enginequery.h"
@@ -21,7 +19,6 @@
 #include "orpostingiterator.h"
 #include "phraseanditerator.h"
 
-#include "writetransaction.h"
 #include "idutils.h"
 #include "database.h"
 #include "databasesize.h"

@@ -12,7 +12,6 @@
 #include "modifiedfileindexer.h"
 #include "xattrindexer.h"
 #include "filecontentindexer.h"
-#include "filecontentindexerprovider.h"
 #include "unindexedfileindexer.h"
 #include "indexcleaner.h"
 

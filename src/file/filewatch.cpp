@@ -12,7 +12,6 @@
 #include "pendingfilequeue.h"
 #include "regexpcache.h"
 #include "database.h"
-#include "pendingfile.h"
 #include "baloodebug.h"
 
 #include "kinotify.h"

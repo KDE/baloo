@@ -7,7 +7,6 @@
 
 #include "baloodebug.h"
 #include "searchstore.h"
-#include "term.h"
 #include "global.h"
 #include "baloodebug.h"
 
