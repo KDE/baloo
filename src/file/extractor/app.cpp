@@ -17,7 +17,6 @@
 
 #include <QTimer>
 #include <QFileInfo>
-#include <QDBusMessage>
 #include <QDBusConnection>
 
 #include <KFileMetaData/Extractor>

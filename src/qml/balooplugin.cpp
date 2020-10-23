@@ -6,8 +6,6 @@
 
 #include "balooplugin.h"
 
-#include <QQmlExtensionPlugin>
-#include <QQmlEngine>
 
 #include "queryresultsmodel.h"
 

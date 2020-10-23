@@ -12,7 +12,6 @@
 #include "resultiterator.h"
 #include "../common/udstools.h"
 
-#include <QDate>
 #include <QCoreApplication>
 
 #include <KUser>

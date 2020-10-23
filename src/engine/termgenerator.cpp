@@ -6,10 +6,8 @@
 */
 
 #include "termgenerator.h"
-#include "document.h"
 
 #include <QTextBoundaryFinder>
-#include <QByteArray>
 
 using namespace Baloo;
 

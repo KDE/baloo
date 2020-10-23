@@ -17,7 +17,6 @@
 #include "documentdatadb.h"
 #include "mtimedb.h"
 
-#include "document.h"
 #include "enginequery.h"
 
 #include "andpostingiterator.h"

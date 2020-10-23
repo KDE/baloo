@@ -8,10 +8,8 @@
 #include "writetransaction.h"
 #include "transaction.h"
 
-#include "document.h"
 #include "postingdb.h"
 #include "documentdb.h"
-#include "documenturldb.h"
 #include "documentiddb.h"
 #include "positiondb.h"
 #include "documenttimedb.h"

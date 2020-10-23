@@ -8,8 +8,6 @@
 #include "timelinetools.h"
 #include "kio_timeline_debug.h"
 
-#include <QUrl>
-#include <QDate>
 #include <QRegularExpression>
 #include <QUrlQuery>
 

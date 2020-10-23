@@ -24,7 +24,6 @@
 #include "taglistjob.h"
 #include "../common/udstools.h"
 
-#include "query.h"
 #include "term.h"
 
 using namespace Baloo;
