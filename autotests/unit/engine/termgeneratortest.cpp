@@ -217,13 +217,16 @@ void TermGeneratorTest::testWordPositionsCJK()
 
     QList<QByteArray> words = allWords(doc);
     QList<QByteArray> expectedWords;
-    // Full width question mark is normalized, and the fullwidth period is trimmed.
-    expectedWords << QByteArray("你好你好!我认识你");
+    // Full width question mark is split point, and the fullwidth period is trimmed.
+    expectedWords << QByteArray("你好你好") << QByteArray("我认识你");
     QCOMPARE(words, expectedWords);
 
-    QVector<uint> posInfo = doc.m_terms.value("你好你好!我认识你").positions;
-    // There is only one term, so there is no position information.
-    QVERIFY(posInfo.isEmpty());
+    QVector<uint> posInfo1 = doc.m_terms.value("你好你好").positions;
+    QCOMPARE(posInfo1, QVector<uint>() << 1);
+
+    QVector<uint> posInfo2 = doc.m_terms.value("我认识你").positions;
+    QCOMPARE(posInfo2, QVector<uint>() << 2);
+
 }
 
 void TermGeneratorTest::testNumbers()
