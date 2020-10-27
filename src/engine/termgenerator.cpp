@@ -19,25 +19,11 @@ QString normalizeTerm(const QString &str)
     // since some exotic unicode symbols can remain uppercase
     const QString denormalized = str.normalized(QString::NormalizationForm_KD).toLower();
 
-    // Remove any leading and trailing space or punctuation
-    auto isPunctOrSpace = [] (QChar c) {
-        return c.isPunct() || c.isSpace();
-    };
-
-    auto begin = denormalized.begin();
-    auto end = denormalized.end();
-    while (begin < end && isPunctOrSpace(*std::prev(end))) {
-        --end;
-    }
-    while (begin < end && isPunctOrSpace(*begin)) {
-        ++begin;
-    }
-
     QString cleanString;
-    cleanString.reserve(std::distance(begin, end));
-    for (; begin != end; ++begin) {
-        if (!begin->isMark()) {
-            cleanString.append(*begin);
+    cleanString.reserve(denormalized.size());
+    for (const auto& c : denormalized) {
+        if (!c.isMark()) {
+            cleanString.append(c);
         }
     }
 
@@ -72,23 +58,41 @@ QByteArrayList TermGenerator::termList(const QString& text_)
 
     int start = 0;
 
+    auto isSkipChar = [] (const QChar& c) {
+        return c.isPunct() || c.isMark() || c.isSpace();
+    };
+
     QByteArrayList list;
     QTextBoundaryFinder bf(QTextBoundaryFinder::Word, text);
     for (; bf.position() != -1; bf.toNextBoundary()) {
-        // We cannot use only text between StartOfItem and EndOfItem pairs.
-        // Most of CJK characters are neither StartOfItem or EndOfItem. And it is possible to have
-        // valid characters between an EndOfItem and next StartOfItem. So we just use StartOfItem
-        // and EndOfItem as a term boundary hint here.
-        if (bf.boundaryReasons() & (QTextBoundaryFinder::StartOfItem | QTextBoundaryFinder::EndOfItem)) {
-            int end = bf.position();
+
+        int end = bf.position();
+        while (start < end && isSkipChar(text[start])) {
+            start++;
+        }
+        if (end == start) {
+            continue;
+        }
+
+        // Typically we commit a term when we have an EndOfItem, starting
+        // from the last StartOfItem, everything between last EndOfItem and
+        // StartOfItem is just whitespace and punctuation. Unfortunately,
+        // most CJK characters do not trigger a StartOfItem and thus no
+        // EndOfItem, so everything in front of a StartOfItem has to be
+        // commited as well
+        bool commit = bf.boundaryReasons() & (QTextBoundaryFinder::EndOfItem | QTextBoundaryFinder::StartOfItem);
+
+        // Also commit term if end-of-text is reached or when we find
+        // any punctuation
+        if (!commit & (end == text.size() || isSkipChar(text[end]))) {
+            commit = true;
+        }
+
+        if (commit) {
             const QString term = normalizeTerm(text.mid(start, end - start));
             appendTerm(list, term);
             start = end;
         }
-    }
-    if (start < text.size()) {
-        const QString term = normalizeTerm(text.mid(start));
-        appendTerm(list, term);
     }
     return list;
 }
