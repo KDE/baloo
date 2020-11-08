@@ -27,7 +27,7 @@ class Result : public KFileMetaData::ExtractionResult
 {
 public:
     Result();
-    Result(const QString& url, const QString& mimetype, const Flags& flags = ExtractEverything);
+    Result(const QString& url, const QString& mimetype, const Flags& flags = ExtractMetaData | ExtractPlainText);
 
     void add(KFileMetaData::Property::Property property, const QVariant& value) override;
     void append(const QString& text) override;

@@ -193,7 +193,7 @@ bool App::index(Transaction* tr, const QString& url, quint64 id)
 
     Baloo::Document doc = basicIndexer.document();
 
-    Result result(url, mimetype, KFileMetaData::ExtractionResult::ExtractEverything);
+    Result result(url, mimetype, KFileMetaData::ExtractionResult::ExtractMetaData | KFileMetaData::ExtractionResult::ExtractPlainText);
     result.setDocument(doc);
 
     const QList<KFileMetaData::Extractor*> exList = m_extractorCollection.fetchExtractors(mimetype);
