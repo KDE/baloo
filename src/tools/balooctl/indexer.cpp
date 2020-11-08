@@ -28,7 +28,7 @@ void Indexer::index()
     basicIJ.index();
     Baloo::Document doc = basicIJ.document();
 
-    Result result(m_url, mimetype, KFileMetaData::ExtractionResult::ExtractEverything);
+    Result result(m_url, mimetype, KFileMetaData::ExtractionResult::ExtractMetaData | KFileMetaData::ExtractionResult::ExtractPlainText);
     result.setDocument(doc);
 
     const QList<KFileMetaData::Extractor*> exList = m_extractorCollection.fetchExtractors(mimetype);
