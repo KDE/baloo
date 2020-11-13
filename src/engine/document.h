@@ -60,7 +60,7 @@ public:
     void setData(const QByteArray& data);
 
 private:
-    quint64 m_id;
+    quint64 m_id = 0;
 
     struct TermData {
         QVector<uint> positions;
@@ -70,10 +70,10 @@ private:
     QMap<QByteArray, TermData> m_fileNameTerms;
 
     QByteArray m_url;
-    bool m_contentIndexing;
+    bool m_contentIndexing = false;
 
-    quint32 m_mTime;
-    quint32 m_cTime;
+    quint32 m_mTime = 0; //< modification time, seconds since Epoch
+    quint32 m_cTime = 0; //< inode change time, seconds since Epoch
     QByteArray m_data;
 
     friend class WriteTransaction;
