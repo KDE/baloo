@@ -171,6 +171,9 @@ BasicIndexingJob::~BasicIndexingJob()
 bool BasicIndexingJob::index()
 {
     const QByteArray url = QFile::encodeName(m_filePath);
+    auto lastSlash = url.lastIndexOf('/');
+
+    const QByteArray fileName = url.mid(lastSlash + 1);
 
     QT_STATBUF statBuf;
     if (filePathToStat(url, statBuf) != 0) {
@@ -181,10 +184,8 @@ bool BasicIndexingJob::index()
     doc.setId(statBufToId(statBuf));
     doc.setUrl(url);
 
-    QString fileName = url.mid(url.lastIndexOf('/') + 1);
-
     TermGenerator tg(doc);
-    tg.indexFileNameText(fileName);
+    tg.indexFileNameText(QFile::decodeName(fileName));
     tg.indexText(m_mimetype, QByteArray("M"));
 
     // (Content) Modification time, Metadata (e.g. XAttr) change time
