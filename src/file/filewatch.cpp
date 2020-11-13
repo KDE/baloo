@@ -20,8 +20,6 @@
 #include <QFileInfo>
 #include <QDir>
 
-#include <syslog.h>
-
 using namespace Baloo;
 
 FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
@@ -159,9 +157,9 @@ void FileWatch::slotAttributeChanged(const QString& path)
 // inotify_add_watch fails with ENOSPC.
 void FileWatch::slotInotifyWatchUserLimitReached(const QString&)
 {
-    //If we got here, we hit the limit and couldn't authenticate to raise it,
-    // so put something in the syslog so someone notices.
-    syslog(LOG_USER | LOG_WARNING, "KDE Baloo File Indexer has reached the inotify folder watch limit. File changes will be ignored.");
+    // If we got here, we hit the limit and are not allowed to raise it,
+    // so put something in the log.
+    qCWarning(BALOO) << "KDE Baloo File Indexer has reached the inotify folder watch limit. File changes will be ignored.";
     // we do it the brutal way for now hoping with new kernels and defaults this will never happen
     // Delete the KInotify
     // FIXME: Maybe we should be aborting?
