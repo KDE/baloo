@@ -43,6 +43,8 @@ public:
 
     quint64 id() const;
     void setId(quint64 id);
+    quint64 parentId() const;
+    void setParentId(quint64 id);
 
     QByteArray url() const;
     void setUrl(const QByteArray& url);
@@ -61,6 +63,7 @@ public:
 
 private:
     quint64 m_id = 0;
+    quint64 m_parentId = 0;
 
     struct TermData {
         QVector<uint> positions;

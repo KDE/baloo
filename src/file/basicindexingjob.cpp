@@ -174,13 +174,19 @@ bool BasicIndexingJob::index()
     auto lastSlash = url.lastIndexOf('/');
 
     const QByteArray fileName = url.mid(lastSlash + 1);
+    const QByteArray filePath = url.left(lastSlash);
 
     QT_STATBUF statBuf;
-    if (filePathToStat(url, statBuf) != 0) {
+    if (filePathToStat(filePath, statBuf) != 0) {
         return false;
     }
 
     Document doc;
+    doc.setParentId(statBufToId(statBuf));
+
+    if (filePathToStat(url, statBuf) != 0) {
+        return false;
+    }
     doc.setId(statBufToId(statBuf));
     doc.setUrl(url);
 
