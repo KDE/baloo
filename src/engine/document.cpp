@@ -9,18 +9,12 @@
 
 using namespace Baloo;
 
-Document::Document()
-    : m_id(0)
-    , m_contentIndexing(false)
-    , m_mTime(0)
-    , m_cTime(0)
-{
-}
+Document::Document() = default;
 
 void Document::addTerm(const QByteArray& term)
 {
     Q_ASSERT(!term.isEmpty());
-    // This adds "term" without data if it does not exist, otherwise it is a noop
+    // This adds "term" without position data if it does not exist, otherwise it is a noop
     m_terms[term];
 }
 
