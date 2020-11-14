@@ -23,11 +23,9 @@ MetadataMover::MetadataMover(Database* db, QObject* parent)
 {
 }
 
-
 MetadataMover::~MetadataMover()
 {
 }
-
 
 void MetadataMover::moveFileMetadata(const QString& from, const QString& to)
 {
@@ -83,26 +81,30 @@ void MetadataMover::updateMetadata(Transaction* tr, const QString& from, const Q
     Q_ASSERT(from[from.size()-1] != QLatin1Char('/'));
     Q_ASSERT(to[to.size()-1] != QLatin1Char('/'));
 
-    QByteArray toPath = QFile::encodeName(to);
-    quint64 id = filePathToId(toPath);
+    const QByteArray fromPath = QFile::encodeName(from);
+    quint64 id = tr->documentId(fromPath);
     if (!id) {
-        qWarning() << "File moved to path which now no longer exists -" << to;
-        return;
-    }
-
-    if (!tr->hasDocument(id)) {
-        //
-        // If we have no metadata yet we need to tell the file indexer so it can
-        // create the metadata in case the target folder is configured to be indexed.
-        //
-        qCDebug(BALOO) << "Moved without data";
+        qDebug() << "Document not (yet) known, signaling newFile" << to;
         Q_EMIT movedWithoutData(to);
         return;
     }
 
-    BasicIndexingJob job(toPath, QString(), BasicIndexingJob::NoLevel);
-    job.index();
-    tr->replaceDocument(job.document(), DocumentUrl | FileNameTerms);
+    QByteArray toPath = QFile::encodeName(to);
+    auto lastSlash = toPath.lastIndexOf('/');
+    QByteArray parentPath = toPath.left(lastSlash + 1);
+
+    quint64 parentId = filePathToId(parentPath);
+    if (!parentId) {
+        qDebug() << "Parent directory not (yet) known, signaling newFile" << to;
+        Q_EMIT movedWithoutData(parentPath);
+        return;
+    }
+
+    Document doc;
+    doc.setId(id);
+    doc.setParentId(parentId);
+    doc.setUrl(toPath);
+    tr->replaceDocument(doc, DocumentUrl | FileNameTerms);
 
     // Possible scenarios
     // 1. file moves to the same device - id is preserved
