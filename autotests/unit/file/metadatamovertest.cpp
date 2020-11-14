@@ -35,6 +35,9 @@ private Q_SLOTS:
     void testRenameFile();
     void testMoveFile();
     void testMoveFolder();
+    void testMoveTwiceSequential();
+    void testMoveTwiceCombined();
+    void testMoveDeleteFile();
 
 private:
     quint64 insertUrl(const QString& url);
@@ -192,6 +195,125 @@ void MetadataMoverTest::testMoveFolder()
         QVERIFY(tr.hasDocument(fid));
         QCOMPARE(tr.documentUrl(did), QFile::encodeName(newFolderUrl));
         QCOMPARE(tr.documentUrl(fid), QFile::encodeName(newFolderUrl + "/file"));
+    }
+}
+
+// Rename a file twice in a row
+// Mimic Inotify/Filewatch behavior as if there was sufficient
+// time to process the first rename before the second happens
+void MetadataMoverTest::testMoveTwiceSequential()
+{
+    QTemporaryDir dir;
+    const quint64 did = insertUrl(dir.path());
+
+    const QString fileUrl = dir.path() + "/file";
+    touchFile(fileUrl);
+    const quint64 fid = insertUrl(fileUrl);
+
+    {
+        Transaction tr(m_db, Transaction::ReadOnly);
+        QVERIFY(tr.hasDocument(did));
+        QVERIFY(tr.hasDocument(fid));
+    }
+
+    // First rename
+    const QString fileUrl1 = dir.path() + "/file1";
+    QFile::rename(fileUrl, fileUrl1);
+
+    MetadataMover mover(m_db, this);
+    mover.moveFileMetadata(QFile::encodeName(fileUrl), QFile::encodeName(fileUrl1));
+
+    // Second rename
+    const QString fileUrl2 = dir.path() + "/file2";
+    QFile::rename(fileUrl1, fileUrl2);
+
+    mover.moveFileMetadata(QFile::encodeName(fileUrl1), QFile::encodeName(fileUrl2));
+
+    // Check result
+    {
+        Transaction tr(m_db, Transaction::ReadOnly);
+        QVERIFY(tr.hasDocument(did));
+        QVERIFY(tr.hasDocument(fid));
+        QCOMPARE(tr.documentUrl(did), QFile::encodeName(dir.path()));
+        QCOMPARE(tr.documentUrl(fid), QFile::encodeName(fileUrl2));
+    }
+}
+
+// Rename a file twice in a row
+// Similar to `testMoveTwiceSequential`, but this time the
+// second rename happens before the first one is processed
+void MetadataMoverTest::testMoveTwiceCombined()
+{
+    QTemporaryDir dir;
+    quint64 did = insertUrl(dir.path());
+
+    const QString fileUrl = dir.path() + "/file";
+    touchFile(fileUrl);
+    const quint64 fid = insertUrl(fileUrl);
+
+    {
+        Transaction tr(m_db, Transaction::ReadOnly);
+        QVERIFY(tr.hasDocument(did));
+        QVERIFY(tr.hasDocument(fid));
+    }
+
+    // First rename
+    const QString fileUrl1 = dir.path() + "/file1";
+    QFile::rename(fileUrl, fileUrl1);
+
+    // Second rename
+    const QString fileUrl2 = dir.path() + "/file2";
+    QFile::rename(fileUrl1, fileUrl2);
+
+    // "Flush" rename notificatons
+    MetadataMover mover(m_db, this);
+    mover.moveFileMetadata(QFile::encodeName(fileUrl), QFile::encodeName(fileUrl1));
+    mover.moveFileMetadata(QFile::encodeName(fileUrl1), QFile::encodeName(fileUrl2));
+
+    // Check result
+    {
+        Transaction tr(m_db, Transaction::ReadOnly);
+        QVERIFY(tr.hasDocument(did));
+        QVERIFY(tr.hasDocument(fid));
+        QCOMPARE(tr.documentUrl(did), QFile::encodeName(dir.path()));
+        QCOMPARE(tr.documentUrl(fid), QFile::encodeName(fileUrl2));
+    }
+}
+
+// Rename a file and then immediately delete it
+void MetadataMoverTest::testMoveDeleteFile()
+{
+    QTemporaryDir dir;
+    quint64 did = insertUrl(dir.path());
+
+    const QString fileUrl = dir.path() + "/file";
+    touchFile(fileUrl);
+    const quint64 fid = insertUrl(fileUrl);
+
+    {
+        Transaction tr(m_db, Transaction::ReadOnly);
+        QVERIFY(tr.hasDocument(did));
+        QVERIFY(tr.hasDocument(fid));
+    }
+
+    // First rename
+    const QString fileUrl1 = dir.path() + "/file1";
+    QFile::rename(fileUrl, fileUrl1);
+
+    QFile::remove(fileUrl1);
+
+    // "Flush" notificatons
+    MetadataMover mover(m_db, this);
+    mover.moveFileMetadata(QFile::encodeName(fileUrl), QFile::encodeName(fileUrl1));
+    mover.removeFileMetadata(QFile::encodeName(fileUrl1));
+
+    // Check result
+    {
+        Transaction tr(m_db, Transaction::ReadOnly);
+        QVERIFY(tr.hasDocument(did));
+        QCOMPARE(tr.documentUrl(did), QFile::encodeName(dir.path()));
+        QEXPECT_FAIL("", "On delete, a just renamed file is not deleted from the index", Continue);
+        QVERIFY(!tr.hasDocument(fid));
     }
 }
 
