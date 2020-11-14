@@ -25,6 +25,7 @@ private Q_SLOTS:
     void testDeleteFolder();
     void testCreateFolder();
     void testRenameFile();
+    void testRenameDeleteFile();
     void testMoveFile();
     void testRenameFolder();
     void testMoveFolder();
@@ -170,6 +171,42 @@ void KInotifyTest::testRenameFile()
     QCOMPARE(args.at(1).toString(), f3);
 }
 
+void KInotifyTest::testRenameDeleteFile()
+{
+    // create some test files
+    QTemporaryDir dir;
+    const QString f1(QStringLiteral("%1/randomJunk1").arg(dir.path()));
+    touchFile(f1);
+
+    // start the inotify watcher
+    KInotify kn(nullptr /*no config*/);
+    kn.addWatch(dir.path(), KInotify::EventAll);
+
+    // listen to the desired signal
+    QSignalSpy spy(&kn, SIGNAL(moved(QString,QString)));
+
+    // actually move the file
+    const QString f2(QStringLiteral("%1/randomJunk2").arg(dir.path()));
+    QFile::rename(f1, f2);
+
+    // check the desired signal
+    QVERIFY(spy.wait());
+    QCOMPARE(spy.count(), 1);
+    QList<QVariant> args = spy.takeFirst();
+    QCOMPARE(args.at(0).toString(), f1);
+    QCOMPARE(args.at(1).toString(), f2);
+
+    // test a subsequent delete
+    QSignalSpy spy1(&kn, SIGNAL(deleted(QString,bool)));
+    QFile::remove(f2);
+
+    // check the desired signal
+    QVERIFY(spy1.wait());
+    QCOMPARE(spy1.count(), 1);
+    QCOMPARE(spy1.takeFirst().at(0).toString(), f2);
+
+    QVERIFY(spy.isEmpty());
+}
 
 void KInotifyTest::testMoveFile()
 {
@@ -209,7 +246,6 @@ void KInotifyTest::testMoveFile()
     QCOMPARE(args.at(0).toString(), dest);
     QCOMPARE(args.at(1).toString(), dest2);
 }
-
 
 void KInotifyTest::testRenameFolder()
 {
@@ -271,7 +307,6 @@ void KInotifyTest::testRenameFolder()
     QCOMPARE(createdSpy.count(), 1);
     QCOMPARE(createdSpy.takeFirst().at(0).toString(), f4);
 }
-
 
 void KInotifyTest::testMoveFolder()
 {
@@ -371,7 +406,6 @@ void KInotifyTest::testMoveFromUnwatchedFolder()
     QVERIFY(spy1.wait());
     QCOMPARE(spy1.count(), 4);
 }
-
 
 void KInotifyTest::testMoveRootFolder()
 {
