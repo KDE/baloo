@@ -245,9 +245,7 @@ void WriteTransaction::replaceDocument(const Document& doc, DocumentOperations o
     }
 
     if (operations & DocumentUrl) {
-        docUrlDB.replace(id, doc.url(), [&docTimeDB](quint64 id) {
-            return !docTimeDB.contains(id);
-        });;
+        docUrlDB.updateUrl(doc.id(), doc.parentId(), doc.url());
     }
 }
 

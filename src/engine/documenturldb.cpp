@@ -102,6 +102,36 @@ bool DocumentUrlDB::put(quint64 docId, const QByteArray& url)
     return true;
 }
 
+void DocumentUrlDB::updateUrl(quint64 id, quint64 parentId, const QByteArray& url)
+{
+    IdFilenameDB idFilenameDb(m_idFilenameDbi, m_txn);
+    IdTreeDB idTreeDb(m_idTreeDbi, m_txn);
+
+    auto lastSlash = url.lastIndexOf('/');
+    auto newname = url.mid(lastSlash + 1);
+
+    // Sanity checks
+    auto path = idFilenameDb.get(id);
+    if (path.parentId != parentId) {
+        // Remove from old parent
+        QVector<quint64> subDocs = idTreeDb.get(path.parentId);
+        if (subDocs.removeOne(id)) {
+            idTreeDb.put(path.parentId, subDocs);
+        }
+        // Add to new parent
+        subDocs = idTreeDb.get(parentId);
+        sortedIdInsert(subDocs, id);
+        idTreeDb.put(parentId, subDocs);
+    }
+
+    if ((newname != path.name) || (parentId != path.parentId)) {
+        qDebug() << id << url << "renaming" << path.name << "to" << newname;
+        path.parentId = parentId;
+        path.name = newname;
+        idFilenameDb.put(id, path);
+    }
+}
+
 void DocumentUrlDB::add(quint64 id, quint64 parentId, const QByteArray& name)
 {
     if (!id || name.isEmpty()) {

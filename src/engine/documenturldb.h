@@ -36,6 +36,10 @@ public:
     QVector<quint64> getChildren(quint64 docId) const;
 
     /**
+     */
+    void updateUrl(quint64 id, quint64 parentId, const QByteArray& url);
+
+    /**
      * Deletes a document from the DB, and conditionally also removes its
      * parent folders.
      *
