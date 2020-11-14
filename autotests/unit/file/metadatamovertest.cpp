@@ -312,7 +312,6 @@ void MetadataMoverTest::testMoveDeleteFile()
         Transaction tr(m_db, Transaction::ReadOnly);
         QVERIFY(tr.hasDocument(did));
         QCOMPARE(tr.documentUrl(did), QFile::encodeName(dir.path()));
-        QEXPECT_FAIL("", "On delete, a just renamed file is not deleted from the index", Continue);
         QVERIFY(!tr.hasDocument(fid));
     }
 }
