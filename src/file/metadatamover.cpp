@@ -9,7 +9,6 @@
 #include "metadatamover.h"
 #include "database.h"
 #include "transaction.h"
-#include "basicindexingjob.h"
 #include "idutils.h"
 #include "baloodebug.h"
 
