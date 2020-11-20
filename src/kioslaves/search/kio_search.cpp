@@ -11,6 +11,7 @@
 
 #include "query.h"
 #include "resultiterator.h"
+#include <sys/stat.h>
 
 #include <QUrl>
 #include <QUrlQuery>
@@ -29,7 +30,11 @@ KIO::UDSEntry statSearchFolder(const QUrl& url)
 {
     KIO::UDSEntry uds;
     uds.reserve(9);
-    uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, 0700);
+#ifdef Q_OS_WIN
+    uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, _S_IREAD );
+#else
+    uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, S_IRUSR | S_IXUSR);
+#endif
     uds.fastInsert(KIO::UDSEntry::UDS_USER, KUser().loginName());
     uds.fastInsert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
     uds.fastInsert(KIO::UDSEntry::UDS_MIME_TYPE, QStringLiteral("inode/directory"));
@@ -80,7 +85,11 @@ void SearchProtocol::listDir(const QUrl& url)
     uds.fastInsert(KIO::UDSEntry::UDS_NAME, QStringLiteral("."));
     uds.fastInsert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
     uds.fastInsert(KIO::UDSEntry::UDS_MIME_TYPE, QStringLiteral("inode/directory"));
-    uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, 0700);
+#ifdef Q_OS_WIN
+    uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, _S_IREAD );
+#else
+    uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, S_IRUSR | S_IXUSR);
+#endif
     uds.fastInsert(KIO::UDSEntry::UDS_USER, KUser().loginName());
     listEntry(uds);
 

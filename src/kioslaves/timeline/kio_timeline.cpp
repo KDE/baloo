@@ -11,6 +11,7 @@
 #include "query.h"
 #include "resultiterator.h"
 #include "../common/udstools.h"
+#include <sys/stat.h>
 
 #include <QCoreApplication>
 
@@ -30,7 +31,11 @@ KIO::UDSEntry createFolderUDSEntry(const QString& name)
     uds.fastInsert(KIO::UDSEntry::UDS_NAME, name);
     uds.fastInsert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
     uds.fastInsert(KIO::UDSEntry::UDS_MIME_TYPE, QStringLiteral("inode/directory"));
-    uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, 0700);
+#ifdef Q_OS_WIN
+    uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, _S_IREAD );
+#else
+    uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, S_IRUSR | S_IXUSR);
+#endif
     uds.fastInsert(KIO::UDSEntry::UDS_USER, KUser().loginName());
     return uds;
 }
@@ -46,7 +51,11 @@ KIO::UDSEntry createDateFolderUDSEntry(const QString& name, const QString& displ
     uds.fastInsert(KIO::UDSEntry::UDS_MIME_TYPE, QStringLiteral("inode/directory"));
     uds.fastInsert(KIO::UDSEntry::UDS_MODIFICATION_TIME, dt.toSecsSinceEpoch());
     uds.fastInsert(KIO::UDSEntry::UDS_CREATION_TIME, dt.toSecsSinceEpoch());
-    uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, 0700);
+#ifdef Q_OS_WIN
+    uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, _S_IREAD );
+#else
+    uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, S_IRUSR | S_IXUSR);
+#endif
     uds.fastInsert(KIO::UDSEntry::UDS_USER, KUser().loginName());
     return uds;
 }
