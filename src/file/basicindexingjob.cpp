@@ -101,6 +101,8 @@ QVector<KFileMetaData::Type::Type> typesForMimeType(const QString& mimeType)
         // - application/vnd.oasis.opendocument.presentation
         // Office 2007
         {"application/vnd.openxmlformats-officedocument.presentationml.presentation", Type::Presentation},
+        {"application/vnd.openxmlformats-officedocument.presentationml.slideshow", Type::Presentation},
+        {"application/vnd.openxmlformats-officedocument.presentationml.template", Type::Presentation},
         {"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", Type::Spreadsheet},
         // Open Document Formats - https://en.wikipedia.org/wiki/OpenDocument_technical_specification
         {"application/vnd.oasis.opendocument.presentation", Type::Presentation},
