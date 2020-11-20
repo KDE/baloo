@@ -9,7 +9,6 @@
 #include "metadatamover.h"
 #include "database.h"
 #include "transaction.h"
-#include "idutils.h"
 #include "baloodebug.h"
 
 #include <QFile>
@@ -92,7 +91,7 @@ void MetadataMover::updateMetadata(Transaction* tr, const QString& from, const Q
     auto lastSlash = toPath.lastIndexOf('/');
     QByteArray parentPath = toPath.left(lastSlash + 1);
 
-    quint64 parentId = filePathToId(parentPath);
+    quint64 parentId = tr->documentId(parentPath);
     if (!parentId) {
         qDebug() << "Parent directory not (yet) known, signaling newFile" << to;
         Q_EMIT movedWithoutData(parentPath);
