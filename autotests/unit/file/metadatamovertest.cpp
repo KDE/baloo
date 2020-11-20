@@ -367,7 +367,6 @@ void MetadataMoverTest::testMoveFileRenameParent()
         QCOMPARE(tr.documentUrl(did), QFile::encodeName(dir.path()));
         QCOMPARE(tr.documentUrl(did_b), QFile::encodeName(dir.path() + "/a"));
         QVERIFY(tr.hasDocument(fid));
-        QEXPECT_FAIL("", "Lost track of file1", Abort);
         QCOMPARE(tr.documentUrl(fid), QFile::encodeName(dir.path() + "/a/file1"));
     }
 }
@@ -424,7 +423,6 @@ void MetadataMoverTest::testRenameMoveFileRenameParent()
         QVERIFY(tr.hasDocument(did));
         QCOMPARE(tr.documentUrl(did), QFile::encodeName(dir.path()));
         QCOMPARE(tr.documentUrl(did_b), QFile::encodeName(dir.path() + "/a"));
-        QEXPECT_FAIL("", "Lost track of file1", Abort);
         QVERIFY(tr.hasDocument(fid));
         QCOMPARE(tr.documentUrl(fid), QFile::encodeName(dir.path() + "/a/file1"));
     }
@@ -470,7 +468,6 @@ void MetadataMoverTest::testMoveFileMoveParent()
         QCOMPARE(tr.documentUrl(did), QFile::encodeName(dir.path()));
         QCOMPARE(tr.documentUrl(did_a), QFile::encodeName(dir.path() + "/b"));
         QVERIFY(tr.hasDocument(fid));
-        QEXPECT_FAIL("", "Lost track of file1", Abort);
         QCOMPARE(tr.documentUrl(fid), QFile::encodeName(dir.path() + "/b/file1"));
     }
 }
