@@ -38,6 +38,9 @@ private Q_SLOTS:
     void testMoveTwiceSequential();
     void testMoveTwiceCombined();
     void testMoveDeleteFile();
+    void testMoveFileRenameParent();
+    void testRenameMoveFileRenameParent();
+    void testMoveFileMoveParent();
 
 private:
     quint64 insertUrl(const QString& url);
@@ -313,6 +316,162 @@ void MetadataMoverTest::testMoveDeleteFile()
         QVERIFY(tr.hasDocument(did));
         QCOMPARE(tr.documentUrl(did), QFile::encodeName(dir.path()));
         QVERIFY(!tr.hasDocument(fid));
+    }
+}
+
+// Move a file to a different parent directory and rename the new parent
+void MetadataMoverTest::testMoveFileRenameParent()
+{
+    QTemporaryDir dir;
+    quint64 did = insertUrl(dir.path());
+
+    QDir().mkpath(dir.path() + "/a");
+    quint64 did_a = insertUrl(dir.path() + "/a");
+    QDir().mkpath(dir.path() + "/b");
+    quint64 did_b = insertUrl(dir.path() + "/b");
+
+    const QString fileUrl = dir.path() + "/a/file";
+    touchFile(fileUrl);
+    const quint64 fid = insertUrl(fileUrl);
+
+    {
+        Transaction tr(m_db, Transaction::ReadOnly);
+        QVERIFY(tr.hasDocument(did));
+        QVERIFY(tr.hasDocument(did_a));
+        QVERIFY(tr.hasDocument(did_b));
+        QVERIFY(tr.hasDocument(fid));
+    }
+
+    // Move to new parent
+    const QString fileUrl_b1 = dir.path() + "/b/file1";
+    QVERIFY(QFile::rename(fileUrl, fileUrl_b1));
+
+    // Rename parent dir (replacing old "a" dir)
+    QVERIFY(QDir::current().rmdir(dir.path() + "/a"));
+    QVERIFY(QFile::rename(dir.path() + "/b", dir.path() + "/a"));
+
+    QVERIFY(QFile::exists(dir.path() + "/a"));
+    QVERIFY(QFile::exists(dir.path() + "/a/file1"));
+    QVERIFY(!QFile::exists(dir.path() + "/b"));
+
+    // "Flush" notificatons
+    MetadataMover mover(m_db, this);
+    mover.moveFileMetadata(QFile::encodeName(fileUrl), QFile::encodeName(fileUrl_b1));
+    mover.removeFileMetadata(QFile::encodeName(dir.path() + "/a"));
+    mover.moveFileMetadata(QFile::encodeName(dir.path() + "/b"), QFile::encodeName(dir.path() + "/a"));
+
+    // Check result
+    {
+        Transaction tr(m_db, Transaction::ReadOnly);
+        QVERIFY(tr.hasDocument(did));
+        QCOMPARE(tr.documentUrl(did), QFile::encodeName(dir.path()));
+        QCOMPARE(tr.documentUrl(did_b), QFile::encodeName(dir.path() + "/a"));
+        QVERIFY(tr.hasDocument(fid));
+        QEXPECT_FAIL("", "Lost track of file1", Abort);
+        QCOMPARE(tr.documentUrl(fid), QFile::encodeName(dir.path() + "/a/file1"));
+    }
+}
+
+// Rename a file, move to a different parent directory and rename the new parent
+void MetadataMoverTest::testRenameMoveFileRenameParent()
+{
+    QTemporaryDir dir;
+    quint64 did = insertUrl(dir.path());
+
+    QDir().mkpath(dir.path() + "/a");
+    quint64 did_a = insertUrl(dir.path() + "/a");
+    QDir().mkpath(dir.path() + "/b");
+    quint64 did_b = insertUrl(dir.path() + "/b");
+
+    const QString fileUrl = dir.path() + "/a/file";
+    touchFile(fileUrl);
+    const quint64 fid = insertUrl(fileUrl);
+
+    {
+        Transaction tr(m_db, Transaction::ReadOnly);
+        QVERIFY(tr.hasDocument(did));
+        QVERIFY(tr.hasDocument(did_a));
+        QVERIFY(tr.hasDocument(did_b));
+        QVERIFY(tr.hasDocument(fid));
+    }
+
+    // First rename
+    const QString fileUrl_a1 = dir.path() + "/a/file1";
+    QFile::rename(fileUrl, fileUrl_a1);
+
+    // Move to new parent
+    const QString fileUrl_b1 = dir.path() + "/b/file1";
+    QVERIFY(QFile::rename(fileUrl_a1, fileUrl_b1));
+
+    // Rename parent dir (replacing old "a" dir)
+    QVERIFY(QDir::current().rmdir(dir.path() + "/a"));
+    QVERIFY(QFile::rename(dir.path() + "/b", dir.path() + "/a"));
+
+    QVERIFY(QFile::exists(dir.path() + "/a"));
+    QVERIFY(QFile::exists(dir.path() + "/a/file1"));
+    QVERIFY(!QFile::exists(dir.path() + "/b"));
+
+    // "Flush" notificatons
+    MetadataMover mover(m_db, this);
+    mover.moveFileMetadata(QFile::encodeName(fileUrl), QFile::encodeName(fileUrl_a1));
+    mover.moveFileMetadata(QFile::encodeName(fileUrl_a1), QFile::encodeName(fileUrl_b1));
+    mover.removeFileMetadata(QFile::encodeName(dir.path() + "/a"));
+    mover.moveFileMetadata(QFile::encodeName(dir.path() + "/b"), QFile::encodeName(dir.path() + "/a"));
+
+    // Check result
+    {
+        Transaction tr(m_db, Transaction::ReadOnly);
+        QVERIFY(tr.hasDocument(did));
+        QCOMPARE(tr.documentUrl(did), QFile::encodeName(dir.path()));
+        QCOMPARE(tr.documentUrl(did_b), QFile::encodeName(dir.path() + "/a"));
+        QEXPECT_FAIL("", "Lost track of file1", Abort);
+        QVERIFY(tr.hasDocument(fid));
+        QCOMPARE(tr.documentUrl(fid), QFile::encodeName(dir.path() + "/a/file1"));
+    }
+}
+
+// Rename a file and then immediately rename a parent directory
+void MetadataMoverTest::testMoveFileMoveParent()
+{
+    QTemporaryDir dir;
+    quint64 did = insertUrl(dir.path());
+
+    QDir().mkpath(dir.path() + "/a");
+    quint64 did_a = insertUrl(dir.path() + "/a");
+
+    const QString fileUrl = dir.path() + "/a/file";
+    touchFile(fileUrl);
+    const quint64 fid = insertUrl(fileUrl);
+
+    {
+        Transaction tr(m_db, Transaction::ReadOnly);
+        QVERIFY(tr.hasDocument(did));
+        QVERIFY(tr.hasDocument(did_a));
+        QVERIFY(tr.hasDocument(fid));
+    }
+
+    // First rename
+    const QString fileUrl1 = dir.path() + "/a/file1";
+    QFile::rename(fileUrl, fileUrl1);
+
+    // Rename parent dir
+    QFile::rename(dir.path() + "/a", dir.path() + "/b");
+
+    // "Flush" notificatons
+    MetadataMover mover(m_db, this);
+    mover.moveFileMetadata(QFile::encodeName(fileUrl), QFile::encodeName(fileUrl1));
+    mover.moveFileMetadata(QFile::encodeName(dir.path() + "/a"), QFile::encodeName(dir.path() + "/b"));
+
+    // Check result
+    {
+        Transaction tr(m_db, Transaction::ReadOnly);
+        QVERIFY(tr.hasDocument(did));
+        QVERIFY(tr.hasDocument(did_a));
+        QCOMPARE(tr.documentUrl(did), QFile::encodeName(dir.path()));
+        QCOMPARE(tr.documentUrl(did_a), QFile::encodeName(dir.path() + "/b"));
+        QVERIFY(tr.hasDocument(fid));
+        QEXPECT_FAIL("", "Lost track of file1", Abort);
+        QCOMPARE(tr.documentUrl(fid), QFile::encodeName(dir.path() + "/b/file1"));
     }
 }
 
