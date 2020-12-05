@@ -1,0 +1,84 @@
+# Malayalam translations for baloo package.
+# Copyright (C) 2019 This file is copyright:
+# This file is distributed under the same license as the baloo package.
+# Automatically generated, 2019.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: baloo\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2020-08-07 02:06+0200\n"
+"PO-Revision-Date: 2019-12-12 20:55+0000\n"
+"Last-Translator: Vivek KJ Pazhedath <vivekkj2004@gmail.com>\n"
+"Language-Team: Swathanthra|സ്വതന്ത്ര Malayalam|മലയാളം Computing|കമ്പ്യൂട്ടിങ്ങ് <smc."
+"org.in>\n"
+"Language: ml\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: indexerstate.h:32
+#, kde-format
+msgid "Unknown"
+msgstr ""
+
+#: indexerstate.h:35
+#, kde-format
+msgid "Idle"
+msgstr ""
+
+#: indexerstate.h:38
+#, kde-format
+msgid "Suspended"
+msgstr ""
+
+#: indexerstate.h:41
+#, kde-format
+msgid "Initial Indexing"
+msgstr ""
+
+#: indexerstate.h:44
+#, kde-format
+msgid "Indexing new files"
+msgstr ""
+
+#: indexerstate.h:47
+#, kde-format
+msgid "Indexing modified files"
+msgstr ""
+
+#: indexerstate.h:50
+#, kde-format
+msgid "Indexing Extended Attributes"
+msgstr ""
+
+#: indexerstate.h:53
+#, kde-format
+msgid "Indexing file content"
+msgstr ""
+
+#: indexerstate.h:56
+#, kde-format
+msgid "Checking for unindexed files"
+msgstr ""
+
+#: indexerstate.h:59
+#, kde-format
+msgid "Checking for stale index entries"
+msgstr ""
+
+#: indexerstate.h:62
+#, kde-format
+msgid "Idle (Powersave)"
+msgstr ""
+
+#: indexerstate.h:65
+#, kde-format
+msgid "Not Running"
+msgstr ""
+
+#: indexerstate.h:68
+#, kde-format
+msgid "Starting"
+msgstr ""
