@@ -4,7 +4,7 @@
 
 Baloo is the file indexing and file search framework for KDE Plasma. It focuses 
 on speed and a very small memory footprint. It maintains an index of your files 
-and optionally their contents which [you can search](@ref searching).
+and optionally their contents which [you can search](./docs/user/searching.md).
 
 ## Contributing
 
@@ -19,7 +19,7 @@ The recommended way of contributing patches is via KDE's [GitLab](https://invent
 ## Documentation
 
 ### Users
-* [Searching](@ref searching)
+* [Searching](./docs/user/searching.md)
 
 ### Developers
 [![Build Status](https://build.kde.org/job/Frameworks/job/baloo/job/kf5-qt5%20SUSEQt5.15/badge/icon)](https://build.kde.org/job/Frameworks/job/baloo/job/kf5-qt5%20SUSEQt5.15/)
