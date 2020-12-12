@@ -19,8 +19,6 @@
 #include <QCoreApplication>
 #include <KLocalizedString>
 
-#include <KIO/Job>
-
 using namespace Baloo;
 
 namespace
