@@ -187,13 +187,7 @@ void TimelineProtocol::stat(const QUrl& url)
 
     switch (parseTimelineUrl(url, &m_date, &m_filename)) {
     case RootFolder: {
-        KIO::UDSEntry uds;
-        uds.reserve(4);
-        uds.fastInsert(KIO::UDSEntry::UDS_NAME, QStringLiteral("/"));
-        uds.fastInsert(KIO::UDSEntry::UDS_ICON_NAME, QStringLiteral("nepomuk"));
-        uds.fastInsert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
-        uds.fastInsert(KIO::UDSEntry::UDS_MIME_TYPE, QStringLiteral("inode/directory"));
-        statEntry(uds);
+        statEntry(createFolderUDSEntry(QStringLiteral("/")));
         finished();
         break;
     }
