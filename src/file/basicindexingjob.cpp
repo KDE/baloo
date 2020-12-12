@@ -23,6 +23,9 @@ BasicIndexingJob::BasicIndexingJob(const QString& filePath, const QString& mimet
     , m_mimetype(mimetype)
     , m_indexingLevel(level)
 {
+    if (m_filePath.endsWith(QChar('/'))) {
+	m_filePath.chop(1);
+    }
 }
 
 namespace {
