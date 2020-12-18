@@ -1,6 +1,6 @@
 # set minimum version requirements
 cmake_minimum_required(VERSION 3.5)
-set(REQUIRED_QT_VERSION 5.13.0)
+set(REQUIRED_QT_VERSION 5.14.0)
 set(KF5_VERSION "5.78.0") # handled by release scripts
 set(KF5_DEP_VERSION "5.77.0") # handled by release scripts
 
@@ -73,7 +73,7 @@ endif()
 # compiler flags and build system
 remove_definitions(-DQT_NO_CAST_FROM_ASCII)
 add_definitions(-DQT_NO_FOREACH)
-add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050d00)
+add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050e00)
 add_definitions(-DKF_DISABLE_DEPRECATED_BEFORE_AND_AT=0x054B00)
 
 find_package(Inotify)
