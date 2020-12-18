@@ -41,11 +41,7 @@ void FileContentIndexer::run()
     ExtractorProcess process;
     connect(&process, &ExtractorProcess::startedIndexingFile, this, &FileContentIndexer::slotStartedIndexingFile);
     connect(&process, &ExtractorProcess::finishedIndexingFile, this, &FileContentIndexer::slotFinishedIndexingFile);
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    m_stop.store(false);
-#else
     m_stop.storeRelaxed(false);
-#endif
     auto batchSize = m_batchSize;
     while (true) {
         //
@@ -53,11 +49,7 @@ void FileContentIndexer::run()
         // cause then we will keep fetching the same N files again and again.
         //
         QVector<quint64> idList = m_provider->fetch(batchSize);
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-        if (idList.isEmpty() || m_stop.load()) {
-#else
         if (idList.isEmpty() || m_stop.loadRelaxed()) {
-#endif
             break;
         }
         QEventLoop loop;
@@ -76,11 +68,7 @@ void FileContentIndexer::run()
         loop.exec();
         batchSize = idList.size();
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-        if (hadErrors && !m_stop.load()) {
-#else
         if (hadErrors && !m_stop.loadRelaxed()) {
-#endif
             if (batchSize == 1) {
                 auto failedId = idList.first();
                 auto ok = m_provider->markFailed(failedId);

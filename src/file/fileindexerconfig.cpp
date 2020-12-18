@@ -120,11 +120,7 @@ QStringList FileIndexerConfig::excludeFilters() const
 
 QStringList FileIndexerConfig::excludeMimetypes() const
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    return QStringList::fromSet(m_excludeMimetypes);
-#else
     return QList<QString>(m_excludeMimetypes.begin(), m_excludeMimetypes.end());
-#endif
 }
 
 bool FileIndexerConfig::indexHiddenFilesAndFolders() const
@@ -366,11 +362,7 @@ void FileIndexerConfig::buildExcludeFilterRegExpCache()
 void FileIndexerConfig::buildMimeTypeCache()
 {
     const QStringList excludedTypes = m_settings->excludedMimetypes();
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    m_excludeMimetypes = excludedTypes.toSet();
-#else
     m_excludeMimetypes = QSet<QString>(excludedTypes.begin(), excludedTypes.end());
-#endif
 }
 
 void FileIndexerConfig::forceConfigUpdate()
