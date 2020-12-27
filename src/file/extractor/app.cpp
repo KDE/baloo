@@ -17,7 +17,6 @@
 
 #include <QTimer>
 #include <QFileInfo>
-#include <QDBusConnection>
 
 #include <KFileMetaData/Extractor>
 #include <KFileMetaData/MimeUtils>
@@ -110,12 +109,9 @@ void App::processNextFile()
         m_outputStream << "S " << url << '\n';
         m_outputStream.flush();
         bool indexed = index(m_tr, url, id);
-        m_outputStream << "F " << url << '\n';
+        m_outputStream << (indexed ? "F " : "f ") << url << '\n';
         m_outputStream.flush();
 
-        if (indexed) {
-            m_updatedFiles << url;
-        }
         int delay = (m_isBusy && indexed) ? 10 : 0;
         QTimer::singleShot(delay, this, &App::processNextFile);
 
@@ -126,23 +122,6 @@ void App::processNextFile()
         }
         delete m_tr;
         m_tr = nullptr;
-
-        /*
-        * TODO we're already sending out each file as we start we can simply send out a done
-        * signal isntead of sending out the list of files, that will need changes in whatever
-        * uses this signal, Dolphin I think?
-        */
-        QDBusMessage message = QDBusMessage::createSignal(QStringLiteral("/files"),
-                                                        QStringLiteral("org.kde"),
-                                                        QStringLiteral("changed"));
-
-        QVariantList vl;
-        vl.reserve(1);
-        vl << QVariant(m_updatedFiles);
-        m_updatedFiles.clear();
-        message.setArguments(vl);
-
-        QDBusConnection::sessionBus().send(message);
 
         // Enable the SocketNotifier for the next batch
         m_notifyNewData.setEnabled(true);

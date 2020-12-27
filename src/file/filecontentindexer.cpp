@@ -15,6 +15,18 @@
 
 using namespace Baloo;
 
+namespace {
+    // TODO KF6 -- remove/combine with started/finished DBus signal
+    void sendChangedSignal(const QStringList& updatedFiles)
+    {
+        auto message = QDBusMessage::createSignal(QStringLiteral("/files"),
+                                                  QStringLiteral("org.kde"),
+                                                  QStringLiteral("changed"));
+        message.setArguments({updatedFiles});
+        QDBusConnection::sessionBus().send(message);
+    }
+}
+
 FileContentIndexer::FileContentIndexer(uint batchSize,
         FileContentIndexerProvider* provider,
         uint& finishedCount, QObject* parent)
@@ -80,10 +92,16 @@ void FileContentIndexer::run()
             } else {
                 batchSize /= 2;
             }
+            m_updatedFiles.clear();
             // reset to old value - nothing committed
             m_finishedCount = batchStartCount;
             process.start();
         } else {
+            // Notify some metadata may have changed
+            sendChangedSignal(m_updatedFiles);
+            m_updatedFiles.clear();
+
+            // Update remaining time estimate
             auto elapsed = timer.elapsed();
             QMetaObject::invokeMethod(this,
                 [this, elapsed, batchSize] { committedBatch(elapsed, batchSize); },
@@ -101,8 +119,12 @@ void FileContentIndexer::slotStartedIndexingFile(const QString& filePath)
     }
 }
 
-void FileContentIndexer::slotFinishedIndexingFile(const QString& filePath)
+void FileContentIndexer::slotFinishedIndexingFile(const QString& filePath, bool fileUpdated)
 {
+    if (fileUpdated) {
+        m_updatedFiles.append(filePath);
+    }
+
     m_currentFile = QString();
     if (!m_registeredMonitors.isEmpty()) {
         Q_EMIT finishedIndexingFile(filePath);
