@@ -50,7 +50,7 @@ Q_SIGNALS:
 private Q_SLOTS:
     void monitorClosed(const QString& service);
     void slotStartedIndexingFile(const QString& filePath);
-    void slotFinishedIndexingFile(const QString& filePath);
+    void slotFinishedIndexingFile(const QString& filePath, bool fileUpdated);
 
 private:
     uint m_batchSize;
@@ -60,6 +60,7 @@ private:
     QAtomicInt m_stop;
 
     QString m_currentFile;
+    QStringList m_updatedFiles;
 
     QStringList m_registeredMonitors;
     QDBusServiceWatcher m_monitorWatcher;

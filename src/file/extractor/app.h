@@ -14,7 +14,6 @@
 #include <QDataStream>
 #include <QTextStream>
 #include <QSocketNotifier>
-#include <QDBusMessage>
 #include <QFile>
 
 #include <KFileMetaData/ExtractorCollection>
@@ -57,7 +56,6 @@ private:
     bool m_isBusy = true;
 
     QVector<quint64> m_ids;
-    QStringList m_updatedFiles;
     Transaction* m_tr;
 };
 

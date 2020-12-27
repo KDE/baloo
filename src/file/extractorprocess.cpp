@@ -77,8 +77,12 @@ void ExtractorProcess::slotIndexingFile()
             Q_EMIT startedIndexingFile(arg);
             break;
 
+        case 'f':
+            Q_EMIT finishedIndexingFile(arg, false);
+            break;
+
         case 'F':
-            Q_EMIT finishedIndexingFile(arg);
+            Q_EMIT finishedIndexingFile(arg, true);
             break;
 
         case 'B':

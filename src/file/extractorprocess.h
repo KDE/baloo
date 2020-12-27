@@ -26,7 +26,7 @@ public:
 
 Q_SIGNALS:
     void startedIndexingFile(QString filePath);
-    void finishedIndexingFile(QString filePath);
+    void finishedIndexingFile(QString filePath, bool fileUpdated);
     void done();
     void failed();
 
