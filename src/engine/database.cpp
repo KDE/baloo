@@ -247,3 +247,9 @@ QString Database::path() const
     QMutexLocker locker(&m_mutex);
     return m_path;
 }
+
+bool Database::isAvailable() const
+{
+    QMutexLocker locker(&m_mutex);
+    return QFileInfo::exists(m_path + QStringLiteral("/index"));
+}
