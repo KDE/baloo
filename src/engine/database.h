@@ -73,6 +73,13 @@ public:
      */
     QString path() const;
 
+    /**
+     * Is the database available for use?
+     * For example if indexing is disabled or the indexer did never run this is false.
+     * @return database available
+     */
+    bool isAvailable() const;
+
 private:
     /**
      * serialize access, as open might be called from multiple threads

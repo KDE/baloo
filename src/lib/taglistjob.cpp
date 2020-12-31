@@ -33,7 +33,14 @@ TagListJob::~TagListJob()
 void TagListJob::start()
 {
     Database *db = globalDatabaseInstance();
+
     if (!db->open(Database::ReadOnlyDatabase)) {
+        // if we have no index, we have no tags
+        if (!db->isAvailable()) {
+            emitResult();
+            return;
+        }
+
         setError(UserDefinedError);
         setErrorText(QStringLiteral("Failed to open the database"));
         emitResult();
