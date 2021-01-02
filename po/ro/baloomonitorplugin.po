@@ -1,0 +1,84 @@
+# Copyright (C) YEAR This file is copyright:
+# This file is distributed under the same license as the baloo package.
+# Sergiu Bivol <sergiu@cip.md>, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: baloo\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2020-08-03 02:05+0200\n"
+"PO-Revision-Date: 2020-09-06 23:36+0100\n"
+"Last-Translator: Sergiu Bivol <sergiu@cip.md>\n"
+"Language-Team: Romanian\n"
+"Language: ro\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
+"20)) ? 1 : 2;\n"
+"X-Generator: Lokalize 19.12.3\n"
+
+#: ../../file/indexerstate.h:32
+#, kde-format
+msgid "Unknown"
+msgstr "Necunoscut"
+
+#: ../../file/indexerstate.h:35
+#, kde-format
+msgid "Idle"
+msgstr "Inactiv"
+
+#: ../../file/indexerstate.h:38
+#, kde-format
+msgid "Suspended"
+msgstr "Suspendat"
+
+#: ../../file/indexerstate.h:41
+#, kde-format
+msgid "Initial Indexing"
+msgstr "Indexare inițială"
+
+#: ../../file/indexerstate.h:44
+#, kde-format
+msgid "Indexing new files"
+msgstr "Se indexează fișierele noi"
+
+#: ../../file/indexerstate.h:47
+#, kde-format
+msgid "Indexing modified files"
+msgstr "Se indexează fișierele modificate"
+
+#: ../../file/indexerstate.h:50
+#, kde-format
+msgid "Indexing Extended Attributes"
+msgstr "Se indexează atributele extinse"
+
+#: ../../file/indexerstate.h:53
+#, kde-format
+msgid "Indexing file content"
+msgstr "Se indexează conținutul fișierelor"
+
+#: ../../file/indexerstate.h:56
+#, kde-format
+msgid "Checking for unindexed files"
+msgstr "Se caută fișiere neindexate"
+
+#: ../../file/indexerstate.h:59
+#, kde-format
+msgid "Checking for stale index entries"
+msgstr "Se caută înregistrări de index învechite"
+
+#: ../../file/indexerstate.h:62
+#, kde-format
+msgid "Idle (Powersave)"
+msgstr "Inactiv (economisire energie)"
+
+#: ../../file/indexerstate.h:65
+#, kde-format
+msgid "Not Running"
+msgstr "Nu rulează"
+
+#: ../../file/indexerstate.h:68
+#, kde-format
+msgid "Starting"
+msgstr "Se pornește"
