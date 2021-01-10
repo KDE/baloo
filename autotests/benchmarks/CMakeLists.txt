@@ -1,9 +1,6 @@
-ecm_add_test(databasebenchmark.cpp
-    TEST_NAME "databasebenchmark"
-    LINK_LIBRARIES Qt5::Test KF5::BalooEngine
-)
+# Benchmarks, compiled, but not run automatically with ctest
+add_executable(databasebenchmark databasebenchmark.cpp)
+target_link_libraries(databasebenchmark Qt5::Test KF5::BalooEngine)
 
-ecm_add_test(positioncodecbenchmark.cpp
-    TEST_NAME "positioncodecbenchmark"
-    LINK_LIBRARIES Qt5::Test KF5::BalooCodecs
-)
+add_executable(positioncodecbenchmark positioncodecbenchmark.cpp)
+target_link_libraries(positioncodecbenchmark Qt5::Test KF5::BalooCodecs)

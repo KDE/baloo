@@ -13,9 +13,9 @@ add_executable(storagedevicestest storagedevicestest.cpp)
 target_link_libraries(storagedevicestest Qt5::Core KF5::Solid baloofilecommon)
 ecm_mark_as_test(storagedevicestest)
 
+# Benchmark, compiled, but not run automatically with ctest
 add_executable(filtereddiriteratorbenchmark filtereddiriteratorbenchmark.cpp)
 target_link_libraries(filtereddiriteratorbenchmark Qt5::Core baloofilecommon)
-ecm_mark_as_test(filtereddiriteratorbenchmark)
 
 #
 # Remaining Time //TODO: rewrite the test to use mainhub, instead of using the indexers directly

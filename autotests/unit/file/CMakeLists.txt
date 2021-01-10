@@ -15,7 +15,6 @@ baloo_file_auto_tests(
     pendingfilequeuetest
     fileindexerconfigtest
     basicindexingjobtest
-    regularexpcachebenchmark
     filtereddiriteratortest
     unindexedfileiteratortest
     metadatamovertest
@@ -40,3 +39,6 @@ ecm_add_test(propertyserializationtest.cpp
     LINK_LIBRARIES Qt5::Test KF5::FileMetaData baloofilecommon
 )
 
+# Benchmark, compiled, but not run automatically with ctest
+add_executable(regularexpcachebenchmark regularexpcachebenchmark.cpp)
+target_link_libraries(regularexpcachebenchmark Qt5::Test baloofilecommon KF5::Baloo)
