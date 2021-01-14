@@ -184,11 +184,7 @@ bool FileIndexerConfig::shouldFolderBeIndexed(const QString& path) const
 
         // check the exclude filters for all components of the path
         // after folder
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-        const QStringList pathComponents = path.mid(folder.count()).split(QLatin1Char('/'), QString::SkipEmptyParts);
-#else
         const QStringList pathComponents = path.mid(folder.count()).split(QLatin1Char('/'), Qt::SkipEmptyParts);
-#endif
         for (const QString& c : pathComponents) {
             if (!shouldFileBeIndexed(c)) {
                 return false;
