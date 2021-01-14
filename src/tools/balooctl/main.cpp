@@ -149,12 +149,7 @@ int main(int argc, char* argv[])
                 if (!mainInterface.isValid()) {
                     break;
                 }
-                out << "." <<
-#if (QT_VERSION < QT_VERSION_CHECK(5, 15, 0))
-                       flush;
-#else
-                       Qt::flush;
-#endif
+                out << "." << Qt::flush;
                 QThread::msleep(200);
             }
             if (!mainInterface.isValid()) {
