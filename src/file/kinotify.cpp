@@ -336,7 +336,7 @@ void KInotify::slotEvent(int socket)
 
         // Overflow happens sometimes if we process the events too slowly
         if (event->wd < 0 && (event->mask & EventQueueOverflow)) {
-            qWarning() << "Inotify - too many event - Overflowed";
+            qCWarning(BALOO) << "Inotify - too many event - Overflowed";
             free(buffer);
             return;
         }
@@ -406,7 +406,9 @@ void KInotify::slotEvent(int socket)
         }
         if (event->mask & EventMoveSelf) {
 //            qCDebug(BALOO) << path << "EventMoveSelf";
-            qWarning() << "EventMoveSelf: THIS CASE IS NOT HANDLED PROPERLY!";
+            // Problematic if the parent is not watched, otherwise
+            // handled by MoveFrom/MoveTo from the parent
+            qCWarning(BALOO) << path << "EventMoveSelf: THIS CASE MAY NOT BE HANDLED PROPERLY!";
         }
         if (event->mask & EventMoveFrom) {
 //            qCDebug(BALOO) << path << "EventMoveFrom";
