@@ -51,8 +51,8 @@ Monitor::Monitor(QObject *parent)
     connect(balooWatcher, &QDBusServiceWatcher::serviceUnregistered, this, [this]() {
         m_balooRunning = false;
         m_indexerState = Baloo::Unavailable;
-        emit balooStateChanged();
-        emit indexerStateChanged();
+        Q_EMIT balooStateChanged();
+        Q_EMIT indexerStateChanged();
     });
 
     if (m_scheduler->isValid()) {
