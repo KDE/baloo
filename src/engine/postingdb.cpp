@@ -119,7 +119,7 @@ QVector< QByteArray > PostingDB::fetchTermsStartingWith(const QByteArray& term)
         qCWarning(ENGINE) << "PostingDB::fetchTermsStartingWith" << mdb_strerror(rc);
         return {};
     }
-    
+
     QVector<QByteArray> terms;
     rc = mdb_cursor_get(cursor, &key, nullptr, MDB_SET_RANGE);
     while (rc == 0) {
