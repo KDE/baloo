@@ -239,7 +239,7 @@ QMap<quint64, QByteArray> DocumentUrlDB::toTestMap() const
     for (quint64 id : allIds) {
         if (id) {
             QByteArray path = get(id);
-            //FIXME: this prevents sanitizing  
+            // FIXME: this prevents sanitizing
             // reactivate  Q_ASSERT(!path.isEmpty());
             map.insert(id, path);
         }
