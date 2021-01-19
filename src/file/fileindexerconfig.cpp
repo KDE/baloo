@@ -211,12 +211,6 @@ bool FileIndexerConfig::shouldMimeTypeBeIndexed(const QString& mimeType) const
 }
 
 
-bool FileIndexerConfig::folderInFolderList(const QString& path)
-{
-    QString str;
-    return folderInFolderList(path, str);
-}
-
 bool FileIndexerConfig::folderInFolderList(const QString& path, QString& folder) const
 {
     const_cast<FileIndexerConfig*>(this)->buildFolderCache();

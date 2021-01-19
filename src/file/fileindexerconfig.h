@@ -114,12 +114,6 @@ public:
     bool shouldMimeTypeBeIndexed(const QString& mimeType) const;
 
     /**
-     * Returns true if the folder is in the list indexed directories
-     * and not in the list of exclude directories
-     */
-    bool folderInFolderList(const QString& path);
-
-    /**
      * Check if \p path is in the list of folders to be indexed taking
      * include and exclude folders into account.
      * \p folder is set to the folder which was the reason for the decision.
