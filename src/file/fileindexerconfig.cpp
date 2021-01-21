@@ -20,22 +20,6 @@
 
 namespace
 {
-/// recursively check if a folder is hidden
-bool isDirHidden(const QDir& dir)
-{
-#ifdef __unix__
-    return dir.absolutePath().contains(QLatin1String("/."));
-#else
-    QDir d = dir;
-    do {
-        if (QFileInfo(d.path()).isHidden())
-            return true;
-    } while (d.cdUp());
-
-    return false;
-#endif
-}
-
 QString normalizeTrailingSlashes(QString&& path)
 {
     while (path.endsWith(QLatin1Char('/'))) {
@@ -171,29 +155,36 @@ bool FileIndexerConfig::shouldBeIndexed(const QString& path) const
 bool FileIndexerConfig::shouldFolderBeIndexed(const QString& path) const
 {
     QString folder;
-    if (folderInFolderList(path, folder)) {
+    auto normalizedPath = normalizeTrailingSlashes(QString(path));
+
+    if (folderInFolderList(normalizedPath, folder)) {
         // we always index the folders in the list
         // ignoring the name filters
-        if (folder == normalizeTrailingSlashes(QString(path)))
+        if (folder == normalizedPath)
             return true;
-
-        // check for hidden folders
-        QDir dir(path);
-        if (!indexHiddenFilesAndFolders() && isDirHidden(dir))
-            return false;
 
         // check the exclude filters for all components of the path
         // after folder
-        const QStringList pathComponents = path.mid(folder.count()).split(QLatin1Char('/'), Qt::SkipEmptyParts);
-        for (const QString& c : pathComponents) {
-            if (!shouldFileBeIndexed(c)) {
+#ifndef __unix__
+        QDir d(folder);
+#endif
+        auto trailingPath = normalizedPath.midRef(folder.size());
+        const auto pathComponents = trailingPath.split(QLatin1Char('/'), Qt::SkipEmptyParts);
+        for (const QStringRef c : pathComponents) {
+            if (!shouldFileBeIndexed(c.toString())) {
                 return false;
             }
+#ifndef __unix__
+            if (!indexHiddenFilesAndFolders()) ||
+                !d.cd(c.toString()) || QFileInfo(d.path()).isHidden() {
+                return false;
+            }
+#endif
         }
         return true;
-    } else {
-        return false;
     }
+
+    return false;
 }
 
 

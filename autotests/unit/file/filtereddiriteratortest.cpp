@@ -28,6 +28,7 @@ namespace {
             QStringLiteral("home/.includedHidden/"),
             QStringLiteral("home/.includedHidden/dir/"),
             QStringLiteral("home/.includedHidden/file"),
+            QStringLiteral("home/.includedHidden/.hidden"),
         };
         return dataSet;
     }
@@ -70,11 +71,9 @@ void FilteredDirIteratorTest::testFiles()
         QStringLiteral("/home/docs/1"),
         QStringLiteral("/home/1"),
         QStringLiteral("/home/2"),
-#if 0
         QStringLiteral("/home/.includedHidden"),
         QStringLiteral("/home/.includedHidden/dir"),
         QStringLiteral("/home/.includedHidden/file"),
-#endif
     };
 
     QSet<QString> list;
@@ -120,6 +119,7 @@ void FilteredDirIteratorTest::testIndexHidden()
         QStringLiteral("/home/.includedHidden"),
         QStringLiteral("/home/.includedHidden/dir"),
         QStringLiteral("/home/.includedHidden/file"),
+        QStringLiteral("/home/.includedHidden/.hidden"),
     };
 
     QSet<QString> list;
