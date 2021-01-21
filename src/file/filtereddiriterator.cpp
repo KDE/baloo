@@ -13,7 +13,7 @@ using namespace Baloo;
 FilteredDirIterator::FilteredDirIterator(const FileIndexerConfig* config, const QString& folder, Filter filter)
     : m_config(config)
     , m_currentIter(nullptr)
-    , m_filters(QDir::NoDotAndDotDot | QDir::Readable | QDir::NoSymLinks)
+    , m_filters(QDir::NoDotAndDotDot | QDir::Readable | QDir::NoSymLinks | QDir::Hidden)
     , m_firstItem(false)
 {
     if (filter == DirsOnly) {
@@ -102,7 +102,7 @@ QFileInfo FilteredDirIterator::fileInfo() const
 bool FilteredDirIterator::shouldIndexFolder(const QString& path) const
 {
     if (!m_config) {
-        return true;
+        return !QFileInfo(path).isHidden();
     }
 
     QString folder;

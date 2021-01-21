@@ -114,14 +114,12 @@ void FilteredDirIteratorTest::testIndexHidden()
         QStringLiteral("/home/docs/1"),
         QStringLiteral("/home/1"),
         QStringLiteral("/home/2"),
-#if 0
         QStringLiteral("/home/docs/.fire"),
         QStringLiteral("/home/.hiddenDir"),
         QStringLiteral("/home/.hiddenFile"),
         QStringLiteral("/home/.includedHidden"),
         QStringLiteral("/home/.includedHidden/dir"),
         QStringLiteral("/home/.includedHidden/file"),
-#endif
     };
 
     QSet<QString> list;
