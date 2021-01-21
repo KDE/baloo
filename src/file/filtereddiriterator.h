@@ -33,12 +33,6 @@ public:
     QFileInfo fileInfo() const;
 
 private:
-    /**
-     * Checks if the folder should be indexed. It only performs filename checks
-     * on the filename, not on every part of the path.
-     */
-    bool shouldIndexFolder(const QString& filePath) const;
-
     const FileIndexerConfig* m_config;
 
     QDirIterator* m_currentIter;
