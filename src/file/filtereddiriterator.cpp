@@ -109,7 +109,7 @@ bool FilteredDirIterator::shouldIndexFolder(const QString& path) const
     if (m_config->folderInFolderList(path, folder)) {
         // we always index the folders in the list
         // ignoring the name filters
-        if (folder == path)
+        if ((folder == path) || (folder == QString(path).append('/')))
             return true;
 
         // check for hidden folders
