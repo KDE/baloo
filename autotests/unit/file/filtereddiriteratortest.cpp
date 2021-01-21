@@ -38,6 +38,7 @@ class FilteredDirIteratorTest : public QObject
     Q_OBJECT
 private Q_SLOTS:
     void testFiles();
+    void testIndexHidden();
     void testFolders();
     void testAddingExcludedFolder();
     void testNoConfig();
@@ -70,6 +71,53 @@ void FilteredDirIteratorTest::testFiles()
         QStringLiteral("/home/1"),
         QStringLiteral("/home/2"),
 #if 0
+        QStringLiteral("/home/.includedHidden"),
+        QStringLiteral("/home/.includedHidden/dir"),
+        QStringLiteral("/home/.includedHidden/file"),
+#endif
+    };
+
+    QSet<QString> list;
+    while (!it.next().isEmpty()) {
+        QString path = it.filePath();
+        // Strip temporary dir prefix
+        path = path.mid(dir->path().length());
+
+        list << path;
+        QVERIFY(config.shouldFolderBeIndexed(it.filePath()));
+        QVERIFY(expected.contains(path));
+    }
+    QCOMPARE(list, expected);
+}
+
+void FilteredDirIteratorTest::testIndexHidden()
+{
+    QScopedPointer<QTemporaryDir> dir(Test::createTmpFilesAndFolders(dataSet()));
+
+    QStringList includeFolders = {
+        dir->path() + QLatin1String("/home"),
+        dir->path() + QLatin1String("/home/.includedHidden"),
+    };
+
+    QStringList excludeFolders = {
+        dir->path() + QLatin1String("/home/kde")
+    };
+
+    Test::writeIndexerConfig(includeFolders, excludeFolders, {}, true);
+
+    FileIndexerConfig config;
+    FilteredDirIterator it(&config, includeFolders.first());
+
+    QSet<QString> expected = {
+        QStringLiteral("/home"),
+        QStringLiteral("/home/docs"),
+        QStringLiteral("/home/docs/1"),
+        QStringLiteral("/home/1"),
+        QStringLiteral("/home/2"),
+#if 0
+        QStringLiteral("/home/docs/.fire"),
+        QStringLiteral("/home/.hiddenDir"),
+        QStringLiteral("/home/.hiddenFile"),
         QStringLiteral("/home/.includedHidden"),
         QStringLiteral("/home/.includedHidden/dir"),
         QStringLiteral("/home/.includedHidden/file"),
