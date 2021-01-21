@@ -7,7 +7,6 @@
 #include "filtereddiriterator.h"
 #include "fileindexerconfig.h"
 
-
 using namespace Baloo;
 
 FilteredDirIterator::FilteredDirIterator(const FileIndexerConfig* config, const QString& folder, Filter filter)
@@ -72,17 +71,35 @@ QString FilteredDirIterator::next()
         m_filePath = m_currentIter->next();
         m_fileInfo = m_currentIter->fileInfo();
 
+        auto shouldIndexFolder = [&] () -> bool {
+            if (!m_config) {
+                return !m_fileInfo.isHidden();
+            }
+            QString folder;
+            if (!m_config->folderInFolderList(m_filePath, folder)) {
+                return false;
+            }
+	    if ((folder == m_filePath) || (folder == QString(m_filePath).append(QLatin1Char('/')))) {
+                return true;
+            }
+            if (!shouldIndexHidden && m_fileInfo.isHidden()) {
+                return false;
+            }
+            return m_config->shouldFileBeIndexed(m_fileInfo.fileName());
+        };
+
         if (m_fileInfo.isDir()) {
-            if (shouldIndexFolder(m_filePath)) {
+            if (shouldIndexFolder()) {
                 // Push the current item to the directory stack
                 m_paths.push(m_filePath);
                 return m_filePath;
             }
         }
         else if (m_fileInfo.isFile()) {
-            bool shouldIndexFile = (shouldIndexHidden || !m_fileInfo.isHidden())
-                                   && (!m_config || m_config->shouldFileBeIndexed(m_fileInfo.fileName()));
-            if (shouldIndexFile) {
+            if ((!shouldIndexHidden) && m_fileInfo.isHidden()) {
+                continue;
+            }
+            if ((!m_config) || m_config->shouldFileBeIndexed(m_fileInfo.fileName())) {
                 return m_filePath;
             }
         }
@@ -98,28 +115,3 @@ QFileInfo FilteredDirIterator::fileInfo() const
 {
     return m_fileInfo;
 }
-
-bool FilteredDirIterator::shouldIndexFolder(const QString& path) const
-{
-    if (!m_config) {
-        return !QFileInfo(path).isHidden();
-    }
-
-    QString folder;
-    if (m_config->folderInFolderList(path, folder)) {
-        // we always index the folders in the list
-        // ignoring the name filters
-        if ((folder == path) || (folder == QString(path).append('/')))
-            return true;
-
-        // check for hidden folders
-        QFileInfo fi(path);
-        if (!m_config->indexHiddenFilesAndFolders() && fi.isHidden())
-            return false;
-
-        return m_config->shouldFileBeIndexed(fi.fileName());
-    }
-
-    return false;
-}
-
