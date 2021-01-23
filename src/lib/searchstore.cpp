@@ -17,11 +17,8 @@
 #include "termgenerator.h"
 #include "andpostingiterator.h"
 #include "orpostingiterator.h"
-#include "idutils.h"
 
 #include <QDateTime>
-#include <QFile>
-#include <QFileInfo>
 
 #include <KFileMetaData/PropertyInfo>
 #include <KFileMetaData/TypeInfo>
@@ -224,8 +221,7 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
         return tr->postingIterator(q);
     }
     else if (property == "includefolder") {
-        const QFileInfo fi(value.toString());
-        const QByteArray folder = QFile::encodeName(fi.canonicalFilePath());
+        const QByteArray folder = value.toString().toUtf8();
 
         if (folder.isEmpty()) {
             return nullptr;
@@ -234,9 +230,9 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
             return nullptr;
         }
 
-        quint64 id = filePathToId(folder);
+        quint64 id = tr->documentId(folder);
         if (!id) {
-            qCDebug(BALOO) << "Folder" << value.toString() << "does not exist";
+            qCDebug(BALOO) << "Folder" << value.toString() << "not indexed";
             return nullptr;
         }
 
