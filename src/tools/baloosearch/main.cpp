@@ -16,7 +16,6 @@
 #include <KLocalizedString>
 
 #include "query.h"
-#include "searchstore.h"
 
 #include <iostream>
 

@@ -8,9 +8,9 @@
 #include "baloodebug.h"
 #include "searchstore.h"
 #include "global.h"
-#include "baloodebug.h"
 
 #include "database.h"
+#include "term.h"
 #include "transaction.h"
 #include "enginequery.h"
 #include "queryparser.h"
@@ -19,6 +19,7 @@
 #include "orpostingiterator.h"
 #include "idutils.h"
 
+#include <QDateTime>
 #include <QFile>
 #include <QFileInfo>
 

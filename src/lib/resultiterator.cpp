@@ -7,7 +7,7 @@
 
 #include "resultiterator.h"
 #include "searchstore.h"
-
+#include <QStringList>
 
 using namespace Baloo;
 
