@@ -175,8 +175,8 @@ bool FileIndexerConfig::shouldFolderBeIndexed(const QString& path) const
                 return false;
             }
 #ifndef __unix__
-            if (!indexHiddenFilesAndFolders()) ||
-                !d.cd(c.toString()) || QFileInfo(d.path()).isHidden() {
+            if (!indexHiddenFilesAndFolders() ||
+                !d.cd(c.toString()) || QFileInfo(d.path()).isHidden()) {
                 return false;
             }
 #endif
