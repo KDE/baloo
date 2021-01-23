@@ -9,8 +9,6 @@
 #define BALOO_SEARCHSTORE_H
 
 #include <QString>
-#include <QDateTime>
-#include "term.h"
 
 namespace Baloo {
 
