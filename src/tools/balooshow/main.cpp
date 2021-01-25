@@ -28,7 +28,8 @@
 
 QString colorString(const QString& input, int color)
 {
-    if(isatty(fileno(stdout))) {
+    static bool isTty = isatty(fileno(stdout));
+    if(isTty) {
         QString colorStart = QStringLiteral("\033[0;%1m").arg(color);
         QLatin1String colorEnd("\033[0;0m");
 
@@ -48,7 +49,6 @@ int main(int argc, char* argv[])
                          i18n("The Baloo data Viewer - A debugging tool"),
                          KAboutLicense::GPL,
                          i18n("(c) 2012, Vishesh Handa"));
-    aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QStringLiteral("me@vhanda.in"));
 
     KAboutData::setApplicationData(aboutData);
 
