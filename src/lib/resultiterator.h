@@ -39,6 +39,7 @@ public:
 
     bool next();
     QString filePath() const;
+    QByteArray documentId() const;
 
 private:
     explicit ResultIterator(ResultList&& res);

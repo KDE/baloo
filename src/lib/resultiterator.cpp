@@ -59,3 +59,9 @@ QString ResultIterator::filePath() const
     Q_ASSERT(d->pos >= 0 && d->pos < d->results.size());
     return QString::fromUtf8(d->results.at(d->pos).filePath);
 }
+
+QByteArray ResultIterator::documentId() const
+{
+    Q_ASSERT(d->pos >= 0 && d->pos < d->results.size());
+    return QByteArray::number(d->results.at(d->pos).documentId, 16);
+}
