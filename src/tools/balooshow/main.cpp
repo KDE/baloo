@@ -147,7 +147,7 @@ int main(int argc, char* argv[])
 
         bool hasFile = tr.hasDocument(fid);
         if (hasFile) {
-            stream << colorString(QString::number(fid), 31);
+            stream << colorString(QString::number(fid, 16), 31);
             stream << QLatin1String(" ");
             stream << colorString(QString::number(Baloo::idToDeviceId(fid)), 28);
             stream << QLatin1String(" ");
