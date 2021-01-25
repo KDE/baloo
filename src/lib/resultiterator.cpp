@@ -6,28 +6,27 @@
 */
 
 #include "resultiterator.h"
+#include "result_p.h"
 #include "searchstore.h"
-#include <QStringList>
+#include <vector>
 
 using namespace Baloo;
 
 class Baloo::ResultIteratorPrivate {
 public:
-    ResultIteratorPrivate() : pos(-1)
-    {}
+    ResultIteratorPrivate() = default;
 
     ~ResultIteratorPrivate() {
     }
 
-    QStringList results;
-    int pos;
+    ResultList results;
+    int pos = -1;
 };
 
-ResultIterator::ResultIterator(const QStringList& results)
+ResultIterator::ResultIterator(ResultList&& res)
     : d(new ResultIteratorPrivate)
 {
-    d->results = results;
-    d->pos = -1;
+    d->results = res;
 }
 
 #if BALOO_CORE_BUILD_DEPRECATED_SINCE(5, 55)
@@ -58,5 +57,5 @@ bool ResultIterator::next()
 QString ResultIterator::filePath() const
 {
     Q_ASSERT(d->pos >= 0 && d->pos < d->results.size());
-    return d->results.at(d->pos);
+    return QString::fromUtf8(d->results.at(d->pos).filePath);
 }

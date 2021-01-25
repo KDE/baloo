@@ -103,16 +103,16 @@ SearchStore::~SearchStore()
 }
 
 // Return the result with-in [offset, offset + limit)
-QStringList SearchStore::exec(const Term& term, uint offset, int limit, bool sortResults)
+ResultList SearchStore::exec(const Term& term, uint offset, int limit, bool sortResults)
 {
     if (!m_db || !m_db->isOpen()) {
-        return QStringList();
+        return ResultList();
     }
 
     Transaction tr(m_db, Transaction::ReadOnly);
     QScopedPointer<PostingIterator> it(constructQuery(&tr, term));
     if (!it) {
-        return QStringList();
+        return ResultList();
     }
 
     if (sortResults) {
@@ -127,7 +127,7 @@ QStringList SearchStore::exec(const Term& term, uint offset, int limit, bool sor
 
         // Not enough results within range, no need to sort.
         if (offset >= static_cast<uint>(resultIds.size())) {
-            return QStringList();
+            return ResultList();
         }
 
         auto compFunc = [](const std::pair<quint64, quint32>& lhs,
@@ -140,20 +140,20 @@ QStringList SearchStore::exec(const Term& term, uint offset, int limit, bool sor
             limit = resultIds.size();
         }
 
-        QStringList results;
+        ResultList results;
         const uint end = qMin(static_cast<uint>(resultIds.size()), offset + static_cast<uint>(limit));
         results.reserve(end - offset);
         for (uint i = offset; i < end; i++) {
             const quint64 id = resultIds[i].first;
-            const QString filePath = tr.documentUrl(id);
+            Result res{tr.documentUrl(id)};
 
-            results << filePath;
+            results.emplace_back(res);
         }
 
         return results;
     }
     else {
-        QStringList results;
+        ResultList results;
         uint ulimit = limit < 0 ? UINT_MAX : limit;
 
         while (offset && it->next()) {
@@ -163,9 +163,10 @@ QStringList SearchStore::exec(const Term& term, uint offset, int limit, bool sor
         while (ulimit && it->next()) {
             quint64 id = it->docId();
             Q_ASSERT(id > 0);
+            Result res{tr.documentUrl(id)};
+            Q_ASSERT(!res.filePath.isEmpty());
 
-            results << tr.documentUrl(it->docId());
-            Q_ASSERT(!results.last().isEmpty());
+            results.emplace_back(res);
 
             ulimit--;
         }

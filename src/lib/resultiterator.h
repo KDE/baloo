@@ -14,7 +14,7 @@
 
 namespace Baloo {
 
-class Result;
+class ResultList;
 class ResultIteratorPrivate;
 
 /**
@@ -41,7 +41,7 @@ public:
     QString filePath() const;
 
 private:
-    explicit ResultIterator(const QStringList& results);
+    explicit ResultIterator(ResultList&& res);
     ResultIteratorPrivate* d;
 
     friend class Query;

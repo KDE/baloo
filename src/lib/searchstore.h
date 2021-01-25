@@ -9,6 +9,7 @@
 #define BALOO_SEARCHSTORE_H
 
 #include <QString>
+#include "result_p.h"
 
 namespace Baloo {
 
@@ -24,7 +25,7 @@ public:
     SearchStore();
     ~SearchStore();
 
-    QStringList exec(const Term& term, uint offset, int limit, bool sortResults);
+    ResultList exec(const Term& term, uint offset, int limit, bool sortResults);
 
 private:
     Database* m_db;
