@@ -145,7 +145,7 @@ ResultList SearchStore::exec(const Term& term, uint offset, int limit, bool sort
         results.reserve(end - offset);
         for (uint i = offset; i < end; i++) {
             const quint64 id = resultIds[i].first;
-            Result res{tr.documentUrl(id)};
+            Result res{tr.documentUrl(id), id};
 
             results.emplace_back(res);
         }
@@ -161,9 +161,9 @@ ResultList SearchStore::exec(const Term& term, uint offset, int limit, bool sort
         }
 
         while (ulimit && it->next()) {
-            quint64 id = it->docId();
+            const quint64 id = it->docId();
             Q_ASSERT(id > 0);
-            Result res{tr.documentUrl(id)};
+            Result res{tr.documentUrl(id), id};
             Q_ASSERT(!res.filePath.isEmpty());
 
             results.emplace_back(res);

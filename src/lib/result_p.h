@@ -15,7 +15,10 @@ namespace Baloo
 {
 class Result {
 public:
+    Result(QByteArray&& path, quint64 id) : filePath(path), documentId(id) {};
+
     QByteArray filePath;
+    quint64 documentId = 0;
 };
 
 class ResultList : public std::vector<Baloo::Result> {};
