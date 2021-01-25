@@ -45,6 +45,8 @@ int main(int argc, char* argv[])
     parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("d") << QStringLiteral("directory"),
                                         i18n("Limit search to specified directory"),
                                         i18n("directory")));
+    parser.addOption(QCommandLineOption({QStringLiteral("i"), QStringLiteral("id")},
+                                        i18n("Show document IDs")));
     parser.addPositionalArgument(i18n("query"), i18n("List of words to query for"));
     parser.addHelpOption();
     parser.addVersionOption();
@@ -53,6 +55,7 @@ int main(int argc, char* argv[])
     int queryLimit = -1;
     int offset = 0;
     QString typeStr;
+    bool showDocumentId = parser.isSet(QStringLiteral("id"));
 
     QStringList args = parser.positionalArguments();
     if (args.isEmpty()) {
@@ -90,6 +93,9 @@ int main(int argc, char* argv[])
     Baloo::ResultIterator iter = query.exec();
     while (iter.next()) {
         const QString filePath = iter.filePath();
+        if (showDocumentId) {
+            std::cout << qPrintable(iter.documentId()) << " ";
+        }
         std::cout << qPrintable(filePath) << std::endl;
     }
     std::cerr << qPrintable(i18n("Elapsed: %1 msecs", timer.nsecsElapsed() / 1000000.0)) << std::endl;
