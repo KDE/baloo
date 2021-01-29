@@ -23,5 +23,5 @@ target_link_libraries(timeline
   KF5::Baloo
 )
 
-install(TARGETS timeline DESTINATION ${PLUGIN_INSTALL_DIR}/kf5/kio)
-install(FILES timeline.protocol DESTINATION ${SERVICES_INSTALL_DIR})
+install(TARGETS timeline DESTINATION ${KDE_INSTALL_PLUGINDIR}/kf5/kio)
+install(FILES timeline.protocol DESTINATION ${KDE_INSTALL_KSERVICES5DIR})

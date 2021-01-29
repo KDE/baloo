@@ -35,5 +35,5 @@ target_link_libraries(baloo_file_extractor
   KF5::IdleTime
 )
 
-install(TARGETS baloo_file_extractor DESTINATION ${BIN_INSTALL_DIR})
+install(TARGETS baloo_file_extractor DESTINATION ${KDE_INSTALL_BINDIR})
 

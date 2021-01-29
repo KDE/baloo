@@ -29,6 +29,6 @@ target_link_libraries(baloomonitorplugin
     KF5::Baloo
     KF5::BalooEngine
 )
-install(TARGETS baloomonitorplugin DESTINATION ${QML_INSTALL_DIR}/org/kde/baloo/experimental)
+install(TARGETS baloomonitorplugin DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/baloo/experimental)
 
-install(FILES qmldir DESTINATION ${QML_INSTALL_DIR}/org/kde/baloo/experimental)
+install(FILES qmldir DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/baloo/experimental)

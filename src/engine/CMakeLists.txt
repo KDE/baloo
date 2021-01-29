@@ -60,7 +60,7 @@ set_target_properties(KF5BalooEngine PROPERTIES
     EXPORT_NAME BalooEngine
 )
 
-##target_include_directories(KF5BalooEngine INTERFACE "$<INSTALL_INTERFACE:${KF5_INCLUDE_INSTALL_DIR}/Baloo>")
+##target_include_directories(KF5BalooEngine INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF5}/Baloo>")
 
 generate_export_header(KF5BalooEngine BASE_NAME BALOO_ENGINE EXPORT_FILE_NAME engine_export.h)
 

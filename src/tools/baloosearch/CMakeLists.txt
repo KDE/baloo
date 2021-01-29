@@ -12,4 +12,4 @@ target_link_libraries(baloosearch
   KF5::Baloo
 )
 
-install(TARGETS baloosearch DESTINATION ${BIN_INSTALL_DIR})
+install(TARGETS baloosearch DESTINATION ${KDE_INSTALL_BINDIR})
