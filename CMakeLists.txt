@@ -1,16 +1,16 @@
 # set minimum version requirements
 cmake_minimum_required(VERSION 3.5)
 set(REQUIRED_QT_VERSION 5.14.0)
-set(KF5_VERSION "5.79.0") # handled by release scripts
-set(KF5_DEP_VERSION "5.79.0") # handled by release scripts
+set(KF_VERSION "5.79.0") # handled by release scripts
+set(KF_DEP_VERSION "5.79.0") # handled by release scripts
 
 # set up project
-project(Baloo VERSION ${KF5_VERSION})
+project(Baloo VERSION ${KF_VERSION})
 
 # set up extra-cmake-modules before trying anything else
 include(FeatureSummary)
 
-find_package(ECM ${KF5_DEP_VERSION} NO_MODULE)
+find_package(ECM ${KF_DEP_VERSION} NO_MODULE)
 set_package_properties(ECM
     PROPERTIES
         TYPE REQUIRED
@@ -57,7 +57,7 @@ add_feature_info(EXP ${BUILD_EXPERIMENTAL} "Build experimental features")
 
 # set up build dependencies
 find_package(Qt5 ${REQUIRED_QT_VERSION} REQUIRED NO_MODULE COMPONENTS Core DBus Widgets Qml Quick Test)
-find_package(KF5 ${KF5_DEP_VERSION} REQUIRED COMPONENTS CoreAddons Config DBusAddons I18n IdleTime Solid FileMetaData Crash KIO)
+find_package(KF5 ${KF_DEP_VERSION} REQUIRED COMPONENTS CoreAddons Config DBusAddons I18n IdleTime Solid FileMetaData Crash KIO)
 
 find_package(LMDB)
 set_package_properties(LMDB
