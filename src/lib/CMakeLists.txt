@@ -61,7 +61,7 @@ set_target_properties(KF5Baloo PROPERTIES
     SOVERSION ${BALOO_SOVERSION}
     EXPORT_NAME Baloo
 )
-target_include_directories(KF5Baloo INTERFACE "$<INSTALL_INTERFACE:${KF5_INCLUDE_INSTALL_DIR}/Baloo>")
+target_include_directories(KF5Baloo INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF5}/Baloo>")
 
 ecm_generate_export_header(KF5Baloo
     EXPORT_FILE_NAME core_export.h
@@ -94,13 +94,13 @@ install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/core_export.h
     ${CMAKE_CURRENT_BINARY_DIR}/baloosettings.h
     ${KF5Baloo_HEADERS}
-    DESTINATION ${KF5_INCLUDE_INSTALL_DIR}/Baloo/baloo
+    DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5}/Baloo/baloo
     COMPONENT Devel
 )
 
 install(FILES
     ${KF5Baloo_CamelCase_HEADERS}
-    DESTINATION ${KF5_INCLUDE_INSTALL_DIR}/Baloo/Baloo
+    DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5}/Baloo/Baloo
     COMPONENT Devel
 )
 
@@ -151,6 +151,6 @@ ecm_generate_pri_file(
     LIB_NAME KF5Baloo
     DEPS "core KCoreAddons KFileMetaData"
     FILENAME_VAR PRI_FILENAME
-    INCLUDE_INSTALL_DIR ${KF5_INCLUDE_INSTALL_DIR}/Baloo
+    INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR_KF5}/Baloo
 )
 install(FILES ${PRI_FILENAME} DESTINATION ${ECM_MKSPECS_INSTALL_DIR})

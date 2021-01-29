@@ -36,4 +36,4 @@ target_link_libraries(balooctl
     baloofilecommon
 )
 
-install(TARGETS balooctl DESTINATION ${BIN_INSTALL_DIR})
+install(TARGETS balooctl DESTINATION ${KDE_INSTALL_BINDIR})

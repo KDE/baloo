@@ -14,4 +14,4 @@ target_link_libraries(balooshow
     KF5::I18n
 )
 
-install(TARGETS balooshow DESTINATION ${BIN_INSTALL_DIR})
+install(TARGETS balooshow DESTINATION ${KDE_INSTALL_BINDIR})

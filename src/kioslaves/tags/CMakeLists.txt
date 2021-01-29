@@ -23,5 +23,5 @@ target_link_libraries(tags
   KF5::Baloo
 )
 
-install(TARGETS tags DESTINATION ${PLUGIN_INSTALL_DIR}/kf5/kio)
-install(FILES tags.protocol DESTINATION ${SERVICES_INSTALL_DIR})
+install(TARGETS tags DESTINATION ${KDE_INSTALL_PLUGINDIR}/kf5/kio)
+install(FILES tags.protocol DESTINATION ${KDE_INSTALL_KSERVICES5DIR})

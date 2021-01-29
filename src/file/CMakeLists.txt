@@ -79,8 +79,8 @@ target_link_libraries(baloo_file
     baloofilecommon
 )
 
-install(TARGETS baloo_file ${INSTALL_TARGETS_DEFAULT_ARGS})
-install(FILES baloo_file.desktop DESTINATION ${AUTOSTART_INSTALL_DIR})
+install(TARGETS baloo_file ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
+install(FILES baloo_file.desktop DESTINATION ${KDE_INSTALL_AUTOSTARTDIR})
 
 add_subdirectory(extractor)
 
