@@ -67,7 +67,7 @@ ecm_generate_export_header(KF5Baloo
     EXPORT_FILE_NAME core_export.h
     BASE_NAME BALOO_CORE
     GROUP_BASE_NAME KF
-    VERSION ${KF5_VERSION}
+    VERSION ${KF_VERSION}
     DEPRECATED_BASE_VERSION 0
     DEPRECATION_VERSIONS 5.55 5.69
     EXCLUDE_DEPRECATED_BEFORE_AND_AT ${EXCLUDE_DEPRECATED_BEFORE_AND_AT}
@@ -109,7 +109,7 @@ if(BUILD_QCH)
         KF5Baloo_QCH
         NAME Baloo
         BASE_NAME KF5Baloo
-        VERSION ${KF5_VERSION}
+        VERSION ${KF_VERSION}
         ORG_DOMAIN org.kde
         SOURCES # using only public headers, to cover only public API
             ${KF5Baloo_HEADERS}
