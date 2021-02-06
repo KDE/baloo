@@ -1,0 +1,86 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Abdalrahim G. Fakhouri <abdilra7eem@yahoo.com>, 2014.
+# Safa Alfulaij <safa1996alfulaij@gmail.com>, ٢٠١٥, 2018.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2020-08-07 02:06+0200\n"
+"PO-Revision-Date: 2018-06-08 00:38+0300\n"
+"Last-Translator: Safa Alfulaij <safa1996alfulaij@gmail.com>\n"
+"Language-Team: Arabic <doc@arabeyes.org>\n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+"X-Generator: Lokalize 2.0\n"
+
+#: indexerstate.h:32
+#, kde-format
+msgid "Unknown"
+msgstr "مجهولة"
+
+#: indexerstate.h:35
+#, kde-format
+msgid "Idle"
+msgstr "خامل"
+
+#: indexerstate.h:38
+#, kde-format
+msgid "Suspended"
+msgstr "معلّق"
+
+#: indexerstate.h:41
+#, kde-format
+msgid "Initial Indexing"
+msgstr "الفهرسة الأولية"
+
+#: indexerstate.h:44
+#, kde-format
+msgid "Indexing new files"
+msgstr "يُفهرس الملفات الجديدة"
+
+#: indexerstate.h:47
+#, kde-format
+msgid "Indexing modified files"
+msgstr "يُفهرس الملفات المعدلة"
+
+#: indexerstate.h:50
+#, kde-format
+msgid "Indexing Extended Attributes"
+msgstr "يُفهرس الصفات الممتدة"
+
+#: indexerstate.h:53
+#, kde-format
+msgid "Indexing file content"
+msgstr "يُفهرس محتويات الملفات"
+
+#: indexerstate.h:56
+#, kde-format
+msgid "Checking for unindexed files"
+msgstr "يفحص بحثًا عن الملفات غير المفهرسة"
+
+#: indexerstate.h:59
+#, fuzzy, kde-format
+#| msgid "Checking for unindexed files"
+msgid "Checking for stale index entries"
+msgstr "يفحص بحثًا عن الملفات غير المفهرسة"
+
+#: indexerstate.h:62
+#, kde-format
+msgid "Idle (Powersave)"
+msgstr ""
+
+#: indexerstate.h:65
+#, kde-format
+msgid "Not Running"
+msgstr ""
+
+#: indexerstate.h:68
+#, kde-format
+msgid "Starting"
+msgstr ""

@@ -1,0 +1,89 @@
+# Translation of baloomonitorplugin.po to Euskara/Basque (eu).
+# Copyright (C) 2017-2018, Free Software Foundation, Inc.
+# Copyright (C) 2019-2020, This file is copyright:
+# This file is distributed under the same license as the baloo package.
+# KDE euskaratzeko proiektuaren arduraduna <xalba@euskalnet.net>.
+#
+# Translators:
+# KDE Euskaratzeko proiektuaren arduraduna <xalba@euskalnet.net>, 2017, 2018.
+# Ander Elortondo <ander@elortondo.net>, 2017.
+# Iñigo Salvador Azurmendi <xalba@euskalnet.net>, 2018, 2019, 2020.
+msgid ""
+msgstr ""
+"Project-Id-Version: baloo\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2020-08-03 02:05+0200\n"
+"PO-Revision-Date: 2020-03-17 19:32+0100\n"
+"Last-Translator: Iñigo Salvador Azurmendi <xalba@euskalnet.net>\n"
+"Language-Team: Basque <kde-i18n-eu@kde.org>\n"
+"Language: eu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 19.12.3\n"
+
+#: ../../file/indexerstate.h:32
+#, kde-format
+msgid "Unknown"
+msgstr "Ezezaguna"
+
+#: ../../file/indexerstate.h:35
+#, kde-format
+msgid "Idle"
+msgstr "Nagi"
+
+#: ../../file/indexerstate.h:38
+#, kde-format
+msgid "Suspended"
+msgstr "Esekita"
+
+#: ../../file/indexerstate.h:41
+#, kde-format
+msgid "Initial Indexing"
+msgstr "Hasierako indexatzea"
+
+#: ../../file/indexerstate.h:44
+#, kde-format
+msgid "Indexing new files"
+msgstr "Fitxategi berriak indexatzen"
+
+#: ../../file/indexerstate.h:47
+#, kde-format
+msgid "Indexing modified files"
+msgstr "Aldatutako fitxategiak indexatzen"
+
+#: ../../file/indexerstate.h:50
+#, kde-format
+msgid "Indexing Extended Attributes"
+msgstr "Atributu hedatuak indexatzen"
+
+#: ../../file/indexerstate.h:53
+#, kde-format
+msgid "Indexing file content"
+msgstr "Fitxategien edukia indexatzen"
+
+#: ../../file/indexerstate.h:56
+#, kde-format
+msgid "Checking for unindexed files"
+msgstr "Indexatu gabeko fitxategiak egiaztatzen"
+
+#: ../../file/indexerstate.h:59
+#, kde-format
+msgid "Checking for stale index entries"
+msgstr "Indize sarrera zaharkituak dauden egiaztatzen"
+
+#: ../../file/indexerstate.h:62
+#, kde-format
+msgid "Idle (Powersave)"
+msgstr "Ez aktibo (energia aurreztea)"
+
+#: ../../file/indexerstate.h:65
+#, kde-format
+msgid "Not Running"
+msgstr "Ez dago martxan"
+
+#: ../../file/indexerstate.h:68
+#, kde-format
+msgid "Starting"
+msgstr "Abiarazten"
