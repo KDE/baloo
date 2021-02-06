@@ -1,0 +1,84 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: baloomonitorplugin\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2020-08-03 02:05+0200\n"
+"PO-Revision-Date: 2017-10-04 11:42+0000\n"
+"Last-Translator: Kaan <kaanozdincer@gmail.com>\n"
+"Language-Team: Turkish <kde-i18n-doc@kde.org>\n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: ../../file/indexerstate.h:32
+#, kde-format
+msgid "Unknown"
+msgstr "Bilinmeyen"
+
+#: ../../file/indexerstate.h:35
+#, kde-format
+msgid "Idle"
+msgstr "Boşta"
+
+#: ../../file/indexerstate.h:38
+#, kde-format
+msgid "Suspended"
+msgstr "Beklemede"
+
+#: ../../file/indexerstate.h:41
+#, kde-format
+msgid "Initial Indexing"
+msgstr "Başlangıç indekslemesi"
+
+#: ../../file/indexerstate.h:44
+#, kde-format
+msgid "Indexing new files"
+msgstr "Yeni dosyaları indeksleme"
+
+#: ../../file/indexerstate.h:47
+#, kde-format
+msgid "Indexing modified files"
+msgstr "Değiştirilmiş dosyaları indeksleme"
+
+#: ../../file/indexerstate.h:50
+#, kde-format
+msgid "Indexing Extended Attributes"
+msgstr "Genişletilmiş Özenitelikleri İndeksleme"
+
+#: ../../file/indexerstate.h:53
+#, kde-format
+msgid "Indexing file content"
+msgstr "Dosya içeriğini indeksleme"
+
+#: ../../file/indexerstate.h:56
+#, kde-format
+msgid "Checking for unindexed files"
+msgstr "İndekslenmemiş dosyalar için denetim"
+
+#: ../../file/indexerstate.h:59
+#, fuzzy, kde-format
+#| msgid "Checking for unindexed files"
+msgid "Checking for stale index entries"
+msgstr "İndekslenmemiş dosyalar için denetim"
+
+#: ../../file/indexerstate.h:62
+#, kde-format
+msgid "Idle (Powersave)"
+msgstr ""
+
+#: ../../file/indexerstate.h:65
+#, kde-format
+msgid "Not Running"
+msgstr ""
+
+#: ../../file/indexerstate.h:68
+#, kde-format
+msgid "Starting"
+msgstr ""

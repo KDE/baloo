@@ -1,0 +1,86 @@
+# Copyright (C) YEAR This file is copyright:
+# This file is distributed under the same license as the baloo package.
+#
+# Andrej Mernik <andrejm@ubuntu.si>, 2013, 2014, 2015.
+# Matjaž Jeran <matjaz.jeran@amis.net>, 2019, 2020.
+msgid ""
+msgstr ""
+"Project-Id-Version: baloo\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2020-08-07 02:06+0200\n"
+"PO-Revision-Date: 2020-03-16 07:40+0100\n"
+"Last-Translator: Matjaž Jeran <matjaz.jeran@amis.net>\n"
+"Language-Team: Slovenian <lugos-slo@lugos.si>\n"
+"Language: sl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Translator: Andrej Mernik <andrejm@ubuntu.si>\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
+"%100==4 ? 3 : 0);\n"
+"X-Generator: Poedit 2.3\n"
+
+#: indexerstate.h:32
+#, kde-format
+msgid "Unknown"
+msgstr "Neznano"
+
+#: indexerstate.h:35
+#, kde-format
+msgid "Idle"
+msgstr "Nedejaven"
+
+#: indexerstate.h:38
+#, kde-format
+msgid "Suspended"
+msgstr "V pripravljenosti"
+
+#: indexerstate.h:41
+#, kde-format
+msgid "Initial Indexing"
+msgstr "Začetna izgradnja kazala"
+
+#: indexerstate.h:44
+#, kde-format
+msgid "Indexing new files"
+msgstr "Gradim kazalo novih datotek"
+
+#: indexerstate.h:47
+#, kde-format
+msgid "Indexing modified files"
+msgstr "Gradim kazalo spremenjenih datotek"
+
+#: indexerstate.h:50
+#, kde-format
+msgid "Indexing Extended Attributes"
+msgstr "Gradim kazalo razširjenih lastnosti"
+
+#: indexerstate.h:53
+#, kde-format
+msgid "Indexing file content"
+msgstr "Gradim kazalo vsebine datotek"
+
+#: indexerstate.h:56
+#, kde-format
+msgid "Checking for unindexed files"
+msgstr "Preverjam še datoteke, ki niso v kazalu"
+
+#: indexerstate.h:59
+#, kde-format
+msgid "Checking for stale index entries"
+msgstr "Preverjanje zastarelih vnosov kazala"
+
+#: indexerstate.h:62
+#, kde-format
+msgid "Idle (Powersave)"
+msgstr "Nedejaven (varčevanje energije)"
+
+#: indexerstate.h:65
+#, kde-format
+msgid "Not Running"
+msgstr "Ne teče"
+
+#: indexerstate.h:68
+#, kde-format
+msgid "Starting"
+msgstr "Začenjam"
