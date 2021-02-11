@@ -39,3 +39,4 @@ CMakeLists.txt.user*
 *.kdev4
 .cmake/
 /.clang-format
+/compile_commands.json
