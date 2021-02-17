@@ -48,6 +48,7 @@ const char* const s_defaultFileExcludeFilters[] = {
     "*.vm*",
     "*.nvram",
     "*.rcore",
+    "*.swp",
     "*.swap",
     "lzo",
     "litmain.sh",
@@ -94,7 +95,7 @@ const char* const s_defaultFileExcludeFilters[] = {
     nullptr
 };
 
-const int s_defaultFileExcludeFiltersVersion = 6;
+const int s_defaultFileExcludeFiltersVersion = 7;
 
 const char* const s_defaultFolderExcludeFilters[] = {
     "po",
