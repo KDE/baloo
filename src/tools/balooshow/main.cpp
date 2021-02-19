@@ -127,10 +127,6 @@ int main(int argc, char* argv[])
                     stream << i18n("%1: Not a valid url or document id", url) << '\n';
                     continue;
                 }
-                if (!tr.hasDocument(fid)) {
-                    stream << i18n("%1: No index information found", url) << '\n';
-                    continue;
-                }
                 url = QFile::decodeName(tr.documentUrl(fid));
                 internalUrl = url;
             }
@@ -151,14 +147,15 @@ int main(int argc, char* argv[])
             internalUrl = url;
         }
 
-        bool hasFile = tr.hasDocument(fid);
-        if (hasFile) {
+        if (fid) {
             stream << colorString(QString::number(fid, 16), 31);
             stream << QLatin1String(" ");
             stream << colorString(QString::number(Baloo::idToDeviceId(fid)), 28);
             stream << QLatin1String(" ");
             stream << colorString(QString::number(Baloo::idToInode(fid)), 28);
             stream << QLatin1String(" ");
+        }
+        if (fid && tr.hasDocument(fid)) {
             stream << colorString(url, 32);
             if (!internalUrl.isEmpty() && internalUrl != url) {
                 // The document is know by a different name inside the DB,
