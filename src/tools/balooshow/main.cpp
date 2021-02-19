@@ -77,7 +77,7 @@ int main(int argc, char* argv[])
         bool ok;
         devId = parser.value(QStringLiteral("d")).toULong(&ok, 10);
         if (!ok) {
-            devId = parser.value(QStringLiteral("d")).toULong(&ok, 0);
+            devId = parser.value(QStringLiteral("d")).toULong(&ok, 16);
         }
     }
 
@@ -119,7 +119,10 @@ int main(int argc, char* argv[])
                 fid = fsFid;
             } else {
                 bool ok;
-                fid = url.toULongLong(&ok);
+                fid = url.toULongLong(&ok, 10);
+                if (!ok) {
+                    fid = url.toULongLong(&ok, 16);
+                }
                 if (!ok) {
                     stream << i18n("%1: Not a valid url or document id", url) << '\n';
                     continue;
@@ -134,7 +137,10 @@ int main(int argc, char* argv[])
 
         } else {
             bool ok;
-            quint32 inode = url.toULong(&ok);
+            quint32 inode = url.toULong(&ok, 10);
+            if (!ok) {
+                inode = url.toULong(&ok, 16);
+            }
             if (!ok) {
                 stream << i18n("%1: Failed to parse inode number", url) << '\n';
                 continue;
