@@ -34,6 +34,9 @@ const char* const s_defaultFileExcludeFilters[] = {
     "confstat",
     "Makefile.am",
     "*.gcode", // CNC machine/3D printer toolpath files
+    ".ninja_deps",
+    ".ninja_log",
+    "build.ninja",
 
     // misc
     "*.csproj",
@@ -95,7 +98,7 @@ const char* const s_defaultFileExcludeFilters[] = {
     nullptr
 };
 
-const int s_defaultFileExcludeFiltersVersion = 7;
+const int s_defaultFileExcludeFiltersVersion = 8;
 
 const char* const s_defaultFolderExcludeFilters[] = {
     "po",
