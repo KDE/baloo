@@ -39,6 +39,7 @@ include(ECMGenerateHeaders)
 include(CMakePackageConfigHelpers)
 include(KDEInstallDirs)
 include(KDECMakeSettings)
+include(KDEGitCommitHooks)
 include(KDEFrameworkCompilerSettings NO_POLICY_SCOPE)
 include(ECMAddTests)
 include(ECMAddQch)
@@ -153,3 +154,9 @@ install(FILES
 
 # and we're done
 feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
+
+kde_configure_git_pre_commit_hook(CHECKS CLANG_FORMAT)
+# Remove these 3 lines when the ECM version is bumped to 5.80
+include(KDEClangFormat)
+file(GLOB_RECURSE ALL_CLANG_FORMAT_SOURCE_FILES *.cpp *.h)
+kde_clang_format(${ALL_CLANG_FORMAT_SOURCE_FILES})
