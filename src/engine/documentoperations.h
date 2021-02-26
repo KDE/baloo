@@ -18,7 +18,7 @@ enum DocumentOperation {
     DocumentData  =  0x8,
     DocumentTime  = 0x10,
     DocumentUrl   = 0x20,
-    Everything    = DocumentTerms | FileNameTerms | XAttrTerms | DocumentData | DocumentTime | DocumentUrl
+    Everything    = DocumentTerms | FileNameTerms | XAttrTerms | DocumentData | DocumentTime | DocumentUrl,
 };
 Q_DECLARE_FLAGS(DocumentOperations, DocumentOperation)
 Q_DECLARE_OPERATORS_FOR_FLAGS(DocumentOperations)

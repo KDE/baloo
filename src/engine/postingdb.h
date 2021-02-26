@@ -43,7 +43,7 @@ public:
 
     enum Comparator {
         LessEqual,
-        GreaterEqual
+        GreaterEqual,
     };
     // For integral types only:
     template<typename T>

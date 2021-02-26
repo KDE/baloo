@@ -17,7 +17,7 @@ class BasicIndexingJob
 public:
     enum IndexingLevel {
         NoLevel,
-        MarkForContentIndexing
+        MarkForContentIndexing,
     };
 
     BasicIndexingJob(const QString& filePath, const QString& mimetype,

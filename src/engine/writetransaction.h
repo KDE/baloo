@@ -51,7 +51,7 @@ public:
 
     enum OperationType {
         AddId,
-        RemoveId
+        RemoveId,
     };
     struct Operation {
         OperationType type;

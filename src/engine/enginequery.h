@@ -24,7 +24,7 @@ public:
         StartsWith,
         And,
         Or,
-        Phrase
+        Phrase,
     };
 
     EngineQuery();

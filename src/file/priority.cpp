@@ -34,7 +34,7 @@ namespace {
         IOPRIO_CLASS_NONE,
         IOPRIO_CLASS_RT,
         IOPRIO_CLASS_BE,
-        IOPRIO_CLASS_IDLE
+        IOPRIO_CLASS_IDLE,
     };
 #endif
 
@@ -42,7 +42,7 @@ namespace {
     enum {
         IOPRIO_WHO_PROCESS = 1,
         IOPRIO_WHO_PGRP,
-        IOPRIO_WHO_USER
+        IOPRIO_WHO_USER,
     };
 #endif
 

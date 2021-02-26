@@ -6154,7 +6154,7 @@ typedef
           VG_USERREQ__VEX_INIT_FOR_IRI = 0x1901,
           /* Used by Inner Valgrind to inform Outer Valgrind where to
              find the list of inner guest threads */
-          VG_USERREQ__INNER_THREADS    = 0x1902
+          VG_USERREQ__INNER_THREADS    = 0x1902,
    } Vg_ClientRequest;
 
 #if !defined(__GNUC__)

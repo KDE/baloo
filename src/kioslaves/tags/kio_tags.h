@@ -26,7 +26,7 @@ public:
     enum UrlType {
         InvalidUrl,
         FileUrl,
-        TagUrl
+        TagUrl,
     };
     Q_ENUM(UrlType)
 
@@ -81,7 +81,7 @@ protected:
 private:
     enum ParseFlags {
         ChopLastSection,
-        LazyValidation
+        LazyValidation,
     };
 
     struct ParseResult {

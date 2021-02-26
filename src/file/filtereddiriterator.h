@@ -20,7 +20,7 @@ class FilteredDirIterator
 public:
     enum Filter {
         FilesAndDirs,
-        DirsOnly
+        DirsOnly,
     };
     FilteredDirIterator(const FileIndexerConfig* config, const QString& folder, Filter filter = FilesAndDirs);
     ~FilteredDirIterator();
