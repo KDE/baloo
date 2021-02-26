@@ -31,7 +31,7 @@ class BALOO_ENGINE_EXPORT Transaction
 public:
     enum TransactionType {
         ReadOnly,
-        ReadWrite
+        ReadWrite,
     };
     Transaction(const Database& db, TransactionType type);
     Transaction(Database* db, TransactionType type);

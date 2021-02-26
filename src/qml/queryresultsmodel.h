@@ -51,7 +51,7 @@ public:
     QHash<int, QByteArray> roleNames() const override;
 
     enum Roles {
-        UrlRole = Qt::UserRole + 1
+        UrlRole = Qt::UserRole + 1,
     };
 
     void setQuery(Query *query);

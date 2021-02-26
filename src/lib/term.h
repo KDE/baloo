@@ -24,13 +24,13 @@ public:
         Greater,
         GreaterEqual,
         Less,
-        LessEqual
+        LessEqual,
     };
 
     enum Operation {
         None,
         And,
-        Or
+        Or,
     };
 
     Term();

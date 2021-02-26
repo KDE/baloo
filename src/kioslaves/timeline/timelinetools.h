@@ -38,7 +38,7 @@ enum TimelineFolderType {
     RootFolder,      /// the root folder
     CalendarFolder,  /// the calendar folder listing all months
     MonthFolder,     /// a folder listing a month's days (m_date contains the month)
-    DayFolder        /// a folder listing a day (m_date); optionally m_filename is set
+    DayFolder,       /// a folder listing a day (m_date); optionally m_filename is set
 };
 
 /**

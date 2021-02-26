@@ -113,7 +113,7 @@ public:
          *
          * This is the default sorting mechanism.
          */
-        SortAuto
+        SortAuto,
     };
 
     void setSortingOption(SortingOption option);

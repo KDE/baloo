@@ -49,7 +49,7 @@ public:
         /**
          * Read-Only Database, only works if database exists.
          */
-        ReadOnlyDatabase
+        ReadOnlyDatabase,
     };
 
     /**
