@@ -1,0 +1,84 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+# Sergiu Bivol <sergiu@cip.md>, 2014, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2020-08-07 02:06+0200\n"
+"PO-Revision-Date: 2020-09-06 23:31+0100\n"
+"Last-Translator: Sergiu Bivol <sergiu@cip.md>\n"
+"Language-Team: Romanian\n"
+"Language: ro\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
+"20)) ? 1 : 2;\n"
+"X-Generator: Lokalize 19.12.3\n"
+
+#: indexerstate.h:32
+#, kde-format
+msgid "Unknown"
+msgstr "Necunoscut"
+
+#: indexerstate.h:35
+#, kde-format
+msgid "Idle"
+msgstr "Inactiv"
+
+#: indexerstate.h:38
+#, kde-format
+msgid "Suspended"
+msgstr "Suspendat"
+
+#: indexerstate.h:41
+#, kde-format
+msgid "Initial Indexing"
+msgstr "Indexare inițială"
+
+#: indexerstate.h:44
+#, kde-format
+msgid "Indexing new files"
+msgstr "Se indexează fișierele noi"
+
+#: indexerstate.h:47
+#, kde-format
+msgid "Indexing modified files"
+msgstr "Se indexează fișierele modificate"
+
+#: indexerstate.h:50
+#, kde-format
+msgid "Indexing Extended Attributes"
+msgstr "Se indexează atributele extinse"
+
+#: indexerstate.h:53
+#, kde-format
+msgid "Indexing file content"
+msgstr "Se indexează conținutul fișierelor"
+
+#: indexerstate.h:56
+#, kde-format
+msgid "Checking for unindexed files"
+msgstr "Se caută fișiere neindexate"
+
+#: indexerstate.h:59
+#, kde-format
+msgid "Checking for stale index entries"
+msgstr "Se caută înregistrări de index învechite"
+
+#: indexerstate.h:62
+#, kde-format
+msgid "Idle (Powersave)"
+msgstr "Inactiv (economisire energie)"
+
+#: indexerstate.h:65
+#, kde-format
+msgid "Not Running"
+msgstr "Nu rulează"
+
+#: indexerstate.h:68
+#, kde-format
+msgid "Starting"
+msgstr "Se pornește"
