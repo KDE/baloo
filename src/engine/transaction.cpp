@@ -471,8 +471,8 @@ DatabaseSize Transaction::dbSize()
 
     dbSize.mtimeDb = dbiSize(m_txn, m_dbis.mtimeDbi);
 
-    dbSize.expectedSize = dbSize.postingDb + dbSize.positionDb + dbSize.docTerms + dbSize.docFilenameTerms
-                  + dbSize.docXattrTerms + dbSize.idTree + dbSize.idFilename + dbSize.docTime
+    dbSize.expectedSize = dbSize.postingDb + dbSize.positionDb + dbSize.docTerms + dbSize.docFilenameTerms //
+                  + dbSize.docXattrTerms + dbSize.idTree + dbSize.idFilename + dbSize.docTime //
                   + dbSize.docData + dbSize.contentIndexingIds + dbSize.failedIds + dbSize.mtimeDb;
 
     MDB_envinfo info;

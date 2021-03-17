@@ -57,7 +57,7 @@ void FileIndexerConfigTest::initTestCase()
         excludedFilterSubDir2,
         excludedFilterSubSubDir2,
         includedFilterSubDir,
-        includedFilterSubSubDir
+        includedFilterSubSubDir,
      });
      m_dirPrefix = m_mainDir->path() + QLatin1Char('/');
 }
@@ -75,7 +75,7 @@ void FileIndexerConfigTest::testShouldFolderBeIndexed_data()
         indexedSubSubDir,
         indexedSubFolderToIndexedHidden,
         indexedSubDirToExcluded,
-        indexedHiddenSubDir
+        indexedHiddenSubDir,
     };
 
     const auto excluded = QStringList{
@@ -85,7 +85,7 @@ void FileIndexerConfigTest::testShouldFolderBeIndexed_data()
         excludedSubDir,
         hiddenSubDir,
         ignoredRootDir,
-        excludedRootDir
+        excludedRootDir,
     };
 
     QTest::addColumn<QString>("path");
@@ -108,12 +108,12 @@ void FileIndexerConfigTest::testShouldFolderBeIndexed()
             m_dirPrefix + indexedRootDir,
             m_dirPrefix + indexedSubFolderToIndexedHidden,
             m_dirPrefix + indexedHiddenSubDir,
-            m_dirPrefix + indexedSubDirToExcluded
+            m_dirPrefix + indexedSubDirToExcluded,
         },
         QStringList{
             m_dirPrefix + excludedRootDir,
             m_dirPrefix + excludedSubDir,
-            m_dirPrefix + excludedSubSubDir
+            m_dirPrefix + excludedSubSubDir,
         },
         QStringList(),
         false);
@@ -138,13 +138,13 @@ void FileIndexerConfigTest::testShouldFolderBeIndexedHidden_data()
         indexedSubFolderToIndexedHidden,
         indexedSubDirToExcluded,
         hiddenSubDir,
-        indexedHiddenSubDir
+        indexedHiddenSubDir,
     };
     const auto excluded = QStringList{
         excludedSubSubDir,
         excludedSubDir,
         ignoredRootDir,
-        excludedRootDir
+        excludedRootDir,
     };
 
     QTest::addColumn<QString>("path");
@@ -170,7 +170,7 @@ void FileIndexerConfigTest::testShouldFolderBeIndexedHidden()
             m_dirPrefix + indexedSubDirToExcluded
         },
         QStringList{
-            m_dirPrefix + excludedRootDir,
+            m_dirPrefix + excludedRootDir, //
             m_dirPrefix + excludedSubDir,
             m_dirPrefix + excludedSubSubDir
         },
@@ -256,7 +256,7 @@ void FileIndexerConfigTest::testShouldBeIndexed()
             m_dirPrefix + indexedSubDirToExcluded
         },
         QStringList{
-            m_dirPrefix + excludedRootDir,
+            m_dirPrefix + excludedRootDir, //
             m_dirPrefix + excludedSubDir,
             m_dirPrefix + excludedSubSubDir
         },
@@ -286,7 +286,7 @@ void FileIndexerConfigTest::testShouldBeIndexedHidden_data()
         indexedSubFolderToIndexedHidden,
         indexedSubDirToExcluded,
         hiddenSubDir,
-        indexedHiddenSubDir
+        indexedHiddenSubDir,
     };
     const auto indexedFilenames = QStringList{
         indexedRootDir + fileName,
@@ -297,19 +297,19 @@ void FileIndexerConfigTest::testShouldBeIndexedHidden_data()
         indexedSubFolderToIndexedHidden + fileName,
         indexedSubDirToExcluded + fileName,
         hiddenSubDir + fileName,
-        indexedHiddenSubDir + fileName
+        indexedHiddenSubDir + fileName,
     };
     const auto excluded = QStringList{
         excludedSubSubDir,
         excludedSubDir,
         ignoredRootDir,
-        excludedRootDir
+        excludedRootDir,
     };
     const auto excludedFilenames = QStringList{
         excludedSubSubDir + fileName,
         excludedSubDir + fileName,
         ignoredRootDir + fileName,
-        excludedRootDir + fileName
+        excludedRootDir + fileName,
     };
 
     QTest::addColumn<QString>("path");
@@ -343,7 +343,7 @@ void FileIndexerConfigTest::testShouldBeIndexedHidden()
             m_dirPrefix + indexedSubDirToExcluded
         },
         QStringList{
-            m_dirPrefix + excludedRootDir,
+            m_dirPrefix + excludedRootDir, //
             m_dirPrefix + excludedSubDir,
             m_dirPrefix + excludedSubSubDir
         },
@@ -371,7 +371,7 @@ void FileIndexerConfigTest::testShouldExcludeFilterOnFolders_data()
     const auto indexedFilenames = QStringList{
         indexedRootDir + fileName,
         includedFilterSubDir + fileName,
-        includedFilterSubSubDir + fileName
+        includedFilterSubSubDir + fileName,
     };
     const auto excluded = QStringList{
         excludedFilterSubDir1,
@@ -383,7 +383,7 @@ void FileIndexerConfigTest::testShouldExcludeFilterOnFolders_data()
         excludedFilterSubDir1 + fileName,
         excludedFilterSubSubDir1 + fileName,
         excludedFilterSubDir2 + fileName,
-        excludedFilterSubSubDir2 + fileName
+        excludedFilterSubSubDir2 + fileName,
     };
 
     QTest::addColumn<QString>("path");
@@ -412,12 +412,12 @@ void FileIndexerConfigTest::testShouldExcludeFilterOnFolders()
 {
     writeIndexerConfig(QStringList{
             m_dirPrefix + indexedRootDir,
-            m_dirPrefix + includedFilterSubDir
+            m_dirPrefix + includedFilterSubDir,
         },
         QStringList(),
         QStringList{
             excludeFilter1,
-            excludeFilter2
+            excludeFilter2,
         },
         false);
 

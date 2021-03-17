@@ -145,9 +145,9 @@ bool FileIndexerConfig::shouldBeIndexed(const QString& path) const
     if (fi.isDir()) {
         return shouldFolderBeIndexed(path);
     } else {
-        return (shouldFolderBeIndexed(fi.absolutePath()) &&
-                (!fi.isHidden() || indexHiddenFilesAndFolders()) &&
-                shouldFileBeIndexed(fi.fileName()));
+        return (shouldFolderBeIndexed(fi.absolutePath()) //
+                && (!fi.isHidden() || indexHiddenFilesAndFolders()) //
+                && shouldFileBeIndexed(fi.fileName()));
     }
 }
 

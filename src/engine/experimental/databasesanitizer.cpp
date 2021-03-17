@@ -300,6 +300,7 @@ void DatabaseSanitizer::printDevices(const QVector<qint64>& deviceIds, const Ite
         // TODO coloring would be nice, but "...|grep '^!'" does not work with it.
         // out << QStringLiteral("%1").arg(dev.mounted ? "+" : "\033[1;31m!")
         // Can be done, see: https://code.qt.io/cgit/qt/qtbase.git/tree/src/corelib/global/qlogging.cpp#n263
+        // clang-format off
         out << QStringLiteral("%1").arg(mounted ? "+" : "!")
             << sep << QStringLiteral("device:%1").arg(id)
             << sep << QStringLiteral("[%1:%2]")
@@ -311,9 +312,9 @@ void DatabaseSanitizer::printDevices(const QVector<qint64>& deviceIds, const Ite
             out
                 << sep << QStringLiteral("fstype:%1").arg(info.fileSystemType().toPercentEncoding().constData())
                 << sep << QStringLiteral("device:%1").arg(info.device().constData())
-                << sep << QStringLiteral("path:%1").arg(info.rootPath())
-            ;
+                << sep << QStringLiteral("path:%1").arg(info.rootPath());
         }
+        // clang-format on
         // TODO: see above
         // out << QStringLiteral("\033[0m") << endl;
         out << endl;

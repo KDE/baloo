@@ -156,7 +156,7 @@ QVector<KFileMetaData::Type::Type> typesForMimeType(const QString& mimeType)
         // Other
         {"text/markdown", Type::Document},
         {"image/vnd.djvu+multipage", Type::Document},
-        {"application/x-lyx", Type::Document}
+        {"application/x-lyx", Type::Document},
     };
 
     auto hashIt = typeMapper.find(mimeType);

@@ -62,6 +62,7 @@ struct InternalProperty {
     const char* prefix;
     QVariant::Type valueType;
 };
+// clang-format off
 constexpr std::array<InternalProperty, 7> internalProperties {{
     { "content",     "",     QVariant::String },
     { "filename",    "F",    QVariant::String },
@@ -71,6 +72,7 @@ constexpr std::array<InternalProperty, 7> internalProperties {{
     { "tags",        "TA",   QVariant::String },
     { "usercomment", "C",    QVariant::String }
 }};
+// clang-format on
 
 std::pair<QByteArray, QVariant::Type> propertyInfo(const QByteArray& property)
 {

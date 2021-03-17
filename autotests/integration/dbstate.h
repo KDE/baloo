@@ -37,10 +37,10 @@ public:
     QVector<quint64> failedIdDb;
 
     bool operator== (const DBState& st) const {
-        return postingDb == st.postingDb && positionDb == st.positionDb && docTermsDb == st.docTermsDb
-               && docFileNameTermsDb == st.docFileNameTermsDb && docXAttrTermsDb == st.docXAttrTermsDb
-               && docTimeDb == st.docTimeDb && mtimeDb == st.mtimeDb && docDataDb == st.docDataDb
-               && docUrlDb == st.docUrlDb && contentIndexingDb == st.contentIndexingDb
+        return postingDb == st.postingDb && positionDb == st.positionDb && docTermsDb == st.docTermsDb //
+               && docFileNameTermsDb == st.docFileNameTermsDb && docXAttrTermsDb == st.docXAttrTermsDb //
+               && docTimeDb == st.docTimeDb && mtimeDb == st.mtimeDb && docDataDb == st.docDataDb //
+               && docUrlDb == st.docUrlDb && contentIndexingDb == st.contentIndexingDb //
                && failedIdDb == st.failedIdDb;
     }
 

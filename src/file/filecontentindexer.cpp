@@ -19,7 +19,7 @@ namespace {
     // TODO KF6 -- remove/combine with started/finished DBus signal
     void sendChangedSignal(const QStringList& updatedFiles)
     {
-        auto message = QDBusMessage::createSignal(QStringLiteral("/files"),
+        auto message = QDBusMessage::createSignal(QStringLiteral("/files"), //
                                                   QStringLiteral("org.kde"),
                                                   QStringLiteral("changed"));
         message.setArguments({updatedFiles});

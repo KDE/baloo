@@ -376,18 +376,18 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
             }
 
             QString value = args.takeFirst();
-            if (value.compare(QLatin1String("true"), Qt::CaseInsensitive) == 0
-                    || value.compare(QLatin1String("y"), Qt::CaseInsensitive) == 0
-                    || value.compare(QLatin1String("yes"), Qt::CaseInsensitive) == 0
-                    || value.compare(QLatin1String("1")) == 0) {
+            if (value.compare(QLatin1String("true"), Qt::CaseInsensitive) == 0 //
+                || value.compare(QLatin1String("y"), Qt::CaseInsensitive) == 0 //
+                || value.compare(QLatin1String("yes"), Qt::CaseInsensitive) == 0 //
+                || value.compare(QLatin1String("1")) == 0) {
                 config.setIndexHidden(true);
                 return 0;
             }
 
-            if (value.compare(QLatin1String("false"), Qt::CaseInsensitive) == 0
-                    || value.compare(QLatin1String("n"), Qt::CaseInsensitive) == 0
-                    || value.compare(QLatin1String("no"), Qt::CaseInsensitive) == 0
-                    || value.compare(QLatin1String("0")) == 0) {
+            if (value.compare(QLatin1String("false"), Qt::CaseInsensitive) == 0 //
+                || value.compare(QLatin1String("n"), Qt::CaseInsensitive) == 0 //
+                || value.compare(QLatin1String("no"), Qt::CaseInsensitive) == 0 //
+                || value.compare(QLatin1String("0")) == 0) {
                 config.setIndexHidden(false);
                 return 0;
             }

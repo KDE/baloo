@@ -33,16 +33,16 @@ int main(int argc, char* argv[])
     KAboutData::setApplicationData(aboutData);
 
     QCommandLineParser parser;
-    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("l") << QStringLiteral("limit"),
+    parser.addOption(QCommandLineOption(QStringList{QStringLiteral("l"), QStringLiteral("limit")}, //
                                         i18n("The maximum number of results"),
                                         i18n("limit")));
-    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("o") << QStringLiteral("offset"),
+    parser.addOption(QCommandLineOption(QStringList{QStringLiteral("o"), QStringLiteral("offset")}, //
                                         i18n("Offset from which to start the search"),
                                         i18n("offset")));
-    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("t") << QStringLiteral("type"),
+    parser.addOption(QCommandLineOption(QStringList{QStringLiteral("t"), QStringLiteral("type")}, //
                                         i18n("Type of data to be searched"),
                                         i18n("typeStr")));
-    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("d") << QStringLiteral("directory"),
+    parser.addOption(QCommandLineOption(QStringList{QStringLiteral("d"), QStringLiteral("directory")}, //
                                         i18n("Limit search to specified directory"),
                                         i18n("directory")));
     parser.addOption(QCommandLineOption({QStringLiteral("i"), QStringLiteral("id")},

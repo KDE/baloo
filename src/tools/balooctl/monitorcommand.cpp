@@ -23,30 +23,28 @@ MonitorCommand::MonitorCommand(QObject *parent)
     , m_dbusServiceWatcher(nullptr)
 
 {
-    m_dbusServiceWatcher = new QDBusServiceWatcher(
-        QStringLiteral("org.kde.baloo"), QDBusConnection::sessionBus(),
-        QDBusServiceWatcher::WatchForOwnerChange, this
-    );
+    m_dbusServiceWatcher = new QDBusServiceWatcher(QStringLiteral("org.kde.baloo"), //
+                                                   QDBusConnection::sessionBus(),
+                                                   QDBusServiceWatcher::WatchForOwnerChange,
+                                                   this);
     connect(m_dbusServiceWatcher, &QDBusServiceWatcher::serviceRegistered,
             this, &MonitorCommand::balooIsAvailable);
     connect(m_dbusServiceWatcher, &QDBusServiceWatcher::serviceUnregistered,
             this, &MonitorCommand::balooIsNotAvailable);
 
-    m_indexerDBusInterface = new org::kde::baloo::fileindexer(QStringLiteral("org.kde.baloo"),
-        QStringLiteral("/fileindexer"),
-        QDBusConnection::sessionBus(),
-        this
-    );
+    m_indexerDBusInterface = new org::kde::baloo::fileindexer(QStringLiteral("org.kde.baloo"), //
+                                                              QStringLiteral("/fileindexer"),
+                                                              QDBusConnection::sessionBus(),
+                                                              this);
     connect(m_indexerDBusInterface, &org::kde::baloo::fileindexer::startedIndexingFile,
         this, &MonitorCommand::startedIndexingFile);
     connect(m_indexerDBusInterface, &org::kde::baloo::fileindexer::finishedIndexingFile,
         this, &MonitorCommand::finishedIndexingFile);
 
-    m_schedulerDBusInterface = new org::kde::baloo::scheduler(QStringLiteral("org.kde.baloo"),
-        QStringLiteral("/scheduler"),
-        QDBusConnection::sessionBus(),
-        this
-    );
+    m_schedulerDBusInterface = new org::kde::baloo::scheduler(QStringLiteral("org.kde.baloo"), //
+                                                              QStringLiteral("/scheduler"),
+                                                              QDBusConnection::sessionBus(),
+                                                              this);
     connect(m_schedulerDBusInterface, &org::kde::baloo::scheduler::stateChanged,
         this, &MonitorCommand::stateChanged);
 

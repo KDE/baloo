@@ -91,11 +91,13 @@ private Q_SLOTS:
 private:
     void setSuspend(bool suspend);
     bool isIndexerIdle() {
+        // clang-format off
         return m_isGoingIdle ||
                (m_indexerState == Suspended) ||
                (m_indexerState == Startup) ||
                (m_indexerState == Idle) ||
                (m_indexerState == LowPowerIdle);
+        // clang-format on
     }
 
     Database* m_db;

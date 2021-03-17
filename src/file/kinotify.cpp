@@ -112,7 +112,7 @@ public:
         const QByteArray encpath = normalizeTrailingSlash(QFile::encodeName(path));
         int wd = inotify_add_watch(inotify(), encpath.data(), mask);
         if (wd > 0) {
-//             qCDebug(BALOO) << "Successfully added watch for" << path << watchPathHash.count();
+            // qCDebug(BALOO) << "Successfully added watch for" << path << watchPathHash.count();
             watchPathHash.insert(wd, encpath);
             pathWatchHash.insert(encpath, wd);
             return true;
@@ -365,23 +365,23 @@ void KInotify::slotEvent(int socket)
 
         // now signal the event
         if (event->mask & EventAccess) {
-//            qCDebug(BALOO) << path << "EventAccess";
+            // qCDebug(BALOO) << path << "EventAccess";
             Q_EMIT accessed(fname);
         }
         if (event->mask & EventAttributeChange) {
-//            qCDebug(BALOO) << path << "EventAttributeChange";
+            // qCDebug(BALOO) << path << "EventAttributeChange";
             Q_EMIT attributeChanged(fname);
         }
         if (event->mask & EventCloseWrite) {
-//            qCDebug(BALOO) << path << "EventCloseWrite";
+            // qCDebug(BALOO) << path << "EventCloseWrite";
             Q_EMIT closedWrite(fname);
         }
         if (event->mask & EventCloseRead) {
-//            qCDebug(BALOO) << path << "EventCloseRead";
+            // qCDebug(BALOO) << path << "EventCloseRead";
             Q_EMIT closedRead(fname);
         }
         if (event->mask & EventCreate) {
-//            qCDebug(BALOO) << path << "EventCreate";
+            // qCDebug(BALOO) << path << "EventCreate";
             Q_EMIT created(fname, event->mask & IN_ISDIR);
             if (event->mask & IN_ISDIR) {
                 // Files/directories inside the new directory may be created before the watch
@@ -390,28 +390,28 @@ void KInotify::slotEvent(int socket)
             }
         }
         if (event->mask & EventDeleteSelf) {
-//            qCDebug(BALOO) << path << "EventDeleteSelf";
+            // qCDebug(BALOO) << path << "EventDeleteSelf";
             d->removeWatch(event->wd);
             Q_EMIT deleted(fname, true);
         }
         if (event->mask & EventDelete) {
-//            qCDebug(BALOO) << path << "EventDelete";
+            // qCDebug(BALOO) << path << "EventDelete";
             // we watch all folders recursively. Thus, folder removing is reported in DeleteSelf.
             if (!(event->mask & IN_ISDIR))
                 Q_EMIT deleted(fname, false);
         }
         if (event->mask & EventModify) {
-//            qCDebug(BALOO) << path << "EventModify";
+            // qCDebug(BALOO) << path << "EventModify";
             Q_EMIT modified(fname);
         }
         if (event->mask & EventMoveSelf) {
-//            qCDebug(BALOO) << path << "EventMoveSelf";
+            // qCDebug(BALOO) << path << "EventMoveSelf";
             // Problematic if the parent is not watched, otherwise
             // handled by MoveFrom/MoveTo from the parent
             qCWarning(BALOO) << path << "EventMoveSelf: THIS CASE MAY NOT BE HANDLED PROPERLY!";
         }
         if (event->mask & EventMoveFrom) {
-//            qCDebug(BALOO) << path << "EventMoveFrom";
+            // qCDebug(BALOO) << path << "EventMoveFrom";
             if (deadline.isForever()) {
                 deadline = QDeadlineTimer(1000); // 1 second
             }
@@ -426,17 +426,17 @@ void KInotify::slotEvent(int socket)
                 if (event->mask & IN_ISDIR) {
                     auto it = d->pathWatchHash.find(oldPath);
                     if (it != d->pathWatchHash.end()) {
-//                        qCDebug(BALOO) << oldPath << path;
+                        // qCDebug(BALOO) << oldPath << path;
                         const int wd = it.value();
                         d->watchPathHash[wd] = path;
                         d->pathWatchHash.erase(it);
                         d->pathWatchHash.insert(path, wd);
                     }
                 }
-//                qCDebug(BALOO) << oldPath << "EventMoveTo" << path;
+                // qCDebug(BALOO) << oldPath << "EventMoveTo" << path;
                 Q_EMIT moved(QFile::decodeName(oldPath), fname);
             } else {
-//                qCDebug(BALOO) << "No cookie for move information of" << path << "simulating new file event";
+                // qCDebug(BALOO) << "No cookie for move information of" << path << "simulating new file event";
                 Q_EMIT created(fname, event->mask & IN_ISDIR);
                 if (event->mask & IN_ISDIR) {
                     handleDirCreated(fname);
@@ -444,11 +444,11 @@ void KInotify::slotEvent(int socket)
             }
         }
         if (event->mask & EventOpen) {
-//            qCDebug(BALOO) << path << "EventOpen";
+            // qCDebug(BALOO) << path << "EventOpen";
             Q_EMIT opened(fname);
         }
         if (event->mask & EventUnmount) {
-//            qCDebug(BALOO) << path << "EventUnmount. removing from path hash";
+            // qCDebug(BALOO) << path << "EventUnmount. removing from path hash";
             if (event->mask & IN_ISDIR) {
                 d->removeWatch(event->wd);
             }
@@ -459,7 +459,7 @@ void KInotify::slotEvent(int socket)
             }
         }
         if (event->mask & EventIgnored) {
-//             qCDebug(BALOO) << path << "EventIgnored";
+            // qCDebug(BALOO) << path << "EventIgnored";
         }
 
         i += sizeof(struct inotify_event) + event->len;

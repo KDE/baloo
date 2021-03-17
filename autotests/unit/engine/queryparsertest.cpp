@@ -260,7 +260,7 @@ void QueryParserTest::testMixedDelimiters_data()
     auto addRow = [](const QString& input, const EngineQuery& query,
                      const QString& failureReason)
         { QTest::addRow("%s", qPrintable(input)) << input << query << failureReason; };
-
+    // clang-format off
     addRow("Term", {"term"}, "");
     addRow("No phrase", { {{"no"}, {"phrase"}}, EngineQuery::And}, "");
     addRow("Underscore_phrase", { {{"underscore"}, {"phrase"}}, EngineQuery::Phrase}, "");
@@ -308,6 +308,7 @@ void QueryParserTest::testMixedDelimiters_data()
     addRow("\'DegeneratedQuotedPhrase\' Anded text", {
             {{"degeneratedquotedphrase"}, {"anded"}, {"text"}}, EngineQuery::And
         }, "Single term in quotes is no phrase");
+    // clang-format on
 }
 
 QTEST_MAIN(QueryParserTest)

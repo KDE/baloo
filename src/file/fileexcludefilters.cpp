@@ -9,6 +9,7 @@
 
 namespace
 {
+// clang-format off
 const char* const s_defaultFileExcludeFilters[] = {
     // tmp files
     "*~",
@@ -188,6 +189,7 @@ const char* const s_sourceCodeMimeTypes[] = {
     // end of list
     nullptr
 };
+// clang-format on
 const int s_sourceCodeMimeTypesVersion = 3;
 }
 

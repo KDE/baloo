@@ -219,6 +219,7 @@ void AdvancedQueryParserTest::testNestedParentheses_data()
     QTest::addColumn<Term>("expectedTerm");
     QTest::addColumn<QString>("failmessage");
 
+    // clang-format off
     QTest::newRow("a AND b AND c AND d")
         << QStringLiteral("a AND b AND c AND d")
         << Term{Term::And, QList<Term>{
@@ -277,6 +278,7 @@ void AdvancedQueryParserTest::testNestedParentheses_data()
             }}
         << QString();
         ;
+    // clang-format on
 }
 
 void AdvancedQueryParserTest::testOptimizedLogic()
@@ -294,6 +296,7 @@ void AdvancedQueryParserTest::testOptimizedLogic_data()
     QTest::addColumn<Term>("testTerm");
     QTest::addColumn<Term>("expectedTerm");
 
+    // clang-format off
     // a && b && c && d can be combined into one AND term with 4 subterms
     QTest::addRow("a && b && c && d")
         << (Term{QString(), QStringLiteral("a"), Term::Contains}
@@ -324,6 +327,7 @@ void AdvancedQueryParserTest::testOptimizedLogic_data()
             }}
         }}
     ;
+    // clang-format on
 }
 
 void AdvancedQueryParserTest::testPhrases()

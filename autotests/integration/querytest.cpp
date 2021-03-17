@@ -234,6 +234,7 @@ void QueryTest::testTermPhrase_data()
                      const QString& failureReason)
         { QTest::addRow("%s", name) << phrase << contentMatches << filenameMatches << failureReason; };
 
+    // clang-format off
     // Content matches
     addRow("Crazy dog",        {"crazy", "dog"},  SortedIdVector{ m_id1 }, {}, "");
     addRow("Lazy dog",         {"lazy", "dog"},   SortedIdVector{ m_id7 }, {}, "");
@@ -247,6 +248,7 @@ void QueryTest::testTermPhrase_data()
     // Matches content and filename
     addRow("Lazy both",        {"lazy"},          { m_id7 }, { m_id7 }, "");
     addRow("Easy both",        {"easy"},          { m_id8 }, { m_id8 }, "");
+    // clang-format on
 }
 
 void QueryTest::testTermPhrase()

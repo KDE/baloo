@@ -57,7 +57,7 @@ void FilteredDirIteratorTest::testFiles()
     };
 
     QStringList excludeFolders = {
-        dir->path() + QLatin1String("/home/kde")
+        dir->path() + QLatin1String("/home/kde"),
     };
 
     Test::writeIndexerConfig(includeFolders, excludeFolders);
@@ -99,7 +99,7 @@ void FilteredDirIteratorTest::testIndexHidden()
     };
 
     QStringList excludeFolders = {
-        dir->path() + QLatin1String("/home/kde")
+        dir->path() + QLatin1String("/home/kde"),
     };
 
     Test::writeIndexerConfig(includeFolders, excludeFolders, {}, true);
@@ -178,7 +178,7 @@ void FilteredDirIteratorTest::testAddingExcludedFolder()
     };
 
     QStringList excludeFolders = {
-        dir->path() + QLatin1String("/home/kde")
+        dir->path() + QLatin1String("/home/kde"),
     };
 
     Test::writeIndexerConfig(includeFolders, excludeFolders);

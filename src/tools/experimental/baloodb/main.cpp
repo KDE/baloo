@@ -27,6 +27,7 @@ struct Command {
     const QStringList options;
 };
 
+// clang-format off
 const auto options = QList<QCommandLineOption>{
     QCommandLineOption{
         QStringList{QStringLiteral("i"), QStringLiteral("device-id")},
@@ -93,6 +94,7 @@ const auto commands = std::vector<Command>{
         }
     }
 };
+// clang-format on
 
 const QStringList allowedCommands()
 {

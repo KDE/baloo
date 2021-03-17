@@ -73,9 +73,9 @@ FileIndexStatus collectFileStatus(Transaction& tr, IndexerConfig&  cfg, const QS
         return FileIndexStatus{filePath, FileStatus::NonExisting, IndexStateReason::NoFileOrDirectory, 0};
     }
 
-    FileStatus fileStatus = fileInfo.isSymLink() ? FileStatus::SymLink :
+    FileStatus fileStatus = (fileInfo.isSymLink() ? FileStatus::SymLink :
                             fileInfo.isFile() ? FileStatus::RegularFile :
-                            fileInfo.isDir() ? FileStatus::Directory : FileStatus::Other;
+                            fileInfo.isDir() ? FileStatus::Directory : FileStatus::Other);
 
     if (fileStatus == FileStatus::Other || fileStatus == FileStatus::SymLink) {
         return FileIndexStatus{filePath, fileStatus, IndexStateReason::NoFileOrDirectory, 0};
@@ -113,27 +113,29 @@ void printMultiLine(Transaction& tr, IndexerConfig&  cfg, const QStringList& arg
     QTextStream out(stdout);
     QTextStream err(stderr);
 
+    // clang-format off
     const QMap<IndexStateReason, QString> basicIndexStateValue = {
-        { IndexStateReason::NoFileOrDirectory,         i18n("File ignored") },
-        { IndexStateReason::ExcludedByPath,            i18n("Basic Indexing: Disabled") },
-        { IndexStateReason::WaitingForIndexingBoth,    i18n("Basic Indexing: Scheduled") },
-        { IndexStateReason::WaitingForBasicIndexing,   i18n("Basic Indexing: Scheduled") },
-        { IndexStateReason::BasicIndexingDone,         i18n("Basic Indexing: Done") },
-        { IndexStateReason::WaitingForContentIndexing, i18n("Basic Indexing: Done") },
-        { IndexStateReason::FailedToIndex,             i18n("Basic Indexing: Done") },
-        { IndexStateReason::Done,                      i18n("Basic Indexing: Done") },
+        {IndexStateReason::NoFileOrDirectory,         i18n("File ignored")},
+        {IndexStateReason::ExcludedByPath,            i18n("Basic Indexing: Disabled")},
+        {IndexStateReason::WaitingForIndexingBoth,    i18n("Basic Indexing: Scheduled")},
+        {IndexStateReason::WaitingForBasicIndexing,   i18n("Basic Indexing: Scheduled")},
+        {IndexStateReason::BasicIndexingDone,         i18n("Basic Indexing: Done")},
+        {IndexStateReason::WaitingForContentIndexing, i18n("Basic Indexing: Done")},
+        {IndexStateReason::FailedToIndex,             i18n("Basic Indexing: Done")},
+        {IndexStateReason::Done,                      i18n("Basic Indexing: Done")},
     };
 
     const QMap<IndexStateReason, QString> contentIndexStateValue = {
-        { IndexStateReason::NoFileOrDirectory,         QString() },
-        { IndexStateReason::ExcludedByPath,            QString() },
-        { IndexStateReason::WaitingForIndexingBoth,    i18n("Content Indexing: Scheduled") },
-        { IndexStateReason::WaitingForBasicIndexing,   QString() },
-        { IndexStateReason::BasicIndexingDone,         QString() },
-        { IndexStateReason::WaitingForContentIndexing, i18n("Content Indexing: Scheduled") },
-        { IndexStateReason::FailedToIndex,             i18n("Content Indexing: Failed") },
-        { IndexStateReason::Done,                      i18n("Content Indexing: Done") },
+        {IndexStateReason::NoFileOrDirectory,         QString()},
+        {IndexStateReason::ExcludedByPath,            QString()},
+        {IndexStateReason::WaitingForIndexingBoth,    i18n("Content Indexing: Scheduled")},
+        {IndexStateReason::WaitingForBasicIndexing,   QString()},
+        {IndexStateReason::BasicIndexingDone,         QString()},
+        {IndexStateReason::WaitingForContentIndexing, i18n("Content Indexing: Scheduled")},
+        {IndexStateReason::FailedToIndex,             i18n("Content Indexing: Failed")},
+        {IndexStateReason::Done,                      i18n("Content Indexing: Done")},
     };
+    // clang-format on
 
     for (const auto& fileName : args) {
         const auto file = collectFileStatus(tr, cfg, fileName);
@@ -164,16 +166,18 @@ void printSimpleFormat(Transaction& tr, IndexerConfig&  cfg, const QStringList& 
     QTextStream out(stdout);
     QTextStream err(stderr);
 
+    // clang-format off
     const QMap<IndexStateReason, QString> simpleIndexStateValue = {
-        { IndexStateReason::NoFileOrDirectory,         QStringLiteral("No regular file or directory") },
-        { IndexStateReason::ExcludedByPath,            QStringLiteral("Indexing disabled") },
-        { IndexStateReason::WaitingForIndexingBoth,    QStringLiteral("Basic and Content indexing scheduled") },
-        { IndexStateReason::WaitingForBasicIndexing,   QStringLiteral("Basic indexing scheduled") },
-        { IndexStateReason::BasicIndexingDone,         QStringLiteral("Basic indexing done") },
-        { IndexStateReason::WaitingForContentIndexing, QStringLiteral("Content indexing scheduled") },
-        { IndexStateReason::FailedToIndex,             QStringLiteral("Content indexing failed") },
-        { IndexStateReason::Done,                      QStringLiteral("Content indexing done") },
+        {IndexStateReason::NoFileOrDirectory,         QStringLiteral("No regular file or directory")},
+        {IndexStateReason::ExcludedByPath,            QStringLiteral("Indexing disabled")},
+        {IndexStateReason::WaitingForIndexingBoth,    QStringLiteral("Basic and Content indexing scheduled")},
+        {IndexStateReason::WaitingForBasicIndexing,   QStringLiteral("Basic indexing scheduled")},
+        {IndexStateReason::BasicIndexingDone,         QStringLiteral("Basic indexing done")},
+        {IndexStateReason::WaitingForContentIndexing, QStringLiteral("Content indexing scheduled")},
+        {IndexStateReason::FailedToIndex,             QStringLiteral("Content indexing failed")},
+        {IndexStateReason::Done,                      QStringLiteral("Content indexing done")},
     };
+    // clang-format on
 
     for (const auto& fileName : args) {
         const auto file = collectFileStatus(tr, cfg, fileName);
@@ -202,27 +206,29 @@ void printJSON(Transaction& tr, IndexerConfig&  cfg, const QStringList& args)
     QJsonArray filesInfo;
     QTextStream err(stderr);
 
+    // clang-format off
     const QMap<IndexStateReason, QString> jsonIndexStateValue = {
-        { IndexStateReason::NoFileOrDirectory,         QStringLiteral("nofile") },
-        { IndexStateReason::ExcludedByPath,            QStringLiteral("disabled") },
-        { IndexStateReason::WaitingForIndexingBoth,    QStringLiteral("scheduled") },
-        { IndexStateReason::WaitingForBasicIndexing,   QStringLiteral("scheduled") },
-        { IndexStateReason::BasicIndexingDone,         QStringLiteral("done") },
-        { IndexStateReason::WaitingForContentIndexing, QStringLiteral("scheduled") },
-        { IndexStateReason::FailedToIndex,             QStringLiteral("failed") },
-        { IndexStateReason::Done,                      QStringLiteral("done") },
+        {IndexStateReason::NoFileOrDirectory,         QStringLiteral("nofile")},
+        {IndexStateReason::ExcludedByPath,            QStringLiteral("disabled")},
+        {IndexStateReason::WaitingForIndexingBoth,    QStringLiteral("scheduled")},
+        {IndexStateReason::WaitingForBasicIndexing,   QStringLiteral("scheduled")},
+        {IndexStateReason::BasicIndexingDone,         QStringLiteral("done")},
+        {IndexStateReason::WaitingForContentIndexing, QStringLiteral("scheduled")},
+        {IndexStateReason::FailedToIndex,             QStringLiteral("failed")},
+        {IndexStateReason::Done,                      QStringLiteral("done")},
     };
 
     const QMap<IndexStateReason, QString> jsonIndexLevelValue = {
-        { IndexStateReason::NoFileOrDirectory,         QStringLiteral("nofile") },
-        { IndexStateReason::ExcludedByPath,            QStringLiteral("none") },
-        { IndexStateReason::WaitingForIndexingBoth,    QStringLiteral("content") },
-        { IndexStateReason::WaitingForBasicIndexing,   QStringLiteral("basic") },
-        { IndexStateReason::BasicIndexingDone,         QStringLiteral("basic") },
-        { IndexStateReason::WaitingForContentIndexing, QStringLiteral("content") },
-        { IndexStateReason::FailedToIndex,             QStringLiteral("content") },
-        { IndexStateReason::Done,                      QStringLiteral("content") },
+        {IndexStateReason::NoFileOrDirectory,         QStringLiteral("nofile")},
+        {IndexStateReason::ExcludedByPath,            QStringLiteral("none")},
+        {IndexStateReason::WaitingForIndexingBoth,    QStringLiteral("content")},
+        {IndexStateReason::WaitingForBasicIndexing,   QStringLiteral("basic")},
+        {IndexStateReason::BasicIndexingDone,         QStringLiteral("basic")},
+        {IndexStateReason::WaitingForContentIndexing, QStringLiteral("content")},
+        {IndexStateReason::FailedToIndex,             QStringLiteral("content")},
+        {IndexStateReason::Done,                      QStringLiteral("content")},
     };
+    // clang-format on
 
     for (const auto& fileName : args) {
         const auto file = collectFileStatus(tr, cfg, fileName);
