@@ -9,8 +9,8 @@
 
 #include <QString>
 
-namespace Baloo {
-
+namespace Baloo
+{
 class FileIndexerConfig;
 
 class Migrator

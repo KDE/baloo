@@ -10,9 +10,10 @@
 
 #include <lmdb.h>
 
-namespace Baloo {
-
-class DatabaseSize {
+namespace Baloo
+{
+class DatabaseSize
+{
 public:
     /**
      * This is the size which is computed with all the pages used from all the

@@ -8,17 +8,16 @@
 #ifndef BALOO_ENGINE_DOCUMENT_OPERATIONS_H
 #define BALOO_ENGINE_DOCUMENT_OPERATIONS_H
 
-
-namespace Baloo {
-
+namespace Baloo
+{
 enum DocumentOperation {
-    DocumentTerms =  0x1,
-    FileNameTerms =  0x2,
-    XAttrTerms    =  0x4,
-    DocumentData  =  0x8,
-    DocumentTime  = 0x10,
-    DocumentUrl   = 0x20,
-    Everything    = DocumentTerms | FileNameTerms | XAttrTerms | DocumentData | DocumentTime | DocumentUrl,
+    DocumentTerms = 0x1,
+    FileNameTerms = 0x2,
+    XAttrTerms = 0x4,
+    DocumentData = 0x8,
+    DocumentTime = 0x10,
+    DocumentUrl = 0x20,
+    Everything = DocumentTerms | FileNameTerms | XAttrTerms | DocumentData | DocumentTime | DocumentUrl,
 };
 Q_DECLARE_FLAGS(DocumentOperations, DocumentOperation)
 Q_DECLARE_OPERATORS_FOR_FLAGS(DocumentOperations)

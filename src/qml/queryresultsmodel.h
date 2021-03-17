@@ -17,13 +17,13 @@ class Query : public QObject
     Q_PROPERTY(int limit READ limit WRITE setLimit NOTIFY limitChanged)
 
 public:
-    explicit Query(QObject *parent = nullptr);
+    explicit Query(QObject* parent = nullptr);
     ~Query();
 
-    void setSearchString(const QString &searchString);
+    void setSearchString(const QString& searchString);
     QString searchString() const;
 
-    void setLimit(const int &limit);
+    void setLimit(const int& limit);
     int limit() const;
 
 Q_SIGNALS:
@@ -33,7 +33,6 @@ Q_SIGNALS:
 private:
     QString m_searchString;
     int m_limit;
-
 };
 
 class QueryResultsModel : public QAbstractListModel
@@ -42,11 +41,11 @@ class QueryResultsModel : public QAbstractListModel
     Q_PROPERTY(Query* query READ query WRITE setQuery NOTIFY queryChanged)
 
 public:
-    explicit QueryResultsModel(QObject *parent = nullptr);
+    explicit QueryResultsModel(QObject* parent = nullptr);
     ~QueryResultsModel();
-    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    int rowCount(const QModelIndex& parent = QModelIndex()) const override;
 
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
 
     QHash<int, QByteArray> roleNames() const override;
 
@@ -54,7 +53,7 @@ public:
         UrlRole = Qt::UserRole + 1,
     };
 
-    void setQuery(Query *query);
+    void setQuery(Query* query);
     Query* query() const;
 
 Q_SIGNALS:
@@ -65,7 +64,7 @@ private Q_SLOTS:
 
 private:
     QStringList m_balooEntryList;
-    Query *m_query;
+    Query* m_query;
 };
 
 #endif

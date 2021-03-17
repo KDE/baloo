@@ -7,18 +7,18 @@
 */
 
 #include "filewatch.h"
-#include "metadatamover.h"
+#include "baloodebug.h"
+#include "database.h"
 #include "fileindexerconfig.h"
+#include "metadatamover.h"
 #include "pendingfilequeue.h"
 #include "regexpcache.h"
-#include "database.h"
-#include "baloodebug.h"
 
 #include "kinotify.h"
 
 #include <QDateTime>
-#include <QFileInfo>
 #include <QDir>
+#include <QFileInfo>
 
 using namespace Baloo;
 
@@ -54,7 +54,6 @@ FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
     connect(m_dirWatch, &KInotify::installedWatches, this, &FileWatch::installedWatches);
 }
 
-
 FileWatch::~FileWatch()
 {
 }
@@ -63,8 +62,7 @@ FileWatch::~FileWatch()
 void FileWatch::watchFolder(const QString& path)
 {
     if (m_dirWatch && !m_dirWatch->watchingPath(path)) {
-        KInotify::WatchEvents flags(KInotify::EventMove | KInotify::EventDelete | KInotify::EventDeleteSelf
-                                    | KInotify::EventCloseWrite | KInotify::EventCreate
+        KInotify::WatchEvents flags(KInotify::EventMove | KInotify::EventDelete | KInotify::EventDeleteSelf | KInotify::EventCloseWrite | KInotify::EventCreate
                                     | KInotify::EventAttributeChange | KInotify::EventModify);
 
         m_dirWatch->addWatch(path, flags, KInotify::FlagOnlyDir);
@@ -91,7 +89,6 @@ void FileWatch::slotFileMoved(const QString& urlFrom, const QString& urlTo)
     }
 }
 
-
 void FileWatch::slotFileDeleted(const QString& urlString, bool isDir)
 {
     // Directories must always end with a trailing slash '/'
@@ -107,7 +104,6 @@ void FileWatch::slotFileDeleted(const QString& urlString, bool isDir)
     m_pendingFileQueue->enqueue(file);
 }
 
-
 void FileWatch::slotFileCreated(const QString& path, bool isDir)
 {
     Q_UNUSED(isDir);
@@ -122,7 +118,7 @@ void FileWatch::slotFileModified(const QString& path)
     PendingFile file(path);
     file.setModified();
 
-    //qCDebug(BALOO) << "MOD" << path;
+    // qCDebug(BALOO) << "MOD" << path;
     m_pendingFileQueue->enqueue(file);
 }
 
@@ -140,7 +136,7 @@ void FileWatch::slotFileClosedAfterWrite(const QString& path)
     if (fileModification.secsTo(current) <= 1000 * 60 || dirModification.secsTo(current) <= 1000 * 60) {
         PendingFile file(path);
         file.setClosedOnWrite();
-        //qCDebug(BALOO) << "CLOSE" << path;
+        // qCDebug(BALOO) << "CLOSE" << path;
         m_pendingFileQueue->enqueue(file);
     }
 }
@@ -205,4 +201,3 @@ void FileWatch::updateIndexedFoldersWatches()
         m_includedFolders = includedFolders;
     }
 }
-

@@ -7,11 +7,11 @@
 #ifndef BALOO_DOCTERMSCODEC_H
 #define BALOO_DOCTERMSCODEC_H
 
-#include <QVector>
 #include <QByteArray>
+#include <QVector>
 
-namespace Baloo {
-
+namespace Baloo
+{
 class DocTermsCodec
 {
 public:

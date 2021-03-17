@@ -42,7 +42,6 @@ bool PhraseAndIterator::checkIfPositionsMatch()
     Position lower_bound = 0;
 
     while (offsets[0] < firstPositions.size()) {
-
         for (int i = 0; i < m_iterators.size(); i++) {
             const auto positions = m_iterators[i]->positions();
             Offset off = offsets[i];
@@ -117,4 +116,3 @@ quint64 PhraseAndIterator::next()
 
     return m_docId;
 }
-

@@ -7,17 +7,18 @@
 */
 
 #include "indexerconfig.h"
-#include "../file/fileindexerconfig.h"
 #include "../file/fileexcludefilters.h"
+#include "../file/fileindexerconfig.h"
 #include "../file/regexpcache.h"
 
-#include <QDBusConnection>
-#include "maininterface.h"
 #include "baloosettings.h"
+#include "maininterface.h"
+#include <QDBusConnection>
 
 using namespace Baloo;
 
-class IndexerConfig::Private {
+class IndexerConfig::Private
+{
 public:
     FileIndexerConfig m_config;
     BalooSettings m_settings;
@@ -39,7 +40,6 @@ bool IndexerConfig::fileIndexingEnabled() const
     return d->m_settings.indexingEnabled();
 }
 
-
 void IndexerConfig::setFileIndexingEnabled(bool enabled) const
 {
     d->m_settings.setIndexingEnabled(enabled);
@@ -49,7 +49,6 @@ bool IndexerConfig::shouldBeIndexed(const QString& path) const
 {
     return d->m_config.shouldBeIndexed(path);
 }
-
 
 bool IndexerConfig::canBeSearched(const QString& folder) const
 {
@@ -129,8 +128,6 @@ void IndexerConfig::setOnlyBasicIndexing(bool value)
 
 void IndexerConfig::refresh() const
 {
-    org::kde::baloo::main mainInterface(QStringLiteral("org.kde.baloo"),
-                                                QStringLiteral("/"),
-                                                QDBusConnection::sessionBus());
+    org::kde::baloo::main mainInterface(QStringLiteral("org.kde.baloo"), QStringLiteral("/"), QDBusConnection::sessionBus());
     mainInterface.updateConfig();
 }

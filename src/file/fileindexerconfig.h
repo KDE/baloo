@@ -9,10 +9,10 @@
 #ifndef BALOO_FILEINDEXER_CONFIG_H_
 #define BALOO_FILEINDEXER_CONFIG_H_
 
-#include <QObject>
-#include <QList>
-#include <QSet>
 #include <QDebug>
+#include <QList>
+#include <QObject>
+#include <QSet>
 
 #include "regexpcache.h"
 
@@ -20,7 +20,6 @@ class BalooSettings;
 
 namespace Baloo
 {
-
 class StorageDevices;
 
 /**
@@ -32,14 +31,13 @@ class FileIndexerConfig : public QObject
     Q_OBJECT
 
 public:
-
     explicit FileIndexerConfig(QObject* parent = nullptr);
     ~FileIndexerConfig();
 
     /**
-    * Folders to search for files to index and analyze.
-    * \return list of paths.
-    */
+     * Folders to search for files to index and analyze.
+     * \return list of paths.
+     */
     QStringList includeFolders() const;
 
     /**
@@ -59,15 +57,15 @@ public:
     bool onlyBasicIndexing() const;
 
     /**
-    * Check if \p folder can be searched.
-    * \p folder can be searched if itself or one of its descendants is indexed.
-    *
-    * Example:
-    * if ~/foo is not indexed and ~/foo/bar is indexed
-    * then ~/foo can be searched.
-    *
-    * \return \c true if the \p folder can be searched.
-    */
+     * Check if \p folder can be searched.
+     * \p folder can be searched if itself or one of its descendants is indexed.
+     *
+     * Example:
+     * if ~/foo is not indexed and ~/foo/bar is indexed
+     * then ~/foo can be searched.
+     *
+     * \return \c true if the \p folder can be searched.
+     */
     bool canBeSearched(const QString& folder) const;
 
     /**
@@ -129,8 +127,8 @@ public:
     bool indexingEnabled() const;
 
     /**
-      * Returns batch size
-      */
+     * Returns batch size
+     */
     uint maxUncomittedFiles() const;
 
 public Q_SLOTS:
@@ -144,15 +142,13 @@ public Q_SLOTS:
     void forceConfigUpdate();
 
 private:
-
     void buildFolderCache();
     void buildExcludeFilterRegExpCache();
     void buildMimeTypeCache();
 
-    BalooSettings *m_settings;
+    BalooSettings* m_settings;
 
-    struct FolderConfig
-    {
+    struct FolderConfig {
         QString path;
         bool isIncluded;
 

@@ -6,8 +6,8 @@
 
 #include "filemonitor.h"
 
-#include <QTest>
 #include <QSignalSpy>
+#include <QTest>
 
 #include <QDBusConnection>
 #include <QDBusMessage>
@@ -35,7 +35,6 @@ private:
     QString getRandomValidWebUrl();
     QString getRandomString(int length) const;
     FileMonitor* m_sut;
-
 };
 
 void FileMonitorTest::init()
@@ -55,9 +54,7 @@ void FileMonitorTest::test()
 
     QSignalSpy spy(m_sut, SIGNAL(fileMetaDataChanged(QString)));
 
-    QDBusMessage message = QDBusMessage::createSignal(QStringLiteral("/files"),
-                           QStringLiteral("org.kde"),
-                           QStringLiteral("changed"));
+    QDBusMessage message = QDBusMessage::createSignal(QStringLiteral("/files"), QStringLiteral("org.kde"), QStringLiteral("changed"));
 
     QList<QString> list;
     list << file;
@@ -178,16 +175,14 @@ QString FileMonitorTest::getRandomString(int length) const
     // assuming you want random strings of 12 characters
 
     QString randomString;
-    auto *generator = QRandomGenerator::global();
-    for(int i=0; i<length; ++i)
-    {
+    auto* generator = QRandomGenerator::global();
+    for (int i = 0; i < length; ++i) {
         int index = generator->bounded(possibleCharacters.length());
         QChar nextChar = possibleCharacters.at(index);
         randomString.append(nextChar);
     }
     return randomString;
 }
-
 
 QTEST_GUILESS_MAIN(FileMonitorTest)
 

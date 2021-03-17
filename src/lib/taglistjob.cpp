@@ -6,15 +6,16 @@
 */
 
 #include "taglistjob.h"
-#include "global.h"
 #include "database.h"
+#include "global.h"
 #include "transaction.h"
 
 #include <QStringList>
 
 using namespace Baloo;
 
-class TagListJob::Private {
+class TagListJob::Private
+{
 public:
     QStringList tags;
 };
@@ -32,7 +33,7 @@ TagListJob::~TagListJob()
 
 void TagListJob::start()
 {
-    Database *db = globalDatabaseInstance();
+    Database* db = globalDatabaseInstance();
 
     if (!db->open(Database::ReadOnlyDatabase)) {
         // if we have no index, we have no tags

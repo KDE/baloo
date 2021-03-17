@@ -8,22 +8,23 @@
 #ifndef BALOO_WRITETRANSACTION_H
 #define BALOO_WRITETRANSACTION_H
 
-#include "positioninfo.h"
+#include "databasedbis.h"
 #include "document.h"
 #include "documentoperations.h"
-#include "databasedbis.h"
 #include "documenturldb.h"
+#include "positioninfo.h"
 #include <functional>
 
-namespace Baloo {
-
+namespace Baloo
+{
 class BALOO_ENGINE_EXPORT WriteTransaction
 {
 public:
     WriteTransaction(DatabaseDbis dbis, MDB_txn* txn)
         : m_txn(txn)
         , m_dbis(dbis)
-    {}
+    {
+    }
 
     void addDocument(const Document& doc);
     void removeDocument(quint64 id);
@@ -44,7 +45,7 @@ public:
      * This function should typically be called when there are no other ReadTransaction in process
      * as that would otherwise balloon the size of the database.
      */
-    bool removeRecursively(quint64 parentId, const std::function<bool(quint64)> &shouldDelete);
+    bool removeRecursively(quint64 parentId, const std::function<bool(quint64)>& shouldDelete);
 
     void replaceDocument(const Document& doc, DocumentOperations operations);
     void commit();
@@ -64,11 +65,10 @@ private:
      * Returns the list of all the terms.
      */
     QVector<QByteArray> addTerms(quint64 id, const QMap<QByteArray, Document::TermData>& terms);
-    QVector<QByteArray> replaceTerms(quint64 id, const QVector<QByteArray>& prevTerms,
-                                     const QMap<QByteArray, Document::TermData>& terms);
+    QVector<QByteArray> replaceTerms(quint64 id, const QVector<QByteArray>& prevTerms, const QMap<QByteArray, Document::TermData>& terms);
     void removeTerms(quint64 id, const QVector<QByteArray>& terms);
 
-    QHash<QByteArray, QVector<Operation> > m_pendingOperations;
+    QHash<QByteArray, QVector<Operation>> m_pendingOperations;
 
     MDB_txn* m_txn;
     DatabaseDbis m_dbis;

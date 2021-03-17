@@ -7,11 +7,11 @@
 #ifndef BALOO_POSTINGITERATOR_H
 #define BALOO_POSTINGITERATOR_H
 
-#include <QVector>
 #include "engine_export.h"
+#include <QVector>
 
-namespace Baloo {
-
+namespace Baloo
+{
 /**
  * A PostingIterator is an abstract base class which can be used to iterate
  * over all the "postings" or "documents" which are particular term appears.

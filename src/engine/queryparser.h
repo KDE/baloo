@@ -11,8 +11,8 @@
 #include "engine_export.h"
 #include <QString>
 
-namespace Baloo {
-
+namespace Baloo
+{
 class EngineQuery;
 
 class BALOO_ENGINE_EXPORT QueryParser

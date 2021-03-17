@@ -8,51 +8,52 @@
 
 #include "coding.h"
 
-namespace Baloo {
-
-static inline int encodeVarint32Internal(char* dst, quint32 v) {
+namespace Baloo
+{
+static inline int encodeVarint32Internal(char* dst, quint32 v)
+{
     // Operate on characters as unsigneds
     unsigned char* ptr = reinterpret_cast<unsigned char*>(dst);
     static const int B = 128;
-    if (v < (1<<7)) {
+    if (v < (1 << 7)) {
         ptr[0] = v;
         return 1;
     }
-    if (v < (1<<14)) {
+    if (v < (1 << 14)) {
         ptr[0] = v | B;
-        ptr[1] = v>>7;
+        ptr[1] = v >> 7;
         return 2;
     }
-    if (v < (1<<21)) {
+    if (v < (1 << 21)) {
         ptr[0] = v | B;
-        ptr[1] = (v>>7) | B;
-        ptr[2] = v>>14;
+        ptr[1] = (v >> 7) | B;
+        ptr[2] = v >> 14;
         return 3;
     }
-    if (v < (1<<28)) {
+    if (v < (1 << 28)) {
         ptr[0] = v | B;
-        ptr[1] = (v>>7) | B;
-        ptr[2] = (v>>14) | B;
-        ptr[3] = v>>21;
+        ptr[1] = (v >> 7) | B;
+        ptr[2] = (v >> 14) | B;
+        ptr[3] = v >> 21;
         return 4;
     }
 
     ptr[0] = v | B;
-    ptr[1] = (v>>7) | B;
-    ptr[2] = (v>>14) | B;
-    ptr[3] = (v>>21) | B;
-    ptr[4] = v>>28;
+    ptr[1] = (v >> 7) | B;
+    ptr[2] = (v >> 14) | B;
+    ptr[3] = (v >> 21) | B;
+    ptr[4] = v >> 28;
     return 5;
 }
 
-static inline void putVarint32Internal(char* dst, quint32 v, int &pos)
+static inline void putVarint32Internal(char* dst, quint32 v, int& pos)
 {
     pos += encodeVarint32Internal(&dst[pos], v);
 }
 
-void putDifferentialVarInt32(QByteArray &temporaryStorage, QByteArray* dst, const QVector<quint32>& values)
+void putDifferentialVarInt32(QByteArray& temporaryStorage, QByteArray* dst, const QVector<quint32>& values)
 {
-    temporaryStorage.resize((values.size() + 1) * 5);  // max size, correct size will be held in pos
+    temporaryStorage.resize((values.size() + 1) * 5); // max size, correct size will be held in pos
     int pos = 0;
     putVarint32Internal(temporaryStorage.data(), values.size(), pos);
 

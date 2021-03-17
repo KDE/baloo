@@ -6,14 +6,14 @@
 */
 
 #include "query.h"
-#include "term.h"
 #include "advancedqueryparser.h"
-#include "searchstore.h"
 #include "baloodebug.h"
+#include "searchstore.h"
+#include "term.h"
 
+#include <QSharedPointer>
 #include <QString>
 #include <QStringList>
-#include <QSharedPointer>
 #include <QUrlQuery>
 
 #include <QJsonDocument>
@@ -23,7 +23,8 @@ using namespace Baloo;
 
 const int defaultLimit = -1;
 
-class Baloo::Query::Private {
+class Baloo::Query::Private
+{
 public:
     Term m_term;
 
@@ -263,7 +264,6 @@ Query Query::fromJSON(const QByteArray& arr)
         query.d->m_sortingOption = static_cast<SortingOption>(option);
     }
 
-
     if (map.contains(QStringLiteral("includeFolder"))) {
         query.d->m_includeFolder = map.value(QStringLiteral("includeFolder")).toString();
     }
@@ -289,7 +289,7 @@ QUrl Query::toSearchUrl(const QString& title)
     return url;
 }
 
-static QString jsonQueryFromUrl(const QUrl &url)
+static QString jsonQueryFromUrl(const QUrl& url)
 {
     const QString path = url.path();
 

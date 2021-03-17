@@ -8,8 +8,8 @@
 #include "fileindexerconfig.h"
 
 #include "database.h"
-#include "transaction.h"
 #include "idutils.h"
+#include "transaction.h"
 
 #include "baloodebug.h"
 

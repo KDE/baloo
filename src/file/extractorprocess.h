@@ -7,13 +7,13 @@
 #ifndef BALOO_EXTRACTORPROCESS_H
 #define BALOO_EXTRACTORPROCESS_H
 
-#include <QProcess>
 #include <QObject>
+#include <QProcess>
 #include <QTimer>
 #include <QVector>
 
-namespace Baloo {
-
+namespace Baloo
+{
 class ExtractorProcess : public QObject
 {
     Q_OBJECT

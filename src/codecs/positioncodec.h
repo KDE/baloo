@@ -13,8 +13,8 @@
 
 #include "positiondb.h"
 
-namespace Baloo {
-
+namespace Baloo
+{
 class PositionCodec
 {
 public:

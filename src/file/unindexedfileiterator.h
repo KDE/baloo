@@ -12,8 +12,8 @@
 
 #include <QMimeDatabase>
 
-namespace Baloo {
-
+namespace Baloo
+{
 class Transaction;
 
 /**

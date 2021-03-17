@@ -7,11 +7,11 @@
 #ifndef BALOO_INDEXCLEANER_H
 #define BALOO_INDEXCLEANER_H
 
-#include <QRunnable>
 #include <QObject>
+#include <QRunnable>
 
-namespace Baloo {
-
+namespace Baloo
+{
 class Database;
 class FileIndexerConfig;
 

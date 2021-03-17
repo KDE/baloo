@@ -7,13 +7,13 @@
 #include "fileindexscheduler.h"
 
 #include "baloodebug.h"
-#include "firstrunindexer.h"
-#include "newfileindexer.h"
-#include "modifiedfileindexer.h"
-#include "xattrindexer.h"
 #include "filecontentindexer.h"
-#include "unindexedfileindexer.h"
+#include "firstrunindexer.h"
 #include "indexcleaner.h"
+#include "modifiedfileindexer.h"
+#include "newfileindexer.h"
+#include "unindexedfileindexer.h"
+#include "xattrindexer.h"
 
 #include "fileindexerconfig.h"
 
@@ -43,8 +43,7 @@ FileIndexScheduler::FileIndexScheduler(Database* db, FileIndexerConfig* config, 
 
     m_threadPool.setMaxThreadCount(1);
 
-    connect(&m_powerMonitor, &PowerStateMonitor::powerManagementStatusChanged,
-            this, &FileIndexScheduler::powerManagementStatusChanged);
+    connect(&m_powerMonitor, &PowerStateMonitor::powerManagementStatusChanged, this, &FileIndexScheduler::powerManagementStatusChanged);
 
     if (m_powerMonitor.isOnBattery()) {
         m_indexerState = LowPowerIdle;
@@ -52,13 +51,10 @@ FileIndexScheduler::FileIndexScheduler(Database* db, FileIndexerConfig* config, 
 
     m_contentIndexer = new FileContentIndexer(m_config->maxUncomittedFiles(), &m_provider, m_indexFinishedFiles, this);
     m_contentIndexer->setAutoDelete(false);
-    connect(m_contentIndexer, &FileContentIndexer::done, this,
-            &FileIndexScheduler::runnerFinished);
-    connect(m_contentIndexer, &FileContentIndexer::committedBatch, &m_timeEstimator,
-            &TimeEstimator::handleNewBatchTime);
+    connect(m_contentIndexer, &FileContentIndexer::done, this, &FileIndexScheduler::runnerFinished);
+    connect(m_contentIndexer, &FileContentIndexer::committedBatch, &m_timeEstimator, &TimeEstimator::handleNewBatchTime);
 
-    QDBusConnection::sessionBus().registerObject(QStringLiteral("/scheduler"),
-                                                 this, QDBusConnection::ExportScriptableContents);
+    QDBusConnection::sessionBus().registerObject(QStringLiteral("/scheduler"), this, QDBusConnection::ExportScriptableContents);
 }
 
 FileIndexScheduler::~FileIndexScheduler()
@@ -67,7 +63,8 @@ FileIndexScheduler::~FileIndexScheduler()
     m_threadPool.waitForDone(0); // wait 0 msecs
 }
 
-void FileIndexScheduler::startupFinished() {
+void FileIndexScheduler::startupFinished()
+{
     m_inStartup = false;
     QTimer::singleShot(0, this, &FileIndexScheduler::scheduleIndexing);
 }
@@ -193,19 +190,17 @@ void FileIndexScheduler::scheduleIndexing()
 
 static void removeStartsWith(QStringList& list, const QString& dir)
 {
-    const auto tail = std::remove_if(list.begin(), list.end(),
-        [&dir](const QString& file) {
-            return file.startsWith(dir);
-        });
+    const auto tail = std::remove_if(list.begin(), list.end(), [&dir](const QString& file) {
+        return file.startsWith(dir);
+    });
     list.erase(tail, list.end());
 }
 
 static void removeShouldNotIndex(QStringList& list, FileIndexerConfig* config)
 {
-    const auto tail = std::remove_if(list.begin(), list.end(),
-        [config](const QString& file) {
-            return !config->shouldBeIndexed(file);
-        });
+    const auto tail = std::remove_if(list.begin(), list.end(), [config](const QString& file) {
+        return !config->shouldBeIndexed(file);
+    });
     list.erase(tail, list.end());
 }
 
@@ -230,8 +225,7 @@ void FileIndexScheduler::handleFileRemoved(const QString& file)
         m_newFiles.removeOne(file);
         m_modifiedFiles.removeOne(file);
         m_xattrFiles.removeOne(file);
-    }
-    else {
+    } else {
         removeStartsWith(m_newFiles, file);
         removeStartsWith(m_modifiedFiles, file);
         removeStartsWith(m_xattrFiles, file);
@@ -296,7 +290,6 @@ void FileIndexScheduler::checkStaleIndexEntries()
     m_checkStaleIndexEntries = true;
     scheduleIndexing();
 }
-
 
 uint FileIndexScheduler::getBatchSize()
 {

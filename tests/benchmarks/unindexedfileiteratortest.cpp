@@ -12,8 +12,8 @@
 #include "transaction.h"
 
 #include <QCoreApplication>
-#include <QTemporaryDir>
 #include <QElapsedTimer>
+#include <QTemporaryDir>
 
 using namespace Baloo;
 

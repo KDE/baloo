@@ -5,33 +5,35 @@
     SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
 */
 
-#include "fileindexerconfigutils.h"
 #include "filtereddiriterator.h"
 #include "fileindexerconfig.h"
+#include "fileindexerconfigutils.h"
 
 #include <QTemporaryDir>
 #include <QTest>
 
-namespace {
-    const QStringList dataSet() {
-        static QStringList dataSet = {
-            QStringLiteral("home/"),
-            QStringLiteral("home/1"),
-            QStringLiteral("home/2"),
-            QStringLiteral("home/kde/"),
-            QStringLiteral("home/kde/1"),
-            QStringLiteral("home/docs/"),
-            QStringLiteral("home/docs/1"),
-            QStringLiteral("home/docs/.fire"),
-            QStringLiteral("home/.hiddenDir/"),
-            QStringLiteral("home/.hiddenFile"),
-            QStringLiteral("home/.includedHidden/"),
-            QStringLiteral("home/.includedHidden/dir/"),
-            QStringLiteral("home/.includedHidden/file"),
-            QStringLiteral("home/.includedHidden/.hidden"),
-        };
-        return dataSet;
-    }
+namespace
+{
+const QStringList dataSet()
+{
+    static QStringList dataSet = {
+        QStringLiteral("home/"),
+        QStringLiteral("home/1"),
+        QStringLiteral("home/2"),
+        QStringLiteral("home/kde/"),
+        QStringLiteral("home/kde/1"),
+        QStringLiteral("home/docs/"),
+        QStringLiteral("home/docs/1"),
+        QStringLiteral("home/docs/.fire"),
+        QStringLiteral("home/.hiddenDir/"),
+        QStringLiteral("home/.hiddenFile"),
+        QStringLiteral("home/.includedHidden/"),
+        QStringLiteral("home/.includedHidden/dir/"),
+        QStringLiteral("home/.includedHidden/file"),
+        QStringLiteral("home/.includedHidden/.hidden"),
+    };
+    return dataSet;
+}
 }
 
 class FilteredDirIteratorTest : public QObject
@@ -143,9 +145,7 @@ void FilteredDirIteratorTest::testFolders()
         dir->path() + QLatin1String("/home"),
     };
 
-    QStringList excludeFolders = {
-        dir->path() + QLatin1String("/home/kde")
-    };
+    QStringList excludeFolders = {dir->path() + QLatin1String("/home/kde")};
 
     Test::writeIndexerConfig(includeFolders, excludeFolders);
 

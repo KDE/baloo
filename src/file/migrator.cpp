@@ -7,8 +7,8 @@
 #include "migrator.h"
 #include "fileindexerconfig.h"
 
-#include <QFile>
 #include <QDir>
+#include <QFile>
 
 using namespace Baloo;
 
@@ -40,8 +40,7 @@ void Migrator::migrate()
     if (dbVersion == 0 && QFile::exists(m_dbPath + "/file")) {
         QDir dir(m_dbPath + "/file");
         dir.removeRecursively();
-    }
-    else if (QFile::exists(m_dbPath + "/index")) {
+    } else if (QFile::exists(m_dbPath + "/index")) {
         QFile::remove(m_dbPath + "/index");
         QFile::remove(m_dbPath + "/index-lock");
     }

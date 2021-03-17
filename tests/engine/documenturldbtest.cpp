@@ -5,13 +5,13 @@
     SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
 */
 
-#include <QDebug>
 #include <QCoreApplication>
-#include <QTemporaryDir>
-#include <QFile>
-#include <QDirIterator>
+#include <QDebug>
 #include <QDir>
+#include <QDirIterator>
 #include <QElapsedTimer>
+#include <QFile>
+#include <QTemporaryDir>
 
 #include "documenturldb.h"
 #include "idutils.h"
@@ -60,7 +60,7 @@ int main(int argc, char** argv)
     }
 
     // Cleanup
-    //mdb_txn_abort(txn);
+    // mdb_txn_abort(txn);
     mdb_env_close(env);
 
     return 0;

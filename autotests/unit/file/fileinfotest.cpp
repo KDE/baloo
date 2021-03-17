@@ -8,8 +8,8 @@
 #include "fileinfo.h"
 
 #include <QFileInfo>
-#include <QTemporaryFile>
 #include <QTemporaryDir>
+#include <QTemporaryFile>
 #include <QTest>
 
 using namespace Baloo;
@@ -110,11 +110,11 @@ private Q_SLOTS:
         FileInfo info(dir.path().toUtf8());
         QCOMPARE(info.isFile(), false);
     }
+
 private:
     QTemporaryFile file;
     QTemporaryDir dir;
 };
-
 
 QTEST_GUILESS_MAIN(FileInfoTest)
 

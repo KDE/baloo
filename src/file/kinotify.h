@@ -10,8 +10,9 @@
 
 #include <QObject>
 
-namespace Baloo {
-    class FileIndexerConfig;
+namespace Baloo
+{
+class FileIndexerConfig;
 }
 
 /**
@@ -52,18 +53,8 @@ public:
         EventQueueOverflow = 0x00004000, /**< Event queued overflowed (compare inotify's IN_Q_OVERFLOW) */
         EventIgnored = 0x00008000, /**< File was ignored (compare inotify's IN_IGNORED) */
         EventMove = (EventMoveFrom | EventMoveTo),
-        EventAll = (EventAccess |
-                    EventAttributeChange |
-                    EventCloseWrite |
-                    EventCloseRead |
-                    EventCreate |
-                    EventDelete |
-                    EventDeleteSelf |
-                    EventModify |
-                    EventMoveSelf |
-                    EventMoveFrom |
-                    EventMoveTo |
-                    EventOpen),
+        EventAll = (EventAccess | EventAttributeChange | EventCloseWrite | EventCloseRead | EventCreate | EventDelete | EventDeleteSelf | EventModify
+                    | EventMoveSelf | EventMoveFrom | EventMoveTo | EventOpen),
     };
     Q_DECLARE_FLAGS(WatchEvents, WatchEvent)
 

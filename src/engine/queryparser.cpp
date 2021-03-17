@@ -42,38 +42,33 @@ EngineQuery QueryParser::parseQuery(const QString& text_, const QString& prefix)
             //
             // Check the previous delimiter
             if (pos != end) {
-                QString delim = text_.mid(end, pos-end);
+                QString delim = text_.mid(end, pos - end);
                 if (delim.contains(QLatin1Char('"'))) {
                     if (inDoubleQuotes) {
                         queries << EngineQuery(phraseQueries, EngineQuery::Phrase);
                         phraseQueries.clear();
                         inDoubleQuotes = false;
-                    }
-                    else {
+                    } else {
                         inDoubleQuotes = true;
                     }
-                }
-                else if (delim.contains(QLatin1Char('\''))) {
+                } else if (delim.contains(QLatin1Char('\''))) {
                     if (inSingleQuotes) {
                         queries << EngineQuery(phraseQueries, EngineQuery::Phrase);
                         phraseQueries.clear();
                         inSingleQuotes = false;
-                    }
-                    else {
+                    } else {
                         inSingleQuotes = true;
                     }
-                }
-                else if (std::none_of(delim.constBegin(), delim.constEnd(),
-                    [](const QChar& ch) { return ch.isSpace();
-                })) {
+                } else if (std::none_of(delim.constBegin(), delim.constEnd(), [](const QChar& ch) {
+                               return ch.isSpace();
+                           })) {
                     if (phraseQueries.isEmpty() && !queries.isEmpty()) {
                         EngineQuery q = queries.takeLast();
                         q.setOp(EngineQuery::Equal);
                         phraseQueries << q;
                         inPhrase = true;
                     }
-                }
-                else if (inPhrase && !phraseQueries.isEmpty()) {
+                } else if (inPhrase && !phraseQueries.isEmpty()) {
                     queries << EngineQuery(phraseQueries, EngineQuery::Phrase);
                     phraseQueries.clear();
                     inPhrase = false;
@@ -85,8 +80,7 @@ EngineQuery QueryParser::parseQuery(const QString& text_, const QString& prefix)
         if (bf.boundaryReasons() & QTextBoundaryFinder::StartOfItem) {
             start = pos;
             continue;
-        }
-        else if (bf.boundaryReasons() & QTextBoundaryFinder::EndOfItem) {
+        } else if (bf.boundaryReasons() & QTextBoundaryFinder::EndOfItem) {
             end = bf.position();
 
             QString str = text.mid(start, end - start);
@@ -108,8 +102,7 @@ EngineQuery QueryParser::parseQuery(const QString& text_, const QString& prefix)
 
             if (inDoubleQuotes || inSingleQuotes || inPhrase) {
                 phraseQueries << EngineQuery(arr, EngineQuery::Equal);
-            }
-            else {
+            } else {
                 if (m_autoExpandSize && arr.size() >= m_autoExpandSize) {
                     queries << EngineQuery(arr, EngineQuery::StartsWith);
                 } else {

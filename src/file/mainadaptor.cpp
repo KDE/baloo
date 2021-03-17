@@ -14,7 +14,7 @@
  * Implementation of adaptor class MainAdaptor
  */
 
-MainAdaptor::MainAdaptor(Baloo::MainHub *parent)
+MainAdaptor::MainAdaptor(Baloo::MainHub* parent)
     : QDBusAbstractAdaptor(parent)
     , mainHub(parent)
 {
@@ -36,4 +36,3 @@ void MainAdaptor::updateConfig()
 {
     mainHub->updateConfig();
 }
-

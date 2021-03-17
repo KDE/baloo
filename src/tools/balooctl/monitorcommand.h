@@ -12,23 +12,25 @@
 #include "command.h"
 #include "fileindexerinterface.h"
 #include "schedulerinterface.h"
+#include <KLocalizedString>
 #include <QObject>
 #include <QTextStream>
-#include <KLocalizedString>
 
-namespace Baloo {
-
+namespace Baloo
+{
 class MonitorCommand : public QObject, public Command
 {
     Q_OBJECT
 public:
     explicit MonitorCommand(QObject* parent = nullptr);
 
-    QString command() override {
+    QString command() override
+    {
         return QStringLiteral("monitor");
     }
 
-    QString description() override {
+    QString description() override
+    {
         return i18n("CLI interface for monitoring Baloo");
     }
 

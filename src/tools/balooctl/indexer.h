@@ -8,13 +8,14 @@
 #ifndef BALOO_INDEXER_H
 #define BALOO_INDEXER_H
 
-#include <QString>
-#include <QMimeDatabase>
 #include <KFileMetaData/ExtractorCollection>
+#include <QMimeDatabase>
+#include <QString>
 
 #include "transaction.h"
 
-namespace Baloo {
+namespace Baloo
+{
 class Indexer
 {
 public:
@@ -31,4 +32,4 @@ private:
 };
 }
 
-#endif //BALOO_INDEXER_H
+#endif // BALOO_INDEXER_H

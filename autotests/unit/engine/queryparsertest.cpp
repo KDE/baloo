@@ -257,9 +257,9 @@ void QueryParserTest::testMixedDelimiters_data()
     QTest::addColumn<EngineQuery>("expectedQuery");
     QTest::addColumn<QString>("failureReason");
 
-    auto addRow = [](const QString& input, const EngineQuery& query,
-                     const QString& failureReason)
-        { QTest::addRow("%s", qPrintable(input)) << input << query << failureReason; };
+    auto addRow = [](const QString& input, const EngineQuery& query, const QString& failureReason) {
+        QTest::addRow("%s", qPrintable(input)) << input << query << failureReason;
+    };
     // clang-format off
     addRow("Term", {"term"}, "");
     addRow("No phrase", { {{"no"}, {"phrase"}}, EngineQuery::And}, "");

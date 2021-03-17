@@ -11,8 +11,8 @@
 #include "database.h"
 #include "transaction.h"
 
-#include <QMimeDatabase>
 #include <QFileInfo>
+#include <QMimeDatabase>
 
 using namespace Baloo;
 
@@ -29,8 +29,7 @@ NewFileIndexer::NewFileIndexer(Database* db, const FileIndexerConfig* config, co
 void NewFileIndexer::run()
 {
     QMimeDatabase mimeDb;
-    BasicIndexingJob::IndexingLevel level = m_config->onlyBasicIndexing() ? BasicIndexingJob::NoLevel
-        : BasicIndexingJob::MarkForContentIndexing;
+    BasicIndexingJob::IndexingLevel level = m_config->onlyBasicIndexing() ? BasicIndexingJob::NoLevel : BasicIndexingJob::MarkForContentIndexing;
 
     Transaction tr(m_db, Transaction::ReadWrite);
 

@@ -29,8 +29,7 @@ FirstRunIndexer::FirstRunIndexer(Database* db, FileIndexerConfig* config, const 
 void FirstRunIndexer::run()
 {
     QMimeDatabase mimeDb;
-    BasicIndexingJob::IndexingLevel level = m_config->onlyBasicIndexing() ? BasicIndexingJob::NoLevel
-        : BasicIndexingJob::MarkForContentIndexing;
+    BasicIndexingJob::IndexingLevel level = m_config->onlyBasicIndexing() ? BasicIndexingJob::NoLevel : BasicIndexingJob::MarkForContentIndexing;
 
     for (const QString& folder : qAsConst(m_folders)) {
         Transaction tr(m_db, Transaction::ReadWrite);

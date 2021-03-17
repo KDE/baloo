@@ -6,11 +6,11 @@
 */
 
 #include "database.h"
-#include "transaction.h"
 #include "document.h"
+#include "transaction.h"
 
-#include <QTest>
 #include <QTemporaryDir>
+#include <QTest>
 
 using namespace Baloo;
 

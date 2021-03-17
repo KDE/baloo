@@ -10,15 +10,16 @@
 
 using namespace Baloo;
 
-class QueryRunnable::Private {
+class QueryRunnable::Private
+{
 public:
     Query m_query;
     QAtomicInt m_stop;
 
-    bool stopRequested() const {
+    bool stopRequested() const
+    {
         return m_stop.loadRelaxed();
     }
-
 };
 
 QueryRunnable::QueryRunnable(const Query& query, QObject* parent)
@@ -48,4 +49,3 @@ void QueryRunnable::run()
 
     Q_EMIT finished(this);
 }
-

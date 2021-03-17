@@ -8,11 +8,11 @@
 #ifndef BALOO_VECTORPOSITIONINFOITERATOR_H
 #define BALOO_VECTORPOSITIONINFOITERATOR_H
 
-#include "postingiterator.h"
 #include "positiondb.h"
+#include "postingiterator.h"
 
-namespace Baloo {
-
+namespace Baloo
+{
 class BALOO_ENGINE_EXPORT VectorPositionInfoIterator : public PostingIterator
 {
 public:

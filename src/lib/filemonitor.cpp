@@ -6,14 +6,15 @@
 
 #include "filemonitor.h"
 
+#include <QDBusConnection>
 #include <QSet>
 #include <QString>
 #include <QStringList>
-#include <QDBusConnection>
 
 using namespace Baloo;
 
-class FileMonitor::Private {
+class FileMonitor::Private
+{
 public:
     QSet<QString> m_files;
 };
@@ -23,8 +24,7 @@ FileMonitor::FileMonitor(QObject* parent)
     , d(new Private)
 {
     QDBusConnection con = QDBusConnection::sessionBus();
-    con.connect(QString(), QStringLiteral("/files"), QStringLiteral("org.kde"),
-                QStringLiteral("changed"), this, SLOT(slotFileMetaDataChanged(QStringList)));
+    con.connect(QString(), QStringLiteral("/files"), QStringLiteral("org.kde"), QStringLiteral("changed"), this, SLOT(slotFileMetaDataChanged(QStringList)));
 }
 
 FileMonitor::~FileMonitor()
@@ -36,7 +36,7 @@ void FileMonitor::addFile(const QString& fileUrl)
 {
     QString f = fileUrl;
     if (f.endsWith(QLatin1Char('/')))
-        f = f.mid(0, f.length()-1);
+        f = f.mid(0, f.length() - 1);
 
     d->m_files.insert(f);
 }

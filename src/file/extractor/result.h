@@ -45,7 +45,8 @@ public:
      * Returns the Baloo document to which the results from the extractors
      * are saved.
      */
-    Baloo::Document& document() {
+    Baloo::Document& document()
+    {
         return m_doc;
     }
 

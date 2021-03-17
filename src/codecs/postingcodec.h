@@ -11,8 +11,8 @@
 #include <QByteArray>
 #include <QVector>
 
-namespace Baloo {
-
+namespace Baloo
+{
 class PostingCodec
 {
 public:

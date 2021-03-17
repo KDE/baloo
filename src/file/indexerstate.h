@@ -8,23 +8,24 @@
 #ifndef BALOO_INDEXER_STATE_H
 #define BALOO_INDEXER_STATE_H
 
-#include <QString>
 #include <KLocalizedString>
+#include <QString>
 
-namespace Baloo {
+namespace Baloo
+{
 enum IndexerState {
-        Idle,
-        Suspended,
-        FirstRun,
-        NewFiles,
-        ModifiedFiles,
-        XAttrFiles,
-        ContentIndexing,
-        UnindexedFileCheck,
-        StaleIndexEntriesClean,
-        LowPowerIdle,
-        Unavailable,
-        Startup,
+    Idle,
+    Suspended,
+    FirstRun,
+    NewFiles,
+    ModifiedFiles,
+    XAttrFiles,
+    ContentIndexing,
+    UnindexedFileCheck,
+    StaleIndexEntriesClean,
+    LowPowerIdle,
+    Unavailable,
+    Startup,
 };
 
 inline QString stateString(IndexerState state)
@@ -35,10 +36,10 @@ inline QString stateString(IndexerState state)
         status = i18n("Idle");
         break;
     case Suspended:
-        status =  i18n("Suspended");
+        status = i18n("Suspended");
         break;
     case FirstRun:
-        status =  i18n("Initial Indexing");
+        status = i18n("Initial Indexing");
         break;
     case NewFiles:
         status = i18n("Indexing new files");
@@ -71,11 +72,11 @@ inline QString stateString(IndexerState state)
     return status;
 }
 
-//TODO: check for implicit conversion
+// TODO: check for implicit conversion
 inline QString stateString(int state)
 {
     return stateString(static_cast<IndexerState>(state));
 }
 
 }
-#endif //BALOO_INDEXER_STATE_H
+#endif // BALOO_INDEXER_STATE_H

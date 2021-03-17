@@ -16,7 +16,8 @@ class PostingCodecTest : public QObject
 {
     Q_OBJECT
 private Q_SLOTS:
-    void test() {
+    void test()
+    {
         PostingCodec codec;
 
         QVector<quint64> vec = {1, 2, 9, 12};
@@ -26,7 +27,6 @@ private Q_SLOTS:
         QVector<quint64> vec2 = codec.decode(arr);
         QCOMPARE(vec2, vec);
     }
-
 };
 
 QTEST_MAIN(PostingCodecTest)

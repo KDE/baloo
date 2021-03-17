@@ -8,11 +8,11 @@
 #ifndef BALOO_PENDINGFILE_H
 #define BALOO_PENDINGFILE_H
 
-#include <QString>
 #include <QObject>
+#include <QString>
 
-namespace Baloo {
-
+namespace Baloo
+{
 /**
  * Represents a file which needs to be indexed.
  */
@@ -24,18 +24,34 @@ public:
     QString path() const;
     void setPath(const QString& path);
 
-    void setAttributeChanged() { m_attributesChanged = true; }
-    void setClosedOnWrite() { m_closedOnWrite = true; }
-    void setModified() { m_modified = true; }
-    void setCreated() { m_created = true; }
-    void setDeleted() { m_deleted = true; }
+    void setAttributeChanged()
+    {
+        m_attributesChanged = true;
+    }
+    void setClosedOnWrite()
+    {
+        m_closedOnWrite = true;
+    }
+    void setModified()
+    {
+        m_modified = true;
+    }
+    void setCreated()
+    {
+        m_created = true;
+    }
+    void setDeleted()
+    {
+        m_deleted = true;
+    }
 
     bool isNewFile() const;
     bool shouldIndexContents() const;
     bool shouldIndexXAttrOnly() const;
     bool shouldRemoveIndex() const;
 
-    bool operator == (const PendingFile& rhs) const {
+    bool operator==(const PendingFile& rhs) const
+    {
         return m_path == rhs.m_path;
     }
 

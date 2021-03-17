@@ -143,7 +143,6 @@ QMap<quint64, IdFilenameDB::FilePath> IdFilenameDB::toTestMap() const
             break;
         }
 
-
         const quint64 id = *(static_cast<quint64*>(key.mv_data));
 
         FilePath path;

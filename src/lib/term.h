@@ -8,12 +8,12 @@
 #ifndef BALOO_TERM_H
 #define BALOO_TERM_H
 
+#include <QDebug>
 #include <QString>
 #include <QVariant>
-#include <QDebug>
 
-namespace Baloo {
-
+namespace Baloo
+{
 class Term
 {
 public:
@@ -105,7 +105,7 @@ public:
     QVariantMap toVariantMap() const;
     static Term fromVariantMap(const QVariantMap& map);
 
-    bool operator == (const Term& rhs) const;
+    bool operator==(const Term& rhs) const;
 
     Term& operator=(const Term& rhs);
 
@@ -114,7 +114,7 @@ private:
     Private* d;
 };
 
-inline Term operator &&(const Term& lhs, const Term& rhs)
+inline Term operator&&(const Term& lhs, const Term& rhs)
 {
     if (lhs.isEmpty())
         return rhs;
@@ -124,7 +124,7 @@ inline Term operator &&(const Term& lhs, const Term& rhs)
     return {lhs, Term::And, rhs};
 }
 
-inline Term operator ||(const Term& lhs, const Term& rhs)
+inline Term operator||(const Term& lhs, const Term& rhs)
 {
     if (lhs.isEmpty())
         return rhs;
@@ -134,7 +134,7 @@ inline Term operator ||(const Term& lhs, const Term& rhs)
     return {lhs, Term::Or, rhs};
 }
 
-inline Term operator !(const Term& rhs)
+inline Term operator!(const Term& rhs)
 {
     Term t(rhs);
     t.setNegation(!rhs.isNegated());
@@ -147,10 +147,10 @@ inline Term operator !(const Term& rhs)
  *
  * @since: 5.70
  */
-char *toString(const Term& term);
+char* toString(const Term& term);
 
 }
 
-QDebug operator <<(QDebug d, const Baloo::Term& t);
+QDebug operator<<(QDebug d, const Baloo::Term& t);
 
 #endif

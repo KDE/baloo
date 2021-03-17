@@ -6,39 +6,37 @@
 */
 
 #include "basicindexingjob.h"
-#include "termgenerator.h"
 #include "idutils.h"
+#include "termgenerator.h"
 
-#include <QStringList>
 #include <QFile>
+#include <QStringList>
 
 #include <KFileMetaData/Types>
 #include <KFileMetaData/UserMetaData>
 
 using namespace Baloo;
 
-BasicIndexingJob::BasicIndexingJob(const QString& filePath, const QString& mimetype,
-                                   IndexingLevel level)
+BasicIndexingJob::BasicIndexingJob(const QString& filePath, const QString& mimetype, IndexingLevel level)
     : m_filePath(filePath)
     , m_mimetype(mimetype)
     , m_indexingLevel(level)
 {
     if (m_filePath.endsWith(QChar('/'))) {
-	m_filePath.chop(1);
+        m_filePath.chop(1);
     }
 }
 
-namespace {
-
+namespace
+{
 void indexXAttr(const QString& url, Document& doc)
 {
     KFileMetaData::UserMetaData userMetaData(url);
 
     using Attribute = KFileMetaData::UserMetaData::Attribute;
-    auto attributes = userMetaData.queryAttributes(Attribute::Tags |
-        Attribute::Rating | Attribute::Comment);
+    auto attributes = userMetaData.queryAttributes(Attribute::Tags | Attribute::Rating | Attribute::Comment);
     if (attributes == Attribute::None) {
-	return;
+        return;
     }
 
     TermGenerator tg(doc);

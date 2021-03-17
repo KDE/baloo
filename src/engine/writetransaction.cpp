@@ -8,14 +8,14 @@
 #include "writetransaction.h"
 #include "transaction.h"
 
-#include "postingdb.h"
+#include "documentdatadb.h"
 #include "documentdb.h"
 #include "documentiddb.h"
-#include "positiondb.h"
 #include "documenttimedb.h"
-#include "documentdatadb.h"
-#include "mtimedb.h"
 #include "idutils.h"
+#include "mtimedb.h"
+#include "positiondb.h"
+#include "postingdb.h"
 
 using namespace Baloo;
 
@@ -54,7 +54,6 @@ void WriteTransaction::addDocument(const Document& doc)
     if (!docFileNameTerms.isEmpty())
         documentFileNameTermsDB.put(id, docFileNameTerms);
 
-
     if (doc.contentIndexing()) {
         contentIndexingDB.put(doc.id());
     }
@@ -92,7 +91,6 @@ QVector<QByteArray> WriteTransaction::addTerms(quint64 id, const QMap<QByteArray
 
     return termList;
 }
-
 
 void WriteTransaction::removeDocument(quint64 id)
 {
@@ -152,7 +150,7 @@ void WriteTransaction::removeRecursively(quint64 parentId)
     removeDocument(parentId);
 }
 
-bool WriteTransaction::removeRecursively(quint64 parentId, const std::function<bool(quint64)> &shouldDelete)
+bool WriteTransaction::removeRecursively(quint64 parentId, const std::function<bool(quint64)>& shouldDelete)
 {
     DocumentUrlDB docUrlDB(m_dbis.idTreeDbi, m_dbis.idFilenameDbi, m_txn);
 
@@ -249,8 +247,7 @@ void WriteTransaction::replaceDocument(const Document& doc, DocumentOperations o
     }
 }
 
-QVector< QByteArray > WriteTransaction::replaceTerms(quint64 id, const QVector<QByteArray>& prevTerms,
-                                                     const QMap<QByteArray, Document::TermData>& terms)
+QVector<QByteArray> WriteTransaction::replaceTerms(quint64 id, const QVector<QByteArray>& prevTerms, const QMap<QByteArray, Document::TermData>& terms)
 {
     m_pendingOperations.reserve(m_pendingOperations.size() + prevTerms.size() + terms.size());
     for (const QByteArray& term : prevTerms) {
@@ -269,7 +266,7 @@ void WriteTransaction::commit()
     PostingDB postingDB(m_dbis.postingDbi, m_txn);
     PositionDB positionDB(m_dbis.positionDBi, m_txn);
 
-    QHashIterator<QByteArray, QVector<Operation> > iter(m_pendingOperations);
+    QHashIterator<QByteArray, QVector<Operation>> iter(m_pendingOperations);
     while (iter.hasNext()) {
         iter.next();
 
@@ -294,8 +291,7 @@ void WriteTransaction::commit()
                     }
                     sortedIdInsert(positionList, op.data);
                 }
-            }
-            else {
+            } else {
                 sortedIdRemove(list, id);
                 if (!fetchedPositionList) {
                     positionList = positionDB.get(term);

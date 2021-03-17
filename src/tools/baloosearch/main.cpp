@@ -5,12 +5,12 @@
     SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
 */
 
-#include <QCoreApplication>
-#include <QCommandLineParser>
 #include <QCommandLineOption>
+#include <QCommandLineParser>
+#include <QCoreApplication>
+#include <QElapsedTimer>
 #include <QFileInfo>
 #include <QTextStream>
-#include <QElapsedTimer>
 
 #include <KAboutData>
 #include <KLocalizedString>
@@ -45,8 +45,7 @@ int main(int argc, char* argv[])
     parser.addOption(QCommandLineOption(QStringList{QStringLiteral("d"), QStringLiteral("directory")}, //
                                         i18n("Limit search to specified directory"),
                                         i18n("directory")));
-    parser.addOption(QCommandLineOption({QStringLiteral("i"), QStringLiteral("id")},
-                                        i18n("Show document IDs")));
+    parser.addOption(QCommandLineOption({QStringLiteral("i"), QStringLiteral("id")}, i18n("Show document IDs")));
     parser.addPositionalArgument(i18n("query"), i18n("List of words to query for"));
     parser.addHelpOption();
     parser.addVersionOption();

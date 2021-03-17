@@ -9,11 +9,11 @@
 #define QUERYRUNNABLE_H
 
 #include "query.h"
-#include <QRunnable>
 #include <QObject>
+#include <QRunnable>
 
-namespace Baloo {
-
+namespace Baloo
+{
 /**
  * @class QueryRunnable queryrunnable.h <Baloo/QueryRunnable>
  */

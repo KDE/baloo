@@ -7,9 +7,9 @@
 
 #include "advancedqueryparser.h"
 
-#include <QStringList>
-#include <QStack>
 #include <QDate>
+#include <QStack>
+#include <QStringList>
 
 using namespace Baloo;
 
@@ -73,7 +73,7 @@ static QStringList lex(const QString& text)
 
 static void addTermToStack(QStack<Term>& stack, const Term& termInConstruction, Term::Operation op)
 {
-    Term &tos = stack.top();
+    Term& tos = stack.top();
 
     tos = Term(tos, op, termInConstruction);
 }
@@ -91,7 +91,7 @@ Term AdvancedQueryParser::parse(const QString& text)
 
     // Lex the input string
     QStringList tokens = lex(text);
-    for (const QString &token : tokens) {
+    for (const QString& token : tokens) {
         // If a key and an operator have been parsed, now is time for a value
         if (valueExpected) {
             // When the parser encounters a literal, it puts it in the value of
@@ -129,58 +129,58 @@ Term AdvancedQueryParser::parse(const QString& text)
         Term::Comparator comparator = Term::Auto;
 
         switch (token.at(0).toLatin1()) {
-            case ':':
-                comparator = Term::Contains;
-                break;
-            case '=':
-                comparator = Term::Equal;
-                break;
-            case '<': {
-                if (token.size() == 1) {
-                    comparator = Term::Less;
-                } else if (token[1] == QLatin1Char('=')) {
-                    comparator = Term::LessEqual;
-                }
-                break;
+        case ':':
+            comparator = Term::Contains;
+            break;
+        case '=':
+            comparator = Term::Equal;
+            break;
+        case '<': {
+            if (token.size() == 1) {
+                comparator = Term::Less;
+            } else if (token[1] == QLatin1Char('=')) {
+                comparator = Term::LessEqual;
             }
-            case '>': {
-                if (token.size() == 1) {
-                    comparator = Term::Greater;
-                } else if (token[1] == QLatin1Char('=')) {
-                    comparator = Term::GreaterEqual;
-                }
-                break;
+            break;
+        }
+        case '>': {
+            if (token.size() == 1) {
+                comparator = Term::Greater;
+            } else if (token[1] == QLatin1Char('=')) {
+                comparator = Term::GreaterEqual;
             }
-            case '(':
-                if (!termInConstruction.isEmpty()) {
+            break;
+        }
+        case '(':
+            if (!termInConstruction.isEmpty()) {
+                addTermToStack(stack, termInConstruction, ops.top());
+                ops.top() = Term::And;
+            }
+
+            stack.push(Term());
+            ops.push(Term::And);
+            termInConstruction = Term();
+
+            continue;
+        case ')':
+            // Prevent a stack underflow if the user writes "a b ))))"
+            if (stack.size() > 1) {
+                // Don't forget the term just before the closing brace
+                if (termInConstruction.value().isValid()) {
                     addTermToStack(stack, termInConstruction, ops.top());
-                    ops.top() = Term::And;
                 }
 
-                stack.push(Term());
-                ops.push(Term::And);
+                // stack.pop() is the term that has just been closed. Append
+                // it to the term just above it.
+                ops.pop();
+                addTermToStack(stack, stack.pop(), ops.top());
+                ops.top() = Term::And;
                 termInConstruction = Term();
+            }
 
-                continue;
-            case ')':
-                // Prevent a stack underflow if the user writes "a b ))))"
-                if (stack.size() > 1) {
-                    // Don't forget the term just before the closing brace
-                    if (termInConstruction.value().isValid()) {
-                        addTermToStack(stack, termInConstruction, ops.top());
-                    }
-
-                    // stack.pop() is the term that has just been closed. Append
-                    // it to the term just above it.
-                    ops.pop();
-                    addTermToStack(stack, stack.pop(), ops.top());
-                    ops.top() = Term::And;
-                    termInConstruction = Term();
-                }
-
-                continue;
-            default:
-                break;
+            continue;
+        default:
+            break;
         }
 
         if (comparator != Term::Auto) {
@@ -212,11 +212,10 @@ Term AdvancedQueryParser::parse(const QString& text)
     // Process unclosed parentheses
     ops.pop();
     while (stack.size() > 1) {
-	// stack.pop() is the term that has to be closed. Append
-	// it to the term just above it.
-	addTermToStack(stack, stack.pop(), ops.top());
+        // stack.pop() is the term that has to be closed. Append
+        // it to the term just above it.
+        addTermToStack(stack, stack.pop(), ops.top());
     }
 
     return stack.top();
 }
-

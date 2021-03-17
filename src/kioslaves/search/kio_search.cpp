@@ -13,23 +13,22 @@
 #include "resultiterator.h"
 #include <sys/stat.h>
 
-#include <QUrl>
-#include <QUrlQuery>
+#include <KLocalizedString>
 #include <KUser>
 #include <QCoreApplication>
-#include <KLocalizedString>
+#include <QUrl>
+#include <QUrlQuery>
 
 using namespace Baloo;
 
 namespace
 {
-
 KIO::UDSEntry statSearchFolder(const QUrl& url)
 {
     KIO::UDSEntry uds;
     uds.reserve(9);
 #ifdef Q_OS_WIN
-    uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, _S_IREAD );
+    uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, _S_IREAD);
 #else
     uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, S_IRUSR | S_IXUSR);
 #endif
@@ -57,7 +56,6 @@ SearchProtocol::SearchProtocol(const QByteArray& poolSocket, const QByteArray& a
 {
 }
 
-
 SearchProtocol::~SearchProtocol()
 {
 }
@@ -74,7 +72,7 @@ void SearchProtocol::listDir(const QUrl& url)
     while (it.next()) {
         KIO::UDSEntry uds = udsf.createUdsEntry(it.filePath());
         if (uds.count()) {
-	    listEntry(uds);
+            listEntry(uds);
         }
     }
 
@@ -84,7 +82,7 @@ void SearchProtocol::listDir(const QUrl& url)
     uds.fastInsert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
     uds.fastInsert(KIO::UDSEntry::UDS_MIME_TYPE, QStringLiteral("inode/directory"));
 #ifdef Q_OS_WIN
-    uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, _S_IREAD );
+    uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, _S_IREAD);
 #else
     uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, S_IRUSR | S_IXUSR);
 #endif
@@ -94,13 +92,11 @@ void SearchProtocol::listDir(const QUrl& url)
     finished();
 }
 
-
 void SearchProtocol::mimetype(const QUrl&)
 {
     mimeType(QStringLiteral("inode/directory"));
     finished();
 }
-
 
 void SearchProtocol::stat(const QUrl& url)
 {
@@ -108,14 +104,13 @@ void SearchProtocol::stat(const QUrl& url)
     finished();
 }
 
-extern "C"
+extern "C" {
+Q_DECL_EXPORT int kdemain(int argc, char** argv)
 {
-    Q_DECL_EXPORT int kdemain(int argc, char** argv)
-    {
-        QCoreApplication app(argc, argv);
-        app.setApplicationName(QStringLiteral("kio_baloosearch"));
-        Baloo::SearchProtocol slave(argv[2], argv[3]);
-        slave.dispatchLoop();
-        return 0;
-    }
+    QCoreApplication app(argc, argv);
+    app.setApplicationName(QStringLiteral("kio_baloosearch"));
+    Baloo::SearchProtocol slave(argv[2], argv[3]);
+    slave.dispatchLoop();
+    return 0;
+}
 }

@@ -8,11 +8,11 @@
 #ifndef BALOO_INDEXERCONFIG_H
 #define BALOO_INDEXERCONFIG_H
 
-#include <QObject>
 #include "core_export.h"
+#include <QObject>
 
-namespace Baloo {
-
+namespace Baloo
+{
 /**
  * @class IndexerConfig indexerconfig.h <Baloo/IndexerConfig>
  */
@@ -22,35 +22,35 @@ public:
     IndexerConfig();
     ~IndexerConfig();
 
-    IndexerConfig(const IndexerConfig &) = delete;
-    IndexerConfig &operator=(const IndexerConfig &) = delete;
+    IndexerConfig(const IndexerConfig&) = delete;
+    IndexerConfig& operator=(const IndexerConfig&) = delete;
 
     bool fileIndexingEnabled() const;
     void setFileIndexingEnabled(bool enabled) const;
 
     /**
-    * Check if the file or folder \p path should be indexed.
-    *
-    * If itself or its nearest explicitly included or excluded ancestor is
-    * excluded it is not indexed.
-    * Otherwise it is indexed according to the
-    * includeFolders and excludeFilters config.
-    *
-    * \return \c true if the file or folder at \p path should
-    * be indexed according to the configuration.
-    */
+     * Check if the file or folder \p path should be indexed.
+     *
+     * If itself or its nearest explicitly included or excluded ancestor is
+     * excluded it is not indexed.
+     * Otherwise it is indexed according to the
+     * includeFolders and excludeFilters config.
+     *
+     * \return \c true if the file or folder at \p path should
+     * be indexed according to the configuration.
+     */
     bool shouldBeIndexed(const QString& path) const;
 
     /**
-    * Check if \p folder can be searched.
-    * \p folder can be searched if itself or one of its descendants is indexed.
-    *
-    * Example:
-    * if ~/foo is not indexed and ~/foo/bar is indexed
-    * then ~/foo can be searched.
-    *
-    * \return \c true if the \p folder can be searched.
-    */
+     * Check if \p folder can be searched.
+     * \p folder can be searched if itself or one of its descendants is indexed.
+     *
+     * Example:
+     * if ~/foo is not indexed and ~/foo/bar is indexed
+     * then ~/foo can be searched.
+     *
+     * \return \c true if the \p folder can be searched.
+     */
     bool canBeSearched(const QString& folder) const;
 
     /**

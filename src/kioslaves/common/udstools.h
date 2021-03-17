@@ -9,11 +9,11 @@
 #ifndef BALOO_KIO_COMMON_UDSTOOLS_H_
 #define BALOO_KIO_COMMON_UDSTOOLS_H_
 
-#include "usergroupcache.h"
 #include "idutils.h"
+#include "usergroupcache.h"
 
-namespace Baloo {
-
+namespace Baloo
+{
 class UdsFactory
 {
 public:
@@ -30,7 +30,7 @@ inline KIO::UDSEntry UdsFactory::createUdsEntry(const QString& filePath) const
     QT_STATBUF statBuf;
     const QByteArray ba = QFile::encodeName(filePath);
     if (filePathToStat(ba, statBuf) != 0) {
-	return uds;
+        return uds;
     }
 
     uds.reserve(12);

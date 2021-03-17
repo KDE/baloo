@@ -7,15 +7,15 @@
 */
 
 #include "database.h"
-#include "transaction.h"
-#include "postingdb.h"
-#include "documentdb.h"
-#include "documenturldb.h"
-#include "documentiddb.h"
-#include "positiondb.h"
-#include "documenttimedb.h"
 #include "documentdatadb.h"
+#include "documentdb.h"
+#include "documentiddb.h"
+#include "documenttimedb.h"
+#include "documenturldb.h"
 #include "mtimedb.h"
+#include "positiondb.h"
+#include "postingdb.h"
+#include "transaction.h"
 
 #include "enginequery.h"
 
@@ -23,9 +23,9 @@
 #include "orpostingiterator.h"
 #include "phraseanditerator.h"
 
-#include "writetransaction.h"
-#include "idutils.h"
 #include "fsutils.h"
+#include "idutils.h"
+#include "writetransaction.h"
 
 #include "enginedebug.h"
 
@@ -37,9 +37,9 @@
 #endif
 #include "valgrind.h"
 
+#include <QDir>
 #include <QFile>
 #include <QFileInfo>
-#include <QDir>
 #include <QMutexLocker>
 
 using namespace Baloo;
@@ -122,7 +122,8 @@ bool Database::open(OpenMode mode)
 
     // Set MDB environment flags
     auto mdbEnvFlags = MDB_NOSUBDIR | MDB_NOMEMINIT;
-    if (mode == ReadOnlyDatabase) mdbEnvFlags |= MDB_RDONLY;
+    if (mode == ReadOnlyDatabase)
+        mdbEnvFlags |= MDB_RDONLY;
 
     // The directory needs to be created before opening the environment
     QByteArray arr = QFile::encodeName(indexInfo.absoluteFilePath());

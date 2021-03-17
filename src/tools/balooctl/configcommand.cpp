@@ -9,8 +9,8 @@
 #include "indexerconfig.h"
 
 #include <QDir>
-#include <QTextStream>
 #include <QFileInfo>
+#include <QTextStream>
 
 #include <KLocalizedString>
 
@@ -69,7 +69,6 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
         out << i18n("Usage: balooctl config <command>\n\n");
         out << i18n("Possible Commands:\n");
 
-
         printCommand(QStringLiteral("add"), i18n("Add a value to config parameter"));
         printCommand(QStringLiteral("rm | remove"), i18n("Remove a value from a config parameter"));
         printCommand(QStringLiteral("list | ls | show"), i18n("Show the value of a config parameter"));
@@ -114,7 +113,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
         }
 
         auto printList = [&out](const QStringList& list) {
-            for (const QString& item: list) {
+            for (const QString& item : list) {
                 out << item << '\n';
             }
         };
@@ -369,7 +368,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
         IndexerConfig config;
         QString configParam = args.takeFirst();
 
-        if (configParam == QLatin1String("hidden"))  {
+        if (configParam == QLatin1String("hidden")) {
             if (args.isEmpty()) {
                 out << i18n("A value must be provided\n");
                 return 1;
@@ -396,25 +395,21 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
             return 1;
         }
 
-        if (configParam.compare(QStringLiteral("contentIndexing"), Qt::CaseInsensitive) == 0)  {
+        if (configParam.compare(QStringLiteral("contentIndexing"), Qt::CaseInsensitive) == 0) {
             if (args.isEmpty()) {
                 out << i18n("A value must be provided\n");
                 return 1;
             }
 
             QString value = args.takeFirst();
-            if (value.compare(QLatin1String("true"), Qt::CaseInsensitive) == 0
-                    || value.compare(QLatin1String("y"), Qt::CaseInsensitive) == 0
-                    || value.compare(QLatin1String("yes"), Qt::CaseInsensitive) == 0
-                    || value.compare(QLatin1String("1")) == 0) {
+            if (value.compare(QLatin1String("true"), Qt::CaseInsensitive) == 0 || value.compare(QLatin1String("y"), Qt::CaseInsensitive) == 0
+                || value.compare(QLatin1String("yes"), Qt::CaseInsensitive) == 0 || value.compare(QLatin1String("1")) == 0) {
                 config.setOnlyBasicIndexing(false);
                 return 0;
             }
 
-            if (value.compare(QLatin1String("false"), Qt::CaseInsensitive) == 0
-                    || value.compare(QLatin1String("n"), Qt::CaseInsensitive) == 0
-                    || value.compare(QLatin1String("no"), Qt::CaseInsensitive) == 0
-                    || value.compare(QLatin1String("0")) == 0) {
+            if (value.compare(QLatin1String("false"), Qt::CaseInsensitive) == 0 || value.compare(QLatin1String("n"), Qt::CaseInsensitive) == 0
+                || value.compare(QLatin1String("no"), Qt::CaseInsensitive) == 0 || value.compare(QLatin1String("0")) == 0) {
                 config.setOnlyBasicIndexing(true);
                 return 0;
             }

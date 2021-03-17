@@ -45,7 +45,7 @@ MDB_dbi IdTreeDB::open(MDB_txn* txn)
     return dbi;
 }
 
-void IdTreeDB::put(quint64 docId, const QVector<quint64> &subDocIds)
+void IdTreeDB::put(quint64 docId, const QVector<quint64>& subDocIds)
 {
     Q_ASSERT(!subDocIds.isEmpty());
     Q_ASSERT(!subDocIds.contains(0));
@@ -101,18 +101,25 @@ void IdTreeDB::del(quint64 docId)
 //
 // Iter
 //
-class IdTreePostingIterator : public PostingIterator {
+class IdTreePostingIterator : public PostingIterator
+{
 public:
-    IdTreePostingIterator(const IdTreeDB& db, const QVector<quint64> &list)
-        : m_db(db), m_pos(-1), m_idList(list) {}
+    IdTreePostingIterator(const IdTreeDB& db, const QVector<quint64>& list)
+        : m_db(db)
+        , m_pos(-1)
+        , m_idList(list)
+    {
+    }
 
-    quint64 docId() const override {
+    quint64 docId() const override
+    {
         if (m_pos >= 0 && m_pos < m_resultList.size())
             return m_resultList[m_pos];
         return 0;
     }
 
-    quint64 next() override {
+    quint64 next() override
+    {
         if (m_resultList.isEmpty() && m_idList.isEmpty()) {
             return 0;
         }
@@ -125,8 +132,7 @@ public:
             }
             std::sort(m_resultList.begin(), m_resultList.end());
             m_pos = 0;
-        }
-        else {
+        } else {
             if (m_pos < m_resultList.size())
                 m_pos++;
             else

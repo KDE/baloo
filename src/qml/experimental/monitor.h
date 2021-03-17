@@ -12,11 +12,12 @@
 #include <QObject>
 #include <QString>
 
+#include "fileindexerinterface.h"
 #include "indexerstate.h"
 #include "schedulerinterface.h"
-#include "fileindexerinterface.h"
 
-namespace Baloo {
+namespace Baloo
+{
 class Monitor : public QObject
 {
     Q_OBJECT
@@ -33,11 +34,23 @@ public:
     explicit Monitor(QObject* parent = nullptr);
 
     // Property readers
-    QString filePath() const { return m_filePath; }
+    QString filePath() const
+    {
+        return m_filePath;
+    }
     QString suspendState() const;
-    QString remainingTime() const { return m_remainingTime; }
-    QString stateString() const { return Baloo::stateString(m_indexerState); }
-    int state() const { return static_cast<int>(m_indexerState); }
+    QString remainingTime() const
+    {
+        return m_remainingTime;
+    }
+    QString stateString() const
+    {
+        return Baloo::stateString(m_indexerState);
+    }
+    int state() const
+    {
+        return static_cast<int>(m_indexerState);
+    }
 
     // Invokable methods
     Q_INVOKABLE void toggleSuspendState();
@@ -75,4 +88,4 @@ private:
     uint m_remainingTimeSeconds = 0;
 };
 }
-#endif //BALOOMONITOR_MONITOR_H
+#endif // BALOOMONITOR_MONITOR_H

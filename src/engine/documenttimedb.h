@@ -10,12 +10,12 @@
 
 #include "engine_export.h"
 
-#include <QMap>
 #include <QDebug>
+#include <QMap>
 #include <lmdb.h>
 
-namespace Baloo {
-
+namespace Baloo
+{
 class BALOO_ENGINE_EXPORT DocumentTimeDB
 {
 public:
@@ -25,21 +25,25 @@ public:
     static MDB_dbi create(MDB_txn* txn);
     static MDB_dbi open(MDB_txn* txn);
 
-    struct TimeInfo
-    {
+    struct TimeInfo {
         /** Tracking of file time stamps
-          *
-          * @sa QDateTime::toSecsSinceEpoch()
-          * @sa QFileInfo::lastModified()
-          * @sa QFileInfo::metadataChangeTime()
-          */
+         *
+         * @sa QDateTime::toSecsSinceEpoch()
+         * @sa QFileInfo::lastModified()
+         * @sa QFileInfo::metadataChangeTime()
+         */
         quint32 mTime; /**< file (data) modification time */
         quint32 cTime; /**< metadata (e.g. XAttr) change time */
         /* No birthtime yet */
 
-        explicit TimeInfo(quint32 mt = 0, quint32 ct = 0) : mTime(mt), cTime(ct) {}
+        explicit TimeInfo(quint32 mt = 0, quint32 ct = 0)
+            : mTime(mt)
+            , cTime(ct)
+        {
+        }
 
-        bool operator == (const TimeInfo& rhs) const {
+        bool operator==(const TimeInfo& rhs) const
+        {
             return mTime == rhs.mTime && cTime == rhs.cTime;
         }
     };
@@ -50,12 +54,14 @@ public:
     bool contains(quint64 docId);
 
     QMap<quint64, TimeInfo> toTestMap() const;
+
 private:
     MDB_txn* m_txn;
     MDB_dbi m_dbi;
 };
 
-inline QDebug operator<<(QDebug dbg, const DocumentTimeDB::TimeInfo &time) {
+inline QDebug operator<<(QDebug dbg, const DocumentTimeDB::TimeInfo& time)
+{
     dbg << "(" << time.mTime << "," << time.cTime << ")";
     return dbg;
 }

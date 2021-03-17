@@ -11,14 +11,14 @@
 
 #include "pendingfile.h"
 
+#include <QHash>
 #include <QObject>
 #include <QString>
-#include <QHash>
 #include <QTimer>
 #include <QVector>
 
-namespace Baloo {
-
+namespace Baloo
+{
 class PendingFileQueueTest;
 
 /**

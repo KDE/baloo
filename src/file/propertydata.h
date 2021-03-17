@@ -13,7 +13,6 @@
 
 namespace Baloo
 {
-
 const QJsonObject propertyMapToJson(const KFileMetaData::PropertyMap& properties);
 const KFileMetaData::PropertyMap jsonToPropertyMap(const QJsonObject& properties);
 

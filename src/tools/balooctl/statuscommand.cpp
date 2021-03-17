@@ -8,18 +8,18 @@
 #include "statuscommand.h"
 #include "indexerconfig.h"
 
-#include "global.h"
 #include "database.h"
-#include "transaction.h"
+#include "global.h"
 #include "idutils.h"
+#include "transaction.h"
 
 #include "fileindexerinterface.h"
-#include "schedulerinterface.h"
-#include "maininterface.h"
 #include "indexerstate.h"
+#include "maininterface.h"
+#include "schedulerinterface.h"
 
-#include <KLocalizedString>
 #include <KFormat>
+#include <KLocalizedString>
 
 using namespace Baloo;
 
@@ -59,7 +59,7 @@ public:
     uint32_t m_dataSize;
 };
 
-FileIndexStatus collectFileStatus(Transaction& tr, IndexerConfig&  cfg, const QString& file)
+FileIndexStatus collectFileStatus(Transaction& tr, IndexerConfig& cfg, const QString& file)
 {
     using FileStatus = FileIndexStatus::FileStatus;
     using IndexStateReason = FileIndexStatus::IndexStateReason;
@@ -73,9 +73,10 @@ FileIndexStatus collectFileStatus(Transaction& tr, IndexerConfig&  cfg, const QS
         return FileIndexStatus{filePath, FileStatus::NonExisting, IndexStateReason::NoFileOrDirectory, 0};
     }
 
-    FileStatus fileStatus = (fileInfo.isSymLink() ? FileStatus::SymLink :
-                            fileInfo.isFile() ? FileStatus::RegularFile :
-                            fileInfo.isDir() ? FileStatus::Directory : FileStatus::Other);
+    FileStatus fileStatus = (fileInfo.isSymLink()    ? FileStatus::SymLink
+                                 : fileInfo.isFile() ? FileStatus::RegularFile
+                                 : fileInfo.isDir()  ? FileStatus::Directory
+                                                     : FileStatus::Other);
 
     if (fileStatus == FileStatus::Other || fileStatus == FileStatus::SymLink) {
         return FileIndexStatus{filePath, fileStatus, IndexStateReason::NoFileOrDirectory, 0};
@@ -106,7 +107,8 @@ FileIndexStatus collectFileStatus(Transaction& tr, IndexerConfig&  cfg, const QS
     }
 }
 
-void printMultiLine(Transaction& tr, IndexerConfig&  cfg, const QStringList& args) {
+void printMultiLine(Transaction& tr, IndexerConfig& cfg, const QStringList& args)
+{
     using FileStatus = FileIndexStatus::FileStatus;
     using IndexStateReason = FileIndexStatus::IndexStateReason;
 
@@ -159,7 +161,8 @@ void printMultiLine(Transaction& tr, IndexerConfig&  cfg, const QStringList& arg
     }
 }
 
-void printSimpleFormat(Transaction& tr, IndexerConfig&  cfg, const QStringList& args) {
+void printSimpleFormat(Transaction& tr, IndexerConfig& cfg, const QStringList& args)
+{
     using FileStatus = FileIndexStatus::FileStatus;
     using IndexStateReason = FileIndexStatus::IndexStateReason;
 
@@ -197,9 +200,8 @@ void printSimpleFormat(Transaction& tr, IndexerConfig&  cfg, const QStringList& 
     }
 }
 
-void printJSON(Transaction& tr, IndexerConfig&  cfg, const QStringList& args)
+void printJSON(Transaction& tr, IndexerConfig& cfg, const QStringList& args)
 {
-
     using FileStatus = FileIndexStatus::FileStatus;
     using IndexStateReason = FileIndexStatus::IndexStateReason;
 
@@ -279,7 +281,7 @@ int StatusCommand::exec(const QCommandLineParser& parser)
         return 1;
     }
 
-    Database *db = globalDatabaseInstance();
+    Database* db = globalDatabaseInstance();
     if (!db->open(Database::ReadOnlyDatabase)) {
         err << i18n("Baloo Index could not be opened\n");
         return 1;
@@ -291,20 +293,14 @@ int StatusCommand::exec(const QCommandLineParser& parser)
     args.pop_front();
 
     if (args.isEmpty()) {
-        org::kde::baloo::main mainInterface(QStringLiteral("org.kde.baloo"),
-                                                    QStringLiteral("/"),
-                                                    QDBusConnection::sessionBus());
+        org::kde::baloo::main mainInterface(QStringLiteral("org.kde.baloo"), QStringLiteral("/"), QDBusConnection::sessionBus());
 
-        org::kde::baloo::scheduler schedulerinterface(QStringLiteral("org.kde.baloo"),
-                                            QStringLiteral("/scheduler"),
-                                            QDBusConnection::sessionBus());
+        org::kde::baloo::scheduler schedulerinterface(QStringLiteral("org.kde.baloo"), QStringLiteral("/scheduler"), QDBusConnection::sessionBus());
 
         bool running = mainInterface.isValid();
 
         if (running) {
-            org::kde::baloo::fileindexer indexerInterface(QStringLiteral("org.kde.baloo"),
-            QStringLiteral("/fileindexer"),
-            QDBusConnection::sessionBus());
+            org::kde::baloo::fileindexer indexerInterface(QStringLiteral("org.kde.baloo"), QStringLiteral("/fileindexer"), QDBusConnection::sessionBus());
 
             const QString currentFile = indexerInterface.currentFile();
 
@@ -315,8 +311,7 @@ int StatusCommand::exec(const QCommandLineParser& parser)
             } else {
                 out << i18n("Indexer state: %1", stateString(schedulerinterface.state())) << '\n';
             }
-        }
-        else {
+        } else {
             out << i18n("Baloo File Indexer is not running\n");
         }
 
@@ -338,9 +333,9 @@ int StatusCommand::exec(const QCommandLineParser& parser)
         } else {
             out << i18n("Index does not exist yet\n");
         }
-    } else if (format == allowedFormats[0]){
+    } else if (format == allowedFormats[0]) {
         printSimpleFormat(tr, cfg, args);
-    } else if (format == allowedFormats[1]){
+    } else if (format == allowedFormats[1]) {
         printJSON(tr, cfg, args);
     } else {
         printMultiLine(tr, cfg, args);

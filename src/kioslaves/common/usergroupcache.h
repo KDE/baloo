@@ -17,21 +17,20 @@
 #include <QHash>
 #include <QString>
 
-namespace Baloo {
-
+namespace Baloo
+{
 class UserGroupCache
 {
 public:
-    QString getUserName(const KUserId &uid) const;
-    QString getGroupName(const KGroupId &gid) const;
+    QString getUserName(const KUserId& uid) const;
+    QString getGroupName(const KGroupId& gid) const;
 
 private:
     mutable QHash<KUserId, QString> mUsercache;
     mutable QHash<KGroupId, QString> mGroupcache;
 };
 
-inline QString
-UserGroupCache::getUserName(const KUserId &uid) const
+inline QString UserGroupCache::getUserName(const KUserId& uid) const
 {
     if (Q_UNLIKELY(!uid.isValid())) {
         return QString();
@@ -48,8 +47,7 @@ UserGroupCache::getUserName(const KUserId &uid) const
     return mUsercache[uid];
 }
 
-inline QString
-UserGroupCache::getGroupName(const KGroupId &gid) const
+inline QString UserGroupCache::getGroupName(const KGroupId& gid) const
 {
     if (Q_UNLIKELY(!gid.isValid())) {
         return QString();

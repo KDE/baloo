@@ -12,10 +12,10 @@
 #include "database.h"
 #include "transaction.h"
 
-#include <QMimeDatabase>
+#include <QDateTime>
 #include <QFile>
 #include <QFileInfo>
-#include <QDateTime>
+#include <QMimeDatabase>
 
 using namespace Baloo;
 
@@ -32,8 +32,7 @@ ModifiedFileIndexer::ModifiedFileIndexer(Database* db, const FileIndexerConfig* 
 void ModifiedFileIndexer::run()
 {
     QMimeDatabase mimeDb;
-    BasicIndexingJob::IndexingLevel level = m_config->onlyBasicIndexing() ? BasicIndexingJob::NoLevel
-        : BasicIndexingJob::MarkForContentIndexing;
+    BasicIndexingJob::IndexingLevel level = m_config->onlyBasicIndexing() ? BasicIndexingJob::NoLevel : BasicIndexingJob::MarkForContentIndexing;
 
     Transaction tr(m_db, Transaction::ReadWrite);
 

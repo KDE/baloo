@@ -8,23 +8,23 @@
 #ifndef EXTRACTOR_APP_H
 #define EXTRACTOR_APP_H
 
-#include <QVector>
-#include <QStringList>
-#include <QMimeDatabase>
 #include <QDataStream>
-#include <QTextStream>
-#include <QSocketNotifier>
 #include <QFile>
+#include <QMimeDatabase>
+#include <QSocketNotifier>
+#include <QStringList>
+#include <QTextStream>
+#include <QVector>
 
 #include <KFileMetaData/ExtractorCollection>
 
-#include "database.h"
 #include "../fileindexerconfig.h"
+#include "database.h"
 
 class KIdleTime;
 
-namespace Baloo {
-
+namespace Baloo
+{
 class Transaction;
 
 class App : public QObject

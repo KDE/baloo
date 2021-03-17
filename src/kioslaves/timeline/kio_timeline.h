@@ -14,7 +14,6 @@
 
 namespace Baloo
 {
-
 class TimelineProtocol : public KIO::SlaveBase
 {
 public:

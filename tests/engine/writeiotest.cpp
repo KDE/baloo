@@ -5,19 +5,19 @@
     SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
 */
 
+#include <QCommandLineOption>
+#include <QCommandLineParser>
+#include <QCoreApplication>
 #include <QDebug>
+#include <QDir>
+#include <QFileInfo>
 #include <QTemporaryDir>
 #include <QUuid>
-#include <QFileInfo>
-#include <QDir>
-#include <QCoreApplication>
-#include <QCommandLineParser>
-#include <QCommandLineOption>
 
 #include "database.h"
 #include "document.h"
-#include "transaction.h"
 #include "tests/file/util.h"
+#include "transaction.h"
 
 int main(int argc, char** argv)
 {
@@ -25,7 +25,7 @@ int main(int argc, char** argv)
 
     QCommandLineParser parser;
     parser.addPositionalArgument(QStringLiteral("num"), QStringLiteral("The number of terms. Each term is of length 10"));
-    parser.addOption(QCommandLineOption(QStringList () << QStringLiteral("p") << QStringLiteral("position"), QStringLiteral("Add positional information")));
+    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("p") << QStringLiteral("position"), QStringLiteral("Add positional information")));
     parser.addHelpOption();
     parser.process(app);
 
@@ -52,8 +52,7 @@ int main(int argc, char** argv)
 
         if (parser.isSet(QStringLiteral("p"))) {
             doc.addPositionTerm(term, i);
-        }
-        else {
+        } else {
             doc.addTerm(term);
         }
     }
@@ -70,7 +69,6 @@ int main(int argc, char** argv)
     for (const QFileInfo& file : dbDir.entryInfoList(QDir::Files)) {
         qDebug() << file.fileName() << file.size() / 1024 << "kb";
         dbSize += file.size();
-
     }
     qDebug() << "Database Size:" << dbSize / 1024 << "kb";
 

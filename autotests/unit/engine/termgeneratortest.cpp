@@ -226,7 +226,6 @@ void TermGeneratorTest::testWordPositionsCJK()
 
     QVector<uint> posInfo2 = doc.m_terms.value("我认识你").positions;
     QCOMPARE(posInfo2, QVector<uint>() << 2);
-
 }
 
 void TermGeneratorTest::testNumbers()
@@ -241,10 +240,10 @@ void TermGeneratorTest::testNumbers()
 
     QList<QByteArray> expectedWords;
     // TODO: Signs are dropped by the TermGenerator
-    expectedWords = { "1", "10", "12", "13.4", "3", "5", "5.6", "7e3"};
+    expectedWords = {"1", "10", "12", "13.4", "3", "5", "5.6", "7e3"};
     QCOMPARE(words, expectedWords);
 
-    expectedWords = { "1", "10", "12", "-13.4", "-3", "5", "5.6", "-7e3"};
+    expectedWords = {"1", "10", "12", "-13.4", "-3", "5", "5.6", "-7e3"};
     QEXPECT_FAIL("", "signs not handled correctly", Continue);
     QCOMPARE(words, expectedWords);
 }

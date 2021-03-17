@@ -7,10 +7,10 @@
 
 #include "unindexedfileindexer.h"
 
-#include "unindexedfileiterator.h"
-#include "transaction.h"
-#include "fileindexerconfig.h"
 #include "basicindexingjob.h"
+#include "fileindexerconfig.h"
+#include "transaction.h"
+#include "unindexedfileiterator.h"
 
 #include <QMimeDatabase>
 
@@ -26,8 +26,7 @@ void UnindexedFileIndexer::run()
 {
     QMimeDatabase m_mimeDb;
     const QStringList includeFolders = m_config->includeFolders();
-    const BasicIndexingJob::IndexingLevel level = m_config->onlyBasicIndexing() ?
-        BasicIndexingJob::NoLevel : BasicIndexingJob::MarkForContentIndexing;
+    const BasicIndexingJob::IndexingLevel level = m_config->onlyBasicIndexing() ? BasicIndexingJob::NoLevel : BasicIndexingJob::MarkForContentIndexing;
 
     for (const QString& includeFolder : includeFolders) {
         Transaction tr(m_db, Transaction::ReadWrite);
@@ -44,7 +43,6 @@ void UnindexedFileIndexer::run()
             // We handle modified files by simply updating the mTime and filename in the Db and marking them for ContentIndexing
             const quint64 id = job.document().id();
             if (tr.hasDocument(id)) {
-
                 DocumentOperations ops = DocumentTime;
                 if (it.cTimeChanged()) {
                     ops |= XAttrTerms;

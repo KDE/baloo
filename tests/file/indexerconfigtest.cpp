@@ -7,8 +7,8 @@
 
 #include "fileindexerconfig.h"
 
-#include <QCoreApplication>
 #include <QCommandLineParser>
+#include <QCoreApplication>
 #include <QFileInfo>
 #include <QMimeDatabase>
 
@@ -44,5 +44,5 @@ int main(int argc, char** argv)
               << "Fast Mimetype: " << fastMimetype.toUtf8().constData() << std::endl
               << "Slow Mimetype: " << mimetype.toUtf8().constData() << std::endl;
 
-    return 0; //app.exec();
+    return 0; // app.exec();
 }

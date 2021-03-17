@@ -15,7 +15,8 @@ class MTimeDBTest : public SingleDBTest
 {
     Q_OBJECT
 private Q_SLOTS:
-    void test() {
+    void test()
+    {
         MTimeDB db(MTimeDB::create(m_txn), m_txn);
 
         db.put(5, 1);
@@ -24,7 +25,8 @@ private Q_SLOTS:
         QCOMPARE(db.get(5), QVector<quint64>());
     }
 
-    void testMultiple() {
+    void testMultiple()
+    {
         MTimeDB db(MTimeDB::create(m_txn), m_txn);
 
         db.put(5, 1);
@@ -39,7 +41,8 @@ private Q_SLOTS:
         QCOMPARE(db.get(6), QVector<quint64>());
     }
 
-    void testIter() {
+    void testIter()
+    {
         MTimeDB db(MTimeDB::create(m_txn), m_txn);
 
         db.put(5, 1);
@@ -86,7 +89,8 @@ private Q_SLOTS:
         }
     }
 
-    void testRangeIter() {
+    void testRangeIter()
+    {
         MTimeDB db(MTimeDB::create(m_txn), m_txn);
 
         db.put(5, 1);
@@ -148,7 +152,8 @@ private Q_SLOTS:
         }
     }
 
-    void testBeginOfEpoch() {
+    void testBeginOfEpoch()
+    {
         MTimeDB db(MTimeDB::create(m_txn), m_txn);
 
         db.put(0, 1);

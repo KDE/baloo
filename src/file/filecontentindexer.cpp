@@ -4,32 +4,31 @@
     SPDX-License-Identifier: LGPL-2.1-or-later
 */
 
-#include "baloodebug.h"
 #include "filecontentindexer.h"
-#include "filecontentindexerprovider.h"
+#include "baloodebug.h"
 #include "extractorprocess.h"
+#include "filecontentindexerprovider.h"
 
-#include <QEventLoop>
-#include <QElapsedTimer>
 #include <QDBusConnection>
+#include <QElapsedTimer>
+#include <QEventLoop>
 
 using namespace Baloo;
 
-namespace {
-    // TODO KF6 -- remove/combine with started/finished DBus signal
-    void sendChangedSignal(const QStringList& updatedFiles)
-    {
-        auto message = QDBusMessage::createSignal(QStringLiteral("/files"), //
-                                                  QStringLiteral("org.kde"),
-                                                  QStringLiteral("changed"));
-        message.setArguments({updatedFiles});
-        QDBusConnection::sessionBus().send(message);
-    }
+namespace
+{
+// TODO KF6 -- remove/combine with started/finished DBus signal
+void sendChangedSignal(const QStringList& updatedFiles)
+{
+    auto message = QDBusMessage::createSignal(QStringLiteral("/files"), //
+                                              QStringLiteral("org.kde"),
+                                              QStringLiteral("changed"));
+    message.setArguments({updatedFiles});
+    QDBusConnection::sessionBus().send(message);
+}
 }
 
-FileContentIndexer::FileContentIndexer(uint batchSize,
-        FileContentIndexerProvider* provider,
-        uint& finishedCount, QObject* parent)
+FileContentIndexer::FileContentIndexer(uint batchSize, FileContentIndexerProvider* provider, uint& finishedCount, QObject* parent)
     : QObject(parent)
     , m_batchSize(batchSize)
     , m_provider(provider)
@@ -41,11 +40,9 @@ FileContentIndexer::FileContentIndexer(uint batchSize,
     QDBusConnection bus = QDBusConnection::sessionBus();
     m_monitorWatcher.setConnection(bus);
     m_monitorWatcher.setWatchMode(QDBusServiceWatcher::WatchForUnregistration);
-    connect(&m_monitorWatcher, &QDBusServiceWatcher::serviceUnregistered, this,
-            &FileContentIndexer::monitorClosed);
+    connect(&m_monitorWatcher, &QDBusServiceWatcher::serviceUnregistered, this, &FileContentIndexer::monitorClosed);
 
-    bus.registerObject(QStringLiteral("/fileindexer"),
-                        this, QDBusConnection::ExportScriptableContents);
+    bus.registerObject(QStringLiteral("/fileindexer"), this, QDBusConnection::ExportScriptableContents);
 }
 
 void FileContentIndexer::run()
@@ -68,10 +65,15 @@ void FileContentIndexer::run()
         connect(&process, &ExtractorProcess::done, &loop, &QEventLoop::quit);
 
         bool hadErrors = false;
-        connect(&process, &ExtractorProcess::failed, &loop, [&hadErrors, &loop]() { hadErrors = true; loop.quit(); });
+        connect(&process, &ExtractorProcess::failed, &loop, [&hadErrors, &loop]() {
+            hadErrors = true;
+            loop.quit();
+        });
 
         uint batchStartCount = m_finishedCount;
-        connect(&process, &ExtractorProcess::finishedIndexingFile, &loop, [this]() { m_finishedCount++; });
+        connect(&process, &ExtractorProcess::finishedIndexingFile, &loop, [this]() {
+            m_finishedCount++;
+        });
 
         QElapsedTimer timer;
         timer.start();
@@ -103,8 +105,11 @@ void FileContentIndexer::run()
 
             // Update remaining time estimate
             auto elapsed = timer.elapsed();
-            QMetaObject::invokeMethod(this,
-                [this, elapsed, batchSize] { committedBatch(elapsed, batchSize); },
+            QMetaObject::invokeMethod(
+                this,
+                [this, elapsed, batchSize] {
+                    committedBatch(elapsed, batchSize);
+                },
                 Qt::QueuedConnection);
         }
     }

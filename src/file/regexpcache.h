@@ -9,8 +9,8 @@
 #define REGEXP_CACHE_H_
 
 #include <QList>
-#include <QSet>
 #include <QRegularExpression>
+#include <QSet>
 
 class RegExpCache
 {
@@ -28,4 +28,3 @@ private:
 };
 
 #endif
-

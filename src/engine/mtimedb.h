@@ -9,12 +9,12 @@
 #define BALOO_MTIMEDB_H
 
 #include "engine_export.h"
-#include <lmdb.h>
-#include <QVector>
 #include <QMap>
+#include <QVector>
+#include <lmdb.h>
 
-namespace Baloo {
-
+namespace Baloo
+{
 class PostingIterator;
 
 /**
@@ -36,12 +36,13 @@ public:
     void del(quint32 mtime, quint64 docId);
 
     /**
-      * Get documents with an mtime between \p beginTime and
-      * \p endTime (inclusive)
-      */
+     * Get documents with an mtime between \p beginTime and
+     * \p endTime (inclusive)
+     */
     PostingIterator* iterRange(quint32 beginTime, quint32 endTime);
 
     QMap<quint32, quint64> toTestMap() const;
+
 private:
     MDB_txn* m_txn;
     MDB_dbi m_dbi;

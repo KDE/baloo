@@ -20,7 +20,7 @@ PendingFileQueue::PendingFileQueue(QObject* parent)
     m_cacheTimer.setInterval(10);
     m_cacheTimer.setSingleShot(true);
     connect(&m_cacheTimer, &QTimer::timeout, [this] {
-            PendingFileQueue::processCache(QTime::currentTime());
+        PendingFileQueue::processCache(QTime::currentTime());
     });
 
     m_trackingTime = 120 * 1000;
@@ -28,7 +28,7 @@ PendingFileQueue::PendingFileQueue(QObject* parent)
     m_clearRecentlyEmittedTimer.setInterval(m_trackingTime);
     m_clearRecentlyEmittedTimer.setSingleShot(true);
     connect(&m_clearRecentlyEmittedTimer, &QTimer::timeout, [this] {
-            PendingFileQueue::clearRecentlyEmitted(QTime::currentTime());
+        PendingFileQueue::clearRecentlyEmitted(QTime::currentTime());
     });
 
     m_minTimeout = 5 * 1000;
@@ -36,7 +36,7 @@ PendingFileQueue::PendingFileQueue(QObject* parent)
     m_pendingFilesTimer.setInterval(m_minTimeout);
     m_pendingFilesTimer.setSingleShot(true);
     connect(&m_pendingFilesTimer, &QTimer::timeout, [this] {
-            PendingFileQueue::processPendingFiles(QTime::currentTime());
+        PendingFileQueue::processPendingFiles(QTime::currentTime());
     });
 }
 
@@ -84,8 +84,7 @@ void PendingFileQueue::processCache(const QTime& currentTime)
     for (const PendingFile& file : qAsConst(m_cache)) {
         if (file.shouldIndexXAttrOnly()) {
             Q_EMIT indexXAttr(file.path());
-        }
-        else if (file.shouldIndexContents()) {
+        } else if (file.shouldIndexContents()) {
             if (m_pendingFiles.contains(file.path())) {
                 QTime time = m_pendingFiles[file.path()];
 
@@ -94,12 +93,10 @@ void PendingFileQueue::processCache(const QTime& currentTime)
 
                 time = currentTime.addMSecs(msecondsLeft);
                 m_pendingFiles[file.path()] = time;
-            }
-            else if (m_recentlyEmitted.contains(file.path())) {
+            } else if (m_recentlyEmitted.contains(file.path())) {
                 QTime time = currentTime.addMSecs(m_minTimeout);
                 m_pendingFiles[file.path()] = time;
-            }
-            else {
+            } else {
                 if (file.isNewFile()) {
                     Q_EMIT indexNewFile(file.path());
                 } else {
@@ -162,8 +159,7 @@ void PendingFileQueue::processPendingFiles(const QTime& currentTime)
             m_recentlyEmitted.insert(it.key(), currentTime);
 
             it.remove();
-        }
-        else {
+        } else {
             nextUpdate = qMin(mSecondsLeft, nextUpdate);
         }
     }

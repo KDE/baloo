@@ -6,13 +6,13 @@
 */
 
 #include "unindexedfileiterator.h"
+#include "baloodebug.h"
 #include "fileindexerconfig.h"
 #include "idutils.h"
 #include "transaction.h"
-#include "baloodebug.h"
 
-#include <QFileInfo>
 #include <QDateTime>
+#include <QFileInfo>
 
 using namespace Baloo;
 
@@ -96,8 +96,7 @@ bool UnIndexedFileIterator::shouldIndex(const QString& filePath)
         // The folder ctime changes when the file is created, when the folder is
         // renamed, or when the xattrs (tags, comments, ...) change
         if (m_cTimeChanged) {
-            qCDebug(BALOO) << filePath << "ctime changed:"
-                << timeInfo.cTime << "->" << fileInfo.metadataChangeTime().toSecsSinceEpoch();
+            qCDebug(BALOO) << filePath << "ctime changed:" << timeInfo.cTime << "->" << fileInfo.metadataChangeTime().toSecsSinceEpoch();
             m_mimetype = QStringLiteral("inode/directory");
             return true;
         }
@@ -112,10 +111,8 @@ bool UnIndexedFileIterator::shouldIndex(const QString& filePath)
         // a more accurate mimetype.
         m_mimetype = m_mimeDb.mimeTypeForFile(filePath, QMimeDatabase::MatchExtension).name();
 
-        qCDebug(BALOO) << filePath << "mtime/ctime changed:"
-            << timeInfo.mTime << "/" << timeInfo.cTime << "->"
-            << fileInfo.lastModified().toSecsSinceEpoch() << "/"
-            << fileInfo.metadataChangeTime().toSecsSinceEpoch();
+        qCDebug(BALOO) << filePath << "mtime/ctime changed:" << timeInfo.mTime << "/" << timeInfo.cTime << "->" << fileInfo.lastModified().toSecsSinceEpoch()
+                       << "/" << fileInfo.metadataChangeTime().toSecsSinceEpoch();
         return true;
     }
 

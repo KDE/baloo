@@ -9,8 +9,8 @@
 
 #include "baloodebug.h"
 
-#include <QStandardPaths>
 #include <QDataStream>
+#include <QStandardPaths>
 
 using namespace Baloo;
 
@@ -20,21 +20,19 @@ ExtractorProcess::ExtractorProcess(QObject* parent)
     , m_extractorProcess(this)
 {
     connect(&m_extractorProcess, &QProcess::readyRead, this, &ExtractorProcess::slotIndexingFile);
-    connect(&m_extractorProcess, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-            [=](int exitCode, QProcess::ExitStatus exitStatus)
-            {
-                if (exitStatus == QProcess::CrashExit) {
-                    Q_EMIT failed();
-                }
-                if (exitCode == 1) {
-                    // DB open error
-                    Q_EMIT failed();
-                }
-                if (exitCode == 2) {
-                    // DB transaction commit error
-                    Q_EMIT failed();
-                }
-            });
+    connect(&m_extractorProcess, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), [=](int exitCode, QProcess::ExitStatus exitStatus) {
+        if (exitStatus == QProcess::CrashExit) {
+            Q_EMIT failed();
+        }
+        if (exitCode == 1) {
+            // DB open error
+            Q_EMIT failed();
+        }
+        if (exitCode == 2) {
+            // DB transaction commit error
+            Q_EMIT failed();
+        }
+    });
 
     m_extractorProcess.setProgram(m_extractorPath);
     m_extractorProcess.setProcessChannelMode(QProcess::ForwardedErrorChannel);

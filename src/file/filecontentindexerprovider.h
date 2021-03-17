@@ -9,8 +9,8 @@
 
 #include <QVector>
 
-namespace Baloo {
-
+namespace Baloo
+{
 class Database;
 
 class FileContentIndexerProvider

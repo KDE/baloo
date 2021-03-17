@@ -7,15 +7,15 @@
 
 #include "metadatamover.h"
 
-#include "database.h"
-#include "transaction.h"
-#include "document.h"
 #include "basicindexingjob.h"
+#include "database.h"
+#include "document.h"
+#include "transaction.h"
 
+#include <QDir>
 #include <QSignalSpy>
 #include <QTemporaryDir>
 #include <QTest>
-#include <QDir>
 #include <qtemporaryfile.h>
 
 using namespace Baloo;

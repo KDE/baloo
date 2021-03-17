@@ -345,16 +345,19 @@ void AdvancedQueryParserTest::testPhrases_data()
     QTest::addColumn<QString>("input");
     QTest::addColumn<Term>("expectedTerm");
 
-    auto addRow = [](const QString& input, const Term& term)
-	{ QTest::addRow("%s", qPrintable(input)) << input << term; };
+    auto addRow = [](const QString& input, const Term& term) {
+        QTest::addRow("%s", qPrintable(input)) << input << term;
+    };
 
     addRow("artist:ColdPlay", {"artist", "ColdPlay", Term::Contains});
     addRow("artist:\"ColdPlay\"", {"artist", "ColdPlay", Term::Contains});
     addRow("artist:\"Foo Fighters\"", {"artist", "Foo Fighters", Term::Contains});
-    addRow("artist:\"Foo Fighters\" OR artist:ColdPlay ", {Term::Or, {
-	{"artist", "Foo Fighters", Term::Contains},
-	{"artist", "ColdPlay", Term::Contains},
-    }});
+    addRow("artist:\"Foo Fighters\" OR artist:ColdPlay ",
+           {Term::Or,
+            {
+                {"artist", "Foo Fighters", Term::Contains},
+                {"artist", "ColdPlay", Term::Contains},
+            }});
 }
 
 void AdvancedQueryParserTest::testIncompleteTokens()
@@ -372,8 +375,9 @@ void AdvancedQueryParserTest::testIncompleteTokens_data()
     QTest::addColumn<QString>("input");
     QTest::addColumn<Term>("expectedTerm");
 
-    auto addRow = [](const QString& name, const QString& input, const Term& term)
-	{ QTest::addRow("%s", qPrintable(name)) << input << term; };
+    auto addRow = [](const QString& name, const QString& input, const Term& term) {
+        QTest::addRow("%s", qPrintable(name)) << input << term;
+    };
 
     addRow("ends with quote", "foo \"", {QString(), "foo", Term::Auto});
     addRow("ends with comparator", "foo>", {"foo", QString(), Term::Contains});

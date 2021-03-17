@@ -13,13 +13,14 @@
 #include "fileindexerconfig.h"
 #include <QObject>
 
-namespace Baloo {
+namespace Baloo
+{
 /*
-* This class handles the time estimation logic for filecontentindexer.
-* Time estimations use a weighted moving average of the time taken by
-* 5 most recent batches. The more recent the batch is, higher the weight
-* it will be assigned.
-*/
+ * This class handles the time estimation logic for filecontentindexer.
+ * Time estimations use a weighted moving average of the time taken by
+ * 5 most recent batches. The more recent the batch is, higher the weight
+ * it will be assigned.
+ */
 
 class TimeEstimator : public QObject
 {
@@ -40,4 +41,4 @@ private:
 
 }
 
-#endif //BALOO_TIMEESTIMATOR_H
+#endif // BALOO_TIMEESTIMATOR_H

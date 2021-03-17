@@ -4,13 +4,13 @@
     SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 */
 
-#include <QCoreApplication>
-#include <QCommandLineParser>
 #include <QCommandLineOption>
+#include <QCommandLineParser>
+#include <QCoreApplication>
 #include <QDateTime>
 #include <QFile>
-#include <QTextStream>
 #include <QStandardPaths>
+#include <QTextStream>
 
 #include <KAboutData>
 #include <KLocalizedString>
@@ -18,18 +18,18 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
+#include "database.h"
 #include "global.h"
 #include "idutils.h"
-#include "database.h"
 #include "transaction.h"
 
-#include <unistd.h>
 #include <KFileMetaData/PropertyInfo>
+#include <unistd.h>
 
 QString colorString(const QString& input, int color)
 {
     static bool isTty = isatty(fileno(stdout));
-    if(isTty) {
+    if (isTty) {
         QString colorStart = QStringLiteral("\033[0;%1m").arg(color);
         QLatin1String colorEnd("\033[0;0m");
 
@@ -54,12 +54,9 @@ int main(int argc, char* argv[])
 
     QCommandLineParser parser;
     parser.addPositionalArgument(QStringLiteral("files"), i18n("Urls, document ids or inodes of the files"), QStringLiteral("[file|id|inode...]"));
-    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("x"),
-                                        i18n("Print internal info")));
-    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("i"),
-                                        i18n("Arguments are interpreted as inode numbers (requires -d)")));
-    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("d"),
-                                        i18n("Device id for the files"), QStringLiteral("deviceId"), QString()));
+    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("x"), i18n("Print internal info")));
+    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("i"), i18n("Arguments are interpreted as inode numbers (requires -d)")));
+    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("d"), i18n("Device id for the files"), QStringLiteral("deviceId"), QString()));
     parser.addHelpOption();
     parser.process(app);
 
@@ -86,10 +83,10 @@ int main(int argc, char* argv[])
         parser.showHelp(1);
     }
 
-    Baloo::Database *db = Baloo::globalDatabaseInstance();
+    Baloo::Database* db = Baloo::globalDatabaseInstance();
     if (!db->open(Baloo::Database::ReadOnlyDatabase)) {
-        stream << i18n("The Baloo index could not be opened. Please run \"%1\" to see if Baloo is enabled and working.",
-	    QStringLiteral("balooctl status")) << '\n';
+        stream << i18n("The Baloo index could not be opened. Please run \"%1\" to see if Baloo is enabled and working.", QStringLiteral("balooctl status"))
+               << '\n';
         return 1;
     }
 
@@ -163,18 +160,14 @@ int main(int argc, char* argv[])
                 stream << QLatin1String(" [") << internalUrl << QChar(']');
             }
             stream << '\n';
-        }
-        else {
+        } else {
             stream << i18n("%1: No index information found", url) << '\n';
             continue;
         }
 
         Baloo::DocumentTimeDB::TimeInfo time = tr.documentTimeInfo(fid);
-        stream << QLatin1String("\tMtime: ") << time.mTime << QChar(' ')
-               << QDateTime::fromSecsSinceEpoch(time.mTime).toString(Qt::ISODate)
-               << QLatin1String("\n\tCtime: ") << time.cTime << QChar(' ')
-               << QDateTime::fromSecsSinceEpoch(time.cTime).toString(Qt::ISODate)
-              << '\n';
+        stream << QLatin1String("\tMtime: ") << time.mTime << QChar(' ') << QDateTime::fromSecsSinceEpoch(time.mTime).toString(Qt::ISODate)
+               << QLatin1String("\n\tCtime: ") << time.cTime << QChar(' ') << QDateTime::fromSecsSinceEpoch(time.cTime).toString(Qt::ISODate) << '\n';
 
         const QJsonDocument jdoc = QJsonDocument::fromJson(tr.documentData(fid));
         const QVariantMap varMap = jdoc.object().toVariantMap();
@@ -250,7 +243,7 @@ int main(int argc, char* argv[])
                         }
 
                         bool ok;
-                        QStringRef prop = word.midRef(1, posOfNonNumeric-1);
+                        QStringRef prop = word.midRef(1, posOfNonNumeric - 1);
                         int propNum = prop.toInt(&ok);
                         QString value = word.mid(posOfNonNumeric + 1);
                         if (!ok) {

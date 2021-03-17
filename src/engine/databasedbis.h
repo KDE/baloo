@@ -10,9 +10,10 @@
 
 #include <lmdb.h>
 
-namespace Baloo {
-
-class DatabaseDbis {
+namespace Baloo
+{
+class DatabaseDbis
+{
 public:
     MDB_dbi postingDbi;
     MDB_dbi positionDBi;
@@ -44,12 +45,13 @@ public:
         , contentIndexingDbi(0)
         , mtimeDbi(0)
         , failedIdDbi(0)
-    {}
+    {
+    }
 
-    bool isValid() {
-        return postingDbi && positionDBi && docTermsDbi && docFilenameTermsDbi && docXattrTermsDbi &&
-               idTreeDbi && idFilenameDbi && docTimeDbi && docDataDbi && contentIndexingDbi && mtimeDbi
-               && failedIdDbi;
+    bool isValid()
+    {
+        return postingDbi && positionDBi && docTermsDbi && docFilenameTermsDbi && docXattrTermsDbi && idTreeDbi && idFilenameDbi && docTimeDbi && docDataDbi
+            && contentIndexingDbi && mtimeDbi && failedIdDbi;
     }
 };
 

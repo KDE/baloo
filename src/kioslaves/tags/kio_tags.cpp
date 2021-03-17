@@ -12,17 +12,17 @@
 
 #include <QUrl>
 
+#include <KIO/Job>
 #include <KLocalizedString>
 #include <KUser>
-#include <KIO/Job>
 
 #include <QCoreApplication>
 #include <QDir>
 #include <QRegularExpression>
 
+#include "../common/udstools.h"
 #include "file.h"
 #include "taglistjob.h"
-#include "../common/udstools.h"
 
 #include "term.h"
 
@@ -41,14 +41,14 @@ void TagsProtocol::listDir(const QUrl& url)
 {
     ParseResult result = parseUrl(url);
 
-    switch(result.urlType) {
-        case InvalidUrl:
-        case FileUrl:
-            qCWarning(KIO_TAGS) << result.decodedUrl << "list() invalid url";
-            error(KIO::ERR_CANNOT_ENTER_DIRECTORY, result.decodedUrl);
-            return;
-        case TagUrl:
-            listEntries(result.pathUDSResults);
+    switch (result.urlType) {
+    case InvalidUrl:
+    case FileUrl:
+        qCWarning(KIO_TAGS) << result.decodedUrl << "list() invalid url";
+        error(KIO::ERR_CANNOT_ENTER_DIRECTORY, result.decodedUrl);
+        return;
+    case TagUrl:
+        listEntries(result.pathUDSResults);
     }
 
     finished();
@@ -58,20 +58,20 @@ void TagsProtocol::stat(const QUrl& url)
 {
     ParseResult result = parseUrl(url);
 
-    switch(result.urlType) {
-        case InvalidUrl:
-            qCWarning(KIO_TAGS) << result.decodedUrl << "stat() invalid url";
-            error(KIO::ERR_DOES_NOT_EXIST, result.decodedUrl);
-            return;
-        case FileUrl:
-            ForwardingSlaveBase::stat(result.fileUrl);
-            return;
-        case TagUrl:
-            for (const KIO::UDSEntry& entry : qAsConst(result.pathUDSResults)) {
-                if (entry.stringValue(KIO::UDSEntry::UDS_EXTRA) == result.tag) {
-                    statEntry(entry);
-                }
+    switch (result.urlType) {
+    case InvalidUrl:
+        qCWarning(KIO_TAGS) << result.decodedUrl << "stat() invalid url";
+        error(KIO::ERR_DOES_NOT_EXIST, result.decodedUrl);
+        return;
+    case FileUrl:
+        ForwardingSlaveBase::stat(result.fileUrl);
+        return;
+    case TagUrl:
+        for (const KIO::UDSEntry& entry : qAsConst(result.pathUDSResults)) {
+            if (entry.stringValue(KIO::UDSEntry::UDS_EXTRA) == result.tag) {
+                statEntry(entry);
             }
+        }
     }
 
     finished();
@@ -95,7 +95,7 @@ void TagsProtocol::copy(const QUrl& src, const QUrl& dest, int permissions, KIO:
         return;
     }
 
-    auto rewriteTags = [] (KFileMetaData::UserMetaData& md, const QString& newTag) {
+    auto rewriteTags = [](KFileMetaData::UserMetaData& md, const QString& newTag) {
         qCDebug(KIO_TAGS) << md.filePath() << "adding tag" << newTag;
         QStringList tags = md.tags();
         tags.append(newTag);
@@ -116,17 +116,17 @@ void TagsProtocol::get(const QUrl& url)
 {
     ParseResult result = parseUrl(url);
 
-    switch(result.urlType) {
-        case InvalidUrl:
-            qCWarning(KIO_TAGS) << result.decodedUrl << "get() invalid url";
-            error(KIO::ERR_DOES_NOT_EXIST, result.decodedUrl);
-            return;
-        case FileUrl:
-            ForwardingSlaveBase::get(result.fileUrl);
-            return;
-        case TagUrl:
-            error(KIO::ERR_UNSUPPORTED_ACTION, result.decodedUrl);
-            return;
+    switch (result.urlType) {
+    case InvalidUrl:
+        qCWarning(KIO_TAGS) << result.decodedUrl << "get() invalid url";
+        error(KIO::ERR_DOES_NOT_EXIST, result.decodedUrl);
+        return;
+    case FileUrl:
+        ForwardingSlaveBase::get(result.fileUrl);
+        return;
+    case TagUrl:
+        error(KIO::ERR_UNSUPPORTED_ACTION, result.decodedUrl);
+        return;
     }
 }
 
@@ -153,7 +153,7 @@ void TagsProtocol::rename(const QUrl& src, const QUrl& dest, KIO::JobFlags flags
         return;
     }
 
-    auto rewriteTags = [] (KFileMetaData::UserMetaData& md, const QString& oldTag, const QString& newTag) {
+    auto rewriteTags = [](KFileMetaData::UserMetaData& md, const QString& oldTag, const QString& newTag) {
         qCDebug(KIO_TAGS) << md.filePath() << "swapping tag" << oldTag << "with" << newTag;
         QStringList tags = md.tags();
         tags.removeAll(oldTag);
@@ -194,34 +194,34 @@ void TagsProtocol::del(const QUrl& url, bool isfile)
 
     ParseResult result = parseUrl(url);
 
-    auto rewriteTags = [] (KFileMetaData::UserMetaData& md, const QString& tag) {
+    auto rewriteTags = [](KFileMetaData::UserMetaData& md, const QString& tag) {
         qCDebug(KIO_TAGS) << md.filePath() << "removing tag" << tag;
         QStringList tags = md.tags();
         tags.removeAll(tag);
         md.setTags(tags);
     };
 
-    switch(result.urlType) {
-        case InvalidUrl:
-            qCWarning(KIO_TAGS) << result.decodedUrl << "del() invalid url";
-            error(KIO::ERR_DOES_NOT_EXIST, result.decodedUrl);
-            return;
-        case FileUrl:
-        case TagUrl:
-            ResultIterator it = result.query.exec();
-            while (it.next()) {
-                KFileMetaData::UserMetaData md(it.filePath());
-                if (it.filePath() == result.fileUrl.toLocalFile()) {
-                    rewriteTags(md, result.tag);
-                } else if (result.fileUrl.isEmpty()) {
-                    const auto tags = md.tags();
-                    for (const QString &tag : tags) {
-                        if ((tag == result.tag) || (tag.startsWith(result.tag + QLatin1Char('/'), Qt::CaseInsensitive))) {
-                            rewriteTags(md, tag);
-                        }
+    switch (result.urlType) {
+    case InvalidUrl:
+        qCWarning(KIO_TAGS) << result.decodedUrl << "del() invalid url";
+        error(KIO::ERR_DOES_NOT_EXIST, result.decodedUrl);
+        return;
+    case FileUrl:
+    case TagUrl:
+        ResultIterator it = result.query.exec();
+        while (it.next()) {
+            KFileMetaData::UserMetaData md(it.filePath());
+            if (it.filePath() == result.fileUrl.toLocalFile()) {
+                rewriteTags(md, result.tag);
+            } else if (result.fileUrl.isEmpty()) {
+                const auto tags = md.tags();
+                for (const QString& tag : tags) {
+                    if ((tag == result.tag) || (tag.startsWith(result.tag + QLatin1Char('/'), Qt::CaseInsensitive))) {
+                        rewriteTags(md, tag);
                     }
                 }
             }
+        }
     }
 
     finished();
@@ -231,16 +231,16 @@ void TagsProtocol::mimetype(const QUrl& url)
 {
     ParseResult result = parseUrl(url);
 
-    switch(result.urlType) {
-        case InvalidUrl:
-            qCWarning(KIO_TAGS) << result.decodedUrl << "mimetype() invalid url";
-            error(KIO::ERR_DOES_NOT_EXIST, result.decodedUrl);
-            return;
-        case FileUrl:
-            ForwardingSlaveBase::mimetype(result.fileUrl);
-            return;
-        case TagUrl:
-            mimeType(QStringLiteral("inode/directory"));
+    switch (result.urlType) {
+    case InvalidUrl:
+        qCWarning(KIO_TAGS) << result.decodedUrl << "mimetype() invalid url";
+        error(KIO::ERR_DOES_NOT_EXIST, result.decodedUrl);
+        return;
+    case FileUrl:
+        ForwardingSlaveBase::mimetype(result.fileUrl);
+        return;
+    case TagUrl:
+        mimeType(QStringLiteral("inode/directory"));
     }
 
     finished();
@@ -252,14 +252,14 @@ void TagsProtocol::mkdir(const QUrl& url, int permissions)
 
     ParseResult result = parseUrl(url, QList<ParseFlags>() << LazyValidation);
 
-    switch(result.urlType) {
-        case InvalidUrl:
-        case FileUrl:
-            qCWarning(KIO_TAGS) << result.decodedUrl << "mkdir() invalid url";
-            error(KIO::ERR_DOES_NOT_EXIST, result.decodedUrl);
-            return;
-        case TagUrl:
-            m_unassignedTags << result.tag;
+    switch (result.urlType) {
+    case InvalidUrl:
+    case FileUrl:
+        qCWarning(KIO_TAGS) << result.decodedUrl << "mkdir() invalid url";
+        error(KIO::ERR_DOES_NOT_EXIST, result.decodedUrl);
+        return;
+    case TagUrl:
+        m_unassignedTags << result.tag;
     }
 
     finished();
@@ -273,17 +273,17 @@ bool TagsProtocol::rewriteUrl(const QUrl& url, QUrl& newURL)
     return false;
 }
 
-TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<ParseFlags> &flags)
+TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<ParseFlags>& flags)
 {
     TagsProtocol::ParseResult result;
     result.decodedUrl = QUrl::fromPercentEncoding(url.toString().toUtf8());
 
-    if ((url.scheme() == QLatin1String("tags")) && result.decodedUrl.length()>6 && result.decodedUrl.at(6) == QChar('/')) {
+    if ((url.scheme() == QLatin1String("tags")) && result.decodedUrl.length() > 6 && result.decodedUrl.at(6) == QChar('/')) {
         result.urlType = InvalidUrl;
         return result;
     }
 
-    auto createUDSEntryForTag = [] (const QString& tagSection, const QString& tag) {
+    auto createUDSEntryForTag = [](const QString& tagSection, const QString& tag) {
         KIO::UDSEntry uds;
         uds.reserve(9);
         uds.fastInsert(KIO::UDSEntry::UDS_NAME, tagSection);
@@ -432,11 +432,11 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
     while (it.next()) {
         KIO::UDSEntry uds = udsf.createUdsEntry(it.filePath());
         if (uds.count() == 0) {
-	    continue;
-	}
+            continue;
+        }
 
-	const QUrl url(uds.stringValue(KIO::UDSEntry::UDS_URL));
-	auto dupCount = resultNames.count(url.fileName());
+        const QUrl url(uds.stringValue(KIO::UDSEntry::UDS_URL));
+        auto dupCount = resultNames.count(url.fileName());
         if (dupCount > 0) {
             uds.replace(KIO::UDSEntry::UDS_NAME, url.fileName() + QStringLiteral(" (%1)").arg(dupCount));
         }
@@ -450,15 +450,13 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
     return result;
 }
 
-extern "C"
+extern "C" {
+Q_DECL_EXPORT int kdemain(int argc, char** argv)
 {
-    Q_DECL_EXPORT int kdemain(int argc, char** argv)
-    {
-        QCoreApplication app(argc, argv);
-        app.setApplicationName(QStringLiteral("kio_tags"));
-        Baloo::TagsProtocol slave(argv[2], argv[3]);
-        slave.dispatchLoop();
-        return 0;
-    }
+    QCoreApplication app(argc, argv);
+    app.setApplicationName(QStringLiteral("kio_tags"));
+    Baloo::TagsProtocol slave(argv[2], argv[3]);
+    slave.dispatchLoop();
+    return 0;
 }
-
+}

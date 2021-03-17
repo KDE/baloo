@@ -4,12 +4,12 @@
     SPDX-License-Identifier: LGPL-2.1-or-later
 */
 
-#include "regexpcache.h"
 #include "fileexcludefilters.h"
+#include "regexpcache.h"
 
-#include <QTest>
 #include <QDir>
 #include <QDirIterator>
+#include <QTest>
 
 class RegularExpCacheBenchmark : public QObject
 {
@@ -34,7 +34,6 @@ void RegularExpCacheBenchmark::test()
             iter.next();
             regex.exactMatch(iter.fileName());
         }
-
     }
 }
 

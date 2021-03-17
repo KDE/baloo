@@ -11,11 +11,11 @@
 
 #include <QMutex>
 
-#include "document.h"
 #include "databasedbis.h"
+#include "document.h"
 
-namespace Baloo {
-
+namespace Baloo
+{
 class DatabaseTest;
 
 class BALOO_ENGINE_EXPORT Database
@@ -96,7 +96,6 @@ private:
 
     friend class Transaction;
     friend class DatabaseTest;
-
 };
 }
 

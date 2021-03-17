@@ -13,12 +13,12 @@
 #include <QTimer>
 
 #include "filecontentindexerprovider.h"
-#include "powerstatemonitor.h"
 #include "indexerstate.h"
+#include "powerstatemonitor.h"
 #include "timeestimator.h"
 
-namespace Baloo {
-
+namespace Baloo
+{
 class Database;
 class FileIndexerConfig;
 class FileContentIndexer;
@@ -32,13 +32,17 @@ class FileIndexScheduler : public QObject
 public:
     FileIndexScheduler(Database* db, FileIndexerConfig* config, bool firstRun, QObject* parent = nullptr);
     ~FileIndexScheduler() override;
-    int state() const { return m_indexerState; }
+    int state() const
+    {
+        return m_indexerState;
+    }
 
 Q_SIGNALS:
     Q_SCRIPTABLE void stateChanged(int state);
 
 public Q_SLOTS:
-    void indexNewFile(const QString& file) {
+    void indexNewFile(const QString& file)
+    {
         if (!m_newFiles.contains(file)) {
             m_newFiles << file;
             if (isIndexerIdle()) {
@@ -47,7 +51,8 @@ public Q_SLOTS:
         }
     }
 
-    void indexModifiedFile(const QString& file) {
+    void indexModifiedFile(const QString& file)
+    {
         if (!m_modifiedFiles.contains(file)) {
             m_modifiedFiles << file;
             if (isIndexerIdle()) {
@@ -56,7 +61,8 @@ public Q_SLOTS:
         }
     }
 
-    void indexXAttrFile(const QString& file) {
+    void indexXAttrFile(const QString& file)
+    {
         if (!m_xattrFiles.contains(file)) {
             m_xattrFiles << file;
             if (isIndexerIdle()) {
@@ -65,7 +71,8 @@ public Q_SLOTS:
         }
     }
 
-    void runnerFinished() {
+    void runnerFinished()
+    {
         m_isGoingIdle = true;
         QTimer::singleShot(0, this, &FileIndexScheduler::scheduleIndexing);
     }
@@ -78,8 +85,14 @@ public Q_SLOTS:
     void scheduleCheckStaleIndexEntries();
     void startupFinished();
 
-    Q_SCRIPTABLE void suspend() { setSuspend(true); }
-    Q_SCRIPTABLE void resume() { setSuspend(false); }
+    Q_SCRIPTABLE void suspend()
+    {
+        setSuspend(true);
+    }
+    Q_SCRIPTABLE void resume()
+    {
+        setSuspend(false);
+    }
     Q_SCRIPTABLE uint getRemainingTime();
     Q_SCRIPTABLE void checkUnindexedFiles();
     Q_SCRIPTABLE void checkStaleIndexEntries();
@@ -90,7 +103,8 @@ private Q_SLOTS:
 
 private:
     void setSuspend(bool suspend);
-    bool isIndexerIdle() {
+    bool isIndexerIdle()
+    {
         // clang-format off
         return m_isGoingIdle ||
                (m_indexerState == Suspended) ||

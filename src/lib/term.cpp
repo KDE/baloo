@@ -9,9 +9,10 @@
 
 #include <QDateTime>
 
-namespace Baloo {
-
-class Baloo::Term::Private {
+namespace Baloo
+{
+class Baloo::Term::Private
+{
 public:
     Operation m_op = None;
     Comparator m_comp = Auto;
@@ -54,8 +55,7 @@ Term::Term(const QString& property, const QVariant& value, Term::Comparator c)
             d->m_comp = Contains;
         else
             d->m_comp = Equal;
-    }
-    else {
+    } else {
         d->m_comp = c;
     }
 }
@@ -96,12 +96,12 @@ Term::Term(const Term& lhs, Term::Operation op, const Term& rhs)
 {
     d->m_op = op;
     if (lhs.isEmpty()) {
-	*d = *(rhs.d);
-	return;
+        *d = *(rhs.d);
+        return;
     }
     if (rhs.isEmpty()) {
-	*d = *(lhs.d);
-	return;
+        *d = *(lhs.d);
+        return;
     }
 
     if (lhs.operation() == op) {
@@ -288,22 +288,24 @@ QVariantMap Term::toVariantMap() const
     return map;
 }
 
-namespace {
-    // QJson does not recognize QDate/QDateTime parameters. We try to guess
-    // and see if they can be converted into date/datetime.
-    QVariant tryConvert(const QVariant& var) {
-        if (var.canConvert(QVariant::DateTime)) {
-            QDateTime dt = var.toDateTime();
-            if (!dt.isValid())
-                return var;
+namespace
+{
+// QJson does not recognize QDate/QDateTime parameters. We try to guess
+// and see if they can be converted into date/datetime.
+QVariant tryConvert(const QVariant& var)
+{
+    if (var.canConvert(QVariant::DateTime)) {
+        QDateTime dt = var.toDateTime();
+        if (!dt.isValid())
+            return var;
 
-            if (!var.toString().contains(QLatin1Char('T'))) {
-                return QVariant(var.toDate());
-            }
-            return dt;
+        if (!var.toString().contains(QLatin1Char('T'))) {
+            return QVariant(var.toDate());
         }
-        return var;
+        return dt;
     }
+    return var;
+}
 }
 
 Term Term::fromVariantMap(const QVariantMap& map)
@@ -317,8 +319,7 @@ Term Term::fromVariantMap(const QVariantMap& map)
     if (map.contains(QLatin1String("$and"))) {
         andOrString = QStringLiteral("$and");
         term.setOperation(And);
-    }
-    else if (map.contains(QLatin1String("$or"))) {
+    } else if (map.contains(QLatin1String("$or"))) {
         andOrString = QStringLiteral("$or");
         term.setOperation(Or);
     }
@@ -372,10 +373,8 @@ Term Term::fromVariantMap(const QVariantMap& map)
 
 bool Term::operator==(const Term& rhs) const
 {
-    if (d->m_op != rhs.d->m_op || d->m_comp != rhs.d->m_comp ||
-        d->m_isNegated != rhs.d->m_isNegated || d->m_property != rhs.d->m_property ||
-        d->m_value != rhs.d->m_value)
-    {
+    if (d->m_op != rhs.d->m_op || d->m_comp != rhs.d->m_comp || d->m_isNegated != rhs.d->m_isNegated || d->m_property != rhs.d->m_property
+        || d->m_value != rhs.d->m_value) {
         return false;
     }
 
@@ -399,7 +398,7 @@ Term& Term::operator=(const Term& rhs)
     return *this;
 }
 
-char *toString(const Term& term)
+char* toString(const Term& term)
 {
     QString buffer;
     QDebug stream(&buffer);
@@ -409,43 +408,46 @@ char *toString(const Term& term)
 
 } // namespace Baloo
 
-namespace {
-    QString comparatorToString(Baloo::Term::Comparator c) {
-        switch (c) {
-        case Baloo::Term::Auto:
-            return QStringLiteral("Auto");
-        case Baloo::Term::Equal:
-            return QStringLiteral("=");
-        case Baloo::Term::Contains:
-            return QStringLiteral(":");
-        case Baloo::Term::Less:
-            return QStringLiteral("<");
-        case Baloo::Term::LessEqual:
-            return QStringLiteral("<=");
-        case Baloo::Term::Greater:
-            return QStringLiteral(">");
-        case Baloo::Term::GreaterEqual:
-            return QStringLiteral(">=");
-        }
-
-        return QString();
+namespace
+{
+QString comparatorToString(Baloo::Term::Comparator c)
+{
+    switch (c) {
+    case Baloo::Term::Auto:
+        return QStringLiteral("Auto");
+    case Baloo::Term::Equal:
+        return QStringLiteral("=");
+    case Baloo::Term::Contains:
+        return QStringLiteral(":");
+    case Baloo::Term::Less:
+        return QStringLiteral("<");
+    case Baloo::Term::LessEqual:
+        return QStringLiteral("<=");
+    case Baloo::Term::Greater:
+        return QStringLiteral(">");
+    case Baloo::Term::GreaterEqual:
+        return QStringLiteral(">=");
     }
 
-    QString operationToString(Baloo::Term::Operation op) {
-        switch (op) {
-        case Baloo::Term::None:
-            return QStringLiteral("NONE");
-        case Baloo::Term::And:
-            return QStringLiteral("AND");
-        case Baloo::Term::Or:
-            return QStringLiteral("OR");
-        }
-
-        return QString();
-    }
+    return QString();
 }
 
-QDebug operator <<(QDebug d, const Baloo::Term& t)
+QString operationToString(Baloo::Term::Operation op)
+{
+    switch (op) {
+    case Baloo::Term::None:
+        return QStringLiteral("NONE");
+    case Baloo::Term::And:
+        return QStringLiteral("AND");
+    case Baloo::Term::Or:
+        return QStringLiteral("OR");
+    }
+
+    return QString();
+}
+}
+
+QDebug operator<<(QDebug d, const Baloo::Term& t)
 {
     QDebugStateSaver saver(d);
     d.noquote().nospace();
@@ -453,15 +455,13 @@ QDebug operator <<(QDebug d, const Baloo::Term& t)
         if (!t.property().isEmpty()) {
             d << t.property();
         }
-	d << comparatorToString(t.comparator());
+        d << comparatorToString(t.comparator());
         if (t.value().type() == QVariant::String) {
             d << QLatin1Char('"') << t.value().toString() << QLatin1Char('"');
         } else {
-            d << t.value().typeName() << QLatin1Char('(')
-              << t.value().toString() << QLatin1Char(')');
+            d << t.value().typeName() << QLatin1Char('(') << t.value().toString() << QLatin1Char(')');
         }
-    }
-    else {
+    } else {
         d << "[" << operationToString(t.operation());
         const auto subTerms = t.subTerms();
         for (const Baloo::Term& term : subTerms) {

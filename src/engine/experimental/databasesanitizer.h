@@ -14,9 +14,9 @@ namespace Baloo
 {
 class DatabaseSanitizerImpl;
 /**
-* \brief Provide methods to show database problems and
-* sanitize them.
-*/
+ * \brief Provide methods to show database problems and
+ * sanitize them.
+ */
 class BALOO_ENGINE_EXPORT DatabaseSanitizer
 {
 public:
@@ -35,35 +35,33 @@ public:
     ~DatabaseSanitizer();
 
     /**
-    * Print database content to stdout
-    *
-    * \p deviceIDs filter by device ids. Negative numbers list everything but...
-    * with empty \p deviceIDs(default) everything is printed.
-    *
-    * \p missingOnly Simulate purging operation. Only inaccessible items are printed.
-    *
-    * \p urlFilter Filter result urls. Default is null = Print everything.
-    */
+     * Print database content to stdout
+     *
+     * \p deviceIDs filter by device ids. Negative numbers list everything but...
+     * with empty \p deviceIDs(default) everything is printed.
+     *
+     * \p missingOnly Simulate purging operation. Only inaccessible items are printed.
+     *
+     * \p urlFilter Filter result urls. Default is null = Print everything.
+     */
     void printList(const QVector<qint64>& deviceIds,
-        const ItemAccessFilters accessFilter = IgnoreNone,
-        const QSharedPointer<QRegularExpression>& urlFilter = nullptr
-    );
+                   const ItemAccessFilters accessFilter = IgnoreNone,
+                   const QSharedPointer<QRegularExpression>& urlFilter = nullptr);
     /**
-    * Print info about known devices to stdout
-    *
-    * \p deviceIDs filter by device ids. Negative numbers list everything but...
-    * with empty \p deviceIDs(default) everything is printed.
-    *
-    * \p accessFilter filter by accessibility. E.g IgnoreAvailable|IgnoreUnmounted
-    * prints only mounted devices with inaccessible files.
-    */
+     * Print info about known devices to stdout
+     *
+     * \p deviceIDs filter by device ids. Negative numbers list everything but...
+     * with empty \p deviceIDs(default) everything is printed.
+     *
+     * \p accessFilter filter by accessibility. E.g IgnoreAvailable|IgnoreUnmounted
+     * prints only mounted devices with inaccessible files.
+     */
     void printDevices(const QVector<qint64>& deviceIds, const ItemAccessFilters accessFilter = IgnoreNone);
 
     void removeStaleEntries(const QVector<qint64>& deviceIds,
-        const DatabaseSanitizer::ItemAccessFilters accessFilter = DatabaseSanitizer::IgnoreNone,
-        const bool dryRun = false,
-        const QSharedPointer<QRegularExpression>& urlFilter = nullptr
-    );
+                            const DatabaseSanitizer::ItemAccessFilters accessFilter = DatabaseSanitizer::IgnoreNone,
+                            const bool dryRun = false,
+                            const QSharedPointer<QRegularExpression>& urlFilter = nullptr);
 
 private:
     DatabaseSanitizer(const DatabaseSanitizer& rhs) = delete;

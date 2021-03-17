@@ -6,24 +6,24 @@
 */
 
 #include "app.h"
-#include "basicindexingjob.h"
-#include "result.h"
-#include "idutils.h"
-#include "transaction.h"
 #include "baloodebug.h"
+#include "basicindexingjob.h"
 #include "global.h"
+#include "idutils.h"
+#include "result.h"
+#include "transaction.h"
 
 #include <QCoreApplication>
 
-#include <QTimer>
 #include <QFileInfo>
+#include <QTimer>
 
 #include <KFileMetaData/Extractor>
 #include <KFileMetaData/MimeUtils>
 #include <KIdleTime>
 
-#include <unistd.h> //for STDIN_FILENO
 #include <iostream>
+#include <unistd.h> //for STDIN_FILENO
 
 using namespace Baloo;
 
@@ -35,7 +35,7 @@ App::App(QObject* parent)
     , m_outputStream(stdout)
     , m_tr(nullptr)
 {
-    m_input.open(STDIN_FILENO, QIODevice::ReadOnly | QIODevice::Unbuffered );
+    m_input.open(STDIN_FILENO, QIODevice::ReadOnly | QIODevice::Unbuffered);
     m_inputStream.setByteOrder(QDataStream::BigEndian);
 
     static int s_idleTimeout = 1000 * 60 * 1; // 1 min
@@ -68,7 +68,7 @@ void App::slotNewInput()
         return;
     }
 
-    Database *db = globalDatabaseInstance();
+    Database* db = globalDatabaseInstance();
     if (!db->open(Database::ReadWriteDatabase)) {
         qCCritical(BALOO) << "Failed to open the database";
         exit(1);
@@ -80,7 +80,7 @@ void App::slotNewInput()
         m_idleTime->catchNextResumeEvent();
     }
 
-    QTimer::singleShot((m_isBusy ? 500 : 0), this, [this, db] () {
+    QTimer::singleShot((m_isBusy ? 500 : 0), this, [this, db]() {
         // FIXME: The transaction is open for way too long. We should just open it for when we're
         //        committing the data not during the extraction.
         m_tr = new Transaction(db, Transaction::ReadWrite);

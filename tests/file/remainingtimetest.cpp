@@ -12,30 +12,33 @@
  */
 
 #include "database.h"
-#include "firstrunindexer.h"
-#include "filecontentindexerprovider.h"
-#include "filecontentindexer.h"
-#include "fileindexerconfig.h"
-#include "timeestimator.h"
 #include "extractor_interface.h"
+#include "filecontentindexer.h"
+#include "filecontentindexerprovider.h"
+#include "fileindexerconfig.h"
+#include "firstrunindexer.h"
+#include "timeestimator.h"
 
 #include <QCoreApplication>
-#include <QThreadPool>
-#include <QTemporaryDir>
-#include <QObject>
 #include <QDBusConnection>
-#include <QTextStream>
-#include <QString>
 #include <QDBusServiceWatcher>
+#include <QObject>
+#include <QString>
+#include <QTemporaryDir>
+#include <QTextStream>
+#include <QThreadPool>
 
 #include <iostream>
 
-namespace org {
-    namespace kde {
-        namespace baloo {
-            typedef OrgKdeBalooExtractorInterface extractorInterface;
-        }
-    }
+namespace org
+{
+namespace kde
+{
+namespace baloo
+{
+typedef OrgKdeBalooExtractorInterface extractorInterface;
+}
+}
 }
 
 class Scheduler : public QObject
@@ -82,18 +85,12 @@ Scheduler::Scheduler(QObject* parent)
     m_pool.setMaxThreadCount(1);
 
     QString extractorService = QStringLiteral("org.kde.baloo.extractor");
-    m_extractorInterface = new org::kde::baloo::extractorInterface(extractorService,
-                                                            QStringLiteral("/extractor"),
-                                                            QDBusConnection::sessionBus(),
-                                                            this);
+    m_extractorInterface = new org::kde::baloo::extractorInterface(extractorService, QStringLiteral("/extractor"), QDBusConnection::sessionBus(), this);
 
-    connect(m_extractorInterface, &org::kde::baloo::extractorInterface::currentUrlChanged,
-            this, &Scheduler::printTime);
+    connect(m_extractorInterface, &org::kde::baloo::extractorInterface::currentUrlChanged, this, &Scheduler::printTime);
 
-    QDBusServiceWatcher* extractorWatcher = new QDBusServiceWatcher(extractorService,
-                                                            QDBusConnection::sessionBus(),
-                                                            QDBusServiceWatcher::WatchForRegistration,
-                                                            this);
+    QDBusServiceWatcher* extractorWatcher =
+        new QDBusServiceWatcher(extractorService, QDBusConnection::sessionBus(), QDBusServiceWatcher::WatchForRegistration, this);
 
     connect(extractorWatcher, &QDBusServiceWatcher::serviceRegistered, this, &Scheduler::registerMonitor);
 
@@ -101,8 +98,7 @@ Scheduler::Scheduler(QObject* parent)
     qputenv("BALOO_DB_PATH", m_dir.path().toUtf8());
 
     QStandardPaths::setTestModeEnabled(true);
-    QString testConfigPath = QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) +
-                                                                            QStringLiteral("baloofilerc");
+    QString testConfigPath = QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + QStringLiteral("baloofilerc");
     // Remove config from previous runs
     QFile::remove(testConfigPath);
 
@@ -133,7 +129,7 @@ void Scheduler::printTime()
         estimator.setBatchTimings(m_contentRunnable->batchTimings());
         estimator.setFilesLeft(m_provider.size());
         // print Remaining time after every 10 batches
-        m_out <<  "Remaining Time: " << estimator.calculateTimeLeft() << endl;
+        m_out << "Remaining Time: " << estimator.calculateTimeLeft() << endl;
         m_count = 0;
     }
 }
@@ -150,7 +146,7 @@ void Scheduler::registerMonitor(const QString& service)
     m_extractorInterface->registerMonitor();
 }
 
-int main (int argc, char** argv)
+int main(int argc, char** argv)
 {
     QCoreApplication app(argc, argv);
 

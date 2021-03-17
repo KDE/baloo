@@ -12,8 +12,10 @@
 // #include <QTemporaryDir>
 class QTemporaryDir;
 
-namespace Baloo {
-namespace Test {
+namespace Baloo
+{
+namespace Test
+{
 class FileIndexerConfigTest : public QObject
 {
     Q_OBJECT

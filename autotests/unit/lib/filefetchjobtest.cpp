@@ -4,20 +4,19 @@
     SPDX-License-Identifier: LGPL-2.1-or-later
 */
 
-#include "file.h"
-#include "document.h"
 #include "database.h"
-#include "transaction.h"
-#include "idutils.h"
+#include "document.h"
+#include "file.h"
 #include "global.h"
+#include "idutils.h"
+#include "transaction.h"
 
-#include <QTest>
-#include <QTemporaryFile>
 #include <QTemporaryDir>
+#include <QTemporaryFile>
+#include <QTest>
 
 #include <QJsonDocument>
 #include <QJsonObject>
-
 
 using namespace Baloo;
 

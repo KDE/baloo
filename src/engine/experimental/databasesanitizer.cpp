@@ -12,25 +12,24 @@
 #include <sys/sysmacros.h>
 
 #include <KLocalizedString>
+#include <QDebug>
 #include <QFileInfo>
 #include <QStorageInfo>
-#include <QDebug>
 
 namespace Baloo
 {
-
-class DatabaseSanitizerImpl {
+class DatabaseSanitizerImpl
+{
 public:
     DatabaseSanitizerImpl(const Database& db, Transaction::TransactionType type)
-    : m_transaction(new Transaction(db, type))
+        : m_transaction(new Transaction(db, type))
     {
     }
 
 public:
-
     /**
-    * \brief Basic info about database items
-    */
+     * \brief Basic info about database items
+     */
     struct FileInfo {
         quint32 deviceId = 0;
         quint32 inode = 0;
@@ -53,33 +52,29 @@ public:
      * Summary of createList() actions
      */
     struct Summary {
-        quint64 total = 0;  ///Count of all files
-        quint64 ignored = 0;      ///Count of filtered out files
-        quint64 accessible = 0;   ///Count of checked and accessible files
+        quint64 total = 0; /// Count of all files
+        quint64 ignored = 0; /// Count of filtered out files
+        quint64 accessible = 0; /// Count of checked and accessible files
     };
     /**
-    * Create a list of \a FileInfo items.
-    *
-    * \p deviceIDs filter by device ids. If the vector is empty no filtering is done
-    * and every item is collected.
-    * Positive numbers are including filters collecting only the mentioned device ids.
-    * Negative numbers are excluding filters collecting everything but the mentioned device ids.
-    *
-    * \p accessFilter Flags to filter items by accessibility.
-    *
-    * \p urlFilter Filter result urls. Default is null = Collect everything.
-    */
-    QPair<QVector<FileInfo>, Summary> createList(
-        const QVector<qint64>& deviceIds,
-        const DatabaseSanitizer::ItemAccessFilters accessFilter,
-        const QSharedPointer<QRegularExpression>& urlFilter
-    ) const
+     * Create a list of \a FileInfo items.
+     *
+     * \p deviceIDs filter by device ids. If the vector is empty no filtering is done
+     * and every item is collected.
+     * Positive numbers are including filters collecting only the mentioned device ids.
+     * Negative numbers are excluding filters collecting everything but the mentioned device ids.
+     *
+     * \p accessFilter Flags to filter items by accessibility.
+     *
+     * \p urlFilter Filter result urls. Default is null = Collect everything.
+     */
+    QPair<QVector<FileInfo>, Summary> createList(const QVector<qint64>& deviceIds,
+                                                 const DatabaseSanitizer::ItemAccessFilters accessFilter,
+                                                 const QSharedPointer<QRegularExpression>& urlFilter) const
     {
         Q_ASSERT(m_transaction);
 
-        const auto docUrlDb = DocumentUrlDB(m_transaction->m_dbis.idTreeDbi,
-                                            m_transaction->m_dbis.idFilenameDbi,
-                                            m_transaction->m_txn);
+        const auto docUrlDb = DocumentUrlDB(m_transaction->m_dbis.idTreeDbi, m_transaction->m_dbis.idFilenameDbi, m_transaction->m_txn);
         const auto map = docUrlDb.toTestMap();
         const auto keys = map.keys();
         QVector<FileInfo> result;
@@ -137,7 +132,8 @@ public:
         return {result, summary};
     }
 
-    QStorageInfo getStorageInfo(const quint32 id) {
+    QStorageInfo getStorageInfo(const quint32 id)
+    {
         static QMap<quint32, QStorageInfo> storageInfos = []() {
             QMap<quint32, QStorageInfo> result;
             const auto volumes = QStorageInfo::mountedVolumes();
@@ -154,7 +150,6 @@ public:
         QStorageInfo info = storageInfos.value(id);
         return info;
     }
-
 
     QMap<quint32, bool> deviceFilters(QVector<FileInfo>& infos, const DatabaseSanitizer::ItemAccessFilters accessFilter)
     {
@@ -191,26 +186,27 @@ public:
         return false;
     }
 
-    void removeDocument(const quint64 id) {
+    void removeDocument(const quint64 id)
+    {
         m_transaction->removeDocument(id);
     }
 
-    void commit() {
+    void commit()
+    {
         m_transaction->commit();
     }
 
-    void abort() {
+    void abort()
+    {
         m_transaction->abort();
     }
 
 private:
     Transaction* m_transaction;
-
 };
 }
 
 using namespace Baloo;
-
 
 DatabaseSanitizer::DatabaseSanitizer(const Database& db, Baloo::Transaction::TransactionType type)
     : m_pimpl(new DatabaseSanitizerImpl(db, type))
@@ -229,47 +225,39 @@ DatabaseSanitizer::~DatabaseSanitizer()
 }
 
 /**
-* Create a list of \a FileInfo items and print it to stdout.
-*
-* \p deviceIDs filter by device ids. If the vector is empty no filtering is done
-* and everything is printed.
-* Positive numbers are including filters printing only the mentioned device ids.
-* Negative numbers are excluding filters printing everything but the mentioned device ids.
-*
-* \p missingOnly Simulate purging operation. Only inaccessible items are printed.
-*
-* \p urlFilter Filter result urls. Default is null = Print everything.
-*/
- void DatabaseSanitizer::printList(
-    const QVector<qint64>& deviceIds,
-    const ItemAccessFilters accessFilter,
-    const QSharedPointer<QRegularExpression>& urlFilter)
+ * Create a list of \a FileInfo items and print it to stdout.
+ *
+ * \p deviceIDs filter by device ids. If the vector is empty no filtering is done
+ * and everything is printed.
+ * Positive numbers are including filters printing only the mentioned device ids.
+ * Negative numbers are excluding filters printing everything but the mentioned device ids.
+ *
+ * \p missingOnly Simulate purging operation. Only inaccessible items are printed.
+ *
+ * \p urlFilter Filter result urls. Default is null = Print everything.
+ */
+void DatabaseSanitizer::printList(const QVector<qint64>& deviceIds, const ItemAccessFilters accessFilter, const QSharedPointer<QRegularExpression>& urlFilter)
 {
     auto listResult = m_pimpl->createList(deviceIds, accessFilter, urlFilter);
     const auto sep = QLatin1Char(' ');
     QTextStream out(stdout);
     QTextStream err(stderr);
-    for (const auto& info: listResult.first) {
-        out << QStringLiteral("%1").arg(info.accessible ? "+" : "!")
-        << sep << QStringLiteral("device: %1").arg(info.deviceId)
-        << sep << QStringLiteral("inode: %1").arg(info.inode)
-        << sep << QStringLiteral("url: %1").arg(info.url)
-        << endl;
+    for (const auto& info : listResult.first) {
+        out << QStringLiteral("%1").arg(info.accessible ? "+" : "!") << sep << QStringLiteral("device: %1").arg(info.deviceId) << sep
+            << QStringLiteral("inode: %1").arg(info.inode) << sep << QStringLiteral("url: %1").arg(info.url) << endl;
     }
 
     const auto& summary = listResult.second;
     if (accessFilter & IgnoreAvailable) {
-        err << i18n("Total: %1, Inaccessible: %2",
-                    summary.total,
-                    summary.total - (summary.ignored + summary.accessible)) << endl;
+        err << i18n("Total: %1, Inaccessible: %2", summary.total, summary.total - (summary.ignored + summary.accessible)) << endl;
     } else {
         err << i18n("Total: %1, Ignored: %2, Accessible: %3, Inaccessible: %4",
                     summary.total,
                     summary.ignored,
                     summary.accessible,
-                    summary.total - (summary.ignored + summary.accessible)) << endl;
+                    summary.total - (summary.ignored + summary.accessible))
+            << endl;
     }
-
 }
 
 void DatabaseSanitizer::printDevices(const QVector<qint64>& deviceIds, const ItemAccessFilters accessFilter)
@@ -324,9 +312,9 @@ void DatabaseSanitizer::printDevices(const QVector<qint64>& deviceIds, const Ite
 }
 
 void DatabaseSanitizer::removeStaleEntries(const QVector<qint64>& deviceIds,
-    const DatabaseSanitizer::ItemAccessFilters accessFilter,
-    const bool dryRun,
-    const QSharedPointer<QRegularExpression>& urlFilter)
+                                           const DatabaseSanitizer::ItemAccessFilters accessFilter,
+                                           const bool dryRun,
+                                           const QSharedPointer<QRegularExpression>& urlFilter)
 {
     auto listResult = m_pimpl->createList(deviceIds, IgnoreAvailable, urlFilter);
 
@@ -336,7 +324,7 @@ void DatabaseSanitizer::removeStaleEntries(const QVector<qint64>& deviceIds,
     auto& summary = listResult.second;
     QTextStream out(stdout);
     QTextStream err(stderr);
-    for (const auto& info: listResult.first) {
+    for (const auto& info : listResult.first) {
         if (ignoredDevices[info.deviceId] == true) {
             summary.ignored++;
         } else {
@@ -347,10 +335,8 @@ void DatabaseSanitizer::removeStaleEntries(const QVector<qint64>& deviceIds,
                 m_pimpl->removeDocument(info.id);
                 out << i18n("Removing:");
             }
-            out << sep << QStringLiteral("device: %1").arg(info.deviceId)
-                << sep << QStringLiteral("inode: %1").arg(info.inode)
-                << sep << QStringLiteral("url: %1").arg(info.url)
-                << endl;
+            out << sep << QStringLiteral("device: %1").arg(info.deviceId) << sep << QStringLiteral("inode: %1").arg(info.inode) << sep
+                << QStringLiteral("url: %1").arg(info.url) << endl;
         }
     }
     if (dryRun) {
@@ -359,9 +345,5 @@ void DatabaseSanitizer::removeStaleEntries(const QVector<qint64>& deviceIds,
         m_pimpl->commit();
     }
     Q_ASSERT(summary.accessible == 0);
-    err << i18nc("numbers", "Removed: %1, Total: %2, Ignored: %3",
-                 summary.total - summary.ignored,
-                 summary.total,
-                 summary.ignored)
-        << endl;
+    err << i18nc("numbers", "Removed: %1, Total: %2, Ignored: %3", summary.total - summary.ignored, summary.total, summary.ignored) << endl;
 }

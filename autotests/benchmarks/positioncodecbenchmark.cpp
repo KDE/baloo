@@ -26,6 +26,7 @@ private Q_SLOTS:
     // data 3 - small number of documents, many positions with large increment
     void benchEncodeData3();
     void benchDecodeData3();
+
 private:
     QVector<PositionInfo> m_benchmarkData1;
     QVector<PositionInfo> m_benchmarkData2;
@@ -40,8 +41,7 @@ void PositionCodecBenchmark::initTestCase()
      */
     m_benchmarkData1.clear();
     m_benchmarkData1.reserve(100);
-    for(int i = 0; i < 100; ++i)
-    {
+    for (int i = 0; i < 100; ++i) {
         PositionInfo info;
         info.docId = (i + 1) * 4711;
         info.positions.reserve(3000);
@@ -76,40 +76,52 @@ void PositionCodecBenchmark::initTestCase()
 void PositionCodecBenchmark::benchEncodeData1()
 {
     PositionCodec pc;
-    QBENCHMARK { pc.encode(m_benchmarkData1); }
+    QBENCHMARK {
+        pc.encode(m_benchmarkData1);
+    }
 }
 
 void PositionCodecBenchmark::benchDecodeData1()
 {
     PositionCodec pc;
     const QByteArray ba = pc.encode(m_benchmarkData1);
-    QBENCHMARK { pc.decode(ba); }
+    QBENCHMARK {
+        pc.decode(ba);
+    }
 }
 
 void PositionCodecBenchmark::benchEncodeData2()
 {
     PositionCodec pc;
-    QBENCHMARK { pc.encode(m_benchmarkData2); }
+    QBENCHMARK {
+        pc.encode(m_benchmarkData2);
+    }
 }
 
 void PositionCodecBenchmark::benchDecodeData2()
 {
     PositionCodec pc;
     const QByteArray ba = pc.encode(m_benchmarkData2);
-    QBENCHMARK { pc.decode(ba); }
+    QBENCHMARK {
+        pc.decode(ba);
+    }
 }
 
 void PositionCodecBenchmark::benchEncodeData3()
 {
     PositionCodec pc;
-    QBENCHMARK { pc.encode(m_benchmarkData3); }
+    QBENCHMARK {
+        pc.encode(m_benchmarkData3);
+    }
 }
 
 void PositionCodecBenchmark::benchDecodeData3()
 {
     PositionCodec pc;
     const QByteArray ba = pc.encode(m_benchmarkData3);
-    QBENCHMARK { pc.decode(ba); }
+    QBENCHMARK {
+        pc.decode(ba);
+    }
 }
 
 QTEST_MAIN(PositionCodecBenchmark)

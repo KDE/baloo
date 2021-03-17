@@ -8,8 +8,8 @@
 #include "fileindexerconfig.h"
 #include "mainadaptor.h"
 
-#include <QDBusConnection>
 #include <QCoreApplication>
+#include <QDBusConnection>
 #include <QTimer>
 
 using namespace Baloo;
@@ -34,8 +34,7 @@ MainHub::MainHub(Database* db, FileIndexerConfig* config, bool firstRun)
     Q_UNUSED(main)
 
     QDBusConnection bus = QDBusConnection::sessionBus();
-    bus.registerObject(QStringLiteral("/"), this, QDBusConnection::ExportAllSlots |
-                        QDBusConnection::ExportScriptableSignals | QDBusConnection::ExportAdaptors);
+    bus.registerObject(QStringLiteral("/"), this, QDBusConnection::ExportAllSlots | QDBusConnection::ExportScriptableSignals | QDBusConnection::ExportAdaptors);
 
     if (firstRun) {
         QTimer::singleShot(5000, this, [this] {
@@ -64,6 +63,6 @@ void MainHub::updateConfig()
     m_fileIndexScheduler.updateConfig();
 }
 
-void MainHub::registerBalooWatcher(const QString &)
+void MainHub::registerBalooWatcher(const QString&)
 {
 }

@@ -9,12 +9,12 @@
 #define BALOO_IDTREEDB_H
 
 #include "engine_export.h"
-#include <lmdb.h>
-#include <QVector>
 #include <QMap>
+#include <QVector>
+#include <lmdb.h>
 
-namespace Baloo {
-
+namespace Baloo
+{
 class PostingIterator;
 
 class BALOO_ENGINE_EXPORT IdTreeDB
@@ -25,7 +25,7 @@ public:
     static MDB_dbi create(MDB_txn* txn);
     static MDB_dbi open(MDB_txn* txn);
 
-    void put(quint64 docId, const QVector<quint64> &subDocIds);
+    void put(quint64 docId, const QVector<quint64>& subDocIds);
     QVector<quint64> get(quint64 docId);
     void del(quint64 docId);
 
@@ -36,6 +36,7 @@ public:
     PostingIterator* iter(quint64 docId);
 
     QMap<quint64, QVector<quint64>> toTestMap() const;
+
 private:
     MDB_txn* m_txn;
     MDB_dbi m_dbi;

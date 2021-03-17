@@ -8,8 +8,8 @@
 #include "documenturldb.h"
 #include "postingiterator.h"
 
-#include <algorithm>
 #include <QPair>
+#include <algorithm>
 
 using namespace Baloo;
 
@@ -85,7 +85,6 @@ bool DocumentUrlDB::put(quint64 docId, const QByteArray& url)
         parentId = filePathToId(arr);
     }
 
-
     for (int i = 0; i < list.size(); i++) {
         quint64 id = list[i].first;
         QByteArray name = list[i].second;
@@ -93,7 +92,7 @@ bool DocumentUrlDB::put(quint64 docId, const QByteArray& url)
         // Update the IdTree
         quint64 parentId = 0;
         if (i) {
-            parentId = list[i-1].first;
+            parentId = list[i - 1].first;
         }
 
         add(id, parentId, name);

@@ -6,9 +6,8 @@
 */
 
 #include "documenturldb.h"
-#include "singledbtest.h"
 #include "idutils.h"
-
+#include "singledbtest.h"
 
 using namespace Baloo;
 
@@ -16,7 +15,8 @@ class DocumentUrlDBTest : public QObject
 {
     Q_OBJECT
 
-    void touchFile(const QByteArray& path) {
+    void touchFile(const QByteArray& path)
+    {
         QFile file(QString::fromUtf8(path));
         file.open(QIODevice::WriteOnly);
         file.write("data");
@@ -43,7 +43,8 @@ private Q_SLOTS:
         delete m_tempDir;
     }
 
-    void testNonExistingPath() {
+    void testNonExistingPath()
+    {
         /*
         DocumentUrlDB db(m_txn);
         db.put(1, "/fire/does/not/exist");
@@ -53,7 +54,8 @@ private Q_SLOTS:
         */
     }
 
-    void testSingleFile() {
+    void testSingleFile()
+    {
         QTemporaryDir dir;
 
         QByteArray filePath(dir.path().toUtf8() + "/file");
@@ -65,11 +67,14 @@ private Q_SLOTS:
 
         QCOMPARE(db.get(id), filePath);
 
-        db.del(id, [](quint64) { return true; });
+        db.del(id, [](quint64) {
+            return true;
+        });
         QCOMPARE(db.get(id), QByteArray());
     }
 
-    void testTwoFilesAndAFolder() {
+    void testTwoFilesAndAFolder()
+    {
         QTemporaryDir dir;
 
         QByteArray dirPath = QFile::encodeName(dir.path());
@@ -91,29 +96,37 @@ private Q_SLOTS:
         QCOMPARE(db.get(id2), filePath2);
         QCOMPARE(db.get(did), dirPath);
 
-        db.del(id1, [=](quint64 id) { return id != did; });
+        db.del(id1, [=](quint64 id) {
+            return id != did;
+        });
 
         QCOMPARE(db.get(id1), QByteArray());
         QCOMPARE(db.get(id2), filePath2);
         QCOMPARE(db.get(did), dirPath);
 
-        db.del(id2, [=](quint64 id) { return id != did; });
+        db.del(id2, [=](quint64 id) {
+            return id != did;
+        });
 
         QCOMPARE(db.get(id1), QByteArray());
         QCOMPARE(db.get(id2), QByteArray());
         QCOMPARE(db.get(did), dirPath);
 
-        db.del(did, [=](quint64 id) { return id != did; });
+        db.del(did, [=](quint64 id) {
+            return id != did;
+        });
 
         QCOMPARE(db.get(id1), QByteArray());
         QCOMPARE(db.get(id2), QByteArray());
         QCOMPARE(db.get(did), QByteArray());
     }
 
-    void testDuplicateId() {
+    void testDuplicateId()
+    {
     }
 
-    void testGetId() {
+    void testGetId()
+    {
         QTemporaryDir dir;
         const QByteArray path = QFile::encodeName(dir.path());
         quint64 id = filePathToId(path);

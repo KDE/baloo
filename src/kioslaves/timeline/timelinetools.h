@@ -34,11 +34,11 @@ namespace Baloo
  * |- /weeks
  */
 enum TimelineFolderType {
-    NoFolder = 0,    /// nothing
-    RootFolder,      /// the root folder
-    CalendarFolder,  /// the calendar folder listing all months
-    MonthFolder,     /// a folder listing a month's days (m_date contains the month)
-    DayFolder,       /// a folder listing a day (m_date); optionally m_filename is set
+    NoFolder = 0, /// nothing
+    RootFolder, /// the root folder
+    CalendarFolder, /// the calendar folder listing all months
+    MonthFolder, /// a folder listing a month's days (m_date contains the month)
+    DayFolder, /// a folder listing a day (m_date); optionally m_filename is set
 };
 
 /**
@@ -50,9 +50,9 @@ enum TimelineFolderType {
 TimelineFolderType parseTimelineUrl(const QUrl& url, QDate* date, QString* filename = nullptr);
 
 /**
-  * Remove any double slashes, remove any trailing slashes, and
-  * add an initial slash after the scheme.
-  */
+ * Remove any double slashes, remove any trailing slashes, and
+ * add an initial slash after the scheme.
+ */
 QUrl canonicalizeTimelineUrl(const QUrl& url);
 
 }

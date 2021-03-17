@@ -10,8 +10,8 @@
 
 #include "command.h"
 
-namespace Baloo {
-
+namespace Baloo
+{
 class ConfigCommand : public Baloo::Command
 {
 public:

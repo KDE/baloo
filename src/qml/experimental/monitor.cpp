@@ -8,20 +8,20 @@
 #include "monitor.h"
 
 #include "database.h"
-#include "transaction.h"
 #include "global.h"
+#include "transaction.h"
 
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
-#include <QDebug>
-#include <QStandardPaths>
 #include <QDBusServiceWatcher>
+#include <QDebug>
 #include <QProcess>
+#include <QStandardPaths>
 
 #include <KFormat>
 
 using namespace Baloo;
-Monitor::Monitor(QObject *parent)
+Monitor::Monitor(QObject* parent)
     : QObject(parent)
     , m_bus(QDBusConnection::sessionBus())
     , m_filePath(QStringLiteral("Idle"))
@@ -29,24 +29,15 @@ Monitor::Monitor(QObject *parent)
     , m_fileindexer(nullptr)
     , m_remainingTime(QStringLiteral("Estimating"))
 {
-    m_scheduler = new org::kde::baloo::scheduler(QStringLiteral("org.kde.baloo"),
-                                          QStringLiteral("/scheduler"),
-                                          m_bus, this);
+    m_scheduler = new org::kde::baloo::scheduler(QStringLiteral("org.kde.baloo"), QStringLiteral("/scheduler"), m_bus, this);
 
-    m_fileindexer = new org::kde::baloo::fileindexer(QStringLiteral("org.kde.baloo"),
-                                                    QStringLiteral("/fileindexer"),
-                                                    m_bus, this);
+    m_fileindexer = new org::kde::baloo::fileindexer(QStringLiteral("org.kde.baloo"), QStringLiteral("/fileindexer"), m_bus, this);
 
-    connect(m_fileindexer, &org::kde::baloo::fileindexer::startedIndexingFile,
-            this, &Monitor::newFile);
+    connect(m_fileindexer, &org::kde::baloo::fileindexer::startedIndexingFile, this, &Monitor::newFile);
 
-    connect(m_scheduler, &org::kde::baloo::scheduler::stateChanged,
-            this, &Monitor::slotIndexerStateChanged);
+    connect(m_scheduler, &org::kde::baloo::scheduler::stateChanged, this, &Monitor::slotIndexerStateChanged);
 
-    QDBusServiceWatcher* balooWatcher = new QDBusServiceWatcher(m_scheduler->service(),
-                                                            m_bus,
-                                                            QDBusServiceWatcher::WatchForOwnerChange,
-                                                            this);
+    QDBusServiceWatcher* balooWatcher = new QDBusServiceWatcher(m_scheduler->service(), m_bus, QDBusServiceWatcher::WatchForOwnerChange, this);
     connect(balooWatcher, &QDBusServiceWatcher::serviceRegistered, this, &Monitor::balooStarted);
     connect(balooWatcher, &QDBusServiceWatcher::serviceUnregistered, this, [this]() {
         m_balooRunning = false;
@@ -79,7 +70,7 @@ void Monitor::newFile(const QString& filePath)
 
 QString Monitor::suspendState() const
 {
-    return m_indexerState == Baloo::Suspended ?  QStringLiteral("Resume") : QStringLiteral("Suspend");
+    return m_indexerState == Baloo::Suspended ? QStringLiteral("Resume") : QStringLiteral("Suspend");
 }
 
 void Monitor::toggleSuspendState()
@@ -102,7 +93,7 @@ void Monitor::balooStarted()
 
 void Monitor::fetchTotalFiles()
 {
-    Baloo::Database *db = Baloo::globalDatabaseInstance();
+    Baloo::Database* db = Baloo::globalDatabaseInstance();
     if (db->open(Baloo::Database::ReadOnlyDatabase)) {
         Baloo::Transaction tr(db, Baloo::Transaction::ReadOnly);
         m_totalFiles = tr.size();
@@ -141,4 +132,3 @@ void Monitor::slotIndexerStateChanged(int state)
         Q_EMIT indexerStateChanged();
     }
 }
-

@@ -14,7 +14,8 @@ class PostingDBTest : public SingleDBTest
 {
     Q_OBJECT
 private Q_SLOTS:
-    void test() {
+    void test()
+    {
         PostingDB db(PostingDB::create(m_txn), m_txn);
 
         QByteArray word("fire");
@@ -24,7 +25,8 @@ private Q_SLOTS:
         QCOMPARE(db.get(word), list);
     }
 
-    void testTermIter() {
+    void testTermIter()
+    {
         PostingDB db(PostingDB::create(m_txn), m_txn);
 
         db.put("abc", {1, 4, 5, 9, 11});
@@ -42,7 +44,8 @@ private Q_SLOTS:
         }
     }
 
-    void testPrefixIter() {
+    void testPrefixIter()
+    {
         PostingDB db(PostingDB::create(m_txn), m_txn);
 
         db.put("abc", {1, 4, 5, 9, 11});
@@ -60,7 +63,8 @@ private Q_SLOTS:
         }
     }
 
-    void testRegExpIter() {
+    void testRegExpIter()
+    {
         PostingDB db(PostingDB::create(m_txn), m_txn);
 
         db.put("abc", {1, 4, 5, 9, 11});
@@ -83,7 +87,8 @@ private Q_SLOTS:
         QVERIFY(it == nullptr);
     }
 
-    void testCompIter() {
+    void testCompIter()
+    {
         PostingDB db(PostingDB::create(m_txn), m_txn);
 
         db.put("abc", {1, 4, 5, 9, 11});
@@ -137,7 +142,8 @@ private Q_SLOTS:
         }
     }
 
-    void testFetchTermsStartingWith() {
+    void testFetchTermsStartingWith()
+    {
         PostingDB db(PostingDB::create(m_txn), m_txn);
 
         db.put("abc", {1, 4, 5, 9, 11});

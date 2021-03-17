@@ -11,9 +11,9 @@
 #include "postingiterator.h"
 #include <QVector>
 
-namespace Baloo {
-
-class BALOO_ENGINE_EXPORT VectorPostingIterator :  public PostingIterator
+namespace Baloo
+{
+class BALOO_ENGINE_EXPORT VectorPostingIterator : public PostingIterator
 {
 public:
     explicit VectorPostingIterator(const QVector<quint64>& values);

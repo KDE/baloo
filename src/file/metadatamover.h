@@ -13,7 +13,6 @@
 
 namespace Baloo
 {
-
 class Database;
 class Transaction;
 

@@ -7,35 +7,42 @@
 #ifndef BALOO_POSITIONINFO_H
 #define BALOO_POSITIONINFO_H
 
-#include <QVector>
 #include <QDebug>
+#include <QVector>
 
-namespace Baloo {
-
-class PositionInfo {
+namespace Baloo
+{
+class PositionInfo
+{
 public:
     quint64 docId;
     QVector<uint> positions;
 
     PositionInfo(quint64 id = 0, const QVector<uint> posList = QVector<uint>())
-        : docId(id), positions(posList) {}
+        : docId(id)
+        , positions(posList)
+    {
+    }
 
-    bool operator ==(const PositionInfo& rhs) const {
+    bool operator==(const PositionInfo& rhs) const
+    {
         return docId == rhs.docId;
     }
-    bool operator !=(const PositionInfo& rhs) const {
+    bool operator!=(const PositionInfo& rhs) const
+    {
         return docId != rhs.docId;
     }
 
-    bool operator <(const PositionInfo& rhs) const {
+    bool operator<(const PositionInfo& rhs) const
+    {
         return docId < rhs.docId;
     }
 };
 
-inline QDebug operator<<(QDebug dbg, const PositionInfo &pos) {
+inline QDebug operator<<(QDebug dbg, const PositionInfo& pos)
+{
     QDebugStateSaver saver(dbg);
-    dbg.nospace() << Qt::hex << "(" << pos.docId << ": "
-                  << Qt::dec << pos.positions << ")";
+    dbg.nospace() << Qt::hex << "(" << pos.docId << ": " << Qt::dec << pos.positions << ")";
     return dbg;
 }
 

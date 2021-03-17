@@ -6,19 +6,20 @@
 */
 
 #include "file.h"
-#include "global.h"
 #include "database.h"
-#include "transaction.h"
+#include "global.h"
 #include "idutils.h"
 #include "propertydata.h"
+#include "transaction.h"
 
-#include <QJsonDocument>
 #include <QFileInfo>
+#include <QJsonDocument>
 #include <QJsonObject>
 
 using namespace Baloo;
 
-class File::Private {
+class File::Private
+{
 public:
     QString url;
     KFileMetaData::PropertyMap propertyMap;
@@ -82,7 +83,7 @@ bool File::load()
         return false;
     }
 
-    Database *db = globalDatabaseInstance();
+    Database* db = globalDatabaseInstance();
     if (!db->open(Database::ReadOnlyDatabase)) {
         return false;
     }

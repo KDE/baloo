@@ -15,7 +15,6 @@
 
 namespace Baloo
 {
-
 class TagsProtocol : public KIO::ForwardingSlaveBase
 {
     Q_OBJECT
@@ -75,6 +74,7 @@ public:
      * Tags will be created as virtual folders.
      */
     void stat(const QUrl& url) override;
+
 protected:
     bool rewriteUrl(const QUrl& url, QUrl& newURL) override;
 
@@ -94,7 +94,7 @@ private:
         KIO::UDSEntryList pathUDSResults;
     };
 
-    ParseResult parseUrl(const QUrl& url, const QList<ParseFlags> &flags = QList<ParseFlags>());
+    ParseResult parseUrl(const QUrl& url, const QList<ParseFlags>& flags = QList<ParseFlags>());
     QStringList m_unassignedTags;
 };
 }

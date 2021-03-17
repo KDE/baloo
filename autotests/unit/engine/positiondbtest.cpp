@@ -7,8 +7,8 @@
 
 #include "positiondb.h"
 #include "positioninfo.h"
-#include "vectorpositioninfoiterator.h"
 #include "singledbtest.h"
+#include "vectorpositioninfoiterator.h"
 
 using namespace Baloo;
 
@@ -16,7 +16,8 @@ class PositionDBTest : public SingleDBTest
 {
     Q_OBJECT
 private Q_SLOTS:
-    void test() {
+    void test()
+    {
         PositionDB db(PositionDB::create(m_txn), m_txn);
 
         QByteArray word("fire");
@@ -35,7 +36,8 @@ private Q_SLOTS:
         QCOMPARE(res, list);
     }
 
-    void testIter() {
+    void testIter()
+    {
         PositionDB db(PositionDB::create(m_txn), m_txn);
 
         QByteArray word("fire");

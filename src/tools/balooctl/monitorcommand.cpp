@@ -14,7 +14,7 @@
 
 using namespace Baloo;
 
-MonitorCommand::MonitorCommand(QObject *parent)
+MonitorCommand::MonitorCommand(QObject* parent)
     : QObject(parent)
     , m_out(stdout)
     , m_err(stderr)
@@ -27,26 +27,21 @@ MonitorCommand::MonitorCommand(QObject *parent)
                                                    QDBusConnection::sessionBus(),
                                                    QDBusServiceWatcher::WatchForOwnerChange,
                                                    this);
-    connect(m_dbusServiceWatcher, &QDBusServiceWatcher::serviceRegistered,
-            this, &MonitorCommand::balooIsAvailable);
-    connect(m_dbusServiceWatcher, &QDBusServiceWatcher::serviceUnregistered,
-            this, &MonitorCommand::balooIsNotAvailable);
+    connect(m_dbusServiceWatcher, &QDBusServiceWatcher::serviceRegistered, this, &MonitorCommand::balooIsAvailable);
+    connect(m_dbusServiceWatcher, &QDBusServiceWatcher::serviceUnregistered, this, &MonitorCommand::balooIsNotAvailable);
 
     m_indexerDBusInterface = new org::kde::baloo::fileindexer(QStringLiteral("org.kde.baloo"), //
                                                               QStringLiteral("/fileindexer"),
                                                               QDBusConnection::sessionBus(),
                                                               this);
-    connect(m_indexerDBusInterface, &org::kde::baloo::fileindexer::startedIndexingFile,
-        this, &MonitorCommand::startedIndexingFile);
-    connect(m_indexerDBusInterface, &org::kde::baloo::fileindexer::finishedIndexingFile,
-        this, &MonitorCommand::finishedIndexingFile);
+    connect(m_indexerDBusInterface, &org::kde::baloo::fileindexer::startedIndexingFile, this, &MonitorCommand::startedIndexingFile);
+    connect(m_indexerDBusInterface, &org::kde::baloo::fileindexer::finishedIndexingFile, this, &MonitorCommand::finishedIndexingFile);
 
     m_schedulerDBusInterface = new org::kde::baloo::scheduler(QStringLiteral("org.kde.baloo"), //
                                                               QStringLiteral("/scheduler"),
                                                               QDBusConnection::sessionBus(),
                                                               this);
-    connect(m_schedulerDBusInterface, &org::kde::baloo::scheduler::stateChanged,
-        this, &MonitorCommand::stateChanged);
+    connect(m_schedulerDBusInterface, &org::kde::baloo::scheduler::stateChanged, this, &MonitorCommand::stateChanged);
 
     if (m_indexerDBusInterface->isValid() && m_schedulerDBusInterface->isValid()) {
         m_err << i18n("Press ctrl+c to stop monitoring\n");
@@ -86,7 +81,7 @@ int MonitorCommand::exec(const QCommandLineParser& parser)
 void MonitorCommand::startedIndexingFile(const QString& filePath)
 {
     if (!m_currentFile.isEmpty()) {
-	m_out << '\n';
+        m_out << '\n';
     }
     m_currentFile = filePath;
     m_out << i18nc("currently indexed file", "Indexing: %1", filePath);

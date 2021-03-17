@@ -12,11 +12,13 @@
 
 using namespace Baloo;
 
-class Baloo::ResultIteratorPrivate {
+class Baloo::ResultIteratorPrivate
+{
 public:
     ResultIteratorPrivate() = default;
 
-    ~ResultIteratorPrivate() {
+    ~ResultIteratorPrivate()
+    {
     }
 
     ResultList results;
@@ -37,7 +39,7 @@ ResultIterator::ResultIterator(const ResultIterator& rhs)
 }
 #endif
 
-ResultIterator::ResultIterator(ResultIterator &&rhs)
+ResultIterator::ResultIterator(ResultIterator&& rhs)
     : d(rhs.d)
 {
     rhs.d = nullptr;

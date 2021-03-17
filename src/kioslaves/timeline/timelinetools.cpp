@@ -11,7 +11,6 @@
 #include <QRegularExpression>
 #include <QUrlQuery>
 
-
 namespace
 {
 QDate applyRelativeDateModificators(const QDate& date, const QMap<QString, QString>& modificators)
@@ -51,7 +50,8 @@ QDate applyRelativeDateModificators(const QDate& date, const QMap<QString, QStri
 }
 }
 
-QUrl Baloo::canonicalizeTimelineUrl(const QUrl& url) {
+QUrl Baloo::canonicalizeTimelineUrl(const QUrl& url)
+{
     QUrl newUrl = url;
     QString path = url.path();
     if (path.contains(QLatin1String("//"))) {
@@ -74,8 +74,7 @@ Baloo::TimelineFolderType Baloo::parseTimelineUrl(const QUrl& url, QDate* date, 
 {
     qCDebug(KIO_TIMELINE) << url;
 
-    static const QRegularExpression s_dateRegexp(
-                    QRegularExpression::anchoredPattern(QStringLiteral("\\d{4}-\\d{2}(?:-(\\d{2}))?")));
+    static const QRegularExpression s_dateRegexp(QRegularExpression::anchoredPattern(QStringLiteral("\\d{4}-\\d{2}(?:-(\\d{2}))?")));
 
     // reset
     *date = QDate();
@@ -102,8 +101,7 @@ Baloo::TimelineFolderType Baloo::parseTimelineUrl(const QUrl& url, QDate* date, 
         QRegularExpressionMatch match = s_dateRegexp.match(sections.last());
         if (match.hasMatch()) {
             dateString = sections.last();
-        } else if (sections.count() > 1
-                   && (match = s_dateRegexp.match(sections[sections.count() - 2])).hasMatch()) {
+        } else if (sections.count() > 1 && (match = s_dateRegexp.match(sections[sections.count() - 2])).hasMatch()) {
             dateString = sections[sections.count() - 2];
             if (filename) {
                 *filename = sections.last();

@@ -7,8 +7,8 @@
 
 #include "enginequery.h"
 
-namespace Baloo {
-
+namespace Baloo
+{
 EngineQuery::EngineQuery()
     : m_op(Equal)
 {
@@ -20,7 +20,7 @@ EngineQuery::EngineQuery(const QByteArray& term, EngineQuery::Operation op)
 {
 }
 
-EngineQuery::EngineQuery(const QVector<EngineQuery> &subQueries, Operation op)
+EngineQuery::EngineQuery(const QVector<EngineQuery>& subQueries, Operation op)
     : m_op(op)
     , m_subQueries(subQueries)
 {

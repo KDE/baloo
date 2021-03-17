@@ -6,28 +6,32 @@
 */
 
 #include "database.h"
-#include "transaction.h"
 #include "document.h"
-#include "termgenerator.h"
 #include "enginequery.h"
 #include "idutils.h"
+#include "termgenerator.h"
+#include "transaction.h"
 
-#include <QTest>
 #include <QTemporaryDir>
+#include <QTest>
 
 using namespace Baloo;
 
-class SortedIdVector : public QVector<quint64> {
-    public:
-        SortedIdVector(const QVector<quint64>& list)
-        : QVector<quint64>(list) {
-            std::sort(begin(), end());
-        }
-        SortedIdVector(std::initializer_list<quint64> args)
-        : SortedIdVector(QVector<quint64>(args)) {}
+class SortedIdVector : public QVector<quint64>
+{
+public:
+    SortedIdVector(const QVector<quint64>& list)
+        : QVector<quint64>(list)
+    {
+        std::sort(begin(), end());
+    }
+    SortedIdVector(std::initializer_list<quint64> args)
+        : SortedIdVector(QVector<quint64>(args))
+    {
+    }
 };
 
-char *toString(const QVector<quint64> &idlist)
+char* toString(const QVector<quint64>& idlist)
 {
     QByteArray text("IDs[");
     text += QByteArray::number(idlist.size()) + "]:";
@@ -41,7 +45,8 @@ class QueryTest : public QObject
 {
     Q_OBJECT
 private Q_SLOTS:
-    void initTestCase() {
+    void initTestCase()
+    {
         dir.reset(new QTemporaryDir());
 
         auto touchFile = [](const QString& path) {
@@ -64,7 +69,8 @@ private Q_SLOTS:
         m_id6 = touchFile(dir->path() + "/tagFile2");
     }
 
-    void init() {
+    void init()
+    {
         dbDir = new QTemporaryDir();
         db = new Database(dbDir->path());
         db->open(Database::CreateDatabase);
@@ -72,7 +78,8 @@ private Q_SLOTS:
         insertDocuments();
     }
 
-    void cleanup() {
+    void cleanup()
+    {
         delete db;
         delete dbDir;
     }
@@ -95,7 +102,7 @@ private:
     Database* db;
 
     void insertDocuments();
-    void addDocument(Transaction* tr,const QString& text, quint64 id, const QString& url)
+    void addDocument(Transaction* tr, const QString& text, quint64 id, const QString& url)
     {
         Document doc;
         doc.setUrl(QFile::encodeName(url));
@@ -124,7 +131,7 @@ private:
     }
 
     void insertTagDocuments();
-    void addTagDocument(Transaction* tr,const QStringList& tags, quint64 id, const QString& url)
+    void addTagDocument(Transaction* tr, const QStringList& tags, quint64 id, const QString& url)
     {
         Document doc;
         doc.setUrl(QFile::encodeName(url));
@@ -153,7 +160,6 @@ private:
     quint64 m_id7;
     quint64 m_id8;
 };
-
 
 void QueryTest::insertDocuments()
 {
@@ -228,11 +234,13 @@ void QueryTest::testTermPhrase_data()
     QTest::addColumn<QVector<quint64>>("filenameMatches");
     QTest::addColumn<QString>("failReason");
 
-    auto addRow = [](const char* name, const QByteArrayList& phrase,
+    auto addRow = [](const char* name,
+                     const QByteArrayList& phrase,
                      const QVector<quint64> contentMatches,
                      const QVector<quint64> filenameMatches,
-                     const QString& failureReason)
-        { QTest::addRow("%s", name) << phrase << contentMatches << filenameMatches << failureReason; };
+                     const QString& failureReason) {
+        QTest::addRow("%s", name) << phrase << contentMatches << filenameMatches << failureReason;
+    };
 
     // clang-format off
     // Content matches
@@ -285,12 +293,9 @@ void QueryTest::testTagTermAnd_data()
     QTest::addColumn<QByteArrayList>("terms");
     QTest::addColumn<QVector<quint64>>("matchIds");
 
-    QTest::addRow("Simple match") << QByteArrayList({"one", "four"})
-        << QVector<quint64> { m_id5, m_id6 };
-    QTest::addRow("Only one") << QByteArrayList({"one", "f1"})
-        << QVector<quint64> { m_id5 };
-    QTest::addRow("Also from phrase") << QByteArrayList({"two", "three"})
-        << QVector<quint64> { m_id5, m_id6 };
+    QTest::addRow("Simple match") << QByteArrayList({"one", "four"}) << QVector<quint64>{m_id5, m_id6};
+    QTest::addRow("Only one") << QByteArrayList({"one", "f1"}) << QVector<quint64>{m_id5};
+    QTest::addRow("Also from phrase") << QByteArrayList({"two", "three"}) << QVector<quint64>{m_id5, m_id6};
 }
 
 void QueryTest::testTagTermAnd()
@@ -316,14 +321,10 @@ void QueryTest::testTagTermPhrase_data()
     QTest::addColumn<QByteArrayList>("terms");
     QTest::addColumn<QVector<quint64>>("matchIds");
 
-    QTest::addRow("Simple match") << QByteArrayList({"one"})
-        << QVector<quint64> { m_id5, m_id6 };
-    QTest::addRow("Apart") << QByteArrayList({"two", "four"})
-        << QVector<quint64> { };
-    QTest::addRow("Adjacent") << QByteArrayList({"three", "four"})
-        << QVector<quint64> { };
-    QTest::addRow("Only phrase") << QByteArrayList({"two", "three"})
-        << QVector<quint64> { m_id6 };
+    QTest::addRow("Simple match") << QByteArrayList({"one"}) << QVector<quint64>{m_id5, m_id6};
+    QTest::addRow("Apart") << QByteArrayList({"two", "four"}) << QVector<quint64>{};
+    QTest::addRow("Adjacent") << QByteArrayList({"three", "four"}) << QVector<quint64>{};
+    QTest::addRow("Only phrase") << QByteArrayList({"two", "three"}) << QVector<quint64>{m_id6};
 }
 
 void QueryTest::testTagTermPhrase()

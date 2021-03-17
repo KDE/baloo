@@ -9,40 +9,35 @@
 #include "storagedevices.h"
 #include "baloodebug.h"
 
-#include <Solid/DeviceNotifier>
-#include <Solid/DeviceInterface>
 #include <Solid/Block>
-#include <Solid/StorageDrive>
-#include <Solid/StorageVolume>
-#include <Solid/StorageAccess>
+#include <Solid/DeviceInterface>
+#include <Solid/DeviceNotifier>
 #include <Solid/NetworkShare>
 #include <Solid/OpticalDisc>
 #include <Solid/Predicate>
+#include <Solid/StorageAccess>
+#include <Solid/StorageDrive>
+#include <Solid/StorageVolume>
 
 using namespace Baloo;
 
 StorageDevices::StorageDevices(QObject* parent)
     : QObject(parent)
 {
-    connect(Solid::DeviceNotifier::instance(), &Solid::DeviceNotifier::deviceAdded,
-            this, &StorageDevices::slotSolidDeviceAdded);
-    connect(Solid::DeviceNotifier::instance(), &Solid::DeviceNotifier::deviceRemoved,
-            this, &StorageDevices::slotSolidDeviceRemoved);
+    connect(Solid::DeviceNotifier::instance(), &Solid::DeviceNotifier::deviceAdded, this, &StorageDevices::slotSolidDeviceAdded);
+    connect(Solid::DeviceNotifier::instance(), &Solid::DeviceNotifier::deviceRemoved, this, &StorageDevices::slotSolidDeviceRemoved);
 
     initCacheEntries();
 }
-
 
 StorageDevices::~StorageDevices()
 {
 }
 
-
 void StorageDevices::initCacheEntries()
 {
-    const QList<Solid::Device> devices
-        = Solid::Device::listFromQuery(QStringLiteral("StorageVolume.usage=='FileSystem'"))
-          + Solid::Device::listFromType(Solid::DeviceInterface::NetworkShare);
+    const QList<Solid::Device> devices =
+        Solid::Device::listFromQuery(QStringLiteral("StorageVolume.usage=='FileSystem'")) + Solid::Device::listFromType(Solid::DeviceInterface::NetworkShare);
     for (const Solid::Device& dev : devices) {
         createCacheEntry(dev);
     }
@@ -66,9 +61,8 @@ StorageDevices::Entry* StorageDevices::createCacheEntry(const Solid::Device& dev
     Entry entry(dev);
     auto it = m_metadataCache.insert(dev.udi(), entry);
 
-    connect(storage, &Solid::StorageAccess::accessibilityChanged,
-            this, &StorageDevices::slotAccessibilityChanged);
-    //connect(storage, SIGNAL(teardownRequested(QString)),
+    connect(storage, &Solid::StorageAccess::accessibilityChanged, this, &StorageDevices::slotAccessibilityChanged);
+    // connect(storage, SIGNAL(teardownRequested(QString)),
     //        this, SLOT(slotTeardownRequested(QString)));
     return &it.value();
 }
@@ -77,7 +71,6 @@ bool StorageDevices::isEmpty() const
 {
     return m_metadataCache.isEmpty();
 }
-
 
 void StorageDevices::slotSolidDeviceAdded(const QString& udi)
 {
@@ -88,17 +81,15 @@ void StorageDevices::slotSolidDeviceAdded(const QString& udi)
     }
 }
 
-
 void StorageDevices::slotSolidDeviceRemoved(const QString& udi)
 {
-    QHash< QString, Entry >::iterator it = m_metadataCache.find(udi);
+    QHash<QString, Entry>::iterator it = m_metadataCache.find(udi);
     if (it != m_metadataCache.end()) {
         qCDebug(BALOO) << "Found removable storage volume for Baloo undocking:" << udi;
         Q_EMIT deviceRemoved(&it.value());
         m_metadataCache.erase(it);
     }
 }
-
 
 void StorageDevices::slotAccessibilityChanged(bool accessible, const QString& udi)
 {
@@ -175,4 +166,3 @@ bool StorageDevices::Entry::isUsable() const
 
     return usable;
 }
-

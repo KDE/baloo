@@ -6,18 +6,17 @@
 */
 
 #include "filesearchstoretest.h"
-#include "filesearchstore.h"
 #include "../../file/database.h"
 #include "filemapping.h"
+#include "filesearchstore.h"
 #include "query.h"
 #include "term.h"
 
 #include <QTest>
 
-#include <xapian.h>
 #include <kfilemetadata/properties.h>
 #include <kfilemetadata/propertyinfo.h>
-
+#include <xapian.h>
 
 using namespace Baloo;
 
@@ -37,7 +36,7 @@ void FileSearchStoreTest::testSimpleSearchString()
         q.setSearchString(QLatin1String("Sample"));
 
         int qid = m_store->exec(q);
-        //QCOMPARE(qid, 1);
+        // QCOMPARE(qid, 1);
         QVERIFY(m_store->next(qid));
         QCOMPARE(m_store->id(qid), serialize("file", id2));
         QCOMPARE(m_store->filePath(qid), url2);

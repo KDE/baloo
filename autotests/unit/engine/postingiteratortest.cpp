@@ -56,7 +56,7 @@ void PostingIteratorTest::test2()
     VectorPostingIterator* it2 = new VectorPostingIterator(l2);
     VectorPostingIterator* it3 = new VectorPostingIterator(l3);
 
-    QVector<PostingIterator*> orvec = {new OrPostingIterator({it2}), new OrPostingIterator({it3}) };
+    QVector<PostingIterator*> orvec = {new OrPostingIterator({it2}), new OrPostingIterator({it3})};
     OrPostingIterator* orit = new OrPostingIterator(orvec);
     QVector<PostingIterator*> andvec = {it1, orit};
     AndPostingIterator it(andvec);

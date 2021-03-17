@@ -8,15 +8,15 @@
 #ifndef BALOO_ID_UTILS_
 #define BALOO_ID_UTILS_
 
-#include <qplatformdefs.h>
 #include <qglobal.h>
+#include <qplatformdefs.h>
 
 #ifdef Q_OS_WIN
-# include <QFileInfo>
+#include <QFileInfo>
 #endif
 
-namespace Baloo {
-
+namespace Baloo
+{
 inline quint64 devIdAndInodeToId(quint32 devId, quint32 inode)
 {
     quint64 res;
@@ -36,8 +36,7 @@ inline quint64 statBufToId(const QT_STATBUF& stBuf)
 {
     // We're losing 32 bits of info, so this could potentially break
     // on file systems with really large inode and device ids
-    return devIdAndInodeToId(static_cast<quint32>(stBuf.st_dev),
-                             static_cast<quint32>(stBuf.st_ino));
+    return devIdAndInodeToId(static_cast<quint32>(stBuf.st_dev), static_cast<quint32>(stBuf.st_ino));
 }
 
 inline int filePathToStat(const QByteArray& filePath, QT_STATBUF& statBuf)
@@ -73,7 +72,6 @@ inline quint32 idToDeviceId(quint64 id)
     return arr[0];
 }
 
-
 template<typename T, typename V>
 inline void sortedIdInsert(T& vec, const V& id)
 {
@@ -98,7 +96,6 @@ inline void sortedIdRemove(T& vec, const V& id)
         vec.remove(idx);
     }
 }
-
 
 }
 

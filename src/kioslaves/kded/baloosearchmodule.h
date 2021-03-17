@@ -9,11 +9,11 @@
 #define KDED_BALOO_SEARCH_MODULE_H_
 
 #include <KDEDModule>
-#include <kdirnotify.h>
 #include <QUrl>
+#include <kdirnotify.h>
 
-namespace Baloo {
-
+namespace Baloo
+{
 class SearchModule : public KDEDModule
 {
     Q_OBJECT
@@ -28,6 +28,7 @@ private Q_SLOTS:
 
     void slotBalooFileDbChanged();
     void slotFileMetaDataChanged(const QStringList& list);
+
 private:
     QList<QUrl> m_searchUrls;
     org::kde::KDirNotify* m_dirNotify;

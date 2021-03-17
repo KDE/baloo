@@ -7,8 +7,8 @@
 
 #include <cmath>
 
-#include "timeestimator.h"
 #include "filecontentindexerprovider.h"
+#include "timeestimator.h"
 
 using namespace Baloo;
 
@@ -17,7 +17,6 @@ TimeEstimator::TimeEstimator(QObject* parent)
     , m_bufferIndex(0)
     , m_estimateReady(false)
 {
-
 }
 
 uint TimeEstimator::calculateTimeLeft(int filesLeft)

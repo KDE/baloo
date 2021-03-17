@@ -10,7 +10,7 @@
 #include <QMimeDatabase>
 #include <QUrl>
 
-Query::Query(QObject *parent)
+Query::Query(QObject* parent)
     : QObject(parent)
     , m_limit(0)
 {
@@ -20,7 +20,7 @@ Query::~Query()
 {
 }
 
-void Query::setSearchString(const QString &searchString)
+void Query::setSearchString(const QString& searchString)
 {
     if (m_searchString == searchString) {
         return;
@@ -35,7 +35,7 @@ QString Query::searchString() const
     return m_searchString;
 }
 
-void Query::setLimit(const int &limit)
+void Query::setLimit(const int& limit)
 {
     if (m_limit == limit) {
         return;
@@ -50,9 +50,9 @@ int Query::limit() const
     return m_limit;
 }
 
-QueryResultsModel::QueryResultsModel(QObject *parent)
-    : QAbstractListModel(parent),
-      m_query(new Query(this))
+QueryResultsModel::QueryResultsModel(QObject* parent)
+    : QAbstractListModel(parent)
+    , m_query(new Query(this))
 {
     connect(m_query, &Query::searchStringChanged, this, &QueryResultsModel::populateModel);
     connect(m_query, &Query::limitChanged, this, &QueryResultsModel::populateModel);
@@ -70,7 +70,7 @@ QHash<int, QByteArray> QueryResultsModel::roleNames() const
     return roleNames;
 }
 
-QVariant QueryResultsModel::data(const QModelIndex &index, int role) const
+QVariant QueryResultsModel::data(const QModelIndex& index, int role) const
 {
     if (!index.isValid()) {
         return QVariant();
@@ -92,7 +92,7 @@ QVariant QueryResultsModel::data(const QModelIndex &index, int role) const
     }
 }
 
-int QueryResultsModel::rowCount(const QModelIndex &parent) const
+int QueryResultsModel::rowCount(const QModelIndex& parent) const
 {
     if (parent.isValid()) {
         return 0;
@@ -101,7 +101,7 @@ int QueryResultsModel::rowCount(const QModelIndex &parent) const
     return m_balooEntryList.count();
 }
 
-void QueryResultsModel::setQuery(Query *query)
+void QueryResultsModel::setQuery(Query* query)
 {
     if (m_query == query) {
         return;
@@ -132,4 +132,3 @@ void QueryResultsModel::populateModel()
     }
     endResetModel();
 }
-

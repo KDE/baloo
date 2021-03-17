@@ -7,16 +7,16 @@
 */
 
 #include "kio_timeline.h"
-#include "timelinetools.h"
+#include "../common/udstools.h"
 #include "query.h"
 #include "resultiterator.h"
-#include "../common/udstools.h"
+#include "timelinetools.h"
 #include <sys/stat.h>
 
 #include <QCoreApplication>
 
-#include <KUser>
 #include <KFormat>
+#include <KUser>
 
 #include <KLocalizedString>
 
@@ -32,7 +32,7 @@ KIO::UDSEntry createFolderUDSEntry(const QString& name)
     uds.fastInsert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
     uds.fastInsert(KIO::UDSEntry::UDS_MIME_TYPE, QStringLiteral("inode/directory"));
 #ifdef Q_OS_WIN
-    uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, _S_IREAD );
+    uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, _S_IREAD);
 #else
     uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, S_IRUSR | S_IXUSR);
 #endif
@@ -52,7 +52,7 @@ KIO::UDSEntry createDateFolderUDSEntry(const QString& name, const QString& displ
     uds.fastInsert(KIO::UDSEntry::UDS_MODIFICATION_TIME, dt.toSecsSinceEpoch());
     uds.fastInsert(KIO::UDSEntry::UDS_CREATION_TIME, dt.toSecsSinceEpoch());
 #ifdef Q_OS_WIN
-    uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, _S_IREAD );
+    uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, _S_IREAD);
 #else
     uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, S_IRUSR | S_IXUSR);
 #endif
@@ -62,39 +62,32 @@ KIO::UDSEntry createDateFolderUDSEntry(const QString& name, const QString& displ
 
 KIO::UDSEntry createMonthUDSEntry(int month, int year)
 {
-    QString dateString = QDate(year, month, 1).toString(
-                i18nc("Month and year used in a tree above the actual days. "
-                      "Have a look at https://doc.qt.io/qt-5/qdate.html#toString "
-                      "to see which variables you can use and ask kde-i18n-doc@kde.org if you have "
-                      "problems understanding how to translate this",
-                      "MMMM yyyy"));
-    return createDateFolderUDSEntry(QDate(year, month, 1).toString(QStringLiteral("yyyy-MM")),
-                                dateString,
-                                QDate(year, month, 1));
+    QString dateString = QDate(year, month, 1)
+                             .toString(i18nc("Month and year used in a tree above the actual days. "
+                                             "Have a look at https://doc.qt.io/qt-5/qdate.html#toString "
+                                             "to see which variables you can use and ask kde-i18n-doc@kde.org if you have "
+                                             "problems understanding how to translate this",
+                                             "MMMM yyyy"));
+    return createDateFolderUDSEntry(QDate(year, month, 1).toString(QStringLiteral("yyyy-MM")), dateString, QDate(year, month, 1));
 }
 
 KIO::UDSEntry createDayUDSEntry(const QDate& date)
 {
-    KIO::UDSEntry uds = createDateFolderUDSEntry(date.toString(QStringLiteral("yyyy-MM-dd")),
-                        KFormat().formatRelativeDate(date, QLocale::LongFormat),
-                        date);
+    KIO::UDSEntry uds = createDateFolderUDSEntry(date.toString(QStringLiteral("yyyy-MM-dd")), KFormat().formatRelativeDate(date, QLocale::LongFormat), date);
 
     return uds;
 }
 
 }
 
-
 TimelineProtocol::TimelineProtocol(const QByteArray& poolSocket, const QByteArray& appSocket)
     : KIO::SlaveBase("timeline", poolSocket, appSocket)
 {
 }
 
-
 TimelineProtocol::~TimelineProtocol()
 {
 }
-
 
 void TimelineProtocol::listDir(const QUrl& url)
 {
@@ -150,7 +143,6 @@ void TimelineProtocol::listDir(const QUrl& url)
     }
 }
 
-
 void TimelineProtocol::mimetype(const QUrl& url)
 {
     QUrl canonicalUrl = canonicalizeTimelineUrl(url);
@@ -174,7 +166,6 @@ void TimelineProtocol::mimetype(const QUrl& url)
         break;
     }
 }
-
 
 void TimelineProtocol::stat(const QUrl& url)
 {
@@ -215,7 +206,6 @@ void TimelineProtocol::stat(const QUrl& url)
     }
 }
 
-
 void TimelineProtocol::listDays(int month, int year)
 {
     const int days = QDate(year, month, 1).daysInMonth();
@@ -239,7 +229,6 @@ bool TimelineProtocol::filesInDate(const QDate& date)
     return it.next();
 }
 
-
 void TimelineProtocol::listThisYearsMonths()
 {
     Query query;
@@ -257,16 +246,13 @@ void TimelineProtocol::listThisYearsMonths()
     }
 }
 
-
-extern "C"
+extern "C" {
+Q_DECL_EXPORT int kdemain(int argc, char** argv)
 {
-    Q_DECL_EXPORT int kdemain(int argc, char** argv)
-    {
-        QCoreApplication app(argc, argv);
-        app.setApplicationName(QStringLiteral("kio_timeline"));
-        Baloo::TimelineProtocol slave(argv[2], argv[3]);
-        slave.dispatchLoop();
-        return 0;
-    }
+    QCoreApplication app(argc, argv);
+    app.setApplicationName(QStringLiteral("kio_timeline"));
+    Baloo::TimelineProtocol slave(argv[2], argv[3]);
+    slave.dispatchLoop();
+    return 0;
 }
-
+}

@@ -9,8 +9,8 @@
 #include "database.h"
 #include "idutils.h"
 
-#include <QTest>
 #include <QTemporaryDir>
+#include <QTest>
 
 using namespace Baloo;
 
@@ -18,24 +18,28 @@ class TransactionTest : public QObject
 {
     Q_OBJECT
 private Q_SLOTS:
-    void init() {
+    void init()
+    {
         dir = new QTemporaryDir();
         db = new Database(dir->path());
         db->open(Database::CreateDatabase);
     }
 
-    void cleanup() {
+    void cleanup()
+    {
         delete db;
         delete dir;
     }
 
     void testTimeInfo();
+
 private:
     QTemporaryDir* dir;
     Database* db;
 };
 
-static quint64 touchFile(const QString& path) {
+static quint64 touchFile(const QString& path)
+{
     QFile file(path);
     file.open(QIODevice::WriteOnly);
     file.write("data");
@@ -73,7 +77,6 @@ void TransactionTest::testTimeInfo()
     DocumentTimeDB::TimeInfo timeInfo(1, 2);
     QCOMPARE(tr2.documentTimeInfo(id), timeInfo);
 }
-
 
 QTEST_MAIN(TransactionTest)
 

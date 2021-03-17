@@ -8,15 +8,15 @@
 #ifndef BALOO_DOCUMENTURLDB_H
 #define BALOO_DOCUMENTURLDB_H
 
-#include "idtreedb.h"
 #include "idfilenamedb.h"
+#include "idtreedb.h"
 #include "idutils.h"
 
 #include <QDebug>
 #include <QFile>
 
-namespace Baloo {
-
+namespace Baloo
+{
 class UrlTest;
 class PostingIterator;
 
@@ -46,8 +46,9 @@ public:
      * \arg shouldDeleteFolder This function is called on any empty parent folder,
      * it is used to determine if that folder should be deleted.
      */
-    template <typename Functor>
-    void del(quint64 docId, Functor shouldDeleteFolder) {
+    template<typename Functor>
+    void del(quint64 docId, Functor shouldDeleteFolder)
+    {
         if (!docId) {
             qWarning() << "del called with invalid docId:" << docId;
             return;
@@ -58,12 +59,13 @@ public:
     /**
      * \p url new url of the file (complete path)
      */
-    template <typename Functor>
+    template<typename Functor>
     void replace(quint64 docId, const QByteArray& url, Functor shouldDeleteFolder);
 
     quint64 getId(quint64 docId, const QByteArray& fileName) const;
 
-    PostingIterator* iter(quint64 docId) {
+    PostingIterator* iter(quint64 docId)
+    {
         IdTreeDB db(m_idTreeDbi, m_txn);
         return db.iter(docId);
     }
@@ -73,7 +75,7 @@ public:
 private:
     void add(quint64 id, quint64 parentId, const QByteArray& name);
 
-    template <typename Functor>
+    template<typename Functor>
     void replaceOrDelete(quint64 docId, const QByteArray& url, Functor shouldDeleteFolder);
 
     MDB_txn* m_txn;
@@ -83,8 +85,7 @@ private:
     friend class UrlTest;
 };
 
-
-template <typename Functor>
+template<typename Functor>
 void DocumentUrlDB::replace(quint64 docId, const QByteArray& url, Functor shouldDeleteFolder)
 {
     if (!docId || url.endsWith('/') || !url.startsWith('/')) {
@@ -94,7 +95,7 @@ void DocumentUrlDB::replace(quint64 docId, const QByteArray& url, Functor should
     replaceOrDelete(docId, url, shouldDeleteFolder);
 }
 
-template <typename Functor>
+template<typename Functor>
 void DocumentUrlDB::replaceOrDelete(quint64 docId, const QByteArray& url, Functor shouldDeleteFolder)
 {
     IdFilenameDB idFilenameDb(m_idFilenameDbi, m_txn);

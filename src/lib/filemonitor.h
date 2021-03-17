@@ -12,8 +12,8 @@
 
 #include "core_export.h"
 
-namespace Baloo {
-
+namespace Baloo
+{
 /**
  * @class FileMonitor filemonitor.h <Baloo/FileMonitor>
  */

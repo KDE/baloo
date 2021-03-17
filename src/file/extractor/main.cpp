@@ -6,8 +6,8 @@
     SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
 */
 
-#include "app.h"
 #include "../priority.h"
+#include "app.h"
 
 #include <KCrash>
 
@@ -27,7 +27,7 @@ int main(int argc, char* argv[])
 
     app.setQuitOnLastWindowClosed(false);
 
-    auto disableSessionManagement = [](QSessionManager &sm) {
+    auto disableSessionManagement = [](QSessionManager& sm) {
         sm.setRestartHint(QSessionManager::RestartNever);
     };
     QObject::connect(&app, &QGuiApplication::commitDataRequest, disableSessionManagement);

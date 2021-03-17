@@ -8,11 +8,11 @@
 #ifndef BALOO_TAGLISTJOB_H
 #define BALOO_TAGLISTJOB_H
 
-#include <KJob>
 #include "core_export.h"
+#include <KJob>
 
-namespace Baloo {
-
+namespace Baloo
+{
 /**
  * @class TagListJob taglisthjob.h <Baloo/TagListJob>
  */

@@ -11,9 +11,9 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-#include <QDateTime>
 #include <KFileMetaData/PropertyInfo>
 #include <KFileMetaData/TypeInfo>
+#include <QDateTime>
 
 // In order to use it in a vector
 Result::Result()
@@ -46,32 +46,26 @@ void Result::add(KFileMetaData::Property::Property property, const QVariant& val
 
     if (value.type() == QVariant::Bool) {
         m_doc.addTerm(prefix);
-    }
-    else if (value.type() == QVariant::Int || value.type() == QVariant::UInt) {
+    } else if (value.type() == QVariant::Int || value.type() == QVariant::UInt) {
         const QByteArray term = prefix + value.toString().toUtf8();
         m_doc.addTerm(term);
-    }
-    else if (value.type() == QVariant::Date) {
+    } else if (value.type() == QVariant::Date) {
         const QByteArray term = prefix + value.toDate().toString(Qt::ISODate).toUtf8();
         m_doc.addTerm(term);
-    }
-    else if (value.type() == QVariant::DateTime) {
+    } else if (value.type() == QVariant::DateTime) {
         const QByteArray term = prefix + value.toDateTime().toString(Qt::ISODate).toUtf8();
         m_doc.addTerm(term);
-    }
-    else if (value.type() == QVariant::StringList) {
+    } else if (value.type() == QVariant::StringList) {
         bool shouldBeIndexed = KFileMetaData::PropertyInfo(property).shouldBeIndexed();
         const auto valueList = value.toStringList();
-        for (const auto& val : valueList)
-        {
+        for (const auto& val : valueList) {
             if (val.isEmpty())
                 continue;
             m_termGen.indexText(val, prefix);
             if (shouldBeIndexed)
                 m_termGen.indexText(val);
         }
-    }
-    else {
+    } else {
         const QString val = value.toString();
         if (val.isEmpty())
             return;

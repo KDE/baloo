@@ -6,8 +6,8 @@
 
 #include "filecontentindexerprovider.h"
 
-#include "transaction.h"
 #include "database.h"
+#include "transaction.h"
 
 using namespace Baloo;
 

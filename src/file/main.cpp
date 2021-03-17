@@ -9,15 +9,15 @@
 
 #include <iostream>
 
-#include "global.h"
 #include "database.h"
 #include "fileindexerconfig.h"
-#include "priority.h"
-#include "migrator.h"
+#include "global.h"
 #include "mainhub.h"
+#include "migrator.h"
+#include "priority.h"
 
-#include <QDBusConnection>
 #include <QCoreApplication>
+#include <QDBusConnection>
 #include <QFile>
 
 int main(int argc, char** argv)
@@ -55,7 +55,7 @@ int main(int argc, char** argv)
     //       the lock manually in the baloo_file process.
     QFile::remove(path + "/index-lock");
 
-    Baloo::Database *db = Baloo::globalDatabaseInstance();
+    Baloo::Database* db = Baloo::globalDatabaseInstance();
 
     /**
      * try to open, if that fails, try to unlink the index db and retry

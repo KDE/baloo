@@ -9,12 +9,12 @@
 #define BALOO_IDFILENAMEDB_H
 
 #include "engine_export.h"
-#include <lmdb.h>
 #include <QByteArray>
 #include <QMap>
+#include <lmdb.h>
 
-namespace Baloo {
-
+namespace Baloo
+{
 class BALOO_ENGINE_EXPORT IdFilenameDB
 {
 public:
@@ -28,8 +28,12 @@ public:
         quint64 parentId;
         QByteArray name;
 
-        FilePath() : parentId(0) {}
-        bool operator == (const FilePath& fp) const {
+        FilePath()
+            : parentId(0)
+        {
+        }
+        bool operator==(const FilePath& fp) const
+        {
             return parentId == fp.parentId && name == fp.name;
         }
     };
@@ -39,6 +43,7 @@ public:
     void del(quint64 docId);
 
     QMap<quint64, FilePath> toTestMap() const;
+
 private:
     MDB_txn* m_txn;
     MDB_dbi m_dbi;

@@ -22,7 +22,7 @@ QByteArray DocTermsCodec::encode(const QVector<QByteArray>& terms)
 
     for (int i = 1; i < terms.size(); i++) {
         const QByteArray term = terms[i];
-        const QByteArray prevTerm = terms[i-1];
+        const QByteArray prevTerm = terms[i - 1];
 
         if (term.startsWith(prevTerm)) {
             full.append(term.mid(prevTerm.size()));
@@ -68,4 +68,3 @@ QVector<QByteArray> DocTermsCodec::decode(const QByteArray& full)
 
     return list;
 }
-

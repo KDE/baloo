@@ -8,15 +8,15 @@
 */
 
 #include "fileindexerconfig.h"
+#include "baloodebug.h"
 #include "fileexcludefilters.h"
 #include "storagedevices.h"
-#include "baloodebug.h"
 
-#include <QStringList>
 #include <QDir>
+#include <QStringList>
 
-#include <QStandardPaths>
 #include "baloosettings.h"
+#include <QStandardPaths>
 
 namespace
 {
@@ -33,7 +33,6 @@ QString normalizeTrailingSlashes(QString&& path)
 
 namespace Baloo
 {
-
 FileIndexerConfig::FileIndexerConfig(QObject* parent)
     : QObject(parent)
     , m_settings(new BalooSettings(this))
@@ -45,7 +44,6 @@ FileIndexerConfig::FileIndexerConfig(QObject* parent)
     forceConfigUpdate();
 }
 
-
 FileIndexerConfig::~FileIndexerConfig()
 {
 }
@@ -53,8 +51,7 @@ FileIndexerConfig::~FileIndexerConfig()
 QDebug operator<<(QDebug dbg, const FileIndexerConfig::FolderConfig& entry)
 {
     QDebugStateSaver saver(dbg);
-    dbg.nospace() << entry.path << ": "
-                  << (entry.isIncluded ? "included" : "excluded");
+    dbg.nospace() << entry.path << ": " << (entry.isIncluded ? "included" : "excluded");
     return dbg;
 }
 
@@ -151,7 +148,6 @@ bool FileIndexerConfig::shouldBeIndexed(const QString& path) const
     }
 }
 
-
 bool FileIndexerConfig::shouldFolderBeIndexed(const QString& path) const
 {
     QString folder;
@@ -163,8 +159,8 @@ bool FileIndexerConfig::shouldFolderBeIndexed(const QString& path) const
         if (folder == normalizedPath)
             return true;
 
-        // check the exclude filters for all components of the path
-        // after folder
+            // check the exclude filters for all components of the path
+            // after folder
 #ifndef __unix__
         QDir d(folder);
 #endif
@@ -175,8 +171,7 @@ bool FileIndexerConfig::shouldFolderBeIndexed(const QString& path) const
                 return false;
             }
 #ifndef __unix__
-            if (!indexHiddenFilesAndFolders() ||
-                !d.cd(c.toString()) || QFileInfo(d.path()).isHidden()) {
+            if (!indexHiddenFilesAndFolders() || !d.cd(c.toString()) || QFileInfo(d.path()).isHidden()) {
                 return false;
             }
 #endif
@@ -186,7 +181,6 @@ bool FileIndexerConfig::shouldFolderBeIndexed(const QString& path) const
 
     return false;
 }
-
 
 bool FileIndexerConfig::shouldFileBeIndexed(const QString& fileName) const
 {
@@ -200,7 +194,6 @@ bool FileIndexerConfig::shouldMimeTypeBeIndexed(const QString& mimeType) const
 {
     return !m_excludeMimetypes.contains(mimeType);
 }
-
 
 bool FileIndexerConfig::folderInFolderList(const QString& path, QString& folder) const
 {
@@ -220,7 +213,6 @@ bool FileIndexerConfig::folderInFolderList(const QString& path, QString& folder)
     return false;
 }
 
-
 void FileIndexerConfig::FolderCache::cleanup()
 {
     // TODO There are two cases where "redundant" includes
@@ -239,11 +231,11 @@ void FileIndexerConfig::FolderCache::cleanup()
         }
 
         const QString entryPath = (*entry).path;
-        auto start = entry; ++start;
-        auto parent = std::find_if(start, end(),
-            [&entryPath](const FolderConfig& _parent) {
-                return entryPath.startsWith(_parent.path);
-            });
+        auto start = entry;
+        ++start;
+        auto parent = std::find_if(start, end(), [&entryPath](const FolderConfig& _parent) {
+            return entryPath.startsWith(_parent.path);
+        });
 
         if (parent != end()) {
             if ((*entry).isIncluded == (*parent).isIncluded) {
@@ -265,8 +257,7 @@ void FileIndexerConfig::FolderCache::cleanup()
 
 bool FileIndexerConfig::FolderConfig::operator<(const FolderConfig& other) const
 {
-    return path.size() > other.path.size() ||
-        (path.size() == other.path.size() && path < other.path);
+    return path.size() > other.path.size() || (path.size() == other.path.size() && path < other.path);
 }
 
 bool FileIndexerConfig::FolderCache::addFolderConfig(const FolderConfig& config)
@@ -317,7 +308,7 @@ void FileIndexerConfig::buildFolderCache()
     // Add all removable media and network shares as ignored unless they have
     // been explicitly added in the include list
     const auto allMedia = m_devices->allMedia();
-    for (const auto& device: allMedia) {
+    for (const auto& device : allMedia) {
         const QString mountPath = device.mountPath();
         if (!device.isUsable() && !mountPath.isEmpty()) {
             if (!includeFolders.contains(mountPath)) {
@@ -332,7 +323,6 @@ void FileIndexerConfig::buildFolderCache()
 
     m_folderCacheDirty = false;
 }
-
 
 void FileIndexerConfig::buildExcludeFilterRegExpCache()
 {

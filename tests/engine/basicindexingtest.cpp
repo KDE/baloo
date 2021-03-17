@@ -5,17 +5,17 @@
     SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
 */
 
-#include <QDebug>
 #include <QCoreApplication>
-#include <QTemporaryDir>
-#include <QDirIterator>
+#include <QDebug>
 #include <QDir>
+#include <QDirIterator>
 #include <QElapsedTimer>
 #include <QMimeDatabase>
+#include <QTemporaryDir>
 
 #include "database.h"
-#include "transaction.h"
 #include "src/file/basicindexingjob.h"
+#include "transaction.h"
 
 using namespace Baloo;
 

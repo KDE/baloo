@@ -13,8 +13,8 @@
 
 #include <QVector>
 
-namespace Baloo {
-
+namespace Baloo
+{
 class BALOO_ENGINE_EXPORT PhraseAndIterator : public PostingIterator
 {
 public:

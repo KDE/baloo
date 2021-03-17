@@ -9,14 +9,13 @@
 #ifndef STORAGE_DEVICES_H
 #define STORAGE_DEVICES_H
 
-#include <QObject>
 #include <QHash>
+#include <QObject>
 
 #include <Solid/Device>
 
 namespace Baloo
 {
-
 /**
  * The removable media cache
  * media that are supported by Baloo.
@@ -35,7 +34,8 @@ public:
         Entry();
         explicit Entry(const Solid::Device& device);
 
-        Solid::Device device() const {
+        Solid::Device device() const
+        {
             return m_device;
         }
 
@@ -48,9 +48,11 @@ public:
          */
         bool isUsable() const;
 
-        QString udi() const {
+        QString udi() const
+        {
             return m_device.udi();
         }
+
     private:
         Solid::Device m_device;
     };

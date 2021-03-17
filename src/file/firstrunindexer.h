@@ -7,12 +7,12 @@
 #ifndef BALOO_FIRSTRUNINDEXER_H
 #define BALOO_FIRSTRUNINDEXER_H
 
-#include <QRunnable>
 #include <QObject>
+#include <QRunnable>
 #include <QStringList>
 
-namespace Baloo {
-
+namespace Baloo
+{
 class Database;
 class FileIndexerConfig;
 

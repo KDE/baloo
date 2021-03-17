@@ -13,8 +13,8 @@
 
 #include <QUrl>
 
-namespace Baloo {
-
+namespace Baloo
+{
 /**
  * @class Query query.h <Baloo/Query>
  *
@@ -134,8 +134,8 @@ public:
     static Query fromSearchUrl(const QUrl& url);
     static QString titleFromQueryUrl(const QUrl& url);
 
-    bool operator == (const Query& rhs) const;
-    bool operator != (const Query& rhs) const;
+    bool operator==(const Query& rhs) const;
+    bool operator!=(const Query& rhs) const;
 
     Query& operator=(const Query& rhs);
 

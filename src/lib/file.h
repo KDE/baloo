@@ -11,8 +11,8 @@
 #include "core_export.h"
 #include <KFileMetaData/Properties>
 
-namespace Baloo {
-
+namespace Baloo
+{
 /**
  * @class File file.h <Baloo/File>
  *
@@ -34,7 +34,7 @@ public:
     File(const QString& url);
     ~File();
 
-    const File& operator =(const File& f);
+    const File& operator=(const File& f);
 
     /**
      * The local url of the file

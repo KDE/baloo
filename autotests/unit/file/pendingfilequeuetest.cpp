@@ -8,12 +8,12 @@
 
 #include "pendingfilequeue.h"
 
-#include <qtest.h>
 #include <qsignalspy.h>
+#include <qtest.h>
 #include <qtimer.h>
 
-namespace Baloo {
-
+namespace Baloo
+{
 class PendingFileQueueTest : public QObject
 {
     Q_OBJECT
@@ -39,10 +39,14 @@ class TimerEventEater : public QObject
     Q_OBJECT
 
 public:
-    TimerEventEater(QObject* parent = nullptr) : QObject(parent) {}
+    TimerEventEater(QObject* parent = nullptr)
+        : QObject(parent)
+    {
+    }
 
 protected:
-    bool eventFilter(QObject *object, QEvent *event) override {
+    bool eventFilter(QObject* object, QEvent* event) override
+    {
         Q_UNUSED(object);
         Q_UNUSED(event);
         return true;
@@ -115,7 +119,9 @@ void PendingFileQueueTest::testTimeout()
 
     // Enqueue, and process the event queue
     queue.enqueue(file1);
-    QTimer::singleShot(0, [&queue, currentTime] { queue.processCache(currentTime); });
+    QTimer::singleShot(0, [&queue, currentTime] {
+        queue.processCache(currentTime);
+    });
 
     // The signal should be emitted immediately
     QVERIFY(spy.wait());
@@ -126,7 +132,9 @@ void PendingFileQueueTest::testTimeout()
     // should be signaled immediately
     queue.enqueue(file1);
     queue.enqueue(file2);
-    QTimer::singleShot(0, [&queue, currentTime] { queue.processCache(currentTime); });
+    QTimer::singleShot(0, [&queue, currentTime] {
+        queue.processCache(currentTime);
+    });
 
     QVERIFY(spy.wait(50));
     QCOMPARE(spy.count(), 1);
@@ -135,11 +143,15 @@ void PendingFileQueueTest::testTimeout()
     // Advance time 1.5 seconds, and let the pending queue be processed.
     // Nothing should be signaled, as the timeout is 2 seconds
     currentTime = currentTime.addMSecs(1500);
-    QTimer::singleShot(0, [&queue, currentTime] { queue.processPendingFiles(currentTime); });
+    QTimer::singleShot(0, [&queue, currentTime] {
+        queue.processPendingFiles(currentTime);
+    });
     QVERIFY(!spy.wait(50));
 
     currentTime = currentTime.addMSecs(1000);
-    QTimer::singleShot(0, [&queue, currentTime] { queue.processPendingFiles(currentTime); });
+    QTimer::singleShot(0, [&queue, currentTime] {
+        queue.processPendingFiles(currentTime);
+    });
     QVERIFY(spy.wait(0));
     QCOMPARE(spy.count(), 1);
     QCOMPARE(spy.takeFirst().constFirst().toString(), file1Url);
@@ -166,7 +178,9 @@ void PendingFileQueueTest::testRequeue()
     PendingFile file(myUrl);
     file.setModified();
     queue.enqueue(file);
-    QTimer::singleShot(0, [&queue, currentTime] { queue.processCache(currentTime); });
+    QTimer::singleShot(0, [&queue, currentTime] {
+        queue.processCache(currentTime);
+    });
 
     // The signal should be emitted immediately
     QVERIFY(spy.wait());
@@ -178,7 +192,9 @@ void PendingFileQueueTest::testRequeue()
     for (int i = 0; i < 3; i++) {
         queue.enqueue(file);
         currentTime = currentTime.addMSecs(20);
-        QTimer::singleShot(0, [&queue, currentTime] { queue.processCache(currentTime); });
+        QTimer::singleShot(0, [&queue, currentTime] {
+            queue.processCache(currentTime);
+        });
         spy.wait(0);
     }
 
@@ -186,7 +202,9 @@ void PendingFileQueueTest::testRequeue()
     int elapsed10thSeconds = 0;
     while (true) {
         currentTime = currentTime.addMSecs(100);
-        QTimer::singleShot(0, [&queue, currentTime] { queue.processPendingFiles(currentTime); });
+        QTimer::singleShot(0, [&queue, currentTime] {
+            queue.processPendingFiles(currentTime);
+        });
         if (spy.wait(0)) {
             break;
         }
@@ -224,7 +242,9 @@ void PendingFileQueueTest::testDeleteCreate()
 
     queue.enqueue(file1);
     queue.enqueue(file2);
-    QTimer::singleShot(0, [&queue, currentTime] { queue.processCache(currentTime); });
+    QTimer::singleShot(0, [&queue, currentTime] {
+        queue.processCache(currentTime);
+    });
 
     // The signals should be emitted immediately
     QVERIFY(spyModified.wait());
@@ -264,7 +284,9 @@ void PendingFileQueueTest::testCreateDelete()
         queue.enqueue(file_modified);
         queue.enqueue(file_delete);
     });
-    QTimer::singleShot(0, [&queue, currentTime] { queue.processCache(currentTime); });
+    QTimer::singleShot(0, [&queue, currentTime] {
+        queue.processCache(currentTime);
+    });
 
     // The Removed signal should be emitted immediately
     QVERIFY(spyRemoved.wait());
@@ -301,26 +323,38 @@ void PendingFileQueueTest::testCreateDelete2()
 
     // Prime the recent files list
     queue.enqueue(file_modified);
-    QTimer::singleShot(0, [&queue, currentTime] { queue.processCache(currentTime); });
+    QTimer::singleShot(0, [&queue, currentTime] {
+        queue.processCache(currentTime);
+    });
     QVERIFY(spyModified.wait());
     QCOMPARE(spyModified.count(), 1);
     QCOMPARE(spyModified.takeFirst().constFirst().toString(), myUrl);
     QCOMPARE(queue.m_recentlyEmitted.count(), 1);
 
     // Modify the file again
-    QTimer::singleShot(0, [&] { queue.enqueue(file_modified); });
-    QTimer::singleShot(0, [&queue, currentTime] { queue.processCache(currentTime); });
+    QTimer::singleShot(0, [&] {
+        queue.enqueue(file_modified);
+    });
+    QTimer::singleShot(0, [&queue, currentTime] {
+        queue.processCache(currentTime);
+    });
     // Process the timer, the file should be pending now
     QTest::qWait(10);
     QCOMPARE(queue.m_pendingFiles.count(), 1);
 
     // Let 5 seconds pass (minimum pending timeout)
     currentTime = currentTime.addMSecs(5000);
-    QTimer::singleShot(0, [&] { queue.enqueue(file_delete); });
+    QTimer::singleShot(0, [&] {
+        queue.enqueue(file_delete);
+    });
     // The "process" timer fires 10ms after the enqueue, plenty of time for the pending timer to fire
-    QTimer::singleShot(0, [&queue, currentTime] { queue.processPendingFiles(currentTime); });
+    QTimer::singleShot(0, [&queue, currentTime] {
+        queue.processPendingFiles(currentTime);
+    });
     currentTime = currentTime.addMSecs(10);
-    QTimer::singleShot(0, [&queue, currentTime] { queue.processCache(currentTime); });
+    QTimer::singleShot(0, [&queue, currentTime] {
+        queue.processCache(currentTime);
+    });
 
     // The Removed signal should be emitted immediately
     QVERIFY(spyRemoved.wait());

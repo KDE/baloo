@@ -7,9 +7,9 @@
 */
 
 #include "metadatamover.h"
+#include "baloodebug.h"
 #include "database.h"
 #include "transaction.h"
-#include "baloodebug.h"
 
 #include <QFile>
 
@@ -27,7 +27,7 @@ MetadataMover::~MetadataMover()
 
 void MetadataMover::moveFileMetadata(const QString& from, const QString& to)
 {
-//    qCDebug(BALOO) << from << to;
+    //    qCDebug(BALOO) << from << to;
     Q_ASSERT(!from.isEmpty() && from != QLatin1String("/"));
     Q_ASSERT(!to.isEmpty() && to != QLatin1String("/"));
 
@@ -76,8 +76,8 @@ void MetadataMover::updateMetadata(Transaction* tr, const QString& from, const Q
 {
     qCDebug(BALOO) << from << "->" << to;
     Q_ASSERT(!from.isEmpty() && !to.isEmpty());
-    Q_ASSERT(from[from.size()-1] != QLatin1Char('/'));
-    Q_ASSERT(to[to.size()-1] != QLatin1Char('/'));
+    Q_ASSERT(from[from.size() - 1] != QLatin1Char('/'));
+    Q_ASSERT(to[to.size() - 1] != QLatin1Char('/'));
 
     const QByteArray fromPath = QFile::encodeName(from);
     quint64 id = tr->documentId(fromPath);

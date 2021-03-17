@@ -7,16 +7,16 @@
 #ifndef BALOO_FILECONTENTINDEXER_H
 #define BALOO_FILECONTENTINDEXER_H
 
-#include <QRunnable>
-#include <QObject>
 #include <QAtomicInt>
+#include <QObject>
+#include <QRunnable>
 #include <QStringList>
 
-#include <QDBusServiceWatcher>
 #include <QDBusMessage>
+#include <QDBusServiceWatcher>
 
-namespace Baloo {
-
+namespace Baloo
+{
 class FileContentIndexerProvider;
 
 class FileContentIndexer : public QObject, public QRunnable
@@ -28,11 +28,15 @@ class FileContentIndexer : public QObject, public QRunnable
 public:
     FileContentIndexer(uint batchSize, FileContentIndexerProvider* provider, uint& finishedCount, QObject* parent = nullptr);
 
-    QString currentFile() { return m_currentFile; }
+    QString currentFile()
+    {
+        return m_currentFile;
+    }
 
     void run() override;
 
-    void quit() {
+    void quit()
+    {
         m_stop.storeRelaxed(true);
     }
 

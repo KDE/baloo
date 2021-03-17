@@ -5,16 +5,16 @@
     SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
 */
 
-#include <QCryptographicHash>
-#include <QTest>
 #include "positioncodec.h"
 #include "positioninfo.h"
+#include <QCryptographicHash>
+#include <QTest>
 
 using namespace Baloo;
 
 class PositionCodecTest : public QObject
 {
-Q_OBJECT
+    Q_OBJECT
 public:
     PositionCodecTest() = default;
     ~PositionCodecTest() = default;
@@ -23,20 +23,20 @@ private Q_SLOTS:
     void checkEncodeOutput();
     void checkEncodeOutput2();
     void checkEncodeOutput3();
+
 private:
     QVector<PositionInfo> m_data;
     QVector<PositionInfo> m_data2;
     QVector<PositionInfo> m_data3;
 };
 
-QTEST_MAIN ( PositionCodecTest )
+QTEST_MAIN(PositionCodecTest)
 
 void PositionCodecTest::initTestCase()
 {
     m_data.clear();
     m_data.reserve(100);
-    for(int i = 0; i < 100; ++i)
-    {
+    for (int i = 0; i < 100; ++i) {
         PositionInfo info;
         info.docId = (i + 1) * 4711;
         info.positions.reserve(3000);

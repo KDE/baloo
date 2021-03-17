@@ -5,18 +5,18 @@
 */
 
 #include "filewatch.h"
-#include "fileindexerconfigutils.h"
 #include "database.h"
 #include "fileindexerconfig.h"
+#include "fileindexerconfigutils.h"
 #include "pendingfilequeue.h"
 
-#include <QTest>
+#include <KFileMetaData/UserMetaData>
 #include <QSignalSpy>
 #include <QTemporaryDir>
-#include <KFileMetaData/UserMetaData>
+#include <QTest>
 
-namespace Baloo {
-
+namespace Baloo
+{
 class FileWatchTest : public QObject
 {
     Q_OBJECT
@@ -30,21 +30,24 @@ private Q_SLOTS:
 
 using namespace Baloo;
 
-namespace {
-    bool createFile(const QString& fileUrl) {
-        QFile f1(fileUrl);
-        f1.open(QIODevice::WriteOnly);
-        f1.close();
-        return QFile::exists(fileUrl);
-    }
+namespace
+{
+bool createFile(const QString& fileUrl)
+{
+    QFile f1(fileUrl);
+    f1.open(QIODevice::WriteOnly);
+    f1.close();
+    return QFile::exists(fileUrl);
+}
 
-    void modifyFile(const QString& fileUrl) {
-        QFile f1(fileUrl);
-        f1.open(QIODevice::Append | QIODevice::Text);
+void modifyFile(const QString& fileUrl)
+{
+    QFile f1(fileUrl);
+    f1.open(QIODevice::Append | QIODevice::Text);
 
-        QTextStream stream(&f1);
-        stream << "1";
-    }
+    QTextStream stream(&f1);
+    stream << "1";
+}
 }
 
 void FileWatchTest::testFileCreation()
@@ -193,7 +196,7 @@ void FileWatchTest::testConfigChange()
     QVERIFY(spyIndexNew.wait());
     QList<QString> result;
     for (const QList<QVariant>& event : qAsConst(spyIndexNew)) {
-	result.append(event.at(0).toString());
+        result.append(event.at(0).toString());
     }
     QCOMPARE(result, {d2 + "/tx2a"});
     spyIndexNew.clear();
@@ -207,7 +210,7 @@ void FileWatchTest::testConfigChange()
 
     QVERIFY(spyIndexNew.wait(500));
     for (const QList<QVariant>& event : qAsConst(spyIndexNew)) {
-	result.append(event.at(0).toString());
+        result.append(event.at(0).toString());
     }
     QCOMPARE(result, {d21 + "/tx2b"});
 }

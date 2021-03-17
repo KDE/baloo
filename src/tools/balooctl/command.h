@@ -8,11 +8,11 @@
 #ifndef BALOO_COMMAND_H
 #define BALOO_COMMAND_H
 
-#include <QString>
 #include <QCommandLineParser>
+#include <QString>
 
-namespace Baloo {
-
+namespace Baloo
+{
 /**
  * An Abstract class from which all other balooctl commands can inherit from
  */
@@ -25,7 +25,6 @@ public:
     virtual QString description() = 0;
 
     virtual int exec(const QCommandLineParser& parser) = 0;
-
 };
 
 }

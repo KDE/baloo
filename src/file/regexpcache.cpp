@@ -15,11 +15,9 @@ RegExpCache::RegExpCache()
 {
 }
 
-
 RegExpCache::~RegExpCache()
 {
 }
-
 
 bool RegExpCache::exactMatch(const QString& s) const
 {
@@ -64,9 +62,7 @@ void RegExpCache::rebuildCacheFromFilterList(const QStringList& filters)
     }
 
     // Combine all suffixes into one large RE: "^.*(foo|bar|baz)$"
-    QString suffixMatch = QStringLiteral("^.*\\.(")
-        + suffixes.join(QChar('|'))
-        + QStringLiteral(")$");
+    QString suffixMatch = QStringLiteral("^.*\\.(") + suffixes.join(QChar('|')) + QStringLiteral(")$");
     // qCDebug(BALOO) << suffixMatch;
     m_regexpCache.prepend(QRegularExpression(suffixMatch));
 }

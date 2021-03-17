@@ -11,29 +11,29 @@
 
 #ifdef Q_OS_LINUX
 #include <errno.h>
-#include <unistd.h>
-#include <sys/ioctl.h>
 #include <fcntl.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
 #endif
 
 using namespace Baloo;
 
-void FSUtils::disableCoW(const QString &path)
+void FSUtils::disableCoW(const QString& path)
 {
 #ifndef Q_OS_LINUX
     Q_UNUSED(path);
 #else
     // from linux/fs.h, so that Baloo does not depend on Linux header files
 #ifndef FS_IOC_GETFLAGS
-#define FS_IOC_GETFLAGS     _IOR('f', 1, long)
+#define FS_IOC_GETFLAGS _IOR('f', 1, long)
 #endif
 #ifndef FS_IOC_SETFLAGS
-#define FS_IOC_SETFLAGS     _IOW('f', 2, long)
+#define FS_IOC_SETFLAGS _IOW('f', 2, long)
 #endif
 
     // Disable COW on file
 #ifndef FS_NOCOW_FL
-#define FS_NOCOW_FL         0x00800000
+#define FS_NOCOW_FL 0x00800000
 #endif
 
     ulong flags = 0;
@@ -67,4 +67,3 @@ void FSUtils::disableCoW(const QString &path)
     close(fd);
 #endif
 }
-

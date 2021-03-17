@@ -8,8 +8,8 @@
 #ifndef BALOO_FILE_WATCH_H_
 #define BALOO_FILE_WATCH_H_
 
-#include <QObject>
 #include "pendingfile.h"
+#include <QObject>
 
 class KInotify;
 

@@ -6,8 +6,8 @@
 */
 
 #include "phraseanditerator.h"
-#include "vectorpositioninfoiterator.h"
 #include "positioninfo.h"
+#include "vectorpositioninfoiterator.h"
 
 #include <QTest>
 

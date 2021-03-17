@@ -12,8 +12,8 @@
 
 #include <QString>
 
-namespace Baloo {
-
+namespace Baloo
+{
 class ResultList;
 class ResultIteratorPrivate;
 
@@ -23,7 +23,7 @@ class ResultIteratorPrivate;
 class BALOO_CORE_EXPORT ResultIterator
 {
 public:
-    ResultIterator(ResultIterator &&rhs);
+    ResultIterator(ResultIterator&& rhs);
     ~ResultIterator();
 
 #if BALOO_CORE_BUILD_DEPRECATED_SINCE(5, 55)
@@ -35,7 +35,7 @@ public:
 #else
     ResultIterator(const ResultIterator& rhs) = delete;
 #endif
-    ResultIterator &operator=(const ResultIterator& rhs) = delete;
+    ResultIterator& operator=(const ResultIterator& rhs) = delete;
 
     bool next();
     QString filePath() const;

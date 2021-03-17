@@ -71,7 +71,7 @@ void PropertySerializationTest::testMultiProp()
 
     auto res = jsonToPropertyMap(json);
 
-    for (auto prop : { KFMProp::Subject, KFMProp::ReleaseYear, KFMProp::PhotoExposureTime }) {
+    for (auto prop : {KFMProp::Subject, KFMProp::ReleaseYear, KFMProp::PhotoExposureTime}) {
         QCOMPARE(res[prop], properties[prop]);
     }
     QCOMPARE(res, properties);
@@ -96,7 +96,7 @@ void PropertySerializationTest::testMultiValue()
 
     auto res = jsonToPropertyMap(json);
 
-    for (auto prop : { KFMProp::Genre, KFMProp::Ensemble, KFMProp::Rating}) {
+    for (auto prop : {KFMProp::Genre, KFMProp::Ensemble, KFMProp::Rating}) {
         QCOMPARE(res[prop], properties[prop]);
         QCOMPARE(res.values(prop), properties.values(prop));
         // qDebug() << res[prop];
@@ -122,14 +122,13 @@ void PropertySerializationTest::testLists()
 
     auto res = jsonToPropertyMap(json);
 
-    for (auto prop : { KFMProp::Genre, KFMProp::Ensemble, KFMProp::Rating}) {
+    for (auto prop : {KFMProp::Genre, KFMProp::Ensemble, KFMProp::Rating}) {
         // qDebug() << res.values(prop);
         // qDebug() << QVariant(res.values(prop)).toStringList().join(", ");
         // qDebug() << properties[prop].toStringList().join(", ");
         QCOMPARE(QVariant(res.values(prop)).toStringList(), properties[prop].toStringList());
     }
 }
-
 
 QTEST_MAIN(PropertySerializationTest)
 

@@ -193,7 +193,6 @@ const char* const s_sourceCodeMimeTypes[] = {
 const int s_sourceCodeMimeTypesVersion = 3;
 }
 
-
 QStringList Baloo::defaultExcludeFilterList()
 {
     QStringList l;
@@ -228,4 +227,3 @@ int Baloo::defaultExcludeMimetypesVersion()
     // The +1 is the image, video and audio mimetypes
     return s_sourceCodeMimeTypesVersion + 1;
 }
-

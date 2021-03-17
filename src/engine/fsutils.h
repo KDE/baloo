@@ -11,14 +11,15 @@
 
 #include <QString>
 
-namespace Baloo {
-namespace FSUtils {
-
+namespace Baloo
+{
+namespace FSUtils
+{
 /**
  * Disables filesystem copy-on-write feature on given file or directory.
  * Only implemented on Linux and does nothing on other platforms.
  */
-void disableCoW(const QString &path);
+void disableCoW(const QString& path);
 
 }
 }

@@ -11,13 +11,13 @@
 #include "postingiterator.h"
 
 #include <QByteArray>
-#include <QVector>
 #include <QRegularExpression>
+#include <QVector>
 
 #include <lmdb.h>
 
-namespace Baloo {
-
+namespace Baloo
+{
 typedef QVector<quint64> PostingList;
 
 /**
@@ -47,8 +47,8 @@ public:
     };
     // For integral types only:
     template<typename T>
-    typename std::enable_if<std::is_integral<T>::value, PostingIterator*>::type
-    compIter(const QByteArray& prefix, T val, Comparator com) {
+    typename std::enable_if<std::is_integral<T>::value, PostingIterator*>::type compIter(const QByteArray& prefix, T val, Comparator com)
+    {
         qlonglong l = val;
         return compIter(prefix, l, com);
     }
@@ -59,14 +59,14 @@ public:
     QVector<QByteArray> fetchTermsStartingWith(const QByteArray& term);
 
     QMap<QByteArray, PostingList> toTestMap() const;
+
 private:
-    template <typename Validator>
+    template<typename Validator>
     PostingIterator* iter(const QByteArray& prefix, Validator validate);
 
     MDB_txn* m_txn;
     MDB_dbi m_dbi;
 };
-
 
 }
 

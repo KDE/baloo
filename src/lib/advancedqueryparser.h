@@ -10,8 +10,8 @@
 #include "query.h"
 #include "term.h"
 
-namespace Baloo {
-
+namespace Baloo
+{
 class AdvancedQueryParser
 {
 public:

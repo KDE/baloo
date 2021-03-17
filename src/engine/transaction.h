@@ -9,16 +9,16 @@
 #define BALOO_TRANSACTION_H
 
 #include "databasedbis.h"
+#include "documenttimedb.h"
 #include "mtimedb.h"
 #include "postingdb.h"
 #include "writetransaction.h"
-#include "documenttimedb.h"
 #include <functional>
 
 #include <lmdb.h>
 
-namespace Baloo {
-
+namespace Baloo
+{
 class Database;
 class Document;
 class PostingIterator;
@@ -114,9 +114,9 @@ private:
     Transaction(const Transaction& rhs) = delete;
 
     const DatabaseDbis& m_dbis;
-    MDB_txn *m_txn = nullptr;
-    MDB_env *m_env = nullptr;
-    WriteTransaction *m_writeTrans = nullptr;
+    MDB_txn* m_txn = nullptr;
+    MDB_env* m_env = nullptr;
+    WriteTransaction* m_writeTrans = nullptr;
 
     friend class DatabaseSanitizerImpl;
     friend class DBState; // for testing

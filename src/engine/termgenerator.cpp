@@ -11,9 +11,9 @@
 
 using namespace Baloo;
 
-namespace {
-
-QString normalizeTerm(const QString &str)
+namespace
+{
+QString normalizeTerm(const QString& str)
 {
     // Remove all accents. It is important to call toLower after normalization,
     // since some exotic unicode symbols can remain uppercase
@@ -30,7 +30,7 @@ QString normalizeTerm(const QString &str)
     return cleanString.normalized(QString::NormalizationForm_KC);
 }
 
-void appendTerm(QByteArrayList &list, const QString &term)
+void appendTerm(QByteArrayList& list, const QString& term)
 {
     if (!term.isEmpty()) {
         // Truncate the string to avoid arbitrarily long terms
@@ -58,14 +58,13 @@ QByteArrayList TermGenerator::termList(const QString& text_)
 
     int start = 0;
 
-    auto isSkipChar = [] (const QChar& c) {
+    auto isSkipChar = [](const QChar& c) {
         return c.isPunct() || c.isMark() || c.isSpace();
     };
 
     QByteArrayList list;
     QTextBoundaryFinder bf(QTextBoundaryFinder::Word, text);
     for (; bf.position() != -1; bf.toNextBoundary()) {
-
         int end = bf.position();
         while (start < end && isSkipChar(text[start])) {
             start++;
@@ -158,4 +157,3 @@ void TermGenerator::setPosition(int position)
 {
     m_position = position;
 }
-

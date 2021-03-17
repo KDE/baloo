@@ -13,7 +13,6 @@
 
 namespace Baloo
 {
-
 class PowerStateMonitor : public QObject
 {
     Q_OBJECT
@@ -21,7 +20,8 @@ class PowerStateMonitor : public QObject
 public:
     explicit PowerStateMonitor(QObject* parent = nullptr);
 
-    bool isOnBattery()    const {
+    bool isOnBattery() const
+    {
         return m_isOnBattery;
     }
 

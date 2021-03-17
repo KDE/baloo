@@ -6,15 +6,15 @@
 
 #include "basicindexingjob.h"
 
-#include <QMimeDatabase>
-#include <QTest>
-#include <QFileInfo>
 #include <QDateTime>
-#include <QTemporaryDir>
 #include <QFile>
+#include <QFileInfo>
+#include <QMimeDatabase>
+#include <QTemporaryDir>
+#include <QTest>
 
-namespace Baloo {
-
+namespace Baloo
+{
 class BasicIndexingJobTest : public QObject
 {
     Q_OBJECT

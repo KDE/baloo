@@ -8,19 +8,20 @@
 #ifndef BALOO_TERMGENERATOR_H
 #define BALOO_TERMGENERATOR_H
 
+#include "document.h"
+#include "engine_export.h"
 #include <QByteArray>
 #include <QString>
-#include "engine_export.h"
-#include "document.h"
 
-namespace Baloo {
-
+namespace Baloo
+{
 class BALOO_ENGINE_EXPORT TermGenerator
 {
 public:
     explicit TermGenerator(Document& doc);
 
-    void setDocument(Document& doc) {
+    void setDocument(Document& doc)
+    {
         m_doc = doc;
     }
 
@@ -37,6 +38,7 @@ public:
 
     // Trim all terms to this size
     const static int maxTermSize = 25;
+
 private:
     Document& m_doc;
     int m_position;

@@ -12,8 +12,8 @@
 #include <QByteArray>
 #include <QVector>
 
-namespace Baloo {
-
+namespace Baloo
+{
 /*
  * This is a stripped down version of various encode/decode functions for
  * 32/64 bit fixed/variable data types. If you need other functions than the
@@ -31,7 +31,7 @@ inline void putFixed64(QByteArray* dst, quint64 value)
  * called inside a loop, the temporary buffer must not be reallocated on every
  * call.
  */
-void putDifferentialVarInt32(QByteArray &temporaryStorage, QByteArray* dst, const QVector<quint32>& values);
+void putDifferentialVarInt32(QByteArray& temporaryStorage, QByteArray* dst, const QVector<quint32>& values);
 char* getDifferentialVarInt32(char* input, char* limit, QVector<quint32>* values);
 extern const char* getVarint32Ptr(const char* p, const char* limit, quint32* v);
 
@@ -39,7 +39,7 @@ inline quint64 decodeFixed64(const char* ptr)
 {
     // Load the raw bytes
     quint64 result;
-    memcpy(&result, ptr, sizeof(result));  // gcc optimizes this to a plain load
+    memcpy(&result, ptr, sizeof(result)); // gcc optimizes this to a plain load
     return result;
 }
 

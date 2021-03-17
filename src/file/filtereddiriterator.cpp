@@ -71,7 +71,7 @@ QString FilteredDirIterator::next()
         m_filePath = m_currentIter->next();
         m_fileInfo = m_currentIter->fileInfo();
 
-        auto shouldIndexFolder = [&] () -> bool {
+        auto shouldIndexFolder = [&]() -> bool {
             if (!m_config) {
                 return !m_fileInfo.isHidden();
             }
@@ -79,7 +79,7 @@ QString FilteredDirIterator::next()
             if (!m_config->folderInFolderList(m_filePath, folder)) {
                 return false;
             }
-	    if ((folder == m_filePath) || (folder == QString(m_filePath).append(QLatin1Char('/')))) {
+            if ((folder == m_filePath) || (folder == QString(m_filePath).append(QLatin1Char('/')))) {
                 return true;
             }
             if (!shouldIndexHidden && m_fileInfo.isHidden()) {
@@ -94,8 +94,7 @@ QString FilteredDirIterator::next()
                 m_paths.push(m_filePath);
                 return m_filePath;
             }
-        }
-        else if (m_fileInfo.isFile()) {
+        } else if (m_fileInfo.isFile()) {
             if ((!shouldIndexHidden) && m_fileInfo.isHidden()) {
                 continue;
             }

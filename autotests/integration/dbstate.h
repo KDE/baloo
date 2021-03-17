@@ -8,18 +8,19 @@
 #ifndef BALOO_DBSTATE_H
 #define BALOO_DBSTATE_H
 
-#include "transaction.h"
-#include "postingdb.h"
-#include "documentdb.h"
-#include "documenturldb.h"
-#include "documentiddb.h"
 #include "documentdatadb.h"
-#include "positiondb.h"
+#include "documentdb.h"
+#include "documentiddb.h"
 #include "documenttimedb.h"
+#include "documenturldb.h"
+#include "positiondb.h"
+#include "postingdb.h"
+#include "transaction.h"
 
-namespace Baloo {
-
-class DBState {
+namespace Baloo
+{
+class DBState
+{
 public:
     QMap<QByteArray, PostingList> postingDb;
     QMap<QByteArray, QVector<PositionInfo>> positionDb;
@@ -36,16 +37,18 @@ public:
     QVector<quint64> contentIndexingDb;
     QVector<quint64> failedIdDb;
 
-    bool operator== (const DBState& st) const {
+    bool operator==(const DBState& st) const
+    {
         return postingDb == st.postingDb && positionDb == st.positionDb && docTermsDb == st.docTermsDb //
-               && docFileNameTermsDb == st.docFileNameTermsDb && docXAttrTermsDb == st.docXAttrTermsDb //
-               && docTimeDb == st.docTimeDb && mtimeDb == st.mtimeDb && docDataDb == st.docDataDb //
-               && docUrlDb == st.docUrlDb && contentIndexingDb == st.contentIndexingDb //
-               && failedIdDb == st.failedIdDb;
+            && docFileNameTermsDb == st.docFileNameTermsDb && docXAttrTermsDb == st.docXAttrTermsDb //
+            && docTimeDb == st.docTimeDb && mtimeDb == st.mtimeDb && docDataDb == st.docDataDb //
+            && docUrlDb == st.docUrlDb && contentIndexingDb == st.contentIndexingDb //
+            && failedIdDb == st.failedIdDb;
     }
 
     static DBState fromTransaction(Transaction* tr);
     static bool debugCompare(const DBState& st1, const DBState& st2);
+
 private:
 };
 

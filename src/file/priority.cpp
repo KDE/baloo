@@ -16,50 +16,50 @@
 
 #include <QDebug>
 
-#include <sys/time.h>
 #include <sys/resource.h>
+#include <sys/time.h>
 
 #include <unistd.h>
 #ifndef _WIN32
-#include <sys/syscall.h>
 #include <errno.h>
+#include <sys/syscall.h>
 
 #include <sched.h>
 #endif
 
 #ifdef SYS_ioprio_set
-namespace {
+namespace
+{
 #ifndef IOPRIO_CLASS_IDLE
-    enum {
-        IOPRIO_CLASS_NONE,
-        IOPRIO_CLASS_RT,
-        IOPRIO_CLASS_BE,
-        IOPRIO_CLASS_IDLE,
-    };
+enum {
+    IOPRIO_CLASS_NONE,
+    IOPRIO_CLASS_RT,
+    IOPRIO_CLASS_BE,
+    IOPRIO_CLASS_IDLE,
+};
 #endif
 
 #ifndef IOPRIO_WHO_PROCESS
-    enum {
-        IOPRIO_WHO_PROCESS = 1,
-        IOPRIO_WHO_PGRP,
-        IOPRIO_WHO_USER,
-    };
+enum {
+    IOPRIO_WHO_PROCESS = 1,
+    IOPRIO_WHO_PGRP,
+    IOPRIO_WHO_USER,
+};
 #endif
 
 #ifndef IOPRIO_CLASS_SHIFT
-    const int IOPRIO_CLASS_SHIFT = 13;
+const int IOPRIO_CLASS_SHIFT = 13;
 #endif
 }
 #endif
 
-
 bool lowerIOPriority()
 {
 #ifdef SYS_ioprio_set
-    if ( syscall( SYS_ioprio_set, IOPRIO_WHO_PROCESS, 0, IOPRIO_CLASS_IDLE<<IOPRIO_CLASS_SHIFT ) < 0 ) {
-        qDebug( "cannot set io scheduling to idle (%s). Trying best effort.\n",  strerror( errno ));
-        if ( syscall( SYS_ioprio_set, IOPRIO_WHO_PROCESS, 0, 7|IOPRIO_CLASS_BE<<IOPRIO_CLASS_SHIFT ) < 0 ) {
-            qDebug( "cannot set io scheduling to best effort.\n");
+    if (syscall(SYS_ioprio_set, IOPRIO_WHO_PROCESS, 0, IOPRIO_CLASS_IDLE << IOPRIO_CLASS_SHIFT) < 0) {
+        qDebug("cannot set io scheduling to idle (%s). Trying best effort.\n", strerror(errno));
+        if (syscall(SYS_ioprio_set, IOPRIO_WHO_PROCESS, 0, 7 | IOPRIO_CLASS_BE << IOPRIO_CLASS_SHIFT) < 0) {
+            qDebug("cannot set io scheduling to best effort.\n");
             return false;
         }
     }
@@ -69,24 +69,22 @@ bool lowerIOPriority()
 #endif
 }
 
-
 bool lowerPriority()
 {
 #ifndef Q_OS_WIN
-    return !setpriority( PRIO_PROCESS, 0, 19 );
+    return !setpriority(PRIO_PROCESS, 0, 19);
 #else
     return false;
 #endif
 }
 
-
 bool lowerSchedulingPriority()
 {
 #ifdef SCHED_BATCH
     struct sched_param param;
-    memset( &param, 0, sizeof(param) );
+    memset(&param, 0, sizeof(param));
     param.sched_priority = 0;
-    return !sched_setscheduler( 0, SCHED_BATCH, &param );
+    return !sched_setscheduler(0, SCHED_BATCH, &param);
 #else
     return false;
 #endif
@@ -96,9 +94,9 @@ bool setIdleSchedulingPriority()
 {
 #ifdef SCHED_IDLE
     struct sched_param param;
-    memset( &param, 0, sizeof(param) );
+    memset(&param, 0, sizeof(param));
     param.sched_priority = 0;
-    return !sched_setscheduler( 0, SCHED_IDLE, &param );
+    return !sched_setscheduler(0, SCHED_IDLE, &param);
 #else
     return false;
 #endif

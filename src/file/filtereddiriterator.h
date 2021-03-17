@@ -11,8 +11,8 @@
 #include <QFileInfo>
 #include <QStack>
 
-namespace Baloo {
-
+namespace Baloo
+{
 class FileIndexerConfig;
 
 class FilteredDirIterator
@@ -25,8 +25,8 @@ public:
     FilteredDirIterator(const FileIndexerConfig* config, const QString& folder, Filter filter = FilesAndDirs);
     ~FilteredDirIterator();
 
-    FilteredDirIterator(const FilteredDirIterator &) = delete;
-    FilteredDirIterator &operator=(const FilteredDirIterator &) = delete;
+    FilteredDirIterator(const FilteredDirIterator&) = delete;
+    FilteredDirIterator& operator=(const FilteredDirIterator&) = delete;
 
     QString next();
     QString filePath() const;

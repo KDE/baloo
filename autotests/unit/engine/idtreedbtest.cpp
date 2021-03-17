@@ -6,8 +6,8 @@
 */
 
 #include "idtreedb.h"
-#include "singledbtest.h"
 #include "postingiterator.h"
+#include "singledbtest.h"
 
 using namespace Baloo;
 
@@ -15,7 +15,8 @@ class BALOO_ENGINE_EXPORT IdTreeDBTest : public SingleDBTest
 {
     Q_OBJECT
 private Q_SLOTS:
-    void test() {
+    void test()
+    {
         IdTreeDB db(IdTreeDB::create(m_txn), m_txn);
 
         QVector<quint64> val = {5, 6, 7};
@@ -27,7 +28,8 @@ private Q_SLOTS:
         QCOMPARE(db.get(1), QVector<quint64>());
     }
 
-    void testIter() {
+    void testIter()
+    {
         IdTreeDB db(IdTreeDB::create(m_txn), m_txn);
 
         db.put(1, {5, 6, 7, 8});

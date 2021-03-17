@@ -8,12 +8,12 @@
 #define BALOO_DOCUMENTDATADB_H
 
 #include "engine_export.h"
-#include <lmdb.h>
 #include <QByteArray>
 #include <QMap>
+#include <lmdb.h>
 
-namespace Baloo {
-
+namespace Baloo
+{
 class BALOO_ENGINE_EXPORT DocumentDataDB
 {
 public:
@@ -30,6 +30,7 @@ public:
     bool contains(quint64 docId);
 
     QMap<quint64, QByteArray> toTestMap() const;
+
 private:
     MDB_txn* m_txn;
     MDB_dbi m_dbi;

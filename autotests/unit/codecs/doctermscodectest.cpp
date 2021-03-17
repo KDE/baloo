@@ -16,7 +16,8 @@ class DocTermsCodecTest : public QObject
 {
     Q_OBJECT
 private Q_SLOTS:
-    void test() {
+    void test()
+    {
         DocTermsCodec codec;
 
         QVector<QByteArray> vec = {"ab", "abc", "dar", "darwin"};

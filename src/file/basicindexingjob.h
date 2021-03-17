@@ -10,8 +10,8 @@
 
 #include "document.h"
 
-namespace Baloo {
-
+namespace Baloo
+{
 class BasicIndexingJob
 {
 public:
@@ -20,13 +20,15 @@ public:
         MarkForContentIndexing,
     };
 
-    BasicIndexingJob(const QString& filePath, const QString& mimetype,
-                     IndexingLevel level = MarkForContentIndexing);
+    BasicIndexingJob(const QString& filePath, const QString& mimetype, IndexingLevel level = MarkForContentIndexing);
     ~BasicIndexingJob();
 
     bool index();
 
-    Document document() { return m_doc; }
+    Document document()
+    {
+        return m_doc;
+    }
 
 private:
     QString m_filePath;

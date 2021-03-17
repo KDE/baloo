@@ -4,36 +4,36 @@
     SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 */
 
-#include <QCoreApplication>
 #include <QCommandLineParser>
+#include <QCoreApplication>
 #include <QFile>
 
 #include <KAboutData>
-#include <KLocalizedString>
 #include <KFormat>
-#include <QStandardPaths>
-#include <QProcess>
-#include <QTextStream>
+#include <KLocalizedString>
 #include <QFileInfo>
 #include <QLocale>
+#include <QProcess>
+#include <QStandardPaths>
+#include <QTextStream>
 
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
 
-#include "global.h"
 #include "database.h"
-#include "transaction.h"
 #include "databasesize.h"
+#include "global.h"
+#include "transaction.h"
 
+#include "configcommand.h"
+#include "fileindexerconfig.h"
+#include "idutils.h"
 #include "indexer.h"
 #include "indexerconfig.h"
-#include "idutils.h"
-#include "fileindexerconfig.h"
+#include "indexerstate.h"
+#include "maininterface.h"
 #include "monitorcommand.h"
 #include "schedulerinterface.h"
-#include "maininterface.h"
-#include "indexerstate.h"
-#include "configcommand.h"
 #include "statuscommand.h"
 
 using namespace Baloo;
@@ -72,12 +72,11 @@ int main(int argc, char* argv[])
 
     QString statusFormatDescription = i18nc("Format to use for status command, %1|%2|%3 are option values, %4 is a CLI command",
                                             "Output format <%1|%2|%3>.\nThe default format is \"%1\".\nOnly applies to \"%4\"",
-                                                QStringLiteral("multiline"),
-                                                QStringLiteral("json"),
-                                                QStringLiteral("simple"),
-                                                QStringLiteral("balooctl status <file>"));
-    parser.addOption({{QStringLiteral("f"), QStringLiteral("format")},
-                     statusFormatDescription, i18n("format"), QStringLiteral("multiline")});
+                                            QStringLiteral("multiline"),
+                                            QStringLiteral("json"),
+                                            QStringLiteral("simple"),
+                                            QStringLiteral("balooctl status <file>"));
+    parser.addOption({{QStringLiteral("f"), QStringLiteral("format")}, statusFormatDescription, i18n("format"), QStringLiteral("multiline")});
 
     parser.addVersionOption();
     parser.addHelpOption();
@@ -91,13 +90,9 @@ int main(int argc, char* argv[])
 
     QString command = parser.positionalArguments().first();
 
-    org::kde::baloo::main mainInterface(QStringLiteral("org.kde.baloo"),
-                                                QStringLiteral("/"),
-                                                QDBusConnection::sessionBus());
+    org::kde::baloo::main mainInterface(QStringLiteral("org.kde.baloo"), QStringLiteral("/"), QDBusConnection::sessionBus());
 
-    org::kde::baloo::scheduler schedulerinterface(QStringLiteral("org.kde.baloo"),
-                                        QStringLiteral("/scheduler"),
-                                        QDBusConnection::sessionBus());
+    org::kde::baloo::scheduler schedulerinterface(QStringLiteral("org.kde.baloo"), QStringLiteral("/scheduler"), QDBusConnection::sessionBus());
 
     if (command == QLatin1String("config")) {
         ConfigCommand command;
@@ -113,8 +108,7 @@ int main(int argc, char* argv[])
         bool isEnabled = false;
         if (command == QLatin1String("enable")) {
             isEnabled = true;
-        }
-        else if (command == QLatin1String("disable")) {
+        } else if (command == QLatin1String("disable")) {
             isEnabled = false;
         }
 
@@ -196,7 +190,7 @@ int main(int argc, char* argv[])
             return 1;
         }
 
-        Database *db = globalDatabaseInstance();
+        Database* db = globalDatabaseInstance();
         if (!db->open(Database::ReadWriteDatabase)) {
             out << "Baloo Index could not be opened\n";
             return 1;
@@ -211,7 +205,7 @@ int main(int argc, char* argv[])
                 out << "Could not stat file: " << url << '\n';
                 continue;
             }
-            if (tr.inPhaseOne(id))  {
+            if (tr.inPhaseOne(id)) {
                 out << "Skipping: " << url << " Reason: Already scheduled for indexing\n";
                 continue;
             }
@@ -235,7 +229,7 @@ int main(int argc, char* argv[])
             return 1;
         }
 
-        Database *db = globalDatabaseInstance();
+        Database* db = globalDatabaseInstance();
         if (!db->open(Database::ReadWriteDatabase)) {
             out << "Baloo Index could not be opened\n";
             return 1;
@@ -260,7 +254,7 @@ int main(int argc, char* argv[])
     }
 
     if (command == QLatin1String("failed")) {
-        Database *db = globalDatabaseInstance();
+        Database* db = globalDatabaseInstance();
         if (!db->open(Database::ReadOnlyDatabase)) {
             out << "Baloo Index could not be opened\n";
             return 1;
@@ -286,7 +280,7 @@ int main(int argc, char* argv[])
     }
 
     if (command == QLatin1String("indexSize")) {
-        Database *db = globalDatabaseInstance();
+        Database* db = globalDatabaseInstance();
         if (!db->open(Database::ReadOnlyDatabase)) {
             out << "Baloo Index could not be opened\n";
             return 1;

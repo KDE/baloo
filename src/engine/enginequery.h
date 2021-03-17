@@ -11,11 +11,11 @@
 #include "engine_export.h"
 
 #include <QByteArray>
-#include <QVector>
 #include <QDebug>
+#include <QVector>
 
-namespace Baloo {
-
+namespace Baloo
+{
 class BALOO_ENGINE_EXPORT EngineQuery
 {
 public:
@@ -29,35 +29,43 @@ public:
 
     EngineQuery();
     EngineQuery(const QByteArray& term, Operation op = Equal);
-    EngineQuery(const QVector<EngineQuery> &subQueries, Operation op = And);
+    EngineQuery(const QVector<EngineQuery>& subQueries, Operation op = And);
 
-    QByteArray term() const {
+    QByteArray term() const
+    {
         return m_term;
     }
 
-    Operation op() const {
+    Operation op() const
+    {
         return m_op;
     }
 
-    void setOp(const Operation& op) {
+    void setOp(const Operation& op)
+    {
         m_op = op;
     }
 
-    bool leaf() const {
+    bool leaf() const
+    {
         return !m_term.isEmpty();
     }
 
-    bool empty() {
+    bool empty()
+    {
         return m_subQueries.isEmpty() && m_term.isEmpty();
     }
 
-    QVector<EngineQuery> subQueries() const {
+    QVector<EngineQuery> subQueries() const
+    {
         return m_subQueries;
     }
 
-    bool operator ==(const EngineQuery& q) const {
+    bool operator==(const EngineQuery& q) const
+    {
         return m_term == q.m_term && m_op == q.m_op && m_subQueries == q.m_subQueries;
     }
+
 private:
     QByteArray m_term;
     Operation m_op;
@@ -83,7 +91,7 @@ inline QDebug operator<<(QDebug d, const Baloo::EngineQuery& q)
     } else if (q.op() == Operation::Phrase) {
         d << "[PHRASE";
     }
-    for (auto &sq : q.subQueries()) {
+    for (auto& sq : q.subQueries()) {
         d << " " << sq;
     }
     return d << "]";
@@ -95,7 +103,7 @@ inline QDebug operator<<(QDebug d, const Baloo::EngineQuery& q)
  *
  * @since: 5.70
  */
-inline char *toString(const EngineQuery& query)
+inline char* toString(const EngineQuery& query)
 {
     QString buffer;
     QDebug stream(&buffer);

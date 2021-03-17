@@ -12,10 +12,8 @@
 
 namespace Baloo
 {
-
 class SearchProtocol : public KIO::SlaveBase
 {
-
 public:
     SearchProtocol(const QByteArray& poolSocket, const QByteArray& appSocket);
     ~SearchProtocol() override;

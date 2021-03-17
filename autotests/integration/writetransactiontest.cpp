@@ -6,12 +6,12 @@
 */
 
 #include "writetransaction.h"
-#include "dbstate.h"
 #include "database.h"
+#include "dbstate.h"
 #include "idutils.h"
 
-#include <QTest>
 #include <QTemporaryDir>
+#include <QTest>
 
 using namespace Baloo;
 
@@ -19,13 +19,15 @@ class WriteTransactionTest : public QObject
 {
     Q_OBJECT
 private Q_SLOTS:
-    void init() {
+    void init()
+    {
         dir = new QTemporaryDir();
         db = new Database(dir->path());
         db->open(Database::CreateDatabase);
     }
 
-    void cleanup() {
+    void cleanup()
+    {
         delete db;
         delete dir;
     }
@@ -39,12 +41,14 @@ private Q_SLOTS:
     void testRemoveRecursively();
     void testDocumentId();
     void testTermPositions();
+
 private:
     QTemporaryDir* dir;
     Database* db;
 };
 
-static void touchFile(const QString& path) {
+static void touchFile(const QString& path)
+{
     QFile file(path);
     file.open(QIODevice::WriteOnly);
     file.write("data");
@@ -82,9 +86,9 @@ void WriteTransactionTest::testAddDocument()
     DBState state;
     state.postingDb = {{"a", {id}}, {"ab", {id}}, {"abc", {id}}, {"power", {id}}, {"system", {id}}, {"link", {id}}};
     state.positionDb = {};
-    state.docTermsDb = {{id, {"a", "ab", "abc", "power"} }};
-    state.docFileNameTermsDb = {{id, {"link"} }};
-    state.docXAttrTermsDb = {{id, {"system"} }};
+    state.docTermsDb = {{id, {"a", "ab", "abc", "power"}}};
+    state.docFileNameTermsDb = {{id, {"link"}}};
+    state.docXAttrTermsDb = {{id, {"system"}}};
     state.docTimeDb = {{id, DocumentTimeDB::TimeInfo(1, 2)}};
     state.mtimeDb = {{1, id}};
 
@@ -92,9 +96,12 @@ void WriteTransactionTest::testAddDocument()
     QCOMPARE(actualState, state);
 }
 
-
-static Document createDocument(const QString& filePath, quint32 mtime, quint32 ctime, const QVector<QByteArray>& terms,
-                               const QVector<QByteArray>& fileNameTerms, const QVector<QByteArray>& xattrTerms)
+static Document createDocument(const QString& filePath,
+                               quint32 mtime,
+                               quint32 ctime,
+                               const QVector<QByteArray>& terms,
+                               const QVector<QByteArray>& fileNameTerms,
+                               const QVector<QByteArray>& xattrTerms)
 {
     Document doc;
 
@@ -102,13 +109,13 @@ static Document createDocument(const QString& filePath, quint32 mtime, quint32 c
     doc.setId(filePathToId(url));
     doc.setUrl(url);
 
-    for (const QByteArray& term: terms) {
+    for (const QByteArray& term : terms) {
         doc.addTerm(term);
     }
-    for (const QByteArray& term: fileNameTerms) {
+    for (const QByteArray& term : fileNameTerms) {
         doc.addFileNameTerm(term);
     }
-    for (const QByteArray& term: xattrTerms) {
+    for (const QByteArray& term : xattrTerms) {
         doc.addXattrTerm(term);
     }
     doc.setMTime(mtime);
@@ -192,10 +199,10 @@ void WriteTransactionTest::testAddAndReplaceOneDocument()
     }
 
     DBState state;
-    state.postingDb = {{"a", {id}}, {"abc", {id}}, {"dab", {id}}, {"file1", {id}} };
+    state.postingDb = {{"a", {id}}, {"abc", {id}}, {"dab", {id}}, {"file1", {id}}};
     state.positionDb = {};
-    state.docTermsDb = {{id, {"a", "abc", "dab"} }};
-    state.docFileNameTermsDb = {{id, {"file1"} }};
+    state.docTermsDb = {{id, {"a", "abc", "dab"}}};
+    state.docFileNameTermsDb = {{id, {"file1"}}};
     state.docXAttrTermsDb = {};
     state.docTimeDb = {{id, DocumentTimeDB::TimeInfo(5, 1)}};
     state.mtimeDb = {{5, id}};
@@ -212,9 +219,9 @@ void WriteTransactionTest::testAddAndReplaceOneDocument()
         tr.commit();
     }
 
-    state.postingDb = {{"a", {id}}, {"abc", {id}}, {"xxx", {id}}, {"file1", {id}}, {"yyy", {id}} };
-    state.docTermsDb = {{id, {"a", "abc", "xxx"} }};
-    state.docFileNameTermsDb = {{id, {"file1", "yyy"} }};
+    state.postingDb = {{"a", {id}}, {"abc", {id}}, {"xxx", {id}}, {"file1", {id}}, {"yyy", {id}}};
+    state.docTermsDb = {{id, {"a", "abc", "xxx"}}};
+    state.docFileNameTermsDb = {{id, {"file1", "yyy"}}};
     state.docTimeDb = {{id, DocumentTimeDB::TimeInfo(6, 2)}};
     state.mtimeDb = {{6, id}};
 
@@ -298,13 +305,13 @@ void WriteTransactionTest::testTermPositions()
     }
 
     DBState state;
-    state.postingDb = {{"a", {id1, id2}}, {"abc", {id1}}, {"abcd", {id2}}, {"dab", {id1, id3}}, {"file1", {id1}}, {"file2", {id2}}, {"file3", {id3}} };
+    state.postingDb = {{"a", {id1, id2}}, {"abc", {id1}}, {"abcd", {id2}}, {"dab", {id1, id3}}, {"file1", {id1}}, {"file2", {id2}}, {"file3", {id3}}};
     state.positionDb = {};
-    state.docTermsDb = {{id1, {"a", "abc", "dab"}}, {id2, {"a", "abcd"}}, {id3, {"dab"}} };
-    state.docFileNameTermsDb = {{id1, {"file1"}}, {id2, {"file2"}}, {id3, {"file3"}} };
+    state.docTermsDb = {{id1, {"a", "abc", "dab"}}, {id2, {"a", "abcd"}}, {id3, {"dab"}}};
+    state.docFileNameTermsDb = {{id1, {"file1"}}, {id2, {"file2"}}, {id3, {"file3"}}};
     state.docXAttrTermsDb = {};
-    state.docTimeDb = {{id1, DocumentTimeDB::TimeInfo(5, 1)}, {id2, DocumentTimeDB::TimeInfo(5, 2)}, {id3, DocumentTimeDB::TimeInfo(6, 3)} };
-    state.mtimeDb = {{5, id1}, {5, id2}, {6, id3} };
+    state.docTimeDb = {{id1, DocumentTimeDB::TimeInfo(5, 1)}, {id2, DocumentTimeDB::TimeInfo(5, 2)}, {id3, DocumentTimeDB::TimeInfo(6, 3)}};
+    state.mtimeDb = {{5, id1}, {5, id2}, {6, id3}};
 
     {
         Transaction tr(db, Transaction::ReadOnly);
@@ -362,8 +369,8 @@ void WriteTransactionTest::testTermPositions()
     Document doc2_clone = doc2; // save state for later reset
     doc2.addPositionTerm("abcd", 500); // add position for existing term
 
-    state.postingDb = {{"a", {id1, id2}}, {"abc", {id1, id2}}, {"abcd", {id2}}, {"dab", {id1, id3}}, {"file1", {id1}}, {"file2", {id2}}, {"file3", {id3}} };
-    state.docTermsDb = {{id1, {"a", "abc", "dab"}}, {id2, {"a", "abc", "abcd"}}, {id3, {"dab"}} };
+    state.postingDb = {{"a", {id1, id2}}, {"abc", {id1, id2}}, {"abcd", {id2}}, {"dab", {id1, id3}}, {"file1", {id1}}, {"file2", {id2}}, {"file3", {id3}}};
+    state.docTermsDb = {{id1, {"a", "abc", "dab"}}, {id2, {"a", "abc", "abcd"}}, {id3, {"dab"}}};
     if (id1 < id2) {
         state.positionDb["a"] = {PositionInfo(id1, {1, 3, 6}), PositionInfo(id2, {7, 8, 9})};
         state.positionDb["abc"] = {PositionInfo(id1, {2, 4, 5, 11, 12}), PositionInfo(id2, {7, 8, 9})};
@@ -434,10 +441,10 @@ void WriteTransactionTest::testIdempotentDocumentChange()
     }
 
     DBState state;
-    state.postingDb = {{"a", {id}}, {"abc", {id}}, {"dab", {id}}, {"file1", {id}} };
+    state.postingDb = {{"a", {id}}, {"abc", {id}}, {"dab", {id}}, {"file1", {id}}};
     state.positionDb = {};
-    state.docTermsDb = {{id, {"a", "abc", "dab"} }};
-    state.docFileNameTermsDb = {{id, {"file1"} }};
+    state.docTermsDb = {{id, {"a", "abc", "dab"}}};
+    state.docFileNameTermsDb = {{id, {"file1"}}};
     state.docXAttrTermsDb = {};
     state.docTimeDb = {{id, DocumentTimeDB::TimeInfo(5, 1)}};
     state.mtimeDb = {{5, id}};
@@ -455,15 +462,14 @@ void WriteTransactionTest::testIdempotentDocumentChange()
         tr.commit();
     }
 
-    state.postingDb = {{"a", {id}}, {"abcd", {id}}, {"dab", {id}}, {"file1", {id}} };
-    state.docTermsDb = {{id, {"a", "abcd", "dab"} }};
+    state.postingDb = {{"a", {id}}, {"abcd", {id}}, {"dab", {id}}, {"file1", {id}}};
+    state.docTermsDb = {{id, {"a", "abcd", "dab"}}};
 
     {
         Transaction tr(db, Transaction::ReadOnly);
         DBState actualState = DBState::fromTransaction(&tr);
         QVERIFY(DBState::debugCompare(actualState, state));
     }
-
 }
 
 QTEST_MAIN(WriteTransactionTest)

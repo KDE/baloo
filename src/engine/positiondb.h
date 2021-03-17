@@ -15,8 +15,8 @@
 #include <QVector>
 #include <lmdb.h>
 
-namespace Baloo {
-
+namespace Baloo
+{
 class PositionInfo;
 class VectorPositionInfoIterator;
 
@@ -36,12 +36,12 @@ public:
     VectorPositionInfoIterator* iter(const QByteArray& term);
 
     QMap<QByteArray, QVector<PositionInfo>> toTestMap() const;
+
 private:
     MDB_txn* m_txn;
     MDB_dbi m_dbi;
 };
 
 }
-
 
 #endif // BALOO_POSITIONDB_H

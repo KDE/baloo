@@ -5,8 +5,8 @@
     SPDX-License-Identifier: LGPL-2.1-or-later
 */
 
-#include "enginedebug.h"
 #include "positiondb.h"
+#include "enginedebug.h"
 #include "positioncodec.h"
 #include "positioninfo.h"
 #include "postingiterator.h"

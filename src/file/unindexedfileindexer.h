@@ -8,11 +8,11 @@
 #ifndef BALOO_UNINDEXEDFILEINDEXER
 #define BALOO_UNINDEXEDFILEINDEXER
 
-#include <QRunnable>
 #include <QObject>
+#include <QRunnable>
 
-namespace Baloo {
-
+namespace Baloo
+{
 class Database;
 class FileIndexerConfig;
 
@@ -33,4 +33,4 @@ private:
 };
 }
 
-#endif //BALOO_UNINDEXEDFILEINDEXER
+#endif // BALOO_UNINDEXEDFILEINDEXER

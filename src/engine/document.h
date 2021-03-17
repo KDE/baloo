@@ -13,8 +13,8 @@
 #include <QDebug>
 #include <QVector>
 
-namespace Baloo {
-
+namespace Baloo
+{
 class WriteTransaction;
 class TermGeneratorTest;
 
@@ -56,8 +56,14 @@ public:
     void setContentIndexing(bool val);
     bool contentIndexing() const;
 
-    void setMTime(quint32 val) { m_mTime = val; }
-    void setCTime(quint32 val) { m_cTime = val; }
+    void setMTime(quint32 val)
+    {
+        m_mTime = val;
+    }
+    void setCTime(quint32 val)
+    {
+        m_cTime = val;
+    }
 
     void setData(const QByteArray& data);
 
@@ -83,7 +89,8 @@ private:
     friend class TermGeneratorTest;
 };
 
-inline QDebug operator<<(QDebug dbg, const Document &doc) {
+inline QDebug operator<<(QDebug dbg, const Document& doc)
+{
     dbg << doc.id() << doc.url();
     return dbg;
 }

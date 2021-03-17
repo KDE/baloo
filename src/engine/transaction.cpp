@@ -6,11 +6,11 @@
 */
 
 #include "transaction.h"
-#include "documentdb.h"
-#include "documenturldb.h"
-#include "documentiddb.h"
-#include "positiondb.h"
 #include "documentdatadb.h"
+#include "documentdb.h"
+#include "documentiddb.h"
+#include "documenturldb.h"
+#include "positiondb.h"
 
 #include "document.h"
 #include "enginequery.h"
@@ -19,9 +19,9 @@
 #include "orpostingiterator.h"
 #include "phraseanditerator.h"
 
-#include "idutils.h"
 #include "database.h"
 #include "databasesize.h"
+#include "idutils.h"
 
 #include "enginedebug.h"
 
@@ -250,7 +250,8 @@ void Transaction::replaceDocument(const Document& doc, DocumentOperations operat
     Q_ASSERT(doc.id() > 0);
     Q_ASSERT(m_writeTrans);
     if (!hasDocument(doc.id())) {
-        qCDebug(ENGINE) << "Transaction::replaceDocument" << "Document does not exist";
+        qCDebug(ENGINE) << "Transaction::replaceDocument"
+                        << "Document does not exist";
     }
 
     if (!m_writeTrans) {
@@ -321,14 +322,15 @@ PostingIterator* Transaction::postingIterator(const EngineQuery& query) const
 
     if (query.op() == EngineQuery::Phrase) {
         if (subQueries.size() == 1) {
-            qCDebug(ENGINE) << "Degenerated Phrase with 1 Term:" <<  query;
+            qCDebug(ENGINE) << "Degenerated Phrase with 1 Term:" << query;
             return postingIterator(subQueries[0]);
         }
         QVector<VectorPositionInfoIterator*> vec;
         vec.reserve(subQueries.size());
         for (const EngineQuery& q : subQueries) {
             if (!q.leaf()) {
-                qCDebug(ENGINE) << "Transaction::toPostingIterator" << "Phrase subqueries must be leafs";
+                qCDebug(ENGINE) << "Transaction::toPostingIterator"
+                                << "Phrase subqueries must be leafs";
                 continue;
             }
             vec << positionDb.iter(q.term());
@@ -472,8 +474,8 @@ DatabaseSize Transaction::dbSize()
     dbSize.mtimeDb = dbiSize(m_txn, m_dbis.mtimeDbi);
 
     dbSize.expectedSize = dbSize.postingDb + dbSize.positionDb + dbSize.docTerms + dbSize.docFilenameTerms //
-                  + dbSize.docXattrTerms + dbSize.idTree + dbSize.idFilename + dbSize.docTime //
-                  + dbSize.docData + dbSize.contentIndexingIds + dbSize.failedIds + dbSize.mtimeDb;
+        + dbSize.docXattrTerms + dbSize.idTree + dbSize.idFilename + dbSize.docTime //
+        + dbSize.docData + dbSize.contentIndexingIds + dbSize.failedIds + dbSize.mtimeDb;
 
     MDB_envinfo info;
     mdb_env_info(m_env, &info);
@@ -505,7 +507,7 @@ void Transaction::checkFsTree()
     std::cout << "Total Document IDs: " << allIds.size() << std::endl;
 
     int count = 0;
-    for (quint64 id: qAsConst(allIds)) {
+    for (quint64 id : qAsConst(allIds)) {
         QByteArray url = docUrlDb.get(id);
         if (url.isEmpty()) {
             auto terms = documentTermsDB.get(id);
@@ -549,7 +551,7 @@ void Transaction::checkFsTree()
 
             count++;
         } else if (!QFileInfo::exists(QString::fromUtf8(url))) {
-            std::cout << "FilePath " << qPrintable(url) << " for " << id << " does not exist"<< std::endl;
+            std::cout << "FilePath " << qPrintable(url) << " for " << id << " does not exist" << std::endl;
             count++;
         }
     }
@@ -621,4 +623,3 @@ void Transaction::checkPostingDbinTermsDb()
         }
     }
 }
-

@@ -7,26 +7,26 @@
 */
 
 #include "kinotify.h"
+#include "baloodebug.h"
 #include "fileindexerconfig.h"
 #include "filtereddiriterator.h"
-#include "baloodebug.h"
 
-#include <QSocketNotifier>
-#include <QHash>
-#include <QFile>
-#include <QTimer>
 #include <QDeadlineTimer>
+#include <QFile>
+#include <QHash>
 #include <QPair>
+#include <QSocketNotifier>
+#include <QTimer>
 
-#include <sys/inotify.h>
-#include <sys/utsname.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/ioctl.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <errno.h>
 #include <dirent.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <sys/inotify.h>
+#include <sys/ioctl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/utsname.h>
+#include <unistd.h>
 
 namespace
 {
@@ -56,10 +56,12 @@ public:
         , m_dirIter(nullptr)
         , m_inotifyFd(-1)
         , m_notifier(nullptr)
-        , q(parent) {
+        , q(parent)
+    {
     }
 
-    ~Private() {
+    ~Private()
+    {
         close();
         delete m_dirIter;
     }
@@ -87,14 +89,16 @@ public:
     WatchEvents mode;
     WatchFlags flags;
 
-    int inotify() {
+    int inotify()
+    {
         if (m_inotifyFd < 0) {
             open();
         }
         return m_inotifyFd;
     }
 
-    void close() {
+    void close()
+    {
         delete m_notifier;
         m_notifier = nullptr;
 
@@ -102,7 +106,8 @@ public:
         m_inotifyFd = -1;
     }
 
-    bool addWatch(const QString& path) {
+    bool addWatch(const QString& path)
+    {
         WatchEvents newMode = mode;
         WatchFlags newFlags = flags;
 
@@ -118,9 +123,9 @@ public:
             return true;
         } else {
             qCDebug(BALOO) << "Failed to create watch for" << path << strerror(errno);
-            //If we could not create the watch because we have hit the limit, try raising it.
+            // If we could not create the watch because we have hit the limit, try raising it.
             if (errno == ENOSPC) {
-                //If we can't, fall back to signalling
+                // If we can't, fall back to signalling
                 qCDebug(BALOO) << "User limit reached. Count: " << watchPathHash.count();
                 userLimitReachedSignaled = true;
                 Q_EMIT q->watchUserLimitReached(path);
@@ -129,7 +134,8 @@ public:
         }
     }
 
-    void removeWatch(int wd) {
+    void removeWatch(int wd)
+    {
         pathWatchHash.remove(watchPathHash.take(wd));
         inotify_rm_watch(inotify(), wd);
     }
@@ -137,10 +143,11 @@ public:
     /**
      * Add one watch and call oneself asynchronously
      */
-    bool _k_addWatches() {
+    bool _k_addWatches()
+    {
         bool addedWatchSuccessfully = false;
 
-        //Do nothing if the inotify user limit has been signaled.
+        // Do nothing if the inotify user limit has been signaled.
         if (userLimitReachedSignaled) {
             return false;
         }
@@ -166,8 +173,7 @@ public:
         // asynchronously add the next batch
         if (m_dirIter) {
             QMetaObject::invokeMethod(q, "_k_addWatches", Qt::QueuedConnection);
-        }
-        else {
+        } else {
             Q_EMIT q->installedWatches();
         }
 
@@ -175,7 +181,8 @@ public:
     }
 
 private:
-    void open() {
+    void open()
+    {
         m_inotifyFd = inotify_init();
         delete m_notifier;
         if (m_inotifyFd > 0) {
@@ -193,7 +200,6 @@ private:
     KInotify* q;
 };
 
-
 KInotify::KInotify(Baloo::FileIndexerConfig* config, QObject* parent)
     : QObject(parent)
     , d(new Private(this))
@@ -206,12 +212,10 @@ KInotify::KInotify(Baloo::FileIndexerConfig* config, QObject* parent)
     connect(&d->cookieExpireTimer, &QTimer::timeout, this, &KInotify::slotClearCookies);
 }
 
-
 KInotify::~KInotify()
 {
     delete d;
 }
-
 
 bool KInotify::available() const
 {
@@ -222,7 +226,7 @@ bool KInotify::available() const
         if (uname(&uts) < 0) {
             return false; // *shrug*
         } else if (sscanf(uts.release, "%d.%d.%d", &major, &minor, &patch) != 3) {
-            //Kernels > 3.0 can in principle have two-number versions.
+            // Kernels > 3.0 can in principle have two-number versions.
             if (sscanf(uts.release, "%d.%d", &major, &minor) != 2)
                 return false; // *shrug*
         } else if (major * 1000000 + minor * 1000 + patch < 2006014) { // <2.6.14
@@ -235,7 +239,6 @@ bool KInotify::available() const
         return false;
     }
 }
-
 
 bool KInotify::watchingPath(const QString& path) const
 {
@@ -250,7 +253,7 @@ void KInotify::resetUserLimit()
 
 bool KInotify::addWatch(const QString& path, WatchEvents mode, WatchFlags flags)
 {
-//    qCDebug(BALOO) << path;
+    //    qCDebug(BALOO) << path;
 
     d->mode = mode;
     d->flags = flags;
@@ -264,7 +267,6 @@ bool KInotify::addWatch(const QString& path, WatchEvents mode, WatchFlags flags)
     d->m_dirIter = new Baloo::FilteredDirIterator(d->config, path, Baloo::FilteredDirIterator::DirsOnly);
     return d->_k_addWatches();
 }
-
 
 bool KInotify::removeWatch(const QString& path)
 {
@@ -356,7 +358,7 @@ void KInotify::slotEvent(int socket)
         }
 
         Q_ASSERT(!path.isEmpty() || event->mask & EventIgnored);
-        Q_ASSERT(path != "/" || event->mask & EventIgnored  || event->mask & EventUnmount);
+        Q_ASSERT(path != "/" || event->mask & EventIgnored || event->mask & EventUnmount);
 
         // All events which need a decoded path, i.e. everything
         // but EventMoveFrom | EventQueueOverflow | EventIgnored
@@ -415,7 +417,7 @@ void KInotify::slotEvent(int socket)
             if (deadline.isForever()) {
                 deadline = QDeadlineTimer(1000); // 1 second
             }
-            d->cookies[event->cookie] = Private::MovedFileCookie{ deadline, path, WatchFlags(event->mask) };
+            d->cookies[event->cookie] = Private::MovedFileCookie{deadline, path, WatchFlags(event->mask)};
         }
         if (event->mask & EventMoveTo) {
             // check if we have a cookie for this one

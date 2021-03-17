@@ -11,14 +11,12 @@
 
 namespace Baloo
 {
-
 const QJsonObject propertyMapToJson(const KFileMetaData::PropertyMap& properties)
 {
     auto it = properties.cbegin();
     QJsonObject jsonDict;
 
     while (it != properties.cend()) {
-
         auto property = it.key();
         QString keyString = QString::number(static_cast<int>(property));
 

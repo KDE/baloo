@@ -5,8 +5,8 @@
     SPDX-License-Identifier: LGPL-2.1-or-later
 */
 
-#include "enginedebug.h"
 #include "postingdb.h"
+#include "enginedebug.h"
 #include "orpostingiterator.h"
 #include "postingcodec.h"
 
@@ -107,7 +107,7 @@ void PostingDB::del(const QByteArray& term)
     }
 }
 
-QVector< QByteArray > PostingDB::fetchTermsStartingWith(const QByteArray& term)
+QVector<QByteArray> PostingDB::fetchTermsStartingWith(const QByteArray& term)
 {
     MDB_val key;
     key.mv_size = term.size();
@@ -138,7 +138,8 @@ QVector< QByteArray > PostingDB::fetchTermsStartingWith(const QByteArray& term)
     return terms;
 }
 
-class DBPostingIterator : public PostingIterator {
+class DBPostingIterator : public PostingIterator
+{
 public:
     DBPostingIterator(void* data, uint size);
     quint64 docId() const override;
@@ -194,7 +195,7 @@ quint64 DBPostingIterator::next()
     return m_vec[m_pos];
 }
 
-template <typename Validator>
+template<typename Validator>
 PostingIterator* PostingDB::iter(const QByteArray& prefix, Validator validate)
 {
     Q_ASSERT(!prefix.isEmpty());
@@ -239,7 +240,7 @@ PostingIterator* PostingDB::iter(const QByteArray& prefix, Validator validate)
 
 PostingIterator* PostingDB::prefixIter(const QByteArray& prefix)
 {
-    auto validate = [] (const QByteArray& arr) {
+    auto validate = [](const QByteArray& arr) {
         Q_UNUSED(arr);
         return true;
     };
@@ -249,7 +250,7 @@ PostingIterator* PostingDB::prefixIter(const QByteArray& prefix)
 PostingIterator* PostingDB::regexpIter(const QRegularExpression& regexp, const QByteArray& prefix)
 {
     int prefixLen = prefix.length();
-    auto validate = [&regexp, prefixLen] (const QByteArray& arr) {
+    auto validate = [&regexp, prefixLen](const QByteArray& arr) {
         QString term = QString::fromUtf8(arr.mid(prefixLen));
         return regexp.match(term).hasMatch();
     };
@@ -260,7 +261,7 @@ PostingIterator* PostingDB::regexpIter(const QRegularExpression& regexp, const Q
 PostingIterator* PostingDB::compIter(const QByteArray& prefix, qlonglong comVal, PostingDB::Comparator com)
 {
     int prefixLen = prefix.length();
-    auto validate = [prefixLen, comVal, com] (const QByteArray& arr) {
+    auto validate = [prefixLen, comVal, com](const QByteArray& arr) {
         bool ok = false;
         auto val = QByteArray::fromRawData(arr.constData() + prefixLen, arr.length() - prefixLen).toLongLong(&ok);
         return ok && ((com == LessEqual && val <= comVal) || (com == GreaterEqual && val >= comVal));
@@ -271,11 +272,10 @@ PostingIterator* PostingDB::compIter(const QByteArray& prefix, qlonglong comVal,
 PostingIterator* PostingDB::compIter(const QByteArray& prefix, double comVal, PostingDB::Comparator com)
 {
     int prefixLen = prefix.length();
-    auto validate = [prefixLen, comVal, com] (const QByteArray& arr) {
+    auto validate = [prefixLen, comVal, com](const QByteArray& arr) {
         bool ok = false;
         auto val = QByteArray::fromRawData(arr.constData() + prefixLen, arr.length() - prefixLen).toDouble(&ok);
-        return ok && ((com == LessEqual && val <= comVal) ||
-                      (com == GreaterEqual && val >= comVal));
+        return ok && ((com == LessEqual && val <= comVal) || (com == GreaterEqual && val >= comVal));
     };
     return iter(prefix, validate);
 }
@@ -283,7 +283,7 @@ PostingIterator* PostingDB::compIter(const QByteArray& prefix, double comVal, Po
 PostingIterator* PostingDB::compIter(const QByteArray& prefix, const QByteArray& comVal, PostingDB::Comparator com)
 {
     int prefixLen = prefix.length();
-    auto validate = [prefixLen, comVal, com] (const QByteArray& arr) {
+    auto validate = [prefixLen, comVal, com](const QByteArray& arr) {
         auto val = QByteArray::fromRawData(arr.constData() + prefixLen, arr.length() - prefixLen);
         return ((com == LessEqual && val <= comVal) || //
                 (com == GreaterEqual && val >= comVal));

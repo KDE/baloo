@@ -77,7 +77,6 @@ quint64 OrPostingIterator::skipTo(quint64 id)
 
     // advance all iterators which point to the lowest docId
     for (PostingIterator*& iter : m_iterators) {
-
         auto docId = iter->docId();
         if (docId == m_docId) {
             docId = iter->next();
@@ -88,15 +87,15 @@ quint64 OrPostingIterator::skipTo(quint64 id)
             delete iter;
             iter = nullptr;
         } else {
-
             // check if the docId is the new lowest docId
             if (docId < m_nextId || !m_nextId) {
                 m_nextId = docId;
             }
         }
     }
-    auto tail = std::remove_if(m_iterators.begin(), m_iterators.end(),
-        [](const PostingIterator* it) { return it == nullptr; });
+    auto tail = std::remove_if(m_iterators.begin(), m_iterators.end(), [](const PostingIterator* it) {
+        return it == nullptr;
+    });
     m_iterators.erase(tail, m_iterators.end());
 
     return m_docId;

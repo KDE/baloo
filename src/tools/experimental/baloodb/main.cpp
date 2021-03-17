@@ -4,19 +4,19 @@
     SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 */
 
-#include "global.h"
 #include "experimental/databasesanitizer.h"
+#include "global.h"
 
 #include <KAboutData>
 #include <KLocalizedString>
 
-#include <QCoreApplication>
 #include <QCommandLineOption>
 #include <QCommandLineParser>
+#include <QCoreApplication>
+#include <QElapsedTimer>
+#include <QList>
 #include <QStandardPaths>
 #include <QTextStream>
-#include <QList>
-#include <QElapsedTimer>
 
 using namespace Baloo;
 
@@ -116,25 +116,18 @@ const QStringList getOptions(const QString& name)
 QString createDescription()
 {
     QStringList allowedcommands;
-    for (const auto& c: commands) {
+    for (const auto& c : commands) {
         auto options = getOptions(c.name);
-        const QString optionStr = options.isEmpty()
-            ? QString()
-            : QStringLiteral(" [--%1]").arg(options.join(QLatin1String("] [--")));
+        const QString optionStr = options.isEmpty() ? QString() : QStringLiteral(" [--%1]").arg(options.join(QLatin1String("] [--")));
 
         QString argumentStr;
-        if (!c.args.isEmpty() ) {
+        if (!c.args.isEmpty()) {
             argumentStr = QStringLiteral(" [%1]").arg(c.args.join(QStringLiteral("] [")));
         }
 
-        const QString commandStr = QStringLiteral("%1%2%3")
-            .arg(c.name)
-            .arg(optionStr)
-            .arg(argumentStr);
+        const QString commandStr = QStringLiteral("%1%2%3").arg(c.name).arg(optionStr).arg(argumentStr);
 
-        const QString str = QStringLiteral("%1 %2")
-            .arg(commandStr, -58)
-            .arg(c.description);
+        const QString str = QStringLiteral("%1 %2").arg(commandStr, -58).arg(c.description);
 
         allowedcommands.append(str);
     }
@@ -156,18 +149,13 @@ int main(int argc, char* argv[])
 
     QCommandLineParser parser;
     parser.addOptions(options);
-    parser.addPositionalArgument(QStringLiteral("command"),
-        i18n("The command to execute"),
-        allowedCommands().join(QLatin1Char('|'))
-    );
+    parser.addPositionalArgument(QStringLiteral("command"), i18n("The command to execute"), allowedCommands().join(QLatin1Char('|')));
     parser.addPositionalArgument(QStringLiteral("pattern"),
-        i18nc("Command", "A regular expression applied to the URL of database items"
-            "\nExample: %1"
-            , "baloodb list '^/media/videos/series'"
-        )
-    );
-    const QString warnExperiment = QStringLiteral(
-        "===\nPlease note: This is an experimental tool. Command line switches or their meaning may change.\n===");
+                                 i18nc("Command",
+                                       "A regular expression applied to the URL of database items"
+                                       "\nExample: %1",
+                                       "baloodb list '^/media/videos/series'"));
+    const QString warnExperiment = QStringLiteral("===\nPlease note: This is an experimental tool. Command line switches or their meaning may change.\n===");
 
     parser.setApplicationDescription(warnExperiment + createDescription());
     parser.addVersionOption();
@@ -183,7 +171,7 @@ int main(int argc, char* argv[])
     auto command = args.at(0);
     args.removeFirst();
 
-    if(!allowedCommands().contains(command)) {
+    if (!allowedCommands().contains(command)) {
         qDebug() << "Unknown command" << command;
         parser.showHelp(1);
     }
@@ -195,21 +183,11 @@ int main(int argc, char* argv[])
     for (const auto& dev : parser.values(QStringLiteral("device-id"))) {
         deviceIds.append(dev.toInt());
     }
-    const DatabaseSanitizer::ItemAccessFilters accessFilter = (
-        parser.isSet(QStringLiteral("missing-only"))
-        ? DatabaseSanitizer::IgnoreAvailable
-        : DatabaseSanitizer::IgnoreNone
-    ) | (
-        parser.isSet(QStringLiteral("mounted-only"))
-        ? DatabaseSanitizer::IgnoreUnmounted
-        : DatabaseSanitizer::IgnoreNone
-    );
-    const QString pattern = args.isEmpty()
-        ? QString()
-        : args.at(0);
-    const QSharedPointer<QRegularExpression> urlFilter(pattern.isEmpty()
-        ? nullptr
-        : new QRegularExpression{pattern});
+    const DatabaseSanitizer::ItemAccessFilters accessFilter =
+        (parser.isSet(QStringLiteral("missing-only")) ? DatabaseSanitizer::IgnoreAvailable : DatabaseSanitizer::IgnoreNone)
+        | (parser.isSet(QStringLiteral("mounted-only")) ? DatabaseSanitizer::IgnoreUnmounted : DatabaseSanitizer::IgnoreNone);
+    const QString pattern = args.isEmpty() ? QString() : args.at(0);
+    const QSharedPointer<QRegularExpression> urlFilter(pattern.isEmpty() ? nullptr : new QRegularExpression{pattern});
 
     auto db = globalDatabaseInstance();
     QTextStream err(stderr);
@@ -245,23 +223,23 @@ int main(int argc, char* argv[])
 
     } else if (command == QLatin1String("check")) {
         parser.showHelp(1);
-       /* TODO: After check methods are improved
-            Database *db = globalDatabaseInstance();
-            if (!db->open(Database::ReadOnlyDatabase)) {
-                err << i18n("Baloo Index could not be opened") << endl;
-                return 1;
-            }
-            Transaction tr(db, Transaction::ReadOnly);
-            err << i18n("Checking file paths ... ") << endl;
-            tr.checkFsTree();
+        /* TODO: After check methods are improved
+             Database *db = globalDatabaseInstance();
+             if (!db->open(Database::ReadOnlyDatabase)) {
+                 err << i18n("Baloo Index could not be opened") << endl;
+                 return 1;
+             }
+             Transaction tr(db, Transaction::ReadOnly);
+             err << i18n("Checking file paths ... ") << endl;
+             tr.checkFsTree();
 
 
-            err << i18n("Checking postings ... ") << endl;
-            tr.checkTermsDbinPostingDb();
+             err << i18n("Checking postings ... ") << endl;
+             tr.checkTermsDbinPostingDb();
 
-            err << i18n("Checking terms ... ") << endl;
-            tr.checkPostingDbinTermsDb();
-        */
+             err << i18n("Checking terms ... ") << endl;
+             tr.checkPostingDbinTermsDb();
+         */
     }
     err << i18n("Elapsed: %1 secs", timer.nsecsElapsed() / 1000000000.0) << endl;
 
