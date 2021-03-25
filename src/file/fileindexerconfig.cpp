@@ -276,7 +276,7 @@ bool FileIndexerConfig::FolderCache::addFolderConfig(const FolderConfig& config)
         return false;
     }
     auto newConfig{config};
-    newConfig.path = normalizeTrailingSlashes(std::move(newConfig.path));
+    newConfig.path = QDir::cleanPath(config.path) + QLatin1Char('/');
 
     auto it = std::lower_bound(cbegin(), cend(), newConfig);
     if (it != cend() && (*it).path == newConfig.path) {
