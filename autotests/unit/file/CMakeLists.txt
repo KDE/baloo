@@ -18,7 +18,6 @@ baloo_file_auto_tests(
     filtereddiriteratortest
     unindexedfileiteratortest
     metadatamovertest
-    fileinfotest
 )
 
 
