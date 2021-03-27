@@ -87,9 +87,9 @@ void MetadataMover::updateMetadata(Transaction* tr, const QString& from, const Q
         return;
     }
 
-    QByteArray toPath = QFile::encodeName(to);
+    const QByteArray toPath = QFile::encodeName(to);
     auto lastSlash = toPath.lastIndexOf('/');
-    QByteArray parentPath = toPath.left(lastSlash + 1);
+    const QByteArray parentPath = toPath.left(lastSlash + 1);
 
     quint64 parentId = tr->documentId(parentPath);
     if (!parentId) {
