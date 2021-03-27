@@ -34,8 +34,12 @@ namespace {
 QPair<quint32, quint32> calculateTimeRange(const QDateTime& dt, Term::Comparator com)
 {
     Q_ASSERT(dt.isValid());
-    quint32 timet = dt.toSecsSinceEpoch();
 
+    if (com == Term::Equal) {
+        return {dt.date().startOfDay().toSecsSinceEpoch(), dt.date().endOfDay().toSecsSinceEpoch()};
+    }
+
+    quint32 timet = dt.toSecsSinceEpoch();
     if (com == Term::LessEqual) {
         return {0, timet};
     }
@@ -47,10 +51,6 @@ QPair<quint32, quint32> calculateTimeRange(const QDateTime& dt, Term::Comparator
     }
     if (com == Term::Greater) {
         return {timet + 1, std::numeric_limits<quint32>::max()};
-    }
-    if (com == Term::Equal) {
-        timet = QDateTime(dt.date()).toSecsSinceEpoch();
-        return {timet, timet + 24 * 60 * 60 - 1};
     }
 
     Q_ASSERT_X(0, __func__, "mtime query must contain a valid comparator");
@@ -264,7 +264,7 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
                 endDate.setDate(endDate.year(), endDate.month(), endDate.daysInMonth());
             }
 
-            return tr->mTimeRangeIter(QDateTime(startDate).toSecsSinceEpoch(), QDateTime(endDate, QTime(23, 59, 59)).toSecsSinceEpoch());
+            return tr->mTimeRangeIter(startDate.startOfDay().toSecsSinceEpoch(), endDate.endOfDay().toSecsSinceEpoch());
         }
         else if (value.type() == QVariant::String) {
             const QDateTime dt = value.toDateTime();
