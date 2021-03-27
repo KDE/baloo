@@ -8,6 +8,7 @@
 
 #include "metadatamover.h"
 #include "database.h"
+#include "termgenerator.h"
 #include "transaction.h"
 #include "baloodebug.h"
 
@@ -99,6 +100,11 @@ void MetadataMover::updateMetadata(Transaction* tr, const QString& from, const Q
     }
 
     Document doc;
+
+    const QByteArray fileName = toPath.mid(lastSlash + 1);
+    TermGenerator tg(doc);
+    tg.indexFileNameText(QFile::decodeName(fileName));
+
     doc.setId(id);
     doc.setParentId(parentId);
     doc.setUrl(toPath);
