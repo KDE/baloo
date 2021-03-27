@@ -11,6 +11,7 @@
 
 #include <QStandardPaths>
 #include <QDataStream>
+#include <QTextStream>
 
 using namespace Baloo;
 
@@ -63,14 +64,20 @@ void ExtractorProcess::index(const QVector<quint64>& fileIds)
 
 void ExtractorProcess::slotIndexingFile()
 {
+    QString line;
+    QTextStream stream(&m_extractorProcess);
     while (m_extractorProcess.canReadLine()) {
-        QString line = m_extractorProcess.readLine().trimmed();
-        if (line.isEmpty()) {
-            continue;
+        char command, space;
+        stream >> command >> space;
+
+        if (!stream.readLineInto(&line)) {
+            break;
         }
 
-        char command = line[0].toLatin1();
-        QString arg = line.mid(2);
+        const QString arg = line.trimmed();
+        if (arg.isEmpty()) {
+            continue;
+        }
 
         switch (command) {
         case 'S':
