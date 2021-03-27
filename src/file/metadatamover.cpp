@@ -82,7 +82,7 @@ void MetadataMover::updateMetadata(Transaction* tr, const QString& from, const Q
     const QByteArray fromPath = QFile::encodeName(from);
     quint64 id = tr->documentId(fromPath);
     if (!id) {
-        qDebug() << "Document not (yet) known, signaling newFile" << to;
+        qCDebug(BALOO) << "Document not (yet) known, signaling newFile" << to;
         Q_EMIT movedWithoutData(to);
         return;
     }
@@ -93,7 +93,7 @@ void MetadataMover::updateMetadata(Transaction* tr, const QString& from, const Q
 
     quint64 parentId = tr->documentId(parentPath);
     if (!parentId) {
-        qDebug() << "Parent directory not (yet) known, signaling newFile" << to;
+        qCDebug(BALOO) << "Parent directory not (yet) known, signaling newFile" << to;
         Q_EMIT movedWithoutData(parentPath);
         return;
     }
