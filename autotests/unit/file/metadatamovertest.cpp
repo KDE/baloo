@@ -164,7 +164,6 @@ void MetadataMoverTest::testRenameFile()
     QCOMPARE(newInfo.url, QFile::encodeName(url2));
     QCOMPARE(newInfo.docTerms, oldInfo.docTerms);
     QVERIFY(newInfo.filenameTerms != oldInfo.filenameTerms);
-    QEXPECT_FAIL("", "Filename terms not added on rename", Continue);
     QVERIFY(!newInfo.filenameTerms.empty());
 }
 
@@ -189,7 +188,6 @@ void MetadataMoverTest::testMoveFile()
     DocumentInfo newInfo = documentInfo(fid);
     QCOMPARE(newInfo.url, QFile::encodeName(url2));
     QCOMPARE(newInfo.docTerms, oldInfo.docTerms);
-    QEXPECT_FAIL("", "Filename terms not added on rename", Continue);
     QCOMPARE(newInfo.filenameTerms, oldInfo.filenameTerms);
 }
 
@@ -215,7 +213,6 @@ void MetadataMoverTest::testMoveRenameFile()
     QCOMPARE(newInfo.url, QFile::encodeName(url2));
     QCOMPARE(newInfo.docTerms, oldInfo.docTerms);
     QVERIFY(newInfo.filenameTerms != oldInfo.filenameTerms);
-    QEXPECT_FAIL("", "Filename terms not added on rename", Continue);
     QVERIFY(!newInfo.filenameTerms.empty());
 }
 
