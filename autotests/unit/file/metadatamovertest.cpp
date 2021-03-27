@@ -34,6 +34,7 @@ private Q_SLOTS:
     void testRemoveFile();
     void testRenameFile();
     void testMoveFile();
+    void testMoveRenameFile();
     void testMoveFolder();
     void testMoveTwiceSequential();
     void testMoveTwiceCombined();
@@ -47,6 +48,14 @@ private:
 
     Database* m_db;
     QTemporaryDir* m_tempDir;
+
+    struct DocumentInfo {
+        QString url;
+        DocumentTimeDB::TimeInfo timeInfo;
+        QVector<QByteArray> docTerms;
+        QVector<QByteArray> filenameTerms;
+    };
+    DocumentInfo documentInfo(quint64 docId);
 };
 
 MetadataMoverTest::MetadataMoverTest(QObject* parent)
@@ -81,6 +90,22 @@ quint64 MetadataMoverTest::insertUrl(const QString& url)
     tr.addDocument(job.document());
     tr.commit();
     return job.document().id();
+}
+
+MetadataMoverTest::DocumentInfo MetadataMoverTest::documentInfo(quint64 id)
+{
+    Transaction tr(m_db, Transaction::ReadOnly);
+    if (!tr.hasDocument(id)) {
+        return DocumentInfo();
+    }
+
+    DocumentInfo docInfo;
+    docInfo.url = tr.documentUrl(id);
+    docInfo.timeInfo = tr.documentTimeInfo(id);
+    docInfo.docTerms = tr.documentTerms(id);
+    docInfo.filenameTerms = tr.documentFileNameTerms(id);
+
+    return docInfo;
 }
 
 void MetadataMoverTest::testRemoveFile()
@@ -126,21 +151,21 @@ void MetadataMoverTest::testRenameFile()
     touchFile(url);
     quint64 fid = insertUrl(url);
 
-    {
-        Transaction tr(m_db, Transaction::ReadOnly);
-        QVERIFY(tr.hasDocument(fid));
-    }
+    DocumentInfo oldInfo = documentInfo(fid);
+    QVERIFY(!oldInfo.url.isEmpty());
+    QCOMPARE(oldInfo.url, QFile::encodeName(url));
 
     MetadataMover mover(m_db, this);
     QString url2 = dir.path() + "/file2";
     QFile::rename(url, url2);
     mover.moveFileMetadata(QFile::encodeName(url), QFile::encodeName(url2));
 
-    {
-        Transaction tr(m_db, Transaction::ReadOnly);
-        QVERIFY(tr.hasDocument(fid));
-        QCOMPARE(tr.documentUrl(fid), QFile::encodeName(url2));
-    }
+    DocumentInfo newInfo = documentInfo(fid);
+    QCOMPARE(newInfo.url, QFile::encodeName(url2));
+    QCOMPARE(newInfo.docTerms, oldInfo.docTerms);
+    QVERIFY(newInfo.filenameTerms != oldInfo.filenameTerms);
+    QEXPECT_FAIL("", "Filename terms not added on rename", Continue);
+    QVERIFY(!newInfo.filenameTerms.empty());
 }
 
 void MetadataMoverTest::testMoveFile()
@@ -152,21 +177,46 @@ void MetadataMoverTest::testMoveFile()
     touchFile(url);
     quint64 fid = insertUrl(url);
 
-    {
-        Transaction tr(m_db, Transaction::ReadOnly);
-        QVERIFY(tr.hasDocument(fid));
-    }
+    DocumentInfo oldInfo = documentInfo(fid);
+    QVERIFY(!oldInfo.url.isEmpty());
+    QCOMPARE(oldInfo.url, QFile::encodeName(url));
+
+    MetadataMover mover(m_db, this);
+    QString url2 = dir.path() + "/file";
+    QFile::rename(url, url2);
+    mover.moveFileMetadata(QFile::encodeName(url), QFile::encodeName(url2));
+
+    DocumentInfo newInfo = documentInfo(fid);
+    QCOMPARE(newInfo.url, QFile::encodeName(url2));
+    QCOMPARE(newInfo.docTerms, oldInfo.docTerms);
+    QEXPECT_FAIL("", "Filename terms not added on rename", Continue);
+    QCOMPARE(newInfo.filenameTerms, oldInfo.filenameTerms);
+}
+
+void MetadataMoverTest::testMoveRenameFile()
+{
+    QTemporaryDir dir;
+    QDir().mkpath(dir.path() + "/a/b/c");
+
+    QString url = dir.path() + "/a/b/c/file";
+    touchFile(url);
+    quint64 fid = insertUrl(url);
+
+    DocumentInfo oldInfo = documentInfo(fid);
+    QVERIFY(!oldInfo.url.isEmpty());
+    QCOMPARE(oldInfo.url, QFile::encodeName(url));
 
     MetadataMover mover(m_db, this);
     QString url2 = dir.path() + "/file2";
     QFile::rename(url, url2);
     mover.moveFileMetadata(QFile::encodeName(url), QFile::encodeName(url2));
 
-    {
-        Transaction tr(m_db, Transaction::ReadOnly);
-        QVERIFY(tr.hasDocument(fid));
-        QCOMPARE(tr.documentUrl(fid), QFile::encodeName(url2));
-    }
+    DocumentInfo newInfo = documentInfo(fid);
+    QCOMPARE(newInfo.url, QFile::encodeName(url2));
+    QCOMPARE(newInfo.docTerms, oldInfo.docTerms);
+    QVERIFY(newInfo.filenameTerms != oldInfo.filenameTerms);
+    QEXPECT_FAIL("", "Filename terms not added on rename", Continue);
+    QVERIFY(!newInfo.filenameTerms.empty());
 }
 
 void MetadataMoverTest::testMoveFolder()
