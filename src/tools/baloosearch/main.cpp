@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
                          PROJECT_VERSION,
                          i18n("A tool to search through the files indexed by Baloo"),
                          KAboutLicense::GPL);
-    aboutData.addAuthor(i18n("Vishesh Handa"), i18n("Maintainer"), QStringLiteral("vhanda@kde.org"));
+    aboutData.addAuthor(i18n("Vishesh Handa"), QString(), QStringLiteral("vhanda@kde.org"));
 
     KAboutData::setApplicationData(aboutData);
 
