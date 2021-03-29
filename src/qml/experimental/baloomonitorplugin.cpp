@@ -11,7 +11,7 @@
 
 void BalooMonitorPlugin::registerTypes(const char *uri)
 {
-    Q_ASSERT(uri == QLatin1String("org.kde.baloo.experimental"));
+    Q_ASSERT(uri == QByteArrayLiteral("org.kde.baloo.experimental"));
 
     qmlRegisterType<Baloo::Monitor>(uri, 0, 1, "Monitor");
 }

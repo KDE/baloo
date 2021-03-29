@@ -82,7 +82,7 @@ std::pair<QByteArray, QVariant::Type> propertyInfo(const QByteArray& property)
     if (it != std::end(internalProperties)) {
         return { (*it).prefix, (*it).valueType };
     } else {
-        KFileMetaData::PropertyInfo pi = KFileMetaData::PropertyInfo::fromName(property);
+        KFileMetaData::PropertyInfo pi = KFileMetaData::PropertyInfo::fromName(QString::fromUtf8(property));
         if (pi.property() == KFileMetaData::Property::Empty) {
             return { QByteArray(), QVariant::Invalid };
         }
