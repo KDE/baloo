@@ -28,7 +28,7 @@ QString PendingFile::path() const
 void PendingFile::setPath(const QString& path)
 {
     m_path = path;
-    if (m_path.endsWith('/')) {
+    if (m_path.endsWith(QLatin1Char('/'))) {
         m_path = m_path.mid(0, m_path.length() - 1);
     }
 }

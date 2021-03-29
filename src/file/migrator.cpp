@@ -17,7 +17,7 @@ Migrator::Migrator(const QString& dbPath, FileIndexerConfig* config)
     , m_config(config)
 {
     Q_ASSERT(!dbPath.isEmpty());
-    Q_ASSERT(!dbPath.endsWith('/'));
+    Q_ASSERT(!dbPath.endsWith(QLatin1Char('/')));
     Q_ASSERT(config);
 }
 
@@ -37,13 +37,13 @@ void Migrator::migrate()
     Q_ASSERT(migrationRequired());
 
     int dbVersion = m_config->databaseVersion();
-    if (dbVersion == 0 && QFile::exists(m_dbPath + "/file")) {
-        QDir dir(m_dbPath + "/file");
+    if (dbVersion == 0 && QFile::exists(m_dbPath + QStringLiteral("/file"))) {
+        QDir dir(m_dbPath + QStringLiteral("/file"));
         dir.removeRecursively();
     }
-    else if (QFile::exists(m_dbPath + "/index")) {
-        QFile::remove(m_dbPath + "/index");
-        QFile::remove(m_dbPath + "/index-lock");
+    else if (QFile::exists(m_dbPath + QStringLiteral("/index"))) {
+        QFile::remove(m_dbPath + QStringLiteral("/index"));
+        QFile::remove(m_dbPath + QStringLiteral("/index-lock"));
     }
 
     m_config->setDatabaseVersion(s_dbVersion);

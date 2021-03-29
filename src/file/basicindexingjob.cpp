@@ -23,7 +23,7 @@ BasicIndexingJob::BasicIndexingJob(const QString& filePath, const QString& mimet
     , m_mimetype(mimetype)
     , m_indexingLevel(level)
 {
-    if (m_filePath.endsWith(QChar('/'))) {
+    if (m_filePath.endsWith(QLatin1Char('/'))) {
 	m_filePath.chop(1);
     }
 }
@@ -87,11 +87,11 @@ QVector<KFileMetaData::Type::Type> typesForMimeType(const QString& mimeType)
         types << Type::Document;
     }
 
-    static QMultiHash<QString, Type::Type> typeMapper = {
-        {"text/plain", Type::Document},
+    static QMultiHash<QString, Type::Type> typeMapper {
+        {QStringLiteral("text/plain"), Type::Document},
         // MS Office
-        {"application/msword", Type::Document},
-        {"application/x-scribus", Type::Document},
+        {QStringLiteral("application/msword"), Type::Document},
+        {QStringLiteral("application/x-scribus"), Type::Document},
         // The old pre-XML MS Office formats are already covered by the excel/powerpoint "contains" above:
         // - application/vnd.ms-powerpoint
         // - application/vnd.ms-excel
@@ -103,60 +103,60 @@ QVector<KFileMetaData::Type::Type> typesForMimeType(const QString& mimeType)
         // - application/vnd.oasis.opendocument.spreadsheet
         // - application/vnd.oasis.opendocument.presentation
         // Office 2007
-        {"application/vnd.openxmlformats-officedocument.presentationml.presentation", Type::Presentation},
-        {"application/vnd.openxmlformats-officedocument.presentationml.slideshow", Type::Presentation},
-        {"application/vnd.openxmlformats-officedocument.presentationml.template", Type::Presentation},
-        {"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", Type::Spreadsheet},
+        {QStringLiteral("application/vnd.openxmlformats-officedocument.presentationml.presentation"), Type::Presentation},
+        {QStringLiteral("application/vnd.openxmlformats-officedocument.presentationml.slideshow"), Type::Presentation},
+        {QStringLiteral("application/vnd.openxmlformats-officedocument.presentationml.template"), Type::Presentation},
+        {QStringLiteral("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"), Type::Spreadsheet},
         // Open Document Formats - https://en.wikipedia.org/wiki/OpenDocument_technical_specification
-        {"application/vnd.oasis.opendocument.presentation", Type::Presentation},
-        {"application/vnd.oasis.opendocument.spreadsheet", Type::Spreadsheet},
-        {"application/pdf", Type::Document},
-        {"application/postscript", Type::Document},
-        {"application/x-dvi", Type::Document},
-        {"application/rtf", Type::Document},
+        {QStringLiteral("application/vnd.oasis.opendocument.presentation"), Type::Presentation},
+        {QStringLiteral("application/vnd.oasis.opendocument.spreadsheet"), Type::Spreadsheet},
+        {QStringLiteral("application/pdf"), Type::Document},
+        {QStringLiteral("application/postscript"), Type::Document},
+        {QStringLiteral("application/x-dvi"), Type::Document},
+        {QStringLiteral("application/rtf"), Type::Document},
         // EBooks
-        {"application/epub+zip", Type::Document},
-        {"application/x-mobipocket-ebook", Type::Document},
+        {QStringLiteral("application/epub+zip"), Type::Document},
+        {QStringLiteral("application/x-mobipocket-ebook"), Type::Document},
         // Archives - https://en.wikipedia.org/wiki/List_of_archive_formats
-        {"application/x-tar", Type::Archive},
-        {"application/x-bzip2", Type::Archive},
-        {"application/x-gzip", Type::Archive},
-        {"application/x-lzip", Type::Archive},
-        {"application/x-lzma", Type::Archive},
-        {"application/x-lzop", Type::Archive},
-        {"application/x-compress", Type::Archive},
-        {"application/x-7z-compressed", Type::Archive},
-        {"application/x-ace-compressed", Type::Archive},
-        {"application/x-astrotite-afa", Type::Archive},
-        {"application/x-alz-compressed", Type::Archive},
-        {"application/vnd.android.package-archive", Type::Archive},
-        {"application/x-arj", Type::Archive},
-        {"application/vnd.ms-cab-compressed", Type::Archive},
-        {"application/x-cfs-compressed", Type::Archive},
-        {"application/x-dar", Type::Archive},
-        {"application/x-lzh", Type::Archive},
-        {"application/x-lzx", Type::Archive},
-        {"application/x-rar-compressed", Type::Archive},
-        {"application/x-stuffit", Type::Archive},
-        {"application/x-stuffitx", Type::Archive},
-        {"application/x-gtar", Type::Archive},
-        {"application/zip", Type::Archive},
+        {QStringLiteral("application/x-tar"), Type::Archive},
+        {QStringLiteral("application/x-bzip2"), Type::Archive},
+        {QStringLiteral("application/x-gzip"), Type::Archive},
+        {QStringLiteral("application/x-lzip"), Type::Archive},
+        {QStringLiteral("application/x-lzma"), Type::Archive},
+        {QStringLiteral("application/x-lzop"), Type::Archive},
+        {QStringLiteral("application/x-compress"), Type::Archive},
+        {QStringLiteral("application/x-7z-compressed"), Type::Archive},
+        {QStringLiteral("application/x-ace-compressed"), Type::Archive},
+        {QStringLiteral("application/x-astrotite-afa"), Type::Archive},
+        {QStringLiteral("application/x-alz-compressed"), Type::Archive},
+        {QStringLiteral("application/vnd.android.package-archive"), Type::Archive},
+        {QStringLiteral("application/x-arj"), Type::Archive},
+        {QStringLiteral("application/vnd.ms-cab-compressed"), Type::Archive},
+        {QStringLiteral("application/x-cfs-compressed"), Type::Archive},
+        {QStringLiteral("application/x-dar"), Type::Archive},
+        {QStringLiteral("application/x-lzh"), Type::Archive},
+        {QStringLiteral("application/x-lzx"), Type::Archive},
+        {QStringLiteral("application/x-rar-compressed"), Type::Archive},
+        {QStringLiteral("application/x-stuffit"), Type::Archive},
+        {QStringLiteral("application/x-stuffitx"), Type::Archive},
+        {QStringLiteral("application/x-gtar"), Type::Archive},
+        {QStringLiteral("application/zip"), Type::Archive},
         // WPS office
-        {"application/wps-office.doc", Type::Document},
-        {"application/wps-office.xls", Type::Document},
-        {"application/wps-office.xls", Type::Spreadsheet},
-        {"application/wps-office.pot", Type::Document},
-        {"application/wps-office.pot", Type::Presentation},
-        {"application/wps-office.wps", Type::Document},
-        {"application/wps-office.docx", Type::Document},
-        {"application/wps-office.xlsx", Type::Document},
-        {"application/wps-office.xlsx", Type::Spreadsheet},
-        {"application/wps-office.pptx", Type::Document},
-        {"application/wps-office.pptx", Type::Presentation},
+        {QStringLiteral("application/wps-office.doc"), Type::Document},
+        {QStringLiteral("application/wps-office.xls"), Type::Document},
+        {QStringLiteral("application/wps-office.xls"), Type::Spreadsheet},
+        {QStringLiteral("application/wps-office.pot"), Type::Document},
+        {QStringLiteral("application/wps-office.pot"), Type::Presentation},
+        {QStringLiteral("application/wps-office.wps"), Type::Document},
+        {QStringLiteral("application/wps-office.docx"), Type::Document},
+        {QStringLiteral("application/wps-office.xlsx"), Type::Document},
+        {QStringLiteral("application/wps-office.xlsx"), Type::Spreadsheet},
+        {QStringLiteral("application/wps-office.pptx"), Type::Document},
+        {QStringLiteral("application/wps-office.pptx"), Type::Presentation},
         // Other
-        {"text/markdown", Type::Document},
-        {"image/vnd.djvu+multipage", Type::Document},
-        {"application/x-lyx", Type::Document}
+        {QStringLiteral("text/markdown"), Type::Document},
+        {QStringLiteral("image/vnd.djvu+multipage"), Type::Document},
+        {QStringLiteral("application/x-lyx"), Type::Document}
     };
 
     auto hashIt = typeMapper.find(mimeType);
