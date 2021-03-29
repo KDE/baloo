@@ -39,7 +39,7 @@ void QueryParserTest::testSinglePrefixWord()
     QueryParser parser;
     parser.setAutoExapandSize(1);
 
-    EngineQuery query = parser.parseQuery("The", "F");
+    EngineQuery query = parser.parseQuery(QStringLiteral("The"), "F");
     EngineQuery q("Fthe", EngineQuery::StartsWith);
     QCOMPARE(query, q);
 }
@@ -49,7 +49,7 @@ void QueryParserTest::testSimpleQuery()
     QueryParser parser;
     parser.setAutoExapandSize(1);
 
-    EngineQuery query = parser.parseQuery("The song of Ice and Fire");
+    EngineQuery query = parser.parseQuery(QStringLiteral("The song of Ice and Fire"));
 
     QVector<EngineQuery> queries;
     queries << EngineQuery("the", EngineQuery::StartsWith);
@@ -67,7 +67,7 @@ void QueryParserTest::testPhraseSearch()
 {
     QueryParser parser;
 
-    EngineQuery query = parser.parseQuery("The \"song of Ice\" Fire");
+    EngineQuery query = parser.parseQuery(QStringLiteral("The \"song of Ice\" Fire"));
 
     QVector<EngineQuery> phraseQueries;
     phraseQueries << EngineQuery("song");
@@ -87,7 +87,7 @@ void QueryParserTest::testPhraseSearchOnly()
 {
     QueryParser parser;
 
-    EngineQuery query = parser.parseQuery("/opt/pro");
+    EngineQuery query = parser.parseQuery(QStringLiteral("/opt/pro"));
 
     QVector<EngineQuery> queries;
     queries << EngineQuery("opt");
@@ -101,7 +101,7 @@ void QueryParserTest::testUnderscorePhrase()
 {
     QueryParser parser;
 
-    EngineQuery query = parser.parseQuery("foo_bar.png");
+    EngineQuery query = parser.parseQuery(QStringLiteral("foo_bar.png"));
 
     QVector<EngineQuery> queries;
     queries << EngineQuery("foo");
@@ -117,7 +117,7 @@ void QueryParserTest::testPhraseSearch_sameLimiter()
     QueryParser parser;
     parser.setAutoExapandSize(1);
 
-    EngineQuery query = parser.parseQuery("The \"song of Ice' and Fire");
+    EngineQuery query = parser.parseQuery(QStringLiteral("The \"song of Ice' and Fire"));
 
     QVector<EngineQuery> queries;
     queries << EngineQuery("the", EngineQuery::StartsWith);
@@ -136,7 +136,7 @@ void QueryParserTest::testPhraseSearchEmail()
 {
     QueryParser parser;
 
-    EngineQuery query = parser.parseQuery("The song@ice.com Fire");
+    EngineQuery query = parser.parseQuery(QStringLiteral("The song@ice.com Fire"));
 
     QVector<EngineQuery> phraseQueries;
     phraseQueries << EngineQuery("song");
@@ -166,7 +166,7 @@ void QueryParserTest::testUnderscoreSplitting()
 {
     QueryParser parser;
 
-    EngineQuery query = parser.parseQuery("The_Fire");
+    EngineQuery query = parser.parseQuery(QStringLiteral("The_Fire"));
 
     QVector<EngineQuery> queries;
     queries << EngineQuery("the");
@@ -176,7 +176,7 @@ void QueryParserTest::testUnderscoreSplitting()
 
     QCOMPARE(query, q);
 
-    query = parser.parseQuery("_Fire");
+    query = parser.parseQuery(QStringLiteral("_Fire"));
     q = EngineQuery("fire", EngineQuery::StartsWith);
 
     QCOMPARE(query, q);
@@ -188,7 +188,7 @@ void QueryParserTest::testAutoExpand()
     parser.setAutoExapandSize(0);
 
     {
-        EngineQuery query = parser.parseQuery("the fire");
+        EngineQuery query = parser.parseQuery(QStringLiteral("the fire"));
 
         QVector<EngineQuery> queries;
         queries << EngineQuery("the", EngineQuery::Equal);
@@ -200,7 +200,7 @@ void QueryParserTest::testAutoExpand()
     }
 
     {
-        EngineQuery query = parser.parseQuery("'the fire");
+        EngineQuery query = parser.parseQuery(QStringLiteral("'the fire"));
 
         QVector<EngineQuery> queries;
         queries << EngineQuery("the", EngineQuery::Equal);
@@ -213,7 +213,7 @@ void QueryParserTest::testAutoExpand()
 
     parser.setAutoExapandSize(4);
     {
-        EngineQuery query = parser.parseQuery("the fire");
+        EngineQuery query = parser.parseQuery(QStringLiteral("the fire"));
 
         QVector<EngineQuery> queries;
         queries << EngineQuery("the", EngineQuery::Equal);
@@ -261,53 +261,53 @@ void QueryParserTest::testMixedDelimiters_data()
                      const QString& failureReason)
         { QTest::addRow("%s", qPrintable(input)) << input << query << failureReason; };
 
-    addRow("Term", {"term"}, "");
-    addRow("No phrase", { {{"no"}, {"phrase"}}, EngineQuery::And}, "");
-    addRow("Underscore_phrase", { {{"underscore"}, {"phrase"}}, EngineQuery::Phrase}, "");
-    addRow("underscore_dot.phrase", { {{"underscore"}, {"dot"}, {"phrase"}}, EngineQuery::Phrase}, "");
-    addRow("\'Quoted phrase\'", { {{"quoted"}, {"phrase"}}, EngineQuery::Phrase}, "");
-    addRow("\'Quoted phrase\' anded tail", {{
-	    {{{"quoted"}, {"phrase"}}, EngineQuery::Phrase},
-	    {"anded"}, {"tail"},
-        }, EngineQuery::And}, "");
-    addRow("\'Long quoted phrase\'", { {{"long"}, {"quoted"}, {"phrase"}}, EngineQuery::Phrase}, "");
-    addRow("Anded dot.phrase", { {
-            {"anded"},
-            {{{"dot"}, {"phrase"}}, EngineQuery::Phrase},
-        }, EngineQuery::And}, "");
-    addRow("Under_score dot.phrase", {{
-            {{{"under"}, {"score"}}, EngineQuery::Phrase},
-            {{{"dot"}, {"phrase"}}, EngineQuery::Phrase},
-        }, EngineQuery::And}, "");
-    addRow("\'One quoted\' Other.withDot", {{
-            {{{"one"}, {"quoted"}}, EngineQuery::Phrase},
-            {{{"other"}, {"withdot"}}, EngineQuery::Phrase},
-        }, EngineQuery::And}, "");
-    addRow("\'One quoted with.dot\'", {{
-            {"one"}, {"quoted"}, {"with"}, {"dot"}
-        }, EngineQuery::Phrase}, "");
-    addRow("\'Quoted_underscore and.dot\'", {{
-            {"quoted"}, {"underscore"}, {"and"}, {"dot"}
-        }, EngineQuery::Phrase}, "");
-    addRow("Underscore_andTrailingDot_.", {{
-            {"underscore"}, {"andtrailingdot"}
-        }, EngineQuery::Phrase}, "");
-    addRow("\'TrailingUnderscore_ andDot.\'", {{
-            {"trailingunderscore"}, {"anddot"}
-        }, EngineQuery::Phrase}, "");
-    addRow("NoPhrase Under_score \'Quoted Phrase\'", {{
-            {"nophrase"},
-            {{{"under"}, {"score"}}, EngineQuery::Phrase},
-            {{{"quoted"}, {"phrase"}}, EngineQuery::Phrase},
-        }, EngineQuery::And}, "");
-    addRow("NoPhrase \'Quoted Phrase\' Under_score", {{
-            {"nophrase"},
-            {{{"quoted"}, {"phrase"}}, EngineQuery::Phrase},
-            {{{"under"}, {"score"}}, EngineQuery::Phrase},
-        }, EngineQuery::And}, "");
-    addRow("\'DegeneratedQuotedPhrase\' Anded text", {
-            {{"degeneratedquotedphrase"}, {"anded"}, {"text"}}, EngineQuery::And
-        }, "Single term in quotes is no phrase");
+    addRow(QStringLiteral("Term"), {"term"}, QString());
+    addRow(QStringLiteral("No phrase"), { {{"no"}, {"phrase"}}, EngineQuery::And}, QString());
+    addRow(QStringLiteral("Underscore_phrase"), { {{"underscore"}, {"phrase"}}, EngineQuery::Phrase}, QString());
+    addRow(QStringLiteral("underscore_dot.phrase"), { {{"underscore"}, {"dot"}, {"phrase"}}, EngineQuery::Phrase}, QString());
+    addRow(QStringLiteral("\'Quoted phrase\'"), { {{"quoted"}, {"phrase"}}, EngineQuery::Phrase}, QString());
+    addRow(QStringLiteral("\'Quoted phrase\' anded tail"), {{
+	       {{{"quoted"}, {"phrase"}}, EngineQuery::Phrase},
+	       {"anded"}, {"tail"},
+           }, EngineQuery::And}, QString());
+    addRow(QStringLiteral("\'Long quoted phrase\'"), { {{"long"}, {"quoted"}, {"phrase"}}, EngineQuery::Phrase}, QString());
+    addRow(QStringLiteral("Anded dot.phrase"), { {
+               {"anded"},
+               {{{"dot"}, {"phrase"}}, EngineQuery::Phrase},
+           }, EngineQuery::And}, QString());
+    addRow(QStringLiteral("Under_score dot.phrase"), {{
+               {{{"under"}, {"score"}}, EngineQuery::Phrase},
+               {{{"dot"}, {"phrase"}}, EngineQuery::Phrase},
+           }, EngineQuery::And}, QString());
+    addRow(QStringLiteral("\'One quoted\' Other.withDot"), {{
+               {{{"one"}, {"quoted"}}, EngineQuery::Phrase},
+               {{{"other"}, {"withdot"}}, EngineQuery::Phrase},
+           }, EngineQuery::And}, QString());
+    addRow(QStringLiteral("\'One quoted with.dot\'"), {{
+               {"one"}, {"quoted"}, {"with"}, {"dot"}
+           }, EngineQuery::Phrase}, QString());
+    addRow(QStringLiteral("\'Quoted_underscore and.dot\'"), {{
+               {"quoted"}, {"underscore"}, {"and"}, {"dot"}
+           }, EngineQuery::Phrase}, QString());
+    addRow(QStringLiteral("Underscore_andTrailingDot_."), {{
+               {"underscore"}, {"andtrailingdot"}
+           }, EngineQuery::Phrase}, QString());
+    addRow(QStringLiteral("\'TrailingUnderscore_ andDot.\'"), {{
+               {"trailingunderscore"}, {"anddot"}
+           }, EngineQuery::Phrase}, QString());
+    addRow(QStringLiteral("NoPhrase Under_score \'Quoted Phrase\'"), {{
+               {"nophrase"},
+               {{{"under"}, {"score"}}, EngineQuery::Phrase},
+               {{{"quoted"}, {"phrase"}}, EngineQuery::Phrase},
+           }, EngineQuery::And}, QString());
+    addRow(QStringLiteral("NoPhrase \'Quoted Phrase\' Under_score"), {{
+               {"nophrase"},
+               {{{"quoted"}, {"phrase"}}, EngineQuery::Phrase},
+               {{{"under"}, {"score"}}, EngineQuery::Phrase},
+           }, EngineQuery::And}, QString());
+    addRow(QStringLiteral("\'DegeneratedQuotedPhrase\' Anded text"), {{
+               {"degeneratedquotedphrase"}, {"anded"}, {"text"}
+	   }, EngineQuery::And}, QStringLiteral("Single term in quotes is no phrase"));
 }
 
 QTEST_MAIN(QueryParserTest)

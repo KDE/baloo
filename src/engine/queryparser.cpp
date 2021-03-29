@@ -18,7 +18,7 @@ QueryParser::QueryParser()
 {
 }
 
-EngineQuery QueryParser::parseQuery(const QString& text_, const QString& prefix)
+EngineQuery QueryParser::parseQuery(const QString& text_, const QByteArray& prefix)
 {
     Q_ASSERT(!text_.isEmpty());
 
@@ -103,8 +103,7 @@ EngineQuery QueryParser::parseQuery(const QString& text_, const QString& prefix)
 
             str = cleanString.normalized(QString::NormalizationForm_KC);
 
-            const QString term = prefix + str;
-            const QByteArray arr = term.toUtf8();
+            const QByteArray arr = prefix + str.toUtf8();
 
             if (inDoubleQuotes || inSingleQuotes || inPhrase) {
                 phraseQueries << EngineQuery(arr, EngineQuery::Equal);
