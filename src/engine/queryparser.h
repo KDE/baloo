@@ -9,7 +9,9 @@
 #define BALOO_QUERYPARSER_H
 
 #include "engine_export.h"
-#include <QString>
+#include <QByteArray>
+
+class QString;
 
 namespace Baloo {
 
@@ -20,7 +22,7 @@ class BALOO_ENGINE_EXPORT QueryParser
 public:
     QueryParser();
 
-    EngineQuery parseQuery(const QString& str, const QString& prefix = QString());
+    EngineQuery parseQuery(const QString& str, const QByteArray& prefix = QByteArray());
 
     /**
      * Set if each word in the string whose length >= \p size should be treated as
