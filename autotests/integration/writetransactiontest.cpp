@@ -55,7 +55,7 @@ void WriteTransactionTest::testAddDocument()
 {
     Transaction tr(db, Transaction::ReadWrite);
 
-    const QString filePath(dir->path() + "/file");
+    const QString filePath(dir->path() + QStringLiteral("/file"));
     touchFile(filePath);
     QByteArray url = QFile::encodeName(filePath);
     quint64 id = filePathToId(url);
@@ -119,8 +119,8 @@ static Document createDocument(const QString& filePath, quint32 mtime, quint32 c
 
 void WriteTransactionTest::testAddDocumentTwoDocuments()
 {
-    const QString url1(dir->path() + "/file1");
-    const QString url2(dir->path() + "/file2");
+    const QString url1(dir->path() + QStringLiteral("/file1"));
+    const QString url2(dir->path() + QStringLiteral("/file2"));
     touchFile(url1);
     touchFile(url2);
 
@@ -154,7 +154,7 @@ void WriteTransactionTest::testAddDocumentTwoDocuments()
 
 void WriteTransactionTest::testAddAndRemoveOneDocument()
 {
-    const QString url1(dir->path() + "/file1");
+    const QString url1(dir->path() + QStringLiteral("/file1"));
     touchFile(url1);
 
     Document doc1 = createDocument(url1, 5, 1, {"a", "abc", "dab"}, {"file1"}, {});
@@ -177,7 +177,7 @@ void WriteTransactionTest::testAddAndRemoveOneDocument()
 
 void WriteTransactionTest::testAddAndReplaceOneDocument()
 {
-    const QString url1(dir->path() + "/file1");
+    const QString url1(dir->path() + QStringLiteral("/file1"));
     touchFile(url1);
 
     Document doc1 = createDocument(url1, 5, 1, {"a", "abc", "dab"}, {"file1"}, {});
@@ -226,9 +226,9 @@ void WriteTransactionTest::testAddAndReplaceOneDocument()
 void WriteTransactionTest::testRemoveRecursively()
 {
     const QString path = dir->path();
-    const QString url1(path + "/file1");
-    const QString dirPath(path + "/dir");
-    const QString url2(dirPath + "/file1");
+    const QString url1(path + QStringLiteral("/file1"));
+    const QString dirPath(path + QStringLiteral("/dir"));
+    const QString url2(dirPath + QStringLiteral("/file1"));
 
     touchFile(url1);
     QDir().mkpath(dirPath);
@@ -258,7 +258,7 @@ void WriteTransactionTest::testRemoveRecursively()
 
 void WriteTransactionTest::testDocumentId()
 {
-    const QString url1(dir->path() + "/file1");
+    const QString url1(dir->path() + QStringLiteral("/file1"));
     touchFile(url1);
 
     Document doc1 = createDocument(url1, 5, 1, {"a", "abc", "dab"}, {"file1"}, {});
@@ -275,9 +275,9 @@ void WriteTransactionTest::testDocumentId()
 
 void WriteTransactionTest::testTermPositions()
 {
-    const QString url1(dir->path() + "/file1");
-    const QString url2(dir->path() + "/file2");
-    const QString url3(dir->path() + "/file3");
+    const QString url1(dir->path() + QStringLiteral("/file1"));
+    const QString url2(dir->path() + QStringLiteral("/file2"));
+    const QString url3(dir->path() + QStringLiteral("/file3"));
     touchFile(url1);
     touchFile(url2);
     touchFile(url3);
@@ -420,7 +420,7 @@ void WriteTransactionTest::testTermPositions()
 
 void WriteTransactionTest::testIdempotentDocumentChange()
 {
-    const QString url1(dir->path() + "/file1");
+    const QString url1(dir->path() + QStringLiteral("/file1"));
     touchFile(url1);
 
     Document doc1 = createDocument(url1, 5, 1, {"a", "abc", "dab"}, {"file1"}, {});

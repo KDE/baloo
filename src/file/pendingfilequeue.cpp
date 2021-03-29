@@ -48,7 +48,7 @@ void PendingFileQueue::enqueue(const PendingFile& file)
 {
     // If we get an event to remove /home/A, remove all events for everything under /home/A/
 
-    if (file.shouldRemoveIndex() && file.path().endsWith('/')) {
+    if (file.shouldRemoveIndex() && file.path().endsWith(QLatin1Char('/'))) {
         const auto keepFile = [&file](const PendingFile& pending) {
             return !pending.path().startsWith(file.path());
         };

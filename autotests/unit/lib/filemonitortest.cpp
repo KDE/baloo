@@ -112,7 +112,7 @@ void FileMonitorTest::testAddFileShouldRemoveTailingSlash()
 {
     QString expectedFilePath = getRandomValidFilePath();
     QString filePath(expectedFilePath);
-    filePath.append("/");
+    filePath.append(QLatin1Char('/'));
 
     m_sut->addFile(filePath);
 
@@ -161,7 +161,7 @@ void FileMonitorTest::testSetFilesIfSetFilesWithOneElementFilesShouldReturn1Item
 
 QString FileMonitorTest::getRandomValidWebUrl()
 {
-    QString file = "http://" + getRandomString(4) + ".com/" + getRandomString(4);
+    QString file = QStringLiteral("http://%1.com/%2").arg(getRandomString(4), getRandomString(4));
     return file;
 }
 

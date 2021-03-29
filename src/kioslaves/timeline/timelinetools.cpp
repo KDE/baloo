@@ -55,16 +55,16 @@ QUrl Baloo::canonicalizeTimelineUrl(const QUrl& url) {
     QUrl newUrl = url;
     QString path = url.path();
     if (path.contains(QLatin1String("//"))) {
-        QStringList sections = path.split(QChar('/'), Qt::SkipEmptyParts);
-        path = '/' + sections.join(QChar('/'));
+        QStringList sections = path.split(QLatin1Char('/'), Qt::SkipEmptyParts);
+        path = QLatin1Char('/') + sections.join(QLatin1Char('/'));
         newUrl.setPath(path);
     }
-    if ((path.size() > 1) && path.endsWith(QChar('/'))) {
+    if ((path.size() > 1) && path.endsWith(QLatin1Char('/'))) {
         path.chop(1);
         newUrl.setPath(path);
     }
-    if (!path.startsWith(QChar('/'))) {
-        path = '/' + path;
+    if (!path.startsWith(QLatin1Char('/'))) {
+        path = QLatin1Char('/') + path;
         newUrl.setPath(path);
     }
     return newUrl;

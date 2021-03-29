@@ -278,7 +278,7 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
     TagsProtocol::ParseResult result;
     result.decodedUrl = QUrl::fromPercentEncoding(url.toString().toUtf8());
 
-    if ((url.scheme() == QLatin1String("tags")) && result.decodedUrl.length()>6 && result.decodedUrl.at(6) == QChar('/')) {
+    if ((url.scheme() == QLatin1String("tags")) && result.decodedUrl.length()>6 && result.decodedUrl.at(6) == QLatin1Char('/')) {
         result.urlType = InvalidUrl;
         return result;
     }
@@ -377,9 +377,9 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
         if (!result.tag.isEmpty()) {
             // Create a query to find files that may be in the operation's scope.
             QString query = result.tag;
-            query.prepend("tag:");
-            query.replace(' ', " AND tag:");
-            query.replace('/', " AND tag:");
+            query.prepend(QStringLiteral("tag:"));
+            query.replace(QLatin1Char(' '), QStringLiteral(" AND tag:"));
+            query.replace(QLatin1Char('/'), QStringLiteral(" AND tag:"));
             result.query.setSearchString(query);
 
             qCDebug(KIO_TAGS) << result.decodedUrl << "url query:" << query;

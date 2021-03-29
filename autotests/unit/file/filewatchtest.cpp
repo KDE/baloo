@@ -83,7 +83,7 @@ void FileWatchTest::testFileCreation()
     QVERIFY(spyIndexXattr.isValid());
 
     // Create a file and see if it is indexed
-    QString fileUrl(includeDir.path() + "/t1");
+    QString fileUrl(includeDir.path() + QStringLiteral("/t1"));
     QVERIFY(createFile(fileUrl));
 
     QVERIFY(spyIndexNew.wait());
@@ -165,22 +165,22 @@ void FileWatchTest::testConfigChange()
 
     QSignalSpy spyIndexNew(&fileWatch, SIGNAL(indexNewFile(QString)));
     QVERIFY(spyIndexNew.isValid());
-    QVERIFY(createFile(d1 + "/t1"));
-    QVERIFY(createFile(d2 + "/t2"));
+    QVERIFY(createFile(d1 + QStringLiteral("/t1")));
+    QVERIFY(createFile(d2 + QStringLiteral("/t2")));
 
     QVERIFY(spyIndexNew.wait());
     QCOMPARE(spyIndexNew.count(), 2);
     spyIndexNew.clear();
 
     // dir d22 is not yet excluded, so one event is expected
-    QVERIFY(createFile(d11 + "/tx1"));
-    QVERIFY(createFile(d21 + "/tx2"));
-    QVERIFY(createFile(d22 + "/tx3"));
+    QVERIFY(createFile(d11 + QStringLiteral("/tx1")));
+    QVERIFY(createFile(d21 + QStringLiteral("/tx2")));
+    QVERIFY(createFile(d22 + QStringLiteral("/tx3")));
 
     QVERIFY(spyIndexNew.wait());
     QCOMPARE(spyIndexNew.count(), 1);
     QList<QVariant> event = spyIndexNew.at(0);
-    QCOMPARE(event.at(0).toString(), d22 + "/tx3");
+    QCOMPARE(event.at(0).toString(), d22 + QStringLiteral("/tx3"));
     spyIndexNew.clear();
 
     Test::writeIndexerConfig({d2}, {d22});
@@ -188,28 +188,28 @@ void FileWatchTest::testConfigChange()
     fileWatch.updateIndexedFoldersWatches();
 
     // dir d1 is no longer included
-    QVERIFY(createFile(d1 + "/tx1a"));
-    QVERIFY(createFile(d2 + "/tx2a"));
+    QVERIFY(createFile(d1 + QStringLiteral("/tx1a")));
+    QVERIFY(createFile(d2 + QStringLiteral("/tx2a")));
     QVERIFY(spyIndexNew.wait());
     QList<QString> result;
     for (const QList<QVariant>& event : qAsConst(spyIndexNew)) {
 	result.append(event.at(0).toString());
     }
-    QCOMPARE(result, {d2 + "/tx2a"});
+    QCOMPARE(result, {d2 + QStringLiteral("/tx2a")});
     spyIndexNew.clear();
     result.clear();
 
     // d11 is implicitly excluded, as d1 is no longer included
     // d22 is explicitly excluded now, d21 is included
-    QVERIFY(createFile(d11 + "/tx1b"));
-    QVERIFY(createFile(d21 + "/tx2b"));
-    QVERIFY(createFile(d22 + "/tx3b"));
+    QVERIFY(createFile(d11 + QStringLiteral("/tx1b")));
+    QVERIFY(createFile(d21 + QStringLiteral("/tx2b")));
+    QVERIFY(createFile(d22 + QStringLiteral("/tx3b")));
 
     QVERIFY(spyIndexNew.wait(500));
     for (const QList<QVariant>& event : qAsConst(spyIndexNew)) {
 	result.append(event.at(0).toString());
     }
-    QCOMPARE(result, {d21 + "/tx2b"});
+    QCOMPARE(result, {d21 + QStringLiteral("/tx2b")});
 }
 
 QTEST_MAIN(FileWatchTest)

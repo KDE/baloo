@@ -45,7 +45,7 @@ void PropertySerializationTest::testSingleProp()
     namespace KFMProp = KFileMetaData::Property;
 
     KFileMetaData::PropertyMap properties;
-    properties.insertMulti(KFMProp::Subject, "subject");
+    properties.insertMulti(KFMProp::Subject, QStringLiteral("subject"));
 
     auto json = propertyMapToJson(properties);
     // QJsonDocument jdoc(json);
@@ -61,7 +61,7 @@ void PropertySerializationTest::testMultiProp()
     namespace KFMProp = KFileMetaData::Property;
 
     KFileMetaData::PropertyMap properties;
-    properties.insertMulti(KFMProp::Subject, "subject");
+    properties.insertMulti(KFMProp::Subject, QStringLiteral("subject"));
     properties.insertMulti(KFMProp::ReleaseYear, 2019);
     properties.insertMulti(KFMProp::PhotoExposureTime, 0.12345);
 
@@ -83,10 +83,10 @@ void PropertySerializationTest::testMultiValue()
     namespace KFMProp = KFileMetaData::Property;
 
     KFileMetaData::PropertyMap properties;
-    properties.insertMulti(KFMProp::Genre, "genre1");
-    properties.insertMulti(KFMProp::Genre, "genre2");
-    properties.insertMulti(KFMProp::Ensemble, "ensemble1");
-    properties.insertMulti(KFMProp::Ensemble, "ensemble2");
+    properties.insertMulti(KFMProp::Genre, QStringLiteral("genre1"));
+    properties.insertMulti(KFMProp::Genre, QStringLiteral("genre2"));
+    properties.insertMulti(KFMProp::Ensemble, QStringLiteral("ensemble1"));
+    properties.insertMulti(KFMProp::Ensemble, QStringLiteral("ensemble2"));
     properties.insertMulti(KFMProp::Rating, 4);
     properties.insertMulti(KFMProp::Rating, 5);
 
@@ -112,8 +112,8 @@ void PropertySerializationTest::testLists()
     namespace KFMProp = KFileMetaData::Property;
 
     KFileMetaData::PropertyMap properties;
-    properties.insertMulti(KFMProp::Genre, QStringList({"genre1", "genre2"}));
-    properties.insertMulti(KFMProp::Ensemble, QVariantList({QVariant("ensemble1"), QVariant("ensemble2")}));
+    properties.insertMulti(KFMProp::Genre, QStringList({QStringLiteral("genre1"), QStringLiteral("genre2")}));
+    properties.insertMulti(KFMProp::Ensemble, QVariantList({QStringLiteral("ensemble1"), QStringLiteral("ensemble2")}));
     properties.insertMulti(KFMProp::Rating, QVariantList({QVariant(10), QVariant(7.7)}));
 
     auto json = propertyMapToJson(properties);

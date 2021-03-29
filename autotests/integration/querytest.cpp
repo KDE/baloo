@@ -53,15 +53,15 @@ private Q_SLOTS:
             return filePathToId(QFile::encodeName(path));
         };
 
-        m_id1 = touchFile(dir->path() + "/file1.txt");
-        m_id2 = touchFile(dir->path() + "/file2");
-        m_id3 = touchFile(dir->path() + "/file3");
-        m_id4 = touchFile(dir->path() + "/file4");
-        m_id7 = touchFile(dir->path() + "/file7_lazy");
-        m_id8 = touchFile(dir->path() + "/file8_dog");
+        m_id1 = touchFile(dir->path() + QStringLiteral("/file1.txt"));
+        m_id2 = touchFile(dir->path() + QStringLiteral("/file2"));
+        m_id3 = touchFile(dir->path() + QStringLiteral("/file3"));
+        m_id4 = touchFile(dir->path() + QStringLiteral("/file4"));
+        m_id7 = touchFile(dir->path() + QStringLiteral("/file7_lazy"));
+        m_id8 = touchFile(dir->path() + QStringLiteral("/file8_dog"));
 
-        m_id5 = touchFile(dir->path() + "/tagFile1");
-        m_id6 = touchFile(dir->path() + "/tagFile2");
+        m_id5 = touchFile(dir->path() + QStringLiteral("/tagFile1"));
+        m_id6 = touchFile(dir->path() + QStringLiteral("/tagFile2"));
     }
 
     void init() {
@@ -95,12 +95,11 @@ private:
     Database* db;
 
     void insertDocuments();
-    void addDocument(Transaction* tr,const QString& text, quint64 id, const QString& url)
+    void addDocument(Transaction* tr,const QString& text, quint64 id, const QString& fileName)
     {
         Document doc;
+        QString url = dir->path() + QLatin1Char('/') + fileName;
         doc.setUrl(QFile::encodeName(url));
-
-        QString fileName = url.mid(url.lastIndexOf('/') + 1);
 
         TermGenerator tg(doc);
         tg.indexText(text);
@@ -124,15 +123,14 @@ private:
     }
 
     void insertTagDocuments();
-    void addTagDocument(Transaction* tr,const QStringList& tags, quint64 id, const QString& url)
+    void addTagDocument(Transaction* tr,const QStringList& tags, quint64 id, const QString& fileName)
     {
         Document doc;
+        QString url = dir->path() + QLatin1Char('/') + fileName;
         doc.setUrl(QFile::encodeName(url));
 
-        QString fileName = url.mid(url.lastIndexOf('/') + 1);
-
         TermGenerator tg(doc);
-        tg.indexText("text/plain", QByteArray("M"));
+        tg.indexText(QStringLiteral("text/plain"), QByteArray("M"));
         for (const QString& tag : tags) {
             tg.indexXattrText(tag, QByteArray("TA"));
         }
@@ -158,12 +156,12 @@ private:
 void QueryTest::insertDocuments()
 {
     Transaction tr(db, Transaction::ReadWrite);
-    addDocument(&tr, QStringLiteral("The quick brown fox jumped over the crazy dog"), m_id1, dir->path() + "/file1.txt");
-    addDocument(&tr, QStringLiteral("The quick brown fox jumped over the lazy dog"), m_id7, dir->path() + "/file7_lazy");
-    addDocument(&tr, QStringLiteral("A quick brown fox ran around a easy dog"), m_id8, dir->path() + "/file8_dog");
-    addDocument(&tr, QStringLiteral("The night is dark and full of terror"), m_id2, dir->path() + "/file2");
-    addDocument(&tr, QStringLiteral("Don't feel sorry for yourself. Only assholes do that"), m_id3, dir->path() + "/file3");
-    addDocument(&tr, QStringLiteral("Only the dead stay 17 forever. crazy"), m_id4, dir->path() + "/file4");
+    addDocument(&tr, QStringLiteral("The quick brown fox jumped over the crazy dog"), m_id1, QStringLiteral("file1.txt"));
+    addDocument(&tr, QStringLiteral("The quick brown fox jumped over the lazy dog"), m_id7, QStringLiteral("file7_lazy"));
+    addDocument(&tr, QStringLiteral("A quick brown fox ran around a easy dog"), m_id8, QStringLiteral("file8_dog"));
+    addDocument(&tr, QStringLiteral("The night is dark and full of terror"), m_id2, QStringLiteral("file2"));
+    addDocument(&tr, QStringLiteral("Don't feel sorry for yourself. Only assholes do that"), m_id3, QStringLiteral("file3"));
+    addDocument(&tr, QStringLiteral("Only the dead stay 17 forever. crazy"), m_id4, QStringLiteral("file4"));
 
     renameDocument(&tr, m_id8, QStringLiteral("file8_easy"));
     tr.commit();
@@ -172,8 +170,19 @@ void QueryTest::insertDocuments()
 void QueryTest::insertTagDocuments()
 {
     Transaction tr(db, Transaction::ReadWrite);
-    addTagDocument(&tr, {"One", "Two", "Three", "Four", "F1"}, m_id5, dir->path() + "/tagFile1");
-    addTagDocument(&tr, {"One", "Two-Three", "Four", "F2"}, m_id6, dir->path() + "/tagFile2");
+    addTagDocument(&tr, {
+	QStringLiteral("One"),
+	QStringLiteral("Two"),
+	QStringLiteral("Three"),
+	QStringLiteral("Four"),
+	QStringLiteral("F1")
+    }, m_id5, QStringLiteral("tagFile1"));
+    addTagDocument(&tr, {
+	QStringLiteral("One"),
+	QStringLiteral("Two-Three"),
+	QStringLiteral("Four"),
+	QStringLiteral("F2")
+    }, m_id6, QStringLiteral("tagFile2"));
     tr.commit();
 }
 
@@ -226,27 +235,25 @@ void QueryTest::testTermPhrase_data()
     QTest::addColumn<QByteArrayList>("phrase");
     QTest::addColumn<QVector<quint64>>("contentMatches");
     QTest::addColumn<QVector<quint64>>("filenameMatches");
-    QTest::addColumn<QString>("failReason");
 
     auto addRow = [](const char* name, const QByteArrayList& phrase,
                      const QVector<quint64> contentMatches,
-                     const QVector<quint64> filenameMatches,
-                     const QString& failureReason)
-        { QTest::addRow("%s", name) << phrase << contentMatches << filenameMatches << failureReason; };
+                     const QVector<quint64> filenameMatches)
+        { QTest::addRow("%s", name) << phrase << contentMatches << filenameMatches;};
 
     // Content matches
-    addRow("Crazy dog",        {"crazy", "dog"},  SortedIdVector{ m_id1 }, {}, "");
-    addRow("Lazy dog",         {"lazy", "dog"},   SortedIdVector{ m_id7 }, {}, "");
-    addRow("Brown fox",        {"brown", "fox"},  SortedIdVector{ m_id1, m_id7, m_id8 }, {}, "");
-    addRow("Dog",              {"dog"},           SortedIdVector{ m_id1, m_id7, m_id8 }, {}, "");
+    addRow("Crazy dog",        {QByteArrayLiteral("crazy"), QByteArrayLiteral("dog")},  SortedIdVector{ m_id1 }, {});
+    addRow("Lazy dog",         {QByteArrayLiteral("lazy"),  QByteArrayLiteral("dog")},  SortedIdVector{ m_id7 }, {});
+    addRow("Brown fox",        {QByteArrayLiteral("brown"), QByteArrayLiteral("fox")},  SortedIdVector{ m_id1, m_id7, m_id8 }, {});
+    addRow("Dog",              {QByteArrayLiteral("dog")},                              SortedIdVector{ m_id1, m_id7, m_id8 }, {});
     // Filename matches
-    addRow("Crazy dog file 1", {"file1"},         {}, SortedIdVector{ m_id1 }, "");
-    addRow("Crazy dog file 2", {"file1", "txt"},  {}, SortedIdVector{ m_id1 }, "");
-    addRow("Lazy dog file 1",  {"file7"},         {}, SortedIdVector{ m_id7 }, "");
-    addRow("Lazy dog file 2",  {"file7", "lazy"}, {}, SortedIdVector{ m_id7 }, "");
+    addRow("Crazy dog file 1", {QByteArrayLiteral("file1")},                            {}, SortedIdVector{ m_id1 });
+    addRow("Crazy dog file 2", {QByteArrayLiteral("file1"), QByteArrayLiteral("txt")},  {}, SortedIdVector{ m_id1 });
+    addRow("Lazy dog file 1",  {QByteArrayLiteral("file7")},                            {}, SortedIdVector{ m_id7 });
+    addRow("Lazy dog file 2",  {QByteArrayLiteral("file7"), QByteArrayLiteral("lazy")}, {}, SortedIdVector{ m_id7 });
     // Matches content and filename
-    addRow("Lazy both",        {"lazy"},          { m_id7 }, { m_id7 }, "");
-    addRow("Easy both",        {"easy"},          { m_id8 }, { m_id8 }, "");
+    addRow("Lazy both",        {QByteArrayLiteral("lazy")},                             { m_id7 }, { m_id7 });
+    addRow("Easy both",        {QByteArrayLiteral("easy")},                             { m_id8 }, { m_id8 });
 }
 
 void QueryTest::testTermPhrase()
@@ -254,7 +261,6 @@ void QueryTest::testTermPhrase()
     QFETCH(QByteArrayList, phrase);
     QFETCH(QVector<quint64>, contentMatches);
     QFETCH(QVector<quint64>, filenameMatches);
-    QFETCH(QString, failReason);
 
     QVector<EngineQuery> queries;
     for (const QByteArray& term : phrase) {
@@ -263,9 +269,6 @@ void QueryTest::testTermPhrase()
     EngineQuery q(queries, EngineQuery::Phrase);
 
     Transaction tr(db, Transaction::ReadOnly);
-    if (!failReason.isEmpty()) {
-        QEXPECT_FAIL("", qPrintable(failReason), Continue);
-    }
     QCOMPARE(tr.exec(q), contentMatches);
 
     queries.clear();

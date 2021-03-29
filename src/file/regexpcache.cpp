@@ -65,7 +65,7 @@ void RegExpCache::rebuildCacheFromFilterList(const QStringList& filters)
 
     // Combine all suffixes into one large RE: "^.*(foo|bar|baz)$"
     QString suffixMatch = QStringLiteral("^.*\\.(")
-        + suffixes.join(QChar('|'))
+        + suffixes.join(QLatin1Char('|'))
         + QStringLiteral(")$");
     // qCDebug(BALOO) << suffixMatch;
     m_regexpCache.prepend(QRegularExpression(suffixMatch));
