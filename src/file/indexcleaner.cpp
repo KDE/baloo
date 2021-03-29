@@ -37,7 +37,7 @@ void IndexCleaner::run()
             return false;
         }
 
-        QString url = tr.documentUrl(id);
+        const QString url = QFile::decodeName(tr.documentUrl(id));
 
         if (!QFile::exists(url)) {
             qCDebug(BALOO) << "not exists: " << url;

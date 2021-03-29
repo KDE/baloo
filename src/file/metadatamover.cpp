@@ -63,7 +63,7 @@ void MetadataMover::removeMetadata(Transaction* tr, const QString& url)
         return;
     }
 
-    bool isDir = url.endsWith('/');
+    bool isDir = url.endsWith(QLatin1Char('/'));
     if (!isDir) {
         tr->removeDocument(id);
     } else {
@@ -95,7 +95,7 @@ void MetadataMover::updateMetadata(Transaction* tr, const QString& from, const Q
     quint64 parentId = tr->documentId(parentPath);
     if (!parentId) {
         qCDebug(BALOO) << "Parent directory not (yet) known, signaling newFile" << to;
-        Q_EMIT movedWithoutData(parentPath);
+        Q_EMIT movedWithoutData(QFile::decodeName(parentPath));
         return;
     }
 
