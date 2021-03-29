@@ -16,7 +16,7 @@ void BalooPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 
 void BalooPlugin::registerTypes(const char *uri)
 {
-    Q_ASSERT(uri == QLatin1String("org.kde.baloo"));
+    Q_ASSERT(uri == QByteArrayLiteral("org.kde.baloo"));
 
     qmlRegisterType<QueryResultsModel>(uri, 0, 1, "QueryResultsModel");
     qmlRegisterType<Query>(uri, 0, 1, "Query");

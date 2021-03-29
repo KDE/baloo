@@ -71,7 +71,6 @@ if(${LMDB_FOUND})
 endif()
 
 # compiler flags and build system
-remove_definitions(-DQT_NO_CAST_FROM_ASCII)
 add_definitions(-DQT_NO_FOREACH)
 add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050e00) # TODO look into the QMap::insertMulti usage in kfilemetadata
 add_definitions(-DKF_DISABLE_DEPRECATED_BEFORE_AND_AT=0x055000)

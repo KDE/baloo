@@ -525,31 +525,31 @@ void Transaction::checkFsTree()
             std::cout << "Missing filePath for " << id << std::endl;
             std::cout << "\tPostingDB Terms: ";
             for (const QByteArray& term : qAsConst(newTerms)) {
-                std::cout << qPrintable(term) << " ";
+                std::cout << qPrintable(QString::fromUtf8(term)) << " ";
             }
             std::cout << std::endl;
 
             std::cout << "\tDocumentTermsDB: ";
             for (const QByteArray& term : terms) {
-                std::cout << qPrintable(term) << " ";
+                std::cout << qPrintable(QString::fromUtf8(term)) << " ";
             }
             std::cout << std::endl;
 
             std::cout << "\tFileNameTermsDB: ";
             for (const QByteArray& term : fileNameTerms) {
-                std::cout << qPrintable(term) << " ";
+                std::cout << qPrintable(QString::fromUtf8(term)) << " ";
             }
             std::cout << std::endl;
 
             std::cout << "\tXAttrTermsDB: ";
             for (const QByteArray& term : xAttrTerms) {
-                std::cout << qPrintable(term) << " ";
+                std::cout << qPrintable(QString::fromUtf8(term)) << " ";
             }
             std::cout << std::endl;
 
             count++;
         } else if (!QFileInfo::exists(QString::fromUtf8(url))) {
-            std::cout << "FilePath " << qPrintable(url) << " for " << id << " does not exist"<< std::endl;
+            std::cout << "FilePath " << qPrintable(QString::fromUtf8(url)) << " for " << id << " does not exist"<< std::endl;
             count++;
         }
     }
@@ -585,7 +585,7 @@ void Transaction::checkTermsDbinPostingDb()
         for (const QByteArray& term : qAsConst(terms)) {
             PostingList plist = postingDb.get(term);
             if (!plist.contains(id)) {
-                std::cout << id << " is missing term " << qPrintable(term) << std::endl;
+                std::cout << id << " is missing term " << qPrintable(QString::fromUtf8(term)) << std::endl;
             }
         }
     }
