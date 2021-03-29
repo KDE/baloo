@@ -100,7 +100,7 @@ MetadataMoverTest::DocumentInfo MetadataMoverTest::documentInfo(quint64 id)
     }
 
     DocumentInfo docInfo;
-    docInfo.url = tr.documentUrl(id);
+    docInfo.url = QFile::decodeName(tr.documentUrl(id));
     docInfo.timeInfo = tr.documentTimeInfo(id);
     docInfo.docTerms = tr.documentTerms(id);
     docInfo.filenameTerms = tr.documentFileNameTerms(id);
@@ -147,21 +147,21 @@ void MetadataMoverTest::testRenameFile()
 {
     QTemporaryDir dir;
 
-    QString url = dir.path() + "/file";
+    QString url = dir.path() + QStringLiteral("/file");
     touchFile(url);
     quint64 fid = insertUrl(url);
 
     DocumentInfo oldInfo = documentInfo(fid);
     QVERIFY(!oldInfo.url.isEmpty());
-    QCOMPARE(oldInfo.url, QFile::encodeName(url));
+    QCOMPARE(oldInfo.url, url);
 
     MetadataMover mover(m_db, this);
-    QString url2 = dir.path() + "/file2";
+    QString url2 = dir.path() + QStringLiteral("/file2");
     QFile::rename(url, url2);
-    mover.moveFileMetadata(QFile::encodeName(url), QFile::encodeName(url2));
+    mover.moveFileMetadata(url, url2);
 
     DocumentInfo newInfo = documentInfo(fid);
-    QCOMPARE(newInfo.url, QFile::encodeName(url2));
+    QCOMPARE(newInfo.url, url2);
     QCOMPARE(newInfo.docTerms, oldInfo.docTerms);
     QVERIFY(newInfo.filenameTerms != oldInfo.filenameTerms);
     QVERIFY(!newInfo.filenameTerms.empty());
@@ -170,23 +170,23 @@ void MetadataMoverTest::testRenameFile()
 void MetadataMoverTest::testMoveFile()
 {
     QTemporaryDir dir;
-    QDir().mkpath(dir.path() + "/a/b/c");
+    QDir().mkpath(dir.path() + QStringLiteral("/a/b/c"));
 
-    QString url = dir.path() + "/a/b/c/file";
+    QString url = dir.path() + QStringLiteral("/a/b/c/file");
     touchFile(url);
     quint64 fid = insertUrl(url);
 
     DocumentInfo oldInfo = documentInfo(fid);
     QVERIFY(!oldInfo.url.isEmpty());
-    QCOMPARE(oldInfo.url, QFile::encodeName(url));
+    QCOMPARE(oldInfo.url, url);
 
     MetadataMover mover(m_db, this);
-    QString url2 = dir.path() + "/file";
+    QString url2 = dir.path() + QStringLiteral("/file");
     QFile::rename(url, url2);
-    mover.moveFileMetadata(QFile::encodeName(url), QFile::encodeName(url2));
+    mover.moveFileMetadata(url, url2);
 
     DocumentInfo newInfo = documentInfo(fid);
-    QCOMPARE(newInfo.url, QFile::encodeName(url2));
+    QCOMPARE(newInfo.url, url2);
     QCOMPARE(newInfo.docTerms, oldInfo.docTerms);
     QCOMPARE(newInfo.filenameTerms, oldInfo.filenameTerms);
 }
@@ -194,23 +194,23 @@ void MetadataMoverTest::testMoveFile()
 void MetadataMoverTest::testMoveRenameFile()
 {
     QTemporaryDir dir;
-    QDir().mkpath(dir.path() + "/a/b/c");
+    QDir().mkpath(dir.path() + QStringLiteral("/a/b/c"));
 
-    QString url = dir.path() + "/a/b/c/file";
+    QString url = dir.path() + QStringLiteral("/a/b/c/file");
     touchFile(url);
     quint64 fid = insertUrl(url);
 
     DocumentInfo oldInfo = documentInfo(fid);
     QVERIFY(!oldInfo.url.isEmpty());
-    QCOMPARE(oldInfo.url, QFile::encodeName(url));
+    QCOMPARE(oldInfo.url, url);
 
     MetadataMover mover(m_db, this);
-    QString url2 = dir.path() + "/file2";
+    QString url2 = dir.path() + QStringLiteral("/file2");
     QFile::rename(url, url2);
-    mover.moveFileMetadata(QFile::encodeName(url), QFile::encodeName(url2));
+    mover.moveFileMetadata(url, url2);
 
     DocumentInfo newInfo = documentInfo(fid);
-    QCOMPARE(newInfo.url, QFile::encodeName(url2));
+    QCOMPARE(newInfo.url, url2);
     QCOMPARE(newInfo.docTerms, oldInfo.docTerms);
     QVERIFY(newInfo.filenameTerms != oldInfo.filenameTerms);
     QVERIFY(!newInfo.filenameTerms.empty());
@@ -220,11 +220,11 @@ void MetadataMoverTest::testMoveFolder()
 {
     QTemporaryDir dir;
 
-    QString folder = dir.path() + "/folder";
+    QString folder = dir.path() + QStringLiteral("/folder");
     mkdir(folder);
     quint64 did = insertUrl(folder);
 
-    QString fileUrl = folder + "/file";
+    QString fileUrl = folder + QStringLiteral("/file");
     touchFile(fileUrl);
     quint64 fid = insertUrl(fileUrl);
 
@@ -234,17 +234,17 @@ void MetadataMoverTest::testMoveFolder()
         QVERIFY(tr.hasDocument(fid));
     }
 
-    QString newFolderUrl = dir.path() + "/dir";
+    QString newFolderUrl = dir.path() + QStringLiteral("/dir");
     QFile::rename(folder, newFolderUrl);
     MetadataMover mover(m_db, this);
-    mover.moveFileMetadata(QFile::encodeName(folder), QFile::encodeName(newFolderUrl));
+    mover.moveFileMetadata(folder, newFolderUrl);
 
     {
         Transaction tr(m_db, Transaction::ReadOnly);
         QVERIFY(tr.hasDocument(did));
         QVERIFY(tr.hasDocument(fid));
         QCOMPARE(tr.documentUrl(did), QFile::encodeName(newFolderUrl));
-        QCOMPARE(tr.documentUrl(fid), QFile::encodeName(newFolderUrl + "/file"));
+        QCOMPARE(tr.documentUrl(fid), QFile::encodeName(newFolderUrl) + "/file");
     }
 }
 
@@ -256,7 +256,7 @@ void MetadataMoverTest::testMoveTwiceSequential()
     QTemporaryDir dir;
     const quint64 did = insertUrl(dir.path());
 
-    const QString fileUrl = dir.path() + "/file";
+    const QString fileUrl = dir.path() + QStringLiteral("/file");
     touchFile(fileUrl);
     const quint64 fid = insertUrl(fileUrl);
 
@@ -267,17 +267,17 @@ void MetadataMoverTest::testMoveTwiceSequential()
     }
 
     // First rename
-    const QString fileUrl1 = dir.path() + "/file1";
+    const QString fileUrl1 = dir.path() + QStringLiteral("/file1");
     QFile::rename(fileUrl, fileUrl1);
 
     MetadataMover mover(m_db, this);
-    mover.moveFileMetadata(QFile::encodeName(fileUrl), QFile::encodeName(fileUrl1));
+    mover.moveFileMetadata(fileUrl, fileUrl1);
 
     // Second rename
-    const QString fileUrl2 = dir.path() + "/file2";
+    const QString fileUrl2 = dir.path() + QStringLiteral("/file2");
     QFile::rename(fileUrl1, fileUrl2);
 
-    mover.moveFileMetadata(QFile::encodeName(fileUrl1), QFile::encodeName(fileUrl2));
+    mover.moveFileMetadata(fileUrl1, fileUrl2);
 
     // Check result
     {
@@ -297,7 +297,7 @@ void MetadataMoverTest::testMoveTwiceCombined()
     QTemporaryDir dir;
     quint64 did = insertUrl(dir.path());
 
-    const QString fileUrl = dir.path() + "/file";
+    const QString fileUrl = dir.path() + QStringLiteral("/file");
     touchFile(fileUrl);
     const quint64 fid = insertUrl(fileUrl);
 
@@ -308,17 +308,17 @@ void MetadataMoverTest::testMoveTwiceCombined()
     }
 
     // First rename
-    const QString fileUrl1 = dir.path() + "/file1";
+    const QString fileUrl1 = dir.path() + QStringLiteral("/file1");
     QFile::rename(fileUrl, fileUrl1);
 
     // Second rename
-    const QString fileUrl2 = dir.path() + "/file2";
+    const QString fileUrl2 = dir.path() + QStringLiteral("/file2");
     QFile::rename(fileUrl1, fileUrl2);
 
     // "Flush" rename notificatons
     MetadataMover mover(m_db, this);
-    mover.moveFileMetadata(QFile::encodeName(fileUrl), QFile::encodeName(fileUrl1));
-    mover.moveFileMetadata(QFile::encodeName(fileUrl1), QFile::encodeName(fileUrl2));
+    mover.moveFileMetadata(fileUrl, fileUrl1);
+    mover.moveFileMetadata(fileUrl1, fileUrl2);
 
     // Check result
     {
@@ -336,7 +336,7 @@ void MetadataMoverTest::testMoveDeleteFile()
     QTemporaryDir dir;
     quint64 did = insertUrl(dir.path());
 
-    const QString fileUrl = dir.path() + "/file";
+    const QString fileUrl = dir.path() + QStringLiteral("/file");
     touchFile(fileUrl);
     const quint64 fid = insertUrl(fileUrl);
 
@@ -347,15 +347,15 @@ void MetadataMoverTest::testMoveDeleteFile()
     }
 
     // First rename
-    const QString fileUrl1 = dir.path() + "/file1";
+    const QString fileUrl1 = dir.path() + QStringLiteral("/file1");
     QFile::rename(fileUrl, fileUrl1);
 
     QFile::remove(fileUrl1);
 
     // "Flush" notificatons
     MetadataMover mover(m_db, this);
-    mover.moveFileMetadata(QFile::encodeName(fileUrl), QFile::encodeName(fileUrl1));
-    mover.removeFileMetadata(QFile::encodeName(fileUrl1));
+    mover.moveFileMetadata(fileUrl, fileUrl1);
+    mover.removeFileMetadata(fileUrl1);
 
     // Check result
     {
@@ -372,12 +372,12 @@ void MetadataMoverTest::testMoveFileRenameParent()
     QTemporaryDir dir;
     quint64 did = insertUrl(dir.path());
 
-    QDir().mkpath(dir.path() + "/a");
-    quint64 did_a = insertUrl(dir.path() + "/a");
-    QDir().mkpath(dir.path() + "/b");
-    quint64 did_b = insertUrl(dir.path() + "/b");
+    QDir().mkpath(dir.path() + QStringLiteral("/a"));
+    quint64 did_a = insertUrl(dir.path() + QStringLiteral("/a"));
+    QDir().mkpath(dir.path() + QStringLiteral("/b"));
+    quint64 did_b = insertUrl(dir.path() + QStringLiteral("/b"));
 
-    const QString fileUrl = dir.path() + "/a/file";
+    const QString fileUrl = dir.path() + QStringLiteral("/a/file");
     touchFile(fileUrl);
     const quint64 fid = insertUrl(fileUrl);
 
@@ -390,31 +390,31 @@ void MetadataMoverTest::testMoveFileRenameParent()
     }
 
     // Move to new parent
-    const QString fileUrl_b1 = dir.path() + "/b/file1";
+    const QString fileUrl_b1 = dir.path() + QStringLiteral("/b/file1");
     QVERIFY(QFile::rename(fileUrl, fileUrl_b1));
 
     // Rename parent dir (replacing old "a" dir)
-    QVERIFY(QDir::current().rmdir(dir.path() + "/a"));
-    QVERIFY(QFile::rename(dir.path() + "/b", dir.path() + "/a"));
+    QVERIFY(QDir::current().rmdir(dir.path() + QStringLiteral("/a")));
+    QVERIFY(QFile::rename(dir.path() + QStringLiteral("/b"), dir.path() + QStringLiteral("/a")));
 
-    QVERIFY(QFile::exists(dir.path() + "/a"));
-    QVERIFY(QFile::exists(dir.path() + "/a/file1"));
-    QVERIFY(!QFile::exists(dir.path() + "/b"));
+    QVERIFY(QFile::exists(dir.path() + QStringLiteral("/a")));
+    QVERIFY(QFile::exists(dir.path() + QStringLiteral("/a/file1")));
+    QVERIFY(!QFile::exists(dir.path() + QStringLiteral("/b")));
 
     // "Flush" notificatons
     MetadataMover mover(m_db, this);
-    mover.moveFileMetadata(QFile::encodeName(fileUrl), QFile::encodeName(fileUrl_b1));
-    mover.removeFileMetadata(QFile::encodeName(dir.path() + "/a"));
-    mover.moveFileMetadata(QFile::encodeName(dir.path() + "/b"), QFile::encodeName(dir.path() + "/a"));
+    mover.moveFileMetadata(fileUrl, fileUrl_b1);
+    mover.removeFileMetadata(dir.path() + QStringLiteral("/a"));
+    mover.moveFileMetadata(dir.path() + QStringLiteral("/b"), dir.path() + QStringLiteral("/a"));
 
     // Check result
     {
         Transaction tr(m_db, Transaction::ReadOnly);
         QVERIFY(tr.hasDocument(did));
         QCOMPARE(tr.documentUrl(did), QFile::encodeName(dir.path()));
-        QCOMPARE(tr.documentUrl(did_b), QFile::encodeName(dir.path() + "/a"));
+        QCOMPARE(tr.documentUrl(did_b), QFile::encodeName(dir.path()) + "/a");
         QVERIFY(tr.hasDocument(fid));
-        QCOMPARE(tr.documentUrl(fid), QFile::encodeName(dir.path() + "/a/file1"));
+        QCOMPARE(tr.documentUrl(fid), QFile::encodeName(dir.path()) + "/a/file1");
     }
 }
 
@@ -424,12 +424,12 @@ void MetadataMoverTest::testRenameMoveFileRenameParent()
     QTemporaryDir dir;
     quint64 did = insertUrl(dir.path());
 
-    QDir().mkpath(dir.path() + "/a");
-    quint64 did_a = insertUrl(dir.path() + "/a");
-    QDir().mkpath(dir.path() + "/b");
-    quint64 did_b = insertUrl(dir.path() + "/b");
+    QDir().mkpath(dir.path() + QStringLiteral("/a"));
+    quint64 did_a = insertUrl(dir.path() + QStringLiteral("/a"));
+    QDir().mkpath(dir.path() + QStringLiteral("/b"));
+    quint64 did_b = insertUrl(dir.path() + QStringLiteral("/b"));
 
-    const QString fileUrl = dir.path() + "/a/file";
+    const QString fileUrl = dir.path() + QStringLiteral("/a/file");
     touchFile(fileUrl);
     const quint64 fid = insertUrl(fileUrl);
 
@@ -442,36 +442,36 @@ void MetadataMoverTest::testRenameMoveFileRenameParent()
     }
 
     // First rename
-    const QString fileUrl_a1 = dir.path() + "/a/file1";
+    const QString fileUrl_a1 = dir.path() + QStringLiteral("/a/file1");
     QFile::rename(fileUrl, fileUrl_a1);
 
     // Move to new parent
-    const QString fileUrl_b1 = dir.path() + "/b/file1";
+    const QString fileUrl_b1 = dir.path() + QStringLiteral("/b/file1");
     QVERIFY(QFile::rename(fileUrl_a1, fileUrl_b1));
 
     // Rename parent dir (replacing old "a" dir)
-    QVERIFY(QDir::current().rmdir(dir.path() + "/a"));
-    QVERIFY(QFile::rename(dir.path() + "/b", dir.path() + "/a"));
+    QVERIFY(QDir::current().rmdir(dir.path() + QStringLiteral("/a")));
+    QVERIFY(QFile::rename(dir.path() + QStringLiteral("/b"), dir.path() + QStringLiteral("/a")));
 
-    QVERIFY(QFile::exists(dir.path() + "/a"));
-    QVERIFY(QFile::exists(dir.path() + "/a/file1"));
-    QVERIFY(!QFile::exists(dir.path() + "/b"));
+    QVERIFY(QFile::exists(dir.path() + QStringLiteral("/a")));
+    QVERIFY(QFile::exists(dir.path() + QStringLiteral("/a/file1")));
+    QVERIFY(!QFile::exists(dir.path() + QStringLiteral("/b")));
 
     // "Flush" notificatons
     MetadataMover mover(m_db, this);
-    mover.moveFileMetadata(QFile::encodeName(fileUrl), QFile::encodeName(fileUrl_a1));
-    mover.moveFileMetadata(QFile::encodeName(fileUrl_a1), QFile::encodeName(fileUrl_b1));
-    mover.removeFileMetadata(QFile::encodeName(dir.path() + "/a"));
-    mover.moveFileMetadata(QFile::encodeName(dir.path() + "/b"), QFile::encodeName(dir.path() + "/a"));
+    mover.moveFileMetadata(fileUrl, fileUrl_a1);
+    mover.moveFileMetadata(fileUrl_a1, fileUrl_b1);
+    mover.removeFileMetadata(dir.path() + QStringLiteral("/a"));
+    mover.moveFileMetadata(dir.path() + QStringLiteral("/b"), dir.path() + QStringLiteral("/a"));
 
     // Check result
     {
         Transaction tr(m_db, Transaction::ReadOnly);
         QVERIFY(tr.hasDocument(did));
         QCOMPARE(tr.documentUrl(did), QFile::encodeName(dir.path()));
-        QCOMPARE(tr.documentUrl(did_b), QFile::encodeName(dir.path() + "/a"));
+        QCOMPARE(tr.documentUrl(did_b), QFile::encodeName(dir.path()) + "/a");
         QVERIFY(tr.hasDocument(fid));
-        QCOMPARE(tr.documentUrl(fid), QFile::encodeName(dir.path() + "/a/file1"));
+        QCOMPARE(tr.documentUrl(fid), QFile::encodeName(dir.path()) + "/a/file1");
     }
 }
 
@@ -481,10 +481,10 @@ void MetadataMoverTest::testMoveFileMoveParent()
     QTemporaryDir dir;
     quint64 did = insertUrl(dir.path());
 
-    QDir().mkpath(dir.path() + "/a");
-    quint64 did_a = insertUrl(dir.path() + "/a");
+    QDir().mkpath(dir.path() + QStringLiteral("/a"));
+    quint64 did_a = insertUrl(dir.path() + QStringLiteral("/a"));
 
-    const QString fileUrl = dir.path() + "/a/file";
+    const QString fileUrl = dir.path() + QStringLiteral("/a/file");
     touchFile(fileUrl);
     const quint64 fid = insertUrl(fileUrl);
 
@@ -496,16 +496,16 @@ void MetadataMoverTest::testMoveFileMoveParent()
     }
 
     // First rename
-    const QString fileUrl1 = dir.path() + "/a/file1";
+    const QString fileUrl1 = dir.path() + QStringLiteral("/a/file1");
     QFile::rename(fileUrl, fileUrl1);
 
     // Rename parent dir
-    QFile::rename(dir.path() + "/a", dir.path() + "/b");
+    QFile::rename(dir.path() + QStringLiteral("/a"), dir.path() + QStringLiteral("/b"));
 
     // "Flush" notificatons
     MetadataMover mover(m_db, this);
-    mover.moveFileMetadata(QFile::encodeName(fileUrl), QFile::encodeName(fileUrl1));
-    mover.moveFileMetadata(QFile::encodeName(dir.path() + "/a"), QFile::encodeName(dir.path() + "/b"));
+    mover.moveFileMetadata(fileUrl, fileUrl1);
+    mover.moveFileMetadata(dir.path() + QStringLiteral("/a"), dir.path() + QStringLiteral("/b"));
 
     // Check result
     {
@@ -513,9 +513,9 @@ void MetadataMoverTest::testMoveFileMoveParent()
         QVERIFY(tr.hasDocument(did));
         QVERIFY(tr.hasDocument(did_a));
         QCOMPARE(tr.documentUrl(did), QFile::encodeName(dir.path()));
-        QCOMPARE(tr.documentUrl(did_a), QFile::encodeName(dir.path() + "/b"));
+        QCOMPARE(tr.documentUrl(did_a), QFile::encodeName(dir.path()) + "/b");
         QVERIFY(tr.hasDocument(fid));
-        QCOMPARE(tr.documentUrl(fid), QFile::encodeName(dir.path() + "/b/file1"));
+        QCOMPARE(tr.documentUrl(fid), QFile::encodeName(dir.path()) + "/b/file1");
     }
 }
 

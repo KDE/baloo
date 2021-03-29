@@ -48,15 +48,15 @@ void TransactionTest::testTimeInfo()
 {
     Transaction tr(db, Transaction::ReadWrite);
 
-    const QByteArray url(dir->path().toUtf8() + "/file");
+    const QString url(dir->path() + QStringLiteral("/file"));
     touchFile(url);
-    quint64 id = filePathToId(url);
+    quint64 id = filePathToId(QFile::encodeName(url));
 
     QCOMPARE(tr.hasDocument(id), false);
 
     Document doc;
     doc.setId(id);
-    doc.setUrl(url);
+    doc.setUrl(QFile::encodeName(url));
     doc.addTerm("a");
     doc.addTerm("ab");
     doc.addTerm("abc");

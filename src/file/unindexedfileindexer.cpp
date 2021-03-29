@@ -48,7 +48,7 @@ void UnindexedFileIndexer::run()
                 DocumentOperations ops = DocumentTime;
                 if (it.cTimeChanged()) {
                     ops |= XAttrTerms;
-                    if (tr.documentUrl(id) != it.filePath()) {
+                    if (QFile::decodeName(tr.documentUrl(id)) != it.filePath()) {
                         ops |= (FileNameTerms | DocumentUrl);
                     }
                 }
