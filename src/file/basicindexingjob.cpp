@@ -116,6 +116,7 @@ QVector<KFileMetaData::Type::Type> typesForMimeType(const QString& mimeType)
         {QStringLiteral("application/rtf"), Type::Document},
         // EBooks
         {QStringLiteral("application/epub+zip"), Type::Document},
+        {QStringLiteral("application/vnd.amazon.mobi8-ebook"), Type::Document},
         {QStringLiteral("application/x-mobipocket-ebook"), Type::Document},
         // Graphic EBooks
         {QStringLiteral("application/vnd.comicbook-rar"), Type::Document},
