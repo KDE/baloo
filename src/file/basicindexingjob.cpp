@@ -86,6 +86,11 @@ QVector<KFileMetaData::Type::Type> typesForMimeType(const QString& mimeType)
         types << Type::Spreadsheet;
         types << Type::Document;
     }
+    // Compressed tar archives: "application/x-<compression>-compressed-tar"
+    if ((mimeType.startsWith(QLatin1String("application/x-"))) &&
+        (mimeType.endsWith(QLatin1String("-compressed-tar")))) {
+        types << Type::Archive;
+    }
 
     static QMultiHash<QString, Type::Type> typeMapper {
         {QStringLiteral("text/plain"), Type::Document},
@@ -124,17 +129,24 @@ QVector<KFileMetaData::Type::Type> typesForMimeType(const QString& mimeType)
         {QStringLiteral("application/x-cb7"), Type::Document},
         {QStringLiteral("application/x-cbt"), Type::Document},
         // Archives - https://en.wikipedia.org/wiki/List_of_archive_formats
+        {QStringLiteral("application/gzip"), Type::Archive},
         {QStringLiteral("application/x-tar"), Type::Archive},
-        {QStringLiteral("application/x-bzip2"), Type::Archive},
-        {QStringLiteral("application/x-gzip"), Type::Archive},
+        {QStringLiteral("application/x-tarz"), Type::Archive},
+        {QStringLiteral("application/x-arc"), Type::Archive},
+        {QStringLiteral("application/x-archive"), Type::Archive},
+        {QStringLiteral("application/x-bzip"), Type::Archive},
+        {QStringLiteral("application/x-cpio"), Type::Archive},
+        {QStringLiteral("application/x-lha"), Type::Archive},
+        {QStringLiteral("application/x-lhz"), Type::Archive},
+        {QStringLiteral("application/x-lrzip"), Type::Archive},
+        {QStringLiteral("application/x-lz4"), Type::Archive},
         {QStringLiteral("application/x-lzip"), Type::Archive},
         {QStringLiteral("application/x-lzma"), Type::Archive},
         {QStringLiteral("application/x-lzop"), Type::Archive},
-        {QStringLiteral("application/x-compress"), Type::Archive},
         {QStringLiteral("application/x-7z-compressed"), Type::Archive},
-        {QStringLiteral("application/x-ace-compressed"), Type::Archive},
+        {QStringLiteral("application/x-ace"), Type::Archive},
         {QStringLiteral("application/x-astrotite-afa"), Type::Archive},
-        {QStringLiteral("application/x-alz-compressed"), Type::Archive},
+        {QStringLiteral("application/x-alz"), Type::Archive},
         {QStringLiteral("application/vnd.android.package-archive"), Type::Archive},
         {QStringLiteral("application/x-arj"), Type::Archive},
         {QStringLiteral("application/vnd.ms-cab-compressed"), Type::Archive},
@@ -142,11 +154,17 @@ QVector<KFileMetaData::Type::Type> typesForMimeType(const QString& mimeType)
         {QStringLiteral("application/x-dar"), Type::Archive},
         {QStringLiteral("application/x-lzh"), Type::Archive},
         {QStringLiteral("application/x-lzx"), Type::Archive},
-        {QStringLiteral("application/x-rar-compressed"), Type::Archive},
+        {QStringLiteral("application/vnd.rar"), Type::Archive},
         {QStringLiteral("application/x-stuffit"), Type::Archive},
         {QStringLiteral("application/x-stuffitx"), Type::Archive},
-        {QStringLiteral("application/x-gtar"), Type::Archive},
+        {QStringLiteral("application/x-tzo"), Type::Archive},
+        {QStringLiteral("application/x-ustar"), Type::Archive},
+        {QStringLiteral("application/x-xar"), Type::Archive},
+        {QStringLiteral("application/x-xz"), Type::Archive},
+        {QStringLiteral("application/x-zoo"), Type::Archive},
         {QStringLiteral("application/zip"), Type::Archive},
+        {QStringLiteral("application/zlib"), Type::Archive},
+        {QStringLiteral("application/zstd"), Type::Archive},
         // WPS office
         {QStringLiteral("application/wps-office.doc"), Type::Document},
         {QStringLiteral("application/wps-office.xls"), Type::Document},
