@@ -81,6 +81,7 @@ private:
 
     friend class WriteTransaction;
     friend class TermGeneratorTest;
+    friend class BasicIndexingJobTest;
 };
 
 inline QDebug operator<<(QDebug dbg, const Document &doc) {
