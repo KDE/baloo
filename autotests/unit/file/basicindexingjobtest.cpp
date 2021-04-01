@@ -6,96 +6,149 @@
 
 #include "basicindexingjob.h"
 
-#include <QMimeDatabase>
-#include <QTest>
-#include <QFileInfo>
+#include <vector>
+#include <QByteArray>
 #include <QDateTime>
-#include <QTemporaryDir>
 #include <QFile>
+#include <QString>
+#include <QTest>
+#include <QTemporaryDir>
+#include <QVector>
+#include <KFileMetaData/Types>
 
 namespace Baloo {
 
 class BasicIndexingJobTest : public QObject
 {
     Q_OBJECT
+
 private Q_SLOTS:
+    void initTestCase();
+
+    void testBasicIndexing_data();
     void testBasicIndexing();
+    void testBasicIndexingTypes_data();
+    void testBasicIndexingTypes();
+
+private:
+    struct TestFile {
+	QString filename;
+	QString mimetype;
+	QList<KFileMetaData::Type::Type> types;
+    };
+    std::vector<TestFile> m_testFiles;
+
+    qint64 m_startTime;
+    QTemporaryDir m_workDir;
 };
 
 }
 using namespace Baloo;
 
+void BasicIndexingJobTest::initTestCase()
+{
+    m_startTime = QDateTime::currentSecsSinceEpoch();
+
+    using Type = KFileMetaData::Type::Type;
+    m_testFiles = {
+	{QStringLiteral("test.epub"),    QStringLiteral("application/epub+zip"),                            {Type::Document}},
+	{QStringLiteral("test.jpg"),     QStringLiteral("image/jpeg"),                                      {Type::Image}},
+	{QStringLiteral("test.mp3"),     QStringLiteral("audio/mpeg"),                                      {Type::Audio}},
+	{QStringLiteral("test.ogv"),     QStringLiteral("video/x-theora+ogg"),                              {Type::Video}},
+	{QStringLiteral("test.odp"),     QStringLiteral("application/vnd.oasis.opendocument.presentation"), {Type::Document, Type::Presentation}},
+	{QStringLiteral("test.odt"),     QStringLiteral("application/vnd.oasis.opendocument.text"),         {Type::Document}},
+	{QStringLiteral("test.tar.bz2"), QStringLiteral("application/x-bzip-compressed-tar"),               {Type::Archive}},
+    };
+
+    for (const auto& entry : m_testFiles) {
+	QFile file(m_workDir.filePath(entry.filename));
+	file.open(QIODevice::WriteOnly);
+	file.write("\0", 1);
+	file.close();
+    }
+}
+
+void BasicIndexingJobTest::testBasicIndexing_data()
+{
+    QTest::addColumn<QString>("filename");
+    QTest::addColumn<QString>("mimetype");
+
+    for (const auto& entry : m_testFiles) {
+	QTest::addRow("%s", qPrintable(entry.mimetype))
+	   << entry.filename << entry.mimetype;
+    }
+}
+
 void BasicIndexingJobTest::testBasicIndexing()
 {
-    /*
-    QTemporaryDir dir;
-    QFile qfile(dir.path() + "/" + "filename.txt");
-    qfile.open(QIODevice::WriteOnly | QIODevice::Text);
-    qfile.close();
-    FileMapping file(qfile.fileName());
-    QFileInfo fileInfo(qfile.fileName());
+    QFETCH(QString, filename);
+    QFETCH(QString, mimetype);
 
-    QMimeDatabase m_mimeDb;
-    QString mimetype = m_mimeDb.mimeTypeForFile(file.url(), QMimeDatabase::MatchExtension).name();
+    QString filepath(m_workDir.filePath(filename));
+    BasicIndexingJob job(filepath, mimetype, BasicIndexingJob::IndexingLevel::NoLevel);
 
-    bool onlyBasicIndexing = false;
-    BasicIndexingJob jobNormal(file, mimetype, onlyBasicIndexing);
-    jobNormal.index();
-    XapianDocument docForNormal(jobNormal.document());
+    QVERIFY(job.index());
 
-    // mimetype
-    QCOMPARE(docForNormal.fetchTermStartsWith("M").remove(0, 1), mimetype);
+    auto doc = job.document();
 
+    QVERIFY(doc.id());
+    QVERIFY(doc.parentId());
 
-    // filename
-    QStringList terms = {"filename", "txt"};
-    for (const QString& term: terms) {
-        QCOMPARE(docForNormal.fetchTermStartsWith(term.toUtf8()), term);
-        QByteArray prefix = "F";
-        QByteArray termWithPrefix = prefix + term.toUtf8();
-        QCOMPARE(docForNormal.fetchTermStartsWith(termWithPrefix).remove(0, prefix.size()), term);
+    QCOMPARE(doc.url(), QFile::encodeName(filepath));
+    QVERIFY(doc.m_mTime >= m_startTime);
+    QVERIFY(doc.m_cTime >= m_startTime);
+
+    auto fileNameTerms = doc.m_fileNameTerms.keys();
+    std::sort(fileNameTerms.begin(), fileNameTerms.end());
+
+    QCOMPARE(fileNameTerms.size(), filename.count(QLatin1Char('.')) + 1);
+}
+
+void BasicIndexingJobTest::testBasicIndexingTypes_data()
+{
+    QTest::addColumn<QString>("filename");
+    QTest::addColumn<QString>("mimetype");
+    QTest::addColumn<QList<QByteArray>>("types");
+
+    for (const auto& entry : m_testFiles) {
+	QByteArrayList list;
+	for(const auto type : entry.types) {
+	    list.append("T" + QByteArray::number(static_cast<int>(type)));
+	}
+	QTest::addRow("%s", qPrintable(entry.mimetype)) << entry.filename << entry.mimetype << list;
     }
+}
 
-    // modified date
-    QDateTime mod = fileInfo.lastModified();
-    const QString dtm = "DT_M" % mod.toString(Qt::ISODate);
-    const QString dtmY = "DT_MY" % QString::number(mod.date().year());
-    const QString dtmM = "DT_MM" % QString::number(mod.date().month());
-    const QString dtmD = "DT_MD" % QString::number(mod.date().day());
+void BasicIndexingJobTest::testBasicIndexingTypes()
+{
+    QFETCH(QString, filename);
+    QFETCH(QString, mimetype);
+    QFETCH(QList<QByteArray>, types);
 
-    QCOMPARE(docForNormal.fetchTermStartsWith("DT_M"), dtm);
-    QCOMPARE(docForNormal.fetchTermStartsWith("DT_MY"), dtmY);
-    QCOMPARE(docForNormal.fetchTermStartsWith("DT_MM"), dtmM);
-    QCOMPARE(docForNormal.fetchTermStartsWith("DT_MD"), dtmD);
+    QString filepath(m_workDir.filePath(filename));
+    BasicIndexingJob job(filepath, mimetype, BasicIndexingJob::IndexingLevel::NoLevel);
 
-    const QString time_t = QString::fromStdString(docForNormal.doc().get_value(0));
-    const QString julanDay = QString::fromStdString(docForNormal.doc().get_value(1));
-    QCOMPARE(time_t, QString::number(mod.toSecsSinceEpoch()));
-    QCOMPARE(julanDay, QString::number(mod.date().toJulianDay()));
+    QVERIFY(job.index());
 
-    // types
-    QVector<KFileMetaData::Type::Type> tList = BasicIndexingJob::typesForMimeType(mimetype);
-    Q_FOREACH (KFileMetaData::Type::Type type, tList) {
-        QByteArray prefix = "T";
-        QString typeStr = KFileMetaData::TypeInfo(type).name().toLower();
-        QByteArray typeWithPrefix = prefix + typeStr.toUtf8();
-        QCOMPARE(docForNormal.fetchTermStartsWith(typeWithPrefix).remove(0, prefix.size()), typeStr);
+    auto doc = job.document();
 
+    auto terms = doc.m_terms.keys();
+    auto split = std::partition(terms.begin(), terms.end(),
+      [](const QByteArray& t) { return t[0] == 'T'; });
+
+    // Types
+    QByteArrayList docTypes{terms.begin(), split};
+    std::sort(docTypes.begin(), docTypes.end());
+    QCOMPARE(types, docTypes);
+
+    // Mimetype terms
+    QByteArrayList docMimeTerms{split, terms.end()};
+    QVERIFY(docMimeTerms.size() >= 2);
+    for (const auto& term : docMimeTerms) {
+	QByteArray mimeBA = mimetype.toLatin1();
+	// Strip 'M' prefix from term
+	QVERIFY(mimeBA.contains(term.mid(1)));
     }
-
-    // folder, basicindexing only
-    if (fileInfo.isDir()) {
-        QCOMPARE(docForNormal.fetchTermStartsWith("T"), QStringLiteral("T"));
-    }
-
-    QCOMPARE(docForNormal.fetchTermStartsWith("Z"), QStringLiteral("Z1"));
-
-    // set up XapianDocument for basic indexing mode only
-    BasicIndexingJob jobBasic(file, mimetype, true);
-    jobBasic.index();
-    XapianDocument docForBasic(jobBasic.document());
-    QCOMPARE(docForBasic.fetchTermStartsWith("Z"), QStringLiteral("Z2"));
-    */
 }
 
 QTEST_GUILESS_MAIN(BasicIndexingJobTest)
