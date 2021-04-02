@@ -238,9 +238,9 @@ void printJSON(Transaction& tr, IndexerConfig&  cfg, const QStringList& args)
         }
 
         QJsonObject fileInfo;
-        fileInfo["file"] = file.m_filePath;
-        fileInfo["indexing"] = jsonIndexLevelValue[file.m_indexState];
-        fileInfo["status"] = jsonIndexStateValue[file.m_indexState];
+        fileInfo[QStringLiteral("file")] = file.m_filePath;
+        fileInfo[QStringLiteral("indexing")] = jsonIndexLevelValue[file.m_indexState];
+        fileInfo[QStringLiteral("status")] = jsonIndexStateValue[file.m_indexState];
 
         filesInfo.append(fileInfo);
     }
@@ -256,7 +256,7 @@ int StatusCommand::exec(const QCommandLineParser& parser)
     QTextStream out(stdout);
     QTextStream err(stderr);
 
-    const QStringList allowedFormats({"simple", "json", "multiline"});
+    const QStringList allowedFormats({QStringLiteral("simple"), QStringLiteral("json"), QStringLiteral("multiline")});
     const QString format = parser.value(QStringLiteral("format"));
 
     if (!allowedFormats.contains(format)) {
