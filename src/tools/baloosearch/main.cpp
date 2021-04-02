@@ -25,7 +25,7 @@ int main(int argc, char* argv[])
 
     KAboutData aboutData(QStringLiteral("Baloo"),
                          i18n("Baloo Search"),
-                         PROJECT_VERSION,
+                         QStringLiteral(PROJECT_VERSION),
                          i18n("A tool to search through the files indexed by Baloo"),
                          KAboutLicense::GPL);
     aboutData.addAuthor(i18n("Vishesh Handa"), QString(), QStringLiteral("vhanda@kde.org"));
@@ -94,7 +94,7 @@ int main(int argc, char* argv[])
     while (iter.next()) {
         const QString filePath = iter.filePath();
         if (showDocumentId) {
-            std::cout << qPrintable(iter.documentId()) << " ";
+            std::cout << iter.documentId().constData() << " ";
         }
         std::cout << qPrintable(filePath) << std::endl;
     }

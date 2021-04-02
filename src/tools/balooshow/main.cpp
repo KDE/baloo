@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
 
     KAboutData aboutData(QStringLiteral("balooshow"),
                          i18n("Baloo Show"),
-                         PROJECT_VERSION,
+                         QStringLiteral(PROJECT_VERSION),
                          i18n("The Baloo data Viewer - A debugging tool"),
                          KAboutLicense::GPL,
                          i18n("(c) 2012, Vishesh Handa"));
@@ -148,19 +148,16 @@ int main(int argc, char* argv[])
         }
 
         if (fid) {
-            stream << colorString(QString::number(fid, 16), 31);
-            stream << QLatin1String(" ");
-            stream << colorString(QString::number(Baloo::idToDeviceId(fid)), 28);
-            stream << QLatin1String(" ");
-            stream << colorString(QString::number(Baloo::idToInode(fid)), 28);
-            stream << QLatin1String(" ");
+            stream << colorString(QString::number(fid, 16), 31) << ' ';
+            stream << colorString(QString::number(Baloo::idToDeviceId(fid)), 28) << ' ';
+            stream << colorString(QString::number(Baloo::idToInode(fid)), 28) << ' ';
         }
         if (fid && tr.hasDocument(fid)) {
             stream << colorString(url, 32);
             if (!internalUrl.isEmpty() && internalUrl != url) {
                 // The document is know by a different name inside the DB,
                 // e.g. a hardlink, or untracked rename
-                stream << QLatin1String(" [") << internalUrl << QChar(']');
+                stream << QLatin1String(" [") << internalUrl << QLatin1Char(']');
             }
             stream << '\n';
         }
@@ -170,9 +167,9 @@ int main(int argc, char* argv[])
         }
 
         Baloo::DocumentTimeDB::TimeInfo time = tr.documentTimeInfo(fid);
-        stream << QLatin1String("\tMtime: ") << time.mTime << QChar(' ')
+        stream << QStringLiteral("\tMtime: %1 ").arg(time.mTime)
                << QDateTime::fromSecsSinceEpoch(time.mTime).toString(Qt::ISODate)
-               << QLatin1String("\n\tCtime: ") << time.cTime << QChar(' ')
+               << QStringLiteral("\n\tCtime: %1 ").arg(time.cTime)
                << QDateTime::fromSecsSinceEpoch(time.cTime).toString(Qt::ISODate)
               << '\n';
 
@@ -211,7 +208,7 @@ int main(int argc, char* argv[])
                     ba.append(arr);
                     ba.append(' ');
                 }
-                return QString(ba);
+                return QString::fromUtf8(ba);
             };
 
             stream << "\n" << i18n("Internal Info") << "\n";
@@ -228,7 +225,7 @@ int main(int argc, char* argv[])
                 };
 
                 if (arr.length() < 1) {
-                    auto error = QString("malformed term (short): '%1'\n").arg(arrAsPrintable());
+                    auto error = QStringLiteral("malformed term (short): '%1'\n").arg(arrAsPrintable());
                     stream << errorPrefix.subs(error).toString();
                     continue;
                 }
@@ -238,13 +235,13 @@ int main(int argc, char* argv[])
                     if (word[0] == QLatin1Char('X')) {
                         if (word.length() < 4) {
                             // 'X<num>-<value>
-                            auto error = QString("malformed property term (short): '%1' in '%2'\n").arg(word).arg(arrAsPrintable());
+                            auto error = QStringLiteral("malformed property term (short): '%1' in '%2'\n").arg(word, arrAsPrintable());
                             stream << errorPrefix.subs(error).toString();
                             continue;
                         }
-                        int posOfNonNumeric = word.indexOf('-', 2);
+                        int posOfNonNumeric = word.indexOf(QLatin1Char('-'), 2);
                         if ((posOfNonNumeric < 0) || ((posOfNonNumeric + 1) == word.length())) {
-                            auto error = QString("malformed property term (no data): '%1' in '%2'\n").arg(word).arg(arrAsPrintable());
+                            auto error = QStringLiteral("malformed property term (no data): '%1' in '%2'\n").arg(word, arrAsPrintable());
                             stream << errorPrefix.subs(error).toString();
                             continue;
                         }
@@ -254,7 +251,7 @@ int main(int argc, char* argv[])
                         int propNum = prop.toInt(&ok);
                         QString value = word.mid(posOfNonNumeric + 1);
                         if (!ok) {
-                            auto error = QString("malformed property term (bad index): '%1' in '%2'\n").arg(prop).arg(arrAsPrintable());
+                            auto error = QStringLiteral("malformed property term (bad index): '%1' in '%2'\n").arg(prop, arrAsPrintable());
                             stream << errorPrefix.subs(error).toString();
                             continue;
                         }

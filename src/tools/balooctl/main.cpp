@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
 {
     QCoreApplication app(argc, argv);
 
-    KAboutData aboutData(QStringLiteral("baloo"), i18n("balooctl"), PROJECT_VERSION);
+    KAboutData aboutData(QStringLiteral("baloo"), i18n("balooctl"), QStringLiteral(PROJECT_VERSION));
     aboutData.addAuthor(i18n("Vishesh Handa"), QString(), QStringLiteral("vhanda@kde.org"));
 
     KAboutData::setApplicationData(aboutData);
