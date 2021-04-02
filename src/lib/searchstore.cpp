@@ -36,7 +36,10 @@ QPair<quint32, quint32> calculateTimeRange(const QDateTime& dt, Term::Comparator
     Q_ASSERT(dt.isValid());
 
     if (com == Term::Equal) {
-        return {dt.date().startOfDay().toSecsSinceEpoch(), dt.date().endOfDay().toSecsSinceEpoch()};
+        // Timestamps in DB are quint32 relative to Epoch (1970...2106)
+        auto start = static_cast<quint32>(dt.date().startOfDay().toSecsSinceEpoch());
+        auto end = static_cast<quint32>(dt.date().endOfDay().toSecsSinceEpoch());
+        return {start, end};
     }
 
     quint32 timet = dt.toSecsSinceEpoch();
