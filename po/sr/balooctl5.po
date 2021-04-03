@@ -1,0 +1,561 @@
+# Translation of balooctl.po into Serbian.
+# Chusslove Illich <caslav.ilic@gmx.net>, 2014, 2015, 2017.
+msgid ""
+msgstr ""
+"Project-Id-Version: balooctl\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2020-03-16 02:57+0100\n"
+"PO-Revision-Date: 2017-04-07 00:51+0200\n"
+"Last-Translator: Chusslove Illich <caslav.ilic@gmx.net>\n"
+"Language-Team: Serbian <kde-i18n-sr@kde.org>\n"
+"Language: sr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n"
+"%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Accelerator-Marker: &\n"
+"X-Text-Markup: kde4\n"
+"X-Environment: kde\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Часлав Илић"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "caslav.ilic@gmx.net"
+
+# >> @item indexer state
+#: ../../file/indexerstate.h:46
+#, kde-format
+msgid "Unknown"
+msgstr "непознато"
+
+# >> @item indexer state
+#: ../../file/indexerstate.h:49
+#, kde-format
+msgid "Idle"
+msgstr "Мирује"
+
+# >> @item indexer state
+#: ../../file/indexerstate.h:52
+#, kde-format
+msgid "Suspended"
+msgstr "суспендован"
+
+# >> @item indexer state
+#: ../../file/indexerstate.h:55
+#, kde-format
+msgid "Initial Indexing"
+msgstr "почетно индексира"
+
+# >> @item indexer state
+#: ../../file/indexerstate.h:58
+#, kde-format
+msgid "Indexing new files"
+msgstr "индексира нове фајлове"
+
+# >> @item indexer state
+#: ../../file/indexerstate.h:61
+#, kde-format
+msgid "Indexing modified files"
+msgstr "индексира измењене фајлове"
+
+# >> @item indexer state
+#: ../../file/indexerstate.h:64
+#, kde-format
+msgid "Indexing Extended Attributes"
+msgstr "индексира проширене атрибуте"
+
+# >> @item indexer state
+#: ../../file/indexerstate.h:67
+#, kde-format
+msgid "Indexing file content"
+msgstr "индексира садржај фајлова"
+
+# >> @item indexer state
+#: ../../file/indexerstate.h:70
+#, kde-format
+msgid "Checking for unindexed files"
+msgstr "тражи неиндексиране фајлове"
+
+# >> @item indexer state
+#: ../../file/indexerstate.h:73
+#, fuzzy, kde-format
+#| msgid "Checking for unindexed files"
+msgid "Checking for stale index entries"
+msgstr "тражи неиндексиране фајлове"
+
+#: ../../file/indexerstate.h:76
+#, kde-format
+msgid "Idle (Powersave)"
+msgstr ""
+
+#: ../../file/indexerstate.h:79
+#, kde-format
+msgid "Not Running"
+msgstr ""
+
+#: ../../file/indexerstate.h:82
+#, kde-format
+msgid "Starting"
+msgstr ""
+
+# >> @info command description
+#: configcommand.cpp:58
+#, kde-format
+msgid "Manipulate the Baloo configuration"
+msgstr "Измените поставу Балуа"
+
+#: configcommand.cpp:81
+#, fuzzy, kde-format
+#| msgid "The config command can be used to manipulate the Baloo Configuration"
+msgid "The config command can be used to manipulate the Baloo Configuration\n"
+msgstr "Ова наредба служи за мењање поставе Балуа"
+
+# literal-segment: config
+#: configcommand.cpp:82
+#, fuzzy, kde-format
+#| msgid "Usage: balooctl config <command>"
+msgid ""
+"Usage: balooctl config <command>\n"
+"\n"
+msgstr "Употреба: balooctl config <наредба>"
+
+#: configcommand.cpp:83
+#, fuzzy, kde-format
+#| msgid "Possible Commands:"
+msgid "Possible Commands:\n"
+msgstr "Могуће наредбе:"
+
+#: configcommand.cpp:86
+#, kde-format
+msgid "Add a value to config parameter"
+msgstr "Додај вредност параметру поставе."
+
+#: configcommand.cpp:87
+#, kde-format
+msgid "Remove a value from a config parameter"
+msgstr "Уклони вредност из параметра поставе."
+
+#: configcommand.cpp:88
+#, kde-format
+msgid "Show the value of a config parameter"
+msgstr "Прикажи вредност параметра поставе."
+
+#: configcommand.cpp:89
+#, kde-format
+msgid "Set the value of a config parameter"
+msgstr "Постави вредност параметра поставе."
+
+#: configcommand.cpp:90
+#, kde-format
+msgid "Display this help menu"
+msgstr "Прикажи овај мени помоћи."
+
+#: configcommand.cpp:96
+#, fuzzy, kde-format
+#| msgid "The following configuration options may be listed:"
+msgid ""
+"The following configuration options may be listed:\n"
+"\n"
+msgstr "Могу се набројати следеће опције поставе:"
+
+#: configcommand.cpp:98 configcommand.cpp:377
+#, kde-format
+msgid "Controls if Baloo indexes hidden files and folders"
+msgstr "Одређује да ли Балу индексира скривене фајлове и фасцикле."
+
+#: configcommand.cpp:99 configcommand.cpp:378
+#, fuzzy, kde-format
+#| msgid "Controls if baloo indexes file content."
+msgid "Controls if Baloo indexes file content"
+msgstr "Одређује да ли Балу индексира садржај фајлова."
+
+#: configcommand.cpp:100 configcommand.cpp:163 configcommand.cpp:254
+#, kde-format
+msgid "The list of folders which Baloo indexes"
+msgstr "Списак фасцикли које Балу индексира."
+
+#: configcommand.cpp:101 configcommand.cpp:164 configcommand.cpp:255
+#, kde-format
+msgid "The list of folders which Baloo will never index"
+msgstr "Списак фасцикли које Балу никад не индексира."
+
+#: configcommand.cpp:102 configcommand.cpp:165 configcommand.cpp:256
+#, kde-format
+msgid "The list of filters which are used to exclude files"
+msgstr "Списак филтера за искључивање фајлова."
+
+#: configcommand.cpp:103 configcommand.cpp:166 configcommand.cpp:257
+#, kde-format
+msgid "The list of mimetypes which are used to exclude files"
+msgstr "Списак МИМЕ типова за искључивање фајлова."
+
+#: configcommand.cpp:155 configcommand.cpp:246 configcommand.cpp:369
+#: configcommand.cpp:439
+#, fuzzy, kde-format
+#| msgid "Config parameter could not be found"
+msgid "Config parameter could not be found\n"
+msgstr "Параметар поставе није нађен."
+
+#: configcommand.cpp:161 configcommand.cpp:252 configcommand.cpp:375
+#, fuzzy, kde-format
+#| msgid "The following configuration options may be modified:"
+msgid ""
+"The following configuration options may be modified:\n"
+"\n"
+msgstr "Могуће је изменити следеће опције поставе:"
+
+#: configcommand.cpp:174 configcommand.cpp:194 configcommand.cpp:265
+#: configcommand.cpp:300
+#, fuzzy, kde-format
+#| msgid "A folder must be provided"
+msgid "A folder must be provided\n"
+msgstr "Мора да се зада фасцикла."
+
+#: configcommand.cpp:182
+#, kde-format
+msgid "%1 is not in the list of include folders"
+msgstr "%1 није на списку укључених фасцикли."
+
+#: configcommand.cpp:202
+#, kde-format
+msgid "%1 is not in the list of exclude folders"
+msgstr "%1 није на списку искључених фасцикли."
+
+#: configcommand.cpp:214 configcommand.cpp:335
+#, fuzzy, kde-format
+#| msgid "A filter must be provided"
+msgid "A filter must be provided\n"
+msgstr "Мора да се зада филтер."
+
+#: configcommand.cpp:220
+#, kde-format
+msgid "%1 is not in list of exclude filters"
+msgstr "%1 није на списку искључних филтера."
+
+#: configcommand.cpp:231 configcommand.cpp:353
+#, fuzzy, kde-format
+#| msgid "A mimetype must be provided"
+msgid "A mimetype must be provided\n"
+msgstr "Мора да се зада МИМЕ тип."
+
+#: configcommand.cpp:237
+#, kde-format
+msgid "%1 is not in list of exclude mimetypes"
+msgstr "%1 није на списку искључних МИМЕ типова."
+
+#: configcommand.cpp:271 configcommand.cpp:306
+#, fuzzy, kde-format
+#| msgid "Path does not exist"
+msgid "Path does not exist\n"
+msgstr "Путања не постоји."
+
+#: configcommand.cpp:276 configcommand.cpp:311
+#, fuzzy, kde-format
+#| msgid "Path is not a directory"
+msgid "Path is not a directory\n"
+msgstr "Путања није фасцикла."
+
+#: configcommand.cpp:283
+#, kde-format
+msgid "%1 is already in the list of include folders"
+msgstr "%1 је већ на списку укључених фасцикли."
+
+#: configcommand.cpp:288 configcommand.cpp:323
+#, kde-format
+msgid "%1 is in the list of exclude folders"
+msgstr "%1 је на списку искључених фасцикли."
+
+#: configcommand.cpp:318
+#, kde-format
+msgid "%1 is already in the list of exclude folders"
+msgstr "%1 је већ на списку искључених фасцикли."
+
+#: configcommand.cpp:341
+#, fuzzy, kde-format
+#| msgid "Exclude filter is already in the list"
+msgid "Exclude filter is already in the list\n"
+msgstr "Искључни филтер је већ на списку."
+
+#: configcommand.cpp:359
+#, fuzzy, kde-format
+#| msgid "Exclude mimetype is already in the list"
+msgid "Exclude mimetype is already in the list\n"
+msgstr "Искључни МИМЕ тип је већ на списку."
+
+#: configcommand.cpp:387 configcommand.cpp:414
+#, fuzzy, kde-format
+#| msgid "A value must be provided"
+msgid "A value must be provided\n"
+msgstr "Мора да се зада вредност."
+
+#: configcommand.cpp:408 configcommand.cpp:435
+#, fuzzy, kde-format
+#| msgid "Invalid value"
+msgid "Invalid value\n"
+msgstr "Лоша вредност."
+
+#: main.cpp:65
+#, kde-format
+msgid "balooctl"
+msgstr "balooctl"
+
+#: main.cpp:66
+#, kde-format
+msgid "Vishesh Handa"
+msgstr "Вишеш Ханда"
+
+#: main.cpp:66
+#, kde-format
+msgid "Maintainer"
+msgstr "Одржавалац"
+
+#: main.cpp:71
+#, kde-format
+msgid "The command to execute"
+msgstr "Наредба коју треба извршити."
+
+#: main.cpp:73
+#, kde-format
+msgid "Print the status of the indexer"
+msgstr "Испиши стање индексара."
+
+#: main.cpp:74
+#, kde-format
+msgid "Enable the file indexer"
+msgstr "Активирај индексар фајлова."
+
+#: main.cpp:75
+#, kde-format
+msgid "Disable the file indexer"
+msgstr "Деактивирај индексар фајлова."
+
+#: main.cpp:76
+#, fuzzy, kde-format
+#| msgid "Resume the file indexer"
+msgid "Remove the index database"
+msgstr "Пробуди индексар фајлова."
+
+#: main.cpp:77
+#, kde-format
+msgid "Suspend the file indexer"
+msgstr "Суспендуј индексар фајлова."
+
+#: main.cpp:78
+#, kde-format
+msgid "Resume the file indexer"
+msgstr "Пробуди индексар фајлова."
+
+#: main.cpp:79
+#, kde-format
+msgid "Check for any unindexed files and index them"
+msgstr "Пази на неиндексиране фајлове и индексирај их."
+
+#: main.cpp:80
+#, kde-format
+msgid "Index the specified files"
+msgstr "Индексирај задате фајлове."
+
+#: main.cpp:81
+#, kde-format
+msgid "Forget the specified files"
+msgstr "Заборави задате фајлове."
+
+#: main.cpp:82
+#, kde-format
+msgid "Modify the Baloo configuration"
+msgstr "Измените поставу Балуа"
+
+#: main.cpp:83
+#, kde-format
+msgid "Monitor the file indexer"
+msgstr "Надгледај индексар фајлова."
+
+#: main.cpp:84
+#, kde-format
+msgid "Display the disk space used by index"
+msgstr "Прикажи простор на диску за индекс."
+
+#: main.cpp:85
+#, fuzzy, kde-format
+#| msgid "Display the disk space used by index"
+msgid "Display files which could not be indexed"
+msgstr "Прикажи простор на диску за индекс."
+
+#: main.cpp:88
+#, kde-format
+msgctxt ""
+"Format to use for status command, %1|%2|%3 are option values, %4 is a CLI "
+"command"
+msgid ""
+"Output format <%1|%2|%3>.\n"
+"The default format is \"%1\".\n"
+"Only applies to \"%4\""
+msgstr ""
+
+#: main.cpp:94
+#, kde-format
+msgid "format"
+msgstr ""
+
+#: monitorcommand.cpp:68
+#, kde-format
+msgid "Press ctrl+c to stop monitoring\n"
+msgstr ""
+
+#: monitorcommand.cpp:86
+#, kde-format
+msgid "Waiting for file indexer to start\n"
+msgstr ""
+
+#: monitorcommand.cpp:87
+#, kde-format
+msgid "Press Ctrl+C to stop monitoring\n"
+msgstr ""
+
+#: monitorcommand.cpp:94
+#, fuzzy, kde-format
+#| msgid "Baloo File Indexer is running"
+msgid "File indexer is running\n"
+msgstr "Балуов индексар фајлова је у погону."
+
+#: monitorcommand.cpp:107
+#, fuzzy, kde-format
+#| msgid "Indexer state: %1"
+msgctxt "currently indexed file"
+msgid "Indexing: %1"
+msgstr "Стање индексара: %1"
+
+#: monitorcommand.cpp:120
+#, kde-format
+msgid ": Ok\n"
+msgstr ""
+
+#: monitorcommand.h:47
+#, kde-format
+msgid "CLI interface for monitoring Baloo"
+msgstr ""
+
+#: statuscommand.cpp:45
+#, kde-format
+msgid "Print the status of the Indexer"
+msgstr "Испиши стање индексара."
+
+#: statuscommand.cpp:129
+#, kde-format
+msgid "File ignored"
+msgstr ""
+
+#: statuscommand.cpp:130
+#, kde-format
+msgid "Basic Indexing: Disabled"
+msgstr ""
+
+#: statuscommand.cpp:131 statuscommand.cpp:132
+#, kde-format
+msgid "Basic Indexing: Scheduled"
+msgstr ""
+
+#: statuscommand.cpp:133 statuscommand.cpp:134 statuscommand.cpp:135
+#: statuscommand.cpp:136
+#, kde-format
+msgid "Basic Indexing: Done"
+msgstr ""
+
+#: statuscommand.cpp:142 statuscommand.cpp:145
+#, kde-format
+msgid "Content Indexing: Scheduled"
+msgstr ""
+
+#: statuscommand.cpp:146
+#, kde-format
+msgid "Content Indexing: Failed"
+msgstr ""
+
+#: statuscommand.cpp:147
+#, kde-format
+msgid "Content Indexing: Done"
+msgstr ""
+
+#: statuscommand.cpp:154 statuscommand.cpp:194 statuscommand.cpp:243
+#, kde-format
+msgid "Ignoring non-existent file %1"
+msgstr ""
+
+#: statuscommand.cpp:159 statuscommand.cpp:199 statuscommand.cpp:248
+#, kde-format
+msgid "Ignoring symlink/special file %1"
+msgstr ""
+
+#: statuscommand.cpp:163
+#, kde-format
+msgid "File: %1"
+msgstr "Фајл: %1"
+
+#: statuscommand.cpp:275
+#, kde-format
+msgid "Output format \"%1\" is invalid"
+msgstr ""
+
+#: statuscommand.cpp:281
+#, fuzzy, kde-format
+#| msgid ""
+#| "Baloo is currently disabled. To enable, please run \"balooctl enable\""
+msgid "Baloo is currently disabled. To enable, please run %1"
+msgstr ""
+"Балу је тренутно ван погона. Извршите balooctl enable да га активирате."
+
+#: statuscommand.cpp:287
+#, fuzzy, kde-format
+#| msgid "Baloo Index could not be opened"
+msgid "Baloo Index could not be opened\n"
+msgstr "Индекс Балуа не може да се отвори."
+
+#: statuscommand.cpp:308
+#, fuzzy, kde-format
+#| msgid "Baloo File Indexer is running"
+msgid "Baloo File Indexer is running\n"
+msgstr "Балуов индексар фајлова је у погону."
+
+#: statuscommand.cpp:309
+#, kde-format
+msgid "Indexer state: %1"
+msgstr "Стање индексара: %1"
+
+#: statuscommand.cpp:312
+#, fuzzy, kde-format
+#| msgid "Baloo File Indexer is not running"
+msgid "Baloo File Indexer is not running\n"
+msgstr "Балуов индексар фајлова није у погону"
+
+#: statuscommand.cpp:319
+#, fuzzy, kde-format
+#| msgid "Stop the file indexer"
+msgid "Total files indexed: %1"
+msgstr "Заустави индексар фајлова."
+
+#: statuscommand.cpp:320
+#, kde-format
+msgid "Files waiting for content indexing: %1"
+msgstr ""
+
+#: statuscommand.cpp:321
+#, kde-format
+msgid "Files failed to index: %1"
+msgstr ""
+
+#: statuscommand.cpp:329
+#, kde-format
+msgid "Current size of index is %1"
+msgstr ""
+
+#: statuscommand.cpp:331
+#, fuzzy, kde-format
+#| msgid "Path does not exist"
+msgid "Index does not exist yet\n"
+msgstr "Путања не постоји."
