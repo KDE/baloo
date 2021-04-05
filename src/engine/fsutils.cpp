@@ -10,7 +10,7 @@
 #include "enginedebug.h"
 
 #ifdef Q_OS_LINUX
-#include <errno.h>
+#include <cerrno>
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
