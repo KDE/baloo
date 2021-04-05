@@ -22,7 +22,7 @@
 #include <unistd.h>
 #ifndef _WIN32
 #include <sys/syscall.h>
-#include <errno.h>
+#include <cerrno>
 
 #include <sched.h>
 #endif
