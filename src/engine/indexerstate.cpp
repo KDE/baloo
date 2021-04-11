@@ -5,29 +5,11 @@
     SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
 */
 
-#ifndef BALOO_INDEXER_STATE_H
-#define BALOO_INDEXER_STATE_H
+#include "indexerstate.h"
 
-#include <QString>
 #include <KLocalizedString>
 
-namespace Baloo {
-enum IndexerState {
-        Idle,
-        Suspended,
-        FirstRun,
-        NewFiles,
-        ModifiedFiles,
-        XAttrFiles,
-        ContentIndexing,
-        UnindexedFileCheck,
-        StaleIndexEntriesClean,
-        LowPowerIdle,
-        Unavailable,
-        Startup,
-};
-
-inline QString stateString(IndexerState state)
+QString Baloo::stateString(IndexerState state)
 {
     QString status = i18n("Unknown");
     switch (state) {
@@ -71,11 +53,7 @@ inline QString stateString(IndexerState state)
     return status;
 }
 
-//TODO: check for implicit conversion
-inline QString stateString(int state)
+QString Baloo::stateString(int state)
 {
     return stateString(static_cast<IndexerState>(state));
 }
-
-}
-#endif //BALOO_INDEXER_STATE_H
