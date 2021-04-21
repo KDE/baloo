@@ -11,7 +11,6 @@
 #include <KAboutData>
 #include <KLocalizedString>
 #include <KFormat>
-#include <QStandardPaths>
 #include <QProcess>
 #include <QTextStream>
 #include <QFileInfo>
@@ -24,6 +23,7 @@
 #include "database.h"
 #include "transaction.h"
 #include "databasesize.h"
+#include "config.h"
 
 #include "indexer.h"
 #include "indexerconfig.h"
@@ -40,7 +40,7 @@ using namespace Baloo;
 
 void start()
 {
-    const QString exe = QStandardPaths::findExecutable(QStringLiteral("baloo_file"));
+    const QString exe = QStringLiteral(KDE_INSTALL_FULL_LIBEXECDIR "/baloo_file");
     QProcess::startDetached(exe, QStringList());
 }
 

@@ -10,11 +10,11 @@
 #include "database.h"
 #include "transaction.h"
 #include "global.h"
+#include "config.h"
 
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
 #include <QDebug>
-#include <QStandardPaths>
 #include <QDBusServiceWatcher>
 #include <QProcess>
 
@@ -114,7 +114,7 @@ void Monitor::fetchTotalFiles()
 
 void Monitor::startBaloo()
 {
-    const QString exe = QStandardPaths::findExecutable(QStringLiteral("baloo_file"));
+    const QString exe = QStringLiteral(KDE_INSTALL_FULL_LIBEXECDIR "/baloo_file");
     QProcess::startDetached(exe, QStringList());
 }
 

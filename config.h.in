@@ -1,0 +1,6 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+#define KDE_INSTALL_FULL_LIBEXECDIR "@KDE_INSTALL_FULL_LIBEXECDIR@"
+
+#endif

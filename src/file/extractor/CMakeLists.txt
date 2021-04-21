@@ -36,5 +36,11 @@ target_link_libraries(baloo_file_extractor
   KF5::IdleTime
 )
 
-install(TARGETS baloo_file_extractor DESTINATION ${KDE_INSTALL_BINDIR})
+# KF6 TODO - remove compatibility symlink to bin/baloo_file_extractor
+add_custom_command(TARGET baloo_file_extractor
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E create_symlink ${KDE_INSTALL_FULL_LIBEXECDIR}/baloo_file_extractor baloo_file_extractor)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/baloo_file_extractor DESTINATION ${KDE_INSTALL_FULL_BINDIR})
+
+install(TARGETS baloo_file_extractor DESTINATION ${KDE_INSTALL_FULL_LIBEXECDIR})
 
