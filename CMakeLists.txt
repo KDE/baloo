@@ -45,6 +45,7 @@ include(ECMAddQch)
 include(ECMQtDeclareLoggingCategory)
 include(ECMMarkNonGuiExecutable)
 include(ECMGenerateExportHeader)
+include(ECMConfiguredInstall)
 
 set(EXCLUDE_DEPRECATED_BEFORE_AND_AT 0 CACHE STRING "Control the range of deprecated API excluded from the build [default=0].")
 
@@ -82,6 +83,8 @@ find_package(Inotify)
 set_package_properties(Inotify PROPERTIES
     PURPOSE "Filesystem alteration notifications using inotify")
 set(BUILD_KINOTIFY ${Inotify_FOUND})
+
+configure_file(config.h.in ${CMAKE_BINARY_DIR}/config.h)
 
 include_directories(
     ${CMAKE_BINARY_DIR}

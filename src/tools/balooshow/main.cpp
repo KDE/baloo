@@ -10,7 +10,6 @@
 #include <QDateTime>
 #include <QFile>
 #include <QTextStream>
-#include <QStandardPaths>
 
 #include <KAboutData>
 #include <KLocalizedString>
