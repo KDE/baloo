@@ -18,6 +18,7 @@ baloo_file_auto_tests(
     filtereddiriteratortest
     unindexedfileiteratortest
     metadatamovertest
+    extractorcommandpipetest
 )
 
 
@@ -36,6 +37,17 @@ ecm_add_test(${fileWatch_SRC}
 ecm_add_test(propertyserializationtest.cpp
     TEST_NAME "propertyserializationtest"
     LINK_LIBRARIES Qt5::Test KF5::FileMetaData baloofilecommon
+)
+
+configure_file(testsconfig.h.in
+               ${CMAKE_CURRENT_BINARY_DIR}/testsconfig.h @ONLY)
+
+# Dummy process for extractor pipe testing
+add_executable(extractorcommandpipe_worker
+	extractorcommandpipe_worker.cpp
+)
+target_link_libraries(extractorcommandpipe_worker
+	baloofilecommon
 )
 
 # Benchmark, compiled, but not run automatically with ctest
