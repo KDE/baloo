@@ -47,7 +47,7 @@ void XAttrIndexer::run()
         }
 
         // FIXME: The BasicIndexingJob extracts too much info. We only need the xattr
-        BasicIndexingJob job(filePath, mimetype, level);
+        BasicIndexingJob job(filePath, mimetype, BasicIndexingJob::NoLevel);
         if (!job.index()) {
             continue;
         }
@@ -57,6 +57,7 @@ void XAttrIndexer::run()
         //        cause we missed its creation somehow
         Baloo::Document doc = job.document();
         if (!tr.hasDocument(doc.id())) {
+            doc.setContentIndexing(level == BasicIndexingJob::MarkForContentIndexing);
             tr.addDocument(doc);
             continue;
         }
