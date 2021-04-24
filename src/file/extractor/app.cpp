@@ -31,12 +31,12 @@ App::App(QObject* parent)
     : QObject(parent)
     , m_notifyNewData(STDIN_FILENO, QSocketNotifier::Read)
     , m_input()
-    , m_inputStream(&m_input)
-    , m_outputStream(stdout)
+    , m_output()
+    , m_workerPipe(&m_input, &m_output)
     , m_tr(nullptr)
 {
     m_input.open(STDIN_FILENO, QIODevice::ReadOnly | QIODevice::Unbuffered );
-    m_inputStream.setByteOrder(QDataStream::BigEndian);
+    m_output.open(STDOUT_FILENO, QIODevice::WriteOnly | QIODevice::Unbuffered );
 
     static int s_idleTimeout = 1000 * 60 * 1; // 1 min
     m_idleTime = KIdleTime::instance();
@@ -50,23 +50,15 @@ App::App(QObject* parent)
         m_isBusy = false;
     });
 
-    connect(&m_notifyNewData, &QSocketNotifier::activated, this, &App::slotNewInput);
+    using WorkerPipe = Baloo::Private::WorkerPipe;
+    connect(&m_notifyNewData, &QSocketNotifier::activated, &m_workerPipe, &WorkerPipe::processIdData);
+    connect(&m_workerPipe, &WorkerPipe::newDocumentIds, this, &App::slotNewBatch);
+    connect(&m_workerPipe, &WorkerPipe::inputEnd, this, &QCoreApplication::quit);
 }
 
-void App::slotNewInput()
+void App::slotNewBatch(const QVector<quint64>& ids)
 {
-    m_inputStream.startTransaction();
-    m_inputStream >> m_ids;
-
-    if (m_inputStream.status() != QDataStream::Ok) {
-        QCoreApplication::quit();
-        return;
-    }
-
-    if (!m_inputStream.commitTransaction()) {
-        m_ids.clear();
-        return;
-    }
+    m_ids = ids;
 
     Database *db = globalDatabaseInstance();
     if (!db->open(Database::ReadWriteDatabase)) {
@@ -106,11 +98,9 @@ void App::processNextFile()
             return;
         }
 
-        m_outputStream << "S " << url << '\n';
-        m_outputStream.flush();
+        m_workerPipe.urlStarted(url);
         bool indexed = index(m_tr, url, id);
-        m_outputStream << (indexed ? "F " : "f ") << url << '\n';
-        m_outputStream.flush();
+        indexed ? m_workerPipe.urlFinished(url) : m_workerPipe.urlFailed(url);
 
         int delay = (m_isBusy && indexed) ? 10 : 0;
         QTimer::singleShot(delay, this, &App::processNextFile);
@@ -125,8 +115,7 @@ void App::processNextFile()
 
         // Enable the SocketNotifier for the next batch
         m_notifyNewData.setEnabled(true);
-        m_outputStream << "B\n";
-        m_outputStream.flush();
+        m_workerPipe.batchFinished();
     }
 }
 

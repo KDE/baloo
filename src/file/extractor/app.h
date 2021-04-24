@@ -10,14 +10,13 @@
 
 #include <QVector>
 #include <QMimeDatabase>
-#include <QDataStream>
-#include <QTextStream>
 #include <QSocketNotifier>
 #include <QFile>
 
 #include <KFileMetaData/ExtractorCollection>
 
 #include "database.h"
+#include "extractor/commandpipe.h"
 #include "../fileindexerconfig.h"
 
 class KIdleTime;
@@ -35,7 +34,7 @@ public:
     explicit App(QObject* parent = nullptr);
 
 private Q_SLOTS:
-    void slotNewInput();
+    void slotNewBatch(const QVector<quint64>& ids);
     void processNextFile();
 
 private:
@@ -49,8 +48,8 @@ private:
 
     QSocketNotifier m_notifyNewData;
     QFile m_input;
-    QDataStream m_inputStream;
-    QTextStream m_outputStream;
+    QFile m_output;
+    Private::WorkerPipe m_workerPipe;
 
     KIdleTime* m_idleTime = nullptr;
     bool m_isBusy = true;

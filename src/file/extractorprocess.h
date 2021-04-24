@@ -7,6 +7,8 @@
 #ifndef BALOO_EXTRACTORPROCESS_H
 #define BALOO_EXTRACTORPROCESS_H
 
+#include "extractor/commandpipe.h"
+
 #include <QProcess>
 #include <QObject>
 #include <QTimer>
@@ -30,15 +32,13 @@ Q_SIGNALS:
     void done();
     void failed();
 
-private Q_SLOTS:
-    void slotIndexingFile();
-
 private:
     const QString m_extractorPath;
 
     QProcess m_extractorProcess;
     QTimer m_timeCurrentFile;
     int m_processTimeout;
+    Baloo::Private::ControllerPipe m_controller;
 };
 }
 
