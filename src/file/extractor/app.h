@@ -9,7 +9,6 @@
 #define EXTRACTOR_APP_H
 
 #include <QVector>
-#include <QStringList>
 #include <QMimeDatabase>
 #include <QDataStream>
 #include <QTextStream>
@@ -22,6 +21,7 @@
 #include "../fileindexerconfig.h"
 
 class KIdleTime;
+class QString;
 
 namespace Baloo {
 
