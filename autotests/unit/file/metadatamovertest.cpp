@@ -12,11 +12,12 @@
 #include "document.h"
 #include "basicindexingjob.h"
 
+#include <memory>
+#include <QDir>
 #include <QSignalSpy>
 #include <QTemporaryDir>
+#include <QTemporaryFile>
 #include <QTest>
-#include <QDir>
-#include <qtemporaryfile.h>
 
 using namespace Baloo;
 
@@ -29,7 +30,6 @@ public:
 private Q_SLOTS:
 
     void init();
-    void cleanupTestCase();
 
     void testRemoveFile();
     void testRenameFile();
@@ -46,8 +46,8 @@ private Q_SLOTS:
 private:
     quint64 insertUrl(const QString& url);
 
-    Database* m_db;
-    QTemporaryDir* m_tempDir;
+    std::unique_ptr<QTemporaryDir> m_tempDir;
+    std::unique_ptr<Database> m_db;
 
     struct DocumentInfo {
         QString url;
@@ -60,25 +60,15 @@ private:
 
 MetadataMoverTest::MetadataMoverTest(QObject* parent)
     : QObject(parent)
-    , m_db(nullptr)
-    , m_tempDir(nullptr)
 {
 }
 
 void MetadataMoverTest::init()
 {
-    m_tempDir = new QTemporaryDir();
-    m_db = new Database(m_tempDir->path());
+    m_tempDir = std::make_unique<QTemporaryDir>();
+    m_db = std::make_unique<Database>(m_tempDir->path());
     m_db->open(Database::CreateDatabase);
-}
-
-void MetadataMoverTest::cleanupTestCase()
-{
-    delete m_db;
-    m_db = nullptr;
-
-    delete m_tempDir;
-    m_tempDir = nullptr;
+    QVERIFY(m_db->isOpen());
 }
 
 quint64 MetadataMoverTest::insertUrl(const QString& url)
@@ -86,7 +76,7 @@ quint64 MetadataMoverTest::insertUrl(const QString& url)
     BasicIndexingJob job(url, QStringLiteral("text/plain"));
     job.index();
 
-    Transaction tr(m_db, Transaction::ReadWrite);
+    Transaction tr(m_db.get(), Transaction::ReadWrite);
     tr.addDocument(job.document());
     tr.commit();
     return job.document().id();
@@ -94,7 +84,7 @@ quint64 MetadataMoverTest::insertUrl(const QString& url)
 
 MetadataMoverTest::DocumentInfo MetadataMoverTest::documentInfo(quint64 id)
 {
-    Transaction tr(m_db, Transaction::ReadOnly);
+    Transaction tr(m_db.get(), Transaction::ReadOnly);
     if (!tr.hasDocument(id)) {
         return DocumentInfo();
     }
@@ -116,16 +106,16 @@ void MetadataMoverTest::testRemoveFile()
     quint64 fid = insertUrl(url);
 
     {
-        Transaction tr(m_db, Transaction::ReadOnly);
+        Transaction tr(m_db.get(), Transaction::ReadOnly);
         QVERIFY(tr.hasDocument(fid));
     }
 
-    MetadataMover mover(m_db, this);
+    MetadataMover mover(m_db.get(), this);
     file.remove();
     mover.removeFileMetadata(url);
 
     {
-        Transaction tr(m_db, Transaction::ReadOnly);
+        Transaction tr(m_db.get(), Transaction::ReadOnly);
         QVERIFY(!tr.hasDocument(fid));
     }
 }
@@ -155,7 +145,7 @@ void MetadataMoverTest::testRenameFile()
     QVERIFY(!oldInfo.url.isEmpty());
     QCOMPARE(oldInfo.url, url);
 
-    MetadataMover mover(m_db, this);
+    MetadataMover mover(m_db.get(), this);
     QString url2 = dir.path() + QStringLiteral("/file2");
     QFile::rename(url, url2);
     mover.moveFileMetadata(url, url2);
@@ -180,7 +170,7 @@ void MetadataMoverTest::testMoveFile()
     QVERIFY(!oldInfo.url.isEmpty());
     QCOMPARE(oldInfo.url, url);
 
-    MetadataMover mover(m_db, this);
+    MetadataMover mover(m_db.get(), this);
     QString url2 = dir.path() + QStringLiteral("/file");
     QFile::rename(url, url2);
     mover.moveFileMetadata(url, url2);
@@ -204,7 +194,7 @@ void MetadataMoverTest::testMoveRenameFile()
     QVERIFY(!oldInfo.url.isEmpty());
     QCOMPARE(oldInfo.url, url);
 
-    MetadataMover mover(m_db, this);
+    MetadataMover mover(m_db.get(), this);
     QString url2 = dir.path() + QStringLiteral("/file2");
     QFile::rename(url, url2);
     mover.moveFileMetadata(url, url2);
@@ -229,18 +219,18 @@ void MetadataMoverTest::testMoveFolder()
     quint64 fid = insertUrl(fileUrl);
 
     {
-        Transaction tr(m_db, Transaction::ReadOnly);
+        Transaction tr(m_db.get(), Transaction::ReadOnly);
         QVERIFY(tr.hasDocument(did));
         QVERIFY(tr.hasDocument(fid));
     }
 
     QString newFolderUrl = dir.path() + QStringLiteral("/dir");
     QFile::rename(folder, newFolderUrl);
-    MetadataMover mover(m_db, this);
+    MetadataMover mover(m_db.get(), this);
     mover.moveFileMetadata(folder, newFolderUrl);
 
     {
-        Transaction tr(m_db, Transaction::ReadOnly);
+        Transaction tr(m_db.get(), Transaction::ReadOnly);
         QVERIFY(tr.hasDocument(did));
         QVERIFY(tr.hasDocument(fid));
         QCOMPARE(tr.documentUrl(did), QFile::encodeName(newFolderUrl));
@@ -261,7 +251,7 @@ void MetadataMoverTest::testMoveTwiceSequential()
     const quint64 fid = insertUrl(fileUrl);
 
     {
-        Transaction tr(m_db, Transaction::ReadOnly);
+        Transaction tr(m_db.get(), Transaction::ReadOnly);
         QVERIFY(tr.hasDocument(did));
         QVERIFY(tr.hasDocument(fid));
     }
@@ -270,7 +260,7 @@ void MetadataMoverTest::testMoveTwiceSequential()
     const QString fileUrl1 = dir.path() + QStringLiteral("/file1");
     QFile::rename(fileUrl, fileUrl1);
 
-    MetadataMover mover(m_db, this);
+    MetadataMover mover(m_db.get(), this);
     mover.moveFileMetadata(fileUrl, fileUrl1);
 
     // Second rename
@@ -281,7 +271,7 @@ void MetadataMoverTest::testMoveTwiceSequential()
 
     // Check result
     {
-        Transaction tr(m_db, Transaction::ReadOnly);
+        Transaction tr(m_db.get(), Transaction::ReadOnly);
         QVERIFY(tr.hasDocument(did));
         QVERIFY(tr.hasDocument(fid));
         QCOMPARE(tr.documentUrl(did), QFile::encodeName(dir.path()));
@@ -302,7 +292,7 @@ void MetadataMoverTest::testMoveTwiceCombined()
     const quint64 fid = insertUrl(fileUrl);
 
     {
-        Transaction tr(m_db, Transaction::ReadOnly);
+        Transaction tr(m_db.get(), Transaction::ReadOnly);
         QVERIFY(tr.hasDocument(did));
         QVERIFY(tr.hasDocument(fid));
     }
@@ -316,13 +306,13 @@ void MetadataMoverTest::testMoveTwiceCombined()
     QFile::rename(fileUrl1, fileUrl2);
 
     // "Flush" rename notificatons
-    MetadataMover mover(m_db, this);
+    MetadataMover mover(m_db.get(), this);
     mover.moveFileMetadata(fileUrl, fileUrl1);
     mover.moveFileMetadata(fileUrl1, fileUrl2);
 
     // Check result
     {
-        Transaction tr(m_db, Transaction::ReadOnly);
+        Transaction tr(m_db.get(), Transaction::ReadOnly);
         QVERIFY(tr.hasDocument(did));
         QVERIFY(tr.hasDocument(fid));
         QCOMPARE(tr.documentUrl(did), QFile::encodeName(dir.path()));
@@ -341,7 +331,7 @@ void MetadataMoverTest::testMoveDeleteFile()
     const quint64 fid = insertUrl(fileUrl);
 
     {
-        Transaction tr(m_db, Transaction::ReadOnly);
+        Transaction tr(m_db.get(), Transaction::ReadOnly);
         QVERIFY(tr.hasDocument(did));
         QVERIFY(tr.hasDocument(fid));
     }
@@ -353,13 +343,13 @@ void MetadataMoverTest::testMoveDeleteFile()
     QFile::remove(fileUrl1);
 
     // "Flush" notificatons
-    MetadataMover mover(m_db, this);
+    MetadataMover mover(m_db.get(), this);
     mover.moveFileMetadata(fileUrl, fileUrl1);
     mover.removeFileMetadata(fileUrl1);
 
     // Check result
     {
-        Transaction tr(m_db, Transaction::ReadOnly);
+        Transaction tr(m_db.get(), Transaction::ReadOnly);
         QVERIFY(tr.hasDocument(did));
         QCOMPARE(tr.documentUrl(did), QFile::encodeName(dir.path()));
         QVERIFY(!tr.hasDocument(fid));
@@ -382,7 +372,7 @@ void MetadataMoverTest::testMoveFileRenameParent()
     const quint64 fid = insertUrl(fileUrl);
 
     {
-        Transaction tr(m_db, Transaction::ReadOnly);
+        Transaction tr(m_db.get(), Transaction::ReadOnly);
         QVERIFY(tr.hasDocument(did));
         QVERIFY(tr.hasDocument(did_a));
         QVERIFY(tr.hasDocument(did_b));
@@ -402,14 +392,14 @@ void MetadataMoverTest::testMoveFileRenameParent()
     QVERIFY(!QFile::exists(dir.path() + QStringLiteral("/b")));
 
     // "Flush" notificatons
-    MetadataMover mover(m_db, this);
+    MetadataMover mover(m_db.get(), this);
     mover.moveFileMetadata(fileUrl, fileUrl_b1);
     mover.removeFileMetadata(dir.path() + QStringLiteral("/a"));
     mover.moveFileMetadata(dir.path() + QStringLiteral("/b"), dir.path() + QStringLiteral("/a"));
 
     // Check result
     {
-        Transaction tr(m_db, Transaction::ReadOnly);
+        Transaction tr(m_db.get(), Transaction::ReadOnly);
         QVERIFY(tr.hasDocument(did));
         QCOMPARE(tr.documentUrl(did), QFile::encodeName(dir.path()));
         QCOMPARE(tr.documentUrl(did_b), QFile::encodeName(dir.path()) + "/a");
@@ -434,7 +424,7 @@ void MetadataMoverTest::testRenameMoveFileRenameParent()
     const quint64 fid = insertUrl(fileUrl);
 
     {
-        Transaction tr(m_db, Transaction::ReadOnly);
+        Transaction tr(m_db.get(), Transaction::ReadOnly);
         QVERIFY(tr.hasDocument(did));
         QVERIFY(tr.hasDocument(did_a));
         QVERIFY(tr.hasDocument(did_b));
@@ -458,7 +448,7 @@ void MetadataMoverTest::testRenameMoveFileRenameParent()
     QVERIFY(!QFile::exists(dir.path() + QStringLiteral("/b")));
 
     // "Flush" notificatons
-    MetadataMover mover(m_db, this);
+    MetadataMover mover(m_db.get(), this);
     mover.moveFileMetadata(fileUrl, fileUrl_a1);
     mover.moveFileMetadata(fileUrl_a1, fileUrl_b1);
     mover.removeFileMetadata(dir.path() + QStringLiteral("/a"));
@@ -466,7 +456,7 @@ void MetadataMoverTest::testRenameMoveFileRenameParent()
 
     // Check result
     {
-        Transaction tr(m_db, Transaction::ReadOnly);
+        Transaction tr(m_db.get(), Transaction::ReadOnly);
         QVERIFY(tr.hasDocument(did));
         QCOMPARE(tr.documentUrl(did), QFile::encodeName(dir.path()));
         QCOMPARE(tr.documentUrl(did_b), QFile::encodeName(dir.path()) + "/a");
@@ -489,7 +479,7 @@ void MetadataMoverTest::testMoveFileMoveParent()
     const quint64 fid = insertUrl(fileUrl);
 
     {
-        Transaction tr(m_db, Transaction::ReadOnly);
+        Transaction tr(m_db.get(), Transaction::ReadOnly);
         QVERIFY(tr.hasDocument(did));
         QVERIFY(tr.hasDocument(did_a));
         QVERIFY(tr.hasDocument(fid));
@@ -503,13 +493,13 @@ void MetadataMoverTest::testMoveFileMoveParent()
     QFile::rename(dir.path() + QStringLiteral("/a"), dir.path() + QStringLiteral("/b"));
 
     // "Flush" notificatons
-    MetadataMover mover(m_db, this);
+    MetadataMover mover(m_db.get(), this);
     mover.moveFileMetadata(fileUrl, fileUrl1);
     mover.moveFileMetadata(dir.path() + QStringLiteral("/a"), dir.path() + QStringLiteral("/b"));
 
     // Check result
     {
-        Transaction tr(m_db, Transaction::ReadOnly);
+        Transaction tr(m_db.get(), Transaction::ReadOnly);
         QVERIFY(tr.hasDocument(did));
         QVERIFY(tr.hasDocument(did_a));
         QCOMPARE(tr.documentUrl(did), QFile::encodeName(dir.path()));
