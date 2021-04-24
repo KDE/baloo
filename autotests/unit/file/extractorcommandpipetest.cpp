@@ -63,6 +63,8 @@ void ExtractorCommandPipeTest::init()
 
 void ExtractorCommandPipeTest::cleanup()
 {
+    m_worker.closeWriteChannel();
+    m_worker.waitForFinished();
     m_worker.close();
 }
 

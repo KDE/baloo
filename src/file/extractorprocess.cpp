@@ -56,6 +56,8 @@ ExtractorProcess::ExtractorProcess(QObject* parent)
 
 ExtractorProcess::~ExtractorProcess()
 {
+    m_extractorProcess.closeWriteChannel();
+    m_extractorProcess.waitForFinished();
     m_extractorProcess.close();
 }
 
