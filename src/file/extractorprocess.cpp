@@ -10,8 +10,6 @@
 #include "baloodebug.h"
 
 #include <QStandardPaths>
-#include <QDataStream>
-#include <QTextStream>
 
 using namespace Baloo;
 
@@ -19,8 +17,22 @@ ExtractorProcess::ExtractorProcess(QObject* parent)
     : QObject(parent)
     , m_extractorPath(QStandardPaths::findExecutable(QStringLiteral("baloo_file_extractor")))
     , m_extractorProcess(this)
+    , m_controller(&m_extractorProcess, &m_extractorProcess)
 {
-    connect(&m_extractorProcess, &QProcess::readyRead, this, &ExtractorProcess::slotIndexingFile);
+    using ControllerPipe = Baloo::Private::ControllerPipe;
+
+    connect(&m_extractorProcess, &QProcess::readyRead, &m_controller, &ControllerPipe::processStatusData);
+    connect(&m_controller, &ControllerPipe::urlStarted, this, &ExtractorProcess::startedIndexingFile);
+    connect(&m_controller, &ControllerPipe::urlFinished, this, [this](const QString& url) {
+        Q_EMIT finishedIndexingFile(url, true);
+    });
+    connect(&m_controller, &ControllerPipe::urlFailed, this, [this](const QString& url) {
+        Q_EMIT finishedIndexingFile(url, false);
+    });
+    connect(&m_controller, &ControllerPipe::batchFinished, this, [this]() {
+        Q_EMIT done();
+    });
+
     connect(&m_extractorProcess, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
             [=](int exitCode, QProcess::ExitStatus exitStatus)
             {
@@ -57,47 +69,6 @@ void ExtractorProcess::start()
 void ExtractorProcess::index(const QVector<quint64>& fileIds)
 {
     Q_ASSERT(!fileIds.isEmpty());
-
-    QDataStream batch(&m_extractorProcess);
-    batch << fileIds;
+    m_controller.processIds(fileIds);
 }
 
-void ExtractorProcess::slotIndexingFile()
-{
-    QString line;
-    QTextStream stream(&m_extractorProcess);
-    while (m_extractorProcess.canReadLine()) {
-        char command, space;
-        stream >> command >> space;
-
-        if (!stream.readLineInto(&line)) {
-            break;
-        }
-
-        const QString arg = line.trimmed();
-        if (arg.isEmpty()) {
-            continue;
-        }
-
-        switch (command) {
-        case 'S':
-            Q_EMIT startedIndexingFile(arg);
-            break;
-
-        case 'f':
-            Q_EMIT finishedIndexingFile(arg, false);
-            break;
-
-        case 'F':
-            Q_EMIT finishedIndexingFile(arg, true);
-            break;
-
-        case 'B':
-            Q_EMIT done();
-            break;
-
-        default:
-            qCritical(BALOO) << "Got unknown result from extractor" << command << arg;
-        }
-    }
-}
