@@ -55,12 +55,13 @@ void XAttrIndexer::run()
         // FIXME: This slightly defeats the point of having separate indexers
         //        But we can get xattr changes of a file, even when it doesn't exist
         //        cause we missed its creation somehow
-        if (!tr.hasDocument(job.document().id())) {
-            tr.addDocument(job.document());
+        Baloo::Document doc = job.document();
+        if (!tr.hasDocument(doc.id())) {
+            tr.addDocument(doc);
             continue;
         }
 
-        tr.replaceDocument(job.document(), XAttrTerms | DocumentTime | FileNameTerms | DocumentUrl);
+        tr.replaceDocument(doc, XAttrTerms | DocumentTime | FileNameTerms | DocumentUrl);
     }
 
     tr.commit();
