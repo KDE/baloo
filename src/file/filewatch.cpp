@@ -95,7 +95,7 @@ void FileWatch::slotFileDeleted(const QString& urlString, bool isDir)
 {
     // Directories must always end with a trailing slash '/'
     QString url = urlString;
-    if (isDir && url.endsWith(QLatin1Char('/'))) {
+    if (isDir && !url.endsWith(QLatin1Char('/'))) {
         url.append(QLatin1Char('/'));
     }
 
