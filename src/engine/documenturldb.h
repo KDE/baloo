@@ -55,12 +55,6 @@ public:
         replaceOrDelete(docId, QByteArray(), shouldDeleteFolder);
     }
 
-    /**
-     * \p url new url of the file (complete path)
-     */
-    template <typename Functor>
-    void replace(quint64 docId, const QByteArray& url, Functor shouldDeleteFolder);
-
     quint64 getId(quint64 docId, const QByteArray& fileName) const;
 
     PostingIterator* iter(quint64 docId) {
@@ -82,17 +76,6 @@ private:
 
     friend class UrlTest;
 };
-
-
-template <typename Functor>
-void DocumentUrlDB::replace(quint64 docId, const QByteArray& url, Functor shouldDeleteFolder)
-{
-    if (!docId || url.endsWith('/') || !url.startsWith('/')) {
-        qWarning() << "replace called with invalid arguments, docId:" << docId << "url:" << url;
-        return;
-    }
-    replaceOrDelete(docId, url, shouldDeleteFolder);
-}
 
 template <typename Functor>
 void DocumentUrlDB::replaceOrDelete(quint64 docId, const QByteArray& url, Functor shouldDeleteFolder)
