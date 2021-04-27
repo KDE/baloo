@@ -8,7 +8,7 @@ and optionally their contents which [you can search](./docs/user/searching.md).
 
 ## Contributing
 
-Baloo is part of the KDE umberella and relies on the KDE infrastructure.
+Baloo is part of the KDE umbrella and relies on the KDE infrastructure.
 
 **Mailing List:** kde-devel@kde.org ([info page](https://mail.kde.org/mailman/listinfo/kde-devel))
 **Bug Tracker:** http://bugs.kde.org  ([new bug](https://bugs.kde.org/enter_bug.cgi?product=frameworks-baloo))
