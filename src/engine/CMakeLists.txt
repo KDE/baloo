@@ -56,7 +56,7 @@ target_link_libraries(KF5BalooEngine
 )
 
 set_target_properties(KF5BalooEngine PROPERTIES
-    VERSION ${BALOO_VERSION_STRING}
+    VERSION ${BALOO_VERSION}
     SOVERSION ${BALOO_SOVERSION}
     EXPORT_NAME BalooEngine
 )
