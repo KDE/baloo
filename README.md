@@ -23,7 +23,6 @@ The recommended way of contributing patches is via KDE's [GitLab](https://invent
 
 ### Developers
 [![Build Status](https://build.kde.org/job/Frameworks/job/baloo/job/kf5-qt5%20SUSEQt5.15/badge/icon?subject=SUSE%20Qt5.15)](https://build.kde.org/job/Frameworks/job/baloo/job/kf5-qt5%20SUSEQt5.15/)
-[![Build Status](https://build.kde.org/job/Frameworks/job/baloo/job/kf5-qt5%20SUSEQt5.14/badge/icon?subject=SUSE%20Qt5.14)](https://build.kde.org/job/Frameworks/job/baloo/job/kf5-qt5%20SUSEQt5.14/)
 [![Build Status](https://build.kde.org/job/Frameworks/job/baloo/job/kf5-qt5%20FreeBSDQt5.15/badge/icon?subject=FreeBSD%20Qt5.15)](https://build.kde.org/job/Frameworks/job/baloo/job/kf5-qt5%20FreeBSDQt5.15/)
 * [Build Instructions](@ref build-instructions)
 * Baloo follows the [KDE Frameworks coding style](https://community.kde.org/Policies/Frameworks_Coding_Style).
