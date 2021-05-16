@@ -52,7 +52,7 @@ ecm_qt_declare_logging_category(file_static_lib_SRCS
 )
 
 # KF6 TODO - remove BalooWatcherApplication
-qt5_add_dbus_interface(file_static_lib_SRCS org.kde.BalooWatcherApplication.xml baloowatcherapplication_interface)
+qt_add_dbus_interface(file_static_lib_SRCS org.kde.BalooWatcherApplication.xml baloowatcherapplication_interface)
 kconfig_add_kcfg_files(file_static_lib_SRCS ../lib/baloosettings.kcfgc GENERATE_MOC)
 
 add_library(baloofilecommon STATIC ${file_static_lib_SRCS})
