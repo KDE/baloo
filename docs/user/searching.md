@@ -25,12 +25,13 @@ For example 'type' can be used to filter for files based on their general type
 Currently the following types are supported:
 
 * Archive
+* Folder
 * Audio
 * Video
 * Image
 * Document
-* Spreadsheet
-* Presentation
+** Spreadsheet
+** Presentation
 * Text
 
 These expressions can be combined using `AND` or `OR` and additional parenthesis.
