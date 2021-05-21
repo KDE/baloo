@@ -38,11 +38,19 @@
 
 using namespace Baloo;
 
+#define S(X) QStringLiteral(X)
+
 void start()
 {
+    auto ret = QProcess::execute(S("systemd-run"), {S("--user"), S("-p"), S("MemoryMax=500M"), S("-p"), S("CPUQuota=20%"), S(KDE_INSTALL_FULL_LIBEXECDIR "/baloo_file")});
+    if (ret == 0) {
+        return;
+    }
     const QString exe = QStringLiteral(KDE_INSTALL_FULL_LIBEXECDIR "/baloo_file");
     QProcess::startDetached(exe, QStringList());
 }
+
+#undef S
 
 int main(int argc, char* argv[])
 {
