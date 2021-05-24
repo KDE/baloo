@@ -12,7 +12,7 @@ Baloo is part of the KDE umbrella and relies on the KDE infrastructure.
 
 **Mailing List:** kde-devel@kde.org ([info page](https://mail.kde.org/mailman/listinfo/kde-devel))
 **Bug Tracker:** http://bugs.kde.org  ([new bug](https://bugs.kde.org/enter_bug.cgi?product=frameworks-baloo))
-**IRC Channel:** #kde-baloo on Freenode
+**IRC Channel:** #kde-baloo on Libera Chat
 
 The recommended way of contributing patches is via KDE's [GitLab](https://invent.kde.org/frameworks/baloo) instance.
 
