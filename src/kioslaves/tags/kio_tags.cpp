@@ -28,6 +28,13 @@
 
 using namespace Baloo;
 
+// Pseudo plugin class to embed meta data
+class KIOPluginForMetaData : public QObject
+{
+    Q_OBJECT
+    Q_PLUGIN_METADATA(IID "org.kde.kio.slave.tags" FILE "tags.json")
+};
+
 TagsProtocol::TagsProtocol(const QByteArray& pool_socket, const QByteArray& app_socket)
     : KIO::ForwardingSlaveBase("tags", pool_socket, app_socket)
 {
@@ -462,3 +469,4 @@ extern "C"
     }
 }
 
+#include "kio_tags.moc"
