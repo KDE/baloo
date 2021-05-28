@@ -1,0 +1,31 @@
+{
+    "KDE-KIO-Protocols": {
+        "baloosearch": {
+            "Class": ":local",
+            "Icon": "baloo",
+            "deleting": true,
+            "exec": "kf5/kio/baloosearch",
+            "input": "none",
+            "linking": false,
+            "listing": [
+                "Name",
+                "Type",
+                "Size",
+                "Date",
+                "AccessDate",
+                "Access",
+                "Owner",
+                "Group",
+                "Link"
+            ],
+            "makedir": false,
+            "maxInstances": 20,
+            "moving": false,
+            "output": "filesystem",
+            "protocol": "baloosearch",
+            "reading": true,
+            "source": false,
+            "writing": false
+        }
+    }
+}
