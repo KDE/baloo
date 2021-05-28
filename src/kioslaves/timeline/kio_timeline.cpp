@@ -22,6 +22,13 @@
 
 using namespace Baloo;
 
+// Pseudo plugin class to embed meta data
+class KIOPluginForMetaData : public QObject
+{
+    Q_OBJECT
+    Q_PLUGIN_METADATA(IID "org.kde.kio.slave.timeline" FILE "timeline.json")
+};
+
 namespace
 {
 KIO::UDSEntry createFolderUDSEntry(const QString& name)
@@ -270,3 +277,4 @@ extern "C"
     }
 }
 
+#include "kio_timeline.moc"

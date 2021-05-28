@@ -21,6 +21,13 @@
 
 using namespace Baloo;
 
+// Pseudo plugin class to embed meta data
+class KIOPluginForMetaData : public QObject
+{
+    Q_OBJECT
+    Q_PLUGIN_METADATA(IID "org.kde.kio.slave.baloosearch" FILE "baloosearch.json")
+};
+
 namespace
 {
 
@@ -119,3 +126,5 @@ extern "C"
         return 0;
     }
 }
+
+#include "kio_search.moc"
