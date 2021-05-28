@@ -12,4 +12,3 @@ target_link_libraries(kio_baloosearch
 set_target_properties(kio_baloosearch PROPERTIES OUTPUT_NAME "baloosearch")
 
 install(TARGETS kio_baloosearch DESTINATION ${KDE_INSTALL_PLUGINDIR}/kf5/kio)
-install(FILES baloosearch.protocol DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
