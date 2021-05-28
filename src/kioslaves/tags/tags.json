@@ -1,0 +1,34 @@
+{
+    "KDE-KIO-Protocols": {
+        "tags": {
+            "Class": ":local",
+            "Icon": "tag",
+            "copyFromFile": true,
+            "deleteRecursive": true,
+            "deleting": true,
+            "exec": "kf5/kio/tags",
+            "input": "none",
+            "linking": false,
+            "listing": [
+                "Name",
+                "Type",
+                "Size",
+                "Date",
+                "AccessDate",
+                "Access",
+                "Owner",
+                "Group",
+                "Link"
+            ],
+            "makedir": true,
+            "maxInstances": 100,
+            "moving": true,
+            "output": "filesystem",
+            "protocol": "tags",
+            "reading": true,
+            "renameFromFile": true,
+            "source": false,
+            "writing": true
+        }
+    }
+}
