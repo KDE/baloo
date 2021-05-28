@@ -24,4 +24,3 @@ target_link_libraries(tags
 )
 
 install(TARGETS tags DESTINATION ${KDE_INSTALL_PLUGINDIR}/kf5/kio)
-install(FILES tags.protocol DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
