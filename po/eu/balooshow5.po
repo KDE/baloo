@@ -1,0 +1,132 @@
+# Translation of balooshow5.po to Euskara/Basque (eu).
+# Copyright (C) 2017-2018, Free Software Foundation, Inc.
+# Copyright (C) 2019, this file is copyright:
+# This file is distributed under the same license as the frameworks package.
+# KDE Euskaratzeko proiektuaren arduraduna <xalba@euskalnet.net>.
+#
+# Translators:
+# Ander Elortondo <ander@elortondo.net>, 2017.
+# Iñigo Salvador Azurmendi <xalba@euskalnet.net>, 2017, 2018, 2019.
+msgid ""
+msgstr ""
+"Project-Id-Version: balooshow5\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2021-04-29 00:15+0000\n"
+"PO-Revision-Date: 2019-04-25 10:40+0100\n"
+"Last-Translator: Iñigo Salvador Azurmendi <xalba@euskalnet.net>\n"
+"Language-Team: Basque <kde-i18n-eu@kde.org>\n"
+"Language: eu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 2.0\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Ander Elortondo,Iñigo Salvador Azurmendi"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "ander@elortondo.net,xalba@euskalnet.net"
+
+# xalba 2018-02-19: Testuinguruan itzulpen zuzena den egiaztatu behar da.
+#: main.cpp:46
+#, kde-format
+msgid "Baloo Show"
+msgstr "Baloo aurkezpena"
+
+#: main.cpp:48
+#, kde-format
+msgid "The Baloo data Viewer - A debugging tool"
+msgstr "Baloo datu ikuskatzailea - Arazteko tresna bat"
+
+#: main.cpp:50
+#, kde-format
+msgid "(c) 2012, Vishesh Handa"
+msgstr "(c) 2012, Vishesh Handa"
+
+#: main.cpp:55
+#, kde-format
+msgid "Urls, document ids or inodes of the files"
+msgstr "URLak, dokumentuen IDak edo fitxategien inodoak"
+
+#: main.cpp:57
+#, kde-format
+msgid "Print internal info"
+msgstr "Inprimatu barneko informazioa"
+
+#: main.cpp:59
+#, kde-format
+msgid "Arguments are interpreted as inode numbers (requires -d)"
+msgstr "Argumentuak inodo zenbaki gisa interpretatzen dira  (-d behar du)"
+
+#: main.cpp:61
+#, kde-format
+msgid "Device id for the files"
+msgstr "Fitxategiaren gailu id"
+
+#: main.cpp:84
+#, kde-format
+msgid "Error: -i requires specifying a device (-d <deviceId>)"
+msgstr "Errorea: -i erabiltzeko gailu bat zehaztu behar da (-d <gailuID>)"
+
+#: main.cpp:90
+#, kde-format
+msgid ""
+"The Baloo index could not be opened. Please run \"%1\" to see if Baloo is "
+"enabled and working."
+msgstr ""
+"Baloo indizea ezin izan da ireki. Exekutatu \"%1\" Baloo gaituta eta martxan "
+"dagoen ikusteko."
+
+#: main.cpp:107
+#, kde-format
+msgid "The document IDs of the Baloo DB and the filesystem are different:"
+msgstr "Dokumentuen IDak ezberdinak dira Baloo DB-an eta fitxategi-sisteman:"
+
+#: main.cpp:126
+#, kde-format
+msgid "%1: Not a valid url or document id"
+msgstr "%1: Ez da baliozko URL bat edo dokumentu ID bat"
+
+#: main.cpp:140
+#, kde-format
+msgid "%1: Failed to parse inode number"
+msgstr "%1: Huts egin du inodo zenbakiaren azterketa sintaktikoak"
+
+#: main.cpp:164
+#, kde-format
+msgid "%1: No index information found"
+msgstr "%1: Ez da indize informaziorik aurkitu"
+
+#: main.cpp:213
+#, kde-format
+msgid "Internal Info"
+msgstr "Barneko informazioa"
+
+# xalba 2018-02-19: Testuinguruan itzulpen zuzena den egiaztatu behar da.
+#: main.cpp:214
+#, kde-format
+msgid "Terms: %1"
+msgstr "Baldintzak: %1"
+
+# xalba 2018-02-19: Testuinguruan itzulpen zuzena den egiaztatu behar da.
+#: main.cpp:215
+#, kde-format
+msgid "File Name Terms: %1"
+msgstr "Fitxategi izenen baldintzak: %1"
+
+# xalba 2018-02-19: Testuinguruan itzulpen zuzena den egiaztatu behar da.
+#: main.cpp:216
+#, kde-format
+msgid "%1 Terms: %2"
+msgstr "%1 baldintzak: %2"
+
+#: main.cpp:219
+#, kde-format
+msgctxt "Prefix string for internal errors"
+msgid "Internal Error - %1"
+msgstr "Barneko errorea - %1"

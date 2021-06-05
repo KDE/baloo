@@ -1,0 +1,116 @@
+# Translation of balooengine5 to Norwegian Nynorsk
+#
+# Karl Ove Hufthammer <karl@huftis.org>, 2018.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2021-04-16 00:16+0000\n"
+"PO-Revision-Date: 2018-05-19 19:12+0100\n"
+"Last-Translator: Karl Ove Hufthammer <karl@huftis.org>\n"
+"Language-Team: Norwegian Nynorsk <l10n-no@lister.huftis.org>\n"
+"Language: nn\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 2.0\n"
+"X-Environment: kde\n"
+"X-Accelerator-Marker: &\n"
+"X-Text-Markup: kde4\n"
+
+#: experimental/databasesanitizer.cpp:262
+#, kde-format
+msgid "Total: %1, Inaccessible: %2"
+msgstr "Totalt: %1, ikkje tilgjengeleg: %2"
+
+#: experimental/databasesanitizer.cpp:266
+#, kde-format
+msgid "Total: %1, Ignored: %2, Accessible: %3, Inaccessible: %4"
+msgstr "Totalt: %1, hoppa over: %2, tilgjengeleg: %3, utilgjengeleg: %4"
+
+#: experimental/databasesanitizer.cpp:322
+#, kde-format
+msgid "Found %1 matching in %2 devices"
+msgstr "Fann %1 treff på %2 einingar"
+
+#: experimental/databasesanitizer.cpp:343
+#, kde-format
+msgid "IgnoredSymbolicLink:"
+msgstr "IgnoredSymbolicLink:"
+
+#: experimental/databasesanitizer.cpp:347
+#, kde-format
+msgid "Removing:"
+msgstr "Fjernar:"
+
+#: experimental/databasesanitizer.cpp:361
+#, kde-format
+msgctxt "numbers"
+msgid "Removed: %1, Total: %2, Ignored: %3"
+msgstr "Fjerna: %1, totalt: %2, hoppa over: %3"
+
+#: indexerstate.cpp:14
+#, kde-format
+msgid "Unknown"
+msgstr ""
+
+#: indexerstate.cpp:17
+#, kde-format
+msgid "Idle"
+msgstr ""
+
+#: indexerstate.cpp:20
+#, kde-format
+msgid "Suspended"
+msgstr ""
+
+#: indexerstate.cpp:23
+#, kde-format
+msgid "Initial Indexing"
+msgstr ""
+
+#: indexerstate.cpp:26
+#, kde-format
+msgid "Indexing new files"
+msgstr ""
+
+#: indexerstate.cpp:29
+#, kde-format
+msgid "Indexing modified files"
+msgstr ""
+
+#: indexerstate.cpp:32
+#, kde-format
+msgid "Indexing Extended Attributes"
+msgstr ""
+
+#: indexerstate.cpp:35
+#, kde-format
+msgid "Indexing file content"
+msgstr ""
+
+#: indexerstate.cpp:38
+#, kde-format
+msgid "Checking for unindexed files"
+msgstr ""
+
+#: indexerstate.cpp:41
+#, kde-format
+msgid "Checking for stale index entries"
+msgstr ""
+
+#: indexerstate.cpp:44
+#, kde-format
+msgid "Idle (Powersave)"
+msgstr ""
+
+#: indexerstate.cpp:47
+#, kde-format
+msgid "Not Running"
+msgstr ""
+
+#: indexerstate.cpp:50
+#, kde-format
+msgid "Starting"
+msgstr ""
