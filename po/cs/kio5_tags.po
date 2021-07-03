@@ -1,0 +1,38 @@
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Vít Pelčák <vit@pelcak.org>, 2010, 2013, 2018.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: kio_tags\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2021-06-05 00:13+0000\n"
+"PO-Revision-Date: 2018-04-12 15:39+0100\n"
+"Last-Translator: Vit Pelcak <vit@pelcak.org>\n"
+"Language-Team: Czech <kde-i18n-doc@kde.org>\n"
+"Language: cs\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Generator: Lokalize 2.0\n"
+
+#: kio_tags.cpp:114 kio_tags.cpp:173
+#, kde-format
+msgid "File %1 already has tag %2"
+msgstr "Soubor %1 již má značku %2"
+
+#: kio_tags.cpp:306
+#, kde-format
+msgid "Tag"
+msgstr "Značka"
+
+#: kio_tags.cpp:308
+#, kde-format
+msgid "Tag Fragment"
+msgstr "Označit fragment"
+
+#: kio_tags.cpp:310 kio_tags.cpp:315
+#, kde-format
+msgid "All Tags"
+msgstr "Všechny značky"
