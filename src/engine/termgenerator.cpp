@@ -79,7 +79,7 @@ QByteArrayList TermGenerator::termList(const QString& text_)
         // StartOfItem is just whitespace and punctuation. Unfortunately,
         // most CJK characters do not trigger a StartOfItem and thus no
         // EndOfItem, so everything in front of a StartOfItem has to be
-        // commited as well
+        // committed as well
         bool commit = bf.boundaryReasons() & (QTextBoundaryFinder::EndOfItem | QTextBoundaryFinder::StartOfItem);
 
         // Also commit term if end-of-text is reached or when we find

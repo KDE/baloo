@@ -22,7 +22,7 @@ class Transaction;
  * - Config include / exclude path
  * - Config filters
  * - Config mimetype filters
- * - Datbase for mtime differences
+ * - Database for mtime differences
  */
 class UnIndexedFileIterator
 {
