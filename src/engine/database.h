@@ -37,7 +37,7 @@ public:
      */
     enum OpenMode {
         /**
-         * Create + open read-write dabase.
+         * Create + open read-write database.
          */
         CreateDatabase,
 

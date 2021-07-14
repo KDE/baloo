@@ -88,7 +88,7 @@ public:
     bool empty() const;
 
     /**
-     * Return the property this term is targetting
+     * Return the property this term is targeting
      */
     QString property() const;
     void setProperty(const QString& property);

@@ -11,7 +11,7 @@ find_dependency(KF5FileMetaData "@KF_DEP_VERSION@")
 include(FeatureSummary)
 
 set_package_properties(LMDB PROPERTIES
-    DESCRIPTION "The Lightning Memory-Mapped Databse (LMDB)"
+    DESCRIPTION "The Lightning Memory-Mapped Database (LMDB)"
     URL "https://symas.com/lmdb"
 )
 
