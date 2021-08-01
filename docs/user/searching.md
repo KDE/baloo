@@ -30,8 +30,8 @@ Currently the following types are supported:
 * Video
 * Image
 * Document
-** Spreadsheet
-** Presentation
+  * Spreadsheet
+  * Presentation
 * Text
 
 These expressions can be combined using `AND` or `OR` and additional parenthesis.
