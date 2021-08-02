@@ -20,6 +20,8 @@ The recommended way of contributing patches is via KDE's [GitLab](https://invent
 
 ### Users
 * [Searching](./docs/user/searching.md)
+* [The Baloo pages on KDE Community Wiki](https://community.kde.org/Baloo) have information on Baloo's command-line tools and how to monitor its operation.
+
 
 ### Developers
 [![Build Status](https://build.kde.org/job/Frameworks/job/baloo/job/kf5-qt5%20SUSEQt5.15/badge/icon?subject=SUSE%20Qt5.15)](https://build.kde.org/job/Frameworks/job/baloo/job/kf5-qt5%20SUSEQt5.15/)
