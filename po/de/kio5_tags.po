@@ -1,0 +1,34 @@
+# Burkhard Lück <lueck@hube-lueck.de>, 2013, 2017, 2018.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2021-06-05 00:13+0000\n"
+"PO-Revision-Date: 2018-11-16 18:59+0100\n"
+"Last-Translator: Burkhard Lück <lueck@hube-lueck.de>\n"
+"Language-Team: German <kde-i18n-de@kde.org>\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: kio_tags.cpp:114 kio_tags.cpp:173
+#, kde-format
+msgid "File %1 already has tag %2"
+msgstr "Die Datei %1 hat bereits das Stichwort %2"
+
+#: kio_tags.cpp:306
+#, kde-format
+msgid "Tag"
+msgstr "Stichwort"
+
+#: kio_tags.cpp:308
+#, kde-format
+msgid "Tag Fragment"
+msgstr "Stichwort-Fragment"
+
+#: kio_tags.cpp:310 kio_tags.cpp:315
+#, kde-format
+msgid "All Tags"
+msgstr "Alle Stichwörter"
