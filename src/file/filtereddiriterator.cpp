@@ -48,8 +48,9 @@ QString FilteredDirIterator::next()
     }
 
     bool shouldIndexHidden = false;
-    if (m_config)
+    if (m_config) {
         shouldIndexHidden = m_config->indexHiddenFilesAndFolders();
+    }
 
     while (true) {
         // Last entry in the current directory found, try the next

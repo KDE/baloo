@@ -180,11 +180,13 @@ ResultIterator Query::exec()
 
     if (d->m_yearFilter || d->m_monthFilter || d->m_dayFilter) {
         QByteArray ba = QByteArray::number(d->m_yearFilter);
-        if (d->m_monthFilter < 10)
+        if (d->m_monthFilter < 10) {
             ba += '0';
+        }
         ba += QByteArray::number(d->m_monthFilter);
-        if (d->m_dayFilter < 10)
+        if (d->m_dayFilter < 10) {
             ba += '0';
+        }
         ba += QByteArray::number(d->m_dayFilter);
 
         term = term && Term(QStringLiteral("modified"), ba, Term::Equal);
@@ -199,33 +201,43 @@ QByteArray Query::toJSON()
 {
     QVariantMap map;
 
-    if (!d->m_types.isEmpty())
+    if (!d->m_types.isEmpty()) {
         map[QStringLiteral("type")] = d->m_types;
+    }
 
-    if (d->m_limit != defaultLimit)
+    if (d->m_limit != defaultLimit) {
         map[QStringLiteral("limit")] = d->m_limit;
+    }
 
-    if (d->m_offset)
+    if (d->m_offset) {
         map[QStringLiteral("offset")] = d->m_offset;
+    }
 
-    if (!d->m_searchString.isEmpty())
+    if (!d->m_searchString.isEmpty()) {
         map[QStringLiteral("searchString")] = d->m_searchString;
+    }
 
-    if (d->m_term.isValid())
+    if (d->m_term.isValid()) {
         map[QStringLiteral("term")] = QVariant(d->m_term.toVariantMap());
+    }
 
-    if (d->m_yearFilter > 0)
+    if (d->m_yearFilter > 0) {
         map[QStringLiteral("yearFilter")] = d->m_yearFilter;
-    if (d->m_monthFilter > 0)
+    }
+    if (d->m_monthFilter > 0) {
         map[QStringLiteral("monthFilter")] = d->m_monthFilter;
-    if (d->m_dayFilter > 0)
+    }
+    if (d->m_dayFilter > 0) {
         map[QStringLiteral("dayFilter")] = d->m_dayFilter;
+    }
 
-    if (d->m_sortingOption != SortAuto)
+    if (d->m_sortingOption != SortAuto) {
         map[QStringLiteral("sortingOption")] = static_cast<int>(d->m_sortingOption);
+    }
 
-    if (!d->m_includeFolder.isEmpty())
+    if (!d->m_includeFolder.isEmpty()) {
         map[QStringLiteral("includeFolder")] = d->m_includeFolder;
+    }
 
     QJsonObject jo = QJsonObject::fromVariantMap(map);
     QJsonDocument jdoc;
@@ -242,21 +254,25 @@ Query Query::fromJSON(const QByteArray& arr)
     Query query;
     query.d->m_types = map[QStringLiteral("type")].toStringList();
 
-    if (map.contains(QStringLiteral("limit")))
+    if (map.contains(QStringLiteral("limit"))) {
         query.d->m_limit = map[QStringLiteral("limit")].toUInt();
-    else
+    } else {
         query.d->m_limit = defaultLimit;
+    }
 
     query.d->m_offset = map[QStringLiteral("offset")].toUInt();
     query.d->m_searchString = map[QStringLiteral("searchString")].toString();
     query.d->m_term = Term::fromVariantMap(map[QStringLiteral("term")].toMap());
 
-    if (map.contains(QStringLiteral("yearFilter")))
+    if (map.contains(QStringLiteral("yearFilter"))) {
         query.d->m_yearFilter = map[QStringLiteral("yearFilter")].toInt();
-    if (map.contains(QStringLiteral("monthFilter")))
+    }
+    if (map.contains(QStringLiteral("monthFilter"))) {
         query.d->m_monthFilter = map[QStringLiteral("monthFilter")].toInt();
-    if (map.contains(QStringLiteral("dayFilter")))
+    }
+    if (map.contains(QStringLiteral("dayFilter"))) {
         query.d->m_dayFilter = map[QStringLiteral("dayFilter")].toInt();
+    }
 
     if (map.contains(QStringLiteral("sortingOption"))) {
         int option = map.value(QStringLiteral("sortingOption")).toInt();
@@ -282,8 +298,9 @@ QUrl Query::toSearchUrl(const QString& title)
     QUrlQuery urlQuery;
     urlQuery.addQueryItem(QStringLiteral("json"), QString::fromUtf8(toJSON()));
 
-    if (!title.isEmpty())
+    if (!title.isEmpty()) {
         urlQuery.addQueryItem(QStringLiteral("title"), title);
+    }
 
     url.setQuery(urlQuery);
     return url;
@@ -308,8 +325,9 @@ static QString jsonQueryFromUrl(const QUrl &url)
 
 Query Query::fromSearchUrl(const QUrl& url)
 {
-    if (url.scheme() != QLatin1String("baloosearch"))
+    if (url.scheme() != QLatin1String("baloosearch")) {
         return Query();
+    }
 
     QUrlQuery urlQuery(url);
 
@@ -350,12 +368,14 @@ bool Query::operator==(const Query& rhs) const
         return false;
     }
 
-    if (rhs.d->m_types.size() != d->m_types.size())
+    if (rhs.d->m_types.size() != d->m_types.size()) {
         return false;
+    }
 
     for (const QString& type : std::as_const(rhs.d->m_types)) {
-        if (!d->m_types.contains(type))
+        if (!d->m_types.contains(type)) {
             return false;
+        }
     }
 
     return d->m_term == rhs.d->m_term;

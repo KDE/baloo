@@ -144,8 +144,9 @@ void TimelineProtocol::listDir(const QUrl& url)
         ResultIterator it = query.exec();
         while (it.next()) {
             KIO::UDSEntry uds = udsf.createUdsEntry(it.filePath());
-            if (uds.count())
+            if (uds.count()) {
                 listEntry(uds);
+            }
         }
         finished();
         break;

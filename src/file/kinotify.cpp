@@ -32,16 +32,18 @@ namespace
 {
 QByteArray normalizeTrailingSlash(QByteArray&& path)
 {
-    if (!path.endsWith('/'))
+    if (!path.endsWith('/')) {
         path.append('/');
+    }
     return path;
 }
 
 QByteArray concatPath(const QByteArray& p1, const QByteArray& p2)
 {
     QByteArray p(p1);
-    if (p.isEmpty() || (!p2.isEmpty() && p[p.length() - 1] != '/'))
+    if (p.isEmpty() || (!p2.isEmpty() && p[p.length() - 1] != '/')) {
         p.append('/');
+    }
     p.append(p2);
     return p;
 }
@@ -218,13 +220,16 @@ bool KInotify::available() const
     if (d->inotify() > 0) {
         // trueg: Copied from KDirWatch.
         struct utsname uts;
-        int major, minor, patch = 0;
+        int major;
+        int minor;
+        int patch = 0;
         if (uname(&uts) < 0) {
             return false; // *shrug*
         } else if (sscanf(uts.release, "%d.%d.%d", &major, &minor, &patch) != 3) {
             //Kernels > 3.0 can in principle have two-number versions.
-            if (sscanf(uts.release, "%d.%d", &major, &minor) != 2)
+            if (sscanf(uts.release, "%d.%d", &major, &minor) != 2) {
                 return false; // *shrug*
+            }
         } else if (major * 1000000 + minor * 1000 + patch < 2006014) { // <2.6.14
             qCDebug(BALOO) << "Can't use INotify, Linux kernel too old";
             return false;
@@ -397,8 +402,9 @@ void KInotify::slotEvent(int socket)
         if (event->mask & EventDelete) {
 //            qCDebug(BALOO) << path << "EventDelete";
             // we watch all folders recursively. Thus, folder removing is reported in DeleteSelf.
-            if (!(event->mask & IN_ISDIR))
+            if (!(event->mask & IN_ISDIR)) {
                 Q_EMIT deleted(fname, false);
+            }
         }
         if (event->mask & EventModify) {
 //            qCDebug(BALOO) << path << "EventModify";

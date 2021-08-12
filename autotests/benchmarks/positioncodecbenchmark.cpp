@@ -45,8 +45,9 @@ void PositionCodecBenchmark::initTestCase()
         PositionInfo info;
         info.docId = (i + 1) * 4711;
         info.positions.reserve(3000);
-        for (int j = 0; j < 3000; j++)
+        for (int j = 0; j < 3000; j++) {
             info.positions.append(((j + 1) * (i + 2)));
+        }
         m_benchmarkData1.append(info);
     }
 
@@ -66,8 +67,9 @@ void PositionCodecBenchmark::initTestCase()
         PositionInfo info;
         info.docId = i;
         info.positions.reserve(30000); // > 2^14 -> 3 byte VarInt32
-        for (int j = 0; j < 30000; j++)
+        for (int j = 0; j < 30000; j++) {
             info.positions.append((j + 1) * 200); // increment 200 -> 2 byte DiffVarInt32
+        }
 
         m_benchmarkData3.append(info);
     }

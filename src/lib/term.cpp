@@ -48,12 +48,13 @@ Term::Term(const QString& property, const QVariant& value, Term::Comparator c)
     d->m_value = value;
 
     if (c == Auto) {
-        if (value.type() == QVariant::String)
+        if (value.type() == QVariant::String) {
             d->m_comp = Contains;
-        else if (value.type() == QVariant::DateTime)
+        } else if (value.type() == QVariant::DateTime) {
             d->m_comp = Contains;
-        else
+        } else {
             d->m_comp = Equal;
+        }
     }
     else {
         d->m_comp = c;
@@ -163,8 +164,9 @@ void Term::setSubTerms(const QList<Term>& terms)
 
 Term Term::subTerm() const
 {
-    if (!d->m_subTerms.isEmpty())
+    if (!d->m_subTerms.isEmpty()) {
         return d->m_subTerms.first();
+    }
 
     return Term();
 }
@@ -243,10 +245,11 @@ QVariantMap Term::toVariantMap() const
             variantList << QVariant(term.toVariantMap());
         }
 
-        if (d->m_op == And)
+        if (d->m_op == And) {
             map[QStringLiteral("$and")] = variantList;
-        else
+        } else {
             map[QStringLiteral("$or")] = variantList;
+        }
 
         return map;
     }
@@ -294,8 +297,9 @@ namespace {
     QVariant tryConvert(const QVariant& var) {
         if (var.canConvert(QVariant::DateTime)) {
             QDateTime dt = var.toDateTime();
-            if (!dt.isValid())
+            if (!dt.isValid()) {
                 return var;
+            }
 
             if (!var.toString().contains(QLatin1Char('T'))) {
                 return QVariant(var.toDate());
@@ -308,8 +312,9 @@ namespace {
 
 Term Term::fromVariantMap(const QVariantMap& map)
 {
-    if (map.size() != 1)
+    if (map.size() != 1) {
         return Term();
+    }
 
     Term term;
 
@@ -327,8 +332,9 @@ Term Term::fromVariantMap(const QVariantMap& map)
         QList<Term> subTerms;
 
         const QVariantList list = map[andOrString].toList();
-        for (const QVariant& var : list)
+        for (const QVariant &var : list) {
             subTerms << Term::fromVariantMap(var.toMap());
+        }
 
         term.setSubTerms(subTerms);
         return term;
@@ -340,23 +346,25 @@ Term Term::fromVariantMap(const QVariantMap& map)
     QVariant value = map.value(prop);
     if (value.type() == QVariant::Map) {
         QVariantMap mapVal = value.toMap();
-        if (mapVal.size() != 1)
+        if (mapVal.size() != 1) {
             return term;
+        }
 
         QString op = mapVal.cbegin().key();
         Term::Comparator com;
-        if (op == QLatin1String("$ct"))
+        if (op == QLatin1String("$ct")) {
             com = Contains;
-        else if (op == QLatin1String("$gt"))
+        } else if (op == QLatin1String("$gt")) {
             com = Greater;
-        else if (op == QLatin1String("$gte"))
+        } else if (op == QLatin1String("$gte")) {
             com = GreaterEqual;
-        else if (op == QLatin1String("$lt"))
+        } else if (op == QLatin1String("$lt")) {
             com = Less;
-        else if (op == QLatin1String("$lte"))
+        } else if (op == QLatin1String("$lte")) {
             com = LessEqual;
-        else
+        } else {
             return term;
+        }
 
         term.setComparator(com);
         term.setValue(tryConvert(mapVal.value(op)));
@@ -379,15 +387,18 @@ bool Term::operator==(const Term& rhs) const
         return false;
     }
 
-    if (d->m_subTerms.size() != rhs.d->m_subTerms.size())
+    if (d->m_subTerms.size() != rhs.d->m_subTerms.size()) {
         return false;
+    }
 
-    if (d->m_subTerms.isEmpty())
+    if (d->m_subTerms.isEmpty()) {
         return true;
+    }
 
     for (const Term& t : std::as_const(d->m_subTerms)) {
-        if (!rhs.d->m_subTerms.contains(t))
+        if (!rhs.d->m_subTerms.contains(t)) {
             return false;
+        }
     }
 
     return true;

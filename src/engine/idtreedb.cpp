@@ -107,8 +107,9 @@ public:
         : m_db(db), m_pos(-1), m_idList(list) {}
 
     quint64 docId() const override {
-        if (m_pos >= 0 && m_pos < m_resultList.size())
+        if (m_pos >= 0 && m_pos < m_resultList.size()) {
             return m_resultList[m_pos];
+        }
         return 0;
     }
 
@@ -127,16 +128,18 @@ public:
             m_pos = 0;
         }
         else {
-            if (m_pos < m_resultList.size())
+            if (m_pos < m_resultList.size()) {
                 m_pos++;
-            else
+            } else {
                 m_resultList.clear();
+            }
         }
 
-        if (m_pos < m_resultList.size())
+        if (m_pos < m_resultList.size()) {
             return m_resultList[m_pos];
-        else
+        } else {
             return 0;
+        }
     }
 
 private:

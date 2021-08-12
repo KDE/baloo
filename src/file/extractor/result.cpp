@@ -64,22 +64,26 @@ void Result::add(KFileMetaData::Property::Property property, const QVariant& val
         const auto valueList = value.toStringList();
         for (const auto& val : valueList)
         {
-            if (val.isEmpty())
+            if (val.isEmpty()) {
                 continue;
+            }
             m_termGen.indexText(val, prefix);
-            if (shouldBeIndexed)
+            if (shouldBeIndexed) {
                 m_termGen.indexText(val);
+            }
         }
     }
     else {
         const QString val = value.toString();
-        if (val.isEmpty())
+        if (val.isEmpty()) {
             return;
+        }
 
         m_termGen.indexText(val, prefix);
         KFileMetaData::PropertyInfo pi(property);
-        if (pi.shouldBeIndexed())
+        if (pi.shouldBeIndexed()) {
             m_termGen.indexText(val);
+        }
     }
 }
 

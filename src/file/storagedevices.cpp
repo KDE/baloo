@@ -55,8 +55,9 @@ QList<StorageDevices::Entry> StorageDevices::allMedia() const
 
 StorageDevices::Entry* StorageDevices::createCacheEntry(const Solid::Device& dev)
 {
-    if (dev.udi().isEmpty())
+    if (dev.udi().isEmpty()) {
         return nullptr;
+    }
 
     const Solid::StorageAccess* storage = dev.as<Solid::StorageAccess>();
     if (!storage) {
