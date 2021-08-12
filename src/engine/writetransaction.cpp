@@ -47,13 +47,14 @@ void WriteTransaction::addDocument(const Document& doc)
     documentTermsDB.put(id, docTerms);
 
     QVector<QByteArray> docXattrTerms = addTerms(id, doc.m_xattrTerms);
-    if (!docXattrTerms.isEmpty())
+    if (!docXattrTerms.isEmpty()) {
         documentXattrTermsDB.put(id, docXattrTerms);
+    }
 
     QVector<QByteArray> docFileNameTerms = addTerms(id, doc.m_fileNameTerms);
-    if (!docFileNameTerms.isEmpty())
+    if (!docFileNameTerms.isEmpty()) {
         documentFileNameTermsDB.put(id, docFileNameTerms);
-
+    }
 
     if (doc.contentIndexing()) {
         contentIndexingDB.put(doc.id());
@@ -201,10 +202,11 @@ void WriteTransaction::replaceDocument(const Document& doc, DocumentOperations o
         QVector<QByteArray> docXattrTerms = replaceTerms(id, prevTerms, doc.m_xattrTerms);
 
         if (docXattrTerms != prevTerms) {
-            if (!docXattrTerms.isEmpty())
+            if (!docXattrTerms.isEmpty()) {
                 documentXattrTermsDB.put(id, docXattrTerms);
-            else
+            } else {
                 documentXattrTermsDB.del(id);
+            }
         }
     }
 
@@ -213,10 +215,11 @@ void WriteTransaction::replaceDocument(const Document& doc, DocumentOperations o
         QVector<QByteArray> docFileNameTerms = replaceTerms(id, prevTerms, doc.m_fileNameTerms);
 
         if (docFileNameTerms != prevTerms) {
-            if (!docFileNameTerms.isEmpty())
+            if (!docFileNameTerms.isEmpty()) {
                 documentFileNameTermsDB.put(id, docFileNameTerms);
-            else
+            } else {
                 documentFileNameTermsDB.del(id);
+            }
         }
     }
 

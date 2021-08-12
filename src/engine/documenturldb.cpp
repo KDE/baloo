@@ -61,8 +61,9 @@ bool DocumentUrlDB::put(quint64 docId, const QByteArray& url)
             add(id, parentId, name);
         }
 
-        if (idFilenameDb.contains(parentId))
+        if (idFilenameDb.contains(parentId)) {
             return true;
+        }
     }
 
     //

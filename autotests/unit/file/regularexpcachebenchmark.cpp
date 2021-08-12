@@ -27,8 +27,9 @@ void RegularExpCacheBenchmark::test()
         QDirIterator iter(QDir::home(), QDirIterator::Subdirectories);
         int amt = 5000;
         while (iter.hasNext()) {
-            if (!amt)
+            if (!amt) {
                 break;
+            }
 
             amt--;
             iter.next();

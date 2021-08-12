@@ -67,16 +67,21 @@ QVector<KFileMetaData::Type::Type> typesForMimeType(const QString& mimeType)
     types.reserve(2);
 
     // Basic types
-    if (mimeType.startsWith(QLatin1String("audio/")))
+    if (mimeType.startsWith(QLatin1String("audio/"))) {
         types << Type::Audio;
-    if (mimeType.startsWith(QLatin1String("video/")))
+    }
+    if (mimeType.startsWith(QLatin1String("video/"))) {
         types << Type::Video;
-    if (mimeType.startsWith(QLatin1String("image/")))
+    }
+    if (mimeType.startsWith(QLatin1String("image/"))) {
         types << Type::Image;
-    if (mimeType.startsWith(QLatin1String("text/")))
+    }
+    if (mimeType.startsWith(QLatin1String("text/"))) {
         types << Type::Text;
-    if (mimeType.contains(QLatin1String("document")))
+    }
+    if (mimeType.contains(QLatin1String("document"))) {
         types << Type::Document;
+    }
 
     if (mimeType.contains(QLatin1String("powerpoint"))) {
         types << Type::Presentation;

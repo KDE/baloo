@@ -70,8 +70,9 @@ QString UnIndexedFileIterator::next()
 bool UnIndexedFileIterator::shouldIndex(const QString& filePath)
 {
     const QFileInfo fileInfo = m_iter.fileInfo();
-    if (!fileInfo.exists())
+    if (!fileInfo.exists()) {
         return false;
+    }
 
     quint64 fileId = filePathToId(QFile::encodeName(filePath));
     if (!fileId) {

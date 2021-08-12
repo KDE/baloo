@@ -64,8 +64,9 @@ QStringList FileIndexerConfig::includeFolders() const
 
     QStringList fl;
     for (const auto& entry : m_folderCache) {
-        if (entry.isIncluded)
+        if (entry.isIncluded) {
             fl << entry.path;
+        }
     }
     return fl;
 }
@@ -76,8 +77,9 @@ QStringList FileIndexerConfig::excludeFolders() const
 
     QStringList fl;
     for (const auto& entry : m_folderCache) {
-        if (!entry.isIncluded)
+        if (!entry.isIncluded) {
             fl << entry.path;
+        }
     }
     return fl;
 }
@@ -160,8 +162,9 @@ bool FileIndexerConfig::shouldFolderBeIndexed(const QString& path) const
     if (folderInFolderList(normalizedPath, folder)) {
         // we always index the folders in the list
         // ignoring the name filters
-        if (folder == normalizedPath)
+        if (folder == normalizedPath) {
             return true;
+        }
 
         // check the exclude filters for all components of the path
         // after folder

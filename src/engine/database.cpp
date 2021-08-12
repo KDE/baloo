@@ -122,7 +122,9 @@ bool Database::open(OpenMode mode)
 
     // Set MDB environment flags
     auto mdbEnvFlags = MDB_NOSUBDIR | MDB_NOMEMINIT;
-    if (mode == ReadOnlyDatabase) mdbEnvFlags |= MDB_RDONLY;
+    if (mode == ReadOnlyDatabase) {
+        mdbEnvFlags |= MDB_RDONLY;
+    }
 
     // The directory needs to be created before opening the environment
     QByteArray arr = QFile::encodeName(indexInfo.absoluteFilePath());

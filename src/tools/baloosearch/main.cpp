@@ -62,12 +62,15 @@ int main(int argc, char* argv[])
         parser.showHelp(1);
     }
 
-    if (parser.isSet(QStringLiteral("type")))
+    if (parser.isSet(QStringLiteral("type"))) {
         typeStr = parser.value(QStringLiteral("type"));
-    if (parser.isSet(QStringLiteral("limit")))
+    }
+    if (parser.isSet(QStringLiteral("limit"))) {
         queryLimit = parser.value(QStringLiteral("limit")).toInt();
-    if (parser.isSet(QStringLiteral("offset")))
+    }
+    if (parser.isSet(QStringLiteral("offset"))) {
         offset = parser.value(QStringLiteral("offset")).toInt();
+    }
 
     QString queryStr = args.join(QLatin1Char(' '));
 
