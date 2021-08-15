@@ -1,6 +1,6 @@
 # set minimum version requirements
 cmake_minimum_required(VERSION 3.16)
-set(REQUIRED_QT_VERSION 5.15.0)
+set(REQUIRED_QT_VERSION 5.15.2)
 set(KF_VERSION "5.86.0") # handled by release scripts
 set(KF_DEP_VERSION "5.85.0") # handled by release scripts
 
