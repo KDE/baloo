@@ -68,7 +68,7 @@ void SearchModule::unregisterSearchUrl(const QString& urlString)
 
 void SearchModule::slotBalooFileDbChanged()
 {
-    for (const QUrl& dirUrl : qAsConst(m_searchUrls)) {
+    for (const QUrl& dirUrl : std::as_const(m_searchUrls)) {
         org::kde::KDirNotify::emitFilesAdded(dirUrl);
     }
 }

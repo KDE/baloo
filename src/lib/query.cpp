@@ -169,7 +169,7 @@ ResultIterator Query::exec()
 
     Term term(d->m_term);
     if (!d->m_types.isEmpty()) {
-        for (const QString& type : qAsConst(d->m_types)) {
+        for (const QString& type : std::as_const(d->m_types)) {
             term = term && Term(QStringLiteral("type"), type);
         }
     }
@@ -353,7 +353,7 @@ bool Query::operator==(const Query& rhs) const
     if (rhs.d->m_types.size() != d->m_types.size())
         return false;
 
-    for (const QString& type : qAsConst(rhs.d->m_types)) {
+    for (const QString& type : std::as_const(rhs.d->m_types)) {
         if (!d->m_types.contains(type))
             return false;
     }

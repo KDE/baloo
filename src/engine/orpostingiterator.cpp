@@ -58,7 +58,7 @@ quint64 OrPostingIterator::skipTo(quint64 id)
         // Fast forward - move all iterators to the lowest position
         // greater or equal to id
         m_nextId = 0;
-        for (PostingIterator* iter : qAsConst(m_iterators)) {
+        for (PostingIterator* iter : std::as_const(m_iterators)) {
             auto docId = iter->skipTo(id);
             if (docId > 0) {
                 if (docId < m_nextId || !m_nextId) {

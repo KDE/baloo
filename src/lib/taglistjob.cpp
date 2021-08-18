@@ -53,7 +53,7 @@ void TagListJob::start()
         tagList = tr.fetchTermsStartingWith("TAG-");
     }
     d->tags.reserve(tagList.size());
-    for (const QByteArray& ba : qAsConst(tagList)) {
+    for (const QByteArray& ba : std::as_const(tagList)) {
         d->tags << QString::fromUtf8(ba.mid(4));
     }
 

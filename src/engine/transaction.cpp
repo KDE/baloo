@@ -505,7 +505,7 @@ void Transaction::checkFsTree()
     std::cout << "Total Document IDs: " << allIds.size() << std::endl;
 
     int count = 0;
-    for (quint64 id: qAsConst(allIds)) {
+    for (quint64 id: std::as_const(allIds)) {
         QByteArray url = docUrlDb.get(id);
         if (url.isEmpty()) {
             auto terms = documentTermsDB.get(id);
@@ -524,7 +524,7 @@ void Transaction::checkFsTree()
 
             std::cout << "Missing filePath for " << id << std::endl;
             std::cout << "\tPostingDB Terms: ";
-            for (const QByteArray& term : qAsConst(newTerms)) {
+            for (const QByteArray& term : std::as_const(newTerms)) {
                 std::cout << qPrintable(QString::fromUtf8(term)) << " ";
             }
             std::cout << std::endl;
@@ -577,12 +577,12 @@ void Transaction::checkTermsDbinPostingDb()
     }
 
     std::cout << "PostingDB check .." << std::endl;
-    for (quint64 id : qAsConst(allIds)) {
+    for (quint64 id : std::as_const(allIds)) {
         QVector<QByteArray> terms = documentTermsDB.get(id);
         terms += documentXattrTermsDB.get(id);
         terms += documentFileNameTermsDB.get(id);
 
-        for (const QByteArray& term : qAsConst(terms)) {
+        for (const QByteArray& term : std::as_const(terms)) {
             PostingList plist = postingDb.get(term);
             if (!plist.contains(id)) {
                 std::cout << id << " is missing term " << qPrintable(QString::fromUtf8(term)) << std::endl;

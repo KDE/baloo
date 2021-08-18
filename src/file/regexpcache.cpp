@@ -26,7 +26,7 @@ bool RegExpCache::exactMatch(const QString& s) const
     if (m_exactMatches.contains(s)) {
         return true;
     }
-    for (const QRegularExpression& filter : qAsConst(m_regexpCache)) {
+    for (const QRegularExpression& filter : std::as_const(m_regexpCache)) {
         if (filter.match(s).hasMatch()) {
             return true;
         }
