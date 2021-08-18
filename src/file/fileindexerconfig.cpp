@@ -170,7 +170,7 @@ bool FileIndexerConfig::shouldFolderBeIndexed(const QString& path) const
 #endif
         auto trailingPath = normalizedPath.midRef(folder.size());
         const auto pathComponents = trailingPath.split(QLatin1Char('/'), Qt::SkipEmptyParts);
-        for (const QStringRef c : pathComponents) {
+        for (const QStringRef &c : pathComponents) {
             if (!shouldFileBeIndexed(c.toString())) {
                 return false;
             }
