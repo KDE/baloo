@@ -33,7 +33,7 @@ void XAttrIndexer::run()
 
     Transaction tr(m_db, Transaction::ReadWrite);
 
-    for (const QString& filePath : qAsConst(m_files)) {
+    for (const QString& filePath : std::as_const(m_files)) {
         Q_ASSERT(!filePath.endsWith(QLatin1Char('/')));
 
         QString fileName = filePath.mid(filePath.lastIndexOf(QLatin1Char('/')) + 1);

@@ -74,7 +74,7 @@ void TagsProtocol::stat(const QUrl& url)
             ForwardingSlaveBase::stat(result.fileUrl);
             return;
         case TagUrl:
-            for (const KIO::UDSEntry& entry : qAsConst(result.pathUDSResults)) {
+            for (const KIO::UDSEntry& entry : std::as_const(result.pathUDSResults)) {
                 if (entry.stringValue(KIO::UDSEntry::UDS_EXTRA) == result.tag) {
                     statEntry(entry);
                 }

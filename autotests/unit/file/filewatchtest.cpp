@@ -192,7 +192,7 @@ void FileWatchTest::testConfigChange()
     QVERIFY(createFile(d2 + QStringLiteral("/tx2a")));
     QVERIFY(spyIndexNew.wait());
     QList<QString> result;
-    for (const QList<QVariant>& event : qAsConst(spyIndexNew)) {
+    for (const QList<QVariant>& event : std::as_const(spyIndexNew)) {
 	result.append(event.at(0).toString());
     }
     QCOMPARE(result, {d2 + QStringLiteral("/tx2a")});
@@ -206,7 +206,7 @@ void FileWatchTest::testConfigChange()
     QVERIFY(createFile(d22 + QStringLiteral("/tx3b")));
 
     QVERIFY(spyIndexNew.wait(500));
-    for (const QList<QVariant>& event : qAsConst(spyIndexNew)) {
+    for (const QList<QVariant>& event : std::as_const(spyIndexNew)) {
 	result.append(event.at(0).toString());
     }
     QCOMPARE(result, {d21 + QStringLiteral("/tx2b")});

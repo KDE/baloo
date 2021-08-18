@@ -32,7 +32,7 @@ void FirstRunIndexer::run()
     BasicIndexingJob::IndexingLevel level = m_config->onlyBasicIndexing() ? BasicIndexingJob::NoLevel
         : BasicIndexingJob::MarkForContentIndexing;
 
-    for (const QString& folder : qAsConst(m_folders)) {
+    for (const QString& folder : std::as_const(m_folders)) {
         Transaction tr(m_db, Transaction::ReadWrite);
 
         FilteredDirIterator it(m_config, folder);

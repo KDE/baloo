@@ -81,7 +81,7 @@ void PendingFileQueue::enqueue(const PendingFile& file)
 
 void PendingFileQueue::processCache(const QTime& currentTime)
 {
-    for (const PendingFile& file : qAsConst(m_cache)) {
+    for (const PendingFile& file : std::as_const(m_cache)) {
         if (file.shouldIndexXAttrOnly()) {
             Q_EMIT indexXAttr(file.path());
         }

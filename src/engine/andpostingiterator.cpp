@@ -38,7 +38,7 @@ quint64 AndPostingIterator::skipTo(quint64 id)
 
     while (true) {
         quint64 lower_bound = id;
-        for (PostingIterator* iter : qAsConst(m_iterators)) {
+        for (PostingIterator* iter : std::as_const(m_iterators)) {
             lower_bound = iter->skipTo(lower_bound);
 
             if (lower_bound == 0) {
