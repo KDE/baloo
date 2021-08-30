@@ -33,21 +33,19 @@ ExtractorProcess::ExtractorProcess(QObject* parent)
         Q_EMIT done();
     });
 
-    connect(&m_extractorProcess, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-            [=](int exitCode, QProcess::ExitStatus exitStatus)
-            {
-                if (exitStatus == QProcess::CrashExit) {
-                    Q_EMIT failed();
-                }
-                if (exitCode == 1) {
-                    // DB open error
-                    Q_EMIT failed();
-                }
-                if (exitCode == 2) {
-                    // DB transaction commit error
-                    Q_EMIT failed();
-                }
-            });
+    connect(&m_extractorProcess, qOverload<int, QProcess::ExitStatus>(&QProcess::finished), [=](int exitCode, QProcess::ExitStatus exitStatus) {
+        if (exitStatus == QProcess::CrashExit) {
+            Q_EMIT failed();
+        }
+        if (exitCode == 1) {
+            // DB open error
+            Q_EMIT failed();
+        }
+        if (exitCode == 2) {
+            // DB transaction commit error
+            Q_EMIT failed();
+        }
+    });
 
     m_extractorProcess.setProgram(m_extractorPath);
     m_extractorProcess.setProcessChannelMode(QProcess::ForwardedErrorChannel);
