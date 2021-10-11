@@ -228,7 +228,8 @@ int main(int argc, char* argv[])
                     stream << errorPrefix.subs(error).toString();
                     continue;
                 }
-                QString word = QString::fromUtf8(arr);
+
+                const QString word = QString::fromUtf8(arr);
 
                 if (word[0].isUpper()) {
                     if (word[0] == QLatin1Char('X')) {
@@ -238,7 +239,7 @@ int main(int argc, char* argv[])
                             stream << errorPrefix.subs(error).toString();
                             continue;
                         }
-                        int posOfNonNumeric = word.indexOf(QLatin1Char('-'), 2);
+                        const int posOfNonNumeric = word.indexOf(QLatin1Char('-'), 2);
                         if ((posOfNonNumeric < 0) || ((posOfNonNumeric + 1) == word.length())) {
                             auto error = QStringLiteral("malformed property term (no data): '%1' in '%2'\n").arg(word, arrAsPrintable());
                             stream << errorPrefix.subs(error).toString();
@@ -246,9 +247,13 @@ int main(int argc, char* argv[])
                         }
 
                         bool ok;
-                        QStringRef prop = word.midRef(1, posOfNonNumeric-1);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+                        const QStringView prop = QStringView(word).mid(1, posOfNonNumeric - 1);
+#else
+                        const QStringRef prop = word.midRef(1, posOfNonNumeric - 1);
+#endif
                         int propNum = prop.toInt(&ok);
-                        QString value = word.mid(posOfNonNumeric + 1);
+                        const QString value = word.mid(posOfNonNumeric + 1);
                         if (!ok) {
                             auto error = QStringLiteral("malformed property term (bad index): '%1' in '%2'\n").arg(prop, arrAsPrintable());
                             stream << errorPrefix.subs(error).toString();

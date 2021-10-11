@@ -23,30 +23,36 @@ inline void printIOUsage()
     qDebug() << "------- IO ---------";
     QTextStream stream(&fileContents);
     while (!stream.atEnd()) {
-        QString str = stream.readLine();
+        const QString line = stream.readLine();
 
-        QString rchar(QStringLiteral("rchar: "));
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        const QStringView str(line);
+#else
+        const QStringRef str(&line);
+#endif
+
+        const QString rchar(QStringLiteral("rchar: "));
         if (str.startsWith(rchar)) {
-            ulong amt = str.midRef(rchar.size()).toULong();
-            qDebug() << "Read:" << amt / 1024  << "kb";
+            const ulong amount = str.mid(rchar.size()).toULong();
+            qDebug() << "Read:" << amount / 1024  << "kb";
         }
 
-        QString wchar(QStringLiteral("wchar: "));
+        const QString wchar(QStringLiteral("wchar: "));
         if (str.startsWith(wchar)) {
-            ulong amt = str.midRef(wchar.size()).toULong();
-            qDebug() << "Write:" << amt / 1024  << "kb";
+            const ulong amount = str.mid(wchar.size()).toULong();
+            qDebug() << "Write:" << amount / 1024  << "kb";
         }
 
-        QString read(QStringLiteral("read_bytes: "));
+        const QString read(QStringLiteral("read_bytes: "));
         if (str.startsWith(read)) {
-            ulong amt = str.midRef(read.size()).toULong();
-            qDebug() << "Actual Reads:" << amt / 1024  << "kb";
+            const ulong amount = str.mid(read.size()).toULong();
+            qDebug() << "Actual Reads:" << amount / 1024  << "kb";
         }
 
-        QString write(QStringLiteral("write_bytes: "));
+        const QString write(QStringLiteral("write_bytes: "));
         if (str.startsWith(write)) {
-            ulong amt = str.midRef(write.size()).toULong();
-            qDebug() << "Actual Writes:" << amt / 1024  << "kb";
+            const ulong amount = str.mid(write.size()).toULong();
+            qDebug() << "Actual Writes:" << amount / 1024  << "kb";
         }
     }
     qDebug() << "\nThe actual read/writes may be 0 because of an existing"
