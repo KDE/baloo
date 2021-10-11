@@ -34,7 +34,7 @@ void appendTerm(QByteArrayList &list, const QString &term)
 {
     if (!term.isEmpty()) {
         // Truncate the string to avoid arbitrarily long terms
-        list << term.leftRef(TermGenerator::maxTermSize).toUtf8();
+        list << QStringView(term).left(TermGenerator::maxTermSize).toUtf8();
     }
 }
 
