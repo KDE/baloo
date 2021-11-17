@@ -17,7 +17,7 @@ class BALOO_ENGINE_EXPORT OrPostingIterator : public PostingIterator
 {
 public:
     explicit OrPostingIterator(const QVector<PostingIterator*>& iterators);
-    ~OrPostingIterator();
+    ~OrPostingIterator() override;
 
     quint64 next() override;
     quint64 docId() const override;

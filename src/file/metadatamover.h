@@ -23,7 +23,7 @@ class MetadataMover : public QObject
 
 public:
     explicit MetadataMover(Database* db, QObject* parent = nullptr);
-    ~MetadataMover();
+    ~MetadataMover() override;
 
 public Q_SLOTS:
     void moveFileMetadata(const QString& from, const QString& to);
