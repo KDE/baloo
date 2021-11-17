@@ -30,7 +30,7 @@ class PendingFileQueue : public QObject
 
 public:
     explicit PendingFileQueue(QObject* parent = nullptr);
-    ~PendingFileQueue();
+    ~PendingFileQueue() override;
 
 Q_SIGNALS:
     void indexNewFile(const QString& fileUrl);

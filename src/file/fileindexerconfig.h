@@ -34,7 +34,7 @@ class FileIndexerConfig : public QObject
 public:
 
     explicit FileIndexerConfig(QObject* parent = nullptr);
-    ~FileIndexerConfig();
+    ~FileIndexerConfig() override;
 
     /**
     * Folders to search for files to index and analyze.

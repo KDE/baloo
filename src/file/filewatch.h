@@ -27,7 +27,7 @@ class FileWatch : public QObject
 
 public:
     FileWatch(Database* db, FileIndexerConfig* config, QObject* parent = nullptr);
-    ~FileWatch();
+    ~FileWatch() override;
 
 public Q_SLOTS:
     /**
