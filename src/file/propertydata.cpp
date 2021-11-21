@@ -12,7 +12,7 @@
 namespace Baloo
 {
 
-const QJsonObject propertyMapToJson(const KFileMetaData::PropertyMap& properties)
+const QJsonObject propertyMapToJson(const KFileMetaData::PropertyMultiMap& properties)
 {
     auto it = properties.cbegin();
     QJsonObject jsonDict;
@@ -61,9 +61,9 @@ const QJsonObject propertyMapToJson(const KFileMetaData::PropertyMap& properties
     return jsonDict;
 }
 
-const KFileMetaData::PropertyMap jsonToPropertyMap(const QJsonObject& properties)
+const KFileMetaData::PropertyMultiMap jsonToPropertyMap(const QJsonObject& properties)
 {
-    KFileMetaData::PropertyMap propertyMap;
+    KFileMetaData::PropertyMultiMap propertyMap;
 
     auto it = properties.begin();
     while (it != properties.end()) {
@@ -73,13 +73,13 @@ const KFileMetaData::PropertyMap jsonToPropertyMap(const QJsonObject& properties
         if (it.value().isArray()) {
             const auto values = it.value().toArray();
             for (const auto val : values) {
-                propertyMap.insertMulti(prop, val.toVariant());
+                propertyMap.insert(prop, val.toVariant());
             }
 
         } else if (it.value().isDouble()) {
-            propertyMap.insertMulti(prop, it.value().toDouble());
+            propertyMap.insert(prop, it.value().toDouble());
         } else {
-            propertyMap.insertMulti(prop, it.value().toString());
+            propertyMap.insert(prop, it.value().toString());
         }
         ++it;
     }

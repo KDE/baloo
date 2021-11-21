@@ -71,7 +71,7 @@ private:
     /**
      * Contains all indexed property data from the extractors.
      */
-    KFileMetaData::PropertyMap m_map;
+    KFileMetaData::PropertyMultiMap m_map;
 };
 
 #endif // EXTRACTIONRESULT_H

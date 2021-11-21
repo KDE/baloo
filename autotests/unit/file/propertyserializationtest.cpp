@@ -44,8 +44,8 @@ void PropertySerializationTest::testSingleProp()
 {
     namespace KFMProp = KFileMetaData::Property;
 
-    KFileMetaData::PropertyMap properties;
-    properties.insertMulti(KFMProp::Subject, QStringLiteral("subject"));
+    KFileMetaData::PropertyMultiMap properties;
+    properties.insert(KFMProp::Subject, QStringLiteral("subject"));
 
     auto json = propertyMapToJson(properties);
     // QJsonDocument jdoc(json);
@@ -60,10 +60,10 @@ void PropertySerializationTest::testMultiProp()
 {
     namespace KFMProp = KFileMetaData::Property;
 
-    KFileMetaData::PropertyMap properties;
-    properties.insertMulti(KFMProp::Subject, QStringLiteral("subject"));
-    properties.insertMulti(KFMProp::ReleaseYear, 2019);
-    properties.insertMulti(KFMProp::PhotoExposureTime, 0.12345);
+    KFileMetaData::PropertyMultiMap properties;
+    properties.insert(KFMProp::Subject, QStringLiteral("subject"));
+    properties.insert(KFMProp::ReleaseYear, 2019);
+    properties.insert(KFMProp::PhotoExposureTime, 0.12345);
 
     auto json = propertyMapToJson(properties);
     // QJsonDocument jdoc(json);
@@ -72,7 +72,7 @@ void PropertySerializationTest::testMultiProp()
     auto res = jsonToPropertyMap(json);
 
     for (auto prop : { KFMProp::Subject, KFMProp::ReleaseYear, KFMProp::PhotoExposureTime }) {
-        QCOMPARE(res[prop], properties[prop]);
+        QCOMPARE(res.value(prop), properties.value(prop));
     }
     QCOMPARE(res, properties);
 }
@@ -82,13 +82,13 @@ void PropertySerializationTest::testMultiValue()
 {
     namespace KFMProp = KFileMetaData::Property;
 
-    KFileMetaData::PropertyMap properties;
-    properties.insertMulti(KFMProp::Genre, QStringLiteral("genre1"));
-    properties.insertMulti(KFMProp::Genre, QStringLiteral("genre2"));
-    properties.insertMulti(KFMProp::Ensemble, QStringLiteral("ensemble1"));
-    properties.insertMulti(KFMProp::Ensemble, QStringLiteral("ensemble2"));
-    properties.insertMulti(KFMProp::Rating, 4);
-    properties.insertMulti(KFMProp::Rating, 5);
+    KFileMetaData::PropertyMultiMap properties;
+    properties.insert(KFMProp::Genre, QStringLiteral("genre1"));
+    properties.insert(KFMProp::Genre, QStringLiteral("genre2"));
+    properties.insert(KFMProp::Ensemble, QStringLiteral("ensemble1"));
+    properties.insert(KFMProp::Ensemble, QStringLiteral("ensemble2"));
+    properties.insert(KFMProp::Rating, 4);
+    properties.insert(KFMProp::Rating, 5);
 
     auto json = propertyMapToJson(properties);
     // QJsonDocument jdoc(json);
@@ -97,7 +97,7 @@ void PropertySerializationTest::testMultiValue()
     auto res = jsonToPropertyMap(json);
 
     for (auto prop : { KFMProp::Genre, KFMProp::Ensemble, KFMProp::Rating}) {
-        QCOMPARE(res[prop], properties[prop]);
+        QCOMPARE(res.value(prop), properties.value(prop));
         QCOMPARE(res.values(prop), properties.values(prop));
         // qDebug() << res[prop];
         // qDebug() << res.values(prop);
@@ -111,10 +111,10 @@ void PropertySerializationTest::testLists()
 {
     namespace KFMProp = KFileMetaData::Property;
 
-    KFileMetaData::PropertyMap properties;
-    properties.insertMulti(KFMProp::Genre, QStringList({QStringLiteral("genre1"), QStringLiteral("genre2")}));
-    properties.insertMulti(KFMProp::Ensemble, QVariantList({QStringLiteral("ensemble1"), QStringLiteral("ensemble2")}));
-    properties.insertMulti(KFMProp::Rating, QVariantList({QVariant(10), QVariant(7.7)}));
+    KFileMetaData::PropertyMultiMap properties;
+    properties.insert(KFMProp::Genre, QStringList({QStringLiteral("genre1"), QStringLiteral("genre2")}));
+    properties.insert(KFMProp::Ensemble, QVariantList({QStringLiteral("ensemble1"), QStringLiteral("ensemble2")}));
+    properties.insert(KFMProp::Rating, QVariantList({QVariant(10), QVariant(7.7)}));
 
     auto json = propertyMapToJson(properties);
     // QJsonDocument jdoc(json);
@@ -126,7 +126,7 @@ void PropertySerializationTest::testLists()
         // qDebug() << res.values(prop);
         // qDebug() << QVariant(res.values(prop)).toStringList().join(", ");
         // qDebug() << properties[prop].toStringList().join(", ");
-        QCOMPARE(QVariant(res.values(prop)).toStringList(), properties[prop].toStringList());
+        QCOMPARE(QVariant(res.values(prop)).toStringList(), properties.value(prop).toStringList());
     }
 }
 

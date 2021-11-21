@@ -26,7 +26,18 @@ class FileFetchJobTest : public QObject
     Q_OBJECT
 
     QTemporaryDir dir;
+private:
+    inline QMultiMap<QString, QVariant> variantToPropertyMultiMap(const KFileMetaData::PropertyMultiMap& propMap)
+    {
+    QMultiMap<QString, QVariant> varMap;
+    KFileMetaData::PropertyMultiMap::const_iterator it = propMap.constBegin();
+    for (; it != propMap.constEnd(); ++it) {
+        int p = static_cast<int>(it.key());
+        varMap.insert(QString::number(p), it.value());
+    }
 
+    return varMap;
+}
 private Q_SLOTS:
     void test();
 };
@@ -37,11 +48,11 @@ void FileFetchJobTest::test()
 
     setenv("BALOO_DB_PATH", dir.path().toStdString().c_str(), 1);
 
-    PropertyMap map;
+    PropertyMultiMap map;
     map.insert(Property::Album, QLatin1String("value1"));
     map.insert(Property::Artist, QLatin1String("value2"));
 
-    QJsonObject jo = QJsonObject::fromVariantMap(toVariantMap(map));
+    QJsonObject jo = QJsonObject::fromVariantMap(variantToPropertyMultiMap(map));
     QJsonDocument jdoc;
     jdoc.setObject(jo);
 
