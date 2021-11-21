@@ -35,10 +35,10 @@ void Result::add(KFileMetaData::Property::Property property, const QVariant& val
     if (value.type() == QVariant::StringList) {
         const auto valueList = value.toStringList();
         for (const auto& val : valueList) {
-            m_map.insertMulti(property, val);
+            m_map.insert(property, val);
         }
     } else {
-        m_map.insertMulti(property, value);
+        m_map.insert(property, value);
     }
 
     int propNum = static_cast<int>(property);

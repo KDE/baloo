@@ -72,10 +72,8 @@ if(${LMDB_FOUND})
 endif()
 
 # compiler flags and build system
-# TODO look into the QMap::insertMulti usage in kfilemetadata, which have been
-# deprecated in Qt >= 5.15.0
-add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050e00)
-add_definitions(-DKF_DISABLE_DEPRECATED_BEFORE_AND_AT=0x055100)
+add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050f00)
+add_definitions(-DKF_DISABLE_DEPRECATED_BEFORE_AND_AT=0x055900)
 
 find_package(Inotify)
 set_package_properties(Inotify PROPERTIES

@@ -38,6 +38,17 @@ QString colorString(const QString& input, int color)
     }
 }
 
+inline KFileMetaData::PropertyMultiMap variantToPropertyMultiMap(const QVariantMap &varMap)
+{
+    KFileMetaData::PropertyMultiMap propMap;
+    QVariantMap::const_iterator it = varMap.constBegin();
+    for (; it != varMap.constEnd(); ++it) {
+        int p = it.key().toInt();
+        propMap.insert(static_cast<KFileMetaData::Property::Property>(p), it.value());
+    }
+    return propMap;
+}
+
 int main(int argc, char* argv[])
 {
     QCoreApplication app(argc, argv);
@@ -174,7 +185,7 @@ int main(int argc, char* argv[])
 
         const QJsonDocument jdoc = QJsonDocument::fromJson(tr.documentData(fid));
         const QVariantMap varMap = jdoc.object().toVariantMap();
-        KFileMetaData::PropertyMap propMap = KFileMetaData::toPropertyMap(varMap);
+        KFileMetaData::PropertyMultiMap propMap = variantToPropertyMultiMap(varMap);
         KFileMetaData::PropertyMap::const_iterator it = propMap.constBegin();
         if (!propMap.isEmpty()) {
             stream << "\tCached properties:" << '\n';
