@@ -1,0 +1,41 @@
+# Translation of kio5_tags.po to Euskara/Basque (eu).
+# Copyright (C) 2017-2018, Free Software Foundation.
+# This file is distributed under the same license as the frameworks package.
+# KDE Euskaratzeko proiektuaren arduraduna <xalba@euskalnet.net>.
+#
+# Translators:
+# Iñigo Salvador Azurmendi <xalba@euskalnet.net>, 2017, 2018.
+msgid ""
+msgstr ""
+"Project-Id-Version: kio5_tags\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2021-06-05 00:13+0000\n"
+"PO-Revision-Date: 2018-05-01 23:44+0100\n"
+"Last-Translator: Iñigo Salvador Azurmendi <xalba@euskalnet.net>\n"
+"Language-Team: Basque <kde-i18n-doc@kde.org>\n"
+"Language: eu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 2.0\n"
+
+#: kio_tags.cpp:114 kio_tags.cpp:173
+#, kde-format
+msgid "File %1 already has tag %2"
+msgstr "%1 fitxategiak badu jada %2 etiketa"
+
+#: kio_tags.cpp:306
+#, kde-format
+msgid "Tag"
+msgstr "Etiketa"
+
+#: kio_tags.cpp:308
+#, kde-format
+msgid "Tag Fragment"
+msgstr "Tag pusketa"
+
+#: kio_tags.cpp:310 kio_tags.cpp:315
+#, kde-format
+msgid "All Tags"
+msgstr "Etiketa guztiak"
