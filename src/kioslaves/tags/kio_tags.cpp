@@ -302,23 +302,27 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
         uds.fastInsert(KIO::UDSEntry::UDS_EXTRA, tag);
 
         QString displayType;
+        QString displayName;
+
+        // a tag/folder
         if (tagSection == tag) {
             displayType = i18n("Tag");
-        } else if (!tag.isEmpty()) {
+            displayName = tag.section(QLatin1Char('/'), -1);
+        }
+
+        // a tagged file
+        else if (!tag.isEmpty()) {
             displayType = i18n("Tag Fragment");
-        } else {
+            displayName = tag.section(QLatin1Char('/'), -1);
+        }
+
+        // The root folder
+        else {
             displayType = i18n("All Tags");
+            displayName = i18n("All Tags");
         }
 
         uds.fastInsert(KIO::UDSEntry::UDS_DISPLAY_TYPE, displayType);
-
-        QString displayName = i18n("All Tags");
-        if (!tag.isEmpty() && ((tagSection == QLatin1Char('.')) || (tagSection == QLatin1String("..")))) {
-            displayName = tag.section(QLatin1Char('/'), -1);
-        } else {
-            displayName = tagSection;
-        }
-
         uds.fastInsert(KIO::UDSEntry::UDS_DISPLAY_NAME, displayName);
 
         return uds;
