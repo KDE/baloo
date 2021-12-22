@@ -47,7 +47,7 @@ add_library(KF5::BalooEngine ALIAS KF5BalooEngine)
 
 target_link_libraries(KF5BalooEngine
     PUBLIC
-    Qt5::Core
+    Qt${QT_MAJOR_VERSION}::Core
     KF5::CoreAddons
     ${LMDB_LIBRARIES}
     PRIVATE
@@ -61,7 +61,7 @@ set_target_properties(KF5BalooEngine PROPERTIES
     EXPORT_NAME BalooEngine
 )
 
-##target_include_directories(KF5BalooEngine INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF5}/Baloo>")
+##target_include_directories(KF5BalooEngine INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF}/Baloo>")
 
 generate_export_header(KF5BalooEngine BASE_NAME BALOO_ENGINE EXPORT_FILE_NAME engine_export.h)
 

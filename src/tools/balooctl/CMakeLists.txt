@@ -27,7 +27,7 @@ add_dependencies(balooctl BalooDBusInterfaces)
 target_compile_definitions(balooctl PRIVATE -DPROJECT_VERSION="${PROJECT_VERSION}")
 
 target_link_libraries(balooctl
-    Qt5::DBus
+    Qt${QT_MAJOR_VERSION}::DBus
     KF5::CoreAddons
     KF5::ConfigCore
     KF5::I18n

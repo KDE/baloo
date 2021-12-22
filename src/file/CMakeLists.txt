@@ -57,7 +57,7 @@ kconfig_add_kcfg_files(file_static_lib_SRCS ../lib/baloosettings.kcfgc GENERATE_
 
 add_library(baloofilecommon STATIC ${file_static_lib_SRCS})
 target_link_libraries(baloofilecommon
-    Qt5::DBus
+    Qt${QT_MAJOR_VERSION}::DBus
     KF5::I18n
     KF5::Solid
     KF5::FileMetaData

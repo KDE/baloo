@@ -4,7 +4,7 @@ set(balooplugin_SRCS
     )
 
 add_library(balooplugin SHARED ${balooplugin_SRCS})
-target_link_libraries(balooplugin Qt5::Core Qt5::Qml KF5::Baloo)
+target_link_libraries(balooplugin Qt${QT_MAJOR_VERSION}::Core Qt${QT_MAJOR_VERSION}::Qml KF5::Baloo)
 install(TARGETS balooplugin DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/baloo/)
 
 install(FILES qmldir DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/baloo)
