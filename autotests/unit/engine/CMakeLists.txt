@@ -2,7 +2,7 @@ MACRO(BALOO_ENGINE_AUTO_TESTS)
   FOREACH(_testname ${ARGN})
     ecm_add_test(${_testname}.cpp singledbtest.cpp
         TEST_NAME ${_testname}
-        LINK_LIBRARIES Qt5::Test KF5::BalooEngine
+        LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test KF5::BalooEngine
     )
   ENDFOREACH()
 ENDMACRO()

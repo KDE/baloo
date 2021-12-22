@@ -12,14 +12,14 @@ ecm_mark_as_test(memorytest)
 
 add_executable(documenturldb documenturldbtest.cpp)
 target_link_libraries(documenturldb
-    Qt5::Core
+    Qt${QT_MAJOR_VERSION}::Core
     KF5::BalooEngine
 )
 ecm_mark_as_test(documenturldb)
 
 add_executable(basicindexingtest basicindexingtest.cpp)
 target_link_libraries(basicindexingtest
-    Qt5::Core
+    Qt${QT_MAJOR_VERSION}::Core
     KF5::BalooEngine
     KF5::FileMetaData
     baloofilecommon

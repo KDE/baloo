@@ -3,7 +3,7 @@
 set(BALOO_DBUS_INTERFACES_DIR "@PACKAGE_KDE_INSTALL_DBUSINTERFACEDIR@")
 
 include(CMakeFindDependencyMacro)
-find_dependency(Qt5Core "@REQUIRED_QT_VERSION@")
+find_dependency(Qt@QT_MAJOR_VERSION@Core "@REQUIRED_QT_VERSION@")
 find_dependency(KF5CoreAddons "@KF_DEP_VERSION@")
 find_dependency(KF5FileMetaData "@KF_DEP_VERSION@")
 #find_dependency(LMDB)

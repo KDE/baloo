@@ -20,9 +20,9 @@ add_dependencies(baloomonitorplugin BalooDBusInterfaces)
 
 target_link_libraries(baloomonitorplugin
     PUBLIC
-    Qt5::Core
-    Qt5::Qml
-    Qt5::DBus
+    Qt${QT_MAJOR_VERSION}::Core
+    Qt${QT_MAJOR_VERSION}::Qml
+    Qt${QT_MAJOR_VERSION}::DBus
     KF5::I18n
     KF5::CoreAddons
     PRIVATE
