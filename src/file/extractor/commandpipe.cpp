@@ -8,7 +8,7 @@
 #include "commandpipe.h"
 #include <QVector>
 #include "baloodebug.h"
-
+#include <QIODevice>
 namespace Baloo {
 namespace Private {
 
