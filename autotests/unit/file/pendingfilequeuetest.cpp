@@ -8,8 +8,8 @@
 
 #include "pendingfilequeue.h"
 
-#include <qtest.h>
-#include <qsignalspy.h>
+#include <QTest>
+#include <QSignalSpy>
 #include <qtimer.h>
 
 namespace Baloo {
