@@ -9,7 +9,7 @@
 #define KDED_BALOO_SEARCH_MODULE_H_
 
 #include <KDEDModule>
-#include <kdirnotify.h>
+#include <KDirNotify>
 #include <QUrl>
 
 namespace Baloo {
