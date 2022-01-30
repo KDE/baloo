@@ -4,7 +4,6 @@
             "Class": ":local",
             "Icon": "nepomuk",
             "deleting": true,
-            "exec": "kf5/kio/timeline",
             "input": "none",
             "linking": false,
             "listing": [

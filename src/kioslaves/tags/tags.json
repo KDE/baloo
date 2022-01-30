@@ -6,7 +6,6 @@
             "copyFromFile": true,
             "deleteRecursive": true,
             "deleting": true,
-            "exec": "kf5/kio/tags",
             "input": "none",
             "linking": false,
             "listing": [
