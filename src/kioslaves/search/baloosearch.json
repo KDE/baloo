@@ -4,7 +4,6 @@
             "Class": ":local",
             "Icon": "baloo",
             "deleting": true,
-            "exec": "kf5/kio/baloosearch",
             "input": "none",
             "linking": false,
             "listing": [
