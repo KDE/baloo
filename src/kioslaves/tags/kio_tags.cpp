@@ -77,6 +77,7 @@ void TagsProtocol::stat(const QUrl& url)
             for (const KIO::UDSEntry& entry : std::as_const(result.pathUDSResults)) {
                 if (entry.stringValue(KIO::UDSEntry::UDS_EXTRA) == result.tag) {
                     statEntry(entry);
+                    break;
                 }
             }
     }
@@ -313,7 +314,13 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
         // a tagged file
         else if (!tag.isEmpty()) {
             displayType = i18n("Tag Fragment");
-            displayName = tag.section(QLatin1Char('/'), -1);
+            if (tagSection == QStringLiteral("..")) {
+                displayName = tag.section(QLatin1Char('/'), -2);
+            } else if (tagSection == QStringLiteral(".")) {
+                displayName = tag.section(QLatin1Char('/'), -1);
+            } else {
+                displayName = tagSection;
+            }
         }
 
         // The root folder
