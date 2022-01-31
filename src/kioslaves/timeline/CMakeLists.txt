@@ -23,4 +23,4 @@ target_link_libraries(timeline
   KF5::Baloo
 )
 
-install(TARGETS timeline DESTINATION ${KDE_INSTALL_PLUGINDIR}/kf5/kio)
+install(TARGETS timeline DESTINATION ${KDE_INSTALL_PLUGINDIR}/kf${QT_MAJOR_VERSION}/kio)
