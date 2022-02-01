@@ -27,11 +27,10 @@ class FileFetchJobTest : public QObject
 
     QTemporaryDir dir;
 private:
-    inline QMultiMap<QString, QVariant> variantToPropertyMultiMap(const KFileMetaData::PropertyMultiMap& propMap)
+    inline QMap<QString, QVariant> variantToPropertyMap(const KFileMetaData::PropertyMap& propMap)
     {
-    QMultiMap<QString, QVariant> varMap;
-    KFileMetaData::PropertyMultiMap::const_iterator it = propMap.constBegin();
-    for (; it != propMap.constEnd(); ++it) {
+    QMap<QString, QVariant> varMap;
+    for (auto it = propMap.constBegin(); it != propMap.constEnd(); ++it) {
         int p = static_cast<int>(it.key());
         varMap.insert(QString::number(p), it.value());
     }
@@ -48,11 +47,11 @@ void FileFetchJobTest::test()
 
     setenv("BALOO_DB_PATH", dir.path().toStdString().c_str(), 1);
 
-    PropertyMultiMap map;
+    PropertyMap map;
     map.insert(Property::Album, QLatin1String("value1"));
     map.insert(Property::Artist, QLatin1String("value2"));
 
-    QJsonObject jo = QJsonObject::fromVariantMap(variantToPropertyMultiMap(map));
+    QJsonObject jo = QJsonObject::fromVariantMap(variantToPropertyMap(map));
     QJsonDocument jdoc;
     jdoc.setObject(jo);
 
@@ -82,7 +81,7 @@ void FileFetchJobTest::test()
 
     File file(tempFile.fileName());
     QVERIFY(file.load());
-    QCOMPARE(file.properties(), map);
+    QCOMPARE(file.properties(), PropertyMultiMap(map));
 }
 
 QTEST_MAIN(FileFetchJobTest)

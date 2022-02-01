@@ -29,7 +29,7 @@ private Q_SLOTS:
 // Test empty property map
 void PropertySerializationTest::testEmpty()
 {
-    KFileMetaData::PropertyMap properties;
+    KFileMetaData::PropertyMultiMap properties;
 
     auto json = propertyMapToJson(properties);
     // QJsonDocument jdoc(json);

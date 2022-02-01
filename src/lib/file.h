@@ -45,7 +45,11 @@ public:
      * Gives a variant map of the properties that have been extracted
      * from the file by the indexer
      */
+#if BALOO_CORE_BUILD_DEPRECATED_SINCE(5, 91)
     KFileMetaData::PropertyMap properties() const;
+#else
+    KFileMetaData::PropertyMultiMap properties() const;
+#endif
     QVariant property(KFileMetaData::Property::Property property) const;
 
     // FIXME: More descriptive error?
