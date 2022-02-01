@@ -186,11 +186,10 @@ int main(int argc, char* argv[])
         const QJsonDocument jdoc = QJsonDocument::fromJson(tr.documentData(fid));
         const QVariantMap varMap = jdoc.object().toVariantMap();
         KFileMetaData::PropertyMultiMap propMap = variantToPropertyMultiMap(varMap);
-        KFileMetaData::PropertyMap::const_iterator it = propMap.constBegin();
         if (!propMap.isEmpty()) {
             stream << "\tCached properties:" << '\n';
         }
-        for (; it != propMap.constEnd(); ++it) {
+        for (auto it = propMap.constBegin(); it != propMap.constEnd(); ++it) {
             QString str;
             if (it.value().type() == QVariant::List) {
                 QStringList list;
