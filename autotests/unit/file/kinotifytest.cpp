@@ -16,6 +16,8 @@
 #include <QDir>
 #include <QTest>
 
+#include <stdio.h>
+
 class KInotifyTest : public QObject
 {
     Q_OBJECT
@@ -150,7 +152,7 @@ void KInotifyTest::testRenameFile()
 
     // actually move the file
     const QString f2(QStringLiteral("%1/randomJunk2").arg(dir.path()));
-    QFile::rename(f1, f2);
+    rename(f1.toLocal8Bit().constData(), f2.toLocal8Bit().constData());
 
     // check the desired signal
     QVERIFY(spy.wait());
@@ -161,7 +163,7 @@ void KInotifyTest::testRenameFile()
 
     // test a subsequent rename
     const QString f3(QStringLiteral("%1/randomJunk3").arg(dir.path()));
-    QFile::rename(f2, f3);
+    rename(f2.toLocal8Bit().constData(), f3.toLocal8Bit().constData());
 
     // check the desired signal
     QVERIFY(spy.wait());
@@ -187,7 +189,7 @@ void KInotifyTest::testRenameDeleteFile()
 
     // actually move the file
     const QString f2(QStringLiteral("%1/randomJunk2").arg(dir.path()));
-    QFile::rename(f1, f2);
+    rename(f1.toLocal8Bit().constData(), f2.toLocal8Bit().constData());
 
     // check the desired signal
     QVERIFY(spy.wait());
@@ -226,7 +228,7 @@ void KInotifyTest::testMoveFile()
     QSignalSpy spy(&kn, SIGNAL(moved(QString,QString)));
 
     // actually move the file
-    QFile::rename(src, dest);
+    rename(src.toLocal8Bit().constData(), dest.toLocal8Bit().constData());
 
     // check the desired signal
     QVERIFY(spy.wait());
@@ -237,7 +239,7 @@ void KInotifyTest::testMoveFile()
 
     // test a subsequent move (back to the original folder)
     const QString dest2(QStringLiteral("%1/randomJunk3").arg(dir1.path()));
-    QFile::rename(dest, dest2);
+    rename(dest.toLocal8Bit().constData(), dest2.toLocal8Bit().constData());
 
     // check the desired signal
     QVERIFY(spy.wait());
@@ -263,7 +265,7 @@ void KInotifyTest::testRenameFolder()
 
     // actually rename the folder
     const QString d2(QStringLiteral("%1/randomJunk2/").arg(dir.path()));
-    QFile::rename(d1, d2);
+    rename(d1.toLocal8Bit().constData(), d2.toLocal8Bit().constData());
 
     // check the desired signal
     QVERIFY(spy.wait());
@@ -278,7 +280,7 @@ void KInotifyTest::testRenameFolder()
 
     // test a subsequent rename
     const QString d3(QStringLiteral("%1/randomJunk3/").arg(dir.path()));
-    QFile::rename(d2, d3);
+    rename(d2.toLocal8Bit().constData(), d3.toLocal8Bit().constData());
 
     // check the desired signal
     QVERIFY(spy.wait());
@@ -326,7 +328,7 @@ void KInotifyTest::testMoveFolder()
     QSignalSpy spy(&kn, SIGNAL(moved(QString,QString)));
 
     // actually move the file
-    QFile::rename(src, dest);
+    rename(src.toLocal8Bit().constData(), dest.toLocal8Bit().constData());
 
     // check the desired signal
     QVERIFY(spy.wait());
@@ -341,7 +343,7 @@ void KInotifyTest::testMoveFolder()
 
     // test a subsequent move
     const QString dest2(QStringLiteral("%1/randomJunk3/").arg(dir1.path()));
-    QFile::rename(dest, dest2);
+    rename(dest.toLocal8Bit().constData(), dest2.toLocal8Bit().constData());
 
     // check the desired signal
     QVERIFY(spy.wait());
