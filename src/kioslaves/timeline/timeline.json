@@ -24,7 +24,7 @@
             "protocol": "timeline",
             "reading": true,
             "source": false,
-            "writing": true
+            "writing": false
         }
     }
 }
