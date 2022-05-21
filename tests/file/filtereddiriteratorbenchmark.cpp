@@ -24,7 +24,7 @@ int main(int argc, char** argv)
     parser.addPositionalArgument(QStringLiteral("folder"), QStringLiteral("Folder to test on"), QStringLiteral("folderName"));
     parser.process(app);
 
-    QScopedPointer<FileIndexerConfig> config;
+    std::unique_ptr<FileIndexerConfig> config;
 
     QStringList includeFolders;
     if (!parser.positionalArguments().isEmpty()) {
@@ -39,7 +39,7 @@ int main(int argc, char** argv)
 
     int num = 0;
     for (const QString& dir : includeFolders) {
-        FilteredDirIterator it(config.data(), dir);
+        FilteredDirIterator it(config.get(), dir);
         while (!it.next().isEmpty()) {
             num++;
         }

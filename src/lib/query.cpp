@@ -13,7 +13,6 @@
 
 #include <QString>
 #include <QStringList>
-#include <QSharedPointer>
 #include <QUrlQuery>
 
 #include <QJsonDocument>

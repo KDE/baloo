@@ -12,7 +12,6 @@
 
 
 #include <QFile>
-#include <QScopedPointer>
 #include <QTest>
 
 
@@ -119,11 +118,11 @@ void FileIndexerConfigTest::testShouldFolderBeIndexed()
         false);
 
     // create our test config object
-    QScopedPointer<Baloo::FileIndexerConfig> cfg(new Baloo::FileIndexerConfig());
+    Baloo::FileIndexerConfig cfg;
     QFETCH(QString, path);
     QFETCH(bool, shouldBeIndexed);
 
-    QCOMPARE(cfg->shouldFolderBeIndexed(path), shouldBeIndexed);
+    QCOMPARE(cfg.shouldFolderBeIndexed(path), shouldBeIndexed);
 }
 
 void FileIndexerConfigTest::testShouldFolderBeIndexedHidden_data()
@@ -178,13 +177,13 @@ void FileIndexerConfigTest::testShouldFolderBeIndexedHidden()
         true);
 
     // create our test config object
-    QScopedPointer<Baloo::FileIndexerConfig> cfg(new Baloo::FileIndexerConfig());
-    cfg->forceConfigUpdate();
+    Baloo::FileIndexerConfig cfg;
+    cfg.forceConfigUpdate();
 
     QFETCH(QString, path);
     QFETCH(bool, shouldBeIndexed);
 
-    QCOMPARE(cfg->shouldFolderBeIndexed(path), shouldBeIndexed);
+    QCOMPARE(cfg.shouldFolderBeIndexed(path), shouldBeIndexed);
 }
 
 void FileIndexerConfigTest::testShouldBeIndexed_data()
@@ -264,13 +263,13 @@ void FileIndexerConfigTest::testShouldBeIndexed()
         false);
 
     // create our test config object
-    QScopedPointer<Baloo::FileIndexerConfig> cfg(new Baloo::FileIndexerConfig());
-    cfg->forceConfigUpdate();
+    Baloo::FileIndexerConfig cfg;
+    cfg.forceConfigUpdate();
 
     QFETCH(QString, path);
     QFETCH(bool, shouldBeIndexed);
 
-    QCOMPARE(cfg->shouldBeIndexed(path), shouldBeIndexed);
+    QCOMPARE(cfg.shouldBeIndexed(path), shouldBeIndexed);
 
 }
 
@@ -351,13 +350,13 @@ void FileIndexerConfigTest::testShouldBeIndexedHidden()
         true);
 
     // create our test config object
-    QScopedPointer<Baloo::FileIndexerConfig> cfg(new Baloo::FileIndexerConfig());
-    cfg->forceConfigUpdate();
+    Baloo::FileIndexerConfig cfg;
+    cfg.forceConfigUpdate();
 
     QFETCH(QString, path);
     QFETCH(bool, shouldBeIndexed);
 
-    QCOMPARE(cfg->shouldBeIndexed(path), shouldBeIndexed);
+    QCOMPARE(cfg.shouldBeIndexed(path), shouldBeIndexed);
 }
 
 void FileIndexerConfigTest::testShouldExcludeFilterOnFolders_data()
@@ -425,10 +424,10 @@ void FileIndexerConfigTest::testShouldExcludeFilterOnFolders()
     QFETCH(QString, path);
     QFETCH(bool, shouldBeIndexed);
 
-    QScopedPointer<Baloo::FileIndexerConfig> cfg(new Baloo::FileIndexerConfig());
-    cfg->forceConfigUpdate(); //Maybe this was left out on purpose
+    Baloo::FileIndexerConfig cfg;
+    cfg.forceConfigUpdate();                                //Maybe this was left out on purpose
 
-    QCOMPARE(cfg->shouldFolderBeIndexed(path), shouldBeIndexed);
+    QCOMPARE(cfg.shouldFolderBeIndexed(path), shouldBeIndexed);
 }
 
 QTEST_GUILESS_MAIN(FileIndexerConfigTest)

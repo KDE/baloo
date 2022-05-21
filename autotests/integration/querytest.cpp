@@ -90,7 +90,7 @@ private Q_SLOTS:
     void testTagTermPhrase();
 
 private:
-    QScopedPointer<QTemporaryDir> dir;
+    std::unique_ptr<QTemporaryDir> dir;
     QTemporaryDir* dbDir;
     Database* db;
 

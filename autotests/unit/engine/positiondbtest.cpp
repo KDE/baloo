@@ -51,7 +51,7 @@ private Q_SLOTS:
 
         db.put(word, list);
 
-        QScopedPointer<VectorPositionInfoIterator> it{db.iter(word)};
+        std::unique_ptr<VectorPositionInfoIterator> it{db.iter(word)};
         QCOMPARE(it->docId(), static_cast<quint64>(0));
         QVERIFY(it->positions().isEmpty());
 
