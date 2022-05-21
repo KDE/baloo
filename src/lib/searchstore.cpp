@@ -111,7 +111,7 @@ ResultList SearchStore::exec(const Term& term, uint offset, int limit, bool sort
     }
 
     Transaction tr(m_db, Transaction::ReadOnly);
-    QScopedPointer<PostingIterator> it(constructQuery(&tr, term));
+    std::unique_ptr<PostingIterator> it(constructQuery(&tr, term));
     if (!it) {
         return ResultList();
     }

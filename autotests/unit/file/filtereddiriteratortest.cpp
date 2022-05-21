@@ -49,7 +49,7 @@ using namespace Baloo;
 
 void FilteredDirIteratorTest::testFiles()
 {
-    QScopedPointer<QTemporaryDir> dir(Test::createTmpFilesAndFolders(dataSet()));
+    std::unique_ptr<QTemporaryDir> dir(Test::createTmpFilesAndFolders(dataSet()));
 
     QStringList includeFolders = {
         dir->path() + QLatin1String("/home"),
@@ -91,7 +91,7 @@ void FilteredDirIteratorTest::testFiles()
 
 void FilteredDirIteratorTest::testIndexHidden()
 {
-    QScopedPointer<QTemporaryDir> dir(Test::createTmpFilesAndFolders(dataSet()));
+    std::unique_ptr<QTemporaryDir> dir(Test::createTmpFilesAndFolders(dataSet()));
 
     QStringList includeFolders = {
         dir->path() + QLatin1String("/home"),
@@ -137,7 +137,7 @@ void FilteredDirIteratorTest::testIndexHidden()
 
 void FilteredDirIteratorTest::testFolders()
 {
-    QScopedPointer<QTemporaryDir> dir(Test::createTmpFilesAndFolders(dataSet()));
+    std::unique_ptr<QTemporaryDir> dir(Test::createTmpFilesAndFolders(dataSet()));
 
     QStringList includeFolders = {
         dir->path() + QLatin1String("/home"),
@@ -171,7 +171,7 @@ void FilteredDirIteratorTest::testFolders()
 
 void FilteredDirIteratorTest::testAddingExcludedFolder()
 {
-    QScopedPointer<QTemporaryDir> dir(Test::createTmpFilesAndFolders(dataSet()));
+    std::unique_ptr<QTemporaryDir> dir(Test::createTmpFilesAndFolders(dataSet()));
 
     QStringList includeFolders = {
         dir->path() + QLatin1String("/home"),
@@ -191,7 +191,7 @@ void FilteredDirIteratorTest::testAddingExcludedFolder()
 
 void FilteredDirIteratorTest::testNoConfig()
 {
-    QScopedPointer<QTemporaryDir> dir(Test::createTmpFilesAndFolders(dataSet()));
+    std::unique_ptr<QTemporaryDir> dir(Test::createTmpFilesAndFolders(dataSet()));
 
     FilteredDirIterator it(nullptr, dir->path() + QLatin1String("/home"));
 
