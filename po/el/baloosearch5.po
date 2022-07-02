@@ -1,0 +1,110 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Antonis Geralis <gaantonio@civil.auth.gr>, 2014.
+# Dimitris Kardarakos <dimkard@gmail.com>, 2014.
+# Stelios <sstavra@gmail.com>, 2020, 2021.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2021-08-19 00:13+0000\n"
+"PO-Revision-Date: 2021-02-28 15:41+0200\n"
+"Last-Translator: Stelios <sstavra@gmail.com>\n"
+"Language-Team: Greek <kde-i18n-el@kde.org>\n"
+"Language: el\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 20.04.2\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Αντώνης Γέραλης"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "capoiosct@gmail.com"
+
+#: main.cpp:27
+#, kde-format
+msgid "Baloo Search"
+msgstr "Baloo αναζήτηση"
+
+#: main.cpp:29
+#, kde-format
+msgid "A tool to search through the files indexed by Baloo"
+msgstr "Εργαλείο αναζήτησης δεικτοδοτημένων από το Baloo αρχείων"
+
+#: main.cpp:31
+#, kde-format
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:37
+#, kde-format
+msgid "The maximum number of results"
+msgstr "Το μέγιστο πλήθος αποτελεσμάτων"
+
+#: main.cpp:38
+#, kde-format
+msgid "limit"
+msgstr "όριο"
+
+#: main.cpp:40
+#, kde-format
+msgid "Offset from which to start the search"
+msgstr "Η μετατόπιση από όπου ξεκινά η αναζήτηση"
+
+#: main.cpp:41
+#, kde-format
+msgid "offset"
+msgstr "μετατόπιση"
+
+#: main.cpp:43
+#, kde-format
+msgid "Type of data to be searched"
+msgstr "Τύπος δεδομένων που θα αναζητηθούν"
+
+#: main.cpp:44
+#, kde-format
+msgid "typeStr"
+msgstr "typeStr"
+
+#: main.cpp:46
+#, kde-format
+msgid "Limit search to specified directory"
+msgstr "Να περιοριστεί η αναζήτηση στον συγκεκριμένο κατάλογο"
+
+#: main.cpp:47
+#, kde-format
+msgid "directory"
+msgstr "κατάλογος"
+
+#: main.cpp:49
+#, kde-format
+msgid "Show document IDs"
+msgstr "Εμφάνιση αναγνωριστικών εγγράφων"
+
+#: main.cpp:50
+#, kde-format
+msgid "query"
+msgstr "αναζήτηση"
+
+#: main.cpp:50
+#, kde-format
+msgid "List of words to query for"
+msgstr "Λίστα λέξεων προς αναζήτηση"
+
+#: main.cpp:87
+#, kde-format
+msgid "%1 is not a valid directory"
+msgstr "Το %1 δεν είναι έγκυρος κατάλογος"
+
+#: main.cpp:104
+#, kde-format
+msgid "Elapsed: %1 msecs"
+msgstr "Χρόνος που παρήλθε: %1 msec"
