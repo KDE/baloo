@@ -3,7 +3,6 @@ set (KDED_BALOOSEARCH_SRCS
 )
 
 add_library(baloosearchmodule MODULE ${KDED_BALOOSEARCH_SRCS})
-kcoreaddons_desktop_to_json(baloosearchmodule baloosearchmodule.desktop)
 
 target_link_libraries(baloosearchmodule
     KF5::CoreAddons
