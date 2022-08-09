@@ -194,6 +194,10 @@ QVector<KFileMetaData::Type::Type> typesForMimeType(const QString& mimeType)
         ++hashIt;
     }
 
+    if (types.isEmpty()) {
+        types << Type::Unknown;
+    }
+
     return types;
 }
 } // namespace

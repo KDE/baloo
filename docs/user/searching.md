@@ -33,6 +33,7 @@ Currently the following types are supported:
   * Spreadsheet
   * Presentation
 * Text
+* Unknown
 
 These expressions can be combined using `AND` or `OR` and additional parenthesis.
 
