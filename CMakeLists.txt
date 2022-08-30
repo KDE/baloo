@@ -79,7 +79,7 @@ endif()
 # compiler flags and build system
 ecm_set_disabled_deprecation_versions(
     QT 5.15.2
-    KF 5.95
+    KF 5.97
 )
 
 find_package(Inotify)
