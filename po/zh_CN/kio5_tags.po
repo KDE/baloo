@@ -1,0 +1,38 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: kdeorg\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2022-06-03 00:41+0000\n"
+"PO-Revision-Date: 2022-08-20 14:16\n"
+"Last-Translator: \n"
+"Language-Team: Chinese Simplified\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: kdeorg\n"
+"X-Crowdin-Project-ID: 269464\n"
+"X-Crowdin-Language: zh-CN\n"
+"X-Crowdin-File: /kf5-trunk/messages/baloo/kio5_tags.pot\n"
+"X-Crowdin-File-ID: 5614\n"
+
+#: kio_tags.cpp:115 kio_tags.cpp:174
+#, kde-format
+msgid "File %1 already has tag %2"
+msgstr "文件 %1 已经分配标签 %2"
+
+#: kio_tags.cpp:310
+#, kde-format
+msgid "Tag"
+msgstr "标签"
+
+#: kio_tags.cpp:316
+#, kde-format
+msgid "Tag Fragment"
+msgstr "标签 Fragment"
+
+#: kio_tags.cpp:328 kio_tags.cpp:329
+#, kde-format
+msgid "All Tags"
+msgstr "所有标签"
