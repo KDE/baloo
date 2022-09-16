@@ -88,7 +88,7 @@ ecm_generate_headers(KF5Baloo_CamelCase_HEADERS
     REQUIRED_HEADERS KF5Baloo_HEADERS
 )
 
-install(TARGETS KF5Baloo EXPORT KF5BalooTargets ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS KF5Baloo EXPORT KF5BalooTargets ${KF_INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/core_export.h
