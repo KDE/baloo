@@ -452,12 +452,3 @@ msgstr ""
 #, kde-format
 msgid "Index does not exist yet\n"
 msgstr ""
-
-#~ msgid "Unknown"
-#~ msgstr "不明"
-
-#~ msgid "Idle"
-#~ msgstr "アイドル"
-
-#~ msgid "Suspended"
-#~ msgstr "サスペンド"
