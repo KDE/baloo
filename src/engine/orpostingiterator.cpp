@@ -14,23 +14,18 @@ OrPostingIterator::OrPostingIterator(const QVector<PostingIterator*>& iterators)
     , m_docId(0)
     , m_nextId(0)
 {
-    for (auto it = m_iterators.begin(), end = m_iterators.end(); it != end;) {
-        /*
-         * Check for null iterators
-         * Preferably, these are not pushed to the list at all, but better be safe
-         */
-        if (!(*it)) {
-            it = m_iterators.erase(it);
-            continue;
-        }
+    /*
+     * Check for null iterators
+     * Preferably, these are not pushed to the list at all, but better be safe
+     */
+    m_iterators.removeAll(nullptr);
 
-        auto docId = (*it)->next();
+    for (PostingIterator* iter : std::as_const(m_iterators)) {
+        auto docId = iter->next();
         // find smallest docId
         if (docId && (docId < m_nextId || m_nextId == 0)) {
             m_nextId = docId;
         }
-
-        it++;
     }
 }
 
