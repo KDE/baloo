@@ -32,8 +32,12 @@ private Q_SLOTS:
     void testWordPositionsCJK();
     void testNumbers();
 
-    QList<QByteArray> allWords(const Document& doc)
+    QList<QByteArray> allWords(const QString& str)
     {
+        Document doc;
+        TermGenerator termGen(doc);
+        termGen.indexText(str);
+
         return doc.m_terms.keys();
     }
 };
@@ -42,11 +46,7 @@ void TermGeneratorTest::testWordBoundaries()
 {
     QString str = QString::fromLatin1("The quick (\"brown\") 'fox' can't jump 32.3 feet, right? No-Wrong;xx.txt");
 
-    Document doc;
-    TermGenerator termGen(doc);
-    termGen.indexText(str);
-
-    QList<QByteArray> words = allWords(doc);
+    QList<QByteArray> words = allWords(str);
 
     QList<QByteArray> expectedWords;
     expectedWords << QByteArray("32.3") << QByteArray("brown") << QByteArray("can't") << QByteArray("feet") << QByteArray("fox") << QByteArray("jump")
@@ -60,11 +60,7 @@ void TermGeneratorTest::testWordBoundariesCJK()
 {
     QString str = QString::fromUtf8("你");
 
-    Document doc;
-    TermGenerator termGen(doc);
-    termGen.indexText(str);
-
-    QList<QByteArray> words = allWords(doc);
+    QList<QByteArray> words = allWords(str);
     QList<QByteArray> expectedWords;
     expectedWords << QByteArray("你");
 
@@ -76,11 +72,7 @@ void TermGeneratorTest::testWordBoundariesCJKMixed()
     // This is a English and CJK mixed string.
     QString str = QString::fromUtf8("hello world!你好世界貴方元気켐ㅇㄹ？☺");
 
-    Document doc;
-    TermGenerator termGen(doc);
-    termGen.indexText(str);
-
-    QList<QByteArray> words = allWords(doc);
+    QList<QByteArray> words = allWords(str);
     QList<QByteArray> expectedWords;
     expectedWords << QByteArray("hello") << QByteArray("world") << QByteArray("☺") << QByteArray("你好世界貴方元気") << QByteArray("켐ᄋᄅ");
 
@@ -91,11 +83,7 @@ void TermGeneratorTest::testUnderscoreWord()
 {
     QString str = QString::fromLatin1("_plant");
 
-    Document doc;
-    TermGenerator termGen(doc);
-    termGen.indexText(str);
-
-    QList<QByteArray> words = allWords(doc);
+    QList<QByteArray> words = allWords(str);
 
     QList<QByteArray> expectedWords;
     expectedWords << QByteArray("plant");
@@ -107,11 +95,7 @@ void TermGeneratorTest::testUnderscore_splitting()
 {
     QString str = QString::fromLatin1("Hello_Howdy");
 
-    Document doc;
-    TermGenerator termGen(doc);
-    termGen.indexText(str);
-
-    QList<QByteArray> words = allWords(doc);
+    QList<QByteArray> words = allWords(str);
 
     QList<QByteArray> expectedWords;
     expectedWords << QByteArray("hello") << QByteArray("howdy");
@@ -123,11 +107,7 @@ void TermGeneratorTest::testAccentCharacters()
 {
     QString str = QString::fromUtf8("Como est\xC3\xA1 K\xC3\xBBg"); // "Como está Kûg"
 
-    Document doc;
-    TermGenerator termGen(doc);
-    termGen.indexText(str);
-
-    QList<QByteArray> words = allWords(doc);
+    QList<QByteArray> words = allWords(str);
 
     QList<QByteArray> expectedWords;
     expectedWords << QByteArray("como") << QByteArray("esta") << QByteArray("kug");
@@ -138,18 +118,14 @@ void TermGeneratorTest::testAccentCharacters()
 void TermGeneratorTest::testUnicodeCompatibleComposition()
 {
     // The 0xfb00 corresponds to U+FB00 which is a 'ff' ligature
-    QString str = QLatin1String("maffab");
-    QString str2 = QLatin1String("ma") + QChar(0xfb00) + QStringLiteral("ab");
+    QString expected = QLatin1String("maffab");
+    QString str = QLatin1String("ma") + QChar(0xfb00) + QStringLiteral("ab");
 
-    Document doc;
-    TermGenerator termGen(doc);
-    termGen.indexText(str2);
-
-    QList<QByteArray> words = allWords(doc);
+    QList<QByteArray> words = allWords(str);
     QCOMPARE(words.size(), 1);
 
     QByteArray output = words.first();
-    QCOMPARE(str.toUtf8(), output);
+    QCOMPARE(expected.toUtf8(), output);
 }
 
 void TermGeneratorTest::testUnicodeLowering()
@@ -157,11 +133,7 @@ void TermGeneratorTest::testUnicodeLowering()
     // This string is unicode mathematical italic "Hedge"
     QString str = QString::fromUtf8("\xF0\x9D\x90\xBB\xF0\x9D\x91\x92\xF0\x9D\x91\x91\xF0\x9D\x91\x94\xF0\x9D\x91\x92");
 
-    Document doc;
-    TermGenerator termGen(doc);
-    termGen.indexText(str);
-
-    QList<QByteArray> words = allWords(doc);
+    QList<QByteArray> words = allWords(str);
 
     QCOMPARE(words, {QByteArray("hedge")});
 }
@@ -170,11 +142,7 @@ void TermGeneratorTest::testEmails()
 {
     QString str = QString::fromLatin1("me@vhanda.in");
 
-    Document doc;
-    TermGenerator termGen(doc);
-    termGen.indexText(str);
-
-    QList<QByteArray> words = allWords(doc);
+    QList<QByteArray> words = allWords(str);
 
     QList<QByteArray> expectedWords;
     expectedWords << QByteArray("in") << QByteArray("me") << QByteArray("vhanda");
@@ -190,7 +158,7 @@ void TermGeneratorTest::testWordPositions()
     QString str = QString::fromLatin1("Hello hi how hi");
     termGen.indexText(str);
 
-    QList<QByteArray> words = allWords(doc);
+    QList<QByteArray> words = doc.m_terms.keys();
 
     QList<QByteArray> expectedWords;
     expectedWords << QByteArray("hello") << QByteArray("hi") << QByteArray("how");
@@ -215,7 +183,7 @@ void TermGeneratorTest::testWordPositionsCJK()
     QString str = QString::fromUtf8("你好你好！我认识你。");
     termGen.indexText(str);
 
-    QList<QByteArray> words = allWords(doc);
+    QList<QByteArray> words = doc.m_terms.keys();
     QList<QByteArray> expectedWords;
     // Full width question mark is split point, and the fullwidth period is trimmed.
     expectedWords << QByteArray("你好你好") << QByteArray("我认识你");
@@ -233,11 +201,7 @@ void TermGeneratorTest::testNumbers()
 {
     QString str = QString::fromLatin1("1 5 10 -3 -12, 5.6, -13.4 -7e3");
 
-    Document doc;
-    TermGenerator termGen(doc);
-    termGen.indexText(str);
-
-    QList<QByteArray> words = allWords(doc);
+    QList<QByteArray> words = allWords(str);
 
     QList<QByteArray> expectedWords;
     // TODO: Signs are dropped by the TermGenerator
