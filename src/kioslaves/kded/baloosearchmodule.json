@@ -1,8 +1,26 @@
 {
     "KPlugin": {
         "Description": "Allows automatic updates of Search Folders",
+        "Description[ar]": "يُتيح التحديثات التلقائية لمجلدات البحث",
+        "Description[ca@valencia]": "Permet l'actualització automàtica de les carpetes de busca",
+        "Description[ca]": "Permet l'actualització automàtica de les carpetes de cerca",
+        "Description[es]": "Permite actualizaciones automáticas de carpetas de búsqueda",
+        "Description[eu]": "«Bilaketa karpeten» eguneratze automatikoak ahalbidetzen ditu",
+        "Description[fr]": "Permet des mises à jour automatiques des dossiers de recherche",
+        "Description[tr]": "Arama klasörlerinin kendiliğinden güncellenmesine izin verir",
+        "Description[uk]": "Надає змогу автоматично оновлювати теки пошуку",
+        "Description[x-test]": "xxAllows automatic updates of Search Foldersxx",
         "Icon": "baloo",
-        "Name": "Search Folder Updater"
+        "Name": "Search Folder Updater",
+        "Name[ar]": "مُحدّث مجلدات البحث",
+        "Name[ca@valencia]": "Actualitzador de les carpetes de busca",
+        "Name[ca]": "Actualitzador de les carpetes de cerca",
+        "Name[es]": "Actualizador de carpetas de búsqueda",
+        "Name[eu]": "«Bilaketa karpeta» eguneratzailea",
+        "Name[fr]": "Mise à jour du dossier Recherche",
+        "Name[tr]": "Arama Klasörü Güncelleyici",
+        "Name[uk]": "Засіб оновлення тек пошуку",
+        "Name[x-test]": "xxSearch Folder Updaterxx"
     },
     "X-KDE-Kded-autoload": true,
     "X-KDE-Kded-load-on-demand": false,
