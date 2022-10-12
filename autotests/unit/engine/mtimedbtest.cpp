@@ -49,7 +49,7 @@ private Q_SLOTS:
         db.put(8, 5);
         db.put(9, 6);
 
-        PostingIterator* it = db.iterRange(6, std::numeric_limits<quint32>::max());
+        std::unique_ptr<PostingIterator> it{db.iterRange(6, std::numeric_limits<quint32>::max())};
         QVERIFY(it);
 
         QVector<quint64> result = {2, 3, 4, 5, 6};
@@ -58,29 +58,29 @@ private Q_SLOTS:
             QCOMPARE(it->docId(), static_cast<quint64>(val));
         }
 
-        it = db.iterRange(0, 10);
+        it.reset(db.iterRange(0, 10));
         QVERIFY(it);
 
         result = {1, 2, 3, 4, 5, 6};
-        for (quint64 val : result) {
+        for (quint64 val : std::as_const(result)) {
             QCOMPARE(it->next(), static_cast<quint64>(val));
             QCOMPARE(it->docId(), static_cast<quint64>(val));
         }
 
-        it = db.iterRange(0, 7);
+        it.reset(db.iterRange(0, 7));
         QVERIFY(it);
 
         result = {1, 2, 3, 4};
-        for (quint64 val : result) {
+        for (quint64 val : std::as_const(result)) {
             QCOMPARE(it->next(), static_cast<quint64>(val));
             QCOMPARE(it->docId(), static_cast<quint64>(val));
         }
 
-        it = db.iterRange(0, 6);
+        it.reset(db.iterRange(0, 6));
         QVERIFY(it);
 
         result = {1, 2, 3};
-        for (quint64 val : result) {
+        for (quint64 val : std::as_const(result)) {
             QCOMPARE(it->next(), static_cast<quint64>(val));
             QCOMPARE(it->docId(), static_cast<quint64>(val));
         }
@@ -96,7 +96,7 @@ private Q_SLOTS:
         db.put(8, 5);
         db.put(9, 6);
 
-        PostingIterator* it = db.iterRange(6, 8);
+        std::unique_ptr<PostingIterator> it{db.iterRange(6, 8)};
         QVERIFY(it);
 
         QVector<quint64> result = {2, 3, 4, 5};
@@ -106,10 +106,10 @@ private Q_SLOTS:
         }
 
         // Empty range
-        it = db.iterRange(4, 4);
+        it.reset(db.iterRange(4, 4));
         QVERIFY(!it);
 
-        it = db.iterRange(10, 20);
+        it.reset(db.iterRange(10, 20));
         QVERIFY(!it);
     }
 
@@ -125,7 +125,7 @@ private Q_SLOTS:
 
         QCOMPARE(db.get(6), QVector<quint64>() << 2 << 3 << 4);
 
-        PostingIterator* it = db.iterRange(5, 7);
+        std::unique_ptr<PostingIterator> it{db.iterRange(5, 7)};
         QVERIFY(it);
 
         {
@@ -137,7 +137,7 @@ private Q_SLOTS:
         }
 
         {
-            it = db.iterRange(6, std::numeric_limits<quint32>::max());
+            it.reset(db.iterRange(6, std::numeric_limits<quint32>::max()));
             QVERIFY(it);
 
             QVector<quint64> result = {2, 3, 4};
@@ -163,14 +163,14 @@ private Q_SLOTS:
         db.del(0, 2);
         QCOMPARE(db.get(0), QVector<quint64>({1, 3}));
 
-        PostingIterator* it = db.iterRange(0, 0);
+        std::unique_ptr<PostingIterator> it{db.iterRange(0, 0)};
         QVector<quint64> result;
         while (it->next()) {
             result.append(it->docId());
         }
         QCOMPARE(result, QVector<quint64>({1, 3}));
 
-        it = db.iterRange(1, std::numeric_limits<quint32>::max());
+        it.reset(db.iterRange(1, std::numeric_limits<quint32>::max()));
         QVERIFY(it->next());
         QCOMPARE(it->docId(), 4);
     }

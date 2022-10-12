@@ -32,7 +32,7 @@ private Q_SLOTS:
         db.put("fire", {1, 8, 9});
         db.put("fore", {2, 3, 5});
 
-        PostingIterator* it = db.iter("fir");
+        std::unique_ptr<PostingIterator> it{db.iter("fir")};
         QVERIFY(it);
 
         QVector<quint64> result = {1, 3, 5};
@@ -50,7 +50,7 @@ private Q_SLOTS:
         db.put("fire", {1, 8, 9});
         db.put("fore", {2, 3, 5});
 
-        PostingIterator* it = db.prefixIter("fi");
+        std::unique_ptr<PostingIterator> it{db.prefixIter("fi")};
         QVERIFY(it);
 
         QVector<quint64> result = {1, 3, 5, 8, 9};
@@ -69,7 +69,7 @@ private Q_SLOTS:
         db.put("fore", {2, 3, 5});
         db.put("zib", {4, 5, 6});
 
-        PostingIterator* it = db.regexpIter(QRegularExpression(QStringLiteral(".re")), QByteArray("f"));
+        std::unique_ptr<PostingIterator> it{db.regexpIter(QRegularExpression(QStringLiteral(".re")), QByteArray("f"))};
         QVERIFY(it);
 
         QVector<quint64> result = {1, 2, 3, 5, 8};
@@ -79,7 +79,7 @@ private Q_SLOTS:
         }
 
         // Non existing
-        it = db.regexpIter(QRegularExpression(QStringLiteral("dub")), QByteArray("f"));
+        it.reset(db.regexpIter(QRegularExpression(QStringLiteral("dub")), QByteArray("f")));
         QVERIFY(it == nullptr);
     }
 
@@ -95,43 +95,43 @@ private Q_SLOTS:
         db.put("X20-90", {1, 2});
         db.put("X20-1000", {10, 11});
 
-        PostingIterator* it = db.compIter("R", 2, PostingDB::GreaterEqual);
+        std::unique_ptr<PostingIterator> it{db.compIter("R", 2, PostingDB::GreaterEqual)};
         QVERIFY(it);
 
         QVector<quint64> result = {1, 2, 3, 5, 8, 10, 12};
-        for (quint64 val : result) {
+        for (quint64 val : std::as_const(result)) {
             QCOMPARE(it->next(), static_cast<quint64>(val));
             QCOMPARE(it->docId(), static_cast<quint64>(val));
         }
 
-        it = db.compIter("R", 2, PostingDB::LessEqual);
+        it.reset(db.compIter("R", 2, PostingDB::LessEqual));
         QVERIFY(it);
         result = {1, 3, 5, 7, 8};
-        for (quint64 val : result) {
+        for (quint64 val : std::as_const(result)) {
             QCOMPARE(it->next(), static_cast<quint64>(val));
             QCOMPARE(it->docId(), static_cast<quint64>(val));
         }
 
-        it = db.compIter("R", 10, PostingDB::GreaterEqual);
+        it.reset(db.compIter("R", 10, PostingDB::GreaterEqual));
         QVERIFY(it);
         result = {10, 12};
-        for (quint64 val : result) {
+        for (quint64 val : std::as_const(result)) {
             QCOMPARE(it->next(), static_cast<quint64>(val));
             QCOMPARE(it->docId(), static_cast<quint64>(val));
         }
 
-        it = db.compIter("X20-", 80, PostingDB::GreaterEqual);
+        it.reset(db.compIter("X20-", 80, PostingDB::GreaterEqual));
         QVERIFY(it);
         result = {1, 2, 10, 11};
-        for (quint64 val : result) {
+        for (quint64 val : std::as_const(result)) {
             QCOMPARE(it->next(), static_cast<quint64>(val));
             QCOMPARE(it->docId(), static_cast<quint64>(val));
         }
 
-        it = db.compIter("X20-", 100, PostingDB::GreaterEqual);
+        it.reset(db.compIter("X20-", 100, PostingDB::GreaterEqual));
         QVERIFY(it);
         result = {10, 11};
-        for (quint64 val : result) {
+        for (quint64 val : std::as_const(result)) {
             QCOMPARE(it->next(), static_cast<quint64>(val));
             QCOMPARE(it->docId(), static_cast<quint64>(val));
         }

@@ -35,7 +35,7 @@ private Q_SLOTS:
         db.put(8, {13, 15});
         db.put(13, {18});
 
-        PostingIterator* it = db.iter(1);
+        std::unique_ptr<PostingIterator> it{db.iter(1)};
         QVERIFY(it);
 
         QVector<quint64> result = {1, 5, 6, 7, 8, 9, 11, 13, 15, 18, 19};
