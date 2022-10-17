@@ -144,12 +144,12 @@ msgstr "Cal indicar una carpeta\n"
 #: configcommand.cpp:169
 #, kde-format
 msgid "%1 is not in the list of include folders"
-msgstr "%1 no es troba en la llista de les carpetes que s'hagen d'incloure"
+msgstr "%1 no es troba en la llista de les carpetes que s'han d'incloure"
 
 #: configcommand.cpp:189
 #, kde-format
 msgid "%1 is not in the list of exclude folders"
-msgstr "%1 no es troba en la llista de les carpetes que s'hagen d'excloure"
+msgstr "%1 no es troba en la llista de les carpetes que s'han d'excloure"
 
 #: configcommand.cpp:201 configcommand.cpp:322
 #, kde-format
@@ -184,17 +184,17 @@ msgstr "El camí no és cap directori\n"
 #: configcommand.cpp:270
 #, kde-format
 msgid "%1 is already in the list of include folders"
-msgstr "%1 ja es troba en la llista de les carpetes que s'hagen d'incloure"
+msgstr "%1 ja es troba en la llista de les carpetes que s'han d'incloure"
 
 #: configcommand.cpp:275 configcommand.cpp:310
 #, kde-format
 msgid "%1 is in the list of exclude folders"
-msgstr "%1 ja es troba en la llista de les carpetes que s'hagen d'excloure"
+msgstr "%1 ja es troba en la llista de les carpetes que s'han d'excloure"
 
 #: configcommand.cpp:305
 #, kde-format
 msgid "%1 is already in the list of exclude folders"
-msgstr "%1 ja es troba en la llista de les carpetes que s'hagen d'excloure"
+msgstr "%1 ja es troba en la llista de les carpetes que s'han d'excloure"
 
 #: configcommand.cpp:328
 #, kde-format
