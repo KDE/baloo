@@ -25,7 +25,7 @@ using namespace Baloo;
 class KIOPluginForMetaData : public QObject
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.kde.kio.slave.baloosearch" FILE "baloosearch.json")
+    Q_PLUGIN_METADATA(IID "org.kde.kio.worker.baloosearch" FILE "baloosearch.json")
 };
 
 namespace
@@ -60,7 +60,7 @@ KIO::UDSEntry statSearchFolder(const QUrl& url)
 }
 
 SearchProtocol::SearchProtocol(const QByteArray& poolSocket, const QByteArray& appSocket)
-    : KIO::SlaveBase("baloosearch", poolSocket, appSocket)
+    : KIO::WorkerBase("baloosearch", poolSocket, appSocket)
 {
 }
 
@@ -69,7 +69,7 @@ SearchProtocol::~SearchProtocol()
 {
 }
 
-void SearchProtocol::listDir(const QUrl& url)
+KIO::WorkerResult SearchProtocol::listDir(const QUrl& url)
 {
     Query q = Query::fromSearchUrl(url);
 
@@ -98,21 +98,21 @@ void SearchProtocol::listDir(const QUrl& url)
     uds.fastInsert(KIO::UDSEntry::UDS_USER, KUser().loginName());
     listEntry(uds);
 
-    finished();
+    return KIO::WorkerResult::pass();
 }
 
 
-void SearchProtocol::mimetype(const QUrl&)
+KIO::WorkerResult SearchProtocol::mimetype(const QUrl&)
 {
     mimeType(QStringLiteral("inode/directory"));
-    finished();
+    return KIO::WorkerResult::pass();
 }
 
 
-void SearchProtocol::stat(const QUrl& url)
+KIO::WorkerResult SearchProtocol::stat(const QUrl& url)
 {
     statEntry(statSearchFolder(url));
-    finished();
+    return KIO::WorkerResult::pass();
 }
 
 extern "C"
@@ -121,8 +121,8 @@ extern "C"
     {
         QCoreApplication app(argc, argv);
         app.setApplicationName(QStringLiteral("kio_baloosearch"));
-        Baloo::SearchProtocol slave(argv[2], argv[3]);
-        slave.dispatchLoop();
+        Baloo::SearchProtocol worker(argv[2], argv[3]);
+        worker.dispatchLoop();
         return 0;
     }
 }
