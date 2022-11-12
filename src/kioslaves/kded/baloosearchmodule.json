@@ -2,6 +2,7 @@
     "KPlugin": {
         "Description": "Allows automatic updates of Search Folders",
         "Description[ar]": "يُتيح التحديثات التلقائية لمجلدات البحث",
+        "Description[az]": "Axtarış qovluqalrının avtomatik yenilənməsinə icazə ver",
         "Description[ca@valencia]": "Permet l'actualització automàtica de les carpetes de busca",
         "Description[ca]": "Permet l'actualització automàtica de les carpetes de cerca",
         "Description[es]": "Permite actualizaciones automáticas de carpetas de búsqueda",
@@ -19,6 +20,7 @@
         "Icon": "baloo",
         "Name": "Search Folder Updater",
         "Name[ar]": "مُحدّث مجلدات البحث",
+        "Name[az]": "Axtarış qovluğunu yeniləmə vasitəsi",
         "Name[ca@valencia]": "Actualitzador de les carpetes de busca",
         "Name[ca]": "Actualitzador de les carpetes de cerca",
         "Name[de]": "Suchordner-Aktualisierung",
