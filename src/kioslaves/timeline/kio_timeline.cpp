@@ -26,7 +26,7 @@ using namespace Baloo;
 class KIOPluginForMetaData : public QObject
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.kde.kio.slave.timeline" FILE "timeline.json")
+    Q_PLUGIN_METADATA(IID "org.kde.kio.worker.timeline" FILE "timeline.json")
 };
 
 namespace
@@ -93,7 +93,7 @@ KIO::UDSEntry createDayUDSEntry(const QDate& date)
 
 
 TimelineProtocol::TimelineProtocol(const QByteArray& poolSocket, const QByteArray& appSocket)
-    : KIO::SlaveBase("timeline", poolSocket, appSocket)
+    : KIO::WorkerBase("timeline", poolSocket, appSocket)
 {
 }
 
@@ -103,13 +103,12 @@ TimelineProtocol::~TimelineProtocol()
 }
 
 
-void TimelineProtocol::listDir(const QUrl& url)
+KIO::WorkerResult TimelineProtocol::listDir(const QUrl& url)
 {
     QUrl canonicalUrl = canonicalizeTimelineUrl(url);
     if (url != canonicalUrl) {
         redirection(canonicalUrl);
-        finished();
-        return;
+        return KIO::WorkerResult::pass();
     }
 
     switch (parseTimelineUrl(url, &m_date, &m_filename)) {
@@ -117,20 +116,17 @@ void TimelineProtocol::listDir(const QUrl& url)
         listEntry(createFolderUDSEntry(QStringLiteral(".")));
         listEntry(createDateFolderUDSEntry(QStringLiteral("today"), i18n("Today"), QDate::currentDate()));
         listEntry(createDateFolderUDSEntry(QStringLiteral("calendar"), i18n("Calendar"), QDate::currentDate()));
-        finished();
         break;
 
     case CalendarFolder:
         listEntry(createFolderUDSEntry(QStringLiteral(".")));
         listThisYearsMonths();
         // TODO: add entry for previous years
-        finished();
         break;
 
     case MonthFolder:
         listEntry(createFolderUDSEntry(QStringLiteral(".")));
         listDays(m_date.month(), m_date.year());
-        finished();
         break;
 
     case DayFolder: {
@@ -148,24 +144,23 @@ void TimelineProtocol::listDir(const QUrl& url)
                 listEntry(uds);
             }
         }
-        finished();
         break;
     }
 
     case NoFolder:
-        error(KIO::ERR_DOES_NOT_EXIST, url.toString());
-        break;
+        return KIO::WorkerResult::fail(KIO::ERR_DOES_NOT_EXIST, url.toString());
     }
+
+    return KIO::WorkerResult::pass();
 }
 
 
-void TimelineProtocol::mimetype(const QUrl& url)
+KIO::WorkerResult TimelineProtocol::mimetype(const QUrl& url)
 {
     QUrl canonicalUrl = canonicalizeTimelineUrl(url);
     if (url != canonicalUrl) {
         redirection(canonicalUrl);
-        finished();
-        return;
+        return KIO::WorkerResult::pass();
     }
 
     switch (parseTimelineUrl(url, &m_date, &m_filename)) {
@@ -174,53 +169,49 @@ void TimelineProtocol::mimetype(const QUrl& url)
     case MonthFolder:
     case DayFolder:
         mimetype(QUrl(QLatin1String("inode/directory")));
-        finished();
         break;
 
     case NoFolder:
-        error(KIO::ERR_DOES_NOT_EXIST, url.toString());
-        break;
+        return KIO::WorkerResult::fail(KIO::ERR_DOES_NOT_EXIST, url.toString());
     }
+
+    return KIO::WorkerResult::pass();
 }
 
 
-void TimelineProtocol::stat(const QUrl& url)
+KIO::WorkerResult TimelineProtocol::stat(const QUrl& url)
 {
     QUrl canonicalUrl = canonicalizeTimelineUrl(url);
     if (url != canonicalUrl) {
         redirection(canonicalUrl);
-        finished();
-        return;
+        return KIO::WorkerResult::pass();
     }
 
     switch (parseTimelineUrl(url, &m_date, &m_filename)) {
     case RootFolder: {
         statEntry(createFolderUDSEntry(QStringLiteral("/")));
-        finished();
         break;
     }
 
     case CalendarFolder:
         statEntry(createDateFolderUDSEntry(QStringLiteral("calendar"), i18n("Calendar"), QDate::currentDate()));
-        finished();
         break;
 
     case MonthFolder:
         statEntry(createMonthUDSEntry(m_date.month(), m_date.year()));
-        finished();
         break;
 
     case DayFolder:
         if (m_filename.isEmpty()) {
             statEntry(createDayUDSEntry(m_date));
         }
-        finished();
         break;
 
     case NoFolder:
-        error(KIO::ERR_DOES_NOT_EXIST, url.toString());
-        break;
+        return KIO::WorkerResult::fail(KIO::ERR_DOES_NOT_EXIST, url.toString());
     }
+
+    return KIO::WorkerResult::pass();
 }
 
 
@@ -272,8 +263,8 @@ extern "C"
     {
         QCoreApplication app(argc, argv);
         app.setApplicationName(QStringLiteral("kio_timeline"));
-        Baloo::TimelineProtocol slave(argv[2], argv[3]);
-        slave.dispatchLoop();
+        Baloo::TimelineProtocol worker(argv[2], argv[3]);
+        worker.dispatchLoop();
         return 0;
     }
 }

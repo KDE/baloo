@@ -8,14 +8,14 @@
 #ifndef KIO_TIMELINE_H_
 #define KIO_TIMELINE_H_
 
-#include <kio/slavebase.h>
+#include <KIO/WorkerBase>
 
 #include <QDate>
 
 namespace Baloo
 {
 
-class TimelineProtocol : public KIO::SlaveBase
+class TimelineProtocol : public KIO::WorkerBase
 {
 public:
     TimelineProtocol(const QByteArray& poolSocket, const QByteArray& appSocket);
@@ -24,19 +24,19 @@ public:
     /**
      * List all files and folders tagged with the corresponding tag.
      */
-    void listDir(const QUrl& url) override;
+    KIO::WorkerResult listDir(const QUrl& url) override;
 
     /**
      * Files will be forwarded.
      * Folders will be created as virtual folders.
      */
-    void mimetype(const QUrl& url) override;
+    KIO::WorkerResult mimetype(const QUrl& url) override;
 
     /**
      * Files will be forwarded.
      * Folders will be created as virtual folders.
      */
-    void stat(const QUrl& url) override;
+    KIO::WorkerResult stat(const QUrl& url) override;
 
 private:
     void listDays(int month, int year);
