@@ -8,12 +8,12 @@
 #ifndef BALOO_KIO_SEARCH_H_
 #define BALOO_KIO_SEARCH_H_
 
-#include <kio/slavebase.h>
+#include <KIO/WorkerBase>
 
 namespace Baloo
 {
 
-class SearchProtocol : public KIO::SlaveBase
+class SearchProtocol : public KIO::WorkerBase
 {
 
 public:
@@ -23,19 +23,19 @@ public:
     /**
      *
      */
-    void listDir(const QUrl& url) override;
+    KIO::WorkerResult listDir(const QUrl& url) override;
 
     /**
      * Files will be forwarded.
      * Folders will be created as virtual folders.
      */
-    void mimetype(const QUrl& url) override;
+    KIO::WorkerResult mimetype(const QUrl& url) override;
 
     /**
      * Files will be forwarded.
      * Folders will be created as virtual folders.
      */
-    void stat(const QUrl& url) override;
+    KIO::WorkerResult stat(const QUrl& url) override;
 };
 }
 
