@@ -32,11 +32,11 @@ using namespace Baloo;
 class KIOPluginForMetaData : public QObject
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.kde.kio.slave.tags" FILE "tags.json")
+    Q_PLUGIN_METADATA(IID "org.kde.kio.worker.tags" FILE "tags.json")
 };
 
 TagsProtocol::TagsProtocol(const QByteArray& pool_socket, const QByteArray& app_socket)
-    : KIO::ForwardingSlaveBase("tags", pool_socket, app_socket)
+    : KIO::ForwardingWorkerBase("tags", pool_socket, app_socket)
 {
 }
 
@@ -44,7 +44,7 @@ TagsProtocol::~TagsProtocol()
 {
 }
 
-void TagsProtocol::listDir(const QUrl& url)
+KIO::WorkerResult TagsProtocol::listDir(const QUrl& url)
 {
     ParseResult result = parseUrl(url);
 
@@ -52,27 +52,24 @@ void TagsProtocol::listDir(const QUrl& url)
         case InvalidUrl:
         case FileUrl:
             qCWarning(KIO_TAGS) << result.decodedUrl << "list() invalid url";
-            error(KIO::ERR_CANNOT_ENTER_DIRECTORY, result.decodedUrl);
-            return;
+            return KIO::WorkerResult::fail(KIO::ERR_CANNOT_ENTER_DIRECTORY, result.decodedUrl);
         case TagUrl:
             listEntries(result.pathUDSResults);
     }
 
-    finished();
+    return KIO::WorkerResult::pass();
 }
 
-void TagsProtocol::stat(const QUrl& url)
+KIO::WorkerResult TagsProtocol::stat(const QUrl& url)
 {
     ParseResult result = parseUrl(url);
 
     switch(result.urlType) {
         case InvalidUrl:
             qCWarning(KIO_TAGS) << result.decodedUrl << "stat() invalid url";
-            error(KIO::ERR_DOES_NOT_EXIST, result.decodedUrl);
-            return;
+            return KIO::WorkerResult::fail(KIO::ERR_DOES_NOT_EXIST, result.decodedUrl);
         case FileUrl:
-            ForwardingSlaveBase::stat(result.fileUrl);
-            return;
+            return ForwardingWorkerBase::stat(result.fileUrl);
         case TagUrl:
             for (const KIO::UDSEntry& entry : std::as_const(result.pathUDSResults)) {
                 if (entry.stringValue(KIO::UDSEntry::UDS_EXTRA) == result.tag) {
@@ -82,10 +79,10 @@ void TagsProtocol::stat(const QUrl& url)
             }
     }
 
-    finished();
+    return KIO::WorkerResult::pass();
 }
 
-void TagsProtocol::copy(const QUrl& src, const QUrl& dest, int permissions, KIO::JobFlags flags)
+KIO::WorkerResult TagsProtocol::copy(const QUrl& src, const QUrl& dest, int permissions, KIO::JobFlags flags)
 {
     Q_UNUSED(permissions);
     Q_UNUSED(flags);
@@ -95,12 +92,10 @@ void TagsProtocol::copy(const QUrl& src, const QUrl& dest, int permissions, KIO:
 
     if (srcResult.urlType == InvalidUrl) {
         qCWarning(KIO_TAGS) << srcResult.decodedUrl << "copy() invalid src url";
-        error(KIO::ERR_DOES_NOT_EXIST, srcResult.decodedUrl);
-        return;
+        return KIO::WorkerResult::fail(KIO::ERR_DOES_NOT_EXIST, srcResult.decodedUrl);
     } else if (dstResult.urlType == InvalidUrl) {
         qCWarning(KIO_TAGS) << dstResult.decodedUrl << "copy() invalid dest url";
-        error(KIO::ERR_DOES_NOT_EXIST, dstResult.decodedUrl);
-        return;
+        return KIO::WorkerResult::fail(KIO::ERR_DOES_NOT_EXIST, dstResult.decodedUrl);
     }
 
     auto rewriteTags = [] (KFileMetaData::UserMetaData& md, const QString& newTag) {
@@ -117,28 +112,27 @@ void TagsProtocol::copy(const QUrl& src, const QUrl& dest, int permissions, KIO:
         rewriteTags(srcResult.metaData, dstResult.tag);
     }
 
-    finished();
+    return KIO::WorkerResult::pass();
 }
 
-void TagsProtocol::get(const QUrl& url)
+KIO::WorkerResult TagsProtocol::get(const QUrl& url)
 {
     ParseResult result = parseUrl(url);
 
     switch(result.urlType) {
         case InvalidUrl:
             qCWarning(KIO_TAGS) << result.decodedUrl << "get() invalid url";
-            error(KIO::ERR_DOES_NOT_EXIST, result.decodedUrl);
-            return;
+            return KIO::WorkerResult::fail(KIO::ERR_DOES_NOT_EXIST, result.decodedUrl);
         case FileUrl:
-            ForwardingSlaveBase::get(result.fileUrl);
-            return;
+            return ForwardingWorkerBase::get(result.fileUrl);
         case TagUrl:
-            error(KIO::ERR_UNSUPPORTED_ACTION, result.decodedUrl);
-            return;
+            return KIO::WorkerResult::fail(KIO::ERR_UNSUPPORTED_ACTION, result.decodedUrl);
     }
+    Q_UNREACHABLE();
+    return KIO::WorkerResult::pass();
 }
 
-void TagsProtocol::rename(const QUrl& src, const QUrl& dest, KIO::JobFlags flags)
+KIO::WorkerResult TagsProtocol::rename(const QUrl& src, const QUrl& dest, KIO::JobFlags flags)
 {
     Q_UNUSED(flags);
 
@@ -153,12 +147,10 @@ void TagsProtocol::rename(const QUrl& src, const QUrl& dest, KIO::JobFlags flags
 
     if (srcResult.urlType == InvalidUrl) {
         qCWarning(KIO_TAGS) << srcResult.decodedUrl << "rename() invalid src url";
-        error(KIO::ERR_DOES_NOT_EXIST, srcResult.decodedUrl);
-        return;
+        return KIO::WorkerResult::fail(KIO::ERR_DOES_NOT_EXIST, srcResult.decodedUrl);
     } else if (dstResult.urlType == InvalidUrl) {
         qCWarning(KIO_TAGS) << dstResult.decodedUrl << "rename() invalid dest url";
-        error(KIO::ERR_DOES_NOT_EXIST, dstResult.decodedUrl);
-        return;
+        return KIO::WorkerResult::fail(KIO::ERR_DOES_NOT_EXIST, dstResult.decodedUrl);
     }
 
     auto rewriteTags = [] (KFileMetaData::UserMetaData& md, const QString& oldTag, const QString& newTag) {
@@ -193,10 +185,10 @@ void TagsProtocol::rename(const QUrl& src, const QUrl& dest, KIO::JobFlags flags
         }
     }
 
-    finished();
+    return KIO::WorkerResult::pass();
 }
 
-void TagsProtocol::del(const QUrl& url, bool isfile)
+KIO::WorkerResult TagsProtocol::del(const QUrl& url, bool isfile)
 {
     Q_UNUSED(isfile);
 
@@ -212,8 +204,7 @@ void TagsProtocol::del(const QUrl& url, bool isfile)
     switch(result.urlType) {
         case InvalidUrl:
             qCWarning(KIO_TAGS) << result.decodedUrl << "del() invalid url";
-            error(KIO::ERR_DOES_NOT_EXIST, result.decodedUrl);
-            return;
+            return KIO::WorkerResult::fail(KIO::ERR_DOES_NOT_EXIST, result.decodedUrl);
         case FileUrl:
         case TagUrl:
             ResultIterator it = result.query.exec();
@@ -232,29 +223,27 @@ void TagsProtocol::del(const QUrl& url, bool isfile)
             }
     }
 
-    finished();
+    return KIO::WorkerResult::pass();
 }
 
-void TagsProtocol::mimetype(const QUrl& url)
+KIO::WorkerResult TagsProtocol::mimetype(const QUrl& url)
 {
     ParseResult result = parseUrl(url);
 
     switch(result.urlType) {
         case InvalidUrl:
             qCWarning(KIO_TAGS) << result.decodedUrl << "mimetype() invalid url";
-            error(KIO::ERR_DOES_NOT_EXIST, result.decodedUrl);
-            return;
+            return KIO::WorkerResult::fail(KIO::ERR_DOES_NOT_EXIST, result.decodedUrl);
         case FileUrl:
-            ForwardingSlaveBase::mimetype(result.fileUrl);
-            return;
+            return ForwardingWorkerBase::mimetype(result.fileUrl);
         case TagUrl:
             mimeType(QStringLiteral("inode/directory"));
     }
 
-    finished();
+    return KIO::WorkerResult::pass();
 }
 
-void TagsProtocol::mkdir(const QUrl& url, int permissions)
+KIO::WorkerResult TagsProtocol::mkdir(const QUrl& url, int permissions)
 {
     Q_UNUSED(permissions);
 
@@ -264,13 +253,12 @@ void TagsProtocol::mkdir(const QUrl& url, int permissions)
         case InvalidUrl:
         case FileUrl:
             qCWarning(KIO_TAGS) << result.decodedUrl << "mkdir() invalid url";
-            error(KIO::ERR_DOES_NOT_EXIST, result.decodedUrl);
-            return;
+            return KIO::WorkerResult::fail(KIO::ERR_DOES_NOT_EXIST, result.decodedUrl);
         case TagUrl:
             m_unassignedTags << result.tag;
     }
 
-    finished();
+    return KIO::WorkerResult::pass();
 }
 
 bool TagsProtocol::rewriteUrl(const QUrl& url, QUrl& newURL)
@@ -474,8 +462,8 @@ extern "C"
     {
         QCoreApplication app(argc, argv);
         app.setApplicationName(QStringLiteral("kio_tags"));
-        Baloo::TagsProtocol slave(argv[2], argv[3]);
-        slave.dispatchLoop();
+        Baloo::TagsProtocol worker(argv[2], argv[3]);
+        worker.dispatchLoop();
         return 0;
     }
 }
