@@ -9,14 +9,14 @@
 #define BALOO_KIO_TAGS_H_
 
 #include <KFileMetaData/UserMetaData>
-#include <KIO/ForwardingSlaveBase>
+#include <KIO/ForwardingWorkerBase>
 
 #include "query.h"
 
 namespace Baloo
 {
 
-class TagsProtocol : public KIO::ForwardingSlaveBase
+class TagsProtocol : public KIO::ForwardingWorkerBase
 {
     Q_OBJECT
 public:
@@ -34,47 +34,48 @@ public:
      * List all files and folders tagged with the corresponding tag, along with
      * additional tags that can be used to filter the results
      */
-    void listDir(const QUrl& url) override;
+    KIO::WorkerResult listDir(const QUrl& url) override;
 
     /**
      * Will be forwarded for files.
      */
-    void get(const QUrl& url) override;
+    KIO::WorkerResult get(const QUrl& url) override;
 
     /**
      * Files and folders can be copied to the virtual folders resulting
      * is assignment of the corresponding tag.
      */
-    void copy(const QUrl& src, const QUrl& dest, int permissions, KIO::JobFlags flags) override;
+    KIO::WorkerResult copy(const QUrl& src, const QUrl& dest, int permissions, KIO::JobFlags flags) override;
 
     /**
      * File renaming will be forwarded.
      * Folder renaming results in renaming of the tag.
      */
-    void rename(const QUrl& src, const QUrl& dest, KIO::JobFlags flags) override;
+    KIO::WorkerResult rename(const QUrl& src, const QUrl& dest, KIO::JobFlags flags) override;
 
     /**
      * File deletion means remocing the tag
      * Folder deletion will result in deletion of the tag.
      */
-    void del(const QUrl& url, bool isfile) override;
+    KIO::WorkerResult del(const QUrl& url, bool isfile) override;
 
     /**
      * Files will be forwarded.
      * Tags will be created as virtual folders.
      */
-    void mimetype(const QUrl& url) override;
+    KIO::WorkerResult mimetype(const QUrl& url) override;
 
     /**
      * Virtual folders will be created.
      */
-    void mkdir(const QUrl& url, int permissions) override;
+    KIO::WorkerResult mkdir(const QUrl& url, int permissions) override;
 
     /**
      * Files will be forwarded.
      * Tags will be created as virtual folders.
      */
-    void stat(const QUrl& url) override;
+    KIO::WorkerResult stat(const QUrl& url) override;
+
 protected:
     bool rewriteUrl(const QUrl& url, QUrl& newURL) override;
 
