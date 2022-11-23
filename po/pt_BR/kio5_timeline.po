@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kio_timeline\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-08-19 00:13+0000\n"
+"POT-Creation-Date: 2022-11-23 00:43+0000\n"
 "PO-Revision-Date: 2020-02-28 13:55-0300\n"
 "Last-Translator: Luiz Fernando Ranghetti <elchevive@opensuse.org>\n"
 "Language-Team: Portuguese <kde-i18n-pt_BR@kde.org>\n"
@@ -29,12 +29,12 @@ msgctxt ""
 msgid "MMMM yyyy"
 msgstr "MMMM de yyyy"
 
-#: kio_timeline.cpp:118
+#: kio_timeline.cpp:117
 #, kde-format
 msgid "Today"
 msgstr "Hoje"
 
-#: kio_timeline.cpp:119 kio_timeline.cpp:204
+#: kio_timeline.cpp:118 kio_timeline.cpp:197
 #, kde-format
 msgid "Calendar"
 msgstr "Calendário"

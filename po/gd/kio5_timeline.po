@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-08-19 00:13+0000\n"
+"POT-Creation-Date: 2022-11-23 00:43+0000\n"
 "PO-Revision-Date: 2015-11-04 15:13+0000\n"
 "Last-Translator: Michael Bauer <fios@akerbeltz.org>\n"
 "Language-Team: Fòram na Gàidhlig\n"
@@ -35,12 +35,12 @@ msgctxt ""
 msgid "MMMM yyyy"
 msgstr "MMMM yyyy"
 
-#: kio_timeline.cpp:118
+#: kio_timeline.cpp:117
 #, kde-format
 msgid "Today"
 msgstr "An-diugh"
 
-#: kio_timeline.cpp:119 kio_timeline.cpp:204
+#: kio_timeline.cpp:118 kio_timeline.cpp:197
 #, kde-format
 msgid "Calendar"
 msgstr "Am mìosachan"

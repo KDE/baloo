@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kio_timeline\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-08-19 00:13+0000\n"
+"POT-Creation-Date: 2022-11-23 00:43+0000\n"
 "PO-Revision-Date: 2011-08-12 10:22+0200\n"
 "Last-Translator: Manfred Wiese <m.j.wiese@web.de>\n"
 "Language-Team: Low Saxon <kde-i18n-nds@kde.org>\n"
@@ -28,12 +28,12 @@ msgctxt ""
 msgid "MMMM yyyy"
 msgstr ""
 
-#: kio_timeline.cpp:118
+#: kio_timeline.cpp:117
 #, kde-format
 msgid "Today"
 msgstr "Vundaag"
 
-#: kio_timeline.cpp:119 kio_timeline.cpp:204
+#: kio_timeline.cpp:118 kio_timeline.cpp:197
 #, kde-format
 msgid "Calendar"
 msgstr "Kalenner"
