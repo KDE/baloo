@@ -5,7 +5,7 @@ add_subdirectory(qml)
 
 if (BUILD_KINOTIFY)
     add_subdirectory(file)
-    add_subdirectory(kioslaves)
+    add_subdirectory(kioworkers)
     add_subdirectory(tools)
 endif()
 
