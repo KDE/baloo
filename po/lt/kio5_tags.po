@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: l 10n\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-06-03 00:41+0000\n"
+"POT-Creation-Date: 2022-11-25 00:42+0000\n"
 "PO-Revision-Date: 2019-07-14 14:22+0300\n"
 "Last-Translator: Moo\n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
@@ -20,22 +20,22 @@ msgstr ""
 "%100>=20) ? 1 : n%10==0 || (n%100>10 && n%100<20) ? 2 : 3);\n"
 "X-Generator: Poedit 2.2.1\n"
 
-#: kio_tags.cpp:115 kio_tags.cpp:174
+#: kio_tags.cpp:110 kio_tags.cpp:166
 #, kde-format
 msgid "File %1 already has tag %2"
 msgstr "Failas %1 jau turi žymę %2"
 
-#: kio_tags.cpp:310
+#: kio_tags.cpp:298
 #, kde-format
 msgid "Tag"
 msgstr "Žymė"
 
-#: kio_tags.cpp:316
+#: kio_tags.cpp:304
 #, kde-format
 msgid "Tag Fragment"
 msgstr "Žymės fragmentas"
 
-#: kio_tags.cpp:328 kio_tags.cpp:329
+#: kio_tags.cpp:316 kio_tags.cpp:317
 #, kde-format
 msgid "All Tags"
 msgstr "Visos žymės"
