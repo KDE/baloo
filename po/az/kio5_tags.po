@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-06-03 00:41+0000\n"
+"POT-Creation-Date: 2022-11-25 00:42+0000\n"
 "PO-Revision-Date: 2020-04-16 00:33+0400\n"
 "Last-Translator: Xəyyam <xxmn77@gmail.com>\n"
 "Language-Team: Azerbaijani\n"
@@ -17,22 +17,22 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Lokalize 19.12.3\n"
 
-#: kio_tags.cpp:115 kio_tags.cpp:174
+#: kio_tags.cpp:110 kio_tags.cpp:166
 #, kde-format
 msgid "File %1 already has tag %2"
 msgstr "%1 faylı artıq %2 yarlığına malikdir"
 
-#: kio_tags.cpp:310
+#: kio_tags.cpp:298
 #, kde-format
 msgid "Tag"
 msgstr "Yarlıq"
 
-#: kio_tags.cpp:316
+#: kio_tags.cpp:304
 #, kde-format
 msgid "Tag Fragment"
 msgstr "Yarlıq Fraqmenti"
 
-#: kio_tags.cpp:328 kio_tags.cpp:329
+#: kio_tags.cpp:316 kio_tags.cpp:317
 #, kde-format
 msgid "All Tags"
 msgstr "Bütün Yarlıqlar"
