@@ -22,6 +22,7 @@
         "Description[tr]": "Arama klasörlerinin kendiliğinden güncellenmesine izin verir",
         "Description[uk]": "Надає змогу автоматично оновлювати теки пошуку",
         "Description[x-test]": "xxAllows automatic updates of Search Foldersxx",
+        "Description[zh_CN]": "允许自动更新搜索文件夹",
         "Icon": "baloo",
         "Name": "Search Folder Updater",
         "Name[ar]": "مُحدّث مجلدات البحث",
@@ -47,7 +48,8 @@
         "Name[sl]": "Posodobilnik mape iskanja",
         "Name[tr]": "Arama Klasörü Güncelleyici",
         "Name[uk]": "Засіб оновлення тек пошуку",
-        "Name[x-test]": "xxSearch Folder Updaterxx"
+        "Name[x-test]": "xxSearch Folder Updaterxx",
+        "Name[zh_CN]": "搜索文件夹更新程序"
     },
     "X-KDE-Kded-autoload": true,
     "X-KDE-Kded-load-on-demand": false,
