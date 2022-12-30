@@ -1,13 +1,13 @@
 # Copyright (C) YEAR This_file_is_part_of_KDE
 # This file is distributed under the same license as the PACKAGE package.
-# Sergiu Bivol <sergiu@cip.md>, 2014.
+# Sergiu Bivol <sergiu@cip.md>, 2014, 2022.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-02-02 00:41+0000\n"
-"PO-Revision-Date: 2014-10-05 19:19+0300\n"
+"PO-Revision-Date: 2022-12-28 13:52+0000\n"
 "Last-Translator: Sergiu Bivol <sergiu@cip.md>\n"
 "Language-Team: Romanian <kde-i18n-ro@kde.org>\n"
 "Language: ro\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
+"X-Generator: Lokalize 21.12.3\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -97,28 +98,28 @@ msgstr ""
 #: main.cpp:223
 #, kde-format
 msgid "Internal Info"
-msgstr ""
+msgstr "Informație internă"
 
 #: main.cpp:224
 #, kde-format
 msgid "Terms: %1"
-msgstr ""
+msgstr "Termeni: %1"
 
 #: main.cpp:225
 #, kde-format
 msgid "File Name Terms: %1"
-msgstr ""
+msgstr "Termeni denumire de fișier: %1"
 
 #: main.cpp:226
 #, kde-format
 msgid "%1 Terms: %2"
-msgstr ""
+msgstr "Termeni %1: %2"
 
 #: main.cpp:229
 #, kde-format
 msgctxt "Prefix string for internal errors"
 msgid "Internal Error - %1"
-msgstr ""
+msgstr "Eroare internă - %1"
 
 #~ msgid "Vishesh Handa"
 #~ msgstr "Vishesh Handa"
