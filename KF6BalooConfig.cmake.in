@@ -4,8 +4,8 @@ set(BALOO_DBUS_INTERFACES_DIR "@PACKAGE_KDE_INSTALL_DBUSINTERFACEDIR@")
 
 include(CMakeFindDependencyMacro)
 find_dependency(Qt@QT_MAJOR_VERSION@Core "@REQUIRED_QT_VERSION@")
-find_dependency(KF5CoreAddons "@KF_DEP_VERSION@")
-find_dependency(KF5FileMetaData "@KF_DEP_VERSION@")
+find_dependency(KF6CoreAddons "@KF_DEP_VERSION@")
+find_dependency(KF6FileMetaData "@KF_DEP_VERSION@")
 #find_dependency(LMDB)
 
 include(FeatureSummary)
@@ -15,5 +15,5 @@ set_package_properties(LMDB PROPERTIES
     URL "https://symas.com/lmdb"
 )
 
-include("${CMAKE_CURRENT_LIST_DIR}/KF5BalooTargets.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/KF6BalooTargets.cmake")
 @PACKAGE_INCLUDE_QCHTARGETS@

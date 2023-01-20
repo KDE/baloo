@@ -6,11 +6,11 @@ set(BALOO_CODECS_SRCS
     coding.cpp
 )
 
-add_library(KF5BalooCodecs STATIC ${BALOO_CODECS_SRCS})
-add_library(KF5::BalooCodecs ALIAS KF5BalooCodecs)
+add_library(KF6BalooCodecs STATIC ${BALOO_CODECS_SRCS})
+add_library(KF6::BalooCodecs ALIAS KF6BalooCodecs)
 
-set_property(TARGET KF5BalooCodecs PROPERTY POSITION_INDEPENDENT_CODE ON)
-target_link_libraries(KF5BalooCodecs
+set_property(TARGET KF6BalooCodecs PROPERTY POSITION_INDEPENDENT_CODE ON)
+target_link_libraries(KF6BalooCodecs
     Qt${QT_MAJOR_VERSION}::Core
-    KF5::CoreAddons
+    KF6::CoreAddons
 )

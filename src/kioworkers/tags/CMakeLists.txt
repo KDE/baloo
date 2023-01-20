@@ -17,10 +17,10 @@ ecm_qt_declare_logging_category(tags_LIB_SRCS
 add_library(tags MODULE ${tags_LIB_SRCS})
 
 target_link_libraries(tags
-  KF5::KIOCore
-  KF5::FileMetaData
-  KF5::I18n
-  KF5::Baloo
+  KF6::KIOCore
+  KF6::FileMetaData
+  KF6::I18n
+  KF6::Baloo
 )
 
 install(TARGETS tags DESTINATION ${KDE_INSTALL_PLUGINDIR}/kf${QT_MAJOR_VERSION}/kio)

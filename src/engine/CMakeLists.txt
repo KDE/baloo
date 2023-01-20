@@ -42,27 +42,27 @@ if(${BUILD_EXPERIMENTAL})
   set(BALOO_ENGINE_SRCS ${BALOO_ENGINE_SRCS} experimental/databasesanitizer.cpp)
 endif()
 
-add_library(KF5BalooEngine ${BALOO_ENGINE_SRCS})
-add_library(KF5::BalooEngine ALIAS KF5BalooEngine)
+add_library(KF6BalooEngine ${BALOO_ENGINE_SRCS})
+add_library(KF6::BalooEngine ALIAS KF6BalooEngine)
 
-target_link_libraries(KF5BalooEngine
+target_link_libraries(KF6BalooEngine
     PUBLIC
     Qt${QT_MAJOR_VERSION}::Core
-    KF5::CoreAddons
+    KF6::CoreAddons
     ${LMDB_LIBRARIES}
     PRIVATE
-    KF5BalooCodecs
-    KF5::I18n
+    KF6BalooCodecs
+    KF6::I18n
 )
 
-set_target_properties(KF5BalooEngine PROPERTIES
+set_target_properties(KF6BalooEngine PROPERTIES
     VERSION ${BALOO_VERSION}
     SOVERSION ${BALOO_SOVERSION}
     EXPORT_NAME BalooEngine
 )
 
-##target_include_directories(KF5BalooEngine INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF}/Baloo>")
+##target_include_directories(KF6BalooEngine INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF}/Baloo>")
 
-generate_export_header(KF5BalooEngine BASE_NAME BALOO_ENGINE EXPORT_FILE_NAME engine_export.h)
+generate_export_header(KF6BalooEngine BASE_NAME BALOO_ENGINE EXPORT_FILE_NAME engine_export.h)
 
-install(TARGETS KF5BalooEngine EXPORT KF5BalooTargets ${KF_INSTALL_TARGETS_DEFAULT_ARGS} LIBRARY NAMELINK_SKIP)
+install(TARGETS KF6BalooEngine EXPORT KF6BalooTargets ${KF_INSTALL_TARGETS_DEFAULT_ARGS} LIBRARY NAMELINK_SKIP)

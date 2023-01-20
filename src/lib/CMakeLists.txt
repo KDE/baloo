@@ -36,32 +36,32 @@ ecm_qt_declare_logging_category(BALOO_LIB_SRCS
 )
 
 kconfig_add_kcfg_files(BALOO_LIB_SRCS baloosettings.kcfgc GENERATE_MOC)
-add_library(KF5Baloo ${BALOO_LIB_SRCS})
-add_dependencies(KF5Baloo BalooDBusInterfaces)
+add_library(KF6Baloo ${BALOO_LIB_SRCS})
+add_dependencies(KF6Baloo BalooDBusInterfaces)
 
-add_library(KF5::Baloo ALIAS KF5Baloo)
+add_library(KF6::Baloo ALIAS KF6Baloo)
 
-target_link_libraries(KF5Baloo
+target_link_libraries(KF6Baloo
     PUBLIC
     Qt${QT_MAJOR_VERSION}::Core
-    KF5::CoreAddons
-    KF5::FileMetaData
+    KF6::CoreAddons
+    KF6::FileMetaData
 
     PRIVATE
-    KF5::ConfigCore
+    KF6::ConfigCore
     Qt${QT_MAJOR_VERSION}::DBus
-    KF5::Solid
-    KF5::BalooEngine
+    KF6::Solid
+    KF6::BalooEngine
 )
 
-set_target_properties(KF5Baloo PROPERTIES
+set_target_properties(KF6Baloo PROPERTIES
     VERSION ${BALOO_VERSION}
     SOVERSION ${BALOO_SOVERSION}
     EXPORT_NAME Baloo
 )
-target_include_directories(KF5Baloo INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF}/Baloo>")
+target_include_directories(KF6Baloo INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF}/Baloo>")
 
-ecm_generate_export_header(KF5Baloo
+ecm_generate_export_header(KF6Baloo
     EXPORT_FILE_NAME core_export.h
     BASE_NAME BALOO_CORE
     GROUP_BASE_NAME KF
@@ -71,7 +71,7 @@ ecm_generate_export_header(KF5Baloo
     EXCLUDE_DEPRECATED_BEFORE_AND_AT ${EXCLUDE_DEPRECATED_BEFORE_AND_AT}
 )
 
-ecm_generate_headers(KF5Baloo_CamelCase_HEADERS
+ecm_generate_headers(KF6Baloo_CamelCase_HEADERS
     HEADER_NAMES
     Query
     QueryRunnable
@@ -83,42 +83,42 @@ ecm_generate_headers(KF5Baloo_CamelCase_HEADERS
     IndexerConfig
 
     PREFIX baloo
-    REQUIRED_HEADERS KF5Baloo_HEADERS
+    REQUIRED_HEADERS KF6Baloo_HEADERS
 )
 
-install(TARGETS KF5Baloo EXPORT KF5BalooTargets ${KF_INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS KF6Baloo EXPORT KF6BalooTargets ${KF_INSTALL_TARGETS_DEFAULT_ARGS})
 
 install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/core_export.h
     ${CMAKE_CURRENT_BINARY_DIR}/baloosettings.h
-    ${KF5Baloo_HEADERS}
+    ${KF6Baloo_HEADERS}
     DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF}/Baloo/baloo
     COMPONENT Devel
 )
 
 install(FILES
-    ${KF5Baloo_CamelCase_HEADERS}
+    ${KF6Baloo_CamelCase_HEADERS}
     DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF}/Baloo/Baloo
     COMPONENT Devel
 )
 
 if(BUILD_QCH)
     ecm_add_qch(
-        KF5Baloo_QCH
+        KF6Baloo_QCH
         NAME Baloo
-        BASE_NAME KF5Baloo
+        BASE_NAME KF6Baloo
         VERSION ${KF_VERSION}
         ORG_DOMAIN org.kde
         SOURCES # using only public headers, to cover only public API
-            ${KF5Baloo_HEADERS}
+            ${KF6Baloo_HEADERS}
             "${CMAKE_SOURCE_DIR}/docs/distributing.md"
             "${CMAKE_SOURCE_DIR}/docs/development/build-instructions.md"
             "${CMAKE_SOURCE_DIR}/docs/user/searching.md"
         MD_MAINPAGE "${CMAKE_SOURCE_DIR}/README.md"
         LINK_QCHS
             Qt5Core_QCH
-            KF5CoreAddons_QCH
-            KF5FileMetaData_QCH
+            KF6CoreAddons_QCH
+            KF6FileMetaData_QCH
         INCLUDE_DIRS
             ${CMAKE_CURRENT_BINARY_DIR}
         BLANK_MACROS
@@ -146,7 +146,7 @@ endif ()
 include(ECMGeneratePriFile)
 ecm_generate_pri_file(
     BASE_NAME Baloo
-    LIB_NAME KF5Baloo
+    LIB_NAME KF6Baloo
     DEPS "core KCoreAddons KFileMetaData"
     FILENAME_VAR PRI_FILENAME
     INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR_KF}/Baloo

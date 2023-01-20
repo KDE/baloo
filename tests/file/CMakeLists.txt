@@ -10,7 +10,7 @@ ecm_mark_as_test(inotifytest)
 # Storage Devices
 #
 add_executable(storagedevicestest storagedevicestest.cpp)
-target_link_libraries(storagedevicestest Qt${QT_MAJOR_VERSION}::Core KF5::Solid baloofilecommon)
+target_link_libraries(storagedevicestest Qt${QT_MAJOR_VERSION}::Core KF6::Solid baloofilecommon)
 ecm_mark_as_test(storagedevicestest)
 
 # Benchmark, compiled, but not run automatically with ctest

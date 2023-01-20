@@ -7,9 +7,9 @@ ecm_mark_nongui_executable(baloosearch)
 target_compile_definitions(baloosearch PRIVATE -DPROJECT_VERSION="${PROJECT_VERSION}")
 
 target_link_libraries(baloosearch
-  KF5::I18n
-  KF5::CoreAddons
-  KF5::Baloo
+  KF6::I18n
+  KF6::CoreAddons
+  KF6::Baloo
 )
 
 install(TARGETS baloosearch DESTINATION ${KDE_INSTALL_BINDIR})

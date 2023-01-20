@@ -21,11 +21,11 @@ target_link_libraries(baloomonitorplugin
     Qt${QT_MAJOR_VERSION}::Core
     Qt${QT_MAJOR_VERSION}::Qml
     Qt${QT_MAJOR_VERSION}::DBus
-    KF5::I18n
-    KF5::CoreAddons
+    KF6::I18n
+    KF6::CoreAddons
     PRIVATE
-    KF5::Baloo
-    KF5::BalooEngine
+    KF6::Baloo
+    KF6::BalooEngine
 )
 install(TARGETS baloomonitorplugin DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/baloo/experimental)
 

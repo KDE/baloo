@@ -7,11 +7,11 @@ ecm_mark_nongui_executable(balooshow)
 target_compile_definitions(balooshow PRIVATE -DPROJECT_VERSION="${PROJECT_VERSION}")
 
 target_link_libraries(balooshow
-    KF5::Baloo
-    KF5::BalooEngine
-    KF5::FileMetaData
-    KF5::CoreAddons
-    KF5::I18n
+    KF6::Baloo
+    KF6::BalooEngine
+    KF6::FileMetaData
+    KF6::CoreAddons
+    KF6::I18n
 )
 
 install(TARGETS balooshow DESTINATION ${KDE_INSTALL_BINDIR})
