@@ -30,8 +30,8 @@ include(ECMSetupVersion)
 ecm_setup_version(PROJECT
     VARIABLE_PREFIX BALOO
     VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/baloo_version.h"
-    PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF5BalooConfigVersion.cmake"
-    SOVERSION 5
+    PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF6BalooConfigVersion.cmake"
+    SOVERSION 6
 )
 
 # include optional and extra cmake stuff
@@ -63,7 +63,7 @@ if (QT_MAJOR_VERSION STREQUAL "6")
     find_package(Qt6Core5Compat)
 endif()
 
-find_package(KF5 ${KF_DEP_VERSION} REQUIRED COMPONENTS CoreAddons Config DBusAddons I18n IdleTime Solid FileMetaData Crash KIO)
+find_package(KF6 ${KF_DEP_VERSION} REQUIRED COMPONENTS CoreAddons Config DBusAddons I18n IdleTime Solid FileMetaData Crash KIO)
 
 find_package(LMDB)
 set_package_properties(LMDB
@@ -121,37 +121,37 @@ if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/po")
 endif()
 
 # config files
-set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KF5Baloo")
+set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KF6Baloo")
 
 if (BUILD_QCH)
     ecm_install_qch_export(
-        TARGETS KF5Baloo_QCH
-        FILE KF5BalooQchTargets.cmake
+        TARGETS KF6Baloo_QCH
+        FILE KF6BalooQchTargets.cmake
         DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
         COMPONENT Devel
     )
-    set(PACKAGE_INCLUDE_QCHTARGETS "include(\"\${CMAKE_CURRENT_LIST_DIR}/KF5BalooQchTargets.cmake\")")
+    set(PACKAGE_INCLUDE_QCHTARGETS "include(\"\${CMAKE_CURRENT_LIST_DIR}/KF6BalooQchTargets.cmake\")")
 endif()
 
 configure_package_config_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/KF5BalooConfig.cmake.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/KF5BalooConfig.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/KF6BalooConfig.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/KF6BalooConfig.cmake"
     PATH_VARS KDE_INSTALL_DBUSINTERFACEDIR
     INSTALL_DESTINATION ${CMAKECONFIG_INSTALL_DIR}
 )
 
 # install targets
 install(FILES
-    "${CMAKE_CURRENT_BINARY_DIR}/KF5BalooConfig.cmake"
-    "${CMAKE_CURRENT_BINARY_DIR}/KF5BalooConfigVersion.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/KF6BalooConfig.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/KF6BalooConfigVersion.cmake"
     DESTINATION ${CMAKECONFIG_INSTALL_DIR}
     COMPONENT devel
 )
 
-install(EXPORT KF5BalooTargets
-    NAMESPACE KF5::
+install(EXPORT KF6BalooTargets
+    NAMESPACE KF6::
     DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
-    FILE KF5BalooTargets.cmake)
+    FILE KF6BalooTargets.cmake)
 
 install(FILES
     "${CMAKE_CURRENT_BINARY_DIR}/baloo_version.h"

@@ -18,9 +18,9 @@ ecm_qt_declare_logging_category(kio_timeline_SRCS
 add_library(timeline MODULE ${kio_timeline_SRCS})
 
 target_link_libraries(timeline
-  KF5::KIOCore
-  KF5::I18n
-  KF5::Baloo
+  KF6::KIOCore
+  KF6::I18n
+  KF6::Baloo
 )
 
 install(TARGETS timeline DESTINATION ${KDE_INSTALL_PLUGINDIR}/kf${QT_MAJOR_VERSION}/kio)

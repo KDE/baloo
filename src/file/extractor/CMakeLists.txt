@@ -28,12 +28,12 @@ target_compile_definitions(baloo_file_extractor PRIVATE -DPROJECT_VERSION="${PRO
 
 target_link_libraries(baloo_file_extractor
   Qt${QT_MAJOR_VERSION}::Gui
-  KF5::FileMetaData
-  KF5::ConfigCore
-  KF5::Solid
-  KF5::BalooEngine
-  KF5::Crash
-  KF5::IdleTime
+  KF6::FileMetaData
+  KF6::ConfigCore
+  KF6::Solid
+  KF6::BalooEngine
+  KF6::Crash
+  KF6::IdleTime
 )
 
 # KF6 TODO - remove compatibility symlink to bin/baloo_file_extractor

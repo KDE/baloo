@@ -7,7 +7,7 @@ endif()
 
 MACRO(BALOO_FILE_AUTO_TESTS)
   FOREACH(_testname ${ARGN})
-    ecm_add_test(${_testname}.cpp TEST_NAME ${_testname} LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test baloofilecommon KF5::Baloo)
+    ecm_add_test(${_testname}.cpp TEST_NAME ${_testname} LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test baloofilecommon KF6::Baloo)
   ENDFOREACH()
 ENDMACRO()
 
@@ -28,7 +28,7 @@ baloo_file_auto_tests(
 set(fileWatch_SRC filewatchtest.cpp)
 ecm_add_test(${fileWatch_SRC}
     TEST_NAME "filewatchtest"
-    LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test Qt${QT_MAJOR_VERSION}::DBus KF5::Baloo KF5::FileMetaData baloofilecommon
+    LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test Qt${QT_MAJOR_VERSION}::DBus KF6::Baloo KF6::FileMetaData baloofilecommon
 )
 
 #
@@ -36,7 +36,7 @@ ecm_add_test(${fileWatch_SRC}
 #
 ecm_add_test(propertyserializationtest.cpp
     TEST_NAME "propertyserializationtest"
-    LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test KF5::FileMetaData baloofilecommon
+    LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test KF6::FileMetaData baloofilecommon
 )
 
 configure_file(testsconfig.h.in
@@ -52,4 +52,4 @@ target_link_libraries(extractorcommandpipe_worker
 
 # Benchmark, compiled, but not run automatically with ctest
 add_executable(regularexpcachebenchmark regularexpcachebenchmark.cpp)
-target_link_libraries(regularexpcachebenchmark Qt${QT_MAJOR_VERSION}::Test baloofilecommon KF5::Baloo)
+target_link_libraries(regularexpcachebenchmark Qt${QT_MAJOR_VERSION}::Test baloofilecommon KF6::Baloo)

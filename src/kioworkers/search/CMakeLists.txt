@@ -3,9 +3,9 @@ add_definitions(-DTRANSLATION_DOMAIN=\"kio5_baloosearch\")
 add_library(kio_baloosearch MODULE kio_search.cpp)
 
 target_link_libraries(kio_baloosearch
-  KF5::KIOCore
-  KF5::I18n
-  KF5::Baloo
+  KF6::KIOCore
+  KF6::I18n
+  KF6::Baloo
   Qt${QT_MAJOR_VERSION}::Network
 )
 
