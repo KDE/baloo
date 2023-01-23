@@ -58,11 +58,7 @@ QString File::path() const
     return d->url;
 }
 
-#if BALOO_CORE_BUILD_DEPRECATED_SINCE(5, 91)
-KFileMetaData::PropertyMap File::properties() const
-#else
 KFileMetaData::PropertyMultiMap File::properties() const
-#endif
 {
     return d->propertyMap;
 }

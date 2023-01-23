@@ -96,17 +96,6 @@ void IndexerConfig::setExcludeMimetypes(const QStringList& excludeMimetypes)
     d->m_settings.setExcludedMimetypes(excludeMimetypes);
 }
 
-#if BALOO_CORE_BUILD_DEPRECATED_SINCE(5, 69)
-bool IndexerConfig::firstRun() const
-{
-    return false;
-}
-
-void IndexerConfig::setFirstRun(bool) const
-{
-}
-#endif
-
 bool IndexerConfig::indexHidden() const
 {
     return d->m_settings.indexHiddenFolders();
