@@ -116,7 +116,7 @@ if(BUILD_QCH)
             "${CMAKE_SOURCE_DIR}/docs/user/searching.md"
         MD_MAINPAGE "${CMAKE_SOURCE_DIR}/README.md"
         LINK_QCHS
-            Qt5Core_QCH
+            Qt6Core_QCH
             KF6CoreAddons_QCH
             KF6FileMetaData_QCH
         INCLUDE_DIRS
