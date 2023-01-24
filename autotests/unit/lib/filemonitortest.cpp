@@ -79,7 +79,7 @@ void FileMonitorTest::test()
     QCOMPARE(variantList.size(), 1);
 
     QVariant var = variantList.front();
-    QCOMPARE(var.type(), QVariant::String);
+    QCOMPARE(var.typeId(), QMetaType::QString);
     QCOMPARE(var.toString(), file);
 }
 
