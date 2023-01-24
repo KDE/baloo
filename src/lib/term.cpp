@@ -48,9 +48,9 @@ Term::Term(const QString& property, const QVariant& value, Term::Comparator c)
     d->m_value = value;
 
     if (c == Auto) {
-        if (value.type() == QVariant::String) {
+        if (value.typeId() == QMetaType::QString) {
             d->m_comp = Contains;
-        } else if (value.type() == QVariant::DateTime) {
+        } else if (value.typeId() == QMetaType::QDateTime) {
             d->m_comp = Contains;
         } else {
             d->m_comp = Equal;
@@ -295,17 +295,17 @@ namespace {
     // QJson does not recognize QDate/QDateTime parameters. We try to guess
     // and see if they can be converted into date/datetime.
     QVariant tryConvert(const QVariant& var) {
-        if (var.canConvert(QVariant::DateTime)) {
-            QDateTime dt = var.toDateTime();
-            if (!dt.isValid()) {
-                return var;
-            }
-
-            if (!var.toString().contains(QLatin1Char('T'))) {
-                return QVariant(var.toDate());
-            }
-            return dt;
+    if (var.canConvert<QDateTime>()) {
+        QDateTime dt = var.toDateTime();
+        if (!dt.isValid()) {
+            return var;
         }
+
+        if (!var.toString().contains(QLatin1Char('T'))) {
+            return QVariant(var.toDate());
+        }
+        return dt;
+    }
         return var;
     }
 }
@@ -344,7 +344,7 @@ Term Term::fromVariantMap(const QVariantMap& map)
     term.setProperty(prop);
 
     QVariant value = map.value(prop);
-    if (value.type() == QVariant::Map) {
+    if (value.typeId() == QMetaType::QVariantMap) {
         QVariantMap mapVal = value.toMap();
         if (mapVal.size() != 1) {
             return term;
@@ -465,12 +465,12 @@ QDebug operator <<(QDebug d, const Baloo::Term& t)
             d << t.property();
         }
 	d << comparatorToString(t.comparator());
-        if (t.value().type() == QVariant::String) {
+    if (t.value().typeId() == QMetaType::QString) {
             d << QLatin1Char('"') << t.value().toString() << QLatin1Char('"');
-        } else {
+    } else {
             d << t.value().typeName() << QLatin1Char('(')
               << t.value().toString() << QLatin1Char(')');
-        }
+    }
     }
     else {
         d << "[" << operationToString(t.operation());

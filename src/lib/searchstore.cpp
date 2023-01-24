@@ -63,19 +63,17 @@ QPair<quint32, quint32> calculateTimeRange(const QDateTime& dt, Term::Comparator
 struct InternalProperty {
     const char* propertyName;
     const char* prefix;
-    QVariant::Type valueType;
+    QMetaType::Type valueType;
 };
-constexpr std::array<InternalProperty, 7> internalProperties {{
-    { "content",     "",     QVariant::String },
-    { "filename",    "F",    QVariant::String },
-    { "mimetype",    "M",    QVariant::String },
-    { "rating",      "R",    QVariant::Int    },
-    { "tag",         "TAG-", QVariant::String },
-    { "tags",        "TA",   QVariant::String },
-    { "usercomment", "C",    QVariant::String }
-}};
+constexpr std::array<InternalProperty, 7> internalProperties{{{"content", "", QMetaType::QString},
+                                                              {"filename", "F", QMetaType::QString},
+                                                              {"mimetype", "M", QMetaType::QString},
+                                                              {"rating", "R", QMetaType::Int},
+                                                              {"tag", "TAG-", QMetaType::QString},
+                                                              {"tags", "TA", QMetaType::QString},
+                                                              {"usercomment", "C", QMetaType::QString}}};
 
-std::pair<QByteArray, QVariant::Type> propertyInfo(const QByteArray& property)
+std::pair<QByteArray, QMetaType::Type> propertyInfo(const QByteArray &property)
 {
     auto it = std::find_if(std::begin(internalProperties), std::end(internalProperties),
         [&property] (const InternalProperty& entry) { return property == entry.propertyName; });
@@ -84,10 +82,10 @@ std::pair<QByteArray, QVariant::Type> propertyInfo(const QByteArray& property)
     } else {
         KFileMetaData::PropertyInfo pi = KFileMetaData::PropertyInfo::fromName(QString::fromUtf8(property));
         if (pi.property() == KFileMetaData::Property::Empty) {
-            return { QByteArray(), QVariant::Invalid };
+            return {QByteArray(), QMetaType::UnknownType};
         }
         int propPrefix = static_cast<int>(pi.property());
-        return { 'X' + QByteArray::number(propPrefix) + '-', pi.valueType() };
+        return {QByteArray('X' + QByteArray::number(propPrefix) + '-'), pi.valueType()};
     }
 }
 }
@@ -215,7 +213,7 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
     }
     Q_ASSERT(term.value().isValid());
     Q_ASSERT(term.comparator() != Term::Auto);
-    Q_ASSERT(term.comparator() == Term::Contains ? term.value().type() == QVariant::String : true);
+    Q_ASSERT(term.comparator() == Term::Contains ? term.value().typeId() == QMetaType::QString : true);
 
     const QVariant value = term.value();
     const QByteArray property = term.property().toLower().toUtf8();
@@ -243,7 +241,7 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
         return tr->docUrlIter(id);
     }
     else if (property == "modified" || property == "mtime") {
-        if (value.type() == QVariant::ByteArray) {
+        if (value.typeId() == QMetaType::QByteArray) {
             // Used by Baloo::Query
             QByteArray ba = value.toByteArray();
             Q_ASSERT(ba.size() >= 4);
@@ -268,16 +266,14 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
             }
 
             return tr->mTimeRangeIter(startDate.startOfDay().toSecsSinceEpoch(), endDate.endOfDay().toSecsSinceEpoch());
-        }
-        else if (value.type() == QVariant::String) {
+        } else if (value.typeId() == QMetaType::QString) {
             const QDateTime dt = value.toDateTime();
             QPair<quint32, quint32> timerange = calculateTimeRange(dt, term.comparator());
             if ((timerange.first == 0) && (timerange.second == 0)) {
                 return nullptr;
             }
             return tr->mTimeRangeIter(timerange.first, timerange.second);
-        }
-        else {
+        } else {
             Q_ASSERT_X(0, "SearchStore::constructQuery", "modified property must contain date/datetime values");
             return nullptr;
         }
@@ -301,16 +297,16 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
     }
 
     QByteArray prefix;
-    QVariant::Type valueType = QVariant::String;
+    QMetaType::Type valueType = QMetaType::QString;
     if (!property.isEmpty()) {
         std::tie(prefix, valueType) = propertyInfo(property);
-        if (valueType == QVariant::Invalid) {
+        if (valueType == QMetaType::UnknownType) {
             return nullptr;
         }
     }
 
     auto com = term.comparator();
-    if (com == Term::Contains && valueType == QVariant::Int) {
+    if (com == Term::Contains && valueType == QMetaType::Int) {
         com = Term::Equal;
     }
     if (com == Term::Contains) {
@@ -332,7 +328,7 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
 
     // FIXME -- has to be kept in sync with the code from
     // Baloo::Result::add
-    if (valueType == QVariant::Int) {
+    if (valueType == QMetaType::Int) {
         qlonglong intVal = value.toLongLong();
 
         if (term.comparator() == Term::Greater) {
@@ -343,11 +339,11 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
 
         return tr->postingCompIterator(prefix, intVal, pcom);
 
-    } else if (valueType == QVariant::Double) {
+    } else if (valueType == QMetaType::Double) {
         double dVal = value.toDouble();
         return tr->postingCompIterator(prefix, dVal, pcom);
 
-    } else if (valueType == QVariant::DateTime) {
+    } else if (valueType == QMetaType::QDateTime) {
         QDateTime dt = value.toDateTime();
         const QByteArray ba = dt.toString(Qt::ISODate).toUtf8();
         return tr->postingCompIterator(prefix, ba, pcom);

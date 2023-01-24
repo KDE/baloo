@@ -191,7 +191,7 @@ int main(int argc, char* argv[])
         }
         for (auto it = propMap.constBegin(); it != propMap.constEnd(); ++it) {
             QString str;
-            if (it.value().type() == QVariant::List) {
+            if (it.value().typeId() == QMetaType::QVariantList) {
                 QStringList list;
                 const auto vars = it.value().toList();
                 for (const QVariant& var : vars) {

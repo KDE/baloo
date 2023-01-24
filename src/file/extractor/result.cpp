@@ -32,7 +32,7 @@ Result::Result(const QString& url, const QString& mimetype, const Flags& flags)
 
 void Result::add(KFileMetaData::Property::Property property, const QVariant& value)
 {
-    if (value.type() == QVariant::StringList) {
+    if (value.typeId() == QMetaType::QStringList) {
         const auto valueList = value.toStringList();
         for (const auto& val : valueList) {
             m_map.insert(property, val);
@@ -44,22 +44,18 @@ void Result::add(KFileMetaData::Property::Property property, const QVariant& val
     int propNum = static_cast<int>(property);
     QByteArray prefix = 'X' + QByteArray::number(propNum) + '-';
 
-    if (value.type() == QVariant::Bool) {
+    if (value.typeId() == QMetaType::Bool) {
         m_doc.addTerm(prefix);
-    }
-    else if (value.type() == QVariant::Int || value.type() == QVariant::UInt) {
+    } else if (value.typeId() == QMetaType::Int || value.typeId() == QMetaType::UInt) {
         const QByteArray term = prefix + value.toString().toUtf8();
         m_doc.addTerm(term);
-    }
-    else if (value.type() == QVariant::Date) {
+    } else if (value.typeId() == QMetaType::QDate) {
         const QByteArray term = prefix + value.toDate().toString(Qt::ISODate).toUtf8();
         m_doc.addTerm(term);
-    }
-    else if (value.type() == QVariant::DateTime) {
+    } else if (value.typeId() == QMetaType::QDateTime) {
         const QByteArray term = prefix + value.toDateTime().toString(Qt::ISODate).toUtf8();
         m_doc.addTerm(term);
-    }
-    else if (value.type() == QVariant::StringList) {
+    } else if (value.typeId() == QMetaType::QStringList) {
         bool shouldBeIndexed = KFileMetaData::PropertyInfo(property).shouldBeIndexed();
         const auto valueList = value.toStringList();
         for (const auto& val : valueList)
@@ -72,8 +68,7 @@ void Result::add(KFileMetaData::Property::Property property, const QVariant& val
                 m_termGen.indexText(val);
             }
         }
-    }
-    else {
+    } else {
         const QString val = value.toString();
         if (val.isEmpty()) {
             return;
