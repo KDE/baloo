@@ -3,19 +3,19 @@ target_link_libraries(indexerconfigtest baloofilecommon)
 ecm_mark_as_test(indexerconfigtest)
 
 add_executable(inotifytest inotify.cpp)
-target_link_libraries(inotifytest Qt${QT_MAJOR_VERSION}::Core baloofilecommon)
+target_link_libraries(inotifytest Qt6::Core baloofilecommon)
 ecm_mark_as_test(inotifytest)
 
 #
 # Storage Devices
 #
 add_executable(storagedevicestest storagedevicestest.cpp)
-target_link_libraries(storagedevicestest Qt${QT_MAJOR_VERSION}::Core KF6::Solid baloofilecommon)
+target_link_libraries(storagedevicestest Qt6::Core KF6::Solid baloofilecommon)
 ecm_mark_as_test(storagedevicestest)
 
 # Benchmark, compiled, but not run automatically with ctest
 add_executable(filtereddiriteratorbenchmark filtereddiriteratorbenchmark.cpp)
-target_link_libraries(filtereddiriteratorbenchmark Qt${QT_MAJOR_VERSION}::Core baloofilecommon)
+target_link_libraries(filtereddiriteratorbenchmark Qt6::Core baloofilecommon)
 
 #
 # Remaining Time //TODO: rewrite the test to use mainhub, instead of using the indexers directly
@@ -30,7 +30,7 @@ target_link_libraries(filtereddiriteratorbenchmark Qt${QT_MAJOR_VERSION}::Core b
 add_dependencies(remainingtimetest-manual BalooDBusInterfaces)
 
 target_link_libraries(remainingtimetest-manual
-  Qt${QT_MAJOR_VERSION}::Core
+  Qt6::Core
   baloofilecommon
 )
 

@@ -43,13 +43,13 @@ add_library(KF6::Baloo ALIAS KF6Baloo)
 
 target_link_libraries(KF6Baloo
     PUBLIC
-    Qt${QT_MAJOR_VERSION}::Core
+    Qt6::Core
     KF6::CoreAddons
     KF6::FileMetaData
 
     PRIVATE
     KF6::ConfigCore
-    Qt${QT_MAJOR_VERSION}::DBus
+    Qt6::DBus
     KF6::Solid
     KF6::BalooEngine
 )

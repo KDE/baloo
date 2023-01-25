@@ -6,9 +6,9 @@ target_link_libraries(kio_baloosearch
   KF6::KIOCore
   KF6::I18n
   KF6::Baloo
-  Qt${QT_MAJOR_VERSION}::Network
+  Qt6::Network
 )
 
 set_target_properties(kio_baloosearch PROPERTIES OUTPUT_NAME "baloosearch")
 
-install(TARGETS kio_baloosearch DESTINATION ${KDE_INSTALL_PLUGINDIR}/kf${QT_MAJOR_VERSION}/kio)
+install(TARGETS kio_baloosearch DESTINATION ${KDE_INSTALL_PLUGINDIR}/kf6/kio)
