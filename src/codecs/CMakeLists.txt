@@ -11,6 +11,6 @@ add_library(KF6::BalooCodecs ALIAS KF6BalooCodecs)
 
 set_property(TARGET KF6BalooCodecs PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_link_libraries(KF6BalooCodecs
-    Qt${QT_MAJOR_VERSION}::Core
+    Qt6::Core
     KF6::CoreAddons
 )

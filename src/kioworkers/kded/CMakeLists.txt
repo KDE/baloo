@@ -10,4 +10,4 @@ target_link_libraries(baloosearchmodule
     KF6::KIOCore
 )
 
-install(TARGETS baloosearchmodule DESTINATION ${KDE_INSTALL_PLUGINDIR}/kf${QT_MAJOR_VERSION}/kded)
+install(TARGETS baloosearchmodule DESTINATION ${KDE_INSTALL_PLUGINDIR}/kf6/kded)

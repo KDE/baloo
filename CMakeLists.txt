@@ -58,10 +58,7 @@ add_feature_info(EXP ${BUILD_EXPERIMENTAL} "Build experimental features")
 
 
 # set up build dependencies
-find_package(Qt${QT_MAJOR_VERSION} ${REQUIRED_QT_VERSION} REQUIRED NO_MODULE COMPONENTS Core DBus Widgets Qml Quick Test)
-if (QT_MAJOR_VERSION STREQUAL "6")
-    find_package(Qt6Core5Compat)
-endif()
+find_package(Qt6 ${REQUIRED_QT_VERSION} REQUIRED NO_MODULE COMPONENTS Core DBus Widgets Qml Quick Test)
 
 find_package(KF6 ${KF_DEP_VERSION} REQUIRED COMPONENTS CoreAddons Config DBusAddons I18n IdleTime Solid FileMetaData Crash KIO)
 

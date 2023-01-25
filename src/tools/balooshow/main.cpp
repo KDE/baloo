@@ -257,11 +257,7 @@ int main(int argc, char* argv[])
                         }
 
                         bool ok;
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
                         const QStringView prop = QStringView(word).mid(1, posOfNonNumeric - 1);
-#else
-                        const QStringRef prop = word.midRef(1, posOfNonNumeric - 1);
-#endif
                         int propNum = prop.toInt(&ok);
                         const QString value = word.mid(posOfNonNumeric + 1);
                         if (!ok) {

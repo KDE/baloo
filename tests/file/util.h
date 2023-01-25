@@ -25,11 +25,7 @@ inline void printIOUsage()
     while (!stream.atEnd()) {
         const QString line = stream.readLine();
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         const QStringView str(line);
-#else
-        const QStringRef str(&line);
-#endif
 
         const QString rchar(QStringLiteral("rchar: "));
         if (str.startsWith(rchar)) {

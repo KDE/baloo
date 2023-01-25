@@ -23,4 +23,4 @@ target_link_libraries(tags
   KF6::Baloo
 )
 
-install(TARGETS tags DESTINATION ${KDE_INSTALL_PLUGINDIR}/kf${QT_MAJOR_VERSION}/kio)
+install(TARGETS tags DESTINATION ${KDE_INSTALL_PLUGINDIR}/kf6/kio)
