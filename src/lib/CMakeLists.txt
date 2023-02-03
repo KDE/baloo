@@ -1,9 +1,3 @@
-set(DBUS_INTERFACES
-  ${CMAKE_BINARY_DIR}/src/dbus/maininterface.cpp
-)
-
-SET_SOURCE_FILES_PROPERTIES(${DBUS_INTERFACES} PROPERTIES GENERATED 1)
-
 set(BALOO_LIB_SRCS
     term.cpp
     query.cpp
@@ -23,8 +17,6 @@ set(BALOO_LIB_SRCS
     ../file/propertydata.cpp
 
     searchstore.cpp
-
-    ${DBUS_INTERFACES}
 )
 ecm_qt_declare_logging_category(BALOO_LIB_SRCS
     HEADER baloodebug.h
@@ -37,7 +29,6 @@ ecm_qt_declare_logging_category(BALOO_LIB_SRCS
 
 kconfig_add_kcfg_files(BALOO_LIB_SRCS baloosettings.kcfgc GENERATE_MOC)
 add_library(KF6Baloo ${BALOO_LIB_SRCS})
-add_dependencies(KF6Baloo BalooDBusInterfaces)
 
 add_library(KF6::Baloo ALIAS KF6Baloo)
 
@@ -52,6 +43,7 @@ target_link_libraries(KF6Baloo
     Qt6::DBus
     KF6::Solid
     KF6::BalooEngine
+    BalooDBusMainInterface
 )
 
 set_target_properties(KF6Baloo PROPERTIES
