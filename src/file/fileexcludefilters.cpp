@@ -126,6 +126,7 @@ const char* const s_defaultFolderExcludeFilters[] = {
     "node_modules",
     "node_packages",
     "nbproject",
+    ".terraform",
 
     //misc
     "core-dumps",
@@ -135,7 +136,7 @@ const char* const s_defaultFolderExcludeFilters[] = {
     nullptr
 };
 
-const int s_defaultFolderExcludeFiltersVersion = 2;
+const int s_defaultFolderExcludeFiltersVersion = 3;
 
 const char* const s_sourceCodeMimeTypes[] = {
     "text/css",
@@ -229,4 +230,3 @@ int Baloo::defaultExcludeMimetypesVersion()
     // The +1 is the image, video and audio mimetypes
     return s_sourceCodeMimeTypesVersion + 1;
 }
-
