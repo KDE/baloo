@@ -76,6 +76,7 @@ const char* const s_defaultFileExcludeFilters[] = {
     "*.sql",     // SQL database dumps
     "*.sql.gz",  // Compressed SQL database dumps
     "*.ytdl",    // youtube-dl temp files
+    "*.tfstate*", // Terraform state files
 
     // Bytecode files
     "*.class", // Java
@@ -98,7 +99,7 @@ const char* const s_defaultFileExcludeFilters[] = {
     nullptr
 };
 
-const int s_defaultFileExcludeFiltersVersion = 8;
+const int s_defaultFileExcludeFiltersVersion = 9;
 
 const char* const s_defaultFolderExcludeFilters[] = {
     "po",
