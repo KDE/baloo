@@ -29,6 +29,7 @@ target_compile_definitions(baloo_file_extractor PRIVATE -DPROJECT_VERSION="${PRO
 target_link_libraries(baloo_file_extractor
   Qt${QT_MAJOR_VERSION}::Gui
   KF5::FileMetaData
+  KF5::I18n
   KF5::ConfigCore
   KF5::Solid
   KF5::BalooEngine
