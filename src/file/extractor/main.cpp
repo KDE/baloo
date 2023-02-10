@@ -10,6 +10,9 @@
 #include "../priority.h"
 
 #include <KCrash>
+#include <KAboutData>
+#include <KLocalizedString>
+#include <QStandardPaths>
 
 #include <QGuiApplication>
 #include <QSessionManager>
@@ -22,6 +25,9 @@ int main(int argc, char* argv[])
 
     QGuiApplication::setDesktopSettingsAware(false);
     QGuiApplication app(argc, argv);
+
+    KAboutData aboutData(QStringLiteral("baloo"), i18n("Baloo File Extractor"), QLatin1String(PROJECT_VERSION));
+    KAboutData::setApplicationData(aboutData);
 
     KCrash::initialize();
 
