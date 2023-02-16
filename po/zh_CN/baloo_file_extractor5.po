@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kdeorg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-11-25 00:42+0000\n"
+"POT-Creation-Date: 2023-02-12 00:54+0000\n"
 "PO-Revision-Date: 2023-02-15 11:03\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
@@ -14,25 +14,20 @@ msgstr ""
 "X-Crowdin-Project: kdeorg\n"
 "X-Crowdin-Project-ID: 269464\n"
 "X-Crowdin-Language: zh-CN\n"
-"X-Crowdin-File: /kf5-trunk/messages/baloo/kio5_tags.pot\n"
-"X-Crowdin-File-ID: 5614\n"
+"X-Crowdin-File: /kf5-trunk/messages/baloo/baloo_file_extractor5.pot\n"
+"X-Crowdin-File-ID: 41749\n"
 
-#: kio_tags.cpp:110 kio_tags.cpp:166
 #, kde-format
-msgid "File %1 already has tag %2"
-msgstr "文件 %1 已经分配标签 %2"
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr ""
 
-#: kio_tags.cpp:298
 #, kde-format
-msgid "Tag"
-msgstr "标签"
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr ""
 
-#: kio_tags.cpp:304
+#: main.cpp:29
 #, kde-format
-msgid "Tag Fragment"
-msgstr "标签 Fragment"
-
-#: kio_tags.cpp:316 kio_tags.cpp:317
-#, kde-format
-msgid "All Tags"
-msgstr "所有标签"
+msgid "Baloo File Extractor"
+msgstr ""
