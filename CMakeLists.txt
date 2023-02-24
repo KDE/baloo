@@ -45,6 +45,7 @@ include(ECMAddQch)
 include(ECMQtDeclareLoggingCategory)
 include(ECMMarkNonGuiExecutable)
 include(ECMGenerateExportHeader)
+include(ECMGeneratePkgConfigFile)
 include(ECMConfiguredInstall)
 include(ECMDeprecationSettings)
 
