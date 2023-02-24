@@ -125,14 +125,13 @@ if(BUILD_QCH)
 endif()
 
 if (NOT WIN32)
-   configure_file (
-      ${CMAKE_CURRENT_SOURCE_DIR}/Baloo.pc.cmake
-      ${CMAKE_CURRENT_BINARY_DIR}/Baloo.pc
-      )
-   install (
-      FILES ${CMAKE_CURRENT_BINARY_DIR}/Baloo.pc
-      DESTINATION ${KDE_INSTALL_LIBDIR}/pkgconfig
-      )
+    ecm_generate_pkgconfig_file(BASE_NAME KF6Baloo
+        LIB_NAME KF6Baloo
+        INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR_KF}/Baloo
+        DEPS Qt6Core
+        DESCRIPTION "Baloo is a file indexing and searching framework for Linux"
+        INSTALL
+    )
 endif ()
 
 include(ECMGeneratePriFile)
