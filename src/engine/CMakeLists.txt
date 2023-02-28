@@ -1,3 +1,5 @@
+add_definitions(-DTRANSLATION_DOMAIN=\"balooengine5\")
+
 set(BALOO_ENGINE_SRCS
     andpostingiterator.cpp
     database.cpp
