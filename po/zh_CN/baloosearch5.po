@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: kdeorg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-08-19 00:13+0000\n"
-"PO-Revision-Date: 2023-01-02 07:11\n"
+"PO-Revision-Date: 2023-02-24 12:42\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -20,12 +20,14 @@ msgstr ""
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr "KDE 中国, Feng Chao"
+msgstr "KDE 中国, DuckSoft, Feng Chao, Guo Yunhe, Tyson Tan"
 
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
-msgstr "kde-china@kde.org, chaofeng111@gmail.com"
+msgstr ""
+"kde-china@kde.org, DuckSoft@kde.org, chaofeng111@gmail.com, i@guoyunhe.me, "
+"tysontan@tysontan.com"
 
 #: main.cpp:27
 #, kde-format
@@ -35,7 +37,7 @@ msgstr "Baloo 搜索"
 #: main.cpp:29
 #, kde-format
 msgid "A tool to search through the files indexed by Baloo"
-msgstr "通过 Baloo 搜索已索引文件的工具"
+msgstr "用于搜索已被 Baloo 索引过的文件的工具"
 
 #: main.cpp:31
 #, kde-format
@@ -50,7 +52,7 @@ msgstr "最大结果数"
 #: main.cpp:38
 #, kde-format
 msgid "limit"
-msgstr "限制"
+msgstr "limit"
 
 #: main.cpp:40
 #, kde-format
@@ -60,7 +62,7 @@ msgstr "开始搜索的偏移量"
 #: main.cpp:41
 #, kde-format
 msgid "offset"
-msgstr "偏移"
+msgstr "offset"
 
 #: main.cpp:43
 #, kde-format
@@ -80,7 +82,7 @@ msgstr "限制只在指定目录搜索"
 #: main.cpp:47
 #, kde-format
 msgid "directory"
-msgstr "目录"
+msgstr "directory"
 
 #: main.cpp:49
 #, kde-format
@@ -105,4 +107,4 @@ msgstr "%1 不是一个有效的目录"
 #: main.cpp:104
 #, kde-format
 msgid "Elapsed: %1 msecs"
-msgstr "已经过去：%1 毫秒"
+msgstr "已耗时：%1 毫秒"

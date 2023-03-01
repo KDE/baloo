@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kio_baloosearch\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2019-08-12 02:44+0200\n"
+"POT-Creation-Date: 2021-06-05 00:13+0000\n"
 "PO-Revision-Date: 2014-09-14 11:45+0200\n"
 "Last-Translator: Chusslove Illich <caslav.ilic@gmx.net>\n"
 "Language-Team: Serbian <kde-i18n-sr@kde.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "X-Text-Markup: kde4\n"
 "X-Environment: kde\n"
 
-#: kio_search.cpp:48
+#: kio_search.cpp:47
 #, kde-format
 msgid "Search Folder"
 msgstr "Fascikla pretrage"

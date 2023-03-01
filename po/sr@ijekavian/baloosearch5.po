@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloosearch\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-04-03 03:01+0200\n"
+"POT-Creation-Date: 2021-08-19 00:13+0000\n"
 "PO-Revision-Date: 2015-09-27 19:15+0200\n"
 "Last-Translator: Chusslove Illich <caslav.ilic@gmx.net>\n"
 "Language-Team: Serbian <kde-i18n-sr@kde.org>\n"
@@ -28,82 +28,85 @@ msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
 msgstr "caslav.ilic@gmx.net"
 
-#: main.cpp:43
+#: main.cpp:27
 #, kde-format
 msgid "Baloo Search"
 msgstr "Балуова претрага"
 
-#: main.cpp:45
+#: main.cpp:29
 #, kde-format
 msgid "A tool to search through the files indexed by Baloo"
 msgstr "Алатка за претрагу фајлова индексираних Балуом"
 
-#: main.cpp:47
+#: main.cpp:31
 #, kde-format
 msgid "Vishesh Handa"
 msgstr "Вишеш Ханда"
 
-#: main.cpp:47
-#, kde-format
-msgid "Maintainer"
-msgstr "Одржавалац"
-
-#: main.cpp:53
+#: main.cpp:37
 #, kde-format
 msgid "The maximum number of results"
 msgstr "Највећи број резултата."
 
-#: main.cpp:54
+#: main.cpp:38
 #, kde-format
 msgid "limit"
 msgstr "ограничење"
 
-#: main.cpp:56
+#: main.cpp:40
 #, kde-format
 msgid "Offset from which to start the search"
 msgstr "Помак од којег почиње претрага."
 
-#: main.cpp:57
+#: main.cpp:41
 #, kde-format
 msgid "offset"
 msgstr "помак"
 
-#: main.cpp:59
+#: main.cpp:43
 #, kde-format
 msgid "Type of data to be searched"
 msgstr "Тип података који се претражују."
 
-#: main.cpp:60
+#: main.cpp:44
 #, kde-format
 msgid "typeStr"
 msgstr "тип"
 
-#: main.cpp:62
+#: main.cpp:46
 #, kde-format
 msgid "Limit search to specified directory"
 msgstr "Ограничи претрагу на задату фасциклу."
 
-#: main.cpp:63
+#: main.cpp:47
 #, kde-format
 msgid "directory"
 msgstr "фасцикла"
 
-#: main.cpp:64
+#: main.cpp:49
+#, kde-format
+msgid "Show document IDs"
+msgstr ""
+
+#: main.cpp:50
 #, kde-format
 msgid "query"
 msgstr "упит"
 
-#: main.cpp:64
+#: main.cpp:50
 #, kde-format
 msgid "List of words to query for"
 msgstr "Списак речи које треба потражити."
 
-#: main.cpp:97
+#: main.cpp:87
 #, kde-format
 msgid "%1 is not a valid directory"
 msgstr ""
 
-#: main.cpp:111
+#: main.cpp:104
 #, kde-format
 msgid "Elapsed: %1 msecs"
 msgstr ""
+
+#~ msgid "Maintainer"
+#~ msgstr "Одржавалац"
