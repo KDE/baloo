@@ -1,4 +1,4 @@
-add_definitions(-DTRANSLATION_DOMAIN=\"balooctl5\")
+add_definitions(-DTRANSLATION_DOMAIN=\"balooctl6\")
 
 add_executable(balooctl)
 target_sources(balooctl PRIVATE

@@ -1,4 +1,4 @@
-add_definitions(-DTRANSLATION_DOMAIN=\"kio5_tags\")
+add_definitions(-DTRANSLATION_DOMAIN=\"kio6_tags\")
 
 set(tags_LIB_SRCS
    kio_tags.cpp

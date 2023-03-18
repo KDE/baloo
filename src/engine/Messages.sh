@@ -1,2 +1,2 @@
 #! /usr/bin/env bash
-$XGETTEXT `find . -name \*.cpp` -o $podir/balooengine5.pot
+$XGETTEXT `find . -name \*.cpp` -o $podir/balooengine6.pot

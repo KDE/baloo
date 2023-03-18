@@ -1,5 +1,5 @@
 include_directories(${Inotify_INCLUDE_DIRS})
-add_definitions(-DTRANSLATION_DOMAIN=\"baloo_file5\")
+add_definitions(-DTRANSLATION_DOMAIN=\"baloo_file6\")
 
 set(file_static_lib_SRCS
     # File Indexer

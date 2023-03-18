@@ -1,4 +1,4 @@
-add_definitions(-DTRANSLATION_DOMAIN=\"balooengine5\")
+add_definitions(-DTRANSLATION_DOMAIN=\"balooengine6\")
 
 set(BALOO_ENGINE_SRCS
     andpostingiterator.cpp
