@@ -11,7 +11,7 @@
 
 using namespace Baloo;
 
-class BALOO_ENGINE_EXPORT IdTreeDBTest : public SingleDBTest
+class IdTreeDBTest : public SingleDBTest
 {
     Q_OBJECT
 private Q_SLOTS:
