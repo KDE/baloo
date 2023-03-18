@@ -10,7 +10,7 @@
 
 using namespace Baloo;
 
-class BALOO_ENGINE_EXPORT IdFilenameDBTest : public SingleDBTest
+class IdFilenameDBTest : public SingleDBTest
 {
     Q_OBJECT
 private Q_SLOTS:
