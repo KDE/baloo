@@ -1,4 +1,4 @@
-add_definitions(-DTRANSLATION_DOMAIN=\"baloodb5\")
+add_definitions(-DTRANSLATION_DOMAIN=\"baloodb6\")
 
 set(SRCS main.cpp)
 

@@ -1,4 +1,4 @@
-add_definitions(-DTRANSLATION_DOMAIN=\"kio5_baloosearch\")
+add_definitions(-DTRANSLATION_DOMAIN=\"kio6_baloosearch\")
 
 add_library(kio_baloosearch MODULE kio_search.cpp)
 
