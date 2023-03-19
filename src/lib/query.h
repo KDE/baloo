@@ -13,6 +13,8 @@
 
 #include <QUrl>
 
+#include <memory>
+
 namespace Baloo {
 
 /**
@@ -141,7 +143,7 @@ public:
 
 private:
     class Private;
-    Private* d;
+    std::unique_ptr<Private> const d;
 };
 
 }

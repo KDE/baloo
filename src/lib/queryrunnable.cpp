@@ -29,10 +29,7 @@ QueryRunnable::QueryRunnable(const Query& query, QObject* parent)
     d->m_stop = false;
 }
 
-QueryRunnable::~QueryRunnable()
-{
-    delete d;
-}
+QueryRunnable::~QueryRunnable() = default;
 
 void QueryRunnable::stop()
 {

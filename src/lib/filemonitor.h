@@ -12,6 +12,8 @@
 
 #include "core_export.h"
 
+#include <memory>
+
 namespace Baloo {
 
 /**
@@ -41,7 +43,7 @@ private Q_SLOTS:
 
 private:
     class Private;
-    Private* d;
+    std::unique_ptr<Private> const d;
 };
 
 }

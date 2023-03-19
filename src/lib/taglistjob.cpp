@@ -25,10 +25,7 @@ TagListJob::TagListJob(QObject* parent)
 {
 }
 
-TagListJob::~TagListJob()
-{
-    delete d;
-}
+TagListJob::~TagListJob() = default;
 
 void TagListJob::start()
 {

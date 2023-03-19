@@ -12,6 +12,8 @@
 
 #include <QString>
 
+#include <memory>
+
 namespace Baloo {
 
 class ResultList;
@@ -35,7 +37,7 @@ public:
 
 private:
     BALOO_CORE_NO_EXPORT explicit ResultIterator(ResultList&& res);
-    ResultIteratorPrivate* d;
+    std::unique_ptr<ResultIteratorPrivate> d;
 
     friend class Query;
 };

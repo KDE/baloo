@@ -9,6 +9,7 @@
 #include "result_p.h"
 #include "searchstore.h"
 #include <vector>
+#include <utility>
 
 using namespace Baloo;
 
@@ -30,15 +31,11 @@ ResultIterator::ResultIterator(ResultList&& res)
 }
 
 ResultIterator::ResultIterator(ResultIterator &&rhs)
-    : d(rhs.d)
+    : d(std::move(rhs.d))
 {
-    rhs.d = nullptr;
 }
 
-ResultIterator::~ResultIterator()
-{
-    delete d;
-}
+ResultIterator::~ResultIterator() = default;
 
 bool ResultIterator::next()
 {
