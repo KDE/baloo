@@ -63,10 +63,10 @@ private:
      * Adds an 'addId' operation to the pending queue for each term.
      * Returns the list of all the terms.
      */
-    QVector<QByteArray> addTerms(quint64 id, const QMap<QByteArray, Document::TermData>& terms);
-    QVector<QByteArray> replaceTerms(quint64 id, const QVector<QByteArray>& prevTerms,
+    BALOO_ENGINE_NO_EXPORT QVector<QByteArray> addTerms(quint64 id, const QMap<QByteArray, Document::TermData>& terms);
+    BALOO_ENGINE_NO_EXPORT QVector<QByteArray> replaceTerms(quint64 id, const QVector<QByteArray>& prevTerms,
                                      const QMap<QByteArray, Document::TermData>& terms);
-    void removeTerms(quint64 id, const QVector<QByteArray>& terms);
+    BALOO_ENGINE_NO_EXPORT void removeTerms(quint64 id, const QVector<QByteArray>& terms);
 
     QHash<QByteArray, QVector<Operation> > m_pendingOperations;
 
