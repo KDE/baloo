@@ -42,7 +42,7 @@ public:
     QByteArray documentId() const;
 
 private:
-    explicit ResultIterator(ResultList&& res);
+    BALOO_CORE_NO_EXPORT explicit ResultIterator(ResultList&& res);
     ResultIteratorPrivate* d;
 
     friend class Query;
