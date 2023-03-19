@@ -10,7 +10,7 @@
 
 using namespace Baloo;
 
-class QueryRunnable::Private {
+class BALOO_CORE_NO_EXPORT QueryRunnable::Private {
 public:
     Query m_query;
     QAtomicInt m_stop;

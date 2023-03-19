@@ -23,7 +23,7 @@ using namespace Baloo;
 
 const int defaultLimit = -1;
 
-class Baloo::Query::Private {
+class BALOO_CORE_NO_EXPORT Baloo::Query::Private {
 public:
     Term m_term;
 

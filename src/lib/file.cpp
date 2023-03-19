@@ -18,7 +18,7 @@
 
 using namespace Baloo;
 
-class File::Private {
+class BALOO_CORE_NO_EXPORT File::Private {
 public:
     QString url;
     KFileMetaData::PropertyMultiMap propertyMap;
