@@ -17,7 +17,7 @@
 
 using namespace Baloo;
 
-class IndexerConfig::Private {
+class BALOO_CORE_NO_EXPORT IndexerConfig::Private {
 public:
     FileIndexerConfig m_config;
     BalooSettings m_settings;

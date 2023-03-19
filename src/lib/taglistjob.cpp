@@ -14,7 +14,7 @@
 
 using namespace Baloo;
 
-class TagListJob::Private {
+class BALOO_CORE_NO_EXPORT TagListJob::Private {
 public:
     QStringList tags;
 };
