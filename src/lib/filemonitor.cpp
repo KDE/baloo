@@ -13,7 +13,7 @@
 
 using namespace Baloo;
 
-class FileMonitor::Private {
+class BALOO_CORE_NO_EXPORT FileMonitor::Private {
 public:
     QSet<QString> m_files;
 };
