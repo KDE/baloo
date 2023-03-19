@@ -65,7 +65,7 @@ public:
     QMap<quint64, QByteArray> toTestMap() const;
 
 private:
-    void add(quint64 id, quint64 parentId, const QByteArray& name);
+    BALOO_ENGINE_NO_EXPORT void add(quint64 id, quint64 parentId, const QByteArray& name);
 
     template <typename Functor>
     void replaceOrDelete(quint64 docId, const QByteArray& url, Functor shouldDeleteFolder);

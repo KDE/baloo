@@ -29,7 +29,7 @@ private:
     QVector<VectorPositionInfoIterator*> m_iterators;
     quint64 m_docId;
 
-    bool checkIfPositionsMatch();
+    BALOO_ENGINE_NO_EXPORT bool checkIfPositionsMatch();
 };
 }
 
