@@ -12,6 +12,8 @@
 #include <QRunnable>
 #include <QObject>
 
+#include <memory>
+
 namespace Baloo {
 
 /**
@@ -33,7 +35,7 @@ Q_SIGNALS:
 
 private:
     class Private;
-    Private* d;
+    std::unique_ptr<Private> const d;
 };
 
 }

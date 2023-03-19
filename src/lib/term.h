@@ -12,6 +12,8 @@
 #include <QVariant>
 #include <QDebug>
 
+#include <memory>
+
 namespace Baloo {
 
 class Term
@@ -111,7 +113,7 @@ public:
 
 private:
     class Private;
-    Private* d;
+    std::unique_ptr<Private> const d;
 };
 
 inline Term operator &&(const Term& lhs, const Term& rhs)

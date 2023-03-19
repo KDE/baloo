@@ -40,10 +40,7 @@ File::File(const QString& url)
     d->url = QFileInfo(url).canonicalFilePath();
 }
 
-File::~File()
-{
-    delete d;
-}
+File::~File() = default;
 
 const File& File::operator=(const File& f)
 {

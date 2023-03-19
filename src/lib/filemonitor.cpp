@@ -27,10 +27,7 @@ FileMonitor::FileMonitor(QObject* parent)
                 QStringLiteral("changed"), this, SLOT(slotFileMetaDataChanged(QStringList)));
 }
 
-FileMonitor::~FileMonitor()
-{
-    delete d;
-}
+FileMonitor::~FileMonitor() = default;
 
 void FileMonitor::addFile(const QString& fileUrl)
 {
