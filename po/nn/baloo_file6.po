@@ -1,4 +1,4 @@
-# Translation of baloo_file5 to Norwegian Nynorsk
+# Translation of baloo_file6 to Norwegian Nynorsk
 #
 # Karl Ove Hufthammer <karl@huftis.org>, 2023.
 msgid ""

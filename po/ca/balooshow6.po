@@ -1,4 +1,4 @@
-# Translation of balooshow5.po to Catalan
+# Translation of balooshow6.po to Catalan
 # Copyright (C) 2014-2022 This_file_is_part_of_KDE
 # This file is distributed under the license LGPL version 2.1 or
 # version 3 or later versions approved by the membership of KDE e.V.
@@ -127,21 +127,3 @@ msgstr "Termes %1: %2"
 msgctxt "Prefix string for internal errors"
 msgid "Internal Error - %1"
 msgstr "Error intern - %1"
-
-#~ msgid "Vishesh Handa"
-#~ msgstr "Vishesh Handa"
-
-#~ msgid "Maintainer"
-#~ msgstr "Mantenidor"
-
-#~ msgid "The file urls"
-#~ msgstr "Els URL del fitxer"
-
-#~ msgid "Inode number of the file to show"
-#~ msgstr "Número d'inode del fitxer a mostrar"
-
-#~ msgid "The fileID is not equal to the actual Baloo fileID"
-#~ msgstr "L'ID del fitxer no és igual que l'ID del fitxer real del Baloo."
-
-#~ msgid "This is a bug"
-#~ msgstr "Això és un error"

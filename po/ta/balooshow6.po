@@ -1,13 +1,13 @@
 # Copyright (C) YEAR This file is copyright:
 # This file is distributed under the same license as the baloo package.
 #
-# Kishore G <kishore96@gmail.com>, 2022.
+# Kishore G <kishore96@gmail.com>, 2022, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-02-02 00:41+0000\n"
-"PO-Revision-Date: 2022-06-14 21:45+0530\n"
+"PO-Revision-Date: 2023-03-19 11:45+0530\n"
 "Last-Translator: Kishore G <kishore96@gmail.com>\n"
 "Language-Team: Tamil <kde-i18n-doc@kde.org>\n"
 "Language: ta\n"
@@ -15,17 +15,17 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 22.04.2\n"
+"X-Generator: Lokalize 22.12.3\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr ""
+msgstr "கோ. கிஷோர்"
 
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
-msgstr ""
+msgstr "Kde-l10n-ta@kde.org"
 
 #: main.cpp:57
 #, kde-format
@@ -50,7 +50,7 @@ msgstr ""
 #: main.cpp:68
 #, kde-format
 msgid "Print internal info"
-msgstr ""
+msgstr "உள்ளக விவரங்களைக் காட்டும்"
 
 #: main.cpp:70
 #, kde-format
@@ -66,6 +66,7 @@ msgstr ""
 #, kde-format
 msgid "Error: -i requires specifying a device (-d <deviceId>)"
 msgstr ""
+"சிக்கல்: -i என்பதைப் பயன்படுத்தும்போது சாதனத்தைக் குறிப்பிட வேண்டும் (-d <deviceId>)"
 
 #: main.cpp:101
 #, kde-format
@@ -82,7 +83,7 @@ msgstr ""
 #: main.cpp:137
 #, kde-format
 msgid "%1: Not a valid url or document id"
-msgstr ""
+msgstr "%1: முறையான முகவரியோ ஆவண அடையாளமோ இல்லை"
 
 #: main.cpp:151
 #, kde-format
@@ -97,12 +98,12 @@ msgstr ""
 #: main.cpp:223
 #, kde-format
 msgid "Internal Info"
-msgstr ""
+msgstr "உள்ளக விவரங்கள்"
 
 #: main.cpp:224
-#, kde-format
+#, fuzzy, kde-format
 msgid "Terms: %1"
-msgstr ""
+msgstr "சொற்கள்: %1"
 
 #: main.cpp:225
 #, kde-format
@@ -118,4 +119,4 @@ msgstr ""
 #, kde-format
 msgctxt "Prefix string for internal errors"
 msgid "Internal Error - %1"
-msgstr ""
+msgstr "உள்ளக சிக்கல் - %1"
