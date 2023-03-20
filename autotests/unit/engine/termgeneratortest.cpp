@@ -31,6 +31,7 @@ private Q_SLOTS:
     void testWordPositions();
     void testWordPositionsCJK();
     void testNumbers();
+    void testControlCharacter();
 
     QList<QByteArray> allWords(const QString& str)
     {
@@ -210,6 +211,16 @@ void TermGeneratorTest::testNumbers()
 
     expectedWords = { "1", "10", "12", "-13.4", "-3", "5", "5.6", "-7e3"};
     QEXPECT_FAIL("", "signs not handled correctly", Continue);
+    QCOMPARE(words, expectedWords);
+}
+
+void TermGeneratorTest::testControlCharacter()
+{
+    QString str = QString::fromUtf8("word1\u0001word2");
+
+    QList<QByteArray> words = allWords(str);
+    QList<QByteArray> expectedWords = { "word1", "word2" };
+
     QCOMPARE(words, expectedWords);
 }
 
