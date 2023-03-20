@@ -59,7 +59,7 @@ QByteArrayList TermGenerator::termList(const QString& text_)
     int start = 0;
 
     auto isSkipChar = [] (const QChar& c) {
-        return c.isPunct() || c.isMark() || c.isSpace();
+        return c.isPunct() || c.isMark() || c.isSpace() || (!c.isPrint() && !c.isSurrogate());
     };
 
     QByteArrayList list;
