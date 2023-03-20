@@ -1,4 +1,4 @@
-# Translation of kio5_timeline to Norwegian Bokmål
+# Translation of kio6_timeline to Norwegian Bokmål
 #
 # Bjørn Steensrud <bjornst@skogkatt.homelinux.org>, 2014.
 msgid ""

@@ -1,4 +1,4 @@
-# Translation of balooctl5 to Norwegian Nynorsk
+# Translation of balooctl6 to Norwegian Nynorsk
 #
 # Karl Ove Hufthammer <karl@huftis.org>, 2015, 2016, 2017, 2018, 2019, 2020.
 msgid ""

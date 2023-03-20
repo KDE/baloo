@@ -1,4 +1,4 @@
-# Translation of baloodb5 to Norwegian Nynorsk
+# Translation of baloodb6 to Norwegian Nynorsk
 #
 # Karl Ove Hufthammer <karl@huftis.org>, 2018.
 msgid ""

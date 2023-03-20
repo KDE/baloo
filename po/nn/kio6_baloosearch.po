@@ -1,4 +1,4 @@
-# Translation of kio5_baloosearch to Norwegian Nynorsk
+# Translation of kio6_baloosearch to Norwegian Nynorsk
 #
 # Eirik U. Birkeland <eirbir@gmail.com>, 2008.
 # Karl Ove Hufthammer <karl@huftis.org>, 2010, 2011, 2015.

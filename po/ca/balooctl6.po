@@ -1,4 +1,4 @@
-# Translation of balooctl5.po to Catalan
+# Translation of balooctl6.po to Catalan
 # Copyright (C) 2014-2020 This_file_is_part_of_KDE
 # This file is distributed under the license LGPL version 2.1 or
 # version 3 or later versions approved by the membership of KDE e.V.
@@ -467,80 +467,3 @@ msgstr "La mida actual de l'índex és %1"
 #, kde-format
 msgid "Index does not exist yet\n"
 msgstr "L'índex encara no existeix\n"
-
-#~ msgid "Unknown"
-#~ msgstr "Desconegut"
-
-#~ msgid "Idle"
-#~ msgstr "Inactiu"
-
-#~ msgid "Suspended"
-#~ msgstr "Suspès"
-
-#~ msgid "Initial Indexing"
-#~ msgstr "Indexació inicial"
-
-#~ msgid "Indexing new files"
-#~ msgstr "Indexació dels fitxers nous"
-
-#~ msgid "Indexing modified files"
-#~ msgstr "Indexació dels fitxers modificats"
-
-#~ msgid "Indexing Extended Attributes"
-#~ msgstr "Indexació dels atributs ampliats"
-
-#~ msgid "Indexing file content"
-#~ msgstr "Indexació del contingut dels fitxers"
-
-#~ msgid "Checking for unindexed files"
-#~ msgstr "S'està comprovant si hi ha fitxers sense indexar"
-
-#~ msgid "Checking for stale index entries"
-#~ msgstr "S'està comprovant si hi ha entrades caducades de l'índex"
-
-#~ msgid "Idle (Powersave)"
-#~ msgstr "En espera (estalvi d'energia)"
-
-#~ msgid "Not Running"
-#~ msgstr "No s'està executant"
-
-#~ msgid "Starting"
-#~ msgstr "S'està iniciant"
-
-#~ msgid "Maintainer"
-#~ msgstr "Mantenidor"
-
-#~ msgid "Start the file indexer"
-#~ msgstr "Inicia l'indexador de fitxers"
-
-#~ msgid "Stop the file indexer"
-#~ msgstr "Atura l'indexador de fitxers"
-
-#~ msgid "Restart the file indexer"
-#~ msgstr "Torna a iniciar l'indexador de fitxers"
-
-#~ msgid "Indexed %1 / %2 files"
-#~ msgstr "S'han indexat %1 / %2 fitxers"
-
-#~ msgid "Parent folder %1 is already in the list of include folders"
-#~ msgstr "La carpeta pare %1 ja es troba a la llista de carpetes a incloure"
-
-#~ msgid "Parent folder %1 is already in the list of exclude folders"
-#~ msgstr "La carpeta pare %1 ja es troba a la llista de carpetes a excloure"
-
-#~ msgctxt "Application"
-#~ msgid "%1 is running"
-#~ msgstr "S'està executant %1"
-
-#~ msgctxt "Application"
-#~ msgid "%1 died"
-#~ msgstr "%1 ha mort"
-
-#~ msgid "Check database for consistency"
-#~ msgstr "Comprova la coherència de la base de dades"
-
-#~ msgid "Baloo died"
-#~ msgstr "El Baloo ha mort"
-
-#~ msgid "Must provide a value"
-#~ msgstr "Cal indicar un valor"
