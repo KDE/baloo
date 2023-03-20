@@ -1,4 +1,4 @@
-# Translation of kio5_tags to Norwegian Nynorsk
+# Translation of kio6_tags to Norwegian Nynorsk
 #
 # Karl Ove Hufthammer <karl@huftis.org>, 2015, 2018.
 msgid ""

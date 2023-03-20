@@ -1,4 +1,4 @@
-# Translation of balooctl5 to Norwegian Bokmål
+# Translation of balooctl6 to Norwegian Bokmål
 #
 # Bjørn Steensrud <bjornst@skogkatt.homelinux.org>, 2014, 2015.
 msgid ""

@@ -1,4 +1,4 @@
-# Translation of balooengine5 to Norwegian Nynorsk
+# Translation of balooengine6 to Norwegian Nynorsk
 #
 # Karl Ove Hufthammer <karl@huftis.org>, 2018.
 # Øystein Steffensen-Alværvik <oysteins.omsetting@protonmail.com>, 2021.
