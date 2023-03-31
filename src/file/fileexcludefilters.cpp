@@ -128,6 +128,8 @@ const char* const s_defaultFolderExcludeFilters[] = {
     "node_packages",
     "nbproject",
     ".terraform",
+    ".venv",
+    "venv",
 
     //misc
     "core-dumps",
@@ -137,7 +139,7 @@ const char* const s_defaultFolderExcludeFilters[] = {
     nullptr
 };
 
-const int s_defaultFolderExcludeFiltersVersion = 3;
+const int s_defaultFolderExcludeFiltersVersion = 4;
 
 const char* const s_sourceCodeMimeTypes[] = {
     "text/css",
