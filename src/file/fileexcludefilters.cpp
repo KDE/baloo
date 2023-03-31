@@ -126,6 +126,8 @@ const char* const s_defaultFolderExcludeFilters[] = {
     "node_modules",
     "node_packages",
     "nbproject",
+    ".venv",
+    "venv",
 
     //misc
     "core-dumps",
@@ -135,7 +137,7 @@ const char* const s_defaultFolderExcludeFilters[] = {
     nullptr
 };
 
-const int s_defaultFolderExcludeFiltersVersion = 2;
+const int s_defaultFolderExcludeFiltersVersion = 3;
 
 const char* const s_sourceCodeMimeTypes[] = {
     "text/css",
