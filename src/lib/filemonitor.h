@@ -37,7 +37,7 @@ Q_SIGNALS:
     void fileMetaDataChanged(const QString& fileUrl);
 
 private Q_SLOTS:
-    void slotFileMetaDataChanged(const QStringList& fileUrl);
+    BALOO_CORE_NO_EXPORT void slotFileMetaDataChanged(const QStringList& fileUrl);
 
 private:
     class Private;
