@@ -2,7 +2,7 @@
 # Copyright (C) YEAR This_file_is_part_of_KDE
 # This file is distributed under the same license as the PACKAGE package.
 # Pino Toscano <toscano.pino@tiscali.it>, 2013.
-# Paolo Zamponi <zapaolo@email.it>, 2017.
+# Paolo Zamponi <feus73@gmail.com>, 2017.
 #
 msgid ""
 msgstr ""
