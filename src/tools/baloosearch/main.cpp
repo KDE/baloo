@@ -87,7 +87,14 @@ int main(int argc, char* argv[])
             std::cerr << qPrintable(i18n("%1 is not a valid directory", folderName)) << std::endl;
             return 1;
         }
-        query.setIncludeFolder(fi.canonicalFilePath());
+        while (folderName.endsWith(QLatin1Char('/')) && (folderName.size() > 1)) {
+            folderName.chop(1);
+        }
+        auto canonicalPath = fi.canonicalFilePath();
+        if (canonicalPath != folderName) {
+            std::cerr << qPrintable(i18n("Using canonical path '%1' for '%2'", canonicalPath, folderName)) << std::endl;
+        }
+        query.setIncludeFolder(canonicalPath);
     }
 
     QElapsedTimer timer;
