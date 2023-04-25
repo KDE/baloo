@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kdeorg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-08-19 00:13+0000\n"
+"POT-Creation-Date: 2023-04-25 02:27+0000\n"
 "PO-Revision-Date: 2023-02-24 12:42\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
@@ -104,7 +104,12 @@ msgstr "要搜索的单词列表"
 msgid "%1 is not a valid directory"
 msgstr "%1 不是一个有效的目录"
 
-#: main.cpp:104
+#: main.cpp:95
+#, kde-format
+msgid "Using canonical path '%1' for '%2'"
+msgstr ""
+
+#: main.cpp:111
 #, kde-format
 msgid "Elapsed: %1 msecs"
 msgstr "已耗时：%1 毫秒"
