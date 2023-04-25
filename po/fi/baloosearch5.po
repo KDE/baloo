@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-08-19 00:13+0000\n"
+"POT-Creation-Date: 2023-04-25 00:45+0000\n"
 "PO-Revision-Date: 2021-04-08 15:18+0300\n"
 "Last-Translator: Tommi Nieminen <translator@legisign.org>\n"
 "Language-Team: Finnish <kde-i18n-doc@kde.org>\n"
@@ -103,7 +103,12 @@ msgstr "Haun hakusanat"
 msgid "%1 is not a valid directory"
 msgstr "%1 ei ole kelvollinen kansio"
 
-#: main.cpp:104
+#: main.cpp:95
+#, kde-format
+msgid "Using canonical path '%1' for '%2'"
+msgstr ""
+
+#: main.cpp:111
 #, kde-format
 msgid "Elapsed: %1 msecs"
 msgstr "Aikaa kului: %1 ms"

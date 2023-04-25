@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-08-19 00:13+0000\n"
+"POT-Creation-Date: 2023-04-25 00:45+0000\n"
 "PO-Revision-Date: 2019-08-16 19:53+0500\n"
 "Last-Translator: Victor Ibragimov <victor.ibragimov@gmail.com>\n"
 "Language-Team: English <kde-i18n-doc@kde.org>\n"
@@ -102,7 +102,12 @@ msgstr "Рӯйхати калимаҳо барои ковиш"
 msgid "%1 is not a valid directory"
 msgstr ""
 
-#: main.cpp:104
+#: main.cpp:95
+#, kde-format
+msgid "Using canonical path '%1' for '%2'"
+msgstr ""
+
+#: main.cpp:111
 #, kde-format
 msgid "Elapsed: %1 msecs"
 msgstr "Гузашти вақт: %1 мсон"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-08-19 00:13+0000\n"
+"POT-Creation-Date: 2023-04-25 00:45+0000\n"
 "PO-Revision-Date: 2021-03-15 08:47+0100\n"
 "Last-Translator: Matjaž Jeran <matjaz.jeran@amis.net>\n"
 "Language-Team: Slovenian <lugos-slo@lugos.si>\n"
@@ -106,7 +106,12 @@ msgstr "Seznam besed, po katerih naj se išče"
 msgid "%1 is not a valid directory"
 msgstr "%1 ni veljaven imenik"
 
-#: main.cpp:104
+#: main.cpp:95
+#, kde-format
+msgid "Using canonical path '%1' for '%2'"
+msgstr ""
+
+#: main.cpp:111
 #, kde-format
 msgid "Elapsed: %1 msecs"
 msgstr "Preteklo: %1 msek"
