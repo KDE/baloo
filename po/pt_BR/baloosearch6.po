@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-08-19 00:13+0000\n"
+"POT-Creation-Date: 2023-04-25 02:27+0000\n"
 "PO-Revision-Date: 2021-03-19 10:36-0300\n"
 "Last-Translator: Luiz Fernando Ranghetti <elchevive@opensuse.org>\n"
 "Language-Team: Brazilian Portuguese <kde-i18n-pt_BR@kde.org>\n"
@@ -104,7 +104,12 @@ msgstr "Lista de palavras a pesquisar"
 msgid "%1 is not a valid directory"
 msgstr "%1 não é uma pasta válida"
 
-#: main.cpp:104
+#: main.cpp:95
+#, kde-format
+msgid "Using canonical path '%1' for '%2'"
+msgstr ""
+
+#: main.cpp:111
 #, kde-format
 msgid "Elapsed: %1 msecs"
 msgstr "Duração: %1 msecs"

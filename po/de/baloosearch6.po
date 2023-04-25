@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-08-19 00:13+0000\n"
+"POT-Creation-Date: 2023-04-25 02:27+0000\n"
 "PO-Revision-Date: 2021-03-01 13:26+0100\n"
 "Last-Translator: Burkhard Lück <lueck@hube-lueck.de>\n"
 "Language-Team: German <kde-i18n-de@kde.org>\n"
@@ -99,7 +99,12 @@ msgstr "Liste der Wörter, nach denen gesucht werden soll"
 msgid "%1 is not a valid directory"
 msgstr "%1 ist kein gültiger Ordner"
 
-#: main.cpp:104
+#: main.cpp:95
+#, kde-format
+msgid "Using canonical path '%1' for '%2'"
+msgstr ""
+
+#: main.cpp:111
 #, kde-format
 msgid "Elapsed: %1 msecs"
 msgstr "Verstrichen: %1 msec"
