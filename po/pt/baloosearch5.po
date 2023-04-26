@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: baloosearch\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-04-25 00:45+0000\n"
-"PO-Revision-Date: 2021-02-28 02:19+0000\n"
+"PO-Revision-Date: 2023-04-25 21:24+0100\n"
 "Last-Translator: José Nuno Coelho Pires <zepires@gmail.com>\n"
 "Language-Team: Portuguese <kde-i18n-pt@kde.org>\n"
 "Language: pt\n"
@@ -101,12 +101,9 @@ msgstr "A %1 não é uma pasta válida"
 #: main.cpp:95
 #, kde-format
 msgid "Using canonical path '%1' for '%2'"
-msgstr ""
+msgstr "A usar a localização canónica '%1' para o '%2'"
 
 #: main.cpp:111
 #, kde-format
 msgid "Elapsed: %1 msecs"
 msgstr "Decorrido: %1 ms"
-
-#~ msgid "Maintainer"
-#~ msgstr "Manutenção"
