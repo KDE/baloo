@@ -1,13 +1,13 @@
 # Copyright (C) YEAR This file is copyright:
 # This file is distributed under the same license as the baloo package.
 #
-# Kishore G <kishore96@gmail.com>, 2022.
+# Kishore G <kishore96@gmail.com>, 2022, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-04-25 02:27+0000\n"
-"PO-Revision-Date: 2022-06-14 21:45+0530\n"
+"PO-Revision-Date: 2023-04-30 21:26+0530\n"
 "Last-Translator: Kishore G <kishore96@gmail.com>\n"
 "Language-Team: Tamil <kde-i18n-doc@kde.org>\n"
 "Language: ta\n"
@@ -15,17 +15,17 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 22.04.2\n"
+"X-Generator: Lokalize 23.04.0\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr ""
+msgstr "கோ. கிஷோர்"
 
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
-msgstr ""
+msgstr "Kde-l10n-ta@kde.org"
 
 #: main.cpp:27
 #, kde-format
@@ -35,22 +35,22 @@ msgstr "பாலூ தேடல்"
 #: main.cpp:29
 #, kde-format
 msgid "A tool to search through the files indexed by Baloo"
-msgstr ""
+msgstr "பாலூவால் அட்டவணையாக்கப்பட்ட கோப்புகளுள் தேடும் நிரல்"
 
 #: main.cpp:31
 #, kde-format
 msgid "Vishesh Handa"
-msgstr ""
+msgstr "விஷேஷ் ஹண்டா"
 
 #: main.cpp:37
 #, kde-format
 msgid "The maximum number of results"
-msgstr ""
+msgstr "விடைகளின் அதிகபட்ச எண்ணிக்கை"
 
 #: main.cpp:38
 #, kde-format
 msgid "limit"
-msgstr ""
+msgstr "வரம்பு"
 
 #: main.cpp:40
 #, kde-format
@@ -65,7 +65,7 @@ msgstr ""
 #: main.cpp:43
 #, kde-format
 msgid "Type of data to be searched"
-msgstr ""
+msgstr "தேட வேண்டிய தரவுவகை"
 
 #: main.cpp:44
 #, kde-format
@@ -75,39 +75,39 @@ msgstr ""
 #: main.cpp:46
 #, kde-format
 msgid "Limit search to specified directory"
-msgstr ""
+msgstr "குறிப்பிட்ட அடைவிற்குள் மட்டும் தேடு"
 
 #: main.cpp:47
 #, kde-format
 msgid "directory"
-msgstr ""
+msgstr "அடைவு"
 
 #: main.cpp:49
 #, kde-format
 msgid "Show document IDs"
-msgstr ""
+msgstr "ஆவண அடையாள எண்களைக் காட்டு"
 
 #: main.cpp:50
 #, kde-format
 msgid "query"
-msgstr ""
+msgstr "வினா"
 
 #: main.cpp:50
 #, kde-format
 msgid "List of words to query for"
-msgstr ""
+msgstr "தேட வேண்டிய சொற்களின் பட்டியல்"
 
 #: main.cpp:87
 #, kde-format
 msgid "%1 is not a valid directory"
-msgstr ""
+msgstr "%1 ஓர் அடைவு இல்லை"
 
 #: main.cpp:95
 #, kde-format
 msgid "Using canonical path '%1' for '%2'"
-msgstr ""
+msgstr "'%2' என்பதன் செந்தர பாதையாக '%1' பயன்படுத்தப்படுகிறது"
 
 #: main.cpp:111
 #, kde-format
 msgid "Elapsed: %1 msecs"
-msgstr ""
+msgstr "கழிந்த‍து: %1 மில்லிநொடிகள்"
