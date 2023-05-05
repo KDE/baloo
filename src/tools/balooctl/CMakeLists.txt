@@ -1,7 +1,7 @@
 add_definitions(-DTRANSLATION_DOMAIN=\"balooctl6\")
 
-add_executable(balooctl)
-target_sources(balooctl PRIVATE
+add_executable(balooctl6)
+target_sources(balooctl6 PRIVATE
     main.cpp
     indexer.cpp
     command.cpp
@@ -11,10 +11,10 @@ target_sources(balooctl PRIVATE
     ${CMAKE_SOURCE_DIR}/src/file/extractor/result.cpp
 )
 
-ecm_mark_nongui_executable(balooctl)
-target_compile_definitions(balooctl PRIVATE -DPROJECT_VERSION="${PROJECT_VERSION}")
+ecm_mark_nongui_executable(balooctl6)
+target_compile_definitions(balooctl6 PRIVATE -DPROJECT_VERSION="${PROJECT_VERSION}")
 
-target_link_libraries(balooctl
+target_link_libraries(balooctl6
     Qt6::DBus
     KF6::CoreAddons
     KF6::ConfigCore
@@ -27,4 +27,4 @@ target_link_libraries(balooctl
     BalooDBusFileIndexerInterface
 )
 
-install(TARGETS balooctl DESTINATION ${KDE_INSTALL_BINDIR})
+install(TARGETS balooctl6 DESTINATION ${KDE_INSTALL_BINDIR})
