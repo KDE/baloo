@@ -81,7 +81,7 @@ target_link_libraries(baloo_file
 
 install(TARGETS baloo_file DESTINATION ${KDE_INSTALL_FULL_LIBEXECDIR_KF})
 
-ecm_install_configured_files(INPUT baloo_file.desktop.in DESTINATION ${KDE_INSTALL_AUTOSTARTDIR})
+ecm_install_configured_files(INPUT baloo_file6.desktop.in DESTINATION ${KDE_INSTALL_AUTOSTARTDIR})
 
 ecm_install_configured_files(
    INPUT kde-baloo.service.in
