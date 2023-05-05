@@ -79,13 +79,7 @@ target_link_libraries(baloo_file
     baloofilecommon
 )
 
-install(TARGETS baloo_file DESTINATION ${KDE_INSTALL_FULL_LIBEXECDIR})
-
-# KF6 TODO - remove compatibility symlink to bin/baloo_file
-add_custom_command(TARGET baloo_file
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E create_symlink ${KDE_INSTALL_FULL_LIBEXECDIR}/baloo_file baloo_file)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/baloo_file DESTINATION ${KDE_INSTALL_FULL_BINDIR})
+install(TARGETS baloo_file DESTINATION ${KDE_INSTALL_FULL_LIBEXECDIR_KF})
 
 ecm_install_configured_files(INPUT baloo_file.desktop.in DESTINATION ${KDE_INSTALL_AUTOSTARTDIR})
 

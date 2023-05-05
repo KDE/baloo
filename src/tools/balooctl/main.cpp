@@ -40,7 +40,7 @@ using namespace Baloo;
 
 void start()
 {
-    const QString exe = QStringLiteral(KDE_INSTALL_FULL_LIBEXECDIR "/baloo_file");
+    const QString exe = QStringLiteral(KDE_INSTALL_FULL_LIBEXECDIR_KF "/baloo_file");
     QProcess::startDetached(exe, QStringList());
 }
 

@@ -3,7 +3,7 @@ Description=Baloo File Indexer Daemon
 PartOf=graphical-session.target
 
 [Service]
-ExecStart=@KDE_INSTALL_FULL_LIBEXECDIR@/baloo_file
+ExecStart=@KDE_INSTALL_FULL_LIBEXECDIR_KF@/baloo_file
 BusName=org.kde.baloo
 Slice=background.slice
 ExecCondition=@KDE_INSTALL_FULL_BINDIR@/kde-systemd-start-condition --condition "baloofilerc:Basic Settings:Indexing-Enabled:true"
