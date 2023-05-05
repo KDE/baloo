@@ -15,7 +15,7 @@ using namespace Baloo;
 
 ExtractorProcess::ExtractorProcess(QObject* parent)
     : QObject(parent)
-    , m_extractorPath(QStringLiteral(KDE_INSTALL_FULL_LIBEXECDIR "/baloo_file_extractor"))
+    , m_extractorPath(QStringLiteral(KDE_INSTALL_FULL_LIBEXECDIR_KF "/baloo_file_extractor"))
     , m_extractorProcess(this)
     , m_controller(&m_extractorProcess, &m_extractorProcess)
 {

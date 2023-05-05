@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Exec=@KDE_INSTALL_FULL_LIBEXECDIR@/baloo_file
+Exec=@KDE_INSTALL_FULL_LIBEXECDIR_KF@/baloo_file
 X-KDE-StartupNotify=false
 X-KDE-autostart-condition=baloofilerc:Basic Settings:Indexing-Enabled:true
 X-KDE-autostart-phase=0
