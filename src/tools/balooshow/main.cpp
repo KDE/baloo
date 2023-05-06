@@ -4,6 +4,8 @@
     SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 */
 
+#include <algorithm>
+
 #include <QCoreApplication>
 #include <QCommandLineParser>
 #include <QCommandLineOption>
@@ -220,15 +222,21 @@ int main(int argc, char* argv[])
                 return QString::fromUtf8(ba);
             };
 
+            auto propertiesBegin = std::stable_partition(terms.begin(), terms.end(),
+                [](const auto & t) { return t.isEmpty() || t[0] < 'A' || t[0] > 'Z'; });
+            const QVector<QByteArray> propertyTerms{propertiesBegin, terms.end()};
+            terms.erase(propertiesBegin, terms.end());
+
             stream << "\n" << i18n("Internal Info") << "\n";
-            stream << i18n("Terms: %1", join(terms)) << "\n";
             stream << i18n("File Name Terms: %1", join(fileNameTerms)) << "\n";
             stream << i18n("%1 Terms: %2", QStringLiteral("XAttr"), join(xAttrTerms)) << '\n';
+            stream << i18n("Plain Text Terms: %1", join(terms)) << "\n";
+            stream << i18n("Property Terms: %1", join(propertyTerms)) << "\n";
 
             QHash<int, QStringList> propertyWords;
             KLocalizedString errorPrefix = ki18nc("Prefix string for internal errors", "Internal Error - %1");
 
-            for (const QByteArray& arr : terms) {
+            for (const QByteArray& arr : propertyTerms) {
                 auto arrAsPrintable = [arr]() {
                     return QString::fromLatin1(arr.toPercentEncoding());
                 };
@@ -241,8 +249,7 @@ int main(int argc, char* argv[])
 
                 const QString word = QString::fromUtf8(arr);
 
-                if (word[0].isUpper()) {
-                    if (word[0] == QLatin1Char('X')) {
+                if (word[0] == QLatin1Char('X')) {
                         if (word.length() < 4) {
                             // 'X<num>-<value>
                             auto error = QStringLiteral("malformed property term (short): '%1' in '%2'\n").arg(word, arrAsPrintable());
@@ -259,15 +266,14 @@ int main(int argc, char* argv[])
                         bool ok;
                         const QStringView prop = QStringView(word).mid(1, posOfNonNumeric - 1);
                         int propNum = prop.toInt(&ok);
-                        const QString value = word.mid(posOfNonNumeric + 1);
                         if (!ok) {
                             auto error = QStringLiteral("malformed property term (bad index): '%1' in '%2'\n").arg(prop, arrAsPrintable());
                             stream << errorPrefix.subs(error).toString();
                             continue;
                         }
 
+                        const QString value = word.mid(posOfNonNumeric + 1);
                         propertyWords[propNum].append(value);
-                    }
                 }
             }
 
