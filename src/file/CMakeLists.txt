@@ -71,24 +71,26 @@ set(file_SRCS
     main.cpp
 )
 
-add_executable(baloo_file ${file_SRCS})
-ecm_mark_nongui_executable(baloo_file)
-target_compile_definitions(baloo_file PRIVATE -DPROJECT_VERSION="${PROJECT_VERSION}")
+if (BUILD_INDEXER_SERVICE)
+    add_executable(baloo_file ${file_SRCS})
+    ecm_mark_nongui_executable(baloo_file)
+    target_compile_definitions(baloo_file PRIVATE -DPROJECT_VERSION="${PROJECT_VERSION}")
 
-target_link_libraries(baloo_file
-    baloofilecommon
-)
+    target_link_libraries(baloo_file
+        baloofilecommon
+    )
 
-install(TARGETS baloo_file DESTINATION ${KDE_INSTALL_FULL_LIBEXECDIR_KF})
+    install(TARGETS baloo_file DESTINATION ${KDE_INSTALL_FULL_LIBEXECDIR_KF})
 
-ecm_install_configured_files(INPUT baloo_file.desktop.in DESTINATION ${KDE_INSTALL_AUTOSTARTDIR})
+    ecm_install_configured_files(INPUT baloo_file.desktop.in DESTINATION ${KDE_INSTALL_AUTOSTARTDIR})
 
-ecm_install_configured_files(
-   INPUT kde-baloo.service.in
-   DESTINATION ${KDE_INSTALL_SYSTEMDUSERUNITDIR}
-)
+    ecm_install_configured_files(
+       INPUT kde-baloo.service.in
+       DESTINATION ${KDE_INSTALL_SYSTEMDUSERUNITDIR}
+    )
 
-add_subdirectory(extractor)
+    add_subdirectory(extractor)
+endif()
 
 install(FILES
     org.kde.BalooWatcherApplication.xml
