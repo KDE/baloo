@@ -20,8 +20,15 @@ The recommended way of contributing patches is via KDE's [GitLab](https://invent
 
 ### Users
 * [Searching](./docs/user/searching.md)
-* [The Baloo pages on KDE Community Wiki](https://community.kde.org/Baloo) have information on Baloo's command-line tools and how to monitor its operation.
+* [The Baloo pages on KDE Community Wiki](https://community.kde.org/Baloo) has information on Baloo's command-line tools and how to monitor its operation.
 
+### File Indexing Plugins
+
+Baloo relies on [KFileMetaData](https://api.kde.org/frameworks/kfilemetadata/html/index.html) to extract content and
+metadata from files. KFileMetadata uses a number file type specific plugins. In case individual
+plugins are packaged separately, we recommend installing all plugins.
+
+Without the indexer plugins, Baloo cannot function to its full potential.
 
 ### Developers
 [![Build Status](https://build.kde.org/job/Frameworks/job/baloo/job/kf5-qt5%20SUSEQt5.15/badge/icon?subject=SUSE%20Qt5.15)](https://build.kde.org/job/Frameworks/job/baloo/job/kf5-qt5%20SUSEQt5.15/)
@@ -44,9 +51,4 @@ correctly. Please test and let us know by [filing a bug](https://bugs.kde.org/en
 **Supported Architectures:** x86_64, aarch64
 **Supported Filesystems:** ext3/4, Btrfs, XFS
 
-###### File Indexing Plugins
 
-Baloo relies on [KFileMetaData](https://api.kde.org/frameworks/kfilemetadata/html/index.html) to extract content from the files. KFileMetadata
-ships with a number of plugins which can be enabled or disabled. We recommend
-shipping all KFileMetaData plugins. Specially ffmpeg by default. Without the indexers, 
-Baloo cannot function to its full potential.
