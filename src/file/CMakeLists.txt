@@ -71,30 +71,32 @@ set(file_SRCS
     main.cpp
 )
 
-add_executable(baloo_file ${file_SRCS})
-ecm_mark_nongui_executable(baloo_file)
-target_compile_definitions(baloo_file PRIVATE -DPROJECT_VERSION="${PROJECT_VERSION}")
+if (BUILD_INDEXER_SERVICE)
+    add_executable(baloo_file ${file_SRCS})
+    ecm_mark_nongui_executable(baloo_file)
+    target_compile_definitions(baloo_file PRIVATE -DPROJECT_VERSION="${PROJECT_VERSION}")
 
-target_link_libraries(baloo_file
-    baloofilecommon
-)
+    target_link_libraries(baloo_file
+        baloofilecommon
+    )
 
-install(TARGETS baloo_file DESTINATION ${KDE_INSTALL_FULL_LIBEXECDIR})
+    install(TARGETS baloo_file DESTINATION ${KDE_INSTALL_FULL_LIBEXECDIR})
 
-# KF6 TODO - remove compatibility symlink to bin/baloo_file
-add_custom_command(TARGET baloo_file
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E create_symlink ${KDE_INSTALL_FULL_LIBEXECDIR}/baloo_file baloo_file)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/baloo_file DESTINATION ${KDE_INSTALL_FULL_BINDIR})
+    # KF6 TODO - remove compatibility symlink to bin/baloo_file
+    add_custom_command(TARGET baloo_file
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E create_symlink ${KDE_INSTALL_FULL_LIBEXECDIR}/baloo_file baloo_file)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/baloo_file DESTINATION ${KDE_INSTALL_FULL_BINDIR})
 
-ecm_install_configured_files(INPUT baloo_file.desktop.in DESTINATION ${KDE_INSTALL_AUTOSTARTDIR})
+    ecm_install_configured_files(INPUT baloo_file.desktop.in DESTINATION ${KDE_INSTALL_AUTOSTARTDIR})
 
-ecm_install_configured_files(
-   INPUT kde-baloo.service.in
-   DESTINATION ${KDE_INSTALL_SYSTEMDUSERUNITDIR}
-)
+    ecm_install_configured_files(
+       INPUT kde-baloo.service.in
+       DESTINATION ${KDE_INSTALL_SYSTEMDUSERUNITDIR}
+    )
 
-add_subdirectory(extractor)
+    add_subdirectory(extractor)
+endif()
 
 install(FILES
     org.kde.BalooWatcherApplication.xml

@@ -51,4 +51,14 @@ correctly. Please test and let us know by [filing a bug](https://bugs.kde.org/en
 **Supported Architectures:** x86_64, aarch64
 **Supported Filesystems:** ext3/4, Btrfs, XFS
 
+#### Packaging the indexer service
 
+The service is an autostarted, session wide background service. In case KF5 and KF6
+versions of the Baloo libraries are installed, both will use the same service and
+database.
+
+Only one version of the service autostart file and associated binaries should be
+installed at a time, i.e. the `baloo_file.desktop` service definition, the `baloo_file`
+service binary, the `baloo_file_extractor` helper, and the `balooctl` tool.
+
+Building of the service can be disabled using the `BUILD_INDEXER_SERVICE` CMake option.

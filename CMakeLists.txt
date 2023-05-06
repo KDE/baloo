@@ -56,6 +56,9 @@ add_feature_info(QCH ${BUILD_QCH} "API documentation in QCH format (for e.g. Qt 
 option(BUILD_EXPERIMENTAL "Build experimental features" OFF)
 add_feature_info(EXP ${BUILD_EXPERIMENTAL} "Build experimental features")
 
+option(BUILD_INDEXER_SERVICE "Build the background indexer service" ON)
+add_feature_info(INDEXER_SERVICE ${BUILD_INDEXER_SERVICE}
+    "Build and install the session wide indexer service. The service is started with the session and running in the background.")
 
 # set up build dependencies
 find_package(Qt${QT_MAJOR_VERSION} ${REQUIRED_QT_VERSION} REQUIRED NO_MODULE COMPONENTS Core DBus Widgets Qml Quick Test)

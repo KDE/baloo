@@ -1,6 +1,10 @@
 add_subdirectory(baloosearch)
 add_subdirectory(balooshow)
-add_subdirectory(balooctl)
+
+if (BUILD_INDEXER_SERVICE)
+  add_subdirectory(balooctl)
+endif()
+
 if(${BUILD_EXPERIMENTAL})
   add_subdirectory(experimental/baloodb)
 endif()
