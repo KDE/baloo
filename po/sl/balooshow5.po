@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-02-02 00:41+0000\n"
+"POT-Creation-Date: 2023-05-07 00:45+0000\n"
 "PO-Revision-Date: 2020-05-19 08:41+0200\n"
 "Last-Translator: Matjaž Jeran <matjaz.jeran@amis.net>\n"
 "Language-Team: Slovenian <lugos-slo@lugos.si>\n"
@@ -31,47 +31,47 @@ msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
 msgstr "andrejm@ubuntu.si,matjaz.jeran@amis.net"
 
-#: main.cpp:57
+#: main.cpp:59
 #, kde-format
 msgid "Baloo Show"
 msgstr "Pregledovalnik podatkov Baloo"
 
-#: main.cpp:59
+#: main.cpp:61
 #, kde-format
 msgid "The Baloo data Viewer - A debugging tool"
 msgstr "Pregledovalnik podatkov Baloo - orodje za odpravljanje napak"
 
-#: main.cpp:61
+#: main.cpp:63
 #, kde-format
 msgid "(c) 2012, Vishesh Handa"
 msgstr "(c) 2012, Vishesh Handa"
 
-#: main.cpp:66
+#: main.cpp:68
 #, kde-format
 msgid "Urls, document ids or inodes of the files"
 msgstr "URL-ji, ID-ji dokumentov ali inode številke datotek"
 
-#: main.cpp:68
+#: main.cpp:70
 #, kde-format
 msgid "Print internal info"
 msgstr "Tiskaj interne informacije"
 
-#: main.cpp:70
+#: main.cpp:72
 #, kde-format
 msgid "Arguments are interpreted as inode numbers (requires -d)"
 msgstr "Argumenti se razlagajo kot številke inode (zahtevan določilnik -d)"
 
-#: main.cpp:72
+#: main.cpp:74
 #, kde-format
 msgid "Device id for the files"
 msgstr "ID naprave za datoteke"
 
-#: main.cpp:95
+#: main.cpp:97
 #, kde-format
 msgid "Error: -i requires specifying a device (-d <deviceId>)"
 msgstr "Napaka: -i zahteva določitev naprave (-d <deviceId>)"
 
-#: main.cpp:101
+#: main.cpp:103
 #, kde-format
 msgid ""
 "The Baloo index could not be opened. Please run \"%1\" to see if Baloo is "
@@ -80,47 +80,54 @@ msgstr ""
 "Kazala Baloo ni bilo mogoče odpreti. Zaženite \"%1\", da preverite, ali je "
 "Baloo omogočen in deluje."
 
-#: main.cpp:118
+#: main.cpp:120
 #, kde-format
 msgid "The document IDs of the Baloo DB and the filesystem are different:"
 msgstr "ID-ji dokumenta v Baloo kazalu in v datotečnem sistemu so različni:"
 
-#: main.cpp:137
+#: main.cpp:139
 #, kde-format
 msgid "%1: Not a valid url or document id"
 msgstr "%1: Ni veljaven URL ali ID dokumenta"
 
-#: main.cpp:151
+#: main.cpp:153
 #, kde-format
 msgid "%1: Failed to parse inode number"
 msgstr "%1: Števila inode ni bilo mogoče razčleniti"
 
-#: main.cpp:175
+#: main.cpp:177
 #, kde-format
 msgid "%1: No index information found"
 msgstr "%1: V kazalu ni bilo najdenih podatkov"
 
-#: main.cpp:223
+#: main.cpp:230
 #, kde-format
 msgid "Internal Info"
 msgstr "Interne informacije"
 
-#: main.cpp:224
-#, kde-format
-msgid "Terms: %1"
-msgstr "Pogoji: %1"
-
-#: main.cpp:225
+#: main.cpp:231
 #, kde-format
 msgid "File Name Terms: %1"
 msgstr "Pogoji imena datoteke: %1"
 
-#: main.cpp:226
+#: main.cpp:232
 #, kde-format
 msgid "%1 Terms: %2"
 msgstr "%1 Pogoji: %2"
 
-#: main.cpp:229
+#: main.cpp:233
+#, fuzzy, kde-format
+#| msgid "File Name Terms: %1"
+msgid "Plain Text Terms: %1"
+msgstr "Pogoji imena datoteke: %1"
+
+#: main.cpp:234
+#, fuzzy, kde-format
+#| msgid "Terms: %1"
+msgid "Property Terms: %1"
+msgstr "Pogoji: %1"
+
+#: main.cpp:237
 #, kde-format
 msgctxt "Prefix string for internal errors"
 msgid "Internal Error - %1"

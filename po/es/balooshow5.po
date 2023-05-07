@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: balooshow\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-02-02 00:41+0000\n"
+"POT-Creation-Date: 2023-05-07 00:45+0000\n"
 "PO-Revision-Date: 2019-04-12 20:43+0200\n"
 "Last-Translator: Eloy Cuadra <ecuadra@eloihr.net>\n"
 "Language-Team: Spanish <kde-l10n-es@kde.org>\n"
@@ -29,47 +29,47 @@ msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
 msgstr "ecuadra@eloihr.net"
 
-#: main.cpp:57
+#: main.cpp:59
 #, kde-format
 msgid "Baloo Show"
 msgstr "Muestra de Baloo"
 
-#: main.cpp:59
+#: main.cpp:61
 #, kde-format
 msgid "The Baloo data Viewer - A debugging tool"
 msgstr "Visor de datos de Baloo - Una herramienta de depuración"
 
-#: main.cpp:61
+#: main.cpp:63
 #, kde-format
 msgid "(c) 2012, Vishesh Handa"
 msgstr "© 2012, Vishesh Handa"
 
-#: main.cpp:66
+#: main.cpp:68
 #, kde-format
 msgid "Urls, document ids or inodes of the files"
 msgstr "URL, ID de los documentos o inodos de los archivos"
 
-#: main.cpp:68
+#: main.cpp:70
 #, kde-format
 msgid "Print internal info"
 msgstr "Mostrar información interna"
 
-#: main.cpp:70
+#: main.cpp:72
 #, kde-format
 msgid "Arguments are interpreted as inode numbers (requires -d)"
 msgstr "Los argumentos se interpretan como números de inodos (necesita -d)"
 
-#: main.cpp:72
+#: main.cpp:74
 #, kde-format
 msgid "Device id for the files"
 msgstr "Id del dispositivo para los archivos"
 
-#: main.cpp:95
+#: main.cpp:97
 #, kde-format
 msgid "Error: -i requires specifying a device (-d <deviceId>)"
 msgstr "Error: -i necesita especificar un dispositivo (-d <IdDeDispositivo>)"
 
-#: main.cpp:101
+#: main.cpp:103
 #, kde-format
 msgid ""
 "The Baloo index could not be opened. Please run \"%1\" to see if Baloo is "
@@ -78,49 +78,56 @@ msgstr ""
 "El índice de Baloo no se puede abrir. Por favor, ejecute «%1» para ver si "
 "Baloo está activado y en funcionamiento."
 
-#: main.cpp:118
+#: main.cpp:120
 #, kde-format
 msgid "The document IDs of the Baloo DB and the filesystem are different:"
 msgstr ""
 "Los ID de documentos de la base de datos de Baloo y del sistema de archivos "
 "son diferentes:"
 
-#: main.cpp:137
+#: main.cpp:139
 #, kde-format
 msgid "%1: Not a valid url or document id"
 msgstr "%1: No es un URL o ID de documento válido"
 
-#: main.cpp:151
+#: main.cpp:153
 #, kde-format
 msgid "%1: Failed to parse inode number"
 msgstr "%1: No se ha podido analizar el número de inodo"
 
-#: main.cpp:175
+#: main.cpp:177
 #, kde-format
 msgid "%1: No index information found"
 msgstr "%1: No se ha encontrado información del índice"
 
-#: main.cpp:223
+#: main.cpp:230
 #, kde-format
 msgid "Internal Info"
 msgstr "Información interna"
 
-#: main.cpp:224
-#, kde-format
-msgid "Terms: %1"
-msgstr "Reglas: %1"
-
-#: main.cpp:225
+#: main.cpp:231
 #, kde-format
 msgid "File Name Terms: %1"
 msgstr "Reglas de nombres de archivos: %1"
 
-#: main.cpp:226
+#: main.cpp:232
 #, kde-format
 msgid "%1 Terms: %2"
 msgstr "Reglas de %1: %2"
 
-#: main.cpp:229
+#: main.cpp:233
+#, fuzzy, kde-format
+#| msgid "File Name Terms: %1"
+msgid "Plain Text Terms: %1"
+msgstr "Reglas de nombres de archivos: %1"
+
+#: main.cpp:234
+#, fuzzy, kde-format
+#| msgid "Terms: %1"
+msgid "Property Terms: %1"
+msgstr "Reglas: %1"
+
+#: main.cpp:237
 #, kde-format
 msgctxt "Prefix string for internal errors"
 msgid "Internal Error - %1"
