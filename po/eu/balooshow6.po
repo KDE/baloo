@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: balooshow5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-02-02 00:41+0000\n"
+"POT-Creation-Date: 2023-05-07 02:15+0000\n"
 "PO-Revision-Date: 2019-04-25 10:40+0100\n"
 "Last-Translator: Iñigo Salvador Azurmendi <xalba@euskalnet.net>\n"
 "Language-Team: Basque <kde-i18n-eu@kde.org>\n"
@@ -33,47 +33,47 @@ msgid "Your emails"
 msgstr "ander@elortondo.net,xalba@euskalnet.net"
 
 # xalba 2018-02-19: Testuinguruan itzulpen zuzena den egiaztatu behar da.
-#: main.cpp:57
+#: main.cpp:59
 #, kde-format
 msgid "Baloo Show"
 msgstr "Baloo aurkezpena"
 
-#: main.cpp:59
+#: main.cpp:61
 #, kde-format
 msgid "The Baloo data Viewer - A debugging tool"
 msgstr "Baloo datu ikuskatzailea - Arazteko tresna bat"
 
-#: main.cpp:61
+#: main.cpp:63
 #, kde-format
 msgid "(c) 2012, Vishesh Handa"
 msgstr "(c) 2012, Vishesh Handa"
 
-#: main.cpp:66
+#: main.cpp:68
 #, kde-format
 msgid "Urls, document ids or inodes of the files"
 msgstr "URLak, dokumentuen IDak edo fitxategien inodoak"
 
-#: main.cpp:68
+#: main.cpp:70
 #, kde-format
 msgid "Print internal info"
 msgstr "Inprimatu barneko informazioa"
 
-#: main.cpp:70
+#: main.cpp:72
 #, kde-format
 msgid "Arguments are interpreted as inode numbers (requires -d)"
 msgstr "Argumentuak inodo zenbaki gisa interpretatzen dira  (-d behar du)"
 
-#: main.cpp:72
+#: main.cpp:74
 #, kde-format
 msgid "Device id for the files"
 msgstr "Fitxategiaren gailu id"
 
-#: main.cpp:95
+#: main.cpp:97
 #, kde-format
 msgid "Error: -i requires specifying a device (-d <deviceId>)"
 msgstr "Errorea: -i erabiltzeko gailu bat zehaztu behar da (-d <gailuID>)"
 
-#: main.cpp:101
+#: main.cpp:103
 #, kde-format
 msgid ""
 "The Baloo index could not be opened. Please run \"%1\" to see if Baloo is "
@@ -82,50 +82,58 @@ msgstr ""
 "Baloo indizea ezin izan da ireki. Exekutatu \"%1\" Baloo gaituta eta martxan "
 "dagoen ikusteko."
 
-#: main.cpp:118
+#: main.cpp:120
 #, kde-format
 msgid "The document IDs of the Baloo DB and the filesystem are different:"
 msgstr "Dokumentuen IDak ezberdinak dira Baloo DB-an eta fitxategi-sisteman:"
 
-#: main.cpp:137
+#: main.cpp:139
 #, kde-format
 msgid "%1: Not a valid url or document id"
 msgstr "%1: Ez da baliozko URL bat edo dokumentu ID bat"
 
-#: main.cpp:151
+#: main.cpp:153
 #, kde-format
 msgid "%1: Failed to parse inode number"
 msgstr "%1: Huts egin du inodo zenbakiaren azterketa sintaktikoak"
 
-#: main.cpp:175
+#: main.cpp:177
 #, kde-format
 msgid "%1: No index information found"
 msgstr "%1: Ez da indize informaziorik aurkitu"
 
-#: main.cpp:223
+#: main.cpp:230
 #, kde-format
 msgid "Internal Info"
 msgstr "Barneko informazioa"
 
 # xalba 2018-02-19: Testuinguruan itzulpen zuzena den egiaztatu behar da.
-#: main.cpp:224
-#, kde-format
-msgid "Terms: %1"
-msgstr "Baldintzak: %1"
-
-# xalba 2018-02-19: Testuinguruan itzulpen zuzena den egiaztatu behar da.
-#: main.cpp:225
+#: main.cpp:231
 #, kde-format
 msgid "File Name Terms: %1"
 msgstr "Fitxategi izenen baldintzak: %1"
 
 # xalba 2018-02-19: Testuinguruan itzulpen zuzena den egiaztatu behar da.
-#: main.cpp:226
+#: main.cpp:232
 #, kde-format
 msgid "%1 Terms: %2"
 msgstr "%1 baldintzak: %2"
 
-#: main.cpp:229
+# xalba 2018-02-19: Testuinguruan itzulpen zuzena den egiaztatu behar da.
+#: main.cpp:233
+#, fuzzy, kde-format
+#| msgid "File Name Terms: %1"
+msgid "Plain Text Terms: %1"
+msgstr "Fitxategi izenen baldintzak: %1"
+
+# xalba 2018-02-19: Testuinguruan itzulpen zuzena den egiaztatu behar da.
+#: main.cpp:234
+#, fuzzy, kde-format
+#| msgid "Terms: %1"
+msgid "Property Terms: %1"
+msgstr "Baldintzak: %1"
+
+#: main.cpp:237
 #, kde-format
 msgctxt "Prefix string for internal errors"
 msgid "Internal Error - %1"
