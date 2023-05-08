@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-05-07 02:15+0000\n"
-"PO-Revision-Date: 2023-03-19 11:45+0530\n"
+"PO-Revision-Date: 2023-05-07 15:08+0530\n"
 "Last-Translator: Kishore G <kishore96@gmail.com>\n"
 "Language-Team: Tamil <kde-i18n-doc@kde.org>\n"
 "Language: ta\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 22.12.3\n"
+"X-Generator: Lokalize 23.04.0\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -40,7 +40,7 @@ msgstr ""
 #: main.cpp:63
 #, kde-format
 msgid "(c) 2012, Vishesh Handa"
-msgstr ""
+msgstr "(c) 2012, விஷேஷ் ஹண்டா"
 
 #: main.cpp:68
 #, kde-format
@@ -88,12 +88,12 @@ msgstr "%1: முறையான முகவரியோ ஆவண அடை�
 #: main.cpp:153
 #, kde-format
 msgid "%1: Failed to parse inode number"
-msgstr ""
+msgstr "%1: inode எண்ணை புரிந்துகொள்ள முடியவில்லை"
 
 #: main.cpp:177
 #, kde-format
 msgid "%1: No index information found"
-msgstr ""
+msgstr "%1: அட்டவணையில் இதன் விவரம் இல்லை"
 
 #: main.cpp:230
 #, kde-format
@@ -103,7 +103,7 @@ msgstr "உள்ளக விவரங்கள்"
 #: main.cpp:231
 #, kde-format
 msgid "File Name Terms: %1"
-msgstr ""
+msgstr "கோப்புப்பெயர் வினாக்கள்: %1"
 
 #: main.cpp:232
 #, kde-format
@@ -111,14 +111,14 @@ msgid "%1 Terms: %2"
 msgstr ""
 
 #: main.cpp:233
-#, fuzzy, kde-format
+#, kde-format
 msgid "Plain Text Terms: %1"
-msgstr "சொற்கள்: %1"
+msgstr "உரை வினாக்கள்: %1"
 
 #: main.cpp:234
-#, fuzzy, kde-format
+#, kde-format
 msgid "Property Terms: %1"
-msgstr "சொற்கள்: %1"
+msgstr "பண்பு வினாக்கள்: %1"
 
 #: main.cpp:237
 #, kde-format
