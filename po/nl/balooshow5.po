@@ -1,26 +1,26 @@
 # Copyright (C) YEAR This_file_is_part_of_KDE
 # This file is distributed under the same license as the PACKAGE package.
 #
-# Freek de Kruijf <freekdekruijf@kde.nl>, 2013, 2015, 2018, 2019.
+# Freek de Kruijf <freekdekruijf@kde.nl>, 2013, 2015, 2018, 2019, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-05-07 00:45+0000\n"
-"PO-Revision-Date: 2019-04-12 11:00+0200\n"
+"PO-Revision-Date: 2023-05-07 15:16+0200\n"
 "Last-Translator: Freek de Kruijf <freekdekruijf@kde.nl>\n"
-"Language-Team: Dutch <kde-i18n-nl@kde.org>\n"
+"Language-Team: \n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 18.12.3\n"
+"X-Generator: Lokalize 22.12.3\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr "Freek de Kruijf - t/m 2019"
+msgstr "Freek de Kruijf - t/m 2013"
 
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
@@ -113,16 +113,14 @@ msgid "%1 Terms: %2"
 msgstr "%1 termen: %2"
 
 #: main.cpp:233
-#, fuzzy, kde-format
-#| msgid "File Name Terms: %1"
+#, kde-format
 msgid "Plain Text Terms: %1"
-msgstr "Bestandsnaamtermen: %1"
+msgstr "Termen in platte tekst: %1"
 
 #: main.cpp:234
-#, fuzzy, kde-format
-#| msgid "Terms: %1"
+#, kde-format
 msgid "Property Terms: %1"
-msgstr "Termen: %1"
+msgstr "Termen van eigenschappen: %1"
 
 #: main.cpp:237
 #, kde-format

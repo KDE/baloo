@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: balooshow\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-05-07 00:45+0000\n"
-"PO-Revision-Date: 2019-04-12 11:12+0100\n"
+"PO-Revision-Date: 2023-05-07 13:50+0100\n"
 "Last-Translator: José Nuno Coelho Pires <zepires@gmail.com>\n"
 "Language-Team: Portuguese <kde-i18n-pt@kde.org>\n"
 "Language: pt\n"
@@ -110,25 +110,17 @@ msgid "%1 Terms: %2"
 msgstr "Termos do %1: %2"
 
 #: main.cpp:233
-#, fuzzy, kde-format
-#| msgid "File Name Terms: %1"
+#, kde-format
 msgid "Plain Text Terms: %1"
-msgstr "Termos do Nome do Ficheiro: %1"
+msgstr "Termos em Texto Simples: %1"
 
 #: main.cpp:234
-#, fuzzy, kde-format
-#| msgid "Terms: %1"
+#, kde-format
 msgid "Property Terms: %1"
-msgstr "Termos: %1"
+msgstr "Termos da Propriedade: %1"
 
 #: main.cpp:237
 #, kde-format
 msgctxt "Prefix string for internal errors"
 msgid "Internal Error - %1"
 msgstr "Erro Interno - %1"
-
-#~ msgid "Vishesh Handa"
-#~ msgstr "Vishesh Handa"
-
-#~ msgid "Maintainer"
-#~ msgstr "Manutenção"
