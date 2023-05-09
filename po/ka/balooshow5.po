@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-05-07 00:45+0000\n"
-"PO-Revision-Date: 2022-08-25 06:01+0200\n"
+"PO-Revision-Date: 2023-05-08 05:22+0200\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
 "Language: ka\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.1.1\n"
+"X-Generator: Poedit 3.2.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -115,16 +115,14 @@ msgid "%1 Terms: %2"
 msgstr "%1 პირობები: %2"
 
 #: main.cpp:233
-#, fuzzy, kde-format
-#| msgid "File Name Terms: %1"
+#, kde-format
 msgid "Plain Text Terms: %1"
-msgstr "ფაილის სახელის პირობები: %1"
+msgstr "უბრალო ტექსტის პირობები: %1"
 
 #: main.cpp:234
-#, fuzzy, kde-format
-#| msgid "Terms: %1"
+#, kde-format
 msgid "Property Terms: %1"
-msgstr "პირობები: %1"
+msgstr "ქონების პირობები: %1"
 
 #: main.cpp:237
 #, kde-format
