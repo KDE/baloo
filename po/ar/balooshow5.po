@@ -3,13 +3,13 @@
 #
 # Abdalrahim G. Fakhouri <abdilra7eem@yahoo.com>, 2014.
 # Safa Alfulaij <safa1996alfulaij@gmail.com>, ٢٠١٥, 2017, 2018.
-# Zayed Al-Saidi <zayed.alsaidi@gmail.com>, 2021.
+# Zayed Al-Saidi <zayed.alsaidi@gmail.com>, 2021, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-05-07 00:45+0000\n"
-"PO-Revision-Date: 2021-07-26 22:57+0400\n"
+"PO-Revision-Date: 2023-05-11 10:05+0400\n"
 "Last-Translator: Zayed Al-Saidi <zayed.alsaidi@gmail.com>\n"
 "Language-Team: ar\n"
 "Language: ar\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
-"X-Generator: Lokalize 21.07.70\n"
+"X-Generator: Lokalize 21.12.3\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -115,16 +115,14 @@ msgid "%1 Terms: %2"
 msgstr "بنود %1: ‏%2"
 
 #: main.cpp:233
-#, fuzzy, kde-format
-#| msgid "File Name Terms: %1"
+#, kde-format
 msgid "Plain Text Terms: %1"
-msgstr "بنود أسماء الملفات: %1"
+msgstr "بنود نص صرف: %1"
 
 #: main.cpp:234
-#, fuzzy, kde-format
-#| msgid "Terms: %1"
+#, kde-format
 msgid "Property Terms: %1"
-msgstr "البنود: %1"
+msgstr "بنود خاصية: %1"
 
 #: main.cpp:237
 #, kde-format
