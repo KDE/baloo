@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Abdalrahim G. Fakhouri <abdilra7eem@yahoo.com>, 2014.
-# Safa Alfulaij <safa1996alfulaij@gmail.com>, ٢٠١٥, 2017, 2018.
+# Safa Alfulaij <safa1996alfulaij@gmail.com>, 2015, 2017, 2018.
 # Zayed Al-Saidi <zayed.alsaidi@gmail.com>, 2021, 2023.
 msgid ""
 msgstr ""
@@ -43,7 +43,7 @@ msgstr "عارض لبيانات «بالو» - أداة تنقيح"
 #: main.cpp:63
 #, kde-format
 msgid "(c) 2012, Vishesh Handa"
-msgstr "‏© ٢٠١٢، Vishesh Handa"
+msgstr "‏© 2012، Vishesh Handa"
 
 #: main.cpp:68
 #, kde-format
