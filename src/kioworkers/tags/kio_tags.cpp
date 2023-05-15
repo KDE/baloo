@@ -295,13 +295,13 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
 
         // a tag/folder
         if (tagSection == tag) {
-            displayType = i18n("Tag");
+            displayType = i18nc("This is a noun", "Tag");
             displayName = tag.section(QLatin1Char('/'), -1);
         }
 
         // a tagged file
         else if (!tag.isEmpty()) {
-            displayType = i18n("Tag Fragment");
+            displayType = i18nc("This is a noun", "Tag Fragment");
             if (tagSection == QStringLiteral("..")) {
                 displayName = tag.section(QLatin1Char('/'), -2);
             } else if (tagSection == QStringLiteral(".")) {
