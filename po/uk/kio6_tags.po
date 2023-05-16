@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kio5_tags\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-11-25 00:42+0000\n"
+"POT-Creation-Date: 2023-05-16 02:14+0000\n"
 "PO-Revision-Date: 2017-11-30 17:27+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
@@ -26,12 +26,16 @@ msgid "File %1 already has tag %2"
 msgstr "Файл %1 вже позначено міткою %2"
 
 #: kio_tags.cpp:298
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Tag"
+msgctxt "This is a noun"
 msgid "Tag"
 msgstr "Мітка"
 
 #: kio_tags.cpp:304
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Tag Fragment"
+msgctxt "This is a noun"
 msgid "Tag Fragment"
 msgstr "Фрагмент мітки"
 

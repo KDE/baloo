@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-11-25 00:42+0000\n"
+"POT-Creation-Date: 2023-05-16 02:14+0000\n"
 "PO-Revision-Date: 2014-02-23 11:42+0100\n"
 "Last-Translator: Bjørn Steensrud <bjornst@skogkatt.homelinux.org>\n"
 "Language-Team: Norwegian Bokmål <l10n-no@lister.huftis.org>\n"
@@ -25,12 +25,15 @@ msgid "File %1 already has tag %2"
 msgstr ""
 
 #: kio_tags.cpp:298
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Tag"
+msgctxt "This is a noun"
 msgid "Tag"
 msgstr "Etikett"
 
 #: kio_tags.cpp:304
 #, kde-format
+msgctxt "This is a noun"
 msgid "Tag Fragment"
 msgstr ""
 
