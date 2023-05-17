@@ -79,9 +79,8 @@ QVector<QByteArray> WriteTransaction::addTerms(quint64 id, const QMap<QByteArray
     termList.reserve(terms.size());
     m_pendingOperations.reserve(m_pendingOperations.size() + terms.size());
 
-    QMapIterator<QByteArray, Document::TermData> it(terms);
-    while (it.hasNext()) {
-        const QByteArray& term = it.next().key();
+    for (auto it = terms.cbegin(), end = terms.cend(); it != end; ++it) {
+        const QByteArray& term = it.key();
         termList.append(term);
 
         Operation op;
