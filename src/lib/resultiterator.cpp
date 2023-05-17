@@ -8,6 +8,7 @@
 #include "resultiterator.h"
 #include "result_p.h"
 #include "searchstore.h"
+#include <limits>
 #include <vector>
 
 using namespace Baloo;
@@ -20,7 +21,7 @@ public:
     }
 
     ResultList results;
-    int pos = -1;
+    std::size_t pos = std::numeric_limits<size_t>::max();
 };
 
 ResultIterator::ResultIterator(ResultList&& res)
@@ -50,18 +51,18 @@ ResultIterator::~ResultIterator()
 
 bool ResultIterator::next()
 {
-    d->pos++;
+    d->pos++; // overflows to 0 on first use
     return d->pos < d->results.size();
 }
 
 QString ResultIterator::filePath() const
 {
-    Q_ASSERT(d->pos >= 0 && d->pos < d->results.size());
+    Q_ASSERT(d->pos < d->results.size());
     return QString::fromUtf8(d->results.at(d->pos).filePath);
 }
 
 QByteArray ResultIterator::documentId() const
 {
-    Q_ASSERT(d->pos >= 0 && d->pos < d->results.size());
+    Q_ASSERT(d->pos < d->results.size());
     return QByteArray::number(d->results.at(d->pos).documentId, 16);
 }
