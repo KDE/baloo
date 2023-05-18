@@ -15,6 +15,13 @@
 
 namespace Baloo {
 
+/**
+ * Implements storage for a set of <term>s for the given docId
+ * Instantiated for:
+ * - document (content) terms
+ * - filename terms
+ * - xattr terms
+ */
 class BALOO_ENGINE_EXPORT DocumentDB
 {
 public:
