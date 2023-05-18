@@ -12,6 +12,12 @@
 #include <QVector>
 #include <lmdb.h>
 
+/**
+ * Implements storage for docIds without any associated data
+ * Instantiated for:
+ * - content indexing (files to be reindexed)
+ * - failed ids (files no indexable, e.g. due to crashing indexers)
+ */
 namespace Baloo {
 
 class BALOO_ENGINE_EXPORT DocumentIdDB
