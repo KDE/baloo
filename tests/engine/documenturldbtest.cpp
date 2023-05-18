@@ -6,7 +6,6 @@
 */
 
 #include <QDebug>
-#include <QCoreApplication>
 #include <QTemporaryDir>
 #include <QFile>
 #include <QDirIterator>
@@ -18,10 +17,8 @@
 
 using namespace Baloo;
 
-int main(int argc, char** argv)
+int main(int /* argc */, char** /* argv */)
 {
-    QCoreApplication app(argc, argv);
-
     MDB_env* env;
     MDB_txn* txn;
 
@@ -56,7 +53,6 @@ int main(int argc, char** argv)
         mdb_txn_commit(txn);
 
         qDebug() << "Done" << timer.elapsed() << "msecs";
-        app.exec();
     }
 
     // Cleanup
