@@ -30,6 +30,7 @@ public:
 private Q_SLOTS:
 
     void init();
+    void cleanup();
 
     void testRemoveFile();
     void testRenameFile();
@@ -61,6 +62,12 @@ private:
 MetadataMoverTest::MetadataMoverTest(QObject* parent)
     : QObject(parent)
 {
+}
+
+void MetadataMoverTest::cleanup()
+{
+    m_db.reset();
+    m_tempDir.reset();
 }
 
 void MetadataMoverTest::init()

@@ -12,6 +12,7 @@
 #include <QTest>
 
 #include <lmdb.h>
+#include <memory>
 
 class SingleDBTest : public QObject
 {
@@ -19,7 +20,7 @@ class SingleDBTest : public QObject
 private Q_SLOTS:
     void init()
     {
-        m_tempDir = new QTemporaryDir();
+        m_tempDir = std::make_unique<QTemporaryDir>();
 
         mdb_env_create(&m_env);
         mdb_env_set_maxdbs(m_env, 1);
@@ -33,14 +34,16 @@ private Q_SLOTS:
     void cleanup()
     {
         mdb_txn_abort(m_txn);
+        m_txn = nullptr;
         mdb_env_close(m_env);
-        delete m_tempDir;
+        m_env = nullptr;
+        m_tempDir.reset();
     }
 
 protected:
-    MDB_env* m_env;
-    MDB_txn* m_txn;
-    QTemporaryDir* m_tempDir;
+    MDB_env* m_env = nullptr;
+    MDB_txn* m_txn = nullptr;
+    std::unique_ptr<QTemporaryDir> m_tempDir;
 };
 
 #endif // SINGLEDBTEST_H

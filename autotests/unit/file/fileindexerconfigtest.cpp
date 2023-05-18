@@ -6,16 +6,45 @@
     SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
 */
 
-#include "fileindexerconfigtest.h"
 #include "fileindexerconfig.h"
 #include "fileindexerconfigutils.h"
 
-
+#include <memory>
+#include <QObject>
 #include <QFile>
 #include <QTest>
+#include <QTemporaryDir>
 
+namespace Baloo {
+namespace Test {
 
-using namespace Baloo::Test;
+class FileIndexerConfigTest : public QObject
+{
+    Q_OBJECT
+private Q_SLOTS:
+
+    void initTestCase();
+    void cleanupTestCase();
+
+    void testShouldFolderBeIndexed();
+    void testShouldFolderBeIndexed_data();
+
+    void testShouldFolderBeIndexedHidden();
+    void testShouldFolderBeIndexedHidden_data();
+
+    void testShouldBeIndexed();
+    void testShouldBeIndexed_data();
+
+    void testShouldBeIndexedHidden();
+    void testShouldBeIndexedHidden_data();
+
+    void testShouldExcludeFilterOnFolders();
+    void testShouldExcludeFilterOnFolders_data();
+
+private:
+    std::unique_ptr<QTemporaryDir> m_mainDir;
+    QString m_dirPrefix;
+};
 
 namespace
 {
@@ -63,7 +92,7 @@ void FileIndexerConfigTest::initTestCase()
 
 void FileIndexerConfigTest::cleanupTestCase()
 {
-    delete m_mainDir;
+    m_mainDir.reset();
 }
 
 void FileIndexerConfigTest::testShouldFolderBeIndexed_data()
@@ -430,4 +459,11 @@ void FileIndexerConfigTest::testShouldExcludeFilterOnFolders()
     QCOMPARE(cfg.shouldFolderBeIndexed(path), shouldBeIndexed);
 }
 
+} // namespace Test
+} // namespace Baloo
+
+using namespace Baloo::Test;
+
 QTEST_GUILESS_MAIN(FileIndexerConfigTest)
+
+#include "fileindexerconfigtest.moc"

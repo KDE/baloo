@@ -9,6 +9,7 @@
 #include "database.h"
 #include "idutils.h"
 
+#include <memory>
 #include <QTest>
 #include <QTemporaryDir>
 
@@ -19,20 +20,20 @@ class TransactionTest : public QObject
     Q_OBJECT
 private Q_SLOTS:
     void init() {
-        dir = new QTemporaryDir();
-        db = new Database(dir->path());
+        dir = std::make_unique<QTemporaryDir>();
+        db = std::make_unique<Database>(dir->path());
         db->open(Database::CreateDatabase);
     }
 
     void cleanup() {
-        delete db;
-        delete dir;
+        db.reset();
+        dir.reset();
     }
 
     void testTimeInfo();
 private:
-    QTemporaryDir* dir;
-    Database* db;
+    std::unique_ptr<QTemporaryDir> dir;
+    std::unique_ptr<Database> db;
 };
 
 static quint64 touchFile(const QString& path) {
@@ -46,7 +47,7 @@ static quint64 touchFile(const QString& path) {
 
 void TransactionTest::testTimeInfo()
 {
-    Transaction tr(db, Transaction::ReadWrite);
+    Transaction tr(db.get(), Transaction::ReadWrite);
 
     const QString url(dir->path() + QStringLiteral("/file"));
     touchFile(url);
@@ -68,7 +69,7 @@ void TransactionTest::testTimeInfo()
     tr.addDocument(doc);
     tr.commit();
 
-    Transaction tr2(db, Transaction::ReadOnly);
+    Transaction tr2(db.get(), Transaction::ReadOnly);
 
     DocumentTimeDB::TimeInfo timeInfo(1, 2);
     QCOMPARE(tr2.documentTimeInfo(id), timeInfo);
