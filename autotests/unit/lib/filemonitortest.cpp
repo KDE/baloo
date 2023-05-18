@@ -6,6 +6,7 @@
 
 #include "filemonitor.h"
 
+#include <memory>
 #include <QTest>
 #include <QSignalSpy>
 
@@ -34,18 +35,18 @@ private:
     QString getRandomValidFilePath();
     QString getRandomValidWebUrl();
     QString getRandomString(int length) const;
-    FileMonitor* m_sut;
+    std::unique_ptr<FileMonitor> m_sut;
 
 };
 
 void FileMonitorTest::init()
 {
-    m_sut = new FileMonitor();
+    m_sut = std::make_unique<FileMonitor>();
 }
 
 void FileMonitorTest::cleanup()
 {
-    delete m_sut;
+    m_sut.reset();
 }
 
 void FileMonitorTest::test()
@@ -53,7 +54,7 @@ void FileMonitorTest::test()
     QString file = getRandomValidFilePath();
     m_sut->addFile(file);
 
-    QSignalSpy spy(m_sut, SIGNAL(fileMetaDataChanged(QString)));
+    QSignalSpy spy(m_sut.get(), SIGNAL(fileMetaDataChanged(QString)));
 
     QDBusMessage message = QDBusMessage::createSignal(QStringLiteral("/files"),
                            QStringLiteral("org.kde"),
@@ -70,7 +71,7 @@ void FileMonitorTest::test()
     QDBusConnection::sessionBus().send(message);
 
     QEventLoop loop;
-    connect(m_sut, &FileMonitor::fileMetaDataChanged, &loop, &QEventLoop::quit);
+    connect(m_sut.get(), &FileMonitor::fileMetaDataChanged, &loop, &QEventLoop::quit);
     loop.exec();
 
     QCOMPARE(spy.count(), 1);
