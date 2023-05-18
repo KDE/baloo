@@ -12,6 +12,7 @@
 #include "enginequery.h"
 #include "idutils.h"
 
+#include <memory>
 #include <QTest>
 #include <QTemporaryDir>
 
@@ -42,7 +43,7 @@ class QueryTest : public QObject
     Q_OBJECT
 private Q_SLOTS:
     void initTestCase() {
-        dir.reset(new QTemporaryDir());
+        dir = std::make_unique<QTemporaryDir>();
 
         auto touchFile = [](const QString& path) {
             QFile file(path);
@@ -65,16 +66,16 @@ private Q_SLOTS:
     }
 
     void init() {
-        dbDir = new QTemporaryDir();
-        db = new Database(dbDir->path());
+        dbDir = std::make_unique<QTemporaryDir>();
+        db = std::make_unique<Database>(dbDir->path());
         db->open(Database::CreateDatabase);
 
         insertDocuments();
     }
 
     void cleanup() {
-        delete db;
-        delete dbDir;
+        db.reset();
+        dbDir.reset();
     }
 
     void testTermEqual();
@@ -91,8 +92,8 @@ private Q_SLOTS:
 
 private:
     std::unique_ptr<QTemporaryDir> dir;
-    QTemporaryDir* dbDir;
-    Database* db;
+    std::unique_ptr<QTemporaryDir> dbDir;
+    std::unique_ptr<Database> db;
 
     void insertDocuments();
     void addDocument(Transaction* tr,const QString& text, quint64 id, const QString& fileName)
@@ -155,7 +156,7 @@ private:
 
 void QueryTest::insertDocuments()
 {
-    Transaction tr(db, Transaction::ReadWrite);
+    Transaction tr(db.get(), Transaction::ReadWrite);
     addDocument(&tr, QStringLiteral("The quick brown fox jumped over the crazy dog"), m_id1, QStringLiteral("file1.txt"));
     addDocument(&tr, QStringLiteral("The quick brown fox jumped over the lazy dog"), m_id7, QStringLiteral("file7_lazy"));
     addDocument(&tr, QStringLiteral("A quick brown fox ran around a easy dog"), m_id8, QStringLiteral("file8_dog"));
@@ -169,7 +170,7 @@ void QueryTest::insertDocuments()
 
 void QueryTest::insertTagDocuments()
 {
-    Transaction tr(db, Transaction::ReadWrite);
+    Transaction tr(db.get(), Transaction::ReadWrite);
     addTagDocument(&tr, {
 	QStringLiteral("One"),
 	QStringLiteral("Two"),
@@ -191,7 +192,7 @@ void QueryTest::testTermEqual()
     EngineQuery q("the");
 
     QVector<quint64> result = SortedIdVector{m_id1, m_id2, m_id4, m_id7};
-    Transaction tr(db, Transaction::ReadOnly);
+    Transaction tr(db.get(), Transaction::ReadOnly);
     QCOMPARE(tr.exec(q), result);
 }
 
@@ -200,7 +201,7 @@ void QueryTest::testTermStartsWith()
     EngineQuery q("for", EngineQuery::StartsWith);
 
     QVector<quint64> result = SortedIdVector{m_id3, m_id4};
-    Transaction tr(db, Transaction::ReadOnly);
+    Transaction tr(db.get(), Transaction::ReadOnly);
     QCOMPARE(tr.exec(q), result);
 }
 
@@ -213,7 +214,7 @@ void QueryTest::testTermAnd()
     EngineQuery q(queries, EngineQuery::And);
 
     QVector<quint64> result = {m_id3};
-    Transaction tr(db, Transaction::ReadOnly);
+    Transaction tr(db.get(), Transaction::ReadOnly);
     QCOMPARE(tr.exec(q), result);
 }
 
@@ -226,7 +227,7 @@ void QueryTest::testTermOr()
     EngineQuery q(queries, EngineQuery::Or);
 
     QVector<quint64> result = SortedIdVector{m_id1, m_id2, m_id7};
-    Transaction tr(db, Transaction::ReadOnly);
+    Transaction tr(db.get(), Transaction::ReadOnly);
     QCOMPARE(tr.exec(q), result);
 }
 
@@ -268,7 +269,7 @@ void QueryTest::testTermPhrase()
     }
     EngineQuery q(queries, EngineQuery::Phrase);
 
-    Transaction tr(db, Transaction::ReadOnly);
+    Transaction tr(db.get(), Transaction::ReadOnly);
     QCOMPARE(tr.exec(q), contentMatches);
 
     queries.clear();
@@ -308,7 +309,7 @@ void QueryTest::testTagTermAnd()
 
     EngineQuery q(queries, EngineQuery::And);
 
-    Transaction tr(db, Transaction::ReadOnly);
+    Transaction tr(db.get(), Transaction::ReadOnly);
     QCOMPARE(tr.exec(q), matchIds);
 }
 
@@ -341,7 +342,7 @@ void QueryTest::testTagTermPhrase()
 
     EngineQuery q(queries, EngineQuery::Phrase);
 
-    Transaction tr(db, Transaction::ReadOnly);
+    Transaction tr(db.get(), Transaction::ReadOnly);
     auto res = tr.exec(q);
     QCOMPARE(res, matchIds);
 }

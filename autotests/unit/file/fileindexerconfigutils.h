@@ -11,6 +11,7 @@
 #include <KConfig>
 #include <KConfigGroup>
 
+#include <memory>
 #include <QDir>
 #include <QTextStream>
 #include <QTemporaryDir>
@@ -38,15 +39,14 @@ void writeIndexerConfig(const QStringList& includeFolders,
     fileIndexerConfig.sync();
 }
 
-QTemporaryDir* createTmpFolders(const QStringList& folders)
+std::unique_ptr<QTemporaryDir> createTmpFolders(const QStringList& folders)
 {
-    QTemporaryDir* tmpDir = new QTemporaryDir();
+    auto tmpDir = std::make_unique<QTemporaryDir>();
     // If the temporary directory is in a hidden folder, then the tests will fail,
     // so we use /tmp/ instead.
     // TODO: Find a better solution
     if (QFileInfo(tmpDir->path()).isHidden()) {
-        delete tmpDir;
-        tmpDir = new QTemporaryDir(QStringLiteral("/tmp/"));
+        tmpDir = std::make_unique<QTemporaryDir>(QStringLiteral("/tmp/"));
     }
     for (const QString & f : folders) {
         QDir dir(tmpDir->path());
@@ -69,15 +69,14 @@ QTemporaryDir* createTmpFolders(const QStringList& folders)
 }
 
 
-QTemporaryDir* createTmpFilesAndFolders(const QStringList& list)
+std::unique_ptr<QTemporaryDir> createTmpFilesAndFolders(const QStringList& list)
 {
-    QTemporaryDir* tmpDir = new QTemporaryDir();
+    auto tmpDir = std::make_unique<QTemporaryDir>();
     // If the temporary directory is in a hidden folder, then the tests will fail,
     // so we use /tmp/ instead.
     // TODO: Find a better solution
     if (QFileInfo(tmpDir->path()).isHidden()) {
-        delete tmpDir;
-        tmpDir = new QTemporaryDir(QStringLiteral("/tmp/"));
+        tmpDir = std::make_unique<QTemporaryDir>(QStringLiteral("/tmp/"));
     }
     for (const QString& f : list) {
         if (f.endsWith(QLatin1Char('/'))) {
