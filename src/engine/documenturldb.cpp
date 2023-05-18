@@ -117,16 +117,12 @@ void DocumentUrlDB::updateUrl(quint64 id, quint64 parentId, const QByteArray& ur
         // Remove from old parent
         QVector<quint64> subDocs = idTreeDb.get(path.parentId);
         if (subDocs.removeOne(id)) {
-            if (subDocs.isEmpty()) {
-                idTreeDb.del(path.parentId);
-            } else {
-                idTreeDb.put(path.parentId, subDocs);
-            }
+            idTreeDb.set(path.parentId, subDocs);
         }
         // Add to new parent
         subDocs = idTreeDb.get(parentId);
         sortedIdInsert(subDocs, id);
-        idTreeDb.put(parentId, subDocs);
+        idTreeDb.set(parentId, subDocs);
     }
 
     if ((newname != path.name) || (parentId != path.parentId)) {
@@ -151,7 +147,7 @@ void DocumentUrlDB::add(quint64 id, quint64 parentId, const QByteArray& name)
     // insert if not there
     sortedIdInsert(subDocs, id);
 
-    idTreeDb.put(parentId, subDocs);
+    idTreeDb.set(parentId, subDocs);
 
     // Update the IdFileName
     IdFilenameDB::FilePath path;

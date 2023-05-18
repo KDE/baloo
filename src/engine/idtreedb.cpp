@@ -45,22 +45,29 @@ MDB_dbi IdTreeDB::open(MDB_txn* txn)
     return dbi;
 }
 
-void IdTreeDB::put(quint64 docId, const QVector<quint64> &subDocIds)
+void IdTreeDB::set(quint64 docId, const QVector<quint64> &subDocIds)
 {
-    Q_ASSERT(!subDocIds.isEmpty());
     Q_ASSERT(!subDocIds.contains(0));
 
     MDB_val key;
     key.mv_size = sizeof(quint64);
     key.mv_data = static_cast<void*>(&docId);
 
-    MDB_val val;
-    val.mv_size = subDocIds.size() * sizeof(quint64);
-    val.mv_data = static_cast<void*>(const_cast<quint64*>(subDocIds.constData()));
+    int rc;
+    if (subDocIds.empty()) {
+        rc = mdb_del(m_txn, m_dbi, &key, nullptr);
+        if (rc == MDB_NOTFOUND) {
+            rc = 0;
+        }
+    } else {
+        MDB_val val;
+        val.mv_size = subDocIds.size() * sizeof(quint64);
+        val.mv_data = static_cast<void*>(const_cast<quint64*>(subDocIds.constData()));
 
-    int rc = mdb_put(m_txn, m_dbi, &key, &val, 0);
+        rc = mdb_put(m_txn, m_dbi, &key, &val, 0);
+    }
     if (rc) {
-        qCWarning(ENGINE) << "IdTreeDB::put" << mdb_strerror(rc);
+        qCWarning(ENGINE) << "IdTreeDB::set" << mdb_strerror(rc);
     }
 }
 
@@ -84,18 +91,6 @@ QVector<quint64> IdTreeDB::get(quint64 docId)
     memcpy(list.data(), val.mv_data, val.mv_size);
 
     return list;
-}
-
-void IdTreeDB::del(quint64 docId)
-{
-    MDB_val key;
-    key.mv_size = sizeof(quint64);
-    key.mv_data = static_cast<void*>(&docId);
-
-    int rc = mdb_del(m_txn, m_dbi, &key, nullptr);
-    if (rc != 0 && rc != MDB_NOTFOUND) {
-        qCDebug(ENGINE) << "IdTreeDB::del" << mdb_strerror(rc);
-    }
 }
 
 //
