@@ -52,11 +52,13 @@ void TransactionTest::testTimeInfo()
     const QString url(dir->path() + QStringLiteral("/file"));
     touchFile(url);
     quint64 id = filePathToId(QFile::encodeName(url));
+    auto parentId = filePathToId(QFile::encodeName(dir->path()));
 
     QCOMPARE(tr.hasDocument(id), false);
 
     Document doc;
     doc.setId(id);
+    doc.setParentId(parentId);
     doc.setUrl(QFile::encodeName(url));
     doc.addTerm("a");
     doc.addTerm("ab");

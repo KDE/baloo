@@ -70,6 +70,7 @@ private Q_SLOTS:
         db = std::make_unique<Database>(dbDir->path());
         db->open(Database::CreateDatabase);
 
+        m_parentId = filePathToId(QFile::encodeName(dir->path()));
         insertDocuments();
     }
 
@@ -94,6 +95,7 @@ private:
     std::unique_ptr<QTemporaryDir> dir;
     std::unique_ptr<QTemporaryDir> dbDir;
     std::unique_ptr<Database> db;
+    quint64 m_parentId = 0;
 
     void insertDocuments();
     void addDocument(Transaction* tr,const QString& text, quint64 id, const QString& fileName)
@@ -106,6 +108,7 @@ private:
         tg.indexText(text);
         tg.indexFileNameText(fileName);
         doc.setId(id);
+        doc.setParentId(m_parentId);
         doc.setMTime(1);
         doc.setCTime(2);
 
@@ -137,6 +140,7 @@ private:
         }
         tg.indexFileNameText(fileName);
         doc.setId(id);
+        doc.setParentId(m_parentId);
         doc.setMTime(3);
         doc.setCTime(4);
 

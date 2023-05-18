@@ -63,18 +63,23 @@ void FileFetchJobTest::test()
 
     Document doc;
     doc.setData(json);
-    doc.setUrl(tempFile.fileName().toUtf8());
+    doc.setUrl(QFile::encodeName(tempFile.fileName()));
     doc.setId(filePathToId(doc.url()));
     doc.addTerm("testterm");
     doc.addFileNameTerm("filename");
     doc.setMTime(1);
     doc.setCTime(1);
 
+    auto lastSlash = doc.url().lastIndexOf('/');
+    auto parentId = filePathToId(doc.url().left(lastSlash));
+
     {
         Database db(fileIndexDbPath());
         db.open(Database::CreateDatabase);
 
         Transaction tr(db, Transaction::ReadWrite);
+        QVERIFY(parentId);
+        doc.setParentId(parentId);
         tr.addDocument(doc);
         tr.commit();
     }
