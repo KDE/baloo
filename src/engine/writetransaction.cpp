@@ -38,6 +38,7 @@ void WriteTransaction::addDocument(const Document& doc)
     Q_ASSERT(!docTimeDB.contains(id));
     Q_ASSERT(!docDataDB.contains(id));
     Q_ASSERT(!contentIndexingDB.contains(id));
+    Q_ASSERT(doc.parentId());
 
     if (!docUrlDB.put(id, doc.url())) {
         return;
