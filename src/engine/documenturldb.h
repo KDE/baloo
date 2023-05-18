@@ -92,12 +92,9 @@ void DocumentUrlDB::replaceOrDelete(quint64 docId, Functor shouldDeleteFolder)
 
     QVector<quint64> subDocs = idTreeDb.get(path.parentId);
     subDocs.removeOne(docId);
+    idTreeDb.set(path.parentId, subDocs);
 
-    if (!subDocs.isEmpty()) {
-        idTreeDb.put(path.parentId, subDocs);
-    } else {
-        idTreeDb.del(path.parentId);
-
+    if (subDocs.isEmpty()) {
         //
         // Delete every parent directory which only has 1 child
         //
@@ -109,7 +106,7 @@ void DocumentUrlDB::replaceOrDelete(quint64 docId, Functor shouldDeleteFolder)
 
             subDocs = idTreeDb.get(path.parentId);
             if (subDocs.size() == 1 && shouldDeleteFolder(id)) {
-                idTreeDb.del(path.parentId);
+                idTreeDb.set(path.parentId, {});
                 idFilenameDb.del(id);
             } else {
                 break;

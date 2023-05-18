@@ -25,9 +25,8 @@ public:
     static MDB_dbi create(MDB_txn* txn);
     static MDB_dbi open(MDB_txn* txn);
 
-    void put(quint64 docId, const QVector<quint64> &subDocIds);
+    void set(quint64 docId, const QVector<quint64> &subDocIds);
     QVector<quint64> get(quint64 docId);
-    void del(quint64 docId);
 
     /**
      * Returns an iterator which will return all the docIds which use \p docId

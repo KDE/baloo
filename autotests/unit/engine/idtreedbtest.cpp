@@ -19,21 +19,21 @@ private Q_SLOTS:
         IdTreeDB db(IdTreeDB::create(m_txn), m_txn);
 
         QVector<quint64> val = {5, 6, 7};
-        db.put(1, val);
+        db.set(1, val);
 
         QCOMPARE(db.get(1), val);
 
-        db.del(1);
+        db.set(1, {});
         QCOMPARE(db.get(1), QVector<quint64>());
     }
 
     void testIter() {
         IdTreeDB db(IdTreeDB::create(m_txn), m_txn);
 
-        db.put(1, {5, 6, 7, 8});
-        db.put(6, {9, 11, 19});
-        db.put(8, {13, 15});
-        db.put(13, {18});
+        db.set(1, {5, 6, 7, 8});
+        db.set(6, {9, 11, 19});
+        db.set(8, {13, 15});
+        db.set(13, {18});
 
         std::unique_ptr<PostingIterator> it{db.iter(1)};
         QVERIFY(it);
