@@ -22,7 +22,7 @@ typedef QVector<quint64> PostingList;
 
 /**
  * The PostingDB is the main database that maps <term> -> <id1> <id2> <id2> ...
- * This is used to do to lookup ids when searching for a <term>.
+ * This is used to lookup ids when searching for a <term>.
  */
 class BALOO_ENGINE_EXPORT PostingDB
 {
