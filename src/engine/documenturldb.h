@@ -51,7 +51,7 @@ public:
             qWarning() << "del called with invalid docId:" << docId;
             return;
         }
-        replaceOrDelete(docId, QByteArray(), shouldDeleteFolder);
+        replaceOrDelete(docId, shouldDeleteFolder);
     }
 
     quint64 getId(quint64 docId, const QByteArray& fileName) const;
@@ -67,7 +67,7 @@ private:
     BALOO_ENGINE_NO_EXPORT void add(quint64 id, quint64 parentId, const QByteArray& name);
 
     template <typename Functor>
-    void replaceOrDelete(quint64 docId, const QByteArray& url, Functor shouldDeleteFolder);
+    void replaceOrDelete(quint64 docId, Functor shouldDeleteFolder);
 
     MDB_txn* m_txn;
     MDB_dbi m_idFilenameDbi;
@@ -77,7 +77,7 @@ private:
 };
 
 template <typename Functor>
-void DocumentUrlDB::replaceOrDelete(quint64 docId, const QByteArray& url, Functor shouldDeleteFolder)
+void DocumentUrlDB::replaceOrDelete(quint64 docId, Functor shouldDeleteFolder)
 {
     IdFilenameDB idFilenameDb(m_idFilenameDbi, m_txn);
     IdTreeDB idTreeDb(m_idTreeDbi, m_txn);
@@ -86,26 +86,6 @@ void DocumentUrlDB::replaceOrDelete(quint64 docId, const QByteArray& url, Functo
     auto path = idFilenameDb.get(docId);
     if (path.name.isEmpty()) {
         return;
-    }
-
-    // Check for trivial case - simple rename, i.e. parent stays the same
-    if (!url.isEmpty()) {
-        auto lastSlash = url.lastIndexOf('/');
-        auto parentPath = url.left(lastSlash + 1);
-        auto parentId = filePathToId(parentPath);
-        if (!parentId) {
-            qDebug() << "parent" << parentPath << "of" << url << "does not exist";
-            return;
-
-        } else if (parentId == path.parentId) {
-            auto newname = url.mid(lastSlash + 1);
-            if (newname != path.name) {
-                qDebug() << docId << url << "renaming" << path.name << "to" << newname;
-                path.name = newname;
-                idFilenameDb.put(docId, path);
-            }
-            return;
-        }
     }
 
     idFilenameDb.del(docId);
@@ -127,7 +107,7 @@ void DocumentUrlDB::replaceOrDelete(quint64 docId, const QByteArray& url, Functo
             // FIXME: Prevents database cleaning
             // Q_ASSERT(!path.name.isEmpty());
 
-            QVector<quint64> subDocs = idTreeDb.get(path.parentId);
+            subDocs = idTreeDb.get(path.parentId);
             if (subDocs.size() == 1 && shouldDeleteFolder(id)) {
                 idTreeDb.del(path.parentId);
                 idFilenameDb.del(id);
@@ -138,13 +118,6 @@ void DocumentUrlDB::replaceOrDelete(quint64 docId, const QByteArray& url, Functo
             id = path.parentId;
         }
     }
-
-    if (url.isEmpty()) {
-        // Delete case, nothing more to do
-        return;
-    }
-
-    put(docId, url);
 }
 
 }
