@@ -17,7 +17,6 @@
 
 namespace Baloo {
 
-class UrlTest;
 class PostingIterator;
 
 class BALOO_ENGINE_EXPORT DocumentUrlDB
