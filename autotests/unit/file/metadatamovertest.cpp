@@ -14,7 +14,6 @@
 
 #include <memory>
 #include <QDir>
-#include <QSignalSpy>
 #include <QTemporaryDir>
 #include <QTemporaryFile>
 #include <QTest>
@@ -134,11 +133,6 @@ static void touchFile(const QString& path)
     QTextStream s(&file);
     s << "random";
 }
-static void mkdir(const QString& path)
-{
-    QDir().mkpath(path);
-    QVERIFY(QDir(path).exists());
-}
 
 void MetadataMoverTest::testRenameFile()
 {
@@ -218,7 +212,7 @@ void MetadataMoverTest::testMoveFolder()
     QTemporaryDir dir;
 
     QString folder = dir.path() + QStringLiteral("/folder");
-    mkdir(folder);
+    QDir().mkpath(folder);
     quint64 did = insertUrl(folder);
 
     QString fileUrl = folder + QStringLiteral("/file");
