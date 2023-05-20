@@ -126,6 +126,8 @@ void MetadataMoverTest::testRemoveFile()
     }
 }
 
+// Rename "file" to "file2"
+// mv <tmpdir>/file <tmpdir>/file2
 static void touchFile(const QString& path)
 {
     QFile file(path);
@@ -158,6 +160,8 @@ void MetadataMoverTest::testRenameFile()
     QVERIFY(!newInfo.filenameTerms.empty());
 }
 
+// Change parent directory of "file"
+// mv <tmpdir>/a/b/c/file <tmpdir>/file
 void MetadataMoverTest::testMoveFile()
 {
     QTemporaryDir dir;
@@ -182,6 +186,8 @@ void MetadataMoverTest::testMoveFile()
     QCOMPARE(newInfo.filenameTerms, oldInfo.filenameTerms);
 }
 
+// Change parent directory of "file", and rename to "file2"
+// mv <tmpdir>/a/b/c/file <tmpdir>/file2
 void MetadataMoverTest::testMoveRenameFile()
 {
     QTemporaryDir dir;
@@ -207,6 +213,9 @@ void MetadataMoverTest::testMoveRenameFile()
     QVERIFY(!newInfo.filenameTerms.empty());
 }
 
+// Rename parent directory of "file"
+// mv <tmpdir>/folder <tmpdir>/dir
+// New path of <tmpdir>/folder/file becomes <tmpdir>/dir/file
 void MetadataMoverTest::testMoveFolder()
 {
     QTemporaryDir dir;
