@@ -155,6 +155,17 @@ void DocumentUrlDB::add(quint64 id, quint64 parentId, const QByteArray& name)
     idFilenameDb.put(id, path);
 }
 
+bool DocumentUrlDB::contains(quint64 docId) const
+{
+    if (!docId) {
+        return false;
+    }
+
+    IdFilenameDB idFilenameDb(m_idFilenameDbi, m_txn);
+
+    return idFilenameDb.contains(docId);
+}
+
 QByteArray DocumentUrlDB::get(quint64 docId) const
 {
     if (!docId) {
