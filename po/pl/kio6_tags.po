@@ -1,13 +1,13 @@
 # Copyright (C) YEAR This_file_is_part_of_KDE
 # This file is distributed under the same license as the PACKAGE package.
 #
-# Łukasz Wojniłowicz <lukasz.wojnilowicz@gmail.com>, 2014, 2017.
+# Łukasz Wojniłowicz <lukasz.wojnilowicz@gmail.com>, 2014, 2017, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-05-16 02:14+0000\n"
-"PO-Revision-Date: 2017-12-02 07:34+0100\n"
+"PO-Revision-Date: 2023-05-20 08:19+0200\n"
 "Last-Translator: Łukasz Wojniłowicz <lukasz.wojnilowicz@gmail.com>\n"
 "Language-Team: Polish <kde-i18n-doc@kde.org>\n"
 "Language: pl\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 2.0\n"
+"X-Generator: Lokalize 22.12.3\n"
 
 #: kio_tags.cpp:110 kio_tags.cpp:166
 #, kde-format
@@ -24,15 +24,13 @@ msgid "File %1 already has tag %2"
 msgstr "Plik %1 już ma ten znacznik %2"
 
 #: kio_tags.cpp:298
-#, fuzzy, kde-format
-#| msgid "Tag"
+#, kde-format
 msgctxt "This is a noun"
 msgid "Tag"
 msgstr "Znacznik"
 
 #: kio_tags.cpp:304
-#, fuzzy, kde-format
-#| msgid "Tag Fragment"
+#, kde-format
 msgctxt "This is a noun"
 msgid "Tag Fragment"
 msgstr "Część znacznika"
