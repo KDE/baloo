@@ -33,6 +33,7 @@ public:
 
     QByteArray get(quint64 docId) const;
     QVector<quint64> getChildren(quint64 docId) const;
+    bool contains(quint64 docId) const;
 
     /**
      * Move the document \p id to directory \p newParentId, set its name
