@@ -35,8 +35,10 @@ public:
     QVector<quint64> getChildren(quint64 docId) const;
 
     /**
+     * Move the document \p id to directory \p newParentId, set its name
+     * to \p newName.
      */
-    void updateUrl(quint64 id, quint64 parentId, const QByteArray& url);
+    void updateUrl(quint64 id, quint64 newParentId, const QByteArray& newName);
 
     /**
      * Deletes a document from the DB, and conditionally also removes its
