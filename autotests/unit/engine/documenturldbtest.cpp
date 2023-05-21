@@ -56,7 +56,8 @@ private Q_SLOTS:
         */
     }
 
-    void testSingleFile() {
+    void testSingleFile()
+    {
         QTemporaryDir dir;
 
         QByteArray filePath(dir.path().toUtf8() + "/file");
@@ -72,7 +73,8 @@ private Q_SLOTS:
         QCOMPARE(db.get(id), QByteArray());
     }
 
-    void testTwoFilesAndAFolder() {
+    void testTwoFilesAndAFolder()
+    {
         QTemporaryDir dir;
 
         QByteArray dirPath = QFile::encodeName(dir.path());
@@ -113,10 +115,35 @@ private Q_SLOTS:
         QCOMPARE(db.get(did), QByteArray());
     }
 
-    void testDuplicateId() {
+    void testFileRename()
+    {
+        QTemporaryDir dir;
+
+        QByteArray dirPath = QFile::encodeName(dir.path());
+        QByteArray filePath(dirPath + "/file");
+        touchFile(filePath);
+        quint64 did = filePathToId(dirPath);
+        quint64 id = filePathToId(filePath);
+
+        DocumentUrlDB db(IdTreeDB::create(m_txn), IdFilenameDB::create(m_txn), m_txn);
+        db.put(id, filePath);
+
+        QCOMPARE(db.get(id), filePath);
+
+	db.updateUrl(id, did, "file2");
+
+        QCOMPARE(db.get(id), dirPath + "/file2");
+
+        db.del(id, [](quint64) { return true; });
+        QCOMPARE(db.get(id), QByteArray());
     }
 
-    void testGetId() {
+    void testDuplicateId()
+    {
+    }
+
+    void testGetId()
+    {
         QTemporaryDir dir;
         const QByteArray path = QFile::encodeName(dir.path());
         quint64 id = filePathToId(path);
