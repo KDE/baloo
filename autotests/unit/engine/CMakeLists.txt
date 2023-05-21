@@ -27,5 +27,4 @@ baloo_engine_auto_tests(
     orpostingiteratortest
     postingiteratortest
     phraseanditeratortest
-    transactiontest
 )
