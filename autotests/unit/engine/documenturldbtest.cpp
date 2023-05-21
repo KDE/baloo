@@ -67,6 +67,7 @@ private Q_SLOTS:
         DocumentUrlDB db(IdTreeDB::create(m_txn), IdFilenameDB::create(m_txn), m_txn);
         db.put(id, filePath);
 
+        QVERIFY(db.contains(id));
         QCOMPARE(db.get(id), filePath);
 
         db.del(id, [](quint64) { return true; });
@@ -92,6 +93,8 @@ private Q_SLOTS:
         db.put(id1, filePath1);
         db.put(id2, filePath2);
 
+        QVERIFY(db.contains(id1));
+        QVERIFY(db.contains(id2));
         QCOMPARE(db.get(id1), filePath1);
         QCOMPARE(db.get(id2), filePath2);
         QCOMPARE(db.get(did), dirPath);
