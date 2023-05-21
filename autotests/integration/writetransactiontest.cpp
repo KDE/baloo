@@ -20,16 +20,16 @@ class WriteTransactionTest : public QObject
     Q_OBJECT
 private Q_SLOTS:
     void init() {
-        dir = new QTemporaryDir();
-        db = new Database(dir->path());
+        dir = std::make_unique<QTemporaryDir>();
+        db = std::make_unique<Database>(dir->path());
         db->open(Database::CreateDatabase);
         m_dirId = filePathToId(QFile::encodeName(dir->path()));
         QVERIFY(m_dirId);
     }
 
     void cleanup() {
-        delete db;
-        delete dir;
+        db.reset();
+        dir.reset();
     }
 
     void testAddDocument();
@@ -42,8 +42,8 @@ private Q_SLOTS:
     void testDocumentId();
     void testTermPositions();
 private:
-    QTemporaryDir* dir;
-    Database* db;
+    std::unique_ptr<QTemporaryDir> dir;
+    std::unique_ptr<Database> db;
     quint64 m_dirId = 0;
 };
 
@@ -56,7 +56,7 @@ static void touchFile(const QString& path) {
 
 void WriteTransactionTest::testAddDocument()
 {
-    Transaction tr(db, Transaction::ReadWrite);
+    Transaction tr(db.get(), Transaction::ReadWrite);
 
     const QString filePath(dir->path() + QStringLiteral("/file"));
     touchFile(filePath);
@@ -81,7 +81,7 @@ void WriteTransactionTest::testAddDocument()
     tr.addDocument(doc);
     tr.commit();
 
-    Transaction tr2(db, Transaction::ReadOnly);
+    Transaction tr2(db.get(), Transaction::ReadOnly);
 
     DBState state;
     state.postingDb = {{"a", {id}}, {"ab", {id}}, {"abc", {id}}, {"power", {id}}, {"system", {id}}, {"link", {id}}};
@@ -133,13 +133,13 @@ void WriteTransactionTest::testAddDocumentTwoDocuments()
     Document doc2 = createDocument(url2, 6, 2, {"a", "abcd", "dab"}, {"file2"}, {}, m_dirId);
 
     {
-        Transaction tr(db, Transaction::ReadWrite);
+        Transaction tr(db.get(), Transaction::ReadWrite);
         tr.addDocument(doc1);
         tr.addDocument(doc2);
         tr.commit();
     }
 
-    Transaction tr(db, Transaction::ReadOnly);
+    Transaction tr(db.get(), Transaction::ReadOnly);
 
     quint64 id1 = doc1.id();
     quint64 id2 = doc2.id();
@@ -165,17 +165,17 @@ void WriteTransactionTest::testAddAndRemoveOneDocument()
     Document doc1 = createDocument(url1, 5, 1, {"a", "abc", "dab"}, {"file1"}, {}, m_dirId);
 
     {
-        Transaction tr(db, Transaction::ReadWrite);
+        Transaction tr(db.get(), Transaction::ReadWrite);
         tr.addDocument(doc1);
         tr.commit();
     }
     {
-        Transaction tr(db, Transaction::ReadWrite);
+        Transaction tr(db.get(), Transaction::ReadWrite);
         tr.removeDocument(doc1.id());
         tr.commit();
     }
 
-    Transaction tr(db, Transaction::ReadOnly);
+    Transaction tr(db.get(), Transaction::ReadOnly);
     DBState actualState = DBState::fromTransaction(&tr);
     QVERIFY(DBState::debugCompare(actualState, DBState()));
 }
@@ -191,7 +191,7 @@ void WriteTransactionTest::testAddAndReplaceOneDocument()
     doc2.setId(id);
 
     {
-        Transaction tr(db, Transaction::ReadWrite);
+        Transaction tr(db.get(), Transaction::ReadWrite);
         tr.addDocument(doc1);
         tr.commit();
     }
@@ -206,13 +206,13 @@ void WriteTransactionTest::testAddAndReplaceOneDocument()
     state.mtimeDb = {{5, id}};
 
     {
-        Transaction tr(db, Transaction::ReadOnly);
+        Transaction tr(db.get(), Transaction::ReadOnly);
         DBState actualState = DBState::fromTransaction(&tr);
         QVERIFY(DBState::debugCompare(actualState, state));
     }
 
     {
-        Transaction tr(db, Transaction::ReadWrite);
+        Transaction tr(db.get(), Transaction::ReadWrite);
         tr.replaceDocument(doc2, DocumentOperation::Everything);
         tr.commit();
     }
@@ -223,7 +223,7 @@ void WriteTransactionTest::testAddAndReplaceOneDocument()
     state.docTimeDb = {{id, DocumentTimeDB::TimeInfo(6, 2)}};
     state.mtimeDb = {{6, id}};
 
-    Transaction tr(db, Transaction::ReadOnly);
+    Transaction tr(db.get(), Transaction::ReadOnly);
     DBState actualState = DBState::fromTransaction(&tr);
     QVERIFY(DBState::debugCompare(actualState, state));
 }
@@ -244,19 +244,19 @@ void WriteTransactionTest::testRemoveRecursively()
     Document doc3 = createDocument(url2, 5, 1, {"a", "abc", "dab"}, {"file1"}, {}, doc2.id());
 
     {
-        Transaction tr(db, Transaction::ReadWrite);
+        Transaction tr(db.get(), Transaction::ReadWrite);
         tr.addDocument(doc1);
         tr.addDocument(doc2);
         tr.addDocument(doc3);
         tr.commit();
     }
     {
-        Transaction tr(db, Transaction::ReadWrite);
+        Transaction tr(db.get(), Transaction::ReadWrite);
         tr.removeRecursively(m_dirId);
         tr.commit();
     }
 
-    Transaction tr(db, Transaction::ReadOnly);
+    Transaction tr(db.get(), Transaction::ReadOnly);
     DBState actualState = DBState::fromTransaction(&tr);
     QVERIFY(DBState::debugCompare(actualState, DBState()));
 }
@@ -269,12 +269,12 @@ void WriteTransactionTest::testDocumentId()
     Document doc1 = createDocument(url1, 5, 1, {"a", "abc", "dab"}, {"file1"}, {}, m_dirId);
 
     {
-        Transaction tr(db, Transaction::ReadWrite);
+        Transaction tr(db.get(), Transaction::ReadWrite);
         tr.addDocument(doc1);
         tr.commit();
     }
 
-    Transaction tr(db, Transaction::ReadOnly);
+    Transaction tr(db.get(), Transaction::ReadOnly);
     QCOMPARE(tr.documentId(QFile::encodeName(url1)), doc1.id());
 }
 
@@ -295,7 +295,7 @@ void WriteTransactionTest::testTermPositions()
     quint64 id3 = doc3.id();
 
     {
-        Transaction tr(db, Transaction::ReadWrite);
+        Transaction tr(db.get(), Transaction::ReadWrite);
         tr.addDocument(doc1);
         tr.addDocument(doc2);
         tr.addDocument(doc3);
@@ -312,7 +312,7 @@ void WriteTransactionTest::testTermPositions()
     state.mtimeDb = {{5, id1}, {5, id2}, {6, id3} };
 
     {
-        Transaction tr(db, Transaction::ReadOnly);
+        Transaction tr(db.get(), Transaction::ReadOnly);
         DBState actualState = DBState::fromTransaction(&tr);
         QVERIFY(DBState::debugCompare(actualState, state));
     }
@@ -340,13 +340,13 @@ void WriteTransactionTest::testTermPositions()
     }
 
     {
-        Transaction tr(db, Transaction::ReadWrite);
+        Transaction tr(db.get(), Transaction::ReadWrite);
         tr.replaceDocument(doc1, DocumentOperation::Everything);
         tr.replaceDocument(doc3, DocumentOperation::Everything);
         tr.commit();
     }
     {
-        Transaction tr(db, Transaction::ReadOnly);
+        Transaction tr(db.get(), Transaction::ReadOnly);
         DBState actualState = DBState::fromTransaction(&tr);
         QVERIFY(DBState::debugCompare(actualState, state));
     }
@@ -384,13 +384,13 @@ void WriteTransactionTest::testTermPositions()
     state.positionDb["abcd"] = {PositionInfo(id2, {500})};
 
     {
-        Transaction tr(db, Transaction::ReadWrite);
+        Transaction tr(db.get(), Transaction::ReadWrite);
         tr.replaceDocument(doc1, DocumentOperation::Everything);
         tr.replaceDocument(doc2, DocumentOperation::Everything);
         tr.commit();
     }
     {
-        Transaction tr(db, Transaction::ReadOnly);
+        Transaction tr(db.get(), Transaction::ReadOnly);
         DBState actualState = DBState::fromTransaction(&tr);
         QVERIFY(DBState::debugCompare(actualState, state));
     }
@@ -411,13 +411,13 @@ void WriteTransactionTest::testTermPositions()
     }
 
     {
-        Transaction tr(db, Transaction::ReadWrite);
+        Transaction tr(db.get(), Transaction::ReadWrite);
         tr.replaceDocument(doc1_clone, DocumentOperation::Everything);
         tr.replaceDocument(doc2_clone, DocumentOperation::Everything);
         tr.commit();
     }
     {
-        Transaction tr(db, Transaction::ReadOnly);
+        Transaction tr(db.get(), Transaction::ReadOnly);
         DBState actualState = DBState::fromTransaction(&tr);
         QVERIFY(DBState::debugCompare(actualState, state));
     }
@@ -433,7 +433,7 @@ void WriteTransactionTest::testIdempotentDocumentChange()
     quint64 id = doc1.id();
 
     {
-        Transaction tr(db, Transaction::ReadWrite);
+        Transaction tr(db.get(), Transaction::ReadWrite);
         tr.addDocument(doc1);
         tr.commit();
     }
@@ -448,13 +448,13 @@ void WriteTransactionTest::testIdempotentDocumentChange()
     state.mtimeDb = {{5, id}};
 
     {
-        Transaction tr(db, Transaction::ReadOnly);
+        Transaction tr(db.get(), Transaction::ReadOnly);
         DBState actualState = DBState::fromTransaction(&tr);
         QVERIFY(DBState::debugCompare(actualState, state));
     }
 
     {
-        Transaction tr(db, Transaction::ReadWrite);
+        Transaction tr(db.get(), Transaction::ReadWrite);
         tr.replaceDocument(doc2, DocumentOperation::Everything);
         tr.replaceDocument(doc2, DocumentOperation::Everything);
         tr.commit();
@@ -464,7 +464,7 @@ void WriteTransactionTest::testIdempotentDocumentChange()
     state.docTermsDb = {{id, {"a", "abcd", "dab"} }};
 
     {
-        Transaction tr(db, Transaction::ReadOnly);
+        Transaction tr(db.get(), Transaction::ReadOnly);
         DBState actualState = DBState::fromTransaction(&tr);
         QVERIFY(DBState::debugCompare(actualState, state));
     }
