@@ -248,7 +248,10 @@ void WriteTransaction::replaceDocument(const Document& doc, DocumentOperations o
     }
 
     if (operations & DocumentUrl) {
-        docUrlDB.updateUrl(doc.id(), doc.parentId(), doc.url());
+        auto url = doc.url();
+        int pos = url.lastIndexOf('/');
+        auto newname = url.mid(pos + 1);
+        docUrlDB.updateUrl(doc.id(), doc.parentId(), newname);
     }
 }
 

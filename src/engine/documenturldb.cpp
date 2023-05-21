@@ -7,6 +7,7 @@
 
 #include "documenturldb.h"
 #include "postingiterator.h"
+#include "enginedebug.h"
 
 #include <algorithm>
 #include <QPair>
@@ -103,32 +104,29 @@ bool DocumentUrlDB::put(quint64 docId, const QByteArray& url)
     return true;
 }
 
-void DocumentUrlDB::updateUrl(quint64 id, quint64 parentId, const QByteArray& url)
+void DocumentUrlDB::updateUrl(quint64 id, quint64 newParentId, const QByteArray& newName)
 {
     IdFilenameDB idFilenameDb(m_idFilenameDbi, m_txn);
     IdTreeDB idTreeDb(m_idTreeDbi, m_txn);
 
-    auto lastSlash = url.lastIndexOf('/');
-    auto newname = url.mid(lastSlash + 1);
-
     // Sanity checks
     auto path = idFilenameDb.get(id);
-    if (path.parentId != parentId) {
+    if (path.parentId != newParentId) {
         // Remove from old parent
         QVector<quint64> subDocs = idTreeDb.get(path.parentId);
         if (subDocs.removeOne(id)) {
             idTreeDb.set(path.parentId, subDocs);
         }
         // Add to new parent
-        subDocs = idTreeDb.get(parentId);
+        subDocs = idTreeDb.get(newParentId);
         sortedIdInsert(subDocs, id);
-        idTreeDb.set(parentId, subDocs);
+        idTreeDb.set(newParentId, subDocs);
     }
 
-    if ((newname != path.name) || (parentId != path.parentId)) {
-        qDebug() << id << url << "renaming" << path.name << "to" << newname;
-        path.parentId = parentId;
-        path.name = newname;
+    if ((newName != path.name) || (newParentId != path.parentId)) {
+        qCDebug(ENGINE) << id << "renaming" << path.name << "to" << newName;
+        path.parentId = newParentId;
+        path.name = newName;
         idFilenameDb.put(id, path);
     }
 }
