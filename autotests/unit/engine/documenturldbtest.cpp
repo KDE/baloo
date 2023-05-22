@@ -69,7 +69,7 @@ private Q_SLOTS:
 
         QCOMPARE(db.get(id), filePath);
 
-        db.del(id, [](quint64) { return true; });
+        db.del(id);
         QCOMPARE(db.get(id), QByteArray());
     }
 
@@ -96,20 +96,20 @@ private Q_SLOTS:
         QCOMPARE(db.get(id2), filePath2);
         QCOMPARE(db.get(did), dirPath);
 
-        db.del(id1, [=](quint64 id) { return id != did; });
+        db.del(id1);
 
         QCOMPARE(db.get(id1), QByteArray());
         QCOMPARE(db.get(id2), filePath2);
         QCOMPARE(db.get(did), dirPath);
 
-        db.del(id2, [=](quint64 id) { return id != did; });
+        db.del(id2);
 
         QCOMPARE(db.get(id1), QByteArray());
         QCOMPARE(db.get(id2), QByteArray());
         QCOMPARE(db.get(did), dirPath);
 
-        db.del(did, [=](quint64 id) { return id != did; });
 
+        db.del(did);
         QCOMPARE(db.get(id1), QByteArray());
         QCOMPARE(db.get(id2), QByteArray());
         QCOMPARE(db.get(did), QByteArray());
@@ -134,7 +134,7 @@ private Q_SLOTS:
 
         QCOMPARE(db.get(id), dirPath + "/file2");
 
-        db.del(id, [](quint64) { return true; });
+        db.del(id);
         QCOMPARE(db.get(id), QByteArray());
     }
 
