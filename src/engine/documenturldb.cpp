@@ -131,6 +131,28 @@ void DocumentUrlDB::updateUrl(quint64 id, quint64 newParentId, const QByteArray&
     }
 }
 
+void DocumentUrlDB::del(quint64 id)
+{
+    if (!id) {
+        qCWarning(ENGINE) << "del called with invalid docId";
+        return;
+    }
+
+    IdFilenameDB idFilenameDb(m_idFilenameDbi, m_txn);
+    IdTreeDB idTreeDb(m_idTreeDbi, m_txn);
+
+    auto path = idFilenameDb.get(id);
+
+    // Remove from parent
+    QVector<quint64> subDocs = idTreeDb.get(path.parentId);
+    if (subDocs.removeOne(id)) {
+        idTreeDb.set(path.parentId, subDocs);
+    }
+
+    qCDebug(ENGINE) << id << "deleting" << path.name;
+    idFilenameDb.del(id);
+}
+
 void DocumentUrlDB::add(quint64 id, quint64 parentId, const QByteArray& name)
 {
     if (!id || name.isEmpty()) {
