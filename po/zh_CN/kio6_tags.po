@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: kdeorg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-05-16 02:14+0000\n"
-"PO-Revision-Date: 2023-02-24 12:42\n"
+"PO-Revision-Date: 2023-05-22 13:58\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -14,8 +14,8 @@ msgstr ""
 "X-Crowdin-Project: kdeorg\n"
 "X-Crowdin-Project-ID: 269464\n"
 "X-Crowdin-Language: zh-CN\n"
-"X-Crowdin-File: /kf5-trunk/messages/baloo/kio5_tags.pot\n"
-"X-Crowdin-File-ID: 5614\n"
+"X-Crowdin-File: /kf6-trunk/messages/baloo/kio6_tags.pot\n"
+"X-Crowdin-File-ID: 43535\n"
 
 #: kio_tags.cpp:110 kio_tags.cpp:166
 #, kde-format
@@ -23,18 +23,16 @@ msgid "File %1 already has tag %2"
 msgstr "文件 %1 已经分配标签 %2"
 
 #: kio_tags.cpp:298
-#, fuzzy, kde-format
-#| msgid "Tag"
+#, kde-format
 msgctxt "This is a noun"
 msgid "Tag"
 msgstr "标签"
 
 #: kio_tags.cpp:304
-#, fuzzy, kde-format
-#| msgid "Tag Fragment"
+#, kde-format
 msgctxt "This is a noun"
 msgid "Tag Fragment"
-msgstr "标签 Fragment"
+msgstr "标签片段"
 
 #: kio_tags.cpp:316 kio_tags.cpp:317
 #, kde-format
