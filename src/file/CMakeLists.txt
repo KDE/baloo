@@ -96,8 +96,10 @@ if (BUILD_INDEXER_SERVICE)
     )
 
     add_subdirectory(extractor)
+
+    install(FILES
+        org.kde.BalooWatcherApplication.xml
+        DESTINATION ${KDE_INSTALL_DBUSINTERFACEDIR}
+    )
 endif()
 
-install(FILES
-    org.kde.BalooWatcherApplication.xml
-    DESTINATION ${KDE_INSTALL_DBUSINTERFACEDIR})

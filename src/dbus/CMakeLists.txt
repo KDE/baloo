@@ -69,11 +69,14 @@ target_sources(BalooDBusFileIndexerInterface PRIVATE ${fileindexerinterface_SRCS
 target_link_libraries(BalooDBusFileIndexerInterface PUBLIC Qt${QT_MAJOR_VERSION}::DBus)
 
 
-install(FILES
-        ${CMAKE_CURRENT_BINARY_DIR}/${mainhub_xml}
-        ${CMAKE_CURRENT_BINARY_DIR}/${scheduler_xml}
-        ${CMAKE_CURRENT_BINARY_DIR}/${contentindexer_xml}
-    DESTINATION ${KDE_INSTALL_DBUSINTERFACEDIR}
-)
+if (BUILD_INDEXER_SERVICE)
+    install(FILES
+            ${CMAKE_CURRENT_BINARY_DIR}/${mainhub_xml}
+            ${CMAKE_CURRENT_BINARY_DIR}/${scheduler_xml}
+            ${CMAKE_CURRENT_BINARY_DIR}/${contentindexer_xml}
+        DESTINATION ${KDE_INSTALL_DBUSINTERFACEDIR}
+    )
 
-add_subdirectory(fake)
+    add_subdirectory(fake)
+endif()
+
