@@ -4,6 +4,8 @@
     SPDX-License-Identifier: LGPL-2.1-or-later
 */
 
+#include "propertydata.h"
+
 #include "file.h"
 #include "document.h"
 #include "database.h"
@@ -11,13 +13,10 @@
 #include "idutils.h"
 #include "global.h"
 
+#include <QJsonDocument>
 #include <QTest>
 #include <QTemporaryFile>
 #include <QTemporaryDir>
-
-#include <QJsonDocument>
-#include <QJsonObject>
-
 
 using namespace Baloo;
 
@@ -26,17 +25,7 @@ class FileFetchJobTest : public QObject
     Q_OBJECT
 
     QTemporaryDir dir;
-private:
-    inline QMap<QString, QVariant> variantToPropertyMap(const KFileMetaData::PropertyMap& propMap)
-    {
-    QMap<QString, QVariant> varMap;
-    for (auto it = propMap.constBegin(); it != propMap.constEnd(); ++it) {
-        int p = static_cast<int>(it.key());
-        varMap.insert(QString::number(p), it.value());
-    }
 
-    return varMap;
-}
 private Q_SLOTS:
     void test();
 };
@@ -47,13 +36,12 @@ void FileFetchJobTest::test()
 
     setenv("BALOO_DB_PATH", dir.path().toStdString().c_str(), 1);
 
-    PropertyMap map;
-    map.insert(Property::Album, QLatin1String("value1"));
-    map.insert(Property::Artist, QLatin1String("value2"));
+    KFileMetaData::PropertyMultiMap map;
+    map.insert(Property::Album, QStringLiteral("value1"));
+    map.insert(Property::Artist, QStringLiteral("value2"));
 
-    QJsonObject jo = QJsonObject::fromVariantMap(variantToPropertyMap(map));
-    QJsonDocument jdoc;
-    jdoc.setObject(jo);
+    const QJsonObject jo = propertyMapToJson(map);
+    const QJsonDocument jdoc(jo);
 
     QByteArray json = jdoc.toJson();
     QVERIFY(!json.isEmpty());
@@ -81,7 +69,7 @@ void FileFetchJobTest::test()
 
     File file(tempFile.fileName());
     QVERIFY(file.load());
-    QCOMPARE(file.properties(), PropertyMultiMap(map));
+    QCOMPARE(file.properties(), map);
 }
 
 QTEST_MAIN(FileFetchJobTest)

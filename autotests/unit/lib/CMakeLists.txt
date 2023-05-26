@@ -24,5 +24,5 @@ ecm_add_test(advancedqueryparsertest.cpp ../../../src/lib/advancedqueryparser.cp
 set(filefetchjobtest_SRC filefetchjobtest.cpp)
 ecm_add_test(${filefetchjobtest_SRC}
     TEST_NAME "filefetchjobtest"
-    LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test KF5::Baloo KF5::BalooEngine KF5::FileMetaData
+    LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test KF5::Baloo KF5::BalooEngine KF5::FileMetaData baloofilecommon
 )
