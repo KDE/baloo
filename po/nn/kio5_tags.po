@@ -1,6 +1,6 @@
 # Translation of kio6_tags to Norwegian Nynorsk
 #
-# Karl Ove Hufthammer <karl@huftis.org>, 2015, 2018.
+# Karl Ove Hufthammer <karl@huftis.org>, 2015, 2018, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: KDE 4\n"
@@ -17,7 +17,7 @@ msgstr ""
 "X-Environment: kde\n"
 "X-Accelerator-Marker: &\n"
 "X-Text-Markup: kde4\n"
-"X-Generator: Lokalize 2.0\n"
+"X-Generator: Lokalize 23.04.1\n"
 
 #: kio_tags.cpp:110 kio_tags.cpp:166
 #, kde-format
