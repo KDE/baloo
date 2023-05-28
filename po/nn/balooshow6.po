@@ -115,13 +115,11 @@ msgstr "%1 termar: %2"
 
 #: main.cpp:233
 #, fuzzy, kde-format
-#| msgid "File Name Terms: %1"
 msgid "Plain Text Terms: %1"
 msgstr "Filnamntermar: %1"
 
 #: main.cpp:234
 #, fuzzy, kde-format
-#| msgid "Terms: %1"
 msgid "Property Terms: %1"
 msgstr "Termar: %1"
 
