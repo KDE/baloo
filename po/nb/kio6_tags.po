@@ -26,7 +26,6 @@ msgstr ""
 
 #: kio_tags.cpp:298
 #, fuzzy, kde-format
-#| msgid "Tag"
 msgctxt "This is a noun"
 msgid "Tag"
 msgstr "Etikett"
