@@ -59,7 +59,3 @@ void MainHub::updateConfig()
     m_fileWatcher.updateIndexedFoldersWatches();
     m_fileIndexScheduler.updateConfig();
 }
-
-void MainHub::registerBalooWatcher(const QString &)
-{
-}
