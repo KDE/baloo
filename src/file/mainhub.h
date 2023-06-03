@@ -28,8 +28,6 @@ public:
 public Q_SLOTS:
     Q_SCRIPTABLE void quit() const;
     Q_SCRIPTABLE void updateConfig();
-    // TODO KF6 - remove
-    Q_SCRIPTABLE void registerBalooWatcher(const QString &service);
 
 private:
     Database* m_db;

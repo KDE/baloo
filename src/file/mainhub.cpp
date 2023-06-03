@@ -60,8 +60,4 @@ void MainHub::updateConfig()
     m_fileIndexScheduler.updateConfig();
 }
 
-void MainHub::registerBalooWatcher(const QString &)
-{
-}
-
 #include "moc_mainhub.cpp"
