@@ -1,26 +1,26 @@
 # Copyright (C) YEAR This file is copyright:
 # This file is distributed under the same license as the baloo package.
 #
-# Xəyyam <xxmn77@gmail.com>, 2020, 2021.
+# Xəyyam <xxmn77@gmail.com>, 2020, 2021, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-04-25 00:45+0000\n"
-"PO-Revision-Date: 2021-02-27 15:32+0400\n"
-"Last-Translator: Kheyyam Gojayev <xxmn77@gmail.com>\n"
+"PO-Revision-Date: 2023-06-12 17:04+0400\n"
+"Last-Translator: Kheyyam <xxmn77@gmail.com>\n"
 "Language-Team: Azerbaijani <kde-i18n-doc@kde.org>\n"
 "Language: az\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 20.12.2\n"
+"X-Generator: Lokalize 23.04.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr "Xəyyam"
+msgstr "Xəyyam Qocayev"
 
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
@@ -105,7 +105,7 @@ msgstr "%1 etibarlı qovluq deyil"
 #: main.cpp:95
 #, kde-format
 msgid "Using canonical path '%1' for '%2'"
-msgstr ""
+msgstr "\"%2\" üçün \"%1\" standart yoldan istifadə edilir"
 
 #: main.cpp:111
 #, kde-format
