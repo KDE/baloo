@@ -36,8 +36,22 @@ Transaction::Transaction(const Database& db, Transaction::TransactionType type)
     : m_dbis(db.m_dbis)
     , m_env(db.m_env)
 {
+    init(type);
+}
+
+void Transaction::reset(TransactionType type)
+{
+    if (m_txn) {
+        qWarning(ENGINE) << "Resetting a Transaction without calling abort/commit";
+        abort();
+    }
+    init(type);
+}
+
+void Transaction::init(TransactionType type)
+{
     uint flags = type == ReadOnly ? MDB_RDONLY : 0;
-    int rc = mdb_txn_begin(db.m_env, nullptr, flags, &m_txn);
+    int rc = mdb_txn_begin(m_env, nullptr, flags, &m_txn);
     if (rc) {
         qCDebug(ENGINE) << "Transaction" << mdb_strerror(rc);
         return;
