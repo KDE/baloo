@@ -41,6 +41,7 @@ private Q_SLOTS:
     void testRemoveRecursively();
     void testDocumentId();
     void testTermPositions();
+    void testTransactionReset();
 private:
     std::unique_ptr<QTemporaryDir> dir;
     std::unique_ptr<Database> db;
@@ -468,7 +469,31 @@ void WriteTransactionTest::testIdempotentDocumentChange()
         DBState actualState = DBState::fromTransaction(&tr);
         QVERIFY(DBState::debugCompare(actualState, state));
     }
+}
 
+void WriteTransactionTest::testTransactionReset()
+{
+    const QString url1(dir->path() + QStringLiteral("/file1"));
+    touchFile(url1);
+
+    Document doc1 = createDocument(url1, 0, 1, {"a", "abc", "dab"}, {"file1"}, {}, m_dirId);
+
+    {
+        Transaction tr(db.get(), Transaction::ReadWrite);
+        tr.addDocument(doc1);
+        tr.commit();
+    }
+
+    Transaction tr(db.get(), Transaction::ReadWrite);
+    for (int i = 0; i < 3; i++) {
+        doc1.setMTime(i);
+        tr.replaceDocument(doc1, DocumentOperation::DocumentTime);
+        if (i % 2) {
+            tr.commit();
+            tr.reset(Transaction::ReadWrite);
+        }
+    }
+    tr.commit();
 }
 
 QTEST_MAIN(WriteTransactionTest)

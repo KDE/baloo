@@ -85,6 +85,7 @@ public:
     //
     bool commit();
     void abort();
+    void reset(TransactionType type);
 
     //
     // Write Methods
@@ -113,6 +114,7 @@ public:
 
 private:
     Transaction(const Transaction& rhs) = delete;
+    void init(TransactionType type);
 
     const DatabaseDbis& m_dbis;
     MDB_txn *m_txn = nullptr;
