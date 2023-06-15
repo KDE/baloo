@@ -14,6 +14,7 @@
 #include "writetransaction.h"
 #include "documenttimedb.h"
 #include <functional>
+#include <memory>
 
 #include <lmdb.h>
 
@@ -116,7 +117,7 @@ private:
     const DatabaseDbis& m_dbis;
     MDB_txn *m_txn = nullptr;
     MDB_env *m_env = nullptr;
-    WriteTransaction *m_writeTrans = nullptr;
+    std::unique_ptr<WriteTransaction> m_writeTrans;
 
     friend class DatabaseSanitizerImpl;
     friend class DBState; // for testing

@@ -35,7 +35,6 @@ using namespace Baloo;
 Transaction::Transaction(const Database& db, Transaction::TransactionType type)
     : m_dbis(db.m_dbis)
     , m_env(db.m_env)
-    , m_writeTrans(nullptr)
 {
     uint flags = type == ReadOnly ? MDB_RDONLY : 0;
     int rc = mdb_txn_begin(db.m_env, nullptr, flags, &m_txn);
@@ -45,7 +44,7 @@ Transaction::Transaction(const Database& db, Transaction::TransactionType type)
     }
 
     if (type == ReadWrite) {
-        m_writeTrans = new WriteTransaction(m_dbis, m_txn);
+        m_writeTrans = std::make_unique<WriteTransaction>(m_dbis, m_txn);
     }
 }
 
@@ -270,8 +269,7 @@ bool Transaction::commit()
     }
 
     m_writeTrans->commit();
-    delete m_writeTrans;
-    m_writeTrans = nullptr;
+    m_writeTrans.reset();
 
     int rc = mdb_txn_commit(m_txn);
     m_txn = nullptr;
@@ -291,8 +289,7 @@ void Transaction::abort()
     mdb_txn_abort(m_txn);
     m_txn = nullptr;
 
-    delete m_writeTrans;
-    m_writeTrans = nullptr;
+    m_writeTrans.reset();
 }
 
 //
