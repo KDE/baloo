@@ -9,6 +9,7 @@
 #include "fileindexerconfig.h"
 #include "filtereddiriterator.h"
 
+#include "baloodebug.h"
 #include "database.h"
 #include "transaction.h"
 
@@ -34,6 +35,7 @@ void FirstRunIndexer::run()
 
     for (const QString& folder : std::as_const(m_folders)) {
         Transaction tr(m_db, Transaction::ReadWrite);
+        int transactionDocumentCount = 0;
 
         FilteredDirIterator it(m_config, folder);
         while (!it.next().isEmpty()) {
@@ -58,6 +60,14 @@ void FirstRunIndexer::run()
                 continue;
             }
             tr.addDocument(job.document());
+
+            transactionDocumentCount++;
+            if (transactionDocumentCount > 20000) {
+                qCDebug(BALOO) << "Commit";
+                tr.commit();
+                tr.reset(Transaction::ReadWrite);
+                transactionDocumentCount = 0;
+            }
         }
 
         // FIXME: This would consume too much memory. We should make some more commits
