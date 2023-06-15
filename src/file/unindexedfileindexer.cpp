@@ -12,8 +12,6 @@
 #include "fileindexerconfig.h"
 #include "basicindexingjob.h"
 
-#include <QMimeDatabase>
-
 using namespace Baloo;
 
 UnindexedFileIndexer::UnindexedFileIndexer(Database* db, const FileIndexerConfig* config)
@@ -24,7 +22,6 @@ UnindexedFileIndexer::UnindexedFileIndexer(Database* db, const FileIndexerConfig
 
 void UnindexedFileIndexer::run()
 {
-    QMimeDatabase m_mimeDb;
     const QStringList includeFolders = m_config->includeFolders();
     const BasicIndexingJob::IndexingLevel level = m_config->onlyBasicIndexing() ?
         BasicIndexingJob::NoLevel : BasicIndexingJob::MarkForContentIndexing;
