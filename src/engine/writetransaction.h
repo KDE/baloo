@@ -1,6 +1,7 @@
 /*
     This file is part of the KDE Baloo project.
     SPDX-FileCopyrightText: 2015 Vishesh Handa <vhanda@kde.org>
+    SPDX-FileCopyrightText: 2023 Harald Sitter <sitter@kde.org>
 
     SPDX-License-Identifier: LGPL-2.1-or-later
 */
@@ -49,6 +50,12 @@ public:
     void replaceDocument(const Document& doc, DocumentOperations operations);
     void commit();
 
+    // The approximate size of pending data. This is a very rough approximation to not spend too
+    // much energy tracking the actual data.
+    // It's very much advised to commit when too much data is pending and start a new transaction;
+    // transaction data consumes RAM until they get committed.
+    size_t approximatelyPendingData() const;
+
     enum OperationType {
         AddId,
         RemoveId,
@@ -72,6 +79,9 @@ private:
 
     MDB_txn* m_txn;
     DatabaseDbis m_dbis;
+
+    size_t m_addedDocuments = 0;
+    size_t m_approximatelyPendingData = 0;
 };
 }
 

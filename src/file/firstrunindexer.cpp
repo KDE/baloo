@@ -1,5 +1,6 @@
 /*
     SPDX-FileCopyrightText: 2015 Vishesh Handa <vhanda@kde.org>
+    SPDX-FileCopyrightText: 2023 Harald Sitter <sitter@kde.org>
 
     SPDX-License-Identifier: LGPL-2.1-or-later
 */
@@ -33,10 +34,16 @@ void FirstRunIndexer::run()
         : BasicIndexingJob::MarkForContentIndexing;
 
     for (const QString& folder : std::as_const(m_folders)) {
-        Transaction tr(m_db, Transaction::ReadWrite);
+        auto tr = std::make_unique<Transaction>(m_db, Transaction::ReadWrite);
 
         FilteredDirIterator it(m_config, folder);
         while (!it.next().isEmpty()) {
+            static constexpr auto maxTransactionSize = 64 * 1024 * 1024; // MiB
+            if (tr->approximatelyPendingData() > maxTransactionSize) {
+                tr->commit();
+                tr = std::make_unique<Transaction>(m_db, Transaction::ReadWrite);
+            }
+
             QString mimetype;
             if (it.fileInfo().isDir()) {
                 mimetype = QStringLiteral("inode/directory");
@@ -54,15 +61,15 @@ void FirstRunIndexer::run()
             // Hence we are checking before.
             // FIXME: Silently ignore hard links!
             //
-            if (tr.hasDocument(job.document().id())) {
+            if (tr->hasDocument(job.document().id())) {
                 continue;
             }
-            tr.addDocument(job.document());
+            tr->addDocument(job.document());
         }
 
         // FIXME: This would consume too much memory. We should make some more commits
         //        based on how much memory we consume
-        tr.commit();
+        tr->commit();
     }
 
     Q_EMIT done();

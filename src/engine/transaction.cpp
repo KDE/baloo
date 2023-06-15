@@ -1,6 +1,7 @@
 /*
     This file is part of the KDE Baloo project.
     SPDX-FileCopyrightText: 2015 Vishesh Handa <vhanda@kde.org>
+    SPDX-FileCopyrightText: 2023 Harald Sitter <sitter@kde.org>
 
     SPDX-License-Identifier: LGPL-2.1-or-later
 */
@@ -622,3 +623,7 @@ void Transaction::checkPostingDbinTermsDb()
     }
 }
 
+size_t Baloo::Transaction::approximatelyPendingData() const
+{
+    return m_writeTrans->approximatelyPendingData();
+}

@@ -1,6 +1,7 @@
 /*
     This file is part of the KDE Baloo project.
     SPDX-FileCopyrightText: 2015 Vishesh Handa <vhanda@kde.org>
+    SPDX-FileCopyrightText: 2023 Harald Sitter <sitter@kde.org>
 
     SPDX-License-Identifier: LGPL-2.1-or-later
 */
@@ -92,6 +93,7 @@ public:
     void removeDocument(quint64 id);
     void removeRecursively(quint64 parentId);
     void addFailed(quint64 id);
+    size_t approximatelyPendingData() const;
 
     bool removeRecursively(quint64 parentId, std::function<bool(quint64)> shouldDelete)
     {

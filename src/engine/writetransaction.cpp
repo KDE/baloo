@@ -1,6 +1,7 @@
 /*
     This file is part of the KDE Baloo project.
     SPDX-FileCopyrightText: 2015 Vishesh Handa <vhanda@kde.org>
+    SPDX-FileCopyrightText: 2023 Harald Sitter <sitter@kde.org>
 
     SPDX-License-Identifier: LGPL-2.1-or-later
 */
@@ -39,36 +40,60 @@ void WriteTransaction::addDocument(const Document& doc)
     Q_ASSERT(!docDataDB.contains(id));
     Q_ASSERT(!contentIndexingDB.contains(id));
 
+    static constexpr size_t fixedTermSize = 16; // fixed size guess of what length a term might have. not based on anything
+    static constexpr auto fixedFileNameSize = static_cast<size_t>(NAME_MAX / 2 /* assume a half bad case */);
+    static constexpr auto sizeOfId = sizeof(id);
+
     if (!docUrlDB.put(id, doc.url())) {
         return;
     }
+    m_approximatelyPendingData += doc.url().size();
+    // Internally DocumentUrlDB also updates the list of sub documents inside the parent dir. This is a bit tricky to approximate
+    // without also adding size tracking to DocumentUrlDB (which is undesirable compared to keeping all the code in a single class)
+    // because we don't know how many sub documents are our siblings, and it's hard to say how this exactly will apply dirt
+    // to pages on the OS level. To get a somewhat flexible guess we are tracking the documents added as part of our
+    // transaction and then assume each of them causes a dirty id and that this causes progressively worse memory use
+    // (i.e. that is why we multiplicatively accumulate footprint of documents).
+    // It also inserts the name portion of the path, that is easy enough to approximate.
+    m_addedDocuments += 1;
+    m_approximatelyPendingData += sizeOfId * m_addedDocuments + fixedFileNameSize;
 
     QVector<QByteArray> docTerms = addTerms(id, doc.m_terms);
     documentTermsDB.put(id, docTerms);
+    m_approximatelyPendingData += docTerms.size() * fixedTermSize;
 
     QVector<QByteArray> docXattrTerms = addTerms(id, doc.m_xattrTerms);
     if (!docXattrTerms.isEmpty()) {
         documentXattrTermsDB.put(id, docXattrTerms);
+        m_approximatelyPendingData += docXattrTerms.size() * fixedTermSize;
     }
 
     QVector<QByteArray> docFileNameTerms = addTerms(id, doc.m_fileNameTerms);
     if (!docFileNameTerms.isEmpty()) {
         documentFileNameTermsDB.put(id, docFileNameTerms);
+        m_approximatelyPendingData += docFileNameTerms.size() * fixedFileNameSize;
     }
 
     if (doc.contentIndexing()) {
         contentIndexingDB.put(doc.id());
+        m_approximatelyPendingData += sizeOfId;
     }
 
     DocumentTimeDB::TimeInfo info;
     info.mTime = doc.m_mTime;
     info.cTime = doc.m_cTime;
 
+    static constexpr auto sizeOfInfo = sizeof(info);
+    static constexpr auto sizeOfMTime = sizeof(doc.m_mTime);
+
     docTimeDB.put(id, info);
+    m_approximatelyPendingData += sizeOfInfo;
     mtimeDB.put(doc.m_mTime, id);
+    m_approximatelyPendingData += sizeOfMTime;
 
     if (!doc.m_data.isEmpty()) {
         docDataDB.put(id, doc.m_data);
+        m_approximatelyPendingData += doc.m_data.size();
     }
 }
 
@@ -327,4 +352,9 @@ void WriteTransaction::commit()
     }
 
     m_pendingOperations.clear();
+}
+
+size_t Baloo::WriteTransaction::approximatelyPendingData() const
+{
+    return m_approximatelyPendingData;
 }
