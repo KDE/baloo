@@ -14,37 +14,24 @@ namespace Baloo {
 
 class DatabaseDbis {
 public:
-    MDB_dbi postingDbi;
-    MDB_dbi positionDBi;
+    MDB_dbi postingDbi = 0;
+    MDB_dbi positionDBi = 0;
 
-    MDB_dbi docTermsDbi;
-    MDB_dbi docFilenameTermsDbi;
-    MDB_dbi docXattrTermsDbi;
+    MDB_dbi docTermsDbi = 0;
+    MDB_dbi docFilenameTermsDbi = 0;
+    MDB_dbi docXattrTermsDbi = 0;
 
-    MDB_dbi idTreeDbi;
-    MDB_dbi idFilenameDbi;
+    MDB_dbi idTreeDbi = 0;
+    MDB_dbi idFilenameDbi = 0;
 
-    MDB_dbi docTimeDbi;
-    MDB_dbi docDataDbi;
-    MDB_dbi contentIndexingDbi;
+    MDB_dbi docTimeDbi = 0;
+    MDB_dbi docDataDbi = 0;
+    MDB_dbi contentIndexingDbi = 0;
 
-    MDB_dbi mtimeDbi;
-    MDB_dbi failedIdDbi;
+    MDB_dbi mtimeDbi = 0;
+    MDB_dbi failedIdDbi = 0;
 
-    DatabaseDbis()
-        : postingDbi(0)
-        , positionDBi(0)
-        , docTermsDbi(0)
-        , docFilenameTermsDbi(0)
-        , docXattrTermsDbi(0)
-        , idTreeDbi(0)
-        , idFilenameDbi(0)
-        , docTimeDbi(0)
-        , docDataDbi(0)
-        , contentIndexingDbi(0)
-        , mtimeDbi(0)
-        , failedIdDbi(0)
-    {}
+    DatabaseDbis() = default;
 
     bool isValid() {
         return postingDbi && positionDBi && docTermsDbi && docFilenameTermsDbi && docXattrTermsDbi &&
