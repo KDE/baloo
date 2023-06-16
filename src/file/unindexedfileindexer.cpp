@@ -10,6 +10,7 @@
 #include "unindexedfileiterator.h"
 #include "transaction.h"
 #include "fileindexerconfig.h"
+#include "baloodebug.h"
 #include "basicindexingjob.h"
 
 using namespace Baloo;
@@ -28,8 +29,9 @@ void UnindexedFileIndexer::run()
 
     for (const QString& includeFolder : includeFolders) {
         Transaction tr(m_db, Transaction::ReadWrite);
-        UnIndexedFileIterator it(m_config, &tr, includeFolder);
+        int transactionDocumentCount = 0;
 
+        UnIndexedFileIterator it(m_config, &tr, includeFolder);
         while (!it.next().isEmpty()) {
             BasicIndexingJob job(it.filePath(), it.mimetype(), level);
             if (!job.index()) {
@@ -55,6 +57,14 @@ void UnindexedFileIndexer::run()
 
             } else { // New file
                 tr.addDocument(job.document());
+            }
+
+            transactionDocumentCount++;
+            if (transactionDocumentCount > 20000) {
+                qCDebug(BALOO) << "Commit";
+                tr.commit();
+                tr.reset(Transaction::ReadWrite);
+                transactionDocumentCount = 0;
             }
         }
         tr.commit();
