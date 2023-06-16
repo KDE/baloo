@@ -32,7 +32,9 @@ void UnindexedFileIndexer::run()
 
         while (!it.next().isEmpty()) {
             BasicIndexingJob job(it.filePath(), it.mimetype(), level);
-            job.index();
+            if (!job.index()) {
+                continue;
+            }
 
             if (it.mTimeChanged() && level == BasicIndexingJob::MarkForContentIndexing) {
                 job.document().setContentIndexing(true);
