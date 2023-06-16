@@ -8,7 +8,7 @@
 #include "monitor.h"
 #include "indexerstate.h"
 
-#include <QtQml>
+#include <QQmlEngine>
 
 void BalooMonitorPlugin::registerTypes(const char *uri)
 {
