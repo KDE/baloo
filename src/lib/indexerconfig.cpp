@@ -17,6 +17,83 @@
 
 using namespace Baloo;
 
+class BALOO_CORE_NO_EXPORT IndexerConfigData::Private
+{
+public:
+    Private()
+        : m_fileIndexingEnabled(false)
+        , m_onlyBasicIndexing(false)
+    {
+    }
+
+    Private(bool fileIndexingEnabled, bool onlyBasicIndexing, FileIndexerConfigData configData)
+        : m_fileIndexingEnabled(fileIndexingEnabled)
+        , m_onlyBasicIndexing(onlyBasicIndexing)
+        , m_configData(configData)
+    {
+    }
+
+    bool m_fileIndexingEnabled;
+    bool m_onlyBasicIndexing;
+    FileIndexerConfigData m_configData;
+};
+
+IndexerConfigData::IndexerConfigData()
+    : d(new Private())
+{
+}
+
+IndexerConfigData::IndexerConfigData(bool fileIndexingEnabled, bool onlyBasicIndexing, FileIndexerConfigData configData)
+    : d(new Private(fileIndexingEnabled, onlyBasicIndexing, configData))
+{
+}
+
+IndexerConfigData::IndexerConfigData(const IndexerConfigData &other)
+    : d(new Private(*other.d))
+{
+}
+
+IndexerConfigData::IndexerConfigData(IndexerConfigData &&other)
+    : d(std::move(other.d))
+{
+}
+
+IndexerConfigData &IndexerConfigData::operator=(const IndexerConfigData &other)
+{
+    d.reset(new Private(*other.d));
+    return *this;
+}
+
+IndexerConfigData &IndexerConfigData::operator=(IndexerConfigData &&other)
+{
+    d.swap(other.d);
+    return *this;
+}
+
+IndexerConfigData::~IndexerConfigData()
+{
+}
+
+bool IndexerConfigData::fileIndexingEnabled() const
+{
+    return d->m_fileIndexingEnabled;
+}
+
+bool IndexerConfigData::onlyBasicIndexing() const
+{
+    return d->m_onlyBasicIndexing;
+}
+
+bool IndexerConfigData::shouldBeIndexed(const QString &path) const
+{
+    return d->m_configData.shouldBeIndexed(path);
+}
+
+std::shared_ptr<IndexerConfigData> IndexerConfigData::configData() const
+{
+    return std::make_shared<IndexerConfigData>(fileIndexingEnabled(), onlyBasicIndexing(), d->m_configData);
+}
+
 class BALOO_CORE_NO_EXPORT IndexerConfig::Private {
 public:
     FileIndexerConfig m_config;
@@ -121,4 +198,9 @@ void IndexerConfig::refresh() const
                                                 QStringLiteral("/"),
                                                 QDBusConnection::sessionBus());
     mainInterface.updateConfig();
+}
+
+std::shared_ptr<IndexerConfigData> IndexerConfig::configData() const
+{
+    return std::make_shared<IndexerConfigData>(fileIndexingEnabled(), onlyBasicIndexing(), d->m_config.configData());
 }

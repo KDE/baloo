@@ -23,11 +23,95 @@ namespace Baloo
 
 class StorageDevices;
 
+class FileIndexerConfigData
+{
+public:
+    virtual ~FileIndexerConfigData(){};
+
+    bool indexHiddenFilesAndFolders() const;
+
+    /**
+     * Check if file or folder \p path should be indexed taking into account
+     * the includeFolders(), the excludeFolders(), and the excludeFilters().
+     * Inclusion takes precedence.
+     *
+     * Be aware that this method does not check if parent dirs
+     * match any of the exclude filters. Only the path of the
+     * dir itself it checked.
+     *
+     * \return \c true if the file or folder at \p path should
+     * be indexed according to the configuration.
+     */
+    bool shouldBeIndexed(const QString &path) const;
+
+    /**
+     * Check if the folder at \p path should be indexed.
+     *
+     * Be aware that this method does not check if parent dirs
+     * match any of the exclude filters. Only the name of the
+     * dir itself it checked.
+     *
+     * \return \c true if the folder at \p path should
+     * be indexed according to the configuration.
+     */
+    bool shouldFolderBeIndexed(const QString &path) const;
+
+    /**
+     * Check \p fileName for all exclude filters. This does
+     * not take file paths into account.
+     *
+     * \return \c true if a file with name \p filename should
+     * be indexed according to the configuration.
+     */
+    bool shouldFileBeIndexed(const QString &fileName) const;
+
+protected:
+    /**
+     * Check if \p path is in the list of folders to be indexed taking
+     * include and exclude folders into account.
+     * \p folder is set to the folder which was the reason for the decision.
+     */
+    virtual bool folderInFolderList(const QString &path, QString &folder) const;
+
+    struct FolderConfig {
+        QString path;
+        bool isIncluded;
+
+        /// Sort by path length, and on ties lexicographically.
+        /// Longest path first
+        bool operator<(const FolderConfig &other) const;
+    };
+
+    class FolderCache : public std::vector<FolderConfig>
+    {
+    public:
+        void cleanup();
+
+        bool addFolderConfig(const FolderConfig &);
+    };
+    friend QDebug operator<<(QDebug dbg, const FolderConfig &config);
+
+    /// Caching cleaned up list (no duplicates, no non-default entries, etc.)
+    FolderCache m_folderCache;
+
+    /// cache of regexp objects for all exclude filters
+    /// to prevent regexp parsing over and over
+    RegExpCache m_excludeFilterRegExpCache;
+
+    bool m_indexHidden;
+
+    FileIndexerConfigData();
+    FileIndexerConfigData(bool indexHidden, FolderCache folderCache, RegExpCache excludeFilterRegExpCache);
+
+    friend class FileIndexerConfig;
+    friend class IndexerConfigData;
+};
+
 /**
  * Active config class which emits signals if the config
  * was changed, for example if the KCM saved the config file.
  */
-class FileIndexerConfig : public QObject
+class FileIndexerConfig : public QObject, public FileIndexerConfigData
 {
     Q_OBJECT
 
@@ -54,8 +138,6 @@ public:
 
     QStringList excludeMimetypes() const;
 
-    bool indexHiddenFilesAndFolders() const;
-
     bool onlyBasicIndexing() const;
 
     /**
@@ -71,41 +153,6 @@ public:
     bool canBeSearched(const QString& folder) const;
 
     /**
-     * Check if file or folder \p path should be indexed taking into account
-     * the includeFolders(), the excludeFolders(), and the excludeFilters().
-     * Inclusion takes precedence.
-     *
-     * Be aware that this method does not check if parent dirs
-     * match any of the exclude filters. Only the path of the
-     * dir itself it checked.
-     *
-     * \return \c true if the file or folder at \p path should
-     * be indexed according to the configuration.
-     */
-    bool shouldBeIndexed(const QString& path) const;
-
-    /**
-     * Check if the folder at \p path should be indexed.
-     *
-     * Be aware that this method does not check if parent dirs
-     * match any of the exclude filters. Only the name of the
-     * dir itself it checked.
-     *
-     * \return \c true if the folder at \p path should
-     * be indexed according to the configuration.
-     */
-    bool shouldFolderBeIndexed(const QString& path) const;
-
-    /**
-     * Check \p fileName for all exclude filters. This does
-     * not take file paths into account.
-     *
-     * \return \c true if a file with name \p filename should
-     * be indexed according to the configuration.
-     */
-    bool shouldFileBeIndexed(const QString& fileName) const;
-
-    /**
      * Checks if \p mimeType should be indexed
      *
      * \return \c true if the mimetype should be indexed according
@@ -118,7 +165,7 @@ public:
      * include and exclude folders into account.
      * \p folder is set to the folder which was the reason for the decision.
      */
-    bool folderInFolderList(const QString& path, QString& folder) const;
+    bool folderInFolderList(const QString &path, QString &folder) const override;
 
     /**
      * Returns the internal version number of the Baloo database
@@ -132,6 +179,8 @@ public:
       * Returns batch size
       */
     uint maxUncomittedFiles() const;
+
+    FileIndexerConfigData configData() const;
 
 public Q_SLOTS:
     /**
@@ -151,38 +200,12 @@ private:
 
     BalooSettings *m_settings;
 
-    struct FolderConfig
-    {
-        QString path;
-        bool isIncluded;
-
-        /// Sort by path length, and on ties lexicographically.
-        /// Longest path first
-        bool operator<(const FolderConfig& other) const;
-    };
-
-    class FolderCache : public std::vector<FolderConfig>
-    {
-    public:
-        void cleanup();
-
-        bool addFolderConfig(const FolderConfig&);
-    };
-    friend QDebug operator<<(QDebug dbg, const FolderConfig& config);
-
-    /// Caching cleaned up list (no duplicates, no non-default entries, etc.)
-    FolderCache m_folderCache;
     /// Whether the folder cache needs to be rebuilt the next time it is used
     bool m_folderCacheDirty;
-
-    /// cache of regexp objects for all exclude filters
-    /// to prevent regexp parsing over and over
-    RegExpCache m_excludeFilterRegExpCache;
 
     /// A set of mimetypes which should never be indexed
     QSet<QString> m_excludeMimetypes;
 
-    bool m_indexHidden;
     bool m_onlyBasicIndexing;
 
     StorageDevices* m_devices;
@@ -190,7 +213,7 @@ private:
     const uint m_maxUncomittedFiles;
 };
 
-QDebug operator<<(QDebug dbg, const FileIndexerConfig::FolderCache::value_type&);
+QDebug operator<<(QDebug dbg, const FileIndexerConfigData::FolderCache::value_type &);
 
 }
 
