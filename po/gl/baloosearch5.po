@@ -87,7 +87,7 @@ msgstr "directorio"
 #: main.cpp:49
 #, kde-format
 msgid "Show document IDs"
-msgstr "Mostrar os identificadores de documento"
+msgstr "Amosar os identificadores de documento"
 
 #: main.cpp:50
 #, kde-format
