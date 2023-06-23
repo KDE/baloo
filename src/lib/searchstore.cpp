@@ -10,10 +10,12 @@
 #include "global.h"
 
 #include "database.h"
-#include "term.h"
-#include "transaction.h"
 #include "enginequery.h"
+#include "filenamequery.h"
+#include "term.h"
 #include "termgenerator.h"
+#include "transaction.h"
+
 #include "andpostingiterator.h"
 #include "orpostingiterator.h"
 
@@ -75,9 +77,8 @@ struct InternalProperty {
     const char* prefix;
     QMetaType::Type valueType;
 };
-constexpr std::array<InternalProperty, 6> internalProperties{{
+constexpr std::array<InternalProperty, 5> internalProperties{{
     {"content", "", QMetaType::QString},
-    {"filename", "F", QMetaType::QString},
     {"mimetype", "M", QMetaType::QString},
     {"rating", "R", QMetaType::Int},
     {"tags", "TA", QMetaType::QString},
@@ -362,6 +363,11 @@ PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term)
         Term cterm(QStringLiteral("content"), term.value(), term.comparator());
         Term fterm(QStringLiteral("filename"), term.value(), term.comparator());
         return constructQuery(tr, Term{cterm, Term::Operation::Or, fterm});
+    } else if (property == "filename") {
+        auto com = term.comparator();
+        auto fq = FilenameQuery(value.toString(), (com == Term::Contains));
+        qCDebug(BALOO) << "filename query:" << fq;
+        return tr->postingIterator(fq);
     }
 
     QByteArray prefix;
