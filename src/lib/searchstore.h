@@ -16,7 +16,6 @@ namespace Baloo {
 class Term;
 class Database;
 class Transaction;
-class EngineQuery;
 class PostingIterator;
 
 class SearchStore
@@ -31,10 +30,6 @@ private:
     Database* m_db;
 
     PostingIterator* constructQuery(Transaction* tr, const Term& term);
-
-    EngineQuery constructContainsQuery(const QByteArray& prefix, const QString& value);
-    EngineQuery constructEqualsQuery(const QByteArray& prefix, const QString& value);
-    EngineQuery constructTypeQuery(const QString& type);
 };
 
 }
