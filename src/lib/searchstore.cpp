@@ -10,10 +10,12 @@
 #include "global.h"
 
 #include "database.h"
-#include "term.h"
-#include "transaction.h"
 #include "enginequery.h"
+#include "filenamequery.h"
+#include "term.h"
 #include "termgenerator.h"
+#include "transaction.h"
+
 #include "andpostingiterator.h"
 #include "orpostingiterator.h"
 
@@ -64,13 +66,15 @@ struct InternalProperty {
     const char* prefix;
     QMetaType::Type valueType;
 };
-constexpr std::array<InternalProperty, 7> internalProperties{{{"content", "", QMetaType::QString},
-                                                              {"filename", "F", QMetaType::QString},
-                                                              {"mimetype", "M", QMetaType::QString},
-                                                              {"rating", "R", QMetaType::Int},
-                                                              {"tag", "TAG-", QMetaType::QString},
-                                                              {"tags", "TA", QMetaType::QString},
-                                                              {"usercomment", "C", QMetaType::QString}}};
+constexpr std::array<InternalProperty, 7> internalProperties{{ //
+    {"content", "", QMetaType::QString},
+    {"filename", "F", QMetaType::QString},
+    {"mimetype", "M", QMetaType::QString},
+    {"rating", "R", QMetaType::Int},
+    {"tag", "TAG-", QMetaType::QString},
+    {"tags", "TA", QMetaType::QString},
+    {"usercomment", "C", QMetaType::QString},
+}};
 
 std::pair<QByteArray, QMetaType::Type> propertyInfo(const QByteArray &property)
 {
@@ -341,6 +345,11 @@ PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term)
         Term cterm(QStringLiteral("content"), term.value(), term.comparator());
         Term fterm(QStringLiteral("filename"), term.value(), term.comparator());
         return constructQuery(tr, Term{cterm, Term::Operation::Or, fterm});
+    } else if (property == "filename") {
+        auto com = term.comparator();
+        auto fq = FilenameQuery(value.toString(), (com == Term::Contains));
+        qCDebug(BALOO) << "filename query:" << fq;
+        return tr->postingIterator(fq);
     }
 
     QByteArray prefix;
