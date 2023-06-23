@@ -14,10 +14,12 @@
 
 #include "document.h"
 #include "enginequery.h"
+#include "filenamequery.h"
 
 #include "andpostingiterator.h"
 #include "orpostingiterator.h"
 #include "phraseanditerator.h"
+#include "vectorpostingiterator.h"
 
 #include "idutils.h"
 #include "database.h"
@@ -28,6 +30,7 @@
 #include <QFile>
 #include <QFileInfo>
 
+#include <algorithm>
 #include <iostream>
 
 using namespace Baloo;
@@ -355,6 +358,56 @@ PostingIterator::Ptr Transaction::postingIterator(const EngineQuery &query) cons
         return std::make_unique<PhraseAndIterator>(std::move(vec));
     }
     return nullptr;
+}
+
+PostingIterator::Ptr Transaction::postingIterator(const FilenameQuery &query) const
+{
+    PostingDB postingDb(m_dbis.postingDbi, m_txn);
+
+    const auto &terms = query.m_terms;
+    if (terms.empty()) {
+        return nullptr;
+    }
+    if (terms.size() == 1) {
+        if (query.m_expandLast) {
+            return postingDb.prefixIter('F' + terms[0]);
+        } else {
+            return postingDb.iter('F' + terms[0]);
+        }
+    }
+
+    PostingList out = postingDb.get('F' + terms[0]);
+    qCDebug(ENGINE) << terms[0] << out;
+    if (out.empty()) {
+        return nullptr;
+    }
+
+    PostingList vec1;
+
+    for (const auto &term : terms.sliced(1)) {
+        auto vec2 = postingDb.get('F' + term);
+
+        std::swap(vec1, out);
+        out.resize(0);
+        out.reserve(std::min(vec1.size(), vec2.size()));
+        std::ranges::set_intersection(vec1, vec2, std::back_inserter(out));
+        qCDebug(ENGINE) << term << vec2 << "->" << out;
+
+        if (out.empty()) {
+            return nullptr;
+        }
+    }
+
+    IdFilenameDB idFilenameDb(m_dbis.idFilenameDbi, m_txn);
+    auto removed = std::ranges::remove_if(out, [&idFilenameDb, &query](auto id) {
+        auto [parent, name] = idFilenameDb.get(id);
+        bool match = query.match(name);
+        qCDebug(ENGINE) << id << name << "<=>" << query.m_terms << "=>" << match;
+        return !match;
+    });
+    out.erase(removed.begin(), removed.end());
+
+    return std::make_unique<VectorPostingIterator>(std::move(out));
 }
 
 PostingIterator::Ptr Transaction::postingIterator(const QByteArray &key) const

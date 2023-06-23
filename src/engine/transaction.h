@@ -24,6 +24,7 @@ class Database;
 class Document;
 class PostingIterator;
 class EngineQuery;
+class FilenameQuery;
 class DatabaseSize;
 class DBState;
 
@@ -63,6 +64,7 @@ public:
     DocumentTimeDB::TimeInfo documentTimeInfo(quint64 id) const;
 
     PostingIterator::Ptr postingIterator(const EngineQuery &query) const;
+    PostingIterator::Ptr postingIterator(const FilenameQuery &query) const;
     PostingIterator::Ptr postingIterator(const QByteArray &key) const;
     PostingIterator::Ptr postingPrefixIterator(const QByteArray &prefix) const;
     PostingIterator::Ptr postingCompIterator(const QByteArray &prefix, qlonglong value, PostingDB::Comparator com) const;

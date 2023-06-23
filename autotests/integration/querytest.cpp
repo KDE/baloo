@@ -5,15 +5,17 @@
     SPDX-License-Identifier: LGPL-2.1-or-later
 */
 
-#include "database.h"
-#include "transaction.h"
-#include "document.h"
-#include "termgenerator.h"
-#include "enginequery.h"
-#include "idutils.h"
 #include "query.h"
+#include "database.h"
+#include "document.h"
+#include "enginequery.h"
+#include "filenamequery.h"
+#include "idutils.h"
+#include "termgenerator.h"
+#include "transaction.h"
 
 #include <memory>
+
 #include <QTest>
 #include <QTemporaryDir>
 
@@ -41,7 +43,8 @@ char *toString(const QVector<quint64> &idlist)
 }
 
 namespace {
-QVector<quint64> execQuery(const Transaction& tr, const EngineQuery& query)
+template<typename QueryT>
+QVector<quint64> execQuery(const Transaction &tr, const QueryT &query)
 {
     std::unique_ptr<PostingIterator> it{tr.postingIterator(query)};
     if (!it) {
@@ -294,13 +297,7 @@ void QueryTest::testFilenamePhrase()
     QFETCH(QString, phrase);
     QFETCH(QVector<quint64>, filenameMatches);
 
-    QVector<EngineQuery::PhraseTerm> queries;
-    const QByteArray fPrefix = QByteArrayLiteral("F");
-    for (QByteArray term : TermGenerator::termList(phrase)) {
-        term = fPrefix + term;
-        queries.emplaceBack(term, EngineQuery::Equal);
-    }
-    EngineQuery qf(queries);
+    FilenameQuery qf(phrase);
 
     Transaction tr(db.get(), Transaction::ReadOnly);
     QCOMPARE(execQuery(tr, qf), filenameMatches);
