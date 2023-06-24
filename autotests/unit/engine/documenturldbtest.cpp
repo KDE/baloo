@@ -58,17 +58,14 @@ private Q_SLOTS:
 
     void testSingleFile()
     {
-        QTemporaryDir dir;
-
-        QByteArray filePath(dir.path().toUtf8() + "/file");
-        touchFile(filePath);
-        quint64 id = filePathToId(filePath);
+        QByteArray filePath("file1");
+        quint64 id = 1;
 
         DocumentUrlDB db(IdTreeDB::create(m_txn), IdFilenameDB::create(m_txn), m_txn);
-        db.put(id, filePath);
+        db.put(id, 0, filePath);
 
         QVERIFY(db.contains(id));
-        QCOMPARE(db.get(id), filePath);
+        QCOMPARE(db.get(id), "/" + filePath);
 
         db.del(id);
         QCOMPARE(db.get(id), QByteArray());
@@ -76,41 +73,36 @@ private Q_SLOTS:
 
     void testTwoFilesAndAFolder()
     {
-        QTemporaryDir dir;
+        QByteArray dirPath("<root>");
+        QByteArray filePath1("file");
+        QByteArray filePath2("file2");
 
-        QByteArray dirPath = QFile::encodeName(dir.path());
-        QByteArray filePath1(dirPath + "/file");
-        QByteArray filePath2(dirPath + "/file2");
-
-        touchFile(filePath1);
-        touchFile(filePath2);
-        quint64 did = filePathToId(dirPath);
-        quint64 id1 = filePathToId(filePath1);
-        quint64 id2 = filePathToId(filePath2);
+        quint64 did = 99;
+        quint64 id1 = 1;
+        quint64 id2 = 2;
 
         DocumentUrlDB db(IdTreeDB::create(m_txn), IdFilenameDB::create(m_txn), m_txn);
-        db.put(did, dirPath);
-        db.put(id1, filePath1);
-        db.put(id2, filePath2);
+        db.put(did, 0, dirPath);
+        db.put(id1, did, filePath1);
+        db.put(id2, did, filePath2);
 
         QVERIFY(db.contains(id1));
         QVERIFY(db.contains(id2));
-        QCOMPARE(db.get(id1), filePath1);
-        QCOMPARE(db.get(id2), filePath2);
-        QCOMPARE(db.get(did), dirPath);
+        QCOMPARE(db.get(id1), "/<root>/" + filePath1);
+        QCOMPARE(db.get(id2), "/<root>/" + filePath2);
+        QCOMPARE(db.get(did), "/" + dirPath);
 
         db.del(id1);
 
         QCOMPARE(db.get(id1), QByteArray());
-        QCOMPARE(db.get(id2), filePath2);
-        QCOMPARE(db.get(did), dirPath);
+        QCOMPARE(db.get(id2), "/<root>/" + filePath2);
+        QCOMPARE(db.get(did), "/" + dirPath);
 
         db.del(id2);
 
         QCOMPARE(db.get(id1), QByteArray());
         QCOMPARE(db.get(id2), QByteArray());
-        QCOMPARE(db.get(did), dirPath);
-
+        QCOMPARE(db.get(did), "/" + dirPath);
 
         db.del(did);
         QCOMPARE(db.get(id1), QByteArray());
@@ -120,22 +112,23 @@ private Q_SLOTS:
 
     void testFileRename()
     {
-        QTemporaryDir dir;
-
-        QByteArray dirPath = QFile::encodeName(dir.path());
-        QByteArray filePath(dirPath + "/file");
-        touchFile(filePath);
-        quint64 did = filePathToId(dirPath);
-        quint64 id = filePathToId(filePath);
+        const QByteArray path{"<root>"};
+        quint64 did = 1;
+        QByteArray filePath("file");
+        quint64 id = 2;
 
         DocumentUrlDB db(IdTreeDB::create(m_txn), IdFilenameDB::create(m_txn), m_txn);
-        db.put(id, filePath);
 
-        QCOMPARE(db.get(id), filePath);
+        db.put(did, 0, path);
+        db.put(id, did, filePath);
+
+        QCOMPARE(db.getId(did, filePath), id);
+        QCOMPARE(db.get(id), QByteArray("/<root>/file"));
 
 	db.updateUrl(id, did, "file2");
 
-        QCOMPARE(db.get(id), dirPath + "/file2");
+        QCOMPARE(db.getId(did, QByteArray("file2")), id);
+        QCOMPARE(db.get(id), QByteArray("/<root>/file2"));
 
         db.del(id);
         QCOMPARE(db.get(id), QByteArray());
@@ -147,21 +140,17 @@ private Q_SLOTS:
 
     void testGetId()
     {
-        QTemporaryDir dir;
-        const QByteArray path = QFile::encodeName(dir.path());
-        quint64 id = filePathToId(path);
+        quint64 id = 1;
 
-        QByteArray filePath1(path + "/file");
-        touchFile(filePath1);
-        quint64 id1 = filePathToId(filePath1);
-        QByteArray filePath2(path + "/file2");
-        touchFile(filePath2);
-        quint64 id2 = filePathToId(filePath2);
+        QByteArray filePath1("file");
+        quint64 id1 = 2;
+        QByteArray filePath2("file2");
+        quint64 id2 = 3;
 
         DocumentUrlDB db(IdTreeDB::create(m_txn), IdFilenameDB::create(m_txn), m_txn);
-        db.put(id, path);
-        db.put(id1, filePath1);
-        db.put(id2, filePath2);
+
+        db.put(id1, id, filePath1);
+        db.put(id2, id, filePath2);
 
         QCOMPARE(db.getId(id, QByteArray("file")), id1);
         QCOMPARE(db.getId(id, QByteArray("file2")), id2);

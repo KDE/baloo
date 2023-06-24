@@ -40,12 +40,12 @@ int main(int /* argc */, char** /* argv */)
         timer.start();
 
         uint num = 0;
-        std::function<void (const QDir&)> recurse = [&db, &num, &recurse](const QDir& dir) -> void {
+        std::function<void (const QDir&, quint64)> recurse = [&db, &num, &recurse](const QDir& dir, quint64 dirId) -> void {
             const auto entryInfos = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries);
             for (const auto& entryInfo : entryInfos) {
                 QByteArray path = QFile::encodeName(entryInfo.absoluteFilePath());
                 auto entryId = filePathToId(path);
-                db.put(entryId, path);
+                db.put(entryId, dirId, path);
                 num++;
 
                 if ((num % 10000) == 0) {
@@ -56,13 +56,13 @@ int main(int /* argc */, char** /* argv */)
                     // qDebug() << "skip" << entryInfo;
                 } else if (entryInfo.isDir()) {
                     // qDebug() << "recurse" << entryInfo;
-                    recurse(entryInfo.absoluteFilePath());
+                    recurse(entryInfo.absoluteFilePath(), entryId);
                 }
             }
         };
 
         QByteArray homePath = QFile::encodeName(QDir::homePath());
-        recurse(QDir::home());
+        recurse(QDir::home(), filePathToId(homePath));
 
         mdb_txn_commit(txn);
 
