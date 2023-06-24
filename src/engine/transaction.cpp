@@ -82,8 +82,8 @@ bool Transaction::hasDocument(quint64 id) const
 {
     Q_ASSERT(id > 0);
 
-    IdFilenameDB idFilenameDb(m_dbis.idFilenameDbi, m_txn);
-    return idFilenameDb.contains(id);
+    DocumentUrlDB docUrlDb(m_dbis.idTreeDbi, m_dbis.idFilenameDbi, m_txn);
+    return docUrlDb.contains(id);
 }
 
 bool Transaction::inPhaseOne(quint64 id) const
