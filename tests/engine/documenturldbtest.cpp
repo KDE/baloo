@@ -8,9 +8,9 @@
 #include <QDebug>
 #include <QTemporaryDir>
 #include <QFile>
-#include <QDirIterator>
 #include <QDir>
 #include <QElapsedTimer>
+#include <functional>
 
 #include "documenturldb.h"
 #include "idutils.h"
@@ -39,17 +39,31 @@ int main(int /* argc */, char** /* argv */)
         QElapsedTimer timer;
         timer.start();
 
-        QDirIterator it(QDir::homePath(), QDirIterator::Subdirectories);
         uint num = 0;
-        while (it.hasNext()) {
-            QByteArray path = QFile::encodeName(it.next());
-            db.put(filePathToId(path), path);
-            num++;
+        std::function<void (const QDir&)> recurse = [&db, &num, &recurse](const QDir& dir) -> void {
+            const auto entryInfos = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries);
+            for (const auto& entryInfo : entryInfos) {
+                QByteArray path = QFile::encodeName(entryInfo.absoluteFilePath());
+                auto entryId = filePathToId(path);
+                db.put(entryId, path);
+                num++;
 
-            if ((num % 10000) == 0) {
-                qDebug() << num;
+                if ((num % 10000) == 0) {
+                    qDebug() << num;
+                }
+
+                if (entryInfo.isSymLink()) {
+                    // qDebug() << "skip" << entryInfo;
+                } else if (entryInfo.isDir()) {
+                    // qDebug() << "recurse" << entryInfo;
+                    recurse(entryInfo.absoluteFilePath());
+                }
             }
-        }
+        };
+
+        QByteArray homePath = QFile::encodeName(QDir::homePath());
+        recurse(QDir::home());
+
         mdb_txn_commit(txn);
 
         qDebug() << "Done" << timer.elapsed() << "msecs";
