@@ -1,7 +1,7 @@
 # Copyright (C) YEAR This_file_is_part_of_KDE
 # This file is distributed under the same license as the PACKAGE package.
 # Lasse Liehu <lasse.liehu@gmail.com>, 2014, 2015, 2017.
-# Tommi Nieminen <translator@legisign.org>, 2017, 2018, 2019, 2020.
+# Tommi Nieminen <translator@legisign.org>, 2017, 2018, 2019, 2020, 2023.
 #
 #
 #
@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-05-19 00:15+0000\n"
-"PO-Revision-Date: 2020-12-16 19:34+0200\n"
+"PO-Revision-Date: 2023-05-19 11:58+0300\n"
 "Last-Translator: Tommi Nieminen <translator@legisign.org>\n"
 "Language-Team: Finnish <kde-i18n-doc@kde.org>\n"
 "Language: fi\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 20.08.3\n"
+"X-Generator: Lokalize 23.04.1\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -38,7 +38,7 @@ msgstr "Muuta Baloon asetuksia"
 #: configcommand.cpp:68
 #, kde-format
 msgid "The config command can be used to manipulate the Baloo Configuration\n"
-msgstr "config-komentoa voi käyttää muuttamaan Baloon asetuksia\n"
+msgstr "config-komennolla Baloon asetuksia voi muuttaa\n"
 
 #: configcommand.cpp:69
 #, kde-format
@@ -57,12 +57,12 @@ msgstr "Mahdolliset komennot:\n"
 #: configcommand.cpp:73
 #, kde-format
 msgid "Add a value to config parameter"
-msgstr "Lisää arvo asetusparametriin"
+msgstr "Lisää asetusparametriin arvo"
 
 #: configcommand.cpp:74
 #, kde-format
 msgid "Remove a value from a config parameter"
-msgstr "Poista arvo asetusparametrista"
+msgstr "Poista asetusparametrista arvo"
 
 #: configcommand.cpp:75
 #, kde-format
@@ -116,7 +116,7 @@ msgstr "Luettelo suodattimista, joita käytetään indeksoinnin ohittamiseen"
 #: configcommand.cpp:90 configcommand.cpp:153 configcommand.cpp:244
 #, kde-format
 msgid "The list of mimetypes which are used to exclude files"
-msgstr "Luettelo MIME-tyypeistä, joita käytetään indeksoinnin ohittamiseen"
+msgstr "Luettelo MIME-tyypeistä, joiden tiedostot sivuutetaan"
 
 #: configcommand.cpp:142 configcommand.cpp:233 configcommand.cpp:356
 #: configcommand.cpp:426
@@ -147,7 +147,7 @@ msgstr "%1 ei kuulu mukana oleviin kansioihin"
 #: configcommand.cpp:189
 #, kde-format
 msgid "%1 is not in the list of exclude folders"
-msgstr "%1 ei kuulu ohitettaviin kansioihin"
+msgstr "%1 ei kuulu sivuutettaviin kansioihin"
 
 #: configcommand.cpp:201 configcommand.cpp:322
 #, kde-format
@@ -157,7 +157,7 @@ msgstr "Suodatin on annettava\n"
 #: configcommand.cpp:207
 #, kde-format
 msgid "%1 is not in list of exclude filters"
-msgstr "%1 ei kuulu ohitussuodattimiin"
+msgstr "%1 ei kuulu sivuutussuodattimiin"
 
 #: configcommand.cpp:218 configcommand.cpp:340
 #, kde-format
@@ -167,7 +167,7 @@ msgstr "MIME-tyyppi on annettava\n"
 #: configcommand.cpp:224
 #, kde-format
 msgid "%1 is not in list of exclude mimetypes"
-msgstr "%1 ei kuulu ohitettaviin MIME-tyyppeihin"
+msgstr "%1 ei kuulu sivuutettaviin MIME-tyyppeihin"
 
 #: configcommand.cpp:258 configcommand.cpp:293
 #, kde-format
@@ -187,22 +187,22 @@ msgstr "%1 kuuluu jo mukana oleviin kansioihin"
 #: configcommand.cpp:275 configcommand.cpp:310
 #, kde-format
 msgid "%1 is in the list of exclude folders"
-msgstr "%1 kuuluu ohitettaviin kansioihin"
+msgstr "%1 kuuluu sivuutettaviin kansioihin"
 
 #: configcommand.cpp:305
 #, kde-format
 msgid "%1 is already in the list of exclude folders"
-msgstr "%1 kuuluu jo ohitettaviin kansioihin"
+msgstr "%1 kuuluu jo sivuutettaviin kansioihin"
 
 #: configcommand.cpp:328
 #, kde-format
 msgid "Exclude filter is already in the list\n"
-msgstr "Ohitussuodatin on jo luettelossa\n"
+msgstr "Sivuutussuodatin on jo luettelossa\n"
 
 #: configcommand.cpp:346
 #, kde-format
 msgid "Exclude mimetype is already in the list\n"
-msgstr "Ohitettava MIME-tyyppi on jo luettelossa\n"
+msgstr "Sivuutettava MIME-tyyppi on jo luettelossa\n"
 
 #: configcommand.cpp:374 configcommand.cpp:401
 #, kde-format
@@ -262,17 +262,17 @@ msgstr "Jatka tiedostojen indeksointia"
 #: main.cpp:65
 #, kde-format
 msgid "Check for any unindexed files and index them"
-msgstr "Tarkista indeksoimattomat tiedostot, ja indeksoi ne"
+msgstr "Etsi indeksoimattomia tiedostoja ja indeksoi ne"
 
 #: main.cpp:66
 #, kde-format
 msgid "Index the specified files"
-msgstr "Indeksoi määritetyt tiedostot"
+msgstr "Indeksoi annetut tiedostot"
 
 #: main.cpp:67
 #, kde-format
 msgid "Forget the specified files"
-msgstr "Unohda määritetyt tiedostot"
+msgstr "Unohda annetut tiedostot"
 
 #: main.cpp:68
 #, kde-format
@@ -347,7 +347,7 @@ msgstr ": OK\n"
 #: monitorcommand.h:32
 #, kde-format
 msgid "CLI interface for monitoring Baloo"
-msgstr "Baloon valvonnan komentorivikäyttöliittymä"
+msgstr "`Baloon valvonnan komentorivikäyttöliittymä"
 
 #: statuscommand.cpp:33
 #, kde-format
@@ -419,7 +419,7 @@ msgstr "– %1\n"
 #: statuscommand.cpp:272
 #, kde-format
 msgid "Baloo is currently disabled. To enable, please run %1\n"
-msgstr "Baloo ei ole käytössä. Voit ottaa sen käyttöön suorittamalla %1\n"
+msgstr "Baloo ei ole käytössä. Sen voi ottaa käyttöön komennolla %1\n"
 
 #: statuscommand.cpp:278
 #, kde-format

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-05-19 00:15+0000\n"
-"PO-Revision-Date: 2023-06-19 13:03+0200\n"
+"PO-Revision-Date: 2023-06-24 10:59+0200\n"
 "Last-Translator: Adrián Chaves (Gallaecio) <adrian@chaves.io>\n"
 "Language-Team: Galician <proxecto@trasno.gal>\n"
 "Language: gl\n"
@@ -175,7 +175,7 @@ msgstr "A ruta non existe.\n"
 #: configcommand.cpp:263 configcommand.cpp:298
 #, kde-format
 msgid "Path is not a directory\n"
-msgstr "A ruta non corresponde a un directorio.\n"
+msgstr "A ruta non corresponde a un cartafol.\n"
 
 #: configcommand.cpp:270
 #, kde-format
