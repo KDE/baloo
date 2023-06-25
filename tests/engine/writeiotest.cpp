@@ -57,7 +57,8 @@ int main(int argc, char** argv)
             doc.addTerm(term);
         }
     }
-    doc.setId(1);
+    doc.setParentId(1);
+    doc.setId(2);
 
     Baloo::Transaction tr(db, Baloo::Transaction::ReadWrite);
     tr.addDocument(doc);
