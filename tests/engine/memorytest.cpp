@@ -46,5 +46,4 @@ int main(int argc, char** argv)
     if (parser.isSet(QStringLiteral("p"))) {
         qDebug() << "With Positional Information";
     }
-    return app.exec();
 }
