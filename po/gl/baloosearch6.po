@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-04-25 02:27+0000\n"
-"PO-Revision-Date: 2023-04-30 12:10+0200\n"
+"PO-Revision-Date: 2023-06-24 10:59+0200\n"
 "Last-Translator: Adrián Chaves (Gallaecio) <adrian@chaves.io>\n"
 "Language-Team: Galician <proxecto@trasno.gal>\n"
 "Language: gl\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 23.04.0\n"
+"X-Generator: Lokalize 23.04.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -77,12 +77,12 @@ msgstr "nome_de_tipo"
 #: main.cpp:46
 #, kde-format
 msgid "Limit search to specified directory"
-msgstr "Limitar a busca ao directorio indicado."
+msgstr "Limitar a busca ao cartafol indicado."
 
 #: main.cpp:47
 #, kde-format
 msgid "directory"
-msgstr "directorio"
+msgstr "cartafol"
 
 #: main.cpp:49
 #, kde-format
@@ -102,7 +102,7 @@ msgstr "Unha lista de palabras para buscar."
 #: main.cpp:87
 #, kde-format
 msgid "%1 is not a valid directory"
-msgstr "%1 non é un directorio válido"
+msgstr "%1 non é un cartafol válido"
 
 #: main.cpp:95
 #, kde-format
