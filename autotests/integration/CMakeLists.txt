@@ -14,7 +14,7 @@ baloo_engine_auto_tests(
 
 add_executable(basicindexingbenchmark_bin basicindexingbenchmark.cpp)
 target_link_libraries(basicindexingbenchmark_bin
-    Qt5::Core
+    Qt${QT_MAJOR_VERSION}::Core
     KF5::BalooEngine
     baloofilecommon
 )
