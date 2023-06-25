@@ -73,6 +73,4 @@ int main(int argc, char** argv)
 
     }
     qDebug() << "Database Size:" << dbSize / 1024 << "kb";
-
-    return app.exec();
 }
