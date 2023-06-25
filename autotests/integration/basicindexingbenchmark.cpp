@@ -17,7 +17,7 @@
 #include "database.h"
 #include "databasesize.h"
 #include "transaction.h"
-#include "../file/util.h"
+#include "../../tests/file/util.h"
 #include "src/file/basicindexingjob.h"
 
 using namespace Baloo;
