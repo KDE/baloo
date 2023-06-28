@@ -35,6 +35,8 @@ private Q_SLOTS:
     void testPhrases_data();
     void testIncompleteTokens();
     void testIncompleteTokens_data();
+    void testQuoting();
+    void testQuoting_data();
 };
 
 void AdvancedQueryParserTest::testSimpleProperty()
@@ -375,6 +377,39 @@ void AdvancedQueryParserTest::testIncompleteTokens_data()
     addRow(QStringLiteral("ends with comparator"),     QStringLiteral("foo>"),   {QStringLiteral("foo"), QString(), Term::Contains});
     addRow(QStringLiteral("ends with opening parens"), QStringLiteral("foo ("),  {QString(), QStringLiteral("foo")});
     addRow(QStringLiteral("ends with closing parens"), QStringLiteral("foo )"),  {QString(), QStringLiteral("foo")});
+}
+
+void AdvancedQueryParserTest::testQuoting()
+{
+    QFETCH(QString, input);
+    QFETCH(Term, expectedTerm);
+
+    AdvancedQueryParser parser;
+    Term term = parser.parse(input);
+    QCOMPARE(term, expectedTerm);
+}
+
+void AdvancedQueryParserTest::testQuoting_data()
+{
+    QTest::addColumn<QString>("input");
+    QTest::addColumn<Term>("expectedTerm");
+
+    auto addRow = [](const QString& name, const QString& input, const Term& term)
+	{ QTest::addRow("%s", qPrintable(name)) << input << term; };
+
+    addRow(QStringLiteral("empty"),                    QStringLiteral("\"\""),   {QString(), QStringLiteral(""), Term::Auto});
+    addRow(QStringLiteral("two quoted"),     QStringLiteral("\"foo\"\"bar\""),   {Term::And, {
+	{QStringLiteral(""), QStringLiteral("foo"), Term::Contains},
+	{QStringLiteral(""), QStringLiteral("bar"), Term::Contains},
+    }});
+    addRow(QStringLiteral("two quoted properties"),     QStringLiteral("artist:\"foo\" OR artist:\"bar\""),   {Term::Or, {
+	{QStringLiteral("artist"), QStringLiteral("foo"), Term::Contains},
+	{QStringLiteral("artist"), QStringLiteral("bar"), Term::Contains},
+    }});
+    addRow(QStringLiteral("two empty properties"),     QStringLiteral("artist:\"\" AND filename:\"\""),   {Term::And, {
+	{QStringLiteral("artist"), QStringLiteral(""), Term::Contains},
+	{QStringLiteral("filename"), QStringLiteral(""), Term::Contains},
+    }});
 }
 
 QTEST_MAIN(AdvancedQueryParserTest)

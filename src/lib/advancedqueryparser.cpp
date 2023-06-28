@@ -28,6 +28,10 @@ static QStringList lex(const QString& text)
 
         if (c == QLatin1Char('"')) {
             // Quotes start or end string literals
+            if (inQuotes) {
+                tokenList.append(token);
+                token.clear();
+            }
             inQuotes = !inQuotes;
         } else if (inQuotes) {
             // Don't do any processing in strings
@@ -128,7 +132,7 @@ Term AdvancedQueryParser::parse(const QString& text)
         // Handle the different comparators (and braces)
         Term::Comparator comparator = Term::Auto;
 
-        switch (token.at(0).toLatin1()) {
+        switch (token.isEmpty() ? '\0' : token.at(0).toLatin1()) {
             case ':':
                 comparator = Term::Contains;
                 break;
