@@ -374,7 +374,7 @@ void AdvancedQueryParserTest::testIncompleteTokens_data()
     addRow(QStringLiteral("ends with quote"),          QStringLiteral("foo \""), {QString(), QStringLiteral("foo"), Term::Auto});
     addRow(QStringLiteral("ends with comparator"),     QStringLiteral("foo>"),   {QStringLiteral("foo"), QString(), Term::Contains});
     addRow(QStringLiteral("ends with opening parens"), QStringLiteral("foo ("),  {QString(), QStringLiteral("foo")});
-    addRow(QStringLiteral("ends with closing parens"), QStringLiteral("foo ("),  {QString(), QStringLiteral("foo")});
+    addRow(QStringLiteral("ends with closing parens"), QStringLiteral("foo )"),  {QString(), QStringLiteral("foo")});
 }
 
 QTEST_MAIN(AdvancedQueryParserTest)
