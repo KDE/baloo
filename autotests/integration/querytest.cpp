@@ -60,25 +60,6 @@ class QueryTest : public QObject
 private Q_SLOTS:
     void initTestCase() {
         dir = std::make_unique<QTemporaryDir>();
-
-        auto touchFile = [](const QString& path) {
-            QFile file(path);
-            file.open(QIODevice::WriteOnly);
-            file.write("data");
-            file.close();
-
-            return filePathToId(QFile::encodeName(path));
-        };
-
-        m_id1 = touchFile(dir->path() + QStringLiteral("/file1.txt"));
-        m_id2 = touchFile(dir->path() + QStringLiteral("/file2"));
-        m_id3 = touchFile(dir->path() + QStringLiteral("/file3"));
-        m_id4 = touchFile(dir->path() + QStringLiteral("/file4"));
-        m_id7 = touchFile(dir->path() + QStringLiteral("/file7_lazy"));
-        m_id8 = touchFile(dir->path() + QStringLiteral("/file8_dog"));
-
-        m_id5 = touchFile(dir->path() + QStringLiteral("/tagFile1"));
-        m_id6 = touchFile(dir->path() + QStringLiteral("/tagFile2"));
     }
 
     void init() {
@@ -87,6 +68,15 @@ private Q_SLOTS:
         db->open(Database::CreateDatabase);
 
         m_parentId = filePathToId(QFile::encodeName(dir->path()));
+        m_id1 = m_parentId + 1;
+        m_id2 = m_parentId + 2;
+        m_id3 = m_parentId + 3;
+        m_id4 = m_parentId + 4;
+        m_id5 = m_parentId + 5;
+        m_id6 = m_parentId + 6;
+        m_id7 = m_parentId + 7;
+        m_id8 = m_parentId + 8;
+
         insertDocuments();
     }
 
