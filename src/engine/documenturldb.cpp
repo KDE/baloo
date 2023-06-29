@@ -10,7 +10,6 @@
 #include "enginedebug.h"
 
 #include <algorithm>
-#include <QPair>
 
 using namespace Baloo;
 
@@ -25,27 +24,23 @@ DocumentUrlDB::~DocumentUrlDB()
 {
 }
 
-bool DocumentUrlDB::put(quint64 docId, const QByteArray& url)
+bool DocumentUrlDB::addPath(const QByteArray& url)
 {
-    if (!docId || url.isEmpty() || url.endsWith('/')) {
+    Q_ASSERT(!url.isEmpty());
+    Q_ASSERT(!url.endsWith('/'));
+    if (url.isEmpty() || url.endsWith('/')) {
         return false;
     }
 
     IdFilenameDB idFilenameDb(m_idFilenameDbi, m_txn);
 
-    typedef QPair<quint64, QByteArray> IdNamePath;
-
     QByteArray arr = url;
-    quint64 parentId;
-    //
-    // id and parent
-    //
-    {
-        quint64 id = filePathToId(arr);
-        if (!id) {
-            return false;
+    quint64 id = filePathToId(arr);
+
+    while (id) {
+        if (idFilenameDb.contains(id)) {
+            return true;
         }
-        Q_ASSERT(id == docId);
 
         int pos = arr.lastIndexOf('/');
         QByteArray name = arr.mid(pos + 1);
@@ -53,54 +48,30 @@ bool DocumentUrlDB::put(quint64 docId, const QByteArray& url)
         if (pos == 0) {
             add(id, 0, name);
             return true;
-        } else {
-            arr.resize(pos);
-            parentId = filePathToId(arr);
-            if (!parentId) {
-                return false;
-            }
-            add(id, parentId, name);
-        }
-
-        if (idFilenameDb.contains(parentId)) {
-            return true;
-        }
-    }
-
-    //
-    // The rest of the path
-    //
-    QVector<IdNamePath> list;
-    while (parentId) {
-        quint64 id = parentId;
-
-        int pos = arr.lastIndexOf('/');
-        QByteArray name = arr.mid(pos + 1);
-
-        list.prepend(qMakePair(id, name));
-        if (pos == 0) {
-            break;
         }
 
         arr.resize(pos);
-
-        parentId = filePathToId(arr);
-    }
-
-
-    for (int i = 0; i < list.size(); i++) {
-        quint64 id = list[i].first;
-        QByteArray name = list[i].second;
-
-        // Update the IdTree
-        quint64 parentId = 0;
-        if (i) {
-            parentId = list[i-1].first;
+        auto parentId = filePathToId(arr);
+        if (!parentId) {
+            return false;
         }
-
         add(id, parentId, name);
+
+        id = parentId;
+    }
+    return false;
+}
+
+bool DocumentUrlDB::put(quint64 docId, quint64 parentId, const QByteArray& filename)
+{
+    Q_ASSERT(docId);
+    Q_ASSERT(!filename.contains('/'));
+    Q_ASSERT(!filename.isEmpty());
+    if (!docId || filename.isEmpty() || filename.contains('/')) {
+        return false;
     }
 
+    add(docId, parentId, filename);
     return true;
 }
 
