@@ -48,21 +48,13 @@ private:
     quint64 m_dirId = 0;
 };
 
-static void touchFile(const QString& path) {
-    QFile file(path);
-    file.open(QIODevice::WriteOnly);
-    file.write("data");
-    file.close();
-}
-
 void WriteTransactionTest::testAddDocument()
 {
     Transaction tr(db.get(), Transaction::ReadWrite);
 
     const QString filePath(dir->path() + QStringLiteral("/file"));
-    touchFile(filePath);
     QByteArray url = QFile::encodeName(filePath);
-    quint64 id = filePathToId(url);
+    quint64 id = 99;
 
     QCOMPARE(tr.hasDocument(id), false);
 
@@ -97,14 +89,17 @@ void WriteTransactionTest::testAddDocument()
     QCOMPARE(actualState, state);
 }
 
-
 static Document createDocument(const QString& filePath, quint32 mtime, quint32 ctime, const QVector<QByteArray>& terms,
                                const QVector<QByteArray>& fileNameTerms, const QVector<QByteArray>& xattrTerms, quint64 parentId)
 {
     Document doc;
 
+    // Generate a unique file id. A monotonic counter is sufficient here.
+    static quint64 fileid = parentId;
+    fileid++;
+
     const QByteArray url = QFile::encodeName(filePath);
-    doc.setId(filePathToId(url));
+    doc.setId(fileid);
     doc.setParentId(parentId);
     doc.setUrl(url);
 
@@ -127,8 +122,6 @@ void WriteTransactionTest::testAddDocumentTwoDocuments()
 {
     const QString url1(dir->path() + QStringLiteral("/file1"));
     const QString url2(dir->path() + QStringLiteral("/file2"));
-    touchFile(url1);
-    touchFile(url2);
 
     Document doc1 = createDocument(url1, 5, 1, {"a", "abc", "dab"}, {"file1"}, {}, m_dirId);
     Document doc2 = createDocument(url2, 6, 2, {"a", "abcd", "dab"}, {"file2"}, {}, m_dirId);
@@ -161,7 +154,6 @@ void WriteTransactionTest::testAddDocumentTwoDocuments()
 void WriteTransactionTest::testAddAndRemoveOneDocument()
 {
     const QString url1(dir->path() + QStringLiteral("/file1"));
-    touchFile(url1);
 
     Document doc1 = createDocument(url1, 5, 1, {"a", "abc", "dab"}, {"file1"}, {}, m_dirId);
 
@@ -184,7 +176,6 @@ void WriteTransactionTest::testAddAndRemoveOneDocument()
 void WriteTransactionTest::testAddAndReplaceOneDocument()
 {
     const QString url1(dir->path() + QStringLiteral("/file1"));
-    touchFile(url1);
 
     Document doc1 = createDocument(url1, 5, 1, {"a", "abc", "dab"}, {"file1"}, {}, m_dirId);
     Document doc2 = createDocument(url1, 6, 2, {"a", "abc", "xxx"}, {"file1", "yyy"}, {}, m_dirId);
@@ -236,10 +227,6 @@ void WriteTransactionTest::testRemoveRecursively()
     const QString dirPath(path + QStringLiteral("/dir"));
     const QString url2(dirPath + QStringLiteral("/file1"));
 
-    touchFile(url1);
-    QDir().mkpath(dirPath);
-    touchFile(url2);
-
     Document doc1 = createDocument(url1, 5, 1, {"a", "abc", "dab"}, {"file1"}, {}, m_dirId);
     Document doc2 = createDocument(dirPath, 5, 1, {"a"}, {"dir"}, {}, m_dirId);
     Document doc3 = createDocument(url2, 5, 1, {"a", "abc", "dab"}, {"file1"}, {}, doc2.id());
@@ -265,7 +252,6 @@ void WriteTransactionTest::testRemoveRecursively()
 void WriteTransactionTest::testDocumentId()
 {
     const QString url1(dir->path() + QStringLiteral("/file1"));
-    touchFile(url1);
 
     Document doc1 = createDocument(url1, 5, 1, {"a", "abc", "dab"}, {"file1"}, {}, m_dirId);
 
@@ -276,7 +262,7 @@ void WriteTransactionTest::testDocumentId()
     }
 
     Transaction tr(db.get(), Transaction::ReadOnly);
-    QCOMPARE(tr.documentId(QFile::encodeName(url1)), doc1.id());
+    QCOMPARE(tr.documentId(doc1.url()), doc1.id());
 }
 
 void WriteTransactionTest::testTermPositions()
@@ -284,9 +270,6 @@ void WriteTransactionTest::testTermPositions()
     const QString url1(dir->path() + QStringLiteral("/file1"));
     const QString url2(dir->path() + QStringLiteral("/file2"));
     const QString url3(dir->path() + QStringLiteral("/file3"));
-    touchFile(url1);
-    touchFile(url2);
-    touchFile(url3);
 
     Document doc1 = createDocument(url1, 5, 1, {"a", "abc", "dab"}, {"file1"}, {}, m_dirId);
     quint64 id1 = doc1.id();
@@ -427,11 +410,11 @@ void WriteTransactionTest::testTermPositions()
 void WriteTransactionTest::testIdempotentDocumentChange()
 {
     const QString url1(dir->path() + QStringLiteral("/file1"));
-    touchFile(url1);
 
     Document doc1 = createDocument(url1, 5, 1, {"a", "abc", "dab"}, {"file1"}, {}, m_dirId);
     Document doc2 = createDocument(url1, 5, 1, {"a", "abcd", "dab"}, {"file1"}, {}, m_dirId);
     quint64 id = doc1.id();
+    doc2.setId(doc1.id());
 
     {
         Transaction tr(db.get(), Transaction::ReadWrite);
@@ -474,7 +457,6 @@ void WriteTransactionTest::testIdempotentDocumentChange()
 void WriteTransactionTest::testTransactionReset()
 {
     const QString url1(dir->path() + QStringLiteral("/file1"));
-    touchFile(url1);
 
     Document doc1 = createDocument(url1, 0, 1, {"a", "abc", "dab"}, {"file1"}, {}, m_dirId);
 
