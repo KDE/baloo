@@ -27,9 +27,9 @@ public:
 
     /**
      * Returns true if added
-     * Returns false is the file no longer exists and could not be added
      */
-    bool put(quint64 docId, const QByteArray& url);
+    bool put(quint64 docId, quint64 parentId, const QByteArray& fileName);
+    bool addPath(const QByteArray& url);
 
     QByteArray get(quint64 docId) const;
     QVector<quint64> getChildren(quint64 docId) const;

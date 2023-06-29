@@ -40,11 +40,25 @@ void WriteTransaction::addDocument(const Document& doc)
     Q_ASSERT(!contentIndexingDB.contains(id));
     Q_ASSERT(doc.parentId());
 
-    if (!docUrlDB.put(id, doc.url())) {
-        return;
+    {
+        auto url = doc.url();
+        int pos = url.lastIndexOf('/');
+        auto filename = url.mid(pos + 1);
+        auto parentId = doc.parentId();
+
+        if (pos > 0) {
+            docUrlDB.addPath(url.left(pos));
+        } else {
+            parentId = 0;
+        }
+
+        if (!docUrlDB.put(id, parentId, filename)) {
+            return;
+        }
     }
 
     QVector<QByteArray> docTerms = addTerms(id, doc.m_terms);
+    Q_ASSERT(!docTerms.empty());
     documentTermsDB.put(id, docTerms);
 
     QVector<QByteArray> docXattrTerms = addTerms(id, doc.m_xattrTerms);
