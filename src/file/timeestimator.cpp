@@ -55,3 +55,5 @@ void TimeEstimator::handleNewBatchTime(uint time, uint batchSize)
         m_estimateReady = true;
     }
 }
+
+#include "moc_timeestimator.cpp"

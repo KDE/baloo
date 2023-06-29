@@ -6,3 +6,5 @@
 */
 
 #include "singledbtest.h"
+
+#include "moc_singledbtest.cpp"

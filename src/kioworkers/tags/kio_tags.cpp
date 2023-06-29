@@ -469,3 +469,4 @@ extern "C"
 }
 
 #include "kio_tags.moc"
+#include "moc_kio_tags.cpp"

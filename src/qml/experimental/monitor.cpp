@@ -142,3 +142,4 @@ void Monitor::slotIndexerStateChanged(int state)
     }
 }
 
+#include "moc_monitor.cpp"

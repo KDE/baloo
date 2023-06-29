@@ -77,3 +77,5 @@ void IndexCleaner::run()
 
     Q_EMIT done();
 }
+
+#include "moc_indexcleaner.cpp"

@@ -53,3 +53,5 @@ void PowerStateMonitor::slotPowerManagementStatusChanged(bool conserveResources)
         Q_EMIT powerManagementStatusChanged(conserveResources);
     }
 }
+
+#include "moc_powerstatemonitor.cpp"

@@ -70,3 +70,5 @@ void FileMonitor::slotFileMetaDataChanged(const QStringList& fileUrls)
         }
     }
 }
+
+#include "moc_filemonitor.cpp"

@@ -109,3 +109,5 @@ void MonitorCommand::stateChanged(int state)
     m_out << stateString(state) << '\n';
     m_out.flush();
 }
+
+#include "moc_monitorcommand.cpp"

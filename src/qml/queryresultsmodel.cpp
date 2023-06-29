@@ -133,3 +133,4 @@ void QueryResultsModel::populateModel()
     endResetModel();
 }
 
+#include "moc_queryresultsmodel.cpp"

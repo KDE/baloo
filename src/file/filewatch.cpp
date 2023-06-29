@@ -204,3 +204,4 @@ void FileWatch::updateIndexedFoldersWatches()
     }
 }
 
+#include "moc_filewatch.cpp"

@@ -68,3 +68,5 @@ void XAttrIndexer::run()
     tr.commit();
     Q_EMIT done();
 }
+
+#include "moc_xattrindexer.cpp"
