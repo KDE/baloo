@@ -177,3 +177,4 @@ bool StorageDevices::Entry::isUsable() const
     return usable;
 }
 
+#include "moc_storagedevices.cpp"

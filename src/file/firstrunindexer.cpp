@@ -77,3 +77,5 @@ void FirstRunIndexer::run()
 
     Q_EMIT done();
 }
+
+#include "moc_firstrunindexer.cpp"

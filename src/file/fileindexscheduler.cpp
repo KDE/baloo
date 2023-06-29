@@ -302,3 +302,5 @@ uint FileIndexScheduler::getBatchSize()
 {
     return m_config->maxUncomittedFiles();
 }
+
+#include "moc_fileindexscheduler.cpp"

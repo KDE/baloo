@@ -114,3 +114,5 @@ void MetadataMover::updateMetadata(Transaction* tr, const QString& from, const Q
     // 1. file moves to the same device - id is preserved
     // 2. file moves to a different device - id is not preserved
 }
+
+#include "moc_metadatamover.cpp"

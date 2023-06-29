@@ -61,3 +61,5 @@ QStringList TagListJob::tags()
 {
     return d->tags;
 }
+
+#include "moc_taglistjob.cpp"

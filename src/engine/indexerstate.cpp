@@ -57,3 +57,5 @@ QString Baloo::stateString(int state)
 {
     return stateString(static_cast<IndexerState>(state));
 }
+
+#include "moc_indexerstate.cpp"

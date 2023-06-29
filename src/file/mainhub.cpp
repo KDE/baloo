@@ -59,3 +59,5 @@ void MainHub::updateConfig()
     m_fileWatcher.updateIndexedFoldersWatches();
     m_fileIndexScheduler.updateConfig();
 }
+
+#include "moc_mainhub.cpp"

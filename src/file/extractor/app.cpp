@@ -185,3 +185,5 @@ bool App::index(Transaction* tr, const QString& url, quint64 id)
     tr->removePhaseOne(doc.id());
     return true;
 }
+
+#include "moc_app.cpp"

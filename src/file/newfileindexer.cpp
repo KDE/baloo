@@ -74,3 +74,5 @@ void NewFileIndexer::run()
     tr.commit();
     Q_EMIT done();
 }
+
+#include "moc_newfileindexer.cpp"

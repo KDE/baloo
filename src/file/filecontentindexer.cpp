@@ -150,3 +150,5 @@ void FileContentIndexer::monitorClosed(const QString& service)
     m_registeredMonitors.removeAll(service);
     m_monitorWatcher.removeWatchedService(service);
 }
+
+#include "moc_filecontentindexer.cpp"

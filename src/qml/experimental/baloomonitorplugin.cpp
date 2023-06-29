@@ -17,3 +17,5 @@ void BalooMonitorPlugin::registerTypes(const char *uri)
     qmlRegisterType<Baloo::Monitor>(uri, 0, 1, "Monitor");
     qmlRegisterUncreatableMetaObject(Baloo::staticMetaObject, uri, 0, 1, "Global", QStringLiteral("Error: only enums"));
 }
+
+#include "moc_baloomonitorplugin.cpp"

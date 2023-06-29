@@ -87,3 +87,4 @@ void SearchModule::slotFileMetaDataChanged(const QStringList& list)
 K_PLUGIN_CLASS_WITH_JSON(SearchModule, "baloosearchmodule.json")
 
 #include "baloosearchmodule.moc"
+#include "moc_baloosearchmodule.cpp"
