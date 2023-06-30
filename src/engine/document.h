@@ -44,7 +44,7 @@ public:
     quint64 id() const;
     void setId(quint64 id);
     quint64 parentId() const;
-    void setParentId(quint64 id);
+    void setParentId(quint64 parentId);
 
     QByteArray url() const;
     void setUrl(const QByteArray& url);
