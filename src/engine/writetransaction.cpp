@@ -108,8 +108,10 @@ void WriteTransaction::removeDocument(quint64 id)
     DocumentUrlDB docUrlDB(m_dbis.idTreeDbi, m_dbis.idFilenameDbi, m_txn);
 
     removeTerms(id, documentTermsDB.get(id));
-    removeTerms(id, documentXattrTermsDB.get(id));
     removeTerms(id, documentFileNameTermsDB.get(id));
+    if (documentXattrTermsDB.contains(id)) {
+        removeTerms(id, documentXattrTermsDB.get(id));
+    }
 
     documentTermsDB.del(id);
     documentXattrTermsDB.del(id);
