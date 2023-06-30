@@ -67,10 +67,10 @@ quint64 Document::parentId() const
     return m_parentId;
 }
 
-void Document::setParentId(quint64 id)
+void Document::setParentId(quint64 parentId)
 {
-    Q_ASSERT(id);
-    m_parentId = id;
+    Q_ASSERT(parentId);
+    m_parentId = parentId;
 }
 
 void Document::setUrl(const QByteArray& url)
