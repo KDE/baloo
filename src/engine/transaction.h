@@ -56,8 +56,6 @@ public:
 
     DocumentTimeDB::TimeInfo documentTimeInfo(quint64 id) const;
 
-    QVector<quint64> exec(const EngineQuery& query, int limit = -1) const;
-
     PostingIterator* postingIterator(const EngineQuery& query) const;
     PostingIterator* postingCompIterator(const QByteArray& prefix, qlonglong value, PostingDB::Comparator com) const;
     PostingIterator* postingCompIterator(const QByteArray& prefix, double value, PostingDB::Comparator com) const;

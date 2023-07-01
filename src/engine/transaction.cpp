@@ -405,24 +405,6 @@ PostingIterator* Transaction::docUrlIter(quint64 id) const
     return docUrlDb.iter(id);
 }
 
-QVector<quint64> Transaction::exec(const EngineQuery& query, int limit) const
-{
-    Q_ASSERT(m_txn);
-
-    QVector<quint64> results;
-    PostingIterator* it = postingIterator(query);
-    if (!it) {
-        return results;
-    }
-
-    while (it->next() && limit) {
-        results << it->docId();
-        limit--;
-    }
-
-    return results;
-}
-
 //
 // Introspection
 //
