@@ -38,6 +38,22 @@ char *toString(const QVector<quint64> &idlist)
     return qstrdup(text.data());
 }
 
+namespace {
+QVector<quint64> execQuery(const Transaction& tr, const EngineQuery& query)
+{
+    PostingIterator* it = tr.postingIterator(query);
+    if (!it) {
+        return {};
+    }
+
+    QVector<quint64> results;
+    while (it->next()) {
+        results << it->docId();
+    }
+    return results;
+}
+} // namespace
+
 class QueryTest : public QObject
 {
     Q_OBJECT
@@ -197,7 +213,7 @@ void QueryTest::testTermEqual()
 
     QVector<quint64> result = SortedIdVector{m_id1, m_id2, m_id4, m_id7};
     Transaction tr(db.get(), Transaction::ReadOnly);
-    QCOMPARE(tr.exec(q), result);
+    QCOMPARE(execQuery(tr, q), result);
 }
 
 void QueryTest::testTermStartsWith()
@@ -206,7 +222,7 @@ void QueryTest::testTermStartsWith()
 
     QVector<quint64> result = SortedIdVector{m_id3, m_id4};
     Transaction tr(db.get(), Transaction::ReadOnly);
-    QCOMPARE(tr.exec(q), result);
+    QCOMPARE(execQuery(tr, q), result);
 }
 
 void QueryTest::testTermAnd()
@@ -219,7 +235,7 @@ void QueryTest::testTermAnd()
 
     QVector<quint64> result = {m_id3};
     Transaction tr(db.get(), Transaction::ReadOnly);
-    QCOMPARE(tr.exec(q), result);
+    QCOMPARE(execQuery(tr, q), result);
 }
 
 void QueryTest::testTermOr()
@@ -232,7 +248,7 @@ void QueryTest::testTermOr()
 
     QVector<quint64> result = SortedIdVector{m_id1, m_id2, m_id7};
     Transaction tr(db.get(), Transaction::ReadOnly);
-    QCOMPARE(tr.exec(q), result);
+    QCOMPARE(execQuery(tr, q), result);
 }
 
 void QueryTest::testTermPhrase_data()
@@ -274,7 +290,7 @@ void QueryTest::testTermPhrase()
     EngineQuery q(queries, EngineQuery::Phrase);
 
     Transaction tr(db.get(), Transaction::ReadOnly);
-    QCOMPARE(tr.exec(q), contentMatches);
+    QCOMPARE(execQuery(tr, q), contentMatches);
 
     queries.clear();
     const QByteArray fPrefix = QByteArrayLiteral("F");
@@ -283,7 +299,7 @@ void QueryTest::testTermPhrase()
         queries << EngineQuery(term);
     }
     EngineQuery qf(queries, EngineQuery::Phrase);
-    QCOMPARE(tr.exec(qf), filenameMatches);
+    QCOMPARE(execQuery(tr, qf), filenameMatches);
 }
 
 void QueryTest::testTagTermAnd_data()
@@ -314,7 +330,7 @@ void QueryTest::testTagTermAnd()
     EngineQuery q(queries, EngineQuery::And);
 
     Transaction tr(db.get(), Transaction::ReadOnly);
-    QCOMPARE(tr.exec(q), matchIds);
+    QCOMPARE(execQuery(tr, q), matchIds);
 }
 
 void QueryTest::testTagTermPhrase_data()
@@ -347,7 +363,7 @@ void QueryTest::testTagTermPhrase()
     EngineQuery q(queries, EngineQuery::Phrase);
 
     Transaction tr(db.get(), Transaction::ReadOnly);
-    auto res = tr.exec(q);
+    auto res = execQuery(tr, q);
     QCOMPARE(res, matchIds);
 }
 
