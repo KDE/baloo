@@ -49,3 +49,4 @@ void QueryRunnable::run()
     Q_EMIT finished(this);
 }
 
+#include "moc_queryrunnable.cpp"

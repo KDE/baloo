@@ -388,3 +388,5 @@ uint FileIndexerConfig::maxUncomittedFiles() const
 }
 
 } // namespace Baloo
+
+#include "moc_fileindexerconfig.cpp"

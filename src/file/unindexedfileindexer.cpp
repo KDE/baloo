@@ -72,3 +72,5 @@ void UnindexedFileIndexer::run()
 
     Q_EMIT done();
 }
+
+#include "moc_unindexedfileindexer.cpp"

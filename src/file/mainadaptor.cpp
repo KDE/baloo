@@ -37,3 +37,4 @@ void MainAdaptor::updateConfig()
     mainHub->updateConfig();
 }
 
+#include "moc_mainadaptor.cpp"

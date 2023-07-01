@@ -138,3 +138,5 @@ void WorkerPipe::batchFinished()
 
 } // namespace Private
 } // namespace Baloo
+
+#include "moc_commandpipe.cpp"

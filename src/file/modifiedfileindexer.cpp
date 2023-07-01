@@ -115,3 +115,5 @@ void ModifiedFileIndexer::run()
     tr.commit();
     Q_EMIT done();
 }
+
+#include "moc_modifiedfileindexer.cpp"

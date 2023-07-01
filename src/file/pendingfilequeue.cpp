@@ -193,3 +193,5 @@ void PendingFileQueue::setMaximumTimeout(int seconds)
 {
     m_maxTimeout = seconds * 1000;
 }
+
+#include "moc_pendingfilequeue.cpp"

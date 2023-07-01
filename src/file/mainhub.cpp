@@ -67,3 +67,5 @@ void MainHub::updateConfig()
 void MainHub::registerBalooWatcher(const QString &)
 {
 }
+
+#include "moc_mainhub.cpp"

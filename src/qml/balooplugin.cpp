@@ -22,3 +22,4 @@ void BalooPlugin::registerTypes(const char *uri)
     qmlRegisterType<Query>(uri, 0, 1, "Query");
 }
 
+#include "moc_balooplugin.cpp"

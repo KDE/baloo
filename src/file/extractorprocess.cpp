@@ -72,3 +72,4 @@ void ExtractorProcess::index(const QVector<quint64>& fileIds)
     m_controller.processIds(fileIds);
 }
 
+#include "moc_extractorprocess.cpp"
