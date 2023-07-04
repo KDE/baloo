@@ -37,6 +37,8 @@ private Q_SLOTS:
     void testIncompleteTokens_data();
     void testQuoting();
     void testQuoting_data();
+    void testSpecialCharacters();
+    void testSpecialCharacters_data();
 };
 
 void AdvancedQueryParserTest::testSimpleProperty()
@@ -410,7 +412,51 @@ void AdvancedQueryParserTest::testQuoting_data()
 	{QStringLiteral("artist"), QStringLiteral(""), Term::Contains},
 	{QStringLiteral("filename"), QStringLiteral(""), Term::Contains},
     }});
+    addRow(QStringLiteral("quoted and unquoted"), QStringLiteral("one \"two and three\" four"),   {Term::And, {
+	{QStringLiteral(""), QStringLiteral("one"), Term::Contains},
+	{QStringLiteral(""), QStringLiteral("two and three"), Term::Contains},
+	{QStringLiteral(""), QStringLiteral("four"), Term::Contains},
+    }});
+    addRow(QStringLiteral("multiple quoted"), QStringLiteral("\"one and two\" \"three and four\""),   {Term::And, {
+	{QStringLiteral(""), QStringLiteral("one and two"), Term::Contains},
+	{QStringLiteral(""), QStringLiteral("three and four"), Term::Contains},
+    }});
 }
+
+void AdvancedQueryParserTest::testSpecialCharacters()
+{
+    QFETCH(QString, input);
+    QFETCH(Term, expectedTerm);
+
+    AdvancedQueryParser parser;
+    Term term = parser.parse(input);
+    QCOMPARE(term, expectedTerm);
+}
+
+void AdvancedQueryParserTest::testSpecialCharacters_data()
+{
+    QTest::addColumn<QString>("input");
+    QTest::addColumn<Term>("expectedTerm");
+
+    auto addRow = [](const QString& name, const QString& input, const Term& term)
+	{ QTest::addRow("%s", qPrintable(name)) << input << term; };
+
+    addRow(QStringLiteral("mail"), QStringLiteral("foo@bar.com"),
+        {QStringLiteral(""), QStringLiteral("foo@bar.com"), Term::Contains});
+    addRow(QStringLiteral("mail and other"), QStringLiteral("one foo@bar.com two"), {Term::And, {
+        {QStringLiteral(""), QStringLiteral("one"), Term::Contains},
+        {QStringLiteral(""), QStringLiteral("foo@bar.com"), Term::Contains},
+        {QStringLiteral(""), QStringLiteral("two"), Term::Contains},
+    }});
+    addRow(QStringLiteral("filename"), QStringLiteral("foo_bar.png"),
+        {QStringLiteral(""), QStringLiteral("foo_bar.png"), Term::Contains});
+    addRow(QStringLiteral("various phrases"), QStringLiteral("one_two \"foo@bar.com\" two.png"), {Term::And, {
+        {QStringLiteral(""), QStringLiteral("one_two"), Term::Contains},
+        {QStringLiteral(""), QStringLiteral("foo@bar.com"), Term::Contains},
+        {QStringLiteral(""), QStringLiteral("two.png"), Term::Contains},
+    }});
+}
+
 
 QTEST_MAIN(AdvancedQueryParserTest)
 
