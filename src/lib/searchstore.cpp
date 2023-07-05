@@ -13,7 +13,6 @@
 #include "term.h"
 #include "transaction.h"
 #include "enginequery.h"
-#include "queryparser.h"
 #include "termgenerator.h"
 #include "andpostingiterator.h"
 #include "orpostingiterator.h"
@@ -120,8 +119,13 @@ EngineQuery constructEqualsQuery(const QByteArray& prefix, const QString& value)
 
 EngineQuery constructContainsQuery(const QByteArray& prefix, const QString& value)
 {
-    QueryParser parser;
-    return parser.parseQuery(value, prefix);
+    auto query = constructEqualsQuery(prefix, value);
+    if (query.op() == EngineQuery::Equal) {
+        if (query.term().size() >= 3) {
+            query.setOp(EngineQuery::StartsWith);
+	}
+    }
+    return query;
 }
 
 EngineQuery constructTypeQuery(const QString& value)
