@@ -379,7 +379,6 @@ void QueryTest::testSearchstringParser()
         auto name = path.section(QLatin1Char('/'), -1, -1);
         matches.append(name);
     }
-    QEXPECT_FAIL("Match '\"quick brown\" content:\"the dog\"'", "Broken quoting", Continue);
     QCOMPARE(matches, expectedFiles);
 }
 
