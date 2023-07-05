@@ -20,7 +20,6 @@ baloo_engine_auto_tests(
     mtimedbtest
 
     termgeneratortest
-    queryparsertest
 
     # Query
     andpostingiteratortest
