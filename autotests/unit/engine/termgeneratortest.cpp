@@ -32,6 +32,10 @@ private Q_SLOTS:
     void testWordPositionsCJK();
     void testNumbers();
     void testControlCharacter();
+    void testFilePaths();
+    void testFilePaths_data();
+    void testApostroph();
+    void testApostroph_data();
 
     QList<QByteArray> allWords(const QString& str)
     {
@@ -222,6 +226,50 @@ void TermGeneratorTest::testControlCharacter()
     QList<QByteArray> expectedWords = { "word1", "word2" };
 
     QCOMPARE(words, expectedWords);
+}
+
+void TermGeneratorTest::testFilePaths()
+{
+    QFETCH(QString, input);
+    QFETCH(QList<QByteArray>, expectedWords);
+
+    auto words = allWords(input);
+    QCOMPARE(words, expectedWords);
+}
+
+void TermGeneratorTest::testFilePaths_data()
+{
+    QTest::addColumn<QString>("input");
+    QTest::addColumn<QList<QByteArray>>("expectedWords");
+
+    QTest::addRow("filename with suffix") << QStringLiteral("file.png")
+        << QList<QByteArray>({"file", "png"});
+    QTest::addRow("filename") << QStringLiteral("foo_bar.png")
+        << QList<QByteArray>({"bar", "foo", "png"});
+    QTest::addRow("filepath") << QStringLiteral("/foo/bar")
+        << QList<QByteArray>({"bar", "foo"});
+}
+
+void TermGeneratorTest::testApostroph()
+{
+    QFETCH(QString, input);
+    QFETCH(QList<QByteArray>, expectedWords);
+
+    auto words = allWords(input);
+    QCOMPARE(words, expectedWords);
+}
+
+void TermGeneratorTest::testApostroph_data()
+{
+    QTest::addColumn<QString>("input");
+    QTest::addColumn<QList<QByteArray>>("expectedWords");
+
+    QTest::addRow("Leading") << QStringLiteral("'one two")
+        << QList<QByteArray>({"one", "two"});
+    QTest::addRow("Middle") << QStringLiteral("one'two three")
+        << QList<QByteArray>({"one'two", "three"});
+    QTest::addRow("End") << QStringLiteral("one' two")
+        << QList<QByteArray>({"one", "two"});
 }
 
 QTEST_MAIN(TermGeneratorTest)
