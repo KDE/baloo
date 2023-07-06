@@ -11,6 +11,7 @@
 #include "termgenerator.h"
 #include "enginequery.h"
 #include "idutils.h"
+#include "query.h"
 
 #include <memory>
 #include <QTest>
@@ -66,6 +67,7 @@ private Q_SLOTS:
         dbDir = std::make_unique<QTemporaryDir>();
         db = std::make_unique<Database>(dbDir->path());
         db->open(Database::CreateDatabase);
+        setenv("BALOO_DB_PATH", dbDir->path().toStdString().c_str(), 1);
 
         m_parentId = filePathToId(QFile::encodeName(dir->path()));
         m_id1 = m_parentId + 1;
@@ -96,6 +98,9 @@ private Q_SLOTS:
     void testTagTermAnd();
     void testTagTermPhrase_data();
     void testTagTermPhrase();
+
+    void testSearchstringParser();
+    void testSearchstringParser_data();
 
 private:
     std::unique_ptr<QTemporaryDir> dir;
@@ -128,8 +133,10 @@ private:
         TermGenerator tg(doc);
         tg.indexFileNameText(newName);
         doc.setId(id);
+        doc.setParentId(m_parentId);
+        doc.setUrl(QFile::encodeName(newName));
 
-        tr->replaceDocument(doc, FileNameTerms);
+        tr->replaceDocument(doc, FileNameTerms | DocumentUrl);
     }
 
     void insertTagDocuments();
@@ -355,6 +362,58 @@ void QueryTest::testTagTermPhrase()
     Transaction tr(db.get(), Transaction::ReadOnly);
     auto res = execQuery(tr, q);
     QCOMPARE(res, matchIds);
+}
+
+void QueryTest::testSearchstringParser()
+{
+    QFETCH(QString, searchString);
+    QFETCH(QStringList, expectedFiles);
+
+    Query q;
+    q.setSearchString(searchString);
+
+    auto res = q.exec();
+    QStringList matches;
+    while (res.next()) {
+        auto path = res.filePath();
+        auto name = path.section(QLatin1Char('/'), -1, -1);
+        matches.append(name);
+    }
+    QEXPECT_FAIL("Match '\"quick brown\" content:\"the dog\"'", "Broken quoting", Continue);
+    QCOMPARE(matches, expectedFiles);
+}
+
+void QueryTest::testSearchstringParser_data()
+{
+    QTest::addColumn<QString>("searchString");
+    QTest::addColumn<QStringList>("expectedFiles");
+
+    auto addRow = [](const QString& searchString,
+                     const QStringList& filenameMatches)
+    {
+        QTest::addRow("Match '%s'", qPrintable(searchString)) << searchString << filenameMatches;
+    };
+
+    addRow(QStringLiteral("crazy"), { QStringLiteral("file1.txt"), QStringLiteral("file4") });
+    addRow(QStringLiteral("content:crazy"), { QStringLiteral("file1.txt"), QStringLiteral("file4") });
+    addRow(QStringLiteral("content:dog"), { QStringLiteral("file1.txt"), QStringLiteral("file7_lazy"), QStringLiteral("file8_easy") });
+    addRow(QStringLiteral("filename:dog"), {});
+    addRow(QStringLiteral("filename:easy"), { QStringLiteral("file8_easy") });
+    addRow(QStringLiteral("content:for"), { QStringLiteral("file3"), QStringLiteral("file4") });
+    addRow(QStringLiteral("content=for"), { QStringLiteral("file3") });
+    addRow(QStringLiteral("content=\"over the\""), { QStringLiteral("file1.txt"), QStringLiteral("file7_lazy") });
+    addRow(QStringLiteral("content=\"over the crazy dog\""), { QStringLiteral("file1.txt") });
+    addRow(QStringLiteral("content=\"over the dog\""), {});
+    addRow(QStringLiteral("quick AND crazy AND dog"), { QStringLiteral("file1.txt") });
+    addRow(QStringLiteral("quick crazy dog"), { QStringLiteral("file1.txt") });
+    addRow(QStringLiteral("\"quick brown\" dog"), { QStringLiteral("file1.txt"), QStringLiteral("file7_lazy"), QStringLiteral("file8_easy") });
+    addRow(QStringLiteral("\"quick brown\" the dog"), { QStringLiteral("file1.txt"), QStringLiteral("file7_lazy") });
+    addRow(QStringLiteral("\"quick brown\" content=\"the dog\""), {});
+    addRow(QStringLiteral("\"quick brown\" content=\"'the dog'\""), {});
+    addRow(QStringLiteral("\"quick brown\" content:\"the dog\""), {});
+    addRow(QStringLiteral("\"quick brown\" content:\"'the dog'\""), {});
+    addRow(QStringLiteral("\"quick brown\" \"the crazy dog\""), { QStringLiteral("file1.txt") });
+    addRow(QStringLiteral("content=for OR filename:eas"), { QStringLiteral("file3"), QStringLiteral("file8_easy") });
 }
 
 QTEST_MAIN(QueryTest)
