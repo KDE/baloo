@@ -330,6 +330,7 @@ PostingIterator* Transaction::postingIterator(const EngineQuery& query) const
         return nullptr;
     }
 
+    Q_ASSERT(query.op() == EngineQuery::Phrase);
     if (query.op() == EngineQuery::Phrase) {
         if (subQueries.size() == 1) {
             qCDebug(ENGINE) << "Degenerated Phrase with 1 Term:" <<  query;
@@ -348,30 +349,6 @@ PostingIterator* Transaction::postingIterator(const EngineQuery& query) const
         return new PhraseAndIterator(vec);
     }
 
-    QVector<PostingIterator*> vec;
-    vec.reserve(subQueries.size());
-    for (const EngineQuery& q : subQueries) {
-        auto iterator = postingIterator(q);
-        if (iterator) {
-            vec << iterator;
-        } else if (query.op() == EngineQuery::And) {
-            return nullptr;
-        }
-    }
-
-    if (vec.empty()) {
-        return nullptr;
-    } else if (vec.size() == 1) {
-        return vec.takeFirst();
-    }
-
-    if (query.op() == EngineQuery::And) {
-        return new AndPostingIterator(vec);
-    } else if (query.op() == EngineQuery::Or) {
-        return new OrPostingIterator(vec);
-    }
-
-    Q_ASSERT(0);
     return nullptr;
 }
 

@@ -22,14 +22,12 @@ public:
     enum Operation {
         Equal,
         StartsWith,
-        And,
-        Or,
         Phrase,
     };
 
     EngineQuery();
     EngineQuery(const QByteArray& term, Operation op = Equal);
-    EngineQuery(const QVector<EngineQuery> &subQueries, Operation op = And);
+    EngineQuery(const QVector<EngineQuery> &subQueries);
 
     QByteArray term() const {
         return m_term;
@@ -76,13 +74,8 @@ inline QDebug operator<<(QDebug d, const Baloo::EngineQuery& q)
         return d << q.term() << (q.op() == Operation::StartsWith ? ".." : "");
     }
 
-    if (q.op() == Operation::And) {
-        d << "[AND";
-    } else if (q.op() == Operation::Or) {
-        d << "[OR";
-    } else if (q.op() == Operation::Phrase) {
-        d << "[PHRASE";
-    }
+    Q_ASSERT(q.op() == Operation::Phrase);
+    d << "[PHRASE";
     for (auto &sq : q.subQueries()) {
         d << " " << sq;
     }

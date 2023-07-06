@@ -115,7 +115,7 @@ EngineQuery constructEqualsQuery(const QByteArray& prefix, const QString& value)
     } else if (queries.size() == 1) {
         return queries.first();
     } else {
-        return EngineQuery(queries, EngineQuery::Phrase);
+        return EngineQuery(queries);
     }
 }
 

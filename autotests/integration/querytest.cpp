@@ -257,7 +257,7 @@ void QueryTest::testTermPhrase()
     for (const QByteArray& term : phrase) {
         queries << EngineQuery(term);
     }
-    EngineQuery q(queries, EngineQuery::Phrase);
+    EngineQuery q(queries);
 
     Transaction tr(db.get(), Transaction::ReadOnly);
     QCOMPARE(execQuery(tr, q), contentMatches);
@@ -268,7 +268,7 @@ void QueryTest::testTermPhrase()
         term = fPrefix + term;
         queries << EngineQuery(term);
     }
-    EngineQuery qf(queries, EngineQuery::Phrase);
+    EngineQuery qf(queries);
     QCOMPARE(execQuery(tr, qf), filenameMatches);
 }
 
@@ -323,7 +323,7 @@ void QueryTest::testTagTermPhrase()
         queries << EngineQuery(prefix + term);
     }
 
-    EngineQuery q(queries, EngineQuery::Phrase);
+    EngineQuery q(queries);
 
     Transaction tr(db.get(), Transaction::ReadOnly);
     auto res = execQuery(tr, q);
