@@ -80,6 +80,7 @@ private Q_SLOTS:
         m_id8 = m_parentId + 8;
 
         insertDocuments();
+        insertTagDocuments();
     }
 
     void cleanup() {
@@ -89,13 +90,11 @@ private Q_SLOTS:
 
     void testTermEqual();
     void testTermStartsWith();
-    void testTermAnd();
-    void testTermOr();
     void testTermPhrase_data();
     void testTermPhrase();
 
-    void testTagTermAnd_data();
-    void testTagTermAnd();
+    void testTagTerm_data();
+    void testTagTerm();
     void testTagTermPhrase_data();
     void testTagTermPhrase();
 
@@ -222,32 +221,6 @@ void QueryTest::testTermStartsWith()
     QCOMPARE(execQuery(tr, q), result);
 }
 
-void QueryTest::testTermAnd()
-{
-    QVector<EngineQuery> queries;
-    queries << EngineQuery("for");
-    queries << EngineQuery("sorry");
-
-    EngineQuery q(queries, EngineQuery::And);
-
-    QVector<quint64> result = {m_id3};
-    Transaction tr(db.get(), Transaction::ReadOnly);
-    QCOMPARE(execQuery(tr, q), result);
-}
-
-void QueryTest::testTermOr()
-{
-    QVector<EngineQuery> queries;
-    queries << EngineQuery("over");
-    queries << EngineQuery("terror");
-
-    EngineQuery q(queries, EngineQuery::Or);
-
-    QVector<quint64> result = SortedIdVector{m_id1, m_id2, m_id7};
-    Transaction tr(db.get(), Transaction::ReadOnly);
-    QCOMPARE(execQuery(tr, q), result);
-}
-
 void QueryTest::testTermPhrase_data()
 {
     QTest::addColumn<QByteArrayList>("phrase");
@@ -299,32 +272,26 @@ void QueryTest::testTermPhrase()
     QCOMPARE(execQuery(tr, qf), filenameMatches);
 }
 
-void QueryTest::testTagTermAnd_data()
+void QueryTest::testTagTerm_data()
 {
-    QTest::addColumn<QByteArrayList>("terms");
+    QTest::addColumn<QByteArray>("term");
     QTest::addColumn<QVector<quint64>>("matchIds");
 
-    QTest::addRow("Simple match") << QByteArrayList({"one", "four"})
+    QTest::addRow("Simple match") << QByteArray("one")
         << QVector<quint64> { m_id5, m_id6 };
-    QTest::addRow("Only one") << QByteArrayList({"one", "f1"})
+    QTest::addRow("Only one") << QByteArray("f1")
         << QVector<quint64> { m_id5 };
-    QTest::addRow("Also from phrase") << QByteArrayList({"two", "three"})
+    QTest::addRow("Also from phrase") << QByteArray("three")
         << QVector<quint64> { m_id5, m_id6 };
 }
 
-void QueryTest::testTagTermAnd()
+void QueryTest::testTagTerm()
 {
-    insertTagDocuments();
-    QFETCH(QByteArrayList, terms);
+    QFETCH(QByteArray, term);
     QFETCH(QVector<quint64>, matchIds);
 
     QByteArray prefix{"TA"};
-    QVector<EngineQuery> queries;
-    for (const QByteArray& term : terms) {
-        queries << EngineQuery(prefix + term);
-    }
-
-    EngineQuery q(queries, EngineQuery::And);
+    EngineQuery q(prefix + term);
 
     Transaction tr(db.get(), Transaction::ReadOnly);
     QCOMPARE(execQuery(tr, q), matchIds);
@@ -347,7 +314,6 @@ void QueryTest::testTagTermPhrase_data()
 
 void QueryTest::testTagTermPhrase()
 {
-    insertTagDocuments();
     QFETCH(QByteArrayList, terms);
     QFETCH(QVector<quint64>, matchIds);
 
@@ -413,6 +379,15 @@ void QueryTest::testSearchstringParser_data()
     addRow(QStringLiteral("\"quick brown\" content:\"'the dog'\""), {});
     addRow(QStringLiteral("\"quick brown\" \"the crazy dog\""), { QStringLiteral("file1.txt") });
     addRow(QStringLiteral("content=for OR filename:eas"), { QStringLiteral("file3"), QStringLiteral("file8_easy") });
+    addRow(QStringLiteral("for sorry"), { QStringLiteral("file3") });
+    addRow(QStringLiteral("over OR terror"), {  QStringLiteral("file1.txt"), QStringLiteral("file2"), QStringLiteral("file7_lazy") });
+
+    addRow(QStringLiteral("tag:f1"), {  QStringLiteral("tagFile1") });
+    addRow(QStringLiteral("tag:f2"), {  QStringLiteral("tagFile2") });
+    addRow(QStringLiteral("tag:one"), {  QStringLiteral("tagFile1"), QStringLiteral("tagFile2") });
+    addRow(QStringLiteral("tag:two"), {  QStringLiteral("tagFile1"), QStringLiteral("tagFile2") });
+    addRow(QStringLiteral("tag:two AND tag:three"), {  QStringLiteral("tagFile1"), QStringLiteral("tagFile2") });
+    addRow(QStringLiteral("tag:two-three"), { QStringLiteral("tagFile2") });
 }
 
 QTEST_MAIN(QueryTest)
