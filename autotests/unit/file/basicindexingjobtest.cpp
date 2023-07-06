@@ -58,12 +58,15 @@ void BasicIndexingJobTest::initTestCase()
 	{QStringLiteral("test.odp"),     QStringLiteral("application/vnd.oasis.opendocument.presentation"), {Type::Document, Type::Presentation}},
 	{QStringLiteral("test.odt"),     QStringLiteral("application/vnd.oasis.opendocument.text"),         {Type::Document}},
 	{QStringLiteral("test.tar.bz2"), QStringLiteral("application/x-bzip-compressed-tar"),               {Type::Archive}},
+	{QStringLiteral("empty.jpg"),    QStringLiteral("application/x-zerosize"),                          {}},
     };
 
     for (const auto& entry : m_testFiles) {
 	QFile file(m_workDir.filePath(entry.filename));
 	file.open(QIODevice::WriteOnly);
-	file.write("\0", 1);
+	if (entry.filename.startsWith(QStringLiteral("test"))) {
+	    file.write("\0", 1);
+	}
 	file.close();
     }
 }
@@ -147,7 +150,8 @@ void BasicIndexingJobTest::testBasicIndexingTypes()
     for (const auto& term : docMimeTerms) {
 	QByteArray mimeBA = mimetype.toLatin1();
 	// Strip 'M' prefix from term
-	QVERIFY(mimeBA.contains(term.mid(1)));
+	auto stripped = term.mid(1);
+	QVERIFY2(mimeBA.contains(stripped), stripped.constData());
     }
 }
 

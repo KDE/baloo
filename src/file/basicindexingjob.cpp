@@ -226,7 +226,11 @@ bool BasicIndexingJob::index()
 
     TermGenerator tg(doc);
     tg.indexFileNameText(QFile::decodeName(fileName));
-    tg.indexText(m_mimetype, QByteArray("M"));
+    if (statBuf.st_size == 0) {
+        tg.indexText(QStringLiteral("application/x-zerosize"), QByteArray("M"));
+    } else {
+        tg.indexText(m_mimetype, QByteArray("M"));
+    }
 
     // (Content) Modification time, Metadata (e.g. XAttr) change time
     doc.setMTime(statBuf.st_mtime);
@@ -237,7 +241,7 @@ bool BasicIndexingJob::index()
         doc.addTerm(type);
         // For folders we do not need to go through file indexing, so we do not set contentIndexing
 
-    } else {
+    } else if (statBuf.st_size > 0) {
         if (m_indexingLevel == MarkForContentIndexing) {
             doc.setContentIndexing(true);
         }
