@@ -11,6 +11,9 @@ baloo_engine_auto_tests(
     querytest
     writetransactiontest
 )
+target_link_libraries(querytest
+    KF5::Baloo
+)
 
 add_executable(basicindexingbenchmark_bin basicindexingbenchmark.cpp)
 target_link_libraries(basicindexingbenchmark_bin
