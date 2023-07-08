@@ -98,9 +98,7 @@ void App::processNextFile()
             return;
         }
 
-        m_workerPipe.urlStarted(url);
         bool indexed = index(m_tr, url, id);
-        indexed ? m_workerPipe.urlFinished(url) : m_workerPipe.urlFailed(url);
 
         int delay = (m_isBusy && indexed) ? 10 : 0;
         QTimer::singleShot(delay, this, &App::processNextFile);
@@ -124,8 +122,9 @@ bool App::index(Transaction* tr, const QString& url, quint64 id)
     if (!m_config.shouldBeIndexed(url)) {
         // This apparently happens when the config has changed after the document
         // was added to the content indexing db
-        qCWarning(BALOO) << "Found" << url << "in the ContentIndexingDB, although it should be skipped";
+        qCDebug(BALOO) << "Found" << url << "in the ContentIndexingDB, although it should be skipped";
         tr->removeDocument(id);
+        m_workerPipe.urlFailed(url);
         return false;
     }
 
@@ -137,6 +136,7 @@ bool App::index(Transaction* tr, const QString& url, quint64 id)
         // FIXME: in case the extension based and content based mimetype differ
         // we should update it.
         tr->removePhaseOne(id);
+        m_workerPipe.urlFailed(url);
         return false;
     }
 
@@ -148,10 +148,12 @@ bool App::index(Transaction* tr, const QString& url, quint64 id)
         if (fileInfo.size() >= 10 * 1024 * 1024) {
             qCDebug(BALOO) << "Skipping large " << url << "- mimetype:" << mimetype;
             tr->removePhaseOne(id);
+            m_workerPipe.urlFailed(url);
             return false;
         }
     }
     qCDebug(BALOO) << "Indexing" << id << url << mimetype;
+    m_workerPipe.urlStarted(url);
 
     // We always run the basic indexing again. This is mostly so that the proper
     // mimetype is set and we get proper type information.
@@ -183,6 +185,7 @@ bool App::index(Transaction* tr, const QString& url, quint64 id)
         tr->replaceDocument(result.document(), DocumentTerms | DocumentData);
     }
     tr->removePhaseOne(doc.id());
+    m_workerPipe.urlFinished(url);
     return true;
 }
 
