@@ -59,13 +59,6 @@ void IndexCleaner::run()
         return false;
     };
 
-    const auto includeFolders = m_config->includeFolders();
-    for (const QString& folder : includeFolders) {
-        quint64 id = filePathToId(QFile::encodeName(folder));
-        if (id > 0) {
-            tr.removeRecursively(id, shouldDelete);
-        }
-    }
     const auto excludeFolders = m_config->excludeFolders();
     for (const QString& folder : excludeFolders) {
         quint64 id = filePathToId(QFile::encodeName(folder));
