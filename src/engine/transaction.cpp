@@ -343,7 +343,11 @@ PostingIterator* Transaction::postingIterator(const EngineQuery& query) const
                 qCDebug(ENGINE) << "Transaction::toPostingIterator" << "Phrase subqueries must be leafs";
                 continue;
             }
-            vec << positionDb.iter(q.term());
+            auto termMatch = positionDb.iter(q.term());
+            if (!termMatch) {
+                return nullptr;
+            }
+            vec << termMatch;
         }
 
         return new PhraseAndIterator(vec);
