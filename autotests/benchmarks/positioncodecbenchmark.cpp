@@ -77,41 +77,35 @@ void PositionCodecBenchmark::initTestCase()
 
 void PositionCodecBenchmark::benchEncodeData1()
 {
-    PositionCodec pc;
-    QBENCHMARK { pc.encode(m_benchmarkData1); }
+    QBENCHMARK { PositionCodec::encode(m_benchmarkData1); }
 }
 
 void PositionCodecBenchmark::benchDecodeData1()
 {
-    PositionCodec pc;
-    const QByteArray ba = pc.encode(m_benchmarkData1);
-    QBENCHMARK { pc.decode(ba); }
+    const QByteArray ba = PositionCodec::encode(m_benchmarkData1);
+    QBENCHMARK { PositionCodec::decode(ba); }
 }
 
 void PositionCodecBenchmark::benchEncodeData2()
 {
-    PositionCodec pc;
-    QBENCHMARK { pc.encode(m_benchmarkData2); }
+    QBENCHMARK { PositionCodec::encode(m_benchmarkData2); }
 }
 
 void PositionCodecBenchmark::benchDecodeData2()
 {
-    PositionCodec pc;
-    const QByteArray ba = pc.encode(m_benchmarkData2);
-    QBENCHMARK { pc.decode(ba); }
+    const QByteArray ba = PositionCodec::encode(m_benchmarkData2);
+    QBENCHMARK { PositionCodec::decode(ba); }
 }
 
 void PositionCodecBenchmark::benchEncodeData3()
 {
-    PositionCodec pc;
-    QBENCHMARK { pc.encode(m_benchmarkData3); }
+    QBENCHMARK { PositionCodec::encode(m_benchmarkData3); }
 }
 
 void PositionCodecBenchmark::benchDecodeData3()
 {
-    PositionCodec pc;
-    const QByteArray ba = pc.encode(m_benchmarkData3);
-    QBENCHMARK { pc.decode(ba); }
+    const QByteArray ba = PositionCodec::encode(m_benchmarkData3);
+    QBENCHMARK { PositionCodec::decode(ba); }
 }
 
 QTEST_MAIN(PositionCodecBenchmark)

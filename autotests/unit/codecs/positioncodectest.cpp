@@ -72,37 +72,34 @@ void PositionCodecTest::initTestCase()
 
 void PositionCodecTest::checkEncodeOutput()
 {
-    PositionCodec pc;
-    const QByteArray ba = pc.encode(m_data);
+    const QByteArray ba = PositionCodec::encode(m_data);
     QCOMPARE(ba.size(), 409000);
     const QByteArray md5 = QCryptographicHash::hash(ba, QCryptographicHash::Md5).toHex();
     QCOMPARE(md5, QByteArray("ae49eb3279bdda36ef91d29ce3c94c2c"));
     // and now decode the whole stuff
-    QVector<PositionInfo> decodedData = pc.decode(ba);
+    QVector<PositionInfo> decodedData = PositionCodec::decode(ba);
     QCOMPARE(m_data, decodedData);
 }
 
 void PositionCodecTest::checkEncodeOutput2()
 {
-    PositionCodec pc;
-    const QByteArray ba = pc.encode(m_data2);
+    const QByteArray ba = PositionCodec::encode(m_data2);
     QCOMPARE(ba.size(), (8 + 1 + 10) * 5000); // DocId, VarInt32 len, DiffVarInt position
     const QByteArray md5 = QCryptographicHash::hash(ba, QCryptographicHash::Md5).toHex();
     QCOMPARE(md5, QByteArray("2f3710246331002e2332dce560ccd783"));
     // and now decode the whole stuff
-    QVector<PositionInfo> decodedData = pc.decode(ba);
+    QVector<PositionInfo> decodedData = PositionCodec::decode(ba);
     QCOMPARE(m_data2, decodedData);
 }
 
 void PositionCodecTest::checkEncodeOutput3()
 {
-    PositionCodec pc;
-    const QByteArray ba = pc.encode(m_data3);
+    const QByteArray ba = PositionCodec::encode(m_data3);
     QCOMPARE(ba.size(), (8 + 3 + (2 * 30000)) * 200); // DocId, VarInt32 len, DiffVarInt position
     const QByteArray md5 = QCryptographicHash::hash(ba, QCryptographicHash::Md5).toHex();
     QCOMPARE(md5, QByteArray("79e942003c082073b4cee8e376fffdaa"));
     // and now decode the whole stuff
-    QVector<PositionInfo> decodedData = pc.decode(ba);
+    QVector<PositionInfo> decodedData = PositionCodec::decode(ba);
     QCOMPARE(m_data3, decodedData);
 }
 

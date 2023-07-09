@@ -17,13 +17,11 @@ class DocTermsCodecTest : public QObject
     Q_OBJECT
 private Q_SLOTS:
     void test() {
-        DocTermsCodec codec;
-
         QVector<QByteArray> vec = {"ab", "abc", "dar", "darwin"};
-        QByteArray arr = codec.encode(vec);
+        QByteArray arr = DocTermsCodec::encode(vec);
         QVERIFY(!arr.isEmpty());
 
-        QVector<QByteArray> vec2 = codec.decode(arr);
+        QVector<QByteArray> vec2 = DocTermsCodec::decode(arr);
         QCOMPARE(vec2, vec);
     }
 };

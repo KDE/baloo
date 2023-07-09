@@ -16,10 +16,8 @@ namespace Baloo {
 class PostingCodec
 {
 public:
-    PostingCodec();
-
-    QByteArray encode(const QVector<quint64>& list);
-    QVector<quint64> decode(const QByteArray& arr);
+    static QByteArray encode(const QVector<quint64>& list);
+    static QVector<quint64> decode(const QByteArray& arr);
 };
 
 }

@@ -15,10 +15,8 @@ namespace Baloo {
 class DocTermsCodec
 {
 public:
-    DocTermsCodec();
-
-    QByteArray encode(const QVector<QByteArray>& terms);
-    QVector<QByteArray> decode(const QByteArray& arr);
+    static QByteArray encode(const QVector<QByteArray>& terms);
+    static QVector<QByteArray> decode(const QByteArray& arr);
 };
 }
 
