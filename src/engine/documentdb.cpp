@@ -56,8 +56,7 @@ void DocumentDB::put(quint64 docId, const QVector<QByteArray>& list)
     key.mv_size = sizeof(quint64);
     key.mv_data = static_cast<void*>(&docId);
 
-    DocTermsCodec codec;
-    QByteArray arr = codec.encode(list);
+    QByteArray arr = DocTermsCodec::encode(list);
 
     MDB_val val;
     val.mv_size = arr.size();
@@ -86,8 +85,7 @@ QVector<QByteArray> DocumentDB::get(quint64 docId)
 
     QByteArray arr = QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size);
 
-    DocTermsCodec codec;
-    auto result = codec.decode(arr);
+    auto result = DocTermsCodec::decode(arr);
     if (result.isEmpty()) {
         qCDebug(ENGINE) << "Document Terms DB contains corrupt data for " << docId;
     }
@@ -160,7 +158,7 @@ QMap<quint64, QVector<QByteArray>> DocumentDB::toTestMap() const
         }
 
         const quint64 id = *(static_cast<quint64*>(key.mv_data));
-        const QVector<QByteArray> vec = DocTermsCodec().decode(QByteArray(static_cast<char*>(val.mv_data), val.mv_size));
+        const QVector<QByteArray> vec = DocTermsCodec::decode(QByteArray(static_cast<char*>(val.mv_data), val.mv_size));
         map.insert(id, vec);
     }
 

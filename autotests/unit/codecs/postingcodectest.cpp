@@ -17,16 +17,13 @@ class PostingCodecTest : public QObject
     Q_OBJECT
 private Q_SLOTS:
     void test() {
-        PostingCodec codec;
-
         QVector<quint64> vec = {1, 2, 9, 12};
-        QByteArray arr = codec.encode(vec);
+        QByteArray arr = PostingCodec::encode(vec);
         QVERIFY(!arr.isEmpty());
 
-        QVector<quint64> vec2 = codec.decode(arr);
+        QVector<quint64> vec2 = PostingCodec::decode(arr);
         QCOMPARE(vec2, vec);
     }
-
 };
 
 QTEST_MAIN(PostingCodecTest)
