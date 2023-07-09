@@ -25,16 +25,16 @@ public:
     static MDB_dbi open(MDB_txn* txn);
 
     struct FilePath {
-        quint64 parentId;
+        quint64 parentId = 0;
         QByteArray name;
 
-        FilePath() : parentId(0) {}
         bool operator == (const FilePath& fp) const {
             return parentId == fp.parentId && name == fp.name;
         }
     };
     void put(quint64 docId, const FilePath& path);
     FilePath get(quint64 docId);
+    bool get(quint64 docId, FilePath& path);
     bool contains(quint64 docId);
     void del(quint64 docId);
 
