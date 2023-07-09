@@ -37,8 +37,12 @@ int main(int argc, char** argv)
     QCommandLineParser parser;
     parser.addHelpOption();
     parser.addOption({QStringLiteral("s"), QStringLiteral("Maximum transaction size (number of documents)"), QStringLiteral("size"), QStringLiteral("50000")});
+    parser.addOption({QStringLiteral("k"), QStringLiteral("Keep temporary DB (for analysis)")});
     parser.addPositionalArgument(QStringLiteral("dir"), QStringLiteral("Index root directory"));
     parser.process(app);
+
+    const bool keepDb = parser.isSet(QStringLiteral("k"));
+    tempDir.setAutoRemove(!keepDb);
 
     const uint transactionSize = parser.value(QStringLiteral("s")).toUInt();
     auto arguments = parser.positionalArguments();
@@ -51,7 +55,7 @@ int main(int argc, char** argv)
         } else {
             QFileInfo fi(arguments[0]);
             if (fi.isDir()) {
-                return arguments[0];
+                return fi.canonicalFilePath();
             }
             parser.showHelp(1);
         }
