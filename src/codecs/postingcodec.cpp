@@ -9,10 +9,6 @@
 
 using namespace Baloo;
 
-PostingCodec::PostingCodec()
-{
-}
-
 QByteArray PostingCodec::encode(const QVector<quint64>& list)
 {
     uint size = list.size() * sizeof(quint64);

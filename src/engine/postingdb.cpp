@@ -57,8 +57,7 @@ void PostingDB::put(const QByteArray& term, const PostingList& list)
     key.mv_size = term.size();
     key.mv_data = static_cast<void*>(const_cast<char*>(term.constData()));
 
-    PostingCodec codec;
-    QByteArray arr = codec.encode(list);
+    QByteArray arr = PostingCodec::encode(list);
 
     MDB_val val;
     val.mv_size = arr.size();
@@ -89,8 +88,7 @@ PostingList PostingDB::get(const QByteArray& term)
 
     QByteArray arr = QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size);
 
-    PostingCodec codec;
-    return codec.decode(arr);
+    return PostingCodec::decode(arr);
 }
 
 void PostingDB::del(const QByteArray& term)
@@ -311,7 +309,7 @@ QMap<QByteArray, PostingList> PostingDB::toTestMap() const
         }
 
         const QByteArray ba(static_cast<char*>(key.mv_data), key.mv_size);
-        const PostingList plist = PostingCodec().decode(QByteArray(static_cast<char*>(val.mv_data), val.mv_size));
+        const PostingList plist = PostingCodec::decode(QByteArray(static_cast<char*>(val.mv_data), val.mv_size));
         map.insert(ba, plist);
     }
 

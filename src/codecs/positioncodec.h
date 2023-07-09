@@ -18,10 +18,8 @@ namespace Baloo {
 class PositionCodec
 {
 public:
-    PositionCodec();
-
-    QByteArray encode(const QVector<PositionInfo>& list);
-    QVector<PositionInfo> decode(const QByteArray& arr);
+    static QByteArray encode(const QVector<PositionInfo>& list);
+    static QVector<PositionInfo> decode(const QByteArray& arr);
 };
 }
 

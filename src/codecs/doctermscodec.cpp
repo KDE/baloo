@@ -8,10 +8,6 @@
 
 using namespace Baloo;
 
-DocTermsCodec::DocTermsCodec()
-{
-}
-
 QByteArray DocTermsCodec::encode(const QVector<QByteArray>& terms)
 {
     Q_ASSERT(!terms.isEmpty());

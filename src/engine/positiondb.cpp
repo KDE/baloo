@@ -59,8 +59,7 @@ void PositionDB::put(const QByteArray& term, const QVector<PositionInfo>& list)
     key.mv_size = term.size();
     key.mv_data = static_cast<void*>(const_cast<char*>(term.constData()));
 
-    PositionCodec codec;
-    QByteArray data = codec.encode(list);
+    QByteArray data = PositionCodec::encode(list);
 
     MDB_val val;
     val.mv_size = data.size();
@@ -91,8 +90,7 @@ QVector<PositionInfo> PositionDB::get(const QByteArray& term)
 
     QByteArray data = QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size);
 
-    PositionCodec codec;
-    return codec.decode(data);
+    return PositionCodec::decode(data);
 }
 
 void PositionDB::del(const QByteArray& term)
@@ -128,9 +126,8 @@ VectorPositionInfoIterator* PositionDB::iter(const QByteArray& term)
         return nullptr;
     }
 
-    PositionCodec codec;
     QByteArray ba(static_cast<char*>(val.mv_data), val.mv_size);
-    return new VectorPositionInfoIterator(codec.decode(ba));
+    return new VectorPositionInfoIterator(PositionCodec::decode(ba));
 }
 
 QMap<QByteArray, QVector<PositionInfo>> PositionDB::toTestMap() const

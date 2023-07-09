@@ -11,11 +11,6 @@
 
 using namespace Baloo;
 
-PositionCodec::PositionCodec()
-{
-
-}
-
 QByteArray PositionCodec::encode(const QVector<PositionInfo>& list)
 {
     QByteArray data;
