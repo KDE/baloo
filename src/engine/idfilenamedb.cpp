@@ -71,13 +71,20 @@ void IdFilenameDB::put(quint64 docId, const FilePath& path)
 
 IdFilenameDB::FilePath IdFilenameDB::get(quint64 docId)
 {
+    FilePath path;
+    if (get(docId, path)) {
+        return path;
+    }
+    return {};
+}
+
+bool IdFilenameDB::get(quint64 docId, FilePath& path)
+{
     Q_ASSERT(docId > 0);
 
     MDB_val key;
     key.mv_size = sizeof(quint64);
     key.mv_data = static_cast<void*>(&docId);
-
-    FilePath path;
 
     MDB_val val{0, nullptr};
     int rc = mdb_get(m_txn, m_dbi, &key, &val);
@@ -85,13 +92,17 @@ IdFilenameDB::FilePath IdFilenameDB::get(quint64 docId)
         if (rc != MDB_NOTFOUND) {
             qCDebug(ENGINE) << "IdfilenameDB::get" << docId << mdb_strerror(rc);
         }
-        return path;
+        return false;
+    }
+    if (val.mv_size < 8) {
+        return false;
     }
 
-    path.parentId = static_cast<quint64*>(val.mv_data)[0];
-    path.name = QByteArray(static_cast<char*>(val.mv_data) + 8, val.mv_size - 8);
+    path.name.resize(val.mv_size - 8);
+    memcpy(&path.parentId, val.mv_data, 8);
+    memcpy(path.name.data(), static_cast<const char*>(val.mv_data) + 8, path.name.size());
 
-    return path;
+    return true;
 }
 
 bool IdFilenameDB::contains(quint64 docId)

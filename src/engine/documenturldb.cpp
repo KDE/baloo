@@ -167,31 +167,31 @@ QByteArray DocumentUrlDB::get(quint64 docId) const
 
     IdFilenameDB idFilenameDb(m_idFilenameDbi, m_txn);
 
-    auto path = idFilenameDb.get(docId);
-    if (path.name.isEmpty()) {
+    IdFilenameDB::FilePath path;
+    if (!idFilenameDb.get(docId, path)) {
         return QByteArray();
     }
 
-    QByteArray ret = path.name;
+    QByteArray ret = '/' + path.name;
     quint64 id = path.parentId;
     // arbitrary path depth limit - we have to deal with
     // possibly corrupted DBs out in the wild
     int depth_limit = 512;
 
     while (id) {
-        auto p = idFilenameDb.get(id);
-        if (p.name.isEmpty()) {
+        if (!idFilenameDb.get(id, path)) {
             return QByteArray();
         }
         if (!depth_limit--) {
             return QByteArray();
         }
+        path.name.prepend('/');
 
-        ret = p.name + '/' + ret;
-        id = p.parentId;
+        ret.prepend(path.name);
+        id = path.parentId;
     }
 
-    return '/' + ret;
+    return ret;
 }
 
 QVector<quint64> DocumentUrlDB::getChildren(quint64 docId) const
@@ -210,9 +210,9 @@ quint64 DocumentUrlDB::getId(quint64 docId, const QByteArray& fileName) const
     IdTreeDB idTreeDb(m_idTreeDbi, m_txn);
 
     const QVector<quint64> subFiles = idTreeDb.get(docId);
+    IdFilenameDB::FilePath path;
     for (quint64 id : subFiles) {
-        IdFilenameDB::FilePath path = idFilenameDb.get(id);
-        if (path.name == fileName) {
+        if (idFilenameDb.get(id, path) && (path.name == fileName)) {
             return id;
         }
     }
