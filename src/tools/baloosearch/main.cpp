@@ -47,6 +47,8 @@ int main(int argc, char* argv[])
                                         i18n("directory")));
     parser.addOption(QCommandLineOption({QStringLiteral("i"), QStringLiteral("id")},
                                         i18n("Show document IDs")));
+    parser.addOption(QCommandLineOption({QStringLiteral("s"), QStringLiteral("sort")},
+                                        i18n("Sorting criteria"), QStringLiteral("auto|time|none"), QStringLiteral("auto")));
     parser.addPositionalArgument(i18n("query"), i18n("List of words to query for"));
     parser.addHelpOption();
     parser.addVersionOption();
@@ -71,6 +73,18 @@ int main(int argc, char* argv[])
     if (parser.isSet(QStringLiteral("offset"))) {
         offset = parser.value(QStringLiteral("offset")).toInt();
     }
+    const Baloo::Query::SortingOption orderBy = [&parser]() {
+       auto val = parser.value(QStringLiteral("sort"));
+       if (val == QStringLiteral("auto")) {
+           return Baloo::Query::SortAuto;
+       } else if (val == QStringLiteral("time")) {
+           return Baloo::Query::SortAuto;
+       } else if (val == QStringLiteral("none")) {
+           return Baloo::Query::SortNone;
+       } else {
+           parser.showHelp(1);
+       }
+    }();
 
     QString queryStr = args.join(QLatin1Char(' '));
 
@@ -79,6 +93,7 @@ int main(int argc, char* argv[])
     query.setSearchString(queryStr);
     query.setLimit(queryLimit);
     query.setOffset(offset);
+    query.setSortingOption(orderBy);
 
     if (parser.isSet(QStringLiteral("directory"))) {
         QString folderName = parser.value(QStringLiteral("directory"));
