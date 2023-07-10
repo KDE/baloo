@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-04-25 00:45+0000\n"
+"POT-Creation-Date: 2023-07-10 00:43+0000\n"
 "PO-Revision-Date: 2023-04-30 21:09+0530\n"
 "Last-Translator: Kishore G <kishore96@gmail.com>\n"
 "Language-Team: Tamil <kde-i18n-doc@kde.org>\n"
@@ -87,27 +87,32 @@ msgstr "அடைவு"
 msgid "Show document IDs"
 msgstr "ஆவண அடையாள எண்களைக் காட்டு"
 
-#: main.cpp:50
+#: main.cpp:51
+#, kde-format
+msgid "Sorting criteria"
+msgstr ""
+
+#: main.cpp:52
 #, kde-format
 msgid "query"
 msgstr "வினா"
 
-#: main.cpp:50
+#: main.cpp:52
 #, kde-format
 msgid "List of words to query for"
 msgstr "தேட வேண்டிய சொற்களின் பட்டியல்"
 
-#: main.cpp:87
+#: main.cpp:102
 #, kde-format
 msgid "%1 is not a valid directory"
 msgstr "%1 ஓர் அடைவு இல்லை"
 
-#: main.cpp:95
+#: main.cpp:110
 #, kde-format
 msgid "Using canonical path '%1' for '%2'"
 msgstr "'%2' என்பதன் செந்தர பாதையாக '%1' பயன்படுத்தப்படுகிறது"
 
-#: main.cpp:111
+#: main.cpp:126
 #, kde-format
 msgid "Elapsed: %1 msecs"
 msgstr "கழிந்த‍து: %1 மில்லிநொடிகள்"

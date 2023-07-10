@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-04-25 00:45+0000\n"
+"POT-Creation-Date: 2023-07-10 00:43+0000\n"
 "PO-Revision-Date: 2023-05-31 14:26-0300\n"
 "Last-Translator: Luiz Fernando Ranghetti <elchevive@opensuse.org>\n"
 "Language-Team: Brazilian Portuguese <kde-i18n-pt_BR@kde.org>\n"
@@ -89,27 +89,32 @@ msgstr "pasta"
 msgid "Show document IDs"
 msgstr "Mostrar IDs dos documentos"
 
-#: main.cpp:50
+#: main.cpp:51
+#, kde-format
+msgid "Sorting criteria"
+msgstr ""
+
+#: main.cpp:52
 #, kde-format
 msgid "query"
 msgstr "pesquisa"
 
-#: main.cpp:50
+#: main.cpp:52
 #, kde-format
 msgid "List of words to query for"
 msgstr "Lista de palavras a pesquisar"
 
-#: main.cpp:87
+#: main.cpp:102
 #, kde-format
 msgid "%1 is not a valid directory"
 msgstr "%1 não é uma pasta válida"
 
-#: main.cpp:95
+#: main.cpp:110
 #, kde-format
 msgid "Using canonical path '%1' for '%2'"
 msgstr "Usando o caminho canônico '%1' para '%2'"
 
-#: main.cpp:111
+#: main.cpp:126
 #, kde-format
 msgid "Elapsed: %1 msecs"
 msgstr "Duração: %1 msecs"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-04-25 00:45+0000\n"
+"POT-Creation-Date: 2023-07-10 00:43+0000\n"
 "PO-Revision-Date: 2023-06-12 17:04+0400\n"
 "Last-Translator: Kheyyam <xxmn77@gmail.com>\n"
 "Language-Team: Azerbaijani <kde-i18n-doc@kde.org>\n"
@@ -87,27 +87,32 @@ msgstr "Qovluq"
 msgid "Show document IDs"
 msgstr "Sənəd İD-sini göstərmək"
 
-#: main.cpp:50
+#: main.cpp:51
+#, kde-format
+msgid "Sorting criteria"
+msgstr ""
+
+#: main.cpp:52
 #, kde-format
 msgid "query"
 msgstr "Sorğü"
 
-#: main.cpp:50
+#: main.cpp:52
 #, kde-format
 msgid "List of words to query for"
 msgstr "Axtarılmalı olan sözlərin siyahısı"
 
-#: main.cpp:87
+#: main.cpp:102
 #, kde-format
 msgid "%1 is not a valid directory"
 msgstr "%1 etibarlı qovluq deyil"
 
-#: main.cpp:95
+#: main.cpp:110
 #, kde-format
 msgid "Using canonical path '%1' for '%2'"
 msgstr "\"%2\" üçün \"%1\" standart yoldan istifadə edilir"
 
-#: main.cpp:111
+#: main.cpp:126
 #, kde-format
 msgid "Elapsed: %1 msecs"
 msgstr "Sərf olunan vaxt: %1 msan"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-04-25 00:45+0000\n"
+"POT-Creation-Date: 2023-07-10 00:43+0000\n"
 "PO-Revision-Date: 2023-04-29 11:24+0200\n"
 "Last-Translator: Łukasz Wojniłowicz <lukasz.wojnilowicz@gmail.com>\n"
 "Language-Team: Polish <kde-i18n-doc@kde.org>\n"
@@ -88,27 +88,32 @@ msgstr "katalog"
 msgid "Show document IDs"
 msgstr "Pokaż ID dokumentu"
 
-#: main.cpp:50
+#: main.cpp:51
+#, kde-format
+msgid "Sorting criteria"
+msgstr ""
+
+#: main.cpp:52
 #, kde-format
 msgid "query"
 msgstr "zapytanie"
 
-#: main.cpp:50
+#: main.cpp:52
 #, kde-format
 msgid "List of words to query for"
 msgstr "Wykaz słów do odpytania"
 
-#: main.cpp:87
+#: main.cpp:102
 #, kde-format
 msgid "%1 is not a valid directory"
 msgstr "%1 nie jest prawidłowym katalogiem"
 
-#: main.cpp:95
+#: main.cpp:110
 #, kde-format
 msgid "Using canonical path '%1' for '%2'"
 msgstr "Użyto ścieżki kanonicznej '%1' dla '%2'"
 
-#: main.cpp:111
+#: main.cpp:126
 #, kde-format
 msgid "Elapsed: %1 msecs"
 msgstr "Upłynęło: %1 msecs"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-04-25 00:45+0000\n"
+"POT-Creation-Date: 2023-07-10 00:43+0000\n"
 "PO-Revision-Date: 2021-09-05 20:21+0200\n"
 "Last-Translator: Martin Schlander <mschlander@opensuse.org>\n"
 "Language-Team: Danish <kde-i18n-doc@kde.org>\n"
@@ -87,27 +87,32 @@ msgstr "mappe"
 msgid "Show document IDs"
 msgstr "Vis dokument-id'er"
 
-#: main.cpp:50
+#: main.cpp:51
+#, kde-format
+msgid "Sorting criteria"
+msgstr ""
+
+#: main.cpp:52
 #, kde-format
 msgid "query"
 msgstr "forespørgsel"
 
-#: main.cpp:50
+#: main.cpp:52
 #, kde-format
 msgid "List of words to query for"
 msgstr "Liste over ord der skal søges efter"
 
-#: main.cpp:87
+#: main.cpp:102
 #, kde-format
 msgid "%1 is not a valid directory"
 msgstr "%1 er ikke en gyldig mappe"
 
-#: main.cpp:95
+#: main.cpp:110
 #, kde-format
 msgid "Using canonical path '%1' for '%2'"
 msgstr ""
 
-#: main.cpp:111
+#: main.cpp:126
 #, kde-format
 msgid "Elapsed: %1 msecs"
 msgstr "Forløbet: %1 ms"
