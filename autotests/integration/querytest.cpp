@@ -78,6 +78,7 @@ private Q_SLOTS:
         m_id6 = m_parentId + 6;
         m_id7 = m_parentId + 7;
         m_id8 = m_parentId + 8;
+        m_id9 = m_parentId + 9;
 
         insertDocuments();
         insertTagDocuments();
@@ -167,6 +168,7 @@ private:
     quint64 m_id6;
     quint64 m_id7;
     quint64 m_id8;
+    quint64 m_id9;
 };
 
 
@@ -179,6 +181,7 @@ void QueryTest::insertDocuments()
     addDocument(&tr, QStringLiteral("The night is dark and full of terror"), m_id2, QStringLiteral("file2"));
     addDocument(&tr, QStringLiteral("Don't feel sorry for yourself. Only assholes do that"), m_id3, QStringLiteral("file3"));
     addDocument(&tr, QStringLiteral("Only the dead stay 17 forever. crazy"), m_id4, QStringLiteral("file4"));
+    addDocument(&tr, QStringLiteral("Some content with isolated dot . Test it"), m_id9, QStringLiteral("file - with hyphen.txt"));
 
     renameDocument(&tr, m_id8, QStringLiteral("file8_easy"));
     tr.commit();
@@ -345,6 +348,8 @@ void QueryTest::testSearchstringParser()
         auto name = path.section(QLatin1Char('/'), -1, -1);
         matches.append(name);
     }
+    QEXPECT_FAIL("Match 'dot . Test'", "Bug 407664: Tries to match isolated dot", Continue);
+    QEXPECT_FAIL("Match 'file - with hyphen.txt'", "Bug 407664: Tries to match hyphen", Continue);
     QCOMPARE(matches, expectedFiles);
 }
 
@@ -366,6 +371,8 @@ void QueryTest::testSearchstringParser_data()
     addRow(QStringLiteral("filename:easy"), { QStringLiteral("file8_easy") });
     addRow(QStringLiteral("content:for"), { QStringLiteral("file3"), QStringLiteral("file4") });
     addRow(QStringLiteral("content=for"), { QStringLiteral("file3") });
+    addRow(QStringLiteral("content=don't"), { QStringLiteral("file3") });
+    addRow(QStringLiteral("content=yourself"), { QStringLiteral("file3") });
     addRow(QStringLiteral("content=\"over the\""), { QStringLiteral("file1.txt"), QStringLiteral("file7_lazy") });
     addRow(QStringLiteral("content=\"over the crazy dog\""), { QStringLiteral("file1.txt") });
     addRow(QStringLiteral("content=\"over the dog\""), {});
@@ -388,6 +395,14 @@ void QueryTest::testSearchstringParser_data()
     addRow(QStringLiteral("tag:two"), {  QStringLiteral("tagFile1"), QStringLiteral("tagFile2") });
     addRow(QStringLiteral("tag:two AND tag:three"), {  QStringLiteral("tagFile1"), QStringLiteral("tagFile2") });
     addRow(QStringLiteral("tag:two-three"), { QStringLiteral("tagFile2") });
+
+    addRow(QStringLiteral("filename:hyphen"), { QStringLiteral("file - with hyphen.txt") });
+    addRow(QStringLiteral("file with hyphen.txt"), { QStringLiteral("file - with hyphen.txt") });
+    addRow(QStringLiteral("file - with hyphen.txt"), { QStringLiteral("file - with hyphen.txt") });
+    addRow(QStringLiteral("\"file - with hyphen.txt\""), { QStringLiteral("file - with hyphen.txt") });
+    addRow(QStringLiteral("content:dot"), { QStringLiteral("file - with hyphen.txt") });
+    addRow(QStringLiteral("dot . Test"), { QStringLiteral("file - with hyphen.txt") });
+    addRow(QStringLiteral("\"dot . Test\""), { QStringLiteral("file - with hyphen.txt") });
 }
 
 QTEST_MAIN(QueryTest)
