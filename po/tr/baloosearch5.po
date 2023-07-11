@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-10 00:43+0000\n"
-"PO-Revision-Date: 2023-04-25 11:13+0300\n"
+"PO-Revision-Date: 2023-07-10 12:49+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 23.03.70\n"
+"X-Generator: Lokalize 23.07.70\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -72,7 +72,7 @@ msgstr "Aranacak verinin türü"
 #: main.cpp:44
 #, kde-format
 msgid "typeStr"
-msgstr "typeStr"
+msgstr "türDizisi"
 
 #: main.cpp:46
 #, kde-format
@@ -92,7 +92,7 @@ msgstr "Belge kimliklerini göster"
 #: main.cpp:51
 #, kde-format
 msgid "Sorting criteria"
-msgstr ""
+msgstr "Sıralama ölçütü"
 
 #: main.cpp:52
 #, kde-format
