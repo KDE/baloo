@@ -1,4 +1,4 @@
-# Translation for baloosearch5.po to Euskara/Basque (eu).
+# Translation for baloosearch6.po to Euskara/Basque (eu).
 # Copyright (C) 2017-2023 This file is copyright:
 # This file is distributed under the same license as the baloo package.
 # KDE euskaratzeko proiektuko arduraduna <xalba@ni.eus>.
@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-10 02:11+0000\n"
-"PO-Revision-Date: 2023-04-25 20:29+0200\n"
+"PO-Revision-Date: 2023-07-15 19:51+0200\n"
 "Last-Translator: Iñigo Salvador Azurmendi <xalba@ni.eus>\n"
 "Language-Team: Basque <kde-i18n-eu@kde.org>\n"
 "Language: eu\n"
@@ -94,7 +94,7 @@ msgstr "Erakutsi dokumentuen IDak"
 #: main.cpp:51
 #, kde-format
 msgid "Sorting criteria"
-msgstr ""
+msgstr "Sailkatzeko irizpidea"
 
 #: main.cpp:52
 #, kde-format
