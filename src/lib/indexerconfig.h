@@ -15,36 +15,10 @@
 
 namespace Baloo {
 
-class FileIndexerConfigData;
-
-class BALOO_CORE_EXPORT IndexerConfigData
-{
-public:
-    IndexerConfigData(bool fileIndexingEnabled, bool onlyBasicIndexing, Baloo::FileIndexerConfigData configData);
-    IndexerConfigData(const IndexerConfigData &);
-    IndexerConfigData(IndexerConfigData &&);
-    IndexerConfigData &operator=(const IndexerConfigData &);
-    IndexerConfigData &operator=(IndexerConfigData &&);
-
-    virtual ~IndexerConfigData();
-
-    virtual bool fileIndexingEnabled() const;
-    virtual bool shouldBeIndexed(const QString &path) const;
-    virtual bool onlyBasicIndexing() const;
-    virtual std::shared_ptr<IndexerConfigData> configData() const;
-
-private:
-    class Private;
-    std::unique_ptr<Private> d;
-
-    IndexerConfigData();
-    friend class IndexerConfig;
-};
-
 /**
  * @class IndexerConfig indexerconfig.h <Baloo/IndexerConfig>
  */
-class BALOO_CORE_EXPORT IndexerConfig : public IndexerConfigData
+class BALOO_CORE_EXPORT IndexerConfig
 {
 public:
     IndexerConfig();
@@ -53,7 +27,7 @@ public:
     IndexerConfig(const IndexerConfig &) = delete;
     IndexerConfig &operator=(const IndexerConfig &) = delete;
 
-    bool fileIndexingEnabled() const override;
+    bool fileIndexingEnabled() const;
     void setFileIndexingEnabled(bool enabled) const;
 
     /**
@@ -67,7 +41,7 @@ public:
     * \return \c true if the file or folder at \p path should
     * be indexed according to the configuration.
     */
-    bool shouldBeIndexed(const QString &path) const override;
+    bool shouldBeIndexed(const QString& path) const;
 
     /**
     * Check if \p folder can be searched.
@@ -105,9 +79,8 @@ public:
     bool indexHidden() const;
     void setIndexHidden(bool value) const;
 
-    bool onlyBasicIndexing() const override;
+    bool onlyBasicIndexing() const;
     void setOnlyBasicIndexing(bool value);
-    std::shared_ptr<IndexerConfigData> configData() const override;
 
     void refresh() const;
 
