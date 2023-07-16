@@ -34,22 +34,11 @@ QString normalizeTrailingSlashes(QString&& path)
 namespace Baloo
 {
 
-FileIndexerConfigData::FileIndexerConfigData()
-    : m_indexHidden(false)
-{
-}
-
-FileIndexerConfigData::FileIndexerConfigData(bool indexHidden, FolderCache folderCache, RegExpCache excludeFilterRegExpCache)
-    : m_indexHidden(indexHidden)
-    , m_folderCache(folderCache)
-    , m_excludeFilterRegExpCache(excludeFilterRegExpCache)
-{
-}
-
-FileIndexerConfig::FileIndexerConfig(QObject *parent)
+FileIndexerConfig::FileIndexerConfig(QObject* parent)
     : QObject(parent)
     , m_settings(new BalooSettings(this))
     , m_folderCacheDirty(true)
+    , m_indexHidden(false)
     , m_devices(nullptr)
     , m_maxUncomittedFiles(40)
 {
@@ -120,7 +109,7 @@ QStringList FileIndexerConfig::excludeMimetypes() const
     return QList<QString>(m_excludeMimetypes.begin(), m_excludeMimetypes.end());
 }
 
-bool FileIndexerConfigData::indexHiddenFilesAndFolders() const
+bool FileIndexerConfig::indexHiddenFilesAndFolders() const
 {
     return m_indexHidden;
 }
@@ -152,7 +141,7 @@ bool FileIndexerConfig::canBeSearched(const QString& folder) const
     return false;
 }
 
-bool FileIndexerConfigData::shouldBeIndexed(const QString &path) const
+bool FileIndexerConfig::shouldBeIndexed(const QString& path) const
 {
     QFileInfo fi(path);
     if (fi.isDir()) {
@@ -164,7 +153,8 @@ bool FileIndexerConfigData::shouldBeIndexed(const QString &path) const
     }
 }
 
-bool FileIndexerConfigData::shouldFolderBeIndexed(const QString &path) const
+
+bool FileIndexerConfig::shouldFolderBeIndexed(const QString& path) const
 {
     QString folder;
     auto normalizedPath = normalizeTrailingSlashes(QString(path));
@@ -202,7 +192,7 @@ bool FileIndexerConfigData::shouldFolderBeIndexed(const QString &path) const
 }
 
 
-bool FileIndexerConfigData::shouldFileBeIndexed(const QString &fileName) const
+bool FileIndexerConfig::shouldFileBeIndexed(const QString& fileName) const
 {
     if (!indexHiddenFilesAndFolders() && fileName.startsWith(QLatin1Char('.'))) {
         return false;
@@ -220,11 +210,6 @@ bool FileIndexerConfig::folderInFolderList(const QString& path, QString& folder)
 {
     const_cast<FileIndexerConfig*>(this)->buildFolderCache();
 
-    return FileIndexerConfigData::folderInFolderList(path, folder);
-}
-
-bool FileIndexerConfigData::folderInFolderList(const QString &path, QString &folder) const
-{
     const QString p = normalizeTrailingSlashes(QString(path));
 
     for (const auto& entry : m_folderCache) {
@@ -240,7 +225,7 @@ bool FileIndexerConfigData::folderInFolderList(const QString &path, QString &fol
 }
 
 
-void FileIndexerConfigData::FolderCache::cleanup()
+void FileIndexerConfig::FolderCache::cleanup()
 {
     // TODO There are two cases where "redundant" includes
     // should be kept:
@@ -288,7 +273,7 @@ bool FileIndexerConfig::FolderConfig::operator<(const FolderConfig& other) const
         (path.size() == other.path.size() && path < other.path);
 }
 
-bool FileIndexerConfigData::FolderCache::addFolderConfig(const FolderConfig &config)
+bool FileIndexerConfig::FolderCache::addFolderConfig(const FolderConfig& config)
 {
     if (config.path.isEmpty()) {
         qCDebug(BALOO) << "Trying to add folder config entry with empty path";
@@ -396,15 +381,6 @@ bool FileIndexerConfig::indexingEnabled() const
 uint FileIndexerConfig::maxUncomittedFiles() const
 {
     return m_maxUncomittedFiles;
-}
-
-FileIndexerConfigData FileIndexerConfig::configData() const
-{
-    auto us = const_cast<FileIndexerConfig *>(this);
-    us->buildExcludeFilterRegExpCache();
-    us->buildFolderCache();
-
-    return FileIndexerConfigData(m_indexHidden, m_folderCache, m_excludeFilterRegExpCache);
 }
 
 } // namespace Baloo
