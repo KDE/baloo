@@ -15,6 +15,13 @@ namespace Baloo {
 
 /**
  * @class IndexerConfig indexerconfig.h <Baloo/IndexerConfig>
+ *
+ * This class allows it to access the current config, to
+ * read and modify it.
+ *
+ * It is not meant as a means to infer the current state of
+ * the Indexer or the DB. The DB is updated asynchronously,
+ * and changes of the config will not be reflected immediately.
  */
 class BALOO_CORE_EXPORT IndexerConfig
 {
@@ -38,6 +45,11 @@ public:
     *
     * \return \c true if the file or folder at \p path should
     * be indexed according to the configuration.
+    *
+    * TODO KF6: deprecate, not of any concern for ouside
+    * users. Use \c Baloo::File to know if a file has
+    * been indexed.
+    * \sa Baloo::File
     */
     bool shouldBeIndexed(const QString& path) const;
 
