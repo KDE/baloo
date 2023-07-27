@@ -41,6 +41,6 @@ inline QDebug operator<<(QDebug dbg, const PositionInfo &pos) {
 
 }
 
-Q_DECLARE_TYPEINFO(Baloo::PositionInfo, Q_MOVABLE_TYPE);
+Q_DECLARE_TYPEINFO(Baloo::PositionInfo, Q_RELOCATABLE_TYPE);
 
 #endif // BALOO_POSITIONINFO_H
