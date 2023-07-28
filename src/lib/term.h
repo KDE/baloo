@@ -155,4 +155,6 @@ char *toString(const Term& term);
 
 QDebug operator <<(QDebug d, const Baloo::Term& t);
 
+Q_DECLARE_TYPEINFO(Baloo::Term, Q_RELOCATABLE_TYPE);
+
 #endif
