@@ -79,4 +79,6 @@ private:
 
 } // namespace Baloo
 
+Q_DECLARE_TYPEINFO(Baloo::StorageDevices::Entry, Q_RELOCATABLE_TYPE);
+
 #endif // STORAGE_DEVICES_H
