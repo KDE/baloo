@@ -4,25 +4,26 @@
 # Antonis Geralis <gaantonio@civil.auth.gr>, 2014.
 # Dimitris Kardarakos <dimkard@gmail.com>, 2014.
 # Stelios <sstavra@gmail.com>, 2020, 2021.
+# George Stefanakis <george.stefanakis@gmail.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-10 02:11+0000\n"
-"PO-Revision-Date: 2021-02-28 15:41+0200\n"
-"Last-Translator: Stelios <sstavra@gmail.com>\n"
-"Language-Team: Greek <kde-i18n-el@kde.org>\n"
+"PO-Revision-Date: 2023-08-02 01:09+0300\n"
+"Last-Translator: George Stefanakis <george.stefanakis@gmail.com>\n"
+"Language-Team: Greek <kde-i18n-doc@kde.org>\n"
 "Language: el\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 20.04.2\n"
+"X-Generator: Lokalize 23.04.3\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr "Αντώνης Γέραλης"
+msgstr "Αντώνης Γέραλης, Γιώργος Στεφανάκης"
 
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
@@ -92,7 +93,7 @@ msgstr "Εμφάνιση αναγνωριστικών εγγράφων"
 #: main.cpp:51
 #, kde-format
 msgid "Sorting criteria"
-msgstr ""
+msgstr "Κριτήρια ταξινόμησης"
 
 #: main.cpp:52
 #, kde-format
@@ -112,7 +113,7 @@ msgstr "Το %1 δεν είναι έγκυρος κατάλογος"
 #: main.cpp:110
 #, kde-format
 msgid "Using canonical path '%1' for '%2'"
-msgstr ""
+msgstr "Χρήση κανονικής διαδρομής '%1' για '%2'"
 
 #: main.cpp:126
 #, kde-format
