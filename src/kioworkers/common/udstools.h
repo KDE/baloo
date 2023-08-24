@@ -11,6 +11,7 @@
 
 #include "usergroupcache.h"
 #include "idutils.h"
+#include <QUrl>
 
 namespace Baloo {
 
