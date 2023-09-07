@@ -13,6 +13,8 @@
 
 #ifdef Q_OS_WIN
 # include <QFileInfo>
+#else
+# include <sys/statvfs.h>
 #endif
 
 namespace Baloo {
@@ -40,10 +42,28 @@ inline quint64 statBufToId(const QT_STATBUF& stBuf)
                              static_cast<quint32>(stBuf.st_ino));
 }
 
+#ifndef Q_OS_WIN
+inline int statWithFsid(const char* path, QT_STATBUF* statBuf)
+{
+    int ret = QT_LSTAT(path, statBuf);
+    if (ret != 0) {
+        return ret;
+    }
+
+    struct statvfs fsBuf;
+    ret = statvfs(path, &fsBuf);
+    if (ret == 0 && fsBuf.f_fsid != 0) {
+        // Fold FSID into 32 bits, statBufToId would discard anything else
+        statBuf->st_dev = static_cast<quint32>(fsBuf.f_fsid ^ (fsBuf.f_fsid >> 32));
+    }
+    return ret;
+}
+#endif
+
 inline int filePathToStat(const QByteArray& filePath, QT_STATBUF& statBuf)
 {
 #ifndef Q_OS_WIN
-    return QT_LSTAT(filePath.constData(), &statBuf);
+    return statWithFsid(filePath.constData(), &statBuf);
 #else
     const int ret = QT_STAT(filePath.constData(), &statBuf);
     const QString filePathStr = QString::fromUtf8(filePath);
