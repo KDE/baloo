@@ -2,13 +2,13 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Balázs Úr <urbalazs@gmail.com>, 2014.
-# Kristof Kiszel <kiszel.kristof@gmail.com>, 2018.
+# Kristof Kiszel <kiszel.kristof@gmail.com>, 2018, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-05-16 02:14+0000\n"
-"PO-Revision-Date: 2018-09-29 16:41+0200\n"
+"PO-Revision-Date: 2023-09-10 20:53+0200\n"
 "Last-Translator: Kristof Kiszel <kiszel.kristof@gmail.com>\n"
 "Language-Team: Hungarian <kde-l10n-hu@kde.org>\n"
 "Language: hu\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 2.0\n"
+"X-Generator: Lokalize 23.04.3\n"
 
 #: kio_tags.cpp:110 kio_tags.cpp:166
 #, kde-format
@@ -24,15 +24,13 @@ msgid "File %1 already has tag %2"
 msgstr "A(z) %1 fájlnak már van %2 címkéje"
 
 #: kio_tags.cpp:298
-#, fuzzy, kde-format
-#| msgid "Tag"
+#, kde-format
 msgctxt "This is a noun"
 msgid "Tag"
 msgstr "Címke"
 
 #: kio_tags.cpp:304
-#, fuzzy, kde-format
-#| msgid "Tag Fragment"
+#, kde-format
 msgctxt "This is a noun"
 msgid "Tag Fragment"
 msgstr "Címkerészlet"
