@@ -39,8 +39,3 @@ msgstr "Etiket Parçacığı"
 #, kde-format
 msgid "All Tags"
 msgstr "Tüm Etiketler"
-
-#, fuzzy
-#~| msgid "All Tags"
-#~ msgid "Tags"
-#~ msgstr "Tüm Etiketler"
