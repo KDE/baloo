@@ -318,7 +318,7 @@ msgstr "format"
 #: monitorcommand.cpp:54
 #, kde-format
 msgid "Press ctrl+c to stop monitoring\n"
-msgstr "Premeu Ctrl+c per a parar el monitoratge\n"
+msgstr "Premeu «Ctrl+C» per a parar el monitoratge\n"
 
 #: monitorcommand.cpp:70
 #, kde-format
@@ -328,7 +328,7 @@ msgstr "S'està esperant que s'inicie l'indexador de fitxers\n"
 #: monitorcommand.cpp:71
 #, kde-format
 msgid "Press Ctrl+C to stop monitoring\n"
-msgstr "Premeu Ctrl+C per a parar el monitoratge\n"
+msgstr "Premeu «Ctrl+C» per a parar el monitoratge\n"
 
 #: monitorcommand.cpp:78
 #, kde-format
