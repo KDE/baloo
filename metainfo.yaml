@@ -9,8 +9,7 @@ portingAid: false
 deprecated: false
 release: true
 libraries:
- - qmake: Baloo
-   cmake: "KF6::Baloo"
+ - cmake: "KF6::Baloo"
 cmakename: KF6Baloo
 
 public_lib: true
