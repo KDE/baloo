@@ -136,12 +136,3 @@ if (NOT WIN32)
     )
 endif ()
 
-include(ECMGeneratePriFile)
-ecm_generate_pri_file(
-    BASE_NAME Baloo
-    LIB_NAME KF6Baloo
-    DEPS "core KCoreAddons KFileMetaData"
-    FILENAME_VAR PRI_FILENAME
-    INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR_KF}/Baloo
-)
-install(FILES ${PRI_FILENAME} DESTINATION ${ECM_MKSPECS_INSTALL_DIR})
