@@ -76,7 +76,7 @@ msgid ""
 "The Baloo index could not be opened. Please run \"%1\" to see if Baloo is "
 "enabled and working."
 msgstr ""
-"Non se puido abrir o índice de Baloo. Execute «%1» para ver se Baloo está "
+"Non foi posíbel abrir o índice de Baloo. Execute «%1» para ver se Baloo está "
 "activado e en funcionamento."
 
 #: main.cpp:120
