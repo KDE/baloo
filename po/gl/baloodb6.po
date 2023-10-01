@@ -148,7 +148,7 @@ msgstr ""
 #: main.cpp:219 main.cpp:227 main.cpp:237
 #, kde-format
 msgid "Baloo Index could not be opened"
-msgstr "Non se puido abrir o índice de Baloo."
+msgstr "Non foi posíbel abrir o índice de Baloo."
 
 #: main.cpp:223 main.cpp:231
 #, kde-format
