@@ -3,7 +3,7 @@
 # Vincent Pinon <vpinon@kde.org>, 2014, 2016.
 # Yoann Laissus <yoann.laissus@gmail.com>, 2018.
 # Simon Depiets <sdepiets@gmail.com>, 2020.
-# Xavier Besnard <xavier.besnard@neuf.fr>, 2021.
+# SPDX-FileCopyrightText: 2021, 2023 Xavier Besnard <xavier.besnard@neuf.fr>
 # Xavier BESNARD <xavier.besnard@neuf.fr>, 2023.
 # Valentin Poupon <valentin.poupon@gmail.com>, 2023.
 #
@@ -12,15 +12,15 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-10 00:43+0000\n"
-"PO-Revision-Date: 2023-08-20 22:47+0200\n"
-"Last-Translator: Valentin Poupon <valentin.poupon@gmail.com>\n"
-"Language-Team: French <kde-francophone@kde.org>\n"
+"PO-Revision-Date: 2023-10-11 18:55+0200\n"
+"Last-Translator: Xavier BESNARD <xavier.besnard@neuf.fr>\n"
+"Language-Team: fr\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 23.04.1\n"
+"X-Generator: Lokalize 23.08.1\n"
 "X-Environment: kde\n"
 "X-Accelerator-Marker: &\n"
 "X-Text-Markup: kde4\n"
@@ -118,7 +118,7 @@ msgstr "%1 n'est pas un dossier valable"
 #: main.cpp:110
 #, kde-format
 msgid "Using canonical path '%1' for '%2'"
-msgstr "Utilisation du chemin standard « %1 » pour « %2 »"
+msgstr "Utilisation de l'emplacement standard « %1 » pour « %2 »"
 
 #: main.cpp:126
 #, kde-format
