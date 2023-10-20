@@ -11,7 +11,7 @@
 
 using namespace Baloo;
 
-QByteArray PositionCodec::encode(const QVector<PositionInfo>& list)
+QByteArray PositionCodec::encode(const QList<PositionInfo> &list)
 {
     QByteArray data;
     QByteArray temporaryStorage;
@@ -24,12 +24,12 @@ QByteArray PositionCodec::encode(const QVector<PositionInfo>& list)
     return data;
 }
 
-QVector<PositionInfo> PositionCodec::decode(const QByteArray& arr)
+QList<PositionInfo> PositionCodec::decode(const QByteArray &arr)
 {
     char* data = const_cast<char*>(arr.data());
     char* end = data + arr.size();
 
-    QVector<PositionInfo> vec;
+    QList<PositionInfo> vec;
     while (data < end) {
         PositionInfo info;
 
@@ -37,7 +37,7 @@ QVector<PositionInfo> PositionCodec::decode(const QByteArray& arr)
         data += sizeof(quint64);
         data = getDifferentialVarInt32(data, end, &info.positions);
         if (!data) {
-            return QVector<PositionInfo>();
+            return QList<PositionInfo>();
         }
 
         vec << info;

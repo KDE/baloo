@@ -56,7 +56,7 @@ App::App(QObject* parent)
     connect(&m_workerPipe, &WorkerPipe::inputEnd, this, &QCoreApplication::quit);
 }
 
-void App::slotNewBatch(const QVector<quint64>& ids)
+void App::slotNewBatch(const QList<quint64> &ids)
 {
     m_ids = ids;
 

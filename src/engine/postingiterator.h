@@ -7,8 +7,8 @@
 #ifndef BALOO_POSTINGITERATOR_H
 #define BALOO_POSTINGITERATOR_H
 
-#include <QVector>
 #include "engine_export.h"
+#include <QList>
 
 namespace Baloo {
 

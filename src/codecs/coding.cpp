@@ -50,7 +50,7 @@ static inline void putVarint32Internal(char* dst, quint32 v, int &pos)
     pos += encodeVarint32Internal(&dst[pos], v);
 }
 
-void putDifferentialVarInt32(QByteArray &temporaryStorage, QByteArray* dst, const QVector<quint32>& values)
+void putDifferentialVarInt32(QByteArray &temporaryStorage, QByteArray *dst, const QList<quint32> &values)
 {
     temporaryStorage.resize((values.size() + 1) * 5);  // max size, correct size will be held in pos
     int pos = 0;
@@ -66,7 +66,7 @@ void putDifferentialVarInt32(QByteArray &temporaryStorage, QByteArray* dst, cons
     dst->append(temporaryStorage.constData(), pos);
 }
 
-char* getDifferentialVarInt32(char* p, char* limit, QVector<quint32>* values)
+char *getDifferentialVarInt32(char *p, char *limit, QList<quint32> *values)
 {
     quint32 size = 0;
     p = getVarint32Ptr(p, limit, &size);

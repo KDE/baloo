@@ -35,7 +35,7 @@ private Q_SLOTS:
         std::unique_ptr<PostingIterator> it{db.iter("fir")};
         QVERIFY(it);
 
-        QVector<quint64> result = {1, 3, 5};
+        QList<quint64> result = {1, 3, 5};
         for (quint64 val : result) {
             QCOMPARE(it->next(), static_cast<quint64>(val));
             QCOMPARE(it->docId(), static_cast<quint64>(val));
@@ -53,7 +53,7 @@ private Q_SLOTS:
         std::unique_ptr<PostingIterator> it{db.prefixIter("fi")};
         QVERIFY(it);
 
-        QVector<quint64> result = {1, 3, 5, 8, 9};
+        QList<quint64> result = {1, 3, 5, 8, 9};
         for (quint64 val : result) {
             QCOMPARE(it->next(), static_cast<quint64>(val));
             QCOMPARE(it->docId(), static_cast<quint64>(val));
@@ -72,7 +72,7 @@ private Q_SLOTS:
         std::unique_ptr<PostingIterator> it{db.regexpIter(QRegularExpression(QStringLiteral(".re")), QByteArray("f"))};
         QVERIFY(it);
 
-        QVector<quint64> result = {1, 2, 3, 5, 8};
+        QList<quint64> result = {1, 2, 3, 5, 8};
         for (quint64 val : result) {
             QCOMPARE(it->next(), static_cast<quint64>(val));
             QCOMPARE(it->docId(), static_cast<quint64>(val));
@@ -98,7 +98,7 @@ private Q_SLOTS:
         std::unique_ptr<PostingIterator> it{db.compIter("R", 2, PostingDB::GreaterEqual)};
         QVERIFY(it);
 
-        QVector<quint64> result = {1, 2, 3, 5, 8, 10, 12};
+        QList<quint64> result = {1, 2, 3, 5, 8, 10, 12};
         for (quint64 val : std::as_const(result)) {
             QCOMPARE(it->next(), static_cast<quint64>(val));
             QCOMPARE(it->docId(), static_cast<quint64>(val));
@@ -146,7 +146,7 @@ private Q_SLOTS:
         db.put("fore", {2, 3, 5});
         db.put("zib", {4, 5, 6});
 
-        QVector<QByteArray> list = {"fir", "fire", "fore"};
+        QList<QByteArray> list = {"fir", "fire", "fore"};
         QCOMPARE(db.fetchTermsStartingWith("f"), list);
     }
 };

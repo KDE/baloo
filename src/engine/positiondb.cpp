@@ -50,7 +50,7 @@ MDB_dbi PositionDB::open(MDB_txn* txn)
     return dbi;
 }
 
-void PositionDB::put(const QByteArray& term, const QVector<PositionInfo>& list)
+void PositionDB::put(const QByteArray &term, const QList<PositionInfo> &list)
 {
     Q_ASSERT(!term.isEmpty());
     Q_ASSERT(!list.isEmpty());
@@ -71,7 +71,7 @@ void PositionDB::put(const QByteArray& term, const QVector<PositionInfo>& list)
     }
 }
 
-QVector<PositionInfo> PositionDB::get(const QByteArray& term)
+QList<PositionInfo> PositionDB::get(const QByteArray &term)
 {
     Q_ASSERT(!term.isEmpty());
 
@@ -85,7 +85,7 @@ QVector<PositionInfo> PositionDB::get(const QByteArray& term)
         if (rc != MDB_NOTFOUND) {
             qCDebug(ENGINE) << "PositionDB::get" << term << mdb_strerror(rc);
         }
-        return QVector<PositionInfo>();
+        return QList<PositionInfo>();
     }
 
     QByteArray data = QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size);
@@ -130,7 +130,7 @@ VectorPositionInfoIterator* PositionDB::iter(const QByteArray& term)
     return new VectorPositionInfoIterator(PositionCodec::decode(ba));
 }
 
-QMap<QByteArray, QVector<PositionInfo>> PositionDB::toTestMap() const
+QMap<QByteArray, QList<PositionInfo>> PositionDB::toTestMap() const
 {
     MDB_cursor* cursor;
     mdb_cursor_open(m_txn, m_dbi, &cursor);
@@ -138,7 +138,7 @@ QMap<QByteArray, QVector<PositionInfo>> PositionDB::toTestMap() const
     MDB_val key = {0, nullptr};
     MDB_val val;
 
-    QMap<QByteArray, QVector<PositionInfo>> map;
+    QMap<QByteArray, QList<PositionInfo>> map;
     while (1) {
         int rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
         if (rc == MDB_NOTFOUND) {
@@ -151,7 +151,7 @@ QMap<QByteArray, QVector<PositionInfo>> PositionDB::toTestMap() const
 
         const QByteArray ba(static_cast<char*>(key.mv_data), key.mv_size);
         const QByteArray data(static_cast<char*>(val.mv_data), val.mv_size);
-        const QVector<PositionInfo> vinfo = PositionCodec().decode(data);
+        const QList<PositionInfo> vinfo = PositionCodec().decode(data);
         map.insert(ba, vinfo);
     }
 

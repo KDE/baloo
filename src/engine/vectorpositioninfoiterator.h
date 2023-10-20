@@ -16,14 +16,14 @@ namespace Baloo {
 class BALOO_ENGINE_EXPORT VectorPositionInfoIterator : public PostingIterator
 {
 public:
-    explicit VectorPositionInfoIterator(const QVector<PositionInfo>& vector);
+    explicit VectorPositionInfoIterator(const QList<PositionInfo> &vector);
 
     quint64 docId() const override;
     quint64 next() override;
-    QVector<uint> positions();
+    QList<uint> positions();
 
 private:
-    QVector<PositionInfo> m_vector;
+    QList<PositionInfo> m_vector;
     int m_pos;
 };
 }

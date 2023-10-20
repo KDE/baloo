@@ -57,16 +57,16 @@ void WriteTransaction::addDocument(const Document& doc)
         }
     }
 
-    QVector<QByteArray> docTerms = addTerms(id, doc.m_terms);
+    QList<QByteArray> docTerms = addTerms(id, doc.m_terms);
     Q_ASSERT(!docTerms.empty());
     documentTermsDB.put(id, docTerms);
 
-    QVector<QByteArray> docXattrTerms = addTerms(id, doc.m_xattrTerms);
+    QList<QByteArray> docXattrTerms = addTerms(id, doc.m_xattrTerms);
     if (!docXattrTerms.isEmpty()) {
         documentXattrTermsDB.put(id, docXattrTerms);
     }
 
-    QVector<QByteArray> docFileNameTerms = addTerms(id, doc.m_fileNameTerms);
+    QList<QByteArray> docFileNameTerms = addTerms(id, doc.m_fileNameTerms);
     if (!docFileNameTerms.isEmpty()) {
         documentFileNameTermsDB.put(id, docFileNameTerms);
     }
@@ -87,9 +87,9 @@ void WriteTransaction::addDocument(const Document& doc)
     }
 }
 
-QVector<QByteArray> WriteTransaction::addTerms(quint64 id, const QMap<QByteArray, Document::TermData>& terms)
+QList<QByteArray> WriteTransaction::addTerms(quint64 id, const QMap<QByteArray, Document::TermData> &terms)
 {
-    QVector<QByteArray> termList;
+    QList<QByteArray> termList;
     termList.reserve(terms.size());
     m_pendingOperations.reserve(m_pendingOperations.size() + terms.size());
 
@@ -143,7 +143,7 @@ void WriteTransaction::removeDocument(quint64 id)
     docDataDB.del(id);
 }
 
-void WriteTransaction::removeTerms(quint64 id, const QVector<QByteArray>& terms)
+void WriteTransaction::removeTerms(quint64 id, const QList<QByteArray> &terms)
 {
     for (const QByteArray& term : terms) {
         Operation op;
@@ -158,7 +158,7 @@ void WriteTransaction::removeRecursively(quint64 parentId)
 {
     DocumentUrlDB docUrlDB(m_dbis.idTreeDbi, m_dbis.idFilenameDbi, m_txn);
 
-    const QVector<quint64> children = docUrlDB.getChildren(parentId);
+    const QList<quint64> children = docUrlDB.getChildren(parentId);
     for (quint64 id : children) {
         if (id) {
             removeRecursively(id);
@@ -176,7 +176,7 @@ bool WriteTransaction::removeRecursively(quint64 parentId, const std::function<b
     }
 
     bool isEmpty = true;
-    const QVector<quint64> children = docUrlDB.getChildren(parentId);
+    const QList<quint64> children = docUrlDB.getChildren(parentId);
     for (quint64 id : children) {
         isEmpty &= removeRecursively(id, shouldDelete);
     }
@@ -203,8 +203,8 @@ void WriteTransaction::replaceDocument(const Document& doc, DocumentOperations o
 
     if (operations & DocumentTerms) {
         Q_ASSERT(!doc.m_terms.isEmpty());
-        QVector<QByteArray> prevTerms = documentTermsDB.get(id);
-        QVector<QByteArray> docTerms = replaceTerms(id, prevTerms, doc.m_terms);
+        QList<QByteArray> prevTerms = documentTermsDB.get(id);
+        QList<QByteArray> docTerms = replaceTerms(id, prevTerms, doc.m_terms);
 
         if (docTerms != prevTerms) {
             documentTermsDB.put(id, docTerms);
@@ -212,8 +212,8 @@ void WriteTransaction::replaceDocument(const Document& doc, DocumentOperations o
     }
 
     if (operations & XAttrTerms) {
-        QVector<QByteArray> prevTerms = documentXattrTermsDB.get(id);
-        QVector<QByteArray> docXattrTerms = replaceTerms(id, prevTerms, doc.m_xattrTerms);
+        QList<QByteArray> prevTerms = documentXattrTermsDB.get(id);
+        QList<QByteArray> docXattrTerms = replaceTerms(id, prevTerms, doc.m_xattrTerms);
 
         if (docXattrTerms != prevTerms) {
             if (!docXattrTerms.isEmpty()) {
@@ -225,8 +225,8 @@ void WriteTransaction::replaceDocument(const Document& doc, DocumentOperations o
     }
 
     if (operations & FileNameTerms) {
-        QVector<QByteArray> prevTerms = documentFileNameTermsDB.get(id);
-        QVector<QByteArray> docFileNameTerms = replaceTerms(id, prevTerms, doc.m_fileNameTerms);
+        QList<QByteArray> prevTerms = documentFileNameTermsDB.get(id);
+        QList<QByteArray> docFileNameTerms = replaceTerms(id, prevTerms, doc.m_fileNameTerms);
 
         if (docFileNameTerms != prevTerms) {
             if (!docFileNameTerms.isEmpty()) {
@@ -269,8 +269,7 @@ void WriteTransaction::replaceDocument(const Document& doc, DocumentOperations o
     }
 }
 
-QVector< QByteArray > WriteTransaction::replaceTerms(quint64 id, const QVector<QByteArray>& prevTerms,
-                                                     const QMap<QByteArray, Document::TermData>& terms)
+QList<QByteArray> WriteTransaction::replaceTerms(quint64 id, const QList<QByteArray> &prevTerms, const QMap<QByteArray, Document::TermData> &terms)
 {
     m_pendingOperations.reserve(m_pendingOperations.size() + prevTerms.size() + terms.size());
     for (const QByteArray& term : prevTerms) {
@@ -289,17 +288,17 @@ void WriteTransaction::commit()
     PostingDB postingDB(m_dbis.postingDbi, m_txn);
     PositionDB positionDB(m_dbis.positionDBi, m_txn);
 
-    QHashIterator<QByteArray, QVector<Operation> > iter(m_pendingOperations);
+    QHashIterator<QByteArray, QList<Operation>> iter(m_pendingOperations);
     while (iter.hasNext()) {
         iter.next();
 
         const QByteArray& term = iter.key();
-        const QVector<Operation> operations = iter.value();
+        const QList<Operation> operations = iter.value();
 
         PostingList list = postingDB.get(term);
 
         bool fetchedPositionList = false;
-        QVector<PositionInfo> positionList;
+        QList<PositionInfo> positionList;
 
         for (const Operation& op : operations) {
             quint64 id = op.data.docId;

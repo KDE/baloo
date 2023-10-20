@@ -7,16 +7,16 @@
 #ifndef BALOO_DOCTERMSCODEC_H
 #define BALOO_DOCTERMSCODEC_H
 
-#include <QVector>
 #include <QByteArray>
+#include <QList>
 
 namespace Baloo {
 
 class DocTermsCodec
 {
 public:
-    static QByteArray encode(const QVector<QByteArray>& terms);
-    static QVector<QByteArray> decode(const QByteArray& arr);
+    static QByteArray encode(const QList<QByteArray> &terms);
+    static QList<QByteArray> decode(const QByteArray &arr);
 };
 }
 

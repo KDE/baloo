@@ -98,14 +98,14 @@ void DocumentIdDB::del(quint64 docId)
     }
 }
 
-QVector<quint64> DocumentIdDB::fetchItems(int size)
+QList<quint64> DocumentIdDB::fetchItems(int size)
 {
     Q_ASSERT(size > 0);
 
     MDB_cursor* cursor;
     mdb_cursor_open(m_txn, m_dbi, &cursor);
 
-    QVector<quint64> vec;
+    QList<quint64> vec;
     vec.reserve(size);
 
     for (int i = 0; i < size; i++) {
@@ -138,7 +138,7 @@ uint DocumentIdDB::size()
     return stat.ms_entries;
 }
 
-QVector<quint64> DocumentIdDB::toTestVector() const
+QList<quint64> DocumentIdDB::toTestVector() const
 {
     MDB_cursor* cursor;
     mdb_cursor_open(m_txn, m_dbi, &cursor);
@@ -146,7 +146,7 @@ QVector<quint64> DocumentIdDB::toTestVector() const
     MDB_val key{0, nullptr};
     MDB_val val{0, nullptr};
 
-    QVector<quint64> vec;
+    QList<quint64> vec;
     while (1) {
         int rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
         if (rc) {

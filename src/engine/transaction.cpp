@@ -100,7 +100,7 @@ bool Transaction::hasFailed(quint64 id) const
     return failedIdDb.contains(id);
 }
 
-QVector<quint64> Transaction::failedIds(quint64 limit) const
+QList<quint64> Transaction::failedIds(quint64 limit) const
 {
     DocumentIdDB failedIdDb(m_dbis.failedIdDbi, m_txn);
     return failedIdDb.fetchItems(limit);
@@ -155,7 +155,7 @@ QByteArray Transaction::documentData(quint64 id) const
     return docDataDb.get(id);
 }
 
-QVector<quint64> Transaction::fetchPhaseOneIds(int size) const
+QList<quint64> Transaction::fetchPhaseOneIds(int size) const
 {
     Q_ASSERT(m_txn);
     Q_ASSERT(size > 0);
@@ -164,7 +164,7 @@ QVector<quint64> Transaction::fetchPhaseOneIds(int size) const
     return contentIndexingDb.fetchItems(size);
 }
 
-QVector<QByteArray> Transaction::fetchTermsStartingWith(const QByteArray& term) const
+QList<QByteArray> Transaction::fetchTermsStartingWith(const QByteArray &term) const
 {
     Q_ASSERT(term.size() > 0);
 
@@ -336,7 +336,7 @@ PostingIterator* Transaction::postingIterator(const EngineQuery& query) const
             qCDebug(ENGINE) << "Degenerated Phrase with 1 Term:" <<  query;
             return postingIterator(subQueries[0]);
         }
-        QVector<VectorPositionInfoIterator*> vec;
+        QList<VectorPositionInfoIterator *> vec;
         vec.reserve(subQueries.size());
         for (const EngineQuery& q : subQueries) {
             if (!q.leaf()) {
@@ -390,7 +390,7 @@ PostingIterator* Transaction::docUrlIter(quint64 id) const
 // Introspection
 //
 
-QVector<QByteArray> Transaction::documentTerms(quint64 docId) const
+QList<QByteArray> Transaction::documentTerms(quint64 docId) const
 {
     Q_ASSERT(docId);
 
@@ -398,7 +398,7 @@ QVector<QByteArray> Transaction::documentTerms(quint64 docId) const
     return documentTermsDB.get(docId);
 }
 
-QVector<QByteArray> Transaction::documentFileNameTerms(quint64 docId) const
+QList<QByteArray> Transaction::documentFileNameTerms(quint64 docId) const
 {
     Q_ASSERT(docId);
 
@@ -406,7 +406,7 @@ QVector<QByteArray> Transaction::documentFileNameTerms(quint64 docId) const
     return documentFileNameTermsDB.get(docId);
 }
 
-QVector<QByteArray> Transaction::documentXattrTerms(quint64 docId) const
+QList<QByteArray> Transaction::documentXattrTerms(quint64 docId) const
 {
     Q_ASSERT(docId);
 
@@ -552,7 +552,7 @@ void Transaction::checkTermsDbinPostingDb()
 
     std::cout << "PostingDB check .." << std::endl;
     for (quint64 id : std::as_const(allIds)) {
-        QVector<QByteArray> terms = documentTermsDB.get(id);
+        QList<QByteArray> terms = documentTermsDB.get(id);
         terms += documentXattrTermsDB.get(id);
         terms += documentFileNameTermsDB.get(id);
 

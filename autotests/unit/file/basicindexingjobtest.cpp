@@ -6,15 +6,15 @@
 
 #include "basicindexingjob.h"
 
-#include <vector>
+#include <KFileMetaData/Types>
 #include <QByteArray>
 #include <QDateTime>
 #include <QFile>
+#include <QList>
 #include <QString>
-#include <QTest>
 #include <QTemporaryDir>
-#include <QVector>
-#include <KFileMetaData/Types>
+#include <QTest>
+#include <vector>
 
 namespace Baloo {
 

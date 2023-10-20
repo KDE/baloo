@@ -9,7 +9,7 @@
 
 using namespace Baloo;
 
-OrPostingIterator::OrPostingIterator(const QVector<PostingIterator*>& iterators)
+OrPostingIterator::OrPostingIterator(const QList<PostingIterator *> &iterators)
     : m_iterators(iterators)
     , m_docId(0)
     , m_nextId(0)

@@ -6,9 +6,9 @@
 */
 
 #include "commandpipe.h"
-#include <QVector>
 #include "baloodebug.h"
 #include <QIODevice>
+#include <QList>
 namespace Baloo {
 namespace Private {
 
@@ -26,7 +26,7 @@ ControllerPipe::ControllerPipe(QIODevice* commandPipe, QIODevice* statusPipe)
 {
 }
 
-void ControllerPipe::processIds(const QVector<quint64>& ids)
+void ControllerPipe::processIds(const QList<quint64> &ids)
 {
     m_commandStream << ids;
 }
@@ -87,7 +87,7 @@ WorkerPipe::WorkerPipe(QIODevice* commandPipe, QIODevice* statusPipe)
 
 void WorkerPipe::processIdData()
 {
-    QVector<quint64> ids;
+    QList<quint64> ids;
 
     while (true) {
         m_commandStream.startTransaction();

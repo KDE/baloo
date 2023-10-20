@@ -8,7 +8,7 @@
 
 using namespace Baloo;
 
-QByteArray DocTermsCodec::encode(const QVector<QByteArray>& terms)
+QByteArray DocTermsCodec::encode(const QList<QByteArray> &terms)
 {
     Q_ASSERT(!terms.isEmpty());
 
@@ -32,11 +32,11 @@ QByteArray DocTermsCodec::encode(const QVector<QByteArray>& terms)
     return full;
 }
 
-QVector<QByteArray> DocTermsCodec::decode(const QByteArray& full)
+QList<QByteArray> DocTermsCodec::decode(const QByteArray &full)
 {
     Q_ASSERT(full.size());
 
-    QVector<QByteArray> list;
+    QList<QByteArray> list;
 
     int prevWordBoundary = 0;
     for (int i = 0; i < full.size(); i++) {

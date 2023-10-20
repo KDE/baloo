@@ -69,11 +69,9 @@ public:
     *
     * \p urlFilter Filter result urls. Default is null = Collect everything.
     */
-    QPair<QVector<FileInfo>, Summary> createList(
-        const QVector<qint64>& deviceIds,
-        const DatabaseSanitizer::ItemAccessFilters accessFilter,
-        const QSharedPointer<QRegularExpression>& urlFilter
-    ) const
+    QPair<QList<FileInfo>, Summary> createList(const QList<qint64> &deviceIds,
+                                               const DatabaseSanitizer::ItemAccessFilters accessFilter,
+                                               const QSharedPointer<QRegularExpression> &urlFilter) const
     {
         Q_ASSERT(m_transaction);
 
@@ -82,12 +80,12 @@ public:
                                             m_transaction->m_txn);
         const auto map = docUrlDb.toTestMap();
         const auto keys = map.keys();
-        QVector<FileInfo> result;
+        QList<FileInfo> result;
         uint max = map.size();
         uint i = 0;
         result.reserve(max);
-        QVector<quint32> includeIds;
-        QVector<quint32> excludeIds;
+        QList<quint32> includeIds;
+        QList<quint32> excludeIds;
         for (qint64 deviceId : deviceIds) {
             if (deviceId > 0) {
                 includeIds.append(deviceId);
@@ -155,8 +153,7 @@ public:
         return info;
     }
 
-
-    QMap<quint32, bool> deviceFilters(QVector<FileInfo>& infos, const DatabaseSanitizer::ItemAccessFilters accessFilter)
+    QMap<quint32, bool> deviceFilters(QList<FileInfo> &infos, const DatabaseSanitizer::ItemAccessFilters accessFilter)
     {
         QMap<quint32, bool> result;
         for (const auto& info : infos) {
@@ -240,10 +237,7 @@ DatabaseSanitizer::~DatabaseSanitizer()
 *
 * \p urlFilter Filter result urls. Default is null = Print everything.
 */
- void DatabaseSanitizer::printList(
-    const QVector<qint64>& deviceIds,
-    const ItemAccessFilters accessFilter,
-    const QSharedPointer<QRegularExpression>& urlFilter)
+void DatabaseSanitizer::printList(const QList<qint64> &deviceIds, const ItemAccessFilters accessFilter, const QSharedPointer<QRegularExpression> &urlFilter)
 {
     auto listResult = m_pimpl->createList(deviceIds, accessFilter, urlFilter);
     const auto sep = QLatin1Char(' ');
@@ -272,7 +266,7 @@ DatabaseSanitizer::~DatabaseSanitizer()
 
 }
 
-void DatabaseSanitizer::printDevices(const QVector<qint64>& deviceIds, const ItemAccessFilters accessFilter)
+void DatabaseSanitizer::printDevices(const QList<qint64> &deviceIds, const ItemAccessFilters accessFilter)
 {
     auto infos = m_pimpl->createList(deviceIds, accessFilter, nullptr);
 
@@ -322,10 +316,10 @@ void DatabaseSanitizer::printDevices(const QVector<qint64>& deviceIds, const Ite
     err << i18n("Found %1 matching in %2 devices", matchCount, useCount.size()) << endl;
 }
 
-void DatabaseSanitizer::removeStaleEntries(const QVector<qint64>& deviceIds,
-    const DatabaseSanitizer::ItemAccessFilters accessFilter,
-    const bool dryRun,
-    const QSharedPointer<QRegularExpression>& urlFilter)
+void DatabaseSanitizer::removeStaleEntries(const QList<qint64> &deviceIds,
+                                           const DatabaseSanitizer::ItemAccessFilters accessFilter,
+                                           const bool dryRun,
+                                           const QSharedPointer<QRegularExpression> &urlFilter)
 {
     auto listResult = m_pimpl->createList(deviceIds, IgnoreAvailable, urlFilter);
 
