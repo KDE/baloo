@@ -19,7 +19,7 @@ namespace Baloo {
 class PendingFile
 {
 public:
-    explicit PendingFile(const QString& path = QString());
+    explicit PendingFile(const QString& path);
 
     QString path() const;
 
@@ -58,7 +58,6 @@ private:
 
 }
 
-Q_DECLARE_METATYPE(Baloo::PendingFile)
 Q_DECLARE_TYPEINFO(Baloo::PendingFile, Q_RELOCATABLE_TYPE);
 
 #endif // BALOO_PENDINGFILE_H
