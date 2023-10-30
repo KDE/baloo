@@ -25,14 +25,6 @@ QString PendingFile::path() const
     return m_path;
 }
 
-void PendingFile::setPath(const QString& path)
-{
-    m_path = path;
-    if (m_path.endsWith(QLatin1Char('/'))) {
-        m_path = m_path.mid(0, m_path.length() - 1);
-    }
-}
-
 bool PendingFile::isNewFile() const
 {
     return m_created;

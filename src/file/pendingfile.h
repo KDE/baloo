@@ -22,7 +22,6 @@ public:
     explicit PendingFile(const QString& path = QString());
 
     QString path() const;
-    void setPath(const QString& path);
 
     void setAttributeChanged() { m_attributesChanged = true; }
     void setClosedOnWrite() { m_closedOnWrite = true; }
