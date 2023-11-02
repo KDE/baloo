@@ -40,6 +40,7 @@ include(CMakePackageConfigHelpers)
 include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(KDEFrameworkCompilerSettings NO_POLICY_SCOPE)
+include(KDEGitCommitHooks)
 include(ECMAddTests)
 include(ECMAddQch)
 include(ECMQtDeclareLoggingCategory)
@@ -163,3 +164,5 @@ install(FILES
 # and we're done
 include(ECMFeatureSummary)
 ecm_feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
+
+kde_configure_git_pre_commit_hook(CHECKS CLANG_FORMAT)
