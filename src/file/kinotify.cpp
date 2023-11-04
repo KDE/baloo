@@ -177,7 +177,9 @@ public:
 
         // asynchronously add the next batch
         if (m_dirIter) {
-            QMetaObject::invokeMethod(q, "_k_addWatches", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(q, [this]() {
+                this->_k_addWatches();
+            }, Qt::QueuedConnection);
         }
         else {
             Q_EMIT q->installedWatches();
@@ -249,7 +251,10 @@ bool KInotify::addWatch(const QString& path, WatchEvents mode, WatchFlags flags)
     }
 
     d->m_dirIter = new Baloo::FilteredDirIterator(d->config, path, Baloo::FilteredDirIterator::DirsOnly);
-    return d->_k_addWatches();
+    QMetaObject::invokeMethod(this, [this]() {
+        this->d->_k_addWatches();
+    }, Qt::QueuedConnection);
+    return true;
 }
 
 

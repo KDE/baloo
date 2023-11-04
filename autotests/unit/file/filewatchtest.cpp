@@ -68,11 +68,12 @@ void FileWatchTest::testFileCreation()
     fileWatch.m_pendingFileQueue->setMinimumTimeout(0);
     fileWatch.m_pendingFileQueue->setTrackingTime(0);
 
-    QSignalSpy spy(&fileWatch, SIGNAL(installedWatches()));
+    QSignalSpy spy(&fileWatch, &FileWatch::installedWatches);
     QVERIFY(spy.isValid());
 
     fileWatch.updateIndexedFoldersWatches();
-    QVERIFY(spy.count() || spy.wait());
+    QVERIFY(spy.wait());
+    QCOMPARE(spy.count(), 1);
 
     QSignalSpy spyIndexNew(&fileWatch, SIGNAL(indexNewFile(QString)));
     QSignalSpy spyIndexModified(&fileWatch, SIGNAL(indexModifiedFile(QString)));
@@ -157,11 +158,12 @@ void FileWatchTest::testConfigChange()
     fileWatch.m_pendingFileQueue->setMinimumTimeout(0);
     fileWatch.m_pendingFileQueue->setTrackingTime(0);
 
-    QSignalSpy spy(&fileWatch, SIGNAL(installedWatches()));
+    QSignalSpy spy(&fileWatch, &FileWatch::installedWatches);
     QVERIFY(spy.isValid());
 
     fileWatch.updateIndexedFoldersWatches();
-    QVERIFY(spy.count() || spy.wait());
+    QVERIFY(spy.wait());
+    QCOMPARE(spy.count(), 1);
 
     QSignalSpy spyIndexNew(&fileWatch, SIGNAL(indexNewFile(QString)));
     QVERIFY(spyIndexNew.isValid());
