@@ -80,11 +80,6 @@ public:
     };
     Q_DECLARE_FLAGS(WatchFlags, WatchFlag)
 
-    /**
-     * \return \p true if inotify is available and usable.
-     */
-    bool available() const;
-
     bool watchingPath(const QString& path) const;
 
     /**

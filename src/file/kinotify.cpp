@@ -214,34 +214,6 @@ KInotify::~KInotify()
     delete d;
 }
 
-
-bool KInotify::available() const
-{
-    if (d->inotify() > 0) {
-        // trueg: Copied from KDirWatch.
-        struct utsname uts;
-        int major;
-        int minor;
-        int patch = 0;
-        if (uname(&uts) < 0) {
-            return false; // *shrug*
-        } else if (sscanf(uts.release, "%d.%d.%d", &major, &minor, &patch) != 3) {
-            //Kernels > 3.0 can in principle have two-number versions.
-            if (sscanf(uts.release, "%d.%d", &major, &minor) != 2) {
-                return false; // *shrug*
-            }
-        } else if (major * 1000000 + minor * 1000 + patch < 2006014) { // <2.6.14
-            qCDebug(BALOO) << "Can't use INotify, Linux kernel too old";
-            return false;
-        }
-
-        return true;
-    } else {
-        return false;
-    }
-}
-
-
 bool KInotify::watchingPath(const QString& path) const
 {
     const QByteArray p = normalizeTrailingSlash(QFile::encodeName(path));
