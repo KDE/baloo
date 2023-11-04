@@ -181,8 +181,6 @@ private:
      * and installs watches for all subdirectories (including @param path)
      */
     void handleDirCreated(const QString& path);
-
-    Q_PRIVATE_SLOT(d, bool _k_addWatches())
 };
 
 #endif
