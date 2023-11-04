@@ -24,9 +24,25 @@ private Q_SLOTS:
 
     void testFileCreation();
     void testConfigChange();
+
+    void init()
+    {
+        m_tmpDir = std::make_unique<QTemporaryDir>();
+        QVERIFY(m_tmpDir->isValid());
+
+        m_dbDir = std::make_unique<QTemporaryDir>();
+        QVERIFY(m_dbDir->isValid());
+
+        m_db = std::make_unique<Baloo::Database>(m_dbDir->path());
+    }
+
+private:
+    std::unique_ptr<QTemporaryDir> m_dbDir;
+    std::unique_ptr<QTemporaryDir> m_tmpDir;
+    std::unique_ptr<Baloo::Database> m_db;
 };
 
-}
+} // namespace Baloo
 
 using namespace Baloo;
 
@@ -49,21 +65,13 @@ namespace {
 
 void FileWatchTest::testFileCreation()
 {
-    QTemporaryDir includeDir;
+    m_db->open(Baloo::Database::CreateDatabase);
+    QVERIFY(m_db->isOpen());
 
-    QStringList includeFolders;
-    includeFolders << includeDir.path();
-
-    QStringList excludeFolders;
-    Test::writeIndexerConfig(includeFolders, excludeFolders);
-
-    QTemporaryDir dbDir;
-    Database db(dbDir.path());
-    db.open(Baloo::Database::CreateDatabase);
-
+    Test::writeIndexerConfig({m_tmpDir->path()}, {});
     FileIndexerConfig config;
 
-    FileWatch fileWatch(&db, &config);
+    FileWatch fileWatch(m_db.get(), &config);
     fileWatch.m_pendingFileQueue->setMaximumTimeout(0);
     fileWatch.m_pendingFileQueue->setMinimumTimeout(0);
     fileWatch.m_pendingFileQueue->setTrackingTime(0);
@@ -84,7 +92,7 @@ void FileWatchTest::testFileCreation()
     QVERIFY(spyIndexXattr.isValid());
 
     // Create a file and see if it is indexed
-    QString fileUrl(includeDir.path() + QStringLiteral("/t1"));
+    QString fileUrl(m_tmpDir->path() + QStringLiteral("/t1"));
     QVERIFY(createFile(fileUrl));
 
     QVERIFY(spyIndexNew.wait());
@@ -134,16 +142,13 @@ void FileWatchTest::testFileCreation()
 
 void FileWatchTest::testConfigChange()
 {
-    QTemporaryDir tmpDir;
+    m_db->open(Baloo::Database::CreateDatabase);
 
-    Database db(tmpDir.path());
-    db.open(Baloo::Database::CreateDatabase);
-
-    QString d1 = tmpDir.path() + QStringLiteral("/d1");
-    QString d2 = tmpDir.path() + QStringLiteral("/d2");
-    QString d11 = tmpDir.path() + QStringLiteral("/d1/d11");
-    QString d21 = tmpDir.path() + QStringLiteral("/d2/d21");
-    QString d22 = tmpDir.path() + QStringLiteral("/d2/d22");
+    QString d1 = m_tmpDir->path() + QStringLiteral("/d1");
+    QString d2 = m_tmpDir->path() + QStringLiteral("/d2");
+    QString d11 = m_tmpDir->path() + QStringLiteral("/d1/d11");
+    QString d21 = m_tmpDir->path() + QStringLiteral("/d2/d21");
+    QString d22 = m_tmpDir->path() + QStringLiteral("/d2/d22");
 
     QDir().mkpath(d11);
     QDir().mkpath(d21);
@@ -153,7 +158,7 @@ void FileWatchTest::testConfigChange()
     Test::writeIndexerConfig({d1, d2}, {d11, d21});
     FileIndexerConfig config;
 
-    FileWatch fileWatch(&db, &config);
+    FileWatch fileWatch(m_db.get(), &config);
     fileWatch.m_pendingFileQueue->setMaximumTimeout(0);
     fileWatch.m_pendingFileQueue->setMinimumTimeout(0);
     fileWatch.m_pendingFileQueue->setTrackingTime(0);
