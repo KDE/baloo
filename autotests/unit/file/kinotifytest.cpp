@@ -32,6 +32,7 @@ private Q_SLOTS:
     void testRenameFolder();
     void testMoveFolder();
     void testMoveFromUnwatchedFolder();
+    void testMoveToUnwatchedFolder();
     void testMoveRootFolder();
     void testFileClosedAfterWrite();
 
@@ -394,6 +395,39 @@ void KInotifyTest::testMoveFromUnwatchedFolder()
 
     QVERIFY(spy1.wait());
     QCOMPARE(spy1.count(), 4);
+}
+
+void KInotifyTest::testMoveToUnwatchedFolder()
+{
+    // create unwatched destination folder
+    QTemporaryDir destDir;
+    const QString src{m_dir.path()};
+    const QString dest{destDir.path()};
+
+    QSignalSpy spy(m_kn.get(), &KInotify::created);
+
+    // Create stuff inside src
+    mkdir(QStringLiteral("%1/sub").arg(src));
+    touchFile(QStringLiteral("%1/sub/file1").arg(src));
+    touchFile(QStringLiteral("%1/file2").arg(src));
+
+    QVERIFY(spy.wait());
+    QCOMPARE(spy.count(), 3);
+
+    // Move file
+    QFile::rename(QStringLiteral("%1/file2").arg(src),
+            QStringLiteral("%1/file2").arg(dest));
+
+    QSignalSpy spy1(m_kn.get(), &KInotify::deleted);
+    QVERIFY(spy1.wait());
+    QCOMPARE(spy1.count(), 1);
+
+    // Move dir
+    QFile::rename(QStringLiteral("%1/sub").arg(src),
+            QStringLiteral("%1/sub").arg(dest));
+
+    QVERIFY(spy1.wait());
+    QCOMPARE(spy1.count(), 2);
 }
 
 void KInotifyTest::testMoveRootFolder()
