@@ -81,6 +81,16 @@ public:
     QHash<int, QByteArray> watchPathHash;
     QHash<QByteArray, int> pathWatchHash;
 
+    bool parentWatched(const QByteArray& path)
+    {
+        auto parent = path.chopped(1);
+        if (auto index = parent.lastIndexOf('/'); index > 0) {
+            parent.truncate(index + 1);
+            return pathWatchHash.contains(parent);
+        }
+        return false;
+    }
+
     Baloo::FileIndexerConfig* config;
     QStringList m_paths;
     Baloo::FilteredDirIterator* m_dirIter;
@@ -386,7 +396,8 @@ void KInotify::slotEvent(int socket)
 //            qCDebug(BALOO) << path << "EventMoveSelf";
             // Problematic if the parent is not watched, otherwise
             // handled by MoveFrom/MoveTo from the parent
-            qCWarning(BALOO) << path << "EventMoveSelf: THIS CASE MAY NOT BE HANDLED PROPERLY!";
+            if (!d->parentWatched(path))
+                qCWarning(BALOO) << path << "EventMoveSelf: THIS CASE MAY NOT BE HANDLED PROPERLY!";
         }
         if (event->mask & EventMoveFrom) {
 //            qCDebug(BALOO) << path << "EventMoveFrom";
