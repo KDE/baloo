@@ -83,9 +83,9 @@ void FileWatchTest::testFileCreation()
     QVERIFY(spy.wait());
     QCOMPARE(spy.count(), 1);
 
-    QSignalSpy spyIndexNew(&fileWatch, SIGNAL(indexNewFile(QString)));
-    QSignalSpy spyIndexModified(&fileWatch, SIGNAL(indexModifiedFile(QString)));
-    QSignalSpy spyIndexXattr(&fileWatch, SIGNAL(indexXAttr(QString)));
+    QSignalSpy spyIndexNew(&fileWatch, &FileWatch::indexNewFile);
+    QSignalSpy spyIndexModified(&fileWatch, &FileWatch::indexModifiedFile);
+    QSignalSpy spyIndexXattr(&fileWatch, &FileWatch::indexXAttr);
 
     QVERIFY(spyIndexNew.isValid());
     QVERIFY(spyIndexModified.isValid());
@@ -99,45 +99,31 @@ void FileWatchTest::testFileCreation()
     QCOMPARE(spyIndexNew.count(), 1);
     QCOMPARE(spyIndexModified.count(), 0);
     QCOMPARE(spyIndexXattr.count(), 0);
+    QCOMPARE(spyIndexNew.takeFirst().at(0), fileUrl);
 
-    spyIndexNew.clear();
-    spyIndexModified.clear();
-    spyIndexXattr.clear();
-
-    //
     // Modify the file
-    //
     modifyFile(fileUrl);
 
     QVERIFY(spyIndexModified.wait());
     QCOMPARE(spyIndexNew.count(), 0);
     QCOMPARE(spyIndexModified.count(), 1);
     QCOMPARE(spyIndexXattr.count(), 0);
+    QCOMPARE(spyIndexModified.takeFirst().at(0), fileUrl);
 
-    spyIndexNew.clear();
-    spyIndexModified.clear();
-    spyIndexXattr.clear();
-
-    //
     // Set an Xattr
-    //
     KFileMetaData::UserMetaData umd(fileUrl);
     if (!umd.isSupported()) {
         qWarning() << "Xattr not supported on this filesystem:" << fileUrl;
-        return;
+    } else {
+        const QString userComment(QStringLiteral("UserComment"));
+        QVERIFY(umd.setUserComment(userComment) == KFileMetaData::UserMetaData::NoError);
+
+        QVERIFY(spyIndexXattr.wait());
+        QCOMPARE(spyIndexNew.count(), 0);
+        QCOMPARE(spyIndexModified.count(), 0);
+        QCOMPARE(spyIndexXattr.count(), 1);
+        QCOMPARE(spyIndexXattr.takeFirst().at(0), fileUrl);
     }
-
-    const QString userComment(QStringLiteral("UserComment"));
-    QVERIFY(umd.setUserComment(userComment) == KFileMetaData::UserMetaData::NoError);
-
-    QVERIFY(spyIndexXattr.wait());
-    QCOMPARE(spyIndexNew.count(), 0);
-    QCOMPARE(spyIndexModified.count(), 0);
-    QCOMPARE(spyIndexXattr.count(), 1);
-
-    spyIndexNew.clear();
-    spyIndexModified.clear();
-    spyIndexXattr.clear();
 }
 
 void FileWatchTest::testConfigChange()
@@ -170,7 +156,7 @@ void FileWatchTest::testConfigChange()
     QVERIFY(spy.wait());
     QCOMPARE(spy.count(), 2);
 
-    QSignalSpy spyIndexNew(&fileWatch, SIGNAL(indexNewFile(QString)));
+    QSignalSpy spyIndexNew(&fileWatch, &FileWatch::indexNewFile);
     QVERIFY(spyIndexNew.isValid());
     QVERIFY(createFile(d1 + QStringLiteral("/t1")));
     QVERIFY(createFile(d2 + QStringLiteral("/t2")));
