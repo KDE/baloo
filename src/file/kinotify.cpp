@@ -55,7 +55,6 @@ public:
     Private(KInotify* parent)
         : userLimitReachedSignaled(false)
         , config(nullptr)
-        , m_dirIter(nullptr)
         , m_inotifyFd(-1)
         , m_notifier(nullptr)
         , q(parent) {
@@ -63,7 +62,6 @@ public:
 
     ~Private() {
         close();
-        delete m_dirIter;
     }
 
     struct MovedFileCookie {
@@ -93,7 +91,7 @@ public:
 
     Baloo::FileIndexerConfig* config;
     QStringList m_paths;
-    Baloo::FilteredDirIterator* m_dirIter;
+    std::unique_ptr<Baloo::FilteredDirIterator> m_dirIter;
 
     // FIXME: only stored from the last addWatch call
     WatchEvents mode;
@@ -162,10 +160,8 @@ public:
         for (int i = 0; i < 1000; i++) {
             if (!m_dirIter || m_dirIter->next().isEmpty()) {
                 if (!m_paths.isEmpty()) {
-                    delete m_dirIter;
-                    m_dirIter = new Baloo::FilteredDirIterator(config, m_paths.takeFirst(), Baloo::FilteredDirIterator::DirsOnly);
+                    m_dirIter = std::make_unique<Baloo::FilteredDirIterator>(config, m_paths.takeFirst(), Baloo::FilteredDirIterator::DirsOnly);
                 } else {
-                    delete m_dirIter;
                     m_dirIter = nullptr;
                     break;
                 }
@@ -243,14 +239,13 @@ bool KInotify::addWatch(const QString& path, WatchEvents mode, WatchFlags flags)
 
     d->mode = mode;
     d->flags = flags;
+    d->m_paths << path;
     // If the inotify user limit has been signaled,
-    // just queue this folder for watching.
-    if (d->m_dirIter || d->userLimitReachedSignaled) {
-        d->m_paths << path;
+    // there will be no watchInstalled signal
+    if (d->userLimitReachedSignaled) {
         return false;
     }
 
-    d->m_dirIter = new Baloo::FilteredDirIterator(d->config, path, Baloo::FilteredDirIterator::DirsOnly);
     QMetaObject::invokeMethod(this, [this]() {
         this->d->_k_addWatches();
     }, Qt::QueuedConnection);
@@ -269,7 +264,6 @@ bool KInotify::removeWatch(const QString& path)
     }
     if (d->m_dirIter) {
         if (d->m_dirIter->filePath().startsWith(path)) {
-            delete d->m_dirIter;
             d->m_dirIter = nullptr;
         }
     }

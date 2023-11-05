@@ -163,7 +163,7 @@ void FileWatchTest::testConfigChange()
 
     fileWatch.updateIndexedFoldersWatches();
     QVERIFY(spy.wait());
-    QCOMPARE(spy.count(), 1);
+    QCOMPARE(spy.count(), 2);
 
     QSignalSpy spyIndexNew(&fileWatch, SIGNAL(indexNewFile(QString)));
     QVERIFY(spyIndexNew.isValid());
