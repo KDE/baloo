@@ -147,17 +147,14 @@ public:
     /**
      * Add one watch and call oneself asynchronously
      */
-    bool _k_addWatches() {
-        bool addedWatchSuccessfully = false;
-
-        //Do nothing if the inotify user limit has been signaled.
-        if (userLimitReachedSignaled) {
-            return false;
-        }
-
+    void _k_addWatches()
+    {
         // It is much faster to add watches in batches instead of adding each one
         // asynchronously. Try out the inotify test to compare results.
         for (int i = 0; i < 1000; i++) {
+            if (userLimitReachedSignaled) {
+                return;
+            }
             if (!m_dirIter || m_dirIter->next().isEmpty()) {
                 if (!m_paths.isEmpty()) {
                     m_dirIter = std::make_unique<Baloo::FilteredDirIterator>(config, m_paths.takeFirst(), Baloo::FilteredDirIterator::DirsOnly);
@@ -166,8 +163,7 @@ public:
                     break;
                 }
             } else {
-                QString path = m_dirIter->filePath();
-                addedWatchSuccessfully = addWatch(path);
+                addWatch(m_dirIter->filePath());
             }
         }
 
@@ -180,8 +176,6 @@ public:
         else {
             Q_EMIT q->installedWatches();
         }
-
-        return addedWatchSuccessfully;
     }
 
 private:
