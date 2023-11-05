@@ -124,6 +124,17 @@ void FileWatchTest::testFileCreation()
         QCOMPARE(spyIndexXattr.count(), 1);
         QCOMPARE(spyIndexXattr.takeFirst().at(0), fileUrl);
     }
+
+    // Change permisssions
+    QFile f(fileUrl);
+    auto permissions = f.permissions();
+    f.setPermissions(permissions & ~QFileDevice::WriteOwner);
+
+    QVERIFY(spyIndexXattr.wait());
+    QCOMPARE(spyIndexNew.count(), 0);
+    QCOMPARE(spyIndexModified.count(), 0);
+    QCOMPARE(spyIndexXattr.count(), 1);
+    QCOMPARE(spyIndexXattr.takeFirst().at(0), fileUrl);
 }
 
 void FileWatchTest::testConfigChange()
