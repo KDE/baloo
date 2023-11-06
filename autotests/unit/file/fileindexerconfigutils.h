@@ -32,10 +32,10 @@ void writeIndexerConfig(const QStringList& includeFolders,
 {
     QStandardPaths::setTestModeEnabled(true);
     KConfig fileIndexerConfig(QStringLiteral("baloofilerc"));
-    fileIndexerConfig.group("General").writePathEntry("folders", includeFolders);
-    fileIndexerConfig.group("General").writePathEntry("exclude folders", excludeFolders);
-    fileIndexerConfig.group("General").writeEntry("exclude filters", excludeFilters);
-    fileIndexerConfig.group("General").writeEntry("index hidden folders", indexHidden);
+    fileIndexerConfig.group(QStringLiteral("General")).writePathEntry("folders", includeFolders);
+    fileIndexerConfig.group(QStringLiteral("General")).writePathEntry("exclude folders", excludeFolders);
+    fileIndexerConfig.group(QStringLiteral("General")).writeEntry("exclude filters", excludeFilters);
+    fileIndexerConfig.group(QStringLiteral("General")).writeEntry("index hidden folders", indexHidden);
     fileIndexerConfig.sync();
 }
 
