@@ -60,7 +60,6 @@ target_link_libraries(baloofilecommon
     KF6::I18n
     KF6::Solid
     KF6::FileMetaData
-    KF6::Crash
     KF6::ConfigCore
     KF6::BalooEngine
     ${Inotify_LIBRARIES}
@@ -77,6 +76,7 @@ if (BUILD_INDEXER_SERVICE)
 
     target_link_libraries(baloo_file
         baloofilecommon
+        KF6::Crash
     )
 
     install(TARGETS baloo_file DESTINATION ${KDE_INSTALL_FULL_LIBEXECDIR_KF})
