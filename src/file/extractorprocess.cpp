@@ -5,17 +5,14 @@
     SPDX-License-Identifier: LGPL-2.1-or-later
 */
 
-#include "extractorprocess.h"
-
 #include "baloodebug.h"
-#include "config.h"
-
+#include "extractorprocess.h"
 
 using namespace Baloo;
 
-ExtractorProcess::ExtractorProcess(QObject* parent)
+ExtractorProcess::ExtractorProcess(const QString& extractorPath, QObject* parent)
     : QObject(parent)
-    , m_extractorPath(QStringLiteral(KDE_INSTALL_FULL_LIBEXECDIR_KF "/baloo_file_extractor"))
+    , m_extractorPath(extractorPath)
     , m_extractorProcess(this)
     , m_controller(&m_extractorProcess, &m_extractorProcess)
 {
