@@ -39,6 +39,21 @@ ecm_add_test(propertyserializationtest.cpp
     LINK_LIBRARIES Qt6::Test KF6::FileMetaData baloofilecommon
 )
 
+# Management of external extractor process
+ecm_add_test(
+    extractorprocesstest.cpp
+    TEST_NAME "extractorprocesstest"
+    LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test baloofilecommon
+)
+# Dummy process for extractor process testing
+add_executable(extractorprocess_fake
+	extractorprocess_fake.cpp
+)
+target_link_libraries(extractorprocess_fake
+	baloofilecommon
+	KF6::Crash
+)
+
 configure_file(testsconfig.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/testsconfig.h @ONLY)
 
