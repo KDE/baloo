@@ -27,19 +27,27 @@ ExtractorProcess::ExtractorProcess(const QString& extractorPath, QObject* parent
         Q_EMIT finishedIndexingFile(url, false);
     });
     connect(&m_controller, &ControllerPipe::batchFinished, this, [this]() {
+        qCDebug(BALOO) << "Batch finished";
         Q_EMIT done();
     });
 
     connect(&m_extractorProcess, qOverload<int, QProcess::ExitStatus>(&QProcess::finished), [=](int exitCode, QProcess::ExitStatus exitStatus) {
         if (exitStatus == QProcess::CrashExit) {
+            qCWarning(BALOO) << "Extractor crashed";
             Q_EMIT failed();
-        }
-        if (exitCode == 1) {
+        } else if (exitCode == 1) {
             // DB open error
             Q_EMIT failed();
-        }
-        if (exitCode == 2) {
+        } else if (exitCode == 2) {
             // DB transaction commit error
+            Q_EMIT failed();
+        } else if (exitCode == 253) {
+            // DrKonqi mangles signals depending on the core_pattern
+            // and does a regular exit with status 253 instead
+            qCWarning(BALOO) << "Extractor probably crashed";
+            Q_EMIT failed();
+        } else if (exitCode != 0) {
+            qCWarning(BALOO) << "Unexpected exit code:" << exitCode;
             Q_EMIT failed();
         }
     });
