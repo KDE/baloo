@@ -20,7 +20,7 @@ class ExtractorProcess : public QObject
 {
     Q_OBJECT
 public:
-    explicit ExtractorProcess(QObject* parent = nullptr);
+    ExtractorProcess(const QString& extractorPath, QObject* parent = nullptr);
     ~ExtractorProcess();
 
     void index(const QVector<quint64>& fileIds);
