@@ -8,17 +8,17 @@
 #include <QCommandLineParser>
 #include <QCoreApplication>
 #include <QDebug>
-#include <QTemporaryDir>
-#include <QDirIterator>
 #include <QDir>
+#include <QDirIterator>
 #include <QElapsedTimer>
 #include <QMimeDatabase>
+#include <QTemporaryDir>
 
+#include "../../tests/file/util.h"
 #include "database.h"
 #include "databasesize.h"
-#include "transaction.h"
-#include "../../tests/file/util.h"
 #include "src/file/basicindexingjob.h"
+#include "transaction.h"
 
 using namespace Baloo;
 
@@ -45,7 +45,7 @@ int main(int argc, char** argv)
     if (arguments.size() > 1 || !transactionSize) {
         parser.showHelp(1);
     }
-    const QString path = [&arguments,&parser]() {
+    const QString path = [&arguments, &parser]() {
         if (arguments.empty()) {
             return QDir::homePath();
         } else {
@@ -77,8 +77,8 @@ int main(int argc, char** argv)
             if (tr.hasDocument(job.document().id())) {
                 qDebug() << "Skip" << path;
             } else {
-              tr.addDocument(job.document());
-              num++;
+                tr.addDocument(job.document());
+                num++;
             }
 
             if ((num % transactionSize) == 0) {
