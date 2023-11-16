@@ -27,7 +27,6 @@ void UnIndexedFileIterator::test()
     // FIXME: How in the world should I test this?
 }
 
-
 QTEST_GUILESS_MAIN(UnIndexedFileIterator)
 
 #include "unindexedfileiteratortest.moc"

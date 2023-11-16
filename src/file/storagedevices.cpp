@@ -32,11 +32,9 @@ StorageDevices::StorageDevices(QObject* parent)
     initCacheEntries();
 }
 
-
 StorageDevices::~StorageDevices()
 {
 }
-
 
 void StorageDevices::initCacheEntries()
 {
@@ -79,7 +77,6 @@ bool StorageDevices::isEmpty() const
     return m_metadataCache.isEmpty();
 }
 
-
 void StorageDevices::slotSolidDeviceAdded(const QString& udi)
 {
     qCDebug(BALOO) << udi;
@@ -88,7 +85,6 @@ void StorageDevices::slotSolidDeviceAdded(const QString& udi)
         Q_EMIT deviceAdded(e);
     }
 }
-
 
 void StorageDevices::slotSolidDeviceRemoved(const QString& udi)
 {
@@ -99,7 +95,6 @@ void StorageDevices::slotSolidDeviceRemoved(const QString& udi)
         m_metadataCache.erase(it);
     }
 }
-
 
 void StorageDevices::slotAccessibilityChanged(bool accessible, const QString& udi)
 {

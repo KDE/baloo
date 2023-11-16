@@ -45,7 +45,6 @@ FileIndexerConfig::FileIndexerConfig(QObject* parent)
     forceConfigUpdate();
 }
 
-
 FileIndexerConfig::~FileIndexerConfig()
 {
 }
@@ -153,7 +152,6 @@ bool FileIndexerConfig::shouldBeIndexed(const QString& path) const
     }
 }
 
-
 bool FileIndexerConfig::shouldFolderBeIndexed(const QString& path) const
 {
     QString folder;
@@ -191,7 +189,6 @@ bool FileIndexerConfig::shouldFolderBeIndexed(const QString& path) const
     return false;
 }
 
-
 bool FileIndexerConfig::shouldFileBeIndexed(const QString& fileName) const
 {
     if (!indexHiddenFilesAndFolders() && fileName.startsWith(QLatin1Char('.'))) {
@@ -204,7 +201,6 @@ bool FileIndexerConfig::shouldMimeTypeBeIndexed(const QString& mimeType) const
 {
     return !m_excludeMimetypes.contains(mimeType);
 }
-
 
 bool FileIndexerConfig::folderInFolderList(const QString& path, QString& folder) const
 {
@@ -223,7 +219,6 @@ bool FileIndexerConfig::folderInFolderList(const QString& path, QString& folder)
     folder.clear();
     return false;
 }
-
 
 void FileIndexerConfig::FolderCache::cleanup()
 {
@@ -336,7 +331,6 @@ void FileIndexerConfig::buildFolderCache()
 
     m_folderCacheDirty = false;
 }
-
 
 void FileIndexerConfig::buildExcludeFilterRegExpCache()
 {

@@ -11,7 +11,6 @@
 #include <QRegularExpression>
 #include <QUrlQuery>
 
-
 namespace
 {
 QDate applyRelativeDateModificators(const QDate& date, const QMap<QString, QString>& modificators)

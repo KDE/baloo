@@ -108,7 +108,6 @@ QVector<QByteArray> WriteTransaction::addTerms(quint64 id, const QMap<QByteArray
     return termList;
 }
 
-
 void WriteTransaction::removeDocument(quint64 id)
 {
     DocumentDB documentTermsDB(m_dbis.docTermsDbi, m_txn);

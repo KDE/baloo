@@ -26,7 +26,6 @@ PowerStateMonitor::PowerStateMonitor(QObject* parent)
                                           QStringLiteral("PowerSaveStatusChanged"),
                                           this, SLOT(slotPowerManagementStatusChanged(bool)));
 
-
     QDBusMessage msg = QDBusMessage::createMethodCall(QStringLiteral("org.freedesktop.PowerManagement"),
                                                       QStringLiteral("/org/freedesktop/PowerManagement"),
                                                       QStringLiteral("org.freedesktop.PowerManagement"),

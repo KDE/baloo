@@ -275,7 +275,6 @@ Query Query::fromJSON(const QByteArray& arr)
         query.d->m_sortingOption = static_cast<SortingOption>(option);
     }
 
-
     if (map.contains(QStringLiteral("includeFolder"))) {
         query.d->m_includeFolder = map.value(QStringLiteral("includeFolder")).toString();
     }

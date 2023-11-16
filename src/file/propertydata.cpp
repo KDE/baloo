@@ -18,7 +18,6 @@ const QJsonObject propertyMapToJson(const KFileMetaData::PropertyMultiMap& prope
     QJsonObject jsonDict;
 
     while (it != properties.cend()) {
-
         auto property = it.key();
         QString keyString = QString::number(static_cast<int>(property));
 

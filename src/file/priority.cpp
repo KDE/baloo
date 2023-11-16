@@ -52,7 +52,6 @@ namespace {
 }
 #endif
 
-
 bool lowerIOPriority()
 {
 #ifdef SYS_ioprio_set
@@ -69,7 +68,6 @@ bool lowerIOPriority()
 #endif
 }
 
-
 bool lowerPriority()
 {
 #ifndef Q_OS_WIN
@@ -78,7 +76,6 @@ bool lowerPriority()
     return false;
 #endif
 }
-
 
 bool lowerSchedulingPriority()
 {

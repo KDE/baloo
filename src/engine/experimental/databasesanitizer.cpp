@@ -155,7 +155,6 @@ public:
         return info;
     }
 
-
     QMap<quint32, bool> deviceFilters(QVector<FileInfo>& infos, const DatabaseSanitizer::ItemAccessFilters accessFilter)
     {
         QMap<quint32, bool> result;
@@ -205,12 +204,10 @@ public:
 
 private:
     Transaction* m_transaction;
-
 };
 }
 
 using namespace Baloo;
-
 
 DatabaseSanitizer::DatabaseSanitizer(const Database& db, Baloo::Transaction::TransactionType type)
     : m_pimpl(new DatabaseSanitizerImpl(db, type))
@@ -269,7 +266,6 @@ DatabaseSanitizer::~DatabaseSanitizer()
                     summary.accessible,
                     summary.total - (summary.ignored + summary.accessible)) << endl;
     }
-
 }
 
 void DatabaseSanitizer::printDevices(const QVector<qint64>& deviceIds, const ItemAccessFilters accessFilter)

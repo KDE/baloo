@@ -63,7 +63,6 @@ const QString includedFilterSubSubDir = includedFilterSubDir + QLatin1String("/s
 
 void FileIndexerConfigTest::initTestCase()
 {
-
      m_mainDir = createTmpFolders(QStringList{
         indexedRootDir,
         indexedSubDir,
@@ -156,7 +155,6 @@ void FileIndexerConfigTest::testShouldFolderBeIndexed()
 
 void FileIndexerConfigTest::testShouldFolderBeIndexedHidden_data()
 {
-
     const auto indexed = QStringList{
         indexedRootDir,
         indexedSubDir,
@@ -299,7 +297,6 @@ void FileIndexerConfigTest::testShouldBeIndexed()
     QFETCH(bool, shouldBeIndexed);
 
     QCOMPARE(cfg.shouldBeIndexed(path), shouldBeIndexed);
-
 }
 
 void FileIndexerConfigTest::testShouldBeIndexedHidden_data()

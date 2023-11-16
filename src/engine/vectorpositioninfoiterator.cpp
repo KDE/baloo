@@ -45,6 +45,3 @@ QVector<uint> VectorPositionInfoIterator::positions()
 
     return m_vector[m_pos].positions;
 }
-
-
-

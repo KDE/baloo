@@ -223,4 +223,3 @@ Term AdvancedQueryParser::parse(const QString& text)
 
     return stack.top();
 }
-

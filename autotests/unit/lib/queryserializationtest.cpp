@@ -92,7 +92,6 @@ void QuerySerializationTest::testDateTimeTerm()
     QCOMPARE(q, query);
 }
 
-
 void QuerySerializationTest::testCustomOptions()
 {
     Query query;
@@ -107,7 +106,6 @@ void QuerySerializationTest::testCustomOptions()
 
     QCOMPARE(query, q);
 }
-
 
 QTEST_MAIN(QuerySerializationTest)
 

@@ -78,7 +78,6 @@ void ControllerPipe::processStatusData()
     }
 }
 
-
 WorkerPipe::WorkerPipe(QIODevice* commandPipe, QIODevice* statusPipe)
     : m_commandStream(commandPipe)
     , m_statusStream(statusPipe)
