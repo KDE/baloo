@@ -51,7 +51,7 @@ add_executable(extractorprocess_fake
 )
 target_link_libraries(extractorprocess_fake
 	baloofilecommon
-	KF6::Crash
+	KF5::Crash
 )
 
 configure_file(testsconfig.h.in
