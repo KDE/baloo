@@ -35,7 +35,6 @@ void RegularExpCacheBenchmark::test()
             iter.next();
             regex.exactMatch(iter.fileName());
         }
-
     }
 }
 

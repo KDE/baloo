@@ -36,7 +36,6 @@ private:
     QString getRandomValidWebUrl();
     QString getRandomString(int length) const;
     std::unique_ptr<FileMonitor> m_sut;
-
 };
 
 void FileMonitorTest::init()
@@ -188,7 +187,6 @@ QString FileMonitorTest::getRandomString(int length) const
     }
     return randomString;
 }
-
 
 QTEST_GUILESS_MAIN(FileMonitorTest)
 

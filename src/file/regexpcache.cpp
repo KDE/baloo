@@ -15,11 +15,9 @@ RegExpCache::RegExpCache()
 {
 }
 
-
 RegExpCache::~RegExpCache()
 {
 }
-
 
 bool RegExpCache::exactMatch(const QString& s) const
 {

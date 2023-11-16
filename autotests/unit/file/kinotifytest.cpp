@@ -92,7 +92,6 @@ void KInotifyTest::testDeleteFile()
     QCOMPARE(spy.takeFirst().at(0).toString(), f1);
 }
 
-
 void KInotifyTest::testDeleteFolder()
 {
     const QString d1(QStringLiteral("%1/").arg(m_dir.path()));
@@ -109,7 +108,6 @@ void KInotifyTest::testDeleteFolder()
     // make sure we do not watch the removed folder anymore
     QVERIFY(!m_kn->watchingPath(d1));
 }
-
 
 void KInotifyTest::testCreateFolder()
 {
@@ -139,7 +137,6 @@ void KInotifyTest::testCreateFolder()
     QCOMPARE(createdSpy.count(), 1);
     QCOMPARE(createdSpy.takeFirst().at(0).toString(), f1);
 }
-
 
 void KInotifyTest::testRenameFile()
 {
@@ -288,7 +285,6 @@ void KInotifyTest::testRenameFolder()
     QVERIFY(!m_kn->watchingPath(d2));
     QVERIFY(m_kn->watchingPath(d3));
 
-
     // KInotify claims it has updated its data structures, lets see if that is true
     // by creating a file in the new folder
     // listen to the desired signal
@@ -349,7 +345,6 @@ void KInotifyTest::testMoveFolder()
     QVERIFY(!m_kn->watchingPath(src));
     QVERIFY(!m_kn->watchingPath(dest));
     QVERIFY(m_kn->watchingPath(dest2));
-
 
     // KInotify claims it has updated its data structures, lets see if that is true
     // by creating a file in the new folder
@@ -462,7 +457,6 @@ void KInotifyTest::testFileClosedAfterWrite()
     QCOMPARE(spy.count(), 1);
     QCOMPARE(spy.at(0).first().toString(), QString(m_dir.path() + QLatin1String("/file")));
 }
-
 
 QTEST_GUILESS_MAIN(KInotifyTest)
 

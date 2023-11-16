@@ -66,7 +66,6 @@ void OrPostingIteratorTest::testNullIterators()
     QCOMPARE(it.docId(), static_cast<quint64>(0));
 }
 
-
 QTEST_MAIN(OrPostingIteratorTest)
 
 #include "orpostingiteratortest.moc"

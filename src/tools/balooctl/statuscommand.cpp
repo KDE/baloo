@@ -195,7 +195,6 @@ void printSimpleFormat(Transaction& tr, IndexerConfig&  cfg, const QStringList& 
 
 void printJSON(Transaction& tr, IndexerConfig&  cfg, const QStringList& args)
 {
-
     using FileStatus = FileIndexStatus::FileStatus;
     using IndexStateReason = FileIndexStatus::IndexStateReason;
 

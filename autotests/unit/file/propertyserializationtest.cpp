@@ -130,7 +130,6 @@ void PropertySerializationTest::testLists()
     }
 }
 
-
 QTEST_MAIN(PropertySerializationTest)
 
 #include "propertyserializationtest.moc"

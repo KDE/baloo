@@ -595,4 +595,3 @@ void Transaction::checkPostingDbinTermsDb()
         }
     }
 }
-

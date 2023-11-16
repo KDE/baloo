@@ -43,5 +43,4 @@ private:
 
 }
 
-
 #endif // BALOO_POSITIONDB_H

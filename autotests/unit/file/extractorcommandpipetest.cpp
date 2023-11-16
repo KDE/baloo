@@ -42,7 +42,6 @@ private:
     Baloo::Private::ControllerPipe m_controller;
 };
 
-
 void ExtractorCommandPipeTest::initTestCase()
 {
     m_workerPath = QStandardPaths::findExecutable(QStringLiteral("extractorcommandpipe_worker"), {QStringLiteral(EXTRACTOR_TESTS_HELPER_PATH)});

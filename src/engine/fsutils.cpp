@@ -67,4 +67,3 @@ void FSUtils::disableCoW(const QString &path)
     close(fd);
 #endif
 }
-

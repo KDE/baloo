@@ -195,7 +195,6 @@ const char* const s_sourceCodeMimeTypes[] = {
 const int s_sourceCodeMimeTypesVersion = 3;
 }
 
-
 QStringList Baloo::defaultExcludeFilterList()
 {
     QStringList l;

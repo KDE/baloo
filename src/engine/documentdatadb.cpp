@@ -141,5 +141,4 @@ QMap<quint64, QByteArray> DocumentDataDB::toTestMap() const
 
     mdb_cursor_close(cursor);
     return map;
-
 }

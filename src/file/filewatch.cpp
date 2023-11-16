@@ -54,7 +54,6 @@ FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
     connect(m_dirWatch, &KInotify::installedWatches, this, &FileWatch::installedWatches);
 }
 
-
 FileWatch::~FileWatch()
 {
 }
@@ -90,7 +89,6 @@ void FileWatch::slotFileMoved(const QString& urlFrom, const QString& urlTo)
     }
 }
 
-
 void FileWatch::slotFileDeleted(const QString& urlString, bool isDir)
 {
     // Directories must always end with a trailing slash '/'
@@ -104,7 +102,6 @@ void FileWatch::slotFileDeleted(const QString& urlString, bool isDir)
 
     m_pendingFileQueue->enqueue(file);
 }
-
 
 void FileWatch::slotFileCreated(const QString& path, bool isDir)
 {
