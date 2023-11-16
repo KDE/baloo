@@ -65,7 +65,6 @@ QByteArrayList TermGenerator::termList(const QString& text_)
     QByteArrayList list;
     QTextBoundaryFinder bf(QTextBoundaryFinder::Word, text);
     for (; bf.position() != -1; bf.toNextBoundary()) {
-
         int end = bf.position();
         while (start < end && isSkipChar(text[start])) {
             start++;
@@ -158,4 +157,3 @@ void TermGenerator::setPosition(int position)
 {
     m_position = position;
 }
-

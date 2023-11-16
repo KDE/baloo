@@ -91,17 +91,14 @@ KIO::UDSEntry createDayUDSEntry(const QDate& date)
 
 }
 
-
 TimelineProtocol::TimelineProtocol(const QByteArray& poolSocket, const QByteArray& appSocket)
     : KIO::WorkerBase("timeline", poolSocket, appSocket)
 {
 }
 
-
 TimelineProtocol::~TimelineProtocol()
 {
 }
-
 
 KIO::WorkerResult TimelineProtocol::listDir(const QUrl& url)
 {
@@ -154,7 +151,6 @@ KIO::WorkerResult TimelineProtocol::listDir(const QUrl& url)
     return KIO::WorkerResult::pass();
 }
 
-
 KIO::WorkerResult TimelineProtocol::mimetype(const QUrl& url)
 {
     QUrl canonicalUrl = canonicalizeTimelineUrl(url);
@@ -177,7 +173,6 @@ KIO::WorkerResult TimelineProtocol::mimetype(const QUrl& url)
 
     return KIO::WorkerResult::pass();
 }
-
 
 KIO::WorkerResult TimelineProtocol::stat(const QUrl& url)
 {
@@ -214,7 +209,6 @@ KIO::WorkerResult TimelineProtocol::stat(const QUrl& url)
     return KIO::WorkerResult::pass();
 }
 
-
 void TimelineProtocol::listDays(int month, int year)
 {
     const int days = QDate(year, month, 1).daysInMonth();
@@ -238,7 +232,6 @@ bool TimelineProtocol::filesInDate(const QDate& date)
     return it.next();
 }
 
-
 void TimelineProtocol::listThisYearsMonths()
 {
     Query query;
@@ -255,7 +248,6 @@ void TimelineProtocol::listThisYearsMonths()
         }
     }
 }
-
 
 extern "C"
 {

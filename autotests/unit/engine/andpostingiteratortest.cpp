@@ -59,7 +59,6 @@ void AndPostingIteratorTest::testNullIterators()
     QCOMPARE(it.docId(), static_cast<quint64>(0));
 }
 
-
 QTEST_MAIN(AndPostingIteratorTest)
 
 #include "andpostingiteratortest.moc"

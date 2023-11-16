@@ -69,7 +69,6 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
         out << i18n("Usage: balooctl config <command>\n\n");
         out << i18n("Possible Commands:\n");
 
-
         printCommand(QStringLiteral("add"), i18n("Add a value to config parameter"));
         printCommand(QStringLiteral("rm | remove"), i18n("Remove a value from a config parameter"));
         printCommand(QStringLiteral("list | ls | show"), i18n("Show the value of a config parameter"));

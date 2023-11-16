@@ -45,7 +45,6 @@ void UnindexedFileIndexer::run()
             // We handle modified files by simply updating the mTime and filename in the Db and marking them for ContentIndexing
             const quint64 id = job.document().id();
             if (tr.hasDocument(id)) {
-
                 DocumentOperations ops = DocumentTime;
                 if (it.cTimeChanged()) {
                     ops |= XAttrTerms;

@@ -457,7 +457,6 @@ void AdvancedQueryParserTest::testSpecialCharacters_data()
     }});
 }
 
-
 QTEST_MAIN(AdvancedQueryParserTest)
 
 #include "advancedqueryparsertest.moc"

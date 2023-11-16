@@ -12,7 +12,6 @@
 #include "filewatch.h"
 #include "fileindexscheduler.h"
 
-
 namespace Baloo {
 
 class Database;

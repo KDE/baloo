@@ -64,7 +64,6 @@ SearchProtocol::SearchProtocol(const QByteArray& poolSocket, const QByteArray& a
 {
 }
 
-
 SearchProtocol::~SearchProtocol()
 {
 }
@@ -101,13 +100,11 @@ KIO::WorkerResult SearchProtocol::listDir(const QUrl& url)
     return KIO::WorkerResult::pass();
 }
 
-
 KIO::WorkerResult SearchProtocol::mimetype(const QUrl&)
 {
     mimeType(QStringLiteral("inode/directory"));
     return KIO::WorkerResult::pass();
 }
-
 
 KIO::WorkerResult SearchProtocol::stat(const QUrl& url)
 {

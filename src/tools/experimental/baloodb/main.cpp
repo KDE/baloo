@@ -253,7 +253,6 @@ int main(int argc, char* argv[])
             err << i18n("Checking file paths ... ") << endl;
             tr.checkFsTree();
 
-
             err << i18n("Checking postings ... ") << endl;
             tr.checkTermsDbinPostingDb();
 

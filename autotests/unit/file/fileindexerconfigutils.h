@@ -68,7 +68,6 @@ std::unique_ptr<QTemporaryDir> createTmpFolders(const QStringList& folders)
     return tmpDir;
 }
 
-
 std::unique_ptr<QTemporaryDir> createTmpFilesAndFolders(const QStringList& list)
 {
     auto tmpDir = std::make_unique<QTemporaryDir>();

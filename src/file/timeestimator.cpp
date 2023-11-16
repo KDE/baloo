@@ -17,7 +17,6 @@ TimeEstimator::TimeEstimator(QObject* parent)
     , m_bufferIndex(0)
     , m_estimateReady(false)
 {
-
 }
 
 uint TimeEstimator::calculateTimeLeft(int filesLeft)

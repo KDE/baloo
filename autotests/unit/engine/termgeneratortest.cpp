@@ -199,7 +199,6 @@ void TermGeneratorTest::testWordPositionsCJK()
 
     QVector<uint> posInfo2 = doc.m_terms.value("我认识你").positions;
     QCOMPARE(posInfo2, QVector<uint>() << 2);
-
 }
 
 void TermGeneratorTest::testNumbers()

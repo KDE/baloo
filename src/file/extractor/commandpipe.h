@@ -43,7 +43,6 @@ private:
     QDataStream m_statusStream;
 };
 
-
 class WorkerPipe : public QObject
 {
     Q_OBJECT

@@ -67,7 +67,6 @@ private:
     MDB_dbi m_dbi;
 };
 
-
 }
 
 #endif // BALOO_POSTINGDB_H

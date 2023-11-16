@@ -197,7 +197,6 @@ private:
     KInotify* q;
 };
 
-
 KInotify::KInotify(Baloo::FileIndexerConfig* config, QObject* parent)
     : QObject(parent)
     , d(new Private(this))
@@ -209,7 +208,6 @@ KInotify::KInotify(Baloo::FileIndexerConfig* config, QObject* parent)
     d->cookieExpireTimer.setSingleShot(true);
     connect(&d->cookieExpireTimer, &QTimer::timeout, this, &KInotify::slotClearCookies);
 }
-
 
 KInotify::~KInotify()
 {
@@ -245,7 +243,6 @@ bool KInotify::addWatch(const QString& path, WatchEvents mode, WatchFlags flags)
     }, Qt::QueuedConnection);
     return true;
 }
-
 
 bool KInotify::removeWatch(const QString& path)
 {

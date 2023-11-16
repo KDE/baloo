@@ -8,7 +8,6 @@
 #ifndef BALOO_ENGINE_DOCUMENT_OPERATIONS_H
 #define BALOO_ENGINE_DOCUMENT_OPERATIONS_H
 
-
 namespace Baloo {
 
 enum DocumentOperation {

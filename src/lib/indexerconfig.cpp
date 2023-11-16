@@ -39,7 +39,6 @@ bool IndexerConfig::fileIndexingEnabled() const
     return d->m_settings.indexingEnabled();
 }
 
-
 void IndexerConfig::setFileIndexingEnabled(bool enabled) const
 {
     d->m_settings.setIndexingEnabled(enabled);
@@ -49,7 +48,6 @@ bool IndexerConfig::shouldBeIndexed(const QString& path) const
 {
     return d->m_config.shouldBeIndexed(path);
 }
-
 
 bool IndexerConfig::canBeSearched(const QString& folder) const
 {

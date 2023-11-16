@@ -6,7 +6,6 @@
 
 #include "balooplugin.h"
 
-
 #include "queryresultsmodel.h"
 
 void BalooPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

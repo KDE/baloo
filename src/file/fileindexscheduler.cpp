@@ -297,7 +297,6 @@ void FileIndexScheduler::checkStaleIndexEntries()
     scheduleIndexing();
 }
 
-
 uint FileIndexScheduler::getBatchSize()
 {
     return m_config->maxUncomittedFiles();

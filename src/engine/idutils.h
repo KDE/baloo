@@ -94,7 +94,6 @@ inline quint32 idToDeviceId(quint64 id)
     return arr[0];
 }
 
-
 template<typename T, typename V>
 inline void sortedIdInsert(T& vec, const V& id)
 {
@@ -119,7 +118,6 @@ inline void sortedIdRemove(T& vec, const V& id)
         vec.remove(idx);
     }
 }
-
 
 }
 

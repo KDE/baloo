@@ -41,7 +41,6 @@ void SearchModule::init()
     connect(m_dirNotify, &OrgKdeKDirNotifyInterface::leftDirectory,
             this, &SearchModule::unregisterSearchUrl);
 
-
     // FIXME: Listen to changes from Baloo!!
     // Listen to dbChanged
     QDBusConnection con = QDBusConnection::sessionBus();
@@ -50,7 +49,6 @@ void SearchModule::init()
     con.connect(QString(), QStringLiteral("/files"), QStringLiteral("org.kde"),
                 QStringLiteral("changed"), this, SLOT(slotFileMetaDataChanged(QStringList)));
 }
-
 
 void SearchModule::registerSearchUrl(const QString& urlString)
 {

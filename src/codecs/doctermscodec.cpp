@@ -64,4 +64,3 @@ QVector<QByteArray> DocTermsCodec::decode(const QByteArray& full)
 
     return list;
 }
-

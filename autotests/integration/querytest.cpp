@@ -171,7 +171,6 @@ private:
     quint64 m_id9;
 };
 
-
 void QueryTest::insertDocuments()
 {
     Transaction tr(db.get(), Transaction::ReadWrite);
