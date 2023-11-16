@@ -64,6 +64,8 @@ private:
 
     QStringList m_registeredMonitors;
     QDBusServiceWatcher m_monitorWatcher;
+
+    QString m_extractorPath;
 };
 
 }

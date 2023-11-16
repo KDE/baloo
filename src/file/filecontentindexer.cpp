@@ -5,6 +5,7 @@
 */
 
 #include "baloodebug.h"
+#include "config.h"
 #include "filecontentindexer.h"
 #include "filecontentindexerprovider.h"
 #include "extractorprocess.h"
@@ -35,6 +36,7 @@ FileContentIndexer::FileContentIndexer(uint batchSize,
     , m_provider(provider)
     , m_finishedCount(finishedCount)
     , m_stop(0)
+    , m_extractorPath(QStringLiteral(KDE_INSTALL_FULL_LIBEXECDIR "/baloo_file_extractor"))
 {
     Q_ASSERT(provider);
 
@@ -50,7 +52,7 @@ FileContentIndexer::FileContentIndexer(uint batchSize,
 
 void FileContentIndexer::run()
 {
-    ExtractorProcess process;
+    ExtractorProcess process{m_extractorPath};
     connect(&process, &ExtractorProcess::startedIndexingFile, this, &FileContentIndexer::slotStartedIndexingFile);
     connect(&process, &ExtractorProcess::finishedIndexingFile, this, &FileContentIndexer::slotFinishedIndexingFile);
     m_stop.storeRelaxed(false);
