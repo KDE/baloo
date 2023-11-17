@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloodb5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-08-03 02:05+0200\n"
+"POT-Creation-Date: 2023-11-17 01:36+0000\n"
 "PO-Revision-Date: 2018-03-23 18:27-0700\n"
 "Last-Translator: Japanese KDE translation team <kde-jp@kde.org>\n"
 "Language-Team: Japanese <kde-jp@kde.org>\n"
@@ -138,7 +138,7 @@ msgstr ""
 msgid "Removing stale database contents..."
 msgstr ""
 
-#: main.cpp:264
+#: main.cpp:263
 #, kde-format
 msgid "Elapsed: %1 secs"
 msgstr ""

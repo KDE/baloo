@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-04-16 00:16+0000\n"
+"POT-Creation-Date: 2023-11-17 01:36+0000\n"
 "PO-Revision-Date: 2020-09-06 23:36+0100\n"
 "Last-Translator: Sergiu Bivol <sergiu@cip.md>\n"
 "Language-Team: Romanian\n"
@@ -18,32 +18,32 @@ msgstr ""
 "20)) ? 1 : 2;\n"
 "X-Generator: Lokalize 19.12.3\n"
 
-#: experimental/databasesanitizer.cpp:262
+#: experimental/databasesanitizer.cpp:259
 #, kde-format
 msgid "Total: %1, Inaccessible: %2"
 msgstr "Total: %1, Inaccesibile: %2"
 
-#: experimental/databasesanitizer.cpp:266
+#: experimental/databasesanitizer.cpp:263
 #, kde-format
 msgid "Total: %1, Ignored: %2, Accessible: %3, Inaccessible: %4"
 msgstr "Total: %1, Ignorate: %2, Accesibile: %3, Inaccesibile: %4"
 
-#: experimental/databasesanitizer.cpp:322
+#: experimental/databasesanitizer.cpp:318
 #, kde-format
 msgid "Found %1 matching in %2 devices"
 msgstr "S-au găsit %1 potriviri în %2 dispozitive"
 
-#: experimental/databasesanitizer.cpp:343
+#: experimental/databasesanitizer.cpp:339
 #, kde-format
 msgid "IgnoredSymbolicLink:"
 msgstr ""
 
-#: experimental/databasesanitizer.cpp:347
+#: experimental/databasesanitizer.cpp:343
 #, kde-format
 msgid "Removing:"
 msgstr "Se elimină:"
 
-#: experimental/databasesanitizer.cpp:361
+#: experimental/databasesanitizer.cpp:357
 #, kde-format
 msgctxt "numbers"
 msgid "Removed: %1, Total: %2, Ignored: %3"

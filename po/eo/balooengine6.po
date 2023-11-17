@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-04-16 00:16+0000\n"
+"POT-Creation-Date: 2023-11-17 01:36+0000\n"
 "PO-Revision-Date: 2023-05-07 05:50+0100\n"
 "Last-Translator: Oliver Kellogg <okellogg@users.sourceforge.net>\n"
 "Language-Team: Esperanto <kde-i18n-eo@kde.org>\n"
@@ -18,32 +18,32 @@ msgstr ""
 "X-Generator: translate-po (https://github.com/zcribe/translate-po)\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: experimental/databasesanitizer.cpp:262
+#: experimental/databasesanitizer.cpp:259
 #, kde-format
 msgid "Total: %1, Inaccessible: %2"
 msgstr "Sumo: %1, Neatingebla: %2"
 
-#: experimental/databasesanitizer.cpp:266
+#: experimental/databasesanitizer.cpp:263
 #, kde-format
 msgid "Total: %1, Ignored: %2, Accessible: %3, Inaccessible: %4"
 msgstr "Sumo: %1, Ignorita: %2, Alirebla: %3, Neatingebla: %4"
 
-#: experimental/databasesanitizer.cpp:322
+#: experimental/databasesanitizer.cpp:318
 #, kde-format
 msgid "Found %1 matching in %2 devices"
 msgstr "Trovis %1 kongrua en %2 aparatoj"
 
-#: experimental/databasesanitizer.cpp:343
+#: experimental/databasesanitizer.cpp:339
 #, kde-format
 msgid "IgnoredSymbolicLink:"
 msgstr "IgnoredSymbolicLink:"
 
-#: experimental/databasesanitizer.cpp:347
+#: experimental/databasesanitizer.cpp:343
 #, kde-format
 msgid "Removing:"
 msgstr "Forigo:"
 
-#: experimental/databasesanitizer.cpp:361
+#: experimental/databasesanitizer.cpp:357
 #, kde-format
 msgctxt "numbers"
 msgid "Removed: %1, Total: %2, Ignored: %3"

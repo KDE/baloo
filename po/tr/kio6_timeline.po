@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-11-23 00:43+0000\n"
+"POT-Creation-Date: 2023-11-17 01:36+0000\n"
 "PO-Revision-Date: 2022-05-05 12:49+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
@@ -28,12 +28,12 @@ msgctxt ""
 msgid "MMMM yyyy"
 msgstr "AAAA yyyy"
 
-#: kio_timeline.cpp:117
+#: kio_timeline.cpp:114
 #, kde-format
 msgid "Today"
 msgstr "Bugün"
 
-#: kio_timeline.cpp:118 kio_timeline.cpp:197
+#: kio_timeline.cpp:115 kio_timeline.cpp:192
 #, kde-format
 msgid "Calendar"
 msgstr "Takvim"

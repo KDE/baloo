@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2020-08-03 02:05+0200\n"
+"POT-Creation-Date: 2023-11-17 01:36+0000\n"
 "PO-Revision-Date: 2020-01-23 15:57+0100\n"
 "Last-Translator: Matjaž Jeran <matjaz.jeran@amis.net>\n"
 "Language-Team: Slovenian <lugos-slo@lugos.si>\n"
@@ -162,7 +162,7 @@ msgstr "Prikaz vsebine baze podatkov..."
 msgid "Removing stale database contents..."
 msgstr "Odstranjevanje zastarele vsebine baze podatkov..."
 
-#: main.cpp:264
+#: main.cpp:263
 #, kde-format
 msgid "Elapsed: %1 secs"
 msgstr "Preteklo: %1 sekund"
