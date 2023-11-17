@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-05 12:24+0000\n"
+"POT-Creation-Date: 2023-11-17 00:39+0000\n"
 "PO-Revision-Date: 2018-09-14 23:54+0300\n"
 "Last-Translator: Alexander Potashev <aspotashev@gmail.com>\n"
 "Language-Team: Russian <kde-russian@lists.kde.ru>\n"
@@ -163,7 +163,7 @@ msgstr "Чтение содержимого базы данных..."
 msgid "Removing stale database contents..."
 msgstr "Удаление устаревших записей из базы данных..."
 
-#: main.cpp:264
+#: main.cpp:263
 #, kde-format
 msgid "Elapsed: %1 secs"
 msgstr "Затрачено времени: %1 с"

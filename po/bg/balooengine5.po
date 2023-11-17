@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-05 12:24+0000\n"
+"POT-Creation-Date: 2023-11-17 00:39+0000\n"
 "PO-Revision-Date: 2022-01-27 10:34+0200\n"
 "Last-Translator: Yasen Pramatarov <yasen@lindeas.com>\n"
 "Language-Team: Bulgarian <dict@ludost.net>\n"
@@ -17,32 +17,32 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Lokalize 21.08.0\n"
 
-#: experimental/databasesanitizer.cpp:262
+#: experimental/databasesanitizer.cpp:259
 #, kde-format
 msgid "Total: %1, Inaccessible: %2"
 msgstr "Общо: %1, Недостъпни: %2"
 
-#: experimental/databasesanitizer.cpp:266
+#: experimental/databasesanitizer.cpp:263
 #, kde-format
 msgid "Total: %1, Ignored: %2, Accessible: %3, Inaccessible: %4"
 msgstr "Общо: %1, Игнорирани: %2, Достъпни: %3, Недостъпни: %4"
 
-#: experimental/databasesanitizer.cpp:322
+#: experimental/databasesanitizer.cpp:318
 #, kde-format
 msgid "Found %1 matching in %2 devices"
 msgstr "Намерени са %1 съвпадащи записа в  %2 устройства"
 
-#: experimental/databasesanitizer.cpp:343
+#: experimental/databasesanitizer.cpp:339
 #, kde-format
 msgid "IgnoredSymbolicLink:"
 msgstr "Игнорирани символни връзки:"
 
-#: experimental/databasesanitizer.cpp:347
+#: experimental/databasesanitizer.cpp:343
 #, kde-format
 msgid "Removing:"
 msgstr "Премахване:"
 
-#: experimental/databasesanitizer.cpp:361
+#: experimental/databasesanitizer.cpp:357
 #, kde-format
 msgctxt "numbers"
 msgid "Removed: %1, Total: %2, Ignored: %3"

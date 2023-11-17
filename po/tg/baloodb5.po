@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-05 12:24+0000\n"
+"POT-Creation-Date: 2023-11-17 00:39+0000\n"
 "PO-Revision-Date: 2019-08-16 20:51+0500\n"
 "Last-Translator: Victor Ibragimov <victor.ibragimov@gmail.com>\n"
 "Language-Team: English <kde-i18n-doc@kde.org>\n"
@@ -160,7 +160,7 @@ msgstr "Рӯйхати мундариҷаи пойгоҳи иттилоотӣ...
 msgid "Removing stale database contents..."
 msgstr "Тозакунии мундариҷаи куҳнашудаи пойгоҳи иттилоотӣ..."
 
-#: main.cpp:264
+#: main.cpp:263
 #, kde-format
 msgid "Elapsed: %1 secs"
 msgstr "Гузашти вақт: %1 сон"

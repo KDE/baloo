@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-05 12:24+0000\n"
+"POT-Creation-Date: 2023-11-17 00:39+0000\n"
 "PO-Revision-Date: 2022-01-24 12:58+0100\n"
 "Last-Translator: giovanni <g.sora@tiscali.it>\n"
 "Language-Team: Interlingua <kde-i18n-doc@kde.org>\n"
@@ -53,32 +53,32 @@ msgstr ""
 msgid "Possible Commands:\n"
 msgstr "Commandos possibile:\n"
 
-#: configcommand.cpp:73
+#: configcommand.cpp:72
 #, kde-format
 msgid "Add a value to config parameter"
 msgstr "Adde un valor al parametro de config"
 
-#: configcommand.cpp:74
+#: configcommand.cpp:73
 #, kde-format
 msgid "Remove a value from a config parameter"
 msgstr "Remove un valor ex un parametro de config"
 
-#: configcommand.cpp:75
+#: configcommand.cpp:74
 #, kde-format
 msgid "Show the value of a config parameter"
 msgstr "Monstra le valor de un parametro de config"
 
-#: configcommand.cpp:76
+#: configcommand.cpp:75
 #, kde-format
 msgid "Set the value of a config parameter"
 msgstr "Fixa le valor de un parametro de config"
 
-#: configcommand.cpp:77
+#: configcommand.cpp:76
 #, kde-format
 msgid "Display this help menu"
 msgstr "Monstra iste menu de adjuta"
 
-#: configcommand.cpp:83
+#: configcommand.cpp:82
 #, kde-format
 msgid ""
 "The following configuration options may be listed:\n"
@@ -87,43 +87,43 @@ msgstr ""
 "Le sequente optiones de configuratione pote esser listate:\n"
 "\n"
 
-#: configcommand.cpp:85 configcommand.cpp:364
+#: configcommand.cpp:84 configcommand.cpp:363
 #, kde-format
 msgid "Controls if Baloo indexes hidden files and folders"
 msgstr "Controla si Baloo indicisa files e dossieres celate"
 
-#: configcommand.cpp:86 configcommand.cpp:365
+#: configcommand.cpp:85 configcommand.cpp:364
 #, kde-format
 msgid "Controls if Baloo indexes file content"
 msgstr "Controla si Baloo indicisa contento de file"
 
-#: configcommand.cpp:87 configcommand.cpp:150 configcommand.cpp:241
+#: configcommand.cpp:86 configcommand.cpp:149 configcommand.cpp:240
 #, kde-format
 msgid "The list of folders which Baloo indexes"
 msgstr "Le lista de dossieres que Baloo indicisa"
 
-#: configcommand.cpp:88 configcommand.cpp:151 configcommand.cpp:242
+#: configcommand.cpp:87 configcommand.cpp:150 configcommand.cpp:241
 #, kde-format
 msgid "The list of folders which Baloo will never index"
 msgstr "Le lista de dossieres que Baloo jammais indicisara"
 
-#: configcommand.cpp:89 configcommand.cpp:152 configcommand.cpp:243
+#: configcommand.cpp:88 configcommand.cpp:151 configcommand.cpp:242
 #, kde-format
 msgid "The list of filters which are used to exclude files"
 msgstr "Le lista de files que es usate per excluder files"
 
-#: configcommand.cpp:90 configcommand.cpp:153 configcommand.cpp:244
+#: configcommand.cpp:89 configcommand.cpp:152 configcommand.cpp:243
 #, kde-format
 msgid "The list of mimetypes which are used to exclude files"
 msgstr "Le lista de mimetypes que es usate per excluder files"
 
-#: configcommand.cpp:142 configcommand.cpp:233 configcommand.cpp:356
-#: configcommand.cpp:426
+#: configcommand.cpp:141 configcommand.cpp:232 configcommand.cpp:355
+#: configcommand.cpp:425
 #, kde-format
 msgid "Config parameter could not be found\n"
 msgstr "Le parametro de configurar non poteva esser trovate\n"
 
-#: configcommand.cpp:148 configcommand.cpp:239 configcommand.cpp:362
+#: configcommand.cpp:147 configcommand.cpp:238 configcommand.cpp:361
 #, kde-format
 msgid ""
 "The following configuration options may be modified:\n"
@@ -132,83 +132,83 @@ msgstr ""
 "Le sequente optiones de configuration pote esser modificate:\n"
 "\n"
 
-#: configcommand.cpp:161 configcommand.cpp:181 configcommand.cpp:252
-#: configcommand.cpp:287
+#: configcommand.cpp:160 configcommand.cpp:180 configcommand.cpp:251
+#: configcommand.cpp:286
 #, kde-format
 msgid "A folder must be provided\n"
 msgstr "Un dossier debe esser fornite\n"
 
-#: configcommand.cpp:169
+#: configcommand.cpp:168
 #, kde-format
 msgid "%1 is not in the list of include folders"
 msgstr "%1 non es in le lista de dossieres de includer"
 
-#: configcommand.cpp:189
+#: configcommand.cpp:188
 #, kde-format
 msgid "%1 is not in the list of exclude folders"
 msgstr "%1 non es in le lista de dossieres de excluder"
 
-#: configcommand.cpp:201 configcommand.cpp:322
+#: configcommand.cpp:200 configcommand.cpp:321
 #, kde-format
 msgid "A filter must be provided\n"
 msgstr "Un filtro debe esser fornite\n"
 
-#: configcommand.cpp:207
+#: configcommand.cpp:206
 #, kde-format
 msgid "%1 is not in list of exclude filters"
 msgstr "%1 non es in le lista de filtros de excluder"
 
-#: configcommand.cpp:218 configcommand.cpp:340
+#: configcommand.cpp:217 configcommand.cpp:339
 #, kde-format
 msgid "A mimetype must be provided\n"
 msgstr "Un mimetype debe esser fornite\n"
 
-#: configcommand.cpp:224
+#: configcommand.cpp:223
 #, kde-format
 msgid "%1 is not in list of exclude mimetypes"
 msgstr "%1 non es in le lista de mimetypes de excluder"
 
-#: configcommand.cpp:258 configcommand.cpp:293
+#: configcommand.cpp:257 configcommand.cpp:292
 #, kde-format
 msgid "Path does not exist\n"
 msgstr "Le percurso non existe\n"
 
-#: configcommand.cpp:263 configcommand.cpp:298
+#: configcommand.cpp:262 configcommand.cpp:297
 #, kde-format
 msgid "Path is not a directory\n"
 msgstr "Le percurso non es un directorio\n"
 
-#: configcommand.cpp:270
+#: configcommand.cpp:269
 #, kde-format
 msgid "%1 is already in the list of include folders"
 msgstr "%1 jam es in le lista de dossieres de includer"
 
-#: configcommand.cpp:275 configcommand.cpp:310
+#: configcommand.cpp:274 configcommand.cpp:309
 #, kde-format
 msgid "%1 is in the list of exclude folders"
 msgstr "%1 es in le lista de dossieres de excluder"
 
-#: configcommand.cpp:305
+#: configcommand.cpp:304
 #, kde-format
 msgid "%1 is already in the list of exclude folders"
 msgstr "%1 jam es in le lista de dossieres de excluder"
 
-#: configcommand.cpp:328
+#: configcommand.cpp:327
 #, kde-format
 msgid "Exclude filter is already in the list\n"
 msgstr "Filtro de excluder jam es in le lista\n"
 
-#: configcommand.cpp:346
+#: configcommand.cpp:345
 #, kde-format
 msgid "Exclude mimetype is already in the list\n"
 msgstr "Mimetype de excluder jam es in le lista\n"
 
-#: configcommand.cpp:374 configcommand.cpp:401
+#: configcommand.cpp:373 configcommand.cpp:400
 #, kde-format
 msgid "A value must be provided\n"
 msgstr "Un valor debe esser fornite\n"
 
-#: configcommand.cpp:395 configcommand.cpp:422
+#: configcommand.cpp:394 configcommand.cpp:421
 #, kde-format
 msgid "Invalid value\n"
 msgstr "Valor invalide\n"
@@ -332,7 +332,7 @@ msgstr "Pressa Ctrl+C per stoppar controlar (monitoring)\n"
 msgid "File indexer is running\n"
 msgstr "Indicisator de file es executante\n"
 
-#: monitorcommand.cpp:94 statuscommand.cpp:308
+#: monitorcommand.cpp:94 statuscommand.cpp:307
 #, kde-format
 msgctxt "currently indexed file"
 msgid "Indexing: %1"
@@ -389,12 +389,12 @@ msgstr "Indicisator de contento: falleva"
 msgid "Content Indexing: Done"
 msgstr "Indicisator de contento: facite"
 
-#: statuscommand.cpp:142 statuscommand.cpp:182 statuscommand.cpp:231
+#: statuscommand.cpp:142 statuscommand.cpp:182 statuscommand.cpp:230
 #, kde-format
 msgid "Ignoring non-existent file %1"
 msgstr "Ignorante file non existente %1"
 
-#: statuscommand.cpp:147 statuscommand.cpp:187 statuscommand.cpp:236
+#: statuscommand.cpp:147 statuscommand.cpp:187 statuscommand.cpp:235
 #, kde-format
 msgid "Ignoring symlink/special file %1"
 msgstr "Ignorante symlink/special file %1"
@@ -404,64 +404,64 @@ msgstr "Ignorante symlink/special file %1"
 msgid "File: %1"
 msgstr "File: %1"
 
-#: statuscommand.cpp:263
+#: statuscommand.cpp:262
 #, kde-format
 msgid "Output format \"%1\" is invalid, use one of:\n"
 msgstr "Formato de egresso \"%1\" es invalide, usa un de:\n"
 
-#: statuscommand.cpp:265
+#: statuscommand.cpp:264
 #, kde-format
 msgctxt "bullet list item with output format"
 msgid "- %1\n"
 msgstr "- %1\n"
 
-#: statuscommand.cpp:272
+#: statuscommand.cpp:271
 #, kde-format
 msgid "Baloo is currently disabled. To enable, please run %1\n"
 msgstr ""
 "Baloo es currentemente deactivate. Per activar lo, pro favor tu executa %1\n"
 
-#: statuscommand.cpp:278
+#: statuscommand.cpp:277
 #, kde-format
 msgid "Baloo Index could not be opened\n"
 msgstr "Indice de Baloo non pote esser aperite\n"
 
-#: statuscommand.cpp:305
+#: statuscommand.cpp:304
 #, kde-format
 msgid "Baloo File Indexer is running\n"
 msgstr "Indicisator de file Baloo es executante\n"
 
-#: statuscommand.cpp:307 statuscommand.cpp:310
+#: statuscommand.cpp:306 statuscommand.cpp:309
 #, kde-format
 msgid "Indexer state: %1"
 msgstr "Stato de indicisator: %1"
 
-#: statuscommand.cpp:314
+#: statuscommand.cpp:313
 #, kde-format
 msgid "Baloo File Indexer is not running\n"
 msgstr "Indicisator de file Baloo non es executante\n"
 
-#: statuscommand.cpp:321
+#: statuscommand.cpp:320
 #, kde-format
 msgid "Total files indexed: %1"
 msgstr "Files total indicisate:%1"
 
-#: statuscommand.cpp:322
+#: statuscommand.cpp:321
 #, kde-format
 msgid "Files waiting for content indexing: %1"
 msgstr "Files expectante per indicisation de contextyo: %1"
 
-#: statuscommand.cpp:323
+#: statuscommand.cpp:322
 #, kde-format
 msgid "Files failed to index: %1"
 msgstr "Files falleva a indicisar: %1"
 
-#: statuscommand.cpp:331
+#: statuscommand.cpp:330
 #, kde-format
 msgid "Current size of index is %1"
 msgstr "Grandor actual del indice es %1"
 
-#: statuscommand.cpp:333
+#: statuscommand.cpp:332
 #, kde-format
 msgid "Index does not exist yet\n"
 msgstr "Le percurso non existe ancora\n"
