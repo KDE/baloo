@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-04-16 00:16+0000\n"
+"POT-Creation-Date: 2023-11-17 01:36+0000\n"
 "PO-Revision-Date: 2018-07-10 14:30+0100\n"
 "Last-Translator: Vit Pelcak <vit@pelcak.org>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
@@ -17,32 +17,32 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Generator: Lokalize 2.0\n"
 
-#: experimental/databasesanitizer.cpp:262
+#: experimental/databasesanitizer.cpp:259
 #, kde-format
 msgid "Total: %1, Inaccessible: %2"
 msgstr "Celkem: %1, Nedostupné: %2"
 
-#: experimental/databasesanitizer.cpp:266
+#: experimental/databasesanitizer.cpp:263
 #, kde-format
 msgid "Total: %1, Ignored: %2, Accessible: %3, Inaccessible: %4"
 msgstr "Celkem: %1, Ignorováno: %2, Dostupné: %3, Nedostupné: %4"
 
-#: experimental/databasesanitizer.cpp:322
+#: experimental/databasesanitizer.cpp:318
 #, kde-format
 msgid "Found %1 matching in %2 devices"
 msgstr "Nalezeno %1 odpovídající na %2 zařízeních"
 
-#: experimental/databasesanitizer.cpp:343
+#: experimental/databasesanitizer.cpp:339
 #, kde-format
 msgid "IgnoredSymbolicLink:"
 msgstr "Ignorovaný Symbolický odkaz:"
 
-#: experimental/databasesanitizer.cpp:347
+#: experimental/databasesanitizer.cpp:343
 #, kde-format
 msgid "Removing:"
 msgstr "Odstraňuje se:"
 
-#: experimental/databasesanitizer.cpp:361
+#: experimental/databasesanitizer.cpp:357
 #, kde-format
 msgctxt "numbers"
 msgid "Removed: %1, Total: %2, Ignored: %3"

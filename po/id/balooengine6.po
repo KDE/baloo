@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-04-16 00:16+0000\n"
+"POT-Creation-Date: 2023-11-17 01:36+0000\n"
 "PO-Revision-Date: 2022-08-26 23:44+0700\n"
 "Last-Translator: Wantoyèk <wantoyek@gmail.com>\n"
 "Language-Team: https://t.me/Localizations_KDE_Indonesia\n"
@@ -17,32 +17,32 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Lokalize 21.12.3\n"
 
-#: experimental/databasesanitizer.cpp:262
+#: experimental/databasesanitizer.cpp:259
 #, kde-format
 msgid "Total: %1, Inaccessible: %2"
 msgstr "Total: %1, Tak Dapat Diakses: %2"
 
-#: experimental/databasesanitizer.cpp:266
+#: experimental/databasesanitizer.cpp:263
 #, kde-format
 msgid "Total: %1, Ignored: %2, Accessible: %3, Inaccessible: %4"
 msgstr "Total: %1, Diabaikan: %2, Dapat Diakses: %3, Tak Dapat Diakses: %4"
 
-#: experimental/databasesanitizer.cpp:322
+#: experimental/databasesanitizer.cpp:318
 #, kde-format
 msgid "Found %1 matching in %2 devices"
 msgstr "Ditemukan %1 kecocokan dalam peranti %2"
 
-#: experimental/databasesanitizer.cpp:343
+#: experimental/databasesanitizer.cpp:339
 #, kde-format
 msgid "IgnoredSymbolicLink:"
 msgstr "IgnoredSymbolicLink:"
 
-#: experimental/databasesanitizer.cpp:347
+#: experimental/databasesanitizer.cpp:343
 #, kde-format
 msgid "Removing:"
 msgstr "Pembuangan:"
 
-#: experimental/databasesanitizer.cpp:361
+#: experimental/databasesanitizer.cpp:357
 #, kde-format
 msgctxt "numbers"
 msgid "Removed: %1, Total: %2, Ignored: %3"

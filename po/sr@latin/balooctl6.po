@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: balooctl\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-05-19 00:15+0000\n"
+"POT-Creation-Date: 2023-11-17 01:36+0000\n"
 "PO-Revision-Date: 2017-04-07 00:51+0200\n"
 "Last-Translator: Chusslove Illich <caslav.ilic@gmx.net>\n"
 "Language-Team: Serbian <kde-i18n-sr@kde.org>\n"
@@ -55,32 +55,32 @@ msgstr "Upotreba: balooctl config <naredba>"
 msgid "Possible Commands:\n"
 msgstr "Moguće naredbe:"
 
-#: configcommand.cpp:73
+#: configcommand.cpp:72
 #, kde-format
 msgid "Add a value to config parameter"
 msgstr "Dodaj vrednost parametru postave."
 
-#: configcommand.cpp:74
+#: configcommand.cpp:73
 #, kde-format
 msgid "Remove a value from a config parameter"
 msgstr "Ukloni vrednost iz parametra postave."
 
-#: configcommand.cpp:75
+#: configcommand.cpp:74
 #, kde-format
 msgid "Show the value of a config parameter"
 msgstr "Prikaži vrednost parametra postave."
 
-#: configcommand.cpp:76
+#: configcommand.cpp:75
 #, kde-format
 msgid "Set the value of a config parameter"
 msgstr "Postavi vrednost parametra postave."
 
-#: configcommand.cpp:77
+#: configcommand.cpp:76
 #, kde-format
 msgid "Display this help menu"
 msgstr "Prikaži ovaj meni pomoći."
 
-#: configcommand.cpp:83
+#: configcommand.cpp:82
 #, fuzzy, kde-format
 #| msgid "The following configuration options may be listed:"
 msgid ""
@@ -88,45 +88,45 @@ msgid ""
 "\n"
 msgstr "Mogu se nabrojati sledeće opcije postave:"
 
-#: configcommand.cpp:85 configcommand.cpp:364
+#: configcommand.cpp:84 configcommand.cpp:363
 #, kde-format
 msgid "Controls if Baloo indexes hidden files and folders"
 msgstr "Određuje da li Baloo indeksira skrivene fajlove i fascikle."
 
-#: configcommand.cpp:86 configcommand.cpp:365
+#: configcommand.cpp:85 configcommand.cpp:364
 #, fuzzy, kde-format
 #| msgid "Controls if baloo indexes file content."
 msgid "Controls if Baloo indexes file content"
 msgstr "Određuje da li Baloo indeksira sadržaj fajlova."
 
-#: configcommand.cpp:87 configcommand.cpp:150 configcommand.cpp:241
+#: configcommand.cpp:86 configcommand.cpp:149 configcommand.cpp:240
 #, kde-format
 msgid "The list of folders which Baloo indexes"
 msgstr "Spisak fascikli koje Baloo indeksira."
 
-#: configcommand.cpp:88 configcommand.cpp:151 configcommand.cpp:242
+#: configcommand.cpp:87 configcommand.cpp:150 configcommand.cpp:241
 #, kde-format
 msgid "The list of folders which Baloo will never index"
 msgstr "Spisak fascikli koje Baloo nikad ne indeksira."
 
-#: configcommand.cpp:89 configcommand.cpp:152 configcommand.cpp:243
+#: configcommand.cpp:88 configcommand.cpp:151 configcommand.cpp:242
 #, kde-format
 msgid "The list of filters which are used to exclude files"
 msgstr "Spisak filtera za isključivanje fajlova."
 
-#: configcommand.cpp:90 configcommand.cpp:153 configcommand.cpp:244
+#: configcommand.cpp:89 configcommand.cpp:152 configcommand.cpp:243
 #, kde-format
 msgid "The list of mimetypes which are used to exclude files"
 msgstr "Spisak MIME tipova za isključivanje fajlova."
 
-#: configcommand.cpp:142 configcommand.cpp:233 configcommand.cpp:356
-#: configcommand.cpp:426
+#: configcommand.cpp:141 configcommand.cpp:232 configcommand.cpp:355
+#: configcommand.cpp:425
 #, fuzzy, kde-format
 #| msgid "Config parameter could not be found"
 msgid "Config parameter could not be found\n"
 msgstr "Parametar postave nije nađen."
 
-#: configcommand.cpp:148 configcommand.cpp:239 configcommand.cpp:362
+#: configcommand.cpp:147 configcommand.cpp:238 configcommand.cpp:361
 #, fuzzy, kde-format
 #| msgid "The following configuration options may be modified:"
 msgid ""
@@ -134,91 +134,91 @@ msgid ""
 "\n"
 msgstr "Moguće je izmeniti sledeće opcije postave:"
 
-#: configcommand.cpp:161 configcommand.cpp:181 configcommand.cpp:252
-#: configcommand.cpp:287
+#: configcommand.cpp:160 configcommand.cpp:180 configcommand.cpp:251
+#: configcommand.cpp:286
 #, fuzzy, kde-format
 #| msgid "A folder must be provided"
 msgid "A folder must be provided\n"
 msgstr "Mora da se zada fascikla."
 
-#: configcommand.cpp:169
+#: configcommand.cpp:168
 #, kde-format
 msgid "%1 is not in the list of include folders"
 msgstr "%1 nije na spisku uključenih fascikli."
 
-#: configcommand.cpp:189
+#: configcommand.cpp:188
 #, kde-format
 msgid "%1 is not in the list of exclude folders"
 msgstr "%1 nije na spisku isključenih fascikli."
 
-#: configcommand.cpp:201 configcommand.cpp:322
+#: configcommand.cpp:200 configcommand.cpp:321
 #, fuzzy, kde-format
 #| msgid "A filter must be provided"
 msgid "A filter must be provided\n"
 msgstr "Mora da se zada filter."
 
-#: configcommand.cpp:207
+#: configcommand.cpp:206
 #, kde-format
 msgid "%1 is not in list of exclude filters"
 msgstr "%1 nije na spisku isključnih filtera."
 
-#: configcommand.cpp:218 configcommand.cpp:340
+#: configcommand.cpp:217 configcommand.cpp:339
 #, fuzzy, kde-format
 #| msgid "A mimetype must be provided"
 msgid "A mimetype must be provided\n"
 msgstr "Mora da se zada MIME tip."
 
-#: configcommand.cpp:224
+#: configcommand.cpp:223
 #, kde-format
 msgid "%1 is not in list of exclude mimetypes"
 msgstr "%1 nije na spisku isključnih MIME tipova."
 
-#: configcommand.cpp:258 configcommand.cpp:293
+#: configcommand.cpp:257 configcommand.cpp:292
 #, fuzzy, kde-format
 #| msgid "Path does not exist"
 msgid "Path does not exist\n"
 msgstr "Putanja ne postoji."
 
-#: configcommand.cpp:263 configcommand.cpp:298
+#: configcommand.cpp:262 configcommand.cpp:297
 #, fuzzy, kde-format
 #| msgid "Path is not a directory"
 msgid "Path is not a directory\n"
 msgstr "Putanja nije fascikla."
 
-#: configcommand.cpp:270
+#: configcommand.cpp:269
 #, kde-format
 msgid "%1 is already in the list of include folders"
 msgstr "%1 je već na spisku uključenih fascikli."
 
-#: configcommand.cpp:275 configcommand.cpp:310
+#: configcommand.cpp:274 configcommand.cpp:309
 #, kde-format
 msgid "%1 is in the list of exclude folders"
 msgstr "%1 je na spisku isključenih fascikli."
 
-#: configcommand.cpp:305
+#: configcommand.cpp:304
 #, kde-format
 msgid "%1 is already in the list of exclude folders"
 msgstr "%1 je već na spisku isključenih fascikli."
 
-#: configcommand.cpp:328
+#: configcommand.cpp:327
 #, fuzzy, kde-format
 #| msgid "Exclude filter is already in the list"
 msgid "Exclude filter is already in the list\n"
 msgstr "Isključni filter je već na spisku."
 
-#: configcommand.cpp:346
+#: configcommand.cpp:345
 #, fuzzy, kde-format
 #| msgid "Exclude mimetype is already in the list"
 msgid "Exclude mimetype is already in the list\n"
 msgstr "Isključni MIME tip je već na spisku."
 
-#: configcommand.cpp:374 configcommand.cpp:401
+#: configcommand.cpp:373 configcommand.cpp:400
 #, fuzzy, kde-format
 #| msgid "A value must be provided"
 msgid "A value must be provided\n"
 msgstr "Mora da se zada vrednost."
 
-#: configcommand.cpp:395 configcommand.cpp:422
+#: configcommand.cpp:394 configcommand.cpp:421
 #, fuzzy, kde-format
 #| msgid "Invalid value"
 msgid "Invalid value\n"
@@ -343,7 +343,7 @@ msgstr ""
 msgid "File indexer is running\n"
 msgstr "Balooov indeksar fajlova je u pogonu."
 
-#: monitorcommand.cpp:94 statuscommand.cpp:308
+#: monitorcommand.cpp:94 statuscommand.cpp:307
 #, fuzzy, kde-format
 #| msgid "Indexer state: %1"
 msgctxt "currently indexed file"
@@ -401,12 +401,12 @@ msgstr ""
 msgid "Content Indexing: Done"
 msgstr ""
 
-#: statuscommand.cpp:142 statuscommand.cpp:182 statuscommand.cpp:231
+#: statuscommand.cpp:142 statuscommand.cpp:182 statuscommand.cpp:230
 #, kde-format
 msgid "Ignoring non-existent file %1"
 msgstr ""
 
-#: statuscommand.cpp:147 statuscommand.cpp:187 statuscommand.cpp:236
+#: statuscommand.cpp:147 statuscommand.cpp:187 statuscommand.cpp:235
 #, kde-format
 msgid "Ignoring symlink/special file %1"
 msgstr ""
@@ -416,18 +416,18 @@ msgstr ""
 msgid "File: %1"
 msgstr "Fajl: %1"
 
-#: statuscommand.cpp:263
+#: statuscommand.cpp:262
 #, kde-format
 msgid "Output format \"%1\" is invalid, use one of:\n"
 msgstr ""
 
-#: statuscommand.cpp:265
+#: statuscommand.cpp:264
 #, kde-format
 msgctxt "bullet list item with output format"
 msgid "- %1\n"
 msgstr ""
 
-#: statuscommand.cpp:272
+#: statuscommand.cpp:271
 #, fuzzy, kde-format
 #| msgid ""
 #| "Baloo is currently disabled. To enable, please run \"balooctl enable\""
@@ -435,51 +435,51 @@ msgid "Baloo is currently disabled. To enable, please run %1\n"
 msgstr ""
 "Baloo je trenutno van pogona. Izvršite balooctl enable da ga aktivirate."
 
-#: statuscommand.cpp:278
+#: statuscommand.cpp:277
 #, fuzzy, kde-format
 #| msgid "Baloo Index could not be opened"
 msgid "Baloo Index could not be opened\n"
 msgstr "Indeks Balooa ne može da se otvori."
 
-#: statuscommand.cpp:305
+#: statuscommand.cpp:304
 #, fuzzy, kde-format
 #| msgid "Baloo File Indexer is running"
 msgid "Baloo File Indexer is running\n"
 msgstr "Balooov indeksar fajlova je u pogonu."
 
-#: statuscommand.cpp:307 statuscommand.cpp:310
+#: statuscommand.cpp:306 statuscommand.cpp:309
 #, kde-format
 msgid "Indexer state: %1"
 msgstr "Stanje indeksara: %1"
 
-#: statuscommand.cpp:314
+#: statuscommand.cpp:313
 #, fuzzy, kde-format
 #| msgid "Baloo File Indexer is not running"
 msgid "Baloo File Indexer is not running\n"
 msgstr "Balooov indeksar fajlova nije u pogonu"
 
-#: statuscommand.cpp:321
+#: statuscommand.cpp:320
 #, fuzzy, kde-format
 #| msgid "Stop the file indexer"
 msgid "Total files indexed: %1"
 msgstr "Zaustavi indeksar fajlova."
 
-#: statuscommand.cpp:322
+#: statuscommand.cpp:321
 #, kde-format
 msgid "Files waiting for content indexing: %1"
 msgstr ""
 
-#: statuscommand.cpp:323
+#: statuscommand.cpp:322
 #, kde-format
 msgid "Files failed to index: %1"
 msgstr ""
 
-#: statuscommand.cpp:331
+#: statuscommand.cpp:330
 #, kde-format
 msgid "Current size of index is %1"
 msgstr ""
 
-#: statuscommand.cpp:333
+#: statuscommand.cpp:332
 #, fuzzy, kde-format
 #| msgid "Path does not exist"
 msgid "Index does not exist yet\n"
