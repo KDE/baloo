@@ -68,6 +68,8 @@ bool Database::open(OpenMode mode)
         return true;
     }
 
+    MDB_env* env = nullptr;
+
     QDir dir(m_path);
     if (!dir.exists()) {
         dir.mkpath(QStringLiteral("."));
@@ -90,9 +92,8 @@ bool Database::open(OpenMode mode)
         }
     }
 
-    int rc = mdb_env_create(&m_env);
+    int rc = mdb_env_create(&env);
     if (rc) {
-        m_env = nullptr;
         return false;
     }
 
@@ -100,7 +101,7 @@ bool Database::open(OpenMode mode)
      * maximal number of allowed named databases, must match number of databases we create below
      * each additional one leads to overhead
      */
-    mdb_env_set_maxdbs(m_env, 12);
+    mdb_env_set_maxdbs(env, 12);
 
     /**
      * size limit for database == size limit of mmap
@@ -118,7 +119,7 @@ bool Database::open(OpenMode mode)
         qCWarning(ENGINE) << "Valgrind detected, limiting DB mmap to" << sizeInGByte << "GByte";
     }
     const size_t maximalSizeInBytes = sizeInGByte * size_t(1024) * size_t(1024) * size_t(1024);
-    mdb_env_set_mapsize(m_env, maximalSizeInBytes);
+    mdb_env_set_mapsize(env, maximalSizeInBytes);
 
     // Set MDB environment flags
     auto mdbEnvFlags = MDB_NOSUBDIR | MDB_NOMEMINIT;
@@ -128,19 +129,17 @@ bool Database::open(OpenMode mode)
 
     // The directory needs to be created before opening the environment
     QByteArray arr = QFile::encodeName(indexInfo.absoluteFilePath());
-    rc = mdb_env_open(m_env, arr.constData(), mdbEnvFlags, 0664);
+    rc = mdb_env_open(env, arr.constData(), mdbEnvFlags, 0664);
     if (rc) {
-        mdb_env_close(m_env);
-        m_env = nullptr;
+        mdb_env_close(env);
         return false;
     }
 
-    rc = mdb_reader_check(m_env, nullptr);
+    rc = mdb_reader_check(env, nullptr);
 
     if (rc) {
         qCWarning(ENGINE) << "Database::open reader_check" << mdb_strerror(rc);
-        mdb_env_close(m_env);
-        m_env = nullptr;
+        mdb_env_close(env);
         return false;
     }
 
@@ -149,11 +148,10 @@ bool Database::open(OpenMode mode)
     //
     MDB_txn* txn;
     if (mode != CreateDatabase) {
-        int rc = mdb_txn_begin(m_env, nullptr, MDB_RDONLY, &txn);
+        int rc = mdb_txn_begin(env, nullptr, MDB_RDONLY, &txn);
         if (rc) {
             qCWarning(ENGINE) << "Database::transaction ro begin" << mdb_strerror(rc);
-            mdb_env_close(m_env);
-            m_env = nullptr;
+            mdb_env_close(env);
             return false;
         }
 
@@ -178,24 +176,21 @@ bool Database::open(OpenMode mode)
         if (!m_dbis.isValid()) {
             qCWarning(ENGINE) << "dbis is invalid";
             mdb_txn_abort(txn);
-            mdb_env_close(m_env);
-            m_env = nullptr;
+            mdb_env_close(env);
             return false;
         }
 
         rc = mdb_txn_commit(txn);
         if (rc) {
             qCWarning(ENGINE) << "Database::transaction ro commit" << mdb_strerror(rc);
-            mdb_env_close(m_env);
-            m_env = nullptr;
+            mdb_env_close(env);
             return false;
         }
     } else {
-        int rc = mdb_txn_begin(m_env, nullptr, 0, &txn);
+        int rc = mdb_txn_begin(env, nullptr, 0, &txn);
         if (rc) {
             qCWarning(ENGINE) << "Database::transaction begin" << mdb_strerror(rc);
-            mdb_env_close(m_env);
-            m_env = nullptr;
+            mdb_env_close(env);
             return false;
         }
 
@@ -220,21 +215,20 @@ bool Database::open(OpenMode mode)
         if (!m_dbis.isValid()) {
             qCWarning(ENGINE) << "dbis is invalid";
             mdb_txn_abort(txn);
-            mdb_env_close(m_env);
-            m_env = nullptr;
+            mdb_env_close(env);
             return false;
         }
 
         rc = mdb_txn_commit(txn);
         if (rc) {
             qCWarning(ENGINE) << "Database::transaction commit" << mdb_strerror(rc);
-            mdb_env_close(m_env);
-            m_env = nullptr;
+            mdb_env_close(env);
             return false;
         }
     }
 
-    Q_ASSERT(m_env);
+    Q_ASSERT(env);
+    m_env = env;
     return true;
 }
 
