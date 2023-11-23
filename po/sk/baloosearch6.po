@@ -2,19 +2,20 @@
 # Roman Paholik <wizzardsk@gmail.com>, 2013, 2015.
 # Mthw <jari_45@hotmail.com>, 2019.
 # Matej Mrenica <matejm98mthw@gmail.com>, 2020, 2022.
+# Ferdinand Galko <galko.ferdinand@gmail.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: baloosearch\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-10 02:11+0000\n"
-"PO-Revision-Date: 2022-02-14 13:57+0100\n"
-"Last-Translator: Matej Mrenica <matejm98mthw@gmail.com>\n"
-"Language-Team: Slovak <kde-i18n-doc@kde.org>\n"
+"PO-Revision-Date: 2023-11-22 18:28+0100\n"
+"Last-Translator: Ferdinand Galko <galko.ferdinand@gmail.com>\n"
+"Language-Team: Slovak <opensuse-translation@opensuse.org>\n"
 "Language: sk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 21.12.2\n"
+"X-Generator: Lokalize 22.12.3\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #, kde-format
@@ -90,7 +91,7 @@ msgstr "Zobraziť ID dokumentov"
 #: main.cpp:51
 #, kde-format
 msgid "Sorting criteria"
-msgstr ""
+msgstr "Kritériá triedenia"
 
 #: main.cpp:52
 #, kde-format
@@ -110,7 +111,7 @@ msgstr "%1 nie je platný priečinok"
 #: main.cpp:110
 #, kde-format
 msgid "Using canonical path '%1' for '%2'"
-msgstr ""
+msgstr "Použitie kanonickej cesty '%1' pre '%2'"
 
 #: main.cpp:126
 #, kde-format
