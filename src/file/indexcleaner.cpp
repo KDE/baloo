@@ -14,7 +14,6 @@
 #include "baloodebug.h"
 
 #include <QFile>
-#include <QMimeDatabase>
 
 using namespace Baloo;
 
@@ -28,8 +27,6 @@ IndexCleaner::IndexCleaner(Database* db, FileIndexerConfig* config)
 
 void IndexCleaner::run()
 {
-    QMimeDatabase mimeDb;
-
     Transaction tr(m_db, Transaction::ReadWrite);
 
     auto shouldDelete = [&](quint64 id) {
@@ -46,13 +43,6 @@ void IndexCleaner::run()
 
         if (!m_config->shouldBeIndexed(url)) {
             qCDebug(BALOO) << "should not be indexed: " << url;
-            return true;
-        }
-
-        // FIXME: This mimetype is not completely accurate!
-        QString mimetype = mimeDb.mimeTypeForFile(url, QMimeDatabase::MatchExtension).name();
-        if (!m_config->shouldMimeTypeBeIndexed(mimetype)) {
-            qCDebug(BALOO) << "mimetype should not be indexed: " << url << mimetype;
             return true;
         }
 
