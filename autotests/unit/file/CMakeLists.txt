@@ -64,7 +64,3 @@ add_executable(extractorcommandpipe_worker
 target_link_libraries(extractorcommandpipe_worker
 	baloofilecommon
 )
-
-# Benchmark, compiled, but not run automatically with ctest
-add_executable(regularexpcachebenchmark regularexpcachebenchmark.cpp)
-target_link_libraries(regularexpcachebenchmark Qt${QT_MAJOR_VERSION}::Test baloofilecommon KF5::Baloo)
