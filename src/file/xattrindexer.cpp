@@ -42,9 +42,6 @@ void XAttrIndexer::run()
         }
 
         QString mimetype = mimeDb.mimeTypeForFile(filePath, QMimeDatabase::MatchExtension).name();
-        if (!m_config->shouldMimeTypeBeIndexed(mimetype)) {
-            continue;
-        }
 
         // FIXME: The BasicIndexingJob extracts too much info. We only need the xattr
         BasicIndexingJob job(filePath, mimetype, BasicIndexingJob::NoLevel);
