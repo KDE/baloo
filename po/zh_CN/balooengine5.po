@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: kdeorg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-17 00:39+0000\n"
-"PO-Revision-Date: 2023-11-19 03:40\n"
+"PO-Revision-Date: 2023-11-25 02:28\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -101,7 +101,7 @@ msgstr "正在检查陈旧索引项"
 #: indexerstate.cpp:44
 #, kde-format
 msgid "Idle (Powersave)"
-msgstr "空闲 (节能)"
+msgstr "空闲 (省电)"
 
 #: indexerstate.cpp:47
 #, kde-format
