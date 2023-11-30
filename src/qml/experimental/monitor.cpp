@@ -19,12 +19,13 @@
 #include <QProcess>
 
 #include <KFormat>
+#include <KLocalizedString>
 
 using namespace Baloo;
 Monitor::Monitor(QObject *parent)
     : QObject(parent)
     , m_bus(QDBusConnection::sessionBus())
-    , m_filePath(QStringLiteral("Idle"))
+    , m_filePath(i18nc("Currently indexed file, when idle", "Idle"))
     , m_scheduler(nullptr)
     , m_fileindexer(nullptr)
     , m_remainingTime(QStringLiteral("Estimating"))
@@ -79,7 +80,7 @@ void Monitor::newFile(const QString& filePath)
 
 QString Monitor::suspendState() const
 {
-    return m_indexerState == Baloo::Suspended ?  QStringLiteral("Resume") : QStringLiteral("Suspend");
+    return m_indexerState == Baloo::Suspended ? i18nc("Indexer state", "Resume") : i18nc("Indexer state", "Suspend");
 }
 
 void Monitor::toggleSuspendState()
