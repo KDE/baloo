@@ -1,5 +1,5 @@
 # translation of balooshow.po to Slovak
-# Roman Paholik <wizzardsk@gmail.com>, 2013, 2015.
+# SPDX-FileCopyrightText: 2013, 2015, 2023 Roman Paholik <wizzardsk@gmail.com>
 # Mthw <jari_45@hotmail.com>, 2018, 2019.
 # Matej Mrenica <matejm98mthw@gmail.com>, 2019.
 msgid ""
@@ -7,14 +7,14 @@ msgstr ""
 "Project-Id-Version: balooshow\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-05 12:24+0000\n"
-"PO-Revision-Date: 2019-07-08 16:02+0200\n"
-"Last-Translator: Matej Mrenica <matejm98mthw@gmail.com>\n"
-"Language-Team: Slovak <kde-i18n-doc@kde.org>\n"
+"PO-Revision-Date: 2023-12-06 19:03+0100\n"
+"Last-Translator: Roman Paholik <wizzardsk@gmail.com>\n"
+"Language-Team: Slovak <kde-sk@linux.sk>\n"
 "Language: sk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 19.04.2\n"
+"X-Generator: Lokalize 23.08.3\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #, kde-format
@@ -112,16 +112,14 @@ msgid "%1 Terms: %2"
 msgstr "%1 Podmienky: %2"
 
 #: main.cpp:233
-#, fuzzy, kde-format
-#| msgid "File Name Terms: %1"
+#, kde-format
 msgid "Plain Text Terms: %1"
-msgstr "Podmienky názvu súboru: %1"
+msgstr "Podmienky čistého textu: %1"
 
 #: main.cpp:234
-#, fuzzy, kde-format
-#| msgid "Terms: %1"
+#, kde-format
 msgid "Property Terms: %1"
-msgstr "Podmienky: %1"
+msgstr "Podmienky vlastností: %1"
 
 #: main.cpp:237
 #, kde-format
