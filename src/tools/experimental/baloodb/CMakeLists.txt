@@ -14,3 +14,7 @@ target_link_libraries(baloodb
 )
 
 install(TARGETS baloodb ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
+
+if (ECM_VERSION VERSION_GREATER_EQUAL 5.101.0)
+  install(FILES completions/baloodb.zsh RENAME baloodb6 DESTINATION ${KDE_INSTALL_ZSHAUTOCOMPLETEDIR})
+endif()

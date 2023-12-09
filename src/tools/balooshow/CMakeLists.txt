@@ -15,3 +15,7 @@ target_link_libraries(balooshow6
 )
 
 install(TARGETS balooshow6 DESTINATION ${KDE_INSTALL_BINDIR})
+
+if (ECM_VERSION VERSION_GREATER_EQUAL 5.101.0)
+  install(FILES completions/balooshow.zsh RENAME _balooshow6 DESTINATION ${KDE_INSTALL_ZSHAUTOCOMPLETEDIR})
+endif()

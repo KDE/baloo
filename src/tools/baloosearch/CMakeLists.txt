@@ -13,3 +13,7 @@ target_link_libraries(baloosearch6
 )
 
 install(TARGETS baloosearch6 DESTINATION ${KDE_INSTALL_BINDIR})
+
+if (ECM_VERSION VERSION_GREATER_EQUAL 5.101.0)
+  install(FILES completions/baloosearch.zsh RENAME _baloosearch DESTINATION ${KDE_INSTALL_ZSHAUTOCOMPLETEDIR})
+endif()

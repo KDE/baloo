@@ -28,3 +28,7 @@ target_link_libraries(balooctl6
 )
 
 install(TARGETS balooctl6 DESTINATION ${KDE_INSTALL_BINDIR})
+
+if (ECM_VERSION VERSION_GREATER_EQUAL 5.101.0)
+  install(FILES completions/balooctl.zsh RENAME _balooctl6 DESTINATION ${KDE_INSTALL_ZSHAUTOCOMPLETEDIR})
+endif()
