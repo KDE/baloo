@@ -6,3 +6,14 @@ include:
     file:
       - /gitlab-templates/linux-qt6.yml
       - /gitlab-templates/freebsd-qt6.yml
+
+# Verify changes against clang-format
+clang-format:
+  stage: build
+  image: invent-registry.kde.org/sysadmin/ci-images/suse-qt66:latest
+  tags:
+    - Linux
+  script:
+    - git config --global --add safe.directory $CI_PROJECT_DIR
+    - git fetch origin master
+    - git-clang-format --diff origin/master
