@@ -10,8 +10,7 @@
 
 #define BUFFER_SIZE 5
 
-#include "fileindexerconfig.h"
-#include <QObject>
+#include <QtGlobal>
 
 namespace Baloo {
 /*
@@ -21,21 +20,19 @@ namespace Baloo {
 * it will be assigned.
 */
 
-class TimeEstimator : public QObject
+class TimeEstimator
 {
-    Q_OBJECT
 public:
-    explicit TimeEstimator(QObject* parent = nullptr);
+    TimeEstimator();
     uint calculateTimeLeft(int filesLeft);
 
-public Q_SLOTS:
     void handleNewBatchTime(uint time, uint batchSize);
 
 private:
     float m_batchTimeBuffer[BUFFER_SIZE];
 
-    int m_bufferIndex;
-    bool m_estimateReady;
+    int m_bufferIndex = 0;
+    bool m_estimateReady = false;
 };
 
 }
