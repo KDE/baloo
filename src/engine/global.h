@@ -8,11 +8,11 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-#include "database.h"
-
+#include "engine_export.h"
 #include <QString>
 
 namespace Baloo {
+    class Database;
 
     /*
      * If BALOO_DB_PATH environment variable is set, then it returns value of that variable.
