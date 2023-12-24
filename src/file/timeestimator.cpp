@@ -8,16 +8,10 @@
 #include <cmath>
 
 #include "timeestimator.h"
-#include "filecontentindexerprovider.h"
 
 using namespace Baloo;
 
-TimeEstimator::TimeEstimator(QObject* parent)
-    : QObject(parent)
-    , m_bufferIndex(0)
-    , m_estimateReady(false)
-{
-}
+TimeEstimator::TimeEstimator() = default;
 
 uint TimeEstimator::calculateTimeLeft(int filesLeft)
 {
@@ -54,5 +48,3 @@ void TimeEstimator::handleNewBatchTime(uint time, uint batchSize)
         m_estimateReady = true;
     }
 }
-
-#include "moc_timeestimator.cpp"

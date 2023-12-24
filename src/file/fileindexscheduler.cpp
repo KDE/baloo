@@ -30,7 +30,6 @@ FileIndexScheduler::FileIndexScheduler(Database* db, FileIndexerConfig* config, 
     , m_provider(db)
     , m_contentIndexer(nullptr)
     , m_indexerState(Startup)
-    , m_timeEstimator(this)
     , m_checkUnindexedFiles(false)
     , m_checkStaleIndexEntries(false)
     , m_isGoingIdle(false)
@@ -54,8 +53,9 @@ FileIndexScheduler::FileIndexScheduler(Database* db, FileIndexerConfig* config, 
     m_contentIndexer->setAutoDelete(false);
     connect(m_contentIndexer, &FileContentIndexer::done, this,
             &FileIndexScheduler::runnerFinished);
-    connect(m_contentIndexer, &FileContentIndexer::committedBatch, &m_timeEstimator,
-            &TimeEstimator::handleNewBatchTime);
+    connect(m_contentIndexer, &FileContentIndexer::committedBatch, [this](uint time, uint batchSize) {
+            this->m_timeEstimator.handleNewBatchTime(time, batchSize);
+    });
 
     QDBusConnection::sessionBus().registerObject(QStringLiteral("/scheduler"),
                                                  this, QDBusConnection::ExportScriptableContents);
