@@ -11,7 +11,6 @@
 
 #include <QProcess>
 #include <QObject>
-#include <QTimer>
 #include <QVector>
 
 namespace Baloo {
@@ -36,8 +35,6 @@ private:
     const QString m_extractorPath;
 
     QProcess m_extractorProcess;
-    QTimer m_timeCurrentFile;
-    int m_processTimeout;
     Baloo::Private::ControllerPipe m_controller;
 };
 }
