@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Alexander Potashev <aspotashev@gmail.com>, 2014, 2015, 2018, 2019.
-# Alexander Yavorsky <kekcuha@gmail.com>, 2018, 2019.
+# Alexander Yavorsky <kekcuha@gmail.com>, 2018, 2019, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-05-07 02:15+0000\n"
-"PO-Revision-Date: 2019-05-27 15:12+0300\n"
-"Last-Translator: Alexander Potashev <aspotashev@gmail.com>\n"
+"PO-Revision-Date: 2023-12-27 10:18+0300\n"
+"Last-Translator: Alexander Yavorsky <kekcuha@gmail.com>\n"
 "Language-Team: Russian <kde-russian@lists.kde.ru>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n"
 "%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Lokalize 19.07.70\n"
+"X-Generator: Lokalize 21.08.3\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -122,16 +122,14 @@ msgid "%1 Terms: %2"
 msgstr "Ключевые слова из %1: %2"
 
 #: main.cpp:233
-#, fuzzy, kde-format
-#| msgid "File Name Terms: %1"
+#, kde-format
 msgid "Plain Text Terms: %1"
-msgstr "Ключевые слова из имени файла: %1"
+msgstr "Ключевые слова из обычного текста: %1"
 
 #: main.cpp:234
-#, fuzzy, kde-format
-#| msgid "Terms: %1"
+#, kde-format
 msgid "Property Terms: %1"
-msgstr "Ключевые слова: %1"
+msgstr "Ключевые слова из свойств: %1"
 
 #: main.cpp:237
 #, kde-format

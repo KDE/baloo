@@ -2,13 +2,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Alexander Potashev <aspotashev@gmail.com>, 2014, 2018.
+# Alexander Yavorsky <kekcuha@gmail.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-05-16 02:14+0000\n"
-"PO-Revision-Date: 2018-01-19 01:47+0300\n"
-"Last-Translator: Alexander Potashev <aspotashev@gmail.com>\n"
+"PO-Revision-Date: 2023-12-27 10:18+0300\n"
+"Last-Translator: Alexander Yavorsky <kekcuha@gmail.com>\n"
 "Language-Team: Russian <kde-russian@lists.kde.ru>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n"
 "%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Lokalize 2.0\n"
+"X-Generator: Lokalize 21.08.3\n"
 
 #: kio_tags.cpp:110 kio_tags.cpp:166
 #, kde-format
@@ -24,15 +25,13 @@ msgid "File %1 already has tag %2"
 msgstr "Файлу «%1» уже присвоена метка «%2»"
 
 #: kio_tags.cpp:298
-#, fuzzy, kde-format
-#| msgid "Tag"
+#, kde-format
 msgctxt "This is a noun"
 msgid "Tag"
 msgstr "Метка"
 
 #: kio_tags.cpp:304
-#, fuzzy, kde-format
-#| msgid "Tag Fragment"
+#, kde-format
 msgctxt "This is a noun"
 msgid "Tag Fragment"
 msgstr "Фрагмент метки"
