@@ -4,7 +4,7 @@
 # Mickael Sibelle <kimael@gmail.com>, 2008.
 # Xavier Besnard <xavier.besnard@kde.org>, 2012, 2013.
 # Vincent Pinon <vpinon@kde.org>, 2017.
-# Xavier BESNARD <xavier.besnard@kde.org>, 2023.
+# Xavier Besnard <xavier.besnard@kde.org>, 2023.
 #
 msgid ""
 msgstr ""
