@@ -185,7 +185,13 @@ QVector<KFileMetaData::Type::Type> typesForMimeType(const QString& mimeType)
         // Other
         {QStringLiteral("text/markdown"), Type::Document},
         {QStringLiteral("image/vnd.djvu+multipage"), Type::Document},
-        {QStringLiteral("application/x-lyx"), Type::Document}
+        {QStringLiteral("application/x-lyx"), Type::Document},
+	{QStringLiteral("image/vnd.microsoft.icon"), Type::Image},
+	{QStringLiteral("audio/mpeg"), Type::Audio},
+	{QStringLiteral("audio/MPA"), Type::Audio},
+	{QStringLiteral("audio/mpa-robust"), Type::Audio},
+	{QStringLiteral("image/jpeg"), Type::Image},
+	{QStringLiteral("image/png"), Type::Image}
     };
 
     auto hashIt = typeMapper.find(mimeType);
