@@ -1,22 +1,22 @@
 # Copyright (C) YEAR This_file_is_part_of_KDE
-# This file is distributed under the same license as the PACKAGE package.
-# Sergiu Bivol <sergiu@cip.md>, 2014, 2020.
+# This file is distributed under the same license as the baloo package.
+# Sergiu Bivol <sergiu@cip.md>, 2014, 2020, 2023, 2024.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-10 02:11+0000\n"
-"PO-Revision-Date: 2020-09-06 23:38+0100\n"
+"PO-Revision-Date: 2024-01-07 12:50+0000\n"
 "Last-Translator: Sergiu Bivol <sergiu@cip.md>\n"
-"Language-Team: Romanian\n"
+"Language-Team: Romanian <kde-i18n-ro@kde.org>\n"
 "Language: ro\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
-"X-Generator: Lokalize 19.12.3\n"
+"X-Generator: Lokalize 21.12.3\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -86,12 +86,12 @@ msgstr "dosar"
 #: main.cpp:49
 #, kde-format
 msgid "Show document IDs"
-msgstr ""
+msgstr "Arată identificatorii documentelor"
 
 #: main.cpp:51
 #, kde-format
 msgid "Sorting criteria"
-msgstr ""
+msgstr "Criteriu de sortare"
 
 #: main.cpp:52
 #, kde-format
@@ -111,7 +111,7 @@ msgstr "%1 nu e un dosar valid"
 #: main.cpp:110
 #, kde-format
 msgid "Using canonical path '%1' for '%2'"
-msgstr ""
+msgstr "Se folosește calea canonică „%1” pentru „%2”"
 
 #: main.cpp:126
 #, kde-format

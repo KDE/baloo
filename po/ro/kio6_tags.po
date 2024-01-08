@@ -1,13 +1,13 @@
 # Copyright (C) YEAR This_file_is_part_of_KDE
-# This file is distributed under the same license as the PACKAGE package.
-# Sergiu Bivol <sergiu@cip.md>, 2014, 2022.
+# This file is distributed under the same license as the baloo package.
+# Sergiu Bivol <sergiu@cip.md>, 2014, 2022, 2024.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-05-16 02:14+0000\n"
-"PO-Revision-Date: 2022-12-28 13:50+0000\n"
+"PO-Revision-Date: 2024-01-07 12:45+0000\n"
 "Last-Translator: Sergiu Bivol <sergiu@cip.md>\n"
 "Language-Team: Romanian <kde-i18n-ro@kde.org>\n"
 "Language: ro\n"
@@ -24,15 +24,13 @@ msgid "File %1 already has tag %2"
 msgstr "Fișierul %1 are deja marcajul %2"
 
 #: kio_tags.cpp:298
-#, fuzzy, kde-format
-#| msgid "Tag"
+#, kde-format
 msgctxt "This is a noun"
 msgid "Tag"
 msgstr "Marcaj"
 
 #: kio_tags.cpp:304
-#, fuzzy, kde-format
-#| msgid "Tag Fragment"
+#, kde-format
 msgctxt "This is a noun"
 msgid "Tag Fragment"
 msgstr "Fragment de marcaj"
