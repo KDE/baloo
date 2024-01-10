@@ -10,7 +10,7 @@ project(Baloo VERSION ${KF_VERSION})
 # set up extra-cmake-modules before trying anything else
 include(FeatureSummary)
 
-find_package(ECM 5.248.0${KF_DEP_VERSION} NO_MODULE)
+find_package(ECM ${KF_DEP_VERSION} NO_MODULE)
 set_package_properties(ECM
     PROPERTIES
         TYPE REQUIRED
