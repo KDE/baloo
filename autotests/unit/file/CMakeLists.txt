@@ -30,6 +30,8 @@ ecm_add_test(${fileWatch_SRC}
     TEST_NAME "filewatchtest"
     LINK_LIBRARIES Qt6::Test Qt6::DBus KF6::Baloo KF6::FileMetaData baloofilecommon
 )
+set_tests_properties("filewatchtest" PROPERTIES ENVIRONMENT "LANG=en_US.utf8")
+
 
 #
 # Property Serialization
