@@ -37,7 +37,6 @@ private Q_SLOTS:
     void slotPowerManagementStatusChanged(bool conserveResources);
 
 private:
-    bool m_enabled;
     bool m_isOnBattery;
 };
 }
