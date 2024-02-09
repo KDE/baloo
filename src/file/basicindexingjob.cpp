@@ -82,7 +82,9 @@ QVector<KFileMetaData::Type::Type> typesForMimeType(const QString& mimeType)
     if (mimeType.contains(QLatin1String("document"))) {
         types << Type::Document;
     }
-
+    if (mimeType.contains(QLatin1String("model/"))) {
+        types << Type::Model;
+    }
     if (mimeType.contains(QLatin1String("powerpoint"))) {
         types << Type::Presentation;
         types << Type::Document;
@@ -185,7 +187,10 @@ QVector<KFileMetaData::Type::Type> typesForMimeType(const QString& mimeType)
         // Other
         {QStringLiteral("text/markdown"), Type::Document},
         {QStringLiteral("image/vnd.djvu+multipage"), Type::Document},
-        {QStringLiteral("application/x-lyx"), Type::Document}
+        {QStringLiteral("application/x-lyx"), Type::Document},
+        {QStringLiteral("model/fbx"), Type::Model},
+        {QStringLiteral("model/playerstudio"), Type::Model},
+        {QStringLiteral("model/obj"), Type::Model}
     };
 
     auto hashIt = typeMapper.find(mimeType);
