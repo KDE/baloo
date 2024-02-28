@@ -7,14 +7,15 @@ msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-17 01:36+0000\n"
-"PO-Revision-Date: 2024-02-25 10:30+0200\n"
+"PO-Revision-Date: 2024-02-26 21:29+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
+"n % 10 == 0) ? 2 : 3));\n"
 "X-Generator: Lokalize 23.08.4\n"
 
 #, kde-format
@@ -82,6 +83,8 @@ msgid ""
 "The following configuration options may be listed:\n"
 "\n"
 msgstr ""
+"אפשר להציג את אפשרויות ההגדרה הבאות:\n"
+"\n"
 
 #: configcommand.cpp:84 configcommand.cpp:363
 #, kde-format
@@ -125,6 +128,8 @@ msgid ""
 "The following configuration options may be modified:\n"
 "\n"
 msgstr ""
+"אפשר לערוך את אפשרויות ההגדרה הבאות:\n"
+"\n"
 
 #: configcommand.cpp:160 configcommand.cpp:180 configcommand.cpp:251
 #: configcommand.cpp:286
@@ -135,12 +140,12 @@ msgstr "חובה לספק תיקייה\n"
 #: configcommand.cpp:168
 #, kde-format
 msgid "%1 is not in the list of include folders"
-msgstr ""
+msgstr "%1 אינו ברשימת התיקיות להכללה"
 
 #: configcommand.cpp:188
 #, kde-format
 msgid "%1 is not in the list of exclude folders"
-msgstr ""
+msgstr " %1 אינה ברשימת התיקיות להחרגה"
 
 #: configcommand.cpp:200 configcommand.cpp:321
 #, kde-format
@@ -150,17 +155,17 @@ msgstr "חובה לספק מסנן\n"
 #: configcommand.cpp:206
 #, kde-format
 msgid "%1 is not in list of exclude filters"
-msgstr ""
+msgstr "%1 אינו ברשימת מסנני ההחרגה"
 
 #: configcommand.cpp:217 configcommand.cpp:339
 #, kde-format
 msgid "A mimetype must be provided\n"
-msgstr ""
+msgstr "יש לספק טיפוס MIME\n"
 
 #: configcommand.cpp:223
 #, kde-format
 msgid "%1 is not in list of exclude mimetypes"
-msgstr ""
+msgstr "%1 אינו ברשימת טיפוסי ה־MIME להחרגה"
 
 #: configcommand.cpp:257 configcommand.cpp:292
 #, kde-format
