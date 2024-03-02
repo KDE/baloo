@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: balooctl5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-17 01:36+0000\n"
-"PO-Revision-Date: 2024-02-09 17:45+0300\n"
+"PO-Revision-Date: 2024-03-01 15:39+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 24.01.95\n"
+"X-Generator: Lokalize 24.02.0\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -109,12 +109,12 @@ msgstr "Baloo’nun hiçbir zaman indekslemeyeceği klasörlerin listesi"
 #: configcommand.cpp:88 configcommand.cpp:151 configcommand.cpp:242
 #, kde-format
 msgid "The list of filters which are used to exclude files"
-msgstr "Dosyaları hariç tutmak için kullanılan süzgeçlerin listesi"
+msgstr "Dosyaları dışlamak için kullanılan süzgeçlerin listesi"
 
 #: configcommand.cpp:89 configcommand.cpp:152 configcommand.cpp:243
 #, kde-format
 msgid "The list of mimetypes which are used to exclude files"
-msgstr "Dosyaları hariç tutmak için kullanılan mime türlerinin listesi"
+msgstr "Dosyaları dışlamak için kullanılan MIME türlerinin listesi"
 
 #: configcommand.cpp:141 configcommand.cpp:232 configcommand.cpp:355
 #: configcommand.cpp:425
@@ -145,7 +145,7 @@ msgstr "%1, içerilen klasörler listesinde değil"
 #: configcommand.cpp:188
 #, kde-format
 msgid "%1 is not in the list of exclude folders"
-msgstr "%1, hariç tutulan klasörler listesinde değil"
+msgstr "%1, dışlanan klasörler listesinde değil"
 
 #: configcommand.cpp:200 configcommand.cpp:321
 #, kde-format
@@ -155,7 +155,7 @@ msgstr "Bir süzgeç belirtilmeli\n"
 #: configcommand.cpp:206
 #, kde-format
 msgid "%1 is not in list of exclude filters"
-msgstr "%1, hariç tutulan süzgeçler listesinde değil"
+msgstr "%1, dışlanan süzgeçler listesinde değil"
 
 #: configcommand.cpp:217 configcommand.cpp:339
 #, kde-format
@@ -165,7 +165,7 @@ msgstr "Bir mime türü belirtilmeli\n"
 #: configcommand.cpp:223
 #, kde-format
 msgid "%1 is not in list of exclude mimetypes"
-msgstr "%1, hariç tutulan mime türleri listesinde değil"
+msgstr "%1, dışlanan MIME türleri listesinde değil"
 
 #: configcommand.cpp:257 configcommand.cpp:292
 #, kde-format
@@ -185,22 +185,22 @@ msgstr "%1, zaten içerilen klasörler listesinde"
 #: configcommand.cpp:274 configcommand.cpp:309
 #, kde-format
 msgid "%1 is in the list of exclude folders"
-msgstr "%1, hariç tutulan klasörler listesinde"
+msgstr "%1, dışlanan klasörler listesinde"
 
 #: configcommand.cpp:304
 #, kde-format
 msgid "%1 is already in the list of exclude folders"
-msgstr "%1, zaten hariç tutulan klasörler listesinde"
+msgstr "%1, halihazırda dışlanan klasörler listesinde"
 
 #: configcommand.cpp:327
 #, kde-format
 msgid "Exclude filter is already in the list\n"
-msgstr "Hariç tutulan süzgeç zaten listede\n"
+msgstr "Dışlanan süzgeç zaten listede\n"
 
 #: configcommand.cpp:345
 #, kde-format
 msgid "Exclude mimetype is already in the list\n"
-msgstr "Hariç tutulan mime türü zaten listede\n"
+msgstr "Dışlanan MIME türü halihazırda listede\n"
 
 #: configcommand.cpp:373 configcommand.cpp:400
 #, kde-format
