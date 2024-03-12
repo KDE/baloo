@@ -31,7 +31,8 @@ ExtractorProcess::ExtractorProcess(const QString& extractorPath, QObject* parent
         Q_EMIT done();
     });
 
-    connect(&m_extractorProcess, qOverload<int, QProcess::ExitStatus>(&QProcess::finished), [=](int exitCode, QProcess::ExitStatus exitStatus) {
+    connect(&m_extractorProcess, qOverload<int, QProcess::ExitStatus>(&QProcess::finished), [this](int exitCode, QProcess::ExitStatus exitStatus) {
+        m_controller.processStatusData();
         if (exitStatus == QProcess::CrashExit) {
             qCWarning(BALOO) << "Extractor crashed";
             Q_EMIT failed();

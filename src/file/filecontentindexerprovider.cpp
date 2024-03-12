@@ -28,9 +28,13 @@ uint FileContentIndexerProvider::size()
     return tr.phaseOneSize();
 }
 
-bool FileContentIndexerProvider::markFailed(quint64 id)
+bool FileContentIndexerProvider::markFailed(const QString &url)
 {
     Transaction tr(m_db, Transaction::ReadWrite);
+    quint64 id = tr.documentId(QFile::encodeName(url));
+    if (!id) {
+        return false;
+    }
     if (!tr.hasFailed(id)) {
         tr.addFailed(id);
     }
