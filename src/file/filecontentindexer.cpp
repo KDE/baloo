@@ -56,13 +56,12 @@ void FileContentIndexer::run()
     connect(&process, &ExtractorProcess::startedIndexingFile, this, &FileContentIndexer::slotStartedIndexingFile);
     connect(&process, &ExtractorProcess::finishedIndexingFile, this, &FileContentIndexer::slotFinishedIndexingFile);
     m_stop.storeRelaxed(false);
-    auto batchSize = m_batchSize;
     while (true) {
         //
         // WARNING: This will go mad, if the Extractor does not commit after N=m_batchSize files
         // cause then we will keep fetching the same N files again and again.
         //
-        QVector<quint64> idList = m_provider->fetch(batchSize);
+        QVector<quint64> idList = m_provider->fetch(m_batchSize);
         if (idList.isEmpty() || m_stop.loadRelaxed()) {
             break;
         }
@@ -80,19 +79,19 @@ void FileContentIndexer::run()
 
         process.index(idList);
         loop.exec();
-        batchSize = idList.size();
+        auto batchSize = idList.size();
 
         if (hadErrors && !m_stop.loadRelaxed()) {
-            if (batchSize == 1) {
-                auto failedId = idList.first();
-                auto ok = m_provider->markFailed(failedId);
+            if (m_currentFile.isEmpty()) {
+                qCCritical(BALOO) << "Indexed crashed whilst not indexing a file. Exiting";
+                exit(1);
+            } else {
+                auto ok = m_provider->markFailed(m_currentFile);
                 if (!ok) {
                     qCCritical(BALOO) << "Not able to commit to DB, DB likely is in a bad state. Exiting";
                     exit(1);
                 }
-                batchSize = m_batchSize;
-            } else {
-                batchSize /= 2;
+                // otherwise continue, provider will skip this file the next time round
             }
             m_updatedFiles.clear();
             // reset to old value - nothing committed
