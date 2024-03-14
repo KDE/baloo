@@ -14,8 +14,7 @@
 #include <KLocalizedString>
 #include <QStandardPaths>
 
-#include <QGuiApplication>
-#include <QSessionManager>
+#include <QCoreApplication>
 
 int main(int argc, char* argv[])
 {
@@ -23,21 +22,12 @@ int main(int argc, char* argv[])
     setIdleSchedulingPriority();
     lowerPriority();
 
-    QGuiApplication::setDesktopSettingsAware(false);
-    QGuiApplication app(argc, argv);
+    QCoreApplication app(argc, argv);
 
     KAboutData aboutData(QStringLiteral("baloo"), i18n("Baloo File Extractor"), QLatin1String(PROJECT_VERSION));
     KAboutData::setApplicationData(aboutData);
 
     KCrash::initialize();
-
-    app.setQuitOnLastWindowClosed(false);
-
-    auto disableSessionManagement = [](QSessionManager &sm) {
-        sm.setRestartHint(QSessionManager::RestartNever);
-    };
-    QObject::connect(&app, &QGuiApplication::commitDataRequest, disableSessionManagement);
-    QObject::connect(&app, &QGuiApplication::saveStateRequest, disableSessionManagement);
 
     Baloo::App appObject;
     return app.exec();

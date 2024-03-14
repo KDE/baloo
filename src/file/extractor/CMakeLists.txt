@@ -27,7 +27,6 @@ ecm_mark_nongui_executable(baloo_file_extractor)
 target_compile_definitions(baloo_file_extractor PRIVATE -DPROJECT_VERSION="${PROJECT_VERSION}")
 
 target_link_libraries(baloo_file_extractor
-  Qt6::Gui
   KF6::FileMetaData
   KF6::I18n
   KF6::ConfigCore
