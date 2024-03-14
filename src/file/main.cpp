@@ -51,10 +51,6 @@ int main(int argc, char** argv)
 
     bool firstRun = !QFile::exists(path + QStringLiteral("/index"));
 
-    // HACK: Until we start using lmdb with robust mutex support. We're just going to remove
-    //       the lock manually in the baloo_file process.
-    QFile::remove(path + QStringLiteral("/index-lock"));
-
     Baloo::Database *db = Baloo::globalDatabaseInstance();
 
     /**
