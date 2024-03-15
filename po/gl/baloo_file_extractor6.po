@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-02-12 00:54+0000\n"
+"POT-Creation-Date: 2024-03-15 00:35+0000\n"
 "PO-Revision-Date: 2023-04-30 10:14+0200\n"
 "Last-Translator: Adrián Chaves (Gallaecio) <adrian@chaves.io>\n"
 "Language-Team: Galician <proxecto@trasno.gal>\n"
@@ -27,7 +27,7 @@ msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
 msgstr "adrian@chaves.io"
 
-#: main.cpp:29
+#: main.cpp:27
 #, kde-format
 msgid "Baloo File Extractor"
 msgstr "Extractor de ficheiros de Baloo"
