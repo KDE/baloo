@@ -6,13 +6,13 @@
 */
 
 #include "positiondb.h"
+#include "dbtest.h"
 #include "positioninfo.h"
 #include "vectorpositioninfoiterator.h"
-#include "singledbtest.h"
 
 using namespace Baloo;
 
-class PositionDBTest : public SingleDBTest
+class PositionDBTest : public DBTest
 {
     Q_OBJECT
 private Q_SLOTS:

@@ -6,14 +6,14 @@
 */
 
 #include "documenturldb.h"
-#include "singledbtest.h"
+#include "dbtest.h"
 #include "idutils.h"
 
 #include <memory>
 
 using namespace Baloo;
 
-class DocumentUrlDBTest : public QObject
+class DocumentUrlDBTest : public DBTest
 {
     Q_OBJECT
 
@@ -24,28 +24,6 @@ class DocumentUrlDBTest : public QObject
     }
 
 private Q_SLOTS:
-    void init()
-    {
-        m_tempDir = std::make_unique<QTemporaryDir>();
-
-        mdb_env_create(&m_env);
-        mdb_env_set_maxdbs(m_env, 2);
-
-        // The directory needs to be created before opening the environment
-        QByteArray path = QFile::encodeName(m_tempDir->path());
-        mdb_env_open(m_env, path.constData(), 0, 0664);
-        mdb_txn_begin(m_env, nullptr, 0, &m_txn);
-    }
-
-    void cleanup()
-    {
-        mdb_txn_abort(m_txn);
-        m_txn = nullptr;
-        mdb_env_close(m_env);
-        m_env = nullptr;
-        m_tempDir.reset();
-    }
-
     void testNonExistingPath() {
         /*
         DocumentUrlDB db(m_txn);
@@ -201,11 +179,6 @@ private Q_SLOTS:
         // no insert please
         QVERIFY(test.size() == 4);
     }
-
-protected:
-    MDB_env* m_env = nullptr;
-    MDB_txn* m_txn = nullptr;
-    std::unique_ptr<QTemporaryDir> m_tempDir;
 };
 
 QTEST_MAIN(DocumentUrlDBTest)

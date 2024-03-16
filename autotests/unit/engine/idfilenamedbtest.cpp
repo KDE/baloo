@@ -6,11 +6,11 @@
 */
 
 #include "idfilenamedb.h"
-#include "singledbtest.h"
+#include "dbtest.h"
 
 using namespace Baloo;
 
-class IdFilenameDBTest : public SingleDBTest
+class IdFilenameDBTest : public DBTest
 {
     Q_OBJECT
 private Q_SLOTS:

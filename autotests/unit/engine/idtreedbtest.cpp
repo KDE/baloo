@@ -6,12 +6,12 @@
 */
 
 #include "idtreedb.h"
-#include "singledbtest.h"
+#include "dbtest.h"
 #include "postingiterator.h"
 
 using namespace Baloo;
 
-class IdTreeDBTest : public SingleDBTest
+class IdTreeDBTest : public DBTest
 {
     Q_OBJECT
 private Q_SLOTS:

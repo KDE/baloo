@@ -6,12 +6,12 @@
 */
 
 #include "mtimedb.h"
+#include "dbtest.h"
 #include "postingiterator.h"
-#include "singledbtest.h"
 
 using namespace Baloo;
 
-class MTimeDBTest : public SingleDBTest
+class MTimeDBTest : public DBTest
 {
     Q_OBJECT
 private Q_SLOTS:

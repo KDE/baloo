@@ -6,11 +6,11 @@
 */
 
 #include "documentiddb.h"
-#include "singledbtest.h"
+#include "dbtest.h"
 
 using namespace Baloo;
 
-class DocIdDBTest : public SingleDBTest
+class DocIdDBTest : public DBTest
 {
     Q_OBJECT
 private Q_SLOTS:

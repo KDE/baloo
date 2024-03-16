@@ -5,6 +5,6 @@
     SPDX-License-Identifier: LGPL-2.1-or-later
 */
 
-#include "singledbtest.h"
+#include "dbtest.h"
 
-#include "moc_singledbtest.cpp"
+#include "moc_dbtest.cpp"

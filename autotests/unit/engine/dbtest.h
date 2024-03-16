@@ -4,8 +4,8 @@
     SPDX-License-Identifier: LGPL-2.1-or-later
 */
 
-#ifndef BALOO_SINGLEDBTEST_H
-#define BALOO_SINGLEDBTEST_H
+#ifndef BALOO_DBTEST_H
+#define BALOO_DBTEST_H
 
 #include <QObject>
 #include <QTemporaryDir>
@@ -14,7 +14,7 @@
 #include <lmdb.h>
 #include <memory>
 
-class SingleDBTest : public QObject
+class DBTest : public QObject
 {
     Q_OBJECT
 private Q_SLOTS:
@@ -23,7 +23,7 @@ private Q_SLOTS:
         m_tempDir = std::make_unique<QTemporaryDir>();
 
         mdb_env_create(&m_env);
-        mdb_env_set_maxdbs(m_env, 1);
+        mdb_env_set_maxdbs(m_env, 12);
 
         // The directory needs to be created before opening the environment
         QByteArray path = QFile::encodeName(m_tempDir->path());
@@ -41,9 +41,9 @@ private Q_SLOTS:
     }
 
 protected:
-    MDB_env* m_env = nullptr;
-    MDB_txn* m_txn = nullptr;
+    MDB_env *m_env = nullptr;
+    MDB_txn *m_txn = nullptr;
     std::unique_ptr<QTemporaryDir> m_tempDir;
 };
 
-#endif // SINGLEDBTEST_H
+#endif // BALOO_DBTEST_H
