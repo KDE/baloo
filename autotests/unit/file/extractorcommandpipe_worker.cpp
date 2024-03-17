@@ -32,7 +32,10 @@ int main(int argc, char* argv[])
     QObject::connect(&inputNotifier, &QSocketNotifier::activated,
                      &worker, &WorkerPipe::processIdData);
 
-    QObject::connect(&worker, &WorkerPipe::inputEnd, &QCoreApplication::quit);
+    QObject::connect(&worker, &WorkerPipe::inputEnd, []() {
+        qCInfo(BALOO) << "Pipe closed, exiting";
+        QCoreApplication::quit();
+    });
     QObject::connect(&worker, &WorkerPipe::newDocumentIds,
         [&worker](const QVector<quint64>& ids) {
             QTimer::singleShot(0, [&worker, ids]() {

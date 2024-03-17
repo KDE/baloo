@@ -13,6 +13,8 @@
 #include <QStandardPaths>
 #include <QTest>
 
+Q_DECLARE_METATYPE(QProcess::ExitStatus)
+
 namespace Baloo {
 namespace Test {
 
@@ -35,6 +37,7 @@ private Q_SLOTS:
     void singleBatch_data();
     void multipleBatch();
     void multipleSequentialBatches();
+    void closePipe();
 
 private:
     QProcess m_worker;
@@ -141,6 +144,15 @@ void ExtractorCommandPipeTest::multipleSequentialBatches()
     m_controller.processIds({3, 33});
     QVERIFY(spy.wait());
     QCOMPARE(spy.count(), 3);
+}
+
+void ExtractorCommandPipeTest::closePipe()
+{
+    qRegisterMetaType<QProcess::ExitStatus>();
+    QSignalSpy spy(&m_worker, &QProcess::finished);
+
+    m_worker.closeWriteChannel();
+    QVERIFY(spy.wait());
 }
 
 } // namespace Test
