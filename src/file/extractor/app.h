@@ -13,6 +13,8 @@
 #include <QSocketNotifier>
 #include <QFile>
 
+#include <memory>
+
 #include <KFileMetaData/ExtractorCollection>
 
 #include "database.h"
@@ -32,6 +34,7 @@ class App : public QObject
 
 public:
     explicit App(QObject* parent = nullptr);
+    ~App();
 
 private Q_SLOTS:
     void slotNewBatch(const QVector<quint64>& ids);
@@ -55,7 +58,7 @@ private:
     bool m_isBusy = true;
 
     QVector<quint64> m_ids;
-    Transaction* m_tr;
+    std::unique_ptr<Transaction> m_tr;
 };
 
 }

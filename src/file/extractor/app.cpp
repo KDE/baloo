@@ -56,6 +56,15 @@ App::App(QObject* parent)
     connect(&m_workerPipe, &WorkerPipe::inputEnd, this, &QCoreApplication::quit);
 }
 
+App::~App()
+{
+    if (m_tr) {
+        // Abort the transaction in case the parent process exited
+        m_tr->abort();
+        m_tr.reset();
+    }
+}
+
 void App::slotNewBatch(const QVector<quint64>& ids)
 {
     m_ids = ids;
@@ -75,7 +84,7 @@ void App::slotNewBatch(const QVector<quint64>& ids)
     QTimer::singleShot((m_isBusy ? 500 : 0), this, [this, db] () {
         // FIXME: The transaction is open for way too long. We should just open it for when we're
         //        committing the data not during the extraction.
-        m_tr = new Transaction(db, Transaction::ReadWrite);
+        m_tr = std::make_unique<Transaction>(db, Transaction::ReadWrite);
         processNextFile();
     });
 
@@ -98,7 +107,7 @@ void App::processNextFile()
             return;
         }
 
-        bool indexed = index(m_tr, url, id);
+        bool indexed = index(m_tr.get(), url, id);
 
         int delay = (m_isBusy && indexed) ? 10 : 0;
         QTimer::singleShot(delay, this, &App::processNextFile);
@@ -108,8 +117,7 @@ void App::processNextFile()
         if (!ok) {
             exit(2);
         }
-        delete m_tr;
-        m_tr = nullptr;
+        m_tr.reset();
 
         // Enable the SocketNotifier for the next batch
         m_notifyNewData.setEnabled(true);
