@@ -1,13 +1,13 @@
-# Copyright (C) YEAR This file is copyright:
+# Copyright (C) 2024 This file is copyright:
 # This file is distributed under the same license as the baloo package.
 #
-# Kishore G <kishore96@gmail.com>, 2022.
+# SPDX-FileCopyrightText: 2022, 2024 Kishore G <kishore96@gmail.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-17 01:36+0000\n"
-"PO-Revision-Date: 2022-06-14 21:44+0530\n"
+"PO-Revision-Date: 2024-03-17 18:17+0530\n"
 "Last-Translator: Kishore G <kishore96@gmail.com>\n"
 "Language-Team: Tamil <kde-i18n-doc@kde.org>\n"
 "Language: ta\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 22.04.2\n"
+"X-Generator: Lokalize 24.02.0\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -30,7 +30,7 @@ msgstr ""
 #: configcommand.cpp:45
 #, kde-format
 msgid "Manipulate the Baloo configuration"
-msgstr ""
+msgstr "பாலூவின் அமைப்புகளை கையாளவிடும்"
 
 #: configcommand.cpp:68
 #, kde-format
@@ -72,7 +72,7 @@ msgstr ""
 #: configcommand.cpp:76
 #, kde-format
 msgid "Display this help menu"
-msgstr ""
+msgstr "இந்த உதவியைக் காட்டு"
 
 #: configcommand.cpp:82
 #, kde-format
