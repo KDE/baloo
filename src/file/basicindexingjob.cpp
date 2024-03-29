@@ -17,14 +17,13 @@
 
 using namespace Baloo;
 
-BasicIndexingJob::BasicIndexingJob(const QString& filePath, const QString& mimetype,
-                                   IndexingLevel level)
+BasicIndexingJob::BasicIndexingJob(const QString &filePath, const QString &mimetype, IndexingLevel level)
     : m_filePath(filePath)
     , m_mimetype(mimetype)
     , m_indexingLevel(level)
 {
-    if (m_filePath.endsWith(QLatin1Char('/'))) {
-	m_filePath.chop(1);
+    while (m_filePath.endsWith(QLatin1Char('/'))) {
+        m_filePath.chop(1);
     }
 }
 
