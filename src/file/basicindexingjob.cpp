@@ -6,8 +6,9 @@
 */
 
 #include "basicindexingjob.h"
-#include "termgenerator.h"
+#include "baloodebug.h"
 #include "idutils.h"
+#include "termgenerator.h"
 
 #include <QStringList>
 #include <QFile>
@@ -17,21 +18,31 @@
 
 using namespace Baloo;
 
-BasicIndexingJob::BasicIndexingJob(const QString& filePath, const QString& mimetype,
-                                   IndexingLevel level)
+BasicIndexingJob::BasicIndexingJob(const QString &filePath, const QString &mimetype, IndexingLevel level)
     : m_filePath(filePath)
     , m_mimetype(mimetype)
     , m_indexingLevel(level)
 {
+    qWarning(BALOO) << "baloo:"
+                    << "BasicIndexingJob::BasicIndexingJob"
+                    << "filePath" << filePath;
     if (m_filePath.endsWith(QLatin1Char('/'))) {
-	m_filePath.chop(1);
+        qWarning(BALOO) << "baloo:"
+                        << "BasicIndexingJob::BasicIndexingJob"
+                        << "filePath ends with /; chopping";
+        m_filePath.chop(1);
+        qWarning(BALOO) << "baloo:"
+                        << "BasicIndexingJob::BasicIndexingJob"
+                        << "new file path" << m_filePath;
     }
 }
 
 namespace {
 
-void indexXAttr(const QString& url, Document& doc)
+void indexXAttr(const QString &url, Document &doc)
 {
+    qWarning(BALOO) << "baloo:"
+                    << "indexXAttr()" << url;
     KFileMetaData::UserMetaData userMetaData(url);
 
     using Attribute = KFileMetaData::UserMetaData::Attribute;
@@ -209,6 +220,9 @@ bool BasicIndexingJob::index()
 
     const QByteArray fileName = url.mid(lastSlash + 1);
     const QByteArray filePath = url.left(lastSlash);
+
+    qWarning(BALOO) << "baloo:"
+                    << "BasicIndexingJob::index()" << m_filePath << url << lastSlash << fileName << filePath;
 
     QT_STATBUF statBuf;
     if (filePathToStat(filePath, statBuf) != 0) {

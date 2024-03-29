@@ -12,9 +12,10 @@
 #include <QThreadPool>
 #include <QTimer>
 
+#include "baloodebug.h"
 #include "filecontentindexerprovider.h"
-#include "powerstatemonitor.h"
 #include "indexerstate.h"
+#include "powerstatemonitor.h"
 #include "timeestimator.h"
 
 namespace Baloo {
@@ -56,7 +57,10 @@ public Q_SLOTS:
         }
     }
 
-    void indexXAttrFile(const QString& file) {
+    void indexXAttrFile(const QString &file)
+    {
+        qWarning(BALOO) << "baloo:"
+                        << "FileIndexSchedular::indexXAttrFile()" << file;
         if (!m_xattrFiles.contains(file)) {
             m_xattrFiles << file;
             if (isIndexerIdle()) {

@@ -5,6 +5,7 @@
 */
 
 #include "xattrindexer.h"
+#include "baloodebug.h"
 #include "basicindexingjob.h"
 #include "fileindexerconfig.h"
 
@@ -33,7 +34,9 @@ void XAttrIndexer::run()
 
     Transaction tr(m_db, Transaction::ReadWrite);
 
-    for (const QString& filePath : std::as_const(m_files)) {
+    for (const QString &filePath : std::as_const(m_files)) {
+        qWarning(BALOO) << "baloo:"
+                        << "XAttrIndexer::run)" << filePath;
         Q_ASSERT(!filePath.endsWith(QLatin1Char('/')));
 
         QString fileName = filePath.mid(filePath.lastIndexOf(QLatin1Char('/')) + 1);

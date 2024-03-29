@@ -7,6 +7,7 @@
 */
 
 #include "pendingfilequeue.h"
+#include "baloodebug.h"
 
 #include <memory>
 
@@ -81,11 +82,12 @@ void PendingFileQueue::enqueue(const PendingFile& file)
 
 void PendingFileQueue::processCache(const QTime& currentTime)
 {
-    for (const PendingFile& file : std::as_const(m_cache)) {
+    for (const PendingFile &file : std::as_const(m_cache)) {
         if (file.shouldIndexXAttrOnly()) {
+            qWarning(BALOO) << "baloo:"
+                            << "PendingFileQueue::processCache emit indexXAttr" << file.path();
             Q_EMIT indexXAttr(file.path());
-        }
-        else if (file.shouldIndexContents()) {
+        } else if (file.shouldIndexContents()) {
             if (m_pendingFiles.contains(file.path())) {
                 QTime time = m_pendingFiles[file.path()];
 
@@ -94,12 +96,10 @@ void PendingFileQueue::processCache(const QTime& currentTime)
 
                 time = currentTime.addMSecs(msecondsLeft);
                 m_pendingFiles[file.path()] = time;
-            }
-            else if (m_recentlyEmitted.contains(file.path())) {
+            } else if (m_recentlyEmitted.contains(file.path())) {
                 QTime time = currentTime.addMSecs(m_minTimeout);
                 m_pendingFiles[file.path()] = time;
-            }
-            else {
+            } else {
                 if (file.isNewFile()) {
                     Q_EMIT indexNewFile(file.path());
                 } else {
