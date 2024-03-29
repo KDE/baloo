@@ -77,10 +77,15 @@ void MetadataMover::updateMetadata(Transaction* tr, const QString& from, const Q
 {
     qCDebug(BALOO) << from << "->" << to;
     Q_ASSERT(!from.isEmpty() && !to.isEmpty());
-    Q_ASSERT(from[from.size()-1] != QLatin1Char('/'));
     Q_ASSERT(to[to.size()-1] != QLatin1Char('/'));
 
-    const QByteArray fromPath = QFile::encodeName(from);
+    // directory case
+    auto normalizedFrom = from;
+    if (normalizedFrom.endsWith(QLatin1Char('/'))) {
+        normalizedFrom.chop(1);
+    }
+
+    const QByteArray fromPath = QFile::encodeName(normalizedFrom);
     quint64 id = tr->documentId(fromPath);
     if (!id) {
         qCDebug(BALOO) << "Document not (yet) known, signaling newFile" << to;

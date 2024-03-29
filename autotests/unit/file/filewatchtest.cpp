@@ -23,7 +23,9 @@ class FileWatchTest : public QObject
 private Q_SLOTS:
 
     void testFileCreation();
+    void testDirCreation();
     void testConfigChange();
+    void testFileMoved();
 
     void init()
     {
@@ -52,6 +54,11 @@ namespace {
         f1.open(QIODevice::WriteOnly);
         f1.close();
         return QFile::exists(fileUrl);
+    }
+
+    bool createDir(const QString &dirPath)
+    {
+        return QDir().mkpath(dirPath);
     }
 
     void modifyFile(const QString& fileUrl) {
@@ -137,6 +144,72 @@ void FileWatchTest::testFileCreation()
     QCOMPARE(spyIndexXattr.takeFirst().at(0), fileUrl);
 }
 
+void FileWatchTest::testDirCreation()
+{
+    m_db->open(Baloo::Database::CreateDatabase);
+    QVERIFY(m_db->isOpen());
+
+    Test::writeIndexerConfig({m_tmpDir->path()}, {});
+    FileIndexerConfig config;
+
+    FileWatch fileWatch(m_db.get(), &config);
+    fileWatch.m_pendingFileQueue->setMaximumTimeout(0);
+    fileWatch.m_pendingFileQueue->setMinimumTimeout(0);
+    fileWatch.m_pendingFileQueue->setTrackingTime(0);
+
+    QSignalSpy spy(&fileWatch, &FileWatch::installedWatches);
+    QVERIFY(spy.isValid());
+
+    fileWatch.updateIndexedFoldersWatches();
+    QVERIFY(spy.wait());
+    QCOMPARE(spy.count(), 1);
+
+    QSignalSpy spyIndexNew(&fileWatch, &FileWatch::indexNewFile);
+    QSignalSpy spyIndexModified(&fileWatch, &FileWatch::indexModifiedFile);
+    QSignalSpy spyIndexXattr(&fileWatch, &FileWatch::indexXAttr);
+
+    QVERIFY(spyIndexNew.isValid());
+    QVERIFY(spyIndexModified.isValid());
+    QVERIFY(spyIndexXattr.isValid());
+
+    // Create a dir and see if it is indexed
+    QString dirUrl(m_tmpDir->path() + QStringLiteral("/d1"));
+    QVERIFY(createDir(dirUrl));
+    QString dirUrlTrailingSlash = QStringLiteral("%1/").arg(dirUrl);
+
+    QVERIFY(spyIndexNew.wait());
+    QCOMPARE(spyIndexNew.count(), 1);
+    QCOMPARE(spyIndexModified.count(), 0);
+    QCOMPARE(spyIndexXattr.count(), 0);
+    QCOMPARE(spyIndexNew.takeFirst().at(0), dirUrlTrailingSlash);
+
+    // Set an Xattr
+    KFileMetaData::UserMetaData umd(dirUrl);
+    if (!umd.isSupported()) {
+        qWarning() << "Xattr not supported on this filesystem:" << dirUrl;
+    } else {
+        const QString userComment(QStringLiteral("UserComment"));
+        QVERIFY(umd.setUserComment(userComment) == KFileMetaData::UserMetaData::NoError);
+
+        QVERIFY(spyIndexXattr.wait());
+        QCOMPARE(spyIndexNew.count(), 0);
+        QCOMPARE(spyIndexModified.count(), 0);
+        QCOMPARE(spyIndexXattr.count(), 1);
+        QCOMPARE(spyIndexXattr.takeFirst().at(0), dirUrlTrailingSlash);
+    }
+
+    // Change permisssions
+    QFile f(dirUrl);
+    auto permissions = f.permissions();
+    f.setPermissions(permissions & ~QFileDevice::WriteOwner);
+
+    QVERIFY(spyIndexXattr.wait());
+    QCOMPARE(spyIndexNew.count(), 0);
+    QCOMPARE(spyIndexModified.count(), 0);
+    QCOMPARE(spyIndexXattr.count(), 1);
+    QCOMPARE(spyIndexXattr.takeFirst().at(0), dirUrlTrailingSlash);
+}
+
 void FileWatchTest::testConfigChange()
 {
     m_db->open(Baloo::Database::CreateDatabase);
@@ -214,6 +287,56 @@ void FileWatchTest::testConfigChange()
 	result.append(event.at(0).toString());
     }
     QCOMPARE(result, {d21 + QStringLiteral("/tx2b")});
+}
+
+void FileWatchTest::testFileMoved()
+{
+    m_db->open(Baloo::Database::CreateDatabase);
+    QVERIFY(m_db->isOpen());
+
+    Test::writeIndexerConfig({m_tmpDir->path()}, {});
+    FileIndexerConfig config;
+
+    FileWatch fileWatch(m_db.get(), &config);
+    fileWatch.m_pendingFileQueue->setMaximumTimeout(0);
+    fileWatch.m_pendingFileQueue->setMinimumTimeout(0);
+    fileWatch.m_pendingFileQueue->setTrackingTime(0);
+
+    QSignalSpy spy(&fileWatch, &FileWatch::installedWatches);
+    QVERIFY(spy.isValid());
+
+    fileWatch.updateIndexedFoldersWatches();
+    QVERIFY(spy.wait());
+    QCOMPARE(spy.count(), 1);
+
+    QSignalSpy spyIndexNew(&fileWatch, &FileWatch::indexNewFile);
+    QSignalSpy spyIndexModified(&fileWatch, &FileWatch::indexModifiedFile);
+    QSignalSpy spyIndexFileRemoved(&fileWatch, &FileWatch::fileRemoved);
+
+    QVERIFY(spyIndexNew.isValid());
+    QVERIFY(spyIndexModified.isValid());
+    QVERIFY(spyIndexFileRemoved.isValid());
+
+    // Create a file and see if it is indexed
+    QString fileUrl(m_tmpDir->path() + QStringLiteral("/t1"));
+    QString fileDestUrl(m_tmpDir->path() + QStringLiteral("/t2"));
+    QVERIFY(createFile(fileUrl));
+
+    QVERIFY(spyIndexNew.wait());
+    QCOMPARE(spyIndexNew.count(), 1);
+    QCOMPARE(spyIndexModified.count(), 0);
+    QCOMPARE(spyIndexFileRemoved.count(), 0);
+    QCOMPARE(spyIndexNew.takeFirst().at(0), fileUrl);
+
+    // Move the file
+    QVERIFY(QFile::rename(fileUrl, fileDestUrl));
+
+    QVERIFY(spyIndexFileRemoved.wait());
+    QCOMPARE(spyIndexNew.count(), 1);
+    QCOMPARE(spyIndexNew.takeFirst().at(0), fileDestUrl);
+    QCOMPARE(spyIndexModified.count(), 0);
+    QCOMPARE(spyIndexFileRemoved.count(), 1);
+    QCOMPARE(spyIndexFileRemoved.takeFirst().at(0), fileDestUrl); // called to clean dest metadata
 }
 
 QTEST_MAIN(FileWatchTest)
