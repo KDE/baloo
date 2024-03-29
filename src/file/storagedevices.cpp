@@ -38,9 +38,7 @@ StorageDevices::~StorageDevices()
 
 void StorageDevices::initCacheEntries()
 {
-    const QList<Solid::Device> devices
-        = Solid::Device::listFromQuery(QStringLiteral("StorageVolume.usage=='FileSystem'"))
-          + Solid::Device::listFromType(Solid::DeviceInterface::NetworkShare);
+    const QList<Solid::Device> devices = Solid::Device::allDevices();
     for (const Solid::Device& dev : devices) {
         createCacheEntry(dev);
     }
@@ -160,6 +158,8 @@ bool StorageDevices::Entry::isUsable() const
     if (dev.is<Solid::NetworkShare>()) {
         usable = false;
     } else if (dev.is<Solid::OpticalDisc>()) {
+        usable = false;
+    } else if (dev.is<Solid::StorageAccess>() && dev.parentUdi() == QStringLiteral("/org/kde/fstab")) {
         usable = false;
     }
 
