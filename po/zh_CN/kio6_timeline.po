@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: kdeorg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-17 01:36+0000\n"
-"PO-Revision-Date: 2024-03-30 19:36\n"
+"PO-Revision-Date: 2024-04-18 19:49\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -25,7 +25,7 @@ msgctxt ""
 "ask kde-i18n-doc@kde.org if you have problems understanding how to translate "
 "this"
 msgid "MMMM yyyy"
-msgstr "MMMM yyyy"
+msgstr "yyyy MMMM"
 
 #: kio_timeline.cpp:114
 #, kde-format
