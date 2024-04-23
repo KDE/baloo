@@ -51,8 +51,8 @@ inline int statWithFsid(const char* path, QT_STATBUF* statBuf)
     }
 
     struct statvfs fsBuf;
-    ret = statvfs(path, &fsBuf);
-    if (ret == 0 && fsBuf.f_fsid != 0) {
+    int statvfsRet = statvfs(path, &fsBuf);
+    if (statvfsRet == 0 && fsBuf.f_fsid != 0) {
         // Fold FSID into 32 bits, statBufToId would discard anything else
         statBuf->st_dev = static_cast<quint32>(fsBuf.f_fsid ^ (fsBuf.f_fsid >> 32));
     }
