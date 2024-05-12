@@ -157,12 +157,12 @@ msgstr "No s'ha pogut obrir l'índex de Baloo"
 #: main.cpp:223 main.cpp:231
 #, kde-format
 msgid "Listing database contents..."
-msgstr "S'està llistant el contingut de la base de dades..."
+msgstr "S'està llistant el contingut de la base de dades…"
 
 #: main.cpp:241
 #, kde-format
 msgid "Removing stale database contents..."
-msgstr "S'estan eliminant les entrades caducades de la base de dades..."
+msgstr "S'estan eliminant les entrades caducades de la base de dades…"
 
 #: main.cpp:263
 #, kde-format
