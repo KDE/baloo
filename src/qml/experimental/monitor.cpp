@@ -96,8 +96,24 @@ void Monitor::balooStarted()
     m_balooRunning = true;
     m_fileindexer->registerMonitor();
 
-    slotIndexerStateChanged(m_scheduler->state());
-    Q_EMIT balooStateChanged();
+    // the generated code doesn't let you fetch properties asynchronously
+    auto methodCall =
+        QDBusMessage::createMethodCall(m_scheduler->service(), m_scheduler->path(), QStringLiteral("org.freedesktop.DBus.Properties"), QStringLiteral("Get"));
+    methodCall << m_scheduler->interface() << QStringLiteral("state");
+    auto pendingCall = m_scheduler->connection().asyncCall(methodCall, m_scheduler->timeout());
+    auto *watcher = new QDBusPendingCallWatcher(pendingCall, this);
+    connect(watcher, &QDBusPendingCallWatcher::finished, this, [this](QDBusPendingCallWatcher *call) {
+        QDBusPendingReply<QDBusVariant> state = *call;
+
+        if (state.isError()) {
+            qWarning() << "Error fetching Baloo indexer state:" << state.error().message();
+        } else {
+            slotIndexerStateChanged(state.value().variant().toInt());
+            Q_EMIT balooStateChanged();
+        }
+
+        call->deleteLater();
+    });
 }
 
 void Monitor::fetchTotalFiles()
@@ -121,11 +137,21 @@ void Monitor::startBaloo()
 void Monitor::updateRemainingTime()
 {
     auto remainingTime = m_scheduler->getRemainingTime();
-    if ((remainingTime != m_remainingTimeSeconds) && (remainingTime > 0)) {
-        m_remainingTime = KFormat().formatSpelloutDuration(remainingTime);
-        m_remainingTimeSeconds = remainingTime;
-        Q_EMIT remainingTimeChanged();
-    }
+    auto *watcher = new QDBusPendingCallWatcher(remainingTime, this);
+    connect(watcher, &QDBusPendingCallWatcher::finished, this, [this](QDBusPendingCallWatcher *call) {
+        QDBusPendingReply<uint> remainingTime = *call;
+
+        if (remainingTime.isError()) {
+            m_remainingTime = remainingTime.error().message();
+            Q_EMIT remainingTimeChanged();
+        } else if ((remainingTime != m_remainingTimeSeconds) && (remainingTime > 0)) {
+            m_remainingTime = KFormat().formatSpelloutDuration(remainingTime);
+            m_remainingTimeSeconds = remainingTime;
+            Q_EMIT remainingTimeChanged();
+        }
+
+        call->deleteLater();
+    });
 }
 
 void Monitor::slotIndexerStateChanged(int state)
