@@ -270,7 +270,7 @@ msgstr "Indeksuj podane pliki"
 #: main.cpp:67
 #, kde-format
 msgid "Forget the specified files"
-msgstr "Zapomij o danych plikach"
+msgstr "Zapomnij o danych plikach"
 
 #: main.cpp:68
 #, kde-format
