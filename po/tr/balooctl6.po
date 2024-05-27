@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: balooctl5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-17 01:36+0000\n"
-"PO-Revision-Date: 2024-03-01 15:39+0300\n"
+"PO-Revision-Date: 2024-05-27 01:09+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 24.02.0\n"
+"X-Generator: Lokalize 24.07.70\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -303,8 +303,8 @@ msgid ""
 "Only applies to \"%4\""
 msgstr ""
 "Çıktı biçimi<%1|%2|%3>.\n"
-"Öntanımlı biçim: \"%1\".\n"
-"Yalnızca \"%4\" için geçerlidir"
+"Öntanımlı biçim: “%1”.\n"
+"Yalnızca “%4” için geçerlidir"
 
 #: main.cpp:80
 #, kde-format
@@ -406,13 +406,13 @@ msgstr "Dosya: %1"
 #: statuscommand.cpp:262
 #, kde-format
 msgid "Output format \"%1\" is invalid, use one of:\n"
-msgstr "Çıktı biçimi \"%1\" geçersiz, şunlardan birini kullanın:\n"
+msgstr "Çıktı biçimi “%1” geçersiz; şunlardan birini kullanın:\n"
 
 #: statuscommand.cpp:264
 #, kde-format
 msgctxt "bullet list item with output format"
 msgid "- %1\n"
-msgstr "- %1\n"
+msgstr "— %1\n"
 
 #: statuscommand.cpp:271
 #, kde-format
