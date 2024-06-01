@@ -1,11 +1,10 @@
 add_definitions(-DTRANSLATION_DOMAIN=\"baloomonitorplugin\")
 
-set(baloomonitorplugin_SRCS
-    baloomonitorplugin.cpp
+ecm_add_qml_module(baloomonitorplugin URI "org.kde.baloo.experimental" VERSION 0.1 GENERATE_PLUGIN_SOURCE)
+
+target_sources(baloomonitorplugin PRIVATE
     monitor.cpp
 )
-
-add_library(baloomonitorplugin SHARED ${baloomonitorplugin_SRCS})
 
 target_link_libraries(baloomonitorplugin
     PUBLIC
@@ -20,6 +19,5 @@ target_link_libraries(baloomonitorplugin
     BalooDBusSchedulerInterface
     BalooDBusFileIndexerInterface
 )
-install(TARGETS baloomonitorplugin DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/baloo/experimental)
 
-install(FILES qmldir DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/baloo/experimental)
+ecm_finalize_qml_module(baloomonitorplugin)

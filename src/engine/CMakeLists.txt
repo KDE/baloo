@@ -46,6 +46,8 @@ endif()
 add_library(KF6BalooEngine ${BALOO_ENGINE_SRCS})
 add_library(KF6::BalooEngine ALIAS KF6BalooEngine)
 
+qt_extract_metatypes(KF6BalooEngine)
+
 target_link_libraries(KF6BalooEngine
     PUBLIC
     Qt6::Core

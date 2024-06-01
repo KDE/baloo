@@ -49,6 +49,7 @@ include(ECMGenerateExportHeader)
 include(ECMGeneratePkgConfigFile)
 include(ECMConfiguredInstall)
 include(ECMDeprecationSettings)
+include(ECMQmlModule)
 
 set(EXCLUDE_DEPRECATED_BEFORE_AND_AT 0 CACHE STRING "Control the range of deprecated API excluded from the build [default=0].")
 

@@ -11,15 +11,23 @@
 #include <QDeadlineTimer>
 #include <QObject>
 #include <QString>
+#include <qqmlregistration.h>
 
 #include "indexerstate.h"
 #include "schedulerinterface.h"
 #include "fileindexerinterface.h"
 
+struct BalooForeign {
+    Q_GADGET
+    QML_NAMED_ELEMENT(Global)
+    QML_FOREIGN_NAMESPACE(Baloo)
+};
+
 namespace Baloo {
 class Monitor : public QObject
 {
     Q_OBJECT
+    QML_ELEMENT
 
     Q_PROPERTY(QString filePath READ filePath NOTIFY newFileIndexed)
     Q_PROPERTY(QString suspendState READ suspendState NOTIFY indexerStateChanged)

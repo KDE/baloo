@@ -1,12 +1,11 @@
-set(balooplugin_SRCS
-    balooplugin.cpp
+ecm_add_qml_module(balooplugin URI "org.kde.baloo" VERSION 0.1 DEPENDENCIES QtCore GENERATE_PLUGIN_SOURCE)
+
+target_sources(balooplugin PRIVATE
     queryresultsmodel.cpp
-    )
+)
 
-add_library(balooplugin SHARED ${balooplugin_SRCS})
-target_link_libraries(balooplugin Qt6::Core Qt6::Qml KF6::Baloo)
-install(TARGETS balooplugin DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/baloo/)
+target_link_libraries(balooplugin PRIVATE Qt6::Core Qt6::Qml KF6::Baloo)
 
-install(FILES qmldir DESTINATION ${KDE_INSTALL_QMLDIR}/org/kde/baloo)
+ecm_finalize_qml_module(balooplugin)
 
 add_subdirectory(experimental)

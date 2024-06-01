@@ -9,10 +9,12 @@
 
 #include <QAbstractListModel>
 #include <QString>
+#include <qqmlregistration.h>
 
 class Query : public QObject
 {
     Q_OBJECT
+    QML_ELEMENT
     Q_PROPERTY(QString searchString READ searchString WRITE setSearchString NOTIFY searchStringChanged)
     Q_PROPERTY(int limit READ limit WRITE setLimit NOTIFY limitChanged)
 
@@ -39,6 +41,7 @@ private:
 class QueryResultsModel : public QAbstractListModel
 {
     Q_OBJECT
+    QML_ELEMENT
     Q_PROPERTY(Query* query READ query WRITE setQuery NOTIFY queryChanged)
 
 public:
