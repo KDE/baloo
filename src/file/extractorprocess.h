@@ -24,6 +24,7 @@ public:
 
     void index(const QVector<quint64>& fileIds);
     void start();
+    bool startedCorrectly();
 
 Q_SIGNALS:
     void startedIndexingFile(QString filePath);
@@ -33,8 +34,8 @@ Q_SIGNALS:
 
 private:
     const QString m_extractorPath;
-
     QProcess m_extractorProcess;
+    bool m_extractorProcessRunning = false;
     Baloo::Private::ControllerPipe m_controller;
 };
 }

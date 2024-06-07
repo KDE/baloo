@@ -39,6 +39,7 @@ int main(int argc, char* argv[])
     WorkerPipe worker(&input, &output);
     QObject::connect(&inputNotifier, &QSocketNotifier::activated,
                      &worker, &WorkerPipe::processIdData);
+    worker.upAndRunning();
 
     QObject::connect(&worker, &WorkerPipe::inputEnd, &QCoreApplication::quit);
     QObject::connect(&worker, &WorkerPipe::newDocumentIds,

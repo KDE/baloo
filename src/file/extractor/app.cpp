@@ -54,6 +54,8 @@ App::App(QObject* parent)
     connect(&m_notifyNewData, &QSocketNotifier::activated, &m_workerPipe, &WorkerPipe::processIdData);
     connect(&m_workerPipe, &WorkerPipe::newDocumentIds, this, &App::slotNewBatch);
     connect(&m_workerPipe, &WorkerPipe::inputEnd, this, &QCoreApplication::quit);
+
+    m_workerPipe.upAndRunning();
 }
 
 App::~App()

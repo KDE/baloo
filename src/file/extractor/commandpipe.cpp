@@ -18,6 +18,7 @@ enum BatchStatus : quint8 {
     UrlFinished = 'F',
     UrlFailed = 'f',
     BatchFinished = 'B',
+    UpAndRunning = 'U',
 };
 
 ControllerPipe::ControllerPipe(QIODevice* commandPipe, QIODevice* statusPipe)
@@ -48,6 +49,13 @@ void ControllerPipe::processStatusData()
         if (event == BatchFinished) {
             if (m_statusStream.commitTransaction()) {
                 Q_EMIT batchFinished();
+                continue;
+            } else {
+                break;
+            }
+        } else if (event == UpAndRunning) {
+            if (m_statusStream.commitTransaction()) {
+                Q_EMIT upAndRunning();
                 continue;
             } else {
                 break;
@@ -133,6 +141,11 @@ void WorkerPipe::urlFailed(const QString& url)
 void WorkerPipe::batchFinished()
 {
     m_statusStream << BatchFinished;
+}
+
+void WorkerPipe::upAndRunning()
+{
+    m_statusStream << UpAndRunning;
 }
 
 } // namespace Private

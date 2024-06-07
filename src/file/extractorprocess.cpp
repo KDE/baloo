@@ -30,10 +30,18 @@ ExtractorProcess::ExtractorProcess(const QString& extractorPath, QObject* parent
         qCDebug(BALOO) << "Batch finished";
         Q_EMIT done();
     });
+    connect(&m_controller, &ControllerPipe::upAndRunning, this, [this]() {
+        m_extractorProcessRunning = true;
+    });
 
-    connect(&m_extractorProcess, qOverload<int, QProcess::ExitStatus>(&QProcess::finished), [=](int exitCode, QProcess::ExitStatus exitStatus) {
+    connect(&m_extractorProcess, qOverload<int, QProcess::ExitStatus>(&QProcess::finished), [this](int exitCode, QProcess::ExitStatus exitStatus) {
+        m_controller.processStatusData();
+
         if (exitStatus == QProcess::CrashExit) {
             qCWarning(BALOO) << "Extractor crashed";
+            if (!m_extractorProcessRunning) {
+                qFatal("Could not successfully launch extractor process");
+            }
             Q_EMIT failed();
         } else if (exitCode == 1) {
             // DB open error

@@ -30,6 +30,7 @@ public:
     void processIds(const QVector<quint64>& ids);
 
 Q_SIGNALS:
+    void upAndRunning();
     void urlStarted(const QString& url);
     void urlFinished(const QString& url);
     void urlFailed(const QString& url);
@@ -54,6 +55,7 @@ public:
     void urlFinished(const QString& url);
     void urlFailed(const QString& url);
     void batchFinished();
+    void upAndRunning();
 
 public Q_SLOTS:
     void processIdData();
