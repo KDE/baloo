@@ -106,7 +106,7 @@ msgstr "空闲 (节能)"
 #: indexerstate.cpp:47
 #, kde-format
 msgid "Not Running"
-msgstr "不在运行"
+msgstr "没有运行"
 
 #: indexerstate.cpp:50
 #, kde-format
