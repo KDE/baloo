@@ -20,6 +20,8 @@
 #include <QCoreApplication>
 #include <QFile>
 
+#include <KAboutData>
+
 int main(int argc, char** argv)
 {
     lowerIOPriority();
@@ -39,7 +41,11 @@ int main(int argc, char** argv)
         return 1;
     }
 
+    KAboutData aboutData(QStringLiteral("baloo_file"), QString(), QLatin1String(PROJECT_VERSION));
+    KAboutData::setApplicationData(aboutData);
+
     // Crash Handling
+    KCrash::initialize();
     KCrash::setFlags(KCrash::AutoRestart);
 
     const QString path = Baloo::fileIndexDbPath();
