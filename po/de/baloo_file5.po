@@ -6,7 +6,7 @@
 # Automatically generated, 2023.
 msgid ""
 msgstr ""
-"Project-Id-Version: baloo\n"
+"Project-Id-Version: baloo_file6\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-05 12:24+0000\n"
 "PO-Revision-Date: 2023-03-12 19:48+0100\n"

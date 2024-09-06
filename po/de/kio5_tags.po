@@ -2,7 +2,7 @@
 # Frederik Schwarzer <schwarzer@kde.org>, 2023.
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: kio6_tags\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-05 12:24+0000\n"
 "PO-Revision-Date: 2018-11-16 18:59+0100\n"
