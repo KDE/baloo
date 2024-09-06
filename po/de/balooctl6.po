@@ -2,7 +2,7 @@
 # Burkhard Lück <lueck@hube-lueck.de>, 2015, 2017, 2018, 2019, 2020.
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: balooctl6\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-17 01:36+0000\n"
 "PO-Revision-Date: 2020-09-11 11:04+0200\n"
