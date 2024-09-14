@@ -10,7 +10,7 @@
 
 using namespace Baloo;
 
-PhraseAndIterator::PhraseAndIterator(const QVector<VectorPositionInfoIterator*>& iterators)
+PhraseAndIterator::PhraseAndIterator(const QList<VectorPositionInfoIterator *> &iterators)
     : m_iterators(iterators)
     , m_docId(0)
 {

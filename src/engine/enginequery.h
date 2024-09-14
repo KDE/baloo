@@ -11,8 +11,8 @@
 #include "engine_export.h"
 
 #include <QByteArray>
-#include <QVector>
 #include <QDebug>
+#include <QList>
 
 namespace Baloo {
 
@@ -27,7 +27,7 @@ public:
 
     EngineQuery();
     EngineQuery(const QByteArray& term, Operation op = Equal);
-    EngineQuery(const QVector<EngineQuery> &subQueries);
+    EngineQuery(const QList<EngineQuery> &subQueries);
 
     QByteArray term() const {
         return m_term;
@@ -49,7 +49,8 @@ public:
         return m_subQueries.isEmpty() && m_term.isEmpty();
     }
 
-    QVector<EngineQuery> subQueries() const {
+    QList<EngineQuery> subQueries() const
+    {
         return m_subQueries;
     }
 
@@ -60,7 +61,7 @@ private:
     QByteArray m_term;
     Operation m_op;
 
-    QVector<EngineQuery> m_subQueries;
+    QList<EngineQuery> m_subQueries;
 };
 
 inline QDebug operator<<(QDebug d, const Baloo::EngineQuery& q)

@@ -11,7 +11,7 @@
 #include "engine_export.h"
 #include <QByteArray>
 #include <QDebug>
-#include <QVector>
+#include <QList>
 
 namespace Baloo {
 
@@ -66,7 +66,7 @@ private:
     quint64 m_parentId = 0;
 
     struct TermData {
-        QVector<uint> positions;
+        QList<uint> positions;
     };
     QMap<QByteArray, TermData> m_terms;
     QMap<QByteArray, TermData> m_xattrTerms;

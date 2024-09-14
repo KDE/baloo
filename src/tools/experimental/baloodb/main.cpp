@@ -189,7 +189,7 @@ int main(int argc, char* argv[])
     const auto optNames = parser.optionNames();
     const auto allowedOptions = getOptions(command);
 
-    QVector<qint64> deviceIds;
+    QList<qint64> deviceIds;
     for (const auto& dev : parser.values(QStringLiteral("device-id"))) {
         deviceIds.append(dev.toInt());
     }

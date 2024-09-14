@@ -27,7 +27,7 @@ class ControllerPipe : public QObject
 public:
     ControllerPipe(QIODevice* commandPipe, QIODevice* statusPipe);
 
-    void processIds(const QVector<quint64>& ids);
+    void processIds(const QList<quint64> &ids);
 
 Q_SIGNALS:
     void urlStarted(const QString& url);
@@ -59,7 +59,7 @@ public Q_SLOTS:
     void processIdData();
 
 Q_SIGNALS:
-    void newDocumentIds(const QVector<quint64>& ids);
+    void newDocumentIds(const QList<quint64> &ids);
     void inputEnd();
 
 private:

@@ -27,9 +27,9 @@ private Q_SLOTS:
     void benchEncodeData3();
     void benchDecodeData3();
 private:
-    QVector<PositionInfo> m_benchmarkData1;
-    QVector<PositionInfo> m_benchmarkData2;
-    QVector<PositionInfo> m_benchmarkData3;
+    QList<PositionInfo> m_benchmarkData1;
+    QList<PositionInfo> m_benchmarkData2;
+    QList<PositionInfo> m_benchmarkData3;
 };
 
 void PositionCodecBenchmark::initTestCase()

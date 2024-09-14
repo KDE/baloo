@@ -9,7 +9,7 @@
 
 using namespace Baloo;
 
-VectorPostingIterator::VectorPostingIterator(const QVector<quint64>& values)
+VectorPostingIterator::VectorPostingIterator(const QList<quint64> &values)
     : m_values(values)
     , m_pos(-1)
 {

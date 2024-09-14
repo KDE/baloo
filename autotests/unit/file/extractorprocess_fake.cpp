@@ -41,30 +41,29 @@ int main(int argc, char* argv[])
                      &worker, &WorkerPipe::processIdData);
 
     QObject::connect(&worker, &WorkerPipe::inputEnd, &QCoreApplication::quit);
-    QObject::connect(&worker, &WorkerPipe::newDocumentIds,
-        [&worker](const QVector<quint64>& ids) {
-            QTimer::singleShot(0, [&worker, ids]() {
-                qCInfo(BALOO) << "Processing ...";
+    QObject::connect(&worker, &WorkerPipe::newDocumentIds, [&worker](const QList<quint64> &ids) {
+        QTimer::singleShot(0, [&worker, ids]() {
+            qCInfo(BALOO) << "Processing ...";
 
-                for(auto id : ids) {
-                    worker.urlStarted(QString::number(id));
+            for (auto id : ids) {
+                worker.urlStarted(QString::number(id));
 
-		    if (id == 0) {
-		      raise(SIGSEGV);
-		    } else if (id == 1) {
-		      exit(1);
-		    } else if (id == 2) {
-		      exit(2);
-		    } else if (id < 100) {
-                        worker.urlFailed(QString::number(id));
-		    } else {
-                        worker.urlFinished(QString::number(id));
-		    }
+                if (id == 0) {
+                    raise(SIGSEGV);
+                } else if (id == 1) {
+                    exit(1);
+                } else if (id == 2) {
+                    exit(2);
+                } else if (id < 100) {
+                    worker.urlFailed(QString::number(id));
+                } else {
+                    worker.urlFinished(QString::number(id));
                 }
-                worker.batchFinished();
-                qCInfo(BALOO) << "Processing done";
-            });
+            }
+            worker.batchFinished();
+            qCInfo(BALOO) << "Processing done";
         });
+    });
 
     return app.exec();
 }

@@ -11,8 +11,8 @@
 #include "engine_export.h"
 
 #include <QByteArray>
+#include <QList>
 #include <QMap>
-#include <QVector>
 #include <lmdb.h>
 
 namespace Baloo {
@@ -29,13 +29,14 @@ public:
     static MDB_dbi create(MDB_txn* txn);
     static MDB_dbi open(MDB_txn* txn);
 
-    void put(const QByteArray& term, const QVector<PositionInfo>& list);
-    QVector<PositionInfo> get(const QByteArray& term);
+    void put(const QByteArray &term, const QList<PositionInfo> &list);
+    QList<PositionInfo> get(const QByteArray &term);
     void del(const QByteArray& term);
 
     VectorPositionInfoIterator* iter(const QByteArray& term);
 
-    QMap<QByteArray, QVector<PositionInfo>> toTestMap() const;
+    QMap<QByteArray, QList<PositionInfo>> toTestMap() const;
+
 private:
     MDB_txn* m_txn;
     MDB_dbi m_dbi;

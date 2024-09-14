@@ -9,9 +9,9 @@
 #define BALOO_DOCUMENTDB_H
 
 #include "engine_export.h"
-#include <lmdb.h>
-#include <QVector>
+#include <QList>
 #include <QMap>
+#include <lmdb.h>
 
 namespace Baloo {
 
@@ -31,14 +31,15 @@ public:
     static MDB_dbi create(const char* name, MDB_txn* txn);
     static MDB_dbi open(const char* name, MDB_txn* txn);
 
-    void put(quint64 docId, const QVector< QByteArray >& list);
-    QVector<QByteArray> get(quint64 docId);
+    void put(quint64 docId, const QList<QByteArray> &list);
+    QList<QByteArray> get(quint64 docId);
 
     bool contains(quint64 docId);
     void del(quint64 docId);
     uint size();
 
-    QMap<quint64, QVector<QByteArray>> toTestMap() const;
+    QMap<quint64, QList<QByteArray>> toTestMap() const;
+
 private:
     MDB_txn* m_txn;
     MDB_dbi m_dbi;

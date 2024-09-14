@@ -50,8 +50,8 @@ private:
     struct DocumentInfo {
         QString url;
         DocumentTimeDB::TimeInfo timeInfo;
-        QVector<QByteArray> docTerms;
-        QVector<QByteArray> filenameTerms;
+        QList<QByteArray> docTerms;
+        QList<QByteArray> filenameTerms;
     };
     DocumentInfo documentInfo(quint64 docId);
 };

@@ -67,7 +67,7 @@ void FileContentIndexer::run()
         // WARNING: This will go mad, if the Extractor does not commit after N=m_batchSize files
         // cause then we will keep fetching the same N files again and again.
         //
-        QVector<quint64> idList = m_provider->fetch(batchSize);
+        QList<quint64> idList = m_provider->fetch(batchSize);
         if (idList.isEmpty() || m_stop.loadRelaxed()) {
             break;
         }

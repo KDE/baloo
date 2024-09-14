@@ -8,10 +8,10 @@
 #ifndef EXTRACTOR_APP_H
 #define EXTRACTOR_APP_H
 
-#include <QVector>
+#include <QFile>
+#include <QList>
 #include <QMimeDatabase>
 #include <QSocketNotifier>
-#include <QFile>
 
 #include <memory>
 
@@ -37,7 +37,7 @@ public:
     ~App();
 
 private Q_SLOTS:
-    void slotNewBatch(const QVector<quint64>& ids);
+    void slotNewBatch(const QList<quint64> &ids);
     void processNextFile();
 
 private:
@@ -57,7 +57,7 @@ private:
     KIdleTime* m_idleTime = nullptr;
     bool m_isBusy = true;
 
-    QVector<quint64> m_ids;
+    QList<quint64> m_ids;
     std::unique_ptr<Transaction> m_tr;
 };
 

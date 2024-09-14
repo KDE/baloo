@@ -32,7 +32,7 @@ void PhraseAndIteratorTest::test()
     pi4_1.docId = 4;
     pi4_1.positions = {4, 2};
 
-    QVector<PositionInfo> vec1;
+    QList<PositionInfo> vec1;
     vec1 << pi2_1 << pi4_1;
 
     // Term 2
@@ -48,18 +48,18 @@ void PhraseAndIteratorTest::test()
     pi7_2.docId = 7;
     pi7_2.positions = {1, 4, 2};
 
-    QVector<PositionInfo> vec2;
+    QList<PositionInfo> vec2;
     vec2 << pi2_2 << pi4_2 << pi7_2;
 
     VectorPositionInfoIterator* it1 = new VectorPositionInfoIterator(vec1);
     VectorPositionInfoIterator* it2 = new VectorPositionInfoIterator(vec2);
 
-    QVector<VectorPositionInfoIterator*> vec = {it1, it2};
+    QList<VectorPositionInfoIterator *> vec = {it1, it2};
     PhraseAndIterator it(vec);
     QCOMPARE(it.docId(), static_cast<quint64>(0));
 
     // The Query is "term1 term2". term1 must appear one position before term2
-    QVector<quint64> result = {2};
+    QList<quint64> result = {2};
     for (quint64 val : result) {
         QCOMPARE(it.next(), static_cast<quint64>(val));
         QCOMPARE(it.docId(), static_cast<quint64>(val));
@@ -75,7 +75,7 @@ void PhraseAndIteratorTest::testNullIterators()
     pi2_1.docId = 2;
     pi2_1.positions = {5, 9};
 
-    QVector<PositionInfo> vec1;
+    QList<PositionInfo> vec1;
     vec1 << pi2_1;
 
     // Term 2
@@ -83,13 +83,13 @@ void PhraseAndIteratorTest::testNullIterators()
     pi2_2.docId = 2;
     pi2_2.positions = {6, 7};
 
-    QVector<PositionInfo> vec2;
+    QList<PositionInfo> vec2;
     vec2 << pi2_2;
 
     VectorPositionInfoIterator* it1 = new VectorPositionInfoIterator(vec1);
     VectorPositionInfoIterator* it2 = new VectorPositionInfoIterator(vec2);
 
-    QVector<VectorPositionInfoIterator*> vec = {it1, nullptr, it2};
+    QList<VectorPositionInfoIterator *> vec = {it1, nullptr, it2};
     PhraseAndIterator it(vec);
     QCOMPARE(it.docId(), static_cast<quint64>(0));
     QCOMPARE(it.next(), static_cast<quint64>(0));

@@ -215,7 +215,7 @@ int main(int argc, char* argv[])
         Transaction tr(db, Transaction::ReadOnly);
 
         const quint64 limit = 128;
-        const QVector<quint64> failedIds = tr.failedIds(limit);
+        const QList<quint64> failedIds = tr.failedIds(limit);
         if (failedIds.isEmpty()) {
             out << "All Files were indexed successfully\n";
             return 0;

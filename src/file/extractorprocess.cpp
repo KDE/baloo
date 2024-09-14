@@ -71,7 +71,7 @@ void ExtractorProcess::start()
     m_extractorProcess.setReadChannel(QProcess::StandardOutput);
 }
 
-void ExtractorProcess::index(const QVector<quint64>& fileIds)
+void ExtractorProcess::index(const QList<quint64> &fileIds)
 {
     Q_ASSERT(!fileIds.isEmpty());
     m_controller.processIds(fileIds);

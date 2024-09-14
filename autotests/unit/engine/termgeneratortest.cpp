@@ -170,14 +170,14 @@ void TermGeneratorTest::testWordPositions()
     expectedWords << QByteArray("hello") << QByteArray("hi") << QByteArray("how");
     QCOMPARE(words, expectedWords);
 
-    QVector<uint> posInfo1 = doc.m_terms.value("hello").positions;
-    QCOMPARE(posInfo1, QVector<uint>() << 1);
+    QList<uint> posInfo1 = doc.m_terms.value("hello").positions;
+    QCOMPARE(posInfo1, QList<uint>() << 1);
 
-    QVector<uint> posInfo2 = doc.m_terms.value("hi").positions;
-    QCOMPARE(posInfo2, QVector<uint>() << 2 << 4);
+    QList<uint> posInfo2 = doc.m_terms.value("hi").positions;
+    QCOMPARE(posInfo2, QList<uint>() << 2 << 4);
 
-    QVector<uint> posInfo3 = doc.m_terms.value("how").positions;
-    QCOMPARE(posInfo3, QVector<uint>() << 3);
+    QList<uint> posInfo3 = doc.m_terms.value("how").positions;
+    QCOMPARE(posInfo3, QList<uint>() << 3);
 }
 
 void TermGeneratorTest::testWordPositionsCJK()
@@ -195,11 +195,11 @@ void TermGeneratorTest::testWordPositionsCJK()
     expectedWords << QByteArray("你好你好") << QByteArray("我认识你");
     QCOMPARE(words, expectedWords);
 
-    QVector<uint> posInfo1 = doc.m_terms.value("你好你好").positions;
-    QCOMPARE(posInfo1, QVector<uint>() << 1);
+    QList<uint> posInfo1 = doc.m_terms.value("你好你好").positions;
+    QCOMPARE(posInfo1, QList<uint>() << 1);
 
-    QVector<uint> posInfo2 = doc.m_terms.value("我认识你").positions;
-    QCOMPARE(posInfo2, QVector<uint>() << 2);
+    QList<uint> posInfo2 = doc.m_terms.value("我认识你").positions;
+    QCOMPARE(posInfo2, QList<uint>() << 2);
 }
 
 void TermGeneratorTest::testNumbers()

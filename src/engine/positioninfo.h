@@ -7,18 +7,21 @@
 #ifndef BALOO_POSITIONINFO_H
 #define BALOO_POSITIONINFO_H
 
-#include <QVector>
 #include <QDebug>
+#include <QList>
 
 namespace Baloo {
 
 class PositionInfo {
 public:
     quint64 docId;
-    QVector<uint> positions;
+    QList<uint> positions;
 
-    PositionInfo(quint64 id = 0, const QVector<uint> posList = QVector<uint>())
-        : docId(id), positions(posList) {}
+    PositionInfo(quint64 id = 0, const QList<uint> posList = QList<uint>())
+        : docId(id)
+        , positions(posList)
+    {
+    }
 
     bool operator ==(const PositionInfo& rhs) const {
         return docId == rhs.docId;

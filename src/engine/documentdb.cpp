@@ -47,7 +47,7 @@ MDB_dbi DocumentDB::open(const char* name, MDB_txn* txn)
     return dbi;
 }
 
-void DocumentDB::put(quint64 docId, const QVector<QByteArray>& list)
+void DocumentDB::put(quint64 docId, const QList<QByteArray> &list)
 {
     Q_ASSERT(docId > 0);
     Q_ASSERT(!list.isEmpty());
@@ -68,7 +68,7 @@ void DocumentDB::put(quint64 docId, const QVector<QByteArray>& list)
     }
 }
 
-QVector<QByteArray> DocumentDB::get(quint64 docId)
+QList<QByteArray> DocumentDB::get(quint64 docId)
 {
     Q_ASSERT(docId > 0);
 
@@ -80,7 +80,7 @@ QVector<QByteArray> DocumentDB::get(quint64 docId)
     int rc = mdb_get(m_txn, m_dbi, &key, &val);
     if (rc) {
         qCDebug(ENGINE) << "DocumentDB::get" << docId << mdb_strerror(rc);
-        return QVector<QByteArray>();
+        return QList<QByteArray>();
     }
 
     QByteArray arr = QByteArray::fromRawData(static_cast<char*>(val.mv_data), val.mv_size);
@@ -138,7 +138,7 @@ uint DocumentDB::size()
     return stat.ms_entries;
 }
 
-QMap<quint64, QVector<QByteArray>> DocumentDB::toTestMap() const
+QMap<quint64, QList<QByteArray>> DocumentDB::toTestMap() const
 {
     MDB_cursor* cursor;
     mdb_cursor_open(m_txn, m_dbi, &cursor);
@@ -146,7 +146,7 @@ QMap<quint64, QVector<QByteArray>> DocumentDB::toTestMap() const
     MDB_val key = {0, nullptr};
     MDB_val val;
 
-    QMap<quint64, QVector<QByteArray>> map;
+    QMap<quint64, QList<QByteArray>> map;
     while (1) {
         int rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
         if (rc == MDB_NOTFOUND) {
@@ -158,7 +158,7 @@ QMap<quint64, QVector<QByteArray>> DocumentDB::toTestMap() const
         }
 
         const quint64 id = *(static_cast<quint64*>(key.mv_data));
-        const QVector<QByteArray> vec = DocTermsCodec::decode(QByteArray(static_cast<char*>(val.mv_data), val.mv_size));
+        const QList<QByteArray> vec = DocTermsCodec::decode(QByteArray(static_cast<char *>(val.mv_data), val.mv_size));
         map.insert(id, vec);
     }
 

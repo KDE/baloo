@@ -22,16 +22,16 @@ private Q_SLOTS:
         QByteArray word("fire");
         PositionInfo pos1;
         pos1.docId = 1;
-        pos1.positions = QVector<uint>() << 1 << 5 << 6;
+        pos1.positions = QList<uint>() << 1 << 5 << 6;
 
         PositionInfo pos2;
         pos2.docId = 5;
-        pos2.positions = QVector<uint>() << 41 << 96 << 116;
+        pos2.positions = QList<uint>() << 41 << 96 << 116;
 
-        QVector<PositionInfo> list = {pos1, pos2};
+        QList<PositionInfo> list = {pos1, pos2};
 
         db.put(word, list);
-        QVector<PositionInfo> res = db.get(word);
+        QList<PositionInfo> res = db.get(word);
         QCOMPARE(res, list);
     }
 
@@ -41,13 +41,13 @@ private Q_SLOTS:
         QByteArray word("fire");
         PositionInfo pos1;
         pos1.docId = 1;
-        pos1.positions = QVector<uint>() << 1 << 5 << 6;
+        pos1.positions = QList<uint>() << 1 << 5 << 6;
 
         PositionInfo pos2;
         pos2.docId = 5;
-        pos2.positions = QVector<uint>() << 41 << 96 << 116;
+        pos2.positions = QList<uint>() << 41 << 96 << 116;
 
-        QVector<PositionInfo> list = {pos1, pos2};
+        QList<PositionInfo> list = {pos1, pos2};
 
         db.put(word, list);
 

@@ -9,7 +9,7 @@
 #define BALOO_POSITIONCODEC_H
 
 #include <QByteArray>
-#include <QVector>
+#include <QList>
 
 #include "positiondb.h"
 
@@ -18,8 +18,8 @@ namespace Baloo {
 class PositionCodec
 {
 public:
-    static QByteArray encode(const QVector<PositionInfo>& list);
-    static QVector<PositionInfo> decode(const QByteArray& arr);
+    static QByteArray encode(const QList<PositionInfo> &list);
+    static QList<PositionInfo> decode(const QByteArray &arr);
 };
 }
 

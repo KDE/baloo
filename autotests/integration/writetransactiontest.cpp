@@ -89,8 +89,13 @@ void WriteTransactionTest::testAddDocument()
     QCOMPARE(actualState, state);
 }
 
-static Document createDocument(const QString& filePath, quint32 mtime, quint32 ctime, const QVector<QByteArray>& terms,
-                               const QVector<QByteArray>& fileNameTerms, const QVector<QByteArray>& xattrTerms, quint64 parentId)
+static Document createDocument(const QString &filePath,
+                               quint32 mtime,
+                               quint32 ctime,
+                               const QList<QByteArray> &terms,
+                               const QList<QByteArray> &fileNameTerms,
+                               const QList<QByteArray> &xattrTerms,
+                               quint64 parentId)
 {
     Document doc;
 

@@ -7,7 +7,7 @@
 #ifndef BALOO_FILECONTENTINDEXERPROVIDER_H
 #define BALOO_FILECONTENTINDEXERPROVIDER_H
 
-#include <QVector>
+#include <QList>
 
 namespace Baloo {
 
@@ -19,7 +19,7 @@ public:
     explicit FileContentIndexerProvider(Database* db);
 
     uint size();
-    QVector<quint64> fetch(uint size);
+    QList<quint64> fetch(uint size);
     bool markFailed(quint64 id);
 
 private:

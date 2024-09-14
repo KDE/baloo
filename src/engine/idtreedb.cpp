@@ -45,7 +45,7 @@ MDB_dbi IdTreeDB::open(MDB_txn* txn)
     return dbi;
 }
 
-void IdTreeDB::set(quint64 docId, const QVector<quint64> &subDocIds)
+void IdTreeDB::set(quint64 docId, const QList<quint64> &subDocIds)
 {
     Q_ASSERT(!subDocIds.contains(0));
 
@@ -71,7 +71,7 @@ void IdTreeDB::set(quint64 docId, const QVector<quint64> &subDocIds)
     }
 }
 
-QVector<quint64> IdTreeDB::get(quint64 docId)
+QList<quint64> IdTreeDB::get(quint64 docId)
 {
     MDB_val key;
     key.mv_size = sizeof(quint64);
@@ -83,11 +83,11 @@ QVector<quint64> IdTreeDB::get(quint64 docId)
         if (rc != MDB_NOTFOUND) {
             qCDebug(ENGINE) << "IdTreeDB::get" << docId << mdb_strerror(rc);
         }
-        return QVector<quint64>();
+        return QList<quint64>();
     }
 
     // FIXME: This still makes a copy of the data. Perhaps we can avoid that?
-    QVector<quint64> list(val.mv_size / sizeof(quint64));
+    QList<quint64> list(val.mv_size / sizeof(quint64));
     memcpy(list.data(), val.mv_data, val.mv_size);
 
     return list;
@@ -98,8 +98,12 @@ QVector<quint64> IdTreeDB::get(quint64 docId)
 //
 class IdTreePostingIterator : public PostingIterator {
 public:
-    IdTreePostingIterator(const IdTreeDB& db, const QVector<quint64> &list)
-        : m_db(db), m_pos(-1), m_idList(list) {}
+    IdTreePostingIterator(const IdTreeDB &db, const QList<quint64> &list)
+        : m_db(db)
+        , m_pos(-1)
+        , m_idList(list)
+    {
+    }
 
     quint64 docId() const override {
         if (m_pos >= 0 && m_pos < m_resultList.size()) {
@@ -140,19 +144,19 @@ public:
 private:
     IdTreeDB m_db;
     int m_pos;
-    QVector<quint64> m_idList;
-    QVector<quint64> m_resultList;
+    QList<quint64> m_idList;
+    QList<quint64> m_resultList;
 };
 
 PostingIterator* IdTreeDB::iter(quint64 docId)
 {
     Q_ASSERT(docId > 0);
 
-    QVector<quint64> list = {docId};
+    QList<quint64> list = {docId};
     return new IdTreePostingIterator(*this, list);
 }
 
-QMap<quint64, QVector<quint64>> IdTreeDB::toTestMap() const
+QMap<quint64, QList<quint64>> IdTreeDB::toTestMap() const
 {
     MDB_cursor* cursor;
     mdb_cursor_open(m_txn, m_dbi, &cursor);
@@ -160,7 +164,7 @@ QMap<quint64, QVector<quint64>> IdTreeDB::toTestMap() const
     MDB_val key = {0, nullptr};
     MDB_val val;
 
-    QMap<quint64, QVector<quint64>> map;
+    QMap<quint64, QList<quint64>> map;
     while (1) {
         int rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
         if (rc == MDB_NOTFOUND) {
@@ -173,7 +177,7 @@ QMap<quint64, QVector<quint64>> IdTreeDB::toTestMap() const
 
         const quint64 id = *(static_cast<quint64*>(key.mv_data));
 
-        QVector<quint64> list(val.mv_size / sizeof(quint64));
+        QList<quint64> list(val.mv_size / sizeof(quint64));
         memcpy(list.data(), val.mv_data, val.mv_size);
 
         map.insert(id, list);
