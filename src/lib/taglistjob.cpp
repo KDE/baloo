@@ -44,7 +44,7 @@ void TagListJob::start()
         return;
     }
 
-    QVector<QByteArray> tagList;
+    QList<QByteArray> tagList;
     {
         Transaction tr(db, Transaction::ReadOnly);
         tagList = tr.fetchTermsStartingWith("TAG-");

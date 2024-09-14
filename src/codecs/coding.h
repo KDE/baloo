@@ -10,7 +10,7 @@
 #define BALOO_STORAGE_LEVELDB_UTIL_CODING_H
 
 #include <QByteArray>
-#include <QVector>
+#include <QList>
 
 namespace Baloo {
 
@@ -31,8 +31,8 @@ inline void putFixed64(QByteArray* dst, quint64 value)
  * called inside a loop, the temporary buffer must not be reallocated on every
  * call.
  */
-void putDifferentialVarInt32(QByteArray &temporaryStorage, QByteArray* dst, const QVector<quint32>& values);
-char* getDifferentialVarInt32(char* input, char* limit, QVector<quint32>* values);
+void putDifferentialVarInt32(QByteArray &temporaryStorage, QByteArray *dst, const QList<quint32> &values);
+char *getDifferentialVarInt32(char *input, char *limit, QList<quint32> *values);
 extern const char* getVarint32Ptr(const char* p, const char* limit, quint32* v);
 
 inline quint64 decodeFixed64(const char* ptr)

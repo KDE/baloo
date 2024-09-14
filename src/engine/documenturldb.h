@@ -32,7 +32,7 @@ public:
     bool addPath(const QByteArray& url);
 
     QByteArray get(quint64 docId) const;
-    QVector<quint64> getChildren(quint64 docId) const;
+    QList<quint64> getChildren(quint64 docId) const;
     bool contains(quint64 docId) const;
 
     /**

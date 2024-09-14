@@ -22,19 +22,19 @@ namespace Baloo {
 class DBState {
 public:
     QMap<QByteArray, PostingList> postingDb;
-    QMap<QByteArray, QVector<PositionInfo>> positionDb;
+    QMap<QByteArray, QList<PositionInfo>> positionDb;
 
-    QMap<quint64, QVector<QByteArray>> docTermsDb;
-    QMap<quint64, QVector<QByteArray>> docFileNameTermsDb;
-    QMap<quint64, QVector<QByteArray>> docXAttrTermsDb;
+    QMap<quint64, QList<QByteArray>> docTermsDb;
+    QMap<quint64, QList<QByteArray>> docFileNameTermsDb;
+    QMap<quint64, QList<QByteArray>> docXAttrTermsDb;
 
     QMap<quint64, DocumentTimeDB::TimeInfo> docTimeDb;
     QMap<quint32, quint64> mtimeDb;
 
     QMap<quint64, QByteArray> docDataDb;
     QMap<quint64, QByteArray> docUrlDb;
-    QVector<quint64> contentIndexingDb;
-    QVector<quint64> failedIdDb;
+    QList<quint64> contentIndexingDb;
+    QList<quint64> failedIdDb;
 
     bool operator== (const DBState& st) const {
         return postingDb == st.postingDb && positionDb == st.positionDb && docTermsDb == st.docTermsDb

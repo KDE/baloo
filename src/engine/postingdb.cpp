@@ -105,7 +105,7 @@ void PostingDB::del(const QByteArray& term)
     }
 }
 
-QVector< QByteArray > PostingDB::fetchTermsStartingWith(const QByteArray& term)
+QList<QByteArray> PostingDB::fetchTermsStartingWith(const QByteArray &term)
 {
     MDB_val key;
     key.mv_size = term.size();
@@ -118,7 +118,7 @@ QVector< QByteArray > PostingDB::fetchTermsStartingWith(const QByteArray& term)
         return {};
     }
 
-    QVector<QByteArray> terms;
+    QList<QByteArray> terms;
     rc = mdb_cursor_get(cursor, &key, nullptr, MDB_SET_RANGE);
     while (rc == 0) {
         const QByteArray arr(static_cast<char*>(key.mv_data), key.mv_size);
@@ -143,7 +143,7 @@ public:
     quint64 next() override;
 
 private:
-    const QVector<quint64> m_vec;
+    const QList<quint64> m_vec;
     int m_pos;
 };
 
@@ -209,7 +209,7 @@ PostingIterator* PostingDB::iter(const QByteArray& prefix, Validator validate)
         return nullptr;
     }
 
-    QVector<PostingIterator*> termIterators;
+    QList<PostingIterator *> termIterators;
 
     MDB_val val;
     rc = mdb_cursor_get(cursor, &key, &val, MDB_SET_RANGE);

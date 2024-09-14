@@ -9,7 +9,7 @@
 #define BALOO_DOCUMENTIDDB_H
 
 #include "engine_export.h"
-#include <QVector>
+#include <QList>
 #include <lmdb.h>
 
 /**
@@ -33,10 +33,11 @@ public:
     bool contains(quint64 docId);
     void del(quint64 docID);
 
-    QVector<quint64> fetchItems(int size);
+    QList<quint64> fetchItems(int size);
     uint size();
 
-    QVector<quint64> toTestVector() const;
+    QList<quint64> toTestVector() const;
+
 private:
     MDB_txn* m_txn;
     MDB_dbi m_dbi;

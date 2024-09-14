@@ -95,7 +95,7 @@ EngineQuery constructEqualsQuery(const QByteArray& prefix, const QString& value)
     // phrase query.
     const QByteArrayList terms = TermGenerator::termList(value);
 
-    QVector<EngineQuery> queries;
+    QList<EngineQuery> queries;
     queries.reserve(terms.size());
     for (const QByteArray& term : terms) {
         QByteArray arr = prefix + term;
@@ -170,7 +170,7 @@ ResultList SearchStore::exec(const Term& term, uint offset, int limit, bool sort
     }
 
     if (sortResults) {
-        QVector<std::pair<quint64, quint32>> resultIds;
+        QList<std::pair<quint64, quint32>> resultIds;
         while (it->next()) {
             quint64 id = it->docId();
             quint32 mtime = tr.documentTimeInfo(id).mTime;
@@ -235,7 +235,7 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
 
     if (term.operation() == Term::And || term.operation() == Term::Or) {
         const QList<Term> subTerms = term.subTerms();
-        QVector<PostingIterator*> vec;
+        QList<PostingIterator *> vec;
         vec.reserve(subTerms.size());
 
         for (const Term& t : subTerms) {

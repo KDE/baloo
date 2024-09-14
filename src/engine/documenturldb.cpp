@@ -84,7 +84,7 @@ void DocumentUrlDB::updateUrl(quint64 id, quint64 newParentId, const QByteArray&
     auto path = idFilenameDb.get(id);
     if (path.parentId != newParentId) {
         // Remove from old parent
-        QVector<quint64> subDocs = idTreeDb.get(path.parentId);
+        QList<quint64> subDocs = idTreeDb.get(path.parentId);
         if (subDocs.removeOne(id)) {
             idTreeDb.set(path.parentId, subDocs);
         }
@@ -115,7 +115,7 @@ void DocumentUrlDB::del(quint64 id)
     auto path = idFilenameDb.get(id);
 
     // Remove from parent
-    QVector<quint64> subDocs = idTreeDb.get(path.parentId);
+    QList<quint64> subDocs = idTreeDb.get(path.parentId);
     if (subDocs.removeOne(id)) {
         idTreeDb.set(path.parentId, subDocs);
     }
@@ -133,7 +133,7 @@ void DocumentUrlDB::add(quint64 id, quint64 parentId, const QByteArray& name)
     IdFilenameDB idFilenameDb(m_idFilenameDbi, m_txn);
     IdTreeDB idTreeDb(m_idTreeDbi, m_txn);
 
-    QVector<quint64> subDocs = idTreeDb.get(parentId);
+    QList<quint64> subDocs = idTreeDb.get(parentId);
 
     // insert if not there
     sortedIdInsert(subDocs, id);
@@ -194,7 +194,7 @@ QByteArray DocumentUrlDB::get(quint64 docId) const
     return ret;
 }
 
-QVector<quint64> DocumentUrlDB::getChildren(quint64 docId) const
+QList<quint64> DocumentUrlDB::getChildren(quint64 docId) const
 {
     IdTreeDB idTreeDb(m_idTreeDbi, m_txn);
     return idTreeDb.get(docId);
@@ -209,7 +209,7 @@ quint64 DocumentUrlDB::getId(quint64 docId, const QByteArray& fileName) const
     IdFilenameDB idFilenameDb(m_idFilenameDbi, m_txn);
     IdTreeDB idTreeDb(m_idTreeDbi, m_txn);
 
-    const QVector<quint64> subFiles = idTreeDb.get(docId);
+    const QList<quint64> subFiles = idTreeDb.get(docId);
     IdFilenameDB::FilePath path;
     for (quint64 id : subFiles) {
         if (idFilenameDb.get(id, path) && (path.name == fileName)) {
@@ -224,7 +224,7 @@ QMap<quint64, QByteArray> DocumentUrlDB::toTestMap() const
 {
     IdTreeDB idTreeDb(m_idTreeDbi, m_txn);
 
-    QMap<quint64, QVector<quint64>> idTreeMap = idTreeDb.toTestMap();
+    QMap<quint64, QList<quint64>> idTreeMap = idTreeDb.toTestMap();
     QSet<quint64> allIds;
 
     for (auto it = idTreeMap.cbegin(); it != idTreeMap.cend(); it++) {

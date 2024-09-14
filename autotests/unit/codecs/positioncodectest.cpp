@@ -24,9 +24,9 @@ private Q_SLOTS:
     void checkEncodeOutput2();
     void checkEncodeOutput3();
 private:
-    QVector<PositionInfo> m_data;
-    QVector<PositionInfo> m_data2;
-    QVector<PositionInfo> m_data3;
+    QList<PositionInfo> m_data;
+    QList<PositionInfo> m_data2;
+    QList<PositionInfo> m_data3;
 };
 
 QTEST_MAIN ( PositionCodecTest )
@@ -77,7 +77,7 @@ void PositionCodecTest::checkEncodeOutput()
     const QByteArray md5 = QCryptographicHash::hash(ba, QCryptographicHash::Md5).toHex();
     QCOMPARE(md5, QByteArray("ae49eb3279bdda36ef91d29ce3c94c2c"));
     // and now decode the whole stuff
-    QVector<PositionInfo> decodedData = PositionCodec::decode(ba);
+    QList<PositionInfo> decodedData = PositionCodec::decode(ba);
     QCOMPARE(m_data, decodedData);
 }
 
@@ -88,7 +88,7 @@ void PositionCodecTest::checkEncodeOutput2()
     const QByteArray md5 = QCryptographicHash::hash(ba, QCryptographicHash::Md5).toHex();
     QCOMPARE(md5, QByteArray("2f3710246331002e2332dce560ccd783"));
     // and now decode the whole stuff
-    QVector<PositionInfo> decodedData = PositionCodec::decode(ba);
+    QList<PositionInfo> decodedData = PositionCodec::decode(ba);
     QCOMPARE(m_data2, decodedData);
 }
 
@@ -99,7 +99,7 @@ void PositionCodecTest::checkEncodeOutput3()
     const QByteArray md5 = QCryptographicHash::hash(ba, QCryptographicHash::Md5).toHex();
     QCOMPARE(md5, QByteArray("79e942003c082073b4cee8e376fffdaa"));
     // and now decode the whole stuff
-    QVector<PositionInfo> decodedData = PositionCodec::decode(ba);
+    QList<PositionInfo> decodedData = PositionCodec::decode(ba);
     QCOMPARE(m_data3, decodedData);
 }
 

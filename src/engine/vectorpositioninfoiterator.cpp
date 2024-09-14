@@ -10,7 +10,7 @@
 
 using namespace Baloo;
 
-VectorPositionInfoIterator::VectorPositionInfoIterator(const QVector<PositionInfo>& vector)
+VectorPositionInfoIterator::VectorPositionInfoIterator(const QList<PositionInfo> &vector)
     : m_vector(vector)
     , m_pos(-1)
 {
@@ -37,10 +37,10 @@ quint64 VectorPositionInfoIterator::docId() const
     return m_vector[m_pos].docId;
 }
 
-QVector<uint> VectorPositionInfoIterator::positions()
+QList<uint> VectorPositionInfoIterator::positions()
 {
     if (m_pos < 0 || m_pos >= m_vector.size()) {
-        return QVector<uint>();
+        return QList<uint>();
     }
 
     return m_vector[m_pos].positions;

@@ -44,10 +44,8 @@ public:
     *
     * \p urlFilter Filter result urls. Default is null = Print everything.
     */
-    void printList(const QVector<qint64>& deviceIds,
-        const ItemAccessFilters accessFilter = IgnoreNone,
-        const QSharedPointer<QRegularExpression>& urlFilter = nullptr
-    );
+    void
+    printList(const QList<qint64> &deviceIds, const ItemAccessFilters accessFilter = IgnoreNone, const QSharedPointer<QRegularExpression> &urlFilter = nullptr);
     /**
     * Print info about known devices to stdout
     *
@@ -57,13 +55,12 @@ public:
     * \p accessFilter filter by accessibility. E.g IgnoreAvailable|IgnoreUnmounted
     * prints only mounted devices with inaccessible files.
     */
-    void printDevices(const QVector<qint64>& deviceIds, const ItemAccessFilters accessFilter = IgnoreNone);
+    void printDevices(const QList<qint64> &deviceIds, const ItemAccessFilters accessFilter = IgnoreNone);
 
-    void removeStaleEntries(const QVector<qint64>& deviceIds,
-        const DatabaseSanitizer::ItemAccessFilters accessFilter = DatabaseSanitizer::IgnoreNone,
-        const bool dryRun = false,
-        const QSharedPointer<QRegularExpression>& urlFilter = nullptr
-    );
+    void removeStaleEntries(const QList<qint64> &deviceIds,
+                            const DatabaseSanitizer::ItemAccessFilters accessFilter = DatabaseSanitizer::IgnoreNone,
+                            const bool dryRun = false,
+                            const QSharedPointer<QRegularExpression> &urlFilter = nullptr);
 
 private:
     DatabaseSanitizer(const DatabaseSanitizer& rhs) = delete;

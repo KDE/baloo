@@ -21,7 +21,7 @@ void DocumentDBTest::test()
 {
     DocumentDB db(DocumentDB::create("db", m_txn), m_txn);
 
-    QVector<QByteArray> list = {"a", "aab", "abc"};
+    QList<QByteArray> list = {"a", "aab", "abc"};
     db.put(1, list);
 
     QCOMPARE(db.get(1), list);

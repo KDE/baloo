@@ -36,18 +36,17 @@ int main(int argc, char* argv[])
         qCInfo(BALOO) << "Pipe closed, exiting";
         QCoreApplication::quit();
     });
-    QObject::connect(&worker, &WorkerPipe::newDocumentIds,
-        [&worker](const QVector<quint64>& ids) {
-            QTimer::singleShot(0, [&worker, ids]() {
-                qCInfo(BALOO) << "Processing ...";
-                for(auto id : ids) {
-                    worker.urlStarted(QString::number(id));
-                    worker.urlFinished(QString::number(id));
-                }
-                worker.batchFinished();
-                qCInfo(BALOO) << "Processing done";
-            });
+    QObject::connect(&worker, &WorkerPipe::newDocumentIds, [&worker](const QList<quint64> &ids) {
+        QTimer::singleShot(0, [&worker, ids]() {
+            qCInfo(BALOO) << "Processing ...";
+            for (auto id : ids) {
+                worker.urlStarted(QString::number(id));
+                worker.urlFinished(QString::number(id));
+            }
+            worker.batchFinished();
+            qCInfo(BALOO) << "Processing done";
         });
+    });
 
     return app.exec();
 }

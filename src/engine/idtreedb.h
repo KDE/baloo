@@ -9,9 +9,9 @@
 #define BALOO_IDTREEDB_H
 
 #include "engine_export.h"
-#include <lmdb.h>
-#include <QVector>
+#include <QList>
 #include <QMap>
+#include <lmdb.h>
 
 namespace Baloo {
 
@@ -25,8 +25,8 @@ public:
     static MDB_dbi create(MDB_txn* txn);
     static MDB_dbi open(MDB_txn* txn);
 
-    void set(quint64 docId, const QVector<quint64> &subDocIds);
-    QVector<quint64> get(quint64 docId);
+    void set(quint64 docId, const QList<quint64> &subDocIds);
+    QList<quint64> get(quint64 docId);
 
     /**
      * Returns an iterator which will return all the docIds which use \p docId
@@ -34,7 +34,8 @@ public:
      */
     PostingIterator* iter(quint64 docId);
 
-    QMap<quint64, QVector<quint64>> toTestMap() const;
+    QMap<quint64, QList<quint64>> toTestMap() const;
+
 private:
     MDB_txn* m_txn;
     MDB_dbi m_dbi;

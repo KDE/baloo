@@ -11,11 +11,11 @@
 
 #include "pendingfile.h"
 
+#include <QHash>
+#include <QList>
 #include <QObject>
 #include <QString>
-#include <QHash>
 #include <QTimer>
-#include <QVector>
 
 namespace Baloo {
 
@@ -60,7 +60,7 @@ private Q_SLOTS:
     void clearRecentlyEmitted(const QTime& currentTime);
 
 private:
-    QVector<PendingFile> m_cache;
+    QList<PendingFile> m_cache;
 
     QTimer m_cacheTimer;
     QTimer m_clearRecentlyEmittedTimer;

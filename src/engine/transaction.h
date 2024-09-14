@@ -44,7 +44,7 @@ public:
     bool hasDocument(quint64 id) const;
     bool inPhaseOne(quint64 id) const;
     bool hasFailed(quint64 id) const;
-    QVector<quint64> failedIds(quint64 limit) const;
+    QList<quint64> failedIds(quint64 limit) const;
     QByteArray documentUrl(quint64 id) const;
 
     /**
@@ -63,18 +63,18 @@ public:
     PostingIterator* mTimeRangeIter(quint32 beginTime, quint32 endTime) const;
     PostingIterator* docUrlIter(quint64 id) const;
 
-    QVector<quint64> fetchPhaseOneIds(int size) const;
+    QList<quint64> fetchPhaseOneIds(int size) const;
     uint phaseOneSize() const;
     uint size() const;
 
-    QVector<QByteArray> fetchTermsStartingWith(const QByteArray& term) const;
+    QList<QByteArray> fetchTermsStartingWith(const QByteArray &term) const;
 
     //
     // Introspecing document data
     //
-    QVector<QByteArray> documentTerms(quint64 docId) const;
-    QVector<QByteArray> documentFileNameTerms(quint64 docId) const;
-    QVector<QByteArray> documentXattrTerms(quint64 docId) const;
+    QList<QByteArray> documentTerms(quint64 docId) const;
+    QList<QByteArray> documentFileNameTerms(quint64 docId) const;
+    QList<QByteArray> documentXattrTerms(quint64 docId) const;
 
     DatabaseSize dbSize();
 

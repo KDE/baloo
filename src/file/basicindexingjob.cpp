@@ -60,10 +60,10 @@ void indexXAttr(const QString& url, Document& doc)
     }
 }
 
-QVector<KFileMetaData::Type::Type> typesForMimeType(const QString& mimeType)
+QList<KFileMetaData::Type::Type> typesForMimeType(const QString &mimeType)
 {
     using namespace KFileMetaData;
-    QVector<Type::Type> types;
+    QList<Type::Type> types;
     types.reserve(2);
 
     // Basic types
@@ -246,7 +246,7 @@ bool BasicIndexingJob::index()
             doc.setContentIndexing(true);
         }
         // Types
-        const QVector<KFileMetaData::Type::Type> tList = typesForMimeType(m_mimetype);
+        const QList<KFileMetaData::Type::Type> tList = typesForMimeType(m_mimetype);
         for (KFileMetaData::Type::Type type : tList) {
             QByteArray num = QByteArray::number(static_cast<int>(type));
             doc.addTerm(QByteArray("T") + num);

@@ -19,17 +19,21 @@
 
 using namespace Baloo;
 
-class SortedIdVector : public QVector<quint64> {
-    public:
-        SortedIdVector(const QVector<quint64>& list)
-        : QVector<quint64>(list) {
-            std::sort(begin(), end());
-        }
-        SortedIdVector(std::initializer_list<quint64> args)
-        : SortedIdVector(QVector<quint64>(args)) {}
+class SortedIdVector : public QList<quint64>
+{
+public:
+    SortedIdVector(const QList<quint64> &list)
+        : QList<quint64>(list)
+    {
+        std::sort(begin(), end());
+    }
+    SortedIdVector(std::initializer_list<quint64> args)
+        : SortedIdVector(QList<quint64>(args))
+    {
+    }
 };
 
-char *toString(const QVector<quint64> &idlist)
+char *toString(const QList<quint64> &idlist)
 {
     QByteArray text("IDs[");
     text += QByteArray::number(idlist.size()) + "]:";
@@ -40,14 +44,14 @@ char *toString(const QVector<quint64> &idlist)
 }
 
 namespace {
-QVector<quint64> execQuery(const Transaction& tr, const EngineQuery& query)
+QList<quint64> execQuery(const Transaction &tr, const EngineQuery &query)
 {
     PostingIterator* it = tr.postingIterator(query);
     if (!it) {
         return {};
     }
 
-    QVector<quint64> results;
+    QList<quint64> results;
     while (it->next()) {
         results << it->docId();
     }
@@ -209,7 +213,7 @@ void QueryTest::testTermEqual()
 {
     EngineQuery q("the");
 
-    QVector<quint64> result = SortedIdVector{m_id1, m_id2, m_id4, m_id7};
+    QList<quint64> result = SortedIdVector{m_id1, m_id2, m_id4, m_id7};
     Transaction tr(db.get(), Transaction::ReadOnly);
     QCOMPARE(execQuery(tr, q), result);
 }
@@ -218,7 +222,7 @@ void QueryTest::testTermStartsWith()
 {
     EngineQuery q("for", EngineQuery::StartsWith);
 
-    QVector<quint64> result = SortedIdVector{m_id3, m_id4};
+    QList<quint64> result = SortedIdVector{m_id3, m_id4};
     Transaction tr(db.get(), Transaction::ReadOnly);
     QCOMPARE(execQuery(tr, q), result);
 }
@@ -226,13 +230,12 @@ void QueryTest::testTermStartsWith()
 void QueryTest::testTermPhrase_data()
 {
     QTest::addColumn<QByteArrayList>("phrase");
-    QTest::addColumn<QVector<quint64>>("contentMatches");
-    QTest::addColumn<QVector<quint64>>("filenameMatches");
+    QTest::addColumn<QList<quint64>>("contentMatches");
+    QTest::addColumn<QList<quint64>>("filenameMatches");
 
-    auto addRow = [](const char* name, const QByteArrayList& phrase,
-                     const QVector<quint64> contentMatches,
-                     const QVector<quint64> filenameMatches)
-        { QTest::addRow("%s", name) << phrase << contentMatches << filenameMatches;};
+    auto addRow = [](const char *name, const QByteArrayList &phrase, const QList<quint64> contentMatches, const QList<quint64> filenameMatches) {
+        QTest::addRow("%s", name) << phrase << contentMatches << filenameMatches;
+    };
 
     // Content matches
     addRow("Crazy dog",        {QByteArrayLiteral("crazy"), QByteArrayLiteral("dog")},  SortedIdVector{ m_id1 }, {});
@@ -252,10 +255,10 @@ void QueryTest::testTermPhrase_data()
 void QueryTest::testTermPhrase()
 {
     QFETCH(QByteArrayList, phrase);
-    QFETCH(QVector<quint64>, contentMatches);
-    QFETCH(QVector<quint64>, filenameMatches);
+    QFETCH(QList<quint64>, contentMatches);
+    QFETCH(QList<quint64>, filenameMatches);
 
-    QVector<EngineQuery> queries;
+    QList<EngineQuery> queries;
     for (const QByteArray& term : phrase) {
         queries << EngineQuery(term);
     }
@@ -277,20 +280,17 @@ void QueryTest::testTermPhrase()
 void QueryTest::testTagTerm_data()
 {
     QTest::addColumn<QByteArray>("term");
-    QTest::addColumn<QVector<quint64>>("matchIds");
+    QTest::addColumn<QList<quint64>>("matchIds");
 
-    QTest::addRow("Simple match") << QByteArray("one")
-        << QVector<quint64> { m_id5, m_id6 };
-    QTest::addRow("Only one") << QByteArray("f1")
-        << QVector<quint64> { m_id5 };
-    QTest::addRow("Also from phrase") << QByteArray("three")
-        << QVector<quint64> { m_id5, m_id6 };
+    QTest::addRow("Simple match") << QByteArray("one") << QList<quint64>{m_id5, m_id6};
+    QTest::addRow("Only one") << QByteArray("f1") << QList<quint64>{m_id5};
+    QTest::addRow("Also from phrase") << QByteArray("three") << QList<quint64>{m_id5, m_id6};
 }
 
 void QueryTest::testTagTerm()
 {
     QFETCH(QByteArray, term);
-    QFETCH(QVector<quint64>, matchIds);
+    QFETCH(QList<quint64>, matchIds);
 
     QByteArray prefix{"TA"};
     EngineQuery q(prefix + term);
@@ -302,25 +302,21 @@ void QueryTest::testTagTerm()
 void QueryTest::testTagTermPhrase_data()
 {
     QTest::addColumn<QByteArrayList>("terms");
-    QTest::addColumn<QVector<quint64>>("matchIds");
+    QTest::addColumn<QList<quint64>>("matchIds");
 
-    QTest::addRow("Simple match") << QByteArrayList({"one"})
-        << QVector<quint64> { m_id5, m_id6 };
-    QTest::addRow("Apart") << QByteArrayList({"two", "four"})
-        << QVector<quint64> { };
-    QTest::addRow("Adjacent") << QByteArrayList({"three", "four"})
-        << QVector<quint64> { };
-    QTest::addRow("Only phrase") << QByteArrayList({"two", "three"})
-        << QVector<quint64> { m_id6 };
+    QTest::addRow("Simple match") << QByteArrayList({"one"}) << QList<quint64>{m_id5, m_id6};
+    QTest::addRow("Apart") << QByteArrayList({"two", "four"}) << QList<quint64>{};
+    QTest::addRow("Adjacent") << QByteArrayList({"three", "four"}) << QList<quint64>{};
+    QTest::addRow("Only phrase") << QByteArrayList({"two", "three"}) << QList<quint64>{m_id6};
 }
 
 void QueryTest::testTagTermPhrase()
 {
     QFETCH(QByteArrayList, terms);
-    QFETCH(QVector<quint64>, matchIds);
+    QFETCH(QList<quint64>, matchIds);
 
     QByteArray prefix{"TA"};
-    QVector<EngineQuery> queries;
+    QList<EngineQuery> queries;
     for (const QByteArray& term : terms) {
         queries << EngineQuery(prefix + term);
     }

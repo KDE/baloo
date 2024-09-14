@@ -16,7 +16,7 @@ FileContentIndexerProvider::FileContentIndexerProvider(Database* db)
 {
 }
 
-QVector<quint64> FileContentIndexerProvider::fetch(uint size)
+QList<quint64> FileContentIndexerProvider::fetch(uint size)
 {
     Transaction tr(m_db, Transaction::ReadOnly);
     return tr.fetchPhaseOneIds(size);

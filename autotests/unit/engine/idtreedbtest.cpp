@@ -18,13 +18,13 @@ private Q_SLOTS:
     void test() {
         IdTreeDB db(IdTreeDB::create(m_txn), m_txn);
 
-        QVector<quint64> val = {5, 6, 7};
+        QList<quint64> val = {5, 6, 7};
         db.set(1, val);
 
         QCOMPARE(db.get(1), val);
 
         db.set(1, {});
-        QCOMPARE(db.get(1), QVector<quint64>());
+        QCOMPARE(db.get(1), QList<quint64>());
     }
 
     void testIter() {
@@ -38,7 +38,7 @@ private Q_SLOTS:
         std::unique_ptr<PostingIterator> it{db.iter(1)};
         QVERIFY(it);
 
-        QVector<quint64> result = {1, 5, 6, 7, 8, 9, 11, 13, 15, 18, 19};
+        QList<quint64> result = {1, 5, 6, 7, 8, 9, 11, 13, 15, 18, 19};
         for (quint64 val : result) {
             QCOMPARE(it->next(), static_cast<quint64>(val));
             QCOMPARE(it->docId(), static_cast<quint64>(val));

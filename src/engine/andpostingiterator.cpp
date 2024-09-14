@@ -9,7 +9,7 @@
 
 using namespace Baloo;
 
-AndPostingIterator::AndPostingIterator(const QVector<PostingIterator*>& iterators)
+AndPostingIterator::AndPostingIterator(const QList<PostingIterator *> &iterators)
     : m_iterators(iterators)
     , m_docId(0)
 {

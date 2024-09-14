@@ -69,13 +69,13 @@ void MTimeDB::put(quint32 mtime, quint64 docId)
     }
 }
 
-QVector<quint64> MTimeDB::get(quint32 mtime)
+QList<quint64> MTimeDB::get(quint32 mtime)
 {
     MDB_val key;
     key.mv_size = sizeof(quint32);
     key.mv_data = static_cast<void*>(&mtime);
 
-    QVector<quint64> values;
+    QList<quint64> values;
 
     MDB_cursor* cursor;
     mdb_cursor_open(m_txn, m_dbi, &cursor);
@@ -151,7 +151,7 @@ PostingIterator* MTimeDB::iterRange(quint32 beginTime, quint32 endTime)
         return nullptr;
     }
 
-    QVector<quint64> results;
+    QList<quint64> results;
 
     while (1) {
         quint32 time = *static_cast<quint32*>(key.mv_data);

@@ -9,9 +9,9 @@
 
 #include "extractor/commandpipe.h"
 
-#include <QProcess>
+#include <QList>
 #include <QObject>
-#include <QVector>
+#include <QProcess>
 
 namespace Baloo {
 
@@ -22,7 +22,7 @@ public:
     ExtractorProcess(const QString& extractorPath, QObject* parent = nullptr);
     ~ExtractorProcess();
 
-    void index(const QVector<quint64>& fileIds);
+    void index(const QList<quint64> &fileIds);
     void start();
 
 Q_SIGNALS:

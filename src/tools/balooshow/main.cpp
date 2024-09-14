@@ -209,11 +209,11 @@ int main(int argc, char* argv[])
         }
 
         if (parser.isSet(QStringLiteral("x"))) {
-            QVector<QByteArray> terms = tr.documentTerms(fid);
-            QVector<QByteArray> fileNameTerms = tr.documentFileNameTerms(fid);
-            QVector<QByteArray> xAttrTerms = tr.documentXattrTerms(fid);
+            QList<QByteArray> terms = tr.documentTerms(fid);
+            QList<QByteArray> fileNameTerms = tr.documentFileNameTerms(fid);
+            QList<QByteArray> xAttrTerms = tr.documentXattrTerms(fid);
 
-            auto join = [](const QVector<QByteArray>& v) {
+            auto join = [](const QList<QByteArray> &v) {
                 QByteArray ba;
                 for (const QByteArray& arr : v) {
                     ba.append(arr);
@@ -224,7 +224,7 @@ int main(int argc, char* argv[])
 
             auto propertiesBegin = std::stable_partition(terms.begin(), terms.end(),
                 [](const auto & t) { return t.isEmpty() || t[0] < 'A' || t[0] > 'Z'; });
-            const QVector<QByteArray> propertyTerms{propertiesBegin, terms.end()};
+            const QList<QByteArray> propertyTerms{propertiesBegin, terms.end()};
             terms.erase(propertiesBegin, terms.end());
 
             stream << "\n" << i18n("Internal Info") << "\n";

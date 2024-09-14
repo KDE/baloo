@@ -9,15 +9,15 @@
 #define BALOO_POSTINGCODEC_H
 
 #include <QByteArray>
-#include <QVector>
+#include <QList>
 
 namespace Baloo {
 
 class PostingCodec
 {
 public:
-    static QByteArray encode(const QVector<quint64>& list);
-    static QVector<quint64> decode(const QByteArray& arr);
+    static QByteArray encode(const QList<quint64> &list);
+    static QList<quint64> decode(const QByteArray &arr);
 };
 
 }

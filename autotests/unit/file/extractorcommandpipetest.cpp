@@ -82,7 +82,7 @@ void ExtractorCommandPipeTest::emptyBatch()
 
 void ExtractorCommandPipeTest::singleBatch()
 {
-    QFETCH(QVector<quint64>, ids);
+    QFETCH(QList<quint64>, ids);
 
     QStringList finishedUrls;
     auto connection = connect(&m_controller, &Baloo::Private::ControllerPipe::urlFinished,
@@ -103,12 +103,12 @@ void ExtractorCommandPipeTest::singleBatch()
 
 void ExtractorCommandPipeTest::singleBatch_data()
 {
-    QTest::addColumn<QVector<quint64>>("ids");
+    QTest::addColumn<QList<quint64>>("ids");
 
-    QTest::addRow("singleEntry") << QVector<quint64>{3};
-    QTest::addRow("multipleEntry") << QVector<quint64>{1, 2, 3, 4, 5, 100, 101, 102, 103, 1000};
+    QTest::addRow("singleEntry") << QList<quint64>{3};
+    QTest::addRow("multipleEntry") << QList<quint64>{1, 2, 3, 4, 5, 100, 101, 102, 103, 1000};
 
-    QVector<quint64> longlist;
+    QList<quint64> longlist;
     for (quint64 i = 0; i < 50; i++) {
         longlist.append(i);
     }

@@ -11,14 +11,14 @@
 #include "postingiterator.h"
 
 #include <QByteArray>
-#include <QVector>
+#include <QList>
 #include <QRegularExpression>
 
 #include <lmdb.h>
 
 namespace Baloo {
 
-typedef QVector<quint64> PostingList;
+typedef QList<quint64> PostingList;
 
 /**
  * The PostingDB is the main database that maps <term> -> <id1> <id2> <id2> ...
@@ -56,7 +56,7 @@ public:
     PostingIterator* compIter(const QByteArray& prefix, double val, Comparator com);
     PostingIterator* compIter(const QByteArray& prefix, const QByteArray& val, Comparator com);
 
-    QVector<QByteArray> fetchTermsStartingWith(const QByteArray& term);
+    QList<QByteArray> fetchTermsStartingWith(const QByteArray &term);
 
     QMap<QByteArray, PostingList> toTestMap() const;
 private:
