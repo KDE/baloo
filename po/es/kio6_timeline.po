@@ -1,12 +1,12 @@
-# Spanish translations for kio_timeline.po package.
+# Spanish translations for kio6_timeline.po package.
 # Copyright (C) 2014 This_file_is_part_of_KDE
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the baloo package.
 #
 # Automatically generated, 2014.
-# Eloy Cuadra <ecuadra@eloihr.net>, 2014, 2015, 2020.
+# SPDX-FileCopyrightText: 2014, 2015, 2020 Eloy Cuadra <ecuadra@eloihr.net>
 msgid ""
 msgstr ""
-"Project-Id-Version: kio_timeline\n"
+"Project-Id-Version: kio6_timeline\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-17 01:36+0000\n"
 "PO-Revision-Date: 2020-02-29 00:29+0100\n"

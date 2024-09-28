@@ -1,12 +1,12 @@
-# Spanish translations for baloo_file_extractor5.po package.
+# Spanish translations for baloo_file_extractor6.po package.
 # Copyright (C) 2023 This file is copyright:
 # This file is distributed under the same license as the baloo package.
 #
 # Automatically generated, 2023.
-# Eloy Cuadra <ecuadra@eloihr.net>, 2023.
+# SPDX-FileCopyrightText: 2023 Eloy Cuadra <ecuadra@eloihr.net>
 msgid ""
 msgstr ""
-"Project-Id-Version: baloo_file_extractor5\n"
+"Project-Id-Version: baloo_file_extractor6\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-06-08 00:36+0000\n"
 "PO-Revision-Date: 2023-02-13 00:05+0100\n"

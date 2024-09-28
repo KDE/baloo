@@ -1,12 +1,12 @@
-# Spanish translations for kio_baloosearch.po package.
+# Spanish translations for kio6_baloosearch.po package.
 # Copyright (C) 2014 This_file_is_part_of_KDE
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the baloo package.
 #
 # Automatically generated, 2014.
-# Eloy Cuadra <ecuadra@eloihr.net>, 2014.
+# SPDX-FileCopyrightText: 2014 Eloy Cuadra <ecuadra@eloihr.net>
 msgid ""
 msgstr ""
-"Project-Id-Version: kio_baloosearch\n"
+"Project-Id-Version: kio6_baloosearch\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-06-05 00:13+0000\n"
 "PO-Revision-Date: 2014-09-16 14:49+0200\n"
