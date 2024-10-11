@@ -141,7 +141,7 @@ const char* const s_defaultFolderExcludeFilters[] = {
 
 const int s_defaultFolderExcludeFiltersVersion = 4;
 
-const char* const s_sourceCodeMimeTypes[] = {
+const char *const s_sourceCodeMimeTypes[] = {
     "text/css",
     "text/x-c++src",
     "text/x-c++hdr",
@@ -167,6 +167,7 @@ const char* const s_sourceCodeMimeTypes[] = {
     "text/asp",
     "text/jsx",
     "text/csx",
+    "text/rust", // Rust source (often .rs)
     "text/vnd.trolltech.linguist",
     "application/x-awk",
     "application/x-cgi",
@@ -189,10 +190,13 @@ const char* const s_sourceCodeMimeTypes[] = {
     // Not really source code, but inherited from text/plain
     "application/pgp-encrypted", // pgp encrypted, with or without ASCII Armor
 
+    // model/obj subtype of text/plain
+    "model/obj", // OBJ 3D model
+
     // end of list
-    nullptr
+    nullptr,
 };
-const int s_sourceCodeMimeTypesVersion = 3;
+const int s_sourceCodeMimeTypesVersion = 4;
 }
 
 QStringList Baloo::defaultExcludeFilterList()
