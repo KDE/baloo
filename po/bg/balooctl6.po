@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-17 01:36+0000\n"
-"PO-Revision-Date: 2024-09-29 14:39+0200\n"
+"PO-Revision-Date: 2024-11-09 20:10+0100\n"
 "Last-Translator: Mincho Kondarev <mkondarev@yahoo.de>\n"
 "Language-Team: Bulgarian <kde-i18n-doc@kde.org>\n"
 "Language: bg\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 24.07.70\n"
+"X-Generator: Lokalize 24.08.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -302,8 +302,8 @@ msgid ""
 "Only applies to \"%4\""
 msgstr ""
 "Изходен формат <%1|%2|%3>.\n"
-"Форматът по подразбиране е \"%1\".\n"
-"Приложим само за \"%4\""
+"Форматът по подразбиране е „%1“.\n"
+"Приложим само за „%4“"
 
 #: main.cpp:80
 #, kde-format
@@ -405,7 +405,7 @@ msgstr "Файл: %1"
 #: statuscommand.cpp:262
 #, kde-format
 msgid "Output format \"%1\" is invalid, use one of:\n"
-msgstr "Изходният формат \"%1\" е невалиден, използвайте един от тези:\n"
+msgstr "Изходният формат „%1“ е невалиден, използвайте един от тези:\n"
 
 #: statuscommand.cpp:264
 #, kde-format
@@ -416,7 +416,7 @@ msgstr "- %1\n"
 #: statuscommand.cpp:271
 #, kde-format
 msgid "Baloo is currently disabled. To enable, please run %1\n"
-msgstr "Baloo е изключен в момента. За включване изпълнете \"%1\" \n"
+msgstr "Baloo е изключен в момента. За включване изпълнете „%1“ \n"
 
 #: statuscommand.cpp:277
 #, kde-format
