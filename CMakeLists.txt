@@ -81,8 +81,8 @@ endif()
 
 # compiler flags and build system
 ecm_set_disabled_deprecation_versions(
-    QT 6.4
-    KF 5.97
+    QT 6.8.0
+    KF 6.8.0
 )
 
 find_package(Inotify)
