@@ -8,6 +8,10 @@ target_sources(balooctl6 PRIVATE
     configcommand.cpp
     statuscommand.cpp
     monitorcommand.cpp
+    indexcommand.cpp
+    indexentry.cpp
+    clearcommand.cpp
+    clearentry.cpp
     ${CMAKE_SOURCE_DIR}/src/file/extractor/result.cpp
 )
 

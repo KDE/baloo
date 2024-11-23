@@ -36,6 +36,9 @@
 #include "configcommand.h"
 #include "statuscommand.h"
 
+#include "clearcommand.h"
+#include "indexcommand.h"
+
 using namespace Baloo;
 
 void start()
@@ -72,12 +75,12 @@ int main(int argc, char* argv[])
 
     QString statusFormatDescription = i18nc("Format to use for status command, %1|%2|%3 are option values, %4 is a CLI command",
                                             "Output format <%1|%2|%3>.\nThe default format is \"%1\".\nOnly applies to \"%4\"",
-                                                QStringLiteral("multiline"),
-                                                QStringLiteral("json"),
-                                                QStringLiteral("simple"),
-                                                QStringLiteral("balooctl status <file>"));
-    parser.addOption({{QStringLiteral("f"), QStringLiteral("format")},
-                     statusFormatDescription, i18n("format"), QStringLiteral("multiline")});
+                                            QStringLiteral("multiline"),
+                                            QStringLiteral("json"),
+                                            QStringLiteral("simple"),
+                                            QStringLiteral("balooctl status <file>"));
+
+    parser.addOption({{QStringLiteral("f"), QStringLiteral("format")}, statusFormatDescription, i18n("format"), QStringLiteral("multiline")});
 
     parser.addVersionOption();
     parser.addHelpOption();
@@ -98,6 +101,8 @@ int main(int argc, char* argv[])
     org::kde::baloo::scheduler schedulerinterface(QStringLiteral("org.kde.baloo"),
                                         QStringLiteral("/scheduler"),
                                         QDBusConnection::sessionBus());
+
+    //  Deal with the various balooctl commands:
 
     if (command == QLatin1String("config")) {
         ConfigCommand command;
@@ -191,79 +196,13 @@ int main(int argc, char* argv[])
     }
 
     if (command == QLatin1String("index")) {
-        if (parser.positionalArguments().size() < 2) {
-            out << "Please enter a filename to index\n";
-            return 1;
-        }
-
-        Database *db = globalDatabaseInstance();
-        if (!db->open(Database::ReadWriteDatabase)) {
-            out << "Baloo Index could not be opened\n";
-            return 1;
-        }
-
-        Transaction tr(db, Transaction::ReadWrite);
-
-        for (int i = 1; i < parser.positionalArguments().size(); ++i) {
-            const QString url = QFileInfo(parser.positionalArguments().at(i)).absoluteFilePath();
-            quint64 id = filePathToId(QFile::encodeName(url));
-            if (id == 0) {
-                out << "Could not stat file: " << url << '\n';
-                continue;
-            }
-            if (tr.inPhaseOne(id))  {
-                out << "Skipping: " << url << " Reason: Already scheduled for indexing\n";
-                continue;
-            }
-            if (!tr.documentData(id).isEmpty()) {
-                out << "Skipping: " << url << " Reason: Already indexed\n";
-                continue;
-            }
-            Indexer indexer(url, &tr);
-            out << "Indexing " << url << '\n';
-            indexer.index();
-        }
-        tr.commit();
-        out << "File(s) indexed\n";
-
-        return 0;
+        IndexCommand commandIndex;
+        return commandIndex.exec(parser);
     }
 
     if (command == QLatin1String("clear")) {
-        if (parser.positionalArguments().size() < 2) {
-            out << "Please enter a filename to index\n";
-            return 1;
-        }
-
-        Database *db = globalDatabaseInstance();
-        if (!db->open(Database::ReadWriteDatabase)) {
-            out << "Baloo Index could not be opened\n";
-            return 1;
-        }
-
-        Transaction tr(db, Transaction::ReadWrite);
-
-        for (int i = 1; i < parser.positionalArguments().size(); ++i) {
-            const QString url = QFileInfo(parser.positionalArguments().at(i)).absoluteFilePath();
-            quint64 id = filePathToId(QFile::encodeName(url));
-            if (id == 0) {
-                id = tr.documentId(QFile::encodeName(url));
-                if (id == 0) {
-                    out << "File not found on filesystem or in DB: " << url << '\n';
-                    continue;
-                } else {
-                    out << "File has been deleted, clearing from DB: " << url << '\n';
-                }
-            } else {
-                out << "Clearing " << url << '\n';
-            }
-
-            tr.removeDocument(id);
-        }
-        tr.commit();
-        out << "File(s) cleared\n";
-
-        return 0;
+        ClearCommand commandClear;
+        return commandClear.exec(parser);
     }
 
     if (command == QLatin1String("failed")) {
