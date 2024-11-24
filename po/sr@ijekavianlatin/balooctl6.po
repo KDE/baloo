@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: balooctl\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-17 01:36+0000\n"
+"POT-Creation-Date: 2024-11-24 00:37+0000\n"
 "PO-Revision-Date: 2017-04-07 00:51+0200\n"
 "Last-Translator: Chusslove Illich <caslav.ilic@gmx.net>\n"
 "Language-Team: Serbian <kde-i18n-sr@kde.org>\n"
@@ -27,6 +27,11 @@ msgstr "Časlav Ilić"
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
 msgstr "caslav.ilic@gmx.net"
+
+#: clearcommand.cpp:30
+#, kde-format
+msgid "Immediately clear entries from the index"
+msgstr ""
 
 # >> @info command description
 #: configcommand.cpp:45
@@ -224,89 +229,94 @@ msgstr "Mora da se zada vrednost."
 msgid "Invalid value\n"
 msgstr "Loša vrednost."
 
-#: main.cpp:51
+#: indexcommand.cpp:30
+#, kde-format
+msgid "Immediately index files"
+msgstr ""
+
+#: main.cpp:54
 #, kde-format
 msgid "balooctl"
 msgstr "balooctl"
 
-#: main.cpp:52
+#: main.cpp:55
 #, kde-format
 msgid "Vishesh Handa"
 msgstr "Višeš Handa"
 
-#: main.cpp:57
+#: main.cpp:60
 #, kde-format
 msgid "The command to execute"
 msgstr "Naredba koju treba izvršiti."
 
-#: main.cpp:59
+#: main.cpp:62
 #, kde-format
 msgid "Print the status of the indexer"
 msgstr "Ispiši stanje indeksara."
 
-#: main.cpp:60
+#: main.cpp:63
 #, kde-format
 msgid "Enable the file indexer"
 msgstr "Aktiviraj indeksar fajlova."
 
-#: main.cpp:61
+#: main.cpp:64
 #, kde-format
 msgid "Disable the file indexer"
 msgstr "Deaktiviraj indeksar fajlova."
 
-#: main.cpp:62
+#: main.cpp:65
 #, fuzzy, kde-format
 #| msgid "Resume the file indexer"
 msgid "Remove the index database"
 msgstr "Probudi indeksar fajlova."
 
-#: main.cpp:63
+#: main.cpp:66
 #, kde-format
 msgid "Suspend the file indexer"
 msgstr "Suspenduj indeksar fajlova."
 
-#: main.cpp:64
+#: main.cpp:67
 #, kde-format
 msgid "Resume the file indexer"
 msgstr "Probudi indeksar fajlova."
 
-#: main.cpp:65
+#: main.cpp:68
 #, kde-format
 msgid "Check for any unindexed files and index them"
 msgstr "Pazi na neindeksirane fajlove i indeksiraj ih."
 
-#: main.cpp:66
+#: main.cpp:69
 #, kde-format
 msgid "Index the specified files"
 msgstr "Indeksiraj zadate fajlove."
 
-#: main.cpp:67
+#: main.cpp:70
 #, kde-format
 msgid "Forget the specified files"
 msgstr "Zaboravi zadate fajlove."
 
-#: main.cpp:68
+#: main.cpp:71
 #, kde-format
 msgid "Modify the Baloo configuration"
 msgstr "Izmenite postavu Balooa"
 
-#: main.cpp:69
+#: main.cpp:72
 #, kde-format
 msgid "Monitor the file indexer"
 msgstr "Nadgledaj indeksar fajlova."
 
-#: main.cpp:70
+#: main.cpp:73
 #, kde-format
 msgid "Display the disk space used by index"
 msgstr "Prikaži prostor na disku za indeks."
 
-#: main.cpp:71
+#: main.cpp:74
 #, fuzzy, kde-format
 #| msgid "Display the disk space used by index"
 msgid "Display files which could not be indexed"
 msgstr "Prikaži prostor na disku za indeks."
 
-#: main.cpp:74
+#: main.cpp:77
 #, kde-format
 msgctxt ""
 "Format to use for status command, %1|%2|%3 are option values, %4 is a CLI "
@@ -317,7 +327,7 @@ msgid ""
 "Only applies to \"%4\""
 msgstr ""
 
-#: main.cpp:80
+#: main.cpp:83
 #, kde-format
 msgid "format"
 msgstr ""

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-17 01:36+0000\n"
+"POT-Creation-Date: 2024-11-24 00:37+0000\n"
 "PO-Revision-Date: 2023-05-19 11:58+0300\n"
 "Last-Translator: Tommi Nieminen <translator@legisign.org>\n"
 "Language-Team: Finnish <kde-i18n-doc@kde.org>\n"
@@ -29,6 +29,11 @@ msgstr "Lasse Liehu, Tommi Nieminen"
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
 msgstr "lasse.liehu@gmail.com, translator@legisign.org"
+
+#: clearcommand.cpp:30
+#, kde-format
+msgid "Immediately clear entries from the index"
+msgstr ""
 
 #: configcommand.cpp:45
 #, kde-format
@@ -214,87 +219,92 @@ msgstr "Arvo on annettava\n"
 msgid "Invalid value\n"
 msgstr "Virheellinen arvo\n"
 
-#: main.cpp:51
+#: indexcommand.cpp:30
+#, kde-format
+msgid "Immediately index files"
+msgstr ""
+
+#: main.cpp:54
 #, kde-format
 msgid "balooctl"
 msgstr "balooctl"
 
-#: main.cpp:52
+#: main.cpp:55
 #, kde-format
 msgid "Vishesh Handa"
 msgstr "Vishesh Handa"
 
-#: main.cpp:57
+#: main.cpp:60
 #, kde-format
 msgid "The command to execute"
 msgstr "Suoritettava komento"
 
-#: main.cpp:59
+#: main.cpp:62
 #, kde-format
 msgid "Print the status of the indexer"
 msgstr "Tulosta indeksoijan tila"
 
-#: main.cpp:60
+#: main.cpp:63
 #, kde-format
 msgid "Enable the file indexer"
 msgstr "Ota tiedostoindeksoija käyttöön"
 
-#: main.cpp:61
+#: main.cpp:64
 #, kde-format
 msgid "Disable the file indexer"
 msgstr "Poista tiedostoindeksoija käytöstä"
 
-#: main.cpp:62
+#: main.cpp:65
 #, kde-format
 msgid "Remove the index database"
 msgstr "Poista indeksitietokanta"
 
-#: main.cpp:63
+#: main.cpp:66
 #, kde-format
 msgid "Suspend the file indexer"
 msgstr "Keskeytä tiedostojen indeksointi"
 
-#: main.cpp:64
+#: main.cpp:67
 #, kde-format
 msgid "Resume the file indexer"
 msgstr "Jatka tiedostojen indeksointia"
 
-#: main.cpp:65
+#: main.cpp:68
 #, kde-format
 msgid "Check for any unindexed files and index them"
 msgstr "Etsi indeksoimattomia tiedostoja ja indeksoi ne"
 
-#: main.cpp:66
+#: main.cpp:69
 #, kde-format
 msgid "Index the specified files"
 msgstr "Indeksoi annetut tiedostot"
 
-#: main.cpp:67
+#: main.cpp:70
 #, kde-format
 msgid "Forget the specified files"
 msgstr "Unohda annetut tiedostot"
 
-#: main.cpp:68
+#: main.cpp:71
 #, kde-format
 msgid "Modify the Baloo configuration"
 msgstr "Muuta Baloon asetuksia"
 
-#: main.cpp:69
+#: main.cpp:72
 #, kde-format
 msgid "Monitor the file indexer"
 msgstr "Valvo tiedostoindeksoijaa"
 
-#: main.cpp:70
+#: main.cpp:73
 #, kde-format
 msgid "Display the disk space used by index"
 msgstr "Näytä indeksin käyttämä levytila"
 
-#: main.cpp:71
+#: main.cpp:74
 #, kde-format
 msgid "Display files which could not be indexed"
 msgstr "Näytä tiedostot, joita ei voitu indeksoida"
 
-#: main.cpp:74
+#: main.cpp:77
 #, kde-format
 msgctxt ""
 "Format to use for status command, %1|%2|%3 are option values, %4 is a CLI "
@@ -308,7 +318,7 @@ msgstr ""
 "Oletusmuoto on ”%1”.\n"
 "Pätee vain kohtaan ”%4”"
 
-#: main.cpp:80
+#: main.cpp:83
 #, kde-format
 msgid "format"
 msgstr "muoto"

@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: balooctl6\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-17 01:36+0000\n"
+"POT-Creation-Date: 2024-11-24 00:37+0000\n"
 "PO-Revision-Date: 2020-09-11 11:04+0200\n"
 "Last-Translator: Burkhard Lück <lueck@hube-lueck.de>\n"
 "Language-Team: German <kde-i18n-de@kde.org>\n"
@@ -23,6 +23,11 @@ msgstr "Frederik Schwarzer"
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
 msgstr "schwarzer@kde.org"
+
+#: clearcommand.cpp:30
+#, kde-format
+msgid "Immediately clear entries from the index"
+msgstr ""
 
 #: configcommand.cpp:45
 #, kde-format
@@ -208,87 +213,92 @@ msgstr "Ein Wert muss angegeben werden\n"
 msgid "Invalid value\n"
 msgstr "Ungültiger Wert\n"
 
-#: main.cpp:51
+#: indexcommand.cpp:30
+#, kde-format
+msgid "Immediately index files"
+msgstr ""
+
+#: main.cpp:54
 #, kde-format
 msgid "balooctl"
 msgstr "balooctl"
 
-#: main.cpp:52
+#: main.cpp:55
 #, kde-format
 msgid "Vishesh Handa"
 msgstr "Vishesh Handa"
 
-#: main.cpp:57
+#: main.cpp:60
 #, kde-format
 msgid "The command to execute"
 msgstr "Auszuführender Befehl"
 
-#: main.cpp:59
+#: main.cpp:62
 #, kde-format
 msgid "Print the status of the indexer"
 msgstr "Status der Indizierung anzeigen"
 
-#: main.cpp:60
+#: main.cpp:63
 #, kde-format
 msgid "Enable the file indexer"
 msgstr "Datei-Indizierung aktivieren"
 
-#: main.cpp:61
+#: main.cpp:64
 #, kde-format
 msgid "Disable the file indexer"
 msgstr "Datei-Indizierung deaktivieren"
 
-#: main.cpp:62
+#: main.cpp:65
 #, kde-format
 msgid "Remove the index database"
 msgstr "Index-Datenbank entfernen"
 
-#: main.cpp:63
+#: main.cpp:66
 #, kde-format
 msgid "Suspend the file indexer"
 msgstr "Datei-Indizierung aussetzen"
 
-#: main.cpp:64
+#: main.cpp:67
 #, kde-format
 msgid "Resume the file indexer"
 msgstr "Datei-Indizierung wieder aufnehmen"
 
-#: main.cpp:65
+#: main.cpp:68
 #, kde-format
 msgid "Check for any unindexed files and index them"
 msgstr "Nach nicht indizierten Dateien suchen und indizieren"
 
-#: main.cpp:66
+#: main.cpp:69
 #, kde-format
 msgid "Index the specified files"
 msgstr "Angegebene Dateien indizieren"
 
-#: main.cpp:67
+#: main.cpp:70
 #, kde-format
 msgid "Forget the specified files"
 msgstr "Angegebene Dateien nicht mehr indizieren"
 
-#: main.cpp:68
+#: main.cpp:71
 #, kde-format
 msgid "Modify the Baloo configuration"
 msgstr "Baloo-Einrichtung bearbeiten"
 
-#: main.cpp:69
+#: main.cpp:72
 #, kde-format
 msgid "Monitor the file indexer"
 msgstr "Datei-Indizierung überwachen"
 
-#: main.cpp:70
+#: main.cpp:73
 #, kde-format
 msgid "Display the disk space used by index"
 msgstr "Durch Index belegten Speicherplatz anzeigen"
 
-#: main.cpp:71
+#: main.cpp:74
 #, kde-format
 msgid "Display files which could not be indexed"
 msgstr "Dateien anzeigen, die nicht indiziert werden können"
 
-#: main.cpp:74
+#: main.cpp:77
 #, kde-format
 msgctxt ""
 "Format to use for status command, %1|%2|%3 are option values, %4 is a CLI "
@@ -302,7 +312,7 @@ msgstr ""
 "Das Standardformat ist „%1“.\n"
 "Passt nur zu „%4“"
 
-#: main.cpp:80
+#: main.cpp:83
 #, kde-format
 msgid "format"
 msgstr "Format"
