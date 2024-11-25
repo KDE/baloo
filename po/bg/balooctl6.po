@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-24 00:37+0000\n"
-"PO-Revision-Date: 2024-11-09 20:10+0100\n"
+"PO-Revision-Date: 2024-11-24 18:24+0100\n"
 "Last-Translator: Mincho Kondarev <mkondarev@yahoo.de>\n"
 "Language-Team: Bulgarian <kde-i18n-doc@kde.org>\n"
 "Language: bg\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 24.08.2\n"
+"X-Generator: Lokalize 25.03.70\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -28,7 +28,7 @@ msgstr "mkondarev@yahoo.de"
 #: clearcommand.cpp:30
 #, kde-format
 msgid "Immediately clear entries from the index"
-msgstr ""
+msgstr "Моментално изтриване на записи от индекса"
 
 #: configcommand.cpp:45
 #, kde-format
@@ -219,7 +219,7 @@ msgstr "Невалидна стойност\n"
 #: indexcommand.cpp:30
 #, kde-format
 msgid "Immediately index files"
-msgstr ""
+msgstr "Моментално индексиране на файлове"
 
 #: main.cpp:54
 #, kde-format

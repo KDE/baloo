@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: balooctl5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-24 00:37+0000\n"
-"PO-Revision-Date: 2024-05-27 01:09+0300\n"
+"PO-Revision-Date: 2024-11-24 20:02+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 24.07.70\n"
+"X-Generator: Lokalize 25.03.70\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -30,7 +30,7 @@ msgstr "kaanozdincer@gmail.com, emir_sari@icloud.com"
 #: clearcommand.cpp:30
 #, kde-format
 msgid "Immediately clear entries from the index"
-msgstr ""
+msgstr "İndeksten girdileri anında temizle"
 
 #: configcommand.cpp:45
 #, kde-format
@@ -220,7 +220,7 @@ msgstr "Geçersiz değer\n"
 #: indexcommand.cpp:30
 #, kde-format
 msgid "Immediately index files"
-msgstr ""
+msgstr "Dosyaları anında indeksle"
 
 #: main.cpp:54
 #, kde-format
