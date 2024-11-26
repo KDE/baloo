@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-24 00:37+0000\n"
-"PO-Revision-Date: 2024-04-04 08:14+0300\n"
+"PO-Revision-Date: 2024-11-25 06:55+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
 "n % 10 == 0) ? 2 : 3));\n"
-"X-Generator: Lokalize 23.08.5\n"
+"X-Generator: Lokalize 24.08.3\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -31,7 +31,7 @@ msgstr "kde-l10n-he@kde.org"
 #: clearcommand.cpp:30
 #, kde-format
 msgid "Immediately clear entries from the index"
-msgstr ""
+msgstr "לפנות רשומות מהמפתח מיידית"
 
 #: configcommand.cpp:45
 #, kde-format
@@ -220,7 +220,7 @@ msgstr "ערך שגוי\n"
 #: indexcommand.cpp:30
 #, kde-format
 msgid "Immediately index files"
-msgstr ""
+msgstr "להוסיף קבצים למפתח מיידית"
 
 #: main.cpp:54
 #, kde-format

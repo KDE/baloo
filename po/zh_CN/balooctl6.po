@@ -30,7 +30,7 @@ msgstr "kde-china@kde.org,wengxt@gmail.com,i@guoyunhe.me"
 #: clearcommand.cpp:30
 #, kde-format
 msgid "Immediately clear entries from the index"
-msgstr ""
+msgstr "立即清除索引中的条目"
 
 #: configcommand.cpp:45
 #, kde-format
@@ -219,7 +219,7 @@ msgstr "无效值\n"
 #: indexcommand.cpp:30
 #, kde-format
 msgid "Immediately index files"
-msgstr ""
+msgstr "立即索引文件"
 
 #: main.cpp:54
 #, kde-format
