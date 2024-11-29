@@ -31,6 +31,7 @@ private Q_SLOTS:
     void testWordPositions();
     void testWordPositionsCJK();
     void testNumbers();
+    void testNumbers_data();
     void testControlCharacter();
     void testFilePaths();
     void testFilePaths_data();
@@ -203,18 +204,43 @@ void TermGeneratorTest::testWordPositionsCJK()
 
 void TermGeneratorTest::testNumbers()
 {
-    QString str = QString::fromLatin1("1 5 10 -3 -12, 5.6, -13.4 -7e3");
+    QFETCH(QString, input);
+    QFETCH(QList<QByteArray>, expectedWords);
 
-    QList<QByteArray> words = allWords(str);
-
-    QList<QByteArray> expectedWords;
-    // TODO: Signs are dropped by the TermGenerator
-    expectedWords = { "1", "10", "12", "13.4", "3", "5", "5.6", "7e3"};
+    auto words = allWords(input);
+    QEXPECT_FAIL("Negative Integer", "Minus signs not handled correctly", Continue);
+    QEXPECT_FAIL("Negative Real", "Minus signs not handled correctly", Continue);
+    QEXPECT_FAIL("Negative Integer Scientific Notation", "Minus signs not handled correctly", Continue);
+    QEXPECT_FAIL("Negative Real Scientific Notation", "Minus signs not handled correctly", Continue);
+    QEXPECT_FAIL("Scientific Notation with Negative Exponent", "Split on the minus in the Negative Exponent", Continue);
+    QEXPECT_FAIL("Comma as decimal separator", "Comma separated integers treated as a real", Continue);
     QCOMPARE(words, expectedWords);
+}
 
-    expectedWords = { "1", "10", "12", "-13.4", "-3", "5", "5.6", "-7e3"};
-    QEXPECT_FAIL("", "signs not handled correctly", Continue);
-    QCOMPARE(words, expectedWords);
+void TermGeneratorTest::testNumbers_data()
+{
+    QTest::addColumn<QString>("input");
+    QTest::addColumn<QList<QByteArray>>("expectedWords");
+
+    QTest::addRow("Positive Integer") << QStringLiteral("1230") << QList<QByteArray>({"1230"});
+    QTest::addRow("Negative Integer") << QStringLiteral("-1230") << QList<QByteArray>({"-1230"});
+    QTest::addRow("Positive Real") << QStringLiteral("1230.0") << QList<QByteArray>({"1230.0"});
+    QTest::addRow("Negative Real") << QStringLiteral("-1230.0") << QList<QByteArray>({"-1230.0"});
+    QTest::addRow("Positive Integer Scientific Notation") << QStringLiteral("1230e0") << QList<QByteArray>({"1230e0"});
+    QTest::addRow("Negative Integer Scientific Notation") << QStringLiteral("-1230e0") << QList<QByteArray>({"-1230e0"});
+    QTest::addRow("Positive Real Scientific Notation") << QStringLiteral("1.23e4") << QList<QByteArray>({"1.23e4"});
+    QTest::addRow("Negative Real Scientific Notation") << QStringLiteral("-1.23e4") << QList<QByteArray>({"-1.23e4"});
+    QTest::addRow("Scientific Notation with Negative Exponent") << QStringLiteral("1.23e-1") << QList<QByteArray>({"1.23e-1"});
+
+    // Correct interpretation of `12,34` depends on the context. For a CSV file, it likely denotes a field separator (thus splitting should
+    // be done), while in many european countries it might be used for a decimal separator (i.e. denoting the value `1234/100 == 12.34`).
+    // '1,234' has the same ambiguity, but additionally in an english text it might be used as a  thousands separator (i.e. denoting
+    // the same value as 1234).
+    // Other ambigous strings: "1.234,567" (two values in CSV and english (1.234, 567), but one number (1234.56) elsewhere
+    // "1,234.567, 1,234,567.890": two numbers in english text, four values in CSV
+    QTest::addRow("Comma as decimal separator") << QStringLiteral("12,34") << QList<QByteArray>({"12", "34"});
+    QTest::addRow("Comma as thousands separator") << QStringLiteral("1,234") << QList<QByteArray>({"1,234"});
+    QTest::addRow("Comma as word separator") << QStringLiteral("twelve,thirtyfour") << QList<QByteArray>({"thirtyfour", "twelve"});
 }
 
 void TermGeneratorTest::testControlCharacter()
