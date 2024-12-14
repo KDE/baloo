@@ -1,0 +1,161 @@
+# Sanskrit translations for baloo package.
+# Copyright (C) 2024 This file is copyright:
+# This file is distributed under the same license as the baloo package.
+# Kali <EMAIL@ADDRESS>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: baloo\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2023-11-17 01:36+0000\n"
+"PO-Revision-Date: 2024-12-13 19:10+0530\n"
+"Last-Translator: Kali <EMAIL@ADDRESS>\n"
+"Language-Team: Sanskrit\n"
+"Language: sa\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "भवतः नामानि"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "भवतः ईमेलपत्राणि"
+
+#: main.cpp:33
+#, kde-format
+msgid ""
+"Filter by device id.\n"
+"0 (default) does not filter and everything is printed.\n"
+"Positive numbers are including filters printing only the mentioned device "
+"id.\n"
+"Negative numbers are excluding filters printing everything but the mentioned "
+"device id.\n"
+"May be given multiple times."
+msgstr ""
+"उपकरण id द्वारा फ़िल्टर।\n"
+"0 (पूर्वनिर्धारितं) न फ़िल्टर करोति सर्वं च मुद्रितं भवति ।\n"
+"सकारात्मकसङ्ख्याः केवलं उल्लिखितं device id मुद्रयन्तः फ़िल्टर्स् समाविष्टाः सन्ति ।\n"
+"नकारात्मकसङ्ख्याः उल्लिखितं device id इत्येतत् विहाय सर्वं मुद्रयन्तः फ़िल्टर्स् अपवर्जयन्ति ।\n"
+"बहुवारं दातुं शक्यते।"
+
+#: main.cpp:38
+#, kde-format
+msgid "integer"
+msgstr "पूर्णाङ्कः"
+
+#: main.cpp:43
+#, kde-format
+msgid ""
+"List only inaccessible entries.\n"
+"Only applies to \"%1\""
+msgstr ""
+"केवलं दुर्गमप्रविष्टीनां सूचीं कुर्वन्तु।\n"
+"केवलं \"%1\" कृते प्रवर्तते ।"
+
+#: main.cpp:47
+#, kde-format
+msgid "Act only on item on mounted devices"
+msgstr "केवलं माउण्टेड् डिवाइसेस् इत्यत्र एव द्रव्ये कार्यं कुर्वन्तु"
+
+#: main.cpp:51
+#, kde-format
+msgid ""
+"Print results of a cleaning operation, but do not change anything.\n"
+"Only applies to \"%1\" command"
+msgstr ""
+"सफाईक्रियायाः परिणामान् मुद्रयन्तु, परन्तु किमपि परिवर्तनं न कुर्वन्तु ।\n"
+"केवलं \"%1\" आदेशाय प्रवर्तते"
+
+#: main.cpp:59
+#, kde-format
+msgid ""
+"List database contents. Use a regular expression as argument to filter output"
+msgstr "दत्तांशकोशसामग्रीसूचीं कुर्वन्तु। आउटपुट् छानयितुं तर्करूपेण नियमितव्यञ्जनस्य उपयोगं कुर्वन्तु"
+
+#: main.cpp:70
+#, kde-format
+msgid "List devices"
+msgstr "यन्त्राणां सूचीं कुर्वन्तु"
+
+#: main.cpp:85
+#, kde-format
+msgid "Remove stale database entries"
+msgstr "बासी दत्तांशकोशप्रविष्टयः निष्कासयन्तु"
+
+#: main.cpp:140
+#, kde-format
+msgid ""
+"\n"
+"\n"
+"Commands:\n"
+"    %1"
+msgstr ""
+"\n"
+"\n"
+"आदेशाः : १.\n"
+"    %1"
+
+#: main.cpp:147
+#, kde-format
+msgid "Baloo Database Sanitizer"
+msgstr "बालू डाटाबेस सैनिटाइजर"
+
+#: main.cpp:149
+#, kde-format
+msgid "The Baloo Database Lister & Sanitizer"
+msgstr "द बालू डाटाबेस लिस्टर एण्ड सैनिटाइजर"
+
+#: main.cpp:151
+#, kde-format
+msgid "(c) 2018, Michael Heidelbach"
+msgstr "(ग) 2018, माइकल हाइडेल्बच"
+
+#: main.cpp:152
+#, kde-format
+msgid "Michael Heidelbach"
+msgstr "माइकल हाइडेल्बच"
+
+#: main.cpp:152
+#, kde-format
+msgid "Maintainer"
+msgstr "परिपालकः"
+
+#: main.cpp:158
+#, kde-format
+msgid "The command to execute"
+msgstr "निष्पादनीयः आदेशः"
+
+#: main.cpp:162
+#, kde-format
+msgctxt "Command"
+msgid ""
+"A regular expression applied to the URL of database items\n"
+"Example: %1"
+msgstr ""
+"दत्तांशकोशवस्तूनाम् URL मध्ये प्रयुक्तं नियमितव्यञ्जनम्\n"
+"उदाहरणम् : %1"
+
+#: main.cpp:219 main.cpp:227 main.cpp:237
+#, kde-format
+msgid "Baloo Index could not be opened"
+msgstr "बालू सूचकाङ्कः उद्घाटयितुं न शक्तवान्"
+
+#: main.cpp:223 main.cpp:231
+#, kde-format
+msgid "Listing database contents..."
+msgstr "दत्तांशकोशसामग्रीसूची..."
+
+#: main.cpp:241
+#, kde-format
+msgid "Removing stale database contents..."
+msgstr "बासी डाटाबेस सामग्रीं निष्कासयन्..."
+
+#: main.cpp:263
+#, kde-format
+msgid "Elapsed: %1 secs"
+msgstr "व्यतीतः: %1 सेकण्ड्"

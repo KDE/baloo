@@ -1,0 +1,113 @@
+# Sanskrit translations for baloo package.
+# Copyright (C) 2024 This file is copyright:
+# This file is distributed under the same license as the baloo package.
+# Kali <EMAIL@ADDRESS>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: baloo\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2023-11-17 01:36+0000\n"
+"PO-Revision-Date: 2024-12-13 19:10+0530\n"
+"Last-Translator: Kali <EMAIL@ADDRESS>\n"
+"Language-Team: Sanskrit\n"
+"Language: sa\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: experimental/databasesanitizer.cpp:259
+#, kde-format
+msgid "Total: %1, Inaccessible: %2"
+msgstr "कुलम् : %1, दुर्गमः : %2"
+
+#: experimental/databasesanitizer.cpp:263
+#, kde-format
+msgid "Total: %1, Ignored: %2, Accessible: %3, Inaccessible: %4"
+msgstr "कुलम्: %1, उपेक्षितम्: %2, अभिगम्यम्: %3, दुर्गमम्: %4"
+
+#: experimental/databasesanitizer.cpp:318
+#, kde-format
+msgid "Found %1 matching in %2 devices"
+msgstr "%2 उपकरणेषु %1 मेलनं प्राप्तम्"
+
+#: experimental/databasesanitizer.cpp:339
+#, kde-format
+msgid "IgnoredSymbolicLink:"
+msgstr "IgnoredSymbolicLink: 1.1."
+
+#: experimental/databasesanitizer.cpp:343
+#, kde-format
+msgid "Removing:"
+msgstr "निष्कासयन् : १."
+
+#: experimental/databasesanitizer.cpp:357
+#, kde-format
+msgctxt "numbers"
+msgid "Removed: %1, Total: %2, Ignored: %3"
+msgstr "निष्कासितम्: %1, कुलम्: %2, उपेक्षितम्: %3"
+
+#: indexerstate.cpp:14
+#, kde-format
+msgid "Unknown"
+msgstr "अज्ञात"
+
+#: indexerstate.cpp:17
+#, kde-format
+msgid "Idle"
+msgstr "आलम"
+
+#: indexerstate.cpp:20
+#, kde-format
+msgid "Suspended"
+msgstr "निलंबित"
+
+#: indexerstate.cpp:23
+#, kde-format
+msgid "Initial Indexing"
+msgstr "प्रारम्भिक अनुक्रमणिका"
+
+#: indexerstate.cpp:26
+#, kde-format
+msgid "Indexing new files"
+msgstr "नूतनानां सञ्चिकानां अनुक्रमणिका"
+
+#: indexerstate.cpp:29
+#, kde-format
+msgid "Indexing modified files"
+msgstr "परिवर्तितसञ्चिकानां अनुक्रमणिका"
+
+#: indexerstate.cpp:32
+#, kde-format
+msgid "Indexing Extended Attributes"
+msgstr "विस्तारितगुणानां अनुक्रमणिका"
+
+#: indexerstate.cpp:35
+#, kde-format
+msgid "Indexing file content"
+msgstr "सञ्चिकासामग्री अनुक्रमणिका"
+
+#: indexerstate.cpp:38
+#, kde-format
+msgid "Checking for unindexed files"
+msgstr "असूचीबद्धसञ्चिकानां जाँचः"
+
+#: indexerstate.cpp:41
+#, kde-format
+msgid "Checking for stale index entries"
+msgstr "बासी अनुक्रमणिकाप्रविष्टीनां जाँचः"
+
+#: indexerstate.cpp:44
+#, kde-format
+msgid "Idle (Powersave)"
+msgstr "निष्क्रिय (शक्तिबचना) २."
+
+#: indexerstate.cpp:47
+#, kde-format
+msgid "Not Running"
+msgstr "न धावति"
+
+#: indexerstate.cpp:50
+#, kde-format
+msgid "Starting"
+msgstr "आरभ्यते"
