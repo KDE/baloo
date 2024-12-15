@@ -13,9 +13,8 @@
 
 using namespace Baloo;
 
-MainHub::MainHub(Database* db, FileIndexerConfig* config, bool firstRun)
-    : m_db(db)
-    , m_config(config)
+MainHub::MainHub(Database *db, FileIndexerConfig *config, bool firstRun)
+    : m_config(config)
     , m_fileWatcher(db, config, this)
     , m_fileIndexScheduler(db, config, firstRun, this)
 {

@@ -29,7 +29,6 @@ public Q_SLOTS:
     Q_SCRIPTABLE void updateConfig();
 
 private:
-    Database* m_db;
     FileIndexerConfig* m_config;
 
     FileWatch m_fileWatcher;
