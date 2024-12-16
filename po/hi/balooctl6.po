@@ -1,0 +1,476 @@
+# Hindi translations for baloo package.
+# Copyright (C) 2024 This file is copyright:
+# This file is distributed under the same license as the baloo package.
+# Kali <EMAIL@ADDRESS>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: baloo\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2024-11-24 00:37+0000\n"
+"PO-Revision-Date: 2024-12-15 19:07+0530\n"
+"Last-Translator: Kali <EMAIL@ADDRESS>\n"
+"Language-Team: Hindi <fedora-trans-hi@redhat.com>\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.5\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "तुम्हारे नाम"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "आपके ईमेल"
+
+#: clearcommand.cpp:30
+#, kde-format
+msgid "Immediately clear entries from the index"
+msgstr "इंडेक्स से प्रविष्टियाँ तुरंत साफ़ करें"
+
+#: configcommand.cpp:45
+#, kde-format
+msgid "Manipulate the Baloo configuration"
+msgstr "बलू कॉन्फ़िगरेशन में हेरफेर करें"
+
+#: configcommand.cpp:68
+#, kde-format
+msgid "The config command can be used to manipulate the Baloo Configuration\n"
+msgstr ""
+"कॉन्फ़िगरेशन कमांड का उपयोग बालू कॉन्फ़िगरेशन में हेरफेर करने के लिए किया जा सकता है\n"
+
+#: configcommand.cpp:69
+#, kde-format
+msgid ""
+"Usage: balooctl config <command>\n"
+"\n"
+msgstr ""
+"उपयोग: balooctl config <command>\n"
+"\n"
+
+#: configcommand.cpp:70
+#, kde-format
+msgid "Possible Commands:\n"
+msgstr "संभावित आदेश:\n"
+
+#: configcommand.cpp:72
+#, kde-format
+msgid "Add a value to config parameter"
+msgstr "कॉन्फ़िगरेशन पैरामीटर में मान जोड़ें"
+
+#: configcommand.cpp:73
+#, kde-format
+msgid "Remove a value from a config parameter"
+msgstr "कॉन्फ़िगरेशन पैरामीटर से मान निकालें"
+
+#: configcommand.cpp:74
+#, kde-format
+msgid "Show the value of a config parameter"
+msgstr "कॉन्फ़िगरेशन पैरामीटर का मान दिखाएँ"
+
+#: configcommand.cpp:75
+#, kde-format
+msgid "Set the value of a config parameter"
+msgstr "कॉन्फ़िगरेशन पैरामीटर का मान सेट करें"
+
+#: configcommand.cpp:76
+#, kde-format
+msgid "Display this help menu"
+msgstr "यह सहायता मेनू प्रदर्शित करें"
+
+#: configcommand.cpp:82
+#, kde-format
+msgid ""
+"The following configuration options may be listed:\n"
+"\n"
+msgstr ""
+"निम्नलिखित कॉन्फ़िगरेशन विकल्प सूचीबद्ध किए जा सकते हैं:\n"
+"\n"
+
+#: configcommand.cpp:84 configcommand.cpp:363
+#, kde-format
+msgid "Controls if Baloo indexes hidden files and folders"
+msgstr ""
+"यह नियंत्रित करता है कि क्या Baloo छुपी हुई फ़ाइलों और फ़ोल्डरों को अनुक्रमित करता है"
+
+#: configcommand.cpp:85 configcommand.cpp:364
+#, kde-format
+msgid "Controls if Baloo indexes file content"
+msgstr "यह नियंत्रित करता है कि Baloo फ़ाइल सामग्री को अनुक्रमित करता है या नहीं"
+
+#: configcommand.cpp:86 configcommand.cpp:149 configcommand.cpp:240
+#, kde-format
+msgid "The list of folders which Baloo indexes"
+msgstr "फ़ोल्डरों की सूची जिन्हें Baloo अनुक्रमित करता है"
+
+#: configcommand.cpp:87 configcommand.cpp:150 configcommand.cpp:241
+#, kde-format
+msgid "The list of folders which Baloo will never index"
+msgstr "उन फ़ोल्डरों की सूची जिन्हें Baloo कभी अनुक्रमित नहीं करेगा"
+
+#: configcommand.cpp:88 configcommand.cpp:151 configcommand.cpp:242
+#, kde-format
+msgid "The list of filters which are used to exclude files"
+msgstr "फ़ाइलों को बाहर करने के लिए उपयोग किए जाने वाले फ़िल्टरों की सूची"
+
+#: configcommand.cpp:89 configcommand.cpp:152 configcommand.cpp:243
+#, kde-format
+msgid "The list of mimetypes which are used to exclude files"
+msgstr "फ़ाइलों को बाहर करने के लिए उपयोग किए जाने वाले mimetypes की सूची"
+
+#: configcommand.cpp:141 configcommand.cpp:232 configcommand.cpp:355
+#: configcommand.cpp:425
+#, kde-format
+msgid "Config parameter could not be found\n"
+msgstr "कॉन्फ़िगरेशन पैरामीटर नहीं मिल सका\n"
+
+#: configcommand.cpp:147 configcommand.cpp:238 configcommand.cpp:361
+#, kde-format
+msgid ""
+"The following configuration options may be modified:\n"
+"\n"
+msgstr ""
+"निम्नलिखित कॉन्फ़िगरेशन विकल्पों को संशोधित किया जा सकता है:\n"
+"\n"
+
+#: configcommand.cpp:160 configcommand.cpp:180 configcommand.cpp:251
+#: configcommand.cpp:286
+#, kde-format
+msgid "A folder must be provided\n"
+msgstr "एक फ़ोल्डर प्रदान किया जाना चाहिए\n"
+
+#: configcommand.cpp:168
+#, kde-format
+msgid "%1 is not in the list of include folders"
+msgstr "%1 सम्मिलित फ़ोल्डरों की सूची में नहीं है"
+
+#: configcommand.cpp:188
+#, kde-format
+msgid "%1 is not in the list of exclude folders"
+msgstr "%1 बहिष्कृत फ़ोल्डरों की सूची में नहीं है"
+
+#: configcommand.cpp:200 configcommand.cpp:321
+#, kde-format
+msgid "A filter must be provided\n"
+msgstr "एक फ़िल्टर अवश्य उपलब्ध कराया जाना चाहिए\n"
+
+#: configcommand.cpp:206
+#, kde-format
+msgid "%1 is not in list of exclude filters"
+msgstr "%1 बहिष्कृत फ़िल्टर की सूची में नहीं है"
+
+#: configcommand.cpp:217 configcommand.cpp:339
+#, kde-format
+msgid "A mimetype must be provided\n"
+msgstr "एक माइमटाइप प्रदान किया जाना चाहिए\n"
+
+#: configcommand.cpp:223
+#, kde-format
+msgid "%1 is not in list of exclude mimetypes"
+msgstr "%1 बहिष्कृत mimetypes की सूची में नहीं है"
+
+#: configcommand.cpp:257 configcommand.cpp:292
+#, kde-format
+msgid "Path does not exist\n"
+msgstr "पथ मौजूद नहीं है\n"
+
+#: configcommand.cpp:262 configcommand.cpp:297
+#, kde-format
+msgid "Path is not a directory\n"
+msgstr "पथ एक निर्देशिका नहीं है\n"
+
+#: configcommand.cpp:269
+#, kde-format
+msgid "%1 is already in the list of include folders"
+msgstr "%1 पहले से ही सम्मिलित फ़ोल्डरों की सूची में है"
+
+#: configcommand.cpp:274 configcommand.cpp:309
+#, kde-format
+msgid "%1 is in the list of exclude folders"
+msgstr "%1 बहिष्कृत फ़ोल्डरों की सूची में है"
+
+#: configcommand.cpp:304
+#, kde-format
+msgid "%1 is already in the list of exclude folders"
+msgstr "%1 पहले से ही बहिष्कृत फ़ोल्डरों की सूची में है"
+
+#: configcommand.cpp:327
+#, kde-format
+msgid "Exclude filter is already in the list\n"
+msgstr "बहिष्कृत फ़िल्टर पहले से ही सूची में है\n"
+
+#: configcommand.cpp:345
+#, kde-format
+msgid "Exclude mimetype is already in the list\n"
+msgstr "बहिष्कृत माइमटाइप पहले से ही सूची में है\n"
+
+#: configcommand.cpp:373 configcommand.cpp:400
+#, kde-format
+msgid "A value must be provided\n"
+msgstr "एक मान प्रदान किया जाना चाहिए\n"
+
+#: configcommand.cpp:394 configcommand.cpp:421
+#, kde-format
+msgid "Invalid value\n"
+msgstr "अमान्य मान\n"
+
+#: indexcommand.cpp:30
+#, kde-format
+msgid "Immediately index files"
+msgstr "फ़ाइलों को तुरंत अनुक्रमित करें"
+
+#: main.cpp:54
+#, kde-format
+msgid "balooctl"
+msgstr "बालूctl"
+
+#: main.cpp:55
+#, kde-format
+msgid "Vishesh Handa"
+msgstr "Vishesh Handa"
+
+#: main.cpp:60
+#, kde-format
+msgid "The command to execute"
+msgstr "निष्पादित करने का आदेश"
+
+#: main.cpp:62
+#, kde-format
+msgid "Print the status of the indexer"
+msgstr "इंडेक्सर की स्थिति प्रिंट करें"
+
+#: main.cpp:63
+#, kde-format
+msgid "Enable the file indexer"
+msgstr "फ़ाइल इंडेक्सर सक्षम करें"
+
+#: main.cpp:64
+#, kde-format
+msgid "Disable the file indexer"
+msgstr "फ़ाइल इंडेक्सर को अक्षम करें"
+
+#: main.cpp:65
+#, kde-format
+msgid "Remove the index database"
+msgstr "इंडेक्स डेटाबेस हटाएँ"
+
+#: main.cpp:66
+#, kde-format
+msgid "Suspend the file indexer"
+msgstr "फ़ाइल इंडेक्सर को निलंबित करें"
+
+#: main.cpp:67
+#, kde-format
+msgid "Resume the file indexer"
+msgstr "फ़ाइल इंडेक्सर को फिर से शुरू करें"
+
+#: main.cpp:68
+#, kde-format
+msgid "Check for any unindexed files and index them"
+msgstr "किसी भी असूचीबद्ध फ़ाइल की जाँच करें और उन्हें अनुक्रमित करें"
+
+#: main.cpp:69
+#, kde-format
+msgid "Index the specified files"
+msgstr "निर्दिष्ट फ़ाइलों को अनुक्रमित करें"
+
+#: main.cpp:70
+#, kde-format
+msgid "Forget the specified files"
+msgstr "निर्दिष्ट फ़ाइलें भूल जाएँ"
+
+#: main.cpp:71
+#, kde-format
+msgid "Modify the Baloo configuration"
+msgstr "बलू कॉन्फ़िगरेशन को संशोधित करें"
+
+#: main.cpp:72
+#, kde-format
+msgid "Monitor the file indexer"
+msgstr "फ़ाइल इंडेक्सर की निगरानी करें"
+
+#: main.cpp:73
+#, kde-format
+msgid "Display the disk space used by index"
+msgstr "इंडेक्स द्वारा उपयोग किया गया डिस्क स्थान प्रदर्शित करें"
+
+#: main.cpp:74
+#, kde-format
+msgid "Display files which could not be indexed"
+msgstr "वे फ़ाइलें प्रदर्शित करें जिन्हें अनुक्रमित नहीं किया जा सका"
+
+#: main.cpp:77
+#, kde-format
+msgctxt ""
+"Format to use for status command, %1|%2|%3 are option values, %4 is a CLI "
+"command"
+msgid ""
+"Output format <%1|%2|%3>.\n"
+"The default format is \"%1\".\n"
+"Only applies to \"%4\""
+msgstr ""
+"आउटपुट प्रारूप <%1|%2|%3>.\n"
+"डिफ़ॉल्ट प्रारूप \"%1\" है.\n"
+"केवल \"%4\" पर लागू होता है"
+
+#: main.cpp:83
+#, kde-format
+msgid "format"
+msgstr "प्रारूप"
+
+#: monitorcommand.cpp:54
+#, kde-format
+msgid "Press ctrl+c to stop monitoring\n"
+msgstr "मॉनिटरिंग रोकने के लिए ctrl+c दबाएँ\n"
+
+#: monitorcommand.cpp:70
+#, kde-format
+msgid "Waiting for file indexer to start\n"
+msgstr "फ़ाइल इंडेक्सर के शुरू होने का इंतज़ार किया जा रहा है\n"
+
+#: monitorcommand.cpp:71
+#, kde-format
+msgid "Press Ctrl+C to stop monitoring\n"
+msgstr "मॉनिटरिंग रोकने के लिए Ctrl+C दबाएँ\n"
+
+#: monitorcommand.cpp:78
+#, kde-format
+msgid "File indexer is running\n"
+msgstr "फ़ाइल इंडेक्सर चल रहा है\n"
+
+#: monitorcommand.cpp:94 statuscommand.cpp:307
+#, kde-format
+msgctxt "currently indexed file"
+msgid "Indexing: %1"
+msgstr "अनुक्रमण: %1"
+
+#: monitorcommand.cpp:103
+#, kde-format
+msgid ": Ok\n"
+msgstr ": ठीक है\n"
+
+#: monitorcommand.h:32
+#, kde-format
+msgid "CLI interface for monitoring Baloo"
+msgstr "बालू की निगरानी के लिए CLI इंटरफ़ेस"
+
+#: statuscommand.cpp:33
+#, kde-format
+msgid "Print the status of the Indexer"
+msgstr "इंडेक्सर की स्थिति प्रिंट करें"
+
+#: statuscommand.cpp:117
+#, kde-format
+msgid "File ignored"
+msgstr "फ़ाइल अनदेखा की गई"
+
+#: statuscommand.cpp:118
+#, kde-format
+msgid "Basic Indexing: Disabled"
+msgstr "बुनियादी अनुक्रमण: अक्षम"
+
+#: statuscommand.cpp:119 statuscommand.cpp:120
+#, kde-format
+msgid "Basic Indexing: Scheduled"
+msgstr "बुनियादी अनुक्रमण: अनुसूचित"
+
+#: statuscommand.cpp:121 statuscommand.cpp:122 statuscommand.cpp:123
+#: statuscommand.cpp:124
+#, kde-format
+msgid "Basic Indexing: Done"
+msgstr "बुनियादी अनुक्रमण: पूर्ण"
+
+#: statuscommand.cpp:130 statuscommand.cpp:133
+#, kde-format
+msgid "Content Indexing: Scheduled"
+msgstr "सामग्री अनुक्रमण: अनुसूचित"
+
+#: statuscommand.cpp:134
+#, kde-format
+msgid "Content Indexing: Failed"
+msgstr "सामग्री अनुक्रमण: विफल"
+
+#: statuscommand.cpp:135
+#, kde-format
+msgid "Content Indexing: Done"
+msgstr "सामग्री अनुक्रमण: पूर्ण"
+
+#: statuscommand.cpp:142 statuscommand.cpp:182 statuscommand.cpp:230
+#, kde-format
+msgid "Ignoring non-existent file %1"
+msgstr "गैर-मौजूद फ़ाइल %1 को अनदेखा किया जा रहा है"
+
+#: statuscommand.cpp:147 statuscommand.cpp:187 statuscommand.cpp:235
+#, kde-format
+msgid "Ignoring symlink/special file %1"
+msgstr "सिम्बलिंक/विशेष फ़ाइल %1 को अनदेखा किया जा रहा है"
+
+#: statuscommand.cpp:151
+#, kde-format
+msgid "File: %1"
+msgstr "फ़ाइल: %1"
+
+#: statuscommand.cpp:262
+#, kde-format
+msgid "Output format \"%1\" is invalid, use one of:\n"
+msgstr "आउटपुट प्रारूप \"%1\" अमान्य है, इनमें से किसी एक का उपयोग करें:\n"
+
+#: statuscommand.cpp:264
+#, kde-format
+msgctxt "bullet list item with output format"
+msgid "- %1\n"
+msgstr "- %1\n"
+
+#: statuscommand.cpp:271
+#, kde-format
+msgid "Baloo is currently disabled. To enable, please run %1\n"
+msgstr "बलू अभी अक्षम है। सक्षम करने के लिए, कृपया %1 चलाएँ\n"
+
+#: statuscommand.cpp:277
+#, kde-format
+msgid "Baloo Index could not be opened\n"
+msgstr "बालू इंडेक्स खोला नहीं जा सका\n"
+
+#: statuscommand.cpp:304
+#, kde-format
+msgid "Baloo File Indexer is running\n"
+msgstr "बलू फ़ाइल इंडेक्सर चल रहा है\n"
+
+#: statuscommand.cpp:306 statuscommand.cpp:309
+#, kde-format
+msgid "Indexer state: %1"
+msgstr "अनुक्रमणिका स्थिति: %1"
+
+#: statuscommand.cpp:313
+#, kde-format
+msgid "Baloo File Indexer is not running\n"
+msgstr "बलू फ़ाइल इंडेक्सर नहीं चल रहा है\n"
+
+#: statuscommand.cpp:320
+#, kde-format
+msgid "Total files indexed: %1"
+msgstr "कुल अनुक्रमित फ़ाइलें: %1"
+
+#: statuscommand.cpp:321
+#, kde-format
+msgid "Files waiting for content indexing: %1"
+msgstr "सामग्री अनुक्रमण के लिए प्रतीक्षारत फ़ाइलें: %1"
+
+#: statuscommand.cpp:322
+#, kde-format
+msgid "Files failed to index: %1"
+msgstr "फ़ाइलें अनुक्रमित करने में विफल: %1"
+
+#: statuscommand.cpp:330
+#, kde-format
+msgid "Current size of index is %1"
+msgstr "सूचकांक का वर्तमान आकार %1 है"
+
+#: statuscommand.cpp:332
+#, kde-format
+msgid "Index does not exist yet\n"
+msgstr "सूचकांक अभी तक मौजूद नहीं है\n"
