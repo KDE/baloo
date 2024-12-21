@@ -3,19 +3,21 @@
 # This file is distributed under the same license as the baloo package.
 # Kali <EMAIL@ADDRESS>, 2024.
 #
+# SPDX-FileCopyrightText: 2024 kali <skkalwar999@gmail.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-17 01:36+0000\n"
-"PO-Revision-Date: 2024-12-13 19:10+0530\n"
-"Last-Translator: Kali <EMAIL@ADDRESS>\n"
-"Language-Team: Sanskrit\n"
+"PO-Revision-Date: 2024-12-20 21:51+0530\n"
+"Last-Translator: kali <skkalwar999@gmail.com>\n"
+"Language-Team: English <kde-i18n-doc@kde.org>\n"
 "Language: sa\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n>2);\n"
+"X-Generator: Lokalize 24.08.2\n"
 
 #: experimental/databasesanitizer.cpp:259
 #, kde-format
@@ -40,7 +42,7 @@ msgstr "IgnoredSymbolicLink: 1.1."
 #: experimental/databasesanitizer.cpp:343
 #, kde-format
 msgid "Removing:"
-msgstr "निष्कासयन् : १."
+msgstr "निष्कासयन् :"
 
 #: experimental/databasesanitizer.cpp:357
 #, kde-format
@@ -101,7 +103,7 @@ msgstr "बासी अनुक्रमणिकाप्रविष्ट�
 #: indexerstate.cpp:44
 #, kde-format
 msgid "Idle (Powersave)"
-msgstr "निष्क्रिय (शक्तिबचना) २."
+msgstr "निष्क्रिय (शक्तिबचना)"
 
 #: indexerstate.cpp:47
 #, kde-format
