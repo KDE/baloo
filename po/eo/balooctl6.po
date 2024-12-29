@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-24 00:37+0000\n"
-"PO-Revision-Date: 2023-11-12 16:39+0100\n"
+"PO-Revision-Date: 2024-12-28 17:41+0100\n"
 "Last-Translator: Oliver Kellogg <olivermkellogg@gmail.com>\n"
 "Language-Team: Esperanto <kde-i18n-eo@kde.org>\n"
 "Language: eo\n"
@@ -31,7 +31,7 @@ msgstr "olivermkellogg@gmail.com"
 #: clearcommand.cpp:30
 #, kde-format
 msgid "Immediately clear entries from the index"
-msgstr ""
+msgstr "Tuj viŝi enirojn el la indekso"
 
 #: configcommand.cpp:45
 #, kde-format
@@ -133,7 +133,7 @@ msgid ""
 "The following configuration options may be modified:\n"
 "\n"
 msgstr ""
-"La sekvaj agordaj opcioj povas esti modifitaj:\n"
+"La sekvaj agordaj elektebloj povas esti modifitaj:\n"
 "\n"
 
 #: configcommand.cpp:160 configcommand.cpp:180 configcommand.cpp:251
@@ -220,7 +220,7 @@ msgstr "Nevalida valoro\n"
 #: indexcommand.cpp:30
 #, kde-format
 msgid "Immediately index files"
-msgstr ""
+msgstr "Tuj indeksi dosierojn"
 
 #: main.cpp:54
 #, kde-format
