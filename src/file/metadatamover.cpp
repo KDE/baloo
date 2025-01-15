@@ -73,11 +73,13 @@ void MetadataMover::removeMetadata(Transaction* tr, const QString& url)
     Q_EMIT fileRemoved(url);
 }
 
-void MetadataMover::updateMetadata(Transaction* tr, const QString& from, const QString& to)
+void MetadataMover::updateMetadata(Transaction *tr, const QString &from, const QString &_to)
 {
-    qCDebug(BALOO) << from << "->" << to;
-    Q_ASSERT(!from.isEmpty() && !to.isEmpty());
-    Q_ASSERT(to[to.size()-1] != QLatin1Char('/'));
+    qCDebug(BALOO) << from << "->" << _to;
+    auto to = _to;
+    if (to.endsWith(QLatin1Char('/'))) {
+        to.chop(1);
+    }
 
     // directory case
     auto normalizedFrom = from;
