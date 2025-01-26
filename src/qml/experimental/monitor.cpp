@@ -119,7 +119,7 @@ void Monitor::balooStarted()
 void Monitor::fetchTotalFiles()
 {
     Baloo::Database *db = Baloo::globalDatabaseInstance();
-    if (db->open(Baloo::Database::ReadOnlyDatabase)) {
+    if (db->open(Baloo::Database::ReadOnlyDatabase) == Baloo::Database::OpenResult::Success) {
         Baloo::Transaction tr(db, Baloo::Transaction::ReadOnly);
         m_totalFiles = tr.size();
         m_filesIndexed = tr.size() - tr.phaseOneSize();

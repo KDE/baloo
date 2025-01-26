@@ -273,7 +273,7 @@ int StatusCommand::exec(const QCommandLineParser& parser)
     }
 
     Database *db = globalDatabaseInstance();
-    if (!db->open(Database::ReadOnlyDatabase)) {
+    if (db->open(Database::ReadOnlyDatabase) != Baloo::Database::OpenResult::Success) {
         err << i18n("Baloo Index could not be opened\n");
         return 1;
     }

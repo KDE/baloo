@@ -71,8 +71,7 @@ void MetadataMoverTest::init()
 {
     m_tempDir = std::make_unique<QTemporaryDir>();
     m_db = std::make_unique<Database>(m_tempDir->path());
-    m_db->open(Database::CreateDatabase);
-    QVERIFY(m_db->isOpen());
+    QCOMPARE(m_db->open(Database::CreateDatabase), Database::OpenResult::Success);
 }
 
 quint64 MetadataMoverTest::insertDoc(const QString& url, quint64 parentId)

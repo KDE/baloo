@@ -43,7 +43,7 @@ int ClearCommand::exec(const QCommandLineParser &parser)
     }
 
     Database *db = globalDatabaseInstance();
-    if (!db->open(Database::ReadWriteDatabase)) {
+    if (db->open(Database::ReadWriteDatabase) != Database::OpenResult::Success) {
         out << "Baloo Index could not be opened\n";
         return 1;
     }

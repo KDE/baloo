@@ -207,7 +207,7 @@ int main(int argc, char* argv[])
 
     if (command == QLatin1String("failed")) {
         Database *db = globalDatabaseInstance();
-        if (!db->open(Database::ReadOnlyDatabase)) {
+        if (db->open(Database::ReadOnlyDatabase) != Database::OpenResult::Success) {
             out << "Baloo Index could not be opened\n";
             return 1;
         }
@@ -233,7 +233,7 @@ int main(int argc, char* argv[])
 
     if (command == QLatin1String("indexSize")) {
         Database *db = globalDatabaseInstance();
-        if (!db->open(Database::ReadOnlyDatabase)) {
+        if (db->open(Database::ReadOnlyDatabase) != Database::OpenResult::Success) {
             out << "Baloo Index could not be opened\n";
             return 1;
         }

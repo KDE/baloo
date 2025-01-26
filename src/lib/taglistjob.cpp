@@ -31,9 +31,9 @@ void TagListJob::start()
 {
     Database *db = globalDatabaseInstance();
 
-    if (!db->open(Database::ReadOnlyDatabase)) {
+    if (auto rc = db->open(Database::ReadOnlyDatabase); rc != Database::OpenResult::Success) {
         // if we have no index, we have no tags
-        if (!db->isAvailable()) {
+        if (rc == Database::OpenResult::InvalidPath) {
             emitResult();
             return;
         }

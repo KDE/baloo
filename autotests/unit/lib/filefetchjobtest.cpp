@@ -63,7 +63,7 @@ void FileFetchJobTest::test()
 
     {
         Database db(fileIndexDbPath());
-        db.open(Database::CreateDatabase);
+        QCOMPARE(db.open(Database::CreateDatabase), Database::OpenResult::Success);
 
         Transaction tr(db, Transaction::ReadWrite);
         QVERIFY(parentId);

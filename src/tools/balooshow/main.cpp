@@ -99,7 +99,7 @@ int main(int argc, char* argv[])
     }
 
     Baloo::Database *db = Baloo::globalDatabaseInstance();
-    if (!db->open(Baloo::Database::ReadOnlyDatabase)) {
+    if (db->open(Baloo::Database::ReadOnlyDatabase) != Baloo::Database::OpenResult::Success) {
         stream << i18n("The Baloo index could not be opened. Please run \"%1\" to see if Baloo is enabled and working.",
 	    QStringLiteral("balooctl status")) << '\n';
         return 1;

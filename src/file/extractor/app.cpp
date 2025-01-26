@@ -70,7 +70,7 @@ void App::slotNewBatch(const QVector<quint64>& ids)
     m_ids = ids;
 
     Database *db = globalDatabaseInstance();
-    if (!db->open(Database::ReadWriteDatabase)) {
+    if (db->open(Database::CreateDatabase) != Database::OpenResult::Success) {
         qCCritical(BALOO) << "Failed to open the database";
         exit(1);
     }

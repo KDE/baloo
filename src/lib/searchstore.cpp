@@ -147,7 +147,7 @@ SearchStore::SearchStore()
     : m_db(nullptr)
 {
     m_db = globalDatabaseInstance();
-    if (!m_db->open(Database::ReadOnlyDatabase)) {
+    if (m_db->open(Database::ReadOnlyDatabase) != Database::OpenResult::Success) {
         m_db = nullptr;
     }
 }
@@ -159,7 +159,7 @@ SearchStore::~SearchStore()
 // Return the result with-in [offset, offset + limit)
 ResultList SearchStore::exec(const Term& term, uint offset, int limit, bool sortResults)
 {
-    if (!m_db || !m_db->isOpen()) {
+    if (!m_db) {
         return ResultList();
     }
 

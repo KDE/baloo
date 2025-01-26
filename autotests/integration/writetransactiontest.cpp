@@ -22,7 +22,7 @@ private Q_SLOTS:
     void init() {
         dir = std::make_unique<QTemporaryDir>();
         db = std::make_unique<Database>(dir->path());
-        db->open(Database::CreateDatabase);
+        QCOMPARE(db->open(Database::CreateDatabase), Database::OpenResult::Success);
         m_dirId = filePathToId(QFile::encodeName(dir->path()));
         QVERIFY(m_dirId);
     }

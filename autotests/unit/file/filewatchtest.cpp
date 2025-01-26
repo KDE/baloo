@@ -72,8 +72,7 @@ namespace {
 
 void FileWatchTest::testFileCreation()
 {
-    m_db->open(Baloo::Database::CreateDatabase);
-    QVERIFY(m_db->isOpen());
+    QCOMPARE(m_db->open(Database::CreateDatabase), Database::OpenResult::Success);
 
     Test::writeIndexerConfig({m_tmpDir->path()}, {});
     FileIndexerConfig config;
@@ -146,8 +145,7 @@ void FileWatchTest::testFileCreation()
 
 void FileWatchTest::testDirCreation()
 {
-    m_db->open(Baloo::Database::CreateDatabase);
-    QVERIFY(m_db->isOpen());
+    QCOMPARE(m_db->open(Database::CreateDatabase), Database::OpenResult::Success);
 
     Test::writeIndexerConfig({m_tmpDir->path()}, {});
     FileIndexerConfig config;
@@ -212,7 +210,7 @@ void FileWatchTest::testDirCreation()
 
 void FileWatchTest::testConfigChange()
 {
-    m_db->open(Baloo::Database::CreateDatabase);
+    QCOMPARE(m_db->open(Database::CreateDatabase), Database::OpenResult::Success);
 
     QString d1 = m_tmpDir->path() + QStringLiteral("/d1");
     QString d2 = m_tmpDir->path() + QStringLiteral("/d2");
@@ -291,8 +289,7 @@ void FileWatchTest::testConfigChange()
 
 void FileWatchTest::testFileMoved()
 {
-    m_db->open(Baloo::Database::CreateDatabase);
-    QVERIFY(m_db->isOpen());
+    QCOMPARE(m_db->open(Database::CreateDatabase), Database::OpenResult::Success);
 
     Test::writeIndexerConfig({m_tmpDir->path()}, {});
     FileIndexerConfig config;

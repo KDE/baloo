@@ -30,7 +30,10 @@ int main(int argc, char** argv)
     qDebug() << "Creating temporary DB in" << tempDir.path();
 
     Database db(tempDir.path());
-    db.open(Baloo::Database::CreateDatabase);
+    if (auto rc = db.open(Baloo::Database::CreateDatabase); rc != Baloo::Database::OpenResult::Success) {
+        qDebug() << "Failed to create DB";
+        exit(1);
+    }
 
     Transaction tr(db, Transaction::ReadWrite);
 

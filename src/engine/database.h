@@ -52,33 +52,20 @@ public:
         ReadOnlyDatabase,
     };
 
+    enum class OpenResult {
+        Success,
+        InvalidPath,     ///< Database does not exist, or could not be created
+        InvalidDatabase, ///< Database structure does not match expectation
+        InternalError,   ///< Internal error in the database engine
+    };
+
     /**
      * Open database in given mode.
      * Nop after open was done (even if mode differs).
      * There is no close as this would invalidate the database for all threads using it.
      * @param mode create or open only?
-     * @return success?
      */
-    bool open(OpenMode mode);
-
-    /**
-     * Is database open?
-     * @return database open?
-     */
-    bool isOpen() const;
-
-    /**
-     * Path to database.
-     * @return database path
-     */
-    QString path() const;
-
-    /**
-     * Is the database available for use?
-     * For example if indexing is disabled or the indexer did never run this is false.
-     * @return database available
-     */
-    bool isAvailable() const;
+    OpenResult open(OpenMode mode);
 
 private:
     /**

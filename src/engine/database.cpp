@@ -59,13 +59,13 @@ Database::~Database()
     }
 }
 
-bool Database::open(OpenMode mode)
+Database::OpenResult Database::open(OpenMode mode)
 {
     QMutexLocker locker(&m_mutex);
 
     // nop if already open!
     if (m_env) {
-        return true;
+        return OpenResult::Success;
     }
 
     MDB_env* env = nullptr;
@@ -78,13 +78,13 @@ bool Database::open(OpenMode mode)
     QFileInfo indexInfo(dir, QStringLiteral("index"));
 
     if ((mode != CreateDatabase) && !indexInfo.exists()) {
-        return false;
+        return OpenResult::InvalidPath;
     }
 
     if (mode == CreateDatabase) {
         if (!QFileInfo(dir.absolutePath()).permission(QFile::WriteOwner)) {
             qCCritical(ENGINE) << m_path << "does not have write permissions. Aborting";
-            return false;
+            return OpenResult::InvalidPath;
         }
 
         if (!indexInfo.exists()) {
@@ -94,7 +94,7 @@ bool Database::open(OpenMode mode)
 
     int rc = mdb_env_create(&env);
     if (rc) {
-        return false;
+        return OpenResult::InternalError;
     }
 
     /**
@@ -131,8 +131,12 @@ bool Database::open(OpenMode mode)
     QByteArray arr = QFile::encodeName(indexInfo.absoluteFilePath());
     rc = mdb_env_open(env, arr.constData(), mdbEnvFlags, 0664);
     if (rc) {
+        // mdb_env_close must be called when mdb_env_open fails
         mdb_env_close(env);
-        return false;
+        if ((rc == ENOENT) || (rc == EACCES)) {
+            return OpenResult::InvalidPath;
+        }
+        return OpenResult::InternalError;
     }
 
     rc = mdb_reader_check(env, nullptr);
@@ -140,7 +144,7 @@ bool Database::open(OpenMode mode)
     if (rc) {
         qCWarning(ENGINE) << "Database::open reader_check" << mdb_strerror(rc);
         mdb_env_close(env);
-        return false;
+        return OpenResult::InternalError;
     }
 
     //
@@ -152,7 +156,7 @@ bool Database::open(OpenMode mode)
         if (rc) {
             qCWarning(ENGINE) << "Database::transaction ro begin" << mdb_strerror(rc);
             mdb_env_close(env);
-            return false;
+            return OpenResult::InternalError;
         }
 
         m_dbis.postingDbi = PostingDB::open(txn);
@@ -177,21 +181,21 @@ bool Database::open(OpenMode mode)
             qCWarning(ENGINE) << "dbis is invalid";
             mdb_txn_abort(txn);
             mdb_env_close(env);
-            return false;
+            return OpenResult::InvalidDatabase;
         }
 
         rc = mdb_txn_commit(txn);
         if (rc) {
             qCWarning(ENGINE) << "Database::transaction ro commit" << mdb_strerror(rc);
             mdb_env_close(env);
-            return false;
+            return OpenResult::InternalError;
         }
     } else {
         int rc = mdb_txn_begin(env, nullptr, 0, &txn);
         if (rc) {
             qCWarning(ENGINE) << "Database::transaction begin" << mdb_strerror(rc);
             mdb_env_close(env);
-            return false;
+            return OpenResult::InternalError;
         }
 
         m_dbis.postingDbi = PostingDB::create(txn);
@@ -216,36 +220,18 @@ bool Database::open(OpenMode mode)
             qCWarning(ENGINE) << "dbis is invalid";
             mdb_txn_abort(txn);
             mdb_env_close(env);
-            return false;
+            return OpenResult::InvalidDatabase;
         }
 
         rc = mdb_txn_commit(txn);
         if (rc) {
             qCWarning(ENGINE) << "Database::transaction commit" << mdb_strerror(rc);
             mdb_env_close(env);
-            return false;
+            return OpenResult::InternalError;
         }
     }
 
     Q_ASSERT(env);
     m_env = env;
-    return true;
-}
-
-bool Database::isOpen() const
-{
-    QMutexLocker locker(&m_mutex);
-    return m_env != nullptr;
-}
-
-QString Database::path() const
-{
-    QMutexLocker locker(&m_mutex);
-    return m_path;
-}
-
-bool Database::isAvailable() const
-{
-    QMutexLocker locker(&m_mutex);
-    return QFileInfo::exists(m_path + QStringLiteral("/index"));
+    return OpenResult::Success;
 }

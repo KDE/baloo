@@ -66,7 +66,7 @@ private Q_SLOTS:
     void init() {
         dbDir = std::make_unique<QTemporaryDir>();
         db = std::make_unique<Database>(dbDir->path());
-        db->open(Database::CreateDatabase);
+        QCOMPARE(db->open(Database::CreateDatabase), Database::OpenResult::Success);
         setenv("BALOO_DB_PATH", dbDir->path().toStdString().c_str(), 1);
 
         m_parentId = filePathToId(QFile::encodeName(dir->path()));

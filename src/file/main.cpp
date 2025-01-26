@@ -62,7 +62,11 @@ int main(int argc, char** argv)
     /**
      * try to open, if that fails, try to unlink the index db and retry
      */
-    if (!db->open(Baloo::Database::CreateDatabase)) {
+    using OpenResult = Baloo::Database::OpenResult;
+    if (auto rc = db->open(Baloo::Database::CreateDatabase); rc != OpenResult::Success) {
+        if (rc == OpenResult::InvalidPath) {
+            return 1;
+        }
         // delete old stuff, set to initial run!
         qWarning() << "Failed to create database, removing corrupted database.";
         QFile::remove(path + QStringLiteral("/index"));
@@ -70,7 +74,7 @@ int main(int argc, char** argv)
         firstRun = true;
 
         // try to create now after cleanup, if still no works => fail
-        if (!db->open(Baloo::Database::CreateDatabase)) {
+        if (db->open(Baloo::Database::CreateDatabase) != OpenResult::Success) {
             qWarning() << "Failed to create database after deleting corrupted one.";
             return 1;
         }
