@@ -18,6 +18,7 @@ baloo_engine_auto_tests(
     idtreedbtest
     idfilenamedbtest
     mtimedbtest
+    dbversiontest
 
     # Query
     andpostingiteratortest
