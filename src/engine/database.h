@@ -59,6 +59,8 @@ public:
         InvalidDatabase, ///< Database structure does not match expectation
         InternalError,   ///< Internal error in the database engine
         OpenedReadOnly,  ///< Database was opened in readonly mode
+        DatabaseTooNew,  ///< Database was created with a newer, incompatible version
+        DatabaseTooOld,  ///< Database was created with an older, incompatible version
         // clang-format on
     };
 

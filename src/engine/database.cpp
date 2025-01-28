@@ -15,6 +15,7 @@
 #include "positiondb.h"
 #include "documenttimedb.h"
 #include "documentdatadb.h"
+#include "metadatadb.h"
 #include "mtimedb.h"
 
 #include "enginequery.h"
@@ -43,6 +44,35 @@
 #include <QMutexLocker>
 
 using namespace Baloo;
+
+namespace
+{
+
+int checkDbVersion(MDB_dbi dbi, MDB_txn* txn, bool readOnly)
+{
+    auto metaDb = MetadataDB(dbi, txn);
+    auto ver = dbi ? metaDb.getDbVersion() : DbVersion();
+
+    if ((readOnly || ver.canWrite()) && ver.canRead()) {
+        qCDebug(ENGINE) << "File DB version:" << ver;
+        return 0;
+    }
+
+    qCWarning(ENGINE) << "Failed to open() for"
+                      << (readOnly ? "read" : "read/write")
+                      << "- File DB version" << ver
+                      << "is incompatible with expected version"
+                      << DbVersion::currentDbVersion();
+    return ver > DbVersion::currentDbVersion() ? 1 : -1;
+}
+
+void resetDbVersion(MDB_dbi dbi, MDB_txn* txn)
+{
+    auto metaDb = MetadataDB(dbi, txn);
+    metaDb.setDbVersion(DbVersion::currentDbVersion());
+}
+
+} // <anonymous> namespace
 
 Database::Database(const QString& path)
     : m_path(path)
@@ -95,6 +125,8 @@ Database::OpenResult Database::open(OpenMode mode)
 
         if (!indexInfo.exists()) {
             FSUtils::disableCoW(m_path);
+        } else {
+            mode = ReadWriteDatabase;
         }
     }
 
@@ -107,7 +139,7 @@ Database::OpenResult Database::open(OpenMode mode)
      * maximal number of allowed named databases, must match number of databases we create below
      * each additional one leads to overhead
      */
-    mdb_env_set_maxdbs(env, 12);
+    mdb_env_set_maxdbs(env, 13);
 
     /**
      * size limit for database == size limit of mmap
@@ -163,6 +195,13 @@ Database::OpenResult Database::open(OpenMode mode)
             qCWarning(ENGINE) << "Database::transaction ro begin" << mdb_strerror(rc);
             mdb_env_close(env);
             return OpenResult::InternalError;
+        }
+
+        m_dbis.dbMetadataDbi = MetadataDB::open(txn);
+        if (auto rc = checkDbVersion(m_dbis.dbMetadataDbi, txn, (mode == ReadOnlyDatabase)); rc != 0) {
+            mdb_txn_abort(txn);
+            mdb_env_close(env);
+            return rc > 0 ? OpenResult::DatabaseTooNew : OpenResult::DatabaseTooOld;
         }
 
         m_dbis.postingDbi = PostingDB::open(txn);
@@ -222,11 +261,20 @@ Database::OpenResult Database::open(OpenMode mode)
 
         m_dbis.mtimeDbi = MTimeDB::create(txn);
 
-        if (!m_dbis.isValid()) {
+        m_dbis.dbMetadataDbi = MetadataDB::create(txn);
+
+        if (!m_dbis.isValid() || !m_dbis.dbMetadataDbi) {
             qCWarning(ENGINE) << "dbis is invalid";
             mdb_txn_abort(txn);
             mdb_env_close(env);
             return OpenResult::InvalidDatabase;
+        }
+
+        resetDbVersion(m_dbis.dbMetadataDbi, txn);
+        if (auto rc = checkDbVersion(m_dbis.dbMetadataDbi, txn, false); rc != 0) {
+            mdb_txn_abort(txn);
+            mdb_env_close(env);
+            return OpenResult::InternalError;
         }
 
         rc = mdb_txn_commit(txn);

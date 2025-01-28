@@ -68,8 +68,16 @@ int main(int argc, char** argv)
         if (rc == OpenResult::InvalidPath) {
             return 1;
         }
+        if (rc == OpenResult::DatabaseTooNew) {
+            qCWarning(BALOO) << "Found database is too new, please update your libraries and tools";
+            return 1;
+        }
+        if (rc == OpenResult::DatabaseTooOld) {
+            qCWarning(BALOO) << "Found old, unsupported database, recreating";
+        } else {
+            qCWarning(BALOO) << "Failed to create database, removing corrupted database.";
+        }
         // delete old stuff, set to initial run!
-        qCWarning(BALOO) << "Failed to create database, removing corrupted database.";
         QFile::remove(path + QStringLiteral("/index"));
         QFile::remove(path + QStringLiteral("/index-lock"));
         firstRun = true;
