@@ -12,6 +12,7 @@ set(BALOO_ENGINE_SRCS
     idtreedb.cpp
     idfilenamedb.cpp
     indexerstate.cpp
+    metadatadb.cpp
     mtimedb.cpp
     orpostingiterator.cpp
     phraseanditerator.cpp
