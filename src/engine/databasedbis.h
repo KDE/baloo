@@ -31,6 +31,8 @@ public:
     MDB_dbi mtimeDbi = 0;
     MDB_dbi failedIdDbi = 0;
 
+    MDB_dbi dbMetadataDbi = 0;
+
     DatabaseDbis() = default;
 
     bool isValid() {
