@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-05 12:24+0000\n"
-"PO-Revision-Date: 2024-02-24 18:01+0200\n"
+"PO-Revision-Date: 2025-01-27 10:45+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 23.08.4\n"
+"X-Generator: Lokalize 24.12.0\n"
 
 #: kio_tags.cpp:110 kio_tags.cpp:166
 #, kde-format
@@ -23,16 +23,12 @@ msgid "File %1 already has tag %2"
 msgstr "לקובץ %1 כבר יש את התגית %2"
 
 #: kio_tags.cpp:298
-#, fuzzy, kde-format
-#| msgctxt "This is a noun"
-#| msgid "Tag"
+#, kde-format
 msgid "Tag"
 msgstr "תגית"
 
 #: kio_tags.cpp:304
-#, fuzzy, kde-format
-#| msgctxt "This is a noun"
-#| msgid "Tag Fragment"
+#, kde-format
 msgid "Tag Fragment"
 msgstr "שבר תגית"
 
