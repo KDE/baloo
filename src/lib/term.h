@@ -38,12 +38,12 @@ public:
     Term();
     Term(const Term& t);
 
-    /**
+    /*!
      * The Item must contain the property \p property
      */
     explicit Term(const QString& property);
 
-    /**
+    /*!
      * The Item must contain the property \p property with
      * value \value.
      *
@@ -54,7 +54,7 @@ public:
      */
     Term(const QString& property, const QVariant& value, Comparator c = Auto);
 
-    /**
+    /*!
      * This term is a combination of other terms
      */
     explicit Term(Operation op);
@@ -65,7 +65,7 @@ public:
 
     bool isValid() const;
 
-    /**
+    /*!
      * Negate this term. Negation only applies for Equal or Contains
      * For other Comparators you must invert it yourself
      */
@@ -77,7 +77,7 @@ public:
     void addSubTerm(const Term& term);
     void setSubTerms(const QList<Term>& terms);
 
-    /**
+    /*!
      * Returns the first subTerm in the list of subTerms
      */
     Term subTerm() const;
@@ -89,7 +89,7 @@ public:
     bool isEmpty() const;
     bool empty() const;
 
-    /**
+    /*!
      * Return the property this term is targeting
      */
     QString property() const;
@@ -143,7 +143,7 @@ inline Term operator !(const Term& rhs)
     return t;
 }
 
-/**
+/*!
  * Helper for QTest
  * \sa QTest::toString
  *

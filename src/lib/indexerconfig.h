@@ -15,7 +15,7 @@
 
 namespace Baloo {
 
-/**
+/*!
  * @class IndexerConfig indexerconfig.h <Baloo/IndexerConfig>
  *
  * This class allows it to access the current config, to
@@ -37,43 +37,43 @@ public:
     bool fileIndexingEnabled() const;
     void setFileIndexingEnabled(bool enabled) const;
 
-    /**
-    * Check if the file or folder \p path should be indexed.
-    *
-    * If itself or its nearest explicitly included or excluded ancestor is
-    * excluded it is not indexed.
-    * Otherwise it is indexed according to the
-    * includeFolders and excludeFilters config.
-    *
-    * \return \c true if the file or folder at \p path should
-    * be indexed according to the configuration.
-    *
-    * TODO KF6: deprecate, not of any concern for ouside
-    * users. Use \c Baloo::File to know if a file has
-    * been indexed.
-    * \sa Baloo::File
-    */
+    /*!
+     * Check if the file or folder \p path should be indexed.
+     *
+     * If itself or its nearest explicitly included or excluded ancestor is
+     * excluded it is not indexed.
+     * Otherwise it is indexed according to the
+     * includeFolders and excludeFilters config.
+     *
+     * \return \c true if the file or folder at \p path should
+     * be indexed according to the configuration.
+     *
+     * TODO KF6: deprecate, not of any concern for ouside
+     * users. Use \c Baloo::File to know if a file has
+     * been indexed.
+     * \sa Baloo::File
+     */
     bool shouldBeIndexed(const QString& path) const;
 
-    /**
-    * Check if \p folder can be searched.
-    * \p folder can be searched if itself or one of its descendants is indexed.
-    *
-    * Example:
-    * if ~/foo is not indexed and ~/foo/bar is indexed
-    * then ~/foo can be searched.
-    *
-    * \return \c true if the \p folder can be searched.
-    */
+    /*!
+     * Check if \p folder can be searched.
+     * \p folder can be searched if itself or one of its descendants is indexed.
+     *
+     * Example:
+     * if ~/foo is not indexed and ~/foo/bar is indexed
+     * then ~/foo can be searched.
+     *
+     * \return \c true if the \p folder can be searched.
+     */
     bool canBeSearched(const QString& folder) const;
 
-    /**
+    /*!
      * Folders to search for files to index and analyze.
      * \return list of paths.
      */
     QStringList includeFolders() const;
 
-    /**
+    /*!
      * Folders that are excluded from indexing.
      * (Descendant folders of an excluded folder can be added
      * and they will be indexed.)

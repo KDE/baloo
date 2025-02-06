@@ -17,7 +17,7 @@
 
 namespace Baloo {
 
-/**
+/*!
  * @class Query query.h <Baloo/Query>
  *
  * The Query class is the central class to query to search for files from the Index.
@@ -57,7 +57,7 @@ public:
     Query(const Query& rhs);
     ~Query();
 
-    /**
+    /*!
      * Add a type to the results of the query.
      *
      * Every file has a higher level type such as "Audio", "Video", "Image", "Document", etc.
@@ -73,14 +73,14 @@ public:
 
     QStringList types() const;
 
-    /**
+    /*!
      * Set some text which should be used to search for Items. This
      * contain a single word or an entire sentence.
      */
     void setSearchString(const QString& str);
     QString searchString() const;
 
-    /**
+    /*!
      * Only a maximum of \p limit results will be returned.
      * By default the value is -1
      */
@@ -90,7 +90,7 @@ public:
     void setOffset(uint offset);
     uint offset() const;
 
-    /**
+    /*!
      * Filter the results in the specified date range.
      *
      * The year/month/day may be set to 0 in order to ignore it.
@@ -102,13 +102,13 @@ public:
     int dayFilter() const;
 
     enum SortingOption {
-        /**
+        /*!
          * The results are returned in the most efficient order. They can
          * be returned in any order.
          */
         SortNone,
 
-        /**
+        /*!
          * The results are returned in the order Baloo decides
          * should be ideal. This criteria is based on the mtime of the
          * file.
@@ -121,7 +121,7 @@ public:
     void setSortingOption(SortingOption option);
     SortingOption sortingOption() const;
 
-    /**
+    /*!
      * Only files in this folder will be returned
      */
     void setIncludeFolder(const QString& folder);
