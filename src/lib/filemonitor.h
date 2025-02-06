@@ -17,25 +17,49 @@
 namespace Baloo {
 
 /*!
- * @class FileMonitor filemonitor.h <Baloo/FileMonitor>
+ * \class Baloo::FileMonitor
+ * \inheaderfile Baloo/FileMonitor
+ * \inmodule Baloo
  */
 class BALOO_CORE_EXPORT FileMonitor : public QObject
 {
     Q_OBJECT
 public:
+    /*!
+     *
+     */
     explicit FileMonitor(QObject* parent = nullptr);
     ~FileMonitor() override;
 
+    /*!
+     *
+     */
     void addFile(const QString& fileUrl);
+
+    /*!
+     *
+     */
     void addFile(const QUrl& url);
 
+    /*!
+     *
+     */
     void setFiles(const QStringList& fileList);
 
+    /*!
+     *
+     */
     QStringList files() const;
 
+    /*!
+     *
+     */
     void clear();
 
 Q_SIGNALS:
+    /*!
+     *
+     */
     void fileMetaDataChanged(const QString& fileUrl);
 
 private Q_SLOTS:
