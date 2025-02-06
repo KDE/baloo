@@ -16,4 +16,3 @@ set_package_properties(LMDB PROPERTIES
 )
 
 include("${CMAKE_CURRENT_LIST_DIR}/KF6BalooTargets.cmake")
-@PACKAGE_INCLUDE_QCHTARGETS@

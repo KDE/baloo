@@ -1,0 +1,22 @@
+/*!
+    \page baloo-index.html
+    \title Baloo
+
+    Baloo is the file indexing and file search framework for KDE Plasma. It focuses
+    on speed and a very small memory footprint. It maintains an index of your files
+    and optionally their contents which you can search.
+
+    \section1 Using the Module
+
+    \include {module-use.qdocinc} {using the c++ api}
+
+    \section2 Building with CMake
+
+    \include {module-use.qdocinc} {building with cmake} {KF6} {Baloo} {KF6::Baloo}
+
+    \section1 API Reference
+
+    \list
+        \li \l{Baloo C++ Classes}
+    \endlist
+*/

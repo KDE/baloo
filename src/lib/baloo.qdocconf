@@ -1,0 +1,30 @@
+include($KDE_DOCS/global/qt-module-defaults.qdocconf)
+
+project = Baloo
+description = File indexing
+
+documentationinheaders = true
+
+headerdirs += .
+sourcedirs += .
+
+outputformats = HTML
+
+depends += \
+    kde \
+    qtcore \
+    qtgui
+
+qhp.projects            = Baloo
+
+qhp.Baloo.file                = baloo.qhp
+qhp.Baloo.namespace           = org.kde.baloo.$QT_VERSION_TAG
+qhp.Baloo.virtualFolder       = baloo
+qhp.Baloo.indexTitle          = Baloo
+qhp.Baloo.indexRoot           =
+
+qhp.Baloo.subprojects         = classes
+qhp.Baloo.subprojects.classes.title = C++ Classes
+qhp.Baloo.subprojects.classes.indexTitle = Baloo C++ Classes
+qhp.Baloo.subprojects.classes.selectors = class fake:headerfile
+qhp.Baloo.subprojects.classes.sortPages = true

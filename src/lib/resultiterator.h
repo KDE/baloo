@@ -19,20 +19,36 @@ namespace Baloo {
 class ResultList;
 class ResultIteratorPrivate;
 
-/**
- * @class ResultIterator resultiterator.h <Baloo/ResultIterator>
+/*!
+ * \class Baloo::ResultIterator
+ * \inheaderfile Baloo/ResultIterator
+ * \inmodule Baloo
  */
 class BALOO_CORE_EXPORT ResultIterator
 {
 public:
+    /*!
+     *
+     */
     ResultIterator(ResultIterator &&rhs);
     ~ResultIterator();
 
     ResultIterator(const ResultIterator& rhs) = delete;
     ResultIterator &operator=(const ResultIterator& rhs) = delete;
 
+    /*!
+     *
+     */
     bool next();
+
+    /*!
+     *
+     */
     QString filePath() const;
+
+    /*!
+     *
+     */
     QByteArray documentId() const;
 
 private:

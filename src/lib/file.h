@@ -15,43 +15,59 @@
 
 namespace Baloo {
 
-/**
- * @class File file.h <Baloo/File>
+/*!
+ * \class Baloo::File
+ * \inheaderfile Baloo/File
+ * \inmodule Baloo
  *
- * @short Provides access to all File Metadata
+ * \brief Provides access to all File Metadata.
  *
  * The File class acts as a temporary container for all the file metadata.
  */
 class BALOO_CORE_EXPORT File
 {
 public:
+    /*!
+     *
+     */
     File();
     File(const File& f);
 
-    /**
+    /*!
      * Constructor
      *
-     * \p url the local url of the file
+     * \a url the local url of the file
      */
     File(const QString& url);
     ~File();
 
     const File& operator =(const File& f);
 
-    /**
+    /*!
      * The local url of the file
      */
     QString path() const;
 
-    /**
+    /*!
      * Gives a variant map of the properties that have been extracted
      * from the file by the indexer
      */
     KFileMetaData::PropertyMultiMap properties() const;
+
+    /*!
+     *
+     */
     QVariant property(KFileMetaData::Property::Property property) const;
 
     // FIXME: More descriptive error?
+    /*!
+     *
+     */
     bool load();
+
+    /*!
+     *
+     */
     bool load(const QString& url);
 
 private:
