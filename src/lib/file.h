@@ -15,7 +15,7 @@
 
 namespace Baloo {
 
-/**
+/*!
  * @class File file.h <Baloo/File>
  *
  * @short Provides access to all File Metadata
@@ -28,7 +28,7 @@ public:
     File();
     File(const File& f);
 
-    /**
+    /*!
      * Constructor
      *
      * \p url the local url of the file
@@ -38,12 +38,12 @@ public:
 
     const File& operator =(const File& f);
 
-    /**
+    /*!
      * The local url of the file
      */
     QString path() const;
 
-    /**
+    /*!
      * Gives a variant map of the properties that have been extracted
      * from the file by the indexer
      */
