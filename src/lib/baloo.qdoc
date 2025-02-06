@@ -1,0 +1,11 @@
+/*!
+    \module Baloo
+    \title Baloo C++ Classes
+    \ingroup modules
+    \cmakepackage KF6
+    \cmakecomponent Baloo
+
+    \brief IO.
+
+    Stuff
+*/
