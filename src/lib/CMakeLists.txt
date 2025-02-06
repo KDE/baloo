@@ -96,35 +96,7 @@ install(FILES
     COMPONENT Devel
 )
 
-if(BUILD_QCH)
-    ecm_add_qch(
-        KF6Baloo_QCH
-        NAME Baloo
-        BASE_NAME KF6Baloo
-        VERSION ${KF_VERSION}
-        ORG_DOMAIN org.kde
-        SOURCES # using only public headers, to cover only public API
-            ${KF6Baloo_HEADERS}
-            "${CMAKE_SOURCE_DIR}/docs/distributing.md"
-            "${CMAKE_SOURCE_DIR}/docs/development/build-instructions.md"
-            "${CMAKE_SOURCE_DIR}/docs/user/searching.md"
-        MD_MAINPAGE "${CMAKE_SOURCE_DIR}/README.md"
-        LINK_QCHS
-            Qt6Core_QCH
-            KF6CoreAddons_QCH
-            KF6FileMetaData_QCH
-        INCLUDE_DIRS
-            ${CMAKE_CURRENT_BINARY_DIR}
-        BLANK_MACROS
-            BALOO_CORE_EXPORT
-            BALOO_CORE_DEPRECATED
-            BALOO_CORE_DEPRECATED_EXPORT
-            "BALOO_DEPRECATED_VERSION(x, y, t)"
-        TAGFILE_INSTALL_DESTINATION ${KDE_INSTALL_QTQCHDIR}
-        QCH_INSTALL_DESTINATION ${KDE_INSTALL_QTQCHDIR}
-        COMPONENT Devel
-    )
-endif()
+ecm_generate_qdoc(KF6Baloo baloo.qdocconf)
 
 if (NOT WIN32)
     ecm_generate_pkgconfig_file(BASE_NAME KF6Baloo

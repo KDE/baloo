@@ -42,7 +42,7 @@ include(KDECMakeSettings)
 include(KDEFrameworkCompilerSettings NO_POLICY_SCOPE)
 include(KDEGitCommitHooks)
 include(ECMAddTests)
-include(ECMAddQch)
+include(ECMGenerateQDoc)
 include(ECMQtDeclareLoggingCategory)
 include(ECMMarkNonGuiExecutable)
 include(ECMGenerateExportHeader)
@@ -52,9 +52,6 @@ include(ECMDeprecationSettings)
 include(ECMQmlModule)
 
 set(EXCLUDE_DEPRECATED_BEFORE_AND_AT 0 CACHE STRING "Control the range of deprecated API excluded from the build [default=0].")
-
-option(BUILD_QCH "Build API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)" OFF)
-add_feature_info(QCH ${BUILD_QCH} "API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)")
 
 option(BUILD_EXPERIMENTAL "Build experimental features" OFF)
 add_feature_info(EXP ${BUILD_EXPERIMENTAL} "Build experimental features")
@@ -125,16 +122,6 @@ endif()
 
 # config files
 set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KF6Baloo")
-
-if (BUILD_QCH)
-    ecm_install_qch_export(
-        TARGETS KF6Baloo_QCH
-        FILE KF6BalooQchTargets.cmake
-        DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
-        COMPONENT Devel
-    )
-    set(PACKAGE_INCLUDE_QCHTARGETS "include(\"\${CMAKE_CURRENT_LIST_DIR}/KF6BalooQchTargets.cmake\")")
-endif()
 
 configure_package_config_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/KF6BalooConfig.cmake.in"
