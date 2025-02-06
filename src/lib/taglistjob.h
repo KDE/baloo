@@ -15,17 +15,26 @@
 
 namespace Baloo {
 
-/**
- * @class TagListJob taglisthjob.h <Baloo/TagListJob>
+/*!
+ * \class Baloo::TagListJob
+ * \inheaderfile Baloo/TagListJob
+ * \inmodule Baloo
  */
 class BALOO_CORE_EXPORT TagListJob : public KJob
 {
     Q_OBJECT
 public:
+    /*!
+     *
+     */
     explicit TagListJob(QObject* parent = nullptr);
     ~TagListJob() override;
 
     void start() override;
+
+    /*!
+     *
+     */
     QStringList tags();
 
 private:

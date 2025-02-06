@@ -1,0 +1,15 @@
+/*!
+    \module Baloo
+    \title Baloo C++ Classes
+    \ingroup modules
+    \cmakepackage KF6
+    \cmakecomponent Baloo
+
+    \brief File indexing.
+*/
+
+/*!
+  \namespace Baloo
+  \inmodule Baloo
+  \brief File indexing.
+*/

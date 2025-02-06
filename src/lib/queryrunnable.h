@@ -16,21 +16,36 @@
 
 namespace Baloo {
 
-/**
- * @class QueryRunnable queryrunnable.h <Baloo/QueryRunnable>
+/*!
+ * \class Baloo::QueryRunnable
+ * \inheaderfile Baloo/QueryRunnable
+ * \inmodule Baloo
  */
 class BALOO_CORE_EXPORT QueryRunnable : public QObject, public QRunnable
 {
     Q_OBJECT
 public:
+    /*!
+     *
+     */
     QueryRunnable(const Query& query, QObject* parent = nullptr);
     ~QueryRunnable() override;
     void run() override;
 
+    /*!
+     *
+     */
     void stop();
 
 Q_SIGNALS:
+    /*!
+     *
+     */
     void queryResult(Baloo::QueryRunnable* queryRunnable, const QString& filePath);
+
+    /*!
+     *
+     */
     void finished(Baloo::QueryRunnable* queryRunnable);
 
 private:
