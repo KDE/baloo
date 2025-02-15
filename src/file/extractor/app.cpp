@@ -167,7 +167,12 @@ bool App::index(Transaction* tr, const QString& url, quint64 id)
     // mimetype is set and we get proper type information.
     // The mimetype fetched in the BasicIndexingJob is fast but not accurate
     BasicIndexingJob basicIndexer(url, mimetype, BasicIndexingJob::NoLevel);
-    basicIndexer.index();
+    if (!basicIndexer.index()) {
+        qCDebug(BALOO) << "Skipping non-existing file " << url << "- mimetype:" << mimetype;
+        tr->removePhaseOne(id);
+        m_workerPipe.urlFailed(url);
+        return false;
+    }
 
     Baloo::Document doc = basicIndexer.document();
 
