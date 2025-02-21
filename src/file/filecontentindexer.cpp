@@ -123,7 +123,7 @@ void FileContentIndexer::slotStartedIndexingFile(const QString& filePath)
 
 void FileContentIndexer::slotFinishedIndexingFile(const QString& filePath, bool fileUpdated)
 {
-    if (fileUpdated) {
+    if (fileUpdated && !m_updatedFiles.contains(filePath)) {
         m_updatedFiles.append(filePath);
     }
 
