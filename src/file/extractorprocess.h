@@ -26,8 +26,8 @@ public:
     void start();
 
 Q_SIGNALS:
-    void startedIndexingFile(QString filePath);
-    void finishedIndexingFile(QString filePath, bool fileUpdated);
+    void startedIndexingFile(const QString &filePath);
+    void finishedIndexingFile(const QString &filePath, bool fileUpdated);
     void done();
     void failed();
 

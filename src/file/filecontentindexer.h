@@ -18,6 +18,7 @@
 namespace Baloo {
 
 class FileContentIndexerProvider;
+class TimeEstimator;
 
 class FileContentIndexer : public QObject, public QRunnable
 {
@@ -26,7 +27,7 @@ class FileContentIndexer : public QObject, public QRunnable
 
     Q_PROPERTY(QString currentFile READ currentFile NOTIFY startedIndexingFile)
 public:
-    FileContentIndexer(uint batchSize, FileContentIndexerProvider* provider, uint& finishedCount, QObject* parent = nullptr);
+    FileContentIndexer(uint batchSize, FileContentIndexerProvider *provider, TimeEstimator &timeEstimator, QObject *parent = nullptr);
 
     QString currentFile() { return m_currentFile; }
 
@@ -49,18 +50,17 @@ Q_SIGNALS:
 
 private Q_SLOTS:
     void monitorClosed(const QString& service);
-    void slotStartedIndexingFile(const QString& filePath);
-    void slotFinishedIndexingFile(const QString& filePath, bool fileUpdated);
+    void slotStartedIndexingFile(const QString &filePath);
+    void slotFinishedIndexingFile(const QString &filePath);
 
 private:
     uint m_batchSize;
-    FileContentIndexerProvider* m_provider;
-    uint& m_finishedCount;
+    FileContentIndexerProvider *m_provider;
 
     QAtomicInt m_stop;
 
     QString m_currentFile;
-    QStringList m_updatedFiles;
+    TimeEstimator &m_timeEstimator;
 
     QStringList m_registeredMonitors;
     QDBusServiceWatcher m_monitorWatcher;

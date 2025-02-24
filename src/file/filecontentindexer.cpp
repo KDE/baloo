@@ -4,11 +4,12 @@
     SPDX-License-Identifier: LGPL-2.1-or-later
 */
 
+#include "filecontentindexer.h"
 #include "baloodebug.h"
 #include "config.h"
-#include "filecontentindexer.h"
-#include "filecontentindexerprovider.h"
 #include "extractorprocess.h"
+#include "filecontentindexerprovider.h"
+#include "timeestimator.h"
 
 #include <QEventLoop>
 #include <QElapsedTimer>
@@ -28,14 +29,15 @@ namespace {
     }
 }
 
-FileContentIndexer::FileContentIndexer(uint batchSize,
-        FileContentIndexerProvider* provider,
-        uint& finishedCount, QObject* parent)
+FileContentIndexer::FileContentIndexer(uint batchSize, //
+                                       FileContentIndexerProvider *provider,
+                                       TimeEstimator &timeEstimator,
+                                       QObject *parent)
     : QObject(parent)
     , m_batchSize(batchSize)
     , m_provider(provider)
-    , m_finishedCount(finishedCount)
     , m_stop(0)
+    , m_timeEstimator(timeEstimator)
     , m_extractorPath(QStringLiteral(KDE_INSTALL_FULL_LIBEXECDIR_KF "/baloo_file_extractor"))
 {
     Q_ASSERT(provider);
@@ -57,6 +59,9 @@ void FileContentIndexer::run()
     connect(&process, &ExtractorProcess::finishedIndexingFile, this, &FileContentIndexer::slotFinishedIndexingFile);
     m_stop.storeRelaxed(false);
     auto batchSize = m_batchSize;
+    uint finishedCount = 0;
+    uint totalCount = m_provider->size();
+
     while (true) {
         //
         // WARNING: This will go mad, if the Extractor does not commit after N=m_batchSize files
@@ -66,18 +71,28 @@ void FileContentIndexer::run()
         if (idList.isEmpty() || m_stop.loadRelaxed()) {
             break;
         }
+        QStringList updatedFiles;
+        updatedFiles.reserve(idList.size());
+
         QEventLoop loop;
         connect(&process, &ExtractorProcess::done, &loop, &QEventLoop::quit);
 
         bool hadErrors = false;
         connect(&process, &ExtractorProcess::failed, &loop, [&hadErrors, &loop]() { hadErrors = true; loop.quit(); });
 
-        uint batchStartCount = m_finishedCount;
-        connect(&process, &ExtractorProcess::finishedIndexingFile, &loop, [this]() { m_finishedCount++; });
+        auto onFileFinished = [&updatedFiles, &finishedCount, &totalCount, this](const QString &filePath, bool updated) {
+            finishedCount++;
+            m_timeEstimator.setProgress(totalCount - finishedCount);
+            if (updated) {
+                updatedFiles.append(filePath);
+            }
+        };
+        connect(&process, &ExtractorProcess::finishedIndexingFile, &loop, onFileFinished, Qt::DirectConnection);
 
         QElapsedTimer timer;
         timer.start();
 
+        uint batchStartCount = finishedCount;
         process.index(idList);
         loop.exec();
         batchSize = idList.size();
@@ -94,14 +109,13 @@ void FileContentIndexer::run()
             } else {
                 batchSize /= 2;
             }
-            m_updatedFiles.clear();
             // reset to old value - nothing committed
-            m_finishedCount = batchStartCount;
+            finishedCount = batchStartCount;
+            m_timeEstimator.setProgress(totalCount - finishedCount);
             process.start();
         } else {
-            // Notify some metadata may have changed
-            sendChangedSignal(m_updatedFiles);
-            m_updatedFiles.clear();
+            // Notify some metadata may have changed after a batch has been finished and committed
+            sendChangedSignal(updatedFiles);
 
             // Update remaining time estimate
             auto elapsed = timer.elapsed();
@@ -121,12 +135,8 @@ void FileContentIndexer::slotStartedIndexingFile(const QString& filePath)
     }
 }
 
-void FileContentIndexer::slotFinishedIndexingFile(const QString& filePath, bool fileUpdated)
+void FileContentIndexer::slotFinishedIndexingFile(const QString &filePath)
 {
-    if (fileUpdated) {
-        m_updatedFiles.append(filePath);
-    }
-
     m_currentFile = QString();
     if (!m_registeredMonitors.isEmpty()) {
         Q_EMIT finishedIndexingFile(filePath);
