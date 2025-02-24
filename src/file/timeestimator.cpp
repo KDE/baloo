@@ -13,7 +13,7 @@ using namespace Baloo;
 
 TimeEstimator::TimeEstimator() = default;
 
-uint TimeEstimator::calculateTimeLeft(int filesLeft)
+uint TimeEstimator::calculateTimeLeft() const
 {
     if (!m_estimateReady) {
         return 0;
@@ -33,7 +33,7 @@ uint TimeEstimator::calculateTimeLeft(int filesLeft)
 
     float weightedAverage = totalTime / totalWeight;
 
-    return weightedAverage * filesLeft;
+    return weightedAverage * m_remainingCount;
 }
 
 void TimeEstimator::handleNewBatchTime(uint time, uint batchSize)

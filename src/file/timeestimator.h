@@ -10,7 +10,7 @@
 
 #define BUFFER_SIZE 5
 
-#include <QtGlobal>
+#include <QAtomicInteger>
 
 namespace Baloo {
 /*
@@ -24,8 +24,12 @@ class TimeEstimator
 {
 public:
     TimeEstimator();
-    uint calculateTimeLeft(int filesLeft);
+    uint calculateTimeLeft() const;
 
+    void setProgress(uint remainingCount)
+    {
+        m_remainingCount.storeRelaxed(remainingCount);
+    }
     void handleNewBatchTime(uint time, uint batchSize);
 
 private:
@@ -33,6 +37,8 @@ private:
 
     int m_bufferIndex = 0;
     bool m_estimateReady = false;
+
+    QAtomicInteger<uint> m_remainingCount = 0;
 };
 
 }
