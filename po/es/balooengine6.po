@@ -1,5 +1,5 @@
 # Spanish translations for balooengine6.po package.
-# Copyright (C) 2018 This_file_is_part_of_KDE
+# Copyright (C) 2018-2025 This_file_is_part_of_KDE
 # This file is distributed under the same license as the baloo package.
 #
 # Automatically generated, 2018.
@@ -114,9 +114,3 @@ msgstr "No se está ejecutando"
 #, kde-format
 msgid "Starting"
 msgstr "Iniciando"
-
-#~ msgid "Missing:"
-#~ msgstr "Falta:"
-
-#~ msgid "Found %1 matching items"
-#~ msgstr "Se han encontrado %1 elementos coincidentes"

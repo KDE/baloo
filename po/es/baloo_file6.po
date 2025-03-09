@@ -1,5 +1,5 @@
 # Spanish translations for baloo_file6.po package.
-# Copyright (C) 2023 This file is copyright:
+# Copyright (C) 2023-2025 This file is copyright:
 # This file is distributed under the same license as the baloo package.
 #
 # Automatically generated, 2023.

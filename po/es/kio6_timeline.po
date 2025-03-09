@@ -1,5 +1,5 @@
 # Spanish translations for kio6_timeline.po package.
-# Copyright (C) 2014 This_file_is_part_of_KDE
+# Copyright (C) 2014-2025 This_file_is_part_of_KDE
 # This file is distributed under the same license as the baloo package.
 #
 # Automatically generated, 2014.
@@ -38,12 +38,3 @@ msgstr "Hoy"
 #, kde-format
 msgid "Calendar"
 msgstr "Calendario"
-
-#~ msgctxt ""
-#~ "Month and year used in a tree above the actual days. Have a look at "
-#~ "http://api.kde.org/4.x-api/kdelibs-apidocs/kdecore/html/"
-#~ "classKCalendarSystem.html#a560204439a4b670ad36c16c404f292b4 to see which "
-#~ "variables you can use and ask kde-i18n-doc@kde.org if you have problems "
-#~ "understanding how to translate this"
-#~ msgid "%B %Y"
-#~ msgstr "%B %Y"

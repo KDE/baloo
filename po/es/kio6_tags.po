@@ -1,5 +1,5 @@
 # Spanish translations for kio6_tags.po package.
-# Copyright (C) 2014 This_file_is_part_of_KDE
+# Copyright (C) 2014-2025 This_file_is_part_of_KDE
 # This file is distributed under the same license as the baloo package.
 #
 # Automatically generated, 2014.
@@ -40,6 +40,3 @@ msgstr "Fragmento de etiqueta"
 #, kde-format
 msgid "All Tags"
 msgstr "Todas las etiquetas"
-
-#~ msgid "Tags"
-#~ msgstr "Etiquetas"

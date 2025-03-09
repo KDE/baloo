@@ -1,5 +1,5 @@
 # Spanish translations for balooshow6.po package.
-# Copyright (C) 2014 This_file_is_part_of_KDE
+# Copyright (C) 2014-2025 This_file_is_part_of_KDE
 # This file is distributed under the same license as the baloo package.
 #
 # Automatically generated, 2014.
@@ -130,21 +130,3 @@ msgstr "Reglas de propiedades: %1"
 msgctxt "Prefix string for internal errors"
 msgid "Internal Error - %1"
 msgstr "Error interno - %1"
-
-#~ msgid "Vishesh Handa"
-#~ msgstr "Vishesh Handa"
-
-#~ msgid "Maintainer"
-#~ msgstr "Encargado"
-
-#~ msgid "The file urls"
-#~ msgstr "URL de los archivos"
-
-#~ msgid "Inode number of the file to show"
-#~ msgstr "Número de inodo del archivo a mostrar"
-
-#~ msgid "The fileID is not equal to the actual Baloo fileID"
-#~ msgstr "El «fileID» no es idéntico al «fileID» real de Baloo"
-
-#~ msgid "This is a bug"
-#~ msgstr "Esto es un fallo"

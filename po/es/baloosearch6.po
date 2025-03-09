@@ -1,5 +1,5 @@
 # Spanish translations for baloosearch6.po package.
-# Copyright (C) 2014 This_file_is_part_of_KDE
+# Copyright (C) 2014-2025 This_file_is_part_of_KDE
 # This file is distributed under the same license as the baloo package.
 #
 # Automatically generated, 2014.
@@ -118,12 +118,3 @@ msgstr "Usando la ruta canónica «%1» para «%2»"
 #, kde-format
 msgid "Elapsed: %1 msecs"
 msgstr "Tiempo transcurrido: %1 ms"
-
-#~ msgid "Maintainer"
-#~ msgstr "Encargado"
-
-#~ msgid "Baloo Search - A debugging tool"
-#~ msgstr "Búsqueda de Baloo - Una herramienta de depuración"
-
-#~ msgid "(c) 2013-15, Vishesh Handa"
-#~ msgstr "© 2013-2015, Vishesh Handa"

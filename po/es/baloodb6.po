@@ -1,5 +1,5 @@
 # Spanish translations for baloodb6.po package.
-# Copyright (C) 2018 This_file_is_part_of_KDE
+# Copyright (C) 2018-2025 This_file_is_part_of_KDE
 # This file is distributed under the same license as the baloo package.
 #
 # Automatically generated, 2018.
@@ -156,12 +156,12 @@ msgstr "El índice de Baloo no se puede abrir"
 #: main.cpp:223 main.cpp:231
 #, kde-format
 msgid "Listing database contents..."
-msgstr "Listando el contenido de la base de datos..."
+msgstr "Listando el contenido de la base de datos…"
 
 #: main.cpp:241
 #, kde-format
 msgid "Removing stale database contents..."
-msgstr "Eliminando el contenido obsoleto de la base de datos..."
+msgstr "Eliminando el contenido obsoleto de la base de datos…"
 
 #: main.cpp:263
 #, kde-format

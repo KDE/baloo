@@ -1,12 +1,12 @@
-# Spanish translations for balooctl.po package.
-# Copyright (C) 2014 This_file_is_part_of_KDE
+# Spanish translations for balooctl6.po package.
+# Copyright (C) 2014-2025 This_file_is_part_of_KDE
 # This file is distributed under the same license as the baloo package.
 #
 # Automatically generated, 2014.
 # SPDX-FileCopyrightText: 2014, 2015, 2017, 2018, 2019, 2020, 2024 Eloy Cuadra <ecuadra@eloihr.net>
 msgid ""
 msgstr ""
-"Project-Id-Version: balooctl\n"
+"Project-Id-Version: balooctl6\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-24 00:37+0000\n"
 "PO-Revision-Date: 2024-11-24 22:18+0100\n"
@@ -475,80 +475,3 @@ msgstr "El tamaño actual del índice es %1"
 #, kde-format
 msgid "Index does not exist yet\n"
 msgstr "El índice todavía no existe\n"
-
-#~ msgid "Unknown"
-#~ msgstr "Desconocido"
-
-#~ msgid "Idle"
-#~ msgstr "En espera"
-
-#~ msgid "Suspended"
-#~ msgstr "Suspendido"
-
-#~ msgid "Initial Indexing"
-#~ msgstr "Indexación inicial"
-
-#~ msgid "Indexing new files"
-#~ msgstr "Indexando nuevos archivos"
-
-#~ msgid "Indexing modified files"
-#~ msgstr "Indexando archivos modificados"
-
-#~ msgid "Indexing Extended Attributes"
-#~ msgstr "Indexando atributos extendidos"
-
-#~ msgid "Indexing file content"
-#~ msgstr "Indexando contenido de archivos"
-
-#~ msgid "Checking for unindexed files"
-#~ msgstr "Comprobando archivos sin indexar"
-
-#~ msgid "Checking for stale index entries"
-#~ msgstr "Comprobando entradas de índice obsoletas"
-
-#~ msgid "Idle (Powersave)"
-#~ msgstr "Inactivo (ahorro de energía)"
-
-#~ msgid "Not Running"
-#~ msgstr "No ejecutándose"
-
-#~ msgid "Starting"
-#~ msgstr "Iniciando"
-
-#~ msgid "Maintainer"
-#~ msgstr "Encargado"
-
-#~ msgid "Start the file indexer"
-#~ msgstr "Iniciar el indexador de archivos"
-
-#~ msgid "Stop the file indexer"
-#~ msgstr "Detener el indexador de archivos"
-
-#~ msgid "Restart the file indexer"
-#~ msgstr "Reiniciar el indexador de archivos"
-
-#~ msgid "Indexed %1 / %2 files"
-#~ msgstr "Indexado %1 / %2 archivos"
-
-#~ msgid "Parent folder %1 is already in the list of include folders"
-#~ msgstr "La carpeta superior %1 ya está en la lista de carpetas a incluir"
-
-#~ msgid "Parent folder %1 is already in the list of exclude folders"
-#~ msgstr "La carpeta superior %1 ya está en la lista de carpetas a excluir"
-
-#~ msgctxt "Application"
-#~ msgid "%1 is running"
-#~ msgstr "%1 está en ejecución"
-
-#~ msgctxt "Application"
-#~ msgid "%1 died"
-#~ msgstr "%1 ha muerto"
-
-#~ msgid "Check database for consistency"
-#~ msgstr "Comprobar la consistencia de la base de datos"
-
-#~ msgid "Baloo died"
-#~ msgstr "Baloo ha muerto"
-
-#~ msgid "Must provide a value"
-#~ msgstr "Se debe proporcionar un valor"

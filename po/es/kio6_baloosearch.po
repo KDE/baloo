@@ -1,5 +1,5 @@
 # Spanish translations for kio6_baloosearch.po package.
-# Copyright (C) 2014 This_file_is_part_of_KDE
+# Copyright (C) 2014-2025 This_file_is_part_of_KDE
 # This file is distributed under the same license as the baloo package.
 #
 # Automatically generated, 2014.
@@ -23,6 +23,3 @@ msgstr ""
 #, kde-format
 msgid "Search Folder"
 msgstr "Carpeta de búsqueda"
-
-#~ msgid "Desktop Queries"
-#~ msgstr "Consultas de escritorio"
