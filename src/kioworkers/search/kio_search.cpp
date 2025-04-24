@@ -13,11 +13,12 @@
 #include "resultiterator.h"
 #include <sys/stat.h>
 
-#include <QUrl>
-#include <QUrlQuery>
+#include <KLocalizedString>
 #include <KUser>
 #include <QCoreApplication>
-#include <KLocalizedString>
+#include <QFileInfo>
+#include <QUrl>
+#include <QUrlQuery>
 
 using namespace Baloo;
 
@@ -71,6 +72,15 @@ SearchProtocol::~SearchProtocol()
 KIO::WorkerResult SearchProtocol::listDir(const QUrl& url)
 {
     Query q = Query::fromSearchUrl(url);
+
+    // Canonicalise the search base directory
+    const QString folder = q.includeFolder();
+    if (!folder.isEmpty()) {
+        const QString canonicalPath = QFileInfo(folder).canonicalFilePath();
+        if (!canonicalPath.isEmpty()) {
+            q.setIncludeFolder(canonicalPath);
+        }
+    }
 
     q.setSortingOption(Query::SortNone);
     ResultIterator it = q.exec();
