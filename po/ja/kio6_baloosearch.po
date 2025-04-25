@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kio_nepomuksearch\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-06-05 00:13+0000\n"
+"POT-Creation-Date: 2025-04-25 00:38+0000\n"
 "PO-Revision-Date: 2011-12-08 21:55-0800\n"
 "Last-Translator: Fumiaki Okushi <okushi@kde.gr.jp>\n"
 "Language-Team: Japanese <kde-jp@kde.org>\n"
@@ -23,7 +23,7 @@ msgstr ""
 "X-Text-Markup: kde4\n"
 "X-Generator: Lokalize 1.1\n"
 
-#: kio_search.cpp:47
+#: kio_search.cpp:48
 #, fuzzy, kde-format
 #| msgid "Query folder"
 msgid "Search Folder"

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kio_nepomuksearch\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-06-05 00:13+0000\n"
+"POT-Creation-Date: 2025-04-25 00:38+0000\n"
 "PO-Revision-Date: 2014-09-29 17:45+0300\n"
 "Last-Translator: Lasse Liehu <lasse.liehu@gmail.com>\n"
 "Language-Team: Finnish <lokalisointi@lists.coss.fi>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: kio_search.cpp:47
+#: kio_search.cpp:48
 #, kde-format
 msgid "Search Folder"
 msgstr "Hakukansio"

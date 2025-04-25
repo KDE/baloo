@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2021-06-05 00:13+0000\n"
+"POT-Creation-Date: 2025-04-25 00:38+0000\n"
 "PO-Revision-Date: 2022-05-03 21:04+0530\n"
 "Last-Translator: Kishore G <kishore96@gmail.com>\n"
 "Language-Team: Tamil <kde-i18n-doc@kde.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "X-Generator: Lokalize 22.04.0\n"
 
 # Does this mean 'search in folder' or 'search for folder'?
-#: kio_search.cpp:47
+#: kio_search.cpp:48
 #, kde-format
 msgid "Search Folder"
 msgstr "அடைவில் தேடு"
