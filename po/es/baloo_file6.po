@@ -1,15 +1,15 @@
 # Spanish translations for baloo_file6.po package.
 # Copyright (C) 2023-2025 This file is copyright:
 # This file is distributed under the same license as the baloo package.
-#
 # Automatically generated, 2023.
-# SPDX-FileCopyrightText: 2023 Eloy Cuadra <ecuadra@eloihr.net>
+#
+# SPDX-FileCopyrightText: 2023, 2025 Eloy Cuadra <ecuadra@eloihr.net>
 msgid ""
 msgstr ""
 "Project-Id-Version: baloo_file6\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-02-12 00:54+0000\n"
-"PO-Revision-Date: 2023-02-13 00:05+0100\n"
+"PO-Revision-Date: 2025-05-04 01:38+0100\n"
 "Last-Translator: Eloy Cuadra <ecuadra@eloihr.net>\n"
 "Language-Team: Spanish <kde-l10n-es@kde.org>\n"
 "Language: es\n"
