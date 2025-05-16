@@ -38,7 +38,7 @@ StorageDevices::~StorageDevices()
 
 void StorageDevices::initCacheEntries()
 {
-    const QList<Solid::Device> devices = Solid::Device::allDevices();
+    const QList<Solid::Device> devices = Solid::Device::listFromType(Solid::DeviceInterface::StorageAccess);
     for (const Solid::Device& dev : devices) {
         createCacheEntry(dev);
     }
