@@ -30,3 +30,5 @@ qhp.Baloo.subprojects.classes.title = C++ Classes
 qhp.Baloo.subprojects.classes.indexTitle = Baloo C++ Classes
 qhp.Baloo.subprojects.classes.selectors = class fake:headerfile
 qhp.Baloo.subprojects.classes.sortPages = true
+
+tagfile = baloo.tags
