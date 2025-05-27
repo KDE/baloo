@@ -5,10 +5,11 @@
     SPDX-License-Identifier: LGPL-2.1-or-later
 */
 
-#include "enginedebug.h"
 #include "postingdb.h"
+#include "enginedebug.h"
 #include "orpostingiterator.h"
 #include "postingcodec.h"
+#include "vectorpostingiterator.h"
 
 using namespace Baloo;
 
@@ -136,17 +137,6 @@ QVector< QByteArray > PostingDB::fetchTermsStartingWith(const QByteArray& term)
     return terms;
 }
 
-class DBPostingIterator : public PostingIterator {
-public:
-    DBPostingIterator(void* data, uint size);
-    quint64 docId() const override;
-    quint64 next() override;
-
-private:
-    const QVector<quint64> m_vec;
-    int m_pos;
-};
-
 PostingIterator* PostingDB::iter(const QByteArray& term)
 {
     MDB_val key;
@@ -160,36 +150,8 @@ PostingIterator* PostingDB::iter(const QByteArray& term)
         return nullptr;
     }
 
-    return new DBPostingIterator(val.mv_data, val.mv_size);
-}
-
-//
-// Posting Iterator
-//
-DBPostingIterator::DBPostingIterator(void* data, uint size)
-    : m_vec(PostingCodec().decode(QByteArray(static_cast<char*>(data), size)))
-    , m_pos(-1)
-{
-}
-
-quint64 DBPostingIterator::docId() const
-{
-    if (m_pos < 0 || m_pos >= m_vec.size()) {
-        return 0;
-    }
-
-    return m_vec[m_pos];
-}
-
-quint64 DBPostingIterator::next()
-{
-    if (m_pos >= m_vec.size() - 1) {
-        m_pos = m_vec.size();
-        return 0;
-    }
-
-    m_pos++;
-    return m_vec[m_pos];
+    auto values = QByteArray::fromRawData(static_cast<char *>(val.mv_data), val.mv_size);
+    return new VectorPostingIterator(PostingCodec().decode(values));
 }
 
 template <typename Validator>
@@ -219,7 +181,8 @@ PostingIterator* PostingDB::iter(const QByteArray& prefix, Validator validate)
             break;
         }
         if (validate(arr)) {
-            termIterators << new DBPostingIterator(val.mv_data, val.mv_size);
+            auto values = QByteArray::fromRawData(static_cast<char *>(val.mv_data), val.mv_size);
+            termIterators << new VectorPostingIterator(PostingCodec().decode(values));
         }
         rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
     }
