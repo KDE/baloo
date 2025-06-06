@@ -20,14 +20,9 @@ class Baloo::TermGeneratorTest : public QObject
 
 private Q_SLOTS:
     void testWordBoundaries();
-    void testWordBoundariesCJK();
-    void testWordBoundariesCJKMixed();
-    void testUnderscoreWord();
-    void testUnderscore_splitting();
-    void testAccentCharacters();
+    void testWordBoundaries_data();
     void testUnicodeCompatibleComposition();
     void testUnicodeLowering();
-    void testEmails();
     void testWordPositions();
     void testWordPositionsCJK();
     void testNumbers();
@@ -50,75 +45,37 @@ private Q_SLOTS:
 
 void TermGeneratorTest::testWordBoundaries()
 {
-    QString str = QString::fromLatin1("The quick (\"brown\") 'fox' can't jump 32.3 feet, right? No-Wrong;xx.txt");
+    QFETCH(QString, input);
+    QFETCH(QList<QByteArray>, expectedWords);
 
-    QList<QByteArray> words = allWords(str);
-
-    QList<QByteArray> expectedWords;
-    expectedWords << QByteArray("32.3") << QByteArray("brown") << QByteArray("can't") << QByteArray("feet") << QByteArray("fox") << QByteArray("jump")
-                  << QByteArray("no") << QByteArray("quick") << QByteArray("right") << QByteArray("the") << QByteArray("txt") << QByteArray("wrong")
-                  << QByteArray("xx");
+    QList<QByteArray> words = allWords(input);
 
     QCOMPARE(words, expectedWords);
 }
 
-void TermGeneratorTest::testWordBoundariesCJK()
+void TermGeneratorTest::testWordBoundaries_data()
 {
-    QString str = QString::fromUtf8("你");
+    using namespace Qt::Literals::StringLiterals;
 
-    QList<QByteArray> words = allWords(str);
-    QList<QByteArray> expectedWords;
-    expectedWords << QByteArray("你");
+    QTest::addColumn<QString>("input");
+    QTest::addColumn<QList<QByteArray>>("expectedWords");
 
-    QCOMPARE(words, expectedWords);
-}
-
-void TermGeneratorTest::testWordBoundariesCJKMixed()
-{
-    // This is a English and CJK mixed string.
-    QString str = QString::fromUtf8("hello world!你好世界貴方元気켐ㅇㄹ？☺");
-
-    QList<QByteArray> words = allWords(str);
-    QList<QByteArray> expectedWords;
-    expectedWords << QByteArray("hello") << QByteArray("world") << QByteArray("☺") << QByteArray("你好世界貴方元気") << QByteArray("켐ᄋᄅ");
-
-    QCOMPARE(words, expectedWords);
-}
-
-void TermGeneratorTest::testUnderscoreWord()
-{
-    QString str = QString::fromLatin1("_plant");
-
-    QList<QByteArray> words = allWords(str);
-
-    QList<QByteArray> expectedWords;
-    expectedWords << QByteArray("plant");
-
-    QCOMPARE(words, expectedWords);
-}
-
-void TermGeneratorTest::testUnderscore_splitting()
-{
-    QString str = QString::fromLatin1("Hello_Howdy");
-
-    QList<QByteArray> words = allWords(str);
-
-    QList<QByteArray> expectedWords;
-    expectedWords << QByteArray("hello") << QByteArray("howdy");
-
-    QCOMPARE(words, expectedWords);
-}
-
-void TermGeneratorTest::testAccentCharacters()
-{
-    QString str = QString::fromUtf8("Como est\xC3\xA1 K\xC3\xBBg"); // "Como está Kûg"
-
-    QList<QByteArray> words = allWords(str);
-
-    QList<QByteArray> expectedWords;
-    expectedWords << QByteArray("como") << QByteArray("esta") << QByteArray("kug");
-
-    QCOMPARE(words, expectedWords);
+    // clang-format off
+    QTest::newRow("latin sentence")   << u"The quick (\"brown\") 'fox' can't jump 32.3 feet, right? No-Wrong;xx.txt"_s
+                                      << QList<QByteArray>{"32.3", "brown", "can't", "feet", "fox", "jump", "no", "quick", "right", "the", "txt", "wrong", "xx"};
+    QTest::newRow("CJK")              << u"你"_s
+                                      << QList<QByteArray>{"你"};
+    QTest::newRow("CJK mixed")        << u"hello world!你好世界貴方元気켐ㅇㄹ？☺"_s
+                                      << QList<QByteArray>{"hello", "world", "☺", "你好世界貴方元気", "켐ᄋᄅ"};
+    QTest::newRow("strip underscore") << u"_plant"_s
+                                      << QList<QByteArray>{"plant"};
+    QTest::newRow("split underscore") << u"Hello_Howdy"_s
+                                      << QList<QByteArray>{"hello", "howdy"};
+    QTest::newRow("Accented")         << u"Como está Kûg"_s
+                                      << QList<QByteArray>{"como", "esta", "kug"};
+    QTest::newRow("Mail address")     << u"me@vhanda.in"_s
+                                      << QList<QByteArray>{"in", "me", "vhanda"};
+    // clang-format on
 }
 
 void TermGeneratorTest::testUnicodeCompatibleComposition()
@@ -142,18 +99,6 @@ void TermGeneratorTest::testUnicodeLowering()
     QList<QByteArray> words = allWords(str);
 
     QCOMPARE(words, {QByteArray("hedge")});
-}
-
-void TermGeneratorTest::testEmails()
-{
-    QString str = QString::fromLatin1("me@vhanda.in");
-
-    QList<QByteArray> words = allWords(str);
-
-    QList<QByteArray> expectedWords;
-    expectedWords << QByteArray("in") << QByteArray("me") << QByteArray("vhanda");
-
-    QCOMPARE(words, expectedWords);
 }
 
 void TermGeneratorTest::testWordPositions()
