@@ -21,6 +21,8 @@ class Baloo::TermGeneratorTest : public QObject
 private Q_SLOTS:
     void testWordBoundaries();
     void testWordBoundaries_data();
+    void benchmarkWordBoundaries();
+    void benchmarkWordBoundaries_data();
     void testUnicodeCompatibleComposition();
     void testUnicodeLowering();
     void testWordPositions();
@@ -53,7 +55,9 @@ void TermGeneratorTest::testWordBoundaries()
     QCOMPARE(words, expectedWords);
 }
 
-void TermGeneratorTest::testWordBoundaries_data()
+namespace
+{
+void addData_WordBoundaries()
 {
     using namespace Qt::Literals::StringLiterals;
 
@@ -76,6 +80,26 @@ void TermGeneratorTest::testWordBoundaries_data()
     QTest::newRow("Mail address")     << u"me@vhanda.in"_s
                                       << QList<QByteArray>{"in", "me", "vhanda"};
     // clang-format on
+}
+} // namespace <anonymous>
+
+void TermGeneratorTest::testWordBoundaries_data()
+{
+    addData_WordBoundaries();
+}
+
+void TermGeneratorTest::benchmarkWordBoundaries()
+{
+    QFETCH(QString, input);
+
+    QBENCHMARK {
+        TermGenerator::termList(input);
+    }
+}
+
+void TermGeneratorTest::benchmarkWordBoundaries_data()
+{
+    addData_WordBoundaries();
 }
 
 void TermGeneratorTest::testUnicodeCompatibleComposition()

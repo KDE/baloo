@@ -19,11 +19,21 @@ baloo_engine_auto_tests(
     idfilenamedbtest
     mtimedbtest
 
-    termgeneratortest
-
     # Query
     andpostingiteratortest
     orpostingiteratortest
     postingiteratortest
     phraseanditeratortest
 )
+
+add_executable(termgeneratortest_bin
+    termgeneratortest.cpp
+)
+target_link_libraries(termgeneratortest_bin
+    Qt6::Test
+    KF6::BalooEngine
+)
+ecm_mark_as_test(termgeneratortest_bin)
+
+# Run the benchmarks with just 1 iteration during CI, so we known it works
+add_test(NAME termgeneratortest COMMAND termgeneratortest_bin "-iterations" "1")
