@@ -66,7 +66,7 @@ QByteArrayList TermGenerator::termList(const QString& text_)
     QTextBoundaryFinder bf(QTextBoundaryFinder::Word, text);
     for (; bf.position() != -1; bf.toNextBoundary()) {
         int end = bf.position();
-        while (start < end && isSkipChar(text[start])) {
+        while (start < end && isSkipChar(text.at(start))) {
             start++;
         }
         if (end == start) {
@@ -83,7 +83,7 @@ QByteArrayList TermGenerator::termList(const QString& text_)
 
         // Also commit term if end-of-text is reached or when we find
         // any punctuation
-        if (!commit & (end == text.size() || isSkipChar(text[end]))) {
+        if (!commit & (end == text.size() || isSkipChar(text.at(end)))) {
             commit = true;
         }
 
