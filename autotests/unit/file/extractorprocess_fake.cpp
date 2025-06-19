@@ -75,8 +75,12 @@ void Context::processOne()
         exit(2);
     } else if (id < 100) {
         worker.urlFailed(QString::number(id));
+    } else if (id < 200) {
+        worker.urlFinished(QString::number(id));
     } else {
         worker.urlFinished(QString::number(id));
+        qCInfo(BALOO) << "... waiting for event ...";
+        return;
     }
 
     QTimer::singleShot(0, [this]() {
