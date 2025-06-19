@@ -35,8 +35,9 @@ private Q_SLOTS:
     void initTestCase();
 
     void testSignals();
-    void testSignals2();
+    void testFailedSignal();
     void testExit();
+    void testExit_data();
 
 private:
     QString m_workerPath;
@@ -62,7 +63,7 @@ void ExtractorProcessTest::testSignals()
     QCOMPARE(spyF.size(), 4);
 }
 
-void ExtractorProcessTest::testSignals2()
+void ExtractorProcessTest::testFailedSignal()
 {
     Baloo::ExtractorProcess extractor{m_workerPath};
     QSignalSpy spyS(&extractor, &ExtractorProcess::startedIndexingFile);
@@ -73,21 +74,41 @@ void ExtractorProcessTest::testSignals2()
     QVERIFY(spyD.wait());
     QCOMPARE(spyS.size(), 2);
     QCOMPARE(spyF.size(), 2);
+    QCOMPARE(spyF.at(0).at(0).toString(), QStringLiteral("123"));
+    QCOMPARE(spyF.at(0).at(1).toBool(), true); // success
+    QCOMPARE(spyF.at(1).at(0).toString(), QStringLiteral("23"));
+    QCOMPARE(spyF.at(1).at(1).toBool(), false); // failed
 }
 
 void ExtractorProcessTest::testExit()
 {
+    QFETCH(quint64, exitCode);
+
     Baloo::ExtractorProcess extractor{m_workerPath};
     QSignalSpy spyS(&extractor, &ExtractorProcess::startedIndexingFile);
     QSignalSpy spyF(&extractor, &ExtractorProcess::finishedIndexingFile);
     QSignalSpy spyD(&extractor, &ExtractorProcess::done);
     QSignalSpy spyX(&extractor, &ExtractorProcess::failed);
 
-    extractor.index({123, 0, 23});
+    extractor.index({121});
+    QVERIFY(spyD.wait());
+
+    extractor.index({123, exitCode, 23});
     QVERIFY(spyX.wait());
-    QCOMPARE(spyS.size(), 2);
-    QCOMPARE(spyF.size(), 1);
-    QCOMPARE(spyD.size(), 0);
+    QCOMPARE(spyS.size(), 3);
+    QCOMPARE(spyF.size(), 2);
+    QCOMPARE(spyD.size(), 1);
+    QCOMPARE(spyS.at(0).at(0).toString(), QStringLiteral("121"));
+    QCOMPARE(spyS.at(1).at(0).toString(), QStringLiteral("123"));
+    QCOMPARE(spyS.at(2).at(0).toString(), QString::number(exitCode));
+}
+
+void ExtractorProcessTest::testExit_data()
+{
+    QTest::addColumn<quint64>("exitCode");
+
+    QTest::newRow("Crash") << quint64(0);
+    QTest::newRow("DB error") << quint64(1);
 }
 
 } // namespace Test
