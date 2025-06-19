@@ -38,6 +38,7 @@ private Q_SLOTS:
     void testFailedSignal();
     void testExit();
     void testExit_data();
+    void testParentExit();
 
 private:
     QString m_workerPath;
@@ -109,6 +110,21 @@ void ExtractorProcessTest::testExit_data()
 
     QTest::newRow("Crash") << quint64(0);
     QTest::newRow("DB error") << quint64(1);
+}
+
+void ExtractorProcessTest::testParentExit()
+{
+    auto extractor = std::make_unique<Baloo::ExtractorProcess>(m_workerPath);
+
+    QSignalSpy spyF(extractor.get(), &ExtractorProcess::finishedIndexingFile);
+    QSignalSpy spyD(extractor.get(), &ExtractorProcess::done);
+
+    extractor->index({223});
+    QVERIFY(spyF.wait());
+
+    extractor = nullptr;
+    QCOMPARE(spyF.size(), 1);
+    QCOMPARE(spyD.size(), 0);
 }
 
 } // namespace Test
