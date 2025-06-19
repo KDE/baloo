@@ -81,18 +81,12 @@ void App::slotNewBatch(const QVector<quint64>& ids)
         m_idleTime->catchNextResumeEvent();
     }
 
-    QTimer::singleShot((m_isBusy ? 500 : 0), this, [this, db] () {
+    QTimer::singleShot((m_isBusy ? 500 : 0), this, [this, db]() {
         // FIXME: The transaction is open for way too long. We should just open it for when we're
         //        committing the data not during the extraction.
         m_tr = std::make_unique<Transaction>(db, Transaction::ReadWrite);
         processNextFile();
     });
-
-    /**
-     * A Single Batch seems to be triggering the SocketNotifier more than once
-     * so we disable it till the batch is done.
-     */
-    m_notifyNewData.setEnabled(false);
 }
 
 void App::processNextFile()
@@ -119,8 +113,6 @@ void App::processNextFile()
         }
         m_tr.reset();
 
-        // Enable the SocketNotifier for the next batch
-        m_notifyNewData.setEnabled(true);
         m_workerPipe.batchFinished();
     }
 }
