@@ -6,6 +6,7 @@
 */
 
 #include "termgenerator.h"
+#include "termgenerator_p.h"
 
 #include <QTextBoundaryFinder>
 
@@ -32,9 +33,13 @@ QString normalizeTerm(const QString &str)
 
 void appendTerm(QByteArrayList &list, const QString &term)
 {
-    if (!term.isEmpty()) {
-        // Truncate the string to avoid arbitrarily long terms
-        list << QStringView(term).left(TermGenerator::maxTermSize).toUtf8();
+    if (term.isEmpty()) {
+        return;
+    }
+    // Truncate the string to avoid arbitrarily long terms
+    auto utf8 = QStringView(term).left(TermGenerator::maxTermSize).toUtf8();
+    if (!utf8.isEmpty()) {
+        list.append(utf8);
     }
 }
 
@@ -53,6 +58,10 @@ void TermGenerator::indexText(const QString& text)
 
 QByteArrayList TermGenerator::termList(const QString& text_)
 {
+    if (!Baloo::detail::verifySurrogates(text_)) {
+        return {};
+    }
+
     QString text(text_);
     text.replace(QLatin1Char('_'), QLatin1Char(' '));
 

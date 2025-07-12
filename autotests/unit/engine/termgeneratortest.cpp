@@ -7,6 +7,7 @@
 
 #include "termgenerator.h"
 #include "document.h"
+#include "termgenerator_p.h"
 
 #include <QTest>
 
@@ -19,6 +20,8 @@ class Baloo::TermGeneratorTest : public QObject
     Q_OBJECT
 
 private Q_SLOTS:
+    void testStringValidity();
+    void testStringValidity_data();
     void testWordBoundaries();
     void testWordBoundaries_data();
     void benchmarkWordBoundaries();
@@ -44,6 +47,41 @@ private Q_SLOTS:
         return doc.m_terms.keys();
     }
 };
+
+void TermGeneratorTest::testStringValidity()
+{
+    QFETCH(QString, input);
+    QFETCH(bool, isValid);
+
+    QCOMPARE(Baloo::detail::verifySurrogates(input), isValid);
+}
+
+void TermGeneratorTest::testStringValidity_data()
+{
+    using namespace Qt::Literals::StringLiterals;
+    using namespace std::string_literals;
+
+    QTest::addColumn<QString>("input");
+    QTest::addColumn<bool>("isValid");
+
+    // clang-format off
+    QTest::newRow("empty")              << QString() << true;
+    QTest::newRow("ASCII characters")   << u" !\"#$%&'()*+,-./ 0123456789:;<=>? @ABCDEFGHIJKLMNO PQRSTUVWXYZ[\\]^_ `abcdefghijklmno pqrstuvwxyz{|}~"_s << true;
+    QTest::newRow("BMP 0 plane")        << u"ÄÖÜäöüßáàâ€"_s << true;
+
+    static_assert(u"🧸"s.size() == 2);       // UTF-16 0xD83E 0xDDF8
+    QTest::newRow("SMP 1 symbol (1)")   << u"Teddy Bear 🧸"_s << true;
+    QTest::newRow("SMP 1 symbol (2)")   << QString(std::array<QChar, 4>{u' ', QChar{0xD83E}, QChar{0xDDF8}, u' '}) << true;
+    QTest::newRow("SMP 1 symbol (3)")   << QString(std::array<QChar, 4>{u' ', u' ', QChar{0xD83E}, QChar{0xDDF8}}) << true;
+    QTest::newRow("Bad Surrogate pair") << QString(std::array<QChar, 2>{QChar{0xDDF8}, QChar{0xD83E}}) << false;
+    QTest::newRow("High Surrogate (1)") << QString(std::array<QChar, 1>{QChar{0xD83E}}) << false;
+    QTest::newRow("High Surrogate (2)") << QString(std::array<QChar, 2>{u' ', QChar{0xD83E}}) << false;
+    QTest::newRow("High Surrogate (3)") << QString(std::array<QChar, 4>{u' ', QChar{0xD83E}, u' ', u' '}) << false;
+    QTest::newRow("Low Surrogate (1)")  << QString(std::array<QChar, 1>{QChar{0xDDF8}}) << false;
+    QTest::newRow("Low Surrogate (2)")  << QString(std::array<QChar, 2>{u' ', QChar{0xDDF8}}) << false;
+    QTest::newRow("Low Surrogate (3)")  << QString(std::array<QChar, 4>{u' ', QChar{0xDDF8}, u' ', u' '}) << false;
+    // clang-format on
+}
 
 void TermGeneratorTest::testWordBoundaries()
 {
@@ -79,6 +117,11 @@ void addData_WordBoundaries()
                                       << QList<QByteArray>{"como", "esta", "kug"};
     QTest::newRow("Mail address")     << u"me@vhanda.in"_s
                                       << QList<QByteArray>{"in", "me", "vhanda"};
+    QTest::newRow("Teddy symbol")     << u"Teddy Bear 🧸"_s
+                                      << QList<QByteArray>{"bear", "teddy", "🧸"};
+    QTest::newRow("High Surrogate")   << QString(std::array<QChar, 4>{u' ', QChar{0xD83E}, u' ', u' '})
+                                      << QList<QByteArray>();
+
     // clang-format on
 }
 } // namespace <anonymous>
