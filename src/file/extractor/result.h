@@ -13,6 +13,9 @@
 #include "document.h"
 #include "termgenerator.h"
 
+namespace Baloo
+{
+
 /**
  * \class Result result.h
  *
@@ -73,5 +76,6 @@ private:
      */
     KFileMetaData::PropertyMultiMap m_map;
 };
+} // namespace Baloo
 
 #endif // EXTRACTIONRESULT_H

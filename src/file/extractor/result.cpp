@@ -15,6 +15,9 @@
 #include <KFileMetaData/PropertyInfo>
 #include <KFileMetaData/TypeInfo>
 
+namespace Baloo
+{
+
 // In order to use it in a vector
 Result::Result()
     : ExtractionResult(QString(), QString())
@@ -117,3 +120,5 @@ void Result::setDocument(const Baloo::Document& doc)
     m_termGenForText.setDocument(m_doc);
     m_termGenForText.setPosition(10000);
 }
+
+} // namespace Baloo
