@@ -89,7 +89,9 @@ QByteArrayList TermGenerator::termList(const QString& text_)
 
         if (commit) {
             const QString term = normalizeTerm(text.mid(start, end - start));
-            appendTerm(list, term);
+            if (!term.isEmpty()) {
+                appendTerm(list, term);
+            }
             start = end;
         }
     }
