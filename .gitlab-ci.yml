@@ -13,7 +13,7 @@ include:
 # Verify changes against clang-format
 clang-format:
   stage: build
-  image: invent-registry.kde.org/sysadmin/ci-images/suse-qt68:latest
+  image: invent-registry.kde.org/sysadmin/ci-images/suse-qt610:latest
   tags:
     - Linux
   script:
