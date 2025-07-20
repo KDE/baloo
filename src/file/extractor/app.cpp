@@ -140,13 +140,14 @@ bool App::index(Transaction* tr, const QString& url, quint64 id)
         return false;
     }
 
-    // HACK: Also, we're ignoring ttext files which are greater tha 10 Mb as we
+    // HACK: Also, we're ignoring text files which are greater than 10 MB as we
     // have trouble processing them
-    //
-    if (mimetype.startsWith(QLatin1String("text/"))) {
+    // Also include .mbox files as these can be large and application/mbox is
+    // a subclass of text/plain
+    if (mimetype.startsWith(QLatin1String("text/")) || mimetype == QLatin1String("application/mbox")) {
         QFileInfo fileInfo(url);
         if (fileInfo.size() >= 10 * 1024 * 1024) {
-            qCDebug(BALOO) << "Skipping large " << url << "- mimetype:" << mimetype;
+            qCDebug(BALOO) << "Skipping large" << url << "- mimetype:" << mimetype << fileInfo.size() << "bytes";
             tr->removePhaseOne(id);
             m_workerPipe.urlFailed(url);
             return false;
