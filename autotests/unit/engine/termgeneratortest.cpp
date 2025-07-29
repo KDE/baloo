@@ -69,7 +69,7 @@ void TermGeneratorTest::testStringValidity_data()
     QTest::newRow("ASCII characters")   << u" !\"#$%&'()*+,-./ 0123456789:;<=>? @ABCDEFGHIJKLMNO PQRSTUVWXYZ[\\]^_ `abcdefghijklmno pqrstuvwxyz{|}~"_s << true;
     QTest::newRow("BMP 0 plane")        << u"ÄÖÜäöüßáàâ€"_s << true;
 
-    static_assert(u"🧸"s.size() == 2);       // UTF-16 0xD83E 0xDDF8
+    static_assert(QStringView(u"🧸").size() == 2);       // UTF-16 0xD83E 0xDDF8
     QTest::newRow("SMP 1 symbol (1)")   << u"Teddy Bear 🧸"_s << true;
     QTest::newRow("SMP 1 symbol (2)")   << QString(std::array<QChar, 4>{u' ', QChar{0xD83E}, QChar{0xDDF8}, u' '}) << true;
     QTest::newRow("SMP 1 symbol (3)")   << QString(std::array<QChar, 4>{u' ', u' ', QChar{0xD83E}, QChar{0xDDF8}}) << true;
