@@ -32,7 +32,7 @@ msgstr "safa1996alfulaij@gmail.com"
 #: clearcommand.cpp:30
 #, kde-format
 msgid "Immediately clear entries from the index"
-msgstr "امسح المدخلات من الفهرس حالًا"
+msgstr "امحُ المدخلات من الفهرس حالًا"
 
 #: configcommand.cpp:45
 #, kde-format
