@@ -126,7 +126,7 @@ msgstr "Michael Heidelbach"
 #: main.cpp:152
 #, kde-format
 msgid "Maintainer"
-msgstr "المصين"
+msgstr "الصائن"
 
 #: main.cpp:158
 #, kde-format
