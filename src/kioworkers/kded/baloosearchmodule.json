@@ -1,7 +1,7 @@
 {
     "KPlugin": {
         "Description": "Allows automatic updates of Search Folders",
-        "Description[ar]": "يُتيح التحديثات التلقائية لمجلدات البحث",
+        "Description[ar]": "يُتيح التحديثات الآليّة لمجلدات البحث",
         "Description[az]": "Axtarış qovluqalrının avtomatik yenilənməsinə icazə ver",
         "Description[bg]": "Позволява автоматично актуализиране на търсене на папки",
         "Description[ca@valencia]": "Permet l'actualització automàtica de les carpetes de busca",
