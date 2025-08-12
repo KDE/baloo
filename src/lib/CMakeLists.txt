@@ -76,7 +76,7 @@ ecm_generate_headers(KF6Baloo_CamelCase_HEADERS
     TagListJob
     IndexerConfig
 
-    PREFIX baloo
+    PREFIX Baloo
     REQUIRED_HEADERS KF6Baloo_HEADERS
 )
 
