@@ -407,7 +407,7 @@ msgstr "الملف: %1"
 #: statuscommand.cpp:262
 #, kde-format
 msgid "Output format \"%1\" is invalid, use one of:\n"
-msgstr "تنسيق الخرج ”%1“غير صالح ، استخدم أحد:\n"
+msgstr "تنسيق الخرج ”%1“غير صالح، استخدم أحد:\n"
 
 #: statuscommand.cpp:264
 #, kde-format
