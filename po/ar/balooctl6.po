@@ -186,7 +186,7 @@ msgstr "المسار ليس بمجلد \n"
 #: configcommand.cpp:269
 #, kde-format
 msgid "%1 is already in the list of include folders"
-msgstr "المسار %1 موجود بالفعل في قائمة مجلدات التضمين"
+msgstr "المسار %1 موجود فعلًا في قائمة مجلدات التضمين"
 
 #: configcommand.cpp:274 configcommand.cpp:309
 #, kde-format
@@ -196,17 +196,17 @@ msgstr "المسار %1 موجود في قائمة مجلدات الاستثنا
 #: configcommand.cpp:304
 #, kde-format
 msgid "%1 is already in the list of exclude folders"
-msgstr "المسار %1 موجود بالفعل في قائمة مجلدات الاستثناء"
+msgstr "المسار %1 موجود فعلًا في قائمة مجلدات الاستثناء"
 
 #: configcommand.cpp:327
 #, kde-format
 msgid "Exclude filter is already in the list\n"
-msgstr "مرشّح الاستثناء موجود بالفعل في القائمة \n"
+msgstr "مرشّح الاستثناء موجود فعلًا في القائمة \n"
 
 #: configcommand.cpp:345
 #, kde-format
 msgid "Exclude mimetype is already in the list\n"
-msgstr "مرشّح نوع MIME موجود بالفعل في القائمة \n"
+msgstr "مرشّح نوع MIME موجود فعلًا في القائمة \n"
 
 #: configcommand.cpp:373 configcommand.cpp:400
 #, kde-format

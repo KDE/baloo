@@ -21,7 +21,7 @@ msgstr ""
 #: kio_tags.cpp:110 kio_tags.cpp:166
 #, kde-format
 msgid "File %1 already has tag %2"
-msgstr "للملف %1 الوسم %2 بالفعل"
+msgstr "للملف %1 الوسم %2 فعلًا"
 
 #: kio_tags.cpp:298
 #, kde-format
