@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-05 12:24+0000\n"
-"PO-Revision-Date: 2018-06-09 20:17+0300\n"
-"Last-Translator: Safa Alfulaij <safa1996alfulaij@gmail.com>\n"
+"PO-Revision-Date: 2023-05-21 09:51+0400\n"
+"Last-Translator: Zayed Al-Saidi <zayed.alsaidi@gmail.com>\n"
 "Language-Team: ar\n"
 "Language: ar\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +21,7 @@ msgstr ""
 #: kio_tags.cpp:110 kio_tags.cpp:166
 #, kde-format
 msgid "File %1 already has tag %2"
-msgstr "للملف %1 الوسم %2 بالفعل"
+msgstr "للملف %1 الوسم %2 فعلًا"
 
 #: kio_tags.cpp:298
 #, kde-format
