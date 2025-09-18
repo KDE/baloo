@@ -1,47 +1,46 @@
-# Copyright (C) 2024 This file is copyright:
+# Copyright (C) 2025 This file is copyright:
 # This file is distributed under the same license as the baloo package.
 #
-# SPDX-FileCopyrightText: 2024, 2025 Yaron Shahrabani <sh.yaron@gmail.com>
+# SPDX-FileCopyrightText: 2025 Gummi <gudmundure@gmail.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-24 00:37+0000\n"
-"PO-Revision-Date: 2025-09-17 10:39+0300\n"
-"Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
-"Language-Team: צוות התרגום של KDE ישראל\n"
-"Language: he\n"
+"PO-Revision-Date: 2025-09-10 10:20+0000\n"
+"Last-Translator: Gummi <gudmundure@gmail.com>\n"
+"Language-Team: Icelandic <kde-i18n-doc@kde.org>\n"
+"Language: is\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
-"n % 10 == 0) ? 2 : 3));\n"
-"X-Generator: Lokalize 25.08.0\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 25.04.3\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr "צוות התרגום של KDE ישראל"
+msgstr "Guðmundur Erlingsson"
 
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
-msgstr "kde-l10n-he@kde.org"
+msgstr "gudmundure@gmail.com"
 
 #: clearcommand.cpp:30
 #, kde-format
 msgid "Immediately clear entries from the index"
-msgstr "לפנות רשומות מהמפתח מיידית"
+msgstr "Eyða strax færslum úr atriðaskránni"
 
 #: configcommand.cpp:45
 #, kde-format
 msgid "Manipulate the Baloo configuration"
-msgstr "עריכת ההגדרות של Baloo"
+msgstr "Breyta grunnstillingu Baloo"
 
 #: configcommand.cpp:68
 #, kde-format
 msgid "The config command can be used to manipulate the Baloo Configuration\n"
-msgstr "פקודת ההגדרות יכולה לשמש כדי לשנות את ההגדרות של Baloo\n"
+msgstr "Hægt er að nota config-skipunina til að breyta grunnstillingu Baloo\n"
 
 #: configcommand.cpp:69
 #, kde-format
@@ -49,38 +48,38 @@ msgid ""
 "Usage: balooctl config <command>\n"
 "\n"
 msgstr ""
-"שימוש: balooctl config <command>\n"
+"Notkun: balooctl config <command>\n"
 "\n"
 
 #: configcommand.cpp:70
 #, kde-format
 msgid "Possible Commands:\n"
-msgstr "פקודות זמינות:\n"
+msgstr "Mögulegar skipanir:\n"
 
 #: configcommand.cpp:72
 #, kde-format
 msgid "Add a value to config parameter"
-msgstr "הוספת ערך למשתנה הגדרות"
+msgstr "Bæta gildi við grunnstillingabreytu"
 
 #: configcommand.cpp:73
 #, kde-format
 msgid "Remove a value from a config parameter"
-msgstr "הסרת ערכת ממשתנה הגדרות"
+msgstr "Taka gildi frá grunnstillingabreytu"
 
 #: configcommand.cpp:74
 #, kde-format
 msgid "Show the value of a config parameter"
-msgstr "הצגת ערך משתנה ההגדרות"
+msgstr "Sýni gildi grunnstillingabreytu"
 
 #: configcommand.cpp:75
 #, kde-format
 msgid "Set the value of a config parameter"
-msgstr "הגדרת ערך משתנה הגדרות"
+msgstr "Stilla gildi fyrir grunnstillingabreytu"
 
 #: configcommand.cpp:76
 #, kde-format
 msgid "Display this help menu"
-msgstr "הצגת תפריט עזרה זה"
+msgstr "Birta þessa hjálparvalmynd"
 
 #: configcommand.cpp:82
 #, kde-format
@@ -88,44 +87,44 @@ msgid ""
 "The following configuration options may be listed:\n"
 "\n"
 msgstr ""
-"אפשר להציג את אפשרויות ההגדרה הבאות:\n"
+"Hægt er að sýna þessa grunnstillingarvalkosti:\n"
 "\n"
 
 #: configcommand.cpp:84 configcommand.cpp:363
 #, kde-format
 msgid "Controls if Baloo indexes hidden files and folders"
-msgstr "שולט האם Baloo יסדר קבצים ותיקיות נסתרים במפתח"
+msgstr "Stjórnar því hvort Baloo skráir faldar skrár og möppur"
 
 #: configcommand.cpp:85 configcommand.cpp:364
 #, kde-format
 msgid "Controls if Baloo indexes file content"
-msgstr "שולט האם Baloo יסדר את תוכן הקבצים במפתח"
+msgstr "Stjórnar því hvort Baloo skráir efni skráa"
 
 #: configcommand.cpp:86 configcommand.cpp:149 configcommand.cpp:240
 #, kde-format
 msgid "The list of folders which Baloo indexes"
-msgstr "רשימת התיקיות ש־Baloo מסדר במפתח"
+msgstr "Listi yfir möppur sem Baloo skráir"
 
 #: configcommand.cpp:87 configcommand.cpp:150 configcommand.cpp:241
 #, kde-format
 msgid "The list of folders which Baloo will never index"
-msgstr "רשימת התיקיות ש־Baloo לעולם לא יסדר במפתח"
+msgstr "Listi yfir möppur sem Baloo skráir aldrei"
 
 #: configcommand.cpp:88 configcommand.cpp:151 configcommand.cpp:242
 #, kde-format
 msgid "The list of filters which are used to exclude files"
-msgstr "רשימת המסננים שמשמשים להחריג קבצים"
+msgstr "Listi yfir síur sem eru notaðar til að útiloka skrár"
 
 #: configcommand.cpp:89 configcommand.cpp:152 configcommand.cpp:243
 #, kde-format
 msgid "The list of mimetypes which are used to exclude files"
-msgstr "רשימת טיפוסי ה־MIME שמשמשים להחריג קבצים"
+msgstr "Listi yfir mime-gerðir notaðar til að útiloka skrár"
 
 #: configcommand.cpp:141 configcommand.cpp:232 configcommand.cpp:355
 #: configcommand.cpp:425
 #, kde-format
 msgid "Config parameter could not be found\n"
-msgstr "לא ניתן למצוא את משתנה ההגדרות\n"
+msgstr "Grunnstillingabreytur fundust ekki\n"
 
 #: configcommand.cpp:147 configcommand.cpp:238 configcommand.cpp:361
 #, kde-format
@@ -133,94 +132,94 @@ msgid ""
 "The following configuration options may be modified:\n"
 "\n"
 msgstr ""
-"אפשר לערוך את אפשרויות ההגדרה הבאות:\n"
+"Hægt er að breyta eftirfarandi grunnstillingabreytum:\n"
 "\n"
 
 #: configcommand.cpp:160 configcommand.cpp:180 configcommand.cpp:251
 #: configcommand.cpp:286
 #, kde-format
 msgid "A folder must be provided\n"
-msgstr "חובה לספק תיקייה\n"
+msgstr "Það verður að gefa upp möppu\n"
 
 #: configcommand.cpp:168
 #, kde-format
 msgid "%1 is not in the list of include folders"
-msgstr "%1 אינו ברשימת התיקיות להכללה"
+msgstr "%1 er ekki listi yfir meðtaldar möppur"
 
 #: configcommand.cpp:188
 #, kde-format
 msgid "%1 is not in the list of exclude folders"
-msgstr " %1 אינה ברשימת התיקיות להחרגה"
+msgstr "%1 er ekki listi yfir útilokaðar möppur"
 
 #: configcommand.cpp:200 configcommand.cpp:321
 #, kde-format
 msgid "A filter must be provided\n"
-msgstr "חובה לספק מסנן\n"
+msgstr "Gefa verður upp síu\n"
 
 #: configcommand.cpp:206
 #, kde-format
 msgid "%1 is not in list of exclude filters"
-msgstr "%1 אינו ברשימת מסנני ההחרגה"
+msgstr "%1 er ekki listi yfir útilokunarsíur"
 
 #: configcommand.cpp:217 configcommand.cpp:339
 #, kde-format
 msgid "A mimetype must be provided\n"
-msgstr "יש לספק טיפוס MIME\n"
+msgstr "Gefa verður upp mime-gerð\n"
 
 #: configcommand.cpp:223
 #, kde-format
 msgid "%1 is not in list of exclude mimetypes"
-msgstr "%1 אינו ברשימת טיפוסי ה־MIME להחרגה"
+msgstr "%1 er ekki listi yfir útilokaðar mime-gerðir"
 
 #: configcommand.cpp:257 configcommand.cpp:292
 #, kde-format
 msgid "Path does not exist\n"
-msgstr "הנתיב לא קיים\n"
+msgstr "Slóðin er ekki til\n"
 
 #: configcommand.cpp:262 configcommand.cpp:297
 #, kde-format
 msgid "Path is not a directory\n"
-msgstr "הנתיב אינו תיקייה\n"
+msgstr "Slóðin er ekki mappa\n"
 
 #: configcommand.cpp:269
 #, kde-format
 msgid "%1 is already in the list of include folders"
-msgstr "%1 כבר ברשימת התיקיות להכללה"
+msgstr "%1 er nú þegar á lista yfir meðtaldar möppur"
 
 #: configcommand.cpp:274 configcommand.cpp:309
 #, kde-format
 msgid "%1 is in the list of exclude folders"
-msgstr "%1 ברשימת התיקיות להחרגה"
+msgstr "%1 er á lista yfir útilokaðar möppur"
 
 #: configcommand.cpp:304
 #, kde-format
 msgid "%1 is already in the list of exclude folders"
-msgstr "%1 כבר ברשימת התיקיות התיקיות להחרגה"
+msgstr "%1 er nú þegar á lista yfir útilokaðar möppur"
 
 #: configcommand.cpp:327
 #, kde-format
 msgid "Exclude filter is already in the list\n"
-msgstr "מסנן ההחרגה כבר ברשימה\n"
+msgstr "Útilokunarsía er nú þegar á listanum\n"
 
 #: configcommand.cpp:345
 #, kde-format
 msgid "Exclude mimetype is already in the list\n"
-msgstr "טיפוסי ה־MIME להחרגה כבר נמצאים ברשימה\n"
+msgstr "Útilokuð mime-gerð er nú þegar á listanum\n"
 
 #: configcommand.cpp:373 configcommand.cpp:400
 #, kde-format
 msgid "A value must be provided\n"
-msgstr "חובה לספק ערך\n"
+msgstr "Gefa verður upp gildi\n"
 
 #: configcommand.cpp:394 configcommand.cpp:421
 #, kde-format
 msgid "Invalid value\n"
-msgstr "ערך שגוי\n"
+msgstr "Ógilt gildi\n"
 
 #: indexcommand.cpp:30
 #, kde-format
 msgid "Immediately index files"
-msgstr "להוסיף קבצים למפתח מיידית"
+msgstr "Atriðaskrá skrár strax"
 
 #: main.cpp:54
 #, kde-format
@@ -230,77 +229,77 @@ msgstr "balooctl"
 #: main.cpp:55
 #, kde-format
 msgid "Vishesh Handa"
-msgstr "וישש האנדה"
+msgstr "Vishesh Handa"
 
 #: main.cpp:60
 #, kde-format
 msgid "The command to execute"
-msgstr "הפקודה להרצה"
+msgstr "Skipunin sem á að keyra"
 
 #: main.cpp:62
 #, kde-format
 msgid "Print the status of the indexer"
-msgstr "הצגת מצב המסדר במפתח"
+msgstr "Prenta stöðu atriðaskráningarinnar"
 
 #: main.cpp:63
 #, kde-format
 msgid "Enable the file indexer"
-msgstr "הפעלת מסדר הקבצים במפתח"
+msgstr "Virkja atriðaskráningu skráa"
 
 #: main.cpp:64
 #, kde-format
 msgid "Disable the file indexer"
-msgstr "השבתת מסדר הקבצים במפתח"
+msgstr "Slökkva á atriðaskráningu skráa"
 
 #: main.cpp:65
 #, kde-format
 msgid "Remove the index database"
-msgstr "הסרת מסד הנתונים של המפתח"
+msgstr "Fjarlægja gagnagrunn atriðaskráningar"
 
 #: main.cpp:66
 #, kde-format
 msgid "Suspend the file indexer"
-msgstr "השהיית המסדר במפתח"
+msgstr "Stöðva skráaskráningu"
 
 #: main.cpp:67
 #, kde-format
 msgid "Resume the file indexer"
-msgstr "המשך פעילות המסדר במפתח"
+msgstr "Halda áfram skráningu"
 
 #: main.cpp:68
 #, kde-format
 msgid "Check for any unindexed files and index them"
-msgstr "לבדוק אם יש קבצים שטרם סודרו במפתח ולסדר אותם במפתח"
+msgstr "Leita að óskráðum skrám og atriðaskrá þær"
 
 #: main.cpp:69
 #, kde-format
 msgid "Index the specified files"
-msgstr "סידור הקבצים שצוינו במפתח"
+msgstr "Atriðaskrá tilgreindu skrárnar"
 
 #: main.cpp:70
 #, kde-format
 msgid "Forget the specified files"
-msgstr "שכיחת הקבצים שצוינו"
+msgstr "Gleyma tilgreindu skránum"
 
 #: main.cpp:71
 #, kde-format
 msgid "Modify the Baloo configuration"
-msgstr "שינוי ההגדרות של Baloo"
+msgstr "Breyta grunnstillingu Baloo"
 
 #: main.cpp:72
 #, kde-format
 msgid "Monitor the file indexer"
-msgstr "מעקב אחר מסד הקבצים במפתח"
+msgstr "Vakta atriðaskráningu skráa"
 
 #: main.cpp:73
 #, kde-format
 msgid "Display the disk space used by index"
-msgstr "הצגת המקום בכונן שתופס המפתח"
+msgstr "Sýna diskplássið sem atriðaskráningin notar"
 
 #: main.cpp:74
 #, kde-format
 msgid "Display files which could not be indexed"
-msgstr "הצגת קבצים שניתן לסדר במפתח"
+msgstr "Sýna skrár sem ekki var hægt að skrá"
 
 #: main.cpp:77
 #, kde-format
@@ -312,111 +311,111 @@ msgid ""
 "The default format is \"%1\".\n"
 "Only applies to \"%4\""
 msgstr ""
-"תבנית הפלט <%1|%2|%3>.\n"
-"תבנית ברירת המחדל היא „%1”.\n"
-"חל רק על „%4”"
+"Úttakssnið <%1|%2|%3>.\n"
+"Sjálfgefna sniðið er \"%1\".\n"
+"Á einungis við um \"%4\""
 
 #: main.cpp:83
 #, kde-format
 msgid "format"
-msgstr "תבנית"
+msgstr "snið"
 
 #: monitorcommand.cpp:54
 #, kde-format
 msgid "Press ctrl+c to stop monitoring\n"
-msgstr "יש ללחוץ על ctrl+c to כדי לעצור את המעקב\n"
+msgstr "Ýttu á ctrl+c til að hætta vöktun\n"
 
 #: monitorcommand.cpp:70
 #, kde-format
 msgid "Waiting for file indexer to start\n"
-msgstr "בהמתנה להפעלת מסדר הקבצים במפתח\n"
+msgstr "Bíð eftir að atriðaskráningin hefjist\n"
 
 #: monitorcommand.cpp:71
 #, kde-format
 msgid "Press Ctrl+C to stop monitoring\n"
-msgstr "יש ללחוץ על Ctrl+C כדי להפסיק לעקוב\n"
+msgstr "Ýttu á Ctrl+C til að hætta vöktun\n"
 
 #: monitorcommand.cpp:78
 #, kde-format
 msgid "File indexer is running\n"
-msgstr "מסדר הקבצים במפתח רץ\n"
+msgstr "Atriðaskráningin er í gangi\n"
 
 #: monitorcommand.cpp:94 statuscommand.cpp:307
 #, kde-format
 msgctxt "currently indexed file"
 msgid "Indexing: %1"
-msgstr "סידור במפתח: %1"
+msgstr "Atriðaskrái: %1"
 
 #: monitorcommand.cpp:103
 #, kde-format
 msgid ": Ok\n"
-msgstr ": תקין\n"
+msgstr ": Í lagi\n"
 
 #: monitorcommand.h:32
 #, kde-format
 msgid "CLI interface for monitoring Baloo"
-msgstr "ממשק לשורת הפקודות למעקב אחרי Baloo"
+msgstr "Skipanalínuviðmót til að vakta Baloo"
 
 #: statuscommand.cpp:33
 #, kde-format
 msgid "Print the status of the Indexer"
-msgstr "הצגת מצב המסדר במפתח"
+msgstr "Prenta stöðu atriðaskráningarinnar"
 
 #: statuscommand.cpp:117
 #, kde-format
 msgid "File ignored"
-msgstr "הקובץ נתעלם"
+msgstr "Skrá hunsuð"
 
 #: statuscommand.cpp:118
 #, kde-format
 msgid "Basic Indexing: Disabled"
-msgstr "סידור בסיסי במפתח: מושבת"
+msgstr "Grunnskráning: Slökkt"
 
 #: statuscommand.cpp:119 statuscommand.cpp:120
 #, kde-format
 msgid "Basic Indexing: Scheduled"
-msgstr "סידור בסיסי במפתח: מתוזמן"
+msgstr "Grunnskráning: Á dagskrá"
 
 #: statuscommand.cpp:121 statuscommand.cpp:122 statuscommand.cpp:123
 #: statuscommand.cpp:124
 #, kde-format
 msgid "Basic Indexing: Done"
-msgstr "סידור בסיסי במפתח: הסתיים"
+msgstr "Grunnskráning: Lokið"
 
 #: statuscommand.cpp:130 statuscommand.cpp:133
 #, kde-format
 msgid "Content Indexing: Scheduled"
-msgstr "סידור תוכן במפתח: מתוזמן"
+msgstr "Efnisskráning: Á dagskrá"
 
 #: statuscommand.cpp:134
 #, kde-format
 msgid "Content Indexing: Failed"
-msgstr "סידור תוכן במפתח: נכשל"
+msgstr "Efnisskráning: Mistókst"
 
 #: statuscommand.cpp:135
 #, kde-format
 msgid "Content Indexing: Done"
-msgstr "סידור תוכן במפתח: הסתיים"
+msgstr "Efnisskráning: Lokið"
 
 #: statuscommand.cpp:142 statuscommand.cpp:182 statuscommand.cpp:230
 #, kde-format
 msgid "Ignoring non-existent file %1"
-msgstr "התעלמות מקובץ שלא קיים %1"
+msgstr "Hunsa skrá %1 sem er ekki til"
 
 #: statuscommand.cpp:147 statuscommand.cpp:187 statuscommand.cpp:235
 #, kde-format
 msgid "Ignoring symlink/special file %1"
-msgstr "התעלמות מקישור סמלי/קובץ מיוחד %1"
+msgstr "Hunsa tákntengil/sérskrá %1"
 
 #: statuscommand.cpp:151
 #, kde-format
 msgid "File: %1"
-msgstr "קובץ: %1"
+msgstr "Skrá: %1"
 
 #: statuscommand.cpp:262
 #, kde-format
 msgid "Output format \"%1\" is invalid, use one of:\n"
-msgstr "תבנית הפלט „%1” שגויה, יש להשתמש באחת מבין:\n"
+msgstr "Úttakssniðið \"%1\" er ógilt, nota eitt af þessum:\n"
 
 #: statuscommand.cpp:264
 #, kde-format
@@ -427,49 +426,49 @@ msgstr "- %1\n"
 #: statuscommand.cpp:271
 #, kde-format
 msgid "Baloo is currently disabled. To enable, please run %1\n"
-msgstr "Baloo מושבת כרגע. כדי להפעיל, נא להריץ את הפקודה %1\n"
+msgstr "Slökkt er á Baloo. Keyrðu %1 til að kveikja\n"
 
 #: statuscommand.cpp:277
 #, kde-format
 msgid "Baloo Index could not be opened\n"
-msgstr "לא ניתן לפתוח את המפתח של Baloo\n"
+msgstr "Ekki tókst að opna Baloo atriðaskrá\n"
 
 #: statuscommand.cpp:304
 #, kde-format
 msgid "Baloo File Indexer is running\n"
-msgstr "מסדר הקבצים במפתח Baloo רץ\n"
+msgstr "Baloo atriðaskráning í gangi\n"
 
 #: statuscommand.cpp:306 statuscommand.cpp:309
 #, kde-format
 msgid "Indexer state: %1"
-msgstr "מצב מסדר במפתח: %1"
+msgstr "Staða skráningar: %1"
 
 #: statuscommand.cpp:313
 #, kde-format
 msgid "Baloo File Indexer is not running\n"
-msgstr "מסדר הקבצים במפתח Baloo לא רץ\n"
+msgstr "Baloo atriðaskráning er ekki í gangi\n"
 
 #: statuscommand.cpp:320
 #, kde-format
 msgid "Total files indexed: %1"
-msgstr "סך כל הקבצים שסודרו במפתח: %1"
+msgstr "Skráðar skrár alls: %1"
 
 #: statuscommand.cpp:321
 #, kde-format
 msgid "Files waiting for content indexing: %1"
-msgstr "קבצים שממתינים לסידור תוכן במפתח: %1"
+msgstr "Skrár sem bíða efnisskráningar: %1"
 
 #: statuscommand.cpp:322
 #, kde-format
 msgid "Files failed to index: %1"
-msgstr "קבצים שהסידור שלהם במפתח נכשל: %1"
+msgstr "Skár sem mistókst að skrá: %1"
 
 #: statuscommand.cpp:330
 #, kde-format
 msgid "Current size of index is %1"
-msgstr "גודל המפתח הנוכחי הוא %1"
+msgstr "Núverandi stærð atriðaskrárinnar er %1"
 
 #: statuscommand.cpp:332
 #, kde-format
 msgid "Index does not exist yet\n"
-msgstr "המפתח לא קיים עדיין\n"
+msgstr "Atriðaskráin er ekki enn til\n"
