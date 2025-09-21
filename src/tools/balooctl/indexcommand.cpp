@@ -8,7 +8,6 @@
 
 #include <KLocalizedString>
 #include <QFileInfo>
-#include <QTextStream>
 
 #include "command.h"
 #include "database.h"

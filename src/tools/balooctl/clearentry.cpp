@@ -8,11 +8,8 @@
 
 #include <KLocalizedString>
 #include <QFileInfo>
-#include <QTextStream>
 
-#include "database.h"
 #include "global.h"
-#include "transaction.h"
 
 #include "clearentry.h"
 
