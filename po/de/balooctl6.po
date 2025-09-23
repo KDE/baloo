@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: balooctl6\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-11-24 00:37+0000\n"
+"POT-Creation-Date: 2025-09-23 00:38+0000\n"
 "PO-Revision-Date: 2024-12-23 19:10+0100\n"
 "Last-Translator: Johannes Obermayr <johannesobermayr@gmx.de>\n"
 "Language-Team: German <kde-i18n-de@kde.org>\n"
@@ -215,7 +215,7 @@ msgstr "Ein Wert muss angegeben werden\n"
 msgid "Invalid value\n"
 msgstr "Ungültiger Wert\n"
 
-#: indexcommand.cpp:30
+#: indexcommand.cpp:29
 #, kde-format
 msgid "Immediately index files"
 msgstr "Dateien sofort indizieren"

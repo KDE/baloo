@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-11-24 00:37+0000\n"
+"POT-Creation-Date: 2025-09-23 00:38+0000\n"
 "PO-Revision-Date: 2024-11-24 06:59+0100\n"
 "Last-Translator: Iñigo Salvador Azurmendi <xalba@ni.eus>\n"
 "Language-Team: Basque <kde-i18n-eu@kde.org>\n"
@@ -222,7 +222,7 @@ msgstr "Balio bat adierazi behar da\n"
 msgid "Invalid value\n"
 msgstr "Balio baliogabea\n"
 
-#: indexcommand.cpp:30
+#: indexcommand.cpp:29
 #, kde-format
 msgid "Immediately index files"
 msgstr "Fitxategiak berehala indexatu"

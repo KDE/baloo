@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-11-24 00:37+0000\n"
+"POT-Creation-Date: 2025-09-23 00:38+0000\n"
 "PO-Revision-Date: 2025-02-28 14:53+0300\n"
 "Last-Translator: Olesya Gerasimenko <translation-team@basealt.ru>\n"
 "Language-Team: Basealt Translation Team\n"
@@ -233,7 +233,7 @@ msgstr "Необходимо указать значение параметра.
 msgid "Invalid value\n"
 msgstr "Указано недопустимое значение.\n"
 
-#: indexcommand.cpp:30
+#: indexcommand.cpp:29
 #, kde-format
 msgid "Immediately index files"
 msgstr "Немедленно проиндексировать файлы."

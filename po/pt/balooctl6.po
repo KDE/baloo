@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: balooctl\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-11-24 00:37+0000\n"
+"POT-Creation-Date: 2025-09-23 00:38+0000\n"
 "PO-Revision-Date: 2020-09-07 00:05+0100\n"
 "Last-Translator: José Nuno Coelho Pires <zepires@gmail.com>\n"
 "Language-Team: Portuguese <kde-i18n-pt@kde.org>\n"
@@ -214,7 +214,7 @@ msgstr "Deverá indicar um valor\n"
 msgid "Invalid value\n"
 msgstr "Valor inválido\n"
 
-#: indexcommand.cpp:30
+#: indexcommand.cpp:29
 #, kde-format
 msgid "Immediately index files"
 msgstr ""

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-11-24 00:37+0000\n"
+"POT-Creation-Date: 2025-09-23 00:38+0000\n"
 "PO-Revision-Date: 2023-11-12 00:57+0100\n"
 "Last-Translator: Enol P. <enolp@softastur.org>\n"
 "Language-Team: \n"
@@ -210,7 +210,7 @@ msgstr ""
 msgid "Invalid value\n"
 msgstr ""
 
-#: indexcommand.cpp:30
+#: indexcommand.cpp:29
 #, kde-format
 msgid "Immediately index files"
 msgstr ""
