@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: 2024 Johannes Obermayr <johannesobermayr@gmx.de>
-# Burkhard Lück <lueck@hube-lueck.de>, 2013, 2015, 2018, 2019, 2020.
-# Frederik Schwarzer <schwarzer@kde.org>, 2015.
+# SPDX-FileCopyrightText: 2013, 2015, 2018, 2019, 2020 Burkhard Lück <lueck@hube-lueck.de>
+# SPDX-FileCopyrightText: 2015 Frederik Schwarzer <schwarzer@kde.org>
 msgid ""
 msgstr ""
 "Project-Id-Version: balooshow6\n"
