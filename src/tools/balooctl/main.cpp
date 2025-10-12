@@ -123,8 +123,11 @@ int main(int argc, char* argv[])
             isEnabled = false;
         }
 
-        IndexerConfig cfg;
-        cfg.setFileIndexingEnabled(isEnabled);
+        {
+            // Use a scope to make sure the backing file is saved at this point
+            IndexerConfig cfg;
+            cfg.setFileIndexingEnabled(isEnabled);
+        }
 
         if (isEnabled) {
             bool running = mainInterface.isValid();
