@@ -122,7 +122,7 @@ void FileWatchTest::testFileCreation()
         qWarning() << "Xattr not supported on this filesystem:" << fileUrl;
     } else {
         const QString userComment(QStringLiteral("UserComment"));
-        QVERIFY(umd.setUserComment(userComment) == KFileMetaData::UserMetaData::NoError);
+        QCOMPARE(umd.setUserComment(userComment), KFileMetaData::UserMetaData::NoError);
 
         QVERIFY(spyIndexXattr.wait());
         QCOMPARE(spyIndexNew.count(), 0);
@@ -187,7 +187,7 @@ void FileWatchTest::testDirCreation()
         qWarning() << "Xattr not supported on this filesystem:" << dirUrl;
     } else {
         const QString userComment(QStringLiteral("UserComment"));
-        QVERIFY(umd.setUserComment(userComment) == KFileMetaData::UserMetaData::NoError);
+        QCOMPARE(umd.setUserComment(userComment), KFileMetaData::UserMetaData::NoError);
 
         QVERIFY(spyIndexXattr.wait());
         QCOMPARE(spyIndexNew.count(), 0);

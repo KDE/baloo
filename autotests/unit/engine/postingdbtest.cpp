@@ -80,7 +80,7 @@ private Q_SLOTS:
 
         // Non existing
         it.reset(db.regexpIter(QRegularExpression(QStringLiteral("dub")), QByteArray("f")));
-        QVERIFY(it == nullptr);
+        QCOMPARE(it, nullptr);
     }
 
     void testCompIter() {

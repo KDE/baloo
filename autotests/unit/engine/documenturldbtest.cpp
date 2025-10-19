@@ -144,40 +144,40 @@ private Q_SLOTS:
         sortedIdInsert(test, quint64(1));
 
         // stuff shall be ok inserted
-        QVERIFY(test.size() == 2);
-        QVERIFY(test[0] == 1);
-        QVERIFY(test[1] == 9);
+        QCOMPARE(test.size(), 2);
+        QCOMPARE(test[0], 1);
+        QCOMPARE(test[1], 9);
 
         // shall not crash
         sortedIdInsert(test, quint64(1));
 
         // no insert please
-        QVERIFY(test.size() == 2);
+        QCOMPARE(test.size(), 2);
 
         // shall not crash
         sortedIdInsert(test, quint64(10));
 
         // stuff shall be ok inserted
-        QVERIFY(test.size() == 3);
-        QVERIFY(test[0] == 1);
-        QVERIFY(test[1] == 9);
-        QVERIFY(test[2] == 10);
+        QCOMPARE(test.size(), 3);
+        QCOMPARE(test[0], 1);
+        QCOMPARE(test[1], 9);
+        QCOMPARE(test[2], 10);
 
         // shall not crash
         sortedIdInsert(test, quint64(2));
 
         // stuff shall be ok inserted
-        QVERIFY(test.size() == 4);
-        QVERIFY(test[0] == 1);
-        QVERIFY(test[1] == 2);
-        QVERIFY(test[2] == 9);
-        QVERIFY(test[3] == 10);
+        QCOMPARE(test.size(), 4);
+        QCOMPARE(test[0], 1);
+        QCOMPARE(test[1], 2);
+        QCOMPARE(test[2], 9);
+        QCOMPARE(test[3], 10);
 
         // shall not crash
         sortedIdInsert(test, quint64(2));
 
         // no insert please
-        QVERIFY(test.size() == 4);
+        QCOMPARE(test.size(), 4);
     }
 };
 
