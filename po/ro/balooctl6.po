@@ -1,13 +1,13 @@
 # Copyright (C) YEAR This_file_is_part_of_KDE
 # This file is distributed under the same license as the baloo package.
-# Sergiu Bivol <sergiu@cip.md>, 2015, 2020, 2022.
+# SPDX-FileCopyrightText: 2015, 2020, 2022, 2025 Sergiu Bivol <sergiu@cip.md>
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-09-23 00:38+0000\n"
-"PO-Revision-Date: 2022-12-28 21:28+0000\n"
+"PO-Revision-Date: 2025-10-19 02:23+0100\n"
 "Last-Translator: Sergiu Bivol <sergiu@cip.md>\n"
 "Language-Team: Romanian <kde-i18n-ro@kde.org>\n"
 "Language: ro\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
-"X-Generator: Lokalize 21.12.3\n"
+"X-Generator: Lokalize 25.08.1\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -31,7 +31,7 @@ msgstr "sergiu@cip.md"
 #: clearcommand.cpp:30
 #, kde-format
 msgid "Immediately clear entries from the index"
-msgstr ""
+msgstr "Curăță imediat înregistrările din index"
 
 #: configcommand.cpp:45
 #, kde-format
@@ -216,12 +216,12 @@ msgstr "Trebuie furnizată o valoare\n"
 #: configcommand.cpp:394 configcommand.cpp:421
 #, kde-format
 msgid "Invalid value\n"
-msgstr "Valoare nevalidă\n"
+msgstr "Valoare eronată\n"
 
 #: indexcommand.cpp:29
 #, kde-format
 msgid "Immediately index files"
-msgstr ""
+msgstr "Indexează fișierele imediat"
 
 #: main.cpp:54
 #, kde-format
