@@ -49,10 +49,10 @@ Q_SIGNALS:
     void done();
 
 private:
-    uint m_batchSize;
+    const uint m_batchSize;
     FileContentIndexerProvider *m_provider;
 
-    QAtomicInt m_stop;
+    QAtomicInt m_stop = 0;
 
     QString m_currentFile;
     TimeEstimator &m_timeEstimator;
@@ -63,6 +63,6 @@ private:
     QString m_extractorPath;
 };
 
-}
+} // namespace BALOO
 
 #endif // BALOO_FILECONTENTINDEXER_H

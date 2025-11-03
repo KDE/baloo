@@ -36,7 +36,6 @@ FileContentIndexer::FileContentIndexer(uint batchSize, //
     : QObject(parent)
     , m_batchSize(batchSize)
     , m_provider(provider)
-    , m_stop(0)
     , m_timeEstimator(timeEstimator)
     , m_extractorPath(QStringLiteral(KDE_INSTALL_FULL_LIBEXECDIR_KF "/baloo_file_extractor"))
 {
