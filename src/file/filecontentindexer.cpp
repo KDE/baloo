@@ -45,8 +45,11 @@ FileContentIndexer::FileContentIndexer(uint batchSize, //
     QDBusConnection bus = QDBusConnection::sessionBus();
     m_monitorWatcher.setConnection(bus);
     m_monitorWatcher.setWatchMode(QDBusServiceWatcher::WatchForUnregistration);
-    connect(&m_monitorWatcher, &QDBusServiceWatcher::serviceUnregistered, this,
-            &FileContentIndexer::monitorClosed);
+    connect(&m_monitorWatcher, &QDBusServiceWatcher::serviceUnregistered, this, [this](const QString &service) {
+        qCDebug(BALOO) << "Unregistered monitor" << service;
+        m_registeredMonitors.removeAll(service);
+        m_monitorWatcher.removeWatchedService(service);
+    });
 
     bus.registerObject(QStringLiteral("/fileindexer"),
                         this, QDBusConnection::ExportScriptableContents);
@@ -55,8 +58,20 @@ FileContentIndexer::FileContentIndexer(uint batchSize, //
 void FileContentIndexer::run()
 {
     ExtractorProcess process{m_extractorPath};
-    connect(&process, &ExtractorProcess::startedIndexingFile, this, &FileContentIndexer::slotStartedIndexingFile);
-    connect(&process, &ExtractorProcess::finishedIndexingFile, this, &FileContentIndexer::slotFinishedIndexingFile);
+
+    connect(&process, &ExtractorProcess::startedIndexingFile, this, [this](const QString &path) {
+        m_currentFile = path;
+        if (!m_registeredMonitors.empty()) {
+            Q_EMIT startedIndexingFile(path);
+        }
+    });
+    connect(&process, &ExtractorProcess::finishedIndexingFile, this, [this](const QString &path) {
+        m_currentFile.clear();
+        if (!m_registeredMonitors.empty()) {
+            Q_EMIT finishedIndexingFile(path);
+        }
+    });
+
     m_stop.storeRelaxed(false);
     auto batchSize = m_batchSize;
     uint finishedCount = 0;
@@ -127,40 +142,23 @@ void FileContentIndexer::run()
     QMetaObject::invokeMethod(this, &FileContentIndexer::done, Qt::QueuedConnection);
 }
 
-void FileContentIndexer::slotStartedIndexingFile(const QString& filePath)
-{
-    m_currentFile = filePath;
-    if (!m_registeredMonitors.isEmpty()) {
-        Q_EMIT startedIndexingFile(filePath);
-    }
-}
-
-void FileContentIndexer::slotFinishedIndexingFile(const QString &filePath)
-{
-    m_currentFile = QString();
-    if (!m_registeredMonitors.isEmpty()) {
-        Q_EMIT finishedIndexingFile(filePath);
-    }
-}
-
 void FileContentIndexer::registerMonitor(const QDBusMessage& message)
 {
-    if (!m_registeredMonitors.contains(message.service())) {
-        m_registeredMonitors << message.service();
-        m_monitorWatcher.addWatchedService(message.service());
+    auto serviceName = message.service();
+    if (!m_registeredMonitors.contains(serviceName)) {
+        qCDebug(BALOO) << "Registered monitor" << serviceName;
+        m_registeredMonitors << serviceName;
+        m_monitorWatcher.addWatchedService(serviceName);
     }
 }
 
 void FileContentIndexer::unregisterMonitor(const QDBusMessage& message)
 {
-    m_registeredMonitors.removeAll(message.service());
-    m_monitorWatcher.removeWatchedService(message.service());
-}
-
-void FileContentIndexer::monitorClosed(const QString& service)
-{
-    m_registeredMonitors.removeAll(service);
-    m_monitorWatcher.removeWatchedService(service);
+    auto serviceName = message.service();
+    if (auto count = m_registeredMonitors.removeAll(serviceName); count > 0) {
+        m_monitorWatcher.removeWatchedService(serviceName);
+        qCDebug(BALOO) << "Unregistered monitor" << serviceName;
+    }
 }
 
 #include "moc_filecontentindexer.cpp"

@@ -48,11 +48,6 @@ Q_SIGNALS:
 
     void done();
 
-private Q_SLOTS:
-    void monitorClosed(const QString& service);
-    void slotStartedIndexingFile(const QString &filePath);
-    void slotFinishedIndexingFile(const QString &filePath);
-
 private:
     uint m_batchSize;
     FileContentIndexerProvider *m_provider;
