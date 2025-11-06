@@ -15,7 +15,6 @@
 #include <QStandardPaths>
 
 #include <QGuiApplication>
-#include <QSessionManager>
 
 int main(int argc, char* argv[])
 {
@@ -23,6 +22,7 @@ int main(int argc, char* argv[])
     setIdleSchedulingPriority();
     lowerPriority();
 
+    QCoreApplication::setAttribute(Qt::AA_DisableSessionManager);
     QGuiApplication::setDesktopSettingsAware(false);
     QGuiApplication app(argc, argv);
 
@@ -32,12 +32,6 @@ int main(int argc, char* argv[])
     KCrash::initialize();
 
     app.setQuitOnLastWindowClosed(false);
-
-    auto disableSessionManagement = [](QSessionManager &sm) {
-        sm.setRestartHint(QSessionManager::RestartNever);
-    };
-    QObject::connect(&app, &QGuiApplication::commitDataRequest, disableSessionManagement);
-    QObject::connect(&app, &QGuiApplication::saveStateRequest, disableSessionManagement);
 
     Baloo::App appObject;
     return app.exec();
