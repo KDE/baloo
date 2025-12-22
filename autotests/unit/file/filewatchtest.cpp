@@ -54,7 +54,9 @@ using namespace Baloo;
 namespace {
     bool createFile(const QString& fileUrl) {
         QFile f1(fileUrl);
-        f1.open(QIODevice::WriteOnly);
+        if (!f1.open(QIODevice::WriteOnly)) {
+            return false;
+        }
         f1.close();
         return QFile::exists(fileUrl);
     }
@@ -66,10 +68,9 @@ namespace {
 
     void modifyFile(const QString& fileUrl) {
         QFile f1(fileUrl);
-        f1.open(QIODevice::Append | QIODevice::Text);
+        QVERIFY(f1.open(QIODevice::Append));
 
-        QTextStream stream(&f1);
-        stream << "1";
+        QCOMPARE(f1.write(QByteArray("abcd", 4)), 4);
     }
 }
 
