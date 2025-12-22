@@ -10,9 +10,11 @@
 #include "fileindexerconfig.h"
 #include "pendingfilequeue.h"
 
-#include <QTest>
+#include <QSaveFile>
 #include <QSignalSpy>
 #include <QTemporaryDir>
+#include <QTest>
+
 #include <KFileMetaData/UserMetaData>
 
 namespace Baloo {
@@ -26,6 +28,7 @@ private Q_SLOTS:
     void testDirCreation();
     void testConfigChange();
     void testFileMoved();
+    void testFileReplaced();
 
     void init()
     {
@@ -343,6 +346,58 @@ void FileWatchTest::testFileMoved()
 #endif
     QCOMPARE(spyIndexFileRemoved.takeFirst().at(0), fileDestUrl);
 }
+
+void FileWatchTest::testFileReplaced()
+{
+    QCOMPARE(m_db->open(Database::CreateDatabase), Database::OpenResult::Success);
+
+    Test::writeIndexerConfig({m_tmpDir->path()}, {});
+    FileIndexerConfig config;
+
+    FileWatch fileWatch(m_db.get(), &config);
+    fileWatch.m_pendingFileQueue->setMaximumTimeout(0);
+    fileWatch.m_pendingFileQueue->setMinimumTimeout(0);
+    fileWatch.m_pendingFileQueue->setTrackingTime(0);
+
+    QSignalSpy spy(&fileWatch, &FileWatch::installedWatches);
+    QVERIFY(spy.isValid());
+
+    fileWatch.updateIndexedFoldersWatches();
+    QVERIFY(spy.wait());
+    QCOMPARE(spy.count(), 1);
+
+    QSignalSpy spyIndexNew(&fileWatch, &FileWatch::indexNewFile);
+    QSignalSpy spyIndexModified(&fileWatch, &FileWatch::indexModifiedFile);
+    QSignalSpy spyIndexFileRemoved(&fileWatch, &FileWatch::fileRemoved);
+
+    QVERIFY(spyIndexNew.isValid());
+    QVERIFY(spyIndexModified.isValid());
+    QVERIFY(spyIndexFileRemoved.isValid());
+
+    // Create a file and see if it is indexed
+    QString fileUrl(m_tmpDir->path() + QStringLiteral("/t1"));
+    QVERIFY(createFile(fileUrl));
+
+    QVERIFY(spyIndexNew.wait());
+    QCOMPARE(spyIndexNew.count(), 1);
+    QCOMPARE(spyIndexModified.count(), 0);
+    QCOMPARE(spyIndexFileRemoved.count(), 0);
+    QCOMPARE(spyIndexNew.takeFirst().at(0), fileUrl);
+
+    // Overwrite atomically
+    {
+        QSaveFile t(fileUrl);
+        QVERIFY(t.open(QIODeviceBase::WriteOnly));
+        QVERIFY(t.commit());
+    }
+
+    QVERIFY(spyIndexNew.wait());
+
+    QCOMPARE(spyIndexNew.count(), 1);
+    QCOMPARE(spyIndexNew.takeFirst().at(0), fileUrl);
+    QCOMPARE(spyIndexModified.count(), 0);
+    QCOMPARE(spyIndexFileRemoved.count(), 1);
+    QCOMPARE(spyIndexFileRemoved.takeFirst().at(0), fileUrl); // cooked event to signal overwriting the old file
 }
 
 QTEST_MAIN(FileWatchTest)

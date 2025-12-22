@@ -10,11 +10,12 @@
 #include <QTemporaryDir>
 #include <KRandom>
 
-#include <QTextStream>
-#include <QFile>
-#include <QSignalSpy>
 #include <QDir>
+#include <QFile>
+#include <QSaveFile>
+#include <QSignalSpy>
 #include <QTest>
+#include <QTextStream>
 
 #include <stdio.h>
 
@@ -35,6 +36,8 @@ private Q_SLOTS:
     void testMoveToUnwatchedFolder();
     void testMoveRootFolder();
     void testFileClosedAfterWrite();
+    void testRacyReplace();
+    void testAtomicReplace();
 
     void init();
 
@@ -456,6 +459,71 @@ void KInotifyTest::testFileClosedAfterWrite()
     QVERIFY(spy.wait());
     QCOMPARE(spy.count(), 1);
     QCOMPARE(spy.at(0).first().toString(), QString(m_dir.path() + QLatin1String("/file")));
+}
+
+void KInotifyTest::testRacyReplace()
+{
+    QSignalSpy createdSpy(m_kn.get(), &KInotify::created);
+    QSignalSpy closedSpy(m_kn.get(), &KInotify::closedWrite);
+    QSignalSpy deletedSpy(m_kn.get(), &KInotify::deleted);
+    QSignalSpy movedSpy(m_kn.get(), &KInotify::moved);
+
+    mkdir(m_dir.path() + QStringLiteral("/rr/"));
+    QVERIFY(createdSpy.wait());
+
+    QString fileUrl1(m_dir.path() + QStringLiteral("/rr/t1"));
+    QString fileUrl2(m_dir.path() + QStringLiteral("/rr/t2"));
+
+    touchFile(fileUrl1);
+    touchFile(fileUrl2);
+
+    QVERIFY(closedSpy.wait());
+    QCOMPARE(closedSpy.count(), 2);
+    QCOMPARE(closedSpy.takeFirst().first().toString(), fileUrl1);
+    QCOMPARE(closedSpy.takeFirst().first().toString(), fileUrl2);
+
+    QVERIFY(!QFile::rename(fileUrl1, fileUrl2));
+    QVERIFY(QFile::remove(fileUrl2));
+    QVERIFY(QFile::rename(fileUrl1, fileUrl2));
+
+    QVERIFY(movedSpy.wait());
+    QCOMPARE(deletedSpy.count(), 1);
+    QCOMPARE(deletedSpy.takeFirst().at(0).toString(), fileUrl2);
+    QCOMPARE(movedSpy.count(), 1);
+    QCOMPARE(movedSpy.first().at(0).toString(), fileUrl1);
+    QCOMPARE(movedSpy.first().at(1).toString(), fileUrl2);
+}
+
+void KInotifyTest::testAtomicReplace()
+{
+    QSignalSpy createdSpy(m_kn.get(), &KInotify::created);
+    QSignalSpy closedSpy(m_kn.get(), &KInotify::closedWrite);
+    QSignalSpy deletedSpy(m_kn.get(), &KInotify::deleted);
+    QSignalSpy movedSpy(m_kn.get(), &KInotify::moved);
+
+    mkdir(m_dir.path() + QStringLiteral("/ar/"));
+    QVERIFY(createdSpy.wait());
+
+    QString fileUrl1(m_dir.path() + QStringLiteral("/ar/t1"));
+
+    touchFile(fileUrl1);
+
+    QVERIFY(closedSpy.wait());
+    QCOMPARE(closedSpy.count(), 1);
+    QCOMPARE(closedSpy.takeFirst().first().toString(), fileUrl1);
+
+    // Overwrite atomically
+    {
+        QSaveFile t(fileUrl1);
+        QVERIFY(t.open(QIODeviceBase::WriteOnly));
+        QVERIFY(t.commit());
+    }
+
+    QVERIFY(movedSpy.wait());
+    QCOMPARE(deletedSpy.count(), 0);
+    QCOMPARE(movedSpy.count(), 1);
+    QVERIFY(!movedSpy.first().at(0).toString().isEmpty());
+    QCOMPARE(movedSpy.first().at(1).toString(), fileUrl1);
 }
 
 QTEST_GUILESS_MAIN(KInotifyTest)
