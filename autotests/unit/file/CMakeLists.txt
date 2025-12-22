@@ -1,4 +1,4 @@
-if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+if(${Inotify_FOUND})
   ecm_add_test(kinotifytest.cpp
     TEST_NAME "kinotifytest"
     LINK_LIBRARIES Qt6::Test baloofilecommon
