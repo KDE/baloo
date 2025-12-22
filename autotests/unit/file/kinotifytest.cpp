@@ -242,6 +242,9 @@ void KInotifyTest::testMoveFile()
 
 void KInotifyTest::testRenameFolder()
 {
+#ifdef Q_OS_FREEBSD
+    QEXPECT_FAIL("", "Fails due to a bug in FreeBSD inotify implementation, see https://reviews.freebsd.org/D54336", Abort);
+#endif
     // create some test files
     const QString d1(QStringLiteral("%1/randomJunk1/").arg(m_dir.path()));
     mkdir(d1);
@@ -302,6 +305,9 @@ void KInotifyTest::testRenameFolder()
 
 void KInotifyTest::testMoveFolder()
 {
+#ifdef Q_OS_FREEBSD
+    QEXPECT_FAIL("", "Fails due to a bug in FreeBSD inotify implementation, see https://reviews.freebsd.org/D54336", Abort);
+#endif
     // create some test files
     QTemporaryDir destDir;
     const QString src(QStringLiteral("%1/randomJunk1/").arg(m_dir.path()));
