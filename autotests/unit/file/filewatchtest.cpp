@@ -335,7 +335,7 @@ void FileWatchTest::testFileMoved()
     QCOMPARE(spyIndexNew.takeFirst().at(0), fileDestUrl);
     QCOMPARE(spyIndexModified.count(), 0);
     QCOMPARE(spyIndexFileRemoved.count(), 1);
-    QCOMPARE(spyIndexFileRemoved.takeFirst().at(0), fileDestUrl); // called to clean dest metadata
+    QCOMPARE(spyIndexFileRemoved.takeFirst().at(0), fileUrl); // called to clean dest metadata
 }
 
 QTEST_MAIN(FileWatchTest)
