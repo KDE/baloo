@@ -7,15 +7,12 @@
 
 #include "kinotify.h"
 
-#include <QTemporaryDir>
-#include <KRandom>
-
 #include <QDir>
 #include <QFile>
 #include <QSaveFile>
 #include <QSignalSpy>
+#include <QTemporaryDir>
 #include <QTest>
-#include <QTextStream>
 
 #include <stdio.h>
 
@@ -52,9 +49,8 @@ namespace
 void touchFile(const QString& path)
 {
     QFile file(path);
-    file.open(QIODevice::WriteOnly);
-    QTextStream s(&file);
-    s << KRandom::randomString(10);
+    QVERIFY(file.open(QIODevice::WriteOnly));
+    file.close();
 }
 
 void mkdir(const QString& path)
