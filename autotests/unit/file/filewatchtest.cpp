@@ -328,15 +328,21 @@ void FileWatchTest::testFileMoved()
     // Move the file
     QVERIFY(QFile::rename(fileUrl, fileDestUrl));
 
-    QVERIFY(spyIndexFileRemoved.wait());
-#ifdef Q_OS_FREEBSD
-    QEXPECT_FAIL("", "FreeBSD fails here. Fix it.", Abort);
-#endif
+    // Moving an unindexd file creates two events, in order:
+    // 1) A cooked "removed" event for the destination, for a potentially overwritten file
+    // 2) A "new" event for the moved file, with the new path
+    QVERIFY(spyIndexNew.wait());
+
     QCOMPARE(spyIndexNew.count(), 1);
     QCOMPARE(spyIndexNew.takeFirst().at(0), fileDestUrl);
     QCOMPARE(spyIndexModified.count(), 0);
     QCOMPARE(spyIndexFileRemoved.count(), 1);
-    QCOMPARE(spyIndexFileRemoved.takeFirst().at(0), fileDestUrl); // called to clean dest metadata
+
+#ifdef Q_OS_FREEBSD
+    QEXPECT_FAIL("", "FreeBSD fails to report MOVE_FROM/MOVE_TO pair (incorrect cookie).", Abort);
+#endif
+    QCOMPARE(spyIndexFileRemoved.takeFirst().at(0), fileDestUrl);
+}
 }
 
 QTEST_MAIN(FileWatchTest)
