@@ -478,16 +478,34 @@ void KInotifyTest::testRacyReplace()
     QCOMPARE(closedSpy.takeFirst().first().toString(), fileUrl1);
     QCOMPARE(closedSpy.takeFirst().first().toString(), fileUrl2);
 
+    createdSpy.clear();
+
     QVERIFY(!QFile::rename(fileUrl1, fileUrl2));
     QVERIFY(QFile::remove(fileUrl2));
     QVERIFY(QFile::rename(fileUrl1, fileUrl2));
 
-    QVERIFY(movedSpy.wait());
-    QCOMPARE(deletedSpy.count(), 1);
-    QCOMPARE(deletedSpy.takeFirst().at(0).toString(), fileUrl2);
-    QCOMPARE(movedSpy.count(), 1);
-    QCOMPARE(movedSpy.first().at(0).toString(), fileUrl1);
-    QCOMPARE(movedSpy.first().at(1).toString(), fileUrl2);
+    movedSpy.wait();
+    // Depending on how QFile::rename is implemented for the given OS
+    // we might get different signals here:
+    QVERIFY(movedSpy.count() == 1 || createdSpy.count() == 1);
+    if (movedSpy.count() == 1) {
+        // If QFile::rename() boils down to the rename() syscall,
+        // the inotify subsystem will be able to generate IN_MOVED_* events
+        QCOMPARE(deletedSpy.count(), 1);
+        QCOMPARE(deletedSpy.takeFirst().at(0).toString(), fileUrl2);
+
+        QCOMPARE(movedSpy.count(), 1);
+        QCOMPARE(movedSpy.first().at(0).toString(), fileUrl1);
+        QCOMPARE(movedSpy.first().at(1).toString(), fileUrl2);
+    } else {
+        // On some systems QFile::rename() is implemented as link() + unlink()
+        // In this case inotify generates separate IN_DELETE and IN_CREATE events
+        QCOMPARE(createdSpy.count(), 1);
+        QCOMPARE(createdSpy.first().at(0).toString(), fileUrl2);
+        QCOMPARE(deletedSpy.count(), 2);
+        QCOMPARE(deletedSpy.takeFirst().at(0).toString(), fileUrl2);
+        QCOMPARE(deletedSpy.takeFirst().at(0).toString(), fileUrl1);
+    }
 }
 
 void KInotifyTest::testAtomicReplace()
