@@ -329,6 +329,8 @@ void FileWatchTest::testFileMoved()
     QVERIFY(QFile::rename(fileUrl, fileDestUrl));
 
     QVERIFY(spyIndexFileRemoved.wait());
+    // We have to wait for both signals, but no need to QVERIFY the second one
+    spyIndexNew.wait();
     QCOMPARE(spyIndexNew.count(), 1);
     QCOMPARE(spyIndexNew.takeFirst().at(0), fileDestUrl);
     QCOMPARE(spyIndexModified.count(), 0);
