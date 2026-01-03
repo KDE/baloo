@@ -8,8 +8,9 @@
 #ifndef BALOO_PENDINGFILE_H
 #define BALOO_PENDINGFILE_H
 
-#include <QString>
+#include <QDebug>
 #include <QObject>
+#include <QString>
 
 namespace Baloo {
 
@@ -56,9 +57,10 @@ private:
     bool m_deleted : 1;
     bool m_modified : 1;
 
-    void printFlags() const;
+    friend QDebug operator<<(QDebug debug, const PendingFile &f);
 };
 
+QDebug operator<<(QDebug debug, const PendingFile &f);
 }
 
 Q_DECLARE_TYPEINFO(Baloo::PendingFile, Q_RELOCATABLE_TYPE);

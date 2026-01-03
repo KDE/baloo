@@ -6,9 +6,9 @@
 */
 
 #include "pendingfile.h"
-#include "baloodebug.h"
 
-using namespace Baloo;
+namespace Baloo
+{
 
 PendingFile::PendingFile(const QString& path)
     : m_path(path)
@@ -54,11 +54,18 @@ void PendingFile::merge(const PendingFile& file)
     m_modified |= file.m_modified;
 }
 
-void PendingFile::printFlags() const
+QDebug operator<<(QDebug debug, const PendingFile &f)
 {
-    qCDebug(BALOO) << "AttributesChanged:" << m_attributesChanged;
-    qCDebug(BALOO) << "ClosedOnWrite:" << m_closedOnWrite;
-    qCDebug(BALOO) << "Created:" << m_created;
-    qCDebug(BALOO) << "Deleted:" << m_deleted;
-    qCDebug(BALOO) << "Modified:" << m_modified;
+    auto fmt = QStringLiteral(u"%1 [%2 %3 %4 %5 %6]");
+    debug << fmt.arg( //
+        (f.path()),
+        (f.m_attributesChanged ? "ATTR" : "    "),
+        (f.m_closedOnWrite ? "CLO" : "   "),
+        (f.m_created ? "CRE" : "   "),
+        (f.m_deleted ? "DEL" : "   "),
+        (f.m_modified ? "MOD" : "   "));
+
+    return debug;
 }
+
+} // namespace
