@@ -32,7 +32,10 @@ public:
     bool isNewFile() const;
     bool shouldIndexContents() const;
     bool shouldIndexXAttrOnly() const;
-    bool shouldRemoveIndex() const;
+    bool shouldRemoveIndex() const
+    {
+        return m_deleted;
+    }
 
     bool operator == (const PendingFile& rhs) const {
         return m_path == rhs.m_path;

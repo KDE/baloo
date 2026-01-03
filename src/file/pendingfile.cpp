@@ -46,11 +46,6 @@ bool PendingFile::shouldIndexXAttrOnly() const
     return false;
 }
 
-bool PendingFile::shouldRemoveIndex() const
-{
-    return m_deleted;
-}
-
 void PendingFile::merge(const PendingFile& file)
 {
     m_attributesChanged |= file.m_attributesChanged;
