@@ -16,7 +16,13 @@ enum BatchStatus : quint8 {
     Invalid = 'X',
     UrlStarted = 'S',
     UrlFinished = 'F',
+    UrlUnchanged = 'U',
     UrlFailed = 'f',
+    UrlIgnored = 's',
+    UrlInvalid = 'i',
+    MimetypeIgnored = 'm',
+    MimetypeUnsupported = 'M',
+    FileTooLarge = 'l',
     BatchFinished = 'B',
 };
 
@@ -33,6 +39,8 @@ void ControllerPipe::processIds(const QVector<quint64>& ids)
 
 void ControllerPipe::processStatusData()
 {
+    using FileIndexStatus = Baloo::IndexResult::FileStatus;
+
     QString url;
     BatchStatus event{Invalid};
 
@@ -65,11 +73,28 @@ void ControllerPipe::processStatusData()
             break;
 
         case UrlFinished:
-            Q_EMIT urlFinished(url);
+            Q_EMIT urlProcessed(url, true, FileIndexStatus::Successful);
             break;
-
+        case UrlUnchanged:
+            Q_EMIT urlProcessed(url, false, FileIndexStatus::Successful);
+            break;
+        case UrlIgnored:
+            Q_EMIT urlProcessed(url, false, FileIndexStatus::IgnoredFilename);
+            break;
+        case MimetypeIgnored:
+            Q_EMIT urlProcessed(url, false, FileIndexStatus::IgnoredMimetype);
+            break;
+        case MimetypeUnsupported:
+            Q_EMIT urlProcessed(url, false, FileIndexStatus::IgnoredMimetypeUnsupported);
+            break;
+        case FileTooLarge:
+            Q_EMIT urlProcessed(url, false, FileIndexStatus::IgnoredTooLarge);
+            break;
         case UrlFailed:
-            Q_EMIT urlFailed(url);
+            Q_EMIT urlProcessed(url, false, FileIndexStatus::ErrorExtractionFailed);
+            break;
+        case UrlInvalid:
+            Q_EMIT urlProcessed(url, false, FileIndexStatus::ErrorFileNotFound);
             break;
 
         default:
@@ -120,14 +145,37 @@ void WorkerPipe::urlStarted(const QString& url)
     m_statusStream << UrlStarted << url;
 }
 
-void WorkerPipe::urlFinished(const QString& url)
+void WorkerPipe::urlProcessed(const QString &url, bool updated, Baloo::IndexResult::FileStatus status)
 {
-    m_statusStream << UrlFinished << url;
-}
+    using FileIndexStatus = Baloo::IndexResult::FileStatus;
 
-void WorkerPipe::urlFailed(const QString& url)
-{
-    m_statusStream << UrlFailed << url;
+    switch (status) {
+    case FileIndexStatus::Successful:
+        if (updated) {
+            m_statusStream << UrlFinished << url;
+        } else {
+            m_statusStream << UrlUnchanged << url;
+        }
+        break;
+    case FileIndexStatus::IgnoredFilename:
+        m_statusStream << UrlIgnored << url;
+        break;
+    case FileIndexStatus::IgnoredMimetype:
+        m_statusStream << MimetypeIgnored << url;
+        break;
+    case FileIndexStatus::IgnoredMimetypeUnsupported:
+        m_statusStream << MimetypeUnsupported << url;
+        break;
+    case FileIndexStatus::IgnoredTooLarge:
+        m_statusStream << FileTooLarge << url;
+        break;
+    case FileIndexStatus::ErrorExtractionFailed:
+        m_statusStream << UrlFailed << url;
+        break;
+    case FileIndexStatus::ErrorFileNotFound:
+        m_statusStream << UrlInvalid << url;
+        break;
+    }
 }
 
 void WorkerPipe::batchFinished()

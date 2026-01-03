@@ -192,6 +192,8 @@ void App::processNextFile()
 
 bool App::index(BatchInfo &info)
 {
+    using FileIndexStatus = Baloo::IndexResult::FileStatus;
+
     QString url = QFile::decodeName(info.m_path);
 
     if (url.isEmpty()) {
@@ -201,7 +203,7 @@ bool App::index(BatchInfo &info)
 
     if (!QFile::exists(url)) {
         info.m_state = IndexState::DoesNotExist;
-        m_workerPipe.urlFailed(url);
+        m_workerPipe.urlProcessed(url, false, FileIndexStatus::ErrorFileNotFound);
         return false;
     }
 
@@ -210,7 +212,7 @@ bool App::index(BatchInfo &info)
         // was added to the content indexing db
         qCDebug(BALOO) << "Found" << url << "in the ContentIndexingDB, although it should be skipped";
         info.m_state = IndexState::RemoveIndex;
-        m_workerPipe.urlFailed(url);
+        m_workerPipe.urlProcessed(url, false, FileIndexStatus::IgnoredFilename);
         return false;
     }
 
@@ -222,7 +224,7 @@ bool App::index(BatchInfo &info)
         // FIXME: in case the extension based and content based mimetype differ
         // we should update it.
         info.m_state = IndexState::SkipIndex;
-        m_workerPipe.urlFailed(url);
+        m_workerPipe.urlProcessed(url, false, FileIndexStatus::IgnoredMimetype);
         return false;
     }
 
@@ -235,7 +237,7 @@ bool App::index(BatchInfo &info)
         if (fileInfo.size() >= 10 * 1024 * 1024) {
             qCDebug(BALOO) << "Skipping large" << url << "- mimetype:" << mimetype << fileInfo.size() << "bytes";
             info.m_state = IndexState::SkipIndex;
-            m_workerPipe.urlFailed(url);
+            m_workerPipe.urlProcessed(url, false, FileIndexStatus::IgnoredTooLarge);
             return false;
         }
     }
@@ -247,9 +249,9 @@ bool App::index(BatchInfo &info)
     // The mimetype fetched in the BasicIndexingJob is fast but not accurate
     BasicIndexingJob basicIndexer(url, mimetype, BasicIndexingJob::NoLevel);
     if (!basicIndexer.index()) {
-        qCDebug(BALOO) << "Skipping non-existing file " << url;
+        qCDebug(BALOO) << "Skipping non-existing file " << url << "- mimetype:" << mimetype;
         info.m_state = IndexState::DoesNotExist;
-        m_workerPipe.urlFailed(url);
+        m_workerPipe.urlProcessed(url, false, FileIndexStatus::ErrorFileNotFound);
         return false;
     }
 
@@ -257,7 +259,7 @@ bool App::index(BatchInfo &info)
     if (doc.id() != info.m_id) {
         qCWarning(BALOO) << url << "id seems to have changed. Perhaps baloo was not running, and this file was deleted + re-created";
         info.m_state = IndexState::RemoveIndex;
-        m_workerPipe.urlFailed(url);
+        m_workerPipe.urlProcessed(url, false, FileIndexStatus::ErrorFileNotFound);
         return false;
     }
 
@@ -273,7 +275,8 @@ bool App::index(BatchInfo &info)
 
     info.m_result->finish();
     info.m_state = IndexState::Succeeded;
-    m_workerPipe.urlFinished(url);
+    m_workerPipe.urlProcessed(url, true, FileIndexStatus::Successful);
+
     return true;
 }
 

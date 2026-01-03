@@ -58,6 +58,8 @@ Context::Context()
 
 void Context::processOne()
 {
+    using FileIndexStatus = Baloo::IndexResult::FileStatus;
+
     if (pendingIds.empty()) {
         worker.batchFinished();
         qCInfo(BALOO) << "Processing done";
@@ -74,11 +76,11 @@ void Context::processOne()
     } else if (id == 2) {
         exit(2);
     } else if (id < 100) {
-        worker.urlFailed(QString::number(id));
+        worker.urlProcessed(QString::number(id), false, FileIndexStatus::ErrorExtractionFailed);
     } else if (id < 200) {
-        worker.urlFinished(QString::number(id));
+        worker.urlProcessed(QString::number(id), true, FileIndexStatus::Successful);
     } else {
-        worker.urlFinished(QString::number(id));
+        worker.urlProcessed(QString::number(id), true, FileIndexStatus::Successful);
         qCInfo(BALOO) << "... waiting for event ...";
         return;
     }

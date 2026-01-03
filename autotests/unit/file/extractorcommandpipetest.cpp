@@ -84,12 +84,14 @@ void ExtractorCommandPipeTest::singleBatch()
 {
     QFETCH(QVector<quint64>, ids);
 
-    QStringList finishedUrls;
-    auto connection = connect(&m_controller, &Baloo::Private::ControllerPipe::urlFinished,
-         [&finishedUrls](const QString& url) {
-             finishedUrls.append(url);
-             // qDebug() << "fileFinished" << url;
-    });
+    QStringList processedUrls;
+    auto connection = connect( //
+        &m_controller,
+        &Baloo::Private::ControllerPipe::urlProcessed,
+        [&processedUrls](const QString &url, bool, Baloo::IndexResult::FileStatus) {
+            processedUrls.append(url);
+            // qDebug() << "fileFinished" << url;
+        });
 
     QSignalSpy spy(&m_controller, &Baloo::Private::ControllerPipe::batchFinished);
 
@@ -97,7 +99,7 @@ void ExtractorCommandPipeTest::singleBatch()
 
     QVERIFY(spy.wait());
 
-    QCOMPARE(finishedUrls.size(), ids.size());
+    QCOMPARE(processedUrls.size(), ids.size());
     disconnect(connection);
 }
 

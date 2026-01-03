@@ -20,11 +20,8 @@ ExtractorProcess::ExtractorProcess(const QString& extractorPath, QObject* parent
 
     connect(&m_extractorProcess, &QProcess::readyRead, &m_controller, &ControllerPipe::processStatusData);
     connect(&m_controller, &ControllerPipe::urlStarted, this, &ExtractorProcess::startedIndexingFile);
-    connect(&m_controller, &ControllerPipe::urlFinished, this, [this](const QString& url) {
-        Q_EMIT finishedIndexingFile(url, true);
-    });
-    connect(&m_controller, &ControllerPipe::urlFailed, this, [this](const QString& url) {
-        Q_EMIT finishedIndexingFile(url, false);
+    connect(&m_controller, &ControllerPipe::urlProcessed, this, [this](const QString &url, bool updated, IndexResult::FileStatus status) {
+        Q_EMIT finishedIndexingFile(url, updated, status);
     });
     connect(&m_controller, &ControllerPipe::batchFinished, this, [this]() {
         qCDebug(BALOO) << "Batch finished";

@@ -8,6 +8,8 @@
 #ifndef COMMANDPIPE_H
 #define COMMANDPIPE_H
 
+#include "fileindexresult.h"
+
 #include <QDataStream>
 #include <QObject>
 
@@ -31,8 +33,7 @@ public:
 
 Q_SIGNALS:
     void urlStarted(const QString& url);
-    void urlFinished(const QString& url);
-    void urlFailed(const QString& url);
+    void urlProcessed(const QString &url, bool updated, Baloo::IndexResult::FileStatus status);
     void batchFinished();
 
 public Q_SLOTS:
@@ -51,8 +52,7 @@ public:
     WorkerPipe(QIODevice* commandPipe, QIODevice* statusPipe);
 
     void urlStarted(const QString& url);
-    void urlFinished(const QString& url);
-    void urlFailed(const QString& url);
+    void urlProcessed(const QString &url, bool updated, Baloo::IndexResult::FileStatus status);
     void batchFinished();
 
 public Q_SLOTS:

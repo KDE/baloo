@@ -18,6 +18,7 @@
 int main(int argc, char* argv[])
 {
     using Baloo::Private::WorkerPipe;
+    using FileIndexStatus = Baloo::IndexResult::FileStatus;
 
     QCoreApplication app(argc, argv);
 
@@ -42,7 +43,7 @@ int main(int argc, char* argv[])
                 qCInfo(BALOO) << "Processing ...";
                 for(auto id : ids) {
                     worker.urlStarted(QString::number(id));
-                    worker.urlFinished(QString::number(id));
+                    worker.urlProcessed(QString::number(id), true, FileIndexStatus::Successful);
                 }
                 worker.batchFinished();
                 qCInfo(BALOO) << "Processing done";

@@ -35,6 +35,8 @@ private Q_SLOTS:
     void initTestCase();
 
     void testSignals();
+    void testResults();
+    void testResults_data();
     void testFailedSignal();
     void testExit();
     void testExit_data();
@@ -66,6 +68,8 @@ void ExtractorProcessTest::testSignals()
 
 void ExtractorProcessTest::testFailedSignal()
 {
+    using FileIndexStatus = Baloo::IndexResult::FileStatus;
+
     Baloo::ExtractorProcess extractor{m_workerPath};
     QSignalSpy spyS(&extractor, &ExtractorProcess::startedIndexingFile);
     QSignalSpy spyF(&extractor, &ExtractorProcess::finishedIndexingFile);
@@ -76,9 +80,45 @@ void ExtractorProcessTest::testFailedSignal()
     QCOMPARE(spyS.size(), 2);
     QCOMPARE(spyF.size(), 2);
     QCOMPARE(spyF.at(0).at(0).toString(), QStringLiteral("123"));
-    QCOMPARE(spyF.at(0).at(1).toBool(), true); // success
+    QCOMPARE(spyF.at(0).at(1).toBool(), true); // updated
+    QCOMPARE(spyF.at(0).at(2).value<FileIndexStatus>(), FileIndexStatus::Successful);
     QCOMPARE(spyF.at(1).at(0).toString(), QStringLiteral("23"));
-    QCOMPARE(spyF.at(1).at(1).toBool(), false); // failed
+    QCOMPARE(spyF.at(1).at(1).toBool(), false); // unchanged
+    QCOMPARE(spyF.at(1).at(2).value<FileIndexStatus>(), FileIndexStatus::ErrorExtractionFailed);
+}
+
+void ExtractorProcessTest::testResults()
+{
+    using FileIndexStatus = Baloo::IndexResult::FileStatus;
+
+    QFETCH(quint64, file);
+    QFETCH(Baloo::IndexResult::FileStatus, status);
+
+    Baloo::ExtractorProcess extractor{m_workerPath};
+    QSignalSpy spyS(&extractor, &ExtractorProcess::startedIndexingFile);
+    QSignalSpy spyF(&extractor, &ExtractorProcess::finishedIndexingFile);
+    QSignalSpy spyD(&extractor, &ExtractorProcess::done);
+    QSignalSpy spyX(&extractor, &ExtractorProcess::failed);
+
+    extractor.index({file});
+    QVERIFY(spyD.wait());
+
+    QCOMPARE(spyS.size(), 1);
+    QCOMPARE(spyF.size(), 1);
+    QCOMPARE(spyD.size(), 1);
+    QCOMPARE(spyS.at(0).at(0).toString(), QString::number(file));
+    QCOMPARE(spyF.at(0).at(2).value<FileIndexStatus>(), status);
+}
+
+void ExtractorProcessTest::testResults_data()
+{
+    using FileIndexStatus = Baloo::IndexResult::FileStatus;
+
+    QTest::addColumn<quint64>("file");
+    QTest::addColumn<FileIndexStatus>("status");
+
+    QTest::newRow("Failed") << quint64(20) << FileIndexStatus::ErrorExtractionFailed;
+    QTest::newRow("Finished") << quint64(120) << FileIndexStatus::Successful;
 }
 
 void ExtractorProcessTest::testExit()
