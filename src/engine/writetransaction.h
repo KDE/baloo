@@ -38,13 +38,13 @@ public:
      * returns false. It starts searching from \p parentId, which can be 0 to search
      * through everything.
      *
-     * \arg shouldDelete takes a quint64 as a parameter
+     * \arg shouldDelete takes an absolute path as parameter
      * \ret true if the document (and all its children) has been removed
      *
      * This function should typically be called when there are no other ReadTransaction in process
      * as that would otherwise balloon the size of the database.
      */
-    bool removeRecursively(quint64 parentId, const std::function<bool(quint64)> &shouldDelete);
+    bool removeRecursively(quint64 parentId, const std::function<bool(const QByteArray &)> &shouldDelete);
 
     void replaceDocument(const Document& doc, DocumentOperations operations);
     void commit();
