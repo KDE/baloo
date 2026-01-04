@@ -93,7 +93,7 @@ public:
     void removeRecursively(quint64 parentId);
     void addFailed(quint64 id);
 
-    bool removeRecursively(quint64 parentId, std::function<bool(quint64)> shouldDelete)
+    bool removeRecursively(quint64 parentId, std::function<bool(const QByteArray &)> shouldDelete)
     {
         Q_ASSERT(m_txn);
         Q_ASSERT(m_writeTrans);

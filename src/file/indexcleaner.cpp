@@ -27,14 +27,8 @@ IndexCleaner::IndexCleaner(Database* db, FileIndexerConfig* config)
 
 void IndexCleaner::run()
 {
-    Transaction tr(m_db, Transaction::ReadWrite);
-
-    auto shouldDelete = [&](quint64 id) {
-        if (!id) {
-            return false;
-        }
-
-        const QString url = QFile::decodeName(tr.documentUrl(id));
+    auto shouldDelete = [&](const QByteArray &baUrl) {
+        const QString url = QFile::decodeName(baUrl);
 
         if (!QFile::exists(url)) {
             qCDebug(BALOO) << "not exists: " << url;
@@ -51,12 +45,14 @@ void IndexCleaner::run()
 
     const auto excludeFolders = m_config->excludeFolders();
     for (const QString& folder : excludeFolders) {
+        Transaction tr(m_db, Transaction::ReadWrite);
+
         quint64 id = filePathToId(QFile::encodeName(folder));
         if (id > 0 && tr.hasDocument(id)) {
             tr.removeRecursively(id, shouldDelete);
         }
+        tr.commit();
     }
-    tr.commit();
 
     Q_EMIT done();
 }
