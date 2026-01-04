@@ -114,26 +114,30 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
 
         auto printList = [&out](const QStringList& list) {
             for (const QString& item: list) {
-                out << item << '\n';
+                out << "    " << item << '\n';
             }
         };
 
         if (value.compare(QLatin1String("includeFolders"), Qt::CaseInsensitive) == 0) {
+            out << "includeFolders:\n";
             printList(config.includeFolders());
             return 0;
         }
 
         if (value.compare(QLatin1String("excludeFolders"), Qt::CaseInsensitive) == 0) {
+            out << "excludeFolders:\n";
             printList(config.excludeFolders());
             return 0;
         }
 
         if (value.compare(QStringLiteral("excludeFilters"), Qt::CaseInsensitive) == 0) {
+            out << "excludeFilters:\n";
             printList(config.excludeFilters());
             return 0;
         }
 
         if (value.compare(QStringLiteral("excludeMimetypes"), Qt::CaseInsensitive) == 0) {
+            out << "excludeMimetypes:\n";
             printList(config.excludeMimetypes());
             return 0;
         }
@@ -306,7 +310,7 @@ int ConfigCommand::exec(const QCommandLineParser& parser)
             }
 
             if (config.includeFolders().contains(path)) {
-                out << i18n("%1 is in the list of exclude folders", path) << '\n';
+                out << i18n("%1 is in the list of include folders", path) << '\n';
                 return 1;
             }
 
