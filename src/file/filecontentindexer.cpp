@@ -40,6 +40,8 @@ FileContentIndexer::FileContentIndexer(uint batchSize, //
     , m_extractorPath(QStringLiteral(KDE_INSTALL_FULL_LIBEXECDIR_KF "/baloo_file_extractor"))
 {
     Q_ASSERT(provider);
+    qRegisterMetaType<qint32>("Baloo::IndexResult::Changed");
+    qRegisterMetaType<qint32>("Baloo::IndexResult::FileStatus");
 
     QDBusConnection bus = QDBusConnection::sessionBus();
     m_monitorWatcher.setConnection(bus);
@@ -64,10 +66,15 @@ void FileContentIndexer::run()
             Q_EMIT startedIndexingFile(path);
         }
     });
-    connect(&process, &ExtractorProcess::finishedIndexingFile, this, [this](const QString &path) {
+    connect(&process, &ExtractorProcess::finishedIndexingFile, this, [this](const QString &path, bool updated, auto status) {
         m_currentFile.clear();
         if (!m_registeredMonitors.empty()) {
-            Q_EMIT finishedIndexingFile(path);
+            if (status == IndexResult::FileStatus::Successful) {
+                auto changed = updated ? IndexResult::Updated : IndexResult::Unchanged;
+                Q_EMIT finishedIndexingFile1(path, changed, status);
+            } else {
+                Q_EMIT finishedIndexingFile1(path, IndexResult::Unchanged, status);
+            }
         }
     });
 

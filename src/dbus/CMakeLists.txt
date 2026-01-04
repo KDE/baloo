@@ -58,6 +58,8 @@ qt_generate_dbus_interface(
     ${CMAKE_SOURCE_DIR}/src/file/filecontentindexer.h
     ${contentindexer_xml}
     OPTIONS -a
+        -t Baloo::IndexResult::Changed=i
+        -t Baloo::IndexResult::FileStatus=i
 )
 
 qt_add_dbus_interface(fileindexerinterface_SRCS

@@ -36,7 +36,7 @@ public:
 
 private Q_SLOTS:
     void startedIndexingFile(const QString& filePath);
-    void finishedIndexingFile(const QString& filePath);
+    void finishedIndexingFile(const QString &filePath, int, int);
     void stateChanged(int state);
     void balooIsAvailable();
     void balooIsNotAvailable();

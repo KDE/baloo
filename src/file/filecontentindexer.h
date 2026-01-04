@@ -7,15 +7,18 @@
 #ifndef BALOO_FILECONTENTINDEXER_H
 #define BALOO_FILECONTENTINDEXER_H
 
+#include "fileindexresult.h"
+
 #include <QRunnable>
 #include <QObject>
 #include <QAtomicInt>
 #include <QStringList>
 
-#include <QDBusServiceWatcher>
 #include <QDBusMessage>
+#include <QDBusServiceWatcher>
 
-namespace Baloo {
+namespace Baloo
+{
 
 class FileContentIndexerProvider;
 class TimeEstimator;
@@ -44,6 +47,7 @@ public Q_SLOTS:
 Q_SIGNALS:
     Q_SCRIPTABLE void startedIndexingFile(const QString& filePath);
     Q_SCRIPTABLE void finishedIndexingFile(const QString& filePath);
+    Q_SCRIPTABLE void finishedIndexingFile1(const QString &filePath, Baloo::IndexResult::Changed changed, Baloo::IndexResult::FileStatus fileStatus);
     Q_SCRIPTABLE void committedBatch(uint time, uint batchSize);
 
     void done();
