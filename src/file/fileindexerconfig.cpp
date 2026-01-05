@@ -29,6 +29,25 @@ QString normalizeTrailingSlashes(QString&& path)
     return path;
 }
 
+void updateExcludeFilters(BalooSettings &settings)
+{
+    int version = Baloo::defaultExcludeFilterListVersion();
+
+    // read configured exclude filters
+    QStringList filters = settings.excludedFilters();
+
+    // make sure we always keep the latest default exclude filters
+    // TODO: there is one problem here. What if the user removed some of the default filters?
+    if (settings.excludedFiltersVersion() < version) {
+        filters += Baloo::defaultExcludeFilterList();
+        // in case the cfg entry was empty and filters == defaultExcludeFilterList()
+        filters.removeDuplicates();
+
+        // write the config directly since the KCM does not have support for the version yet
+        settings.setExcludedFilters(filters);
+        settings.setExcludedFiltersVersion(version);
+    }
+}
 }
 
 namespace Baloo
@@ -42,6 +61,7 @@ FileIndexerConfig::FileIndexerConfig(QObject* parent)
     , m_devices(nullptr)
     , m_maxUncomittedFiles(40)
 {
+    updateExcludeFilters(*m_settings);
     forceConfigUpdate();
 }
 
@@ -85,22 +105,7 @@ QStringList FileIndexerConfig::excludeFolders() const
 
 QStringList FileIndexerConfig::excludeFilters() const
 {
-    // read configured exclude filters
-    QStringList filters = m_settings->excludedFilters();
-
-    // make sure we always keep the latest default exclude filters
-    // TODO: there is one problem here. What if the user removed some of the default filters?
-    if (m_settings->excludedFiltersVersion() < defaultExcludeFilterListVersion()) {
-        filters += defaultExcludeFilterList();
-        // in case the cfg entry was empty and filters == defaultExcludeFilterList()
-        filters.removeDuplicates();
-
-        // write the config directly since the KCM does not have support for the version yet
-        m_settings->setExcludedFilters(filters);
-        m_settings->setExcludedFiltersVersion(defaultExcludeFilterListVersion());
-    }
-
-    return filters;
+    return m_settings->excludedFilters();
 }
 
 QStringList FileIndexerConfig::excludeMimetypes() const
