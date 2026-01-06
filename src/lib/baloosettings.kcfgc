@@ -2,6 +2,7 @@ File=baloosettings.kcfg
 ClassName=BalooSettings
 Inherits=KCoreConfigSkeleton
 Mutators=true
+Notifiers=true
 DefaultValueGetters=true
 GenerateProperties=true
 ParentInConstructor=true
