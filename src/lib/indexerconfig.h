@@ -50,20 +50,14 @@ public:
     void setFileIndexingEnabled(bool enabled) const;
 
     /*!
-     * Check if the file or folder \a path should be indexed.
-     *
-     * If itself or its nearest explicitly included or excluded ancestor is
-     * excluded it is not indexed.
-     * Otherwise it is indexed according to the
-     * includeFolders and excludeFilters config.
-     *
-     * Returns \c true if the file or folder at \a path should
-     * be indexed according to the configuration.
-     *
-     * TODO KF6: deprecate, not of any concern for ouside
-     * users. Use \c Baloo::File to know if a file has
+     * \deprecated[6.22]
+     * Use \c Baloo::File to know if a file has
      * been indexed.
+     * Use \c Baloo::IndexerConfig::canBeSearched if
+     * a path contains indexed files.
+     *
      * \sa Baloo::File
+     * \sa Baloo::IndexerConfig::
      */
     bool shouldBeIndexed(const QString& path) const;
 
@@ -144,6 +138,7 @@ public:
     void setOnlyBasicIndexing(bool value);
 
     /*!
+     * \deprecated[6.22]
      *
      */
     void refresh() const;
