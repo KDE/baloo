@@ -8,14 +8,14 @@
 #ifndef EXTRACTOR_APP_H
 #define EXTRACTOR_APP_H
 
-#include <QVector>
 #include <QMimeDatabase>
 #include <QSocketNotifier>
 #include <QFile>
 
-#include <memory>
-
 #include <KFileMetaData/ExtractorCollection>
+
+#include <memory>
+#include <vector>
 
 #include "database.h"
 #include "extractor/commandpipe.h"
@@ -26,7 +26,7 @@ class QString;
 
 namespace Baloo {
 
-class Transaction;
+class Result;
 
 class App : public QObject
 {
@@ -41,7 +41,8 @@ private Q_SLOTS:
     void processNextFile();
 
 private:
-    bool index(Transaction* tr, const QString& filePath, quint64 id);
+    struct BatchInfo;
+    bool index(BatchInfo &info);
 
     QMimeDatabase m_mimeDb;
 
@@ -57,8 +58,20 @@ private:
     KIdleTime* m_idleTime = nullptr;
     bool m_isBusy = true;
 
-    QVector<quint64> m_ids;
-    std::unique_ptr<Transaction> m_tr;
+    enum class IndexState {
+        Pending = 0,
+        DoesNotExist,
+        RemoveIndex,
+        SkipIndex,
+        Succeeded,
+    };
+    struct BatchInfo {
+        quint64 m_id = 0;
+        QByteArray m_path;
+        IndexState m_state = IndexState::Pending;
+        std::unique_ptr<Baloo::Result> m_result;
+    };
+    std::vector<BatchInfo> m_batch;
 };
 
 }
