@@ -9,12 +9,13 @@
 
 #include <iostream>
 
-#include "global.h"
+#include "baloodebug.h"
 #include "database.h"
 #include "fileindexerconfig.h"
-#include "priority.h"
-#include "migrator.h"
+#include "global.h"
 #include "mainhub.h"
+#include "migrator.h"
+#include "priority.h"
 
 #include <QDBusConnection>
 #include <QCoreApplication>
@@ -37,7 +38,7 @@ int main(int argc, char** argv)
     }
 
     if (!QDBusConnection::sessionBus().registerService(QStringLiteral("org.kde.baloo"))) {
-        qWarning() << "Failed to register via dbus. Another instance is running";
+        qCWarning(BALOO) << "Failed to register via dbus. Another instance is running";
         return 1;
     }
 
@@ -68,14 +69,14 @@ int main(int argc, char** argv)
             return 1;
         }
         // delete old stuff, set to initial run!
-        qWarning() << "Failed to create database, removing corrupted database.";
+        qCWarning(BALOO) << "Failed to create database, removing corrupted database.";
         QFile::remove(path + QStringLiteral("/index"));
         QFile::remove(path + QStringLiteral("/index-lock"));
         firstRun = true;
 
         // try to create now after cleanup, if still no works => fail
         if (db->open(Baloo::Database::CreateDatabase) != OpenResult::Success) {
-            qWarning() << "Failed to create database after deleting corrupted one.";
+            qCWarning(BALOO) << "Failed to create database after deleting corrupted one.";
             return 1;
         }
     }
