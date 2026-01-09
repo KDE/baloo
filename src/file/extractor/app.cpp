@@ -77,6 +77,8 @@ void App::slotNewBatch(const QVector<quint64>& ids)
         }
     }
 
+    m_batchTime.start();
+
     QTimer::singleShot((m_isBusy ? 500 : 0), this, [this, db]() {
         processNextFile();
     });
@@ -92,10 +94,16 @@ void App::processNextFile()
         bool indexed = index(*next);
         Q_ASSERT(next->m_state != IndexState::Pending);
 
-        int delay = (m_isBusy && indexed) ? 10 : 0;
-        QTimer::singleShot(delay, this, &App::processNextFile);
+        // Try to commit at least every 2 seconds
+        if (m_batchTime.durationElapsed() < std::chrono::seconds{2}) {
+            int delay = (m_isBusy && indexed) ? 10 : 0;
+            QTimer::singleShot(delay, this, &App::processNextFile);
+            return;
+        }
+    }
 
-    } else {
+    // End of batch, or batch time exceeded, commit
+    {
         Database *db = globalDatabaseInstance();
         if (db->open(Database::ReadWriteDatabase) != Database::OpenResult::Success) {
             qCCritical(BALOO) << "Failed to open the database";
@@ -103,17 +111,22 @@ void App::processNextFile()
         }
         Transaction tr(db, Transaction::ReadWrite);
 
+        size_t pendingCount = 0;
+
         for (auto &info : m_batch) {
             auto result = info.m_result.release();
             switch (info.m_state) {
             case IndexState::DoesNotExist:
             case IndexState::RemoveIndex:
+                info.m_state = IndexState::Committed;
                 tr.removeDocument(info.m_id);
                 break;
             case IndexState::SkipIndex:
+                info.m_state = IndexState::Committed;
                 tr.removePhaseOne(info.m_id);
                 break;
             case IndexState::Succeeded:
+                info.m_state = IndexState::Committed;
                 if (!tr.inPhaseOne(info.m_id)) {
                     // Document was replaced by a document which should
                     // not be indexed, typically by overwriting it.
@@ -132,6 +145,9 @@ void App::processNextFile()
                 tr.removePhaseOne(info.m_id);
                 break;
             case IndexState::Pending:
+                pendingCount++;
+                break;
+            case IndexState::Committed:
                 break;
             }
         }
@@ -140,8 +156,16 @@ void App::processNextFile()
             exit(2);
         }
 
-        m_batch.clear();
-        m_workerPipe.batchFinished();
+        if (pendingCount > 0) {
+            m_batchTime.restart();
+
+            int delay = m_isBusy ? 500 : 0;
+            QTimer::singleShot(delay, this, &App::processNextFile);
+
+        } else {
+            m_batch.clear();
+            m_workerPipe.batchFinished();
+        }
     }
 }
 
