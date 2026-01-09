@@ -8,9 +8,10 @@
 #ifndef EXTRACTOR_APP_H
 #define EXTRACTOR_APP_H
 
+#include <QElapsedTimer>
+#include <QFile>
 #include <QMimeDatabase>
 #include <QSocketNotifier>
-#include <QFile>
 
 #include <KFileMetaData/ExtractorCollection>
 
@@ -64,6 +65,7 @@ private:
         RemoveIndex,
         SkipIndex,
         Succeeded,
+        Committed,
     };
     struct BatchInfo {
         quint64 m_id = 0;
@@ -72,6 +74,7 @@ private:
         std::unique_ptr<Baloo::Result> m_result;
     };
     std::vector<BatchInfo> m_batch;
+    QElapsedTimer m_batchTime;
 };
 
 }
