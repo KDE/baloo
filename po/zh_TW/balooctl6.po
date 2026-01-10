@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:49+0000\n"
+"POT-Creation-Date: 2026-01-10 00:39+0000\n"
 "PO-Revision-Date: 2024-12-29 01:58+0900\n"
 "Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
 "Language-Team: Traditional Chinese <zh-l10n@lists.slat.org>\n"
@@ -93,43 +93,43 @@ msgstr ""
 "以下的設定選項可能會被列出：\n"
 "\n"
 
-#: configcommand.cpp:84 configcommand.cpp:363
+#: configcommand.cpp:84 configcommand.cpp:367
 #, kde-format
 msgid "Controls if Baloo indexes hidden files and folders"
 msgstr "控制 Baloo 是否對隱藏的檔案與資料夾建立索引"
 
-#: configcommand.cpp:85 configcommand.cpp:364
+#: configcommand.cpp:85 configcommand.cpp:368
 #, kde-format
 msgid "Controls if Baloo indexes file content"
 msgstr "控制 baloo 是否對檔案內容建立索引"
 
-#: configcommand.cpp:86 configcommand.cpp:149 configcommand.cpp:240
+#: configcommand.cpp:86 configcommand.cpp:153 configcommand.cpp:244
 #, kde-format
 msgid "The list of folders which Baloo indexes"
 msgstr "Baloo 建立索引的資料夾清單"
 
-#: configcommand.cpp:87 configcommand.cpp:150 configcommand.cpp:241
+#: configcommand.cpp:87 configcommand.cpp:154 configcommand.cpp:245
 #, kde-format
 msgid "The list of folders which Baloo will never index"
 msgstr "Baloo 絕對不會建立索引的資料夾清單"
 
-#: configcommand.cpp:88 configcommand.cpp:151 configcommand.cpp:242
+#: configcommand.cpp:88 configcommand.cpp:155 configcommand.cpp:246
 #, kde-format
 msgid "The list of filters which are used to exclude files"
 msgstr "用來排除檔案的過濾器清單"
 
-#: configcommand.cpp:89 configcommand.cpp:152 configcommand.cpp:243
+#: configcommand.cpp:89 configcommand.cpp:156 configcommand.cpp:247
 #, kde-format
 msgid "The list of mimetypes which are used to exclude files"
 msgstr "用來排除檔案的 MIME 類型清單"
 
-#: configcommand.cpp:141 configcommand.cpp:232 configcommand.cpp:355
-#: configcommand.cpp:425
+#: configcommand.cpp:145 configcommand.cpp:236 configcommand.cpp:359
+#: configcommand.cpp:429
 #, kde-format
 msgid "Config parameter could not be found\n"
 msgstr "找不到 config 參數\n"
 
-#: configcommand.cpp:147 configcommand.cpp:238 configcommand.cpp:361
+#: configcommand.cpp:151 configcommand.cpp:242 configcommand.cpp:365
 #, kde-format
 msgid ""
 "The following configuration options may be modified:\n"
@@ -138,83 +138,89 @@ msgstr ""
 "以下的設定選項可能會被修改：\n"
 "\n"
 
-#: configcommand.cpp:160 configcommand.cpp:180 configcommand.cpp:251
-#: configcommand.cpp:286
+#: configcommand.cpp:164 configcommand.cpp:184 configcommand.cpp:255
+#: configcommand.cpp:290
 #, kde-format
 msgid "A folder must be provided\n"
 msgstr "必須提供一個資料夾\n"
 
-#: configcommand.cpp:168
+#: configcommand.cpp:172
 #, kde-format
 msgid "%1 is not in the list of include folders"
 msgstr "%1 不在包含的資料夾的清單內"
 
-#: configcommand.cpp:188
+#: configcommand.cpp:192
 #, kde-format
 msgid "%1 is not in the list of exclude folders"
 msgstr "%1 不在排除的資料夾的清單內"
 
-#: configcommand.cpp:200 configcommand.cpp:321
+#: configcommand.cpp:204 configcommand.cpp:325
 #, kde-format
 msgid "A filter must be provided\n"
 msgstr "必須提供一個過濾器\n"
 
-#: configcommand.cpp:206
+#: configcommand.cpp:210
 #, kde-format
 msgid "%1 is not in list of exclude filters"
 msgstr "%1 不在排除的過濾器的清單內"
 
-#: configcommand.cpp:217 configcommand.cpp:339
+#: configcommand.cpp:221 configcommand.cpp:343
 #, kde-format
 msgid "A mimetype must be provided\n"
 msgstr "必須提供一個 MIME 類型\n"
 
-#: configcommand.cpp:223
+#: configcommand.cpp:227
 #, kde-format
 msgid "%1 is not in list of exclude mimetypes"
 msgstr "%1 不在排除的 MIME 類型的清單內"
 
-#: configcommand.cpp:257 configcommand.cpp:292
+#: configcommand.cpp:261 configcommand.cpp:296
 #, kde-format
 msgid "Path does not exist\n"
 msgstr "路徑不存在\n"
 
-#: configcommand.cpp:262 configcommand.cpp:297
+#: configcommand.cpp:266 configcommand.cpp:301
 #, kde-format
 msgid "Path is not a directory\n"
 msgstr "路徑並非目錄\n"
 
-#: configcommand.cpp:269
+#: configcommand.cpp:273
 #, kde-format
 msgid "%1 is already in the list of include folders"
 msgstr "%1 已經在包含的資料夾的清單內"
 
-#: configcommand.cpp:274 configcommand.cpp:309
+#: configcommand.cpp:278
 #, kde-format
 msgid "%1 is in the list of exclude folders"
 msgstr "%1 在排除的資料夾的清單內"
 
-#: configcommand.cpp:304
+#: configcommand.cpp:308
 #, kde-format
 msgid "%1 is already in the list of exclude folders"
 msgstr "%1 已經在排除的資料夾的清單內"
 
-#: configcommand.cpp:327
+#: configcommand.cpp:313
+#, fuzzy, kde-format
+#| msgid "%1 is not in the list of include folders"
+msgid "%1 is in the list of include folders"
+msgstr "%1 不在包含的資料夾的清單內"
+
+#: configcommand.cpp:331
 #, kde-format
 msgid "Exclude filter is already in the list\n"
 msgstr "排除過濾器已在清單內\n"
 
-#: configcommand.cpp:345
+#: configcommand.cpp:349
 #, kde-format
 msgid "Exclude mimetype is already in the list\n"
 msgstr "排除 MIME 類型已在清單內\n"
 
-#: configcommand.cpp:373 configcommand.cpp:400
+#: configcommand.cpp:377 configcommand.cpp:404
 #, kde-format
 msgid "A value must be provided\n"
 msgstr "必須提供一個值\n"
 
-#: configcommand.cpp:394 configcommand.cpp:421
+#: configcommand.cpp:398 configcommand.cpp:425
 #, kde-format
 msgid "Invalid value\n"
 msgstr "不合法的值\n"

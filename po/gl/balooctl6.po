@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:49+0000\n"
+"POT-Creation-Date: 2026-01-10 00:39+0000\n"
 "PO-Revision-Date: 2024-12-04 09:46+0100\n"
 "Last-Translator: Adrián Chaves (Gallaecio) <adrian@chaves.io>\n"
 "Language-Team: Proxecto Trasno (proxecto@trasno.gal)\n"
@@ -91,43 +91,43 @@ msgstr ""
 "Pódense listar as seguintes opcións de configuración:\n"
 "\n"
 
-#: configcommand.cpp:84 configcommand.cpp:363
+#: configcommand.cpp:84 configcommand.cpp:367
 #, kde-format
 msgid "Controls if Baloo indexes hidden files and folders"
 msgstr "Controla se Baloo indexa ficheiros e cartafoles agochados."
 
-#: configcommand.cpp:85 configcommand.cpp:364
+#: configcommand.cpp:85 configcommand.cpp:368
 #, kde-format
 msgid "Controls if Baloo indexes file content"
 msgstr "Controla se Baloo indexa o contido dos ficheiros"
 
-#: configcommand.cpp:86 configcommand.cpp:149 configcommand.cpp:240
+#: configcommand.cpp:86 configcommand.cpp:153 configcommand.cpp:244
 #, kde-format
 msgid "The list of folders which Baloo indexes"
 msgstr "A lista de cartafoles que Baloo indexa."
 
-#: configcommand.cpp:87 configcommand.cpp:150 configcommand.cpp:241
+#: configcommand.cpp:87 configcommand.cpp:154 configcommand.cpp:245
 #, kde-format
 msgid "The list of folders which Baloo will never index"
 msgstr "A lista de cartafoles que Baloo non indexa."
 
-#: configcommand.cpp:88 configcommand.cpp:151 configcommand.cpp:242
+#: configcommand.cpp:88 configcommand.cpp:155 configcommand.cpp:246
 #, kde-format
 msgid "The list of filters which are used to exclude files"
 msgstr "A lista de filtros que se usan para excluír ficheiros."
 
-#: configcommand.cpp:89 configcommand.cpp:152 configcommand.cpp:243
+#: configcommand.cpp:89 configcommand.cpp:156 configcommand.cpp:247
 #, kde-format
 msgid "The list of mimetypes which are used to exclude files"
 msgstr "A lista de tipos MIME que se usan para excluír ficheiros."
 
-#: configcommand.cpp:141 configcommand.cpp:232 configcommand.cpp:355
-#: configcommand.cpp:425
+#: configcommand.cpp:145 configcommand.cpp:236 configcommand.cpp:359
+#: configcommand.cpp:429
 #, kde-format
 msgid "Config parameter could not be found\n"
 msgstr "Non foi posíbel atopar o parámetro de configuración indicado.\n"
 
-#: configcommand.cpp:147 configcommand.cpp:238 configcommand.cpp:361
+#: configcommand.cpp:151 configcommand.cpp:242 configcommand.cpp:365
 #, kde-format
 msgid ""
 "The following configuration options may be modified:\n"
@@ -136,83 +136,89 @@ msgstr ""
 "Pódense modificar as seguintes opcións de configuración:\n"
 "\n"
 
-#: configcommand.cpp:160 configcommand.cpp:180 configcommand.cpp:251
-#: configcommand.cpp:286
+#: configcommand.cpp:164 configcommand.cpp:184 configcommand.cpp:255
+#: configcommand.cpp:290
 #, kde-format
 msgid "A folder must be provided\n"
 msgstr "Debe fornecer un cartafol.\n"
 
-#: configcommand.cpp:168
+#: configcommand.cpp:172
 #, kde-format
 msgid "%1 is not in the list of include folders"
 msgstr "%1 non está na lista de cartafoles incluídos."
 
-#: configcommand.cpp:188
+#: configcommand.cpp:192
 #, kde-format
 msgid "%1 is not in the list of exclude folders"
 msgstr "%1 non está na lista de cartafoles excluídos."
 
-#: configcommand.cpp:200 configcommand.cpp:321
+#: configcommand.cpp:204 configcommand.cpp:325
 #, kde-format
 msgid "A filter must be provided\n"
 msgstr "Debe fornecer un filtro.\n"
 
-#: configcommand.cpp:206
+#: configcommand.cpp:210
 #, kde-format
 msgid "%1 is not in list of exclude filters"
 msgstr "%1 non está na lista de filtros excluídos."
 
-#: configcommand.cpp:217 configcommand.cpp:339
+#: configcommand.cpp:221 configcommand.cpp:343
 #, kde-format
 msgid "A mimetype must be provided\n"
 msgstr "Debe fornecer un tipo MIME.\n"
 
-#: configcommand.cpp:223
+#: configcommand.cpp:227
 #, kde-format
 msgid "%1 is not in list of exclude mimetypes"
 msgstr "%1 non está na lista de tipos MIME excluídos."
 
-#: configcommand.cpp:257 configcommand.cpp:292
+#: configcommand.cpp:261 configcommand.cpp:296
 #, kde-format
 msgid "Path does not exist\n"
 msgstr "A ruta non existe.\n"
 
-#: configcommand.cpp:262 configcommand.cpp:297
+#: configcommand.cpp:266 configcommand.cpp:301
 #, kde-format
 msgid "Path is not a directory\n"
 msgstr "A ruta non corresponde a un cartafol.\n"
 
-#: configcommand.cpp:269
+#: configcommand.cpp:273
 #, kde-format
 msgid "%1 is already in the list of include folders"
 msgstr "%1 xa está na lista de cartafoles incluídos."
 
-#: configcommand.cpp:274 configcommand.cpp:309
+#: configcommand.cpp:278
 #, kde-format
 msgid "%1 is in the list of exclude folders"
 msgstr "%1 está na lista de cartafoles excluídos."
 
-#: configcommand.cpp:304
+#: configcommand.cpp:308
 #, kde-format
 msgid "%1 is already in the list of exclude folders"
 msgstr "%1 xa está na lista de cartafoles excluídos."
 
-#: configcommand.cpp:327
+#: configcommand.cpp:313
+#, fuzzy, kde-format
+#| msgid "%1 is not in the list of include folders"
+msgid "%1 is in the list of include folders"
+msgstr "%1 non está na lista de cartafoles incluídos."
+
+#: configcommand.cpp:331
 #, kde-format
 msgid "Exclude filter is already in the list\n"
 msgstr "O filtro de exclusión xa está na lista.\n"
 
-#: configcommand.cpp:345
+#: configcommand.cpp:349
 #, kde-format
 msgid "Exclude mimetype is already in the list\n"
 msgstr "O tipo MIME de exclusión xa está na lista.\n"
 
-#: configcommand.cpp:373 configcommand.cpp:400
+#: configcommand.cpp:377 configcommand.cpp:404
 #, kde-format
 msgid "A value must be provided\n"
 msgstr "Debe fornecer un valor.\n"
 
-#: configcommand.cpp:394 configcommand.cpp:421
+#: configcommand.cpp:398 configcommand.cpp:425
 #, kde-format
 msgid "Invalid value\n"
 msgstr "Este valor é incorrecto\n"

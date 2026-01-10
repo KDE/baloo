@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: balooctl5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:49+0000\n"
+"POT-Creation-Date: 2026-01-10 00:39+0000\n"
 "PO-Revision-Date: 2024-11-24 08:43+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
@@ -94,45 +94,45 @@ msgstr ""
 "Може бути показано список таких параметрів налаштування:\n"
 "\n"
 
-#: configcommand.cpp:84 configcommand.cpp:363
+#: configcommand.cpp:84 configcommand.cpp:367
 #, kde-format
 msgid "Controls if Baloo indexes hidden files and folders"
 msgstr "Керує тим, чи буде Baloo індексувати приховані файли і теки"
 
-#: configcommand.cpp:85 configcommand.cpp:364
+#: configcommand.cpp:85 configcommand.cpp:368
 #, kde-format
 msgid "Controls if Baloo indexes file content"
 msgstr "Керує тим, чи буде Baloo індексувати вміст файлів"
 
-#: configcommand.cpp:86 configcommand.cpp:149 configcommand.cpp:240
+#: configcommand.cpp:86 configcommand.cpp:153 configcommand.cpp:244
 #, kde-format
 msgid "The list of folders which Baloo indexes"
 msgstr "Список тек, які індексує Baloo"
 
-#: configcommand.cpp:87 configcommand.cpp:150 configcommand.cpp:241
+#: configcommand.cpp:87 configcommand.cpp:154 configcommand.cpp:245
 #, kde-format
 msgid "The list of folders which Baloo will never index"
 msgstr "Список тек, які Baloo ніколи не індексує"
 
-#: configcommand.cpp:88 configcommand.cpp:151 configcommand.cpp:242
+#: configcommand.cpp:88 configcommand.cpp:155 configcommand.cpp:246
 #, kde-format
 msgid "The list of filters which are used to exclude files"
 msgstr ""
 "Список фільтрів, які використовуються для виключення файлів з індексування"
 
-#: configcommand.cpp:89 configcommand.cpp:152 configcommand.cpp:243
+#: configcommand.cpp:89 configcommand.cpp:156 configcommand.cpp:247
 #, kde-format
 msgid "The list of mimetypes which are used to exclude files"
 msgstr ""
 "Список типів MIME, які використовуються для виключення файлів з індексування"
 
-#: configcommand.cpp:141 configcommand.cpp:232 configcommand.cpp:355
-#: configcommand.cpp:425
+#: configcommand.cpp:145 configcommand.cpp:236 configcommand.cpp:359
+#: configcommand.cpp:429
 #, kde-format
 msgid "Config parameter could not be found\n"
 msgstr "Не вдалося знайти параметр налаштувань\n"
 
-#: configcommand.cpp:147 configcommand.cpp:238 configcommand.cpp:361
+#: configcommand.cpp:151 configcommand.cpp:242 configcommand.cpp:365
 #, kde-format
 msgid ""
 "The following configuration options may be modified:\n"
@@ -141,83 +141,89 @@ msgstr ""
 "Можна змінювати такі параметри налаштувань:\n"
 "\n"
 
-#: configcommand.cpp:160 configcommand.cpp:180 configcommand.cpp:251
-#: configcommand.cpp:286
+#: configcommand.cpp:164 configcommand.cpp:184 configcommand.cpp:255
+#: configcommand.cpp:290
 #, kde-format
 msgid "A folder must be provided\n"
 msgstr "Слід вказати теку\n"
 
-#: configcommand.cpp:168
+#: configcommand.cpp:172
 #, kde-format
 msgid "%1 is not in the list of include folders"
 msgstr "%1 немає у списку включених тек"
 
-#: configcommand.cpp:188
+#: configcommand.cpp:192
 #, kde-format
 msgid "%1 is not in the list of exclude folders"
 msgstr "%1 немає у списку виключених тек"
 
-#: configcommand.cpp:200 configcommand.cpp:321
+#: configcommand.cpp:204 configcommand.cpp:325
 #, kde-format
 msgid "A filter must be provided\n"
 msgstr "Слід вказати фільтр\n"
 
-#: configcommand.cpp:206
+#: configcommand.cpp:210
 #, kde-format
 msgid "%1 is not in list of exclude filters"
 msgstr "%1 немає у списку фільтрів виключення"
 
-#: configcommand.cpp:217 configcommand.cpp:339
+#: configcommand.cpp:221 configcommand.cpp:343
 #, kde-format
 msgid "A mimetype must be provided\n"
 msgstr "Слід вказати тип MIME\n"
 
-#: configcommand.cpp:223
+#: configcommand.cpp:227
 #, kde-format
 msgid "%1 is not in list of exclude mimetypes"
 msgstr "%1 немає у списку типів MIME виключення"
 
-#: configcommand.cpp:257 configcommand.cpp:292
+#: configcommand.cpp:261 configcommand.cpp:296
 #, kde-format
 msgid "Path does not exist\n"
 msgstr "Шляху не існує\n"
 
-#: configcommand.cpp:262 configcommand.cpp:297
+#: configcommand.cpp:266 configcommand.cpp:301
 #, kde-format
 msgid "Path is not a directory\n"
 msgstr "Вказана адреса не є адресою каталогу\n"
 
-#: configcommand.cpp:269
+#: configcommand.cpp:273
 #, kde-format
 msgid "%1 is already in the list of include folders"
 msgstr "%1 вже є у списку включених тек"
 
-#: configcommand.cpp:274 configcommand.cpp:309
+#: configcommand.cpp:278
 #, kde-format
 msgid "%1 is in the list of exclude folders"
 msgstr "%1 є у списку виключених тек"
 
-#: configcommand.cpp:304
+#: configcommand.cpp:308
 #, kde-format
 msgid "%1 is already in the list of exclude folders"
 msgstr "%1 вже є у списку виключених тек"
 
-#: configcommand.cpp:327
+#: configcommand.cpp:313
+#, fuzzy, kde-format
+#| msgid "%1 is not in the list of include folders"
+msgid "%1 is in the list of include folders"
+msgstr "%1 немає у списку включених тек"
+
+#: configcommand.cpp:331
 #, kde-format
 msgid "Exclude filter is already in the list\n"
 msgstr "Фільтр виключення вже є у списку\n"
 
-#: configcommand.cpp:345
+#: configcommand.cpp:349
 #, kde-format
 msgid "Exclude mimetype is already in the list\n"
 msgstr "Тип MIME виключення вже є у списку\n"
 
-#: configcommand.cpp:373 configcommand.cpp:400
+#: configcommand.cpp:377 configcommand.cpp:404
 #, kde-format
 msgid "A value must be provided\n"
 msgstr "Слід вказати значення\n"
 
-#: configcommand.cpp:394 configcommand.cpp:421
+#: configcommand.cpp:398 configcommand.cpp:425
 #, kde-format
 msgid "Invalid value\n"
 msgstr "Некоректне значення\n"

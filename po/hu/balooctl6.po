@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:49+0000\n"
+"POT-Creation-Date: 2026-01-10 00:39+0000\n"
 "PO-Revision-Date: 2025-01-30 10:33+0100\n"
 "Last-Translator: Kristof Kiszel <ulysses@fsf.hu>\n"
 "Language-Team: Hungarian <kde-l10n-hu@kde.org>\n"
@@ -92,44 +92,44 @@ msgstr ""
 "Az alábbi konfigurációs beállítások kerülhetnek listázásra:\n"
 "\n"
 
-#: configcommand.cpp:84 configcommand.cpp:363
+#: configcommand.cpp:84 configcommand.cpp:367
 #, kde-format
 msgid "Controls if Baloo indexes hidden files and folders"
 msgstr ""
 "Megadja, hogy a Baloo indexelje-e a rejtett fájlokat és mappákat, vagy sem."
 
-#: configcommand.cpp:85 configcommand.cpp:364
+#: configcommand.cpp:85 configcommand.cpp:368
 #, kde-format
 msgid "Controls if Baloo indexes file content"
 msgstr "Megadja, hogy a Baloo indexelje-e a fájlok  tartalmát"
 
-#: configcommand.cpp:86 configcommand.cpp:149 configcommand.cpp:240
+#: configcommand.cpp:86 configcommand.cpp:153 configcommand.cpp:244
 #, kde-format
 msgid "The list of folders which Baloo indexes"
 msgstr "A mappák listája, amiket a Baloo indexel"
 
-#: configcommand.cpp:87 configcommand.cpp:150 configcommand.cpp:241
+#: configcommand.cpp:87 configcommand.cpp:154 configcommand.cpp:245
 #, kde-format
 msgid "The list of folders which Baloo will never index"
 msgstr "A mappák listája, amiket a Baloo soha nem fog indexelni"
 
-#: configcommand.cpp:88 configcommand.cpp:151 configcommand.cpp:242
+#: configcommand.cpp:88 configcommand.cpp:155 configcommand.cpp:246
 #, kde-format
 msgid "The list of filters which are used to exclude files"
 msgstr "A fájlok kizárására használt szűrők listája"
 
-#: configcommand.cpp:89 configcommand.cpp:152 configcommand.cpp:243
+#: configcommand.cpp:89 configcommand.cpp:156 configcommand.cpp:247
 #, kde-format
 msgid "The list of mimetypes which are used to exclude files"
 msgstr "A féjlok kizárására használt MIME-típusok listája"
 
-#: configcommand.cpp:141 configcommand.cpp:232 configcommand.cpp:355
-#: configcommand.cpp:425
+#: configcommand.cpp:145 configcommand.cpp:236 configcommand.cpp:359
+#: configcommand.cpp:429
 #, kde-format
 msgid "Config parameter could not be found\n"
 msgstr "A konfigurációs paraméter nem található\n"
 
-#: configcommand.cpp:147 configcommand.cpp:238 configcommand.cpp:361
+#: configcommand.cpp:151 configcommand.cpp:242 configcommand.cpp:365
 #, kde-format
 msgid ""
 "The following configuration options may be modified:\n"
@@ -138,83 +138,89 @@ msgstr ""
 "Az alábbi konfigurációs beállítások módosulhatnak:\n"
 "\n"
 
-#: configcommand.cpp:160 configcommand.cpp:180 configcommand.cpp:251
-#: configcommand.cpp:286
+#: configcommand.cpp:164 configcommand.cpp:184 configcommand.cpp:255
+#: configcommand.cpp:290
 #, kde-format
 msgid "A folder must be provided\n"
 msgstr "Mappát kell megadni\n"
 
-#: configcommand.cpp:168
+#: configcommand.cpp:172
 #, kde-format
 msgid "%1 is not in the list of include folders"
 msgstr "A(z) %1 nincs a mappák listájában"
 
-#: configcommand.cpp:188
+#: configcommand.cpp:192
 #, kde-format
 msgid "%1 is not in the list of exclude folders"
 msgstr "A(z) %1 nincs a kizáró mappák listájában"
 
-#: configcommand.cpp:200 configcommand.cpp:321
+#: configcommand.cpp:204 configcommand.cpp:325
 #, kde-format
 msgid "A filter must be provided\n"
 msgstr "Szűrőt kell megadni\n"
 
-#: configcommand.cpp:206
+#: configcommand.cpp:210
 #, kde-format
 msgid "%1 is not in list of exclude filters"
 msgstr "A(z) %1 nincs a kizáró szűrők listájában"
 
-#: configcommand.cpp:217 configcommand.cpp:339
+#: configcommand.cpp:221 configcommand.cpp:343
 #, kde-format
 msgid "A mimetype must be provided\n"
 msgstr "MIME-típus megadása szükséges\n"
 
-#: configcommand.cpp:223
+#: configcommand.cpp:227
 #, kde-format
 msgid "%1 is not in list of exclude mimetypes"
 msgstr "A(z) %1 nincs a kizáró MIME-típusok listájában"
 
-#: configcommand.cpp:257 configcommand.cpp:292
+#: configcommand.cpp:261 configcommand.cpp:296
 #, kde-format
 msgid "Path does not exist\n"
 msgstr "Az elérési út nem létezik\n"
 
-#: configcommand.cpp:262 configcommand.cpp:297
+#: configcommand.cpp:266 configcommand.cpp:301
 #, kde-format
 msgid "Path is not a directory\n"
 msgstr "Az elérési út nem mappa\n"
 
-#: configcommand.cpp:269
+#: configcommand.cpp:273
 #, kde-format
 msgid "%1 is already in the list of include folders"
 msgstr "A(z) %1 már a mappák listájában van"
 
-#: configcommand.cpp:274 configcommand.cpp:309
+#: configcommand.cpp:278
 #, kde-format
 msgid "%1 is in the list of exclude folders"
 msgstr "A(z) %1 a kizáró mappák listájában"
 
-#: configcommand.cpp:304
+#: configcommand.cpp:308
 #, kde-format
 msgid "%1 is already in the list of exclude folders"
 msgstr "A(z) %1 már a kizáró mappák listájában van"
 
-#: configcommand.cpp:327
+#: configcommand.cpp:313
+#, fuzzy, kde-format
+#| msgid "%1 is not in the list of include folders"
+msgid "%1 is in the list of include folders"
+msgstr "A(z) %1 nincs a mappák listájában"
+
+#: configcommand.cpp:331
 #, kde-format
 msgid "Exclude filter is already in the list\n"
 msgstr "A kizáró szűrő már a listában van\n"
 
-#: configcommand.cpp:345
+#: configcommand.cpp:349
 #, kde-format
 msgid "Exclude mimetype is already in the list\n"
 msgstr "A kizáró MIME-típus már a listában van\n"
 
-#: configcommand.cpp:373 configcommand.cpp:400
+#: configcommand.cpp:377 configcommand.cpp:404
 #, kde-format
 msgid "A value must be provided\n"
 msgstr "Meg kell adni egy értéket\n"
 
-#: configcommand.cpp:394 configcommand.cpp:421
+#: configcommand.cpp:398 configcommand.cpp:425
 #, kde-format
 msgid "Invalid value\n"
 msgstr "Érvénytelen érték\n"
