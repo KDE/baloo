@@ -23,15 +23,15 @@
 
 using namespace Baloo;
 
-FileIndexScheduler::FileIndexScheduler(Database* db, FileIndexerConfig* config, bool firstRun, QObject* parent)
+FileIndexScheduler::FileIndexScheduler(Database *db, FileIndexerConfig *config, bool firstRun, QObject *parent)
     : QObject(parent)
     , m_db(db)
     , m_config(config)
     , m_provider(db)
     , m_contentIndexer(nullptr)
     , m_indexerState(Startup)
-    , m_checkUnindexedFiles(false)
-    , m_checkStaleIndexEntries(false)
+    , m_checkUnindexedFiles(true)
+    , m_checkStaleIndexEntries(true)
     , m_isGoingIdle(false)
     , m_isSuspended(false)
     , m_isFirstRun(firstRun)
@@ -93,6 +93,10 @@ void FileIndexScheduler::scheduleIndexing()
         }
 
         m_isFirstRun = false;
+        // Not necessary immediately after initial run
+        m_checkStaleIndexEntries = false;
+        m_checkUnindexedFiles = false;
+
         auto runnable = new FirstRunIndexer(m_db, m_config, m_config->includeFolders());
         connect(runnable, &FirstRunIndexer::done, this, &FileIndexScheduler::runnerFinished);
 
@@ -273,20 +277,10 @@ uint FileIndexScheduler::getRemainingTime()
     return m_timeEstimator.calculateTimeLeft();
 }
 
-void FileIndexScheduler::scheduleCheckUnindexedFiles()
-{
-    m_checkUnindexedFiles = true;
-}
-
 void FileIndexScheduler::checkUnindexedFiles()
 {
     m_checkUnindexedFiles = true;
     scheduleIndexing();
-}
-
-void FileIndexScheduler::scheduleCheckStaleIndexEntries()
-{
-    m_checkStaleIndexEntries = true;
 }
 
 void FileIndexScheduler::checkStaleIndexEntries()
