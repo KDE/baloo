@@ -45,10 +45,6 @@ FileIndexScheduler::FileIndexScheduler(Database *db, FileIndexerConfig *config, 
     connect(&m_powerMonitor, &PowerStateMonitor::powerManagementStatusChanged,
             this, &FileIndexScheduler::powerManagementStatusChanged);
 
-    if (m_powerMonitor.isOnBattery()) {
-        m_indexerState = LowPowerIdle;
-    }
-
     m_contentIndexer = new FileContentIndexer(m_config->maxUncomittedFiles(), &m_provider, m_timeEstimator, this);
     m_contentIndexer->setAutoDelete(false);
     connect(m_contentIndexer, &FileContentIndexer::done, this,
@@ -59,6 +55,7 @@ FileIndexScheduler::FileIndexScheduler(Database *db, FileIndexerConfig *config, 
 
     QDBusConnection::sessionBus().registerObject(QStringLiteral("/scheduler"),
                                                  this, QDBusConnection::ExportScriptableContents);
+    Q_EMIT stateChanged(m_indexerState);
 }
 
 FileIndexScheduler::~FileIndexScheduler()
@@ -139,18 +136,18 @@ void FileIndexScheduler::scheduleIndexing()
         return;
     }
 
-    // No housekeeping, no content indexing
-    if (m_powerMonitor.isOnBattery()) {
-        if (m_indexerState != LowPowerIdle) {
-            m_indexerState = LowPowerIdle;
+    if (m_inStartup) {
+        if (m_indexerState != Startup) {
+            m_indexerState = Startup;
             Q_EMIT stateChanged(m_indexerState);
         }
         return;
     }
 
-    if (m_inStartup) {
-        if (m_indexerState != Startup) {
-            m_indexerState = Startup;
+    // No housekeeping, no content indexing
+    if (m_powerMonitor.isOnBattery()) {
+        if (m_indexerState != LowPowerIdle) {
+            m_indexerState = LowPowerIdle;
             Q_EMIT stateChanged(m_indexerState);
         }
         return;
