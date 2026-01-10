@@ -74,8 +74,6 @@ public Q_SLOTS:
 
     void updateConfig();
     void scheduleIndexing();
-    void scheduleCheckUnindexedFiles();
-    void scheduleCheckStaleIndexEntries();
     void startupFinished();
 
     Q_SCRIPTABLE void suspend() { setSuspend(true); }

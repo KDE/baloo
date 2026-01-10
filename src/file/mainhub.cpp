@@ -32,18 +32,12 @@ MainHub::MainHub(Database *db, FileIndexerConfig *config, bool firstRun)
     bus.registerObject(QStringLiteral("/"), this, QDBusConnection::ExportAllSlots |
                         QDBusConnection::ExportScriptableSignals | QDBusConnection::ExportAdaptors);
 
-    if (firstRun) {
-        QTimer::singleShot(5000, this, [this] {
-            m_fileIndexScheduler.startupFinished();
-        });
-    } else {
-        // Delay these checks so we don't end up consuming excessive resources on login
-        QTimer::singleShot(5000, this, [this] {
-            m_fileIndexScheduler.checkUnindexedFiles();
-            m_fileIndexScheduler.checkStaleIndexEntries();
-            m_fileIndexScheduler.startupFinished();
-        });
-    }
+    QTimer::singleShot(5000, this, [this] {
+        // Delay expensive housekeeping and content indexing
+        // so we don't end up consuming excessive resources on login
+        m_fileIndexScheduler.startupFinished();
+    });
+
     QTimer::singleShot(0, &m_fileWatcher, &FileWatch::updateIndexedFoldersWatches);
 }
 
