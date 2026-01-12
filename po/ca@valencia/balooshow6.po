@@ -96,7 +96,7 @@ msgstr "%1: No és un URL o un ID de document vàlid"
 #: main.cpp:153
 #, kde-format
 msgid "%1: Failed to parse inode number"
-msgstr "%1: No s'ha pogut analitzar el número d'«inode»"
+msgstr "%1: Ha fallat durant l'anàlisi del número d'«inode»"
 
 #: main.cpp:177
 #, kde-format
