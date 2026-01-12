@@ -456,7 +456,7 @@ msgstr "Fitxers en espera de la indexació del contingut: %1"
 #: statuscommand.cpp:322
 #, kde-format
 msgid "Files failed to index: %1"
-msgstr "Fitxers que han fallat en la indexació: %1"
+msgstr "Fitxers que han fallat durant la indexació: %1"
 
 #: statuscommand.cpp:330
 #, kde-format
