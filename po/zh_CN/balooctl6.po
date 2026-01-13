@@ -197,10 +197,9 @@ msgid "%1 is already in the list of exclude folders"
 msgstr "%1 已经在排除的文件夹列表中"
 
 #: configcommand.cpp:313
-#, fuzzy, kde-format
-#| msgid "%1 is not in the list of include folders"
+#, kde-format
 msgid "%1 is in the list of include folders"
-msgstr "%1 不在包含文件夹的列表中"
+msgstr ""
 
 #: configcommand.cpp:331
 #, kde-format

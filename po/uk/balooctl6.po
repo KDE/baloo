@@ -3,13 +3,13 @@
 # This file is distributed under the license LGPL version 2.1 or
 # version 3 or later versions approved by the membership of KDE e.V.
 #
-# Yuri Chornoivan <yurchor@ukr.net>, 2014, 2015, 2017, 2018, 2019, 2020, 2024.
+# Yuri Chornoivan <yurchor@ukr.net>, 2014, 2015, 2017, 2018, 2019, 2020, 2024, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: balooctl5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-01-10 00:39+0000\n"
-"PO-Revision-Date: 2024-11-24 08:43+0200\n"
+"PO-Revision-Date: 2026-01-12 03:04+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -203,10 +203,9 @@ msgid "%1 is already in the list of exclude folders"
 msgstr "%1 вже є у списку виключених тек"
 
 #: configcommand.cpp:313
-#, fuzzy, kde-format
-#| msgid "%1 is not in the list of include folders"
+#, kde-format
 msgid "%1 is in the list of include folders"
-msgstr "%1 немає у списку включених тек"
+msgstr "%1 є у списку включених тек"
 
 #: configcommand.cpp:331
 #, kde-format
