@@ -1,14 +1,14 @@
 # Copyright (C) YEAR This_file_is_part_of_KDE
 # This file is distributed under the same license as the PACKAGE package.
 # Safa Alfulaij <safa1996alfulaij@gmail.com>, 2015, 2015, 2017, 2018.
-# SPDX-FileCopyrightText: 2021, 2024, 2025 Zayed Al-Saidi <zayed.alsaidi@gmail.com>
+# SPDX-FileCopyrightText: 2021, 2024, 2025, 2026 Zayed Al-Saidi <zayed.alsaidi@gmail.com>
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-01-10 00:39+0000\n"
-"PO-Revision-Date: 2025-08-03 23:27+0400\n"
+"PO-Revision-Date: 2026-01-14 07:19+0400\n"
 "Last-Translator: Zayed Al-Saidi <zayed.alsaidi@gmail.com>\n"
 "Language-Team: ar\n"
 "Language: ar\n"
@@ -199,10 +199,9 @@ msgid "%1 is already in the list of exclude folders"
 msgstr "المسار %1 موجود فعلًا في قائمة مجلدات الاستثناء"
 
 #: configcommand.cpp:313
-#, fuzzy, kde-format
-#| msgid "%1 is not in the list of include folders"
+#, kde-format
 msgid "%1 is in the list of include folders"
-msgstr "ليس %1 في قائمة مجلّدات التضمين"
+msgstr "%1 في قائمة مجلّدات التضمين"
 
 #: configcommand.cpp:331
 #, kde-format
