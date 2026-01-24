@@ -336,21 +336,21 @@ PostingIterator* Transaction::postingIterator(const EngineQuery& query) const
             qCDebug(ENGINE) << "Degenerated Phrase with 1 Term:" <<  query;
             return postingIterator(subQueries[0]);
         }
-        QVector<VectorPositionInfoIterator*> vec;
+        std::vector<std::unique_ptr<VectorPositionInfoIterator>> vec;
         vec.reserve(subQueries.size());
         for (const EngineQuery& q : subQueries) {
             if (!q.leaf()) {
                 qCDebug(ENGINE) << "Transaction::toPostingIterator" << "Phrase subqueries must be leafs";
                 continue;
             }
-            auto termMatch = positionDb.iter(q.term());
+            auto termMatch = std::unique_ptr<VectorPositionInfoIterator>(positionDb.iter(q.term()));
             if (!termMatch) {
                 return nullptr;
             }
-            vec << termMatch;
+            vec.push_back(std::move(termMatch));
         }
 
-        return new PhraseAndIterator(vec);
+        return new PhraseAndIterator(std::move(vec));
     }
 
     return nullptr;

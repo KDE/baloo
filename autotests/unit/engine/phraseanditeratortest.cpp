@@ -51,11 +51,11 @@ void PhraseAndIteratorTest::test()
     QVector<PositionInfo> vec2;
     vec2 << pi2_2 << pi4_2 << pi7_2;
 
-    VectorPositionInfoIterator* it1 = new VectorPositionInfoIterator(vec1);
-    VectorPositionInfoIterator* it2 = new VectorPositionInfoIterator(vec2);
+    std::vector<std::unique_ptr<VectorPositionInfoIterator>> vec;
+    vec.push_back(std::make_unique<VectorPositionInfoIterator>(vec1));
+    vec.push_back(std::make_unique<VectorPositionInfoIterator>(vec2));
 
-    QVector<VectorPositionInfoIterator*> vec = {it1, it2};
-    PhraseAndIterator it(vec);
+    PhraseAndIterator it(std::move(vec));
     QCOMPARE(it.docId(), static_cast<quint64>(0));
 
     // The Query is "term1 term2". term1 must appear one position before term2
@@ -86,11 +86,12 @@ void PhraseAndIteratorTest::testNullIterators()
     QVector<PositionInfo> vec2;
     vec2 << pi2_2;
 
-    VectorPositionInfoIterator* it1 = new VectorPositionInfoIterator(vec1);
-    VectorPositionInfoIterator* it2 = new VectorPositionInfoIterator(vec2);
+    std::vector<std::unique_ptr<VectorPositionInfoIterator>> vec;
+    vec.push_back(std::make_unique<VectorPositionInfoIterator>(vec1));
+    vec.push_back(nullptr);
+    vec.push_back(std::make_unique<VectorPositionInfoIterator>(vec2));
 
-    QVector<VectorPositionInfoIterator*> vec = {it1, nullptr, it2};
-    PhraseAndIterator it(vec);
+    PhraseAndIterator it(std::move(vec));
     QCOMPARE(it.docId(), static_cast<quint64>(0));
     QCOMPARE(it.next(), static_cast<quint64>(0));
     QCOMPARE(it.docId(), static_cast<quint64>(0));

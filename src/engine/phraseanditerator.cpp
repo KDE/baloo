@@ -8,22 +8,22 @@
 #include "phraseanditerator.h"
 #include "positioninfo.h"
 
+#include <ranges>
+
 using namespace Baloo;
 
-PhraseAndIterator::PhraseAndIterator(const QVector<VectorPositionInfoIterator*>& iterators)
-    : m_iterators(iterators)
+PhraseAndIterator::PhraseAndIterator(std::vector<std::unique_ptr<VectorPositionInfoIterator>> &&iterators)
+    : m_iterators(std::move(iterators))
     , m_docId(0)
 {
-    if (m_iterators.contains(nullptr)) {
-        qDeleteAll(m_iterators);
+    if (std::ranges::any_of(m_iterators, [](const auto &e) {
+            return e == nullptr;
+        })) {
         m_iterators.clear();
     }
 }
 
-PhraseAndIterator::~PhraseAndIterator()
-{
-    qDeleteAll(m_iterators);
-}
+PhraseAndIterator::~PhraseAndIterator() = default;
 
 quint64 PhraseAndIterator::docId() const
 {
@@ -42,7 +42,7 @@ bool PhraseAndIterator::checkIfPositionsMatch()
     Position lower_bound = 0;
 
     while (offsets[0] < firstPositions.size()) {
-        for (int i = 0; i < m_iterators.size(); i++) {
+        for (size_t i = 0; i < m_iterators.size(); i++) {
             const auto positions = m_iterators[i]->positions();
             Offset off = offsets[i];
 
@@ -63,7 +63,7 @@ bool PhraseAndIterator::checkIfPositionsMatch()
 
         if (lower_bound == firstPositions[offsets[0]]) {
             // lower_bound has not changed, i.e. all offsets are aligned
-            for (int i = 0; i < m_iterators.size(); i++) {
+            for (size_t i = 0; i < m_iterators.size(); i++) {
                 auto positions = m_iterators[i]->positions();
             }
             return true;
@@ -76,14 +76,14 @@ bool PhraseAndIterator::checkIfPositionsMatch()
 
 quint64 PhraseAndIterator::skipTo(quint64 id)
 {
-    if (m_iterators.isEmpty()) {
+    if (m_iterators.empty()) {
         m_docId = 0;
         return 0;
     }
 
     while (true) {
         quint64 lower_bound = id;
-        for (PostingIterator* iter : std::as_const(m_iterators)) {
+        for (auto &iter : std::as_const(m_iterators)) {
             lower_bound = iter->skipTo(lower_bound);
 
             if (lower_bound == 0) {
@@ -97,7 +97,7 @@ quint64 PhraseAndIterator::skipTo(quint64 id)
                 m_docId = lower_bound;
                 return lower_bound;
             } else {
-                lower_bound = m_iterators[0]->next();
+                lower_bound = m_iterators.at(0)->next();
             }
         }
         id = lower_bound;
@@ -106,12 +106,12 @@ quint64 PhraseAndIterator::skipTo(quint64 id)
 
 quint64 PhraseAndIterator::next()
 {
-    if (m_iterators.isEmpty()) {
+    if (m_iterators.empty()) {
         m_docId = 0;
         return 0;
     }
 
-    m_docId = m_iterators[0]->next();
+    m_docId = m_iterators.at(0)->next();
     m_docId = skipTo(m_docId);
 
     return m_docId;

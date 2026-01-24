@@ -11,14 +11,15 @@
 #include "postingiterator.h"
 #include "vectorpositioninfoiterator.h"
 
-#include <QVector>
+#include <memory>
+#include <vector>
 
 namespace Baloo {
 
 class BALOO_ENGINE_EXPORT PhraseAndIterator : public PostingIterator
 {
 public:
-    explicit PhraseAndIterator(const QVector<VectorPositionInfoIterator*>& iterators);
+    explicit PhraseAndIterator(std::vector<std::unique_ptr<VectorPositionInfoIterator>> &&iterators);
     ~PhraseAndIterator();
 
     quint64 next() override;
@@ -26,7 +27,7 @@ public:
     quint64 skipTo(quint64 docId) override;
 
 private:
-    QVector<VectorPositionInfoIterator*> m_iterators;
+    std::vector<std::unique_ptr<VectorPositionInfoIterator>> m_iterators;
     quint64 m_docId;
 
     BALOO_ENGINE_NO_EXPORT bool checkIfPositionsMatch();
