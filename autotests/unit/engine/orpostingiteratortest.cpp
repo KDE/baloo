@@ -26,12 +26,13 @@ void OrPostingIteratorTest::test()
     QVector<quint64> l2 = {3, 4, 5, 7, 9, 11};
     QVector<quint64> l3 = {1, 3, 7};
 
-    VectorPostingIterator* it1 = new VectorPostingIterator(l1);
-    VectorPostingIterator* it2 = new VectorPostingIterator(l2);
-    VectorPostingIterator* it3 = new VectorPostingIterator(l3);
+    std::vector<std::unique_ptr<PostingIterator>> vec;
 
-    QVector<PostingIterator*> vec = {it1, it2, it3};
-    OrPostingIterator it(vec);
+    vec.push_back(std::make_unique<VectorPostingIterator>(l1));
+    vec.push_back(std::make_unique<VectorPostingIterator>(l2));
+    vec.push_back(std::make_unique<VectorPostingIterator>(l3));
+
+    OrPostingIterator it(std::move(vec));
     QCOMPARE(it.docId(), static_cast<quint64>(0));
 
     QVector<quint64> result = {1, 3, 4, 5, 7, 9, 11};
@@ -49,12 +50,15 @@ void OrPostingIteratorTest::testNullIterators()
     QVector<quint64> l2 = {3, 4, 5, 7, 9, 11};
     QVector<quint64> l3 = {1, 3, 7};
 
-    VectorPostingIterator* it1 = new VectorPostingIterator(l1);
-    VectorPostingIterator* it2 = new VectorPostingIterator(l2);
-    VectorPostingIterator* it3 = new VectorPostingIterator(l3);
+    std::vector<std::unique_ptr<PostingIterator>> vec;
 
-    QVector<PostingIterator*> vec = {it1, nullptr, it2, nullptr, it3};
-    OrPostingIterator it(vec);
+    vec.push_back(std::make_unique<VectorPostingIterator>(l1));
+    vec.push_back(nullptr);
+    vec.push_back(std::make_unique<VectorPostingIterator>(l2));
+    vec.push_back(nullptr);
+    vec.push_back(std::make_unique<VectorPostingIterator>(l3));
+
+    OrPostingIterator it(std::move(vec));
     QCOMPARE(it.docId(), static_cast<quint64>(0));
 
     QVector<quint64> result = {1, 3, 4, 5, 7, 9, 11};

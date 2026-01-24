@@ -27,14 +27,16 @@ void PostingIteratorTest::test()
     QVector<quint64> l2 = {2, 3, 4, 9, 11};
     QVector<quint64> l3 = {4, 7};
 
-    VectorPostingIterator* it1 = new VectorPostingIterator(l1);
-    VectorPostingIterator* it2 = new VectorPostingIterator(l2);
-    VectorPostingIterator* it3 = new VectorPostingIterator(l3);
+    std::vector<std::unique_ptr<PostingIterator>> orvec;
+    orvec.push_back(std::make_unique<VectorPostingIterator>(l2));
+    orvec.push_back(std::make_unique<VectorPostingIterator>(l3));
 
-    QVector<PostingIterator*> orvec = {it2, it3};
-    OrPostingIterator* orit = new OrPostingIterator(orvec);
-    QVector<PostingIterator*> andvec = {it1, orit};
-    AndPostingIterator it(andvec);
+    // {l1} AND ({l2} OR {l3})
+    std::vector<std::unique_ptr<PostingIterator>> andvec;
+    andvec.push_back(std::make_unique<VectorPostingIterator>(l1));
+    andvec.push_back(std::make_unique<OrPostingIterator>(std::move(orvec)));
+
+    AndPostingIterator it(std::move(andvec));
     QCOMPARE(it.docId(), static_cast<quint64>(0));
 
     QVector<quint64> result = {3, 7};
@@ -52,14 +54,16 @@ void PostingIteratorTest::test2()
     QVector<quint64> l2 = {2, 3, 4, 9, 11};
     QVector<quint64> l3 = {3, 7};
 
-    VectorPostingIterator* it1 = new VectorPostingIterator(l1);
-    VectorPostingIterator* it2 = new VectorPostingIterator(l2);
-    VectorPostingIterator* it3 = new VectorPostingIterator(l3);
+    std::vector<std::unique_ptr<PostingIterator>> orvec;
+    orvec.push_back(std::make_unique<VectorPostingIterator>(l2));
+    orvec.push_back(std::make_unique<VectorPostingIterator>(l3));
 
-    QVector<PostingIterator*> orvec = {new OrPostingIterator({it2}), new OrPostingIterator({it3}) };
-    OrPostingIterator* orit = new OrPostingIterator(orvec);
-    QVector<PostingIterator*> andvec = {it1, orit};
-    AndPostingIterator it(andvec);
+    // {l1} AND ({l2} OR {l3})
+    std::vector<std::unique_ptr<PostingIterator>> andvec;
+    andvec.push_back(std::make_unique<VectorPostingIterator>(l1));
+    andvec.push_back(std::make_unique<OrPostingIterator>(std::move(orvec)));
+
+    AndPostingIterator it(std::move(andvec));
     QCOMPARE(it.docId(), static_cast<quint64>(0));
 
     QVector<quint64> result = {3, 7};

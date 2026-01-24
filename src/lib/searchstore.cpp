@@ -235,29 +235,29 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
 
     if (term.operation() == Term::And || term.operation() == Term::Or) {
         const QList<Term> subTerms = term.subTerms();
-        QVector<PostingIterator*> vec;
+        std::vector<std::unique_ptr<PostingIterator>> vec;
         vec.reserve(subTerms.size());
 
         for (const Term& t : subTerms) {
-            auto iterator = constructQuery(tr, t);
+            auto iterator = std::unique_ptr<PostingIterator>(constructQuery(tr, t));
             // constructQuery returns a nullptr to signal an empty list
             if (iterator) {
-                vec << iterator;
+                vec.push_back(std::move(iterator));
             } else if (term.operation() == Term::And) {
                 return nullptr;
             }
         }
 
-        if (vec.isEmpty()) {
+        if (vec.empty()) {
             return nullptr;
         } else if (vec.size() == 1) {
-            return vec.takeFirst();
+            return vec.front().release();
         }
 
         if (term.operation() == Term::And) {
-            return new AndPostingIterator(vec);
+            return new AndPostingIterator(std::move(vec));
         } else {
-            return new OrPostingIterator(vec);
+            return new OrPostingIterator(std::move(vec));
         }
     }
 

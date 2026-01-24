@@ -171,7 +171,7 @@ PostingIterator* PostingDB::iter(const QByteArray& prefix, Validator validate)
         return nullptr;
     }
 
-    QVector<PostingIterator*> termIterators;
+    std::vector<std::unique_ptr<PostingIterator>> termIterators;
 
     MDB_val val;
     rc = mdb_cursor_get(cursor, &key, &val, MDB_SET_RANGE);
@@ -182,7 +182,7 @@ PostingIterator* PostingDB::iter(const QByteArray& prefix, Validator validate)
         }
         if (validate(arr)) {
             auto values = QByteArray::fromRawData(static_cast<char *>(val.mv_data), val.mv_size);
-            termIterators << new VectorPostingIterator(PostingCodec().decode(values));
+            termIterators.push_back(std::make_unique<VectorPostingIterator>(PostingCodec().decode(values)));
         }
         rc = mdb_cursor_get(cursor, &key, &val, MDB_NEXT);
     }
@@ -192,10 +192,10 @@ PostingIterator* PostingDB::iter(const QByteArray& prefix, Validator validate)
     }
 
     mdb_cursor_close(cursor);
-    if (termIterators.isEmpty()) {
+    if (termIterators.empty()) {
         return nullptr;
     }
-    return new OrPostingIterator(termIterators);
+    return new OrPostingIterator(std::move(termIterators));
 }
 
 PostingIterator* PostingDB::prefixIter(const QByteArray& prefix)

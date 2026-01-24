@@ -9,14 +9,16 @@
 #define BALOO_ANDPOSTINGITERATOR_H
 
 #include "postingiterator.h"
-#include <QVector>
+
+#include <memory>
+#include <vector>
 
 namespace Baloo {
 
 class BALOO_ENGINE_EXPORT AndPostingIterator : public PostingIterator
 {
 public:
-    explicit AndPostingIterator(const QVector<PostingIterator*>& iterators);
+    explicit AndPostingIterator(std::vector<std::unique_ptr<PostingIterator>> &&iterators);
     ~AndPostingIterator() override;
 
     quint64 next() override;
@@ -24,7 +26,7 @@ public:
     quint64 skipTo(quint64 docId) override;
 
 private:
-    QVector<PostingIterator*> m_iterators;
+    std::vector<std::unique_ptr<PostingIterator>> m_iterators;
     quint64 m_docId;
 };
 

@@ -7,22 +7,22 @@
 
 #include "andpostingiterator.h"
 
+#include <ranges>
+
 using namespace Baloo;
 
-AndPostingIterator::AndPostingIterator(const QVector<PostingIterator*>& iterators)
-    : m_iterators(iterators)
+AndPostingIterator::AndPostingIterator(std::vector<std::unique_ptr<PostingIterator>> &&iterators)
+    : m_iterators(std::move(iterators))
     , m_docId(0)
 {
-    if (m_iterators.contains(nullptr)) {
-        qDeleteAll(m_iterators);
+    if (std::ranges::any_of(m_iterators, [](const auto &e) {
+            return e == nullptr;
+        })) {
         m_iterators.clear();
     }
 }
 
-AndPostingIterator::~AndPostingIterator()
-{
-    qDeleteAll(m_iterators);
-}
+AndPostingIterator::~AndPostingIterator() = default;
 
 quint64 AndPostingIterator::docId() const
 {
@@ -31,14 +31,14 @@ quint64 AndPostingIterator::docId() const
 
 quint64 AndPostingIterator::skipTo(quint64 id)
 {
-    if (m_iterators.isEmpty()) {
+    if (m_iterators.empty()) {
         m_docId = 0;
         return 0;
     }
 
     while (true) {
         quint64 lower_bound = id;
-        for (PostingIterator* iter : std::as_const(m_iterators)) {
+        for (auto &iter : std::as_const(m_iterators)) {
             lower_bound = iter->skipTo(lower_bound);
 
             if (lower_bound == 0) {
@@ -57,12 +57,12 @@ quint64 AndPostingIterator::skipTo(quint64 id)
 
 quint64 AndPostingIterator::next()
 {
-    if (m_iterators.isEmpty()) {
+    if (m_iterators.empty()) {
         m_docId = 0;
         return 0;
     }
 
-    m_docId = m_iterators[0]->next();
+    m_docId = m_iterators.at(0)->next();
     m_docId = skipTo(m_docId);
 
     return m_docId;
