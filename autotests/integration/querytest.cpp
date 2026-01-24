@@ -42,7 +42,7 @@ char *toString(const QVector<quint64> &idlist)
 namespace {
 QVector<quint64> execQuery(const Transaction& tr, const EngineQuery& query)
 {
-    PostingIterator* it = tr.postingIterator(query);
+    std::unique_ptr<PostingIterator> it{tr.postingIterator(query)};
     if (!it) {
         return {};
     }
