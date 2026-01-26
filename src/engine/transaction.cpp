@@ -42,7 +42,7 @@ Transaction::Transaction(const Database& db, Transaction::TransactionType type)
 void Transaction::reset(TransactionType type)
 {
     if (m_txn) {
-        qWarning(ENGINE) << "Resetting a Transaction without calling abort/commit";
+        qCWarning(ENGINE) << "Resetting a Transaction without calling abort/commit";
         abort();
     }
     init(type);
@@ -70,7 +70,7 @@ Transaction::Transaction(Database* db, Transaction::TransactionType type)
 Transaction::~Transaction()
 {
     if (m_writeTrans) {
-        qWarning(ENGINE) << "Closing an active WriteTransaction without calling abort/commit";
+        qCWarning(ENGINE) << "Closing an active WriteTransaction without calling abort/commit";
     }
 
     if (m_txn) {
