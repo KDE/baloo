@@ -9,8 +9,7 @@
 */
 
 #include "priority.h"
-
-#include <QDebug>
+#include "baloodebug.h"
 
 #include <cerrno>
 #include <sched.h>
@@ -30,10 +29,10 @@ bool lowerIOPriority()
     int idle_error = errno;
 
     if (syscall(SYS_ioprio_set, IOPRIO_WHO_PROCESS, 0, ioprio_value(IOPRIO_CLASS_BE, 7, IOPRIO_HINT_NONE)) >= 0) {
-        qDebug("Cannot set io scheduling to Idle (%s). Using Best Effort.\n", strerror(idle_error));
+        qCDebug(BALOO, "Cannot set io scheduling to Idle (%s). Using Best Effort.\n", strerror(idle_error));
         return true;
     }
-    qDebug("Cannot set io scheduling to Best Effort or Idle.\n");
+    qCDebug(BALOO, "Cannot set io scheduling to Best Effort or Idle.\n");
 #endif
 
     return false;
