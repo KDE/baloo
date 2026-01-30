@@ -13,14 +13,18 @@
 
 inline void printIOUsage()
 {
+    qDebug() << "------- IO ---------";
+
     // Print the io usage
     QFile file(QStringLiteral("/proc/self/io"));
-    file.open(QIODevice::ReadOnly | QIODevice::Text);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qDebug() << "Failed to open" << file.fileName();
+        return;
+    }
 
     QTextStream fs(&file);
     QString fileContents = fs.readAll();
 
-    qDebug() << "------- IO ---------";
     QTextStream stream(&fileContents);
     while (!stream.atEnd()) {
         const QString line = stream.readLine();
