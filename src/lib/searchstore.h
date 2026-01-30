@@ -14,8 +14,6 @@ namespace Baloo {
 
 class Term;
 class Database;
-class Transaction;
-class PostingIterator;
 
 class SearchStore
 {
@@ -26,9 +24,7 @@ public:
     ResultList exec(const Term& term, uint offset, int limit, bool sortResults);
 
 private:
-    Database* m_db;
-
-    PostingIterator* constructQuery(Transaction* tr, const Term& term);
+    Database *m_db = nullptr;
 };
 
 }

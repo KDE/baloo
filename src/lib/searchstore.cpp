@@ -141,6 +141,9 @@ EngineQuery constructTypeQuery(const QString& value)
 
     return EngineQuery('T' + QByteArray::number(num));
 }
+
+PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term);
+
 } // namespace
 
 SearchStore::SearchStore()
@@ -164,7 +167,7 @@ ResultList SearchStore::exec(const Term& term, uint offset, int limit, bool sort
     }
 
     Transaction tr(m_db, Transaction::ReadOnly);
-    std::unique_ptr<PostingIterator> it(constructQuery(&tr, term));
+    auto it = constructQuery(&tr, term);
     if (!it) {
         return ResultList();
     }
@@ -229,7 +232,9 @@ ResultList SearchStore::exec(const Term& term, uint offset, int limit, bool sort
     }
 }
 
-PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
+namespace
+{
+PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term)
 {
     Q_ASSERT(tr);
 
@@ -239,7 +244,7 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
         vec.reserve(subTerms.size());
 
         for (const Term& t : subTerms) {
-            auto iterator = std::unique_ptr<PostingIterator>(constructQuery(tr, t));
+            auto iterator = constructQuery(tr, t);
             // constructQuery returns a nullptr to signal an empty list
             if (iterator) {
                 vec.push_back(std::move(iterator));
@@ -251,13 +256,13 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
         if (vec.empty()) {
             return nullptr;
         } else if (vec.size() == 1) {
-            return vec.front().release();
+            return std::move(vec.front());
         }
 
         if (term.operation() == Term::And) {
-            return new AndPostingIterator(std::move(vec));
+            return std::make_unique<AndPostingIterator>(std::move(vec));
         } else {
-            return new OrPostingIterator(std::move(vec));
+            return std::make_unique<OrPostingIterator>(std::move(vec));
         }
     }
 
@@ -407,5 +412,6 @@ PostingIterator* SearchStore::constructQuery(Transaction* tr, const Term& term)
 
     return nullptr;
 }
+} // namepspace <anonymous>
 
 } // namespace Baloo

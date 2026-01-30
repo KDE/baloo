@@ -11,6 +11,8 @@
 
 #include <QtTypes>
 
+#include <memory>
+
 namespace Baloo {
 
 /**
@@ -28,6 +30,8 @@ public:
     virtual quint64 next() = 0;
     virtual quint64 docId() const = 0;
     virtual quint64 skipTo(quint64 docId);
+
+    using Ptr = std::unique_ptr<PostingIterator>;
 };
 }
 
