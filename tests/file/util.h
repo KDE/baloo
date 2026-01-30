@@ -22,15 +22,9 @@ inline void printIOUsage()
         return;
     }
 
-    QTextStream fs(&file);
-    QString fileContents = fs.readAll();
+    const QString fileContents = QString::fromLatin1(file.readAll());
 
-    QTextStream stream(&fileContents);
-    while (!stream.atEnd()) {
-        const QString line = stream.readLine();
-
-        const QStringView str(line);
-
+    for (auto str : QStringTokenizer{fileContents, QLatin1Char{'\n'}}) {
         const QString rchar(QStringLiteral("rchar: "));
         if (str.startsWith(rchar)) {
             const ulong amount = str.mid(rchar.size()).toULong();
