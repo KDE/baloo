@@ -310,7 +310,7 @@ void Transaction::abort()
 // Queries
 //
 
-PostingIterator* Transaction::postingIterator(const EngineQuery& query) const
+PostingIterator::Ptr Transaction::postingIterator(const EngineQuery &query) const
 {
     PostingDB postingDb(m_dbis.postingDbi, m_txn);
     PositionDB positionDb(m_dbis.positionDBi, m_txn);
@@ -350,37 +350,37 @@ PostingIterator* Transaction::postingIterator(const EngineQuery& query) const
             vec.push_back(std::move(termMatch));
         }
 
-        return new PhraseAndIterator(std::move(vec));
+        return std::make_unique<PhraseAndIterator>(std::move(vec));
     }
 
     return nullptr;
 }
 
-PostingIterator* Transaction::postingCompIterator(const QByteArray& prefix, qlonglong value, PostingDB::Comparator com) const
+PostingIterator::Ptr Transaction::postingCompIterator(const QByteArray &prefix, qlonglong value, PostingDB::Comparator com) const
 {
     PostingDB postingDb(m_dbis.postingDbi, m_txn);
     return postingDb.compIter(prefix, value, com);
 }
 
-PostingIterator* Transaction::postingCompIterator(const QByteArray& prefix, double value, PostingDB::Comparator com) const
+PostingIterator::Ptr Transaction::postingCompIterator(const QByteArray &prefix, double value, PostingDB::Comparator com) const
 {
     PostingDB postingDb(m_dbis.postingDbi, m_txn);
     return postingDb.compIter(prefix, value, com);
 }
 
-PostingIterator* Transaction::postingCompIterator(const QByteArray& prefix, const QByteArray& value, PostingDB::Comparator com) const
+PostingIterator::Ptr Transaction::postingCompIterator(const QByteArray &prefix, const QByteArray &value, PostingDB::Comparator com) const
 {
     PostingDB postingDb(m_dbis.postingDbi, m_txn);
     return postingDb.compIter(prefix, value, com);
 }
 
-PostingIterator* Transaction::mTimeRangeIter(quint32 beginTime, quint32 endTime) const
+PostingIterator::Ptr Transaction::mTimeRangeIter(quint32 beginTime, quint32 endTime) const
 {
     MTimeDB mTimeDb(m_dbis.mtimeDbi, m_txn);
     return mTimeDb.iterRange(beginTime, endTime);
 }
 
-PostingIterator* Transaction::docUrlIter(quint64 id) const
+PostingIterator::Ptr Transaction::docUrlIter(quint64 id) const
 {
     DocumentUrlDB docUrlDb(m_dbis.idTreeDbi, m_dbis.idFilenameDbi, m_txn);
     return docUrlDb.iter(id);

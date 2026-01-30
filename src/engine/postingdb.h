@@ -37,9 +37,9 @@ public:
     PostingList get(const QByteArray& term);
     void del(const QByteArray& term);
 
-    PostingIterator* iter(const QByteArray& term);
-    PostingIterator* prefixIter(const QByteArray& term);
-    PostingIterator* regexpIter(const QRegularExpression& regexp, const QByteArray& prefix);
+    PostingIterator::Ptr iter(const QByteArray &term);
+    PostingIterator::Ptr prefixIter(const QByteArray &term);
+    PostingIterator::Ptr regexpIter(const QRegularExpression &regexp, const QByteArray &prefix);
 
     enum Comparator {
         LessEqual,
@@ -47,21 +47,22 @@ public:
     };
     // For integral types only:
     template<typename T>
-    typename std::enable_if<std::is_integral<T>::value, PostingIterator*>::type
-    compIter(const QByteArray& prefix, T val, Comparator com) {
+    typename std::enable_if<std::is_integral<T>::value, PostingIterator::Ptr>::type //
+    compIter(const QByteArray &prefix, T val, Comparator com)
+    {
         qlonglong l = val;
         return compIter(prefix, l, com);
     }
-    PostingIterator* compIter(const QByteArray& prefix, qlonglong val, Comparator com);
-    PostingIterator* compIter(const QByteArray& prefix, double val, Comparator com);
-    PostingIterator* compIter(const QByteArray& prefix, const QByteArray& val, Comparator com);
+    PostingIterator::Ptr compIter(const QByteArray &prefix, qlonglong val, Comparator com);
+    PostingIterator::Ptr compIter(const QByteArray &prefix, double val, Comparator com);
+    PostingIterator::Ptr compIter(const QByteArray &prefix, const QByteArray &val, Comparator com);
 
     QVector<QByteArray> fetchTermsStartingWith(const QByteArray& term);
 
     QMap<QByteArray, PostingList> toTestMap() const;
 private:
-    template <typename Validator>
-    PostingIterator* iter(const QByteArray& prefix, Validator validate);
+    template<typename Validator>
+    PostingIterator::Ptr iter(const QByteArray &prefix, Validator validate);
 
     MDB_txn* m_txn;
     MDB_dbi m_dbi;

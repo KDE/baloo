@@ -56,12 +56,12 @@ public:
 
     DocumentTimeDB::TimeInfo documentTimeInfo(quint64 id) const;
 
-    PostingIterator* postingIterator(const EngineQuery& query) const;
-    PostingIterator* postingCompIterator(const QByteArray& prefix, qlonglong value, PostingDB::Comparator com) const;
-    PostingIterator* postingCompIterator(const QByteArray& prefix, double value, PostingDB::Comparator com) const;
-    PostingIterator* postingCompIterator(const QByteArray& prefix, const QByteArray& value, PostingDB::Comparator com) const;
-    PostingIterator* mTimeRangeIter(quint32 beginTime, quint32 endTime) const;
-    PostingIterator* docUrlIter(quint64 id) const;
+    PostingIterator::Ptr postingIterator(const EngineQuery &query) const;
+    PostingIterator::Ptr postingCompIterator(const QByteArray &prefix, qlonglong value, PostingDB::Comparator com) const;
+    PostingIterator::Ptr postingCompIterator(const QByteArray &prefix, double value, PostingDB::Comparator com) const;
+    PostingIterator::Ptr postingCompIterator(const QByteArray &prefix, const QByteArray &value, PostingDB::Comparator com) const;
+    PostingIterator::Ptr mTimeRangeIter(quint32 beginTime, quint32 endTime) const;
+    PostingIterator::Ptr docUrlIter(quint64 id) const;
 
     QVector<quint64> fetchPhaseOneIds(int size) const;
     uint phaseOneSize() const;

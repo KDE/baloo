@@ -137,7 +137,7 @@ QVector< QByteArray > PostingDB::fetchTermsStartingWith(const QByteArray& term)
     return terms;
 }
 
-PostingIterator* PostingDB::iter(const QByteArray& term)
+PostingIterator::Ptr PostingDB::iter(const QByteArray &term)
 {
     MDB_val key;
     key.mv_size = term.size();
@@ -151,11 +151,11 @@ PostingIterator* PostingDB::iter(const QByteArray& term)
     }
 
     auto values = QByteArray::fromRawData(static_cast<char *>(val.mv_data), val.mv_size);
-    return new VectorPostingIterator(PostingCodec().decode(values));
+    return std::make_unique<VectorPostingIterator>(PostingCodec().decode(values));
 }
 
-template <typename Validator>
-PostingIterator* PostingDB::iter(const QByteArray& prefix, Validator validate)
+template<typename Validator>
+PostingIterator::Ptr PostingDB::iter(const QByteArray &prefix, Validator validate)
 {
     Q_ASSERT(!prefix.isEmpty());
 
@@ -171,7 +171,7 @@ PostingIterator* PostingDB::iter(const QByteArray& prefix, Validator validate)
         return nullptr;
     }
 
-    std::vector<std::unique_ptr<PostingIterator>> termIterators;
+    std::vector<PostingIterator::Ptr> termIterators;
 
     MDB_val val;
     rc = mdb_cursor_get(cursor, &key, &val, MDB_SET_RANGE);
@@ -195,10 +195,10 @@ PostingIterator* PostingDB::iter(const QByteArray& prefix, Validator validate)
     if (termIterators.empty()) {
         return nullptr;
     }
-    return new OrPostingIterator(std::move(termIterators));
+    return std::make_unique<OrPostingIterator>(std::move(termIterators));
 }
 
-PostingIterator* PostingDB::prefixIter(const QByteArray& prefix)
+PostingIterator::Ptr PostingDB::prefixIter(const QByteArray &prefix)
 {
     auto validate = [] (const QByteArray& arr) {
         Q_UNUSED(arr);
@@ -207,7 +207,7 @@ PostingIterator* PostingDB::prefixIter(const QByteArray& prefix)
     return iter(prefix, validate);
 }
 
-PostingIterator* PostingDB::regexpIter(const QRegularExpression& regexp, const QByteArray& prefix)
+PostingIterator::Ptr PostingDB::regexpIter(const QRegularExpression &regexp, const QByteArray &prefix)
 {
     int prefixLen = prefix.length();
     auto validate = [&regexp, prefixLen] (const QByteArray& arr) {
@@ -218,7 +218,7 @@ PostingIterator* PostingDB::regexpIter(const QRegularExpression& regexp, const Q
     return iter(prefix, validate);
 }
 
-PostingIterator* PostingDB::compIter(const QByteArray& prefix, qlonglong comVal, PostingDB::Comparator com)
+PostingIterator::Ptr PostingDB::compIter(const QByteArray &prefix, qlonglong comVal, PostingDB::Comparator com)
 {
     int prefixLen = prefix.length();
     auto validate = [prefixLen, comVal, com] (const QByteArray& arr) {
@@ -229,7 +229,7 @@ PostingIterator* PostingDB::compIter(const QByteArray& prefix, qlonglong comVal,
     return iter(prefix, validate);
 }
 
-PostingIterator* PostingDB::compIter(const QByteArray& prefix, double comVal, PostingDB::Comparator com)
+PostingIterator::Ptr PostingDB::compIter(const QByteArray &prefix, double comVal, PostingDB::Comparator com)
 {
     int prefixLen = prefix.length();
     auto validate = [prefixLen, comVal, com] (const QByteArray& arr) {
@@ -241,7 +241,7 @@ PostingIterator* PostingDB::compIter(const QByteArray& prefix, double comVal, Po
     return iter(prefix, validate);
 }
 
-PostingIterator* PostingDB::compIter(const QByteArray& prefix, const QByteArray& comVal, PostingDB::Comparator com)
+PostingIterator::Ptr PostingDB::compIter(const QByteArray &prefix, const QByteArray &comVal, PostingDB::Comparator com)
 {
     int prefixLen = prefix.length();
     auto validate = [prefixLen, comVal, com] (const QByteArray& arr) {

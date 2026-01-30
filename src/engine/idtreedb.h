@@ -32,7 +32,7 @@ public:
      * Returns an iterator which will return all the docIds which use \p docId
      * are the parent docID.
      */
-    PostingIterator* iter(quint64 docId);
+    PostingIterator::Ptr iter(quint64 docId);
 
     QMap<quint64, QVector<quint64>> toTestMap() const;
 private:

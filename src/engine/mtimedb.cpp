@@ -128,7 +128,7 @@ void MTimeDB::del(quint32 mtime, quint64 docId)
 //
 // Posting Iterator
 //
-PostingIterator* MTimeDB::iterRange(quint32 beginTime, quint32 endTime)
+PostingIterator::Ptr MTimeDB::iterRange(quint32 beginTime, quint32 endTime)
 {
     if (endTime < beginTime) {
         return nullptr;
@@ -176,7 +176,7 @@ PostingIterator* MTimeDB::iterRange(quint32 beginTime, quint32 endTime)
     }
     std::sort(results.begin(), results.end());
     results.erase(std::unique(results.begin(), results.end()), results.end());
-    return new VectorPostingIterator(results);
+    return std::make_unique<VectorPostingIterator>(results);
 }
 
 QMap<quint32, quint64> MTimeDB::toTestMap() const

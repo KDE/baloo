@@ -79,7 +79,7 @@ private Q_SLOTS:
         }
 
         // Non existing
-        it.reset(db.regexpIter(QRegularExpression(QStringLiteral("dub")), QByteArray("f")));
+        it = db.regexpIter(QRegularExpression(QStringLiteral("dub")), QByteArray("f"));
         QCOMPARE(it, nullptr);
     }
 
@@ -104,7 +104,7 @@ private Q_SLOTS:
             QCOMPARE(it->docId(), static_cast<quint64>(val));
         }
 
-        it.reset(db.compIter("R", 2, PostingDB::LessEqual));
+        it = db.compIter("R", 2, PostingDB::LessEqual);
         QVERIFY(it);
         result = {1, 3, 5, 7, 8};
         for (quint64 val : std::as_const(result)) {
@@ -112,7 +112,7 @@ private Q_SLOTS:
             QCOMPARE(it->docId(), static_cast<quint64>(val));
         }
 
-        it.reset(db.compIter("R", 10, PostingDB::GreaterEqual));
+        it = db.compIter("R", 10, PostingDB::GreaterEqual);
         QVERIFY(it);
         result = {10, 12};
         for (quint64 val : std::as_const(result)) {
@@ -120,7 +120,7 @@ private Q_SLOTS:
             QCOMPARE(it->docId(), static_cast<quint64>(val));
         }
 
-        it.reset(db.compIter("X20-", 80, PostingDB::GreaterEqual));
+        it = db.compIter("X20-", 80, PostingDB::GreaterEqual);
         QVERIFY(it);
         result = {1, 2, 10, 11};
         for (quint64 val : std::as_const(result)) {
@@ -128,7 +128,7 @@ private Q_SLOTS:
             QCOMPARE(it->docId(), static_cast<quint64>(val));
         }
 
-        it.reset(db.compIter("X20-", 100, PostingDB::GreaterEqual));
+        it = db.compIter("X20-", 100, PostingDB::GreaterEqual);
         QVERIFY(it);
         result = {10, 11};
         for (quint64 val : std::as_const(result)) {

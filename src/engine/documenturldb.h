@@ -45,7 +45,8 @@ public:
 
     quint64 getId(quint64 docId, const QByteArray& fileName) const;
 
-    PostingIterator* iter(quint64 docId) {
+    PostingIterator::Ptr iter(quint64 docId)
+    {
         IdTreeDB db(m_idTreeDbi, m_txn);
         return db.iter(docId);
     }

@@ -144,12 +144,12 @@ private:
     QVector<quint64> m_resultList;
 };
 
-PostingIterator* IdTreeDB::iter(quint64 docId)
+PostingIterator::Ptr IdTreeDB::iter(quint64 docId)
 {
     Q_ASSERT(docId > 0);
 
     QVector<quint64> list = {docId};
-    return new IdTreePostingIterator(*this, list);
+    return std::make_unique<IdTreePostingIterator>(*this, list);
 }
 
 QMap<quint64, QVector<quint64>> IdTreeDB::toTestMap() const

@@ -39,7 +39,7 @@ public:
       * Get documents with an mtime between \p beginTime and
       * \p endTime (inclusive)
       */
-    PostingIterator* iterRange(quint32 beginTime, quint32 endTime);
+    PostingIterator::Ptr iterRange(quint32 beginTime, quint32 endTime);
 
     QMap<quint32, quint64> toTestMap() const;
 private:
