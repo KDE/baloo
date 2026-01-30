@@ -8,7 +8,6 @@
 #ifndef BALOO_SEARCHSTORE_H
 #define BALOO_SEARCHSTORE_H
 
-#include <QString>
 #include "result_p.h"
 
 namespace Baloo {

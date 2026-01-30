@@ -8,10 +8,6 @@
 
 using namespace Baloo;
 
-PostingIterator::~PostingIterator()
-{
-}
-
 quint64 PostingIterator::skipTo(quint64 id)
 {
     quint64 currentId = docId();

@@ -7,8 +7,9 @@
 #ifndef BALOO_POSTINGITERATOR_H
 #define BALOO_POSTINGITERATOR_H
 
-#include <QVector>
 #include "engine_export.h"
+
+#include <QtTypes>
 
 namespace Baloo {
 
@@ -21,7 +22,8 @@ namespace Baloo {
 class BALOO_ENGINE_EXPORT PostingIterator
 {
 public:
-    virtual ~PostingIterator();
+    PostingIterator() = default;
+    virtual ~PostingIterator() = default;
 
     virtual quint64 next() = 0;
     virtual quint64 docId() const = 0;

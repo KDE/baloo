@@ -9,13 +9,13 @@
 #define BALOO_IDTREEDB_H
 
 #include "engine_export.h"
+#include "postingiterator.h"
+
 #include <lmdb.h>
 #include <QVector>
 #include <QMap>
 
 namespace Baloo {
-
-class PostingIterator;
 
 class BALOO_ENGINE_EXPORT IdTreeDB
 {

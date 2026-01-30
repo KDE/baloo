@@ -9,13 +9,13 @@
 #define BALOO_MTIMEDB_H
 
 #include "engine_export.h"
+#include "postingiterator.h"
+
 #include <lmdb.h>
 #include <QVector>
 #include <QMap>
 
 namespace Baloo {
-
-class PostingIterator;
 
 /**
  * The MTime DB maps the file mtime to its id. This allows us to do

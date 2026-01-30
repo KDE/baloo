@@ -7,6 +7,7 @@
 
 #include "andpostingiterator.h"
 
+#include <algorithm>
 #include <ranges>
 
 using namespace Baloo;
