@@ -1,21 +1,21 @@
 # Copyright (C) 2024 This file is copyright:
 # This file is distributed under the same license as the baloo package.
 #
-# SPDX-FileCopyrightText: 2022, 2024 Kishore G <kishore96@gmail.com>
+# SPDX-FileCopyrightText: 2022, 2024, 2026 Kishore G <kishore96@gmail.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-01-10 00:39+0000\n"
-"PO-Revision-Date: 2024-11-24 16:08+0530\n"
+"PO-Revision-Date: 2026-02-01 13:53+0530\n"
 "Last-Translator: Kishore G <kishore96@gmail.com>\n"
-"Language-Team: Tamil <kde-i18n-doc@kde.org>\n"
+"Language-Team: Tamil <kde-l10n-ta@kde.org>\n"
 "Language: ta\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 24.08.3\n"
+"X-Generator: Lokalize 25.12.1\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -30,7 +30,7 @@ msgstr "Kde-l10n-ta@kde.org"
 #: clearcommand.cpp:30
 #, kde-format
 msgid "Immediately clear entries from the index"
-msgstr ""
+msgstr "அட்டவணையிலிருந்து பதிவுகளை உடனே நீக்கு"
 
 #: configcommand.cpp:45
 #, kde-format
@@ -52,7 +52,7 @@ msgstr ""
 #: configcommand.cpp:70
 #, kde-format
 msgid "Possible Commands:\n"
-msgstr ""
+msgstr "பயன்படுத்தக்கூடிய கட்டளைகள்:\n"
 
 #: configcommand.cpp:72
 #, kde-format
@@ -148,7 +148,7 @@ msgstr ""
 #: configcommand.cpp:204 configcommand.cpp:325
 #, kde-format
 msgid "A filter must be provided\n"
-msgstr ""
+msgstr "வடிகட்டியைக் குறிப்பிடவேண்டும்\n"
 
 #: configcommand.cpp:210
 #, kde-format
@@ -208,17 +208,17 @@ msgstr ""
 #: configcommand.cpp:377 configcommand.cpp:404
 #, kde-format
 msgid "A value must be provided\n"
-msgstr ""
+msgstr "மதிப்பைக் குறிப்பிடவேண்டும்\n"
 
 #: configcommand.cpp:398 configcommand.cpp:425
 #, kde-format
 msgid "Invalid value\n"
-msgstr ""
+msgstr "செல்லுபடியாகாத மதிப்பு\n"
 
 #: indexcommand.cpp:29
 #, kde-format
 msgid "Immediately index files"
-msgstr ""
+msgstr "கோப்புகளை உடனே அட்டவணையாக்கு"
 
 #: main.cpp:54
 #, kde-format
@@ -228,7 +228,7 @@ msgstr ""
 #: main.cpp:55
 #, kde-format
 msgid "Vishesh Handa"
-msgstr ""
+msgstr "விஷேஷ் ஹண்டா"
 
 #: main.cpp:60
 #, kde-format
@@ -238,52 +238,52 @@ msgstr "இயக்க வேண்டிய கட்டளை"
 #: main.cpp:62
 #, kde-format
 msgid "Print the status of the indexer"
-msgstr ""
+msgstr "அட்டவணையாக்கியின் நிலையை காட்டு"
 
 #: main.cpp:63
 #, kde-format
 msgid "Enable the file indexer"
-msgstr ""
+msgstr "அட்டவணையாக்கியை இயக்கு"
 
 #: main.cpp:64
 #, kde-format
 msgid "Disable the file indexer"
-msgstr ""
+msgstr "அட்டவணையாக்கியை முடக்கு"
 
 #: main.cpp:65
 #, kde-format
 msgid "Remove the index database"
-msgstr ""
+msgstr "அட்டவணையை நீக்கு"
 
 #: main.cpp:66
 #, kde-format
 msgid "Suspend the file indexer"
-msgstr ""
+msgstr "அட்டவணையாக்கியை இடைநிறுத்து"
 
 #: main.cpp:67
 #, kde-format
 msgid "Resume the file indexer"
-msgstr ""
+msgstr "அட்டவணையாக்கியை தொடரசெய்"
 
 #: main.cpp:68
 #, kde-format
 msgid "Check for any unindexed files and index them"
-msgstr ""
+msgstr "அட்டவணையாக்கப்படாத கோப்புகளைக் கண்டுபிடித்து அட்டவணையாக்கு"
 
 #: main.cpp:69
 #, kde-format
 msgid "Index the specified files"
-msgstr ""
+msgstr "குறிப்பிட்ட கோப்புகளை அட்டவணையாக்கு"
 
 #: main.cpp:70
 #, kde-format
 msgid "Forget the specified files"
-msgstr ""
+msgstr "குறிப்பிட்ட கோப்புகளை மறந்துவிடு"
 
 #: main.cpp:71
 #, kde-format
 msgid "Modify the Baloo configuration"
-msgstr ""
+msgstr "பாலுவின் அமைப்புகளை மாற்று"
 
 #: main.cpp:72
 #, kde-format
@@ -422,49 +422,49 @@ msgstr "- %1\n"
 #: statuscommand.cpp:271
 #, kde-format
 msgid "Baloo is currently disabled. To enable, please run %1\n"
-msgstr ""
+msgstr "பாலு தற்போது முடங்கியுள்ளது. இயக்க, %1 கட்டளையைப் பயன்படுத்தவும்\n"
 
 #: statuscommand.cpp:277
 #, kde-format
 msgid "Baloo Index could not be opened\n"
-msgstr ""
+msgstr "பாலூவின் அட்டவணையை திறக்க முடியவில்லை\n"
 
 #: statuscommand.cpp:304
 #, kde-format
 msgid "Baloo File Indexer is running\n"
-msgstr ""
+msgstr "பாலு அட்டவணையாக்கி இயங்குகிறது\n"
 
 #: statuscommand.cpp:306 statuscommand.cpp:309
 #, kde-format
 msgid "Indexer state: %1"
-msgstr ""
+msgstr "அட்டவணையாக்கியின் நிலை: %1"
 
 #: statuscommand.cpp:313
 #, kde-format
 msgid "Baloo File Indexer is not running\n"
-msgstr ""
+msgstr "பாலு அட்டவணையாக்கி இயங்கவில்லை\n"
 
 #: statuscommand.cpp:320
 #, kde-format
 msgid "Total files indexed: %1"
-msgstr ""
+msgstr "அட்டவணையாக்கப்பட்டுள்ள கோப்புகள்: %1"
 
 #: statuscommand.cpp:321
 #, kde-format
 msgid "Files waiting for content indexing: %1"
-msgstr ""
+msgstr "அட்டவணையாக்கப்படவிருக்கும் கோப்புகள்: %1"
 
 #: statuscommand.cpp:322
 #, kde-format
 msgid "Files failed to index: %1"
-msgstr ""
+msgstr "அட்டவணையாக்க முடியாத கோப்புகள்: %1"
 
 #: statuscommand.cpp:330
 #, kde-format
 msgid "Current size of index is %1"
-msgstr ""
+msgstr "அட்டவணையின் தற்போதைய அளவு %1"
 
 #: statuscommand.cpp:332
 #, kde-format
 msgid "Index does not exist yet\n"
-msgstr ""
+msgstr "அட்டவணை இன்னும் உருவாக்கப்படவில்லை\n"
