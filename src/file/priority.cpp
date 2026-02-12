@@ -15,6 +15,7 @@
 #include <sched.h>
 #include <sys/resource.h>
 #include <sys/syscall.h>
+#include <unistd.h>
 
 #ifdef SYS_ioprio_set
 #include <linux/ioprio.h>
