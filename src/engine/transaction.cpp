@@ -53,7 +53,7 @@ void Transaction::init(TransactionType type)
     uint flags = type == ReadOnly ? MDB_RDONLY : 0;
     int rc = mdb_txn_begin(m_env, nullptr, flags, &m_txn);
     if (rc) {
-        qCDebug(ENGINE) << "Transaction" << mdb_strerror(rc);
+        qCDebug(ENGINE) << "Transaction init() error:" << rc << mdb_strerror(rc);
         return;
     }
 
