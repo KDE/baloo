@@ -53,10 +53,13 @@ public:
     };
 
     enum class OpenResult {
+        // clang-format off
         Success,
         InvalidPath,     ///< Database does not exist, or could not be created
         InvalidDatabase, ///< Database structure does not match expectation
         InternalError,   ///< Internal error in the database engine
+        OpenedReadOnly,  ///< Database was opened in readonly mode
+        // clang-format on
     };
 
     /**
@@ -80,6 +83,8 @@ private:
 
     MDB_env* m_env;
     DatabaseDbis m_dbis;
+    /// m_mode is only valid if m_env is valid
+    OpenMode m_mode = ReadOnlyDatabase;
 
     friend class Transaction;
     friend class DatabaseTest;

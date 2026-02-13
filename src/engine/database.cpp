@@ -65,7 +65,13 @@ Database::OpenResult Database::open(OpenMode mode)
 
     // nop if already open!
     if (m_env) {
-        return OpenResult::Success;
+        if (mode == ReadOnlyDatabase) {
+            return OpenResult::Success;
+        } else if (m_mode == ReadWriteDatabase) {
+            return OpenResult::Success;
+        } else {
+            return OpenResult::OpenedReadOnly;
+        }
     }
 
     MDB_env* env = nullptr;
@@ -233,5 +239,6 @@ Database::OpenResult Database::open(OpenMode mode)
 
     Q_ASSERT(env);
     m_env = env;
+    m_mode = (mode == ReadOnlyDatabase) ? ReadOnlyDatabase : ReadWriteDatabase;
     return OpenResult::Success;
 }
