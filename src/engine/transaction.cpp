@@ -211,6 +211,16 @@ void Transaction::removePhaseOne(quint64 id)
     contentIndexingDb.del(id);
 }
 
+void Transaction::removeFailed(quint64 id)
+{
+    Q_ASSERT(m_txn);
+    Q_ASSERT(id > 0);
+    Q_ASSERT(m_writeTrans);
+
+    DocumentIdDB failedIdDb(m_dbis.failedIdDbi, m_txn);
+    failedIdDb.del(id);
+}
+
 void Transaction::addFailed(quint64 id)
 {
     Q_ASSERT(m_txn);

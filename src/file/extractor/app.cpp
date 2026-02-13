@@ -140,6 +140,7 @@ void App::processNextFile()
                 }
                 tr.replaceDocument(result->document(), DocumentTerms | DocumentData);
                 tr.removePhaseOne(info.m_id);
+                tr.removeFailed(info.m_id);
                 break;
             case IndexState::Pending:
                 pendingCount++;
