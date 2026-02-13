@@ -59,8 +59,9 @@ App::~App() = default;
 
 void App::slotNewBatch(const QVector<quint64>& ids)
 {
+    // The DB is a per process static instance. Any open call but the first is a no-op
     Database *db = globalDatabaseInstance();
-    if (db->open(Database::ReadOnlyDatabase) != Database::OpenResult::Success) {
+    if (db->open(Database::ReadWriteDatabase) != Database::OpenResult::Success) {
         qCCritical(BALOO) << "Failed to open the database";
         exit(1);
     }
@@ -105,10 +106,6 @@ void App::processNextFile()
     // End of batch, or batch time exceeded, commit
     {
         Database *db = globalDatabaseInstance();
-        if (db->open(Database::ReadWriteDatabase) != Database::OpenResult::Success) {
-            qCCritical(BALOO) << "Failed to open the database";
-            exit(1);
-        }
         Transaction tr(db, Transaction::ReadWrite);
 
         size_t pendingCount = 0;
