@@ -92,6 +92,7 @@ public:
     void removeDocument(quint64 id);
     void removeRecursively(quint64 parentId);
     void addFailed(quint64 id);
+    void removeFailed(quint64 id);
 
     bool removeRecursively(quint64 parentId, std::function<bool(const QByteArray &)> shouldDelete)
     {
