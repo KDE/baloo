@@ -18,10 +18,8 @@ class QuerySerializationTest : public QObject
 
 private Q_SLOTS:
     void testBasic();
-    void testTerm();
-    void testAndTerm();
-    void testDateTerm();
-    void testDateTimeTerm();
+    void testJSON();
+    void testJSON_data();
 
     void testCustomOptions();
 };
@@ -48,10 +46,12 @@ void QuerySerializationTest::testBasic()
     QCOMPARE(q, query);
 }
 
-void QuerySerializationTest::testTerm()
+void QuerySerializationTest::testJSON()
 {
+    QFETCH(QString, searchString);
+
     Query query;
-    query.setSearchString(QStringLiteral("prop:value"));
+    query.setSearchString(searchString);
 
     QByteArray json = query.toJSON();
     Query q = Query::fromJSON(json);
@@ -59,37 +59,14 @@ void QuerySerializationTest::testTerm()
     QCOMPARE(q, query);
 }
 
-void QuerySerializationTest::testAndTerm()
+void QuerySerializationTest::testJSON_data()
 {
-    Query query;
-    query.setSearchString(QStringLiteral("prop1:1 AND prop2:2"));
+    QTest::addColumn<QString>("searchString");
 
-    QByteArray json = query.toJSON();
-    Query q = Query::fromJSON(json);
-
-    QCOMPARE(q, query);
-}
-
-void QuerySerializationTest::testDateTerm()
-{
-    Query query;
-    query.setSearchString(QStringLiteral("prop:2015-05-01"));
-
-    QByteArray json = query.toJSON();
-    Query q = Query::fromJSON(json);
-
-    QCOMPARE(q, query);
-}
-
-void QuerySerializationTest::testDateTimeTerm()
-{
-    Query query;
-    query.setSearchString(QStringLiteral("prop:2015-05-01T23:44:11"));
-
-    QByteArray json = query.toJSON();
-    Query q = Query::fromJSON(json);
-
-    QCOMPARE(q, query);
+    QTest::addRow("term") << QStringLiteral("prop:value");
+    QTest::addRow("andTerm") << QStringLiteral("prop1:1 AND prop2:2");
+    QTest::addRow("dateTerm") << QStringLiteral("prop:2015-05-01");
+    QTest::addRow("dateTimeTerm") << QStringLiteral("prop:2015-05-01T23:44:11");
 }
 
 void QuerySerializationTest::testCustomOptions()
