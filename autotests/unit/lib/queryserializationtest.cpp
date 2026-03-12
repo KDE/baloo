@@ -20,6 +20,8 @@ private Q_SLOTS:
     void testBasic();
     void testJSON();
     void testJSON_data();
+    void testURL();
+    void testURL_data();
 
     void testCustomOptions();
 };
@@ -60,6 +62,32 @@ void QuerySerializationTest::testJSON()
 }
 
 void QuerySerializationTest::testJSON_data()
+{
+    QTest::addColumn<QString>("searchString");
+
+    QTest::addRow("term") << QStringLiteral("prop:value");
+    QTest::addRow("andTerm") << QStringLiteral("prop1:1 AND prop2:2");
+    QTest::addRow("dateTerm") << QStringLiteral("prop:2015-05-01");
+    QTest::addRow("dateTimeTerm") << QStringLiteral("prop:2015-05-01T23:44:11");
+}
+
+void QuerySerializationTest::testURL()
+{
+    QFETCH(QString, searchString);
+    QString title = QString::fromUtf8(QTest::currentDataTag());
+
+    Query query;
+    query.setSearchString(searchString);
+
+    const auto url = query.toSearchUrl(title);
+    QCOMPARE(Query::titleFromQueryUrl(url), title);
+
+    Query q = Query::fromSearchUrl(url);
+
+    QCOMPARE(q, query);
+}
+
+void QuerySerializationTest::testURL_data()
 {
     QTest::addColumn<QString>("searchString");
 
