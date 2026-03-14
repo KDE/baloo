@@ -80,12 +80,10 @@ void QuerySerializationTest::testURL()
     query.setSearchString(searchString);
 
     const auto url = query.toSearchUrl(title);
-    QEXPECT_FAIL("looksLikePercentEncoded", "encoding is heuristic", Continue);
     QCOMPARE(Query::titleFromQueryUrl(url), title);
 
     Query q = Query::fromSearchUrl(url);
 
-    QEXPECT_FAIL("looksLikePercentEncoded", "encoding is heuristic", Abort);
     QCOMPARE(q.searchString(), query.searchString());
     QCOMPARE(q, query);
 }

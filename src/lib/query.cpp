@@ -19,6 +19,7 @@
 #include <QJsonObject>
 
 using namespace Baloo;
+using namespace Qt::StringLiterals;
 
 const int defaultLimit = -1;
 
@@ -290,11 +291,13 @@ QUrl Query::toSearchUrl(const QString& title)
     QUrl url;
     url.setScheme(QStringLiteral("baloosearch"));
 
+    const auto percentEncodedJSON = QString::fromUtf8(QUrl::toPercentEncoding(QString::fromUtf8(toJSON()), ":"_ba));
     QUrlQuery urlQuery;
-    urlQuery.addQueryItem(QStringLiteral("json"), QString::fromUtf8(toJSON()));
+    urlQuery.addQueryItem(QStringLiteral("json"), percentEncodedJSON);
 
     if (!title.isEmpty()) {
-        urlQuery.addQueryItem(QStringLiteral("title"), title);
+        const auto percentEncodedTitle = QString::fromUtf8(QUrl::toPercentEncoding(title, ":"_ba));
+        urlQuery.addQueryItem(QStringLiteral("title"), percentEncodedTitle);
     }
 
     url.setQuery(urlQuery);
