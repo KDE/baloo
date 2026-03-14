@@ -74,16 +74,19 @@ void QuerySerializationTest::testJSON_data()
 void QuerySerializationTest::testURL()
 {
     QFETCH(QString, searchString);
-    QString title = QString::fromUtf8(QTest::currentDataTag());
+    const auto title{searchString};
 
     Query query;
     query.setSearchString(searchString);
 
     const auto url = query.toSearchUrl(title);
+    QEXPECT_FAIL("looksLikePercentEncoded", "encoding is heuristic", Continue);
     QCOMPARE(Query::titleFromQueryUrl(url), title);
 
     Query q = Query::fromSearchUrl(url);
 
+    QEXPECT_FAIL("looksLikePercentEncoded", "encoding is heuristic", Abort);
+    QCOMPARE(q.searchString(), query.searchString());
     QCOMPARE(q, query);
 }
 
@@ -95,6 +98,9 @@ void QuerySerializationTest::testURL_data()
     QTest::addRow("andTerm") << QStringLiteral("prop1:1 AND prop2:2");
     QTest::addRow("dateTerm") << QStringLiteral("prop:2015-05-01");
     QTest::addRow("dateTimeTerm") << QStringLiteral("prop:2015-05-01T23:44:11");
+    QTest::addRow("reservedChars") << QStringLiteral("()&+:,;[]!");
+    QTest::addRow("disallowedChars") << QStringLiteral("{\"äöü\"}");
+    QTest::addRow("looksLikePercentEncoded") << QStringLiteral("%22 abc %22");
 }
 
 void QuerySerializationTest::testCustomOptions()
