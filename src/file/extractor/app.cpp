@@ -34,8 +34,8 @@ App::App(QObject *parent)
     , m_output()
     , m_workerPipe(&m_input, &m_output)
 {
-    m_input.open(STDIN_FILENO, QIODevice::ReadOnly | QIODevice::Unbuffered );
-    m_output.open(STDOUT_FILENO, QIODevice::WriteOnly | QIODevice::Unbuffered );
+    std::ignore = m_input.open(STDIN_FILENO, QIODevice::ReadOnly | QIODevice::Unbuffered);
+    std::ignore = m_output.open(STDOUT_FILENO, QIODevice::WriteOnly | QIODevice::Unbuffered);
 
     static int s_idleTimeout = 1000 * 60 * 1; // 1 min
     m_idleTime = KIdleTime::instance();

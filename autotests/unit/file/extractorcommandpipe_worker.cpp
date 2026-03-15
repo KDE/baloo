@@ -22,11 +22,11 @@ int main(int argc, char* argv[])
     QCoreApplication app(argc, argv);
 
     QFile input;
-    input.open(STDIN_FILENO, QIODevice::ReadOnly | QIODevice::Unbuffered);
+    std::ignore = input.open(STDIN_FILENO, QIODevice::ReadOnly | QIODevice::Unbuffered);
     QSocketNotifier inputNotifier(STDIN_FILENO, QSocketNotifier::Read);
 
     QFile output;
-    output.open(STDOUT_FILENO, QIODevice::WriteOnly | QIODevice::Unbuffered);
+    std::ignore = output.open(STDOUT_FILENO, QIODevice::WriteOnly | QIODevice::Unbuffered);
 
     WorkerPipe worker(&input, &output);
     QObject::connect(&inputNotifier, &QSocketNotifier::activated,

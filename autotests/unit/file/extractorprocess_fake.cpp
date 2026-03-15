@@ -35,8 +35,8 @@ Context::Context()
     : notifier(STDIN_FILENO, QSocketNotifier::Read)
     , worker(&input, &output)
 {
-    input.open(STDIN_FILENO, QIODevice::ReadOnly | QIODevice::Unbuffered);
-    output.open(STDOUT_FILENO, QIODevice::WriteOnly | QIODevice::Unbuffered);
+    std::ignore = input.open(STDIN_FILENO, QIODevice::ReadOnly | QIODevice::Unbuffered);
+    std::ignore = output.open(STDOUT_FILENO, QIODevice::WriteOnly | QIODevice::Unbuffered);
 
     QObject::connect(&notifier, //
                      &QSocketNotifier::activated,
