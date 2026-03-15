@@ -75,6 +75,7 @@ private:
     };
     std::vector<BatchInfo> m_batch;
     QElapsedTimer m_batchTime;
+    unsigned int m_consecutiveErrors = 0;
 };
 
 }

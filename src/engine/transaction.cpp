@@ -53,7 +53,8 @@ void Transaction::init(TransactionType type)
     uint flags = type == ReadOnly ? MDB_RDONLY : 0;
     int rc = mdb_txn_begin(m_env, nullptr, flags, &m_txn);
     if (rc) {
-        qCDebug(ENGINE) << "Transaction init() error:" << rc << mdb_strerror(rc);
+        m_lastError = rc;
+        qCWarning(ENGINE) << "Transaction init() error:" << rc << mdb_strerror(rc);
         return;
     }
 
@@ -76,6 +77,11 @@ Transaction::~Transaction()
     if (m_txn) {
         abort();
     }
+}
+
+const char *Transaction::lastError() const
+{
+    return mdb_strerror(m_lastError);
 }
 
 bool Transaction::hasDocument(quint64 id) const
@@ -299,6 +305,7 @@ bool Transaction::commit()
     m_txn = nullptr;
 
     if (rc) {
+        m_lastError = rc;
         qCWarning(ENGINE) << "Transaction::commit" << mdb_strerror(rc);
         return false;
     }

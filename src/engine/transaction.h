@@ -38,6 +38,12 @@ public:
     Transaction(Database* db, TransactionType type);
     ~Transaction();
 
+    constexpr bool isValid() const
+    {
+        return m_txn != nullptr;
+    }
+    const char *lastError() const;
+
     //
     // Getters
     //
@@ -119,6 +125,7 @@ private:
     MDB_txn *m_txn = nullptr;
     MDB_env *m_env = nullptr;
     std::unique_ptr<WriteTransaction> m_writeTrans;
+    int m_lastError = 0;
 
     friend class DatabaseSanitizerImpl;
     friend class DBState; // for testing

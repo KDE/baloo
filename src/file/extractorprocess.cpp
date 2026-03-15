@@ -41,6 +41,9 @@ ExtractorProcess::ExtractorProcess(const QString& extractorPath, QObject* parent
         } else if (exitCode == 2) {
             // DB transaction commit error
             Q_EMIT failed();
+        } else if (exitCode == 3) {
+            // DB transaction create error
+            Q_EMIT failed();
         } else if (exitCode == 253) {
             // DrKonqi mangles signals depending on the core_pattern
             // and does a regular exit with status 253 instead

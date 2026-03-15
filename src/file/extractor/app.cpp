@@ -72,6 +72,17 @@ void App::slotNewBatch(const QVector<quint64>& ids)
 
     {
         Transaction tr(db, Transaction::ReadOnly);
+        if (tr.isValid()) {
+            m_consecutiveErrors = 0;
+        } else if (m_consecutiveErrors++ > 10) {
+            qCCritical(BALOO) << "Failed to create ReadOnly transaction" << tr.lastError();
+            exit(3);
+        } else {
+            QTimer::singleShot(500, [this, ids]() {
+                slotNewBatch(ids);
+            });
+        }
+
         for (const auto id : ids) {
             auto url = tr.documentUrl(id);
             m_batch.push_back({id, url, IndexState::Pending, {}});
@@ -107,6 +118,16 @@ void App::processNextFile()
     {
         Database *db = globalDatabaseInstance();
         Transaction tr(db, Transaction::ReadWrite);
+        if (tr.isValid()) {
+            m_consecutiveErrors = 0;
+        } else if (m_consecutiveErrors++ > 10) {
+            qCCritical(BALOO) << "Failed to create ReadWrite transaction";
+            exit(3);
+        } else {
+            QTimer::singleShot(500, [this]() {
+                processNextFile();
+            });
+        }
 
         size_t pendingCount = 0;
 
