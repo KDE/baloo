@@ -17,12 +17,6 @@ class DocumentUrlDBTest : public DBTest
 {
     Q_OBJECT
 
-    void touchFile(const QByteArray& path) {
-        QFile file(QString::fromUtf8(path));
-        file.open(QIODevice::WriteOnly);
-        file.write("data");
-    }
-
 private Q_SLOTS:
     void testNonExistingPath() {
         /*
