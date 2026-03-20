@@ -18,6 +18,8 @@
 namespace Baloo {
 namespace Test {
 
+using namespace Qt::Literals::StringLiterals;
+
 class FileIndexerConfigTest : public QObject
 {
     Q_OBJECT
@@ -48,6 +50,37 @@ private:
 
 namespace
 {
+// Trying to put all cases into one folder tree:
+// |- indexedRootDir
+//   |- indexedSubDir
+//     |- indexedSubSubDir
+//     |- excludedSubSubDir
+//     |- .hiddenSubSubDir
+//       |- ignoredSubFolderToIndexedHidden
+//       |- indexedSubFolderToIndexedHidden
+//   |- excludedSubDir
+//     |- indexedSubDirToExcluded
+//     |- .indexedHiddenSubDirToExcluded
+//   |- .hiddenSubDir
+//   |- .indexedHiddenSubDir
+// |- ignoredRootDir
+// |- excludedRootDir
+//
+const QString indexedRootDir = u"d1/"_s;
+const QString indexedSubDir = u"d1/sd1/"_s;
+const QString indexedSubSubDir = u"d1/sd1/ssd1/"_s;
+const QString excludedSubSubDir = u"d1/sd1/ssd2/"_s;
+const QString hiddenSubSubDir = u"d1/sd1/.ssd3/"_s;
+const QString ignoredSubFolderToIndexedHidden = u"d1/sd1/.ssd3/isfh1/"_s;
+const QString indexedSubFolderToIndexedHidden = u"d1/sd1/.ssd3/isfh2/"_s;
+const QString excludedSubDir = u"d1/sd2/"_s;
+const QString indexedSubDirToExcluded = u"d1/sd2/isde1/"_s;
+const QString indexedHiddenSubDirToExcluded = u"d1/sd2/.isde2/"_s;
+const QString hiddenSubDir = u"d1/.sd3/"_s;
+const QString indexedHiddenSubDir = u"d1/.sd4/"_s;
+const QString ignoredRootDir = u"d2/"_s;
+const QString excludedRootDir = u"d3/"_s;
+
 const QString excludeFilter1 = QStringLiteral("build");
 const QString excludeFilter2 = QStringLiteral("foo?ar");
 

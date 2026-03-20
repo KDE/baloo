@@ -105,38 +105,7 @@ std::unique_ptr<QTemporaryDir> createTmpFilesAndFolders(const QStringList& list)
     }
     return tmpDir;
 }
-//
-// Trying to put all cases into one folder tree:
-// |- indexedRootDir
-//   |- indexedSubDir
-//     |- indexedSubSubDir
-//     |- excludedSubSubDir
-//     |- .hiddenSubSubDir
-//       |- ignoredSubFolderToIndexedHidden
-//       |- indexedSubFolderToIndexedHidden
-//   |- excludedSubDir
-//     |- indexedSubDirToExcluded
-//     |- .indexedHiddenSubDirToExcluded
-//   |- .hiddenSubDir
-//   |- .indexedHiddenSubDir
-// |- ignoredRootDir
-// |- excludedRootDir
-//
-const QString indexedRootDir = QStringLiteral("d1");
-const QString indexedSubDir = QStringLiteral("d1/sd1");
-const QString indexedSubSubDir = QStringLiteral("d1/sd1/ssd1");
-const QString excludedSubSubDir = QStringLiteral("d1/sd1/ssd2");
-const QString hiddenSubSubDir = QStringLiteral("d1/sd1/.ssd3");
-const QString ignoredSubFolderToIndexedHidden = QStringLiteral("d1/sd1/.ssd3/isfh1");
-const QString indexedSubFolderToIndexedHidden = QStringLiteral("d1/sd1/.ssd3/isfh2");
-const QString excludedSubDir = QStringLiteral("d1/sd2");
-const QString indexedSubDirToExcluded = QStringLiteral("d1/sd2/isde1");
-const QString indexedHiddenSubDirToExcluded = QStringLiteral("d1/sd2/.isde2");
-const QString hiddenSubDir = QStringLiteral("d1/.sd3");
-const QString indexedHiddenSubDir = QStringLiteral("d1/.sd4");
-const QString ignoredRootDir = QStringLiteral("d2");
-const QString excludedRootDir = QStringLiteral("d3");
-}
-}
+} // namespace Test
+} // namespace Baloo
 
 #endif // FILEINDEXERCONFIGUTILS_H
