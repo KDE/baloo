@@ -12,10 +12,10 @@
 #include <KConfigGroup>
 
 #include <memory>
+
 #include <QDir>
-#include <QTextStream>
-#include <QTemporaryDir>
 #include <QStandardPaths>
+#include <QTemporaryDir>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -70,8 +70,7 @@ std::unique_ptr<QTemporaryDir> createTmpFilesAndFolders(const QStringList& list)
             QFile file(tmpDir->path() + QLatin1Char('/') + f);
             file.open(QIODevice::WriteOnly);
 
-            QTextStream stream(&file);
-            stream << "test";
+            file.write("test");
         }
     }
     return tmpDir;
