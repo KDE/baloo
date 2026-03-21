@@ -47,7 +47,7 @@ void FileFetchJobTest::test()
     QVERIFY(!json.isEmpty());
 
     QTemporaryFile tempFile;
-    tempFile.open();
+    QVERIFY(tempFile.open());
 
     Document doc;
     doc.setData(json);
