@@ -68,7 +68,9 @@ std::unique_ptr<QTemporaryDir> createTmpFilesAndFolders(const QStringList& list)
         }
         else {
             QFile file(tmpDir->path() + QLatin1Char('/') + f);
-            file.open(QIODevice::WriteOnly);
+            if (!file.open(QIODevice::WriteOnly)) {
+                return nullptr;
+            }
 
             file.write("test");
         }
