@@ -152,13 +152,15 @@ void FileIndexerConfigTest::testShouldFolderBeIndexed_data()
     QTest::addColumn<bool>("shouldBeIndexed");
 
     for (const auto& key : indexed) {
-        QVERIFY2(QFileInfo(m_dirPrefix + key).isDir(), qPrintable(QStringLiteral("Not a folder: %1").arg(m_dirPrefix + key)));
-        QTest::addRow("%s", qPrintable(key)) << m_dirPrefix + key << true;
+        const auto dirName = m_dirPrefix + key;
+        QVERIFY2(QFileInfo(dirName).isDir(), qPrintable(u"Not a folder: %1"_s.arg(dirName)));
+        QTest::addRow("%s", qPrintable(key)) << dirName << true;
     }
 
     for (const auto& key : excluded) {
-       QVERIFY2(QFileInfo(m_dirPrefix + key).isDir(), qPrintable(QStringLiteral("Not a folder: %1").arg(m_dirPrefix + key)));
-        QTest::addRow("%s", qPrintable(key)) << m_dirPrefix + key << false;
+        const auto dirName = m_dirPrefix + key;
+        QVERIFY2(QFileInfo(dirName).isDir(), qPrintable(u"Not a folder: %1"_s.arg(dirName)));
+        QTest::addRow("%s", qPrintable(key)) << dirName << false;
     }
 }
 
@@ -210,13 +212,15 @@ void FileIndexerConfigTest::testShouldFolderBeIndexedHidden_data()
     QTest::addColumn<bool>("shouldBeIndexed");
 
     for (const auto& key : indexed) {
-        QVERIFY2(QFileInfo(m_dirPrefix + key).isDir(), qPrintable(QStringLiteral("Not a folder: %1").arg(m_dirPrefix + key)));
-        QTest::addRow("%s", qPrintable(key)) << m_dirPrefix + key << true;
+        const auto dirName = m_dirPrefix + key;
+        QVERIFY2(QFileInfo(dirName).isDir(), qPrintable(u"Not a folder: %1"_s.arg(dirName)));
+        QTest::addRow("%s", qPrintable(key)) << dirName << true;
     }
 
     for (const auto& key : excluded) {
-        QVERIFY2(QFileInfo(m_dirPrefix + key).isDir(), qPrintable(QStringLiteral("Not a folder: %1").arg(m_dirPrefix + key)));
-        QTest::addRow("%s", qPrintable(key)) << m_dirPrefix + key << false;
+        const auto dirName = m_dirPrefix + key;
+        QVERIFY2(QFileInfo(dirName).isDir(), qPrintable(u"Not a folder: %1"_s.arg(dirName)));
+        QTest::addRow("%s", qPrintable(key)) << dirName << false;
     }
 }
 
@@ -257,14 +261,6 @@ void FileIndexerConfigTest::testShouldBeIndexed_data()
         indexedSubDirToExcluded,
         indexedHiddenSubDir,
     };
-    const auto indexedFilenames = QStringList{
-        indexedRootDir + fileName,
-        indexedSubDir + fileName,
-        indexedSubSubDir + fileName,
-        indexedSubFolderToIndexedHidden + fileName,
-        indexedSubDirToExcluded + fileName,
-        indexedHiddenSubDir + fileName
-    };
     const auto excluded = QStringList{
         excludedSubSubDir,
         hiddenSubSubDir,
@@ -274,35 +270,22 @@ void FileIndexerConfigTest::testShouldBeIndexed_data()
         ignoredRootDir,
         excludedRootDir,
     };
-    const auto excludedFilenames = QStringList{
-        excludedSubSubDir + fileName,
-        hiddenSubSubDir + fileName,
-        ignoredSubFolderToIndexedHidden + fileName,
-        excludedSubDir + fileName,
-        hiddenSubDir + fileName,
-        ignoredRootDir + fileName,
-        excludedRootDir + fileName,
-    };
 
     QTest::addColumn<QString>("path");
     QTest::addColumn<bool>("shouldBeIndexed");
 
     for (const auto& key : indexed) {
-        QVERIFY2(QFileInfo(m_dirPrefix + key).isDir(), qPrintable(QStringLiteral("Not a folder: %1").arg(m_dirPrefix + key)));
-        QTest::addRow("%s", qPrintable(key)) << m_dirPrefix + key << true;
-    }
-
-    for (const auto& key : indexedFilenames) {
-        QTest::addRow("%s", qPrintable(key)) << m_dirPrefix + key << true;
+        const auto dirName = m_dirPrefix + key;
+        QVERIFY2(QFileInfo(dirName).isDir(), qPrintable(u"Not a folder: %1"_s.arg(dirName)));
+        QTest::addRow("%s", qPrintable(key)) << dirName << true;
+        QTest::addRow("%s - file", qPrintable(key)) << dirName + fileName << true;
     }
 
     for (const auto& key : excluded) {
-        QVERIFY2(QFileInfo(m_dirPrefix + key).isDir(), qPrintable(QStringLiteral("Not a folder: %1").arg(m_dirPrefix + key)));
-        QTest::addRow("%s", qPrintable(key)) << m_dirPrefix + key << false;
-    }
-
-    for (const auto& key : excludedFilenames) {
-        QTest::addRow("%s", qPrintable(key)) << m_dirPrefix + key << false;
+        const auto dirName = m_dirPrefix + key;
+        QVERIFY2(QFileInfo(dirName).isDir(), qPrintable(u"Not a folder: %1"_s.arg(dirName)));
+        QTest::addRow("%s", qPrintable(key)) << dirName << false;
+        QTest::addRow("%s - file", qPrintable(key)) << dirName + fileName << false;
     }
 }
 
@@ -347,49 +330,29 @@ void FileIndexerConfigTest::testShouldBeIndexedHidden_data()
         hiddenSubDir,
         indexedHiddenSubDir
     };
-    const auto indexedFilenames = QStringList{
-        indexedRootDir + fileName,
-        indexedSubDir + fileName,
-        indexedSubSubDir + fileName,
-        hiddenSubSubDir + fileName,
-        ignoredSubFolderToIndexedHidden + fileName,
-        indexedSubFolderToIndexedHidden + fileName,
-        indexedSubDirToExcluded + fileName,
-        hiddenSubDir + fileName,
-        indexedHiddenSubDir + fileName
-    };
+
     const auto excluded = QStringList{
         excludedSubSubDir,
         excludedSubDir,
         ignoredRootDir,
-        excludedRootDir
-    };
-    const auto excludedFilenames = QStringList{
-        excludedSubSubDir + fileName,
-        excludedSubDir + fileName,
-        ignoredRootDir + fileName,
-        excludedRootDir + fileName
+        excludedRootDir,
     };
 
     QTest::addColumn<QString>("path");
     QTest::addColumn<bool>("shouldBeIndexed");
 
     for (const auto& key : indexed) {
-        QVERIFY2(QFileInfo(m_dirPrefix + key).isDir(), qPrintable(QStringLiteral("Not a folder: %1").arg(m_dirPrefix + key)));
-        QTest::addRow("%s", qPrintable(key)) << m_dirPrefix + key << true;
-    }
-
-    for (const auto& key : indexedFilenames) {
-        QTest::addRow("%s", qPrintable(key)) << m_dirPrefix + key << true;
+        const auto dirName = m_dirPrefix + key;
+        QVERIFY2(QFileInfo(m_dirPrefix + key).isDir(), qPrintable(u"Not a folder: %1"_s.arg(m_dirPrefix + key)));
+        QTest::addRow("%s", qPrintable(key)) << dirName << true;
+        QTest::addRow("%s - file", qPrintable(key)) << dirName + fileName << true;
     }
 
     for (const auto& key : excluded) {
-        QVERIFY2(QFileInfo(m_dirPrefix + key).isDir(), qPrintable(QStringLiteral("Not a folder: %1").arg(m_dirPrefix + key)));
-        QTest::addRow("%s", qPrintable(key)) << m_dirPrefix + key << false;
-    }
-
-    for (const auto& key : excludedFilenames) {
-        QTest::addRow("%s", qPrintable(key)) << m_dirPrefix + key << false;
+        const auto dirName = m_dirPrefix + key;
+        QVERIFY2(QFileInfo(m_dirPrefix + key).isDir(), qPrintable(u"Not a folder: %1"_s.arg(m_dirPrefix + key)));
+        QTest::addRow("%s", qPrintable(key)) << dirName << false;
+        QTest::addRow("%s - file", qPrintable(key)) << dirName + fileName << false;
     }
 }
 
@@ -427,43 +390,28 @@ void FileIndexerConfigTest::testShouldExcludeFilterOnFolders_data()
         includedFilterSubDir,
         includedFilterSubSubDir,
     };
-    const auto indexedFilenames = QStringList{
-        indexedRootDir + fileName,
-        includedFilterSubDir + fileName,
-        includedFilterSubSubDir + fileName
-    };
     const auto excluded = QStringList{
         excludedFilterSubDir1,
         excludedFilterSubSubDir1,
         excludedFilterSubDir2,
         excludedFilterSubSubDir2,
     };
-    const auto excludedFilenames = QStringList{
-        excludedFilterSubDir1 + fileName,
-        excludedFilterSubSubDir1 + fileName,
-        excludedFilterSubDir2 + fileName,
-        excludedFilterSubSubDir2 + fileName
-    };
 
     QTest::addColumn<QString>("path");
     QTest::addColumn<bool>("shouldBeIndexed");
 
     for (const auto& key : indexed) {
-        QVERIFY2(QFileInfo(m_dirPrefix + key).isDir(), qPrintable(QStringLiteral("Not a folder: %1").arg(m_dirPrefix + key)));
-        QTest::addRow("%s", qPrintable(key)) << m_dirPrefix + key << true;
-    }
-
-    for (const auto& key : indexedFilenames) {
-        QTest::addRow("%s", qPrintable(key)) << m_dirPrefix + key << true;
+        const auto dirName = m_dirPrefix + key;
+        QVERIFY2(QFileInfo(dirName).isDir(), qPrintable(u"Not a folder: %1"_s.arg(dirName)));
+        QTest::addRow("%s", qPrintable(key)) << dirName << true;
+        QTest::addRow("%s - file", qPrintable(key)) << dirName + fileName << true;
     }
 
     for (const auto& key : excluded) {
-        QVERIFY2(QFileInfo(m_dirPrefix + key).isDir(), qPrintable(QStringLiteral("Not a folder: %1").arg(m_dirPrefix + key)));
-        QTest::addRow("%s", qPrintable(key)) << m_dirPrefix + key << false;
-    }
-
-    for (const auto& key : excludedFilenames) {
-        QTest::addRow("%s", qPrintable(key)) << m_dirPrefix + key << false;
+        const auto dirName = m_dirPrefix + key;
+        QVERIFY2(QFileInfo(dirName).isDir(), qPrintable(u"Not a folder: %1"_s.arg(dirName)));
+        QTest::addRow("%s", qPrintable(key)) << dirName << false;
+        QTest::addRow("%s - file", qPrintable(key)) << dirName + fileName << false;
     }
 }
 
