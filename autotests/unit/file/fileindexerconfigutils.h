@@ -39,35 +39,6 @@ void writeIndexerConfig(const QStringList& includeFolders,
     fileIndexerConfig.sync();
 }
 
-std::unique_ptr<QTemporaryDir> createTmpFolders(const QStringList& folders)
-{
-    auto tmpDir = std::make_unique<QTemporaryDir>();
-    // If the temporary directory is in a hidden folder, then the tests will fail,
-    // so we use /tmp/ instead.
-    // TODO: Find a better solution
-    if (QFileInfo(tmpDir->path()).isHidden()) {
-        tmpDir = std::make_unique<QTemporaryDir>(QStringLiteral("/tmp/"));
-    }
-    for (const QString & f : folders) {
-        QDir dir(tmpDir->path());
-        const auto lst = f.split(QLatin1Char('/'), Qt::SkipEmptyParts);
-        for (const QString & sf : lst) {
-            if (!dir.exists(sf)) {
-                dir.mkdir(sf);
-            }
-#ifdef Q_OS_WIN
-            if(sf.startsWith(QLatin1Char('.'))) {
-                if(!SetFileAttributesW(reinterpret_cast<const WCHAR*>((dir.path() + "/" + sf).utf16()), FILE_ATTRIBUTE_HIDDEN)) {
-                    qWarning("failed to set 'hidden' attribute!");
-                }
-            }
-#endif
-            dir.cd(sf);
-        }
-    }
-    return tmpDir;
-}
-
 std::unique_ptr<QTemporaryDir> createTmpFilesAndFolders(const QStringList& list)
 {
     auto tmpDir = std::make_unique<QTemporaryDir>();
