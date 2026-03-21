@@ -96,7 +96,7 @@ const QString includedFilterSubSubDir = indexedRootDir + u"build/sub3/sub/";
 
 void FileIndexerConfigTest::initTestCase()
 {
-     m_mainDir = createTmpFolders(QStringList{
+    m_mainDir = createTmpFilesAndFolders(QStringList{
         indexedRootDir,
         indexedSubDir,
         indexedSubSubDir,
@@ -117,9 +117,9 @@ void FileIndexerConfigTest::initTestCase()
         excludedFilterSubDir2,
         excludedFilterSubSubDir2,
         includedFilterSubDir,
-        includedFilterSubSubDir
-     });
-     m_dirPrefix = m_mainDir->path() + QLatin1Char('/');
+        includedFilterSubSubDir,
+    });
+    m_dirPrefix = m_mainDir->path() + QLatin1Char('/');
 }
 
 void FileIndexerConfigTest::cleanupTestCase()
