@@ -81,17 +81,17 @@ const QString indexedHiddenSubDir = u"d1/.sd4/"_s;
 const QString ignoredRootDir = u"d2/"_s;
 const QString excludedRootDir = u"d3/"_s;
 
-const QString excludeFilter1 = QStringLiteral("build");
-const QString excludeFilter2 = QStringLiteral("foo?ar");
+const QString excludeFilter1 = u"build"_s;
+const QString excludeFilter2 = u"foo?ar"_s;
 
-const QString excludedFilterSubDir1 = indexedRootDir + QLatin1String("/") + excludeFilter1;
-const QString excludedFilterSubSubDir1 = excludedFilterSubDir1 + QLatin1String("/sub1");
+const QString excludedFilterSubDir1 = indexedRootDir + u"build/"_s;
+const QString excludedFilterSubSubDir1 = indexedRootDir + u"build/sub1/"_s;
 
-const QString excludedFilterSubDir2 = indexedRootDir + QLatin1String("/foobar");
-const QString excludedFilterSubSubDir2 = excludedFilterSubDir2 + QLatin1String("/sub2");
+const QString excludedFilterSubDir2 = indexedRootDir + u"foobar/"_s;
+const QString excludedFilterSubSubDir2 = indexedRootDir + u"foobar/sub2/"_s;
 
-const QString includedFilterSubDir = excludedFilterSubDir1 + QLatin1String("/sub3");
-const QString includedFilterSubSubDir = includedFilterSubDir + QLatin1String("/sub");
+const QString includedFilterSubDir = indexedRootDir + u"build/sub3/"_s;
+const QString includedFilterSubSubDir = indexedRootDir + u"build/sub3/sub/";
 }
 
 void FileIndexerConfigTest::initTestCase()
@@ -248,7 +248,7 @@ void FileIndexerConfigTest::testShouldFolderBeIndexedHidden()
 
 void FileIndexerConfigTest::testShouldBeIndexed_data()
 {
-    const QString fileName = QStringLiteral("/somefile.txt");
+    const QString fileName = u"somefile.txt"_s;
     const auto indexed = QStringList{
         indexedRootDir,
         indexedSubDir,
@@ -334,7 +334,8 @@ void FileIndexerConfigTest::testShouldBeIndexed()
 
 void FileIndexerConfigTest::testShouldBeIndexedHidden_data()
 {
-    const QString fileName = QStringLiteral("/somefile.txt");
+    const QString fileName = u"somefile.txt"_s;
+
     const auto indexed = QStringList{
         indexedRootDir,
         indexedSubDir,
@@ -420,7 +421,7 @@ void FileIndexerConfigTest::testShouldBeIndexedHidden()
 
 void FileIndexerConfigTest::testShouldExcludeFilterOnFolders_data()
 {
-    const QString fileName = QStringLiteral("/somefile.txt");
+    const QString fileName = u"somefile.txt"_s;
     const auto indexed = QStringList{
         indexedRootDir,
         includedFilterSubDir,
