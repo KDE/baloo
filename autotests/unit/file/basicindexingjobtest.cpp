@@ -62,12 +62,12 @@ void BasicIndexingJobTest::initTestCase()
     };
 
     for (const auto& entry : m_testFiles) {
-	QFile file(m_workDir.filePath(entry.filename));
-	file.open(QIODevice::WriteOnly);
-	if (entry.filename.startsWith(QStringLiteral("test"))) {
-	    file.write("\0", 1);
-	}
-	file.close();
+        QFile file(m_workDir.filePath(entry.filename));
+        QVERIFY(file.open(QIODevice::WriteOnly));
+        if (entry.filename.startsWith(QStringLiteral("test"))) {
+            file.write("\0", 1);
+        }
+        file.close();
     }
 }
 
