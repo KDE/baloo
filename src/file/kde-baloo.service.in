@@ -10,9 +10,11 @@ ExecCondition=@KDE_INSTALL_FULL_BINDIR@/kde-systemd-start-condition --condition 
 # We'll basically only want to consume resources if they aren't needed anywhere else, hence weights are way low.
 CPUWeight=1
 IOWeight=1
-# Memory should comfortably fit the binary itself, any extra data loaded ought to be subject to extreme constraints
-# though - so as to avoid OOM conditions caused by baloo.
-MemoryHigh=512M
+# Used memory includes any generated data, notably any transient allocation done
+# by the extractors. A too low limit will cause significant slowdown, causing the
+# extractor to hold onto the memory instead of releasing it in a timely manner
+# after a transaction has finished.
+MemoryHigh=25%
 
 [Install]
 WantedBy=graphical-session.target
