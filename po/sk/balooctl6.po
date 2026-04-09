@@ -14,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.0\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Generator: Poedit 3.0\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -30,7 +30,7 @@ msgstr "wizzardsk@gmail.com"
 #: clearcommand.cpp:30
 #, kde-format
 msgid "Immediately clear entries from the index"
-msgstr ""
+msgstr "Okamžite vymazať záznamy z indexu"
 
 #: configcommand.cpp:45
 #, kde-format
@@ -197,8 +197,7 @@ msgid "%1 is already in the list of exclude folders"
 msgstr "%1 je už v zozname vylúčených priečinkov"
 
 #: configcommand.cpp:313
-#, fuzzy, kde-format
-#| msgid "%1 is not in the list of include folders"
+#, kde-format
 msgid "%1 is in the list of include folders"
 msgstr "%1 nie je v zozname zahrnutých priečinkov"
 
@@ -225,7 +224,7 @@ msgstr "Neplatná hodnota\n"
 #: indexcommand.cpp:29
 #, kde-format
 msgid "Immediately index files"
-msgstr ""
+msgstr "Okamžite indexovať súbory"
 
 #: main.cpp:54
 #, kde-format
@@ -540,7 +539,6 @@ msgstr "Index zatiaľ neexistuje\n"
 #~ msgstr "Nadradený priečinok %1 je už v zozname vylúčených priečinkov"
 
 #, fuzzy
-#~| msgid "Baloo File Indexer is not running"
 #~ msgctxt "Application"
 #~ msgid "%1 is running"
 #~ msgstr "Indexer súborov Baloo nebeží"
