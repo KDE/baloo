@@ -81,6 +81,7 @@ void App::slotNewBatch(const QVector<quint64>& ids)
             QTimer::singleShot(500, [this, ids]() {
                 slotNewBatch(ids);
             });
+            return;
         }
 
         for (const auto id : ids) {
@@ -127,6 +128,7 @@ void App::processNextFile()
             QTimer::singleShot(500, [this]() {
                 processNextFile();
             });
+            return;
         }
 
         size_t pendingCount = 0;
