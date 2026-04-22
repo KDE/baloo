@@ -52,13 +52,33 @@ MonitorCommand::MonitorCommand(QObject *parent)
 
     if (m_indexerDBusInterface->isValid() && m_schedulerDBusInterface->isValid()) {
         m_err << i18n("Press ctrl+c to stop monitoring\n");
-        m_err.flush();
         balooIsAvailable();
         stateChanged(m_schedulerDBusInterface->state());
-        const QString currentFile = m_indexerDBusInterface->currentFile();
-        if (!currentFile.isEmpty()) {
-            startedIndexingFile(currentFile);
-        }
+
+        auto methodCall = QDBusMessage::createMethodCall( //
+            m_indexerDBusInterface->service(),
+            m_indexerDBusInterface->path(),
+            QStringLiteral("org.freedesktop.DBus.Properties"),
+            QStringLiteral("Get"));
+        methodCall.setArguments({m_indexerDBusInterface->interface(), QStringLiteral("currentFile")});
+        auto pendingCall = m_indexerDBusInterface->connection().asyncCall(methodCall, m_indexerDBusInterface->timeout());
+        auto *watcher = new QDBusPendingCallWatcher(pendingCall, this);
+        connect(watcher, &QDBusPendingCallWatcher::finished, this, [this](QDBusPendingCallWatcher *w) {
+            QDBusPendingReply<QDBusVariant> state = *w;
+            w->deleteLater();
+
+            if (!m_currentFile.isEmpty()) {
+                // async startedIndexingFile arrived before method return;
+                return;
+            }
+            if (state.isError()) {
+                qDebug() << state.error();
+                return;
+            } else if (const auto currentFile = state.value().variant().toString(); !currentFile.isEmpty()) {
+                startedIndexingFile(currentFile);
+            }
+        });
+
     } else {
         balooIsNotAvailable();
     }
