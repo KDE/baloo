@@ -39,6 +39,9 @@ Monitor::Monitor(QObject *parent)
 
     connect(m_fileindexer, &org::kde::baloo::fileindexer::startedIndexingFile,
             this, &Monitor::newFile);
+    connect(m_fileindexer, &org::kde::baloo::fileindexer::finishedIndexingFile, this, [this]() {
+        ++(this->m_filesIndexed);
+    });
 
     connect(m_scheduler, &org::kde::baloo::scheduler::stateChanged,
             this, &Monitor::slotIndexerStateChanged);
@@ -67,7 +70,6 @@ void Monitor::newFile(const QString& filePath)
     if (m_totalFiles == 0) {
         fetchTotalFiles();
     }
-    ++m_filesIndexed;
     Q_EMIT newFileIndexed();
 
     auto now = QDeadlineTimer::current();
