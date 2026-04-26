@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-01-10 00:39+0000\n"
+"POT-Creation-Date: 2026-04-26 00:39+0000\n"
 "PO-Revision-Date: 2019-10-01 11:08+0500\n"
 "Last-Translator: Victor Ibragimov <victor.ibragimov@gmail.com>\n"
 "Language-Team: English <kde-i18n-doc@kde.org>\n"
@@ -338,41 +338,91 @@ msgstr ""
 msgid "format"
 msgstr "қолиб"
 
-#: monitorcommand.cpp:54
+#: monitorcommand.cpp:28
+msgctxt "File index suceeded"
+msgid "Ok"
+msgstr ""
+
+#: monitorcommand.cpp:29
+#, fuzzy
+#| msgid "File ignored"
+msgctxt "File index skipped"
+msgid "File path ignored"
+msgstr "Файл рад карда шуд"
+
+#: monitorcommand.cpp:30
+#, fuzzy
+#| msgid "File ignored"
+msgctxt "File index skipped"
+msgid "File type ignored"
+msgstr "Файл рад карда шуд"
+
+#: monitorcommand.cpp:31
+msgctxt "File index skipped"
+msgid "File type not supported"
+msgstr ""
+
+#: monitorcommand.cpp:32
+#, fuzzy
+#| msgid "File ignored"
+msgctxt "File index skipped"
+msgid "File too large"
+msgstr "Файл рад карда шуд"
+
+#: monitorcommand.cpp:33
+#, fuzzy
+#| msgid "File ignored"
+msgctxt "File index failed"
+msgid "File not found"
+msgstr "Файл рад карда шуд"
+
+#: monitorcommand.cpp:34
+msgctxt "File index failed"
+msgid "Failed to extract metadata/content"
+msgstr ""
+
+#: monitorcommand.cpp:47
+#, kde-format
+msgctxt "Unknown index result code"
+msgid "<unknown> [%1]"
+msgstr ""
+
+#: monitorcommand.cpp:87
 #, fuzzy, kde-format
 #| msgid "Press ctrl+c to stop monitoring"
 msgid "Press ctrl+c to stop monitoring\n"
 msgstr "Барои истодани назорат тугмаҳои ctrl+c-ро пахш кунед"
 
-#: monitorcommand.cpp:70
+#: monitorcommand.cpp:123
 #, fuzzy, kde-format
 #| msgid "Waiting for file indexer to start"
 msgid "Waiting for file indexer to start\n"
 msgstr "Интизори оғози намоябандикунандаи файлҳо"
 
-#: monitorcommand.cpp:71
+#: monitorcommand.cpp:124
 #, fuzzy, kde-format
 #| msgid "Press ctrl+c to stop monitoring"
 msgid "Press Ctrl+C to stop monitoring\n"
 msgstr "Барои истодани назорат тугмаҳои ctrl+c-ро пахш кунед"
 
-#: monitorcommand.cpp:78
+#: monitorcommand.cpp:131
 #, fuzzy, kde-format
 #| msgid "File indexer is running"
 msgid "File indexer is running\n"
 msgstr "Намоябандикунандаи файлҳо дар ҳоли иҷро аст"
 
-#: monitorcommand.cpp:94 statuscommand.cpp:307
+#: monitorcommand.cpp:147 monitorcommand.cpp:155 statuscommand.cpp:307
 #, kde-format
 msgctxt "currently indexed file"
 msgid "Indexing: %1"
 msgstr "Дар ҳоли намоябандӣ: %1"
 
-#: monitorcommand.cpp:103
+#: monitorcommand.cpp:158
 #, fuzzy, kde-format
-#| msgid ": Ok"
-msgid ": Ok\n"
-msgstr ": Хуб"
+#| msgid "File: %1"
+msgctxt "index result"
+msgid ": %1\n"
+msgstr "Файл: %1"
 
 #: monitorcommand.h:32
 #, kde-format
@@ -503,6 +553,11 @@ msgstr "Андозаи ҷории намоябандӣ %1"
 #| msgid "Index does not exist yet"
 msgid "Index does not exist yet\n"
 msgstr "Намоябандӣ ҳоло вуҷуд надорад"
+
+#, fuzzy
+#~| msgid ": Ok"
+#~ msgid ": Ok\n"
+#~ msgstr ": Хуб"
 
 #~ msgid "Unknown"
 #~ msgstr "Номаълум"

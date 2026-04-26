@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-01-10 00:39+0000\n"
+"POT-Creation-Date: 2026-04-26 00:39+0000\n"
 "PO-Revision-Date: 2020-04-29 20:15+0700\n"
 "Last-Translator: Wantoyo <wantoyek@gmail.com>\n"
 "Language-Team: Indonesian <kde-i18n-doc@kde.org>\n"
@@ -325,36 +325,87 @@ msgstr ""
 msgid "format"
 msgstr "format"
 
-#: monitorcommand.cpp:54
+#: monitorcommand.cpp:28
+msgctxt "File index suceeded"
+msgid "Ok"
+msgstr ""
+
+#: monitorcommand.cpp:29
+#, fuzzy
+#| msgid "File ignored"
+msgctxt "File index skipped"
+msgid "File path ignored"
+msgstr "File diabaikan"
+
+#: monitorcommand.cpp:30
+#, fuzzy
+#| msgid "File ignored"
+msgctxt "File index skipped"
+msgid "File type ignored"
+msgstr "File diabaikan"
+
+#: monitorcommand.cpp:31
+msgctxt "File index skipped"
+msgid "File type not supported"
+msgstr ""
+
+#: monitorcommand.cpp:32
+#, fuzzy
+#| msgid "File ignored"
+msgctxt "File index skipped"
+msgid "File too large"
+msgstr "File diabaikan"
+
+#: monitorcommand.cpp:33
+#, fuzzy
+#| msgid "File ignored"
+msgctxt "File index failed"
+msgid "File not found"
+msgstr "File diabaikan"
+
+#: monitorcommand.cpp:34
+msgctxt "File index failed"
+msgid "Failed to extract metadata/content"
+msgstr ""
+
+#: monitorcommand.cpp:47
+#, kde-format
+msgctxt "Unknown index result code"
+msgid "<unknown> [%1]"
+msgstr ""
+
+#: monitorcommand.cpp:87
 #, kde-format
 msgid "Press ctrl+c to stop monitoring\n"
 msgstr "Tekan ctrl+c untuk menghentikan pemantauan\n"
 
-#: monitorcommand.cpp:70
+#: monitorcommand.cpp:123
 #, kde-format
 msgid "Waiting for file indexer to start\n"
 msgstr "Menunggu pengindeks file untuk memulai\n"
 
-#: monitorcommand.cpp:71
+#: monitorcommand.cpp:124
 #, kde-format
 msgid "Press Ctrl+C to stop monitoring\n"
 msgstr "Tekan Ctrl+C untuk menghentikan pemantauan\n"
 
-#: monitorcommand.cpp:78
+#: monitorcommand.cpp:131
 #, kde-format
 msgid "File indexer is running\n"
 msgstr "Pengindeks file telah berjalan\n"
 
-#: monitorcommand.cpp:94 statuscommand.cpp:307
+#: monitorcommand.cpp:147 monitorcommand.cpp:155 statuscommand.cpp:307
 #, kde-format
 msgctxt "currently indexed file"
 msgid "Indexing: %1"
 msgstr "Pengindeksan: %1"
 
-#: monitorcommand.cpp:103
-#, kde-format
-msgid ": Ok\n"
-msgstr ": Oke\n"
+#: monitorcommand.cpp:158
+#, fuzzy, kde-format
+#| msgid "File: %1"
+msgctxt "index result"
+msgid ": %1\n"
+msgstr "File: %1"
 
 #: monitorcommand.h:32
 #, kde-format
@@ -479,6 +530,9 @@ msgstr "Ukuran pengindeksan saat ini adalah %1"
 #, kde-format
 msgid "Index does not exist yet\n"
 msgstr "Indeks belum ada\n"
+
+#~ msgid ": Ok\n"
+#~ msgstr ": Oke\n"
 
 #~ msgid "Unknown"
 #~ msgstr "Tidak diketahui"

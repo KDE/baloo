@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-01-10 00:39+0000\n"
+"POT-Creation-Date: 2026-04-26 00:39+0000\n"
 "PO-Revision-Date: 2024-12-01 20:48+0200\n"
 "Last-Translator: Toms Trasuns <toms.trasuns@posteo.net>\n"
 "Language-Team: Latvian <kde-i18n-doc@kde.org>\n"
@@ -328,36 +328,88 @@ msgstr ""
 msgid "format"
 msgstr "formāts"
 
-#: monitorcommand.cpp:54
+#: monitorcommand.cpp:28
+msgctxt "File index suceeded"
+msgid "Ok"
+msgstr ""
+
+#: monitorcommand.cpp:29
+#, fuzzy
+#| msgid "File ignored"
+msgctxt "File index skipped"
+msgid "File path ignored"
+msgstr "Datne ir ignorēta"
+
+#: monitorcommand.cpp:30
+#, fuzzy
+#| msgid "File ignored"
+msgctxt "File index skipped"
+msgid "File type ignored"
+msgstr "Datne ir ignorēta"
+
+#: monitorcommand.cpp:31
+msgctxt "File index skipped"
+msgid "File type not supported"
+msgstr ""
+
+#: monitorcommand.cpp:32
+#, fuzzy
+#| msgid "File ignored"
+msgctxt "File index skipped"
+msgid "File too large"
+msgstr "Datne ir ignorēta"
+
+#: monitorcommand.cpp:33
+#, fuzzy
+#| msgid "File ignored"
+msgctxt "File index failed"
+msgid "File not found"
+msgstr "Datne ir ignorēta"
+
+#: monitorcommand.cpp:34
+msgctxt "File index failed"
+msgid "Failed to extract metadata/content"
+msgstr ""
+
+#: monitorcommand.cpp:47
+#, kde-format
+msgctxt "Unknown index result code"
+msgid "<unknown> [%1]"
+msgstr ""
+
+#: monitorcommand.cpp:87
 #, kde-format
 msgid "Press ctrl+c to stop monitoring\n"
 msgstr "Spiediet CTRL+C, lai apturētu pārraudzīšanu\n"
 
-#: monitorcommand.cpp:70
+#: monitorcommand.cpp:123
 #, kde-format
 msgid "Waiting for file indexer to start\n"
 msgstr "Gaida datņu indeksētāja ieslēgšanu\n"
 
-#: monitorcommand.cpp:71
+#: monitorcommand.cpp:124
 #, kde-format
 msgid "Press Ctrl+C to stop monitoring\n"
 msgstr "Spiediet CTRL+C, lai apturētu pārraudzīšanu\n"
 
-#: monitorcommand.cpp:78
+#: monitorcommand.cpp:131
 #, kde-format
 msgid "File indexer is running\n"
 msgstr "Datņu indeksētājs darbojas\n"
 
-#: monitorcommand.cpp:94 statuscommand.cpp:307
+#: monitorcommand.cpp:147 monitorcommand.cpp:155 statuscommand.cpp:307
 #, kde-format
 msgctxt "currently indexed file"
 msgid "Indexing: %1"
 msgstr "Indeksē: %1"
 
-#: monitorcommand.cpp:103
-#, kde-format
-msgid ": Ok\n"
-msgstr ": Labi\n"
+#: monitorcommand.cpp:158
+#, fuzzy, kde-format
+#| msgctxt "bullet list item with output format"
+#| msgid "- %1\n"
+msgctxt "index result"
+msgid ": %1\n"
+msgstr "- %1\n"
 
 #: monitorcommand.h:32
 #, kde-format
@@ -480,3 +532,6 @@ msgstr "Pašreizējais indeksa izmērs: %1"
 #, kde-format
 msgid "Index does not exist yet\n"
 msgstr "Indekss vēl nav izveidots\n"
+
+#~ msgid ": Ok\n"
+#~ msgstr ": Labi\n"
