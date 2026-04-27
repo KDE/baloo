@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the baloo package.
 # Automatically generated, 2014.
 #
-# SPDX-FileCopyrightText: 2014, 2015, 2017, 2018, 2019, 2020, 2024, 2025, 2026 Eloy Cuadra <ecuadra@eloihr.net>
+# SPDX-FileCopyrightText: 2014-2015, 2017-2020, 2024-2026 Eloy Cuadra <ecuadra@eloihr.net>
 msgid ""
 msgstr ""
 "Project-Id-Version: balooctl6\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-04-26 00:39+0000\n"
-"PO-Revision-Date: 2026-01-11 00:23+0100\n"
+"PO-Revision-Date: 2026-04-26 12:20+0100\n"
 "Last-Translator: Eloy Cuadra <ecuadra@eloihr.net>\n"
 "Language-Team: Spanish <kde-l10n-es@kde.org>\n"
 "Language: es\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 25.12.0\n"
+"X-Generator: Lokalize 26.04.0\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -331,51 +331,43 @@ msgstr "formato"
 #: monitorcommand.cpp:28
 msgctxt "File index suceeded"
 msgid "Ok"
-msgstr ""
+msgstr "Aceptar"
 
 #: monitorcommand.cpp:29
-#, fuzzy
-#| msgid "File ignored"
 msgctxt "File index skipped"
 msgid "File path ignored"
-msgstr "Archivo ignorado"
+msgstr "Ruta de archivo ignorada"
 
 #: monitorcommand.cpp:30
-#, fuzzy
-#| msgid "File ignored"
 msgctxt "File index skipped"
 msgid "File type ignored"
-msgstr "Archivo ignorado"
+msgstr "Tipo de archivo ignorado"
 
 #: monitorcommand.cpp:31
 msgctxt "File index skipped"
 msgid "File type not supported"
-msgstr ""
+msgstr "Tipo de archivo no compatible"
 
 #: monitorcommand.cpp:32
-#, fuzzy
-#| msgid "File ignored"
 msgctxt "File index skipped"
 msgid "File too large"
-msgstr "Archivo ignorado"
+msgstr "Archivo demasiado grande"
 
 #: monitorcommand.cpp:33
-#, fuzzy
-#| msgid "File ignored"
 msgctxt "File index failed"
 msgid "File not found"
-msgstr "Archivo ignorado"
+msgstr "Archivo no encontrado"
 
 #: monitorcommand.cpp:34
 msgctxt "File index failed"
 msgid "Failed to extract metadata/content"
-msgstr ""
+msgstr "No se han podido extraer los metadatos o el contenido"
 
 #: monitorcommand.cpp:47
 #, kde-format
 msgctxt "Unknown index result code"
 msgid "<unknown> [%1]"
-msgstr ""
+msgstr "<desconocido> [%1]"
 
 #: monitorcommand.cpp:87
 #, kde-format
@@ -404,12 +396,10 @@ msgid "Indexing: %1"
 msgstr "Indexando: %1"
 
 #: monitorcommand.cpp:158
-#, fuzzy, kde-format
-#| msgctxt "bullet list item with output format"
-#| msgid "- %1\n"
+#, kde-format
 msgctxt "index result"
 msgid ": %1\n"
-msgstr "- %1\n"
+msgstr ": %1\n"
 
 #: monitorcommand.h:32
 #, kde-format
@@ -532,6 +522,3 @@ msgstr "El tamaño actual del índice es %1"
 #, kde-format
 msgid "Index does not exist yet\n"
 msgstr "El índice todavía no existe\n"
-
-#~ msgid ": Ok\n"
-#~ msgstr ": Correcto\n"

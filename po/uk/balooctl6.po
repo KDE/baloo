@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: balooctl5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-04-26 00:39+0000\n"
-"PO-Revision-Date: 2026-01-12 03:04+0200\n"
+"PO-Revision-Date: 2026-04-26 12:42+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -334,51 +334,43 @@ msgstr "формат"
 #: monitorcommand.cpp:28
 msgctxt "File index suceeded"
 msgid "Ok"
-msgstr ""
+msgstr "Гаразд"
 
 #: monitorcommand.cpp:29
-#, fuzzy
-#| msgid "File ignored"
 msgctxt "File index skipped"
 msgid "File path ignored"
-msgstr "Файл проігноровано"
+msgstr "Шлях до файла проігноровано"
 
 #: monitorcommand.cpp:30
-#, fuzzy
-#| msgid "File ignored"
 msgctxt "File index skipped"
 msgid "File type ignored"
-msgstr "Файл проігноровано"
+msgstr "Тип файлів проігноровано"
 
 #: monitorcommand.cpp:31
 msgctxt "File index skipped"
 msgid "File type not supported"
-msgstr ""
+msgstr "Підтримку типу файлів не передбачено"
 
 #: monitorcommand.cpp:32
-#, fuzzy
-#| msgid "File ignored"
 msgctxt "File index skipped"
 msgid "File too large"
-msgstr "Файл проігноровано"
+msgstr "Файл є надто великим"
 
 #: monitorcommand.cpp:33
-#, fuzzy
-#| msgid "File ignored"
 msgctxt "File index failed"
 msgid "File not found"
-msgstr "Файл проігноровано"
+msgstr "Файл не знайдено"
 
 #: monitorcommand.cpp:34
 msgctxt "File index failed"
 msgid "Failed to extract metadata/content"
-msgstr ""
+msgstr "Не вдалося видобути метадані/вміст"
 
 #: monitorcommand.cpp:47
 #, kde-format
 msgctxt "Unknown index result code"
 msgid "<unknown> [%1]"
-msgstr ""
+msgstr "<невідомо> [%1]"
 
 #: monitorcommand.cpp:87
 #, kde-format
@@ -407,12 +399,10 @@ msgid "Indexing: %1"
 msgstr "Індексуємо: %1"
 
 #: monitorcommand.cpp:158
-#, fuzzy, kde-format
-#| msgctxt "bullet list item with output format"
-#| msgid "- %1\n"
+#, kde-format
 msgctxt "index result"
 msgid ": %1\n"
-msgstr "– %1\n"
+msgstr ": %1\n"
 
 #: monitorcommand.h:32
 #, kde-format

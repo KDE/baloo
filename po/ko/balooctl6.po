@@ -1,13 +1,13 @@
 # Copyright (C) YEAR This_file_is_part_of_KDE
 # This file is distributed under the same license as the PACKAGE package.
-# SPDX-FileCopyrightText: 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2024 Shinjo Park <kde@peremen.name>
+# SPDX-FileCopyrightText: 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2024, 2026 Shinjo Park <kde@peremen.name>
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-04-26 00:39+0000\n"
-"PO-Revision-Date: 2024-11-29 01:00+0100\n"
+"PO-Revision-Date: 2026-04-26 22:59+0200\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean <kde-kr@kde.org>\n"
 "Language: ko\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Lokalize 23.08.5\n"
+"X-Generator: Lokalize 25.08.1\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -195,10 +195,9 @@ msgid "%1 is already in the list of exclude folders"
 msgstr "%1이(가) 제외할 폴더 목록에 이미 있음"
 
 #: configcommand.cpp:313
-#, fuzzy, kde-format
-#| msgid "%1 is not in the list of include folders"
+#, kde-format
 msgid "%1 is in the list of include folders"
-msgstr "%1이(가) 포함할 폴더 목록에 없음"
+msgstr "%1이(가) 포함할 폴더 목록에 있음"
 
 #: configcommand.cpp:331
 #, kde-format
@@ -327,51 +326,43 @@ msgstr "형식"
 #: monitorcommand.cpp:28
 msgctxt "File index suceeded"
 msgid "Ok"
-msgstr ""
+msgstr "성공"
 
 #: monitorcommand.cpp:29
-#, fuzzy
-#| msgid "File ignored"
 msgctxt "File index skipped"
 msgid "File path ignored"
-msgstr "파일 무시됨"
+msgstr "파일 경로 무시됨"
 
 #: monitorcommand.cpp:30
-#, fuzzy
-#| msgid "File ignored"
 msgctxt "File index skipped"
 msgid "File type ignored"
-msgstr "파일 무시됨"
+msgstr "파일 형식 무시됨"
 
 #: monitorcommand.cpp:31
 msgctxt "File index skipped"
 msgid "File type not supported"
-msgstr ""
+msgstr "파일 형식이 지원되지 않음"
 
 #: monitorcommand.cpp:32
-#, fuzzy
-#| msgid "File ignored"
 msgctxt "File index skipped"
 msgid "File too large"
-msgstr "파일 무시됨"
+msgstr "파일이 너무 큼"
 
 #: monitorcommand.cpp:33
-#, fuzzy
-#| msgid "File ignored"
 msgctxt "File index failed"
 msgid "File not found"
-msgstr "파일 무시됨"
+msgstr "파일을 찾을 수 없음"
 
 #: monitorcommand.cpp:34
 msgctxt "File index failed"
 msgid "Failed to extract metadata/content"
-msgstr ""
+msgstr "메타데이터/내용을 추출할 수 없음"
 
 #: monitorcommand.cpp:47
 #, kde-format
 msgctxt "Unknown index result code"
 msgid "<unknown> [%1]"
-msgstr ""
+msgstr "<알 수 없음> [%1]"
 
 #: monitorcommand.cpp:87
 #, kde-format
@@ -400,12 +391,10 @@ msgid "Indexing: %1"
 msgstr "현재 색인 중: %1"
 
 #: monitorcommand.cpp:158
-#, fuzzy, kde-format
-#| msgctxt "bullet list item with output format"
-#| msgid "- %1\n"
+#, kde-format
 msgctxt "index result"
 msgid ": %1\n"
-msgstr "- %1\n"
+msgstr ": %1\n"
 
 #: monitorcommand.h:32
 #, kde-format

@@ -530,6 +530,3 @@ msgstr "Storleiken på indeksen er %1"
 #, kde-format
 msgid "Index does not exist yet\n"
 msgstr "Indeksen finst ikkje enno\n"
-
-#~ msgid ": Ok\n"
-#~ msgstr ": OK\n"
