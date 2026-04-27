@@ -78,7 +78,7 @@ msgstr ""
 msgid ""
 "List database contents. Use a regular expression as argument to filter output"
 msgstr ""
-"Vypísať obsah databázy. Použiť regulérny výraz ako parameter filtrovania "
+"Vypísať obsah databázy. Použiť regulárny výraz ako parameter filtrovania "
 "výstupu"
 
 #: main.cpp:70
@@ -141,7 +141,7 @@ msgid ""
 "A regular expression applied to the URL of database items\n"
 "Example: %1"
 msgstr ""
-"Regulérny výraz použitý na URL položiek databázy\n"
+"Regulárny výraz použitý na URL položiek databázy\n"
 "Napríklad: %1"
 
 #: main.cpp:219 main.cpp:227 main.cpp:237
