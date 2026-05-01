@@ -213,5 +213,5 @@ private:
     std::unique_ptr<Private> const d;
 };
 
-}
+} // namespace Baloo
 #endif // BALOO_QUERY_H

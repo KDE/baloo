@@ -18,14 +18,13 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-using namespace Baloo;
 using namespace Qt::StringLiterals;
 
 const int defaultLimit = -1;
 
 class BALOO_CORE_NO_EXPORT Baloo::Query::Private {
 public:
-    Term m_term;
+    Baloo::Term m_term;
 
     QStringList m_types;
     QString m_searchString;
@@ -39,6 +38,9 @@ public:
     SortingOption m_sortingOption = SortAuto;
     QString m_includeFolder;
 };
+
+namespace Baloo
+{
 
 Query::Query()
     : d(new Private)
@@ -389,3 +391,5 @@ Query& Query::operator=(const Query& rhs)
     *d = *rhs.d;
     return *this;
 }
+
+} // namespace Baloo
