@@ -10,8 +10,6 @@
 
 #include <QTest>
 
-using namespace Baloo;
-
 class QuerySerializationTest : public QObject
 {
     Q_OBJECT
@@ -25,6 +23,8 @@ private Q_SLOTS:
 
     void testCustomOptions();
 };
+
+using Query = Baloo::Query;
 
 // Test a simple query with no terms
 void QuerySerializationTest::testBasic()

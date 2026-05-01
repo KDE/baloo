@@ -142,7 +142,7 @@ inline Term operator !(const Term& rhs)
 
 char *toString(const Term& term);
 
-}
+} // namespace Baloo
 
 QDebug operator <<(QDebug d, const Baloo::Term& t);
 
