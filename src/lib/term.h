@@ -101,9 +101,6 @@ public:
     Comparator comparator() const;
     void setComparator(Comparator c);
 
-    void setUserData(const QString& name, const QVariant& value);
-    QVariant userData(const QString& name) const;
-
     QVariantMap toVariantMap() const;
     static Term fromVariantMap(const QVariantMap& map);
 
