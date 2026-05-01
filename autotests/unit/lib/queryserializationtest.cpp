@@ -6,7 +6,6 @@
 */
 
 #include "query.h"
-#include "term.h"
 
 #include <QTest>
 
