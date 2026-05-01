@@ -158,15 +158,17 @@ void Query::setIncludeFolder(const QString& folder)
 
 ResultIterator Query::exec()
 {
+    Term term;
     if (!d->m_searchString.isEmpty()) {
         if (d->m_term.isValid()) {
             qCDebug(BALOO) << "Term already set";
         }
         AdvancedQueryParser parser;
-        d->m_term = parser.parse(d->m_searchString);
+        term = parser.parse(d->m_searchString);
+    } else {
+        term = d->m_term;
     }
 
-    Term term(d->m_term);
     if (!d->m_types.isEmpty()) {
         for (const QString& type : std::as_const(d->m_types)) {
             term = term && Term(QStringLiteral("type"), type);
