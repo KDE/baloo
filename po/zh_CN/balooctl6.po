@@ -328,51 +328,43 @@ msgstr "格式"
 #: monitorcommand.cpp:28
 msgctxt "File index suceeded"
 msgid "Ok"
-msgstr ""
+msgstr "确定"
 
 #: monitorcommand.cpp:29
-#, fuzzy
-#| msgid "File ignored"
 msgctxt "File index skipped"
 msgid "File path ignored"
-msgstr "忽略的文件"
+msgstr "文件路径已忽略"
 
 #: monitorcommand.cpp:30
-#, fuzzy
-#| msgid "File ignored"
 msgctxt "File index skipped"
 msgid "File type ignored"
-msgstr "忽略的文件"
+msgstr "文件类型已忽略"
 
 #: monitorcommand.cpp:31
 msgctxt "File index skipped"
 msgid "File type not supported"
-msgstr ""
+msgstr "文件类型不支持"
 
 #: monitorcommand.cpp:32
-#, fuzzy
-#| msgid "File ignored"
 msgctxt "File index skipped"
 msgid "File too large"
-msgstr "忽略的文件"
+msgstr "文件太大"
 
 #: monitorcommand.cpp:33
-#, fuzzy
-#| msgid "File ignored"
 msgctxt "File index failed"
 msgid "File not found"
-msgstr "忽略的文件"
+msgstr "文件找不到"
 
 #: monitorcommand.cpp:34
 msgctxt "File index failed"
 msgid "Failed to extract metadata/content"
-msgstr ""
+msgstr "提取元数据/内容失败"
 
 #: monitorcommand.cpp:47
 #, kde-format
 msgctxt "Unknown index result code"
 msgid "<unknown> [%1]"
-msgstr ""
+msgstr "<未知> [%1]"
 
 #: monitorcommand.cpp:87
 #, kde-format
@@ -401,12 +393,10 @@ msgid "Indexing: %1"
 msgstr "正在索引：%1"
 
 #: monitorcommand.cpp:158
-#, fuzzy, kde-format
-#| msgctxt "bullet list item with output format"
-#| msgid "- %1\n"
+#, kde-format
 msgctxt "index result"
 msgid ": %1\n"
-msgstr "- %1\n"
+msgstr "：%1\n"
 
 #: monitorcommand.h:32
 #, kde-format
@@ -529,6 +519,3 @@ msgstr "当前索引大小为 %1"
 #, kde-format
 msgid "Index does not exist yet\n"
 msgstr "尚不存在索引\n"
-
-#~ msgid ": Ok\n"
-#~ msgstr ": Ok\n"
