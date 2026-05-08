@@ -34,19 +34,19 @@ int main(int argc, char* argv[])
                      &worker, &WorkerPipe::processIdData);
 
     QObject::connect(&worker, &WorkerPipe::inputEnd, []() {
-        qCInfo(BALOO) << "Pipe closed, exiting";
+        qDebug(BALOO) << "Pipe closed, exiting";
         QCoreApplication::quit();
     });
     QObject::connect(&worker, &WorkerPipe::newDocumentIds,
         [&worker](const QVector<quint64>& ids) {
             QTimer::singleShot(0, [&worker, ids]() {
-                qCInfo(BALOO) << "Processing ...";
+                qDebug(BALOO) << "Processing ...";
                 for(auto id : ids) {
                     worker.urlStarted(QString::number(id));
                     worker.urlProcessed(QString::number(id), true, FileIndexStatus::Successful);
                 }
                 worker.batchFinished();
-                qCInfo(BALOO) << "Processing done";
+                qDebug(BALOO) << "Processing done";
             });
         });
 

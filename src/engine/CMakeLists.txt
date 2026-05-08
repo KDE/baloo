@@ -32,7 +32,6 @@ ecm_qt_declare_logging_category(
     BALOO_ENGINE_SRCS
     HEADER "enginedebug.h"
     IDENTIFIER "Baloo::ENGINE"
-    DEFAULT_SEVERITY Warning
     CATEGORY_NAME kf.baloo.engine
     OLD_CATEGORY_NAMES org.kde.baloo.engine
     DESCRIPTION "Baloo Engine"

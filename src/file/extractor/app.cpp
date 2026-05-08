@@ -41,11 +41,11 @@ App::App(QObject *parent)
     m_idleTime = KIdleTime::instance();
     m_idleTime->addIdleTimeout(s_idleTimeout);
     connect(m_idleTime, &KIdleTime::resumingFromIdle, this, [this]() {
-        qCInfo(BALOO) << "Busy, paced indexing";
+        qCDebug(BALOO) << "Busy, paced indexing";
         m_isBusy = true;
     });
     connect(m_idleTime, &KIdleTime::timeoutReached, this, [this]() {
-        qCInfo(BALOO) << "Not busy, fast indexing";
+        qCDebug(BALOO) << "Not busy, fast indexing";
         m_isBusy = false;
     });
 
