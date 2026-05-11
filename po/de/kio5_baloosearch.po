@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2013, 2014 Burkhard Lück <lueck@hube-lueck.de>
+# SPDX-FileCopyrightText: 2013-2014 Burkhard Lück <lueck@hube-lueck.de>
 msgid ""
 msgstr ""
 "Project-Id-Version: kio6_baloosearch\n"
