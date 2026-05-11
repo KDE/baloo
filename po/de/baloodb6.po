@@ -117,7 +117,7 @@ msgstr "Anzeige und aufräumen der Baloo-Datenbank"
 #: main.cpp:151
 #, kde-format
 msgid "(c) 2018, Michael Heidelbach"
-msgstr "Copyright © 2018, Michael Heidelbach"
+msgstr "© 2018, Michael Heidelbach"
 
 #: main.cpp:152
 #, kde-format
@@ -153,12 +153,12 @@ msgstr "Der Baloo-Index kann nicht geöffnet werden"
 #: main.cpp:223 main.cpp:231
 #, kde-format
 msgid "Listing database contents..."
-msgstr "Datenbankinhalte werden angezeigt ..."
+msgstr "Datenbankinhalte werden angezeigt …"
 
 #: main.cpp:241
 #, kde-format
 msgid "Removing stale database contents..."
-msgstr "Veraltete Datenbankinhalte werden entfernt ..."
+msgstr "Veraltete Datenbankinhalte werden entfernt …"
 
 #: main.cpp:263
 #, kde-format

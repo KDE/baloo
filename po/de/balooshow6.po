@@ -1,6 +1,6 @@
-# SPDX-FileCopyrightText: 2024 Johannes Obermayr <johannesobermayr@gmx.de>
-# SPDX-FileCopyrightText: 2013, 2015, 2018, 2019, 2020 Burkhard Lück <lueck@hube-lueck.de>
+# SPDX-FileCopyrightText: 2013, 2015, 2018-2020 Burkhard Lück <lueck@hube-lueck.de>
 # SPDX-FileCopyrightText: 2015 Frederik Schwarzer <schwarzer@kde.org>
+# SPDX-FileCopyrightText: 2024 Johannes Obermayr <johannesobermayr@gmx.de>
 msgid ""
 msgstr ""
 "Project-Id-Version: balooshow6\n"
@@ -34,12 +34,12 @@ msgstr "Baloo Show"
 #: main.cpp:61
 #, kde-format
 msgid "The Baloo data Viewer - A debugging tool"
-msgstr "Der Baloo-Datenbetrachter - Ein Werkzeug zur Fehlersuche"
+msgstr "Der Baloo-Datenbetrachter – Ein Werkzeug zur Fehlersuche"
 
 #: main.cpp:63
 #, kde-format
 msgid "(c) 2012, Vishesh Handa"
-msgstr "(c) 2012, Vishesh Handa"
+msgstr "© 2012, Vishesh Handa"
 
 #: main.cpp:68
 #, kde-format
@@ -126,7 +126,7 @@ msgstr "Eigenschafts-Begriffe: %1"
 #, kde-format
 msgctxt "Prefix string for internal errors"
 msgid "Internal Error - %1"
-msgstr "Interner Fehler - %1"
+msgstr "Interner Fehler – %1"
 
 #~ msgid "Vishesh Handa"
 #~ msgstr "Vishesh Handa"
