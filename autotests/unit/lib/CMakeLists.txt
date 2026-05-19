@@ -13,11 +13,11 @@ ecm_add_test(filemonitortest.cpp
 #
 # Advanced Query Parser
 #
-ecm_add_test(advancedqueryparsertest.cpp
-    ../../../src/lib/advancedqueryparser.cpp
+ecm_add_test(queryparsertest.cpp
+    ../../../src/lib/queryparser.cpp
     ../../../src/lib/term.cpp
     ../../../src/lib/baloodebug.cpp
-    TEST_NAME "advancedqueryparsertest"
+    TEST_NAME "queryparsertest"
     LINK_LIBRARIES Qt6::Test
 )
 

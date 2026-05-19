@@ -5,7 +5,7 @@
     SPDX-License-Identifier: LGPL-2.1-or-later
 */
 
-#include "advancedqueryparser.h"
+#include "queryparser.h"
 
 #include "baloodebug.h"
 
@@ -13,13 +13,11 @@
 #include <QStack>
 #include <QDate>
 
-using namespace Baloo;
-
-AdvancedQueryParser::AdvancedQueryParser()
+namespace
 {
-}
+using Term = Baloo::Term;
 
-static QStringList lex(const QString& text)
+QStringList lex(const QString& text)
 {
     QStringList tokenList;
     QString token;
@@ -77,14 +75,15 @@ static QStringList lex(const QString& text)
     return tokenList;
 }
 
-static void addTermToStack(QStack<Term>& stack, const Term& termInConstruction, Term::Operation op)
+void addTermToStack(QStack<Term>& stack, const Term& termInConstruction, Term::Operation op)
 {
     Term &tos = stack.top();
 
     tos = Term(tos, op, termInConstruction);
 }
+} // namespace <anonymous>
 
-Term AdvancedQueryParser::parse(const QString& text)
+Term Baloo::QueryParser::parse(const QString& text)
 {
     // The parser does not do any look-ahead but has to store some state
     QStack<Term> stack;

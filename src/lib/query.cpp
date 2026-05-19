@@ -6,9 +6,11 @@
 */
 
 #include "query.h"
-#include "term.h"
-#include "advancedqueryparser.h"
+
+#include "queryparser.h"
 #include "searchstore.h"
+#include "term.h"
+
 #include "baloodebug.h"
 
 #include <QString>
@@ -163,8 +165,7 @@ ResultIterator Query::exec()
         if (d->m_term.isValid()) {
             qCDebug(BALOO) << "Term already set";
         }
-        AdvancedQueryParser parser;
-        term = parser.parse(d->m_searchString);
+        term = QueryParser::parse(d->m_searchString);
     } else {
         term = d->m_term;
     }

@@ -3,7 +3,7 @@ set(BALOO_LIB_SRCS
     query.cpp
     queryrunnable.cpp
     resultiterator.cpp
-    advancedqueryparser.cpp
+    queryparser.cpp
 
     file.cpp
     filemonitor.cpp

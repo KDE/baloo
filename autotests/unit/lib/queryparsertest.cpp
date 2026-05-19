@@ -5,14 +5,14 @@
     SPDX-License-Identifier: LGPL-2.1-or-later
 */
 
-#include "advancedqueryparser.h"
+#include "queryparser.h"
 
 #include <QTest>
 
 Q_DECLARE_METATYPE(Baloo::Term)
 
 using Term = Baloo::Term;
-using AdvancedQueryParser = Baloo::AdvancedQueryParser;
+namespace QueryParser = Baloo::QueryParser;
 
 class AdvancedQueryParserTest : public QObject
 {
@@ -43,8 +43,7 @@ private Q_SLOTS:
 
 void AdvancedQueryParserTest::testSimpleProperty()
 {
-    AdvancedQueryParser parser;
-    Term term = parser.parse(QStringLiteral("artist:Coldplay"));
+    Term term = QueryParser::parse(QStringLiteral("artist:Coldplay"));
     Term expectedTerm(QStringLiteral("artist"), QStringLiteral("Coldplay"));
 
     QCOMPARE(term, expectedTerm);
@@ -52,8 +51,7 @@ void AdvancedQueryParserTest::testSimpleProperty()
 
 void AdvancedQueryParserTest::testSimpleString()
 {
-    AdvancedQueryParser parser;
-    Term term = parser.parse(QStringLiteral("Coldplay"));
+    Term term = QueryParser::parse(QStringLiteral("Coldplay"));
     Term expectedTerm(QString(), QStringLiteral("Coldplay"));
 
     QCOMPARE(term, expectedTerm);
@@ -61,8 +59,7 @@ void AdvancedQueryParserTest::testSimpleString()
 
 void AdvancedQueryParserTest::testStringAndProperty()
 {
-    AdvancedQueryParser parser;
-    Term term = parser.parse(QStringLiteral("stars artist:Coldplay fire"));
+    Term term = QueryParser::parse(QStringLiteral("stars artist:Coldplay fire"));
     Term expectedTerm(Term::And);
 
     expectedTerm.addSubTerm(Term(QString(), QStringLiteral("stars")));
@@ -75,8 +72,7 @@ void AdvancedQueryParserTest::testStringAndProperty()
 void AdvancedQueryParserTest::testLogicalOps()
 {
     // AND
-    AdvancedQueryParser parser;
-    Term term = parser.parse(QStringLiteral("artist:Coldplay AND type:song"));
+    Term term = QueryParser::parse(QStringLiteral("artist:Coldplay AND type:song"));
     Term expectedTerm(Term::And);
 
     expectedTerm.addSubTerm(Term(QStringLiteral("artist"), QStringLiteral("Coldplay")));
@@ -85,7 +81,7 @@ void AdvancedQueryParserTest::testLogicalOps()
     QCOMPARE(term, expectedTerm);
 
     // OR
-    term = parser.parse(QStringLiteral("artist:Coldplay OR type:song"));
+    term = QueryParser::parse(QStringLiteral("artist:Coldplay OR type:song"));
     expectedTerm = Term(Term::Or);
 
     expectedTerm.addSubTerm(Term(QStringLiteral("artist"), QStringLiteral("Coldplay")));
@@ -94,7 +90,7 @@ void AdvancedQueryParserTest::testLogicalOps()
     QCOMPARE(term, expectedTerm);
 
     // AND then OR
-    term = parser.parse(QStringLiteral("artist:Coldplay AND type:song OR stars"));
+    term = QueryParser::parse(QStringLiteral("artist:Coldplay AND type:song OR stars"));
     expectedTerm = Term(Term::Or);
 
     expectedTerm.addSubTerm(Term(QStringLiteral("artist"), QStringLiteral("Coldplay")) && Term(QStringLiteral("type"), QStringLiteral("song")));
@@ -103,7 +99,7 @@ void AdvancedQueryParserTest::testLogicalOps()
     QCOMPARE(term, expectedTerm);
 
     // OR then AND
-    term = parser.parse(QStringLiteral("artist:Coldplay OR type:song AND stars"));
+    term = QueryParser::parse(QStringLiteral("artist:Coldplay OR type:song AND stars"));
     expectedTerm = Term(Term::And);
 
     expectedTerm.addSubTerm(Term(QStringLiteral("artist"), QStringLiteral("Coldplay")) || Term(QStringLiteral("type"), QStringLiteral("song")));
@@ -112,7 +108,7 @@ void AdvancedQueryParserTest::testLogicalOps()
     QCOMPARE(term, expectedTerm);
 
     // Multiple ANDs
-    term = parser.parse(QStringLiteral("artist:Coldplay AND type:song AND stars"));
+    term = QueryParser::parse(QStringLiteral("artist:Coldplay AND type:song AND stars"));
     expectedTerm = Term(Term::And);
 
     expectedTerm.addSubTerm(Term(QStringLiteral("artist"), QStringLiteral("Coldplay")));
@@ -122,7 +118,7 @@ void AdvancedQueryParserTest::testLogicalOps()
     QCOMPARE(term, expectedTerm);
 
     // Multiple ORs
-    term = parser.parse(QStringLiteral("artist:Coldplay OR type:song OR stars"));
+    term = QueryParser::parse(QStringLiteral("artist:Coldplay OR type:song OR stars"));
     expectedTerm = Term(Term::Or);
 
     expectedTerm.addSubTerm(Term(QStringLiteral("artist"), QStringLiteral("Coldplay")));
@@ -134,8 +130,7 @@ void AdvancedQueryParserTest::testLogicalOps()
 
 void AdvancedQueryParserTest::testNesting()
 {
-    AdvancedQueryParser parser;
-    Term term = parser.parse(QStringLiteral("artist:Coldplay AND (type:song OR stars) fire"));
+    Term term = QueryParser::parse(QStringLiteral("artist:Coldplay AND (type:song OR stars) fire"));
     Term expectedTerm(Term::And);
 
     expectedTerm.addSubTerm(Term(QStringLiteral("artist"), QStringLiteral("Coldplay")));
@@ -148,54 +143,51 @@ void AdvancedQueryParserTest::testNesting()
 void AdvancedQueryParserTest::testDateTime()
 {
     // Integers
-    AdvancedQueryParser parser;
     Term term;
     Term expectedTerm;
 
-    term = parser.parse(QStringLiteral("modified:2014-12-02"));
+    term = QueryParser::parse(QStringLiteral("modified:2014-12-02"));
     expectedTerm = Term(QStringLiteral("modified"), QStringLiteral("2014-12-02"));
     QCOMPARE(term, expectedTerm);
 
-    term = parser.parse(QStringLiteral("modified:\"2014-12-02T23:22:1\""));
+    term = QueryParser::parse(QStringLiteral("modified:\"2014-12-02T23:22:1\""));
     expectedTerm = Term(QStringLiteral("modified"), QStringLiteral("2014-12-02T23:22:1"));
     QCOMPARE(term, expectedTerm);
 }
 
 void AdvancedQueryParserTest::testOperators()
 {
-    AdvancedQueryParser parser;
     Term term;
     Term expectedTerm;
 
-    term = parser.parse(QStringLiteral("width:500"));
+    term = QueryParser::parse(QStringLiteral("width:500"));
     expectedTerm = Term(QStringLiteral("width"), QStringLiteral("500"), Term::Contains);
     QCOMPARE(term, expectedTerm);
 
-    term = parser.parse(QStringLiteral("width=500"));
+    term = QueryParser::parse(QStringLiteral("width=500"));
     expectedTerm = Term(QStringLiteral("width"), QStringLiteral("500"), Term::Equal);
     QCOMPARE(term, expectedTerm);
 
-    term = parser.parse(QStringLiteral("width<500"));
+    term = QueryParser::parse(QStringLiteral("width<500"));
     expectedTerm = Term(QStringLiteral("width"), QStringLiteral("500"), Term::Less);
     QCOMPARE(term, expectedTerm);
 
-    term = parser.parse(QStringLiteral("width<=500"));
+    term = QueryParser::parse(QStringLiteral("width<=500"));
     expectedTerm = Term(QStringLiteral("width"), QStringLiteral("500"), Term::LessEqual);
     QCOMPARE(term, expectedTerm);
 
-    term = parser.parse(QStringLiteral("width>500"));
+    term = QueryParser::parse(QStringLiteral("width>500"));
     expectedTerm = Term(QStringLiteral("width"), QStringLiteral("500"), Term::Greater);
     QCOMPARE(term, expectedTerm);
 
-    term = parser.parse(QStringLiteral("width>=500"));
+    term = QueryParser::parse(QStringLiteral("width>=500"));
     expectedTerm = Term(QStringLiteral("width"), QStringLiteral("500"), Term::GreaterEqual);
     QCOMPARE(term, expectedTerm);
 }
 
 void AdvancedQueryParserTest::testBinaryOperatorMissingFirstArg()
 {
-    AdvancedQueryParser parser;
-    Term term = parser.parse(QStringLiteral("=:2"));
+    Term term = QueryParser::parse(QStringLiteral("=:2"));
     Term expectedTerm;
     QCOMPARE(term, expectedTerm);
 }
@@ -206,8 +198,7 @@ void AdvancedQueryParserTest::testNestedParentheses()
     QFETCH(QString, failmessage);
     QFETCH(Term, expectedTerm);
 
-    AdvancedQueryParser parser;
-    const auto testTerm = parser.parse(searchInput);
+    const auto testTerm = QueryParser::parse(searchInput);
     qDebug() << "  result term" << testTerm;
     qDebug() << "expected term" << expectedTerm;
     if (!failmessage.isEmpty()) {
@@ -335,8 +326,7 @@ void AdvancedQueryParserTest::testPhrases()
     QFETCH(QString, input);
     QFETCH(Term, expectedTerm);
 
-    AdvancedQueryParser parser;
-    Term term = parser.parse(input);
+    Term term = QueryParser::parse(input);
     QCOMPARE(term, expectedTerm);
 }
 
@@ -362,8 +352,7 @@ void AdvancedQueryParserTest::testIncompleteTokens()
     QFETCH(QString, input);
     QFETCH(Term, expectedTerm);
 
-    AdvancedQueryParser parser;
-    Term term = parser.parse(input);
+    Term term = QueryParser::parse(input);
     QCOMPARE(term, expectedTerm);
 }
 
@@ -386,8 +375,7 @@ void AdvancedQueryParserTest::testQuoting()
     QFETCH(QString, input);
     QFETCH(Term, expectedTerm);
 
-    AdvancedQueryParser parser;
-    Term term = parser.parse(input);
+    Term term = QueryParser::parse(input);
     QCOMPARE(term, expectedTerm);
 }
 
@@ -428,8 +416,7 @@ void AdvancedQueryParserTest::testSpecialCharacters()
     QFETCH(QString, input);
     QFETCH(Term, expectedTerm);
 
-    AdvancedQueryParser parser;
-    Term term = parser.parse(input);
+    Term term = QueryParser::parse(input);
     QCOMPARE(term, expectedTerm);
 }
 
@@ -459,4 +446,4 @@ void AdvancedQueryParserTest::testSpecialCharacters_data()
 
 QTEST_MAIN(AdvancedQueryParserTest)
 
-#include "advancedqueryparsertest.moc"
+#include "queryparsertest.moc"
