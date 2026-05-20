@@ -39,11 +39,6 @@ public:
     Term(const Term& t);
 
     /*
-     * The Item must contain the property property
-     */
-    explicit Term(const QString& property);
-
-    /*
      * The Item must contain the property property with
      * value value.
      *
