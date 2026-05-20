@@ -34,12 +34,6 @@ Term::Term(const Term& t)
 {
 }
 
-Term::Term(const QString& property)
-    : d(new Private)
-{
-    d->m_property = property;
-}
-
 Term::Term(const QString& property, const QVariant& value, Term::Comparator c)
     : d(new Private)
 {
