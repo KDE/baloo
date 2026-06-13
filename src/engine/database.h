@@ -86,6 +86,15 @@ private:
     /// m_mode is only valid if m_env is valid
     OpenMode m_mode = ReadOnlyDatabase;
 
+    /// Path of the marker dropped when LMDB reports corruption, checked on open.
+    QString corruptionMarkerPath() const;
+    bool isIndexMarkedCorrupted() const;
+    void markIndexCorrupted(const QString &reason);
+    void clearIndexCorruptedMarker();
+
+    /// LMDB assert callback: flags the index corrupted, then aborts.
+    static void lmdbAssertFailed(MDB_env *env, const char *message);
+
     friend class Transaction;
     friend class DatabaseTest;
 

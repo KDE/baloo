@@ -8,6 +8,7 @@ MACRO(BALOO_ENGINE_AUTO_TESTS)
 ENDMACRO()
 
 baloo_engine_auto_tests(
+    databasecorruptiontest
     querytest
     writetransactiontest
 )

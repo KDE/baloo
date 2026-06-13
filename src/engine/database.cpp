@@ -42,6 +42,8 @@
 #include <QDir>
 #include <QMutexLocker>
 
+#include <cstdlib>
+
 using namespace Baloo;
 
 Database::Database(const QString& path)
@@ -57,6 +59,41 @@ Database::~Database()
         mdb_env_close(m_env);
         m_env = nullptr;
     }
+}
+
+QString Database::corruptionMarkerPath() const
+{
+    return m_path + QStringLiteral("/index-corrupted");
+}
+
+bool Database::isIndexMarkedCorrupted() const
+{
+    return QFileInfo::exists(corruptionMarkerPath());
+}
+
+void Database::markIndexCorrupted(const QString &reason)
+{
+    QFile marker(corruptionMarkerPath());
+    if (marker.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+        marker.write(reason.toUtf8());
+    }
+}
+
+void Database::clearIndexCorruptedMarker()
+{
+    QFile::remove(corruptionMarkerPath());
+}
+
+void Database::lmdbAssertFailed(MDB_env *env, const char *message)
+{
+    qCCritical(ENGINE) << "Baloo detected index database corruption:" << message;
+    if (auto *self = static_cast<Database *>(mdb_env_get_userctx(env))) {
+        self->markIndexCorrupted(QString::fromUtf8(message));
+    }
+    // The environment is left in an undefined state and may still hold the
+    // write lock, so we cannot safely continue. Abort now; the marker makes the
+    // next start purge the index and rebuild it instead of crashing here again.
+    abort();
 }
 
 Database::OpenResult Database::open(OpenMode mode)
@@ -83,6 +120,23 @@ Database::OpenResult Database::open(OpenMode mode)
     }
     QFileInfo indexInfo(dir, QStringLiteral("index"));
 
+    // A previous run flagged the index as corrupted (LMDB assertion). An LMDB
+    // file cannot be repaired in place, so the only recovery is to discard it
+    // and reindex from scratch. Only the owner (CreateDatabase) rebuilds; other
+    // openers refuse the corrupted database and let the indexer recreate it.
+    if (isIndexMarkedCorrupted()) {
+        if (mode == CreateDatabase) {
+            qCWarning(ENGINE) << "Index" << m_path << "was flagged as corrupted, purging and rebuilding";
+            QFile::remove(indexInfo.absoluteFilePath());
+            QFile::remove(indexInfo.absoluteFilePath() + QStringLiteral("-lock"));
+            clearIndexCorruptedMarker();
+            indexInfo.refresh();
+        } else {
+            qCWarning(ENGINE) << "Index" << m_path << "is flagged as corrupted, refusing to open";
+            return OpenResult::InvalidDatabase;
+        }
+    }
+
     if ((mode != CreateDatabase) && !indexInfo.exists()) {
         return OpenResult::InvalidPath;
     }
@@ -102,6 +156,12 @@ Database::OpenResult Database::open(OpenMode mode)
     if (rc) {
         return OpenResult::InternalError;
     }
+
+    // Intercept LMDB corruption assertions instead of letting them abort() the
+    // process uncaught. The handler flags the index so the next start purges
+    // and rebuilds it, turning a crash loop into a one-time reindex.
+    mdb_env_set_userctx(env, this);
+    mdb_env_set_assert(env, &Database::lmdbAssertFailed);
 
     /**
      * maximal number of allowed named databases, must match number of databases we create below
