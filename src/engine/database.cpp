@@ -42,6 +42,8 @@
 #include <QDir>
 #include <QMutexLocker>
 
+#include <cstdlib>
+
 using namespace Baloo;
 
 Database::Database(const QString& path)
@@ -57,6 +59,52 @@ Database::~Database()
         mdb_env_close(m_env);
         m_env = nullptr;
     }
+}
+
+QString Database::corruptionMarkerPath(const QString &path)
+{
+    return path + QStringLiteral("/index-corruption");
+}
+
+void Database::reportCorruption(const QString &path, const QString &reason)
+{
+    qCCritical(ENGINE).noquote() << QStringLiteral(
+                                        "The index at %1 is damaged: %2\n"
+                                        "Baloo has stopped indexing and will not touch the index again. It does not throw "
+                                        "it away by itself: if something here keeps damaging it, building it anew would "
+                                        "only lead back to this, over and over.\n"
+                                        "Run 'balooctl6 purge' to throw the index away and start over.\n"
+                                        "Please report this at https://bugs.kde.org against baloo first, with this message "
+                                        "and what the machine was doing at the time, so that the cause can be found.")
+                                        .arg(path, reason);
+}
+
+void Database::noteCorruption(const QString &path, const QString &reason)
+{
+    QFile marker(corruptionMarkerPath(path));
+    if (marker.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+        marker.write(reason.toUtf8() + '\n');
+    } else {
+        qCWarning(ENGINE) << "Could not write" << corruptionMarkerPath(path) << marker.errorString();
+    }
+
+    reportCorruption(path, reason);
+}
+
+void Database::lmdbAssertFailed(MDB_env *env, const char *message)
+{
+    QString path;
+    if (auto *self = static_cast<Database *>(mdb_env_get_userctx(env))) {
+        path = self->m_path;
+    }
+    noteCorruption(path, QString::fromUtf8(message));
+
+    // The environment is left in an undefined state and may still hold the write lock,
+    // so there is nothing left to do in this process. Leave without running the exit
+    // handlers, which would touch the very state that is broken, and without the core
+    // dump an abort would produce, since the message above says more than a backtrace
+    // of the reader that happened to trip over the damage.
+    _exit(EXIT_FAILURE);
 }
 
 Database::OpenResult Database::open(OpenMode mode)
@@ -83,6 +131,21 @@ Database::OpenResult Database::open(OpenMode mode)
     }
     QFileInfo indexInfo(dir, QStringLiteral("index"));
 
+    QFile marker(corruptionMarkerPath(m_path));
+    if (marker.exists()) {
+        if (indexInfo.exists()) {
+            // Nothing has been done about the damage, so opening it again would walk back into it.
+            QByteArray reason;
+            if (marker.open(QIODevice::ReadOnly)) {
+                reason = marker.readAll().trimmed();
+            }
+            reportCorruption(m_path, QString::fromUtf8(reason));
+            return OpenResult::InvalidDatabase;
+        }
+        // The index is gone, so it has been purged. There is nothing left to keep away from.
+        marker.remove();
+    }
+
     if ((mode != CreateDatabase) && !indexInfo.exists()) {
         return OpenResult::InvalidPath;
     }
@@ -102,6 +165,11 @@ Database::OpenResult Database::open(OpenMode mode)
     if (rc) {
         return OpenResult::InternalError;
     }
+
+    // LMDB calls this when it walks into damage it cannot make sense of. Left to itself
+    // it would abort the process with nothing said about what happened or what to do.
+    mdb_env_set_userctx(env, this);
+    mdb_env_set_assert(env, &Database::lmdbAssertFailed);
 
     /**
      * maximal number of allowed named databases, must match number of databases we create below
@@ -141,6 +209,12 @@ Database::OpenResult Database::open(OpenMode mode)
         mdb_env_close(env);
         if ((rc == ENOENT) || (rc == EACCES)) {
             return OpenResult::InvalidPath;
+        }
+        // Damage in the pages LMDB reads to open the file comes back as an error rather
+        // than through the assert handler, so say the same thing here.
+        if ((rc == MDB_CORRUPTED) || (rc == MDB_PANIC) || (rc == MDB_INVALID) || (rc == MDB_VERSION_MISMATCH)) {
+            noteCorruption(m_path, QString::fromUtf8(mdb_strerror(rc)));
+            return OpenResult::InvalidDatabase;
         }
         return OpenResult::InternalError;
     }

@@ -86,6 +86,16 @@ private:
     /// m_mode is only valid if m_env is valid
     OpenMode m_mode = ReadOnlyDatabase;
 
+    /// Marks the index as damaged, so that the next open knows to keep away from it.
+    static QString corruptionMarkerPath(const QString &path);
+    /// Leaves the mark and says what happened.
+    static void noteCorruption(const QString &path, const QString &reason);
+    /// Says what happened and what the user can do about it.
+    static void reportCorruption(const QString &path, const QString &reason);
+
+    /// LMDB assert callback: records the damage, then leaves the process.
+    static void lmdbAssertFailed(MDB_env *env, const char *message);
+
     friend class Transaction;
     friend class DatabaseTest;
 
