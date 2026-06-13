@@ -42,6 +42,8 @@
 #include <QDir>
 #include <QMutexLocker>
 
+#include <cstdlib>
+
 using namespace Baloo;
 
 Database::Database(const QString& path)
@@ -57,6 +59,88 @@ Database::~Database()
         mdb_env_close(m_env);
         m_env = nullptr;
     }
+}
+
+// Damage that comes back after the index has been built anew is a sign of something that
+// keeps breaking it, and building it yet again would only feed a loop of reindexing and
+// crashing. A record of the damage seen so far tells the two apart. It only holds for as
+// long as this window, so an incident a season later counts as a fresh one.
+static constexpr int corruptionWindowInDays = 30;
+
+QString Database::corruptionRecordPath(const QString &path)
+{
+    return path + QStringLiteral("/index-corruption");
+}
+
+Database::CorruptionRecord Database::readCorruptionRecord(const QString &path)
+{
+    CorruptionRecord record;
+    QFile file(corruptionRecordPath(path));
+    if (!file.open(QIODevice::ReadOnly)) {
+        return record;
+    }
+
+    const QList<QByteArray> lines = file.readAll().split('\n');
+    for (const QByteArray &line : lines) {
+        const int separator = line.indexOf('=');
+        if (separator < 0) {
+            continue;
+        }
+        const QByteArray key = line.left(separator);
+        const QString value = QString::fromUtf8(line.mid(separator + 1));
+        if (key == "count") {
+            record.count = value.toInt();
+        } else if (key == "lastRebuild") {
+            record.lastRebuild = QDateTime::fromString(value, Qt::ISODate);
+        }
+    }
+    return record;
+}
+
+void Database::writeCorruptionRecord(const QString &path, const CorruptionRecord &record)
+{
+    QFile file(corruptionRecordPath(path));
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+        qCWarning(ENGINE) << "Could not write" << corruptionRecordPath(path) << file.errorString();
+        return;
+    }
+    file.write("count=" + QByteArray::number(record.count) + '\n');
+    if (record.lastRebuild.isValid()) {
+        file.write("lastRebuild=" + record.lastRebuild.toString(Qt::ISODate).toUtf8() + '\n');
+    }
+}
+
+void Database::noteCorruption(const QString &path, const QString &reason)
+{
+    CorruptionRecord record = readCorruptionRecord(path);
+    const bool withinWindow = record.lastRebuild.isValid() && record.lastRebuild.daysTo(QDateTime::currentDateTime()) < corruptionWindowInDays;
+    record.count = withinWindow ? record.count + 1 : 1;
+    writeCorruptionRecord(path, record);
+
+    qCCritical(ENGINE).noquote() << QStringLiteral(
+                                        "The index at %1 is damaged: %2\n"
+                                        "Baloo is stopping. What happens on the next start depends on whether this has "
+                                        "happened before: the index is built anew the first time, and left alone if the "
+                                        "damage came back after a rebuild.\n"
+                                        "Please report this at https://bugs.kde.org, and say what the machine was doing "
+                                        "when it happened, so that the cause can be found.")
+                                        .arg(path, reason);
+}
+
+void Database::lmdbAssertFailed(MDB_env *env, const char *message)
+{
+    QString path;
+    if (auto *self = static_cast<Database *>(mdb_env_get_userctx(env))) {
+        path = self->m_path;
+    }
+    noteCorruption(path, QString::fromUtf8(message));
+
+    // The environment is left in an undefined state and may still hold the write lock,
+    // so there is nothing left to do in this process. Leave without running the exit
+    // handlers, which would touch the very state that is broken, and without the core
+    // dump an abort would produce, since the message above says more than a backtrace
+    // of the reader that happened to trip over the damage.
+    _exit(EXIT_FAILURE);
 }
 
 Database::OpenResult Database::open(OpenMode mode)
@@ -83,6 +167,34 @@ Database::OpenResult Database::open(OpenMode mode)
     }
     QFileInfo indexInfo(dir, QStringLiteral("index"));
 
+    const CorruptionRecord corruption = readCorruptionRecord(m_path);
+    if (corruption.count == 1 && indexInfo.exists()) {
+        if (mode == CreateDatabase) {
+            qCWarning(ENGINE).noquote() << QStringLiteral(
+                                               "The index at %1 was damaged. Throwing it away and building a new one, "
+                                               "which takes as long as the first indexing did.")
+                                               .arg(m_path);
+            QFile::remove(indexInfo.absoluteFilePath());
+            QFile::remove(indexInfo.absoluteFilePath() + QStringLiteral("-lock"));
+            writeCorruptionRecord(m_path, {corruption.count, QDateTime::currentDateTime()});
+            indexInfo.refresh();
+        } else {
+            // The indexer owns the rebuild, everyone else stays out of the way until it has
+            // happened.
+            return OpenResult::InvalidDatabase;
+        }
+    } else if (corruption.count > 1) {
+        qCCritical(ENGINE).noquote() << QStringLiteral(
+                                            "The index at %1 was damaged again after it had been built anew, so something "
+                                            "keeps breaking it and building it a third time would only repeat this.\n"
+                                            "Baloo indexes nothing until you run 'balooctl6 purge', which throws the index "
+                                            "away and starts over.\n"
+                                            "Please report this at https://bugs.kde.org first, and say what the machine was "
+                                            "doing when it happened, so that the cause can be found.")
+                                            .arg(m_path);
+        return OpenResult::InvalidDatabase;
+    }
+
     if ((mode != CreateDatabase) && !indexInfo.exists()) {
         return OpenResult::InvalidPath;
     }
@@ -102,6 +214,11 @@ Database::OpenResult Database::open(OpenMode mode)
     if (rc) {
         return OpenResult::InternalError;
     }
+
+    // LMDB calls this when it walks into damage it cannot make sense of. Left to itself
+    // it would abort the process with nothing said about what happened or what to do.
+    mdb_env_set_userctx(env, this);
+    mdb_env_set_assert(env, &Database::lmdbAssertFailed);
 
     /**
      * maximal number of allowed named databases, must match number of databases we create below
@@ -141,6 +258,12 @@ Database::OpenResult Database::open(OpenMode mode)
         mdb_env_close(env);
         if ((rc == ENOENT) || (rc == EACCES)) {
             return OpenResult::InvalidPath;
+        }
+        // Damage in the pages LMDB reads to open the file comes back as an error rather
+        // than through the assert handler, so say the same thing here.
+        if ((rc == MDB_CORRUPTED) || (rc == MDB_PANIC) || (rc == MDB_INVALID) || (rc == MDB_VERSION_MISMATCH)) {
+            noteCorruption(m_path, QString::fromUtf8(mdb_strerror(rc)));
+            return OpenResult::InvalidDatabase;
         }
         return OpenResult::InternalError;
     }

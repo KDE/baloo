@@ -9,6 +9,7 @@
 #ifndef BALOO_DATABASE_H
 #define BALOO_DATABASE_H
 
+#include <QDateTime>
 #include <QMutex>
 
 #include "document.h"
@@ -85,6 +86,24 @@ private:
     DatabaseDbis m_dbis;
     /// m_mode is only valid if m_env is valid
     OpenMode m_mode = ReadOnlyDatabase;
+
+    /// What is known about damage seen at this index so far.
+    struct CorruptionRecord {
+        /// Times the index was found damaged, counting only those within the window.
+        int count = 0;
+        /// When the index was last thrown away and built anew because of damage.
+        QDateTime lastRebuild;
+    };
+
+    static QString corruptionRecordPath(const QString &path);
+    static CorruptionRecord readCorruptionRecord(const QString &path);
+    static void writeCorruptionRecord(const QString &path, const CorruptionRecord &record);
+
+    /// Records damage found at the index, tells the journal about it and the user what to expect.
+    static void noteCorruption(const QString &path, const QString &reason);
+
+    /// LMDB assert callback: records the damage, then leaves the process.
+    static void lmdbAssertFailed(MDB_env *env, const char *message);
 
     friend class Transaction;
     friend class DatabaseTest;
