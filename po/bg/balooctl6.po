@@ -519,6 +519,3 @@ msgstr "Текущият индекс е %1 по размер"
 #, kde-format
 msgid "Index does not exist yet\n"
 msgstr "Индекс все още не съществува \n"
-
-#~ msgid ": Ok\n"
-#~ msgstr ": OK\n"
