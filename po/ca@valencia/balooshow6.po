@@ -132,4 +132,4 @@ msgstr "Termes de propietats: %1"
 #, kde-format
 msgctxt "Prefix string for internal errors"
 msgid "Internal Error - %1"
-msgstr "S'ha produït un error intern - %1"
+msgstr "S'ha produït un error intern – %1"
