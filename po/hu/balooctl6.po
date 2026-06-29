@@ -3,13 +3,13 @@
 #
 # Kristóf Kiszel <ulysses@kubuntu.org>, 2014, 2015, 2019.
 # Kiszel Kristóf <kiszel.kristof@gmail.com>, 2017, 2018, 2020.
-# SPDX-FileCopyrightText: 2025 Kristof Kiszel <ulysses@fsf.hu>
+# SPDX-FileCopyrightText: 2025-2026 Kristof Kiszel <ulysses@fsf.hu>
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-04-26 00:39+0000\n"
-"PO-Revision-Date: 2025-01-30 10:33+0100\n"
+"PO-Revision-Date: 2026-06-28 22:04+0200\n"
 "Last-Translator: Kristof Kiszel <ulysses@fsf.hu>\n"
 "Language-Team: Hungarian <kde-l10n-hu@kde.org>\n"
 "Language: hu\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 24.12.1\n"
+"X-Generator: Lokalize 26.04.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -147,7 +147,7 @@ msgstr "Mappát kell megadni\n"
 #: configcommand.cpp:172
 #, kde-format
 msgid "%1 is not in the list of include folders"
-msgstr "A(z) %1 nincs a mappák listájában"
+msgstr "A(z) %1 nincs a figyelt mappák listájában"
 
 #: configcommand.cpp:192
 #, kde-format
@@ -187,7 +187,7 @@ msgstr "Az elérési út nem mappa\n"
 #: configcommand.cpp:273
 #, kde-format
 msgid "%1 is already in the list of include folders"
-msgstr "A(z) %1 már a mappák listájában van"
+msgstr "A(z) %1 már a figyelt mappák listájában van"
 
 #: configcommand.cpp:278
 #, kde-format
@@ -200,10 +200,9 @@ msgid "%1 is already in the list of exclude folders"
 msgstr "A(z) %1 már a kizáró mappák listájában van"
 
 #: configcommand.cpp:313
-#, fuzzy, kde-format
-#| msgid "%1 is not in the list of include folders"
+#, kde-format
 msgid "%1 is in the list of include folders"
-msgstr "A(z) %1 nincs a mappák listájában"
+msgstr "A(z) %1 a figyelt mappák listájában van"
 
 #: configcommand.cpp:331
 #, kde-format
@@ -332,51 +331,43 @@ msgstr "formátum"
 #: monitorcommand.cpp:28
 msgctxt "File index suceeded"
 msgid "Ok"
-msgstr ""
+msgstr "OK"
 
 #: monitorcommand.cpp:29
-#, fuzzy
-#| msgid "File ignored"
 msgctxt "File index skipped"
 msgid "File path ignored"
-msgstr "Fájl mellőzve"
+msgstr "A fájl elérési útja mellőzve"
 
 #: monitorcommand.cpp:30
-#, fuzzy
-#| msgid "File ignored"
 msgctxt "File index skipped"
 msgid "File type ignored"
-msgstr "Fájl mellőzve"
+msgstr "Fájltípus mellőzve"
 
 #: monitorcommand.cpp:31
 msgctxt "File index skipped"
 msgid "File type not supported"
-msgstr ""
+msgstr "A fájltípus nem támogatott"
 
 #: monitorcommand.cpp:32
-#, fuzzy
-#| msgid "File ignored"
 msgctxt "File index skipped"
 msgid "File too large"
-msgstr "Fájl mellőzve"
+msgstr "A fájl túl nagy"
 
 #: monitorcommand.cpp:33
-#, fuzzy
-#| msgid "File ignored"
 msgctxt "File index failed"
 msgid "File not found"
-msgstr "Fájl mellőzve"
+msgstr "A fájl nem található"
 
 #: monitorcommand.cpp:34
 msgctxt "File index failed"
 msgid "Failed to extract metadata/content"
-msgstr ""
+msgstr "Nem sikerült kibontani a metaadatokat/tartalmat"
 
 #: monitorcommand.cpp:47
 #, kde-format
 msgctxt "Unknown index result code"
 msgid "<unknown> [%1]"
-msgstr ""
+msgstr "<ismeretlen> [%1]"
 
 #: monitorcommand.cpp:87
 #, kde-format
@@ -405,12 +396,10 @@ msgid "Indexing: %1"
 msgstr "Indexelés: %1"
 
 #: monitorcommand.cpp:158
-#, fuzzy, kde-format
-#| msgctxt "bullet list item with output format"
-#| msgid "- %1\n"
+#, kde-format
 msgctxt "index result"
 msgid ": %1\n"
-msgstr "- %1\n"
+msgstr ": %1\n"
 
 #: monitorcommand.h:32
 #, kde-format
