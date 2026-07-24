@@ -96,6 +96,8 @@ install(FILES
     COMPONENT Devel
 )
 
+install(FILES baloosettings.kcfg DESTINATION ${KDE_INSTALL_KCFGDIR})
+
 ecm_generate_qdoc(KF6Baloo baloo.qdocconf)
 
 if (NOT WIN32)
