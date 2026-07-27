@@ -12,10 +12,11 @@
 #include "document.h"
 #include "termgenerator.h"
 
-#include <memory>
 #include <QDir>
+#include <QSignalSpy>
 #include <QTemporaryDir>
 #include <QTest>
+#include <memory>
 
 using namespace Baloo;
 
@@ -40,6 +41,8 @@ private Q_SLOTS:
     void testMoveFileRenameParent();
     void testRenameMoveFileRenameParent();
     void testMoveFileMoveParent();
+    void testMoveFileUnknownTargetParent();
+    void testMoveFolderUnknownTargetParent();
 
 private:
     quint64 insertDoc(const QString& url, quint64 parentId);
@@ -442,6 +445,76 @@ void MetadataMoverTest::testMoveFileMoveParent()
         QVERIFY(tr.hasDocument(fid));
         QCOMPARE(tr.documentUrl(fid), QFile::encodeName(dir.path()) + "/b/file1");
     }
+}
+
+void MetadataMoverTest::testMoveFileUnknownTargetParent()
+{
+    QTemporaryDir dir;
+    auto parentId = filePathToId(QFile::encodeName(dir.path()));
+
+    const QString fileUrl = dir.path() + QStringLiteral("/file");
+    const quint64 fid = insertDoc(fileUrl, parentId);
+
+    {
+        Transaction tr(m_db.get(), Transaction::ReadOnly);
+        QVERIFY(tr.hasDocument(fid));
+    }
+
+    QTemporaryDir unknownDir;
+    const QString newUrl = unknownDir.path() + QStringLiteral("/file2");
+
+    MetadataMover mover(m_db.get(), this);
+    QSignalSpy movedWithoutDataSpy(&mover, &MetadataMover::movedWithoutData);
+    QSignalSpy fileRemovedSpy(&mover, &MetadataMover::fileRemoved);
+
+    mover.moveFileMetadata(fileUrl, newUrl);
+
+    {
+        Transaction tr(m_db.get(), Transaction::ReadOnly);
+        QVERIFY(!tr.hasDocument(fid));
+    }
+
+    QCOMPARE(fileRemovedSpy.count(), 2);
+    QCOMPARE(fileRemovedSpy.at(0).at(0).toString(), newUrl);
+    QCOMPARE(fileRemovedSpy.at(1).at(0).toString(), fileUrl);
+
+    QCOMPARE(movedWithoutDataSpy.count(), 1);
+    QCOMPARE(movedWithoutDataSpy.at(0).at(0).toString(), newUrl);
+}
+
+void MetadataMoverTest::testMoveFolderUnknownTargetParent()
+{
+    QTemporaryDir dir;
+    auto parentId = filePathToId(QFile::encodeName(dir.path()));
+
+    const QString folderUrl = dir.path() + QStringLiteral("/folder");
+    const quint64 did = insertDoc(folderUrl, parentId);
+
+    const QString fileUrl = folderUrl + QStringLiteral("/file");
+    const quint64 fid = insertDoc(fileUrl, did);
+
+    {
+        Transaction tr(m_db.get(), Transaction::ReadOnly);
+        QVERIFY(tr.hasDocument(did));
+        QVERIFY(tr.hasDocument(fid));
+    }
+
+    QTemporaryDir unknownDir;
+    const QString newFolderUrl = unknownDir.path() + QStringLiteral("/folder2");
+
+    MetadataMover mover(m_db.get(), this);
+    QSignalSpy movedWithoutDataSpy(&mover, &MetadataMover::movedWithoutData);
+
+    mover.moveFileMetadata(folderUrl + QStringLiteral("/"), newFolderUrl);
+
+    {
+        Transaction tr(m_db.get(), Transaction::ReadOnly);
+        QVERIFY(!tr.hasDocument(did));
+        QVERIFY(!tr.hasDocument(fid));
+    }
+
+    QCOMPARE(movedWithoutDataSpy.count(), 1);
+    QCOMPARE(movedWithoutDataSpy.at(0).at(0).toString(), newFolderUrl);
 }
 
 QTEST_GUILESS_MAIN(MetadataMoverTest)
