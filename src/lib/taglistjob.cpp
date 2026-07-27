@@ -39,7 +39,7 @@ void TagListJob::start()
         }
 
         setError(UserDefinedError);
-        setErrorText(QStringLiteral("Failed to open the database"));
+        setErrorText(QStringLiteral("Failed to open the database. Error code: %1").arg(static_cast<int>(rc)));
         emitResult();
         return;
     }

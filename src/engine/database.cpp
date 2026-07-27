@@ -100,6 +100,7 @@ Database::OpenResult Database::open(OpenMode mode)
 
     int rc = mdb_env_create(&env);
     if (rc) {
+        qCWarning(ENGINE) << "Database::open mdb_env_create" << mdb_strerror(rc);
         return OpenResult::InternalError;
     }
 
@@ -137,6 +138,7 @@ Database::OpenResult Database::open(OpenMode mode)
     QByteArray arr = QFile::encodeName(indexInfo.absoluteFilePath());
     rc = mdb_env_open(env, arr.constData(), mdbEnvFlags, 0664);
     if (rc) {
+        qCWarning(ENGINE) << "Database::open mdb_env_open" << mdb_strerror(rc);
         // mdb_env_close must be called when mdb_env_open fails
         mdb_env_close(env);
         if ((rc == ENOENT) || (rc == EACCES)) {
