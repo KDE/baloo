@@ -47,17 +47,15 @@ void NewFileIndexer::run()
             continue;
         }
 
-        if (fileInfo.isDir()) {
-            if (!m_config->shouldFolderBeIndexed(filePath)) {
-                continue;
-            }
-            mimetype = QStringLiteral("inode/directory");
+        // The whole path decides this, not just the name. A file whose own name is plain can
+        // still sit in a folder that is left out of the index.
+        if (!m_config->shouldBeIndexed(fileInfo)) {
+            continue;
+        }
 
+        if (fileInfo.isDir()) {
+            mimetype = QStringLiteral("inode/directory");
         } else {
-            QString fileName = filePath.mid(filePath.lastIndexOf(QLatin1Char('/')) + 1);
-            if (!m_config->shouldFileBeIndexed(fileName)) {
-                continue;
-            }
             mimetype = mimeDb.mimeTypeForFile(filePath, QMimeDatabase::MatchExtension).name();
         }
 

@@ -19,6 +19,7 @@ baloo_file_auto_tests(
     unindexedfileiteratortest
     metadatamovertest
     extractorcommandpipetest
+    hiddenfileindexingtest
 )
 
 

@@ -147,13 +147,15 @@ bool FileIndexerConfig::canBeSearched(const QString& folder) const
 
 bool FileIndexerConfig::shouldBeIndexed(const QString& path) const
 {
-    QFileInfo fi(path);
-    if (fi.isDir()) {
-        return shouldFolderBeIndexed(path);
+    return shouldBeIndexed(QFileInfo(path));
+}
+
+bool FileIndexerConfig::shouldBeIndexed(const QFileInfo &info) const
+{
+    if (info.isDir()) {
+        return shouldFolderBeIndexed(info.absoluteFilePath());
     } else {
-        return (shouldFolderBeIndexed(fi.absolutePath()) &&
-                (!fi.isHidden() || indexHiddenFilesAndFolders()) &&
-                shouldFileBeIndexed(fi.fileName()));
+        return (shouldFolderBeIndexed(info.absolutePath()) && (!info.isHidden() || indexHiddenFilesAndFolders()) && shouldFileBeIndexed(info.fileName()));
     }
 }
 

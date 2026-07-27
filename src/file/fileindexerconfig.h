@@ -9,10 +9,11 @@
 #ifndef BALOO_FILEINDEXER_CONFIG_H_
 #define BALOO_FILEINDEXER_CONFIG_H_
 
-#include <QObject>
-#include <QList>
-#include <QSet>
 #include <QDebug>
+#include <QFileInfo>
+#include <QList>
+#include <QObject>
+#include <QSet>
 
 #include "regexpcache.h"
 
@@ -83,6 +84,16 @@ public:
      * be indexed according to the configuration.
      */
     bool shouldBeIndexed(const QString& path) const;
+
+    /*!
+     * Same as shouldBeIndexed(const QString&) for a path that has already been looked up on
+     * disk, so that the caller can hand over what it knows instead of paying for a second
+     * look.
+     *
+     * \return \c true if the file or folder \p info points at should be indexed according
+     * to the configuration.
+     */
+    bool shouldBeIndexed(const QFileInfo &info) const;
 
     /**
      * Check if the folder at \p path should be indexed.

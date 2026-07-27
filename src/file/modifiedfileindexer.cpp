@@ -43,11 +43,6 @@ void ModifiedFileIndexer::run()
             filePath.chop(1);
         }
 
-        QString fileName = filePath.mid(filePath.lastIndexOf(QLatin1Char('/')) + 1);
-        if (!m_config->shouldFileBeIndexed(fileName)) {
-            continue;
-        }
-
         quint64 fileId = filePathToId(QFile::encodeName(filePath));
         if (!fileId) {
             continue;
@@ -56,6 +51,12 @@ void ModifiedFileIndexer::run()
         // FIXME: Using QFileInfo over here is quite expensive!
         QFileInfo fileInfo(filePath);
         if (fileInfo.isSymLink()) {
+            continue;
+        }
+
+        // The whole path decides this, not just the name. A file whose own name is plain can
+        // still sit in a folder that is left out of the index.
+        if (!m_config->shouldBeIndexed(fileInfo)) {
             continue;
         }
 
