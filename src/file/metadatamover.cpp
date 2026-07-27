@@ -102,7 +102,13 @@ void MetadataMover::updateMetadata(Transaction *tr, const QString &from, const Q
     quint64 parentId = tr->documentId(parentPath);
     if (!parentId) {
         qCDebug(BALOO) << "Parent directory not (yet) known, signaling newFile" << to;
-        Q_EMIT movedWithoutData(QFile::decodeName(parentPath));
+        if (from.endsWith(QLatin1Char('/'))) {
+            tr->removeRecursively(id);
+        } else {
+            tr->removeDocument(id);
+        }
+        Q_EMIT fileRemoved(from);
+        Q_EMIT movedWithoutData(to);
         return;
     }
 
