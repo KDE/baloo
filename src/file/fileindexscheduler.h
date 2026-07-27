@@ -115,6 +115,12 @@ private:
 
     bool m_checkUnindexedFiles;
     bool m_checkStaleIndexEntries;
+    // Value of the hidden files setting as of the last configuration read, so that the
+    // moment the user turns it off can be told apart from any other configuration change.
+    bool m_indexHiddenFiles;
+    // Set when hidden files have just been turned off, so the ones already in the index
+    // have to be taken out of it.
+    bool m_removeHiddenFilesFromIndex;
     bool m_isGoingIdle;
     bool m_isSuspended;
     bool m_isFirstRun;

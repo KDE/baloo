@@ -34,17 +34,36 @@ public:
     void removeRecursively(quint64 parentId);
 
     /**
+     * How much of a subtree removeRecursively() looks at once it meets a document it keeps.
+     */
+    enum class RemovalWalk {
+        /**
+         * A kept document ends the walk of its own subtree. Use this when keeping a document
+         * means everything below it is kept as well, as when the search starts at a folder
+         * that is excluded from indexing.
+         */
+        StopAtKeptDocuments,
+        /**
+         * Every document below \p parentId is passed to shouldDelete, whether its parent is
+         * kept or not. Use this when a folder stays in the index while some of the documents
+         * below it have to go, as when hidden files are left out of the index.
+         */
+        VisitEveryDocument,
+    };
+
+    /**
      * Goes through every document in the database, and remove the ones for which \p shouldDelete
      * returns false. It starts searching from \p parentId, which can be 0 to search
      * through everything.
      *
      * \arg shouldDelete takes an absolute path as parameter
+     * \arg walk how much of the subtree below a kept document is looked at
      * \ret true if the document (and all its children) has been removed
      *
      * This function should typically be called when there are no other ReadTransaction in process
      * as that would otherwise balloon the size of the database.
      */
-    bool removeRecursively(quint64 parentId, const std::function<bool(const QByteArray &)> &shouldDelete);
+    bool removeRecursively(quint64 parentId, const std::function<bool(const QByteArray &)> &shouldDelete, RemovalWalk walk = RemovalWalk::StopAtKeptDocuments);
 
     void replaceDocument(const Document& doc, DocumentOperations operations);
     void commit();

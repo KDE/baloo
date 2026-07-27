@@ -166,7 +166,7 @@ void WriteTransaction::removeRecursively(quint64 parentId)
     removeDocument(parentId);
 }
 
-bool WriteTransaction::removeRecursively(quint64 parentId, const std::function<bool(const QByteArray &)> &shouldDelete)
+bool WriteTransaction::removeRecursively(quint64 parentId, const std::function<bool(const QByteArray &)> &shouldDelete, RemovalWalk walk)
 {
     DocumentUrlDB docUrlDB(m_dbis.idTreeDbi, m_dbis.idFilenameDbi, m_txn);
 
@@ -175,7 +175,8 @@ bool WriteTransaction::removeRecursively(quint64 parentId, const std::function<b
         return !shouldDelete(url);
     };
 
-    if (parentId && shouldKeepId(parentId)) {
+    const bool keepParent = parentId && shouldKeepId(parentId);
+    if (keepParent && walk == RemovalWalk::StopAtKeptDocuments) {
         return false;
     }
 
@@ -183,11 +184,11 @@ bool WriteTransaction::removeRecursively(quint64 parentId, const std::function<b
     const QVector<quint64> children = docUrlDB.getChildren(parentId);
     for (quint64 id : children) {
         if (id) {
-            isEmpty &= removeRecursively(id, shouldDelete);
+            isEmpty &= removeRecursively(id, shouldDelete, walk);
         }
     }
     // refetch
-    if (isEmpty && docUrlDB.getChildren(parentId).isEmpty()) {
+    if (!keepParent && isEmpty && docUrlDB.getChildren(parentId).isEmpty()) {
         removeDocument(parentId);
         return true;
     }

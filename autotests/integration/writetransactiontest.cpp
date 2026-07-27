@@ -39,6 +39,7 @@ private Q_SLOTS:
     void testIdempotentDocumentChange();
 
     void testRemoveRecursively();
+    void testRemoveRecursivelyBelowKeptDocument();
     void testDocumentId();
     void testTermPositions();
     void testTransactionReset();
@@ -247,6 +248,58 @@ void WriteTransactionTest::testRemoveRecursively()
     Transaction tr(db.get(), Transaction::ReadOnly);
     DBState actualState = DBState::fromTransaction(&tr);
     QVERIFY(DBState::debugCompare(actualState, DBState()));
+}
+
+void WriteTransactionTest::testRemoveRecursivelyBelowKeptDocument()
+{
+    // A document that is kept can have documents below it that have to go, which is what
+    // happens when hidden files leave the index while the folder holding them stays in it.
+    const QString path = dir->path();
+    const QString visibleFile(path + QStringLiteral("/file1"));
+    const QString hiddenDir(path + QStringLiteral("/.hidden"));
+    const QString fileBelowHiddenDir(hiddenDir + QStringLiteral("/file2"));
+
+    Document visible = createDocument(visibleFile, 5, 1, {"a"}, {"file1"}, {}, m_dirId);
+    Document hidden = createDocument(hiddenDir, 5, 1, {"a"}, {"hidden"}, {}, m_dirId);
+    Document belowHidden = createDocument(fileBelowHiddenDir, 5, 1, {"a"}, {"file2"}, {}, hidden.id());
+
+    {
+        Transaction tr(db.get(), Transaction::ReadWrite);
+        tr.addDocument(visible);
+        tr.addDocument(hidden);
+        tr.addDocument(belowHidden);
+        tr.commit();
+    }
+
+    // Stands for the hidden files, which are the ones to remove here.
+    auto shouldDelete = [&path](const QByteArray &url) {
+        return QFile::decodeName(url).mid(path.size()).contains(QStringLiteral("/."));
+    };
+
+    // The default walk ends at the temporary directory, which is kept, so the documents
+    // below it are left alone.
+    {
+        Transaction tr(db.get(), Transaction::ReadWrite);
+        tr.removeRecursively(m_dirId, shouldDelete);
+        tr.commit();
+    }
+    {
+        Transaction tr(db.get(), Transaction::ReadOnly);
+        QVERIFY(tr.hasDocument(hidden.id()));
+        QVERIFY(tr.hasDocument(belowHidden.id()));
+    }
+
+    // Visiting every document reaches them, and takes the whole hidden folder with it.
+    {
+        Transaction tr(db.get(), Transaction::ReadWrite);
+        tr.removeRecursively(m_dirId, shouldDelete, WriteTransaction::RemovalWalk::VisitEveryDocument);
+        tr.commit();
+    }
+
+    Transaction tr(db.get(), Transaction::ReadOnly);
+    QVERIFY(!tr.hasDocument(hidden.id()));
+    QVERIFY(!tr.hasDocument(belowHidden.id()));
+    QVERIFY(tr.hasDocument(visible.id()));
 }
 
 void WriteTransactionTest::testDocumentId()

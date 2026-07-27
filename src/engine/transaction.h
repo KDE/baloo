@@ -100,12 +100,14 @@ public:
     void addFailed(quint64 id);
     void removeFailed(quint64 id);
 
-    bool removeRecursively(quint64 parentId, std::function<bool(const QByteArray &)> shouldDelete)
+    bool removeRecursively(quint64 parentId,
+                           std::function<bool(const QByteArray &)> shouldDelete,
+                           WriteTransaction::RemovalWalk walk = WriteTransaction::RemovalWalk::StopAtKeptDocuments)
     {
         Q_ASSERT(m_txn);
         Q_ASSERT(m_writeTrans);
 
-        return m_writeTrans->removeRecursively(parentId, shouldDelete);
+        return m_writeTrans->removeRecursively(parentId, shouldDelete, walk);
     }
 
     void replaceDocument(const Document& doc, DocumentOperations operations);

@@ -32,6 +32,8 @@ FileIndexScheduler::FileIndexScheduler(Database *db, FileIndexerConfig *config, 
     , m_indexerState(Startup)
     , m_checkUnindexedFiles(true)
     , m_checkStaleIndexEntries(true)
+    , m_indexHiddenFiles(config->indexHiddenFilesAndFolders())
+    , m_removeHiddenFilesFromIndex(false)
     , m_isGoingIdle(false)
     , m_isSuspended(false)
     , m_isFirstRun(firstRun)
@@ -156,11 +158,13 @@ void FileIndexScheduler::scheduleIndexing()
     // This has to be above content indexing, because there can be files that
     // should not be indexed in the DB (i.e. if config was changed)
     if (m_checkStaleIndexEntries) {
-        auto runnable = new IndexCleaner(m_db, m_config);
+        auto hiddenFiles = m_removeHiddenFilesFromIndex ? IndexCleaner::HiddenFiles::RemoveFromIndex : IndexCleaner::HiddenFiles::LeaveAlone;
+        auto runnable = new IndexCleaner(m_db, m_config, hiddenFiles);
         connect(runnable, &IndexCleaner::done, this, &FileIndexScheduler::runnerFinished);
 
         m_threadPool.start(runnable);
         m_checkStaleIndexEntries = false;
+        m_removeHiddenFilesFromIndex = false;
         m_indexerState = StaleIndexEntriesClean;
         Q_EMIT stateChanged(m_indexerState);
         return;
@@ -219,6 +223,15 @@ void FileIndexScheduler::updateConfig()
     removeShouldNotIndex(m_newFiles, m_config);
     removeShouldNotIndex(m_modifiedFiles, m_config);
     removeShouldNotIndex(m_xattrFiles, m_config);
+
+    // Hidden files that were indexed while the setting was on stay in the index, and the
+    // index is what keeps them watched and updated, so they have to be taken out of it.
+    const bool indexHiddenFiles = m_config->indexHiddenFilesAndFolders();
+    if (m_indexHiddenFiles && !indexHiddenFiles) {
+        m_removeHiddenFilesFromIndex = true;
+    }
+    m_indexHiddenFiles = indexHiddenFiles;
+
     m_checkStaleIndexEntries = true;
     m_checkUnindexedFiles = true;
     scheduleIndexing();
