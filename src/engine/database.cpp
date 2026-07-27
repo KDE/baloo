@@ -42,6 +42,7 @@
 #include <QDir>
 #include <QMutexLocker>
 
+using namespace Qt::StringLiterals;
 using namespace Baloo;
 
 Database::Database(const QString& path)
@@ -98,35 +99,41 @@ Database::OpenResult Database::open(OpenMode mode)
         }
     }
 
-    int rc = mdb_env_create(&env);
-    if (rc) {
-        qCWarning(ENGINE) << "Database::open mdb_env_create" << mdb_strerror(rc);
-        return OpenResult::InternalError;
-    }
+    auto setupMDBEnv = [&]() -> OpenResult {
+        int rc = mdb_env_create(&env);
+        if (rc) {
+            qCWarning(ENGINE) << "Database::open mdb_env_create" << mdb_strerror(rc);
+            return OpenResult::InternalError;
+        }
 
-    /**
-     * maximal number of allowed named databases, must match number of databases we create below
-     * each additional one leads to overhead
-     */
-    mdb_env_set_maxdbs(env, 12);
+        /**
+         * maximal number of allowed named databases, must match number of databases we create below
+         * each additional one leads to overhead
+         */
+        mdb_env_set_maxdbs(env, 12);
 
-    /**
-     * size limit for database == size limit of mmap
-     * use 1 GB on 32-bit, use 256 GB on 64-bit
-     * Valgrind by default (without recompiling) limits the mmap size:
-     * <= 3.9: 32 GByte, 3.9 to 3.12: 64 GByte, 3.13: 128 GByte
-     */
-    size_t sizeInGByte = 256;
-    if (sizeof(void*) == 4) {
-        sizeInGByte = 1;
-        qCWarning(ENGINE) << "Running on 32 bit arch, limiting DB mmap to" << sizeInGByte << "GByte";
-    } else if (RUNNING_ON_VALGRIND) {
-        // valgrind lacks a runtime version check, assume valgrind >= 3.9, and allow for some other mmaps
-        sizeInGByte = 40;
-        qCWarning(ENGINE) << "Valgrind detected, limiting DB mmap to" << sizeInGByte << "GByte";
+        /**
+         * size limit for database == size limit of mmap
+         * use 1 GB on 32-bit, use 256 GB on 64-bit
+         * Valgrind by default (without recompiling) limits the mmap size:
+         * <= 3.9: 32 GByte, 3.9 to 3.12: 64 GByte, 3.13: 128 GByte
+         */
+        size_t sizeInGByte = 256;
+        if (sizeof(void *) == 4) {
+            sizeInGByte = 1;
+            qCWarning(ENGINE) << "Running on 32 bit arch, limiting DB mmap to" << sizeInGByte << "GByte";
+        } else if (RUNNING_ON_VALGRIND) {
+            // valgrind lacks a runtime version check, assume valgrind >= 3.9, and allow for some other mmaps
+            sizeInGByte = 40;
+            qCWarning(ENGINE) << "Valgrind detected, limiting DB mmap to" << sizeInGByte << "GByte";
+        }
+        const size_t maximalSizeInBytes = sizeInGByte * size_t(1024) * size_t(1024) * size_t(1024);
+        mdb_env_set_mapsize(env, maximalSizeInBytes);
+        return OpenResult::Success;
+    };
+    if (const OpenResult result = setupMDBEnv(); result != OpenResult::Success) {
+        return result;
     }
-    const size_t maximalSizeInBytes = sizeInGByte * size_t(1024) * size_t(1024) * size_t(1024);
-    mdb_env_set_mapsize(env, maximalSizeInBytes);
 
     // Set MDB environment flags
     auto mdbEnvFlags = MDB_NOSUBDIR | MDB_NOMEMINIT;
@@ -136,7 +143,20 @@ Database::OpenResult Database::open(OpenMode mode)
 
     // The directory needs to be created before opening the environment
     QByteArray arr = QFile::encodeName(indexInfo.absoluteFilePath());
-    rc = mdb_env_open(env, arr.constData(), mdbEnvFlags, 0664);
+    auto rc = mdb_env_open(env, arr.constData(), mdbEnvFlags, 0664);
+    if (rc == MDB_INVALID) {
+        // Database is corrupt. We don't really have any options here but to recreate it.
+        if (!QFile::rename(indexInfo.absoluteFilePath(),
+                           indexInfo.absoluteFilePath() + ".corrupt."_L1 + QDateTime::currentDateTime().toString(Qt::ISODateWithMs))) {
+            qCWarning(ENGINE) << "Failed to rename corrupt database file";
+            mdb_env_close(env);
+            return OpenResult::InvalidDatabase;
+        }
+        if (const OpenResult result = setupMDBEnv(); result != OpenResult::Success) {
+            return result;
+        }
+        rc = mdb_env_open(env, arr.constData(), mdbEnvFlags, 0664);
+    }
     if (rc) {
         qCWarning(ENGINE) << "Database::open mdb_env_open" << mdb_strerror(rc);
         // mdb_env_close must be called when mdb_env_open fails
