@@ -78,7 +78,7 @@ msgstr ""
 msgid ""
 "List database contents. Use a regular expression as argument to filter output"
 msgstr ""
-"Listet den Inhalt der Datenbank. Benutzen Sie einen regulären Ausdruck als "
+"Listet den Inhalt der Datenbank. Verwenden Sie einen regulären Ausdruck als "
 "Argument für die Filterausgabe"
 
 #: main.cpp:70
