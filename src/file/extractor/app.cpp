@@ -70,7 +70,14 @@ void App::slotNewBatch(const QVector<quint64>& ids)
         m_idleTime->catchNextResumeEvent();
     }
 
-    {
+    // Extract the plain text if content indexing is (still) enabled in the config.
+    // There may be a while between the file being queued for indexing and it being passed
+    // to the extractor and the config may have changed.
+    if (m_config.onlyBasicIndexing()) {
+        for (const auto id : ids) {
+            m_batch.push_back({id, "", IndexState::SkipIndex, {}});
+        }
+    } else {
         Transaction tr(db, Transaction::ReadOnly);
         if (tr.isValid()) {
             m_consecutiveErrors = 0;
