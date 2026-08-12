@@ -350,7 +350,7 @@ msgstr "نوع الملف غير متاح"
 #: monitorcommand.cpp:32
 msgctxt "File index skipped"
 msgid "File too large"
-msgstr "الملف كبير جداً"
+msgstr "الملف كبير جدًا"
 
 #: monitorcommand.cpp:33
 msgctxt "File index failed"
