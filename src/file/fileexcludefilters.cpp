@@ -101,44 +101,42 @@ const char* const s_defaultFileExcludeFilters[] = {
 
 const int s_defaultFileExcludeFiltersVersion = 9;
 
-const char* const s_defaultFolderExcludeFilters[] = {
-    "po",
+const char *const s_defaultFolderExcludeFilters[] = {"po",
 
-    // VCS
-    "CVS",
-    ".svn",
-    ".git",
-    "_darcs",
-    ".bzr",
-    ".hg",
+                                                     // VCS
+                                                     "CVS",
+                                                     ".svn",
+                                                     ".git",
+                                                     "_darcs",
+                                                     ".bzr",
+                                                     ".hg",
 
-    // development
-    "CMakeFiles",
-    "CMakeTmp",
-    "CMakeTmpQmake",
-    ".moc",
-    ".obj",
-    ".pch",
-    ".uic",
-    ".npm",
-    ".yarn",
-    ".yarn-cache",
-    "__pycache__",
-    "node_modules",
-    "node_packages",
-    "nbproject",
-    ".terraform",
-    ".venv",
-    "venv",
+                                                     // development
+                                                     "CMakeFiles",
+                                                     "CMakeTmp",
+                                                     "CMakeTmpQmake",
+                                                     ".moc",
+                                                     ".obj",
+                                                     ".pch",
+                                                     ".uic",
+                                                     ".npm",
+                                                     ".yarn",
+                                                     ".yarn-cache",
+                                                     "__pycache__",
+                                                     "node_modules",
+                                                     "node_packages",
+                                                     "nbproject",
+                                                     ".terraform",
+                                                     ".venv",
+                                                     "venv",
 
-    //misc
-    "core-dumps",
-    "lost+found",
-    ".snapshots",
+                                                     // misc
+                                                     "core-dumps",
+                                                     "lost+found",
+                                                     ".snapshots",
 
-    // end of list
-    nullptr
-};
+                                                     // end of list
+                                                     nullptr};
 
 const int s_defaultFolderExcludeFiltersVersion = 5;
 
