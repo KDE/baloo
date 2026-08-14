@@ -134,12 +134,13 @@ const char* const s_defaultFolderExcludeFilters[] = {
     //misc
     "core-dumps",
     "lost+found",
+    ".snapshots",
 
     // end of list
     nullptr
 };
 
-const int s_defaultFolderExcludeFiltersVersion = 4;
+const int s_defaultFolderExcludeFiltersVersion = 5;
 
 const char *const s_sourceCodeMimeTypes[] = {
     "text/css",
