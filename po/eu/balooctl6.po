@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-04-26 00:39+0000\n"
-"PO-Revision-Date: 2026-01-24 14:37+0100\n"
+"PO-Revision-Date: 2026-08-21 22:03+0200\n"
 "Last-Translator: Iñigo Salvador Azurmendi <xalba@ni.eus>\n"
 "Language-Team: Basque <kde-i18n-eu@kde.org>\n"
 "Language: eu\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 25.12.1\n"
+"X-Generator: Lokalize 26.04.3\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -334,51 +334,43 @@ msgstr "formatua"
 #: monitorcommand.cpp:28
 msgctxt "File index suceeded"
 msgid "Ok"
-msgstr ""
+msgstr "Ados"
 
 #: monitorcommand.cpp:29
-#, fuzzy
-#| msgid "File ignored"
 msgctxt "File index skipped"
 msgid "File path ignored"
-msgstr "Fitxategi ezikusia"
+msgstr "Fitxategiaren bide-izena ezikusia"
 
 #: monitorcommand.cpp:30
-#, fuzzy
-#| msgid "File ignored"
 msgctxt "File index skipped"
 msgid "File type ignored"
-msgstr "Fitxategi ezikusia"
+msgstr "Fitxategi-mota ezikusia"
 
 #: monitorcommand.cpp:31
 msgctxt "File index skipped"
 msgid "File type not supported"
-msgstr ""
+msgstr "Fitxategi-mota ez da onartzen"
 
 #: monitorcommand.cpp:32
-#, fuzzy
-#| msgid "File ignored"
 msgctxt "File index skipped"
 msgid "File too large"
-msgstr "Fitxategi ezikusia"
+msgstr "Fitxategi luzeegia"
 
 #: monitorcommand.cpp:33
-#, fuzzy
-#| msgid "File ignored"
 msgctxt "File index failed"
 msgid "File not found"
-msgstr "Fitxategi ezikusia"
+msgstr "Fitxategia ez da aurkitu"
 
 #: monitorcommand.cpp:34
 msgctxt "File index failed"
 msgid "Failed to extract metadata/content"
-msgstr ""
+msgstr "Metadatuak/edukia erauztea huts egin du"
 
 #: monitorcommand.cpp:47
 #, kde-format
 msgctxt "Unknown index result code"
 msgid "<unknown> [%1]"
-msgstr ""
+msgstr "<ezezaguna> [%1]"
 
 #: monitorcommand.cpp:87
 #, kde-format
@@ -407,12 +399,10 @@ msgid "Indexing: %1"
 msgstr "Indexatzen: %1"
 
 #: monitorcommand.cpp:158
-#, fuzzy, kde-format
-#| msgctxt "bullet list item with output format"
-#| msgid "- %1\n"
+#, kde-format
 msgctxt "index result"
 msgid ": %1\n"
-msgstr "- %1\n"
+msgstr ": %1\n"
 
 #: monitorcommand.h:32
 #, kde-format
