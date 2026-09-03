@@ -72,7 +72,7 @@ msgstr "Indexation initiale"
 #: indexerstate.cpp:26
 #, kde-format
 msgid "Indexing new files"
-msgstr "Indexation de nouveaux fichiers"
+msgstr "Indexation des nouveaux fichiers"
 
 #: indexerstate.cpp:29
 #, kde-format
@@ -87,7 +87,7 @@ msgstr "Indexation des attributs étendus"
 #: indexerstate.cpp:35
 #, kde-format
 msgid "Indexing file content"
-msgstr "Indexation des contenus des fichiers"
+msgstr "Indexation du contenu des fichiers"
 
 #: indexerstate.cpp:38
 #, kde-format
@@ -97,17 +97,17 @@ msgstr "Recherche de fichiers non indexés"
 #: indexerstate.cpp:41
 #, kde-format
 msgid "Checking for stale index entries"
-msgstr "Recherche d'entrées anciennes d'index "
+msgstr "Recherche d'entrées périmées dans l'index"
 
 #: indexerstate.cpp:44
 #, kde-format
 msgid "Idle (Powersave)"
-msgstr "Inactif (Économie d'énergie)"
+msgstr "Mis en pause (Économie d'énergie)"
 
 #: indexerstate.cpp:47
 #, kde-format
 msgid "Not Running"
-msgstr "Non actif"
+msgstr "Service d'indexation non démarré"
 
 #: indexerstate.cpp:50
 #, kde-format
