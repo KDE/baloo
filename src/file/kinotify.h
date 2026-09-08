@@ -93,6 +93,13 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     /**
+     * Emitted when the kernel reports IN_Q_OVERFLOW. What was dropped is
+     * unknowable, so the watcher has to revalidate rather than repair.
+     */
+    void eventQueueOverflowed();
+
+Q_SIGNALS:
+    /**
      * Emitted if a file is accessed (KInotify::EventAccess)
      */
     void accessed(const QString& file);
@@ -165,6 +172,10 @@ Q_SIGNALS:
      * indicated by addWatch
      */
     void installedWatches();
+
+protected:
+    /** Parse and dispatch one inotify read buffer. Exposed for testing. */
+    void processEventBuffer(const char *buffer, int len);
 
 private Q_SLOTS:
     void slotEvent(int);

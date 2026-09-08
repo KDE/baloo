@@ -302,6 +302,18 @@ void KInotify::slotEvent(int socket)
     const int len = read(socket, buffer, avail);
     Q_ASSERT(len == avail);
 
+    if (len < 0) {
+        qCDebug(BALOO) << "Failed to read event.";
+    } else {
+        processEventBuffer(buffer, len);
+    }
+
+    free(buffer);
+}
+
+// Split out of slotEvent() so a test can feed the parser a synthetic buffer.
+void KInotify::processEventBuffer(const char *buffer, int len)
+{
     // deadline for MoveFrom events without matching MoveTo event
     QDeadlineTimer deadline(QDeadlineTimer::Forever);
 
@@ -314,8 +326,12 @@ void KInotify::slotEvent(int socket)
         // Overflow happens sometimes if we process the events too slowly
         if (event->wd < 0 && (event->mask & EventQueueOverflow)) {
             qCWarning(BALOO) << "Inotify - too many event - Overflowed";
-            free(buffer);
-            return;
+            // The kernel dropped events, but the ones already read behind the
+            // marker are still valid. Signal the loss and keep parsing. The
+            // i += is needed because this loop advances at the bottom.
+            Q_EMIT eventQueueOverflowed();
+            i += sizeof(struct inotify_event) + event->len;
+            continue;
         }
 
         // the event name only contains an interesting value if we get an event for a file/folder inside
@@ -451,12 +467,6 @@ void KInotify::slotEvent(int socket)
             d->cookieExpireTimer.start();
         }
     }
-
-    if (len < 0) {
-        qCDebug(BALOO) << "Failed to read event.";
-    }
-
-    free(buffer);
 }
 
 void KInotify::slotClearCookies()

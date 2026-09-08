@@ -13,8 +13,36 @@
 #include <QSignalSpy>
 #include <QTemporaryDir>
 #include <QTest>
+#include <cstring>
+#include <sys/inotify.h>
 
 #include <stdio.h>
+
+// processEventBuffer is protected; expose it so a test can feed it a buffer.
+class TestableKInotify : public KInotify
+{
+public:
+    using KInotify::KInotify;
+    using KInotify::processEventBuffer;
+};
+
+// Append one synthetic inotify_event, with name padded to 8 bytes as the kernel does.
+static void appendInotifyEvent(QByteArray &buf, int wd, uint32_t mask, const char *name)
+{
+    struct inotify_event ev;
+    std::memset(&ev, 0, sizeof(ev));
+    ev.wd = wd;
+    ev.mask = mask;
+    ev.cookie = 0;
+    const uint32_t nameLen = name ? uint32_t((std::strlen(name) + 1 + 7) & ~7u) : 0u;
+    ev.len = nameLen;
+    buf.append(reinterpret_cast<const char *>(&ev), sizeof(ev));
+    if (nameLen) {
+        QByteArray padded(int(nameLen), '\0');
+        std::memcpy(padded.data(), name, std::strlen(name));
+        buf.append(padded);
+    }
+}
 
 class KInotifyTest : public QObject
 {
@@ -35,6 +63,8 @@ private Q_SLOTS:
     void testFileClosedAfterWrite();
     void testRacyReplace();
     void testAtomicReplace();
+    void testQueueOverflowRequestsRescan();
+    void testOverflowDoesNotDiscardRemainingEvents();
 
     void init();
 
@@ -523,5 +553,42 @@ void KInotifyTest::testAtomicReplace()
 }
 
 QTEST_GUILESS_MAIN(KInotifyTest)
+
+void KInotifyTest::testQueueOverflowRequestsRescan()
+{
+    // The marker is fed to the parser rather than provoked from the kernel:
+    // forcing a real overflow is a race and depends on max_queued_events.
+    TestableKInotify kn(nullptr);
+    QSignalSpy spy(&kn, &KInotify::eventQueueOverflowed);
+    QVERIFY(spy.isValid());
+
+    // The kernel sets wd = -1 and len = 0 on the overflow marker.
+    QByteArray buf;
+    appendInotifyEvent(buf, -1, KInotify::EventQueueOverflow, nullptr);
+
+    kn.processEventBuffer(buf.constData(), buf.size());
+
+    QVERIFY2(spy.count() == 1,
+             "an overflow was parsed but nothing downstream was told, so the index "
+             "diverges from the filesystem with no path back");
+}
+
+void KInotifyTest::testOverflowDoesNotDiscardRemainingEvents()
+{
+    TestableKInotify kn(nullptr);
+    QSignalSpy spy(&kn, &KInotify::modified);
+
+    // One read can contain events queued after the overflow marker: the kernel
+    // appends the marker when full, then queues again as the reader drains.
+    QByteArray buf;
+    appendInotifyEvent(buf, 1, KInotify::EventModify, "before_overflow");
+    appendInotifyEvent(buf, -1, KInotify::EventQueueOverflow, nullptr);
+    appendInotifyEvent(buf, 1, KInotify::EventModify, "after_overflow");
+
+    kn.processEventBuffer(buf.constData(), buf.size());
+
+    // Events read behind the marker are still valid.
+    QCOMPARE(spy.count(), 2);
+}
 
 #include "kinotifytest.moc"
