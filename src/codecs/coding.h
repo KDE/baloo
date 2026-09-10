@@ -32,8 +32,7 @@ inline void putFixed64(QByteArray* dst, quint64 value)
  * call.
  */
 void putDifferentialVarInt32(QByteArray &temporaryStorage, QByteArray* dst, const QVector<quint32>& values);
-char* getDifferentialVarInt32(char* input, char* limit, QVector<quint32>* values);
-extern const char* getVarint32Ptr(const char* p, const char* limit, quint32* v);
+char *getDifferentialVarInt32(char *input, char *limit, QVector<quint32> *values);
 
 inline quint64 decodeFixed64(const char* ptr)
 {
