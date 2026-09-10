@@ -6,6 +6,9 @@
 */
 
 #include "postingcodec.h"
+#include "codecsdebug.h"
+
+#include <QDebug>
 
 using namespace Baloo;
 
@@ -19,9 +22,17 @@ QByteArray PostingCodec::encode(const QVector<quint64>& list)
 
 QVector<quint64> PostingCodec::decode(const QByteArray& arr)
 {
-    QVector<quint64> vec;
-    vec.resize(arr.size() / sizeof(quint64));
+    // A length that is not a multiple of the entry size means the value is
+    // truncated or corrupted; none of it is decoded.
+    if (arr.size() % qsizetype(sizeof(quint64)) != 0) {
+        qCWarning(BALOO_CODECS) << "PostingCodec::decode: value length" << arr.size() << "is not a multiple of" << sizeof(quint64) << "- not decoding it";
+        return {};
+    }
 
-    memcpy(vec.data(), arr.constData(), arr.size());
+    QVector<quint64> vec;
+    vec.resize(arr.size() / qsizetype(sizeof(quint64)));
+    if (!vec.isEmpty()) {
+        memcpy(vec.data(), arr.constData(), arr.size());
+    }
     return vec;
 }

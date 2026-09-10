@@ -8,6 +8,7 @@
 #include "postingcodec.h"
 
 #include <QObject>
+#include <QRegularExpression>
 #include <QTest>
 
 using namespace Baloo;
@@ -23,6 +24,20 @@ private Q_SLOTS:
 
         QVector<quint64> vec2 = PostingCodec::decode(arr);
         QCOMPARE(vec2, vec);
+    }
+
+    void testDecodeRejectsAPartialEntry()
+    {
+        // A length that is not a multiple of sizeof(quint64) means the value
+        // is damaged, so none of it is trusted.
+        const QVector<quint64> vec = {1, 2, 9, 12};
+        QByteArray arr = PostingCodec::encode(vec);
+        arr.chop(3); // three whole entries plus five trailing bytes
+        QTest::ignoreMessage(QtWarningMsg, QRegularExpression(QStringLiteral("not a multiple")));
+        QCOMPARE(PostingCodec::decode(arr), QVector<quint64>{});
+
+        QTest::ignoreMessage(QtWarningMsg, QRegularExpression(QStringLiteral("not a multiple")));
+        QCOMPARE(PostingCodec::decode(QByteArray(5, 'x')), QVector<quint64>{});
     }
 };
 
