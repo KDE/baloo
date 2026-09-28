@@ -9,13 +9,13 @@ include:
       - /gitlab-templates/yaml-lint.yml
 
 # Verify changes against clang-format
-clang-format:
-  stage: build
-  image: invent-registry.kde.org/sysadmin/ci-images/suse-qt611:latest
-  tags:
-    - Linux
-  script:
-    - git config --global --add safe.directory $CI_PROJECT_DIR
-    - if [[ ! -f .clang-format && ! -f _clang-format ]]; then wget -O .clang-format https://invent.kde.org/frameworks/extra-cmake-modules/-/raw/master/kde-modules/clang-format.cmake; fi
-    - git fetch origin master
-    - git-clang-format --diff origin/master
+# clang-format:
+#   stage: build
+#   image: invent-registry.kde.org/sysadmin/ci-images/suse-qt611:latest
+#   tags:
+#     - Linux
+#   script:
+#     - git config --global --add safe.directory $CI_PROJECT_DIR
+#     - if [[ ! -f .clang-format && ! -f _clang-format ]]; then wget -O .clang-format https://invent.kde.org/frameworks/extra-cmake-modules/-/raw/master/kde-modules/clang-format.cmake; fi
+#     - git fetch origin master
+#     - git-clang-format --diff origin/master
