@@ -11,7 +11,7 @@ include:
 # Verify changes against clang-format
 clang-format:
   stage: build
-  image: invent-registry.kde.org/sysadmin/ci-images/kubuntu_2604_qt610
+  image: invent-registry.kde.org/sysadmin/ci-images/kubuntu_2604_qt610:latest
   tags:
     - Linux
   script:
