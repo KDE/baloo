@@ -166,7 +166,6 @@ msgstr "%1 не входит в список исключённых из инд�
 msgid "A filter must be provided\n"
 msgstr "Необходимо указать фильтр.\n"
 
-# BUGME: word puzzle --aspotashev
 #: configcommand.cpp:210
 #, kde-format
 msgid "%1 is not in list of exclude filters"
@@ -177,7 +176,6 @@ msgstr "%1 не входит в список фильтров исключени
 msgid "A mimetype must be provided\n"
 msgstr "Необходимо указать тип файла (MIME).\n"
 
-# BUGME: word puzzle --aspotashev
 #: configcommand.cpp:227
 #, kde-format
 msgid "%1 is not in list of exclude mimetypes"
