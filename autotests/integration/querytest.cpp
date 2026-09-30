@@ -207,7 +207,7 @@ void QueryTest::insertTagDocuments()
 
 void QueryTest::testTermEqual()
 {
-    EngineQuery q("the");
+    EngineQuery q({EngineQuery::PhraseTerm("the", EngineQuery::Equal)});
 
     QVector<quint64> result = SortedIdVector{m_id1, m_id2, m_id4, m_id7};
     Transaction tr(db.get(), Transaction::ReadOnly);
@@ -216,7 +216,7 @@ void QueryTest::testTermEqual()
 
 void QueryTest::testTermStartsWith()
 {
-    EngineQuery q("for", EngineQuery::StartsWith);
+    EngineQuery q({EngineQuery::PhraseTerm("for", EngineQuery::StartsWith)});
 
     QVector<quint64> result = SortedIdVector{m_id3, m_id4};
     Transaction tr(db.get(), Transaction::ReadOnly);
@@ -255,9 +255,9 @@ void QueryTest::testTermPhrase()
     QFETCH(QVector<quint64>, contentMatches);
     QFETCH(QVector<quint64>, filenameMatches);
 
-    QVector<EngineQuery> queries;
+    QVector<EngineQuery::PhraseTerm> queries;
     for (const QByteArray& term : phrase) {
-        queries << EngineQuery(term);
+        queries.emplaceBack(term, EngineQuery::Equal);
     }
     EngineQuery q(queries);
 
@@ -268,7 +268,7 @@ void QueryTest::testTermPhrase()
     const QByteArray fPrefix = QByteArrayLiteral("F");
     for (QByteArray term : phrase) {
         term = fPrefix + term;
-        queries << EngineQuery(term);
+        queries.emplaceBack(term, EngineQuery::Equal);
     }
     EngineQuery qf(queries);
     QCOMPARE(execQuery(tr, qf), filenameMatches);
@@ -293,7 +293,7 @@ void QueryTest::testTagTerm()
     QFETCH(QVector<quint64>, matchIds);
 
     QByteArray prefix{"TA"};
-    EngineQuery q(prefix + term);
+    EngineQuery q({EngineQuery::PhraseTerm(prefix + term, EngineQuery::Equal)});
 
     Transaction tr(db.get(), Transaction::ReadOnly);
     QCOMPARE(execQuery(tr, q), matchIds);
@@ -320,9 +320,9 @@ void QueryTest::testTagTermPhrase()
     QFETCH(QVector<quint64>, matchIds);
 
     QByteArray prefix{"TA"};
-    QVector<EngineQuery> queries;
+    QVector<EngineQuery::PhraseTerm> queries;
     for (const QByteArray& term : terms) {
-        queries << EngineQuery(prefix + term);
+        queries.emplaceBack(prefix + term, EngineQuery::Equal);
     }
 
     EngineQuery q(queries);

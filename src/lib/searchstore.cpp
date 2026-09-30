@@ -88,44 +88,36 @@ std::pair<QByteArray, QMetaType::Type> propertyInfo(const QByteArray &property)
     }
 }
 
-EngineQuery constructEqualsQuery(const QByteArray& prefix, const QString& value)
+PostingIterator::Ptr constructEqualsQuery(Transaction *tr, const QByteArray &prefix, const QString &value, bool expandLast = false)
 {
     // We use the TermGenerator to normalize the words in the value and to
     // split it into other words. If we split the words, we then add them as a
     // phrase query.
     const QByteArrayList terms = TermGenerator::termList(value);
+    if (terms.isEmpty()) {
+        return nullptr;
+    } else if (terms.size() == 1) {
+        QByteArray arr = prefix + terms[0];
+        if (expandLast && terms[0].size() >= 3) {
+            return tr->postingPrefixIterator(arr);
+        }
+        return tr->postingIterator(arr);
+    }
 
-    QVector<EngineQuery> queries;
+    QVector<EngineQuery::PhraseTerm> queries;
     queries.reserve(terms.size());
     for (const QByteArray& term : terms) {
         QByteArray arr = prefix + term;
-        // FIXME - compatibility hack, to find truncated terms with old
-        // DBs, remove on next DB bump
-        if (arr.size() > 25) {
-            queries << EngineQuery(arr.left(25), EngineQuery::StartsWith);
-        } else {
-            queries << EngineQuery(arr);
-        }
+        queries.emplaceBack(arr, EngineQuery::Operation::Equal);
     }
 
-    if (queries.isEmpty()) {
-        return EngineQuery();
-    } else if (queries.size() == 1) {
-        return queries.first();
-    } else {
-        return EngineQuery(queries);
-    }
+    EngineQuery q(queries);
+    return tr->postingIterator(q);
 }
 
-EngineQuery constructContainsQuery(const QByteArray& prefix, const QString& value)
+PostingIterator::Ptr constructContainsQuery(Transaction *tr, const QByteArray &prefix, const QString &value)
 {
-    auto query = constructEqualsQuery(prefix, value);
-    if (query.op() == EngineQuery::Equal) {
-        if (query.term().size() >= 3) {
-            query.setOp(EngineQuery::StartsWith);
-	}
-    }
-    return query;
+    return constructEqualsQuery(tr, prefix, value, true);
 }
 
 PostingIterator::Ptr constructTypeQuery(Transaction *tr, const QString &value)
@@ -340,8 +332,7 @@ PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term)
             return tr->postingIterator(prefix + value.toByteArray());
         } else if (term.comparator() == Term::Contains) {
             const QByteArray prefix = "TA";
-            EngineQuery q = constructEqualsQuery(prefix, value.toString());
-            return tr->postingIterator(q);
+            return constructEqualsQuery(tr, prefix, value.toString());
         } else {
             Q_ASSERT(0);
             return nullptr;
@@ -366,13 +357,11 @@ PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term)
         com = Term::Equal;
     }
     if (com == Term::Contains) {
-        EngineQuery q = constructContainsQuery(prefix, value.toString());
-        return tr->postingIterator(q);
+        return constructContainsQuery(tr, prefix, value.toString());
     }
 
     if (com == Term::Equal) {
-        EngineQuery q = constructEqualsQuery(prefix, value.toString());
-        return tr->postingIterator(q);
+        return constructEqualsQuery(tr, prefix, value.toString());
     }
 
     PostingDB::Comparator pcom;

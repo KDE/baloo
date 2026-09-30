@@ -332,35 +332,20 @@ PostingIterator::Ptr Transaction::postingIterator(const EngineQuery &query) cons
     PostingDB postingDb(m_dbis.postingDbi, m_txn);
     PositionDB positionDb(m_dbis.positionDBi, m_txn);
 
-    if (query.leaf()) {
-        if (query.op() == EngineQuery::Equal) {
-            return postingDb.iter(query.term());
-        } else if (query.op() == EngineQuery::StartsWith) {
-            return postingDb.prefixIter(query.term());
-        } else {
-            Q_ASSERT(0);
-        }
-    }
-
     const auto subQueries = query.subQueries();
-    if (subQueries.isEmpty()) {
-        return nullptr;
-    }
-
-    Q_ASSERT(query.op() == EngineQuery::Phrase);
-    if (query.op() == EngineQuery::Phrase) {
-        if (subQueries.size() == 1) {
-            qCDebug(ENGINE) << "Degenerated Phrase with 1 Term:" <<  query;
-            return postingIterator(subQueries[0]);
+    if (subQueries.size() == 1) {
+        // Single term entries are not mirrored to the positiondb, so
+        // check in the postingdb
+        if (subQueries[0].m_op == EngineQuery::Equal) {
+            return postingDb.iter(subQueries[0].m_term);
+        } else {
+            return postingDb.prefixIter(subQueries[0].m_term);
         }
+    } else {
         std::vector<std::unique_ptr<VectorPositionInfoIterator>> vec;
         vec.reserve(subQueries.size());
-        for (const EngineQuery& q : subQueries) {
-            if (!q.leaf()) {
-                qCDebug(ENGINE) << "Transaction::toPostingIterator" << "Phrase subqueries must be leafs";
-                continue;
-            }
-            auto termMatch = std::unique_ptr<VectorPositionInfoIterator>(positionDb.iter(q.term()));
+        for (const auto &sq : subQueries) {
+            auto termMatch = std::unique_ptr<VectorPositionInfoIterator>(positionDb.iter(sq.m_term));
             if (!termMatch) {
                 return nullptr;
             }
@@ -369,7 +354,6 @@ PostingIterator::Ptr Transaction::postingIterator(const EngineQuery &query) cons
 
         return std::make_unique<PhraseAndIterator>(std::move(vec));
     }
-
     return nullptr;
 }
 
