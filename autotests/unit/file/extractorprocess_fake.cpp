@@ -69,8 +69,12 @@ void Context::processOne()
     auto id = pendingIds.takeFirst();
     worker.urlStarted(QString::number(id));
 
+    // The parent process will receive a siginfo_t structure with either
+    // a si_code == CLD_EXITED, which is translated to QProcess::NormalExit,
+    // or CLD_KILLED/CLD_DUMPED, which is translated to QProcess::CrashExit.
     if (id == 0) {
-        raise(SIGSEGV);
+        // Use SIGTERM in place of SIGSEGV, to avoid crash notifications
+        raise(SIGTERM);
     } else if (id == 1) {
         exit(1);
     } else if (id == 2) {
