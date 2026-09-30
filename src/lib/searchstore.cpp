@@ -128,18 +128,18 @@ EngineQuery constructContainsQuery(const QByteArray& prefix, const QString& valu
     return query;
 }
 
-EngineQuery constructTypeQuery(const QString& value)
+PostingIterator::Ptr constructTypeQuery(Transaction *tr, const QString &value)
 {
     Q_ASSERT(!value.isEmpty());
 
     KFileMetaData::TypeInfo ti = KFileMetaData::TypeInfo::fromName(value);
     if (ti == KFileMetaData::Type::Empty) {
         qCDebug(BALOO) << "Type" << value << "does not exist";
-        return EngineQuery();
+        return {};
     }
     int num = static_cast<int>(ti.type());
 
-    return EngineQuery('T' + QByteArray::number(num));
+    return tr->postingIterator('T' + QByteArray::number(num));
 }
 
 PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term);
@@ -277,8 +277,7 @@ PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term)
     const QByteArray property = term.property().toLower().toUtf8();
 
     if (property == "type" || property == "kind") {
-        EngineQuery q = constructTypeQuery(value.toString());
-        return tr->postingIterator(q);
+        return constructTypeQuery(tr, value.toString());
     }
     else if (property == "includefolder") {
         const QByteArray folder = value.toString().toUtf8();
@@ -338,8 +337,7 @@ PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term)
     } else if (property == "tag") {
         if (term.comparator() == Term::Equal) {
             const QByteArray prefix = "TAG-";
-            EngineQuery q = EngineQuery(prefix + value.toByteArray());
-            return tr->postingIterator(q);
+            return tr->postingIterator(prefix + value.toByteArray());
         } else if (term.comparator() == Term::Contains) {
             const QByteArray prefix = "TA";
             EngineQuery q = constructEqualsQuery(prefix, value.toString());

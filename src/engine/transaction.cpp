@@ -373,6 +373,18 @@ PostingIterator::Ptr Transaction::postingIterator(const EngineQuery &query) cons
     return nullptr;
 }
 
+PostingIterator::Ptr Transaction::postingIterator(const QByteArray &key) const
+{
+    PostingDB postingDb(m_dbis.postingDbi, m_txn);
+    return postingDb.iter(key);
+}
+
+PostingIterator::Ptr Transaction::postingPrefixIterator(const QByteArray &prefix) const
+{
+    PostingDB postingDb(m_dbis.postingDbi, m_txn);
+    return postingDb.prefixIter(prefix);
+}
+
 PostingIterator::Ptr Transaction::postingCompIterator(const QByteArray &prefix, qlonglong value, PostingDB::Comparator com) const
 {
     PostingDB postingDb(m_dbis.postingDbi, m_txn);

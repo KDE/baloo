@@ -63,6 +63,8 @@ public:
     DocumentTimeDB::TimeInfo documentTimeInfo(quint64 id) const;
 
     PostingIterator::Ptr postingIterator(const EngineQuery &query) const;
+    PostingIterator::Ptr postingIterator(const QByteArray &key) const;
+    PostingIterator::Ptr postingPrefixIterator(const QByteArray &prefix) const;
     PostingIterator::Ptr postingCompIterator(const QByteArray &prefix, qlonglong value, PostingDB::Comparator com) const;
     PostingIterator::Ptr postingCompIterator(const QByteArray &prefix, double value, PostingDB::Comparator com) const;
     PostingIterator::Ptr postingCompIterator(const QByteArray &prefix, const QByteArray &value, PostingDB::Comparator com) const;
