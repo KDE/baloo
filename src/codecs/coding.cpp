@@ -50,7 +50,7 @@ static inline void putVarint32Internal(char* dst, quint32 v, int &pos)
     pos += encodeVarint32Internal(&dst[pos], v);
 }
 
-void putDifferentialVarInt32(QByteArray &temporaryStorage, QByteArray* dst, const QVector<quint32>& values)
+void putDifferentialVarInt32(QByteArray &temporaryStorage, QByteArray &dst, const QVector<quint32> &values)
 {
     temporaryStorage.resize((values.size() + 1) * 5);  // max size, correct size will be held in pos
     int pos = 0;
@@ -63,33 +63,33 @@ void putDifferentialVarInt32(QByteArray &temporaryStorage, QByteArray* dst, cons
         putVarint32Internal(temporaryStorage.data(), n - v, pos);
         v = n;
     }
-    dst->append(temporaryStorage.constData(), pos);
+    dst.append(temporaryStorage.constData(), pos);
 }
 
-const char *getDifferentialVarInt32(const char *p, const char *limit, QVector<quint32> *values)
+const char *getDifferentialVarInt32(const char *p, const char *limit, QVector<quint32> &values)
 {
     quint32 size = 0;
-    p = getVarint32Ptr(p, limit, &size);
-    values->resize(size);
+    p = getVarint32Ptr(p, limit, size);
+    values.resize(size);
 
-    auto it = values->begin();
-    auto end = values->end();
+    auto it = values.begin();
+    auto end = values.end();
 
     quint32 v = 0;
     while (p && it != end) {
         quint32 n = 0;
-        p = getVarint32Ptr(p, limit, &n);
+        p = getVarint32Ptr(p, limit, n);
 
         *it = (n + v);
         v += n;
         ++it;
     }
-    values->erase(it, end);
+    values.erase(it, end);
 
     return p;
 }
 
-const char *getVarint32PtrFallback(const char *p, const char *limit, quint32 *value)
+const char *getVarint32PtrFallback(const char *p, const char *limit, quint32 &value)
 {
     quint32 result = 0;
     for (quint32 shift = 0; shift <= 28 && p < limit; shift += 7) {
@@ -100,7 +100,7 @@ const char *getVarint32PtrFallback(const char *p, const char *limit, quint32 *va
             result |= ((byte & 127) << shift);
         } else {
             result |= (byte << shift);
-            *value = result;
+            value = result;
             return p;
         }
     }
