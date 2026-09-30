@@ -22,45 +22,39 @@ public:
     enum Operation {
         Equal,
         StartsWith,
-        Phrase,
     };
 
-    EngineQuery();
-    EngineQuery(const QByteArray& term, Operation op = Equal);
-    EngineQuery(const QVector<EngineQuery> &subQueries);
+    struct PhraseTerm {
+        QByteArray m_term;
+        Operation m_op;
 
-    QByteArray term() const {
-        return m_term;
-    }
+        bool operator==(const PhraseTerm &pt) const
+        {
+            return m_op == pt.m_op && m_term == pt.m_term;
+        }
+    };
 
-    Operation op() const {
-        return m_op;
-    }
-
-    void setOp(const Operation& op) {
-        m_op = op;
-    }
-
-    bool leaf() const {
-        return !m_term.isEmpty();
+    EngineQuery(const QVector<PhraseTerm> &subQueries)
+        : m_subQueries(subQueries)
+    {
     }
 
     bool empty() {
-        return m_subQueries.isEmpty() && m_term.isEmpty();
+        return m_subQueries.isEmpty();
     }
 
-    QVector<EngineQuery> subQueries() const {
+    QVector<PhraseTerm> subQueries() const
+    {
         return m_subQueries;
     }
 
-    bool operator ==(const EngineQuery& q) const {
-        return m_term == q.m_term && m_op == q.m_op && m_subQueries == q.m_subQueries;
+    bool operator==(const EngineQuery &q) const
+    {
+        return m_subQueries == q.m_subQueries;
     }
-private:
-    QByteArray m_term;
-    Operation m_op;
 
-    QVector<EngineQuery> m_subQueries;
+private:
+    QVector<PhraseTerm> m_subQueries;
 };
 
 inline QDebug operator<<(QDebug d, const Baloo::EngineQuery& q)
@@ -68,16 +62,13 @@ inline QDebug operator<<(QDebug d, const Baloo::EngineQuery& q)
     QDebugStateSaver state(d);
     d.setAutoInsertSpaces(false);
 
-    using Operation = Baloo::EngineQuery::Operation;
-    if ((q.op() == Operation::Equal) || q.op() == Operation::StartsWith) {
-        Q_ASSERT(q.subQueries().isEmpty());
-        return d << q.term() << (q.op() == Operation::StartsWith ? ".." : "");
-    }
-
-    Q_ASSERT(q.op() == Operation::Phrase);
     d << "[PHRASE";
     for (auto &sq : q.subQueries()) {
-        d << " " << sq;
+        if (sq.m_op == Baloo::EngineQuery::Operation::StartsWith) {
+            d << " " << sq.m_term << "..";
+        } else {
+            d << " " << sq.m_term;
+        }
     }
     return d << "]";
 }

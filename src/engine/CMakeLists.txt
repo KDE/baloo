@@ -9,7 +9,6 @@ set(BALOO_ENGINE_SRCS
     documenturldb.cpp
     documenttimedb.cpp
     documentiddb.cpp
-    enginequery.cpp
     idtreedb.cpp
     idfilenamedb.cpp
     indexerstate.cpp
