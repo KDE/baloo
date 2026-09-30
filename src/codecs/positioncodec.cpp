@@ -26,8 +26,8 @@ QByteArray PositionCodec::encode(const QVector<PositionInfo>& list)
 
 QVector<PositionInfo> PositionCodec::decode(const QByteArray& arr)
 {
-    char* data = const_cast<char*>(arr.data());
-    char* end = data + arr.size();
+    const char *data = arr.data();
+    const char *end = data + arr.size();
 
     QVector<PositionInfo> vec;
     while (data < end) {

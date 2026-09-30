@@ -66,7 +66,7 @@ void putDifferentialVarInt32(QByteArray &temporaryStorage, QByteArray* dst, cons
     dst->append(temporaryStorage.constData(), pos);
 }
 
-char* getDifferentialVarInt32(char* p, char* limit, QVector<quint32>* values)
+const char *getDifferentialVarInt32(const char *p, const char *limit, QVector<quint32> *values)
 {
     quint32 size = 0;
     p = getVarint32Ptr(p, limit, &size);
@@ -89,7 +89,7 @@ char* getDifferentialVarInt32(char* p, char* limit, QVector<quint32>* values)
     return p;
 }
 
-char* getVarint32PtrFallback(char* p, char* limit, quint32* value)
+const char *getVarint32PtrFallback(const char *p, const char *limit, quint32 *value)
 {
     quint32 result = 0;
     for (quint32 shift = 0; shift <= 28 && p < limit; shift += 7) {

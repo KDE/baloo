@@ -32,7 +32,7 @@ inline void putFixed64(QByteArray* dst, quint64 value)
  * call.
  */
 void putDifferentialVarInt32(QByteArray &temporaryStorage, QByteArray* dst, const QVector<quint32>& values);
-char *getDifferentialVarInt32(char *input, char *limit, QVector<quint32> *values);
+const char *getDifferentialVarInt32(const char *input, const char *limit, QVector<quint32> *values);
 
 inline quint64 decodeFixed64(const char* ptr)
 {
@@ -43,8 +43,8 @@ inline quint64 decodeFixed64(const char* ptr)
 }
 
 // Internal routine for use by fallback path of GetVarint32Ptr
-extern char* getVarint32PtrFallback(char* p, char* limit, quint32* value);
-inline char* getVarint32Ptr(char* p, char* limit, quint32* value)
+const char *getVarint32PtrFallback(const char *p, const char *limit, quint32 *value);
+inline const char *getVarint32Ptr(const char *p, const char *limit, quint32 *value)
 {
     if (p >= limit) {
         return nullptr;
