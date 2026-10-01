@@ -60,7 +60,11 @@ class QueryTest : public QObject
 {
     Q_OBJECT
 private Q_SLOTS:
-    void initTestCase() {
+    void initTestCase()
+    {
+        // Make timestamp parsing independent of host locale
+        qputenv("TZ", "UTC");
+
         dir = std::make_unique<QTemporaryDir>();
     }
 
@@ -156,8 +160,8 @@ private:
         tg.indexFileNameText(fileName);
         doc.setId(id);
         doc.setParentId(m_parentId);
-        doc.setMTime(3);
-        doc.setCTime(4);
+        doc.setMTime(3600 * 24 + 30);
+        doc.setCTime(3600 * 24 + 40);
 
         tr->addDocument(doc);
     }
@@ -415,6 +419,16 @@ void QueryTest::testSearchstringParser_data()
     addRow(u"\"https://www.kde.org\""_s, {u"url:file.txt"_s});
     addRow(u"https_//www.kde.org"_s,     {u"url:file.txt"_s});
     addRow(u"https://www.kde.org"_s,     {u"url:file.txt"_s});
+    addRow(u"modified:0"_s,              {}); // invalid date string
+    addRow(u"modified:1970-01-02"_s,     {u"tagFile1"_s, u"tagFile2"_s});
+    addRow(u"mtime:1970-01-02"_s,        {u"tagFile1"_s, u"tagFile2"_s});
+    addRow(u"mtime:1970-01-01 sorry"_s,  {u"file3"_s});
+    addRow(u"mtime:1960-01-01"_s,        {});
+    addRow(u"modified=1970-01-02"_s,     {u"tagFile1"_s, u"tagFile2"_s});
+    addRow(u"modified>=1970-01-02"_s,    {u"tagFile1"_s, u"tagFile2"_s});
+    addRow(u"modified>1970-01-02"_s,     {u"tagFile1"_s, u"tagFile2"_s});
+    addRow(u"modified>1970-01-03"_s,     {});
+    addRow(u"mtime>1960-01-03 tag:f1"_s, {u"tagFile1"_s});
     // clang-format off
 }
 
