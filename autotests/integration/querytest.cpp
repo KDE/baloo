@@ -353,8 +353,6 @@ void QueryTest::testSearchstringParser()
     }
     QEXPECT_FAIL("Match 'dot . Test'", "Bug 407664: Tries to match isolated dot", Continue);
     QEXPECT_FAIL("Match 'file - with hyphen.txt'", "Bug 407664: Tries to match hyphen", Continue);
-    QEXPECT_FAIL("Match 'url:file'", "Colon always used as property separator", Continue);
-    QEXPECT_FAIL("Match 'https://www.kde.org'", "Colon always used as property separator", Continue);
     QCOMPARE(matches, expectedFiles);
 }
 
