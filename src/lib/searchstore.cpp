@@ -25,6 +25,7 @@
 
 #include <algorithm>
 #include <array>
+#include <limits>
 #include <tuple>
 
 namespace Baloo {
@@ -32,23 +33,31 @@ namespace Baloo {
 using namespace Qt::StringLiterals;
 
 namespace {
-QPair<quint32, quint32> calculateTimeRange(const QDateTime& dt, Term::Comparator com)
+QPair<quint32, quint32> calculateTimeRange(const QVariant &value, Term::Comparator com)
 {
-    Q_ASSERT(dt.isValid());
+    const QDateTime dt = value.toDateTime();
+    if (!dt.isValid()) {
+        // Do not warn, input may not be complete
+        qCDebug(BALOO) << "Failed to parse timestamp" << value.toString();
+        return {1, 0};
+    }
 
-    if (com == Term::Equal) {
+    if ((com == Term::Equal) || (com == Term::Contains)) {
         // Timestamps in DB are quint32 relative to Epoch (1970...2106)
-        auto start = static_cast<quint32>(dt.date().startOfDay().toSecsSinceEpoch());
-        auto end = static_cast<quint32>(dt.date().endOfDay().toSecsSinceEpoch());
+        static constexpr qint64 maxUInt32 = std::numeric_limits<quint32>::max();
+        quint32 start = std::clamp<qint64>(dt.date().startOfDay().toSecsSinceEpoch(), 0, maxUInt32);
+        quint32 end = std::clamp<qint64>(dt.date().endOfDay().toSecsSinceEpoch(), 0, maxUInt32);
         return {start, end};
     }
 
-    quint32 timet = dt.toSecsSinceEpoch();
+    quint32 timet = std::clamp<qint64>(dt.toSecsSinceEpoch(), 0, std::numeric_limits<quint32>::max());
+    qCDebug(BALOO) << "Parsed/clamped timestamp:" << dt << "->" << timet;
+
     if (com == Term::LessEqual) {
         return {0, timet};
     }
     if (com == Term::Less) {
-        return {0, timet - 1};
+        return {0, timet > 0 ? timet - 1 : 0};
     }
     if (com == Term::GreaterEqual) {
         return {timet, std::numeric_limits<quint32>::max()};
@@ -58,7 +67,7 @@ QPair<quint32, quint32> calculateTimeRange(const QDateTime& dt, Term::Comparator
     }
 
     Q_ASSERT_X(0, __func__, "mtime query must contain a valid comparator");
-    return {0, 0};
+    return {1, 0};
 }
 
 struct InternalProperty {
@@ -331,9 +340,8 @@ PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term)
 
             return tr->mTimeRangeIter(startDate.startOfDay().toSecsSinceEpoch(), endDate.endOfDay().toSecsSinceEpoch());
         } else if (value.typeId() == QMetaType::QString) {
-            const QDateTime dt = value.toDateTime();
-            QPair<quint32, quint32> timerange = calculateTimeRange(dt, term.comparator());
-            if ((timerange.first == 0) && (timerange.second == 0)) {
+            QPair<quint32, quint32> timerange = calculateTimeRange(value, term.comparator());
+            if (timerange.first > timerange.second) {
                 return nullptr;
             }
             return tr->mTimeRangeIter(timerange.first, timerange.second);
