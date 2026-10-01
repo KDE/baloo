@@ -18,6 +18,7 @@
 #include <QTemporaryDir>
 
 using namespace Baloo;
+using namespace Qt::StringLiterals;
 
 class SortedIdVector : public QVector<quint64> {
     public:
@@ -79,6 +80,7 @@ private Q_SLOTS:
         m_id7 = m_parentId + 7;
         m_id8 = m_parentId + 8;
         m_id9 = m_parentId + 9;
+        m_id10 = m_parentId + 10;
 
         insertDocuments();
         insertTagDocuments();
@@ -169,6 +171,7 @@ private:
     quint64 m_id7;
     quint64 m_id8;
     quint64 m_id9;
+    quint64 m_id10;
 };
 
 void QueryTest::insertDocuments()
@@ -181,6 +184,7 @@ void QueryTest::insertDocuments()
     addDocument(&tr, QStringLiteral("Don't feel sorry for yourself. Only assholes do that"), m_id3, QStringLiteral("file3"));
     addDocument(&tr, QStringLiteral("Only the dead stay 17 forever. crazy"), m_id4, QStringLiteral("file4"));
     addDocument(&tr, QStringLiteral("Some content with isolated dot . Test it"), m_id9, QStringLiteral("file - with hyphen.txt"));
+    addDocument(&tr, QStringLiteral("File with URL: https://www.kde.org"), m_id10, QStringLiteral("url:file.txt"));
 
     renameDocument(&tr, m_id8, QStringLiteral("file8_easy"));
     tr.commit();
@@ -349,6 +353,8 @@ void QueryTest::testSearchstringParser()
     }
     QEXPECT_FAIL("Match 'dot . Test'", "Bug 407664: Tries to match isolated dot", Continue);
     QEXPECT_FAIL("Match 'file - with hyphen.txt'", "Bug 407664: Tries to match hyphen", Continue);
+    QEXPECT_FAIL("Match 'url:file'", "Colon always used as property separator", Continue);
+    QEXPECT_FAIL("Match 'https://www.kde.org'", "Colon always used as property separator", Continue);
     QCOMPARE(matches, expectedFiles);
 }
 
@@ -402,6 +408,16 @@ void QueryTest::testSearchstringParser_data()
     addRow(QStringLiteral("content:dot"), { QStringLiteral("file - with hyphen.txt") });
     addRow(QStringLiteral("dot . Test"), { QStringLiteral("file - with hyphen.txt") });
     addRow(QStringLiteral("\"dot . Test\""), { QStringLiteral("file - with hyphen.txt") });
+    // clang-format off
+    addRow(u"file.txt"_s,                {u"url:file.txt"_s});
+    addRow(u"\"url:file\""_s,            {u"url:file.txt"_s});
+    addRow(u"url_file"_s,                {u"url:file.txt"_s});
+    addRow(u"url:file"_s,                {u"url:file.txt"_s});
+    addRow(u"www.kde.org"_s,             {u"url:file.txt"_s});
+    addRow(u"\"https://www.kde.org\""_s, {u"url:file.txt"_s});
+    addRow(u"https_//www.kde.org"_s,     {u"url:file.txt"_s});
+    addRow(u"https://www.kde.org"_s,     {u"url:file.txt"_s});
+    // clang-format off
 }
 
 QTEST_MAIN(QueryTest)
