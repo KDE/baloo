@@ -29,6 +29,8 @@
 
 namespace Baloo {
 
+using namespace Qt::StringLiterals;
+
 namespace {
 QPair<quint32, quint32> calculateTimeRange(const QDateTime& dt, Term::Comparator com)
 {
@@ -132,6 +134,19 @@ PostingIterator::Ptr constructTypeQuery(Transaction *tr, const QString &value)
     int num = static_cast<int>(ti.type());
 
     return tr->postingIterator('T' + QByteArray::number(num));
+}
+
+QString reconstructFromTerm(const Term &term)
+{
+    auto comp = term.comparator();
+    auto compString = comp == Term::Equal ? u"="_sv //
+        : comp == Term::LessEqual         ? u"<="_sv
+        : comp == Term::GreaterEqual      ? u">="_sv
+        : comp == Term::Less              ? u"<"_sv
+        : comp == Term::Greater           ? u">"_sv
+                                          : u":"_sv;
+    // Reconstruct something like "http://www.kde.org"
+    return term.property() + compString + term.value().toString();
 }
 
 PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term);
@@ -348,7 +363,10 @@ PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term)
     if (!property.isEmpty()) {
         std::tie(prefix, valueType) = propertyInfo(property);
         if (valueType == QMetaType::UnknownType) {
-            return nullptr;
+            QString reconstructed{reconstructFromTerm(term)};
+            qCDebug(BALOO) << "Unknown property" << property << "with value" //
+                           << term.value().toString() << "- using" << reconstructed;
+            return constructQuery(tr, Term{QString{}, reconstructed, Term::Equal});
         }
     }
 
