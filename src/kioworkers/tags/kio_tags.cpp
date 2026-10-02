@@ -281,7 +281,8 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
 
     auto createUDSEntryForTag = [] (const QString& tagSection, const QString& tag) {
         KIO::UDSEntry uds;
-        uds.reserve(9);
+        uds.reserveNumbers(2);
+        uds.reserveStrings(7);
         uds.fastInsert(KIO::UDSEntry::UDS_NAME, tagSection);
         uds.fastInsert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
         uds.fastInsert(KIO::UDSEntry::UDS_MIME_TYPE, QStringLiteral("inode/directory"));
@@ -319,6 +320,9 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
 
         uds.fastInsert(KIO::UDSEntry::UDS_DISPLAY_TYPE, displayType);
         uds.fastInsert(KIO::UDSEntry::UDS_DISPLAY_NAME, displayName);
+
+        Q_ASSERT(uds.numbersCount() == 2);
+        Q_ASSERT(uds.stringsCount() == 7);
 
         return uds;
     };
@@ -438,11 +442,11 @@ TagsProtocol::ParseResult TagsProtocol::parseUrl(const QUrl& url, const QList<Pa
     while (it.next()) {
         KIO::UDSEntry uds = udsf.createUdsEntry(it.filePath());
         if (uds.count() == 0) {
-	    continue;
-	}
+            continue;
+        }
 
-	const QUrl url(uds.stringValue(KIO::UDSEntry::UDS_URL));
-	auto dupCount = resultNames.count(url.fileName());
+        const QUrl url(uds.stringValue(KIO::UDSEntry::UDS_URL));
+        auto dupCount = resultNames.count(url.fileName());
         if (dupCount > 0) {
             uds.replace(KIO::UDSEntry::UDS_NAME, url.fileName() + QStringLiteral(" (%1)").arg(dupCount));
         }

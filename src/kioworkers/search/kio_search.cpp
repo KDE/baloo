@@ -35,7 +35,8 @@ namespace
 KIO::UDSEntry statSearchFolder(const QUrl& url)
 {
     KIO::UDSEntry uds;
-    uds.reserve(9);
+    uds.reserveNumbers(2);
+    uds.reserveStrings(7);
 #ifdef Q_OS_WIN
     uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, _S_IREAD );
 #else
@@ -54,6 +55,9 @@ KIO::UDSEntry statSearchFolder(const QUrl& url)
         uds.fastInsert(KIO::UDSEntry::UDS_NAME, title);
         uds.fastInsert(KIO::UDSEntry::UDS_DISPLAY_NAME, title);
     }
+
+    Q_ASSERT(uds.stringsCount() == 7);
+    Q_ASSERT(uds.numbersCount() == 2);
 
     return uds;
 }
@@ -90,12 +94,13 @@ KIO::WorkerResult SearchProtocol::listDir(const QUrl& url)
     while (it.next()) {
         KIO::UDSEntry uds = udsf.createUdsEntry(it.filePath());
         if (uds.count()) {
-	    listEntry(uds);
+            listEntry(uds);
         }
     }
 
     KIO::UDSEntry uds;
-    uds.reserve(5);
+    uds.reserveNumbers(2);
+    uds.reserveStrings(3);
     uds.fastInsert(KIO::UDSEntry::UDS_NAME, QStringLiteral("."));
     uds.fastInsert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
     uds.fastInsert(KIO::UDSEntry::UDS_MIME_TYPE, QStringLiteral("inode/directory"));
@@ -105,6 +110,10 @@ KIO::WorkerResult SearchProtocol::listDir(const QUrl& url)
     uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, S_IRUSR | S_IXUSR);
 #endif
     uds.fastInsert(KIO::UDSEntry::UDS_USER, KUser().loginName());
+
+    Q_ASSERT(uds.numbersCount() == 2);
+    Q_ASSERT(uds.stringsCount() == 3);
+
     listEntry(uds);
 
     return KIO::WorkerResult::pass();

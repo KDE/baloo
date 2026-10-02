@@ -34,7 +34,8 @@ namespace
 KIO::UDSEntry createFolderUDSEntry(const QString& name)
 {
     KIO::UDSEntry uds;
-    uds.reserve(5);
+    uds.reserveNumbers(2);
+    uds.reserveStrings(3);
     uds.fastInsert(KIO::UDSEntry::UDS_NAME, name);
     uds.fastInsert(KIO::UDSEntry::UDS_FILE_TYPE, S_IFDIR);
     uds.fastInsert(KIO::UDSEntry::UDS_MIME_TYPE, QStringLiteral("inode/directory"));
@@ -44,13 +45,18 @@ KIO::UDSEntry createFolderUDSEntry(const QString& name)
     uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, S_IRUSR | S_IXUSR);
 #endif
     uds.fastInsert(KIO::UDSEntry::UDS_USER, KUser().loginName());
+
+    Q_ASSERT(uds.numbersCount() == 2);
+    Q_ASSERT(uds.stringsCount() == 3);
+
     return uds;
 }
 
 KIO::UDSEntry createDateFolderUDSEntry(const QString& name, const QString& displayName, const QDate& date)
 {
     KIO::UDSEntry uds;
-    uds.reserve(8);
+    uds.reserveNumbers(4);
+    uds.reserveStrings(4);
     QDateTime dt(date, QTime(0, 0, 0));
     uds.fastInsert(KIO::UDSEntry::UDS_NAME, name);
     uds.fastInsert(KIO::UDSEntry::UDS_DISPLAY_NAME, displayName);
@@ -64,6 +70,10 @@ KIO::UDSEntry createDateFolderUDSEntry(const QString& name, const QString& displ
     uds.fastInsert(KIO::UDSEntry::UDS_ACCESS, S_IRUSR | S_IXUSR);
 #endif
     uds.fastInsert(KIO::UDSEntry::UDS_USER, KUser().loginName());
+
+    Q_ASSERT(uds.numbersCount() == 4);
+    Q_ASSERT(uds.stringsCount() == 4);
+
     return uds;
 }
 

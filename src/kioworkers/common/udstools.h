@@ -31,10 +31,11 @@ inline KIO::UDSEntry UdsFactory::createUdsEntry(const QString& filePath) const
     QT_STATBUF statBuf;
     const QByteArray ba = QFile::encodeName(filePath);
     if (filePathToStat(ba, statBuf) != 0) {
-	return uds;
+        return uds;
     }
 
-    uds.reserve(12);
+    uds.reserveNumbers(7);
+    uds.reserveStrings(5);
     uds.fastInsert(KIO::UDSEntry::UDS_DEVICE_ID, statBuf.st_dev);
     uds.fastInsert(KIO::UDSEntry::UDS_INODE, statBuf.st_ino);
 
@@ -57,6 +58,9 @@ inline KIO::UDSEntry UdsFactory::createUdsEntry(const QString& filePath) const
     uds.fastInsert(KIO::UDSEntry::UDS_NAME, url.fileName());
     uds.fastInsert(KIO::UDSEntry::UDS_URL, url.url());
     uds.fastInsert(KIO::UDSEntry::UDS_LOCAL_PATH, filePath);
+
+    Q_ASSERT(uds.numbersCount() == 7);
+    Q_ASSERT(uds.stringsCount() <= 5);
 
     return uds;
 }
