@@ -66,14 +66,6 @@ private Q_SLOTS:
         qputenv("TZ", "UTC");
 
         dir = std::make_unique<QTemporaryDir>();
-    }
-
-    void init() {
-        dbDir = std::make_unique<QTemporaryDir>();
-        db = std::make_unique<Database>(dbDir->path());
-        QCOMPARE(db->open(Database::CreateDatabase), Database::OpenResult::Success);
-        setenv("BALOO_DB_PATH", dbDir->path().toStdString().c_str(), 1);
-
         m_parentId = filePathToId(QFile::encodeName(dir->path()));
         m_id1 = m_parentId + 1;
         m_id2 = m_parentId + 2;
@@ -85,6 +77,14 @@ private Q_SLOTS:
         m_id8 = m_parentId + 8;
         m_id9 = m_parentId + 9;
         m_id10 = m_parentId + 10;
+    }
+
+    void init()
+    {
+        dbDir = std::make_unique<QTemporaryDir>();
+        db = std::make_unique<Database>(dbDir->path());
+        QCOMPARE(db->open(Database::CreateDatabase), Database::OpenResult::Success);
+        setenv("BALOO_DB_PATH", dbDir->path().toStdString().c_str(), 1);
 
         insertDocuments();
         insertTagDocuments();
