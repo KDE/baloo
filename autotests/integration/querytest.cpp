@@ -159,7 +159,7 @@ private:
         doc.setUrl(QFile::encodeName(url));
 
         TermGenerator tg(doc);
-        tg.indexText(QStringLiteral("text/plain"), QByteArray("M"));
+        tg.indexMimetype(QStringLiteral("text/plain"));
         for (const QString& tag : tags) {
             tg.indexXattrText(tag, QByteArray("TA"));
         }
