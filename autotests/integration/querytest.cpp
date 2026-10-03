@@ -450,6 +450,11 @@ void QueryTest::testSearchstringParser_data()
     addRow(u"modified>1970-01-02"_s,     {u"tagFile1"_s, u"tagFile2"_s});
     addRow(u"modified>1970-01-03"_s,     {});
     addRow(u"mtime>1960-01-03 tag:f1"_s, {u"tagFile1"_s});
+    addRow(u"mimetype=text tag:f1"_s,    {u"tagFile1"_s});
+    addRow(u"mimetype=plain tag:f1"_s,   {u"tagFile1"_s});
+    addRow(u"mimetype:pla tag:f1"_s,     {u"tagFile1"_s});
+    addRow(u"mimetype:text/plain"_s,     {u"tagFile1"_s, u"tagFile2"_s});
+    addRow(u"mimetype:plain/text"_s,     {});
     // clang-format off
 }
 
