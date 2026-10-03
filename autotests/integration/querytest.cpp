@@ -91,8 +91,11 @@ private Q_SLOTS:
 
     void testTermEqual();
     void testTermStartsWith();
-    void testTermPhrase_data();
-    void testTermPhrase();
+    void testContentPhrase_data();
+    void testContentPhrase();
+    void testFilenamePhrase_data();
+    void testFilenamePhrase();
+    void testPhrases_dataCommon();
 
     void testTagTerm_data();
     void testTagTerm();
@@ -223,54 +226,75 @@ void QueryTest::testTermStartsWith()
     QCOMPARE(execQuery(tr, q), result);
 }
 
-void QueryTest::testTermPhrase_data()
+void QueryTest::testPhrases_dataCommon()
 {
-    QTest::addColumn<QByteArrayList>("phrase");
+    QTest::addColumn<QString>("phrase");
     QTest::addColumn<QVector<quint64>>("contentMatches");
     QTest::addColumn<QVector<quint64>>("filenameMatches");
 
-    auto addRow = [](const char* name, const QByteArrayList& phrase,
+    auto addRow = [](const char *name, //
+                     const QString &phrase,
                      const QVector<quint64> contentMatches,
-                     const QVector<quint64> filenameMatches)
-        { QTest::addRow("%s", name) << phrase << contentMatches << filenameMatches;};
+                     const QVector<quint64> filenameMatches) {
+        QTest::addRow("%s", name) << phrase << contentMatches << filenameMatches;
+    };
 
     // Content matches
-    addRow("Crazy dog",        {QByteArrayLiteral("crazy"), QByteArrayLiteral("dog")},  SortedIdVector{ m_id1 }, {});
-    addRow("Lazy dog",         {QByteArrayLiteral("lazy"),  QByteArrayLiteral("dog")},  SortedIdVector{ m_id7 }, {});
-    addRow("Brown fox",        {QByteArrayLiteral("brown"), QByteArrayLiteral("fox")},  SortedIdVector{ m_id1, m_id7, m_id8 }, {});
-    addRow("Dog",              {QByteArrayLiteral("dog")},                              SortedIdVector{ m_id1, m_id7, m_id8 }, {});
+    // clang-format off
+    addRow("Crazy dog",        {u"crazy dog"_s},  {m_id1},               {});
+    addRow("Lazy dog",         {u"lazy dog"_s},   {m_id7},               {});
+    addRow("Brown fox",        {u"brown fox"_s},  {m_id1, m_id7, m_id8}, {});
+    addRow("Dog",              {u"dog"_s},        {m_id1, m_id7, m_id8}, {});
     // Filename matches
-    addRow("Crazy dog file 1", {QByteArrayLiteral("file1")},                            {}, SortedIdVector{ m_id1 });
-    addRow("Crazy dog file 2", {QByteArrayLiteral("file1"), QByteArrayLiteral("txt")},  {}, SortedIdVector{ m_id1 });
-    addRow("Lazy dog file 1",  {QByteArrayLiteral("file7")},                            {}, SortedIdVector{ m_id7 });
-    addRow("Lazy dog file 2",  {QByteArrayLiteral("file7"), QByteArrayLiteral("lazy")}, {}, SortedIdVector{ m_id7 });
+    addRow("Crazy dog file 1", {u"file1"_s},      {},                    {m_id1});
+    addRow("Crazy dog file 2", {u"file1 txt"_s},  {},                    {m_id1});
+    addRow("Lazy dog file 1",  {u"file7"_s},      {},                    {m_id7});
+    addRow("Lazy dog file 2",  {u"file7 lazy"_s}, {},                    {m_id7});
     // Matches content and filename
-    addRow("Lazy both",        {QByteArrayLiteral("lazy")},                             { m_id7 }, { m_id7 });
-    addRow("Easy both",        {QByteArrayLiteral("easy")},                             { m_id8 }, { m_id8 });
+    addRow("Lazy both",        {u"lazy"_s},       {m_id7},               {m_id7});
+    addRow("Easy both",        {u"easy"_s},       {m_id8},               {m_id8});
+    // clang-format off
 }
 
-void QueryTest::testTermPhrase()
+void QueryTest::testContentPhrase_data()
 {
-    QFETCH(QByteArrayList, phrase);
+    testPhrases_dataCommon();
+}
+
+void QueryTest::testContentPhrase()
+{
+    QFETCH(QString, phrase);
     QFETCH(QVector<quint64>, contentMatches);
-    QFETCH(QVector<quint64>, filenameMatches);
 
     QVector<EngineQuery::PhraseTerm> queries;
-    for (const QByteArray& term : phrase) {
+    for (const QByteArray& term : TermGenerator::termList(phrase)) {
         queries.emplaceBack(term, EngineQuery::Equal);
     }
     EngineQuery q(queries);
 
     Transaction tr(db.get(), Transaction::ReadOnly);
     QCOMPARE(execQuery(tr, q), contentMatches);
+}
 
-    queries.clear();
+void QueryTest::testFilenamePhrase_data()
+{
+    testPhrases_dataCommon();
+}
+
+void QueryTest::testFilenamePhrase()
+{
+    QFETCH(QString, phrase);
+    QFETCH(QVector<quint64>, filenameMatches);
+
+    QVector<EngineQuery::PhraseTerm> queries;
     const QByteArray fPrefix = QByteArrayLiteral("F");
-    for (QByteArray term : phrase) {
+    for (QByteArray term : TermGenerator::termList(phrase)) {
         term = fPrefix + term;
         queries.emplaceBack(term, EngineQuery::Equal);
     }
     EngineQuery qf(queries);
+
+    Transaction tr(db.get(), Transaction::ReadOnly);
     QCOMPARE(execQuery(tr, qf), filenameMatches);
 }
 
