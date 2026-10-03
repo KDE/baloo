@@ -91,7 +91,7 @@ int main(int argc, char** argv)
             if ((num % transactionSize) == 0) {
                 tr.commit();
                 tr.reset(Transaction::ReadWrite);
-                qDebug() << num << "- Commit";
+                qDebug() << num << "- Commit (" << timer.elapsed() << "msecs)";
             }
         }
         tr.commit();
@@ -102,8 +102,11 @@ int main(int argc, char** argv)
     {
         Transaction tr(db, Transaction::ReadOnly);
         const auto dbSize = tr.dbSize();
-        qDebug() << "File size (MiB):" << dbSize.actualSize / (1024.0 * 1024)
-                 << "Used:" << dbSize.expectedSize / (1024.0 * 1024);
+        qDebug() << "  File size (MiB):\t" << dbSize.actualSize / (1024.0 * 1024) //
+                 << "\n  Used:         \t" << dbSize.expectedSize / (1024.0 * 1024) //
+                 << "\n  PostingDB:    \t" << dbSize.postingDb / (1024.0 * 1024) //
+                 << "\n  PositionDB:   \t" << dbSize.positionDb / (1024.0 * 1024) //
+                 << "\n  DocData:      \t" << dbSize.docData / (1024.0 * 1024);
     }
     printIOUsage();
 
