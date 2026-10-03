@@ -227,9 +227,9 @@ bool BasicIndexingJob::index()
     TermGenerator tg(doc);
     tg.indexFileNameText(QFile::decodeName(fileName));
     if (statBuf.st_size == 0) {
-        tg.indexText(QStringLiteral("application/x-zerosize"), QByteArray("M"));
+        tg.indexMimetype(QStringLiteral("application/x-zerosize"));
     } else {
-        tg.indexText(m_mimetype, QByteArray("M"));
+        tg.indexMimetype(m_mimetype);
     }
 
     // (Content) Modification time, Metadata (e.g. XAttr) change time

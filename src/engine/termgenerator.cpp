@@ -132,6 +132,23 @@ void TermGenerator::indexFileNameText(const QString& text)
     }
 }
 
+void TermGenerator::indexMimetype(const QString &text)
+{
+    const QByteArray prefix = QByteArrayLiteral("M");
+    const QByteArrayList terms = termList(text);
+    if (terms.size() == 1) {
+        QByteArray finalArr = prefix + terms[0];
+        m_doc.addTerm(finalArr);
+        return;
+    }
+    for (const QByteArray &term : terms) {
+        QByteArray finalArr = prefix + term;
+        m_doc.addPositionTerm(finalArr, m_position);
+        m_position++;
+    }
+    m_position++;
+}
+
 void TermGenerator::indexXattrText(const QString& text, const QByteArray& prefix)
 {
     const QByteArrayList terms = termList(text);
