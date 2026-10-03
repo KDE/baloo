@@ -38,13 +38,6 @@ void Document::addXattrTerm(const QByteArray& term)
     m_xattrTerms[term];
 }
 
-void Document::addFileNamePositionTerm(const QByteArray& term, int position)
-{
-    Q_ASSERT(!term.isEmpty());
-    TermData& td = m_fileNameTerms[term];
-    td.positions.append(position);
-}
-
 void Document::addFileNameTerm(const QByteArray& term)
 {
     Q_ASSERT(!term.isEmpty());

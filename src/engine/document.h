@@ -39,7 +39,6 @@ public:
     void addXattrPositionTerm(const QByteArray& term, int position = 0);
 
     void addFileNameTerm(const QByteArray& term);
-    void addFileNamePositionTerm(const QByteArray& term, int position = 0);
 
     quint64 id() const;
     void setId(quint64 id);
