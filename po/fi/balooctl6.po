@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-04-26 00:39+0000\n"
-"PO-Revision-Date: 2026-03-13 13:37+0200\n"
+"PO-Revision-Date: 2026-08-26 12:14+0300\n"
 "Last-Translator: Tommi Nieminen <translator@legisign.org>\n"
 "Language-Team: Finnish <kde-i18n-doc@kde.org>\n"
 "Language: fi\n"
@@ -331,51 +331,43 @@ msgstr "muoto"
 #: monitorcommand.cpp:28
 msgctxt "File index suceeded"
 msgid "Ok"
-msgstr ""
+msgstr "OK"
 
 #: monitorcommand.cpp:29
-#, fuzzy
-#| msgid "File ignored"
 msgctxt "File index skipped"
 msgid "File path ignored"
-msgstr "Sivuutettiin tiedosto"
+msgstr "Tiedoston sijainti ohitetaan"
 
 #: monitorcommand.cpp:30
-#, fuzzy
-#| msgid "File ignored"
 msgctxt "File index skipped"
 msgid "File type ignored"
-msgstr "Sivuutettiin tiedosto"
+msgstr "Tiedostotyyppi ohitetaan"
 
 #: monitorcommand.cpp:31
 msgctxt "File index skipped"
 msgid "File type not supported"
-msgstr ""
+msgstr "Tiedostotyyppiä ei tueta"
 
 #: monitorcommand.cpp:32
-#, fuzzy
-#| msgid "File ignored"
 msgctxt "File index skipped"
 msgid "File too large"
-msgstr "Sivuutettiin tiedosto"
+msgstr "Tiedosto on liian iso"
 
 #: monitorcommand.cpp:33
-#, fuzzy
-#| msgid "File ignored"
 msgctxt "File index failed"
 msgid "File not found"
-msgstr "Sivuutettiin tiedosto"
+msgstr "Tiedostoa ei löydy"
 
 #: monitorcommand.cpp:34
 msgctxt "File index failed"
 msgid "Failed to extract metadata/content"
-msgstr ""
+msgstr "Metatietoa tai sisältöä ei voitu purkaa"
 
 #: monitorcommand.cpp:47
 #, kde-format
 msgctxt "Unknown index result code"
 msgid "<unknown> [%1]"
-msgstr ""
+msgstr "<tuntematon> [%1]"
 
 #: monitorcommand.cpp:87
 #, kde-format
@@ -404,12 +396,10 @@ msgid "Indexing: %1"
 msgstr "Indeksoidaan: %1"
 
 #: monitorcommand.cpp:158
-#, fuzzy, kde-format
-#| msgctxt "bullet list item with output format"
-#| msgid "- %1\n"
+#, kde-format
 msgctxt "index result"
 msgid ": %1\n"
-msgstr "– %1\n"
+msgstr ": %1\n"
 
 #: monitorcommand.h:32
 #, kde-format
