@@ -19,7 +19,7 @@ const QJsonObject propertyMapToJson(const KFileMetaData::PropertyMultiMap& prope
 
     while (it != properties.cend()) {
         auto property = it.key();
-        QString keyString = QString::number(static_cast<int>(property));
+        QString keyString = QString::number(static_cast<int>(property), 10);
 
         auto rangeEnd = properties.upperBound(property);
 
@@ -64,23 +64,26 @@ const KFileMetaData::PropertyMultiMap jsonToPropertyMap(const QJsonObject& prope
 {
     KFileMetaData::PropertyMultiMap propertyMap;
 
-    auto it = properties.begin();
-    while (it != properties.end()) {
-        int propNum = it.key().toInt();
+    for (auto [key, value] : properties.asKeyValueRange()) {
+        bool isInt = true;
+        int propNum = key.toString().toInt(&isInt, 10);
+        if (!isInt) {
+            continue;
+        }
+
         auto prop = static_cast<KFileMetaData::Property::Property>(propNum);
 
-        if (it.value().isArray()) {
-            const auto values = it.value().toArray();
+        if (value.isArray()) {
+            const auto values = value.toArray();
             for (const auto val : values) {
                 propertyMap.insert(prop, val.toVariant());
             }
 
-        } else if (it.value().isDouble()) {
-            propertyMap.insert(prop, it.value().toDouble());
+        } else if (value.isDouble()) {
+            propertyMap.insert(prop, value.toDouble());
         } else {
-            propertyMap.insert(prop, it.value().toString());
+            propertyMap.insert(prop, value.toString());
         }
-        ++it;
     }
 
     return propertyMap;
