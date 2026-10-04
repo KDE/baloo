@@ -84,6 +84,7 @@ int main(int argc, char* argv[])
     QTextStream stream(stdout);
 
     bool useInodes = parser.isSet(QStringLiteral("i"));
+    bool showInternal = parser.isSet(QStringLiteral("x"));
     quint32 devId;
     if (useInodes) {
         bool ok;
@@ -205,10 +206,14 @@ int main(int argc, char* argv[])
             }
 
             KFileMetaData::PropertyInfo pi(it.key());
-            stream << "\t\t" << pi.displayName() << ": " << str << '\n';
+            if (showInternal) {
+                stream << "\t\t[" << it.key() << "\t" << pi.name() << "]:\t" << pi.displayName() << ": " << str << '\n';
+            } else {
+                stream << "\t\t" << pi.displayName() << ": " << str << '\n';
+            }
         }
 
-        if (parser.isSet(QStringLiteral("x"))) {
+        if (showInternal) {
             QVector<QByteArray> terms = tr.documentTerms(fid);
             QVector<QByteArray> fileNameTerms = tr.documentFileNameTerms(fid);
             QVector<QByteArray> xAttrTerms = tr.documentXattrTerms(fid);
