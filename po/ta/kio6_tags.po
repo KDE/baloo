@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:49+0000\n"
+"POT-Creation-Date: 2026-10-04 00:41+0000\n"
 "PO-Revision-Date: 2023-05-21 14:07+0530\n"
 "Last-Translator: Kishore G <kishore96@gmail.com>\n"
 "Language-Team: Tamil <kde-i18n-doc@kde.org>\n"
@@ -22,19 +22,19 @@ msgstr ""
 msgid "File %1 already has tag %2"
 msgstr "%1 என்ற கொப்புக்கு %2 என்ற குறிச்சொல் ஏற்கனவே உள்ளது"
 
-#: kio_tags.cpp:298
+#: kio_tags.cpp:299
 #, kde-format
 msgctxt "This is a noun"
 msgid "Tag"
 msgstr "குறிச்சொல்"
 
-#: kio_tags.cpp:304
+#: kio_tags.cpp:305
 #, kde-format
 msgctxt "This is a noun"
 msgid "Tag Fragment"
 msgstr "குறிச்சொல்லின் பகுதி"
 
-#: kio_tags.cpp:316 kio_tags.cpp:317
+#: kio_tags.cpp:317 kio_tags.cpp:318
 #, kde-format
 msgid "All Tags"
 msgstr "அனைத்து குறிச்சொற்கள்"

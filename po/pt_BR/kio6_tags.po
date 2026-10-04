@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kio_tags\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:49+0000\n"
+"POT-Creation-Date: 2026-10-04 00:41+0000\n"
 "PO-Revision-Date: 2023-05-31 14:56-0300\n"
 "Last-Translator: Luiz Fernando Ranghetti <elchevive@opensuse.org>\n"
 "Language-Team: Brazilian Portuguese <kde-i18n-pt_BR@kde.org>\n"
@@ -24,19 +24,19 @@ msgstr ""
 msgid "File %1 already has tag %2"
 msgstr "O arquivo %1 já tem a etiqueta %2"
 
-#: kio_tags.cpp:298
+#: kio_tags.cpp:299
 #, kde-format
 msgctxt "This is a noun"
 msgid "Tag"
 msgstr "Etiqueta"
 
-#: kio_tags.cpp:304
+#: kio_tags.cpp:305
 #, kde-format
 msgctxt "This is a noun"
 msgid "Tag Fragment"
 msgstr "Fragmento da etiqueta"
 
-#: kio_tags.cpp:316 kio_tags.cpp:317
+#: kio_tags.cpp:317 kio_tags.cpp:318
 #, kde-format
 msgid "All Tags"
 msgstr "Todas as etiquetas"

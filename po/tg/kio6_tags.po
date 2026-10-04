@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:49+0000\n"
+"POT-Creation-Date: 2026-10-04 00:41+0000\n"
 "PO-Revision-Date: 2019-08-16 19:03+0500\n"
 "Last-Translator: Victor Ibragimov <victor.ibragimov@gmail.com>\n"
 "Language-Team: English <kde-i18n-doc@kde.org>\n"
@@ -22,21 +22,21 @@ msgstr ""
 msgid "File %1 already has tag %2"
 msgstr "Файли %1 аллакай дорои барчаспи %2 мебошад"
 
-#: kio_tags.cpp:298
+#: kio_tags.cpp:299
 #, fuzzy, kde-format
 #| msgid "Tag"
 msgctxt "This is a noun"
 msgid "Tag"
 msgstr "Барчасп"
 
-#: kio_tags.cpp:304
+#: kio_tags.cpp:305
 #, fuzzy, kde-format
 #| msgid "Tag Fragment"
 msgctxt "This is a noun"
 msgid "Tag Fragment"
 msgstr "Қисмати барчасп"
 
-#: kio_tags.cpp:316 kio_tags.cpp:317
+#: kio_tags.cpp:317 kio_tags.cpp:318
 #, kde-format
 msgid "All Tags"
 msgstr "Ҳамаи барчаспҳо"

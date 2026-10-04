@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:49+0000\n"
+"POT-Creation-Date: 2026-10-04 00:41+0000\n"
 "PO-Revision-Date: 2018-04-03 06:29+0700\n"
 "Last-Translator: Wantoyo <wantoyek@gmail.com>\n"
 "Language-Team: Indonesian <kde-i18n-doc@kde.org>\n"
@@ -21,21 +21,21 @@ msgstr ""
 msgid "File %1 already has tag %2"
 msgstr "File %1 sudah ter-tag %2"
 
-#: kio_tags.cpp:298
+#: kio_tags.cpp:299
 #, fuzzy, kde-format
 #| msgid "Tag"
 msgctxt "This is a noun"
 msgid "Tag"
 msgstr "Tag"
 
-#: kio_tags.cpp:304
+#: kio_tags.cpp:305
 #, fuzzy, kde-format
 #| msgid "Tag Fragment"
 msgctxt "This is a noun"
 msgid "Tag Fragment"
 msgstr "Fragmen Tag"
 
-#: kio_tags.cpp:316 kio_tags.cpp:317
+#: kio_tags.cpp:317 kio_tags.cpp:318
 #, kde-format
 msgid "All Tags"
 msgstr "Semua Tag"

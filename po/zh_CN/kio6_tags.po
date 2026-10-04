@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kdeorg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:49+0000\n"
+"POT-Creation-Date: 2026-10-04 00:41+0000\n"
 "PO-Revision-Date: 2024-04-22 15:58\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
@@ -22,19 +22,19 @@ msgstr ""
 msgid "File %1 already has tag %2"
 msgstr "文件 %1 已经分配标签 %2"
 
-#: kio_tags.cpp:298
+#: kio_tags.cpp:299
 #, kde-format
 msgctxt "This is a noun"
 msgid "Tag"
 msgstr "标签"
 
-#: kio_tags.cpp:304
+#: kio_tags.cpp:305
 #, kde-format
 msgctxt "This is a noun"
 msgid "Tag Fragment"
 msgstr "标签片段"
 
-#: kio_tags.cpp:316 kio_tags.cpp:317
+#: kio_tags.cpp:317 kio_tags.cpp:318
 #, kde-format
 msgid "All Tags"
 msgstr "所有标签"

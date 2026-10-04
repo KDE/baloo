@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:49+0000\n"
+"POT-Creation-Date: 2026-10-04 00:41+0000\n"
 "PO-Revision-Date: 2024-12-13 19:10+0530\n"
 "Last-Translator: Kali <EMAIL@ADDRESS>\n"
 "Language-Team: Sanskrit <kde-i18n-doc@kde.org>\n"
@@ -22,19 +22,19 @@ msgstr ""
 msgid "File %1 already has tag %2"
 msgstr "%1 सञ्चिकायां पूर्वमेव %2 इति टैग् अस्ति"
 
-#: kio_tags.cpp:298
+#: kio_tags.cpp:299
 #, kde-format
 msgctxt "This is a noun"
 msgid "Tag"
 msgstr "सूचकपत्त्र"
 
-#: kio_tags.cpp:304
+#: kio_tags.cpp:305
 #, kde-format
 msgctxt "This is a noun"
 msgid "Tag Fragment"
 msgstr "टैग खण्ड"
 
-#: kio_tags.cpp:316 kio_tags.cpp:317
+#: kio_tags.cpp:317 kio_tags.cpp:318
 #, kde-format
 msgid "All Tags"
 msgstr "सर्वे टैग्स्"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: l 10n\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:49+0000\n"
+"POT-Creation-Date: 2026-10-04 00:41+0000\n"
 "PO-Revision-Date: 2020-03-09 12:43+0200\n"
 "Last-Translator: Moo\n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 "%100>=20) ? 1 : n%10==0 || (n%100>10 && n%100<20) ? 2 : 3);\n"
 "X-Generator: Poedit 2.3\n"
 
-#: kio_timeline.cpp:77
+#: kio_timeline.cpp:87
 #, kde-format
 msgctxt ""
 "Month and year used in a tree above the actual days. Have a look at https://"
@@ -30,12 +30,12 @@ msgctxt ""
 msgid "MMMM yyyy"
 msgstr "yyyy MMMM"
 
-#: kio_timeline.cpp:114
+#: kio_timeline.cpp:124
 #, kde-format
 msgid "Today"
 msgstr "Šiandien"
 
-#: kio_timeline.cpp:115 kio_timeline.cpp:192
+#: kio_timeline.cpp:125 kio_timeline.cpp:202
 #, kde-format
 msgid "Calendar"
 msgstr "Kalendorius"

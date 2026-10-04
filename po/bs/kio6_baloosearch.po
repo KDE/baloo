@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: $2\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:49+0000\n"
+"POT-Creation-Date: 2026-10-04 00:41+0000\n"
 "PO-Revision-Date: 2014-12-25 23:27+0000\n"
 "Last-Translator: Samir Ribić <Unknown>\n"
 "Language-Team: none\n"
@@ -21,7 +21,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 
-#: kio_search.cpp:48
+#: kio_search.cpp:49
 #, kde-format
 msgid "Search Folder"
 msgstr "Direktorij za pretragu"

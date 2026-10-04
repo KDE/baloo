@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kdeorg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:49+0000\n"
+"POT-Creation-Date: 2026-10-04 00:41+0000\n"
 "PO-Revision-Date: 2024-04-22 15:58\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
@@ -17,7 +17,7 @@ msgstr ""
 "X-Crowdin-File: /kf6-trunk/messages/baloo/kio6_baloosearch.pot\n"
 "X-Crowdin-File-ID: 42569\n"
 
-#: kio_search.cpp:48
+#: kio_search.cpp:49
 #, kde-format
 msgid "Search Folder"
 msgstr "搜索文件夹"

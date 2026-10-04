@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:49+0000\n"
+"POT-Creation-Date: 2026-10-04 00:41+0000\n"
 "PO-Revision-Date: 2024-01-24 19:09+0200\n"
 "Last-Translator: Toms Trasuns <toms.trasuns@posteo.net>\n"
 "Language-Team: Latvian <kde-i18n-doc@kde.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "2);\n"
 "X-Generator: Lokalize 23.08.4\n"
 
-#: kio_timeline.cpp:77
+#: kio_timeline.cpp:87
 #, kde-format
 msgctxt ""
 "Month and year used in a tree above the actual days. Have a look at https://"
@@ -28,12 +28,12 @@ msgctxt ""
 msgid "MMMM yyyy"
 msgstr "MMMM yyyy"
 
-#: kio_timeline.cpp:114
+#: kio_timeline.cpp:124
 #, kde-format
 msgid "Today"
 msgstr "Šodien"
 
-#: kio_timeline.cpp:115 kio_timeline.cpp:192
+#: kio_timeline.cpp:125 kio_timeline.cpp:202
 #, kde-format
 msgid "Calendar"
 msgstr "Kalendārs"

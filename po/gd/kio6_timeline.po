@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:49+0000\n"
+"POT-Creation-Date: 2026-10-04 00:41+0000\n"
 "PO-Revision-Date: 2015-11-04 15:13+0000\n"
 "Last-Translator: Michael Bauer <fios@akerbeltz.org>\n"
 "Language-Team: Fòram na Gàidhlig\n"
@@ -19,7 +19,7 @@ msgstr ""
 "X-Generator: Poedit 1.8.4\n"
 "X-Project-Style: kde\n"
 
-#: kio_timeline.cpp:77
+#: kio_timeline.cpp:87
 #, fuzzy, kde-format
 #| msgctxt ""
 #| "Month and year used in a tree above the actual days. Have a look at "
@@ -35,12 +35,12 @@ msgctxt ""
 msgid "MMMM yyyy"
 msgstr "MMMM yyyy"
 
-#: kio_timeline.cpp:114
+#: kio_timeline.cpp:124
 #, kde-format
 msgid "Today"
 msgstr "An-diugh"
 
-#: kio_timeline.cpp:115 kio_timeline.cpp:192
+#: kio_timeline.cpp:125 kio_timeline.cpp:202
 #, kde-format
 msgid "Calendar"
 msgstr "Am mìosachan"

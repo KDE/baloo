@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:49+0000\n"
+"POT-Creation-Date: 2026-10-04 00:41+0000\n"
 "PO-Revision-Date: 2021-07-17 23:33+0400\n"
 "Last-Translator: Zayed Al-Saidi <zayed.alsaidi@gmail.com>\n"
 "Language-Team: ar\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
 
-#: kio_timeline.cpp:77
+#: kio_timeline.cpp:87
 #, kde-format
 msgctxt ""
 "Month and year used in a tree above the actual days. Have a look at https://"
@@ -28,12 +28,12 @@ msgctxt ""
 msgid "MMMM yyyy"
 msgstr "MMMM yyyy"
 
-#: kio_timeline.cpp:114
+#: kio_timeline.cpp:124
 #, kde-format
 msgid "Today"
 msgstr "اليوم"
 
-#: kio_timeline.cpp:115 kio_timeline.cpp:192
+#: kio_timeline.cpp:125 kio_timeline.cpp:202
 #, kde-format
 msgid "Calendar"
 msgstr "التقويم"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:49+0000\n"
+"POT-Creation-Date: 2026-10-04 00:41+0000\n"
 "PO-Revision-Date: 2020-02-26 21:13+0200\n"
 "Last-Translator: Marek Laane <qiilaq69@gmail.com>\n"
 "Language-Team: Estonian <kde-et@lists.linux.ee>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Lokalize 19.08.1\n"
 
-#: kio_timeline.cpp:77
+#: kio_timeline.cpp:87
 #, kde-format
 msgctxt ""
 "Month and year used in a tree above the actual days. Have a look at https://"
@@ -27,12 +27,12 @@ msgctxt ""
 msgid "MMMM yyyy"
 msgstr "MMMM yyyy"
 
-#: kio_timeline.cpp:114
+#: kio_timeline.cpp:124
 #, kde-format
 msgid "Today"
 msgstr "Täna"
 
-#: kio_timeline.cpp:115 kio_timeline.cpp:192
+#: kio_timeline.cpp:125 kio_timeline.cpp:202
 #, kde-format
 msgid "Calendar"
 msgstr "Kalender"

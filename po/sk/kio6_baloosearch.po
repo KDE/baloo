@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kio_baloosearch\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:49+0000\n"
+"POT-Creation-Date: 2026-10-04 00:41+0000\n"
 "PO-Revision-Date: 2014-09-10 15:19+0200\n"
 "Last-Translator: Roman Paholik <wizzardsk@gmail.com>\n"
 "Language-Team: Slovak <kde-sk@linux.sk>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "X-Generator: Lokalize 1.5\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: kio_search.cpp:48
+#: kio_search.cpp:49
 #, kde-format
 msgid "Search Folder"
 msgstr "Priečinok hľadania"
