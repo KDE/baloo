@@ -13,11 +13,13 @@
 #include <QElapsedTimer>
 
 #include <KAboutData>
+#include <KFileMetaData/PropertyInfo>
 #include <KFileMetaData/TypeInfo>
 #include <KLocalizedString>
 
 #include "query.h"
 
+#include <array>
 #include <iostream>
 
 using namespace Qt::StringLiterals;
@@ -35,6 +37,47 @@ void showKFMAllTypes(int exitCode)
     for (const auto &name : allNames) {
         const auto &typeInfo = KFileMetaData::TypeInfo::fromName(name);
         output.append(u"%1 %2"_s.arg(name, -16).arg(typeInfo.displayName()));
+    }
+    output.append(u""_s);
+
+    QCommandLineParser::showMessageAndExit( //
+        exitCode == 0 ? QCommandLineParser::MessageType::Information : QCommandLineParser::MessageType::Error,
+        output.join(u'\n'),
+        exitCode);
+}
+
+void showAllProperties(int exitCode)
+{
+    const auto allNames = KFileMetaData::PropertyInfo::allNames();
+    constexpr std::array internalProperties = {
+        std::pair{u"fileName"_sv, u"File name"_sv},
+        std::pair{u"content"_sv, u"File textual content"_sv},
+        std::pair{u"type"_sv, u"File type class (see --listTypes)"_sv},
+        std::pair{u"mimetype"_sv, u"File mimetype"_sv},
+        std::pair{u"modified"_sv, u"File modification time"_sv},
+        std::pair{u"tags"_sv, u"File XAttr tags"_sv},
+        std::pair{u"rating"_sv, u"File XAttr rating"_sv},
+        std::pair{u"usercomment"_sv, u"File XAttr comment"_sv},
+        std::pair{u"includefolder"_sv, u"File (indirect) parent directory"_sv},
+    };
+
+    QStringList output;
+    output.reserve(6 + allNames.size() + internalProperties.size());
+    const auto pheader = i18nc("'listProperties' table header", "Metadata Property Name                 Description");
+    output.append(pheader);
+    output.append(QString(pheader.size(), u'='));
+
+    for (const auto &name : allNames) {
+        const auto &propertyInfo = KFileMetaData::PropertyInfo::fromName(name);
+        output.append(u"%1 %2"_s.arg(name, -38).arg(propertyInfo.displayName()));
+    }
+    output.append(u""_s);
+
+    const auto iheader = i18nc("'listProperties' table header", "File Property Name                     Description");
+    output.append(iheader);
+    output.append(QString(iheader.size(), u'='));
+    for (const auto &property : internalProperties) {
+        output.append(u"%1 %2"_s.arg(property.first, -38).arg(property.second));
     }
     output.append(u""_s);
 
@@ -69,6 +112,8 @@ int main(int argc, char* argv[])
                                         i18nc("option value name", "typeString")));
     parser.addOption(QCommandLineOption(u"listTypes"_s, //
                                         i18n("Show supported <typeString> values")));
+    parser.addOption(QCommandLineOption(u"listProperties"_s, //
+                                        i18n("Show property names supported in query.")));
     parser.addOption(QCommandLineOption({u"d"_s, u"directory"_s}, //
                                         i18n("Limit search to specified directory"),
                                         i18nc("option value name", "directory")));
@@ -98,6 +143,10 @@ int main(int argc, char* argv[])
 
     if (parser.isSet(u"listTypes"_s)) {
         showKFMAllTypes(0);
+    }
+
+    if (parser.isSet(u"listProperties"_s)) {
+        showAllProperties(0);
     }
 
     QStringList args = parser.positionalArguments();
