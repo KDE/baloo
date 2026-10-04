@@ -13,6 +13,7 @@
 #include <QElapsedTimer>
 
 #include <KAboutData>
+#include <KFileMetaData/TypeInfo>
 #include <KLocalizedString>
 
 #include "query.h"
@@ -20,6 +21,28 @@
 #include <iostream>
 
 using namespace Qt::StringLiterals;
+
+void showKFMAllTypes(int exitCode)
+{
+    const auto allNames = KFileMetaData::TypeInfo::allNames();
+
+    QStringList output;
+    output.reserve(3 + allNames.size());
+    const auto header = i18nc("'listTypes' table header", "<typeString>     Description");
+    output.append(header);
+    output.append(QString(header.size(), u'='));
+
+    for (const auto &name : allNames) {
+        const auto &typeInfo = KFileMetaData::TypeInfo::fromName(name);
+        output.append(u"%1 %2"_s.arg(name, -16).arg(typeInfo.displayName()));
+    }
+    output.append(u""_s);
+
+    QCommandLineParser::showMessageAndExit( //
+        exitCode == 0 ? QCommandLineParser::MessageType::Information : QCommandLineParser::MessageType::Error,
+        output.join(u'\n'),
+        exitCode);
+}
 
 int main(int argc, char* argv[])
 {
@@ -44,6 +67,8 @@ int main(int argc, char* argv[])
     parser.addOption(QCommandLineOption({u"t"_s, u"type"_s}, //
                                         i18n("Type of data to be searched"),
                                         i18nc("option value name", "typeString")));
+    parser.addOption(QCommandLineOption(u"listTypes"_s, //
+                                        i18n("Show supported <typeString> values")));
     parser.addOption(QCommandLineOption({u"d"_s, u"directory"_s}, //
                                         i18n("Limit search to specified directory"),
                                         i18nc("option value name", "directory")));
@@ -63,6 +88,10 @@ int main(int argc, char* argv[])
     QString typeStr;
     bool showDocumentId = parser.isSet(u"id"_s);
 
+    if (parser.isSet(u"listTypes"_s)) {
+        showKFMAllTypes(0);
+    }
+
     QStringList args = parser.positionalArguments();
     if (args.isEmpty()) {
         parser.showHelp(1);
@@ -70,6 +99,11 @@ int main(int argc, char* argv[])
 
     if (parser.isSet(u"type"_s)) {
         typeStr = parser.value(u"type"_s);
+        const auto typeinfo = KFileMetaData::TypeInfo::fromName(typeStr);
+        if (typeinfo.type() == KFileMetaData::Type::Empty) {
+            std::cerr << qPrintable(i18n("ERROR: Invalid \"type\" value, supported values:\n")) << std::endl;
+            showKFMAllTypes(1);
+        }
     }
     if (parser.isSet(u"limit"_s)) {
         queryLimit = parser.value(u"limit"_s).toInt();
