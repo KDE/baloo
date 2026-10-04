@@ -78,7 +78,15 @@ int main(int argc, char* argv[])
                                         i18n("Sorting criteria"),
                                         u"auto|time|none"_s,
                                         u"auto"_s));
-    parser.addPositionalArgument(i18n("query"), i18n("List of words to query for"));
+    parser.addPositionalArgument( //
+        i18n("query [(|AND|OR) query ...]"),
+        i18n("List of words to query for.\n"
+             "Each query may be single value, or a value prefixed with a property name.\n"
+             "Queries may be nested, and grouped with parentheses.\n\n\n"
+             "Example:\n"
+             "baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR filename:jpg)'"
+             ""));
+    parser.setApplicationDescription(aboutData.shortDescription());
     parser.addHelpOption();
     parser.addVersionOption();
     parser.process(app);
