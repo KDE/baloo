@@ -74,31 +74,31 @@ void ModifiedFileIndexer::run()
             continue;
         }
 
-        QString mimetype;
-        if (fileInfo.isDir()) {
+        if (!cTimeChanged && fileInfo.isDir()) {
             // The folder ctime changes when the folder is created, when the folder is
             // renamed, or when the xattrs (tags, comments, ...) change
-            if (!cTimeChanged) {
-                continue;
-            }
-            mimetype = QStringLiteral("inode/directory");
-
-        } else {
-            mimetype = mimeDb.mimeTypeForFile(filePath, QMimeDatabase::MatchExtension).name();
+            // mTime only changes (added/removed files ...) do not matter here
+            continue;
         }
 
-        // Only mTime changed
-        if (!cTimeChanged) {
+        if (!cTimeChanged && (level == BasicIndexingJob::MarkForContentIndexing)) {
+            // Defer any content only changes to the content indexer
+            // This will update the DocumentTerms for the content, as well as any
+            // derived terms like Type or mimetype
             Document doc;
             doc.setId(fileId);
             doc.setMTime(fileInfo.lastModified().toSecsSinceEpoch());
             doc.setCTime(fileInfo.metadataChangeTime().toSecsSinceEpoch());
-            if (level == BasicIndexingJob::MarkForContentIndexing) {
-                doc.setContentIndexing(true);
-            }
-
+            doc.setContentIndexing(true);
             tr.replaceDocument(doc, DocumentTime);
             continue;
+        }
+
+        QString mimetype;
+        if (fileInfo.isDir()) {
+            mimetype = QStringLiteral("inode/directory");
+        } else {
+            mimetype = mimeDb.mimeTypeForFile(filePath, QMimeDatabase::MatchExtension).name();
         }
 
         BasicIndexingJob job(filePath, mimetype, level);
@@ -109,7 +109,11 @@ void ModifiedFileIndexer::run()
         // We can get modified events for files which do not yet exist in the database
         // because Baloo was not running and missed the creation events
         if (isKnownFile && (job.document().id() == fileId)) {
-            tr.replaceDocument(job.document(), XAttrTerms | DocumentTime | FileNameTerms | DocumentUrl);
+            DocumentOperations ops = XAttrTerms | DocumentTime | FileNameTerms | DocumentUrl;
+            if (level != BasicIndexingJob::MarkForContentIndexing) {
+                ops |= DocumentTerms | DocumentData;
+            }
+            tr.replaceDocument(job.document(), ops);
         } else {
             tr.addDocument(job.document());
         }
