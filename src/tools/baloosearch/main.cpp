@@ -19,6 +19,8 @@
 
 #include <iostream>
 
+using namespace Qt::StringLiterals;
+
 int main(int argc, char* argv[])
 {
     QCoreApplication app(argc, argv);
@@ -33,22 +35,24 @@ int main(int argc, char* argv[])
     KAboutData::setApplicationData(aboutData);
 
     QCommandLineParser parser;
-    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("l") << QStringLiteral("limit"),
+    parser.addOption(QCommandLineOption({u"l"_s, u"limit"_s}, //
                                         i18n("The maximum number of results"),
-                                        i18n("limit")));
-    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("o") << QStringLiteral("offset"),
+                                        i18nc("option value name", "limit")));
+    parser.addOption(QCommandLineOption({u"o"_s, u"offset"_s}, //
                                         i18n("Offset from which to start the search"),
-                                        i18n("offset")));
-    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("t") << QStringLiteral("type"),
+                                        i18nc("option value name", "offset")));
+    parser.addOption(QCommandLineOption({u"t"_s, u"type"_s}, //
                                         i18n("Type of data to be searched"),
-                                        i18n("typeStr")));
-    parser.addOption(QCommandLineOption(QStringList() << QStringLiteral("d") << QStringLiteral("directory"),
+                                        i18nc("option value name", "typeString")));
+    parser.addOption(QCommandLineOption({u"d"_s, u"directory"_s}, //
                                         i18n("Limit search to specified directory"),
-                                        i18n("directory")));
-    parser.addOption(QCommandLineOption({QStringLiteral("i"), QStringLiteral("id")},
+                                        i18nc("option value name", "directory")));
+    parser.addOption(QCommandLineOption({u"i"_s, u"id"_s}, //
                                         i18n("Show document IDs")));
-    parser.addOption(QCommandLineOption({QStringLiteral("s"), QStringLiteral("sort")},
-                                        i18n("Sorting criteria"), QStringLiteral("auto|time|none"), QStringLiteral("auto")));
+    parser.addOption(QCommandLineOption({u"s"_s, u"sort"_s}, //
+                                        i18n("Sorting criteria"),
+                                        u"auto|time|none"_s,
+                                        u"auto"_s));
     parser.addPositionalArgument(i18n("query"), i18n("List of words to query for"));
     parser.addHelpOption();
     parser.addVersionOption();
@@ -57,33 +61,33 @@ int main(int argc, char* argv[])
     int queryLimit = -1;
     int offset = 0;
     QString typeStr;
-    bool showDocumentId = parser.isSet(QStringLiteral("id"));
+    bool showDocumentId = parser.isSet(u"id"_s);
 
     QStringList args = parser.positionalArguments();
     if (args.isEmpty()) {
         parser.showHelp(1);
     }
 
-    if (parser.isSet(QStringLiteral("type"))) {
-        typeStr = parser.value(QStringLiteral("type"));
+    if (parser.isSet(u"type"_s)) {
+        typeStr = parser.value(u"type"_s);
     }
-    if (parser.isSet(QStringLiteral("limit"))) {
-        queryLimit = parser.value(QStringLiteral("limit")).toInt();
+    if (parser.isSet(u"limit"_s)) {
+        queryLimit = parser.value(u"limit"_s).toInt();
     }
-    if (parser.isSet(QStringLiteral("offset"))) {
-        offset = parser.value(QStringLiteral("offset")).toInt();
+    if (parser.isSet(u"offset"_s)) {
+        offset = parser.value(u"offset"_s).toInt();
     }
     const Baloo::Query::SortingOption orderBy = [&parser]() {
-       auto val = parser.value(QStringLiteral("sort"));
-       if (val == QStringLiteral("auto")) {
-           return Baloo::Query::SortAuto;
-       } else if (val == QStringLiteral("time")) {
-           return Baloo::Query::SortAuto;
-       } else if (val == QStringLiteral("none")) {
-           return Baloo::Query::SortNone;
-       } else {
-           parser.showHelp(1);
-       }
+        auto val = parser.value(u"sort"_s);
+        if (val == u"auto"_s) {
+            return Baloo::Query::SortAuto;
+        } else if (val == u"time"_s) {
+            return Baloo::Query::SortAuto;
+        } else if (val == u"none"_s) {
+            return Baloo::Query::SortNone;
+        } else {
+            parser.showHelp(1);
+        }
     }();
 
     QString queryStr = args.join(QLatin1Char(' '));
@@ -95,8 +99,8 @@ int main(int argc, char* argv[])
     query.setOffset(offset);
     query.setSortingOption(orderBy);
 
-    if (parser.isSet(QStringLiteral("directory"))) {
-        QString folderName = parser.value(QStringLiteral("directory"));
+    if (parser.isSet(u"directory"_s)) {
+        QString folderName = parser.value(u"directory"_s);
         const QFileInfo fi(folderName);
         if (!fi.isDir()) {
             std::cerr << qPrintable(i18n("%1 is not a valid directory", folderName)) << std::endl;
