@@ -400,9 +400,9 @@ PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term)
     if (valueType == QMetaType::Int) {
         qlonglong intVal = value.toLongLong();
 
-        if (term.comparator() == Term::Greater) {
+        if ((term.comparator() == Term::Greater) && (intVal < std::numeric_limits<qlonglong>::max())) {
             intVal++;
-        } else if (term.comparator() == Term::Less) {
+        } else if ((term.comparator() == Term::Less) && (intVal > std::numeric_limits<qlonglong>::min())) {
             intVal--;
         }
 
