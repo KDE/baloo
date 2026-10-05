@@ -52,6 +52,9 @@ void UnindexedFileIndexer::run()
                         ops |= (FileNameTerms | DocumentUrl);
                     }
                 }
+                if (it.mTimeChanged() && (level != BasicIndexingJob::MarkForContentIndexing)) {
+                    ops |= DocumentTerms | DocumentData;
+                }
                 tr.replaceDocument(job.document(), ops);
 
             } else { // New file
