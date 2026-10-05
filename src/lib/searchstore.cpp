@@ -398,22 +398,35 @@ PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term)
     // FIXME -- has to be kept in sync with the code from
     // Baloo::Result::add
     if (valueType == QMetaType::Int) {
-        qlonglong intVal = value.toLongLong();
+        bool ok = false;
+        qlonglong intVal = value.toLongLong(&ok);
+        if (!ok) {
+            qCDebug(BALOO) << "Failed to parse number" << value.toString();
+            return nullptr;
+        }
 
         if ((term.comparator() == Term::Greater) && (intVal < std::numeric_limits<qlonglong>::max())) {
             intVal++;
         } else if ((term.comparator() == Term::Less) && (intVal > std::numeric_limits<qlonglong>::min())) {
             intVal--;
         }
-
         return tr->postingCompIterator(prefix, intVal, pcom);
 
     } else if (valueType == QMetaType::Double) {
-        double dVal = value.toDouble();
+        bool ok = false;
+        if (!ok) {
+            qCDebug(BALOO) << "Failed to parse number" << value.toString();
+            return nullptr;
+        }
+        double dVal = value.toDouble(&ok);
         return tr->postingCompIterator(prefix, dVal, pcom);
 
     } else if (valueType == QMetaType::QDateTime) {
         QDateTime dt = value.toDateTime();
+        if (!dt.isValid()) {
+            qCDebug(BALOO) << "Failed to parse date/time" << value.toString();
+            return nullptr;
+        }
         const QByteArray ba = dt.toString(Qt::ISODate).toUtf8();
         return tr->postingCompIterator(prefix, ba, pcom);
 
