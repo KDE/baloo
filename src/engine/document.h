@@ -48,6 +48,9 @@ public:
     QByteArray url() const;
     void setUrl(const QByteArray& url);
 
+    QString mimetype() const;
+    void setMimetype(const QString &mimetype);
+
     /**
      * This flag is used to signify if the file needs its contents to be indexed.
      * It defaults to false
@@ -59,6 +62,7 @@ public:
     void setCTime(quint32 val) { m_cTime = val; }
 
     void setData(const QByteArray& data);
+    QByteArray data() const;
 
 private:
     quint64 m_id = 0;
@@ -77,6 +81,7 @@ private:
     quint32 m_mTime = 0; //< modification time, seconds since Epoch
     quint32 m_cTime = 0; //< inode change time, seconds since Epoch
     QByteArray m_data;
+    QString m_mimetype;
 
     friend class WriteTransaction;
     friend class TermGeneratorTest;

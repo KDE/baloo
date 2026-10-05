@@ -27,6 +27,8 @@
 #include <unistd.h>
 #include <KFileMetaData/PropertyInfo>
 
+using namespace Qt::StringLiterals;
+
 QString colorString(const QString& input, int color)
 {
     static bool isTty = isatty(fileno(stdout));
@@ -45,8 +47,11 @@ inline KFileMetaData::PropertyMultiMap variantToPropertyMultiMap(const QVariantM
     KFileMetaData::PropertyMultiMap propMap;
     QVariantMap::const_iterator it = varMap.constBegin();
     for (; it != varMap.constEnd(); ++it) {
-        int p = it.key().toInt();
-        propMap.insert(static_cast<KFileMetaData::Property::Property>(p), it.value());
+        bool ok = false;
+        int p = it.key().toInt(&ok);
+        if (ok) {
+            propMap.insert(static_cast<KFileMetaData::Property::Property>(p), it.value());
+        }
     }
     return propMap;
 }
@@ -188,6 +193,9 @@ int main(int argc, char* argv[])
 
         const QJsonDocument jdoc = QJsonDocument::fromJson(tr.documentData(fid));
         const QVariantMap varMap = jdoc.object().toVariantMap();
+        if (const auto mimetype = varMap[u"M"_s]; mimetype.isValid()) {
+            stream << "\tMimetype: " << mimetype.toString() << '\n';
+        }
         KFileMetaData::PropertyMultiMap propMap = variantToPropertyMultiMap(varMap);
         if (!propMap.isEmpty()) {
             stream << "\tCached properties:" << '\n';

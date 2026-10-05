@@ -14,6 +14,7 @@
 #include <QTemporaryDir>
 
 using namespace Baloo;
+using namespace Qt::StringLiterals;
 
 class WriteTransactionTest : public QObject
 {
@@ -70,6 +71,7 @@ void WriteTransactionTest::testAddDocument()
     doc.addXattrTerm("system");
     doc.setMTime(1);
     doc.setCTime(2);
+    doc.setMimetype(u"t/p"_s);
 
     tr.addDocument(doc);
     tr.commit();
@@ -84,6 +86,7 @@ void WriteTransactionTest::testAddDocument()
     state.docXAttrTermsDb = {{id, {"system"} }};
     state.docTimeDb = {{id, DocumentTimeDB::TimeInfo(1, 2)}};
     state.mtimeDb = {{1, id}};
+    state.docDataDb = {{id, "{\"M\":\"t/p\"}"}};
 
     DBState actualState = DBState::fromTransaction(&tr2);
     QCOMPARE(actualState, state);
