@@ -15,6 +15,7 @@
 #include "document.h"
 #include "enginequery.h"
 #include "filenamequery.h"
+#include "mimetypequery.h"
 
 #include "andpostingiterator.h"
 #include "orpostingiterator.h"
@@ -29,11 +30,14 @@
 
 #include <QFile>
 #include <QFileInfo>
+#include <QJsonDocument>
+#include <QJsonValue>
 
 #include <algorithm>
 #include <iostream>
 
 using namespace Baloo;
+using namespace Qt::StringLiterals;
 
 Transaction::Transaction(const Database& db, Transaction::TransactionType type)
     : m_dbis(db.m_dbis)
@@ -358,6 +362,88 @@ PostingIterator::Ptr Transaction::postingIterator(const EngineQuery &query) cons
         return std::make_unique<PhraseAndIterator>(std::move(vec));
     }
     return nullptr;
+}
+
+PostingIterator::Ptr Transaction::postingIterator(const MimetypeQuery &query) const
+{
+    PostingDB postingDb(m_dbis.postingDbi, m_txn);
+
+    const auto &terms = query.m_terms;
+    if (terms.empty()) {
+        return nullptr;
+    }
+    if (terms.size() == 1) {
+        if (query.m_expandLast) {
+            return postingDb.prefixIter('M' + terms[0]);
+        } else {
+            return postingDb.iter('M' + terms[0]);
+        }
+    }
+
+    PostingList out = postingDb.get('M' + terms[0]);
+    // qCDebug(ENGINE) << terms[0] << out;
+    if (out.empty()) {
+        return nullptr;
+    }
+
+    PostingList vec1;
+
+    for (const auto &term : terms.sliced(1)) {
+        auto vec2 = postingDb.get('M' + term);
+
+        std::swap(vec1, out);
+        out.resize(0);
+        out.reserve(std::min(vec1.size(), vec2.size()));
+        std::ranges::set_intersection(vec1, vec2, std::back_inserter(out));
+        // qCDebug(ENGINE) << term << vec2 << "->" << out;
+
+        if (out.empty()) {
+            return nullptr;
+        }
+    }
+
+    // Remove "deferred" when DB is bumped and Mimetype is always in the DocData
+    PostingList deferred;
+    deferred.reserve(out.size());
+
+    DocumentDataDB docDataDb(m_dbis.docDataDbi, m_txn);
+    auto removed = std::ranges::remove_if(out, [&docDataDb, &query, &deferred](auto id) {
+        const auto data = docDataDb.get(id);
+        const auto type = data.isEmpty() ? QString{} : [&data]() {
+            const QJsonDocument jdoc = QJsonDocument::fromJson(data);
+            return jdoc[u"M"_s].toString();
+        }();
+        if (!type.isEmpty()) {
+            bool match = query.match(type);
+            qCDebug(ENGINE) << id << data << type << "<=>" << query.m_terms << "=>" << match;
+            return !match;
+        } else {
+            deferred.emplace_back(id);
+            return true;
+        }
+    });
+    out.erase(removed.begin(), removed.end());
+
+    if (!deferred.isEmpty()) {
+        PositionDB positionDb(m_dbis.positionDBi, m_txn);
+        std::vector<std::unique_ptr<VectorPositionInfoIterator>> vec;
+        vec.reserve(terms.size());
+        for (const auto &term : terms) {
+            auto positionInfos{positionDb.get('M' + term)};
+            positionInfos.removeIf([&deferred](const auto info) {
+                return !deferred.contains(info.docId);
+            });
+            vec.push_back(std::make_unique<VectorPositionInfoIterator>(positionInfos));
+        }
+        deferred.clear();
+        PhraseAndIterator phraseIter{std::move(vec)};
+        while (const auto id = phraseIter.next()) {
+            out.append(id);
+        }
+        std::ranges::sort(out);
+    }
+
+    return std::make_unique<VectorPostingIterator>(std::move(out));
 }
 
 PostingIterator::Ptr Transaction::postingIterator(const FilenameQuery &query) const
