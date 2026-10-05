@@ -15,6 +15,8 @@
 #include <KFileMetaData/PropertyInfo>
 #include <KFileMetaData/TypeInfo>
 
+using namespace Qt::StringLiterals;
+
 namespace Baloo
 {
 
@@ -98,13 +100,15 @@ void Result::addType(KFileMetaData::Type::Type type)
 
 void Result::finish()
 {
-    if (m_map.isEmpty()) {
-        m_doc.setData(QByteArray());
-        return;
-    }
-    QJsonObject jo = Baloo::propertyMapToJson(m_map);
     QJsonDocument jdoc;
-    jdoc.setObject(jo);
+    if (m_map.isEmpty()) {
+        QJsonObject mo{{u"M"_s, m_doc.mimetype()}};
+        jdoc.setObject(mo);
+    } else {
+        QJsonObject jo = Baloo::propertyMapToJson(m_map);
+        jo.insert(u"M"_s, m_doc.mimetype());
+        jdoc.setObject(jo);
+    }
     m_doc.setData(jdoc.toJson(QJsonDocument::JsonFormat::Compact));
 }
 

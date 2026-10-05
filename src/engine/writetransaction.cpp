@@ -82,8 +82,8 @@ void WriteTransaction::addDocument(const Document& doc)
     docTimeDB.put(id, info);
     mtimeDB.put(doc.m_mTime, id);
 
-    if (!doc.m_data.isEmpty()) {
-        docDataDB.put(id, doc.m_data);
+    if (const auto docData = doc.data(); !docData.isEmpty()) {
+        docDataDB.put(id, docData);
     }
 }
 
@@ -260,10 +260,8 @@ void WriteTransaction::replaceDocument(const Document& doc, DocumentOperations o
     }
 
     if (operations & DocumentData) {
-        if (!doc.m_data.isEmpty()) {
-            docDataDB.put(id, doc.m_data);
-        } else {
-            docDataDB.del(id);
+        if (const auto docData = doc.data(); !docData.isEmpty()) {
+            docDataDB.put(id, docData);
         }
     }
 

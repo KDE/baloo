@@ -146,6 +146,7 @@ void TermGenerator::indexMimetype(const QString &text)
         m_doc.addPositionTerm(finalArr, m_position);
         m_position++;
     }
+    m_doc.setMimetype(text);
     m_position++;
 }
 

@@ -7,7 +7,11 @@
 
 #include "document.h"
 
+#include <QJsonDocument>
+#include <QJsonObject>
+
 using namespace Baloo;
+using namespace Qt::StringLiterals;
 
 Document::Document() = default;
 
@@ -77,6 +81,16 @@ QByteArray Document::url() const
     return m_url;
 }
 
+void Document::setMimetype(const QString &mimetype)
+{
+    m_mimetype = mimetype;
+}
+
+QString Document::mimetype() const
+{
+    return m_mimetype;
+}
+
 bool Document::contentIndexing() const
 {
     return m_contentIndexing;
@@ -90,4 +104,18 @@ void Document::setContentIndexing(bool val)
 void Document::setData(const QByteArray& data)
 {
     m_data = data;
+}
+
+QByteArray Document::data() const
+{
+    if (!m_data.isEmpty()) {
+        return m_data;
+    } else if (m_mimetype.isEmpty()) {
+        return {};
+    }
+
+    QJsonDocument jdoc;
+    QJsonObject mo{{u"M"_s, m_mimetype}};
+    jdoc.setObject(mo);
+    return jdoc.toJson(QJsonDocument::JsonFormat::Compact);
 }
