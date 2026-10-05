@@ -94,7 +94,7 @@ msgstr ""
 #: main.cpp:139
 #, kde-format
 msgid "%1: Not a valid url or document id"
-msgstr "%1: Не является корректным адресом URL или идентификатором документа."
+msgstr "%1: не является корректным адресом URL или идентификатором документа."
 
 #: main.cpp:153
 #, kde-format

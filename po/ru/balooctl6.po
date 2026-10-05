@@ -386,7 +386,7 @@ msgstr "<неизвестно> [%1]"
 #: monitorcommand.cpp:87
 #, kde-format
 msgid "Press ctrl+c to stop monitoring\n"
-msgstr "Нажмите Ctrl+С для остановки наблюдения.\n"
+msgstr "Нажмите Ctrl+C для остановки наблюдения.\n"
 
 #: monitorcommand.cpp:123
 #, kde-format
@@ -396,7 +396,7 @@ msgstr "Ожидание запуска службы индексировани�
 #: monitorcommand.cpp:124
 #, kde-format
 msgid "Press Ctrl+C to stop monitoring\n"
-msgstr "Нажмите Ctrl+С для остановки наблюдения.\n"
+msgstr "Нажмите Ctrl+C для остановки наблюдения.\n"
 
 #: monitorcommand.cpp:131
 #, kde-format

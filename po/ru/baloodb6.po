@@ -72,7 +72,7 @@ msgid ""
 "Print results of a cleaning operation, but do not change anything.\n"
 "Only applies to \"%1\" command"
 msgstr ""
-"Напечатать предполагаемые результаты операции очистки, но не модифицировать "
+"Вывести предполагаемые результаты операции очистки, но не модифицировать "
 "базу данных.\n"
 "Применимо только к команде «%1»."
 
@@ -156,12 +156,12 @@ msgstr "Не удалось открыть индекс Baloo."
 #: main.cpp:223 main.cpp:231
 #, kde-format
 msgid "Listing database contents..."
-msgstr "Чтение содержимого базы данных..."
+msgstr "Чтение содержимого базы данных…"
 
 #: main.cpp:241
 #, kde-format
 msgid "Removing stale database contents..."
-msgstr "Удаление устаревших записей из базы данных..."
+msgstr "Удаление устаревших записей из базы данных…"
 
 #: main.cpp:263
 #, kde-format

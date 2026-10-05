@@ -87,7 +87,7 @@ msgstr "каталог"
 #: main.cpp:49
 #, kde-format
 msgid "Show document IDs"
-msgstr "Показать идентификаторы документа"
+msgstr "Показать идентификаторы документов"
 
 #: main.cpp:51
 #, kde-format
