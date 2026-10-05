@@ -75,13 +75,15 @@ struct InternalProperty {
     const char* prefix;
     QMetaType::Type valueType;
 };
-constexpr std::array<InternalProperty, 7> internalProperties{{{"content", "", QMetaType::QString},
-                                                              {"filename", "F", QMetaType::QString},
-                                                              {"mimetype", "M", QMetaType::QString},
-                                                              {"rating", "R", QMetaType::Int},
-                                                              {"tag", "TAG-", QMetaType::QString},
-                                                              {"tags", "TA", QMetaType::QString},
-                                                              {"usercomment", "C", QMetaType::QString}}};
+constexpr std::array<InternalProperty, 7> internalProperties{{
+    {"content", "", QMetaType::QString},
+    {"filename", "F", QMetaType::QString},
+    {"mimetype", "M", QMetaType::QString},
+    {"rating", "R", QMetaType::Int},
+    {"tag", "TAG-", QMetaType::QString},
+    {"tags", "TA", QMetaType::QString},
+    {"usercomment", "C", QMetaType::QString},
+}};
 
 std::pair<QByteArray, QMetaType::Type> propertyInfo(const QByteArray &property)
 {
