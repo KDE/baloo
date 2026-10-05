@@ -141,7 +141,7 @@ void App::processNextFile()
         size_t pendingCount = 0;
 
         for (auto &info : m_batch) {
-            auto result = info.m_result.release();
+            const auto result = std::move(info.m_result);
             switch (info.m_state) {
             case IndexState::DoesNotExist:
             case IndexState::RemoveIndex:
