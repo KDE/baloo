@@ -12,6 +12,7 @@
 #include "database.h"
 #include "enginequery.h"
 #include "filenamequery.h"
+#include "mimetypequery.h"
 #include "term.h"
 #include "termgenerator.h"
 #include "transaction.h"
@@ -77,9 +78,8 @@ struct InternalProperty {
     const char* prefix;
     QMetaType::Type valueType;
 };
-constexpr std::array<InternalProperty, 5> internalProperties{{
+constexpr std::array<InternalProperty, 4> internalProperties{{
     {"content", "", QMetaType::QString},
-    {"mimetype", "M", QMetaType::QString},
     {"rating", "R", QMetaType::Int},
     {"tags", "TA", QMetaType::QString},
     {"usercomment", "C", QMetaType::QString},
@@ -368,6 +368,11 @@ PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term)
         auto fq = FilenameQuery(value.toString(), (com == Term::Contains));
         qCDebug(BALOO) << "filename query:" << fq;
         return tr->postingIterator(fq);
+    } else if (property == "mimetype") {
+        auto com = term.comparator();
+        auto mq = MimetypeQuery(value.toString(), (com == Term::Contains));
+        qCDebug(BALOO) << "mimetype query:" << mq;
+        return tr->postingIterator(mq);
     }
 
     QByteArray prefix;
