@@ -75,12 +75,11 @@ struct InternalProperty {
     const char* prefix;
     QMetaType::Type valueType;
 };
-constexpr std::array<InternalProperty, 7> internalProperties{{
+constexpr std::array<InternalProperty, 6> internalProperties{{
     {"content", "", QMetaType::QString},
     {"filename", "F", QMetaType::QString},
     {"mimetype", "M", QMetaType::QString},
     {"rating", "R", QMetaType::Int},
-    {"tag", "TAG-", QMetaType::QString},
     {"tags", "TA", QMetaType::QString},
     {"usercomment", "C", QMetaType::QString},
 }};
@@ -355,12 +354,9 @@ PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term)
         if (term.comparator() == Term::Equal) {
             const QByteArray prefix = "TAG-";
             return tr->postingIterator(prefix + value.toByteArray());
-        } else if (term.comparator() == Term::Contains) {
-            const QByteArray prefix = "TA";
-            return constructEqualsQuery(tr, prefix, value.toString());
         } else {
-            Q_ASSERT(0);
-            return nullptr;
+            // Delegate to "internalProperties" "tags" handler
+            return constructQuery(tr, Term{u"tags"_s, term.value(), term.comparator()});
         }
     } else if (property == "") {
         Term cterm(QStringLiteral("content"), term.value(), term.comparator());
