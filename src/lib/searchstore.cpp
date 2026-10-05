@@ -429,10 +429,9 @@ PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term)
         }
         const QByteArray ba = dt.toString(Qt::ISODate).toUtf8();
         return tr->postingCompIterator(prefix, ba, pcom);
-
-    } else {
-        qCDebug(BALOO) << "Comparison must be with an integer";
     }
+
+    qCWarning(BALOO) << "Invalid operator" << ((com == Term::LessEqual) || (com == Term::Less) ? "'<'" : "'>'") << "for string property";
 
     return nullptr;
 }
