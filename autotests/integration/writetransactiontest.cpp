@@ -148,7 +148,7 @@ void WriteTransactionTest::testAddDocumentTwoDocuments()
     state.mtimeDb = {{5, id1}, {6, id2}};
 
     DBState actualState = DBState::fromTransaction(&tr);
-    QVERIFY(DBState::debugCompare(actualState, state));
+    QCOMPARE(actualState, state);
 }
 
 void WriteTransactionTest::testAddAndRemoveOneDocument()
@@ -170,7 +170,7 @@ void WriteTransactionTest::testAddAndRemoveOneDocument()
 
     Transaction tr(db.get(), Transaction::ReadOnly);
     DBState actualState = DBState::fromTransaction(&tr);
-    QVERIFY(DBState::debugCompare(actualState, DBState()));
+    QCOMPARE(actualState, DBState{});
 }
 
 void WriteTransactionTest::testAddAndReplaceOneDocument()
@@ -200,7 +200,7 @@ void WriteTransactionTest::testAddAndReplaceOneDocument()
     {
         Transaction tr(db.get(), Transaction::ReadOnly);
         DBState actualState = DBState::fromTransaction(&tr);
-        QVERIFY(DBState::debugCompare(actualState, state));
+        QCOMPARE(actualState, state);
     }
 
     {
@@ -217,7 +217,7 @@ void WriteTransactionTest::testAddAndReplaceOneDocument()
 
     Transaction tr(db.get(), Transaction::ReadOnly);
     DBState actualState = DBState::fromTransaction(&tr);
-    QVERIFY(DBState::debugCompare(actualState, state));
+    QCOMPARE(actualState, state);
 }
 
 void WriteTransactionTest::testRemoveRecursively()
@@ -246,7 +246,7 @@ void WriteTransactionTest::testRemoveRecursively()
 
     Transaction tr(db.get(), Transaction::ReadOnly);
     DBState actualState = DBState::fromTransaction(&tr);
-    QVERIFY(DBState::debugCompare(actualState, DBState()));
+    QCOMPARE(actualState, DBState{});
 }
 
 void WriteTransactionTest::testDocumentId()
@@ -298,7 +298,7 @@ void WriteTransactionTest::testTermPositions()
     {
         Transaction tr(db.get(), Transaction::ReadOnly);
         DBState actualState = DBState::fromTransaction(&tr);
-        QVERIFY(DBState::debugCompare(actualState, state));
+        QCOMPARE(actualState, state);
     }
 
     Document doc1_clone = doc1; // save state for later reset
@@ -332,7 +332,7 @@ void WriteTransactionTest::testTermPositions()
     {
         Transaction tr(db.get(), Transaction::ReadOnly);
         DBState actualState = DBState::fromTransaction(&tr);
-        QVERIFY(DBState::debugCompare(actualState, state));
+        QCOMPARE(actualState, state);
     }
 
     for (auto pos : {11, 12}) { // extend
@@ -376,7 +376,7 @@ void WriteTransactionTest::testTermPositions()
     {
         Transaction tr(db.get(), Transaction::ReadOnly);
         DBState actualState = DBState::fromTransaction(&tr);
-        QVERIFY(DBState::debugCompare(actualState, state));
+        QCOMPARE(actualState, state);
     }
 
     // Reset some positions of doc1
@@ -403,7 +403,7 @@ void WriteTransactionTest::testTermPositions()
     {
         Transaction tr(db.get(), Transaction::ReadOnly);
         DBState actualState = DBState::fromTransaction(&tr);
-        QVERIFY(DBState::debugCompare(actualState, state));
+        QCOMPARE(actualState, state);
     }
 }
 
@@ -434,7 +434,7 @@ void WriteTransactionTest::testIdempotentDocumentChange()
     {
         Transaction tr(db.get(), Transaction::ReadOnly);
         DBState actualState = DBState::fromTransaction(&tr);
-        QVERIFY(DBState::debugCompare(actualState, state));
+        QCOMPARE(actualState, state);
     }
 
     {
@@ -450,7 +450,7 @@ void WriteTransactionTest::testIdempotentDocumentChange()
     {
         Transaction tr(db.get(), Transaction::ReadOnly);
         DBState actualState = DBState::fromTransaction(&tr);
-        QVERIFY(DBState::debugCompare(actualState, state));
+        QCOMPARE(actualState, state);
     }
 }
 

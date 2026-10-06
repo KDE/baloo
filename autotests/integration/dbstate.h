@@ -45,7 +45,6 @@ public:
     }
 
     static DBState fromTransaction(Transaction* tr);
-    static bool debugCompare(const DBState& st1, const DBState& st2);
 private:
 };
 
@@ -84,58 +83,26 @@ DBState DBState::fromTransaction(Baloo::Transaction* tr)
     return state;
 }
 
-bool DBState::debugCompare(const DBState& st1, const DBState& st2)
+/**
+ * Helper for QTest
+ * \sa QTest::toString
+ */
+inline char *toString(const DBState &state)
 {
-    if (st1.postingDb != st2.postingDb) {
-        qDebug() << "Posting DB different";
-        qDebug() << st1.postingDb;
-        qDebug() << st2.postingDb;
-        return false;
-    }
-
-    if (st1.positionDb != st2.positionDb) {
-        qDebug() << "Position DB different";
-        qDebug() << st1.positionDb;
-        qDebug() << st2.positionDb;
-        return false;
-    }
-
-    if (st1.docTermsDb != st2.docTermsDb) {
-        qDebug() << "DocTerms DB different";
-        qDebug() << st1.docTermsDb;
-        qDebug() << st2.docTermsDb;
-        return false;
-    }
-
-    if (st1.docFileNameTermsDb != st2.docFileNameTermsDb) {
-        qDebug() << "Doc FileName Terms DB different";
-        qDebug() << st1.docFileNameTermsDb;
-        qDebug() << st2.docFileNameTermsDb;
-        return false;
-    }
-
-    if (st1.docXAttrTermsDb != st2.docXAttrTermsDb) {
-        qDebug() << "Doc XAttr Terms DB different";
-        qDebug() << st1.docXAttrTermsDb;
-        qDebug() << st2.docXAttrTermsDb;
-        return false;
-    }
-
-    if (st1.docTimeDb != st2.docTimeDb) {
-        qDebug() << "Doc Time DB different";
-        qDebug() << st1.docTimeDb;
-        qDebug() << st2.docTimeDb;
-        return false;
-    }
-
-    if (st1.mtimeDb != st2.mtimeDb) {
-        qDebug() << "MTime DB different";
-        qDebug() << st1.mtimeDb;
-        qDebug() << st2.mtimeDb;
-        return false;
-    }
-
-    return st1 == st2;
+    QString buffer;
+    QDebug stream(&buffer);
+    stream << state.postingDb //
+           << state.positionDb //
+           << state.docTermsDb //
+           << state.docFileNameTermsDb //
+           << state.docXAttrTermsDb //
+           << state.docTimeDb //
+           << state.mtimeDb //
+           << state.docDataDb //
+           << state.docUrlDb //
+           << state.contentIndexingDb //
+           << state.failedIdDb;
+    return qstrdup(buffer.toUtf8().constData());
 }
 } // namespace
 
