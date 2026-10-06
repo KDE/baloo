@@ -21,6 +21,7 @@
 #include "transaction.h"
 
 using namespace Baloo;
+using namespace Qt::StringLiterals;
 
 int main(int argc, char** argv)
 {
@@ -73,8 +74,11 @@ int main(int argc, char** argv)
         QDirIterator it(path, QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs, QDirIterator::Subdirectories);
         uint num = 0;
         while (it.hasNext()) {
-            const QString& path = it.next();
-            const QString& mimetype = mimeDb.mimeTypeForFile(path, QMimeDatabase::MatchExtension).name();
+            const auto fileInfo = it.nextFileInfo();
+            const QString &path = fileInfo.filePath();
+            const QString &mimetype = fileInfo.isDir() //
+                ? u"inode/directory"_s
+                : mimeDb.mimeTypeForFile(path, QMimeDatabase::MatchExtension).name();
 
             BasicIndexingJob job(path, mimetype);
             if (!job.index()) {
