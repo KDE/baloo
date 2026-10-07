@@ -64,3 +64,10 @@ add_executable(extractorcommandpipe_worker
 target_link_libraries(extractorcommandpipe_worker
 	baloofilecommon
 )
+
+# Indexing tracked and untracked files on modification
+ecm_add_test(
+    modifiedfileindexertest.cpp
+    TEST_NAME "modifiedfileindexertest"
+    LINK_LIBRARIES Qt6::Test baloofilecommon
+)

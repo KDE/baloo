@@ -25,10 +25,11 @@ namespace Baloo
 {
 namespace Test
 {
-void writeIndexerConfig(const QStringList& includeFolders,
-                        const QStringList& excludeFolders,
-                        const QStringList& excludeFilters = QStringList(),
-                        bool indexHidden = false)
+void writeIndexerConfig(const QStringList &includeFolders,
+                        const QStringList &excludeFolders,
+                        const QStringList &excludeFilters = QStringList(),
+                        bool indexHidden = false,
+                        bool onlyBasicIndexing = false)
 {
     QStandardPaths::setTestModeEnabled(true);
     KConfig fileIndexerConfig(QStringLiteral("baloofilerc"));
@@ -36,6 +37,7 @@ void writeIndexerConfig(const QStringList& includeFolders,
     fileIndexerConfig.group(QStringLiteral("General")).writePathEntry("exclude folders", excludeFolders);
     fileIndexerConfig.group(QStringLiteral("General")).writeEntry("exclude filters", excludeFilters);
     fileIndexerConfig.group(QStringLiteral("General")).writeEntry("index hidden folders", indexHidden);
+    fileIndexerConfig.group(QStringLiteral("General")).writeEntry("only basic indexing", onlyBasicIndexing);
     fileIndexerConfig.sync();
 }
 
