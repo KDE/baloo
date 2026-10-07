@@ -1,0 +1,166 @@
+# Translation of baloodb5.po into Serbian.
+# Chusslove Illich <caslav.ilic@gmx.net>, 2018.
+# Nemanja Hiršl <nemhirsl@gmail.com>, 2026.
+msgid ""
+msgstr ""
+"Project-Id-Version: baloodb5\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2025-11-17 11:49+0000\n"
+"PO-Revision-Date: 2026-10-06 08:03+0200\n"
+"Last-Translator: Nemanja Hiršl <nemhirsl@gmail.com>\n"
+"Language-Team: Serbian <kde-i18n-sr@kde.org>\n"
+"Language: sr@latin\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n"
+"%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Accelerator-Marker: &\n"
+"X-Text-Markup: kde4\n"
+"X-Environment: kde\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Časlav Ilić,Nemanja Hiršl"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "caslav.ilic@gmx.net,nemhirsl@gmail.com"
+
+#: main.cpp:33
+#, kde-format
+msgid ""
+"Filter by device id.\n"
+"0 (default) does not filter and everything is printed.\n"
+"Positive numbers are including filters printing only the mentioned device "
+"id.\n"
+"Negative numbers are excluding filters printing everything but the mentioned "
+"device id.\n"
+"May be given multiple times."
+msgstr ""
+"Filtriraj po ID‑u uređaja.\n"
+"0 (podrazumevano) ne filtrira ništa, sve se ispisuje.\n"
+"Pozitivni brojevi znače ispis samo za zadate ID‑ove uređaja.\n"
+"Negativni brojevi znače ispis svega osim za zadate ID‑ove uređaja.\n"
+"Može se zadati više puta."
+
+#: main.cpp:38
+#, kde-format
+msgid "integer"
+msgstr "ceo‑broj"
+
+#: main.cpp:43
+#, kde-format
+msgid ""
+"List only inaccessible entries.\n"
+"Only applies to \"%1\""
+msgstr ""
+"Nabroji samo nedostupne unose.\n"
+"Važi samo za „%1“."
+
+#: main.cpp:47
+#, kde-format
+msgid "Act only on item on mounted devices"
+msgstr "Radi samo nad stavkama na montiranim uređajima."
+
+#: main.cpp:51
+#, kde-format
+msgid ""
+"Print results of a cleaning operation, but do not change anything.\n"
+"Only applies to \"%1\" command"
+msgstr ""
+"Ispiši rezultat operacije čišćenja, ali ne menjaj ništa.\n"
+"Važi samo za naredbu „%1“."
+
+#: main.cpp:59
+#, kde-format
+msgid ""
+"List database contents. Use a regular expression as argument to filter output"
+msgstr ""
+"Izlistaj sadržaj baze podataka. Zadajte regularni izraz kao argument radi "
+"filtriranja ispisa."
+
+#: main.cpp:70
+#, kde-format
+msgid "List devices"
+msgstr "Nabroji uređaje"
+
+#: main.cpp:85
+#, kde-format
+msgid "Remove stale database entries"
+msgstr "Ukloni zastarele unose iz baze podataka"
+
+#: main.cpp:140
+#, kde-format
+msgid ""
+"\n"
+"\n"
+"Commands:\n"
+"    %1"
+msgstr ""
+"\n"
+"\n"
+"Naredbe:\n"
+"    %1"
+
+#: main.cpp:147
+#, kde-format
+msgid "Baloo Database Sanitizer"
+msgstr "Normalizator Balooovih baze podataka"
+
+#: main.cpp:149
+#, kde-format
+msgid "The Baloo Database Lister & Sanitizer"
+msgstr "Listač i normalizator Balooovih baze podataka"
+
+#: main.cpp:151
+#, kde-format
+msgid "(c) 2018, Michael Heidelbach"
+msgstr "© 2018, Mihael Hajdelbah"
+
+#: main.cpp:152
+#, kde-format
+msgid "Michael Heidelbach"
+msgstr "Mihael Hajdelbah"
+
+#: main.cpp:152
+#, kde-format
+msgid "Maintainer"
+msgstr "Održavalac"
+
+#: main.cpp:158
+#, kde-format
+msgid "The command to execute"
+msgstr "Naredba za izvršavanje"
+
+#: main.cpp:162
+#, kde-format
+msgctxt "Command"
+msgid ""
+"A regular expression applied to the URL of database items\n"
+"Example: %1"
+msgstr ""
+"Regularni izraz za primenu na URL stavki baze podataka.\n"
+"Primer: %1"
+
+#: main.cpp:219 main.cpp:227 main.cpp:237
+#, kde-format
+msgid "Baloo Index could not be opened"
+msgstr "Balooov indeks ne može da se otvori"
+
+#: main.cpp:223 main.cpp:231
+#, kde-format
+msgid "Listing database contents..."
+msgstr "Listam sadržaj baze podataka..."
+
+#: main.cpp:241
+#, kde-format
+msgid "Removing stale database contents..."
+msgstr "Uklanjam zastareli sadržaj baze podataka..."
+
+#: main.cpp:263
+#, kde-format
+msgid "Elapsed: %1 secs"
+msgstr "Proteklo: %1 s"

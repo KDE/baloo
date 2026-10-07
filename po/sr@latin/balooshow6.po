@@ -1,12 +1,13 @@
-# Translation of balooshow.po into Serbian.
-# Chusslove Illich <caslav.ilic@gmx.net>, 2014, 2015.
+# Translation of balooshow5.po into Serbian.
+# Chusslove Illich <caslav.ilic@gmx.net>, 2014, 2015, 2018.
+# Nemanja Hiršl <nemhirsl@gmail.com>, 2026.
 msgid ""
 msgstr ""
-"Project-Id-Version: balooshow\n"
+"Project-Id-Version: balooshow5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-17 11:49+0000\n"
-"PO-Revision-Date: 2015-09-27 19:15+0200\n"
-"Last-Translator: Chusslove Illich <caslav.ilic@gmx.net>\n"
+"PO-Revision-Date: 2026-10-06 08:03+0200\n"
+"Last-Translator: Nemanja Hiršl <nemhirsl@gmail.com>\n"
 "Language-Team: Serbian <kde-i18n-sr@kde.org>\n"
 "Language: sr@latin\n"
 "MIME-Version: 1.0\n"
@@ -21,12 +22,12 @@ msgstr ""
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr "Časlav Ilić"
+msgstr "Časlav Ilić,Nemanja Hiršl"
 
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
-msgstr "caslav.ilic@gmx.net"
+msgstr "caslav.ilic@gmx.net,nemhirsl@gmail.com"
 
 #: main.cpp:59
 #, kde-format
@@ -46,94 +47,84 @@ msgstr "© 2012, Višeš Handa"
 #: main.cpp:68
 #, kde-format
 msgid "Urls, document ids or inodes of the files"
-msgstr ""
+msgstr "URL‑ovi, ID‑ovi dokumenta ili i‑čvorovi fajlova"
 
 #: main.cpp:70
 #, kde-format
 msgid "Print internal info"
-msgstr ""
+msgstr "Ispiši unutrašnje podatke"
 
 #: main.cpp:72
 #, kde-format
 msgid "Arguments are interpreted as inode numbers (requires -d)"
-msgstr ""
+msgstr "Argumenti se tumače kao brojevi i‑čvorova (zahteva -d)"
 
 #: main.cpp:74
 #, kde-format
 msgid "Device id for the files"
-msgstr ""
+msgstr "ID uređaja za fajlove"
 
 #: main.cpp:97
 #, kde-format
 msgid "Error: -i requires specifying a device (-d <deviceId>)"
-msgstr ""
+msgstr "Greška: -i zahteva zadavanje uređaja (-d <deviceId>)"
 
 #: main.cpp:103
-#, fuzzy, kde-format
-#| msgid ""
-#| "The Baloo index could not be opened. Please run \"balooctl status\" to "
-#| "see if Baloo is enabled and working."
+#, kde-format
 msgid ""
 "The Baloo index could not be opened. Please run \"%1\" to see if Baloo is "
 "enabled and working."
 msgstr ""
-"Indeks Balooa ne može da se otvori. Izvršite balooctl status da proverite da "
-"li je Baloo aktiviran i u pogonu."
+"Indeks Balooa ne može da se otvori. Izvršite „%1“ da proverite da li je "
+"Baloo aktiviran i u pogonu."
 
 #: main.cpp:120
 #, kde-format
 msgid "The document IDs of the Baloo DB and the filesystem are different:"
-msgstr ""
+msgstr "ID‑ovi dokumenta u bazi Balooa i u fajl sistemu se razlikuju:"
 
 #: main.cpp:139
 #, kde-format
 msgid "%1: Not a valid url or document id"
-msgstr ""
+msgstr "%1: nije ispravan URL niti ID dokumenta"
 
 #: main.cpp:153
 #, kde-format
 msgid "%1: Failed to parse inode number"
-msgstr ""
+msgstr "%1: ne mogu da raščlanim broj i‑čvora"
 
 #: main.cpp:177
-#, fuzzy, kde-format
-#| msgid "No index information found"
+#, kde-format
 msgid "%1: No index information found"
-msgstr "Podaci indeksa nisu nađeni."
+msgstr "%1: podaci indeksa nisu nađeni"
 
 #: main.cpp:230
 #, kde-format
 msgid "Internal Info"
-msgstr ""
+msgstr "Unutrašnji podaci"
 
 #: main.cpp:231
 #, kde-format
 msgid "File Name Terms: %1"
-msgstr ""
+msgstr "Termovi imena fajlova: %1"
 
 #: main.cpp:232
 #, kde-format
 msgid "%1 Terms: %2"
-msgstr ""
+msgstr "%1‑termovi: %2"
 
 #: main.cpp:233
 #, kde-format
 msgid "Plain Text Terms: %1"
-msgstr ""
+msgstr "Termovi običnog teksta: %1"
 
 #: main.cpp:234
 #, kde-format
 msgid "Property Terms: %1"
-msgstr ""
+msgstr "Termovi svojstava: %1"
 
 #: main.cpp:237
 #, kde-format
 msgctxt "Prefix string for internal errors"
 msgid "Internal Error - %1"
-msgstr ""
-
-#~ msgid "Vishesh Handa"
-#~ msgstr "Višeš Handa"
-
-#~ msgid "Maintainer"
-#~ msgstr "Održavalac"
+msgstr "Unutrašnja greška — %1"
