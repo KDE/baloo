@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:49+0000\n"
+"POT-Creation-Date: 2026-10-09 00:42+0000\n"
 "PO-Revision-Date: 2024-12-15 17:36+0530\n"
 "Last-Translator: Kali <EMAIL@ADDRESS>\n"
 "Language-Team: Hindi <fedora-trans-hi@redhat.com>\n"
@@ -62,12 +62,12 @@ msgstr "तर्कों को इनोड संख्या के रू�
 msgid "Device id for the files"
 msgstr "फ़ाइलों के लिए डिवाइस आईडी"
 
-#: main.cpp:97
+#: main.cpp:98
 #, kde-format
 msgid "Error: -i requires specifying a device (-d <deviceId>)"
 msgstr "त्रुटि: -i को डिवाइस निर्दिष्ट करने की आवश्यकता है (-d <deviceId>)"
 
-#: main.cpp:103
+#: main.cpp:104
 #, kde-format
 msgid ""
 "The Baloo index could not be opened. Please run \"%1\" to see if Baloo is "
@@ -76,52 +76,52 @@ msgstr ""
 "बलू इंडेक्स खोला नहीं जा सका। कृपया यह देखने के लिए \"%1\" चलाएँ कि बलू सक्षम है या काम "
 "कर रहा है।"
 
-#: main.cpp:120
+#: main.cpp:121
 #, kde-format
 msgid "The document IDs of the Baloo DB and the filesystem are different:"
 msgstr "बल्लू डीबी और फाइल सिस्टम की दस्तावेज़ आईडी अलग-अलग हैं:"
 
-#: main.cpp:139
+#: main.cpp:140
 #, kde-format
 msgid "%1: Not a valid url or document id"
 msgstr "%1: वैध यूआरएल या दस्तावेज़ आईडी नहीं है"
 
-#: main.cpp:153
+#: main.cpp:154
 #, kde-format
 msgid "%1: Failed to parse inode number"
 msgstr "%1: इनोड संख्या पार्स करने में विफल"
 
-#: main.cpp:177
+#: main.cpp:178
 #, kde-format
 msgid "%1: No index information found"
 msgstr "%1: कोई सूचकांक जानकारी नहीं मिली"
 
-#: main.cpp:230
+#: main.cpp:235
 #, kde-format
 msgid "Internal Info"
 msgstr "आंतरिक जानकारी"
 
-#: main.cpp:231
+#: main.cpp:236
 #, kde-format
 msgid "File Name Terms: %1"
 msgstr "फ़ाइल नाम शर्तें: %1"
 
-#: main.cpp:232
+#: main.cpp:237
 #, kde-format
 msgid "%1 Terms: %2"
 msgstr "%1 शर्तें: %2"
 
-#: main.cpp:233
+#: main.cpp:238
 #, kde-format
 msgid "Plain Text Terms: %1"
 msgstr "सादा पाठ शर्तें: %1"
 
-#: main.cpp:234
+#: main.cpp:239
 #, kde-format
 msgid "Property Terms: %1"
 msgstr "संपत्ति की शर्तें: %1"
 
-#: main.cpp:237
+#: main.cpp:242
 #, kde-format
 msgctxt "Prefix string for internal errors"
 msgid "Internal Error - %1"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:49+0000\n"
+"POT-Creation-Date: 2026-10-09 00:42+0000\n"
 "PO-Revision-Date: 2023-12-27 10:18+0300\n"
 "Last-Translator: Alexander Yavorsky <kekcuha@gmail.com>\n"
 "Language-Team: Russian <kde-russian@lists.kde.ru>\n"
@@ -68,14 +68,14 @@ msgstr ""
 msgid "Device id for the files"
 msgstr "Идентификатор устройства для искомых файлов."
 
-#: main.cpp:97
+#: main.cpp:98
 #, kde-format
 msgid "Error: -i requires specifying a device (-d <deviceId>)"
 msgstr ""
 "Ошибка: при использовании параметра -i требуется также указать устройство (-"
 "d <deviceId>)."
 
-#: main.cpp:103
+#: main.cpp:104
 #, kde-format
 msgid ""
 "The Baloo index could not be opened. Please run \"%1\" to see if Baloo is "
@@ -84,54 +84,54 @@ msgstr ""
 "Не удалось открыть индекс Baloo. Чтобы узнать, работает ли служба "
 "индексирования Baloo, запустите команду «%1»."
 
-#: main.cpp:120
+#: main.cpp:121
 #, kde-format
 msgid "The document IDs of the Baloo DB and the filesystem are different:"
 msgstr ""
 "Идентификаторы документа в базе данных Baloo и в файловой системе "
 "различаются:"
 
-#: main.cpp:139
+#: main.cpp:140
 #, kde-format
 msgid "%1: Not a valid url or document id"
 msgstr "%1: не является корректным адресом URL или идентификатором документа."
 
-#: main.cpp:153
+#: main.cpp:154
 #, kde-format
 msgid "%1: Failed to parse inode number"
 msgstr "%1: Не удалось получить номер индексного дескриптора (inode)."
 
-#: main.cpp:177
+#: main.cpp:178
 #, kde-format
 msgid "%1: No index information found"
 msgstr "%1: Файл не найден в индексе."
 
-#: main.cpp:230
+#: main.cpp:235
 #, kde-format
 msgid "Internal Info"
 msgstr "Техническая информация"
 
-#: main.cpp:231
+#: main.cpp:236
 #, kde-format
 msgid "File Name Terms: %1"
 msgstr "Ключевые слова из имени файла: %1"
 
-#: main.cpp:232
+#: main.cpp:237
 #, kde-format
 msgid "%1 Terms: %2"
 msgstr "Ключевые слова из %1: %2"
 
-#: main.cpp:233
+#: main.cpp:238
 #, kde-format
 msgid "Plain Text Terms: %1"
 msgstr "Ключевые слова из обычного текста: %1"
 
-#: main.cpp:234
+#: main.cpp:239
 #, kde-format
 msgid "Property Terms: %1"
 msgstr "Ключевые слова из свойств: %1"
 
-#: main.cpp:237
+#: main.cpp:242
 #, kde-format
 msgctxt "Prefix string for internal errors"
 msgid "Internal Error - %1"

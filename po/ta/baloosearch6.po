@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:49+0000\n"
+"POT-Creation-Date: 2026-10-09 00:42+0000\n"
 "PO-Revision-Date: 2023-07-16 12:26+0530\n"
 "Last-Translator: Kishore G <kishore96@gmail.com>\n"
 "Language-Team: Tamil <kde-i18n-doc@kde.org>\n"
@@ -27,92 +27,145 @@ msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
 msgstr "Kde-l10n-ta@kde.org"
 
-#: main.cpp:27
+#: main.cpp:33
+#, kde-format
+msgctxt "'listTypes' table header"
+msgid "<typeString>     Description"
+msgstr ""
+
+#: main.cpp:66
+#, kde-format
+msgctxt "'listProperties' table header"
+msgid "Metadata Property Name                 Description"
+msgstr ""
+
+#: main.cpp:76
+#, kde-format
+msgctxt "'listProperties' table header"
+msgid "File Property Name                     Description"
+msgstr ""
+
+#: main.cpp:95
 #, kde-format
 msgid "Baloo Search"
 msgstr "பாலூ தேடல்"
 
-#: main.cpp:29
+#: main.cpp:97
 #, kde-format
 msgid "A tool to search through the files indexed by Baloo"
 msgstr "பாலூவால் அட்டவணையாக்கப்பட்ட கோப்புகளுள் தேடும் நிரல்"
 
-#: main.cpp:31
+#: main.cpp:99
 #, kde-format
 msgid "Vishesh Handa"
 msgstr "விஷேஷ் ஹண்டா"
 
-#: main.cpp:37
+#: main.cpp:105
 #, kde-format
 msgid "The maximum number of results"
 msgstr "விடைகளின் அதிகபட்ச எண்ணிக்கை"
 
-#: main.cpp:38
-#, kde-format
+#: main.cpp:106
+#, fuzzy, kde-format
+#| msgid "limit"
+msgctxt "option value name"
 msgid "limit"
 msgstr "வரம்பு"
 
-#: main.cpp:40
+#: main.cpp:108
 #, kde-format
 msgid "Offset from which to start the search"
 msgstr ""
 
-#: main.cpp:41
+#: main.cpp:109
 #, kde-format
+msgctxt "option value name"
 msgid "offset"
 msgstr ""
 
-#: main.cpp:43
+#: main.cpp:111
 #, kde-format
 msgid "Type of data to be searched"
 msgstr "தேட வேண்டிய தரவுவகை"
 
-#: main.cpp:44
+#: main.cpp:112
 #, kde-format
-msgid "typeStr"
+msgctxt "option value name"
+msgid "typeString"
 msgstr ""
 
-#: main.cpp:46
+#: main.cpp:114
+#, kde-format
+msgid "Show supported <typeString> values"
+msgstr ""
+
+#: main.cpp:116
+#, kde-format
+msgid "Show property names supported in query."
+msgstr ""
+
+#: main.cpp:118
 #, kde-format
 msgid "Limit search to specified directory"
 msgstr "குறிப்பிட்ட அடைவிற்குள் மட்டும் தேடு"
 
-#: main.cpp:47
-#, kde-format
+#: main.cpp:119
+#, fuzzy, kde-format
+#| msgid "directory"
+msgctxt "option value name"
 msgid "directory"
 msgstr "அடைவு"
 
-#: main.cpp:49
+#: main.cpp:121
 #, kde-format
 msgid "Show document IDs"
 msgstr "ஆவண அடையாள எண்களைக் காட்டு"
 
-#: main.cpp:51
+#: main.cpp:123
 #, kde-format
 msgid "Sorting criteria"
 msgstr "வரிசைப்படுத்தும் முறை"
 
-#: main.cpp:52
+#: main.cpp:127
 #, kde-format
-msgid "query"
-msgstr "வினா"
+msgid "query [(|AND|OR) query ...]"
+msgstr ""
 
-#: main.cpp:52
+#: main.cpp:128
 #, kde-format
-msgid "List of words to query for"
-msgstr "தேட வேண்டிய சொற்களின் பட்டியல்"
+msgid ""
+"List of words to query for.\n"
+"Each query may be single value, or a value prefixed with a property name.\n"
+"Queries may be nested, and grouped with parentheses.\n"
+"\n"
+"\n"
+"Example:\n"
+"baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
+"filename:jpg)'"
+msgstr ""
 
-#: main.cpp:102
+#: main.cpp:161
+#, kde-format
+msgid "ERROR: Invalid \"type\" value, supported values:\n"
+msgstr ""
+
+#: main.cpp:197
 #, kde-format
 msgid "%1 is not a valid directory"
 msgstr "%1 ஓர் அடைவு இல்லை"
 
-#: main.cpp:110
+#: main.cpp:205
 #, kde-format
 msgid "Using canonical path '%1' for '%2'"
 msgstr "'%2' என்பதன் செந்தர பாதையாக '%1' பயன்படுத்தப்படுகிறது"
 
-#: main.cpp:126
+#: main.cpp:221
 #, kde-format
 msgid "Elapsed: %1 msecs"
 msgstr "கழிந்த‍து: %1 மில்லிநொடிகள்"
+
+#~ msgid "query"
+#~ msgstr "வினா"
+
+#~ msgid "List of words to query for"
+#~ msgstr "தேட வேண்டிய சொற்களின் பட்டியல்"

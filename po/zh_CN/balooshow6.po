@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kdeorg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:49+0000\n"
+"POT-Creation-Date: 2026-10-09 00:42+0000\n"
 "PO-Revision-Date: 2024-04-22 15:58\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
@@ -62,64 +62,64 @@ msgstr "参数被解释为 inode 数字 (需要 -d)"
 msgid "Device id for the files"
 msgstr "文件的设备 id"
 
-#: main.cpp:97
+#: main.cpp:98
 #, kde-format
 msgid "Error: -i requires specifying a device (-d <deviceId>)"
 msgstr "错误：-i 需要指定设备 (-d <deviceId>)"
 
-#: main.cpp:103
+#: main.cpp:104
 #, kde-format
 msgid ""
 "The Baloo index could not be opened. Please run \"%1\" to see if Baloo is "
 "enabled and working."
 msgstr "无法打开 Baloo 索引。请运行 \"%1\" 以查看 Baloo 是否已启用且工作正常。"
 
-#: main.cpp:120
+#: main.cpp:121
 #, kde-format
 msgid "The document IDs of the Baloo DB and the filesystem are different:"
 msgstr "Baloo 数据库和文件系统的文档 ID 不同："
 
-#: main.cpp:139
+#: main.cpp:140
 #, kde-format
 msgid "%1: Not a valid url or document id"
 msgstr "%1：不是有效的 URL 或文档 ID"
 
-#: main.cpp:153
+#: main.cpp:154
 #, kde-format
 msgid "%1: Failed to parse inode number"
 msgstr "%1：解析 inode 数字失败"
 
-#: main.cpp:177
+#: main.cpp:178
 #, kde-format
 msgid "%1: No index information found"
 msgstr "%1：未找到索引信息"
 
-#: main.cpp:230
+#: main.cpp:235
 #, kde-format
 msgid "Internal Info"
 msgstr "内部信息"
 
-#: main.cpp:231
+#: main.cpp:236
 #, kde-format
 msgid "File Name Terms: %1"
 msgstr "文件名术语：%1"
 
-#: main.cpp:232
+#: main.cpp:237
 #, kde-format
 msgid "%1 Terms: %2"
 msgstr "%1 个术语：%2"
 
-#: main.cpp:233
+#: main.cpp:238
 #, kde-format
 msgid "Plain Text Terms: %1"
 msgstr "纯文本条款：%1"
 
-#: main.cpp:234
+#: main.cpp:239
 #, kde-format
 msgid "Property Terms: %1"
 msgstr "属性条款：%1"
 
-#: main.cpp:237
+#: main.cpp:242
 #, kde-format
 msgctxt "Prefix string for internal errors"
 msgid "Internal Error - %1"

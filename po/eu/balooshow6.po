@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:49+0000\n"
+"POT-Creation-Date: 2026-10-09 00:42+0000\n"
 "PO-Revision-Date: 2023-07-15 19:58+0200\n"
 "Last-Translator: Iñigo Salvador Azurmendi <xalba@ni.eus>\n"
 "Language-Team: Basque <kde-i18n-eu@kde.org>\n"
@@ -67,12 +67,12 @@ msgstr "Argumentuak inodo zenbaki gisa interpretatzen dira  (-d behar du)"
 msgid "Device id for the files"
 msgstr "Fitxategiaren gailu id"
 
-#: main.cpp:97
+#: main.cpp:98
 #, kde-format
 msgid "Error: -i requires specifying a device (-d <deviceId>)"
 msgstr "Errorea: -i erabiltzeko gailu bat zehaztu behar da (-d <gailuID>)"
 
-#: main.cpp:103
+#: main.cpp:104
 #, kde-format
 msgid ""
 "The Baloo index could not be opened. Please run \"%1\" to see if Baloo is "
@@ -81,56 +81,56 @@ msgstr ""
 "Baloo indizea ezin izan da ireki. Exekutatu \"%1\" Baloo gaituta eta martxan "
 "dagoen ikusteko."
 
-#: main.cpp:120
+#: main.cpp:121
 #, kde-format
 msgid "The document IDs of the Baloo DB and the filesystem are different:"
 msgstr "Dokumentuen IDak ezberdinak dira Baloo DB-an eta fitxategi-sisteman:"
 
-#: main.cpp:139
+#: main.cpp:140
 #, kde-format
 msgid "%1: Not a valid url or document id"
 msgstr "%1: Ez da baliozko URL bat edo dokumentu ID bat"
 
-#: main.cpp:153
+#: main.cpp:154
 #, kde-format
 msgid "%1: Failed to parse inode number"
 msgstr "%1: Huts egin du inodo zenbakiaren azterketa sintaktikoak"
 
-#: main.cpp:177
+#: main.cpp:178
 #, kde-format
 msgid "%1: No index information found"
 msgstr "%1: Ez da indize informaziorik aurkitu"
 
-#: main.cpp:230
+#: main.cpp:235
 #, kde-format
 msgid "Internal Info"
 msgstr "Barneko informazioa"
 
 # xalba 2018-02-19: Testuinguruan itzulpen zuzena den egiaztatu behar da.
-#: main.cpp:231
+#: main.cpp:236
 #, kde-format
 msgid "File Name Terms: %1"
 msgstr "Fitxategi izen terminoak: %1"
 
 # xalba 2018-02-19: Testuinguruan itzulpen zuzena den egiaztatu behar da.
-#: main.cpp:232
+#: main.cpp:237
 #, kde-format
 msgid "%1 Terms: %2"
 msgstr "%1 terminoak: %2"
 
 # xalba 2018-02-19: Testuinguruan itzulpen zuzena den egiaztatu behar da.
-#: main.cpp:233
+#: main.cpp:238
 #, kde-format
 msgid "Plain Text Terms: %1"
 msgstr "Testu arrunteko terminoak: %1"
 
 # xalba 2018-02-19: Testuinguruan itzulpen zuzena den egiaztatu behar da.
-#: main.cpp:234
+#: main.cpp:239
 #, kde-format
 msgid "Property Terms: %1"
 msgstr "Propietate terminoak: %1"
 
-#: main.cpp:237
+#: main.cpp:242
 #, kde-format
 msgctxt "Prefix string for internal errors"
 msgid "Internal Error - %1"

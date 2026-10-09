@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:49+0000\n"
+"POT-Creation-Date: 2026-10-09 00:42+0000\n"
 "PO-Revision-Date: 2022-08-26 23:44+0700\n"
 "Last-Translator: Wantoyèk <wantoyek@gmail.com>\n"
 "Language-Team: https://t.me/Localizations_KDE_Indonesia\n"
@@ -62,12 +62,12 @@ msgstr "Argumen yang ditafsirkan sebagai sejumlah inode (memerlukan -d)"
 msgid "Device id for the files"
 msgstr "Id perangkat untuk file"
 
-#: main.cpp:97
+#: main.cpp:98
 #, kde-format
 msgid "Error: -i requires specifying a device (-d <deviceId>)"
 msgstr "Error: -i memerlukan penspesifikasian sebuah peranti (-d <deviceId>)"
 
-#: main.cpp:103
+#: main.cpp:104
 #, kde-format
 msgid ""
 "The Baloo index could not be opened. Please run \"%1\" to see if Baloo is "
@@ -76,54 +76,54 @@ msgstr ""
 "Indeks Baloo tidak bisa dibuka. Silakan jalankan \"%1\" untuk lihat jika "
 "Baloo telah difungsikan dan bekerja."
 
-#: main.cpp:120
+#: main.cpp:121
 #, kde-format
 msgid "The document IDs of the Baloo DB and the filesystem are different:"
 msgstr "ID-ID dokumennya Baloo DB dan filesystem yang berbeda:"
 
-#: main.cpp:139
+#: main.cpp:140
 #, kde-format
 msgid "%1: Not a valid url or document id"
 msgstr "%1: Bukanlah sebuah id dokumen atau url yang absah"
 
-#: main.cpp:153
+#: main.cpp:154
 #, kde-format
 msgid "%1: Failed to parse inode number"
 msgstr "%1: Gagal mengurai jumlah inode"
 
-#: main.cpp:177
+#: main.cpp:178
 #, kde-format
 msgid "%1: No index information found"
 msgstr "%1: Tidak ada informasi indeks yang ditemukan"
 
-#: main.cpp:230
+#: main.cpp:235
 #, kde-format
 msgid "Internal Info"
 msgstr "Info Internal"
 
-#: main.cpp:231
+#: main.cpp:236
 #, kde-format
 msgid "File Name Terms: %1"
 msgstr "Istilah Nama File: %1"
 
-#: main.cpp:232
+#: main.cpp:237
 #, kde-format
 msgid "%1 Terms: %2"
 msgstr "Istilah %1: %2"
 
-#: main.cpp:233
+#: main.cpp:238
 #, fuzzy, kde-format
 #| msgid "File Name Terms: %1"
 msgid "Plain Text Terms: %1"
 msgstr "Istilah Nama File: %1"
 
-#: main.cpp:234
+#: main.cpp:239
 #, fuzzy, kde-format
 #| msgid "Terms: %1"
 msgid "Property Terms: %1"
 msgstr "Istilah: %1"
 
-#: main.cpp:237
+#: main.cpp:242
 #, kde-format
 msgctxt "Prefix string for internal errors"
 msgid "Internal Error - %1"
