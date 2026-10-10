@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-10-09 00:42+0000\n"
-"PO-Revision-Date: 2023-07-11 06:21+0200\n"
+"PO-Revision-Date: 2026-10-09 06:27+0200\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
 "Language: ka\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: Poedit 3.9\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -32,19 +32,19 @@ msgstr "Temuri.doghonadze@gmail.com"
 #, kde-format
 msgctxt "'listTypes' table header"
 msgid "<typeString>     Description"
-msgstr ""
+msgstr "<typeString>     აღწერა"
 
 #: main.cpp:66
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "Metadata Property Name                 Description"
-msgstr ""
+msgstr "მეტამონაცემები თვისება სახელი                 აღწერა"
 
 #: main.cpp:76
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "File Property Name                     Description"
-msgstr ""
+msgstr "ფაილი თვისება სახელი                     აღწერა"
 
 #: main.cpp:95
 #, kde-format
@@ -67,8 +67,7 @@ msgid "The maximum number of results"
 msgstr "ძებნის შედეგების მაქსიმალური რიცხვი"
 
 #: main.cpp:106
-#, fuzzy, kde-format
-#| msgid "limit"
+#, kde-format
 msgctxt "option value name"
 msgid "limit"
 msgstr "ლიმიტი"
@@ -79,8 +78,7 @@ msgid "Offset from which to start the search"
 msgstr "წანაცვლება, საიდანაც ძებნა დაიწყება"
 
 #: main.cpp:109
-#, fuzzy, kde-format
-#| msgid "offset"
+#, kde-format
 msgctxt "option value name"
 msgid "offset"
 msgstr "წანაცვლება"
@@ -91,21 +89,20 @@ msgid "Type of data to be searched"
 msgstr "საძებნი მონაცემების ტიპი"
 
 #: main.cpp:112
-#, fuzzy, kde-format
-#| msgid "typeStr"
+#, kde-format
 msgctxt "option value name"
 msgid "typeString"
-msgstr "typeStr"
+msgstr "typeString"
 
 #: main.cpp:114
 #, kde-format
 msgid "Show supported <typeString> values"
-msgstr ""
+msgstr "მხარდაჭერილი <typeString> მნიშვნელობების ჩვენება"
 
 #: main.cpp:116
 #, kde-format
 msgid "Show property names supported in query."
-msgstr ""
+msgstr "მოთხოვნაში მხარდაჭერილი თვისების სახელების ჩვენება."
 
 #: main.cpp:118
 #, kde-format
@@ -113,8 +110,7 @@ msgid "Limit search to specified directory"
 msgstr "ძებნის მითითებული საქაღალდით შეზღუდვა"
 
 #: main.cpp:119
-#, fuzzy, kde-format
-#| msgid "directory"
+#, kde-format
 msgctxt "option value name"
 msgid "directory"
 msgstr "საქაღალდე"
@@ -132,7 +128,7 @@ msgstr "დალაგების პირობა"
 #: main.cpp:127
 #, kde-format
 msgid "query [(|AND|OR) query ...]"
-msgstr ""
+msgstr "მოთხოვნა [(|AND|OR) მოთხოვნა ...]"
 
 #: main.cpp:128
 #, kde-format
@@ -146,11 +142,21 @@ msgid ""
 "baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
 "filename:jpg)'"
 msgstr ""
+"სიტყვების სია გამოსათხოვად.\n"
+"თითოეული მოთხოვნა, შეიძლება, იყოს ერთი მნიშვნელობა, ან მნიშვნელობა, რომელსაც "
+"პრეფიქსად თვისების სახელი აქვს.\n"
+"მოთხოვნები შეიძლება, ერთმანეთში ჩასვათ, ან დააჯგუფოთ ფრჩხილების "
+"გამოყენებით.\n"
+"\n"
+"\n"
+"მაგ:\n"
+"baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
+"filename:jpg)'"
 
 #: main.cpp:161
 #, kde-format
 msgid "ERROR: Invalid \"type\" value, supported values:\n"
-msgstr ""
+msgstr "შეცდომა: არასწორი მნიშვნელობა 'type'. მხარდაჭერილი მნიშვნელობებია:\n"
 
 #: main.cpp:197
 #, kde-format

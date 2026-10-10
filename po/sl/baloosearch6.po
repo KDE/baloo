@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-10-09 00:42+0000\n"
-"PO-Revision-Date: 2023-07-10 07:26+0200\n"
+"PO-Revision-Date: 2026-10-09 07:14+0200\n"
 "Last-Translator: Matjaž Jeran <matjaz.jeran@amis.net>\n"
 "Language-Team: Slovenian <lugos-slo@lugos.si>\n"
 "Language: sl\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
 "%100==4 ? 3 : 0);\n"
 "Translator: Andrej Mernik <andrejm@ubuntu.si>\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: Poedit 3.9\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -35,19 +35,19 @@ msgstr "andrejm@ubuntu.si,matjaz.jeran@amis.net"
 #, kde-format
 msgctxt "'listTypes' table header"
 msgid "<typeString>     Description"
-msgstr ""
+msgstr "<typeString>     Opis"
 
 #: main.cpp:66
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "Metadata Property Name                 Description"
-msgstr ""
+msgstr "Ime lastnosti metapodatka                 Opis"
 
 #: main.cpp:76
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "File Property Name                     Description"
-msgstr ""
+msgstr "Ime lastnosti datoteke                     Opis"
 
 #: main.cpp:95
 #, kde-format
@@ -70,8 +70,7 @@ msgid "The maximum number of results"
 msgstr "Največje število rezultatov"
 
 #: main.cpp:106
-#, fuzzy, kde-format
-#| msgid "limit"
+#, kde-format
 msgctxt "option value name"
 msgid "limit"
 msgstr "omejitev"
@@ -82,8 +81,7 @@ msgid "Offset from which to start the search"
 msgstr "Odmik od začetka iskanja"
 
 #: main.cpp:109
-#, fuzzy, kde-format
-#| msgid "offset"
+#, kde-format
 msgctxt "option value name"
 msgid "offset"
 msgstr "odmik"
@@ -94,21 +92,20 @@ msgid "Type of data to be searched"
 msgstr "Vrsta podatkov po kateri naj bo iskano"
 
 #: main.cpp:112
-#, fuzzy, kde-format
-#| msgid "typeStr"
+#, kde-format
 msgctxt "option value name"
 msgid "typeString"
-msgstr "typeStr"
+msgstr "typeString"
 
 #: main.cpp:114
 #, kde-format
 msgid "Show supported <typeString> values"
-msgstr ""
+msgstr "Prikaži podprte <typeString> vrednosti"
 
 #: main.cpp:116
 #, kde-format
 msgid "Show property names supported in query."
-msgstr ""
+msgstr "Prikaži imena lastnosti, ki jih podpira poizvedba."
 
 #: main.cpp:118
 #, kde-format
@@ -116,11 +113,10 @@ msgid "Limit search to specified directory"
 msgstr "Omeji iskanje na navedeni imenik"
 
 #: main.cpp:119
-#, fuzzy, kde-format
-#| msgid "directory"
+#, kde-format
 msgctxt "option value name"
 msgid "directory"
-msgstr "direktorij"
+msgstr "imenik"
 
 #: main.cpp:121
 #, kde-format
@@ -135,7 +131,7 @@ msgstr "Kriterij razvrščanja"
 #: main.cpp:127
 #, kde-format
 msgid "query [(|AND|OR) query ...]"
-msgstr ""
+msgstr "poizvedba [(|AND|OR) poizvedba ...]"
 
 #: main.cpp:128
 #, kde-format
@@ -149,11 +145,20 @@ msgid ""
 "baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
 "filename:jpg)'"
 msgstr ""
+"Seznam iskalnih izrazov.\n"
+"Vsaka poizvedba je lahko posamezna vrednost ali vrednost s predpono v obliki "
+"imena lastnosti.\n"
+"Poizvedbe je mogoče gnezditi in družiti z oklepaji.\n"
+"\n"
+"\n"
+"Primer:\n"
+"baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
+"filename:jpg)'"
 
 #: main.cpp:161
 #, kde-format
 msgid "ERROR: Invalid \"type\" value, supported values:\n"
-msgstr ""
+msgstr "NAPAKA: Neveljavno \"type\" vrednost, podprte vrednosti:\n"
 
 #: main.cpp:197
 #, kde-format

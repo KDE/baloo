@@ -1,16 +1,16 @@
 # Translation of baloosearch6.po to Catalan
-# Copyright (C) 2014-2023 This_file_is_part_of_KDE
+# Copyright (C) 2014-2026 This_file_is_part_of_KDE
 # This file is distributed under the license LGPL version 2.1 or
 # version 3 or later versions approved by the membership of KDE e.V.
 #
-# SPDX-FileCopyrightText: 2014-2015, 2018, 2020, 2023 Josep M. Ferrer <txemaq@gmail.com>
+# SPDX-FileCopyrightText: 2014-2015, 2018, 2020, 2023, 2026 Josep M. Ferrer <txemaq@gmail.com>
 # SPDX-FileCopyrightText: 2020-2021 Antoni Bella Pérez <antonibella5@yahoo.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-10-09 00:42+0000\n"
-"PO-Revision-Date: 2023-07-10 08:43+0200\n"
+"PO-Revision-Date: 2026-10-09 09:55+0200\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Lokalize 22.12.3\n"
+"X-Generator: Lokalize 25.04.0\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -35,19 +35,19 @@ msgstr "txemaq@gmail.com"
 #, kde-format
 msgctxt "'listTypes' table header"
 msgid "<typeString>     Description"
-msgstr ""
+msgstr "<typeString>     Descripció"
 
 #: main.cpp:66
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "Metadata Property Name                 Description"
-msgstr ""
+msgstr "Nom de propietat de metadades                 Descripció"
 
 #: main.cpp:76
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "File Property Name                     Description"
-msgstr ""
+msgstr "Nom de propietat de fitxer                     Descripció"
 
 #: main.cpp:95
 #, kde-format
@@ -70,8 +70,7 @@ msgid "The maximum number of results"
 msgstr "El nombre màxim de resultats"
 
 #: main.cpp:106
-#, fuzzy, kde-format
-#| msgid "limit"
+#, kde-format
 msgctxt "option value name"
 msgid "limit"
 msgstr "límit"
@@ -82,8 +81,7 @@ msgid "Offset from which to start the search"
 msgstr "Desplaçament des del qual començar la cerca"
 
 #: main.cpp:109
-#, fuzzy, kde-format
-#| msgid "offset"
+#, kde-format
 msgctxt "option value name"
 msgid "offset"
 msgstr "desplaçament"
@@ -94,21 +92,20 @@ msgid "Type of data to be searched"
 msgstr "Tipus de dades a cercar"
 
 #: main.cpp:112
-#, fuzzy, kde-format
-#| msgid "typeStr"
+#, kde-format
 msgctxt "option value name"
 msgid "typeString"
-msgstr "typeStr"
+msgstr "typeString"
 
 #: main.cpp:114
 #, kde-format
 msgid "Show supported <typeString> values"
-msgstr ""
+msgstr "Mostra els valors de <typeString> admesos"
 
 #: main.cpp:116
 #, kde-format
 msgid "Show property names supported in query."
-msgstr ""
+msgstr "Mostra els nom de propietat admesos a la consulta."
 
 #: main.cpp:118
 #, kde-format
@@ -116,8 +113,7 @@ msgid "Limit search to specified directory"
 msgstr "Limita la cerca al directori especificat"
 
 #: main.cpp:119
-#, fuzzy, kde-format
-#| msgid "directory"
+#, kde-format
 msgctxt "option value name"
 msgid "directory"
 msgstr "directori"
@@ -132,11 +128,13 @@ msgstr "Mostra els ID dels documents"
 msgid "Sorting criteria"
 msgstr "Criteri d'ordenació"
 
+# skip-rule: t-sp_pu
 #: main.cpp:127
 #, kde-format
 msgid "query [(|AND|OR) query ...]"
-msgstr ""
+msgstr "query [(|AND|OR) consulta ...]"
 
+# skip-rule: t-apo_ini, t-apo_fim
 #: main.cpp:128
 #, kde-format
 msgid ""
@@ -149,11 +147,20 @@ msgid ""
 "baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
 "filename:jpg)'"
 msgstr ""
+"Llista de paraules a consultar.\n"
+"Cada consulta pot ser un valor individual o un valor prefixat amb un nom de "
+"propietat.\n"
+"Les consultes es poden imbricar i agrupar amb parèntesis.\n"
+"\n"
+"\n"
+"Exemple:\n"
+"baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
+"filename:jpg)'"
 
 #: main.cpp:161
 #, kde-format
 msgid "ERROR: Invalid \"type\" value, supported values:\n"
-msgstr ""
+msgstr "ERROR: Valor no vàlid de «tipus», valors admesos:\n"
 
 #: main.cpp:197
 #, kde-format

@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-10-09 00:42+0000\n"
-"PO-Revision-Date: 2026-07-02 11:11+0200\n"
+"PO-Revision-Date: 2026-10-09 11:57+0200\n"
 "Last-Translator: Libor Filípek <libor.filipek@gmail.com>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "Language: cs\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Lokalize 26.04.2\n"
+"X-Generator: Poedit 3.9\n"
 "X-Language: cs_CZ\n"
 "X-Source-Language: en_US\n"
 
@@ -35,19 +35,19 @@ msgstr "vit@pelcak.org"
 #, kde-format
 msgctxt "'listTypes' table header"
 msgid "<typeString>     Description"
-msgstr ""
+msgstr "<typeString>     Popis"
 
 #: main.cpp:66
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "Metadata Property Name                 Description"
-msgstr ""
+msgstr "Název vlastnosti metadat                 Popis"
 
 #: main.cpp:76
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "File Property Name                     Description"
-msgstr ""
+msgstr "Název vlastnosti souboru                     Popis"
 
 #: main.cpp:95
 #, kde-format
@@ -70,11 +70,10 @@ msgid "The maximum number of results"
 msgstr "Maximální počet výsledků"
 
 #: main.cpp:106
-#, fuzzy, kde-format
-#| msgid "limit"
+#, kde-format
 msgctxt "option value name"
 msgid "limit"
-msgstr "omezení"
+msgstr "limit"
 
 #: main.cpp:108
 #, kde-format
@@ -82,8 +81,7 @@ msgid "Offset from which to start the search"
 msgstr "Odstup s jakým spustit hledání"
 
 #: main.cpp:109
-#, fuzzy, kde-format
-#| msgid "offset"
+#, kde-format
 msgctxt "option value name"
 msgid "offset"
 msgstr "posun"
@@ -94,21 +92,20 @@ msgid "Type of data to be searched"
 msgstr "Typ vyhledávaných dat"
 
 #: main.cpp:112
-#, fuzzy, kde-format
-#| msgid "typeStr"
+#, kde-format
 msgctxt "option value name"
 msgid "typeString"
-msgstr "typeStr"
+msgstr "typeString"
 
 #: main.cpp:114
 #, kde-format
 msgid "Show supported <typeString> values"
-msgstr ""
+msgstr "Zobrazit podporované hodnoty <typeString>"
 
 #: main.cpp:116
 #, kde-format
 msgid "Show property names supported in query."
-msgstr ""
+msgstr "Zobrazit názvy vlastností podporované v dotazu."
 
 #: main.cpp:118
 #, kde-format
@@ -116,8 +113,7 @@ msgid "Limit search to specified directory"
 msgstr "Omezit hledání na zvolený adresář"
 
 #: main.cpp:119
-#, fuzzy, kde-format
-#| msgid "directory"
+#, kde-format
 msgctxt "option value name"
 msgid "directory"
 msgstr "adresář"
@@ -135,7 +131,7 @@ msgstr "Kritéria řazení"
 #: main.cpp:127
 #, kde-format
 msgid "query [(|AND|OR) query ...]"
-msgstr ""
+msgstr "dotaz [(|AND|OR) dotaz ...]"
 
 #: main.cpp:128
 #, kde-format
@@ -149,11 +145,20 @@ msgid ""
 "baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
 "filename:jpg)'"
 msgstr ""
+"Seznam slov pro vyhledávání.\n"
+"Každý dotaz může být tvořen jednou hodnotou nebo hodnotou s předponou názvu "
+"vlastnosti.\n"
+"Dotazy mohou být vnořené a seskupené pomocí závorek.\n"
+"\n"
+"\n"
+"Příklad:\n"
+"baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
+"filename:jpg)'"
 
 #: main.cpp:161
 #, kde-format
 msgid "ERROR: Invalid \"type\" value, supported values:\n"
-msgstr ""
+msgstr "CHYBA: Neplatná hodnota \"type\", podporované hodnoty:\n"
 
 #: main.cpp:197
 #, kde-format

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-10-09 00:42+0000\n"
-"PO-Revision-Date: 2023-12-27 10:19+0300\n"
+"PO-Revision-Date: 2026-10-09 08:23+0200\n"
 "Last-Translator: Alexander Yavorsky <kekcuha@gmail.com>\n"
 "Language-Team: Russian <kde-russian@lists.kde.ru>\n"
 "Language: ru\n"
@@ -33,19 +33,19 @@ msgstr "aspotashev@gmail.com"
 #, kde-format
 msgctxt "'listTypes' table header"
 msgid "<typeString>     Description"
-msgstr ""
+msgstr "<название_типа>  Описание"
 
 #: main.cpp:66
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "Metadata Property Name                 Description"
-msgstr ""
+msgstr "Свойство метаданных                    Описание"
 
 #: main.cpp:76
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "File Property Name                     Description"
-msgstr ""
+msgstr "Свойство файла                         Описание"
 
 #: main.cpp:95
 #, kde-format
@@ -68,8 +68,7 @@ msgid "The maximum number of results"
 msgstr "Максимальное число результатов поиска."
 
 #: main.cpp:106
-#, fuzzy, kde-format
-#| msgid "limit"
+#, kde-format
 msgctxt "option value name"
 msgid "limit"
 msgstr "ограничение"
@@ -80,8 +79,7 @@ msgid "Offset from which to start the search"
 msgstr "Смещение в списке результатов поиска."
 
 #: main.cpp:109
-#, fuzzy, kde-format
-#| msgid "offset"
+#, kde-format
 msgctxt "option value name"
 msgid "offset"
 msgstr "смещение"
@@ -92,8 +90,7 @@ msgid "Type of data to be searched"
 msgstr "Тип данных для поиска"
 
 #: main.cpp:112
-#, fuzzy, kde-format
-#| msgid "typeStr"
+#, kde-format
 msgctxt "option value name"
 msgid "typeString"
 msgstr "название_типа"
@@ -101,12 +98,12 @@ msgstr "название_типа"
 #: main.cpp:114
 #, kde-format
 msgid "Show supported <typeString> values"
-msgstr ""
+msgstr "Показать допустимые значения <название_типа>"
 
 #: main.cpp:116
 #, kde-format
 msgid "Show property names supported in query."
-msgstr ""
+msgstr "Показать названия свойств, которые можно использовать в запросе."
 
 #: main.cpp:118
 #, kde-format
@@ -114,8 +111,7 @@ msgid "Limit search to specified directory"
 msgstr "Ограничить поиск указанным каталогом."
 
 #: main.cpp:119
-#, fuzzy, kde-format
-#| msgid "directory"
+#, kde-format
 msgctxt "option value name"
 msgid "directory"
 msgstr "каталог"
@@ -133,7 +129,7 @@ msgstr "Критерии сортировки"
 #: main.cpp:127
 #, kde-format
 msgid "query [(|AND|OR) query ...]"
-msgstr ""
+msgstr "запрос [(|AND|OR) запрос ...]"
 
 #: main.cpp:128
 #, kde-format
@@ -147,11 +143,20 @@ msgid ""
 "baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
 "filename:jpg)'"
 msgstr ""
+"Список слов для поиска.\n"
+"Каждый запрос — это отдельное значение или значение с префиксом из названия "
+"свойства.\n"
+"Запросы могут быть вложенными и группироваться скобками.\n"
+"\n"
+"\n"
+"Пример:\n"
+"baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
+"filename:jpg)'"
 
 #: main.cpp:161
 #, kde-format
 msgid "ERROR: Invalid \"type\" value, supported values:\n"
-msgstr ""
+msgstr "ОШИБКА: недопустимое значение параметра «type». Допустимые значения:\n"
 
 #: main.cpp:197
 #, kde-format

@@ -1,15 +1,15 @@
 # Spanish translations for baloosearch6.po package.
-# Copyright (C) 2014-2025 This file is copyright:
+# Copyright (C) 2014-2026 This file is copyright:
 # This file is distributed under the same license as the baloo package.
 # Automatically generated, 2014.
 #
-# SPDX-FileCopyrightText: 2014, 2015, 2018, 2020, 2021, 2023, 2025 Eloy Cuadra <ecuadra@eloihr.net>
+# SPDX-FileCopyrightText: 2014-2015, 2018, 2020-2021, 2023, 2025-2026 Eloy Cuadra <ecuadra@eloihr.net>
 msgid ""
 msgstr ""
 "Project-Id-Version: baloosearch6\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-10-09 00:42+0000\n"
-"PO-Revision-Date: 2025-05-04 01:40+0100\n"
+"PO-Revision-Date: 2026-10-09 15:53+0100\n"
 "Last-Translator: Eloy Cuadra <ecuadra@eloihr.net>\n"
 "Language-Team: Spanish <kde-l10n-es@kde.org>\n"
 "Language: es\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 23.04.3\n"
+"X-Generator: Lokalize 26.08.1\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -33,19 +33,19 @@ msgstr "ecuadra@eloihr.net"
 #, kde-format
 msgctxt "'listTypes' table header"
 msgid "<typeString>     Description"
-msgstr ""
+msgstr "<typeString>     Descripción"
 
 #: main.cpp:66
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "Metadata Property Name                 Description"
-msgstr ""
+msgstr "Metadatos Propiedad Nombre                 Descripción"
 
 #: main.cpp:76
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "File Property Name                     Description"
-msgstr ""
+msgstr "Archivo Propiedad Nombre                     Descripción"
 
 #: main.cpp:95
 #, kde-format
@@ -68,8 +68,7 @@ msgid "The maximum number of results"
 msgstr "El número máximo de resultados"
 
 #: main.cpp:106
-#, fuzzy, kde-format
-#| msgid "limit"
+#, kde-format
 msgctxt "option value name"
 msgid "limit"
 msgstr "límite"
@@ -80,8 +79,7 @@ msgid "Offset from which to start the search"
 msgstr "Desplazamiento desde donde empezar la búsqueda"
 
 #: main.cpp:109
-#, fuzzy, kde-format
-#| msgid "offset"
+#, kde-format
 msgctxt "option value name"
 msgid "offset"
 msgstr "desplazamiento"
@@ -92,21 +90,20 @@ msgid "Type of data to be searched"
 msgstr "Tipo de datos a buscar"
 
 #: main.cpp:112
-#, fuzzy, kde-format
-#| msgid "typeStr"
+#, kde-format
 msgctxt "option value name"
 msgid "typeString"
-msgstr "typeStr"
+msgstr "typeString"
 
 #: main.cpp:114
 #, kde-format
 msgid "Show supported <typeString> values"
-msgstr ""
+msgstr "Mostrar valores permitidos para <typeString>"
 
 #: main.cpp:116
 #, kde-format
 msgid "Show property names supported in query."
-msgstr ""
+msgstr "Mostrar nombres de propiedades implementadas en la consulta."
 
 #: main.cpp:118
 #, kde-format
@@ -114,8 +111,7 @@ msgid "Limit search to specified directory"
 msgstr "Limitar la búsqueda al directorio indicado"
 
 #: main.cpp:119
-#, fuzzy, kde-format
-#| msgid "directory"
+#, kde-format
 msgctxt "option value name"
 msgid "directory"
 msgstr "directorio"
@@ -133,7 +129,7 @@ msgstr "Criterios de ordenación"
 #: main.cpp:127
 #, kde-format
 msgid "query [(|AND|OR) query ...]"
-msgstr ""
+msgstr "consulta [(|AND|OR) consulta …]"
 
 #: main.cpp:128
 #, kde-format
@@ -147,11 +143,20 @@ msgid ""
 "baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
 "filename:jpg)'"
 msgstr ""
+"Lista de palabras para consultar.\n"
+"Cada consulta puede ser un único valor, o un valor con un nombre de "
+"propiedad como prefijo.\n"
+"Las consultas se pueden anidar y agrupar con paréntesis.\n"
+"\n"
+"\n"
+"Ejemplo:\n"
+"baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
+"filename:jpg)'"
 
 #: main.cpp:161
 #, kde-format
 msgid "ERROR: Invalid \"type\" value, supported values:\n"
-msgstr ""
+msgstr "ERROR: valor «type» no válido; valores permitidos:\n"
 
 #: main.cpp:197
 #, kde-format
@@ -167,9 +172,3 @@ msgstr "Usando la ruta canónica «%1» para «%2»"
 #, kde-format
 msgid "Elapsed: %1 msecs"
 msgstr "Tiempo transcurrido: %1 ms"
-
-#~ msgid "query"
-#~ msgstr "consulta"
-
-#~ msgid "List of words to query for"
-#~ msgstr "Lista de palabras a buscar"

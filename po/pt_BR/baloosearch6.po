@@ -4,20 +4,21 @@
 #
 # André Marcelo Alvarenga <alvarenga@kde.org>, 2014, 2015, 2020.
 # Luiz Fernando Ranghetti <elchevive@opensuse.org>, 2018, 2021, 2023.
+# SPDX-FileCopyrightText: 2026 Marcus Gama <marcus.gama@gmail.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-10-09 00:42+0000\n"
-"PO-Revision-Date: 2023-07-25 10:05-0300\n"
-"Last-Translator: Luiz Fernando Ranghetti <elchevive@opensuse.org>\n"
-"Language-Team: Brazilian Portuguese <kde-i18n-pt_BR@kde.org>\n"
+"PO-Revision-Date: 2026-10-09 09:17-0300\n"
+"Last-Translator: Marcus Gama <marcus.gama@gmail.com>\n"
+"Language-Team: Portuguese <kde-i18n-pt_BR@kde.org>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 22.12.3\n"
+"X-Generator: Lokalize 26.08.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -33,19 +34,19 @@ msgstr "alvarenga@kde.org"
 #, kde-format
 msgctxt "'listTypes' table header"
 msgid "<typeString>     Description"
-msgstr ""
+msgstr "<stringTipo>     Descrição"
 
 #: main.cpp:66
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "Metadata Property Name                 Description"
-msgstr ""
+msgstr "Nome da propriedade de metadados                 Descrição"
 
 #: main.cpp:76
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "File Property Name                     Description"
-msgstr ""
+msgstr "Nome da propriedade do arquivo                     Descrição"
 
 #: main.cpp:95
 #, kde-format
@@ -68,8 +69,7 @@ msgid "The maximum number of results"
 msgstr "Número máximo de resultados"
 
 #: main.cpp:106
-#, fuzzy, kde-format
-#| msgid "limit"
+#, kde-format
 msgctxt "option value name"
 msgid "limit"
 msgstr "limite"
@@ -80,8 +80,7 @@ msgid "Offset from which to start the search"
 msgstr "Posição de onde iniciar a pesquisa"
 
 #: main.cpp:109
-#, fuzzy, kde-format
-#| msgid "offset"
+#, kde-format
 msgctxt "option value name"
 msgid "offset"
 msgstr "posição"
@@ -92,8 +91,7 @@ msgid "Type of data to be searched"
 msgstr "Tipo de dados a ser pesquisado"
 
 #: main.cpp:112
-#, fuzzy, kde-format
-#| msgid "typeStr"
+#, kde-format
 msgctxt "option value name"
 msgid "typeString"
 msgstr "stringTipo"
@@ -101,12 +99,12 @@ msgstr "stringTipo"
 #: main.cpp:114
 #, kde-format
 msgid "Show supported <typeString> values"
-msgstr ""
+msgstr "Mostra valores <stringTipo> suportados"
 
 #: main.cpp:116
 #, kde-format
 msgid "Show property names supported in query."
-msgstr ""
+msgstr "Mostrar nomes de propriedades suportados na consulta."
 
 #: main.cpp:118
 #, kde-format
@@ -114,8 +112,7 @@ msgid "Limit search to specified directory"
 msgstr "Limitar a pesquisa à pasta indicada"
 
 #: main.cpp:119
-#, fuzzy, kde-format
-#| msgid "directory"
+#, kde-format
 msgctxt "option value name"
 msgid "directory"
 msgstr "pasta"
@@ -133,7 +130,7 @@ msgstr "Critério de ordenação"
 #: main.cpp:127
 #, kde-format
 msgid "query [(|AND|OR) query ...]"
-msgstr ""
+msgstr "consulta [consulta (|AND|OR) ...]"
 
 #: main.cpp:128
 #, kde-format
@@ -147,11 +144,20 @@ msgid ""
 "baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
 "filename:jpg)'"
 msgstr ""
+"Lista de palavras para consulta.\n"
+"Cada consulta pode consistir em um valor único ou em um valor precedido pelo "
+"nome de uma propriedade.\n"
+"As consultas podem ser aninhadas e agrupadas entre parênteses.\n"
+"\n"
+"\n"
+"Exemplo:\n"
+"baloosearch6 -t image 'width<=2000 (nomearquivo:png OR nomearquivo:jpeg OR "
+"nomearquivo:jpg)'"
 
 #: main.cpp:161
 #, kde-format
 msgid "ERROR: Invalid \"type\" value, supported values:\n"
-msgstr ""
+msgstr "ERRO: Valor \"tipo\" inválido, valores suportados:\n"
 
 #: main.cpp:197
 #, kde-format

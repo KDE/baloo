@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: baloosearch5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-10-09 00:42+0000\n"
-"PO-Revision-Date: 2026-10-06 08:03+0200\n"
+"PO-Revision-Date: 2026-10-09 15:40+0200\n"
 "Last-Translator: Nemanja Hiršl <nemhirsl@gmail.com>\n"
 "Language-Team: Serbian <kde-i18n-sr@kde.org>\n"
 "Language: sr@ijekavian\n"
@@ -33,19 +33,19 @@ msgstr "caslav.ilic@gmx.net,nemhirsl@gmail.com"
 #, kde-format
 msgctxt "'listTypes' table header"
 msgid "<typeString>     Description"
-msgstr ""
+msgstr "<тип>            Опис"
 
 #: main.cpp:66
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "Metadata Property Name                 Description"
-msgstr ""
+msgstr "Име својства метаподатака              Опис"
 
 #: main.cpp:76
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "File Property Name                     Description"
-msgstr ""
+msgstr "Име својства фајла                     Опис"
 
 #: main.cpp:95
 #, kde-format
@@ -68,8 +68,7 @@ msgid "The maximum number of results"
 msgstr "Највећи број резултата."
 
 #: main.cpp:106
-#, fuzzy, kde-format
-#| msgid "limit"
+#, kde-format
 msgctxt "option value name"
 msgid "limit"
 msgstr "ограничење"
@@ -80,8 +79,7 @@ msgid "Offset from which to start the search"
 msgstr "Помак од којег почиње претрага."
 
 #: main.cpp:109
-#, fuzzy, kde-format
-#| msgid "offset"
+#, kde-format
 msgctxt "option value name"
 msgid "offset"
 msgstr "помак"
@@ -92,8 +90,7 @@ msgid "Type of data to be searched"
 msgstr "Тип података који се претражују."
 
 #: main.cpp:112
-#, fuzzy, kde-format
-#| msgid "typeStr"
+#, kde-format
 msgctxt "option value name"
 msgid "typeString"
 msgstr "тип"
@@ -101,12 +98,12 @@ msgstr "тип"
 #: main.cpp:114
 #, kde-format
 msgid "Show supported <typeString> values"
-msgstr ""
+msgstr "Прикажи подржане вриједности за <тип>."
 
 #: main.cpp:116
 #, kde-format
 msgid "Show property names supported in query."
-msgstr ""
+msgstr "Прикажи имена својстава подржаних у упиту."
 
 #: main.cpp:118
 #, kde-format
@@ -114,8 +111,7 @@ msgid "Limit search to specified directory"
 msgstr "Ограничи претрагу на задату фасциклу."
 
 #: main.cpp:119
-#, fuzzy, kde-format
-#| msgid "directory"
+#, kde-format
 msgctxt "option value name"
 msgid "directory"
 msgstr "фасцикла"
@@ -133,7 +129,7 @@ msgstr "Критеријум ређања."
 #: main.cpp:127
 #, kde-format
 msgid "query [(|AND|OR) query ...]"
-msgstr ""
+msgstr "упит [(|AND|OR) упит ...]"
 
 #: main.cpp:128
 #, kde-format
@@ -147,11 +143,20 @@ msgid ""
 "baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
 "filename:jpg)'"
 msgstr ""
+"Списак ријечи које треба потражити.\n"
+"Сваки упит може бити једна вриједност, или вриједност испред које стоји име "
+"својства.\n"
+"Упити могу бити угнијежђени и груписани заградама.\n"
+"\n"
+"\n"
+"Примјер:\n"
+"baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
+"filename:jpg)'"
 
 #: main.cpp:161
 #, kde-format
 msgid "ERROR: Invalid \"type\" value, supported values:\n"
-msgstr ""
+msgstr "ГРЕШКА: Лоша вриједност за „type“, подржане вриједности:\n"
 
 #: main.cpp:197
 #, kde-format
@@ -167,9 +172,3 @@ msgstr "Користим каноничку путању „%1“ за „%2“"
 #, kde-format
 msgid "Elapsed: %1 msecs"
 msgstr "Протекло: %1 ms"
-
-#~ msgid "query"
-#~ msgstr "упит"
-
-#~ msgid "List of words to query for"
-#~ msgstr "Списак ријечи које треба потражити."

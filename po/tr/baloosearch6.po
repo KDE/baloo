@@ -2,13 +2,13 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Volkan Gezer <volkangezer@gmail.com>, 2015, 2021.
-# SPDX-FileCopyrightText: 2022, 2023, 2024, 2026 Emir SARI <emir_sari@icloud.com>
+# SPDX-FileCopyrightText: 2022-2024, 2026 Emir SARI <emir_sari@icloud.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-10-09 00:42+0000\n"
-"PO-Revision-Date: 2026-05-02 19:50+0300\n"
+"PO-Revision-Date: 2026-10-09 19:38+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 25.12.3\n"
+"X-Generator: Lokalize 26.08.0\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -32,19 +32,23 @@ msgstr "volkangezer@gmail.com"
 #, kde-format
 msgctxt "'listTypes' table header"
 msgid "<typeString>     Description"
-msgstr ""
+msgstr "<türDizisi>      Açıklama"
 
 #: main.cpp:66
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "Metadata Property Name                 Description"
 msgstr ""
+"Metadata Property Name                 Description Üst Veri Özelliği "
+"Adı                  Açıklama"
 
 #: main.cpp:76
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "File Property Name                     Description"
 msgstr ""
+"File Property Name                     Description Dosya Özelliği "
+"Adı                     Açıklama"
 
 #: main.cpp:95
 #, kde-format
@@ -68,8 +72,7 @@ msgid "The maximum number of results"
 msgstr "En çok sonuç sayısı"
 
 #: main.cpp:106
-#, fuzzy, kde-format
-#| msgid "limit"
+#, kde-format
 msgctxt "option value name"
 msgid "limit"
 msgstr "sınır"
@@ -77,14 +80,13 @@ msgstr "sınır"
 #: main.cpp:108
 #, kde-format
 msgid "Offset from which to start the search"
-msgstr "Aramanın başlatılacağı konum"
+msgstr "Aramanın başlatılacağı ofset"
 
 #: main.cpp:109
-#, fuzzy, kde-format
-#| msgid "offset"
+#, kde-format
 msgctxt "option value name"
 msgid "offset"
-msgstr "konum"
+msgstr "ofset"
 
 #: main.cpp:111
 #, kde-format
@@ -92,8 +94,7 @@ msgid "Type of data to be searched"
 msgstr "Aranacak verinin türü"
 
 #: main.cpp:112
-#, fuzzy, kde-format
-#| msgid "typeStr"
+#, kde-format
 msgctxt "option value name"
 msgid "typeString"
 msgstr "türDizisi"
@@ -101,12 +102,12 @@ msgstr "türDizisi"
 #: main.cpp:114
 #, kde-format
 msgid "Show supported <typeString> values"
-msgstr ""
+msgstr "Desteklenen <türDizisi> değerleri"
 
 #: main.cpp:116
 #, kde-format
 msgid "Show property names supported in query."
-msgstr ""
+msgstr "Sorguda desteklenen özellik adlarını gösterin."
 
 #: main.cpp:118
 #, kde-format
@@ -114,8 +115,7 @@ msgid "Limit search to specified directory"
 msgstr "Aramayı belirlenen dizinle sınırlandır"
 
 #: main.cpp:119
-#, fuzzy, kde-format
-#| msgid "directory"
+#, kde-format
 msgctxt "option value name"
 msgid "directory"
 msgstr "dizin"
@@ -133,7 +133,7 @@ msgstr "Sıralama ölçütü"
 #: main.cpp:127
 #, kde-format
 msgid "query [(|AND|OR) query ...]"
-msgstr ""
+msgstr "query [(|AND|OR) sorgu …]"
 
 #: main.cpp:128
 #, kde-format
@@ -147,11 +147,20 @@ msgid ""
 "baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
 "filename:jpg)'"
 msgstr ""
+"Sorgulanacak sözcüklerin listesini gösterir.\n"
+"Her bir sorgu tekil bir değer veya başına bir özellik adı getirilmiş bir "
+"değer olabilir.\n"
+"Sorgular iç içe geçirilebilir ve parantezlerle gruplanabilirler.\n"
+"\n"
+"\n"
+"Örnek:\n"
+"baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
+"filename:jpg)'"
 
 #: main.cpp:161
 #, kde-format
 msgid "ERROR: Invalid \"type\" value, supported values:\n"
-msgstr ""
+msgstr "HATA: Geçersiz “type” değeri, desteklenen değerler:\n"
 
 #: main.cpp:197
 #, kde-format
