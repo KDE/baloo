@@ -11,6 +11,7 @@
 #include "enginequery.h"
 #include "filenamequery.h"
 #include "idutils.h"
+#include "mimetypequery.h"
 #include "termgenerator.h"
 #include "transaction.h"
 
@@ -95,6 +96,9 @@ private Q_SLOTS:
     void testFilenamePhrase_data();
     void testFilenamePhrase();
     void testPhrases_dataCommon();
+
+    void testMimetypePhrase();
+    void testMimetypePhrase_data();
 
     void testTagTerm_data();
     void testTagTerm();
@@ -329,6 +333,27 @@ void QueryTest::testFilenamePhrase()
 
     Transaction tr(db.get(), Transaction::ReadOnly);
     QCOMPARE(execQuery(tr, qf), filenameMatches);
+}
+
+void QueryTest::testMimetypePhrase_data()
+{
+    QTest::addColumn<QString>("phrase");
+    QTest::addColumn<QList<quint64>>("mimetypeMatches");
+
+    QTest::addRow("text") << u"text"_s << QList{m_ids[5], m_ids[6]};
+    QTest::addRow("plain") << u"plain"_s << QList{m_ids[5], m_ids[6]};
+    QTest::addRow("text/plain") << u"text/plain"_s << QList{m_ids[5], m_ids[6]};
+}
+
+void QueryTest::testMimetypePhrase()
+{
+    QFETCH(QString, phrase);
+    QFETCH(QList<quint64>, mimetypeMatches);
+
+    MimetypeQuery qm(phrase);
+
+    Transaction tr(db.get(), Transaction::ReadOnly);
+    QCOMPARE(execQuery(tr, qm), mimetypeMatches);
 }
 
 void QueryTest::testTagTerm_data()
