@@ -167,9 +167,3 @@ msgstr "Brukar kanonisk sti «%1» for «%2»"
 #, kde-format
 msgid "Elapsed: %1 msecs"
 msgstr "Tid gått: %1 ms"
-
-#~ msgid "query"
-#~ msgstr "søk"
-
-#~ msgid "List of words to query for"
-#~ msgstr "Ord å søkja etter"
