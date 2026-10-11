@@ -125,19 +125,10 @@ void TermGenerator::indexProperty(const QString &text, const QByteArray &prefix,
     if (indexAsContent) {
         addPositionTerms(terms);
     }
-    if (terms.size() == 1) {
-        QByteArray finalArr = prefix + terms[0];
-        m_doc.addTerm(finalArr);
-        return;
-    }
-
-    for (const QByteArray& term : terms) {
+    for (const QByteArray &term : terms) {
         QByteArray finalArr = prefix + term;
-
-        m_doc.addPositionTerm(finalArr, m_position);
-        m_position++;
+        m_doc.addTerm(finalArr);
     }
-    m_position++;
 }
 
 void TermGenerator::indexFileNameText(const QString& text)
