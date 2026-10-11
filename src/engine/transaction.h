@@ -26,6 +26,7 @@ class PostingIterator;
 class EngineQuery;
 class FilenameQuery;
 class MimetypeQuery;
+class PropertyPhraseQuery;
 class DatabaseSize;
 class DBState;
 
@@ -67,6 +68,7 @@ public:
     PostingIterator::Ptr postingIterator(const EngineQuery &query) const;
     PostingIterator::Ptr postingIterator(const FilenameQuery &query) const;
     PostingIterator::Ptr postingIterator(const MimetypeQuery &query) const;
+    PostingIterator::Ptr postingIterator(const PropertyPhraseQuery &query) const;
     PostingIterator::Ptr postingIterator(const QByteArray &key) const;
     PostingIterator::Ptr postingPrefixIterator(const QByteArray &prefix) const;
     PostingIterator::Ptr postingCompIterator(const QByteArray &prefix, qlonglong value, PostingDB::Comparator com) const;

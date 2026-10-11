@@ -12,6 +12,8 @@
 #include "filenamequery.h"
 #include "idutils.h"
 #include "mimetypequery.h"
+#include "propertydata.h"
+#include "propertyphrasequery.h"
 #include "termgenerator.h"
 #include "transaction.h"
 
@@ -100,6 +102,9 @@ private Q_SLOTS:
     void testMimetypePhrase();
     void testMimetypePhrase_data();
 
+    void testPropertyPhrase();
+    void testPropertyPhrase_data();
+
     void testTagTerm_data();
     void testTagTerm();
     void testTagTermPhrase_data();
@@ -175,16 +180,21 @@ private:
         QString url = dir->path() + QLatin1Char('/') + fileName;
         doc.setUrl(QFile::encodeName(url));
 
+        QByteArray jsonData{1, '{'};
         TermGenerator tg(doc);
         for (const auto &property : properties) {
             const QByteArray prefix{'X' + property.prefix + '-'};
             tg.indexProperty(property.text, prefix, property.asContent);
+            jsonData += '"' + property.prefix + "\":\"" //
+                + property.text.toUtf8() + "\",";
         }
         tg.indexFileNameText(fileName);
         doc.setId(id);
         doc.setParentId(m_parentId);
         doc.setMTime(1000);
         doc.setCTime(1200);
+        jsonData.back() = '}';
+        doc.setData(jsonData);
 
         tr->addDocument(doc);
     }
@@ -351,6 +361,35 @@ void QueryTest::testMimetypePhrase()
 
     Transaction tr(db.get(), Transaction::ReadOnly);
     QCOMPARE(execQuery(tr, qm), mimetypeMatches);
+}
+
+void QueryTest::testPropertyPhrase_data()
+{
+    QTest::addColumn<QByteArray>("propertyInfix");
+    QTest::addColumn<QString>("phrase");
+    QTest::addColumn<QList<quint64>>("propertyMatches");
+
+    QTest::addRow("AlbumArtist") << "9"_ba << u"Artist"_s << QList{m_ids[11]};
+    QTest::addRow("AlbumArtist2") << "9"_ba << u"1"_s << QList{m_ids[11]};
+    QTest::addRow("AlbumArtistPhrase") << "9"_ba << u"Artist Number 1"_s << QList{m_ids[11]};
+    QTest::addRow("AlbumArtistPhraseNoMatch2") << "9"_ba << u"Artist Number 2"_s << QList<quint64>{};
+    QTest::addRow("AlbumArtistPhraseNoMatch3") << "9"_ba << u"Artist Number 3"_s << QList<quint64>{};
+    QTest::addRow("AlbumArtistBadPhrase") << "9"_ba << u"Artist 1"_s << QList<quint64>{};
+    QTest::addRow("Photographer") << "9"_ba << u"Photographer"_s << QList{m_ids[12]};
+    QTest::addRow("Width") << "26"_ba << u"1234"_s << QList{m_ids[12]};
+    QTest::addRow("Exposure") << "40"_ba << u"0.234"_s << QList{m_ids[12]};
+}
+
+void QueryTest::testPropertyPhrase()
+{
+    QFETCH(QByteArray, propertyInfix);
+    QFETCH(QString, phrase);
+    QFETCH(QList<quint64>, propertyMatches);
+
+    PropertyPhraseQuery qm(phrase, propertyInfix);
+
+    Transaction tr(db.get(), Transaction::ReadOnly);
+    QCOMPARE(execQuery(tr, qm), propertyMatches);
 }
 
 void QueryTest::testTagTerm_data()
