@@ -57,6 +57,12 @@ QVector<quint64> execQuery(const Transaction &tr, const QueryT &query)
     }
     return results;
 }
+
+struct PropertyTerm {
+    QByteArray prefix;
+    QString text;
+    bool asContent;
+};
 } // namespace
 
 class QueryTest : public QObject
@@ -80,6 +86,8 @@ private Q_SLOTS:
         m_id8 = m_parentId + 8;
         m_id9 = m_parentId + 9;
         m_id10 = m_parentId + 10;
+        m_id11 = m_parentId + 11;
+        m_id12 = m_parentId + 12;
     }
 
     void init()
@@ -91,6 +99,7 @@ private Q_SLOTS:
 
         insertDocuments();
         insertTagDocuments();
+        insertPropertyDocuments();
     }
 
     void cleanup() {
@@ -172,6 +181,29 @@ private:
         tr->addDocument(doc);
     }
 
+    void insertPropertyDocuments();
+    void addPropertyDocument(Transaction *tr, const QList<PropertyTerm> &properties, quint64 id, const QString &fileName)
+    {
+        Document doc;
+        QString url = dir->path() + QLatin1Char('/') + fileName;
+        doc.setUrl(QFile::encodeName(url));
+
+        TermGenerator tg(doc);
+        for (const auto &property : properties) {
+            tg.indexText(property.text, property.prefix);
+            if (property.asContent) {
+                tg.indexText(property.text);
+            }
+        }
+        tg.indexFileNameText(fileName);
+        doc.setId(id);
+        doc.setParentId(m_parentId);
+        doc.setMTime(1000);
+        doc.setCTime(1200);
+
+        tr->addDocument(doc);
+    }
+
     quint64 m_id1;
     quint64 m_id2;
     quint64 m_id3;
@@ -182,6 +214,8 @@ private:
     quint64 m_id8;
     quint64 m_id9;
     quint64 m_id10;
+    quint64 m_id11;
+    quint64 m_id12;
 };
 
 void QueryTest::insertDocuments()
@@ -219,11 +253,31 @@ void QueryTest::insertTagDocuments()
     tr.commit();
 }
 
+void QueryTest::insertPropertyDocuments()
+{
+    Transaction tr(db.get(), Transaction::ReadWrite);
+    addPropertyDocument(&tr, //
+                        {
+                            {"X9-", u"The Artist Number 1"_s, true}, // artist
+                            {"X10-", u"Album Number 2"_s, true}, // album
+                        },
+                        m_id11,
+                        u"propertyFile.mp3"_s);
+    addPropertyDocument(&tr, //
+                        {
+                            {"X9-", u"Photographer Name"_s, true}, // artist
+                            {"X31-", u"Great Camera Model 2"_s, false}, // model
+                        },
+                        m_id12,
+                        u"propertyFile.jpg"_s);
+    tr.commit();
+}
+
 void QueryTest::testTermEqual()
 {
     EngineQuery q({EngineQuery::PhraseTerm("the", EngineQuery::Equal)});
 
-    QVector<quint64> result = SortedIdVector{m_id1, m_id2, m_id4, m_id7};
+    QVector<quint64> result = SortedIdVector{m_id1, m_id2, m_id4, m_id7, m_id11};
     Transaction tr(db.get(), Transaction::ReadOnly);
     QCOMPARE(execQuery(tr, q), result);
 }
@@ -455,6 +509,13 @@ void QueryTest::testSearchstringParser_data()
     addRow(u"mimetype:pla tag:f1"_s,     {u"tagFile1"_s});
     addRow(u"mimetype:text/plain"_s,     {u"tagFile1"_s, u"tagFile2"_s});
     addRow(u"mimetype:plain/text"_s,     {});
+    addRow(u"the artist"_s,              {u"propertyFile.mp3"_s});
+    addRow(u"\"the artist\""_s,          {u"propertyFile.mp3"_s});
+    addRow(u"artist:\"the artist\""_s,   {u"propertyFile.mp3"_s});
+    addRow(u"photographer"_s,            {u"propertyFile.jpg"_s});
+    addRow(u"artist:photographer"_s,     {u"propertyFile.jpg"_s});
+    addRow(u"model:camera"_s,            {u"propertyFile.jpg"_s});
+    addRow(u"camera"_s,                  {});
     // clang-format off
 }
 
