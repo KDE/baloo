@@ -17,6 +17,7 @@ namespace Baloo {
 
 class WriteTransaction;
 class TermGeneratorTest;
+class DocumentContentTest;
 
 /**
  * A document represents an indexed file to be stored in the Baloo engine.
@@ -81,6 +82,7 @@ private:
     friend class WriteTransaction;
     friend class TermGeneratorTest;
     friend class BasicIndexingJobTest;
+    friend class DocumentContentTest;
 };
 
 inline QDebug operator<<(QDebug dbg, const Document &doc) {

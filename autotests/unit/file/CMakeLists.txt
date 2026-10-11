@@ -71,3 +71,17 @@ ecm_add_test(
     TEST_NAME "modifiedfileindexertest"
     LINK_LIBRARIES Qt6::Test baloofilecommon
 )
+
+# Processing of document content
+add_executable(documentcontenttest_bin
+    documentcontenttest.cpp
+    ../../../src/file/extractor/result.cpp
+)
+target_link_libraries(documentcontenttest_bin
+    Qt6::Test
+    baloofilecommon
+)
+ecm_mark_as_test(documentcontenttest_bin)
+
+# Run the benchmarks with just 1 iteration during CI, so we known it works
+add_test(NAME documentcontenttest COMMAND documentcontenttest_bin "-iterations" "1")
