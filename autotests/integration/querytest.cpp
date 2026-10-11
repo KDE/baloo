@@ -190,7 +190,8 @@ private:
 
         TermGenerator tg(doc);
         for (const auto &property : properties) {
-            tg.indexText(property.text, property.prefix);
+            const QByteArray prefix{'X' + property.prefix + '-'};
+            tg.indexText(property.text, prefix);
             if (property.asContent) {
                 tg.indexText(property.text);
             }
@@ -258,15 +259,17 @@ void QueryTest::insertPropertyDocuments()
     Transaction tr(db.get(), Transaction::ReadWrite);
     addPropertyDocument(&tr, //
                         {
-                            {"X9-", u"The Artist Number 1"_s, true}, // artist
-                            {"X10-", u"Album Number 2"_s, true}, // album
+                            {"9", u"The Artist Number 1"_s, true}, // artist
+                            {"10", u"Album Number 2"_s, true}, // album
                         },
                         m_id11,
                         u"propertyFile.mp3"_s);
     addPropertyDocument(&tr, //
                         {
-                            {"X9-", u"Photographer Name"_s, true}, // artist
-                            {"X31-", u"Great Camera Model 2"_s, false}, // model
+                            {"9", u"Photographer Name"_s, true}, // artist
+                            {"31", u"Great Camera Model 2"_s, false}, // model
+                            {"26", u"1234"_s, false}, // width
+                            {"40", u"0.234"_s, false}, // photoExposureTime
                         },
                         m_id12,
                         u"propertyFile.jpg"_s);
@@ -432,6 +435,8 @@ void QueryTest::testSearchstringParser()
     }
     QEXPECT_FAIL("Match 'dot . Test'", "Bug 407664: Tries to match isolated dot", Continue);
     QEXPECT_FAIL("Match 'file - with hyphen.txt'", "Bug 407664: Tries to match hyphen", Continue);
+    QEXPECT_FAIL("Match 'photoExposureTime>0.2'", "Floating point values not parsed", Continue);
+    QEXPECT_FAIL("Match 'photoExposureTime<0.3'", "Floating point values not parsed", Continue);
     QCOMPARE(matches, expectedFiles);
 }
 
@@ -515,6 +520,13 @@ void QueryTest::testSearchstringParser_data()
     addRow(u"photographer"_s,            {u"propertyFile.jpg"_s});
     addRow(u"artist:photographer"_s,     {u"propertyFile.jpg"_s});
     addRow(u"model:camera"_s,            {u"propertyFile.jpg"_s});
+    addRow(u"width:1234"_s,              {u"propertyFile.jpg"_s});
+    addRow(u"width=1234"_s,              {u"propertyFile.jpg"_s});
+    addRow(u"width>1230"_s,              {u"propertyFile.jpg"_s});
+    addRow(u"photoExposureTime=0.2"_s,   {});
+    addRow(u"photoExposureTime:0.2"_s,   {u"propertyFile.jpg"_s});
+    addRow(u"photoExposureTime>0.2"_s,   {u"propertyFile.jpg"_s});
+    addRow(u"photoExposureTime<0.3"_s,   {u"propertyFile.jpg"_s});
     addRow(u"camera"_s,                  {});
     // clang-format off
 }
