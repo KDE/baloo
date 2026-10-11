@@ -25,11 +25,10 @@ public:
     }
 
     void indexText(const QString& text);
-    void indexText(const QString& text, const QByteArray& prefix);
-
     void indexXattrText(const QString& text, const QByteArray& prefix);
     void indexFileNameText(const QString& text);
     void indexMimetype(const QString &text);
+    void indexProperty(const QString &text, const QByteArray &prefix, bool indexAsContent);
 
     void setPosition(int position);
     int position() const;
@@ -39,6 +38,8 @@ public:
     // Trim all terms to this size
     const static int maxTermSize = 25;
 private:
+    void addPositionTerms(const QByteArrayList &terms);
+
     Document& m_doc;
     int m_position;
 };

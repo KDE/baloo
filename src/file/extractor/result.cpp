@@ -68,10 +68,7 @@ void Result::add(KFileMetaData::Property::Property property, const QVariant& val
             if (val.isEmpty()) {
                 continue;
             }
-            m_termGen.indexText(val, prefix);
-            if (shouldBeIndexed) {
-                m_termGen.indexText(val);
-            }
+            m_termGen.indexProperty(val, prefix, shouldBeIndexed);
         }
     } else {
         const QString val = value.toString();
@@ -79,11 +76,8 @@ void Result::add(KFileMetaData::Property::Property property, const QVariant& val
             return;
         }
 
-        m_termGen.indexText(val, prefix);
-        KFileMetaData::PropertyInfo pi(property);
-        if (pi.shouldBeIndexed()) {
-            m_termGen.indexText(val);
-        }
+        const bool shouldBeIndexed = KFileMetaData::PropertyInfo(property).shouldBeIndexed();
+        m_termGen.indexProperty(val, prefix, shouldBeIndexed);
     }
 }
 

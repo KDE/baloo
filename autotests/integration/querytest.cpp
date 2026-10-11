@@ -178,10 +178,7 @@ private:
         TermGenerator tg(doc);
         for (const auto &property : properties) {
             const QByteArray prefix{'X' + property.prefix + '-'};
-            tg.indexText(property.text, prefix);
-            if (property.asContent) {
-                tg.indexText(property.text);
-            }
+            tg.indexProperty(property.text, prefix, property.asContent);
         }
         tg.indexFileNameText(fileName);
         doc.setId(id);
