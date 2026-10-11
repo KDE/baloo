@@ -13,6 +13,7 @@
 #include "enginequery.h"
 #include "filenamequery.h"
 #include "mimetypequery.h"
+#include "propertyphrasequery.h"
 #include "term.h"
 #include "termgenerator.h"
 #include "transaction.h"
@@ -85,19 +86,19 @@ constexpr std::array<InternalProperty, 4> internalProperties{{
     {"usercomment", "C", QMetaType::QString},
 }};
 
-std::pair<QByteArray, QMetaType::Type> propertyInfo(const QByteArray &property)
+std::tuple<bool, QByteArray, QMetaType::Type> propertyInfo(const QByteArray &property)
 {
     auto it = std::find_if(std::begin(internalProperties), std::end(internalProperties),
         [&property] (const InternalProperty& entry) { return property == entry.propertyName; });
     if (it != std::end(internalProperties)) {
-        return { (*it).prefix, (*it).valueType };
+        return {false, (*it).prefix, (*it).valueType};
     } else {
         KFileMetaData::PropertyInfo pi = KFileMetaData::PropertyInfo::fromName(QString::fromUtf8(property));
         if (pi.property() == KFileMetaData::Property::Empty) {
-            return {QByteArray(), QMetaType::UnknownType};
+            return {false, QByteArray(), QMetaType::UnknownType};
         }
         int propPrefix = static_cast<int>(pi.property());
-        return {QByteArray('X' + QByteArray::number(propPrefix) + '-'), pi.valueType()};
+        return {true, QByteArray::number(propPrefix), pi.valueType()};
     }
 }
 
@@ -375,16 +376,25 @@ PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term)
         return tr->postingIterator(mq);
     }
 
+    bool isProperty = false;
     QByteArray prefix;
     QMetaType::Type valueType = QMetaType::QString;
     if (!property.isEmpty()) {
-        std::tie(prefix, valueType) = propertyInfo(property);
+        std::tie(isProperty, prefix, valueType) = propertyInfo(property);
         if (valueType == QMetaType::UnknownType) {
             QString reconstructed{reconstructFromTerm(term)};
             qCDebug(BALOO) << "Unknown property" << property << "with value" //
                            << term.value().toString() << "- using" << reconstructed;
             return constructQuery(tr, Term{QString{}, reconstructed, Term::Equal});
         }
+    }
+    if (isProperty && valueType == QMetaType::QString) {
+        auto com = term.comparator();
+        auto pq = PropertyPhraseQuery(value.toString(), prefix, (com == Term::Contains));
+        qCDebug(BALOO) << "property query:" << pq;
+        return tr->postingIterator(pq);
+    } else if (isProperty) {
+        prefix = 'X' + prefix + '-';
     }
 
     auto com = term.comparator();
