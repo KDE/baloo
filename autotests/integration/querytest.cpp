@@ -22,16 +22,6 @@
 using namespace Baloo;
 using namespace Qt::StringLiterals;
 
-class SortedIdVector : public QVector<quint64> {
-    public:
-        SortedIdVector(const QVector<quint64>& list)
-        : QVector<quint64>(list) {
-            std::sort(begin(), end());
-        }
-        SortedIdVector(std::initializer_list<quint64> args)
-        : SortedIdVector(QVector<quint64>(args)) {}
-};
-
 char *toString(const QVector<quint64> &idlist)
 {
     QByteArray text("IDs[");
@@ -261,7 +251,7 @@ void QueryTest::testTermEqual()
 {
     EngineQuery q({EngineQuery::PhraseTerm("the", EngineQuery::Equal)});
 
-    QVector<quint64> result = SortedIdVector{m_ids[1], m_ids[2], m_ids[4], m_ids[7], m_ids[11]};
+    QVector<quint64> result{m_ids[1], m_ids[2], m_ids[4], m_ids[7], m_ids[11]};
     Transaction tr(db.get(), Transaction::ReadOnly);
     QCOMPARE(execQuery(tr, q), result);
 }
@@ -270,7 +260,7 @@ void QueryTest::testTermStartsWith()
 {
     EngineQuery q({EngineQuery::PhraseTerm("for", EngineQuery::StartsWith)});
 
-    QVector<quint64> result = SortedIdVector{m_ids[3], m_ids[4]};
+    QVector<quint64> result{m_ids[3], m_ids[4]};
     Transaction tr(db.get(), Transaction::ReadOnly);
     QCOMPARE(execQuery(tr, q), result);
 }
