@@ -435,8 +435,6 @@ void QueryTest::testSearchstringParser()
     }
     QEXPECT_FAIL("Match 'dot . Test'", "Bug 407664: Tries to match isolated dot", Continue);
     QEXPECT_FAIL("Match 'file - with hyphen.txt'", "Bug 407664: Tries to match hyphen", Continue);
-    QEXPECT_FAIL("Match 'photoExposureTime>0.2'", "Floating point values not parsed", Continue);
-    QEXPECT_FAIL("Match 'photoExposureTime<0.3'", "Floating point values not parsed", Continue);
     QCOMPARE(matches, expectedFiles);
 }
 

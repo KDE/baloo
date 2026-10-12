@@ -420,11 +420,11 @@ PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term)
 
     } else if (valueType == QMetaType::Double) {
         bool ok = false;
+        double dVal = value.toDouble(&ok);
         if (!ok) {
             qCDebug(BALOO) << "Failed to parse number" << value.toString();
             return nullptr;
         }
-        double dVal = value.toDouble(&ok);
         return tr->postingCompIterator(prefix, dVal, pcom);
 
     } else if (valueType == QMetaType::QDateTime) {
