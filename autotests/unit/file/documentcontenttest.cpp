@@ -30,6 +30,7 @@ private Q_SLOTS:
     void testResultText_data();
     void testResultProperty();
     void testResultProperty_data();
+    void testResultMixed();
     void benchmarkResultTerms();
     void benchmarkResultTerms_data();
 };
@@ -38,22 +39,25 @@ void DocumentContentTest::testResultText_data()
 {
     using namespace Qt::Literals::StringLiterals;
 
-    QTest::addColumn<QString>("text");
+    QTest::addColumn<QStringList>("text");
     QTest::addColumn<QByteArrayList>("expectedKeys");
 
-    QTest::addRow("notext") << QString{} << QByteArrayList{};
-    QTest::addRow("single") << u"single"_s << QByteArrayList{"single"};
-    QTest::addRow("two words") << u"two words"_s << QByteArrayList{"two", "words"};
-    QTest::addRow("repeated") << u"a b c b a"_s << QByteArrayList{"a", "b", "c"};
+    QTest::addRow("notext") << QStringList{} << QByteArrayList{};
+    QTest::addRow("single") << QList{u"single"_s} << QByteArrayList{"single"};
+    QTest::addRow("two words") << QList{u"two words"_s} << QByteArrayList{"two", "words"};
+    QTest::addRow("repeated") << QList{u"a b c b a"_s} << QByteArrayList{"a", "b", "c"};
+    QTest::addRow("multiple") << QList{u"a b"_s, u"c b"_s, u" a"_s} << QByteArrayList{"a", "b", "c"};
 }
 
 void DocumentContentTest::testResultText()
 {
-    QFETCH(QString, text);
+    QFETCH(QStringList, text);
     QFETCH(QByteArrayList, expectedKeys);
 
     Baloo::Result result;
-    result.append(text);
+    for (const auto &block : text) {
+        result.append(block);
+    }
     result.finish();
 
     auto doc = result.document();
@@ -103,6 +107,28 @@ void DocumentContentTest::testResultProperty()
     QFETCH(QByteArrayList, expectedKeys);
 
     Baloo::Result result;
+    for (const auto &p : properties) {
+        result.add(p.property, p.value);
+    }
+    result.finish();
+
+    auto doc = result.document();
+    QCOMPARE(doc.m_terms.keys(), expectedKeys);
+}
+
+void DocumentContentTest::testResultMixed()
+{
+    using namespace Qt::Literals::StringLiterals;
+    using KFMP = KFileMetaData::Property::Property;
+
+    QStringList text{u"a b"_s, u"c d"_s};
+    QList<ValueProperty> properties{{KFMP::Artist, u"a n"_s}, {KFMP::Model, u"m"_s}};
+    QByteArrayList expectedKeys{"X31-m", "X9-a", "X9-n", "a", "b", "c", "d", "n"};
+
+    Baloo::Result result;
+    for (const auto &block : text) {
+        result.append(block);
+    }
     for (const auto &p : properties) {
         result.add(p.property, p.value);
     }
