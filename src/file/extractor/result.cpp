@@ -23,14 +23,12 @@ namespace Baloo
 // In order to use it in a vector
 Result::Result()
     : ExtractionResult(QString(), QString())
-    , m_termGen(m_doc)
     , m_termGenForText(m_doc)
 {
 }
 
 Result::Result(const QString& url, const QString& mimetype, const Flags& flags)
     : KFileMetaData::ExtractionResult(url, mimetype, flags)
-    , m_termGen(m_doc)
     , m_termGenForText(m_doc)
 {
 }
@@ -45,41 +43,48 @@ void Result::add(KFileMetaData::Property::Property property, const QVariant& val
     } else {
         m_map.insert(property, value);
     }
+}
 
-    int propNum = static_cast<int>(property);
-    QByteArray prefix = 'X' + QByteArray::number(propNum) + '-';
+namespace
+{
+void indexProperties(Baloo::Document &doc, const KFileMetaData::PropertyMultiMap &properties)
+{
+    Baloo::TermGenerator termGen(doc);
 
-    if (value.typeId() == QMetaType::Bool) {
-        m_doc.addTerm(prefix);
-    } else if (value.typeId() == QMetaType::Int || value.typeId() == QMetaType::UInt) {
-        const QByteArray term = prefix + value.toString().toUtf8();
-        m_doc.addTerm(term);
-    } else if (value.typeId() == QMetaType::QDate) {
-        const QByteArray term = prefix + value.toDate().toString(Qt::ISODate).toUtf8();
-        m_doc.addTerm(term);
-    } else if (value.typeId() == QMetaType::QDateTime) {
-        const QByteArray term = prefix + value.toDateTime().toString(Qt::ISODate).toUtf8();
-        m_doc.addTerm(term);
-    } else if (value.typeId() == QMetaType::QStringList) {
-        bool shouldBeIndexed = KFileMetaData::PropertyInfo(property).shouldBeIndexed();
-        const auto valueList = value.toStringList();
-        for (const auto& val : valueList)
-        {
-            if (val.isEmpty()) {
-                continue;
+    auto it = properties.cbegin();
+    while (it != properties.cend()) {
+        const auto property = it.key();
+        const auto rangeEnd = properties.upperBound(property);
+
+        const bool indexAsContent = KFileMetaData::PropertyInfo(property).shouldBeIndexed();
+        const int propNum = static_cast<int>(property);
+        const QByteArray prefix = 'X' + QByteArray::number(propNum) + '-';
+
+        while (it != rangeEnd) {
+            const auto value = it.value();
+
+            if (value.typeId() == QMetaType::Bool) {
+                doc.addTerm(prefix);
+            } else if (value.typeId() == QMetaType::Int || value.typeId() == QMetaType::UInt) {
+                const QByteArray term = prefix + value.toString().toUtf8();
+                doc.addTerm(term);
+            } else if (value.typeId() == QMetaType::QDate) {
+                const QByteArray term = prefix + value.toDate().toString(Qt::ISODate).toUtf8();
+                doc.addTerm(term);
+            } else if (value.typeId() == QMetaType::QDateTime) {
+                const QByteArray term = prefix + value.toDateTime().toString(Qt::ISODate).toUtf8();
+                doc.addTerm(term);
+            } else {
+                const QString val = value.toString();
+                if (!val.isEmpty()) {
+                    termGen.indexProperty(val, prefix, indexAsContent);
+                }
             }
-            m_termGen.indexProperty(val, prefix, shouldBeIndexed);
+            ++it;
         }
-    } else {
-        const QString val = value.toString();
-        if (val.isEmpty()) {
-            return;
-        }
-
-        const bool shouldBeIndexed = KFileMetaData::PropertyInfo(property).shouldBeIndexed();
-        m_termGen.indexProperty(val, prefix, shouldBeIndexed);
     }
 }
+} // namespace <anonymous>
 
 void Result::append(const QString& text)
 {
@@ -104,15 +109,13 @@ void Result::finish()
         jdoc.setObject(jo);
     }
     m_doc.setData(jdoc.toJson(QJsonDocument::JsonFormat::Compact));
+
+    indexProperties(m_doc, m_map);
 }
 
 void Result::setDocument(const Baloo::Document& doc)
 {
     m_doc = doc;
-    // All document metadata are indexed from position 1000
-    m_termGen.setDocument(m_doc);
-    m_termGen.setPosition(1000);
-
     // All document plain text starts from 10000. This is done to avoid
     // clashes with the term positions
     m_termGenForText.setDocument(m_doc);

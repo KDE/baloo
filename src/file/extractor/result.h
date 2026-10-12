@@ -64,10 +64,6 @@ private:
      */
     Baloo::Document m_doc;
     /**
-     * Contains the position state of the metadata and adds it to the document.
-     */
-    Baloo::TermGenerator m_termGen;
-    /**
      * Contains the position state of plain text and adds it to the document.
      */
     Baloo::TermGenerator m_termGenForText;
