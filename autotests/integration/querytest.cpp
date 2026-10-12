@@ -88,6 +88,8 @@ private Q_SLOTS:
         m_id10 = m_parentId + 10;
         m_id11 = m_parentId + 11;
         m_id12 = m_parentId + 12;
+        m_id13 = m_parentId + 13;
+        m_id14 = m_parentId + 14;
     }
 
     void init()
@@ -130,14 +132,16 @@ private:
     quint64 m_parentId = 0;
 
     void insertDocuments();
-    void addDocument(Transaction* tr,const QString& text, quint64 id, const QString& fileName)
+    void addDocument(Transaction *tr, const QStringList &text, quint64 id, const QString &fileName)
     {
         Document doc;
         QString url = dir->path() + QLatin1Char('/') + fileName;
         doc.setUrl(QFile::encodeName(url));
 
         TermGenerator tg(doc);
-        tg.indexText(text);
+        for (const auto &block : text) {
+            tg.indexText(block);
+        }
         tg.indexFileNameText(fileName);
         doc.setId(id);
         doc.setParentId(m_parentId);
@@ -217,19 +221,25 @@ private:
     quint64 m_id10;
     quint64 m_id11;
     quint64 m_id12;
+    quint64 m_id13;
+    quint64 m_id14;
 };
 
 void QueryTest::insertDocuments()
 {
     Transaction tr(db.get(), Transaction::ReadWrite);
-    addDocument(&tr, QStringLiteral("The quick brown fox jumped over the crazy dog"), m_id1, QStringLiteral("file1.txt"));
-    addDocument(&tr, QStringLiteral("The quick brown fox jumped over the lazy dog"), m_id7, QStringLiteral("file7_lazy"));
-    addDocument(&tr, QStringLiteral("A quick brown fox ran around a easy dog"), m_id8, QStringLiteral("file8_dog"));
-    addDocument(&tr, QStringLiteral("The night is dark and full of terror"), m_id2, QStringLiteral("file2"));
-    addDocument(&tr, QStringLiteral("Don't feel sorry for yourself. Only assholes do that"), m_id3, QStringLiteral("file3"));
-    addDocument(&tr, QStringLiteral("Only the dead stay 17 forever. crazy"), m_id4, QStringLiteral("file4"));
-    addDocument(&tr, QStringLiteral("Some content with isolated dot . Test it"), m_id9, QStringLiteral("file - with hyphen.txt"));
-    addDocument(&tr, QStringLiteral("File with URL: https://www.kde.org"), m_id10, QStringLiteral("url:file.txt"));
+    // clang-format off
+    addDocument(&tr, {u"The quick brown fox jumped over the crazy dog"_s},        m_id1,  u"file1.txt"_s);
+    addDocument(&tr, {u"The quick brown fox jumped over the lazy dog"_s},         m_id7,  u"file7_lazy"_s);
+    addDocument(&tr, {u"A quick brown fox ran around a easy dog"_s},              m_id8,  u"file8_dog"_s);
+    addDocument(&tr, {u"The night is dark and full of terror"_s},                 m_id2,  u"file2"_s);
+    addDocument(&tr, {u"Don't feel sorry for yourself. Only assholes do that"_s}, m_id3,  u"file3"_s);
+    addDocument(&tr, {u"Only the dead stay 17 forever. crazy"_s},                 m_id4,  u"file4"_s);
+    addDocument(&tr, {u"Some content with isolated dot . Test it"_s},             m_id9,  u"file - with hyphen.txt"_s);
+    addDocument(&tr, {u"File with URL: https://www.kde.org"_s},                   m_id10, u"url:file.txt"_s);
+    addDocument(&tr, {u"First page."_s, u"Second page."_s},                       m_id13, u"two_page.txt"_s);
+    addDocument(&tr, {u"Soft hy\u00ad"_s, u"phen."_s},                            m_id14, u"two_page_hyphenated.txt"_s);
+    // clang-format on
 
     renameDocument(&tr, m_id8, QStringLiteral("file8_easy"));
     tr.commit();
@@ -435,6 +445,8 @@ void QueryTest::testSearchstringParser()
     }
     QEXPECT_FAIL("Match 'dot . Test'", "Bug 407664: Tries to match isolated dot", Continue);
     QEXPECT_FAIL("Match 'file - with hyphen.txt'", "Bug 407664: Tries to match hyphen", Continue);
+    QEXPECT_FAIL("Match '\"page. second\"'", "Page break breaks matching", Continue);
+    QEXPECT_FAIL("Match '\"soft hyphen\"'", "Soft hyphen not joined", Continue);
     QCOMPARE(matches, expectedFiles);
 }
 
@@ -481,7 +493,7 @@ void QueryTest::testSearchstringParser_data()
     addRow(QStringLiteral("tag:two AND tag:three"), {  QStringLiteral("tagFile1"), QStringLiteral("tagFile2") });
     addRow(QStringLiteral("tag:two-three"), { QStringLiteral("tagFile2") });
 
-    addRow(QStringLiteral("filename:hyphen"), { QStringLiteral("file - with hyphen.txt") });
+    addRow(QStringLiteral("filename:hyphen"), {u"file - with hyphen.txt"_s, u"two_page_hyphenated.txt"_s});
     addRow(QStringLiteral("file with hyphen.txt"), { QStringLiteral("file - with hyphen.txt") });
     addRow(QStringLiteral("file - with hyphen.txt"), { QStringLiteral("file - with hyphen.txt") });
     addRow(QStringLiteral("\"file - with hyphen.txt\""), { QStringLiteral("file - with hyphen.txt") });
@@ -526,6 +538,12 @@ void QueryTest::testSearchstringParser_data()
     addRow(u"photoExposureTime>0.2"_s,   {u"propertyFile.jpg"_s});
     addRow(u"photoExposureTime<0.3"_s,   {u"propertyFile.jpg"_s});
     addRow(u"camera"_s,                  {});
+    addRow(u"first"_s,                   {u"two_page.txt"_s});
+    addRow(u"first page. second"_s,      {u"two_page.txt"_s});
+    addRow(u"\"first page.\""_s,         {u"two_page.txt"_s});
+    addRow(u"\"page. second\""_s,        {u"two_page.txt"_s});
+    addRow(u"soft"_s,                    {u"two_page_hyphenated.txt"_s});
+    addRow(u"\"soft hyphen\""_s,         {u"two_page_hyphenated.txt"_s});
     // clang-format off
 }
 
