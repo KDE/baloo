@@ -76,20 +76,9 @@ private Q_SLOTS:
 
         dir = std::make_unique<QTemporaryDir>();
         m_parentId = filePathToId(QFile::encodeName(dir->path()));
-        m_id1 = m_parentId + 1;
-        m_id2 = m_parentId + 2;
-        m_id3 = m_parentId + 3;
-        m_id4 = m_parentId + 4;
-        m_id5 = m_parentId + 5;
-        m_id6 = m_parentId + 6;
-        m_id7 = m_parentId + 7;
-        m_id8 = m_parentId + 8;
-        m_id9 = m_parentId + 9;
-        m_id10 = m_parentId + 10;
-        m_id11 = m_parentId + 11;
-        m_id12 = m_parentId + 12;
-        m_id13 = m_parentId + 13;
-        m_id14 = m_parentId + 14;
+        for (size_t i = 0; i < m_ids.size(); i++) {
+            m_ids[i] = m_parentId + i;
+        }
     }
 
     void init()
@@ -209,58 +198,40 @@ private:
         tr->addDocument(doc);
     }
 
-    quint64 m_id1;
-    quint64 m_id2;
-    quint64 m_id3;
-    quint64 m_id4;
-    quint64 m_id5;
-    quint64 m_id6;
-    quint64 m_id7;
-    quint64 m_id8;
-    quint64 m_id9;
-    quint64 m_id10;
-    quint64 m_id11;
-    quint64 m_id12;
-    quint64 m_id13;
-    quint64 m_id14;
+    std::array<quint64, 15> m_ids{};
 };
 
 void QueryTest::insertDocuments()
 {
     Transaction tr(db.get(), Transaction::ReadWrite);
     // clang-format off
-    addDocument(&tr, {u"The quick brown fox jumped over the crazy dog"_s},        m_id1,  u"file1.txt"_s);
-    addDocument(&tr, {u"The quick brown fox jumped over the lazy dog"_s},         m_id7,  u"file7_lazy"_s);
-    addDocument(&tr, {u"A quick brown fox ran around a easy dog"_s},              m_id8,  u"file8_dog"_s);
-    addDocument(&tr, {u"The night is dark and full of terror"_s},                 m_id2,  u"file2"_s);
-    addDocument(&tr, {u"Don't feel sorry for yourself. Only assholes do that"_s}, m_id3,  u"file3"_s);
-    addDocument(&tr, {u"Only the dead stay 17 forever. crazy"_s},                 m_id4,  u"file4"_s);
-    addDocument(&tr, {u"Some content with isolated dot . Test it"_s},             m_id9,  u"file - with hyphen.txt"_s);
-    addDocument(&tr, {u"File with URL: https://www.kde.org"_s},                   m_id10, u"url:file.txt"_s);
-    addDocument(&tr, {u"First page."_s, u"Second page."_s},                       m_id13, u"two_page.txt"_s);
-    addDocument(&tr, {u"Soft hy\u00ad"_s, u"phen."_s},                            m_id14, u"two_page_hyphenated.txt"_s);
+    addDocument(&tr, {u"The quick brown fox jumped over the crazy dog"_s},        m_ids[1],  u"file1.txt"_s);
+    addDocument(&tr, {u"The quick brown fox jumped over the lazy dog"_s},         m_ids[7],  u"file7_lazy"_s);
+    addDocument(&tr, {u"A quick brown fox ran around a easy dog"_s},              m_ids[8],  u"file8_dog"_s);
+    addDocument(&tr, {u"The night is dark and full of terror"_s},                 m_ids[2],  u"file2"_s);
+    addDocument(&tr, {u"Don't feel sorry for yourself. Only assholes do that"_s}, m_ids[3],  u"file3"_s);
+    addDocument(&tr, {u"Only the dead stay 17 forever. crazy"_s},                 m_ids[4],  u"file4"_s);
+    addDocument(&tr, {u"Some content with isolated dot . Test it"_s},             m_ids[9],  u"file - with hyphen.txt"_s);
+    addDocument(&tr, {u"File with URL: https://www.kde.org"_s},                   m_ids[10], u"url:file.txt"_s);
+    addDocument(&tr, {u"First page."_s, u"Second page."_s},                       m_ids[13], u"two_page.txt"_s);
+    addDocument(&tr, {u"Soft hy\u00ad"_s, u"phen."_s},                            m_ids[14], u"two_page_hyphenated.txt"_s);
     // clang-format on
 
-    renameDocument(&tr, m_id8, QStringLiteral("file8_easy"));
+    renameDocument(&tr, m_ids[8], QStringLiteral("file8_easy"));
     tr.commit();
 }
 
 void QueryTest::insertTagDocuments()
 {
     Transaction tr(db.get(), Transaction::ReadWrite);
-    addTagDocument(&tr, {
-	QStringLiteral("One"),
-	QStringLiteral("Two"),
-	QStringLiteral("Three"),
-	QStringLiteral("Four"),
-	QStringLiteral("F1")
-    }, m_id5, QStringLiteral("tagFile1"));
-    addTagDocument(&tr, {
-	QStringLiteral("One"),
-	QStringLiteral("Two-Three"),
-	QStringLiteral("Four"),
-	QStringLiteral("F2")
-    }, m_id6, QStringLiteral("tagFile2"));
+    addTagDocument(&tr, //
+                   {u"One"_s, u"Two"_s, u"Three"_s, u"Four"_s, u"F1"_s},
+                   m_ids[5],
+                   u"tagFile1"_s);
+    addTagDocument(&tr, //
+                   {u"One"_s, u"Two-Three"_s, u"Four"_s, u"F2"_s},
+                   m_ids[6],
+                   u"tagFile2"_s);
     tr.commit();
 }
 
@@ -272,7 +243,7 @@ void QueryTest::insertPropertyDocuments()
                             {"9", u"The Artist Number 1"_s, true}, // artist
                             {"10", u"Album Number 2"_s, true}, // album
                         },
-                        m_id11,
+                        m_ids[11],
                         u"propertyFile.mp3"_s);
     addPropertyDocument(&tr, //
                         {
@@ -281,7 +252,7 @@ void QueryTest::insertPropertyDocuments()
                             {"26", u"1234"_s, false}, // width
                             {"40", u"0.234"_s, false}, // photoExposureTime
                         },
-                        m_id12,
+                        m_ids[12],
                         u"propertyFile.jpg"_s);
     tr.commit();
 }
@@ -290,7 +261,7 @@ void QueryTest::testTermEqual()
 {
     EngineQuery q({EngineQuery::PhraseTerm("the", EngineQuery::Equal)});
 
-    QVector<quint64> result = SortedIdVector{m_id1, m_id2, m_id4, m_id7, m_id11};
+    QVector<quint64> result = SortedIdVector{m_ids[1], m_ids[2], m_ids[4], m_ids[7], m_ids[11]};
     Transaction tr(db.get(), Transaction::ReadOnly);
     QCOMPARE(execQuery(tr, q), result);
 }
@@ -299,7 +270,7 @@ void QueryTest::testTermStartsWith()
 {
     EngineQuery q({EngineQuery::PhraseTerm("for", EngineQuery::StartsWith)});
 
-    QVector<quint64> result = SortedIdVector{m_id3, m_id4};
+    QVector<quint64> result = SortedIdVector{m_ids[3], m_ids[4]};
     Transaction tr(db.get(), Transaction::ReadOnly);
     QCOMPARE(execQuery(tr, q), result);
 }
@@ -319,18 +290,18 @@ void QueryTest::testPhrases_dataCommon()
 
     // Content matches
     // clang-format off
-    addRow("Crazy dog",        {u"crazy dog"_s},  {m_id1},               {});
-    addRow("Lazy dog",         {u"lazy dog"_s},   {m_id7},               {});
-    addRow("Brown fox",        {u"brown fox"_s},  {m_id1, m_id7, m_id8}, {});
-    addRow("Dog",              {u"dog"_s},        {m_id1, m_id7, m_id8}, {});
+    addRow("Crazy dog",        {u"crazy dog"_s},  {m_ids[1]},                     {});
+    addRow("Lazy dog",         {u"lazy dog"_s},   {m_ids[7]},                     {});
+    addRow("Brown fox",        {u"brown fox"_s},  {m_ids[1], m_ids[7], m_ids[8]}, {});
+    addRow("Dog",              {u"dog"_s},        {m_ids[1], m_ids[7], m_ids[8]}, {});
     // Filename matches
-    addRow("Crazy dog file 1", {u"file1"_s},      {},                    {m_id1});
-    addRow("Crazy dog file 2", {u"file1 txt"_s},  {},                    {m_id1});
-    addRow("Lazy dog file 1",  {u"file7"_s},      {},                    {m_id7});
-    addRow("Lazy dog file 2",  {u"file7 lazy"_s}, {},                    {m_id7});
+    addRow("Crazy dog file 1", {u"file1"_s},      {},                             {m_ids[1]});
+    addRow("Crazy dog file 2", {u"file1 txt"_s},  {},                             {m_ids[1]});
+    addRow("Lazy dog file 1",  {u"file7"_s},      {},                             {m_ids[7]});
+    addRow("Lazy dog file 2",  {u"file7 lazy"_s}, {},                             {m_ids[7]});
     // Matches content and filename
-    addRow("Lazy both",        {u"lazy"_s},       {m_id7},               {m_id7});
-    addRow("Easy both",        {u"easy"_s},       {m_id8},               {m_id8});
+    addRow("Lazy both",        {u"lazy"_s},       {m_ids[7]},                     {m_ids[7]});
+    addRow("Easy both",        {u"easy"_s},       {m_ids[8]},                     {m_ids[8]});
     // clang-format off
 }
 
@@ -376,11 +347,11 @@ void QueryTest::testTagTerm_data()
     QTest::addColumn<QVector<quint64>>("matchIds");
 
     QTest::addRow("Simple match") << QByteArray("one")
-        << QVector<quint64> { m_id5, m_id6 };
+        << QVector<quint64> { m_ids[5], m_ids[6] };
     QTest::addRow("Only one") << QByteArray("f1")
-        << QVector<quint64> { m_id5 };
+        << QVector<quint64> { m_ids[5] };
     QTest::addRow("Also from phrase") << QByteArray("three")
-        << QVector<quint64> { m_id5, m_id6 };
+        << QVector<quint64> { m_ids[5], m_ids[6] };
 }
 
 void QueryTest::testTagTerm()
@@ -401,13 +372,13 @@ void QueryTest::testTagTermPhrase_data()
     QTest::addColumn<QVector<quint64>>("matchIds");
 
     QTest::addRow("Simple match") << QByteArrayList({"one"})
-        << QVector<quint64> { m_id5, m_id6 };
+        << QVector<quint64> { m_ids[5], m_ids[6] };
     QTest::addRow("Apart") << QByteArrayList({"two", "four"})
         << QVector<quint64> { };
     QTest::addRow("Adjacent") << QByteArrayList({"three", "four"})
         << QVector<quint64> { };
     QTest::addRow("Only phrase") << QByteArrayList({"two", "three"})
-        << QVector<quint64> { m_id6 };
+        << QVector<quint64> { m_ids[6] };
 }
 
 void QueryTest::testTagTermPhrase()
