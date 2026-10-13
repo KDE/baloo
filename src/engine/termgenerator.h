@@ -38,8 +38,6 @@ public:
     // Trim all terms to this size
     const static int maxTermSize = 25;
 private:
-    void addPositionTerms(const QByteArrayList &terms);
-
     Document& m_doc;
     int m_position;
 };

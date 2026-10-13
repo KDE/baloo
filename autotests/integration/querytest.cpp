@@ -469,9 +469,7 @@ void QueryTest::testSearchstringParser()
     }
     QEXPECT_FAIL("Match 'dot . Test'", "Bug 407664: Tries to match isolated dot", Continue);
     QEXPECT_FAIL("Match 'file - with hyphen.txt'", "Bug 407664: Tries to match hyphen", Continue);
-    QEXPECT_FAIL("Match '\"page. second\"'", "Page break breaks matching", Continue);
     QEXPECT_FAIL("Match '\"soft hyphen\"'", "Soft hyphen not joined", Continue);
-    QEXPECT_FAIL("Match '\"Start. Line 2. Last\"'", "Single word blocks missing", Continue);
     QCOMPARE(matches, expectedFiles);
 }
 
