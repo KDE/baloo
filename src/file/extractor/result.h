@@ -11,7 +11,6 @@
 #include <KFileMetaData/ExtractionResult>
 
 #include "document.h"
-#include "termgenerator.h"
 
 namespace Baloo
 {
@@ -64,9 +63,9 @@ private:
      */
     Baloo::Document m_doc;
     /**
-     * Contains the position state of plain text and adds it to the document.
+     * Contains the plain text.
      */
-    Baloo::TermGenerator m_termGenForText;
+    QStringList m_text;
     /**
      * Contains all indexed property data from the extractors.
      */

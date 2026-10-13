@@ -7,6 +7,7 @@
 
 #include "result.h"
 #include "propertydata.h"
+#include "termgenerator.h"
 
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -23,13 +24,11 @@ namespace Baloo
 // In order to use it in a vector
 Result::Result()
     : ExtractionResult(QString(), QString())
-    , m_termGenForText(m_doc)
 {
 }
 
 Result::Result(const QString& url, const QString& mimetype, const Flags& flags)
     : KFileMetaData::ExtractionResult(url, mimetype, flags)
-    , m_termGenForText(m_doc)
 {
 }
 
@@ -47,10 +46,8 @@ void Result::add(KFileMetaData::Property::Property property, const QVariant& val
 
 namespace
 {
-void indexProperties(Baloo::Document &doc, const KFileMetaData::PropertyMultiMap &properties)
+void indexProperties(Baloo::TermGenerator &termGen, Baloo::Document &doc, const KFileMetaData::PropertyMultiMap &properties)
 {
-    Baloo::TermGenerator termGen(doc);
-
     auto it = properties.cbegin();
     while (it != properties.cend()) {
         const auto property = it.key();
@@ -84,11 +81,18 @@ void indexProperties(Baloo::Document &doc, const KFileMetaData::PropertyMultiMap
         }
     }
 }
+
+void indexText(Baloo::TermGenerator &termGen, const QStringList &text)
+{
+    for (const auto &block : text) {
+        termGen.indexText(block);
+    }
+}
 } // namespace <anonymous>
 
 void Result::append(const QString& text)
 {
-    m_termGenForText.indexText(text);
+    m_text.append(text);
 }
 
 void Result::addType(KFileMetaData::Type::Type type)
@@ -110,16 +114,14 @@ void Result::finish()
     }
     m_doc.setData(jdoc.toJson(QJsonDocument::JsonFormat::Compact));
 
-    indexProperties(m_doc, m_map);
+    Baloo::TermGenerator termGen(m_doc);
+    indexProperties(termGen, m_doc, m_map);
+    indexText(termGen, m_text);
 }
 
 void Result::setDocument(const Baloo::Document& doc)
 {
     m_doc = doc;
-    // All document plain text starts from 10000. This is done to avoid
-    // clashes with the term positions
-    m_termGenForText.setDocument(m_doc);
-    m_termGenForText.setPosition(10000);
 }
 
 } // namespace Baloo
