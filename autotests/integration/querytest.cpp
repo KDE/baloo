@@ -199,7 +199,7 @@ private:
         tr->addDocument(doc);
     }
 
-    std::array<quint64, 15> m_ids{};
+    std::array<quint64, 17> m_ids{};
 };
 
 void QueryTest::insertDocuments()
@@ -216,6 +216,8 @@ void QueryTest::insertDocuments()
     addDocument(&tr, {u"File with URL: https://www.kde.org"_s},                   m_ids[10], u"url:file.txt"_s);
     addDocument(&tr, {u"First page."_s, u"Second page."_s},                       m_ids[13], u"two_page.txt"_s);
     addDocument(&tr, {u"Soft hy\u00ad"_s, u"phen."_s},                            m_ids[14], u"two_page_hyphenated.txt"_s);
+    addDocument(&tr, {u"Start."_s, u"Line 2."_s, u"Last."_s},                     m_ids[15], u"three_line.txt"_s);
+    addDocument(&tr, {u"single"_s},                                               m_ids[16], u"one_word.txt"_s);
     // clang-format on
 
     renameDocument(&tr, m_ids[8], QStringLiteral("file8_easy"));
@@ -469,6 +471,7 @@ void QueryTest::testSearchstringParser()
     QEXPECT_FAIL("Match 'file - with hyphen.txt'", "Bug 407664: Tries to match hyphen", Continue);
     QEXPECT_FAIL("Match '\"page. second\"'", "Page break breaks matching", Continue);
     QEXPECT_FAIL("Match '\"soft hyphen\"'", "Soft hyphen not joined", Continue);
+    QEXPECT_FAIL("Match '\"Start. Line 2. Last\"'", "Single word blocks missing", Continue);
     QCOMPARE(matches, expectedFiles);
 }
 
@@ -566,6 +569,13 @@ void QueryTest::testSearchstringParser_data()
     addRow(u"\"page. second\""_s,        {u"two_page.txt"_s});
     addRow(u"soft"_s,                    {u"two_page_hyphenated.txt"_s});
     addRow(u"\"soft hyphen\""_s,         {u"two_page_hyphenated.txt"_s});
+    addRow(u"start"_s,                   {u"three_line.txt"_s});
+    addRow(u"last"_s,                    {u"three_line.txt"_s});
+    addRow(u"line 2"_s,                  {u"three_line.txt"_s});
+    addRow(u"\"line 2\""_s,              {u"three_line.txt"_s});
+    addRow(u"\"Start. Line 2. Last\""_s, {u"three_line.txt"_s});
+    addRow(u"Start. Line 2. Last"_s,     {u"three_line.txt"_s});
+    addRow(u"single"_s,                  {u"one_word.txt"_s});
     // clang-format off
 }
 
