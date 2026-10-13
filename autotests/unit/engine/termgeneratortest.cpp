@@ -102,27 +102,39 @@ void addData_WordBoundaries()
     QTest::addColumn<QString>("input");
     QTest::addColumn<QList<QByteArray>>("expectedWords");
 
-    // clang-format off
-    QTest::newRow("latin sentence")   << u"The quick (\"brown\") 'fox' can't jump 32.3 feet, right? No-Wrong;xx.txt"_s
-                                      << QList<QByteArray>{"32.3", "brown", "can't", "feet", "fox", "jump", "no", "quick", "right", "the", "txt", "wrong", "xx"};
-    QTest::newRow("CJK")              << u"你"_s
-                                      << QList<QByteArray>{"你"};
-    QTest::newRow("CJK mixed")        << u"hello world!你好世界貴方元気켐ㅇㄹ？☺"_s
-                                      << QList<QByteArray>{"hello", "world", "☺", "你好世界貴方元気", "켐ᄋᄅ"};
-    QTest::newRow("strip underscore") << u"_plant"_s
-                                      << QList<QByteArray>{"plant"};
-    QTest::newRow("split underscore") << u"Hello_Howdy"_s
-                                      << QList<QByteArray>{"hello", "howdy"};
-    QTest::newRow("Accented")         << u"Como está Kûg"_s
-                                      << QList<QByteArray>{"como", "esta", "kug"};
-    QTest::newRow("Mail address")     << u"me@vhanda.in"_s
-                                      << QList<QByteArray>{"in", "me", "vhanda"};
-    QTest::newRow("Teddy symbol")     << u"Teddy Bear 🧸"_s
-                                      << QList<QByteArray>{"bear", "teddy", "🧸"};
-    QTest::newRow("High Surrogate")   << QString(std::array<QChar, 4>{u' ', QChar{0xD83E}, u' ', u' '})
-                                      << QList<QByteArray>();
+    struct TC {
+        const char *name;
+        QString input;
+        QByteArrayList expectedWords;
+    } testCases[] = {
+        // clang-format off
+        {
+            "latin sentence",
+            u"The quick (\"brown\") 'fox' can't jump 32.3 feet, right? No-Wrong;xx.txt"_s,
+            {"32.3", "brown", "can't", "feet", "fox", "jump", "no", "quick", "right", "the", "txt", "wrong", "xx"},
+        },
+        {"CJK",              u"你"_s,            {"你"}},
+        {
+            "CJK mixed",
+            u"hello world!你好世界貴方元気켐ㅇㄹ？☺"_s,
+            {"hello", "world", "☺", "你好世界貴方元気", "켐ᄋᄅ"},
+        },
+        {"strip underscore", u"_plant"_s,        {"plant"}},
+        {"split underscore", u"Hello_Howdy"_s,   {"hello", "howdy"}},
+        {"Accented",         u"Como está Kûg"_s, {"como", "esta", "kug"}},
+        {"Mail address",     u"me@vhanda.in"_s,  {"in", "me", "vhanda"}},
+        {"Teddy symbol",     u"Teddy Bear 🧸"_s, {"bear", "teddy", "🧸"}},
+        {
+            "High Surrogate",
+            QString(std::array<QChar, 4>{u' ', QChar{0xD83E}, u' ', u' '}),
+            {},
+        },
+        // clang-format on
+    };
 
-    // clang-format on
+    for (const auto &tc : testCases) {
+        QTest::addRow("%s", tc.name) << tc.input << tc.expectedWords;
+    }
 }
 } // namespace <anonymous>
 
