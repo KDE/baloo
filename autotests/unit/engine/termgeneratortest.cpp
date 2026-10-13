@@ -95,12 +95,13 @@ void TermGeneratorTest::testWordBoundaries()
 
 namespace
 {
-void addData_WordBoundaries()
+void addData_WordBoundaries(std::span<const unsigned int> expansions)
 {
     using namespace Qt::Literals::StringLiterals;
 
     QTest::addColumn<QString>("input");
     QTest::addColumn<QList<QByteArray>>("expectedWords");
+    QTest::addColumn<unsigned int>("expansion");
 
     struct TC {
         const char *name;
@@ -133,28 +134,34 @@ void addData_WordBoundaries()
     };
 
     for (const auto &tc : testCases) {
-        QTest::addRow("%s", tc.name) << tc.input << tc.expectedWords;
+        for (const auto count : expansions) {
+            QTest::addRow("%s/%i", tc.name, count) << tc.input << tc.expectedWords << count;
+        }
     }
 }
 } // namespace <anonymous>
 
 void TermGeneratorTest::testWordBoundaries_data()
 {
-    addData_WordBoundaries();
+    addData_WordBoundaries(std::array{1u});
 }
 
 void TermGeneratorTest::benchmarkWordBoundaries()
 {
     QFETCH(QString, input);
+    QFETCH(unsigned int, expansion);
+
+    QStringList list(expansion);
+    const auto expandedInput = list.fill(input).join(QLatin1Char{' '});
 
     QBENCHMARK {
-        TermGenerator::termList(input);
+        TermGenerator::termList(expandedInput);
     }
 }
 
 void TermGeneratorTest::benchmarkWordBoundaries_data()
 {
-    addData_WordBoundaries();
+    addData_WordBoundaries(std::array{1u, 100u, 1000u});
 }
 
 void TermGeneratorTest::testUnicodeCompatibleComposition()
