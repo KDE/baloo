@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: l 10n\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-10-09 00:42+0000\n"
+"POT-Creation-Date: 2026-10-14 00:41+0000\n"
 "PO-Revision-Date: 2024-01-16 01:37+0200\n"
 "Last-Translator: Moo\n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
@@ -30,47 +30,47 @@ msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
 msgstr "liudas@akmc.lt, <>"
 
-#: main.cpp:59
+#: main.cpp:64
 #, kde-format
 msgid "Baloo Show"
 msgstr "Baloo peržiūra"
 
-#: main.cpp:61
+#: main.cpp:66
 #, kde-format
 msgid "The Baloo data Viewer - A debugging tool"
 msgstr "Baloo duomenų žiūryklė - Derinimo įrankis"
 
-#: main.cpp:63
+#: main.cpp:68
 #, kde-format
 msgid "(c) 2012, Vishesh Handa"
 msgstr "(c) 2012, Vishesh Handa"
 
-#: main.cpp:68
+#: main.cpp:73
 #, kde-format
 msgid "Urls, document ids or inodes of the files"
 msgstr "URL adresai, dokumentų id arba failų \"inode\""
 
-#: main.cpp:70
+#: main.cpp:75
 #, kde-format
 msgid "Print internal info"
 msgstr "Išvesti vidinę informaciją"
 
-#: main.cpp:72
+#: main.cpp:77
 #, kde-format
 msgid "Arguments are interpreted as inode numbers (requires -d)"
 msgstr "Argumentai yra traktuojami kaip \"inode\" numeriai (reikalauja -d)"
 
-#: main.cpp:74
+#: main.cpp:79
 #, kde-format
 msgid "Device id for the files"
 msgstr "Failų įrenginio id"
 
-#: main.cpp:98
+#: main.cpp:103
 #, kde-format
 msgid "Error: -i requires specifying a device (-d <deviceId>)"
 msgstr "Klaida: -i reikalauja nurodyti įrenginį (-d <įrenginioId>)"
 
-#: main.cpp:104
+#: main.cpp:109
 #, kde-format
 msgid ""
 "The Baloo index could not be opened. Please run \"%1\" to see if Baloo is "
@@ -79,52 +79,52 @@ msgstr ""
 "Nepavyko atverti Baloo indekso. Norėdami pamatyti ar Baloo įjungtas ir "
 "veikia, paleiskite \"%1\"."
 
-#: main.cpp:121
+#: main.cpp:126
 #, kde-format
 msgid "The document IDs of the Baloo DB and the filesystem are different:"
 msgstr "Baloo duomenų bazės ir failų sistemos dokumentų ID yra skirtingi:"
 
-#: main.cpp:140
+#: main.cpp:145
 #, kde-format
 msgid "%1: Not a valid url or document id"
 msgstr "%1: Neteisingas URL ar dokumento id"
 
-#: main.cpp:154
+#: main.cpp:159
 #, kde-format
 msgid "%1: Failed to parse inode number"
 msgstr "%1: Nepavyko išnagrinėti \"inode\" numerio"
 
-#: main.cpp:178
+#: main.cpp:183
 #, kde-format
 msgid "%1: No index information found"
 msgstr "%1: Nerasta jokios indekso informacijos"
 
-#: main.cpp:235
+#: main.cpp:243
 #, kde-format
 msgid "Internal Info"
 msgstr "Vidinė informacija"
 
-#: main.cpp:236
+#: main.cpp:244
 #, kde-format
 msgid "File Name Terms: %1"
 msgstr "Failo pavadinimo paieškos žodžiai: %1"
 
-#: main.cpp:237
+#: main.cpp:245
 #, kde-format
 msgid "%1 Terms: %2"
 msgstr "%1 paieškos žodžiai: %2"
 
-#: main.cpp:238
+#: main.cpp:246
 #, kde-format
 msgid "Plain Text Terms: %1"
 msgstr "Grynojo teksto paieškos žodžiai: %1"
 
-#: main.cpp:239
+#: main.cpp:247
 #, kde-format
 msgid "Property Terms: %1"
 msgstr "Savybės paieškos žodžiai: %1"
 
-#: main.cpp:242
+#: main.cpp:250
 #, kde-format
 msgctxt "Prefix string for internal errors"
 msgid "Internal Error - %1"

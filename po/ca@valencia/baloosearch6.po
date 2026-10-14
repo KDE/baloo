@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-10-09 00:42+0000\n"
-"PO-Revision-Date: 2026-10-09 09:55+0200\n"
+"PO-Revision-Date: 2026-10-12 18:12+0200\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca@valencia\n"
@@ -105,7 +105,7 @@ msgstr "Mostra els valors de <typeString> admesos"
 #: main.cpp:116
 #, kde-format
 msgid "Show property names supported in query."
-msgstr "Mostra els nom de propietat admesos a la consulta."
+msgstr "Mostra els noms de propietats admesos a la consulta."
 
 #: main.cpp:118
 #, kde-format

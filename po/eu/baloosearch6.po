@@ -1,17 +1,24 @@
 # Translation for baloosearch6.po to Euskara/Basque (eu).
-# Copyright (C) 2017-2023 This file is copyright:
+# Copyright (C) 2017-2026 This file is copyright:
 # This file is distributed under the same license as the baloo package.
-# KDE euskaratzeko proiektuko arduraduna <xalba@ni.eus>.
+# SPDX-FileCopyrightText: 2026 KDE euskaratzeko proiektuko arduraduna <xalba@ni.eus>
 #
 # Translators:
 # Ander Elortondo <ander@elortondo.net>, 2017.
-# Iñigo Salvador Azurmendi <xalba@ni.eus>, 2017, 2018, 2020, 2021, 2023.
+# Iñigo Salvador Azurmendi <xalba@ni.eus>, 2017, 2018, 2020, 2021, 2023, 2026.
+#
+# Egoera:
+# Proiektuaren berrikuspen integrala: hasiera 2026-10-13.
+# Azken berrikuspena: 2026-10-13 — .
+# Terminologia, estiloa, ortotipografia, kohesioa eta koherentzia berrikusi dira.
+# Erreferentzia-gida: —
+# Ikus, halaber: KDE-eu-berrikuspen-integralen-erregistroa.md
 msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-10-09 00:42+0000\n"
-"PO-Revision-Date: 2023-07-15 19:51+0200\n"
+"PO-Revision-Date: 2026-10-13 21:05+0200\n"
 "Last-Translator: Iñigo Salvador Azurmendi <xalba@ni.eus>\n"
 "Language-Team: Basque <kde-i18n-eu@kde.org>\n"
 "Language: eu\n"
@@ -19,35 +26,35 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 23.04.0\n"
+"X-Generator: Lokalize 26.08.1\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr "Ander Elortondo,Iñigo Salvador Azurmendi"
+msgstr "Iñigo Salvador Azurmendi,Ander Elortondo"
 
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
-msgstr "ander@elortondo.net,xalba@euskalnet.net"
+msgstr "xalba@euskalnet.net,ander@elortondo.net"
 
 #: main.cpp:33
 #, kde-format
 msgctxt "'listTypes' table header"
 msgid "<typeString>     Description"
-msgstr ""
+msgstr "<motaKatea>     Deskribapena"
 
 #: main.cpp:66
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "Metadata Property Name                 Description"
-msgstr ""
+msgstr "Metadatu-propietatearen izena           Deskribapena"
 
 #: main.cpp:76
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "File Property Name                     Description"
-msgstr ""
+msgstr "Fitxategi-propietatearen izena          Deskribapena"
 
 #: main.cpp:95
 #, kde-format
@@ -57,7 +64,7 @@ msgstr "Baloo bilaketa"
 #: main.cpp:97
 #, kde-format
 msgid "A tool to search through the files indexed by Baloo"
-msgstr "Balook indexatutako fitxategietan barrena bilatzeko tresna"
+msgstr "Balook indexatutako fitxategietan bilatzeko tresna"
 
 #: main.cpp:99
 #, kde-format
@@ -67,26 +74,24 @@ msgstr "Vishesh Handa"
 #: main.cpp:105
 #, kde-format
 msgid "The maximum number of results"
-msgstr "Emaitzen kopuru handiena"
+msgstr "Gehieneko emaitza kopurua"
 
 #: main.cpp:106
-#, fuzzy, kde-format
-#| msgid "limit"
+#, kde-format
 msgctxt "option value name"
 msgid "limit"
-msgstr "Muga"
+msgstr "muga"
 
 #: main.cpp:108
 #, kde-format
 msgid "Offset from which to start the search"
-msgstr "Bilaketa hasteko jatorri-aldaketa"
+msgstr "Bilaketa hasteko desplazamendua"
 
 #: main.cpp:109
-#, fuzzy, kde-format
-#| msgid "offset"
+#, kde-format
 msgctxt "option value name"
 msgid "offset"
-msgstr "jatorri-aldaketa"
+msgstr "desplazamendua"
 
 #: main.cpp:111
 #, kde-format
@@ -94,48 +99,46 @@ msgid "Type of data to be searched"
 msgstr "Bilatu beharreko datu mota"
 
 #: main.cpp:112
-#, fuzzy, kde-format
-#| msgid "typeStr"
+#, kde-format
 msgctxt "option value name"
 msgid "typeString"
-msgstr "typeStr"
+msgstr "motaKatea"
 
 #: main.cpp:114
 #, kde-format
 msgid "Show supported <typeString> values"
-msgstr ""
+msgstr "Onartutako <motaKatea> balioak erakutsi"
 
 #: main.cpp:116
 #, kde-format
 msgid "Show property names supported in query."
-msgstr ""
+msgstr "Itaunean onartutako propietate-izenak erakutsi."
 
 #: main.cpp:118
 #, kde-format
 msgid "Limit search to specified directory"
-msgstr "Mugatu bilaketa adierazitako karpetara"
+msgstr "Bilaketa adierazitako direktoriora mugatu"
 
 #: main.cpp:119
-#, fuzzy, kde-format
-#| msgid "directory"
+#, kde-format
 msgctxt "option value name"
 msgid "directory"
-msgstr "karpeta"
+msgstr "direktorioa"
 
 #: main.cpp:121
 #, kde-format
 msgid "Show document IDs"
-msgstr "Erakutsi dokumentuen IDak"
+msgstr "Dokumentuen IDak erakutsi"
 
 #: main.cpp:123
 #, kde-format
 msgid "Sorting criteria"
-msgstr "Sailkatzeko irizpidea"
+msgstr "Ordenatzeko irizpideak"
 
 #: main.cpp:127
 #, kde-format
 msgid "query [(|AND|OR) query ...]"
-msgstr ""
+msgstr "itauna [(|AND|OR) itauna ...]"
 
 #: main.cpp:128
 #, kde-format
@@ -149,26 +152,35 @@ msgid ""
 "baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
 "filename:jpg)'"
 msgstr ""
+"Itauntzeko hitzen zerrenda.\n"
+"Itaun bakoitza balio bakarra izan daiteke, edo aurretik propietate-izen bat "
+"duen balioa.\n"
+"Itaunak habiaratu eta parentesien bidez taldekatu daitezke.\n"
+"\n"
+"\n"
+"Adibidea:\n"
+"baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
+"filename:jpg)'"
 
 #: main.cpp:161
 #, kde-format
 msgid "ERROR: Invalid \"type\" value, supported values:\n"
-msgstr ""
+msgstr "ERROREA: «type» balio baliogabea, onartutako balioak:\n"
 
 #: main.cpp:197
 #, kde-format
 msgid "%1 is not a valid directory"
-msgstr "%1 ez da baliozko direktorioa"
+msgstr "%1 ez da direktorio balioduna"
 
 #: main.cpp:205
 #, kde-format
 msgid "Using canonical path '%1' for '%2'"
-msgstr "'%2'(e)rekin '%1' bide-izen kanonikoa erabiltzen ari da"
+msgstr "«%2»(r)en ordez «%1» bide-izen kanonikoa erabiltzen ari da"
 
 #: main.cpp:221
 #, kde-format
 msgid "Elapsed: %1 msecs"
-msgstr "Igarotakoa: %1 ms"
+msgstr "Igarotako denbora: %1 ms"
 
 #~ msgid "query"
 #~ msgstr "kontsulta"

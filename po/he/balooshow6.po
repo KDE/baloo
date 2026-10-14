@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-10-09 00:42+0000\n"
+"POT-Creation-Date: 2026-10-14 00:41+0000\n"
 "PO-Revision-Date: 2026-03-20 08:13+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
@@ -28,47 +28,47 @@ msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
 msgstr "kde-l10n-he@kde.org"
 
-#: main.cpp:59
+#: main.cpp:64
 #, kde-format
 msgid "Baloo Show"
 msgstr "הצגה עם Baloo"
 
-#: main.cpp:61
+#: main.cpp:66
 #, kde-format
 msgid "The Baloo data Viewer - A debugging tool"
 msgstr "מציג הנתונים של Baloo - כלי לניפוי תקלות"
 
-#: main.cpp:63
+#: main.cpp:68
 #, kde-format
 msgid "(c) 2012, Vishesh Handa"
 msgstr "(c) 2012, וישש האנדה"
 
-#: main.cpp:68
+#: main.cpp:73
 #, kde-format
 msgid "Urls, document ids or inodes of the files"
 msgstr "כתובות, מזהי מסמכים או inodes של הקבצים"
 
-#: main.cpp:70
+#: main.cpp:75
 #, kde-format
 msgid "Print internal info"
 msgstr "הצגת מידע פנימי"
 
-#: main.cpp:72
+#: main.cpp:77
 #, kde-format
 msgid "Arguments are interpreted as inode numbers (requires -d)"
 msgstr "הארגומנטים מפוענחים כמספרי inode (דורש ‎-d)"
 
-#: main.cpp:74
+#: main.cpp:79
 #, kde-format
 msgid "Device id for the files"
 msgstr "מזהה התקן הקבצים"
 
-#: main.cpp:98
+#: main.cpp:103
 #, kde-format
 msgid "Error: -i requires specifying a device (-d <deviceId>)"
 msgstr "שגיאה: ‎-i דורש ציון התקן (‎-d <deviceId>‎)"
 
-#: main.cpp:104
+#: main.cpp:109
 #, kde-format
 msgid ""
 "The Baloo index could not be opened. Please run \"%1\" to see if Baloo is "
@@ -77,52 +77,52 @@ msgstr ""
 "אי אפשר לפתוח את המפתח של Baloo. נא להריץ את „%1” כדי לראות אם Baloo פעיל "
 "ועובד."
 
-#: main.cpp:121
+#: main.cpp:126
 #, kde-format
 msgid "The document IDs of the Baloo DB and the filesystem are different:"
 msgstr "מזהי המסמכים של מסד הנתונים של Baloo ומערכת הקבצים שונים:"
 
-#: main.cpp:140
+#: main.cpp:145
 #, kde-format
 msgid "%1: Not a valid url or document id"
 msgstr "%1: לא כתובת או מזהה מסמך תקניים"
 
-#: main.cpp:154
+#: main.cpp:159
 #, kde-format
 msgid "%1: Failed to parse inode number"
 msgstr "%1: פיענוח מספר ה־inode נכשל"
 
-#: main.cpp:178
+#: main.cpp:183
 #, kde-format
 msgid "%1: No index information found"
 msgstr "%1: לא נמצאו פרטי מפתח"
 
-#: main.cpp:235
+#: main.cpp:243
 #, kde-format
 msgid "Internal Info"
 msgstr "מידע פנימי"
 
-#: main.cpp:236
+#: main.cpp:244
 #, kde-format
 msgid "File Name Terms: %1"
 msgstr "ביטויי שמות הקובץ: %1"
 
-#: main.cpp:237
+#: main.cpp:245
 #, kde-format
 msgid "%1 Terms: %2"
 msgstr "ביטויי %1‏: %2"
 
-#: main.cpp:238
+#: main.cpp:246
 #, kde-format
 msgid "Plain Text Terms: %1"
 msgstr "ביטויי טקסט פשוט: %1"
 
-#: main.cpp:239
+#: main.cpp:247
 #, kde-format
 msgid "Property Terms: %1"
 msgstr "ביטויי מאפיינים: %1"
 
-#: main.cpp:242
+#: main.cpp:250
 #, kde-format
 msgctxt "Prefix string for internal errors"
 msgid "Internal Error - %1"
