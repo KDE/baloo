@@ -22,6 +22,7 @@ int main(int argc, char* argv[])
     setIdleSchedulingPriority();
     lowerPriority();
 
+    qputenv("QT_QPA_PLATFORM", "offscreen");
     QCoreApplication::setAttribute(Qt::AA_DisableSessionManager);
     QGuiApplication::setDesktopSettingsAware(false);
     QGuiApplication app(argc, argv);

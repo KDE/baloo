@@ -22,7 +22,6 @@
 #include "extractor/commandpipe.h"
 #include "../fileindexerconfig.h"
 
-class KIdleTime;
 class QString;
 
 namespace Baloo {
@@ -56,7 +55,6 @@ private:
     QFile m_output;
     Private::WorkerPipe m_workerPipe;
 
-    KIdleTime* m_idleTime = nullptr;
     bool m_isBusy = true;
 
     enum class IndexState {

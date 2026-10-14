@@ -34,7 +34,6 @@ target_link_libraries(baloo_file_extractor
   KF6::Solid
   KF6::BalooEngine
   KF6::Crash
-  KF6::IdleTime
 )
 
 install(TARGETS baloo_file_extractor DESTINATION ${KDE_INSTALL_FULL_LIBEXECDIR_KF})
