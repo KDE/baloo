@@ -20,7 +20,6 @@
 
 #include <KFileMetaData/Extractor>
 #include <KFileMetaData/MimeUtils>
-#include <KIdleTime>
 
 #include <unistd.h> //for STDIN_FILENO
 #include <iostream>
@@ -37,19 +36,16 @@ App::App(QObject *parent)
     std::ignore = m_input.open(STDIN_FILENO, QIODevice::ReadOnly | QIODevice::Unbuffered);
     std::ignore = m_output.open(STDOUT_FILENO, QIODevice::WriteOnly | QIODevice::Unbuffered);
 
-    static int s_idleTimeout = 1000 * 60 * 1; // 1 min
-    m_idleTime = KIdleTime::instance();
-    m_idleTime->addIdleTimeout(s_idleTimeout);
-    connect(m_idleTime, &KIdleTime::resumingFromIdle, this, [this]() {
-        qCInfo(BALOO) << "Busy, paced indexing";
-        m_isBusy = true;
-    });
-    connect(m_idleTime, &KIdleTime::timeoutReached, this, [this]() {
-        qCInfo(BALOO) << "Not busy, fast indexing";
-        m_isBusy = false;
-    });
-
     using WorkerPipe = Baloo::Private::WorkerPipe;
+    connect(&m_workerPipe, &WorkerPipe::indexSpeed, this, [this](Private::IndexSpeed speed) {
+        if (speed == Private::IndexSpeed::Slow) {
+            qCInfo(BALOO) << "Busy, paced indexing";
+            m_isBusy = true;
+        } else {
+            qCInfo(BALOO) << "Not busy, fast indexing";
+            m_isBusy = false;
+        }
+    });
     connect(&m_notifyNewData, &QSocketNotifier::activated, &m_workerPipe, &WorkerPipe::processIdData);
     connect(&m_workerPipe, &WorkerPipe::newDocumentIds, this, &App::slotNewBatch);
     connect(&m_workerPipe, &WorkerPipe::inputEnd, this, &QCoreApplication::quit);
@@ -64,10 +60,6 @@ void App::slotNewBatch(const QVector<quint64>& ids)
     if (db->open(Database::ReadWriteDatabase) != Database::OpenResult::Success) {
         qCCritical(BALOO) << "Failed to open the database";
         exit(1);
-    }
-
-    if (!m_isBusy) {
-        m_idleTime->catchNextResumeEvent();
     }
 
     // Extract the plain text if content indexing is (still) enabled in the config.
