@@ -1,0 +1,4 @@
+[D-BUS Service]
+Name=org.kde.baloo_idle_monitor
+Exec=@KDE_INSTALL_FULL_LIBEXECDIR_KF@/baloo_idle_monitor
+SystemdService=kde-baloo-idle-monitor.service
