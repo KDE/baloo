@@ -16,6 +16,9 @@
 #include <QDBusConnection>
 
 using namespace Baloo;
+using namespace Qt::StringLiterals;
+
+static const auto IDLE_MONITOR_SERVICE{u"org.kde.baloo_idle_monitor"_s};
 
 namespace {
     // TODO KF6 -- remove/combine with started/finished DBus signal
@@ -52,8 +55,19 @@ FileContentIndexer::FileContentIndexer(uint batchSize, //
         m_monitorWatcher.removeWatchedService(service);
     });
 
+    bus.connect(IDLE_MONITOR_SERVICE, u"/"_s, u"org.kde.baloo.idle_monitor"_s, u"idle"_s, u"b"_s, this, SLOT(sessionIdle(bool)));
+
     bus.registerObject(QStringLiteral("/fileindexer"),
                         this, QDBusConnection::ExportScriptableContents);
+}
+
+void FileContentIndexer::sessionIdle(bool isIdle)
+{
+    auto oldValue = m_sessionIdle.fetchAndStoreRelaxed(isIdle);
+    if (isIdle != oldValue) {
+        qDebug() << "Session Idle: " << isIdle;
+        Q_EMIT indexSpeedChanged(isIdle);
+    }
 }
 
 void FileContentIndexer::run()
@@ -76,6 +90,9 @@ void FileContentIndexer::run()
                 Q_EMIT finishedIndexingFile1(path, IndexResult::Unchanged, status);
             }
         }
+    });
+    connect(this, &FileContentIndexer::indexSpeedChanged, &process, [&process](bool indexFast) {
+        process.setIndexFast(indexFast);
     });
 
     m_stop.storeRelaxed(false);
@@ -114,6 +131,7 @@ void FileContentIndexer::run()
         timer.start();
 
         uint batchStartCount = finishedCount;
+        process.setIndexFast(m_sessionIdle);
         process.index(idList);
         loop.exec();
         batchSize = idList.size();

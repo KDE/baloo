@@ -77,4 +77,9 @@ void ExtractorProcess::index(const QVector<quint64>& fileIds)
     m_controller.processIds(fileIds);
 }
 
+void ExtractorProcess::setIndexFast(bool fast)
+{
+    m_controller.setIndexSpeed(fast ? Private::IndexSpeed::Fast : Private::IndexSpeed::Slow);
+}
+
 #include "moc_extractorprocess.cpp"
