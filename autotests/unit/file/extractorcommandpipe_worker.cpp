@@ -15,21 +15,29 @@
 
 #include <unistd.h> //for STDIN_FILENO
 
-int main(int argc, char* argv[])
-{
-    using Baloo::Private::WorkerPipe;
-    using FileIndexStatus = Baloo::IndexResult::FileStatus;
+using namespace Qt::StringLiterals;
 
-    QCoreApplication app(argc, argv);
+struct Context {
+    using WorkerPipe = Baloo::Private::WorkerPipe;
+    Context();
 
+    void processOne();
+
+    QSocketNotifier inputNotifier;
     QFile input;
-    std::ignore = input.open(STDIN_FILENO, QIODevice::ReadOnly | QIODevice::Unbuffered);
-    QSocketNotifier inputNotifier(STDIN_FILENO, QSocketNotifier::Read);
-
     QFile output;
+    WorkerPipe worker;
+    QVector<quint64> pendingIds;
+    bool indexFast = false;
+};
+
+Context::Context()
+    : inputNotifier(STDIN_FILENO, QSocketNotifier::Read)
+    , worker(&input, &output)
+{
+    std::ignore = input.open(STDIN_FILENO, QIODevice::ReadOnly | QIODevice::Unbuffered);
     std::ignore = output.open(STDOUT_FILENO, QIODevice::WriteOnly | QIODevice::Unbuffered);
 
-    WorkerPipe worker(&input, &output);
     QObject::connect(&inputNotifier, &QSocketNotifier::activated,
                      &worker, &WorkerPipe::processIdData);
 
@@ -37,20 +45,46 @@ int main(int argc, char* argv[])
         qCInfo(BALOO) << "[TEST] Pipe closed, exiting";
         QCoreApplication::quit();
     });
+
     QObject::connect( //
         &worker,
         &WorkerPipe::newDocumentIds,
-        [&worker](const QVector<quint64> &ids) {
-            QTimer::singleShot(0, [&worker, ids]() {
-                qCInfo(BALOO) << "[TEST] Processing" << ids << "...";
-                for(auto id : ids) {
-                    worker.urlStarted(QString::number(id));
-                    worker.urlProcessed(QString::number(id), true, FileIndexStatus::Successful);
-                }
-                worker.batchFinished();
-                qCInfo(BALOO) << "[TEST] Processing done";
+        [this](const QVector<quint64> &ids) {
+            qCInfo(BALOO) << "[TEST] Processing" << ids << "...";
+            pendingIds = ids;
+            QTimer::singleShot(0, [this]() {
+                processOne();
             });
         });
+}
+
+void Context::processOne()
+{
+    using FileIndexStatus = Baloo::IndexResult::FileStatus;
+
+    if (pendingIds.empty()) {
+        worker.batchFinished();
+        qCInfo(BALOO) << "[TEST] Processing done";
+        return;
+    }
+
+    auto id = pendingIds.takeFirst();
+    qCInfo(BALOO) << "[TEST] Processing" << id;
+
+    const auto url = QString::number(id);
+    worker.urlStarted(url);
+    worker.urlProcessed(url, true, FileIndexStatus::Successful);
+
+    QTimer::singleShot(0, [this]() {
+        processOne();
+    });
+}
+
+int main(int argc, char *argv[])
+{
+    QCoreApplication app(argc, argv);
+
+    Context context;
 
     return app.exec();
 }
