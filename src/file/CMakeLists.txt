@@ -50,6 +50,12 @@ ecm_qt_declare_logging_category(file_static_lib_SRCS
     CATEGORY_NAME kf.baloo
 )
 
+ecm_qt_declare_logging_category(baloo_idle_monitor_SRCS
+    HEADER baloo_idle_monitor_debug.h
+    IDENTIFIER BALOO_IDLE_MONITOR
+    CATEGORY_NAME kf.baloo.idlemonitor
+)
+
 # KF6 TODO - remove BalooWatcherApplication
 qt_add_dbus_interface(file_static_lib_SRCS org.kde.BalooWatcherApplication.xml baloowatcherapplication_interface)
 kconfig_add_kcfg_files(file_static_lib_SRCS ../lib/baloosettings.kcfgc GENERATE_MOC)
@@ -79,13 +85,32 @@ if (BUILD_INDEXER_SERVICE)
         KF6::Crash
     )
 
-    install(TARGETS baloo_file DESTINATION ${KDE_INSTALL_FULL_LIBEXECDIR_KF})
+    add_executable(baloo_idle_monitor baloo_idle_monitor.cpp ${baloo_idle_monitor_SRCS})
+    ecm_mark_nongui_executable(baloo_idle_monitor)
+    target_link_libraries(baloo_idle_monitor
+        Qt6::DBus
+        Qt6::Gui
+        KF6::IdleTime
+    )
+
+    install(TARGETS
+        baloo_file
+        baloo_idle_monitor
+        DESTINATION ${KDE_INSTALL_FULL_LIBEXECDIR_KF}
+    )
 
     ecm_install_configured_files(INPUT baloo_file.desktop.in DESTINATION ${KDE_INSTALL_AUTOSTARTDIR})
 
     ecm_install_configured_files(
-       INPUT kde-baloo.service.in
-       DESTINATION ${KDE_INSTALL_SYSTEMDUSERUNITDIR}
+        INPUT
+            kde-baloo.service.in
+            kde-baloo-idle-monitor.service.in
+        DESTINATION ${KDE_INSTALL_SYSTEMDUSERUNITDIR}
+    )
+    ecm_install_configured_files(
+        INPUT
+            org.kde.baloo_idle_monitor.service.in
+        DESTINATION ${KDE_INSTALL_DBUSSERVICEDIR}
     )
 
     add_subdirectory(extractor)
