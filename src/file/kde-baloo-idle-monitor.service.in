@@ -1,0 +1,11 @@
+[Unit]
+Description=Baloo Idle Monitor
+PartOf=graphical-session.target
+After=graphical-session.target
+
+[Service]
+Type=dbus
+BusName=org.kde.baloo_idle_monitor
+ExecStart=@KDE_INSTALL_FULL_LIBEXECDIR_KF@/baloo_idle_monitor
+Slice=session.slice
+Restart=no
