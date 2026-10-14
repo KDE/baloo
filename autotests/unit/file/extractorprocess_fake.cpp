@@ -46,7 +46,7 @@ Context::Context()
     QObject::connect(&worker, //
                      &WorkerPipe::newDocumentIds,
                      [this](const QVector<quint64> &ids) {
-                         qCInfo(BALOO) << "Processing " << ids << " ...";
+                         qCInfo(BALOO) << "[TEST] Processing" << ids << "...";
                          pendingIds = ids;
                          QTimer::singleShot(0, [this]() {
                              processOne();
@@ -62,7 +62,7 @@ void Context::processOne()
 
     if (pendingIds.empty()) {
         worker.batchFinished();
-        qCInfo(BALOO) << "Processing done";
+        qCInfo(BALOO) << "[TEST] Processing done";
         return;
     }
 
@@ -85,7 +85,7 @@ void Context::processOne()
         worker.urlProcessed(QString::number(id), true, FileIndexStatus::Successful);
     } else {
         worker.urlProcessed(QString::number(id), true, FileIndexStatus::Successful);
-        qCInfo(BALOO) << "... waiting for event ...";
+        qCInfo(BALOO) << "[TEST] ... waiting for event ...";
         return;
     }
 
