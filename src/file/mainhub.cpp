@@ -7,11 +7,16 @@
 #include "mainhub.h"
 #include "fileindexerconfig.h"
 
-#include <QDBusConnection>
 #include <QCoreApplication>
+#include <QDBusConnection>
+#include <QDBusMessage>
+#include <QDBusPendingCall>
 #include <QTimer>
 
 using namespace Baloo;
+using namespace Qt::StringLiterals;
+
+static const auto IDLE_MONITOR_SERVICE{u"org.kde.baloo_idle_monitor"_s};
 
 MainHub::MainHub(Database *db, FileIndexerConfig *config, bool firstRun)
     : m_config(config)
@@ -37,6 +42,10 @@ MainHub::MainHub(Database *db, FileIndexerConfig *config, bool firstRun)
         // so we don't end up consuming excessive resources on login
         m_fileIndexScheduler.startupFinished();
     });
+
+    // Try to start the idle monitor
+    auto monitorPing{QDBusMessage::createMethodCall(IDLE_MONITOR_SERVICE, u"/"_s, u"org.freedesktop.DBus.Peer"_s, u"Ping"_s)};
+    bus.asyncCall(monitorPing);
 
     QTimer::singleShot(0, &m_fileWatcher, &FileWatch::updateIndexedFoldersWatches);
 }
