@@ -23,6 +23,7 @@ public:
     ~ExtractorProcess();
 
     void index(const QVector<quint64>& fileIds);
+    void setIndexFast(bool fast);
     void start();
 
 Q_SIGNALS:

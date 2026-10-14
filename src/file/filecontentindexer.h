@@ -29,10 +29,15 @@ class FileContentIndexer : public QObject, public QRunnable
     Q_CLASSINFO("D-Bus Interface", "org.kde.baloo.fileindexer")
 
     Q_PROPERTY(QString currentFile READ currentFile NOTIFY startedIndexingFile)
+    Q_PROPERTY(bool indexFast READ indexFast NOTIFY indexSpeedChanged)
 public:
     FileContentIndexer(uint batchSize, FileContentIndexerProvider *provider, TimeEstimator &timeEstimator, QObject *parent = nullptr);
 
     QString currentFile() { return m_currentFile; }
+    bool indexFast()
+    {
+        return m_sessionIdle;
+    }
 
     void run() override;
 
@@ -50,13 +55,18 @@ Q_SIGNALS:
     Q_SCRIPTABLE void finishedIndexingFile1(const QString &filePath, Baloo::IndexResult::Changed changed, Baloo::IndexResult::FileStatus fileStatus);
     Q_SCRIPTABLE void committedBatch(uint time, uint batchSize);
 
+    void indexSpeedChanged(bool indexFast);
     void done();
+
+private Q_SLOTS:
+    void sessionIdle(bool isIdle);
 
 private:
     const uint m_batchSize;
     FileContentIndexerProvider *m_provider;
 
     QAtomicInt m_stop = 0;
+    QAtomicInteger<bool> m_sessionIdle = false;
 
     QString m_currentFile;
     TimeEstimator &m_timeEstimator;
