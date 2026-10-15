@@ -99,7 +99,7 @@ void App::slotNewBatch(const QVector<quint64>& ids)
 
     m_batchTime.start();
 
-    QTimer::singleShot((m_isBusy ? 500 : 0), this, [this, db]() {
+    QTimer::singleShot((m_isBusy ? 500 : 0), this, [this]() {
         processNextFile();
     });
 }
