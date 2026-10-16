@@ -1,13 +1,13 @@
 # Copyright (C) 2024 This file is copyright:
 # This file is distributed under the same license as the baloo package.
 #
-# SPDX-FileCopyrightText: 2024 Yaron Shahrabani <sh.yaron@gmail.com>
+# SPDX-FileCopyrightText: 2024, 2026 Yaron Shahrabani <sh.yaron@gmail.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-10-09 00:42+0000\n"
-"PO-Revision-Date: 2024-03-02 22:00+0200\n"
+"PO-Revision-Date: 2026-10-09 10:51+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
 "n % 10 == 0) ? 2 : 3));\n"
-"X-Generator: Lokalize 23.08.4\n"
+"X-Generator: Lokalize 26.08.0\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -32,19 +32,19 @@ msgstr "kde-l10n-he@kde.org"
 #, kde-format
 msgctxt "'listTypes' table header"
 msgid "<typeString>     Description"
-msgstr ""
+msgstr "<מחרוזת_סוג>     תיאור"
 
 #: main.cpp:66
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "Metadata Property Name                 Description"
-msgstr ""
+msgstr "שם מאפיין נתוני על                 תיאור"
 
 #: main.cpp:76
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "File Property Name                     Description"
-msgstr ""
+msgstr "שם מאפיין קובץ                 תיאור"
 
 #: main.cpp:95
 #, kde-format
@@ -67,8 +67,7 @@ msgid "The maximum number of results"
 msgstr "מספר התוצאות המרבי"
 
 #: main.cpp:106
-#, fuzzy, kde-format
-#| msgid "limit"
+#, kde-format
 msgctxt "option value name"
 msgid "limit"
 msgstr "גבול"
@@ -79,8 +78,7 @@ msgid "Offset from which to start the search"
 msgstr "היסט להתחלת החיפוש"
 
 #: main.cpp:109
-#, fuzzy, kde-format
-#| msgid "offset"
+#, kde-format
 msgctxt "option value name"
 msgid "offset"
 msgstr "היסט"
@@ -91,8 +89,7 @@ msgid "Type of data to be searched"
 msgstr "סוג הנתונים לחיפוש"
 
 #: main.cpp:112
-#, fuzzy, kde-format
-#| msgid "typeStr"
+#, kde-format
 msgctxt "option value name"
 msgid "typeString"
 msgstr "מחרוזת_סוג"
@@ -100,12 +97,12 @@ msgstr "מחרוזת_סוג"
 #: main.cpp:114
 #, kde-format
 msgid "Show supported <typeString> values"
-msgstr ""
+msgstr "הצגת ערכי <מחרוזת_סוג> נתמכים"
 
 #: main.cpp:116
 #, kde-format
 msgid "Show property names supported in query."
-msgstr ""
+msgstr "הצגת שמות מאפיינים בשאילתה נתמכת."
 
 #: main.cpp:118
 #, kde-format
@@ -113,8 +110,7 @@ msgid "Limit search to specified directory"
 msgstr "הגבלת החיפוש לתיקייה מסוימת"
 
 #: main.cpp:119
-#, fuzzy, kde-format
-#| msgid "directory"
+#, kde-format
 msgctxt "option value name"
 msgid "directory"
 msgstr "תיקייה"
@@ -132,7 +128,7 @@ msgstr "תנאי מיון"
 #: main.cpp:127
 #, kde-format
 msgid "query [(|AND|OR) query ...]"
-msgstr ""
+msgstr "שאילתה [(|וגם|או) שאילתה …]"
 
 #: main.cpp:128
 #, kde-format
@@ -146,11 +142,19 @@ msgid ""
 "baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
 "filename:jpg)'"
 msgstr ""
+"רשימת מילים לתשאול.\n"
+"בכל רשומה יכול להיות ערך בודד, או ערך שלפניו שם מאפיין.\n"
+"אפשר לקונן שאילתות ולקבץ עם סוגריים.\n"
+"\n"
+"\n"
+"למשל:\n"
+"baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
+"filename:jpg)'"
 
 #: main.cpp:161
 #, kde-format
 msgid "ERROR: Invalid \"type\" value, supported values:\n"
-msgstr ""
+msgstr "שגיאה: ערך „סוג” שגוי, ערכים נתמכים:\n"
 
 #: main.cpp:197
 #, kde-format
