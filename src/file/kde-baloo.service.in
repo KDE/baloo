@@ -3,6 +3,8 @@ Description=Baloo File Indexer Daemon
 PartOf=graphical-session.target
 # We need the compositor to be running since we fork QGuiApplications.
 After=graphical-session.target
+# Plasma < 6.9 is implicitly ordering After us. Explicitly specify the correct order to avoid a dependency loop
+After=plasma-workspace.target
 
 [Service]
 ExecStart=@KDE_INSTALL_FULL_LIBEXECDIR_KF@/baloo_file
