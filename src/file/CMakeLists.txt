@@ -88,6 +88,11 @@ if (BUILD_INDEXER_SERVICE)
        DESTINATION ${KDE_INSTALL_SYSTEMDUSERUNITDIR}
     )
 
+    install(CODE "
+        include(${CMAKE_SOURCE_DIR}/cmake/SystemctlEnable.cmake)
+        systemctl_enable(kde-baloo.service graphical-session.target ${KDE_INSTALL_FULL_SYSTEMDUSERUNITDIR})
+    ")
+
     add_subdirectory(extractor)
 
     install(FILES
