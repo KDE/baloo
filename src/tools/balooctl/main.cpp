@@ -41,12 +41,9 @@
 #include "purgecommand.h"
 
 using namespace Baloo;
+using namespace Qt::StringLiterals;
 
-void start()
-{
-    const QString exe = QStringLiteral(KDE_INSTALL_FULL_LIBEXECDIR_KF "/baloo_file");
-    QProcess::startDetached(exe, QStringList());
-}
+static const auto BALOO_SERVICE_NAME{u"org.kde.baloo"_s};
 
 int main(int argc, char* argv[])
 {
@@ -136,7 +133,7 @@ int main(int argc, char* argv[])
                 out << "File Indexer already running\n";
             } else {
                 out << "Enabling and starting the File Indexer\n";
-                start();
+                QDBusConnection::sessionBus().interface()->startService(BALOO_SERVICE_NAME);
             }
         } else {
             out << "Disabling and stopping the File Indexer\n";
