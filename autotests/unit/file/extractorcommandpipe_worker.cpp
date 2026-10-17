@@ -29,6 +29,7 @@ struct Context {
     WorkerPipe worker;
     QVector<quint64> pendingIds;
     bool indexFast = false;
+    bool waiting = false;
 };
 
 Context::Context()
@@ -56,6 +57,20 @@ Context::Context()
                 processOne();
             });
         });
+
+    QObject::connect( //
+        &worker,
+        &WorkerPipe::indexSpeed,
+        [this](Baloo::Private::IndexSpeed speed) {
+            qCInfo(BALOO) << "[TEST] Speed changed:" << static_cast<int>(speed);
+            indexFast = speed == Baloo::Private::IndexSpeed::Fast ? true : false;
+            if (waiting) {
+                QTimer::singleShot(0, [this]() {
+                    processOne();
+                });
+                waiting = false;
+            }
+        });
 }
 
 void Context::processOne()
@@ -71,9 +86,15 @@ void Context::processOne()
     auto id = pendingIds.takeFirst();
     qCInfo(BALOO) << "[TEST] Processing" << id;
 
-    const auto url = QString::number(id);
+    const auto url = (indexFast ? u"F_"_s : u"S_"_s) + QString::number(id);
     worker.urlStarted(url);
     worker.urlProcessed(url, true, FileIndexStatus::Successful);
+
+    if (id >= 2000) {
+        waiting = true;
+        qCInfo(BALOO) << "[TEST] ... waiting for event ...";
+        return;
+    }
 
     QTimer::singleShot(0, [this]() {
         processOne();

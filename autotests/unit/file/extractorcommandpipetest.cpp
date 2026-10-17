@@ -38,6 +38,7 @@ private Q_SLOTS:
     void multipleBatch();
     void multipleSequentialBatches();
     void closePipe();
+    void changeSpeed();
 
 private:
     QProcess m_worker;
@@ -155,6 +156,50 @@ void ExtractorCommandPipeTest::closePipe()
 
     m_worker.closeWriteChannel();
     QVERIFY(spy.wait());
+}
+
+void ExtractorCommandPipeTest::changeSpeed()
+{
+    QSignalSpy spy(&m_controller, &Baloo::Private::ControllerPipe::urlProcessed);
+
+    m_controller.setIndexSpeed(Baloo::Private::IndexSpeed::Fast);
+    m_controller.processIds({1});
+    QVERIFY(spy.wait());
+
+    m_controller.setIndexSpeed(Baloo::Private::IndexSpeed::Slow);
+    m_controller.processIds({2, 3});
+    while (spy.count() < 3) {
+        QVERIFY(spy.wait(500));
+    }
+
+    m_controller.setIndexSpeed(Baloo::Private::IndexSpeed::Fast);
+    m_controller.setIndexSpeed(Baloo::Private::IndexSpeed::Slow);
+    m_controller.setIndexSpeed(Baloo::Private::IndexSpeed::Fast);
+    m_controller.processIds({2034, 5, 6});
+
+    while (spy.count() < 4) {
+        QVERIFY(spy.wait(500));
+    }
+
+    m_controller.setIndexSpeed(Baloo::Private::IndexSpeed::Slow);
+    while (spy.count() < 6) {
+        QVERIFY(spy.wait(500));
+    }
+
+    m_controller.setIndexSpeed(Baloo::Private::IndexSpeed::Fast);
+    m_controller.processIds({7});
+    while (spy.count() < 7) {
+        QVERIFY(spy.wait(500));
+    }
+
+    // Per file, QVariantList of (url, changed, status)
+    QCOMPARE(spy.at(0).at(0).toString(), u"F_1");
+    QCOMPARE(spy.at(1).at(0).toString(), u"S_2");
+    QCOMPARE(spy.at(2).at(0).toString(), u"S_3");
+    QCOMPARE(spy.at(3).at(0).toString(), u"F_2034");
+    QCOMPARE(spy.at(4).at(0).toString(), u"S_5");
+    QCOMPARE(spy.at(5).at(0).toString(), u"S_6");
+    QCOMPARE(spy.at(6).at(0).toString(), u"F_7");
 }
 
 } // namespace Test
