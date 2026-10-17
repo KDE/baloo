@@ -26,6 +26,12 @@ enum BatchStatus : quint8 {
     BatchFinished = 'B',
 };
 
+enum ControllerCommand : quint8 {
+    Batch = 'B',
+    IndexSlow = 'S',
+    IndexFast = 'F',
+};
+
 ControllerPipe::ControllerPipe(QIODevice* commandPipe, QIODevice* statusPipe)
     : m_commandStream(commandPipe)
     , m_statusStream(statusPipe)
@@ -34,7 +40,12 @@ ControllerPipe::ControllerPipe(QIODevice* commandPipe, QIODevice* statusPipe)
 
 void ControllerPipe::processIds(const QVector<quint64>& ids)
 {
-    m_commandStream << ids;
+    m_commandStream << ControllerCommand::Batch << ids;
+}
+
+void ControllerPipe::setIndexSpeed(IndexSpeed speed)
+{
+    m_commandStream << (speed == IndexSpeed::Fast ? ControllerCommand::IndexFast : ControllerCommand::IndexSlow);
 }
 
 void ControllerPipe::processStatusData()
@@ -112,10 +123,11 @@ WorkerPipe::WorkerPipe(QIODevice* commandPipe, QIODevice* statusPipe)
 void WorkerPipe::processIdData()
 {
     QVector<quint64> ids;
+    ControllerCommand cmd;
 
     while (true) {
         m_commandStream.startTransaction();
-        m_commandStream >> ids;
+        m_commandStream >> cmd;
 
         /* QIODevice::atEnd() has to be checked *after* reading from
          * the QDataStream, but *before* commitTransaction to get
@@ -128,6 +140,28 @@ void WorkerPipe::processIdData()
             Q_EMIT inputEnd();
             return;
         }
+
+        if (cmd != ControllerCommand::Batch) {
+            if (!m_commandStream.commitTransaction()) {
+                return;
+            }
+            if (cmd == ControllerCommand::IndexFast) {
+                qCDebug(BALOO) << "Got Command [IndexFast]";
+                Q_EMIT indexSpeed(IndexSpeed::Fast);
+            } else if (cmd == ControllerCommand::IndexSlow) {
+                qCDebug(BALOO) << "Got Command [IndexSlow]";
+                Q_EMIT indexSpeed(IndexSpeed::Slow);
+            } else {
+                qCDebug(BALOO) << "Got unknown command:" << cmd;
+            }
+            if (m_commandStream.device()->atEnd()) {
+                return;
+            }
+            continue;
+        }
+
+        m_commandStream >> ids;
+        qCDebug(BALOO) << "Got Command [Batch]:" << ids;
 
         if (!m_commandStream.commitTransaction()) {
             return;

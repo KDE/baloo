@@ -18,6 +18,11 @@ class QIODevice;
 namespace Baloo {
 namespace Private {
 
+enum class IndexSpeed : uint8_t {
+    Slow = 0,
+    Fast = 1,
+};
+
 /**
  * Bidirectional communication pipe
  *
@@ -30,6 +35,7 @@ public:
     ControllerPipe(QIODevice* commandPipe, QIODevice* statusPipe);
 
     void processIds(const QVector<quint64>& ids);
+    void setIndexSpeed(IndexSpeed speed);
 
 Q_SIGNALS:
     void urlStarted(const QString& url);
@@ -61,6 +67,7 @@ public Q_SLOTS:
 Q_SIGNALS:
     void newDocumentIds(const QVector<quint64>& ids);
     void inputEnd();
+    void indexSpeed(IndexSpeed speed);
 
 private:
     QDataStream m_commandStream;
