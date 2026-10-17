@@ -6,6 +6,7 @@ target_sources(balooctl6 PRIVATE
     indexer.cpp
     command.cpp
     configcommand.cpp
+    purgecommand.cpp
     statuscommand.cpp
     monitorcommand.cpp
     indexcommand.cpp
