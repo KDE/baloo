@@ -84,8 +84,14 @@ if (BUILD_INDEXER_SERVICE)
     ecm_install_configured_files(INPUT baloo_file.desktop.in DESTINATION ${KDE_INSTALL_AUTOSTARTDIR})
 
     ecm_install_configured_files(
-       INPUT kde-baloo.service.in
-       DESTINATION ${KDE_INSTALL_SYSTEMDUSERUNITDIR}
+        INPUT
+            kde-baloo.service.in
+        DESTINATION ${KDE_INSTALL_SYSTEMDUSERUNITDIR}
+    )
+    ecm_install_configured_files(
+        INPUT
+            org.kde.baloo.service.in
+        DESTINATION ${KDE_INSTALL_DBUSSERVICEDIR}
     )
 
     add_subdirectory(extractor)

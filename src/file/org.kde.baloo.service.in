@@ -1,0 +1,4 @@
+[D-BUS Service]
+Name=org.kde.baloo
+Exec=@KDE_INSTALL_FULL_LIBEXECDIR_KF@/baloo_file
+SystemdService=kde-baloo.service
