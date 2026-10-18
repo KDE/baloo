@@ -53,7 +53,6 @@ void indexProperties(Baloo::TermGenerator &termGen, Baloo::Document &doc, const 
         const auto property = it.key();
         const auto rangeEnd = properties.upperBound(property);
 
-        const bool indexAsContent = KFileMetaData::PropertyInfo(property).shouldBeIndexed();
         const int propNum = static_cast<int>(property);
         const QByteArray prefix = 'X' + QByteArray::number(propNum) + '-';
 
@@ -74,7 +73,7 @@ void indexProperties(Baloo::TermGenerator &termGen, Baloo::Document &doc, const 
             } else {
                 const QString val = value.toString();
                 if (!val.isEmpty()) {
-                    termGen.indexProperty(val, prefix, indexAsContent);
+                    termGen.indexProperty(val, prefix);
                 }
             }
             ++it;

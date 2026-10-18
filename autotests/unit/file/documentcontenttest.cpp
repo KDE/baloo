@@ -86,14 +86,14 @@ void DocumentContentTest::testResultProperty_data()
              {KFMP::Manufacturer, u"Vendor"_s},
          },
          {"X30-vendor", "X31-camera", "X31-great"}},
-        {"singleContent", {{KFMP::Artist, u"Artist"_s}}, {"X9-artist", "artist"}},
+        {"singleContent", {{KFMP::Artist, u"Artist"_s}}, {"X9-artist"}},
         {"mixedContent",
          {
              {KFMP::Artist, u"Artist Name"_s},
              {KFMP::Model, u"Great Camera"_s},
              {KFMP::Manufacturer, u"Vendor"_s},
          },
-         {"X30-vendor", "X31-camera", "X31-great", "X9-artist", "X9-name", "artist", "name"}},
+         {"X30-vendor", "X31-camera", "X31-great", "X9-artist", "X9-name"}},
     };
 
     for (const auto &tc : testCases) {
@@ -123,7 +123,7 @@ void DocumentContentTest::testResultMixed()
 
     QStringList text{u"a b"_s, u"c d"_s};
     QList<ValueProperty> properties{{KFMP::Artist, u"a n"_s}, {KFMP::Model, u"m"_s}};
-    QByteArrayList expectedKeys{"X31-m", "X9-a", "X9-n", "a", "b", "c", "d", "n"};
+    QByteArrayList expectedKeys{"X31-m", "X9-a", "X9-n", "a", "b", "c", "d"};
 
     Baloo::Result result;
     for (const auto &block : text) {
