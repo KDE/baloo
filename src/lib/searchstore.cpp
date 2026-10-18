@@ -104,6 +104,32 @@ std::tuple<bool, QByteArray, QMetaType::Type> propertyInfo(const QByteArray &pro
     }
 }
 
+using KFMDPropertyInfix = QByteArray;
+const std::vector<KFMDPropertyInfix> &defaultIndexedProperties()
+{
+    const static std::vector<KFMDPropertyInfix> properties = []() {
+        const auto allNames = KFileMetaData::PropertyInfo::allNames();
+        std::vector<KFMDPropertyInfix> v;
+        v.reserve(allNames.size());
+
+        for (const auto &name : allNames) {
+            const auto &propertyInfo = KFileMetaData::PropertyInfo::fromName(name);
+            if (!propertyInfo.shouldBeIndexed()) {
+                continue;
+            }
+            if (propertyInfo.valueType() != QMetaType::QString) {
+                // Should not happen, but as KFMD is external ignore it with a warning
+                qCWarning(BALOO) << "Unexpected non-string property" << name;
+                continue;
+            }
+            const int propertyNumber = static_cast<int>(propertyInfo.property());
+            v.emplace_back(QByteArray::number(propertyNumber));
+        }
+        return v;
+    }();
+    return properties;
+}
+
 PostingIterator::Ptr constructEqualsQuery(Transaction *tr, const QByteArray &prefix, const QString &value, bool expandLast = false)
 {
     // We use the TermGenerator to normalize the words in the value and to
@@ -388,9 +414,10 @@ PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term)
             return constructQuery(tr, Term{u"tags"_s, term.value(), term.comparator()});
         }
     } else if (property == "") {
+        Term mterm(QStringLiteral("metadata"), term.value(), term.comparator());
         Term cterm(QStringLiteral("content"), term.value(), term.comparator());
         Term fterm(QStringLiteral("filename"), term.value(), term.comparator());
-        return constructQuery(tr, Term{cterm, Term::Operation::Or, fterm});
+        return constructQuery(tr, Term{cterm, Term::Operation::Or, Term{fterm, Term::Operation::Or, mterm}});
     } else if (property == "filename") {
         auto com = term.comparator();
         auto fq = FilenameQuery(value, (com == Term::Contains));
@@ -401,6 +428,19 @@ PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term)
         auto mq = MimetypeQuery(value, (com == Term::Contains));
         qCDebug(BALOO) << "mimetype query:" << mq;
         return tr->postingIterator(mq);
+    } else if (property == "metadata") {
+        auto com = term.comparator();
+        const auto propertyInfixes = defaultIndexedProperties();
+
+        std::vector<std::unique_ptr<PostingIterator>> vec;
+        vec.reserve(propertyInfixes.size());
+
+        for (const auto &infix : propertyInfixes) {
+            auto pq = PropertyPhraseQuery(value, infix, (com == Term::Contains));
+            qCDebug(BALOO) << "metadata/property query:" << pq;
+            vec.push_back(tr->postingIterator(pq));
+        }
+        return std::make_unique<OrPostingIterator>(std::move(vec));
     }
 
     bool isProperty = false;
