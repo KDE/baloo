@@ -109,20 +109,9 @@ QByteArrayList TermGenerator::termList(const QString& text_)
     return list;
 }
 
-void TermGenerator::indexProperty(const QString &text, const QByteArray &prefix, bool indexAsContent)
+void TermGenerator::indexProperty(const QString &text, const QByteArray &prefix)
 {
     const QByteArrayList terms = termList(text);
-    if (indexAsContent) {
-        if (terms.size() == 1) {
-            m_doc.addTerm(terms[0]);
-        } else {
-            for (const QByteArray &term : terms) {
-                m_doc.addPositionTerm(term, m_position);
-                m_position++;
-            }
-            m_position++;
-        }
-    }
     for (const QByteArray &term : terms) {
         QByteArray finalArr = prefix + term;
         m_doc.addTerm(finalArr);

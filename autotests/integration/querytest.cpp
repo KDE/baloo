@@ -54,7 +54,6 @@ QVector<quint64> execQuery(const Transaction &tr, const QueryT &query)
 struct PropertyTerm {
     QByteArray prefix;
     QString text;
-    bool asContent;
 };
 } // namespace
 
@@ -184,7 +183,7 @@ private:
         TermGenerator tg(doc);
         for (const auto &property : properties) {
             const QByteArray prefix{'X' + property.prefix + '-'};
-            tg.indexProperty(property.text, prefix, property.asContent);
+            tg.indexProperty(property.text, prefix);
             jsonData += '"' + property.prefix + "\":\"" //
                 + property.text.toUtf8() + "\",";
         }
@@ -243,17 +242,17 @@ void QueryTest::insertPropertyDocuments()
     Transaction tr(db.get(), Transaction::ReadWrite);
     addPropertyDocument(&tr, //
                         {
-                            {"9", u"The Artist Number 1"_s, true}, // artist
-                            {"10", u"Album Number 2"_s, true}, // album
+                            {"9", u"The Artist Number 1"_s}, // artist
+                            {"10", u"Album Number 2"_s}, // album
                         },
                         m_ids[11],
                         u"propertyFile.mp3"_s);
     addPropertyDocument(&tr, //
                         {
-                            {"9", u"Photographer Name"_s, true}, // artist
-                            {"31", u"Great Camera Model 2"_s, false}, // model
-                            {"26", u"1234"_s, false}, // width
-                            {"40", u"0.234"_s, false}, // photoExposureTime
+                            {"9", u"Photographer Name"_s}, // artist
+                            {"31", u"Great Camera Model 2"_s}, // model
+                            {"26", u"1234"_s}, // width
+                            {"40", u"0.234"_s}, // photoExposureTime
                         },
                         m_ids[12],
                         u"propertyFile.jpg"_s);
@@ -264,7 +263,7 @@ void QueryTest::testTermEqual()
 {
     EngineQuery q({EngineQuery::PhraseTerm("the", EngineQuery::Equal)});
 
-    QVector<quint64> result{m_ids[1], m_ids[2], m_ids[4], m_ids[7], m_ids[11]};
+    QVector<quint64> result{m_ids[1], m_ids[2], m_ids[4], m_ids[7]};
     Transaction tr(db.get(), Transaction::ReadOnly);
     QCOMPARE(execQuery(tr, q), result);
 }
