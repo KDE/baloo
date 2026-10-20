@@ -60,15 +60,6 @@ public:
 
     bool isValid() const;
 
-    /*
-     * Negate this term. Negation only applies for Equal or Contains
-     * For other Comparators you must invert it yourself
-     */
-    void setNegation(bool isNegated);
-
-    bool negated() const;
-    bool isNegated() const;
-
     void addSubTerm(const Term& term);
     void setSubTerms(const QList<Term>& terms);
 
@@ -126,13 +117,6 @@ inline Term operator ||(const Term& lhs, const Term& rhs)
         return lhs;
 
     return {lhs, Term::Or, rhs};
-}
-
-inline Term operator !(const Term& rhs)
-{
-    Term t(rhs);
-    t.setNegation(!rhs.isNegated());
-    return t;
 }
 
 char *toString(const Term& term);

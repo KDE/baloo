@@ -19,8 +19,6 @@ public:
     QString m_property;
     QVariant m_value;
 
-    bool m_isNegated = false;
-
     QList<Term> m_subTerms;
 };
 
@@ -125,21 +123,6 @@ bool Term::isValid() const
     }
 
     return true;
-}
-
-void Term::setNegation(bool isNegated)
-{
-    d->m_isNegated = isNegated;
-}
-
-bool Term::isNegated() const
-{
-    return d->m_isNegated;
-}
-
-bool Term::negated() const
-{
-    return d->m_isNegated;
 }
 
 void Term::addSubTerm(const Term& term)
@@ -360,10 +343,8 @@ Term Term::fromVariantMap(const QVariantMap& map)
 
 bool Term::operator==(const Term& rhs) const
 {
-    if (d->m_op != rhs.d->m_op || d->m_comp != rhs.d->m_comp ||
-        d->m_isNegated != rhs.d->m_isNegated || d->m_property != rhs.d->m_property ||
-        d->m_value != rhs.d->m_value)
-    {
+    if (d->m_op != rhs.d->m_op || d->m_comp != rhs.d->m_comp //
+        || d->m_property != rhs.d->m_property || d->m_value != rhs.d->m_value) {
         return false;
     }
 
