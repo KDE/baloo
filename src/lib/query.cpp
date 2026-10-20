@@ -26,8 +26,6 @@ const int defaultLimit = -1;
 
 class BALOO_CORE_NO_EXPORT Baloo::Query::Private {
 public:
-    Baloo::Term m_term;
-
     QStringList m_types;
     QString m_searchString;
     int m_limit = defaultLimit;
@@ -92,8 +90,6 @@ QString Query::searchString() const
 void Query::setSearchString(const QString& str)
 {
     d->m_searchString = str;
-
-    d->m_term = Term();
 }
 
 uint Query::limit() const
@@ -162,12 +158,7 @@ ResultIterator Query::exec()
 {
     Term term;
     if (!d->m_searchString.isEmpty()) {
-        if (d->m_term.isValid()) {
-            qCDebug(BALOO) << "Term already set";
-        }
         term = QueryParser::parse(d->m_searchString);
-    } else {
-        term = d->m_term;
     }
 
     if (!d->m_types.isEmpty()) {
@@ -219,10 +210,6 @@ QByteArray Query::toJSON()
         map[QStringLiteral("searchString")] = d->m_searchString;
     }
 
-    if (d->m_term.isValid()) {
-        map[QStringLiteral("term")] = QVariant(d->m_term.toVariantMap());
-    }
-
     if (d->m_yearFilter > 0) {
         map[QStringLiteral("yearFilter")] = d->m_yearFilter;
     }
@@ -264,7 +251,6 @@ Query Query::fromJSON(const QByteArray& arr)
 
     query.d->m_offset = map[QStringLiteral("offset")].toUInt();
     query.d->m_searchString = map[QStringLiteral("searchString")].toString();
-    query.d->m_term = Term::fromVariantMap(map[QStringLiteral("term")].toMap());
 
     if (map.contains(QStringLiteral("yearFilter"))) {
         query.d->m_yearFilter = map[QStringLiteral("yearFilter")].toInt();
@@ -285,9 +271,6 @@ Query Query::fromJSON(const QByteArray& arr)
         query.d->m_includeFolder = map.value(QStringLiteral("includeFolder")).toString();
     }
 
-    if (!query.d->m_searchString.isEmpty() && query.d->m_term.isValid()) {
-        qCWarning(BALOO) << "Only one of 'searchString' and 'term' should be set:" << arr;
-    }
     return query;
 }
 
@@ -381,7 +364,7 @@ bool Query::operator==(const Query& rhs) const
         }
     }
 
-    return d->m_term == rhs.d->m_term;
+    return true;
 }
 
 bool Query::operator!=(const Query& rhs) const
