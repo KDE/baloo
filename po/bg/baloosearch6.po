@@ -3,13 +3,13 @@
 #
 # Svetoslav Stefanov <svetlisashkov@yahoo.com>, 2014.
 # Yasen Pramatarov <yasen@lindeas.com>, 2022.
-# SPDX-FileCopyrightText: 2023, 2024 Mincho Kondarev <mkondarev@yahoo.de>
+# SPDX-FileCopyrightText: 2023-2024, 2026 Mincho Kondarev <mkondarev@yahoo.de>
 msgid ""
 msgstr ""
 "Project-Id-Version: baloosearch\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-10-09 00:42+0000\n"
-"PO-Revision-Date: 2024-11-10 20:12+0100\n"
+"PO-Revision-Date: 2026-10-19 16:38+0200\n"
 "Last-Translator: Mincho Kondarev <mkondarev@yahoo.de>\n"
 "Language-Team: Bulgarian <kde-i18n-doc@kde.org>\n"
 "Language: bg\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 24.11.70\n"
+"X-Generator: Poedit 3.10\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #, kde-format
@@ -34,19 +34,19 @@ msgstr "mkondarev@yahoo.de,svetlisashkov@yahoo.com"
 #, kde-format
 msgctxt "'listTypes' table header"
 msgid "<typeString>     Description"
-msgstr ""
+msgstr "<typeString>     Описание"
 
 #: main.cpp:66
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "Metadata Property Name                 Description"
-msgstr ""
+msgstr "Име на метаданни свойство                 Описание"
 
 #: main.cpp:76
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "File Property Name                     Description"
-msgstr ""
+msgstr "Име на свойство на файла                     Описание"
 
 #: main.cpp:95
 #, kde-format
@@ -69,11 +69,10 @@ msgid "The maximum number of results"
 msgstr "Максималният брой резултати"
 
 #: main.cpp:106
-#, fuzzy, kde-format
-#| msgid "limit"
+#, kde-format
 msgctxt "option value name"
 msgid "limit"
-msgstr "ограничение"
+msgstr "лимит"
 
 #: main.cpp:108
 #, kde-format
@@ -81,8 +80,7 @@ msgid "Offset from which to start the search"
 msgstr "Отместване за начална позиция на търсенето"
 
 #: main.cpp:109
-#, fuzzy, kde-format
-#| msgid "offset"
+#, kde-format
 msgctxt "option value name"
 msgid "offset"
 msgstr "отместване"
@@ -93,21 +91,20 @@ msgid "Type of data to be searched"
 msgstr "Вид на данните за търсене"
 
 #: main.cpp:112
-#, fuzzy, kde-format
-#| msgid "typeStr"
+#, kde-format
 msgctxt "option value name"
 msgid "typeString"
-msgstr "typeStr"
+msgstr "typeString"
 
 #: main.cpp:114
 #, kde-format
 msgid "Show supported <typeString> values"
-msgstr ""
+msgstr "Показване на поддържаните стойности за <typeString>"
 
 #: main.cpp:116
 #, kde-format
 msgid "Show property names supported in query."
-msgstr ""
+msgstr "Показване на имената на свойствата, поддържани в заявката."
 
 #: main.cpp:118
 #, kde-format
@@ -115,11 +112,10 @@ msgid "Limit search to specified directory"
 msgstr "Ограничaване на търсенето до посочената папка"
 
 #: main.cpp:119
-#, fuzzy, kde-format
-#| msgid "directory"
+#, kde-format
 msgctxt "option value name"
 msgid "directory"
-msgstr "папка"
+msgstr "директория"
 
 #: main.cpp:121
 #, kde-format
@@ -134,7 +130,7 @@ msgstr "Критерии на сортиране"
 #: main.cpp:127
 #, kde-format
 msgid "query [(|AND|OR) query ...]"
-msgstr ""
+msgstr "завка [(|AND|OR) завка ...]"
 
 #: main.cpp:128
 #, kde-format
@@ -148,11 +144,20 @@ msgid ""
 "baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
 "filename:jpg)'"
 msgstr ""
+"Списък с думи за търсене.\n"
+"Всяко търсене може да бъде единична стойност или стойност с предфикс на име "
+"на свойство.\n"
+"Търсенията могат да бъдат вгнездени и групирани с скоби.\n"
+"\n"
+"\n"
+"Пример:\n"
+"baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
+"filename:jpg)'"
 
 #: main.cpp:161
 #, kde-format
 msgid "ERROR: Invalid \"type\" value, supported values:\n"
-msgstr ""
+msgstr "ГРЕШКА: Невалидна стойност на \"type\", поддържани стойности:\n"
 
 #: main.cpp:197
 #, kde-format
@@ -168,9 +173,3 @@ msgstr "Използване на каноничен път „%1“ за „%2�
 #, kde-format
 msgid "Elapsed: %1 msecs"
 msgstr "Изпълнено за: %1 ms"
-
-#~ msgid "query"
-#~ msgstr "заявка"
-
-#~ msgid "List of words to query for"
-#~ msgstr "Списък на думите за търсене"
