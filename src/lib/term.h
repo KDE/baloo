@@ -87,9 +87,6 @@ public:
     Comparator comparator() const;
     void setComparator(Comparator c);
 
-    QVariantMap toVariantMap() const;
-    static Term fromVariantMap(const QVariantMap& map);
-
     bool operator == (const Term& rhs) const;
 
     Term& operator=(const Term& rhs);
