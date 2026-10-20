@@ -37,7 +37,7 @@ namespace Baloo {
  *
  * "artist:Coldplay" -> Look for any files with the artist "Coldplay"
  *
- * "artist:(Coldplay OR Maroon5) power" -> Look for files with the artist Coldplay or Maroon5 and
+ * "(artist:Coldplay OR artist:Maroon5) power" -> Look for files with the artist Coldplay or Maroon5 and
  * the word "power"
  *
  * "artist:'Noah and the Whale'" -> Look for files with the artist "Noah and the Whale"
