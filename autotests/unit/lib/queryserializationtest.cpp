@@ -9,6 +9,8 @@
 
 #include <QTest>
 
+using namespace Qt::StringLiterals;
+
 class QuerySerializationTest : public QObject
 {
     Q_OBJECT
@@ -19,6 +21,8 @@ private Q_SLOTS:
     void testJSON_data();
     void testURL();
     void testURL_data();
+    void testTypeURL();
+    void testTypeURL_data();
 
     void testCustomOptions();
 };
@@ -98,6 +102,27 @@ void QuerySerializationTest::testURL_data()
     QTest::addRow("reservedChars") << QStringLiteral("()&+:,;[]!");
     QTest::addRow("disallowedChars") << QStringLiteral("{\"äöü\"}");
     QTest::addRow("looksLikePercentEncoded") << QStringLiteral("%22 abc %22");
+}
+
+void QuerySerializationTest::testTypeURL()
+{
+    QFETCH(QString, url);
+    QFETCH(QStringList, types);
+
+    Query q = Query::fromSearchUrl(QUrl{u"baloosearch://"_s + url});
+
+    QCOMPARE(q.types(), types);
+}
+
+void QuerySerializationTest::testTypeURL_data()
+{
+    QTest::addColumn<QString>("url");
+    QTest::addColumn<QStringList>("types");
+
+    QTest::addRow("documents") << u"/documents"_s << QList{u"Document"_s};
+    QTest::addRow("audio") << u"/audio"_s << QList{u"Audio"_s};
+    QTest::addRow("images") << u"/images"_s << QList{u"Image"_s};
+    QTest::addRow("videos") << u"/videos"_s << QList{u"Video"_s};
 }
 
 void QuerySerializationTest::testCustomOptions()
