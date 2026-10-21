@@ -292,21 +292,22 @@ QUrl Query::toSearchUrl(const QString& title)
     return url;
 }
 
-static QString jsonQueryFromUrl(const QUrl &url)
+static Query typeQueryFromUrl(const QUrl &url)
 {
     const QString path = url.path();
 
-    if (path == QLatin1String("/documents")) {
-        return QStringLiteral("{\"type\":[\"Document\"]}");
-    } else if (path.endsWith(QLatin1String("/images"))) {
-        return QStringLiteral("{\"type\":[\"Image\"]}");
-    } else if (path.endsWith(QLatin1String("/audio"))) {
-        return QStringLiteral("{\"type\":[\"Audio\"]}");
-    } else if (path.endsWith(QLatin1String("/videos"))) {
-        return QStringLiteral("{\"type\":[\"Video\"]}");
+    Query query;
+    if (path == "/documents"_L1) {
+        query.setTypes({u"Document"_s});
+    } else if (path.endsWith("/images"_L1)) {
+        query.setTypes({u"Image"_s});
+    } else if (path.endsWith("/audio"_L1)) {
+        query.setTypes({u"Audio"_s});
+    } else if (path.endsWith("/videos"_L1)) {
+        query.setTypes({u"Video"_s});
     }
 
-    return QString();
+    return query;
 }
 
 Query Query::fromSearchUrl(const QUrl& url)
@@ -329,12 +330,7 @@ Query Query::fromSearchUrl(const QUrl& url)
         return q;
     }
 
-    const QString jsonString = jsonQueryFromUrl(url);
-    if (!jsonString.isEmpty()) {
-        return Query::fromJSON(jsonString.toUtf8());
-    }
-
-    return Query();
+    return typeQueryFromUrl(url);
 }
 
 QString Query::titleFromQueryUrl(const QUrl& url)
