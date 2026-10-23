@@ -15,8 +15,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 22.12.3\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Generator: Lokalize 22.12.3\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -32,19 +32,19 @@ msgstr "wizzardsk@gmail.com"
 #, kde-format
 msgctxt "'listTypes' table header"
 msgid "<typeString>     Description"
-msgstr ""
+msgstr "<typeString>     Popis"
 
 #: main.cpp:66
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "Metadata Property Name                 Description"
-msgstr ""
+msgstr "Názov vlastnosti metadát                 Popis"
 
 #: main.cpp:76
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "File Property Name                     Description"
-msgstr ""
+msgstr "Názov vlastnosti súboru                   Popis"
 
 #: main.cpp:95
 #, kde-format
@@ -67,8 +67,7 @@ msgid "The maximum number of results"
 msgstr "Maximálny počet výsledkov"
 
 #: main.cpp:106
-#, fuzzy, kde-format
-#| msgid "limit"
+#, kde-format
 msgctxt "option value name"
 msgid "limit"
 msgstr "obmedzenie"
@@ -79,8 +78,7 @@ msgid "Offset from which to start the search"
 msgstr "Posun, z ktorého začať hľadanie"
 
 #: main.cpp:109
-#, fuzzy, kde-format
-#| msgid "offset"
+#, kde-format
 msgctxt "option value name"
 msgid "offset"
 msgstr "posun"
@@ -91,21 +89,20 @@ msgid "Type of data to be searched"
 msgstr "Napíšte údaje na hľadanie"
 
 #: main.cpp:112
-#, fuzzy, kde-format
-#| msgid "typeStr"
+#, kde-format
 msgctxt "option value name"
 msgid "typeString"
-msgstr "typeStr"
+msgstr "typeString"
 
 #: main.cpp:114
 #, kde-format
 msgid "Show supported <typeString> values"
-msgstr ""
+msgstr "Zobraziť podporované hodnoty <typeString>"
 
 #: main.cpp:116
 #, kde-format
 msgid "Show property names supported in query."
-msgstr ""
+msgstr "Zobraziť názvy vlastností podporované v dopyte."
 
 #: main.cpp:118
 #, kde-format
@@ -113,8 +110,7 @@ msgid "Limit search to specified directory"
 msgstr "Obmedziť hľadanie na určený adresár"
 
 #: main.cpp:119
-#, fuzzy, kde-format
-#| msgid "directory"
+#, kde-format
 msgctxt "option value name"
 msgid "directory"
 msgstr "adresár"
@@ -132,7 +128,7 @@ msgstr "Kritériá triedenia"
 #: main.cpp:127
 #, kde-format
 msgid "query [(|AND|OR) query ...]"
-msgstr ""
+msgstr "dopyt [(|AND|OR) dopyt ...]"
 
 #: main.cpp:128
 #, kde-format
@@ -146,11 +142,20 @@ msgid ""
 "baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
 "filename:jpg)'"
 msgstr ""
+"Zoznam slov na vyhľadanie.\n"
+"Každý dopyt môže byť jedna hodnota alebo hodnota s predponou názvu "
+"vlastnosti.\n"
+"Dopyty možno vnárať a zoskupovať zátvorkami.\n"
+"\n"
+"\n"
+"Príklad:\n"
+"baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
+"filename:jpg)'"
 
 #: main.cpp:161
 #, kde-format
 msgid "ERROR: Invalid \"type\" value, supported values:\n"
-msgstr ""
+msgstr "CHYBA: Neplatná hodnota „type“, podporované hodnoty:\n"
 
 #: main.cpp:197
 #, kde-format
