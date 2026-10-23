@@ -13,18 +13,10 @@
 namespace Baloo {
 
 class Term;
-class Database;
 
-class SearchStore
+namespace SearchStore
 {
-public:
-    SearchStore();
-    ~SearchStore();
-
     ResultList exec(const Term& term, uint offset, int limit, bool sortResults);
-
-private:
-    Database *m_db = nullptr;
 };
 
 }

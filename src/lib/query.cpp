@@ -185,8 +185,7 @@ ResultIterator Query::exec()
         term = term && Term(QStringLiteral("modified"), ba, Term::Equal);
     }
 
-    SearchStore searchStore;
-    auto results = searchStore.exec(term, d->m_offset, d->m_limit, d->m_sortingOption == SortAuto);
+    auto results = SearchStore::exec(term, d->m_offset, d->m_limit, d->m_sortingOption == SortAuto);
     return ResultIterator(std::move(results));
 }
 

@@ -165,27 +165,15 @@ PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term);
 
 } // namespace
 
-SearchStore::SearchStore()
-    : m_db(nullptr)
-{
-    m_db = globalDatabaseInstance();
-    if (m_db->open(Database::ReadOnlyDatabase) != Database::OpenResult::Success) {
-        m_db = nullptr;
-    }
-}
-
-SearchStore::~SearchStore()
-{
-}
-
 // Return the result with-in [offset, offset + limit)
 ResultList SearchStore::exec(const Term& term, uint offset, int limit, bool sortResults)
 {
-    if (!m_db) {
+    auto db = globalDatabaseInstance();
+    if (!db || db->open(Database::ReadOnlyDatabase) != Database::OpenResult::Success) {
         return ResultList();
     }
 
-    Transaction tr(m_db, Transaction::ReadOnly);
+    Transaction tr(db, Transaction::ReadOnly);
     auto it = constructQuery(&tr, term);
     if (!it) {
         return ResultList();
