@@ -43,10 +43,12 @@ void IndexerConfig::setFileIndexingEnabled(bool enabled) const
     d->m_settings.setIndexingEnabled(enabled);
 }
 
+#if BALOO_CORE_BUILD_DEPRECATED_SINCE(6, 32)
 bool IndexerConfig::shouldBeIndexed(const QString& path) const
 {
     return d->m_config.shouldBeIndexed(path);
 }
+#endif
 
 bool IndexerConfig::canBeSearched(const QString& folder) const
 {

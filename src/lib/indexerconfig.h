@@ -49,17 +49,19 @@ public:
      */
     void setFileIndexingEnabled(bool enabled) const;
 
+#if BALOO_CORE_ENABLE_DEPRECATED_SINCE(6, 32)
     /*!
-     * \deprecated[6.22]
+     * \deprecated[6.32]
      * Use \c Baloo::File to know if a file has
      * been indexed.
-     * Use \c Baloo::IndexerConfig::canBeSearched if
-     * a path contains indexed files.
+     * Use \c Baloo::IndexerConfig::canBeSearched() to check
+     * if a path contains indexed files.
      *
      * \sa Baloo::File
-     * \sa Baloo::IndexerConfig::
+     * \sa Baloo::IndexerConfig::canBeSearched()
      */
     bool shouldBeIndexed(const QString& path) const;
+#endif
 
     /*!
      * Check if \a folder can be searched.
