@@ -54,6 +54,7 @@ Query::Query(const Query& rhs)
 
 Query::~Query() = default;
 
+#if BALOO_CORE_BUILD_DEPRECATED_SINCE(6, 32)
 void Query::addType(const QString& type)
 {
     d->m_types << type.split(QLatin1Char('/'), Qt::SkipEmptyParts);
@@ -71,6 +72,7 @@ void Query::setType(const QString& type)
     d->m_types.clear();
     addType(type);
 }
+#endif
 
 void Query::setTypes(const QStringList& types)
 {

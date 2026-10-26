@@ -58,34 +58,39 @@ public:
     Query(const Query& rhs);
     ~Query();
 
+#if BALOO_CORE_ENABLE_DEPRECATED_SINCE(6, 32)
     /*!
-     * Add a type to the results of the query.
-     *
-     * Every file has a higher level type such as "Audio", "Video", "Image", "Document", etc.
-     *
-     * Please note that the types are ANDed together. So searching for "Image"
-     * and "Video" will probably never return any results. Have a look at
-     * KFileMetaData::TypeInfo for a list of type names.
+     * \deprecated[6.32] Use types()/setTypes()
      */
     void addType(const QString& type);
 
     /*!
-     *
+     * \deprecated[6.32] Use types()/setTypes()
      */
     void addTypes(const QStringList& typeList);
 
     /*!
-     *
+     * \deprecated[6.32] Use setTypes()
      */
     void setType(const QString& type);
+#endif
 
     /*!
+     * Set a filter to limit the query results to specific file types.
      *
+     * Every file has a high level type such as "Audio", "Video", "Image",
+     * "Document", etc.
+     *
+     * Please note that the \a types are ANDed together. So searching for
+     * "Image" and "Video" will probably never return any results. Have a
+     * look at KFileMetaData::TypeInfo for a list of type names.
+     *
+     * Use an empty list to clear the type filter.
      */
     void setTypes(const QStringList& types);
 
     /*!
-     *
+     * \sa setTypes()
      */
     QStringList types() const;
 
