@@ -342,9 +342,6 @@ void FileWatchTest::testFileMoved()
     QCOMPARE(spyIndexModified.count(), 0);
     QCOMPARE(spyIndexFileRemoved.count(), 1);
 
-#ifdef Q_OS_FREEBSD
-    QEXPECT_FAIL("", "FreeBSD fails to report MOVE_FROM/MOVE_TO pair (incorrect cookie).", Abort);
-#endif
     QCOMPARE(spyIndexFileRemoved.takeFirst().at(0), fileDestUrl);
 }
 
