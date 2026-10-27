@@ -12,11 +12,11 @@
 
 namespace Baloo {
 
-class Term;
+class Query;
 
 namespace SearchStore
 {
-    ResultList exec(const Term& term, uint offset, int limit, bool sortResults);
+ResultList exec(const Query &query);
 };
 
 }

@@ -14,6 +14,8 @@
 #include "filenamequery.h"
 #include "mimetypequery.h"
 #include "propertyphrasequery.h"
+#include "query.h"
+#include "queryparser.h"
 #include "term.h"
 #include "termgenerator.h"
 #include "transaction.h"
@@ -161,17 +163,49 @@ QString reconstructFromTerm(const Term &term)
     return term.property() + compString + term.value().toString();
 }
 
+Term termForQuery(const Query &q)
+{
+    Term term;
+    if (!q.searchString().isEmpty()) {
+        term = QueryParser::parse(q.searchString());
+    }
+
+    for (const QString &type : q.types()) {
+        term = term && Term(u"type"_s, type);
+    }
+
+    if (!q.includeFolder().isEmpty()) {
+        term = term && Term(u"includefolder"_s, q.includeFolder());
+    }
+
+    if (q.yearFilter() || q.monthFilter() || q.dayFilter()) {
+        QByteArray ba = QByteArray::number(q.yearFilter());
+        if (q.monthFilter() < 10) {
+            ba += '0';
+        }
+        ba += QByteArray::number(q.monthFilter());
+        if (q.dayFilter() < 10) {
+            ba += '0';
+        }
+        ba += QByteArray::number(q.dayFilter());
+
+        term = term && Term(u"modified"_s, ba, Term::Equal);
+    }
+    return term;
+}
+
 PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term);
 
 } // namespace
 
-// Return the result with-in [offset, offset + limit)
-ResultList SearchStore::exec(const Term& term, uint offset, int limit, bool sortResults)
+ResultList SearchStore::exec(const Query &query)
 {
     auto db = globalDatabaseInstance();
     if (!db || db->open(Database::ReadOnlyDatabase) != Database::OpenResult::Success) {
         return ResultList();
     }
+
+    Term term = termForQuery(query);
 
     Transaction tr(db, Transaction::ReadOnly);
     auto it = constructQuery(&tr, term);
@@ -179,18 +213,19 @@ ResultList SearchStore::exec(const Term& term, uint offset, int limit, bool sort
         return ResultList();
     }
 
-    if (sortResults) {
-        QVector<std::pair<quint64, quint32>> resultIds;
+    if (query.sortingOption() == Query::SortAuto) {
+        std::vector<std::pair<quint64, quint32>> resultIds;
         while (it->next()) {
             quint64 id = it->docId();
             quint32 mtime = tr.documentTimeInfo(id).mTime;
-            resultIds << std::pair<quint64, quint32>{id, mtime};
+            resultIds.emplace_back(id, mtime);
 
             Q_ASSERT(id > 0);
         }
 
         // Not enough results within range, no need to sort.
-        if (offset >= static_cast<uint>(resultIds.size())) {
+        const size_t offset = query.offset();
+        if (offset >= resultIds.size()) {
             return ResultList();
         }
 
@@ -200,14 +235,17 @@ ResultList SearchStore::exec(const Term& term, uint offset, int limit, bool sort
         };
 
         std::sort(resultIds.begin(), resultIds.end(), compFunc);
-        if (limit < 0) {
-            limit = resultIds.size();
-        }
 
         ResultList results;
-        const uint end = qMin(static_cast<uint>(resultIds.size()), offset + static_cast<uint>(limit));
+        const size_t end = [&query, offset, count = resultIds.size()]() {
+            if (query.limit() == std::numeric_limits<uint>::max()) {
+                return count;
+            }
+            return std::min<size_t>(offset + query.limit(), count);
+        }();
+
         results.reserve(end - offset);
-        for (uint i = offset; i < end; i++) {
+        for (size_t i = offset; i < end; i++) {
             const quint64 id = resultIds[i].first;
             Result res{tr.documentUrl(id), id};
 
@@ -215,10 +253,11 @@ ResultList SearchStore::exec(const Term& term, uint offset, int limit, bool sort
         }
 
         return results;
-    }
-    else {
+
+    } else {
         ResultList results;
-        uint ulimit = limit < 0 ? UINT_MAX : limit;
+        uint ulimit = query.limit();
+        uint offset = query.offset();
 
         while (offset && it->next()) {
             offset--;

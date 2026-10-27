@@ -7,11 +7,7 @@
 
 #include "query.h"
 
-#include "queryparser.h"
 #include "searchstore.h"
-#include "term.h"
-
-#include "baloodebug.h"
 
 #include <QString>
 #include <QStringList>
@@ -160,36 +156,7 @@ void Query::setIncludeFolder(const QString& folder)
 
 ResultIterator Query::exec()
 {
-    Term term;
-    if (!d->m_searchString.isEmpty()) {
-        term = QueryParser::parse(d->m_searchString);
-    }
-
-    if (!d->m_types.isEmpty()) {
-        for (const QString& type : std::as_const(d->m_types)) {
-            term = term && Term(QStringLiteral("type"), type);
-        }
-    }
-
-    if (!d->m_includeFolder.isEmpty()) {
-        term = term && Term(QStringLiteral("includefolder"), d->m_includeFolder);
-    }
-
-    if (d->m_yearFilter || d->m_monthFilter || d->m_dayFilter) {
-        QByteArray ba = QByteArray::number(d->m_yearFilter);
-        if (d->m_monthFilter < 10) {
-            ba += '0';
-        }
-        ba += QByteArray::number(d->m_monthFilter);
-        if (d->m_dayFilter < 10) {
-            ba += '0';
-        }
-        ba += QByteArray::number(d->m_dayFilter);
-
-        term = term && Term(QStringLiteral("modified"), ba, Term::Equal);
-    }
-
-    auto results = SearchStore::exec(term, d->m_offset, d->m_limit, d->m_sortingOption == SortAuto);
+    auto results = SearchStore::exec(*this);
     return ResultIterator(std::move(results));
 }
 
