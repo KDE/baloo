@@ -107,7 +107,9 @@ public:
 
     /*!
      * Only a maximum of \a limit results will be returned.
-     * By default the value is -1
+     *
+     * The default \a limit value of std::numeric_limits<uint>::max()
+     * will be treated as unlimited.
      */
     void setLimit(uint limit);
 

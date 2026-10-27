@@ -20,15 +20,17 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
+#include <limits>
+
 using namespace Qt::StringLiterals;
 
-const int defaultLimit = -1;
+const uint defaultLimit = std::numeric_limits<uint>::max();
 
 class BALOO_CORE_NO_EXPORT Baloo::Query::Private {
 public:
     QStringList m_types;
     QString m_searchString;
-    int m_limit = defaultLimit;
+    uint m_limit = defaultLimit;
     uint m_offset = 0;
 
     int m_yearFilter = 0;
