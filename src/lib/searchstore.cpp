@@ -136,6 +136,27 @@ PostingIterator::Ptr constructContainsQuery(Transaction *tr, const QByteArray &p
     return constructEqualsQuery(tr, prefix, value, true);
 }
 
+PostingIterator::Ptr constructFolderQuery(Transaction *tr, const QString &value)
+{
+    const QByteArray folder = value.toUtf8();
+
+    if (folder.isEmpty()) {
+        return nullptr;
+    }
+    if (!folder.startsWith('/')) {
+        qCDebug(BALOO) << "Invalid include folder:" << value;
+        return nullptr;
+    }
+
+    quint64 id = tr->documentId(folder);
+    if (!id) {
+        qCDebug(BALOO) << "Folder" << value << "not indexed";
+        return nullptr;
+    }
+
+    return tr->docUrlIter(id);
+}
+
 PostingIterator::Ptr constructTypeQuery(Transaction *tr, const QString &value)
 {
     Q_ASSERT(!value.isEmpty());
@@ -163,39 +184,66 @@ QString reconstructFromTerm(const Term &term)
     return term.property() + compString + term.value().toString();
 }
 
-Term termForQuery(const Query &q)
+PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term);
+
+PostingIterator::Ptr constructFromQuery(Transaction *tr, const Query &q)
 {
-    Term term;
+    std::vector<std::unique_ptr<PostingIterator>> vec;
+
     if (!q.searchString().isEmpty()) {
-        term = QueryParser::parse(q.searchString());
+        Term term = QueryParser::parse(q.searchString());
+        if (auto it = constructQuery(tr, term)) {
+            vec.push_back(std::move(it));
+        } else {
+            return {};
+        }
     }
 
     for (const QString &type : q.types()) {
-        term = term && Term(u"type"_s, type);
+        if (auto it = constructTypeQuery(tr, type)) {
+            vec.push_back(std::move(it));
+        } else {
+            return {};
+        }
     }
 
     if (!q.includeFolder().isEmpty()) {
-        term = term && Term(u"includefolder"_s, q.includeFolder());
+        if (auto it = constructFolderQuery(tr, q.includeFolder())) {
+            vec.push_back(std::move(it));
+        } else {
+            return {};
+        }
     }
 
     if (q.yearFilter() || q.monthFilter() || q.dayFilter()) {
-        QByteArray ba = QByteArray::number(q.yearFilter());
-        if (q.monthFilter() < 10) {
-            ba += '0';
-        }
-        ba += QByteArray::number(q.monthFilter());
-        if (q.dayFilter() < 10) {
-            ba += '0';
-        }
-        ba += QByteArray::number(q.dayFilter());
+        int year = q.yearFilter();
+        int month = q.monthFilter();
+        int day = q.dayFilter();
 
-        term = term && Term(u"modified"_s, ba, Term::Equal);
+        month = month >= 0 && month <= 12 ? month : 0;
+        day = day >= 0 && day <= 31 ? day : 0;
+
+        QDate startDate(year, month ? month : 1, day ? day : 1);
+        QDate endDate(startDate);
+
+        if (month == 0) {
+            endDate.setDate(endDate.year(), 12, 31);
+        } else if (day == 0) {
+            endDate.setDate(endDate.year(), endDate.month(), endDate.daysInMonth());
+        }
+
+        auto start = startDate.startOfDay().toSecsSinceEpoch();
+        auto end = endDate.endOfDay().toSecsSinceEpoch();
+        if (auto it = tr->mTimeRangeIter(start, end)) {
+            vec.push_back(std::move(it));
+        } else {
+            qCDebug(BALOO) << "Invalid year/month/day filter:" << year << month << day;
+            return {};
+        }
     }
-    return term;
+
+    return std::make_unique<AndPostingIterator>(std::move(vec));
 }
-
-PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term);
-
 } // namespace
 
 ResultList SearchStore::exec(const Query &query)
@@ -205,10 +253,8 @@ ResultList SearchStore::exec(const Query &query)
         return ResultList();
     }
 
-    Term term = termForQuery(query);
-
     Transaction tr(db, Transaction::ReadOnly);
-    auto it = constructQuery(&tr, term);
+    auto it = constructFromQuery(&tr, query);
     if (!it) {
         return ResultList();
     }
@@ -326,50 +372,10 @@ PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term)
         return constructTypeQuery(tr, value.toString());
     }
     else if (property == "includefolder") {
-        const QByteArray folder = value.toString().toUtf8();
-
-        if (folder.isEmpty()) {
-            return nullptr;
-        }
-        if (!folder.startsWith('/')) {
-            return nullptr;
-        }
-
-        quint64 id = tr->documentId(folder);
-        if (!id) {
-            qCDebug(BALOO) << "Folder" << value.toString() << "not indexed";
-            return nullptr;
-        }
-
-        return tr->docUrlIter(id);
+        return constructFolderQuery(tr, value.toString());
     }
     else if (property == "modified" || property == "mtime") {
-        if (value.typeId() == QMetaType::QByteArray) {
-            // Used by Baloo::Query
-            QByteArray ba = value.toByteArray();
-            Q_ASSERT(ba.size() >= 4);
-
-            int year = ba.mid(0, 4).toInt();
-            int month = ba.mid(4, 2).toInt();
-            int day = ba.mid(6, 2).toInt();
-
-            Q_ASSERT(year);
-
-            // uses 0 to represent whole month or whole year
-            month = month >= 0 && month <= 12 ? month : 0;
-            day = day >= 0 && day <= 31 ? day : 0;
-
-            QDate startDate(year, month ? month : 1, day ? day : 1);
-            QDate endDate(startDate);
-
-            if (month == 0) {
-                endDate.setDate(endDate.year(), 12, 31);
-            } else if (day == 0) {
-                endDate.setDate(endDate.year(), endDate.month(), endDate.daysInMonth());
-            }
-
-            return tr->mTimeRangeIter(startDate.startOfDay().toSecsSinceEpoch(), endDate.endOfDay().toSecsSinceEpoch());
-        } else if (value.typeId() == QMetaType::QString) {
+        if (value.typeId() == QMetaType::QString) {
             QPair<quint32, quint32> timerange = calculateTimeRange(value, term.comparator());
             if (timerange.first > timerange.second) {
                 return nullptr;
