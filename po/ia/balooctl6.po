@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-04-26 00:39+0000\n"
+"POT-Creation-Date: 2026-10-29 00:49+0000\n"
 "PO-Revision-Date: 2026-04-27 17:18+0200\n"
 "Last-Translator: giovanni <g.sora@tiscali.it>\n"
 "Language-Team: Interlingua <kde-i18n-doc@kde.org>\n"
@@ -228,87 +228,87 @@ msgstr "Valor invalide\n"
 msgid "Immediately index files"
 msgstr "Indicisa immediatemente files"
 
-#: main.cpp:54
+#: main.cpp:52
 #, kde-format
 msgid "balooctl"
 msgstr "balooctl"
 
-#: main.cpp:55
+#: main.cpp:53
 #, kde-format
 msgid "Vishesh Handa"
 msgstr "Vishesh Handa"
 
-#: main.cpp:60
+#: main.cpp:58
 #, kde-format
 msgid "The command to execute"
 msgstr "Le commando de executar"
 
-#: main.cpp:62
+#: main.cpp:60
 #, kde-format
 msgid "Print the status of the indexer"
 msgstr "Imprime le status del indicisator"
 
-#: main.cpp:63
+#: main.cpp:61
 #, kde-format
 msgid "Enable the file indexer"
 msgstr "Activa le indicisator de file"
 
-#: main.cpp:64
+#: main.cpp:62
 #, kde-format
 msgid "Disable the file indexer"
 msgstr "Deactiva le indicisator de file"
 
-#: main.cpp:65
+#: main.cpp:63
 #, kde-format
 msgid "Remove the index database"
 msgstr "Remove le base de datos de indice"
 
-#: main.cpp:66
+#: main.cpp:64
 #, kde-format
 msgid "Suspend the file indexer"
 msgstr "Suspende le indicisator de file"
 
-#: main.cpp:67
+#: main.cpp:65
 #, kde-format
 msgid "Resume the file indexer"
 msgstr "Recomencia le indicisator de file"
 
-#: main.cpp:68
+#: main.cpp:66
 #, kde-format
 msgid "Check for any unindexed files and index them"
 msgstr "Verifica omne files non indicisate e indicisa los"
 
-#: main.cpp:69
+#: main.cpp:67
 #, kde-format
 msgid "Index the specified files"
 msgstr "Indicisa le files specificate"
 
-#: main.cpp:70
+#: main.cpp:68
 #, kde-format
 msgid "Forget the specified files"
 msgstr "Oblida le files specificate"
 
-#: main.cpp:71
+#: main.cpp:69
 #, kde-format
 msgid "Modify the Baloo configuration"
 msgstr "Modifica le configuration de Baloo"
 
-#: main.cpp:72
+#: main.cpp:70
 #, kde-format
 msgid "Monitor the file indexer"
 msgstr "Supervide le indicisator de file"
 
-#: main.cpp:73
+#: main.cpp:71
 #, kde-format
 msgid "Display the disk space used by index"
 msgstr "Monstra le spatio de disco usate per le indice"
 
-#: main.cpp:74
+#: main.cpp:72
 #, kde-format
 msgid "Display files which could not be indexed"
 msgstr "Monstra le files que non pote esser indicisate"
 
-#: main.cpp:77
+#: main.cpp:75
 #, kde-format
 msgctxt ""
 "Format to use for status command, %1|%2|%3 are option values, %4 is a CLI "
@@ -322,7 +322,7 @@ msgstr ""
 "Le formato predefinite es \"%1\".\n"
 "Solmente applica a \"%4\""
 
-#: main.cpp:83
+#: main.cpp:81
 #, kde-format
 msgid "format"
 msgstr "formato"
@@ -404,6 +404,11 @@ msgstr ": %1\n"
 #, kde-format
 msgid "CLI interface for monitoring Baloo"
 msgstr "Interfacie CLI  per supervisionar Baloo"
+
+#: purgecommand.cpp:53
+#, kde-format
+msgid "Remove the complete DB, and restart the daemon if enabled"
+msgstr ""
 
 #: statuscommand.cpp:33
 #, kde-format

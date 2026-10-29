@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: balooctl5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-04-26 00:39+0000\n"
+"POT-Creation-Date: 2026-10-29 00:49+0000\n"
 "PO-Revision-Date: 2026-04-26 12:42+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
@@ -232,87 +232,87 @@ msgstr "Некоректне значення\n"
 msgid "Immediately index files"
 msgstr "Негайно індексувати файли"
 
-#: main.cpp:54
+#: main.cpp:52
 #, kde-format
 msgid "balooctl"
 msgstr "balooctl"
 
-#: main.cpp:55
+#: main.cpp:53
 #, kde-format
 msgid "Vishesh Handa"
 msgstr "Vishesh Handa"
 
-#: main.cpp:60
+#: main.cpp:58
 #, kde-format
 msgid "The command to execute"
 msgstr "Команда, яку слід виконати"
 
-#: main.cpp:62
+#: main.cpp:60
 #, kde-format
 msgid "Print the status of the indexer"
 msgstr "Вивести дані щодо стану засобу індексування"
 
-#: main.cpp:63
+#: main.cpp:61
 #, kde-format
 msgid "Enable the file indexer"
 msgstr "Увімкнути засіб індексування файлів"
 
-#: main.cpp:64
+#: main.cpp:62
 #, kde-format
 msgid "Disable the file indexer"
 msgstr "Вимкнути засіб індексування файлів"
 
-#: main.cpp:65
+#: main.cpp:63
 #, kde-format
 msgid "Remove the index database"
 msgstr "Вилучити базу даних індексування"
 
-#: main.cpp:66
+#: main.cpp:64
 #, kde-format
 msgid "Suspend the file indexer"
 msgstr "Призупинити роботу засобу індексування файлів"
 
-#: main.cpp:67
+#: main.cpp:65
 #, kde-format
 msgid "Resume the file indexer"
 msgstr "Поновити роботу засобу індексування файлів"
 
-#: main.cpp:68
+#: main.cpp:66
 #, kde-format
 msgid "Check for any unindexed files and index them"
 msgstr "Знайти усі неіндексовані файли і індексувати їх"
 
-#: main.cpp:69
+#: main.cpp:67
 #, kde-format
 msgid "Index the specified files"
 msgstr "Індексувати вказані файли"
 
-#: main.cpp:70
+#: main.cpp:68
 #, kde-format
 msgid "Forget the specified files"
 msgstr "Забути про вказані файли"
 
-#: main.cpp:71
+#: main.cpp:69
 #, kde-format
 msgid "Modify the Baloo configuration"
 msgstr "Змінити налаштування Baloo"
 
-#: main.cpp:72
+#: main.cpp:70
 #, kde-format
 msgid "Monitor the file indexer"
 msgstr "Спостерігати за засобом індексування файлів"
 
-#: main.cpp:73
+#: main.cpp:71
 #, kde-format
 msgid "Display the disk space used by index"
 msgstr "Показати дані щодо місця на диску, яке займає покажчик"
 
-#: main.cpp:74
+#: main.cpp:72
 #, kde-format
 msgid "Display files which could not be indexed"
 msgstr "Показати файли, які не вдалося індексувати"
 
-#: main.cpp:77
+#: main.cpp:75
 #, kde-format
 msgctxt ""
 "Format to use for status command, %1|%2|%3 are option values, %4 is a CLI "
@@ -326,7 +326,7 @@ msgstr ""
 "Типовий формат — «%1».\n"
 "Застосовується лише до «%4»"
 
-#: main.cpp:83
+#: main.cpp:81
 #, kde-format
 msgid "format"
 msgstr "формат"
@@ -408,6 +408,11 @@ msgstr ": %1\n"
 #, kde-format
 msgid "CLI interface for monitoring Baloo"
 msgstr "Інтерфейс командного рядка для спостереження за Baloo"
+
+#: purgecommand.cpp:53
+#, kde-format
+msgid "Remove the complete DB, and restart the daemon if enabled"
+msgstr ""
 
 #: statuscommand.cpp:33
 #, kde-format

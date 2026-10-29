@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-04-26 00:39+0000\n"
+"POT-Creation-Date: 2026-10-29 00:49+0000\n"
 "PO-Revision-Date: 2019-10-01 11:08+0500\n"
 "Last-Translator: Victor Ibragimov <victor.ibragimov@gmail.com>\n"
 "Language-Team: English <kde-i18n-doc@kde.org>\n"
@@ -239,87 +239,87 @@ msgstr "Қимати нодуруст"
 msgid "Immediately index files"
 msgstr ""
 
-#: main.cpp:54
+#: main.cpp:52
 #, kde-format
 msgid "balooctl"
 msgstr "balooctl"
 
-#: main.cpp:55
+#: main.cpp:53
 #, kde-format
 msgid "Vishesh Handa"
 msgstr "Вишеш Ханда (Vishesh Handa)"
 
-#: main.cpp:60
+#: main.cpp:58
 #, kde-format
 msgid "The command to execute"
 msgstr "Фармон барои иҷро"
 
-#: main.cpp:62
+#: main.cpp:60
 #, kde-format
 msgid "Print the status of the indexer"
 msgstr "Чоп кардани вазъияти намоябандикунанда"
 
-#: main.cpp:63
+#: main.cpp:61
 #, kde-format
 msgid "Enable the file indexer"
 msgstr "Фаъол кардани намоябандикунандаи файлҳо"
 
-#: main.cpp:64
+#: main.cpp:62
 #, kde-format
 msgid "Disable the file indexer"
 msgstr "Ғайрифаъол кардани намоябандикунандаи файлҳо"
 
-#: main.cpp:65
+#: main.cpp:63
 #, kde-format
 msgid "Remove the index database"
 msgstr "Тоза кардани пойгоҳи иттилоотии намоябандӣ"
 
-#: main.cpp:66
+#: main.cpp:64
 #, kde-format
 msgid "Suspend the file indexer"
 msgstr "Таваққуф кардани намоябандикунандаи файлҳо"
 
-#: main.cpp:67
+#: main.cpp:65
 #, kde-format
 msgid "Resume the file indexer"
 msgstr "Дубора оғоз кардани намоябандикунандаи файлҳо"
 
-#: main.cpp:68
+#: main.cpp:66
 #, kde-format
 msgid "Check for any unindexed files and index them"
 msgstr "Санҷиши файлҳои намоябандинашуда ва намоябандӣ кардани онҳо"
 
-#: main.cpp:69
+#: main.cpp:67
 #, kde-format
 msgid "Index the specified files"
 msgstr "Намоябандӣ кардани файлҳои муайяншуда"
 
-#: main.cpp:70
+#: main.cpp:68
 #, kde-format
 msgid "Forget the specified files"
 msgstr "Фаромӯш кардани файлҳои муайяншуда"
 
-#: main.cpp:71
+#: main.cpp:69
 #, kde-format
 msgid "Modify the Baloo configuration"
 msgstr "Тағйир додани танзимоти Baloo"
 
-#: main.cpp:72
+#: main.cpp:70
 #, kde-format
 msgid "Monitor the file indexer"
 msgstr "Назорати намоябандикунандаи файлҳо"
 
-#: main.cpp:73
+#: main.cpp:71
 #, kde-format
 msgid "Display the disk space used by index"
 msgstr "Намоиш додани фазои диске, ки барои намоябандӣ истифода мешавад"
 
-#: main.cpp:74
+#: main.cpp:72
 #, kde-format
 msgid "Display files which could not be indexed"
 msgstr "Намоиш додани файлҳое, ки намоябандӣ карда намешаванд"
 
-#: main.cpp:77
+#: main.cpp:75
 #, kde-format
 msgctxt ""
 "Format to use for status command, %1|%2|%3 are option values, %4 is a CLI "
@@ -333,7 +333,7 @@ msgstr ""
 "Қолиби стандартӣ \"%1\".\n"
 "Танҳо ба \"%4\" татбиқ мешавад"
 
-#: main.cpp:83
+#: main.cpp:81
 #, kde-format
 msgid "format"
 msgstr "қолиб"
@@ -427,6 +427,11 @@ msgstr "Файл: %1"
 #: monitorcommand.h:32
 #, kde-format
 msgid "CLI interface for monitoring Baloo"
+msgstr ""
+
+#: purgecommand.cpp:53
+#, kde-format
+msgid "Remove the complete DB, and restart the daemon if enabled"
 msgstr ""
 
 #: statuscommand.cpp:33

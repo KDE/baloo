@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-04-26 00:39+0000\n"
+"POT-Creation-Date: 2026-10-29 00:49+0000\n"
 "PO-Revision-Date: 2026-04-26 08:44+0200\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
@@ -231,87 +231,87 @@ msgstr "Valor no vàlid\n"
 msgid "Immediately index files"
 msgstr "Fitxers d'índex immediatament"
 
-#: main.cpp:54
+#: main.cpp:52
 #, kde-format
 msgid "balooctl"
 msgstr "balooctl"
 
-#: main.cpp:55
+#: main.cpp:53
 #, kde-format
 msgid "Vishesh Handa"
 msgstr "Vishesh Handa"
 
-#: main.cpp:60
+#: main.cpp:58
 #, kde-format
 msgid "The command to execute"
 msgstr "L'ordre que s'ha d'executar"
 
-#: main.cpp:62
+#: main.cpp:60
 #, kde-format
 msgid "Print the status of the indexer"
 msgstr "Imprimix l'estat de l'indexador"
 
-#: main.cpp:63
+#: main.cpp:61
 #, kde-format
 msgid "Enable the file indexer"
 msgstr "Activa l'indexador de fitxers"
 
-#: main.cpp:64
+#: main.cpp:62
 #, kde-format
 msgid "Disable the file indexer"
 msgstr "Desactiva l'indexador de fitxers"
 
-#: main.cpp:65
+#: main.cpp:63
 #, kde-format
 msgid "Remove the index database"
 msgstr "Elimina la base de dades d'índexs"
 
-#: main.cpp:66
+#: main.cpp:64
 #, kde-format
 msgid "Suspend the file indexer"
 msgstr "Suspén l'indexador de fitxers"
 
-#: main.cpp:67
+#: main.cpp:65
 #, kde-format
 msgid "Resume the file indexer"
 msgstr "Reactiva l'indexador de fitxers"
 
-#: main.cpp:68
+#: main.cpp:66
 #, kde-format
 msgid "Check for any unindexed files and index them"
 msgstr "Comprova si hi ha qualsevol fitxer sense indexar i indexa'l"
 
-#: main.cpp:69
+#: main.cpp:67
 #, kde-format
 msgid "Index the specified files"
 msgstr "Indexa els fitxers especificats"
 
-#: main.cpp:70
+#: main.cpp:68
 #, kde-format
 msgid "Forget the specified files"
 msgstr "Oblida els fitxers especificats"
 
-#: main.cpp:71
+#: main.cpp:69
 #, kde-format
 msgid "Modify the Baloo configuration"
 msgstr "Modifica la configuració de Baloo"
 
-#: main.cpp:72
+#: main.cpp:70
 #, kde-format
 msgid "Monitor the file indexer"
 msgstr "Controla l'indexador de fitxers"
 
-#: main.cpp:73
+#: main.cpp:71
 #, kde-format
 msgid "Display the disk space used by index"
 msgstr "Mostra l'espai en disc utilitzat per l'índex"
 
-#: main.cpp:74
+#: main.cpp:72
 #, kde-format
 msgid "Display files which could not be indexed"
 msgstr "Mostra els fitxers que no s'han pogut indexar"
 
-#: main.cpp:77
+#: main.cpp:75
 #, kde-format
 msgctxt ""
 "Format to use for status command, %1|%2|%3 are option values, %4 is a CLI "
@@ -325,7 +325,7 @@ msgstr ""
 "El format predeterminat és «%1».\n"
 "Només s'aplica a «%4»"
 
-#: main.cpp:83
+#: main.cpp:81
 #, kde-format
 msgid "format"
 msgstr "format"
@@ -407,6 +407,11 @@ msgstr ": %1\n"
 #, kde-format
 msgid "CLI interface for monitoring Baloo"
 msgstr "Interfície CLI per al monitoratge de Baloo"
+
+#: purgecommand.cpp:53
+#, kde-format
+msgid "Remove the complete DB, and restart the daemon if enabled"
+msgstr ""
 
 #: statuscommand.cpp:33
 #, kde-format

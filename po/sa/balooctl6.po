@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-04-26 00:39+0000\n"
+"POT-Creation-Date: 2026-10-29 00:49+0000\n"
 "PO-Revision-Date: 2024-12-24 20:39+0530\n"
 "Last-Translator: kali <shreekantkalwar@gmail.com>\n"
 "Language-Team: Sanskrit <kde-i18n-doc@kde.org>\n"
@@ -229,87 +229,87 @@ msgstr "अमान्य मूल्यम्\n"
 msgid "Immediately index files"
 msgstr "तत्क्षणमेव सञ्चिकानां अनुक्रमणिकाकरणं कुर्वन्तु"
 
-#: main.cpp:54
+#: main.cpp:52
 #, kde-format
 msgid "balooctl"
 msgstr "बालूक्ट्ल्"
 
-#: main.cpp:55
+#: main.cpp:53
 #, kde-format
 msgid "Vishesh Handa"
 msgstr "विशेस हण्डा"
 
-#: main.cpp:60
+#: main.cpp:58
 #, kde-format
 msgid "The command to execute"
 msgstr "निष्पादनीयः आदेशः"
 
-#: main.cpp:62
+#: main.cpp:60
 #, kde-format
 msgid "Print the status of the indexer"
 msgstr "अनुक्रमणिकायाः स्थितिं मुद्रयन्तु"
 
-#: main.cpp:63
+#: main.cpp:61
 #, kde-format
 msgid "Enable the file indexer"
 msgstr "सञ्चिकासूचकाङ्ककं सक्षमं कुर्वन्तु"
 
-#: main.cpp:64
+#: main.cpp:62
 #, kde-format
 msgid "Disable the file indexer"
 msgstr "सञ्चिकासूचकाङ्ककं निष्क्रियं कुर्वन्तु"
 
-#: main.cpp:65
+#: main.cpp:63
 #, kde-format
 msgid "Remove the index database"
 msgstr "अनुक्रमणिकादत्तांशकोशं निष्कासयन्तु"
 
-#: main.cpp:66
+#: main.cpp:64
 #, kde-format
 msgid "Suspend the file indexer"
 msgstr "सञ्चिकासूचकाङ्ककं स्थगयन्तु"
 
-#: main.cpp:67
+#: main.cpp:65
 #, kde-format
 msgid "Resume the file indexer"
 msgstr "सञ्चिकासूचकाङ्ककं पुनः आरभत"
 
-#: main.cpp:68
+#: main.cpp:66
 #, kde-format
 msgid "Check for any unindexed files and index them"
 msgstr "असूचीकृताः सञ्चिकाः सन्ति वा इति पश्यन्तु, तानि अनुक्रमणिकां च कुर्वन्तु"
 
-#: main.cpp:69
+#: main.cpp:67
 #, kde-format
 msgid "Index the specified files"
 msgstr "निर्दिष्टसञ्चिकानां अनुक्रमणिकां कुर्वन्तु"
 
-#: main.cpp:70
+#: main.cpp:68
 #, kde-format
 msgid "Forget the specified files"
 msgstr "निर्दिष्टसञ्चिकाः विस्मरन्तु"
 
-#: main.cpp:71
+#: main.cpp:69
 #, kde-format
 msgid "Modify the Baloo configuration"
 msgstr "Baloo विन्यासं परिवर्तयन्तु"
 
-#: main.cpp:72
+#: main.cpp:70
 #, kde-format
 msgid "Monitor the file indexer"
 msgstr "सञ्चिकासूचकाङ्ककस्य निरीक्षणं कुर्वन्तु"
 
-#: main.cpp:73
+#: main.cpp:71
 #, kde-format
 msgid "Display the disk space used by index"
 msgstr "अनुक्रमणिकाद्वारा उपयुज्यमानं डिस्कस्थानं प्रदर्शयन्तु"
 
-#: main.cpp:74
+#: main.cpp:72
 #, kde-format
 msgid "Display files which could not be indexed"
 msgstr "सञ्चिकाः प्रदर्शयन्तु येषां अनुक्रमणं कर्तुं न शक्यते स्म"
 
-#: main.cpp:77
+#: main.cpp:75
 #, kde-format
 msgctxt ""
 "Format to use for status command, %1|%2|%3 are option values, %4 is a CLI "
@@ -323,7 +323,7 @@ msgstr ""
 "पूर्वनिर्धारितं प्रारूपं \"%1\" अस्ति ।\n"
 "केवलं \"%4\" कृते प्रवर्तते ।"
 
-#: main.cpp:83
+#: main.cpp:81
 #, kde-format
 msgid "format"
 msgstr "प्रारूपम्"
@@ -415,6 +415,11 @@ msgstr "- %1\n"
 #, kde-format
 msgid "CLI interface for monitoring Baloo"
 msgstr "बालू इत्यस्य निरीक्षणार्थं CLI अन्तरफलकम्"
+
+#: purgecommand.cpp:53
+#, kde-format
+msgid "Remove the complete DB, and restart the daemon if enabled"
+msgstr ""
 
 #: statuscommand.cpp:33
 #, kde-format
