@@ -7,8 +7,6 @@
 
 #include "term.h"
 
-#include <QDateTime>
-
 namespace Baloo {
 
 class Baloo::Term::Private {
@@ -17,7 +15,7 @@ public:
     Comparator m_comp = Auto;
 
     QString m_property;
-    QVariant m_value;
+    QString m_value;
 
     QList<Term> m_subTerms;
 };
@@ -32,22 +30,15 @@ Term::Term(const Term& t)
 {
 }
 
-Term::Term(const QString& property, const QVariant& value, Term::Comparator c)
+Term::Term(const QString &property, const QString &value, Term::Comparator c)
     : d(new Private)
 {
     d->m_property = property;
     d->m_value = value;
 
     if (c == Auto) {
-        if (value.typeId() == QMetaType::QString) {
-            d->m_comp = Contains;
-        } else if (value.typeId() == QMetaType::QDateTime) {
-            d->m_comp = Contains;
-        } else {
-            d->m_comp = Equal;
-        }
-    }
-    else {
+        d->m_comp = Contains;
+    } else {
         d->m_comp = c;
     }
 }
@@ -159,14 +150,10 @@ Term::Operation Term::operation() const
     return d->m_op;
 }
 
-bool Term::empty() const
-{
-    return isEmpty();
-}
-
 bool Term::isEmpty() const
 {
-    return d->m_property.isEmpty() && d->m_value.isNull() && d->m_subTerms.isEmpty();
+    return d->m_property.isEmpty() && d->m_value.isEmpty() //
+        && d->m_subTerms.isEmpty() && (d->m_comp == Auto);
 }
 
 QString Term::property() const
@@ -179,12 +166,12 @@ void Term::setProperty(const QString& property)
     d->m_property = property;
 }
 
-void Term::setValue(const QVariant& value)
+void Term::setValue(const QString &value)
 {
     d->m_value = value;
 }
 
-QVariant Term::value() const
+QString Term::value() const
 {
     return d->m_value;
 }
@@ -280,16 +267,13 @@ QDebug operator <<(QDebug d, const Baloo::Term& t)
     QDebugStateSaver saver(d);
     d.noquote().nospace();
     if (t.subTerms().isEmpty()) {
-        if (!t.property().isEmpty()) {
+        if (t.isEmpty()) {
+            d << "[EMPTY]";
+        } else {
             d << t.property();
+            d << comparatorToString(t.comparator());
+            d << '"' << t.value() << '"';
         }
-	d << comparatorToString(t.comparator());
-    if (t.value().typeId() == QMetaType::QString) {
-            d << QLatin1Char('"') << t.value().toString() << QLatin1Char('"');
-    } else {
-            d << t.value().typeName() << QLatin1Char('(')
-              << t.value().toString() << QLatin1Char(')');
-    }
     }
     else {
         d << "[" << operationToString(t.operation());
