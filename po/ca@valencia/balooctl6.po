@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-10-29 00:49+0000\n"
-"PO-Revision-Date: 2026-04-26 08:44+0200\n"
+"PO-Revision-Date: 2026-10-29 11:00+0100\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca@valencia\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Lokalize 26.04.0\n"
+"X-Generator: Lokalize 25.04.0\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -411,7 +411,7 @@ msgstr "Interfície CLI per al monitoratge de Baloo"
 #: purgecommand.cpp:53
 #, kde-format
 msgid "Remove the complete DB, and restart the daemon if enabled"
-msgstr ""
+msgstr "Elimina la base de dades completa i reinicia el dimoni si es marca"
 
 #: statuscommand.cpp:33
 #, kde-format
