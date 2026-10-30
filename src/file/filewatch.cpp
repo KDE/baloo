@@ -10,7 +10,6 @@
 #include "metadatamover.h"
 #include "fileindexerconfig.h"
 #include "pendingfilequeue.h"
-#include "regexpcache.h"
 #include "database.h"
 #include "baloodebug.h"
 

@@ -19,14 +19,10 @@
 #include <QPair>
 
 #include <sys/inotify.h>
-#include <sys/utsname.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <cerrno>
-#include <dirent.h>
 
 namespace
 {

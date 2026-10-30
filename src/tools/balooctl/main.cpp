@@ -25,14 +25,11 @@
 #include "databasesize.h"
 #include "config.h"
 
-#include "indexer.h"
 #include "indexerconfig.h"
-#include "idutils.h"
 #include "fileindexerconfig.h"
 #include "monitorcommand.h"
 #include "schedulerinterface.h"
 #include "maininterface.h"
-#include "indexerstate.h"
 #include "configcommand.h"
 #include "statuscommand.h"
 

@@ -23,7 +23,6 @@
 #include "../fileindexerconfig.h"
 
 class KIdleTime;
-class QString;
 
 namespace Baloo {
 

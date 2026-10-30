@@ -7,7 +7,6 @@
 
 #include "indexer.h"
 #include "basicindexingjob.h"
-#include "database.h"
 #include "./extractor/result.h"
 
 #include <KFileMetaData/Extractor>

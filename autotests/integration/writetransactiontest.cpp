@@ -5,7 +5,6 @@
     SPDX-License-Identifier: LGPL-2.1-or-later
 */
 
-#include "writetransaction.h"
 #include "dbstate.h"
 #include "database.h"
 #include "idutils.h"

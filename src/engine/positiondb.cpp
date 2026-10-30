@@ -9,7 +9,6 @@
 #include "positiondb.h"
 #include "positioncodec.h"
 #include "positioninfo.h"
-#include "postingiterator.h"
 #include "vectorpositioninfoiterator.h"
 
 using namespace Baloo;

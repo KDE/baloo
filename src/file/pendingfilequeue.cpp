@@ -8,8 +8,6 @@
 
 #include "pendingfilequeue.h"
 
-#include <memory>
-
 #include <QDateTime>
 
 using namespace Baloo;

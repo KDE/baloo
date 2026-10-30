@@ -7,9 +7,7 @@
 
 #include "resultiterator.h"
 #include "result_p.h"
-#include "searchstore.h"
 #include <limits>
-#include <vector>
 #include <utility>
 
 using namespace Baloo;

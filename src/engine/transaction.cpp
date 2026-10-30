@@ -18,12 +18,9 @@
 #include "mimetypequery.h"
 #include "propertyphrasequery.h"
 
-#include "andpostingiterator.h"
-#include "orpostingiterator.h"
 #include "phraseanditerator.h"
 #include "vectorpostingiterator.h"
 
-#include "idutils.h"
 #include "database.h"
 #include "databasesize.h"
 

@@ -20,11 +20,8 @@
 #include <QDir>
 #include <QRegularExpression>
 
-#include "file.h"
 #include "taglistjob.h"
 #include "../common/udstools.h"
-
-#include "term.h"
 
 using namespace Baloo;
 

@@ -6,10 +6,7 @@
 */
 
 #include "documenturldb.h"
-#include "postingiterator.h"
 #include "enginedebug.h"
-
-#include <algorithm>
 
 using namespace Baloo;
 

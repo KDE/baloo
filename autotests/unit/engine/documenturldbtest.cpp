@@ -9,8 +9,6 @@
 #include "dbtest.h"
 #include "idutils.h"
 
-#include <memory>
-
 using namespace Baloo;
 
 class DocumentUrlDBTest : public DBTest

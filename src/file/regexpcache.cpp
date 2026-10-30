@@ -7,7 +7,6 @@
 */
 
 #include "regexpcache.h"
-#include "baloodebug.h"
 
 #include <QStringList>
 

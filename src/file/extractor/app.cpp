@@ -8,7 +8,6 @@
 #include "app.h"
 #include "basicindexingjob.h"
 #include "result.h"
-#include "idutils.h"
 #include "transaction.h"
 #include "baloodebug.h"
 #include "global.h"
@@ -23,7 +22,6 @@
 #include <KIdleTime>
 
 #include <unistd.h> //for STDIN_FILENO
-#include <iostream>
 
 using namespace Baloo;
 

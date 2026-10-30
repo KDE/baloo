@@ -8,8 +8,6 @@
 
 #include "indexerconfig.h"
 #include "../file/fileindexerconfig.h"
-#include "../file/fileexcludefilters.h"
-#include "../file/regexpcache.h"
 
 #include <QDBusConnection>
 #include "maininterface.h"

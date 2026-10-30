@@ -11,8 +11,6 @@
 #include "searchstore.h"
 #include "term.h"
 
-#include "baloodebug.h"
-
 #include <QString>
 #include <QStringList>
 #include <QUrlQuery>
