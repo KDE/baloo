@@ -101,7 +101,7 @@ Term Baloo::QueryParser::parse(const QString &text)
         if (valueExpected) {
             // When the parser encounters a literal, it puts it in the value of
             // termInConstruction so that "foo bar baz" is parsed as expected.
-            auto property = termInConstruction.value().toString();
+            auto property = termInConstruction.value();
             if (property.isEmpty()) {
                 qCDebug(BALOO) << "Binary operator without first argument encountered:" << text;
                 return Term();
@@ -171,7 +171,7 @@ Term Baloo::QueryParser::parse(const QString &text)
                 // Prevent a stack underflow if the user writes "a b ))))"
                 if (stack.size() > 1) {
                     // Don't forget the term just before the closing brace
-                    if (termInConstruction.value().isValid()) {
+                    if (!termInConstruction.isEmpty()) {
                         addTermToStack(stack, termInConstruction, ops.top());
                     }
 
@@ -205,12 +205,12 @@ Term Baloo::QueryParser::parse(const QString &text)
     }
 
     if (valueExpected) {
-        termInConstruction.setProperty(termInConstruction.value().toString());
+        termInConstruction.setProperty(termInConstruction.value());
         termInConstruction.setValue(QString());
         termInConstruction.setComparator(Term::Contains);
     }
 
-    if (termInConstruction.value().isValid()) {
+    if (!termInConstruction.isEmpty()) {
         addTermToStack(stack, termInConstruction, ops.top());
     }
 

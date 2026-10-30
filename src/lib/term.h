@@ -8,9 +8,8 @@
 #ifndef BALOO_TERM_H
 #define BALOO_TERM_H
 
-#include <QString>
-#include <QVariant>
 #include <QDebug>
+#include <QString>
 
 #include <memory>
 
@@ -47,7 +46,7 @@ public:
      * For DateTime - Contains
      * For any other type - Equals
      */
-    Term(const QString& property, const QVariant& value, Comparator c = Auto);
+    Term(const QString &property, const QString &value, Comparator c = Auto);
 
     /*
      * This term is a combination of other terms
@@ -73,7 +72,6 @@ public:
     Operation operation() const;
 
     bool isEmpty() const;
-    bool empty() const;
 
     /*
      * Return the property this term is targeting
@@ -81,8 +79,8 @@ public:
     QString property() const;
     void setProperty(const QString& property);
 
-    QVariant value() const;
-    void setValue(const QVariant& value);
+    QString value() const;
+    void setValue(const QString &value);
 
     Comparator comparator() const;
     void setComparator(Comparator c);

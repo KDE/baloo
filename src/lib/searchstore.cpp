@@ -39,12 +39,12 @@ namespace Baloo {
 using namespace Qt::StringLiterals;
 
 namespace {
-QPair<quint32, quint32> calculateTimeRange(const QVariant &value, Term::Comparator com)
+QPair<quint32, quint32> calculateTimeRange(const QString &value, Term::Comparator com)
 {
-    const QDateTime dt = value.toDateTime();
+    const QDateTime dt = QDateTime::fromString(value, Qt::ISODate);
     if (!dt.isValid()) {
         // Do not warn, input may not be complete
-        qCDebug(BALOO) << "Failed to parse timestamp" << value.toString();
+        qCDebug(BALOO) << "Failed to parse timestamp" << value;
         return {1, 0};
     }
 
@@ -181,7 +181,7 @@ QString reconstructFromTerm(const Term &term)
         : comp == Term::Greater           ? u">"_sv
                                           : u":"_sv;
     // Reconstruct something like "http://www.kde.org"
-    return term.property() + compString + term.value().toString();
+    return term.property() + compString + term.value();
 }
 
 PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term);
@@ -361,34 +361,28 @@ PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term)
     if (term.value().isNull()) {
         return nullptr;
     }
-    Q_ASSERT(term.value().isValid());
+    Q_ASSERT(!term.isEmpty());
     Q_ASSERT(term.comparator() != Term::Auto);
-    Q_ASSERT(term.comparator() == Term::Contains ? term.value().typeId() == QMetaType::QString : true);
 
-    const QVariant value = term.value();
+    const QString value = term.value();
     const QByteArray property = term.property().toLower().toUtf8();
 
     if (property == "type" || property == "kind") {
-        return constructTypeQuery(tr, value.toString());
+        return constructTypeQuery(tr, value);
     }
     else if (property == "includefolder") {
-        return constructFolderQuery(tr, value.toString());
+        return constructFolderQuery(tr, value);
     }
     else if (property == "modified" || property == "mtime") {
-        if (value.typeId() == QMetaType::QString) {
-            QPair<quint32, quint32> timerange = calculateTimeRange(value, term.comparator());
-            if (timerange.first > timerange.second) {
-                return nullptr;
-            }
-            return tr->mTimeRangeIter(timerange.first, timerange.second);
-        } else {
-            Q_ASSERT_X(0, "SearchStore::constructQuery", "modified property must contain date/datetime values");
+        QPair<quint32, quint32> timerange = calculateTimeRange(value, term.comparator());
+        if (timerange.first > timerange.second) {
             return nullptr;
         }
+        return tr->mTimeRangeIter(timerange.first, timerange.second);
     } else if (property == "tag") {
         if (term.comparator() == Term::Equal) {
             const QByteArray prefix = "TAG-";
-            return tr->postingIterator(prefix + value.toByteArray());
+            return tr->postingIterator(prefix + value.toUtf8());
         } else {
             // Delegate to "internalProperties" "tags" handler
             return constructQuery(tr, Term{u"tags"_s, term.value(), term.comparator()});
@@ -399,12 +393,12 @@ PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term)
         return constructQuery(tr, Term{cterm, Term::Operation::Or, fterm});
     } else if (property == "filename") {
         auto com = term.comparator();
-        auto fq = FilenameQuery(value.toString(), (com == Term::Contains));
+        auto fq = FilenameQuery(value, (com == Term::Contains));
         qCDebug(BALOO) << "filename query:" << fq;
         return tr->postingIterator(fq);
     } else if (property == "mimetype") {
         auto com = term.comparator();
-        auto mq = MimetypeQuery(value.toString(), (com == Term::Contains));
+        auto mq = MimetypeQuery(value, (com == Term::Contains));
         qCDebug(BALOO) << "mimetype query:" << mq;
         return tr->postingIterator(mq);
     }
@@ -417,13 +411,13 @@ PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term)
         if (valueType == QMetaType::UnknownType) {
             QString reconstructed{reconstructFromTerm(term)};
             qCDebug(BALOO) << "Unknown property" << property << "with value" //
-                           << term.value().toString() << "- using" << reconstructed;
+                           << term.value() << "- using" << reconstructed;
             return constructQuery(tr, Term{QString{}, reconstructed, Term::Equal});
         }
     }
     if (isProperty && valueType == QMetaType::QString) {
         auto com = term.comparator();
-        auto pq = PropertyPhraseQuery(value.toString(), prefix, (com == Term::Contains));
+        auto pq = PropertyPhraseQuery(value, prefix, (com == Term::Contains));
         qCDebug(BALOO) << "property query:" << pq;
         return tr->postingIterator(pq);
     } else if (isProperty) {
@@ -435,11 +429,11 @@ PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term)
         com = Term::Equal;
     }
     if (com == Term::Contains) {
-        return constructContainsQuery(tr, prefix, value.toString());
+        return constructContainsQuery(tr, prefix, value);
     }
 
     if (com == Term::Equal) {
-        return constructEqualsQuery(tr, prefix, value.toString());
+        return constructEqualsQuery(tr, prefix, value);
     }
 
     PostingDB::Comparator pcom;
@@ -455,7 +449,7 @@ PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term)
         bool ok = false;
         qlonglong intVal = value.toLongLong(&ok);
         if (!ok) {
-            qCDebug(BALOO) << "Failed to parse number" << value.toString();
+            qCDebug(BALOO) << "Failed to parse number" << value;
             return nullptr;
         }
 
@@ -470,15 +464,15 @@ PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term)
         bool ok = false;
         double dVal = value.toDouble(&ok);
         if (!ok) {
-            qCDebug(BALOO) << "Failed to parse number" << value.toString();
+            qCDebug(BALOO) << "Failed to parse number" << value;
             return nullptr;
         }
         return tr->postingCompIterator(prefix, dVal, pcom);
 
     } else if (valueType == QMetaType::QDateTime) {
-        QDateTime dt = value.toDateTime();
+        const QDateTime dt = QDateTime::fromString(value, Qt::ISODate);
         if (!dt.isValid()) {
-            qCDebug(BALOO) << "Failed to parse date/time" << value.toString();
+            qCDebug(BALOO) << "Failed to parse date/time" << value;
             return nullptr;
         }
         const QByteArray ba = dt.toString(Qt::ISODate).toUtf8();
