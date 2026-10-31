@@ -212,6 +212,30 @@ QString reconstructFromTerm(const Term &term)
 
 PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term);
 
+QStringList cleanedScopes(const QStringList &scopes)
+{
+    QStringList knownScopes{
+        u"filename"_s,
+        u"content"_s,
+        u"metadata"_s,
+    };
+
+    QStringList cleaned;
+    for (const auto &scope : scopes) {
+        auto lower = scope.toLower();
+        if (knownScopes.contains(lower)) {
+            cleaned.push_back(lower);
+        } else {
+            qCDebug(BALOO) << "Scope" << lower << "unknown";
+        }
+    }
+    if (cleaned.empty()) {
+        qCDebug(BALOO) << "Using default scope list:" << knownScopes;
+        return knownScopes;
+    }
+    return cleaned;
+}
+
 Term expandScopes(const QStringList &scopes, const Term &term)
 {
     if (!term.subTerms().isEmpty()) {
@@ -239,7 +263,7 @@ PostingIterator::Ptr constructFromQuery(Transaction *tr, const Query &q)
 
     if (!q.searchString().isEmpty()) {
         Term term = QueryParser::parse(q.searchString());
-        auto scopes = QList{u"filename"_s, u"content"_s, u"metadata"_s};
+        auto scopes = cleanedScopes(q.searchScopes());
         auto expanded = expandScopes(scopes, term);
         qCDebug(BALOO) << scopes << "x" << term << "->" << expanded;
         if (auto it = constructQuery(tr, expanded)) {
@@ -471,7 +495,9 @@ PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term)
             QString reconstructed{reconstructFromTerm(term)};
             qCDebug(BALOO) << "Unknown property" << property << "with value" //
                            << term.value() << "- using" << reconstructed;
-            return constructQuery(tr, Term{QString{}, reconstructed, Term::Equal});
+            auto scopes = cleanedScopes({});
+            auto t = Term{QString{}, reconstructed, Term::Equal};
+            return constructQuery(tr, expandScopes(scopes, t));
         }
     }
     if (isProperty && valueType == QMetaType::QString) {

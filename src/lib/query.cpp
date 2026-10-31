@@ -26,6 +26,7 @@ class BALOO_CORE_NO_EXPORT Baloo::Query::Private {
 public:
     QStringList m_types;
     QString m_searchString;
+    QStringList m_searchScopes;
     uint m_limit = defaultLimit;
     uint m_offset = 0;
 
@@ -154,6 +155,16 @@ void Query::setIncludeFolder(const QString& folder)
     d->m_includeFolder = folder;
 }
 
+QStringList Query::searchScopes() const
+{
+    return d->m_searchScopes;
+}
+
+void Query::setSearchScopes(const QStringList &scopes)
+{
+    d->m_searchScopes = scopes;
+}
+
 ResultIterator Query::exec()
 {
     auto results = SearchStore::exec(*this);
@@ -178,6 +189,10 @@ QByteArray Query::toJSON()
 
     if (!d->m_searchString.isEmpty()) {
         map[QStringLiteral("searchString")] = d->m_searchString;
+    }
+
+    if (!d->m_searchScopes.isEmpty()) {
+        map[QStringLiteral("searchScopes")] = d->m_searchScopes;
     }
 
     if (d->m_yearFilter > 0) {
@@ -221,6 +236,7 @@ Query Query::fromJSON(const QByteArray& arr)
 
     query.d->m_offset = map[QStringLiteral("offset")].toUInt();
     query.d->m_searchString = map[QStringLiteral("searchString")].toString();
+    query.d->m_searchScopes = map[QStringLiteral("searchScopes")].toStringList();
 
     if (map.contains(QStringLiteral("yearFilter"))) {
         query.d->m_yearFilter = map[QStringLiteral("yearFilter")].toInt();
@@ -330,6 +346,15 @@ bool Query::operator==(const Query& rhs) const
         }
     }
 
+    if (rhs.d->m_searchScopes.size() != d->m_searchScopes.size()) {
+        return false;
+    }
+
+    for (const QString &scope : std::as_const(rhs.d->m_searchScopes)) {
+        if (!d->m_searchScopes.contains(scope)) {
+            return false;
+        }
+    }
     return true;
 }
 

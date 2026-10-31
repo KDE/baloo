@@ -112,6 +112,9 @@ private Q_SLOTS:
     void testSearchstringParser();
     void testSearchstringParser_data();
 
+    void testScopedQuery();
+    void testScopedQuery_data();
+
 private:
     std::unique_ptr<QTemporaryDir> dir;
     std::unique_ptr<QTemporaryDir> dbDir;
@@ -573,7 +576,55 @@ void QueryTest::testSearchstringParser_data()
     addRow(u"\"Start. Line 2. Last\""_s, {u"three_line.txt"_s});
     addRow(u"Start. Line 2. Last"_s,     {u"three_line.txt"_s});
     addRow(u"single"_s,                  {u"one_word.txt"_s});
+    // clang-format on
+}
+
+void QueryTest::testScopedQuery()
+{
+    QFETCH(QString, searchString);
+    QFETCH(QStringList, scopes);
+    QFETCH(QStringList, expectedFiles);
+
+    Query q;
+    q.setSearchString(searchString);
+    q.setSearchScopes(scopes);
+
+    auto res = q.exec();
+    QStringList matches;
+    while (res.next()) {
+        auto path = res.filePath();
+        auto name = path.section(QLatin1Char('/'), -1, -1);
+        matches.append(name);
+    }
+    QCOMPARE(matches, expectedFiles);
+}
+
+void QueryTest::testScopedQuery_data()
+{
+    QTest::addColumn<QString>("searchString");
+    QTest::addColumn<QStringList>("scopes");
+    QTest::addColumn<QStringList>("expectedFiles");
+
+    auto addRow = [](const QString &searchString, //
+                     const QStringList &scopes,
+                     const QStringList &filenameMatches) {
+        QTest::addRow("Match '%s' '%s'", qPrintable(scopes.join(u'|')), qPrintable(searchString)) //
+            << searchString << scopes << filenameMatches;
+    };
+
     // clang-format off
+    addRow(u"crazy"_s,          {},                             {u"file1.txt"_s, u"file4"_s});
+    addRow(u"crazy"_s,          {u"filename"_s},                {});
+    addRow(u"crazy"_s,          {u"content"_s},                 { u"file1.txt"_s, u"file4"_s});
+    addRow(u"crazy"_s,          {u"filename"_s, u"metadata"_s}, {});
+    addRow(u"artist"_s,         {},                             {u"propertyFile.mp3"_s});
+    addRow(u"artist"_s,         {u"filename"_s, u"content"_s},  {});
+    addRow(u"artist"_s,         {u"metadata"_s},                {u"propertyFile.mp3"_s});
+    addRow(u"dog"_s,            {u"filename"_s, u"content"_s},  {u"file1.txt"_s, u"file7_lazy"_s, u"file8_easy"_s});
+    addRow(u"the"_s,            {u"filename"_s, u"content"_s},  {u"file1.txt"_s, u"file2"_s, u"file4"_s, u"file7_lazy"_s});
+    addRow(u"the"_s,            {u"metadata"_s, u"content"_s},  {u"propertyFile.mp3"_s, u"file1.txt"_s, u"file2"_s, u"file4"_s, u"file7_lazy"_s});
+    addRow(u"\"the artist\""_s, {u"metadata"_s, u"content"_s},  {u"propertyFile.mp3"_s});
+    // clang-format on
 }
 
 QTEST_MAIN(QueryTest)

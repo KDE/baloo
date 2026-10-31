@@ -181,6 +181,35 @@ public:
     QString includeFolder() const;
 
     /*!
+     * Limit where to look for a match
+     *
+     * By default (empty \a scopes), terms are matched with the filename,
+     * plain text content, and any string like property from the file
+     * metadata (e.g. Album or Artist name).
+     *
+     * Search terms with an explicit property name are not affected by
+     * the search scope value.
+     *
+     * If multiple scopes are provided, each is checked and the results
+     * are combined. Invalid/unknown scopes are ignored. Scope names
+     * are case insensitive.
+     *
+     * \value FileName
+     * \value Content
+     * \value Metadata
+     *
+     * \since 6.32
+     */
+    void setSearchScopes(const QStringList &scopes);
+
+    /*!
+     * \sa setSearchScopes()
+     *
+     * \since 6.32
+     */
+    QStringList searchScopes() const;
+
+    /*!
      *
      */
     ResultIterator exec();

@@ -130,12 +130,15 @@ void QuerySerializationTest::testCustomOptions()
     Query query;
     query.setTypes({u"File"_s});
     query.setIncludeFolder(QStringLiteral("/home/vishesh"));
+    query.setSearchScopes({u"filename"_s, u"metadata"_s});
 
     QByteArray json = query.toJSON();
     Query q = Query::fromJSON(json);
 
     QString includeFolder = q.includeFolder();
     QCOMPARE(includeFolder, QStringLiteral("/home/vishesh"));
+    QVERIFY(q.searchScopes().contains(u"filename"_s));
+    QVERIFY(q.searchScopes().contains(u"metadata"_s));
 
     QCOMPARE(query, q);
 }
