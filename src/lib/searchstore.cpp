@@ -212,13 +212,37 @@ QString reconstructFromTerm(const Term &term)
 
 PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term);
 
+Term expandScopes(const QStringList &scopes, const Term &term)
+{
+    if (!term.subTerms().isEmpty()) {
+        QList<Term> expanded;
+        for (auto subterm : term.subTerms()) {
+            // recurse
+            expanded.push_back(expandScopes(scopes, subterm));
+        }
+        return Term{term.operation(), expanded};
+    } else if (term.property().isEmpty()) {
+        // should expand
+        Term expanded;
+        for (auto scope : scopes) {
+            Term withScope{scope, term.value(), term.comparator()};
+            expanded = Term{expanded, Term::Or, withScope};
+        }
+        return expanded;
+    }
+    return term;
+}
+
 PostingIterator::Ptr constructFromQuery(Transaction *tr, const Query &q)
 {
     std::vector<std::unique_ptr<PostingIterator>> vec;
 
     if (!q.searchString().isEmpty()) {
         Term term = QueryParser::parse(q.searchString());
-        if (auto it = constructQuery(tr, term)) {
+        auto scopes = QList{u"filename"_s, u"content"_s, u"metadata"_s};
+        auto expanded = expandScopes(scopes, term);
+        qCDebug(BALOO) << scopes << "x" << term << "->" << expanded;
+        if (auto it = constructQuery(tr, expanded)) {
             vec.push_back(std::move(it));
         } else {
             return {};
@@ -413,11 +437,6 @@ PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term)
             // Delegate to "internalProperties" "tags" handler
             return constructQuery(tr, Term{u"tags"_s, term.value(), term.comparator()});
         }
-    } else if (property == "") {
-        Term mterm(QStringLiteral("metadata"), term.value(), term.comparator());
-        Term cterm(QStringLiteral("content"), term.value(), term.comparator());
-        Term fterm(QStringLiteral("filename"), term.value(), term.comparator());
-        return constructQuery(tr, Term{cterm, Term::Operation::Or, Term{fterm, Term::Operation::Or, mterm}});
     } else if (property == "filename") {
         auto com = term.comparator();
         auto fq = FilenameQuery(value, (com == Term::Contains));
