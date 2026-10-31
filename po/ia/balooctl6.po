@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-10-29 00:49+0000\n"
-"PO-Revision-Date: 2026-04-27 17:18+0200\n"
+"PO-Revision-Date: 2026-10-30 12:16+0100\n"
 "Last-Translator: giovanni <g.sora@tiscali.it>\n"
 "Language-Team: Interlingua <kde-i18n-doc@kde.org>\n"
 "Language: ia\n"
@@ -408,7 +408,7 @@ msgstr "Interfacie CLI  per supervisionar Baloo"
 #: purgecommand.cpp:53
 #, kde-format
 msgid "Remove the complete DB, and restart the daemon if enabled"
-msgstr ""
+msgstr "Remove le DB complete, e restarta ledaemon si habilitate"
 
 #: statuscommand.cpp:33
 #, kde-format
