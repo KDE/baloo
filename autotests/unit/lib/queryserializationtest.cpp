@@ -36,7 +36,7 @@ void QuerySerializationTest::testBasic()
     query.setLimit(5);
     query.setOffset(1);
     query.setSearchString(QStringLiteral("Bookie"));
-    query.addType(QStringLiteral("File/Audio"));
+    query.setTypes({u"Text"_s, u"Document"_s});
 
     QByteArray json = query.toJSON();
     Query q = Query::fromJSON(json);
@@ -45,8 +45,8 @@ void QuerySerializationTest::testBasic()
     QCOMPARE(q.offset(), static_cast<uint>(1));
     QCOMPARE(q.searchString(), QLatin1String("Bookie"));
     QCOMPARE(q.types().size(), 2);
-    QVERIFY(q.types().contains(QLatin1String("File")));
-    QVERIFY(q.types().contains(QLatin1String("Audio")));
+    QVERIFY(q.types().contains(u"Text"_s));
+    QVERIFY(q.types().contains(u"Document"_s));
 
     QCOMPARE(q, query);
 }
@@ -128,7 +128,7 @@ void QuerySerializationTest::testTypeURL_data()
 void QuerySerializationTest::testCustomOptions()
 {
     Query query;
-    query.addType(QStringLiteral("File"));
+    query.setTypes({u"File"_s});
     query.setIncludeFolder(QStringLiteral("/home/vishesh"));
 
     QByteArray json = query.toJSON();
