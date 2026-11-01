@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 # Abdalrahim G. Fakhouri <abdilra7eem@yahoo.com>, 2014.
 # Safa Alfulaij <safa1996alfulaij@gmail.com>, 2015, 2017, 2018.
-# SPDX-FileCopyrightText: 2021, 2023, 2024 Zayed Al-Saidi <zayed.alsaidi@gmail.com>
+# SPDX-FileCopyrightText: 2021, 2023-2024, 2026 Zayed Al-Saidi <zayed.alsaidi@gmail.com>
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-17 08:59+0000\n"
-"PO-Revision-Date: 2023-08-19 21:51+0400\n"
+"PO-Revision-Date: 2026-10-31 19:35+0400\n"
 "Last-Translator: Zayed Al-Saidi <zayed.alsaidi@gmail.com>\n"
 "Language-Team: ar\n"
 "Language: ar\n"
@@ -18,6 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
+"X-Generator: Lokalize 26.08.1\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -42,7 +43,7 @@ msgstr "أداة للبحث في الملفات التي فهرسها «بالو
 #: main.cpp:31
 #, kde-format
 msgid "Vishesh Handa"
-msgstr "Vishesh Handa"
+msgstr "فيشيش هاندا"
 
 #: main.cpp:37
 #, kde-format
@@ -52,7 +53,7 @@ msgstr "أقصى عدد للنتائج"
 #: main.cpp:38
 #, kde-format
 msgid "limit"
-msgstr "الحد"
+msgstr "limit"
 
 #: main.cpp:40
 #, kde-format
@@ -62,7 +63,7 @@ msgstr "الإزاحة حيث سيبدأ البحث منها"
 #: main.cpp:41
 #, kde-format
 msgid "offset"
-msgstr "الإزاحة"
+msgstr "offset"
 
 #: main.cpp:43
 #, kde-format
@@ -72,7 +73,7 @@ msgstr "نوع البيانات ليُبحث عنها"
 #: main.cpp:44
 #, kde-format
 msgid "typeStr"
-msgstr "نص_النوع"
+msgstr "typeStr"
 
 #: main.cpp:46
 #, kde-format
@@ -82,7 +83,7 @@ msgstr "احصر البحث إلى الدليل المنتقى"
 #: main.cpp:47
 #, kde-format
 msgid "directory"
-msgstr "الدليل"
+msgstr "directory"
 
 #: main.cpp:49
 #, kde-format
@@ -97,7 +98,7 @@ msgstr "معاير الترتيب"
 #: main.cpp:52
 #, kde-format
 msgid "query"
-msgstr "الاستعلام"
+msgstr "query"
 
 #: main.cpp:52
 #, kde-format
