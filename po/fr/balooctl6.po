@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-10-29 00:49+0000\n"
-"PO-Revision-Date: 2026-08-29 18:48+0200\n"
+"PO-Revision-Date: 2026-10-30 15:51+0100\n"
 "Last-Translator: Xavier Besnard <xavier.besnard@kde.org>\n"
 "Language-Team: fr\n"
 "Language: fr\n"
@@ -21,7 +21,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Accelerator-Marker: &\n"
 "X-Environment: kde\n"
-"X-Generator: Lokalize 26.08.0\n"
+"X-Generator: Lokalize 26.08.1\n"
 "X-Text-Markup: kde4\n"
 
 #, kde-format
@@ -416,6 +416,8 @@ msgstr "Interface CLI pour surveiller Baloo"
 #, kde-format
 msgid "Remove the complete DB, and restart the daemon if enabled"
 msgstr ""
+"Supprimez la totalité de la base de données et redémarrez le démon s'il est "
+"activé"
 
 #: statuscommand.cpp:33
 #, kde-format
