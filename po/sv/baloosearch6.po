@@ -1,21 +1,21 @@
 # Copyright (C) YEAR This_file_is_part_of_KDE
 # This file is distributed under the same license as the PACKAGE package.
 #
-# SPDX-FileCopyrightText: 2013, 2015, 2018, 2020, 2021, 2024 Stefan Asserhäll <stefan.asserhall@gmail.com>
+# SPDX-FileCopyrightText: 2013, 2015, 2018, 2020-2021, 2024, 2026 Stefan Asserhäll <stefan.asserhall@gmail.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-10-09 00:42+0000\n"
-"PO-Revision-Date: 2024-06-16 19:32+0200\n"
-"Last-Translator: Stefan Asserhäll <stefan.asserhall@bredband.net>\n"
+"PO-Revision-Date: 2026-11-01 09:56+0100\n"
+"Last-Translator: Stefan Asserhäll <stefan.asserhall@gmail.com>\n"
 "Language-Team: Swedish <kde-i18n-doc@kde.org>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 23.08.5\n"
+"X-Generator: Lokalize 26.08.1\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -31,19 +31,19 @@ msgstr "stefan.asserhall@gmail.com"
 #, kde-format
 msgctxt "'listTypes' table header"
 msgid "<typeString>     Description"
-msgstr ""
+msgstr "<typeString>     Beskrivning"
 
 #: main.cpp:66
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "Metadata Property Name                 Description"
-msgstr ""
+msgstr "Metadataegenskapsnamn                 Beskrivning"
 
 #: main.cpp:76
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "File Property Name                     Description"
-msgstr ""
+msgstr "Filegenskapsnamn                     Beskrivning"
 
 #: main.cpp:95
 #, kde-format
@@ -66,11 +66,10 @@ msgid "The maximum number of results"
 msgstr "Maximalt antal resultat"
 
 #: main.cpp:106
-#, fuzzy, kde-format
-#| msgid "limit"
+#, kde-format
 msgctxt "option value name"
 msgid "limit"
-msgstr "gräns"
+msgstr "limit"
 
 #: main.cpp:108
 #, kde-format
@@ -78,11 +77,10 @@ msgid "Offset from which to start the search"
 msgstr "Position där sökningen ska startas"
 
 #: main.cpp:109
-#, fuzzy, kde-format
-#| msgid "offset"
+#, kde-format
 msgctxt "option value name"
 msgid "offset"
-msgstr "position"
+msgstr "offset"
 
 #: main.cpp:111
 #, kde-format
@@ -90,21 +88,20 @@ msgid "Type of data to be searched"
 msgstr "Typ av data att söka efter"
 
 #: main.cpp:112
-#, fuzzy, kde-format
-#| msgid "typeStr"
+#, kde-format
 msgctxt "option value name"
 msgid "typeString"
-msgstr "typsträng"
+msgstr "typeString"
 
 #: main.cpp:114
 #, kde-format
 msgid "Show supported <typeString> values"
-msgstr ""
+msgstr "Visa <typeString> värden som stöds"
 
 #: main.cpp:116
 #, kde-format
 msgid "Show property names supported in query."
-msgstr ""
+msgstr "Visa egenskapsnamn som stöds i frågor."
 
 #: main.cpp:118
 #, kde-format
@@ -112,11 +109,10 @@ msgid "Limit search to specified directory"
 msgstr "Begränsa sökningen till angiven katalog"
 
 #: main.cpp:119
-#, fuzzy, kde-format
-#| msgid "directory"
+#, kde-format
 msgctxt "option value name"
 msgid "directory"
-msgstr "katalog"
+msgstr "directory"
 
 #: main.cpp:121
 #, kde-format
@@ -131,7 +127,7 @@ msgstr "Sorteringskriterier"
 #: main.cpp:127
 #, kde-format
 msgid "query [(|AND|OR) query ...]"
-msgstr ""
+msgstr "fråga [(|AND|OR) fråga ...]"
 
 #: main.cpp:128
 #, kde-format
@@ -145,11 +141,20 @@ msgid ""
 "baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
 "filename:jpg)'"
 msgstr ""
+"Lista med ord att fråga efter.\n"
+"Varje fråga kan vara ett enda värde, eller ett värde inlett med ett "
+"egenskapsnamn.\n"
+"Frågor kan nästlas, och grupperas med parenteser.\n"
+"\n"
+"\n"
+"Exempel:\n"
+"baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
+"filename:jpg)'"
 
 #: main.cpp:161
 #, kde-format
 msgid "ERROR: Invalid \"type\" value, supported values:\n"
-msgstr ""
+msgstr "FEL: Ogiltigt \"typvärde\", värden som stöds:\n"
 
 #: main.cpp:197
 #, kde-format
