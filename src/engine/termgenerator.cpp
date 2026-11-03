@@ -60,16 +60,17 @@ void TermGenerator::indexText(const QString& text)
     }
 }
 
-QByteArrayList TermGenerator::termList(const QString& text_)
+QByteArrayList TermGenerator::termList(const QString &text)
 {
-    if (!Baloo::detail::verifySurrogates(text_)) {
+    if (!Baloo::detail::verifySurrogates(text)) {
         return {};
     }
 
-    QString text(text_);
-    text.replace(QLatin1Char('_'), QLatin1Char(' '));
-
-    int start = 0;
+    qsizetype start = 0;
+    auto nextUnderscore = text.indexOf(u'_');
+    if (nextUnderscore == -1) {
+        nextUnderscore = text.size();
+    }
 
     auto isSkipChar = [] (const QChar& c) {
         return c.isPunct() || c.isMark() || c.isSpace() || (!c.isPrint() && !c.isSurrogate());
@@ -77,8 +78,7 @@ QByteArrayList TermGenerator::termList(const QString& text_)
 
     QByteArrayList list;
     QTextBoundaryFinder bf(QTextBoundaryFinder::Word, text);
-    for (; bf.position() != -1; bf.toNextBoundary()) {
-        int end = bf.position();
+    for (auto end = bf.toNextBoundary(); end >= 0; end = bf.toNextBoundary()) {
         while (start < end && isSkipChar(text.at(start))) {
             start++;
         }
@@ -93,6 +93,19 @@ QByteArrayList TermGenerator::termList(const QString& text_)
         // EndOfItem, so everything in front of a StartOfItem has to be
         // committed as well
         bool commit = bf.boundaryReasons() & (QTextBoundaryFinder::EndOfItem | QTextBoundaryFinder::StartOfItem);
+
+        if (nextUnderscore < end) {
+            if (nextUnderscore < start) {
+                nextUnderscore = start;
+            }
+            end = nextUnderscore;
+            bf.setPosition(end);
+            nextUnderscore = text.indexOf(u'_', nextUnderscore + 1);
+            if (nextUnderscore < 0) {
+                nextUnderscore = text.size();
+            }
+            commit = true;
+        }
 
         // Also commit term if end-of-text is reached or when we find
         // any punctuation

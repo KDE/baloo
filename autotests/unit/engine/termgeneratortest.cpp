@@ -111,6 +111,8 @@ void addData_WordBoundaries(std::span<const unsigned int> expansions)
             {"hello", "world", "你好世界貴方元気", "켐ᄋᄅ", "☺"},
         },
         {"strip underscore", u"_plant"_s,        {"plant"}},
+        {"double underscore", u"a__plant"_s,     {"a", "plant"}},
+        {"multiple underscore", u"__a_ _plant_"_s,     {"a", "plant"}},
         {"split underscore", u"Hello_Howdy"_s,   {"hello", "howdy"}},
         {"Accented",         u"Como está Kûg"_s, {"como", "esta", "kug"}},
         {"Mail address",     u"me@vhanda.in"_s,  {"me", "vhanda", "in"}},
