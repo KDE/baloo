@@ -14,21 +14,20 @@ using namespace Baloo;
 
 namespace {
 
-QString normalizeTerm(const QString &str)
+QString normalizeTerm(const QString &str, QString &buffer)
 {
     // Remove all accents. It is important to call toLower after normalization,
     // since some exotic unicode symbols can remain uppercase
     const QString denormalized = str.normalized(QString::NormalizationForm_KD).toLower();
 
-    QString cleanString;
-    cleanString.reserve(denormalized.size());
+    buffer.resize(0);
     for (const auto& c : denormalized) {
         if (!c.isMark()) {
-            cleanString.append(c);
+            buffer.append(c);
         }
     }
 
-    return cleanString.normalized(QString::NormalizationForm_KC);
+    return buffer.normalized(QString::NormalizationForm_KC);
 }
 
 void appendTerm(QByteArrayList &list, const QString &term)
@@ -76,6 +75,9 @@ QByteArrayList TermGenerator::termList(const QString &text)
         return c.isPunct() || c.isMark() || c.isSpace() || (!c.isPrint() && !c.isSurrogate());
     };
 
+    QString normalizationBuffer;
+    normalizationBuffer.reserve(20);
+
     QByteArrayList list;
     QTextBoundaryFinder bf(QTextBoundaryFinder::Word, text);
     for (auto end = bf.toNextBoundary(); end >= 0; end = bf.toNextBoundary()) {
@@ -114,7 +116,7 @@ QByteArrayList TermGenerator::termList(const QString &text)
         }
 
         if (commit) {
-            const QString term = normalizeTerm(text.mid(start, end - start));
+            const QString term = normalizeTerm(text.mid(start, end - start), normalizationBuffer);
             appendTerm(list, term);
             start = end;
         }
