@@ -96,7 +96,7 @@ QByteArrayList TermGenerator::termList(const QString& text_)
 
         // Also commit term if end-of-text is reached or when we find
         // any punctuation
-        if (!commit & (end == text.size() || isSkipChar(text.at(end)))) {
+        if (!commit && (end == text.size() || isSkipChar(text.at(end)))) {
             commit = true;
         }
 
