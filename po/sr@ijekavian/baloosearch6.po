@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloosearch5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-10-09 00:42+0000\n"
+"POT-Creation-Date: 2026-11-03 00:50+0000\n"
 "PO-Revision-Date: 2026-10-09 15:40+0200\n"
 "Last-Translator: Nemanja Hiršl <nemhirsl@gmail.com>\n"
 "Language-Team: Serbian <kde-i18n-sr@kde.org>\n"
@@ -153,7 +153,7 @@ msgstr ""
 "baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
 "filename:jpg)'"
 
-#: main.cpp:161
+#: main.cpp:160
 #, kde-format
 msgid "ERROR: Invalid \"type\" value, supported values:\n"
 msgstr "ГРЕШКА: Лоша вриједност за „type“, подржане вриједности:\n"
