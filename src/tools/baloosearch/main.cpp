@@ -153,14 +153,17 @@ int main(int argc, char* argv[])
         parser.showHelp(1);
     }
 
-    const auto typeStr = [&parser]() {
+    const auto types = [&parser]() -> QStringList {
         auto type = parser.value(u"type"_s);
+        if (type.isEmpty()) {
+            return {};
+        }
         const auto typeinfo = KFileMetaData::TypeInfo::fromName(type);
         if (typeinfo.type() == KFileMetaData::Type::Empty) {
             std::cerr << qPrintable(i18n("ERROR: Invalid \"type\" value, supported values:\n")) << std::endl;
             showKFMAllTypes(1);
         }
-        return type;
+        return {type};
     }();
     if (parser.isSet(u"limit"_s)) {
         queryLimit = parser.value(u"limit"_s).toInt();
@@ -184,7 +187,7 @@ int main(int argc, char* argv[])
     QString queryStr = args.join(QLatin1Char(' '));
 
     Baloo::Query query;
-    query.setTypes({typeStr});
+    query.setTypes(types);
     query.setSearchString(queryStr);
     query.setLimit(queryLimit);
     query.setOffset(offset);
