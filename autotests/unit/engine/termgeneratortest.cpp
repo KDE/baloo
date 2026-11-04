@@ -6,7 +6,6 @@
 */
 
 #include "termgenerator.h"
-#include "document.h"
 #include "termgenerator_p.h"
 
 #include <QTest>
@@ -37,15 +36,6 @@ private Q_SLOTS:
     void testFilePaths_data();
     void testApostroph();
     void testApostroph_data();
-
-    QList<QByteArray> allWords(const QString& str)
-    {
-        Document doc;
-        TermGenerator termGen(doc);
-        termGen.indexText(str);
-
-        return doc.m_terms.keys();
-    }
 };
 
 void TermGeneratorTest::testStringValidity()
@@ -88,7 +78,7 @@ void TermGeneratorTest::testWordBoundaries()
     QFETCH(QString, input);
     QFETCH(QList<QByteArray>, expectedWords);
 
-    QList<QByteArray> words = allWords(input);
+    QList<QByteArray> words = TermGenerator::termList(input);
 
     QCOMPARE(words, expectedWords);
 }
@@ -112,19 +102,19 @@ void addData_WordBoundaries(std::span<const unsigned int> expansions)
         {
             "latin sentence",
             u"The quick (\"brown\") 'fox' can't jump 32.3 feet, right? No-Wrong;xx.txt"_s,
-            {"32.3", "brown", "can't", "feet", "fox", "jump", "no", "quick", "right", "the", "txt", "wrong", "xx"},
+            {"the", "quick", "brown", "fox", "can't", "jump", "32.3", "feet", "right", "no", "wrong", "xx", "txt"},
         },
         {"CJK",              u"你"_s,            {"你"}},
         {
             "CJK mixed",
             u"hello world!你好世界貴方元気켐ㅇㄹ？☺"_s,
-            {"hello", "world", "☺", "你好世界貴方元気", "켐ᄋᄅ"},
+            {"hello", "world", "你好世界貴方元気", "켐ᄋᄅ", "☺"},
         },
         {"strip underscore", u"_plant"_s,        {"plant"}},
         {"split underscore", u"Hello_Howdy"_s,   {"hello", "howdy"}},
         {"Accented",         u"Como está Kûg"_s, {"como", "esta", "kug"}},
-        {"Mail address",     u"me@vhanda.in"_s,  {"in", "me", "vhanda"}},
-        {"Teddy symbol",     u"Teddy Bear 🧸"_s, {"bear", "teddy", "🧸"}},
+        {"Mail address",     u"me@vhanda.in"_s,  {"me", "vhanda", "in"}},
+        {"Teddy symbol",     u"Teddy Bear 🧸"_s, {"teddy", "bear", "🧸"}},
         {
             "High Surrogate",
             QString(std::array<QChar, 4>{u' ', QChar{0xD83E}, u' ', u' '}),
@@ -251,7 +241,7 @@ void TermGeneratorTest::testNumbers()
     QFETCH(QString, input);
     QFETCH(QList<QByteArray>, expectedWords);
 
-    auto words = allWords(input);
+    auto words = TermGenerator::termList(input);
     QEXPECT_FAIL("Negative Integer", "Minus signs not handled correctly", Continue);
     QEXPECT_FAIL("Negative Real", "Minus signs not handled correctly", Continue);
     QEXPECT_FAIL("Negative Integer Scientific Notation", "Minus signs not handled correctly", Continue);
@@ -284,14 +274,14 @@ void TermGeneratorTest::testNumbers_data()
     // "1,234.567, 1,234,567.890": two numbers in english text, four values in CSV
     QTest::addRow("Comma as decimal separator") << QStringLiteral("12,34") << QList<QByteArray>({"12", "34"});
     QTest::addRow("Comma as thousands separator") << QStringLiteral("1,234") << QList<QByteArray>({"1,234"});
-    QTest::addRow("Comma as word separator") << QStringLiteral("twelve,thirtyfour") << QList<QByteArray>({"thirtyfour", "twelve"});
+    QTest::addRow("Comma as word separator") << QStringLiteral("twelve,thirtyfour") << QList<QByteArray>({"twelve", "thirtyfour"});
 }
 
 void TermGeneratorTest::testControlCharacter()
 {
     QString str = QString::fromUtf8("word1\u0001word2");
 
-    QList<QByteArray> words = allWords(str);
+    QList<QByteArray> words = TermGenerator::termList(str);
     QList<QByteArray> expectedWords = { "word1", "word2" };
 
     QCOMPARE(words, expectedWords);
@@ -302,7 +292,7 @@ void TermGeneratorTest::testFilePaths()
     QFETCH(QString, input);
     QFETCH(QList<QByteArray>, expectedWords);
 
-    auto words = allWords(input);
+    auto words = TermGenerator::termList(input);
     QCOMPARE(words, expectedWords);
 }
 
@@ -313,10 +303,12 @@ void TermGeneratorTest::testFilePaths_data()
 
     QTest::addRow("filename with suffix") << QStringLiteral("file.png")
         << QList<QByteArray>({"file", "png"});
-    QTest::addRow("filename") << QStringLiteral("foo_bar.png")
-        << QList<QByteArray>({"bar", "foo", "png"});
-    QTest::addRow("filepath") << QStringLiteral("/foo/bar")
-        << QList<QByteArray>({"bar", "foo"});
+    QTest::addRow("filename") //
+        << QStringLiteral("foo_bar.png") //
+        << QList<QByteArray>({"foo", "bar", "png"});
+    QTest::addRow("filepath") //
+        << QStringLiteral("/foo/bar") //
+        << QList<QByteArray>({"foo", "bar"});
 }
 
 void TermGeneratorTest::testApostroph()
@@ -324,7 +316,7 @@ void TermGeneratorTest::testApostroph()
     QFETCH(QString, input);
     QFETCH(QList<QByteArray>, expectedWords);
 
-    auto words = allWords(input);
+    auto words = TermGenerator::termList(input);
     QCOMPARE(words, expectedWords);
 }
 
