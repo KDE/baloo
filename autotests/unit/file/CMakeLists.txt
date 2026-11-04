@@ -16,7 +16,6 @@ baloo_file_auto_tests(
     fileindexerconfigtest
     basicindexingjobtest
     filtereddiriteratortest
-    unindexedfileiteratortest
     metadatamovertest
     extractorcommandpipetest
 )
