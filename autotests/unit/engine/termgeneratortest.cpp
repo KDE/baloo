@@ -26,8 +26,8 @@ private Q_SLOTS:
     void testWordBoundaries_data();
     void benchmarkWordBoundaries();
     void benchmarkWordBoundaries_data();
-    void testUnicodeCompatibleComposition();
-    void testUnicodeLowering();
+    void testUnicodeNormalization();
+    void testUnicodeNormalization_data();
     void testWordPositions();
     void testWordPositionsCJK();
     void testNumbers();
@@ -164,27 +164,40 @@ void TermGeneratorTest::benchmarkWordBoundaries_data()
     addData_WordBoundaries(std::array{1u, 100u, 1000u});
 }
 
-void TermGeneratorTest::testUnicodeCompatibleComposition()
+void TermGeneratorTest::testUnicodeNormalization()
 {
-    // The 0xfb00 corresponds to U+FB00 which is a 'ff' ligature
-    QString expected = QLatin1String("maffab");
-    QString str = QLatin1String("ma") + QChar(0xfb00) + QStringLiteral("ab");
+    QFETCH(QString, input);
+    QFETCH(QByteArrayList, expected);
 
-    QList<QByteArray> words = allWords(str);
-    QCOMPARE(words.size(), 1);
+    const auto words = TermGenerator::termList(input);
 
-    QByteArray output = words.first();
-    QCOMPARE(expected.toUtf8(), output);
+    QCOMPARE(expected, words);
 }
 
-void TermGeneratorTest::testUnicodeLowering()
+void TermGeneratorTest::testUnicodeNormalization_data()
 {
-    // This string is unicode mathematical italic "Hedge"
-    QString str = QString::fromUtf8("\xF0\x9D\x90\xBB\xF0\x9D\x91\x92\xF0\x9D\x91\x91\xF0\x9D\x91\x94\xF0\x9D\x91\x92");
+    using namespace Qt::Literals::StringLiterals;
+    using namespace std::string_literals;
 
-    QList<QByteArray> words = allWords(str);
+    QTest::addColumn<QString>("input");
+    QTest::addColumn<QByteArrayList>("expected");
 
-    QCOMPARE(words, {QByteArray("hedge")});
+    // Unicode U+1D400...U+1D7FF Mathematical Alphanumeric Symbols
+    QTest::newRow("Math Alnum") //
+        << u"\U0001d60c = \U0001d62e\U0001d624²"_s // 𝘌 = 𝘮𝘤²
+        << QByteArrayList({"e", "=", "mc", "2"});
+    QTest::newRow("ff ligature") //
+        << (u"ma\ufb00ab"_s) // maﬀab
+        << QByteArrayList({"maffab"});
+    QTest::newRow("A_Umlaut decomposed") //
+        << u"A\u0308ffin"_s // Äffin
+        << QByteArrayList({"affin"});
+    QTest::newRow("A_Umlaut ligature decomposed") //
+        << u"A\u0308\ufb03n"_s // Äﬃn
+        << QByteArrayList({"affin"});
+    QTest::newRow("Roman Numeral") //
+        << u"Henry \u2163"_s // Henry Ⅳ
+        << QByteArrayList({"henry", "iv"});
 }
 
 void TermGeneratorTest::testWordPositions()
