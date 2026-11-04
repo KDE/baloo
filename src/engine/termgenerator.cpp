@@ -18,12 +18,12 @@ QString normalizeTerm(const QString &str, QString &buffer)
 {
     // Remove all accents. It is important to call toLower after normalization,
     // since some exotic unicode symbols can remain uppercase
-    const QString denormalized = str.normalized(QString::NormalizationForm_KD).toLower();
+    const QString denormalized = str.normalized(QString::NormalizationForm_KD);
 
     buffer.resize(0);
     for (const auto& c : denormalized) {
         if (!c.isMark()) {
-            buffer.append(c);
+            buffer.append(c.toLower());
         }
     }
 
