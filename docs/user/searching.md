@@ -13,7 +13,7 @@ Example:
     /home/user/Music/Coldplay - Ghost Stories/03. Ink.mp3
 
 
-## Advanced Searches
+## Advanced Searches - Types
 
 Baloo offers a rich syntax for searching through your files. Certain
 attributes of a file can be searched through.
@@ -34,13 +34,38 @@ Currently the following types are supported:
   * Presentation
 * Text
 
-These expressions can be combined using `AND` or `OR` and additional parenthesis.
+For a complete list of supported types, use:
 
-The full list of properties which can be searched is listed below. They are
-grouped by file types.
+    $ baloosearch --listTypes
+
+## Advanced Searches - Boolean operations
+
+The expressions can be combined using `AND` or `OR` and additional parenthesis.
+
+Example:
+
+    $ baloosearch 'coldplay tracknumber<4 (album:viva OR album:"A rush")'
+    /home/user/Music/Coldplay/A Rush Of Blood To The Head/03_-_God Put A Smile Upon Your Face.mp3
+    /home/user/Music/Coldplay/A Rush Of Blood To The Head/01_-_Politik.mp3
+    /home/user/Music/Coldplay/A Rush Of Blood To The Head/02_-_In My Place.mp3
+    /home/user/Music/Coldplay/Viva La Vida/01_-_Life In Technicolor.mp3
+    /home/user/Music/Coldplay/Viva La Vida/02_-_Cemeteries Of London.mp3
+    /home/user/Music/Coldplay/Viva La Vida/03_-_Lost!.mp3
+
+## Advanced Searches - Properties
+
+The list of properties which can be searched is listed below. They are
+grouped by the file type they typically apply to - though e.g. "Artist" can
+refer to a band name for audio files, or a photographer for images, width
+applies to images and videos, and duration to video and audio files.
+
+For a complete list of supported properties, use:
+
+    $ baloosearch --listProperties
 
 ### All Files
 * filename
+* content
 * modified
 * mimetype
 * tags
@@ -61,7 +86,6 @@ grouped by file types.
 * AlbumArtist
 * Composer
 * Lyricist
-
 
 ### Documents
 * Author
