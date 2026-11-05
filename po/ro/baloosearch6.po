@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-11-03 00:50+0000\n"
+"POT-Creation-Date: 2026-11-05 00:51+0000\n"
 "PO-Revision-Date: 2024-01-07 12:50+0000\n"
 "Last-Translator: Sergiu Bivol <sergiu@cip.md>\n"
 "Language-Team: Romanian <kde-i18n-ro@kde.org>\n"
@@ -147,22 +147,22 @@ msgid ""
 "filename:jpg)'"
 msgstr ""
 
-#: main.cpp:160
+#: main.cpp:163
 #, kde-format
 msgid "ERROR: Invalid \"type\" value, supported values:\n"
 msgstr ""
 
-#: main.cpp:197
+#: main.cpp:200
 #, kde-format
 msgid "%1 is not a valid directory"
 msgstr "%1 nu e un dosar valid"
 
-#: main.cpp:205
+#: main.cpp:208
 #, kde-format
 msgid "Using canonical path '%1' for '%2'"
 msgstr "Se folosește calea canonică „%1” pentru „%2”"
 
-#: main.cpp:221
+#: main.cpp:224
 #, kde-format
 msgid "Elapsed: %1 msecs"
 msgstr "Scurs: %1 msec"

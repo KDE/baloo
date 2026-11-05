@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-11-03 00:50+0000\n"
+"POT-Creation-Date: 2026-11-05 00:51+0000\n"
 "PO-Revision-Date: 2023-07-10 10:08+0100\n"
 "Last-Translator: Oliver Kellogg <olivermkellogg@gmail.com>\n"
 "Language-Team: Esperanto <kde-i18n-eo@kde.org>\n"
@@ -147,22 +147,22 @@ msgid ""
 "filename:jpg)'"
 msgstr ""
 
-#: main.cpp:160
+#: main.cpp:163
 #, kde-format
 msgid "ERROR: Invalid \"type\" value, supported values:\n"
 msgstr ""
 
-#: main.cpp:197
+#: main.cpp:200
 #, kde-format
 msgid "%1 is not a valid directory"
 msgstr "%1 ne estas valida dosierujo"
 
-#: main.cpp:205
+#: main.cpp:208
 #, kde-format
 msgid "Using canonical path '%1' for '%2'"
 msgstr "Uzante kanonan vojon '%1' por '%2'"
 
-#: main.cpp:221
+#: main.cpp:224
 #, kde-format
 msgid "Elapsed: %1 msecs"
 msgstr "Pasis: %1 msek"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-11-03 00:50+0000\n"
+"POT-Creation-Date: 2026-11-05 00:51+0000\n"
 "PO-Revision-Date: 2026-10-09 10:51+0300\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
@@ -151,22 +151,22 @@ msgstr ""
 "baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
 "filename:jpg)'"
 
-#: main.cpp:160
+#: main.cpp:163
 #, kde-format
 msgid "ERROR: Invalid \"type\" value, supported values:\n"
 msgstr "שגיאה: ערך „סוג” שגוי, ערכים נתמכים:\n"
 
-#: main.cpp:197
+#: main.cpp:200
 #, kde-format
 msgid "%1 is not a valid directory"
 msgstr "%1 זאת לא תיקייה תקפה"
 
-#: main.cpp:205
+#: main.cpp:208
 #, kde-format
 msgid "Using canonical path '%1' for '%2'"
 msgstr "נעשה שימוש בנתיב מתומצת ‚%1’ עבור ‚%2’"
 
-#: main.cpp:221
+#: main.cpp:224
 #, kde-format
 msgid "Elapsed: %1 msecs"
 msgstr "חלפו: %1 מילישניות"

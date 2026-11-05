@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-11-03 00:50+0000\n"
+"POT-Creation-Date: 2026-11-05 00:51+0000\n"
 "PO-Revision-Date: 2024-12-24 20:39+0530\n"
 "Last-Translator: kali <shreekantkalwar@gmail.com>\n"
 "Language-Team: Sanskrit <kde-i18n-doc@kde.org>\n"
@@ -148,22 +148,22 @@ msgid ""
 "filename:jpg)'"
 msgstr ""
 
-#: main.cpp:160
+#: main.cpp:163
 #, kde-format
 msgid "ERROR: Invalid \"type\" value, supported values:\n"
 msgstr ""
 
-#: main.cpp:197
+#: main.cpp:200
 #, kde-format
 msgid "%1 is not a valid directory"
 msgstr "%1 वैधनिर्देशिका नास्ति"
 
-#: main.cpp:205
+#: main.cpp:208
 #, kde-format
 msgid "Using canonical path '%1' for '%2'"
 msgstr "'%2' कृते '%1' इति विहितमार्गस्य उपयोगः ।"
 
-#: main.cpp:221
+#: main.cpp:224
 #, kde-format
 msgid "Elapsed: %1 msecs"
 msgstr "व्यतीतः: %1 msecs"

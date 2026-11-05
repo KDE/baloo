@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kdeorg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-11-03 00:50+0000\n"
+"POT-Creation-Date: 2026-11-05 00:51+0000\n"
 "PO-Revision-Date: 2024-04-22 15:58\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
@@ -148,22 +148,22 @@ msgid ""
 "filename:jpg)'"
 msgstr ""
 
-#: main.cpp:160
+#: main.cpp:163
 #, kde-format
 msgid "ERROR: Invalid \"type\" value, supported values:\n"
 msgstr ""
 
-#: main.cpp:197
+#: main.cpp:200
 #, kde-format
 msgid "%1 is not a valid directory"
 msgstr "%1 不是一个有效的目录"
 
-#: main.cpp:205
+#: main.cpp:208
 #, kde-format
 msgid "Using canonical path '%1' for '%2'"
 msgstr "为“%2”使用标准路径“%1”"
 
-#: main.cpp:221
+#: main.cpp:224
 #, kde-format
 msgid "Elapsed: %1 msecs"
 msgstr "已耗时：%1 毫秒"
