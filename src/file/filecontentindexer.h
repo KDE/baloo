@@ -60,11 +60,8 @@ Q_SIGNALS:
 
 private Q_SLOTS:
     void sessionIdle(bool isIdle);
-    void idlePropertiesChanged(const QString &interface, const QVariantMap &changed, const QStringList &invalidated);
 
 private:
-    void fetchIdleState();
-
     const uint m_batchSize;
     FileContentIndexerProvider *m_provider;
 

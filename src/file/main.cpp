@@ -18,8 +18,8 @@
 #include "priority.h"
 
 #include <QDBusConnection>
-#include <QCoreApplication>
 #include <QFile>
+#include <QGuiApplication>
 
 #include <KAboutData>
 
@@ -29,7 +29,12 @@ int main(int argc, char** argv)
     lowerSchedulingPriority();
     lowerPriority();
 
-    QCoreApplication app(argc, argv);
+    // Avoid desktop portal registration implied by QGuiApplication
+    qputenv("QT_NO_XDG_DESKTOP_PORTAL", "1");
+
+    QCoreApplication::setAttribute(Qt::AA_DisableSessionManager);
+    QGuiApplication::setDesktopSettingsAware(false);
+    QGuiApplication app(argc, argv);
 
     Baloo::FileIndexerConfig indexerConfig;
     if (!indexerConfig.indexingEnabled()) {
