@@ -58,7 +58,7 @@ public:
     }
 
     ~Private() {
-        close();
+        ::close(m_inotifyFd);
     }
 
     struct MovedFileCookie {
@@ -99,14 +99,6 @@ public:
             open();
         }
         return m_inotifyFd;
-    }
-
-    void close() {
-        delete m_notifier;
-        m_notifier = nullptr;
-
-        ::close(m_inotifyFd);
-        m_inotifyFd = -1;
     }
 
     bool addWatch(const QString& path) {
@@ -178,18 +170,18 @@ public:
 private:
     void open() {
         m_inotifyFd = inotify_init();
-        delete m_notifier;
         if (m_inotifyFd > 0) {
             fcntl(m_inotifyFd, F_SETFD, FD_CLOEXEC);
-            m_notifier = new QSocketNotifier(m_inotifyFd, QSocketNotifier::Read);
-            connect(m_notifier, &QSocketNotifier::activated, q, &KInotify::slotEvent);
+            m_notifier.setSocket(m_inotifyFd);
+            m_notifier.setEnabled(true);
+            connect(&m_notifier, &QSocketNotifier::activated, q, &KInotify::slotEvent);
         } else {
             Q_ASSERT_X(0, "kinotify", "Failed to initialize inotify");
         }
     }
 
     int m_inotifyFd = -1;
-    QSocketNotifier *m_notifier = nullptr;
+    QSocketNotifier m_notifier{QSocketNotifier::Read};
 
     KInotify* q;
 };
