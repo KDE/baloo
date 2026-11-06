@@ -59,19 +59,13 @@ void ModifiedFileIndexer::run()
             continue;
         }
 
-        bool mTimeChanged;
         bool cTimeChanged;
         const bool isKnownFile = tr.hasDocument(fileId);
         if (isKnownFile) {
             DocumentTimeDB::TimeInfo timeInfo = tr.documentTimeInfo(fileId);
-            mTimeChanged = timeInfo.mTime != fileInfo.lastModified().toSecsSinceEpoch();
             cTimeChanged = timeInfo.cTime != fileInfo.metadataChangeTime().toSecsSinceEpoch();
         } else {
-            mTimeChanged = cTimeChanged = true;
-        }
-
-        if (!mTimeChanged && !cTimeChanged) {
-            continue;
+            cTimeChanged = true;
         }
 
         if (!cTimeChanged && fileInfo.isDir()) {
