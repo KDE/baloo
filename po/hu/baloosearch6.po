@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-11-05 00:51+0000\n"
+"POT-Creation-Date: 2026-11-06 00:45+0000\n"
 "PO-Revision-Date: 2023-09-10 21:37+0200\n"
 "Last-Translator: Kristof Kiszel <kiszel.kristof@gmail.com>\n"
 "Language-Team: Hungarian <kde-l10n-hu@kde.org>\n"
@@ -48,95 +48,117 @@ msgctxt "'listProperties' table header"
 msgid "File Property Name                     Description"
 msgstr ""
 
-#: main.cpp:95
+#: main.cpp:100
+#, kde-format
+msgctxt "'listScopes' table header"
+msgid "<searchScope>   Description"
+msgstr ""
+
+#: main.cpp:120
 #, kde-format
 msgid "Baloo Search"
 msgstr "Baloo keresés"
 
-#: main.cpp:97
+#: main.cpp:122
 #, kde-format
 msgid "A tool to search through the files indexed by Baloo"
 msgstr "Segédprogram a Baloo által indexelt fájlokban való kereséshez"
 
-#: main.cpp:99
+#: main.cpp:124
 #, kde-format
 msgid "Vishesh Handa"
 msgstr "Vishesh Handa"
 
-#: main.cpp:105
+#: main.cpp:130
 #, kde-format
 msgid "The maximum number of results"
 msgstr "Az eredmények maximális száma"
 
-#: main.cpp:106
+#: main.cpp:131
 #, fuzzy, kde-format
 #| msgid "limit"
 msgctxt "option value name"
 msgid "limit"
 msgstr "limit"
 
-#: main.cpp:108
+#: main.cpp:133
 #, kde-format
 msgid "Offset from which to start the search"
 msgstr "Eltolás, amelytől a keresés induljon"
 
-#: main.cpp:109
+#: main.cpp:134
 #, fuzzy, kde-format
 #| msgid "offset"
 msgctxt "option value name"
 msgid "offset"
 msgstr "eltolás"
 
-#: main.cpp:111
+#: main.cpp:136
+#, kde-format
+msgid "Scope used to look for matches"
+msgstr ""
+
+#: main.cpp:137
+#, kde-format
+msgctxt "option value name"
+msgid "searchScope"
+msgstr ""
+
+#: main.cpp:139
 #, kde-format
 msgid "Type of data to be searched"
 msgstr "A keresendő adatok típusa"
 
-#: main.cpp:112
+#: main.cpp:140
 #, fuzzy, kde-format
 #| msgid "typeStr"
 msgctxt "option value name"
 msgid "typeString"
 msgstr "típus"
 
-#: main.cpp:114
+#: main.cpp:142
+#, kde-format
+msgid "Show supported <searchScope> values"
+msgstr ""
+
+#: main.cpp:144
 #, kde-format
 msgid "Show supported <typeString> values"
 msgstr ""
 
-#: main.cpp:116
+#: main.cpp:146
 #, kde-format
 msgid "Show property names supported in query."
 msgstr ""
 
-#: main.cpp:118
+#: main.cpp:148
 #, kde-format
 msgid "Limit search to specified directory"
 msgstr "Keresés korlátozása egy adott mappára"
 
-#: main.cpp:119
+#: main.cpp:149
 #, fuzzy, kde-format
 #| msgid "directory"
 msgctxt "option value name"
 msgid "directory"
 msgstr "mappa"
 
-#: main.cpp:121
+#: main.cpp:151
 #, kde-format
 msgid "Show document IDs"
 msgstr "Dokumentumazonosítók megjelenítése"
 
-#: main.cpp:123
+#: main.cpp:153
 #, kde-format
 msgid "Sorting criteria"
 msgstr "Rendezési feltétel"
 
-#: main.cpp:127
+#: main.cpp:157
 #, kde-format
 msgid "query [(|AND|OR) query ...]"
 msgstr ""
 
-#: main.cpp:128
+#: main.cpp:158
 #, kde-format
 msgid ""
 "List of words to query for.\n"
@@ -149,22 +171,22 @@ msgid ""
 "filename:jpg)'"
 msgstr ""
 
-#: main.cpp:163
+#: main.cpp:197
 #, kde-format
 msgid "ERROR: Invalid \"type\" value, supported values:\n"
 msgstr ""
 
-#: main.cpp:200
+#: main.cpp:242
 #, kde-format
 msgid "%1 is not a valid directory"
 msgstr "A(z) %1 érvénytelen mappa"
 
-#: main.cpp:208
+#: main.cpp:250
 #, kde-format
 msgid "Using canonical path '%1' for '%2'"
 msgstr "A(z) „%1” kanonikus elérési út használata ehhez: „%2”"
 
-#: main.cpp:224
+#: main.cpp:266
 #, kde-format
 msgid "Elapsed: %1 msecs"
 msgstr "Eltelt: %1 ms"

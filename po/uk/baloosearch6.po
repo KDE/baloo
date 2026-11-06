@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloosearch5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-11-05 00:51+0000\n"
+"POT-Creation-Date: 2026-11-06 00:45+0000\n"
 "PO-Revision-Date: 2026-10-09 18:50+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
@@ -48,91 +48,116 @@ msgctxt "'listProperties' table header"
 msgid "File Property Name                     Description"
 msgstr "Назва файла властивостей               Опис"
 
-#: main.cpp:95
+#: main.cpp:100
+#, fuzzy, kde-format
+#| msgctxt "'listTypes' table header"
+#| msgid "<typeString>     Description"
+msgctxt "'listScopes' table header"
+msgid "<searchScope>   Description"
+msgstr "<typeString>     Опис"
+
+#: main.cpp:120
 #, kde-format
 msgid "Baloo Search"
 msgstr "Пошук Baloo"
 
-#: main.cpp:97
+#: main.cpp:122
 #, kde-format
 msgid "A tool to search through the files indexed by Baloo"
 msgstr "Засіб пошуку у файлах, індексованих за допомогою Baloo"
 
-#: main.cpp:99
+#: main.cpp:124
 #, kde-format
 msgid "Vishesh Handa"
 msgstr "Vishesh Handa"
 
-#: main.cpp:105
+#: main.cpp:130
 #, kde-format
 msgid "The maximum number of results"
 msgstr "Максимальна кількість результатів"
 
-#: main.cpp:106
+#: main.cpp:131
 #, kde-format
 msgctxt "option value name"
 msgid "limit"
 msgstr "обмеження"
 
-#: main.cpp:108
+#: main.cpp:133
 #, kde-format
 msgid "Offset from which to start the search"
 msgstr "Позиція, з якої слід розпочати пошук"
 
-#: main.cpp:109
+#: main.cpp:134
 #, kde-format
 msgctxt "option value name"
 msgid "offset"
 msgstr "зміщення"
 
-#: main.cpp:111
+#: main.cpp:136
+#, kde-format
+msgid "Scope used to look for matches"
+msgstr ""
+
+#: main.cpp:137
+#, kde-format
+msgctxt "option value name"
+msgid "searchScope"
+msgstr ""
+
+#: main.cpp:139
 #, kde-format
 msgid "Type of data to be searched"
 msgstr "Тип даних, у яких слід виконати пошук"
 
-#: main.cpp:112
+#: main.cpp:140
 #, kde-format
 msgctxt "option value name"
 msgid "typeString"
 msgstr "typeString"
 
-#: main.cpp:114
+#: main.cpp:142
+#, fuzzy, kde-format
+#| msgid "Show supported <typeString> values"
+msgid "Show supported <searchScope> values"
+msgstr "Показати підтримувані значення <typeString>"
+
+#: main.cpp:144
 #, kde-format
 msgid "Show supported <typeString> values"
 msgstr "Показати підтримувані значення <typeString>"
 
-#: main.cpp:116
+#: main.cpp:146
 #, kde-format
 msgid "Show property names supported in query."
 msgstr "Показати назви властивостей, підтримку яких передбачено для запиту."
 
-#: main.cpp:118
+#: main.cpp:148
 #, kde-format
 msgid "Limit search to specified directory"
 msgstr "Обмежити пошук вказаним каталогом"
 
-#: main.cpp:119
+#: main.cpp:149
 #, kde-format
 msgctxt "option value name"
 msgid "directory"
 msgstr "каталог"
 
-#: main.cpp:121
+#: main.cpp:151
 #, kde-format
 msgid "Show document IDs"
 msgstr "Показати ідентифікатори документів"
 
-#: main.cpp:123
+#: main.cpp:153
 #, kde-format
 msgid "Sorting criteria"
 msgstr "Критерії упорядкування"
 
-#: main.cpp:127
+#: main.cpp:157
 #, kde-format
 msgid "query [(|AND|OR) query ...]"
 msgstr "запит [(|AND|OR) запит ...]"
 
-#: main.cpp:128
+#: main.cpp:158
 #, kde-format
 msgid ""
 "List of words to query for.\n"
@@ -154,22 +179,22 @@ msgstr ""
 "baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
 "filename:jpg)'"
 
-#: main.cpp:163
+#: main.cpp:197
 #, kde-format
 msgid "ERROR: Invalid \"type\" value, supported values:\n"
 msgstr "ПОМИЛКА: некоректне значення «type», підтримувані значення:\n"
 
-#: main.cpp:200
+#: main.cpp:242
 #, kde-format
 msgid "%1 is not a valid directory"
 msgstr "%1 не є коректним каталогом"
 
-#: main.cpp:208
+#: main.cpp:250
 #, kde-format
 msgid "Using canonical path '%1' for '%2'"
 msgstr "Використовуємо канонічний шлях «%1» для «%2»"
 
-#: main.cpp:224
+#: main.cpp:266
 #, kde-format
 msgid "Elapsed: %1 msecs"
 msgstr "Витрачено: %1 мс"

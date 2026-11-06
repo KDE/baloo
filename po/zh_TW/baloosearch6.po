@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-11-05 00:51+0000\n"
+"POT-Creation-Date: 2026-11-06 00:45+0000\n"
 "PO-Revision-Date: 2023-08-07 23:00+0900\n"
 "Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
 "Language-Team: Chinese <zh-l10n@linux.org.tw>\n"
@@ -48,95 +48,117 @@ msgctxt "'listProperties' table header"
 msgid "File Property Name                     Description"
 msgstr ""
 
-#: main.cpp:95
+#: main.cpp:100
+#, kde-format
+msgctxt "'listScopes' table header"
+msgid "<searchScope>   Description"
+msgstr ""
+
+#: main.cpp:120
 #, kde-format
 msgid "Baloo Search"
 msgstr "Baloo 搜尋"
 
-#: main.cpp:97
+#: main.cpp:122
 #, kde-format
 msgid "A tool to search through the files indexed by Baloo"
 msgstr "透過已由 Baloo 所索引的檔案搜尋的工具"
 
-#: main.cpp:99
+#: main.cpp:124
 #, kde-format
 msgid "Vishesh Handa"
 msgstr "Vishesh Handa"
 
-#: main.cpp:105
+#: main.cpp:130
 #, kde-format
 msgid "The maximum number of results"
 msgstr "最多結果筆數"
 
-#: main.cpp:106
+#: main.cpp:131
 #, fuzzy, kde-format
 #| msgid "limit"
 msgctxt "option value name"
 msgid "limit"
 msgstr "限制"
 
-#: main.cpp:108
+#: main.cpp:133
 #, kde-format
 msgid "Offset from which to start the search"
 msgstr "開始搜尋的位移"
 
-#: main.cpp:109
+#: main.cpp:134
 #, fuzzy, kde-format
 #| msgid "offset"
 msgctxt "option value name"
 msgid "offset"
 msgstr "位移"
 
-#: main.cpp:111
+#: main.cpp:136
+#, kde-format
+msgid "Scope used to look for matches"
+msgstr ""
+
+#: main.cpp:137
+#, kde-format
+msgctxt "option value name"
+msgid "searchScope"
+msgstr ""
+
+#: main.cpp:139
 #, kde-format
 msgid "Type of data to be searched"
 msgstr "要搜尋的資料型態"
 
-#: main.cpp:112
+#: main.cpp:140
 #, fuzzy, kde-format
 #| msgid "typeStr"
 msgctxt "option value name"
 msgid "typeString"
 msgstr "typeStr"
 
-#: main.cpp:114
+#: main.cpp:142
+#, kde-format
+msgid "Show supported <searchScope> values"
+msgstr ""
+
+#: main.cpp:144
 #, kde-format
 msgid "Show supported <typeString> values"
 msgstr ""
 
-#: main.cpp:116
+#: main.cpp:146
 #, kde-format
 msgid "Show property names supported in query."
 msgstr ""
 
-#: main.cpp:118
+#: main.cpp:148
 #, kde-format
 msgid "Limit search to specified directory"
 msgstr "限制搜尋特定目錄"
 
-#: main.cpp:119
+#: main.cpp:149
 #, fuzzy, kde-format
 #| msgid "directory"
 msgctxt "option value name"
 msgid "directory"
 msgstr "目錄"
 
-#: main.cpp:121
+#: main.cpp:151
 #, kde-format
 msgid "Show document IDs"
 msgstr "顯示文件 ID"
 
-#: main.cpp:123
+#: main.cpp:153
 #, kde-format
 msgid "Sorting criteria"
 msgstr "排序條件"
 
-#: main.cpp:127
+#: main.cpp:157
 #, kde-format
 msgid "query [(|AND|OR) query ...]"
 msgstr ""
 
-#: main.cpp:128
+#: main.cpp:158
 #, kde-format
 msgid ""
 "List of words to query for.\n"
@@ -149,22 +171,22 @@ msgid ""
 "filename:jpg)'"
 msgstr ""
 
-#: main.cpp:163
+#: main.cpp:197
 #, kde-format
 msgid "ERROR: Invalid \"type\" value, supported values:\n"
 msgstr ""
 
-#: main.cpp:200
+#: main.cpp:242
 #, kde-format
 msgid "%1 is not a valid directory"
 msgstr "%1 目錄無效"
 
-#: main.cpp:208
+#: main.cpp:250
 #, kde-format
 msgid "Using canonical path '%1' for '%2'"
 msgstr "為 %2 使用標準路徑 %1"
 
-#: main.cpp:224
+#: main.cpp:266
 #, kde-format
 msgid "Elapsed: %1 msecs"
 msgstr "經過時間：%1 毫秒"

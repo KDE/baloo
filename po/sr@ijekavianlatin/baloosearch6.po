@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: baloosearch5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-11-05 00:51+0000\n"
+"POT-Creation-Date: 2026-11-06 00:45+0000\n"
 "PO-Revision-Date: 2026-10-09 15:40+0200\n"
 "Last-Translator: Nemanja Hiršl <nemhirsl@gmail.com>\n"
 "Language-Team: Serbian <kde-i18n-sr@kde.org>\n"
@@ -47,91 +47,116 @@ msgctxt "'listProperties' table header"
 msgid "File Property Name                     Description"
 msgstr "Ime svojstva fajla                     Opis"
 
-#: main.cpp:95
+#: main.cpp:100
+#, fuzzy, kde-format
+#| msgctxt "'listTypes' table header"
+#| msgid "<typeString>     Description"
+msgctxt "'listScopes' table header"
+msgid "<searchScope>   Description"
+msgstr "<tip>            Opis"
+
+#: main.cpp:120
 #, kde-format
 msgid "Baloo Search"
 msgstr "Balooova pretraga"
 
-#: main.cpp:97
+#: main.cpp:122
 #, kde-format
 msgid "A tool to search through the files indexed by Baloo"
 msgstr "Alatka za pretragu fajlova indeksiranih Balooom"
 
-#: main.cpp:99
+#: main.cpp:124
 #, kde-format
 msgid "Vishesh Handa"
 msgstr "Višeš Handa"
 
-#: main.cpp:105
+#: main.cpp:130
 #, kde-format
 msgid "The maximum number of results"
 msgstr "Najveći broj rezultata."
 
-#: main.cpp:106
+#: main.cpp:131
 #, kde-format
 msgctxt "option value name"
 msgid "limit"
 msgstr "ograničenje"
 
-#: main.cpp:108
+#: main.cpp:133
 #, kde-format
 msgid "Offset from which to start the search"
 msgstr "Pomak od kojeg počinje pretraga."
 
-#: main.cpp:109
+#: main.cpp:134
 #, kde-format
 msgctxt "option value name"
 msgid "offset"
 msgstr "pomak"
 
-#: main.cpp:111
+#: main.cpp:136
+#, kde-format
+msgid "Scope used to look for matches"
+msgstr ""
+
+#: main.cpp:137
+#, kde-format
+msgctxt "option value name"
+msgid "searchScope"
+msgstr ""
+
+#: main.cpp:139
 #, kde-format
 msgid "Type of data to be searched"
 msgstr "Tip podataka koji se pretražuju."
 
-#: main.cpp:112
+#: main.cpp:140
 #, kde-format
 msgctxt "option value name"
 msgid "typeString"
 msgstr "tip"
 
-#: main.cpp:114
+#: main.cpp:142
+#, fuzzy, kde-format
+#| msgid "Show supported <typeString> values"
+msgid "Show supported <searchScope> values"
+msgstr "Prikaži podržane vrijednosti za <tip>."
+
+#: main.cpp:144
 #, kde-format
 msgid "Show supported <typeString> values"
 msgstr "Prikaži podržane vrijednosti za <tip>."
 
-#: main.cpp:116
+#: main.cpp:146
 #, kde-format
 msgid "Show property names supported in query."
 msgstr "Prikaži imena svojstava podržanih u upitu."
 
-#: main.cpp:118
+#: main.cpp:148
 #, kde-format
 msgid "Limit search to specified directory"
 msgstr "Ograniči pretragu na zadatu fasciklu."
 
-#: main.cpp:119
+#: main.cpp:149
 #, kde-format
 msgctxt "option value name"
 msgid "directory"
 msgstr "fascikla"
 
-#: main.cpp:121
+#: main.cpp:151
 #, kde-format
 msgid "Show document IDs"
 msgstr "Prikaži ID‑ove dokumenta."
 
-#: main.cpp:123
+#: main.cpp:153
 #, kde-format
 msgid "Sorting criteria"
 msgstr "Kriterijum ređanja."
 
-#: main.cpp:127
+#: main.cpp:157
 #, kde-format
 msgid "query [(|AND|OR) query ...]"
 msgstr "upit [(|AND|OR) upit ...]"
 
-#: main.cpp:128
+#: main.cpp:158
 #, kde-format
 msgid ""
 "List of words to query for.\n"
@@ -153,22 +178,22 @@ msgstr ""
 "baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
 "filename:jpg)'"
 
-#: main.cpp:163
+#: main.cpp:197
 #, kde-format
 msgid "ERROR: Invalid \"type\" value, supported values:\n"
 msgstr "GREŠKA: Loša vrijednost za „type“, podržane vrijednosti:\n"
 
-#: main.cpp:200
+#: main.cpp:242
 #, kde-format
 msgid "%1 is not a valid directory"
 msgstr "%1 nije ispravna fascikla"
 
-#: main.cpp:208
+#: main.cpp:250
 #, kde-format
 msgid "Using canonical path '%1' for '%2'"
 msgstr "Koristim kanoničku putanju „%1“ za „%2“"
 
-#: main.cpp:224
+#: main.cpp:266
 #, kde-format
 msgid "Elapsed: %1 msecs"
 msgstr "Proteklo: %1 ms"

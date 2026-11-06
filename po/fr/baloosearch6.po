@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-11-05 00:51+0000\n"
+"POT-Creation-Date: 2026-11-06 00:45+0000\n"
 "PO-Revision-Date: 2026-10-11 10:21+0200\n"
 "Last-Translator: Xavier Besnard <xavier.besnard@kde.org>\n"
 "Language-Team: fr\n"
@@ -53,91 +53,116 @@ msgctxt "'listProperties' table header"
 msgid "File Property Name                     Description"
 msgstr "Nom de la propriété du fichier     Description"
 
-#: main.cpp:95
+#: main.cpp:100
+#, fuzzy, kde-format
+#| msgctxt "'listTypes' table header"
+#| msgid "<typeString>     Description"
+msgctxt "'listScopes' table header"
+msgid "<searchScope>   Description"
+msgstr "<typeString>     Description"
+
+#: main.cpp:120
 #, kde-format
 msgid "Baloo Search"
 msgstr "Recherche Baloo"
 
-#: main.cpp:97
+#: main.cpp:122
 #, kde-format
 msgid "A tool to search through the files indexed by Baloo"
 msgstr "Un outil pour rechercher dans les fichiers indexés par Baloo"
 
-#: main.cpp:99
+#: main.cpp:124
 #, kde-format
 msgid "Vishesh Handa"
 msgstr "Vishesh Handa"
 
-#: main.cpp:105
+#: main.cpp:130
 #, kde-format
 msgid "The maximum number of results"
 msgstr "Le nombre maximum de résultats "
 
-#: main.cpp:106
+#: main.cpp:131
 #, kde-format
 msgctxt "option value name"
 msgid "limit"
 msgstr "Limite"
 
-#: main.cpp:108
+#: main.cpp:133
 #, kde-format
 msgid "Offset from which to start the search"
 msgstr "Décalage à partir duquel commencer la recherche"
 
-#: main.cpp:109
+#: main.cpp:134
 #, kde-format
 msgctxt "option value name"
 msgid "offset"
 msgstr "Décalage"
 
-#: main.cpp:111
+#: main.cpp:136
+#, kde-format
+msgid "Scope used to look for matches"
+msgstr ""
+
+#: main.cpp:137
+#, kde-format
+msgctxt "option value name"
+msgid "searchScope"
+msgstr ""
+
+#: main.cpp:139
 #, kde-format
 msgid "Type of data to be searched"
 msgstr "Type de donnée à chercher"
 
-#: main.cpp:112
+#: main.cpp:140
 #, kde-format
 msgctxt "option value name"
 msgid "typeString"
 msgstr "typeString"
 
-#: main.cpp:114
+#: main.cpp:142
+#, fuzzy, kde-format
+#| msgid "Show supported <typeString> values"
+msgid "Show supported <searchScope> values"
+msgstr "Afficher les valeurs <typeString> prises en charge"
+
+#: main.cpp:144
 #, kde-format
 msgid "Show supported <typeString> values"
 msgstr "Afficher les valeurs <typeString> prises en charge"
 
-#: main.cpp:116
+#: main.cpp:146
 #, kde-format
 msgid "Show property names supported in query."
 msgstr "Afficher les noms de propriétés pris en charge par la requête."
 
-#: main.cpp:118
+#: main.cpp:148
 #, kde-format
 msgid "Limit search to specified directory"
 msgstr "Limiter la rechercher au dossier spécifié"
 
-#: main.cpp:119
+#: main.cpp:149
 #, kde-format
 msgctxt "option value name"
 msgid "directory"
 msgstr "Dossier"
 
-#: main.cpp:121
+#: main.cpp:151
 #, kde-format
 msgid "Show document IDs"
 msgstr "Afficher les identifiants de document"
 
-#: main.cpp:123
+#: main.cpp:153
 #, kde-format
 msgid "Sorting criteria"
 msgstr "Critères de tri"
 
-#: main.cpp:127
+#: main.cpp:157
 #, kde-format
 msgid "query [(|AND|OR) query ...]"
 msgstr "Requête [Requête (|AND|OR), etc."
 
-#: main.cpp:128
+#: main.cpp:158
 #, kde-format
 msgid ""
 "List of words to query for.\n"
@@ -159,22 +184,22 @@ msgstr ""
 "baloosearch6 -t image 'largeur<=2000 (nom de fichier : png OU nom de "
 "fichier : jpeg OU nom de fichier : jpg)'"
 
-#: main.cpp:163
+#: main.cpp:197
 #, kde-format
 msgid "ERROR: Invalid \"type\" value, supported values:\n"
 msgstr "ERREUR : valeur \"type\" non valable. Valeurs prises en charge :\n"
 
-#: main.cpp:200
+#: main.cpp:242
 #, kde-format
 msgid "%1 is not a valid directory"
 msgstr "%1 n'est pas un dossier valable"
 
-#: main.cpp:208
+#: main.cpp:250
 #, kde-format
 msgid "Using canonical path '%1' for '%2'"
 msgstr "Utilisation de l'emplacement standard « %1 » pour « %2 »"
 
-#: main.cpp:224
+#: main.cpp:266
 #, kde-format
 msgid "Elapsed: %1 msecs"
 msgstr "Temps écoulé : %1 ms"
