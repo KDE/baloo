@@ -52,12 +52,9 @@ QByteArray concatPath(const QByteArray& p1, const QByteArray& p2)
 class KInotify::Private
 {
 public:
-    Private(KInotify* parent)
-        : userLimitReachedSignaled(false)
-        , config(nullptr)
-        , m_inotifyFd(-1)
-        , m_notifier(nullptr)
-        , q(parent) {
+    Private(KInotify *parent)
+        : q(parent)
+    {
     }
 
     ~Private() {
@@ -73,7 +70,7 @@ public:
     QHash<int, MovedFileCookie> cookies;
     QTimer cookieExpireTimer;
     // This variable is set to true if the watch limit is reached, and reset when it is raised
-    bool userLimitReachedSignaled;
+    bool userLimitReachedSignaled = false;
 
     // url <-> wd mappings
     QHash<int, QByteArray> watchPathHash;
@@ -89,7 +86,7 @@ public:
         return false;
     }
 
-    Baloo::FileIndexerConfig* config;
+    Baloo::FileIndexerConfig *config = nullptr;
     QStringList m_paths;
     std::unique_ptr<Baloo::FilteredDirIterator> m_dirIter;
 
@@ -191,8 +188,8 @@ private:
         }
     }
 
-    int m_inotifyFd;
-    QSocketNotifier* m_notifier;
+    int m_inotifyFd = -1;
+    QSocketNotifier *m_notifier = nullptr;
 
     KInotify* q;
 };
