@@ -178,7 +178,6 @@ protected:
     void processEventBuffer(const char *buffer, int len);
 
 private Q_SLOTS:
-    void slotEvent(int);
     void slotClearCookies();
 
 private:

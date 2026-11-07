@@ -18,15 +18,10 @@
 #include <QDeadlineTimer>
 #include <QPair>
 
-#include <sys/inotify.h>
-#include <sys/utsname.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/ioctl.h>
-#include <unistd.h>
-#include <fcntl.h>
 #include <cerrno>
-#include <dirent.h>
+#include <limits.h>
+#include <sys/inotify.h>
+#include <unistd.h>
 
 namespace
 {
@@ -55,6 +50,7 @@ public:
     Private(KInotify *parent)
         : q(parent)
     {
+        m_eventBuffer.resize(128 * (sizeof(inotify_event) + NAME_MAX));
     }
 
     ~Private() {
@@ -168,13 +164,18 @@ public:
     }
 
 private:
+    void processEvents();
+
     void open() {
-        m_inotifyFd = inotify_init();
-        if (m_inotifyFd > 0) {
-            fcntl(m_inotifyFd, F_SETFD, FD_CLOEXEC);
+        m_inotifyFd = inotify_init1(IN_NONBLOCK | IN_CLOEXEC);
+        if (m_inotifyFd >= 0) {
             m_notifier.setSocket(m_inotifyFd);
             m_notifier.setEnabled(true);
-            connect(&m_notifier, &QSocketNotifier::activated, q, &KInotify::slotEvent);
+            connect(&m_notifier, //
+                    &QSocketNotifier::activated,
+                    [this](QSocketDescriptor, QSocketNotifier::Type) {
+                        processEvents();
+                    });
         } else {
             Q_ASSERT_X(0, "kinotify", "Failed to initialize inotify");
         }
@@ -182,6 +183,7 @@ private:
 
     int m_inotifyFd = -1;
     QSocketNotifier m_notifier{QSocketNotifier::Read};
+    QByteArray m_eventBuffer;
 
     KInotify* q;
 };
@@ -278,26 +280,20 @@ void KInotify::handleDirCreated(const QString& path)
     }
 }
 
-void KInotify::slotEvent(int socket)
+void KInotify::Private::processEvents()
 {
-    int avail;
-    if (ioctl(socket, FIONREAD, &avail) == EINVAL) {
-        qCDebug(BALOO) << "Did not receive an entire inotify event.";
-        return;
+    // arbitrary upper bound to avoid stalling the event loop
+    for (int i = 0; i < 10; i++) {
+        const int len = read(m_inotifyFd, m_eventBuffer.data(), m_eventBuffer.size());
+        if (len > 0) {
+            q->processEventBuffer(m_eventBuffer.constData(), len);
+        } else {
+            if (errno != EAGAIN) {
+                qCDebug(BALOO) << "Failed to read event:" << errno;
+            }
+            break;
+        }
     }
-
-    char* buffer = (char*)malloc(avail);
-
-    const int len = read(socket, buffer, avail);
-    Q_ASSERT(len == avail);
-
-    if (len < 0) {
-        qCDebug(BALOO) << "Failed to read event.";
-    } else {
-        processEventBuffer(buffer, len);
-    }
-
-    free(buffer);
 }
 
 // Split out of slotEvent() so a test can feed the parser a synthetic buffer.
