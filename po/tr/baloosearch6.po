@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-11-06 00:45+0000\n"
-"PO-Revision-Date: 2026-10-09 19:38+0300\n"
+"PO-Revision-Date: 2026-11-06 19:39+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 26.08.0\n"
+"X-Generator: Lokalize 26.08.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -51,12 +51,10 @@ msgstr ""
 "Adı                     Açıklama"
 
 #: main.cpp:100
-#, fuzzy, kde-format
-#| msgctxt "'listTypes' table header"
-#| msgid "<typeString>     Description"
+#, kde-format
 msgctxt "'listScopes' table header"
 msgid "<searchScope>   Description"
-msgstr "<türDizisi>      Açıklama"
+msgstr "<aramaKapsamı>      Açıklama"
 
 #: main.cpp:120
 #, kde-format
@@ -99,13 +97,13 @@ msgstr "ofset"
 #: main.cpp:136
 #, kde-format
 msgid "Scope used to look for matches"
-msgstr ""
+msgstr "Eşleşmeler için kullanılacak kapsam"
 
 #: main.cpp:137
 #, kde-format
 msgctxt "option value name"
 msgid "searchScope"
-msgstr ""
+msgstr "aramaKapsamı"
 
 #: main.cpp:139
 #, kde-format
@@ -119,10 +117,9 @@ msgid "typeString"
 msgstr "türDizisi"
 
 #: main.cpp:142
-#, fuzzy, kde-format
-#| msgid "Show supported <typeString> values"
+#, kde-format
 msgid "Show supported <searchScope> values"
-msgstr "Desteklenen <türDizisi> değerleri"
+msgstr "Desteklenen <aramaKapsamı> değerleri"
 
 #: main.cpp:144
 #, kde-format

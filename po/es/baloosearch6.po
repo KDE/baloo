@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: baloosearch6\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-11-06 00:45+0000\n"
-"PO-Revision-Date: 2026-10-09 15:53+0100\n"
+"PO-Revision-Date: 2026-11-06 18:24+0100\n"
 "Last-Translator: Eloy Cuadra <ecuadra@eloihr.net>\n"
 "Language-Team: Spanish <kde-l10n-es@kde.org>\n"
 "Language: es\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 26.08.1\n"
+"X-Generator: Lokalize 26.08.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -48,12 +48,10 @@ msgid "File Property Name                     Description"
 msgstr "Archivo Propiedad Nombre                     Descripción"
 
 #: main.cpp:100
-#, fuzzy, kde-format
-#| msgctxt "'listTypes' table header"
-#| msgid "<typeString>     Description"
+#, kde-format
 msgctxt "'listScopes' table header"
 msgid "<searchScope>   Description"
-msgstr "<typeString>     Descripción"
+msgstr "<searchScope>   Descripción"
 
 #: main.cpp:120
 #, kde-format
@@ -95,13 +93,13 @@ msgstr "desplazamiento"
 #: main.cpp:136
 #, kde-format
 msgid "Scope used to look for matches"
-msgstr ""
+msgstr "Ámbito usado para buscar coincidencias"
 
 #: main.cpp:137
 #, kde-format
 msgctxt "option value name"
 msgid "searchScope"
-msgstr ""
+msgstr "searchScope"
 
 #: main.cpp:139
 #, kde-format
@@ -115,10 +113,9 @@ msgid "typeString"
 msgstr "typeString"
 
 #: main.cpp:142
-#, fuzzy, kde-format
-#| msgid "Show supported <typeString> values"
+#, kde-format
 msgid "Show supported <searchScope> values"
-msgstr "Mostrar valores permitidos para <typeString>"
+msgstr "Mostrar valores permitidos para <searchScope>"
 
 #: main.cpp:144
 #, kde-format

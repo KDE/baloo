@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-11-06 00:45+0000\n"
-"PO-Revision-Date: 2026-10-12 18:12+0200\n"
+"PO-Revision-Date: 2026-11-06 10:26+0100\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca\n"
@@ -50,12 +50,10 @@ msgid "File Property Name                     Description"
 msgstr "Nom de propietat de fitxer                     Descripció"
 
 #: main.cpp:100
-#, fuzzy, kde-format
-#| msgctxt "'listTypes' table header"
-#| msgid "<typeString>     Description"
+#, kde-format
 msgctxt "'listScopes' table header"
 msgid "<searchScope>   Description"
-msgstr "<typeString>     Descripció"
+msgstr "<searchScope>   Descripció"
 
 #: main.cpp:120
 #, kde-format
@@ -97,13 +95,13 @@ msgstr "desplaçament"
 #: main.cpp:136
 #, kde-format
 msgid "Scope used to look for matches"
-msgstr ""
+msgstr "Àmbit utilitzat per cercar coincidències"
 
 #: main.cpp:137
 #, kde-format
 msgctxt "option value name"
 msgid "searchScope"
-msgstr ""
+msgstr "searchScope"
 
 #: main.cpp:139
 #, kde-format
@@ -117,10 +115,9 @@ msgid "typeString"
 msgstr "typeString"
 
 #: main.cpp:142
-#, fuzzy, kde-format
-#| msgid "Show supported <typeString> values"
+#, kde-format
 msgid "Show supported <searchScope> values"
-msgstr "Mostra els valors de <typeString> admesos"
+msgstr "Mostra els valors de <searchScope> admesos"
 
 #: main.cpp:144
 #, kde-format

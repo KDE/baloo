@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-11-06 00:45+0000\n"
-"PO-Revision-Date: 2026-10-09 08:23+0200\n"
+"PO-Revision-Date: 2026-11-06 07:49+0200\n"
 "Last-Translator: Alexander Yavorsky <kekcuha@gmail.com>\n"
 "Language-Team: Russian <kde-russian@lists.kde.ru>\n"
 "Language: ru\n"
@@ -48,12 +48,10 @@ msgid "File Property Name                     Description"
 msgstr "Свойство файла                         Описание"
 
 #: main.cpp:100
-#, fuzzy, kde-format
-#| msgctxt "'listTypes' table header"
-#| msgid "<typeString>     Description"
+#, kde-format
 msgctxt "'listScopes' table header"
 msgid "<searchScope>   Description"
-msgstr "<название_типа>  Описание"
+msgstr "<область_поиска>  Описание"
 
 #: main.cpp:120
 #, kde-format
@@ -95,13 +93,13 @@ msgstr "смещение"
 #: main.cpp:136
 #, kde-format
 msgid "Scope used to look for matches"
-msgstr ""
+msgstr "Область поиска совпадений"
 
 #: main.cpp:137
 #, kde-format
 msgctxt "option value name"
 msgid "searchScope"
-msgstr ""
+msgstr "область_поиска"
 
 #: main.cpp:139
 #, kde-format
@@ -115,10 +113,9 @@ msgid "typeString"
 msgstr "название_типа"
 
 #: main.cpp:142
-#, fuzzy, kde-format
-#| msgid "Show supported <typeString> values"
+#, kde-format
 msgid "Show supported <searchScope> values"
-msgstr "Показать допустимые значения <название_типа>"
+msgstr "Показать допустимые значения <область_поиска>"
 
 #: main.cpp:144
 #, kde-format

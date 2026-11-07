@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-11-06 00:45+0000\n"
-"PO-Revision-Date: 2026-10-09 11:57+0200\n"
+"PO-Revision-Date: 2026-11-06 11:03+0100\n"
 "Last-Translator: Libor Filípek <libor.filipek@gmail.com>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "Language: cs\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Poedit 3.9\n"
+"X-Generator: Lokalize 26.08.3\n"
 "X-Language: cs_CZ\n"
 "X-Source-Language: en_US\n"
 
@@ -50,12 +50,10 @@ msgid "File Property Name                     Description"
 msgstr "Název vlastnosti souboru                     Popis"
 
 #: main.cpp:100
-#, fuzzy, kde-format
-#| msgctxt "'listTypes' table header"
-#| msgid "<typeString>     Description"
+#, kde-format
 msgctxt "'listScopes' table header"
 msgid "<searchScope>   Description"
-msgstr "<typeString>     Popis"
+msgstr "<searchScope>   Popis"
 
 #: main.cpp:120
 #, kde-format
@@ -97,13 +95,13 @@ msgstr "posun"
 #: main.cpp:136
 #, kde-format
 msgid "Scope used to look for matches"
-msgstr ""
+msgstr "Rozsah, v němž se hledají shody"
 
 #: main.cpp:137
 #, kde-format
 msgctxt "option value name"
 msgid "searchScope"
-msgstr ""
+msgstr "searchScope"
 
 #: main.cpp:139
 #, kde-format
@@ -117,10 +115,9 @@ msgid "typeString"
 msgstr "typeString"
 
 #: main.cpp:142
-#, fuzzy, kde-format
-#| msgid "Show supported <typeString> values"
+#, kde-format
 msgid "Show supported <searchScope> values"
-msgstr "Zobrazit podporované hodnoty <typeString>"
+msgstr "Zobrazit podporované hodnoty <searchScope>"
 
 #: main.cpp:144
 #, kde-format
