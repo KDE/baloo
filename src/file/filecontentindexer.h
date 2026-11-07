@@ -33,8 +33,8 @@ class FileContentIndexer : public QObject, public QRunnable
 public:
     FileContentIndexer(uint batchSize, FileContentIndexerProvider *provider, TimeEstimator &timeEstimator, QObject *parent = nullptr);
 
-    QString currentFile() { return m_currentFile; }
-    bool indexFast()
+    QString currentFile() const { return m_currentFile; }
+    bool indexFast() const
     {
         return m_sessionIdle;
     }
