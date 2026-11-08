@@ -24,7 +24,9 @@ public:
 private Q_SLOTS:
     void testTimers();
     void testTimeout();
+    void testTimeout_data();
     void testRequeue();
+    void testRequeue_data();
     void testDeleteCreate();
     void testCreateDelete();
     void testCreateDelete2();
@@ -70,7 +72,7 @@ void PendingFileQueueTest::testTimers()
     QCOMPARE(spy.takeFirst().constFirst().toString(), myUrl);
     QCOMPARE(queue.m_recentlyEmitted.count(), 1);
 
-    // Enqueue the url again. This time it should wait for should wait for the
+    // Enqueue the url again. This time it should wait for the
     // minimumTimeout
     queue.enqueue(file);
 
@@ -90,12 +92,21 @@ void PendingFileQueueTest::testTimers()
     QCOMPARE(queue.m_recentlyEmitted.count(), 0);
 }
 
+void PendingFileQueueTest::testTimeout_data()
+{
+    QTest::addColumn<QTime>("currentTime");
+
+    QTest::addRow("afterMidnight") << QTime{00, 00, 01};
+    QTest::addRow("beforeMidnight") << QTime{23, 59, 58};
+    QTest::addRow("now") << QTime::currentTime();
+}
+
 void PendingFileQueueTest::testTimeout()
 {
+    QFETCH(QTime, currentTime);
+
     QString file1Url(QStringLiteral("file1_url"));
     QString file2Url(QStringLiteral("file2_url"));
-
-    QTime currentTime = QTime::currentTime();
 
     PendingFileQueue queue;
     queue.setMinimumTimeout(2);
@@ -136,6 +147,7 @@ void PendingFileQueueTest::testTimeout()
     // Nothing should be signaled, as the timeout is 2 seconds
     currentTime = currentTime.addMSecs(1500);
     QTimer::singleShot(0, [&queue, currentTime] { queue.processPendingFiles(currentTime); });
+    QEXPECT_FAIL("beforeMidnight", "Wraparound on midnight", Abort);
     QVERIFY(!spy.wait(50));
 
     currentTime = currentTime.addMSecs(1000);
@@ -145,11 +157,20 @@ void PendingFileQueueTest::testTimeout()
     QCOMPARE(spy.takeFirst().constFirst().toString(), file1Url);
 }
 
+void PendingFileQueueTest::testRequeue_data()
+{
+    QTest::addColumn<QTime>("currentTime");
+
+    QTest::addRow("afterMidnight") << QTime{00, 00, 01};
+    QTest::addRow("beforeMidnight") << QTime{23, 59, 58};
+    QTest::addRow("now") << QTime::currentTime();
+}
+
 void PendingFileQueueTest::testRequeue()
 {
-    QString myUrl(QStringLiteral("/tmp"));
+    QFETCH(QTime, currentTime);
 
-    QTime currentTime = QTime::currentTime();
+    QString myUrl(QStringLiteral("/tmp"));
 
     PendingFileQueue queue;
     queue.setMinimumTimeout(2);
@@ -193,6 +214,7 @@ void PendingFileQueueTest::testRequeue()
         QVERIFY2(elapsed10thSeconds <= 50, "Signal emitted late");
         elapsed10thSeconds++;
     }
+    QEXPECT_FAIL("beforeMidnight", "Wraparound on midnight", Abort);
     QVERIFY2(elapsed10thSeconds > 40, "Signal emitted early");
 
     QCOMPARE(spy.count(), 1);
