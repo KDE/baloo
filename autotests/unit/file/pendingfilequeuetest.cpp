@@ -147,7 +147,6 @@ void PendingFileQueueTest::testTimeout()
     // Nothing should be signaled, as the timeout is 2 seconds
     currentTime = currentTime.addMSecs(1500);
     QTimer::singleShot(0, [&queue, currentTime] { queue.processPendingFiles(currentTime); });
-    QEXPECT_FAIL("beforeMidnight", "Wraparound on midnight", Abort);
     QVERIFY(!spy.wait(50));
 
     currentTime = currentTime.addMSecs(1000);
@@ -214,7 +213,6 @@ void PendingFileQueueTest::testRequeue()
         QVERIFY2(elapsed10thSeconds <= 50, "Signal emitted late");
         elapsed10thSeconds++;
     }
-    QEXPECT_FAIL("beforeMidnight", "Wraparound on midnight", Abort);
     QVERIFY2(elapsed10thSeconds > 40, "Signal emitted early");
 
     QCOMPARE(spy.count(), 1);

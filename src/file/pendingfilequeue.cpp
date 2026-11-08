@@ -14,6 +14,21 @@
 
 using namespace Baloo;
 
+namespace
+{
+void correctDayWraparound(int &msecs)
+{
+    // QTime(00, 01).addSecs(120) is "00:03", and
+    // QTime(00, 01).secsTo({00, 03) is 120
+    // QTime(23, 59).addSecs(120) is "00:01", but
+    // QTime(23, 59).secsTo({00, 01) is -86280
+    // Consider all negative differences more than half a day as caused by wraparound
+    if (msecs < (-86400000 / 2)) {
+        msecs += 86400000;
+    }
+}
+} // namespace <anonymous>
+
 PendingFileQueue::PendingFileQueue(QObject* parent)
     : QObject(parent)
 {
@@ -91,6 +106,8 @@ void PendingFileQueue::processCache(const QTime& currentTime)
                 QTime time = pendingIt.value();
 
                 int msecondsLeft = currentTime.msecsTo(time);
+                correctDayWraparound(msecondsLeft);
+
                 msecondsLeft = qBound(m_minTimeout, msecondsLeft * 2, m_maxTimeout);
 
                 time = currentTime.addMSecs(msecondsLeft);
@@ -135,6 +152,7 @@ void PendingFileQueue::clearRecentlyEmitted(const QTime& time)
         it.next();
 
         int msecondsSinceEmitted = it.value().msecsTo(time);
+        correctDayWraparound(msecondsSinceEmitted);
         if (msecondsSinceEmitted >= m_trackingTime) {
             it.remove();
         } else {
@@ -158,6 +176,7 @@ void PendingFileQueue::processPendingFiles(const QTime& currentTime)
         it.next();
 
         int mSecondsLeft = currentTime.msecsTo(it.value());
+        correctDayWraparound(mSecondsLeft);
         if (mSecondsLeft <= 0) {
             Q_EMIT indexModifiedFile(it.key());
             m_recentlyEmitted.insert(it.key(), currentTime);
