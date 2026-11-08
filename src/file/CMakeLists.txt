@@ -20,6 +20,7 @@ set(file_static_lib_SRCS
     filecontentindexerprovider.cpp
     extractorprocess.cpp
     extractor/commandpipe.cpp
+    sessionidlemonitor.cpp
     timeestimator.cpp
 
     indexcleaner.cpp

@@ -52,6 +52,7 @@ public:
 public Q_SLOTS:
     Q_SCRIPTABLE void registerMonitor(const QDBusMessage& message);
     Q_SCRIPTABLE void unregisterMonitor(const QDBusMessage& message);
+    void sessionIdle(bool isIdle);
 
 Q_SIGNALS:
     Q_SCRIPTABLE void startedIndexingFile(const QString& filePath);
@@ -62,13 +63,7 @@ Q_SIGNALS:
     void indexSpeedChanged(bool indexFast);
     void done();
 
-private Q_SLOTS:
-    void sessionIdle(bool isIdle);
-    void idlePropertiesChanged(const QString &interface, const QVariantMap &changed, const QStringList &invalidated);
-
 private:
-    void fetchIdleState();
-
     const uint m_batchSize;
     FileContentIndexerProvider *m_provider;
 

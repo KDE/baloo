@@ -15,13 +15,8 @@
 #include <QElapsedTimer>
 
 #include <QDBusConnection>
-#include <QDBusPendingCallWatcher>
-#include <QDBusPendingReply>
 
 using namespace Baloo;
-using namespace Qt::StringLiterals;
-
-static const auto IDLE_MONITOR_SERVICE{u"org.kde.baloo_idle_monitor"_s};
 
 namespace {
     // TODO KF6 -- remove/combine with started/finished DBus signal
@@ -51,47 +46,15 @@ FileContentIndexer::FileContentIndexer(uint batchSize, //
 
     QDBusConnection bus = QDBusConnection::sessionBus();
     m_monitorWatcher.setConnection(bus);
-    m_monitorWatcher.setWatchMode(QDBusServiceWatcher::WatchForUnregistration | QDBusServiceWatcher::WatchForRegistration);
+    m_monitorWatcher.setWatchMode(QDBusServiceWatcher::WatchForUnregistration);
     connect(&m_monitorWatcher, &QDBusServiceWatcher::serviceUnregistered, this, [this](const QString &service) {
-        if (service == IDLE_MONITOR_SERVICE) {
-            qCDebug(BALOO) << "Idle monitor unregistered";
-            m_sessionIdle.storeRelaxed(false);
-            return;
-        }
         qCDebug(BALOO) << "Unregistered monitor" << service;
         m_registeredMonitors.removeAll(service);
         m_monitorWatcher.removeWatchedService(service);
     });
-    connect(&m_monitorWatcher, &QDBusServiceWatcher::serviceRegistered, this, [this](const QString &service) {
-        if (service == IDLE_MONITOR_SERVICE) {
-            qCDebug(BALOO) << "Idle monitor registered";
-            fetchIdleState();
-        }
-    });
-    m_monitorWatcher.addWatchedService(IDLE_MONITOR_SERVICE);
-
-    bus.connect(IDLE_MONITOR_SERVICE,
-                u"/"_s,
-                u"org.freedesktop.DBus.Properties"_s,
-                u"PropertiesChanged"_s,
-                u"sa{sv}as"_s,
-                this,
-                SLOT(idlePropertiesChanged(QString, QVariantMap, QStringList)));
-    fetchIdleState();
 
     bus.registerObject(QStringLiteral("/fileindexer"),
                         this, QDBusConnection::ExportScriptableContents);
-}
-
-void FileContentIndexer::idlePropertiesChanged( //
-    [[maybe_unused]] const QString &interface,
-    [[maybe_unused]] const QVariantMap &changed,
-    [[maybe_unused]] const QStringList &invalidated)
-{
-    auto vIsIdle = changed.value(u"idle"_s);
-    if (auto pIsIdle = get_if<bool>(&vIsIdle)) {
-        sessionIdle(*pIsIdle);
-    }
 }
 
 void FileContentIndexer::sessionIdle(bool isIdle)
@@ -103,36 +66,9 @@ void FileContentIndexer::sessionIdle(bool isIdle)
     }
 }
 
-void FileContentIndexer::fetchIdleState()
-{
-    QDBusConnection bus = QDBusConnection::sessionBus();
-    auto message = QDBusMessage::createMethodCall( //
-        IDLE_MONITOR_SERVICE,
-        u"/"_s,
-        u"org.freedesktop.DBus.Properties"_s,
-        u"Get"_s);
-    message.setArguments({u"org.kde.baloo_idle_monitor"_s, u"idle"_s});
-
-    auto pending = bus.asyncCall(message);
-    auto *watcher = new QDBusPendingCallWatcher(pending, this);
-    QObject::connect( //
-        watcher,
-        &QDBusPendingCallWatcher::finished,
-        this,
-        [this](QDBusPendingCallWatcher *response) {
-            QDBusPendingReply<bool> reply = *response;
-            if (!reply.isError()) {
-                bool idle = reply.argumentAt<0>();
-                sessionIdle(idle);
-            }
-            response->deleteLater();
-        });
-}
-
 void FileContentIndexer::run()
 {
     ExtractorProcess process{m_extractorPath};
-
     connect(&process, &ExtractorProcess::startedIndexingFile, this, [this](const QString &path) {
         m_currentFile = path;
         if (!m_registeredMonitors.empty()) {
@@ -153,6 +89,7 @@ void FileContentIndexer::run()
     connect(this, &FileContentIndexer::indexSpeedChanged, &process, [&process](bool indexFast) {
         process.setIndexFast(indexFast);
     });
+    process.setIndexFast(m_sessionIdle);
 
     m_stop.storeRelaxed(false);
     auto batchSize = m_batchSize;
@@ -190,7 +127,6 @@ void FileContentIndexer::run()
         timer.start();
 
         uint batchStartCount = finishedCount;
-        process.setIndexFast(m_sessionIdle);
         process.index(idList);
         loop.exec();
         batchSize = idList.size();
