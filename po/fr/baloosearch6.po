@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-11-06 00:45+0000\n"
-"PO-Revision-Date: 2026-10-11 10:21+0200\n"
+"PO-Revision-Date: 2026-11-07 10:15+0100\n"
 "Last-Translator: Xavier Besnard <xavier.besnard@kde.org>\n"
 "Language-Team: fr\n"
 "Language: fr\n"
@@ -54,12 +54,10 @@ msgid "File Property Name                     Description"
 msgstr "Nom de la propriété du fichier     Description"
 
 #: main.cpp:100
-#, fuzzy, kde-format
-#| msgctxt "'listTypes' table header"
-#| msgid "<typeString>     Description"
+#, kde-format
 msgctxt "'listScopes' table header"
 msgid "<searchScope>   Description"
-msgstr "<typeString>     Description"
+msgstr "<searchScope>   Description"
 
 #: main.cpp:120
 #, kde-format
@@ -101,13 +99,13 @@ msgstr "Décalage"
 #: main.cpp:136
 #, kde-format
 msgid "Scope used to look for matches"
-msgstr ""
+msgstr "Périmètre utilisée pour la recherche de correspondances"
 
 #: main.cpp:137
 #, kde-format
 msgctxt "option value name"
 msgid "searchScope"
-msgstr ""
+msgstr "searchScope"
 
 #: main.cpp:139
 #, kde-format
@@ -121,10 +119,9 @@ msgid "typeString"
 msgstr "typeString"
 
 #: main.cpp:142
-#, fuzzy, kde-format
-#| msgid "Show supported <typeString> values"
+#, kde-format
 msgid "Show supported <searchScope> values"
-msgstr "Afficher les valeurs <typeString> prises en charge"
+msgstr "Afficher les valeurs <searchScope> prises en charge"
 
 #: main.cpp:144
 #, kde-format

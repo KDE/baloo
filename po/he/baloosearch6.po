@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: baloo\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-11-06 00:45+0000\n"
-"PO-Revision-Date: 2026-10-09 10:51+0300\n"
+"PO-Revision-Date: 2026-11-07 19:41+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
 "n % 10 == 0) ? 2 : 3));\n"
-"X-Generator: Lokalize 26.08.0\n"
+"X-Generator: Lokalize 26.08.1\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -47,12 +47,10 @@ msgid "File Property Name                     Description"
 msgstr "שם מאפיין קובץ                 תיאור"
 
 #: main.cpp:100
-#, fuzzy, kde-format
-#| msgctxt "'listTypes' table header"
-#| msgid "<typeString>     Description"
+#, kde-format
 msgctxt "'listScopes' table header"
 msgid "<searchScope>   Description"
-msgstr "<מחרוזת_סוג>     תיאור"
+msgstr "<טווח_חיפוש>     תיאור"
 
 #: main.cpp:120
 #, kde-format
@@ -94,13 +92,13 @@ msgstr "היסט"
 #: main.cpp:136
 #, kde-format
 msgid "Scope used to look for matches"
-msgstr ""
+msgstr "טווח שמשמש לאיתור תוצאות"
 
 #: main.cpp:137
 #, kde-format
 msgctxt "option value name"
 msgid "searchScope"
-msgstr ""
+msgstr "טווח חיפוש"
 
 #: main.cpp:139
 #, kde-format
@@ -114,10 +112,9 @@ msgid "typeString"
 msgstr "מחרוזת_סוג"
 
 #: main.cpp:142
-#, fuzzy, kde-format
-#| msgid "Show supported <typeString> values"
+#, kde-format
 msgid "Show supported <searchScope> values"
-msgstr "הצגת ערכי <מחרוזת_סוג> נתמכים"
+msgstr "הצגת ערכי <טווח_חיפוש> נתמכים"
 
 #: main.cpp:144
 #, kde-format
