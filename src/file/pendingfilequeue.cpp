@@ -86,20 +86,21 @@ void PendingFileQueue::processCache(const QTime& currentTime)
             Q_EMIT indexXAttr(file.path());
         }
         else if (file.shouldIndexContents()) {
-            if (m_pendingFiles.contains(file.path())) {
-                QTime time = m_pendingFiles[file.path()];
+            if (auto pendingIt = m_pendingFiles.find(file.path()); //
+                pendingIt != m_pendingFiles.end()) {
+                QTime time = pendingIt.value();
 
                 int msecondsLeft = currentTime.msecsTo(time);
                 msecondsLeft = qBound(m_minTimeout, msecondsLeft * 2, m_maxTimeout);
 
                 time = currentTime.addMSecs(msecondsLeft);
-                m_pendingFiles[file.path()] = time;
-            }
-            else if (m_recentlyEmitted.contains(file.path())) {
+                pendingIt.value() = time;
+
+            } else if (m_recentlyEmitted.contains(file.path())) {
                 QTime time = currentTime.addMSecs(m_minTimeout);
                 m_pendingFiles[file.path()] = time;
-            }
-            else {
+
+            } else {
                 if (file.isNewFile()) {
                     Q_EMIT indexNewFile(file.path());
                 } else {
