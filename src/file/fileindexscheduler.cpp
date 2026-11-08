@@ -52,6 +52,7 @@ FileIndexScheduler::FileIndexScheduler(Database *db, FileIndexerConfig *config, 
     connect(m_contentIndexer, &FileContentIndexer::committedBatch, [this](uint time, uint batchSize) {
             this->m_timeEstimator.handleNewBatchTime(time, batchSize);
     });
+    connect(&m_sessionIdleMonitor, &SessionIdleMonitor::idleChanged, m_contentIndexer, &FileContentIndexer::sessionIdle);
 
     QDBusConnection::sessionBus().registerObject(QStringLiteral("/scheduler"),
                                                  this, QDBusConnection::ExportScriptableContents);
@@ -167,6 +168,7 @@ void FileIndexScheduler::scheduleIndexing()
     }
 
     if (auto remainingCount = m_provider.size(); remainingCount > 0) {
+        m_sessionIdleMonitor.updateIdleState();
         m_timeEstimator.setProgress(remainingCount);
         m_threadPool.start(m_contentIndexer);
         m_indexerState = ContentIndexing;

@@ -13,8 +13,9 @@
 #include <QTimer>
 
 #include "filecontentindexerprovider.h"
-#include "powerstatemonitor.h"
 #include "indexerstate.h"
+#include "powerstatemonitor.h"
+#include "sessionidlemonitor.h"
 #include "timeestimator.h"
 
 namespace Baloo {
@@ -109,6 +110,7 @@ private:
     FileContentIndexer* m_contentIndexer;
 
     PowerStateMonitor m_powerMonitor;
+    SessionIdleMonitor m_sessionIdleMonitor;
 
     IndexerState m_indexerState;
     TimeEstimator m_timeEstimator;
