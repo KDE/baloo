@@ -33,6 +33,7 @@ private Q_SLOTS:
     void testCreateDelete();
     void testCreateDelete2();
     void testEnqueueMixed();
+    void testDeleteDir();
     void benchmarkCacheEnqueue();
     void benchmarkCacheEnqueue_data();
 };
@@ -387,6 +388,41 @@ void PendingFileQueueTest::testEnqueueMixed()
     QCOMPARE(spyModified.count(), 2);
     QCOMPARE(spyModified[0].constFirst().toString(), file2_modify.path());
     QCOMPARE(spyModified[1].constFirst().toString(), file3_modify.path());
+}
+
+void PendingFileQueueTest::testDeleteDir()
+{
+    PendingFile file1_1_modify(u"/p/t1/f1"_s);
+    PendingFile file1_2_modify(u"/p/t1/f2"_s);
+    PendingFile dir1_modify(u"/p/t1/"_s);
+    PendingFile dir1_delete(u"/p/t1/"_s);
+    file1_1_modify.setModified();
+    file1_2_modify.setModified();
+    dir1_modify.setModified();
+    dir1_delete.setDeleted();
+
+    PendingFile file2_modify(u"/p/t2/f"_s);
+    file2_modify.setModified();
+
+    PendingFileQueue queue;
+    QSignalSpy spyModified(&queue, &PendingFileQueue::indexModifiedFile);
+
+    queue.enqueue(file1_1_modify);
+    queue.enqueue(file1_2_modify);
+    queue.enqueue(file2_modify);
+    queue.enqueue(dir1_delete);
+    queue.enqueue(dir1_modify);
+    queue.enqueue(file1_1_modify);
+
+    QTimer::singleShot(0, [&queue] {
+        queue.processCache(QTime{00, 01});
+    });
+
+    QVERIFY(spyModified.wait());
+    QCOMPARE(spyModified.count(), 3);
+    QCOMPARE(spyModified[0].constFirst().toString(), file2_modify.path());
+    QCOMPARE(spyModified[1].constFirst().toString(), dir1_modify.path());
+    QCOMPARE(spyModified[2].constFirst().toString(), file1_1_modify.path());
 }
 
 void PendingFileQueueTest::benchmarkCacheEnqueue_data()
