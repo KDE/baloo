@@ -32,6 +32,7 @@ private Q_SLOTS:
     void testDeleteCreate();
     void testCreateDelete();
     void testCreateDelete2();
+    void testEnqueueMixed();
     void benchmarkCacheEnqueue();
     void benchmarkCacheEnqueue_data();
 };
@@ -354,6 +355,38 @@ void PendingFileQueueTest::testCreateDelete2()
     // The Modified signal should be suppressed, the file no longer be pending
     QCOMPARE(spyModified.count(), 0);
     QCOMPARE(queue.m_pendingFiles.count(), 0);
+}
+
+void PendingFileQueueTest::testEnqueueMixed()
+{
+    PendingFile file1_modify(u"/p/t/f1"_s);
+    PendingFile file1_delete(file1_modify.path());
+    file1_modify.setModified();
+    file1_delete.setDeleted();
+
+    PendingFile file2_modify(u"/p/t/f2"_s);
+    file2_modify.setModified();
+
+    PendingFile file3_modify(u"/p/t/f3"_s);
+    file3_modify.setModified();
+
+    PendingFileQueue queue;
+    QSignalSpy spyModified(&queue, &PendingFileQueue::indexModifiedFile);
+
+    queue.enqueue(file1_modify);
+    queue.enqueue(file2_modify);
+    queue.enqueue(file1_delete);
+    queue.enqueue(file3_modify);
+    queue.enqueue(file2_modify);
+
+    QTimer::singleShot(0, [&queue] {
+        queue.processCache(QTime{00, 01});
+    });
+
+    QVERIFY(spyModified.wait());
+    QCOMPARE(spyModified.count(), 2);
+    QCOMPARE(spyModified[0].constFirst().toString(), file2_modify.path());
+    QCOMPARE(spyModified[1].constFirst().toString(), file3_modify.path());
 }
 
 void PendingFileQueueTest::benchmarkCacheEnqueue_data()
