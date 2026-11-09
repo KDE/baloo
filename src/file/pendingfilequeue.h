@@ -60,7 +60,8 @@ private Q_SLOTS:
     void clearRecentlyEmitted(const QTime& currentTime);
 
 private:
-    QVector<PendingFile> m_cache;
+    QHash<QString, std::pair<PendingFile, qsizetype>> m_cache;
+    qsizetype m_cacheSequenceCounter = 0;
 
     QTimer m_cacheTimer;
     QTimer m_clearRecentlyEmittedTimer;

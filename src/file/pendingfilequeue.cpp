@@ -64,31 +64,33 @@ void PendingFileQueue::enqueue(const PendingFile& file)
     // If we get an event to remove /home/A, remove all events for everything under /home/A/
 
     if (file.shouldRemoveIndex() && file.path().endsWith(QLatin1Char('/'))) {
-        const auto keepFile = [&file](const PendingFile& pending) {
-            return !pending.path().startsWith(file.path());
-        };
-        const auto end = m_cache.end();
-        // std::partition moves all matching entries to the first partition
-        const auto droppedFilesBegin = std::partition(m_cache.begin(), end, keepFile);
-        for (auto it = droppedFilesBegin; it != end; it++) {
-            m_pendingFiles.remove(it->path());
-            m_recentlyEmitted.remove(it->path());
+        auto it = m_cache.begin();
+        while (it != m_cache.end()) {
+            const auto &name = it.value().first.path();
+            if (name.startsWith(file.path())) {
+                m_pendingFiles.remove(name);
+                m_recentlyEmitted.remove(name);
+                it = m_cache.erase(it);
+            } else {
+                it++;
+            }
         }
-        m_cache.erase(droppedFilesBegin, end);
     }
 
     if (file.shouldRemoveIndex()) {
-        m_cache.removeOne(file);
+        m_cache.remove(file.path());
         m_pendingFiles.remove(file.path());
         Q_EMIT removeFileIndex(file.path());
         return;
     }
 
-    int i = m_cache.indexOf(file);
-    if (i == -1) {
-        m_cache << file;
+    auto idx = m_cache.find(file.path());
+    if (idx == m_cache.end()) {
+        m_cache.insert(file.path(), {file, m_cacheSequenceCounter});
+        m_cacheSequenceCounter++;
+
     } else {
-        m_cache[i].merge(file);
+        idx.value().first.merge(file);
     }
 
     m_cacheTimer.start();
@@ -96,7 +98,21 @@ void PendingFileQueue::enqueue(const PendingFile& file)
 
 void PendingFileQueue::processCache(const QTime& currentTime)
 {
-    for (const PendingFile& file : std::as_const(m_cache)) {
+    const std::vector<std::pair<PendingFile, qsizetype>> cache = [this] {
+        std::vector<std::pair<PendingFile, qsizetype>> t;
+        t.reserve(m_cache.size());
+        for (auto [_, v] : m_cache.asKeyValueRange()) {
+            t.emplace_back(v);
+        }
+        std::ranges::sort(t, [](const auto &a, const auto &b) {
+            return a.second < b.second;
+        });
+        return t;
+    }();
+    m_cache.clear();
+    m_cacheSequenceCounter = 0;
+
+    for (const auto &[file, i] : cache) {
         if (file.shouldIndexXAttrOnly()) {
             Q_EMIT indexXAttr(file.path());
         }
@@ -129,8 +145,6 @@ void PendingFileQueue::processCache(const QTime& currentTime)
             Q_ASSERT_X(false, "FileWatch", "The PendingFile should always have some flags set");
         }
     }
-
-    m_cache.clear();
 
     if (!m_pendingFiles.isEmpty() && !m_pendingFilesTimer.isActive()) {
         m_pendingFilesTimer.setInterval(m_minTimeout);
