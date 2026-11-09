@@ -12,6 +12,8 @@
 #include <QSignalSpy>
 #include <qtimer.h>
 
+using namespace Qt::Literals::StringLiterals;
+
 namespace Baloo {
 
 class PendingFileQueueTest : public QObject
@@ -30,6 +32,8 @@ private Q_SLOTS:
     void testDeleteCreate();
     void testCreateDelete();
     void testCreateDelete2();
+    void benchmarkCacheEnqueue();
+    void benchmarkCacheEnqueue_data();
 };
 
 PendingFileQueueTest::PendingFileQueueTest()
@@ -350,6 +354,39 @@ void PendingFileQueueTest::testCreateDelete2()
     // The Modified signal should be suppressed, the file no longer be pending
     QCOMPARE(spyModified.count(), 0);
     QCOMPARE(queue.m_pendingFiles.count(), 0);
+}
+
+void PendingFileQueueTest::benchmarkCacheEnqueue_data()
+{
+    QTest::addColumn<unsigned int>("filecount");
+
+    QTest::addRow("100") << 100u;
+    QTest::addRow("1000") << 1000u;
+    QTest::addRow("10000") << 10000u;
+}
+
+void PendingFileQueueTest::benchmarkCacheEnqueue()
+{
+    QFETCH(unsigned int, filecount);
+    QList<PendingFile> files;
+    files.reserve(filecount);
+
+    for (unsigned int i = 0; i < filecount; i++) {
+        auto name = u"/path/to/file_%1"_s.arg(i);
+        PendingFile pf(name);
+        pf.setModified();
+        files.append(pf);
+    }
+
+    PendingFileQueue queue;
+
+    QBENCHMARK {
+        for (auto pf : files) {
+            queue.enqueue(pf);
+            queue.enqueue(pf);
+            queue.enqueue(pf);
+        }
+    }
 }
 
 } // namespace

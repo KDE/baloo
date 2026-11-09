@@ -12,14 +12,12 @@ MACRO(BALOO_FILE_AUTO_TESTS)
 ENDMACRO()
 
 baloo_file_auto_tests(
-    pendingfilequeuetest
     fileindexerconfigtest
     basicindexingjobtest
     filtereddiriteratortest
     metadatamovertest
     extractorcommandpipetest
 )
-
 
 #
 # File Watch
@@ -42,7 +40,7 @@ ecm_add_test(propertyserializationtest.cpp
 ecm_add_test(
     extractorprocesstest.cpp
     TEST_NAME "extractorprocesstest"
-    LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test baloofilecommon
+    LINK_LIBRARIES Qt6::Test baloofilecommon
 )
 # Dummy process for extractor process testing
 add_executable(extractorprocess_fake
@@ -84,3 +82,16 @@ ecm_mark_as_test(documentcontenttest_bin)
 
 # Run the benchmarks with just 1 iteration during CI, so we known it works
 add_test(NAME documentcontenttest COMMAND documentcontenttest_bin "-iterations" "1")
+
+# PendingFileQueue
+add_executable(pendingfilequeuetest_bin
+    pendingfilequeuetest.cpp
+)
+target_link_libraries(pendingfilequeuetest_bin
+    Qt6::Test
+    baloofilecommon
+)
+ecm_mark_as_test(pendingfilequeuetest_bin)
+
+# Run the benchmarks with just 1 iteration during CI, so we known it works
+add_test(NAME pendingfilequeuetest COMMAND pendingfilequeuetest_bin "-iterations" "1")
