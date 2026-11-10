@@ -16,6 +16,8 @@
 #include <QStorageInfo>
 #include <QDebug>
 
+#include <utility>
+
 namespace Baloo
 {
 
@@ -69,11 +71,9 @@ public:
     *
     * \p urlFilter Filter result urls. Default is null = Collect everything.
     */
-    QPair<QVector<FileInfo>, Summary> createList(
-        const QVector<qint64>& deviceIds,
-        const DatabaseSanitizer::ItemAccessFilters accessFilter,
-        const QSharedPointer<QRegularExpression>& urlFilter
-    ) const
+    std::pair<QVector<FileInfo>, Summary> createList(const QVector<qint64> &deviceIds,
+                                                     const DatabaseSanitizer::ItemAccessFilters accessFilter,
+                                                     const QSharedPointer<QRegularExpression> &urlFilter) const
     {
         Q_ASSERT(m_transaction);
 
