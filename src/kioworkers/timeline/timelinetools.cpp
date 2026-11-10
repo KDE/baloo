@@ -11,6 +11,8 @@
 #include <QRegularExpression>
 #include <QUrlQuery>
 
+#include <utility>
+
 namespace
 {
 QDate applyRelativeDateModificators(const QDate& date, const QMap<QString, QString>& modificators)
@@ -124,7 +126,7 @@ Baloo::TimelineFolderType Baloo::parseTimelineUrl(const QUrl& url, QDate* date, 
             }
         } else {
             qCDebug(KIO_TIMELINE) << "parsing " << dateString;
-            typedef QPair<QString, QString> StringPair;
+            typedef std::pair<QString, QString> StringPair;
             QUrlQuery query(url);
             const QList<StringPair> queryItems = query.queryItems();
             QMap<QString, QString> map;

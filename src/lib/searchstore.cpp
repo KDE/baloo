@@ -33,13 +33,14 @@
 #include <array>
 #include <limits>
 #include <tuple>
+#include <utility>
 
 namespace Baloo {
 
 using namespace Qt::StringLiterals;
 
 namespace {
-QPair<quint32, quint32> calculateTimeRange(const QString &value, Term::Comparator com)
+std::pair<quint32, quint32> calculateTimeRange(const QString &value, Term::Comparator com)
 {
     const QDateTime dt = QDateTime::fromString(value, Qt::ISODate);
     if (!dt.isValid()) {
@@ -448,7 +449,7 @@ PostingIterator::Ptr constructQuery(Transaction *tr, const Term &term)
         return constructFolderQuery(tr, value);
     }
     else if (property == "modified" || property == "mtime") {
-        QPair<quint32, quint32> timerange = calculateTimeRange(value, term.comparator());
+        const std::pair<quint32, quint32> timerange = calculateTimeRange(value, term.comparator());
         if (timerange.first > timerange.second) {
             return nullptr;
         }

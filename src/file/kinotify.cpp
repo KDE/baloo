@@ -16,7 +16,6 @@
 #include <QFile>
 #include <QTimer>
 #include <QDeadlineTimer>
-#include <QPair>
 
 #include <cerrno>
 #include <limits.h>
