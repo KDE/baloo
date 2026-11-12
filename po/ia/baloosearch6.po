@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-11-06 00:45+0000\n"
-"PO-Revision-Date: 2026-10-09 15:26+0200\n"
+"PO-Revision-Date: 2026-11-11 12:43+0100\n"
 "Last-Translator: giovanni <g.sora@tiscali.it>\n"
 "Language-Team: Interlingua <kde-i18n-doc@kde.org>\n"
 "Language: ia\n"
@@ -47,12 +47,10 @@ msgid "File Property Name                     Description"
 msgstr "Nomine de proprietate de file                     Description"
 
 #: main.cpp:100
-#, fuzzy, kde-format
-#| msgctxt "'listTypes' table header"
-#| msgid "<typeString>     Description"
+#, kde-format
 msgctxt "'listScopes' table header"
 msgid "<searchScope>   Description"
-msgstr "<typeString>     Description"
+msgstr "<searchScope>   Description"
 
 #: main.cpp:120
 #, kde-format
@@ -94,13 +92,13 @@ msgstr "displaciamento"
 #: main.cpp:136
 #, kde-format
 msgid "Scope used to look for matches"
-msgstr ""
+msgstr "Ambito usate pro cercar correspondentias"
 
 #: main.cpp:137
 #, kde-format
 msgctxt "option value name"
 msgid "searchScope"
-msgstr ""
+msgstr "searchScope"
 
 #: main.cpp:139
 #, kde-format
@@ -114,10 +112,9 @@ msgid "typeString"
 msgstr "typeString"
 
 #: main.cpp:142
-#, fuzzy, kde-format
-#| msgid "Show supported <typeString> values"
+#, kde-format
 msgid "Show supported <searchScope> values"
-msgstr "MOnstra valores <typeString>  supportate"
+msgstr "Monstra valores <searchScope> supportate"
 
 #: main.cpp:144
 #, kde-format
