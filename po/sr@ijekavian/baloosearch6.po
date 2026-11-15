@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: baloosearch5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-11-06 00:45+0000\n"
-"PO-Revision-Date: 2026-10-09 15:40+0200\n"
+"PO-Revision-Date: 2026-11-14 16:15+0100\n"
 "Last-Translator: Nemanja Hiršl <nemhirsl@gmail.com>\n"
 "Language-Team: Serbian <kde-i18n-sr@kde.org>\n"
 "Language: sr@ijekavian\n"
@@ -48,12 +48,10 @@ msgid "File Property Name                     Description"
 msgstr "Име својства фајла                     Опис"
 
 #: main.cpp:100
-#, fuzzy, kde-format
-#| msgctxt "'listTypes' table header"
-#| msgid "<typeString>     Description"
+#, kde-format
 msgctxt "'listScopes' table header"
 msgid "<searchScope>   Description"
-msgstr "<тип>            Опис"
+msgstr "<досег>         Опис"
 
 #: main.cpp:120
 #, kde-format
@@ -95,13 +93,13 @@ msgstr "помак"
 #: main.cpp:136
 #, kde-format
 msgid "Scope used to look for matches"
-msgstr ""
+msgstr "Досег у коме се траже поклапања."
 
 #: main.cpp:137
 #, kde-format
 msgctxt "option value name"
 msgid "searchScope"
-msgstr ""
+msgstr "досег"
 
 #: main.cpp:139
 #, kde-format
@@ -115,10 +113,9 @@ msgid "typeString"
 msgstr "тип"
 
 #: main.cpp:142
-#, fuzzy, kde-format
-#| msgid "Show supported <typeString> values"
+#, kde-format
 msgid "Show supported <searchScope> values"
-msgstr "Прикажи подржане вриједности за <тип>."
+msgstr "Прикажи подржане вриједности за <досег>."
 
 #: main.cpp:144
 #, kde-format

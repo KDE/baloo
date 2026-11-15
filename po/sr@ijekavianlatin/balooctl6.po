@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: balooctl5\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-10-29 00:49+0000\n"
-"PO-Revision-Date: 2026-10-06 08:03+0200\n"
+"PO-Revision-Date: 2026-11-14 16:15+0100\n"
 "Last-Translator: Nemanja Hiršl <nemhirsl@gmail.com>\n"
 "Language-Team: Serbian <kde-i18n-sr@kde.org>\n"
 "Language: sr@ijekavianlatin\n"
@@ -410,7 +410,7 @@ msgstr "Sučelje komandne linije za nadgledanje Balooa"
 #: purgecommand.cpp:53
 #, kde-format
 msgid "Remove the complete DB, and restart the daemon if enabled"
-msgstr ""
+msgstr "Ukloni cijelu bazu podataka i ponovo pokreni demon ako je uključen"
 
 #: statuscommand.cpp:33
 #, kde-format
