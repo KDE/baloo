@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-10-29 00:49+0000\n"
-"PO-Revision-Date: 2026-04-27 21:52+0200\n"
+"PO-Revision-Date: 2026-11-15 08:46+0100\n"
 "Last-Translator: Karl Ove Hufthammer <karl@huftis.org>\n"
 "Language-Team: Norwegian Nynorsk <l10n-no@nuug.no>\n"
 "Language: nn\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 26.04.0\n"
+"X-Generator: Lokalize 27.03.70\n"
 "X-Environment: kde\n"
 "X-Accelerator-Marker: &\n"
 "X-Text-Markup: kde4\n"
@@ -408,7 +408,7 @@ msgstr "Tekstgrensesnitt for Baloo-overvaking"
 #: purgecommand.cpp:53
 #, kde-format
 msgid "Remove the complete DB, and restart the daemon if enabled"
-msgstr ""
+msgstr "Fjern heile databasen, og start om nødvendig tenesta på nytt"
 
 #: statuscommand.cpp:33
 #, kde-format

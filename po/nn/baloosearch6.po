@@ -1,12 +1,12 @@
 # Translation of baloosearch6 to Norwegian Nynorsk
 #
-# Karl Ove Hufthammer <karl@huftis.org>, 2015, 2016, 2018, 2020, 2021, 2023.
+# Karl Ove Hufthammer <karl@huftis.org>, 2015, 2016, 2018, 2020, 2021, 2023, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-11-06 00:45+0000\n"
-"PO-Revision-Date: 2023-07-29 12:30+0200\n"
+"PO-Revision-Date: 2026-11-15 08:57+0100\n"
 "Last-Translator: Karl Ove Hufthammer <karl@huftis.org>\n"
 "Language-Team: Norwegian Nynorsk <l10n-no@nuug.no>\n"
 "Language: nn\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 23.04.3\n"
+"X-Generator: Lokalize 27.03.70\n"
 "X-Environment: kde\n"
 "X-Accelerator-Marker: &\n"
 "X-Text-Markup: kde4\n"
@@ -33,25 +33,27 @@ msgstr "karl@huftis.org"
 #, kde-format
 msgctxt "'listTypes' table header"
 msgid "<typeString>     Description"
-msgstr ""
+msgstr "<typestreng>     Skildring"
 
+# Talet på mellomrom må sikkert vera slik at Description/Skildring vert ståande på same plass.
 #: main.cpp:66
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "Metadata Property Name                 Description"
-msgstr ""
+msgstr "Metadataeigenskapsnamn                 Skildring"
 
+# Talet på mellomrom må sikkert vera slik at Description/Skildring vert ståande på same plass.
 #: main.cpp:76
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "File Property Name                     Description"
-msgstr ""
+msgstr "Fileigenskapsnamn                      Skildring"
 
 #: main.cpp:100
 #, kde-format
 msgctxt "'listScopes' table header"
 msgid "<searchScope>   Description"
-msgstr ""
+msgstr "<søkjeomfang>   Skildring"
 
 #: main.cpp:120
 #, kde-format
@@ -68,76 +70,75 @@ msgstr "Verktøy for å søkja gjennom filer indekserte av Baloo"
 msgid "Vishesh Handa"
 msgstr "Vishesh Handa"
 
+# Kommandolinjehjelp, så skal slutta på punktum.
 #: main.cpp:130
 #, kde-format
 msgid "The maximum number of results"
-msgstr "Høgste tal på forslag"
+msgstr "Høgste tal på forslag."
 
 #: main.cpp:131
-#, fuzzy, kde-format
-#| msgid "limit"
+#, kde-format
 msgctxt "option value name"
 msgid "limit"
-msgstr "grenser"
+msgstr "grense"
 
+# Kommandolinjehjelp, så skal slutta på punktum.
 #: main.cpp:133
 #, kde-format
 msgid "Offset from which to start the search"
-msgstr "Posisjon der søket skal starta"
+msgstr "Posisjon der søket skal starta."
 
 #: main.cpp:134
-#, fuzzy, kde-format
-#| msgid "offset"
+#, kde-format
 msgctxt "option value name"
 msgid "offset"
 msgstr "posisjon"
 
+# Kommandolinjehjelp, så skal slutta på punktum.
 #: main.cpp:136
 #, kde-format
 msgid "Scope used to look for matches"
-msgstr ""
+msgstr "Område der ein skal sjå etter søkjetreff i."
 
 #: main.cpp:137
 #, kde-format
 msgctxt "option value name"
 msgid "searchScope"
-msgstr ""
+msgstr "søkjeomfang"
 
 #: main.cpp:139
 #, kde-format
 msgid "Type of data to be searched"
-msgstr "Type data som skal gjennomsøkjast"
+msgstr "Type data som skal gjennomsøkjast."
 
 #: main.cpp:140
-#, fuzzy, kde-format
-#| msgid "typeStr"
+#, kde-format
 msgctxt "option value name"
 msgid "typeString"
-msgstr "typeStr"
+msgstr "typestreng"
 
 #: main.cpp:142
 #, kde-format
 msgid "Show supported <searchScope> values"
-msgstr ""
+msgstr "Vis støtta <søkjeomfang>-verdiar"
 
 #: main.cpp:144
 #, kde-format
 msgid "Show supported <typeString> values"
-msgstr ""
+msgstr "Vis støtta <typestreng>-verdiar"
 
 #: main.cpp:146
 #, kde-format
 msgid "Show property names supported in query."
-msgstr ""
+msgstr "Vis eigenskapsnamn støtta i søk."
 
 #: main.cpp:148
 #, kde-format
 msgid "Limit search to specified directory"
-msgstr "Avgrens søket til vald mappe"
+msgstr "Avgrens søket til vald mappe."
 
 #: main.cpp:149
-#, fuzzy, kde-format
-#| msgid "directory"
+#, kde-format
 msgctxt "option value name"
 msgid "directory"
 msgstr "mappe"
@@ -145,17 +146,17 @@ msgstr "mappe"
 #: main.cpp:151
 #, kde-format
 msgid "Show document IDs"
-msgstr "Vis dokument-ID-ar"
+msgstr "Vis dokument-ID-ar."
 
 #: main.cpp:153
 #, kde-format
 msgid "Sorting criteria"
-msgstr "Sorteringsreglar"
+msgstr "Sorteringskriterium."
 
 #: main.cpp:157
 #, kde-format
 msgid "query [(|AND|OR) query ...]"
-msgstr ""
+msgstr "søk [(|AND|OR) søk …]"
 
 #: main.cpp:158
 #, kde-format
@@ -169,11 +170,20 @@ msgid ""
 "baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
 "filename:jpg)'"
 msgstr ""
+"Liste over ord å søkja etter.\n"
+"Kvart søk kan vera ein enkeltverdi eller ein verdi med eit eigenskapsnamn "
+"som prefiks.\n"
+"Du kan ha søk inni andre søk, og også gruppert med parentesar.\n"
+"\n"
+"\n"
+"Eksempel:\n"
+"baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
+"filename:jpg)'"
 
 #: main.cpp:197
 #, kde-format
 msgid "ERROR: Invalid \"type\" value, supported values:\n"
-msgstr ""
+msgstr "Feil: Ugyldig «type»-verdi. Støtta verdiar:\n"
 
 #: main.cpp:242
 #, kde-format
