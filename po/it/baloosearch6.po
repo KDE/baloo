@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: baloosearch\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-11-06 00:45+0000\n"
-"PO-Revision-Date: 2026-10-09 15:50+0200\n"
+"PO-Revision-Date: 2026-11-12 16:35+0100\n"
 "Last-Translator: Paolo Zamponi <feus73@gmail.com>\n"
 "Language-Team: Italian <kde-i18n-it@kde.org>\n"
 "Language: it\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 26.08.1\n"
+"X-Generator: Lokalize 26.08.3\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -47,12 +47,10 @@ msgid "File Property Name                     Description"
 msgstr "Nome della proprietà del file                     Descrizione"
 
 #: main.cpp:100
-#, fuzzy, kde-format
-#| msgctxt "'listTypes' table header"
-#| msgid "<typeString>     Description"
+#, kde-format
 msgctxt "'listScopes' table header"
 msgid "<searchScope>   Description"
-msgstr "<typeString>     Descrizione"
+msgstr "<searchScope>     Descrizione"
 
 #: main.cpp:120
 #, kde-format
@@ -114,10 +112,9 @@ msgid "typeString"
 msgstr "tipoStringa"
 
 #: main.cpp:142
-#, fuzzy, kde-format
-#| msgid "Show supported <typeString> values"
+#, kde-format
 msgid "Show supported <searchScope> values"
-msgstr "Mostra i valori <typeString> supportati"
+msgstr "Mostra i valori <searchScope> supportati"
 
 #: main.cpp:144
 #, kde-format

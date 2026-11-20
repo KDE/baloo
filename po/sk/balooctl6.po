@@ -406,7 +406,7 @@ msgstr "Konzolové rozhranie pre monitorovanie Baloo"
 #: purgecommand.cpp:53
 #, kde-format
 msgid "Remove the complete DB, and restart the daemon if enabled"
-msgstr ""
+msgstr "Odstrániť celú databázu a reštartovať démona, ak je povolený"
 
 #: statuscommand.cpp:33
 #, kde-format
