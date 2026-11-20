@@ -5,14 +5,15 @@
 # Jumpei Ogawa <phanective@gmail.com>, 2010.
 # Jumpei Ogawa (phanect) <phanective@gmail.com>, 2010.
 # Fumiaki Okushi <okushi@kde.gr.jp>, 2011.
+# SPDX-FileCopyrightText: 2026 Mint <5602mint@gmail.com>
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: kio_nepomuksearch\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-17 08:59+0000\n"
-"PO-Revision-Date: 2011-12-08 21:55-0800\n"
-"Last-Translator: Fumiaki Okushi <okushi@kde.gr.jp>\n"
+"PO-Revision-Date: 2026-11-14 11:46+0900\n"
+"Last-Translator: Mint <5602mint@gmail.com>\n"
 "Language-Team: Japanese <kde-jp@kde.org>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
@@ -21,10 +22,9 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Accelerator-Marker: &\n"
 "X-Text-Markup: kde4\n"
-"X-Generator: Lokalize 1.1\n"
+"X-Generator: Lokalize 26.08.3\n"
 
 #: kio_search.cpp:47
-#, fuzzy, kde-format
-#| msgid "Query folder"
+#, kde-format
 msgid "Search Folder"
-msgstr "クエリフォルダ"
+msgstr "検索フォルダ"
