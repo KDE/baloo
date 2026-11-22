@@ -1,13 +1,13 @@
 # Copyright (C) YEAR This_file_is_part_of_KDE
 # This file is distributed under the same license as the PACKAGE package.
-# Shinjo Park <kde@peremen.name>, 2014, 2015, 2018, 2020, 2021, 2023.
+# SPDX-FileCopyrightText: 2014, 2015, 2018, 2020, 2021, 2023, 2026 Shinjo Park <kde@peremen.name>
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-11-06 00:45+0000\n"
-"PO-Revision-Date: 2023-07-18 13:26+0200\n"
+"PO-Revision-Date: 2026-11-21 23:31+0100\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean <kde-kr@kde.org>\n"
 "Language: ko\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Lokalize 22.12.3\n"
+"X-Generator: Lokalize 25.12.3\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -31,25 +31,25 @@ msgstr "kde@peremen.name"
 #, kde-format
 msgctxt "'listTypes' table header"
 msgid "<typeString>     Description"
-msgstr ""
+msgstr "<typeString>     설명"
 
 #: main.cpp:66
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "Metadata Property Name                 Description"
-msgstr ""
+msgstr "메타데이터 속성 이름                 설명"
 
 #: main.cpp:76
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "File Property Name                     Description"
-msgstr ""
+msgstr "파일 속성 이름                     설명"
 
 #: main.cpp:100
 #, kde-format
 msgctxt "'listScopes' table header"
 msgid "<searchScope>   Description"
-msgstr ""
+msgstr "<searchScope>   설명"
 
 #: main.cpp:120
 #, kde-format
@@ -72,8 +72,7 @@ msgid "The maximum number of results"
 msgstr "최대 결과 개수"
 
 #: main.cpp:131
-#, fuzzy, kde-format
-#| msgid "limit"
+#, kde-format
 msgctxt "option value name"
 msgid "limit"
 msgstr "limit"
@@ -84,8 +83,7 @@ msgid "Offset from which to start the search"
 msgstr "검색을 시작할 위치"
 
 #: main.cpp:134
-#, fuzzy, kde-format
-#| msgid "offset"
+#, kde-format
 msgctxt "option value name"
 msgid "offset"
 msgstr "offset"
@@ -93,13 +91,13 @@ msgstr "offset"
 #: main.cpp:136
 #, kde-format
 msgid "Scope used to look for matches"
-msgstr ""
+msgstr "일치에 사용할 범위"
 
 #: main.cpp:137
 #, kde-format
 msgctxt "option value name"
 msgid "searchScope"
-msgstr ""
+msgstr "searchScope"
 
 #: main.cpp:139
 #, kde-format
@@ -107,26 +105,25 @@ msgid "Type of data to be searched"
 msgstr "검색할 데이터 종류"
 
 #: main.cpp:140
-#, fuzzy, kde-format
-#| msgid "typeStr"
+#, kde-format
 msgctxt "option value name"
 msgid "typeString"
-msgstr "typeStr"
+msgstr "typeString"
 
 #: main.cpp:142
 #, kde-format
 msgid "Show supported <searchScope> values"
-msgstr ""
+msgstr "지원하는 <searchScope> 값 표시"
 
 #: main.cpp:144
 #, kde-format
 msgid "Show supported <typeString> values"
-msgstr ""
+msgstr "지원하는 <typeString> 값 표시"
 
 #: main.cpp:146
 #, kde-format
 msgid "Show property names supported in query."
-msgstr ""
+msgstr "질의에서 지원하는 속성 이름을 표시합니다."
 
 #: main.cpp:148
 #, kde-format
@@ -134,8 +131,7 @@ msgid "Limit search to specified directory"
 msgstr "지정한 디렉터리에서만 검색"
 
 #: main.cpp:149
-#, fuzzy, kde-format
-#| msgid "directory"
+#, kde-format
 msgctxt "option value name"
 msgid "directory"
 msgstr "directory"
@@ -153,7 +149,7 @@ msgstr "정렬 기준"
 #: main.cpp:157
 #, kde-format
 msgid "query [(|AND|OR) query ...]"
-msgstr ""
+msgstr "query [(|AND|OR) query ...]"
 
 #: main.cpp:158
 #, kde-format
@@ -167,11 +163,19 @@ msgid ""
 "baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
 "filename:jpg)'"
 msgstr ""
+"질의할 때 사용할 단어 목록입니다.\n"
+"각각 질의는 단일 값이거나, 속성 이름이 앞에 붙은 값입니다.\n"
+"질의는 다른 질의를 포함할 수도 있으며, 괄호로 둘러쌀 수도 있습니다.\n"
+"\n"
+"\n"
+"예제:\n"
+"baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
+"filename:jpg)'"
 
 #: main.cpp:197
 #, kde-format
 msgid "ERROR: Invalid \"type\" value, supported values:\n"
-msgstr ""
+msgstr "오류: \"type\" 값이 잘못되었습니다. 지원하는 값:\n"
 
 #: main.cpp:242
 #, kde-format
