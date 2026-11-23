@@ -33,25 +33,25 @@ msgstr ""
 #, kde-format
 msgctxt "'listTypes' table header"
 msgid "<typeString>     Description"
-msgstr ""
+msgstr "<typeString>     描述"
 
 #: main.cpp:66
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "Metadata Property Name                 Description"
-msgstr ""
+msgstr "元数据属性名称                 描述"
 
 #: main.cpp:76
 #, kde-format
 msgctxt "'listProperties' table header"
 msgid "File Property Name                     Description"
-msgstr ""
+msgstr "文件属性名称                     描述"
 
 #: main.cpp:100
 #, kde-format
 msgctxt "'listScopes' table header"
 msgid "<searchScope>   Description"
-msgstr ""
+msgstr "<searchScope>   描述"
 
 #: main.cpp:120
 #, kde-format
@@ -74,8 +74,7 @@ msgid "The maximum number of results"
 msgstr "最大结果数"
 
 #: main.cpp:131
-#, fuzzy, kde-format
-#| msgid "limit"
+#, kde-format
 msgctxt "option value name"
 msgid "limit"
 msgstr "limit"
@@ -86,8 +85,7 @@ msgid "Offset from which to start the search"
 msgstr "开始搜索的偏移量"
 
 #: main.cpp:134
-#, fuzzy, kde-format
-#| msgid "offset"
+#, kde-format
 msgctxt "option value name"
 msgid "offset"
 msgstr "offset"
@@ -95,13 +93,13 @@ msgstr "offset"
 #: main.cpp:136
 #, kde-format
 msgid "Scope used to look for matches"
-msgstr ""
+msgstr "用于寻找匹配项的范围"
 
 #: main.cpp:137
 #, kde-format
 msgctxt "option value name"
 msgid "searchScope"
-msgstr ""
+msgstr "searchScope"
 
 #: main.cpp:139
 #, kde-format
@@ -109,26 +107,25 @@ msgid "Type of data to be searched"
 msgstr "要搜索的数据类型"
 
 #: main.cpp:140
-#, fuzzy, kde-format
-#| msgid "typeStr"
+#, kde-format
 msgctxt "option value name"
 msgid "typeString"
-msgstr "typeStr"
+msgstr "typeString"
 
 #: main.cpp:142
 #, kde-format
 msgid "Show supported <searchScope> values"
-msgstr ""
+msgstr "显示支持的 <searchScope> 值"
 
 #: main.cpp:144
 #, kde-format
 msgid "Show supported <typeString> values"
-msgstr ""
+msgstr "显示支持的 <typeString> 值"
 
 #: main.cpp:146
 #, kde-format
 msgid "Show property names supported in query."
-msgstr ""
+msgstr "在查询中显示支持的属性名称。"
 
 #: main.cpp:148
 #, kde-format
@@ -136,8 +133,7 @@ msgid "Limit search to specified directory"
 msgstr "限制只在指定目录搜索"
 
 #: main.cpp:149
-#, fuzzy, kde-format
-#| msgid "directory"
+#, kde-format
 msgctxt "option value name"
 msgid "directory"
 msgstr "directory"
@@ -155,7 +151,7 @@ msgstr "排序条件"
 #: main.cpp:157
 #, kde-format
 msgid "query [(|AND|OR) query ...]"
-msgstr ""
+msgstr "查询 [(|AND|OR) 查询 ...]"
 
 #: main.cpp:158
 #, kde-format
@@ -169,11 +165,19 @@ msgid ""
 "baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
 "filename:jpg)'"
 msgstr ""
+"待查询的词语列表。  \n"
+"每个查询可以是单个值，也可以是以属性名作为前缀的值。  \n"
+"查询可嵌套，并可用括号进行分组。\n"
+"\n"
+"\n"
+"示例：\n"
+"baloosearch6 -t image 'width<=2000 (filename:png OR filename:jpeg OR "
+"filename:jpg)'"
 
 #: main.cpp:197
 #, kde-format
 msgid "ERROR: Invalid \"type\" value, supported values:\n"
-msgstr ""
+msgstr "错误：无效的“type”值，支持的值：\n"
 
 #: main.cpp:242
 #, kde-format
@@ -189,9 +193,3 @@ msgstr "为“%2”使用标准路径“%1”"
 #, kde-format
 msgid "Elapsed: %1 msecs"
 msgstr "已耗时：%1 毫秒"
-
-#~ msgid "query"
-#~ msgstr "查询"
-
-#~ msgid "List of words to query for"
-#~ msgstr "要搜索的单词列表"

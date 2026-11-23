@@ -20,12 +20,12 @@ msgstr ""
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr "KDE China,Weng Xuetian,Guo Yunhe"
+msgstr "KDE China, Guo Yunhe, Tyson Tan, Weng Xuetian"
 
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
-msgstr "kde-china@kde.org,wengxt@gmail.com,i@guoyunhe.me"
+msgstr "kde-china@kde.org, i@guoyunhe.me, tds00@qq.com, wengxt@gmail.com"
 
 #: clearcommand.cpp:30
 #, kde-format
@@ -406,7 +406,7 @@ msgstr "监控 Baloo 的命令行接口"
 #: purgecommand.cpp:53
 #, kde-format
 msgid "Remove the complete DB, and restart the daemon if enabled"
-msgstr ""
+msgstr "移除整个数据库，如果启用，则重启守护进程"
 
 #: statuscommand.cpp:33
 #, kde-format
