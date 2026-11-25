@@ -28,6 +28,10 @@ public:
 public Q_SLOTS:
     void moveFileMetadata(const QString& from, const QString& to);
     void removeFileMetadata(const QString& file);
+    /**
+     * Removes the metadata of all of \p files in one transaction. Folders end with a slash.
+     */
+    void removeFilesMetadata(const QStringList &files);
 
 Q_SIGNALS:
     /**

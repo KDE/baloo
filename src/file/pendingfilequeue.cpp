@@ -9,6 +9,7 @@
 #include "pendingfilequeue.h"
 
 #include <memory>
+#include <utility>
 
 #include <QDateTime>
 
@@ -46,6 +47,10 @@ PendingFileQueue::PendingFileQueue(QObject* parent)
             PendingFileQueue::clearRecentlyEmitted(QTime::currentTime());
     });
 
+    m_removalTimer.setInterval(1000);
+    m_removalTimer.setSingleShot(true);
+    connect(&m_removalTimer, &QTimer::timeout, this, &PendingFileQueue::flushRemovals);
+
     m_minTimeout = 5 * 1000;
     m_maxTimeout = 60 * 1000;
     m_pendingFilesTimer.setInterval(m_minTimeout);
@@ -64,6 +69,9 @@ void PendingFileQueue::enqueue(const PendingFile& file)
     // If we get an event to remove /home/A, remove all events for everything under /home/A/
 
     if (file.shouldRemoveIndex() && file.path().endsWith(QLatin1Char('/'))) {
+        m_pendingRemovals.removeIf([&file](const QString &path) {
+            return path.startsWith(file.path());
+        });
         auto it = m_cache.begin();
         while (it != m_cache.end()) {
             const auto &name = it.value().first.path();
@@ -80,7 +88,14 @@ void PendingFileQueue::enqueue(const PendingFile& file)
     if (file.shouldRemoveIndex()) {
         m_cache.remove(file.path());
         m_pendingFiles.remove(file.path());
-        Q_EMIT removeFileIndex(file.path());
+        // Removals are emitted together, at the latest one second after the first of them
+        // was queued, or as soon as s_maxPendingRemovals are queued.
+        m_pendingRemovals.append(file.path());
+        if (m_pendingRemovals.size() >= s_maxPendingRemovals) {
+            flushRemovals();
+        } else if (!m_removalTimer.isActive()) {
+            m_removalTimer.start();
+        }
         return;
     }
 
@@ -96,8 +111,21 @@ void PendingFileQueue::enqueue(const PendingFile& file)
     m_cacheTimer.start();
 }
 
+void PendingFileQueue::flushRemovals()
+{
+    m_removalTimer.stop();
+    if (m_pendingRemovals.isEmpty()) {
+        return;
+    }
+    const QStringList removals = std::exchange(m_pendingRemovals, {});
+    Q_EMIT removeFileIndexes(removals);
+}
+
 void PendingFileQueue::processCache(const QTime& currentTime)
 {
+    // A file can be deleted and then created again under the same name, so the removals come first.
+    flushRemovals();
+
     const std::vector<std::pair<PendingFile, qsizetype>> cache = [this] {
         std::vector<std::pair<PendingFile, qsizetype>> t;
         t.reserve(m_cache.size());
@@ -183,6 +211,8 @@ void PendingFileQueue::clearRecentlyEmitted(const QTime& time)
 
 void PendingFileQueue::processPendingFiles(const QTime& currentTime)
 {
+    flushRemovals();
+
     int nextUpdate = m_maxTimeout;
 
     QMutableHashIterator<QString, QTime> it(m_pendingFiles);

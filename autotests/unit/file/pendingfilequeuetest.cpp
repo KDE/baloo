@@ -34,6 +34,10 @@ private Q_SLOTS:
     void testCreateDelete2();
     void testEnqueueMixed();
     void testDeleteDir();
+    void testRemovalsComeTogether();
+    void testRemovalsWaitAtMostOneSecond();
+    void testManyRemovalsAreEmittedAtOnce();
+    void testFolderRemovalCoversItsContent();
     void benchmarkCacheEnqueue();
     void benchmarkCacheEnqueue_data();
 };
@@ -239,7 +243,7 @@ void PendingFileQueueTest::testDeleteCreate()
     queue.m_pendingFilesTimer.installEventFilter(eventEater);
 
     QSignalSpy spyModified(&queue, SIGNAL(indexModifiedFile(QString)));
-    QSignalSpy spyRemoved(&queue, SIGNAL(removeFileIndex(QString)));
+    QSignalSpy spyRemoved(&queue, SIGNAL(removeFileIndexes(QStringList)));
     QVERIFY(spyModified.isValid());
     QVERIFY(spyRemoved.isValid());
 
@@ -256,7 +260,7 @@ void PendingFileQueueTest::testDeleteCreate()
     QVERIFY(spyModified.wait());
 
     QCOMPARE(spyRemoved.count(), 1);
-    QCOMPARE(spyRemoved.takeFirst().constFirst().toString(), myUrl);
+    QCOMPARE(spyRemoved.takeFirst().constFirst().toStringList(), QStringList{myUrl});
 
     QCOMPARE(spyModified.count(), 1);
     QCOMPARE(spyModified.takeFirst().constFirst().toString(), myUrl);
@@ -276,7 +280,7 @@ void PendingFileQueueTest::testCreateDelete()
     queue.m_pendingFilesTimer.installEventFilter(eventEater);
 
     QSignalSpy spyModified(&queue, SIGNAL(indexModifiedFile(QString)));
-    QSignalSpy spyRemoved(&queue, SIGNAL(removeFileIndex(QString)));
+    QSignalSpy spyRemoved(&queue, SIGNAL(removeFileIndexes(QStringList)));
     QVERIFY(spyModified.isValid());
     QVERIFY(spyRemoved.isValid());
 
@@ -292,14 +296,14 @@ void PendingFileQueueTest::testCreateDelete()
     });
     QTimer::singleShot(0, [&queue, currentTime] { queue.processCache(currentTime); });
 
-    // The Removed signal should be emitted immediately
+    // The removal is emitted when the queue is processed
     QVERIFY(spyRemoved.wait());
 
     // The Modified signal should be suppressed
     QCOMPARE(spyModified.count(), 0);
 
     QCOMPARE(spyRemoved.count(), 1);
-    QCOMPARE(spyRemoved.takeFirst().constFirst().toString(), myUrl);
+    QCOMPARE(spyRemoved.takeFirst().constFirst().toStringList(), QStringList{myUrl});
 }
 
 void PendingFileQueueTest::testCreateDelete2()
@@ -316,7 +320,7 @@ void PendingFileQueueTest::testCreateDelete2()
     queue.m_pendingFilesTimer.installEventFilter(eventEater);
 
     QSignalSpy spyModified(&queue, SIGNAL(indexModifiedFile(QString)));
-    QSignalSpy spyRemoved(&queue, SIGNAL(removeFileIndex(QString)));
+    QSignalSpy spyRemoved(&queue, SIGNAL(removeFileIndexes(QStringList)));
     QVERIFY(spyModified.isValid());
     QVERIFY(spyRemoved.isValid());
 
@@ -348,10 +352,10 @@ void PendingFileQueueTest::testCreateDelete2()
     currentTime = currentTime.addMSecs(10);
     QTimer::singleShot(0, [&queue, currentTime] { queue.processCache(currentTime); });
 
-    // The Removed signal should be emitted immediately
+    // The removal is emitted when the queue is processed
     QVERIFY(spyRemoved.wait());
     QCOMPARE(spyRemoved.count(), 1);
-    QCOMPARE(spyRemoved.takeFirst().constFirst().toString(), myUrl);
+    QCOMPARE(spyRemoved.takeFirst().constFirst().toStringList(), QStringList{myUrl});
 
     // The Modified signal should be suppressed, the file no longer be pending
     QCOMPARE(spyModified.count(), 0);
@@ -456,6 +460,92 @@ void PendingFileQueueTest::benchmarkCacheEnqueue()
             queue.enqueue(pf);
         }
     }
+}
+
+void PendingFileQueueTest::testRemovalsComeTogether()
+{
+    PendingFile file1_delete(u"/p/f1"_s);
+    PendingFile file2_delete(u"/p/f2"_s);
+    PendingFile dir_delete(u"/p/d/"_s);
+    PendingFile file1_create(u"/p/f1"_s);
+    file1_delete.setDeleted();
+    file2_delete.setDeleted();
+    dir_delete.setDeleted();
+    file1_create.setCreated();
+
+    PendingFileQueue queue;
+    QStringList events;
+    connect(&queue, &PendingFileQueue::removeFileIndexes, this, [&events](const QStringList &urls) {
+        events << u"removed "_s + urls.join(u' ');
+    });
+    connect(&queue, &PendingFileQueue::indexNewFile, this, [&events](const QString &url) {
+        events << u"new "_s + url;
+    });
+
+    queue.enqueue(file1_delete);
+    queue.enqueue(file2_delete);
+    queue.enqueue(dir_delete);
+    // The same name is used again right after it was deleted.
+    queue.enqueue(file1_create);
+
+    QTRY_COMPARE(events, (QStringList{u"removed /p/f1 /p/f2 /p/d/"_s, u"new /p/f1"_s}));
+}
+
+void PendingFileQueueTest::testRemovalsWaitAtMostOneSecond()
+{
+    PendingFile file_delete(u"/p/gone"_s);
+    file_delete.setDeleted();
+    PendingFile other_modify(u"/p/busy"_s);
+    other_modify.setModified();
+
+    PendingFileQueue queue;
+    QSignalSpy spyRemoved(&queue, &PendingFileQueue::removeFileIndexes);
+    queue.enqueue(file_delete);
+
+    // Other events keep coming, closer together than the queue waits for them to stop.
+    const QTime start = QTime::currentTime();
+    while (spyRemoved.isEmpty() && start.msecsTo(QTime::currentTime()) < 3000) {
+        queue.enqueue(other_modify);
+        QTest::qWait(5);
+    }
+
+    QCOMPARE(spyRemoved.count(), 1);
+    QCOMPARE(spyRemoved.constFirst().constFirst().toStringList(), QStringList{file_delete.path()});
+    QVERIFY(start.msecsTo(QTime::currentTime()) < 2000);
+}
+
+void PendingFileQueueTest::testManyRemovalsAreEmittedAtOnce()
+{
+    PendingFileQueue queue;
+    QSignalSpy spyRemoved(&queue, &PendingFileQueue::removeFileIndexes);
+
+    for (int i = 0; i < 1000; ++i) {
+        PendingFile file(u"/p/f%1"_s.arg(i));
+        file.setDeleted();
+        queue.enqueue(file);
+    }
+
+    QCOMPARE(spyRemoved.count(), 1);
+    QCOMPARE(spyRemoved.constFirst().constFirst().toStringList().size(), 1000);
+}
+
+void PendingFileQueueTest::testFolderRemovalCoversItsContent()
+{
+    PendingFile file_delete(u"/p/d/f"_s);
+    PendingFile dir_delete(u"/p/d/"_s);
+    PendingFile other_delete(u"/p/dd"_s);
+    file_delete.setDeleted();
+    dir_delete.setDeleted();
+    other_delete.setDeleted();
+
+    PendingFileQueue queue;
+    QSignalSpy spyRemoved(&queue, &PendingFileQueue::removeFileIndexes);
+    queue.enqueue(file_delete);
+    queue.enqueue(other_delete);
+    queue.enqueue(dir_delete);
+
+    QVERIFY(spyRemoved.wait());
+    QCOMPARE(spyRemoved.constFirst().constFirst().toStringList(), (QStringList{u"/p/dd"_s, u"/p/d/"_s}));
 }
 
 } // namespace

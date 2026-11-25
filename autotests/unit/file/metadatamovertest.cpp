@@ -32,6 +32,7 @@ private Q_SLOTS:
     void cleanup();
 
     void testRemoveFile();
+    void testRemoveFiles();
     void testRenameFile();
     void testMoveFile();
     void testMoveRenameFile();
@@ -135,6 +136,21 @@ void MetadataMoverTest::testRemoveFile()
         Transaction tr(m_db.get(), Transaction::ReadOnly);
         QVERIFY(!tr.hasDocument(fid));
     }
+}
+
+void MetadataMoverTest::testRemoveFiles()
+{
+    const quint64 kept = insertDoc(QStringLiteral("/kept"), 99);
+    const quint64 removed1 = insertDoc(QStringLiteral("/removed1"), 99);
+    const quint64 removed2 = insertDoc(QStringLiteral("/removed2"), 99);
+
+    MetadataMover mover(m_db.get(), this);
+    mover.removeFilesMetadata({QStringLiteral("/removed1"), QStringLiteral("/unknown"), QStringLiteral("/removed2")});
+
+    Transaction tr(m_db.get(), Transaction::ReadOnly);
+    QVERIFY(tr.hasDocument(kept));
+    QVERIFY(!tr.hasDocument(removed1));
+    QVERIFY(!tr.hasDocument(removed2));
 }
 
 // Rename "file" to "file2"

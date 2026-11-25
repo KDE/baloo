@@ -46,11 +46,22 @@ void MetadataMover::moveFileMetadata(const QString& from, const QString& to)
 
 void MetadataMover::removeFileMetadata(const QString& file)
 {
-    Q_ASSERT(!file.isEmpty() && file != QLatin1String("/"));
+    removeFilesMetadata({file});
+}
 
+void MetadataMover::removeFilesMetadata(const QStringList &files)
+{
+    if (files.isEmpty()) {
+        return;
+    }
     Transaction tr(m_db, Transaction::ReadWrite);
-    removeMetadata(&tr, file);
-    tr.commit();
+    for (const QString &file : files) {
+        Q_ASSERT(!file.isEmpty() && file != QLatin1String("/"));
+        removeMetadata(&tr, file);
+    }
+    if (!tr.commit()) {
+        qCWarning(BALOO) << "Could not remove" << files.size() << "deleted files from the index, starting with" << files.constFirst();
+    }
 }
 
 void MetadataMover::removeMetadata(Transaction* tr, const QString& url)

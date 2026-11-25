@@ -36,10 +36,18 @@ Q_SIGNALS:
     void indexNewFile(const QString& fileUrl);
     void indexModifiedFile(const QString& fileUrl);
     void indexXAttr(const QString& fileUrl);
-    void removeFileIndex(const QString& fileUrl);
+    /**
+     * The files and folders in \p fileUrls are gone. Folders end with a slash.
+     */
+    void removeFileIndexes(const QStringList &fileUrls);
 
 public Q_SLOTS:
     void enqueue(const PendingFile& file);
+
+    /**
+     * Emits removeFileIndexes() for the removals queued so far, if there are any.
+     */
+    void flushRemovals();
 
     /**
      * The number of seconds the file should be tracked after it has
@@ -61,6 +69,13 @@ private Q_SLOTS:
 
 private:
     QHash<QString, std::pair<PendingFile, qsizetype>> m_cache;
+
+    /**
+     * Files and folders that are gone, in the order they went.
+     */
+    QStringList m_pendingRemovals;
+    QTimer m_removalTimer;
+    static constexpr qsizetype s_maxPendingRemovals = 1000;
     qsizetype m_cacheSequenceCounter = 0;
 
     QTimer m_cacheTimer;

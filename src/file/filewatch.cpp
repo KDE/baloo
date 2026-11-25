@@ -39,7 +39,7 @@ FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
     connect(m_pendingFileQueue, &PendingFileQueue::indexNewFile, this, &FileWatch::indexNewFile);
     connect(m_pendingFileQueue, &PendingFileQueue::indexModifiedFile, this, &FileWatch::indexModifiedFile);
     connect(m_pendingFileQueue, &PendingFileQueue::indexXAttr, this, &FileWatch::indexXAttr);
-    connect(m_pendingFileQueue, &PendingFileQueue::removeFileIndex, m_metadataMover, &MetadataMover::removeFileMetadata);
+    connect(m_pendingFileQueue, &PendingFileQueue::removeFileIndexes, m_metadataMover, &MetadataMover::removeFilesMetadata);
 
     // monitor the file system for changes (restricted by the inotify limit)
     m_dirWatch = new KInotify(m_config, this);
@@ -56,6 +56,8 @@ FileWatch::FileWatch(Database* db, FileIndexerConfig* config, QObject* parent)
 
 FileWatch::~FileWatch()
 {
+    // The files deleted just before the indexer stops are removed from the index too.
+    m_pendingFileQueue->flushRemovals();
 }
 
 // FIXME: listen to Create for folders!
@@ -72,6 +74,9 @@ void FileWatch::watchFolder(const QString& path)
 
 void FileWatch::slotFileMoved(const QString& urlFrom, const QString& urlTo)
 {
+    // The target can be a file or folder that was deleted just before, so its removal goes first.
+    m_pendingFileQueue->flushRemovals();
+
     if (m_config->shouldBeIndexed(urlTo)) {
         m_metadataMover->moveFileMetadata(urlFrom, urlTo);
     } else {
